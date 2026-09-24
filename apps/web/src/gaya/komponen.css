@@ -146,3 +146,53 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .tur-pop .aw-btn-ghost{color:var(--surface-raised)}
 @media (prefers-reduced-motion:reduce){.tur-lubang{transition:none}}
 .kartu-pilihan[aria-disabled=true]{opacity:.45;cursor:not-allowed;box-shadow:none}
+
+/* ─── Langkah Harta & Kewajiban ─── */
+.tumpuk-rapat{display:flex;flex-direction:column;gap:10px}
+.isian-uang{display:flex;flex-direction:column;gap:6px;max-width:440px}
+.isian-uang label{font-weight:700;font-size:15px}
+.kotak-uang{display:flex;align-items:center;height:52px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);overflow:hidden}
+.kotak-uang:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.prefix-uang{display:grid;place-items:center;align-self:stretch;padding:0 14px;background:var(--surface-sunken);border-right:var(--border-w) solid var(--outline);font:700 16px var(--font-display);color:var(--ink-muted)}
+.kotak-uang input{flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 14px;font:700 20px var(--font-display);color:var(--ink);font-variant-numeric:tabular-nums}
+.kotak-uang input:focus{outline:none}
+.isian-uang.besar{max-width:520px}
+.isian-uang.besar .kotak-uang{height:64px}
+.isian-uang.besar input{font-size:28px}
+.isian-uang.besar label{font-size:16px}
+.caption-isian{margin:0;color:var(--ink-muted);font-size:13.5px;line-height:1.5;max-width:60ch}
+.tambah-cepat{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.chip-kecil{min-height:36px;padding:0 12px;border-radius:999px;border:1.5px solid var(--divider);background:var(--surface-raised);color:var(--ink-muted);font:700 13px var(--font-sans);cursor:pointer}
+.chip-kecil:hover{border-color:var(--outline);color:var(--ink)}
+.chip-kecil.hapus{border-style:dashed}
+.tab-kecil{display:inline-flex;align-self:flex-start;border:var(--border-w) solid var(--outline);border-radius:12px;overflow:hidden;background:var(--surface-raised)}
+.tab-kecil button{border:0;background:transparent;min-height:40px;padding:0 16px;font:800 13px var(--font-sans);color:var(--ink);cursor:pointer}
+.tab-kecil button[aria-selected=true]{background:var(--ink);color:var(--surface-raised)}
+.rincian-harta{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px 20px}
+.rincian-harta .kotak-uang{height:46px}
+.rincian-harta input{font-size:17px}
+.total-rincian{grid-column:1/-1;display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:14px 16px;border-radius:var(--radius-md);background:var(--surface-sunken);font-weight:700}
+.total-rincian b{font:700 24px var(--font-display)}
+.kartu-lipat{border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);max-width:640px}
+.kartu-lipat>summary{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;padding:14px 16px}
+.kartu-lipat>summary::-webkit-details-marker{display:none}
+.kartu-lipat>summary::after{content:"▾";margin-left:auto;font-weight:800}
+.kartu-lipat[open]>summary::after{content:"▴"}
+.judul-lipat{font:700 17px var(--font-display)}
+.ringkas-lipat{color:var(--ink-muted);font-size:13.5px;font-weight:600}
+.isi-lipat{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+.pilihan-bulat{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px}
+.pilihan-bulat button{display:flex;flex-direction:column;gap:4px;align-items:flex-start;text-align:left;padding:12px;border-radius:12px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);cursor:pointer;min-height:44px}
+.pilihan-bulat button b{font:700 16px var(--font-display)}
+.pilihan-bulat button small{font-size:12.5px;line-height:1.4;color:var(--ink-muted)}
+.pilihan-bulat button[aria-checked=true]{background:var(--primary);color:var(--on-primary)}
+.pilihan-bulat button[aria-checked=true] small{color:inherit;opacity:.9}
+.contoh-bulat{margin:0;padding:10px 12px;border-radius:10px;background:var(--surface-sunken);font-size:13.5px}
+.urutan-kewajiban{margin:0;padding-left:28px;display:flex;flex-direction:column;gap:18px}
+.urutan-kewajiban li::marker{font:700 18px var(--font-display);color:var(--primary)}
+.peringatan-isian{margin:8px 0 0;padding:10px 12px;border-radius:10px;background:var(--sun);color:var(--on-fill);font-size:13.5px;max-width:440px}
+.hitungan-berjalan{max-width:440px;display:grid;gap:6px;padding:14px 16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);font-variant-numeric:tabular-nums}
+.hitungan-berjalan>div{display:flex;justify-content:space-between;gap:12px}
+.hitungan-berjalan .potongan span:last-child{color:var(--danger);font-weight:700}
+.garis-total{border-top:var(--border-w) solid var(--outline);padding-top:8px;margin-top:2px}
+.hitungan-total{font-family:var(--font-display);font-size:20px}
