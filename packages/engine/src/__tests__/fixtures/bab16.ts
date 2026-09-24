@@ -12,12 +12,12 @@ const KB_VERSION = '1.0.0-dev';
 const DEFAULT_CONFIG: MadhhabConfig = { residuePolicy: 'radd', talakBainInMaradh: 'qaulJadid' };
 
 /** Buat Person minimal (default: alive, islam, no parents). */
-function p(id: string, sex: 'M' | 'F', overrides: Partial<Person> = {}): Person {
+export function p(id: string, sex: 'M' | 'F', overrides: Partial<Person> = {}): Person {
   return { id, sex, life: 'alive', religion: 'islam', ...overrides };
 }
 
 /** Buat input engine dengan tirkah default 0 (kasus tanpa nominal). */
-function input(graph: FamilyGraph, config: MadhhabConfig = DEFAULT_CONFIG): EngineInput {
+export function input(graph: FamilyGraph, config: MadhhabConfig = DEFAULT_CONFIG): EngineInput {
   return { graph, tirkah: { gross: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, rounding: { unit: 1n }, config, ruleset: 'syafii', kbVersion: KB_VERSION };
 }
 
