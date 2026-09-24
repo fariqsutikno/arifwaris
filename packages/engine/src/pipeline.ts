@@ -53,8 +53,9 @@ export function runHeirStages(input: EngineInput): HeirStagesResult | EarlyExit 
 
   const hajb = applyHajb(candidates);
   const statuses = { ...mawani.statuses };
-  for (const [personId, { by, ruleRef }] of Object.entries(hajb.mahjub)) {
-    statuses[personId] = { kind: 'mahjub', by, ruleRef };
+  for (const heir of candidates) {
+    const blocked = hajb.mahjub[heir.personId];
+    if (blocked) statuses[heir.personId] = { kind: 'mahjub', role: heir, by: blocked.by, ruleRef: blocked.ruleRef };
   }
 
   const shares = assignShares(hajb.effective, candidates);

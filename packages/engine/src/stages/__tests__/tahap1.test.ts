@@ -100,6 +100,11 @@ describe('1b mawani\' [R02-2] — keluar dan tidak menghijab [R06-6]', () => {
     expect(statuses(graph)['SS1']).toMatchObject({ kind: 'heir' });
   });
 
+  test('status mamnu dan mahjub membawa peran (untuk narasi)', () => {
+    expect(statuses(bab16.caseNeg1.input)['D1']).toMatchObject({ kind: 'mamnu', role: { key: 'BINT' } });
+    expect(statuses(bab16.case15.input)['AK1']).toMatchObject({ kind: 'mahjub', role: { key: 'AKH_SYQ' } });
+  });
+
   test('yang wafat bukan ahli waris', () => {
     expect(statuses(bab16.case04.input)['F1']).toMatchObject({ kind: 'nonHeir' });
   });

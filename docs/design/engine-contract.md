@@ -146,8 +146,8 @@ interface KinshipPosition {
 
 type PersonStatus =
   | { kind: 'heir'; role: HeirRole }
-  | { kind: 'mahjub'; by: PersonId[]; ruleRef: RefCode }
-  | { kind: 'mamnu'; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; ruleRef: RefCode }
+  | { kind: 'mahjub'; role: HeirRole; by: PersonId[]; ruleRef: RefCode }        // role: untuk narasi explain
+  | { kind: 'mamnu'; role: HeirRole; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; ruleRef: RefCode }
   | { kind: 'nonHeir'; reason: string; ruleRef?: RefCode };
 ```
 
@@ -264,6 +264,9 @@ orang penyebab + angka pembanding, lihat `packages/engine/src/types.ts`), mis.
 Setiap perbandingan angka (ashl, radd, inkisar, juz' as-sahm) wajib memancarkan `NISAB_COMPARE` —
 termasuk yang hasilnya habis/tamatsul — supaya `explain` bisa menulis "diketahui 2 dan 4 → tadakhul →
 ambil yang besar". Teks bebas di trace dilarang.
+
+`packages/explain` (`explain(result, graph)`) menghasilkan lapis 2 sebagai bagian → baris teks + `refs`;
+lapis 3 (dalil) nanti menempelkan teks dari `packages/content` berdasarkan `refs` tiap baris.
 
 Output ke pengguna = 3 lapis dari trace yang sama:
 1. **Tabel mas'alah** (kolom 'aul/radd/tashih muncul hanya bila terjadi; yang mahjub tetap tampil).

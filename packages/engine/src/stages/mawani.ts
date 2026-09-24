@@ -23,11 +23,11 @@ export function applyMawani(
       // Syarat 2 (bab 2.2): warits harus hidup saat muwarrits wafat.
       statuses[personId] = { kind: 'nonHeir', reason: 'tidak hidup saat pewaris wafat' };
     } else if (person.religion === 'nonIslam') {
-      statuses[personId] = { kind: 'mamnu', mani: 'ikhtilafDin', ruleRef: 'R02-4' };
+      statuses[personId] = { kind: 'mamnu', role, mani: 'ikhtilafDin', ruleRef: 'R02-4' };
       trace.push({ stage: 'mawani', refs: ['R02-4'], kind: 'MANI', personId, mani: 'ikhtilafDin' });
     } else if (person.killedDeceased === true) {
       // [R02-9] [SYF] semua bentuk pembunuhan menghalangi.
-      statuses[personId] = { kind: 'mamnu', mani: 'qatl', ruleRef: 'R02-9' };
+      statuses[personId] = { kind: 'mamnu', role, mani: 'qatl', ruleRef: 'R02-9' };
       trace.push({ stage: 'mawani', refs: ['R02-9'], kind: 'MANI', personId, mani: 'qatl' });
     } else {
       statuses[personId] = { kind: 'heir', role };

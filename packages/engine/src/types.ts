@@ -56,8 +56,8 @@ export interface HeirRole {
 
 export type PersonStatus =
   | { kind: 'heir'; role: HeirRole }
-  | { kind: 'mahjub'; by: PersonId[]; ruleRef: string }
-  | { kind: 'mamnu'; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; ruleRef: string }
+  | { kind: 'mahjub'; role: HeirRole; by: PersonId[]; ruleRef: string }
+  | { kind: 'mamnu'; role: HeirRole; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; ruleRef: string }
   | { kind: 'nonHeir'; reason: string; ruleRef?: string };
 
 // ─── Konfigurasi ──────────────────────────────────────────────────────────────
