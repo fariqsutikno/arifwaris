@@ -9,20 +9,20 @@ tags: [ahli waris, laki-laki, perempuan, furudh, ashabah, klasifikasi]
 ## 3.1 Ahli Waris Laki-laki (15, dirinci) [R03-1] [R03-2]
 | No | Ahli waris | Kode sistem |
 |----|-----------|-------------|
-| 1 | Anak laki-laki (ibn) | IBN |
-| 2 | Cucu laki-laki dari anak laki-laki, dan seterusnya ke bawah melalui laki-laki (ibn al-ibn) | IBN_IBN |
-| 3 | Ayah (ab) | AB |
-| 4 | Kakek dari ayah, dan seterusnya ke atas melalui laki-laki (jadd shahih) | JADD |
-| 5 | Saudara laki-laki kandung (akh syaqiq) | AKH_SYQ |
-| 6 | Saudara laki-laki sebapak (akh li ab) | AKH_AB |
-| 7 | Saudara laki-laki seibu (akh li umm) | AKH_UMM |
-| 8 | Anak laki-laki saudara laki-laki kandung (ibn akh syaqiq) | IBN_AKH_SYQ |
-| 9 | Anak laki-laki saudara laki-laki sebapak (ibn akh li ab) | IBN_AKH_AB |
-| 10 | Paman kandung (saudara kandung ayah) ('amm syaqiq) | AMM_SYQ |
-| 11 | Paman sebapak ('amm li ab) | AMM_AB |
-| 12 | Anak laki-laki paman kandung (ibn 'amm syaqiq) | IBN_AMM_SYQ |
-| 13 | Anak laki-laki paman sebapak (ibn 'amm li ab) | IBN_AMM_AB |
-| 14 | Suami (zawj) | ZAWJ |
+| 1 | Anak laki-laki (ibn) | ANAK_LK |
+| 2 | Cucu laki-laki dari anak laki-laki, dan seterusnya ke bawah melalui laki-laki (ibn al-ibn) | CUCU_LK |
+| 3 | Ayah (ab) | AYAH |
+| 4 | Kakek dari ayah, dan seterusnya ke atas melalui laki-laki (jadd shahih) | KAKEK |
+| 5 | Saudara laki-laki kandung (akh syaqiq) | SAUDARA_KANDUNG |
+| 6 | Saudara laki-laki sebapak (akh li ab) | SAUDARA_SEBAPAK |
+| 7 | Saudara laki-laki seibu (akh li umm) | SAUDARA_SEIBU |
+| 8 | Anak laki-laki saudara laki-laki kandung (ibn akh syaqiq) | KEPONAKAN_KANDUNG |
+| 9 | Anak laki-laki saudara laki-laki sebapak (ibn akh li ab) | KEPONAKAN_SEBAPAK |
+| 10 | Paman kandung (saudara kandung ayah) ('amm syaqiq) | PAMAN_KANDUNG |
+| 11 | Paman sebapak ('amm li ab) | PAMAN_SEBAPAK |
+| 12 | Anak laki-laki paman kandung (ibn 'amm syaqiq) | SEPUPU_KANDUNG |
+| 13 | Anak laki-laki paman sebapak (ibn 'amm li ab) | SEPUPU_SEBAPAK |
+| 14 | Suami (zawj) | SUAMI |
 | 15 | Laki-laki yang memerdekakan (mu'tiq) | MUTIQ |
 
 Ringkasan global: 10 (anak, cucu lk, ayah, kakek, saudara lk, anak saudara lk selain seibu, paman selain seibu, anak paman, suami, mu'tiq).
@@ -31,15 +31,15 @@ Catatan: paman dan anak paman mencakup juga paman ayah, paman kakek, dan seterus
 ## 3.2 Ahli Waris Perempuan (10, dirinci) [R03-1] [R03-4] [R03-5]
 | No | Ahli waris | Kode |
 |----|-----------|------|
-| 1 | Anak perempuan (bint) | BINT |
-| 2 | Cucu perempuan dari anak laki-laki, dan seterusnya melalui laki-laki (bint al-ibn) | BINT_IBN |
-| 3 | Ibu (umm) | UMM |
-| 4 | Nenek dari pihak ibu (umm al-umm, dst. melalui perempuan murni) | JADDAH_UMM |
-| 5 | Nenek dari pihak ayah (umm al-ab, dst.) | JADDAH_AB |
-| 6 | Saudara perempuan kandung (ukht syaqiqah) | UKHT_SYQ |
-| 7 | Saudara perempuan sebapak (ukht li ab) | UKHT_AB |
-| 8 | Saudara perempuan seibu (ukht li umm) | UKHT_UMM |
-| 9 | Istri (zawjah) | ZAWJAH |
+| 1 | Anak perempuan (bint) | ANAK_PR |
+| 2 | Cucu perempuan dari anak laki-laki, dan seterusnya melalui laki-laki (bint al-ibn) | CUCU_PR |
+| 3 | Ibu (umm) | IBU |
+| 4 | Nenek dari pihak ibu (umm al-umm, dst. melalui perempuan murni) | NENEK_DARI_IBU |
+| 5 | Nenek dari pihak ayah (umm al-ab, dst.) | NENEK_DARI_AYAH |
+| 6 | Saudara perempuan kandung (ukht syaqiqah) | SAUDARI_KANDUNG |
+| 7 | Saudara perempuan sebapak (ukht li ab) | SAUDARI_SEBAPAK |
+| 8 | Saudara perempuan seibu (ukht li umm) | SAUDARI_SEIBU |
+| 9 | Istri (zawjah) | ISTRI |
 | 10 | Perempuan yang memerdekakan (mu'tiqah) | MUTIQAH |
 
 Ringkasan global: 7 (anak pr, cucu pr, ibu, nenek, saudari, istri, mu'tiqah).

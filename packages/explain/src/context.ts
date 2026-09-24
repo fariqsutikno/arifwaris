@@ -1,40 +1,40 @@
-import type { EngineResult, FamilyGraph, PersonId, TraceStep } from '@waris/engine';
+import type { HasilEngine, GrafKeluarga, IdOrang, LangkahJejak } from '@waris/engine';
 import { makePeople, type People } from './people.js';
 import { joinAnd, type Segment } from './segments.js';
 
-export type Ok = Extract<EngineResult, { status: 'OK' }>;
-export type Step<K extends TraceStep['kind']> = Extract<TraceStep, { kind: K }>;
+export type Ok = Extract<HasilEngine, { status: 'OK' }>;
+export type Step<K extends LangkahJejak['jenis']> = Extract<LangkahJejak, { jenis: K }>;
 
 export interface Ctx {
-  result: Ok;
+  hasil: Ok;
   people: People;
-  steps<K extends TraceStep['kind']>(kind: K): Array<Step<K>>;
-  membersOf(group: string): PersonId[];
+  langkahLangkah<K extends LangkahJejak['jenis']>(jenis: K): Array<Step<K>>;
+  membersOf(kelompok: string): IdOrang[];
   /** Penyebut akhir: tashih, lalu radd/'aul, lalu ashl. */
   finalDenominator: bigint;
   showNominal: boolean;
 }
 
-export function makeCtx(result: Ok, graph: FamilyGraph): Ctx {
-  const { totals } = result.table;
+export function makeCtx(hasil: Ok, graf: GrafKeluarga): Ctx {
+  const { totalKolom } = hasil.tabel;
   return {
-    result,
-    people: makePeople(result, graph),
-    steps: <K extends TraceStep['kind']>(kind: K) => result.trace.filter((s): s is Step<K> => s.kind === kind),
-    membersOf: group => result.table.rows.find(r => r.group === group)?.members ?? [],
-    finalDenominator: totals.tashih ?? totals.radd ?? totals.aul ?? totals.ashl!,
-    showNominal: result.trace.some(s => s.kind === 'TIRKAH' && s.gross > 0n),
+    hasil,
+    people: makePeople(hasil, graf),
+    langkahLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((s): s is Step<K> => s.jenis === jenis),
+    membersOf: kelompok => hasil.tabel.baris.find(r => r.kelompok === kelompok)?.anggota ?? [],
+    finalDenominator: totalKolom.tashih ?? totalKolom.radd ?? totalKolom.aul ?? totalKolom.ashl!,
+    showNominal: hasil.jejak.some(s => s.jenis === 'TIRKAH' && s.kotor > 0n),
   };
 }
 
 /** Sebut beberapa orang, dikelompokkan per peran ("kedua anak perempuan dan ibu"). */
-export function mentionAll(ctx: Ctx, ids: PersonId[]): Segment[] {
-  const byRole = new Map<string, PersonId[]>();
+export function mentionAll(ctx: Ctx, ids: IdOrang[]): Segment[] {
+  const byRole = new Map<string, IdOrang[]>();
   for (const id of ids) {
-    const key = ctx.people.roleOf(id)?.key ?? id;
-    byRole.set(key, [...(byRole.get(key) ?? []), id]);
+    const kunci = ctx.people.roleOf(id)?.kunci ?? id;
+    byRole.set(kunci, [...(byRole.get(kunci) ?? []), id]);
   }
-  return joinAnd([...byRole.values()].map(members => [ctx.people.mention(members)]));
+  return joinAnd([...byRole.values()].map(anggota => [ctx.people.mention(anggota)]));
 }
 
-export const group = (ctx: Ctx, groupId: string): Segment[] => mentionAll(ctx, ctx.membersOf(groupId));
+export const kelompok = (ctx: Ctx, groupId: string): Segment[] => mentionAll(ctx, ctx.membersOf(groupId));

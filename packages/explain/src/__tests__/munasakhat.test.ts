@@ -1,18 +1,18 @@
-import { computeMunasakhat, type MunasakhatInput } from '@waris/engine';
+import { hitungMunasakhat, type InputMunasakhat } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import { M2, M7, M8, M9 } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
-import { explainMunasakhat, toPlainText, type MunasakhatExplanation } from '../index.js';
+import { jelaskanMunasakhat, toPlainText, type MunasakhatExplanation } from '../index.js';
 
-function explainCase(input: MunasakhatInput, mode?: 'cerita' | 'ringkas'): MunasakhatExplanation {
-  const result = computeMunasakhat(input);
-  if (result.status !== 'OK') throw new Error(result.status);
-  return explainMunasakhat(result, input.base.graph, mode ? { mode } : {});
+function explainCase(input: InputMunasakhat, mode?: 'cerita' | 'ringkas'): MunasakhatExplanation {
+  const hasil = hitungMunasakhat(input);
+  if (hasil.status !== 'OK') throw new Error(hasil.status);
+  return jelaskanMunasakhat(hasil, input.dasar.graf, mode ? { mode } : {});
 }
 
-const texts = (e: MunasakhatExplanation, part: number, section = 0) =>
-  e.parts[part]!.sections[section]!.lines.map(toPlainText);
-const lastSection = (e: MunasakhatExplanation, part: number) =>
-  e.parts[part]!.sections[e.parts[part]!.sections.length - 1]!;
+const texts = (e: MunasakhatExplanation, porsi: number, section = 0) =>
+  e.parts[porsi]!.sections[section]!.lines.map(toPlainText);
+const lastSection = (e: MunasakhatExplanation, porsi: number) =>
+  e.parts[porsi]!.sections[e.parts[porsi]!.sections.length - 1]!;
 
 describe('M2 — penjelasan munasakhat', () => {
   const e = explainCase(M2.input);
@@ -49,7 +49,7 @@ describe('M2 — penjelasan munasakhat', () => {
       'Istri: 3 × 3 + 1 × 7 = 16.',
       'Anak laki-laki: 14 × 3 + 2 × 7 = 56.',
     ]);
-    expect(section.lines[2]!.segments).toContainEqual({ kind: 'term', term: 'jamiah', text: "jami'ah" });
+    expect(section.lines[2]!.segments).toContainEqual({ jenis: 'term', term: 'jamiah', text: "jami'ah" });
   });
 
   test('hasil akhir: angka kitab + ringkasan', () => {
@@ -61,7 +61,7 @@ describe('M2 — penjelasan munasakhat', () => {
   });
 
   test('nominal hanya dari harta mayit pertama', () => {
-    const e2 = explainCase({ ...M2.input, base: { ...M2.input.base, tirkah: { gross: 72_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } } });
+    const e2 = explainCase({ ...M2.input, dasar: { ...M2.input.dasar, tirkah: { kotor: 72_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } } });
     expect(texts(e2, 3).slice(1)).toEqual(['Istri: 16/72 (diringkas 2/9) = Rp16.000.000.', 'Anak laki-laki: 56/72 (diringkas 7/9) = Rp56.000.000.']);
     expect(e2.parts[2]!.sections.some(sec => sec.title.includes('Menghitung harta'))).toBe(false);
   });
@@ -99,17 +99,17 @@ describe('sebutan lintas mayit dan catatan', () => {
   });
 
   test('yang wafat tanpa bagian dicatat di pembukaan', () => {
-    const { graph } = M2.input.base;
+    const { graf } = M2.input.dasar;
     const withBrother = {
-      ...graph,
-      persons: {
-        ...graph.persons,
-        F1: { id: 'F1', sex: 'M' as const, life: 'dead' as const, religion: 'islam' as const, isPlaceholder: true },
-        D: { ...graph.persons['D']!, fatherId: 'F1' },
-        AK: { id: 'AK', sex: 'M' as const, life: 'alive' as const, religion: 'islam' as const, fatherId: 'F1' },
+      ...graf,
+      orang: {
+        ...graf.orang,
+        F1: { id: 'F1', jenisKelamin: 'L' as const, statusHidup: 'wafat' as const, agama: 'islam' as const, penghubung: true },
+        D: { ...graf.orang['D']!, idAyah: 'F1' },
+        AK: { id: 'AK', jenisKelamin: 'L' as const, statusHidup: 'hidup' as const, agama: 'islam' as const, idAyah: 'F1' },
       },
     };
-    const e = explainCase({ ...M2.input, base: { ...M2.input.base, graph: withBrother }, deaths: ['AK', 'B'] });
+    const e = explainCase({ ...M2.input, dasar: { ...M2.input.dasar, graf: withBrother }, urutanWafat: ['AK', 'B'] });
     expect(texts(e, 0)[3]).toBe('Saudara laki-laki sebapak tidak mendapat bagian dari harta almarhum, jadi tidak ada yang diteruskan kepada ahli warisnya.');
   });
 

@@ -1,4 +1,4 @@
-import type { FamilyGraph, Person, PersonId } from './types.js';
+import type { GrafKeluarga, Orang, IdOrang } from './types.js';
 
 /**
  * Penyusunan graf untuk UI: jenis kelamin orang baru selalu diturunkan dari relasinya, sehingga
@@ -6,66 +6,66 @@ import type { FamilyGraph, Person, PersonId } from './types.js';
  */
 export type Relasi = 'ayah' | 'ibu' | 'anakLaki' | 'anakPerempuan' | 'suami' | 'istri';
 
-const SEX_OF: Record<Relasi, Person['sex']> = { ayah: 'M', ibu: 'F', anakLaki: 'M', anakPerempuan: 'F', suami: 'M', istri: 'F' };
+const SEX_OF: Record<Relasi, Orang['jenisKelamin']> = { ayah: 'L', ibu: 'P', anakLaki: 'L', anakPerempuan: 'P', suami: 'L', istri: 'P' };
 const MAX_ISTRI = 4;   // [R04-3]
 
-type NewPerson = { id: PersonId } & Partial<Omit<Person, 'id' | 'sex' | 'fatherId' | 'motherId'>>;
+type OrangBaru = { id: IdOrang } & Partial<Omit<Orang, 'id' | 'jenisKelamin' | 'idAyah' | 'idIbu'>>;
 
-const activeMarriages = (graph: FamilyGraph, personId: PersonId) =>
-  graph.marriages.filter(m => m.status !== 'talakBain' && (m.husbandId === personId || m.wifeId === personId));
+const activeMarriages = (graf: GrafKeluarga, idOrang: IdOrang) =>
+  graf.pernikahan.filter(m => m.status !== 'talakBain' && (m.idSuami === idOrang || m.idIstri === idOrang));
 
 /** Relasi yang boleh ditambahkan untuk seseorang. Laki-laki: istri (maks. 4); perempuan: suami (maks. 1). */
-export function relationOptions(graph: FamilyGraph, personId: PersonId): Relasi[] {
-  const person = graph.persons[personId];
-  if (!person) throw new Error(`orang ${personId} tidak ada di graf`);
-  const options: Relasi[] = [];
-  if (!person.fatherId) options.push('ayah');
-  if (!person.motherId) options.push('ibu');
-  options.push('anakLaki', 'anakPerempuan');
-  const pasangan = activeMarriages(graph, personId).length;
-  if (person.sex === 'M' && pasangan < MAX_ISTRI) options.push('istri');
-  if (person.sex === 'F' && pasangan < 1) options.push('suami');
-  return options;
+export function opsiRelasi(graf: GrafKeluarga, idOrang: IdOrang): Relasi[] {
+  const person = graf.orang[idOrang];
+  if (!person) throw new Error(`orang ${idOrang} tidak ada di graf`);
+  const opsi: Relasi[] = [];
+  if (!person.idAyah) opsi.push('ayah');
+  if (!person.idIbu) opsi.push('ibu');
+  opsi.push('anakLaki', 'anakPerempuan');
+  const pasangan = activeMarriages(graf, idOrang).length;
+  if (person.jenisKelamin === 'L' && pasangan < MAX_ISTRI) opsi.push('istri');
+  if (person.jenisKelamin === 'P' && pasangan < 1) opsi.push('suami');
+  return opsi;
 }
 
-/** Tambah kerabat untuk `personId`; mengembalikan graf baru (tidak mengubah input). */
-export function addRelative(
-  graph: FamilyGraph,
-  personId: PersonId,
+/** Tambah kerabat untuk `idOrang`; mengembalikan graf baru (tidak mengubah input). */
+export function tambahKerabat(
+  graf: GrafKeluarga,
+  idOrang: IdOrang,
   relasi: Relasi,
-  data: NewPerson,
-  options: { otherParentId?: PersonId } = {},
-): FamilyGraph {
-  if (!relationOptions(graph, personId).includes(relasi)) {
-    throw new Error(`relasi '${relasi}' tidak tersedia untuk ${personId}`);
+  data: OrangBaru,
+  opsi: { otherParentId?: IdOrang } = {},
+): GrafKeluarga {
+  if (!opsiRelasi(graf, idOrang).includes(relasi)) {
+    throw new Error(`relasi '${relasi}' tidak tersedia untuk ${idOrang}`);
   }
-  if (graph.persons[data.id]) throw new Error(`id ${data.id} sudah dipakai`);
-  const person = graph.persons[personId]!;
-  const baru: Person = { life: 'alive', religion: 'islam', ...data, sex: SEX_OF[relasi] };
-  const persons = { ...graph.persons, [baru.id]: baru };
-  let marriages = graph.marriages;
+  if (graf.orang[data.id]) throw new Error(`id ${data.id} sudah dipakai`);
+  const person = graf.orang[idOrang]!;
+  const baru: Orang = { statusHidup: 'hidup', agama: 'islam', ...data, jenisKelamin: SEX_OF[relasi] };
+  const orang = { ...graf.orang, [baru.id]: baru };
+  let pernikahan = graf.pernikahan;
 
   switch (relasi) {
-    case 'ayah': persons[personId] = { ...person, fatherId: baru.id }; break;
-    case 'ibu': persons[personId] = { ...person, motherId: baru.id }; break;
-    case 'suami': marriages = [...marriages, { husbandId: baru.id, wifeId: personId, status: 'intact' }]; break;
-    case 'istri': marriages = [...marriages, { husbandId: personId, wifeId: baru.id, status: 'intact' }]; break;
+    case 'ayah': orang[idOrang] = { ...person, idAyah: baru.id }; break;
+    case 'ibu': orang[idOrang] = { ...person, idIbu: baru.id }; break;
+    case 'suami': pernikahan = [...pernikahan, { idSuami: baru.id, idIstri: idOrang, status: 'utuh' }]; break;
+    case 'istri': pernikahan = [...pernikahan, { idSuami: idOrang, idIstri: baru.id, status: 'utuh' }]; break;
     case 'anakLaki': case 'anakPerempuan': {
-      const other = options.otherParentId;
-      if (other !== undefined && !activeMarriages(graph, personId).some(m => m.husbandId === other || m.wifeId === other)) {
-        throw new Error(`${other} bukan pasangan ${personId}`);
+      const other = opsi.otherParentId;
+      if (other !== undefined && !activeMarriages(graf, idOrang).some(m => m.idSuami === other || m.idIstri === other)) {
+        throw new Error(`${other} bukan pasangan ${idOrang}`);
       }
-      const [ayahId, ibuId] = person.sex === 'M' ? [personId, other] : [other, personId];
-      persons[baru.id] = { ...baru, ...(ayahId ? { fatherId: ayahId } : {}), ...(ibuId ? { motherId: ibuId } : {}) };
+      const [ayahId, ibuId] = person.jenisKelamin === 'L' ? [idOrang, other] : [other, idOrang];
+      orang[baru.id] = { ...baru, ...(ayahId ? { idAyah: ayahId } : {}), ...(ibuId ? { idIbu: ibuId } : {}) };
       break;
     }
   }
-  return { ...graph, persons, marriages };
+  return { ...graf, orang, pernikahan };
 }
 
 /** Jenis kelamin hanya boleh diubah bila orang itu belum tercatat sebagai ayah/ibu/suami/istri. */
-export function canChangeSex(graph: FamilyGraph, personId: PersonId): boolean {
-  const asParent = Object.values(graph.persons).some(p => p.fatherId === personId || p.motherId === personId);
-  const asSpouse = graph.marriages.some(m => m.husbandId === personId || m.wifeId === personId);
+export function bolehUbahJenisKelamin(graf: GrafKeluarga, idOrang: IdOrang): boolean {
+  const asParent = Object.values(graf.orang).some(p => p.idAyah === idOrang || p.idIbu === idOrang);
+  const asSpouse = graf.pernikahan.some(m => m.idSuami === idOrang || m.idIstri === idOrang);
   return !asParent && !asSpouse;
 }

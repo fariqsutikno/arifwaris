@@ -1,66 +1,66 @@
 import { fpb, type Pecahan } from '@waris/math';
-import type { GroupId, HeirKey, HeirRole, PersonId } from '../types.js';
+import type { IdKelompok, KunciAhliWaris, PeranAhliWaris, IdOrang } from '../types.js';
 
-/** Calon ahli waris: peran yang punya HeirKey (bukan DZAWIL_ARHAM / NON_HEIR). */
-export type Heir = HeirRole & { key: HeirKey };
+/** Calon ahli waris: peran yang punya KunciAhliWaris (bukan DZAWIL_ARHAM / BUKAN_AHLI_WARIS). */
+export type AhliWaris = PeranAhliWaris & { kunci: KunciAhliWaris };
 
-export type Share =
-  | { kind: 'fardh'; fardh: Pecahan }
+export type Bagian =
+  | { jenis: 'fardh'; fardh: Pecahan }
   // [R04-5] ayah/kakek bersama far'u warits muannats: 1/6 + sisa.
-  | { kind: 'fardhAshabah'; fardh: Pecahan }
-  | { kind: 'ashabah'; type: 'binNafsi' | 'bilGhair' | 'maalGhair' }
+  | { jenis: 'fardhAshabah'; fardh: Pecahan }
+  | { jenis: 'ashabah'; type: 'binNafsi' | 'bilGhair' | 'maalGhair' }
   // Bab 08: bagian kakek/saudari yang ditetapkan sebagai pecahan harta, bukan fardh muqaddarah.
-  | { kind: 'fixed'; value: Pecahan; basis: 'tsuluts' | 'tsulutsBaqi' | 'muqasamah' | 'muaddah' };
+  | { jenis: 'fixed'; nilai: Pecahan; basis: 'tsuluts' | 'tsulutsBaqi' | 'muqasamah' | 'muaddah' };
 
 /**
- * Satu baris tabel mas'alah. `weights` = perbandingan bagian antar anggota (2:1 ashabah bil ghair,
+ * Satu baris tabel mas'alah. `bobot` = perbandingan bagian antar anggota (2:1 ashabah bil ghair,
  * rata untuk furudh bersama, 0 untuk saudara sebapak dalam mu'addah).
  */
-export interface ShareGroup {
-  id: GroupId;
-  members: PersonId[];
-  weights: Record<PersonId, bigint>;
-  share: Share;
+export interface KelompokBagian {
+  id: IdKelompok;
+  anggota: IdOrang[];
+  bobot: Record<IdOrang, bigint>;
+  bagian: Bagian;
 }
 
-export type Unsupported = { status: 'UNSUPPORTED'; reason: string; refs: string[] };
+export type Unsupported = { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[] };
 
 /** Buat grup; bobot dinormalisasi (dibagi FPB bobot bukan nol) supaya 2:2 tampil sebagai rata. */
-export function makeGroup(id: GroupId, weights: Record<PersonId, bigint>, share: Share): ShareGroup {
-  const nonZero = Object.values(weights).filter(w => w > 0n);
+export function makeGroup(id: IdKelompok, bobot: Record<IdOrang, bigint>, bagian: Bagian): KelompokBagian {
+  const nonZero = Object.values(bobot).filter(w => w > 0n);
   const divisor = nonZero.reduce((acc, w) => fpb(acc, w), 0n) || 1n;
-  const normalized = Object.fromEntries(Object.entries(weights).map(([id, w]) => [id, w / divisor]));
-  return { id, members: Object.keys(weights), weights: normalized, share };
+  const normalized = Object.fromEntries(Object.entries(bobot).map(([id, w]) => [id, w / divisor]));
+  return { id, anggota: Object.keys(bobot), bobot: normalized, bagian };
 }
 
 /** Bobot rata 1 untuk tiap anggota (furudh bersama: istri-istri, nenek-nenek, anak-anak pr). */
-export const equalWeights = (heirs: Array<{ personId: PersonId }>): Record<PersonId, bigint> =>
-  Object.fromEntries(heirs.map(h => [h.personId, 1n]));
+export const equalWeights = (daftarAhliWaris: Array<{ idOrang: IdOrang }>): Record<IdOrang, bigint> =>
+  Object.fromEntries(daftarAhliWaris.map(h => [h.idOrang, 1n]));
 
-const MALE_KEYS: HeirKey[] = ['IBN', 'IBN_IBN', 'AB', 'JADD', 'AKH_SYQ', 'AKH_AB', 'AKH_UMM',
-  'IBN_AKH_SYQ', 'IBN_AKH_AB', 'AMM_SYQ', 'AMM_AB', 'IBN_AMM_SYQ', 'IBN_AMM_AB', 'ZAWJ', 'MUTIQ'];
-export const isMale = (heir: Heir): boolean => MALE_KEYS.includes(heir.key);
+const MALE_KEYS: KunciAhliWaris[] = ['ANAK_LK', 'CUCU_LK', 'AYAH', 'KAKEK', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARA_SEIBU',
+  'KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK', 'SUAMI', 'MUTIQ'];
+export const isMale = (ahliWaris: AhliWaris): boolean => MALE_KEYS.includes(ahliWaris.kunci);
 
 /** Unit ru'us ashabah bil ghair: laki-laki 2, perempuan 1 (An-Nisa' 11, 176). */
-export const unitOf = (heir: Heir): bigint => (isMale(heir) ? 2n : 1n);
+export const unitOf = (ahliWaris: AhliWaris): bigint => (isMale(ahliWaris) ? 2n : 1n);
 
 /** Keadaan mas'alah setelah tahap 3: saham tiap kelompok pada ashl (ashabah sudah mengambil sisa, min. 0). */
 export interface Masalah {
-  groups: ShareGroup[];
+  kelompokKelompok: KelompokBagian[];
   ashl: bigint;
-  saham: Record<GroupId, bigint>;
+  saham: Record<IdKelompok, bigint>;
 }
 
 /** Pecahan tetap sebuah kelompok (fardh, bagian fardh ayah/kakek, atau bagian tetap bab 08); ashabah murni → undefined. */
-export function fixedFractionOf(share: Share): Pecahan | undefined {
-  switch (share.kind) {
-    case 'fardh': case 'fardhAshabah': return share.fardh;
-    case 'fixed': return share.value;
+export function fixedFractionOf(bagian: Bagian): Pecahan | undefined {
+  switch (bagian.jenis) {
+    case 'fardh': case 'fardhAshabah': return bagian.fardh;
+    case 'fixed': return bagian.nilai;
     case 'ashabah': return undefined;
   }
 }
 
-export const isResidueGroup = (group: ShareGroup): boolean =>
-  group.share.kind === 'ashabah' || group.share.kind === 'fardhAshabah';
+export const isResidueGroup = (kelompok: KelompokBagian): boolean =>
+  kelompok.bagian.jenis === 'ashabah' || kelompok.bagian.jenis === 'fardhAshabah';
 
-export const sumWeights = (group: ShareGroup): bigint => Object.values(group.weights).reduce((a, b) => a + b, 0n);
+export const sumWeights = (kelompok: KelompokBagian): bigint => Object.values(kelompok.bobot).reduce((a, b) => a + b, 0n);

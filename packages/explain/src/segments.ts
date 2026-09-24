@@ -1,4 +1,4 @@
-import type { PersonId } from '@waris/engine';
+import type { IdOrang } from '@waris/engine';
 import type { Pecahan } from '@waris/math';
 import type { TermId } from './terms.js';
 
@@ -7,9 +7,9 @@ import type { TermId } from './terms.js';
  * `person` sebagai sebutan orang (bisa di-hover); `text` apa adanya.
  */
 export type Segment =
-  | { kind: 'text'; text: string }
-  | { kind: 'person'; personIds: PersonId[]; text: string }
-  | { kind: 'term'; term: TermId; text: string; example?: string };
+  | { jenis: 'text'; text: string }
+  | { jenis: 'person'; idOrangOrang: IdOrang[]; text: string }
+  | { jenis: 'term'; term: TermId; text: string; example?: string };
 
 export interface ExplainLine { segments: Segment[]; refs: string[] }
 
@@ -17,7 +17,7 @@ export const toPlainText = (line: ExplainLine): string => line.segments.map(s =>
 
 type Part = string | number | bigint | Pecahan | Segment | Segment[];
 
-const isFraction = (part: object): part is Pecahan => 'n' in part && 'd' in part;
+const isFraction = (porsi: object): porsi is Pecahan => 'n' in porsi && 'd' in porsi;
 
 /** Template bertag: `s\`${person} mendapat ${fraction}\`` → Segment[]; teks berdampingan digabung. */
 export function s(strings: TemplateStringsArray, ...parts: Part[]): Segment[] {
@@ -25,17 +25,17 @@ export function s(strings: TemplateStringsArray, ...parts: Part[]): Segment[] {
   const pushText = (text: string) => {
     if (text === '') return;
     const last = out[out.length - 1];
-    if (last?.kind === 'text') out[out.length - 1] = { kind: 'text', text: last.text + text };
-    else out.push({ kind: 'text', text });
+    if (last?.jenis === 'text') out[out.length - 1] = { jenis: 'text', text: last.text + text };
+    else out.push({ jenis: 'text', text });
   };
   strings.forEach((str, i) => {
     pushText(str);
     if (i >= parts.length) return;
-    const part = parts[i]!;
-    if (typeof part !== 'object') pushText(String(part));
-    else if (Array.isArray(part)) part.forEach(p => (p.kind === 'text' ? pushText(p.text) : out.push(p)));
-    else if ('kind' in part) (part.kind === 'text' ? pushText(part.text) : out.push(part));
-    else if (isFraction(part)) pushText(`${part.n}/${part.d}`);
+    const porsi = parts[i]!;
+    if (typeof porsi !== 'object') pushText(String(porsi));
+    else if (Array.isArray(porsi)) porsi.forEach(p => (p.jenis === 'text' ? pushText(p.text) : out.push(p)));
+    else if ('jenis' in porsi) (porsi.jenis === 'text' ? pushText(porsi.text) : out.push(porsi));
+    else if (isFraction(porsi)) pushText(`${porsi.n}/${porsi.d}`);
   });
   return out;
 }
@@ -46,7 +46,7 @@ export function line(segments: Segment[], refs: string[] = []): ExplainLine {
   const merged = s`${segments}`;   // satukan teks bersebelahan dari beberapa template
   const out = merged.map((seg, i) => {
     const previous = merged[i - 1];
-    const opensSentence = i === 0 || (previous?.kind === 'text' && /[.!?]\s$/.test(previous.text));
+    const opensSentence = i === 0 || (previous?.jenis === 'text' && /[.!?]\s$/.test(previous.text));
     return opensSentence ? capitalize(seg) : seg;
   });
   return { segments: out, refs };
@@ -57,6 +57,6 @@ export function joinAnd(items: Segment[][]): Segment[] {
   return items.flatMap((item, i) => {
     if (i === 0) return item;
     const sep = i === items.length - 1 ? (items.length > 2 ? ', dan ' : ' dan ') : ', ';
-    return [{ kind: 'text' as const, text: sep }, ...item];
+    return [{ jenis: 'text' as const, text: sep }, ...item];
   });
 }

@@ -11,4 +11,4 @@ export type TermId = typeof TERM_IDS[number];
 
 /** Istilah fikih sebagai potongan tooltip; `example` = contoh dari kasus ini sendiri. */
 export const term = (id: TermId, text: string, example?: string): Segment =>
-  ({ kind: 'term', term: id, text, ...(example ? { example } : {}) });
+  ({ jenis: 'term', term: id, text, ...(example ? { example } : {}) });

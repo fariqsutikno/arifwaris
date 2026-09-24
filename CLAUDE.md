@@ -9,22 +9,22 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 - Madzhab: **Syafi'i [SYF] saja**. Pendapat lain di KB (Ibnu 'Utsaimin, Al-Fara'idh al-Muyassar, Hanbali, dst.) hanya perbandingan, tidak diimplementasikan.
 - Setiap cabang kode fikih WAJIB diberi anotasi rujukan, contoh: `// [R09-7] radd, bab 9.4`.
 - Aturan yang tidak ada di KB, atau berstatus `[perlu verifikasi lanjut]` (bab 17.4), JANGAN dikarang.
-  Kembalikan `UNSUPPORTED` / tandai `blocked` dan beri tahu pengguna.
+  Kembalikan `TIDAK_DIDUKUNG` / tandai `blocked` dan beri tahu pengguna.
 - KHI = fase 4, ruleset terpisah (`docs/kb-khi/`), selalu ditandai "hukum positif, bukan fikih [SYF]".
   Jangan campur ke ruleset `syafii`.
 
 ## Prinsip engine (tidak boleh dilanggar)
 1. **Deterministik**: fungsi murni, tanpa I/O, `Date`, `Math.random`.
-2. **Eksak**: `Fraction` berbasis `bigint`, ternormalisasi, `d > 0`. Dilarang `number` di jalur hitung.
+2. **Eksak**: `Pecahan` berbasis `bigint`, ternormalisasi, `d > 0`. Dilarang `number` di jalur hitung.
    Uang = `bigint` satuan terkecil. Pembulatan: tiap orang dibulatkan ke bawah ke kelipatan
-   `RoundingConfig.unit` (dipilih pengguna: 1 / 100 / 1000), sisa total dilaporkan terpisah sebagai
+   `KonfigurasiPembulatan.satuan` (dipilih pengguna: 1 / 100 / 1000), sisa total dilaporkan terpisah sebagai
    "selisih pembulatan" (tidak dibagikan diam-diam). Lihat engine-contract Tahap 6.
 3. **Pisahkan hukum vs hisab**: `packages/math` hanya kaidah hisab [KH]; aturan fikih di `packages/engine`.
 4. **Pipeline wajib** (bab 00.2), tiap tahap = fungsi terpisah yang diuji sendiri:
    tirkah → validasi & mawani' → hajb → furudh/ashabah (+bab 07/08) → ashl → 'aul/radd → tashih → nominal.
    Munasakhat (12), kasus khusus (13), dzawil arham (14) = orkestrator di atas pipeline, bukan cabang di dalamnya.
-5. **Data kurang → tanya**, jangan asumsi (bab 00 konvensi 4): kembalikan `NEEDS_INPUT`.
-6. **Trace terstruktur**: setiap keputusan memancarkan `TraceStep` (data, bukan kalimat) + `refs`.
+5. **Data kurang → tanya**, jangan asumsi (bab 00 konvensi 4): kembalikan `PERLU_INPUT`.
+6. **Trace terstruktur**: setiap keputusan memancarkan `LangkahJejak` (data, bukan kalimat) + `refs`.
    Narasi dibuat di `packages/explain`.
 7. **Invarian sebagai assertion**: 'aul hanya 6→7..10, 12→13/15/17, 24→27 [R09-4]; inkisar ≤ 4 kelompok [R10-3];
    Σ saham individu = tashih; semua saham bulat; rasio 2:1 pada ashabah bil ghair (bab 10.5).
@@ -32,10 +32,10 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 
 ## Struktur repo
 ```
-packages/math      Fraction, gcd/lcm, nisab arba' [KH]
+packages/math      Pecahan, fpb/kpk, nisab arba' [KH]
 packages/engine    types, rulesets/syafii, pipeline stages, orchestrators
 packages/content   RefEntry dari tabel "Dasar dan Rujukan" KB, glosarium, materi, bank soal
-packages/explain   TraceStep → narasi Indonesia
+packages/explain   LangkahJejak → narasi Indonesia
 apps/web           (belakangan) UI
 docs/kb            knowledge base fikih 00–17
 docs/design        dokumen desain (baca engine-contract.md sebelum menulis kode engine)
@@ -66,7 +66,7 @@ komentar "## bagian 2" adalah sinyal untuk dipecah.
 dipakai di 3 tempat (ashl, radd, tashih) → satu fungsi di `packages/math`. Tapi jangan bikin abstraksi
 generik untuk pola yang kebetulan mirip sekali pakai; itu over-engineering.
 
-**Konfigurasi vs konstanta** — yang WAJIB jadi parameter: field `MadhhabConfig` (khilaf internal
+**Konfigurasi vs konstanta** — yang WAJIB jadi parameter: field `KonfigurasiMadzhab` (khilaf internal
 Syafi'iyyah), `ruleset`. Yang BOLEH jadi konstanta bernama dengan anotasi rujukan: angka-angka yang
 memang tetap secara fikih, contoh `const VALID_USUL = [2, 3, 4, 6, 8, 12, 24] as const; // [R09-1]`.
 Bedanya: konfigurasi = titik khilaf yang bisa berubah menurut pendapat; konstanta = fakta fikih yang tidak berubah.
@@ -75,7 +75,7 @@ Bedanya: konfigurasi = titik khilaf yang bisa berubah menurut pendapat; konstant
 `ashlulMasalah` bukan `am`, `sisaHartaSetelahFardh` bukan `sisa2`. Boleh transliterasi Arab kalau
 istilahnya baku (`fardh`, `ashabah`, `hajb`). Yang bukan istilah fikih pakai Indonesia
 (`ahliWaris` bukan `heir`, `pecahan` bukan `fraction`). Kunci ahli waris juga Indonesia
-(`CUCU_LK_DARI_ANAK_LK`, bukan `IBN_IBN`). Tidak ada nama 1-huruf kecuali index loop generik.
+(`CUCU_LK`, `SAUDARI_SEBAPAK`; bukan `IBN_IBN`, `UKHT_AB`). Tidak ada nama 1-huruf kecuali index loop generik.
 
 **Kode sebagai cerita** — tiap file dibuka dengan komentar pendek: tahap ini menerima apa,
 memutuskan apa, menyerahkan apa ke tahap berikutnya. Fungsi utama diletakkan di atas, helper di

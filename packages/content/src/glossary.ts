@@ -2,7 +2,7 @@
 import glosariumMd from '../../../docs/kb/15_glosarium.md?raw';
 
 export interface GlossaryEntry {
-  /** Slug istilah pertama; dipakai `packages/explain` sebagai TermId. */
+  /** Slug istilah pertama; dipakai `packages/jelaskan` sebagai TermId. */
   id: string;
   /** Slug semua sinonim di kolom Istilah ("Ta'shib / 'Ashabah" → tashib, ashabah). */
   aliases: string[];

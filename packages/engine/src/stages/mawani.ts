@@ -1,43 +1,43 @@
-import type { FamilyGraph, HeirRole, PersonId, PersonStatus, TraceStep } from '../types.js';
+import type { GrafKeluarga, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak } from '../types.js';
 
 /**
  * Tahap 1b: status awal tiap orang. Yang terkena mani' dianggap tidak ada dan tidak menghijab
- * siapa pun [R06-6]; sisanya (status 'heir') masuk ke tahap hajb.
+ * siapa pun [R06-6]; sisanya (status 'ahliWaris') masuk ke tahap hajb.
  */
-export function applyMawani(
-  graph: FamilyGraph,
-  roles: Record<PersonId, HeirRole>,
-): { statuses: Record<PersonId, PersonStatus>; trace: TraceStep[] } {
-  const statuses: Record<PersonId, PersonStatus> = {};
-  const trace: TraceStep[] = [];
+export function terapkanMawani(
+  graf: GrafKeluarga,
+  daftarPeran: Record<IdOrang, PeranAhliWaris>,
+): { statusOrang: Record<IdOrang, StatusOrang>; jejak: LangkahJejak[] } {
+  const statusOrang: Record<IdOrang, StatusOrang> = {};
+  const jejak: LangkahJejak[] = [];
 
-  for (const [personId, role] of Object.entries(roles)) {
-    const person = graph.persons[personId]!;
-    if (role.key === 'NON_HEIR') {
-      statuses[personId] = isTalakBain(graph, personId)
-        ? { kind: 'nonHeir', reason: "talak ba'in memutus sebab nikah", ruleRef: 'R02-3' }
-        : { kind: 'nonHeir', reason: 'tidak ada sebab waris' };
-    } else if (role.key === 'DZAWIL_ARHAM') {
-      statuses[personId] = { kind: 'nonHeir', reason: 'dzawil arham', ruleRef: 'R14-4' };
-    } else if (person.life !== 'alive') {
+  for (const [idOrang, peran] of Object.entries(daftarPeran)) {
+    const person = graf.orang[idOrang]!;
+    if (peran.kunci === 'BUKAN_AHLI_WARIS') {
+      statusOrang[idOrang] = isTalakBain(graf, idOrang)
+        ? { jenis: 'bukanAhliWaris', alasan: "talak ba'in memutus sebab nikah", rujukanAturan: 'R02-3' }
+        : { jenis: 'bukanAhliWaris', alasan: 'tidak ada sebab waris' };
+    } else if (peran.kunci === 'DZAWIL_ARHAM') {
+      statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'dzawil arham', rujukanAturan: 'R14-4' };
+    } else if (person.statusHidup !== 'hidup') {
       // Syarat 2 (bab 2.2): warits harus hidup saat muwarrits wafat.
-      statuses[personId] = { kind: 'nonHeir', reason: 'tidak hidup saat pewaris wafat' };
-    } else if (person.religion === 'nonIslam') {
-      statuses[personId] = { kind: 'mamnu', role, mani: 'ikhtilafDin', ruleRef: 'R02-4' };
-      trace.push({ stage: 'mawani', refs: ['R02-4'], kind: 'MANI', personId, mani: 'ikhtilafDin' });
-    } else if (person.killedDeceased === true) {
+      statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'tidak hidup saat pewaris wafat' };
+    } else if (person.agama === 'nonIslam') {
+      statusOrang[idOrang] = { jenis: 'mamnu', peran, mani: 'ikhtilafDin', rujukanAturan: 'R02-4' };
+      jejak.push({ tahap: 'mawani', refs: ['R02-4'], jenis: 'MANI', idOrang, mani: 'ikhtilafDin' });
+    } else if (person.membunuhPewaris === true) {
       // [R02-9] [SYF] semua bentuk pembunuhan menghalangi.
-      statuses[personId] = { kind: 'mamnu', role, mani: 'qatl', ruleRef: 'R02-9' };
-      trace.push({ stage: 'mawani', refs: ['R02-9'], kind: 'MANI', personId, mani: 'qatl' });
+      statusOrang[idOrang] = { jenis: 'mamnu', peran, mani: 'qatl', rujukanAturan: 'R02-9' };
+      jejak.push({ tahap: 'mawani', refs: ['R02-9'], jenis: 'MANI', idOrang, mani: 'qatl' });
     } else {
-      statuses[personId] = { kind: 'heir', role };
+      statusOrang[idOrang] = { jenis: 'ahliWaris', peran };
     }
   }
-  return { statuses, trace };
+  return { statusOrang, jejak };
 }
 
-function isTalakBain(graph: FamilyGraph, personId: PersonId): boolean {
-  const { deceasedId } = graph;
-  return graph.marriages.some(m => m.status === 'talakBain'
-    && ((m.husbandId === deceasedId && m.wifeId === personId) || (m.wifeId === deceasedId && m.husbandId === personId)));
+function isTalakBain(graf: GrafKeluarga, idOrang: IdOrang): boolean {
+  const { idPewaris } = graf;
+  return graf.pernikahan.some(m => m.status === 'talakBain'
+    && ((m.idSuami === idPewaris && m.idIstri === idOrang) || (m.idIstri === idPewaris && m.idSuami === idOrang)));
 }

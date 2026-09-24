@@ -1,22 +1,22 @@
 import { findRef, findTerm } from '@waris/content';
-import { compute, type EngineInput, type TraceStep } from '@waris/engine';
+import { hitung, type InputEngine, type LangkahJejak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
-import { TERM_IDS, explain, narrateNisab, toPlainText, type Explanation } from '../index.js';
+import { TERM_IDS, jelaskan, narrateNisab, toPlainText, type Explanation } from '../index.js';
 
-function explainCase(input: EngineInput, mode?: 'cerita' | 'ringkas'): Explanation {
-  const result = compute(input);
-  if (result.status !== 'OK') throw new Error(result.status);
-  return explain(result, input.graph, mode ? { mode } : {});
+function explainCase(input: InputEngine, mode?: 'cerita' | 'ringkas'): Explanation {
+  const hasil = hitung(input);
+  if (hasil.status !== 'OK') throw new Error(hasil.status);
+  return jelaskan(hasil, input.graf, mode ? { mode } : {});
 }
 
 const texts = (e: Explanation, step: number) => e.sections[step - 1]!.lines.map(toPlainText);
 
 /** Salin input dengan nama orang (nama opsional di input). */
-function withNames(input: EngineInput, names: Record<string, string>): EngineInput {
-  const persons = Object.fromEntries(Object.entries(input.graph.persons)
-    .map(([id, p]) => [id, names[id] ? { ...p, name: names[id] } : p]));
-  return { ...input, graph: { ...input.graph, persons } };
+function withNames(input: InputEngine, names: Record<string, string>): InputEngine {
+  const orang = Object.fromEntries(Object.entries(input.graf.orang)
+    .map(([id, p]) => [id, names[id] ? { ...p, nama: names[id] } : p]));
+  return { ...input, graf: { ...input.graf, orang } };
 }
 
 describe('kasus 10 — mode cerita tanpa nama', () => {
@@ -77,9 +77,9 @@ describe('kasus 10 — mode cerita tanpa nama', () => {
 
   test('istilah dan orang adalah potongan tersendiri (untuk tooltip & hover)', () => {
     const segments = e.sections[2]!.lines[1]!.segments;
-    expect(segments).toContainEqual({ kind: 'term', term: 'tadakhul', text: 'tadakhul', example: 'Di kasus ini: 4 dan 2 → 4.' });
+    expect(segments).toContainEqual({ jenis: 'term', term: 'tadakhul', text: 'tadakhul', example: 'Di kasus ini: 4 dan 2 → 4.' });
     const suami = e.sections[1]!.lines[0]!.segments[0];
-    expect(suami).toEqual({ kind: 'person', personIds: ['H1'], text: 'Suami' });
+    expect(suami).toEqual({ jenis: 'person', idOrangOrang: ['H1'], text: 'Suami' });
   });
 });
 
@@ -99,8 +99,8 @@ describe('nama opsional', () => {
       + "yang membuat mereka ikut mengambil sisa (mu'ashshib).");
     // Urutan mengikuti urutan input: D1 = pertama, D2 = kedua.
     const hasil = e.sections[e.sections.length - 1]!.lines.map(l => l.segments[0]);
-    expect(hasil).toContainEqual({ kind: 'person', personIds: ['D1'], text: 'Anak perempuan pertama' });
-    expect(hasil).toContainEqual({ kind: 'person', personIds: ['D2'], text: 'Anak perempuan kedua' });
+    expect(hasil).toContainEqual({ jenis: 'person', idOrangOrang: ['D1'], text: 'Anak perempuan pertama' });
+    expect(hasil).toContainEqual({ jenis: 'person', idOrangOrang: ['D2'], text: 'Anak perempuan kedua' });
   });
 
   test('[R04-3] istri-istri berbagi rata, bukan masing-masing mendapat 1/4', () => {
@@ -149,7 +149,7 @@ describe('kasus 12 — akdariyyah', () => {
 });
 
 describe('nominal dan selisih pembulatan', () => {
-  const e = explainCase({ ...bab16.caseNominal.input, rounding: { unit: 1000n } });
+  const e = explainCase({ ...bab16.caseNominal.input, pembulatan: { satuan: 1000n } });
 
   test('harta yang dibagi', () => {
     expect(texts(e, 1)).toEqual([
@@ -182,12 +182,12 @@ describe('mode ringkas', () => {
   });
 
   test('narasi nisab: angka 1 dan inkisar', () => {
-    const cmp = (fields: Partial<Extract<TraceStep, { kind: 'NISAB_COMPARE' }>>) => toPlainText({ refs: [], segments: narrateNisab({
-      stage: 'ashl', refs: [], kind: 'NISAB_COMPARE', purpose: 'ashl', a: 0n, b: 0n, relation: 'tamatsul', gcd: 0n, result: 0n, ...fields,
+    const cmp = (fields: Partial<Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>>) => toPlainText({ refs: [], segments: narrateNisab({
+      tahap: 'ashl', refs: [], jenis: 'PERBANDINGAN_NISAB', tujuan: 'ashl', a: 0n, b: 0n, hubungan: 'tamatsul', fpb: 0n, hasil: 0n, ...fields,
     }) });
-    expect(cmp({ purpose: 'juzSahm', a: 1n, b: 4n, relation: 'tabayun', gcd: 1n, result: 4n }))
+    expect(cmp({ tujuan: 'juzSahm', a: 1n, b: 4n, hubungan: 'tabayun', fpb: 1n, hasil: 4n }))
       .toBe('Simpanan 1 dan 4: setiap bilangan bertemu 1 dihukumi tabayun. Kalikan keduanya: 1 × 4 = 4.');
-    expect(cmp({ purpose: 'inkisar', a: 2n, b: 4n, relation: 'tawafuq', gcd: 2n, result: 2n }))
+    expect(cmp({ tujuan: 'inkisar', a: 2n, b: 4n, hubungan: 'tawafuq', fpb: 2n, hasil: 2n }))
       .toBe("Saham 2 tidak habis dibagi ru'us 4, FPB 2 → tawafuq. Simpan wafq ru'us: 4 ÷ 2 = 2.");
   });
 });
@@ -197,15 +197,15 @@ describe('keterkaitan dengan glosarium dan dalil', () => {
     expect(TERM_IDS.filter(id => !findTerm(id))).toEqual([]);
   });
 
-  test('setiap kode rujukan di trace dan narasi fixture bab 16 ada di tabel rujukan KB', () => {
+  test('setiap kode rujukan di jejak dan narasi fixture bab 16 ada di tabel rujukan KB', () => {
     const missing = new Set<string>();
     for (const fixture of bab16.BAB16_FIXTURES) {
-      const result = compute(fixture.input);
-      if (result.status !== 'OK') continue;
+      const hasil = hitung(fixture.input);
+      if (hasil.status !== 'OK') continue;
       const codes = [
-        ...result.trace.flatMap(step => step.refs),
+        ...hasil.jejak.flatMap(step => step.refs),
         ...(['cerita', 'ringkas'] as const).flatMap(mode =>
-          explain(result, fixture.input.graph, { mode }).sections.flatMap(sec => sec.lines.flatMap(l => l.refs))),
+          jelaskan(hasil, fixture.input.graf, { mode }).sections.flatMap(sec => sec.lines.flatMap(l => l.refs))),
       ];
       codes.filter(code => !findRef(code)).forEach(code => missing.add(`${fixture.id}: ${code}`));
     }

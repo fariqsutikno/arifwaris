@@ -1,5 +1,5 @@
 export type * from './types.js';
 
-export { compute } from './pipeline.js';
-export { addRelative, canChangeSex, relationOptions, type Relasi } from './graf.js';
-export { computeMunasakhat } from './munasakhat.js';
+export { hitung } from './pipeline.js';
+export { tambahKerabat, bolehUbahJenisKelamin, opsiRelasi, type Relasi } from './graf.js';
+export { hitungMunasakhat } from './munasakhat.js';

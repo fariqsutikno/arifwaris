@@ -1,66 +1,66 @@
 import { describe, expect, test } from 'vitest';
-import { addRelative, canChangeSex, relationOptions } from '../graf.js';
-import { deriveRoles } from '../stages/derivasi.js';
-import { validateInput } from '../stages/validasi.js';
-import type { FamilyGraph, HeirKey } from '../types.js';
+import { tambahKerabat, bolehUbahJenisKelamin, opsiRelasi } from '../graf.js';
+import { turunkanPeran } from '../stages/derivasi.js';
+import { validasiInput } from '../stages/validasi.js';
+import type { GrafKeluarga, KunciAhliWaris } from '../types.js';
 import { BAB16_FIXTURES, input, p } from './fixtures/bab16.js';
 
-const single = (sex: 'M' | 'F'): FamilyGraph => ({ deceasedId: 'D', persons: { D: p('D', sex, { life: 'dead' }) }, marriages: [] });
+const single = (jenisKelamin: 'L' | 'P'): GrafKeluarga => ({ idPewaris: 'D', orang: { D: p('D', jenisKelamin, { statusHidup: 'wafat' }) }, pernikahan: [] });
 
 describe('opsi relasi mengikuti jenis kelamin', () => {
   test('laki-laki hanya ditawari istri, perempuan hanya suami', () => {
-    expect(relationOptions(single('M'), 'D')).toEqual(['ayah', 'ibu', 'anakLaki', 'anakPerempuan', 'istri']);
-    expect(relationOptions(single('F'), 'D')).toEqual(['ayah', 'ibu', 'anakLaki', 'anakPerempuan', 'suami']);
+    expect(opsiRelasi(single('L'), 'D')).toEqual(['ayah', 'ibu', 'anakLaki', 'anakPerempuan', 'istri']);
+    expect(opsiRelasi(single('P'), 'D')).toEqual(['ayah', 'ibu', 'anakLaki', 'anakPerempuan', 'suami']);
   });
 
   test('ayah/ibu hanya sekali; suami maksimal 1, istri maksimal 4', () => {
-    let g = addRelative(single('F'), 'D', 'ayah', { id: 'F1' });
-    g = addRelative(g, 'D', 'suami', { id: 'H1' });
-    expect(relationOptions(g, 'D')).toEqual(['ibu', 'anakLaki', 'anakPerempuan']);
+    let g = tambahKerabat(single('P'), 'D', 'ayah', { id: 'F1' });
+    g = tambahKerabat(g, 'D', 'suami', { id: 'H1' });
+    expect(opsiRelasi(g, 'D')).toEqual(['ibu', 'anakLaki', 'anakPerempuan']);
 
-    let m = single('M');
-    for (const id of ['W1', 'W2', 'W3', 'W4']) m = addRelative(m, 'D', 'istri', { id });
-    expect(relationOptions(m, 'D')).not.toContain('istri');
+    let m = single('L');
+    for (const id of ['W1', 'W2', 'W3', 'W4']) m = tambahKerabat(m, 'D', 'istri', { id });
+    expect(opsiRelasi(m, 'D')).not.toContain('istri');
   });
 
   test('relasi yang tidak ditawarkan ditolak', () => {
-    expect(() => addRelative(single('M'), 'D', 'suami', { id: 'X' })).toThrow(/suami/);
+    expect(() => tambahKerabat(single('L'), 'D', 'suami', { id: 'X' })).toThrow(/suami/);
   });
 });
 
-describe('addRelative: jenis kelamin dan peran selalu konsisten', () => {
+describe('tambahKerabat: jenis kelamin dan peran selalu konsisten', () => {
   test('jenis kelamin otomatis dari relasi; anak dihubungkan sesuai jenis kelamin orang tua', () => {
-    let g = addRelative(single('F'), 'D', 'suami', { id: 'H1' });
-    g = addRelative(g, 'D', 'anakPerempuan', { id: 'B1' }, { otherParentId: 'H1' });
-    g = addRelative(g, 'D', 'ibu', { id: 'M1' });
-    expect(g.persons['H1']).toMatchObject({ sex: 'M' });
-    expect(g.persons['B1']).toMatchObject({ sex: 'F', motherId: 'D', fatherId: 'H1' });
-    expect(g.persons['D']).toMatchObject({ motherId: 'M1' });
-    expect(g.marriages).toEqual([{ husbandId: 'H1', wifeId: 'D', status: 'intact' }]);
-    expect(validateInput(input(g), deriveRoles(g, input(g).config).roles)).toEqual([]);
+    let g = tambahKerabat(single('P'), 'D', 'suami', { id: 'H1' });
+    g = tambahKerabat(g, 'D', 'anakPerempuan', { id: 'B1' }, { otherParentId: 'H1' });
+    g = tambahKerabat(g, 'D', 'ibu', { id: 'M1' });
+    expect(g.orang['H1']).toMatchObject({ jenisKelamin: 'L' });
+    expect(g.orang['B1']).toMatchObject({ jenisKelamin: 'P', idIbu: 'D', idAyah: 'H1' });
+    expect(g.orang['D']).toMatchObject({ idIbu: 'M1' });
+    expect(g.pernikahan).toEqual([{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }]);
+    expect(validasiInput(input(g), turunkanPeran(g, input(g).konfigurasi).daftarPeran)).toEqual([]);
   });
 
   test('orang tua kedua harus pasangannya', () => {
-    expect(() => addRelative(single('M'), 'D', 'anakLaki', { id: 'S1' }, { otherParentId: 'X' })).toThrow(/pasangan/);
+    expect(() => tambahKerabat(single('L'), 'D', 'anakLaki', { id: 'S1' }, { otherParentId: 'X' })).toThrow(/pasangan/);
   });
 
   test('jenis kelamin tidak bisa diubah bila sudah punya peran bergender', () => {
-    const g = addRelative(addRelative(single('M'), 'D', 'istri', { id: 'W1' }), 'D', 'anakLaki', { id: 'S1' });
-    expect(canChangeSex(g, 'D')).toBe(false);   // suami dan ayah
-    expect(canChangeSex(g, 'W1')).toBe(false);  // istri
-    expect(canChangeSex(g, 'S1')).toBe(true);   // belum punya peran bergender
+    const g = tambahKerabat(tambahKerabat(single('L'), 'D', 'istri', { id: 'W1' }), 'D', 'anakLaki', { id: 'S1' });
+    expect(bolehUbahJenisKelamin(g, 'D')).toBe(false);   // suami dan ayah
+    expect(bolehUbahJenisKelamin(g, 'W1')).toBe(false);  // istri
+    expect(bolehUbahJenisKelamin(g, 'S1')).toBe(true);   // belum punya peran bergender
   });
 });
 
 describe('tidak ada salah gender pada peran hasil derivasi', () => {
-  const MALE: HeirKey[] = ['IBN', 'IBN_IBN', 'AB', 'JADD', 'AKH_SYQ', 'AKH_AB', 'AKH_UMM', 'IBN_AKH_SYQ', 'IBN_AKH_AB',
-    'AMM_SYQ', 'AMM_AB', 'IBN_AMM_SYQ', 'IBN_AMM_AB', 'ZAWJ', 'MUTIQ'];
+  const MALE: KunciAhliWaris[] = ['ANAK_LK', 'CUCU_LK', 'AYAH', 'KAKEK', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARA_SEIBU', 'KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK',
+    'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK', 'SUAMI', 'MUTIQ'];
 
   test.each(BAB16_FIXTURES.map(f => [f.id, f] as const))('%s', (_id, fixture) => {
-    const { graph, config } = fixture.input;
-    for (const role of Object.values(deriveRoles(graph, config).roles)) {
-      if (role.key === 'NON_HEIR' || role.key === 'DZAWIL_ARHAM') continue;
-      expect(graph.persons[role.personId]!.sex, `${role.personId} ${role.key}`).toBe(MALE.includes(role.key) ? 'M' : 'F');
+    const { graf, konfigurasi } = fixture.input;
+    for (const peran of Object.values(turunkanPeran(graf, konfigurasi).daftarPeran)) {
+      if (peran.kunci === 'BUKAN_AHLI_WARIS' || peran.kunci === 'DZAWIL_ARHAM') continue;
+      expect(graf.orang[peran.idOrang]!.jenisKelamin, `${peran.idOrang} ${peran.kunci}`).toBe(MALE.includes(peran.kunci) ? 'L' : 'P');
     }
   });
 });

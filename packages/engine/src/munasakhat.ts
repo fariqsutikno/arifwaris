@@ -1,42 +1,42 @@
 import { fpb } from '@waris/math';
-import { compute } from './pipeline.js';
-import { distributeNominal } from './stages/pembagian.js';
-import { computeTirkah } from './stages/tirkah.js';
+import { hitung } from './pipeline.js';
+import { bagikanNominal } from './stages/pembagian.js';
+import { hitungTirkah } from './stages/tirkah.js';
 import type {
-  EngineResult, FamilyGraph, InkisarRelation, MunasakhatInput, MunasakhatResult, PersonId, TraceStep,
+  HasilEngine, GrafKeluarga, HubunganInkisar, InputMunasakhat, HasilMunasakhat, IdOrang, LangkahJejak,
 } from './types.js';
 
-type EngineOk = Extract<EngineResult, { status: 'OK' }>;
-type Saham = Record<PersonId, bigint>;
+type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
+type Saham = Record<IdOrang, bigint>;
 
-const NO_TIRKAH = { gross: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
+const NO_TIRKAH = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
 
 /**
- * Orkestrator munasakhat (bab 12) di atas pipeline: tiap mayit dihitung dengan `compute`, lalu digabung
+ * Orkestrator munasakhat (bab 12) di atas pipeline: tiap mayit dihitung dengan `hitung`, lalu digabung
  * bertahap memakai metode Keadaan 3, yang berlaku untuk semua keadaan [R12-3].
  * Yang dibagi hanya harta mayit pertama; bagian yang diteruskan ke mayit berikutnya adalah harta yang ia dapat
  * dari mayit pertama, bukan pembagian waris atas seluruh hartanya. Hutang, wasiat, dan harta pribadinya
  * diselesaikan terpisah oleh ahli warisnya (bab 12.5).
  */
-export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
-  const order = deathOrder(input);
-  const steps: Array<{ mayit: PersonId; result: EngineOk }> = [];
-  const trace: TraceStep[] = [];
+export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
+  const urutan = deathOrder(input);
+  const langkahLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }> = [];
+  const jejak: LangkahJejak[] = [];
   let saham: Saham = {};
   let jamiah = 0n;
 
-  for (const [index, mayit] of order.entries()) {
+  for (const [index, mayit] of urutan.entries()) {
     if (index > 0 && !saham[mayit]) {
-      trace.push({ stage: 'munasakhat', refs: ['R12-1'], kind: 'MUNASAKHAT_SKIP', mayit });
+      jejak.push({ tahap: 'munasakhat', refs: ['R12-1'], jenis: 'MUNASAKHAT_DILEWATI', mayit });
       continue;
     }
     // Hanya harta mayit pertama yang bernominal; mayit berikutnya cukup mas'alah-nya (bab 12.5).
-    const tirkah = index === 0 ? input.base.tirkah : NO_TIRKAH;
-    const result = compute({ ...input.base, tirkah, graph: graphAt(input, order, index) });
-    if (result.status !== 'OK') return { ...result, mayit };
-    steps.push({ mayit, result });
+    const tirkah = index === 0 ? input.dasar.tirkah : NO_TIRKAH;
+    const hasil = hitung({ ...input.dasar, tirkah, graf: graphAt(input, urutan, index) });
+    if (hasil.status !== 'OK') return { ...hasil, mayit };
+    langkahLangkah.push({ mayit, hasil });
 
-    const masalahSaham = sahamOf(result);
+    const masalahSaham = sahamOf(hasil);
     const masalah = total(masalahSaham);
     if (index === 0) {
       saham = masalahSaham;
@@ -44,22 +44,22 @@ export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
     } else {
       const step = combine(saham, jamiah, mayit, masalahSaham, masalah);
       saham = step.saham;
-      jamiah = step.trace.jamiah;
-      trace.push(step.trace);
+      jamiah = step.jejak.jamiah;
+      jejak.push(step.jejak);
     }
     assertInvariants(saham, jamiah);
   }
 
-  const tirkah = computeTirkah(input.base.tirkah);
-  const nominal = distributeNominal(saham, jamiah, tirkah.bersih, input.base.rounding.unit);
+  const tirkah = hitungTirkah(input.dasar.tirkah);
+  const nominal = bagikanNominal(saham, jamiah, tirkah.bersih, input.dasar.pembulatan.satuan);
 
   return {
-    status: 'OK', steps, jamiah, saham,
-    keadaan: classifyKeadaan(input, order, steps, saham, jamiah),
+    status: 'OK', langkahLangkah, jamiah, saham,
+    keadaan: classifyKeadaan(input, urutan, langkahLangkah, saham, jamiah),
     ikhtishar: ikhtisharSiham(saham, jamiah),
     nominal: nominal.nominal,
-    rounding: { unit: input.base.rounding.unit, remainder: nominal.remainder },
-    trace: [...trace, tirkah.trace, ...nominal.trace],
+    pembulatan: { satuan: input.dasar.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan },
+    jejak: [...jejak, tirkah.jejak, ...nominal.jejak],
   };
 }
 
@@ -70,16 +70,16 @@ export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
  * - 2: lebih dari satu mayit kedua, ahli waris masing-masing tidak mewarisi dari mayit pertama maupun mayit lain;
  * - 3: selain itu.
  */
-function classifyKeadaan(input: MunasakhatInput, order: PersonId[], steps: Array<{ mayit: PersonId; result: EngineOk }>,
+function classifyKeadaan(input: InputMunasakhat, urutan: IdOrang[], langkahLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>,
   saham: Saham, jamiah: bigint): 1 | 2 | 3 {
-  const allDead = graphAt(input, order, 0);
-  for (const personId of input.deaths) allDead.persons[personId] = { ...allDead.persons[personId]!, life: 'dead' };
-  const direct = compute({ ...input.base, tirkah: NO_TIRKAH, graph: allDead });
+  const allDead = graphAt(input, urutan, 0);
+  for (const idOrang of input.urutanWafat) allDead.orang[idOrang] = { ...allDead.orang[idOrang]!, statusHidup: 'wafat' };
+  const direct = hitung({ ...input.dasar, tirkah: NO_TIRKAH, graf: allDead });
   if (direct.status === 'OK' && sameFractions(sahamOf(direct), saham, jamiah)) return 1;
 
-  const [first, ...later] = steps;
-  const heirsOf = (step: { mayit: PersonId; result: EngineOk }) => Object.keys(sahamOf(step.result));
-  const mayitIds = new Set(steps.map(step => step.mayit));
+  const [first, ...later] = langkahLangkah;
+  const heirsOf = (step: { mayit: IdOrang; hasil: HasilOk }) => Object.keys(sahamOf(step.hasil));
+  const mayitIds = new Set(langkahLangkah.map(step => step.mayit));
   const firstHeirs = new Set(heirsOf(first!));
   const disjoint = later.every(step => heirsOf(step).every(id => !firstHeirs.has(id) && !mayitIds.has(id)));
   return later.length > 1 && disjoint ? 2 : 3;
@@ -92,35 +92,35 @@ function sameFractions(direct: Saham, saham: Saham, jamiah: bigint): boolean {
     && ids.every(id => direct[id] !== undefined && direct[id]! * jamiah === saham[id]! * directTotal);
 }
 
-function deathOrder(input: MunasakhatInput): PersonId[] {
-  const order = [input.base.graph.deceasedId, ...input.deaths];
-  if (new Set(order).size !== order.length) throw new Error('munasakhat: seseorang tercatat wafat dua kali');
-  for (const after of Object.values(input.bornAfterDeathOf ?? {})) {
-    if (!order.includes(after)) throw new Error(`munasakhat: bornAfterDeathOf merujuk ${after} yang tidak ada di urutan wafat`);
+function deathOrder(input: InputMunasakhat): IdOrang[] {
+  const urutan = [input.dasar.graf.idPewaris, ...input.urutanWafat];
+  if (new Set(urutan).size !== urutan.length) throw new Error('munasakhat: seseorang tercatat wafat dua kali');
+  for (const after of Object.values(input.lahirSetelahWafat ?? {})) {
+    if (!urutan.includes(after)) throw new Error(`munasakhat: lahirSetelahWafat merujuk ${after} yang tidak ada di urutan wafat`);
   }
-  return order;
+  return urutan;
 }
 
-/** Graf saat mayit ke-`index` wafat: yang wafat lebih dulu 'dead', yang wafat belakangan masih 'alive'. */
-function graphAt(input: MunasakhatInput, order: PersonId[], index: number): FamilyGraph {
-  const { graph } = input.base;
-  const unborn = new Set(Object.entries(input.bornAfterDeathOf ?? {})
-    .filter(([, after]) => index <= order.indexOf(after))
-    .map(([personId]) => personId));
+/** Graf saat mayit ke-`index` wafat: yang wafat lebih dulu 'wafat', yang wafat belakangan masih 'hidup'. */
+function graphAt(input: InputMunasakhat, urutan: IdOrang[], index: number): GrafKeluarga {
+  const { graf } = input.dasar;
+  const unborn = new Set(Object.entries(input.lahirSetelahWafat ?? {})
+    .filter(([, after]) => index <= urutan.indexOf(after))
+    .map(([idOrang]) => idOrang));
 
-  const persons = Object.fromEntries(Object.entries(graph.persons).filter(([id]) => !unborn.has(id)));
-  for (const [position, personId] of order.entries()) {
-    persons[personId] = { ...graph.persons[personId]!, life: position <= index ? 'dead' : 'alive' };
+  const orang = Object.fromEntries(Object.entries(graf.orang).filter(([id]) => !unborn.has(id)));
+  for (const [position, idOrang] of urutan.entries()) {
+    orang[idOrang] = { ...graf.orang[idOrang]!, statusHidup: position <= index ? 'wafat' : 'hidup' };
   }
-  const marriages = graph.marriages.filter(m => !unborn.has(m.husbandId) && !unborn.has(m.wifeId));
-  return { deceasedId: order[index]!, persons, marriages };
+  const pernikahan = graf.pernikahan.filter(m => !unborn.has(m.idSuami) && !unborn.has(m.idIstri));
+  return { idPewaris: urutan[index]!, orang, pernikahan };
 }
 
-function sahamOf(result: EngineOk): Saham {
+function sahamOf(hasil: HasilOk): Saham {
   const saham: Saham = {};
-  for (const row of result.table.rows) {
-    for (const [personId, cell] of Object.entries(row.perPerson)) {
-      if (cell.saham > 0n) saham[personId] = cell.saham;
+  for (const barisTabel of hasil.tabel.baris) {
+    for (const [idOrang, cell] of Object.entries(barisTabel.perOrang)) {
+      if (cell.saham > 0n) saham[idOrang] = cell.saham;
     }
   }
   return saham;
@@ -132,40 +132,40 @@ const total = (saham: Saham): bigint => Object.values(saham).reduce((a, b) => a 
  * [R12-2] Saham mayit di jami'ah sejauh ini vs mas'alah-nya: habis / tawafuq / tabayun, tanpa tadakhul.
  * Jami'ah baru = jami'ah × wafq mas'alah; saham mas'alah mayit × wafq saham.
  */
-function combine(saham: Saham, jamiah: bigint, mayit: PersonId, masalahSaham: Saham, masalah: bigint):
-  { saham: Saham; trace: Extract<TraceStep, { kind: 'MUNASAKHAT' }> } {
+function combine(saham: Saham, jamiah: bigint, mayit: IdOrang, masalahSaham: Saham, masalah: bigint):
+  { saham: Saham; jejak: Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }> } {
   const sahamMayit = saham[mayit]!;
   const faktor = fpb(sahamMayit, masalah);
   const wafqMasalah = masalah / faktor;
   const wafqSaham = sahamMayit / faktor;
-  const relation: InkisarRelation = sahamMayit % masalah === 0n ? 'habis' : faktor === 1n ? 'tabayun' : 'tawafuq';
+  const hubungan: HubunganInkisar = sahamMayit % masalah === 0n ? 'habis' : faktor === 1n ? 'tabayun' : 'tawafuq';
 
-  const rincian: Extract<TraceStep, { kind: 'MUNASAKHAT' }>['rincian'] = {};
-  for (const [personId, value] of Object.entries(saham)) {
-    if (personId !== mayit) rincian[personId] = { sebelum: value, dariMayit: 0n, sesudah: value * wafqMasalah };
+  const rincian: Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>['rincian'] = {};
+  for (const [idOrang, nilai] of Object.entries(saham)) {
+    if (idOrang !== mayit) rincian[idOrang] = { sebelum: nilai, dariMayit: 0n, sesudah: nilai * wafqMasalah };
   }
-  for (const [personId, value] of Object.entries(masalahSaham)) {
-    const row = rincian[personId] ?? { sebelum: 0n, dariMayit: 0n, sesudah: 0n };
-    rincian[personId] = { ...row, dariMayit: value, sesudah: row.sesudah + value * wafqSaham };
+  for (const [idOrang, nilai] of Object.entries(masalahSaham)) {
+    const barisTabel = rincian[idOrang] ?? { sebelum: 0n, dariMayit: 0n, sesudah: 0n };
+    rincian[idOrang] = { ...barisTabel, dariMayit: nilai, sesudah: barisTabel.sesudah + nilai * wafqSaham };
   }
-  const next: Saham = Object.fromEntries(Object.entries(rincian).map(([personId, row]) => [personId, row.sesudah]));
+  const next: Saham = Object.fromEntries(Object.entries(rincian).map(([idOrang, barisTabel]) => [idOrang, barisTabel.sesudah]));
   return {
     saham: next,
-    trace: { stage: 'munasakhat', refs: ['R12-2'], kind: 'MUNASAKHAT', mayit, saham: sahamMayit, masalah, relation,
-      gcd: faktor, wafqMasalah, wafqSaham, jamiah: jamiah * wafqMasalah, rincian },
+    jejak: { tahap: 'munasakhat', refs: ['R12-2'], jenis: 'MUNASAKHAT', mayit, saham: sahamMayit, masalah, hubungan,
+      fpb: faktor, wafqMasalah, wafqSaham, jamiah: jamiah * wafqMasalah, rincian },
   };
 }
 
 function assertInvariants(saham: Saham, jamiah: bigint): void {
   if (total(saham) !== jamiah) throw new Error(`munasakhat: Σ saham ${total(saham)} ≠ jami'ah ${jamiah}`);
-  if (Object.values(saham).some(value => value <= 0n)) throw new Error('munasakhat: ada saham ≤ 0');
+  if (Object.values(saham).some(nilai => nilai <= 0n)) throw new Error('munasakhat: ada saham ≤ 0');
 }
 
 /** Bab 12.4 jenis 3: bila semua saham bersekutu, dibagi FPB-nya. Hanya penyajian. */
 function ikhtisharSiham(saham: Saham, jamiah: bigint): { jamiah: bigint; saham: Saham } {
-  const faktor = Object.values(saham).reduce((acc, value) => fpb(acc, value), jamiah);
+  const faktor = Object.values(saham).reduce((acc, nilai) => fpb(acc, nilai), jamiah);
   return {
     jamiah: jamiah / faktor,
-    saham: Object.fromEntries(Object.entries(saham).map(([personId, value]) => [personId, value / faktor])),
+    saham: Object.fromEntries(Object.entries(saham).map(([idOrang, nilai]) => [idOrang, nilai / faktor])),
   };
 }

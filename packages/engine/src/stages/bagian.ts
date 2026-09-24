@@ -1,8 +1,8 @@
 import { tambah, bandingkan, pecahan, kali, kurang, type Pecahan } from '@waris/math';
-import type { FardhReason, GroupId, HeirKey, PersonId, TraceStep } from '../types.js';
+import type { AlasanFardh, IdKelompok, KunciAhliWaris, IdOrang, LangkahJejak } from '../types.js';
 import { jaddWalIkhwah } from './jaddWalIkhwah.js';
 import { isAkdariyyah, isMusyarrakah, isUmariyyatain } from './khusus.js';
-import { equalWeights, makeGroup, unitOf, type Heir, type ShareGroup, type Unsupported } from './model.js';
+import { equalWeights, makeGroup, unitOf, type AhliWaris, type KelompokBagian, type Unsupported } from './model.js';
 
 const ZERO = pecahan(0n);
 const ONE = pecahan(1n);
@@ -13,94 +13,94 @@ const TSULUTSAN = pecahan(2n, 3n);
 const TSULUTS = pecahan(1n, 3n);
 const SUDUS = pecahan(1n, 6n);
 
-const SIBLING_KEYS: HeirKey[] = ['AKH_SYQ', 'UKHT_SYQ', 'AKH_AB', 'UKHT_AB', 'AKH_UMM', 'UKHT_UMM'];
-const HAWASYI_ASHABAH: HeirKey[] = ['IBN_AKH_SYQ', 'IBN_AKH_AB', 'AMM_SYQ', 'AMM_AB', 'IBN_AMM_SYQ', 'IBN_AMM_AB'];
+const SIBLING_KEYS: KunciAhliWaris[] = ['SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU'];
+const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'];
 
 /**
  * Tahap 2: bagian tiap kelompok — furudh (bab 04), ashabah (bab 05), kasus khusus bab 07 & 08.
- * `effective` = ahli waris setelah hajb; `candidates` = sebelum hajb, dipakai untuk jam' min al-ikhwah
+ * `efektif` = ahli waris setelah hajb; `kandidat` = sebelum hajb, dipakai untuk jam' min al-ikhwah
  * karena saudara yang mahjub tetap mengurangi bagian ibu [R06-6].
  */
-export function assignShares(effective: Heir[], candidates: Heir[]): { groups: ShareGroup[]; trace: TraceStep[] } | Unsupported {
-  const groups: ShareGroup[] = [];
-  const trace: TraceStep[] = [];
-  const of = (...keys: HeirKey[]) => effective.filter(h => keys.includes(h.key));
-  const ids = (heirs: Heir[]) => heirs.map(h => h.personId);
+export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[]): { kelompokKelompok: KelompokBagian[]; jejak: LangkahJejak[] } | Unsupported {
+  const kelompokKelompok: KelompokBagian[] = [];
+  const jejak: LangkahJejak[] = [];
+  const of = (...keys: KunciAhliWaris[]) => efektif.filter(h => keys.includes(h.kunci));
+  const ids = (daftarAhliWaris: AhliWaris[]) => daftarAhliWaris.map(h => h.idOrang);
 
-  const addFardh = (id: GroupId, heirs: Heir[], fardh: Pecahan, reason: FardhReason, refs: string[],
-    weights: Record<PersonId, bigint> = equalWeights(heirs)) => {
-    groups.push(makeGroup(id, weights, { kind: 'fardh', fardh }));
-    trace.push({ stage: 'furudh', refs, kind: 'FARDH', group: id, fardh, reason });
+  const addFardh = (id: IdKelompok, daftarAhliWaris: AhliWaris[], fardh: Pecahan, alasan: AlasanFardh, refs: string[],
+    bobot: Record<IdOrang, bigint> = equalWeights(daftarAhliWaris)) => {
+    kelompokKelompok.push(makeGroup(id, bobot, { jenis: 'fardh', fardh }));
+    jejak.push({ tahap: 'furudh', refs, jenis: 'FARDH', kelompok: id, fardh, alasan });
   };
-  const addAshabah = (id: GroupId, heirs: Heir[], type: 'binNafsi' | 'bilGhair' | 'maalGhair', refs: string[]) => {
-    const weights = type === 'bilGhair' ? Object.fromEntries(heirs.map(h => [h.personId, unitOf(h)])) : equalWeights(heirs);
-    groups.push(makeGroup(id, weights, { kind: 'ashabah', type }));
-    trace.push({ stage: 'ashabah', refs, kind: 'ASHABAH', group: id, type });
+  const addAshabah = (id: IdKelompok, daftarAhliWaris: AhliWaris[], type: 'binNafsi' | 'bilGhair' | 'maalGhair', refs: string[]) => {
+    const bobot = type === 'bilGhair' ? Object.fromEntries(daftarAhliWaris.map(h => [h.idOrang, unitOf(h)])) : equalWeights(daftarAhliWaris);
+    kelompokKelompok.push(makeGroup(id, bobot, { jenis: 'ashabah', type }));
+    jejak.push({ tahap: 'ashabah', refs, jenis: 'ASHABAH', kelompok: id, type });
   };
-  const nuqshan = (affected: Heir[], from: Pecahan, to: Pecahan, cause: Heir[], refs: string[]) => {
-    for (const heir of affected) {
-      trace.push({ stage: 'furudh', refs, kind: 'HAJB_NUQSHAN', affected: heir.personId, from, to, cause: ids(cause) });
+  const nuqshan = (terdampak: AhliWaris[], from: Pecahan, to: Pecahan, penyebab: AhliWaris[], refs: string[]) => {
+    for (const ahliWaris of terdampak) {
+      jejak.push({ tahap: 'furudh', refs, jenis: 'HAJB_NUQSHAN', terdampak: ahliWaris.idOrang, from, to, penyebab: ids(penyebab) });
     }
   };
 
-  const faruWarits = of('IBN', 'BINT', 'IBN_IBN', 'BINT_IBN');
-  const faruMudzakkar = of('IBN', 'IBN_IBN');
+  const faruWarits = of('ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR');
+  const faruMudzakkar = of('ANAK_LK', 'CUCU_LK');
   const hasFaruMuannats = faruWarits.length > 0 && faruMudzakkar.length === 0;
-  const ikhwah = candidates.filter(h => SIBLING_KEYS.includes(h.key));
-  const umariyyatain = isUmariyyatain(effective, ikhwah.length);
+  const ikhwah = kandidat.filter(h => SIBLING_KEYS.includes(h.kunci));
+  const umariyyatain = isUmariyyatain(efektif, ikhwah.length);
 
   // ─── Pasangan [R04-2] [R04-3] ───
-  const zawj = of('ZAWJ');
-  const zawjah = of('ZAWJAH');
-  let spouseFardh = ZERO;
-  const spouseReason: FardhReason = faruWarits.length > 0 ? { code: 'ADA_FARU_WARITS', by: ids(faruWarits) } : { code: 'TANPA_FARU_WARITS' };
+  const zawj = of('SUAMI');
+  const zawjah = of('ISTRI');
+  let fardhPasangan = ZERO;
+  const spouseReason: AlasanFardh = faruWarits.length > 0 ? { code: 'ADA_FARU_WARITS', oleh: ids(faruWarits) } : { code: 'TANPA_FARU_WARITS' };
   if (zawj.length > 0) {
-    spouseFardh = faruWarits.length > 0 ? RUBU : NISF;
-    addFardh('ZAWJ', zawj, spouseFardh, spouseReason, ['R04-2']);
+    fardhPasangan = faruWarits.length > 0 ? RUBU : NISF;
+    addFardh('SUAMI', zawj, fardhPasangan, spouseReason, ['R04-2']);
     if (faruWarits.length > 0) nuqshan(zawj, NISF, RUBU, faruWarits, ['R04-2']);
   }
   if (zawjah.length > 0) {
-    spouseFardh = faruWarits.length > 0 ? TSUMUN : RUBU;
-    addFardh('ZAWJAH', zawjah, spouseFardh, spouseReason, ['R04-2', 'R04-3']);
+    fardhPasangan = faruWarits.length > 0 ? TSUMUN : RUBU;
+    addFardh('ISTRI', zawjah, fardhPasangan, spouseReason, ['R04-2', 'R04-3']);
     if (faruWarits.length > 0) nuqshan(zawjah, RUBU, TSUMUN, faruWarits, ['R04-2']);
   }
 
   // ─── Ibu [R04-4] ───
-  const umm = of('UMM');
+  const umm = of('IBU');
   if (umm.length > 0) {
     if (umariyyatain) {
       // [R07-1] ibu 1/3 dari sisa setelah pasangan, supaya ayah tidak kurang dari ibu.
-      trace.push({ stage: 'furudh', refs: ['R07-1'], kind: 'SPECIAL_CASE', name: 'umariyyatain' });
-      addFardh('UMM', umm, kali(TSULUTS, kurang(ONE, spouseFardh)), { code: 'UMARIYYATAIN', spouseFardh }, ['R07-1', 'R04-4']);
+      jejak.push({ tahap: 'furudh', refs: ['R07-1'], jenis: 'KASUS_KHUSUS', nama: 'umariyyatain' });
+      addFardh('IBU', umm, kali(TSULUTS, kurang(ONE, fardhPasangan)), { code: 'UMARIYYATAIN', fardhPasangan }, ['R07-1', 'R04-4']);
     } else {
       const sebab = faruWarits.length > 0 ? faruWarits : ikhwah.length >= 2 ? ikhwah : [];
-      const reason: FardhReason = faruWarits.length > 0 ? { code: 'ADA_FARU_WARITS', by: ids(faruWarits) }
-        : sebab.length > 0 ? { code: 'JAM_IKHWAH', by: ids(ikhwah) }
+      const alasan: AlasanFardh = faruWarits.length > 0 ? { code: 'ADA_FARU_WARITS', oleh: ids(faruWarits) }
+        : sebab.length > 0 ? { code: 'JAM_IKHWAH', oleh: ids(ikhwah) }
         : { code: 'TANPA_FARU_WARITS_DAN_IKHWAH' };
-      addFardh('UMM', umm, sebab.length > 0 ? SUDUS : TSULUTS, reason, ['R04-4']);
+      addFardh('IBU', umm, sebab.length > 0 ? SUDUS : TSULUTS, alasan, ['R04-4']);
       if (sebab.length > 0) nuqshan(umm, TSULUTS, SUDUS, sebab, ['R04-4', 'R06-6']);
     }
   }
 
   // ─── Nenek [R04-7] [R04-8] ───
-  const jaddah = of('JADDAH_UMM', 'JADDAH_AB');
-  if (jaddah.length > 0) addFardh('JADDAH', jaddah, SUDUS, { code: 'NENEK_TANPA_IBU', count: jaddah.length }, ['R04-7', 'R04-8']);
+  const jaddah = of('NENEK_DARI_IBU', 'NENEK_DARI_AYAH');
+  if (jaddah.length > 0) addFardh('JADDAH', jaddah, SUDUS, { code: 'NENEK_TANPA_IBU', banyaknya: jaddah.length }, ['R04-7', 'R04-8']);
 
   // ─── Keturunan [R04-11] [R04-12] [R04-13] ───
-  const joinedFemales: Heir[] = [];
-  const maleDepth = faruMudzakkar[0]?.kinship.descentDepth ?? Number.POSITIVE_INFINITY;
+  const joinedFemales: AhliWaris[] = [];
+  const maleDepth = faruMudzakkar[0]?.kekerabatan.kedalamanKeturunan ?? Number.POSITIVE_INFINITY;
   let tsulutsanTerpakai = ZERO;
-  let levelAbove: Heir[] = [];
-  for (const depth of [...new Set(of('BINT', 'BINT_IBN').map(h => h.kinship.descentDepth))].sort((a, b) => a - b)) {
-    const females = of('BINT', 'BINT_IBN').filter(h => h.kinship.descentDepth === depth);
-    const id = depth === 1 ? 'BINT' : `BINT_IBN_${depth}`;
-    if (depth >= maleDepth || bandingkan(tsulutsanTerpakai, TSULUTSAN) === 0) {
+  let levelAbove: AhliWaris[] = [];
+  for (const kedalaman of [...new Set(of('ANAK_PR', 'CUCU_PR').map(h => h.kekerabatan.kedalamanKeturunan))].sort((a, b) => a - b)) {
+    const females = of('ANAK_PR', 'CUCU_PR').filter(h => h.kekerabatan.kedalamanKeturunan === kedalaman);
+    const id = kedalaman === 1 ? 'ANAK_PR' : `CUCU_PR_${kedalaman}`;
+    if (kedalaman >= maleDepth || bandingkan(tsulutsanTerpakai, TSULUTSAN) === 0) {
       // Diashabahkan laki-laki sederajat, atau qarib mubarak ketika 2/3 sudah habis.
       joinedFemales.push(...females);
     } else if (tsulutsanTerpakai.n === 0n) {
       tsulutsanTerpakai = females.length === 1 ? NISF : TSULUTSAN;
-      addFardh(id, females, tsulutsanTerpakai, { code: 'TANPA_MUASHSHIB', count: females.length },
-        [depth === 1 ? 'R04-11' : 'R04-12']);
+      addFardh(id, females, tsulutsanTerpakai, { code: 'TANPA_MUASHSHIB', banyaknya: females.length },
+        [kedalaman === 1 ? 'R04-11' : 'R04-12']);
     } else {
       addFardh(id, females, SUDUS, { code: 'TAKMILAH', with: ids(levelAbove) }, ['R04-12']);
       nuqshan(females, females.length === 1 ? NISF : TSULUTSAN, SUDUS, levelAbove, ['R04-12']);
@@ -110,90 +110,90 @@ export function assignShares(effective: Heir[], candidates: Heir[]): { groups: S
   }
   if (faruMudzakkar.length > 0) {
     addAshabah('ASHABAH', [...faruMudzakkar, ...joinedFemales], joinedFemales.length > 0 ? 'bilGhair' : 'binNafsi',
-      joinedFemales.some(h => h.kinship.descentDepth < maleDepth) ? ['R05-4', 'R04-13'] : ['R05-4']);
+      joinedFemales.some(h => h.kekerabatan.kedalamanKeturunan < maleDepth) ? ['R05-4', 'R04-13'] : ['R05-4']);
   } else if (joinedFemales.length > 0) {
     throw new Error("invariant: cucu pr tanpa fardh dan tanpa mu'ashshib seharusnya terhijab [R04-13]");
   }
 
   // ─── Ayah [R04-5] ───
-  const addUshulMudzakkar = (id: GroupId, heir: Heir, refs: string[]) => {
+  const addUshulMudzakkar = (id: IdKelompok, ahliWaris: AhliWaris, refs: string[]) => {
     if (faruMudzakkar.length > 0) {
-      addFardh(id, [heir], SUDUS, { code: 'ADA_FARU_MUDZAKKAR', by: ids(faruMudzakkar) }, refs);
+      addFardh(id, [ahliWaris], SUDUS, { code: 'ADA_FARU_MUDZAKKAR', oleh: ids(faruMudzakkar) }, refs);
     } else if (faruWarits.length > 0) {
-      groups.push(makeGroup(id, { [heir.personId]: 1n }, { kind: 'fardhAshabah', fardh: SUDUS }));
-      trace.push({ stage: 'furudh', refs, kind: 'FARDH', group: id, fardh: SUDUS, reason: { code: 'ADA_FARU_MUANNATS', by: ids(faruWarits) } });
-      trace.push({ stage: 'ashabah', refs, kind: 'ASHABAH', group: id, type: 'binNafsi' });
+      kelompokKelompok.push(makeGroup(id, { [ahliWaris.idOrang]: 1n }, { jenis: 'fardhAshabah', fardh: SUDUS }));
+      jejak.push({ tahap: 'furudh', refs, jenis: 'FARDH', kelompok: id, fardh: SUDUS, alasan: { code: 'ADA_FARU_MUANNATS', oleh: ids(faruWarits) } });
+      jejak.push({ tahap: 'ashabah', refs, jenis: 'ASHABAH', kelompok: id, type: 'binNafsi' });
     } else {
-      addAshabah(id, [heir], 'binNafsi', refs);
+      addAshabah(id, [ahliWaris], 'binNafsi', refs);
     }
   };
-  const [ab] = of('AB');
-  if (ab) addUshulMudzakkar('AB', ab, ['R04-5']);
+  const [ab] = of('AYAH');
+  if (ab) addUshulMudzakkar('AYAH', ab, ['R04-5']);
 
   // ─── Saudara seibu [R04-16], musyarrakah [R07-2] ───
-  const awladUmm = of('AKH_UMM', 'UKHT_UMM');
-  const musyarrakah = isMusyarrakah(effective);
+  const awladUmm = of('SAUDARA_SEIBU', 'SAUDARI_SEIBU');
+  const musyarrakah = isMusyarrakah(efektif);
   if (musyarrakah) {
-    trace.push({ stage: 'furudh', refs: ['R07-2'], kind: 'SPECIAL_CASE', name: 'musyarrakah' });
-    addFardh('MUSYARRAKAH', [...awladUmm, ...of('AKH_SYQ', 'UKHT_SYQ')], TSULUTS, { code: 'MUSYARRAKAH' }, ['R07-2']);
+    jejak.push({ tahap: 'furudh', refs: ['R07-2'], jenis: 'KASUS_KHUSUS', nama: 'musyarrakah' });
+    addFardh('MUSYARRAKAH', [...awladUmm, ...of('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG')], TSULUTS, { code: 'MUSYARRAKAH' }, ['R07-2']);
   } else if (awladUmm.length > 0) {
     addFardh('AWLAD_UMM', awladUmm, awladUmm.length === 1 ? SUDUS : TSULUTS,
-      { code: 'KALALAH', count: awladUmm.length }, ['R04-16']);
+      { code: 'KALALAH', banyaknya: awladUmm.length }, ['R04-16']);
   }
 
   // ─── Kakek [R04-6] dan bab 08 ───
-  const siblingsWithJadd = of('AKH_SYQ', 'UKHT_SYQ', 'AKH_AB', 'UKHT_AB');
-  const [jadd] = of('JADD');
-  if (jadd && isAkdariyyah(effective)) {
+  const siblingsWithJadd = of('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK');
+  const [jadd] = of('KAKEK');
+  if (jadd && isAkdariyyah(efektif)) {
     // [R08-5] kakek 1/6 dan saudari 1/2 → 'aul, lalu keduanya dibagi 2:1 dari gabungan saham (tashih).
     const [ukht] = siblingsWithJadd;
-    trace.push({ stage: 'furudh', refs: ['R08-5'], kind: 'SPECIAL_CASE', name: 'akdariyyah' });
-    trace.push({ stage: 'furudh', refs: ['R08-5'], kind: 'FARDH', group: 'AKDARIYYAH', fardh: SUDUS, reason: { code: 'AKDARIYYAH', part: 'jadd' } });
-    addFardh('AKDARIYYAH', [jadd, ukht!], tambah(SUDUS, NISF), { code: 'AKDARIYYAH', part: 'ukht' },
-      ['R08-5'], { [jadd.personId]: 2n, [ukht!.personId]: 1n });
+    jejak.push({ tahap: 'furudh', refs: ['R08-5'], jenis: 'KASUS_KHUSUS', nama: 'akdariyyah' });
+    jejak.push({ tahap: 'furudh', refs: ['R08-5'], jenis: 'FARDH', kelompok: 'AKDARIYYAH', fardh: SUDUS, alasan: { code: 'AKDARIYYAH', porsi: 'jadd' } });
+    addFardh('AKDARIYYAH', [jadd, ukht!], tambah(SUDUS, NISF), { code: 'AKDARIYYAH', porsi: 'ukht' },
+      ['R08-5'], { [jadd.idOrang]: 2n, [ukht!.idOrang]: 1n });
   } else if (jadd && siblingsWithJadd.length > 0) {
-    const furudhSum = groups.reduce((sum, g) => (g.share.kind === 'fardh' ? tambah(sum, g.share.fardh) : sum), ZERO);
-    const result = jaddWalIkhwah(jadd, siblingsWithJadd, furudhSum, hasFaruMuannats);
-    if ('status' in result) return result;
-    groups.push(...result.groups);
-    trace.push(...result.trace);
+    const furudhSum = kelompokKelompok.reduce((sum, g) => (g.bagian.jenis === 'fardh' ? tambah(sum, g.bagian.fardh) : sum), ZERO);
+    const hasil = jaddWalIkhwah(jadd, siblingsWithJadd, furudhSum, hasFaruMuannats);
+    if ('status' in hasil) return hasil;
+    kelompokKelompok.push(...hasil.kelompokKelompok);
+    jejak.push(...hasil.jejak);
   } else if (jadd) {
-    addUshulMudzakkar('JADD', jadd, ['R04-6']);
+    addUshulMudzakkar('KAKEK', jadd, ['R04-6']);
   }
 
   // ─── Saudara kandung / sebapak tanpa kakek [R04-14] [R05-5] ───
   if (!jadd && !musyarrakah) {
-    const kandung = addSiblingLine(of('AKH_SYQ'), of('UKHT_SYQ'), 'SYQ', undefined);
-    addSiblingLine(of('AKH_AB'), of('UKHT_AB'), 'AB', kandung);
+    const kandung = addSiblingLine(of('SAUDARA_KANDUNG'), of('SAUDARI_KANDUNG'), 'kandung', undefined);
+    addSiblingLine(of('SAUDARA_SEBAPAK'), of('SAUDARI_SEBAPAK'), 'sebapak', kandung);
   }
 
   // ─── Hawasyi lain: bani al-ikhwah, 'umumah [R05-3] ───
   const hawasyi = of(...HAWASYI_ASHABAH);
   if (hawasyi.length > 0) addAshabah('ASHABAH', hawasyi, 'binNafsi', ['R05-3']);
 
-  const residueGroups = groups.filter(g => g.share.kind === 'ashabah' || g.share.kind === 'fardhAshabah');
+  const residueGroups = kelompokKelompok.filter(g => g.bagian.jenis === 'ashabah' || g.bagian.jenis === 'fardhAshabah');
   if (residueGroups.length > 1) throw new Error(`invariant: lebih dari satu kelompok ashabah (${residueGroups.map(g => g.id)})`);
-  return { groups, trace };
+  return { kelompokKelompok, jejak };
 
   /** Satu garis saudara (kandung atau sebapak). Mengembalikan saudari yang mendapat fardh, untuk takmilah. */
-  function addSiblingLine(brothers: Heir[], sisters: Heir[], line: 'SYQ' | 'AB', kandungSisters: Heir[] | undefined): Heir[] {
-    if (brothers.length > 0) {
-      addAshabah('ASHABAH', [...brothers, ...sisters], sisters.length > 0 ? 'bilGhair' : 'binNafsi', ['R05-4']);
+  function addSiblingLine(saudaraLk: AhliWaris[], saudari: AhliWaris[], garis: 'kandung' | 'sebapak', kandungSisters: AhliWaris[] | undefined): AhliWaris[] {
+    if (saudaraLk.length > 0) {
+      addAshabah('ASHABAH', [...saudaraLk, ...saudari], saudari.length > 0 ? 'bilGhair' : 'binNafsi', ['R05-4']);
       return [];
     }
-    if (sisters.length === 0) return [];
+    if (saudari.length === 0) return [];
     if (hasFaruMuannats) {
-      addAshabah('ASHABAH', sisters, 'maalGhair', ['R05-5']);
+      addAshabah('ASHABAH', saudari, 'maalGhair', ['R05-5']);
       return [];
     }
-    if (line === 'AB' && kandungSisters?.length === 1) {
+    if (garis === 'sebapak' && kandungSisters?.length === 1) {
       // [R04-14] saudari sebapak bersama satu saudari kandung: 1/6 takmilah.
-      addFardh('UKHT_AB', sisters, SUDUS, { code: 'TAKMILAH', with: ids(kandungSisters) }, ['R04-14']);
-      nuqshan(sisters, sisters.length === 1 ? NISF : TSULUTSAN, SUDUS, kandungSisters, ['R04-14']);
+      addFardh('SAUDARI_SEBAPAK', saudari, SUDUS, { code: 'TAKMILAH', with: ids(kandungSisters) }, ['R04-14']);
+      nuqshan(saudari, saudari.length === 1 ? NISF : TSULUTSAN, SUDUS, kandungSisters, ['R04-14']);
       return [];
     }
-    addFardh(`UKHT_${line}`, sisters, sisters.length === 1 ? NISF : TSULUTSAN,
-      { code: 'KALALAH', count: sisters.length }, ['R04-14']);
-    return sisters;
+    addFardh(garis === 'kandung' ? 'SAUDARI_KANDUNG' : 'SAUDARI_SEBAPAK', saudari, saudari.length === 1 ? NISF : TSULUTSAN,
+      { code: 'KALALAH', banyaknya: saudari.length }, ['R04-14']);
+    return saudari;
   }
 }

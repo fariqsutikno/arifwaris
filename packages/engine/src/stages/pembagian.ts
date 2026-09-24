@@ -1,59 +1,59 @@
 import { bulatkanKeBawah, pecahan, type Uang } from '@waris/math';
-import type { MasalahTable, PersonId, PersonStatus, TraceStep } from '../types.js';
-import type { Classified } from './klasifikasi.js';
+import type { TabelMasalah, IdOrang, StatusOrang, LangkahJejak } from '../types.js';
+import type { HasilKlasifikasi } from './klasifikasi.js';
 import { fixedFractionOf, isResidueGroup, type Masalah } from './model.js';
 import type { Tashih } from './tashih.js';
 
 /**
  * Tahap 6 (bab 11.1): nominal = saham ÷ tashih × tirkah bersih, dibulatkan ke bawah ke kelipatan
- * `unit` per orang; selisihnya dilaporkan, tidak dibagikan diam-diam (engine-contract Tahap 6).
+ * `satuan` per orang; selisihnya dilaporkan, tidak dibagikan diam-diam (engine-contract Tahap 6).
  */
-export function distributeNominal(perPerson: Record<PersonId, bigint>, tashih: bigint, bersih: Uang, unit: bigint):
-  { nominal: Record<PersonId, Uang>; remainder: Uang; trace: TraceStep[] } {
-  const nominal: Record<PersonId, Uang> = {};
-  const trace: TraceStep[] = [];
-  for (const [personId, saham] of Object.entries(perPerson)) {
-    const amount = bulatkanKeBawah(bersih, pecahan(saham, tashih), unit);
-    nominal[personId] = amount;
-    trace.push({ stage: 'distribusi', refs: ['R11-1'], kind: 'DISTRIBUTE', personId, saham, of: tashih, amount });
+export function bagikanNominal(perOrang: Record<IdOrang, bigint>, tashih: bigint, bersih: Uang, satuan: bigint):
+  { nominal: Record<IdOrang, Uang>; sisaPembulatan: Uang; jejak: LangkahJejak[] } {
+  const nominal: Record<IdOrang, Uang> = {};
+  const jejak: LangkahJejak[] = [];
+  for (const [idOrang, saham] of Object.entries(perOrang)) {
+    const besaran = bulatkanKeBawah(bersih, pecahan(saham, tashih), satuan);
+    nominal[idOrang] = besaran;
+    jejak.push({ tahap: 'distribusi', refs: ['R11-1'], jenis: 'DISTRIBUSI', idOrang, saham, of: tashih, besaran });
   }
-  const remainder = bersih - Object.values(nominal).reduce((a, b) => a + b, 0n);
-  return { nominal, remainder, trace };
+  const sisaPembulatan = bersih - Object.values(nominal).reduce((a, b) => a + b, 0n);
+  return { nominal, sisaPembulatan, jejak };
 }
 
-/** Tabel mas'alah: kolom 'aul/radd/tashih hanya muncul bila terjadi; yang mahjub/mamnu tetap tampil di `excluded`. */
-export function buildTable(
+/** Tabel mas'alah: kolom 'aul/radd/tashih hanya muncul bila terjadi; yang mahjub/mamnu tetap tampil di `dikecualikan`. */
+export function susunTabel(
   masalah: Masalah,
-  classified: Classified,
+  classified: HasilKlasifikasi,
   tashih: Tashih,
-  nominal: Record<PersonId, Uang>,
-  statuses: Record<PersonId, PersonStatus>,
-): MasalahTable {
+  nominal: Record<IdOrang, Uang>,
+  statusOrang: Record<IdOrang, StatusOrang>,
+): TabelMasalah {
   const adaTashih = tashih.juzSahm > 1n;
-  const columns: MasalahTable['columns'] = ['fardh', 'ashl'];
-  if (classified.column) columns.push(classified.column);
-  if (adaTashih) columns.push('tashih');
-  columns.push('perPerson', 'nominal');
+  const kolom: TabelMasalah['kolom'] = ['fardh', 'ashl'];
+  if (classified.column) kolom.push(classified.column);
+  if (adaTashih) kolom.push('tashih');
+  kolom.push('perOrang', 'nominal');
 
-  const totals: MasalahTable['totals'] = { ashl: masalah.ashl };
-  if (classified.column) totals[classified.column] = classified.base;
-  if (adaTashih) totals.tashih = tashih.tashih;
+  const totalKolom: TabelMasalah['totalKolom'] = { ashl: masalah.ashl };
+  if (classified.column) totalKolom[classified.column] = classified.dasar;
+  if (adaTashih) totalKolom.tashih = tashih.tashih;
 
-  const rows = masalah.groups.map(group => {
-    const cells: Record<string, bigint> = { ashl: masalah.saham[group.id]! };
-    if (classified.column) cells[classified.column] = classified.saham[group.id]!;
-    if (adaTashih) cells['tashih'] = tashih.groupSaham[group.id]!;
-    const fardh = fixedFractionOf(group.share);
+  const baris = masalah.kelompokKelompok.map(kelompok => {
+    const sel: Record<string, bigint> = { ashl: masalah.saham[kelompok.id]! };
+    if (classified.column) sel[classified.column] = classified.saham[kelompok.id]!;
+    if (adaTashih) sel['tashih'] = tashih.groupSaham[kelompok.id]!;
+    const fardh = fixedFractionOf(kelompok.bagian);
     return {
-      group: group.id,
-      members: group.members,
+      kelompok: kelompok.id,
+      anggota: kelompok.anggota,
       ...(fardh ? { fardh } : {}),
-      ...(isResidueGroup(group) ? { ashabah: true } : {}),
-      cells,
-      perPerson: Object.fromEntries(group.members.map(id => [id, { saham: tashih.perPerson[id]!, nominal: nominal[id]! }])),
+      ...(isResidueGroup(kelompok) ? { ashabah: true } : {}),
+      sel,
+      perOrang: Object.fromEntries(kelompok.anggota.map(id => [id, { saham: tashih.perOrang[id]!, nominal: nominal[id]! }])),
     };
   });
 
-  const excluded = Object.entries(statuses).filter(([, s]) => s.kind === 'mahjub' || s.kind === 'mamnu').map(([id]) => id);
-  return { columns, totals, rows, excluded };
+  const dikecualikan = Object.entries(statusOrang).filter(([, s]) => s.jenis === 'mahjub' || s.jenis === 'mamnu').map(([id]) => id);
+  return { kolom, totalKolom, baris, dikecualikan };
 }

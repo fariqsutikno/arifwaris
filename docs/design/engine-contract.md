@@ -25,12 +25,12 @@ Edukasi: (a) pembahasan per kasus dari trace + dalil; (b) modul belajar per bab 
 Keluarkan hak 'ain tirkah → biaya jenazah → hutang → wasiat (≤ 1/3). Hasil: harta yang dibagi.
 
 ### Tahap 1 — Ahli waris
-- **1a Derivasi peran** dari graf: telusuri jalur tiap orang ke pewaris → `HeirKey` + `darajah` (bab 3.1–3.2).
+- **1a Derivasi peran** dari graf: telusuri jalur tiap orang ke pewaris → `KunciAhliWaris` + `darajah` (bab 3.1–3.2).
   Jalur lewat perempuan pada garis ke bawah → `DZAWIL_ARHAM` (bab 14).
 - **1b Mawani'** (bab 02): 5 penghalang [SYF]; pembunuhan semua bentuk.
 - **1c Hajb hirman** (6.4–6.5), dari hajib terkuat; catat `hajib` + kaidah.
 - **1d Hajb nuqshan**: dicatat; yang mahjub tetap dihitung untuk nuqshan ibu (6.7 no. 3).
-- Data kurang → `NEEDS_INPUT`.
+- Data kurang → `PERLU_INPUT`.
 
 ### Tahap 2 — Bagian per kelompok
 Fardh (bab 04) + syaratnya; ashabah (bab 05): bi nafsihi / bil ghair / ma'al ghair,
@@ -39,7 +39,7 @@ urutan jihah → darajah → quwwah → isytirak. Deteksi kasus khusus bab 07 da
 ### Tahap 3 — Ashlul mas'alah (9.1)
 - Semua ashabah → jumlah ru'us (lk = 2, pr = 1) [R09-2].
 - Satu fardh → makhraj.
-- Beberapa fardh → bandingkan penyebut dengan nisab arba' (`NISAB_COMPARE`, purpose `ashl`);
+- Beberapa fardh → bandingkan penyebut dengan nisab arba' (`PERBANDINGAN_NISAB`, purpose `ashl`);
   cocokkan dengan tabel kelompok A/B 9.1 sebagai assertion.
 - 18 dan 36 hanya di bab jadd [R09-1].
 
@@ -49,8 +49,8 @@ urutan jihah → darajah → quwwah → isytirak. Deteksi kasus khusus bab 07 da
 - Σ < ashl, tanpa ashabah → radd (9.4):
   - `raddA` tanpa pasangan: ashl = Σ saham ahli radd.
   - `raddB` ada pasangan: zawjiyyah + raddiyyah; bandingkan sisa vs ashl radd (habis / tawafuq / tabayun).
-- Tak ada ahli radd selain pasangan → dzawil arham (fase 3; sebelumnya `UNSUPPORTED`).
-- Dikendalikan `residuePolicy`.
+- Tak ada ahli radd selain pasangan → dzawil arham (fase 3; sebelumnya `TIDAK_DIDUKUNG`).
+- Dikendalikan `kebijakanSisa`.
 
 ### Tahap 5 — Tashih (bab 10)
 Per kelompok: saham vs ru'us → habis / tawafuq (simpan wafq ru'us) / tabayun (simpan ru'us).
@@ -70,17 +70,17 @@ Saham individu = saham kelompok × juz' ÷ ru'us; validasi 10.5; nominal = saham
 dibulatkan ke bawah per orang ke kelipatan `unit`, sisa dilaporkan sebagai selisih pembulatan.
 
 ```ts
-interface RoundingConfig {
-  unit: bigint; // 1n = rupiah penuh, 100n = ratusan, 1000n = ribuan — input dari pengguna
+interface KonfigurasiPembulatan {
+  satuan: bigint; // 1n = rupiah penuh, 100n = ratusan, 1000n = ribuan — input dari pengguna
 }
 ```
 
 - `unit` dipilih pengguna sesuai cara penyerahan harta: tunai tidak mungkin dibayar sampai satuan
   rupiah (mis. 46.666.666), transfer bank bisa. UI menawarkan 1 / 100 / 1000; engine menerima `bigint > 0`.
-- `unit ≤ 0` → `NEEDS_INPUT` (field `rounding`).
+- `unit ≤ 0` → `PERLU_INPUT` (field `rounding`).
 - Nominal per orang = floor(saham ÷ tashih × harta ÷ unit) × unit. Selisih = harta − Σ nominal
   (bisa sampai (jumlah ahli waris × unit) − 1); tidak dibagikan diam-diam.
-- `unit` bukan khilaf fikih → bukan bagian `MadhhabConfig`.
+- `unit` bukan khilaf fikih → bukan bagian `KonfigurasiMadzhab`.
 - Lapis penjelasan (`packages/explain`) wajib memberi tahu pengguna: besar selisih pembulatan, bahwa
   selisih itu tetap milik ahli waris dan perlu disepakati penyalurannya, dan bahwa pembagian bisa pas
   sampai rupiah terakhir bila diserahkan lewat transfer bank (`unit = 1`).
@@ -90,68 +90,68 @@ interface RoundingConfig {
 ## 3. Model data
 
 ```ts
-type PersonId = string;
+type IdOrang = string;
 
-interface Person {
-  id: PersonId;
-  name?: string;
-  sex: 'M' | 'F';                    // khuntsa → fase 2
-  fatherId?: PersonId;
-  motherId?: PersonId;
-  life: 'alive' | 'dead' | 'unknown';
-  religion: 'islam' | 'nonIslam' | 'unknown';
-  killedDeceased?: boolean;          // [SYF] semua bentuk (bab 02)
-  isPlaceholder?: boolean;           // node penghubung buatan sistem
+interface Orang {
+  id: IdOrang;
+  nama?: string;
+  jenisKelamin: 'L' | 'P';                    // khuntsa → fase 2
+  idAyah?: IdOrang;
+  idIbu?: IdOrang;
+  statusHidup: 'hidup' | 'wafat' | 'tidakDiketahui';
+  agama: 'islam' | 'nonIslam' | 'tidakDiketahui';
+  membunuhPewaris?: boolean;          // [SYF] semua bentuk (bab 02)
+  penghubung?: boolean;           // node penghubung buatan sistem
 }
 
-interface Marriage {
-  husbandId: PersonId;
-  wifeId: PersonId;
-  status: 'intact' | 'talakRajiIddah' | 'talakBain';
-  talakInMaradh?: boolean;
+interface Pernikahan {
+  idSuami: IdOrang;
+  idIstri: IdOrang;
+  status: 'utuh' | 'talakRajiIddah' | 'talakBain';
+  talakSaatMaradh?: boolean;
 }
 
-interface FamilyGraph {
-  deceasedId: PersonId;
-  persons: Record<PersonId, Person>;
-  marriages: Marriage[];
+interface GrafKeluarga {
+  idPewaris: IdOrang;
+  orang: Record<IdOrang, Orang>;
+  pernikahan: Pernikahan[];
 }
 ```
 
-Jenis saudara/paman diturunkan dari kesamaan `fatherId`/`motherId`, tidak pernah diinput langsung.
+Jenis saudara/paman diturunkan dari kesamaan `idAyah`/`idIbu`, tidak pernah diinput langsung.
 
 ```ts
-type HeirKey =
-  | 'IBN' | 'IBN_IBN' | 'AB' | 'JADD' | 'AKH_SYQ' | 'AKH_AB' | 'AKH_UMM'
-  | 'IBN_AKH_SYQ' | 'IBN_AKH_AB' | 'AMM_SYQ' | 'AMM_AB' | 'IBN_AMM_SYQ' | 'IBN_AMM_AB'
-  | 'ZAWJ' | 'MUTIQ'
-  | 'BINT' | 'BINT_IBN' | 'UMM' | 'JADDAH_UMM' | 'JADDAH_AB'
-  | 'UKHT_SYQ' | 'UKHT_AB' | 'UKHT_UMM' | 'ZAWJAH' | 'MUTIQAH';   // bab 3.1–3.2
+type KunciAhliWaris =
+  | 'ANAK_LK' | 'CUCU_LK' | 'AYAH' | 'KAKEK' | 'SAUDARA_KANDUNG' | 'SAUDARA_SEBAPAK' | 'SAUDARA_SEIBU'
+  | 'KEPONAKAN_KANDUNG' | 'KEPONAKAN_SEBAPAK' | 'PAMAN_KANDUNG' | 'PAMAN_SEBAPAK' | 'SEPUPU_KANDUNG' | 'SEPUPU_SEBAPAK'
+  | 'SUAMI' | 'MUTIQ'
+  | 'ANAK_PR' | 'CUCU_PR' | 'IBU' | 'NENEK_DARI_IBU' | 'NENEK_DARI_AYAH'
+  | 'SAUDARI_KANDUNG' | 'SAUDARI_SEBAPAK' | 'SAUDARI_SEIBU' | 'ISTRI' | 'MUTIQAH';   // bab 3.1–3.2
 
-interface HeirRole {
-  personId: PersonId;
-  key: HeirKey | 'DZAWIL_ARHAM' | 'NON_HEIR';
-  kinship: KinshipPosition;
-  path: PersonId[];
+interface PeranAhliWaris {
+  idOrang: IdOrang;
+  kunci: KunciAhliWaris | 'DZAWIL_ARHAM' | 'BUKAN_AHLI_WARIS';
+  kekerabatan: PosisiKekerabatan;
+  lintasan: IdOrang[];
 }
 
 // Posisi kekerabatan relatif ke mayit, diturunkan dari graf (tidak diinput).
 // Dipakai untuk urutan ashabah bab 5.3 (jihah → darajah → quwwah) dan urutan tanzil bab 14.5.
-interface KinshipPosition {
-  ancestorGeneration: number;   // generasi leluhur bersama: 0 = mayit sendiri, 1 = ayah/ibu, 2 = kakek/nenek, 3 = buyut ...
-  descentDepth: number;         // turun berapa generasi dari leluhur bersama itu ke orang ini
-  lineage: 'full' | 'paternal' | 'maternal';   // di titik percabangan: kandung / sebapak / seibu (quwwah, bab 5.3)
-  throughFemale: boolean;       // ada perempuan di jalur (selain awlad al-umm) → calon dzawil arham (bab 14.2)
+interface PosisiKekerabatan {
+  generasiLeluhur: number;   // generasi leluhur bersama: 0 = mayit sendiri, 1 = ayah/ibu, 2 = kakek/nenek, 3 = buyut ...
+  kedalamanKeturunan: number;         // turun berapa generasi dari leluhur bersama itu ke orang ini
+  jalur: 'kandung' | 'sebapak' | 'seibu';   // di titik percabangan: kandung / sebapak / seibu (quwwah, bab 5.3)
+  lewatPerempuan: boolean;       // ada perempuan di jalur (selain awlad al-umm) → calon dzawil arham (bab 14.2)
 }
 
-type PersonStatus =
-  | { kind: 'heir'; role: HeirRole }
-  | { kind: 'mahjub'; role: HeirRole; by: PersonId[]; ruleRef: RefCode }        // role: untuk narasi explain
-  | { kind: 'mamnu'; role: HeirRole; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; ruleRef: RefCode }
-  | { kind: 'nonHeir'; reason: string; ruleRef?: RefCode };
+type StatusOrang =
+  | { jenis: 'ahliWaris'; peran: PeranAhliWaris }
+  | { jenis: 'mahjub'; peran: PeranAhliWaris; oleh: IdOrang[]; rujukanAturan: RefCode }        // peran: untuk narasi jelaskan
+  | { jenis: 'mamnu'; peran: PeranAhliWaris; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; rujukanAturan: RefCode }
+  | { jenis: 'bukanAhliWaris'; alasan: string; rujukanAturan?: RefCode };
 ```
 
-Contoh `KinshipPosition` (ancestorGeneration, descentDepth):
+Contoh `PosisiKekerabatan` (generasiLeluhur, kedalamanKeturunan):
 
 | Orang | Koordinat | Jihah [SYF] (bab 5.3) |
 |---|---|---|
@@ -164,11 +164,11 @@ Contoh `KinshipPosition` (ancestorGeneration, descentDepth):
 | Paman kakek | (4,1) | 'Umumah (paman kakek) |
 
 Aturan urutan yang diturunkan dari koordinat:
-- **Ukhuwwah vs Bani al-Ikhwah**: `ancestorGeneration` sama (1); `descentDepth` lebih kecil didahulukan
+- **Ukhuwwah vs Bani al-Ikhwah**: `generasiLeluhur` sama (1); `kedalamanKeturunan` lebih kecil didahulukan
   (darajah), baru `lineage` full > paternal (quwwah). Karena itu anak lk saudara kandung (1,2,full)
   kalah dari saudara lk sebapak (1,1,paternal) [bab 5.3 "konsekuensi penting"].
-- **'Umumah**: `ancestorGeneration` lebih kecil didahulukan dulu (paman mayit beserta anak-anaknya
-  sebelum paman ayah), baru `descentDepth`, lalu `lineage` [bab 5.3 (1)–(3)].
+- **'Umumah**: `generasiLeluhur` lebih kecil didahulukan dulu (paman mayit beserta anak-anaknya
+  sebelum paman ayah), baru `kedalamanKeturunan`, lalu `lineage` [bab 5.3 (1)–(3)].
 - `lineage: 'maternal'` pada hawasyi → saudara seibu (fardh, bab 4.9) atau dzawil arham
   (paman seibu, anak saudara seibu; bab 14.2).
 - Dzawil arham (khal, khalah, 'ammah, saudara nenek, dst.) memakai koordinat yang sama untuk tanzil fase 3.
@@ -182,9 +182,9 @@ Angka: `Fraction` (bigint, immutable, branded), `Money = bigint`, saham/ashl = `
 ```ts
 type Ruleset = 'syafii';               // 'khi' ditambahkan fase 4
 
-interface MadhhabConfig {              // internal Syafi'iyyah saja; UI: "pengaturan lanjutan"
-  residuePolicy: 'radd' | 'baitulMal';           // default 'radd'   [R09-8] [R14-5]
-  talakBainInMaradh: 'qaulJadid' | 'qaulQadim';  // default 'qaulJadid' [R02-3]
+interface KonfigurasiMadzhab {              // internal Syafi'iyyah saja; UI: "pengaturan lanjutan"
+  kebijakanSisa: 'radd' | 'baitulMal';           // default 'radd'   [R09-8] [R14-5]
+  talakBainSaatMaradh: 'qaulJadid' | 'qaulQadim';  // default 'qaulJadid' [R02-3]
 }
 ```
 
@@ -203,48 +203,48 @@ Setiap tahap menerima `ruleset` sebagai parameter (colokan untuk KHI).
 ## 4. Kontrak output
 
 ```ts
-type EngineResult =
-  | { status: 'NEEDS_INPUT'; questions: Question[] }
-  | { status: 'UNSUPPORTED'; reason: string; refs: RefCode[] }
+type HasilEngine =
+  | { status: 'PERLU_INPUT'; pertanyaan: Pertanyaan[] }
+  | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: RefCode[] }
   | { status: 'OK';
-      statuses: Record<PersonId, PersonStatus>;
-      table: MasalahTable;
-      trace: TraceStep[];
-      rounding: { unit: bigint; remainder: Money };
-      ruleset: Ruleset; config: MadhhabConfig; kbVersion: string };
+      statusOrang: Record<IdOrang, StatusOrang>;
+      tabel: TabelMasalah;
+      jejak: LangkahJejak[];
+      pembulatan: { satuan: bigint; sisaPembulatan: Money };
+      ruleset: Ruleset; konfigurasi: KonfigurasiMadzhab; versiKb: string };
 // fase 2: tambah { status: 'MAUQUF'; scenarios: ...; held: ... }
 ```
 
 ```ts
 type Nisab = 'tamatsul' | 'tadakhul' | 'tawafuq' | 'tabayun';
 
-type TraceStep = { stage: Stage; refs: RefCode[] } & (
-  | { kind: 'MANI'; personId: PersonId; mani: string }
-  | { kind: 'HAJB_HIRMAN'; mahjub: PersonId; hajib: PersonId[] }
-  | { kind: 'HAJB_NUQSHAN'; affected: PersonId; from: Fraction; to: Fraction; cause: PersonId[] }
-  | { kind: 'FARDH'; group: GroupId; fardh: Fraction; reason: FardhReason }
-  | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair'; jaddChoice?: ... }
-  | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
-  | { kind: 'TIRKAH'; gross; tajhiz; hutang; wasiatDiminta; wasiatBatas; wasiatDipakai; wasiatButuhIjazah; bersih }
+type LangkahJejak = { tahap: Tahap; refs: RefCode[] } & (
+  | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
+  | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
+  | { jenis: 'HAJB_NUQSHAN'; terdampak: IdOrang; from: Fraction; to: Fraction; penyebab: IdOrang[] }
+  | { jenis: 'FARDH'; kelompok: IdKelompok; fardh: Fraction; alasan: AlasanFardh }
+  | { jenis: 'ASHABAH'; kelompok: IdKelompok; type: 'binNafsi' | 'bilGhair' | 'maalGhair'; pilihanJadd?: ... }
+  | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
+  | { jenis: 'TIRKAH'; kotor; tajhiz; hutang; wasiatDiminta; wasiatBatas; wasiatDipakai; wasiatButuhIjazah; bersih }
   // ashl & juzSahm: nisab arba' penuh (10.2). inkisar & raddVsSisa: hanya FPB → 'habis' | 'tawafuq' | 'tabayun' (9.4, 10.3).
-  | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; group?: GroupId;
-      a: bigint; b: bigint; relation: Nisab | 'habis'; gcd: bigint; result: bigint }
-  | { kind: 'MASALAH_CLASS'; cls: 'adilah' | 'ailah' | 'raddA' | 'raddB'; sumSaham: bigint; ashl: bigint }
-  | { kind: 'AUL'; from: bigint; to: bigint }
-  | { kind: 'RADD'; zawjiyyah?: { group; ashl; spouseSaham; sisa }; raddiyyah: { saham; ashl }; result: bigint }
-  | { kind: 'TASHIH'; base: bigint; juzSahm: bigint; result: bigint }
-  | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Money }
+  | { jenis: 'PERBANDINGAN_NISAB'; tujuan: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; kelompok?: IdKelompok;
+      a: bigint; b: bigint; hubungan: Nisab | 'habis'; fpb: bigint; hasil: bigint }
+  | { jenis: 'KELAS_MASALAH'; kelas: 'adilah' | 'ailah' | 'raddA' | 'raddB'; jumlahSaham: bigint; ashl: bigint }
+  | { jenis: 'AUL'; from: bigint; to: bigint }
+  | { jenis: 'RADD'; zawjiyyah?: { kelompok; ashl; sahamPasangan; sisa }; raddiyyah: { saham; ashl }; hasil: bigint }
+  | { jenis: 'TASHIH'; dasar: bigint; juzSahm: bigint; hasil: bigint }
+  | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; of: bigint; besaran: Money }
 );
 ```
 
 ```ts
-interface MasalahTable {
-  columns: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perPerson' | 'nominal'>; // dinamis
-  totals: Partial<Record<'ashl' | 'aul' | 'radd' | 'tashih', bigint>>;                  // penyebut tiap kolom
-  rows: Array<{ group: GroupId; members: PersonId[];
-                fardh?: Fraction; ashabah?: boolean; cells: Record<string, bigint>;    // saham kelompok per kolom
-                perPerson: Record<PersonId, { saham: bigint; nominal: Money }> }>;     // kelompok 2:1 → beda per orang
-  excluded: PersonId[];   // mahjub/mamnu, tampil dengan alasan
+interface TabelMasalah {
+  kolom: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perOrang' | 'nominal'>; // dinamis
+  totalKolom: Partial<Record<'ashl' | 'aul' | 'radd' | 'tashih', bigint>>;                  // penyebut tiap kolom
+  baris: Array<{ kelompok: IdKelompok; anggota: IdOrang[];
+                fardh?: Fraction; ashabah?: boolean; sel: Record<string, bigint>;    // saham kelompok per kolom
+                perOrang: Record<IdOrang, { saham: bigint; nominal: Money }> }>;     // kelompok 2:1 → beda per orang
+  dikecualikan: IdOrang[];   // mahjub/mamnu, tampil dengan alasan
 }
 
 interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan Rujukan" KB bab 01–14, 16
@@ -263,10 +263,10 @@ interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan R
 // Baris tanpa refs / kode tak ada di KB → notes.
 ```
 
-**Trace = data, bukan kalimat.** Alasan setiap keputusan disimpan terstruktur (`FardhReason`: kode + id
+**Trace = data, bukan kalimat.** Alasan setiap keputusan disimpan terstruktur (`AlasanFardh`: kode + id
 orang penyebab + angka pembanding, lihat `packages/engine/src/types.ts`), mis.
 `{ code: 'ADA_FARU_WARITS', by: ['D1'] }` atau `{ code: 'JADD_WAL_IKHWAH', options: [...], chosen }`.
-Setiap perbandingan angka (ashl, radd, inkisar, juz' as-sahm) wajib memancarkan `NISAB_COMPARE` —
+Setiap perbandingan angka (ashl, radd, inkisar, juz' as-sahm) wajib memancarkan `PERBANDINGAN_NISAB` —
 termasuk yang hasilnya habis/tamatsul — supaya `explain` bisa menulis "diketahui 2 dan 4 → tadakhul →
 ambil yang besar". Teks bebas di trace dilarang.
 
@@ -294,8 +294,8 @@ Output ke pengguna = 3 lapis dari trace yang sama:
 ### Contoh jejak — suami, anak pr, cucu pr (dari anak lk)
 1. Ketiganya ahli waris (1 anak pr → cucu pr tidak terhijab).
 2. Suami 1/4, anak pr 1/2, cucu pr 1/6 (takmilah ats-tsulutsain).
-3. NISAB_COMPARE ashl: 4 & 6 tawafuq → 12. Saham 3, 6, 2; Σ 11.
-4. MASALAH_CLASS raddB: zawjiyyah 4 (suami 1, sisa 3); raddiyyah 3:1 → 4; NISAB_COMPARE raddVsSisa 3 vs 4 tabayun → 16.
+3. PERBANDINGAN_NISAB ashl: 4 & 6 tawafuq → 12. Saham 3, 6, 2; Σ 11.
+4. KELAS_MASALAH raddB: zawjiyyah 4 (suami 1, sisa 3); raddiyyah 3:1 → 4; PERBANDINGAN_NISAB raddVsSisa 3 vs 4 tabayun → 16.
 5. Tanpa inkisar.
 6. Suami 4/16, anak pr 9/16, cucu pr 3/16.
 

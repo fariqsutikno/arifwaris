@@ -2,232 +2,232 @@ import type { Pecahan, Uang, Nisab } from '@waris/math';
 
 // ─── Graf keluarga ────────────────────────────────────────────────────────────
 
-export type PersonId = string;
+export type IdOrang = string;
 
-export interface Person {
-  id: PersonId;
-  name?: string;
-  sex: 'M' | 'F';
-  fatherId?: PersonId;
-  motherId?: PersonId;
-  life: 'alive' | 'dead' | 'unknown';
-  religion: 'islam' | 'nonIslam' | 'unknown';
-  killedDeceased?: boolean;   // [SYF] semua bentuk pembunuhan (bab 02)
-  isPlaceholder?: boolean;    // node penghubung buatan sistem
+export interface Orang {
+  id: IdOrang;
+  nama?: string;
+  jenisKelamin: 'L' | 'P';
+  idAyah?: IdOrang;
+  idIbu?: IdOrang;
+  statusHidup: 'hidup' | 'wafat' | 'tidakDiketahui';
+  agama: 'islam' | 'nonIslam' | 'tidakDiketahui';
+  membunuhPewaris?: boolean;   // [SYF] semua bentuk pembunuhan (bab 02)
+  penghubung?: boolean;    // node penghubung buatan sistem
 }
 
-export interface Marriage {
-  husbandId: PersonId;
-  wifeId: PersonId;
-  status: 'intact' | 'talakRajiIddah' | 'talakBain';
-  talakInMaradh?: boolean;
+export interface Pernikahan {
+  idSuami: IdOrang;
+  idIstri: IdOrang;
+  status: 'utuh' | 'talakRajiIddah' | 'talakBain';
+  talakSaatMaradh?: boolean;
 }
 
-export interface FamilyGraph {
-  deceasedId: PersonId;
-  persons: Record<PersonId, Person>;
-  marriages: Marriage[];
+export interface GrafKeluarga {
+  idPewaris: IdOrang;
+  orang: Record<IdOrang, Orang>;
+  pernikahan: Pernikahan[];
 }
 
 // ─── Peran ahli waris ─────────────────────────────────────────────────────────
 
 // [R03-1] Daftar ahli waris dan kunci peran (bab 3.1–3.2)
-export type HeirKey =
-  | 'IBN' | 'IBN_IBN' | 'AB' | 'JADD' | 'AKH_SYQ' | 'AKH_AB' | 'AKH_UMM'
-  | 'IBN_AKH_SYQ' | 'IBN_AKH_AB' | 'AMM_SYQ' | 'AMM_AB' | 'IBN_AMM_SYQ' | 'IBN_AMM_AB'
-  | 'ZAWJ' | 'MUTIQ'
-  | 'BINT' | 'BINT_IBN' | 'UMM' | 'JADDAH_UMM' | 'JADDAH_AB'
-  | 'UKHT_SYQ' | 'UKHT_AB' | 'UKHT_UMM' | 'ZAWJAH' | 'MUTIQAH';
+export type KunciAhliWaris =
+  | 'ANAK_LK' | 'CUCU_LK' | 'AYAH' | 'KAKEK' | 'SAUDARA_KANDUNG' | 'SAUDARA_SEBAPAK' | 'SAUDARA_SEIBU'
+  | 'KEPONAKAN_KANDUNG' | 'KEPONAKAN_SEBAPAK' | 'PAMAN_KANDUNG' | 'PAMAN_SEBAPAK' | 'SEPUPU_KANDUNG' | 'SEPUPU_SEBAPAK'
+  | 'SUAMI' | 'MUTIQ'
+  | 'ANAK_PR' | 'CUCU_PR' | 'IBU' | 'NENEK_DARI_IBU' | 'NENEK_DARI_AYAH'
+  | 'SAUDARI_KANDUNG' | 'SAUDARI_SEBAPAK' | 'SAUDARI_SEIBU' | 'ISTRI' | 'MUTIQAH';
 
 // Posisi kekerabatan diturunkan dari graf; dipakai untuk urutan ashabah (bab 5.3) dan tanzil (bab 14.5).
-export interface KinshipPosition {
-  ancestorGeneration: number;
-  descentDepth: number;
-  lineage: 'full' | 'paternal' | 'maternal';
-  throughFemale: boolean;
+export interface PosisiKekerabatan {
+  generasiLeluhur: number;
+  kedalamanKeturunan: number;
+  jalur: 'kandung' | 'sebapak' | 'seibu';
+  lewatPerempuan: boolean;
 }
 
-export interface HeirRole {
-  personId: PersonId;
-  key: HeirKey | 'DZAWIL_ARHAM' | 'NON_HEIR';
-  kinship: KinshipPosition;
-  path: PersonId[];
+export interface PeranAhliWaris {
+  idOrang: IdOrang;
+  kunci: KunciAhliWaris | 'DZAWIL_ARHAM' | 'BUKAN_AHLI_WARIS';
+  kekerabatan: PosisiKekerabatan;
+  lintasan: IdOrang[];
 }
 
-export type PersonStatus =
-  | { kind: 'heir'; role: HeirRole }
-  | { kind: 'mahjub'; role: HeirRole; by: PersonId[]; ruleRef: string }
-  | { kind: 'mamnu'; role: HeirRole; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; ruleRef: string }
-  | { kind: 'nonHeir'; reason: string; ruleRef?: string };
+export type StatusOrang =
+  | { jenis: 'ahliWaris'; peran: PeranAhliWaris }
+  | { jenis: 'mahjub'; peran: PeranAhliWaris; oleh: IdOrang[]; rujukanAturan: string }
+  | { jenis: 'mamnu'; peran: PeranAhliWaris; mani: 'qatl' | 'ikhtilafDin' | 'riqq' | 'istibham' | 'daur'; rujukanAturan: string }
+  | { jenis: 'bukanAhliWaris'; alasan: string; rujukanAturan?: string };
 
 // ─── Konfigurasi ──────────────────────────────────────────────────────────────
 
 export type Ruleset = 'syafii';
 
-export interface MadhhabConfig {
-  residuePolicy: 'radd' | 'baitulMal';          // default 'radd'   [R09-8] [R14-5]
-  talakBainInMaradh: 'qaulJadid' | 'qaulQadim'; // default 'qaulJadid' [R02-3]
+export interface KonfigurasiMadzhab {
+  kebijakanSisa: 'radd' | 'baitulMal';          // default 'radd'   [R09-8] [R14-5]
+  talakBainSaatMaradh: 'qaulJadid' | 'qaulQadim'; // default 'qaulJadid' [R02-3]
 }
 
-export const DEFAULT_CONFIG: MadhhabConfig = {
-  residuePolicy: 'radd',
-  talakBainInMaradh: 'qaulJadid',
+export const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = {
+  kebijakanSisa: 'radd',
+  talakBainSaatMaradh: 'qaulJadid',
 };
 
 // ─── Output tabel ─────────────────────────────────────────────────────────────
 
-export type GroupId = string;
+export type IdKelompok = string;
 
-export interface MasalahTable {
-  columns: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perPerson' | 'nominal'>;
+export interface TabelMasalah {
+  kolom: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perOrang' | 'nominal'>;
   /** Penyebut tiap kolom: ashl, lalu 'aul/radd/tashih bila terjadi. */
-  totals: Partial<Record<'ashl' | 'aul' | 'radd' | 'tashih', bigint>>;
-  rows: Array<{
-    group: GroupId;
-    members: PersonId[];
+  totalKolom: Partial<Record<'ashl' | 'aul' | 'radd' | 'tashih', bigint>>;
+  baris: Array<{
+    kelompok: IdKelompok;
+    anggota: IdOrang[];
     fardh?: Pecahan;
     ashabah?: boolean;
     /** Saham kelompok per kolom (ashl/aul/radd/tashih). */
-    cells: Record<string, bigint>;
+    sel: Record<string, bigint>;
     /** Per orang: dalam kelompok 2:1 bagian anggota bisa berbeda. */
-    perPerson: Record<PersonId, { saham: bigint; nominal: Uang }>;
+    perOrang: Record<IdOrang, { saham: bigint; nominal: Uang }>;
   }>;
-  excluded: PersonId[];
+  dikecualikan: IdOrang[];
 }
 
 // ─── Trace ────────────────────────────────────────────────────────────────────
 
 export type { Nisab };
-export type Stage = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat';
+export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat';
 /** Saham vs ru'us (inkisar) dan sisa zawjiyyah vs ashl radd hanya memakai FPB: habis / tawafuq / tabayun (bab 9.4, 10.3). */
-export type InkisarRelation = 'habis' | 'tawafuq' | 'tabayun';
+export type HubunganInkisar = 'habis' | 'tawafuq' | 'tabayun';
 
-export type JaddOption = 'muqasamah' | 'tsuluts' | 'tsulutsBaqi' | 'sudus';
+export type PilihanJadd = 'muqasamah' | 'tsuluts' | 'tsulutsBaqi' | 'sudus';
 
 /**
- * Alasan sebuah fardh — data, bukan kalimat; `packages/explain` yang menarasikan
- * (mis. `by` diubah jadi nama orang: "karena ada anak perempuan (Fatimah)").
+ * Alasan sebuah fardh — data, bukan kalimat; `packages/jelaskan` yang menarasikan
+ * (mis. `oleh` diubah jadi nama orang: "karena ada anak perempuan (Fatimah)").
  */
-export type FardhReason =
-  | { code: 'ADA_FARU_WARITS'; by: PersonId[] }              // pasangan turun, ibu 1/6
+export type AlasanFardh =
+  | { code: 'ADA_FARU_WARITS'; oleh: IdOrang[] }              // pasangan turun, ibu 1/6
   | { code: 'TANPA_FARU_WARITS' }                            // pasangan 1/2 atau 1/4
-  | { code: 'JAM_IKHWAH'; by: PersonId[] }                   // ibu 1/6 karena 2+ saudara (termasuk yang mahjub)
+  | { code: 'JAM_IKHWAH'; oleh: IdOrang[] }                   // ibu 1/6 karena 2+ saudara (termasuk yang mahjub)
   | { code: 'TANPA_FARU_WARITS_DAN_IKHWAH' }                 // ibu 1/3
-  | { code: 'UMARIYYATAIN'; spouseFardh: Pecahan }          // ibu 1/3 sisa
-  | { code: 'NENEK_TANPA_IBU'; count: number }
-  | { code: 'TANPA_MUASHSHIB'; count: number }               // anak/cucu pr: 1 → 1/2, 2+ → 2/3
-  | { code: 'TAKMILAH'; with: PersonId[] }                   // 1/6 penyempurna 2/3
-  | { code: 'KALALAH'; count: number }                       // saudari atau anak ibu tanpa far'u & ashl mudzakkar
-  | { code: 'ADA_FARU_MUDZAKKAR'; by: PersonId[] }           // ayah/kakek 1/6 saja
-  | { code: 'ADA_FARU_MUANNATS'; by: PersonId[] }            // ayah/kakek 1/6 + sisa
+  | { code: 'UMARIYYATAIN'; fardhPasangan: Pecahan }          // ibu 1/3 sisa
+  | { code: 'NENEK_TANPA_IBU'; banyaknya: number }
+  | { code: 'TANPA_MUASHSHIB'; banyaknya: number }               // anak/cucu pr: 1 → 1/2, 2+ → 2/3
+  | { code: 'TAKMILAH'; with: IdOrang[] }                   // 1/6 penyempurna 2/3
+  | { code: 'KALALAH'; banyaknya: number }                       // saudari atau anak ibu tanpa far'u & ashl mudzakkar
+  | { code: 'ADA_FARU_MUDZAKKAR'; oleh: IdOrang[] }           // ayah/kakek 1/6 saja
+  | { code: 'ADA_FARU_MUANNATS'; oleh: IdOrang[] }            // ayah/kakek 1/6 + sisa
   | { code: 'MUSYARRAKAH' }
-  | { code: 'AKDARIYYAH'; part: 'jadd' | 'ukht' }
+  | { code: 'AKDARIYYAH'; porsi: 'jadd' | 'ukht' }
   | { code: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
-  | { code: 'JADD_WAL_IKHWAH'; sisa: Pecahan; options: Array<{ name: JaddOption; value: Pecahan }>; chosen: JaddOption };
+  | { code: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
 
-export type TraceStep = { stage: Stage; refs: string[] } & (
-  | { kind: 'MANI'; personId: PersonId; mani: string }
-  | { kind: 'HAJB_HIRMAN'; mahjub: PersonId; hajib: PersonId[] }
-  | { kind: 'HAJB_NUQSHAN'; affected: PersonId; from: Pecahan; to: Pecahan; cause: PersonId[] }
-  | { kind: 'FARDH'; group: GroupId; fardh: Pecahan; reason: FardhReason }
-  | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair';
+export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
+  | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
+  | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
+  | { jenis: 'HAJB_NUQSHAN'; terdampak: IdOrang; from: Pecahan; to: Pecahan; penyebab: IdOrang[] }
+  | { jenis: 'FARDH'; kelompok: IdKelompok; fardh: Pecahan; alasan: AlasanFardh }
+  | { jenis: 'ASHABAH'; kelompok: IdKelompok; type: 'binNafsi' | 'bilGhair' | 'maalGhair';
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
-      jaddChoice?: Extract<FardhReason, { code: 'JADD_WAL_IKHWAH' }> }
-  | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
-  | { kind: 'TIRKAH'; gross: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
+      pilihanJadd?: Extract<AlasanFardh, { code: 'JADD_WAL_IKHWAH' }> }
+  | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
+  | { jenis: 'TIRKAH'; kotor: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
       wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
   // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).
-  // inkisar: a = saham kelompok, b = ru'us, result = simpanan (ru'us ÷ FPB; 1 bila habis).
-  // raddVsSisa: a = sisa zawjiyyah, b = ashl radd, result = ashl akhir.
-  | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; group?: GroupId;
-      a: bigint; b: bigint; relation: Nisab | InkisarRelation; gcd: bigint; result: bigint }
-  | { kind: 'MASALAH_CLASS'; cls: 'adilah' | 'ailah' | 'raddA' | 'raddB'; sumSaham: bigint; ashl: bigint }
-  | { kind: 'AUL'; from: bigint; to: bigint }
-  | { kind: 'RADD';
-      zawjiyyah?: { group: GroupId; ashl: bigint; spouseSaham: bigint; sisa: bigint };   // hanya raddB
-      raddiyyah: { saham: Record<GroupId, bigint>; ashl: bigint };
-      result: bigint }
-  | { kind: 'TASHIH'; base: bigint; juzSahm: bigint; result: bigint }
-  | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Uang }
+  // inkisar: a = saham kelompok, b = ru'us, hasil = simpanan (ru'us ÷ FPB; 1 bila habis).
+  // raddVsSisa: a = sisa zawjiyyah, b = ashl radd, hasil = ashl akhir.
+  | { jenis: 'PERBANDINGAN_NISAB'; tujuan: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; kelompok?: IdKelompok;
+      a: bigint; b: bigint; hubungan: Nisab | HubunganInkisar; fpb: bigint; hasil: bigint }
+  | { jenis: 'KELAS_MASALAH'; kelas: 'adilah' | 'ailah' | 'raddA' | 'raddB'; jumlahSaham: bigint; ashl: bigint }
+  | { jenis: 'AUL'; from: bigint; to: bigint }
+  | { jenis: 'RADD';
+      zawjiyyah?: { kelompok: IdKelompok; ashl: bigint; sahamPasangan: bigint; sisa: bigint };   // hanya raddB
+      raddiyyah: { saham: Record<IdKelompok, bigint>; ashl: bigint };
+      hasil: bigint }
+  | { jenis: 'TASHIH'; dasar: bigint; juzSahm: bigint; hasil: bigint }
+  | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; of: bigint; besaran: Uang }
   // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
-  | { kind: 'MUNASAKHAT'; mayit: PersonId; saham: bigint; masalah: bigint; relation: InkisarRelation;
-      gcd: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;
+  | { jenis: 'MUNASAKHAT'; mayit: IdOrang; saham: bigint; masalah: bigint; hubungan: HubunganInkisar;
+      fpb: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;
       /** Per orang: saham sebelum × wafqMasalah + saham dari mayit × wafqSaham = sesudah. */
-      rincian: Record<PersonId, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
+      rincian: Record<IdOrang, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
   // Yang wafat tidak mendapat bagian dari mayit sebelumnya → tidak ada yang diteruskan; diabaikan [R12-1].
-  | { kind: 'MUNASAKHAT_SKIP'; mayit: PersonId }
+  | { jenis: 'MUNASAKHAT_DILEWATI'; mayit: IdOrang }
 );
 
 // ─── Kontrak output utama ─────────────────────────────────────────────────────
 
-export interface Question {
-  personId?: PersonId;
-  field: keyof Person | 'marriages' | 'rounding';
-  reason: string;
+export interface Pertanyaan {
+  idOrang?: IdOrang;
+  isian: keyof Orang | 'pernikahan' | 'pembulatan';
+  alasan: string;
 }
 
-export type EngineResult =
-  | { status: 'NEEDS_INPUT'; questions: Question[] }
-  | { status: 'UNSUPPORTED'; reason: string; refs: string[] }
+export type HasilEngine =
+  | { status: 'PERLU_INPUT'; pertanyaan: Pertanyaan[] }
+  | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[] }
   | { status: 'OK';
-      statuses: Record<PersonId, PersonStatus>;
-      table: MasalahTable;
-      trace: TraceStep[];
-      rounding: { unit: bigint; remainder: Uang };
+      statusOrang: Record<IdOrang, StatusOrang>;
+      tabel: TabelMasalah;
+      jejak: LangkahJejak[];
+      pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       ruleset: Ruleset;
-      config: MadhhabConfig;
-      kbVersion: string };
+      konfigurasi: KonfigurasiMadzhab;
+      versiKb: string };
 
 // ─── Input engine ─────────────────────────────────────────────────────────────
 
-export interface TirkahInput {
-  gross: Uang;
+export interface InputTirkah {
+  kotor: Uang;
   tajhiz: Uang;
   hutang: Uang;
   wasiat: Uang;
 }
 
 // Satuan pembulatan nominal, dipilih pengguna (tunai vs transfer bank). Bukan khilaf fikih.
-export interface RoundingConfig {
-  unit: bigint;
+export interface KonfigurasiPembulatan {
+  satuan: bigint;
 }
 
-export interface EngineInput {
-  graph: FamilyGraph;
-  tirkah: TirkahInput;
-  rounding: RoundingConfig;
-  config: MadhhabConfig;
+export interface InputEngine {
+  graf: GrafKeluarga;
+  tirkah: InputTirkah;
+  pembulatan: KonfigurasiPembulatan;
+  konfigurasi: KonfigurasiMadzhab;
   ruleset: Ruleset;
-  kbVersion: string;
+  versiKb: string;
 }
 
 // ─── Munasakhat (bab 12) ──────────────────────────────────────────────────────
 
-export interface MunasakhatInput {
-  /** Mayit pertama = `base.graph.deceasedId`. */
-  base: EngineInput;
+export interface InputMunasakhat {
+  /** Mayit pertama = `dasar.graf.idPewaris`. */
+  dasar: InputEngine;
   /**
    * Ahli waris yang wafat sebelum pembagian, urut waktu wafat (bab 12.7). Yang dibagi hanya harta mayit pertama;
    * harta pribadi, hutang, dan wasiat mereka sendiri bukan bagian munasakhat (bab 12.5).
    */
-  deaths: PersonId[];
+  urutanWafat: IdOrang[];
   /** Orang yang lahir setelah wafatnya mayit tertentu: belum ada saat mayit itu dan sebelumnya wafat. */
-  bornAfterDeathOf?: Record<PersonId, PersonId>;
+  lahirSetelahWafat?: Record<IdOrang, IdOrang>;
 }
 
-type EngineOk = Extract<EngineResult, { status: 'OK' }>;
+type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 
-export type MunasakhatResult =
-  | (Extract<EngineResult, { status: 'NEEDS_INPUT' | 'UNSUPPORTED' }> & { mayit: PersonId })
+export type HasilMunasakhat =
+  | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit: IdOrang })
   | { status: 'OK';
       /** Hasil pipeline tiap mayit, urut wafat. */
-      steps: Array<{ mayit: PersonId; result: EngineOk }>;
+      langkahLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>;
       /** Bab 12.2: label untuk telusur-balik & penjelasan; tidak menentukan jalur hitung [R12-3]. */
       keadaan: 1 | 2 | 3;
       jamiah: bigint;
-      saham: Record<PersonId, bigint>;
+      saham: Record<IdOrang, bigint>;
       /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. */
-      ikhtishar: { jamiah: bigint; saham: Record<PersonId, bigint> };
-      nominal: Record<PersonId, Uang>;
-      rounding: { unit: bigint; remainder: Uang };
-      trace: TraceStep[] };
+      ikhtishar: { jamiah: bigint; saham: Record<IdOrang, bigint> };
+      nominal: Record<IdOrang, Uang>;
+      pembulatan: { satuan: bigint; sisaPembulatan: Uang };
+      jejak: LangkahJejak[] };

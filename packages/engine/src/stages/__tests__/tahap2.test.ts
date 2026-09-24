@@ -1,34 +1,34 @@
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../__tests__/fixtures/bab16.js';
-import { runHeirStages } from '../../pipeline.js';
-import type { EngineInput } from '../../types.js';
-import type { ShareGroup } from '../model.js';
+import { jalankanTahapAhliWaris } from '../../pipeline.js';
+import type { InputEngine } from '../../types.js';
+import type { KelompokBagian } from '../model.js';
 import { ANAK, KANDUNG, SEBAPAK, keluarga } from './helpers.js';
 
 /** Ringkas grup → { "id1,id2": "fardh 2/3 [id1:2,id2:1]" } supaya ekspektasi mudah dibaca. */
-function summarize(groups: ShareGroup[]): Record<string, string> {
+function summarize(kelompokKelompok: KelompokBagian[]): Record<string, string> {
   const fr = (f: { n: bigint; d: bigint }) => `${f.n}/${f.d}`;
   const out: Record<string, string> = {};
-  for (const g of groups) {
-    const members = [...g.members].sort();
-    const s = g.share;
-    let text = s.kind === 'fardh' || s.kind === 'fardhAshabah' ? `${s.kind} ${fr(s.fardh)}`
-      : s.kind === 'ashabah' ? `ashabah ${s.type}`
-      : `fixed ${fr(s.value)} ${s.basis}`;
-    if (members.some(id => g.weights[id] !== 1n)) text += ` [${members.map(id => `${id}:${g.weights[id]}`).join(',')}]`;
-    out[members.join(',')] = text;
+  for (const g of kelompokKelompok) {
+    const anggota = [...g.anggota].sort();
+    const s = g.bagian;
+    let text = s.jenis === 'fardh' || s.jenis === 'fardhAshabah' ? `${s.jenis} ${fr(s.fardh)}`
+      : s.jenis === 'ashabah' ? `ashabah ${s.type}`
+      : `fixed ${fr(s.nilai)} ${s.basis}`;
+    if (anggota.some(id => g.bobot[id] !== 1n)) text += ` [${anggota.map(id => `${id}:${g.bobot[id]}`).join(',')}]`;
+    out[anggota.join(',')] = text;
   }
   return out;
 }
 
-function shares(input: EngineInput) {
-  const result = runHeirStages(input);
-  if (result.status !== 'HEIRS') throw new Error(`${result.status}: ${JSON.stringify(result)}`);
-  return { groups: summarize(result.groups), trace: result.trace };
+function hasilBagian(input: InputEngine) {
+  const hasil = jalankanTahapAhliWaris(input);
+  if (hasil.status !== 'AHLI_WARIS') throw new Error(`${hasil.status}: ${JSON.stringify(hasil)}`);
+  return { kelompokKelompok: summarize(hasil.kelompokKelompok), jejak: hasil.jejak };
 }
 
 describe('tahap 2 — furudh dan ashabah pada fixture bab 16', () => {
-  const cases: Array<[string, EngineInput, Record<string, string>]> = [
+  const cases: Array<[string, InputEngine, Record<string, string>]> = [
     ['C01', bab16.case01.input, { W1: 'fardh 1/8', 'D1,S1': 'ashabah bilGhair [D1:1,S1:2]' }],
     ['C02', bab16.case02.input, { H1: 'fardh 1/2', M1: 'fardh 1/6', F1: 'ashabah binNafsi' }],
     ['C03', bab16.case03.input, { W1: 'fardh 1/4', M1: 'fardh 1/4', F1: 'ashabah binNafsi' }],
@@ -58,12 +58,12 @@ describe('tahap 2 — furudh dan ashabah pada fixture bab 16', () => {
   ];
 
   test.each(cases)('%s', (_id, input, expected) => {
-    expect(shares(input).groups).toEqual(expected);
+    expect(hasilBagian(input).kelompokKelompok).toEqual(expected);
   });
 
-  test('kasus khusus dicatat di trace', () => {
-    const special = (input: EngineInput) =>
-      shares(input).trace.filter(s => s.kind === 'SPECIAL_CASE').map(s => s.kind === 'SPECIAL_CASE' && s.name);
+  test('kasus khusus dicatat di jejak', () => {
+    const special = (input: InputEngine) =>
+      hasilBagian(input).jejak.filter(s => s.jenis === 'KASUS_KHUSUS').map(s => s.jenis === 'KASUS_KHUSUS' && s.nama);
     expect(special(bab16.case02.input)).toEqual(['umariyyatain']);
     expect(special(bab16.case04.input)).toEqual([]);            // kakek ≠ ayah [R07-1]
     expect(special(bab16.case12.input)).toEqual(['akdariyyah']);
@@ -71,103 +71,103 @@ describe('tahap 2 — furudh dan ashabah pada fixture bab 16', () => {
   });
 
   test('hajb nuqshan dicatat [bab 6.3]', () => {
-    const nuqshan = shares(bab16.case10.input).trace.filter(s => s.kind === 'HAJB_NUQSHAN');
-    expect(nuqshan).toContainEqual(expect.objectContaining({ affected: 'H1', from: { n: 1n, d: 2n }, to: { n: 1n, d: 4n } }));
-    expect(nuqshan).toContainEqual(expect.objectContaining({ affected: 'GD1', from: { n: 1n, d: 2n }, to: { n: 1n, d: 6n } }));
+    const nuqshan = hasilBagian(bab16.case10.input).jejak.filter(s => s.jenis === 'HAJB_NUQSHAN');
+    expect(nuqshan).toContainEqual(expect.objectContaining({ terdampak: 'H1', from: { n: 1n, d: 2n }, to: { n: 1n, d: 4n } }));
+    expect(nuqshan).toContainEqual(expect.objectContaining({ terdampak: 'GD1', from: { n: 1n, d: 2n }, to: { n: 1n, d: 6n } }));
   });
 });
 
 describe('tahap 2 — kakek bersama saudara [SYF] (bab 08)', () => {
-  const kakek = { PGF: { sex: 'M' } } as const;
+  const kakek = { PGF: { jenisKelamin: 'L' } } as const;
 
-  test('[R08-2] tanpa furudh, unit < 4 → muqasamah bersama', () => {
-    expect(shares(keluarga({ ...kakek, AK1: { sex: 'M', ...KANDUNG } })).groups)
+  test('[R08-2] tanpa furudh, satuan < 4 → muqasamah bersama', () => {
+    expect(hasilBagian(keluarga({ ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG } })).kelompokKelompok)
       .toEqual({ 'AK1,PGF': 'ashabah binNafsi' });   // kakek = satu saudara lk
   });
 
-  test('[R08-2] tanpa furudh, unit > 4 → 1/3', () => {
-    expect(shares(keluarga({
-      ...kakek, AK1: { sex: 'M', ...KANDUNG }, AK2: { sex: 'M', ...KANDUNG }, AK3: { sex: 'M', ...KANDUNG },
-    })).groups).toEqual({ PGF: 'fixed 1/3 tsuluts', 'AK1,AK2,AK3': 'ashabah binNafsi' });
+  test('[R08-2] tanpa furudh, satuan > 4 → 1/3', () => {
+    expect(hasilBagian(keluarga({
+      ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG }, AK2: { jenisKelamin: 'L', ...KANDUNG }, AK3: { jenisKelamin: 'L', ...KANDUNG },
+    })).kelompokKelompok).toEqual({ PGF: 'fixed 1/3 tsuluts', 'AK1,AK2,AK3': 'ashabah binNafsi' });
   });
 
   test('[R08-3] sisa ≤ 1/6 → kakek 1/6, saudara gugur (ashabah tanpa sisa)', () => {
-    expect(shares(keluarga({
-      ...kakek, M: { sex: 'F' }, B1: { sex: 'F', ...ANAK }, B2: { sex: 'F', ...ANAK }, W1: { sex: 'F' },
-      AK1: { sex: 'M', ...KANDUNG },
-    }, [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }])).groups).toEqual({
+    expect(hasilBagian(keluarga({
+      ...kakek, M: { jenisKelamin: 'P' }, B1: { jenisKelamin: 'P', ...ANAK }, B2: { jenisKelamin: 'P', ...ANAK }, W1: { jenisKelamin: 'P' },
+      AK1: { jenisKelamin: 'L', ...KANDUNG },
+    }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }])).kelompokKelompok).toEqual({
       // Furudh 1/8 + 2/3 + 1/6 = 23/24 → sisa 1/24.
       W1: 'fardh 1/8', 'B1,B2': 'fardh 2/3', M: 'fardh 1/6', PGF: 'fardh 1/6', AK1: 'ashabah binNafsi',
     });
   });
 
   test('[R08-4] mu\'addah: saudara sebapak dihitung lalu bagiannya ke kandung', () => {
-    const { groups, trace } = shares(keluarga({ ...kakek, AK1: { sex: 'M', ...KANDUNG }, AB1: { sex: 'M', ...SEBAPAK } }));
-    expect(groups).toEqual({ PGF: 'fixed 1/3 muqasamah', 'AB1,AK1': 'ashabah binNafsi [AB1:0,AK1:1]' });
-    expect(trace).toContainEqual(expect.objectContaining({ kind: 'SPECIAL_CASE', name: 'muaddah' }));
+    const { kelompokKelompok, jejak } = hasilBagian(keluarga({ ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG }, AB1: { jenisKelamin: 'L', ...SEBAPAK } }));
+    expect(kelompokKelompok).toEqual({ PGF: 'fixed 1/3 muqasamah', 'AB1,AK1': 'ashabah binNafsi [AB1:0,AK1:1]' });
+    expect(jejak).toContainEqual(expect.objectContaining({ jenis: 'KASUS_KHUSUS', nama: 'muaddah' }));
   });
 
   test('[R08-4] mu\'addah, satu saudari kandung mengambil hingga 1/2, sisanya ke sebapak', () => {
     // Kakek, saudari kandung, saudara sebapak → 10: kakek 4, saudari 5, sebapak 1.
-    expect(shares(keluarga({ ...kakek, UK1: { sex: 'F', ...KANDUNG }, AB1: { sex: 'M', ...SEBAPAK } })).groups).toEqual({
+    expect(hasilBagian(keluarga({ ...kakek, UK1: { jenisKelamin: 'P', ...KANDUNG }, AB1: { jenisKelamin: 'L', ...SEBAPAK } })).kelompokKelompok).toEqual({
       PGF: 'fixed 2/5 muqasamah', UK1: 'fixed 1/2 muaddah', AB1: 'ashabah binNafsi',
     });
   });
 
-  test('kakek + saudari saja + anak pr → UNSUPPORTED (ma\'al ghair bersama kakek tidak dirinci KB)', () => {
-    expect(runHeirStages(keluarga({ ...kakek, B1: { sex: 'F', ...ANAK }, UK1: { sex: 'F', ...KANDUNG } })))
-      .toMatchObject({ status: 'UNSUPPORTED', refs: ['R08-3'] });
+  test('kakek + saudari saja + anak pr → TIDAK_DIDUKUNG (ma\'al ghair bersama kakek tidak dirinci KB)', () => {
+    expect(jalankanTahapAhliWaris(keluarga({ ...kakek, B1: { jenisKelamin: 'P', ...ANAK }, UK1: { jenisKelamin: 'P', ...KANDUNG } })))
+      .toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['R08-3'] });
   });
 });
 
-describe('tahap 2 — alasan fardh terstruktur (untuk packages/explain)', () => {
-  const reasonOf = (input: EngineInput, group: string) => {
-    const step = shares(input).trace.find(s => s.kind === 'FARDH' && s.group === group);
-    return step?.kind === 'FARDH' ? step.reason : undefined;
+describe('tahap 2 — alasan fardh terstruktur (untuk packages/jelaskan)', () => {
+  const reasonOf = (input: InputEngine, kelompok: string) => {
+    const step = hasilBagian(input).jejak.find(s => s.jenis === 'FARDH' && s.kelompok === kelompok);
+    return step?.jenis === 'FARDH' ? step.alasan : undefined;
   };
   const f = (n: bigint, d: bigint) => ({ n, d });
 
   test('pasangan dan ibu menyebut siapa penyebab nuqshan', () => {
-    expect(reasonOf(bab16.case10.input, 'ZAWJ')).toEqual({ code: 'ADA_FARU_WARITS', by: ['D1', 'GD1'] });
-    expect(reasonOf(bab16.case04.input, 'ZAWJ')).toEqual({ code: 'TANPA_FARU_WARITS' });
-    expect(reasonOf(bab16.case15.input, 'UMM')).toEqual({ code: 'JAM_IKHWAH', by: ['AK1', 'AK2'] });
-    expect(reasonOf(bab16.case04.input, 'UMM')).toEqual({ code: 'TANPA_FARU_WARITS_DAN_IKHWAH' });
-    expect(reasonOf(bab16.case02.input, 'UMM')).toEqual({ code: 'UMARIYYATAIN', spouseFardh: f(1n, 2n) });
+    expect(reasonOf(bab16.case10.input, 'SUAMI')).toEqual({ code: 'ADA_FARU_WARITS', oleh: ['D1', 'GD1'] });
+    expect(reasonOf(bab16.case04.input, 'SUAMI')).toEqual({ code: 'TANPA_FARU_WARITS' });
+    expect(reasonOf(bab16.case15.input, 'IBU')).toEqual({ code: 'JAM_IKHWAH', oleh: ['AK1', 'AK2'] });
+    expect(reasonOf(bab16.case04.input, 'IBU')).toEqual({ code: 'TANPA_FARU_WARITS_DAN_IKHWAH' });
+    expect(reasonOf(bab16.case02.input, 'IBU')).toEqual({ code: 'UMARIYYATAIN', fardhPasangan: f(1n, 2n) });
   });
 
   test('keturunan, saudari, anak ibu, ayah', () => {
-    expect(reasonOf(bab16.case06.input, 'BINT')).toEqual({ code: 'TANPA_MUASHSHIB', count: 2 });
-    expect(reasonOf(bab16.case08.input, 'BINT_IBN_2')).toEqual({ code: 'TAKMILAH', with: ['D1'] });
-    expect(reasonOf(bab16.case17b.input, 'UKHT_AB')).toEqual({ code: 'TAKMILAH', with: ['UK1'] });
-    expect(reasonOf(bab16.case05.input, 'UKHT_SYQ')).toEqual({ code: 'KALALAH', count: 2 });
-    expect(reasonOf(bab16.case11.input, 'AWLAD_UMM')).toEqual({ code: 'KALALAH', count: 2 });
-    expect(reasonOf(bab16.case20.input, 'AB')).toEqual({ code: 'ADA_FARU_MUDZAKKAR', by: ['S1'] });
-    expect(reasonOf(bab16.case21.input, 'AB')).toEqual({ code: 'ADA_FARU_MUANNATS', by: ['D1'] });
-    expect(reasonOf(bab16.case23.input, 'JADDAH')).toEqual({ code: 'NENEK_TANPA_IBU', count: 2 });
+    expect(reasonOf(bab16.case06.input, 'ANAK_PR')).toEqual({ code: 'TANPA_MUASHSHIB', banyaknya: 2 });
+    expect(reasonOf(bab16.case08.input, 'CUCU_PR_2')).toEqual({ code: 'TAKMILAH', with: ['D1'] });
+    expect(reasonOf(bab16.case17b.input, 'SAUDARI_SEBAPAK')).toEqual({ code: 'TAKMILAH', with: ['UK1'] });
+    expect(reasonOf(bab16.case05.input, 'SAUDARI_KANDUNG')).toEqual({ code: 'KALALAH', banyaknya: 2 });
+    expect(reasonOf(bab16.case11.input, 'AWLAD_UMM')).toEqual({ code: 'KALALAH', banyaknya: 2 });
+    expect(reasonOf(bab16.case20.input, 'AYAH')).toEqual({ code: 'ADA_FARU_MUDZAKKAR', oleh: ['S1'] });
+    expect(reasonOf(bab16.case21.input, 'AYAH')).toEqual({ code: 'ADA_FARU_MUANNATS', oleh: ['D1'] });
+    expect(reasonOf(bab16.case23.input, 'JADDAH')).toEqual({ code: 'NENEK_TANPA_IBU', banyaknya: 2 });
   });
 
   test('kasus khusus: pilihan kakek dicatat lengkap dengan pembandingnya', () => {
-    expect(reasonOf(bab16.case14.input, 'JADD')).toEqual({
+    expect(reasonOf(bab16.case14.input, 'KAKEK')).toEqual({
       code: 'JADD_WAL_IKHWAH',
       sisa: f(3n, 4n),
-      options: [
-        { name: 'muqasamah', value: f(3n, 16n) },
-        { name: 'tsulutsBaqi', value: f(1n, 4n) },
-        { name: 'sudus', value: f(1n, 6n) },
+      opsi: [
+        { nama: 'muqasamah', nilai: f(3n, 16n) },
+        { nama: 'tsulutsBaqi', nilai: f(1n, 4n) },
+        { nama: 'sudus', nilai: f(1n, 6n) },
       ],
-      chosen: 'tsulutsBaqi',
+      terpilih: 'tsulutsBaqi',
     });
     expect(reasonOf(bab16.case13.input, 'MUSYARRAKAH')).toEqual({ code: 'MUSYARRAKAH' });
   });
 
   test('muqasamah bersama tetap mencatat pembanding pilihan kakek', () => {
-    const step = shares(keluarga({ PGF: { sex: 'M' }, AK1: { sex: 'M', ...KANDUNG } })).trace
-      .find(s => s.kind === 'ASHABAH' && s.group === 'JADD_IKHWAH');
-    expect(step?.kind === 'ASHABAH' && step.jaddChoice).toEqual({
+    const step = hasilBagian(keluarga({ PGF: { jenisKelamin: 'L' }, AK1: { jenisKelamin: 'L', ...KANDUNG } })).jejak
+      .find(s => s.jenis === 'ASHABAH' && s.kelompok === 'JADD_IKHWAH');
+    expect(step?.jenis === 'ASHABAH' && step.pilihanJadd).toEqual({
       code: 'JADD_WAL_IKHWAH',
       sisa: f(1n, 1n),
-      options: [{ name: 'muqasamah', value: f(1n, 2n) }, { name: 'tsuluts', value: f(1n, 3n) }],
-      chosen: 'muqasamah',
+      opsi: [{ nama: 'muqasamah', nilai: f(1n, 2n) }, { nama: 'tsuluts', nilai: f(1n, 3n) }],
+      terpilih: 'muqasamah',
     });
   });
 });

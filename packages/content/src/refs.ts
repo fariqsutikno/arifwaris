@@ -39,7 +39,7 @@ export interface RefEntry extends ParsedRef {
 }
 
 const REF_TYPES: RefType[] = ['Q', 'H', 'A', 'IJ', 'RDH', 'KH'];
-const cells = (line: string) => line.split('|').slice(1, -1).map(cell => cell.trim());
+const sel = (line: string) => line.split('|').slice(1, -1).map(cell => cell.trim());
 
 /** Baris tabel di bagian "## Dasar dan Rujukan" sebuah bab (sampai heading `##` berikutnya). */
 export function parseRefs(markdown: string, bab: number): ParsedRef[] {
@@ -48,7 +48,7 @@ export function parseRefs(markdown: string, bab: number): ParsedRef[] {
   for (const line of markdown.split('\n')) {
     if (line.startsWith('## ')) inSection = line.startsWith('## Dasar dan Rujukan');
     if (!inSection || !/^\| R\d{2}-\d+ /.test(line)) continue;
-    const [code = '', claim = '', jenis = '', source = '', kutipan = ''] = cells(line);
+    const [code = '', claim = '', jenis = '', source = '', kutipan = ''] = sel(line);
     const types = jenis.split('+').map(t => t.trim().split(/[\s(]/)[0] as RefType).filter(t => REF_TYPES.includes(t));
     const arab = [...kutipan.matchAll(/«([^»]*)»/g)].map(m => m[1]!);
     refs.push({ code, bab, claim, jenis, types, source, kutipan, arab });
@@ -62,7 +62,7 @@ export function parseNeedsVerification(markdown: string): string[] {
   const codes: string[] = [];
   for (const line of markdown.split('\n')) {
     if (line.startsWith('## ')) inSection = line.startsWith('## 17.4');
-    if (inSection && /^\| R\d{2}-\d+ /.test(line)) codes.push(cells(line)[0]!);
+    if (inSection && /^\| R\d{2}-\d+ /.test(line)) codes.push(sel(line)[0]!);
   }
   return codes;
 }
@@ -100,8 +100,8 @@ export const AYAT: Ayat[] = parseAyat(bab01);
 
 /** Bagian Al-Qur'an di kolom Sumber (sebelum "·"): "An-Nisa' 11, 12, 176", "Al-Anfal 75; Al-Ahzab 6". */
 export function ayatRefs(source: string): Array<{ surah: string; ayat: number }> {
-  return source.split('·')[0]!.split(';').flatMap(part => {
-    const match = /^\s*([A-Z][A-Za-z'-]+)\s+([\d,\s]+?)\s*$/.exec(part);
+  return source.split('·')[0]!.split(';').flatMap(porsi => {
+    const match = /^\s*([A-Z][A-Za-z'-]+)\s+([\d,\s]+?)\s*$/.exec(porsi);
     return match ? match[2]!.split(',').map(n => ({ surah: match[1]!, ayat: Number(n.trim()) })) : [];
   });
 }

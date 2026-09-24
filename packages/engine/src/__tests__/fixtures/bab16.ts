@@ -4,21 +4,21 @@
  * Setiap kasus menguji invariant spesifik; lihat kolom "Menguji" di tabel KB bab 16.
  */
 
-import type { EngineInput, FamilyGraph, MadhhabConfig, Person } from '../../types.js';
+import type { InputEngine, GrafKeluarga, KonfigurasiMadzhab, Orang } from '../../types.js';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const KB_VERSION = '1.0.0-dev';
-const DEFAULT_CONFIG: MadhhabConfig = { residuePolicy: 'radd', talakBainInMaradh: 'qaulJadid' };
+const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = { kebijakanSisa: 'radd', talakBainSaatMaradh: 'qaulJadid' };
 
-/** Buat Person minimal (default: alive, islam, no parents). */
-export function p(id: string, sex: 'M' | 'F', overrides: Partial<Person> = {}): Person {
-  return { id, sex, life: 'alive', religion: 'islam', ...overrides };
+/** Buat Orang minimal (default: hidup, islam, no parents). */
+export function p(id: string, jenisKelamin: 'L' | 'P', overrides: Partial<Orang> = {}): Orang {
+  return { id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...overrides };
 }
 
 /** Buat input engine dengan tirkah default 0 (kasus tanpa nominal). */
-export function input(graph: FamilyGraph, config: MadhhabConfig = DEFAULT_CONFIG): EngineInput {
-  return { graph, tirkah: { gross: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, rounding: { unit: 1n }, config, ruleset: 'syafii', kbVersion: KB_VERSION };
+export function input(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab = KONFIGURASI_BAWAAN): InputEngine {
+  return { graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi, ruleset: 'syafii', versiKb: KB_VERSION };
 }
 
 // ─── Tipe fixture ─────────────────────────────────────────────────────────────
@@ -26,21 +26,21 @@ export function input(graph: FamilyGraph, config: MadhhabConfig = DEFAULT_CONFIG
 export interface ExpectedTable {
   /** ashlulMasalah setelah 'aul/radd/tashih. */
   finalAshl: bigint;
-  /** Saham per personId. */
+  /** Saham per idOrang. */
   saham: Record<string, bigint>;
-  /** personId yang terhijab atau mamnuu' (tidak dapat bagian). */
-  excluded?: string[];
+  /** idOrang yang terhijab atau mamnuu' (tidak dapat bagian). */
+  dikecualikan?: string[];
 }
 
 export interface Fixture {
   id: string;
   /** Label singkat dari kolom "Menguji" di KB bab 16. */
   menguji: string;
-  input: EngineInput;
+  input: InputEngine;
   expected:
-    | { status: 'OK'; table: ExpectedTable; traceKinds?: string[] }
-    | { status: 'NEEDS_INPUT'; questionFields: string[] }
-    | { status: 'UNSUPPORTED' };
+    | { status: 'OK'; tabel: ExpectedTable; traceKinds?: string[] }
+    | { status: 'PERLU_INPUT'; questionFields: string[] }
+    | { status: 'TIDAK_DIDUKUNG' };
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -54,19 +54,19 @@ export const case01: Fixture = {
   id: 'C16-01',
   menguji: 'Ashabah bil ghair + tashih tabayun',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead' }),
-      W1: p('W1', 'F'),
-      S1: p('S1', 'M', { fatherId: 'D', motherId: 'W1' }),
-      D1: p('D1', 'F', { fatherId: 'D', motherId: 'W1' }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat' }),
+      W1: p('W1', 'P'),
+      S1: p('S1', 'L', { idAyah: 'D', idIbu: 'W1' }),
+      D1: p('D1', 'P', { idAyah: 'D', idIbu: 'W1' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 24n, saham: { W1: 3n, S1: 14n, D1: 7n } },
-    traceKinds: ['TASHIH', 'NISAB_COMPARE'],
+    tabel: { finalAshl: 24n, saham: { W1: 3n, S1: 14n, D1: 7n } },
+    traceKinds: ['TASHIH', 'PERBANDINGAN_NISAB'],
   },
 };
 
@@ -77,19 +77,19 @@ export const case02: Fixture = {
   id: 'C16-02',
   menguji: "'Umariyyah (suami + 2 orang tua)",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1: p('H1', 'M'),
-      F1: p('F1', 'M'),
-      M1: p('M1', 'F'),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1: p('H1', 'L'),
+      F1: p('F1', 'L'),
+      M1: p('M1', 'P'),
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 6n, saham: { H1: 3n, M1: 1n, F1: 2n } },
-    traceKinds: ['SPECIAL_CASE'],
+    tabel: { finalAshl: 6n, saham: { H1: 3n, M1: 1n, F1: 2n } },
+    traceKinds: ['KASUS_KHUSUS'],
   },
 };
 
@@ -100,19 +100,19 @@ export const case03: Fixture = {
   id: 'C16-03',
   menguji: "'Umariyyah (istri + 2 orang tua)",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1: p('W1', 'F'),
-      F1: p('F1', 'M'),
-      M1: p('M1', 'F'),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1: p('W1', 'P'),
+      F1: p('F1', 'L'),
+      M1: p('M1', 'P'),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 4n, saham: { W1: 1n, M1: 1n, F1: 2n } },
-    traceKinds: ['SPECIAL_CASE'],
+    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 1n, F1: 2n } },
+    traceKinds: ['KASUS_KHUSUS'],
   },
 };
 
@@ -123,21 +123,21 @@ export const case04: Fixture = {
   id: 'C16-04',
   menguji: "Kakek ≠ ayah dalam 'Umariyyah",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
       // F1: ayah D sudah wafat, penghubung ke kakek
-      F1:  p('F1', 'M', { life: 'dead', fatherId: 'GF1', isPlaceholder: true }),
-      GF1: p('GF1', 'M'),  // kakek (JADD)
-      M1:  p('M1', 'F'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', idAyah: 'GF1', penghubung: true }),
+      GF1: p('GF1', 'L'),  // kakek (KAKEK)
+      M1:  p('M1', 'P'),
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Suami 1/2=3, ibu 1/3=2 (tanpa 'Umariyyah), kakek ashabah=1
-    table: { finalAshl: 6n, saham: { H1: 3n, M1: 2n, GF1: 1n } },
+    tabel: { finalAshl: 6n, saham: { H1: 3n, M1: 2n, GF1: 1n } },
   },
 };
 
@@ -148,21 +148,21 @@ export const case05: Fixture = {
   id: 'C16-05',
   menguji: "'Aul 6→7",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { life: 'dead', isPlaceholder: true }),
-      M1:  p('M1', 'F', { life: 'dead', isPlaceholder: true }),
-      UK1: p('UK1', 'F', { fatherId: 'F1', motherId: 'M1' }),
-      UK2: p('UK2', 'F', { fatherId: 'F1', motherId: 'M1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      M1:  p('M1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      UK1: p('UK1', 'P', { idAyah: 'F1', idIbu: 'M1' }),
+      UK2: p('UK2', 'P', { idAyah: 'F1', idIbu: 'M1' }),
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 7n, saham: { H1: 3n, UK1: 2n, UK2: 2n } },
-    traceKinds: ['AUL', 'MASALAH_CLASS'],
+    tabel: { finalAshl: 7n, saham: { H1: 3n, UK1: 2n, UK2: 2n } },
+    traceKinds: ['AUL', 'KELAS_MASALAH'],
   },
 };
 
@@ -173,20 +173,20 @@ export const case06: Fixture = {
   id: 'C16-06',
   menguji: "'Aul 24→27 / Minbariyyah",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1: p('W1', 'F'),
-      F1: p('F1', 'M'),
-      M1: p('M1', 'F'),
-      D1: p('D1', 'F', { fatherId: 'D', motherId: 'W1' }),
-      D2: p('D2', 'F', { fatherId: 'D', motherId: 'W1' }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1: p('W1', 'P'),
+      F1: p('F1', 'L'),
+      M1: p('M1', 'P'),
+      D1: p('D1', 'P', { idAyah: 'D', idIbu: 'W1' }),
+      D2: p('D2', 'P', { idAyah: 'D', idIbu: 'W1' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 27n, saham: { W1: 3n, F1: 4n, M1: 4n, D1: 8n, D2: 8n } },
+    tabel: { finalAshl: 27n, saham: { W1: 3n, F1: 4n, M1: 4n, D1: 8n, D2: 8n } },
     traceKinds: ['AUL'],
   },
 };
@@ -198,25 +198,25 @@ export const case07: Fixture = {
   id: 'C16-07',
   menguji: "'Aul 6→10 / Syuraihiyyah",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { life: 'dead', isPlaceholder: true }),
-      M1:  p('M1', 'F'),
-      // Saudari kandung: share F1 dan M1 dengan D
-      UK1: p('UK1', 'F', { fatherId: 'F1', motherId: 'M1' }),
-      UK2: p('UK2', 'F', { fatherId: 'F1', motherId: 'M1' }),
-      // Saudari seibu: share M1 saja (ayah berbeda)
-      UF1: p('UF1', 'M', { life: 'dead', isPlaceholder: true }), // ayah saudari seibu
-      UM1: p('UM1', 'F', { fatherId: 'UF1', motherId: 'M1' }),
-      UM2: p('UM2', 'F', { fatherId: 'UF1', motherId: 'M1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      M1:  p('M1', 'P'),
+      // Saudari kandung: bagian F1 dan M1 dengan D
+      UK1: p('UK1', 'P', { idAyah: 'F1', idIbu: 'M1' }),
+      UK2: p('UK2', 'P', { idAyah: 'F1', idIbu: 'M1' }),
+      // Saudari seibu: bagian M1 saja (ayah berbeda)
+      UF1: p('UF1', 'L', { statusHidup: 'wafat', penghubung: true }), // ayah saudari seibu
+      UM1: p('UM1', 'P', { idAyah: 'UF1', idIbu: 'M1' }),
+      UM2: p('UM2', 'P', { idAyah: 'UF1', idIbu: 'M1' }),
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 10n, saham: { H1: 3n, M1: 1n, UM1: 1n, UM2: 1n, UK1: 2n, UK2: 2n } },
+    tabel: { finalAshl: 10n, saham: { H1: 3n, M1: 1n, UM1: 1n, UM2: 1n, UK1: 2n, UK2: 2n } },
     traceKinds: ['AUL'],
   },
 };
@@ -228,25 +228,25 @@ export const case08: Fixture = {
   id: 'C16-08',
   menguji: 'Takmilah + ma\'al ghair',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'GF1', motherId: 'GM1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'GF1', idIbu: 'GM1' }),
       // Anak pr
-      D1:  p('D1', 'F', { fatherId: 'D' }),
+      D1:  p('D1', 'P', { idAyah: 'D' }),
       // Anak lk (wafat) — penghubung ke cucu pr
-      S1:  p('S1', 'M', { fatherId: 'D', life: 'dead', isPlaceholder: true }),
-      GD1: p('GD1', 'F', { fatherId: 'S1' }),  // cucu pr dari anak lk
-      // Saudari kandung (share orang tua dengan D)
-      GF1: p('GF1', 'M', { life: 'dead', isPlaceholder: true }),
-      GM1: p('GM1', 'F', { life: 'dead', isPlaceholder: true }),
-      UK1: p('UK1', 'F', { fatherId: 'GF1', motherId: 'GM1' }),
+      S1:  p('S1', 'L', { idAyah: 'D', statusHidup: 'wafat', penghubung: true }),
+      GD1: p('GD1', 'P', { idAyah: 'S1' }),  // cucu pr dari anak lk
+      // Saudari kandung (bagian orang tua dengan D)
+      GF1: p('GF1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      GM1: p('GM1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      UK1: p('UK1', 'P', { idAyah: 'GF1', idIbu: 'GM1' }),
     },
-    marriages: [],
+    pernikahan: [],
   }),
   expected: {
     status: 'OK',
     // Anak pr 1/2=3, cucu pr takmilah 1/6=1, saudari kandung ma'al ghair=2
-    table: { finalAshl: 6n, saham: { D1: 3n, GD1: 1n, UK1: 2n } },
+    tabel: { finalAshl: 6n, saham: { D1: 3n, GD1: 1n, UK1: 2n } },
     traceKinds: ['ASHABAH', 'FARDH'],
   },
 };
@@ -258,19 +258,19 @@ export const case09: Fixture = {
   id: 'C16-09',
   menguji: 'Radd tanpa pasangan (raddA)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', motherId: 'M1' }),
-      D1: p('D1', 'F', { fatherId: 'D' }),
-      M1: p('M1', 'F'),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idIbu: 'M1' }),
+      D1: p('D1', 'P', { idAyah: 'D' }),
+      M1: p('M1', 'P'),
     },
-    marriages: [],
+    pernikahan: [],
   }),
   expected: {
     status: 'OK',
     // Anak pr 3/4, ibu 1/4 setelah radd; ashl final=4
-    table: { finalAshl: 4n, saham: { D1: 3n, M1: 1n } },
-    traceKinds: ['MASALAH_CLASS', 'NISAB_COMPARE'],
+    tabel: { finalAshl: 4n, saham: { D1: 3n, M1: 1n } },
+    traceKinds: ['KELAS_MASALAH', 'PERBANDINGAN_NISAB'],
   },
 };
 
@@ -281,21 +281,21 @@ export const case10: Fixture = {
   id: 'C16-10',
   menguji: 'Radd dengan pasangan — tabayun (raddB)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead' }),
-      H1:  p('H1', 'M'),
-      D1:  p('D1', 'F', { fatherId: 'H1', motherId: 'D' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat' }),
+      H1:  p('H1', 'L'),
+      D1:  p('D1', 'P', { idAyah: 'H1', idIbu: 'D' }),
       // Anak lk wafat — penghubung ke cucu pr
-      S1:  p('S1', 'M', { fatherId: 'H1', motherId: 'D', life: 'dead', isPlaceholder: true }),
-      GD1: p('GD1', 'F', { fatherId: 'S1' }),
+      S1:  p('S1', 'L', { idAyah: 'H1', idIbu: 'D', statusHidup: 'wafat', penghubung: true }),
+      GD1: p('GD1', 'P', { idAyah: 'S1' }),
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 16n, saham: { H1: 4n, D1: 9n, GD1: 3n } },
-    traceKinds: ['MASALAH_CLASS', 'NISAB_COMPARE'],
+    tabel: { finalAshl: 16n, saham: { H1: 4n, D1: 9n, GD1: 3n } },
+    traceKinds: ['KELAS_MASALAH', 'PERBANDINGAN_NISAB'],
   },
 };
 
@@ -306,22 +306,22 @@ export const case11: Fixture = {
   id: 'C16-11',
   menguji: 'Radd dengan pasangan — habis (raddB tamatsul)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', motherId: 'M1' }),
-      W1:  p('W1', 'F'),
-      M1:  p('M1', 'F'),
-      // Saudara seibu: share M1 saja
-      UF1: p('UF1', 'M', { life: 'dead', isPlaceholder: true }),
-      US1: p('US1', 'M', { fatherId: 'UF1', motherId: 'M1' }),
-      US2: p('US2', 'M', { fatherId: 'UF1', motherId: 'M1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idIbu: 'M1' }),
+      W1:  p('W1', 'P'),
+      M1:  p('M1', 'P'),
+      // Saudara seibu: bagian M1 saja
+      UF1: p('UF1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      US1: p('US1', 'L', { idAyah: 'UF1', idIbu: 'M1' }),
+      US2: p('US2', 'L', { idAyah: 'UF1', idIbu: 'M1' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
-    table: { finalAshl: 4n, saham: { W1: 1n, M1: 1n, US1: 1n, US2: 1n } },
-    traceKinds: ['MASALAH_CLASS'],
+    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 1n, US1: 1n, US2: 1n } },
+    traceKinds: ['KELAS_MASALAH'],
   },
 };
 
@@ -332,22 +332,22 @@ export const case12: Fixture = {
   id: 'C16-12',
   menguji: 'Akdariyyah',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { life: 'dead', fatherId: 'GF1', isPlaceholder: true }),
-      GF1: p('GF1', 'M'),  // kakek
-      M1:  p('M1', 'F'),
-      UK1: p('UK1', 'F', { fatherId: 'F1', motherId: 'M1' }),  // saudari kandung
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', idAyah: 'GF1', penghubung: true }),
+      GF1: p('GF1', 'L'),  // kakek
+      M1:  p('M1', 'P'),
+      UK1: p('UK1', 'P', { idAyah: 'F1', idIbu: 'M1' }),  // saudari kandung
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // [R16-2]: suami 9, ibu 6, saudari 4, kakek 8 (dari ashl 27)
-    table: { finalAshl: 27n, saham: { H1: 9n, M1: 6n, UK1: 4n, GF1: 8n } },
-    traceKinds: ['SPECIAL_CASE'],
+    tabel: { finalAshl: 27n, saham: { H1: 9n, M1: 6n, UK1: 4n, GF1: 8n } },
+    traceKinds: ['KASUS_KHUSUS'],
   },
 };
 
@@ -358,26 +358,26 @@ export const case13: Fixture = {
   id: 'C16-13',
   menguji: 'Musyarrakah (tasyrik default)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { life: 'dead', isPlaceholder: true }),
-      M1:  p('M1', 'F'),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      M1:  p('M1', 'P'),
       // Saudara seibu (2)
-      UF1: p('UF1', 'M', { life: 'dead', isPlaceholder: true }),
-      US1: p('US1', 'M', { fatherId: 'UF1', motherId: 'M1' }),
-      US2: p('US2', 'M', { fatherId: 'UF1', motherId: 'M1' }),
-      // Saudara kandung (1): share F1 dan M1
-      AK1: p('AK1', 'M', { fatherId: 'F1', motherId: 'M1' }),
+      UF1: p('UF1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      US1: p('US1', 'L', { idAyah: 'UF1', idIbu: 'M1' }),
+      US2: p('US2', 'L', { idAyah: 'UF1', idIbu: 'M1' }),
+      // Saudara kandung (1): bagian F1 dan M1
+      AK1: p('AK1', 'L', { idAyah: 'F1', idIbu: 'M1' }),
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Ashl 6→18; suami 9, ibu 3, tiap saudara (3 orang) 2
-    table: { finalAshl: 18n, saham: { H1: 9n, M1: 3n, US1: 2n, US2: 2n, AK1: 2n } },
-    traceKinds: ['SPECIAL_CASE', 'TASHIH'],
+    tabel: { finalAshl: 18n, saham: { H1: 9n, M1: 3n, US1: 2n, US2: 2n, AK1: 2n } },
+    traceKinds: ['KASUS_KHUSUS', 'TASHIH'],
   },
 };
 
@@ -388,24 +388,24 @@ export const case14: Fixture = {
   id: 'C16-14',
   menguji: 'Jadd wal ikhwah — muqasamah jumhur',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1:  p('W1', 'F'),
-      F1:  p('F1', 'M', { life: 'dead', fatherId: 'GF1', isPlaceholder: true }),
-      GF1: p('GF1', 'M'),  // kakek
-      M1:  p('M1', 'F', { life: 'dead', isPlaceholder: true }),
-      AK1: p('AK1', 'M', { fatherId: 'F1', motherId: 'M1' }),
-      AK2: p('AK2', 'M', { fatherId: 'F1', motherId: 'M1' }),
-      AK3: p('AK3', 'M', { fatherId: 'F1', motherId: 'M1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1:  p('W1', 'P'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', idAyah: 'GF1', penghubung: true }),
+      GF1: p('GF1', 'L'),  // kakek
+      M1:  p('M1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      AK1: p('AK1', 'L', { idAyah: 'F1', idIbu: 'M1' }),
+      AK2: p('AK2', 'L', { idAyah: 'F1', idIbu: 'M1' }),
+      AK3: p('AK3', 'L', { idAyah: 'F1', idIbu: 'M1' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Istri 1/4=3, kakek 1/3 sisa = 3, 3 saudara = 6 (2 each); ashl 12
-    table: { finalAshl: 12n, saham: { W1: 3n, GF1: 3n, AK1: 2n, AK2: 2n, AK3: 2n } },
-    traceKinds: ['NISAB_COMPARE'],
+    tabel: { finalAshl: 12n, saham: { W1: 3n, GF1: 3n, AK1: 2n, AK2: 2n, AK3: 2n } },
+    traceKinds: ['PERBANDINGAN_NISAB'],
   },
 };
 
@@ -416,20 +416,20 @@ export const case15: Fixture = {
   id: 'C16-15',
   menguji: 'Mahjub tetap menghajb nuqshan ibu',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      F1:  p('F1', 'M'),
-      M1:  p('M1', 'F'),
-      AK1: p('AK1', 'M', { fatherId: 'F1', motherId: 'M1' }),
-      AK2: p('AK2', 'M', { fatherId: 'F1', motherId: 'M1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      F1:  p('F1', 'L'),
+      M1:  p('M1', 'P'),
+      AK1: p('AK1', 'L', { idAyah: 'F1', idIbu: 'M1' }),
+      AK2: p('AK2', 'L', { idAyah: 'F1', idIbu: 'M1' }),
     },
-    marriages: [],
+    pernikahan: [],
   }),
   expected: {
     status: 'OK',
     // Ibu 1/6=1, ayah ashabah=5; saudara mahjub hirman
-    table: { finalAshl: 6n, saham: { F1: 5n, M1: 1n }, excluded: ['AK1', 'AK2'] },
+    tabel: { finalAshl: 6n, saham: { F1: 5n, M1: 1n }, dikecualikan: ['AK1', 'AK2'] },
     traceKinds: ['HAJB_HIRMAN', 'HAJB_NUQSHAN'],
   },
 };
@@ -441,30 +441,30 @@ export const case16: Fixture = {
   id: 'C16-16',
   menguji: 'Regresi hajb: anak lk + ayah menghijab semua lk lain',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { fatherId: 'GF1', motherId: 'GM1' }),
-      M1:  p('M1', 'F', { life: 'dead', isPlaceholder: true }),
-      S1:  p('S1', 'M', { fatherId: 'H1', motherId: 'D' }),   // anak lk
-      GF1: p('GF1', 'M'),                                     // kakek — mahjub oleh ayah
-      GM1: p('GM1', 'F', { life: 'dead', isPlaceholder: true }),
-      GS1: p('GS1', 'M', { fatherId: 'S1' }),                 // cucu lk — mahjub oleh anak lk
-      AK1: p('AK1', 'M', { fatherId: 'F1', motherId: 'M1' }), // saudara lk kandung
-      IA1: p('IA1', 'M', { fatherId: 'AK1' }),                // anak saudara lk kandung
-      AM1: p('AM1', 'M', { fatherId: 'GF1', motherId: 'GM1' }), // paman kandung
-      IM1: p('IM1', 'M', { fatherId: 'AM1' }),                // anak paman kandung
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { idAyah: 'GF1', idIbu: 'GM1' }),
+      M1:  p('M1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      S1:  p('S1', 'L', { idAyah: 'H1', idIbu: 'D' }),   // anak lk
+      GF1: p('GF1', 'L'),                                     // kakek — mahjub oleh ayah
+      GM1: p('GM1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      GS1: p('GS1', 'L', { idAyah: 'S1' }),                 // cucu lk — mahjub oleh anak lk
+      AK1: p('AK1', 'L', { idAyah: 'F1', idIbu: 'M1' }), // saudara lk kandung
+      IA1: p('IA1', 'L', { idAyah: 'AK1' }),                // anak saudara lk kandung
+      AM1: p('AM1', 'L', { idAyah: 'GF1', idIbu: 'GM1' }), // paman kandung
+      IM1: p('IM1', 'L', { idAyah: 'AM1' }),                // anak paman kandung
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Suami 1/4=3, ayah 1/6=2, anak lk ashabah=7; ashl 12
-    table: {
+    tabel: {
       finalAshl: 12n,
       saham: { H1: 3n, F1: 2n, S1: 7n },
-      excluded: ['GF1', 'GS1', 'AK1', 'IA1', 'AM1', 'IM1'],
+      dikecualikan: ['GF1', 'GS1', 'AK1', 'IA1', 'AM1', 'IM1'],
     },
     traceKinds: ['HAJB_HIRMAN'],
   },
@@ -477,25 +477,25 @@ export const case17: Fixture = {
   id: 'C16-17',
   menguji: 'Qarib masy\'um — ashabah sebapak habis karena \'aul',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { life: 'dead', isPlaceholder: true }),
-      M1:  p('M1', 'F'),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      M1:  p('M1', 'P'),
       // Ibu D = M1 (sudah di atas)
-      UK1: p('UK1', 'F', { fatherId: 'F1', motherId: 'M1' }),  // saudari kandung
-      // Saudara/saudari sebapak: share F1 saja
-      GM1: p('GM1', 'F', { life: 'dead', isPlaceholder: true }),  // ibu saudara sebapak
-      AB1: p('AB1', 'M', { fatherId: 'F1', motherId: 'GM1' }),    // saudara lk sebapak
-      UB1: p('UB1', 'F', { fatherId: 'F1', motherId: 'GM1' }),    // saudari sebapak
+      UK1: p('UK1', 'P', { idAyah: 'F1', idIbu: 'M1' }),  // saudari kandung
+      // Saudara/saudari sebapak: bagian F1 saja
+      GM1: p('GM1', 'P', { statusHidup: 'wafat', penghubung: true }),  // ibu saudara sebapak
+      AB1: p('AB1', 'L', { idAyah: 'F1', idIbu: 'GM1' }),    // saudara lk sebapak
+      UB1: p('UB1', 'P', { idAyah: 'F1', idIbu: 'GM1' }),    // saudari sebapak
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Sebapak lk+pr = ashabah bil ghair, bukan mahjub; sisa habis karena 'aul → 0.
-    table: { finalAshl: 7n, saham: { H1: 3n, M1: 1n, UK1: 3n, AB1: 0n, UB1: 0n } },
+    tabel: { finalAshl: 7n, saham: { H1: 3n, M1: 1n, UK1: 3n, AB1: 0n, UB1: 0n } },
     traceKinds: ['AUL'],
   },
 };
@@ -507,22 +507,22 @@ export const case17b: Fixture = {
   id: 'C16-17b',
   menguji: 'Saudari sebapak takmilah (tanpa saudara sebapak)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'F', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      H1:  p('H1', 'M'),
-      F1:  p('F1', 'M', { life: 'dead', isPlaceholder: true }),
-      M1:  p('M1', 'F'),
-      UK1: p('UK1', 'F', { fatherId: 'F1', motherId: 'M1' }),   // saudari kandung
-      GM1: p('GM1', 'F', { life: 'dead', isPlaceholder: true }),
-      UB1: p('UB1', 'F', { fatherId: 'F1', motherId: 'GM1' }),  // saudari sebapak
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'P', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      H1:  p('H1', 'L'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      M1:  p('M1', 'P'),
+      UK1: p('UK1', 'P', { idAyah: 'F1', idIbu: 'M1' }),   // saudari kandung
+      GM1: p('GM1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      UB1: p('UB1', 'P', { idAyah: 'F1', idIbu: 'GM1' }),  // saudari sebapak
     },
-    marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Suami 3, ibu 1, saudari kandung 3, saudari sebapak 1 (takmilah); ashl 8
-    table: { finalAshl: 8n, saham: { H1: 3n, M1: 1n, UK1: 3n, UB1: 1n } },
+    tabel: { finalAshl: 8n, saham: { H1: 3n, M1: 1n, UK1: 3n, UB1: 1n } },
     traceKinds: ['AUL'],
   },
 };
@@ -534,25 +534,25 @@ export const case18: Fixture = {
   id: 'C16-18',
   menguji: "Qarib mubarak — cicit lk membuka takmilah cucu pr",
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:    p('D', 'M', { life: 'dead' }),
+    idPewaris: 'D',
+    orang: {
+      D:    p('D', 'L', { statusHidup: 'wafat' }),
       // 2 anak pr
-      D1:   p('D1', 'F', { fatherId: 'D' }),
-      D2:   p('D2', 'F', { fatherId: 'D' }),
+      D1:   p('D1', 'P', { idAyah: 'D' }),
+      D2:   p('D2', 'P', { idAyah: 'D' }),
       // Cucu pr (dari anak lk yang wafat)
-      S1:   p('S1', 'M', { fatherId: 'D', life: 'dead', isPlaceholder: true }),
-      GD1:  p('GD1', 'F', { fatherId: 'S1' }),
+      S1:   p('S1', 'L', { idAyah: 'D', statusHidup: 'wafat', penghubung: true }),
+      GD1:  p('GD1', 'P', { idAyah: 'S1' }),
       // Cicit lk (anak lk dari cucu lk yang wafat)
-      GS1:  p('GS1', 'M', { fatherId: 'S1', life: 'dead', isPlaceholder: true }),
-      GGS1: p('GGS1', 'M', { fatherId: 'GS1' }),
+      GS1:  p('GS1', 'L', { idAyah: 'S1', statusHidup: 'wafat', penghubung: true }),
+      GGS1: p('GGS1', 'L', { idAyah: 'GS1' }),
     },
-    marriages: [],
+    pernikahan: [],
   }),
   expected: {
     status: 'OK',
     // Anak pr 6 (3+3), cucu pr 1, cicit lk 2; ashl 9
-    table: { finalAshl: 9n, saham: { D1: 3n, D2: 3n, GD1: 1n, GGS1: 2n } },
+    tabel: { finalAshl: 9n, saham: { D1: 3n, D2: 3n, GD1: 1n, GGS1: 2n } },
     traceKinds: ['TASHIH'],
   },
 };
@@ -564,27 +564,27 @@ export const case19: Fixture = {
   id: 'C16-19',
   menguji: 'Urutan jihah: ukhuwwah sebelum umumah',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1:  p('W1', 'F'),
-      F1:  p('F1', 'M', { life: 'dead', fatherId: 'GF1', motherId: 'GM2', isPlaceholder: true }),
-      M1:  p('M1', 'F', { life: 'dead', isPlaceholder: true }),
-      D1:  p('D1', 'F', { fatherId: 'D' }),    // anak pr
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1:  p('W1', 'P'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', idAyah: 'GF1', idIbu: 'GM2', penghubung: true }),
+      M1:  p('M1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      D1:  p('D1', 'P', { idAyah: 'D' }),    // anak pr
       // Saudara lk sebapak
-      GM1: p('GM1', 'F', { life: 'dead', isPlaceholder: true }),
-      AB1: p('AB1', 'M', { fatherId: 'F1', motherId: 'GM1' }),
+      GM1: p('GM1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      AB1: p('AB1', 'L', { idAyah: 'F1', idIbu: 'GM1' }),
       // Paman kandung (saudara lk ayah, berbagi kakek GF1)
-      GF1: p('GF1', 'M', { life: 'dead', isPlaceholder: true }),
-      GM2: p('GM2', 'F', { life: 'dead', isPlaceholder: true }),
-      AM1: p('AM1', 'M', { fatherId: 'GF1', motherId: 'GM2' }),  // paman
+      GF1: p('GF1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      GM2: p('GM2', 'P', { statusHidup: 'wafat', penghubung: true }),
+      AM1: p('AM1', 'L', { idAyah: 'GF1', idIbu: 'GM2' }),  // paman
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Istri 1, anak pr 4, saudara sebapak 3, paman 0
-    table: { finalAshl: 8n, saham: { W1: 1n, D1: 4n, AB1: 3n }, excluded: ['AM1'] },
+    tabel: { finalAshl: 8n, saham: { W1: 1n, D1: 4n, AB1: 3n }, dikecualikan: ['AM1'] },
     traceKinds: ['HAJB_HIRMAN'],
   },
 };
@@ -596,20 +596,20 @@ export const case20: Fixture = {
   id: 'C16-20',
   menguji: 'Ayah fardh saja (ada anak lk)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1: p('W1', 'F'),
-      F1: p('F1', 'M'),
-      M1: p('M1', 'F'),
-      S1: p('S1', 'M', { fatherId: 'D', motherId: 'W1' }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1: p('W1', 'P'),
+      F1: p('F1', 'L'),
+      M1: p('M1', 'P'),
+      S1: p('S1', 'L', { idAyah: 'D', idIbu: 'W1' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Istri 1/8=3, ayah 1/6=4, ibu 1/6=4, anak lk ashabah=13; ashl 24
-    table: { finalAshl: 24n, saham: { W1: 3n, F1: 4n, M1: 4n, S1: 13n } },
+    tabel: { finalAshl: 24n, saham: { W1: 3n, F1: 4n, M1: 4n, S1: 13n } },
   },
 };
 
@@ -620,20 +620,20 @@ export const case21: Fixture = {
   id: 'C16-21',
   menguji: 'Ayah fardh + ashabah (ada anak pr saja)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1: p('W1', 'F'),
-      F1: p('F1', 'M'),
-      M1: p('M1', 'F'),
-      D1: p('D1', 'F', { fatherId: 'D', motherId: 'W1' }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1: p('W1', 'P'),
+      F1: p('F1', 'L'),
+      M1: p('M1', 'P'),
+      D1: p('D1', 'P', { idAyah: 'D', idIbu: 'W1' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // Istri 1/8=3, anak pr 1/2=12, ibu 1/6=4, ayah 1/6=4+sisa1=5; ashl 24
-    table: { finalAshl: 24n, saham: { W1: 3n, D1: 12n, M1: 4n, F1: 5n } },
+    tabel: { finalAshl: 24n, saham: { W1: 3n, D1: 12n, M1: 4n, F1: 5n } },
   },
 };
 
@@ -644,31 +644,31 @@ export const case22: Fixture = {
   id: 'C16-22',
   menguji: 'Tashih inkisar 1 kelompok',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      W1:  p('W1', 'F'),
-      W2:  p('W2', 'F'),
-      W3:  p('W3', 'F'),
-      W4:  p('W4', 'F'),
-      F1:  p('F1', 'M', { life: 'dead', isPlaceholder: true }),
-      M1:  p('M1', 'F', { life: 'dead', isPlaceholder: true }),
-      AK1: p('AK1', 'M', { fatherId: 'F1', motherId: 'M1' }),
-      AK2: p('AK2', 'M', { fatherId: 'F1', motherId: 'M1' }),
-      AK3: p('AK3', 'M', { fatherId: 'F1', motherId: 'M1' }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      W1:  p('W1', 'P'),
+      W2:  p('W2', 'P'),
+      W3:  p('W3', 'P'),
+      W4:  p('W4', 'P'),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      M1:  p('M1', 'P', { statusHidup: 'wafat', penghubung: true }),
+      AK1: p('AK1', 'L', { idAyah: 'F1', idIbu: 'M1' }),
+      AK2: p('AK2', 'L', { idAyah: 'F1', idIbu: 'M1' }),
+      AK3: p('AK3', 'L', { idAyah: 'F1', idIbu: 'M1' }),
     },
-    marriages: [
-      { husbandId: 'D', wifeId: 'W1', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W2', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W3', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W4', status: 'intact' },
+    pernikahan: [
+      { idSuami: 'D', idIstri: 'W1', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W2', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W3', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W4', status: 'utuh' },
     ],
   }),
   expected: {
     status: 'OK',
     // 4 istri berbagi 1/4 → 1 saham masing-masing; saudara 3 berbagi sisa=3 saham tiap 1.
     // Ashl 4, tashih: istri 4 ru'us → tabayun dg 1 → ×4=16. Saudara 4 each.
-    table: { finalAshl: 16n, saham: { W1: 1n, W2: 1n, W3: 1n, W4: 1n, AK1: 4n, AK2: 4n, AK3: 4n } },
+    tabel: { finalAshl: 16n, saham: { W1: 1n, W2: 1n, W3: 1n, W4: 1n, AK1: 4n, AK2: 4n, AK3: 4n } },
     traceKinds: ['TASHIH'],
   },
 };
@@ -680,56 +680,56 @@ export const case23: Fixture = {
   id: 'C16-23',
   menguji: 'Tashih inkisar 2 kelompok',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      F1:  p('F1', 'M', { life: 'dead', fatherId: 'GF1', motherId: 'GM1', isPlaceholder: true }),
-      M1:  p('M1', 'F', { life: 'dead', fatherId: 'GF2', motherId: 'GM2', isPlaceholder: true }),
-      GM1: p('GM1', 'F'),  // nenek dari pihak ayah (JADDAH_AB)
-      GM2: p('GM2', 'F'),  // nenek dari pihak ibu (JADDAH_UMM)
-      GF1: p('GF1', 'M', { life: 'dead', isPlaceholder: true }),
-      GF2: p('GF2', 'M', { life: 'dead', isPlaceholder: true }),
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', idAyah: 'GF1', idIbu: 'GM1', penghubung: true }),
+      M1:  p('M1', 'P', { statusHidup: 'wafat', idAyah: 'GF2', idIbu: 'GM2', penghubung: true }),
+      GM1: p('GM1', 'P'),  // nenek dari pihak ayah (NENEK_DARI_AYAH)
+      GM2: p('GM2', 'P'),  // nenek dari pihak ibu (NENEK_DARI_IBU)
+      GF1: p('GF1', 'L', { statusHidup: 'wafat', penghubung: true }),
+      GF2: p('GF2', 'L', { statusHidup: 'wafat', penghubung: true }),
       // Saudara lk sebapak
-      GM3: p('GM3', 'F', { life: 'dead', isPlaceholder: true }),
-      AB1: p('AB1', 'M', { fatherId: 'F1', motherId: 'GM3' }),
-      AB2: p('AB2', 'M', { fatherId: 'F1', motherId: 'GM3' }),
-      AB3: p('AB3', 'M', { fatherId: 'F1', motherId: 'GM3' }),
+      GM3: p('GM3', 'P', { statusHidup: 'wafat', penghubung: true }),
+      AB1: p('AB1', 'L', { idAyah: 'F1', idIbu: 'GM3' }),
+      AB2: p('AB2', 'L', { idAyah: 'F1', idIbu: 'GM3' }),
+      AB3: p('AB3', 'L', { idAyah: 'F1', idIbu: 'GM3' }),
     },
-    marriages: [],
+    pernikahan: [],
   }),
   expected: {
     status: 'OK',
     // Nenek 1/6 bersama=1 saham, saudara ashabah=5. Tashih: nenek 2 orang (tabayun dg 1)→×2=12.
     // Saudara 3 orang (tabayun dg 5)→×3. Gabung: juz'=6. Ashl=6×6=36.
     // Nenek tiap 3; saudara tiap 10.
-    table: { finalAshl: 36n, saham: { GM1: 3n, GM2: 3n, AB1: 10n, AB2: 10n, AB3: 10n } },
-    traceKinds: ['TASHIH', 'NISAB_COMPARE'],
+    tabel: { finalAshl: 36n, saham: { GM1: 3n, GM2: 3n, AB1: 10n, AB2: 10n, AB3: 10n } },
+    traceKinds: ['TASHIH', 'PERBANDINGAN_NISAB'],
   },
 };
 
 // ─── Case 24: Dzawil arham — tanzil ──────────────────────────────────────────
 // Khalah, 'ammah (tanpa ahli waris lain); Ashl 3
-// Menguji: Dzawil arham tanzil (fase 3) — UNSUPPORTED di fase 1 [R14-1]
+// Menguji: Dzawil arham tanzil (fase 3) — TIDAK_DIDUKUNG di fase 1 [R14-1]
 export const case24: Fixture = {
   id: 'C16-24',
-  menguji: 'Dzawil arham tanzil — UNSUPPORTED fase 1',
+  menguji: 'Dzawil arham tanzil — TIDAK_DIDUKUNG fase 1',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:   p('D', 'M', { life: 'dead', fatherId: 'F1', motherId: 'M1' }),
-      F1:  p('F1', 'M', { life: 'dead', fatherId: 'PGF', motherId: 'PGM', isPlaceholder: true }),
-      M1:  p('M1', 'F', { life: 'dead', fatherId: 'MGF', motherId: 'MGM', isPlaceholder: true }),
-      PGF: p('PGF', 'M', { life: 'dead', isPlaceholder: true }),
-      PGM: p('PGM', 'F', { life: 'dead', isPlaceholder: true }),
-      MGF: p('MGF', 'M', { life: 'dead', isPlaceholder: true }),
-      MGM: p('MGM', 'F', { life: 'dead', isPlaceholder: true }),
-      KL1: p('KL1', 'F', { fatherId: 'MGF', motherId: 'MGM' }),  // khalah: saudari kandung ibu
-      AM1: p('AM1', 'F', { fatherId: 'PGF', motherId: 'PGM' }),  // 'ammah: saudari kandung ayah
+    idPewaris: 'D',
+    orang: {
+      D:   p('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+      F1:  p('F1', 'L', { statusHidup: 'wafat', idAyah: 'PGF', idIbu: 'PGM', penghubung: true }),
+      M1:  p('M1', 'P', { statusHidup: 'wafat', idAyah: 'MGF', idIbu: 'MGM', penghubung: true }),
+      PGF: p('PGF', 'L', { statusHidup: 'wafat', penghubung: true }),
+      PGM: p('PGM', 'P', { statusHidup: 'wafat', penghubung: true }),
+      MGF: p('MGF', 'L', { statusHidup: 'wafat', penghubung: true }),
+      MGM: p('MGM', 'P', { statusHidup: 'wafat', penghubung: true }),
+      KL1: p('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }),  // khalah: saudari kandung ibu
+      AM1: p('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),  // 'ammah: saudari kandung ayah
     },
-    marriages: [],
+    pernikahan: [],
   }),
   // [R14-1] Fase 3. Target kelak: ashl 3, khalah 1 ('ammah 2).
-  expected: { status: 'UNSUPPORTED' },
+  expected: { status: 'TIDAK_DIDUKUNG' },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════
@@ -740,41 +740,41 @@ export const case24: Fixture = {
  * Tirkah Rp 150.000.000; tajhiz Rp 5.000.000; hutang Rp 25.000.000;
  * wasiat Rp 50.000.000 → dipotong jadi 40.000.000 (1/3 dari 120.000.000).
  * Tirkah bersih = 80.000.000. Ahli waris: case 1 (istri, anak lk, anak pr).
- * unit 1 → selisih pembulatan 1 (floor per orang, engine-contract Tahap 6). KB menulis anak lk
- * 46.666.667 — disepakati floor; KB perlu dikoreksi. Variasi unit diuji di regression.test.ts.
+ * satuan 1 → selisih pembulatan 1 (floor per orang, engine-contract Tahap 6). KB menulis anak lk
+ * 46.666.667 — disepakati floor; KB perlu dikoreksi. Variasi satuan diuji di regression.test.ts.
  */
 export const caseNominal: Fixture = {
   id: 'C16-NOM',
   menguji: 'Nominal + potongan wasiat + selisih pembulatan',
   input: {
-    graph: {
-      deceasedId: 'D',
-      persons: {
-        D:  p('D', 'M', { life: 'dead' }),
-        W1: p('W1', 'F'),
-        S1: p('S1', 'M', { fatherId: 'D', motherId: 'W1' }),
-        D1: p('D1', 'F', { fatherId: 'D', motherId: 'W1' }),
+    graf: {
+      idPewaris: 'D',
+      orang: {
+        D:  p('D', 'L', { statusHidup: 'wafat' }),
+        W1: p('W1', 'P'),
+        S1: p('S1', 'L', { idAyah: 'D', idIbu: 'W1' }),
+        D1: p('D1', 'P', { idAyah: 'D', idIbu: 'W1' }),
       },
-      marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+      pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
     },
     tirkah: {
-      gross:   150_000_000n,
+      kotor:   150_000_000n,
       tajhiz:    5_000_000n,
       hutang:   25_000_000n,
       wasiat:   50_000_000n,  // dipotong jadi 40.000.000
     },
-    rounding: { unit: 1n },
-    config: DEFAULT_CONFIG,
+    pembulatan: { satuan: 1n },
+    konfigurasi: KONFIGURASI_BAWAAN,
     ruleset: 'syafii',
-    kbVersion: KB_VERSION,
+    versiKb: KB_VERSION,
   },
   expected: {
     status: 'OK',
-    table: {
+    tabel: {
       finalAshl: 24n,
       saham: { W1: 3n, S1: 14n, D1: 7n },
     },
-    traceKinds: ['DISTRIBUTE'],
+    traceKinds: ['DISTRIBUSI'],
   },
 };
 
@@ -787,21 +787,21 @@ export const caseNeg1: Fixture = {
   id: 'C16-NEG1',
   menguji: 'Ahli waris non-muslim → mamnu, tidak menghijab',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', motherId: 'M1' }),
-      W1: p('W1', 'F'),
-      M1: p('M1', 'F'),
-      D1: p('D1', 'F', { fatherId: 'D', motherId: 'W1', religion: 'nonIslam' }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idIbu: 'M1' }),
+      W1: p('W1', 'P'),
+      M1: p('M1', 'P'),
+      D1: p('D1', 'P', { idAyah: 'D', idIbu: 'W1', agama: 'nonIslam' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // [R02] mamnu tidak menghijab: istri tetap 1/4 (bukan 1/8), ibu 1/3 (bukan 1/6).
     // Ashl 12: istri 3, ibu 4 → raddB; zawjiyyah 4 (istri 1, sisa 3), ibu satu-satunya ahli radd → 4.
-    table: { finalAshl: 4n, saham: { W1: 1n, M1: 3n }, excluded: ['D1'] },
-    traceKinds: ['MANI', 'MASALAH_CLASS'],
+    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 3n }, dikecualikan: ['D1'] },
+    traceKinds: ['MANI', 'KELAS_MASALAH'],
   },
 };
 
@@ -810,80 +810,80 @@ export const caseNeg2: Fixture = {
   id: 'C16-NEG2',
   menguji: 'Pembunuh pewaris → mamnu, tidak menghijab',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead', motherId: 'M1' }),
-      W1: p('W1', 'F'),
-      M1: p('M1', 'F'),
-      S1: p('S1', 'M', { fatherId: 'D', motherId: 'W1', killedDeceased: true }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat', idIbu: 'M1' }),
+      W1: p('W1', 'P'),
+      M1: p('M1', 'P'),
+      S1: p('S1', 'L', { idAyah: 'D', idIbu: 'W1', membunuhPewaris: true }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
     status: 'OK',
     // [R02] mamnu tidak menghijab: istri tetap 1/4 (bukan 1/8), ibu 1/3 (bukan 1/6).
     // Ashl 12: istri 3, ibu 4 → raddB; zawjiyyah 4 (istri 1, sisa 3), ibu satu-satunya ahli radd → 4.
-    table: { finalAshl: 4n, saham: { W1: 1n, M1: 3n }, excluded: ['S1'] },
-    traceKinds: ['MANI', 'MASALAH_CLASS'],
+    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 3n }, dikecualikan: ['S1'] },
+    traceKinds: ['MANI', 'KELAS_MASALAH'],
   },
 };
 
-// ─── Negatif 3: Status hidup tidak jelas → NEEDS_INPUT ──────────────────────
+// ─── Negatif 3: Status hidup tidak jelas → PERLU_INPUT ──────────────────────
 export const caseNeg3: Fixture = {
   id: 'C16-NEG3',
-  menguji: 'Status hidup tidak jelas → NEEDS_INPUT',
+  menguji: 'Status hidup tidak jelas → PERLU_INPUT',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead' }),
-      W1: p('W1', 'F'),
-      S1: p('S1', 'M', { fatherId: 'D', motherId: 'W1', life: 'unknown' }),
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat' }),
+      W1: p('W1', 'P'),
+      S1: p('S1', 'L', { idAyah: 'D', idIbu: 'W1', statusHidup: 'tidakDiketahui' }),
     },
-    marriages: [{ husbandId: 'D', wifeId: 'W1', status: 'intact' }],
+    pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
   }),
   expected: {
-    status: 'NEEDS_INPUT',
-    questionFields: ['life'],
+    status: 'PERLU_INPUT',
+    questionFields: ['statusHidup'],
   },
 };
 
-// ─── Negatif (blocked): wasiat kepada ahli waris → tandai perlu ijazah.
+// ─── Negatif (terhalang): wasiat kepada ahli waris → tandai perlu ijazah.
 // Tidak dibuat fixture: R01-7 (ijazah wasiat) masih [perlu verifikasi lanjut] — lihat CLAUDE.md.
 
 // ─── Negatif 4: Jumlah istri > 4 → validasi gagal ────────────────────────────
 export const caseNeg4: Fixture = {
   id: 'C16-NEG4',
-  menguji: 'Jumlah istri > 4 → NEEDS_INPUT (validasi input)',
+  menguji: 'Jumlah istri > 4 → PERLU_INPUT (validasi input)',
   input: input({
-    deceasedId: 'D',
-    persons: {
-      D:  p('D', 'M', { life: 'dead' }),
-      W1: p('W1', 'F'),
-      W2: p('W2', 'F'),
-      W3: p('W3', 'F'),
-      W4: p('W4', 'F'),
-      W5: p('W5', 'F'),  // istri ke-5: tidak sah
+    idPewaris: 'D',
+    orang: {
+      D:  p('D', 'L', { statusHidup: 'wafat' }),
+      W1: p('W1', 'P'),
+      W2: p('W2', 'P'),
+      W3: p('W3', 'P'),
+      W4: p('W4', 'P'),
+      W5: p('W5', 'P'),  // istri ke-5: tidak sah
     },
-    marriages: [
-      { husbandId: 'D', wifeId: 'W1', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W2', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W3', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W4', status: 'intact' },
-      { husbandId: 'D', wifeId: 'W5', status: 'intact' },
+    pernikahan: [
+      { idSuami: 'D', idIstri: 'W1', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W2', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W3', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W4', status: 'utuh' },
+      { idSuami: 'D', idIstri: 'W5', status: 'utuh' },
     ],
   }),
   expected: {
-    status: 'NEEDS_INPUT',
-    questionFields: ['marriages'],
+    status: 'PERLU_INPUT',
+    questionFields: ['pernikahan'],
   },
 };
 
-// ─── Negatif 5: unit pembulatan tidak valid → NEEDS_INPUT ───────────────────
+// ─── Negatif 5: satuan pembulatan tidak valid → PERLU_INPUT ───────────────────
 export const caseNeg5: Fixture = {
   id: 'C16-NEG5',
-  menguji: 'Unit pembulatan ≤ 0 → NEEDS_INPUT',
-  input: { ...case01.input, rounding: { unit: 0n } },
-  expected: { status: 'NEEDS_INPUT', questionFields: ['rounding'] },
+  menguji: 'Unit pembulatan ≤ 0 → PERLU_INPUT',
+  input: { ...case01.input, pembulatan: { satuan: 0n } },
+  expected: { status: 'PERLU_INPUT', questionFields: ['pembulatan'] },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════

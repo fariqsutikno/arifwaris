@@ -1,92 +1,92 @@
-import { computeAshl } from './stages/ashl.js';
-import { assignShares } from './stages/bagian.js';
-import { deriveRoles } from './stages/derivasi.js';
-import { applyHajb } from './stages/hajb.js';
-import { classifyMasalah } from './stages/klasifikasi.js';
-import { applyMawani } from './stages/mawani.js';
-import type { Heir, ShareGroup } from './stages/model.js';
-import { buildTable, distributeNominal } from './stages/pembagian.js';
-import { applyTashih } from './stages/tashih.js';
-import { computeTirkah } from './stages/tirkah.js';
-import { validateInput } from './stages/validasi.js';
-import type { EngineInput, EngineResult, HeirRole, PersonId, PersonStatus, TraceStep } from './types.js';
+import { hitungAshl } from './stages/ashl.js';
+import { tetapkanBagian } from './stages/bagian.js';
+import { turunkanPeran } from './stages/derivasi.js';
+import { terapkanHajb } from './stages/hajb.js';
+import { klasifikasikanMasalah } from './stages/klasifikasi.js';
+import { terapkanMawani } from './stages/mawani.js';
+import type { AhliWaris, KelompokBagian } from './stages/model.js';
+import { susunTabel, bagikanNominal } from './stages/pembagian.js';
+import { terapkanTashih } from './stages/tashih.js';
+import { hitungTirkah } from './stages/tirkah.js';
+import { validasiInput } from './stages/validasi.js';
+import type { InputEngine, HasilEngine, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak } from './types.js';
 
-type EarlyExit = Extract<EngineResult, { status: 'NEEDS_INPUT' | 'UNSUPPORTED' }>;
+type KeluarAwal = Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }>;
 
-export interface HeirStagesResult {
-  status: 'HEIRS';
-  statuses: Record<PersonId, PersonStatus>;
-  groups: ShareGroup[];
-  trace: TraceStep[];
+export interface HasilTahapAhliWaris {
+  status: 'AHLI_WARIS';
+  statusOrang: Record<IdOrang, StatusOrang>;
+  kelompokKelompok: KelompokBagian[];
+  jejak: LangkahJejak[];
   /** Ada dzawil arham yang hidup → sisa tanpa ahli radd jatuh ke fase 3, bukan baitul mal. */
-  hasDzawilArham: boolean;
+  adaDzawilArham: boolean;
 }
 
-const isHeirKey = (role: HeirRole): role is Heir => role.key !== 'NON_HEIR' && role.key !== 'DZAWIL_ARHAM';
+const punyaKunciAhliWaris = (peran: PeranAhliWaris): peran is AhliWaris => peran.kunci !== 'BUKAN_AHLI_WARIS' && peran.kunci !== 'DZAWIL_ARHAM';
 
 /** Tahap 1–2: derivasi peran → validasi → mawani' → hajb → furudh/ashabah (+ bab 07/08). */
-export function runHeirStages(input: EngineInput): HeirStagesResult | EarlyExit {
-  const { graph, config } = input;
-  const deceased = graph.persons[graph.deceasedId];
-  if (!deceased) throw new Error(`deceasedId ${graph.deceasedId} tidak ada di graf`);
-  if (deceased.religion === 'nonIslam') {
-    return { status: 'UNSUPPORTED', reason: 'Pewaris non-muslim di luar cakupan platform.', refs: ['R02-4'] };
+export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris | KeluarAwal {
+  const { graf, konfigurasi } = input;
+  const pewaris = graf.orang[graf.idPewaris];
+  if (!pewaris) throw new Error(`idPewaris ${graf.idPewaris} tidak ada di graf`);
+  if (pewaris.agama === 'nonIslam') {
+    return { status: 'TIDAK_DIDUKUNG', alasan: 'Pewaris non-muslim di luar cakupan platform.', refs: ['R02-4'] };
   }
 
-  const { roles, duaJihah } = deriveRoles(graph, config);
-  const questions = validateInput(input, roles);
-  if (questions.length > 0) return { status: 'NEEDS_INPUT', questions };
+  const { daftarPeran, duaJihah } = turunkanPeran(graf, konfigurasi);
+  const pertanyaan = validasiInput(input, daftarPeran);
+  if (pertanyaan.length > 0) return { status: 'PERLU_INPUT', pertanyaan };
   if (duaJihah.length > 0) {
-    return { status: 'UNSUPPORTED', reason: `Ahli waris dengan dua jihah (pasangan sekaligus kerabat): ${duaJihah.join(', ')}.`, refs: [] };
+    return { status: 'TIDAK_DIDUKUNG', alasan: `Ahli waris dengan dua jihah (pasangan sekaligus kerabat): ${duaJihah.join(', ')}.`, refs: [] };
   }
 
-  const mawani = applyMawani(graph, roles);
-  const candidates = Object.values(mawani.statuses)
-    .flatMap(s => (s.kind === 'heir' && isHeirKey(s.role) ? [s.role] : []));
-  const hasDzawilArham = Object.values(roles)
-    .some(r => r.key === 'DZAWIL_ARHAM' && graph.persons[r.personId]!.life === 'alive');
-  if (candidates.length === 0) {
-    return hasDzawilArham
-      ? { status: 'UNSUPPORTED', reason: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham (fase 3).', refs: ['R14-4'] }
-      : { status: 'UNSUPPORTED', reason: 'Tidak ada ahli waris; harta ke baitul mal.', refs: ['R02-1'] };
+  const mawani = terapkanMawani(graf, daftarPeran);
+  const kandidat = Object.values(mawani.statusOrang)
+    .flatMap(s => (s.jenis === 'ahliWaris' && punyaKunciAhliWaris(s.peran) ? [s.peran] : []));
+  const adaDzawilArham = Object.values(daftarPeran)
+    .some(r => r.kunci === 'DZAWIL_ARHAM' && graf.orang[r.idOrang]!.statusHidup === 'hidup');
+  if (kandidat.length === 0) {
+    return adaDzawilArham
+      ? { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham (fase 3).', refs: ['R14-4'] }
+      : { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ahli waris; harta ke baitul mal.', refs: ['R02-1'] };
   }
 
-  const hajb = applyHajb(candidates);
-  const statuses = { ...mawani.statuses };
-  for (const heir of candidates) {
-    const blocked = hajb.mahjub[heir.personId];
-    if (blocked) statuses[heir.personId] = { kind: 'mahjub', role: heir, by: blocked.by, ruleRef: blocked.ruleRef };
+  const hajb = terapkanHajb(kandidat);
+  const statusOrang = { ...mawani.statusOrang };
+  for (const ahliWaris of kandidat) {
+    const terhalang = hajb.mahjub[ahliWaris.idOrang];
+    if (terhalang) statusOrang[ahliWaris.idOrang] = { jenis: 'mahjub', peran: ahliWaris, oleh: terhalang.oleh, rujukanAturan: terhalang.rujukanAturan };
   }
 
-  const shares = assignShares(hajb.effective, candidates);
-  if ('status' in shares) return shares;
+  const hasilBagian = tetapkanBagian(hajb.efektif, kandidat);
+  if ('status' in hasilBagian) return hasilBagian;
 
   return {
-    status: 'HEIRS', statuses, groups: shares.groups, hasDzawilArham,
-    trace: [...mawani.trace, ...hajb.trace, ...shares.trace],
+    status: 'AHLI_WARIS', statusOrang, kelompokKelompok: hasilBagian.kelompokKelompok, adaDzawilArham,
+    jejak: [...mawani.jejak, ...hajb.jejak, ...hasilBagian.jejak],
   };
 }
 
 /** Pipeline lengkap (bab 00.2): tirkah → ahli waris & bagian → ashl → 'aul/radd → tashih → nominal. */
-export function compute(input: EngineInput): EngineResult {
-  const heirs = runHeirStages(input);
-  if (heirs.status !== 'HEIRS') return heirs;
+export function hitung(input: InputEngine): HasilEngine {
+  const daftarAhliWaris = jalankanTahapAhliWaris(input);
+  if (daftarAhliWaris.status !== 'AHLI_WARIS') return daftarAhliWaris;
 
-  const tirkah = computeTirkah(input.tirkah);
-  const masalah = computeAshl(heirs.groups);
-  const classified = classifyMasalah(masalah, input.config, heirs.hasDzawilArham);
+  const tirkah = hitungTirkah(input.tirkah);
+  const masalah = hitungAshl(daftarAhliWaris.kelompokKelompok);
+  const classified = klasifikasikanMasalah(masalah, input.konfigurasi, daftarAhliWaris.adaDzawilArham);
   if ('status' in classified) return classified;
-  const tashih = applyTashih(heirs.groups, classified.saham, classified.base);
-  const nominal = distributeNominal(tashih.perPerson, tashih.tashih, tirkah.bersih, input.rounding.unit);
+  const tashih = terapkanTashih(daftarAhliWaris.kelompokKelompok, classified.saham, classified.dasar);
+  const nominal = bagikanNominal(tashih.perOrang, tashih.tashih, tirkah.bersih, input.pembulatan.satuan);
 
   return {
     status: 'OK',
-    statuses: heirs.statuses,
-    table: buildTable(masalah, classified, tashih, nominal.nominal, heirs.statuses),
-    trace: [tirkah.trace, ...heirs.trace, ...masalah.trace, ...classified.trace, ...tashih.trace, ...nominal.trace],
-    rounding: { unit: input.rounding.unit, remainder: nominal.remainder },
+    statusOrang: daftarAhliWaris.statusOrang,
+    tabel: susunTabel(masalah, classified, tashih, nominal.nominal, daftarAhliWaris.statusOrang),
+    jejak: [tirkah.jejak, ...daftarAhliWaris.jejak, ...masalah.jejak, ...classified.jejak, ...tashih.jejak, ...nominal.jejak],
+    pembulatan: { satuan: input.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan },
     ruleset: input.ruleset,
-    config: input.config,
-    kbVersion: input.kbVersion,
+    konfigurasi: input.konfigurasi,
+    versiKb: input.versiKb,
   };
 }
