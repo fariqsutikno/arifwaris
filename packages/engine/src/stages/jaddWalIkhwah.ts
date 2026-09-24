@@ -1,19 +1,25 @@
+// Tahap 2 (bab 08 [SYF], algoritma 8.6) — Kakek bersama saudara kandung/sebapak.
+//   Masuk : kakek, saudara-saudaranya, dan jumlah furudh ahli waris lain.
+//   Keluar: kelompok kakek + kelompok saudara, dan jejak pilihan kakek.
+// Alurnya:
+//   1. sisa ≤ 1/6            → kakek 1/6, saudara gugur.
+//   2. pilih yang terbesar untuk kakek: muqasamah / 1/3 (tanpa furudh), atau
+//      muqasamah / 1/3 sisa / 1/6 (dengan furudh). Seri → muqasamah.
+//   3. ada kandung dan sebapak sekaligus → mu'addah: sebapak ikut dihitung, bagiannya ke kandung.
+// Akdariyyah ditangani pemanggil (bagian.ts) karena polanya furudh khusus.
+
 import { bandingkan, pecahan, kali, kurang, type Pecahan } from '@waris/math';
 import type { PilihanJadd, IdOrang, LangkahJejak } from '../types.js';
 import { adalahLakiLaki, buatKelompok, satuanRuus, type AhliWaris, type KelompokBagian, type TidakDidukung } from './model.js';
 
-const ONE = pecahan(1n);
+const SATU = pecahan(1n);
 const SUDUS = pecahan(1n, 6n);
 const NISF = pecahan(1n, 2n);
 const TSULUTS = pecahan(1n, 3n);
 
-const bobotSatuan = (daftarAhliWaris: AhliWaris[]): Record<IdOrang, bigint> => Object.fromEntries(daftarAhliWaris.map(h => [h.idOrang, satuanRuus(h)]));
-const jenisAshabah = (daftarAhliWaris: AhliWaris[]) => (daftarAhliWaris.some(h => !adalahLakiLaki(h)) ? 'bilGhair' as const : 'binNafsi' as const);
+const bobotSatuan = (daftarAhliWaris: AhliWaris[]): Record<IdOrang, bigint> => Object.fromEntries(daftarAhliWaris.map(saudara => [saudara.idOrang, satuanRuus(saudara)]));
+const jenisAshabah = (daftarAhliWaris: AhliWaris[]) => (daftarAhliWaris.some(saudara => !adalahLakiLaki(saudara)) ? 'bilGhair' as const : 'binNafsi' as const);
 
-/**
- * Bab 08 [SYF], algoritma 8.6: kakek bersama saudara kandung/sebapak. Dipanggil setelah semua furudh
- * lain ditetapkan; `jumlahFurudh` = jumlahnya. Akdariyyah ditangani pemanggil (pola furudh khusus).
- */
 export function jaddWalIkhwah(
   jadd: AhliWaris,
   daftarSaudara: AhliWaris[],
@@ -30,8 +36,8 @@ export function jaddWalIkhwah(
 
   const daftarKelompok: KelompokBagian[] = [];
   const jejak: LangkahJejak[] = [];
-  const sisa = kurang(ONE, jumlahFurudh);
-  const jumlahSatuan = daftarSaudara.reduce((sum, h) => sum + satuanRuus(h), 0n);
+  const sisa = kurang(SATU, jumlahFurudh);
+  const jumlahSatuan = daftarSaudara.reduce((jumlah, saudara) => jumlah + satuanRuus(saudara), 0n);
 
   // [R08-3] sisa ≤ 1/6: kakek 1/6 (dengan 'aul bila perlu), saudara gugur — tetap dicatat sebagai ashabah tanpa sisa.
   if (jumlahFurudh.n > 0n && bandingkan(sisa, SUDUS) <= 0) {
@@ -49,14 +55,14 @@ export function jaddWalIkhwah(
   const opsi: Array<[PilihanJadd, Pecahan]> = jumlahFurudh.n === 0n
     ? [['muqasamah', muqasamah], ['tsuluts', TSULUTS]]
     : [['muqasamah', muqasamah], ['tsulutsBaqi', kali(sisa, TSULUTS)], ['sudus', SUDUS]];
-  const [pilihan, bagianKakek] = opsi.reduce((terbaik, opt) => (bandingkan(opt[1], terbaik[1]) > 0 ? opt : terbaik));
+  const [pilihan, bagianKakek] = opsi.reduce((terbaik, calon) => (bandingkan(calon[1], terbaik[1]) > 0 ? calon : terbaik));
   const refs = [jumlahFurudh.n === 0n ? 'R08-2' : 'R08-3'];
   const pilihanJadd = {
     kode: 'JADD_WAL_IKHWAH' as const, sisa, opsi: opsi.map(([nama, nilai]) => ({ nama, nilai })), terpilih: pilihan,
   };
 
-  const kandung = daftarSaudara.filter(h => h.kunci === 'SAUDARA_KANDUNG' || h.kunci === 'SAUDARI_KANDUNG');
-  const sebapak = daftarSaudara.filter(h => h.kunci === 'SAUDARA_SEBAPAK' || h.kunci === 'SAUDARI_SEBAPAK');
+  const kandung = daftarSaudara.filter(saudara => saudara.kunci === 'SAUDARA_KANDUNG' || saudara.kunci === 'SAUDARI_KANDUNG');
+  const sebapak = daftarSaudara.filter(saudara => saudara.kunci === 'SAUDARA_SEBAPAK' || saudara.kunci === 'SAUDARI_SEBAPAK');
   const muaddah = kandung.length > 0 && sebapak.length > 0;
 
   if (pilihan === 'muqasamah' && !muaddah) {
@@ -84,14 +90,14 @@ export function jaddWalIkhwah(
   if (kandung.length === 1 && hanyaKandung && !adalahLakiLaki(hanyaKandung)) {
     // [R08-4] saudari kandung tunggal mengambil hingga 1/2; lebihnya untuk sebapak.
     const bagianSaudara = kurang(sisa, bagianKakek);
-    const bagianUkht = bandingkan(bagianSaudara, NISF) < 0 ? bagianSaudara : NISF;
-    daftarKelompok.push(buatKelompok('SAUDARI_KANDUNG', { [hanyaKandung.idOrang]: 1n }, { jenis: 'tetap', nilai: bagianUkht, basis: 'muaddah' }));
+    const bagianSaudari = bandingkan(bagianSaudara, NISF) < 0 ? bagianSaudara : NISF;
+    daftarKelompok.push(buatKelompok('SAUDARI_KANDUNG', { [hanyaKandung.idOrang]: 1n }, { jenis: 'tetap', nilai: bagianSaudari, basis: 'muaddah' }));
     daftarKelompok.push(buatKelompok('IKHWAH', bobotSatuan(sebapak), { jenis: 'ashabah', jenisAshabah: jenisAshabah(sebapak) }));
     jejak.push({ tahap: 'ashabah', refs: ['R08-4'], jenis: 'ASHABAH', kelompok: 'IKHWAH', jenisAshabah: jenisAshabah(sebapak) });
     return { daftarKelompok, jejak };
   }
 
-  const bobot = { ...bobotSatuan(kandung), ...Object.fromEntries(sebapak.map(h => [h.idOrang, 0n])) };
+  const bobot = { ...bobotSatuan(kandung), ...Object.fromEntries(sebapak.map(saudara => [saudara.idOrang, 0n])) };
   daftarKelompok.push(buatKelompok('IKHWAH', bobot, { jenis: 'ashabah', jenisAshabah: jenisAshabah(kandung) }));
   jejak.push({ tahap: 'ashabah', refs: ['R08-4'], jenis: 'ASHABAH', kelompok: 'IKHWAH', jenisAshabah: jenisAshabah(kandung) });
   return { daftarKelompok, jejak };

@@ -60,7 +60,7 @@ function cariHajib(ahliWaris: AhliWaris, efektif: AhliWaris[]): Mahjub | undefin
       const penghalang = [
         ...denganKunci(efektif, ['IBU']),
         ...(pihak === 'NENEK_DARI_AYAH' ? ayah : []),                                 // [R04-10]
-        ...kakek.filter(k => ahliWaris.lintasan.includes(k.idOrang)),                // [R04-6] hanya nenek yang lewat kakek itu
+        ...kakek.filter(kakekIni => ahliWaris.lintasan.includes(kakekIni.idOrang)),                // [R04-6] hanya nenek yang lewat kakek itu
         // [R04-9] [SYF]: nenek dekat sepihak menghijab yang jauh; nenek dekat pihak ibu juga menghijab
         // nenek jauh pihak ayah, tidak sebaliknya.
         ...denganKunci(efektif, ['NENEK_DARI_IBU', 'NENEK_DARI_AYAH']).filter(nenek =>

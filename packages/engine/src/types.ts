@@ -1,3 +1,7 @@
+// Kontrak data engine, dibaca dari atas ke bawah mengikuti alur:
+//   graf keluarga (input) → peran & status tiap orang → konfigurasi → tabel mas'alah
+//   → jejak keputusan → hasil engine → input engine → munasakhat.
+
 import type { Pecahan, Uang, Nisab } from '@waris/math';
 
 // ─── Graf keluarga ────────────────────────────────────────────────────────────
@@ -95,7 +99,7 @@ export interface TabelMasalah {
   dikecualikan: IdOrang[];
 }
 
-// ─── Trace ────────────────────────────────────────────────────────────────────
+// ─── Jejak: tiap keputusan sebagai data (dinarasikan di packages/explain) ─────
 
 export type { Nisab };
 export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat';
@@ -148,7 +152,7 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
       raddiyyah: { saham: Record<IdKelompok, bigint>; ashl: bigint };
       hasil: bigint }
   | { jenis: 'TASHIH'; dasar: bigint; juzSahm: bigint; hasil: bigint }
-  | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; of: bigint; besaran: Uang }
+  | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; dariTashih: bigint; besaran: Uang }
   // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
   | { jenis: 'MUNASAKHAT'; mayit: IdOrang; saham: bigint; masalah: bigint; hubungan: HubunganInkisar;
       fpb: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;

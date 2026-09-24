@@ -1,9 +1,11 @@
+// Tahap 1b — Mawani' (bab 02): status awal tiap orang.
+//   bukan kerabat/pasangan sah, dzawil arham, sudah wafat → bukanAhliWaris
+//   beda agama, pembunuh                                  → mamnu (dianggap tidak ada,
+//                                                            tidak menghijab siapa pun [R06-6])
+//   sisanya                                               → ahliWaris, lanjut ke tahap hajb.
+
 import type { GrafKeluarga, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak } from '../types.js';
 
-/**
- * Tahap 1b: status awal tiap orang. Yang terkena mani' dianggap tidak ada dan tidak menghijab
- * siapa pun [R06-6]; sisanya (status 'ahliWaris') masuk ke tahap hajb.
- */
 export function terapkanMawani(
   graf: GrafKeluarga,
   daftarPeran: Record<IdOrang, PeranAhliWaris>,
@@ -38,6 +40,6 @@ export function terapkanMawani(
 
 function terkenaTalakBain(graf: GrafKeluarga, idOrang: IdOrang): boolean {
   const { idPewaris } = graf;
-  return graf.pernikahan.some(m => m.status === 'talakBain'
-    && ((m.idSuami === idPewaris && m.idIstri === idOrang) || (m.idIstri === idPewaris && m.idSuami === idOrang)));
+  return graf.pernikahan.some(nikah => nikah.status === 'talakBain'
+    && ((nikah.idSuami === idPewaris && nikah.idIstri === idOrang) || (nikah.idIstri === idPewaris && nikah.idSuami === idOrang)));
 }

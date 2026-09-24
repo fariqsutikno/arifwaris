@@ -1,15 +1,15 @@
 import type { KunciAhliWaris } from '../types.js';
 import type { AhliWaris } from './model.js';
 
-const banyaknya = (daftarAhliWaris: AhliWaris[], keys: KunciAhliWaris[]) => daftarAhliWaris.filter(h => keys.includes(h.kunci)).length;
+const banyaknya = (daftarAhliWaris: AhliWaris[], kunci: KunciAhliWaris[]) => daftarAhliWaris.filter(ahliWaris => kunci.includes(ahliWaris.kunci)).length;
 
 /**
  * [R07-1] 'Umariyyatain: salah satu pasangan + ayah + ibu, tanpa ahli waris lain.
  * Dengan 2+ saudara (walau mahjub) ibu sudah 1/6 lewat nuqshan, bukan 'Umariyyatain.
  */
 export function adalahUmariyyatain(efektif: AhliWaris[], banyakIkhwah: number): boolean {
-  const onlyThese = efektif.every(h => ['SUAMI', 'ISTRI', 'AYAH', 'IBU'].includes(h.kunci));
-  return onlyThese && banyaknya(efektif, ['SUAMI', 'ISTRI']) > 0 && banyaknya(efektif, ['AYAH']) === 1
+  const hanyaPasanganDanOrangTua = efektif.every(ahliWaris => ['SUAMI', 'ISTRI', 'AYAH', 'IBU'].includes(ahliWaris.kunci));
+  return hanyaPasanganDanOrangTua && banyaknya(efektif, ['SUAMI', 'ISTRI']) > 0 && banyaknya(efektif, ['AYAH']) === 1
     && banyaknya(efektif, ['IBU']) === 1 && banyakIkhwah < 2;
 }
 

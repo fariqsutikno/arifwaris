@@ -233,7 +233,7 @@ type LangkahJejak = { tahap: Tahap; refs: RefCode[] } & (
   | { jenis: 'AUL'; dari: bigint; menjadi: bigint }
   | { jenis: 'RADD'; zawjiyyah?: { kelompok; ashl; sahamPasangan; sisa }; raddiyyah: { saham; ashl }; hasil: bigint }
   | { jenis: 'TASHIH'; dasar: bigint; juzSahm: bigint; hasil: bigint }
-  | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; of: bigint; besaran: Money }
+  | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; dariTashih: bigint; besaran: Uang }
 );
 ```
 
@@ -302,7 +302,7 @@ Output ke pengguna = 3 lapis dari trace yang sama:
 ---
 
 ## 5. Urutan kerja di Claude Code
-1. **C** — fixture kasus bab 16 (input graf + expected table/trace kunci), termasuk uji negatif.
+1. **C** — fixture kasus bab 16 (input graf + jenisKelaminSeharusnya table/trace kunci), termasuk uji negatif.
 2. `packages/math` + test.
 3. **D** — tahap 1–2 (derivasi peran, mawani', hajb, ashabah, bab 07/08).
 4. Tahap 3–6, sampai seluruh fixture bab 16 lolos.

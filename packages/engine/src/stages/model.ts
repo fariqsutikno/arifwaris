@@ -1,3 +1,6 @@
+// Model data bersama tahap 2–6: ahli waris, bentuk bagian, kelompok (baris tabel mas'alah),
+// dan helper kecil yang dipakai lebih dari satu tahap.
+
 import { fpb, type Pecahan } from '@waris/math';
 import type { IdKelompok, KunciAhliWaris, PeranAhliWaris, IdOrang } from '../types.js';
 
@@ -27,15 +30,15 @@ export type TidakDidukung = { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: st
 
 /** Buat grup; bobot dinormalisasi (dibagi FPB bobot bukan nol) supaya 2:2 tampil sebagai rata. */
 export function buatKelompok(id: IdKelompok, bobot: Record<IdOrang, bigint>, bagian: Bagian): KelompokBagian {
-  const bukanNol = Object.values(bobot).filter(w => w > 0n);
-  const pembagi = bukanNol.reduce((acc, w) => fpb(acc, w), 0n) || 1n;
-  const ternormalisasi = Object.fromEntries(Object.entries(bobot).map(([id, w]) => [id, w / pembagi]));
+  const bukanNol = Object.values(bobot).filter(nilai => nilai > 0n);
+  const pembagi = bukanNol.reduce((faktor, nilai) => fpb(faktor, nilai), 0n) || 1n;
+  const ternormalisasi = Object.fromEntries(Object.entries(bobot).map(([id, nilai]) => [id, nilai / pembagi]));
   return { id, anggota: Object.keys(bobot), bobot: ternormalisasi, bagian };
 }
 
 /** Bobot rata 1 untuk tiap anggota (furudh bersama: istri-istri, nenek-nenek, anak-anak pr). */
 export const bobotRata = (daftarAhliWaris: Array<{ idOrang: IdOrang }>): Record<IdOrang, bigint> =>
-  Object.fromEntries(daftarAhliWaris.map(h => [h.idOrang, 1n]));
+  Object.fromEntries(daftarAhliWaris.map(ahliWaris => [ahliWaris.idOrang, 1n]));
 
 const KUNCI_LAKI_LAKI: KunciAhliWaris[] = ['ANAK_LK', 'CUCU_LK', 'AYAH', 'KAKEK', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARA_SEIBU',
   'KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK', 'SUAMI', 'MUTIQ'];

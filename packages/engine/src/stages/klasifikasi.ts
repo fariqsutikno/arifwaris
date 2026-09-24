@@ -1,3 +1,9 @@
+// Tahap 4 — Klasifikasi mas'alah (bab 9.2–9.4): bandingkan jumlah saham dengan ashl.
+//   jumlah = ashl → 'adilah (pas, tidak ada perubahan)
+//   jumlah > ashl → 'ailah ('aul: penyebut dinaikkan jadi jumlah saham)
+//   jumlah < ashl → radd (sisa dikembalikan; tidak mungkin ada ashabah di sini)
+//   Keluar: penyebut baru (`dasar`), saham, dan kolom tabel tambahan ('aul/radd).
+
 import { fpb } from '@waris/math';
 import type { IdKelompok, HubunganInkisar, KonfigurasiMadzhab, LangkahJejak } from '../types.js';
 import { penerimaSisa, type Masalah, type TidakDidukung } from './model.js';
@@ -11,16 +17,15 @@ export interface HasilKlasifikasi {
   /** Penyebut setelah klasifikasi: ashl ('adilah), hasil 'aul, atau hasil radd. */
   dasar: bigint;
   saham: Record<IdKelompok, bigint>;
-  column?: 'aul' | 'radd';
+  kolomTambahan?: 'aul' | 'radd';
   jejak: LangkahJejak[];
 }
 
-const sum = (xs: bigint[]) => xs.reduce((a, b) => a + b, 0n);
+const jumlahkan = (daftar: bigint[]) => daftar.reduce((a, b) => a + b, 0n);
 
-/** Tahap 4: 'adilah / 'ailah / radd (bab 9.2–9.4). */
 export function klasifikasikanMasalah(masalah: Masalah, konfigurasi: KonfigurasiMadzhab, adaDzawilArham: boolean): HasilKlasifikasi | TidakDidukung {
   const { ashl, saham, daftarKelompok } = masalah;
-  const total = sum(Object.values(saham));
+  const total = jumlahkan(Object.values(saham));
 
   if (total === ashl) {
     return { dasar: ashl, saham, jejak: [{ tahap: 'klasifikasi', refs: ['R09-3'], jenis: 'KELAS_MASALAH', kelas: 'adilah', jumlahSaham: total, ashl }] };
@@ -28,7 +33,7 @@ export function klasifikasikanMasalah(masalah: Masalah, konfigurasi: Konfigurasi
   if (total > ashl) {
     if (!VALID_AUL[ashl.toString()]?.includes(total)) throw new Error(`invariant [R09-4]: 'aul ${ashl} → ${total} tidak sah`);
     return {
-      dasar: total, saham, column: 'aul',
+      dasar: total, saham, kolomTambahan: 'aul',
       jejak: [
         { tahap: 'klasifikasi', refs: ['R09-3'], jenis: 'KELAS_MASALAH', kelas: 'ailah', jumlahSaham: total, ashl },
         { tahap: 'klasifikasi', refs: ['R09-3', 'R09-4'], jenis: 'AUL', dari: ashl, menjadi: total },
@@ -39,13 +44,17 @@ export function klasifikasikanMasalah(masalah: Masalah, konfigurasi: Konfigurasi
   return terapkanRadd(masalah, total, konfigurasi, adaDzawilArham);
 }
 
+// ─── Radd [R09-7]: sisa dikembalikan ke ashabul furudh selain pasangan ───────
+//   raddA: tanpa pasangan → ashl diganti jumlah saham penerima radd.
+//   raddB: ada pasangan → pasangan ambil fardhnya dulu dari mas'alah zawjiyyah, sisanya dibagi radd.
+
 function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiMadzhab, adaDzawilArham: boolean): HasilKlasifikasi | TidakDidukung {
   const { ashl, saham, daftarKelompok } = masalah;
   if (konfigurasi.kebijakanSisa === 'baitulMal') {
     return { status: 'TIDAK_DIDUKUNG', alasan: 'Sisa harta ke baitul mal belum didukung output engine.', refs: ['R09-8'] };
   }
-  const pasangan = daftarKelompok.find(g => KELOMPOK_PASANGAN.includes(g.id));
-  const penerima = daftarKelompok.filter(g => g !== pasangan);
+  const pasangan = daftarKelompok.find(kelompok => KELOMPOK_PASANGAN.includes(kelompok.id));
+  const penerima = daftarKelompok.filter(kelompok => kelompok !== pasangan);
   if (penerima.length === 0) {
     return adaDzawilArham
       ? { status: 'TIDAK_DIDUKUNG', alasan: 'Sisa harta ke dzawil arham (fase 3); pasangan tidak menerima radd.', refs: ['R09-9', 'R14-4'] }
@@ -53,13 +62,13 @@ function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiM
   }
 
   // [R09-7] ashl radd = jumlah saham ahli radd, disederhanakan (satu jenis → per kepala lewat tashih).
-  const pembagi = penerima.reduce((acc, g) => fpb(acc, saham[g.id]!), 0n);
-  const raddSaham: Record<IdKelompok, bigint> = Object.fromEntries(penerima.map(g => [g.id, saham[g.id]! / pembagi]));
-  const raddAshl = sum(Object.values(raddSaham));
+  const pembagi = penerima.reduce((faktor, kelompok) => fpb(faktor, saham[kelompok.id]!), 0n);
+  const raddSaham: Record<IdKelompok, bigint> = Object.fromEntries(penerima.map(kelompok => [kelompok.id, saham[kelompok.id]! / pembagi]));
+  const raddAshl = jumlahkan(Object.values(raddSaham));
 
   if (!pasangan) {
     return {
-      dasar: raddAshl, saham: raddSaham, column: 'radd',
+      dasar: raddAshl, saham: raddSaham, kolomTambahan: 'radd',
       jejak: [
         { tahap: 'klasifikasi', refs: ['R09-7'], jenis: 'KELAS_MASALAH', kelas: 'raddA', jumlahSaham: total, ashl },
         { tahap: 'klasifikasi', refs: ['R09-7', 'R09-10'], jenis: 'RADD', raddiyyah: { saham: raddSaham, ashl: raddAshl }, hasil: raddAshl },
@@ -77,10 +86,10 @@ function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiM
   const pengali = raddAshl / faktor;             // habis → 1; tawafuq → wafq ashl radd; tabayun → seluruh ashl radd
   const hasil = zawjiyyahAshl * pengali;
   const sahamAkhir: Record<IdKelompok, bigint> = { [pasangan.id]: sahamPasangan * pengali };
-  for (const g of penerima) sahamAkhir[g.id] = raddSaham[g.id]! * (sisa / faktor);
+  for (const kelompok of penerima) sahamAkhir[kelompok.id] = raddSaham[kelompok.id]! * (sisa / faktor);
 
   return {
-    dasar: hasil, saham: sahamAkhir, column: 'radd',
+    dasar: hasil, saham: sahamAkhir, kolomTambahan: 'radd',
     jejak: [
       { tahap: 'klasifikasi', refs: ['R09-7'], jenis: 'KELAS_MASALAH', kelas: 'raddB', jumlahSaham: total, ashl },
       { tahap: 'klasifikasi', refs: ['R09-10'], jenis: 'PERBANDINGAN_NISAB', tujuan: 'raddVsSisa', a: sisa, b: raddAshl, hubungan, fpb: faktor, hasil },
