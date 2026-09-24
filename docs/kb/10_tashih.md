@@ -25,9 +25,14 @@ walau 1 selalu habis membagi angka lain. Berlaku sebelum pengecekan tadakhul (mi
 
 ## 10.3 Langkah Tashih [R10-2] [R10-3]
 1. Selesaikan ashl (termasuk 'aul bila ada).
-2. Untuk setiap kelompok yang **inkisar**, bandingkan **saham kelompok** dengan **jumlah kepala** (ru'us):
-   - **Tawafuq** → simpan **wafq ru'us** (ru'us ÷ FPB).
-   - **Tabayun** → simpan **seluruh ru'us**.
+2. Untuk setiap kelompok yang **inkisar**, bandingkan **saham kelompok** dengan **jumlah kepala** (ru'us).
+   Langkah ini HANYA memakai FPB, bukan nisab arba' penuh (10.2) — tadakhul tidak pernah dicek di sini,
+   walau sepasang angkanya kebetulan tadakhul secara definisi (mis. 10.4b: 2 & 4). Sebabnya: yang dicari
+   di sini bukan "gabung dua angka merdeka" (KPK, rumus tadakhul "ambil yang besar"), tapi **pengali
+   minimal** supaya saham satu kelompok yang sama bisa rata ke ru'us-nya. Rumusnya selalu ru'us ÷ FPB,
+   tidak pernah "ambil yang besar" — kalau dipaksa pakai itu, tashih jadi lebih besar dari yang perlu.
+   - **Tawafuq** (FPB > 1) → simpan **wafq ru'us** (ru'us ÷ FPB).
+   - **Tabayun** (FPB = 1) → simpan **seluruh ru'us** (= ru'us ÷ 1, rumus yang sama).
 3. **Inkisar pada satu kelompok**: bilangan yang disimpan = **juz' as-sahm** (pengali).
 4. **Inkisar pada 2–4 kelompok**: bandingkan bilangan-bilangan simpanan satu sama lain dengan nisab arba' → hasil gabung (KPK) = **juz' as-sahm**.
    - Tamatsul → ambil salah satu.
@@ -44,8 +49,10 @@ Inkisar tidak mungkin terjadi pada lebih dari **4 kelompok** (menurut istiqra').
 Ashl 4: istri 1, saudara 3 → 3 ÷ 3 habis. Tidak perlu tashih.
 Ubah: istri, 2 saudara lk: saudara 3 vs 2 → tabayun → juz' 2 → tashih 8: istri 2, saudara 6 (masing-masing 3).
 
-**(b) Satu kelompok, tawafuq**: ibu, 4 paman.
-Ashl 3: ibu 1, paman 2. 2 vs 4 → tawafuq (FPB 2) → wafq ru'us = 2 → tashih 6: ibu 2, paman 4 (masing-masing 1).
+**(b) Satu kelompok, FPB > 1**: ibu, 4 paman.
+Ashl 3: ibu 1, paman 2. Saham paman (2) vs ru'us (4): FPB = 2 → wafq ru'us = 4 ÷ 2 = 2 → tashih 6:
+ibu 2, paman 4 (masing-masing 1). (2 & 4 sendiri tadakhul menurut 10.2, tapi langkah ini cuma pakai
+FPB, bukan "ambil yang besar" — lihat catatan di 10.3 langkah 2.)
 
 **(c) Satu kelompok, tabayun (istri)**: 4 istri, 3 saudara lk kandung.
 Ashl 4: istri 1, saudara 3. Istri: 1 vs 4 → tabayun → simpan 4. Saudara: 3 vs 3 → habis → tidak disimpan.
