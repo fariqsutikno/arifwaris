@@ -1,76 +1,86 @@
-// [KH] Kaidah hisab — fungsi murni; tidak ada I/O, Date, Math.random, atau `number` di jalur hitung.
+// [KH] Kaidah hisab: fungsi murni tanpa I/O, Date, Math.random, dan tanpa `number` di jalur hitung.
+// Isi file ini: (1) pecahan eksak, (2) FPB/KPK, (3) nisab arba', (4) pembulatan nominal.
 
-declare const fractionBrand: unique symbol;
+declare const tandaPecahan: unique symbol;
 
-/** Pecahan eksak berbasis bigint; hanya bisa dibuat lewat `fraction()` → selalu ternormalisasi (d > 0, gcd(n,d)=1). */
-export type Fraction = { readonly n: bigint; readonly d: bigint; readonly [fractionBrand]: true };
+/** Pecahan eksak berbasis bigint. Hanya bisa dibuat lewat `pecahan()`, jadi selalu ternormalisasi (penyebut > 0, FPB = 1). */
+export type Pecahan = { readonly n: bigint; readonly d: bigint; readonly [tandaPecahan]: true };
 
 /** Uang dalam satuan terkecil (rupiah, tanpa desimal). */
-export type Money = bigint;
+export type Uang = bigint;
 
-const abs = (x: bigint): bigint => (x < 0n ? -x : x);
+const mutlak = (x: bigint): bigint => (x < 0n ? -x : x);
 
-export function gcd(a: bigint, b: bigint): bigint {
-  let x = abs(a);
-  let y = abs(b);
+// ─── 1. FPB & KPK ─────────────────────────────────────────────────────────────
+
+export function fpb(a: bigint, b: bigint): bigint {
+  let x = mutlak(a);
+  let y = mutlak(b);
   while (y !== 0n) [x, y] = [y, x % y];
   return x;
 }
 
-export function lcm(a: bigint, b: bigint): bigint {
+export function kpk(a: bigint, b: bigint): bigint {
   if (a === 0n || b === 0n) return 0n;
-  return abs(a / gcd(a, b) * b);
+  return mutlak(a / fpb(a, b) * b);
 }
 
-export function fraction(n: bigint, d: bigint = 1n): Fraction {
-  if (d === 0n) throw new RangeError('fraction: penyebut nol');
-  const sign = d < 0n ? -1n : 1n;
-  const divisor = gcd(n, d) || 1n;
-  return Object.freeze({ n: sign * n / divisor, d: sign * d / divisor }) as Fraction;
+// ─── 2. Pecahan ───────────────────────────────────────────────────────────────
+
+export function pecahan(pembilang: bigint, penyebut: bigint = 1n): Pecahan {
+  if (penyebut === 0n) throw new RangeError('pecahan: penyebut nol');
+  const tanda = penyebut < 0n ? -1n : 1n;
+  const pembagi = fpb(pembilang, penyebut) || 1n;
+  return Object.freeze({ n: tanda * pembilang / pembagi, d: tanda * penyebut / pembagi }) as Pecahan;
 }
 
-export const add = (a: Fraction, b: Fraction): Fraction => fraction(a.n * b.d + b.n * a.d, a.d * b.d);
-export const sub = (a: Fraction, b: Fraction): Fraction => fraction(a.n * b.d - b.n * a.d, a.d * b.d);
-export const mul = (a: Fraction, b: Fraction): Fraction => fraction(a.n * b.n, a.d * b.d);
+export const tambah = (a: Pecahan, b: Pecahan): Pecahan => pecahan(a.n * b.d + b.n * a.d, a.d * b.d);
+export const kurang = (a: Pecahan, b: Pecahan): Pecahan => pecahan(a.n * b.d - b.n * a.d, a.d * b.d);
+export const kali = (a: Pecahan, b: Pecahan): Pecahan => pecahan(a.n * b.n, a.d * b.d);
 
-export function div(a: Fraction, b: Fraction): Fraction {
-  if (b.n === 0n) throw new RangeError('div: pembagi nol');
-  return fraction(a.n * b.d, a.d * b.n);
+export function bagi(a: Pecahan, b: Pecahan): Pecahan {
+  if (b.n === 0n) throw new RangeError('bagi: pembagi nol');
+  return pecahan(a.n * b.d, a.d * b.n);
 }
 
-export function compare(a: Fraction, b: Fraction): -1 | 0 | 1 {
-  const diff = a.n * b.d - b.n * a.d;
-  return diff < 0n ? -1 : diff > 0n ? 1 : 0;
+/** -1 kalau a < b, 0 kalau sama, 1 kalau a > b. */
+export function bandingkan(a: Pecahan, b: Pecahan): -1 | 0 | 1 {
+  const selisih = a.n * b.d - b.n * a.d;
+  return selisih < 0n ? -1 : selisih > 0n ? 1 : 0;
 }
+
+// ─── 3. Nisab arba' ───────────────────────────────────────────────────────────
 
 export type Nisab = 'tamatsul' | 'tadakhul' | 'tawafuq' | 'tabayun';
 
 /**
- * [R10-1] Nisab arba' antara dua bilangan positif, bab 10.2.
- * `result` = hasil gabung (KPK) menurut kaidah tiap relasi; dipakai untuk ashl, radd, dan juz' as-sahm.
+ * [R10-1] Nisab arba' antara dua bilangan positif (bab 10.2).
+ * `hasil` = gabungan keduanya menurut kaidah tiap hubungan; dipakai di ashl, radd, dan tashih.
  */
-export function nisab(a: bigint, b: bigint): { relation: Nisab; gcd: bigint; result: bigint } {
+export function nisab(a: bigint, b: bigint): { hubungan: Nisab; fpb: bigint; hasil: bigint } {
   if (a <= 0n || b <= 0n) throw new RangeError('nisab: bilangan harus positif');
-  const faktorPersekutuan = gcd(a, b);
+  const faktorPersekutuan = fpb(a, b);
   const [kecil, besar] = a < b ? [a, b] : [b, a];
-  if (a === b) return { relation: 'tamatsul', gcd: faktorPersekutuan, result: a };
-  // [R10-5] «كل عدد مع الواحد فهو متباين»: angka 1 vs angka lain = tabayun, didahulukan atas
-  // tadakhul (1 selalu habis membagi angka apa pun, tapi itu bukan tadakhul menurut kaidah ini).
-  if (kecil === 1n) return { relation: 'tabayun', gcd: faktorPersekutuan, result: a * b };
-  if (besar % kecil === 0n) return { relation: 'tadakhul', gcd: faktorPersekutuan, result: besar };
+  if (a === b) return { hubungan: 'tamatsul', fpb: faktorPersekutuan, hasil: a };
+  // [R10-5] «كل عدد مع الواحد فهو متباين»: 1 dengan angka lain = tabayun. Ini didahulukan atas
+  // tadakhul, karena 1 memang habis membagi apa pun, tapi menurut kaidah ini bukan tadakhul.
+  if (kecil === 1n) return { hubungan: 'tabayun', fpb: faktorPersekutuan, hasil: a * b };
+  if (besar % kecil === 0n) return { hubungan: 'tadakhul', fpb: faktorPersekutuan, hasil: besar };
   if (faktorPersekutuan > 1n) {
-    // Tawafuq: kalikan salah satu dengan wafq yang lain.
-    return { relation: 'tawafuq', gcd: faktorPersekutuan, result: a * (b / faktorPersekutuan) };
+    // Tawafuq: salah satu dikali wafq (hasil bagi dengan FPB) yang lain.
+    return { hubungan: 'tawafuq', fpb: faktorPersekutuan, hasil: a * (b / faktorPersekutuan) };
   }
-  return { relation: 'tabayun', gcd: faktorPersekutuan, result: a * b };
+  return { hubungan: 'tabayun', fpb: faktorPersekutuan, hasil: a * b };
 }
 
+// ─── 4. Pembulatan nominal ────────────────────────────────────────────────────
+
 /**
- * Nominal = harta × bagian, dibulatkan ke bawah ke kelipatan `unit` (engine-contract Tahap 6).
- * Selisihnya dilaporkan pemanggil sebagai selisih pembulatan, tidak dibagikan di sini.
+ * Nominal = harta × bagian, dibulatkan ke bawah ke kelipatan `satuan` (engine-contract Tahap 6).
+ * Sisa pembulatan tidak dibagikan di sini; pemanggil melaporkannya sebagai selisih pembulatan.
  */
-export function floorShare(harta: Money, bagian: Fraction, unit: bigint): Money {
-  if (unit <= 0n) throw new RangeError('floorShare: unit harus > 0');
-  if (bagian.n < 0n || harta < 0n) throw new RangeError('floorShare: harta dan bagian tidak boleh negatif');
-  return (harta * bagian.n) / (bagian.d * unit) * unit;
+export function bulatkanKeBawah(harta: Uang, bagian: Pecahan, satuan: bigint): Uang {
+  if (satuan <= 0n) throw new RangeError('bulatkanKeBawah: satuan harus > 0');
+  if (bagian.n < 0n || harta < 0n) throw new RangeError('bulatkanKeBawah: harta dan bagian tidak boleh negatif');
+  return (harta * bagian.n) / (bagian.d * satuan) * satuan;
 }

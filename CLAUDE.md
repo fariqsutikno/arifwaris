@@ -1,8 +1,8 @@
 # CLAUDE.md — Platform Waris (Faraidh Engine)
 
 Kamu adalah kolaborator teknis untuk membangun kalkulator waris (faraidh) + edukasi, TypeScript.
-Istilah teknis (nama variabel/fungsi) dalam Inggris; diskusi dalam Indonesia; istilah fikih
-pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`.
+Nama variabel/fungsi/tipe, komentar, dan diskusi dalam **bahasa Indonesia**; istilah fikih
+pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan API pustaka tetap apa adanya.
 
 ## Sumber kebenaran
 - `docs/kb/00–17_*.md` adalah SATU-SATUNYA sumber hukum fikih. Jangan ambil aturan dari pengetahuan umum.
@@ -73,10 +73,15 @@ Bedanya: konfigurasi = titik khilaf yang bisa berubah menurut pendapat; konstant
 
 **Penamaan** — nama mengikuti istilah bab 3–15 (glosarium), bukan disingkat sendiri:
 `ashlulMasalah` bukan `am`, `sisaHartaSetelahFardh` bukan `sisa2`. Boleh transliterasi Arab kalau
-istilahnya baku (`fardh`, `ashabah`, `hajb`) — jangan dipaksa jadi bahasa Inggris. Tidak ada nama
-1-huruf kecuali index loop generik yang benar-benar tanpa makna domain.
+istilahnya baku (`fardh`, `ashabah`, `hajb`). Yang bukan istilah fikih pakai Indonesia
+(`ahliWaris` bukan `heir`, `pecahan` bukan `fraction`). Kunci ahli waris juga Indonesia
+(`CUCU_LK_DARI_ANAK_LK`, bukan `IBN_IBN`). Tidak ada nama 1-huruf kecuali index loop generik.
 
-**Komentar** — hanya untuk *mengapa*, bukan *apa*. Kode sudah menjelaskan apa yang terjadi lewat
+**Kode sebagai cerita** — tiap file dibuka dengan komentar pendek: tahap ini menerima apa,
+memutuskan apa, menyerahkan apa ke tahap berikutnya. Fungsi utama diletakkan di atas, helper di
+bawah, supaya file bisa dibaca dari atas ke bawah. Angka urutan/prioritas diberi nama konstanta.
+
+**Komentar** — hanya untuk *mengapa* atau alur, bukan *apa* per baris. Kode sudah menjelaskan apa yang terjadi lewat
 nama variabel/fungsi. Komentar wajib berisi rujukan `[Rxx-y]` ketika logikanya berasal dari
 keputusan fikih, supaya reviewer syariah bisa mencocokkan. Contoh baik:
 `// [R08-5] akdariyyah: kakek dapat 1/6 fardh, bukan muqasamah, meski ada far'u warits pr`.

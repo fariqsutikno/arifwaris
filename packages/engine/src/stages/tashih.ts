@@ -1,4 +1,4 @@
-import { gcd, nisab } from '@waris/math';
+import { fpb, nisab } from '@waris/math';
 import type { GroupId, InkisarRelation, PersonId, TraceStep } from '../types.js';
 import { sumWeights, type ShareGroup } from './model.js';
 
@@ -24,20 +24,20 @@ export function applyTashih(groups: ShareGroup[], saham: Record<GroupId, bigint>
     const sahamKelompok = saham[group.id]!;
     const ruus = sumWeights(group);
     if (sahamKelompok === 0n || ruus <= 1n) continue;
-    const fpb = gcd(sahamKelompok, ruus);
-    const relation: InkisarRelation = sahamKelompok % ruus === 0n ? 'habis' : fpb > 1n ? 'tawafuq' : 'tabayun';
+    const faktor = fpb(sahamKelompok, ruus);
+    const relation: InkisarRelation = sahamKelompok % ruus === 0n ? 'habis' : faktor > 1n ? 'tawafuq' : 'tabayun';
     // Tawafuq → wafq ru'us; tabayun → seluruh ru'us (rumus sama: ru'us ÷ FPB).
-    const disimpan = ruus / fpb;
+    const disimpan = ruus / faktor;
     trace.push({ stage: 'tashih', refs: ['R10-2'], kind: 'NISAB_COMPARE', purpose: 'inkisar', group: group.id,
-      a: sahamKelompok, b: ruus, relation, gcd: fpb, result: disimpan });
+      a: sahamKelompok, b: ruus, relation, gcd: faktor, result: disimpan });
     if (relation !== 'habis') simpanan.push(disimpan);
   }
   if (simpanan.length > MAX_KELOMPOK_INKISAR) throw new Error(`invariant [R10-3]: inkisar pada ${simpanan.length} kelompok`);
 
   let juzSahm = simpanan[0] ?? 1n;
   for (const next of simpanan.slice(1)) {
-    const { relation, gcd: fpb, result } = nisab(juzSahm, next);
-    trace.push({ stage: 'tashih', refs: ['R10-2', 'R10-1'], kind: 'NISAB_COMPARE', purpose: 'juzSahm', a: juzSahm, b: next, relation, gcd: fpb, result });
+    const { hubungan: relation, fpb: faktor, hasil: result } = nisab(juzSahm, next);
+    trace.push({ stage: 'tashih', refs: ['R10-2', 'R10-1'], kind: 'NISAB_COMPARE', purpose: 'juzSahm', a: juzSahm, b: next, relation, gcd: faktor, result });
     juzSahm = result;
   }
   const tashih = base * juzSahm;

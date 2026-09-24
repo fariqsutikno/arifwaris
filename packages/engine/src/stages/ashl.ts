@@ -26,7 +26,7 @@ export function computeAshl(groups: ShareGroup[]): Masalah & { trace: TraceStep[
   const denominators = [...new Set(fractions.map(f => f.fraction.d))];
   let ashl = denominators[0]!;
   for (const denominator of denominators.slice(1)) {
-    const { relation, gcd, result } = nisab(ashl, denominator);
+    const { hubungan: relation, fpb: gcd, hasil: result } = nisab(ashl, denominator);
     trace.push({ stage: 'ashl', refs: ['R10-1', 'R09-1'], kind: 'NISAB_COMPARE', purpose: 'ashl', a: ashl, b: denominator, relation, gcd, result });
     ashl = result;
   }

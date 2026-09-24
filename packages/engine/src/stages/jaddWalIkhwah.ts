@@ -1,11 +1,11 @@
-import { compare, fraction, mul, sub, type Fraction } from '@waris/math';
+import { bandingkan, pecahan, kali, kurang, type Pecahan } from '@waris/math';
 import type { JaddOption, PersonId, TraceStep } from '../types.js';
 import { isMale, makeGroup, unitOf, type Heir, type ShareGroup, type Unsupported } from './model.js';
 
-const ONE = fraction(1n);
-const SUDUS = fraction(1n, 6n);
-const NISF = fraction(1n, 2n);
-const TSULUTS = fraction(1n, 3n);
+const ONE = pecahan(1n);
+const SUDUS = pecahan(1n, 6n);
+const NISF = pecahan(1n, 2n);
+const TSULUTS = pecahan(1n, 3n);
 
 const unitWeights = (heirs: Heir[]): Record<PersonId, bigint> => Object.fromEntries(heirs.map(h => [h.personId, unitOf(h)]));
 const ashabahType = (heirs: Heir[]) => (heirs.some(h => !isMale(h)) ? 'bilGhair' as const : 'binNafsi' as const);
@@ -17,7 +17,7 @@ const ashabahType = (heirs: Heir[]) => (heirs.some(h => !isMale(h)) ? 'bilGhair'
 export function jaddWalIkhwah(
   jadd: Heir,
   siblings: Heir[],
-  furudhSum: Fraction,
+  furudhSum: Pecahan,
   hasFaruMuannats: boolean,
 ): { groups: ShareGroup[]; trace: TraceStep[] } | Unsupported {
   if (hasFaruMuannats && !siblings.some(isMale)) {
@@ -30,11 +30,11 @@ export function jaddWalIkhwah(
 
   const groups: ShareGroup[] = [];
   const trace: TraceStep[] = [];
-  const sisa = sub(ONE, furudhSum);
+  const sisa = kurang(ONE, furudhSum);
   const units = siblings.reduce((sum, h) => sum + unitOf(h), 0n);
 
   // [R08-3] sisa ≤ 1/6: kakek 1/6 (dengan 'aul bila perlu), saudara gugur — tetap dicatat sebagai ashabah tanpa sisa.
-  if (furudhSum.n > 0n && compare(sisa, SUDUS) <= 0) {
+  if (furudhSum.n > 0n && bandingkan(sisa, SUDUS) <= 0) {
     groups.push(makeGroup('JADD', { [jadd.personId]: 1n }, { kind: 'fardh', fardh: SUDUS }));
     trace.push({ stage: 'furudh', refs: ['R08-3'], kind: 'FARDH', group: 'JADD', fardh: SUDUS,
       reason: { code: 'JADD_SISA_SEDIKIT', sisa } });
@@ -45,11 +45,11 @@ export function jaddWalIkhwah(
 
   // [R08-2] tanpa furudh: terbaik dari muqasamah dan 1/3; [R08-3] dengan furudh: + 1/3 sisa dan 1/6.
   // Seri → muqasamah didahulukan (bab 8.2 "pilih muqasamah secara default").
-  const muqasamah = mul(sisa, fraction(2n, 2n + units));
-  const options: Array<[JaddOption, Fraction]> = furudhSum.n === 0n
+  const muqasamah = kali(sisa, pecahan(2n, 2n + units));
+  const options: Array<[JaddOption, Pecahan]> = furudhSum.n === 0n
     ? [['muqasamah', muqasamah], ['tsuluts', TSULUTS]]
-    : [['muqasamah', muqasamah], ['tsulutsBaqi', mul(sisa, TSULUTS)], ['sudus', SUDUS]];
-  const [pilihan, bagianKakek] = options.reduce((best, opt) => (compare(opt[1], best[1]) > 0 ? opt : best));
+    : [['muqasamah', muqasamah], ['tsulutsBaqi', kali(sisa, TSULUTS)], ['sudus', SUDUS]];
+  const [pilihan, bagianKakek] = options.reduce((best, opt) => (bandingkan(opt[1], best[1]) > 0 ? opt : best));
   const refs = [furudhSum.n === 0n ? 'R08-2' : 'R08-3'];
   const jaddChoice = {
     code: 'JADD_WAL_IKHWAH' as const, sisa, options: options.map(([name, value]) => ({ name, value })), chosen: pilihan,
@@ -83,8 +83,8 @@ export function jaddWalIkhwah(
   const [onlyKandung] = kandung;
   if (kandung.length === 1 && onlyKandung && !isMale(onlyKandung)) {
     // [R08-4] saudari kandung tunggal mengambil hingga 1/2; lebihnya untuk sebapak.
-    const bagianSaudara = sub(sisa, bagianKakek);
-    const bagianUkht = compare(bagianSaudara, NISF) < 0 ? bagianSaudara : NISF;
+    const bagianSaudara = kurang(sisa, bagianKakek);
+    const bagianUkht = bandingkan(bagianSaudara, NISF) < 0 ? bagianSaudara : NISF;
     groups.push(makeGroup('UKHT_SYQ', { [onlyKandung.personId]: 1n }, { kind: 'fixed', value: bagianUkht, basis: 'muaddah' }));
     groups.push(makeGroup('IKHWAH', unitWeights(sebapak), { kind: 'ashabah', type: ashabahType(sebapak) }));
     trace.push({ stage: 'ashabah', refs: ['R08-4'], kind: 'ASHABAH', group: 'IKHWAH', type: ashabahType(sebapak) });

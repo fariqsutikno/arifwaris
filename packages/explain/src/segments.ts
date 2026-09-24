@@ -1,5 +1,5 @@
 import type { PersonId } from '@waris/engine';
-import type { Fraction } from '@waris/math';
+import type { Pecahan } from '@waris/math';
 import type { TermId } from './terms.js';
 
 /**
@@ -15,9 +15,9 @@ export interface ExplainLine { segments: Segment[]; refs: string[] }
 
 export const toPlainText = (line: ExplainLine): string => line.segments.map(s => s.text).join('');
 
-type Part = string | number | bigint | Fraction | Segment | Segment[];
+type Part = string | number | bigint | Pecahan | Segment | Segment[];
 
-const isFraction = (part: object): part is Fraction => 'n' in part && 'd' in part;
+const isFraction = (part: object): part is Pecahan => 'n' in part && 'd' in part;
 
 /** Template bertag: `s\`${person} mendapat ${fraction}\`` → Segment[]; teks berdampingan digabung. */
 export function s(strings: TemplateStringsArray, ...parts: Part[]): Segment[] {

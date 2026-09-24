@@ -1,4 +1,4 @@
-import type { Fraction, Money, Nisab } from '@waris/math';
+import type { Pecahan, Uang, Nisab } from '@waris/math';
 
 // ─── Graf keluarga ────────────────────────────────────────────────────────────
 
@@ -85,12 +85,12 @@ export interface MasalahTable {
   rows: Array<{
     group: GroupId;
     members: PersonId[];
-    fardh?: Fraction;
+    fardh?: Pecahan;
     ashabah?: boolean;
     /** Saham kelompok per kolom (ashl/aul/radd/tashih). */
     cells: Record<string, bigint>;
     /** Per orang: dalam kelompok 2:1 bagian anggota bisa berbeda. */
-    perPerson: Record<PersonId, { saham: bigint; nominal: Money }>;
+    perPerson: Record<PersonId, { saham: bigint; nominal: Uang }>;
   }>;
   excluded: PersonId[];
 }
@@ -113,7 +113,7 @@ export type FardhReason =
   | { code: 'TANPA_FARU_WARITS' }                            // pasangan 1/2 atau 1/4
   | { code: 'JAM_IKHWAH'; by: PersonId[] }                   // ibu 1/6 karena 2+ saudara (termasuk yang mahjub)
   | { code: 'TANPA_FARU_WARITS_DAN_IKHWAH' }                 // ibu 1/3
-  | { code: 'UMARIYYATAIN'; spouseFardh: Fraction }          // ibu 1/3 sisa
+  | { code: 'UMARIYYATAIN'; spouseFardh: Pecahan }          // ibu 1/3 sisa
   | { code: 'NENEK_TANPA_IBU'; count: number }
   | { code: 'TANPA_MUASHSHIB'; count: number }               // anak/cucu pr: 1 → 1/2, 2+ → 2/3
   | { code: 'TAKMILAH'; with: PersonId[] }                   // 1/6 penyempurna 2/3
@@ -122,20 +122,20 @@ export type FardhReason =
   | { code: 'ADA_FARU_MUANNATS'; by: PersonId[] }            // ayah/kakek 1/6 + sisa
   | { code: 'MUSYARRAKAH' }
   | { code: 'AKDARIYYAH'; part: 'jadd' | 'ukht' }
-  | { code: 'JADD_SISA_SEDIKIT'; sisa: Fraction }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
-  | { code: 'JADD_WAL_IKHWAH'; sisa: Fraction; options: Array<{ name: JaddOption; value: Fraction }>; chosen: JaddOption };
+  | { code: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
+  | { code: 'JADD_WAL_IKHWAH'; sisa: Pecahan; options: Array<{ name: JaddOption; value: Pecahan }>; chosen: JaddOption };
 
 export type TraceStep = { stage: Stage; refs: string[] } & (
   | { kind: 'MANI'; personId: PersonId; mani: string }
   | { kind: 'HAJB_HIRMAN'; mahjub: PersonId; hajib: PersonId[] }
-  | { kind: 'HAJB_NUQSHAN'; affected: PersonId; from: Fraction; to: Fraction; cause: PersonId[] }
-  | { kind: 'FARDH'; group: GroupId; fardh: Fraction; reason: FardhReason }
+  | { kind: 'HAJB_NUQSHAN'; affected: PersonId; from: Pecahan; to: Pecahan; cause: PersonId[] }
+  | { kind: 'FARDH'; group: GroupId; fardh: Pecahan; reason: FardhReason }
   | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair';
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
       jaddChoice?: Extract<FardhReason, { code: 'JADD_WAL_IKHWAH' }> }
   | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
-  | { kind: 'TIRKAH'; gross: Money; tajhiz: Money; hutang: Money; wasiatDiminta: Money; wasiatBatas: Money;
-      wasiatDipakai: Money; wasiatButuhIjazah: Money; bersih: Money }
+  | { kind: 'TIRKAH'; gross: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
+      wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
   // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).
   // inkisar: a = saham kelompok, b = ru'us, result = simpanan (ru'us ÷ FPB; 1 bila habis).
   // raddVsSisa: a = sisa zawjiyyah, b = ashl radd, result = ashl akhir.
@@ -148,7 +148,7 @@ export type TraceStep = { stage: Stage; refs: string[] } & (
       raddiyyah: { saham: Record<GroupId, bigint>; ashl: bigint };
       result: bigint }
   | { kind: 'TASHIH'; base: bigint; juzSahm: bigint; result: bigint }
-  | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Money }
+  | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Uang }
   // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
   | { kind: 'MUNASAKHAT'; mayit: PersonId; saham: bigint; masalah: bigint; relation: InkisarRelation;
       gcd: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;
@@ -173,7 +173,7 @@ export type EngineResult =
       statuses: Record<PersonId, PersonStatus>;
       table: MasalahTable;
       trace: TraceStep[];
-      rounding: { unit: bigint; remainder: Money };
+      rounding: { unit: bigint; remainder: Uang };
       ruleset: Ruleset;
       config: MadhhabConfig;
       kbVersion: string };
@@ -181,10 +181,10 @@ export type EngineResult =
 // ─── Input engine ─────────────────────────────────────────────────────────────
 
 export interface TirkahInput {
-  gross: Money;
-  tajhiz: Money;
-  hutang: Money;
-  wasiat: Money;
+  gross: Uang;
+  tajhiz: Uang;
+  hutang: Uang;
+  wasiat: Uang;
 }
 
 // Satuan pembulatan nominal, dipilih pengguna (tunai vs transfer bank). Bukan khilaf fikih.
@@ -228,6 +228,6 @@ export type MunasakhatResult =
       saham: Record<PersonId, bigint>;
       /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. */
       ikhtishar: { jamiah: bigint; saham: Record<PersonId, bigint> };
-      nominal: Record<PersonId, Money>;
-      rounding: { unit: bigint; remainder: Money };
+      nominal: Record<PersonId, Uang>;
+      rounding: { unit: bigint; remainder: Uang };
       trace: TraceStep[] };

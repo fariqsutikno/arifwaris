@@ -1,4 +1,4 @@
-import { floorShare, fraction, type Money } from '@waris/math';
+import { bulatkanKeBawah, pecahan, type Uang } from '@waris/math';
 import type { MasalahTable, PersonId, PersonStatus, TraceStep } from '../types.js';
 import type { Classified } from './klasifikasi.js';
 import { fixedFractionOf, isResidueGroup, type Masalah } from './model.js';
@@ -8,12 +8,12 @@ import type { Tashih } from './tashih.js';
  * Tahap 6 (bab 11.1): nominal = saham ÷ tashih × tirkah bersih, dibulatkan ke bawah ke kelipatan
  * `unit` per orang; selisihnya dilaporkan, tidak dibagikan diam-diam (engine-contract Tahap 6).
  */
-export function distributeNominal(perPerson: Record<PersonId, bigint>, tashih: bigint, bersih: Money, unit: bigint):
-  { nominal: Record<PersonId, Money>; remainder: Money; trace: TraceStep[] } {
-  const nominal: Record<PersonId, Money> = {};
+export function distributeNominal(perPerson: Record<PersonId, bigint>, tashih: bigint, bersih: Uang, unit: bigint):
+  { nominal: Record<PersonId, Uang>; remainder: Uang; trace: TraceStep[] } {
+  const nominal: Record<PersonId, Uang> = {};
   const trace: TraceStep[] = [];
   for (const [personId, saham] of Object.entries(perPerson)) {
-    const amount = floorShare(bersih, fraction(saham, tashih), unit);
+    const amount = bulatkanKeBawah(bersih, pecahan(saham, tashih), unit);
     nominal[personId] = amount;
     trace.push({ stage: 'distribusi', refs: ['R11-1'], kind: 'DISTRIBUTE', personId, saham, of: tashih, amount });
   }
@@ -26,7 +26,7 @@ export function buildTable(
   masalah: Masalah,
   classified: Classified,
   tashih: Tashih,
-  nominal: Record<PersonId, Money>,
+  nominal: Record<PersonId, Uang>,
   statuses: Record<PersonId, PersonStatus>,
 ): MasalahTable {
   const adaTashih = tashih.juzSahm > 1n;

@@ -1,4 +1,4 @@
-import { fraction } from '@waris/math';
+import { pecahan } from '@waris/math';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../__tests__/fixtures/bab16.js';
 import { compute } from '../../pipeline.js';
@@ -63,7 +63,7 @@ describe('tahap 4 — klasifikasi, \'aul, radd [R09-3] [R09-7]', () => {
   });
 
   test('[R09-4] \'aul di luar 6→7..10, 12→13/15/17, 24→27 = pelanggaran invarian', () => {
-    const fardh = (d: bigint, n = 1n) => ({ kind: 'fardh' as const, fardh: fraction(n, d) });
+    const fardh = (d: bigint, n = 1n) => ({ kind: 'fardh' as const, fardh: pecahan(n, d) });
     const masalah = computeAshl([
       makeGroup('A', { a: 1n }, fardh(8n)), makeGroup('B', { b: 1n }, fardh(3n, 2n)), makeGroup('C', { c: 1n }, fardh(3n, 2n)),
     ]);
@@ -116,7 +116,7 @@ describe('tahap 5 — tashih [R10-2] [R10-3]', () => {
 
   test('[R10-3] inkisar > 4 kelompok = pelanggaran invarian', () => {
     const groups = ['A', 'B', 'C', 'D', 'E'].map(id =>
-      makeGroup(id, { [`${id}1`]: 1n, [`${id}2`]: 1n }, { kind: 'fardh', fardh: fraction(1n, 5n) }));
+      makeGroup(id, { [`${id}1`]: 1n, [`${id}2`]: 1n }, { kind: 'fardh', fardh: pecahan(1n, 5n) }));
     const saham = Object.fromEntries(groups.map(g => [g.id, 1n]));
     expect(() => applyTashih(groups, saham, 5n)).toThrow(/R10-3/);
   });

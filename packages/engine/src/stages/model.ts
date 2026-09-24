@@ -1,16 +1,16 @@
-import { gcd, type Fraction } from '@waris/math';
+import { fpb, type Pecahan } from '@waris/math';
 import type { GroupId, HeirKey, HeirRole, PersonId } from '../types.js';
 
 /** Calon ahli waris: peran yang punya HeirKey (bukan DZAWIL_ARHAM / NON_HEIR). */
 export type Heir = HeirRole & { key: HeirKey };
 
 export type Share =
-  | { kind: 'fardh'; fardh: Fraction }
+  | { kind: 'fardh'; fardh: Pecahan }
   // [R04-5] ayah/kakek bersama far'u warits muannats: 1/6 + sisa.
-  | { kind: 'fardhAshabah'; fardh: Fraction }
+  | { kind: 'fardhAshabah'; fardh: Pecahan }
   | { kind: 'ashabah'; type: 'binNafsi' | 'bilGhair' | 'maalGhair' }
   // Bab 08: bagian kakek/saudari yang ditetapkan sebagai pecahan harta, bukan fardh muqaddarah.
-  | { kind: 'fixed'; value: Fraction; basis: 'tsuluts' | 'tsulutsBaqi' | 'muqasamah' | 'muaddah' };
+  | { kind: 'fixed'; value: Pecahan; basis: 'tsuluts' | 'tsulutsBaqi' | 'muqasamah' | 'muaddah' };
 
 /**
  * Satu baris tabel mas'alah. `weights` = perbandingan bagian antar anggota (2:1 ashabah bil ghair,
@@ -28,7 +28,7 @@ export type Unsupported = { status: 'UNSUPPORTED'; reason: string; refs: string[
 /** Buat grup; bobot dinormalisasi (dibagi FPB bobot bukan nol) supaya 2:2 tampil sebagai rata. */
 export function makeGroup(id: GroupId, weights: Record<PersonId, bigint>, share: Share): ShareGroup {
   const nonZero = Object.values(weights).filter(w => w > 0n);
-  const divisor = nonZero.reduce((acc, w) => gcd(acc, w), 0n) || 1n;
+  const divisor = nonZero.reduce((acc, w) => fpb(acc, w), 0n) || 1n;
   const normalized = Object.fromEntries(Object.entries(weights).map(([id, w]) => [id, w / divisor]));
   return { id, members: Object.keys(weights), weights: normalized, share };
 }
@@ -52,7 +52,7 @@ export interface Masalah {
 }
 
 /** Pecahan tetap sebuah kelompok (fardh, bagian fardh ayah/kakek, atau bagian tetap bab 08); ashabah murni → undefined. */
-export function fixedFractionOf(share: Share): Fraction | undefined {
+export function fixedFractionOf(share: Share): Pecahan | undefined {
   switch (share.kind) {
     case 'fardh': case 'fardhAshabah': return share.fardh;
     case 'fixed': return share.value;

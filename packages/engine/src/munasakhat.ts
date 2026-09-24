@@ -1,4 +1,4 @@
-import { gcd } from '@waris/math';
+import { fpb } from '@waris/math';
 import { compute } from './pipeline.js';
 import { distributeNominal } from './stages/pembagian.js';
 import { computeTirkah } from './stages/tirkah.js';
@@ -135,7 +135,7 @@ const total = (saham: Saham): bigint => Object.values(saham).reduce((a, b) => a 
 function combine(saham: Saham, jamiah: bigint, mayit: PersonId, masalahSaham: Saham, masalah: bigint):
   { saham: Saham; trace: Extract<TraceStep, { kind: 'MUNASAKHAT' }> } {
   const sahamMayit = saham[mayit]!;
-  const faktor = gcd(sahamMayit, masalah);
+  const faktor = fpb(sahamMayit, masalah);
   const wafqMasalah = masalah / faktor;
   const wafqSaham = sahamMayit / faktor;
   const relation: InkisarRelation = sahamMayit % masalah === 0n ? 'habis' : faktor === 1n ? 'tabayun' : 'tawafuq';
@@ -163,7 +163,7 @@ function assertInvariants(saham: Saham, jamiah: bigint): void {
 
 /** Bab 12.4 jenis 3: bila semua saham bersekutu, dibagi FPB-nya. Hanya penyajian. */
 function ikhtisharSiham(saham: Saham, jamiah: bigint): { jamiah: bigint; saham: Saham } {
-  const faktor = Object.values(saham).reduce((acc, value) => gcd(acc, value), jamiah);
+  const faktor = Object.values(saham).reduce((acc, value) => fpb(acc, value), jamiah);
   return {
     jamiah: jamiah / faktor,
     saham: Object.fromEntries(Object.entries(saham).map(([personId, value]) => [personId, value / faktor])),

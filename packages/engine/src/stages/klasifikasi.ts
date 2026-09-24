@@ -1,4 +1,4 @@
-import { gcd } from '@waris/math';
+import { fpb } from '@waris/math';
 import type { GroupId, InkisarRelation, MadhhabConfig, TraceStep } from '../types.js';
 import { isResidueGroup, type Masalah, type Unsupported } from './model.js';
 
@@ -53,7 +53,7 @@ function applyRadd(masalah: Masalah, total: bigint, config: MadhhabConfig, hasDz
   }
 
   // [R09-7] ashl radd = jumlah saham ahli radd, disederhanakan (satu jenis → per kepala lewat tashih).
-  const divisor = receivers.reduce((acc, g) => gcd(acc, saham[g.id]!), 0n);
+  const divisor = receivers.reduce((acc, g) => fpb(acc, saham[g.id]!), 0n);
   const raddSaham: Record<GroupId, bigint> = Object.fromEntries(receivers.map(g => [g.id, saham[g.id]! / divisor]));
   const raddAshl = sum(Object.values(raddSaham));
 
@@ -72,18 +72,18 @@ function applyRadd(masalah: Masalah, total: bigint, config: MadhhabConfig, hasDz
   const zawjiyyahAshl = spouse.share.fardh.d;
   const spouseSaham = spouse.share.fardh.n;
   const sisa = zawjiyyahAshl - spouseSaham;
-  const fpb = gcd(sisa, raddAshl);
-  const relation: InkisarRelation = sisa % raddAshl === 0n ? 'habis' : fpb > 1n ? 'tawafuq' : 'tabayun';
-  const pengali = raddAshl / fpb;             // habis → 1; tawafuq → wafq ashl radd; tabayun → seluruh ashl radd
+  const faktor = fpb(sisa, raddAshl);
+  const relation: InkisarRelation = sisa % raddAshl === 0n ? 'habis' : faktor > 1n ? 'tawafuq' : 'tabayun';
+  const pengali = raddAshl / faktor;             // habis → 1; tawafuq → wafq ashl radd; tabayun → seluruh ashl radd
   const result = zawjiyyahAshl * pengali;
   const finalSaham: Record<GroupId, bigint> = { [spouse.id]: spouseSaham * pengali };
-  for (const g of receivers) finalSaham[g.id] = raddSaham[g.id]! * (sisa / fpb);
+  for (const g of receivers) finalSaham[g.id] = raddSaham[g.id]! * (sisa / faktor);
 
   return {
     base: result, saham: finalSaham, column: 'radd',
     trace: [
       { stage: 'klasifikasi', refs: ['R09-7'], kind: 'MASALAH_CLASS', cls: 'raddB', sumSaham: total, ashl },
-      { stage: 'klasifikasi', refs: ['R09-10'], kind: 'NISAB_COMPARE', purpose: 'raddVsSisa', a: sisa, b: raddAshl, relation, gcd: fpb, result },
+      { stage: 'klasifikasi', refs: ['R09-10'], kind: 'NISAB_COMPARE', purpose: 'raddVsSisa', a: sisa, b: raddAshl, relation, gcd: faktor, result },
       { stage: 'klasifikasi', refs: ['R09-7', 'R09-10'], kind: 'RADD',
         zawjiyyah: { group: spouse.id, ashl: zawjiyyahAshl, spouseSaham, sisa },
         raddiyyah: { saham: raddSaham, ashl: raddAshl }, result },

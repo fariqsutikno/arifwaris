@@ -1,17 +1,17 @@
-import { add, compare, fraction, mul, sub, type Fraction } from '@waris/math';
+import { tambah, bandingkan, pecahan, kali, kurang, type Pecahan } from '@waris/math';
 import type { FardhReason, GroupId, HeirKey, PersonId, TraceStep } from '../types.js';
 import { jaddWalIkhwah } from './jaddWalIkhwah.js';
 import { isAkdariyyah, isMusyarrakah, isUmariyyatain } from './khusus.js';
 import { equalWeights, makeGroup, unitOf, type Heir, type ShareGroup, type Unsupported } from './model.js';
 
-const ZERO = fraction(0n);
-const ONE = fraction(1n);
-const NISF = fraction(1n, 2n);
-const RUBU = fraction(1n, 4n);
-const TSUMUN = fraction(1n, 8n);
-const TSULUTSAN = fraction(2n, 3n);
-const TSULUTS = fraction(1n, 3n);
-const SUDUS = fraction(1n, 6n);
+const ZERO = pecahan(0n);
+const ONE = pecahan(1n);
+const NISF = pecahan(1n, 2n);
+const RUBU = pecahan(1n, 4n);
+const TSUMUN = pecahan(1n, 8n);
+const TSULUTSAN = pecahan(2n, 3n);
+const TSULUTS = pecahan(1n, 3n);
+const SUDUS = pecahan(1n, 6n);
 
 const SIBLING_KEYS: HeirKey[] = ['AKH_SYQ', 'UKHT_SYQ', 'AKH_AB', 'UKHT_AB', 'AKH_UMM', 'UKHT_UMM'];
 const HAWASYI_ASHABAH: HeirKey[] = ['IBN_AKH_SYQ', 'IBN_AKH_AB', 'AMM_SYQ', 'AMM_AB', 'IBN_AMM_SYQ', 'IBN_AMM_AB'];
@@ -27,7 +27,7 @@ export function assignShares(effective: Heir[], candidates: Heir[]): { groups: S
   const of = (...keys: HeirKey[]) => effective.filter(h => keys.includes(h.key));
   const ids = (heirs: Heir[]) => heirs.map(h => h.personId);
 
-  const addFardh = (id: GroupId, heirs: Heir[], fardh: Fraction, reason: FardhReason, refs: string[],
+  const addFardh = (id: GroupId, heirs: Heir[], fardh: Pecahan, reason: FardhReason, refs: string[],
     weights: Record<PersonId, bigint> = equalWeights(heirs)) => {
     groups.push(makeGroup(id, weights, { kind: 'fardh', fardh }));
     trace.push({ stage: 'furudh', refs, kind: 'FARDH', group: id, fardh, reason });
@@ -37,7 +37,7 @@ export function assignShares(effective: Heir[], candidates: Heir[]): { groups: S
     groups.push(makeGroup(id, weights, { kind: 'ashabah', type }));
     trace.push({ stage: 'ashabah', refs, kind: 'ASHABAH', group: id, type });
   };
-  const nuqshan = (affected: Heir[], from: Fraction, to: Fraction, cause: Heir[], refs: string[]) => {
+  const nuqshan = (affected: Heir[], from: Pecahan, to: Pecahan, cause: Heir[], refs: string[]) => {
     for (const heir of affected) {
       trace.push({ stage: 'furudh', refs, kind: 'HAJB_NUQSHAN', affected: heir.personId, from, to, cause: ids(cause) });
     }
@@ -71,7 +71,7 @@ export function assignShares(effective: Heir[], candidates: Heir[]): { groups: S
     if (umariyyatain) {
       // [R07-1] ibu 1/3 dari sisa setelah pasangan, supaya ayah tidak kurang dari ibu.
       trace.push({ stage: 'furudh', refs: ['R07-1'], kind: 'SPECIAL_CASE', name: 'umariyyatain' });
-      addFardh('UMM', umm, mul(TSULUTS, sub(ONE, spouseFardh)), { code: 'UMARIYYATAIN', spouseFardh }, ['R07-1', 'R04-4']);
+      addFardh('UMM', umm, kali(TSULUTS, kurang(ONE, spouseFardh)), { code: 'UMARIYYATAIN', spouseFardh }, ['R07-1', 'R04-4']);
     } else {
       const sebab = faruWarits.length > 0 ? faruWarits : ikhwah.length >= 2 ? ikhwah : [];
       const reason: FardhReason = faruWarits.length > 0 ? { code: 'ADA_FARU_WARITS', by: ids(faruWarits) }
@@ -94,7 +94,7 @@ export function assignShares(effective: Heir[], candidates: Heir[]): { groups: S
   for (const depth of [...new Set(of('BINT', 'BINT_IBN').map(h => h.kinship.descentDepth))].sort((a, b) => a - b)) {
     const females = of('BINT', 'BINT_IBN').filter(h => h.kinship.descentDepth === depth);
     const id = depth === 1 ? 'BINT' : `BINT_IBN_${depth}`;
-    if (depth >= maleDepth || compare(tsulutsanTerpakai, TSULUTSAN) === 0) {
+    if (depth >= maleDepth || bandingkan(tsulutsanTerpakai, TSULUTSAN) === 0) {
       // Diashabahkan laki-laki sederajat, atau qarib mubarak ketika 2/3 sudah habis.
       joinedFemales.push(...females);
     } else if (tsulutsanTerpakai.n === 0n) {
@@ -149,10 +149,10 @@ export function assignShares(effective: Heir[], candidates: Heir[]): { groups: S
     const [ukht] = siblingsWithJadd;
     trace.push({ stage: 'furudh', refs: ['R08-5'], kind: 'SPECIAL_CASE', name: 'akdariyyah' });
     trace.push({ stage: 'furudh', refs: ['R08-5'], kind: 'FARDH', group: 'AKDARIYYAH', fardh: SUDUS, reason: { code: 'AKDARIYYAH', part: 'jadd' } });
-    addFardh('AKDARIYYAH', [jadd, ukht!], add(SUDUS, NISF), { code: 'AKDARIYYAH', part: 'ukht' },
+    addFardh('AKDARIYYAH', [jadd, ukht!], tambah(SUDUS, NISF), { code: 'AKDARIYYAH', part: 'ukht' },
       ['R08-5'], { [jadd.personId]: 2n, [ukht!.personId]: 1n });
   } else if (jadd && siblingsWithJadd.length > 0) {
-    const furudhSum = groups.reduce((sum, g) => (g.share.kind === 'fardh' ? add(sum, g.share.fardh) : sum), ZERO);
+    const furudhSum = groups.reduce((sum, g) => (g.share.kind === 'fardh' ? tambah(sum, g.share.fardh) : sum), ZERO);
     const result = jaddWalIkhwah(jadd, siblingsWithJadd, furudhSum, hasFaruMuannats);
     if ('status' in result) return result;
     groups.push(...result.groups);
