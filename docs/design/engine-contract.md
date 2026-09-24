@@ -247,15 +247,20 @@ interface MasalahTable {
   excluded: PersonId[];   // mahjub/mamnu, tampil dengan alasan
 }
 
-interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan Rujukan" KB
-  code: RefCode;
-  type: 'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH';
+interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan Rujukan" KB bab 01–14, 16
+  code: RefCode; bab: number;
   claim: string;
+  jenis: string;           // kolom Jenis apa adanya ("Q + RDH", "H (dha'if)", "—")
+  types: Array<'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH'>;   // jenis gabungan dipecah
   source: string;
-  text?: string;           // teks Arab dari KB, bukan dari luar
-  highlight?: [number, number];
-  status: 'verified' | 'needsVerification';   // bab 17.4
+  kutipan: string;
+  arab: string[];          // teks «…» dari kolom Kutipan — teks Arab dari KB, bukan dari luar
+  status: 'verified' | 'needsVerification';   // tercantum di tabel bab 17.4
+  dhaif: boolean;
 }
+// dalilFor(line.refs) → { entries: DalilView[] (label jenis, sumber, teks Arab, peringatan), notes }
+// Peringatan: KH saja → "kaidah hisab, bukan dalil syar'i"; 17.4 → belum dicek; dha'if; "—" → bukan dalil.
+// Baris tanpa refs / kode tak ada di KB → notes.
 ```
 
 **Trace = data, bukan kalimat.** Alasan setiap keputusan disimpan terstruktur (`FardhReason`: kode + id

@@ -1,4 +1,4 @@
-import { findTerm } from '@waris/content';
+import { findRef, findTerm } from '@waris/content';
 import { compute, type EngineInput, type TraceStep } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
@@ -194,6 +194,21 @@ describe('mode ringkas', () => {
 describe('keterkaitan dengan glosarium dan dalil', () => {
   test('setiap istilah yang dipakai narasi ada di glosarium KB bab 15', () => {
     expect(TERM_IDS.filter(id => !findTerm(id))).toEqual([]);
+  });
+
+  test('setiap kode rujukan di trace dan narasi fixture bab 16 ada di tabel rujukan KB', () => {
+    const missing = new Set<string>();
+    for (const fixture of bab16.BAB16_FIXTURES) {
+      const result = compute(fixture.input);
+      if (result.status !== 'OK') continue;
+      const codes = [
+        ...result.trace.flatMap(step => step.refs),
+        ...(['cerita', 'ringkas'] as const).flatMap(mode =>
+          explain(result, fixture.input.graph, { mode }).sections.flatMap(sec => sec.lines.flatMap(l => l.refs))),
+      ];
+      codes.filter(code => !findRef(code)).forEach(code => missing.add(`${fixture.id}: ${code}`));
+    }
+    expect([...missing]).toEqual([]);
   });
 
   test('baris membawa rujukan untuk lapis dalil', () => {
