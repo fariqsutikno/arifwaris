@@ -89,6 +89,17 @@ ayah/ibu/kakek/nenek → `leluhur`; saudara/keponakan/paman/sepupu → `saudara`
 
 `ShareBar.weight` (`number`) hanya untuk lebar visual, dihitung dari saham/tashih di layer tampilan.
 
+## Penamaan
+
+Mengikuti Standar kode di `CLAUDE.md`, berlaku juga untuk UI:
+- Nama file, komponen, fungsi, state, dan props berbahasa Indonesia yang utuh dan jelas:
+  `LayarHasil`, `KartuAhliWaris`, `tambahAhliWaris`, `daftarMayitWafat`, bukan `ResView`, `hc`, `addH`.
+- Komponen port dari Arif Waris ikut diberi nama Indonesia (`Tombol`, `KartuAhliWaris`, `LangkahHitung`,
+  `KartuHasil`, `BarBagian`, `Stiker`, …); nama aslinya dicatat di komentar pembuka file supaya tetap bisa dicocokkan ke design system.
+- Handler: `saat…` (`saatTambah`, `saatLanjut`). Boolean: `adalah…`/`ada…`/`sedang…`.
+- Istilah fikih pakai transliterasi glosarium (`mahjub`, `tashih`, `jamiah`), tanpa singkatan buatan sendiri.
+- Tiap file dibuka komentar pendek: layar/unit ini menerima apa dan menampilkan/menyerahkan apa.
+
 ## Error & aksesibilitas
 
 - Input uang: hanya digit; nilai negatif/kosong ditolak di form.
