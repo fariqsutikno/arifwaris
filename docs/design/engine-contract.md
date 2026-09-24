@@ -56,6 +56,15 @@ urutan jihah → darajah → quwwah → isytirak. Deteksi kasus khusus bab 07 da
 Per kelompok: saham vs ru'us → habis / tawafuq (simpan wafq ru'us) / tabayun (simpan ru'us).
 Gabung 2–4 simpanan dengan nisab arba' → juz' as-sahm. Tashih = ashl × juz'.
 
+> **Implementasi** [R10-2]: langkah "saham vs ru'us per kelompok" BUKAN `nisab()` generik dari
+> `packages/math` — itu fungsi tersendiri di `packages/engine` (habis / tawafuq / tabayun saja, tanpa
+> tadakhul), karena arahnya searah (habis = ru'us membagi saham) dan nilai yang disimpan (wafq ru'us /
+> ru'us) beda dari `result` (KPK) milik `nisab()`. Contoh pembeda: `nisab(2n, 4n)` = tadakhul, result 4;
+> tapi bab 10.3(b) (ibu, 4 paman: saham paman 2 vs ru'us 4) = **tawafuq**, simpan **2** (wafq ru'us).
+> `nisab()` generik tetap dipakai apa adanya untuk: ashl dari beberapa fardh (9.1), radd vs sisa (9.4),
+> dan gabung simpanan antar 2–4 kelompok (10.3.4) — semua itu perbandingan dua bilangan sejajar yang
+> memang butuh tadakhul.
+
 ### Tahap 6 — Pembagian
 Saham individu = saham kelompok × juz' ÷ ru'us; validasi 10.5; nominal = saham ÷ tashih × harta,
 dibulatkan ke bawah per orang ke kelipatan `unit`, sisa dilaporkan sebagai selisih pembulatan.
