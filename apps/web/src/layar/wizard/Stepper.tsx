@@ -8,7 +8,7 @@ interface Props { langkahAktif: number; terjauh: number; saatPilih: (langkah: nu
 export function Stepper({ langkahAktif, terjauh, saatPilih }: Props) {
   const daftar = [...LANGKAH_WIZARD.map(teks => teks.nama), 'Hasil'];
   return (
-    <nav className="stepper" aria-label="Langkah isian">
+    <nav className="stepper" data-tur="stepper" aria-label="Langkah isian">
       {daftar.map((nama, indeks) => {
         const langkah = indeks + 1;
         const adalahAktif = langkah === langkahAktif;

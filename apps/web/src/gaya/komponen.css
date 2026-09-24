@@ -134,3 +134,14 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .tanya-tujuan{font-family:var(--font-display);font-size:22px;margin:16px 0 0}
 @media (max-width:900px){.kerangka-langkah{grid-template-columns:minmax(0,1fr)}.kerangka-samping{display:none}}
 @media (max-width:560px){.kepala{padding:8px 16px;gap:10px}.kepala .aw-logo small{display:none}.alasan{text-align:left;max-width:none;order:-1;width:100%}}
+
+/* ─── Tur singkat ─── */
+.tur-tirai{position:fixed;inset:0;z-index:70}
+.tur-lubang{position:fixed;z-index:71;pointer-events:none;border-radius:18px;outline:4px solid var(--pink);outline-offset:2px;box-shadow:0 0 0 100vmax rgba(10,12,28,.66);transition:top .2s,left .2s,width .2s,height .2s}
+.tur-pop{position:fixed;z-index:72;width:min(320px,calc(100vw - 32px));background:var(--ink);color:var(--surface-raised);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow-pop);font-size:14px}
+.tur-pop h4{font-family:var(--font-display);font-size:17px;margin:2px 0 4px}
+.tur-pop p{margin:0}
+.tur-pop small{opacity:.75;font-weight:700}
+.tur-aksi{display:flex;align-items:center;gap:8px;margin-top:12px}
+.tur-pop .aw-btn-ghost{color:var(--surface-raised)}
+@media (prefers-reduced-motion:reduce){.tur-lubang{transition:none}}

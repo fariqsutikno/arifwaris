@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, expect, it } from 'vitest';
 import { Aplikasi } from '../Aplikasi';
 
-beforeEach(() => localStorage.clear());
+beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); });
 
 const mulai = (tujuan: 'Hitung kasus' | 'Belajar' = 'Hitung kasus') => {
   render(<Aplikasi />);

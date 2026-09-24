@@ -9,7 +9,7 @@ export function KerangkaLangkah({ langkah, children, ringkasan }: { langkah: num
     <div className="kerangka-langkah">
       <section className="kerangka-utama" aria-labelledby="pertanyaan-utama">
         <p className="label-langkah">Langkah {langkah} dari {LANGKAH_WIZARD.length}</p>
-        <h1 id="pertanyaan-utama" className="pertanyaan-utama">{teks.pertanyaan}</h1>
+        <h1 id="pertanyaan-utama" data-tur="pertanyaan" className="pertanyaan-utama">{teks.pertanyaan}</h1>
         <p className="caption-langkah">{teks.caption}</p>
         <div className="tumpuk">{children}</div>
       </section>
