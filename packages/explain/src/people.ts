@@ -4,7 +4,7 @@ import { joinAnd, type Segment } from './segments.js';
 type Ok = Extract<EngineResult, { status: 'OK' }>;
 
 // Padanan sehari-hari kode peran bab 3.1–3.2.
-const ROLE_LABEL: Record<HeirKey, string> = {
+export const ROLE_LABEL: Record<HeirKey, string> = {
   IBN: 'anak laki-laki', IBN_IBN: 'cucu laki-laki dari anak laki-laki', AB: 'ayah', JADD: 'kakek',
   AKH_SYQ: 'saudara laki-laki kandung', AKH_AB: 'saudara laki-laki sebapak', AKH_UMM: 'saudara laki-laki seibu',
   IBN_AKH_SYQ: 'anak laki-laki saudara kandung', IBN_AKH_AB: 'anak laki-laki saudara sebapak',

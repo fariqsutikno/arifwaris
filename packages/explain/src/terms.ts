@@ -5,7 +5,7 @@ export const TERM_IDS = [
   'tirkah', 'warits', 'faru-warits', 'hajb-hirman', 'hajb-nuqshan', 'mani', 'jam-min-al-ikhwah', 'muashshib',
   'takmilah-tsulutsain', 'kalalah', 'ashabah', 'bi-nafsihi', 'bil-ghair', 'maal-ghair', 'umariyyatain', 'musyarrakah',
   'akdariyyah', 'muaddah', 'muqasamah', 'ashlul-masalah', 'tamatsul', 'tadakhul', 'tawafuq', 'tabayun', 'wafq',
-  'adilah', 'aul', 'radd', 'saham', 'ruus', 'inkisar', 'juz-as-sahm', 'tashih',
+  'adilah', 'aul', 'radd', 'saham', 'ruus', 'inkisar', 'juz-as-sahm', 'tashih', 'munasakhat', 'jamiah',
 ] as const;
 export type TermId = typeof TERM_IDS[number];
 

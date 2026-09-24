@@ -9,6 +9,8 @@ import type {
 type EngineOk = Extract<EngineResult, { status: 'OK' }>;
 type Saham = Record<PersonId, bigint>;
 
+const NO_TIRKAH = { gross: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
+
 /**
  * Orkestrator munasakhat (bab 12) di atas pipeline: tiap mayit dihitung dengan `compute`, lalu digabung
  * bertahap memakai metode Keadaan 3, yang berlaku untuk semua keadaan [R12-3].
@@ -28,7 +30,9 @@ export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
       trace.push({ stage: 'munasakhat', refs: ['R12-1'], kind: 'MUNASAKHAT_SKIP', mayit });
       continue;
     }
-    const result = compute({ ...input.base, graph: graphAt(input, order, index) });
+    // Hanya harta mayit pertama yang bernominal; mayit berikutnya cukup mas'alah-nya (bab 12.5).
+    const tirkah = index === 0 ? input.base.tirkah : NO_TIRKAH;
+    const result = compute({ ...input.base, tirkah, graph: graphAt(input, order, index) });
     if (result.status !== 'OK') return { ...result, mayit };
     steps.push({ mayit, result });
 
@@ -106,17 +110,19 @@ function combine(saham: Saham, jamiah: bigint, mayit: PersonId, masalahSaham: Sa
   const wafqSaham = sahamMayit / faktor;
   const relation: InkisarRelation = sahamMayit % masalah === 0n ? 'habis' : faktor === 1n ? 'tabayun' : 'tawafuq';
 
-  const next: Saham = {};
+  const rincian: Extract<TraceStep, { kind: 'MUNASAKHAT' }>['rincian'] = {};
   for (const [personId, value] of Object.entries(saham)) {
-    if (personId !== mayit) next[personId] = value * wafqMasalah;
+    if (personId !== mayit) rincian[personId] = { sebelum: value, dariMayit: 0n, sesudah: value * wafqMasalah };
   }
   for (const [personId, value] of Object.entries(masalahSaham)) {
-    next[personId] = (next[personId] ?? 0n) + value * wafqSaham;
+    const row = rincian[personId] ?? { sebelum: 0n, dariMayit: 0n, sesudah: 0n };
+    rincian[personId] = { ...row, dariMayit: value, sesudah: row.sesudah + value * wafqSaham };
   }
+  const next: Saham = Object.fromEntries(Object.entries(rincian).map(([personId, row]) => [personId, row.sesudah]));
   return {
     saham: next,
     trace: { stage: 'munasakhat', refs: ['R12-2'], kind: 'MUNASAKHAT', mayit, saham: sahamMayit, masalah, relation,
-      gcd: faktor, wafqMasalah, wafqSaham, jamiah: jamiah * wafqMasalah },
+      gcd: faktor, wafqMasalah, wafqSaham, jamiah: jamiah * wafqMasalah, rincian },
   };
 }
 

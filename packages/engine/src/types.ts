@@ -151,7 +151,9 @@ export type TraceStep = { stage: Stage; refs: string[] } & (
   | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Money }
   // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
   | { kind: 'MUNASAKHAT'; mayit: PersonId; saham: bigint; masalah: bigint; relation: InkisarRelation;
-      gcd: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint }
+      gcd: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;
+      /** Per orang: saham sebelum × wafqMasalah + saham dari mayit × wafqSaham = sesudah. */
+      rincian: Record<PersonId, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
   // Yang wafat tidak mendapat bagian dari mayit sebelumnya → tidak ada yang diteruskan; diabaikan [R12-1].
   | { kind: 'MUNASAKHAT_SKIP'; mayit: PersonId }
 );
