@@ -82,6 +82,33 @@ export const REFS: RefEntry[] = CHAPTERS.flatMap(([bab, md]) => parseRefs(md, ba
 const byCode = new Map(REFS.map(ref => [ref.code, ref]));
 export const findRef = (code: string): RefEntry | undefined => byCode.get(code);
 
+// ─── Teks ayat (KB bab 1.2) ───────────────────────────────────────────────────
+
+export interface Ayat { surah: string; ayat: number; text: string }
+
+/** Blok ayat bab 1.2: baris `**Surah: N** ...` diikuti kutipan `> teks`. */
+export function parseAyat(markdown: string): Ayat[] {
+  const lines = markdown.split('\n');
+  return lines.flatMap((line, i) => {
+    const heading = /^\*\*([A-Z][\w'-]*): (\d+)\*\*/.exec(line);
+    const next = lines[i + 1];
+    return heading && next?.startsWith('> ') ? [{ surah: heading[1]!, ayat: Number(heading[2]), text: next.slice(2).trim() }] : [];
+  });
+}
+
+export const AYAT: Ayat[] = parseAyat(bab01);
+
+/** Bagian Al-Qur'an di kolom Sumber (sebelum "·"): "An-Nisa' 11, 12, 176", "Al-Anfal 75; Al-Ahzab 6". */
+export function ayatRefs(source: string): Array<{ surah: string; ayat: number }> {
+  return source.split('·')[0]!.split(';').flatMap(part => {
+    const match = /^\s*([A-Z][A-Za-z'-]+)\s+([\d,\s]+?)\s*$/.exec(part);
+    return match ? match[2]!.split(',').map(n => ({ surah: match[1]!, ayat: Number(n.trim()) })) : [];
+  });
+}
+
+const surahKey = (surah: string) => surah.replace(/['’]/g, '').toLowerCase();
+const findAyat = (surah: string, ayat: number) => AYAT.find(a => surahKey(a.surah) === surahKey(surah) && a.ayat === ayat);
+
 // ─── Lapis 3: dalil per baris penjelasan ──────────────────────────────────────
 
 const TYPE_LABEL: Record<RefType, string> = {
@@ -94,6 +121,8 @@ export interface DalilView {
   labels: string[];
   source: string;
   arab: string[];
+  /** Untuk dalil Al-Qur'an: teks ayat dari KB bab 1.2; `text` kosong bila belum ada di KB. */
+  ayat: Array<{ label: string; text?: string }>;
   kutipan: string;
   warnings: string[];
 }
@@ -117,9 +146,17 @@ export function dalilFor(codes: string[]): { entries: DalilView[]; notes: string
     if (ref.types.length === 0) warnings.push('Keterangan tambahan, bukan dalil.');
     if (ref.status === 'needsVerification') warnings.push('Dasar ini belum dicek ke teks aslinya (bab 17.4).');
     if (ref.dhaif) warnings.push("Sanad hadits ini dha'if (lemah).");
+    const ayat = ref.types.includes('Q')
+      ? ayatRefs(ref.source).map(({ surah, ayat: n }) => {
+        const found = findAyat(surah, n);
+        return { label: `${surah} ${n}`, ...(found ? { text: found.text } : {}) };
+      })
+      : [];
+    const tanpaTeks = ayat.filter(a => a.text === undefined).map(a => a.label);
+    if (tanpaTeks.length > 0) warnings.push(`Teks ayat ${tanpaTeks.join(', ')} belum ada di KB.`);
     entries.push({
       code, claim: ref.claim, labels: ref.types.map(t => TYPE_LABEL[t]), source: ref.source,
-      arab: ref.arab, kutipan: ref.kutipan, warnings,
+      arab: ref.arab, ayat, kutipan: ref.kutipan, warnings,
     });
   }
   return { entries, notes };

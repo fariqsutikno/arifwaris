@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { REFS, dalilFor, findRef, parseNeedsVerification, parseRefs } from '../index.js';
+import { AYAT, REFS, ayatRefs, dalilFor, findRef, parseAyat, parseNeedsVerification, parseRefs } from '../index.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
   const md = [
@@ -62,5 +62,32 @@ describe('dalilFor — lapis 3 per baris penjelasan', () => {
   test('baris tanpa rujukan dan kode yang tidak ada di KB ditandai', () => {
     expect(dalilFor([])).toEqual({ entries: [], notes: ['Langkah ini belum punya rujukan di KB.'] });
     expect(dalilFor(['R99-1'])).toEqual({ entries: [], notes: ['Rujukan R99-1 belum tersedia di KB.'] });
+  });
+});
+
+describe('teks ayat dari KB bab 1.2', () => {
+  test('parseAyat: blok **Surah: N** diikuti kutipan >', () => {
+    const md = ['**An-Nisa: 11** (anak)', '> يُوصِيكُمُ اللَّهُ', '', '**Hadits dasar**', '> bukan ayat'].join('\n');
+    expect(parseAyat(md)).toEqual([{ surah: 'An-Nisa', ayat: 11, text: 'يُوصِيكُمُ اللَّهُ' }]);
+  });
+
+  test('KB memuat An-Nisa\' 11, 12, 176', () => {
+    expect(AYAT.map(a => `${a.surah} ${a.ayat}`)).toEqual(['An-Nisa 11', 'An-Nisa 12', 'An-Nisa 176']);
+  });
+
+  test('ayatRefs: bagian Al-Qur\'an di kolom Sumber → daftar ayat', () => {
+    expect(ayatRefs("An-Nisa' 11, 12, 176 · RDH Bab 9, muqaddimah 1")).toEqual([
+      { surah: "An-Nisa'", ayat: 11 }, { surah: "An-Nisa'", ayat: 12 }, { surah: "An-Nisa'", ayat: 176 },
+    ]);
+    expect(ayatRefs('Al-Anfal 75; Al-Ahzab 6')).toEqual([{ surah: 'Al-Anfal', ayat: 75 }, { surah: 'Al-Ahzab', ayat: 6 }]);
+  });
+
+  test('dalilFor menampilkan teks ayat; ayat yang belum ada di KB ditandai', () => {
+    const [r042] = dalilFor(['R04-2']).entries;
+    expect(r042!.ayat).toEqual([{ label: "An-Nisa' 12", text: AYAT[1]!.text }]);
+    const [r141] = dalilFor(['R14-1']).entries;
+    expect(r141!.ayat).toEqual([{ label: 'Al-Anfal 75' }, { label: 'Al-Ahzab 6' }]);
+    expect(r141!.warnings).toContain('Teks ayat Al-Anfal 75, Al-Ahzab 6 belum ada di KB.');
+    expect(dalilFor(['R09-1']).entries[0]!.ayat).toEqual([]);   // bukan dalil Al-Qur'an
   });
 });
