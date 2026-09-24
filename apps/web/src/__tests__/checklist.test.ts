@@ -89,3 +89,13 @@ describe('checklist', () => {
     expect(() => tambahAhliWaris(graf, 'PEWARIS', 'AYAH')).toThrow();
   });
 });
+
+describe('pasangan diisi setelah anak', () => {
+  it('istri jadi ibu anak yang belum punya ibu; anak-anak saling kandung', () => {
+    let graf = tambahAhliWaris(grafAwal('L'), 'PEWARIS', 'ANAK_LK');
+    graf = tambahAhliWaris(graf, 'PEWARIS', 'ANAK_LK');
+    graf = tambahAhliWaris(graf, 'PEWARIS', 'ISTRI');
+    const [idAnak] = hitungIsian(graf, 'PEWARIS').ANAK_LK!;
+    expect(jumlah(graf, idAnak!)).toMatchObject({ IBU: 1, SAUDARA_KANDUNG: 1 });
+  });
+});

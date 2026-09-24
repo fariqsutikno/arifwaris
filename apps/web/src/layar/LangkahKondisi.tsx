@@ -12,21 +12,33 @@ import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
 
 export function LangkahKondisi({ kasus, ubah }: Props) {
+  // Ahli waris pewaris asal dan tiap mayit munasakhat, masing-masing dinamai relatif ke mayit tempat ia pertama muncul.
+  const mayitDari: Record<IdOrang, IdOrang> = {};
+  for (const idMayit of [kasus.graf.idPewaris, ...kasus.urutanWafat]) {
+    for (const idOrang of Object.values(hitungIsian(kasus.graf, idMayit)).flat() as IdOrang[]) {
+      if (idOrang !== kasus.graf.idPewaris && !mayitDari[idOrang]) mayitDari[idOrang] = idMayit;
+    }
+  }
+  const semuaAhliWaris = Object.keys(mayitDari);
   const daftarAhliWaris = Object.values(hitungIsian(kasus.graf, kasus.graf.idPewaris)).flat() as IdOrang[];
   const ubahOrang = (idOrang: IdOrang, perubahan: Partial<Orang>) =>
     ubah(k => ({ ...k, graf: { ...k.graf, orang: { ...k.graf.orang, [idOrang]: { ...k.graf.orang[idOrang]!, ...perubahan } } } }));
-  const label = (idOrang: IdOrang) => labelOrangChecklist(kasus.graf, kasus.graf.idPewaris, idOrang);
+  const labelDasar = (idOrang: IdOrang) => labelOrangChecklist(kasus.graf, mayitDari[idOrang] ?? kasus.graf.idPewaris, idOrang);
+  const label = (idOrang: IdOrang) => {
+    const idMayit = mayitDari[idOrang];
+    return idMayit && idMayit !== kasus.graf.idPewaris ? `${labelDasar(idOrang)} (ahli waris ${labelDasar(idMayit)})` : labelDasar(idOrang);
+  };
 
   return (
     <div className="tumpuk">
       <p className="keterangan">Nggak ada? Langsung aja gas hitung.</p>
       <Kondisi judul="Ada yang beda agama dengan almarhum" keterangan="Beda agama menggugurkan hak waris.">
-        {daftarAhliWaris.map(id => (
+        {semuaAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={kasus.graf.orang[id]!.agama === 'nonIslam'}
             saatUbah={tercentang => ubahOrang(id, { agama: tercentang ? 'nonIslam' : 'islam' })} />
         ))}
       </Kondisi>
-      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Pembunuh nggak dapat warisan, apa pun bentuknya.">
+      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Pembunuh nggak dapat warisan, apa pun bentuknya. Yang dimaksud: kematian pewaris pertama.">
         {daftarAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={!!kasus.graf.orang[id]!.membunuhPewaris}
             saatUbah={tercentang => ubahOrang(id, { membunuhPewaris: tercentang })} />

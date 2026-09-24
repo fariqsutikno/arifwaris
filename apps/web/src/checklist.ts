@@ -95,7 +95,8 @@ function bangun(graf: GrafKeluarga, idMayit: IdOrang, kunci: KunciAhliWaris, seb
   switch (kunci) {
     case 'SUAMI': case 'ISTRI': {
       const idOrang = idBaru(graf);
-      return { graf: tambahKerabat(graf, idMayit, kunci === 'SUAMI' ? 'suami' : 'istri', { id: idOrang }), idOrang };
+      const grafBaru = tambahKerabat(graf, idMayit, kunci === 'SUAMI' ? 'suami' : 'istri', { id: idOrang });
+      return { graf: hubungkanAnakTanpaOrangTuaLain(grafBaru, idMayit), idOrang };
     }
     case 'ANAK_LK': case 'ANAK_PR':
       return tambahAnakDariMayit(graf, idMayit, kunci === 'ANAK_LK' ? 'L' : 'P', status);
@@ -132,14 +133,29 @@ function pilihInduk(graf: GrafKeluarga, idMayit: IdOrang, kunciInduk: KunciAhliW
   return penghubungAda ? { graf, idOrang: penghubungAda } : bangun(graf, idMayit, kunciInduk, true);
 }
 
-/** Anak mayit. Pasangan yang masih hidup (tepat satu) otomatis jadi orang tua lainnya. */
-function tambahAnakDariMayit(graf: GrafKeluarga, idMayit: IdOrang, jenisKelamin: 'L' | 'P', status: Partial<Orang>): Hasil {
-  const mayit = graf.orang[idMayit]!;
+/** Pasangan mayit yang masih hidup, bila tepat satu; dialah orang tua lain anak-anak mayit. */
+function satuSatunyaPasanganHidup(graf: GrafKeluarga, idMayit: IdOrang): IdOrang | undefined {
   const idPasangan = graf.pernikahan
     .filter(nikah => nikah.status !== 'talakBain' && (nikah.idSuami === idMayit || nikah.idIstri === idMayit))
     .map(nikah => (nikah.idSuami === idMayit ? nikah.idIstri : nikah.idSuami))
     .filter(id => graf.orang[id]?.statusHidup !== 'wafat');
-  const orangTuaLain = idPasangan.length === 1 ? idPasangan[0] : undefined;
+  return idPasangan.length === 1 ? idPasangan[0] : undefined;
+}
+
+/** Pasangan diisi setelah anak: anak mayit yang belum punya orang tua lain dihubungkan ke pasangan itu. */
+function hubungkanAnakTanpaOrangTuaLain(graf: GrafKeluarga, idMayit: IdOrang): GrafKeluarga {
+  const idPasangan = satuSatunyaPasanganHidup(graf, idMayit);
+  if (!idPasangan) return graf;
+  const [kunciMayit, kunciPasangan] = graf.orang[idMayit]!.jenisKelamin === 'L' ? ['idAyah', 'idIbu'] as const : ['idIbu', 'idAyah'] as const;
+  return Object.values(graf.orang)
+    .filter(orang => orang[kunciMayit] === idMayit && !orang[kunciPasangan])
+    .reduce((grafKini, anak) => ubahOrang(grafKini, anak.id, { [kunciPasangan]: idPasangan }), graf);
+}
+
+/** Anak mayit. Pasangan yang masih hidup (tepat satu) otomatis jadi orang tua lainnya. */
+function tambahAnakDariMayit(graf: GrafKeluarga, idMayit: IdOrang, jenisKelamin: 'L' | 'P', status: Partial<Orang>): Hasil {
+  const mayit = graf.orang[idMayit]!;
+  const orangTuaLain = satuSatunyaPasanganHidup(graf, idMayit);
   const [idAyah, idIbu] = mayit.jenisKelamin === 'L' ? [idMayit, orangTuaLain] : [orangTuaLain, idMayit];
   return tambahOrang(graf, { jenisKelamin, ...(idAyah ? { idAyah } : {}), ...(idIbu ? { idIbu } : {}), ...status });
 }

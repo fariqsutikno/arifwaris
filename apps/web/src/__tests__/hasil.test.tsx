@@ -34,3 +34,20 @@ it('munasakhat: ahli waris mayit kedua dinamai sesuai perannya, pecahan disederh
   expect(screen.queryByText(/^Kerabat/)).toBeNull();
   expect(screen.getAllByText('1/3').length).toBeGreaterThan(0);
 });
+
+it('total yang dibagi memakai batas wasiat 1/3 dari engine, kelebihannya dicatat', () => {
+  const kasus = kasusIstriAnak();
+  render(<Hasil kasus={{ ...kasus, tirkah: { ...kasus.tirkah, kotor: 90_000_000n, wasiat: 60_000_000n } }} kirim={vi.fn()} />);
+  expect(screen.getByText('Rp 60.000.000')).toBeTruthy();
+  expect(screen.getByText(/ijazah/)).toBeTruthy();
+});
+
+it('munasakhat: yang terhalang di mayit berikutnya ikut ditampilkan', async () => {
+  const { hitungIsian } = await import('../checklist');
+  let kasus = kasusBaru('P');
+  kasus = { ...kasus, graf: ['SUAMI', 'IBU'].reduce((g, kunci) => tambahAhliWaris(g, 'PEWARIS', kunci as never), kasus.graf) };
+  const [idSuami] = hitungIsian(kasus.graf, 'PEWARIS').SUAMI!;
+  kasus = { ...kasus, urutanWafat: [idSuami!], graf: ['ANAK_LK', 'SAUDARA_KANDUNG'].reduce((g, kunci) => tambahAhliWaris(g, idSuami!, kunci as never), kasus.graf) };
+  render(<Hasil kasus={kasus} kirim={vi.fn()} />);
+  expect(screen.getByText('Saudara lk kandung')).toBeTruthy();
+});

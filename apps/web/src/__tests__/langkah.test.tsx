@@ -30,3 +30,13 @@ it('tambah anak lk lalu tandai wafat sebelum pembagian', () => {
   expect(screen.getByTestId('urutan').textContent).not.toBe('');
   expect(screen.getByText(/Ahli waris Anak laki-laki/)).toBeTruthy();
 });
+
+it('kondisi beda agama juga menawarkan ahli waris mayit munasakhat', () => {
+  render(<Uji awal={kasusBaru('L')} />);
+  fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
+  fireEvent.click(screen.getByLabelText(/wafat sebelum harta dibagi/));
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Anak laki-laki' }));
+  fireEvent.click(screen.getAllByLabelText('Tambah Istri')[1]!);
+  fireEvent.click(screen.getByLabelText(/beda agama/));
+  expect(screen.getAllByRole('checkbox', { name: /Istri/ }).length).toBeGreaterThan(0);
+});

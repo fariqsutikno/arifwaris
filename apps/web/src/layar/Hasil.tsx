@@ -3,7 +3,7 @@
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan. Tidak ada hitungan waris di sini.
 
 import { useMemo, useState } from 'react';
-import type { GrafKeluarga, IdOrang, StatusOrang } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, LangkahJejak, StatusOrang } from '@waris/engine';
 import { jenisDari, type Kelompok } from '../checklist';
 import { formatRupiah, namaOrang, penyebutAkhir, teksPecahan } from '../format';
 import { jalankan, type HasilMunasakhatOk, type HasilOk } from '../jalankan';
@@ -60,15 +60,18 @@ export function Hasil({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => v
   const { baris, selisih, terhalang } = tampil.jenis === 'biasa'
     ? ringkasBiasa(kasus.graf, hasil as HasilOk)
     : ringkasMunasakhat(kasus.graf, hasil as HasilMunasakhatOk);
-  const bersih = kasus.tirkah.kotor - kasus.tirkah.tajhiz - kasus.tirkah.hutang - kasus.tirkah.wasiat;
+  const tirkah = langkahTirkah(tampil.jenis === 'biasa' ? (hasil as HasilOk).jejak : (hasil as HasilMunasakhatOk).daftarLangkah[0]!.hasil.jejak);
 
   return (
     <main className="halaman tumpuk">
       <h1 className="judul-langkah">Nah, ini pembagiannya</h1>
       <div className="kartu keterangan">
-        Harta {formatRupiah(kasus.tirkah.kotor)} − jenazah {formatRupiah(kasus.tirkah.tajhiz)} − hutang {formatRupiah(kasus.tirkah.hutang)} − wasiat {formatRupiah(kasus.tirkah.wasiat)}
+        Harta {formatRupiah(tirkah.kotor)} − jenazah {formatRupiah(tirkah.tajhiz)} − hutang {formatRupiah(tirkah.hutang)} − wasiat {formatRupiah(tirkah.wasiatDipakai)}
+        {tirkah.wasiatButuhIjazah > 0n && (
+          <p>Wasiat maksimal 1/3 [R01-4]. Kelebihan {formatRupiah(tirkah.wasiatButuhIjazah)} cuma berlaku kalau ahli waris setuju (ijazah), jadi nggak dipotong di sini.</p>
+        )}
       </div>
-      <KartuHasil total={formatRupiah(bersih < 0n ? 0n : bersih)} stiker="Fix!" daftarBaris={baris} />
+      <KartuHasil total={formatRupiah(tirkah.bersih)} stiker="Fix!" daftarBaris={baris} />
       <p className="keterangan">Selisih pembulatan: {formatRupiah(selisih)} (nggak dibagi, dicatat terpisah).</p>
       {terhalang.length > 0 && (
         <>
@@ -121,7 +124,17 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk) {
     nominal: formatRupiah(hasil.nominal[id] ?? 0n),
     keterangan: `Jami'ah ${String(hasil.jamiah)}`,
   }));
-  return { baris, selisih: hasil.pembulatan.sisaPembulatan, terhalang: daftarTerhalang(graf, hasil.daftarLangkah[0]!.hasil.statusOrang) };
+  // Yang terhalang di tiap mayit (pewaris asal dan yang wafat berikutnya), sekali per orang.
+  const terhalang = hasil.daftarLangkah.flatMap(({ hasil: hasilMayit }) => daftarTerhalang(graf, hasilMayit.statusOrang))
+    .filter((orang, indeks, semua) => semua.findIndex(lain => lain.id === orang.id) === indeks);
+  return { baris, selisih: hasil.pembulatan.sisaPembulatan, terhalang };
+}
+
+/** Rincian tirkah dari jejak engine: UI tidak menghitung potongan sendiri (batas wasiat 1/3 ada di engine). */
+function langkahTirkah(jejak: LangkahJejak[]): Extract<LangkahJejak, { jenis: 'TIRKAH' }> {
+  const langkah = jejak.find((langkahIni): langkahIni is Extract<LangkahJejak, { jenis: 'TIRKAH' }> => langkahIni.jenis === 'TIRKAH');
+  if (!langkah) throw new Error('jejak engine tanpa langkah TIRKAH');
+  return langkah;
 }
 
 function daftarTerhalang(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>): OrangTerhalang[] {
