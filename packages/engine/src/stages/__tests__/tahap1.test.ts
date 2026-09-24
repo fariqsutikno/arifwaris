@@ -225,4 +225,13 @@ describe('validasi input → NEEDS_INPUT / UNSUPPORTED', () => {
     });
     expect(runHeirStages(graph)).toMatchObject({ status: 'NEEDS_INPUT', questions: [{ field: 'marriages' }] });
   });
+
+  test('suami pertama sudah wafat lalu menikah lagi → yang dihitung hanya suami yang hidup', () => {
+    const graph = bab16.input({
+      deceasedId: 'D',
+      persons: { D: p('D', 'F', { life: 'dead' }), H1: p('H1', 'M', { life: 'dead' }), H2: p('H2', 'M') },
+      marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }, { husbandId: 'H2', wifeId: 'D', status: 'intact' }],
+    });
+    expect(runHeirStages(graph)).toMatchObject({ status: 'HEIRS' });
+  });
 });

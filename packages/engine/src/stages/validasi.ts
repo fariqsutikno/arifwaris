@@ -36,7 +36,9 @@ export function validateInput(input: EngineInput, roles: Record<PersonId, HeirRo
 
   questions.push(...sexConsistency(input));
 
-  const spouses = Object.values(roles).filter(r => r.key === 'ZAWJ' || r.key === 'ZAWJAH');
+  // Pasangan yang sudah wafat tidak dihitung: pernikahan berakhir karena kematian (mis. janda yang menikah lagi, bab 12).
+  const spouses = Object.values(roles)
+    .filter(r => (r.key === 'ZAWJ' || r.key === 'ZAWJAH') && graph.persons[r.personId]!.life !== 'dead');
   const limit = deceased.sex === 'M' ? MAX_ZAWJAH : MAX_ZAWJ;
   if (spouses.length > limit) {
     questions.push({ field: 'marriages', reason: `Jumlah pasangan yang sah (${spouses.length}) melebihi batas ${limit}; periksa status pernikahan.` });
