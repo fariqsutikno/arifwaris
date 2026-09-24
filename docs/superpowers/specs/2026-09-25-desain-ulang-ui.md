@@ -19,7 +19,7 @@ tanpa validasi. Target: pengguna awam dipandu satu pertanyaan sekali, pelajar bi
 |---|---|
 | Design system | Tetap Arif Waris (token + komponen yang ada). Gaya lain = pekerjaan terpisah. |
 | Tujuan pemakaian | Ditanya di beranda: **Hitung kasus** / **Belajar**. Bisa diganti di layar hasil. Disimpan sebagai preferensi (localStorage), bukan bagian Kasus. |
-| Mode Belajar | Semua angka bagian disembunyikan (pecahan, persen, nominal, lebar bar, status terhalang, tabel) sampai pengguna menekan "Tampilkan jawaban" atau menyelesaikan semua langkah. |
+| Mode Belajar | Isi kartu Pembagian langsung tertutup seluruhnya (bukan sekadar nominal); pohon hanya nama tanpa angka/status terhalang; tabel, kartu pembulatan, dan alasan di modal disembunyikan. Terbuka lewat "Tampilkan jawaban" atau setelah langkah terakhir. Berbeda dari ikon mata di mode Hitung kasus yang hanya menyembunyikan nominal. |
 | Harta | Wajib > 0. Dua cara isi: total langsung atau rinci per kategori. |
 | Petunjuk langsung di langkah ahli waris | Tidak ada; pengguna memasukkan semua kerabat dulu. |
 | Tur | Tur singkat per layar (wizard, hasil); otomatis sekali di kunjungan pertama, bisa diulang dari header. |
@@ -100,19 +100,22 @@ Desktop: **canvas kiri**, **sidebar kanan** (420px). HP (< 980px): tanpa tab; ur
 Sidebar:
 1. **Catatan**: madzhab Syafi'i, musyawarahkan dengan ahli, link "Laporkan ke pengembang" (GitHub issues; URL placeholder di konfigurasi).
 2. **Pembagian** (terbuka): bar pecahan + daftar per orang (titik warna, nama, keterangan, nominal, pecahan, persen,
-   bar persen). Ikon mata = sembunyikan nominal. Ikon atur = tampil pecahan/persen dan bentuk pecahan
-   **Disederhanakan (1/6)** / **Penyebut sama (12/72)**. Yang tidak dapat bagian ditulis di bawah dengan alasannya.
+   bar persen). Ikon mata = sembunyikan nominal. Ikon atur membuka panel berjudul: "Tampilkan di samping nominal"
+   (centang **Pecahan** — bagian dari harta, mis. 1/6 = satu dari enam bagian; **Persen**) dan "Bentuk pecahan"
+   (**Disederhanakan** 1/6 · 13/36 — paling ringkas / **Penyebut sama** 12/72 · 26/72 — gampang dibandingkan). Yang tidak dapat bagian ditulis di bawah dengan alasannya.
    Kartu **pembulatan** muncul hanya bila ada nominal yang bukan kelipatan Rp 1.000 pada pembulatan Rp 1: pilihan
    Rp 1 (transfer) / Rp 100 / Rp 1.000 (tunai) langsung menghitung ulang lewat engine; sisa ditampilkan dengan
    ajakan menyepakatinya bersama ahli waris. Bila semua sudah bulat, kartu tidak muncul.
-3. **Harta yang dibagi** (tertutup, total di judul): susunan hitungan (label kiri, tanda −/= di kolom sendiri,
-   angka rata kanan, garis sebelum total), keterangan batas wasiat, bar komposisi. Tanpa kotak ikon +/−.
+3. **Harta yang dibagi** (tertutup, total di judul): susunan hitungan (label kiri, angka rata kanan; potongan ditulis
+   `−Rp 5.000.000` berwarna merah; garis lalu `=` sebelum total), keterangan batas wasiat, bar komposisi. Tanpa kotak ikon +/−.
 4. **Tentang kasus ini** (tertutup): jenis kasus dari `KELAS_MASALAH`, asal masalah dan hubungan nisbahnya dari
    `PERBANDINGAN_NISAB` (tamatsul/tadakhul/tawafuq/tabayun), tashih bila ada; istilah dengan tooltip buatan sendiri.
 5. **Pelajari langkah perhitungan** (tertutup; terbuka otomatis di mode Belajar): pilihan Langkah demi langkah /
    Tampilkan semua. Langkah demi langkah = deret tahap horizontal yang bisa digeser + Sebelumnya/Berikutnya.
    Tiap langkah: judul berbentuk jawaban, poin-poin (satu baris explain = satu poin), "Kenapa begitu?" bisa
    dibuka-tutup berisi dalil (`dalilUntuk`). Langkah yang tidak terjadi di kasus ini tidak ditampilkan.
+6. **Habis ini ngapain?** (tertutup): daftar bernomor langkah setelah tahu pembagian (bereskan jenazah & hutang,
+   tunaikan wasiat, musyawarah, sepakati pembulatan & cara bagi, urus dokumen, tanya ahli bila ragu). Teks di `src/konten/`, `perluCek`.
 
 Canvas:
 - Tab **Pohon keluarga / Tabel faraidh** (desktop saja).
@@ -124,8 +127,10 @@ Canvas:
   sel gabungan (ashabah berkelompok) rata tengah; garis tegas; baris terhalang bergaris miring; baris jumlah.
 - **Sorot silang**: hover/fokus satu orang di pohon, bar, daftar, atau tabel menyalakan orang yang sama di semua tempat.
 - **Klik orang** → modal: peran & hubungan, "Bagiannya di kasus ini" (pecahan/persen/nominal), "Kenapa segitu?"
-  (baris explain yang menyebut orang itu, sebagai poin), "Dalilnya" (lipat), link kecil "Ubah data orang ini",
-  tombol "Oke, paham".
+  (baris explain yang menyebut orang itu, sebagai poin), **"Kapan dapat berapa?"** (lipat; tabel semua ahwal ahli waris
+  itu dari `src/konten/ahwal.ts`, baris yang berlaku di kasus ini disorot kecuali di mode Belajar), "Dalilnya" (lipat),
+  link kecil "Ubah data orang ini", tombol "Oke, paham". Tampil di kedua mode. Ahwal ditulis per kunci ahli waris,
+  `perluCek` sampai diverifikasi tim keilmuan; baris "kasus ini" ditentukan dari jejak engine (FARDH.alasan / ASHABAH / HAJB), bukan ditebak UI.
 - Saat langkah perhitungan terbuka, canvas menyorot orang yang disebut langkah itu (dari `Potongan` jenis `orang`)
   dan kolom tabel yang relevan; yang lain diredupkan.
 
@@ -135,7 +140,8 @@ Munasakhat: pohon menampilkan mayit berikutnya sebagai almarhum dengan keluargan
 Bar bawah: ← Ubah data · Simpan file.
 
 ### Tur singkat
-Coachmark bernomor (maks. 4–5 per layar) dengan Lewati / Lanjut, menyorot elemen yang dijelaskan. Hasil:
+Coachmark bernomor (maks. 4–5 per layar) dengan Lewati / Lanjut. Elemen yang dijelaskan disorot lewat lapisan di
+level halaman (lubang terang + garis pink), sisanya digelapkan; klik area gelap menutup tur. Hasil:
 pohon, pembagian, pembulatan (bila ada), langkah perhitungan. Wizard: stepper, pertanyaan utama, bar bawah.
 Keyboard: Esc menutup.
 
