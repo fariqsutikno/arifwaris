@@ -80,7 +80,7 @@ Bandingkan **saham mayit kedua di mas'alah 1** dengan **total mas'alah 2**:
 ### Langkah-langkah
 
 1. Buat **mas'alah 1** (mayit pertama), tashih jika perlu.
-2. Buat **mas'alah 2** (mayit kedua), tashih jika perlu. Input tirkah mayit 2 = saham-nya dari mayit 1 + harta pribadi (lihat 12.5).
+2. Buat **mas'alah 2** (mayit kedua), tashih jika perlu. Yang dibagi hanya saham-nya dari mayit 1 (lihat 12.5).
 3. Tentukan cabang dari tabel di atas → hitung jami'ah dan pengali.
 4. Bagian ahli waris mayit pertama (yang tidak mewarisi mayit kedua) = saham × pengali mas'alah 1.
 5. Bagian ahli waris mayit kedua = saham × pengali mas'alah 2.
@@ -103,17 +103,16 @@ Tiga jenis ikhtishar yang disebut Lahim (Amr Kedua), bersifat opsional untuk lap
 
 ---
 
-## 12.5 Harta Mayit Kedua
+## 12.5 Batas Cakupan: Hanya Harta Mayit Pertama
 
-**[Keputusan Penerapan Prinsip Umum — dikonfirmasi pemilik project]**
-Tidak ada teks eksplisit di Lahim yang membahas kasus ini langsung dalam konteks munasakhat. Keputusan ini adalah penerapan prinsip umum bab 01 kepada mayit kedua/ketiga/dst dalam rantai munasakhat.
+**[Keputusan pemilik project]**
+Munasakhat hanya membagi **harta mayit pertama**. Yang diteruskan kepada mayit kedua (dan seterusnya) adalah **bagian yang ia dapat dari mayit pertama**, bukan pembagian waris atas seluruh harta mayit kedua. Seluruh contoh Lahim juga hanya mengoper saham dari mayit pertama, tanpa potongan apa pun.
 
-Bagian tirkah mayit pertama yang jatuh ke mayit kedua menjadi hak milik penuh mayit kedua sejak wafatnya mayit pertama. Karena itu:
-- **Tirkah mayit kedua** = saham dari mayit pertama **+** harta pribadi mayit kedua (jika ada).
-- Tirkah gabungan itu **melewati pipeline bab 01 penuh** (tajhiz → hutang → wasiat → waris) sebelum dibagi ke ahli waris mayit kedua.
-- **Default** (keputusan pemilik project): hutang, wasiat, dan harta pribadi mayit kedua dst. dianggap **sudah diselesaikan** sebelum munasakhat dihitung, jadi tidak ditanyakan dan harta dibagi menurut jami'ah. Bila pengguna mengisinya, tirkah gabungan mayit itu melewati bab 01 seperti di atas.
+- **Harta pribadi** mayit kedua: bukan bagian munasakhat; dibagi sebagai kasus waris tersendiri.
+- **Hutang, wasiat, dan biaya jenazah** mayit kedua: tidak dihitung engine; urusannya dikembalikan kepada ahli warisnya.
+- Yang wafat tetapi tidak mendapat bagian dari mayit sebelumnya (mis. mahjub): tidak ada yang diteruskan, jadi **diabaikan dengan catatan** [R12-1], bukan ditolak.
 
-Kalau tidak ada potongan (hutang = 0, wasiat = 0, harta pribadi = 0), hasil pipeline penuh = hasil metode jami'ah langsung — ini dapat dijadikan assertion test.
+> **Disclaimer untuk pengguna**: angka yang diterima ahli waris mayit kedua dst. adalah bagian dari harta mayit pertama yang sampai kepada mereka lewat mayit kedua, bukan pembagian waris atas seluruh harta mayit kedua. Bila mayit kedua punya hutang, wasiat, atau harta lain, penyelesaiannya dikembalikan kepada ahli warisnya.
 
 ---
 

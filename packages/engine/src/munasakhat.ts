@@ -1,20 +1,20 @@
-import { add, compare, floorShare, fraction, gcd, mul, sub, type Fraction, type Money } from '@waris/math';
+import { gcd } from '@waris/math';
 import { compute } from './pipeline.js';
 import { distributeNominal } from './stages/pembagian.js';
 import { computeTirkah } from './stages/tirkah.js';
 import type {
-  EngineResult, FamilyGraph, InkisarRelation, MunasakhatInput, MunasakhatResult, MunasakhatTirkah, PersonId, TraceStep,
+  EngineResult, FamilyGraph, InkisarRelation, MunasakhatInput, MunasakhatResult, PersonId, TraceStep,
 } from './types.js';
 
 type EngineOk = Extract<EngineResult, { status: 'OK' }>;
 type Saham = Record<PersonId, bigint>;
 
-const ZERO = fraction(0n);
-const NO_DEDUCTION: MunasakhatTirkah = { pribadi: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
-
 /**
  * Orkestrator munasakhat (bab 12) di atas pipeline: tiap mayit dihitung dengan `compute`, lalu digabung
  * bertahap memakai metode Keadaan 3, yang berlaku untuk semua keadaan [R12-3].
+ * Yang dibagi hanya harta mayit pertama; bagian yang diteruskan ke mayit berikutnya adalah harta yang ia dapat
+ * dari mayit pertama, bukan pembagian waris atas seluruh hartanya. Hutang, wasiat, dan harta pribadinya
+ * diselesaikan terpisah oleh ahli warisnya (bab 12.5).
  */
 export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
   const order = deathOrder(input);
@@ -25,8 +25,8 @@ export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
 
   for (const [index, mayit] of order.entries()) {
     if (index > 0 && !saham[mayit]) {
-      return { status: 'UNSUPPORTED', mayit, refs: ['R12-1'],
-        reason: 'Yang wafat tidak mendapat bagian dari mayit sebelumnya, jadi bukan munasakhat.' };
+      trace.push({ stage: 'munasakhat', refs: ['R12-1'], kind: 'MUNASAKHAT_SKIP', mayit });
+      continue;
     }
     const result = compute({ ...input.base, graph: graphAt(input, order, index) });
     if (result.status !== 'OK') return { ...result, mayit };
@@ -46,21 +46,20 @@ export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
     assertInvariants(saham, jamiah);
   }
 
-  const nominal = input.deaths.some(death => death.tirkah)
-    ? chainedNominal(input, steps)
-    : jamiahNominal(input, saham, jamiah);
+  const tirkah = computeTirkah(input.base.tirkah);
+  const nominal = distributeNominal(saham, jamiah, tirkah.bersih, input.base.rounding.unit);
 
   return {
     status: 'OK', steps, jamiah, saham,
     ikhtishar: ikhtisharSiham(saham, jamiah),
     nominal: nominal.nominal,
     rounding: { unit: input.base.rounding.unit, remainder: nominal.remainder },
-    trace: [...trace, ...nominal.trace],
+    trace: [...trace, tirkah.trace, ...nominal.trace],
   };
 }
 
 function deathOrder(input: MunasakhatInput): PersonId[] {
-  const order = [input.base.graph.deceasedId, ...input.deaths.map(death => death.personId)];
+  const order = [input.base.graph.deceasedId, ...input.deaths];
   if (new Set(order).size !== order.length) throw new Error('munasakhat: seseorang tercatat wafat dua kali');
   for (const after of Object.values(input.bornAfterDeathOf ?? {})) {
     if (!order.includes(after)) throw new Error(`munasakhat: bornAfterDeathOf merujuk ${after} yang tidak ada di urutan wafat`);
@@ -134,55 +133,3 @@ function ikhtisharSiham(saham: Saham, jamiah: bigint): { jamiah: bigint; saham: 
     saham: Object.fromEntries(Object.entries(saham).map(([personId, value]) => [personId, value / faktor])),
   };
 }
-
-/** Default bab 12.5: urusan harta mayit berikutnya dianggap sudah beres → tirkah mayit 1 dibagi menurut jami'ah. */
-function jamiahNominal(input: MunasakhatInput, saham: Saham, jamiah: bigint) {
-  const tirkah = computeTirkah(input.base.tirkah);
-  const nominal = distributeNominal(saham, jamiah, tirkah.bersih, input.base.rounding.unit);
-  return { nominal: nominal.nominal, remainder: nominal.remainder, trace: [tirkah.trace, ...nominal.trace] };
-}
-
-/**
- * Bab 12.5 [Keputusan Penerapan Prinsip Umum]: tiap mayit berikutnya menjalani bab 01 atas warisannya + harta
- * pribadinya. Dihitung dengan pecahan eksak; dibulatkan ke bawah per orang hanya di akhir.
- */
-function chainedNominal(input: MunasakhatInput, steps: Array<{ mayit: PersonId; result: EngineOk }>) {
-  const tirkah = computeTirkah(input.base.tirkah);
-  const trace: TraceStep[] = [tirkah.trace];
-  const amounts: Record<PersonId, Fraction> = {};
-  const distribute = (bersih: Fraction, result: EngineOk) => {
-    const masalahSaham = sahamOf(result);
-    const masalah = total(masalahSaham);
-    for (const [personId, value] of Object.entries(masalahSaham)) {
-      amounts[personId] = add(amounts[personId] ?? ZERO, mul(bersih, fraction(value, masalah)));
-    }
-  };
-
-  distribute(fraction(tirkah.bersih), steps[0]!.result);
-  for (const [index, death] of input.deaths.entries()) {
-    const warisan = amounts[death.personId]!;
-    delete amounts[death.personId];
-    const potongan = death.tirkah ?? NO_DEDUCTION;
-    const setelahHutang = nonNegative(sub(sub(add(warisan, fraction(potongan.pribadi)), fraction(potongan.tajhiz)), fraction(potongan.hutang)));
-    // [R01-4] wasiat maksimal 1/3 sisa setelah hutang; batas dibulatkan ke bawah ke rupiah seperti tahap 0 [KH].
-    const wasiatBatas = fraction(floorShare(1n, mul(setelahHutang, fraction(1n, 3n)), 1n));
-    const wasiatDipakai = compare(fraction(potongan.wasiat), wasiatBatas) < 0 ? fraction(potongan.wasiat) : wasiatBatas;
-    const bersih = sub(setelahHutang, wasiatDipakai);
-    trace.push({ stage: 'munasakhat', refs: ['R01-1', 'R01-4', 'R12-1'], kind: 'MUNASAKHAT_TIRKAH', mayit: death.personId,
-      warisan, pribadi: potongan.pribadi, tajhiz: potongan.tajhiz, hutang: potongan.hutang,
-      wasiatDiminta: potongan.wasiat, wasiatDipakai, bersih });
-    distribute(bersih, steps[index + 1]!.result);
-  }
-
-  const unit = input.base.rounding.unit;
-  const nominal: Record<PersonId, Money> = {};
-  let exactTotal = ZERO;
-  for (const [personId, amount] of Object.entries(amounts)) {
-    nominal[personId] = floorShare(1n, amount, unit);
-    exactTotal = add(exactTotal, amount);
-  }
-  const remainder = floorShare(1n, exactTotal, 1n) - Object.values(nominal).reduce((a, b) => a + b, 0n);
-  return { nominal, remainder, trace };
-}
-
-const nonNegative = (x: Fraction): Fraction => (compare(x, ZERO) < 0 ? ZERO : x);

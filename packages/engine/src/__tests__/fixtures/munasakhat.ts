@@ -23,7 +23,7 @@ export interface MunasakhatFixture {
 
 const munasakhat = (graph: FamilyGraph, deaths: string[], bornAfterDeathOf?: Record<string, string>): MunasakhatInput => ({
   base: input(graph),
-  deaths: deaths.map(personId => ({ personId })),
+  deaths,
   ...(bornAfterDeathOf ? { bornAfterDeathOf } : {}),
 });
 

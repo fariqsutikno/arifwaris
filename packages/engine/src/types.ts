@@ -152,9 +152,8 @@ export type TraceStep = { stage: Stage; refs: string[] } & (
   // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
   | { kind: 'MUNASAKHAT'; mayit: PersonId; saham: bigint; masalah: bigint; relation: InkisarRelation;
       gcd: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint }
-  // Bab 12.5: harta mayit berikutnya = warisannya + harta pribadi, lalu bab 01 (pecahan eksak).
-  | { kind: 'MUNASAKHAT_TIRKAH'; mayit: PersonId; warisan: Fraction; pribadi: Money; tajhiz: Money; hutang: Money;
-      wasiatDiminta: Money; wasiatDipakai: Fraction; bersih: Fraction }
+  // Yang wafat tidak mendapat bagian dari mayit sebelumnya → tidak ada yang diteruskan; diabaikan [R12-1].
+  | { kind: 'MUNASAKHAT_SKIP'; mayit: PersonId }
 );
 
 // ─── Kontrak output utama ─────────────────────────────────────────────────────
@@ -202,19 +201,14 @@ export interface EngineInput {
 
 // ─── Munasakhat (bab 12) ──────────────────────────────────────────────────────
 
-/** Bab 12.5: opsional; tanpa ini hutang/wasiat/harta pribadi mayit dianggap sudah diselesaikan. */
-export interface MunasakhatTirkah {
-  pribadi: Money;
-  tajhiz: Money;
-  hutang: Money;
-  wasiat: Money;
-}
-
 export interface MunasakhatInput {
   /** Mayit pertama = `base.graph.deceasedId`. */
   base: EngineInput;
-  /** Ahli waris yang wafat sebelum pembagian, urut waktu wafat (bab 12.7). */
-  deaths: Array<{ personId: PersonId; tirkah?: MunasakhatTirkah }>;
+  /**
+   * Ahli waris yang wafat sebelum pembagian, urut waktu wafat (bab 12.7). Yang dibagi hanya harta mayit pertama;
+   * harta pribadi, hutang, dan wasiat mereka sendiri bukan bagian munasakhat (bab 12.5).
+   */
+  deaths: PersonId[];
   /** Orang yang lahir setelah wafatnya mayit tertentu: belum ada saat mayit itu dan sebelumnya wafat. */
   bornAfterDeathOf?: Record<PersonId, PersonId>;
 }
