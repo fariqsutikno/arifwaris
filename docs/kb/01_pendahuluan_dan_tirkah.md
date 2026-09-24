@@ -52,7 +52,8 @@ Catatan tertib: meski dalam ayat wasiat disebut lebih dulu dari hutang, **hutang
 
 ## 1.5 Aturan Implementasi
 - Sistem harus meminta input: total harta, biaya tajhiz, hutang (dipisah: yang terkait 'ain vs mutlak), wasiat (penerima dan jumlah).
-- Validasi otomatis: wasiat > 1/3 sisa atau wasiat kepada ahli waris → tandai **"butuh ijazah ahli waris"**.
+- **Wasiat > 1/3 sisa**: engine **otomatis memangkas** ke batas 1/3 (contoh: harta 30, wasiat diminta 20 → otomatis jadi 10). Ini adalah **keputusan scope engine** — hukum asal [SYF] sebenarnya *mauquf* (tergantung ijazah ahli waris); hasil auto-cap hanya berlaku pada kondisi *tanpa ijazah*. Mekanisme ijazah tidak diimplementasikan di versi ini (lihat R01-7 dan R01-9). Nama fungsi: `capWasiatToMaxThird()`, bukan `applyIjazahRule()`.
+- **Wasiat kepada ahli waris**: tandai **"tidak sah tanpa ijazah ahli waris lain"** (R01-5); engine menolak dan melaporkan ke pengguna.
 - Jika hutang ≥ tirkah, tidak ada pembagian waris.
 
 ---
@@ -68,5 +69,6 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R01-4 | Wasiat maksimal 1/3 | H | Al-Bukhari no. 2742; Muslim no. 1628, hadits Sa'd bin Abi Waqqash | «الثلث، والثلث كثير» |
 | R01-5 | Tidak ada wasiat untuk ahli waris | H | Abu Dawud no. 2870; at-Tirmidzi no. 2120 (hasan shahih); Ibnu Majah no. 2713, dari Abu Umamah | «إن الله قد أعطى كل ذي حق حقه، فلا وصية لوارث» |
 | R01-6 | Hutang didahulukan atas wasiat | H + IJ | At-Tirmidzi no. 2094; Ibnu Majah no. 2715, dari 'Ali. Sanadnya dibicarakan (al-Harits al-A'war), tetapi at-Tirmidzi menyebut amal ahli ilmu di atasnya | «قضى رسول الله ﷺ بالدين قبل الوصية». Kekuatan hukumnya bertumpu pada ijma' yang diamalkan, bukan pada sanad hadits ini. |
-| R01-7 | Ijazah wasiat setelah wafat | RDH (bab lain) | Raudhah, **Kitab al-Washaya** — di luar file yang diunggah | `[perlu verifikasi lanjut]` — belum dicek langsung ke teks Kitab al-Washaya. |
+| R01-7 | Ijazah wasiat setelah wafat | RDH (bab lain) | Raudhah, **Kitab al-Washaya** — di luar file yang diunggah | `[perlu verifikasi lanjut]` — belum dicek langsung ke teks Kitab al-Washaya. Fitur ijazah tidak diimplementasikan di versi ini. |
+| R01-9 | Auto-cap wasiat ke 1/3 = keputusan scope engine | — | Keputusan desain (bukan klaim fikih independen) | Dalil batas 1/3: R01-4 (hadits Sa'd). Engine ini tidak mengimplementasikan mekanisme ijazah, sehingga setiap wasiat > 1/3 dipangkas otomatis. Hasil ini kebetulan sama dengan hukum asal *pada kondisi tanpa ijazah*, tapi TIDAK mencakup skenario ijazah. R01-7 tetap terbuka untuk fase lanjut. |
 | R01-8 | Mempelajari faraidh fardhu kifayah | H (dha'if) | Ibnu Majah no. 2719, dari Abu Hurairah — sanadnya dha'if | «تعلموا الفرائض وعلموها، فإنها نصف العلم». Status fardhu kifayah adalah ketetapan fuqaha, hadits ini hanya penguat. |
