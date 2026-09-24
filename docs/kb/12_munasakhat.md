@@ -43,7 +43,13 @@ Contoh: mayit meninggalkan 4 anak lk, lalu salah satunya wafat tanpa ahli waris 
 
 **Kondisi**: ahli waris **masing-masing** mayit sama sekali tidak mewarisi dari yang lain (fully disjoint), DAN ada **lebih dari satu** mayit seperti itu secara bersamaan.
 
-**Teknik**: metode jami'ah (sama dengan Keadaan 3) — lihat bagian 12.3.
+**Teknik** (Lahim, "بجامعة واحدة"): satu jami'ah bersama, bukan bertahap.
+1. Tiap mayit kedua: bandingkan sahamnya di mas'alah 1 dengan mas'alahnya → catat *wafq* mas'alah dan *wafq* saham (tabayun: seluruh mas'alah dan seluruh saham; inqisam: 1 dan hasil bagi).
+2. Gabungkan semua *wafq* mas'alah dengan nisab arba' → *juz'* bersama.
+3. Jami'ah = mas'alah 1 × *juz'* bersama.
+4. Pengali mas'alah tiap mayit = *juz'* bersama ÷ *wafq* mas'alahnya × *wafq* sahamnya.
+
+Hasilnya identik dengan menerapkan metode Keadaan 3 (12.3) mayit per mayit lalu ikhtishar as-siham [R12-3]. Contoh: kasus uji M8 (jami'ah 576).
 
 ---
 
