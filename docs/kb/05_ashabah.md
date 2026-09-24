@@ -31,7 +31,7 @@ Jika ada beberapa ashabah, yang didahulukan ditentukan berurutan dengan:
 ### (1) Jihah (arah)
 > **KHILAF — Jumlah dan urutan jihah**
 > - **[SYF] (default)**: **Bunuwwah → Ubuwwah → Juduwwah & Ukhuwwah (sejajar, berbagi) → Bani al-Ikhwah → 'Umumah (paman mayit, lalu paman ayah, lalu paman kakek, beserta anak-anak mereka) → Wala' → Baitul mal**. Nash Raudhah: *"ويقدم منهم الأبناء، ثم بنوهم وإن سفلوا، ثم الأب، ثم الجد والإخوة للأبوين أو للأب، وهم في درجة"* [R05-2]. Anak saudara lk **gugur oleh kakek** (setinggi apa pun kakeknya) [R05-2].
-> - **Abu Hanifah dan [UTS]**: 5 jihah — Bunuwwah → Ubuwwah (termasuk kakek) → Ukhuwwah → 'Umumah → Wala'. Nazham: *بنوةٌ أبوةٌ أخوةٌ ... عمومةٌ وذو الولا التتمة*. Konsekuensinya kakek menghijab saudara (bab 08, mode [UTS]).
+> - **Abu Hanifah dan Ibnu 'Utsaimin**: 5 jihah — Bunuwwah → Ubuwwah (termasuk kakek) → Ukhuwwah → 'Umumah → Wala'. Nazham: *بنوةٌ أبوةٌ أخوةٌ ... عمومةٌ وذو الولا التتمة*. Konsekuensinya kakek menghijab saudara (bab 08, pendapat 2).
 
 Rincian cakupan:
 - **Bunuwwah**: anak lk, cucu lk dst.
@@ -68,7 +68,7 @@ Laki-laki menanggung kewajiban nafkah (istri, anak, kerabat), mahar, dan diyat '
 ## 5.6 Ashabah Sababiyyah (Wala') [R05-7] [R05-8]
 Mu'tiq/mu'tiqah, lalu ashabah bi nafsihi mu'tiq, diurutkan dengan kaidah 5.3.
 > **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Kitab al-Fara'idh, Fashl fi 'Ashabat al-Mu'tiq**: *"فَالِاسْتِحْقَاقُ لِعَصَبَاتِهِ مِنَ النَّسَبِ الَّذِينَ يَتَعَصَّبُونَ بِأَنْفُسِهِمْ"* — setelah mu'tiq, penerima wala' adalah ashabah bi nafsihi murni, tanpa penyebutan furudh sama sekali.
-> - **[SYF] (default, dikonfirmasi)**: **tidak ada furudh dalam wala'**; ayah/kakek mu'tiq mewarisi murni sebagai ashabah (gugur total oleh anak lk mu'tiq), sejalan dengan [UTS] dan pilihan Ibnu Taimiyah.
+> - **[SYF] (default, dikonfirmasi)**: **tidak ada furudh dalam wala'**; ayah/kakek mu'tiq mewarisi murni sebagai ashabah (gugur total oleh anak lk mu'tiq), sejalan dengan Ibnu 'Utsaimin dan pilihan Ibnu Taimiyah.
 > - **Masyhur Hanabilah**: ayah/kakek mu'tiq mendapat fardh 1/6 bersama anak lk mu'tiq — disediakan sebagai opsi non-default.
 
 ---

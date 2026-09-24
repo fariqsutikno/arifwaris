@@ -22,7 +22,7 @@ Catatan: ummul ab al-jadd (nenek di atas kakek melalui laki-laki) → khilaf; de
 ## 14.3 Apakah Mereka Mewarisi? [R14-1] [R14-2] [R14-3] [R14-5]
 > **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Kitab al-Fara'idh**, sumber sama dengan bab 09:
 > - **Asal madzhab [SYF] dan Maliki**: tidak mewarisi; harta ke baitul mal (syarat: baitul mal teratur, ada imam yang adil mengelolanya).
-> - **[SYF] — pendapat al-ashah menurut muhaqqiqin madzhab (dikutip Nawawi dari Ibnu Suraqah: *"وَعَلَيْهِ الْفَتْوَى الْيَوْمَ فِي الْأَمْصَارِ"*), sejalan dengan Hanafi, Hanbali, [UTS] (default sistem)**: dzawil arham **mewarisi** ketika baitul mal **tidak** teratur (kondisi Indonesia saat ini), dengan syarat **tidak ada ashabah** dan **tidak ada ashabul furudh yang menerima radd** (yaitu selain pasangan). Nawawi bahkan mengoreksi ulama lain yang keliru mengira ini bukan pendapat Syafi'i: *"غَلِطَ الشَّيْخُ أَبُو حَامِدٍ فِي مُخَالَفَتِهِ ... وَإِنَّمَا مَذْهَبُ الشَّافِعِيِّ مَنْعُهُمْ إِذَا اسْتَقَامَ بَيْتُ الْمَالِ"* (mazhab Syafi'i hanya melarang mereka mewarisi ketika baitul mal tegak — implikasinya, boleh mewarisi ketika baitul mal tidak tegak).
+> - **[SYF] — pendapat al-ashah menurut muhaqqiqin madzhab (dikutip Nawawi dari Ibnu Suraqah: *"وَعَلَيْهِ الْفَتْوَى الْيَوْمَ فِي الْأَمْصَارِ"*), sejalan dengan Hanafi, Hanbali, Ibnu 'Utsaimin**: dzawil arham **mewarisi** ketika baitul mal **tidak** teratur (kondisi Indonesia saat ini), dengan syarat **tidak ada ashabah** dan **tidak ada ashabul furudh yang menerima radd** (yaitu selain pasangan). Nawawi bahkan mengoreksi ulama lain yang keliru mengira ini bukan pendapat Syafi'i: *"غَلِطَ الشَّيْخُ أَبُو حَامِدٍ فِي مُخَالَفَتِهِ ... وَإِنَّمَا مَذْهَبُ الشَّافِعِيِّ مَنْعُهُمْ إِذَا اسْتَقَامَ بَيْتُ الْمَالِ"* (mazhab Syafi'i hanya melarang mereka mewarisi ketika baitul mal tegak — implikasinya, boleh mewarisi ketika baitul mal tidak tegak).
 > - **Catatan konsistensi**: keputusan ini sejalan dengan bab 09 (radd) — keduanya bergantung pada status baitul mal, dan keduanya kini didukung kutipan langsung dari sumber utama Syafi'i.
 
 **Dalil**:
@@ -38,9 +38,9 @@ Catatan: ummul ab al-jadd (nenek di atas kakek melalui laki-laki) → khilaf; de
 > **Tiga metode (lintas madzhab)**:
 > 1. **Ahl ar-Rahm**: semua sama rata, dekat maupun jauh. (Ditinggalkan semua madzhab.)
 > 2. **Ahl al-Qarabah** (murni Hanafi): diurutkan berdasarkan kedekatan derajat ke mayit langsung, lalu kekuatan qarabah.
-> 3. **Ahl at-Tanzil ([SYF] — satu-satunya metode dalam madzhab Syafi'i, juga dipakai masyhur Hanbali dan [UTS] — default)**: setiap dzawil arham **didudukkan pada posisi ahli waris** yang menjadi perantaranya.
+> 3. **Ahl at-Tanzil ([SYF] — satu-satunya metode dalam madzhab Syafi'i, juga dipakai masyhur Hanbali dan Ibnu 'Utsaimin)**: setiap dzawil arham **didudukkan pada posisi ahli waris** yang menjadi perantaranya.
 
-Contoh perbedaan ([UTS]): cicit pr dari anak pr + anak pr saudara lk (bukan seibu):
+Contoh perbedaan (dari Ibnu 'Utsaimin): cicit pr dari anak pr + anak pr saudara lk (bukan seibu):
 - Qurb darajah: semua untuk anak pr saudara (lebih dekat ke ahli waris).
 - Qarabah: semua untuk cicit pr (jihah bunuwwah lebih dulu).
 - **Tanzil**: masing-masing 1/2 (cicit pr sebagai anak pr: 1/2 fardh; anak pr saudara sebagai saudara lk: sisa).
@@ -54,10 +54,10 @@ Contoh perbedaan ([UTS]): cicit pr dari anak pr + anak pr saudara lk (bukan seib
 
 > **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin*, Bab ar-Radd wa Dzawil Arham, Fashl (aulad al-ikhwah wal-akhawat)**:
 > - **[SYF] (default, dikonfirmasi)** — dinukil eksplisit: *"وَأَمَّا أَوْلَادُ الْإِخْوَةِ وَالْأَخَوَاتِ مِنَ الْأَبَوَيْنِ وَمِنَ الْأَبِ، فَيُفَضَّلُ ذَكَرُهُمْ عِنْدَ الْمُنَزِّلِينَ"* (anak-anak saudara/i kandung dan sebapak, **laki-lakinya diutamakan 2:1** menurut Ahl at-Tanzil), **kecuali** anak-anak saudara/i **seibu**: *"يُسَوَّى بَيْنَهُمْ فِي الْقِسْمَةِ عِنْدَ الْجُمْهُورِ مِنَ الْمُنَزِّلِينَ"* (mereka **disamakan/sama rata**, mengikuti pola bagian orang tua mereka yang juga sama rata). Kaidah yang sama (2:1, kecuali cabang dari perantara yang aslinya sama rata) berlaku juga pada dzawil arham lain seperti aulad al-banat, sesuai prinsip tanzil: cabang mengikuti hukum bagian perantaranya.
-> - **Masyhur Hanbali & [UTS]**: laki-laki dan perempuan **sama rata** di seluruh dzawil arham tanpa kecuali — disediakan sebagai opsi non-default.
-> - Titik ini semula ditandai `[perlu verifikasi lanjut]`; kini terkonfirmasi dari teks utama Syafi'i dan **selaras dengan [MYS]** (aturan 2:1 kecuali anak-anak saudara seibu), sehingga [MYS] pada titik ini sebenarnya identik dengan [SYF], bukan alternatif Hanbali seperti dugaan sebelumnya.
+> - **Masyhur Hanbali & Ibnu 'Utsaimin**: laki-laki dan perempuan **sama rata** di seluruh dzawil arham tanpa kecuali — dicatat sebagai perbandingan.
+> - Titik ini semula ditandai `[perlu verifikasi lanjut]`; kini terkonfirmasi dari teks utama Syafi'i dan **selaras dengan Al-Fara'idh al-Muyassar** (aturan 2:1 kecuali anak-anak saudara seibu), sehingga kitab itu pada titik ini sebenarnya identik dengan [SYF], bukan alternatif Hanbali seperti dugaan sebelumnya.
 
-**Tiga keadaan ([UTS])**:
+**Tiga keadaan** (susunan Ibnu 'Utsaimin; keadaan 1 = R14-9):
 1. **Hanya satu dzawil arham** → seluruh harta: ashabah jika perantaranya ashabah, fardh + radd jika perantaranya ashabul furudh.
 2. **Beberapa, satu perantara** → seluruh harta dibagi di antara mereka seolah perantara wafat meninggalkan mereka.
 3. **Beberapa, beberapa perantara** → bagi dulu antar perantara, lalu bagi bagian tiap perantara.

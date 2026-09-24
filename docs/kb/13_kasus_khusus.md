@@ -115,14 +115,14 @@ Untuk setiap ahli waris (bukan haml):
 > - **Jika tidak diharapkan jelas** (meninggal/baligh tetap musykil):
 >   - **Hanabilah**: khuntsa dan orang lain diberi **setengah bagian lk + setengah bagian pr** (rata-rata dua taqdir).
 >   - **Hanafiyyah**: khuntsa diberi yang terkecil; yang lain yang terbesar.
->   - **Syafi'iyyah** & **[MYS] (default)**: setiap orang diberi terkecil yang yakin, sisanya ditahan sampai jelas atau berdamai.
+>   - **Syafi'iyyah [SYF]** (juga Al-Fara'idh al-Muyassar): setiap orang diberi terkecil yang yakin, sisanya ditahan sampai jelas atau berdamai.
 
 **Langkah (default)**: buat mas'alah dengan asumsi lk dan asumsi pr → jami'ah (KPK) → setiap orang mendapat bagian terkecil dari keduanya → sisanya mauquf.
 
 ## 13.4 Gharqa, Hadma, Harqa (Mati Bersamaan) [R13-10]
 **Pola**: sekelompok orang yang saling mewarisi wafat dalam satu musibah umum (tenggelam, runtuh, terbakar, kecelakaan).
 
-**Lima keadaan** ([UTS]):
+**Lima keadaan** (pembagian dari Ibnu 'Utsaimin):
 1. Diketahui siapa yang wafat belakangan secara pasti → ia mewarisi yang lebih dulu, tidak sebaliknya.
 2. Diketahui wafat serentak → tidak saling mewarisi.
 3. Tidak diketahui berurutan atau serentak.
@@ -130,7 +130,7 @@ Untuk setiap ahli waris (bukan haml):
 5. Diketahui yang terakhir, lalu terlupakan.
 
 > **KHILAF – Keadaan 3, 4, 5**
-> - **[SYF], jumhur (Abu Hanifah, Malik), [UTS], [MYS] (default)**: **tidak saling mewarisi**; harta masing-masing untuk ahli warisnya yang masih hidup, karena syarat hidupnya warits setelah muwarrits tidak terbukti.
+> - **[SYF], jumhur (Abu Hanifah, Malik), juga Ibnu 'Utsaimin**: **tidak saling mewarisi**; harta masing-masing untuk ahli warisnya yang masih hidup, karena syarat hidupnya warits setelah muwarrits tidak terbukti.
 > - **[SYF] — tambahan khusus keadaan 5** (diketahui yang terakhir lalu terlupakan): ditunggu sampai ingat atau para ahli waris berdamai (ishtilah), sebelum harta dibagi.
 > - **Masyhur Hanabilah**: jika ahli waris mereka tidak berselisih, masing-masing mewarisi dari **tilad** (harta asli) yang lain, bukan dari harta yang diwarisi darinya (menghindari daur). Jika berselisih tanpa bukti → saling bersumpah, lalu tidak saling mewarisi. Disediakan sebagai opsi.
 
@@ -140,7 +140,7 @@ Untuk setiap ahli waris (bukan haml):
   > **KHILAF**
   > - **Malik, Syafi'i, masyhur Hanabilah (default)**: menjadi **fai'** untuk baitul mal.
   > - Abu Hanifah: harta yang diperoleh saat masih Islam diwarisi ahli waris muslimnya.
-  > - **[UTS]**: beda agama menghalangi mutlak tanpa pengecualian, sehingga ahli waris muslim tidak mewarisinya (sejalan dengan default).
+  > - **Ibnu 'Utsaimin**: beda agama menghalangi mutlak tanpa pengecualian, sehingga ahli waris muslim tidak mewarisinya (sejalan dengan default).
 - Sistem: status murtad membutuhkan **putusan resmi**; tanpa itu, sistem tidak boleh menghukumi seseorang murtad.
 
 ## 13.6 Anak Li'an dan Anak Zina [R13-11] [R13-12]

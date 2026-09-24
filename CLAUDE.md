@@ -6,7 +6,7 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`.
 
 ## Sumber kebenaran
 - `docs/kb/00–17_*.md` adalah SATU-SATUNYA sumber hukum fikih. Jangan ambil aturan dari pengetahuan umum.
-- Madzhab: **Syafi'i [SYF] saja**. Abaikan label [UTS]/[MYS] di KB (tidak dipakai; akan dibersihkan dari KB).
+- Madzhab: **Syafi'i [SYF] saja**. Pendapat lain di KB (Ibnu 'Utsaimin, Al-Fara'idh al-Muyassar, Hanbali, dst.) hanya perbandingan, tidak diimplementasikan.
 - Setiap cabang kode fikih WAJIB diberi anotasi rujukan, contoh: `// [R09-7] radd, bab 9.4`.
 - Aturan yang tidak ada di KB, atau berstatus `[perlu verifikasi lanjut]` (bab 17.4), JANGAN dikarang.
   Kembalikan `UNSUPPORTED` / tandai `blocked` dan beri tahu pengguna.

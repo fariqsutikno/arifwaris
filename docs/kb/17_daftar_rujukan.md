@@ -11,15 +11,16 @@ tags: [rujukan, referensi, takhrij, dalil, metodologi]
 2. **Hadits** — kode [H]. Ditulis dengan perawi dan nomor. Hadits yang lemah ditandai *dha'if* dan tidak dijadikan satu-satunya sandaran hukum.
 3. **Atsar sahabat** — kode [A]. Terutama putusan 'Umar, 'Ali, Zaid bin Tsabit, Ibnu Mas'ud, Ibnu 'Abbas.
 4. **Ijma'** — kode [IJ]. Hanya dipakai jika ada ulama yang **menukil** ijma' tersebut; penukilnya disebutkan.
-5. **Pendapat madzhab** — kode [RDH] untuk nash Syafi'iyyah dari Raudhah ath-Thalibin, [UTS] dan [MYS] untuk pembanding.
+5. **Pendapat madzhab** — kode [RDH] untuk nash Syafi'iyyah dari Raudhah ath-Thalibin. Tashil al-Fara'idh dan Al-Fara'idh al-Muyassar disebut dengan namanya, hanya sebagai pembanding.
 6. **Kaidah hisab** — kode [KH]. Teknik matematika (KPK, FPB, konversi desimal). Ini bukan hukum syar'i dan tidak memerlukan dalil, tetapi hasilnya wajib sesuai hukum yang berdalil.
 
 ## 17.2 Sumber Primer
 | Kode | Judul | Penulis | Keterangan |
 |---|---|---|---|
 | [RDH] | *Raudhah ath-Thalibin wa 'Umdah al-Muftin* | Imam Yahya bin Syaraf an-Nawawi (w. 676 H) | Al-Maktab al-Islami, Beirut, cet. 3, 1412 H/1991 M, tahqiq Zuhair asy-Syawisy. Dipakai: **Kitab al-Fara'idh** (juz 6), bab 1–10. Kitab pokok madzhab Syafi'i dalam furu'. |
-| [UTS] | *Tashil al-Fara'idh* | Syaikh Muhammad bin Shalih al-'Utsaimin (w. 1421 H) | Hanbali dengan tarjih mandiri. Sumber pembanding. |
-| [MYS] | *Al-Fara'idh al-Muyassar* | 'Abdusy-Syakur Mu'allim 'Abd Farah | Syabakah al-Alukah, 2019. Menyertakan Matn ar-Rahbiyyah. Sumber struktur dan contoh. |
+| — | *Tashil al-Fara'idh* | Syaikh Muhammad bin Shalih al-'Utsaimin (w. 1421 H) | Hanbali dengan tarjih mandiri. Pembanding saja, tidak dipakai sistem. |
+| — | *Al-Fara'idh al-Muyassar* | 'Abdusy-Syakur Mu'allim 'Abd Farah | Syabakah al-Alukah, 2019. Menyertakan Matn ar-Rahbiyyah. Sumber struktur dan contoh; pendapatnya pembanding saja. |
+| Lahim | *Kitab al-Fara'idh* | Dr. 'Abdul Karim bin Muhammad al-Lahim | Dipakai untuk bab 12 (kaidah tiga keadaan munasakhat, ikhtishar, dan contoh soal M1–M9) dan bab 13 (haml, mafqud). Penerbit dan edisi belum dicatat; nomor halaman mengikuti cetakan milik pemilik project. |
 
 ## 17.3 Sumber Hadits
 Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shahih Muslim cetakan dengan penomoran Muhammad Fu'ad 'Abdul Baqi; Sunan at-Tirmidzi, Abu Dawud, Ibnu Majah penomoran umum). Nomor bisa berbeda antar cetakan; cocokkan dengan **lafaz**, bukan hanya nomor.
@@ -34,7 +35,7 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 | «ابن أخت القوم منهم» | Al-Bukhari 3528; Muslim 1059 | Muttafaq 'alaih |
 | «فلا وصية لوارث» | Abu Dawud 2870; at-Tirmidzi 2120; Ibnu Majah 2713 | Hasan shahih (at-Tirmidzi) |
 | Nenek diberi 1/6 (hadits Qabishah) | Abu Dawud 2894; at-Tirmidzi 2100; Ibnu Majah 2724 | Diperselisihkan sanadnya; diamalkan ahli ilmu |
-| «الخال وارث من لا وارث له» | Abu Dawud 2899; at-Tirmidzi 2103; Ibnu Majah 2737 | Hasan (at-Tirmidzi); dilemahkan Ibnu Ma'in dan al-Baihaqi (dinukil [UTS]) |
+| «الخال وارث من لا وارث له» | Abu Dawud 2899; at-Tirmidzi 2103; Ibnu Majah 2737 | Hasan (at-Tirmidzi); dilemahkan Ibnu Ma'in dan al-Baihaqi (dinukil Ibnu 'Utsaimin) |
 | «القاتل لا يرث» | At-Tirmidzi 2109; Ibnu Majah 2645 | Dibicarakan sanadnya; dikuatkan riwayat lain dan amal |
 | «إذا استهل المولود ورث» | Abu Dawud 2920 | Shahih menurut sebagian muhaddits |
 | «قضى رسول الله ﷺ بالدين قبل الوصية» | At-Tirmidzi 2094; Ibnu Majah 2715 | Sanad lemah; hukumnya tetap berdasar ijma' |

@@ -45,7 +45,7 @@ Catatan: paman dan anak paman mencakup juga paman ayah, paman kakek, dan seterus
 Ringkasan global: 7 (anak pr, cucu pr, ibu, nenek, saudari, istri, mu'tiqah).
 
 > **KHILAF – Nenek dari ayah yang lebih tinggi (umm abil jadd)**
-> - **[SYF] (default)**, sejalan dengan Hanafi dan [UTS]: setiap nenek yang bernasab melalui ahli waris (**mudliyah bi warits**) adalah ahli waris, berapa pun tingginya (pilihan Ibnu Taimiyah juga sejalan dengan ini).
+> - **[SYF] (default)**, sejalan dengan Hanafi dan Ibnu 'Utsaimin: setiap nenek yang bernasab melalui ahli waris (**mudliyah bi warits**) adalah ahli waris, berapa pun tingginya (pilihan Ibnu Taimiyah juga sejalan dengan ini).
 > - **Masyhur Hanabilah**: hanya mewarisi 3 nenek: ummul umm, ummul ab, ummul jadd (dan yang di atas mereka melalui perempuan murni). Nenek melalui ayah di atas kakek (umm abil jadd) dianggap dzawil arham.
 > - **Nenek fasidah (disepakati bukan ahli waris furudh)**: nenek yang di antara dia dan mayit ada laki-laki diapit dua perempuan, contoh *umm abil umm* (ibunya kakek dari ibu) → dzawil arham.
 

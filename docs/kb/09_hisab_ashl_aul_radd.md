@@ -74,7 +74,7 @@ Contoh: suami, 2 saudari kandung → ashl 6: suami 3, saudari 4 → 'aul ke **7*
 | Beberapa jenis | Ashl dari furudh biasa (umumnya 6), lalu **ashl diganti jumlah saham** mereka |
 
 Contoh: anak pr + ibu → 6: anak pr 3, ibu 1 → ashl radd **4** (anak pr 3/4, ibu 1/4).
-Contoh [UTS]: nenek + saudara seibu → 6: 1 + 1 → ashl **2**. Ibu + saudara seibu → 2 + 1 → **3**. Anak pr + cucu pr + ibu → 3 + 1 + 1 → **5**.
+Contoh (dari Ibnu 'Utsaimin): nenek + saudara seibu → 6: 1 + 1 → ashl **2**. Ibu + saudara seibu → 2 + 1 → **3**. Anak pr + cucu pr + ibu → 3 + 1 + 1 → **5**.
 
 **Kondisi B: ada suami/istri**
 1. Buat *mas'alah zawjiyyah*: ashl dari makhraj fardh pasangan saja (2, 4, atau 8). Berikan bagiannya.

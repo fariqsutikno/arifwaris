@@ -1,7 +1,7 @@
-import type { FamilyGraph, HeirKey, MunasakhatResult, PersonId, TraceStep } from '@waris/engine';
+import type { FamilyGraph, MunasakhatResult, PersonId, TraceStep } from '@waris/engine';
 import { rupiah } from './format.js';
 import { explain, type ExplainSection } from './narasi.js';
-import { ROLE_LABEL } from './people.js';
+import { roleLabel } from './people.js';
 import { joinAnd, line, s, type ExplainLine, type Segment } from './segments.js';
 import { term } from './terms.js';
 
@@ -49,7 +49,7 @@ function makeMention(result: Ok, graph: FamilyGraph): (id: PersonId) => Segment 
   const heirOf = (id: PersonId) => {
     for (const step of result.steps) {
       const status = step.result.statuses[id];
-      if (status?.kind === 'heir' || status?.kind === 'mahjub') return { mayit: step.mayit, key: status.role.key };
+      if (status?.kind === 'heir' || status?.kind === 'mahjub') return { mayit: step.mayit, role: status.role };
     }
     return undefined;
   };
@@ -59,7 +59,7 @@ function makeMention(result: Ok, graph: FamilyGraph): (id: PersonId) => Segment 
     if (id === deceasedId) return person?.sex === 'F' ? 'almarhumah' : 'almarhum';
     const role = heirOf(id);
     if (!role) return 'kerabat';
-    const label = ROLE_LABEL[role.key as HeirKey] ?? 'kerabat';
+    const label = roleLabel(role.role);
     return role.mayit === deceasedId ? label : `${label} dari ${baseLabel(role.mayit)}`;
   };
 

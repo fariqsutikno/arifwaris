@@ -49,10 +49,10 @@ Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**
 - Orang kafir dengan sesama kafir beda agama:
   > **KHILAF** — Jumhur (Hanafi, Syafi'i): kekafiran satu millah, saling mewarisi. Hanbali dan Maliki: beda millah (Yahudi, Nasrani, dll.) tidak saling mewarisi. *Tidak relevan bagi platform muslim; cukup ditandai.*
 - **Pengecualian yang dibahas ulama** (Hanbali): (1) kafir yang masuk Islam sebelum tirkah dibagi; (2) wala'.
-  > **[UTS]**: yang benar, **tidak ada pengecualian**; beda agama menghalangi mutlak, termasuk pada wala', karena keumuman dalil.
+  > **Ibnu 'Utsaimin** (pembanding): yang benar, **tidak ada pengecualian**; beda agama menghalangi mutlak, termasuk pada wala', karena keumuman dalil.
   > **Default sistem**: beda agama menghalangi mutlak; status agama dinilai **pada saat kematian** pewaris.
 - **Murtad**: tidak mewarisi siapa pun (lihat bab 13).
-- **Munafiq**: dihukumi Islam secara zahir. [UTS]: jika kemunafikannya nyata dan diketahui, tidak ada saling mewarisi.
+- **Munafiq**: dihukumi Islam secara zahir. Ibnu 'Utsaimin (pembanding): jika kemunafikannya nyata dan diketahui, tidak ada saling mewarisi.
 
 ## 2.5 Kasus Talak di Maradh al-Maut (Tuhmah) [R02-3]
 Jika suami menalak ba'in istrinya dalam sakit menjelang wafat dengan dugaan hendak menghalanginya dari waris, para ulama berbeda pendapat apakah istri tetap mewarisi.

@@ -23,9 +23,7 @@ Format: **Ahli waris → Ashl/Tashih → Bagian (saham)**. Default = jumhur kecu
 | 11 | Istri, ibu, 2 saudara seibu | 4 | Istri 1; ibu 1; seibu 2 | Radd dengan pasangan (habis) |
 | 12 | Suami, ibu, kakek, 1 saudari kandung | 6 → 9 → 27 | Suami 9; ibu 6; kakek 8; saudari 4 | Akdariyyah |
 | 13 | Suami, ibu, 2 saudara seibu, 1 saudara lk kandung | 6 → 18 | Suami 9; ibu 3; tiap saudara (3 orang) 2 | Musyarrakah (tasyrik, default) |
-| 13b | Sama, mode tanpa tasyrik (Hanafi–Hanbali–[UTS]) | 6 | Suami 3; ibu 1; seibu 2; kandung 0 | Opsi khilaf |
 | 14 | Istri, kakek, 3 saudara lk kandung | 4 → 12 | Istri 3; kakek 3 (1/3 sisa); saudara 6 | Jadd wal ikhwah jumhur |
-| 14b | Sama, mode [UTS] | 4 | Istri 1; kakek 3; saudara 0 | Kakek = ayah |
 | 15 | Ayah, ibu, 2 saudara lk kandung | 6 | Ibu 1; ayah 5; saudara 0 | Mahjub tetap menghijab nuqshan |
 | 16 | Suami, ayah, anak lk (+ semua lk lain) | 12 | Suami 3; ayah 2; anak lk 7 | Regresi hajb (semua lk) |
 | 17 | Suami, ibu, saudari kandung, saudara lk sebapak, saudari sebapak | 6 → 7 | Suami 3; ibu 1; saudari kandung 3; sebapak (lk & pr) 0 | Qarib masy'um |

@@ -86,6 +86,10 @@ describe('sebutan lintas mayit dan catatan', () => {
         + 'Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus; langkah bertahap di bawah memberi hasil yang sama.');
   });
 
+  test('M9: paman pewaris adalah paman ayah bagi anak perempuannya («عم أب»)', () => {
+    expect(texts(explainCase(M9.input), 2)[0]).toBe('Ahli waris (warits) anak perempuan: paman kandung ayah dan ibu.');
+  });
+
   test('M7: penggabungan saham 1 vs 7', () => {
     expect(lastSection(explainCase(M7.input), 2).lines.map(toPlainText).slice(0, 2)).toEqual([
       'Saudara perempuan sebapak mendapat 1 dari 8 bagian. Bagian itu dibagi kepada ahli warisnya, yang pembagiannya memakai 7 bagian.',

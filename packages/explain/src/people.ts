@@ -16,6 +16,17 @@ export const ROLE_LABEL: Record<HeirKey, string> = {
   ZAWJAH: 'istri', MUTIQAH: "mu'tiqah",
 };
 
+// [R03-2] paman & anak paman mencakup paman ayah/kakek (ancestorGeneration 3, 4, …); «عم أب» = paman ayah.
+const ANCESTOR_OF_DECEASED = ['', '', '', 'ayah', 'kakek'];
+
+/** Sebutan peran; paman/anak paman di atas generasi ayah diberi keterangan leluhurnya ("paman kandung ayah"). */
+export function roleLabel(role: HeirRole): string {
+  const base = role.key in ROLE_LABEL ? ROLE_LABEL[role.key as HeirKey] : 'kerabat';
+  const generation = role.kinship.ancestorGeneration;
+  if (!/^(IBN_)?AMM_/.test(role.key) || generation < 3) return base;
+  return `${base} ${ANCESTOR_OF_DECEASED[generation] ?? `leluhur ke-${generation - 1}`}`;
+}
+
 const ORDINAL = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 const COLLECTIVE = ['', '', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
@@ -38,8 +49,8 @@ export function makePeople(result: Ok, graph: FamilyGraph): People {
     return status && 'role' in status ? status.role : undefined;
   };
   const labelOf = (id: PersonId) => {
-    const key = roleOf(id)?.key;
-    return key && key in ROLE_LABEL ? ROLE_LABEL[key as HeirKey] : 'kerabat';
+    const role = roleOf(id);
+    return role ? roleLabel(role) : 'kerabat';
   };
   const sameRole = new Map<string, PersonId[]>();
   for (const id of Object.keys(graph.persons)) {

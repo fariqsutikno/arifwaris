@@ -7,10 +7,10 @@ sumber: [Al-Faraidh al-Muyassar (Alukah), Tashil al-Faraidh (Ibn Utsaimin)]
 # 00. Indeks dan Konvensi
 
 ## Tujuan
-Knowledge base ilmu faraidh untuk sistem AI platform waris. Disusun dari dua sumber: **Al-Faraidh al-Muyassar** (disingkat **[MYS]**, bercorak didaktis, mengikuti jumhur) dan **Tashil al-Faraidh** karya Syaikh Muhammad bin Shalih al-Utsaimin (disingkat **[UTS]**, bercorak tahqiq dan tarjih, bermazhab Hanbali dengan tarjih mandiri).
+Knowledge base ilmu faraidh untuk sistem AI platform waris. Disusun dari dua sumber: **Al-Faraidh al-Muyassar** (bercorak didaktis, mengikuti jumhur) dan **Tashil al-Faraidh** karya Syaikh Muhammad bin Shalih al-Utsaimin (bercorak tahqiq dan tarjih, bermazhab Hanbali dengan tarjih mandiri). Keduanya kini hanya pembanding; hukum yang dipakai sistem adalah [SYF].
 
 ## Konvensi Wajib bagi AI
-1. **Default perhitungan = madzhab Syafi'i** (menyesuaikan konteks mayoritas Indonesia). Setiap titik khilaf diberi blok `KHILAF` berisi pendapat Syafi'i (dipakai default, ditandai **[SYF]**) dan pendapat lain sebagai opsi, termasuk [UTS] (Hanbali–tarjih Ibnu Utsaimin) dan [MYS] (jumhur/umum sebagaimana disusun kitab Al-Faraidh al-Muyassar).
+1. **Default perhitungan = madzhab Syafi'i** (menyesuaikan konteks mayoritas Indonesia). Setiap titik khilaf diberi blok `KHILAF` berisi pendapat Syafi'i (ditandai **[SYF]**, satu-satunya yang dipakai sistem) dan pendapat lain yang dicatat hanya sebagai perbandingan, disebut dengan nama ulama atau kitabnya.
 2. **Rujukan verifikasi madzhab Syafi'i**: disusun dari pernyataan eksplisit kitab mu'tabar — **Raudhah ath-Thalibin wa 'Umdah al-Muftin karya Imam an-Nawawi** (dicek langsung dari teks Kitab al-Fara'idh untuk titik-titik kunci: radd, dzawil arham, wala', jadd wal-ikhwah), serta fatwa lembaga berbasis Syafi'i (Dar al-Ifta Mesir) untuk titik lain (talak di masa sakit). Titik yang belum ditemukan rujukan tegas ditandai `[perlu verifikasi lanjut]`.
 2. **Urutan kerja standar** setiap kasus: (a) hak-hak tirkah → (b) validasi syarat dan mawani' → (c) daftar ahli waris → (d) hajb → (e) tentukan furudh dan ashabah → (f) ashlul mas'alah → (g) 'aul atau radd → (h) tashih → (i) konversi ke nominal.
 3. **Pecahan dikerjakan dalam bilangan bulat (saham)**, bukan desimal, sampai langkah akhir.

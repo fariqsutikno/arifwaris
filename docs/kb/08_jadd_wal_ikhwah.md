@@ -11,9 +11,9 @@ tags: [jadd, ikhwah, muqasamah, tsuluts, sudus, muaddah, akdariyyah, khilaf]
 ## 8.1 Titik Khilaf Induk [R08-1] [R08-6] [R08-7]
 > **KHILAF — Apakah kakek menghijab saudara kandung/sebapak?**
 > - **Pendapat 1 — [SYF] (default)**: Zaid bin Tsabit, Ali; diikuti **Syafi'i, Malik, dan riwayat masyhur Ahmad**, Abu Yusuf, Muhammad. Dinukil eksplisit: *"وذهب إليه الشافعي ومالك وأحمد في المشهور عنه أنه لا يحجبهم"* (Syafi'i, Malik, dan riwayat masyhur Ahmad berpendapat kakek **tidak** menghijab saudara). **Saudara tetap mewarisi bersama kakek** dengan rincian 8.2–8.5 (madzhab Zaid).
-> - **Pendapat 2 — [UTS] (rajih menurut beliau, bukan pendapat Syafi'i)**: Abu Bakr ash-Shiddiq, Abu Musa, Ibnu Abbas, dan sekitar 14 sahabat; Abu Hanifah; pilihan Ibnu Taimiyah dan Ibnul Qayyim. **Kakek = ayah**: menghijab semua saudara secara mutlak. Seluruh rincian muqasamah, mu'addah, akdariyyah **tidak diperlukan** menurut pendapat ini. Disediakan sebagai opsi, bukan default.
+> - **Pendapat 2 — Ibnu 'Utsaimin (rajih menurut beliau, bukan pendapat Syafi'i)**: Abu Bakr ash-Shiddiq, Abu Musa, Ibnu Abbas, dan sekitar 14 sahabat; Abu Hanifah; pilihan Ibnu Taimiyah dan Ibnul Qayyim. **Kakek = ayah**: menghijab semua saudara secara mutlak. Seluruh rincian muqasamah, mu'addah, akdariyyah **tidak diperlukan** menurut pendapat ini. Disediakan sebagai opsi, bukan default.
 >
-> **Aturan sistem**: default (mode [SYF]) → jalankan 8.2–8.5. Jika mode = [UTS] → perlakukan kakek sebagai ayah terhadap saudara, lewati bab ini.
+> **Aturan sistem**: sistem hanya memakai [SYF] → jalankan 8.2–8.5. Pendapat 2 dicatat sebagai perbandingan, tidak diimplementasikan.
 
 Dalil pendapat 2 (ringkas, untuk pembanding): kakek disebut "ayah" dalam Al-Qur'an (مِّلَّةَ أَبِيكُمْ إِبْرَاهِيمَ); ia menghijab saudara seibu secara ijma', maka menurut pendapat ini ia lebih utama menghijab saudara kandung; hadits «فما بقي فلأولى رجل ذكر» dan kakek lebih dekat (jihah ubuwwah).
 
@@ -97,4 +97,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R08-4 | Mu'addah | RDH | Idem | «لكن هنا يعد أولاد الأبوين أولاد الأب على الجد في القسمة... والواحدة تأخذ إلى النصف. فإن بقي شيء، فلأولاد الأب» |
 | R08-5 | Saudari tidak diberi fardh bersama kakek, kecuali akdariyyah | RDH | Idem | «فلا يفرض لهن معه ولا تعال مسألة بسببهن... وهذا أصل مطرد إلا في المسألة الأكدرية... وتصح من سبعة وعشرين، للزوج تسعة، وللأم ستة، وللأخت أربعة، وللجد ثمانية» |
 | R08-6 | Madzhab Zaid bin Tsabit dalam jadd | A | Diriwayatkan al-Baihaqi dan ad-Darimi; hadits keutamaan Zaid «وأفرضهم زيد بن ثابت» (at-Tirmidzi no. 3790; Ibnu Majah no. 154) | Dasar penisbatan madzhab Syafi'i pada Zaid dalam fara'idh. |
-| R08-7 | Pendapat kakek = ayah ([UTS]) | A | Abu Bakr ash-Shiddiq, Ibnu 'Abbas; dinukil al-Bukhari secara mu'allaq (Kitab al-Fara'idh, bab Mirats al-Jadd ma'a al-Ab wal-Ikhwah) | Opsi non-default. |
+| R08-7 | Pendapat kakek = ayah (Ibnu 'Utsaimin) | A | Abu Bakr ash-Shiddiq, Ibnu 'Abbas; dinukil al-Bukhari secara mu'allaq (Kitab al-Fara'idh, bab Mirats al-Jadd ma'a al-Ab wal-Ikhwah) | Perbandingan; tidak dipakai sistem. |

@@ -31,8 +31,8 @@ Hakikatnya ibu mendapat 1/6 dari total (kasus suami) dan 1/4 dari total (kasus i
 Furudh menghabiskan harta (6/6), sehingga saudara kandung sebagai ashabah tidak mendapat apa-apa, padahal ia berkongsi ibu yang sama dengan saudara seibu.
 
 > **KHILAF (2 lawan 2)**
-> - **[SYF] dan Maliki (default)** — mengikuti putusan akhir Umar (disebut [MYS]; *"anggaplah ayah mereka keledai/batu yang dilempar ke laut; bukankah mereka seibu?"*): saudara kandung **digabungkan** dengan saudara seibu dalam 1/3, dibagi **rata per kepala** (lk = pr), karena dihitung sebagai anak ibu. Nawawi: *"هذا هو المشهور والمذهب، وبه قطع الأصحاب"* [R07-2]. Ada nukilan qaul kedua (tanpa tasyrik) dari Abu Bakr bin Lal karena riwayat Zaid berbeda, namun Nawawi berkata tidak menemukan ulama lain yang menukilnya sebagai qaul Syafi'i [R07-2].
-> - **Tanpa tasyrik** — Hanafi, Hanbali, **[UTS]** (*"yang benar tidak ada tasyrik, karena itulah tuntutan nash"*): saudara kandung gugur, mengikuti hadits «ألحقوا الفرائض بأهلها...»، disediakan sebagai opsi.
+> - **[SYF] dan Maliki (default)** — mengikuti putusan akhir Umar (disebut dalam Al-Fara'idh al-Muyassar; *"anggaplah ayah mereka keledai/batu yang dilempar ke laut; bukankah mereka seibu?"*): saudara kandung **digabungkan** dengan saudara seibu dalam 1/3, dibagi **rata per kepala** (lk = pr), karena dihitung sebagai anak ibu. Nawawi: *"هذا هو المشهور والمذهب، وبه قطع الأصحاب"* [R07-2]. Ada nukilan qaul kedua (tanpa tasyrik) dari Abu Bakr bin Lal karena riwayat Zaid berbeda, namun Nawawi berkata tidak menemukan ulama lain yang menukilnya sebagai qaul Syafi'i [R07-2].
+> - **Tanpa tasyrik** — Hanafi, Hanbali, **Ibnu 'Utsaimin** (*"yang benar tidak ada tasyrik, karena itulah tuntutan nash"*): saudara kandung gugur, mengikuti hadits «ألحقوا الفرائض بأهلها...»، dicatat sebagai perbandingan.
 
 **Contoh**: suami, ibu, 2 saudara seibu, 1 saudara lk kandung.
 - Tasyrik: ashl 6 → suami 3, ibu 1, (3 saudara) 2 → inkisar 2 atas 3 → tashih 18: suami 9, ibu 3, masing-masing saudara 2.
