@@ -1,25 +1,56 @@
-import { expect, it } from 'vitest';
+import { beforeEach, expect, it, vi } from 'vitest';
+import { tambahAhliWaris } from '../checklist';
+import { kasusBaru } from '../kasus';
 import { keadaanAwal, pengurangKeadaan } from '../keadaan';
+import { bacaTujuan, simpanTujuan, sudahLihatTur, tandaiTurDilihat } from '../preferensi';
 
-it('MULAI membuat kasus baru di langkah 1', () => {
-  const keadaan = pengurangKeadaan(keadaanAwal(null), { jenis: 'MULAI', jenisKelamin: 'P' });
-  expect(keadaan).toMatchObject({ layar: 'wizard', langkah: 1 });
-  expect(keadaan.kasus?.graf.orang.PEWARIS?.jenisKelamin).toBe('P');
+beforeEach(() => localStorage.clear());
+
+const awal = keadaanAwal(null, null);
+
+it('MULAI membuka wizard langkah 1 tanpa kasus (jenis kelamin belum dipilih)', () => {
+  expect(pengurangKeadaan(awal, { jenis: 'MULAI' })).toMatchObject({ layar: 'wizard', langkah: 1, kasus: null });
 });
 
-it('KE_LANGKAH dibatasi 1..5', () => {
-  const awal = pengurangKeadaan(keadaanAwal(null), { jenis: 'MULAI', jenisKelamin: 'L' });
-  expect(pengurangKeadaan(awal, { jenis: 'KE_LANGKAH', langkah: 9 }).langkah).toBe(5);
-  expect(pengurangKeadaan(awal, { jenis: 'KE_LANGKAH', langkah: 0 }).langkah).toBe(1);
+it('PILIH_PEWARIS membuat kasus, lalu bisa mengganti jenis kelamin selama belum ada pasangan', () => {
+  let keadaan = pengurangKeadaan(pengurangKeadaan(awal, { jenis: 'MULAI' }), { jenis: 'PILIH_PEWARIS', jenisKelamin: 'P' });
+  expect(keadaan.kasus?.graf.orang.PEWARIS?.jenisKelamin).toBe('P');
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  expect(keadaan.kasus?.graf.orang.PEWARIS?.jenisKelamin).toBe('L');
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }) });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'P' });
+  expect(keadaan.kasus?.graf.orang.PEWARIS?.jenisKelamin).toBe('L');
+});
+
+it('KE_LANGKAH tidak bisa melompati langkah yang belum lengkap', () => {
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L') };   // harta masih 0
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 4 }).langkah).toBe(2);
+});
+
+it('KE_LAYAR hasil ditolak bila isian belum lengkap', () => {
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L') };
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LAYAR', layar: 'hasil' }).layar).toBe('wizard');
+});
+
+it('ULANGI menghapus kasus dan kembali ke beranda, tujuan tetap', () => {
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L'), tujuan: 'belajar' as const };
+  expect(pengurangKeadaan(keadaan, { jenis: 'ULANGI' })).toMatchObject({ layar: 'beranda', kasus: null, tujuan: 'belajar' });
 });
 
 it('UBAH_KASUS selalu merapikan urutan wafat', () => {
-  const awal = pengurangKeadaan(keadaanAwal(null), { jenis: 'MULAI', jenisKelamin: 'L' });
-  const keadaan = pengurangKeadaan(awal, { jenis: 'UBAH_KASUS', ubah: kasus => ({ ...kasus, urutanWafat: ['TIDAK_ADA'] }) });
-  expect(keadaan.kasus?.urutanWafat).toEqual([]);
+  const keadaan = { ...awal, kasus: kasusBaru('L') };
+  const hasil = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: kasus => ({ ...kasus, urutanWafat: ['TIDAK_ADA'] }) });
+  expect(hasil.kasus?.urutanWafat).toEqual([]);
 });
 
-it('kasus tersimpan membuka beranda dengan tawaran lanjut', () => {
-  const tersimpan = pengurangKeadaan(keadaanAwal(null), { jenis: 'MULAI', jenisKelamin: 'L' }).kasus!;
-  expect(keadaanAwal(tersimpan)).toMatchObject({ layar: 'beranda', kasus: tersimpan });
+it('preferensi tersimpan, dan tetap jalan bila localStorage melempar error', () => {
+  simpanTujuan('belajar');
+  expect(bacaTujuan()).toBe('belajar');
+  const setItem = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('penuh'); });
+  const getItem = vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('diblokir'); });
+  tandaiTurDilihat('wizard');
+  expect(sudahLihatTur('wizard')).toBe(true);   // jatuh ke memori
+  simpanTujuan('hitung');
+  expect(bacaTujuan()).toBe('hitung');
+  setItem.mockRestore(); getItem.mockRestore();
 });

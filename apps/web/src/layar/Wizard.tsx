@@ -14,6 +14,17 @@ const JUDUL_LANGKAH = ['', 'Siapa yang meninggal?', 'Berapa harta peninggalannya
   'Siapa aja yang ditinggalin?', 'Ada kondisi khusus?'];
 
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
+  if (!keadaan.kasus) {
+        return (
+          <main className="halaman tumpuk">
+            <h1 className="judul-langkah">Almarhum laki-laki atau perempuan?</h1>
+            <div className="chip-deret">
+              <Pilihan saatKlik={() => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' })}>Laki-laki</Pilihan>
+              <Pilihan saatKlik={() => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin: 'P' })}>Perempuan</Pilihan>
+            </div>
+          </main>
+        );
+      }
   const kasus = keadaan.kasus!;
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
   const adalahTerakhir = keadaan.langkah === TOTAL_LANGKAH;
