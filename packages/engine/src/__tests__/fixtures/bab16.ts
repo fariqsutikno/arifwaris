@@ -283,11 +283,11 @@ export const case10: Fixture = {
   input: input({
     deceasedId: 'D',
     persons: {
-      D:   p('D', 'M', { life: 'dead' }),
+      D:   p('D', 'F', { life: 'dead' }),
       H1:  p('H1', 'M'),
-      D1:  p('D1', 'F', { fatherId: 'D' }),
+      D1:  p('D1', 'F', { fatherId: 'H1', motherId: 'D' }),
       // Anak lk wafat — penghubung ke cucu pr
-      S1:  p('S1', 'M', { fatherId: 'D', life: 'dead', isPlaceholder: true }),
+      S1:  p('S1', 'M', { fatherId: 'H1', motherId: 'D', life: 'dead', isPlaceholder: true }),
       GD1: p('GD1', 'F', { fatherId: 'S1' }),
     },
     marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],

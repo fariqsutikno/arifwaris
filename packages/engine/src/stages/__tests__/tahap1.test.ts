@@ -206,6 +206,17 @@ describe('validasi input → NEEDS_INPUT / UNSUPPORTED', () => {
     expect(runHeirStages(graph)).toMatchObject({ status: 'UNSUPPORTED' });
   });
 
+  test('jenis kelamin tidak cocok dengan peran di graf → tanya', () => {
+    const suamiPerempuan = bab16.input({
+      deceasedId: 'D',
+      persons: { D: p('D', 'M', { life: 'dead' }), H1: p('H1', 'M') },
+      marriages: [{ husbandId: 'H1', wifeId: 'D', status: 'intact' }],
+    });
+    expect(runHeirStages(suamiPerempuan)).toMatchObject({ status: 'NEEDS_INPUT', questions: [{ personId: 'D', field: 'sex' }] });
+    const ayahPerempuan = keluarga({ S1: { sex: 'M', motherId: 'D' } });
+    expect(runHeirStages(ayahPerempuan)).toMatchObject({ status: 'NEEDS_INPUT', questions: [{ personId: 'D', field: 'sex' }] });
+  });
+
   test('suami lebih dari satu → tanya', () => {
     const graph = bab16.input({
       deceasedId: 'D',

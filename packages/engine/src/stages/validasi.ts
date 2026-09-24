@@ -34,10 +34,31 @@ export function validateInput(input: EngineInput, roles: Record<PersonId, HeirRo
     }
   }
 
+  questions.push(...sexConsistency(input));
+
   const spouses = Object.values(roles).filter(r => r.key === 'ZAWJ' || r.key === 'ZAWJAH');
   const limit = deceased.sex === 'M' ? MAX_ZAWJAH : MAX_ZAWJ;
   if (spouses.length > limit) {
     questions.push({ field: 'marriages', reason: `Jumlah pasangan yang sah (${spouses.length}) melebihi batas ${limit}; periksa status pernikahan.` });
   }
   return questions;
+}
+
+/** Jenis kelamin harus cocok dengan perannya di graf (ayah/suami laki-laki, ibu/istri perempuan). */
+function sexConsistency({ graph }: EngineInput): Question[] {
+  const expected = new Map<PersonId, 'M' | 'F'>();
+  for (const person of Object.values(graph.persons)) {
+    if (person.fatherId) expected.set(person.fatherId, 'M');
+    if (person.motherId) expected.set(person.motherId, 'F');
+  }
+  for (const marriage of graph.marriages) {
+    expected.set(marriage.husbandId, 'M');
+    expected.set(marriage.wifeId, 'F');
+  }
+  return [...expected].flatMap(([personId, sex]) => {
+    const person = graph.persons[personId];
+    return person && person.sex !== sex
+      ? [{ personId, field: 'sex' as const, reason: `Tercatat sebagai ${sex === 'M' ? 'ayah/suami' : 'ibu/istri'} tetapi jenis kelaminnya berbeda.` }]
+      : [];
+  });
 }
