@@ -33,7 +33,7 @@ Seorang ahli waris wafat **sebelum** tirkah mayit pertama dibagi, sehingga bagia
 
 **Teknik**: ikhtishar al-masa'il — anggap mayit kedua tidak pernah ada; bagi harta langsung ke ahli waris yang hidup saat pembagian. Tidak perlu prosedur jami'ah.
 
-Sub-bentuk (4): ta'shib saja / ta'shib yang tadinya fardh lalu berubah / fardh + ta'shib / fardh saja. Untuk sub-bentuk **fardh saja**: mas'alah mayit pertama harus **'aul dengan nilai yang sama persis** dengan bagian mayit kedua — syarat ini *ghairu muththarid*, ada kasus yang tidak 'aul (lihat contoh soal Lahim).
+Sub-bentuk (4): ta'shib saja / ta'shib yang tadinya fardh lalu berubah / fardh + ta'shib / fardh saja. Untuk sub-bentuk **fardh saja**: mas'alah mayit pertama harus **'aul dengan nilai yang sama persis** dengan bagian mayit kedua — syarat ini *ghairu muththarid* (tidak selalu berlaku): Lahim hlm. 77 memberi contoh mas'alah 1 'aul **melebihi** bagian mayit kedua (zawj, syaqiqah, umm ab, ukht li-ab; seandainya ukht li-ab dihitung, 6 'aul ke 8 = 'aul 2, sedangkan bagiannya 1), dan ikhtishar tetap dipakai: 6 'aul ke 7. Lihat kasus uji M7.
 
 Contoh: mayit meninggalkan 4 anak lk, lalu salah satunya wafat tanpa ahli waris selain 3 saudaranya → harta dibagi 3 anak lk langsung.
 
@@ -87,7 +87,7 @@ Bandingkan **saham mayit kedua di mas'alah 1** dengan **total mas'alah 2**:
 
 Tiga jenis ikhtishar yang disebut Lahim (Amr Kedua), bersifat opsional untuk lapisan penyajian:
 
-**Jenis 1 — Ikhtishar al-Masa'il** (ringkas sebelum kerja): gunakan satu mas'alah langsung untuk Keadaan 1. Tiga syarat: (a) ahli waris mayit 2 = seluruh sisa ahli waris mayit 1; (b) nisbah bagian tidak berbeda; (c) khusus bentuk fardh saja: 'aul mas'alah 1 sama persis dengan bagian mayit 2.
+**Jenis 1 — Ikhtishar al-Masa'il** (ringkas sebelum kerja): gunakan satu mas'alah langsung untuk Keadaan 1. Tiga syarat: (a) ahli waris mayit 2 = seluruh sisa ahli waris mayit 1; (b) nisbah bagian tidak berbeda; (c) khusus bentuk fardh saja: 'aul mas'alah 1 sama persis dengan bagian mayit 2 — *ghairu muththarid*, lihat pengecualian di Keadaan 1 dan kasus M7.
 
 **Jenis 2 — Ikhtishar al-Jawami'** (jami'ah): dipakai Keadaan 2 & 3, sama dengan metode 12.3 di atas.
 
