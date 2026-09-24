@@ -43,17 +43,22 @@ describe('Munasakhat bab 12 — kasus uji M1–M9 (bab 16)', () => {
 });
 
 describe('Munasakhat — penolakan dan pertanyaan', () => {
+  const cloneGraph = () => {
+    const { graph } = M2.input.base;
+    return { ...graph, persons: { ...graph.persons }, marriages: [...graph.marriages] };
+  };
+
   test('yang wafat bukan ahli waris mayit sebelumnya (saham 0) → UNSUPPORTED', () => {
-    const graph = structuredClone(M2.input.base.graph);
+    const graph = cloneGraph();
     graph.persons['F1'] = { id: 'F1', sex: 'M', life: 'dead', religion: 'islam', isPlaceholder: true };
-    graph.persons['D']!.fatherId = 'F1';
+    graph.persons['D'] = { ...graph.persons['D']!, fatherId: 'F1' };
     graph.persons['AK'] = { id: 'AK', sex: 'M', life: 'alive', religion: 'islam', fatherId: 'F1' };
     const result = computeMunasakhat({ ...M2.input, base: { ...M2.input.base, graph }, deaths: [{ personId: 'AK' }] });
     expect(result).toMatchObject({ status: 'UNSUPPORTED', mayit: 'AK', refs: ['R12-1'] });
   });
 
   test('data kurang pada mayit berikutnya → NEEDS_INPUT dengan mayit-nya', () => {
-    const graph = structuredClone(M2.input.base.graph);
+    const graph = cloneGraph();
     graph.persons['HB'] = { id: 'HB', sex: 'M', life: 'alive', religion: 'unknown' };
     graph.marriages.push({ husbandId: 'HB', wifeId: 'B', status: 'intact' });
     const result = computeMunasakhat({ ...M2.input, base: { ...M2.input.base, graph } });

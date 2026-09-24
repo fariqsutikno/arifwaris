@@ -111,7 +111,7 @@ Tidak ada teks eksplisit di Lahim yang membahas kasus ini langsung dalam konteks
 Bagian tirkah mayit pertama yang jatuh ke mayit kedua menjadi hak milik penuh mayit kedua sejak wafatnya mayit pertama. Karena itu:
 - **Tirkah mayit kedua** = saham dari mayit pertama **+** harta pribadi mayit kedua (jika ada).
 - Tirkah gabungan itu **melewati pipeline bab 01 penuh** (tajhiz → hutang → wasiat → waris) sebelum dibagi ke ahli waris mayit kedua.
-- Jika pengguna belum mengisi hutang/wasiat/harta pribadi mayit kedua → kembalikan `NEEDS_INPUT`.
+- **Default** (keputusan pemilik project): hutang, wasiat, dan harta pribadi mayit kedua dst. dianggap **sudah diselesaikan** sebelum munasakhat dihitung, jadi tidak ditanyakan dan harta dibagi menurut jami'ah. Bila pengguna mengisinya, tirkah gabungan mayit itu melewati bab 01 seperti di atas.
 
 Kalau tidak ada potongan (hutang = 0, wasiat = 0, harta pribadi = 0), hasil pipeline penuh = hasil metode jami'ah langsung — ini dapat dijadikan assertion test.
 
