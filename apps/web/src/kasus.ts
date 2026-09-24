@@ -5,21 +5,26 @@
 import type { GrafKeluarga, IdOrang, InputTirkah, Orang, Pernikahan } from '@waris/engine';
 
 export const SATUAN_PEMBULATAN = [1n, 100n, 1000n] as const;
+// Rincian harta hanya alat bantu mengisi total; engine tetap menerima `tirkah.kotor`.
+export const KATEGORI_HARTA = ['tabungan', 'properti', 'kendaraan', 'emas', 'piutang', 'lainnya'] as const;
+export type KategoriHarta = typeof KATEGORI_HARTA[number];
 const KUNCI_PENYIMPANAN = 'arif-waris:kasus';
 const ID_PEWARIS = 'PEWARIS';
 
 export interface Kasus {
-  versi: 1;
+  versi: 2;
   graf: GrafKeluarga;
   tirkah: InputTirkah;
   satuanPembulatan: bigint;
   /** Kosong = bukan munasakhat. Urut waktu wafat, setelah pewaris. */
   urutanWafat: IdOrang[];
+  /** Diisi bila pengguna memilih "Rinci per jenis" di langkah Harta. */
+  rincianHarta?: Partial<Record<KategoriHarta, bigint>>;
 }
 
 export function kasusBaru(jenisKelaminPewaris: 'L' | 'P'): Kasus {
   return {
-    versi: 1,
+    versi: 2,
     graf: {
       idPewaris: ID_PEWARIS,
       orang: { [ID_PEWARIS]: { id: ID_PEWARIS, jenisKelamin: jenisKelaminPewaris, statusHidup: 'wafat', agama: 'islam' } },
@@ -75,7 +80,8 @@ export function muatLokal(): Kasus | null {
 
 function bacaKasus(data: unknown): Kasus {
   const objek = wajibObjek(data, 'kasus');
-  if (objek.versi !== 1) throw new Error('Versi file tidak dikenal. Pakai file dari Arif Waris versi ini.');
+  // Versi 1 = versi 2 tanpa rincian harta, jadi cukup dibaca dengan aturan yang sama.
+  if (objek.versi !== 1 && objek.versi !== 2) throw new Error('Versi file tidak dikenal. Pakai file dari Arif Waris versi ini.');
   const graf = bacaGraf(objek.graf);
   const tirkahMentah = wajibObjek(objek.tirkah, 'tirkah');
   const tirkah: InputTirkah = {
@@ -86,10 +92,28 @@ function bacaKasus(data: unknown): Kasus {
   };
   const satuanPembulatan = bacaUang(objek.satuanPembulatan, 'satuan pembulatan');
   if (!SATUAN_PEMBULATAN.includes(satuanPembulatan as 1n)) throw new Error('Satuan pembulatan harus 1, 100, atau 1000.');
-  if (!Array.isArray(objek.urutanWafat) || !objek.urutanWafat.every(id => typeof id === 'string' && graf.orang[id])) {
-    throw new Error('Daftar yang wafat berisi orang yang tidak ada.');
+  const urutanWafat = bacaUrutanWafat(objek.urutanWafat, graf);
+  const rincianHarta = objek.rincianHarta === undefined ? undefined : bacaRincianHarta(objek.rincianHarta);
+  const kasus: Kasus = { versi: 2, graf, tirkah, satuanPembulatan, urutanWafat, ...(rincianHarta ? { rincianHarta } : {}) };
+  return rapikanUrutanWafat(kasus);
+}
+
+function bacaUrutanWafat(nilai: unknown, graf: GrafKeluarga): IdOrang[] {
+  const salah = new Error('Daftar yang wafat berisi orang yang tidak ada.');
+  if (!Array.isArray(nilai) || !nilai.every(id => typeof id === 'string' && graf.orang[id])) throw salah;
+  if (nilai.includes(graf.idPewaris)) throw new Error('Pewaris tidak boleh ada di daftar yang wafat sesudahnya.');
+  if (new Set(nilai).size !== nilai.length) throw new Error('Ada orang yang tercatat wafat dua kali.');
+  return nilai as IdOrang[];
+}
+
+function bacaRincianHarta(nilai: unknown): Partial<Record<KategoriHarta, bigint>> {
+  const objek = wajibObjek(nilai, 'rincian harta');
+  const rincian: Partial<Record<KategoriHarta, bigint>> = {};
+  for (const [kategori, jumlah] of Object.entries(objek)) {
+    if (!KATEGORI_HARTA.includes(kategori as KategoriHarta)) throw new Error(`Jenis harta "${kategori}" tidak dikenal.`);
+    rincian[kategori as KategoriHarta] = bacaUang(jumlah, `harta ${kategori}`);
   }
-  return { versi: 1, graf, tirkah, satuanPembulatan, urutanWafat: objek.urutanWafat as IdOrang[] };
+  return rincian;
 }
 
 function bacaGraf(data: unknown): GrafKeluarga {
