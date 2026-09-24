@@ -97,9 +97,10 @@ describe('nama opsional', () => {
     const e = explainCase(bab16.case06.input);
     expect(texts(e, 2)).toContain("Kedua anak perempuan berbagi 2/3 sama rata karena jumlahnya lebih dari satu dan tidak ada laki-laki sederajat "
       + "yang membuat mereka ikut mengambil sisa (mu'ashshib).");
-    const hasil = texts(e, e.sections.length);
-    expect(hasil).toContain('Anak perempuan pertama: 8 bagian (8/27).');
-    expect(hasil).toContain('Anak perempuan kedua: 8 bagian (8/27).');
+    // Urutan mengikuti urutan input: D1 = pertama, D2 = kedua.
+    const hasil = e.sections[e.sections.length - 1]!.lines.map(l => l.segments[0]);
+    expect(hasil).toContainEqual({ kind: 'person', personIds: ['D1'], text: 'Anak perempuan pertama' });
+    expect(hasil).toContainEqual({ kind: 'person', personIds: ['D2'], text: 'Anak perempuan kedua' });
   });
 
   test('[R04-3] istri-istri berbagi rata, bukan masing-masing mendapat 1/4', () => {

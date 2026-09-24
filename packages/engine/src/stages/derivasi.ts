@@ -87,7 +87,8 @@ function ascendantRole(graph: FamilyGraph, personId: PersonId, path: PersonId[])
   const kinship: KinshipPosition = {
     ancestorGeneration: generation,
     descentDepth: 0,
-    lineage: sexOf(graph, links[0]!) === 'M' ? 'paternal' : 'maternal',
+    // Pihak ditentukan dari jalur (fatherId/motherId), bukan dari jenis kelamin yang diinput.
+    lineage: graph.persons[path[0]!]!.fatherId === links[0] ? 'paternal' : 'maternal',
     throughFemale: hasFemale(graph, intermediates),
   };
 
