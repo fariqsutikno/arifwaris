@@ -265,8 +265,14 @@ Setiap perbandingan angka (ashl, radd, inkisar, juz' as-sahm) wajib memancarkan 
 termasuk yang hasilnya habis/tamatsul — supaya `explain` bisa menulis "diketahui 2 dan 4 → tadakhul →
 ambil yang besar". Teks bebas di trace dilarang.
 
-`packages/explain` (`explain(result, graph)`) menghasilkan lapis 2 sebagai bagian → baris teks + `refs`;
-lapis 3 (dalil) nanti menempelkan teks dari `packages/content` berdasarkan `refs` tiap baris.
+`packages/explain` (`explain(result, graph, { mode })`) menghasilkan lapis 2 sebagai langkah → baris → potongan
+berjenis: `text`, `person` (sebutan orang; id internal tidak pernah tampil), `term` (id glosarium bab 15 + contoh dari
+kasus itu, untuk tooltip bergaris bawah) — plus `refs` per baris untuk lapis 3 (dalil, `packages/content`).
+- Mode `cerita` (default, awam): masalahnya → caranya → istilahnya → hasilnya. Mode `ringkas`: istilah dulu, angka.
+- Nama opsional: bernama → "Fatimah (anak perempuan)" lalu "Fatimah"; tanpa nama → "anak perempuan", atau
+  "anak perempuan kedua" bila berbilang; seluruh anggota satu peran → "kedua anak perempuan". Nama berubah → panggil
+  `explain` lagi (murah, tanpa engine).
+- Tooltip mengambil `artiAwam` glosarium (`@waris/content`, dibaca langsung dari KB bab 15).
 
 Output ke pengguna = 3 lapis dari trace yang sama:
 1. **Tabel mas'alah** (kolom 'aul/radd/tashih muncul hanya bila terjadi; yang mahjub tetap tampil).

@@ -1,5 +1,5 @@
 {
-  "name": "@waris/explain",
+  "name": "@waris/content",
   "version": "0.0.1",
   "type": "module",
   "main": "./src/index.ts",
@@ -9,13 +9,8 @@
   "scripts": {
     "test": "vitest run"
   },
-  "dependencies": {
-    "@waris/engine": "workspace:*",
-    "@waris/math": "workspace:*"
-  },
   "devDependencies": {
     "typescript": "^5.5.0",
-    "vitest": "^2.0.0",
-    "@waris/content": "workspace:*"
+    "vitest": "^2.0.0"
   }
 }

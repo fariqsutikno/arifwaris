@@ -1,160 +1,202 @@
+import { findTerm } from '@waris/content';
 import { compute, type EngineInput, type TraceStep } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
-import { explain, narrateNisab, type Explanation } from '../index.js';
+import { TERM_IDS, explain, narrateNisab, toPlainText, type Explanation } from '../index.js';
 
-function explainCase(input: EngineInput): Explanation {
+function explainCase(input: EngineInput, mode?: 'cerita' | 'ringkas'): Explanation {
   const result = compute(input);
   if (result.status !== 'OK') throw new Error(result.status);
-  return explain(result, input.graph);
+  return explain(result, input.graph, mode ? { mode } : {});
 }
 
-const section = (e: Explanation, title: string) => {
-  const found = e.sections.find(s => s.title === title);
-  if (!found) throw new Error(`section "${title}" tidak ada; ada: ${e.sections.map(s => s.title).join(' | ')}`);
-  return found.lines.map(l => l.text);
-};
+const texts = (e: Explanation, step: number) => e.sections[step - 1]!.lines.map(toPlainText);
 
-const compare = (fields: Partial<Extract<TraceStep, { kind: 'NISAB_COMPARE' }>>): Extract<TraceStep, { kind: 'NISAB_COMPARE' }> =>
-  ({ stage: 'ashl', refs: [], kind: 'NISAB_COMPARE', purpose: 'ashl', a: 0n, b: 0n, relation: 'tamatsul', gcd: 0n, result: 0n, ...fields });
+/** Salin input dengan nama orang (nama opsional di input). */
+function withNames(input: EngineInput, names: Record<string, string>): EngineInput {
+  const persons = Object.fromEntries(Object.entries(input.graph.persons)
+    .map(([id, p]) => [id, names[id] ? { ...p, name: names[id] } : p]));
+  return { ...input, graph: { ...input.graph, persons } };
+}
 
-describe('narasi nisab — identifikasi hubungan dua bilangan', () => {
-  test('empat nisab arba\' untuk ashl (bab 10.2)', () => {
-    expect(narrateNisab(compare({ a: 6n, b: 6n, relation: 'tamatsul', gcd: 6n, result: 6n })))
-      .toBe('Penyebut 6 dan 6 sama → tamatsul. Ambil salah satunya: 6.');
-    expect(narrateNisab(compare({ a: 4n, b: 2n, relation: 'tadakhul', gcd: 2n, result: 4n })))
-      .toBe('Penyebut 4 dan 2: 4 habis dibagi 2 → tadakhul. Ambil yang besar: 4.');
-    expect(narrateNisab(compare({ a: 4n, b: 6n, relation: 'tawafuq', gcd: 2n, result: 12n })))
-      .toBe('Penyebut 4 dan 6: tidak saling habis membagi, FPB 2 → tawafuq. Kalikan salah satu dengan wafq yang lain: 4 × (6 ÷ 2) = 12.');
-    expect(narrateNisab(compare({ a: 2n, b: 3n, relation: 'tabayun', gcd: 1n, result: 6n })))
-      .toBe('Penyebut 2 dan 3: FPB 1 → tabayun. Kalikan keduanya: 2 × 3 = 6.');
-  });
-
-  test('[R10-5] angka 1 disebut tabayun dengan alasannya', () => {
-    expect(narrateNisab(compare({ purpose: 'juzSahm', a: 1n, b: 4n, relation: 'tabayun', gcd: 1n, result: 4n })))
-      .toBe('Simpanan 1 dan 4: setiap bilangan bertemu 1 dihukumi tabayun. Kalikan keduanya: 1 × 4 = 4.');
-  });
-
-  test('inkisar hanya memakai FPB (bab 10.3)', () => {
-    expect(narrateNisab(compare({ purpose: 'inkisar', a: 3n, b: 3n, relation: 'habis', gcd: 3n, result: 1n })))
-      .toBe('Saham 3 habis dibagi ru\'us 3 → tidak perlu dikoreksi.');
-    expect(narrateNisab(compare({ purpose: 'inkisar', a: 2n, b: 4n, relation: 'tawafuq', gcd: 2n, result: 2n })))
-      .toBe('Saham 2 tidak habis dibagi ru\'us 4, FPB 2 → tawafuq. Simpan wafq ru\'us: 4 ÷ 2 = 2.');
-    expect(narrateNisab(compare({ purpose: 'inkisar', a: 7n, b: 3n, relation: 'tabayun', gcd: 1n, result: 3n })))
-      .toBe('Saham 7 tidak habis dibagi ru\'us 3, FPB 1 → tabayun. Simpan seluruh ru\'us: 3.');
-  });
-});
-
-describe('kasus 10 — suami, anak pr, cucu pr (radd dengan pasangan)', () => {
+describe('kasus 10 — mode cerita tanpa nama', () => {
   const e = explainCase(bab16.case10.input);
 
-  test('urutan langkah', () => {
-    expect(e.sections.map(s => s.title)).toEqual([
-      'Ahli waris', 'Bagian masing-masing', 'Ashlul mas\'alah (penyebut bersama)', 'Radd (pengembalian sisa)', 'Hasil',
+  test('judul langkah', () => {
+    expect(e.sections.map(sec => sec.title)).toEqual([
+      'Langkah 1 — Siapa yang mendapat warisan',
+      'Langkah 2 — Bagian masing-masing',
+      'Langkah 3 — Menyamakan penyebut',
+      'Langkah 4 — Masih ada sisa, untuk siapa?',
+      'Langkah 5 — Hasil akhir',
     ]);
   });
 
-  test('ahli waris dan bagian beserta alasannya', () => {
-    expect(section(e, 'Ahli waris')).toEqual([
-      'Yang mewarisi: suami (H1), anak perempuan (D1), cucu perempuan dari anak laki-laki (GD1).',
-    ]);
-    expect(section(e, 'Bagian masing-masing')).toEqual([
-      'Suami (H1) mendapat 1/4 karena ada keturunan yang mewarisi (far\'u warits): anak perempuan (D1), cucu perempuan dari anak laki-laki (GD1).',
-      'Hajb nuqshan: bagian suami (H1) berkurang dari 1/2 menjadi 1/4.',
-      'Anak perempuan (D1) mendapat 1/2 karena seorang diri tanpa laki-laki sederajat yang menjadikannya ashabah (mu\'ashshib).',
-      'Cucu perempuan dari anak laki-laki (GD1) mendapat 1/6 sebagai penyempurna 2/3 (takmilah ats-tsulutsain) bersama anak perempuan (D1).',
-      'Hajb nuqshan: bagian cucu perempuan dari anak laki-laki (GD1) berkurang dari 1/2 menjadi 1/6.',
+  test('ahli waris dan bagian, dengan hajb nuqshan dijelaskan sekali', () => {
+    expect(texts(e, 1)).toEqual(['Ahli waris (warits) almarhumah: suami, anak perempuan, dan cucu perempuan dari anak laki-laki.']);
+    expect(texts(e, 2)).toEqual([
+      "Suami mendapat 1/4, bukan 1/2, karena almarhumah meninggalkan keturunan yang ikut mewarisi (far'u warits): "
+        + 'anak perempuan dan cucu perempuan dari anak laki-laki. Pengurangan seperti ini disebut hajb nuqshan.',
+      "Anak perempuan mendapat 1/2 karena ia sendirian dan tidak ada laki-laki sederajat yang membuatnya ikut mengambil sisa (mu'ashshib).",
+      'Cucu perempuan dari anak laki-laki mendapat 1/6, bukan 1/2, sebagai pelengkap agar bagiannya bersama anak perempuan genap 2/3 '
+        + '(takmilah ats-tsulutsain).',
     ]);
   });
 
-  test('ashl: 4 dan 2 tadakhul, lalu 4 dan 6 tawafuq', () => {
-    expect(section(e, 'Ashlul mas\'alah (penyebut bersama)')).toEqual([
-      'Penyebut 4 dan 2: 4 habis dibagi 2 → tadakhul. Ambil yang besar: 4.',
-      'Penyebut 4 dan 6: tidak saling habis membagi, FPB 2 → tawafuq. Kalikan salah satu dengan wafq yang lain: 4 × (6 ÷ 2) = 12.',
-      'Ashl = 12. Saham: suami (H1) 1/4 × 12 = 3; anak perempuan (D1) 1/2 × 12 = 6; cucu perempuan dari anak laki-laki (GD1) 1/6 × 12 = 2.',
+  test('menyamakan penyebut: 4 dan 2 tadakhul, lalu 4 dan 6 tawafuq', () => {
+    expect(texts(e, 3)).toEqual([
+      'Bagian-bagian di atas masih berupa pecahan: suami 1/4, anak perempuan 1/2, dan cucu perempuan dari anak laki-laki 1/6. '
+        + "Supaya bisa dijumlah, kita cari satu angka yang bisa dibagi oleh semua penyebutnya. Angka ini disebut ashlul mas'alah.",
+      'Mulai dari 4 dan 2: 4 sudah habis dibagi 2 (tadakhul), jadi cukup pakai 4.',
+      'Lalu 4 dengan 6: tidak ada yang habis membagi yang lain, tetapi keduanya sama-sama bisa dibagi 2 (tawafuq). Caranya: 4 × (6 ÷ 2) = 12.',
+      'Jadi harta kita bayangkan dipotong menjadi 12 bagian yang sama (saham): suami 3, anak perempuan 6, dan cucu perempuan dari anak laki-laki 2.',
     ]);
   });
 
-  test('radd: zawjiyyah, raddiyyah, dan perbandingan sisa', () => {
-    expect(section(e, 'Radd (pengembalian sisa)')).toEqual([
-      'Jumlah saham 11 lebih kecil dari ashl 12 dan tidak ada ashabah → sisa dikembalikan kepada ashabul furudh (radd). Suami/istri tidak menerima radd.',
-      'Mas\'alah zawjiyyah: ashl 4 dari bagian suami (H1) → suami (H1) 1, sisa 3.',
-      'Mas\'alah raddiyyah: perbandingan anak perempuan (D1) : cucu perempuan dari anak laki-laki (GD1) = 3 : 1 → ashl radd 4.',
-      'Sisa 3 dibanding ashl radd 4: FPB 1 → tabayun. Kalikan ashl zawjiyyah dengan seluruh ashl radd: 4 × 4 = 16.',
+  test('radd diceritakan bertahap', () => {
+    expect(texts(e, 4)).toEqual([
+      'Jumlah semua bagian 3 + 6 + 2 = 11, padahal ada 12. Masih tersisa 1 bagian, dan tidak ada ahli waris yang berhak atas sisa (ashabah). '
+        + 'Sisa itu dikembalikan kepada anak perempuan dan cucu perempuan dari anak laki-laki sesuai besar bagian mereka (radd). '
+        + 'Suami tidak ikut, karena suami/istri tidak menerima radd.',
+      'Pertama, bagian suami diselesaikan dulu: 1/4 berarti dari 4 bagian ia mendapat 1, dan sisanya 3 bagian.',
+      'Kedua, anak perempuan dan cucu perempuan dari anak laki-laki berbagi sisa itu dengan perbandingan 3 : 1, totalnya 4 bagian.',
+      'Ketiga, 3 bagian tidak bisa dibagi rata menjadi 4, dan keduanya tidak punya faktor bersama (tabayun). '
+        + 'Maka semuanya dikalikan 4: harta dibagi menjadi 16 bagian.',
+      'Hasilnya: suami 4 bagian (tetap 1/4), anak perempuan 9 bagian, dan cucu perempuan dari anak laki-laki 3 bagian.',
     ]);
   });
 
-  test('hasil', () => {
-    expect(section(e, 'Hasil')).toEqual([
-      'Suami (H1): 4/16.',
-      'Anak perempuan (D1): 9/16.',
-      'Cucu perempuan dari anak laki-laki (GD1): 3/16.',
+  test('hasil akhir', () => {
+    expect(texts(e, 5)).toEqual([
+      'Harta dibagi menjadi 16 bagian:',
+      'Suami: 4 bagian (4/16).',
+      'Anak perempuan: 9 bagian (9/16).',
+      'Cucu perempuan dari anak laki-laki: 3 bagian (3/16).',
     ]);
+  });
+
+  test('istilah dan orang adalah potongan tersendiri (untuk tooltip & hover)', () => {
+    const segments = e.sections[2]!.lines[1]!.segments;
+    expect(segments).toContainEqual({ kind: 'term', term: 'tadakhul', text: 'tadakhul', example: 'Di kasus ini: 4 dan 2 → 4.' });
+    const suami = e.sections[1]!.lines[0]!.segments[0];
+    expect(suami).toEqual({ kind: 'person', personIds: ['H1'], text: 'Suami' });
   });
 });
 
-describe('kasus 12 — akdariyyah (\'aul lalu tashih)', () => {
+describe('nama opsional', () => {
+  test('bernama: sebutan pertama memperkenalkan peran, berikutnya nama saja', () => {
+    const e = explainCase(withNames(bab16.case10.input, { D: 'Khadijah', H1: 'Hasan', D1: 'Fatimah', GD1: 'Aisyah' }));
+    expect(texts(e, 1)).toEqual([
+      'Ahli waris (warits) Khadijah: Hasan (suami), Fatimah (anak perempuan), dan Aisyah (cucu perempuan dari anak laki-laki).',
+    ]);
+    expect(texts(e, 2)[0]).toBe("Hasan mendapat 1/4, bukan 1/2, karena Khadijah meninggalkan keturunan yang ikut mewarisi (far'u warits): "
+      + 'Fatimah dan Aisyah. Pengurangan seperti ini disebut hajb nuqshan.');
+  });
+
+  test('tanpa nama, peran sama: kolektif bila semuanya disebut, urutan bila satu per satu', () => {
+    const e = explainCase(bab16.case06.input);
+    expect(texts(e, 2)).toContain("Kedua anak perempuan berbagi 2/3 sama rata karena jumlahnya lebih dari satu dan tidak ada laki-laki sederajat "
+      + "yang membuat mereka ikut mengambil sisa (mu'ashshib).");
+    const hasil = texts(e, e.sections.length);
+    expect(hasil).toContain('Anak perempuan pertama: 8 bagian (8/27).');
+    expect(hasil).toContain('Anak perempuan kedua: 8 bagian (8/27).');
+  });
+
+  test('[R04-3] istri-istri berbagi rata, bukan masing-masing mendapat 1/4', () => {
+    expect(texts(explainCase(bab16.case22.input), 2)[0])
+      .toBe("Keempat istri berbagi 1/4 sama rata karena almarhum tidak meninggalkan keturunan yang ikut mewarisi (far'u warits).");
+  });
+
+  test('saudara terhalang tetap mengurangi bagian ibu', () => {
+    const e = explainCase(bab16.case15.input);
+    expect(texts(e, 1)).toEqual([
+      'Ahli waris (warits) almarhum: ayah dan ibu.',
+      'Kedua saudara laki-laki kandung tidak mendapat bagian karena terhalang oleh ayah (hajb hirman).',
+    ]);
+    expect(texts(e, 2)).toContain("Ibu mendapat 1/6, bukan 1/3, karena almarhum punya dua saudara atau lebih (jam' min al-ikhwah): "
+      + 'kedua saudara laki-laki kandung. Mereka tetap dihitung walaupun tidak mendapat bagian. Pengurangan seperti ini disebut hajb nuqshan.');
+  });
+});
+
+describe('kasus 12 — akdariyyah', () => {
   const e = explainCase(bab16.case12.input);
 
-  test('kasus khusus disebut dan bagian kakek/saudari dijelaskan', () => {
-    expect(section(e, 'Bagian masing-masing')).toEqual([
-      'Suami (H1) mendapat 1/2 karena tidak ada keturunan yang mewarisi (far\'u warits).',
-      'Ibu (M1) mendapat 1/3 karena tidak ada keturunan yang mewarisi dan tidak ada dua saudara atau lebih.',
-      'Kasus khusus: al-Akdariyyah.',
-      'Kakek (GF1) diberi 1/6.',
-      'Saudara perempuan kandung (UK1) diberi 1/2, lalu bagiannya digabung dengan bagian kakek (1/6 + 1/2 = 2/3) untuk dibagi 2 : 1.',
+  test('bagian kakek dan saudari', () => {
+    expect(texts(e, 2)).toEqual([
+      "Suami mendapat 1/2 karena almarhumah tidak meninggalkan keturunan yang ikut mewarisi (far'u warits).",
+      'Ibu mendapat 1/3 karena almarhumah tidak meninggalkan keturunan yang ikut mewarisi dan tidak punya dua saudara atau lebih.',
+      'Ini termasuk kasus khusus al-Akdariyyah.',
+      'Kakek diberi 1/6.',
+      'Saudara perempuan kandung diberi 1/2. Bagian keduanya lalu digabung (1/6 + 1/2 = 2/3) dan dibagi ulang: kakek mendapat dua kali bagian saudari.',
     ]);
   });
 
-  test('\'aul dan tashih', () => {
-    expect(section(e, '\'Aul')).toEqual([
-      'Jumlah saham 9 lebih besar dari ashl 6 → \'aul: ashl dinaikkan menjadi 9, sehingga setiap bagian berkurang secara proporsional.',
+  test('\'aul lalu pembulatan', () => {
+    expect(e.sections.map(sec => sec.title)).toContain('Langkah 4 — Bagiannya melebihi harta');
+    expect(texts(e, 4)).toEqual([
+      "Jumlah semua bagian 3 + 2 + 4 = 9, lebih besar dari 6. Supaya adil, penyebutnya dinaikkan menjadi 9 ('aul): setiap orang tetap "
+        + 'mendapat jumlah bagian yang sama, tetapi karena harta sekarang dibagi 9, semua bagian berkurang secara sebanding.',
     ]);
-    expect(section(e, 'Tashih (koreksi agar bagian per orang bulat)')).toEqual([
-      'Kakek (GF1) dan saudara perempuan kandung (UK1): saham 4 tidak habis dibagi ru\'us 3 (laki-laki dihitung 2), FPB 1 → tabayun. Simpan seluruh ru\'us: 3.',
-      'Juz\' as-sahm = 3. Tashih = 9 × 3 = 27.',
-    ]);
-    expect(section(e, 'Hasil')).toEqual([
-      'Suami (H1): 9/27.', 'Ibu (M1): 6/27.', 'Kakek (GF1): 8/27.', 'Saudara perempuan kandung (UK1): 4/27.',
+    expect(texts(e, 5)).toEqual([
+      'Bagian sebuah kelompok kadang tidak bisa dibagi rata ke anggotanya (inkisar). Kalau begitu, jumlah bagian diperbesar supaya '
+        + 'setiap orang mendapat bilangan bulat (tashih).',
+      "Kakek dan saudara perempuan kandung mendapat 4 bagian untuk 3 kepala (ru'us, laki-laki dihitung 2). 4 tidak bisa dibagi 3 dan "
+        + 'keduanya tidak punya faktor bersama (tabayun), jadi angka 3 disimpan.',
+      "Semua bagian dikalikan 3 (juz' as-sahm): 9 × 3 = 27 bagian.",
     ]);
   });
 });
 
-describe('penghalang, jam\' min al-ikhwah, nominal', () => {
-  test('kasus 15: saudara terhijab tetapi tetap mengurangi bagian ibu', () => {
-    const e = explainCase(bab16.case15.input);
-    expect(section(e, 'Ahli waris')).toEqual([
-      'Yang mewarisi: ayah (F1), ibu (M1).',
-      '2 saudara laki-laki kandung (AK1, AK2) terhalang seluruhnya (hajb hirman) oleh ayah (F1).',
-    ]);
-    expect(section(e, 'Bagian masing-masing')).toContain(
-      'Ibu (M1) mendapat 1/6 karena ada dua saudara atau lebih (jam\' min al-ikhwah): 2 saudara laki-laki kandung (AK1, AK2), tetap dihitung walaupun mereka terhalang.');
-  });
+describe('nominal dan selisih pembulatan', () => {
+  const e = explainCase({ ...bab16.caseNominal.input, rounding: { unit: 1000n } });
 
-  test('pembunuh tidak mewarisi', () => {
-    expect(section(explainCase(bab16.caseNeg2.input), 'Ahli waris')).toContain(
-      'Anak laki-laki (S1) tidak mewarisi karena membunuh pewaris (mani\' qatl).');
-  });
-
-  test('uji nominal: tirkah, rupiah, dan selisih pembulatan', () => {
-    const input = { ...bab16.caseNominal.input, rounding: { unit: 1000n } };
-    const e = explainCase(input);
-    expect(section(e, 'Harta yang dibagi')).toEqual([
-      'Tirkah Rp150.000.000 dikurangi biaya pengurusan jenazah Rp5.000.000 dan hutang Rp25.000.000 → sisa Rp120.000.000.',
-      'Wasiat Rp50.000.000 melebihi batas 1/3 (Rp40.000.000); yang dijalankan Rp40.000.000. Kelebihan Rp10.000.000 hanya berlaku dengan persetujuan (ijazah) ahli waris.',
+  test('harta yang dibagi', () => {
+    expect(texts(e, 1)).toEqual([
+      'Sebelum dibagi, harta peninggalan (tirkah) Rp150.000.000 dipakai dulu untuk biaya pengurusan jenazah Rp5.000.000 dan melunasi '
+        + 'hutang Rp25.000.000, sehingga tersisa Rp120.000.000.',
+      'Wasiat almarhum sebesar Rp50.000.000 melebihi batas sepertiga harta (Rp40.000.000), jadi yang dijalankan hanya Rp40.000.000. '
+        + 'Kelebihan Rp10.000.000 baru boleh dijalankan jika semua ahli waris menyetujuinya (ijazah).',
       'Harta yang dibagi kepada ahli waris: Rp80.000.000.',
     ]);
-    expect(section(e, 'Hasil')).toEqual([
-      'Istri (W1): 3/24 = Rp10.000.000.',
-      'Anak laki-laki (S1): 14/24 = Rp46.666.000.',
-      'Anak perempuan (D1): 7/24 = Rp23.333.000.',
-      'Selisih pembulatan Rp1.000 (dibulatkan ke bawah per Rp1.000) belum dibagikan; tetap milik ahli waris dan perlu disepakati penyalurannya. Bila diserahkan lewat transfer bank, pembagian bisa per rupiah sehingga selisihnya lebih kecil.',
-    ]);
   });
 
-  test('setiap baris membawa rujukan untuk lapis dalil', () => {
-    const e = explainCase(bab16.case10.input);
-    const bagian = e.sections.find(s => s.title === 'Bagian masing-masing')!;
-    expect(bagian.lines[0]!.refs).toEqual(['R04-2']);
+  test('hasil dalam rupiah dan saran transfer bank', () => {
+    expect(texts(e, e.sections.length)).toEqual([
+      'Harta dibagi menjadi 24 bagian:',
+      'Istri: 3 bagian (3/24) = Rp10.000.000.',
+      'Anak laki-laki: 14 bagian (14/24) = Rp46.666.000.',
+      'Anak perempuan: 7 bagian (7/24) = Rp23.333.000.',
+      'Karena setiap bagian dibulatkan ke bawah per Rp1.000, ada selisih Rp1.000 yang belum dibagikan. Uang ini tetap milik para ahli '
+        + 'waris dan perlu disepakati bersama penyalurannya. Jika dibagikan lewat transfer bank, pembulatan bisa per rupiah sehingga selisihnya lebih kecil.',
+    ]);
+  });
+});
+
+describe('mode ringkas', () => {
+  test('istilah dulu, langsung ke angka', () => {
+    const e = explainCase(bab16.case10.input, 'ringkas');
+    const ashl = e.sections.find(sec => sec.title.endsWith("Ashlul mas'alah"))!.lines.map(toPlainText);
+    expect(ashl[0]).toBe('Penyebut 4 dan 2: 4 habis dibagi 2 → tadakhul. Ambil yang besar: 4.');
+    expect(ashl[1]).toBe('Penyebut 4 dan 6: tidak saling habis membagi, FPB 2 → tawafuq. Kalikan salah satu dengan wafq yang lain: 4 × (6 ÷ 2) = 12.');
+  });
+
+  test('narasi nisab: angka 1 dan inkisar', () => {
+    const cmp = (fields: Partial<Extract<TraceStep, { kind: 'NISAB_COMPARE' }>>) => toPlainText({ refs: [], segments: narrateNisab({
+      stage: 'ashl', refs: [], kind: 'NISAB_COMPARE', purpose: 'ashl', a: 0n, b: 0n, relation: 'tamatsul', gcd: 0n, result: 0n, ...fields,
+    }) });
+    expect(cmp({ purpose: 'juzSahm', a: 1n, b: 4n, relation: 'tabayun', gcd: 1n, result: 4n }))
+      .toBe('Simpanan 1 dan 4: setiap bilangan bertemu 1 dihukumi tabayun. Kalikan keduanya: 1 × 4 = 4.');
+    expect(cmp({ purpose: 'inkisar', a: 2n, b: 4n, relation: 'tawafuq', gcd: 2n, result: 2n }))
+      .toBe("Saham 2 tidak habis dibagi ru'us 4, FPB 2 → tawafuq. Simpan wafq ru'us: 4 ÷ 2 = 2.");
+  });
+});
+
+describe('keterkaitan dengan glosarium dan dalil', () => {
+  test('setiap istilah yang dipakai narasi ada di glosarium KB bab 15', () => {
+    expect(TERM_IDS.filter(id => !findTerm(id))).toEqual([]);
+  });
+
+  test('baris membawa rujukan untuk lapis dalil', () => {
+    expect(explainCase(bab16.case10.input).sections[1]!.lines[0]!.refs).toEqual(['R04-2']);
   });
 });
