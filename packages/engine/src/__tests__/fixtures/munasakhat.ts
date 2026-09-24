@@ -18,6 +18,8 @@ export interface MunasakhatFixture {
     exactJamiah?: boolean;
     ikhtishar?: { jamiah: bigint; saham: Record<string, bigint> };
     relations?: Array<'habis' | 'tawafuq' | 'tabayun'>;
+    /** Bab 12.2 kaidah pembeda. */
+    keadaan: 1 | 2 | 3;
   };
 }
 
@@ -46,7 +48,7 @@ export const M1: MunasakhatFixture = {
     },
     marriages: [{ husbandId: 'H', wifeId: 'D', status: 'intact' }],
   }, ['H']),
-  expected: { jamiah: 6n, exactJamiah: true, saham: { M1: 2n, AK: 1n, S: 2n, B: 1n }, relations: ['habis'] },
+  expected: { keadaan: 3, jamiah: 6n, exactJamiah: true, saham: { M1: 2n, AK: 1n, S: 2n, B: 1n }, relations: ['habis'] },
 };
 
 // ─── M2: istri, anak lk, anak pr → anak pr wafat (ibu + saudara lk) ───
@@ -62,7 +64,7 @@ export const M2: MunasakhatFixture = {
     },
     marriages: [{ husbandId: 'D', wifeId: 'W', status: 'intact' }],
   }, ['B']),
-  expected: { jamiah: 72n, exactJamiah: true, saham: { W: 16n, S: 56n }, relations: ['tabayun'] },
+  expected: { keadaan: 3, jamiah: 72n, exactJamiah: true, saham: { W: 16n, S: 56n }, relations: ['tabayun'] },
 };
 
 // ─── M3: 6 akh syaqiq + ibu; 3 akh wafat berturut, lalu ibu → sisa 3 akh ───
@@ -78,7 +80,7 @@ export const M3: MunasakhatFixture = {
     },
     marriages: [],
   }, ['A1', 'A2', 'A3', 'M1']),
-  expected: {
+  expected: { keadaan: 1,
     jamiah: 3n, saham: { A4: 1n, A5: 1n, A6: 1n },
     ikhtishar: { jamiah: 3n, saham: { A4: 1n, A5: 1n, A6: 1n } },
   },
@@ -101,7 +103,7 @@ export const M4: MunasakhatFixture = {
     },
     marriages: [{ husbandId: 'A', wifeId: 'WA', status: 'intact' }, { husbandId: 'B', wifeId: 'WB', status: 'intact' }],
   }, ['A', 'B']),
-  expected: {
+  expected: { keadaan: 3,
     jamiah: 384n, exactJamiah: true, relations: ['tabayun', 'tabayun'],
     saham: { C: 209n, WA: 16n, DA: 64n, WB: 19n, DB: 76n },
   },
@@ -129,7 +131,7 @@ export const M5: MunasakhatFixture = {
     },
     marriages: [{ husbandId: 'D', wifeId: 'W', status: 'intact' }],
   }, ['B2']),
-  expected: { jamiah: 72n, exactJamiah: true, saham: { W: 17n, B1: 36n, U: 19n }, relations: ['tawafuq'] },
+  expected: { keadaan: 3, jamiah: 72n, exactJamiah: true, saham: { W: 17n, B1: 36n, U: 19n }, relations: ['tawafuq'] },
 };
 
 export const M6: MunasakhatFixture = {
@@ -147,7 +149,7 @@ export const M6: MunasakhatFixture = {
     },
     marriages: [{ husbandId: 'D', wifeId: 'W', status: 'intact' }],
   }, ['B3']),
-  expected: { jamiah: 216n, exactJamiah: true, saham: { W: 27n, B1: 64n, B2: 64n, U: 61n }, relations: ['tabayun'] },
+  expected: { keadaan: 3, jamiah: 216n, exactJamiah: true, saham: { W: 27n, B1: 64n, B2: 64n, U: 61n }, relations: ['tabayun'] },
 };
 
 // ─── M7: zawj, syaqiqah, umm ab, ukht li-ab → ukht li-ab wafat (setelah dinikahi zawj) ───
@@ -167,7 +169,7 @@ export const M7: MunasakhatFixture = {
     },
     marriages: [{ husbandId: 'H', wifeId: 'D', status: 'intact' }, { husbandId: 'H', wifeId: 'UB', status: 'intact' }],
   }, ['UB']),
-  expected: {
+  expected: { keadaan: 1,
     jamiah: 56n, exactJamiah: true, relations: ['tabayun'],
     saham: { H: 24n, UK: 24n, JAB: 8n },
     ikhtishar: { jamiah: 7n, saham: { H: 3n, UK: 3n, JAB: 1n } },
@@ -200,7 +202,7 @@ export const M8: MunasakhatFixture = {
       { husbandId: 'U', wifeId: 'UW', status: 'intact' },
     ],
   }, ['B1', 'B2', 'U', 'W']),
-  expected: {
+  expected: { keadaan: 2,
     jamiah: 576n, exactJamiah: true,
     saham: { WM: 24n, WF: 48n, MB1: 32n, HB1: 48n, SB1: 112n, MB2: 32n, SB2: 160n, UW: 15n, US: 105n },
   },
@@ -225,7 +227,7 @@ export const M9: MunasakhatFixture = {
       { husbandId: 'U', wifeId: 'W2', status: 'intact' },
     ],
   }, ['B', 'W', 'U'], { S: 'B' }),
-  expected: {
+  expected: { keadaan: 3,
     jamiah: 768n, exactJamiah: true, relations: ['tabayun', 'tabayun', 'tabayun'],
     saham: { W2: 75n, S: 693n },
   },

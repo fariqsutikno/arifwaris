@@ -138,7 +138,7 @@ Mayit 1: istri, anak lk, anak pr → ashl 8 → tashih 24: istri 3, anak lk 14, 
 - Proses mayit berurutan sesuai **waktu wafat**.
 - Setiap mas'alah melewati pipeline lengkap (mani', hajb, furudh, 'aul/radd, tashih).
 - Jalur hitung dasar = metode jami'ah (12.3) untuk semua kasus sesuai Amr Keempat Lahim [R12-3].
-- Field `keadaan` (`keadaan_1` / `keadaan_2` / `keadaan_3`) disimpan untuk telusur-balik ke KB dan penjelasan ke pengguna, tapi tidak menentukan jalur kode.
+- Field `keadaan` (1 / 2 / 3) disimpan untuk telusur-balik ke KB dan penjelasan ke pengguna, tapi tidak menentukan jalur kode. Ditentukan atas seluruh rantai: **1** bila hasil akhir sama dengan membagi harta mayit pertama langsung kepada yang masih hidup (seperti M3 yang beberapa kematiannya beruntun); **2** bila ada >1 mayit kedua dan ahli waris masing-masing tidak mewarisi dari mayit pertama maupun mayit lain; selain itu **3**.
 - Ahli waris yang wafat sebelum mayit pertama bukan ahli waris sama sekali (bukan munasakhat).
 - Jika urutan wafat tidak diketahui → bab 13 (gharqa).
 

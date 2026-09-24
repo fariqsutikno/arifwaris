@@ -222,6 +222,8 @@ export type MunasakhatResult =
   | { status: 'OK';
       /** Hasil pipeline tiap mayit, urut wafat. */
       steps: Array<{ mayit: PersonId; result: EngineOk }>;
+      /** Bab 12.2: label untuk telusur-balik & penjelasan; tidak menentukan jalur hitung [R12-3]. */
+      keadaan: 1 | 2 | 3;
       jamiah: bigint;
       saham: Record<PersonId, bigint>;
       /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. */

@@ -55,11 +55,41 @@ export function computeMunasakhat(input: MunasakhatInput): MunasakhatResult {
 
   return {
     status: 'OK', steps, jamiah, saham,
+    keadaan: classifyKeadaan(input, order, steps, saham, jamiah),
     ikhtishar: ikhtisharSiham(saham, jamiah),
     nominal: nominal.nominal,
     rounding: { unit: input.base.rounding.unit, remainder: nominal.remainder },
     trace: [...trace, tirkah.trace, ...nominal.trace],
   };
+}
+
+/**
+ * [R12-2] Kaidah pembeda tiga keadaan (bab 12.2), diterapkan pada seluruh rantai:
+ * - 1: hasil = membagi harta mayit pertama langsung kepada yang masih hidup, seolah yang wafat belakangan tidak ada
+ *      (ahli waris mayit berikutnya = baqiyyah ahli waris mayit pertama, bagian tidak berbeda);
+ * - 2: lebih dari satu mayit kedua, ahli waris masing-masing tidak mewarisi dari mayit pertama maupun mayit lain;
+ * - 3: selain itu.
+ */
+function classifyKeadaan(input: MunasakhatInput, order: PersonId[], steps: Array<{ mayit: PersonId; result: EngineOk }>,
+  saham: Saham, jamiah: bigint): 1 | 2 | 3 {
+  const allDead = graphAt(input, order, 0);
+  for (const personId of input.deaths) allDead.persons[personId] = { ...allDead.persons[personId]!, life: 'dead' };
+  const direct = compute({ ...input.base, tirkah: NO_TIRKAH, graph: allDead });
+  if (direct.status === 'OK' && sameFractions(sahamOf(direct), saham, jamiah)) return 1;
+
+  const [first, ...later] = steps;
+  const heirsOf = (step: { mayit: PersonId; result: EngineOk }) => Object.keys(sahamOf(step.result));
+  const mayitIds = new Set(steps.map(step => step.mayit));
+  const firstHeirs = new Set(heirsOf(first!));
+  const disjoint = later.every(step => heirsOf(step).every(id => !firstHeirs.has(id) && !mayitIds.has(id)));
+  return later.length > 1 && disjoint ? 2 : 3;
+}
+
+function sameFractions(direct: Saham, saham: Saham, jamiah: bigint): boolean {
+  const directTotal = total(direct);
+  const ids = Object.keys(saham);
+  return ids.length === Object.keys(direct).length
+    && ids.every(id => direct[id] !== undefined && direct[id]! * jamiah === saham[id]! * directTotal);
 }
 
 function deathOrder(input: MunasakhatInput): PersonId[] {

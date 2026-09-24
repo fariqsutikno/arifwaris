@@ -86,6 +86,7 @@ function pembukaan(result: Ok, mention: (id: PersonId) => Segment): MunasakhatPa
     line(s`${deceased} wafat. Sebelum hartanya dibagi, ${joinAnd(later.map(id => [mention(id)]))} ikut wafat, berurutan seperti itu. `
       .concat(s`Kasus seperti ini disebut ${term('munasakhat', 'munasakhat')}: bagian yang sudah menjadi hak orang yang wafat belakangan `,
         s`diteruskan kepada ahli warisnya.`), ['R12-1']),
+    line(keadaanText(result.keadaan, deceased), ['R12-2', 'R12-3']),
     line(s`Yang diteruskan hanyalah bagian dari harta ${deceased} yang sampai kepada mereka, bukan pembagian waris atas seluruh harta mereka. `
       .concat(s`Hutang, wasiat, dan harta lain milik mereka diselesaikan oleh ahli warisnya masing-masing.`)),
   ];
@@ -93,6 +94,22 @@ function pembukaan(result: Ok, mention: (id: PersonId) => Segment): MunasakhatPa
     lines.push(line(s`${mention(skip.mayit)} tidak mendapat bagian dari harta ${deceased}, jadi tidak ada yang diteruskan kepada ahli warisnya.`, skip.refs));
   }
   return { title: 'Kematian berantai', sections: [{ title: 'Apa yang terjadi', lines }] };
+}
+
+function keadaanText(keadaan: 1 | 2 | 3, deceased: Segment): Segment[] {
+  switch (keadaan) {
+    case 1:
+      return s`Yang wafat belakangan hanya meninggalkan ahli waris yang sama dengan sisa ahli waris ${deceased}, dan bagian mereka `
+        .concat(s`tidak berubah (keadaan pertama). Karena itu hasil akhirnya sama dengan membagi harta ${deceased} langsung kepada `,
+          s`yang masih hidup, seolah yang wafat belakangan tidak ada. Langkah bertahap di bawah tetap ditampilkan sebagai buktinya.`);
+    case 2:
+      return s`Ahli waris masing-masing yang wafat belakangan tidak ikut mewarisi dari ${deceased} maupun dari yang lain `
+        .concat(s`(keadaan kedua). Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus; langkah bertahap di bawah `,
+          s`memberi hasil yang sama.`);
+    case 3:
+      return s`Susunan ahli warisnya berubah dari satu kematian ke kematian berikutnya (keadaan ketiga), jadi bagian tiap orang `
+        .concat(s`yang wafat diteruskan satu per satu.`);
+  }
 }
 
 /** Urutan wafat setelah mayit pertama, termasuk yang diabaikan karena tidak mendapat bagian. */

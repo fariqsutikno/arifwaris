@@ -1,6 +1,6 @@
 import { computeMunasakhat, type MunasakhatInput } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
-import { M2, M7, M9 } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
+import { M2, M7, M8, M9 } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
 import { explainMunasakhat, toPlainText, type MunasakhatExplanation } from '../index.js';
 
 function explainCase(input: MunasakhatInput, mode?: 'cerita' | 'ringkas'): MunasakhatExplanation {
@@ -27,6 +27,8 @@ describe('M2 — penjelasan munasakhat', () => {
     expect(texts(e, 0)).toEqual([
       'Almarhum wafat. Sebelum hartanya dibagi, anak perempuan ikut wafat, berurutan seperti itu. Kasus seperti ini disebut '
         + 'munasakhat: bagian yang sudah menjadi hak orang yang wafat belakangan diteruskan kepada ahli warisnya.',
+      'Susunan ahli warisnya berubah dari satu kematian ke kematian berikutnya (keadaan ketiga), jadi bagian tiap orang yang wafat '
+        + 'diteruskan satu per satu.',
       'Yang diteruskan hanyalah bagian dari harta almarhum yang sampai kepada mereka, bukan pembagian waris atas seluruh harta '
         + 'mereka. Hutang, wasiat, dan harta lain milik mereka diselesaikan oleh ahli warisnya masing-masing.',
     ]);
@@ -74,6 +76,16 @@ describe('sebutan lintas mayit dan catatan', () => {
     ]);
   });
 
+  test('keadaan pertama dan kedua dijelaskan di pembukaan', () => {
+    expect(texts(explainCase(M7.input), 0)[1]).toBe(
+      'Yang wafat belakangan hanya meninggalkan ahli waris yang sama dengan sisa ahli waris almarhumah, dan bagian mereka tidak '
+        + 'berubah (keadaan pertama). Karena itu hasil akhirnya sama dengan membagi harta almarhumah langsung kepada yang masih '
+        + 'hidup, seolah yang wafat belakangan tidak ada. Langkah bertahap di bawah tetap ditampilkan sebagai buktinya.');
+    expect(texts(explainCase(M8.input), 0)[1]).toBe(
+      'Ahli waris masing-masing yang wafat belakangan tidak ikut mewarisi dari almarhum maupun dari yang lain (keadaan kedua). '
+        + 'Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus; langkah bertahap di bawah memberi hasil yang sama.');
+  });
+
   test('M7: penggabungan saham 1 vs 7', () => {
     expect(lastSection(explainCase(M7.input), 2).lines.map(toPlainText).slice(0, 2)).toEqual([
       'Saudara perempuan sebapak mendapat 1 dari 8 bagian. Bagian itu dibagi kepada ahli warisnya, yang pembagiannya memakai 7 bagian.',
@@ -94,7 +106,7 @@ describe('sebutan lintas mayit dan catatan', () => {
       },
     };
     const e = explainCase({ ...M2.input, base: { ...M2.input.base, graph: withBrother }, deaths: ['AK', 'B'] });
-    expect(texts(e, 0)[2]).toBe('Saudara laki-laki sebapak tidak mendapat bagian dari harta almarhum, jadi tidak ada yang diteruskan kepada ahli warisnya.');
+    expect(texts(e, 0)[3]).toBe('Saudara laki-laki sebapak tidak mendapat bagian dari harta almarhum, jadi tidak ada yang diteruskan kepada ahli warisnya.');
   });
 
   test('mode ringkas memakai penjelas per mayit versi ringkas', () => {

@@ -32,6 +32,7 @@ describe('Munasakhat bab 12 — kasus uji M1–M9 (bab 16)', () => {
         expect(result.jamiah).toBe(expected.jamiah);
         expect(result.saham).toEqual(expected.saham);
       }
+      expect(result.keadaan, 'keadaan').toBe(expected.keadaan);
       if (expected.ikhtishar) expect(result.ikhtishar).toEqual(expected.ikhtishar);
       if (expected.relations) {
         const relations = result.trace.flatMap(step => (step.kind === 'MUNASAKHAT' ? [step.relation] : []));
