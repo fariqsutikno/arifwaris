@@ -107,7 +107,7 @@ Sidebar:
    Rp 1 (transfer) / Rp 100 / Rp 1.000 (tunai) langsung menghitung ulang lewat engine; sisa ditampilkan dengan
    ajakan menyepakatinya bersama ahli waris. Bila semua sudah bulat, kartu tidak muncul.
 3. **Harta yang dibagi** (tertutup, total di judul): susunan hitungan (label kiri, angka rata kanan; potongan ditulis
-   `−Rp 5.000.000` berwarna merah; garis lalu `=` sebelum total), keterangan batas wasiat, bar komposisi. Tanpa kotak ikon +/−.
+   `−Rp 5.000.000` berwarna merah; garis lalu `=` sebelum total), keterangan batas wasiat, bar komposisi (hover/fokus/ketuk tiap ruas → tooltip: nama, persen dari harta peninggalan, nominal). Tanpa kotak ikon +/−.
 4. **Tentang kasus ini** (tertutup): jenis kasus dari `KELAS_MASALAH`, asal masalah dan hubungan nisbahnya dari
    `PERBANDINGAN_NISAB` (tamatsul/tadakhul/tawafuq/tabayun), tashih bila ada; istilah dengan tooltip buatan sendiri.
 5. **Pelajari langkah perhitungan** (tertutup; terbuka otomatis di mode Belajar): pilihan Langkah demi langkah /
