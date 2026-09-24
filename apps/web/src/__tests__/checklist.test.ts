@@ -23,6 +23,12 @@ describe('checklist', () => {
     expect(jumlah(graf)).toEqual({ SAUDARA_KANDUNG: 1, IBU: 1 });
   });
 
+  it('ibu diisi sebelum saudara: saudara memakai ibu yang sama', () => {
+    let graf = tambahAhliWaris(grafAwal('L'), 'PEWARIS', 'IBU');
+    graf = tambahAhliWaris(graf, 'PEWARIS', 'SAUDARA_KANDUNG');
+    expect(jumlah(graf)).toEqual({ IBU: 1, SAUDARA_KANDUNG: 1 });
+  });
+
   it('saudara sebapak dan seibu dibedakan lewat orang tua', () => {
     let graf = grafAwal('P');
     for (const kunci of ['SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU'] as const) graf = tambahAhliWaris(graf, 'PEWARIS', kunci);

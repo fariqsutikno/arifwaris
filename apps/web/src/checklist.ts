@@ -148,8 +148,9 @@ function tambahAnakDariMayit(graf: GrafKeluarga, idMayit: IdOrang, jenisKelamin:
 function isiOrangTua(graf: GrafKeluarga, idAnak: IdOrang, jenisKelamin: 'L' | 'P', status: Partial<Orang>): Hasil {
   const idAda = jenisKelamin === 'L' ? graf.orang[idAnak]!.idAyah : graf.orang[idAnak]!.idIbu;
   if (idAda) {
-    if (!graf.orang[idAda]!.penghubung) throw new Error(`orang tua ${idAnak} sudah terisi`);
+    // Dibutuhkan sebagai penghubung: orang tua yang sudah ada (hidup atau penghubung) dipakai.
     if (status.penghubung) return { graf, idOrang: idAda };
+    if (!graf.orang[idAda]!.penghubung) throw new Error(`orang tua ${idAnak} sudah terisi`);
     return { graf: ubahOrang(graf, idAda, { penghubung: false, statusHidup: 'hidup' }), idOrang: idAda };
   }
   const baru = tambahOrang(graf, { jenisKelamin, ...status });
