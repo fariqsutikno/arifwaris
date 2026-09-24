@@ -1,40 +1,43 @@
+// Konteks yang dibawa ke tiap bab penjelasan: hasil engine, cara menyebut orang,
+// dan akses cepat ke langkah jejak per jenis.
+
 import type { HasilEngine, GrafKeluarga, IdOrang, LangkahJejak } from '@waris/engine';
-import { makePeople, type People } from './people.js';
-import { joinAnd, type Segment } from './segments.js';
+import { buatSebutan, type Sebutan } from './people.js';
+import { gabungDan, type Potongan } from './segments.js';
 
-export type Ok = Extract<HasilEngine, { status: 'OK' }>;
-export type Step<K extends LangkahJejak['jenis']> = Extract<LangkahJejak, { jenis: K }>;
+export type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
+export type Langkah<K extends LangkahJejak['jenis']> = Extract<LangkahJejak, { jenis: K }>;
 
-export interface Ctx {
-  hasil: Ok;
-  people: People;
-  daftarLangkah<K extends LangkahJejak['jenis']>(jenis: K): Array<Step<K>>;
-  membersOf(kelompok: string): IdOrang[];
+export interface Konteks {
+  hasil: HasilOk;
+  sebutan: Sebutan;
+  daftarLangkah<K extends LangkahJejak['jenis']>(jenis: K): Array<Langkah<K>>;
+  anggotaDari(kelompok: string): IdOrang[];
   /** Penyebut akhir: tashih, lalu radd/'aul, lalu ashl. */
-  finalDenominator: bigint;
-  showNominal: boolean;
+  penyebutAkhir: bigint;
+  tampilkanNominal: boolean;
 }
 
-export function makeCtx(hasil: Ok, graf: GrafKeluarga): Ctx {
+export function buatKonteks(hasil: HasilOk, graf: GrafKeluarga): Konteks {
   const { totalKolom } = hasil.tabel;
   return {
     hasil,
-    people: makePeople(hasil, graf),
-    daftarLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((s): s is Step<K> => s.jenis === jenis),
-    membersOf: kelompok => hasil.tabel.baris.find(r => r.kelompok === kelompok)?.anggota ?? [],
-    finalDenominator: totalKolom.tashih ?? totalKolom.radd ?? totalKolom.aul ?? totalKolom.ashl!,
-    showNominal: hasil.jejak.some(s => s.jenis === 'TIRKAH' && s.kotor > 0n),
+    sebutan: buatSebutan(hasil, graf),
+    daftarLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((langkahIni): langkahIni is Langkah<K> => langkahIni.jenis === jenis),
+    anggotaDari: kelompok => hasil.tabel.baris.find(r => r.kelompok === kelompok)?.anggota ?? [],
+    penyebutAkhir: totalKolom.tashih ?? totalKolom.radd ?? totalKolom.aul ?? totalKolom.ashl!,
+    tampilkanNominal: hasil.jejak.some(langkahIni => langkahIni.jenis === 'TIRKAH' && langkahIni.kotor > 0n),
   };
 }
 
 /** Sebut beberapa orang, dikelompokkan per peran ("kedua anak perempuan dan ibu"). */
-export function mentionAll(ctx: Ctx, ids: IdOrang[]): Segment[] {
-  const byRole = new Map<string, IdOrang[]>();
+export function sebutSemua(konteks: Konteks, ids: IdOrang[]): Potongan[] {
+  const perPeran = new Map<string, IdOrang[]>();
   for (const id of ids) {
-    const kunci = ctx.people.roleOf(id)?.kunci ?? id;
-    byRole.set(kunci, [...(byRole.get(kunci) ?? []), id]);
+    const kunci = konteks.sebutan.peranDari(id)?.kunci ?? id;
+    perPeran.set(kunci, [...(perPeran.get(kunci) ?? []), id]);
   }
-  return joinAnd([...byRole.values()].map(anggota => [ctx.people.mention(anggota)]));
+  return gabungDan([...perPeran.values()].map(anggota => [konteks.sebutan.sebut(anggota)]));
 }
 
-export const kelompok = (ctx: Ctx, groupId: string): Segment[] => mentionAll(ctx, ctx.membersOf(groupId));
+export const sebutKelompok = (konteks: Konteks, idKelompok: string): Potongan[] => sebutSemua(konteks, konteks.anggotaDari(idKelompok));

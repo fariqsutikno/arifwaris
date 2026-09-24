@@ -247,18 +247,18 @@ interface TabelMasalah {
   dikecualikan: IdOrang[];   // mahjub/mamnu, tampil dengan alasan
 }
 
-interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan Rujukan" KB bab 01–14, 16
+interface EntriRujukan {       // packages/content, dibangun dari tabel "Dasar dan Rujukan" KB bab 01–14, 16
   kode: RefCode; bab: number;
-  claim: string;
+  klaim: string;
   jenis: string;           // kolom Jenis apa adanya ("Q + RDH", "H (dha'if)", "—")
-  types: Array<'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH'>;   // jenis gabungan dipecah
-  source: string;
+  daftarJenis: Array<'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH'>;   // jenis gabungan dipecah
+  sumber: string;
   kutipan: string;
   arab: string[];          // teks «…» dari kolom Kutipan — teks Arab dari KB, bukan dari luar
-  status: 'verified' | 'needsVerification';   // tercantum di tabel bab 17.4
+  status: 'terverifikasi' | 'perluVerifikasi';   // tercantum di tabel bab 17.4
   dhaif: boolean;
 }
-// dalilFor(line.refs) → { entries: DalilView[] (label jenis, sumber, teks Arab, peringatan), notes }
+// dalilUntuk(baris.refs) → { daftarEntri: TampilanDalil[] (label jenis, sumber, teks Arab, peringatan), catatan }
 // Peringatan: KH saja → "kaidah hisab, bukan dalil syar'i"; 17.4 → belum dicek; dha'if; "—" → bukan dalil.
 // Baris tanpa refs / kode tak ada di KB → notes.
 ```

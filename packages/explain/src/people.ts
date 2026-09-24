@@ -1,10 +1,15 @@
-import type { HasilEngine, GrafKeluarga, KunciAhliWaris, PeranAhliWaris, IdOrang } from '@waris/engine';
-import { joinAnd, type Segment } from './segments.js';
+// Cara menyebut orang dalam narasi; id internal tidak pernah tampil.
+//   bernama   → "Fatimah (anak perempuan)" pertama kali, lalu "Fatimah".
+//   tanpa nama → "anak perempuan", atau "anak perempuan kedua" bila perannya tidak tunggal;
+//                satu peran disebut sekaligus → "kedua anak perempuan".
 
-type Ok = Extract<HasilEngine, { status: 'OK' }>;
+import type { HasilEngine, GrafKeluarga, KunciAhliWaris, PeranAhliWaris, IdOrang } from '@waris/engine';
+import { gabungDan, type Potongan } from './segments.js';
+
+type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 
 // Padanan sehari-hari kode peran bab 3.1–3.2.
-export const ROLE_LABEL: Record<KunciAhliWaris, string> = {
+export const LABEL_PERAN: Record<KunciAhliWaris, string> = {
   ANAK_LK: 'anak laki-laki', CUCU_LK: 'cucu laki-laki dari anak laki-laki', AYAH: 'ayah', KAKEK: 'kakek',
   SAUDARA_KANDUNG: 'saudara laki-laki kandung', SAUDARA_SEBAPAK: 'saudara laki-laki sebapak', SAUDARA_SEIBU: 'saudara laki-laki seibu',
   KEPONAKAN_KANDUNG: 'anak laki-laki saudara kandung', KEPONAKAN_SEBAPAK: 'anak laki-laki saudara sebapak',
@@ -17,72 +22,66 @@ export const ROLE_LABEL: Record<KunciAhliWaris, string> = {
 };
 
 // [R03-2] paman & anak paman mencakup paman ayah/kakek (generasiLeluhur 3, 4, …); «عم أب» = paman ayah.
-const ANCESTOR_OF_DECEASED = ['', '', '', 'ayah', 'kakek'];
+const LELUHUR_PEWARIS = ['', '', '', 'ayah', 'kakek'];
 
 /** Sebutan peran; paman/anak paman di atas generasi ayah diberi keterangan leluhurnya ("paman kandung ayah"). */
-export function roleLabel(peran: PeranAhliWaris): string {
-  const dasar = peran.kunci in ROLE_LABEL ? ROLE_LABEL[peran.kunci as KunciAhliWaris] : 'kerabat';
+export function labelPeran(peran: PeranAhliWaris): string {
+  const dasar = peran.kunci in LABEL_PERAN ? LABEL_PERAN[peran.kunci as KunciAhliWaris] : 'kerabat';
   const generasi = peran.kekerabatan.generasiLeluhur;
   if (!/^(PAMAN|SEPUPU)_/.test(peran.kunci) || generasi < 3) return dasar;
-  return `${dasar} ${ANCESTOR_OF_DECEASED[generasi] ?? `leluhur ke-${generasi - 1}`}`;
+  return `${dasar} ${LELUHUR_PEWARIS[generasi] ?? `leluhur ke-${generasi - 1}`}`;
 }
 
-const ORDINAL = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
-const COLLECTIVE = ['', '', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
+const URUTAN_KE = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
+const KOLEKTIF = ['', '', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
-export interface People {
+export interface Sebutan {
   /** Sebutan satu/beberapa orang. Sebutan pertama orang bernama memperkenalkan perannya. */
-  mention(ids: IdOrang[]): Segment;
-  pewaris(): Segment;
-  roleOf(id: IdOrang): PeranAhliWaris | undefined;
+  sebut(ids: IdOrang[]): Potongan;
+  pewaris(): Potongan;
+  peranDari(id: IdOrang): PeranAhliWaris | undefined;
 }
 
-/**
- * Sebutan orang untuk narasi; id internal tidak pernah tampil.
- * - Bernama: "Fatimah (anak perempuan)" lalu "Fatimah".
- * - Tanpa nama: "anak perempuan" bila perannya tunggal, "anak perempuan kedua" bila lebih dari satu (urutan input);
- *   seluruh anggota satu peran sekaligus → "kedua anak perempuan".
- */
-export function makePeople(hasil: Ok, graf: GrafKeluarga): People {
-  const roleOf = (id: IdOrang) => {
+export function buatSebutan(hasil: HasilOk, graf: GrafKeluarga): Sebutan {
+  const peranDari = (id: IdOrang) => {
     const status = hasil.statusOrang[id];
     return status && 'peran' in status ? status.peran : undefined;
   };
-  const labelOf = (id: IdOrang) => {
-    const peran = roleOf(id);
-    return peran ? roleLabel(peran) : 'kerabat';
+  const labelDari = (id: IdOrang) => {
+    const peran = peranDari(id);
+    return peran ? labelPeran(peran) : 'kerabat';
   };
-  const sameRole = new Map<string, IdOrang[]>();
+  const peranSama = new Map<string, IdOrang[]>();
   for (const id of Object.keys(graf.orang)) {
-    if (!roleOf(id)) continue;
-    sameRole.set(labelOf(id), [...(sameRole.get(labelOf(id)) ?? []), id]);
+    if (!peranDari(id)) continue;
+    peranSama.set(labelDari(id), [...(peranSama.get(labelDari(id)) ?? []), id]);
   }
-  const mentioned = new Set<IdOrang>();
+  const sudahDisebut = new Set<IdOrang>();
 
-  const single = (id: IdOrang): string => {
+  const tunggal = (id: IdOrang): string => {
     const nama = graf.orang[id]?.nama;
-    const label = labelOf(id);
-    if (nama) return mentioned.has(id) ? nama : `${nama} (${label})`;
-    const peers = sameRole.get(label) ?? [id];
-    return peers.length === 1 ? label : `${label} ${ORDINAL[peers.indexOf(id)] ?? `ke-${peers.indexOf(id) + 1}`}`;
+    const label = labelDari(id);
+    if (nama) return sudahDisebut.has(id) ? nama : `${nama} (${label})`;
+    const sePeran = peranSama.get(label) ?? [id];
+    return sePeran.length === 1 ? label : `${label} ${URUTAN_KE[sePeran.indexOf(id)] ?? `ke-${sePeran.indexOf(id) + 1}`}`;
   };
 
-  const mention = (ids: IdOrang[]): Segment => {
-    const label = labelOf(ids[0]!);
-    const peers = sameRole.get(label) ?? [];
-    const wholeRole = ids.length > 1 && ids.length === peers.length && ids.every(id => labelOf(id) === label)
+  const sebut = (ids: IdOrang[]): Potongan => {
+    const label = labelDari(ids[0]!);
+    const sePeran = peranSama.get(label) ?? [];
+    const seluruhPeran = ids.length > 1 && ids.length === sePeran.length && ids.every(id => labelDari(id) === label)
       && ids.every(id => !graf.orang[id]?.nama);
-    const text = wholeRole
-      ? `${COLLECTIVE[ids.length] ?? ids.length} ${label}`
-      : joinAnd(ids.map(id => [{ jenis: 'text' as const, text: single(id) }])).map(p => p.text).join('');
-    ids.forEach(id => mentioned.add(id));
-    return { jenis: 'orangIni', daftarIdOrang: ids, text };
+    const teks = seluruhPeran
+      ? `${KOLEKTIF[ids.length] ?? ids.length} ${label}`
+      : gabungDan(ids.map(id => [{ jenis: 'teks' as const, teks: tunggal(id) }])).map(potonganIni => potonganIni.teks).join('');
+    ids.forEach(id => sudahDisebut.add(id));
+    return { jenis: 'orang', daftarIdOrang: ids, teks };
   };
 
-  const pewaris = (): Segment => {
+  const pewaris = (): Potongan => {
     const orangIni = graf.orang[graf.idPewaris]!;
-    return { jenis: 'orangIni', daftarIdOrang: [orangIni.id], text: orangIni.nama ?? (orangIni.jenisKelamin === 'L' ? 'almarhum' : 'almarhumah') };
+    return { jenis: 'orang', daftarIdOrang: [orangIni.id], teks: orangIni.nama ?? (orangIni.jenisKelamin === 'L' ? 'almarhum' : 'almarhumah') };
   };
 
-  return { mention, pewaris, roleOf };
+  return { sebut, pewaris, peranDari };
 }

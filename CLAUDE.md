@@ -34,7 +34,7 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 ```
 packages/math      Pecahan, fpb/kpk, nisab arba' [KH]
 packages/engine    types, rulesets/syafii, pipeline stages, orchestrators
-packages/content   RefEntry dari tabel "Dasar dan Rujukan" KB, glosarium, materi, bank soal
+packages/content   EntriRujukan dari tabel "Dasar dan Rujukan" KB, glosarium, materi, bank soal
 packages/explain   LangkahJejak → narasi Indonesia
 apps/web           (belakangan) UI
 docs/kb            knowledge base fikih 00–17

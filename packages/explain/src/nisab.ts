@@ -1,65 +1,65 @@
+// Narasi perbandingan dua bilangan (mode ringkas).
+//   ashl & juzSahm      : nisab arba' — tamatsul/tadakhul/tawafuq/tabayun (bab 10.2, [R10-1]).
+//   inkisar & raddVsSisa: hanya FPB — habis/tawafuq/tabayun (bab 9.4, 10.3).
+
 import type { LangkahJejak } from '@waris/engine';
-import { s, type Segment } from './segments.js';
-import { term } from './terms.js';
+import { kalimat, type Potongan } from './segments.js';
+import { istilah } from './terms.js';
 
-type NisabStep = Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>;
+type LangkahNisab = Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>;
 
-/**
- * Mode ringkas: identifikasi dua bilangan beserta kaidahnya, dengan istilah sebagai potongan tooltip.
- * ashl & juzSahm: nisab arba' (bab 10.2, [R10-1]); inkisar & raddVsSisa: hanya FPB (bab 9.4, 10.3).
- */
-export function narrateNisab(step: NisabStep, opsi: { weighted?: boolean } = {}): Segment[] {
-  switch (step.tujuan) {
-    case 'ashl': return narrateArba(step, 'Penyebut');
-    case 'juzSahm': return narrateArba(step, 'Simpanan');
-    case 'inkisar': return narrateInkisar(step, opsi.weighted === true);
-    case 'raddVsSisa': return narrateRaddVsSisa(step);
+export function narasiNisab(langkah: LangkahNisab, opsi: { berbobot?: boolean } = {}): Potongan[] {
+  switch (langkah.tujuan) {
+    case 'ashl': return narasiArba(langkah, 'Penyebut');
+    case 'juzSahm': return narasiArba(langkah, 'Simpanan');
+    case 'inkisar': return narasiInkisar(langkah, opsi.berbobot === true);
+    case 'raddVsSisa': return narasiRaddVsSisa(langkah);
   }
 }
 
-function narrateArba({ a, b, hubungan, fpb, hasil }: NisabStep, noun: string): Segment[] {
-  const [small, big] = a < b ? [a, b] : [b, a];
+function narasiArba({ a, b, hubungan, fpb, hasil }: LangkahNisab, kataBenda: string): Potongan[] {
+  const [kecil, besar] = a < b ? [a, b] : [b, a];
   switch (hubungan) {
     case 'tamatsul':
-      return s`${noun} ${a} dan ${b} sama → ${term('tamatsul', 'tamatsul')}. Ambil salah satunya: ${hasil}.`;
+      return kalimat`${kataBenda} ${a} dan ${b} sama → ${istilah('tamatsul', 'tamatsul')}. Ambil salah satunya: ${hasil}.`;
     case 'tadakhul':
-      return s`${noun} ${a} dan ${b}: ${big} habis dibagi ${small} → ${term('tadakhul', 'tadakhul')}. Ambil yang besar: ${hasil}.`;
+      return kalimat`${kataBenda} ${a} dan ${b}: ${besar} habis dibagi ${kecil} → ${istilah('tadakhul', 'tadakhul')}. Ambil yang besar: ${hasil}.`;
     case 'tawafuq':
-      return s`${noun} ${a} dan ${b}: tidak saling habis membagi, FPB ${fpb} → ${term('tawafuq', 'tawafuq')}. `
-        .concat(s`Kalikan salah satu dengan ${term('wafq', 'wafq')} yang lain: ${a} × (${b} ÷ ${fpb}) = ${hasil}.`);
+      return kalimat`${kataBenda} ${a} dan ${b}: tidak saling habis membagi, FPB ${fpb} → ${istilah('tawafuq', 'tawafuq')}. `
+        .concat(kalimat`Kalikan salah satu dengan ${istilah('wafq', 'wafq')} yang lain: ${a} × (${b} ÷ ${fpb}) = ${hasil}.`);
     case 'tabayun':
       // [R10-5] «كل عدد مع الواحد فهو متباين»
-      return small === 1n
-        ? s`${noun} ${a} dan ${b}: setiap bilangan bertemu 1 dihukumi ${term('tabayun', 'tabayun')}. Kalikan keduanya: ${a} × ${b} = ${hasil}.`
-        : s`${noun} ${a} dan ${b}: FPB 1 → ${term('tabayun', 'tabayun')}. Kalikan keduanya: ${a} × ${b} = ${hasil}.`;
+      return kecil === 1n
+        ? kalimat`${kataBenda} ${a} dan ${b}: setiap bilangan bertemu 1 dihukumi ${istilah('tabayun', 'tabayun')}. Kalikan keduanya: ${a} × ${b} = ${hasil}.`
+        : kalimat`${kataBenda} ${a} dan ${b}: FPB 1 → ${istilah('tabayun', 'tabayun')}. Kalikan keduanya: ${a} × ${b} = ${hasil}.`;
     default:
       throw new Error(`relasi ${hubungan} tidak berlaku untuk nisab arba'`);
   }
 }
 
-function narrateInkisar({ a: saham, b: ruus, hubungan, fpb, hasil }: NisabStep, weighted: boolean): Segment[] {
-  const ruusText = s`${term('ruus', "ru'us")} ${ruus}${weighted ? ' (laki-laki dihitung 2)' : ''}`;
+function narasiInkisar({ a: saham, b: ruus, hubungan, fpb, hasil }: LangkahNisab, berbobot: boolean): Potongan[] {
+  const teksRuus = kalimat`${istilah('ruus', "ru'us")} ${ruus}${berbobot ? ' (laki-laki dihitung 2)' : ''}`;
   switch (hubungan) {
-    case 'habis': return s`Saham ${saham} habis dibagi ${ruusText} → tidak perlu dikoreksi.`;
+    case 'habis': return kalimat`Saham ${saham} habis dibagi ${teksRuus} → tidak perlu dikoreksi.`;
     case 'tawafuq':
-      return s`Saham ${saham} tidak habis dibagi ${ruusText}, FPB ${fpb} → ${term('tawafuq', 'tawafuq')}. Simpan ${term('wafq', 'wafq')} ru'us: ${ruus} ÷ ${fpb} = ${hasil}.`;
+      return kalimat`Saham ${saham} tidak habis dibagi ${teksRuus}, FPB ${fpb} → ${istilah('tawafuq', 'tawafuq')}. Simpan ${istilah('wafq', 'wafq')} ru'us: ${ruus} ÷ ${fpb} = ${hasil}.`;
     case 'tabayun':
-      return s`Saham ${saham} tidak habis dibagi ${ruusText}, FPB 1 → ${term('tabayun', 'tabayun')}. Simpan seluruh ru'us: ${hasil}.`;
+      return kalimat`Saham ${saham} tidak habis dibagi ${teksRuus}, FPB 1 → ${istilah('tabayun', 'tabayun')}. Simpan seluruh ru'us: ${hasil}.`;
     default: throw new Error(`relasi ${hubungan} tidak berlaku untuk inkisar`);
   }
 }
 
-function narrateRaddVsSisa({ a: sisa, b: ashlRadd, hubungan, fpb, hasil }: NisabStep): Segment[] {
+function narasiRaddVsSisa({ a: sisa, b: ashlRadd, hubungan, fpb, hasil }: LangkahNisab): Potongan[] {
   const ashlZawjiyyah = hasil / (ashlRadd / fpb);
   switch (hubungan) {
     case 'habis':
-      return s`Sisa ${sisa} habis dibagi ashl radd ${ashlRadd} → cukup dengan ashl zawjiyyah: ${hasil}.`;
+      return kalimat`Sisa ${sisa} habis dibagi ashl radd ${ashlRadd} → cukup dengan ashl zawjiyyah: ${hasil}.`;
     case 'tawafuq':
-      return s`Sisa ${sisa} dibanding ashl radd ${ashlRadd}: FPB ${fpb} → ${term('tawafuq', 'tawafuq')}. `
-        .concat(s`Kalikan ashl zawjiyyah dengan ${term('wafq', 'wafq')} ashl radd: ${ashlZawjiyyah} × (${ashlRadd} ÷ ${fpb}) = ${hasil}.`);
+      return kalimat`Sisa ${sisa} dibanding ashl radd ${ashlRadd}: FPB ${fpb} → ${istilah('tawafuq', 'tawafuq')}. `
+        .concat(kalimat`Kalikan ashl zawjiyyah dengan ${istilah('wafq', 'wafq')} ashl radd: ${ashlZawjiyyah} × (${ashlRadd} ÷ ${fpb}) = ${hasil}.`);
     case 'tabayun':
-      return s`Sisa ${sisa} dibanding ashl radd ${ashlRadd}: FPB 1 → ${term('tabayun', 'tabayun')}. `
-        .concat(s`Kalikan ashl zawjiyyah dengan seluruh ashl radd: ${ashlZawjiyyah} × ${ashlRadd} = ${hasil}.`);
+      return kalimat`Sisa ${sisa} dibanding ashl radd ${ashlRadd}: FPB 1 → ${istilah('tabayun', 'tabayun')}. `
+        .concat(kalimat`Kalikan ashl zawjiyyah dengan seluruh ashl radd: ${ashlZawjiyyah} × ${ashlRadd} = ${hasil}.`);
     default: throw new Error(`relasi ${hubungan} tidak berlaku untuk radd`);
   }
 }

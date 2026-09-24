@@ -1,143 +1,145 @@
+// Mode ringkas (untuk pelajar/ustadz): istilah dulu, langsung ke angka.
+// Urutan bab sama dengan mode cerita: harta → ahli waris → bagian → ashl → klasifikasi → tashih → hasil.
+
 import type { AlasanFardh, PilihanJadd, IdOrang } from '@waris/engine';
-import type { Section } from './cerita.js';
-import { kelompok, mentionAll, type Ctx, type Step } from './context.js';
+import type { Bab } from './cerita.js';
+import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
-import { narrateNisab } from './nisab.js';
-import { line, s, type ExplainLine, type Segment } from './segments.js';
-import { term } from './terms.js';
+import { narasiNisab } from './nisab.js';
+import { buatBaris, kalimat, type BarisPenjelasan, type Potongan } from './segments.js';
+import { istilah } from './terms.js';
 
-/** Mode ringkas (pelajar/ustadz): istilah dulu, langsung ke angka. */
-export function ringkasSections(ctx: Ctx): Section[] {
+export function babRingkas(konteks: Konteks): Bab[] {
   return [babHarta, babAhliWaris, babBagian, babAshl, babKlasifikasi, babTashih, babHasil]
-    .map(build => build(ctx))
-    .filter((section): section is Section => section !== undefined);
+    .map(susun => susun(konteks))
+    .filter((bab): bab is Bab => bab !== undefined);
 }
 
-function babHarta(ctx: Ctx): Section | undefined {
-  const [t] = ctx.daftarLangkah('TIRKAH');
-  if (!t || t.kotor === 0n) return undefined;
-  const lines: ExplainLine[] = [];
-  if (t.tajhiz > 0n || t.hutang > 0n) {
-    lines.push(line(s`${term('tirkah', 'Tirkah')} ${rupiah(t.kotor)} − tajhiz ${rupiah(t.tajhiz)} − hutang ${rupiah(t.hutang)} = ${rupiah(t.bersih + t.wasiatDipakai)}.`, t.refs));
+function babHarta(konteks: Konteks): Bab | undefined {
+  const [langkahTirkah] = konteks.daftarLangkah('TIRKAH');
+  if (!langkahTirkah || langkahTirkah.kotor === 0n) return undefined;
+  const daftarBaris: BarisPenjelasan[] = [];
+  if (langkahTirkah.tajhiz > 0n || langkahTirkah.hutang > 0n) {
+    daftarBaris.push(buatBaris(kalimat`${istilah('tirkah', 'Tirkah')} ${rupiah(langkahTirkah.kotor)} − tajhiz ${rupiah(langkahTirkah.tajhiz)} − hutang ${rupiah(langkahTirkah.hutang)} = ${rupiah(langkahTirkah.bersih + langkahTirkah.wasiatDipakai)}.`, langkahTirkah.refs));
   }
-  if (t.wasiatDiminta > 0n) {
-    lines.push(line(s`Wasiat ${rupiah(t.wasiatDiminta)}, batas 1/3 = ${rupiah(t.wasiatBatas)} → dijalankan ${rupiah(t.wasiatDipakai)}`
-      .concat(t.wasiatButuhIjazah > 0n ? s`; kelebihan ${rupiah(t.wasiatButuhIjazah)} butuh ijazah ahli waris.` : s`.`), ['R01-4']));
+  if (langkahTirkah.wasiatDiminta > 0n) {
+    daftarBaris.push(buatBaris(kalimat`Wasiat ${rupiah(langkahTirkah.wasiatDiminta)}, batas 1/3 = ${rupiah(langkahTirkah.wasiatBatas)} → dijalankan ${rupiah(langkahTirkah.wasiatDipakai)}`
+      .concat(langkahTirkah.wasiatButuhIjazah > 0n ? kalimat`; kelebihan ${rupiah(langkahTirkah.wasiatButuhIjazah)} butuh ijazah ahli waris.` : kalimat`.`), ['R01-4']));
   }
-  lines.push(line(s`Tirkah bersih: ${rupiah(t.bersih)}.`, ['R11-1']));
-  return { title: 'Harta yang dibagi', lines };
+  daftarBaris.push(buatBaris(kalimat`Tirkah bersih: ${rupiah(langkahTirkah.bersih)}.`, ['R11-1']));
+  return { judul: 'Harta yang dibagi', daftarBaris };
 }
 
-function babAhliWaris(ctx: Ctx): Section {
-  const daftarAhliWaris = Object.entries(ctx.hasil.statusOrang).filter(([, st]) => st.jenis === 'ahliWaris').map(([id]) => id);
-  const lines = [line(s`Yang mewarisi: ${mentionAll(ctx, daftarAhliWaris)}.`)];
-  for (const step of ctx.daftarLangkah('MANI')) {
-    lines.push(line(s`${ctx.people.mention([step.idOrang])} tidak mewarisi: ${term('mani', "mani'")} ${step.mani === 'qatl' ? 'qatl' : 'ikhtilaf ad-din'}.`, step.refs));
+function babAhliWaris(konteks: Konteks): Bab {
+  const daftarAhliWaris = Object.entries(konteks.hasil.statusOrang).filter(([, langkahIni]) => langkahIni.jenis === 'ahliWaris').map(([id]) => id);
+  const daftarBaris = [buatBaris(kalimat`Yang mewarisi: ${sebutSemua(konteks, daftarAhliWaris)}.`)];
+  for (const langkah of konteks.daftarLangkah('MANI')) {
+    daftarBaris.push(buatBaris(kalimat`${konteks.sebutan.sebut([langkah.idOrang])} tidak mewarisi: ${istilah('mani', "mani'")} ${langkah.mani === 'qatl' ? 'qatl' : 'ikhtilaf ad-din'}.`, langkah.refs));
   }
-  for (const step of ctx.daftarLangkah('HAJB_HIRMAN')) {
-    lines.push(line(s`${ctx.people.mention([step.mahjub])} ${term('hajb-hirman', 'mahjub hirman')} oleh ${mentionAll(ctx, step.hajib)}.`, step.refs));
+  for (const langkah of konteks.daftarLangkah('HAJB_HIRMAN')) {
+    daftarBaris.push(buatBaris(kalimat`${konteks.sebutan.sebut([langkah.mahjub])} ${istilah('hajb-hirman', 'mahjub hirman')} oleh ${sebutSemua(konteks, langkah.hajib)}.`, langkah.refs));
   }
-  return { title: 'Ahli waris', lines };
+  return { judul: 'Ahli waris', daftarBaris };
 }
 
-const JADD_OPTION: Record<PilihanJadd, string> = { muqasamah: 'muqasamah', tsuluts: '1/3 harta', tsulutsBaqi: '1/3 sisa', sudus: '1/6 harta' };
+const OPSI_KAKEK: Record<PilihanJadd, string> = { muqasamah: 'muqasamah', tsuluts: '1/3 harta', tsulutsBaqi: '1/3 sisa', sudus: '1/6 harta' };
 
-function pilihanJadd(choice: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }>): Segment[] {
-  const terpilih = choice.opsi.find(o => o.nama === choice.terpilih)!;
-  return s`terbaik dari ${choice.opsi.map(o => `${JADD_OPTION[o.nama]} ${o.nilai.n}/${o.nilai.d}`).join(', ')} → ${JADD_OPTION[choice.terpilih]} ${terpilih.nilai}.`;
+function pilihanJadd(pilihan: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }>): Potongan[] {
+  const terpilih = pilihan.opsi.find(o => o.nama === pilihan.terpilih)!;
+  return kalimat`terbaik dari ${pilihan.opsi.map(o => `${OPSI_KAKEK[o.nama]} ${o.nilai.n}/${o.nilai.d}`).join(', ')} → ${OPSI_KAKEK[pilihan.terpilih]} ${terpilih.nilai}.`;
 }
 
-function fardhReason(ctx: Ctx, alasan: AlasanFardh): Segment[] {
+function alasanFardh(konteks: Konteks, alasan: AlasanFardh): Potongan[] {
   switch (alasan.kode) {
-    case 'ADA_FARU_WARITS': return s`ada ${term('faru-warits', "far'u warits")} (${mentionAll(ctx, alasan.oleh)})`;
-    case 'TANPA_FARU_WARITS': return s`tanpa ${term('faru-warits', "far'u warits")}`;
-    case 'JAM_IKHWAH': return s`${term('jam-min-al-ikhwah', "jam' min al-ikhwah")} (${mentionAll(ctx, alasan.oleh)})`;
-    case 'TANPA_FARU_WARITS_DAN_IKHWAH': return s`tanpa far'u warits dan tanpa jam' min al-ikhwah`;
-    case 'UMARIYYATAIN': return s`${term('umariyyatain', "'Umariyyatain")}: 1/3 sisa setelah pasangan ${alasan.fardhPasangan}`;
-    case 'NENEK_TANPA_IBU': return s`tanpa ibu`;
-    case 'TANPA_MUASHSHIB': return s`${alasan.banyaknya} orang, tanpa ${term('muashshib', "mu'ashshib")}`;
-    case 'TAKMILAH': return s`${term('takmilah-tsulutsain', 'takmilah ats-tsulutsain')} bersama ${mentionAll(ctx, alasan.bersama)}`;
-    case 'KALALAH': return s`${alasan.banyaknya} orang, ${term('kalalah', 'kalalah')}`;
-    case 'ADA_FARU_MUDZAKKAR': return s`ada far'u warits laki-laki (${mentionAll(ctx, alasan.oleh)})`;
-    case 'ADA_FARU_MUANNATS': return s`far'u warits perempuan saja (${mentionAll(ctx, alasan.oleh)}): 1/6 + sisa`;
-    case 'MUSYARRAKAH': return s`${term('musyarrakah', 'musyarrakah')}, rata per kepala`;
-    case 'AKDARIYYAH': return s`${term('akdariyyah', 'akdariyyah')} (${alasan.porsi === 'jadd' ? 'kakek 1/6' : 'saudari 1/2, digabung dengan kakek lalu 2 : 1'})`;
-    case 'JADD_SISA_SEDIKIT': return s`sisa ${alasan.sisa} ≤ 1/6 → kakek 1/6, saudara gugur`;
+    case 'ADA_FARU_WARITS': return kalimat`ada ${istilah('faru-warits', "far'u warits")} (${sebutSemua(konteks, alasan.oleh)})`;
+    case 'TANPA_FARU_WARITS': return kalimat`tanpa ${istilah('faru-warits', "far'u warits")}`;
+    case 'JAM_IKHWAH': return kalimat`${istilah('jam-min-al-ikhwah', "jam' min al-ikhwah")} (${sebutSemua(konteks, alasan.oleh)})`;
+    case 'TANPA_FARU_WARITS_DAN_IKHWAH': return kalimat`tanpa far'u warits dan tanpa jam' min al-ikhwah`;
+    case 'UMARIYYATAIN': return kalimat`${istilah('umariyyatain', "'Umariyyatain")}: 1/3 sisa setelah pasangan ${alasan.fardhPasangan}`;
+    case 'NENEK_TANPA_IBU': return kalimat`tanpa ibu`;
+    case 'TANPA_MUASHSHIB': return kalimat`${alasan.banyaknya} orang, tanpa ${istilah('muashshib', "mu'ashshib")}`;
+    case 'TAKMILAH': return kalimat`${istilah('takmilah-tsulutsain', 'takmilah ats-tsulutsain')} bersama ${sebutSemua(konteks, alasan.bersama)}`;
+    case 'KALALAH': return kalimat`${alasan.banyaknya} orang, ${istilah('kalalah', 'kalalah')}`;
+    case 'ADA_FARU_MUDZAKKAR': return kalimat`ada far'u warits laki-laki (${sebutSemua(konteks, alasan.oleh)})`;
+    case 'ADA_FARU_MUANNATS': return kalimat`far'u warits perempuan saja (${sebutSemua(konteks, alasan.oleh)}): 1/6 + sisa`;
+    case 'MUSYARRAKAH': return kalimat`${istilah('musyarrakah', 'musyarrakah')}, rata per kepala`;
+    case 'AKDARIYYAH': return kalimat`${istilah('akdariyyah', 'akdariyyah')} (${alasan.porsi === 'jadd' ? 'kakek 1/6' : 'saudari 1/2, digabung dengan kakek lalu 2 : 1'})`;
+    case 'JADD_SISA_SEDIKIT': return kalimat`sisa ${alasan.sisa} ≤ 1/6 → kakek 1/6, saudara gugur`;
     case 'JADD_WAL_IKHWAH': return pilihanJadd(alasan);
   }
 }
 
-function babBagian(ctx: Ctx): Section {
-  const lines: ExplainLine[] = [];
-  const fardhGroups = new Set(ctx.daftarLangkah('FARDH').map(st => st.kelompok));
-  for (const step of ctx.hasil.jejak) {
-    if (step.jenis === 'FARDH') {
-      lines.push(line(s`${kelompok(ctx, step.kelompok)}: ${step.fardh} — ${fardhReason(ctx, step.alasan)}.`, step.refs));
-    } else if (step.jenis === 'HAJB_NUQSHAN') {
-      lines.push(line(s`${term('hajb-nuqshan', 'Hajb nuqshan')}: ${ctx.people.mention([step.terdampak])} ${step.dari} → ${step.menjadi}.`, step.refs));
-    } else if (step.jenis === 'ASHABAH' && !fardhGroups.has(step.kelompok)) {
-      const jenis = step.jenisAshabah === 'binNafsi' ? term('bi-nafsihi', 'ashabah bi nafsihi')
-        : step.jenisAshabah === 'bilGhair' ? term('bil-ghair', 'ashabah bil ghair (2 : 1)') : term('maal-ghair', "ashabah ma'al ghair");
-      lines.push(line(s`${kelompok(ctx, step.kelompok)}: ${jenis}${step.pilihanJadd ? s` — kakek ${pilihanJadd(step.pilihanJadd)}` : '.'}`, step.refs));
-    } else if (step.jenis === 'KASUS_KHUSUS') {
-      lines.push(line(s`Kasus khusus: ${term(step.nama, step.nama)}.`, step.refs));
+function babBagian(konteks: Konteks): Bab {
+  const daftarBaris: BarisPenjelasan[] = [];
+  const kelompokFardh = new Set(konteks.daftarLangkah('FARDH').map(langkahIni => langkahIni.kelompok));
+  for (const langkah of konteks.hasil.jejak) {
+    if (langkah.jenis === 'FARDH') {
+      daftarBaris.push(buatBaris(kalimat`${sebutKelompok(konteks, langkah.kelompok)}: ${langkah.fardh} — ${alasanFardh(konteks, langkah.alasan)}.`, langkah.refs));
+    } else if (langkah.jenis === 'HAJB_NUQSHAN') {
+      daftarBaris.push(buatBaris(kalimat`${istilah('hajb-nuqshan', 'Hajb nuqshan')}: ${konteks.sebutan.sebut([langkah.terdampak])} ${langkah.dari} → ${langkah.menjadi}.`, langkah.refs));
+    } else if (langkah.jenis === 'ASHABAH' && !kelompokFardh.has(langkah.kelompok)) {
+      const jenis = langkah.jenisAshabah === 'binNafsi' ? istilah('bi-nafsihi', 'ashabah bi nafsihi')
+        : langkah.jenisAshabah === 'bilGhair' ? istilah('bil-ghair', 'ashabah bil ghair (2 : 1)') : istilah('maal-ghair', "ashabah ma'al ghair");
+      daftarBaris.push(buatBaris(kalimat`${sebutKelompok(konteks, langkah.kelompok)}: ${jenis}${langkah.pilihanJadd ? kalimat` — kakek ${pilihanJadd(langkah.pilihanJadd)}` : '.'}`, langkah.refs));
+    } else if (langkah.jenis === 'KASUS_KHUSUS') {
+      daftarBaris.push(buatBaris(kalimat`Kasus khusus: ${istilah(langkah.nama, langkah.nama)}.`, langkah.refs));
     }
   }
-  return { title: 'Bagian masing-masing', lines };
+  return { judul: 'Bagian masing-masing', daftarBaris };
 }
 
-function babAshl(ctx: Ctx): Section {
-  const { baris, totalKolom } = ctx.hasil.tabel;
+function babAshl(konteks: Konteks): Bab {
+  const { baris, totalKolom } = konteks.hasil.tabel;
   const nilai = totalKolom.ashl!;
-  const lines: ExplainLine[] = ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'ashl').map(st => line(narrateNisab(st), st.refs));
-  const parts = baris.map(barisTabel => s`${kelompok(ctx, barisTabel.kelompok)} ${barisTabel.sel['ashl']!}`);
-  lines.push(line(s`${term('ashlul-masalah', 'Ashl')} = ${nilai}. ${term('saham', 'Saham')}: `.concat(...parts.flatMap((p, i) => (i ? [s`; `, p] : [p])), s`.`)));
-  return { title: "Ashlul mas'alah", lines };
+  const daftarBaris: BarisPenjelasan[] = konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(langkahIni => langkahIni.tujuan === 'ashl').map(langkahIni => buatBaris(narasiNisab(langkahIni), langkahIni.refs));
+  const sisipan = baris.map(barisTabel => kalimat`${sebutKelompok(konteks, barisTabel.kelompok)} ${barisTabel.sel['ashl']!}`);
+  daftarBaris.push(buatBaris(kalimat`${istilah('ashlul-masalah', 'Ashl')} = ${nilai}. ${istilah('saham', 'Saham')}: `.concat(...sisipan.flatMap((potonganIni, i) => (i ? [kalimat`; `, potonganIni] : [potonganIni])), kalimat`.`)));
+  return { judul: "Ashlul mas'alah", daftarBaris };
 }
 
-function babKlasifikasi(ctx: Ctx): Section {
-  const [kelas] = ctx.daftarLangkah('KELAS_MASALAH');
+function babKlasifikasi(konteks: Konteks): Bab {
+  const [kelas] = konteks.daftarLangkah('KELAS_MASALAH');
   if (!kelas) throw new Error('jejak tanpa KELAS_MASALAH');
-  const lines: ExplainLine[] = [];
-  if (kelas.kelas === 'adilah') lines.push(line(s`Σ saham ${kelas.jumlahSaham} = ashl ${kelas.ashl} → ${term('adilah', "'adilah")}.`, kelas.refs));
-  if (kelas.kelas === 'ailah') lines.push(line(s`Σ saham ${kelas.jumlahSaham} > ashl ${kelas.ashl} → ${term('aul', "'aul")} ke ${kelas.jumlahSaham}.`, kelas.refs));
+  const daftarBaris: BarisPenjelasan[] = [];
+  if (kelas.kelas === 'adilah') daftarBaris.push(buatBaris(kalimat`Σ saham ${kelas.jumlahSaham} = ashl ${kelas.ashl} → ${istilah('adilah', "'adilah")}.`, kelas.refs));
+  if (kelas.kelas === 'ailah') daftarBaris.push(buatBaris(kalimat`Σ saham ${kelas.jumlahSaham} > ashl ${kelas.ashl} → ${istilah('aul', "'aul")} ke ${kelas.jumlahSaham}.`, kelas.refs));
   if (kelas.kelas === 'raddA' || kelas.kelas === 'raddB') {
-    lines.push(line(s`Σ saham ${kelas.jumlahSaham} < ashl ${kelas.ashl}, tanpa ashabah → ${term('radd', 'radd')}${kelas.kelas === 'raddB' ? ' (pasangan tidak menerima radd)' : ''}.`, kelas.refs));
-    const [radd] = ctx.daftarLangkah('RADD');
+    daftarBaris.push(buatBaris(kalimat`Σ saham ${kelas.jumlahSaham} < ashl ${kelas.ashl}, tanpa ashabah → ${istilah('radd', 'radd')}${kelas.kelas === 'raddB' ? ' (pasangan tidak menerima radd)' : ''}.`, kelas.refs));
+    const [radd] = konteks.daftarLangkah('RADD');
     if (radd?.zawjiyyah) {
       const z = radd.zawjiyyah;
-      lines.push(line(s`Zawjiyyah: ashl ${z.ashl}, ${kelompok(ctx, z.kelompok)} ${z.sahamPasangan}, sisa ${z.sisa}. Raddiyyah: ${Object.values(radd.raddiyyah.saham).join(' : ')} → ashl radd ${radd.raddiyyah.ashl}.`, radd.refs));
+      daftarBaris.push(buatBaris(kalimat`Zawjiyyah: ashl ${z.ashl}, ${sebutKelompok(konteks, z.kelompok)} ${z.sahamPasangan}, sisa ${z.sisa}. Raddiyyah: ${Object.values(radd.raddiyyah.saham).join(' : ')} → ashl radd ${radd.raddiyyah.ashl}.`, radd.refs));
     } else if (radd) {
-      lines.push(line(s`Ashl radd = Σ saham ahli radd = ${radd.raddiyyah.ashl}.`, radd.refs));
+      daftarBaris.push(buatBaris(kalimat`Ashl radd = Σ saham ahli radd = ${radd.raddiyyah.ashl}.`, radd.refs));
     }
-    for (const st of ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(x => x.tujuan === 'raddVsSisa')) lines.push(line(narrateNisab(st), st.refs));
+    for (const langkahIni of konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(x => x.tujuan === 'raddVsSisa')) daftarBaris.push(buatBaris(narasiNisab(langkahIni), langkahIni.refs));
   }
-  return { title: 'Klasifikasi', lines };
+  return { judul: 'Klasifikasi', daftarBaris };
 }
 
-function babTashih(ctx: Ctx): Section | undefined {
-  const inkisar = ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'inkisar');
+function babTashih(konteks: Konteks): Bab | undefined {
+  const inkisar = konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(langkahIni => langkahIni.tujuan === 'inkisar');
   if (inkisar.length === 0) return undefined;
-  const lines = inkisar.map(st => line(s`${kelompok(ctx, st.kelompok!)}: `
-    .concat(narrateNisab(st, { weighted: st.b > BigInt(ctx.membersOf(st.kelompok!).length) })), st.refs));
-  for (const st of ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(x => x.tujuan === 'juzSahm')) lines.push(line(narrateNisab(st), st.refs));
-  const [t] = ctx.daftarLangkah('TASHIH');
-  lines.push(t
-    ? line(s`${term('juz-as-sahm', "Juz' as-sahm")} = ${t.juzSahm}. ${term('tashih', 'Tashih')} = ${t.dasar} × ${t.juzSahm} = ${t.hasil}.`, t.refs)
-    : line(s`Tanpa ${term('inkisar', 'inkisar')} → tidak perlu tashih.`, ['R10-2']));
-  return { title: 'Tashih', lines };
+  const daftarBaris = inkisar.map(langkahIni => buatBaris(kalimat`${sebutKelompok(konteks, langkahIni.kelompok!)}: `
+    .concat(narasiNisab(langkahIni, { berbobot: langkahIni.b > BigInt(konteks.anggotaDari(langkahIni.kelompok!).length) })), langkahIni.refs));
+  for (const langkahIni of konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(x => x.tujuan === 'juzSahm')) daftarBaris.push(buatBaris(narasiNisab(langkahIni), langkahIni.refs));
+  const [langkahTirkah] = konteks.daftarLangkah('TASHIH');
+  daftarBaris.push(langkahTirkah
+    ? buatBaris(kalimat`${istilah('juz-as-sahm', "Juz' as-sahm")} = ${langkahTirkah.juzSahm}. ${istilah('tashih', 'Tashih')} = ${langkahTirkah.dasar} × ${langkahTirkah.juzSahm} = ${langkahTirkah.hasil}.`, langkahTirkah.refs)
+    : buatBaris(kalimat`Tanpa ${istilah('inkisar', 'inkisar')} → tidak perlu tashih.`, ['R10-2']));
+  return { judul: 'Tashih', daftarBaris };
 }
 
-function babHasil(ctx: Ctx): Section {
-  const { tabel, pembulatan } = ctx.hasil;
-  const lines: ExplainLine[] = [];
+function babHasil(konteks: Konteks): Bab {
+  const { tabel, pembulatan } = konteks.hasil;
+  const daftarBaris: BarisPenjelasan[] = [];
   for (const barisTabel of tabel.baris) {
     for (const [id, { saham, nominal }] of Object.entries(barisTabel.perOrang) as Array<[IdOrang, { saham: bigint; nominal: bigint }]>) {
-      lines.push(line(s`${ctx.people.mention([id])}: ${saham}/${ctx.finalDenominator}${ctx.showNominal ? ` = ${rupiah(nominal)}` : ''}.`, ['R11-1']));
+      daftarBaris.push(buatBaris(kalimat`${konteks.sebutan.sebut([id])}: ${saham}/${konteks.penyebutAkhir}${konteks.tampilkanNominal ? ` = ${rupiah(nominal)}` : ''}.`, ['R11-1']));
     }
   }
-  if (ctx.showNominal && pembulatan.sisaPembulatan > 0n) {
-    lines.push(line(s`Selisih pembulatan ${rupiah(pembulatan.sisaPembulatan)} (per ${rupiah(pembulatan.satuan)}), belum dibagikan.`));
+  if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
+    daftarBaris.push(buatBaris(kalimat`Selisih pembulatan ${rupiah(pembulatan.sisaPembulatan)} (per ${rupiah(pembulatan.satuan)}), belum dibagikan.`));
   }
-  return { title: 'Hasil', lines };
+  return { judul: 'Hasil', daftarBaris };
 }

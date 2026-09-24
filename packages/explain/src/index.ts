@@ -1,5 +1,5 @@
-export { jelaskan, type ExplainSection, type Explanation } from './narasi.js';
-export { narrateNisab } from './nisab.js';
-export { toPlainText, type ExplainLine, type Segment } from './segments.js';
-export { TERM_IDS, type TermId } from './terms.js';
-export { jelaskanMunasakhat, type MunasakhatExplanation, type MunasakhatPart } from './munasakhat.js';
+export { jelaskan, type BabPenjelasan, type Penjelasan } from './narasi.js';
+export { narasiNisab } from './nisab.js';
+export { keTeksBiasa, type BarisPenjelasan, type Potongan } from './segments.js';
+export { ID_ISTILAH, type IdIstilah } from './terms.js';
+export { jelaskanMunasakhat, type PenjelasanMunasakhat, type BagianMunasakhat } from './munasakhat.js';

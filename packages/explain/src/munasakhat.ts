@@ -1,41 +1,42 @@
+// Penjelasan munasakhat (bab 12), disusun dari penjelasan biasa:
+//   1. pembukaan + batas cakupan
+//   2. per mayit: penjelasan pembagiannya (memakai `jelaskan`) + penggabungan ke jami'ah
+//   3. hasil akhir per orang
+
 import type { GrafKeluarga, HasilMunasakhat, IdOrang, LangkahJejak } from '@waris/engine';
 import { rupiah } from './format.js';
-import { jelaskan, type ExplainSection } from './narasi.js';
-import { roleLabel } from './people.js';
-import { joinAnd, line, s, type ExplainLine, type Segment } from './segments.js';
-import { term } from './terms.js';
+import { jelaskan, type BabPenjelasan } from './narasi.js';
+import { labelPeran } from './people.js';
+import { gabungDan, buatBaris, kalimat, type BarisPenjelasan, type Potongan } from './segments.js';
+import { istilah } from './terms.js';
 
-type Ok = Extract<HasilMunasakhat, { status: 'OK' }>;
-type Combine = Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>;
+type HasilOk = Extract<HasilMunasakhat, { status: 'OK' }>;
+type LangkahGabungan = Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>;
 
-export interface MunasakhatPart { title: string; sections: ExplainSection[] }
-export interface MunasakhatExplanation { parts: MunasakhatPart[] }
+export interface BagianMunasakhat { judul: string; daftarBab: BabPenjelasan[] }
+export interface PenjelasanMunasakhat { daftarBagian: BagianMunasakhat[] }
 
-const ORDINAL = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
+const URUTAN_KE = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
-/**
- * Penjelasan munasakhat (bab 12): pembukaan + batas cakupan, pembagian tiap mayit (memakai `jelaskan`),
- * penggabungan jami'ah per mayit berikutnya, lalu hasil akhir.
- */
-export function jelaskanMunasakhat(hasil: Ok, graf: GrafKeluarga, opsi: { mode?: 'cerita' | 'ringkas' } = {}): MunasakhatExplanation {
-  const mention = makeMention(hasil, graf);
-  const combines = hasil.jejak.filter((st): st is Combine => st.jenis === 'MUNASAKHAT');
+export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { mode?: 'cerita' | 'ringkas' } = {}): PenjelasanMunasakhat {
+  const sebut = buatSebut(hasil, graf);
+  const daftarGabungan = hasil.jejak.filter((langkahIni): langkahIni is LangkahGabungan => langkahIni.jenis === 'MUNASAKHAT');
 
-  const parts: MunasakhatPart[] = [pembukaan(hasil, mention)];
-  for (const [index, step] of hasil.daftarLangkah.entries()) {
+  const daftarBagian: BagianMunasakhat[] = [pembukaan(hasil, sebut)];
+  for (const [urutanKe, langkah] of hasil.daftarLangkah.entries()) {
     // Mayit berikutnya disebut dengan perannya ("anak perempuan"), bukan "almarhumah", supaya jelas siapa yang wafat.
-    const named = index === 0 ? graf
-      : { ...graf, orang: { ...graf.orang, [step.mayit]: { ...graf.orang[step.mayit]!, nama: mention(step.mayit).text } } };
-    const sections = jelaskan(step.hasil, { ...named, idPewaris: step.mayit }, opsi).sections;
-    const gabungkan = combines.find(st => st.mayit === step.mayit);
-    if (gabungkan) sections.push(penggabungan(gabungkan, mention));
-    parts.push({
-      title: index === 0 ? `Pembagian harta ${mention(step.mayit).text}` : `Bagian ${mention(step.mayit).text} diteruskan`,
-      sections,
+    const bernama = urutanKe === 0 ? graf
+      : { ...graf, orang: { ...graf.orang, [langkah.mayit]: { ...graf.orang[langkah.mayit]!, nama: sebut(langkah.mayit).teks } } };
+    const daftarBab = jelaskan(langkah.hasil, { ...bernama, idPewaris: langkah.mayit }, opsi).daftarBab;
+    const gabunganMayit = daftarGabungan.find(langkahIni => langkahIni.mayit === langkah.mayit);
+    if (gabunganMayit) daftarBab.push(penggabungan(gabunganMayit, sebut));
+    daftarBagian.push({
+      judul: urutanKe === 0 ? `Pembagian harta ${sebut(langkah.mayit).teks}` : `Bagian ${sebut(langkah.mayit).teks} diteruskan`,
+      daftarBab,
     });
   }
-  parts.push(hasilAkhir(hasil, mention));
-  return { parts };
+  daftarBagian.push(hasilAkhir(hasil, sebut));
+  return { daftarBagian };
 }
 
 // ─── Sebutan orang lintas mayit ───────────────────────────────────────────────
@@ -44,128 +45,128 @@ export function jelaskanMunasakhat(hasil: Ok, graf: GrafKeluarga, opsi: { mode?:
  * Tanpa nama, peran disebut terhadap mayit pertama yang ia warisi: "istri", "anak laki-laki dari istri".
  * Sebutan yang sama untuk dua orang diberi urutan ("anak perempuan pertama").
  */
-function makeMention(hasil: Ok, graf: GrafKeluarga): (id: IdOrang) => Segment {
+function buatSebut(hasil: HasilOk, graf: GrafKeluarga): (id: IdOrang) => Potongan {
   const idPewaris = hasil.daftarLangkah[0]!.mayit;
-  const heirOf = (id: IdOrang) => {
-    for (const step of hasil.daftarLangkah) {
-      const status = step.hasil.statusOrang[id];
-      if (status?.jenis === 'ahliWaris' || status?.jenis === 'mahjub') return { mayit: step.mayit, peran: status.peran };
+  const ahliWarisDari = (id: IdOrang) => {
+    for (const langkah of hasil.daftarLangkah) {
+      const status = langkah.hasil.statusOrang[id];
+      if (status?.jenis === 'ahliWaris' || status?.jenis === 'mahjub') return { mayit: langkah.mayit, peran: status.peran };
     }
     return undefined;
   };
-  const baseLabel = (id: IdOrang): string => {
+  const labelDasar = (id: IdOrang): string => {
     const orangIni = graf.orang[id];
     if (orangIni?.nama) return orangIni.nama;
     if (id === idPewaris) return orangIni?.jenisKelamin === 'P' ? 'almarhumah' : 'almarhum';
-    const peran = heirOf(id);
+    const peran = ahliWarisDari(id);
     if (!peran) return 'kerabat';
-    const label = roleLabel(peran.peran);
-    return peran.mayit === idPewaris ? label : `${label} dari ${baseLabel(peran.mayit)}`;
+    const label = labelPeran(peran.peran);
+    return peran.mayit === idPewaris ? label : `${label} dari ${labelDasar(peran.mayit)}`;
   };
 
-  const peers = new Map<string, IdOrang[]>();
+  const sePeran = new Map<string, IdOrang[]>();
   for (const id of Object.keys(graf.orang)) {
-    if (id !== idPewaris && !heirOf(id)) continue;
-    const label = baseLabel(id);
-    peers.set(label, [...(peers.get(label) ?? []), id]);
+    if (id !== idPewaris && !ahliWarisDari(id)) continue;
+    const label = labelDasar(id);
+    sePeran.set(label, [...(sePeran.get(label) ?? []), id]);
   }
   return id => {
-    const label = baseLabel(id);
-    const same = peers.get(label) ?? [id];
-    const text = same.length > 1 && !graf.orang[id]?.nama ? `${label} ${ORDINAL[same.indexOf(id)] ?? `ke-${same.indexOf(id) + 1}`}` : label;
-    return { jenis: 'orangIni', daftarIdOrang: [id], text };
+    const label = labelDasar(id);
+    const samaDengan = sePeran.get(label) ?? [id];
+    const teks = samaDengan.length > 1 && !graf.orang[id]?.nama ? `${label} ${URUTAN_KE[samaDengan.indexOf(id)] ?? `ke-${samaDengan.indexOf(id) + 1}`}` : label;
+    return { jenis: 'orang', daftarIdOrang: [id], teks };
   };
 }
 
 // ─── Bagian ───────────────────────────────────────────────────────────────────
 
-function pembukaan(hasil: Ok, mention: (id: IdOrang) => Segment): MunasakhatPart {
-  const [first, ...later] = [hasil.daftarLangkah[0]!.mayit, ...deathsInOrder(hasil)];
-  const pewaris = mention(first!);
-  const lines: ExplainLine[] = [
-    line(s`${pewaris} wafat. Sebelum hartanya dibagi, ${joinAnd(later.map(id => [mention(id)]))} ikut wafat, berurutan seperti itu. `
-      .concat(s`Kasus seperti ini disebut ${term('munasakhat', 'munasakhat')}: bagian yang sudah menjadi hak orang yang wafat belakangan `,
-        s`diteruskan kepada ahli warisnya.`), ['R12-1']),
-    line(keadaanText(hasil.keadaan, pewaris), ['R12-2', 'R12-3']),
-    line(s`Yang diteruskan hanyalah bagian dari harta ${pewaris} yang sampai kepada mereka, bukan pembagian waris atas seluruh harta mereka. `
-      .concat(s`Hutang, wasiat, dan harta lain milik mereka diselesaikan oleh ahli warisnya masing-masing.`)),
+function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMunasakhat {
+  const [pertama, ...berikutnya] = [hasil.daftarLangkah[0]!.mayit, ...urutanWafatSebenarnya(hasil)];
+  const pewaris = sebut(pertama!);
+  const daftarBaris: BarisPenjelasan[] = [
+    buatBaris(kalimat`${pewaris} wafat. Sebelum hartanya dibagi, ${gabungDan(berikutnya.map(id => [sebut(id)]))} ikut wafat, berurutan seperti itu. `
+      .concat(kalimat`Kasus seperti ini disebut ${istilah('munasakhat', 'munasakhat')}: bagian yang sudah menjadi hak orang yang wafat belakangan `,
+        kalimat`diteruskan kepada ahli warisnya.`), ['R12-1']),
+    buatBaris(teksKeadaan(hasil.keadaan, pewaris), ['R12-2', 'R12-3']),
+    buatBaris(kalimat`Yang diteruskan hanyalah bagian dari harta ${pewaris} yang sampai kepada mereka, bukan pembagian waris atas seluruh harta mereka. `
+      .concat(kalimat`Hutang, wasiat, dan harta lain milik mereka diselesaikan oleh ahli warisnya masing-masing.`)),
   ];
-  for (const skip of hasil.jejak.filter(st => st.jenis === 'MUNASAKHAT_DILEWATI')) {
-    lines.push(line(s`${mention(skip.mayit)} tidak mendapat bagian dari harta ${pewaris}, jadi tidak ada yang diteruskan kepada ahli warisnya.`, skip.refs));
+  for (const skip of hasil.jejak.filter(langkahIni => langkahIni.jenis === 'MUNASAKHAT_DILEWATI')) {
+    daftarBaris.push(buatBaris(kalimat`${sebut(skip.mayit)} tidak mendapat bagian dari harta ${pewaris}, jadi tidak ada yang diteruskan kepada ahli warisnya.`, skip.refs));
   }
-  return { title: 'Kematian berantai', sections: [{ title: 'Apa yang terjadi', lines }] };
+  return { judul: 'Kematian berantai', daftarBab: [{ judul: 'Apa yang terjadi', daftarBaris }] };
 }
 
-function keadaanText(keadaan: 1 | 2 | 3, pewaris: Segment): Segment[] {
+function teksKeadaan(keadaan: 1 | 2 | 3, pewaris: Potongan): Potongan[] {
   switch (keadaan) {
     case 1:
-      return s`Yang wafat belakangan hanya meninggalkan ahli waris yang sama dengan sisa ahli waris ${pewaris}, dan bagian mereka `
-        .concat(s`tidak berubah (keadaan pertama). Karena itu hasil akhirnya sama dengan membagi harta ${pewaris} langsung kepada `,
-          s`yang masih hidup, seolah yang wafat belakangan tidak ada. Langkah bertahap di bawah tetap ditampilkan sebagai buktinya.`);
+      return kalimat`Yang wafat belakangan hanya meninggalkan ahli waris yang sama dengan sisa ahli waris ${pewaris}, dan bagian mereka `
+        .concat(kalimat`tidak berubah (keadaan pertama). Karena itu hasil akhirnya sama dengan membagi harta ${pewaris} langsung kepada `,
+          kalimat`yang masih hidup, seolah yang wafat belakangan tidak ada. Langkah bertahap di bawah tetap ditampilkan sebagai buktinya.`);
     case 2:
-      return s`Ahli waris masing-masing yang wafat belakangan tidak ikut mewarisi dari ${pewaris} maupun dari yang lain `
-        .concat(s`(keadaan kedua). Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus; langkah bertahap di bawah `,
-          s`memberi hasil yang sama.`);
+      return kalimat`Ahli waris masing-masing yang wafat belakangan tidak ikut mewarisi dari ${pewaris} maupun dari yang lain `
+        .concat(kalimat`(keadaan kedua). Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus; langkah bertahap di bawah `,
+          kalimat`memberi hasil yang sama.`);
     case 3:
-      return s`Susunan ahli warisnya berubah dari satu kematian ke kematian berikutnya (keadaan ketiga), jadi bagian tiap orang `
-        .concat(s`yang wafat diteruskan satu per satu.`);
+      return kalimat`Susunan ahli warisnya berubah dari satu kematian ke kematian berikutnya (keadaan ketiga), jadi bagian tiap orang `
+        .concat(kalimat`yang wafat diteruskan satu per satu.`);
   }
 }
 
 /** Urutan wafat setelah mayit pertama, termasuk yang diabaikan karena tidak mendapat bagian. */
-function deathsInOrder(hasil: Ok): IdOrang[] {
-  return hasil.jejak.flatMap(st => (st.jenis === 'MUNASAKHAT' || st.jenis === 'MUNASAKHAT_DILEWATI' ? [st.mayit] : []));
+function urutanWafatSebenarnya(hasil: HasilOk): IdOrang[] {
+  return hasil.jejak.flatMap(langkahIni => (langkahIni.jenis === 'MUNASAKHAT' || langkahIni.jenis === 'MUNASAKHAT_DILEWATI' ? [langkahIni.mayit] : []));
 }
 
-function penggabungan(st: Combine, mention: (id: IdOrang) => Segment): ExplainSection {
-  const who = mention(st.mayit);
-  const sebelum = st.jamiah / st.wafqMasalah;
-  const lines: ExplainLine[] = [
-    line(s`${who} mendapat ${st.saham} dari ${sebelum} bagian. Bagian itu dibagi kepada ahli warisnya, yang pembagiannya memakai ${st.masalah} bagian.`, ['R12-2']),
-    line(relationText(st, who), ['R12-2']),
-    line(s`Angka pembagi gabungan (${term('jamiah', "jami'ah")}) sekarang ${st.jamiah}:`, ['R12-2']),
-    ...Object.entries(st.rincian).map(([id, barisTabel]) => {
-      const terms = [
-        ...(barisTabel.sebelum > 0n ? [`${barisTabel.sebelum} × ${st.wafqMasalah}`] : []),
-        ...(barisTabel.dariMayit > 0n ? [`${barisTabel.dariMayit} × ${st.wafqSaham}`] : []),
+function penggabungan(langkahIni: LangkahGabungan, sebut: (id: IdOrang) => Potongan): BabPenjelasan {
+  const siapa = sebut(langkahIni.mayit);
+  const sebelum = langkahIni.jamiah / langkahIni.wafqMasalah;
+  const daftarBaris: BarisPenjelasan[] = [
+    buatBaris(kalimat`${siapa} mendapat ${langkahIni.saham} dari ${sebelum} bagian. Bagian itu dibagi kepada ahli warisnya, yang pembagiannya memakai ${langkahIni.masalah} bagian.`, ['R12-2']),
+    buatBaris(teksHubungan(langkahIni, siapa), ['R12-2']),
+    buatBaris(kalimat`Angka pembagi gabungan (${istilah('jamiah', "jami'ah")}) sekarang ${langkahIni.jamiah}:`, ['R12-2']),
+    ...Object.entries(langkahIni.rincian).map(([id, rincianOrang]) => {
+      const istilahIstilah = [
+        ...(rincianOrang.sebelum > 0n ? [`${rincianOrang.sebelum} × ${langkahIni.wafqMasalah}`] : []),
+        ...(rincianOrang.dariMayit > 0n ? [`${rincianOrang.dariMayit} × ${langkahIni.wafqSaham}`] : []),
       ];
-      return line(s`${mention(id)}: ${terms.join(' + ')} = ${barisTabel.sesudah}.`);
+      return buatBaris(kalimat`${sebut(id)}: ${istilahIstilah.join(' + ')} = ${rincianOrang.sesudah}.`);
     }),
   ];
-  return { title: 'Menggabungkan dengan pembagian sebelumnya', lines };
+  return { judul: 'Menggabungkan dengan pembagian sebelumnya', daftarBaris };
 }
 
-function relationText(st: Combine, who: Segment): Segment[] {
-  switch (st.hubungan) {
+function teksHubungan(langkahIni: LangkahGabungan, siapa: Potongan): Potongan[] {
+  switch (langkahIni.hubungan) {
     case 'habis':
-      return st.saham === st.masalah
-        ? s`${st.saham} sama dengan ${st.masalah} (${term('tamatsul', 'tamatsul')}), jadi angka pembagi tidak perlu diperbesar.`
-        : s`${st.saham} habis dibagi ${st.masalah}, jadi angka pembagi tidak perlu diperbesar; bagian ahli waris ${who} dikali ${st.wafqSaham}.`;
+      return langkahIni.saham === langkahIni.masalah
+        ? kalimat`${langkahIni.saham} sama dengan ${langkahIni.masalah} (${istilah('tamatsul', 'tamatsul')}), jadi angka pembagi tidak perlu diperbesar.`
+        : kalimat`${langkahIni.saham} habis dibagi ${langkahIni.masalah}, jadi angka pembagi tidak perlu diperbesar; bagian ahli waris ${siapa} dikali ${langkahIni.wafqSaham}.`;
     case 'tawafuq':
-      return s`${st.saham} dan ${st.masalah} sama-sama habis dibagi ${st.fpb} (${term('tawafuq', 'tawafuq')}). `
-        .concat(s`Angka pembagi sebelumnya dikali ${st.masalah} ÷ ${st.fpb} = ${st.wafqMasalah} (${term('wafq', 'wafq')}), `,
-          s`dan bagian ahli waris ${who} dikali ${st.saham} ÷ ${st.fpb} = ${st.wafqSaham}.`);
+      return kalimat`${langkahIni.saham} dan ${langkahIni.masalah} sama-sama habis dibagi ${langkahIni.fpb} (${istilah('tawafuq', 'tawafuq')}). `
+        .concat(kalimat`Angka pembagi sebelumnya dikali ${langkahIni.masalah} ÷ ${langkahIni.fpb} = ${langkahIni.wafqMasalah} (${istilah('wafq', 'wafq')}), `,
+          kalimat`dan bagian ahli waris ${siapa} dikali ${langkahIni.saham} ÷ ${langkahIni.fpb} = ${langkahIni.wafqSaham}.`);
     case 'tabayun':
-      return s`${st.saham} dan ${st.masalah} tidak bisa sama-sama dibagi kecuali oleh 1 (${term('tabayun', 'tabayun')}). `
-        .concat(s`Angka pembagi sebelumnya dikali ${st.masalah}, dan bagian ahli waris ${who} dikali ${st.saham}.`);
+      return kalimat`${langkahIni.saham} dan ${langkahIni.masalah} tidak bisa sama-sama dibagi kecuali oleh 1 (${istilah('tabayun', 'tabayun')}). `
+        .concat(kalimat`Angka pembagi sebelumnya dikali ${langkahIni.masalah}, dan bagian ahli waris ${siapa} dikali ${langkahIni.saham}.`);
   }
 }
 
-function hasilAkhir(hasil: Ok, mention: (id: IdOrang) => Segment): MunasakhatPart {
+function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMunasakhat {
   const { ikhtishar, nominal, pembulatan } = hasil;
-  const showNominal = hasil.jejak.some(st => st.jenis === 'TIRKAH' && st.kotor > 0n);
-  const lines: ExplainLine[] = [];
+  const tampilkanNominal = hasil.jejak.some(langkahIni => langkahIni.jenis === 'TIRKAH' && langkahIni.kotor > 0n);
+  const daftarBaris: BarisPenjelasan[] = [];
   const diringkas = ikhtishar.jamiah !== hasil.jamiah;
   if (diringkas) {
     const faktor = hasil.jamiah / ikhtishar.jamiah;
-    lines.push(line(s`Semua angka bisa diringkas dengan membagi ${faktor}: ${hasil.jamiah} menjadi ${ikhtishar.jamiah}.`, ['R12-2']));
+    daftarBaris.push(buatBaris(kalimat`Semua angka bisa diringkas dengan membagi ${faktor}: ${hasil.jamiah} menjadi ${ikhtishar.jamiah}.`, ['R12-2']));
   }
   for (const [id, saham] of Object.entries(hasil.saham)) {
     const ringkas = diringkas ? ` (diringkas ${ikhtishar.saham[id]}/${ikhtishar.jamiah})` : '';
-    lines.push(line(s`${mention(id)}: ${saham}/${hasil.jamiah}${ringkas}${showNominal ? ` = ${rupiah(nominal[id]!)}` : ''}.`, ['R11-1']));
+    daftarBaris.push(buatBaris(kalimat`${sebut(id)}: ${saham}/${hasil.jamiah}${ringkas}${tampilkanNominal ? ` = ${rupiah(nominal[id]!)}` : ''}.`, ['R11-1']));
   }
-  if (showNominal && pembulatan.sisaPembulatan > 0n) {
-    lines.push(line(s`Selisih pembulatan ${rupiah(pembulatan.sisaPembulatan)} (per ${rupiah(pembulatan.satuan)}), belum dibagikan.`));
+  if (tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
+    daftarBaris.push(buatBaris(kalimat`Selisih pembulatan ${rupiah(pembulatan.sisaPembulatan)} (per ${rupiah(pembulatan.satuan)}), belum dibagikan.`));
   }
-  return { title: 'Hasil akhir', sections: [{ title: 'Bagian akhir tiap ahli waris', lines }] };
+  return { judul: 'Hasil akhir', daftarBab: [{ judul: 'Bagian akhir tiap ahli waris', daftarBaris }] };
 }
