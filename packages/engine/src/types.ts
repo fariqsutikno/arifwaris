@@ -95,12 +95,37 @@ export interface MasalahTable {
 export type { Nisab };
 export type Stage = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi';
 
+export type JaddOption = 'muqasamah' | 'tsuluts' | 'tsulutsBaqi' | 'sudus';
+
+/**
+ * Alasan sebuah fardh — data, bukan kalimat; `packages/explain` yang menarasikan
+ * (mis. `by` diubah jadi nama orang: "karena ada anak perempuan (Fatimah)").
+ */
+export type FardhReason =
+  | { code: 'ADA_FARU_WARITS'; by: PersonId[] }              // pasangan turun, ibu 1/6
+  | { code: 'TANPA_FARU_WARITS' }                            // pasangan 1/2 atau 1/4
+  | { code: 'JAM_IKHWAH'; by: PersonId[] }                   // ibu 1/6 karena 2+ saudara (termasuk yang mahjub)
+  | { code: 'TANPA_FARU_WARITS_DAN_IKHWAH' }                 // ibu 1/3
+  | { code: 'UMARIYYATAIN'; spouseFardh: Fraction }          // ibu 1/3 sisa
+  | { code: 'NENEK_TANPA_IBU'; count: number }
+  | { code: 'TANPA_MUASHSHIB'; count: number }               // anak/cucu pr: 1 → 1/2, 2+ → 2/3
+  | { code: 'TAKMILAH'; with: PersonId[] }                   // 1/6 penyempurna 2/3
+  | { code: 'KALALAH'; count: number }                       // saudari atau anak ibu tanpa far'u & ashl mudzakkar
+  | { code: 'ADA_FARU_MUDZAKKAR'; by: PersonId[] }           // ayah/kakek 1/6 saja
+  | { code: 'ADA_FARU_MUANNATS'; by: PersonId[] }            // ayah/kakek 1/6 + sisa
+  | { code: 'MUSYARRAKAH' }
+  | { code: 'AKDARIYYAH'; part: 'jadd' | 'ukht' }
+  | { code: 'JADD_SISA_SEDIKIT'; sisa: Fraction }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
+  | { code: 'JADD_WAL_IKHWAH'; sisa: Fraction; options: Array<{ name: JaddOption; value: Fraction }>; chosen: JaddOption };
+
 export type TraceStep = { stage: Stage; refs: string[] } & (
   | { kind: 'MANI'; personId: PersonId; mani: string }
   | { kind: 'HAJB_HIRMAN'; mahjub: PersonId; hajib: PersonId[] }
   | { kind: 'HAJB_NUQSHAN'; affected: PersonId; from: Fraction; to: Fraction; cause: PersonId[] }
-  | { kind: 'FARDH'; group: GroupId; fardh: Fraction; condition: string }
-  | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair' }
+  | { kind: 'FARDH'; group: GroupId; fardh: Fraction; reason: FardhReason }
+  | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair';
+      // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
+      jaddChoice?: Extract<FardhReason, { code: 'JADD_WAL_IKHWAH' }> }
   | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
   | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm';
       a: bigint; b: bigint; relation: Nisab; gcd: bigint; result: bigint }

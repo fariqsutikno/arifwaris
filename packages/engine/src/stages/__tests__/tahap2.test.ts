@@ -119,3 +119,55 @@ describe('tahap 2 — kakek bersama saudara [SYF] (bab 08)', () => {
       .toMatchObject({ status: 'UNSUPPORTED', refs: ['R08-3'] });
   });
 });
+
+describe('tahap 2 — alasan fardh terstruktur (untuk packages/explain)', () => {
+  const reasonOf = (input: EngineInput, group: string) => {
+    const step = shares(input).trace.find(s => s.kind === 'FARDH' && s.group === group);
+    return step?.kind === 'FARDH' ? step.reason : undefined;
+  };
+  const f = (n: bigint, d: bigint) => ({ n, d });
+
+  test('pasangan dan ibu menyebut siapa penyebab nuqshan', () => {
+    expect(reasonOf(bab16.case10.input, 'ZAWJ')).toEqual({ code: 'ADA_FARU_WARITS', by: ['D1', 'GD1'] });
+    expect(reasonOf(bab16.case04.input, 'ZAWJ')).toEqual({ code: 'TANPA_FARU_WARITS' });
+    expect(reasonOf(bab16.case15.input, 'UMM')).toEqual({ code: 'JAM_IKHWAH', by: ['AK1', 'AK2'] });
+    expect(reasonOf(bab16.case04.input, 'UMM')).toEqual({ code: 'TANPA_FARU_WARITS_DAN_IKHWAH' });
+    expect(reasonOf(bab16.case02.input, 'UMM')).toEqual({ code: 'UMARIYYATAIN', spouseFardh: f(1n, 2n) });
+  });
+
+  test('keturunan, saudari, anak ibu, ayah', () => {
+    expect(reasonOf(bab16.case06.input, 'BINT')).toEqual({ code: 'TANPA_MUASHSHIB', count: 2 });
+    expect(reasonOf(bab16.case08.input, 'BINT_IBN_2')).toEqual({ code: 'TAKMILAH', with: ['D1'] });
+    expect(reasonOf(bab16.case17b.input, 'UKHT_AB')).toEqual({ code: 'TAKMILAH', with: ['UK1'] });
+    expect(reasonOf(bab16.case05.input, 'UKHT_SYQ')).toEqual({ code: 'KALALAH', count: 2 });
+    expect(reasonOf(bab16.case11.input, 'AWLAD_UMM')).toEqual({ code: 'KALALAH', count: 2 });
+    expect(reasonOf(bab16.case20.input, 'AB')).toEqual({ code: 'ADA_FARU_MUDZAKKAR', by: ['S1'] });
+    expect(reasonOf(bab16.case21.input, 'AB')).toEqual({ code: 'ADA_FARU_MUANNATS', by: ['D1'] });
+    expect(reasonOf(bab16.case23.input, 'JADDAH')).toEqual({ code: 'NENEK_TANPA_IBU', count: 2 });
+  });
+
+  test('kasus khusus: pilihan kakek dicatat lengkap dengan pembandingnya', () => {
+    expect(reasonOf(bab16.case14.input, 'JADD')).toEqual({
+      code: 'JADD_WAL_IKHWAH',
+      sisa: f(3n, 4n),
+      options: [
+        { name: 'muqasamah', value: f(3n, 16n) },
+        { name: 'tsulutsBaqi', value: f(1n, 4n) },
+        { name: 'sudus', value: f(1n, 6n) },
+      ],
+      chosen: 'tsulutsBaqi',
+    });
+    expect(reasonOf(bab16.case13.input, 'MUSYARRAKAH')).toEqual({ code: 'MUSYARRAKAH' });
+  });
+
+  test('muqasamah bersama tetap mencatat pembanding pilihan kakek', () => {
+    const step = shares(keluarga({ PGF: { sex: 'M' }, AK1: { sex: 'M', ...KANDUNG } })).trace
+      .find(s => s.kind === 'ASHABAH' && s.group === 'JADD_IKHWAH');
+    expect(step?.kind === 'ASHABAH' && step.jaddChoice).toEqual({
+      code: 'JADD_WAL_IKHWAH',
+      sisa: f(1n, 1n),
+      options: [{ name: 'muqasamah', value: f(1n, 2n) }, { name: 'tsuluts', value: f(1n, 3n) }],
+      chosen: 'muqasamah',
+    });
+  });
+});

@@ -222,8 +222,8 @@ type TraceStep = { stage: Stage; refs: RefCode[] } & (
   | { kind: 'MANI'; personId: PersonId; mani: string }
   | { kind: 'HAJB_HIRMAN'; mahjub: PersonId; hajib: PersonId[] }
   | { kind: 'HAJB_NUQSHAN'; affected: PersonId; from: Fraction; to: Fraction; cause: PersonId[] }
-  | { kind: 'FARDH'; group: GroupId; fardh: Fraction; condition: string }
-  | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair' }
+  | { kind: 'FARDH'; group: GroupId; fardh: Fraction; reason: FardhReason }
+  | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair'; jaddChoice?: ... }
   | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
   | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm';
       a: bigint; b: bigint; relation: Nisab; gcd: bigint; result: bigint }
@@ -252,6 +252,13 @@ interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan R
   status: 'verified' | 'needsVerification';   // bab 17.4
 }
 ```
+
+**Trace = data, bukan kalimat.** Alasan setiap keputusan disimpan terstruktur (`FardhReason`: kode + id
+orang penyebab + angka pembanding, lihat `packages/engine/src/types.ts`), mis.
+`{ code: 'ADA_FARU_WARITS', by: ['D1'] }` atau `{ code: 'JADD_WAL_IKHWAH', options: [...], chosen }`.
+Setiap perbandingan angka (ashl, radd, inkisar, juz' as-sahm) wajib memancarkan `NISAB_COMPARE` —
+termasuk yang hasilnya habis/tamatsul — supaya `explain` bisa menulis "diketahui 2 dan 4 → tadakhul →
+ambil yang besar". Teks bebas di trace dilarang.
 
 Output ke pengguna = 3 lapis dari trace yang sama:
 1. **Tabel mas'alah** (kolom 'aul/radd/tashih muncul hanya bila terjadi; yang mahjub tetap tampil).
