@@ -1,4 +1,4 @@
-import type { Fraction, Money } from '@waris/math';
+import type { Fraction, Money, Nisab } from '@waris/math';
 
 // ─── Graf keluarga ────────────────────────────────────────────────────────────
 
@@ -92,7 +92,7 @@ export interface MasalahTable {
 
 // ─── Trace ────────────────────────────────────────────────────────────────────
 
-export type Nisab = 'tamatsul' | 'tadakhul' | 'tawafuq' | 'tabayun';
+export type { Nisab };
 export type Stage = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi';
 
 export type TraceStep = { stage: Stage; refs: string[] } & (
