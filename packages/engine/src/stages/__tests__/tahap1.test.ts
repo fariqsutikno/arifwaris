@@ -207,14 +207,14 @@ describe('validasi input → PERLU_INPUT / TIDAK_DIDUKUNG', () => {
   });
 
   test('jenis kelamin tidak cocok dengan peran di graf → tanya', () => {
-    const suamiPerempuan = bab16.input({
+    const suamiBerjenisPerempuan = bab16.input({
       idPewaris: 'D',
       orang: { D: p('D', 'L', { statusHidup: 'wafat' }), H1: p('H1', 'L') },
       pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' }],
     });
-    expect(jalankanTahapAhliWaris(suamiPerempuan)).toMatchObject({ status: 'PERLU_INPUT', pertanyaan: [{ idOrang: 'D', isian: 'jenisKelamin' }] });
-    const ayahPerempuan = keluarga({ S1: { jenisKelamin: 'L', idIbu: 'D' } });
-    expect(jalankanTahapAhliWaris(ayahPerempuan)).toMatchObject({ status: 'PERLU_INPUT', pertanyaan: [{ idOrang: 'D', isian: 'jenisKelamin' }] });
+    expect(jalankanTahapAhliWaris(suamiBerjenisPerempuan)).toMatchObject({ status: 'PERLU_INPUT', pertanyaan: [{ idOrang: 'D', isian: 'jenisKelamin' }] });
+    const ayahBerjenisPerempuan = keluarga({ S1: { jenisKelamin: 'L', idIbu: 'D' } });
+    expect(jalankanTahapAhliWaris(ayahBerjenisPerempuan)).toMatchObject({ status: 'PERLU_INPUT', pertanyaan: [{ idOrang: 'D', isian: 'jenisKelamin' }] });
   });
 
   test('suami lebih dari satu → tanya', () => {

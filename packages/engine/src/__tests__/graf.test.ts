@@ -31,7 +31,7 @@ describe('opsi relasi mengikuti jenis kelamin', () => {
 describe('tambahKerabat: jenis kelamin dan peran selalu konsisten', () => {
   test('jenis kelamin otomatis dari relasi; anak dihubungkan sesuai jenis kelamin orang tua', () => {
     let g = tambahKerabat(single('P'), 'D', 'suami', { id: 'H1' });
-    g = tambahKerabat(g, 'D', 'anakPerempuan', { id: 'B1' }, { otherParentId: 'H1' });
+    g = tambahKerabat(g, 'D', 'anakPerempuan', { id: 'B1' }, { idOrangTuaLain: 'H1' });
     g = tambahKerabat(g, 'D', 'ibu', { id: 'M1' });
     expect(g.orang['H1']).toMatchObject({ jenisKelamin: 'L' });
     expect(g.orang['B1']).toMatchObject({ jenisKelamin: 'P', idIbu: 'D', idAyah: 'H1' });
@@ -41,7 +41,7 @@ describe('tambahKerabat: jenis kelamin dan peran selalu konsisten', () => {
   });
 
   test('orang tua kedua harus pasangannya', () => {
-    expect(() => tambahKerabat(single('L'), 'D', 'anakLaki', { id: 'S1' }, { otherParentId: 'X' })).toThrow(/pasangan/);
+    expect(() => tambahKerabat(single('L'), 'D', 'anakLaki', { id: 'S1' }, { idOrangTuaLain: 'X' })).toThrow(/pasangan/);
   });
 
   test('jenis kelamin tidak bisa diubah bila sudah punya peran bergender', () => {

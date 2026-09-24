@@ -79,7 +79,7 @@ describe('kasus 10 — mode cerita tanpa nama', () => {
     const segments = e.sections[2]!.lines[1]!.segments;
     expect(segments).toContainEqual({ jenis: 'term', term: 'tadakhul', text: 'tadakhul', example: 'Di kasus ini: 4 dan 2 → 4.' });
     const suami = e.sections[1]!.lines[0]!.segments[0];
-    expect(suami).toEqual({ jenis: 'person', idOrangOrang: ['H1'], text: 'Suami' });
+    expect(suami).toEqual({ jenis: 'orangIni', daftarIdOrang: ['H1'], text: 'Suami' });
   });
 });
 
@@ -99,8 +99,8 @@ describe('nama opsional', () => {
       + "yang membuat mereka ikut mengambil sisa (mu'ashshib).");
     // Urutan mengikuti urutan input: D1 = pertama, D2 = kedua.
     const hasil = e.sections[e.sections.length - 1]!.lines.map(l => l.segments[0]);
-    expect(hasil).toContainEqual({ jenis: 'person', idOrangOrang: ['D1'], text: 'Anak perempuan pertama' });
-    expect(hasil).toContainEqual({ jenis: 'person', idOrangOrang: ['D2'], text: 'Anak perempuan kedua' });
+    expect(hasil).toContainEqual({ jenis: 'orangIni', daftarIdOrang: ['D1'], text: 'Anak perempuan pertama' });
+    expect(hasil).toContainEqual({ jenis: 'orangIni', daftarIdOrang: ['D2'], text: 'Anak perempuan kedua' });
   });
 
   test('[R04-3] istri-istri berbagi rata, bukan masing-masing mendapat 1/4', () => {
@@ -207,7 +207,7 @@ describe('keterkaitan dengan glosarium dan dalil', () => {
         ...(['cerita', 'ringkas'] as const).flatMap(mode =>
           jelaskan(hasil, fixture.input.graf, { mode }).sections.flatMap(sec => sec.lines.flatMap(l => l.refs))),
       ];
-      codes.filter(code => !findRef(code)).forEach(code => missing.add(`${fixture.id}: ${code}`));
+      codes.filter(kode => !findRef(kode)).forEach(kode => missing.add(`${fixture.id}: ${kode}`));
     }
     expect([...missing]).toEqual([]);
   });

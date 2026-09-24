@@ -25,7 +25,7 @@ export function input(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab = KONF
 
 export interface ExpectedTable {
   /** ashlulMasalah setelah 'aul/radd/tashih. */
-  finalAshl: bigint;
+  ashlAkhir: bigint;
   /** Saham per idOrang. */
   saham: Record<string, bigint>;
   /** idOrang yang terhijab atau mamnuu' (tidak dapat bagian). */
@@ -39,7 +39,7 @@ export interface Fixture {
   input: InputEngine;
   expected:
     | { status: 'OK'; tabel: ExpectedTable; traceKinds?: string[] }
-    | { status: 'PERLU_INPUT'; questionFields: string[] }
+    | { status: 'PERLU_INPUT'; isianPertanyaan: string[] }
     | { status: 'TIDAK_DIDUKUNG' };
 }
 
@@ -65,7 +65,7 @@ export const case01: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 24n, saham: { W1: 3n, S1: 14n, D1: 7n } },
+    tabel: { ashlAkhir: 24n, saham: { W1: 3n, S1: 14n, D1: 7n } },
     traceKinds: ['TASHIH', 'PERBANDINGAN_NISAB'],
   },
 };
@@ -88,7 +88,7 @@ export const case02: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 6n, saham: { H1: 3n, M1: 1n, F1: 2n } },
+    tabel: { ashlAkhir: 6n, saham: { H1: 3n, M1: 1n, F1: 2n } },
     traceKinds: ['KASUS_KHUSUS'],
   },
 };
@@ -111,7 +111,7 @@ export const case03: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 1n, F1: 2n } },
+    tabel: { ashlAkhir: 4n, saham: { W1: 1n, M1: 1n, F1: 2n } },
     traceKinds: ['KASUS_KHUSUS'],
   },
 };
@@ -137,7 +137,7 @@ export const case04: Fixture = {
   expected: {
     status: 'OK',
     // Suami 1/2=3, ibu 1/3=2 (tanpa 'Umariyyah), kakek ashabah=1
-    tabel: { finalAshl: 6n, saham: { H1: 3n, M1: 2n, GF1: 1n } },
+    tabel: { ashlAkhir: 6n, saham: { H1: 3n, M1: 2n, GF1: 1n } },
   },
 };
 
@@ -161,7 +161,7 @@ export const case05: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 7n, saham: { H1: 3n, UK1: 2n, UK2: 2n } },
+    tabel: { ashlAkhir: 7n, saham: { H1: 3n, UK1: 2n, UK2: 2n } },
     traceKinds: ['AUL', 'KELAS_MASALAH'],
   },
 };
@@ -186,7 +186,7 @@ export const case06: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 27n, saham: { W1: 3n, F1: 4n, M1: 4n, D1: 8n, D2: 8n } },
+    tabel: { ashlAkhir: 27n, saham: { W1: 3n, F1: 4n, M1: 4n, D1: 8n, D2: 8n } },
     traceKinds: ['AUL'],
   },
 };
@@ -216,7 +216,7 @@ export const case07: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 10n, saham: { H1: 3n, M1: 1n, UM1: 1n, UM2: 1n, UK1: 2n, UK2: 2n } },
+    tabel: { ashlAkhir: 10n, saham: { H1: 3n, M1: 1n, UM1: 1n, UM2: 1n, UK1: 2n, UK2: 2n } },
     traceKinds: ['AUL'],
   },
 };
@@ -246,7 +246,7 @@ export const case08: Fixture = {
   expected: {
     status: 'OK',
     // Anak pr 1/2=3, cucu pr takmilah 1/6=1, saudari kandung ma'al ghair=2
-    tabel: { finalAshl: 6n, saham: { D1: 3n, GD1: 1n, UK1: 2n } },
+    tabel: { ashlAkhir: 6n, saham: { D1: 3n, GD1: 1n, UK1: 2n } },
     traceKinds: ['ASHABAH', 'FARDH'],
   },
 };
@@ -269,7 +269,7 @@ export const case09: Fixture = {
   expected: {
     status: 'OK',
     // Anak pr 3/4, ibu 1/4 setelah radd; ashl final=4
-    tabel: { finalAshl: 4n, saham: { D1: 3n, M1: 1n } },
+    tabel: { ashlAkhir: 4n, saham: { D1: 3n, M1: 1n } },
     traceKinds: ['KELAS_MASALAH', 'PERBANDINGAN_NISAB'],
   },
 };
@@ -294,7 +294,7 @@ export const case10: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 16n, saham: { H1: 4n, D1: 9n, GD1: 3n } },
+    tabel: { ashlAkhir: 16n, saham: { H1: 4n, D1: 9n, GD1: 3n } },
     traceKinds: ['KELAS_MASALAH', 'PERBANDINGAN_NISAB'],
   },
 };
@@ -320,7 +320,7 @@ export const case11: Fixture = {
   }),
   expected: {
     status: 'OK',
-    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 1n, US1: 1n, US2: 1n } },
+    tabel: { ashlAkhir: 4n, saham: { W1: 1n, M1: 1n, US1: 1n, US2: 1n } },
     traceKinds: ['KELAS_MASALAH'],
   },
 };
@@ -346,7 +346,7 @@ export const case12: Fixture = {
   expected: {
     status: 'OK',
     // [R16-2]: suami 9, ibu 6, saudari 4, kakek 8 (dari ashl 27)
-    tabel: { finalAshl: 27n, saham: { H1: 9n, M1: 6n, UK1: 4n, GF1: 8n } },
+    tabel: { ashlAkhir: 27n, saham: { H1: 9n, M1: 6n, UK1: 4n, GF1: 8n } },
     traceKinds: ['KASUS_KHUSUS'],
   },
 };
@@ -376,7 +376,7 @@ export const case13: Fixture = {
   expected: {
     status: 'OK',
     // Ashl 6→18; suami 9, ibu 3, tiap saudara (3 orang) 2
-    tabel: { finalAshl: 18n, saham: { H1: 9n, M1: 3n, US1: 2n, US2: 2n, AK1: 2n } },
+    tabel: { ashlAkhir: 18n, saham: { H1: 9n, M1: 3n, US1: 2n, US2: 2n, AK1: 2n } },
     traceKinds: ['KASUS_KHUSUS', 'TASHIH'],
   },
 };
@@ -404,7 +404,7 @@ export const case14: Fixture = {
   expected: {
     status: 'OK',
     // Istri 1/4=3, kakek 1/3 sisa = 3, 3 saudara = 6 (2 each); ashl 12
-    tabel: { finalAshl: 12n, saham: { W1: 3n, GF1: 3n, AK1: 2n, AK2: 2n, AK3: 2n } },
+    tabel: { ashlAkhir: 12n, saham: { W1: 3n, GF1: 3n, AK1: 2n, AK2: 2n, AK3: 2n } },
     traceKinds: ['PERBANDINGAN_NISAB'],
   },
 };
@@ -429,7 +429,7 @@ export const case15: Fixture = {
   expected: {
     status: 'OK',
     // Ibu 1/6=1, ayah ashabah=5; saudara mahjub hirman
-    tabel: { finalAshl: 6n, saham: { F1: 5n, M1: 1n }, dikecualikan: ['AK1', 'AK2'] },
+    tabel: { ashlAkhir: 6n, saham: { F1: 5n, M1: 1n }, dikecualikan: ['AK1', 'AK2'] },
     traceKinds: ['HAJB_HIRMAN', 'HAJB_NUQSHAN'],
   },
 };
@@ -462,7 +462,7 @@ export const case16: Fixture = {
     status: 'OK',
     // Suami 1/4=3, ayah 1/6=2, anak lk ashabah=7; ashl 12
     tabel: {
-      finalAshl: 12n,
+      ashlAkhir: 12n,
       saham: { H1: 3n, F1: 2n, S1: 7n },
       dikecualikan: ['GF1', 'GS1', 'AK1', 'IA1', 'AM1', 'IM1'],
     },
@@ -495,7 +495,7 @@ export const case17: Fixture = {
   expected: {
     status: 'OK',
     // Sebapak lk+pr = ashabah bil ghair, bukan mahjub; sisa habis karena 'aul → 0.
-    tabel: { finalAshl: 7n, saham: { H1: 3n, M1: 1n, UK1: 3n, AB1: 0n, UB1: 0n } },
+    tabel: { ashlAkhir: 7n, saham: { H1: 3n, M1: 1n, UK1: 3n, AB1: 0n, UB1: 0n } },
     traceKinds: ['AUL'],
   },
 };
@@ -522,7 +522,7 @@ export const case17b: Fixture = {
   expected: {
     status: 'OK',
     // Suami 3, ibu 1, saudari kandung 3, saudari sebapak 1 (takmilah); ashl 8
-    tabel: { finalAshl: 8n, saham: { H1: 3n, M1: 1n, UK1: 3n, UB1: 1n } },
+    tabel: { ashlAkhir: 8n, saham: { H1: 3n, M1: 1n, UK1: 3n, UB1: 1n } },
     traceKinds: ['AUL'],
   },
 };
@@ -552,7 +552,7 @@ export const case18: Fixture = {
   expected: {
     status: 'OK',
     // Anak pr 6 (3+3), cucu pr 1, cicit lk 2; ashl 9
-    tabel: { finalAshl: 9n, saham: { D1: 3n, D2: 3n, GD1: 1n, GGS1: 2n } },
+    tabel: { ashlAkhir: 9n, saham: { D1: 3n, D2: 3n, GD1: 1n, GGS1: 2n } },
     traceKinds: ['TASHIH'],
   },
 };
@@ -584,7 +584,7 @@ export const case19: Fixture = {
   expected: {
     status: 'OK',
     // Istri 1, anak pr 4, saudara sebapak 3, paman 0
-    tabel: { finalAshl: 8n, saham: { W1: 1n, D1: 4n, AB1: 3n }, dikecualikan: ['AM1'] },
+    tabel: { ashlAkhir: 8n, saham: { W1: 1n, D1: 4n, AB1: 3n }, dikecualikan: ['AM1'] },
     traceKinds: ['HAJB_HIRMAN'],
   },
 };
@@ -609,7 +609,7 @@ export const case20: Fixture = {
   expected: {
     status: 'OK',
     // Istri 1/8=3, ayah 1/6=4, ibu 1/6=4, anak lk ashabah=13; ashl 24
-    tabel: { finalAshl: 24n, saham: { W1: 3n, F1: 4n, M1: 4n, S1: 13n } },
+    tabel: { ashlAkhir: 24n, saham: { W1: 3n, F1: 4n, M1: 4n, S1: 13n } },
   },
 };
 
@@ -633,7 +633,7 @@ export const case21: Fixture = {
   expected: {
     status: 'OK',
     // Istri 1/8=3, anak pr 1/2=12, ibu 1/6=4, ayah 1/6=4+sisa1=5; ashl 24
-    tabel: { finalAshl: 24n, saham: { W1: 3n, D1: 12n, M1: 4n, F1: 5n } },
+    tabel: { ashlAkhir: 24n, saham: { W1: 3n, D1: 12n, M1: 4n, F1: 5n } },
   },
 };
 
@@ -668,7 +668,7 @@ export const case22: Fixture = {
     status: 'OK',
     // 4 istri berbagi 1/4 → 1 saham masing-masing; saudara 3 berbagi sisa=3 saham tiap 1.
     // Ashl 4, tashih: istri 4 ru'us → tabayun dg 1 → ×4=16. Saudara 4 each.
-    tabel: { finalAshl: 16n, saham: { W1: 1n, W2: 1n, W3: 1n, W4: 1n, AK1: 4n, AK2: 4n, AK3: 4n } },
+    tabel: { ashlAkhir: 16n, saham: { W1: 1n, W2: 1n, W3: 1n, W4: 1n, AK1: 4n, AK2: 4n, AK3: 4n } },
     traceKinds: ['TASHIH'],
   },
 };
@@ -702,7 +702,7 @@ export const case23: Fixture = {
     // Nenek 1/6 bersama=1 saham, saudara ashabah=5. Tashih: nenek 2 orang (tabayun dg 1)→×2=12.
     // Saudara 3 orang (tabayun dg 5)→×3. Gabung: juz'=6. Ashl=6×6=36.
     // Nenek tiap 3; saudara tiap 10.
-    tabel: { finalAshl: 36n, saham: { GM1: 3n, GM2: 3n, AB1: 10n, AB2: 10n, AB3: 10n } },
+    tabel: { ashlAkhir: 36n, saham: { GM1: 3n, GM2: 3n, AB1: 10n, AB2: 10n, AB3: 10n } },
     traceKinds: ['TASHIH', 'PERBANDINGAN_NISAB'],
   },
 };
@@ -771,7 +771,7 @@ export const caseNominal: Fixture = {
   expected: {
     status: 'OK',
     tabel: {
-      finalAshl: 24n,
+      ashlAkhir: 24n,
       saham: { W1: 3n, S1: 14n, D1: 7n },
     },
     traceKinds: ['DISTRIBUSI'],
@@ -800,7 +800,7 @@ export const caseNeg1: Fixture = {
     status: 'OK',
     // [R02] mamnu tidak menghijab: istri tetap 1/4 (bukan 1/8), ibu 1/3 (bukan 1/6).
     // Ashl 12: istri 3, ibu 4 → raddB; zawjiyyah 4 (istri 1, sisa 3), ibu satu-satunya ahli radd → 4.
-    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 3n }, dikecualikan: ['D1'] },
+    tabel: { ashlAkhir: 4n, saham: { W1: 1n, M1: 3n }, dikecualikan: ['D1'] },
     traceKinds: ['MANI', 'KELAS_MASALAH'],
   },
 };
@@ -823,7 +823,7 @@ export const caseNeg2: Fixture = {
     status: 'OK',
     // [R02] mamnu tidak menghijab: istri tetap 1/4 (bukan 1/8), ibu 1/3 (bukan 1/6).
     // Ashl 12: istri 3, ibu 4 → raddB; zawjiyyah 4 (istri 1, sisa 3), ibu satu-satunya ahli radd → 4.
-    tabel: { finalAshl: 4n, saham: { W1: 1n, M1: 3n }, dikecualikan: ['S1'] },
+    tabel: { ashlAkhir: 4n, saham: { W1: 1n, M1: 3n }, dikecualikan: ['S1'] },
     traceKinds: ['MANI', 'KELAS_MASALAH'],
   },
 };
@@ -843,7 +843,7 @@ export const caseNeg3: Fixture = {
   }),
   expected: {
     status: 'PERLU_INPUT',
-    questionFields: ['statusHidup'],
+    isianPertanyaan: ['statusHidup'],
   },
 };
 
@@ -874,7 +874,7 @@ export const caseNeg4: Fixture = {
   }),
   expected: {
     status: 'PERLU_INPUT',
-    questionFields: ['pernikahan'],
+    isianPertanyaan: ['pernikahan'],
   },
 };
 
@@ -883,7 +883,7 @@ export const caseNeg5: Fixture = {
   id: 'C16-NEG5',
   menguji: 'Unit pembulatan ≤ 0 → PERLU_INPUT',
   input: { ...case01.input, pembulatan: { satuan: 0n } },
-  expected: { status: 'PERLU_INPUT', questionFields: ['pembulatan'] },
+  expected: { status: 'PERLU_INPUT', isianPertanyaan: ['pembulatan'] },
 };
 
 // ═════════════════════════════════════════════════════════════════════════════

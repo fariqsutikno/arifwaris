@@ -1,3 +1,9 @@
+// Tahap 1a — Derivasi peran: dari graf keluarga, tentukan siapa tiap orang bagi pewaris.
+//   Masuk : graf (orang + idAyah/idIbu + pernikahan).
+//   Keluar: peran tiap orang (ANAK_LK, SAUDARI_SEBAPAK, DZAWIL_ARHAM, ...) + posisi kekerabatannya.
+// Jenis saudara/paman tidak pernah diinput; selalu diturunkan dari kesamaan ayah/ibu.
+// Urutan cek per orang: pasangan? → leluhur? → keturunan? → hawasyi (saudara, keponakan, paman, sepupu).
+
 import type { GrafKeluarga, KunciAhliWaris, PeranAhliWaris, PosisiKekerabatan, KonfigurasiMadzhab, Orang, IdOrang } from '../types.js';
 
 type Jalur = PosisiKekerabatan['jalur'];
@@ -17,118 +23,118 @@ export interface HasilDerivasi {
  * kesamaan idAyah/idIbu, tidak pernah diinput langsung.
  */
 export function turunkanPeran(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab): HasilDerivasi {
-  const deceasedPaths = upwardPaths(graf, graf.idPewaris);
+  const jalurPewaris = jalurKeAtas(graf, graf.idPewaris);
   const daftarPeran: Record<IdOrang, PeranAhliWaris> = {};
   const duaJihah: IdOrang[] = [];
 
   for (const idOrang of Object.keys(graf.orang)) {
     if (idOrang === graf.idPewaris) continue;
-    const kin = kinshipRole(graf, idOrang, deceasedPaths);
-    const pasangan = spouseRole(graf, idOrang, konfigurasi);
-    if (pasangan && kin.kunci !== 'BUKAN_AHLI_WARIS' && kin.kunci !== 'DZAWIL_ARHAM') duaJihah.push(idOrang);
-    daftarPeran[idOrang] = pasangan ?? kin;
+    const kerabat = peranKekerabatan(graf, idOrang, jalurPewaris);
+    const pasangan = peranPasangan(graf, idOrang, konfigurasi);
+    if (pasangan && kerabat.kunci !== 'BUKAN_AHLI_WARIS' && kerabat.kunci !== 'DZAWIL_ARHAM') duaJihah.push(idOrang);
+    daftarPeran[idOrang] = pasangan ?? kerabat;
   }
   return { daftarPeran, duaJihah };
 }
 
 // ─── Pasangan ─────────────────────────────────────────────────────────────────
 
-function spouseRole(graf: GrafKeluarga, idOrang: IdOrang, konfigurasi: KonfigurasiMadzhab): PeranAhliWaris | undefined {
+function peranPasangan(graf: GrafKeluarga, idOrang: IdOrang, konfigurasi: KonfigurasiMadzhab): PeranAhliWaris | undefined {
   const idPewaris = graf.idPewaris;
-  const marriage = graf.pernikahan.find(m =>
-    (m.idSuami === idPewaris && m.idIstri === idOrang) || (m.idIstri === idPewaris && m.idSuami === idOrang));
-  if (!marriage) return undefined;
+  const nikah = graf.pernikahan.find(nikahIni =>
+    (nikahIni.idSuami === idPewaris && nikahIni.idIstri === idOrang) || (nikahIni.idIstri === idPewaris && nikahIni.idSuami === idOrang));
+  if (!nikah) return undefined;
 
   const lintasan = [idPewaris, idOrang];
   const kekerabatan: PosisiKekerabatan = { generasiLeluhur: 0, kedalamanKeturunan: 0, jalur: 'kandung', lewatPerempuan: false };
   // [R02-3] talak ba'in memutus sebab nikah; pengecualian talak di maradh al-maut hanya menurut qaul qadim.
-  const inheritsDespiteBain = marriage.talakSaatMaradh === true && marriage.idSuami === idPewaris
+  const mewarisiMeskiBain = nikah.talakSaatMaradh === true && nikah.idSuami === idPewaris
     && konfigurasi.talakBainSaatMaradh === 'qaulQadim';
-  if (marriage.status === 'talakBain' && !inheritsDespiteBain) return { idOrang, kunci: 'BUKAN_AHLI_WARIS', kekerabatan, lintasan };
+  if (nikah.status === 'talakBain' && !mewarisiMeskiBain) return { idOrang, kunci: 'BUKAN_AHLI_WARIS', kekerabatan, lintasan };
 
-  return { idOrang, kunci: marriage.idSuami === idOrang ? 'SUAMI' : 'ISTRI', kekerabatan, lintasan };
+  return { idOrang, kunci: nikah.idSuami === idOrang ? 'SUAMI' : 'ISTRI', kekerabatan, lintasan };
 }
 
 // ─── Kekerabatan ──────────────────────────────────────────────────────────────
 
-/** Semua leluhur `startId` beserta jalur terpendek [start, ..., leluhur]. */
-function upwardPaths(graf: GrafKeluarga, startId: IdOrang): Map<IdOrang, IdOrang[]> {
-  const paths = new Map<IdOrang, IdOrang[]>([[startId, [startId]]]);
-  const queue: IdOrang[][] = [[startId]];
-  while (queue.length > 0) {
-    const lintasan = queue.shift()!;
-    const person = graf.orang[lintasan[lintasan.length - 1]!];
-    for (const parentId of [person?.idAyah, person?.idIbu]) {
-      if (parentId === undefined || paths.has(parentId) || !graf.orang[parentId]) continue;
-      const next = [...lintasan, parentId];
-      paths.set(parentId, next);
-      queue.push(next);
+/** Semua leluhur `idAwal` beserta jalur terpendek [idAwal, ..., leluhur]. */
+function jalurKeAtas(graf: GrafKeluarga, idAwal: IdOrang): Map<IdOrang, IdOrang[]> {
+  const daftarJalur = new Map<IdOrang, IdOrang[]>([[idAwal, [idAwal]]]);
+  const antrean: IdOrang[][] = [[idAwal]];
+  while (antrean.length > 0) {
+    const lintasan = antrean.shift()!;
+    const orangIni = graf.orang[lintasan[lintasan.length - 1]!];
+    for (const idOrangTua of [orangIni?.idAyah, orangIni?.idIbu]) {
+      if (idOrangTua === undefined || daftarJalur.has(idOrangTua) || !graf.orang[idOrangTua]) continue;
+      const jalurBaru = [...lintasan, idOrangTua];
+      daftarJalur.set(idOrangTua, jalurBaru);
+      antrean.push(jalurBaru);
     }
   }
-  return paths;
+  return daftarJalur;
 }
 
-function kinshipRole(graf: GrafKeluarga, idOrang: IdOrang, deceasedPaths: Map<IdOrang, IdOrang[]>): PeranAhliWaris {
-  const ancestorPath = deceasedPaths.get(idOrang);
-  if (ancestorPath) return ascendantRole(graf, idOrang, ancestorPath);
+function peranKekerabatan(graf: GrafKeluarga, idOrang: IdOrang, jalurPewaris: Map<IdOrang, IdOrang[]>): PeranAhliWaris {
+  const jalurLeluhur = jalurPewaris.get(idOrang);
+  if (jalurLeluhur) return peranLeluhur(graf, idOrang, jalurLeluhur);
 
-  const personPaths = upwardPaths(graf, idOrang);
-  const descentPath = personPaths.get(graf.idPewaris);
-  if (descentPath) return descendantRole(graf, idOrang, [...descentPath].reverse());
+  const jalurOrang = jalurKeAtas(graf, idOrang);
+  const jalurKeturunan = jalurOrang.get(graf.idPewaris);
+  if (jalurKeturunan) return peranKeturunan(graf, idOrang, [...jalurKeturunan].reverse());
 
-  return collateralRole(graf, idOrang, personPaths, deceasedPaths);
+  return peranHawasyi(graf, idOrang, jalurOrang, jalurPewaris);
 }
 
-const sexOf = (graf: GrafKeluarga, id: IdOrang): Orang['jenisKelamin'] => graf.orang[id]!.jenisKelamin;
-const hasFemale = (graf: GrafKeluarga, ids: IdOrang[]) => ids.some(id => sexOf(graf, id) === 'P');
+const jenisKelaminDari = (graf: GrafKeluarga, id: IdOrang): Orang['jenisKelamin'] => graf.orang[id]!.jenisKelamin;
+const adaPerempuan = (graf: GrafKeluarga, ids: IdOrang[]) => ids.some(id => jenisKelaminDari(graf, id) === 'P');
 
 /** `lintasan` = [pewaris, ayah/ibu, ..., orang ini]. */
-function ascendantRole(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[]): PeranAhliWaris {
+function peranLeluhur(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[]): PeranAhliWaris {
   const generasi = lintasan.length - 1;
-  const links = lintasan.slice(1);
-  const intermediates = lintasan.slice(1, -1);
+  const tautan = lintasan.slice(1);
+  const perantara = lintasan.slice(1, -1);
   const kekerabatan: PosisiKekerabatan = {
     generasiLeluhur: generasi,
     kedalamanKeturunan: 0,
     // Pihak ditentukan dari jalur (idAyah/idIbu), bukan dari jenis kelamin yang diinput.
-    jalur: graf.orang[lintasan[0]!]!.idAyah === links[0] ? 'sebapak' : 'seibu',
-    lewatPerempuan: hasFemale(graf, intermediates),
+    jalur: graf.orang[lintasan[0]!]!.idAyah === tautan[0] ? 'sebapak' : 'seibu',
+    lewatPerempuan: adaPerempuan(graf, perantara),
   };
 
   let kunci: KunciPeran;
-  if (sexOf(graf, idOrang) === 'L') {
+  if (jenisKelaminDari(graf, idOrang) === 'L') {
     // [R03-1] jadd shahih: ke atas melalui laki-laki saja; selain itu jadd fasid (dzawil arham).
-    kunci = hasFemale(graf, links) ? 'DZAWIL_ARHAM' : generasi === 1 ? 'AYAH' : 'KAKEK';
+    kunci = adaPerempuan(graf, tautan) ? 'DZAWIL_ARHAM' : generasi === 1 ? 'AYAH' : 'KAKEK';
   } else if (generasi === 1) {
     kunci = 'IBU';
   } else {
     // [R03-4] [R03-5] nenek shahihah: tidak ada laki-laki diapit dua perempuan → pola jalur L* P*.
-    const sexes = intermediates.map(id => sexOf(graf, id));
-    const fasidah = sexes.some((jenisKelamin, i) => jenisKelamin === 'L' && sexes.slice(0, i).includes('P'));
+    const daftarJenisKelamin = perantara.map(id => jenisKelaminDari(graf, id));
+    const fasidah = daftarJenisKelamin.some((jenisKelamin, i) => jenisKelamin === 'L' && daftarJenisKelamin.slice(0, i).includes('P'));
     kunci = fasidah ? 'DZAWIL_ARHAM' : kekerabatan.jalur === 'sebapak' ? 'NENEK_DARI_AYAH' : 'NENEK_DARI_IBU';
   }
   return { idOrang, kunci, kekerabatan, lintasan };
 }
 
 /** `lintasan` = [pewaris, anak, ..., orang ini]. */
-function descendantRole(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[]): PeranAhliWaris {
+function peranKeturunan(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[]): PeranAhliWaris {
   const kedalaman = lintasan.length - 1;
-  const lewatPerempuan = hasFemale(graf, lintasan.slice(1, -1));
+  const lewatPerempuan = adaPerempuan(graf, lintasan.slice(1, -1));
   const kekerabatan: PosisiKekerabatan = { generasiLeluhur: 0, kedalamanKeturunan: kedalaman, jalur: 'kandung', lewatPerempuan };
-  const male = sexOf(graf, idOrang) === 'L';
+  const lakiLaki = jenisKelaminDari(graf, idOrang) === 'L';
   // [R14-4] cucu melalui anak perempuan = dzawil arham.
   const kunci: KunciPeran = lewatPerempuan ? 'DZAWIL_ARHAM'
-    : kedalaman === 1 ? (male ? 'ANAK_LK' : 'ANAK_PR')
-    : (male ? 'CUCU_LK' : 'CUCU_PR');
+    : kedalaman === 1 ? (lakiLaki ? 'ANAK_LK' : 'ANAK_PR')
+    : (lakiLaki ? 'CUCU_LK' : 'CUCU_PR');
   return { idOrang, kunci, kekerabatan, lintasan };
 }
 
-function siblingLineage(a: Orang, b: Orang): Jalur | undefined {
-  const sameFather = a.idAyah !== undefined && a.idAyah === b.idAyah;
-  const sameMother = a.idIbu !== undefined && a.idIbu === b.idIbu;
-  if (sameFather && sameMother) return 'kandung';
-  if (sameFather) return 'sebapak';
-  if (sameMother) return 'seibu';
+function jalurSaudara(a: Orang, b: Orang): Jalur | undefined {
+  const samaAyah = a.idAyah !== undefined && a.idAyah === b.idAyah;
+  const samaIbu = a.idIbu !== undefined && a.idIbu === b.idIbu;
+  if (samaAyah && samaIbu) return 'kandung';
+  if (samaAyah) return 'sebapak';
+  if (samaIbu) return 'seibu';
   return undefined;
 }
 
@@ -136,47 +142,47 @@ function siblingLineage(a: Orang, b: Orang): Jalur | undefined {
  * Hawasyi: orang ini (atau leluhurnya, X) bersaudara dengan pewaris atau leluhur pewaris (Y).
  * generasiLeluhur = generasi Y + 1; kedalamanKeturunan = jarak X → orang ini + 1 (bab 3 / tabel PosisiKekerabatan).
  */
-function collateralRole(
+function peranHawasyi(
   graf: GrafKeluarga,
   idOrang: IdOrang,
-  personPaths: Map<IdOrang, IdOrang[]>,
-  deceasedPaths: Map<IdOrang, IdOrang[]>,
+  jalurOrang: Map<IdOrang, IdOrang[]>,
+  jalurPewaris: Map<IdOrang, IdOrang[]>,
 ): PeranAhliWaris {
-  let best: { generasi: number; kedalaman: number; jalur: Jalur; xPath: IdOrang[]; yPath: IdOrang[] } | undefined;
-  for (const [xId, xPath] of personPaths) {
-    for (const [yId, yPath] of deceasedPaths) {
-      if (xId === yId) continue;
-      const jalur = siblingLineage(graf.orang[xId]!, graf.orang[yId]!);
+  let terbaik: { generasi: number; kedalaman: number; jalur: Jalur; jalurX: IdOrang[]; jalurY: IdOrang[] } | undefined;
+  for (const [idX, jalurX] of jalurOrang) {
+    for (const [idY, jalurY] of jalurPewaris) {
+      if (idX === idY) continue;
+      const jalur = jalurSaudara(graf.orang[idX]!, graf.orang[idY]!);
       if (!jalur) continue;
-      const generasi = yPath.length;
-      const kedalaman = xPath.length;
-      if (!best || generasi < best.generasi || (generasi === best.generasi && kedalaman < best.kedalaman)) {
-        best = { generasi, kedalaman, jalur, xPath, yPath };
+      const generasi = jalurY.length;
+      const kedalaman = jalurX.length;
+      if (!terbaik || generasi < terbaik.generasi || (generasi === terbaik.generasi && kedalaman < terbaik.kedalaman)) {
+        terbaik = { generasi, kedalaman, jalur, jalurX, jalurY };
       }
     }
   }
 
-  if (!best) {
+  if (!terbaik) {
     const kekerabatan: PosisiKekerabatan = { generasiLeluhur: 0, kedalamanKeturunan: 0, jalur: 'kandung', lewatPerempuan: false };
     return { idOrang, kunci: 'BUKAN_AHLI_WARIS', kekerabatan, lintasan: [graf.idPewaris, idOrang] };
   }
 
-  const { generasi, kedalaman, jalur, xPath, yPath } = best;
-  const downFromSibling = [...xPath].reverse();          // [X, ..., orang ini]
-  const lintasan = [...yPath, ...downFromSibling];
-  const lewatPerempuan = hasFemale(graf, [...yPath.slice(1), ...downFromSibling.slice(0, -1)]);
+  const { generasi, kedalaman, jalur, jalurX, jalurY } = terbaik;
+  const turunDariSaudara = [...jalurX].reverse();          // [X, ..., orang ini]
+  const lintasan = [...jalurY, ...turunDariSaudara];
+  const lewatPerempuan = adaPerempuan(graf, [...jalurY.slice(1), ...turunDariSaudara.slice(0, -1)]);
   const kekerabatan: PosisiKekerabatan = { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman, jalur, lewatPerempuan };
-  const male = sexOf(graf, idOrang) === 'L';
-  const maleLineDown = !hasFemale(graf, downFromSibling);
+  const lakiLaki = jenisKelaminDari(graf, idOrang) === 'L';
+  const garisLakiLakiKeBawah = !adaPerempuan(graf, turunDariSaudara);
   const kandung = jalur === 'kandung';
 
   let kunci: KunciPeran = 'DZAWIL_ARHAM';
   if (generasi === 1 && kedalaman === 1) {
-    kunci = (male ? KUNCI_SAUDARA_LK : KUNCI_SAUDARI)[jalur];
-  } else if (generasi === 1 && jalur !== 'seibu' && maleLineDown) {
+    kunci = (lakiLaki ? KUNCI_SAUDARA_LK : KUNCI_SAUDARI)[jalur];
+  } else if (generasi === 1 && jalur !== 'seibu' && garisLakiLakiKeBawah) {
     // [R14-4] anak saudari, anak saudara seibu, anak pr saudara → dzawil arham.
     kunci = kandung ? 'KEPONAKAN_KANDUNG' : 'KEPONAKAN_SEBAPAK';
-  } else if (generasi >= 2 && jalur !== 'seibu' && maleLineDown && !hasFemale(graf, yPath.slice(1))) {
+  } else if (generasi >= 2 && jalur !== 'seibu' && garisLakiLakiKeBawah && !adaPerempuan(graf, jalurY.slice(1))) {
     // [R03-2] paman mencakup paman ayah/kakek, asal jalurnya lewat laki-laki; 'ammah & khal = dzawil arham.
     if (kedalaman === 1) kunci = kandung ? 'PAMAN_KANDUNG' : 'PAMAN_SEBAPAK';
     else kunci = kandung ? 'SEPUPU_KANDUNG' : 'SEPUPU_SEBAPAK';

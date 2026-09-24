@@ -109,30 +109,30 @@ export type PilihanJadd = 'muqasamah' | 'tsuluts' | 'tsulutsBaqi' | 'sudus';
  * (mis. `oleh` diubah jadi nama orang: "karena ada anak perempuan (Fatimah)").
  */
 export type AlasanFardh =
-  | { code: 'ADA_FARU_WARITS'; oleh: IdOrang[] }              // pasangan turun, ibu 1/6
-  | { code: 'TANPA_FARU_WARITS' }                            // pasangan 1/2 atau 1/4
-  | { code: 'JAM_IKHWAH'; oleh: IdOrang[] }                   // ibu 1/6 karena 2+ saudara (termasuk yang mahjub)
-  | { code: 'TANPA_FARU_WARITS_DAN_IKHWAH' }                 // ibu 1/3
-  | { code: 'UMARIYYATAIN'; fardhPasangan: Pecahan }          // ibu 1/3 sisa
-  | { code: 'NENEK_TANPA_IBU'; banyaknya: number }
-  | { code: 'TANPA_MUASHSHIB'; banyaknya: number }               // anak/cucu pr: 1 → 1/2, 2+ → 2/3
-  | { code: 'TAKMILAH'; with: IdOrang[] }                   // 1/6 penyempurna 2/3
-  | { code: 'KALALAH'; banyaknya: number }                       // saudari atau anak ibu tanpa far'u & ashl mudzakkar
-  | { code: 'ADA_FARU_MUDZAKKAR'; oleh: IdOrang[] }           // ayah/kakek 1/6 saja
-  | { code: 'ADA_FARU_MUANNATS'; oleh: IdOrang[] }            // ayah/kakek 1/6 + sisa
-  | { code: 'MUSYARRAKAH' }
-  | { code: 'AKDARIYYAH'; porsi: 'jadd' | 'ukht' }
-  | { code: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
-  | { code: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
+  | { kode: 'ADA_FARU_WARITS'; oleh: IdOrang[] }              // pasangan turun, ibu 1/6
+  | { kode: 'TANPA_FARU_WARITS' }                            // pasangan 1/2 atau 1/4
+  | { kode: 'JAM_IKHWAH'; oleh: IdOrang[] }                   // ibu 1/6 karena 2+ saudara (termasuk yang mahjub)
+  | { kode: 'TANPA_FARU_WARITS_DAN_IKHWAH' }                 // ibu 1/3
+  | { kode: 'UMARIYYATAIN'; fardhPasangan: Pecahan }          // ibu 1/3 sisa
+  | { kode: 'NENEK_TANPA_IBU'; banyaknya: number }
+  | { kode: 'TANPA_MUASHSHIB'; banyaknya: number }               // anak/cucu pr: 1 → 1/2, 2+ → 2/3
+  | { kode: 'TAKMILAH'; bersama: IdOrang[] }                   // 1/6 penyempurna 2/3
+  | { kode: 'KALALAH'; banyaknya: number }                       // saudari atau anak ibu tanpa far'u & ashl mudzakkar
+  | { kode: 'ADA_FARU_MUDZAKKAR'; oleh: IdOrang[] }           // ayah/kakek 1/6 saja
+  | { kode: 'ADA_FARU_MUANNATS'; oleh: IdOrang[] }            // ayah/kakek 1/6 + sisa
+  | { kode: 'MUSYARRAKAH' }
+  | { kode: 'AKDARIYYAH'; porsi: 'jadd' | 'ukht' }
+  | { kode: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
+  | { kode: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
 
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
   | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
-  | { jenis: 'HAJB_NUQSHAN'; terdampak: IdOrang; from: Pecahan; to: Pecahan; penyebab: IdOrang[] }
+  | { jenis: 'HAJB_NUQSHAN'; terdampak: IdOrang; dari: Pecahan; menjadi: Pecahan; penyebab: IdOrang[] }
   | { jenis: 'FARDH'; kelompok: IdKelompok; fardh: Pecahan; alasan: AlasanFardh }
-  | { jenis: 'ASHABAH'; kelompok: IdKelompok; type: 'binNafsi' | 'bilGhair' | 'maalGhair';
+  | { jenis: 'ASHABAH'; kelompok: IdKelompok; jenisAshabah: 'binNafsi' | 'bilGhair' | 'maalGhair';
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
-      pilihanJadd?: Extract<AlasanFardh, { code: 'JADD_WAL_IKHWAH' }> }
+      pilihanJadd?: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }> }
   | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
   | { jenis: 'TIRKAH'; kotor: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
       wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
@@ -142,7 +142,7 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'PERBANDINGAN_NISAB'; tujuan: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; kelompok?: IdKelompok;
       a: bigint; b: bigint; hubungan: Nisab | HubunganInkisar; fpb: bigint; hasil: bigint }
   | { jenis: 'KELAS_MASALAH'; kelas: 'adilah' | 'ailah' | 'raddA' | 'raddB'; jumlahSaham: bigint; ashl: bigint }
-  | { jenis: 'AUL'; from: bigint; to: bigint }
+  | { jenis: 'AUL'; dari: bigint; menjadi: bigint }
   | { jenis: 'RADD';
       zawjiyyah?: { kelompok: IdKelompok; ashl: bigint; sahamPasangan: bigint; sisa: bigint };   // hanya raddB
       raddiyyah: { saham: Record<IdKelompok, bigint>; ashl: bigint };
@@ -221,7 +221,7 @@ export type HasilMunasakhat =
   | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit: IdOrang })
   | { status: 'OK';
       /** Hasil pipeline tiap mayit, urut wafat. */
-      langkahLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>;
+      daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>;
       /** Bab 12.2: label untuk telusur-balik & penjelasan; tidak menentukan jalur hitung [R12-3]. */
       keadaan: 1 | 2 | 3;
       jamiah: bigint;

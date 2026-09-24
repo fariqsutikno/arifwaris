@@ -4,11 +4,11 @@ import type { TermId } from './terms.js';
 
 /**
  * Satu baris penjelasan = potongan berjenis. UI menampilkan `term` bergaris bawah + tooltip glosarium,
- * `person` sebagai sebutan orang (bisa di-hover); `text` apa adanya.
+ * `orangIni` sebagai sebutan orang (bisa di-hover); `text` apa adanya.
  */
 export type Segment =
   | { jenis: 'text'; text: string }
-  | { jenis: 'person'; idOrangOrang: IdOrang[]; text: string }
+  | { jenis: 'orangIni'; daftarIdOrang: IdOrang[]; text: string }
   | { jenis: 'term'; term: TermId; text: string; example?: string };
 
 export interface ExplainLine { segments: Segment[]; refs: string[] }
@@ -19,7 +19,7 @@ type Part = string | number | bigint | Pecahan | Segment | Segment[];
 
 const isFraction = (porsi: object): porsi is Pecahan => 'n' in porsi && 'd' in porsi;
 
-/** Template bertag: `s\`${person} mendapat ${fraction}\`` → Segment[]; teks berdampingan digabung. */
+/** Template bertag: `s\`${orangIni} mendapat ${fraction}\`` → Segment[]; teks berdampingan digabung. */
 export function s(strings: TemplateStringsArray, ...parts: Part[]): Segment[] {
   const out: Segment[] = [];
   const pushText = (text: string) => {

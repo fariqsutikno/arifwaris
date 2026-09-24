@@ -1,7 +1,7 @@
 import { bulatkanKeBawah, pecahan, type Uang } from '@waris/math';
 import type { TabelMasalah, IdOrang, StatusOrang, LangkahJejak } from '../types.js';
 import type { HasilKlasifikasi } from './klasifikasi.js';
-import { fixedFractionOf, isResidueGroup, type Masalah } from './model.js';
+import { pecahanTetapDari, penerimaSisa, type Masalah } from './model.js';
 import type { Tashih } from './tashih.js';
 
 /**
@@ -24,31 +24,31 @@ export function bagikanNominal(perOrang: Record<IdOrang, bigint>, tashih: bigint
 /** Tabel mas'alah: kolom 'aul/radd/tashih hanya muncul bila terjadi; yang mahjub/mamnu tetap tampil di `dikecualikan`. */
 export function susunTabel(
   masalah: Masalah,
-  classified: HasilKlasifikasi,
+  klasifikasi: HasilKlasifikasi,
   tashih: Tashih,
   nominal: Record<IdOrang, Uang>,
   statusOrang: Record<IdOrang, StatusOrang>,
 ): TabelMasalah {
   const adaTashih = tashih.juzSahm > 1n;
   const kolom: TabelMasalah['kolom'] = ['fardh', 'ashl'];
-  if (classified.column) kolom.push(classified.column);
+  if (klasifikasi.column) kolom.push(klasifikasi.column);
   if (adaTashih) kolom.push('tashih');
   kolom.push('perOrang', 'nominal');
 
   const totalKolom: TabelMasalah['totalKolom'] = { ashl: masalah.ashl };
-  if (classified.column) totalKolom[classified.column] = classified.dasar;
+  if (klasifikasi.column) totalKolom[klasifikasi.column] = klasifikasi.dasar;
   if (adaTashih) totalKolom.tashih = tashih.tashih;
 
-  const baris = masalah.kelompokKelompok.map(kelompok => {
+  const baris = masalah.daftarKelompok.map(kelompok => {
     const sel: Record<string, bigint> = { ashl: masalah.saham[kelompok.id]! };
-    if (classified.column) sel[classified.column] = classified.saham[kelompok.id]!;
-    if (adaTashih) sel['tashih'] = tashih.groupSaham[kelompok.id]!;
-    const fardh = fixedFractionOf(kelompok.bagian);
+    if (klasifikasi.column) sel[klasifikasi.column] = klasifikasi.saham[kelompok.id]!;
+    if (adaTashih) sel['tashih'] = tashih.sahamKelompokIni[kelompok.id]!;
+    const fardh = pecahanTetapDari(kelompok.bagian);
     return {
       kelompok: kelompok.id,
       anggota: kelompok.anggota,
       ...(fardh ? { fardh } : {}),
-      ...(isResidueGroup(kelompok) ? { ashabah: true } : {}),
+      ...(penerimaSisa(kelompok) ? { ashabah: true } : {}),
       sel,
       perOrang: Object.fromEntries(kelompok.anggota.map(id => [id, { saham: tashih.perOrang[id]!, nominal: nominal[id]! }])),
     };

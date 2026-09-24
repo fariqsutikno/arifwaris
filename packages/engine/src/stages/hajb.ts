@@ -1,4 +1,10 @@
-import type { KunciAhliWaris, IdOrang, LangkahJejak } from '../types.js';
+// Tahap 1c — Hajb hirman [R06-3]: siapa yang terhalang sepenuhnya oleh ahli waris yang lebih dekat.
+//   Masuk : kandidat ahli waris (sudah lolos mawani').
+//   Keluar: `efektif` (yang tetap mewarisi), `mahjub` (yang terhalang + oleh siapa), dan jejak.
+// Caranya: urutkan kandidat dari penghalang terkuat (bab 6.7 no. 2), lalu periksa satu per satu.
+// Setiap orang cukup dibandingkan dengan yang sudah pasti tidak terhalang (`efektif`).
+
+import type { IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
 import type { AhliWaris } from './model.js';
 
 export interface Mahjub { oleh: IdOrang[]; rujukanAturan: string }
@@ -7,20 +13,17 @@ const FARU_MUDZAKKAR: KunciAhliWaris[] = ['ANAK_LK', 'CUCU_LK'];
 const FARU_WARITS: KunciAhliWaris[] = ['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR'];
 const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'];
 
-/**
- * Tahap 1c: hajb hirman [R06-3]. Kandidat diproses dari hajib terkuat (bab 6.7 no. 2) sehingga
- * setiap orang hanya dibandingkan dengan yang sudah pasti tidak terhijab.
- */
 export function terapkanHajb(kandidat: AhliWaris[]): { mahjub: Record<IdOrang, Mahjub>; efektif: AhliWaris[]; jejak: LangkahJejak[] } {
   const efektif: AhliWaris[] = [];
   const mahjub: Record<IdOrang, Mahjub> = {};
   const jejak: LangkahJejak[] = [];
 
-  for (const ahliWaris of [...kandidat].sort((a, b) => compareTuple(evaluationOrder(a), evaluationOrder(b)))) {
-    const terhalang = hajibOf(ahliWaris, efektif);
-    if (terhalang && terhalang.oleh.length > 0) {
-      mahjub[ahliWaris.idOrang] = terhalang;
-      jejak.push({ tahap: 'hajb', refs: [terhalang.rujukanAturan], jenis: 'HAJB_HIRMAN', mahjub: ahliWaris.idOrang, hajib: terhalang.oleh });
+  const urutPenghalangTerkuat = [...kandidat].sort((a, b) => bandingkanUrutan(urutanEvaluasi(a), urutanEvaluasi(b)));
+  for (const ahliWaris of urutPenghalangTerkuat) {
+    const penghalang = cariHajib(ahliWaris, efektif);
+    if (penghalang) {
+      mahjub[ahliWaris.idOrang] = penghalang;
+      jejak.push({ tahap: 'hajb', refs: [penghalang.rujukanAturan], jenis: 'HAJB_HIRMAN', mahjub: ahliWaris.idOrang, hajib: penghalang.oleh });
     } else {
       efektif.push(ahliWaris);
     }
@@ -28,130 +31,155 @@ export function terapkanHajb(kandidat: AhliWaris[]): { mahjub: Record<IdOrang, M
   return { mahjub, efektif, jejak };
 }
 
-// ─── Urutan evaluasi ──────────────────────────────────────────────────────────
+// ─── Siapa menghalangi siapa ──────────────────────────────────────────────────
 
-function evaluationOrder(ahliWaris: AhliWaris): number[] {
+function cariHajib(ahliWaris: AhliWaris, efektif: AhliWaris[]): Mahjub | undefined {
   const { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman } = ahliWaris.kekerabatan;
+  const faruMudzakkar = denganKunci(efektif, FARU_MUDZAKKAR);
+  const ayah = denganKunci(efektif, ['AYAH']);
+  const kakek = denganKunci(efektif, ['KAKEK']);
+
   switch (ahliWaris.kunci) {
-    case 'CUCU_LK': return [1, kedalaman];
-    case 'CUCU_PR': return [2, kedalaman];
-    case 'KAKEK': return [3, generasi];
-    case 'NENEK_DARI_IBU': case 'NENEK_DARI_AYAH': return [4, generasi];
-    case 'SAUDARA_KANDUNG': return [5, 0];
-    case 'SAUDARI_KANDUNG': return [5, 1];
-    case 'SAUDARA_SEBAPAK': return [6, 0];         // sebelum SAUDARI_SEBAPAK: menentukan apakah ia diashabahkan
-    case 'SAUDARI_SEBAPAK': return [6, 1];
-    case 'SAUDARA_SEIBU': case 'SAUDARI_SEIBU': return [7, 0];
-    default:
-      return HAWASYI_ASHABAH.includes(ahliWaris.kunci) ? [8, ...ashabahRank(ahliWaris)] : [0];
+    case 'CUCU_LK':
+      return hajibDari(faruMudzakkar.filter(lk => lk.kekerabatan.kedalamanKeturunan < kedalaman), 'R06-3');
+
+    case 'CUCU_PR': {
+      const lakiLakiDiAtas = faruMudzakkar.filter(lk => lk.kekerabatan.kedalamanKeturunan < kedalaman);
+      if (lakiLakiDiAtas.length > 0) return hajibDari(lakiLakiDiAtas, 'R06-3');
+      // [R04-13] 2+ perempuan di atasnya menghabiskan 2/3, kecuali ada mu'ashshib sederajat/lebih rendah.
+      const perempuanDiAtas = denganKunci(efektif, ['ANAK_PR', 'CUCU_PR']).filter(pr => pr.kekerabatan.kedalamanKeturunan < kedalaman);
+      const adaMuashshib = denganKunci(efektif, ['CUCU_LK']).some(lk => lk.kekerabatan.kedalamanKeturunan >= kedalaman);
+      return perempuanDiAtas.length >= 2 && !adaMuashshib ? hajibDari(perempuanDiAtas, 'R04-13') : undefined;
+    }
+
+    case 'KAKEK':
+      return hajibDari([...ayah, ...kakek.filter(lebihDekat => lebihDekat.kekerabatan.generasiLeluhur < generasi)], 'R06-3');
+
+    case 'NENEK_DARI_IBU': case 'NENEK_DARI_AYAH': {
+      const pihak = ahliWaris.kunci;
+      const penghalang = [
+        ...denganKunci(efektif, ['IBU']),
+        ...(pihak === 'NENEK_DARI_AYAH' ? ayah : []),                                 // [R04-10]
+        ...kakek.filter(k => ahliWaris.lintasan.includes(k.idOrang)),                // [R04-6] hanya nenek yang lewat kakek itu
+        // [R04-9] [SYF]: nenek dekat sepihak menghijab yang jauh; nenek dekat pihak ibu juga menghijab
+        // nenek jauh pihak ayah, tidak sebaliknya.
+        ...denganKunci(efektif, ['NENEK_DARI_IBU', 'NENEK_DARI_AYAH']).filter(nenek =>
+          nenek.kekerabatan.generasiLeluhur < generasi && (nenek.kunci === pihak || nenek.kunci === 'NENEK_DARI_IBU')),
+      ];
+      return hajibDari(penghalang, 'R04-9');
+    }
+
+    case 'SAUDARA_KANDUNG': case 'SAUDARI_KANDUNG':
+      return hajibDari([...faruMudzakkar, ...ayah], 'R06-4');
+
+    case 'SAUDARA_SEBAPAK': case 'SAUDARI_SEBAPAK': {
+      const penghalangDasar = [...faruMudzakkar, ...ayah];
+      // [R08-4] bersama kakek, saudara sebapak tidak digugurkan kandung di sini; mu'addah (bab 08) yang mengatur.
+      if (kakek.length > 0) return hajibDari(penghalangDasar, 'R06-3');
+      const olehKandung = [...denganKunci(efektif, ['SAUDARA_KANDUNG']), ...saudariMaalGhair(efektif, 'SAUDARI_KANDUNG')];
+      const saudariKandung = denganKunci(efektif, ['SAUDARI_KANDUNG']);
+      const adaSaudaraSebapak = denganKunci(efektif, ['SAUDARA_SEBAPAK']).length > 0;
+      // [R04-14] saudari sebapak gugur oleh 2+ saudari kandung, kecuali diashabahkan saudara lk sebapak.
+      const olehDuaSaudari = ahliWaris.kunci === 'SAUDARI_SEBAPAK' && saudariKandung.length >= 2 && !adaSaudaraSebapak ? saudariKandung : [];
+      return hajibDari(tanpaDuplikat([...penghalangDasar, ...olehKandung, ...olehDuaSaudari]), 'R06-3');
+    }
+
+    case 'SAUDARA_SEIBU': case 'SAUDARI_SEIBU':
+      return hajibDari([...denganKunci(efektif, FARU_WARITS), ...ayah, ...kakek], 'R06-5');
+
+    default: {
+      // Ayah, ibu, anak, pasangan tidak pernah terkena hajb hirman [R06-2].
+      if (!HAWASYI_ASHABAH.includes(ahliWaris.kunci)) return undefined;
+      // Keponakan, paman, sepupu: kalah oleh ashabah mana pun yang peringkatnya lebih kuat [R05-3].
+      const peringkat = peringkatAshabah(ahliWaris);
+      const lebihKuat = [
+        ...denganKunci(efektif, ['ANAK_LK', 'CUCU_LK', 'AYAH', 'KAKEK', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', ...HAWASYI_ASHABAH]),
+        ...saudariMaalGhair(efektif, 'SAUDARI_KANDUNG'),
+        ...saudariMaalGhair(efektif, 'SAUDARI_SEBAPAK'),
+      ].filter(ashabah => bandingkanUrutan(peringkatAshabah(ashabah), peringkat) < 0);
+      return hajibDari(lebihKuat, 'R05-3');
+    }
   }
 }
 
-function compareTuple(a: number[], b: number[]): number {
+/** [R05-5] saudari menjadi ashabah ma'al ghair bersama far'u warits perempuan, tanpa saudara lk sederajat. */
+function saudariMaalGhair(efektif: AhliWaris[], kunciSaudari: 'SAUDARI_KANDUNG' | 'SAUDARI_SEBAPAK'): AhliWaris[] {
+  const kunciSaudaraLk = kunciSaudari === 'SAUDARI_KANDUNG' ? 'SAUDARA_KANDUNG' : 'SAUDARA_SEBAPAK';
+  const adaFaruMuannats = denganKunci(efektif, ['ANAK_PR', 'CUCU_PR']).length > 0;
+  const adaSaudaraLk = denganKunci(efektif, [kunciSaudaraLk]).length > 0;
+  return adaFaruMuannats && !adaSaudaraLk ? denganKunci(efektif, [kunciSaudari]) : [];
+}
+
+// ─── Urutan pemeriksaan ───────────────────────────────────────────────────────
+// Urutan = tuple angka, dibandingkan dari kiri (kecil = diperiksa lebih dulu).
+// Yang tidak pernah terhalang (ayah, ibu, anak, pasangan) diperiksa pertama.
+
+const URUTAN = {
+  TIDAK_PERNAH_TERHALANG: 0,
+  CUCU_LK: 1,
+  CUCU_PR: 2,
+  KAKEK: 3,
+  NENEK: 4,
+  GARIS_KANDUNG: 5,
+  GARIS_SEBAPAK: 6,
+  SAUDARA_SEIBU: 7,
+  HAWASYI: 8,
+} as const;
+
+// Dalam satu garis saudara, yang laki-laki diperiksa lebih dulu karena ia menentukan
+// apakah saudarinya menjadi ashabah bil ghair.
+const LAKI_LAKI_DULU = 0;
+const PEREMPUAN_SETELAHNYA = 1;
+
+function urutanEvaluasi(ahliWaris: AhliWaris): number[] {
+  const { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman } = ahliWaris.kekerabatan;
+  switch (ahliWaris.kunci) {
+    case 'CUCU_LK': return [URUTAN.CUCU_LK, kedalaman];
+    case 'CUCU_PR': return [URUTAN.CUCU_PR, kedalaman];
+    case 'KAKEK': return [URUTAN.KAKEK, generasi];
+    case 'NENEK_DARI_IBU': case 'NENEK_DARI_AYAH': return [URUTAN.NENEK, generasi];
+    case 'SAUDARA_KANDUNG': return [URUTAN.GARIS_KANDUNG, LAKI_LAKI_DULU];
+    case 'SAUDARI_KANDUNG': return [URUTAN.GARIS_KANDUNG, PEREMPUAN_SETELAHNYA];
+    case 'SAUDARA_SEBAPAK': return [URUTAN.GARIS_SEBAPAK, LAKI_LAKI_DULU];
+    case 'SAUDARI_SEBAPAK': return [URUTAN.GARIS_SEBAPAK, PEREMPUAN_SETELAHNYA];
+    case 'SAUDARA_SEIBU': case 'SAUDARI_SEIBU': return [URUTAN.SAUDARA_SEIBU, 0];
+    default:
+      return HAWASYI_ASHABAH.includes(ahliWaris.kunci)
+        ? [URUTAN.HAWASYI, ...peringkatAshabah(ahliWaris)]
+        : [URUTAN.TIDAK_PERNAH_TERHALANG];
+  }
+}
+
+// [R05-2] [R05-3] urutan ashabah bi nafsihi [SYF]: jihah → darajah → quwwah.
+const JIHAH = { BUNUWWAH: 0, UBUWWAH: 1, JUDUWWAH_DAN_UKHUWWAH: 2, BANI_AL_IKHWAH: 3, UMUMAH: 4 } as const;
+
+function peringkatAshabah(ahliWaris: AhliWaris): number[] {
+  const { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman, jalur } = ahliWaris.kekerabatan;
+  const quwwah = jalur === 'kandung' ? 0 : 1;   // kandung lebih kuat dari sebapak
+  switch (ahliWaris.kunci) {
+    case 'ANAK_LK': case 'CUCU_LK': return [JIHAH.BUNUWWAH, kedalaman];
+    case 'AYAH': return [JIHAH.UBUWWAH];
+    case 'KAKEK': case 'SAUDARA_KANDUNG': case 'SAUDARA_SEBAPAK': case 'SAUDARI_KANDUNG': case 'SAUDARI_SEBAPAK':
+      return [JIHAH.JUDUWWAH_DAN_UKHUWWAH];
+    case 'KEPONAKAN_KANDUNG': case 'KEPONAKAN_SEBAPAK': return [JIHAH.BANI_AL_IKHWAH, kedalaman, quwwah];
+    default: return [JIHAH.UMUMAH, generasi, kedalaman, quwwah];   // paman & sepupu
+  }
+}
+
+function bandingkanUrutan(a: number[], b: number[]): number {
   for (let i = 0; i < Math.max(a.length, b.length); i++) {
-    const diff = (a[i] ?? 0) - (b[i] ?? 0);
-    if (diff !== 0) return diff;
+    const selisih = (a[i] ?? 0) - (b[i] ?? 0);
+    if (selisih !== 0) return selisih;
   }
   return 0;
 }
 
-/**
- * [R05-2] [R05-3] urutan ashabah bi nafsihi [SYF]: jihah → darajah → quwwah.
- * Jihah: bunuwwah 0, ubuwwah 1, juduwwah & ukhuwwah 2, bani al-ikhwah 3, 'umumah 4.
- */
-function ashabahRank(ahliWaris: AhliWaris): number[] {
-  const { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman, jalur } = ahliWaris.kekerabatan;
-  const quwwah = jalur === 'kandung' ? 0 : 1;
-  switch (ahliWaris.kunci) {
-    case 'ANAK_LK': case 'CUCU_LK': return [0, kedalaman];
-    case 'AYAH': return [1];
-    case 'KAKEK': case 'SAUDARA_KANDUNG': case 'SAUDARA_SEBAPAK': case 'SAUDARI_KANDUNG': case 'SAUDARI_SEBAPAK': return [2];
-    case 'KEPONAKAN_KANDUNG': case 'KEPONAKAN_SEBAPAK': return [3, kedalaman, quwwah];
-    default: return [4, generasi, kedalaman, quwwah];   // AMM_*, IBN_AMM_*
-  }
-}
+// ─── Bantuan kecil ────────────────────────────────────────────────────────────
 
-// ─── Aturan hajib per jenis ───────────────────────────────────────────────────
+const denganKunci = (daftar: AhliWaris[], kunci: KunciAhliWaris[]) => daftar.filter(ahliWaris => kunci.includes(ahliWaris.kunci));
 
-const ids = (daftarAhliWaris: AhliWaris[]) => daftarAhliWaris.map(h => h.idOrang);
-const withKey = (daftarAhliWaris: AhliWaris[], keys: KunciAhliWaris[]) => daftarAhliWaris.filter(h => keys.includes(h.kunci));
-const rule = (oleh: AhliWaris[], rujukanAturan: string): Mahjub | undefined => (oleh.length > 0 ? { oleh: ids(oleh), rujukanAturan } : undefined);
+const hajibDari = (penghalang: AhliWaris[], rujukanAturan: string): Mahjub | undefined =>
+  penghalang.length > 0 ? { oleh: penghalang.map(ahliWaris => ahliWaris.idOrang), rujukanAturan } : undefined;
 
-/** [R05-5] saudari menjadi ashabah ma'al ghair bersama far'u warits perempuan, tanpa saudara lk sederajat. */
-function maalGhairSisters(efektif: AhliWaris[], sisterKey: 'SAUDARI_KANDUNG' | 'SAUDARI_SEBAPAK'): AhliWaris[] {
-  const brotherKey = sisterKey === 'SAUDARI_KANDUNG' ? 'SAUDARA_KANDUNG' : 'SAUDARA_SEBAPAK';
-  const hasFaruMuannats = withKey(efektif, ['ANAK_PR', 'CUCU_PR']).length > 0;
-  const hasBrother = withKey(efektif, [brotherKey]).length > 0;
-  return hasFaruMuannats && !hasBrother ? withKey(efektif, [sisterKey]) : [];
-}
-
-function hajibOf(ahliWaris: AhliWaris, efektif: AhliWaris[]): Mahjub | undefined {
-  const { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman } = ahliWaris.kekerabatan;
-  const faruMudzakkar = withKey(efektif, FARU_MUDZAKKAR);
-  const ab = withKey(efektif, ['AYAH']);
-  const jadd = withKey(efektif, ['KAKEK']);
-
-  switch (ahliWaris.kunci) {
-    case 'CUCU_LK':
-      return rule(faruMudzakkar.filter(h => h.kekerabatan.kedalamanKeturunan < kedalaman), 'R06-3');
-
-    case 'CUCU_PR': {
-      const maleAbove = faruMudzakkar.filter(h => h.kekerabatan.kedalamanKeturunan < kedalaman);
-      if (maleAbove.length > 0) return rule(maleAbove, 'R06-3');
-      // [R04-13] 2+ perempuan di atasnya menghabiskan 2/3, kecuali ada mu'ashshib sederajat/lebih rendah.
-      const femalesAbove = withKey(efektif, ['ANAK_PR', 'CUCU_PR']).filter(h => h.kekerabatan.kedalamanKeturunan < kedalaman);
-      const muashshib = withKey(efektif, ['CUCU_LK']).some(h => h.kekerabatan.kedalamanKeturunan >= kedalaman);
-      return femalesAbove.length >= 2 && !muashshib ? rule(femalesAbove, 'R04-13') : undefined;
-    }
-
-    case 'KAKEK':
-      return rule([...ab, ...jadd.filter(h => h.kekerabatan.generasiLeluhur < generasi)], 'R06-3');
-
-    case 'NENEK_DARI_IBU': case 'NENEK_DARI_AYAH': {
-      const side = ahliWaris.kunci;
-      const oleh = [
-        ...withKey(efektif, ['IBU']),
-        ...(side === 'NENEK_DARI_AYAH' ? ab : []),                          // [R04-10]
-        ...jadd.filter(j => ahliWaris.lintasan.includes(j.idOrang)),          // [R04-6] hanya nenek yang lewat kakek itu
-        // [R04-9] [SYF]: nenek dekat sepihak menghijab yang jauh; nenek dekat pihak ibu juga menghijab
-        // nenek jauh pihak ayah, tidak sebaliknya.
-        ...withKey(efektif, ['NENEK_DARI_IBU', 'NENEK_DARI_AYAH']).filter(k =>
-          k.kekerabatan.generasiLeluhur < generasi && (k.kunci === side || k.kunci === 'NENEK_DARI_IBU')),
-      ];
-      return rule(oleh, 'R04-9');
-    }
-
-    case 'SAUDARA_KANDUNG': case 'SAUDARI_KANDUNG':
-      return rule([...faruMudzakkar, ...ab], 'R06-4');
-
-    case 'SAUDARA_SEBAPAK': case 'SAUDARI_SEBAPAK': {
-      const dasar = [...faruMudzakkar, ...ab];
-      // [R08-4] bersama kakek, saudara sebapak tidak digugurkan kandung di sini; mu'addah (bab 08) yang mengatur.
-      if (jadd.length > 0) return rule(dasar, 'R06-3');
-      const byKandung = [...withKey(efektif, ['SAUDARA_KANDUNG']), ...maalGhairSisters(efektif, 'SAUDARI_KANDUNG')];
-      const kandungSisters = withKey(efektif, ['SAUDARI_KANDUNG']);
-      const hasBrotherAb = withKey(efektif, ['SAUDARA_SEBAPAK']).length > 0;
-      // [R04-14] saudari sebapak gugur oleh 2+ saudari kandung, kecuali diashabahkan saudara lk sebapak.
-      const byTwoSisters = ahliWaris.kunci === 'SAUDARI_SEBAPAK' && kandungSisters.length >= 2 && !hasBrotherAb ? kandungSisters : [];
-      return rule(unique([...dasar, ...byKandung, ...byTwoSisters]), 'R06-3');
-    }
-
-    case 'SAUDARA_SEIBU': case 'SAUDARI_SEIBU':
-      return rule([...withKey(efektif, FARU_WARITS), ...ab, ...jadd], 'R06-5');
-
-    default: {
-      if (!HAWASYI_ASHABAH.includes(ahliWaris.kunci)) return undefined;   // ayah, ibu, anak, pasangan: tidak pernah hirman [R06-2]
-      const rank = ashabahRank(ahliWaris);
-      const stronger = [
-        ...withKey(efektif, ['ANAK_LK', 'CUCU_LK', 'AYAH', 'KAKEK', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', ...HAWASYI_ASHABAH]),
-        ...maalGhairSisters(efektif, 'SAUDARI_KANDUNG'),
-        ...maalGhairSisters(efektif, 'SAUDARI_SEBAPAK'),
-      ].filter(h => compareTuple(ashabahRank(h), rank) < 0);
-      return rule(stronger, 'R05-3');
-    }
-  }
-}
-
-function unique(daftarAhliWaris: AhliWaris[]): AhliWaris[] {
-  return daftarAhliWaris.filter((h, i) => daftarAhliWaris.findIndex(o => o.idOrang === h.idOrang) === i);
-}
+const tanpaDuplikat = (daftar: AhliWaris[]): AhliWaris[] =>
+  daftar.filter((ahliWaris, i) => daftar.findIndex(lain => lain.idOrang === ahliWaris.idOrang) === i);

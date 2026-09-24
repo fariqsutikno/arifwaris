@@ -221,16 +221,16 @@ type Nisab = 'tamatsul' | 'tadakhul' | 'tawafuq' | 'tabayun';
 type LangkahJejak = { tahap: Tahap; refs: RefCode[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
   | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
-  | { jenis: 'HAJB_NUQSHAN'; terdampak: IdOrang; from: Fraction; to: Fraction; penyebab: IdOrang[] }
+  | { jenis: 'HAJB_NUQSHAN'; terdampak: IdOrang; dari: Fraction; menjadi: Fraction; penyebab: IdOrang[] }
   | { jenis: 'FARDH'; kelompok: IdKelompok; fardh: Fraction; alasan: AlasanFardh }
-  | { jenis: 'ASHABAH'; kelompok: IdKelompok; type: 'binNafsi' | 'bilGhair' | 'maalGhair'; pilihanJadd?: ... }
+  | { jenis: 'ASHABAH'; kelompok: IdKelompok; jenisAshabah: 'binNafsi' | 'bilGhair' | 'maalGhair'; pilihanJadd?: ... }
   | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
   | { jenis: 'TIRKAH'; kotor; tajhiz; hutang; wasiatDiminta; wasiatBatas; wasiatDipakai; wasiatButuhIjazah; bersih }
   // ashl & juzSahm: nisab arba' penuh (10.2). inkisar & raddVsSisa: hanya FPB → 'habis' | 'tawafuq' | 'tabayun' (9.4, 10.3).
   | { jenis: 'PERBANDINGAN_NISAB'; tujuan: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; kelompok?: IdKelompok;
       a: bigint; b: bigint; hubungan: Nisab | 'habis'; fpb: bigint; hasil: bigint }
   | { jenis: 'KELAS_MASALAH'; kelas: 'adilah' | 'ailah' | 'raddA' | 'raddB'; jumlahSaham: bigint; ashl: bigint }
-  | { jenis: 'AUL'; from: bigint; to: bigint }
+  | { jenis: 'AUL'; dari: bigint; menjadi: bigint }
   | { jenis: 'RADD'; zawjiyyah?: { kelompok; ashl; sahamPasangan; sisa }; raddiyyah: { saham; ashl }; hasil: bigint }
   | { jenis: 'TASHIH'; dasar: bigint; juzSahm: bigint; hasil: bigint }
   | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; of: bigint; besaran: Money }
@@ -248,7 +248,7 @@ interface TabelMasalah {
 }
 
 interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan Rujukan" KB bab 01–14, 16
-  code: RefCode; bab: number;
+  kode: RefCode; bab: number;
   claim: string;
   jenis: string;           // kolom Jenis apa adanya ("Q + RDH", "H (dha'if)", "—")
   types: Array<'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH'>;   // jenis gabungan dipecah
@@ -265,7 +265,7 @@ interface RefEntry {       // packages/content, dibangun dari tabel "Dasar dan R
 
 **Trace = data, bukan kalimat.** Alasan setiap keputusan disimpan terstruktur (`AlasanFardh`: kode + id
 orang penyebab + angka pembanding, lihat `packages/engine/src/types.ts`), mis.
-`{ code: 'ADA_FARU_WARITS', by: ['D1'] }` atau `{ code: 'JADD_WAL_IKHWAH', options: [...], chosen }`.
+`{ kode: 'ADA_FARU_WARITS', by: ['D1'] }` atau `{ kode: 'JADD_WAL_IKHWAH', options: [...], chosen }`.
 Setiap perbandingan angka (ashl, radd, inkisar, juz' as-sahm) wajib memancarkan `PERBANDINGAN_NISAB` —
 termasuk yang hasilnya habis/tamatsul — supaya `explain` bisa menulis "diketahui 2 dan 4 → tadakhul →
 ambil yang besar". Teks bebas di trace dilarang.

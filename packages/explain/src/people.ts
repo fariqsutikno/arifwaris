@@ -76,12 +76,12 @@ export function makePeople(hasil: Ok, graf: GrafKeluarga): People {
       ? `${COLLECTIVE[ids.length] ?? ids.length} ${label}`
       : joinAnd(ids.map(id => [{ jenis: 'text' as const, text: single(id) }])).map(p => p.text).join('');
     ids.forEach(id => mentioned.add(id));
-    return { jenis: 'person', idOrangOrang: ids, text };
+    return { jenis: 'orangIni', daftarIdOrang: ids, text };
   };
 
   const pewaris = (): Segment => {
-    const person = graf.orang[graf.idPewaris]!;
-    return { jenis: 'person', idOrangOrang: [person.id], text: person.nama ?? (person.jenisKelamin === 'L' ? 'almarhum' : 'almarhumah') };
+    const orangIni = graf.orang[graf.idPewaris]!;
+    return { jenis: 'orangIni', daftarIdOrang: [orangIni.id], text: orangIni.nama ?? (orangIni.jenisKelamin === 'L' ? 'almarhum' : 'almarhumah') };
   };
 
   return { mention, pewaris, roleOf };

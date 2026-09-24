@@ -16,9 +16,9 @@ describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
 
   test('hanya tabel di bagian "Dasar dan Rujukan"; jenis gabungan dipecah; teks «…» diambil', () => {
     expect(parseRefs(md, 99)).toEqual([
-      { code: 'R99-1', bab: 99, claim: 'Bagian suami', jenis: 'Q + RDH', types: ['Q', 'RDH'], source: "An-Nisa' 12 · RDH Bab 1",
+      { kode: 'R99-1', bab: 99, claim: 'Bagian suami', jenis: 'Q + RDH', types: ['Q', 'RDH'], source: "An-Nisa' 12 · RDH Bab 1",
         kutipan: '«فللزوج نصف المال» dan «وربعه»', arab: ['فللزوج نصف المال', 'وربعه'] },
-      { code: 'R99-2', bab: 99, claim: 'Hikmah', jenis: '—', types: [], source: 'Penjelasan fuqaha', kutipan: 'Keterangan saja', arab: [] },
+      { kode: 'R99-2', bab: 99, claim: 'Hikmah', jenis: '—', types: [], source: 'Penjelasan fuqaha', kutipan: 'Keterangan saja', arab: [] },
     ]);
   });
 
@@ -31,7 +31,7 @@ describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
 
 describe('rujukan KB (bab 01–14, 16)', () => {
   test('kode unik dan lengkap', () => {
-    const codes = REFS.map(r => r.code);
+    const codes = REFS.map(r => r.kode);
     expect(new Set(codes).size).toBe(codes.length);
     expect(codes.length).toBe(129);
   });
@@ -47,12 +47,12 @@ describe('rujukan KB (bab 01–14, 16)', () => {
 describe('dalilFor — lapis 3 per baris penjelasan', () => {
   test('dalil dengan label jenis dan teks Arab dari KB', () => {
     const [view] = dalilFor(['R04-2']).entries;
-    expect(view).toMatchObject({ code: 'R04-2', labels: ["Al-Qur'an", 'Raudhah ath-Thalibin (an-Nawawi)'], warnings: [] });
+    expect(view).toMatchObject({ kode: 'R04-2', labels: ["Al-Qur'an", 'Raudhah ath-Thalibin (an-Nawawi)'], warnings: [] });
     expect(view!.arab.length).toBeGreaterThan(0);
   });
 
   test('peringatan: kaidah hisab, perlu verifikasi, dha\'if, bukan dalil', () => {
-    const warn = (code: string) => dalilFor([code]).entries[0]!.warnings;
+    const warn = (kode: string) => dalilFor([kode]).entries[0]!.warnings;
     expect(warn('R09-10')).toEqual(["Kaidah hisab (cara menghitung), bukan dalil syar'i."]);
     expect(warn('R01-7')).toEqual(['Dasar ini belum dicek ke teks aslinya (bab 17.4).']);
     expect(warn('R01-8')).toEqual(["Sanad hadits ini dha'if (lemah)."]);

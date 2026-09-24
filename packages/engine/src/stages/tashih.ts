@@ -1,13 +1,13 @@
 import { fpb, nisab } from '@waris/math';
 import type { IdKelompok, HubunganInkisar, IdOrang, LangkahJejak } from '../types.js';
-import { sumWeights, type KelompokBagian } from './model.js';
+import { jumlahBobot, type KelompokBagian } from './model.js';
 
 const MAX_KELOMPOK_INKISAR = 4;   // [R10-3]
 
 export interface Tashih {
   tashih: bigint;
   juzSahm: bigint;
-  groupSaham: Record<IdKelompok, bigint>;
+  sahamKelompokIni: Record<IdKelompok, bigint>;
   perOrang: Record<IdOrang, bigint>;
   jejak: LangkahJejak[];
 }
@@ -16,13 +16,13 @@ export interface Tashih {
  * Tahap 5 (bab 10.3): saham kelompok vs ru'us hanya lewat FPB (habis/tawafuq/tabayun); simpanan
  * digabung dengan nisab arba' → juz' as-sahm; tashih = dasar × juz'.
  */
-export function terapkanTashih(kelompokKelompok: KelompokBagian[], saham: Record<IdKelompok, bigint>, dasar: bigint): Tashih {
+export function terapkanTashih(daftarKelompok: KelompokBagian[], saham: Record<IdKelompok, bigint>, dasar: bigint): Tashih {
   const jejak: LangkahJejak[] = [];
   const simpanan: bigint[] = [];
 
-  for (const kelompok of kelompokKelompok) {
+  for (const kelompok of daftarKelompok) {
     const sahamKelompok = saham[kelompok.id]!;
-    const ruus = sumWeights(kelompok);
+    const ruus = jumlahBobot(kelompok);
     if (sahamKelompok === 0n || ruus <= 1n) continue;
     const faktor = fpb(sahamKelompok, ruus);
     const hubungan: HubunganInkisar = sahamKelompok % ruus === 0n ? 'habis' : faktor > 1n ? 'tawafuq' : 'tabayun';
@@ -43,12 +43,12 @@ export function terapkanTashih(kelompokKelompok: KelompokBagian[], saham: Record
   const tashih = dasar * juzSahm;
   if (juzSahm > 1n) jejak.push({ tahap: 'tashih', refs: ['R10-2'], jenis: 'TASHIH', dasar, juzSahm, hasil: tashih });
 
-  const groupSaham: Record<IdKelompok, bigint> = {};
+  const sahamKelompokIni: Record<IdKelompok, bigint> = {};
   const perOrang: Record<IdOrang, bigint> = {};
-  for (const kelompok of kelompokKelompok) {
+  for (const kelompok of daftarKelompok) {
     const total = saham[kelompok.id]! * juzSahm;
-    const ruus = sumWeights(kelompok);
-    groupSaham[kelompok.id] = total;
+    const ruus = jumlahBobot(kelompok);
+    sahamKelompokIni[kelompok.id] = total;
     for (const [idOrang, bobot] of Object.entries(kelompok.bobot)) {
       if ((total * bobot) % ruus !== 0n) throw new Error(`invariant: saham ${idOrang} tidak bulat setelah tashih`);
       perOrang[idOrang] = total * bobot / ruus;
@@ -56,5 +56,5 @@ export function terapkanTashih(kelompokKelompok: KelompokBagian[], saham: Record
   }
   const jumlah = Object.values(perOrang).reduce((a, b) => a + b, 0n);
   if (jumlah !== tashih) throw new Error(`invariant (bab 10.5): Σ saham individu ${jumlah} ≠ tashih ${tashih}`);
-  return { tashih, juzSahm, groupSaham, perOrang, jejak };
+  return { tashih, juzSahm, sahamKelompokIni, perOrang, jejak };
 }

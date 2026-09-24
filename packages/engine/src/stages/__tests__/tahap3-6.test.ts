@@ -5,7 +5,7 @@ import { hitung } from '../../pipeline.js';
 import type { InputEngine, HasilEngine, LangkahJejak } from '../../types.js';
 import { hitungAshl } from '../ashl.js';
 import { klasifikasikanMasalah } from '../klasifikasi.js';
-import { makeGroup } from '../model.js';
+import { buatKelompok } from '../model.js';
 import { terapkanTashih } from '../tashih.js';
 import { hitungTirkah } from '../tirkah.js';
 import { ANAK, KANDUNG, SEBAPAK, keluarga } from './helpers.js';
@@ -18,11 +18,11 @@ function ok(input: InputEngine): Ok {
   return hasil;
 }
 
-const langkahLangkah = <K extends LangkahJejak['jenis']>(input: InputEngine, jenis: K) =>
+const daftarLangkah = <K extends LangkahJejak['jenis']>(input: InputEngine, jenis: K) =>
   ok(input).jejak.filter((s): s is Extract<LangkahJejak, { jenis: K }> => s.jenis === jenis);
 
 const compares = (input: InputEngine, tujuan: string) =>
-  langkahLangkah(input, 'PERBANDINGAN_NISAB').filter(s => s.tujuan === tujuan)
+  daftarLangkah(input, 'PERBANDINGAN_NISAB').filter(s => s.tujuan === tujuan)
     .map(({ a, b, hubungan, fpb, hasil }) => ({ a, b, hubungan, fpb, hasil }));
 
 describe('tahap 0 — tirkah [R01-1] [R01-4]', () => {
@@ -52,31 +52,31 @@ describe('tahap 3 — ashlul mas\'alah [R09-1] [R10-1]', () => {
   });
 
   test('[R09-2] semua ashabah → ashl = jumlah ru\'us', () => {
-    expect(hitungAshl([makeGroup('ASHABAH', { S1: 2n, D1: 1n }, { jenis: 'ashabah', type: 'bilGhair' })]).ashl).toBe(3n);
+    expect(hitungAshl([buatKelompok('ASHABAH', { S1: 2n, D1: 1n }, { jenis: 'ashabah', jenisAshabah: 'bilGhair' })]).ashl).toBe(3n);
   });
 });
 
 describe('tahap 4 — klasifikasi, \'aul, radd [R09-3] [R09-7]', () => {
   test('\'aul 24 → 27', () => {
-    expect(langkahLangkah(bab16.case06.input, 'KELAS_MASALAH')).toMatchObject([{ kelas: 'ailah', jumlahSaham: 27n, ashl: 24n }]);
-    expect(langkahLangkah(bab16.case06.input, 'AUL')).toMatchObject([{ from: 24n, to: 27n }]);
+    expect(daftarLangkah(bab16.case06.input, 'KELAS_MASALAH')).toMatchObject([{ kelas: 'ailah', jumlahSaham: 27n, ashl: 24n }]);
+    expect(daftarLangkah(bab16.case06.input, 'AUL')).toMatchObject([{ dari: 24n, menjadi: 27n }]);
   });
 
   test('[R09-4] \'aul di luar 6→7..10, 12→13/15/17, 24→27 = pelanggaran invarian', () => {
     const fardh = (d: bigint, n = 1n) => ({ jenis: 'fardh' as const, fardh: pecahan(n, d) });
     const masalah = hitungAshl([
-      makeGroup('A', { a: 1n }, fardh(8n)), makeGroup('B', { b: 1n }, fardh(3n, 2n)), makeGroup('C', { c: 1n }, fardh(3n, 2n)),
+      buatKelompok('A', { a: 1n }, fardh(8n)), buatKelompok('B', { b: 1n }, fardh(3n, 2n)), buatKelompok('C', { c: 1n }, fardh(3n, 2n)),
     ]);
     expect(() => klasifikasikanMasalah(masalah, bab16.case01.input.konfigurasi, false)).toThrow(/R09-4/);
   });
 
   test('raddA: ashl diganti jumlah saham ahli radd', () => {
-    expect(langkahLangkah(bab16.case09.input, 'KELAS_MASALAH')).toMatchObject([{ kelas: 'raddA', jumlahSaham: 4n, ashl: 6n }]);
-    expect(langkahLangkah(bab16.case09.input, 'RADD')).toMatchObject([{ raddiyyah: { ashl: 4n }, hasil: 4n }]);
+    expect(daftarLangkah(bab16.case09.input, 'KELAS_MASALAH')).toMatchObject([{ kelas: 'raddA', jumlahSaham: 4n, ashl: 6n }]);
+    expect(daftarLangkah(bab16.case09.input, 'RADD')).toMatchObject([{ raddiyyah: { ashl: 4n }, hasil: 4n }]);
   });
 
   test('raddB: zawjiyyah vs raddiyyah — tabayun (kasus 10) dan habis (kasus 11)', () => {
-    expect(langkahLangkah(bab16.case10.input, 'RADD')).toMatchObject([{
+    expect(daftarLangkah(bab16.case10.input, 'RADD')).toMatchObject([{
       zawjiyyah: { ashl: 4n, sahamPasangan: 1n, sisa: 3n }, raddiyyah: { ashl: 4n }, hasil: 16n,
     }]);
     expect(compares(bab16.case10.input, 'raddVsSisa')).toEqual([{ a: 3n, b: 4n, hubungan: 'tabayun', fpb: 1n, hasil: 16n }]);
@@ -84,8 +84,8 @@ describe('tahap 4 — klasifikasi, \'aul, radd [R09-3] [R09-7]', () => {
   });
 
   test('radd tanpa ahli radd selain pasangan → TIDAK_DIDUKUNG [R09-9]', () => {
-    const istriSaja = keluarga({ W1: { jenisKelamin: 'P' } }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }]);
-    expect(hitung(istriSaja)).toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['R09-9', 'R02-1'] });
+    const hanyaIstri = keluarga({ W1: { jenisKelamin: 'P' } }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }]);
+    expect(hitung(hanyaIstri)).toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['R09-9', 'R02-1'] });
   });
 
   test('kebijakanSisa baitulMal belum didukung', () => {
@@ -101,24 +101,24 @@ describe('tahap 5 — tashih [R10-2] [R10-3]', () => {
       { a: 1n, b: 4n, hubungan: 'tabayun', fpb: 1n, hasil: 4n },
       { a: 3n, b: 3n, hubungan: 'habis', fpb: 3n, hasil: 1n },
     ]);
-    expect(langkahLangkah(bab16.case22.input, 'TASHIH')).toMatchObject([{ dasar: 4n, juzSahm: 4n, hasil: 16n }]);
+    expect(daftarLangkah(bab16.case22.input, 'TASHIH')).toMatchObject([{ dasar: 4n, juzSahm: 4n, hasil: 16n }]);
   });
 
   test('dua kelompok inkisar: simpanan dibandingkan dengan nisab arba\' → juz\' as-sahm', () => {
     expect(compares(bab16.case23.input, 'juzSahm')).toEqual([{ a: 2n, b: 3n, hubungan: 'tabayun', fpb: 1n, hasil: 6n }]);
-    expect(langkahLangkah(bab16.case23.input, 'TASHIH')).toMatchObject([{ dasar: 6n, juzSahm: 6n, hasil: 36n }]);
+    expect(daftarLangkah(bab16.case23.input, 'TASHIH')).toMatchObject([{ dasar: 6n, juzSahm: 6n, hasil: 36n }]);
   });
 
   test('akdariyyah: \'aul 9 lalu tashih 27', () => {
-    expect(langkahLangkah(bab16.case12.input, 'AUL')).toMatchObject([{ from: 6n, to: 9n }]);
-    expect(langkahLangkah(bab16.case12.input, 'TASHIH')).toMatchObject([{ dasar: 9n, juzSahm: 3n, hasil: 27n }]);
+    expect(daftarLangkah(bab16.case12.input, 'AUL')).toMatchObject([{ dari: 6n, menjadi: 9n }]);
+    expect(daftarLangkah(bab16.case12.input, 'TASHIH')).toMatchObject([{ dasar: 9n, juzSahm: 3n, hasil: 27n }]);
   });
 
   test('[R10-3] inkisar > 4 kelompok = pelanggaran invarian', () => {
-    const kelompokKelompok = ['A', 'B', 'C', 'D', 'E'].map(id =>
-      makeGroup(id, { [`${id}1`]: 1n, [`${id}2`]: 1n }, { jenis: 'fardh', fardh: pecahan(1n, 5n) }));
-    const saham = Object.fromEntries(kelompokKelompok.map(g => [g.id, 1n]));
-    expect(() => terapkanTashih(kelompokKelompok, saham, 5n)).toThrow(/R10-3/);
+    const daftarKelompok = ['A', 'B', 'C', 'D', 'E'].map(id =>
+      buatKelompok(id, { [`${id}1`]: 1n, [`${id}2`]: 1n }, { jenis: 'fardh', fardh: pecahan(1n, 5n) }));
+    const saham = Object.fromEntries(daftarKelompok.map(g => [g.id, 1n]));
+    expect(() => terapkanTashih(daftarKelompok, saham, 5n)).toThrow(/R10-3/);
   });
 });
 
@@ -141,7 +141,7 @@ describe('tabel mas\'alah', () => {
 });
 
 describe('end-to-end bab 08 [SYF]', () => {
-  const sahamOf = (input: InputEngine) => {
+  const sahamDari = (input: InputEngine) => {
     const hasil = ok(input);
     const out: Record<string, bigint> = {};
     for (const barisTabel of hasil.tabel.baris) for (const [id, { saham }] of Object.entries(barisTabel.perOrang)) out[id] = saham;
@@ -150,16 +150,16 @@ describe('end-to-end bab 08 [SYF]', () => {
   const kakek = { PGF: { jenisKelamin: 'L' } } as const;
 
   test('muqasamah: kakek + 1 saudara → 2 : kakek 1, saudara 1', () => {
-    expect(sahamOf(keluarga({ ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG } }))).toEqual({ PGF: 1n, AK1: 1n });
+    expect(sahamDari(keluarga({ ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG } }))).toEqual({ PGF: 1n, AK1: 1n });
   });
 
   test('[R08-4] mu\'addah: kakek, saudara kandung, saudara sebapak → 3 : 1, 2, 0', () => {
-    expect(sahamOf(keluarga({ ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG }, AB1: { jenisKelamin: 'L', ...SEBAPAK } })))
+    expect(sahamDari(keluarga({ ...kakek, AK1: { jenisKelamin: 'L', ...KANDUNG }, AB1: { jenisKelamin: 'L', ...SEBAPAK } })))
       .toEqual({ PGF: 1n, AK1: 2n, AB1: 0n });
   });
 
   test('[R08-4] kakek, saudari kandung, saudara sebapak → 10 : 4, 5, 1', () => {
-    expect(sahamOf(keluarga({ ...kakek, UK1: { jenisKelamin: 'P', ...KANDUNG }, AB1: { jenisKelamin: 'L', ...SEBAPAK } })))
+    expect(sahamDari(keluarga({ ...kakek, UK1: { jenisKelamin: 'P', ...KANDUNG }, AB1: { jenisKelamin: 'L', ...SEBAPAK } })))
       .toEqual({ PGF: 4n, UK1: 5n, AB1: 1n });
   });
 
@@ -168,7 +168,7 @@ describe('end-to-end bab 08 [SYF]', () => {
       ...kakek, M: { jenisKelamin: 'P' }, B1: { jenisKelamin: 'P', ...ANAK }, B2: { jenisKelamin: 'P', ...ANAK }, W1: { jenisKelamin: 'P' },
       AK1: { jenisKelamin: 'L', ...KANDUNG },
     }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }]);
-    expect(sahamOf(input)).toEqual({ W1: 3n, B1: 8n, B2: 8n, M: 4n, PGF: 4n, AK1: 0n });
-    expect(langkahLangkah(input, 'AUL')).toMatchObject([{ from: 24n, to: 27n }]);
+    expect(sahamDari(input)).toEqual({ W1: 3n, B1: 8n, B2: 8n, M: 4n, PGF: 4n, AK1: 0n });
+    expect(daftarLangkah(input, 'AUL')).toMatchObject([{ dari: 24n, menjadi: 27n }]);
   });
 });

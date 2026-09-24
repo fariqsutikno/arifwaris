@@ -21,7 +21,7 @@ const orList = (items: Segment[][]) => items.flatMap((item, i) =>
 // ─── Langkah: harta ───────────────────────────────────────────────────────────
 
 function babHarta(ctx: Ctx): Section | undefined {
-  const [t] = ctx.langkahLangkah('TIRKAH');
+  const [t] = ctx.daftarLangkah('TIRKAH');
   if (!t || t.kotor === 0n) return undefined;
   const lines: ExplainLine[] = [];
   const setelahHutang = t.bersih + t.wasiatDipakai;
@@ -49,7 +49,7 @@ function babAhliWaris(ctx: Ctx): Section {
   const daftarAhliWaris = Object.entries(ctx.hasil.statusOrang).filter(([, st]) => st.jenis === 'ahliWaris').map(([id]) => id);
   const lines = [line(s`Ahli waris (${term('warits', 'warits')}) ${ctx.people.pewaris()}: ${mentionAll(ctx, daftarAhliWaris)}.`)];
 
-  for (const step of ctx.langkahLangkah('MANI')) {
+  for (const step of ctx.daftarLangkah('MANI')) {
     const who = ctx.people.mention([step.idOrang]);
     lines.push(line(step.mani === 'qatl'
       ? s`${who} tidak mendapat warisan karena membunuh ${ctx.people.pewaris()}; pembunuh terhalang dari warisan (${term('mani', "mani'")}).`
@@ -57,7 +57,7 @@ function babAhliWaris(ctx: Ctx): Section {
   }
 
   const grouped = new Map<string, { mahjub: IdOrang[]; step: Step<'HAJB_HIRMAN'> }>();
-  for (const step of ctx.langkahLangkah('HAJB_HIRMAN')) {
+  for (const step of ctx.daftarLangkah('HAJB_HIRMAN')) {
     const kunci = `${ctx.people.roleOf(step.mahjub)?.kunci}|${step.hajib.join(',')}`;
     const entry = grouped.get(kunci) ?? { mahjub: [], step };
     entry.mahjub.push(step.mahjub);
@@ -81,7 +81,7 @@ const JADD_OPTION: Record<PilihanJadd, (ctx: Ctx) => Segment[]> = {
 
 function babBagian(ctx: Ctx): Section {
   const lines: ExplainLine[] = [];
-  const fardhGroups = new Set(ctx.langkahLangkah('FARDH').map(st => st.kelompok));
+  const fardhGroups = new Set(ctx.daftarLangkah('FARDH').map(st => st.kelompok));
   let nuqshanDijelaskan = false;
   const nuqshanNote = (): Segment[] => {
     if (nuqshanDijelaskan) return [];
@@ -92,8 +92,8 @@ function babBagian(ctx: Ctx): Section {
   for (const step of ctx.hasil.jejak) {
     if (step.jenis === 'FARDH') {
       const anggota = ctx.membersOf(step.kelompok);
-      const nuqshan = ctx.langkahLangkah('HAJB_NUQSHAN').find(n => anggota.includes(n.terdampak));
-      lines.push(line(fardhStory(ctx, step, nuqshan ? s`, bukan ${nuqshan.from},` : [], nuqshan ? nuqshanNote : () => []), step.refs));
+      const nuqshan = ctx.daftarLangkah('HAJB_NUQSHAN').find(n => anggota.includes(n.terdampak));
+      lines.push(line(fardhStory(ctx, step, nuqshan ? s`, bukan ${nuqshan.dari},` : [], nuqshan ? nuqshanNote : () => []), step.refs));
     } else if (step.jenis === 'KASUS_KHUSUS') {
       lines.push(line(specialStory(step.nama), step.refs));
     } else if (step.jenis === 'ASHABAH' && !fardhGroups.has(step.kelompok)) {
@@ -115,7 +115,7 @@ function fardhStory(ctx: Ctx, step: Step<'FARDH'>, bukan: Segment[], note: () =>
   const faruWarits = term('faru-warits', "far'u warits");
   // Furudh bersama (istri-istri, nenek-nenek) dibagi rata [R04-3] [R04-8].
   const mendapat = ctx.membersOf(step.kelompok).length > 1 ? s`berbagi ${f}${bukan} sama rata` : s`mendapat ${f}${bukan}`;
-  switch (alasan.code) {
+  switch (alasan.kode) {
     case 'ADA_FARU_WARITS':
       return [...s`${subject} ${mendapat} karena ${almarhum} meninggalkan keturunan yang ikut mewarisi (${faruWarits}): `,
         ...s`${mentionAll(ctx, alasan.oleh)}.`, ...note()];
@@ -141,7 +141,7 @@ function fardhStory(ctx: Ctx, step: Step<'FARDH'>, bukan: Segment[], note: () =>
         ? s`${subject} mendapat ${f} karena ia sendirian dan tidak ada laki-laki sederajat yang membuatnya ikut mengambil sisa (${term('muashshib', "mu'ashshib")}).`
         : s`${subject} berbagi ${f} sama rata karena jumlahnya lebih dari satu dan tidak ada laki-laki sederajat yang membuat mereka ikut mengambil sisa (${term('muashshib', "mu'ashshib")}).`;
     case 'TAKMILAH':
-      return [...s`${subject} mendapat ${f}${bukan} sebagai pelengkap agar bagiannya bersama ${mentionAll(ctx, alasan.with)} genap 2/3 `,
+      return [...s`${subject} mendapat ${f}${bukan} sebagai pelengkap agar bagiannya bersama ${mentionAll(ctx, alasan.bersama)} genap 2/3 `,
         ...s`(${term('takmilah-tsulutsain', 'takmilah ats-tsulutsain')}).`, ...note()];
     case 'KALALAH':
       return s`${subject} ${alasan.banyaknya > 1 ? 'berbagi' : 'mendapat'} ${f}${alasan.banyaknya > 1 ? ' sama rata' : ''} karena ${almarhum} tidak meninggalkan anak/cucu maupun ayah/kakek (${term('kalalah', 'kalalah')}).`;
@@ -165,7 +165,7 @@ function fardhStory(ctx: Ctx, step: Step<'FARDH'>, bukan: Segment[], note: () =>
   }
 }
 
-function jaddChoiceStory(ctx: Ctx, kakek: Segment[], choice: Extract<AlasanFardh, { code: 'JADD_WAL_IKHWAH' }>): Segment[] {
+function jaddChoiceStory(ctx: Ctx, kakek: Segment[], choice: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }>): Segment[] {
   const opsi = orList(choice.opsi.map(o => s`${JADD_OPTION[o.nama](ctx)} = ${o.nilai}`));
   const terpilih = choice.opsi.find(o => o.nama === choice.terpilih)!;
   return s`Bersama saudara, ${kakek} mendapat pilihan yang paling menguntungkan baginya: ${opsi}. Yang terbesar ${JADD_OPTION[choice.terpilih](ctx)}, yaitu ${terpilih.nilai}.`;
@@ -183,7 +183,7 @@ function specialStory(nama: Step<'KASUS_KHUSUS'>['nama']): Segment[] {
 
 function ashabahStory(ctx: Ctx, step: Step<'ASHABAH'>): Segment[] {
   const subject = kelompok(ctx, step.kelompok);
-  switch (step.type) {
+  switch (step.jenisAshabah) {
     case 'binNafsi':
       return s`${subject} mengambil seluruh sisa harta setelah bagian-bagian di atas (${term('ashabah', 'ashabah')}).`;
     case 'bilGhair':
@@ -230,7 +230,7 @@ function babPenyebut(ctx: Ctx): Section {
   }
 
   const pecahan = baris.filter(r => r.fardh).map(r => s`${kelompok(ctx, r.kelompok)} ${r.fardh!}`);
-  const compares = ctx.langkahLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'ashl');
+  const compares = ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'ashl');
   if (compares.length === 0) {
     lines.push(line(s`Bagian yang sudah pasti: ${joinAnd(pecahan)}. ${pecahan.length > 1 ? 'Semua penyebutnya sama, yaitu' : 'Penyebutnya'} ${ashl}, `
       .concat(s`jadi angka itu langsung dipakai sebagai penyebut bersama (${ashlTerm}).`), ['R09-1']));
@@ -256,7 +256,7 @@ function babPenyebut(ctx: Ctx): Section {
 // ─── Langkah: 'adilah / 'aul / radd ───────────────────────────────────────────
 
 function babPenyesuaian(ctx: Ctx): Section {
-  const [kelas] = ctx.langkahLangkah('KELAS_MASALAH');
+  const [kelas] = ctx.daftarLangkah('KELAS_MASALAH');
   if (!kelas) throw new Error('jejak tanpa KELAS_MASALAH');
   const baris = ctx.hasil.tabel.baris;
   const rincian = baris.length > 1 ? `${baris.map(r => r.sel['ashl']).join(' + ')} = ` : '';
@@ -271,7 +271,7 @@ function babPenyesuaian(ctx: Ctx): Section {
       return { title: 'Bagiannya melebihi harta', lines: [line(
         s`Jumlah semua bagian ${rincian}${jumlahSaham}, lebih besar dari ${ashl}. Supaya adil, penyebutnya dinaikkan menjadi ${jumlahSaham} (${aul}): `
           .concat(s`setiap orang tetap mendapat jumlah bagian yang sama, tetapi karena harta sekarang dibagi ${jumlahSaham}, semua bagian berkurang secara sebanding.`),
-        ctx.langkahLangkah('AUL')[0]?.refs ?? kelas.refs)] };
+        ctx.daftarLangkah('AUL')[0]?.refs ?? kelas.refs)] };
     }
     case 'raddA': case 'raddB':
       return { title: 'Masih ada sisa, untuk siapa?', lines: raddStory(ctx, kelas, rincian) };
@@ -279,7 +279,7 @@ function babPenyesuaian(ctx: Ctx): Section {
 }
 
 function raddStory(ctx: Ctx, kelas: Step<'KELAS_MASALAH'>, rincian: string): ExplainLine[] {
-  const [radd] = ctx.langkahLangkah('RADD');
+  const [radd] = ctx.daftarLangkah('RADD');
   if (!radd) throw new Error('jejak radd tanpa langkah RADD');
   const penerimaGroups = Object.keys(radd.raddiyyah.saham);
   const penerima = mentionAll(ctx, penerimaGroups.flatMap(g => ctx.membersOf(g)));
@@ -305,7 +305,7 @@ function raddStory(ctx: Ctx, kelas: Step<'KELAS_MASALAH'>, rincian: string): Exp
     ? s`Kedua, ${penerima} berbagi sisa itu dengan perbandingan ${perbandingan}, totalnya ${radd.raddiyyah.ashl} bagian.`
     : s`Kedua, sisa ${z.sisa} bagian itu seluruhnya untuk ${penerima}.`, radd.refs));
 
-  const [cmp] = ctx.langkahLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'raddVsSisa');
+  const [cmp] = ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'raddVsSisa');
   if (cmp && penerimaGroups.length > 1) {
     const { a: sisa, b: ashlRadd, fpb, hasil } = cmp;
     lines.push(line(cmp.hubungan === 'habis'
@@ -327,7 +327,7 @@ function raddStory(ctx: Ctx, kelas: Step<'KELAS_MASALAH'>, rincian: string): Exp
 // ─── Langkah: tashih ──────────────────────────────────────────────────────────
 
 function babPembulatan(ctx: Ctx): Section | undefined {
-  const inkisar = ctx.langkahLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'inkisar');
+  const inkisar = ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'inkisar');
   if (inkisar.length === 0) return undefined;
   const lines: ExplainLine[] = [];
   if (inkisar.some(st => st.hubungan !== 'habis')) {
@@ -349,10 +349,10 @@ function babPembulatan(ctx: Ctx): Section | undefined {
         : s`${who} mendapat ${saham} bagian untuk ${untuk}. ${saham} tidak bisa dibagi ${ruus} dan keduanya tidak punya faktor bersama `
           .concat(s`(${term('tabayun', 'tabayun')}), jadi angka ${ruus} disimpan.`), step.refs));
   }
-  for (const step of ctx.langkahLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'juzSahm')) {
+  for (const step of ctx.daftarLangkah('PERBANDINGAN_NISAB').filter(st => st.tujuan === 'juzSahm')) {
     lines.push(line(arbaStory(step, s`Angka yang disimpan, ${step.a} dan ${step.b}, digabung`), step.refs));
   }
-  const [tashih] = ctx.langkahLangkah('TASHIH');
+  const [tashih] = ctx.daftarLangkah('TASHIH');
   lines.push(tashih
     ? line(s`Semua bagian dikalikan ${tashih.juzSahm} (${term('juz-as-sahm', "juz' as-sahm")}): ${tashih.dasar} × ${tashih.juzSahm} = ${tashih.hasil} bagian.`, tashih.refs)
     : line(s`Semua kelompok bisa dibagi rata, jadi tidak perlu pembulatan.`, ['R10-2']));

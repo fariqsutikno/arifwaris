@@ -25,41 +25,41 @@ export function validasiInput(input: InputEngine, daftarPeran: Record<IdOrang, P
 
   for (const peran of Object.values(daftarPeran)) {
     if (peran.kunci === 'BUKAN_AHLI_WARIS' || peran.kunci === 'DZAWIL_ARHAM') continue;
-    const person = graf.orang[peran.idOrang]!;
-    if (person.penghubung) continue;
-    if (person.statusHidup === 'tidakDiketahui') {
-      pertanyaan.push({ idOrang: person.id, isian: 'statusHidup', alasan: 'Apakah masih hidup saat pewaris wafat? Jika hilang → mafqud (bab 13.2).' });
-    } else if (person.statusHidup === 'hidup' && person.agama === 'tidakDiketahui') {
-      pertanyaan.push({ idOrang: person.id, isian: 'agama', alasan: 'Agama belum diisi; beda agama menghalangi waris (bab 2.4).' });
+    const orangIni = graf.orang[peran.idOrang]!;
+    if (orangIni.penghubung) continue;
+    if (orangIni.statusHidup === 'tidakDiketahui') {
+      pertanyaan.push({ idOrang: orangIni.id, isian: 'statusHidup', alasan: 'Apakah masih hidup saat pewaris wafat? Jika hilang → mafqud (bab 13.2).' });
+    } else if (orangIni.statusHidup === 'hidup' && orangIni.agama === 'tidakDiketahui') {
+      pertanyaan.push({ idOrang: orangIni.id, isian: 'agama', alasan: 'Agama belum diisi; beda agama menghalangi waris (bab 2.4).' });
     }
   }
 
-  pertanyaan.push(...sexConsistency(input));
+  pertanyaan.push(...konsistensiJenisKelamin(input));
 
   // Pasangan yang sudah wafat tidak dihitung: pernikahan berakhir karena kematian (mis. janda yang menikah lagi, bab 12).
-  const spouses = Object.values(daftarPeran)
+  const daftarPasangan = Object.values(daftarPeran)
     .filter(r => (r.kunci === 'SUAMI' || r.kunci === 'ISTRI') && graf.orang[r.idOrang]!.statusHidup !== 'wafat');
   const limit = pewaris.jenisKelamin === 'L' ? MAX_ZAWJAH : MAX_ZAWJ;
-  if (spouses.length > limit) {
-    pertanyaan.push({ isian: 'pernikahan', alasan: `Jumlah pasangan yang sah (${spouses.length}) melebihi batas ${limit}; periksa status pernikahan.` });
+  if (daftarPasangan.length > limit) {
+    pertanyaan.push({ isian: 'pernikahan', alasan: `Jumlah pasangan yang sah (${daftarPasangan.length}) melebihi batas ${limit}; periksa status pernikahan.` });
   }
   return pertanyaan;
 }
 
 /** Jenis kelamin harus cocok dengan perannya di graf (ayah/suami laki-laki, ibu/istri perempuan). */
-function sexConsistency({ graf }: InputEngine): Pertanyaan[] {
+function konsistensiJenisKelamin({ graf }: InputEngine): Pertanyaan[] {
   const expected = new Map<IdOrang, 'L' | 'P'>();
-  for (const person of Object.values(graf.orang)) {
-    if (person.idAyah) expected.set(person.idAyah, 'L');
-    if (person.idIbu) expected.set(person.idIbu, 'P');
+  for (const orangIni of Object.values(graf.orang)) {
+    if (orangIni.idAyah) expected.set(orangIni.idAyah, 'L');
+    if (orangIni.idIbu) expected.set(orangIni.idIbu, 'P');
   }
-  for (const marriage of graf.pernikahan) {
-    expected.set(marriage.idSuami, 'L');
-    expected.set(marriage.idIstri, 'P');
+  for (const nikah of graf.pernikahan) {
+    expected.set(nikah.idSuami, 'L');
+    expected.set(nikah.idIstri, 'P');
   }
   return [...expected].flatMap(([idOrang, jenisKelamin]) => {
-    const person = graf.orang[idOrang];
-    return person && person.jenisKelamin !== jenisKelamin
+    const orangIni = graf.orang[idOrang];
+    return orangIni && orangIni.jenisKelamin !== jenisKelamin
       ? [{ idOrang, isian: 'jenisKelamin' as const, alasan: `Tercatat sebagai ${jenisKelamin === 'L' ? 'ayah/suami' : 'ibu/istri'} tetapi jenis kelaminnya berbeda.` }]
       : [];
   });

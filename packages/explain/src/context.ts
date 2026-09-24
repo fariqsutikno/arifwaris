@@ -8,7 +8,7 @@ export type Step<K extends LangkahJejak['jenis']> = Extract<LangkahJejak, { jeni
 export interface Ctx {
   hasil: Ok;
   people: People;
-  langkahLangkah<K extends LangkahJejak['jenis']>(jenis: K): Array<Step<K>>;
+  daftarLangkah<K extends LangkahJejak['jenis']>(jenis: K): Array<Step<K>>;
   membersOf(kelompok: string): IdOrang[];
   /** Penyebut akhir: tashih, lalu radd/'aul, lalu ashl. */
   finalDenominator: bigint;
@@ -20,7 +20,7 @@ export function makeCtx(hasil: Ok, graf: GrafKeluarga): Ctx {
   return {
     hasil,
     people: makePeople(hasil, graf),
-    langkahLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((s): s is Step<K> => s.jenis === jenis),
+    daftarLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((s): s is Step<K> => s.jenis === jenis),
     membersOf: kelompok => hasil.tabel.baris.find(r => r.kelompok === kelompok)?.anggota ?? [],
     finalDenominator: totalKolom.tashih ?? totalKolom.radd ?? totalKolom.aul ?? totalKolom.ashl!,
     showNominal: hasil.jejak.some(s => s.jenis === 'TIRKAH' && s.kotor > 0n),

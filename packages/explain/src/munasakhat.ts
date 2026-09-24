@@ -22,13 +22,13 @@ export function jelaskanMunasakhat(hasil: Ok, graf: GrafKeluarga, opsi: { mode?:
   const combines = hasil.jejak.filter((st): st is Combine => st.jenis === 'MUNASAKHAT');
 
   const parts: MunasakhatPart[] = [pembukaan(hasil, mention)];
-  for (const [index, step] of hasil.langkahLangkah.entries()) {
+  for (const [index, step] of hasil.daftarLangkah.entries()) {
     // Mayit berikutnya disebut dengan perannya ("anak perempuan"), bukan "almarhumah", supaya jelas siapa yang wafat.
     const named = index === 0 ? graf
       : { ...graf, orang: { ...graf.orang, [step.mayit]: { ...graf.orang[step.mayit]!, nama: mention(step.mayit).text } } };
     const sections = jelaskan(step.hasil, { ...named, idPewaris: step.mayit }, opsi).sections;
-    const combine = combines.find(st => st.mayit === step.mayit);
-    if (combine) sections.push(penggabungan(combine, mention));
+    const gabungkan = combines.find(st => st.mayit === step.mayit);
+    if (gabungkan) sections.push(penggabungan(gabungkan, mention));
     parts.push({
       title: index === 0 ? `Pembagian harta ${mention(step.mayit).text}` : `Bagian ${mention(step.mayit).text} diteruskan`,
       sections,
@@ -45,18 +45,18 @@ export function jelaskanMunasakhat(hasil: Ok, graf: GrafKeluarga, opsi: { mode?:
  * Sebutan yang sama untuk dua orang diberi urutan ("anak perempuan pertama").
  */
 function makeMention(hasil: Ok, graf: GrafKeluarga): (id: IdOrang) => Segment {
-  const idPewaris = hasil.langkahLangkah[0]!.mayit;
+  const idPewaris = hasil.daftarLangkah[0]!.mayit;
   const heirOf = (id: IdOrang) => {
-    for (const step of hasil.langkahLangkah) {
+    for (const step of hasil.daftarLangkah) {
       const status = step.hasil.statusOrang[id];
       if (status?.jenis === 'ahliWaris' || status?.jenis === 'mahjub') return { mayit: step.mayit, peran: status.peran };
     }
     return undefined;
   };
   const baseLabel = (id: IdOrang): string => {
-    const person = graf.orang[id];
-    if (person?.nama) return person.nama;
-    if (id === idPewaris) return person?.jenisKelamin === 'P' ? 'almarhumah' : 'almarhum';
+    const orangIni = graf.orang[id];
+    if (orangIni?.nama) return orangIni.nama;
+    if (id === idPewaris) return orangIni?.jenisKelamin === 'P' ? 'almarhumah' : 'almarhum';
     const peran = heirOf(id);
     if (!peran) return 'kerabat';
     const label = roleLabel(peran.peran);
@@ -73,14 +73,14 @@ function makeMention(hasil: Ok, graf: GrafKeluarga): (id: IdOrang) => Segment {
     const label = baseLabel(id);
     const same = peers.get(label) ?? [id];
     const text = same.length > 1 && !graf.orang[id]?.nama ? `${label} ${ORDINAL[same.indexOf(id)] ?? `ke-${same.indexOf(id) + 1}`}` : label;
-    return { jenis: 'person', idOrangOrang: [id], text };
+    return { jenis: 'orangIni', daftarIdOrang: [id], text };
   };
 }
 
 // ─── Bagian ───────────────────────────────────────────────────────────────────
 
 function pembukaan(hasil: Ok, mention: (id: IdOrang) => Segment): MunasakhatPart {
-  const [first, ...later] = [hasil.langkahLangkah[0]!.mayit, ...deathsInOrder(hasil)];
+  const [first, ...later] = [hasil.daftarLangkah[0]!.mayit, ...deathsInOrder(hasil)];
   const pewaris = mention(first!);
   const lines: ExplainLine[] = [
     line(s`${pewaris} wafat. Sebelum hartanya dibagi, ${joinAnd(later.map(id => [mention(id)]))} ikut wafat, berurutan seperti itu. `

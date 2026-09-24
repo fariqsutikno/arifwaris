@@ -12,20 +12,20 @@ export function terapkanMawani(
   const jejak: LangkahJejak[] = [];
 
   for (const [idOrang, peran] of Object.entries(daftarPeran)) {
-    const person = graf.orang[idOrang]!;
+    const orangIni = graf.orang[idOrang]!;
     if (peran.kunci === 'BUKAN_AHLI_WARIS') {
-      statusOrang[idOrang] = isTalakBain(graf, idOrang)
+      statusOrang[idOrang] = terkenaTalakBain(graf, idOrang)
         ? { jenis: 'bukanAhliWaris', alasan: "talak ba'in memutus sebab nikah", rujukanAturan: 'R02-3' }
         : { jenis: 'bukanAhliWaris', alasan: 'tidak ada sebab waris' };
     } else if (peran.kunci === 'DZAWIL_ARHAM') {
       statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'dzawil arham', rujukanAturan: 'R14-4' };
-    } else if (person.statusHidup !== 'hidup') {
+    } else if (orangIni.statusHidup !== 'hidup') {
       // Syarat 2 (bab 2.2): warits harus hidup saat muwarrits wafat.
       statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'tidak hidup saat pewaris wafat' };
-    } else if (person.agama === 'nonIslam') {
+    } else if (orangIni.agama === 'nonIslam') {
       statusOrang[idOrang] = { jenis: 'mamnu', peran, mani: 'ikhtilafDin', rujukanAturan: 'R02-4' };
       jejak.push({ tahap: 'mawani', refs: ['R02-4'], jenis: 'MANI', idOrang, mani: 'ikhtilafDin' });
-    } else if (person.membunuhPewaris === true) {
+    } else if (orangIni.membunuhPewaris === true) {
       // [R02-9] [SYF] semua bentuk pembunuhan menghalangi.
       statusOrang[idOrang] = { jenis: 'mamnu', peran, mani: 'qatl', rujukanAturan: 'R02-9' };
       jejak.push({ tahap: 'mawani', refs: ['R02-9'], jenis: 'MANI', idOrang, mani: 'qatl' });
@@ -36,7 +36,7 @@ export function terapkanMawani(
   return { statusOrang, jejak };
 }
 
-function isTalakBain(graf: GrafKeluarga, idOrang: IdOrang): boolean {
+function terkenaTalakBain(graf: GrafKeluarga, idOrang: IdOrang): boolean {
   const { idPewaris } = graf;
   return graf.pernikahan.some(m => m.status === 'talakBain'
     && ((m.idSuami === idPewaris && m.idIstri === idOrang) || (m.idIstri === idPewaris && m.idSuami === idOrang)));

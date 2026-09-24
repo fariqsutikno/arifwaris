@@ -20,7 +20,7 @@ import bab17 from '../../../docs/kb/17_daftar_rujukan.md?raw';
 export type RefType = 'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH';
 
 export interface ParsedRef {
-  code: string;
+  kode: string;
   bab: number;
   claim: string;
   /** Isi kolom Jenis apa adanya, mis. "Q + RDH", "H (dha'if)", "—". */
@@ -48,10 +48,10 @@ export function parseRefs(markdown: string, bab: number): ParsedRef[] {
   for (const line of markdown.split('\n')) {
     if (line.startsWith('## ')) inSection = line.startsWith('## Dasar dan Rujukan');
     if (!inSection || !/^\| R\d{2}-\d+ /.test(line)) continue;
-    const [code = '', claim = '', jenis = '', source = '', kutipan = ''] = sel(line);
+    const [kode = '', claim = '', jenis = '', source = '', kutipan = ''] = sel(line);
     const types = jenis.split('+').map(t => t.trim().split(/[\s(]/)[0] as RefType).filter(t => REF_TYPES.includes(t));
     const arab = [...kutipan.matchAll(/«([^»]*)»/g)].map(m => m[1]!);
-    refs.push({ code, bab, claim, jenis, types, source, kutipan, arab });
+    refs.push({ kode, bab, claim, jenis, types, source, kutipan, arab });
   }
   return refs;
 }
@@ -75,12 +75,12 @@ const needsVerification = new Set(parseNeedsVerification(bab17));
 
 export const REFS: RefEntry[] = CHAPTERS.flatMap(([bab, md]) => parseRefs(md, bab)).map(ref => ({
   ...ref,
-  status: needsVerification.has(ref.code) ? 'needsVerification' : 'verified',
+  status: needsVerification.has(ref.kode) ? 'needsVerification' : 'verified',
   dhaif: ref.jenis.includes("dha'if"),
 }));
 
-const byCode = new Map(REFS.map(ref => [ref.code, ref]));
-export const findRef = (code: string): RefEntry | undefined => byCode.get(code);
+const byCode = new Map(REFS.map(ref => [ref.kode, ref]));
+export const findRef = (kode: string): RefEntry | undefined => byCode.get(kode);
 
 // ─── Teks ayat (KB bab 1.2) ───────────────────────────────────────────────────
 
@@ -116,7 +116,7 @@ const TYPE_LABEL: Record<RefType, string> = {
 };
 
 export interface DalilView {
-  code: string;
+  kode: string;
   claim: string;
   labels: string[];
   source: string;
@@ -135,10 +135,10 @@ export function dalilFor(codes: string[]): { entries: DalilView[]; notes: string
   if (codes.length === 0) return { entries: [], notes: ['Langkah ini belum punya rujukan di KB.'] };
   const entries: DalilView[] = [];
   const notes: string[] = [];
-  for (const code of codes) {
-    const ref = findRef(code);
+  for (const kode of codes) {
+    const ref = findRef(kode);
     if (!ref) {
-      notes.push(`Rujukan ${code} belum tersedia di KB.`);
+      notes.push(`Rujukan ${kode} belum tersedia di KB.`);
       continue;
     }
     const warnings: string[] = [];
@@ -155,7 +155,7 @@ export function dalilFor(codes: string[]): { entries: DalilView[]; notes: string
     const tanpaTeks = ayat.filter(a => a.text === undefined).map(a => a.label);
     if (tanpaTeks.length > 0) warnings.push(`Teks ayat ${tanpaTeks.join(', ')} belum ada di KB.`);
     entries.push({
-      code, claim: ref.claim, labels: ref.types.map(t => TYPE_LABEL[t]), source: ref.source,
+      kode, claim: ref.claim, labels: ref.types.map(t => TYPE_LABEL[t]), source: ref.source,
       arab: ref.arab, ayat, kutipan: ref.kutipan, warnings,
     });
   }
