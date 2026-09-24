@@ -1,5 +1,5 @@
-export { GLOSSARY, findTerm, parseGlossary, slug, type GlossaryEntry } from './glossary.js';
+export { GLOSARIUM, cariIstilah, bacaGlosarium, slug, type EntriGlosarium } from './glossary.js';
 export {
-  AYAT, REFS, ayatRefs, dalilFor, findRef, parseAyat, parseNeedsVerification, parseRefs,
-  type Ayat, type DalilView, type ParsedRef, type RefEntry, type RefType,
+  DAFTAR_AYAT, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan,
+  type Ayat, type TampilanDalil, type RujukanTerbaca, type EntriRujukan, type JenisDalil,
 } from './refs.js';

@@ -1,11 +1,13 @@
 /// <reference path="./raw.d.ts" />
+// Glosarium diambil langsung dari tabel KB bab 15 (Istilah | Arab | Makna | Arti awam).
+// Tiap istilah diberi id slug; sinonim di kolom Istilah ("Ta'shib / 'Ashabah") ikut bisa dicari.
 import glosariumMd from '../../../docs/kb/15_glosarium.md?raw';
 
-export interface GlossaryEntry {
+export interface EntriGlosarium {
   /** Slug istilah pertama; dipakai `packages/jelaskan` sebagai TermId. */
   id: string;
   /** Slug semua sinonim di kolom Istilah ("Ta'shib / 'Ashabah" → tashib, ashabah). */
-  aliases: string[];
+  sinonim: string[];
   istilah: string;
   arab: string;
   makna: string;
@@ -17,17 +19,17 @@ export const slug = (istilah: string): string =>
   istilah.toLowerCase().replace(/['’ʿ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 /** Parse tabel glosarium (bab 15): | Istilah | Arab | Makna | Arti awam |. */
-export function parseGlossary(markdown: string): GlossaryEntry[] {
-  return markdown.split('\n')
-    .filter(line => line.startsWith('| ') && !line.startsWith('| Istilah'))
-    .map(line => {
-      const [istilah = '', arab = '', makna = '', artiAwam = ''] = line.split('|').slice(1, -1).map(cell => cell.trim());
-      const aliases = istilah.split('/').map(slug);
-      return { id: aliases[0]!, aliases, istilah, arab, makna, ...(artiAwam ? { artiAwam } : {}) };
+export function bacaGlosarium(teksMarkdown: string): EntriGlosarium[] {
+  return teksMarkdown.split('\n')
+    .filter(baris => baris.startsWith('| ') && !baris.startsWith('| Istilah'))
+    .map(baris => {
+      const [istilah = '', arab = '', makna = '', artiAwam = ''] = baris.split('|').slice(1, -1).map(isi => isi.trim());
+      const sinonim = istilah.split('/').map(slug);
+      return { id: sinonim[0]!, sinonim, istilah, arab, makna, ...(artiAwam ? { artiAwam } : {}) };
     });
 }
 
-export const GLOSSARY: GlossaryEntry[] = parseGlossary(glosariumMd);
+export const GLOSARIUM: EntriGlosarium[] = bacaGlosarium(glosariumMd);
 
-const byAlias = new Map(GLOSSARY.flatMap(entry => entry.aliases.map(alias => [alias, entry] as const)));
-export const findTerm = (id: string): GlossaryEntry | undefined => byAlias.get(id);
+const menurutSinonim = new Map(GLOSARIUM.flatMap(entri => entri.sinonim.map(sinonimIni => [sinonimIni, entri] as const)));
+export const cariIstilah = (id: string): EntriGlosarium | undefined => menurutSinonim.get(id);

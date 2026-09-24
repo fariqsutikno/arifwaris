@@ -1,4 +1,4 @@
-import { findRef, findTerm } from '@waris/content';
+import { cariRujukan, cariIstilah } from '@waris/content';
 import { hitung, type InputEngine, type LangkahJejak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
@@ -194,7 +194,7 @@ describe('mode ringkas', () => {
 
 describe('keterkaitan dengan glosarium dan dalil', () => {
   test('setiap istilah yang dipakai narasi ada di glosarium KB bab 15', () => {
-    expect(TERM_IDS.filter(id => !findTerm(id))).toEqual([]);
+    expect(TERM_IDS.filter(id => !cariIstilah(id))).toEqual([]);
   });
 
   test('setiap kode rujukan di jejak dan narasi fixture bab 16 ada di tabel rujukan KB', () => {
@@ -207,7 +207,7 @@ describe('keterkaitan dengan glosarium dan dalil', () => {
         ...(['cerita', 'ringkas'] as const).flatMap(mode =>
           jelaskan(hasil, fixture.input.graf, { mode }).sections.flatMap(sec => sec.lines.flatMap(l => l.refs))),
       ];
-      codes.filter(kode => !findRef(kode)).forEach(kode => missing.add(`${fixture.id}: ${kode}`));
+      codes.filter(kode => !cariRujukan(kode)).forEach(kode => missing.add(`${fixture.id}: ${kode}`));
     }
     expect([...missing]).toEqual([]);
   });

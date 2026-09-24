@@ -1,6 +1,6 @@
 import type { Segment } from './segments.js';
 
-/** Id istilah = slug kolom Istilah KB bab 15 (lihat `@waris/content` findTerm). */
+/** Id istilah = slug kolom Istilah KB bab 15 (lihat `@waris/content` cariIstilah). */
 export const TERM_IDS = [
   'tirkah', 'warits', 'faru-warits', 'hajb-hirman', 'hajb-nuqshan', 'mani', 'jam-min-al-ikhwah', 'muashshib',
   'takmilah-tsulutsain', 'kalalah', 'ashabah', 'bi-nafsihi', 'bil-ghair', 'maal-ghair', 'umariyyatain', 'musyarrakah',
