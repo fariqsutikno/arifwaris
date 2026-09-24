@@ -19,6 +19,10 @@ tags: [tashih, inkisar, nisab arba, tamatsul, tadakhul, tawafuq, tabayun, juz sa
 
 **Wafq** = bilangan ÷ FPB. Secara komputasi: hasil gabung = **KPK**.
 
+**Kaidah angka 1** [R10-5]: «كل عدد مع الواحد فهو متباين» — setiap angka bertemu 1 = **tabayun**, bukan tadakhul,
+walau 1 selalu habis membagi angka lain. Berlaku sebelum pengecekan tadakhul (mis. contoh 10.3c: istri
+1 vs 4 ru'us → tabayun, bukan tadakhul).
+
 ## 10.3 Langkah Tashih [R10-2] [R10-3]
 1. Selesaikan ashl (termasuk 'aul bila ada).
 2. Untuk setiap kelompok yang **inkisar**, bandingkan **saham kelompok** dengan **jumlah kepala** (ru'us):
@@ -66,3 +70,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R10-2 | Tashih satu kelompok | RDH | Bab 9, Fashl 2 | «إن كانا متباينين، ضربت عدد رءوسهم في أصل المسألة بعولها إن عالت. وإن كانا متوافقين، ضربت جزء الوفق من عدد رءوسهم» |
 | R10-3 | Inkisar maksimal 4 kelompok, beserta alasannya | RDH | Idem | «ولا تتصور الزيادة؛ لأن الوارثين في الفريضة لا يزيدون على خمسة أصناف... ولا بد من صحة نصيب أحد الأصناف عليه» |
 | R10-4 | Perhitungan KPK/FPB | KH | Kaidah hisab | Setara dengan metode klasik; bukan hukum syar'i. |
+| R10-5 | Kaidah angka 1 = tabayun | KH | Kaidah hisab | «كل عدد مع الواحد فهو متباين» — didahulukan atas pengecekan tadakhul. |

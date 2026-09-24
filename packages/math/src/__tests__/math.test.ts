@@ -96,6 +96,12 @@ describe('nisab arba\' [R10-1], bab 10.2', () => {
     expect(nisab(2n, 3n)).toEqual({ relation: 'tabayun', gcd: 1n, result: 6n });
   });
 
+  test('[R10-5] angka 1 = tabayun, bukan tadakhul (10_tashih.md contoh 10.3c: istri 1 vs 4)', () => {
+    expect(nisab(1n, 4n)).toEqual({ relation: 'tabayun', gcd: 1n, result: 4n });
+    expect(nisab(1n, 2n)).toEqual({ relation: 'tabayun', gcd: 1n, result: 2n });
+    expect(nisab(5n, 1n)).toEqual({ relation: 'tabayun', gcd: 1n, result: 5n });
+  });
+
   test('bilangan ≤ 0 ditolak', () => {
     expect(() => nisab(0n, 4n)).toThrow(RangeError);
     expect(() => nisab(4n, -2n)).toThrow(RangeError);
@@ -108,7 +114,8 @@ describe('nisab arba\' [R10-1], bab 10.2', () => {
       expect(r.result).toBe(lcm(a, b));
       expect(r.gcd).toBe(gcd(a, b));
       const [small, big] = a < b ? [a, b] : [b, a];
-      const expected = a === b ? 'tamatsul' : big % small === 0n ? 'tadakhul' : r.gcd > 1n ? 'tawafuq' : 'tabayun';
+      // [R10-5] angka 1 = tabayun, didahulukan atas tadakhul.
+      const expected = a === b ? 'tamatsul' : small === 1n ? 'tabayun' : big % small === 0n ? 'tadakhul' : r.gcd > 1n ? 'tawafuq' : 'tabayun';
       expect(r.relation).toBe(expected);
     }));
   });

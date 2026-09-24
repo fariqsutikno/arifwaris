@@ -54,6 +54,9 @@ export function nisab(a: bigint, b: bigint): { relation: Nisab; gcd: bigint; res
   const faktorPersekutuan = gcd(a, b);
   const [kecil, besar] = a < b ? [a, b] : [b, a];
   if (a === b) return { relation: 'tamatsul', gcd: faktorPersekutuan, result: a };
+  // [R10-5] «كل عدد مع الواحد فهو متباين»: angka 1 vs angka lain = tabayun, didahulukan atas
+  // tadakhul (1 selalu habis membagi angka apa pun, tapi itu bukan tadakhul menurut kaidah ini).
+  if (kecil === 1n) return { relation: 'tabayun', gcd: faktorPersekutuan, result: a * b };
   if (besar % kecil === 0n) return { relation: 'tadakhul', gcd: faktorPersekutuan, result: besar };
   if (faktorPersekutuan > 1n) {
     // Tawafuq: kalikan salah satu dengan wafq yang lain.
