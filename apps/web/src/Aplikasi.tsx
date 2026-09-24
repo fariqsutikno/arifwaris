@@ -1,6 +1,6 @@
 // Rangkaian aplikasi: reducer keadaan, autosave, header global, dan pemilihan layar.
 
-import { useEffect, useReducer, useRef, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { unduhKasus } from './berkas';
 import { muatLokal, simpanLokal } from './kasus';
 import { keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
@@ -15,14 +15,11 @@ import { Wizard } from './layar/Wizard';
 
 export function Aplikasi() {
   const [keadaan, kirimAsli] = useReducer(pengurangKeadaan, null, () => keadaanAwal(muatLokal(), bacaTujuan()));
-  // Kasus tersimpan hanya dihapus lewat ULANGI; MULAI (kasus null sementara) tidak menimpa simpanan lama.
-  const hapusSimpanan = useRef(false);
-  const kirim = (aksi: Aksi) => { if (aksi.jenis === 'ULANGI') hapusSimpanan.current = true; kirimAsli(aksi); };
+  // Kasus tersimpan hanya dihapus lewat ULANGI, dan langsung (sebelum render berikutnya) supaya beranda
+  // tidak menawarkan kasus yang baru saja dihapus. MULAI (kasus null sementara) tidak menimpa simpanan lama.
+  const kirim = (aksi: Aksi) => { if (aksi.jenis === 'ULANGI') simpanLokal(null); kirimAsli(aksi); };
 
-  useEffect(() => {
-    if (keadaan.kasus || hapusSimpanan.current) simpanLokal(keadaan.kasus);
-    hapusSimpanan.current = false;
-  }, [keadaan.kasus]);
+  useEffect(() => { if (keadaan.kasus) simpanLokal(keadaan.kasus); }, [keadaan.kasus]);
   useEffect(() => { if (keadaan.tujuan) simpanTujuan(keadaan.tujuan); }, [keadaan.tujuan]);
 
   const { kasus, layar } = keadaan;

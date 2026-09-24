@@ -1,8 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { beforeEach, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { tambahAhliWaris } from '../checklist';
+import { kasusBaru, keJson } from '../kasus';
 import { Aplikasi } from '../Aplikasi';
 
 beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); });
+
+const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }; };
 
 const mulai = (tujuan: 'Hitung kasus' | 'Belajar' = 'Hitung kasus') => {
   render(<Aplikasi />);
@@ -49,4 +53,44 @@ it('ulangi dari awal meminta konfirmasi di halaman', () => {
 it('header tidak punya tombol simpan', () => {
   mulai();
   expect(screen.queryByRole('banner')?.textContent ?? '').not.toMatch(/Simpan file/);
+});
+
+describe('temuan review akhir', () => {
+  const isiKasus = () => {
+    mulai();
+    fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
+  };
+
+  it('setelah "Hapus dan mulai baru", kasus lama tidak ditawarkan lagi', () => {
+    isiKasus();
+    fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
+    fireEvent.click(screen.getByRole('button', { name: /Hapus dan mulai baru/ }));
+    expect(screen.queryByRole('button', { name: /Lanjutkan kasus terakhir/ })).toBeNull();
+  });
+
+  it('memilih tujuan saat ada kasus tersimpan meminta konfirmasi dulu', () => {
+    isiKasus();
+    fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
+    fireEvent.click(screen.getByRole('button', { name: /Hitung kasus/ }));
+    expect(screen.getByRole('alertdialog')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
+    expect(screen.getByRole('button', { name: /Lanjutkan kasus terakhir/ })).toBeTruthy();
+  });
+
+  it('dialog konfirmasi memfokuskan Batal dan tertutup dengan Esc', () => {
+    isiKasus();
+    fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
+    expect(document.activeElement?.textContent).toBe('Batal');
+    fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+  });
+});
+
+it('jenis kelamin terkunci setelah ada pasangan, dengan penjelasan', () => {
+  localStorage.setItem('arif-waris:kasus', keJson({ ...denganIstri(), tirkah: { kotor: 1n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
+  render(<Aplikasi />);
+  fireEvent.click(screen.getByRole('button', { name: /Lanjutkan kasus terakhir/ }));
+  const perempuan = screen.getByRole('radio', { name: /Perempuan/ });
+  expect(perempuan.getAttribute('aria-disabled')).toBe('true');
+  expect(screen.getByText(/Kurangi dulu di langkah Ahli waris/)).toBeTruthy();
 });

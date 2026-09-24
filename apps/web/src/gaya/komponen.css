@@ -145,3 +145,4 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .tur-aksi{display:flex;align-items:center;gap:8px;margin-top:12px}
 .tur-pop .aw-btn-ghost{color:var(--surface-raised)}
 @media (prefers-reduced-motion:reduce){.tur-lubang{transition:none}}
+.kartu-pilihan[aria-disabled=true]{opacity:.45;cursor:not-allowed;box-shadow:none}

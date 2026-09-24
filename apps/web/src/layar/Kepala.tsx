@@ -3,6 +3,7 @@
 
 import { useState } from 'react';
 import { Logo, Tombol } from '../ui/komponen';
+import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 
 interface Props {
   adaKasus: boolean;
@@ -25,17 +26,8 @@ export function Kepala({ adaKasus, adaTur, saatKeBeranda, saatTur, saatUlangi, s
         {adaKasus && <Tombol varian="secondary" kecil onClick={() => setSedangKonfirmasi(true)}>Ulangi dari awal</Tombol>}
       </header>
       {sedangKonfirmasi && (
-        <div className="konfirmasi" role="alertdialog" aria-labelledby="judul-konfirmasi" aria-describedby="isi-konfirmasi">
-          <div className="konfirmasi-isi">
-            <h2 id="judul-konfirmasi">Mulai kasus baru?</h2>
-            <p id="isi-konfirmasi">Kasus yang sedang diisi akan dihapus dari perangkat ini. Mau simpan file-nya dulu?</p>
-            <div className="chip-deret">
-              <Tombol varian="secondary" onClick={saatSimpan}>Simpan file dulu</Tombol>
-              <Tombol onClick={() => { setSedangKonfirmasi(false); saatUlangi(); }}>Hapus dan mulai baru</Tombol>
-              <Tombol varian="ghost" onClick={() => setSedangKonfirmasi(false)}>Batal</Tombol>
-            </div>
-          </div>
-        </div>
+        <KonfirmasiKasusBaru saatSimpan={saatSimpan} saatBatal={() => setSedangKonfirmasi(false)}
+          saatLanjut={() => { setSedangKonfirmasi(false); saatUlangi(); }} />
       )}
     </>
   );

@@ -1,7 +1,9 @@
 // Beranda: janji singkat, pertanyaan pembuka (Hitung kasus / Belajar), lanjutkan kasus tersimpan, buka file.
 
 import { useRef, useState } from 'react';
+import { unduhKasus } from '../berkas';
 import { TEKS_BERANDA } from '../konten/umum';
+import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { dariJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
@@ -16,7 +18,10 @@ export function Beranda({ kasusTersimpan, kirim }: { kasusTersimpan: Kasus | nul
     if (hasil.berhasil) kirim({ jenis: 'MUAT', kasus: hasil.kasus });
     else setPesan(`File-nya nggak bisa dibuka: ${hasil.pesan}`);
   };
-  const saatPilihTujuan = (tujuan: Tujuan) => { kirim({ jenis: 'PILIH_TUJUAN', tujuan }); kirim({ jenis: 'MULAI' }); };
+  const [tujuanTertunda, setTujuanTertunda] = useState<Tujuan | null>(null);
+  const mulaiDengan = (tujuan: Tujuan) => { kirim({ jenis: 'PILIH_TUJUAN', tujuan }); kirim({ jenis: 'MULAI' }); };
+  // Ada kasus tersimpan: jangan ditimpa diam-diam, tanyakan dulu (sama seperti Ulangi dari awal).
+  const saatPilihTujuan = (tujuan: Tujuan) => (kasusTersimpan ? setTujuanTertunda(tujuan) : mulaiDengan(tujuan));
   return (
     <Motif>
       <main className="halaman tumpuk beranda">
@@ -38,6 +43,10 @@ export function Beranda({ kasusTersimpan, kirim }: { kasusTersimpan: Kasus | nul
           <input ref={inputFile} type="file" accept="application/json,.json" hidden onChange={event => void saatPilihFile(event.target.files?.[0])} />
         </div>
         {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
+        {tujuanTertunda && kasusTersimpan && (
+          <KonfirmasiKasusBaru saatSimpan={() => unduhKasus(kasusTersimpan)} saatBatal={() => setTujuanTertunda(null)}
+            saatLanjut={() => { kirim({ jenis: 'ULANGI' }); mulaiDengan(tujuanTertunda); setTujuanTertunda(null); }} />
+        )}
       </main>
     </Motif>
   );
