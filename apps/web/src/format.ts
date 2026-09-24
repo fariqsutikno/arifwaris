@@ -1,5 +1,6 @@
 // Format tampilan: uang, pecahan, nama orang. Tidak ada hitungan waris di sini.
 
+import { fpb } from '@waris/math';
 import type { GrafKeluarga, IdOrang, StatusOrang, TabelMasalah } from '@waris/engine';
 import { jenisDari } from './checklist';
 
@@ -15,7 +16,11 @@ export function bacaInputUang(teks: string): bigint | null {
   return /^\d+$/.test(bersih) ? BigInt(bersih) : null;
 }
 
-export const teksPecahan = (pecahan: { n: bigint; d: bigint }): string => `${pecahan.n}/${pecahan.d}`;
+/** Selalu disederhanakan (2/6 → 1/3) untuk tampilan. */
+export function teksPecahan({ n, d }: { n: bigint; d: bigint }): string {
+  const faktor = n === 0n ? d : fpb(n, d);
+  return `${n / faktor}/${d / faktor}`;
+}
 
 /** Penyebut kolom terakhir tabel (tashih bila ada, lalu radd/'aul/ashl). */
 export function penyebutAkhir(tabel: TabelMasalah): bigint {

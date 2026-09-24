@@ -107,7 +107,12 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk) {
 
 function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk) {
   const statusGabungan: Record<IdOrang, StatusOrang> = {};
-  for (const { hasil: hasilMayit } of [...hasil.daftarLangkah].reverse()) Object.assign(statusGabungan, hasilMayit.statusOrang);
+  // Tiap orang dinamai dari mayit tempat ia pertama kali menjadi ahli waris (bukan "kerabat" mayit lain).
+  for (const { hasil: hasilMayit } of hasil.daftarLangkah) {
+    for (const [id, status] of Object.entries(hasilMayit.statusOrang)) {
+      if (!statusGabungan[id] || (statusGabungan[id]!.jenis !== 'ahliWaris' && status.jenis === 'ahliWaris')) statusGabungan[id] = status;
+    }
+  }
   const baris: BarisHasil[] = Object.entries(hasil.saham).filter(([, saham]) => saham > 0n).map(([id, saham]) => ({
     nama: namaOrang(graf, statusGabungan, id),
     kelompok: kelompokDari(statusGabungan[id]),

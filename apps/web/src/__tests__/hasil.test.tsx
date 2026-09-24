@@ -22,3 +22,15 @@ it('TIDAK_DIDUKUNG tampil sebagai kartu peringatan, bukan tabel', () => {
   render(<Hasil kasus={kasusBaru('L')} kirim={vi.fn()} />);   // tanpa ahli waris → baitul mal
   expect(screen.getByRole('alert').textContent).toMatch(/belum (bisa|didukung)/i);
 });
+
+it('munasakhat: ahli waris mayit kedua dinamai sesuai perannya, pecahan disederhanakan', async () => {
+  const { hitungIsian } = await import('../checklist');
+  let kasus = kasusBaru('P');
+  kasus = { ...kasus, graf: ['SUAMI', 'IBU', 'SAUDARA_KANDUNG'].reduce((g, kunci) => tambahAhliWaris(g, 'PEWARIS', kunci as never), kasus.graf) };
+  const [idSuami] = hitungIsian(kasus.graf, 'PEWARIS').SUAMI!;
+  kasus = { ...kasus, urutanWafat: [idSuami!], graf: ['ANAK_LK', 'ANAK_PR'].reduce((g, kunci) => tambahAhliWaris(g, idSuami!, kunci as never), kasus.graf) };
+  render(<Hasil kasus={kasus} kirim={vi.fn()} />);
+  expect(screen.getByText('Anak laki-laki')).toBeTruthy();
+  expect(screen.queryByText(/^Kerabat/)).toBeNull();
+  expect(screen.getAllByText('1/3').length).toBeGreaterThan(0);
+});
