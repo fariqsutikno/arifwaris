@@ -2,78 +2,49 @@
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil'.
 
 import { useState } from 'react';
-import { bolehUbahJenisKelamin } from '@waris/engine';
 import { SATUAN_PEMBULATAN, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { bacaInputUang, formatRupiah } from '../format';
-import { Pilihan, Stiker, Tombol } from '../ui/komponen';
+import { Pilihan } from '../ui/komponen';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
 import { LangkahKondisi } from './LangkahKondisi';
+import { BarBawah } from './wizard/BarBawah';
+import { KerangkaLangkah } from './wizard/KerangkaLangkah';
+import { LangkahPewaris } from './wizard/LangkahPewaris';
+import { Stepper } from './wizard/Stepper';
+import { alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from './wizard/validasi';
 
-const JUDUL_LANGKAH = ['', 'Siapa yang meninggal?', 'Berapa harta peninggalannya?', 'Ada kewajiban yang harus dibayar dulu?',
-  'Siapa aja yang ditinggalin?', 'Ada kondisi khusus?'];
 
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
-  if (!keadaan.kasus) {
-        return (
-          <main className="halaman tumpuk">
-            <h1 className="judul-langkah">Almarhum laki-laki atau perempuan?</h1>
-            <div className="chip-deret">
-              <Pilihan saatKlik={() => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' })}>Laki-laki</Pilihan>
-              <Pilihan saatKlik={() => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin: 'P' })}>Perempuan</Pilihan>
-            </div>
-          </main>
-        );
-      }
-  const kasus = keadaan.kasus!;
+  const { kasus, langkah } = keadaan;
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
-  const adalahTerakhir = keadaan.langkah === TOTAL_LANGKAH;
+  const alasan = alasanBelumLengkap(kasus, langkah);
   return (
-    <main className="halaman tumpuk">
-      <Stiker>Langkah {keadaan.langkah}/{TOTAL_LANGKAH}</Stiker>
-      <h1 className="judul-langkah">{JUDUL_LANGKAH[keadaan.langkah]}</h1>
-      {keadaan.langkah === 1 && <LangkahPewaris kasus={kasus} ubah={ubah} />}
-      {keadaan.langkah === 2 && <LangkahHarta kasus={kasus} ubah={ubah} />}
-      {keadaan.langkah === 3 && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
-      {keadaan.langkah === 4 && <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />}
-      {keadaan.langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}
-      <div className="baris-tombol">
-        <Tombol varian="secondary" onClick={() => (keadaan.langkah === 1 ? kirim({ jenis: 'KE_LAYAR', layar: 'beranda' }) : kirim({ jenis: 'KE_LANGKAH', langkah: keadaan.langkah - 1 }))}>
-          Kembali
-        </Tombol>
-        <Tombol onClick={() => (adalahTerakhir ? kirim({ jenis: 'KE_LAYAR', layar: 'hasil' }) : kirim({ jenis: 'KE_LANGKAH', langkah: keadaan.langkah + 1 }))}>
-          {adalahTerakhir ? 'Gas hitung' : 'Gas, langkah berikutnya'}
-        </Tombol>
-      </div>
+    <main className="halaman halaman-wizard">
+      <Stepper langkahAktif={langkah} terjauh={langkahTerjauh(kasus)}
+        saatPilih={tujuan => kirim(tujuan === LANGKAH_HASIL ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: tujuan })} />
+      <KerangkaLangkah langkah={langkah}>
+        {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
+          saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
+        {kasus && langkah === 2 && <LangkahHarta kasus={kasus} ubah={ubah} />}
+        {kasus && langkah === 3 && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
+        {kasus && langkah === 4 && <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />}
+        {kasus && langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}
+      </KerangkaLangkah>
+      <BarBawah langkah={langkah} alasan={alasan}
+        saatKembali={() => kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'beranda' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 })}
+        saatLanjut={() => kirim(langkah === TOTAL_LANGKAH ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: langkah + 1 })} />
     </main>
   );
 }
 
-interface PropsLangkah { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
-
-function LangkahPewaris({ kasus, ubah }: PropsLangkah) {
-  const pewaris = kasus.graf.orang[kasus.graf.idPewaris]!;
-  const bolehUbah = bolehUbahJenisKelamin(kasus.graf, pewaris.id);
-  const ubahPewaris = (perubahan: Partial<typeof pewaris>) =>
-    ubah(k => ({ ...k, graf: { ...k.graf, orang: { ...k.graf.orang, [pewaris.id]: { ...pewaris, ...perubahan } } } }));
-  return (
-    <div className="tumpuk">
-      <label className="isian">Namanya (boleh dikosongin)
-        <input value={pewaris.nama ?? ''} onChange={event => ubah(k => {
-          const { nama: _lama, ...tanpaNama } = k.graf.orang[pewaris.id]!;
-          const baru = event.target.value ? { ...tanpaNama, nama: event.target.value } : tanpaNama;
-          return { ...k, graf: { ...k.graf, orang: { ...k.graf.orang, [pewaris.id]: baru } } };
-        })} />
-      </label>
-      <p className="keterangan">Jenis kelaminnya? Ini nentuin siapa pasangannya: suami atau istri.</p>
-      <div className="chip-deret">
-        <Pilihan terpilih={pewaris.jenisKelamin === 'L'} saatKlik={() => bolehUbah && ubahPewaris({ jenisKelamin: 'L' })}>Laki-laki</Pilihan>
-        <Pilihan terpilih={pewaris.jenisKelamin === 'P'} saatKlik={() => bolehUbah && ubahPewaris({ jenisKelamin: 'P' })}>Perempuan</Pilihan>
-      </div>
-      {!bolehUbah && <p className="keterangan">Udah ada pasangan atau anak yang diisi. Kurangi dulu di langkah 4 kalau mau ganti.</p>}
-    </div>
-  );
+function ubahNamaPewaris(kasus: Kasus, nama: string): Kasus {
+  const { nama: _lama, ...tanpaNama } = kasus.graf.orang[kasus.graf.idPewaris]!;
+  const pewaris = nama ? { ...tanpaNama, nama } : tanpaNama;
+  return { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [kasus.graf.idPewaris]: pewaris } } };
 }
+
+interface PropsLangkah { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
 
 function LangkahHarta({ kasus, ubah }: PropsLangkah) {
   return (

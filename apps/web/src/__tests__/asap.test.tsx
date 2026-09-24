@@ -6,24 +6,24 @@ beforeEach(() => localStorage.clear());
 
 it('alur penuh: beranda → wizard → hasil', () => {
   render(<Aplikasi />);
-  fireEvent.click(screen.getByText('Mulai hitung'));
-  fireEvent.click(screen.getByText('Laki-laki'));
-  fireEvent.click(screen.getByText('Gas, langkah berikutnya'));
+  fireEvent.click(screen.getByRole('button', { name: /Hitung kasus/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
   fireEvent.change(screen.getByLabelText(/Total harta/), { target: { value: '24.000.000' } });
-  fireEvent.click(screen.getByText('Gas, langkah berikutnya'));
-  fireEvent.click(screen.getByText('Gas, langkah berikutnya'));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Kewajiban/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Ahli waris/ }));
   fireEvent.click(screen.getByLabelText('Tambah Istri'));
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
-  fireEvent.click(screen.getByText('Gas, langkah berikutnya'));
-  fireEvent.click(screen.getByText('Gas hitung'));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Kondisi khusus/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lihat hasil/ }));
   expect(screen.getByText('Nah, ini pembagiannya')).toBeTruthy();
 });
 
 it('autosave: kasus muncul lagi setelah render ulang', () => {
   const { unmount } = render(<Aplikasi />);
-  fireEvent.click(screen.getByText('Mulai hitung'));
-  fireEvent.click(screen.getByText('Laki-laki'));
+  fireEvent.click(screen.getByRole('button', { name: /Hitung kasus/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   unmount();
   render(<Aplikasi />);
-  expect(screen.getByText('Lanjutin kasus terakhir')).toBeTruthy();
+  expect(screen.getByRole('button', { name: /Lanjutkan kasus terakhir/ })).toBeTruthy();
 });

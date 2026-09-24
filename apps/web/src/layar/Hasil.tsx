@@ -7,6 +7,7 @@ import type { GrafKeluarga, IdOrang, LangkahJejak, StatusOrang } from '@waris/en
 import { jenisDari, type Kelompok } from '../checklist';
 import { formatRupiah, namaOrang, penyebutAkhir, teksPecahan } from '../format';
 import { jalankan, type HasilMunasakhatOk, type HasilOk } from '../jalankan';
+import { unduhKasus } from '../berkas';
 import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { KartuAhliWaris, KartuHasil, Tombol, type BarisHasil } from '../ui/komponen';
@@ -83,6 +84,7 @@ export function Hasil({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => v
         {tombolUbah}
         <Tombol varian="sun" onClick={() => setPenjelasanTerbuka(!penjelasanTerbuka)}>Kok bisa gini?</Tombol>
         <Tombol onClick={() => kirim({ jenis: 'KE_LAYAR', layar: 'belajar' })}>Pelajari langkah demi langkah</Tombol>
+        <Tombol varian="secondary" onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
       </div>
       {penjelasanTerbuka && (
         <div className="tumpuk">
