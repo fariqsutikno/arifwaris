@@ -42,7 +42,7 @@ Format: **Ahli waris → Ashl/Tashih → Bagian (saham)**. Default = jumhur kecu
 Tirkah Rp 150.000.000; tajhiz Rp 5.000.000; hutang Rp 25.000.000; wasiat untuk masjid Rp 50.000.000.
 - Sisa setelah hutang = 120.000.000; batas wasiat 1/3 = 40.000.000 → wasiat dipotong jadi **40.000.000** (kelebihan 10.000.000 butuh ijazah ahli waris).
 - Tirkah bersih = 80.000.000. Ahli waris: kasus #1 (24).
-- Istri 3/24 = **10.000.000**; anak lk 14/24 = **46.666.667**; anak pr 7/24 = **23.333.333**. Σ = 80.000.000.
+- Istri 3/24 = **10.000.000**; anak lk 14/24 = **46.666.666**; anak pr 7/24 = **23.333.333**; selisih pembulatan = **1**. Σ = 80.000.000 (floor per orang ke unit=1, selisih tidak dibagikan diam-diam — lihat engine-contract Tahap 6).
 
 ## Uji Negatif (sistem harus menolak / bertanya)
 - Ahli waris beda agama → dikeluarkan, tidak menghijab.
