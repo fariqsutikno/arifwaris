@@ -16,8 +16,9 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`.
 ## Prinsip engine (tidak boleh dilanggar)
 1. **Deterministik**: fungsi murni, tanpa I/O, `Date`, `Math.random`.
 2. **Eksak**: `Fraction` berbasis `bigint`, ternormalisasi, `d > 0`. Dilarang `number` di jalur hitung.
-   Uang = `bigint` satuan terkecil. Pembulatan: tiap orang dibulatkan ke bawah, sisa total dilaporkan
-   terpisah sebagai "selisih pembulatan" (tidak dibagikan diam-diam).
+   Uang = `bigint` satuan terkecil. Pembulatan: tiap orang dibulatkan ke bawah ke kelipatan
+   `RoundingConfig.unit` (dipilih pengguna: 1 / 100 / 1000), sisa total dilaporkan terpisah sebagai
+   "selisih pembulatan" (tidak dibagikan diam-diam). Lihat engine-contract Tahap 6.
 3. **Pisahkan hukum vs hisab**: `packages/math` hanya kaidah hisab [KH]; aturan fikih di `packages/engine`.
 4. **Pipeline wajib** (bab 00.2), tiap tahap = fungsi terpisah yang diuji sendiri:
    tirkah → validasi & mawani' → hajb → furudh/ashabah (+bab 07/08) → ashl → 'aul/radd → tashih → nominal.

@@ -113,8 +113,8 @@ export type TraceStep = { stage: Stage; refs: string[] } & (
 // ─── Kontrak output utama ─────────────────────────────────────────────────────
 
 export interface Question {
-  personId: PersonId;
-  field: keyof Person | 'marriages';   // 'marriages': validasi jumlah istri (uji negatif bab 16)
+  personId?: PersonId;
+  field: keyof Person | 'marriages' | 'rounding';
   reason: string;
 }
 
@@ -125,7 +125,7 @@ export type EngineResult =
       statuses: Record<PersonId, PersonStatus>;
       table: MasalahTable;
       trace: TraceStep[];
-      rounding: { remainder: Money };
+      rounding: { unit: bigint; remainder: Money };
       ruleset: Ruleset;
       config: MadhhabConfig;
       kbVersion: string };
@@ -139,9 +139,15 @@ export interface TirkahInput {
   wasiat: Money;
 }
 
+// Satuan pembulatan nominal, dipilih pengguna (tunai vs transfer bank). Bukan khilaf fikih.
+export interface RoundingConfig {
+  unit: bigint;
+}
+
 export interface EngineInput {
   graph: FamilyGraph;
   tirkah: TirkahInput;
+  rounding: RoundingConfig;
   config: MadhhabConfig;
   ruleset: Ruleset;
   kbVersion: string;

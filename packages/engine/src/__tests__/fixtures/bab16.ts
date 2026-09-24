@@ -18,7 +18,7 @@ function p(id: string, sex: 'M' | 'F', overrides: Partial<Person> = {}): Person 
 
 /** Buat input engine dengan tirkah default 0 (kasus tanpa nominal). */
 function input(graph: FamilyGraph, config: MadhhabConfig = DEFAULT_CONFIG): EngineInput {
-  return { graph, tirkah: { gross: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, config, ruleset: 'syafii', kbVersion: KB_VERSION };
+  return { graph, tirkah: { gross: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, rounding: { unit: 1n }, config, ruleset: 'syafii', kbVersion: KB_VERSION };
 }
 
 // ─── Tipe fixture ─────────────────────────────────────────────────────────────
@@ -740,8 +740,8 @@ export const case24: Fixture = {
  * Tirkah Rp 150.000.000; tajhiz Rp 5.000.000; hutang Rp 25.000.000;
  * wasiat Rp 50.000.000 → dipotong jadi 40.000.000 (1/3 dari 120.000.000).
  * Tirkah bersih = 80.000.000. Ahli waris: case 1 (istri, anak lk, anak pr).
- * Selisih pembulatan = 1 (floor per orang, CLAUDE.md prinsip 2). KB menulis anak lk 46.666.667 —
- * disepakati floor; KB perlu dikoreksi.
+ * unit 1 → selisih pembulatan 1 (floor per orang, engine-contract Tahap 6). KB menulis anak lk
+ * 46.666.667 — disepakati floor; KB perlu dikoreksi. Variasi unit diuji di regression.test.ts.
  */
 export const caseNominal: Fixture = {
   id: 'C16-NOM',
@@ -763,6 +763,7 @@ export const caseNominal: Fixture = {
       hutang:   25_000_000n,
       wasiat:   50_000_000n,  // dipotong jadi 40.000.000
     },
+    rounding: { unit: 1n },
     config: DEFAULT_CONFIG,
     ruleset: 'syafii',
     kbVersion: KB_VERSION,
@@ -877,6 +878,14 @@ export const caseNeg4: Fixture = {
   },
 };
 
+// ─── Negatif 5: unit pembulatan tidak valid → NEEDS_INPUT ───────────────────
+export const caseNeg5: Fixture = {
+  id: 'C16-NEG5',
+  menguji: 'Unit pembulatan ≤ 0 → NEEDS_INPUT',
+  input: { ...case01.input, rounding: { unit: 0n } },
+  expected: { status: 'NEEDS_INPUT', questionFields: ['rounding'] },
+};
+
 // ═════════════════════════════════════════════════════════════════════════════
 // EKSPOR LENGKAP
 // ═════════════════════════════════════════════════════════════════════════════
@@ -887,5 +896,5 @@ export const BAB16_FIXTURES: Fixture[] = [
   case14, case15, case16, case17, case17b,
   case18, case19, case20, case21, case22, case23, case24,
   caseNominal,
-  caseNeg1, caseNeg2, caseNeg3, caseNeg4,
+  caseNeg1, caseNeg2, caseNeg3, caseNeg4, caseNeg5,
 ];

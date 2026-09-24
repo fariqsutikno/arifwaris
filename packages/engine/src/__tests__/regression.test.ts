@@ -54,20 +54,29 @@ describe('Regression bab 16', () => {
 });
 
 describe('Uji nominal bab 16', () => {
-  // Floor per orang sesuai CLAUDE.md prinsip 2; KB menulis 46.666.667 (dibulatkan) — sengaja menyimpang.
-  test('C16-NOM: wasiat dipotong ke 1/3, floor per orang, selisih pembulatan dilaporkan', () => {
-    const result = compute(caseNominal.input);
-    expect(result.status).toBe('OK');
-    if (result.status !== 'OK') return;
+  // Floor per orang ke kelipatan unit (engine-contract Tahap 6); KB menulis 46.666.667 — sengaja menyimpang.
+  // Tirkah bersih 80.000.000: istri 3/24, anak lk 14/24, anak pr 7/24.
+  const cases = [
+    { unit: 1n,    W1: 10_000_000n, S1: 46_666_666n, D1: 23_333_333n, remainder: 1n },
+    { unit: 100n,  W1: 10_000_000n, S1: 46_666_600n, D1: 23_333_300n, remainder: 100n },
+    { unit: 1000n, W1: 10_000_000n, S1: 46_666_000n, D1: 23_333_000n, remainder: 1_000n },
+  ];
 
-    const distributed = result.trace.filter(
-      (step): step is Extract<OkResult['trace'][number], { kind: 'DISTRIBUTE' }> => step.kind === 'DISTRIBUTE',
-    );
-    const byPerson = Object.fromEntries(distributed.map(d => [d.personId, d.amount]));
-    expect(byPerson).toEqual({ W1: 10_000_000n, S1: 46_666_666n, D1: 23_333_333n });
-    expect(result.rounding.remainder).toBe(1n);
+  for (const { unit, remainder, ...amounts } of cases) {
+    test(`C16-NOM unit ${unit}: wasiat dipotong ke 1/3, floor per orang, selisih dilaporkan`, () => {
+      const result = compute({ ...caseNominal.input, rounding: { unit } });
+      expect(result.status).toBe('OK');
+      if (result.status !== 'OK') return;
 
-    const total = distributed.reduce((sum, d) => sum + d.amount, 0n);
-    expect(total + result.rounding.remainder).toBe(80_000_000n);
-  });
+      const distributed = result.trace.filter(
+        (step): step is Extract<OkResult['trace'][number], { kind: 'DISTRIBUTE' }> => step.kind === 'DISTRIBUTE',
+      );
+      const byPerson = Object.fromEntries(distributed.map(d => [d.personId, d.amount]));
+      expect(byPerson).toEqual(amounts);
+      expect(result.rounding).toEqual({ unit, remainder });
+
+      const total = distributed.reduce((sum, d) => sum + d.amount, 0n);
+      expect(total + result.rounding.remainder).toBe(80_000_000n);
+    });
+  }
 });

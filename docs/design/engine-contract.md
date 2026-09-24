@@ -58,7 +58,23 @@ Gabung 2–4 simpanan dengan nisab arba' → juz' as-sahm. Tashih = ashl × juz'
 
 ### Tahap 6 — Pembagian
 Saham individu = saham kelompok × juz' ÷ ru'us; validasi 10.5; nominal = saham ÷ tashih × harta,
-floor per orang, sisa dilaporkan sebagai selisih pembulatan.
+dibulatkan ke bawah per orang ke kelipatan `unit`, sisa dilaporkan sebagai selisih pembulatan.
+
+```ts
+interface RoundingConfig {
+  unit: bigint; // 1n = rupiah penuh, 100n = ratusan, 1000n = ribuan — input dari pengguna
+}
+```
+
+- `unit` dipilih pengguna sesuai cara penyerahan harta: tunai tidak mungkin dibayar sampai satuan
+  rupiah (mis. 46.666.666), transfer bank bisa. UI menawarkan 1 / 100 / 1000; engine menerima `bigint > 0`.
+- `unit ≤ 0` → `NEEDS_INPUT` (field `rounding`).
+- Nominal per orang = floor(saham ÷ tashih × harta ÷ unit) × unit. Selisih = harta − Σ nominal
+  (bisa sampai (jumlah ahli waris × unit) − 1); tidak dibagikan diam-diam.
+- `unit` bukan khilaf fikih → bukan bagian `MadhhabConfig`.
+- Lapis penjelasan (`packages/explain`) wajib memberi tahu pengguna: besar selisih pembulatan, bahwa
+  selisih itu tetap milik ahli waris dan perlu disepakati penyalurannya, dan bahwa pembagian bisa pas
+  sampai rupiah terakhir bila diserahkan lewat transfer bank (`unit = 1`).
 
 ---
 
@@ -185,7 +201,7 @@ type EngineResult =
       statuses: Record<PersonId, PersonStatus>;
       table: MasalahTable;
       trace: TraceStep[];
-      rounding: { remainder: Money };
+      rounding: { unit: bigint; remainder: Money };
       ruleset: Ruleset; config: MadhhabConfig; kbVersion: string };
 // fase 2: tambah { status: 'MAUQUF'; scenarios: ...; held: ... }
 ```
