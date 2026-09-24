@@ -98,7 +98,7 @@ export interface MasalahTable {
 // ─── Trace ────────────────────────────────────────────────────────────────────
 
 export type { Nisab };
-export type Stage = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi';
+export type Stage = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat';
 /** Saham vs ru'us (inkisar) dan sisa zawjiyyah vs ashl radd hanya memakai FPB: habis / tawafuq / tabayun (bab 9.4, 10.3). */
 export type InkisarRelation = 'habis' | 'tawafuq' | 'tabayun';
 
@@ -149,6 +149,12 @@ export type TraceStep = { stage: Stage; refs: string[] } & (
       result: bigint }
   | { kind: 'TASHIH'; base: bigint; juzSahm: bigint; result: bigint }
   | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Money }
+  // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
+  | { kind: 'MUNASAKHAT'; mayit: PersonId; saham: bigint; masalah: bigint; relation: InkisarRelation;
+      gcd: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint }
+  // Bab 12.5: harta mayit berikutnya = warisannya + harta pribadi, lalu bab 01 (pecahan eksak).
+  | { kind: 'MUNASAKHAT_TIRKAH'; mayit: PersonId; warisan: Fraction; pribadi: Money; tajhiz: Money; hutang: Money;
+      wasiatDiminta: Money; wasiatDipakai: Fraction; bersih: Fraction }
 );
 
 // ─── Kontrak output utama ─────────────────────────────────────────────────────
@@ -193,3 +199,37 @@ export interface EngineInput {
   ruleset: Ruleset;
   kbVersion: string;
 }
+
+// ─── Munasakhat (bab 12) ──────────────────────────────────────────────────────
+
+/** Bab 12.5: opsional; tanpa ini hutang/wasiat/harta pribadi mayit dianggap sudah diselesaikan. */
+export interface MunasakhatTirkah {
+  pribadi: Money;
+  tajhiz: Money;
+  hutang: Money;
+  wasiat: Money;
+}
+
+export interface MunasakhatInput {
+  /** Mayit pertama = `base.graph.deceasedId`. */
+  base: EngineInput;
+  /** Ahli waris yang wafat sebelum pembagian, urut waktu wafat (bab 12.7). */
+  deaths: Array<{ personId: PersonId; tirkah?: MunasakhatTirkah }>;
+  /** Orang yang lahir setelah wafatnya mayit tertentu: belum ada saat mayit itu dan sebelumnya wafat. */
+  bornAfterDeathOf?: Record<PersonId, PersonId>;
+}
+
+type EngineOk = Extract<EngineResult, { status: 'OK' }>;
+
+export type MunasakhatResult =
+  | (Extract<EngineResult, { status: 'NEEDS_INPUT' | 'UNSUPPORTED' }> & { mayit: PersonId })
+  | { status: 'OK';
+      /** Hasil pipeline tiap mayit, urut wafat. */
+      steps: Array<{ mayit: PersonId; result: EngineOk }>;
+      jamiah: bigint;
+      saham: Record<PersonId, bigint>;
+      /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. */
+      ikhtishar: { jamiah: bigint; saham: Record<PersonId, bigint> };
+      nominal: Record<PersonId, Money>;
+      rounding: { unit: bigint; remainder: Money };
+      trace: TraceStep[] };
