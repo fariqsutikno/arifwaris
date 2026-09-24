@@ -43,3 +43,24 @@ export const isMale = (heir: Heir): boolean => MALE_KEYS.includes(heir.key);
 
 /** Unit ru'us ashabah bil ghair: laki-laki 2, perempuan 1 (An-Nisa' 11, 176). */
 export const unitOf = (heir: Heir): bigint => (isMale(heir) ? 2n : 1n);
+
+/** Keadaan mas'alah setelah tahap 3: saham tiap kelompok pada ashl (ashabah sudah mengambil sisa, min. 0). */
+export interface Masalah {
+  groups: ShareGroup[];
+  ashl: bigint;
+  saham: Record<GroupId, bigint>;
+}
+
+/** Pecahan tetap sebuah kelompok (fardh, bagian fardh ayah/kakek, atau bagian tetap bab 08); ashabah murni → undefined. */
+export function fixedFractionOf(share: Share): Fraction | undefined {
+  switch (share.kind) {
+    case 'fardh': case 'fardhAshabah': return share.fardh;
+    case 'fixed': return share.value;
+    case 'ashabah': return undefined;
+  }
+}
+
+export const isResidueGroup = (group: ShareGroup): boolean =>
+  group.share.kind === 'ashabah' || group.share.kind === 'fardhAshabah';
+
+export const sumWeights = (group: ShareGroup): bigint => Object.values(group.weights).reduce((a, b) => a + b, 0n);

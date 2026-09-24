@@ -225,10 +225,13 @@ type TraceStep = { stage: Stage; refs: RefCode[] } & (
   | { kind: 'FARDH'; group: GroupId; fardh: Fraction; reason: FardhReason }
   | { kind: 'ASHABAH'; group: GroupId; type: 'binNafsi' | 'bilGhair' | 'maalGhair'; jaddChoice?: ... }
   | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
-  | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm';
-      a: bigint; b: bigint; relation: Nisab; gcd: bigint; result: bigint }
+  | { kind: 'TIRKAH'; gross; tajhiz; hutang; wasiatDiminta; wasiatBatas; wasiatDipakai; wasiatButuhIjazah; bersih }
+  // ashl & juzSahm: nisab arba' penuh (10.2). inkisar & raddVsSisa: hanya FPB → 'habis' | 'tawafuq' | 'tabayun' (9.4, 10.3).
+  | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; group?: GroupId;
+      a: bigint; b: bigint; relation: Nisab | 'habis'; gcd: bigint; result: bigint }
   | { kind: 'MASALAH_CLASS'; cls: 'adilah' | 'ailah' | 'raddA' | 'raddB'; sumSaham: bigint; ashl: bigint }
   | { kind: 'AUL'; from: bigint; to: bigint }
+  | { kind: 'RADD'; zawjiyyah?: { group; ashl; spouseSaham; sisa }; raddiyyah: { saham; ashl }; result: bigint }
   | { kind: 'TASHIH'; base: bigint; juzSahm: bigint; result: bigint }
   | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Money }
 );
@@ -237,8 +240,10 @@ type TraceStep = { stage: Stage; refs: RefCode[] } & (
 ```ts
 interface MasalahTable {
   columns: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perPerson' | 'nominal'>; // dinamis
+  totals: Partial<Record<'ashl' | 'aul' | 'radd' | 'tashih', bigint>>;                  // penyebut tiap kolom
   rows: Array<{ group: GroupId; members: PersonId[];
-                fardh?: Fraction; ashabah?: boolean; cells: Record<string, bigint> }>;
+                fardh?: Fraction; ashabah?: boolean; cells: Record<string, bigint>;    // saham kelompok per kolom
+                perPerson: Record<PersonId, { saham: bigint; nominal: Money }> }>;     // kelompok 2:1 → beda per orang
   excluded: PersonId[];   // mahjub/mamnu, tampil dengan alasan
 }
 

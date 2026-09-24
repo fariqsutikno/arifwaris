@@ -5,13 +5,11 @@ import { BAB16_FIXTURES, caseNominal } from './fixtures/bab16.js';
 
 type OkResult = Extract<EngineResult, { status: 'OK' }>;
 
-/** Saham individu dari cells['perPerson'] tiap row; row tanpa nilai itu → gagal eksplisit. */
+/** Saham individu dari row.perPerson (kelompok 2:1 punya bagian anggota berbeda). */
 function sahamPerPerson(result: OkResult): Record<string, bigint> {
   const out: Record<string, bigint> = {};
   for (const row of result.table.rows) {
-    const perPerson = row.cells['perPerson'];
-    if (perPerson === undefined) throw new Error(`row ${row.group} tanpa cells.perPerson`);
-    for (const memberId of row.members) out[memberId] = perPerson;
+    for (const [personId, { saham }] of Object.entries(row.perPerson)) out[personId] = saham;
   }
   return out;
 }

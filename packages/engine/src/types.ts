@@ -80,12 +80,17 @@ export type GroupId = string;
 
 export interface MasalahTable {
   columns: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perPerson' | 'nominal'>;
+  /** Penyebut tiap kolom: ashl, lalu 'aul/radd/tashih bila terjadi. */
+  totals: Partial<Record<'ashl' | 'aul' | 'radd' | 'tashih', bigint>>;
   rows: Array<{
     group: GroupId;
     members: PersonId[];
     fardh?: Fraction;
     ashabah?: boolean;
+    /** Saham kelompok per kolom (ashl/aul/radd/tashih). */
     cells: Record<string, bigint>;
+    /** Per orang: dalam kelompok 2:1 bagian anggota bisa berbeda. */
+    perPerson: Record<PersonId, { saham: bigint; nominal: Money }>;
   }>;
   excluded: PersonId[];
 }
@@ -94,6 +99,8 @@ export interface MasalahTable {
 
 export type { Nisab };
 export type Stage = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi';
+/** Saham vs ru'us (inkisar) dan sisa zawjiyyah vs ashl radd hanya memakai FPB: habis / tawafuq / tabayun (bab 9.4, 10.3). */
+export type InkisarRelation = 'habis' | 'tawafuq' | 'tabayun';
 
 export type JaddOption = 'muqasamah' | 'tsuluts' | 'tsulutsBaqi' | 'sudus';
 
@@ -127,10 +134,19 @@ export type TraceStep = { stage: Stage; refs: string[] } & (
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
       jaddChoice?: Extract<FardhReason, { code: 'JADD_WAL_IKHWAH' }> }
   | { kind: 'SPECIAL_CASE'; name: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
-  | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm';
-      a: bigint; b: bigint; relation: Nisab; gcd: bigint; result: bigint }
+  | { kind: 'TIRKAH'; gross: Money; tajhiz: Money; hutang: Money; wasiatDiminta: Money; wasiatBatas: Money;
+      wasiatDipakai: Money; wasiatButuhIjazah: Money; bersih: Money }
+  // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).
+  // inkisar: a = saham kelompok, b = ru'us, result = simpanan (ru'us ÷ FPB; 1 bila habis).
+  // raddVsSisa: a = sisa zawjiyyah, b = ashl radd, result = ashl akhir.
+  | { kind: 'NISAB_COMPARE'; purpose: 'ashl' | 'raddVsSisa' | 'inkisar' | 'juzSahm'; group?: GroupId;
+      a: bigint; b: bigint; relation: Nisab | InkisarRelation; gcd: bigint; result: bigint }
   | { kind: 'MASALAH_CLASS'; cls: 'adilah' | 'ailah' | 'raddA' | 'raddB'; sumSaham: bigint; ashl: bigint }
   | { kind: 'AUL'; from: bigint; to: bigint }
+  | { kind: 'RADD';
+      zawjiyyah?: { group: GroupId; ashl: bigint; spouseSaham: bigint; sisa: bigint };   // hanya raddB
+      raddiyyah: { saham: Record<GroupId, bigint>; ashl: bigint };
+      result: bigint }
   | { kind: 'TASHIH'; base: bigint; juzSahm: bigint; result: bigint }
   | { kind: 'DISTRIBUTE'; personId: PersonId; saham: bigint; of: bigint; amount: Money }
 );
