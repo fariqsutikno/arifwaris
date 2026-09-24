@@ -33,7 +33,7 @@ describe('rujukan KB (bab 01–14, 16)', () => {
   test('kode unik dan lengkap', () => {
     const codes = REFS.map(r => r.code);
     expect(new Set(codes).size).toBe(codes.length);
-    expect(codes.length).toBe(124);
+    expect(codes.length).toBe(126);
   });
 
   test('status dan jenis', () => {
