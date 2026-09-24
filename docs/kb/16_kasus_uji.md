@@ -38,6 +38,18 @@ Format: **Ahli waris → Ashl/Tashih → Bagian (saham)**. Default = jumhur kecu
 | 23 | 2 nenek, 3 saudara lk sebapak | 6 → 36 | Nenek 6 (3 each); saudara 30 (10 each) | Tashih 2 kelompok |
 | 24 | Khalah, 'ammah (tanpa ahli waris lain) | 3 | Khalah 1; 'ammah 2 | Dzawil arham tanzil |
 
+### Munasakhat (Bab 12)
+
+| # | Keterangan | Ashl → Jami'ah | Saham akhir | Menguji |
+|---|---|---|---|---|
+| M1 | Mayit 1: suami, ibu, saudara lk kandung → suami wafat (ahli waris: anak lk + anak pr) | 6 → 6 | Ibu 2; saudara lk kandung 1; anak lk 2; anak pr 1 | Munasakhat Keadaan 3, tamatsul/inqisam |
+| M2 | Mayit 1: istri, anak lk, anak pr (tashih 24) → anak pr wafat (ahli waris: ibu=istri + saudara lk=anak lk) | 24 → 72 | Istri 16; anak lk 56 | Munasakhat Keadaan 3, tabayun |
+| M3a | Mayit 1: zawj, ukht syaqiqah, ukht li-ab (ukht li-ab mahjub) → ukht li-ab wafat (ahli waris: zawj + ukht syaqiqah) | 2 → 2 | Zawj 1; ukht syaqiqah 1 | Keadaan 1 ikhtishar sah: nisbah 1:1 sama, tidak ada 'aul — boleh langsung |
+| M3b | Kasus M3a dengan susunan yang memaksa 'aul ≠ bagian mayit kedua | jami'ah | — | Keadaan 1 ikhtishar TIDAK sah (kasus uji negatif): ikhtishar naif memberi angka berbeda dari jami'ah; jami'ah tetap benar |
+| M4 | 3 akh syaqiq berantai: akh 1 wafat → akh 2 wafat (sisa: akh 3) | 3 → 9 | Akh 3 mendapat semua (9/9) | Munasakhat 3 mayit berantai, jami'ah akhir = 9 |
+
+> M3a & M3b adalah property test pair: assert `hasil_jamiah(M3a) == hasil_ikhtishar_langsung(M3a)` (harus sama); assert `hasil_jamiah(M3b) != hasil_ikhtishar_naif(M3b)` (harus beda).
+
 ## Uji Nominal
 Tirkah Rp 150.000.000; tajhiz Rp 5.000.000; hutang Rp 25.000.000; wasiat untuk masjid Rp 50.000.000.
 - Sisa setelah hutang = 120.000.000; batas wasiat 1/3 = 40.000.000 → wasiat dipotong jadi **40.000.000** (kelebihan 10.000.000 butuh ijazah ahli waris).
@@ -63,3 +75,5 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R16-3 | Kasus 15 (ayah, ibu, 2 saudara) | RDH | Bab 4, far' | «مات عن أبوين وأخوين، فللأم السدس، والباقي للأب» |
 | R16-4 | Kasus 13 (musyarrakah) | RDH | Bab 1 | Rukun terpenuhi; pembagian sama rata (R07-2). |
 | R16-5 | Kasus 22–23 (tashih) | RDH + KH | Bab 9, Fashl 2 | Metode tabayun/tawafuq sesuai R10-2. |
+| R16-6 | Kasus M1–M2 (munasakhat dasar) | KH + Lahim | Lahim contoh Bab Munasakhat | Angka sudah terverifikasi dari contoh Lahim (R12-4). |
+| R16-7 | Kasus M4 (3 akh berantai, jami'ah = 9) | Lahim | Lahim, contoh Keadaan 3 multi-mayit | Lahim: «fa-iktafaina biha» — tamatsul di salah satu langkah, jami'ah akhir 9. |
