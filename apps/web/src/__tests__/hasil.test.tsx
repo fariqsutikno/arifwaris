@@ -1,6 +1,6 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { useState } from 'react';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
@@ -24,6 +24,13 @@ function Uji({ awal, tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; tujuan?
   return <Hasil kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
 const pembagian = () => screen.getByRole('region', { name: 'Pembagian' });
+/** Buka jawaban lewat dialog tekan-tahan. */
+const bukaLewatDialog = (namaTombolTahan: RegExp) => {
+  vi.useFakeTimers();
+  fireEvent.pointerDown(within(screen.getByRole('alertdialog')).getByRole('button', { name: namaTombolTahan }));
+  act(() => { vi.advanceTimersByTime(1300); });
+  vi.useRealTimers();
+};
 
 describe('layar hasil', () => {
   it('pembagian per orang dan yang terhalang beserta alasannya', () => {
@@ -67,6 +74,8 @@ describe('layar hasil', () => {
     expect(screen.queryByText('1/6')).toBeNull();
     expect(screen.queryByText(/Terhalang oleh/)).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/belum nyoba/);
+    bukaLewatDialog(/Tahan untuk buka/);
     expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);
   });
 
@@ -85,15 +94,18 @@ describe('layar hasil', () => {
     expect(within(pembagian()).getByRole('status').textContent).toMatch(/Benar semua/);
   });
 
-  it('mode belajar: pindah ke Hitung kasus saat jawaban tertutup butuh mengetik kata kunci', () => {
+  it('mode belajar: pindah ke Hitung kasus saat jawaban tertutup harus menahan tombol; dilepas cepat = batal', () => {
     render(<Uji awal={c1601()} tujuan="belajar" />);
     fireEvent.click(screen.getByRole('button', { name: 'Hitung kasus' }));
-    const dialog = screen.getByRole('alertdialog');
-    const pindah = within(dialog).getByRole('button', { name: 'Pindah ke Hitung kasus' }) as HTMLButtonElement;
-    expect(pindah.disabled).toBe(true);
-    fireEvent.change(within(dialog).getByRole('textbox'), { target: { value: 'Buka Jawaban' } });
-    expect(pindah.disabled).toBe(false);
-    fireEvent.click(pindah);
+    vi.useFakeTimers();
+    const tombol = within(screen.getByRole('alertdialog')).getByRole('button', { name: /Tahan untuk pindah/ });
+    fireEvent.pointerDown(tombol);
+    act(() => { vi.advanceTimersByTime(400); });
+    fireEvent.pointerUp(tombol);
+    act(() => { vi.advanceTimersByTime(2000); });
+    vi.useRealTimers();
+    expect(screen.getByRole('alertdialog')).toBeTruthy();
+    bukaLewatDialog(/Tahan untuk pindah/);
     expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
   });
 
@@ -101,12 +113,15 @@ describe('layar hasil', () => {
     let dikerjakan = 0;
     const { unmount } = render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={() => { dikerjakan++; }} />);
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
+    bukaLewatDialog(/Tahan untuk buka/);
     expect(dikerjakan).toBe(0);
     unmount();
     render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={() => { dikerjakan++; }} />);
     for (const kotak of within(pembagian()).getAllByRole('textbox')) fireEvent.change(kotak, { target: { value: '0' } });
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
+    expect(screen.getByRole('alertdialog').textContent).not.toMatch(/belum nyoba/);
+    bukaLewatDialog(/Tahan untuk buka/);
     expect(dikerjakan).toBe(1);
   });
 

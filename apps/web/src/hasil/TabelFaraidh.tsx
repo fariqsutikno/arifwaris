@@ -5,7 +5,7 @@ import type { IdOrang, TabelMasalah } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
 import type { HasilOk } from '../jalankan';
-import type { RingkasanHasil } from './ringkasan';
+import { urutkanBaris, type RingkasanHasil } from './ringkasan';
 import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
 
@@ -49,7 +49,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
         </tr>
       </thead>
       <tbody>
-        {tabel.baris.flatMap(baris => {
+        {urutkanBaris(tabel.baris, ringkasan.statusOrang).flatMap(baris => {
           const anggota = Object.keys(baris.perOrang);
           return anggota.map((id, indeks) => {
             const orang = nama.get(id);

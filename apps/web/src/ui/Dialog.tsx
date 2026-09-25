@@ -1,6 +1,6 @@
 // Dialog konfirmasi di halaman (tanpa window.confirm). Dua tombol sejajar selebar sama: Batal (fokus awal) dan
-// aksi lanjut. Esc = Batal. Untuk aksi yang sengaja dibuat berat (mis. membuka jawaban dengan pindah mode),
-// `kataKunci` mewajibkan pengguna mengetik kata itu dulu sebelum tombol lanjut aktif.
+// aksi lanjut. Esc = Batal. Untuk aksi yang sengaja dibuat berat (membuka jawaban di mode Belajar), `tahan`
+// mengganti tombol lanjut dengan tombol yang harus ditekan-tahan sampai penuh (mouse, sentuh, atau Spasi/Enter).
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { Tombol } from './komponen';
@@ -12,14 +12,12 @@ interface Props {
   labelBatal?: string;
   saatLanjut: () => void;
   saatBatal: () => void;
-  kataKunci?: string;
+  tahan?: boolean;
 }
 
-export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, kataKunci }: Props) {
+export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan }: Props) {
   const id = useId();
   const wadah = useRef<HTMLDivElement>(null);
-  const [ketikan, setKetikan] = useState('');
-  const bolehLanjut = !kataKunci || ketikan.trim().toLowerCase() === kataKunci.toLowerCase();
   useEffect(() => { wadah.current?.querySelector<HTMLButtonElement>('[data-batal]')?.focus(); }, []);
   return (
     <div className="konfirmasi" role="alertdialog" aria-modal="true" aria-labelledby={`${id}-judul`} aria-describedby={`${id}-isi`}
@@ -27,17 +25,37 @@ export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'B
       <div className="konfirmasi-isi">
         <h2 id={`${id}-judul`}>{judul}</h2>
         <div id={`${id}-isi`} className="isi-konfirmasi">{children}</div>
-        {kataKunci && (
-          <label className="isian isian-kata-kunci">
-            Ketik <b>{kataKunci}</b> untuk melanjutkan
-            <input value={ketikan} onChange={event => setKetikan(event.target.value)} autoComplete="off" spellCheck={false} />
-          </label>
-        )}
         <div className="aksi-konfirmasi">
-          <Tombol varian="secondary" data-batal onClick={saatBatal}>{labelBatal}</Tombol>
-          <Tombol onClick={saatLanjut} disabled={!bolehLanjut}>{labelLanjut}</Tombol>
+          <Tombol data-batal onClick={saatBatal}>{labelBatal}</Tombol>
+          {tahan ? <TombolTahan label={labelLanjut} saatSelesai={saatLanjut} />
+            : <Tombol varian="secondary" onClick={saatLanjut}>{labelLanjut}</Tombol>}
         </div>
       </div>
     </div>
+  );
+}
+
+const DURASI_TAHAN = 1200;
+
+/** Tombol tekan-tahan: aksi baru jalan setelah ditahan penuh; dilepas sebelum penuh = batal. */
+export function TombolTahan({ label, saatSelesai }: { label: string; saatSelesai: () => void }) {
+  const [menahan, setMenahan] = useState(false);
+  const waktu = useRef<number>();
+  const mulai = () => {
+    setMenahan(true);
+    waktu.current = window.setTimeout(() => { setMenahan(false); saatSelesai(); }, DURASI_TAHAN);
+  };
+  const lepas = () => { window.clearTimeout(waktu.current); setMenahan(false); };
+  useEffect(() => () => window.clearTimeout(waktu.current), []);
+  const tombolTahan = (event: React.KeyboardEvent) => event.key === ' ' || event.key === 'Enter';
+  return (
+    <button type="button" className={menahan ? 'aw-btn aw-btn-secondary tombol-tahan menahan' : 'aw-btn aw-btn-secondary tombol-tahan'}
+      style={{ ['--durasi-tahan' as string]: `${DURASI_TAHAN}ms` }}
+      onPointerDown={mulai} onPointerUp={lepas} onPointerLeave={lepas} onPointerCancel={lepas} onContextMenu={event => event.preventDefault()}
+      onKeyDown={event => { if (tombolTahan(event) && !event.repeat) { event.preventDefault(); mulai(); } }}
+      onKeyUp={event => { if (tombolTahan(event)) lepas(); }}>
+      <span className="isi-tahan" aria-hidden="true" />
+      <span className="label-tahan">{label}</span>
+    </button>
   );
 }

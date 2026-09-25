@@ -1,5 +1,5 @@
 // Beranda: janji singkat, pertanyaan pembuka (Hitung kasus / Belajar), lanjutkan kasus tersimpan, buka file,
-// dan 5 riwayat hitung terbaru.
+// dan riwayat hitung dua pekan terakhir.
 
 import { useRef, useState } from 'react';
 import { TEKS_BERANDA } from '../konten/umum';
@@ -11,15 +11,20 @@ import type { EntriRiwayat } from '../riwayat';
 import { Motif, Tombol } from '../ui/komponen';
 import { DaftarRiwayat } from './Riwayat';
 
-interface Props { kasusTersimpan: Kasus | null; kirim: (aksi: Aksi) => void; saatBukaRiwayat: (entri: EntriRiwayat) => void }
+interface Props {
+  kasusTersimpan: Kasus | null;
+  kirim: (aksi: Aksi) => void;
+  saatBukaRiwayat: (entri: EntriRiwayat) => void;
+  saatImpor: (kasus: Kasus) => void;
+}
 
-export function Beranda({ kasusTersimpan, kirim, saatBukaRiwayat }: Props) {
+export function Beranda({ kasusTersimpan, kirim, saatBukaRiwayat, saatImpor }: Props) {
   const inputFile = useRef<HTMLInputElement>(null);
   const [pesan, setPesan] = useState<string | null>(null);
   const saatPilihFile = async (file: File | undefined) => {
     if (!file) return;
     const hasil = dariJson(await file.text());
-    if (hasil.berhasil) kirim({ jenis: 'MUAT', kasus: hasil.kasus });
+    if (hasil.berhasil) saatImpor(hasil.kasus);
     else setPesan(`File-nya nggak bisa dibuka: ${hasil.pesan}`);
   };
   const [tujuanTertunda, setTujuanTertunda] = useState<Tujuan | null>(null);
@@ -49,7 +54,7 @@ export function Beranda({ kasusTersimpan, kirim, saatBukaRiwayat }: Props) {
         {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
         <section className="tumpuk-rapat riwayat-beranda" aria-labelledby="judul-riwayat">
           <h2 id="judul-riwayat" className="tanya-tujuan">Riwayat hitung</h2>
-          <DaftarRiwayat kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} batas={5} />
+          <DaftarRiwayat kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} ringkas />
         </section>
         {tujuanTertunda && kasusTersimpan && (
           <KonfirmasiKasusBaru kasus={kasusTersimpan} saatBatal={() => setTujuanTertunda(null)}

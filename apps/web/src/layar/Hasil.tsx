@@ -35,11 +35,9 @@ interface Props {
    * pernah mencoba menjawab. Membuka kunci tanpa mencoba tidak dihitung.
    */
   saatDikerjakan?: (() => void) | undefined;
-  /** Kasus biasa otomatis masuk riwayat; soal latihan tidak. */
-  tersimpanDiRiwayat?: boolean;
 }
 
-export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat = true }: Props) {
+export function Hasil({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>;
 
@@ -73,10 +71,10 @@ export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} tersimpanDiRiwayat={tersimpanDiRiwayat} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat = true }: Props) {
+function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
@@ -90,9 +88,10 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat
   const bukaJawaban = () => { setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(); };
   const [tebakanBenar, setTebakanBenar] = useState(false);
   const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(); };
-  const [konfirmasiPindahMode, setKonfirmasiPindahMode] = useState(false);
-  // Pindah ke Hitung kasus saat jawaban masih tertutup = membuka kunci; dibuat berat lewat ketik kata kunci.
-  const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiPindahMode(true) : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
+  // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
+  // lewat dialog dengan tombol tekan-tahan.
+  const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | 'pindah' | null>(null);
+  const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
   const [sembunyiNominal, setSembunyiNominal] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
   const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
@@ -146,7 +145,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat
           </div>
           <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan}
             sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
-            sedangMenebak={sedangMenebak} saatTampilkanJawaban={bukaJawaban} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
+            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} />
@@ -161,7 +160,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat
         <div className="bar-bawah-isi">
           <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>
           <span className="pengisi" />
-          {tersimpanDiRiwayat && <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> Tersimpan di riwayat</span>}
+          <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> Tersimpan di riwayat</span>
           <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> Ekspor</Tombol>
         </div>
       </div>
@@ -171,11 +170,22 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
           saatUbah={kunci => { setOrangDipilih(null); setKunciDiubah(kunci); }} />
       )}
-      {konfirmasiPindahMode && (
-        <DialogKonfirmasi judul="Keluar dari mode Belajar?" labelBatal="Tetap belajar" labelLanjut="Pindah ke Hitung kasus" kataKunci="buka jawaban"
-          saatBatal={() => setKonfirmasiPindahMode(false)}
-          saatLanjut={() => { setKonfirmasiPindahMode(false); kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }); }}>
-          <p>Semua jawaban langsung terbuka{sudahMencoba ? '.' : ', dan kasus ini tidak dihitung sudah kamu kerjakan.'} Kalau masih mau mencoba, pilih Tetap belajar.</p>
+      {konfirmasiBuka && (
+        <DialogKonfirmasi tahan
+          judul={konfirmasiBuka === 'lihat' ? 'Yakin mau lihat jawaban?' : 'Pindah ke Hitung kasus?'}
+          labelBatal={konfirmasiBuka === 'lihat' ? 'Coba dulu' : 'Tetap belajar'}
+          labelLanjut={konfirmasiBuka === 'lihat' ? 'Tahan untuk buka' : 'Tahan untuk pindah'}
+          saatBatal={() => setKonfirmasiBuka(null)}
+          saatLanjut={() => {
+            const jenis = konfirmasiBuka;
+            setKonfirmasiBuka(null);
+            if (jenis === 'lihat') bukaJawaban();
+            else kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
+          }}>
+          <ul className="poin-konfirmasi">
+            <li>Semua jawaban langsung kebuka, kamu nggak bisa nebak kasus ini lagi.</li>
+            {!sudahMencoba && <li>Kamu belum nyoba jawab sama sekali. Sekali coba dulu, yuk.</li>}
+          </ul>
         </DialogKonfirmasi>
       )}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
@@ -199,8 +209,9 @@ function Legenda() {
       <span><i className="kotak g-keturunan" />Keturunan</span>
       <span><i className="kotak g-leluhur" />Orang tua & leluhur</span>
       <span><i className="kotak g-saudara" />Saudara & kerabat</span>
-      <span><i className="kotak putus" />Garis putus = tidak dapat bagian</span>
       <span><i className="kotak almarhum" />Almarhum</span>
+      <span><i className="kotak terhalang" />Terhalang</span>
+      <span><i className="kotak putus" />Garis putus = tidak mewarisi</span>
       <span><i className="garis-l" />Mendatar = menikah, turun = anak</span>
     </div>
   );

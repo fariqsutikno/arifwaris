@@ -24,8 +24,8 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
     <main className="halaman tumpuk">
       <h1>Latihan</h1>
       <nav className="tab-kecil tab-latihan" aria-label="Jenis latihan">
-        <a href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>Soal hitung</a>
-        <a href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>Kuis konsep</a>
+        <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>Soal hitung</a>
+        <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>Kuis konsep</a>
       </nav>
       {tab === 'hitung' ? <DaftarSoalHitung kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <DaftarPaketKuis />}
     </main>

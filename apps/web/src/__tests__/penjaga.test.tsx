@@ -25,3 +25,17 @@ it('tautan yang tidak dijaga dan penjaga nonaktif tidak bertanya', () => {
   fireEvent.click(screen.getByRole('link', { name: 'Belajar' }));
   expect(screen.queryByRole('alertdialog')).toBeNull();
 });
+
+it('tombol tahan bisa dipakai dengan keyboard: tahan Spasi sampai penuh', async () => {
+  const { act } = await import('@testing-library/react');
+  const { vi } = await import('vitest');
+  const { TombolTahan } = await import('../ui/Dialog');
+  let selesai = 0;
+  vi.useFakeTimers();
+  render(<TombolTahan label="Tahan untuk buka" saatSelesai={() => { selesai++; }} />);
+  const tombol = screen.getByRole('button', { name: 'Tahan untuk buka' });
+  fireEvent.keyDown(tombol, { key: ' ' });
+  act(() => { vi.advanceTimersByTime(1300); });
+  vi.useRealTimers();
+  expect(selesai).toBe(1);
+});

@@ -1,6 +1,6 @@
-// Riwayat hitung: kasus yang pernah sampai ke layar hasil, terbaru di atas, disimpan di perangkat ini.
-// Satu entri per sesi (mulai kasus / buka file / buka dari riwayat): mengubah kasus di layar hasil memperbarui
-// entri sesinya, bukan menambah entri baru.
+// Riwayat hitung: kasus yang pernah sampai ke layar hasil, terakhir dibuka di atas, disimpan di perangkat ini.
+// Satu entri per sesi (mulai kasus / impor / buka dari riwayat, materi, atau latihan): mengubah kasus di layar hasil
+// memperbarui entri sesinya. Tiap entri mencatat sumbernya. Entri yang tidak dibuka lebih dari 30 hari dibuang.
 
 import type { KunciAhliWaris } from '@waris/engine';
 import { hitungIsian, jenisDari } from './checklist';
@@ -9,26 +9,47 @@ import { dariJson, keJson, type Kasus } from './kasus';
 import { LABEL_SEHARI } from './konten/ahliWaris';
 
 const KUNCI_RIWAYAT = 'arif-waris:riwayat';
-const BATAS_RIWAYAT = 30;
+const HARI = 24 * 60 * 60 * 1000;
+export const MASA_SIMPAN = 30 * HARI;
+/** Beranda Hitung menampilkan riwayat dua pekan terakhir; sisanya di halaman Riwayat. */
+export const MASA_BERANDA = 14 * HARI;
 
-export interface EntriRiwayat { id: string; waktu: number; judul: string; keterangan: string; kasus: Kasus }
-interface EntriTersimpan { id: string; waktu: number; kasus: string }
+export type SumberRiwayat =
+  | { jenis: 'sendiri' }
+  | { jenis: 'impor' }
+  | { jenis: 'materi' }
+  | { jenis: 'latihan'; kode: string };
+
+export interface EntriRiwayat { id: string; waktu: number; sumber: SumberRiwayat; judul: string; keterangan: string; kasus: Kasus }
+interface EntriTersimpan { id: string; waktu: number; sumber?: SumberRiwayat; kasus: string }
 
 export function bacaRiwayat(): EntriRiwayat[] {
   return bacaTersimpan().flatMap(entri => {
     const hasil = dariJson(entri.kasus);
-    return hasil.berhasil ? [{ id: entri.id, waktu: entri.waktu, ...ringkasKasus(hasil.kasus), kasus: hasil.kasus }] : [];
+    return hasil.berhasil
+      ? [{ id: entri.id, waktu: entri.waktu, sumber: entri.sumber ?? { jenis: 'sendiri' }, ...ringkasKasus(hasil.kasus), kasus: hasil.kasus }]
+      : [];
   });
 }
 
-export function catatRiwayat(id: string, kasus: Kasus, waktu: number): void {
+/** Catat atau perbarui entri sesi `id`; `waktu` = terakhir dibuka/diubah. */
+export function catatRiwayat(id: string, kasus: Kasus, waktu: number, sumber: SumberRiwayat): void {
   const json = keJson(kasus);
   // Kasus yang persis sama (mis. dibuka lagi dari riwayat lalu tidak diubah) tidak dicatat dua kali.
-  const lain = bacaTersimpan().filter(entri => entri.id !== id && entri.kasus !== json);
-  simpanTersimpan([{ id, waktu, kasus: json }, ...lain].slice(0, BATAS_RIWAYAT));
+  const lain = bacaTersimpan().filter(entri => entri.id !== id && entri.kasus !== json && waktu - entri.waktu <= MASA_SIMPAN);
+  simpanTersimpan([{ id, waktu, sumber, kasus: json }, ...lain]);
 }
 
 export const hapusRiwayat = (id?: string): void => simpanTersimpan(id ? bacaTersimpan().filter(entri => entri.id !== id) : []);
+
+export function labelSumber(sumber: SumberRiwayat): string {
+  switch (sumber.jenis) {
+    case 'sendiri': return 'Hitung sendiri';
+    case 'impor': return 'Impor file';
+    case 'materi': return 'Contoh materi';
+    case 'latihan': return `Soal latihan ${sumber.kode}`;
+  }
+}
 
 /** "Istri, 2 Anak perempuan, Ayah" dan "Rp 120.000.000". */
 export function ringkasKasus(kasus: Kasus): { judul: string; keterangan: string } {

@@ -52,7 +52,7 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
           <span>Tidak ada</span><small>Langsung lihat hasil.</small>
         </button>
         <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
-          <span>Ada</span><small>Beda agama atau terlibat dalam kematian almarhum.</small>
+          <span>Ada</span><small>Beda agama atau terlibat dalam penyebab kematian almarhum.</small>
         </button>
       </div>
       {adaKondisi && <>
@@ -63,7 +63,7 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
             saatUbah={tercentang => ubahOrang(id, { agama: tercentang ? 'nonIslam' : 'islam' })} />
         ))}
       </Kondisi>
-      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Apa pun bentuknya."
+      <Kondisi judul="Ada yang terlibat dalam penyebab kematian almarhum" keterangan="Apa pun bentuknya."
         akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
         {daftarAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={!!kasus.graf.orang[id]!.membunuhPewaris}

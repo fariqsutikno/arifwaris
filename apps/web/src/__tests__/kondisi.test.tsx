@@ -23,7 +23,7 @@ it('memilih "Ada" menampilkan dua kondisi dengan akibatnya (munasakhat disembuny
   render(<Uji awal={denganAnak()} />);
   fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
   expect(screen.getByLabelText(/beda agama/)).toBeTruthy();
-  expect(screen.getByLabelText(/terlibat dalam kematian/)).toBeTruthy();
+  expect(screen.getByLabelText(/terlibat dalam penyebab kematian/)).toBeTruthy();
   expect(screen.queryByLabelText(/wafat sebelum harta dibagi/)).toBeNull();
   expect(screen.getAllByText(/Akibatnya:/).length).toBe(2);
 });

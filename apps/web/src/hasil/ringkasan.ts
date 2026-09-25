@@ -86,10 +86,25 @@ const TEKS_SISA_KELUAR = {
 
 // ─── Kasus biasa ──────────────────────────────────────────────────────────────
 
+// ─── Urutan tampil ───────────────────────────────────────────────────────────
+// Sama di tabel faraidh, kartu pembagian, tebakan, dan daftar terhalang: fardh saja → fardh + sisa → ashabah;
+// di dalamnya pasangan → ashl warits (leluhur) → far'u warits (keturunan) → hawasyi (saudara, paman, dst.).
+const URUTAN_KELOMPOK: Record<Kelompok, number> = { pasangan: 0, leluhur: 1, keturunan: 2, saudara: 3 };
+const golongan = (baris: { fardh?: unknown; ashabah?: unknown }) => (baris.fardh ? (baris.ashabah ? 1 : 0) : 2);
+
+/** Baris tabel engine diurutkan untuk tampilan; isi (saham, sel) tidak diubah. */
+export function urutkanBaris<T extends HasilOk['tabel']['baris'][number]>(daftar: T[], statusOrang: Record<IdOrang, StatusOrang>): T[] {
+  const kelompokBaris = (baris: T) => URUTAN_KELOMPOK[kelompokDari(kunciDari(statusOrang[Object.keys(baris.perOrang)[0] ?? '']))];
+  return [...daftar].sort((a, b) => golongan(a) - golongan(b) || kelompokBaris(a) - kelompokBaris(b));
+}
+
+const menurutKelompok = <T extends { kelompok: Kelompok }>(daftar: T[]): T[] =>
+  [...daftar].sort((a, b) => URUTAN_KELOMPOK[a.kelompok] - URUTAN_KELOMPOK[b.kelompok]);
+
 function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
   const penyebut = penyebutAkhir(hasil.tabel);
   const alasanPerKelompok = new Map(hasil.jejak.flatMap(langkah => (langkah.jenis === 'FARDH' ? [[langkah.kelompok, langkah.alasan.kode] as const] : [])));
-  const penerima = hasil.tabel.baris.flatMap(baris => Object.entries(baris.perOrang).map(([id, { saham, nominal }]): Penerima => {
+  const penerima = urutkanBaris(hasil.tabel.baris, hasil.statusOrang).flatMap(baris => Object.entries(baris.perOrang).map(([id, { saham, nominal }]): Penerima => {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
       id, nama: namaOrang(graf, hasil.statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham, nominal,
@@ -101,7 +116,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
   }));
   return {
     jenis: 'biasa', penerima, penyebut,
-    terhalang: daftarTerhalang(graf, hasil.statusOrang),
+    terhalang: menurutKelompok(daftarTerhalang(graf, hasil.statusOrang)),
     tirkah: langkahTirkah(hasil.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
     ...(hasil.sisaKeluar ? { sisaKeluar: { saham: hasil.sisaKeluar.saham, nominal: hasil.sisaKeluar.nominal, ...TEKS_SISA_KELUAR[hasil.sisaKeluar.tujuan] } } : {}),
@@ -128,15 +143,15 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): Ringka
       if (!statusOrang[id] || (statusOrang[id]!.jenis !== 'ahliWaris' && status.jenis === 'ahliWaris')) statusOrang[id] = status;
     }
   }
-  const penerima = Object.entries(hasil.saham).filter(([, saham]) => saham > 0n).map(([id, saham]): Penerima => {
+  const penerima = menurutKelompok(Object.entries(hasil.saham).filter(([, saham]) => saham > 0n).map(([id, saham]): Penerima => {
     const kunci = kunciDari(statusOrang[id]);
     return {
       id, nama: namaOrang(graf, statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham,
       nominal: hasil.nominal[id] ?? 0n, keterangan: `${saham} dari ${hasil.jamiah} saham jami'ah`, ashabah: false,
     };
-  });
-  const terhalang = hasil.daftarLangkah.flatMap(({ hasil: hasilMayit }) => daftarTerhalang(graf, hasilMayit.statusOrang))
-    .filter((orang, indeks, semua) => semua.findIndex(lain => lain.id === orang.id) === indeks);
+  }));
+  const terhalang = menurutKelompok(hasil.daftarLangkah.flatMap(({ hasil: hasilMayit }) => daftarTerhalang(graf, hasilMayit.statusOrang))
+    .filter((orang, indeks, semua) => semua.findIndex(lain => lain.id === orang.id) === indeks));
   const pertama = hasil.daftarLangkah[0]!.hasil;
   return {
     jenis: 'munasakhat', penerima, terhalang, penyebut: hasil.jamiah,
@@ -189,7 +204,7 @@ function daftarTerhalang(graf: GrafKeluarga, statusOrang: Record<IdOrang, Status
 }
 
 const ALASAN_MANI: Record<Extract<StatusOrang, { jenis: 'mamnu' }>['mani'], string> = {
-  qatl: 'terlibat dalam kematian almarhum', ikhtilafDin: 'berbeda agama dengan almarhum', riqq: 'berstatus budak',
+  qatl: 'terlibat dalam penyebab kematian almarhum', ikhtilafDin: 'berbeda agama dengan almarhum', riqq: 'berstatus budak',
   istibham: 'urutan wafatnya tidak diketahui', daur: 'akan menimbulkan hitungan berputar (daur)',
 };
 

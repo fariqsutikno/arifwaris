@@ -1,4 +1,5 @@
-// Pohon keluarga di kanvas hasil: node per orang (warna kelompok, garis putus = tidak dapat, abu-abu = almarhum),
+// Pohon keluarga di kanvas hasil: node per orang (warna kelompok, gelap = almarhum, merah bergaris = terhalang,
+// garis putus = tidak mewarisi),
 // garis menikah (mendatar + lingkaran) dan garis keturunan (turun), diukur dari posisi node sesungguhnya.
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
@@ -37,7 +38,7 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
       isi: <span className="dapat-node"><span className="frac">{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</span>
         <span className="angka">{sembunyiNominal ? 'Rp ••••••' : formatRupiah(dapat.nominal)}</span></span>,
     };
-    if (halang) return { kelas: 'putus', peran: 'Terhalang (mahjub)', nama, isi: <span className="alasan-node">{halang.alasan}</span> };
+    if (halang) return { kelas: 'terhalang', peran: 'Terhalang', nama, isi: <span className="alasan-node">{halang.alasan}</span> };
     return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">Tidak mewarisi</span> };
   };
   return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} />;
@@ -69,7 +70,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
               if (!saatPilih) {
                 return (
                   <div key={id} {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} role="group" aria-label={node.nama}>
-                    <span className="peran-node">{node.peran}</span>
+                    {node.peran && <span className="peran-node">{node.peran}</span>}
                     <b>{node.nama}</b>
                     {node.isi}
                     {node.aksi}
@@ -80,7 +81,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')}
                   aria-label={bisaDipilih ? `${node.nama}. Lihat penjelasan` : node.nama} disabled={!bisaDipilih}
                   onClick={() => saatPilih?.(id)}>
-                  <span className="peran-node">{node.peran}</span>
+                  {node.peran && <span className="peran-node">{node.peran}</span>}
                   <b>{node.nama}</b>
                   {node.isi}
                 </button>
@@ -120,12 +121,17 @@ function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak)
         cincin.push(titik);
         return titik;
       };
+      // Keluarga yang anaknya di baris sama mendapat ketinggian batang berbeda, supaya garis mendatarnya tidak menumpuk.
+      const jumlahDiBaris = new Map<number, number>();
       for (const { orangTua, anak } of letak.keluarga) {
         const titikAwal = orangTua.length === 2 ? garisNikah(orangTua[0]!, orangTua[1]!)
           : (() => { const k = kotak(orangTua[0]!); return k ? [k.tengahX, k.bawah] as [number, number] : null; })();
         const daftarAnak = anak.map(kotak).filter((k): k is NonNullable<typeof k> => !!k);
         if (!titikAwal || daftarAnak.length === 0) continue;
-        const yBatang = Math.min(...daftarAnak.map(k => k.atas)) - 22;
+        const atasAnak = Math.round(Math.min(...daftarAnak.map(k => k.atas)));
+        const keBerapa = jumlahDiBaris.get(atasAnak) ?? 0;
+        jumlahDiBaris.set(atasAnak, keBerapa + 1);
+        const yBatang = atasAnak - 18 - (keBerapa % 4) * 9;
         const semuaX = [titikAwal[0], ...daftarAnak.map(k => k.tengahX)];
         jalur += `M${titikAwal[0]},${titikAwal[1]}V${yBatang}M${Math.min(...semuaX)},${yBatang}H${Math.max(...semuaX)}`;
         for (const k of daftarAnak) jalur += `M${k.tengahX},${yBatang}V${k.atas}`;

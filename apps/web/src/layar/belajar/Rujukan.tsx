@@ -200,7 +200,6 @@ function DetailRujukan({ kode }: { kode: string }) {
       <div className="kartu kartu-rujukan"><Dalil daftarKode={[rujukan.kode]} diHalamanRujukan /></div>
       {rujukan.arab.map(teks => <blockquote key={teks} lang="ar" dir="rtl" className="kutipan-arab">{teks}</blockquote>)}
       {rujukan.arab.length === 0 && rujukan.kutipan && <p>{rujukan.kutipan}</p>}
-      <p className="keterangan">Kode {rujukan.kode}</p>
     </>
   );
 }

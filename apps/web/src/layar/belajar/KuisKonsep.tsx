@@ -173,8 +173,8 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
           <p className="skor-besar">{benar}<small>/{daftarSoal.length}</small></p>
         </div>
         <dl className="rincian-skor">
-          <div><dt>Benar</dt><dd>{benar}</dd></div>
-          <div><dt>Salah</dt><dd>{daftarSoal.length - benar}</dd></div>
+          <div className="skor-benar"><dt>Benar</dt><dd>{benar}</dd></div>
+          <div className="skor-salah"><dt>Salah</dt><dd>{daftarSoal.length - benar}</dd></div>
           <div><dt>Nilai</dt><dd>{persen}</dd></div>
         </dl>
         <div className="aksi-konfirmasi">
@@ -194,12 +194,24 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
                 <details className={tepat ? 'kartu-lipat pembahasan-item' : 'kartu-lipat pembahasan-item salah'} open={!tepat}>
                   <summary>
                     <span className={tepat ? 'status-jawaban benar' : 'status-jawaban salah'}><Ikon nama={tepat ? 'benar' : 'salah'} ukuran={16} /></span>
-                    <span><b>Soal {urutan + 1}.</b> <Sebaris isi={soal.pertanyaan} /></span>
+                    <span className="pertanyaan-pembahasan"><b>Soal {urutan + 1}.</b> <Sebaris isi={soal.pertanyaan} /></span>
+                    <span className="panah-lipat" aria-hidden="true">▾</span>
                   </summary>
                   <div className="isi-pembahasan">
-                    <p><span className="keterangan">Jawabanmu</span> {HURUF[dipilih]}. <Sebaris isi={soal.pilihan[dipilih]!} /></p>
-                    {!tepat && <p><span className="keterangan">Jawaban benar</span> {HURUF[soal.indeksBenar]}. <Sebaris isi={soal.pilihan[soal.indeksBenar]!} /></p>}
-                    <p><Sebaris isi={soal.pembahasan} /></p>
+                    <div className={tepat ? 'baris-jawaban benar' : 'baris-jawaban salah'}>
+                      <span className="label-jawaban">Jawabanmu</span>
+                      <span><b>{HURUF[dipilih]}.</b> <Sebaris isi={soal.pilihan[dipilih]!} /></span>
+                    </div>
+                    {!tepat && (
+                      <div className="baris-jawaban benar">
+                        <span className="label-jawaban">Jawaban tepat</span>
+                        <span><b>{HURUF[soal.indeksBenar]}.</b> <Sebaris isi={soal.pilihan[soal.indeksBenar]!} /></span>
+                      </div>
+                    )}
+                    <div className="teks-pembahasan">
+                      <span className="label-jawaban">Pembahasan</span>
+                      <p><Sebaris isi={soal.pembahasan} /></p>
+                    </div>
                   </div>
                 </details>
               </li>
