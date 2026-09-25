@@ -1,14 +1,16 @@
-// Mode fokus langkah perhitungan: satu layar tanpa menu dan tombol lain. Pohon dan tabel berdampingan di atas,
-// penjelasan langkah + navigasi di bawah. Di atas tabel, panel hitung membacakan poin yang sedang dibahas dan
-// memunculkan hitungannya pelan-pelan (saham/penyebut × harta = nominal) sebelum angkanya masuk ke tabel. Di layar lebar, bagian pecahan "terbang" dari orangnya di pohon ke selnya
-// di tabel saat langkah bagian masing-masing. Di HP keduanya ditumpuk dan layar menggulir ke bagian yang dibahas.
+// Mode fokus langkah perhitungan: satu layar hanya untuk tahap yang sedang dibahas. Pohon dan tabel berdampingan;
+// di atas tabel, panel hitung menyebut sub-langkahnya ("Langkah 4b — ...") beserta kalimatnya, lalu memperagakan
+// hitungannya bagian demi bagian sebelum angkanya masuk ke kotak di tabel. Daftar langkah lengkap disembunyikan di
+// laci samping (bawah di HP) yang dibuka dengan tombol. Kontrol animasi (nyala/mati, putar/jeda) berupa ikon di kepala.
+// Di layar lebar, bagian pecahan "terbang" dari orangnya di pohon ke selnya di tabel saat langkah bagian masing-masing.
 
-import { useEffect, useRef, type ReactNode } from 'react';
+import { useEffect, useRef, type CSSProperties, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import type { BarisPenjelasan, KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
 import { Baris } from '../layar/Penjelasan';
 import { Ikon } from '../ui/Ikon';
+import { JEDA_BAGIAN, type Peraga } from './peraga';
 import { LegendaSorot, useSorot, type PeranSorot } from './sorot';
 
 interface Props {
@@ -18,17 +20,18 @@ interface Props {
   kolom: KolomBab | undefined;
   kanvas: { pohon: ReactNode; tabel: ReactNode };
   saatTutup: () => void;
+  kontrol: ReactNode;
   atasTabel: ReactNode;
-  children: ReactNode;
+  /** Daftar langkah lengkap; null = laci tertutup. */
+  laci: ReactNode | null;
+  navigasi: ReactNode;
+  dijeda: boolean;
 }
 
 const DURASI_TERBANG = 1400;
-/** Jeda antarbagian hitungan di panel; angka masuk ke tabel setelah seluruh hitungan tampil. */
-const JEDA_BAGIAN_HITUNGAN = 1000;
-export const DURASI_HITUNGAN = JEDA_BAGIAN_HITUNGAN * 3 + 400;
 const LEBAR_BERDAMPINGAN = '(min-width: 900px)';
 
-export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, atasTabel, children }: Props) {
+export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, kontrol, atasTabel, laci, navigasi, dijeda }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
   const { langkah } = useSorot();
 
@@ -46,7 +49,7 @@ export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, at
     tujuan?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' });
   }, [kolom, nomor]);
 
-  // Sekali per ketukan, hanya untuk orang yang menerima bagian (bukan penyebab).
+  // Sekali per ketukan (termasuk tiap putaran ulang), hanya untuk orang yang menerima bagian (bukan penyebab).
   const ketukanTerbang = useRef<number | null>(null);
   useEffect(() => {
     if (langkah?.kolom !== 'bagian' || !wadah.current || ketukanTerbang.current === langkah.ketukan) return;
@@ -60,31 +63,36 @@ export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, at
   };
 
   return createPortal(
-    <div className="fokus-langkah" role="dialog" aria-modal="true" aria-label={`Mode fokus: ${judul}`} ref={wadah}
-      onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
+    <div className={['fokus-langkah', dijeda && 'dijeda', laci && 'laci-terbuka'].filter(Boolean).join(' ')} role="dialog" aria-modal="true"
+      aria-label={`Mode fokus: ${judul}`} ref={wadah} onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
       <header className="kepala-fokus">
-        <p><span className="ke-langkah">Mode fokus</span> <b>Langkah {nomor + 1} dari {total}</b></p>
+        <button type="button" className="tombol-ikon" data-tutup onClick={saatTutup} aria-label="Tutup" title="Tutup"><Ikon nama="salah" /></button>
+        <p><span className="ke-langkah">Langkah {nomor + 1} dari {total}</span> <b>{judul}</b></p>
         <LegendaSorot />
-        <button type="button" className="tombol-ikon" onClick={layarPenuh} aria-label="Layar penuh" title="Layar penuh"><Ikon nama="perbesar" /></button>
-        <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" data-tutup onClick={saatTutup}><Ikon nama="salah" ukuran={16} /> Tutup</button>
+        <div className="kontrol-fokus">
+          {kontrol}
+          <button type="button" className="tombol-ikon" onClick={layarPenuh} aria-label="Layar penuh" title="Layar penuh"><Ikon nama="perbesar" /></button>
+        </div>
       </header>
       <div className="kanvas-fokus">
         <section className="fokus-pohon" aria-label="Pohon keluarga">{kanvas.pohon}</section>
         <section className="fokus-tabel" aria-label="Tabel faraidh">{atasTabel}<div className="wadah-tabel">{kanvas.tabel}</div></section>
+        {laci && <aside className="laci-langkah" aria-label="Daftar langkah">{laci}</aside>}
       </div>
-      <div className="panel-fokus">{children}</div>
+      <div className="kaki-fokus">{navigasi}</div>
     </div>,
     document.body,
   );
 }
 
-export interface Hitungan { saham: bigint; penyebut: bigint; harta: bigint; nominal: bigint }
-
-/** Poin yang sedang dibahas, dibaca besar. poin null = semua langkah sudah diikuti. */
-export function PanelHitung({ judul, poin, jumlahPoin, baris, hitungan }: {
-  judul: string; poin: number | null; jumlahPoin: number; baris: BarisPenjelasan | null; hitungan: Hitungan | null;
+/**
+ * Kepala panel: sub-langkah yang sedang dibahas dan kalimatnya, lalu peraga hitungannya. Tanpa ketukan (animasi mati)
+ * seluruh baris langkah tampil sekaligus. selesai = semua langkah sudah diikuti.
+ */
+export function PanelHitung({ label, judul, baris, semuaBaris, peraga, selesai }: {
+  label: string; judul: string; baris: BarisPenjelasan | null; semuaBaris: BarisPenjelasan[]; peraga: Peraga | null; selesai: boolean;
 }) {
-  if (poin === null) {
+  if (selesai) {
     return (
       <div className="panel-hitung panel-hitung-selesai" aria-live="polite">
         <p className="judul-panel-hitung">Selesai!</p>
@@ -92,23 +100,70 @@ export function PanelHitung({ judul, poin, jumlahPoin, baris, hitungan }: {
       </div>
     );
   }
-  // Nominal dibulatkan ke bawah oleh engine; kalau tidak pas, tanda "=" jadi "≈".
-  const pas = hitungan && hitungan.nominal * hitungan.penyebut === hitungan.saham * hitungan.harta;
-  const tunda = (urutan: number) => ({ animationDelay: `${urutan * JEDA_BAGIAN_HITUNGAN}ms` });
   return (
     <div className="panel-hitung" aria-live="polite">
-      <p className="judul-panel-hitung">{judul} <span>· poin {poin + 1} dari {jumlahPoin}</span></p>
-      {baris && <p className="narasi-hitung"><Baris baris={baris} /></p>}
-      {hitungan && (
-        <p className="rumus-hitung">
-          <span style={tunda(0)}>{String(hitungan.saham)}/{String(hitungan.penyebut)}</span>
-          <span style={tunda(1)}> × {formatRupiah(hitungan.harta)}</span>
-          <b style={tunda(2)}> {pas ? '=' : '≈'} {formatRupiah(hitungan.nominal)}</b>
-          {!pas && <small style={tunda(3)}>dibulatkan ke bawah</small>}
-        </p>
-      )}
+      <p className="judul-panel-hitung"><b>{label}</b> — {judul}</p>
+      {baris ? <p className="narasi-hitung"><Baris baris={baris} /></p>
+        : <ul className="narasi-semua">{semuaBaris.map((isi, nomor) => <li key={nomor}><Baris baris={isi} /></li>)}</ul>}
+      {peraga && <TampilPeraga peraga={peraga} />}
     </div>
   );
+}
+
+const tunda = (urutan: number, tambahan = 0): CSSProperties => ({ animationDelay: `${urutan * JEDA_BAGIAN + tambahan}ms` });
+
+function TampilPeraga({ peraga }: { peraga: Peraga }) {
+  switch (peraga.jenis) {
+    case 'penyebut':
+      return (
+        <div className="peraga">
+          <span className="label-peraga" style={tunda(0)}>Penyebutnya:</span>
+          {peraga.daftarPenyebut.map((penyebut, urutan) => <span key={urutan} className="kotak-angka" style={tunda(urutan + 1)}>{String(penyebut)}</span>)}
+        </div>
+      );
+    case 'nisab': {
+      const { a, b, hubungan, fpb, hasil } = peraga.langkah;
+      const [kecil, besar] = a < b ? [a, b] : [b, a];
+      const [keterangan, rumus] = hubungan === 'tamatsul' ? [`${a} = ${b}`, `ambil salah satu`]
+        : hubungan === 'tadakhul' ? [`${besar} ÷ ${kecil} = ${besar / kecil}, habis`, `ambil yang besar`]
+          : hubungan === 'tawafuq' ? [`FPB ${fpb}`, `${a} × (${b} ÷ ${fpb})`]
+            : [`FPB 1`, `${a} × ${b}`];
+      return (
+        <div className="peraga">
+          <span className="kotak-angka" style={tunda(0)}>{String(a)}</span><span className="label-peraga" style={tunda(0)}>dan</span>
+          <span className="kotak-angka" style={tunda(0)}>{String(b)}</span>
+          <span className="label-peraga" style={tunda(1)}>→ {keterangan} ({hubungan})</span>
+          <span className="rumus-peraga" style={tunda(2)}>{rumus} =</span>
+          <span className="kotak-angka kotak-hasil" style={tunda(3)}>{String(hasil)}</span>
+        </div>
+      );
+    }
+    case 'kali':
+      return (
+        <div className="peraga peraga-kali">
+          <p style={tunda(0)}>Ashl masalah = <span className="kotak-angka kotak-hasil">{String(peraga.ashl)}</span></p>
+          {peraga.daftar.map((baris, urutan) => (
+            <p key={urutan} style={tunda(urutan + 1)}>
+              <span className="nama-peraga">{baris.nama}</span> <span className="rumus-peraga">{baris.rumus} =</span>{' '}
+              <span className="kotak-angka" style={tunda(urutan + 1, JEDA_BAGIAN / 3)}>{String(baris.hasil)}</span>
+            </p>
+          ))}
+        </div>
+      );
+    case 'nominal': {
+      const { saham, penyebut, harta, nominal } = peraga.hitungan;
+      // Nominal dibulatkan ke bawah oleh engine; kalau tidak pas, tanda "=" jadi "≈".
+      const pas = nominal * penyebut === saham * harta;
+      return (
+        <p className="rumus-hitung">
+          <span style={tunda(0)}>{String(saham)}/{String(penyebut)}</span>
+          <span style={tunda(1)}> × {formatRupiah(harta)}</span>
+          <b style={tunda(2)}> {pas ? '=' : '≈'} <span className="kotak-angka kotak-hasil">{formatRupiah(nominal)}</span></b>
+          {!pas && <small style={tunda(3)}>dibulatkan ke bawah</small>}
+        </p>
+      );
+    }
+  }
 }
 
 /** Label bagian meluncur dari node orang di pohon ke sel Bagian miliknya di tabel (Web Animations API, tanpa pustaka). */

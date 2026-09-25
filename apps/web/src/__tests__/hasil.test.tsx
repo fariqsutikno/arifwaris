@@ -252,20 +252,23 @@ describe('layar hasil', () => {
     expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
   });
 
-  it('mode fokus: maju per poin hanya lewat Lanjut, hasil akhir menampilkan hitungan, Lewati langsung selesai', () => {
+  it('mode fokus: maju per sub-langkah lewat Lanjut, hasil akhir menampilkan hitungan, animasi bisa dimatikan', () => {
     render(<Uji awal={c1601()} />);
     fireEvent.click(screen.getByRole('button', { name: /Pelajari langkah perhitungan/ }));
     fireEvent.click(screen.getByRole('button', { name: /Mode fokus/ }));
     const panel = () => document.querySelector('.panel-hitung')!;
     const awal = panel().textContent;
-    expect(awal).toMatch(/poin 1 dari/);
+    expect(awal).toMatch(/Langkah 1/);
     fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
     expect(panel().textContent).not.toBe(awal);
     fireEvent.click(screen.getByRole('button', { name: '← Kembali' }));
     expect(panel().textContent).toBe(awal);
     for (let klik = 0; klik < 60 && !panel().querySelector('.rumus-hitung'); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
     expect(panel().querySelector('.rumus-hitung')!.textContent).toMatch(/× Rp 24\.000\.000/);
-    fireEvent.click(screen.getByRole('button', { name: 'Lewati animasi' }));
+    expect(screen.getByRole('button', { name: 'Jeda animasi' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('switch', { name: /Animasi/ }));
+    expect(screen.queryByRole('button', { name: 'Jeda animasi' })).toBeNull();
+    for (let klik = 0; klik < 20 && !/Selesai!/.test(panel().textContent ?? ''); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
     expect(panel().textContent).toMatch(/Selesai!/);
     expect(screen.getByRole('button', { name: 'Tutup mode fokus' })).toBeTruthy();
   });

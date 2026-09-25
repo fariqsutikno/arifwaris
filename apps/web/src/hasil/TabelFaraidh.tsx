@@ -1,7 +1,8 @@
 // Tabel faraidh ala kitab: Ahli waris · Bagian · Asal masalah · ('Aul/Radd) · (Tashih) · Per orang · Nominal.
 // Sel kelompok (ashabah bersama) digabung dan rata tengah; orang terhalang di baris bergaris miring. Angka dari tabel engine.
 // Saat langkah perhitungan diputar, sel milik orang yang dibahas menyala dengan warna perannya dan angka kolom yang
-// sedang dihitung berjalan dari 0. Mode fokus membangun tabel bertahap: kolom yang babnya belum dilewati berisi "?".
+// sedang dihitung "masuk" ke kotaknya. Mode fokus membangun tabel bertahap: kolom yang babnya belum dilewati berisi "?",
+// dan di kolom yang sedang dibahas, sel orang yang belum dibahas juga masih "?".
 // Mode Belajar sebelum jawaban terbuka: struktur tabel tetap tampil, semua angka "?" (TabelSoal).
 
 import type { IdOrang, TabelMasalah } from '@waris/engine';
@@ -9,7 +10,7 @@ import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
 import type { HasilOk } from '../jalankan';
 import { urutkanBaris, type RingkasanHasil } from './ringkasan';
-import { AngkaJalan } from '../ui/AngkaJalan';
+import { AngkaMasuk } from '../ui/AngkaMasuk';
 import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
 
@@ -34,7 +35,13 @@ export function TabelFaraidh({ hasil, ringkasan, sembunyiNominal, sedangMenebak,
 /** Cara tabel bereaksi terhadap langkah yang sedang diputar. */
 function useSorotTabel() {
   const { langkah } = useSorot();
-  const tertutup = (kolom: KolomBab | 'perOrang') => !!langkah?.kolomTerbuka && !langkah.kolomTerbuka.has(kolom);
+  /** Tanpa daftarId = angka total kolom, baru tampil setelah seluruh sel kolom itu terungkap. */
+  const tertutup = (kolom: KolomBab | 'perOrang', daftarId?: IdOrang[]) => {
+    if (langkah?.kolomTerbuka && !langkah.kolomTerbuka.has(kolom)) return true;
+    const terungkap = langkah?.kolom === kolom ? langkah.terungkap : undefined;
+    return !!terungkap && !daftarId?.some(id => terungkap.has(id));
+  };
+  const tunda = (daftarId: IdOrang[] = []) => Math.max(0, ...daftarId.map(id => langkah?.tundaSel?.get(id) ?? 0));
   const kepala = (kolom: KolomBab) => (langkah?.kolom === kolom ? 'kolom-sorot' : undefined);
   /** Sel milik orang yang sedang dibahas di kolom yang sedang dibahas menyala terang; sel lain di kolom itu cukup ditandai. */
   const sel = (kolom: KolomBab, daftarId: IdOrang[]) => {
@@ -44,22 +51,24 @@ function useSorotTabel() {
   };
   const pemicu = (kolom: KolomBab, daftarId?: IdOrang[]) =>
     langkah?.kolom === kolom && (!daftarId || daftarId.some(id => langkah.peran.has(id))) ? langkah.ketukan : null;
-  return { langkah, tertutup, kepala, sel, pemicu };
+  return { langkah, tertutup, kepala, sel, pemicu, tunda };
 }
 
 function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
   tabel: TabelMasalah; ringkasan: RingkasanHasil; sembunyi: boolean; saatPilih: (id: IdOrang) => void;
 }) {
   const atribut = useAtributOrang();
-  const { langkah, tertutup, kepala, sel, pemicu } = useSorotTabel();
+  const { langkah, tertutup, kepala, sel, pemicu, tunda } = useSorotTabel();
   const nama = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const { ashl, aul, radd, tashih } = tabel.totalKolom;
   const penyesuaian = aul !== undefined ? { judul: "'Aul", nilai: aul, kunci: 'aul' } : radd !== undefined ? { judul: 'Radd', nilai: radd, kunci: 'radd' } : null;
   const totalNominal = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, ringkasan.sisaKeluar?.nominal ?? 0n);
   const angka = (kolom: KolomBab | 'perOrang', nilai: bigint | undefined, daftarId?: IdOrang[]) =>
-    tertutup(kolom) ? RAHASIA : nilai === undefined ? '-' : kolom === 'perOrang' ? String(nilai) : <AngkaJalan nilai={nilai} pemicu={pemicu(kolom as KolomBab, daftarId)} />;
+    tertutup(kolom, daftarId) ? RAHASIA : nilai === undefined ? '-' : kolom === 'perOrang' ? String(nilai)
+      : <AngkaMasuk teks={String(nilai)} pemicu={pemicu(kolom as KolomBab, daftarId)} tunda={tunda(daftarId)} />;
   const uang = (nilai: bigint, daftarId?: IdOrang[]) =>
-    tertutup('nominal') ? RAHASIA : sembunyi ? uangAtau(nilai, true) : <AngkaJalan nilai={nilai} format={formatRupiah} pemicu={pemicu('nominal', daftarId)} />;
+    tertutup('nominal', daftarId) ? RAHASIA : sembunyi ? uangAtau(nilai, true)
+      : <AngkaMasuk teks={formatRupiah(nilai)} pemicu={pemicu('nominal', daftarId)} tunda={tunda(daftarId)} />;
   const dasarTashih = penyesuaian?.nilai ?? ashl;
 
   return (
@@ -72,7 +81,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
           {penyesuaian && (
             <th className={kepala('penyesuaian')}><Istilah id={penyesuaian.kunci}>{penyesuaian.judul}</Istilah>
               <small>{langkah?.kolom === 'penyesuaian' && ashl !== undefined
-                ? <span className="ubah-angka"><s>{String(ashl)}</s> → <AngkaJalan nilai={penyesuaian.nilai} pemicu={langkah.ketukan} /></span>
+                ? <span className="ubah-angka"><s>{String(ashl)}</s> → <AngkaMasuk teks={String(penyesuaian.nilai)} pemicu={langkah.ketukan} /></span>
                 : angka('penyesuaian', penyesuaian.nilai)}</small></th>
           )}
           {tashih !== undefined && (
@@ -80,7 +89,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
               {langkah?.kolom === 'tashih' && dasarTashih !== undefined && dasarTashih > 0n && tashih % dasarTashih === 0n && <span className="pengali-tashih">{String(dasarTashih)} × {String(tashih / dasarTashih)}</span>}</th>
           )}
           <th>Per orang<small><Istilah arti="Bagian tiap orang dihitung dalam satuan kecil yang sama (saham), dari jumlah pada kolom sebelumnya.">saham</Istilah></small></th>
-          <th className={kepala('nominal')}>Nominal<small>{sembunyi ? uangAtau(ringkasan.tirkah.bersih, true) : <AngkaJalan nilai={ringkasan.tirkah.bersih} format={formatRupiah} pemicu={pemicu('nominal', [])} />}</small></th>
+          <th className={kepala('nominal')}>Nominal<small>{sembunyi ? uangAtau(ringkasan.tirkah.bersih, true) : <AngkaMasuk teks={formatRupiah(ringkasan.tirkah.bersih)} pemicu={pemicu('nominal', [])} />}</small></th>
         </tr>
       </thead>
       <tbody>
@@ -96,7 +105,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
                 </td>
                 {indeks === 0 && <>
                   <td rowSpan={anggota.length} className={sel('bagian', anggota)} data-anggota={anggota.join(' ')}>
-                    {tertutup('bagian') ? RAHASIA : (
+                    {tertutup('bagian', anggota) ? RAHASIA : (
                       <span className="bagian-sel">{baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : <Istilah id="ashabah">Ashabah</Istilah>}
                         <small>{baris.fardh ? (baris.ashabah ? 'bagian tertentu + sisa' : 'bagian tertentu') : anggota.length > 1 ? 'sisa, dibagi bersama' : 'sisa'}</small></span>
                     )}

@@ -1,12 +1,14 @@
 // Ketukan animasi langkah perhitungan. Satu ketukan = satu baris penjelasan: siapa yang dibahas baris itu
-// menyala dengan warna perannya, orang lain yang disebut menjadi penyebab (oranye) dengan panah ke yang terdampak.
-// Tanpa ketukan (null) = seluruh bab sekaligus. Peran hanya dibaca dari data engine (statusOrang, tabel), tanpa aturan fikih baru.
+// menyala dengan warna perannya, orang lain yang disebut menjadi penyebab (oranye) dengan panah berlabel ke yang terdampak.
+// Hajb ditampilkan sebagai perubahan (bagian semula dicoret → bagian baru). Sel tabel di kolom yang sedang dibahas baru
+// terungkap saat orangnya sudah dibahas. Tanpa ketukan (null) = seluruh bab sekaligus.
+// Peran dan pecahan hanya dibaca dari data engine (statusOrang, tabel, jejak HAJB_*), tanpa aturan fikih baru.
 
-import type { GrafKeluarga, IdOrang, TabelMasalah } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, LangkahJejak, TabelMasalah } from '@waris/engine';
 import type { BabPenjelasan, BarisPenjelasan, KolomBab } from '@waris/explain';
 import { orangDisebut } from '../layar/Penjelasan';
 import type { RingkasanHasil } from './ringkasan';
-import type { PeranSorot, SorotLangkah } from './sorot';
+import type { PeranSorot, SorotLangkah, UbahBagian } from './sorot';
 
 export interface DataPeran {
   idPewaris: IdOrang;
@@ -15,9 +17,11 @@ export interface DataPeran {
   terhalang: Set<IdOrang>;
   /** Orang di pohon yang tidak mewarisi dan tidak terhalang (bukan ahli waris sama sekali, atau terkena mani'). */
   bukanAhliWaris: IdOrang[];
+  /** Hajb nuqshan dari jejak engine: bagian semula → bagian setelah dikurangi. */
+  nuqshan: Map<IdOrang, UbahBagian>;
 }
 
-export function dataPeranDari(graf: GrafKeluarga, ringkasan: RingkasanHasil, tabel: TabelMasalah | null, urutanWafat: IdOrang[]): DataPeran {
+export function dataPeranDari(graf: GrafKeluarga, ringkasan: RingkasanHasil, tabel: TabelMasalah | null, urutanWafat: IdOrang[], jejak: LangkahJejak[] = []): DataPeran {
   const pembagian = new Map<IdOrang, 'fardh' | 'ashabah'>();
   for (const baris of tabel?.baris ?? []) {
     for (const id of Object.keys(baris.perOrang)) pembagian.set(id, baris.fardh ? 'fardh' : 'ashabah');
@@ -26,7 +30,11 @@ export function dataPeranDari(graf: GrafKeluarga, ringkasan: RingkasanHasil, tab
   const terhalang = new Set(ringkasan.terhalang.filter(orang => ringkasan.statusOrang[orang.id]?.jenis === 'mahjub').map(orang => orang.id));
   const bukanAhliWaris = Object.keys(graf.orang).filter(id =>
     id !== graf.idPewaris && !graf.orang[id]!.penghubung && !urutanWafat.includes(id) && !menerima.has(id) && !terhalang.has(id));
-  return { idPewaris: graf.idPewaris, pembagian, terhalang, bukanAhliWaris };
+  const nuqshan = new Map<IdOrang, UbahBagian>();
+  for (const langkah of jejak) {
+    if (langkah.jenis === 'HAJB_NUQSHAN') nuqshan.set(langkah.terdampak, { dari: `${langkah.dari.n}/${langkah.dari.d}`, menjadi: `${langkah.menjadi.n}/${langkah.menjadi.d}` });
+  }
+  return { idPewaris: graf.idPewaris, pembagian, terhalang, bukanAhliWaris, nuqshan };
 }
 
 /** Istilah ashabah di baris = baris itu membahas sisa harta, meski orangnya juga punya fardh (mis. ayah 1/6 + sisa). */
@@ -34,9 +42,12 @@ const ISTILAH_ASHABAH = new Set(['ashabah', 'bi-nafsihi', 'bil-ghair', 'maal-gha
 const membahasAshabah = (baris: BarisPenjelasan) =>
   baris.daftarPotongan.some(potongan => potongan.jenis === 'istilah' && ISTILAH_ASHABAH.has(potongan.istilah));
 
+const HAJB_HIRMAN: UbahBagian = { dari: 'ahli waris', menjadi: 'terhalang' };
+
 export function sorotKetukan(bab: BabPenjelasan, ketukan: number | null, data: DataPeran, nomorKetukan: number): Omit<SorotLangkah, 'kolomTerbuka'> {
   const peran = new Map<IdOrang, PeranSorot>();
-  const panah: Array<[IdOrang, IdOrang]> = [];
+  const panah: SorotLangkah['panah'] = [];
+  const ubah = new Map<IdOrang, UbahBagian>();
   // Saat seluruh bab ditampilkan, peran yang lebih spesifik menang atas "penyebab" dari baris lain.
   const pasang = (id: IdOrang, peranBaru: PeranSorot) => {
     if (id === data.idPewaris) { peran.set(id, 'pewaris'); return; }
@@ -61,13 +72,27 @@ export function sorotKetukan(bab: BabPenjelasan, ketukan: number | null, data: D
     }
     if (subjek.length > 0) {
       lain.forEach(id => pasang(id, 'penyebab'));
-      for (const dari of lain) for (const ke of subjek) panah.push([dari, ke]);
+      for (const ke of subjek) {
+        const perubahan = bab.kolom === 'ahliWaris' && data.terhalang.has(ke) ? HAJB_HIRMAN : bab.kolom === 'bagian' ? data.nuqshan.get(ke) : undefined;
+        if (perubahan && lain.length > 0) ubah.set(ke, perubahan);
+        const label = perubahan === HAJB_HIRMAN ? 'menghalangi' : perubahan ? `mengurangi ${perubahan.dari} → ${perubahan.menjadi}` : 'memengaruhi';
+        for (const dari of lain) panah.push([dari, ke, label]);
+      }
     }
     disebut.filter(id => id === data.idPewaris).forEach(id => pasang(id, 'pewaris'));
   }
   // Bab harta tidak menyebut siapa pun sebagai orang: sorot pewaris sebagai pemilik harta.
   if (peran.size === 0 && bab.kolom === 'nominal') peran.set(data.idPewaris, 'pewaris');
-  return { peran, kolom: bab.kolom, panah, ketukan: nomorKetukan };
+  return { peran, kolom: bab.kolom, panah, ubah, terungkap: terungkapSampai(bab, ketukan), ketukan: nomorKetukan };
+}
+
+/**
+ * Sel kolom yang sedang dibahas terbuka per orang, mengikuti baris yang sudah dibahas. Baris terakhir bab
+ * (atau seluruh bab) membuka semuanya, termasuk bab tanpa subjek seperti menyamakan penyebut.
+ */
+function terungkapSampai(bab: BabPenjelasan, ketukan: number | null): Set<IdOrang> | undefined {
+  if (ketukan === null || ketukan >= bab.daftarBaris.length - 1) return undefined;
+  return new Set(bab.daftarBaris.slice(0, ketukan + 1).flatMap(baris => baris.subjek ?? []));
 }
 
 /**

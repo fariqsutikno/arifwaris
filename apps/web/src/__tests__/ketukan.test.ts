@@ -4,7 +4,8 @@ import { kolomTerbukaSampai, sorotKetukan, type DataPeran } from '../hasil/ketuk
 
 const orang = (id: string) => ({ jenis: 'orang' as const, daftarIdOrang: [id], teks: id });
 const teks = (isi: string) => ({ jenis: 'teks' as const, teks: isi });
-const data: DataPeran = { idPewaris: 'p', pembagian: new Map([['ibu', 'fardh'], ['anak', 'ashabah']]), terhalang: new Set(['saudara']), bukanAhliWaris: ['sepupu'] };
+const data: DataPeran = { idPewaris: 'p', pembagian: new Map([['ibu', 'fardh'], ['anak', 'ashabah']]), terhalang: new Set(['saudara']), bukanAhliWaris: ['sepupu'],
+  nuqshan: new Map([['ibu', { dari: '1/3', menjadi: '1/6' }]]) };
 
 describe('sorot ketukan', () => {
   const babAhliWaris: BabPenjelasan = { judul: 'Siapa', kolom: 'ahliWaris', daftarBaris: [
@@ -21,7 +22,21 @@ describe('sorot ketukan', () => {
   it('baris hajb: yang terhalang merah, penghalang jadi penyebab dengan panah ke yang terhalang', () => {
     const { peran, panah } = sorotKetukan(babAhliWaris, 1, data, 2);
     expect(Object.fromEntries(peran)).toEqual({ saudara: 'mahjub', anak: 'penyebab' });
-    expect(panah).toEqual([['anak', 'saudara']]);
+    expect(panah).toEqual([['anak', 'saudara', 'menghalangi']]);
+  });
+
+  it('hajb tampil sebagai perubahan: hirman ahli waris → terhalang, nuqshan 1/3 → 1/6 dengan label panah', () => {
+    expect(sorotKetukan(babAhliWaris, 1, data, 2).ubah?.get('saudara')).toEqual({ dari: 'ahli waris', menjadi: 'terhalang' });
+    const babBagian: BabPenjelasan = { judul: 'Bagian', kolom: 'bagian', daftarBaris: [
+      { daftarPotongan: [orang('ibu'), teks(' 1/6 karena ada '), orang('anak')], refs: [], subjek: ['ibu'] },
+      { daftarPotongan: [orang('anak'), teks(' sisa')], refs: [], subjek: ['anak'] },
+    ] };
+    const sorot = sorotKetukan(babBagian, 0, data, 1);
+    expect(sorot.ubah?.get('ibu')).toEqual({ dari: '1/3', menjadi: '1/6' });
+    expect(sorot.panah).toEqual([['anak', 'ibu', 'mengurangi 1/3 → 1/6']]);
+    // Sel kolom bagian terbuka per orang yang sudah dibahas; baris terakhir membuka semuanya.
+    expect([...sorot.terungkap!]).toEqual(['ibu']);
+    expect(sorotKetukan(babBagian, 1, data, 2).terungkap).toBeUndefined();
   });
 
   it('seluruh bab: peran spesifik menang atas penyebab', () => {

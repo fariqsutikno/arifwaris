@@ -1,8 +1,9 @@
 // Pohon keluarga di kanvas hasil: node per orang (warna kelompok, gelap = almarhum, merah bergaris = terhalang,
 // garis putus = tidak mewarisi),
 // garis menikah (mendatar + lingkaran) dan garis keturunan (turun), diukur dari posisi node sesungguhnya.
-// Saat langkah perhitungan diputar: panah sebab-akibat (mis. penghalang → terhalang) digambar di atas node,
-// dan keterangan warna sorotan tampil di pojok.
+// Saat langkah perhitungan diputar: panah sebab-akibat berlabel (mis. "menghalangi") digambar di atas node,
+// hajb tampil sebagai bagian semula yang dicoret lalu diganti, dan keterangan warna sorotan tampil di pojok.
+// Mode fokus membangun tabel bertahap: node menampilkan pecahan fardh dulu, saham/nominal baru di hasil akhir.
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
@@ -35,6 +36,12 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: `${nama} (tidak diisi)` };
     if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? 'Almarhum' : 'Wafat sebelum dibagi', nama };
     if (sedangMenebak) return { kelas: dapat || halang ? `g-${(dapat ?? halang)!.kelompok}` : 'putus', peran: '', nama };
+    const ubah = langkah?.ubah?.get(id);
+    if (ubah) return { kelas: dapat ? `g-${dapat.kelompok}` : 'terhalang', peran: '', nama, isi: <UbahNode key={langkah!.ketukan} ubah={ubah} /> };
+    if (dapat && langkah?.kolomTerbuka && !langkah.kolomTerbuka.has('perOrang')) {
+      const bagianTerbuka = langkah.kolomTerbuka.has('bagian') && (langkah.kolom !== 'bagian' || !langkah.terungkap || langkah.terungkap.has(id));
+      return { kelas: `g-${dapat.kelompok}`, peran: '', nama, isi: <span className="dapat-node"><span className="frac">{bagianTerbuka ? bagianFardh(dapat) : '?'}</span></span> };
+    }
     if (dapat) return {
       kelas: `g-${dapat.kelompok}`, peran: '', nama,
       isi: <span className="dapat-node"><span className="frac">{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</span>
@@ -44,6 +51,14 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">Tidak mewarisi</span> };
   };
   return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} />;
+}
+
+/** Bagian sebelum dijadikan saham: "1/8", "1/6 + sisa", atau "sisa". */
+const bagianFardh = ({ fardh, ashabah }: { fardh?: { n: bigint; d: bigint }; ashabah: boolean }) =>
+  fardh ? `${fardh.n}/${fardh.d}${ashabah ? ' + sisa' : ''}` : 'sisa';
+
+function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
+  return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">→</span><b>{ubah.menjadi}</b></span>;
 }
 
 export interface IsiNode { kelas: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
@@ -69,9 +84,12 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
         {panah.length > 0 && (
           <svg className="panah-pohon" aria-hidden="true" key={langkah?.ketukan}>
             <defs><marker id="ujung-panah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" /></marker></defs>
-            {panah.map(jalur => <path key={jalur} d={jalur} pathLength={1} markerEnd="url(#ujung-panah)" />)}
+            {panah.map(({ jalur }) => <path key={jalur} d={jalur} pathLength={1} markerEnd="url(#ujung-panah)" />)}
           </svg>
         )}
+        {/* Beberapa penyebab ke orang yang sama cukup satu label. */}
+        {panah.filter((isi, urutan) => panah.findIndex(lain => lain.ke === isi.ke && lain.label === isi.label) === urutan)
+          .map(({ jalur, x, y, label }) => <span key={`${langkah?.ketukan}${jalur}`} className="label-panah" style={{ left: x, top: y }}>{label}</span>)}
         {letak.baris.map((baris, indeksBaris) => (
           <div className="pohon-baris" key={indeksBaris}>
             {baris.map(id => {
@@ -105,9 +123,9 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
   );
 }
 
-/** Jalur panah melengkung dari tepi node asal ke tepi node tujuan, diukur ulang tiap daftar panah berubah. */
-function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Array<[IdOrang, IdOrang]>) {
-  const [jalur, setJalur] = useState<string[]>([]);
+/** Jalur panah melengkung dari tepi node asal ke tepi node tujuan (+ titik tengah untuk labelnya), diukur ulang tiap daftar panah berubah. */
+function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Array<[IdOrang, IdOrang, string]>) {
+  const [jalur, setJalur] = useState<Array<{ jalur: string; ke: IdOrang; x: number; y: number; label: string }>>([]);
   const kunci = JSON.stringify(daftarPanah);
   useLayoutEffect(() => {
     const elemen = wadah.current;
@@ -119,7 +137,7 @@ function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Arra
       const r = node.getBoundingClientRect();
       return { x: (r.left + r.right) / 2 - dasar.left, y: (r.top + r.bottom) / 2 - dasar.top, rx: r.width / 2, ry: r.height / 2 };
     };
-    setJalur(daftarPanah.flatMap(([dari, ke]) => {
+    setJalur(daftarPanah.flatMap(([dari, ke, label]) => {
       const a = pusat(dari);
       const b = pusat(ke);
       if (!a || !b) return [];
@@ -134,7 +152,8 @@ function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Arra
       const lengkung = 0.2;
       const cx = (x1 + x2) / 2 - (y2 - y1) * lengkung;
       const cy = (y1 + y2) / 2 + (x2 - x1) * lengkung;
-      return [`M${x1},${y1}Q${cx},${cy} ${x2},${y2}`];
+      // Titik tengah kurva kuadrat (t = 0.5) untuk label panah.
+      return [{ jalur: `M${x1},${y1}Q${cx},${cy} ${x2},${y2}`, ke, x: (x1 + 2 * cx + x2) / 4, y: (y1 + 2 * cy + y2) / 4, label }];
     }));
   }, [wadah, kunci]);
   return jalur;

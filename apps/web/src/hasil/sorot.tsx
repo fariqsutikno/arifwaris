@@ -13,11 +13,19 @@ export const LABEL_PERAN_SOROT: Record<PeranSorot, string> = {
   bukan: 'Bukan ahli waris', fardh: 'Fardh (bagian tertentu)', ashabah: 'Ashabah (sisa)',
 };
 
+/** Hajb sebagai perubahan: bagian semula dicoret, diganti bagian baru (mis. 1/3 → 1/6, ahli waris → terhalang). */
+export interface UbahBagian { dari: string; menjadi: string }
+
 export interface SorotLangkah {
   peran: Map<IdOrang, PeranSorot>;
   kolom: KolomBab | undefined;
-  /** Panah dari penyebab ke orang yang terdampak (mis. penghalang → terhalang). */
-  panah: Array<[IdOrang, IdOrang]>;
+  /** Panah dari penyebab ke orang yang terdampak (mis. penghalang → terhalang), dengan keterangan pengaruhnya. */
+  panah: Array<[IdOrang, IdOrang, string]>;
+  ubah?: Map<IdOrang, UbahBagian>;
+  /** Sel kolom yang sedang dibahas yang sudah boleh tampil; undefined = semua. */
+  terungkap?: Set<IdOrang> | undefined;
+  /** Jeda (ms) sebelum angka orang ini "masuk" ke selnya, supaya sejalan dengan hitungan di panel. */
+  tundaSel?: Map<IdOrang, number>;
   /** Kolom tabel yang angkanya sudah boleh tampil saat tutorial membangun tabel; undefined = semua tampil. */
   kolomTerbuka?: Set<KolomBab | 'perOrang'>;
   /** Berubah tiap ketukan animasi, supaya animasi yang sama bisa diputar ulang. */

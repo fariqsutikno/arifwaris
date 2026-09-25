@@ -26,6 +26,8 @@ const JALUR = {
   buka: <><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 14v6H4V6h6" /></>,
   kunci: <><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></>,
   perbesar: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
+  putar: <path d="M7 4.5v15l12-7.5z" />,
+  jeda: <path d="M8 5v14M16 5v14" />,
   jam: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
 } as const;
 
