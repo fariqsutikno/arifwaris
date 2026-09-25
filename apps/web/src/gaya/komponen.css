@@ -735,7 +735,7 @@ a.aw-btn{text-decoration:none;color:inherit}
 .pembahasan-item>summary{align-items:flex-start;flex-wrap:nowrap;gap:10px}
 .status-jawaban{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;border:var(--border-w) solid var(--outline)}
 .status-jawaban.benar{background:var(--lime);color:var(--on-fill)}
-.status-jawaban.salah{background:var(--pink);color:var(--on-fill)}
+.status-jawaban.salah{background:var(--danger);color:var(--on-danger)}
 .isi-pembahasan{padding:0 16px 14px 52px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.6}
 .isi-pembahasan p{margin:0}
 .isi-pembahasan .keterangan{display:block;font-size:12px;font-weight:800}
@@ -749,7 +749,7 @@ a.aw-btn{text-decoration:none;color:inherit}
 .node-orang.almarhum .peran-node{color:var(--sun);opacity:1}
 .node-orang.terhalang{border:var(--border-w) dashed var(--danger);box-shadow:none;background:repeating-linear-gradient(135deg,var(--surface-sunken) 0 8px,var(--surface-raised) 8px 16px);color:var(--ink-muted)}
 .node-orang.terhalang b{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--danger);color:var(--ink)}
-.node-orang.terhalang .peran-node{background:var(--danger);color:#fff;opacity:1;padding:2px 8px;border-radius:var(--radius-pill);letter-spacing:.02em}
+.node-orang.terhalang .peran-node{background:var(--danger);color:var(--on-danger);opacity:1;padding:2px 8px;border-radius:var(--radius-pill);letter-spacing:.02em}
 .legenda .kotak.almarhum{border-style:solid;background:var(--ink)}
 .legenda .kotak.terhalang{border:2px dashed var(--danger);background:repeating-linear-gradient(135deg,var(--surface-sunken) 0 3px,var(--surface-raised) 3px 6px)}
 /* Redup saat langkah disorot: node tetap buram (tidak tembus), jadi garis di belakangnya tidak terlihat menembus. */
@@ -770,12 +770,12 @@ a.aw-btn{text-decoration:none;color:inherit}
 /* Hasil kuis: papan skor dan pembahasan selebar sama */
 .sesi-kuis .kartu-lipat{max-width:none}
 .rincian-skor .skor-benar{background:var(--lime);border-color:var(--outline);color:var(--on-fill)}
-.rincian-skor .skor-salah{background:var(--pink);border-color:var(--outline);color:var(--on-fill)}
-.rincian-skor .skor-benar dt,.rincian-skor .skor-salah dt{color:var(--on-fill)}
+.rincian-skor .skor-salah{background:var(--danger);border-color:var(--outline);color:var(--on-danger)}
+.rincian-skor .skor-benar dt{color:var(--on-fill)}.rincian-skor .skor-salah dt{color:var(--on-danger)}
 .isi-pembahasan{padding:0 16px 16px;gap:10px}
 .baris-jawaban,.teks-pembahasan{display:flex;flex-direction:column;gap:4px;padding:10px 12px;border-radius:var(--radius-sm)}
 .baris-jawaban.benar{background:var(--lime);color:var(--on-fill)}
-.baris-jawaban.salah{background:var(--pink);color:var(--on-fill)}
+.baris-jawaban.salah{background:var(--danger-soft);color:var(--ink);border:1.5px solid var(--danger)}
 .teks-pembahasan{background:var(--surface-sunken);border:1.5px solid var(--divider)}
 .teks-pembahasan p{margin:0}
 .label-jawaban{font:800 11.5px/1.2 var(--font-sans);text-transform:uppercase;letter-spacing:.04em;opacity:.85}
@@ -791,3 +791,11 @@ a.aw-btn{text-decoration:none;color:inherit}
 .sumber-riwayat.sumber-materi{background:var(--keturunan);color:var(--on-fill)}
 .sumber-riwayat.sumber-impor{background:var(--surface-sunken)}
 .baris-soal .aw-btn-sm{flex:none}
+.tombol-kepala{flex:none}
+@media (max-width:1180px){.tombol-kepala .label-lebar{display:none}.tombol-kepala{padding:0 10px;min-width:40px;justify-content:center}}
+/* HP: header dua baris supaya keempat menu selalu terlihat; tombol aksi tetap di baris logo. */
+@media (max-width:560px){
+  .kepala{flex-wrap:wrap;row-gap:6px}
+  .kepala-nav{order:3;flex:1 0 100%;justify-content:space-between}
+  .kepala-menu{flex:1;justify-content:center}
+}

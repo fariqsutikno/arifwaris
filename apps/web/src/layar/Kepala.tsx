@@ -4,6 +4,7 @@
 import { useState } from 'react';
 import { Logo, Tombol } from '../ui/komponen';
 import type { Kasus } from '../kasus';
+import { Ikon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 
@@ -36,8 +37,10 @@ export function Kepala({ halaman, kasus, adaTur, saatKeBeranda, saatTur, saatUla
           ))}
         </nav>
         <span className="pengisi" />
-        {adaTur && <Tombol varian="secondary" kecil onClick={saatTur}>Tur singkat</Tombol>}
-        {kasus && <Tombol varian="secondary" kecil onClick={() => setSedangKonfirmasi(true)}>Ulangi dari awal</Tombol>}
+        {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
+        {kasus && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Beranda Hitung" onClick={saatKeBeranda}><Ikon nama="rumah" ukuran={18} /><span className="label-lebar">Beranda Hitung</span></Tombol>}
+        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Tur singkat" onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">Tur singkat</span></Tombol>}
+        {kasus && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Ulangi dari awal" onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">Ulangi dari awal</span></Tombol>}
       </header>
       {sedangKonfirmasi && kasus && (
         <KonfirmasiKasusBaru kasus={kasus} saatBatal={() => setSedangKonfirmasi(false)}

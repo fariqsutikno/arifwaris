@@ -5,6 +5,11 @@ urutan: 1
 tujuan: Mengenal arti faraidh, dalil pokoknya, dan kenapa ilmu ini dipelajari.
 perluCek: true
 ---
+```video
+https://www.youtube.com/watch?v=vJEvisFOJT0
+judul: Contoh video (placeholder, akan diganti tim keilmuan)
+```
+
 ## Arti kata
 
 *Faraidh* adalah bentuk jamak dari *faridhah*, yaitu bagian yang kadarnya sudah ditentukan syariat [R01-8].
