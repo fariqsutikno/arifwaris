@@ -28,11 +28,14 @@ interface Props {
   kasus: Kasus;
   tujuan: Tujuan | null;
   kirim: (aksi: Aksi) => void;
-  /** Mode belajar: jawaban dibuka lewat "Tampilkan jawaban" atau langkah terakhir (dipakai menandai soal latihan). */
-  saatJawabanDibuka?: (() => void) | undefined;
+  /**
+   * Mode belajar: kasus ini dihitung "sudah dikerjakan" bila tebakan dijawab benar, atau jawaban dibuka setelah
+   * pernah mencoba menjawab. Membuka kunci tanpa mencoba tidak dihitung.
+   */
+  saatDikerjakan?: (() => void) | undefined;
 }
 
-export function Hasil({ kasus, tujuan, kirim, saatJawabanDibuka }: Props) {
+export function Hasil({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>;
 
@@ -66,10 +69,10 @@ export function Hasil({ kasus, tujuan, kirim, saatJawabanDibuka }: Props) {
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatJawabanDibuka={saatJawabanDibuka} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, tujuan, kirim, saatJawabanDibuka }: Props) {
+function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
@@ -79,7 +82,9 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatJawabanDibuka }: Props) {
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
-  const bukaJawaban = () => { setJawabanTerbuka(true); saatJawabanDibuka?.(); };
+  const [sudahMencoba, setSudahMencoba] = useState(false);
+  const bukaJawaban = () => { setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(); };
+  const tebakanBenar = () => { setJawabanTerbuka(true); saatDikerjakan?.(); };
   const [sembunyiNominal, setSembunyiNominal] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
   const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
@@ -132,7 +137,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatJawabanDibuka }: Props) {
           </div>
           <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan}
             sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
-            sedangMenebak={sedangMenebak} saatTampilkanJawaban={bukaJawaban}
+            sedangMenebak={sedangMenebak} saatTampilkanJawaban={bukaJawaban} saatTebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} />

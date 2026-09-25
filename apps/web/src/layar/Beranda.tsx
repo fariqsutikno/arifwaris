@@ -1,4 +1,5 @@
-// Beranda: janji singkat, pertanyaan pembuka (Hitung kasus / Belajar), lanjutkan kasus tersimpan, buka file.
+// Beranda: janji singkat, pertanyaan pembuka (Hitung kasus / Belajar), lanjutkan kasus tersimpan, buka file,
+// dan 5 riwayat hitung terbaru.
 
 import { useRef, useState } from 'react';
 import { unduhKasus } from '../berkas';
@@ -7,9 +8,13 @@ import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { dariJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
+import type { EntriRiwayat } from '../riwayat';
 import { Motif, Tombol } from '../ui/komponen';
+import { DaftarRiwayat } from './Riwayat';
 
-export function Beranda({ kasusTersimpan, kirim }: { kasusTersimpan: Kasus | null; kirim: (aksi: Aksi) => void }) {
+interface Props { kasusTersimpan: Kasus | null; kirim: (aksi: Aksi) => void; saatBukaRiwayat: (entri: EntriRiwayat) => void }
+
+export function Beranda({ kasusTersimpan, kirim, saatBukaRiwayat }: Props) {
   const inputFile = useRef<HTMLInputElement>(null);
   const [pesan, setPesan] = useState<string | null>(null);
   const saatPilihFile = async (file: File | undefined) => {
@@ -43,6 +48,10 @@ export function Beranda({ kasusTersimpan, kirim }: { kasusTersimpan: Kasus | nul
           <input ref={inputFile} type="file" accept="application/json,.json" hidden onChange={event => void saatPilihFile(event.target.files?.[0])} />
         </div>
         {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
+        <section className="tumpuk-rapat riwayat-beranda" aria-labelledby="judul-riwayat">
+          <h2 id="judul-riwayat" className="tanya-tujuan">Riwayat hitung</h2>
+          <DaftarRiwayat kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} batas={5} />
+        </section>
         {tujuanTertunda && kasusTersimpan && (
           <KonfirmasiKasusBaru saatSimpan={() => unduhKasus(kasusTersimpan)} saatBatal={() => setTujuanTertunda(null)}
             saatLanjut={() => { kirim({ jenis: 'ULANGI' }); mulaiDengan(tujuanTertunda); setTujuanTertunda(null); }} />

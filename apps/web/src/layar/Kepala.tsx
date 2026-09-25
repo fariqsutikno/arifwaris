@@ -7,7 +7,7 @@ import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 
 const MENU: Array<{ label: string; tautan: string; aktifDi: Array<Rute['halaman']> }> = [
-  { label: 'Kalkulator', tautan: TAUTAN_KALKULATOR, aktifDi: ['kalkulator'] },
+  { label: 'Kalkulator', tautan: TAUTAN_KALKULATOR, aktifDi: ['kalkulator', 'riwayat'] },
   { label: 'Belajar', tautan: tautanBelajar(), aktifDi: ['belajar', 'materi', 'glosarium', 'faq'] },
   { label: 'Latihan', tautan: tautanLatihan(), aktifDi: ['latihan'] },
   { label: 'Rujukan', tautan: tautanRujukan(), aktifDi: ['rujukan'] },

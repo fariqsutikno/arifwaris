@@ -35,7 +35,9 @@ function useTooltip() {
     'aria-describedby': terbuka ? id : undefined,
     onMouseEnter: () => setTerbuka(true), onMouseLeave: () => setTerbuka(false),
     onFocus: () => setTerbuka(true), onBlur: () => setTerbuka(false),
-    onClick: () => setTerbuka(nilai => !nilai),
+    // Di HP satu ketukan memicu mouseenter + focus + click berurutan; kalau click membalik keadaan, tooltip
+    // langsung tertutup lagi. Jadi ketukan selalu membuka; menutup lewat ketuk di luar (blur) atau Esc.
+    onClick: () => setTerbuka(true),
     onKeyDown: (event: React.KeyboardEvent) => { if (event.key === 'Escape') setTerbuka(false); },
   };
   const isi = (konten: ReactNode) => terbuka && (

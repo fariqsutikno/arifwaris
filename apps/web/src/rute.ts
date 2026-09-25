@@ -10,6 +10,7 @@ export type Rute =
   | { halaman: 'materi'; slug: string }
   | { halaman: 'latihan'; tab: 'hitung' | 'kuis' }
   | { halaman: 'faq'; id?: string }
+  | { halaman: 'riwayat' }
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string };
 
@@ -17,6 +18,7 @@ export function bacaRute(hash: string): Rute {
   const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
   if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'latihan') return { halaman, tab: parameter === 'kuis' ? 'kuis' : 'hitung' };
+  if (halaman === 'riwayat') return { halaman };
   if (halaman === 'faq') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'glosarium') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'rujukan') return parameter ? { halaman, kode: parameter } : { halaman };
@@ -25,6 +27,7 @@ export function bacaRute(hash: string): Rute {
 
 export const tautanBelajar = (slug?: string) => `#/belajar${slug ? `/${encodeURIComponent(slug)}` : ''}`;
 export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung') => (tab === 'kuis' ? '#/latihan/kuis' : '#/latihan');
+export const tautanRiwayat = () => '#/riwayat';
 export const tautanFaq = (id?: string) => `#/faq${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanGlosarium = (id?: string) => `#/glosarium${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanRujukan = (kode?: string) => `#/rujukan${kode ? `/${encodeURIComponent(kode)}` : ''}`;

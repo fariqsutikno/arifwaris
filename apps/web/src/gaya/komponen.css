@@ -87,7 +87,7 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .chip-deret{display:flex;flex-wrap:wrap;gap:8px}
 .centang{display:flex;gap:12px;align-items:flex-start;min-height:44px;cursor:pointer}
 .centang input{width:22px;height:22px;margin-top:2px;accent-color:var(--primary)}
-.istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:help}
+.istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:pointer}
 .rujukan{font:700 12px var(--font-sans);color:var(--ink-muted);margin-left:6px}
 @media (max-width:600px){.judul-langkah{font-size:24px;line-height:30px}}
 
@@ -370,7 +370,7 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .sumber-dalil{font-weight:700}
 .peringatan-dalil{font-style:italic;opacity:.85}
 .nav-langkah{display:flex;justify-content:space-between;gap:8px}
-.istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:help;position:relative}
+.istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:pointer;position:relative}
 .istilah:hover::after,.istilah:focus::after{content:attr(data-arti);position:absolute;left:0;bottom:calc(100% + 8px);z-index:30;width:max-content;max-width:240px;background:var(--ink);color:var(--surface-raised);font:500 12.5px/1.45 var(--font-sans);padding:8px 10px;border-radius:10px;box-shadow:var(--shadow-pop-sm);white-space:normal}
 .modal-latar{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(17,19,34,.5)}
 .modal-orang{width:100%;max-width:540px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:20px;box-shadow:var(--shadow-pop);overflow:hidden}
@@ -419,10 +419,10 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 
 /* ─── Tooltip & ikon info ─── */
 .tooltip{position:fixed;z-index:80;max-width:min(260px,calc(100vw - 16px));background:var(--ink);color:var(--surface-raised);font:500 12.5px/1.45 var(--font-sans);padding:8px 10px;border-radius:10px;box-shadow:var(--shadow-pop-sm);text-align:left;text-transform:none;letter-spacing:0;white-space:normal;pointer-events:none}
-.istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:help}
+.istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:pointer}
 .istilah:hover::after,.istilah:focus::after{content:none}
 .info-tip{display:inline-flex;vertical-align:middle}
-.tombol-info{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;border-radius:50%;border:1.5px solid var(--ink-muted);background:transparent;color:var(--ink-muted);font:italic 700 12px/1 Georgia,serif;cursor:help}
+.tombol-info{display:inline-grid;place-items:center;width:20px;height:20px;padding:0;border-radius:50%;border:1.5px solid var(--ink-muted);background:transparent;color:var(--ink-muted);font:italic 700 12px/1 Georgia,serif;cursor:pointer}
 .tombol-info:hover,.tombol-info:focus-visible{border-color:var(--primary);color:var(--primary);outline:none}
 .faraidh tbody tr{cursor:pointer}
 
@@ -549,3 +549,10 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 @media (prefers-color-scheme:dark){.tingkat-dasar{color:#6ee7a8}.tingkat-menengah{color:#ffc266}}
 .entri-faq{max-width:760px;scroll-margin-top:80px}
 .isi-lipat-faq{padding:0 16px 14px;font-size:15px}
+.tebak code{font:700 13px var(--font-sans);background:rgba(255,255,255,.6);padding:1px 5px;border-radius:6px}
+.isian-tebak{display:grid;gap:6px;width:100%}
+.baris-tebak{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700}
+.baris-tebak input{width:84px;height:36px;padding:0 10px;border-radius:var(--radius-sm);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 15px var(--font-display);text-align:center}
+.baris-tebak input:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.baris-tebak.keliru input{border-color:var(--danger);box-shadow:0 0 0 2px var(--danger)}
+.riwayat-beranda{margin-top:24px;max-width:720px}

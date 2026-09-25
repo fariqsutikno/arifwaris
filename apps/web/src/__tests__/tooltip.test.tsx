@@ -25,3 +25,12 @@ it('istilah mengambil arti dari glosarium', () => {
   fireEvent.focus(screen.getByText('tashih'));
   expect(screen.getByRole('tooltip').textContent).toMatch(/pembagi/);
 });
+
+it('ketukan di HP (mouseenter + focus + click) tetap membuka tooltip', () => {
+  render(<Istilah id="ashabah">ashabah</Istilah>);
+  const pemicu = screen.getByText('ashabah');
+  fireEvent.mouseEnter(pemicu);
+  fireEvent.focus(pemicu);
+  fireEvent.click(pemicu);
+  expect(screen.getByRole('tooltip')).toBeTruthy();
+});

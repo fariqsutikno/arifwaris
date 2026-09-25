@@ -1,12 +1,13 @@
 // Kartu Pembagian (selalu terbuka): bar pecahan, daftar per orang, yang tidak dapat beserta alasannya,
 // ikon mata (sembunyikan nominal), panel atur tampilan, dan kartu pembulatan yang muncul hanya bila ada angka tidak bulat.
-// Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti ajakan menebak.
+// Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
 import { useState } from 'react';
 import { formatRupiah } from '../format';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
+import { KartuTebak } from './KartuTebak';
 import { useAtributOrang } from './sorot';
 
 export interface PengaturanTampil { pecahan: boolean; persen: boolean; bentuk: BentukPecahan }
@@ -19,6 +20,8 @@ interface Props {
   saatSembunyi: () => void;
   sedangMenebak: boolean;
   saatTampilkanJawaban: () => void;
+  saatTebakanBenar: () => void;
+  saatMencobaMenjawab: () => void;
   tampilPembulatan: boolean;
   satuanPembulatan: bigint;
   saatUbahPembulatan: (satuan: bigint) => void;
@@ -54,10 +57,7 @@ export function KartuPembagian(props: Props) {
       </header>
 
       {sedangMenebak ? (
-        <div className="tebak">
-          <p><b>Mode belajar:</b> pembagiannya disembunyikan dulu. Coba tebak siapa dapat berapa, lalu ikuti langkah perhitungan di bawah.</p>
-          <button type="button" className="aw-btn aw-btn-sun aw-btn-sm" onClick={props.saatTampilkanJawaban}>Tampilkan jawaban</button>
-        </div>
+        <KartuTebak ringkasan={ringkasan} saatBenar={props.saatTebakanBenar} saatMencoba={props.saatMencobaMenjawab} saatLihatJawaban={props.saatTampilkanJawaban} />
       ) : (
         <>
           {aturTerbuka && <PanelAtur pengaturan={pengaturan} saatUbah={props.saatUbahPengaturan} />}
