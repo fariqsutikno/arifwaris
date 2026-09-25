@@ -539,7 +539,7 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .baris-soal.selesai .status-soal{color:var(--primary)}
 .isi-soal{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .tingkat{font-weight:800;text-transform:capitalize}
-.tingkat-dasar{color:#1a8a5a}.tingkat-menengah{color:#b26a00}.tingkat-sulit{color:var(--danger)}
+.tingkat-dasar{color:#16734b}.tingkat-menengah{color:#8f5600}.tingkat-sulit{color:var(--danger)}
 .kartu-kuis{margin:0;display:flex;flex-direction:column;gap:10px;max-width:720px}
 .kartu-kuis legend{padding:0 6px}
 .pertanyaan-kuis{margin:0;font-weight:700;line-height:1.5}
