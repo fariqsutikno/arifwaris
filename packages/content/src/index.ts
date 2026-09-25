@@ -15,3 +15,4 @@ export {
 export {
   DAFTAR_FAQ, bacaFaq, type EntriFaq,
 } from './faq.js';
+export { DAFTAR_SYAHID, SUMBER_KITAB, bacaSyahid, bacaSumberKitab, type Syahid, type SumberKitab } from './pustaka.js';

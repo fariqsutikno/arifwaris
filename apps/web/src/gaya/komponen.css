@@ -689,3 +689,58 @@ a.isi-soal:hover b{text-decoration:underline}
 .confetti span{position:absolute;top:-16px;width:10px;height:14px;border:1.5px solid #111322;border-radius:2px;animation:jatuh 1.5s cubic-bezier(.25,.6,.45,1) forwards}
 @keyframes jatuh{to{transform:translate(var(--geser),105vh) rotate(var(--putar));opacity:.9}}
 @media (prefers-reduced-motion:reduce){.confetti{display:none}}
+
+/* Rujukan: jarak antarblok seragam (24px antar bagian, 12px di dalam kartu) */
+.konten-rujukan{display:flex;flex-direction:column;gap:24px}
+.konten-rujukan h1{margin:0}
+.konten-rujukan h2{margin:0;font:700 20px/1.3 var(--font-display)}
+.blok-rujukan{display:flex;flex-direction:column;gap:14px}
+.kartu-rujukan,.kartu-ayat{display:flex;flex-direction:column;gap:12px;margin:0}
+.kartu-rujukan p,.kartu-ayat p{margin:0;line-height:1.6}
+.judul-ayat{font:700 17px/1.3 var(--font-display)!important}
+.teks-hadits{font-size:16px;line-height:1.7}
+.teks-hadits:lang(ar){font-size:19px;line-height:2.1}
+.sumber-rujukan{color:var(--ink-muted);font-size:14px}
+.syahid{background:var(--sun);color:var(--on-fill);border-radius:4px;padding:0 3px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.daftar-hukum{display:flex;flex-direction:column;gap:8px}
+.daftar-hukum li{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.tombol-hukum{padding:8px 12px;min-height:40px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-sm);background:var(--surface-raised);color:var(--ink);font:600 14px/1.35 var(--font-sans);text-align:left;cursor:pointer}
+.tombol-hukum[aria-pressed=true]{background:var(--sun);color:var(--on-fill)}
+.tombol-hukum:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.kartu-kitab h2{font-size:19px!important}
+.aksi-kitab{display:flex;flex-wrap:wrap;gap:10px}
+.aksi-kitab a.aw-btn{text-decoration:none}
+.penampil-kitab{width:100%;height:78vh;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised)}
+.kartu-ayat .tab-kecil{align-self:flex-start}
+
+/* Sesi kuis */
+a.aw-btn{text-decoration:none;color:inherit}
+.aw-btn-secondary{color:var(--ink)}
+.judul-sesi{font:700 16px/1.3 var(--font-display);text-align:right}
+.judul-awal-kuis{margin:0;font:800 32px/1.1 var(--font-display)}
+.pilihan-mode{margin:0;padding:0;border:0;display:grid;gap:10px}
+.pilihan-mode legend{margin-bottom:10px;font:700 16px var(--font-display)}
+.opsi-mode{display:flex;gap:12px;align-items:flex-start;padding:14px;border:var(--border-w) solid var(--divider);border-radius:var(--radius-md);background:var(--surface-raised);cursor:pointer}
+.opsi-mode.dipilih{border-color:var(--outline);background:var(--primary-soft)}
+.opsi-mode input{margin:3px 0 0;width:18px;height:18px;accent-color:var(--primary);flex:none}
+.opsi-mode span{display:flex;flex-direction:column;gap:2px}
+.opsi-mode b{font:700 15px var(--font-display)}
+.opsi-mode small{color:var(--ink-muted);font-size:13.5px;line-height:1.45}
+.opsi-mode:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.progres-sesi{display:flex;justify-content:space-between;gap:12px}
+.pilihan-kuis-item.dipilih{background:var(--primary-soft);border-color:var(--primary)}
+.ringkasan-kuis{display:grid;grid-template-columns:auto 1fr;gap:16px 28px;align-items:center}
+.ringkasan-kuis .aksi-konfirmasi{grid-column:1/-1;margin:0}
+.ringkasan-kuis p{margin:0}
+.rincian-skor{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0}
+.rincian-skor div{padding:10px 12px;border:1.5px solid var(--divider);border-radius:var(--radius-sm);background:var(--surface)}
+.rincian-skor dt{font-size:12px;font-weight:800;color:var(--ink-muted)}
+.rincian-skor dd{margin:0;font:800 24px/1.2 var(--font-display)}
+.pembahasan-item>summary{align-items:flex-start;flex-wrap:nowrap;gap:10px}
+.status-jawaban{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;border:var(--border-w) solid var(--outline)}
+.status-jawaban.benar{background:var(--lime);color:var(--on-fill)}
+.status-jawaban.salah{background:var(--pink);color:var(--on-fill)}
+.isi-pembahasan{padding:0 16px 14px 52px;display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.6}
+.isi-pembahasan p{margin:0}
+.isi-pembahasan .keterangan{display:block;font-size:12px;font-weight:800}
+@media (max-width:560px){.ringkasan-kuis{grid-template-columns:1fr}.isi-pembahasan{padding-left:16px}}

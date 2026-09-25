@@ -1,117 +1,170 @@
 // Halaman Rujukan, tersusun menurut hierarki dalil KB bab 17.1: Al-Qur'an → Sunnah → Atsar → Ijma' → Kitab
-// madzhab → Kaidah hisab, ditambah "Masih dikaji" (17.4). Sidebar kategori di kiri (seperti materi), isi di kanan.
-// Dalil yang bersandar pada lebih dari satu jenis (mis. Q + RDH) muncul di tiap kategorinya.
-// `#/rujukan/<kategori>` membuka satu kategori, `#/rujukan/<kode>` satu dalil lengkap.
+// madzhab → Kaidah hisab, ditambah Keterangan dan Masih dikaji (17.4). Sidebar kategori di kiri, isi di kanan.
+// Ayat: hukum yang tercantum (docs/rujukan/syahid.md) bisa dipilih untuk menyorot potongan ayatnya.
+// Kitab: baca di aplikasi (PDF berlisensi di public/kitab) atau buka situs sumber; keduanya dari docs/rujukan/kitab.md.
+// `#/rujukan/<kategori>`, `#/rujukan/<kode>` (satu dalil), `#/rujukan/kitab/<nomor>` (penampil PDF).
 
+import { useState } from 'react';
 import {
-  DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, RUJUKAN, TITIK_DIKAJI, cariRujukan,
-  type EntriRujukan, type JenisDalil,
+  DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, DAFTAR_SYAHID, JUDUL_BAB, RUJUKAN, SUMBER_KITAB, TITIK_DIKAJI, cariRujukan,
+  type Ayat, type EntriRujukan, type JenisDalil,
 } from '@waris/content';
 import { tautanRujukan } from '../../rute';
+import { Ikon } from '../../ui/Ikon';
 import { Dalil } from '../Penjelasan';
 
-interface Kategori { id: string; judul: string; ringkas: string; jenis?: JenisDalil }
+interface Kategori { id: string; judul: string; jenis?: JenisDalil }
 
 const DAFTAR_KATEGORI: Kategori[] = [
-  { id: 'quran', judul: "Al-Qur'an", ringkas: 'Ayat inti waris: An-Nisa\' 11, 12, 176.', jenis: 'Q' },
-  { id: 'sunnah', judul: 'Sunnah', ringkas: "Hadits beserta takhrij; yang lemah ditandai dha'if.", jenis: 'H' },
-  { id: 'atsar', judul: 'Atsar sahabat', ringkas: "Putusan 'Umar, 'Ali, Zaid bin Tsabit, dan sahabat lain.", jenis: 'A' },
-  { id: 'ijma', judul: "Ijma'", ringkas: "Kesepakatan ulama yang dinukil oleh penukilnya.", jenis: 'IJ' },
-  { id: 'kitab', judul: 'Kitab madzhab', ringkas: "Nash Syafi'iyyah dari Raudhah ath-Thalibin; kitab lain sebagai pembanding.", jenis: 'RDH' },
-  { id: 'hisab', judul: 'Kaidah hisab', ringkas: "Cara menghitung (KPK, FPB). Bukan hukum syar'i.", jenis: 'KH' },
-  { id: 'keterangan', judul: 'Keterangan', ringkas: 'Catatan tambahan dan keputusan desain, bukan dalil.' },
-  { id: 'dikaji', judul: 'Masih dikaji', ringkas: 'Dasarnya belum dicek ke teks asli; hitungan kasus umum tidak terpengaruh.' },
+  { id: 'quran', judul: "Al-Qur'an", jenis: 'Q' },
+  { id: 'sunnah', judul: 'Sunnah', jenis: 'H' },
+  { id: 'atsar', judul: 'Atsar sahabat', jenis: 'A' },
+  { id: 'ijma', judul: "Ijma'", jenis: 'IJ' },
+  { id: 'kitab', judul: 'Kitab madzhab', jenis: 'RDH' },
+  { id: 'hisab', judul: 'Kaidah hisab', jenis: 'KH' },
+  { id: 'keterangan', judul: 'Keterangan' },
+  { id: 'dikaji', judul: 'Masih dikaji' },
 ];
+
+export const KATEGORI_RUJUKAN = DAFTAR_KATEGORI.map(isi => isi.id);
 
 /** Dalil satu kategori; kategori tanpa jenis ("Keterangan") menampung baris KB yang bukan dalil. */
 const dalilKategori = (kategori: Kategori) => (kategori.jenis
   ? RUJUKAN.filter(rujukan => rujukan.daftarJenis.includes(kategori.jenis!))
   : RUJUKAN.filter(rujukan => rujukan.daftarJenis.length === 0));
 
-export const KATEGORI_RUJUKAN = DAFTAR_KATEGORI.map(isi => isi.id);
+const jumlahDi = (kategori: Kategori) => (kategori.id === 'dikaji' ? TITIK_DIKAJI.length : dalilKategori(kategori).length);
 
-export function Rujukan({ kode, kategori }: { kode?: string | undefined; kategori?: string | undefined }) {
+interface Props { kode?: string | undefined; kategori?: string | undefined; kitab?: string | undefined }
+
+export function Rujukan({ kode, kategori, kitab }: Props) {
   const aktif = kode ? undefined : DAFTAR_KATEGORI.find(isi => isi.id === kategori) ?? DAFTAR_KATEGORI[0]!;
   return (
     <div className="tata-materi">
       <aside className="sidebar-materi" aria-label="Kategori rujukan">
-        <div className="lipat-sidebar">
-          <p className="label-langkah kepala-sidebar">Urutan dalil</p>
-          <ol className="daftar-polos modul-sidebar">
-            {DAFTAR_KATEGORI.map((isi, urutan) => (
-              <li key={isi.id}>
-                <a href={tautanRujukan(isi.id)} className="pelajaran-sidebar" aria-current={isi === aktif ? 'page' : undefined}>
-                  <span className="tanda-pelajaran">{isi.jenis ? urutan + 1 : '·'}</span>
-                  <span className="isi-sidebar-rujukan">{isi.judul}<small>{jumlahDi(isi)}</small></span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </div>
+        <p className="label-langkah kepala-sidebar">Urutan dalil</p>
+        <ol className="daftar-polos modul-sidebar">
+          {DAFTAR_KATEGORI.map((isi, urutan) => (
+            <li key={isi.id}>
+              <a href={tautanRujukan(isi.id)} className="pelajaran-sidebar" aria-current={isi === aktif ? 'page' : undefined}>
+                <span className="tanda-pelajaran">{isi.jenis ? urutan + 1 : ''}</span>
+                <span className="isi-sidebar-rujukan">{isi.judul}<small>{jumlahDi(isi)}</small></span>
+              </a>
+            </li>
+          ))}
+        </ol>
       </aside>
-      <main className="konten-materi tumpuk">
-        {kode ? <DetailRujukan kode={kode} /> : <IsiKategori kategori={aktif!} />}
+      <main className="konten-materi konten-rujukan">
+        {kode ? <DetailRujukan kode={kode} />
+          : aktif!.id === 'kitab' && kitab !== undefined ? <PenampilKitab nomor={Number(kitab)} />
+          : <IsiKategori kategori={aktif!} />}
       </main>
     </div>
   );
-}
-
-function jumlahDi(kategori: Kategori): number {
-  if (kategori.id === 'dikaji') return TITIK_DIKAJI.length;
-  return dalilKategori(kategori).length;
 }
 
 function IsiKategori({ kategori }: { kategori: Kategori }) {
   return (
     <>
       <h1>{kategori.judul}</h1>
-      <p className="lead">{kategori.ringkas}</p>
-      {kategori.id === 'quran' && (
-        <section className="tumpuk-rapat">
-          <h2>Ayat</h2>
-          {DAFTAR_AYAT.map(ayat => (
-            <figure key={`${ayat.surah}-${ayat.ayat}`} className="kartu kartu-ayat">
-              <blockquote lang="ar" dir="rtl" className="kutipan-arab">{ayat.teks}</blockquote>
-              <figcaption className="label-langkah">{ayat.surah} : {ayat.ayat}</figcaption>
-            </figure>
-          ))}
-        </section>
-      )}
+      {kategori.id === 'quran' && <section className="blok-rujukan">{DAFTAR_AYAT.map(ayat => <KartuAyat key={`${ayat.surah}-${ayat.ayat}`} ayat={ayat} />)}</section>}
       {kategori.id === 'sunnah' && (
-        <section className="tumpuk-rapat">
-          <h2>Hadits</h2>
-          <p className="keterangan">Nomor bisa berbeda antar cetakan; cocokkan dengan lafaznya.</p>
-          <ul className="daftar-polos tumpuk-rapat">
+        <section className="blok-rujukan">
+          <ul className="daftar-polos blok-rujukan">
             {DAFTAR_HADITS.map(hadits => (
-              <li key={hadits.hadits} className="kartu">
-                <p lang={/[؀-ۿ]/.test(hadits.hadits) ? 'ar' : undefined} className="teks-arab-baris">{hadits.hadits.replace(/[«»]/g, '')}</p>
-                <p className="keterangan">{hadits.takhrij} · <b>{hadits.status.replace(/`/g, '')}</b></p>
+              <li key={hadits.hadits} className="kartu kartu-rujukan">
+                <p lang={/[؀-ۿ]/.test(hadits.hadits) ? 'ar' : undefined} dir="auto" className="teks-hadits">{hadits.hadits.replace(/[«»]/g, '')}</p>
+                <p className="sumber-rujukan">{hadits.takhrij} · <b>{hadits.status.replace(/`/g, '')}</b></p>
               </li>
             ))}
           </ul>
+          <p className="keterangan">Nomor hadits bisa berbeda antar cetakan; cocokkan dengan lafaznya.</p>
         </section>
       )}
-      {kategori.id === 'kitab' && (
-        <section className="tumpuk-rapat">
-          <h2>Kitab</h2>
-          {DAFTAR_KITAB.map(kitab => (
-            <div key={kitab.judul} className="kartu">
-              <h3><cite>{kitab.judul}</cite></h3>
-              <p>{kitab.penulis}</p>
-              <p className="keterangan">{kitab.keterangan.replace(/\*\*/g, '')}</p>
-            </div>
-          ))}
-        </section>
-      )}
+      {kategori.id === 'kitab' && <section className="blok-rujukan">{DAFTAR_KITAB.map((kitab, nomor) => <KartuKitab key={kitab.judul} nomor={nomor} />)}</section>}
       {kategori.id === 'dikaji' ? (
         <ul className="daftar-polos daftar-soal">
           {TITIK_DIKAJI.map(titik => (
             <li key={titik.kode} className="baris-soal">
-              <a className="isi-soal" href={tautanRujukan(titik.kode)}><b>{titik.topik}</b><span className="keterangan">Perlu: {titik.yangDibutuhkan}</span></a>
+              <a className="isi-soal" href={tautanRujukan(titik.kode)}><b>{titik.topik}</b><span className="keterangan">Perlu dicek: {titik.yangDibutuhkan}</span></a>
             </li>
           ))}
         </ul>
       ) : <DalilPerBab daftar={dalilKategori(kategori)} />}
+    </>
+  );
+}
+
+/** Satu ayat: teks Arab, lalu tab Hukum (pilih untuk menyorot syahid) · Arti · Tafsir. */
+function KartuAyat({ ayat }: { ayat: Ayat }) {
+  const daftarHukum = DAFTAR_SYAHID.filter(isi => isi.surah === ayat.surah && isi.ayat === ayat.ayat);
+  const [tab, setTab] = useState<'hukum' | 'arti' | 'tafsir'>('hukum');
+  const [disorot, setDisorot] = useState<number | null>(null);
+  const syahid = disorot === null ? undefined : daftarHukum[disorot]?.syahid;
+  const posisi = syahid ? ayat.teks.indexOf(syahid) : -1;
+  return (
+    <article className="kartu kartu-ayat">
+      <h2 className="judul-ayat">{ayat.surah} : {ayat.ayat}</h2>
+      <blockquote lang="ar" dir="rtl" className="kutipan-arab">
+        {posisi < 0 ? ayat.teks : <>{ayat.teks.slice(0, posisi)}<mark className="syahid">{syahid}</mark>{ayat.teks.slice(posisi + syahid!.length)}</>}
+      </blockquote>
+      <div className="tab-kecil" role="tablist" aria-label={`Keterangan ${ayat.surah} ${ayat.ayat}`}>
+        {(['hukum', 'arti', 'tafsir'] as const).map(isi => (
+          <button key={isi} type="button" role="tab" aria-selected={tab === isi} onClick={() => setTab(isi)}>{isi[0]!.toUpperCase() + isi.slice(1)}</button>
+        ))}
+      </div>
+      {tab === 'hukum' && (
+        daftarHukum.length === 0 ? <p className="keterangan">Belum ada rincian hukum untuk ayat ini.</p> : (
+          <ul className="daftar-polos daftar-hukum" role="tabpanel">
+            {daftarHukum.map((isi, urutan) => (
+              <li key={isi.hukum}>
+                <button type="button" className="tombol-hukum" aria-pressed={disorot === urutan} onClick={() => setDisorot(disorot === urutan ? null : urutan)}>
+                  {isi.hukum}
+                </button>
+                <a className="tautan-dalil" href={tautanRujukan(isi.rujukan)} aria-label={`Dalil: ${isi.hukum}`}>dalil</a>
+              </li>
+            ))}
+          </ul>
+        )
+      )}
+      {/* TODO: arti dan tafsir diisi tim keilmuan di docs/rujukan/syahid.md bagian "Arti dan Tafsir". */}
+      {tab !== 'hukum' && <p className="keterangan" role="tabpanel">{tab === 'arti' ? 'Arti' : 'Tafsir'} ayat ini belum diisi. Akan ditambahkan tim keilmuan.</p>}
+    </article>
+  );
+}
+
+function KartuKitab({ nomor }: { nomor: number }) {
+  const kitab = DAFTAR_KITAB[nomor]!;
+  const sumber = SUMBER_KITAB.find(isi => isi.judul === kitab.judul);
+  return (
+    <article className="kartu kartu-rujukan kartu-kitab">
+      <h2><cite>{kitab.judul}</cite></h2>
+      <p className="sumber-rujukan">{kitab.penulis}</p>
+      <p>{kitab.keterangan.replace(/\*\*/g, '')}</p>
+      <div className="aksi-kitab">
+        {sumber?.pdf
+          ? <a className="aw-btn aw-btn-primary aw-btn-sm" href={`#/rujukan/kitab/${nomor}`}><Ikon nama="pelajaran" ukuran={18} /> Baca di sini</a>
+          : <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled>Baca di sini · belum tersedia</button>}
+        {sumber?.tautan
+          ? <a className="aw-btn aw-btn-secondary aw-btn-sm" href={sumber.tautan} target="_blank" rel="noopener noreferrer"><Ikon nama="buka" ukuran={18} /> Situs sumber</a>
+          : <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" disabled>Situs sumber · belum tersedia</button>}
+      </div>
+    </article>
+  );
+}
+
+function PenampilKitab({ nomor }: { nomor: number }) {
+  const kitab = DAFTAR_KITAB[nomor];
+  const pdf = kitab && SUMBER_KITAB.find(isi => isi.judul === kitab.judul)?.pdf;
+  return (
+    <>
+      <a href={tautanRujukan('kitab')}>Kembali ke daftar kitab</a>
+      {kitab && pdf ? (
+        <>
+          <h1><cite>{kitab.judul}</cite></h1>
+          <iframe className="penampil-kitab" src={`/kitab/${encodeURIComponent(pdf)}`} title={kitab.judul} />
+        </>
+      ) : <p role="alert">Berkas kitab ini belum tersedia.</p>}
     </>
   );
 }
@@ -121,14 +174,14 @@ function DalilPerBab({ daftar }: { daftar: EntriRujukan[] }) {
   const daftarBab = [...new Set(daftar.map(rujukan => rujukan.bab))];
   if (daftar.length === 0) return null;
   return (
-    <section className="tumpuk-rapat">
+    <section className="blok-rujukan">
       <h2>Dipakai untuk</h2>
       {daftarBab.map(bab => (
         <details key={bab} className="kartu-lipat">
           <summary><b>{JUDUL_BAB[bab]}</b><span className="keterangan">{daftar.filter(rujukan => rujukan.bab === bab).length}</span></summary>
           <ul className="isi-lipat">
             {daftar.filter(rujukan => rujukan.bab === bab).map(rujukan => (
-              <li key={rujukan.kode}><a href={tautanRujukan(rujukan.kode)}>{rujukan.klaim}{rujukan.status === 'perluVerifikasi' ? ' (masih dikaji)' : ''}</a></li>
+              <li key={rujukan.kode}><a href={tautanRujukan(rujukan.kode)}>{rujukan.klaim}</a>{rujukan.status === 'perluVerifikasi' ? ' (masih dikaji)' : ''}</li>
             ))}
           </ul>
         </details>
@@ -139,14 +192,14 @@ function DalilPerBab({ daftar }: { daftar: EntriRujukan[] }) {
 
 function DetailRujukan({ kode }: { kode: string }) {
   const rujukan = cariRujukan(kode);
-  if (!rujukan) return <><a href={tautanRujukan()}>← Rujukan</a><p role="alert">Rujukan {kode} tidak ada di daftar.</p></>;
+  if (!rujukan) return <><a href={tautanRujukan()}>Kembali ke rujukan</a><p role="alert">Rujukan {kode} tidak ada di daftar.</p></>;
   return (
     <>
       <p className="label-langkah">{JUDUL_BAB[rujukan.bab]}</p>
       <h1>{rujukan.klaim}</h1>
-      <div className="kartu"><Dalil daftarKode={[rujukan.kode]} diHalamanRujukan /></div>
+      <div className="kartu kartu-rujukan"><Dalil daftarKode={[rujukan.kode]} diHalamanRujukan /></div>
       {rujukan.arab.map(teks => <blockquote key={teks} lang="ar" dir="rtl" className="kutipan-arab">{teks}</blockquote>)}
-      {rujukan.arab.length === 0 && rujukan.kutipan && <p className="keterangan">{rujukan.kutipan}</p>}
+      {rujukan.arab.length === 0 && rujukan.kutipan && <p>{rujukan.kutipan}</p>}
       <p className="keterangan">Kode {rujukan.kode}</p>
     </>
   );

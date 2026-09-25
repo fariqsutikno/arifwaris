@@ -38,3 +38,19 @@ it('kode rujukan tak dikenal tidak membuat halaman rusak', () => {
   render(<Rujukan kode="R99-9" />);
   expect(screen.getByRole('alert').textContent).toMatch(/R99-9/);
 });
+
+it("rujukan Al-Qur'an: memilih hukum menyorot syahidnya di teks ayat; arti & tafsir berupa placeholder jujur", async () => {
+  const { DAFTAR_SYAHID } = await import('@waris/content');
+  const { container } = render(<Rujukan kategori="quran" />);
+  const pertama = DAFTAR_SYAHID[0]!;
+  expect(container.querySelector('mark.syahid')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: pertama.hukum }));
+  expect(container.querySelector('mark.syahid')?.textContent).toBe(pertama.syahid);
+  fireEvent.click(screen.getAllByRole('tab', { name: 'Arti' })[0]!);
+  expect(screen.getByText(/Arti ayat ini belum diisi/)).toBeTruthy();
+});
+
+it('kitab tanpa sumber: tombol baca nonaktif dengan label, bukan tombol mati', () => {
+  render(<Rujukan kategori="kitab" />);
+  for (const tombol of screen.getAllByRole('button', { name: /belum tersedia/ })) expect((tombol as HTMLButtonElement).disabled).toBe(true);
+});

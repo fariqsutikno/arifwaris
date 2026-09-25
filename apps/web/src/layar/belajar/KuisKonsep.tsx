@@ -125,7 +125,7 @@ export function SesiKuis({ paket }: { paket: string }) {
     );
   }
 
-  if (tahap === 'hasil') return <HasilKuis judul={judul} kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} saatUlang={() => mulai(mode)} />;
+  if (tahap === 'hasil') return <HasilKuis kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} saatUlang={() => mulai(mode)} />;
 
   const soal = daftarSoal[posisi]!;
   const sudahDijawab = pilihan.length > posisi;
@@ -159,8 +159,8 @@ export function SesiKuis({ paket }: { paket: string }) {
   );
 }
 
-function HasilKuis({ judul, kepala, daftarSoal, pilihan, saatUlang }: {
-  judul: string; kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: number[]; saatUlang: () => void;
+function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
+  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: number[]; saatUlang: () => void;
 }) {
   const benar = daftarSoal.filter((soal, urutan) => pilihan[urutan] === soal.indeksBenar).length;
   const persen = Math.round((benar / daftarSoal.length) * 100);
@@ -169,7 +169,7 @@ function HasilKuis({ judul, kepala, daftarSoal, pilihan, saatUlang }: {
       {kepala}
       <div className="kartu ringkasan-kuis" aria-live="polite">
         <div>
-          <p className="label-langkah">Skor {judul}</p>
+          <p className="label-langkah">Skor</p>
           <p className="skor-besar">{benar}<small>/{daftarSoal.length}</small></p>
         </div>
         <dl className="rincian-skor">

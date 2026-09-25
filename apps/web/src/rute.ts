@@ -12,7 +12,7 @@ export type Rute =
   | { halaman: 'faq'; id?: string }
   | { halaman: 'riwayat' }
   | { halaman: 'glosarium'; id?: string }
-  | { halaman: 'rujukan'; kode?: string; kategori?: string };
+  | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
 
 export function bacaRute(hash: string): Rute {
   const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
@@ -26,7 +26,9 @@ export function bacaRute(hash: string): Rute {
   if (halaman === 'glosarium') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'rujukan') {
     if (!parameter) return { halaman };
-    return /^R\d{2}-\d+$/.test(parameter) ? { halaman, kode: parameter } : { halaman, kategori: parameter };
+    if (/^R\d{2}-\d+$/.test(parameter)) return { halaman, kode: parameter };
+    const kitab = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    return kitab ? { halaman, kategori: parameter, kitab } : { halaman, kategori: parameter };
   }
   return { halaman: 'kalkulator' };
 }

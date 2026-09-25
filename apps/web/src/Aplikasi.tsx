@@ -58,7 +58,7 @@ export function Aplikasi() {
   usePenjaga(diKalkulator && !!kasus && layar !== 'beranda', {
     berlaku: href => !['kalkulator', 'riwayat'].includes(bacaRute(href).halaman),
     judul: 'Tinggalkan Hitung?',
-    isi: <p>{soalAktif ? 'Soal latihan ini belum selesai. Kamu bisa membukanya lagi dari Latihan.'
+    isi: <p>{soalAktif ? 'Soal ini bisa kamu buka lagi kapan saja dari Latihan.'
       : kasusLengkap(kasus) ? 'Kasusmu sudah tersimpan di Riwayat hitung. Buka menu Hitung kapan saja untuk melanjutkan.'
       : 'Isianmu tetap tersimpan di perangkat ini. Buka menu Hitung, lalu Lanjutkan kasus terakhir.'}</p>,
     labelTetap: 'Tetap di sini',
@@ -88,7 +88,7 @@ export function Aplikasi() {
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
-        : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} />
+        : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatBukaRiwayat={bukaRiwayat} />
         : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim}

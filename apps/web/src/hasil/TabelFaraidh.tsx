@@ -64,9 +64,9 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
                     <span className="bagian-sel">{baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : <Istilah id="ashabah">Ashabah</Istilah>}
                       <small>{baris.fardh ? (baris.ashabah ? 'bagian tertentu + sisa' : 'bagian tertentu') : anggota.length > 1 ? 'sisa, dibagi bersama' : 'sisa'}</small></span>
                   </td>
-                  <td rowSpan={anggota.length} className={['angka', sorot('ashl')].filter(Boolean).join(' ')}>{String(baris.sel.ashl ?? '—')}</td>
-                  {penyesuaian && <td rowSpan={anggota.length} className={['angka', sorot('penyesuaian')].filter(Boolean).join(' ')}>{String(baris.sel[penyesuaian.kunci] ?? '—')}</td>}
-                  {tashih !== undefined && <td rowSpan={anggota.length} className={['angka', sorot('tashih')].filter(Boolean).join(' ')}>{String(baris.sel.tashih ?? '—')}</td>}
+                  <td rowSpan={anggota.length} className={['angka', sorot('ashl')].filter(Boolean).join(' ')}>{String(baris.sel.ashl ?? '-')}</td>
+                  {penyesuaian && <td rowSpan={anggota.length} className={['angka', sorot('penyesuaian')].filter(Boolean).join(' ')}>{String(baris.sel[penyesuaian.kunci] ?? '-')}</td>}
+                  {tashih !== undefined && <td rowSpan={anggota.length} className={['angka', sorot('tashih')].filter(Boolean).join(' ')}>{String(baris.sel.tashih ?? '-')}</td>}
                 </>}
                 <td className="angka">{String(baris.perOrang[id]!.saham)}</td>
                 <td className={['uang', sorot('nominal')].filter(Boolean).join(' ')}>{uangAtau(baris.perOrang[id]!.nominal, sembunyi)}</td>
@@ -79,7 +79,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
             <td className="kiri"><span className="orang-sel"><span className="titik putus" />{ringkasan.sisaKeluar.judul}</span></td>
             <td><span className="bagian-sel">Sisa<small>bukan untuk ahli waris</small></span></td>
             <td className="angka">{String(ringkasan.sisaKeluar.saham * ashl! / ringkasan.penyebut)}</td>
-            {penyesuaian && <td className="angka">—</td>}
+            {penyesuaian && <td className="angka">-</td>}
             {tashih !== undefined && <td className="angka">{String(ringkasan.sisaKeluar.saham)}</td>}
             <td className="angka">{String(ringkasan.sisaKeluar.saham)}</td>
             <td className="uang">{uangAtau(ringkasan.sisaKeluar.nominal, sembunyi)}</td>
@@ -91,7 +91,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
       <tfoot>
         <tr>
           <td className="kiri">Jumlah</td>
-          <td>—</td>
+          <td>-</td>
           <td className="angka">{String(ashl)}</td>
           {penyesuaian && <td className="angka">{String(penyesuaian.nilai)}</td>}
           {tashih !== undefined && <td className="angka">{String(tashih)}</td>}
