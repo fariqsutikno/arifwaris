@@ -28,6 +28,12 @@ mengurangi bagian orang lain [R06-6].
 Ini berbeda dengan orang yang terhalang karena ada ahli waris yang lebih dekat. Yang kedua ini akan dibahas di
 modul [[hajb]].
 
+## Cek pemahaman
+
+```kuis
+K-03, K-04
+```
+
 ## Ringkasnya
 
 - Lima penghalang: beda agama, perbudakan, pembunuhan, tidak jelas siapa wafat duluan, daur.

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { DAFTAR_PELAJARAN, type ContohKasus } from '@waris/content';
 import { jalankan } from '../jalankan';
@@ -42,8 +42,19 @@ describe('halaman belajar', () => {
     expect(document.querySelector('a.tautan-dalil[href^="#/rujukan/R"]')).toBeTruthy();
     fireEvent.click(screen.getAllByRole('button', { name: 'Coba di kalkulator' })[0]!);
     expect(dicoba).toHaveLength(1);
-    fireEvent.click(screen.getByRole('button', { name: /^Selesai/ }));
+    const navigasi = screen.getByRole('navigation', { name: 'Navigasi pelajaran' });
+    expect(within(navigasi).getByRole('link', { name: '⌂ Beranda belajar' }).getAttribute('href')).toBe('#/belajar');
+    fireEvent.click(within(navigasi).getByRole('link', { name: 'Berikutnya →' }));
     expect(bacaPelajaranSelesai().has(pelajaran.slug)).toBe(true);
+    expect(within(screen.getByRole('complementary', { name: 'Daftar materi' })).getByRole('link', { current: 'page' }).textContent).toContain(pelajaran.judul);
+  });
+
+  it('cek pemahaman di materi: pilihan berhuruf, pembahasan muncul setelah memilih', () => {
+    const pelajaran = DAFTAR_PELAJARAN.find(isi => isi.blok.some(blok => blok.jenis === 'kuis'))!;
+    render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={() => {}} />);
+    const kartu = document.querySelector('fieldset.kartu-kuis') as HTMLElement;
+    fireEvent.click(within(kartu).getByRole('button', { name: /^A\. / }));
+    expect(within(kartu).getByRole('status').textContent).toMatch(/Benar!|Belum tepat/);
   });
 
   it('coba di kalkulator saat ada kasus lain: tanya dulu', () => {

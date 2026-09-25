@@ -6,7 +6,7 @@ import { unduhKasus } from './berkas';
 import { muatLokal, simpanLokal, type Kasus } from './kasus';
 import { keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
-import { bacaTujuan, simpanCatatan, simpanTujuan, sudahLihatTur } from './preferensi';
+import { bacaTujuan, catatAktivitas, simpanCatatan, simpanTujuan, sudahLihatTur } from './preferensi';
 import { Tur } from './tur/Tur';
 import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
@@ -28,7 +28,7 @@ export function Aplikasi() {
   // Kasus tersimpan hanya dihapus lewat ULANGI, dan langsung (sebelum render berikutnya) supaya beranda
   // tidak menawarkan kasus yang baru saja dihapus. MULAI (kasus null sementara) tidak menimpa simpanan lama.
   // Soal latihan yang sedang dikerjakan di kalkulator; ditandai selesai saat jawabannya dibuka.
-  const [soalAktif, setSoalAktif] = useState<string | null>(null);
+  const [soalAktif, setSoalAktif] = useState<SoalHitung | null>(null);
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(buatIdSesi);
   const kirim = (aksi: Aksi) => {
@@ -55,7 +55,7 @@ export function Aplikasi() {
   const kerjakanSoal = (soal: SoalHitung) => {
     kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
     cobaDiKalkulator(kasusDariContoh(soal.kasus));
-    setSoalAktif(soal.kode);
+    setSoalAktif(soal);
   };
   // Otomatis sekali di kunjungan pertama tiap layar yang punya tur.
   useEffect(() => {
@@ -68,7 +68,7 @@ export function Aplikasi() {
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} saatSimpan={() => kasus && unduhKasus(kasus)} />
       {rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
-        : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
+        : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
@@ -76,7 +76,7 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatBukaRiwayat={bukaRiwayat} />
         : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim}
-            saatDikerjakan={soalAktif ? () => simpanCatatan('soal', soalAktif, 'selesai') : undefined} />}
+            saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined} />}
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
   );
@@ -87,3 +87,8 @@ const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLoka
 
 /** Id sesi riwayat; cukup unik di satu perangkat. */
 const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+
+function tandaiSoalDikerjakan(soal: SoalHitung): void {
+  simpanCatatan('soal', soal.kode, 'selesai');
+  catatAktivitas({ jenis: 'soal', kode: soal.kode, judul: soal.judul, waktu: Date.now() });
+}

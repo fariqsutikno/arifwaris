@@ -43,6 +43,12 @@ harta: 120.000.000
 harapan: IBU 1, AYAH 5; ashl 6
 ```
 
+## Cek pemahaman
+
+```kuis
+K-10, K-11
+```
+
 ## Ringkasnya
 
 - Hirman = gugur total; nuqshan = berkurang.

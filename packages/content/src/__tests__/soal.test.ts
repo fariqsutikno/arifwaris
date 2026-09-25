@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, JUDUL_BAB, bacaSoalKuis, cariIstilah, cariRujukan, type Potongan } from '../index.js';
+import { DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, JUDUL_BAB, bacaSoalKuis, cariIstilah, cariRujukan, type Potongan } from '../index.js';
 
 const cekPotongan = (daftar: Potongan[]) => {
   for (const potongan of daftar) {
@@ -21,6 +21,13 @@ describe('bank soal', () => {
     for (const soal of DAFTAR_SOAL_KUIS) {
       expect(JUDUL_BAB[soal.bab], soal.kode).toBeDefined();
       [soal.pertanyaan, soal.pembahasan, ...soal.pilihan].forEach(cekPotongan);
+    }
+  });
+
+  test('kuis yang disisipkan di materi ada di bank kuis', () => {
+    const kodeKuis = new Set(DAFTAR_SOAL_KUIS.map(soal => soal.kode));
+    for (const pelajaran of DAFTAR_PELAJARAN) {
+      for (const blok of pelajaran.blok) if (blok.jenis === 'kuis') for (const kode of blok.daftarKode) expect(kodeKuis.has(kode), `${pelajaran.slug}: ${kode}`).toBe(true);
     }
   });
 

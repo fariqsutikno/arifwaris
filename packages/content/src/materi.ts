@@ -3,7 +3,8 @@
 // Satu berkas = satu pelajaran: frontmatter (judul, modul, urutan, tujuan, perluCek) + isi Markdown terbatas:
 //   ## / ###, paragraf, daftar (- / 1.), catatan (>), tabel, **tebal**, *miring*,
 //   [[id-istilah]] atau [[id-istilah|teks]] → istilah glosarium, [R04-2] → tautan dalil,
-//   blok ```kasus → contoh yang dihitung engine di aplikasi (harapan dicek oleh test, tidak ditampilkan).
+//   blok ```kasus → contoh yang dihitung engine di aplikasi (harapan dicek oleh test, tidak ditampilkan),
+//   blok ```video → video YouTube, blok ```kuis → kode soal dari docs/soal/kuis.md (cek pemahaman).
 // Daftar modul diambil dari tabel `docs/materi/00-modul.md`.
 import { barisTabelBagian } from './refs.js';
 
@@ -29,7 +30,9 @@ export type Blok =
   | { jenis: 'daftar'; berurut: boolean; butir: Potongan[][] }
   | { jenis: 'catatan'; isi: Potongan[] }
   | { jenis: 'tabel'; kepala: Potongan[][]; baris: Potongan[][][] }
-  | { jenis: 'kasus'; kasus: ContohKasus };
+  | { jenis: 'kasus'; kasus: ContohKasus }
+  | { jenis: 'video'; idYoutube: string; judul: string }
+  | { jenis: 'kuis'; daftarKode: string[] };
 
 export interface Pelajaran {
   slug: string;
@@ -68,11 +71,13 @@ export function bacaBlok(slug: string, isi: string): Blok[] {
       return diambil;
     };
     if (baris.trim() === '') { indeks++; continue; }
-    if (baris.startsWith('```kasus')) {
+    if (/^```(kasus|video|kuis)/.test(baris)) {
       indeks++;
-      const isiKasus = ambilSelama(teks => !teks.startsWith('```'));
+      const isiBlok = ambilSelama(teks => !teks.startsWith('```'));
       indeks++;
-      daftarBlok.push({ jenis: 'kasus', kasus: bacaKasus(slug, isiKasus) });
+      if (baris.startsWith('```kasus')) daftarBlok.push({ jenis: 'kasus', kasus: bacaKasus(slug, isiBlok) });
+      else if (baris.startsWith('```video')) daftarBlok.push(bacaVideo(slug, isiBlok));
+      else daftarBlok.push({ jenis: 'kuis', daftarKode: isiBlok.join(',').split(',').map(kode => kode.trim()).filter(Boolean) });
     } else if (/^#{2,3} /.test(baris)) {
       const tingkat = baris.startsWith('### ') ? 3 : 2;
       daftarBlok.push({ jenis: 'judul', tingkat, isi: bacaPotongan(baris.slice(tingkat + 1)) });
@@ -122,12 +127,25 @@ export function semuaPotongan(daftarBlok: Blok[]): Potongan[] {
       case 'judul': case 'paragraf': case 'catatan': return blok.isi;
       case 'daftar': return blok.butir.flat();
       case 'tabel': return [...blok.kepala, ...blok.baris.flat()].flat();
-      case 'kasus': return [];
+      case 'kasus': case 'video': case 'kuis': return [];
     }
   });
 }
 
 const selTabel = (baris: string) => baris.split('|').slice(1, -1).map(isi => isi.trim());
+
+/**
+ * Blok video (YouTube, ditampilkan lewat youtube-nocookie):
+ *   https://www.youtube.com/watch?v=XXXXXXXXXXX
+ *   judul: Pengantar faraidh
+ */
+function bacaVideo(slug: string, daftarBaris: string[]): Extract<Blok, { jenis: 'video' }> {
+  const tautan = daftarBaris.find(baris => /^https?:\/\//.test(baris.trim()))?.trim() ?? '';
+  const idYoutube = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/.exec(tautan)?.[1];
+  if (!idYoutube) throw new Error(`${slug}: blok video butuh tautan YouTube`);
+  const judul = daftarBaris.find(baris => baris.startsWith('judul:'))?.slice('judul:'.length).trim() ?? 'Video';
+  return { jenis: 'video', idYoutube, judul };
+}
 
 /**
  * Blok kasus:

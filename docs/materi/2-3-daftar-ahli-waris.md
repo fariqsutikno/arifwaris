@@ -66,6 +66,12 @@ harapan: SUAMI 3, AYAH 2, ANAK_LK 7; ashl 12
 Kalau semua ahli waris perempuan ada, yang mendapat bagian lima: anak perempuan, cucu perempuan, ibu, saudari
 kandung, dan istri [R03-3].
 
+## Cek pemahaman
+
+```kuis
+K-05
+```
+
 ## Ringkasnya
 
 - 15 laki-laki, 10 perempuan. Di luar itu dzawil arham.

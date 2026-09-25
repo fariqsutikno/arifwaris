@@ -55,6 +55,12 @@ harta: 120.000.000
 harapan: ISTRI 3, AYAH 4, IBU 4, ANAK_LK 13; ashl 24
 ```
 
+## Cek pemahaman
+
+```kuis
+K-06
+```
+
 ## Ringkasnya
 
 - Enam fardh: 1/2, 1/4, 1/8, 2/3, 1/3, 1/6.

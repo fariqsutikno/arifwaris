@@ -25,6 +25,14 @@ describe('parser materi', () => {
     } });
   });
 
+  test('blok video (berbagai bentuk tautan YouTube) dan kuis', () => {
+    for (const tautan of ['https://www.youtube.com/watch?v=dQw4w9WgXcQ&t=3', 'https://youtu.be/dQw4w9WgXcQ', 'https://www.youtube.com/embed/dQw4w9WgXcQ']) {
+      expect(bacaBlok('v', `\`\`\`video\n${tautan}\njudul: Uji\n\`\`\``)).toEqual([{ jenis: 'video', idYoutube: 'dQw4w9WgXcQ', judul: 'Uji' }]);
+    }
+    expect(() => bacaBlok('v', '```video\nhttps://example.com\n```')).toThrow(/YouTube/);
+    expect(bacaBlok('k', '```kuis\nK-01, K-02\nK-03\n```')).toEqual([{ jenis: 'kuis', daftarKode: ['K-01', 'K-02', 'K-03'] }]);
+  });
+
   test('frontmatter atau blok kasus rusak = galat, bukan diam-diam', () => {
     expect(() => bacaPelajaran('x', 'tanpa frontmatter')).toThrow(/frontmatter/);
     expect(() => bacaPelajaran('x', '---\njudul: A\nmodul: 1\nurutan: 1\n---\nisi')).toThrow(/tujuan/);

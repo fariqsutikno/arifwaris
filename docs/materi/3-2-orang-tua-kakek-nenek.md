@@ -55,6 +55,12 @@ harta: 120.000.000
 harapan: ISTRI 3, ANAK_PR 12, IBU 4, AYAH 5; ashl 24
 ```
 
+## Cek pemahaman
+
+```kuis
+K-07
+```
+
 ## Ringkasnya
 
 - Ayah: 1/6, 1/6 + sisa, atau sisa saja.

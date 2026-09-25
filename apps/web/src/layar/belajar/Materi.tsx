@@ -1,18 +1,22 @@
-// Satu pelajaran: isi Markdown terbatas dari packages/content → elemen React (tanpa innerHTML).
-// Istilah jadi tooltip glosarium, kode rujukan jadi tautan "dalil", blok kasus jadi tabel faraidh dari engine.
-// Selesai dibaca → ditandai di perangkat ini, lalu lanjut ke pelajaran berikutnya.
+// Satu pelajaran, tata letak e-learning: sidebar (progres + daftar modul & pelajaran) di kiri, isi di kanan.
+// Isi = blok Markdown terbatas dari packages/content: teks, tabel, video YouTube, contoh kasus dihitung engine,
+// dan kuis cek pemahaman. Pelajaran ditandai selesai saat dibaca sampai bawah atau saat lanjut ke berikutnya.
+// Navigasi bawah: Sebelumnya · Beranda belajar · Berikutnya, gayanya setara.
 
-import { Fragment, useMemo } from 'react';
-import { DAFTAR_MODUL, DAFTAR_PELAJARAN, cariPelajaran, cariRujukan, type Blok, type ContohKasus, type Potongan } from '@waris/content';
+import { useEffect, useMemo, useRef } from 'react';
+import {
+  DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_KUIS, cariPelajaran,
+  type Blok, type ContohKasus, type Pelajaran,
+} from '@waris/content';
 import { TabelFaraidh } from '../../hasil/TabelFaraidh';
 import { ringkas } from '../../hasil/ringkasan';
 import { jalankan, type HasilOk } from '../../jalankan';
 import type { Kasus } from '../../kasus';
-import { tandaiPelajaranSelesai } from '../../preferensi';
-import { tautanBelajar, tautanRujukan } from '../../rute';
-import { Tombol } from '../../ui/komponen';
-import { Istilah } from '../../ui/Tooltip';
+import { bacaPelajaranSelesai, catatAktivitas, tandaiPelajaranSelesai } from '../../preferensi';
+import { tautanBelajar } from '../../rute';
 import { kasusDariContoh } from './contoh';
+import { KartuSoalKuis } from './KartuSoalKuis';
+import { Sebaris } from './Sebaris';
 import { TombolBukaKasus } from './TombolBukaKasus';
 
 interface Props {
@@ -24,6 +28,18 @@ interface Props {
 
 export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const pelajaran = cariPelajaran(slug);
+  const ujung = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!pelajaran) return;
+    catatAktivitas({ jenis: 'pelajaran', kode: pelajaran.slug, judul: pelajaran.judul, waktu: Date.now() });
+    // Dibaca sampai bawah = selesai. Tanpa IntersectionObserver (browser lama, jsdom) cukup lewat tombol Berikutnya.
+    if (!ujung.current || typeof IntersectionObserver === 'undefined') return;
+    const pengamat = new IntersectionObserver(([isi]) => { if (isi?.isIntersecting) tandaiPelajaranSelesai(pelajaran.slug); });
+    pengamat.observe(ujung.current);
+    return () => pengamat.disconnect();
+  }, [pelajaran]);
+
   if (!pelajaran) {
     return <main className="halaman tumpuk"><a href={tautanBelajar()}>← Belajar</a><p role="alert">Pelajaran ini tidak ditemukan.</p></main>;
   }
@@ -31,26 +47,72 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const sebelumnya = DAFTAR_PELAJARAN[indeks - 1];
   const berikutnya = DAFTAR_PELAJARAN[indeks + 1];
   const modul = DAFTAR_MODUL.find(modulIni => modulIni.nomor === pelajaran.modul);
-  const selesaikan = () => {
-    tandaiPelajaranSelesai(pelajaran.slug);
-    window.location.hash = berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar();
-  };
+
   return (
-    <main className="halaman tumpuk materi">
-      <nav aria-label="Posisi" className="keterangan"><a href={tautanBelajar()}>Belajar</a> / Modul {pelajaran.modul} · {modul?.judul}</nav>
-      <h1>{pelajaran.judul}</h1>
-      {pelajaran.perluCek && <p className="lencana-draf">Draf, belum direview tim keilmuan</p>}
-      <p className="lead">{pelajaran.tujuan}</p>
-      <article className="isi-materi">
-        {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
-      </article>
-      <div className="navigasi-materi">
-        {sebelumnya ? <a href={tautanBelajar(sebelumnya.slug)}>← {sebelumnya.judul}</a> : <span />}
-        <Tombol onClick={selesaikan}>{berikutnya ? `Selesai, lanjut: ${berikutnya.judul}` : 'Selesai'}</Tombol>
-      </div>
-    </main>
+    <div className="tata-materi">
+      <SidebarMateri aktif={pelajaran} />
+      <main className="konten-materi tumpuk">
+        <p className="label-langkah">Modul {pelajaran.modul} · {modul?.judul} · Pelajaran {indeks + 1} dari {DAFTAR_PELAJARAN.length}</p>
+        <h1>{pelajaran.judul}</h1>
+        {pelajaran.perluCek && <p className="lencana-draf">Draf, belum direview tim keilmuan</p>}
+        <p className="lead">{pelajaran.tujuan}</p>
+        <article className="isi-materi">
+          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
+        </article>
+        <nav ref={ujung} className="navigasi-materi" aria-label="Navigasi pelajaran">
+          <TautanNavigasi tujuan={sebelumnya} label="← Sebelumnya" />
+          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}>⌂ Beranda belajar</a>
+          <TautanNavigasi tujuan={berikutnya} label="Berikutnya →" saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
+        </nav>
+      </main>
+    </div>
   );
 }
+
+function TautanNavigasi({ tujuan, label, saatKlik }: { tujuan: Pelajaran | undefined; label: string; saatKlik?: () => void }) {
+  if (!tujuan) return <span className="aw-btn aw-btn-secondary nonaktif" aria-disabled="true">{label}</span>;
+  return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={tujuan.judul}>{label}</a>;
+}
+
+/** Sidebar: progres keseluruhan dan daftar modul; di HP menjadi daftar lipat di atas isi. */
+function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
+  const selesai = bacaPelajaranSelesai();
+  const jumlahSelesai = DAFTAR_PELAJARAN.filter(pelajaran => selesai.has(pelajaran.slug)).length;
+  const persen = Math.round((jumlahSelesai / DAFTAR_PELAJARAN.length) * 100);
+  return (
+    <aside className="sidebar-materi" aria-label="Daftar materi">
+      <details open={terbukaAwal()} className="lipat-sidebar">
+        <summary>
+          <span className="label-langkah">Progres belajar</span>
+          <span className="angka-progres">{jumlahSelesai}/{DAFTAR_PELAJARAN.length} pelajaran · {persen}%</span>
+          <span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span>
+        </summary>
+        {DAFTAR_MODUL.map(modul => {
+          const daftar = DAFTAR_PELAJARAN.filter(pelajaran => pelajaran.modul === modul.nomor);
+          return (
+            <div key={modul.nomor} className={daftar.length ? 'modul-sidebar' : 'modul-sidebar modul-menyusul'}>
+              <p className="judul-modul-sidebar">{modul.nomor}. {modul.judul}{daftar.length ? '' : ' · menyusul'}</p>
+              <ol className="daftar-polos">
+                {daftar.map(pelajaran => (
+                  <li key={pelajaran.slug}>
+                    <a href={tautanBelajar(pelajaran.slug)} aria-current={pelajaran === aktif ? 'page' : undefined}
+                      className={selesai.has(pelajaran.slug) ? 'pelajaran-sidebar selesai' : 'pelajaran-sidebar'}>
+                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? 'selesai' : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
+                      {pelajaran.judul}
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          );
+        })}
+      </details>
+    </aside>
+  );
+}
+
+/** Di layar lebar daftar materi langsung terbuka; di HP tertutup supaya isi pelajaran tidak terdorong ke bawah. */
+const terbukaAwal = () => typeof window === 'undefined' || !window.matchMedia || window.matchMedia('(min-width: 861px)').matches;
 
 export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & Omit<Props, 'slug'>) {
   switch (blok.jenis) {
@@ -71,25 +133,20 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & O
         </div>
       );
     case 'kasus': return <ContohDihitung contoh={blok.kasus} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
+    case 'video': return (
+      <figure className="video-materi">
+        <iframe src={`https://www.youtube-nocookie.com/embed/${blok.idYoutube}`} title={blok.judul} loading="lazy"
+          allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowFullScreen referrerPolicy="strict-origin-when-cross-origin" />
+        <figcaption className="keterangan">{blok.judul}</figcaption>
+      </figure>
+    );
+    case 'kuis': return (
+      <div className="tumpuk-rapat">
+        {blok.daftarKode.map(kode => DAFTAR_SOAL_KUIS.find(soal => soal.kode === kode)).filter(soal => soal !== undefined)
+          .map((soal, urutan, semua) => <KartuSoalKuis key={soal.kode} soal={soal} label={`Soal ${urutan + 1} dari ${semua.length}`} />)}
+      </div>
+    );
   }
-}
-
-export function Sebaris({ isi }: { isi: Potongan[] }) {
-  return (
-    <>
-      {isi.map((potongan, urutan) => {
-        switch (potongan.jenis) {
-          case 'teks': return <Fragment key={urutan}>{potongan.teks}</Fragment>;
-          case 'tebal': return <b key={urutan}>{potongan.teks}</b>;
-          case 'miring': return <em key={urutan}>{potongan.teks}</em>;
-          case 'istilah': return <Istilah key={urutan} id={potongan.id}>{potongan.teks}</Istilah>;
-          case 'rujukan': return (
-            <a key={urutan} className="tautan-dalil" href={tautanRujukan(potongan.kode)} aria-label={`Dalil: ${cariRujukan(potongan.kode)?.klaim ?? potongan.kode}`}>dalil</a>
-          );
-        }
-      })}
-    </>
-  );
 }
 
 function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKasus } & Omit<Props, 'slug'>) {

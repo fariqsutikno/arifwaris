@@ -39,6 +39,12 @@ harta: 120.000.000
 harapan: ANAK_LK 2, ANAK_PR 2; ashl 4
 ```
 
+## Cek pemahaman
+
+```kuis
+K-09
+```
+
 ## Ringkasnya
 
 - Ashabah mengambil semua, sisa, atau tidak sama sekali.

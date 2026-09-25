@@ -47,6 +47,12 @@ harta: 120.000.000
 harapan: ISTRI 1, ANAK_PR 4, SAUDARA_SEBAPAK 3; ashl 8
 ```
 
+## Cek pemahaman
+
+```kuis
+K-08
+```
+
 ## Ringkasnya
 
 - Arah → kedekatan → kekuatan → berbagi.

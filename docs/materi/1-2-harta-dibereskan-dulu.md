@@ -34,6 +34,12 @@ dikaji dan belum dipakai kalkulator [R01-7].
 
 Kalau hutang sama dengan atau lebih besar dari tirkah, tidak ada yang tersisa untuk dibagi.
 
+## Cek pemahaman
+
+```kuis
+K-01, K-02
+```
+
 ## Ringkasnya
 
 - Urutan: hak atas barang tertentu → biaya jenazah → hutang → wasiat (maks. 1/3, bukan untuk ahli waris) → warisan.

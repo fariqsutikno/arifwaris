@@ -39,3 +39,15 @@ Satu berkas = satu pelajaran, nama `<modul>-<urutan>-<slug>.md`. Frontmatter waj
 
   `harapan` tidak ditampilkan; test memastikan angkanya sama dengan hasil engine, jadi angka yang ditulis di
   teks pelajaran harus sama dengan `harapan`.
+- Video YouTube (diputar lewat youtube-nocookie):
+
+      ```video
+      https://www.youtube.com/watch?v=XXXXXXXXXXX
+      judul: Judul video
+      ```
+
+- Cek pemahaman dari bank kuis (`docs/soal/kuis.md`), satu atau beberapa kode:
+
+      ```kuis
+      K-06, K-07
+      ```

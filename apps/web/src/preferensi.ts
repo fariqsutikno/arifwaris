@@ -53,3 +53,22 @@ export const simpanCatatan = (jenis: JenisCatatan, kode: string, nilai: string):
 
 export const bacaPelajaranSelesai = (): Set<string> => new Set(Object.keys(bacaCatatan('pelajaran')));
 export const tandaiPelajaranSelesai = (slug: string): void => simpanCatatan('pelajaran', slug, 'selesai');
+
+/** Jejak belajar terbaru untuk beranda Belajar ("Terakhir kamu…"). Terbaru di atas, satu entri per jenis+kode. */
+export interface Aktivitas { jenis: 'pelajaran' | 'soal' | 'kuis'; kode: string; judul: string; waktu: number; hasil?: string }
+const KUNCI_AKTIVITAS = 'arif-waris:aktivitas';
+const BATAS_AKTIVITAS = 20;
+
+export function bacaAktivitas(): Aktivitas[] {
+  try {
+    const daftar: unknown = JSON.parse(baca(KUNCI_AKTIVITAS) ?? '[]');
+    return Array.isArray(daftar) ? daftar.filter((isi): isi is Aktivitas => typeof isi?.kode === 'string' && typeof isi?.waktu === 'number') : [];
+  } catch {
+    return [];
+  }
+}
+
+export function catatAktivitas(aktivitas: Aktivitas): void {
+  const lain = bacaAktivitas().filter(isi => isi.jenis !== aktivitas.jenis || isi.kode !== aktivitas.kode);
+  simpan(KUNCI_AKTIVITAS, JSON.stringify([aktivitas, ...lain].slice(0, BATAS_AKTIVITAS)));
+}
