@@ -2,11 +2,12 @@
 
 import { useEffect, useReducer, useState } from 'react';
 import type { SoalHitung } from '@waris/content';
-import { muatLokal, simpanLokal, type Kasus } from './kasus';
-import { keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
+import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
+import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
 import { bacaTujuan, catatAktivitas, simpanCatatan, simpanTujuan, sudahLihatTur } from './preferensi';
 import { Tur } from './tur/Tur';
+import { AwalHitung } from './layar/AwalHitung';
 import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
@@ -18,10 +19,11 @@ import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
 import { kasusDariContoh } from './layar/belajar/contoh';
 import { Rujukan } from './layar/belajar/Rujukan';
-import { catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
+import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, bacaRute, useRute } from './rute';
+import { KepalaHalaman } from './ui/KepalaHalaman';
 import { usePenjaga } from './ui/Penjaga';
 
 export function Aplikasi() {
@@ -36,8 +38,8 @@ export function Aplikasi() {
   const kirim = (aksi: Aksi) => {
     if (aksi.jenis === 'ULANGI') simpanLokal(null);
     if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') {
-      // Kasus yang sudah sampai hasil dicatat dulu ke riwayat sebelum diganti, supaya tidak hilang.
-      if (keadaan.kasus && kasusLengkap(keadaan.kasus)) catatRiwayat(idSesi, keadaan.kasus, Date.now(), sumberSesi);
+      // Kasus tersimpan yang belum pernah masuk riwayat (dari versi lama) dicatat dulu sebelum diganti, supaya tidak hilang.
+      if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
       setSoalAktif(null);
       setIdSesi(buatIdSesi());
       setSumberSesi({ jenis: 'sendiri' });
@@ -47,8 +49,9 @@ export function Aplikasi() {
 
   useEffect(() => { if (keadaan.kasus) simpanLokal(keadaan.kasus); }, [keadaan.kasus]);
   useEffect(() => { if (keadaan.tujuan) simpanTujuan(keadaan.tujuan); }, [keadaan.tujuan]);
+  // Setiap kasus yang sedang diisi atau dilihat hasilnya masuk riwayat, lengkap atau belum.
   useEffect(() => {
-    if (keadaan.layar === 'hasil' && keadaan.kasus) catatRiwayat(idSesi, keadaan.kasus, Date.now(), sumberSesi);
+    if (keadaan.layar !== 'awal' && keadaan.kasus) catatRiwayat(idSesi, keadaan.kasus, Date.now(), sumberSesi);
   }, [keadaan.layar, keadaan.kasus, idSesi, sumberSesi]);
 
   const { kasus, layar } = keadaan;
@@ -56,19 +59,20 @@ export function Aplikasi() {
   const diKalkulator = rute.halaman === 'kalkulator';
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
-  usePenjaga(diKalkulator && !!kasus && layar !== 'beranda', {
+  usePenjaga(diKalkulator && !!kasus && layar !== 'awal', {
     berlaku: href => !['kalkulator', 'riwayat'].includes(bacaRute(href).halaman),
-    judul: 'Tinggalkan Hitung?',
+    judul: 'Tinggalkan ArifLab?',
     isi: <p>{soalAktif ? 'Soal ini bisa kamu buka lagi kapan saja dari Latihan.'
-      : kasusLengkap(kasus) ? 'Kasusmu sudah tersimpan di Riwayat hitung. Buka menu Hitung kapan saja untuk melanjutkan.'
-      : 'Isianmu tetap tersimpan di perangkat ini. Buka menu Hitung, lalu Lanjutkan kasus terakhir.'}</p>,
+      : 'Kasusmu tersimpan di Riwayat hitung. Buka menu ArifLab kapan saja untuk melanjutkan.'}</p>,
     labelTetap: 'Tetap di sini',
     labelPergi: 'Pindah',
   });
   const [turBerjalan, setTurBerjalan] = useState(false);
-  // Contoh dari materi dibuka di layar hasil; konfirmasi menimpa kasus lama sudah ditanyakan di halaman materi.
+  // Kasus lengkap dibuka di layar hasil, yang belum lengkap di langkah wizard pertama yang belum terisi.
+  // Konfirmasi menimpa kasus lama sudah ditanyakan di halaman asalnya.
   const bukaDiHitung = (kasusBaru: Kasus, sumber: SumberRiwayat) => {
     kirim({ jenis: 'MUAT', kasus: kasusBaru });
+    if (!kasusLengkap(kasusBaru)) kirim({ jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
     setSumberSesi(sumber);
     window.location.hash = TAUTAN_KALKULATOR;
   };
@@ -78,6 +82,19 @@ export function Aplikasi() {
     setIdSesi(entri.id);
     catatRiwayat(entri.id, entri.kasus, Date.now(), entri.sumber);
   };
+  // Lanjut kasus terakhir. Kasus yang masih dimuat cukup ditampilkan lagi (sesi & mode belajar tetap);
+  // selain itu pakai entri riwayatnya bila ada, supaya sumbernya tidak berubah.
+  const lanjutkan = (kasusLama: Kasus) => {
+    if (kasusLama === kasus) {
+      kirim(kasusLengkap(kasus) ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
+      return;
+    }
+    const entri = bacaRiwayat().find(isi => keJson(isi.kasus) === keJson(kasusLama));
+    if (entri) bukaRiwayat(entri);
+    else bukaDiHitung(kasusLama, { jenis: 'sendiri' });
+  };
+  // Menu Hitung selalu membuka awal Hitung (skenario baru / lanjut / impor); kasus yang ada tetap dimuat.
+  const keAwalHitung = () => kirim({ jenis: 'KE_LAYAR', layar: 'awal' });
   const kerjakanSoal = (soal: SoalHitung) => {
     kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
     bukaDiHitung(kasusDariContoh(soal.kasus), { jenis: 'latihan', kode: soal.kode });
@@ -89,10 +106,12 @@ export function Aplikasi() {
   }, [layar, diKalkulator]);
   return (
     <>
-      <Kepala halaman={rute.halaman} kasus={diKalkulator && layar !== 'beranda' ? kasus : null} adaTur={daftarTur.length > 0}
-        saatKeBeranda={() => { window.location.hash = TAUTAN_KALKULATOR; kirim({ jenis: 'KE_LAYAR', layar: 'beranda' }); }} saatTur={() => setTurBerjalan(true)}
+      <Kepala halaman={rute.halaman} kasusWizard={diKalkulator && layar === 'wizard' ? kasus : null}
+        adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)}
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} />
-      {rute.halaman === 'belajar' ? <Belajar />
+      {!['beranda', 'kalkulator', 'belajar'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}
+      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} />
+        : rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
@@ -100,8 +119,8 @@ export function Aplikasi() {
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
-        : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} />
-        : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim}
+        : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} />
+        : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined}  />}
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>

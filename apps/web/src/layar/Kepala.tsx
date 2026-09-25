@@ -1,49 +1,52 @@
-// Header global: logo (ke beranda kalkulator), menu utama (Hitung · Belajar · Latihan · Rujukan), tur, dan "Ulangi dari awal" dengan konfirmasi di halaman.
+// Header global: logo, menu utama (Beranda · ArifLab · Belajar · Latihan · Rujukan), tur, dan "Reset skenario"
+// (hanya di wizard; layar hasil punya tombolnya sendiri di bar aksi). Di HP menu utama pindah ke nav bawah.
 // Tidak memuat tombol simpan (spec: Navigasi global).
 
 import { useState } from 'react';
 import { Logo, Tombol } from '../ui/komponen';
 import type { Kasus } from '../kasus';
-import { Ikon } from '../ui/Ikon';
+import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
-import { TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
-
-const MENU: Array<{ label: string; tautan: string; aktifDi: Array<Rute['halaman']> }> = [
-  { label: 'Hitung', tautan: TAUTAN_KALKULATOR, aktifDi: ['kalkulator', 'riwayat'] },
-  { label: 'Belajar', tautan: tautanBelajar(), aktifDi: ['belajar', 'materi', 'glosarium', 'faq'] },
-  { label: 'Latihan', tautan: tautanLatihan(), aktifDi: ['latihan'] },
-  { label: 'Rujukan', tautan: tautanRujukan(), aktifDi: ['rujukan'] },
-];
+import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 
 interface Props {
   halaman: Rute['halaman'];
-  /** Kasus yang bisa diulang dari awal; null = tombol Ulangi tidak tampil. */
-  kasus: Kasus | null;
+  /** Kasus di wizard yang bisa diulang dari awal; null = tombol Ulangi tidak tampil. */
+  kasusWizard: Kasus | null;
   adaTur: boolean;
-  saatKeBeranda: () => void;
+  saatKeHitung: () => void;
   saatTur: () => void;
   saatUlangi: () => void;
 }
 
-export function Kepala({ halaman, kasus, adaTur, saatKeBeranda, saatTur, saatUlangi }: Props) {
+export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, saatUlangi }: Props) {
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
+  const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
+    { label: 'Beranda', ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
+    { label: 'ArifLab', ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
+    { label: 'Belajar', ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq'].includes(halaman) },
+    { label: 'Latihan', ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
+    { label: 'Rujukan', ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
+  ];
+  const tautanMenu = (kelas: string, denganIkon: boolean) => menu.map(item => (
+    <a key={item.label} href={item.tautan} className={kelas} aria-current={item.aktif ? 'page' : undefined}
+      onClick={item.saatKlik}>
+      {denganIkon && <Ikon nama={item.ikon} ukuran={22} />}{item.label}
+    </a>
+  ));
   return (
     <>
       <header className="kepala" role="banner">
-        <Logo saatKlik={saatKeBeranda} />
-        <nav aria-label="Menu utama" className="kepala-nav">
-          {MENU.map(menu => (
-            <a key={menu.label} href={menu.tautan} className="kepala-menu" aria-current={menu.aktifDi.includes(halaman) ? 'page' : undefined}>{menu.label}</a>
-          ))}
-        </nav>
+        <Logo saatKlik={() => { window.location.hash = TAUTAN_BERANDA; }} />
+        <nav aria-label="Menu utama" className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
         <span className="pengisi" />
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
-        {kasus && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Beranda Hitung" onClick={saatKeBeranda}><Ikon nama="rumah" ukuran={18} /><span className="label-lebar">Beranda Hitung</span></Tombol>}
-        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Tur singkat" onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">Tur singkat</span></Tombol>}
-        {kasus && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Ulangi dari awal" onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">Ulangi dari awal</span></Tombol>}
+        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Tur singkat" title="Tur singkat" onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">Tur singkat</span></Tombol>}
+        {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Reset skenario" title="Reset skenario" onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">Reset skenario</span></Tombol>}
       </header>
-      {sedangKonfirmasi && kasus && (
-        <KonfirmasiKasusBaru kasus={kasus} saatBatal={() => setSedangKonfirmasi(false)}
+      <nav aria-label="Menu utama" className="nav-bawah">{tautanMenu('nav-bawah-item', true)}</nav>
+      {sedangKonfirmasi && kasusWizard && (
+        <KonfirmasiKasusBaru kasus={kasusWizard} judul="Reset skenario?" labelLanjut="Reset" saatBatal={() => setSedangKonfirmasi(false)}
           saatLanjut={() => { setSedangKonfirmasi(false); saatUlangi(); }} />
       )}
     </>

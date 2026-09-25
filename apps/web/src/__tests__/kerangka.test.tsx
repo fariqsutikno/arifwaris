@@ -4,16 +4,16 @@ import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, keJson } from '../kasus';
 import { Aplikasi } from '../Aplikasi';
 
-beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); });
+beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); window.location.hash = '#/hitung'; });
 
 const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }; };
 
-const mulai = (tujuan: 'Hitung kasus' | 'Belajar' = 'Hitung kasus') => {
+const mulai = () => {
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: new RegExp(tujuan) }));
+  fireEvent.click(screen.getByRole('button', { name: /Skenario baru/ }));
 };
 
-it('beranda menanyakan tujuan lalu membuka langkah pewaris tanpa pilihan bawaan', () => {
+it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => {
   mulai();
   expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   expect(screen.getByRole('radio', { name: /Laki-laki/ }).getAttribute('aria-checked')).toBe('false');
@@ -39,15 +39,15 @@ it('stepper tidak bisa membuka langkah yang belum boleh', () => {
 it('ulangi dari awal meminta konfirmasi di halaman', () => {
   mulai();
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
-  fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
   expect(screen.getByRole('alertdialog')).toBeTruthy();
-  expect(screen.getByRole('alertdialog').textContent).toMatch(/belum sampai hasil/);
+  expect(screen.getByRole('alertdialog').textContent).toMatch(/data belum lengkap/);
   fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
   expect(screen.queryByRole('alertdialog')).toBeNull();
   expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Mulai baru' }));
-  expect(screen.getByText(/Mau pakai buat apa/)).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+  expect(screen.getByRole('button', { name: /Skenario baru/ })).toBeTruthy();
 });
 
 it('ringkasan kasus di samping langkah ikut terisi', () => {
@@ -69,25 +69,32 @@ describe('temuan review akhir', () => {
     fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   };
 
-  it('setelah "Mulai baru", kasus lama tidak ditawarkan lagi', () => {
+  it('setelah Reset, kasus lama tidak ditawarkan lagi', () => {
     isiKasus();
-    fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Mulai baru' }));
-    expect(screen.queryByRole('button', { name: /Lanjutkan kasus terakhir/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    expect(screen.queryByRole('button', { name: /Lanjut kasus terakhir/ })).toBeNull();
   });
 
-  it('memilih tujuan saat ada kasus tersimpan meminta konfirmasi dulu', () => {
+  it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu langsung ke wizard', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
-    fireEvent.click(screen.getByRole('button', { name: /Hitung kasus/ }));
-    expect(screen.getByRole('alertdialog')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
-    expect(screen.getByRole('button', { name: /Lanjutkan kasus terakhir/ })).toBeTruthy();
+    const tombol = screen.getByRole('button', { name: /Skenario baru/ });
+    expect(tombol.textContent).toMatch(/tetap tersimpan di riwayat/);
+    fireEvent.click(tombol);
+    expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
+  });
+
+  it('menu Hitung selalu membuka awal Hitung, bukan langsung ke skenario', () => {
+    isiKasus();
+    fireEvent.click(screen.getAllByRole('link', { name: 'ArifLab' })[0]!);
+    expect(screen.getByRole('button', { name: /Skenario baru/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Lanjut kasus terakhir/ })).toBeTruthy();
   });
 
   it('dialog konfirmasi memfokuskan Batal dan tertutup dengan Esc', () => {
     isiKasus();
-    fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
     expect(document.activeElement?.textContent).toBe('Batal');
     fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
     expect(screen.queryByRole('alertdialog')).toBeNull();
@@ -97,7 +104,9 @@ describe('temuan review akhir', () => {
 it('ganti jenis kelamin setelah ada ahli waris: minta konfirmasi, lalu ahli waris dikosongkan, harta tetap', () => {
   localStorage.setItem('arif-waris:kasus', keJson({ ...denganIstri(), tirkah: { kotor: 5n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /Lanjutkan kasus terakhir/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut kasus terakhir/ }));
+  // Kasus lengkap dilanjutkan di layar hasil; dari sana kembali ke langkah 1.
+  fireEvent.click(screen.getByRole('button', { name: /Ubah data/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
   const dialog = screen.getByRole('alertdialog');
   expect(dialog.textContent).toMatch(/ahli waris/);
