@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_AYAT, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan } from '../index.js';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan } from '../index.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
   const teksBab = [
@@ -20,6 +20,12 @@ describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
         kutipan: '«فللزوج نصف المال» dan «وربعه»', arab: ['فللزوج نصف المال', 'وربعه'] },
       { kode: 'R99-2', bab: 99, klaim: 'Hikmah', jenis: '—', daftarJenis: [], sumber: 'Penjelasan fuqaha', kutipan: 'Keterangan saja', arab: [] },
     ]);
+  });
+
+  test('sumber "Idem" diganti sumber baris di atasnya', () => {
+    const md = ['## Dasar dan Rujukan Bab Ini', '| Kode | Klaim | Jenis | Sumber | Kutipan |', '|---|---|---|---|---|',
+      '| R99-1 | a | RDH | Bab 9, muqaddimah 4 | x |', '| R99-2 | b | RDH | Idem | y |', "| R99-3 | c | RDH | Idem, far' | z |"].join('\n');
+    expect(bacaRujukan(md, 99).map(rujukan => rujukan.sumber)).toEqual(['Bab 9, muqaddimah 4', 'Bab 9, muqaddimah 4', "Bab 9, muqaddimah 4, far'"]);
   });
 
   test('daftar perlu verifikasi dari bab 17.4', () => {
@@ -89,5 +95,20 @@ describe('teks ayat dari KB bab 1.2', () => {
     expect(r141!.ayat).toEqual([{ label: 'Al-Anfal 75' }, { label: 'Al-Ahzab 6' }]);
     expect(r141!.peringatan).toContain('Teks ayat Al-Anfal 75, Al-Ahzab 6 belum ada di KB.');
     expect(dalilUntuk(['R09-1']).daftarEntri[0]!.ayat).toEqual([]);   // bukan dalil Al-Qur'an
+  });
+});
+
+describe('daftar pustaka bab 17', () => {
+  test('kitab, hadits, dan titik dikaji terbaca dari tabelnya masing-masing', () => {
+    expect(DAFTAR_KITAB.map(kitab => kitab.kode)).toEqual(['[RDH]', '—', '—', 'Lahim']);
+    expect(DAFTAR_KITAB[0]!.judul).toBe("Raudhah ath-Thalibin wa 'Umdah al-Muftin");
+    expect(DAFTAR_HADITS.length).toBe(15);
+    expect(DAFTAR_HADITS[0]).toMatchObject({ takhrij: 'Al-Bukhari 6732; Muslim 1615', status: "Muttafaq 'alaih" });
+    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R01-7', 'R02-11', 'R11-3', 'R13-5', 'R13-14']);
+  });
+
+  test('judul bab dari frontmatter', () => {
+    expect(JUDUL_BAB[4]).toMatch(/^Ashabul Furudh/);
+    expect(Object.keys(JUDUL_BAB).length).toBe(15);
   });
 });

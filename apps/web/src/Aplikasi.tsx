@@ -11,6 +11,9 @@ import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
 import { Wizard } from './layar/Wizard';
+import { Glosarium } from './layar/belajar/Glosarium';
+import { Rujukan } from './layar/belajar/Rujukan';
+import { TAUTAN_KALKULATOR, useRute } from './rute';
 
 export function Aplikasi() {
   const [keadaan, kirimAsli] = useReducer(pengurangKeadaan, null, () => keadaanAwal(muatLokal(), bacaTujuan()));
@@ -22,18 +25,22 @@ export function Aplikasi() {
   useEffect(() => { if (keadaan.tujuan) simpanTujuan(keadaan.tujuan); }, [keadaan.tujuan]);
 
   const { kasus, layar } = keadaan;
-  const daftarTur = TUR[layar] ?? [];
+  const rute = useRute();
+  const diKalkulator = rute.halaman === 'kalkulator';
+  const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   const [turBerjalan, setTurBerjalan] = useState(false);
   // Otomatis sekali di kunjungan pertama tiap layar yang punya tur.
   useEffect(() => {
     if (daftarTur.length > 0 && !sudahLihatTur(layar)) setTurBerjalan(true);
-  }, [layar]);
+  }, [layar, diKalkulator]);
   return (
     <>
-      <Kepala adaKasus={!!kasus && layar !== 'beranda'} adaTur={daftarTur.length > 0}
-        saatKeBeranda={() => kirim({ jenis: 'KE_LAYAR', layar: 'beranda' })} saatTur={() => setTurBerjalan(true)}
+      <Kepala halaman={rute.halaman} adaKasus={diKalkulator && !!kasus && layar !== 'beranda'} adaTur={daftarTur.length > 0}
+        saatKeBeranda={() => { window.location.hash = TAUTAN_KALKULATOR; kirim({ jenis: 'KE_LAYAR', layar: 'beranda' }); }} saatTur={() => setTurBerjalan(true)}
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} saatSimpan={() => kasus && unduhKasus(kasus)} />
-      {layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
+      {rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
+        : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} />
+        : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} />
         : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim} />}
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />

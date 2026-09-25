@@ -53,7 +53,10 @@ export function bacaRujukan(teksMarkdown: string, bab: number): RujukanTerbaca[]
   for (const baris of teksMarkdown.split('\n')) {
     if (baris.startsWith('## ')) diDalamBagian = baris.startsWith('## Dasar dan Rujukan');
     if (!diDalamBagian || !/^\| R\d{2}-\d+ /.test(baris)) continue;
-    const [kode = '', klaim = '', jenis = '', sumber = '', kutipan = ''] = sel(baris);
+    const [kode = '', klaim = '', jenis = '', sumberTertulis = '', kutipan = ''] = sel(baris);
+    // "Idem" / "Idem, far'" di KB = sumber sama dengan baris di atasnya.
+    const sumber = sumberTertulis.startsWith('Idem') && refs.length > 0
+      ? refs[refs.length - 1]!.sumber + sumberTertulis.slice('Idem'.length) : sumberTertulis;
     const daftarJenis = jenis.split('+').map(kodeJenis => kodeJenis.trim().split(/[\s(]/)[0] as JenisDalil).filter(kodeJenis => JENIS_DALIL.includes(kodeJenis));
     const arab = [...kutipan.matchAll(/«([^»]*)»/g)].map(hasilCocok => hasilCocok[1]!);
     refs.push({ kode, bab, klaim, jenis, daftarJenis, sumber, kutipan, arab });
@@ -61,22 +64,48 @@ export function bacaRujukan(teksMarkdown: string, bab: number): RujukanTerbaca[]
   return refs;
 }
 
-/** Kode di tabel bab 17.4 ("Titik yang Masih Ditandai [perlu verifikasi lanjut]"). */
-export function bacaPerluVerifikasi(teksMarkdown: string): string[] {
+/** Sel tiap baris tabel di bagian `## <awalanJudul>…` sampai judul `##` berikutnya, tanpa baris kepala & pemisah. */
+export function barisTabelBagian(teksMarkdown: string, awalanJudul: string): string[][] {
   let diDalamBagian = false;
-  const daftarKode: string[] = [];
+  const daftarBaris: string[][] = [];
+  let sudahLewatKepala = false;
   for (const baris of teksMarkdown.split('\n')) {
-    if (baris.startsWith('## ')) diDalamBagian = baris.startsWith('## 17.4');
-    if (diDalamBagian && /^\| R\d{2}-\d+ /.test(baris)) daftarKode.push(sel(baris)[0]!);
+    if (baris.startsWith('## ')) { diDalamBagian = baris.startsWith(`## ${awalanJudul}`); sudahLewatKepala = false; }
+    if (!diDalamBagian || !baris.startsWith('|')) continue;
+    if (/^\|[\s|:-]+\|$/.test(baris)) { sudahLewatKepala = true; continue; }
+    if (sudahLewatKepala) daftarBaris.push(sel(baris));
   }
-  return daftarKode;
+  return daftarBaris;
 }
+
+/** Kode di tabel bab 17.4 ("Titik yang Masih Ditandai [perlu verifikasi lanjut]"). */
+export const bacaPerluVerifikasi = (teksMarkdown: string): string[] =>
+  barisTabelBagian(teksMarkdown, '17.4').map(([kode = '']) => kode).filter(kode => /^R\d{2}-\d+$/.test(kode));
 
 const DAFTAR_BAB: Array<[number, string]> = [
   [1, bab01], [2, bab02], [3, bab03], [4, bab04], [5, bab05], [6, bab06], [7, bab07], [8, bab08],
   [9, bab09], [10, bab10], [11, bab11], [12, bab12], [13, bab13], [14, bab14], [16, bab16],
 ];
 const perluVerifikasi = new Set(bacaPerluVerifikasi(bab17));
+
+/** Judul bab dari frontmatter `judul:` tiap berkas KB. */
+export const JUDUL_BAB: Record<number, string> = Object.fromEntries(
+  DAFTAR_BAB.map(([bab, teksBab]) => [bab, /^judul: (.+)$/m.exec(teksBab)?.[1] ?? `Bab ${bab}`]),
+);
+
+// ─── Daftar pustaka (KB bab 17) ───────────────────────────────────────────────
+
+export interface Kitab { kode: string; judul: string; penulis: string; keterangan: string }
+export interface Hadits { hadits: string; takhrij: string; status: string }
+export interface TitikDikaji { kode: string; topik: string; yangDibutuhkan: string }
+
+const tanpaMiring = (teks: string) => teks.replace(/^\*(.*)\*$/, '$1');
+export const DAFTAR_KITAB: Kitab[] = barisTabelBagian(bab17, '17.2')
+  .map(([kode = '', judul = '', penulis = '', keterangan = '']) => ({ kode, judul: tanpaMiring(judul), penulis, keterangan }));
+export const DAFTAR_HADITS: Hadits[] = barisTabelBagian(bab17, '17.3')
+  .map(([hadits = '', takhrij = '', status = '']) => ({ hadits, takhrij, status }));
+export const TITIK_DIKAJI: TitikDikaji[] = barisTabelBagian(bab17, '17.4')
+  .map(([kode = '', topik = '', yangDibutuhkan = '']) => ({ kode, topik, yangDibutuhkan }));
 
 export const RUJUKAN: EntriRujukan[] = DAFTAR_BAB.flatMap(([bab, teksBab]) => bacaRujukan(teksBab, bab)).map(rujukan => ({
   ...rujukan,

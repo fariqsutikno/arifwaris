@@ -7,6 +7,7 @@ import { dalilUntuk } from '@waris/content';
 import { jelaskan, jelaskanMunasakhat, type BabPenjelasan, type BarisPenjelasan } from '@waris/explain';
 import type { HasilTampil } from '../jalankan';
 import type { Kasus } from '../kasus';
+import { tautanRujukan } from '../rute';
 import { Istilah } from '../ui/Tooltip';
 
 export interface BabBerjudul { judulBagian?: string; bab: BabPenjelasan }
@@ -40,17 +41,21 @@ export function Baris({ baris }: { baris: BarisPenjelasan }) {
   );
 }
 
-/** Dalil ditulis formal: klaim, sumber, teks ayat bila ada, dan peringatan status. Tanpa kode rujukan. */
-export function Dalil({ daftarKode }: { daftarKode: string[] }) {
+/**
+ * Dalil ditulis formal: klaim, sumber, teks ayat bila ada, dan peringatan status. Tanpa kode rujukan.
+ * Di halaman Rujukan klaim sudah jadi judul dan tautan ke dirinya sendiri tidak perlu.
+ */
+export function Dalil({ daftarKode, diHalamanRujukan }: { daftarKode: string[]; diHalamanRujukan?: boolean }) {
   const { daftarEntri, catatan } = dalilUntuk(daftarKode);
   return (
     <div className="dalil">
       {daftarEntri.map(entri => (
         <div key={entri.kode}>
-          <p>{entri.klaim}</p>
+          {!diHalamanRujukan && <p>{entri.klaim}</p>}
           {entri.sumber && <p className="sumber-dalil">{entri.sumber}</p>}
           {entri.ayat.filter(ayat => ayat.teks).map(ayat => <q key={ayat.label}>{ayat.teks} ({ayat.label})</q>)}
           {entri.peringatan.map(peringatan => <p key={peringatan} className="peringatan-dalil">{peringatan}</p>)}
+          {!diHalamanRujukan && <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>Lihat di halaman Rujukan</a>}
         </div>
       ))}
       {catatan.map(teks => <p key={teks} className="peringatan-dalil">{teks}</p>)}
