@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
 import { GLOSARIUM, RUJUKAN } from '@waris/content';
 import { Glosarium } from '../layar/belajar/Glosarium';
-import { Rujukan } from '../layar/belajar/Rujukan';
+import { KATEGORI_RUJUKAN, Rujukan } from '../layar/belajar/Rujukan';
 
 it('glosarium menampilkan semua istilah dan bisa dicari lewat arti awam', () => {
   render(<Glosarium />);
@@ -16,13 +16,22 @@ it('glosarium dengan id menyorot istilahnya', () => {
   expect(document.getElementById('istilah-hajb')?.className).toContain('terpilih');
 });
 
-it('rujukan: semua dalil tertaut per kode, detail menampilkan klaimnya', () => {
-  const { container, unmount } = render(<Rujukan />);
-  const tautan = [...container.querySelectorAll('a[href^="#/rujukan/R"]')].map(a => a.getAttribute('href'));
-  for (const rujukan of RUJUKAN) expect(tautan).toContain(`#/rujukan/${rujukan.kode}`);
-  unmount();
+it('rujukan: tiap dalil KB bisa dicapai dari salah satu kategori; detail menampilkan klaimnya', () => {
+  const tautan = new Set<string>();
+  for (const kategori of KATEGORI_RUJUKAN) {
+    const { container, unmount } = render(<Rujukan kategori={kategori} />);
+    container.querySelectorAll('a[href^="#/rujukan/R"]').forEach(a => tautan.add(a.getAttribute('href')!));
+    unmount();
+  }
+  for (const rujukan of RUJUKAN) expect(tautan, rujukan.kode).toContain(`#/rujukan/${rujukan.kode}`);
   render(<Rujukan kode="R09-4" />);
   expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(RUJUKAN.find(r => r.kode === 'R09-4')!.klaim);
+});
+
+it('rujukan tanpa kategori membuka Al-Qur\'an dengan teks ayat', () => {
+  const { container } = render(<Rujukan />);
+  expect(screen.getByRole('heading', { level: 1 }).textContent).toBe("Al-Qur'an");
+  expect(container.querySelectorAll('.kartu-ayat').length).toBeGreaterThan(0);
 });
 
 it('kode rujukan tak dikenal tidak membuat halaman rusak', () => {

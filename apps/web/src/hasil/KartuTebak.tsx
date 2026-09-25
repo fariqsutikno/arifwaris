@@ -37,7 +37,7 @@ export function KartuTebak({ ringkasan, saatBenar, saatMencoba, saatLihatJawaban
         {daftarOrang.map(orang => (
           <label key={orang.id} className={salah.has(orang.id) || kosong.has(orang.id) ? 'baris-tebak keliru' : 'baris-tebak'}>
             <span>{orang.nama}</span>
-            <input inputMode="numeric" autoComplete="off" placeholder="1/8" value={tebakan[orang.id] ?? ''}
+            <input inputMode="numeric" autoComplete="off" placeholder="?" value={tebakan[orang.id] ?? ''}
               aria-invalid={salah.has(orang.id) || kosong.has(orang.id)}
               onChange={event => { setTebakan({ ...tebakan, [orang.id]: event.target.value }); setHasil(null); }} />
           </label>

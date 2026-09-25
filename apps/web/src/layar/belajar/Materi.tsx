@@ -3,7 +3,7 @@
 // dan kuis cek pemahaman. Pelajaran ditandai selesai saat dibaca sampai bawah atau saat lanjut ke berikutnya.
 // Navigasi bawah: Sebelumnya · Beranda belajar · Berikutnya, gayanya setara.
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_KUIS, cariPelajaran,
   type Blok, type ContohKasus, type Pelajaran,
@@ -29,13 +29,19 @@ interface Props {
 export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const pelajaran = cariPelajaran(slug);
   const ujung = useRef<HTMLElement>(null);
+  // Dinaikkan saat pelajaran ditandai selesai supaya progres di sidebar langsung ikut berubah.
+  const [, setVersiProgres] = useState(0);
 
   useEffect(() => {
     if (!pelajaran) return;
     catatAktivitas({ jenis: 'pelajaran', kode: pelajaran.slug, judul: pelajaran.judul, waktu: Date.now() });
     // Dibaca sampai bawah = selesai. Tanpa IntersectionObserver (browser lama, jsdom) cukup lewat tombol Berikutnya.
     if (!ujung.current || typeof IntersectionObserver === 'undefined') return;
-    const pengamat = new IntersectionObserver(([isi]) => { if (isi?.isIntersecting) tandaiPelajaranSelesai(pelajaran.slug); });
+    const pengamat = new IntersectionObserver(([isi]) => {
+      if (!isi?.isIntersecting || bacaPelajaranSelesai().has(pelajaran.slug)) return;
+      tandaiPelajaranSelesai(pelajaran.slug);
+      setVersiProgres(versi => versi + 1);
+    });
     pengamat.observe(ujung.current);
     return () => pengamat.disconnect();
   }, [pelajaran]);

@@ -127,21 +127,9 @@ Isi awalnya sama dengan bab 17.2, yang sudah tampil di halaman Rujukan bagian "K
 terpisah. Bila tim keilmuan menambah bacaan (buku Indonesia, tautan legal, tingkat), tambahkan kolom/tabel di
 sumber yang sama dan tampilkan di bagian Kitab.
 
-### 7. Konsultasi (dosen & lembaga) — P1
+### 7. Konsultasi — dibatalkan (2026-09-25)
 
-Tautan ke tempat bertanya: dosen di lingkungan kampus sendiri dan lembaga yang dilampirkan (mis. lembaga
-fatwa/konsultasi waris). Bukan direktori ustadz/konsultan umum.
-
-- Data statis di repo, dua jenis entri:
-  - **Dosen**: nama & gelar, bidang keahlian, tautan profil resmi (laman fakultas/SINTA/Google Scholar),
-    akun **Telegram** (`t.me/…`) yang dosen izinkan.
-  - **Lembaga**: nama, kota, layanan (konsultasi/fatwa/kajian), situs resmi, kontak resmi lembaga
-    (Telegram/email/situs), tautan Google Maps bila ada kantor.
-- Nomor HP pribadi & alamat rumah tidak dicantumkan.
-- Tiap entri dicantumkan hanya setelah pemiliknya setuju; entri membawa tanggal verifikasi.
-- Disclaimer singkat: konsultasi di luar tanggung jawab aplikasi.
-- Tampil di halaman Belajar dan sebagai arahan dari jawaban FAQ / hasil yang `TIDAK_DIDUKUNG` ("Tanyakan ke dosen").
-- Tanpa peta tertanam, filter, atau form pendaftaran. Daftar pendek tidak butuh itu.
+Diputuskan tidak dibuat. Jawaban yang di luar KB cukup mengarahkan pengguna bertanya ke ahli faraidh.
 
 ## Navigasi & teknis
 
@@ -164,7 +152,6 @@ fatwa/konsultasi waris). Bukan direktori ustadz/konsultan umum.
 | C | Bank soal hitung (bab 16 + M1–M9) + soal konsep modul 1–5 | Kunci = engine = bab 16 |
 | D | Modul 6–10 + soalnya | idem |
 | E | FAQ (buku digabung ke Rujukan) | Semua jawaban fikih berujukan valid |
-| F | Konsultasi (dosen & lembaga) | Semua entri berizin & bertanggal |
 
 Setelah C, pengerjaan munasakhat lanjutan / haml / mafqud bisa jalan paralel dengan penulisan konten D–E.
 

@@ -125,7 +125,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
           </section>
           <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label="Tabel faraidh">
             {sedangMenebak
-              ? <p className="kosong-ahli-waris">Tabel disembunyikan di mode belajar. Ikuti langkah perhitungan, atau tekan Tampilkan jawaban.</p>
+              ? <p className="kosong-ahli-waris">Tabel disembunyikan di mode belajar. Tebak dulu di kartu Pembagian, atau ikuti langkah perhitungan.</p>
               : <div className="wadah-tabel"><TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} /></div>}
           </section>
         </section>

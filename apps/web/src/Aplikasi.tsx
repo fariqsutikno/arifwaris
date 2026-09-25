@@ -72,7 +72,7 @@ export function Aplikasi() {
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
-        : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} />
+        : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatBukaRiwayat={bukaRiwayat} />
         : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim}

@@ -27,10 +27,13 @@ describe('contoh kasus di materi = hasil engine', () => {
 });
 
 describe('halaman belajar', () => {
-  it('beranda belajar menawarkan pelajaran pertama dan menautkan semua pelajaran', () => {
+  it('beranda belajar: lanjutkan pelajaran pertama, angka progres, jalur tiap modul', () => {
     render(<Belajar />);
-    expect(screen.getByRole('link', { name: `Mulai: ${DAFTAR_PELAJARAN[0]!.judul}` })).toBeTruthy();
-    for (const pelajaran of DAFTAR_PELAJARAN) expect(screen.getByRole('link', { name: pelajaran.judul })).toBeTruthy();
+    const lanjut = screen.getByRole('link', { name: new RegExp(DAFTAR_PELAJARAN[0]!.judul) });
+    expect(lanjut.getAttribute('href')).toBe(`#/belajar/${DAFTAR_PELAJARAN[0]!.slug}`);
+    expect(screen.getByLabelText(/^Progres 0%/)).toBeTruthy();
+    expect(within(screen.getByRole('region', { name: 'Progres' })).getAllByRole('link')).toHaveLength(3);
+    expect(screen.getAllByText('Menyusul').length).toBeGreaterThan(0);
   });
 
   it('pelajaran dengan contoh: tabel dari engine, tautan dalil, dan selesai tersimpan', () => {

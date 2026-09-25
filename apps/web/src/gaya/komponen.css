@@ -599,3 +599,50 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .skor-besar small{font-size:24px;color:var(--ink-muted)}
 .rekap-kuis{margin:0;padding-left:0;list-style:none;display:grid;gap:6px;font-size:14px}
 .rekap-kuis .benar{color:var(--ink)}.rekap-kuis .salah{color:var(--danger)}
+
+/* Beranda Belajar */
+.pusat-belajar{max-width:1080px;gap:28px}
+.hero-belajar{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-lg);background:var(--primary-soft);box-shadow:var(--shadow-pop)}
+.hero-belajar h1{margin:0}
+.kartu-lanjut{position:relative;display:flex;flex-direction:column;gap:4px;max-width:460px;margin:8px 0 0;padding:14px 48px 14px 16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;box-shadow:var(--shadow-pop-sm)}
+.kartu-lanjut b{font:700 18px/1.3 var(--font-display)}
+.kartu-lanjut .panah{position:absolute;right:16px;top:50%;transform:translateY(-50%);font:800 22px var(--font-display)}
+.kartu-lanjut:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-pop)}
+.cincin-progres{position:relative;margin:0;flex:none;display:grid;place-items:center}
+.cincin-progres svg{display:block}
+.cincin-latar{fill:none;stroke:var(--surface-raised);stroke-width:12}
+.cincin-isi{fill:none;stroke:var(--primary);stroke-width:12;stroke-linecap:round}
+.cincin-progres figcaption{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.cincin-progres figcaption b{font:800 28px/1 var(--font-display)}
+.cincin-progres figcaption span{font-size:11px;font-weight:700;color:var(--ink-muted);max-width:80px}
+.deret-angka{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.kotak-angka{display:flex;flex-direction:column;gap:6px;padding:16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none}
+.kotak-angka:hover{box-shadow:var(--shadow-pop-sm)}
+.angka-besar{font:800 32px/1 var(--font-display)}
+.angka-besar small{font-size:16px;color:var(--ink-muted)}
+.grid-modul{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.kartu-modul-jalur{height:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:6px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none}
+a.kartu-modul-jalur:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-pop-sm)}
+.kartu-modul-jalur b{font:700 16px/1.3 var(--font-display)}
+.kartu-modul-jalur .bar-progres{margin-top:auto}
+.nomor-modul{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--sun);color:var(--on-fill);border:var(--border-w) solid var(--outline);font:800 14px var(--font-display)}
+.modul-menyusul .nomor-modul{background:var(--surface-sunken);color:var(--ink-muted)}
+.dua-kolom-belajar{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:start}
+.ikon-aktivitas{flex:none;font-size:20px}
+a.isi-soal{color:var(--ink);text-decoration:none}
+a.isi-soal:hover b{text-decoration:underline}
+.grid-pintu{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.pintu-belajar{display:flex;align-items:center;gap:10px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;font-weight:800}
+.pintu-belajar span{font-size:22px}
+.pintu-belajar:hover{background:var(--sun);color:var(--on-fill)}
+@media (max-width:760px){
+  .hero-belajar{flex-direction:column-reverse;align-items:stretch;padding:18px}
+  .cincin-progres{align-self:center}
+  .deret-angka{gap:8px}.kotak-angka{padding:12px 10px}.angka-besar{font-size:24px}.kotak-angka .keterangan{font-size:12px;line-height:1.3}
+  .dua-kolom-belajar{grid-template-columns:1fr}
+  .grid-modul{grid-template-columns:1fr 1fr}
+}
+.kepala-sidebar{margin:0;padding:14px 16px;border-bottom:1.5px solid var(--divider)}
+.isi-sidebar-rujukan{display:flex;justify-content:space-between;gap:8px;flex:1}
+.isi-sidebar-rujukan small{color:var(--ink-muted);font-weight:700}
+.kartu-ayat{margin:0;display:flex;flex-direction:column;gap:8px}
