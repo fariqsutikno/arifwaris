@@ -127,16 +127,21 @@ rujukan yang valid.
   keilmuan lewat file data yang sama.
 - Tidak mengunggah PDF ke app kecuali lisensinya jelas mengizinkan.
 
-### 7. Konsultasi (direktori dosen) — P1
+### 7. Konsultasi (dosen & lembaga) — P1
 
-Isinya tautan ke dosen di lingkungan kampus sendiri, bukan direktori ustadz/konsultan umum.
+Tautan ke tempat bertanya: dosen di lingkungan kampus sendiri dan lembaga yang dilampirkan (mis. lembaga
+fatwa/konsultasi waris). Bukan direktori ustadz/konsultan umum.
 
-- Data statis di repo: nama & gelar, bidang keahlian, tautan profil resmi (laman fakultas/SINTA/Google Scholar),
-  kontak **institusional** yang dosen izinkan (email kampus). Nomor HP pribadi & alamat rumah tidak dicantumkan.
-- Tiap dosen dicantumkan hanya setelah setuju; entri membawa tanggal verifikasi.
+- Data statis di repo, dua jenis entri:
+  - **Dosen**: nama & gelar, bidang keahlian, tautan profil resmi (laman fakultas/SINTA/Google Scholar),
+    akun **Telegram** (`t.me/…`) yang dosen izinkan.
+  - **Lembaga**: nama, kota, layanan (konsultasi/fatwa/kajian), situs resmi, kontak resmi lembaga
+    (Telegram/email/situs), tautan Google Maps bila ada kantor.
+- Nomor HP pribadi & alamat rumah tidak dicantumkan.
+- Tiap entri dicantumkan hanya setelah pemiliknya setuju; entri membawa tanggal verifikasi.
 - Disclaimer singkat: konsultasi di luar tanggung jawab aplikasi.
 - Tampil di halaman Belajar dan sebagai arahan dari jawaban FAQ / hasil yang `TIDAK_DIDUKUNG` ("Tanyakan ke dosen").
-- Tanpa peta, filter, atau form pendaftaran. Daftar pendek tidak butuh itu.
+- Tanpa peta tertanam, filter, atau form pendaftaran. Daftar pendek tidak butuh itu.
 
 ## Navigasi & teknis
 
@@ -159,7 +164,7 @@ Isinya tautan ke dosen di lingkungan kampus sendiri, bukan direktori ustadz/kons
 | C | Bank soal hitung (bab 16 + M1–M9) + soal konsep modul 1–5 | Kunci = engine = bab 16 |
 | D | Modul 6–10 + soalnya | idem |
 | E | FAQ, Buku & bacaan | Semua jawaban fikih berujukan valid |
-| F | Konsultasi (direktori dosen) | Semua entri berizin & bertanggal |
+| F | Konsultasi (dosen & lembaga) | Semua entri berizin & bertanggal |
 
 Setelah C, pengerjaan munasakhat lanjutan / haml / mafqud bisa jalan paralel dengan penulisan konten D–E.
 
@@ -167,6 +172,6 @@ Setelah C, pengerjaan munasakhat lanjutan / haml / mafqud bisa jalan paralel den
 
 1. **Penulis konten**: Claude membuat draf materi, soal konsep, dan FAQ dari KB; semua `perluCek: true` sampai
    direview tim keilmuan.
-2. **Direktori**: menjadi daftar tautan ke dosen kampus sendiri (fitur 7), naik ke P1.
+2. **Direktori**: menjadi daftar tautan ke dosen kampus (via Telegram) dan lembaga yang dilampirkan (fitur 7), naik ke P1.
 3. **Soal hitung**: dijawab per langkah pipeline.
 4. **Buku**: cukup dari bab 17.2 dulu; tambahan bacaan diurus tim keilmuan.
