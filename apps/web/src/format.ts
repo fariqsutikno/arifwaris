@@ -3,6 +3,7 @@
 import { fpb } from '@waris/math';
 import type { GrafKeluarga, IdOrang, StatusOrang, TabelMasalah } from '@waris/engine';
 import { jenisDari } from './checklist';
+import { LABEL_SEHARI } from './konten/ahliWaris';
 
 const ANGKA_INDONESIA = new Intl.NumberFormat('id-ID');
 const URUTAN_PENYEBUT = ['ashl', 'aul', 'radd', 'tashih'] as const;
@@ -43,5 +44,5 @@ export function namaOrang(graf: GrafKeluarga, statusOrang: Record<IdOrang, Statu
 function labelDari(status: StatusOrang | undefined): string {
   if (!status || !('peran' in status)) return 'Kerabat';
   const kunci = status.peran.kunci;
-  return kunci === 'DZAWIL_ARHAM' || kunci === 'BUKAN_AHLI_WARIS' ? 'Kerabat' : jenisDari(kunci)?.label ?? 'Kerabat';
+  return kunci === 'DZAWIL_ARHAM' || kunci === 'BUKAN_AHLI_WARIS' ? 'Kerabat' : LABEL_SEHARI[kunci] ?? jenisDari(kunci)?.label ?? 'Kerabat';
 }
