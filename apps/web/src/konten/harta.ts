@@ -24,11 +24,6 @@ export const PILIHAN_PEMBULATAN = [
   { satuan: 1000n, judul: 'Rp 1.000', keterangan: 'Paling praktis kalau dibagi tunai.' },
 ] as const;
 
-export const TEKS_PEMBULATAN = {
-  judul: 'Mau hasilnya dibulatkan?',
-  apa: 'Bagian tiap orang sering jatuh di angka ganjil, misalnya Rp 33.333. Pilih kelipatan yang enak dibagi. Sisanya dicatat terpisah, nggak dibagi diam-diam, dan pilihan ini bisa diganti lagi di layar hasil.',
-};
-
 export const TEKS_KEWAJIBAN = {
   urutan: [
     { kunci: 'tajhiz', label: 'Pengurusan jenazah', alasan: 'Biaya memandikan, mengafani, dan menguburkan almarhum. Ini didahulukan dari semuanya.' },

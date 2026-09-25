@@ -132,6 +132,7 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
       <div className="bar-bawah">
         <div className="bar-bawah-isi">
           <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>
+          <Tombol varian="ghost" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>Ubah ahli waris</Tombol>
           <span className="pengisi" />
           <Tombol onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
         </div>

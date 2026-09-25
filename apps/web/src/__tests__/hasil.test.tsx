@@ -134,6 +134,27 @@ describe('layar hasil', () => {
     expect(within(pembagian()).queryByText(/^Istri/)).toBeNull();
   });
 
+  it('tombol aksi di modal orang ringkas', () => {
+    render(<Uji awal={prototipe()} />);
+    fireEvent.click(within(pembagian()).getByRole('button', { name: /Anak perempuan/ }));
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByRole('button', { name: /Hapus Anak perempuan/ }).textContent).toBe('Hapus');
+    expect(within(dialog).getByRole('button', { name: /Tambah satu Anak perempuan lagi/ }).textContent).toBe('+1');
+  });
+
+  it('pintasan "Ubah ahli waris" membuka langkah ahli waris', () => {
+    render(<Uji awal={prototipe()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah ahli waris' }));
+    expect(aksiTerakhir).toEqual({ jenis: 'KE_LANGKAH', langkah: 4 });
+  });
+
+  it('istilah di tabel faraidh punya tooltip', () => {
+    render(<Uji awal={prototipe()} />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
+    fireEvent.focus(within(screen.getByRole('table')).getByText('Tashih'));
+    expect(screen.getByRole('tooltip').textContent).toMatch(/pembagi/);
+  });
+
   it('"Ubah data" membuka wizard dari langkah pertama', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(screen.getAllByRole('button', { name: /Ubah data/ }).at(-1)!);

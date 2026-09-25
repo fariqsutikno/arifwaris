@@ -84,20 +84,30 @@ it('paman & sepupu ditanya bertahap dengan bahasa sederhana', () => {
   expect(hitungIsian(grafTerakhir, 'PEWARIS').SEPUPU_SEBAPAK).toHaveLength(1);
 });
 
-it('kerabat yang bukan ahli waris bisa ditambahkan dan ditandai dzawil arham', () => {
+it('kerabat dzawil arham tidak ditawarkan', () => {
   render(<Uji />);
   fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
-  fireEvent.click(screen.getByRole('button', { name: 'Tambah Kakek dari pihak ibu (ayahnya ibu pewaris)' }));
-  const terisi = screen.getByRole('list', { name: 'Kerabat lain yang sudah ditambahkan' });
-  expect(within(terisi).getByText(/Kakek dari pihak ibu/)).toBeTruthy();
-  expect(within(terisi).getByText(/dzawil arham/i)).toBeTruthy();
+  expect(screen.queryByText(/dzawil arham/i)).toBeNull();
+});
+
+it('orang tua yang dibuat otomatis (tidak diisi pengguna) tidak disebut "sudah wafat" di pohon', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
+  const grup = screen.getByRole('group', { name: 'Kakak/adik almarhum' });
+  fireEvent.click(within(grup).getByRole('radio', { name: 'Laki-laki' }));
+  fireEvent.click(within(grup).getByRole('radio', { name: /Satu ayah satu ibu/ }));
+  fireEvent.click(within(grup).getByRole('button', { name: /Tambah kakak\/adik/ }));
+  fireEvent.click(screen.getByRole('tab', { name: 'Pohon keluarga' }));
+  const pohon = screen.getByRole('region', { name: 'Pohon keluarga' });
+  expect(within(pohon).queryByText(/Sudah wafat/)).toBeNull();
+  expect(within(pohon).getAllByText(/tidak diisi/).length).toBeGreaterThan(0);
 });
 
 it('urutan kerabat lain: kakek-nenek, cucu, kakak/adik, paman, keponakan', () => {
   render(<Uji />);
   fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
   const judul = [...document.querySelectorAll('.kerabat-lain legend')].map(legend => legend.textContent);
-  expect(judul.slice(0, 5)).toEqual(['Kakek & nenek', 'Cucu', 'Kakak/adik almarhum', 'Paman & sepupu dari pihak ayah', 'Keponakan']);
+  expect(judul).toEqual(['Kakek & nenek', 'Cucu', 'Kakak/adik almarhum', 'Paman & sepupu dari pihak ayah', 'Keponakan']);
 });
 
 it('tambah cepat pakai tombol kurang dan tambah dengan jumlah di tengah', () => {

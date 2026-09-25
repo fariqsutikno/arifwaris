@@ -365,7 +365,8 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .urutan-selanjutnya span{display:block;color:var(--ink-muted);font-size:13px}
 .jalur-langkah{position:relative;display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;scroll-behavior:smooth}
 .jalur-langkah button{flex:none;scroll-snap-align:start;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 12.5px var(--font-sans);cursor:pointer}
-.jalur-langkah b{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:6px;background:var(--surface-sunken);font-size:11px}
+.jalur-langkah b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--ink);color:var(--surface-raised);font-size:12px;font-weight:800}
+.jalur-langkah [aria-current=step] b{background:var(--on-primary);color:var(--primary)}
 .jalur-langkah .kelar b{background:var(--lime);color:var(--on-fill)}
 .jalur-langkah [aria-current=step]{background:var(--primary);color:var(--on-primary)}
 .kartu-langkah{border:var(--border-w) solid var(--outline);border-radius:16px;padding:16px}
@@ -455,11 +456,6 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .terisi-ahli-waris .judul-bagian-kecil{margin:0}
 .pohon-isian{border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);overflow:hidden;background:var(--surface-raised)}
 .lencana-jumlah{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--surface-raised);font:800 12px/1 var(--font-sans)}
-.bukan-ahli-waris{display:flex;flex-direction:column;gap:6px;padding-top:8px;border-top:1.5px dashed var(--divider)}
-.bukan-ahli-waris .caption-isian{display:flex;align-items:center;gap:6px}
-.bukan-ahli-waris ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:13.5px;color:var(--ink-muted)}
-.bukan-ahli-waris li{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.tag-dzawil{padding:1px 7px;border-radius:999px;border:1px dashed var(--ink-muted);font-size:11px;font-weight:700}
 
 .hitungan-berjalan>div span:last-child,.hitungan-berjalan .hitungan-total{white-space:nowrap;text-align:right}
 .modal-kecil{max-width:440px}
@@ -473,8 +469,11 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .kontrol-jumlah button:active{transform:translate(2px,2px);box-shadow:none}
 .kontrol-jumlah button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
 .angka-kontrol{min-width:22px;text-align:center;font:700 17px var(--font-display);font-variant-numeric:tabular-nums}
-.tombol-tambah.lain{border-style:dashed;box-shadow:none;font-weight:600}
-.orang-terisi.lain{background:var(--surface-raised);border-style:dashed;box-shadow:none;color:var(--ink)}
 .node-orang{position:relative}
 .hapus-node{position:absolute;top:-10px;right:-10px;display:grid;place-items:center;width:26px;height:26px;padding:0;border-radius:50%;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:800 15px/1 var(--font-sans);cursor:pointer}
 .hapus-node:hover,.hapus-node:focus-visible{background:var(--danger);color:#fff}
+.aksi-kecil{min-height:36px;padding:0 12px;border-radius:10px;border:1.5px solid var(--divider);background:transparent;color:var(--ink);font:800 13px var(--font-sans);cursor:pointer}
+.aksi-kecil:hover{border-color:var(--outline)}
+.aksi-kecil.hapus{color:var(--danger)}
+.faraidh thead .istilah{text-decoration-color:currentColor}
+.node-orang.penghubung b{font-weight:600;color:var(--ink-muted)}

@@ -22,7 +22,6 @@ interface Props {
 export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih }: Props) {
   const penerima = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const terhalang = new Map(ringkasan.terhalang.map(orang => [orang.id, orang]));
-  const bukanAhliWaris = new Map(ringkasan.bukanAhliWaris.map(orang => [orang.id, orang]));
   const { langkah } = useSorot();
   const isiNode = (id: IdOrang): IsiNode => {
     const orang = graf.orang[id]!;
@@ -30,7 +29,7 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     const dapat = penerima.get(id);
     const halang = terhalang.get(id);
     const nama = id === graf.idPewaris ? orang.nama ?? 'Almarhum' : namaOrang(graf, ringkasan.statusOrang, id);
-    if (orang.penghubung) return { kelas: 'penghubung', peran: 'Sudah wafat', nama };
+    if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: `${nama} (tidak diisi)` };
     if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? 'Pewaris' : 'Wafat sebelum dibagi', nama };
     if (sedangMenebak) return { kelas: dapat || halang ? `g-${(dapat ?? halang)!.kelompok}` : 'putus', peran: '', nama };
     if (dapat) return {
@@ -39,7 +38,7 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
         <span className="angka">{sembunyiNominal ? 'Rp ••••••' : formatRupiah(dapat.nominal)}</span></span>,
     };
     if (halang) return { kelas: 'putus', peran: 'Terhalang (mahjub)', nama, isi: <span className="alasan-node">{halang.alasan}</span> };
-    return { kelas: 'putus', peran: 'Tidak mewarisi', nama, isi: <span className="alasan-node">{bukanAhliWaris.get(id)?.alasan ?? 'Tidak termasuk ahli waris.'}</span> };
+    return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">Tidak mewarisi</span> };
   };
   return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} />;
 }

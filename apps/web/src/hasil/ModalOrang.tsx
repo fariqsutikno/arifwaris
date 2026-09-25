@@ -114,9 +114,10 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
           )}
         </div>
         <footer className="kaki-modal">
-          {bisaDiubah && <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={() => saatHapus(id)}>Hapus {nama}</button>}
+          {bisaDiubah && <button type="button" className="aksi-kecil hapus" aria-label={`Hapus ${nama}`} onClick={() => saatHapus(id)}>Hapus</button>}
           {bisaDiubah && kunci && !sudahPenuh && (
-            <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={() => saatTambahSejenis(kunci)}>Tambah satu {LABEL_SEHARI[kunci] ?? nama} lagi</button>
+            <button type="button" className="aksi-kecil" aria-label={`Tambah satu ${LABEL_SEHARI[kunci] ?? nama} lagi`} title={`Tambah satu ${LABEL_SEHARI[kunci] ?? nama} lagi`}
+              onClick={() => saatTambahSejenis(kunci)}>+1</button>
           )}
           <span className="pengisi" />
           <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>Oke, paham</button>

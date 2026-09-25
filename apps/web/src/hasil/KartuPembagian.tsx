@@ -93,7 +93,7 @@ export function KartuPembagian(props: Props) {
               );
             })}
           </ul>
-          {[...ringkasan.terhalang, ...ringkasan.bukanAhliWaris].map(orang => {
+          {ringkasan.terhalang.map(orang => {
             const { className, ...pemicu } = atribut(orang.id);
             return (
               <button key={orang.id} type="button" {...pemicu} className={['tidak-dapat', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>

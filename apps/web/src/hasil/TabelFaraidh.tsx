@@ -6,6 +6,7 @@ import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
 import type { HasilOk } from '../jalankan';
 import type { RingkasanHasil } from './ringkasan';
+import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
 
 interface Props { hasil: HasilOk | null; ringkasan: RingkasanHasil; sembunyiNominal: boolean; saatPilih: (id: IdOrang) => void }
@@ -40,10 +41,10 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
         <tr>
           <th className={['kiri', sorot('ahliWaris')].filter(Boolean).join(' ')}>Ahli waris</th>
           <th className={sorot('bagian')}>Bagian</th>
-          <th className={sorot('ashl')}>Asal masalah<small>{String(ashl)}</small></th>
-          {penyesuaian && <th className={sorot('penyesuaian')}>{penyesuaian.judul}<small>{String(penyesuaian.nilai)}</small></th>}
-          {tashih !== undefined && <th className={sorot('tashih')}>Tashih<small>{String(tashih)}</small></th>}
-          <th>Per orang<small>saham</small></th>
+          <th className={sorot('ashl')}><Istilah id="ashlul-masalah">Asal masalah</Istilah><small>{String(ashl)}</small></th>
+          {penyesuaian && <th className={sorot('penyesuaian')}><Istilah id={penyesuaian.kunci}>{penyesuaian.judul}</Istilah><small>{String(penyesuaian.nilai)}</small></th>}
+          {tashih !== undefined && <th className={sorot('tashih')}><Istilah id="tashih">Tashih</Istilah><small>{String(tashih)}</small></th>}
+          <th>Per orang<small><Istilah arti="Bagian tiap orang dihitung dalam satuan kecil yang sama (saham), dari jumlah pada kolom sebelumnya.">saham</Istilah></small></th>
           <th className={sorot('nominal')}>Nominal<small>{uangAtau(ringkasan.tirkah.bersih, sembunyi)}</small></th>
         </tr>
       </thead>
@@ -60,7 +61,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
                 </td>
                 {indeks === 0 && <>
                   <td rowSpan={anggota.length} className={sorot('bagian')}>
-                    <span className="bagian-sel">{baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : 'Ashabah'}
+                    <span className="bagian-sel">{baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : <Istilah id="ashabah">Ashabah</Istilah>}
                       <small>{baris.fardh ? (baris.ashabah ? 'bagian tertentu + sisa' : 'bagian tertentu') : anggota.length > 1 ? 'sisa, dibagi bersama' : 'sisa'}</small></span>
                   </td>
                   <td rowSpan={anggota.length} className={['angka', sorot('ashl')].filter(Boolean).join(' ')}>{String(baris.sel.ashl ?? '—')}</td>
@@ -73,7 +74,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
             );
           });
         })}
-        {[...ringkasan.terhalang, ...ringkasan.bukanAhliWaris].map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
+        {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
           kolom={4 + (penyesuaian ? 1 : 0) + (tashih !== undefined ? 1 : 0)} />)}
       </tbody>
       <tfoot>
@@ -96,7 +97,7 @@ function TabelMunasakhat({ ringkasan, sembunyi, saatPilih }: { ringkasan: Ringka
   return (
     <table className="faraidh">
       <thead>
-        <tr><th className="kiri">Ahli waris</th><th>Saham jami'ah<small>{String(ringkasan.penyebut)}</small></th><th>Nominal<small>{uangAtau(ringkasan.tirkah.bersih, sembunyi)}</small></th></tr>
+        <tr><th className="kiri">Ahli waris</th><th><Istilah id="jamiah">Saham jami'ah</Istilah><small>{String(ringkasan.penyebut)}</small></th><th>Nominal<small>{uangAtau(ringkasan.tirkah.bersih, sembunyi)}</small></th></tr>
       </thead>
       <tbody>
         {ringkasan.penerima.map(orang => {
@@ -109,7 +110,7 @@ function TabelMunasakhat({ ringkasan, sembunyi, saatPilih }: { ringkasan: Ringka
             </tr>
           );
         })}
-        {[...ringkasan.terhalang, ...ringkasan.bukanAhliWaris].map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan} kolom={2} />)}
+        {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan} kolom={2} />)}
       </tbody>
     </table>
   );

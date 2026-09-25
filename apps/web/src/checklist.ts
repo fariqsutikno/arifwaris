@@ -89,48 +89,6 @@ export function hapusAhliWaris(graf: GrafKeluarga, idOrang: IdOrang): GrafKeluar
   };
 }
 
-// ─── Kerabat yang bukan ahli waris (dzawil arham) ─────────────────────────────
-// Boleh dicatat supaya keluarga lengkap; engine menandainya DZAWIL_ARHAM dan tidak memberinya bagian selama
-// ada ahli waris lain (pewarisan dzawil arham = fase 3). Engine tidak punya kunci untuk mereka, jadi label
-// hubungannya disimpan di `nama` orang itu.
-
-export const DAFTAR_KERABAT_LAIN = [
-  { kode: 'KAKEK_DARI_IBU', label: 'Kakek dari pihak ibu (ayahnya ibu pewaris)' },
-  { kode: 'CUCU_DARI_ANAK_PR', label: 'Cucu dari anak perempuan' },
-  { kode: 'BIBI_DARI_AYAH', label: 'Bibi dari pihak ayah (saudari ayah pewaris)' },
-  { kode: 'PAMAN_DARI_IBU', label: 'Paman dari pihak ibu (saudara laki-laki ibu pewaris)' },
-  { kode: 'BIBI_DARI_IBU', label: 'Bibi dari pihak ibu (saudari ibu pewaris)' },
-  { kode: 'ANAK_SAUDARI', label: 'Anak dari kakak/adik perempuan' },
-  { kode: 'KEPONAKAN_PR', label: 'Keponakan perempuan (anak kakak/adik laki-laki)' },
-] as const;
-export type KodeKerabatLain = typeof DAFTAR_KERABAT_LAIN[number]['kode'];
-
-export function tambahKerabatLain(graf: GrafKeluarga, idMayit: IdOrang, kode: KodeKerabatLain): GrafKeluarga {
-  const label = DAFTAR_KERABAT_LAIN.find(kerabat => kerabat.kode === kode)!.label;
-  const hasil = bangunKerabatLain(graf, idMayit, kode);
-  return ubahOrang(hasil.graf, hasil.idOrang, { nama: label });
-}
-
-/** Kerabat hidup yang dicatat tetapi bukan ahli waris (peran DZAWIL_ARHAM menurut engine). */
-export function daftarKerabatLain(graf: GrafKeluarga, idMayit: IdOrang): Array<{ id: IdOrang; label: string }> {
-  const { daftarPeran } = turunkanPeran({ ...graf, idPewaris: idMayit }, KONFIGURASI_BAWAAN);
-  return Object.values(graf.orang)
-    .filter(orang => orang.id !== idMayit && !orang.penghubung && orang.statusHidup !== 'wafat' && daftarPeran[orang.id]?.kunci === 'DZAWIL_ARHAM')
-    .map(orang => ({ id: orang.id, label: orang.nama ?? 'Kerabat' }));
-}
-
-function bangunKerabatLain(graf: GrafKeluarga, idMayit: IdOrang, kode: KodeKerabatLain): Hasil {
-  switch (kode) {
-    case 'KAKEK_DARI_IBU': { const ibu = pastikanOrangTua(graf, idMayit, 'P'); return isiOrangTua(ibu.graf, ibu.idOrang, 'L', {}); }
-    case 'PAMAN_DARI_IBU': { const ibu = pastikanOrangTua(graf, idMayit, 'P'); return tambahSaudara(ibu.graf, ibu.idOrang, 'kandung', 'L', {}); }
-    case 'BIBI_DARI_IBU': { const ibu = pastikanOrangTua(graf, idMayit, 'P'); return tambahSaudara(ibu.graf, ibu.idOrang, 'kandung', 'P', {}); }
-    case 'BIBI_DARI_AYAH': { const ayah = pastikanOrangTua(graf, idMayit, 'L'); return tambahSaudara(ayah.graf, ayah.idOrang, 'kandung', 'P', {}); }
-    case 'CUCU_DARI_ANAK_PR': { const induk = pilihInduk(graf, idMayit, 'ANAK_PR'); return tambahOrang(induk.graf, { jenisKelamin: 'L', idIbu: induk.idOrang }); }
-    case 'ANAK_SAUDARI': { const induk = pilihInduk(graf, idMayit, 'SAUDARI_KANDUNG'); return tambahOrang(induk.graf, { jenisKelamin: 'L', idIbu: induk.idOrang }); }
-    case 'KEPONAKAN_PR': { const induk = pilihInduk(graf, idMayit, 'SAUDARA_KANDUNG'); return tambahOrang(induk.graf, { jenisKelamin: 'P', idAyah: induk.idOrang }); }
-  }
-}
-
 // ─── Membangun orang per jenis ────────────────────────────────────────────────
 
 type Hasil = { graf: GrafKeluarga; idOrang: IdOrang };

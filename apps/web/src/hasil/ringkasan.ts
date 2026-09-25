@@ -1,7 +1,7 @@
 // Ringkasan layar hasil: HasilTampil (OK) → data siap tampil untuk sidebar, pohon, tabel, dan modal.
 // Semua angka diambil dari engine (tabel, statusOrang, jejak); di sini hanya dipilih, diberi nama, dan diformat.
 
-import { KONFIGURASI_BAWAAN, turunkanPeran, type GrafKeluarga, type IdOrang, type KunciAhliWaris, type LangkahJejak, type StatusOrang } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, KunciAhliWaris, LangkahJejak, StatusOrang } from '@waris/engine';
 import { fpb } from '@waris/math';
 import { jenisDari, type Kelompok } from '../checklist';
 import { namaOrang, penyebutAkhir } from '../format';
@@ -41,8 +41,6 @@ export interface RingkasanHasil {
   jenis: 'biasa' | 'munasakhat';
   penerima: Penerima[];
   terhalang: Terhalang[];
-  /** Kerabat yang dicatat tetapi tidak mewarisi (dzawil arham, atau bukan ahli waris sama sekali). */
-  bukanAhliWaris: Terhalang[];
   /** Tashih (kasus biasa) atau jami'ah (munasakhat): jumlah semua saham. */
   penyebut: bigint;
   tirkah: LangkahTirkah;
@@ -96,7 +94,6 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
   return {
     jenis: 'biasa', penerima, penyebut,
     terhalang: daftarTerhalang(graf, hasil.statusOrang),
-    bukanAhliWaris: daftarBukanAhliWaris(graf, hasil.statusOrang, new Set([...penerima.map(o => o.id)])),
     tirkah: langkahTirkah(hasil.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
     tentang: tentangKasus(hasil.jejak),
@@ -126,7 +123,6 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): Ringka
   const pertama = hasil.daftarLangkah[0]!.hasil;
   return {
     jenis: 'munasakhat', penerima, terhalang, penyebut: hasil.jamiah,
-    bukanAhliWaris: daftarBukanAhliWaris(graf, statusOrang, new Set([...penerima.map(o => o.id), ...Object.keys(hasil.saham)])),
     tirkah: langkahTirkah(pertama.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
     tentang: { ...tentangKasus(pertama.jejak), jamiah: hasil.jamiah },
@@ -172,21 +168,6 @@ function daftarTerhalang(graf: GrafKeluarga, statusOrang: Record<IdOrang, Status
       ? `Terhalang oleh ${status.oleh.map(idLain => namaOrang(graf, statusOrang, idLain)).join(' dan ')}.`
       : `Tidak mewarisi karena ${ALASAN_MANI[status.mani]}.`;
     return [{ id, nama: namaOrang(graf, statusOrang, id), kunci, kelompok: kelompokDari(kunci), alasan }];
-  });
-}
-
-/** Orang hidup yang dicatat tetapi tidak menerima apa pun dan tidak terhalang: dzawil arham atau bukan ahli waris. */
-function daftarBukanAhliWaris(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>, penerima: Set<IdOrang>): Terhalang[] {
-  const { daftarPeran } = turunkanPeran(graf, KONFIGURASI_BAWAAN);
-  return Object.values(graf.orang).flatMap((orang): Terhalang[] => {
-    const status = statusOrang[orang.id];
-    if (orang.id === graf.idPewaris || orang.penghubung || orang.statusHidup === 'wafat' || penerima.has(orang.id)) return [];
-    if (status && (status.jenis === 'mahjub' || status.jenis === 'mamnu')) return [];
-    const dzawil = daftarPeran[orang.id]?.kunci === 'DZAWIL_ARHAM';
-    return [{
-      id: orang.id, nama: namaOrang(graf, statusOrang, orang.id), kunci: undefined, kelompok: 'saudara',
-      alasan: dzawil ? 'Termasuk dzawil arham: hanya mewarisi bila tidak ada ahli waris lain.' : 'Tidak termasuk ahli waris.',
-    }];
   });
 }
 

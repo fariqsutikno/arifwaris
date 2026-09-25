@@ -46,18 +46,10 @@ it('rinci per jenis menjumlahkan otomatis ke total', () => {
   expect(screen.getByText('Rp 7.000.000')).toBeTruthy();
 });
 
-it('pembulatan tampil sebagai bagian sendiri dengan penjelasan dan contoh, langsung bisa dipilih', () => {
+it('langkah harta tidak lagi menanyakan pembulatan (diatur di layar hasil bila perlu)', () => {
   render(<Uji Langkah={LangkahHarta} awal={kasusBaru('L')} />);
-  expect(screen.getByRole('heading', { name: 'Mau hasilnya dibulatkan?' })).toBeTruthy();
-  fireEvent.click(screen.getByRole('radio', { name: /Rp 1.000/ }));
-  expect(terakhir.satuanPembulatan).toBe(1000n);
-  expect(screen.getByText(/Contoh/)).toBeTruthy();
-});
-
-it('harta dikelompokkan: total harta dan pembulatan di bagian terpisah', () => {
-  render(<Uji Langkah={LangkahHarta} awal={kasusBaru('L')} />);
-  expect(screen.getByRole('region', { name: 'Total harta' })).toBeTruthy();
-  expect(screen.getByRole('region', { name: 'Mau hasilnya dibulatkan?' })).toBeTruthy();
+  expect(screen.queryByRole('heading', { name: 'Mau hasilnya dibulatkan?' })).toBeNull();
+  expect(screen.queryByRole('radio', { name: /Rp 1.000/ })).toBeNull();
 });
 
 it('kewajiban: tiap isian punya ikon info, batas wasiat tertulis', () => {

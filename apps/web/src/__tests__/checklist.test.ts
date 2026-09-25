@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GrafKeluarga } from '@waris/engine';
-import { daftarInduk, daftarKerabatLain, hapusAhliWaris, hitungIsian, kurangiAhliWaris, tambahAhliWaris, tambahKerabatLain } from '../checklist';
+import { daftarInduk, hapusAhliWaris, hitungIsian, kurangiAhliWaris, tambahAhliWaris } from '../checklist';
 
 const grafAwal = (jenisKelamin: 'L' | 'P'): GrafKeluarga => ({
   idPewaris: 'PEWARIS',
@@ -107,24 +107,5 @@ describe('hapus orang tertentu', () => {
     const [pertama, kedua] = hitungIsian(graf, 'PEWARIS').ANAK_LK!;
     graf = hapusAhliWaris(graf, pertama!);
     expect(hitungIsian(graf, 'PEWARIS').ANAK_LK).toEqual([kedua]);
-  });
-});
-
-describe('kerabat bukan ahli waris (dzawil arham)', () => {
-  it('kakek dari pihak ibu, bibi, dan cucu dari anak perempuan bisa ditambahkan dan tercatat sebagai dzawil arham', () => {
-    let graf = tambahKerabatLain(grafAwal('L'), 'PEWARIS', 'KAKEK_DARI_IBU');
-    graf = tambahKerabatLain(graf, 'PEWARIS', 'BIBI_DARI_AYAH');
-    graf = tambahKerabatLain(graf, 'PEWARIS', 'CUCU_DARI_ANAK_PR');
-    const daftar = daftarKerabatLain(graf, 'PEWARIS');
-    expect(daftar.map(orang => orang.label)).toEqual(expect.arrayContaining([
-      'Kakek dari pihak ibu (ayahnya ibu pewaris)', 'Bibi dari pihak ayah (saudari ayah pewaris)', 'Cucu dari anak perempuan']));
-    expect(jumlah(graf)).toEqual({});   // bukan ahli waris
-  });
-
-  it('bisa dihapus lagi', () => {
-    let graf = tambahKerabatLain(grafAwal('L'), 'PEWARIS', 'PAMAN_DARI_IBU');
-    const [orang] = daftarKerabatLain(graf, 'PEWARIS');
-    graf = hapusAhliWaris(graf, orang!.id);
-    expect(daftarKerabatLain(graf, 'PEWARIS')).toEqual([]);
   });
 });

@@ -1,11 +1,10 @@
-// Langkah 2: harta peninggalan, dua kelompok yang jelas terpisah.
-// (1) Total harta: total langsung / rinci per jenis, tambah cepat tepat di bawah isian, catatan gono-gini.
-// (2) Pembulatan hasil: selalu terlihat, dengan penjelasan singkat, pilihan berketerangan, dan contoh akibatnya.
+// Langkah 2: harta peninggalan — total langsung / rinci per jenis, tambah cepat tepat di bawah isian, catatan gono-gini.
+// Pembulatan tidak ditanya di sini (bawaan Rp 1); pilihannya muncul di layar hasil hanya bila pembagian menyisakan sisa.
 
 import { useState } from 'react';
 import { formatRupiah } from '../../format';
 import { KATEGORI_HARTA, type Kasus, type KategoriHarta } from '../../kasus';
-import { KATEGORI_HARTA_TEKS, PILIHAN_PEMBULATAN, TEKS_HARTA, TEKS_PEMBULATAN } from '../../konten/harta';
+import { KATEGORI_HARTA_TEKS, TEKS_HARTA } from '../../konten/harta';
 import { IsianUang } from './IsianUang';
 
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
@@ -64,33 +63,6 @@ export function LangkahHarta({ kasus, ubah }: Props) {
         <p className="catatan-info"><span aria-hidden="true" className="ikon-info-kecil">i</span>{TEKS_HARTA.gonoGini}</p>
       </section>
 
-      <section className="grup-isian" aria-labelledby="judul-pembulatan">
-        <div className="kepala-grup">
-          <h2 id="judul-pembulatan">{TEKS_PEMBULATAN.judul}</h2>
-        </div>
-        <p className="caption-isian">{TEKS_PEMBULATAN.apa}</p>
-        <div className="pilihan-bulat" role="radiogroup" aria-labelledby="judul-pembulatan">
-          {PILIHAN_PEMBULATAN.map(pilihan => (
-            <button key={String(pilihan.satuan)} type="button" role="radio" aria-checked={pilihan.satuan === kasus.satuanPembulatan}
-              onClick={() => ubah(k => ({ ...k, satuanPembulatan: pilihan.satuan }))}>
-              <b>{pilihan.judul}</b><small>{pilihan.keterangan}</small>
-            </button>
-          ))}
-        </div>
-        <ContohPembulatan satuan={kasus.satuanPembulatan} />
-      </section>
     </>
-  );
-}
-
-/** Contoh tetap Rp 100.000 dibagi rata 3 orang, supaya akibat tiap pilihan kelihatan. */
-function ContohPembulatan({ satuan }: { satuan: bigint }) {
-  const harta = 100_000n, orang = 3n;
-  const perOrang = (harta / orang / satuan) * satuan;
-  const sisa = harta - perOrang * orang;
-  return (
-    <p className="contoh-bulat">
-      <b>Contoh:</b> Rp 100.000 dibagi rata 3 orang → tiap orang dapat <b>{formatRupiah(perOrang)}</b>, sisa <b>{formatRupiah(sisa)}</b> disepakati bersama.
-    </p>
   );
 }

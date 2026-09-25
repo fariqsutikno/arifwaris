@@ -2,7 +2,6 @@
 // Label menyebut hubungannya dengan pewaris supaya tidak perlu menebak. Semua masih draf; `perluCek` sampai dicek tim keilmuan.
 
 import type { KunciAhliWaris } from '@waris/engine';
-import type { KodeKerabatLain } from '../checklist';
 
 export const PERLU_CEK_LABEL = true;
 
@@ -21,27 +20,17 @@ export const LABEL_SEHARI: Partial<Record<KunciAhliWaris, string>> = {
 /** Tambah cepat: kerabat yang paling sering ada. Pasangan menyesuaikan jenis kelamin mayit. */
 export const TAMBAH_CEPAT: KunciAhliWaris[] = ['SUAMI', 'ISTRI', 'ANAK_LK', 'ANAK_PR', 'AYAH', 'IBU'];
 
-export interface KelompokLain {
-  judul: string;
-  catatan?: string;
-  pilihan: KunciAhliWaris[];
-  /** Kerabat sejenis yang bukan ahli waris di sini (dzawil arham): boleh dicatat, di hasil ditandai tidak mewarisi. */
-  lain?: KodeKerabatLain[];
-}
+export interface KelompokLain { judul: string; catatan?: string; pilihan: KunciAhliWaris[] }
 
-/** Urutan "Tambah kerabat lain": dari atas ke bawah silsilah — kakek-nenek, cucu, kakak/adik, paman, keponakan, pihak ibu. */
-export type BagianKerabatLain = { jenis: 'kelompok'; kelompok: KelompokLain } | { jenis: 'saudara' } | { jenis: 'paman'; lain: KodeKerabatLain[] };
+/** Urutan "Tambah kerabat lain": dari atas ke bawah silsilah — kakek-nenek, cucu, kakak/adik, paman & sepupu, keponakan. */
+export type BagianKerabatLain = { jenis: 'kelompok'; kelompok: KelompokLain } | { jenis: 'saudara' } | { jenis: 'paman' };
 export const URUTAN_KERABAT_LAIN: BagianKerabatLain[] = [
-  { jenis: 'kelompok', kelompok: { judul: 'Kakek & nenek', pilihan: ['KAKEK', 'NENEK_DARI_AYAH', 'NENEK_DARI_IBU'], lain: ['KAKEK_DARI_IBU'] } },
-  { jenis: 'kelompok', kelompok: { judul: 'Cucu', pilihan: ['CUCU_LK', 'CUCU_PR'], lain: ['CUCU_DARI_ANAK_PR'] } },
+  { jenis: 'kelompok', kelompok: { judul: 'Kakek & nenek', pilihan: ['KAKEK', 'NENEK_DARI_AYAH', 'NENEK_DARI_IBU'] } },
+  { jenis: 'kelompok', kelompok: { judul: 'Cucu', catatan: 'Hanya cucu dari anak laki-laki.', pilihan: ['CUCU_LK', 'CUCU_PR'] } },
   { jenis: 'saudara' },
-  { jenis: 'paman', lain: ['BIBI_DARI_AYAH'] },
-  { jenis: 'kelompok', kelompok: { judul: 'Keponakan', catatan: 'Anak dari kakak/adik pewaris.', pilihan: ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK'], lain: ['KEPONAKAN_PR', 'ANAK_SAUDARI'] } },
-  { jenis: 'kelompok', kelompok: { judul: 'Paman & bibi dari pihak ibu', pilihan: [], lain: ['PAMAN_DARI_IBU', 'BIBI_DARI_IBU'] } },
+  { jenis: 'paman' },
+  { jenis: 'kelompok', kelompok: { judul: 'Keponakan', catatan: 'Anak laki-laki dari kakak/adik laki-laki pewaris.', pilihan: ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK'] } },
 ];
-
-export const TEKS_DZAWIL_ARHAM =
-  'Kerabat ini termasuk dzawil arham: mereka hanya mewarisi kalau tidak ada ahli waris lain. Boleh dicatat; di hasil mereka ditandai tidak mewarisi. Perhitungan khusus dzawil arham belum tersedia.';
 
 /** Kakak/adik ditanya bertahap: jenis kelamin → hubungan orang tua → kunci. */
 export const HUBUNGAN_SAUDARA = [
