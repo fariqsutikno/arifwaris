@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GrafKeluarga } from '@waris/engine';
-import { daftarInduk, hitungIsian, kurangiAhliWaris, tambahAhliWaris } from '../checklist';
+import { daftarInduk, hapusAhliWaris, hitungIsian, kurangiAhliWaris, tambahAhliWaris } from '../checklist';
 
 const grafAwal = (jenisKelamin: 'L' | 'P'): GrafKeluarga => ({
   idPewaris: 'PEWARIS',
@@ -97,5 +97,15 @@ describe('pasangan diisi setelah anak', () => {
     graf = tambahAhliWaris(graf, 'PEWARIS', 'ISTRI');
     const [idAnak] = hitungIsian(graf, 'PEWARIS').ANAK_LK!;
     expect(jumlah(graf, idAnak!)).toMatchObject({ IBU: 1, SAUDARA_KANDUNG: 1 });
+  });
+});
+
+describe('hapus orang tertentu', () => {
+  it('menghapus anak yang dipilih, bukan yang terakhir', () => {
+    let graf = tambahAhliWaris(grafAwal('L'), 'PEWARIS', 'ANAK_LK');
+    graf = tambahAhliWaris(graf, 'PEWARIS', 'ANAK_LK');
+    const [pertama, kedua] = hitungIsian(graf, 'PEWARIS').ANAK_LK!;
+    graf = hapusAhliWaris(graf, pertama!);
+    expect(hitungIsian(graf, 'PEWARIS').ANAK_LK).toEqual([kedua]);
   });
 });

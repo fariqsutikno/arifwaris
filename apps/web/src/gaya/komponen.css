@@ -196,3 +196,42 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .hitungan-berjalan .potongan span:last-child{color:var(--danger);font-weight:700}
 .garis-total{border-top:var(--border-w) solid var(--outline);padding-top:8px;margin-top:2px}
 .hitungan-total{font-family:var(--font-display);font-size:20px}
+
+/* ─── Langkah Ahli waris ─── */
+.isian-ahli-waris{display:flex;flex-direction:column;gap:18px}
+.judul-bagian-kecil{margin:0 0 8px;font:800 12px/1 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
+.kosong-ahli-waris{margin:0;padding:14px 16px;border:var(--border-w) dashed var(--divider);border-radius:var(--radius-md);color:var(--ink-muted);font-weight:600}
+.daftar-terisi{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.orang-terisi{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border:var(--border-w) solid var(--outline);border-radius:14px;color:var(--on-fill);box-shadow:var(--shadow-pop-sm)}
+.orang-terisi.g-pasangan{background:var(--pasangan)}.orang-terisi.g-keturunan{background:var(--keturunan)}.orang-terisi.g-leluhur{background:var(--leluhur)}.orang-terisi.g-saudara{background:var(--saudara)}
+.orang-terisi-teks{display:flex;flex-direction:column;line-height:1.2}
+.orang-terisi-teks b{font:700 15px var(--font-display)}
+.orang-terisi-teks small{font-size:11.5px;font-weight:600;opacity:.8}
+.orang-terisi button{width:32px;height:32px;border-radius:9px;border:var(--border-w) solid var(--outline);background:#fff;color:#111322;font:800 16px/1 var(--font-sans);cursor:pointer}
+.tombol-cepat{display:flex;flex-wrap:wrap;gap:8px}
+.tombol-tambah{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 14px var(--font-sans);cursor:pointer;box-shadow:var(--shadow-pop-sm);text-align:left}
+.tombol-tambah span{font:800 18px/1 var(--font-display);color:var(--primary)}
+.tombol-tambah:active{transform:translate(2px,2px);box-shadow:none}
+.tombol-tambah:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.buka-kerabat{align-self:flex-start;display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-height:44px;padding:10px 16px;border-radius:var(--radius-md);border:var(--border-w) dashed var(--outline);background:transparent;color:var(--ink);font:800 14px var(--font-sans);cursor:pointer}
+.buka-kerabat small{font-weight:600;color:var(--ink-muted);font-size:12.5px}
+.kerabat-lain{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.kelompok-kerabat{margin:0;border:var(--border-w) solid var(--divider);border-radius:var(--radius-md);padding:12px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.kelompok-kerabat legend{padding:0 6px;font:700 15px var(--font-display)}
+.tahap-pilih{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.chip-pilih{min-height:36px;padding:0 12px;border-radius:999px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 13px var(--font-sans);cursor:pointer}
+.chip-pilih[aria-checked=true]{background:var(--ink);color:var(--surface-raised)}
+.tambah-berinduk{display:flex;flex-direction:column;gap:6px}
+
+/* ─── Langkah Kondisi khusus ─── */
+.kartu-pilihan-deret.ringkas{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));max-width:720px}
+.kartu-pilihan.kecil{min-height:0;padding:14px 16px;font-size:18px;gap:4px}
+.kondisi{border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);max-width:720px}
+.kondisi-kepala{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;cursor:pointer}
+.kondisi-kepala input{width:22px;height:22px;margin:1px 0 0;flex:none;accent-color:var(--primary)}
+.kondisi-kepala b{display:block;font:700 15.5px/1.3 var(--font-display)}
+.kondisi-kepala small{display:block;margin-top:2px;color:var(--ink-muted);font-size:13px;line-height:1.45}
+.kondisi-kepala em{font-style:normal;font-weight:700;color:var(--ink)}
+.kondisi-isi{padding:4px 14px 14px 48px;display:flex;flex-direction:column;gap:6px;border-top:1.5px solid var(--divider)}
+.kondisi.terbuka .kondisi-kepala{background:var(--primary-soft);border-radius:calc(var(--radius-md) - 2px) calc(var(--radius-md) - 2px) 0 0}
+.kartu-pilihan[aria-checked=true] small{color:inherit;opacity:.9}

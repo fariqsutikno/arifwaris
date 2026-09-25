@@ -25,6 +25,7 @@ it('pewaris laki-laki: ada kartu istri, tidak ada kartu suami', () => {
 it('tambah anak lk lalu tandai wafat sebelum pembagian', () => {
   render(<Uji awal={kasusBaru('L')} />);
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
+  fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
   fireEvent.click(screen.getByLabelText(/wafat sebelum harta dibagi/));
   fireEvent.click(screen.getByRole('checkbox', { name: 'Anak laki-laki' }));
   expect(screen.getByTestId('urutan').textContent).not.toBe('');
@@ -34,6 +35,7 @@ it('tambah anak lk lalu tandai wafat sebelum pembagian', () => {
 it('kondisi beda agama juga menawarkan ahli waris mayit munasakhat', () => {
   render(<Uji awal={kasusBaru('L')} />);
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
+  fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
   fireEvent.click(screen.getByLabelText(/wafat sebelum harta dibagi/));
   fireEvent.click(screen.getByRole('checkbox', { name: 'Anak laki-laki' }));
   fireEvent.click(screen.getAllByLabelText('Tambah Istri')[1]!);

@@ -29,22 +29,47 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
     return idMayit && idMayit !== kasus.graf.idPewaris ? `${labelDasar(idOrang)} (ahli waris ${labelDasar(idMayit)})` : labelDasar(idOrang);
   };
 
+  const adaTerisi = kasus.urutanWafat.length > 0
+    || semuaAhliWaris.some(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris);
+  const [adaKondisi, setAdaKondisi] = useState(adaTerisi);
+  // "Tidak ada" berarti benar-benar tidak ada: kondisi yang sempat dicentang dibersihkan supaya hasil tidak berubah diam-diam.
+  const pilihTidakAda = () => {
+    setAdaKondisi(false);
+    ubah(k => ({
+      ...k,
+      urutanWafat: [],
+      graf: { ...k.graf, orang: Object.fromEntries(Object.entries(k.graf.orang).map(([id, orang]) =>
+        [id, id === k.graf.idPewaris ? orang : { ...orang, agama: orang.agama === 'nonIslam' ? 'islam' : orang.agama, membunuhPewaris: false }])) },
+    }));
+  };
+
   return (
     <div className="tumpuk">
-      <p className="keterangan">Nggak ada? Langsung aja gas hitung.</p>
-      <Kondisi judul="Ada yang beda agama dengan almarhum" keterangan="Beda agama menggugurkan hak waris.">
+      <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby="pertanyaan-utama">
+        <button type="button" role="radio" aria-checked={!adaKondisi} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
+          <span>Tidak ada</span><small>Langsung lihat hasil.</small>
+        </button>
+        <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
+          <span>Ada</span><small>Beda agama, terlibat kematian, atau ada yang wafat sebelum harta dibagi.</small>
+        </button>
+      </div>
+      {adaKondisi && <>
+      <Kondisi judul="Ada yang beda agama dengan almarhum" keterangan="Beda agama menggugurkan hak waris."
+        akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
         {semuaAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={kasus.graf.orang[id]!.agama === 'nonIslam'}
             saatUbah={tercentang => ubahOrang(id, { agama: tercentang ? 'nonIslam' : 'islam' })} />
         ))}
       </Kondisi>
-      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Pembunuh nggak dapat warisan, apa pun bentuknya. Yang dimaksud: kematian pewaris pertama.">
+      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Yang dimaksud: kematian pewaris pertama, apa pun bentuknya."
+        akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
         {daftarAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={!!kasus.graf.orang[id]!.membunuhPewaris}
             saatUbah={tercentang => ubahOrang(id, { membunuhPewaris: tercentang })} />
         ))}
       </Kondisi>
       <PanelMunasakhat kasus={kasus} ubah={ubah} daftarAhliWaris={daftarAhliWaris} label={label} />
+      </>}
     </div>
   );
 }
@@ -58,7 +83,8 @@ function PanelMunasakhat({ kasus, ubah, daftarAhliWaris, label }: Props & { daft
     aturUrutan(baru);
   };
   return (
-    <Kondisi judul="Ada ahli waris yang wafat sebelum harta dibagi" keterangan="Ini namanya munasakhat. Bagiannya diterusin ke ahli warisnya sendiri."
+    <Kondisi judul="Ada ahli waris yang wafat sebelum harta dibagi" keterangan="Ini namanya munasakhat."
+      akibat="bagian orang itu diteruskan ke ahli warisnya sendiri, dihitung bertingkat."
       terbukaAwal={urutan.length > 0}>
       {daftarAhliWaris.map(id => (
         <Centang key={id} label={label(id)} tercentang={urutan.includes(id)}
@@ -83,13 +109,17 @@ function PanelMunasakhat({ kasus, ubah, daftarAhliWaris, label }: Props & { daft
   );
 }
 
-function Kondisi({ judul, keterangan, terbukaAwal = false, children }: { judul: string; keterangan: string; terbukaAwal?: boolean; children: ReactNode }) {
+function Kondisi({ judul, keterangan, akibat, terbukaAwal = false, children }: {
+  judul: string; keterangan: string; akibat: string; terbukaAwal?: boolean; children: ReactNode;
+}) {
   const [terbuka, setTerbuka] = useState(terbukaAwal);
   return (
-    <div className="kartu tumpuk">
-      <Centang label={judul} tercentang={terbuka} saatUbah={setTerbuka} />
-      <p className="keterangan">{keterangan}</p>
-      {terbuka && <div className="tumpuk">{children}</div>}
+    <div className={terbuka ? 'kondisi terbuka' : 'kondisi'}>
+      <label className="kondisi-kepala">
+        <input type="checkbox" checked={terbuka} onChange={event => setTerbuka(event.target.checked)} />
+        <span><b>{judul}</b><small>{keterangan} <em>Akibatnya:</em> {akibat}</small></span>
+      </label>
+      {terbuka && <div className="kondisi-isi">{children}</div>}
     </div>
   );
 }

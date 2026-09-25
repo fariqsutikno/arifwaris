@@ -1,0 +1,46 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { expect, it } from 'vitest';
+import { tambahAhliWaris } from '../checklist';
+import { kasusBaru, type Kasus } from '../kasus';
+import { LangkahKondisi } from '../layar/LangkahKondisi';
+
+let terakhir: Kasus;
+function Uji({ awal }: { awal: Kasus }) {
+  const [kasus, setKasus] = useState(awal);
+  terakhir = kasus;
+  return <LangkahKondisi kasus={kasus} ubah={ubah => setKasus(ubah)} />;
+}
+const denganAnak = () => { const k = kasusBaru('L'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }; };
+
+it('bawaan "Tidak ada", kartu kondisi belum tampil', () => {
+  render(<Uji awal={denganAnak()} />);
+  expect(screen.getByRole('radio', { name: /Tidak ada/ }).getAttribute('aria-checked')).toBe('true');
+  expect(screen.queryByLabelText(/beda agama/)).toBeNull();
+});
+
+it('memilih "Ada" menampilkan tiga kondisi dengan akibatnya', () => {
+  render(<Uji awal={denganAnak()} />);
+  fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
+  expect(screen.getByLabelText(/beda agama/)).toBeTruthy();
+  expect(screen.getByLabelText(/terlibat dalam kematian/)).toBeTruthy();
+  expect(screen.getByLabelText(/wafat sebelum harta dibagi/)).toBeTruthy();
+  expect(screen.getAllByText(/Akibatnya:/).length).toBe(3);
+});
+
+it('kembali ke "Tidak ada" menghapus kondisi yang sempat diisi', () => {
+  render(<Uji awal={denganAnak()} />);
+  fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
+  fireEvent.click(screen.getByLabelText(/wafat sebelum harta dibagi/));
+  fireEvent.click(screen.getByRole('checkbox', { name: 'Anak laki-laki' }));
+  expect(terakhir.urutanWafat).toHaveLength(1);
+  fireEvent.click(screen.getByRole('radio', { name: /Tidak ada/ }));
+  expect(terakhir.urutanWafat).toEqual([]);
+});
+
+it('kasus yang sudah punya kondisi langsung terbuka di "Ada"', () => {
+  const kasus = denganAnak();
+  const idAnak = Object.keys(kasus.graf.orang).find(id => id !== 'PEWARIS')!;
+  render(<Uji awal={{ ...kasus, urutanWafat: [idAnak] }} />);
+  expect(screen.getByRole('radio', { name: /^Ada/ }).getAttribute('aria-checked')).toBe('true');
+});

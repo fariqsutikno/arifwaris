@@ -74,7 +74,11 @@ export function tambahAhliWaris(
 /** Kurangi satu (yang terakhir ditambah). Yang masih punya keturunan di graf jadi penghubung. */
 export function kurangiAhliWaris(graf: GrafKeluarga, idMayit: IdOrang, kunci: KunciAhliWaris): GrafKeluarga {
   const idOrang = hitungIsian(graf, idMayit)[kunci]?.at(-1);
-  if (!idOrang) return graf;
+  return idOrang ? hapusAhliWaris(graf, idOrang) : graf;
+}
+
+/** Hapus satu orang tertentu. Yang masih punya keturunan di graf jadi penghubung (wafat) supaya garis keturunan tetap utuh. */
+export function hapusAhliWaris(graf: GrafKeluarga, idOrang: IdOrang): GrafKeluarga {
   const adaKeturunan = Object.values(graf.orang).some(orang => orang.idAyah === idOrang || orang.idIbu === idOrang);
   if (adaKeturunan) return ubahOrang(graf, idOrang, { penghubung: true, statusHidup: 'wafat' });
   const { [idOrang]: _dihapus, ...orangSisa } = graf.orang;
