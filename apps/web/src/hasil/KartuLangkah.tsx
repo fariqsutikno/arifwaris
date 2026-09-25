@@ -65,7 +65,6 @@ export function KartuLangkah({ daftarBab, terbukaAwal, saatSelesai }: Props) {
                   {indeks === daftarBab.length - 1 ? 'Selesai' : 'Berikutnya →'}
                 </button>
               </div>
-              {indeks > 0 && <p className="caption-isian">Mantap, {indeks} langkah kelar. Tinggal {daftarBab.length - indeks} lagi.</p>}
             </>
           )}
         </div>

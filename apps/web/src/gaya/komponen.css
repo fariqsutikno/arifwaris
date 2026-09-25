@@ -462,3 +462,6 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .tag-dzawil{padding:1px 7px;border-radius:999px;border:1px dashed var(--ink-muted);font-size:11px;font-weight:700}
 
 .hitungan-berjalan>div span:last-child,.hitungan-berjalan .hitungan-total{white-space:nowrap;text-align:right}
+.modal-kecil{max-width:440px}
+.tombol-ubah-harta{align-self:flex-start}
+.tautan-teks{padding:0;border:0;background:none;color:var(--primary);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}

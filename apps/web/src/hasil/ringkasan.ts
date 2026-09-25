@@ -69,14 +69,11 @@ export function persenTeks(saham: bigint, penyebut: bigint): string {
   return `${(Number(perSepuluhRibu) / 100).toLocaleString('id-ID', { maximumFractionDigits: 2 })}%`;
 }
 
-/** Kartu pembulatan hanya muncul bila, dengan pembulatan Rp 1, ada bagian yang bukan kelipatan Rp 1.000. */
+/** Kartu pembulatan hanya muncul bila pembagian dengan pembulatan Rp 1 masih menyisakan sisa (tidak habis dibagi). */
 export function adaTidakPas(kasus: Kasus): boolean {
   const tampil = jalankan({ ...kasus, satuanPembulatan: 1n });
   if (tampil.jenis === 'galat' || tampil.hasil.status !== 'OK') return false;
-  const nominal = tampil.jenis === 'munasakhat'
-    ? Object.values((tampil.hasil as HasilMunasakhatOk).nominal)
-    : (tampil.hasil as HasilOk).tabel.baris.flatMap(baris => Object.values(baris.perOrang).map(orang => orang.nominal));
-  return nominal.some(nilai => nilai % 1000n !== 0n);
+  return tampil.hasil.pembulatan.sisaPembulatan > 0n;
 }
 
 // ─── Kasus biasa ──────────────────────────────────────────────────────────────

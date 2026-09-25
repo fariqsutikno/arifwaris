@@ -48,7 +48,9 @@ it('pecahan dua bentuk dan persen', () => {
   expect(persenTeks(9n, 72n)).toBe('12,5%');
 });
 
-it('ada tidak pas: hanya bila ada nominal bukan kelipatan Rp 1.000 pada pembulatan Rp 1', () => {
+it('ada tidak pas: hanya bila pembagian dengan pembulatan Rp 1 menyisakan sisa', () => {
   expect(adaTidakPas(prototipe())).toBe(true);
   expect(adaTidakPas(buat(['ISTRI', 'ANAK_LK', 'ANAK_PR'], { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }))).toBe(false);
+  // Angka tidak kelipatan ribuan tapi habis dibagi tanpa sisa: tidak perlu ditawari pembulatan.
+  expect(adaTidakPas(buat(['ISTRI', 'ANAK_LK'], { kotor: 8_000_008n, tajhiz: 0n, hutang: 0n, wasiat: 0n }))).toBe(false);
 });

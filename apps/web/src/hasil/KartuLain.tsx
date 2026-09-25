@@ -1,25 +1,20 @@
 // Kartu sidebar yang tertutup: Harta yang dibagi (hitungan bersusun + bar komposisi bertooltip),
 // Tentang kasus ini (jenis kasus, asal masalah, tashih dari jejak engine), dan Habis ini ngapain.
 
-import { useState } from 'react';
 import { formatRupiah } from '../format';
 import { LANGKAH_SELANJUTNYA } from '../konten/ahwal';
 import { Istilah } from '../ui/Tooltip';
 import { Lipat } from './Lipat';
 import type { RingkasanHasil, TentangKasus } from './ringkasan';
 
-export function KartuHarta({ ringkasan, sembunyiNominal }: { ringkasan: RingkasanHasil; sembunyiNominal: boolean }) {
+export function KartuHarta({ ringkasan, sembunyiNominal, saatUbahHarta }: { ringkasan: RingkasanHasil; sembunyiNominal: boolean; saatUbahHarta: () => void }) {
   const { tirkah } = ringkasan;
   const uang = (nilai: bigint) => (sembunyiNominal ? 'Rp ••••••' : formatRupiah(nilai));
   const potongan = [
-    { label: 'Pengurusan jenazah', nilai: tirkah.tajhiz, kelas: 'a-jenazah' },
-    { label: 'Hutang', nilai: tirkah.hutang, kelas: 'a-hutang' },
-    { label: 'Wasiat', nilai: tirkah.wasiatDipakai, kelas: 'a-wasiat' },
+    { label: 'Pengurusan jenazah', nilai: tirkah.tajhiz },
+    { label: 'Hutang', nilai: tirkah.hutang },
+    { label: 'Wasiat', nilai: tirkah.wasiatDipakai },
   ];
-  const ruas = [{ label: 'Dibagi ke ahli waris', nilai: tirkah.bersih, kelas: 'a-dibagi' }, ...potongan].filter(bagian => bagian.nilai > 0n);
-  const [ruasAktif, setRuasAktif] = useState<typeof ruas[number] | null>(null);
-  const persenDari = (nilai: bigint) => tirkah.kotor === 0n ? '0%'
-    : `${(Number(nilai * 10000n / tirkah.kotor) / 100).toLocaleString('id-ID', { maximumFractionDigits: 2 })}%`;
 
   return (
     <Lipat judul="Harta yang dibagi" ringkas={uang(tirkah.bersih)} className="urut-harta">
@@ -33,16 +28,7 @@ export function KartuHarta({ ringkasan, sembunyiNominal }: { ringkasan: Ringkasa
         <span className="garis" />
         <b>Dibagi ke ahli waris</b><b className="nilai total">{uang(tirkah.bersih)}</b>
       </div>
-      <div className="alir" onMouseLeave={() => setRuasAktif(null)}>
-        {ruas.map(bagian => (
-          <span key={bagian.label} className={[bagian.kelas, ruasAktif === bagian ? 'aktif' : ''].filter(Boolean).join(' ')} style={{ flex: Number(bagian.nilai * 1000n / (tirkah.kotor || 1n)) || 1 }}
-            tabIndex={0} role="button" aria-label={`${bagian.label}: ${persenDari(bagian.nilai)} dari harta, ${uang(bagian.nilai)}`}
-            onMouseEnter={() => setRuasAktif(bagian)} onFocus={() => setRuasAktif(bagian)} onClick={() => setRuasAktif(bagian)} />
-        ))}
-      </div>
-      {ruasAktif
-        ? <p className="tip-alir" role="status"><b>{ruasAktif.label}</b><span>{persenDari(ruasAktif.nilai)} dari harta</span><span>{uang(ruasAktif.nilai)}</span></p>
-        : <p className="caption-isian">Arahkan kursor atau ketuk bagian bar untuk melihat persen dan nominalnya.</p>}
+      <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-ubah-harta" onClick={saatUbahHarta}>Ubah harta</button>
     </Lipat>
   );
 }

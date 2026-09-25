@@ -14,6 +14,8 @@ import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { ModalOrang } from '../hasil/ModalOrang';
+import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
+import { hapusAhliWaris, tambahAhliWaris } from '../checklist';
 import { Pohon } from '../hasil/Pohon';
 import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
@@ -25,7 +27,7 @@ interface Props { kasus: Kasus; tujuan: Tujuan | null; kirim: (aksi: Aksi) => vo
 
 export function Hasil({ kasus, tujuan, kirim }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
-  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>← Ubah data</Tombol>;
+  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>;
 
   if (tampil.jenis === 'galat') {
     return (
@@ -74,6 +76,8 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
   const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
   const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
+  const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
+  const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
 
   return (
@@ -118,7 +122,7 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} />
-          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal || sedangMenebak} />
+          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal || sedangMenebak} saatUbahHarta={() => setUbahHartaTerbuka(true)} />
           {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
           <KartuLangkah daftarBab={daftarBab} terbukaAwal={adalahBelajar} saatSelesai={() => setJawabanTerbuka(true)} />
           <KartuSelanjutnya />
@@ -127,7 +131,7 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
 
       <div className="bar-bawah">
         <div className="bar-bawah-isi">
-          <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>← Ubah data</Tombol>
+          <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>
           <span className="pengisi" />
           <Tombol onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
         </div>
@@ -136,7 +140,16 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
       {orangDipilih && (
         <ModalOrang id={orangDipilih} graf={kasus.graf} ringkasan={ringkasan} daftarBab={daftarBab} bentuk={pengaturan.bentuk}
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
-          saatUbahData={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })} />
+          saatHapus={id => { setOrangDipilih(null); ubahGraf(graf => hapusAhliWaris(graf, id)); }}
+          saatTambahSejenis={kunci => { setOrangDipilih(null); ubahGraf(graf => tambahAhliWaris(graf, graf.idPewaris, kunci)); }} />
+      )}
+      {ubahHartaTerbuka && (
+        <ModalUbahHarta kasus={kasus} saatTutup={() => setUbahHartaTerbuka(false)}
+          saatBukaKewajiban={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3 })}
+          saatSimpan={kotor => {
+            setUbahHartaTerbuka(false);
+            kirim({ jenis: 'UBAH_KASUS', ubah: k => { const { rincianHarta: _rincian, ...tanpaRincian } = k; return { ...tanpaRincian, tirkah: { ...k.tirkah, kotor } }; } });
+          }} />
       )}
     </main>
   );

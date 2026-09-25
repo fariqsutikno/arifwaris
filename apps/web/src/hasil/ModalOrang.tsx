@@ -1,9 +1,11 @@
 // Modal penjelasan satu orang (dari klik pohon, daftar, bar, atau tabel): peran, bagiannya di kasus ini,
 // "Kenapa segitu?" (baris penjelasan explain yang menyebut orang itu), "Kapan dapat berapa?" (ahwal, baris kasus ini
-// disorot kecuali di mode Belajar), dan dalil. Ubah data hanya link kecil di bawah supaya tidak bersaing dengan penjelasan.
+// disorot kecuali di mode Belajar), dan dalil. Aksi khusus orang itu (hapus / tambah satu lagi) kecil di bawah.
 
 import { useEffect, useRef, useState } from 'react';
-import type { GrafKeluarga, IdOrang } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
+import { hitungIsian, jenisDari } from '../checklist';
+import { LABEL_SEHARI } from '../konten/ahliWaris';
 import { formatRupiah, namaOrang } from '../format';
 import { AHWAL, barisBerlaku } from '../konten/ahwal';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
@@ -19,10 +21,11 @@ interface Props {
   sedangMenebak: boolean;
   sembunyiNominal: boolean;
   saatTutup: () => void;
-  saatUbahData: () => void;
+  saatHapus: (id: IdOrang) => void;
+  saatTambahSejenis: (kunci: KunciAhliWaris) => void;
 }
 
-export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatUbahData }: Props) {
+export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatHapus, saatTambahSejenis }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
   const [ahwalTerbuka, setAhwalTerbuka] = useState(false);
   const [dalilTerbuka, setDalilTerbuka] = useState(false);
@@ -36,6 +39,10 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   const barisTentangDia = daftarBab.flatMap(({ bab }) => bab.daftarBaris.filter(baris => orangDisebut([baris]).includes(id)));
   const refs = [...new Set(barisTentangDia.flatMap(baris => baris.refs))];
   const ahwal = kunci ? AHWAL[kunci] : undefined;
+  // Ubah langsung dari sini hanya untuk ahli waris pewaris pertama (bukan pewaris, bukan ahli waris mayit munasakhat).
+  const bisaDiubah = !!kunci && (hitungIsian(graf, graf.idPewaris)[kunci] ?? []).includes(id);
+  const maksimal = kunci ? jenisDari(kunci)?.maksimal : undefined;
+  const sudahPenuh = maksimal !== undefined && kunci !== undefined && (hitungIsian(graf, graf.idPewaris)[kunci]?.length ?? 0) >= maksimal;
   const dataCocok = {
     ...(dapat?.fardh ? { fardh: `${dapat.fardh.n}/${dapat.fardh.d}` } : {}),
     ashabah: !!dapat?.ashabah, terhalang: !!halang,
@@ -107,7 +114,10 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
           )}
         </div>
         <footer className="kaki-modal">
-          <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={saatUbahData}>Ubah data orang ini</button>
+          {bisaDiubah && <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={() => saatHapus(id)}>Hapus {nama}</button>}
+          {bisaDiubah && kunci && !sudahPenuh && (
+            <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={() => saatTambahSejenis(kunci)}>Tambah satu {LABEL_SEHARI[kunci] ?? nama} lagi</button>
+          )}
           <span className="pengisi" />
           <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>Oke, paham</button>
         </footer>
