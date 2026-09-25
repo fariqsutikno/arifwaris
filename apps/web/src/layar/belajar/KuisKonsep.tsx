@@ -1,5 +1,5 @@
 // Kuis konsep: daftar paket (per bab + acak) dan satu sesi paket.
-// Sesi: layar awal (pilih kapan pembahasan muncul: langsung per soal atau di akhir) → soal satu per satu →
+// Sesi: layar awal (mode latihan = jawaban tepat langsung muncul, mode ujian = muncul di akhir) → soal satu per satu →
 // hasil: skor lalu pembahasan tiap soal. Keluar di tengah sesi ditanya dulu (usePenjaga).
 
 import { useState } from 'react';
@@ -109,14 +109,14 @@ export function SesiKuis({ paket }: { paket: string }) {
         <div className="kartu tumpuk-rapat">
           <h1 className="judul-awal-kuis">{daftarSoal.length} soal</h1>
           <fieldset className="pilihan-mode">
-            <legend>Kapan pembahasan muncul?</legend>
+            <legend>Pilih mode</legend>
             <label className={mode === 'langsung' ? 'opsi-mode dipilih' : 'opsi-mode'}>
               <input type="radio" name="mode" checked={mode === 'langsung'} onChange={() => setMode('langsung')} />
-              <span><b>Langsung</b><small>Benar atau salah, beserta pembahasannya, muncul setiap selesai menjawab.</small></span>
+              <span><b>Mode latihan</b><small>Jawaban yang tepat dan pembahasannya muncul setiap selesai menjawab.</small></span>
             </label>
             <label className={mode === 'akhir' ? 'opsi-mode dipilih' : 'opsi-mode'}>
               <input type="radio" name="mode" checked={mode === 'akhir'} onChange={() => setMode('akhir')} />
-              <span><b>Di akhir</b><small>Jawab semua dulu; skor dan pembahasan muncul setelah soal terakhir.</small></span>
+              <span><b>Mode ujian</b><small>Jawaban yang tepat baru muncul setelah soal terakhir.</small></span>
             </label>
           </fieldset>
           <button type="button" className="aw-btn aw-btn-primary" onClick={() => mulai(mode)}>Mulai kuis</button>

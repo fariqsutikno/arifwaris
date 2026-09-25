@@ -43,11 +43,11 @@ describe('halaman latihan', () => {
     expect(acak.length).toBe(Math.min(10, DAFTAR_SOAL_KUIS.length));
   });
 
-  it('sesi kuis mode langsung: fokus (tanpa tab), soal satu per satu, pembahasan langsung, skor + pembahasan di akhir', () => {
+  it('sesi kuis mode latihan: fokus (tanpa tab), soal satu per satu, pembahasan langsung, skor + pembahasan di akhir', () => {
     const daftar = soalPaket('bab-1');
     render(<Latihan tab="kuis" paket="bab-1" kasusSekarang={null} saatKerjakan={() => {}} />);
     expect(screen.queryByRole('link', { name: 'Soal hitung' })).toBeNull();
-    fireEvent.click(screen.getByRole('radio', { name: /Langsung/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Mode latihan/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
     daftar.forEach((soal, indeks) => {
       expect(screen.getByText(`Soal ${indeks + 1} dari ${daftar.length}`)).toBeTruthy();
@@ -63,10 +63,10 @@ describe('halaman latihan', () => {
     expect(bacaCatatan('kuis')['bab-1']).toBe(`1/${daftar.length}`);
   });
 
-  it('sesi kuis mode di akhir: tidak ada penilaian sampai soal terakhir', () => {
+  it('sesi kuis mode ujian: tidak ada penilaian sampai soal terakhir', () => {
     const daftar = soalPaket('bab-2');
     render(<Latihan tab="kuis" paket="bab-2" kasusSekarang={null} saatKerjakan={() => {}} />);
-    fireEvent.click(screen.getByRole('radio', { name: /Di akhir/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Mode ujian/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
     daftar.forEach((soal, indeks) => {
       fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${'ABCD'[soal.indeksBenar]}\\. `) }));
