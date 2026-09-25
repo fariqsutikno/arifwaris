@@ -2,7 +2,6 @@
 // kasus lain, tanya dulu supaya kasus itu tidak tertimpa diam-diam (sama seperti "Ulangi dari awal").
 
 import { useState, type ReactNode } from 'react';
-import { unduhKasus } from '../../berkas';
 import type { Kasus } from '../../kasus';
 import { Tombol } from '../../ui/komponen';
 import { KonfirmasiKasusBaru } from '../KonfirmasiKasusBaru';
@@ -15,7 +14,7 @@ export function TombolBukaKasus({ kasusSekarang, saatBuka, varian = 'secondary',
     <>
       <Tombol varian={varian} kecil onClick={() => (kasusSekarang ? setSedangKonfirmasi(true) : saatBuka())}>{children}</Tombol>
       {sedangKonfirmasi && kasusSekarang && (
-        <KonfirmasiKasusBaru saatSimpan={() => unduhKasus(kasusSekarang)} saatBatal={() => setSedangKonfirmasi(false)}
+        <KonfirmasiKasusBaru kasus={kasusSekarang} judul="Buka kasus ini?" labelLanjut="Buka" saatBatal={() => setSedangKonfirmasi(false)}
           saatLanjut={() => { setSedangKonfirmasi(false); saatBuka(); }} />
       )}
     </>

@@ -7,7 +7,8 @@ import { formatRupiah } from '../format';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
-import { KartuTebak } from './KartuTebak';
+import { Confetti } from '../ui/Confetti';
+import { KartuTebak, UmpanBalikBenar } from './KartuTebak';
 import { useAtributOrang } from './sorot';
 
 export interface PengaturanTampil { pecahan: boolean; persen: boolean; bentuk: BentukPecahan }
@@ -22,6 +23,8 @@ interface Props {
   saatTampilkanJawaban: () => void;
   saatTebakanBenar: () => void;
   saatMencobaMenjawab: () => void;
+  /** Tebakan baru saja dijawab benar semua: tampilkan umpan balik + confetti di atas pembagian. */
+  tebakanBenar: boolean;
   tampilPembulatan: boolean;
   satuanPembulatan: bigint;
   saatUbahPembulatan: (satuan: bigint) => void;
@@ -60,6 +63,7 @@ export function KartuPembagian(props: Props) {
         <KartuTebak ringkasan={ringkasan} saatBenar={props.saatTebakanBenar} saatMencoba={props.saatMencobaMenjawab} saatLihatJawaban={props.saatTampilkanJawaban} />
       ) : (
         <>
+          {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
           {aturTerbuka && <PanelAtur pengaturan={pengaturan} saatUbah={props.saatUbahPengaturan} />}
           <div className="bar-bagian" role="img" aria-label={ringkasan.penerima.map(orang => `${orang.nama} ${pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)}`).join(', ')}>
             {ringkasan.penerima.map(orang => {

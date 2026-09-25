@@ -4,7 +4,6 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
-import { unduhKasus } from '../berkas';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
@@ -14,6 +13,7 @@ import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { ModalOrang } from '../hasil/ModalOrang';
+import { ModalEkspor } from '../hasil/ModalEkspor';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
 import { Pohon } from '../hasil/Pohon';
@@ -21,6 +21,8 @@ import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { Tombol } from '../ui/komponen';
+import { DialogKonfirmasi } from '../ui/Dialog';
+import { Ikon } from '../ui/Ikon';
 import { TombolIkon } from '../ui/Tooltip';
 import { daftarBabDari } from './Penjelasan';
 
@@ -33,9 +35,11 @@ interface Props {
    * pernah mencoba menjawab. Membuka kunci tanpa mencoba tidak dihitung.
    */
   saatDikerjakan?: (() => void) | undefined;
+  /** Kasus biasa otomatis masuk riwayat; soal latihan tidak. */
+  tersimpanDiRiwayat?: boolean;
 }
 
-export function Hasil({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
+export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat = true }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>;
 
@@ -69,10 +73,10 @@ export function Hasil({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} tersimpanDiRiwayat={tersimpanDiRiwayat} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
+function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, tersimpanDiRiwayat = true }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
@@ -84,13 +88,18 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
   const [sudahMencoba, setSudahMencoba] = useState(false);
   const bukaJawaban = () => { setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(); };
-  const tebakanBenar = () => { setJawabanTerbuka(true); saatDikerjakan?.(); };
+  const [tebakanBenar, setTebakanBenar] = useState(false);
+  const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(); };
+  const [konfirmasiPindahMode, setKonfirmasiPindahMode] = useState(false);
+  // Pindah ke Hitung kasus saat jawaban masih tertutup = membuka kunci; dibuat berat lewat ketik kata kunci.
+  const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiPindahMode(true) : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
   const [sembunyiNominal, setSembunyiNominal] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
   const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
   const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
   const [kunciDiubah, setKunciDiubah] = useState<KunciAhliWaris | null>(null);
   const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
+  const [eksporTerbuka, setEksporTerbuka] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
 
@@ -99,7 +108,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
       <div className="judul-hasil">
         <h1>Nah, ini pembagiannya</h1>
         <div className="tab-kecil" role="group" aria-label="Tujuan">
-          <button type="button" aria-pressed={!adalahBelajar} onClick={() => kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' })}>Hitung kasus</button>
+          <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>Hitung kasus</button>
           <button type="button" aria-pressed={adalahBelajar} onClick={() => kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' })}>Belajar</button>
         </div>
       </div>
@@ -137,7 +146,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
           </div>
           <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan}
             sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
-            sedangMenebak={sedangMenebak} saatTampilkanJawaban={bukaJawaban} saatTebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
+            sedangMenebak={sedangMenebak} saatTampilkanJawaban={bukaJawaban} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} />
@@ -152,7 +161,8 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
         <div className="bar-bawah-isi">
           <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>
           <span className="pengisi" />
-          <Tombol onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
+          {tersimpanDiRiwayat && <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> Tersimpan di riwayat</span>}
+          <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> Ekspor</Tombol>
         </div>
       </div>
 
@@ -161,6 +171,14 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
           saatUbah={kunci => { setOrangDipilih(null); setKunciDiubah(kunci); }} />
       )}
+      {konfirmasiPindahMode && (
+        <DialogKonfirmasi judul="Keluar dari mode Belajar?" labelBatal="Tetap belajar" labelLanjut="Pindah ke Hitung kasus" kataKunci="buka jawaban"
+          saatBatal={() => setKonfirmasiPindahMode(false)}
+          saatLanjut={() => { setKonfirmasiPindahMode(false); kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }); }}>
+          <p>Semua jawaban langsung terbuka{sudahMencoba ? '.' : ', dan kasus ini tidak dihitung sudah kamu kerjakan.'} Kalau masih mau mencoba, pilih Tetap belajar.</p>
+        </DialogKonfirmasi>
+      )}
+      {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (
         <ModalUbahHarta kasus={kasus} saatTutup={() => setUbahHartaTerbuka(false)}

@@ -43,10 +43,10 @@ describe('halaman belajar', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(pelajaran.judul);
     expect(document.querySelector('table.faraidh')).toBeTruthy();
     expect(document.querySelector('a.tautan-dalil[href^="#/rujukan/R"]')).toBeTruthy();
-    fireEvent.click(screen.getAllByRole('button', { name: 'Coba di kalkulator' })[0]!);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);
     expect(dicoba).toHaveLength(1);
     const navigasi = screen.getByRole('navigation', { name: 'Navigasi pelajaran' });
-    expect(within(navigasi).getByRole('link', { name: '⌂ Beranda belajar' }).getAttribute('href')).toBe('#/belajar');
+    expect(within(navigasi).getByRole('link', { name: 'Beranda belajar' }).getAttribute('href')).toBe('#/belajar');
     fireEvent.click(within(navigasi).getByRole('link', { name: 'Berikutnya →' }));
     expect(bacaPelajaranSelesai().has(pelajaran.slug)).toBe(true);
     expect(within(screen.getByRole('complementary', { name: 'Daftar materi' })).getByRole('link', { current: 'page' }).textContent).toContain(pelajaran.judul);
@@ -64,9 +64,10 @@ describe('halaman belajar', () => {
     const pelajaran = DAFTAR_PELAJARAN.find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
     const dicoba: unknown[] = [];
     render(<Materi slug={pelajaran.slug} kasusSekarang={kasusDariContoh(semuaContoh[0]![1])} saatCoba={kasus => dicoba.push(kasus)} />);
-    fireEvent.click(screen.getAllByRole('button', { name: 'Coba di kalkulator' })[0]!);
+    fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);
     expect(dicoba).toHaveLength(0);
-    fireEvent.click(screen.getByRole('button', { name: 'Hapus dan mulai baru' }));
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/tersimpan di Riwayat hitung/);
+    fireEvent.click(screen.getByRole('button', { name: 'Buka' }));
     expect(dicoba).toHaveLength(1);
   });
 

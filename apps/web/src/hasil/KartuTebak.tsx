@@ -1,8 +1,9 @@
-// Mode Belajar sebelum jawaban dibuka: pelajar menebak bagian tiap orang (pecahan dari harta, 0 bila tidak dapat),
-// lalu Jawab. Benar semua → jawaban terbuka dan dicatat sudah dikerjakan. Salah → ditolak, boleh mencoba lagi
-// atau melihat jawaban. Yang dinilai hanya bagian akhir; langkah perhitungan tetap bisa diikuti di bawah.
+// Mode Belajar sebelum jawaban dibuka: pelajar menebak bagian AKHIR tiap orang (pecahan dari seluruh harta yang
+// dibagi, sesudah 'aul/radd/tashih bila ada; 0 bila tidak dapat), lalu Jawab. Tiga kelompok yang terpisah jelas:
+// petunjuk, isian, dan hasil penilaian. Benar semua → jawaban terbuka (umpan balik benar ditampilkan kartu induk).
 
 import { useState } from 'react';
+import { Ikon } from '../ui/Ikon';
 import { nilaiTebakan, type HasilTebakan } from './tebak';
 import type { RingkasanHasil } from './ringkasan';
 
@@ -20,6 +21,7 @@ export function KartuTebak({ ringkasan, saatBenar, saatMencoba, saatLihatJawaban
     ...ringkasan.penerima.map(orang => ({ id: orang.id, nama: orang.nama, saham: orang.saham })),
     ...ringkasan.terhalang.map(orang => ({ id: orang.id, nama: orang.nama, saham: 0n })),
   ];
+  const namaDari = (daftarId: string[]) => daftarId.map(id => daftarOrang.find(orang => orang.id === id)?.nama).join(', ');
   const jawab = () => {
     const nilai = nilaiTebakan(tebakan, daftarOrang, ringkasan.penyebut);
     setHasil(nilai);
@@ -27,30 +29,53 @@ export function KartuTebak({ ringkasan, saatBenar, saatMencoba, saatLihatJawaban
     saatMencoba();
     if (nilai.idSalah.length === 0) saatBenar();
   };
-  const salah = hasil?.jenis === 'dinilai' ? new Set(hasil.idSalah) : new Set<string>();
-  const kosong = hasil?.jenis === 'belumLengkap' ? new Set(hasil.idKosong) : new Set<string>();
+  const ditandai = new Set(hasil?.jenis === 'dinilai' ? hasil.idSalah : hasil?.jenis === 'belumLengkap' ? hasil.idKosong : []);
 
   return (
-    <form className="tebak" onSubmit={event => { event.preventDefault(); jawab(); }}>
-      <p><b>Mode belajar.</b> Tebak bagian tiap orang dari seluruh harta, misalnya <code>1/8</code>. Yang tidak dapat, isi <code>0</code>.</p>
+    <form className="tebak" onSubmit={event => { event.preventDefault(); jawab(); }} aria-labelledby="judul-tebak">
+      <div className="petunjuk-tebak">
+        <h3 id="judul-tebak">Tebak pembagian akhirnya</h3>
+        <p>Tulis bagian akhir tiap orang dari <b>seluruh harta yang dibagi</b>, sesudah 'aul atau radd bila ada. Bukan bagian fardh awalnya.</p>
+        <p className="contoh-tebak">Contoh <code>1/8</code> atau <code>3/24</code>. Yang tidak mendapat bagian, isi <code>0</code>.</p>
+      </div>
+
       <div className="isian-tebak">
         {daftarOrang.map(orang => (
-          <label key={orang.id} className={salah.has(orang.id) || kosong.has(orang.id) ? 'baris-tebak keliru' : 'baris-tebak'}>
+          <label key={orang.id} className={ditandai.has(orang.id) ? 'baris-tebak keliru' : 'baris-tebak'}>
             <span>{orang.nama}</span>
-            <input inputMode="numeric" autoComplete="off" placeholder="?" value={tebakan[orang.id] ?? ''}
-              aria-invalid={salah.has(orang.id) || kosong.has(orang.id)}
+            <input inputMode="numeric" autoComplete="off" placeholder="?" value={tebakan[orang.id] ?? ''} aria-invalid={ditandai.has(orang.id)}
               onChange={event => { setTebakan({ ...tebakan, [orang.id]: event.target.value }); setHasil(null); }} />
           </label>
         ))}
       </div>
-      {hasil?.jenis === 'belumLengkap' && <p role="alert">Isi semua dengan pecahan (mis. 1/8) atau 0.</p>}
-      {hasil?.jenis === 'dinilai' && hasil.idSalah.length > 0 && (
-        <p role="alert"><b>Jawaban kamu masih salah.</b> {hasil.idBenar.length} dari {daftarOrang.length} sudah tepat. Coba lagi, atau lihat jawabannya.</p>
+
+      {hasil?.jenis === 'belumLengkap' && (
+        <div className="hasil-tebak kurang" role="alert">
+          <b>Masih ada yang kosong</b>
+          <p>Isi dulu: {namaDari(hasil.idKosong)}.</p>
+        </div>
       )}
-      <div className="chip-deret">
+      {hasil?.jenis === 'dinilai' && hasil.idSalah.length > 0 && (
+        <div className="hasil-tebak salah" role="alert">
+          <b><Ikon nama="salah" ukuran={18} /> Jawabanmu belum tepat</b>
+          <p>{hasil.idBenar.length} dari {daftarOrang.length} orang sudah benar. Perbaiki: {namaDari(hasil.idSalah)}.</p>
+        </div>
+      )}
+
+      <div className="aksi-tebak">
         <button type="submit" className="aw-btn aw-btn-primary aw-btn-sm">Jawab</button>
         <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={saatLihatJawaban}>Lihat jawaban</button>
       </div>
     </form>
+  );
+}
+
+/** Ditampilkan di atas pembagian setelah tebakan benar semua, bersama confetti. */
+export function UmpanBalikBenar() {
+  return (
+    <div className="hasil-tebak benar" role="status">
+      <b><Ikon nama="benar" ukuran={20} /> Benar semua!</b>
+      <p>Pembagianmu sama persis dengan hasil perhitungan. Cocokkan caranya di langkah perhitungan.</p>
+    </div>
   );
 }

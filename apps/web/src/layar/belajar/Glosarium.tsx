@@ -24,7 +24,6 @@ export function Glosarium({ id }: { id?: string | undefined }) {
   return (
     <main className="halaman tumpuk">
       <h1>Glosarium</h1>
-      <p className="keterangan">Istilah faraidh beserta artinya dalam bahasa sehari-hari.</p>
       <label className="isian">
         Cari istilah
         <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder="mis. sisa, ashabah, terhalang" />

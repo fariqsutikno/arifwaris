@@ -2,7 +2,6 @@
 // dan 5 riwayat hitung terbaru.
 
 import { useRef, useState } from 'react';
-import { unduhKasus } from '../berkas';
 import { TEKS_BERANDA } from '../konten/umum';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { dariJson, type Kasus } from '../kasus';
@@ -44,7 +43,7 @@ export function Beranda({ kasusTersimpan, kirim, saatBukaRiwayat }: Props) {
         </div>
         <div className="chip-deret">
           {kasusTersimpan && <Tombol varian="sun" onClick={() => { kirim({ jenis: 'MUAT', kasus: kasusTersimpan }); kirim({ jenis: 'KE_LANGKAH', langkah: 1 }); }}>Lanjutkan kasus terakhir</Tombol>}
-          <Tombol varian="secondary" onClick={() => inputFile.current?.click()}>Buka file</Tombol>
+          <Tombol varian="secondary" onClick={() => inputFile.current?.click()}>Impor file</Tombol>
           <input ref={inputFile} type="file" accept="application/json,.json" hidden onChange={event => void saatPilihFile(event.target.files?.[0])} />
         </div>
         {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
@@ -53,7 +52,7 @@ export function Beranda({ kasusTersimpan, kirim, saatBukaRiwayat }: Props) {
           <DaftarRiwayat kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} batas={5} />
         </section>
         {tujuanTertunda && kasusTersimpan && (
-          <KonfirmasiKasusBaru saatSimpan={() => unduhKasus(kasusTersimpan)} saatBatal={() => setTujuanTertunda(null)}
+          <KonfirmasiKasusBaru kasus={kasusTersimpan} saatBatal={() => setTujuanTertunda(null)}
             saatLanjut={() => { kirim({ jenis: 'ULANGI' }); mulaiDengan(tujuanTertunda); setTujuanTertunda(null); }} />
         )}
       </main>

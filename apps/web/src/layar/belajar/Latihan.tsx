@@ -45,10 +45,7 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
   const jumlahSelesai = DAFTAR_SOAL_HITUNG.filter(soal => catatan[soal.kode]).length;
   return (
     <>
-      <p className="keterangan">
-        Tiap soal dibuka di kalkulator mode Belajar: jawabannya disembunyikan dulu, ikuti langkahnya atau tebak sendiri.
-        {' '}{jumlahSelesai} dari {DAFTAR_SOAL_HITUNG.length} soal sudah dikerjakan.
-      </p>
+      <p className="keterangan">{jumlahSelesai} dari {DAFTAR_SOAL_HITUNG.length} soal sudah dikerjakan. Soal dibuka di Hitung mode Belajar, jawabannya tertutup sampai kamu menjawab.</p>
       {perBab(DAFTAR_SOAL_HITUNG).map(([bab, daftar]) => (
         <section key={bab} className="tumpuk-rapat">
           <h2 className="judul-bab-latihan">Bab {bab} · {JUDUL_BAB[bab]} <span className="keterangan">{daftar.filter(soal => catatan[soal.kode]).length}/{daftar.length}</span></h2>

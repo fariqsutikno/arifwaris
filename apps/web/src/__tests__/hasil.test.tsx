@@ -76,12 +76,25 @@ describe('layar hasil', () => {
     const isi = (nama: RegExp, nilai: string) => fireEvent.change(within(pembagian()).getByRole('textbox', { name: nama }), { target: { value: nilai } });
     isi(/Istri/, '1/4'); isi(/Anak laki-laki/, '7/12'); isi(/Anak perempuan/, '7/24');
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
-    expect(screen.getByRole('alert').textContent).toMatch(/masih salah.*2 dari 3/);
+    expect(screen.getByRole('alert').textContent).toMatch(/belum tepat.*2 dari 3 orang sudah benar.*Perbaiki: Istri/);
     expect(dikerjakan).toBe(0);
     isi(/Istri/, '3/24');
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
     expect(dikerjakan).toBe(1);
     expect(screen.queryByRole('button', { name: 'Jawab' })).toBeNull();
+    expect(within(pembagian()).getByRole('status').textContent).toMatch(/Benar semua/);
+  });
+
+  it('mode belajar: pindah ke Hitung kasus saat jawaban tertutup butuh mengetik kata kunci', () => {
+    render(<Uji awal={c1601()} tujuan="belajar" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Hitung kasus' }));
+    const dialog = screen.getByRole('alertdialog');
+    const pindah = within(dialog).getByRole('button', { name: 'Pindah ke Hitung kasus' }) as HTMLButtonElement;
+    expect(pindah.disabled).toBe(true);
+    fireEvent.change(within(dialog).getByRole('textbox'), { target: { value: 'Buka Jawaban' } });
+    expect(pindah.disabled).toBe(false);
+    fireEvent.click(pindah);
+    expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
   });
 
   it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung', () => {

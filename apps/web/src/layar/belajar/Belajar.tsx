@@ -5,6 +5,7 @@ import { DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS } 
 import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, type Aktivitas } from '../../preferensi';
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan } from '../../rute';
+import { Ikon, type NamaIkon } from '../../ui/Ikon';
 import { PAKET_ACAK } from './Latihan';
 
 export function Belajar() {
@@ -22,7 +23,6 @@ export function Belajar() {
       <section className="hero-belajar">
         <div className="tumpuk-rapat">
           <h1>Pusat belajar faraidh</h1>
-          <p className="lead">Dari nol sampai bisa menghitung sendiri.</p>
           {berikutnya ? (
             <a className="kartu-lanjut" href={tautanBelajar(berikutnya.slug)}>
               <span className="label-langkah">{jumlahSelesai === 0 ? 'Mulai dari sini' : 'Lanjutkan'} · Modul {berikutnya.modul}</span>
@@ -72,7 +72,7 @@ export function Belajar() {
             <ul className="daftar-polos daftar-soal">
               {aktivitas.map(isi => (
                 <li key={`${isi.jenis}-${isi.kode}`} className="baris-soal">
-                  <span className="ikon-aktivitas" aria-hidden="true">{IKON[isi.jenis]}</span>
+                  <span className="ikon-aktivitas"><Ikon nama={IKON[isi.jenis]} ukuran={22} /></span>
                   <a className="isi-soal" href={tautanAktivitas(isi)}>
                     <b>{isi.judul}</b>
                     <span className="keterangan">{LABEL[isi.jenis]}{isi.hasil ? ` · skor ${isi.hasil}` : ''} · {waktuRelatif(isi.waktu, sekarang)}</span>
@@ -86,11 +86,11 @@ export function Belajar() {
         <section className="tumpuk-rapat" aria-labelledby="judul-jelajah">
           <h2 id="judul-jelajah">Jelajahi</h2>
           <div className="grid-pintu">
-            <Pintu tautan={tautanLatihan('hitung')} ikon="🧮" judul="Soal hitung" />
-            <Pintu tautan={tautanLatihan('kuis', PAKET_ACAK)} ikon="🎲" judul="Kuis acak" />
-            <Pintu tautan={tautanFaq()} ikon="💬" judul="Tanya jawab" />
-            <Pintu tautan={tautanGlosarium()} ikon="📘" judul="Glosarium" />
-            <Pintu tautan={tautanRujukan()} ikon="📜" judul="Rujukan" />
+            <Pintu tautan={tautanLatihan('hitung')} ikon="hitung" judul="Soal hitung" />
+            <Pintu tautan={tautanLatihan('kuis', PAKET_ACAK)} ikon="acak" judul="Kuis acak" />
+            <Pintu tautan={tautanFaq()} ikon="tanya" judul="Tanya jawab" />
+            <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul="Glosarium" />
+            <Pintu tautan={tautanRujukan()} ikon="rujukan" judul="Rujukan" />
           </div>
         </section>
       </div>
@@ -98,7 +98,7 @@ export function Belajar() {
   );
 }
 
-const IKON: Record<Aktivitas['jenis'], string> = { pelajaran: '📖', soal: '🧮', kuis: '✅' };
+const IKON: Record<Aktivitas['jenis'], NamaIkon> = { pelajaran: 'pelajaran', soal: 'hitung', kuis: 'kuis' };
 const LABEL: Record<Aktivitas['jenis'], string> = { pelajaran: 'Pelajaran', soal: 'Soal hitung', kuis: 'Kuis' };
 
 function tautanAktivitas(aktivitas: Aktivitas): string {
@@ -117,8 +117,8 @@ function KotakAngka({ nilai, total, label, tautan }: { nilai: number; total: num
   );
 }
 
-const Pintu = ({ tautan, ikon, judul }: { tautan: string; ikon: string; judul: string }) => (
-  <a className="pintu-belajar" href={tautan}><span aria-hidden="true">{ikon}</span>{judul}</a>
+const Pintu = ({ tautan, ikon, judul }: { tautan: string; ikon: NamaIkon; judul: string }) => (
+  <a className="pintu-belajar" href={tautan}><Ikon nama={ikon} ukuran={22} />{judul}</a>
 );
 
 /** Cincin progres keseluruhan; angka di tengah juga ditulis sebagai teks untuk pembaca layar. */

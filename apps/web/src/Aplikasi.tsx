@@ -2,7 +2,6 @@
 
 import { useEffect, useReducer, useState } from 'react';
 import type { SoalHitung } from '@waris/content';
-import { unduhKasus } from './berkas';
 import { muatLokal, simpanLokal, type Kasus } from './kasus';
 import { keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
@@ -21,6 +20,7 @@ import { kasusDariContoh } from './layar/belajar/contoh';
 import { Rujukan } from './layar/belajar/Rujukan';
 import { catatRiwayat, type EntriRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
+import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, useRute } from './rute';
 
 export function Aplikasi() {
@@ -33,7 +33,12 @@ export function Aplikasi() {
   const [idSesi, setIdSesi] = useState(buatIdSesi);
   const kirim = (aksi: Aksi) => {
     if (aksi.jenis === 'ULANGI') simpanLokal(null);
-    if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') { setSoalAktif(null); setIdSesi(buatIdSesi()); }
+    if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') {
+      // Kasus yang sudah sampai hasil dicatat dulu ke riwayat sebelum diganti, supaya tidak hilang.
+      if (keadaan.kasus && kasusLengkap(keadaan.kasus) && !soalAktif) catatRiwayat(idSesi, keadaan.kasus, Date.now());
+      setSoalAktif(null);
+      setIdSesi(buatIdSesi());
+    }
     kirimAsli(aksi);
   };
 
@@ -63,9 +68,9 @@ export function Aplikasi() {
   }, [layar, diKalkulator]);
   return (
     <>
-      <Kepala halaman={rute.halaman} adaKasus={diKalkulator && !!kasus && layar !== 'beranda'} adaTur={daftarTur.length > 0}
+      <Kepala halaman={rute.halaman} kasus={diKalkulator && layar !== 'beranda' ? kasus : null} adaTur={daftarTur.length > 0}
         saatKeBeranda={() => { window.location.hash = TAUTAN_KALKULATOR; kirim({ jenis: 'KE_LAYAR', layar: 'beranda' }); }} saatTur={() => setTurBerjalan(true)}
-        saatUlangi={() => kirim({ jenis: 'ULANGI' })} saatSimpan={() => kasus && unduhKasus(kasus)} />
+        saatUlangi={() => kirim({ jenis: 'ULANGI' })} />
       {rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
@@ -76,7 +81,7 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatBukaRiwayat={bukaRiwayat} />
         : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim}
-            saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined} />}
+            saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined} tersimpanDiRiwayat={!soalAktif} />}
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
   );

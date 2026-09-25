@@ -18,10 +18,11 @@ import { kasusDariContoh } from './contoh';
 import { KartuSoalKuis } from './KartuSoalKuis';
 import { Sebaris } from './Sebaris';
 import { TombolBukaKasus } from './TombolBukaKasus';
+import { Ikon } from '../../ui/Ikon';
 
 interface Props {
   slug: string;
-  /** Kasus yang sedang ada di kalkulator; bila ada, "Coba di kalkulator" minta konfirmasi dulu. */
+  /** Kasus yang sedang ada di kalkulator; bila ada, "Buka di Hitung" minta konfirmasi dulu. */
   kasusSekarang: Kasus | null;
   saatCoba: (kasus: Kasus) => void;
 }
@@ -67,7 +68,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
         </article>
         <nav ref={ujung} className="navigasi-materi" aria-label="Navigasi pelajaran">
           <TautanNavigasi tujuan={sebelumnya} label="← Sebelumnya" />
-          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}>⌂ Beranda belajar</a>
+          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}><Ikon nama="rumah" /> Beranda belajar</a>
           <TautanNavigasi tujuan={berikutnya} label="Berikutnya →" saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
         </nav>
       </main>
@@ -163,11 +164,11 @@ function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKas
   }
   return (
     <figure className="contoh-kasus">
-      <figcaption className="label-langkah">Dihitung kalkulator</figcaption>
+      <figcaption className="label-langkah">Dihitung otomatis</figcaption>
       <div className="wadah-tabel">
         <TabelFaraidh hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
       </div>
-      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>Coba di kalkulator</TombolBukaKasus>
+      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>Buka di Hitung</TombolBukaKasus>
     </figure>
   );
 }

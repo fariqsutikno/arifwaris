@@ -41,12 +41,12 @@ it('ulangi dari awal meminta konfirmasi di halaman', () => {
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
   expect(screen.getByRole('alertdialog')).toBeTruthy();
-  expect(screen.getByRole('button', { name: /Simpan file dulu/ })).toBeTruthy();
+  expect(screen.getByRole('alertdialog').textContent).toMatch(/belum sampai hasil/);
   fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
   expect(screen.queryByRole('alertdialog')).toBeNull();
   expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
-  fireEvent.click(screen.getByRole('button', { name: /Hapus dan mulai baru/ }));
+  fireEvent.click(screen.getByRole('button', { name: 'Mulai baru' }));
   expect(screen.getByText(/Mau pakai buat apa/)).toBeTruthy();
 });
 
@@ -69,10 +69,10 @@ describe('temuan review akhir', () => {
     fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   };
 
-  it('setelah "Hapus dan mulai baru", kasus lama tidak ditawarkan lagi', () => {
+  it('setelah "Mulai baru", kasus lama tidak ditawarkan lagi', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Ulangi dari awal' }));
-    fireEvent.click(screen.getByRole('button', { name: /Hapus dan mulai baru/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai baru' }));
     expect(screen.queryByRole('button', { name: /Lanjutkan kasus terakhir/ })).toBeNull();
   });
 

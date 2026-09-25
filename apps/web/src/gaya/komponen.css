@@ -1,3 +1,9 @@
+/* Teks Arab selalu Noto Kufi Arabic, di mana pun muncul (ayat, hadits, kutipan kitab, glosarium). */
+:lang(ar){font-family:var(--font-arab)}
+/* Tautan di dalam teks memakai motif stabilo Arif Waris (aw-hl): garis kuning tebal di bawah, penuh saat disorot. */
+a:not([class]){color:var(--ink);font-weight:700;text-decoration:none;background:linear-gradient(transparent 62%,var(--sun) 62%);border-radius:2px;transition:background-size .12s}
+a:not([class]):hover,a:not([class]):focus-visible{background:var(--sun);color:var(--on-fill)}
+a:not([class]):focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(--ink);font-size:16px;line-height:26px;-webkit-font-smoothing:antialiased}
 .aw-pad{padding:20px 24px 24px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
 .aw-btn{font-family:var(--font-sans);font-weight:800;font-size:15px;line-height:20px;display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 24px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);box-shadow:var(--shadow-pop);cursor:pointer;transition:transform .1s,box-shadow .1s}
@@ -492,14 +498,14 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .entri-istilah dt a{color:inherit}
 .entri-istilah dd{margin:6px 0 0}
 .entri-istilah dd p{margin:0 0 4px}
-.teks-arab{font:500 20px/1.6 serif}
+.teks-arab{font:500 19px/1.9 var(--font-arab)}
 .teks-arab-baris{margin:0 0 4px;font-size:18px;line-height:1.7}
-.teks-arab-baris:lang(ar){direction:rtl;font-family:serif;font-size:20px}
+.teks-arab-baris:lang(ar){direction:rtl;font-family:var(--font-arab);font-size:19px;line-height:2}
 .daftar-polos{list-style:none;padding:0;margin:0}
 .isi-lipat{margin:0;padding:0 16px 14px 32px;display:grid;gap:6px}
 .tautan-kecil{display:inline-block;margin-top:4px;font-size:13px;font-weight:700}
 @media (max-width:560px){.kepala-menu{padding:0 8px;font-size:13px}.kepala .aw-logo>span{display:none}}
-.kutipan-arab{margin:0;padding:12px 16px;border-right:4px solid var(--primary);background:var(--surface-sunken);border-radius:var(--radius-sm);font:500 20px/1.9 serif}
+.kutipan-arab{margin:0;padding:14px 18px;background:var(--surface-sunken);border-radius:var(--radius-sm);font:400 19px/2.1 var(--font-arab)}
 
 /* Pusat belajar & materi */
 .tombol-lanjut{align-self:flex-start;text-decoration:none}
@@ -628,12 +634,12 @@ a.kartu-modul-jalur:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow
 .nomor-modul{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--sun);color:var(--on-fill);border:var(--border-w) solid var(--outline);font:800 14px var(--font-display)}
 .modul-menyusul .nomor-modul{background:var(--surface-sunken);color:var(--ink-muted)}
 .dua-kolom-belajar{display:grid;grid-template-columns:1.3fr 1fr;gap:24px;align-items:start}
-.ikon-aktivitas{flex:none;font-size:20px}
+.ikon-aktivitas{flex:none;color:var(--primary)}
 a.isi-soal{color:var(--ink);text-decoration:none}
 a.isi-soal:hover b{text-decoration:underline}
 .grid-pintu{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .pintu-belajar{display:flex;align-items:center;gap:10px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;font-weight:800}
-.pintu-belajar span{font-size:22px}
+.ikon{flex:none;display:block}
 .pintu-belajar:hover{background:var(--sun);color:var(--on-fill)}
 @media (max-width:760px){
   .hero-belajar{flex-direction:column-reverse;align-items:stretch;padding:18px}
@@ -646,3 +652,40 @@ a.isi-soal:hover b{text-decoration:underline}
 .isi-sidebar-rujukan{display:flex;justify-content:space-between;gap:8px;flex:1}
 .isi-sidebar-rujukan small{color:var(--ink-muted);font-weight:700}
 .kartu-ayat{margin:0;display:flex;flex-direction:column;gap:8px}
+@media (prefers-color-scheme:dark){a:not([class]){background:linear-gradient(transparent 86%,var(--sun) 86%)}}
+.daftar-format{display:grid;gap:10px}
+.pilihan-format{display:flex;align-items:center;gap:14px;width:100%;padding:14px 16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-align:left;cursor:pointer;font:inherit}
+.pilihan-format span{display:flex;flex-direction:column}
+.pilihan-format b{font:700 17px var(--font-display)}
+.pilihan-format small{color:var(--ink-muted);font-size:13px}
+.pilihan-format:not(:disabled):hover{background:var(--sun);color:var(--on-fill)}
+.pilihan-format:not(:disabled):hover small{color:var(--on-fill)}
+.pilihan-format:disabled{border-style:dashed;border-color:var(--divider);color:var(--ink-muted);cursor:not-allowed}
+.pilihan-format:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.status-simpan{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink-muted)}
+.aksi-konfirmasi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.aksi-konfirmasi .aw-btn{justify-content:center}
+.aw-btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
+.isi-konfirmasi p{margin:0;line-height:1.55}
+.isian-kata-kunci{font-weight:600;font-size:14px}
+@media (max-width:560px){.status-simpan{display:none}}
+
+/* Mode belajar: tebakan */
+.tebak{display:flex;flex-direction:column;gap:14px;align-items:stretch;padding:16px;border-radius:var(--radius-md);background:var(--surface-sunken);color:var(--ink);border:var(--border-w) solid var(--outline);font-size:14px}
+.petunjuk-tebak h3{margin:0 0 4px;font:700 17px/1.3 var(--font-display)}
+.petunjuk-tebak p{margin:0;line-height:1.55}
+.contoh-tebak{margin-top:6px!important;color:var(--ink-muted)}
+.tebak code{font:700 13px var(--font-sans);background:var(--surface-raised);border:1.5px solid var(--divider);padding:0 6px;border-radius:6px;color:var(--ink)}
+.isian-tebak{padding:12px;border-radius:var(--radius-sm);background:var(--surface-raised);border:1.5px solid var(--divider)}
+.hasil-tebak{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:var(--radius-sm);border:var(--border-w) solid var(--outline)}
+.hasil-tebak b{display:flex;align-items:center;gap:6px;font:700 16px/1.3 var(--font-display)}
+.hasil-tebak p{margin:0;line-height:1.5}
+.hasil-tebak.salah{background:var(--pink);color:var(--on-fill)}
+.hasil-tebak.kurang{background:var(--sun);color:var(--on-fill)}
+.hasil-tebak.benar{background:var(--lime);color:var(--on-fill);box-shadow:var(--shadow-pop-sm);margin-bottom:12px}
+.aksi-tebak{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.aksi-tebak .aw-btn{justify-content:center}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
+.confetti span{position:absolute;top:-16px;width:10px;height:14px;border:1.5px solid #111322;border-radius:2px;animation:jatuh 1.5s cubic-bezier(.25,.6,.45,1) forwards}
+@keyframes jatuh{to{transform:translate(var(--geser),105vh) rotate(var(--putar));opacity:.9}}
+@media (prefers-reduced-motion:reduce){.confetti{display:none}}

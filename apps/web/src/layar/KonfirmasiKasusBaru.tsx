@@ -1,28 +1,29 @@
-// Konfirmasi sebelum kasus yang sedang ada dihapus (Ulangi dari awal, atau memilih tujuan saat ada kasus tersimpan).
-// Dialog di halaman (tanpa window.confirm): fokus langsung ke Batal, Esc = Batal, simpan file ditawarkan dulu.
+// Konfirmasi sebelum kasus yang sedang ada diganti (Ulangi dari awal, memilih tujuan saat ada kasus tersimpan,
+// membuka kasus dari materi/latihan/riwayat). Kasus yang sudah sampai hasil otomatis tersimpan di riwayat, jadi
+// cukup diberi tahu; isian yang belum sampai hasil tidak masuk riwayat, jadi diberi tahu bahwa ia akan hilang.
 
-import { useEffect, useRef } from 'react';
-import { Tombol } from '../ui/komponen';
+import type { Kasus } from '../kasus';
+import { DialogKonfirmasi } from '../ui/Dialog';
+import { LANGKAH_HASIL, langkahTerjauh } from './wizard/validasi';
 
-interface Props { saatSimpan: () => void; saatLanjut: () => void; saatBatal: () => void }
+interface Props {
+  kasus: Kasus;
+  saatLanjut: () => void;
+  saatBatal: () => void;
+  judul?: string;
+  labelLanjut?: string;
+}
 
-export function KonfirmasiKasusBaru({ saatSimpan, saatLanjut, saatBatal }: Props) {
-  const wadah = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    wadah.current?.querySelector<HTMLButtonElement>('[data-batal]')?.focus();
-  }, []);
+export const kasusLengkap = (kasus: Kasus | null): boolean => !!kasus && langkahTerjauh(kasus) === LANGKAH_HASIL;
+
+export function KonfirmasiKasusBaru({ kasus, saatLanjut, saatBatal, judul = 'Mulai kasus baru?', labelLanjut = 'Mulai baru' }: Props) {
   return (
-    <div className="konfirmasi" role="alertdialog" aria-modal="true" aria-labelledby="judul-konfirmasi" aria-describedby="isi-konfirmasi"
-      ref={wadah} onKeyDown={event => { if (event.key === 'Escape') saatBatal(); }}>
-      <div className="konfirmasi-isi">
-        <h2 id="judul-konfirmasi">Mulai kasus baru?</h2>
-        <p id="isi-konfirmasi">Kasus yang sedang diisi akan dihapus dari perangkat ini. Mau simpan file-nya dulu?</p>
-        <div className="chip-deret">
-          <Tombol varian="secondary" onClick={saatSimpan}>Simpan file dulu</Tombol>
-          <Tombol onClick={saatLanjut}>Hapus dan mulai baru</Tombol>
-          <Tombol varian="ghost" data-batal onClick={saatBatal}>Batal</Tombol>
-        </div>
-      </div>
-    </div>
+    <DialogKonfirmasi judul={judul} labelLanjut={labelLanjut} saatLanjut={saatLanjut} saatBatal={saatBatal}>
+      <p>
+        {kasusLengkap(kasus)
+          ? 'Kasus yang sekarang sudah tersimpan di Riwayat hitung, jadi bisa kamu buka lagi kapan saja.'
+          : 'Isian yang sekarang belum sampai hasil, jadi belum masuk riwayat dan akan hilang.'}
+      </p>
+    </DialogKonfirmasi>
   );
 }
