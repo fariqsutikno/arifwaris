@@ -8,7 +8,9 @@ import { rupiah } from './format.js';
 import { gabungDan, buatBaris, kalimat, type BarisPenjelasan, type Potongan } from './segments.js';
 import { istilah } from './terms.js';
 
-export interface Bab { judul: string; daftarBaris: BarisPenjelasan[] }
+/** Kolom tabel faraidh yang dibahas bab ini, untuk penyorotan di UI (tidak memengaruhi narasi). */
+export type KolomBab = 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'nominal';
+export interface Bab { judul: string; daftarBaris: BarisPenjelasan[]; kolom?: KolomBab }
 
 export function babCerita(konteks: Konteks): Bab[] {
   return [babHarta, babAhliWaris, babBagian, babPenyebut, babPenyesuaian, babPembulatan, babHasil]
@@ -43,7 +45,7 @@ function babHarta(konteks: Konteks): Bab | undefined {
     daftarBaris.push(buatBaris(kalimat`Wasiat ${konteks.sebutan.pewaris()} sebesar ${rupiah(langkahTirkah.wasiatDipakai)} dijalankan karena tidak melebihi sepertiga harta (${rupiah(langkahTirkah.wasiatBatas)}).`, ['R01-4']));
   }
   daftarBaris.push(buatBaris(kalimat`Harta yang dibagi kepada ahli waris: ${rupiah(langkahTirkah.bersih)}.`, ['R11-1']));
-  return { judul: 'Menghitung harta yang dibagi', daftarBaris };
+  return { judul: 'Menghitung harta yang dibagi', daftarBaris, kolom: 'nominal' };
 }
 
 // ─── Langkah: ahli waris ──────────────────────────────────────────────────────
@@ -70,7 +72,7 @@ function babAhliWaris(konteks: Konteks): Bab {
     daftarBaris.push(buatBaris(kalimat`${sebutSemua(konteks, mahjub)} tidak mendapat bagian karena terhalang oleh ${sebutSemua(konteks, langkah.hajib)} `
       .concat(kalimat`(${istilah('hajb-hirman', 'hajb hirman')}).`), langkah.refs));
   }
-  return { judul: 'Siapa yang mendapat warisan', daftarBaris };
+  return { judul: 'Siapa yang mendapat warisan', daftarBaris, kolom: 'ahliWaris' };
 }
 
 // ─── Langkah: bagian masing-masing ────────────────────────────────────────────
@@ -107,7 +109,7 @@ function babBagian(konteks: Konteks): Bab {
       daftarBaris.push(buatBaris(ceritaAshabah(konteks, langkah), langkah.refs));
     }
   }
-  return { judul: 'Bagian masing-masing', daftarBaris };
+  return { judul: 'Bagian masing-masing', daftarBaris, kolom: 'bagian' };
 }
 
 function ceritaFardh(konteks: Konteks, langkah: Langkah<'FARDH'>, bukan: Potongan[], catatanTambahan: () => Potongan[]): Potongan[] {
@@ -229,7 +231,7 @@ function babPenyebut(konteks: Konteks): Bab {
   if (baris.every(barisTabel => barisTabel.fardh === undefined)) {
     daftarBaris.push(buatBaris(kalimat`Semua ahli waris mengambil sisa (${istilah('ashabah', 'ashabah')}), jadi harta langsung dibagi per kepala (${istilah('ruus', "ru'us")}): `
       .concat(kalimat`laki-laki dihitung 2, perempuan 1. Totalnya ${ashl} bagian (${istilahAshl}).`), ['R09-2']));
-    return { judul: 'Menyamakan penyebut', daftarBaris };
+    return { judul: 'Menyamakan penyebut', daftarBaris, kolom: 'ashl' };
   }
 
   const pecahan = baris.filter(barisTabel => barisTabel.fardh).map(barisTabel => kalimat`${sebutKelompok(konteks, barisTabel.kelompok)} ${barisTabel.fardh!}`);
@@ -253,7 +255,7 @@ function babPenyebut(konteks: Konteks): Bab {
     return barisTabel.ashabah ? kalimat`${sebutKelompok(konteks, barisTabel.kelompok)} ${porsiFardh} + sisa ${sahamAshl - porsiFardh}` : kalimat`${sebutKelompok(konteks, barisTabel.kelompok)} ${sahamAshl}`;
   });
   daftarBaris.push(buatBaris(kalimat`Jadi harta kita bayangkan dipotong menjadi ${ashl} bagian yang sama (${istilah('saham', 'saham')}): ${gabungDan(bagianBagian)}.`));
-  return { judul: 'Menyamakan penyebut', daftarBaris };
+  return { judul: 'Menyamakan penyebut', daftarBaris, kolom: 'ashl' };
 }
 
 // ─── Langkah: 'adilah / 'aul / radd ───────────────────────────────────────────
@@ -267,17 +269,17 @@ function babPenyesuaian(konteks: Konteks): Bab {
 
   switch (kelas.kelas) {
     case 'adilah':
-      return { judul: 'Memeriksa jumlah bagian', daftarBaris: [buatBaris(
+      return { judul: 'Memeriksa jumlah bagian', kolom: 'penyesuaian', daftarBaris: [buatBaris(
         kalimat`Jumlah semua bagian ${rincian}${jumlahSaham}, pas sama dengan ${ashl} (${istilah('adilah', "'adilah")}). Tidak perlu penyesuaian.`, kelas.refs)] };
     case 'ailah': {
       const aul = istilah('aul', "'aul", `Di kasus ini: ${ashl} menjadi ${jumlahSaham}.`);
-      return { judul: 'Bagiannya melebihi harta', daftarBaris: [buatBaris(
+      return { judul: 'Bagiannya melebihi harta', kolom: 'penyesuaian', daftarBaris: [buatBaris(
         kalimat`Jumlah semua bagian ${rincian}${jumlahSaham}, lebih besar dari ${ashl}. Supaya adil, penyebutnya dinaikkan menjadi ${jumlahSaham} (${aul}): `
           .concat(kalimat`setiap orang tetap mendapat jumlah bagian yang sama, tetapi karena harta sekarang dibagi ${jumlahSaham}, semua bagian berkurang secara sebanding.`),
         konteks.daftarLangkah('AUL')[0]?.refs ?? kelas.refs)] };
     }
     case 'raddA': case 'raddB':
-      return { judul: 'Masih ada sisa, untuk siapa?', daftarBaris: ceritaRadd(konteks, kelas, rincian) };
+      return { judul: 'Masih ada sisa, untuk siapa?', kolom: 'penyesuaian', daftarBaris: ceritaRadd(konteks, kelas, rincian) };
   }
 }
 
@@ -359,7 +361,7 @@ function babPembulatan(konteks: Konteks): Bab | undefined {
   daftarBaris.push(tashih
     ? buatBaris(kalimat`Semua bagian dikalikan ${tashih.juzSahm} (${istilah('juz-as-sahm', "juz' as-sahm")}): ${tashih.dasar} × ${tashih.juzSahm} = ${tashih.hasil} bagian.`, tashih.refs)
     : buatBaris(kalimat`Semua kelompok bisa dibagi rata, jadi tidak perlu pembulatan.`, ['R10-2']));
-  return { judul: 'Membulatkan bagian per orang', daftarBaris };
+  return { judul: 'Membulatkan bagian per orang', daftarBaris, kolom: 'tashih' };
 }
 
 // ─── Langkah: hasil ───────────────────────────────────────────────────────────
@@ -384,6 +386,6 @@ function babHasil(konteks: Konteks): Bab {
       ...(perSatuan ? kalimat` Jika dibagikan lewat transfer bank, pembulatan bisa per rupiah sehingga selisihnya lebih kecil.` : []),
     ]));
   }
-  return { judul: 'Hasil akhir', daftarBaris };
+  return { judul: 'Hasil akhir', daftarBaris, kolom: 'nominal' };
 }
 
