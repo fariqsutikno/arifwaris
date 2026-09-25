@@ -1,23 +1,31 @@
-// Layar hasil. Menerima Kasus, menjalankan engine, menampilkan:
-// OK → rincian tirkah, KartuHasil (+ selisih pembulatan), yang terhalang, penjelasan per bab;
-// PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan. Tidak ada hitungan waris di sini.
+// Layar hasil. Desktop: kanvas (pohon keluarga / tabel faraidh) di kiri, sidebar di kanan.
+// HP: tanpa tab; kanvas disisipkan di antara kartu (urutan diatur CSS). Semua angka dari engine lewat ringkas().
+// PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
-import { useMemo, useState } from 'react';
-import type { GrafKeluarga, IdOrang, LangkahJejak, StatusOrang } from '@waris/engine';
-import { jenisDari, type Kelompok } from '../checklist';
-import { formatRupiah, namaOrang, penyebutAkhir, teksPecahan } from '../format';
-import { jalankan, type HasilMunasakhatOk, type HasilOk } from '../jalankan';
+import { useEffect, useMemo, useState } from 'react';
+import type { IdOrang } from '@waris/engine';
 import { unduhKasus } from '../berkas';
+import { TAUTAN_LAPORAN } from '../konten/umum';
 import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
-import { KartuAhliWaris, KartuHasil, Tombol, type BarisHasil } from '../ui/komponen';
-import { BabSebagaiLangkah, daftarBabDari } from './Penjelasan';
+import { jalankan, type HasilOk } from '../jalankan';
+import type { Tujuan } from '../preferensi';
+import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
+import { KartuLangkah } from '../hasil/KartuLangkah';
+import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
+import { ModalOrang } from '../hasil/ModalOrang';
+import { Pohon } from '../hasil/Pohon';
+import { adaTidakPas, ringkas } from '../hasil/ringkasan';
+import { PenyediaSorot } from '../hasil/sorot';
+import { TabelFaraidh } from '../hasil/TabelFaraidh';
+import { Tombol } from '../ui/komponen';
+import { daftarBabDari } from './Penjelasan';
 
-export function Hasil({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => void }) {
+interface Props { kasus: Kasus; tujuan: Tujuan | null; kirim: (aksi: Aksi) => void }
+
+export function Hasil({ kasus, tujuan, kirim }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
-  const [penjelasanTerbuka, setPenjelasanTerbuka] = useState(false);
-  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
-  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>Ubah isian</Tombol>;
+  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>← Ubah data</Tombol>;
 
   if (tampil.jenis === 'galat') {
     return (
@@ -26,135 +34,124 @@ export function Hasil({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => v
           <h1 className="judul-langkah">Waduh, ada yang nggak beres di mesin hitungnya</h1>
           <p>Ini bukan salah isianmu. Tolong laporkan dan lampirkan data kasus di bawah.</p>
           <p className="keterangan">{tampil.pesan}</p>
-          <Tombol varian="secondary" onClick={() => void navigator.clipboard?.writeText(keJson(kasus))}>Salin data kasus</Tombol>
+          <div className="chip-deret">
+            <Tombol varian="secondary" onClick={() => void navigator.clipboard?.writeText(keJson(kasus)).catch(() => {})}>Salin data kasus</Tombol>
+            <a className="aw-btn aw-btn-ghost" href={TAUTAN_LAPORAN} target="_blank" rel="noopener">Laporkan ke pengembang</a>
+          </div>
         </div>
         {tombolUbah}
       </main>
     );
   }
-  const hasil = tampil.hasil;
-  if (hasil.status === 'PERLU_INPUT') {
+  if (tampil.hasil.status !== 'OK') {
+    const hasil = tampil.hasil;
     return (
       <main className="halaman tumpuk">
         <div className="kartu kartu-peringatan tumpuk" role="alert">
-          <h1 className="judul-langkah">Bentar, masih ada yang perlu diisi</h1>
-          <ul>{hasil.pertanyaan.map((pertanyaan, indeks) => <li key={indeks}>{pertanyaan.alasan}</li>)}</ul>
+          <h1 className="judul-langkah">{hasil.status === 'PERLU_INPUT' ? 'Bentar, masih ada yang perlu diisi' : 'Kasus ini belum bisa dihitung di sini'}</h1>
+          {hasil.status === 'PERLU_INPUT'
+            ? <ul>{hasil.pertanyaan.map((pertanyaan, indeks) => <li key={indeks}>{pertanyaan.alasan}</li>)}</ul>
+            : <p>{hasil.alasan}</p>}
         </div>
         {tombolUbah}
       </main>
     );
   }
-  if (hasil.status === 'TIDAK_DIDUKUNG') {
-    return (
-      <main className="halaman tumpuk">
-        <div className="kartu kartu-peringatan tumpuk" role="alert">
-          <h1 className="judul-langkah">Kasus ini belum bisa dihitung di sini</h1>
-          <p>{hasil.alasan}</p>
-          {'mayit' in hasil && <p className="keterangan">Terjadi saat menghitung ahli waris {String(hasil.mayit)}.</p>}
-          {hasil.refs.length > 0 && <p className="keterangan">Rujukan: {hasil.refs.join(', ')}</p>}
-        </div>
-        {tombolUbah}
-      </main>
-    );
-  }
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} /></PenyediaSorot>;
+}
 
-  const { baris, selisih, terhalang } = tampil.jenis === 'biasa'
-    ? ringkasBiasa(kasus.graf, hasil as HasilOk)
-    : ringkasMunasakhat(kasus.graf, hasil as HasilMunasakhatOk);
-  const tirkah = langkahTirkah(tampil.jenis === 'biasa' ? (hasil as HasilOk).jejak : (hasil as HasilMunasakhatOk).daftarLangkah[0]!.hasil.jejak);
+function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
+  const tampil = useMemo(() => jalankan(kasus), [kasus]);
+  const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
+  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
+  const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
+  const adalahBelajar = tujuan === 'belajar';
+
+  const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
+  useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
+  const sedangMenebak = adalahBelajar && !jawabanTerbuka;
+  const [sembunyiNominal, setSembunyiNominal] = useState(false);
+  const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
+  const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
+  const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
+  const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
 
   return (
-    <main className="halaman tumpuk">
-      <h1 className="judul-langkah">Nah, ini pembagiannya</h1>
-      <div className="kartu keterangan">
-        Harta {formatRupiah(tirkah.kotor)} − jenazah {formatRupiah(tirkah.tajhiz)} − hutang {formatRupiah(tirkah.hutang)} − wasiat {formatRupiah(tirkah.wasiatDipakai)}
-        {tirkah.wasiatButuhIjazah > 0n && (
-          <p>Wasiat maksimal 1/3 [R01-4]. Kelebihan {formatRupiah(tirkah.wasiatButuhIjazah)} cuma berlaku kalau ahli waris setuju (ijazah), jadi nggak dipotong di sini.</p>
-        )}
-      </div>
-      <KartuHasil total={formatRupiah(tirkah.bersih)} stiker="Fix!" daftarBaris={baris} />
-      <p className="keterangan">Selisih pembulatan: {formatRupiah(selisih)} (nggak dibagi, dicatat terpisah).</p>
-      {terhalang.length > 0 && (
-        <>
-          <h2 className="judul-langkah" style={{ fontSize: 22 }}>Yang nggak dapat, dan kenapa</h2>
-          <div className="aw-heirs">{terhalang.map(orang => <KartuAhliWaris key={orang.id} nama={orang.nama} kelompok={orang.kelompok} adalahMahjub catatan={orang.alasan} />)}</div>
-        </>
-      )}
-      <div className="baris-tombol">
-        {tombolUbah}
-        <Tombol varian="sun" onClick={() => setPenjelasanTerbuka(!penjelasanTerbuka)}>Kok bisa gini?</Tombol>
-        <Tombol onClick={() => kirim({ jenis: 'KE_LAYAR', layar: 'belajar' })}>Pelajari langkah demi langkah</Tombol>
-        <Tombol varian="secondary" onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
-      </div>
-      {penjelasanTerbuka && (
-        <div className="tumpuk">
-          {daftarBab.map((babBerjudul, indeks) => <BabSebagaiLangkah key={indeks} nomor={indeks + 1} babBerjudul={babBerjudul} />)}
+    <main className="halaman-hasil">
+      <div className="judul-hasil">
+        <h1>Nah, ini pembagiannya</h1>
+        <div className="tab-kecil" role="group" aria-label="Tujuan">
+          <button type="button" aria-pressed={!adalahBelajar} onClick={() => kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' })}>Hitung kasus</button>
+          <button type="button" aria-pressed={adalahBelajar} onClick={() => kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' })}>Belajar</button>
         </div>
+      </div>
+
+      <div className="tata-hasil">
+        <section className="kanvas-hasil" aria-label="Kanvas keluarga">
+          <div className="kepala-kanvas">
+            <div className="tab-kecil" role="tablist" aria-label="Tampilan kanvas">
+              <button type="button" role="tab" aria-selected={tabKanvas === 'pohon'} onClick={() => setTabKanvas('pohon')}>Pohon keluarga</button>
+              <button type="button" role="tab" aria-selected={tabKanvas === 'tabel'} onClick={() => setTabKanvas('tabel')}>Tabel faraidh</button>
+            </div>
+            <span className="caption-isian">Klik orang untuk melihat penjelasannya</span>
+          </div>
+          <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label="Pohon keluarga" data-tur="pohon">
+            <Legenda />
+            <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
+              sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />
+          </section>
+          <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label="Tabel faraidh">
+            {sedangMenebak
+              ? <p className="kosong-ahli-waris">Tabel disembunyikan di mode belajar. Ikuti langkah perhitungan, atau tekan Tampilkan jawaban.</p>
+              : <div className="wadah-tabel"><TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} /></div>}
+          </section>
+        </section>
+
+        <aside className="sidebar-hasil" aria-label="Hasil perhitungan">
+          <div className="catatan-hasil">
+            <b>Catatan.</b> Hasil ini menurut madzhab Syafi'i. Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat.
+            Nemu yang janggal? <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">Laporkan ke pengembang</a>.
+          </div>
+          <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan}
+            sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
+            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setJawabanTerbuka(true)}
+            tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
+            saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
+            saatPilihOrang={setOrangDipilih} />
+          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal || sedangMenebak} />
+          {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
+          <KartuLangkah daftarBab={daftarBab} terbukaAwal={adalahBelajar} saatSelesai={() => setJawabanTerbuka(true)} />
+          <KartuSelanjutnya />
+        </aside>
+      </div>
+
+      <div className="bar-bawah">
+        <div className="bar-bawah-isi">
+          <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>← Ubah data</Tombol>
+          <span className="pengisi" />
+          <Tombol onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
+        </div>
+      </div>
+
+      {orangDipilih && (
+        <ModalOrang id={orangDipilih} graf={kasus.graf} ringkasan={ringkasan} daftarBab={daftarBab} bentuk={pengaturan.bentuk}
+          sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
+          saatUbahData={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })} />
       )}
     </main>
   );
 }
 
-interface OrangTerhalang { id: IdOrang; nama: string; kelompok: Kelompok; alasan: string }
-
-function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk) {
-  const penyebut = penyebutAkhir(hasil.tabel);
-  const baris: BarisHasil[] = hasil.tabel.baris.flatMap(barisTabel => Object.entries(barisTabel.perOrang).map(([id, { saham, nominal }]) => ({
-    nama: namaOrang(graf, hasil.statusOrang, id),
-    kelompok: kelompokDari(hasil.statusOrang[id]),
-    bagian: teksPecahan({ n: saham, d: penyebut }),
-    bobot: Number(saham),   // hanya lebar visual BarBagian
-    nominal: formatRupiah(nominal),
-    ...(barisTabel.fardh ? { keterangan: `Fardh ${teksPecahan(barisTabel.fardh)}` } : barisTabel.ashabah ? { keterangan: 'Ashabah (sisa)' } : {}),
-  })));
-  return { baris, selisih: hasil.pembulatan.sisaPembulatan, terhalang: daftarTerhalang(graf, hasil.statusOrang) };
-}
-
-function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk) {
-  const statusGabungan: Record<IdOrang, StatusOrang> = {};
-  // Tiap orang dinamai dari mayit tempat ia pertama kali menjadi ahli waris (bukan "kerabat" mayit lain).
-  for (const { hasil: hasilMayit } of hasil.daftarLangkah) {
-    for (const [id, status] of Object.entries(hasilMayit.statusOrang)) {
-      if (!statusGabungan[id] || (statusGabungan[id]!.jenis !== 'ahliWaris' && status.jenis === 'ahliWaris')) statusGabungan[id] = status;
-    }
-  }
-  const baris: BarisHasil[] = Object.entries(hasil.saham).filter(([, saham]) => saham > 0n).map(([id, saham]) => ({
-    nama: namaOrang(graf, statusGabungan, id),
-    kelompok: kelompokDari(statusGabungan[id]),
-    bagian: teksPecahan({ n: saham, d: hasil.jamiah }),
-    bobot: Number(saham),
-    nominal: formatRupiah(hasil.nominal[id] ?? 0n),
-    keterangan: `Jami'ah ${String(hasil.jamiah)}`,
-  }));
-  // Yang terhalang di tiap mayit (pewaris asal dan yang wafat berikutnya), sekali per orang.
-  const terhalang = hasil.daftarLangkah.flatMap(({ hasil: hasilMayit }) => daftarTerhalang(graf, hasilMayit.statusOrang))
-    .filter((orang, indeks, semua) => semua.findIndex(lain => lain.id === orang.id) === indeks);
-  return { baris, selisih: hasil.pembulatan.sisaPembulatan, terhalang };
-}
-
-/** Rincian tirkah dari jejak engine: UI tidak menghitung potongan sendiri (batas wasiat 1/3 ada di engine). */
-function langkahTirkah(jejak: LangkahJejak[]): Extract<LangkahJejak, { jenis: 'TIRKAH' }> {
-  const langkah = jejak.find((langkahIni): langkahIni is Extract<LangkahJejak, { jenis: 'TIRKAH' }> => langkahIni.jenis === 'TIRKAH');
-  if (!langkah) throw new Error('jejak engine tanpa langkah TIRKAH');
-  return langkah;
-}
-
-function daftarTerhalang(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>): OrangTerhalang[] {
-  return Object.entries(statusOrang).flatMap(([id, status]) => {
-    if (graf.orang[id]?.penghubung) return [];
-    if (status.jenis === 'mahjub') {
-      const oleh = status.oleh.map(idLain => namaOrang(graf, statusOrang, idLain)).join(', ');
-      return [{ id, nama: namaOrang(graf, statusOrang, id), kelompok: kelompokDari(status), alasan: `Kehalang oleh ${oleh} [${status.rujukanAturan}]` }];
-    }
-    if (status.jenis === 'mamnu') {
-      return [{ id, nama: namaOrang(graf, statusOrang, id), kelompok: kelompokDari(status), alasan: `Terhalang penghalang waris (${status.mani}) [${status.rujukanAturan}]` }];
-    }
-    return [];
-  });
-}
-
-function kelompokDari(status: StatusOrang | undefined): Kelompok {
-  if (!status || !('peran' in status)) return 'saudara';
-  const kunci = status.peran.kunci;
-  return kunci === 'DZAWIL_ARHAM' || kunci === 'BUKAN_AHLI_WARIS' ? 'saudara' : jenisDari(kunci)?.kelompok ?? 'saudara';
+function Legenda() {
+  return (
+    <div className="legenda" aria-label="Keterangan pohon">
+      <span><i className="kotak g-pasangan" />Pasangan</span>
+      <span><i className="kotak g-keturunan" />Keturunan</span>
+      <span><i className="kotak g-leluhur" />Orang tua & leluhur</span>
+      <span><i className="kotak g-saudara" />Saudara & kerabat</span>
+      <span><i className="kotak putus" />Garis putus = tidak dapat bagian</span>
+      <span><i className="kotak almarhum" />Almarhum</span>
+      <span><i className="garis-l" />Mendatar = menikah, turun = anak</span>
+    </div>
+  );
 }

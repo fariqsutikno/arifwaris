@@ -10,7 +10,6 @@ import { Tur } from './tur/Tur';
 import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
-import { ModeBelajar } from './layar/ModeBelajar';
 import { Wizard } from './layar/Wizard';
 
 export function Aplikasi() {
@@ -36,8 +35,7 @@ export function Aplikasi() {
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} saatSimpan={() => kasus && unduhKasus(kasus)} />
       {layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} />
-        : layar === 'hasil' ? <Hasil kasus={kasus} kirim={kirim} />
-        : <ModeBelajar kasus={kasus} kirim={kirim} />}
+        : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim} />}
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
   );

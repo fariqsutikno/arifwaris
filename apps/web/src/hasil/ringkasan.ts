@@ -23,6 +23,8 @@ export interface Penerima {
   /** Pecahan fardh kelompoknya bila ada (dipakai mencocokkan ahwal). */
   fardh?: { n: bigint; d: bigint };
   ashabah: boolean;
+  /** Kode alasan fardh dari jejak engine (ADA_FARU_WARITS, UMARIYYATAIN, ...), untuk mencocokkan ahwal. */
+  kodeAlasan?: string;
 }
 
 export interface Terhalang { id: IdOrang; nama: string; kunci: KunciAhliWaris | undefined; kelompok: Kelompok; alasan: string }
@@ -81,6 +83,7 @@ export function adaTidakPas(kasus: Kasus): boolean {
 
 function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
   const penyebut = penyebutAkhir(hasil.tabel);
+  const alasanPerKelompok = new Map(hasil.jejak.flatMap(langkah => (langkah.jenis === 'FARDH' ? [[langkah.kelompok, langkah.alasan.kode] as const] : [])));
   const penerima = hasil.tabel.baris.flatMap(baris => Object.entries(baris.perOrang).map(([id, { saham, nominal }]): Penerima => {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
@@ -88,6 +91,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
       keterangan: baris.fardh ? `Bagian pasti ${baris.fardh.n}/${baris.fardh.d}` : 'Sisa (ashabah)',
       ...(baris.fardh ? { fardh: { n: baris.fardh.n, d: baris.fardh.d } } : {}),
       ashabah: !!baris.ashabah,
+      ...(alasanPerKelompok.has(baris.kelompok) ? { kodeAlasan: alasanPerKelompok.get(baris.kelompok)! } : {}),
     };
   }));
   return {
