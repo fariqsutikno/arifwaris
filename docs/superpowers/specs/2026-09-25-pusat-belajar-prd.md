@@ -93,25 +93,25 @@ tiap `[Rxx-y]` ada di `RUJUKAN`.
 
 Konten ditulis bertahap: rilis P0 cukup modul 1–5 (dasar); modul 6–10 menyusul tanpa perubahan kode.
 
-### 4. Bank soal latihan — P0
+### 4. Latihan (bank soal & kuis) — P0
 
-Dua jenis soal:
+Menu **Latihan** (`#/latihan`), dua tab. Keduanya dikelompokkan per bab KB.
 
-| Jenis | Contoh | Kunci jawaban dari |
-|---|---|---|
-| **Hitung** | "Istri, ayah, ibu, 2 anak pr. Tentukan ashl, 'aul, dan saham tiap ahli waris." | Engine (deterministik), divalidasi silang dengan bab 16 |
-| **Konsep** | Pilihan ganda / benar-salah: "Siapa yang menghalangi saudara seibu?" | Ditulis manual + `[Rxx-y]` + `perluCek` |
+**Soal hitung** (ala LeetCode) — sumber `docs/soal/hitung.md`:
+- Daftar soal per bab: status ✓/○, judul (daftar ahli waris), tingkat (dasar/menengah/sulit), tombol Kerjakan.
+- Kerjakan → kasus dibuka di kalkulator **mode Belajar**: jawaban tertutup, pelajar mengikuti langkah
+  perhitungan atau menebak, lalu "Tampilkan jawaban". Langkah per pipeline memakai kartu langkah yang sudah ada.
+- Soal ditandai selesai saat jawabannya dibuka; topik yang diuji baru tampil setelah selesai (tidak membocorkan).
+- Isi awal: kasus bab 16 kecuali #18 (cicit) dan #24 (dzawil arham). M1–M9 munasakhat menyusul (butuh format
+  urutan wafat).
 
-- Sumber awal soal hitung: 24 kasus bab 16 + contoh M1–M9 bab 12 (Lahim), dikelompokkan per modul & tingkat
-  (dasar / menengah / sulit). Soal nomor 24 (dzawil arham) tidak dimasukkan selama bab 14 dicabut dari UI.
-- Soal hitung dijawab per langkah mengikuti pipeline: siapa terhalang → bagian tiap orang → ashl → 'aul/radd → tashih.
-  Tiap tahap dicek langsung; salah → tampilkan penjelasan tahap itu dari `packages/explain`, bukan cuma "salah".
-  Ini memakai ulang trace yang sudah ada.
-- Mode latihan: pilih modul/tingkat → 5–10 soal → ringkasan skor. Skor & riwayat di `localStorage` saja.
-- Soal konsep disimpan di `docs/materi/soal/*.md` (atau satu file TS data), satu soal = satu entri.
+**Kuis konsep** — sumber `docs/soal/kuis.md`:
+- Pilihan ganda; memilih langsung menampilkan benar/salah + pembahasan berujukan `[Rxx-y]`; bisa dicoba lagi.
 
-Kriteria terima: test memastikan kunci setiap soal hitung = hasil engine = angka bab 16; setiap soal konsep punya
-rujukan yang valid.
+Status soal & kuis disimpan di perangkat (`localStorage`), tanpa akun.
+
+Kriteria terima: test memastikan kunci tiap soal hitung = hasil engine; tiap kuis punya tepat satu jawaban benar
+dan rujukan/istilah valid.
 
 ### 5. FAQ — P1
 
@@ -173,5 +173,5 @@ Setelah C, pengerjaan munasakhat lanjutan / haml / mafqud bisa jalan paralel den
 1. **Penulis konten**: Claude membuat draf materi, soal konsep, dan FAQ dari KB; semua `perluCek: true` sampai
    direview tim keilmuan.
 2. **Direktori**: menjadi daftar tautan ke dosen kampus (via Telegram) dan lembaga yang dilampirkan (fitur 7), naik ke P1.
-3. **Soal hitung**: dijawab per langkah pipeline.
+3. **Soal hitung**: dikerjakan di kalkulator mode Belajar (langkah per pipeline yang sudah ada), ditandai selesai saat jawaban dibuka; daftar per bab ala LeetCode. Ditambah kuis konsep pilihan ganda dengan pembahasan.
 4. **Buku**: cukup dari bab 17.2 dulu; tambahan bacaan diurus tim keilmuan.

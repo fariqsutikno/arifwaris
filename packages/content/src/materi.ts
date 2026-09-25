@@ -144,12 +144,24 @@ function bacaKasus(slug: string, daftarBaris: string[]): ContohKasus {
   const galat = (pesan: string) => new Error(`${slug}: blok kasus ${pesan}`);
   if (isian.pewaris !== 'L' && isian.pewaris !== 'P') throw galat('butuh "pewaris: L" atau "pewaris: P"');
   if (!isian['ahli waris'] || !isian.harta || !isian.harapan) throw galat('butuh "ahli waris", "harta", dan "harapan"');
-  const ahliWaris = isian['ahli waris'].split(',').flatMap(butir => {
+  return {
+    pewaris: isian.pewaris, ahliWaris: bacaDaftarAhliWaris(isian['ahli waris'], galat),
+    harta: BigInt(isian.harta.replace(/\D/g, '')), harapan: bacaHarapan(isian.harapan, galat),
+  };
+}
+
+/** "ISTRI, 2 ANAK_PR" → ['ISTRI', 'ANAK_PR', 'ANAK_PR']. Dipakai juga oleh bank soal. */
+export function bacaDaftarAhliWaris(teks: string, galat: (pesan: string) => Error): string[] {
+  return teks.split(',').flatMap(butir => {
     const [, jumlah = '1', kunci] = /^\s*(?:(\d+)\s+)?([A-Z_]+)\s*$/.exec(butir) ?? [];
     if (!kunci) throw galat(`ahli waris "${butir.trim()}" tidak terbaca`);
     return Array.from({ length: Number(jumlah) }, () => kunci);
   });
-  const [bagianSaham = '', bagianAshl = ''] = isian.harapan.split(';');
+}
+
+/** "ISTRI 3, ANAK_PR 16; ashl 24" → saham per kunci (hanya yang > 0) dan ashl akhir. */
+export function bacaHarapan(teks: string, galat: (pesan: string) => Error): ContohKasus['harapan'] {
+  const [bagianSaham = '', bagianAshl = ''] = teks.split(';');
   const saham = Object.fromEntries(bagianSaham.split(',').map(butir => {
     const [, kunci, nilai] = /^\s*([A-Z_]+)\s+(\d+)\s*$/.exec(butir) ?? [];
     if (!kunci) throw galat(`harapan "${butir.trim()}" tidak terbaca`);
@@ -157,7 +169,7 @@ function bacaKasus(slug: string, daftarBaris: string[]): ContohKasus {
   }));
   const ashl = /^\s*ashl\s+(\d+)\s*$/.exec(bagianAshl);
   if (!ashl) throw galat('harapan harus diakhiri "; ashl N"');
-  return { pewaris: isian.pewaris, ahliWaris, harta: BigInt(isian.harta.replace(/\D/g, '')), harapan: { saham, ashlAkhir: BigInt(ashl[1]!) } };
+  return { saham, ashlAkhir: BigInt(ashl[1]!) };
 }
 
 export function bacaDaftarModul(teksMarkdown: string): Modul[] {

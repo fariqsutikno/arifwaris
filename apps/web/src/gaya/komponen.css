@@ -522,3 +522,28 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .contoh-kasus{margin:8px 0 20px;padding:16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);display:flex;flex-direction:column;gap:8px;align-items:flex-start;max-width:100%;box-sizing:border-box}
 .contoh-kasus .wadah-tabel{padding:0;width:100%;box-sizing:border-box}
 .navigasi-materi{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;max-width:70ch;padding-top:16px;border-top:1.5px solid var(--divider)}
+
+/* Latihan */
+.tab-latihan a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;font:800 13px var(--font-sans);color:var(--ink);text-decoration:none}
+.tab-latihan a[aria-current=page]{background:var(--ink);color:var(--surface-raised)}
+.judul-bab-latihan{margin:16px 0 0;font:700 18px/1.3 var(--font-display);display:flex;flex-wrap:wrap;gap:8px;align-items:baseline}
+.daftar-soal{border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);overflow:hidden}
+.baris-soal{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1.5px solid var(--divider)}
+.baris-soal:last-child{border-bottom:0}
+.status-soal{flex:none;width:24px;text-align:center;font-weight:800;color:var(--ink-muted)}
+.baris-soal.selesai .status-soal{color:var(--primary)}
+.isi-soal{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tingkat{font-weight:800;text-transform:capitalize}
+.tingkat-dasar{color:#1a8a5a}.tingkat-menengah{color:#b26a00}.tingkat-sulit{color:var(--danger)}
+.kartu-kuis{margin:0;display:flex;flex-direction:column;gap:10px;max-width:720px}
+.kartu-kuis legend{padding:0 6px}
+.pertanyaan-kuis{margin:0;font-weight:700;line-height:1.5}
+.pilihan-kuis{display:grid;gap:8px}
+.pilihan-kuis-item{text-align:left;padding:10px 14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-sm);background:var(--surface-raised);color:var(--ink);font:600 15px/1.4 var(--font-sans);cursor:pointer}
+.pilihan-kuis-item:disabled{cursor:default}
+.pilihan-kuis-item:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.pilihan-kuis-item.benar{background:var(--lime);color:var(--on-fill)}
+.pilihan-kuis-item.salah{background:var(--pink);color:var(--on-fill)}
+.pembahasan-kuis{padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface-sunken);line-height:1.6}
+.tautan-tombol{margin-top:6px;padding:0;border:0;background:none;color:var(--primary);font:700 14px var(--font-sans);text-decoration:underline;cursor:pointer}
+@media (prefers-color-scheme:dark){.tingkat-dasar{color:#6ee7a8}.tingkat-menengah{color:#ffc266}}

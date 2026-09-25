@@ -1,11 +1,12 @@
-// Preferensi per pengguna di perangkat ini: tujuan pemakaian, tur yang sudah dilihat, dan pelajaran yang sudah selesai.
+// Preferensi per pengguna di perangkat ini: tujuan pemakaian, tur yang sudah dilihat, dan catatan belajar
+// (pelajaran selesai, soal dikerjakan, jawaban kuis).
 // Bukan bagian Kasus. Bila localStorage tidak bisa dipakai, nilai disimpan di memori selama sesi.
 
 export type Tujuan = 'hitung' | 'belajar';
 
 const KUNCI_TUJUAN = 'arif-waris:tujuan';
 const AWALAN_TUR = 'arif-waris:tur:';
-const KUNCI_PELAJARAN_SELESAI = 'arif-waris:pelajaran-selesai';
+const AWALAN_CATATAN = 'arif-waris:catatan:';
 const cadangan = new Map<string, string>();
 
 function baca(kunci: string): string | null {
@@ -34,14 +35,21 @@ export const simpanTujuan = (tujuan: Tujuan): void => simpan(KUNCI_TUJUAN, tujua
 export const sudahLihatTur = (kunci: string): boolean => baca(AWALAN_TUR + kunci) === '1';
 export const tandaiTurDilihat = (kunci: string): void => simpan(AWALAN_TUR + kunci, '1');
 
-export function bacaPelajaranSelesai(): Set<string> {
+/** Catatan belajar per kode: pelajaran → 'selesai', soal hitung → 'selesai', kuis → 'benar' / 'salah'. */
+export type JenisCatatan = 'pelajaran' | 'soal' | 'kuis';
+
+export function bacaCatatan(jenis: JenisCatatan): Record<string, string> {
   try {
-    const nilai: unknown = JSON.parse(baca(KUNCI_PELAJARAN_SELESAI) ?? '[]');
-    return new Set(Array.isArray(nilai) ? nilai.filter((slug): slug is string => typeof slug === 'string') : []);
+    const nilai: unknown = JSON.parse(baca(AWALAN_CATATAN + jenis) ?? '{}');
+    return nilai && typeof nilai === 'object' && !Array.isArray(nilai)
+      ? Object.fromEntries(Object.entries(nilai).filter((isi): isi is [string, string] => typeof isi[1] === 'string')) : {};
   } catch {
-    return new Set();
+    return {};
   }
 }
 
-export const tandaiPelajaranSelesai = (slug: string): void =>
-  simpan(KUNCI_PELAJARAN_SELESAI, JSON.stringify([...bacaPelajaranSelesai().add(slug)]));
+export const simpanCatatan = (jenis: JenisCatatan, kode: string, nilai: string): void =>
+  simpan(AWALAN_CATATAN + jenis, JSON.stringify({ ...bacaCatatan(jenis), [kode]: nilai }));
+
+export const bacaPelajaranSelesai = (): Set<string> => new Set(Object.keys(bacaCatatan('pelajaran')));
+export const tandaiPelajaranSelesai = (slug: string): void => simpanCatatan('pelajaran', slug, 'selesai');

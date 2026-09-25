@@ -2,9 +2,8 @@
 // Istilah jadi tooltip glosarium, kode rujukan jadi tautan "dalil", blok kasus jadi tabel faraidh dari engine.
 // Selesai dibaca → ditandai di perangkat ini, lalu lanjut ke pelajaran berikutnya.
 
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useMemo } from 'react';
 import { DAFTAR_MODUL, DAFTAR_PELAJARAN, cariPelajaran, cariRujukan, type Blok, type ContohKasus, type Potongan } from '@waris/content';
-import { unduhKasus } from '../../berkas';
 import { TabelFaraidh } from '../../hasil/TabelFaraidh';
 import { ringkas } from '../../hasil/ringkasan';
 import { jalankan, type HasilOk } from '../../jalankan';
@@ -13,8 +12,8 @@ import { tandaiPelajaranSelesai } from '../../preferensi';
 import { tautanBelajar, tautanRujukan } from '../../rute';
 import { Tombol } from '../../ui/komponen';
 import { Istilah } from '../../ui/Tooltip';
-import { KonfirmasiKasusBaru } from '../KonfirmasiKasusBaru';
 import { kasusDariContoh } from './contoh';
+import { TombolBukaKasus } from './TombolBukaKasus';
 
 interface Props {
   slug: string;
@@ -75,7 +74,7 @@ function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & Omit<Pro
   }
 }
 
-function Sebaris({ isi }: { isi: Potongan[] }) {
+export function Sebaris({ isi }: { isi: Potongan[] }) {
   return (
     <>
       {isi.map((potongan, urutan) => {
@@ -96,22 +95,16 @@ function Sebaris({ isi }: { isi: Potongan[] }) {
 function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKasus } & Omit<Props, 'slug'>) {
   const kasus = useMemo(() => kasusDariContoh(contoh), [contoh]);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
-  const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
   if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') {
     return <p className="kartu kartu-galat" role="alert">Contoh ini tidak bisa dihitung. Laporkan ke pengembang.</p>;
   }
-  const coba = () => (kasusSekarang ? setSedangKonfirmasi(true) : saatCoba(kasus));
   return (
     <figure className="contoh-kasus">
       <figcaption className="label-langkah">Dihitung kalkulator</figcaption>
       <div className="wadah-tabel">
         <TabelFaraidh hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
       </div>
-      <Tombol varian="secondary" kecil onClick={coba}>Coba di kalkulator</Tombol>
-      {sedangKonfirmasi && kasusSekarang && (
-        <KonfirmasiKasusBaru saatSimpan={() => unduhKasus(kasusSekarang)} saatBatal={() => setSedangKonfirmasi(false)}
-          saatLanjut={() => { setSedangKonfirmasi(false); saatCoba(kasus); }} />
-      )}
+      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>Coba di kalkulator</TombolBukaKasus>
     </figure>
   );
 }
