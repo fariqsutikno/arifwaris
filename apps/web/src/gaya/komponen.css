@@ -500,3 +500,25 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .tautan-kecil{display:inline-block;margin-top:4px;font-size:13px;font-weight:700}
 @media (max-width:560px){.kepala-menu{padding:0 8px;font-size:13px}.kepala .aw-logo>span{display:none}}
 .kutipan-arab{margin:0;padding:12px 16px;border-right:4px solid var(--primary);background:var(--surface-sunken);border-radius:var(--radius-sm);font:500 20px/1.9 serif}
+
+/* Pusat belajar & materi */
+.tombol-lanjut{align-self:flex-start;text-decoration:none}
+.modul-menyusul{opacity:.6}
+.kartu-modul h2{margin:4px 0}
+.daftar-pelajaran{margin:12px 0 0;padding-left:22px;display:grid;gap:6px;font-weight:600}
+.tanda-selesai{color:var(--primary);font-weight:800}
+.lencana-draf{align-self:flex-start;margin:0;padding:4px 10px;border-radius:var(--radius-pill);background:var(--sun);color:var(--on-fill);font-size:12px;font-weight:800}
+.isi-materi{max-width:70ch;font-size:16px;line-height:1.7}
+.isi-materi h2{margin:32px 0 8px;font:700 22px/1.3 var(--font-display)}
+.isi-materi h3{margin:24px 0 8px}
+.isi-materi p,.isi-materi ul,.isi-materi ol{margin:0 0 12px}
+.isi-materi li{margin-bottom:4px}
+.catatan-materi{margin:0 0 12px;padding:12px 16px;border-left:4px solid var(--primary);background:var(--primary-soft);border-radius:var(--radius-sm);font-size:15px}
+.tautan-dalil{margin-left:4px;padding:0 6px;border-radius:var(--radius-pill);border:1.5px solid currentColor;font-size:11px;font-weight:800;text-decoration:none;vertical-align:2px;white-space:nowrap}
+.wadah-tabel-materi{overflow-x:auto;margin:0 0 16px}
+.tabel-materi{border-collapse:collapse;font-size:15px;line-height:1.5}
+.tabel-materi th,.tabel-materi td{padding:8px 12px;border:1.5px solid var(--divider);text-align:left;vertical-align:top}
+.tabel-materi th{background:var(--surface-sunken)}
+.contoh-kasus{margin:8px 0 20px;padding:16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);display:flex;flex-direction:column;gap:8px;align-items:flex-start;max-width:100%;box-sizing:border-box}
+.contoh-kasus .wadah-tabel{padding:0;width:100%;box-sizing:border-box}
+.navigasi-materi{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;max-width:70ch;padding-top:16px;border-top:1.5px solid var(--divider)}

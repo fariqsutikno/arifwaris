@@ -1,20 +1,25 @@
-// Rute halaman berbasis `location.hash` supaya halaman belajar bisa dibagikan lewat URL (`#/glosarium/ashabah`).
+// Rute halaman berbasis `location.hash` supaya halaman belajar bisa dibagikan lewat URL (`#/belajar/1-1-apa-itu-faraidh`,
+// `#/glosarium/ashabah`, `#/rujukan/R09-4`).
 // Kalkulator tetap memakai state reducer; hash kosong atau `#/` = kalkulator.
 
 import { useEffect, useState } from 'react';
 
 export type Rute =
   | { halaman: 'kalkulator' }
+  | { halaman: 'belajar' }
+  | { halaman: 'materi'; slug: string }
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string };
 
 export function bacaRute(hash: string): Rute {
   const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+  if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'glosarium') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'rujukan') return parameter ? { halaman, kode: parameter } : { halaman };
   return { halaman: 'kalkulator' };
 }
 
+export const tautanBelajar = (slug?: string) => `#/belajar${slug ? `/${encodeURIComponent(slug)}` : ''}`;
 export const tautanGlosarium = (id?: string) => `#/glosarium${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanRujukan = (kode?: string) => `#/rujukan${kode ? `/${encodeURIComponent(kode)}` : ''}`;
 export const TAUTAN_KALKULATOR = '#/';

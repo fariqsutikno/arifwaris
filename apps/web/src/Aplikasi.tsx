@@ -2,7 +2,7 @@
 
 import { useEffect, useReducer, useState } from 'react';
 import { unduhKasus } from './berkas';
-import { muatLokal, simpanLokal } from './kasus';
+import { muatLokal, simpanLokal, type Kasus } from './kasus';
 import { keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
 import { bacaTujuan, simpanTujuan, sudahLihatTur } from './preferensi';
@@ -11,7 +11,9 @@ import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
 import { Wizard } from './layar/Wizard';
+import { Belajar } from './layar/belajar/Belajar';
 import { Glosarium } from './layar/belajar/Glosarium';
+import { Materi } from './layar/belajar/Materi';
 import { Rujukan } from './layar/belajar/Rujukan';
 import { TAUTAN_KALKULATOR, useRute } from './rute';
 
@@ -29,6 +31,8 @@ export function Aplikasi() {
   const diKalkulator = rute.halaman === 'kalkulator';
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   const [turBerjalan, setTurBerjalan] = useState(false);
+  // Contoh dari materi dibuka di layar hasil; konfirmasi menimpa kasus lama sudah ditanyakan di halaman materi.
+  const cobaDiKalkulator = (kasusContoh: Kasus) => { kirim({ jenis: 'MUAT', kasus: kasusContoh }); window.location.hash = TAUTAN_KALKULATOR; };
   // Otomatis sekali di kunjungan pertama tiap layar yang punya tur.
   useEffect(() => {
     if (daftarTur.length > 0 && !sudahLihatTur(layar)) setTurBerjalan(true);
@@ -38,7 +42,9 @@ export function Aplikasi() {
       <Kepala halaman={rute.halaman} adaKasus={diKalkulator && !!kasus && layar !== 'beranda'} adaTur={daftarTur.length > 0}
         saatKeBeranda={() => { window.location.hash = TAUTAN_KALKULATOR; kirim({ jenis: 'KE_LAYAR', layar: 'beranda' }); }} saatTur={() => setTurBerjalan(true)}
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} saatSimpan={() => kasus && unduhKasus(kasus)} />
-      {rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
+      {rute.halaman === 'belajar' ? <Belajar />
+        : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
+        : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'beranda' || !kasus ? <Beranda kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} />
