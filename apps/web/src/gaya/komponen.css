@@ -438,8 +438,8 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .label-isian{display:flex;align-items:center;gap:6px}
 .catatan-info{display:flex;gap:8px;align-items:flex-start;margin:0;padding:10px 12px;border-radius:10px;background:var(--surface-sunken);color:var(--ink-muted);font-size:13px;line-height:1.45}
 .ikon-info-kecil{flex:none;display:inline-grid;place-items:center;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid var(--ink-muted);font:italic 700 11px/1 Georgia,serif}
-.dua-kolom-isian{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:16px;align-items:start;max-width:900px}
-.ringkas-hitung{position:sticky;top:84px}
+.dua-kolom-isian{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start;max-width:680px}
+.ringkas-hitung{position:static}
 .ringkas-hitung .hitungan-berjalan{border:0;padding:0}
 .ringkasan-samping h2{margin:0 0 10px;font:700 15px var(--font-display)}
 .ringkasan-samping dl{margin:0;display:grid;gap:10px}
@@ -449,4 +449,16 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .baris-ringkas ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}
 .tanda-ringkas{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:5px;border:1.5px solid var(--divider);font-size:10px;color:var(--on-fill)}
 .baris-ringkas.terisi .tanda-ringkas{background:var(--lime);border-color:var(--outline)}
-@media (max-width:900px){.dua-kolom-isian{grid-template-columns:minmax(0,1fr)}.ringkas-hitung{position:static}}
+
+.node-orang:disabled{cursor:default}
+.terisi-ahli-waris{display:flex;flex-direction:column;gap:10px}
+.terisi-ahli-waris .judul-bagian-kecil{margin:0}
+.pohon-isian{border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);overflow:hidden;background:var(--surface-raised)}
+.lencana-jumlah{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--ink);color:var(--surface-raised);font:800 12px/1 var(--font-sans)}
+.bukan-ahli-waris{display:flex;flex-direction:column;gap:6px;padding-top:8px;border-top:1.5px dashed var(--divider)}
+.bukan-ahli-waris .caption-isian{display:flex;align-items:center;gap:6px}
+.bukan-ahli-waris ul{margin:0;padding:0;list-style:none;display:grid;gap:4px;font-size:13.5px;color:var(--ink-muted)}
+.bukan-ahli-waris li{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.tag-dzawil{padding:1px 7px;border-radius:999px;border:1px dashed var(--ink-muted);font-size:11px;font-weight:700}
+
+.hitungan-berjalan>div span:last-child,.hitungan-berjalan .hitungan-total{white-space:nowrap;text-align:right}

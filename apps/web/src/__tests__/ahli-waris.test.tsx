@@ -57,3 +57,43 @@ it('istilah fikih tetap tampil kecil di bawah label sehari-hari', () => {
   fireEvent.click(within(grup).getByRole('button', { name: /Tambah kakak\/adik/ }));
   expect(within(daftar()).getByText('Saudara lk seibu')).toBeTruthy();
 });
+
+it('yang sudah ditambahkan bisa dilihat sebagai pohon keluarga', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+  fireEvent.click(screen.getByRole('tab', { name: 'Pohon keluarga' }));
+  const pohon = screen.getByRole('region', { name: 'Pohon keluarga' });
+  expect(within(pohon).getByText('Anak laki-laki')).toBeTruthy();
+  expect(within(pohon).getByText('Pewaris')).toBeTruthy();
+});
+
+it('label kerabat jauh menyebut hubungannya dengan pewaris', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
+  expect(screen.getByRole('button', { name: 'Tambah Kakek (ayahnya ayah pewaris)' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Tambah Nenek (ibunya ibu pewaris)' })).toBeTruthy();
+});
+
+it('paman & sepupu ditanya bertahap dengan bahasa sederhana', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
+  const grup = screen.getByRole('group', { name: 'Paman & sepupu dari pihak ayah' });
+  fireEvent.click(within(grup).getByRole('radio', { name: 'Sepupu laki-laki' }));
+  fireEvent.click(within(grup).getByRole('radio', { name: /satu ayah saja/ }));
+  fireEvent.click(within(grup).getByRole('button', { name: /Tambah sepupu/ }));
+  expect(hitungIsian(grafTerakhir, 'PEWARIS').SEPUPU_SEBAPAK).toHaveLength(1);
+});
+
+it('kerabat yang bukan ahli waris di sini tetap dicantumkan dengan keterangan', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
+  expect(screen.getByText(/Kakek dari pihak ibu/)).toBeTruthy();
+  expect(screen.getAllByText(/dzawil arham/i).length).toBeGreaterThan(0);
+});
+
+it('tombol tambah cepat menunjukkan jumlah yang sudah ditambahkan', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+  expect(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }).textContent).toMatch(/2/);
+});

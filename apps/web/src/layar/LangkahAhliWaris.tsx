@@ -3,15 +3,18 @@
 // Label sehari-hari sebagai judul, istilah fikih sebagai caption. Menyerahkan graf baru lewat ubahGraf.
 
 import { useState } from 'react';
-import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
+import { KONFIGURASI_BAWAAN, turunkanPeran, type GrafKeluarga, type IdOrang, type KunciAhliWaris } from '@waris/engine';
 import { daftarInduk, hapusAhliWaris, hitungIsian, jenisDari, tambahAhliWaris } from '../checklist';
-import { HUBUNGAN_SAUDARA, KELOMPOK_LAIN, LABEL_SEHARI, TAMBAH_CEPAT } from '../konten/ahliWaris';
+import { HUBUNGAN_PAMAN, HUBUNGAN_SAUDARA, KELOMPOK_LAIN, LABEL_SEHARI, TAMBAH_CEPAT, TEKS_DZAWIL_ARHAM } from '../konten/ahliWaris';
+import { PohonDasar } from '../hasil/Pohon';
+import { InfoTip } from '../ui/Tooltip';
 
 interface Props { graf: GrafKeluarga; idMayit: IdOrang; ubahGraf: (ubah: (graf: GrafKeluarga) => GrafKeluarga) => void }
 
 export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
   const [pesan, setPesan] = useState<string | null>(null);
   const [kerabatLainTerbuka, setKerabatLainTerbuka] = useState(false);
+  const [tampilan, setTampilan] = useState<'daftar' | 'pohon'>('daftar');
   const isian = hitungIsian(graf, idMayit);
   const jenisKelaminMayit = graf.orang[idMayit]!.jenisKelamin;
 
@@ -38,7 +41,18 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
     <div className="isian-ahli-waris">
       {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
 
-      <DaftarTerisi graf={graf} idMayit={idMayit} saatHapus={idOrang => coba(g => hapusAhliWaris(g, idOrang))} />
+      <section className="terisi-ahli-waris" aria-labelledby={`judul-terisi-${idMayit}`}>
+        <div className="kepala-grup">
+          <h3 id={`judul-terisi-${idMayit}`} className="judul-bagian-kecil">Sudah ditambahkan</h3>
+          <div className="tab-kecil" role="tablist" aria-label="Tampilan ahli waris">
+            <button type="button" role="tab" aria-selected={tampilan === 'daftar'} onClick={() => setTampilan('daftar')}>Daftar</button>
+            <button type="button" role="tab" aria-selected={tampilan === 'pohon'} onClick={() => setTampilan('pohon')}>Pohon keluarga</button>
+          </div>
+        </div>
+        {tampilan === 'daftar'
+          ? <DaftarTerisi graf={graf} idMayit={idMayit} saatHapus={idOrang => coba(g => hapusAhliWaris(g, idOrang))} />
+          : <PohonIsian graf={graf} idMayit={idMayit} />}
+      </section>
 
       <section className="tambah-ahli-waris" aria-labelledby={`judul-cepat-${idMayit}`}>
         <h3 id={`judul-cepat-${idMayit}`} className="judul-bagian-kecil">Tambah cepat</h3>
@@ -47,6 +61,7 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
             <button key={kunci} type="button" className="tombol-tambah" aria-label={`Tambah ${LABEL_SEHARI[kunci]}`}
               disabled={sudahPenuh(kunci)} onClick={() => tambah(kunci)}>
               <span aria-hidden="true">+</span>{LABEL_SEHARI[kunci]}
+              {(isian[kunci]?.length ?? 0) > 0 && <span className="lencana-jumlah" aria-hidden="true">{isian[kunci]!.length}</span>}
             </button>
           ))}
         </div>
@@ -60,15 +75,19 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
       {kerabatLainTerbuka && (
         <div className="kerabat-lain">
           <PilihSaudara saatTambah={tambah} />
+          <PilihPamanSepupu graf={graf} idMayit={idMayit} saatTambah={tambah} />
           {KELOMPOK_LAIN.map(kelompok => (
             <fieldset key={kelompok.judul} className="kelompok-kerabat">
               <legend>{kelompok.judul}</legend>
               {kelompok.catatan && <p className="caption-isian">{kelompok.catatan}</p>}
-              <div className="tombol-cepat">
-                {kelompok.pilihan.map(kunci => (
-                  <TombolDenganInduk key={kunci} kunci={kunci} graf={graf} idMayit={idMayit} penuh={sudahPenuh(kunci)} saatTambah={tambah} />
-                ))}
-              </div>
+              {kelompok.pilihan.length > 0 && (
+                <div className="tombol-cepat">
+                  {kelompok.pilihan.map(kunci => (
+                    <TombolDenganInduk key={kunci} kunci={kunci} graf={graf} idMayit={idMayit} penuh={sudahPenuh(kunci)} saatTambah={tambah} />
+                  ))}
+                </div>
+              )}
+              {kelompok.bukanAhliWaris && <BukanAhliWaris daftar={kelompok.bukanAhliWaris} />}
             </fieldset>
           ))}
         </div>
@@ -94,6 +113,71 @@ function DaftarTerisi({ graf, idMayit, saatHapus }: { graf: GrafKeluarga; idMayi
         );
       })}
     </ul>
+  );
+}
+
+/** Pohon dari orang yang sudah ditambahkan (tanpa angka): hubungan antarorang terlihat. */
+function PohonIsian({ graf, idMayit }: { graf: GrafKeluarga; idMayit: IdOrang }) {
+  const isian = hitungIsian(graf, idMayit);
+  const kunciDari = (id: IdOrang) => (Object.entries(isian) as Array<[KunciAhliWaris, IdOrang[]]>).find(([, ids]) => ids.includes(id))?.[0];
+  // Orang penghubung (dibuat otomatis, sudah wafat) dinamai menurut perannya terhadap pewaris, misalnya "Ayah".
+  const { daftarPeran: peran } = turunkanPeran({ ...graf, idPewaris: idMayit }, KONFIGURASI_BAWAAN);
+  return (
+    <section className="pohon-isian" aria-label="Pohon keluarga">
+      <PohonDasar graf={{ ...graf, idPewaris: idMayit }} isiNode={id => {
+        const orang = graf.orang[id]!;
+        if (id === idMayit) return { kelas: 'almarhum', peran: 'Pewaris', nama: orang.nama ?? 'Almarhum' };
+        if (orang.penghubung || orang.statusHidup === 'wafat') {
+          const kunciPeran = peran[id]?.kunci as KunciAhliWaris | undefined;
+          return { kelas: 'penghubung', peran: 'Sudah wafat', nama: (kunciPeran && LABEL_SEHARI[kunciPeran]) || 'Kerabat' };
+        }
+        const kunci = kunciDari(id);
+        return kunci
+          ? { kelas: `g-${jenisDari(kunci)?.kelompok ?? 'saudara'}`, peran: '', nama: labelOrangChecklist(graf, idMayit, id, kunci) }
+          : { kelas: 'putus', peran: '', nama: orang.nama ?? 'Kerabat' };
+      }} />
+    </section>
+  );
+}
+
+/** Kerabat yang bukan ahli waris di sini: dicantumkan dengan keterangan dzawil arham, tidak bisa ditambahkan dulu. */
+function BukanAhliWaris({ daftar }: { daftar: string[] }) {
+  return (
+    <div className="bukan-ahli-waris">
+      <span className="caption-isian">Bukan ahli waris di sini <InfoTip label="Tentang dzawil arham">{TEKS_DZAWIL_ARHAM}</InfoTip></span>
+      <ul>{daftar.map(nama => <li key={nama}>{nama}<span className="tag-dzawil">dzawil arham · belum dihitung</span></li>)}</ul>
+    </div>
+  );
+}
+
+/** Paman & sepupu (pihak ayah): paman atau sepupu dulu, lalu hubungan paman dengan ayah pewaris. */
+function PilihPamanSepupu({ graf, idMayit, saatTambah }: {
+  graf: GrafKeluarga; idMayit: IdOrang; saatTambah: (kunci: KunciAhliWaris, idInduk?: IdOrang) => void;
+}) {
+  const [siapa, setSiapa] = useState<'PAMAN' | 'SEPUPU' | null>(null);
+  const [hubungan, setHubungan] = useState<typeof HUBUNGAN_PAMAN[number] | null>(null);
+  return (
+    <fieldset className="kelompok-kerabat" aria-label="Paman & sepupu dari pihak ayah">
+      <legend>Paman & sepupu dari pihak ayah</legend>
+      <div className="tahap-pilih" role="radiogroup" aria-label="Siapa">
+        {([['PAMAN', 'Paman'], ['SEPUPU', 'Sepupu laki-laki']] as const).map(([nilai, label]) => (
+          <button key={nilai} type="button" role="radio" aria-checked={siapa === nilai} className="chip-pilih" onClick={() => setSiapa(nilai)}>{label}</button>
+        ))}
+      </div>
+      {siapa && (
+        <div className="tahap-pilih" role="radiogroup" aria-label="Hubungan paman dengan ayah pewaris">
+          {HUBUNGAN_PAMAN.map(pilihan => (
+            <button key={pilihan.nilai} type="button" role="radio" aria-checked={hubungan?.nilai === pilihan.nilai} className="chip-pilih" onClick={() => setHubungan(pilihan)}>
+              {pilihan.label}
+            </button>
+          ))}
+        </div>
+      )}
+      {siapa && hubungan && (
+        <TombolDenganInduk kunci={hubungan[siapa]} graf={graf} idMayit={idMayit} penuh={false} saatTambah={saatTambah}
+          label={`Tambah ${siapa === 'PAMAN' ? 'paman' : 'sepupu laki-laki'} (${hubungan.ringkas})`} />
+      )}
+    </fieldset>
   );
 }
 
@@ -130,8 +214,8 @@ function PilihSaudara({ saatTambah }: { saatTambah: (kunci: KunciAhliWaris) => v
 }
 
 /** Kerabat bertingkat (cucu, keponakan, sepupu): bila calon induknya lebih dari satu, tanya "dari siapa". */
-function TombolDenganInduk({ kunci, graf, idMayit, penuh, saatTambah }: {
-  kunci: KunciAhliWaris; graf: GrafKeluarga; idMayit: IdOrang; penuh: boolean; saatTambah: (kunci: KunciAhliWaris, idInduk?: IdOrang) => void;
+function TombolDenganInduk({ kunci, graf, idMayit, penuh, saatTambah, label }: {
+  kunci: KunciAhliWaris; graf: GrafKeluarga; idMayit: IdOrang; penuh: boolean; saatTambah: (kunci: KunciAhliWaris, idInduk?: IdOrang) => void; label?: string;
 }) {
   const kunciInduk = jenisDari(kunci)?.kunciInduk;
   const calonInduk = kunciInduk ? daftarInduk(graf, idMayit, kunciInduk) : [];
@@ -139,9 +223,9 @@ function TombolDenganInduk({ kunci, graf, idMayit, penuh, saatTambah }: {
   const indukTerpilih = idInduk && calonInduk.includes(idInduk) ? idInduk : undefined;
   return (
     <div className="tambah-berinduk">
-      <button type="button" className="tombol-tambah" aria-label={`Tambah ${LABEL_SEHARI[kunci]}`} disabled={penuh}
+      <button type="button" className="tombol-tambah" aria-label={label ?? `Tambah ${LABEL_SEHARI[kunci]}`} disabled={penuh}
         onClick={() => saatTambah(kunci, indukTerpilih)}>
-        <span aria-hidden="true">+</span>{LABEL_SEHARI[kunci]}
+        <span aria-hidden="true">+</span>{label ?? LABEL_SEHARI[kunci]}
       </button>
       {calonInduk.length > 1 && (
         <div className="tahap-pilih" role="radiogroup" aria-label={`${LABEL_SEHARI[kunci]} dari siapa?`}>
