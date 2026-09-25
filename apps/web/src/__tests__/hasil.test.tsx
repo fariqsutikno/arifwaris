@@ -124,22 +124,33 @@ describe('layar hasil', () => {
     expect(within(pembagian()).getByText('Rp 12.500.000')).toBeTruthy();
   });
 
-  it('dari modal orang: hapus orang itu saja, atau tambah satu lagi yang sejenis', () => {
+  it('dari modal orang: Ubah jumlah membuka modal − n + khusus jenis itu', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(within(pembagian()).getByRole('button', { name: /Anak perempuan/ }));
-    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /Tambah satu Anak perempuan lagi/ }));
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Ubah jumlah' }));
+    const modal = screen.getByRole('dialog', { name: /Ubah jumlah Anak perempuan/ });
+    fireEvent.click(within(modal).getByRole('button', { name: 'Tambah Anak perempuan' }));
     expect(within(pembagian()).getAllByText(/^Anak perempuan/).length).toBe(2);
-    fireEvent.click(within(pembagian()).getByRole('button', { name: /^Istri/ }));
-    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /Hapus Istri/ }));
-    expect(within(pembagian()).queryByText(/^Istri/)).toBeNull();
+    fireEvent.click(within(modal).getByRole('button', { name: 'Kurangi Anak perempuan' }));
+    fireEvent.click(within(modal).getByRole('button', { name: 'Kurangi Anak perempuan' }));
+    expect(within(pembagian()).queryByText(/^Anak perempuan/)).toBeNull();
   });
 
-  it('tombol aksi di modal orang ringkas', () => {
+  it('modal orang: kenapa segitu hanya tentang dia, pengaruhnya ke orang lain dipisah', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(within(pembagian()).getByRole('button', { name: /Anak perempuan/ }));
+    fireEvent.click(within(pembagian()).getByRole('button', { name: /^Anak laki-laki/ }));
     const dialog = screen.getByRole('dialog');
-    expect(within(dialog).getByRole('button', { name: /Hapus Anak perempuan/ }).textContent).toBe('Hapus');
-    expect(within(dialog).getByRole('button', { name: /Tambah satu Anak perempuan lagi/ }).textContent).toBe('+1');
+    const kenapa = dialog.querySelector('.kenapa-utama')!;
+    expect(kenapa.textContent).toMatch(/sisa/);
+    expect(kenapa.textContent).not.toMatch(/Istri mendapat/);
+    expect(within(dialog).getByText('Ahli waris lain yang terdampak')).toBeTruthy();
+    expect(within(dialog).getByText('Cara menghitungnya')).toBeTruthy();
+  });
+
+  it('hanya istri: hasil tetap tampil, sisa ke dzawil arham / baitul mal', () => {
+    render(<Uji awal={buat(['ISTRI'], { kotor: 4_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n })} />);
+    expect(within(pembagian()).getByText(/Sisa: dzawil arham \/ baitul mal/)).toBeTruthy();
+    expect(within(pembagian()).getByText('Rp 3.000.000')).toBeTruthy();
   });
 
   it('pintasan "Ubah ahli waris" membuka langkah ahli waris', () => {

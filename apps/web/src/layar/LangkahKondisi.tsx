@@ -9,6 +9,8 @@ import type { Kasus } from '../kasus';
 import { Tombol } from '../ui/komponen';
 import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
 
+const TAMPILKAN_MUNASAKHAT = false;
+
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
 
 export function LangkahKondisi({ kasus, ubah }: Props) {
@@ -50,7 +52,7 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
           <span>Tidak ada</span><small>Langsung lihat hasil.</small>
         </button>
         <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
-          <span>Ada</span><small>Beda agama, terlibat kematian, atau ada yang wafat sebelum harta dibagi.</small>
+          <span>Ada</span><small>Beda agama atau terlibat dalam kematian almarhum.</small>
         </button>
       </div>
       {adaKondisi && <>
@@ -61,14 +63,15 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
             saatUbah={tercentang => ubahOrang(id, { agama: tercentang ? 'nonIslam' : 'islam' })} />
         ))}
       </Kondisi>
-      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Yang dimaksud: kematian pewaris pertama, apa pun bentuknya."
+      <Kondisi judul="Ada yang terlibat dalam kematian almarhum" keterangan="Apa pun bentuknya."
         akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
         {daftarAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={!!kasus.graf.orang[id]!.membunuhPewaris}
             saatUbah={tercentang => ubahOrang(id, { membunuhPewaris: tercentang })} />
         ))}
       </Kondisi>
-      <PanelMunasakhat kasus={kasus} ubah={ubah} daftarAhliWaris={daftarAhliWaris} label={label} />
+      {/* Munasakhat disembunyikan sementara dari UI; engine & panel tetap ada. */}
+      {TAMPILKAN_MUNASAKHAT && <PanelMunasakhat kasus={kasus} ubah={ubah} daftarAhliWaris={daftarAhliWaris} label={label} />}
       </>}
     </div>
   );

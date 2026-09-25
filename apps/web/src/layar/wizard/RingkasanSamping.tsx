@@ -16,7 +16,7 @@ export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
     <div className="ringkasan-samping">
       <h2>Ringkasan kasus</h2>
       <dl>
-        <Baris label="Pewaris" terisi={!!pewaris}>
+        <Baris label="Almarhum" terisi={!!pewaris}>
           {pewaris ? `${pewaris.jenisKelamin === 'L' ? 'Laki-laki' : 'Perempuan'}${pewaris.nama ? ` · ${pewaris.nama}` : ''}` : 'Belum dipilih'}
         </Baris>
         <Baris label="Harta peninggalan" terisi={!!tirkah && tirkah.kotor > 0n}>{tirkah && tirkah.kotor > 0n ? formatRupiah(tirkah.kotor) : 'Belum diisi'}</Baris>

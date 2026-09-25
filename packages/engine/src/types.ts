@@ -82,6 +82,9 @@ export const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = {
 
 export type IdKelompok = string;
 
+/** [R14-3] ada dzawil arham → mereka; tidak ada → baitul mal [R02-1]. */
+export type TujuanSisa = 'dzawilArham' | 'baitulMal';
+
 export interface TabelMasalah {
   kolom: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perOrang' | 'nominal'>;
   /** Penyebut tiap kolom: ashl, lalu 'aul/radd/tashih bila terjadi. */
@@ -147,6 +150,8 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
       a: bigint; b: bigint; hubungan: Nisab | HubunganInkisar; fpb: bigint; hasil: bigint }
   | { jenis: 'KELAS_MASALAH'; kelas: 'adilah' | 'ailah' | 'raddA' | 'raddB'; jumlahSaham: bigint; ashl: bigint }
   | { jenis: 'AUL'; dari: bigint; menjadi: bigint }
+  // [R09-9] hanya pasangan: pasangan tidak menerima radd; sisa keluar dari pembagian ahli waris [R14-3] [R02-1].
+  | { jenis: 'SISA_KELUAR'; saham: bigint; ashl: bigint; tujuan: TujuanSisa }
   | { jenis: 'RADD';
       zawjiyyah?: { kelompok: IdKelompok; ashl: bigint; sahamPasangan: bigint; sisa: bigint };   // hanya raddB
       raddiyyah: { saham: Record<IdKelompok, bigint>; ashl: bigint };
@@ -178,6 +183,8 @@ export type HasilEngine =
       tabel: TabelMasalah;
       jejak: LangkahJejak[];
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
+      /** Hanya pasangan yang mewarisi: sisa tidak dibagi ke ahli waris, tapi ke dzawil arham / baitul mal. */
+      sisaKeluar?: { tujuan: TujuanSisa; saham: bigint; nominal: Uang };
       ruleset: Ruleset;
       konfigurasi: KonfigurasiMadzhab;
       versiKb: string };

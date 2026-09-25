@@ -44,17 +44,22 @@ export function hitung(input: InputEngine): HasilEngine {
   if ('status' in klasifikasi) return klasifikasi;
 
   // 5. Tashih: perbesar ashl supaya saham tiap orang bulat.
-  const tashih = terapkanTashih(ahliWaris.daftarKelompok, klasifikasi.saham, klasifikasi.dasar);
+  const tashih = terapkanTashih(ahliWaris.daftarKelompok, klasifikasi.saham, klasifikasi.dasar, klasifikasi.sisaKeluar?.saham);
 
   // 6. Ubah saham jadi rupiah, dibulatkan ke bawah; sisa pembulatan dilaporkan terpisah.
   const nominal = bagikanNominal(tashih.perOrang, tashih.tashih, tirkah.bersih, input.pembulatan.satuan);
+  // Sisa yang keluar (hanya pasangan mewarisi): harta bersih × sisa ÷ tashih, dibulatkan ke bawah ke rupiah.
+  const nominalSisaKeluar = klasifikasi.sisaKeluar ? tirkah.bersih * tashih.sisaKeluar / tashih.tashih : 0n;
 
   return {
     status: 'OK',
     statusOrang: ahliWaris.statusOrang,
     tabel: susunTabel(masalah, klasifikasi, tashih, nominal.nominal, ahliWaris.statusOrang),
     jejak: [tirkah.jejak, ...ahliWaris.jejak, ...masalah.jejak, ...klasifikasi.jejak, ...tashih.jejak, ...nominal.jejak],
-    pembulatan: { satuan: input.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan },
+    pembulatan: { satuan: input.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan - nominalSisaKeluar },
+    ...(klasifikasi.sisaKeluar
+      ? { sisaKeluar: { tujuan: klasifikasi.sisaKeluar.tujuan, saham: tashih.sisaKeluar, nominal: nominalSisaKeluar } }
+      : {}),
     ruleset: input.ruleset,
     konfigurasi: input.konfigurasi,
     versiKb: input.versiKb,

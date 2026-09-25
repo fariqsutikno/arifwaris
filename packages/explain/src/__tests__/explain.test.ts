@@ -216,3 +216,36 @@ describe('keterkaitan dengan glosarium dan dalil', () => {
     expect(jelaskanKasus(bab16.case10.input).daftarBab[1]!.daftarBaris[0]!.refs).toEqual(['R04-2']);
   });
 });
+
+describe('penjelasan per orang: subjek, ashabah terdekat, sisa keluar', () => {
+  const semuaBaris = (e: Penjelasan) => e.daftarBab.flatMap(babIni => babIni.daftarBaris);
+
+  test('baris hajb & bagian ditandai subjeknya [C16-16]', () => {
+    const baris = semuaBaris(jelaskanKasus(bab16.case16.input));
+    const tentangCucu = baris.filter(barisIni => barisIni.subjek?.includes('GS1'));
+    expect(tentangCucu.map(keTeksBiasa).join(' ')).toMatch(/terhalang/);
+    expect(baris.find(barisIni => barisIni.subjek?.includes('H1'))).toBeTruthy();
+  });
+
+  test('ashabah bukan anak (saudara sebapak, C16-19): tidak ada yang lebih dekat [R05-2] [R05-3]', () => {
+    const { case19 } = bab16;
+    const hasil = hitung(case19.input);
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    const ashabah = hasil.jejak.find((langkahIni): langkahIni is Extract<LangkahJejak, { jenis: 'ASHABAH' }> => langkahIni.jenis === 'ASHABAH')!;
+    const anggota = hasil.tabel.baris.find(barisIni => barisIni.kelompok === ashabah.kelompok)!.anggota;
+    const teks = semuaBaris(jelaskan(hasil, case19.input.graf)).filter(barisIni => barisIni.subjek?.includes(anggota[0]!)).map(keTeksBiasa).join(' ');
+    expect(teks).toMatch(/tidak ada yang lebih dekat darinya: anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, atau saudara laki-laki kandung/);
+  });
+
+  test('hanya istri: hasil tetap dijelaskan, sisa ke dzawil arham/baitul mal [R09-9]', () => {
+    const input = bab16.case01.input;
+    const hanyaIstri: InputEngine = {
+      ...input,
+      graf: { idPewaris: 'D', pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }],
+        orang: { D: { id: 'D', jenisKelamin: 'L', statusHidup: 'wafat', agama: 'islam' }, W1: { id: 'W1', jenisKelamin: 'P', statusHidup: 'hidup', agama: 'islam' } } },
+    };
+    const teks = semuaBaris(jelaskanKasus(hanyaIstri)).map(keTeksBiasa).join(' ');
+    expect(teks).toMatch(/tersisa 3 bagian/);
+    expect(teks).toMatch(/baitul mal/);
+  });
+});

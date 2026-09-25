@@ -58,7 +58,7 @@ function babAhliWaris(konteks: Konteks): Bab {
     const siapa = konteks.sebutan.sebut([langkah.idOrang]);
     daftarBaris.push(buatBaris(langkah.mani === 'qatl'
       ? kalimat`${siapa} tidak mendapat warisan karena membunuh ${konteks.sebutan.pewaris()}; pembunuh terhalang dari warisan (${istilah('mani', "mani'")}).`
-      : kalimat`${siapa} tidak mendapat warisan karena berbeda agama dengan ${konteks.sebutan.pewaris()} (${istilah('mani', "mani'")}).`, langkah.refs));
+      : kalimat`${siapa} tidak mendapat warisan karena berbeda agama dengan ${konteks.sebutan.pewaris()} (${istilah('mani', "mani'")}).`, langkah.refs, [langkah.idOrang]));
   }
 
   const dikelompokkan = new Map<string, { mahjub: IdOrang[]; langkah: Langkah<'HAJB_HIRMAN'> }>();
@@ -70,7 +70,7 @@ function babAhliWaris(konteks: Konteks): Bab {
   }
   for (const { mahjub, langkah } of dikelompokkan.values()) {
     daftarBaris.push(buatBaris(kalimat`${sebutSemua(konteks, mahjub)} tidak mendapat bagian karena terhalang oleh ${sebutSemua(konteks, langkah.hajib)} `
-      .concat(kalimat`(${istilah('hajb-hirman', 'hajb hirman')}).`), langkah.refs));
+      .concat(kalimat`(${istilah('hajb-hirman', 'hajb hirman')}).`), langkah.refs, mahjub));
   }
   return { judul: 'Siapa yang mendapat warisan', daftarBaris, kolom: 'ahliWaris' };
 }
@@ -98,15 +98,21 @@ function babBagian(konteks: Konteks): Bab {
     if (langkah.jenis === 'FARDH') {
       const anggota = konteks.anggotaDari(langkah.kelompok);
       const nuqshan = konteks.daftarLangkah('HAJB_NUQSHAN').find(langkahNuqshan => anggota.includes(langkahNuqshan.terdampak));
-      daftarBaris.push(buatBaris(ceritaFardh(konteks, langkah, nuqshan ? kalimat`, bukan ${nuqshan.dari},` : [], nuqshan ? catatanNuqshan : () => []), langkah.refs));
+      daftarBaris.push(buatBaris(ceritaFardh(konteks, langkah, nuqshan ? kalimat`, bukan ${nuqshan.dari},` : [], nuqshan ? catatanNuqshan : () => []), langkah.refs, anggota));
     } else if (langkah.jenis === 'KASUS_KHUSUS') {
       daftarBaris.push(buatBaris(ceritaKasusKhusus(langkah.nama), langkah.refs));
     } else if (langkah.jenis === 'ASHABAH' && !kelompokFardh.has(langkah.kelompok)) {
       if (langkah.pilihanJadd) {
         const kakek = konteks.anggotaDari(langkah.kelompok).filter(id => konteks.sebutan.peranDari(id)?.kunci === 'KAKEK');
-        daftarBaris.push(buatBaris(ceritaPilihanKakek(konteks, sebutSemua(konteks, kakek), langkah.pilihanJadd), langkah.refs));
+        daftarBaris.push(buatBaris(ceritaPilihanKakek(konteks, sebutSemua(konteks, kakek), langkah.pilihanJadd), langkah.refs, kakek));
       }
-      daftarBaris.push(buatBaris(ceritaAshabah(konteks, langkah), langkah.refs));
+      const anggota = konteks.anggotaDari(langkah.kelompok);
+      daftarBaris.push(buatBaris(ceritaAshabah(konteks, langkah), langkah.refs, anggota));
+      const lebihDekat = langkah.jenisAshabah === 'binNafsi' ? ASHABAH_LEBIH_DEKAT[konteks.sebutan.peranDari(anggota[0]!)?.kunci ?? ''] : undefined;
+      if (lebihDekat) {
+        daftarBaris.push(buatBaris(kalimat`Sisa harta diberikan kepada kerabat laki-laki yang paling dekat. ${sebutKelompok(konteks, langkah.kelompok)} yang mengambilnya `
+          .concat(kalimat`karena tidak ada yang lebih dekat darinya: ${lebihDekat}.`), ['R05-1', 'R05-2', 'R05-3'], anggota));
+      }
     }
   }
   return { judul: 'Bagian masing-masing', daftarBaris, kolom: 'bagian' };
@@ -186,11 +192,28 @@ function ceritaKasusKhusus(nama: Langkah<'KASUS_KHUSUS'>['nama']): Potongan[] {
   }
 }
 
+// [R05-2] urutan ashabah bi nafsihi [SYF]: bunuwwah → ubuwwah → juduwwah & ukhuwwah (sejajar) → bani al-ikhwah
+// (gugur oleh kakek) → 'umumah & anaknya; [R05-3] dalam satu jihah yang kandung didahulukan dari yang sebapak.
+// Isinya: siapa saja yang, bila ada, lebih berhak atas sisa daripada peran ini.
+const ASHABAH_LEBIH_DEKAT: Partial<Record<string, string>> = {
+  CUCU_LK: 'anak laki-laki',
+  AYAH: 'anak laki-laki atau cucu laki-laki dari anak laki-laki',
+  KAKEK: 'anak laki-laki, cucu laki-laki dari anak laki-laki, atau ayah',
+  SAUDARA_KANDUNG: 'anak laki-laki, cucu laki-laki dari anak laki-laki, atau ayah',
+  SAUDARA_SEBAPAK: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, atau saudara laki-laki kandung',
+  KEPONAKAN_KANDUNG: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, atau saudara laki-laki',
+  KEPONAKAN_SEBAPAK: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, atau keponakan laki-laki kandung',
+  PAMAN_KANDUNG: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, atau keponakan laki-laki',
+  PAMAN_SEBAPAK: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, keponakan laki-laki, atau paman kandung',
+  SEPUPU_KANDUNG: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, keponakan laki-laki, atau paman',
+  SEPUPU_SEBAPAK: 'anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, keponakan laki-laki, paman, atau sepupu laki-laki kandung',
+};
+
 function ceritaAshabah(konteks: Konteks, langkah: Langkah<'ASHABAH'>): Potongan[] {
   const subjek = sebutKelompok(konteks, langkah.kelompok);
   switch (langkah.jenisAshabah) {
     case 'binNafsi':
-      return kalimat`${subjek} mengambil seluruh sisa harta setelah bagian-bagian di atas (${istilah('ashabah', 'ashabah')}).`;
+      return kalimat`${subjek} mengambil seluruh sisa harta setelah bagian tertentu (fardh) dibagikan (${istilah('ashabah', 'ashabah')}).`;
     case 'bilGhair':
       return kalimat`${subjek} mengambil sisa harta bersama-sama (${istilah('bil-ghair', 'ashabah bil ghair')}): laki-laki mendapat dua kali bagian perempuan.`;
     case 'maalGhair':
@@ -262,6 +285,8 @@ function babPenyebut(konteks: Konteks): Bab {
 
 function babPenyesuaian(konteks: Konteks): Bab {
   const [kelas] = konteks.daftarLangkah('KELAS_MASALAH');
+  const [sisaKeluar] = konteks.daftarLangkah('SISA_KELUAR');
+  if (sisaKeluar) return { judul: 'Masih ada sisa, untuk siapa?', kolom: 'penyesuaian', daftarBaris: [ceritaSisaKeluar(konteks, sisaKeluar)] };
   if (!kelas) throw new Error('jejak tanpa KELAS_MASALAH');
   const baris = konteks.hasil.tabel.baris;
   const rincian = baris.length > 1 ? `${baris.map(barisTabel => barisTabel.sel['ashl']).join(' + ')} = ` : '';
@@ -281,6 +306,18 @@ function babPenyesuaian(konteks: Konteks): Bab {
     case 'raddA': case 'raddB':
       return { judul: 'Masih ada sisa, untuk siapa?', kolom: 'penyesuaian', daftarBaris: ceritaRadd(konteks, kelas, rincian) };
   }
+}
+
+/** Hanya pasangan yang mewarisi [R09-9]: fardh penuh, sisanya keluar dari ahli waris [R14-3] [R02-1]. */
+export function ceritaSisaKeluar(konteks: Konteks, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
+  const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
+  const tujuan = langkah.tujuan === 'dzawilArham'
+    ? kalimat`diberikan kepada kerabat dzawil arham (kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan).`
+    : kalimat`diberikan kepada kerabat dzawil arham bila ada (misalnya ayahnya ibu atau anak dari anak perempuan); bila tidak ada, diserahkan ke baitul mal (kas umum umat Islam).`;
+  return buatBaris([
+    ...kalimat`Dari ${langkah.ashl} bagian, ${sebutSemua(konteks, pasangan)} mendapat ${langkah.ashl - langkah.saham}. `,
+    ...kalimat`Masih tersisa ${langkah.saham} bagian, tetapi suami/istri tidak menerima tambahan dari sisa (${istilah('radd', 'radd')}). Sisa itu `, ...tujuan,
+  ], langkah.refs, pasangan);
 }
 
 function ceritaRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: string): BarisPenjelasan[] {
@@ -377,6 +414,11 @@ function babHasil(konteks: Konteks): Bab {
         ? kalimat`${siapa}: tidak mendapat bagian karena sisa harta sudah habis.`
         : kalimat`${siapa}: ${saham} bagian (${saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(nominal)}` : ''}.`, ['R11-1']));
     }
+  }
+  const { sisaKeluar } = konteks.hasil;
+  if (sisaKeluar) {
+    daftarBaris.push(buatBaris(kalimat`Sisa: ${sisaKeluar.saham} bagian (${sisaKeluar.saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(sisaKeluar.nominal)}` : ''}, `
+      .concat(kalimat`${sisaKeluar.tujuan === 'dzawilArham' ? 'untuk dzawil arham' : 'untuk dzawil arham bila ada, bila tidak ke baitul mal'}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []));
   }
   if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     const perSatuan = pembulatan.satuan > 1n;

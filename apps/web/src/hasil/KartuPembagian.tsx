@@ -71,6 +71,7 @@ export function KartuPembagian(props: Props) {
                 </span>
               );
             })}
+            {ringkasan.sisaKeluar && <span className="sisa-keluar" style={{ flex: Number(ringkasan.sisaKeluar.saham) }}>{pecahanTeks(ringkasan.sisaKeluar.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
           </div>
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => {
@@ -92,6 +93,21 @@ export function KartuPembagian(props: Props) {
                 </li>
               );
             })}
+            {ringkasan.sisaKeluar && (
+              <li>
+                <div className="baris-bagian sisa">
+                  <span className="titik putus" aria-hidden="true" />
+                  <span className="nama-bagian">{ringkasan.sisaKeluar.judul}<small>{ringkasan.sisaKeluar.keterangan}</small></span>
+                  <span className="jumlah-bagian">
+                    <span className="angka">{uang(ringkasan.sisaKeluar.nominal)}</span>
+                    <span className="sub-bagian">
+                      {pengaturan.pecahan && <span className="frac">{pecahanTeks(ringkasan.sisaKeluar.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
+                      {pengaturan.persen && <span>{persenTeks(ringkasan.sisaKeluar.saham, ringkasan.penyebut)}</span>}
+                    </span>
+                  </span>
+                </div>
+              </li>
+            )}
           </ul>
           {ringkasan.terhalang.map(orang => {
             const { className, ...pemicu } = atribut(orang.id);

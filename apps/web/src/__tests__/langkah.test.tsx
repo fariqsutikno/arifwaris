@@ -22,7 +22,8 @@ it('pewaris laki-laki: ada kartu istri, tidak ada kartu suami', () => {
   expect(screen.queryByLabelText('Tambah Suami')).toBeNull();
 });
 
-it('tambah anak lk lalu tandai wafat sebelum pembagian', () => {
+// Munasakhat disembunyikan dari UI (TAMPILKAN_MUNASAKHAT di LangkahKondisi).
+it.skip('tambah anak lk lalu tandai wafat sebelum pembagian', () => {
   render(<Uji awal={kasusBaru('L')} />);
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
   fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
@@ -32,7 +33,7 @@ it('tambah anak lk lalu tandai wafat sebelum pembagian', () => {
   expect(screen.getByText(/Ahli waris Anak laki-laki/)).toBeTruthy();
 });
 
-it('kondisi beda agama juga menawarkan ahli waris mayit munasakhat', () => {
+it.skip('kondisi beda agama juga menawarkan ahli waris mayit munasakhat', () => {
   render(<Uji awal={kasusBaru('L')} />);
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
   fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));

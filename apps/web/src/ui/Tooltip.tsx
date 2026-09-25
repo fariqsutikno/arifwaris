@@ -63,3 +63,16 @@ export function InfoTip({ label, children }: { label: string; children: ReactNod
     </span>
   );
 }
+
+/** Tombol ikon dengan label di tooltip kita (bukan title browser). Klik menjalankan aksi, bukan membuka tooltip. */
+export function TombolIkon({ label, className = 'tombol-ikon', onClick, children, ...lain }: {
+  label: string; className?: string; onClick: () => void; children: ReactNode;
+} & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'className' | 'children'>) {
+  const { pemicuProps, isi } = useTooltip();
+  return (
+    <span className="info-tip">
+      <button type="button" className={className} aria-label={label} {...lain} {...pemicuProps} onClick={onClick}>{children}</button>
+      {isi(label)}
+    </span>
+  );
+}

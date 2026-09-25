@@ -30,7 +30,7 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     const halang = terhalang.get(id);
     const nama = id === graf.idPewaris ? orang.nama ?? 'Almarhum' : namaOrang(graf, ringkasan.statusOrang, id);
     if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: `${nama} (tidak diisi)` };
-    if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? 'Pewaris' : 'Wafat sebelum dibagi', nama };
+    if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? 'Almarhum' : 'Wafat sebelum dibagi', nama };
     if (sedangMenebak) return { kelas: dapat || halang ? `g-${(dapat ?? halang)!.kelompok}` : 'putus', peran: '', nama };
     if (dapat) return {
       kelas: `g-${dapat.kelompok}`, peran: '', nama,

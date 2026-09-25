@@ -45,6 +45,8 @@ export interface RingkasanHasil {
   penyebut: bigint;
   tirkah: LangkahTirkah;
   sisaPembulatan: bigint;
+  /** Hanya pasangan yang mewarisi: sisa harta keluar dari ahli waris (engine `sisaKeluar`). */
+  sisaKeluar?: { saham: bigint; nominal: bigint; judul: string; keterangan: string };
   tentang: TentangKasus;
   statusOrang: Record<IdOrang, StatusOrang>;
 }
@@ -76,6 +78,12 @@ export function adaTidakPas(kasus: Kasus): boolean {
   return tampil.hasil.pembulatan.sisaPembulatan > 0n;
 }
 
+// [R09-9] pasangan tidak menerima radd; sisa ke dzawil arham [R14-3], bila tidak ada ke baitul mal [R02-1].
+const TEKS_SISA_KELUAR = {
+  dzawilArham: { judul: 'Sisa untuk dzawil arham', keterangan: 'Suami/istri tidak menerima sisa' },
+  baitulMal: { judul: 'Sisa: dzawil arham / baitul mal', keterangan: 'Untuk dzawil arham bila ada; bila tidak, ke baitul mal' },
+} as const;
+
 // ─── Kasus biasa ──────────────────────────────────────────────────────────────
 
 function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
@@ -85,7 +93,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
       id, nama: namaOrang(graf, hasil.statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham, nominal,
-      keterangan: baris.fardh ? `Bagian tertentu ${baris.fardh.n}/${baris.fardh.d}` : 'Sisa (ashabah)',
+      keterangan: (baris.fardh ? `Bagian tertentu ${baris.fardh.n}/${baris.fardh.d}` : 'Sisa (ashabah)') + asalInduk(graf, hasil.statusOrang, id, kunci),
       ...(baris.fardh ? { fardh: { n: baris.fardh.n, d: baris.fardh.d } } : {}),
       ashabah: !!baris.ashabah,
       ...(alasanPerKelompok.has(baris.kelompok) ? { kodeAlasan: alasanPerKelompok.get(baris.kelompok)! } : {}),
@@ -96,9 +104,18 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     terhalang: daftarTerhalang(graf, hasil.statusOrang),
     tirkah: langkahTirkah(hasil.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
+    ...(hasil.sisaKeluar ? { sisaKeluar: { saham: hasil.sisaKeluar.saham, nominal: hasil.sisaKeluar.nominal, ...TEKS_SISA_KELUAR[hasil.sisaKeluar.tujuan] } } : {}),
     tentang: tentangKasus(hasil.jejak),
     statusOrang: hasil.statusOrang,
   };
+}
+
+/** Cucu/keponakan/sepupu: " · dari Ahmad" supaya jelas dari cabang mana, termasuk induk yang sudah wafat. */
+function asalInduk(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>, id: IdOrang, kunci: KunciAhliWaris | undefined): string {
+  const idInduk = kunci && jenisDari(kunci)?.kunciInduk ? graf.orang[id]?.idAyah : undefined;
+  if (!idInduk) return '';
+  const induk = graf.orang[idInduk]!;
+  return ` · dari ${induk.nama ?? namaOrang(graf, statusOrang, idInduk)}${induk.penghubung || induk.statusHidup === 'wafat' ? ' (sudah wafat)' : ''}`;
 }
 
 // ─── Munasakhat ───────────────────────────────────────────────────────────────
@@ -172,7 +189,7 @@ function daftarTerhalang(graf: GrafKeluarga, statusOrang: Record<IdOrang, Status
 }
 
 const ALASAN_MANI: Record<Extract<StatusOrang, { jenis: 'mamnu' }>['mani'], string> = {
-  qatl: 'terlibat dalam kematian pewaris', ikhtilafDin: 'berbeda agama dengan pewaris', riqq: 'berstatus budak',
+  qatl: 'terlibat dalam kematian almarhum', ikhtilafDin: 'berbeda agama dengan almarhum', riqq: 'berstatus budak',
   istibham: 'urutan wafatnya tidak diketahui', daur: 'akan menimbulkan hitungan berputar (daur)',
 };
 

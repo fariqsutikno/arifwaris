@@ -16,7 +16,8 @@ export type Potongan =
   | { jenis: 'orang'; daftarIdOrang: IdOrang[]; teks: string }
   | { jenis: 'istilah'; istilah: IdIstilah; teks: string; contoh?: string };
 
-export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[] }
+/** `subjek`: orang yang dibahas baris ini (bagiannya/haknya). Orang lain yang disebut = penyebab/pembanding. */
+export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[] }
 
 export const keTeksBiasa = (baris: BarisPenjelasan): string => baris.daftarPotongan.map(potonganIni => potonganIni.teks).join('');
 
@@ -46,7 +47,7 @@ export function kalimat(teksTetap: TemplateStringsArray, ...sisipan: Sisipan[]):
 }
 
 /** Baris kalimat: potongan yang membuka kalimat (awal baris atau setelah ". ") diberi huruf kapital. */
-export function buatBaris(daftarPotongan: Potongan[], refs: string[] = []): BarisPenjelasan {
+export function buatBaris(daftarPotongan: Potongan[], refs: string[] = [], subjek?: IdOrang[]): BarisPenjelasan {
   const kapitalAwal = (potonganIni: Potongan): Potongan => ({ ...potonganIni, teks: potonganIni.teks.charAt(0).toUpperCase() + potonganIni.teks.slice(1) });
   const gabungan = kalimat`${daftarPotongan}`;   // satukan teks bersebelahan dari beberapa template
   const hasilPotongan = gabungan.map((potonganIni, i) => {
@@ -54,7 +55,7 @@ export function buatBaris(daftarPotongan: Potongan[], refs: string[] = []): Bari
     const membukaKalimat = i === 0 || (sebelumnya?.jenis === 'teks' && /[.!?]\s$/.test(sebelumnya.teks));
     return membukaKalimat ? kapitalAwal(potonganIni) : potonganIni;
   });
-  return { daftarPotongan: hasilPotongan, refs };
+  return { daftarPotongan: hasilPotongan, refs, ...(subjek ? { subjek } : {}) };
 }
 
 /** "a", "a dan b", "a, b, dan c" — untuk daftar Potongan[]. */

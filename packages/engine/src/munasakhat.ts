@@ -38,6 +38,8 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
     const tirkah = urutanKe === 0 ? input.dasar.tirkah : TANPA_TIRKAH;
     const hasil = hitung({ ...input.dasar, tirkah, graf: grafPada(input, urutan, urutanKe) });
     if (hasil.status !== 'OK') return { ...hasil, mayit };
+    // Jami'ah hanya menjumlah saham ahli waris; sisa yang keluar ke dzawil arham/baitul mal belum dimodelkan di bab 12.
+    if (hasil.sisaKeluar) return { status: 'TIDAK_DIDUKUNG', alasan: 'Munasakhat dengan sisa ke dzawil arham/baitul mal belum didukung.', refs: ['R09-9'], mayit };
     daftarLangkah.push({ mayit, hasil });
 
     const sahamMasalah = sahamDari(hasil);

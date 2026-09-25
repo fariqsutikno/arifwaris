@@ -61,6 +61,9 @@ export function daftarInduk(graf: GrafKeluarga, idMayit: IdOrang, kunciInduk: Ku
   return kelompokkanPerKunci(graf, idMayit, () => true)[kunciInduk] ?? [];
 }
 
+/** Pilihan induk "yang lain, sudah wafat": selalu buat penghubung baru, bukan memakai yang sudah ada. */
+export const INDUK_BARU_WAFAT = 'INDUK_BARU_WAFAT';
+
 export function tambahAhliWaris(
   graf: GrafKeluarga, idMayit: IdOrang, kunci: KunciAhliWaris, opsi: { idInduk?: IdOrang } = {},
 ): GrafKeluarga {
@@ -92,6 +95,13 @@ export function hapusAhliWaris(graf: GrafKeluarga, idOrang: IdOrang): GrafKeluar
 // ─── Membangun orang per jenis ────────────────────────────────────────────────
 
 type Hasil = { graf: GrafKeluarga; idOrang: IdOrang };
+
+/** Nama opsional seseorang; string kosong menghapus nama. */
+export function ubahNama(graf: GrafKeluarga, idOrang: IdOrang, nama: string): GrafKeluarga {
+  const { nama: _lama, ...tanpaNama } = graf.orang[idOrang]!;
+  const namaBersih = nama.trim();
+  return { ...graf, orang: { ...graf.orang, [idOrang]: namaBersih ? { ...tanpaNama, nama: namaBersih } : tanpaNama } };
+}
 
 /** `sebagaiPenghubung`: dipakai saat jenis ini hanya dibutuhkan sebagai induk/orang tua. */
 function bangun(graf: GrafKeluarga, idMayit: IdOrang, kunci: KunciAhliWaris, sebagaiPenghubung: boolean, idInduk?: IdOrang): Hasil {
@@ -132,6 +142,7 @@ function bangun(graf: GrafKeluarga, idMayit: IdOrang, kunci: KunciAhliWaris, seb
 
 /** Induk pilihan pengguna; kalau tidak dipilih, pakai penghubung yang sudah ada atau buat baru. */
 function pilihInduk(graf: GrafKeluarga, idMayit: IdOrang, kunciInduk: KunciAhliWaris, idInduk?: IdOrang): Hasil {
+  if (idInduk === INDUK_BARU_WAFAT) return bangun(graf, idMayit, kunciInduk, true);
   if (idInduk) return { graf, idOrang: idInduk };
   const penghubungAda = daftarInduk(graf, idMayit, kunciInduk).find(id => graf.orang[id]!.penghubung);
   return penghubungAda ? { graf, idOrang: penghubungAda } : bangun(graf, idMayit, kunciInduk, true);

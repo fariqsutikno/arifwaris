@@ -2,7 +2,7 @@
 // Urutan bab sama dengan mode cerita: harta → ahli waris → bagian → ashl → klasifikasi → tashih → hasil.
 
 import type { AlasanFardh, PilihanJadd, IdOrang } from '@waris/engine';
-import type { Bab } from './cerita.js';
+import { ceritaSisaKeluar, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
 import { narasiNisab } from './nisab.js';
@@ -99,6 +99,8 @@ function babAshl(konteks: Konteks): Bab {
 
 function babKlasifikasi(konteks: Konteks): Bab {
   const [kelas] = konteks.daftarLangkah('KELAS_MASALAH');
+  const [sisaKeluar] = konteks.daftarLangkah('SISA_KELUAR');
+  if (sisaKeluar) return { judul: 'Klasifikasi', daftarBaris: [ceritaSisaKeluar(konteks, sisaKeluar)] };
   if (!kelas) throw new Error('jejak tanpa KELAS_MASALAH');
   const daftarBaris: BarisPenjelasan[] = [];
   if (kelas.kelas === 'adilah') daftarBaris.push(buatBaris(kalimat`Σ saham ${kelas.jumlahSaham} = ashl ${kelas.ashl} → ${istilah('adilah', "'adilah")}.`, kelas.refs));

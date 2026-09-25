@@ -3,7 +3,7 @@
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
 import { useEffect, useMemo, useState } from 'react';
-import type { IdOrang } from '@waris/engine';
+import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { unduhKasus } from '../berkas';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import { keJson, type Kasus } from '../kasus';
@@ -15,12 +15,13 @@ import { KartuLangkah } from '../hasil/KartuLangkah';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { ModalOrang } from '../hasil/ModalOrang';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
-import { hapusAhliWaris, tambahAhliWaris } from '../checklist';
+import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
 import { Pohon } from '../hasil/Pohon';
 import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { Tombol } from '../ui/komponen';
+import { TombolIkon } from '../ui/Tooltip';
 import { daftarBabDari } from './Penjelasan';
 
 interface Props { kasus: Kasus; tujuan: Tujuan | null; kirim: (aksi: Aksi) => void }
@@ -76,6 +77,7 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
   const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
   const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
+  const [kunciDiubah, setKunciDiubah] = useState<KunciAhliWaris | null>(null);
   const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
@@ -97,12 +99,17 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
               <button type="button" role="tab" aria-selected={tabKanvas === 'pohon'} onClick={() => setTabKanvas('pohon')}>Pohon keluarga</button>
               <button type="button" role="tab" aria-selected={tabKanvas === 'tabel'} onClick={() => setTabKanvas('tabel')}>Tabel faraidh</button>
             </div>
-            <span className="caption-isian">Klik orang untuk melihat penjelasannya</span>
+            <TombolIkon label="Ubah ahli waris" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" />
+                </svg>
+            </TombolIkon>
           </div>
           <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label="Pohon keluarga" data-tur="pohon">
             <Legenda />
             <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
               sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />
+            <p className="petunjuk-kanvas">Klik orang untuk melihat penjelasannya</p>
           </section>
           <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label="Tabel faraidh">
             {sedangMenebak
@@ -132,7 +139,6 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
       <div className="bar-bawah">
         <div className="bar-bawah-isi">
           <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>
-          <Tombol varian="ghost" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>Ubah ahli waris</Tombol>
           <span className="pengisi" />
           <Tombol onClick={() => unduhKasus(kasus)}>Simpan file</Tombol>
         </div>
@@ -141,9 +147,9 @@ function HasilOkLayar({ kasus, tujuan, kirim }: Props) {
       {orangDipilih && (
         <ModalOrang id={orangDipilih} graf={kasus.graf} ringkasan={ringkasan} daftarBab={daftarBab} bentuk={pengaturan.bentuk}
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
-          saatHapus={id => { setOrangDipilih(null); ubahGraf(graf => hapusAhliWaris(graf, id)); }}
-          saatTambahSejenis={kunci => { setOrangDipilih(null); ubahGraf(graf => tambahAhliWaris(graf, graf.idPewaris, kunci)); }} />
+          saatUbah={kunci => { setOrangDipilih(null); setKunciDiubah(kunci); }} />
       )}
+      {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (
         <ModalUbahHarta kasus={kasus} saatTutup={() => setUbahHartaTerbuka(false)}
           saatBukaKewajiban={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3 })}

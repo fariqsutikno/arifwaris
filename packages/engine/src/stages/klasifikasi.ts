@@ -5,7 +5,7 @@
 //   Keluar: penyebut baru (`dasar`), saham, dan kolom tabel tambahan ('aul/radd).
 
 import { fpb } from '@waris/math';
-import type { IdKelompok, HubunganInkisar, KonfigurasiMadzhab, LangkahJejak } from '../types.js';
+import type { IdKelompok, HubunganInkisar, KonfigurasiMadzhab, LangkahJejak, TujuanSisa } from '../types.js';
 import { penerimaSisa, type Masalah, type TidakDidukung } from './model.js';
 
 // [R09-4] hanya 6, 12, 24 yang bisa 'aul, dengan batas masing-masing.
@@ -18,6 +18,8 @@ export interface HasilKlasifikasi {
   dasar: bigint;
   saham: Record<IdKelompok, bigint>;
   kolomTambahan?: 'aul' | 'radd';
+  /** Saham (dalam `dasar`) yang tidak dibagi ke ahli waris: hanya pasangan yang mewarisi. */
+  sisaKeluar?: { saham: bigint; tujuan: TujuanSisa };
   jejak: LangkahJejak[];
 }
 
@@ -55,11 +57,7 @@ function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiM
   }
   const pasangan = daftarKelompok.find(kelompok => KELOMPOK_PASANGAN.includes(kelompok.id));
   const penerima = daftarKelompok.filter(kelompok => kelompok !== pasangan);
-  if (penerima.length === 0) {
-    return adaDzawilArham
-      ? { status: 'TIDAK_DIDUKUNG', alasan: 'Sisa harta ke dzawil arham (fase 3); pasangan tidak menerima radd.', refs: ['R09-9', 'R14-4'] }
-      : { status: 'TIDAK_DIDUKUNG', alasan: 'Sisa harta ke baitul mal; pasangan tidak menerima radd.', refs: ['R09-9', 'R02-1'] };
-  }
+  if (penerima.length === 0) return sisaKeluarDariPasangan(ashl, saham, total, adaDzawilArham);
 
   // [R09-7] ashl radd = jumlah saham ahli radd, disederhanakan (satu jenis → per kepala lewat tashih).
   const pembagi = penerima.reduce((faktor, kelompok) => fpb(faktor, saham[kelompok.id]!), 0n);
@@ -97,5 +95,16 @@ function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiM
         zawjiyyah: { kelompok: pasangan.id, ashl: zawjiyyahAshl, sahamPasangan, sisa },
         raddiyyah: { saham: raddSaham, ashl: raddAshl }, hasil },
     ],
+  };
+}
+
+// [R09-9] pasangan tidak menerima radd: ia tetap mengambil fardh penuhnya (bab 14.3 "Bersama pasangan"),
+// sisanya keluar ke dzawil arham [R14-3], atau ke baitul mal bila tidak ada [R02-1]. Ashl tidak berubah.
+function sisaKeluarDariPasangan(ashl: bigint, saham: Record<IdKelompok, bigint>, total: bigint, adaDzawilArham: boolean): HasilKlasifikasi {
+  const tujuan: TujuanSisa = adaDzawilArham ? 'dzawilArham' : 'baitulMal';
+  const sisa = ashl - total;
+  return {
+    dasar: ashl, saham, sisaKeluar: { saham: sisa, tujuan },
+    jejak: [{ tahap: 'klasifikasi', refs: ['R09-9', adaDzawilArham ? 'R14-3' : 'R02-1'], jenis: 'SISA_KELUAR', saham: sisa, ashl, tujuan }],
   };
 }

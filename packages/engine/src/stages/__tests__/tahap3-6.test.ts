@@ -83,9 +83,22 @@ describe('tahap 4 — klasifikasi, \'aul, radd [R09-3] [R09-7]', () => {
     expect(compares(bab16.case11.input, 'raddVsSisa')).toEqual([{ a: 3n, b: 3n, hubungan: 'habis', fpb: 3n, hasil: 4n }]);
   });
 
-  test('radd tanpa ahli radd selain pasangan → TIDAK_DIDUKUNG [R09-9]', () => {
+  test('hanya pasangan: fardh penuh, sisa keluar ke baitul mal, tetap dihitung [R09-9] [R02-1]', () => {
     const hanyaIstri = keluarga({ W1: { jenisKelamin: 'P' } }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }]);
-    expect(hitung(hanyaIstri)).toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['R09-9', 'R02-1'] });
+    const hasil = hitung(hanyaIstri);
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    expect(hasil.sisaKeluar).toMatchObject({ tujuan: 'baitulMal', saham: 3n });
+    expect(hasil.tabel.baris[0]!.perOrang['W1']!.saham).toBe(1n);
+    expect(hasil.tabel.totalKolom).toEqual({ ashl: 4n });
+    const bersih = hasil.jejak.find(langkah => langkah.jenis === 'TIRKAH')!;
+    const total = hasil.tabel.baris[0]!.perOrang['W1']!.nominal + hasil.sisaKeluar!.nominal + hasil.pembulatan.sisaPembulatan;
+    expect(total).toBe((bersih as { bersih: bigint }).bersih);
+    expect(hasil.jejak).toContainEqual(expect.objectContaining({ jenis: 'SISA_KELUAR', tujuan: 'baitulMal', refs: ['R09-9', 'R02-1'] }));
+  });
+
+  test('hanya pasangan + dzawil arham hidup: sisa ke dzawil arham [R14-3]', () => {
+    const denganKakekDariIbu = keluarga({ W1: { jenisKelamin: 'P' }, MGF: { jenisKelamin: 'L' } }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }]);
+    expect(hitung(denganKakekDariIbu)).toMatchObject({ status: 'OK', sisaKeluar: { tujuan: 'dzawilArham', saham: 3n } });
   });
 
   test('kebijakanSisa baitulMal belum didukung', () => {

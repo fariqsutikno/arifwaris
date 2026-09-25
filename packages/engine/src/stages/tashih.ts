@@ -17,10 +17,12 @@ export interface Tashih {
   juzSahm: bigint;
   sahamKelompokTashih: Record<IdKelompok, bigint>;
   perOrang: Record<IdOrang, bigint>;
+  /** Saham sisa yang keluar (hanya pasangan mewarisi), ikut diperbesar juz' as-sahm. */
+  sisaKeluar: bigint;
   jejak: LangkahJejak[];
 }
 
-export function terapkanTashih(daftarKelompok: KelompokBagian[], saham: Record<IdKelompok, bigint>, dasar: bigint): Tashih {
+export function terapkanTashih(daftarKelompok: KelompokBagian[], saham: Record<IdKelompok, bigint>, dasar: bigint, sahamSisaKeluar = 0n): Tashih {
   const jejak: LangkahJejak[] = [];
   const simpanan: bigint[] = [];
 
@@ -58,7 +60,8 @@ export function terapkanTashih(daftarKelompok: KelompokBagian[], saham: Record<I
       perOrang[idOrang] = total * bobot / ruus;
     }
   }
-  const jumlah = Object.values(perOrang).reduce((a, b) => a + b, 0n);
-  if (jumlah !== tashih) throw new Error(`invariant (bab 10.5): Σ saham individu ${jumlah} ≠ tashih ${tashih}`);
-  return { tashih, juzSahm, sahamKelompokTashih, perOrang, jejak };
+  const sisaKeluar = sahamSisaKeluar * juzSahm;
+  const jumlah = Object.values(perOrang).reduce((a, b) => a + b, 0n) + sisaKeluar;
+  if (jumlah !== tashih) throw new Error(`invariant (bab 10.5): Σ saham individu + sisa keluar ${jumlah} ≠ tashih ${tashih}`);
+  return { tashih, juzSahm, sahamKelompokTashih, perOrang, sisaKeluar, jejak };
 }

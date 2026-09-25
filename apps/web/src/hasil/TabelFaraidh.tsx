@@ -33,7 +33,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
   const nama = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const { ashl, aul, radd, tashih } = tabel.totalKolom;
   const penyesuaian = aul !== undefined ? { judul: "'Aul", nilai: aul, kunci: 'aul' } : radd !== undefined ? { judul: 'Radd', nilai: radd, kunci: 'radd' } : null;
-  const totalNominal = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, 0n);
+  const totalNominal = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, ringkasan.sisaKeluar?.nominal ?? 0n);
 
   return (
     <table className="faraidh">
@@ -74,6 +74,17 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
             );
           });
         })}
+        {ringkasan.sisaKeluar && (
+          <tr className="baris-sisa">
+            <td className="kiri"><span className="orang-sel"><span className="titik putus" />{ringkasan.sisaKeluar.judul}</span></td>
+            <td><span className="bagian-sel">Sisa<small>bukan untuk ahli waris</small></span></td>
+            <td className="angka">{String(ringkasan.sisaKeluar.saham * ashl! / ringkasan.penyebut)}</td>
+            {penyesuaian && <td className="angka">—</td>}
+            {tashih !== undefined && <td className="angka">{String(ringkasan.sisaKeluar.saham)}</td>}
+            <td className="angka">{String(ringkasan.sisaKeluar.saham)}</td>
+            <td className="uang">{uangAtau(ringkasan.sisaKeluar.nominal, sembunyi)}</td>
+          </tr>
+        )}
         {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
           kolom={4 + (penyesuaian ? 1 : 0) + (tashih !== undefined ? 1 : 0)} />)}
       </tbody>

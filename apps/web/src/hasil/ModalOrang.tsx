@@ -1,11 +1,11 @@
-// Modal penjelasan satu orang (dari klik pohon, daftar, bar, atau tabel): peran, bagiannya di kasus ini,
-// "Kenapa segitu?" (baris penjelasan explain yang menyebut orang itu), "Kapan dapat berapa?" (ahwal, baris kasus ini
-// disorot kecuali di mode Belajar), dan dalil. Aksi khusus orang itu (hapus / tambah satu lagi) kecil di bawah.
+// Modal penjelasan satu orang (dari klik pohon, daftar, bar, atau tabel): bagiannya di kasus ini, lalu
+// "Kenapa segitu?" (baris explain yang subjeknya orang ini), "Cara menghitungnya", dan "Ahli waris lain yang terdampak"
+// (baris tentang orang lain yang menyebut dia sebagai penyebab). "Kapan dapat berapa?" dan dalil sebagai lipatan sekunder.
+// Ubah jumlah jenis orang ini lewat tombol Ubah (modal kecil − n +).
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
-import { hitungIsian, jenisDari } from '../checklist';
-import { LABEL_SEHARI } from '../konten/ahliWaris';
+import { hitungIsian } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
 import { AHWAL, barisBerlaku } from '../konten/ahwal';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
@@ -21,14 +21,11 @@ interface Props {
   sedangMenebak: boolean;
   sembunyiNominal: boolean;
   saatTutup: () => void;
-  saatHapus: (id: IdOrang) => void;
-  saatTambahSejenis: (kunci: KunciAhliWaris) => void;
+  saatUbah: (kunci: KunciAhliWaris) => void;
 }
 
-export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatHapus, saatTambahSejenis }: Props) {
+export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatUbah }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
-  const [ahwalTerbuka, setAhwalTerbuka] = useState(false);
-  const [dalilTerbuka, setDalilTerbuka] = useState(false);
   useEffect(() => { wadah.current?.querySelector<HTMLButtonElement>('[data-tutup]')?.focus(); }, []);
 
   const dapat = ringkasan.penerima.find(orang => orang.id === id);
@@ -36,13 +33,13 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   const kunci = dapat?.kunci ?? halang?.kunci;
   const kelompok = dapat?.kelompok ?? halang?.kelompok;
   const nama = id === graf.idPewaris ? graf.orang[id]?.nama ?? 'Almarhum' : namaOrang(graf, ringkasan.statusOrang, id);
-  const barisTentangDia = daftarBab.flatMap(({ bab }) => bab.daftarBaris.filter(baris => orangDisebut([baris]).includes(id)));
-  const refs = [...new Set(barisTentangDia.flatMap(baris => baris.refs))];
+  const semuaBaris = daftarBab.flatMap(({ bab }) => bab.daftarBaris);
+  const barisKenapa = semuaBaris.filter(baris => baris.subjek?.includes(id));
+  const barisTerdampak = semuaBaris.filter(baris => baris.subjek && !baris.subjek.includes(id) && orangDisebut([baris]).includes(id));
+  const refs = [...new Set(barisKenapa.flatMap(baris => baris.refs))];
   const ahwal = kunci ? AHWAL[kunci] : undefined;
   // Ubah langsung dari sini hanya untuk ahli waris pewaris pertama (bukan pewaris, bukan ahli waris mayit munasakhat).
   const bisaDiubah = !!kunci && (hitungIsian(graf, graf.idPewaris)[kunci] ?? []).includes(id);
-  const maksimal = kunci ? jenisDari(kunci)?.maksimal : undefined;
-  const sudahPenuh = maksimal !== undefined && kunci !== undefined && (hitungIsian(graf, graf.idPewaris)[kunci]?.length ?? 0) >= maksimal;
   const dataCocok = {
     ...(dapat?.fardh ? { fardh: `${dapat.fardh.n}/${dapat.fardh.d}` } : {}),
     ashabah: !!dapat?.ashabah, terhalang: !!halang,
@@ -55,7 +52,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
         <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? 'Pewaris' : halang && !sedangMenebak ? 'Terhalang (mahjub)' : kelompok ?? 'Kerabat'}</p>
+            <p className="peran-modal">{id === graf.idPewaris ? 'Almarhum' : halang && !sedangMenebak ? 'Terhalang (mahjub)' : kelompok ?? 'Kerabat'}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
           <button type="button" className="tombol-ikon" data-tutup aria-label="Tutup" onClick={saatTutup}>✕</button>
@@ -72,57 +69,72 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
               </div>
             </div>
           )}
-          {!sedangMenebak && (barisTentangDia.length > 0 || halang) && (
-            <div>
+          {!sedangMenebak && (barisKenapa.length > 0 || halang) && (
+            <div className="kenapa-utama">
               <h3>{halang ? 'Kenapa tidak dapat?' : 'Kenapa segitu?'}</h3>
               <ul>
-                {halang && <li>{halang.alasan}</li>}
-                {barisTentangDia.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}
+                {barisKenapa.length === 0 && halang && <li>{halang.alasan}</li>}
+                {barisKenapa.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}
               </ul>
             </div>
           )}
-          {ahwal && (
-            <div className="ahwal">
-              <button type="button" aria-expanded={ahwalTerbuka} onClick={() => setAhwalTerbuka(!ahwalTerbuka)}>
-                Kapan dapat berapa? <small>semua kemungkinan bagian {nama.toLowerCase()}</small>
-              </button>
-              {ahwalTerbuka && (
-                <>
-                  <table>
-                    <tbody>
-                      {ahwal.map(baris => {
-                        const berlaku = !sedangMenebak && barisBerlaku(baris, dataCocok);
-                        return (
-                          <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
-                            <th>{baris.bagian}</th>
-                            <td>{baris.syarat}{berlaku && <span className="stiker-kecil">kasus ini</span>}</td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  <p className="caption-isian">Draf, menunggu pengecekan tim keilmuan.</p>
-                </>
-              )}
+          {dapat && !sedangMenebak && (
+            <div>
+              <h3>Cara menghitungnya</h3>
+              <p className="cara-hitung">
+                Harta dibagi menjadi {String(ringkasan.penyebut)} bagian yang sama; {nama} mendapat {String(dapat.saham)} bagian.<br />
+                {String(dapat.saham)}/{String(ringkasan.penyebut)} × {sembunyiNominal ? 'Rp ••••••' : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? 'Rp ••••••' : formatRupiah(dapat.nominal)}</b>
+                {ringkasan.sisaPembulatan > 0n && <small> (dibulatkan ke bawah)</small>}
+              </p>
             </div>
           )}
-          {refs.length > 0 && !sedangMenebak && (
-            <div className="kenapa">
-              <button type="button" aria-expanded={dalilTerbuka} onClick={() => setDalilTerbuka(!dalilTerbuka)}>Dalilnya</button>
-              {dalilTerbuka && <div className="isi-kenapa"><Dalil daftarKode={refs} /></div>}
+          {!sedangMenebak && barisTerdampak.length > 0 && (
+            <div>
+              <h3>Ahli waris lain yang terdampak</h3>
+              <ul>{barisTerdampak.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}</ul>
             </div>
+          )}
+          {ahwal && (
+            <Lipatan judul="Kapan dapat berapa?" catatan={`semua kemungkinan bagian ${nama.toLowerCase()}`}>
+              <table>
+                <tbody>
+                  {ahwal.map(baris => {
+                    const berlaku = !sedangMenebak && barisBerlaku(baris, dataCocok);
+                    return (
+                      <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
+                        <th>{baris.bagian}</th>
+                        <td>{baris.syarat}{berlaku && <span className="stiker-kecil">kasus ini</span>}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <p className="caption-isian">Draf, menunggu pengecekan tim keilmuan.</p>
+            </Lipatan>
+          )}
+          {refs.length > 0 && !sedangMenebak && (
+            <Lipatan judul="Dalilnya"><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
           )}
         </div>
         <footer className="kaki-modal">
-          {bisaDiubah && <button type="button" className="aksi-kecil hapus" aria-label={`Hapus ${nama}`} onClick={() => saatHapus(id)}>Hapus</button>}
-          {bisaDiubah && kunci && !sudahPenuh && (
-            <button type="button" className="aksi-kecil" aria-label={`Tambah satu ${LABEL_SEHARI[kunci] ?? nama} lagi`} title={`Tambah satu ${LABEL_SEHARI[kunci] ?? nama} lagi`}
-              onClick={() => saatTambahSejenis(kunci)}>+1</button>
-          )}
+          {bisaDiubah && kunci && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>Ubah jumlah</button>}
           <span className="pengisi" />
           <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>Oke, paham</button>
         </footer>
       </div>
+    </div>
+  );
+}
+
+/** Lipatan sekunder (lebih kecil dan netral dari "Kenapa segitu?"), dengan ikon +/−. */
+function Lipatan({ judul, catatan, children }: { judul: string; catatan?: string; children: ReactNode }) {
+  const [terbuka, setTerbuka] = useState(false);
+  return (
+    <div className="lipatan-sekunder">
+      <button type="button" aria-expanded={terbuka} onClick={() => setTerbuka(!terbuka)}>
+        {judul}{catatan && <small>{catatan}</small>}
+      </button>
+      {terbuka && <div className="isi-lipatan">{children}</div>}
     </div>
   );
 }
