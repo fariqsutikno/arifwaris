@@ -444,7 +444,7 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .ringkasan-samping h2{margin:0 0 10px;font:700 15px var(--font-display)}
 .ringkasan-samping dl{margin:0;display:grid;gap:10px}
 .baris-ringkas dt{display:flex;align-items:center;gap:6px;font:800 11px/1.3 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
-.baris-ringkas dd{margin:2px 0 0 22px;font-size:14px;color:var(--ink-muted)}
+.baris-ringkas dd{margin:2px 0 0;font-size:14px;color:var(--ink-muted)}
 .baris-ringkas.terisi dd{color:var(--ink);font-weight:600}
 .baris-ringkas ul{margin:0;padding:0;list-style:none;display:grid;gap:2px}
 .tanda-ringkas{display:inline-grid;place-items:center;width:16px;height:16px;border-radius:5px;border:1.5px solid var(--divider);font-size:10px;color:var(--on-fill)}

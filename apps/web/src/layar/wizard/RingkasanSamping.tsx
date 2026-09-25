@@ -37,7 +37,7 @@ export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
 function Baris({ label, terisi, children }: { label: string; terisi: boolean; children: React.ReactNode }) {
   return (
     <div className={terisi ? 'baris-ringkas terisi' : 'baris-ringkas'}>
-      <dt><span className="tanda-ringkas" aria-hidden="true">{terisi ? '✓' : ''}</span>{label}</dt>
+      <dt>{label}</dt>
       <dd>{children}</dd>
     </div>
   );

@@ -94,11 +94,27 @@ describe('temuan review akhir', () => {
   });
 });
 
-it('jenis kelamin terkunci setelah ada pasangan, dengan penjelasan', () => {
-  localStorage.setItem('arif-waris:kasus', keJson({ ...denganIstri(), tirkah: { kotor: 1n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
+it('ganti jenis kelamin setelah ada ahli waris: minta konfirmasi, lalu ahli waris dikosongkan, harta tetap', () => {
+  localStorage.setItem('arif-waris:kasus', keJson({ ...denganIstri(), tirkah: { kotor: 5n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
   render(<Aplikasi />);
   fireEvent.click(screen.getByRole('button', { name: /Lanjutkan kasus terakhir/ }));
-  const perempuan = screen.getByRole('radio', { name: /Perempuan/ });
-  expect(perempuan.getAttribute('aria-disabled')).toBe('true');
-  expect(screen.getByText(/Kurangi dulu di langkah Ahli waris/)).toBeTruthy();
+  fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
+  const dialog = screen.getByRole('alertdialog');
+  expect(dialog.textContent).toMatch(/ahli waris/);
+  fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
+  expect(screen.getByRole('radio', { name: /Laki-laki/ }).getAttribute('aria-checked')).toBe('true');
+  fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Ganti dan kosongkan/ }));
+  expect(screen.getByRole('radio', { name: /Perempuan/ }).getAttribute('aria-checked')).toBe('true');
+  const ringkasan = screen.getByRole('complementary', { name: 'Ringkasan kasus' });
+  expect(ringkasan.textContent).toMatch(/Belum ada/);
+  expect(ringkasan.textContent).toMatch(/Rp 5/);
+});
+
+it('ringkasan kasus tanpa kotak centang (tidak terlihat seperti yang bisa dicentang)', () => {
+  mulai();
+  fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
+  const ringkasan = screen.getByRole('complementary', { name: 'Ringkasan kasus' });
+  expect(ringkasan.querySelector('.tanda-ringkas')).toBeNull();
+  expect(ringkasan.textContent).not.toMatch(/✓/);
 });

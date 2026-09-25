@@ -1,7 +1,7 @@
 // Wizard 5 langkah, satu pertanyaan per layar. Menerima keadaan + kirim(aksi);
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil'.
 
-import type { Kasus } from '../kasus';
+import { kasusBaru, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
@@ -26,6 +26,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         saatPilih={tujuan => kirim(tujuan === LANGKAH_HASIL ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: tujuan })} />
       <KerangkaLangkah langkah={langkah} ringkasan={<RingkasanSamping kasus={kasus} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
+          saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiPewarisDanKosongkan(k, jenisKelamin))}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
         {kasus && langkah === 2 && <LangkahHarta kasus={kasus} ubah={ubah} />}
         {kasus && langkah === 3 && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
@@ -37,6 +38,18 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         saatLanjut={() => kirim(langkah === TOTAL_LANGKAH ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: langkah + 1 })} />
     </main>
   );
+}
+
+/** Kasus baru dengan jenis kelamin lain; harta, kewajiban, pembulatan, dan nama pewaris dibawa, keluarga dikosongkan. */
+function gantiPewarisDanKosongkan(kasus: Kasus, jenisKelamin: 'L' | 'P'): Kasus {
+  const baru = kasusBaru(jenisKelamin);
+  const nama = kasus.graf.orang[kasus.graf.idPewaris]?.nama;
+  const pewaris = { ...baru.graf.orang[baru.graf.idPewaris]!, ...(nama ? { nama } : {}) };
+  return {
+    ...baru, tirkah: kasus.tirkah, satuanPembulatan: kasus.satuanPembulatan,
+    ...(kasus.rincianHarta ? { rincianHarta: kasus.rincianHarta } : {}),
+    graf: { ...baru.graf, orang: { [baru.graf.idPewaris]: pewaris } },
+  };
 }
 
 function ubahNamaPewaris(kasus: Kasus, nama: string): Kasus {
