@@ -21,7 +21,7 @@ interface Props {
   sedangMenebak: boolean;
   sembunyiNominal: boolean;
   saatTutup: () => void;
-  saatUbah: (kunci: KunciAhliWaris) => void;
+  saatUbah?: ((kunci: KunciAhliWaris) => void) | undefined;
 }
 
 export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatUbah }: Props) {
@@ -117,7 +117,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
           )}
         </div>
         <footer className="kaki-modal">
-          {bisaDiubah && kunci && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>Ubah jumlah</button>}
+          {bisaDiubah && kunci && saatUbah && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>Ubah jumlah</button>}
           <span className="pengisi" />
           <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>Oke, paham</button>
         </footer>

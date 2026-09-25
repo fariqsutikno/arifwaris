@@ -8,7 +8,7 @@ import type { Tujuan } from './preferensi';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
 export const TOTAL_LANGKAH = 5;
-export type Layar = 'beranda' | 'wizard' | 'hasil' | 'belajar';
+export type Layar = 'awal' | 'wizard' | 'hasil' | 'belajar';
 
 export interface KeadaanAplikasi { layar: Layar; langkah: number; kasus: Kasus | null; tujuan: Tujuan | null }
 
@@ -23,7 +23,7 @@ export type Aksi =
   | { jenis: 'ULANGI' };
 
 export const keadaanAwal = (kasusTersimpan: Kasus | null, tujuan: Tujuan | null): KeadaanAplikasi =>
-  ({ layar: 'beranda', langkah: 1, kasus: kasusTersimpan, tujuan });
+  ({ layar: 'awal', langkah: 1, kasus: kasusTersimpan, tujuan });
 
 export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanAplikasi {
   switch (aksi.jenis) {
@@ -41,7 +41,7 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
       if ((aksi.layar === 'hasil' || aksi.layar === 'belajar') && !bolehHasil) return keadaan;
       return { ...keadaan, layar: aksi.layar };
     }
-    case 'ULANGI': return { ...keadaan, layar: 'beranda', langkah: 1, kasus: null };
+    case 'ULANGI': return { ...keadaan, layar: 'awal', langkah: 1, kasus: null };
   }
 }
 

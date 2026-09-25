@@ -30,7 +30,7 @@ it('rujukan: tiap dalil KB bisa dicapai dari salah satu kategori; detail menampi
 
 it('rujukan tanpa kategori membuka Al-Qur\'an dengan teks ayat', () => {
   const { container } = render(<Rujukan />);
-  expect(screen.getByRole('heading', { level: 1 }).textContent).toBe("Al-Qur'an");
+  expect(screen.getByRole('heading', { level: 2, name: "Al-Qur'an" })).toBeTruthy();
   expect(container.querySelectorAll('.kartu-ayat').length).toBeGreaterThan(0);
 });
 

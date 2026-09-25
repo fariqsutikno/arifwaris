@@ -7,7 +7,7 @@ import { Istilah } from '../ui/Tooltip';
 import { Lipat } from './Lipat';
 import type { RingkasanHasil, TentangKasus } from './ringkasan';
 
-export function KartuHarta({ ringkasan, sembunyiNominal, saatUbahHarta }: { ringkasan: RingkasanHasil; sembunyiNominal: boolean; saatUbahHarta: () => void }) {
+export function KartuHarta({ ringkasan, sembunyiNominal, saatUbahHarta }: { ringkasan: RingkasanHasil; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined }) {
   const { tirkah } = ringkasan;
   const uang = (nilai: bigint) => (sembunyiNominal ? 'Rp ••••••' : formatRupiah(nilai));
   const potongan = [
@@ -28,7 +28,7 @@ export function KartuHarta({ ringkasan, sembunyiNominal, saatUbahHarta }: { ring
         <span className="garis" />
         <b>Dibagi ke ahli waris</b><b className="nilai total">{uang(tirkah.bersih)}</b>
       </div>
-      <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-ubah-harta" onClick={saatUbahHarta}>Ubah harta</button>
+      {saatUbahHarta && <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-ubah-harta" onClick={saatUbahHarta}>Ubah harta</button>}
     </Lipat>
   );
 }

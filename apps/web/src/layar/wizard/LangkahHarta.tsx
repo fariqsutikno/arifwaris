@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { formatRupiah } from '../../format';
 import { KATEGORI_HARTA, type Kasus, type KategoriHarta } from '../../kasus';
 import { KATEGORI_HARTA_TEKS, TEKS_HARTA } from '../../konten/harta';
+import { DialogKonfirmasi } from '../../ui/Dialog';
 import { IsianUang } from './IsianUang';
 
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
@@ -13,6 +14,7 @@ const labelTambahCepat = (nilai: bigint) => `+${nilai / 1_000_000n} jt`;
 
 export function LangkahHarta({ kasus, ubah }: Props) {
   const [cara, setCara] = useState<'total' | 'rinci'>(kasus.rincianHarta ? 'rinci' : 'total');
+  const [tanyaKosongkan, setTanyaKosongkan] = useState(false);
   const aturTotal = (kotor: bigint) => ubah(k => {
     const { rincianHarta: _rincian, ...tanpaRincian } = k;
     return { ...tanpaRincian, tirkah: { ...k.tirkah, kotor } };
@@ -46,7 +48,13 @@ export function LangkahHarta({ kasus, ubah }: Props) {
                   {labelTambahCepat(nilai)}
                 </button>
               ))}
-              {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => aturTotal(0n)}>Kosongkan</button>}
+              {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => setTanyaKosongkan(true)}>Kosongkan</button>}
+              {tanyaKosongkan && (
+                <DialogKonfirmasi judul="Kosongkan total harta?" labelLanjut="Kosongkan" saatBatal={() => setTanyaKosongkan(false)}
+                  saatLanjut={() => { setTanyaKosongkan(false); aturTotal(0n); }}>
+                  <p>Total {formatRupiah(kasus.tirkah.kotor)} akan dihapus dan perlu diisi ulang.</p>
+                </DialogKonfirmasi>
+              )}
             </div>
           </div>
         ) : (
@@ -60,7 +68,7 @@ export function LangkahHarta({ kasus, ubah }: Props) {
           </div>
         )}
 
-        <p className="catatan-info"><span aria-hidden="true" className="ikon-info-kecil">i</span>{TEKS_HARTA.gonoGini}</p>
+        <p className="catatan-info">{TEKS_HARTA.gonoGini}</p>
       </section>
 
     </>

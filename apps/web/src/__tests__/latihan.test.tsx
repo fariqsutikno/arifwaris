@@ -5,7 +5,7 @@ import { ringkas } from '../hasil/ringkasan';
 import { jalankan } from '../jalankan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
 import { Latihan } from '../layar/belajar/Latihan';
-import { PAKET_ACAK, soalPaket } from '../layar/belajar/KuisKonsep';
+import { PAKET_ACAK, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
 import { bacaCatatan, simpanCatatan } from '../preferensi';
 
 describe('kunci soal hitung = hasil engine', () => {
@@ -27,7 +27,7 @@ describe('halaman latihan', () => {
     simpanCatatan('soal', kedua.kode, 'selesai');
     const dikerjakan: SoalHitung[] = [];
     const { container } = render(<Latihan tab="hitung" kasusSekarang={null} saatKerjakan={soal => dikerjakan.push(soal)} />);
-    expect(screen.getByRole('heading', { name: new RegExp(`^Bab ${pertama.bab} ·`) })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: new RegExp(`^${judulTopik(pertama.bab)}`) })).toBeTruthy();
     expect(container.textContent).not.toContain(pertama.topik);
     expect(container.textContent).toContain(kedua.topik);
     fireEvent.click(screen.getAllByRole('button', { name: 'Kerjakan' })[0]!);
@@ -37,7 +37,7 @@ describe('halaman latihan', () => {
   it('kuis: daftar paket per bab + acak; paket acak berisi soal unik', () => {
     render(<Latihan tab="kuis" kasusSekarang={null} saatKerjakan={() => {}} />);
     expect(screen.getByRole('link', { name: /Kuis acak/ }).getAttribute('href')).toBe('#/latihan/kuis/acak');
-    for (const bab of new Set(DAFTAR_SOAL_KUIS.map(soal => soal.bab))) expect(screen.getByRole('link', { name: new RegExp(`^Bab ${bab} `) })).toBeTruthy();
+    for (const bab of new Set(DAFTAR_SOAL_KUIS.map(soal => soal.bab))) expect(screen.getByRole('link', { name: new RegExp(`^${judulTopik(bab)}`) })).toBeTruthy();
     const acak = soalPaket(PAKET_ACAK);
     expect(new Set(acak.map(soal => soal.kode)).size).toBe(acak.length);
     expect(acak.length).toBe(Math.min(10, DAFTAR_SOAL_KUIS.length));
@@ -63,15 +63,24 @@ describe('halaman latihan', () => {
     expect(bacaCatatan('kuis')['bab-1']).toBe(`1/${daftar.length}`);
   });
 
-  it('sesi kuis mode ujian: tidak ada penilaian sampai soal terakhir', () => {
+  it('sesi kuis mode ujian: jawaban bisa diganti dan soal sebelumnya dibuka lagi; penilaian baru saat diselesaikan', () => {
     const daftar = soalPaket('bab-2');
     render(<Latihan tab="kuis" paket="bab-2" kasusSekarang={null} saatKerjakan={() => {}} />);
     fireEvent.click(screen.getByRole('radio', { name: /Mode ujian/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
+    expect(screen.getByRole('button', { name: daftar.length > 1 ? 'Soal berikutnya' : 'Selesaikan' }).hasAttribute('disabled')).toBe(true);
     daftar.forEach((soal, indeks) => {
+      if (indeks === 1) {
+        fireEvent.click(screen.getByRole('button', { name: 'Soal sebelumnya' }));
+        const pilihanTadi = screen.getByRole('button', { name: new RegExp(`^${'ABCD'[daftar[0]!.indeksBenar]}\\. `) });
+        expect(pilihanTadi.getAttribute('aria-pressed')).toBe('true');
+        fireEvent.click(screen.getByRole('button', { name: 'Soal berikutnya' }));
+      }
+      const salah = 'ABCD'[(soal.indeksBenar + 1) % soal.pilihan.length]!;
+      fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${salah}\\. `) }));
       fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${'ABCD'[soal.indeksBenar]}\\. `) }));
       expect(screen.queryByRole('status')).toBeNull();
-      fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya' : 'Lihat hasil' }));
+      fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya' : 'Selesaikan' }));
     });
     expect(document.querySelector('.skor-besar')?.textContent).toBe(`${daftar.length}/${daftar.length}`);
   });

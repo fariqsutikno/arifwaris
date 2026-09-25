@@ -30,7 +30,8 @@ it('sumber tercatat; entri yang tidak dibuka lebih dari 30 hari dibuang', () => 
 });
 
 it('ringkasan dan waktu relatif', () => {
-  expect(ringkasKasus(kasus())).toEqual({ judul: 'Belum ada ahli waris', keterangan: 'Rp 24.000.000' });
+  expect(ringkasKasus(kasus())).toEqual({ judul: 'Belum ada ahli waris', keterangan: 'Data belum lengkap', lengkap: false });
+  expect(ringkasKasus(kasus('ISTRI'))).toEqual({ judul: 'Istri', keterangan: 'Rp 24.000.000', lengkap: true });
   expect(waktuRelatif(0, 30_000)).toBe('baru saja');
   expect(waktuRelatif(0, 5 * 60_000)).toMatch(/5 menit/);
 });

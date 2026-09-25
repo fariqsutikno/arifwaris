@@ -34,7 +34,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         {kasus && langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}
       </KerangkaLangkah>
       <BarBawah langkah={langkah} alasan={alasan}
-        saatKembali={() => kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'beranda' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 })}
+        saatKembali={() => kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'awal' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 })}
         saatLanjut={() => kirim(langkah === TOTAL_LANGKAH ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: langkah + 1 })} />
     </main>
   );

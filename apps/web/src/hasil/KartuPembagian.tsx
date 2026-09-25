@@ -1,5 +1,5 @@
 // Kartu Pembagian (selalu terbuka): bar pecahan, daftar per orang, yang tidak dapat beserta alasannya,
-// ikon mata (sembunyikan nominal), panel atur tampilan, dan kartu pembulatan yang muncul hanya bila ada angka tidak bulat.
+// pensil (ubah ahli waris), ikon mata (sembunyikan nominal), panel atur tampilan, dan kartu pembulatan yang muncul hanya bila ada angka tidak bulat.
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
 import { useState } from 'react';
@@ -10,6 +10,7 @@ import { pecahanTeks, persenTeks } from './ringkasan';
 import { Confetti } from '../ui/Confetti';
 import { KartuTebak, UmpanBalikBenar } from './KartuTebak';
 import { useAtributOrang } from './sorot';
+import { Ikon } from '../ui/Ikon';
 
 export interface PengaturanTampil { pecahan: boolean; persen: boolean; bentuk: BentukPecahan }
 
@@ -29,6 +30,7 @@ interface Props {
   satuanPembulatan: bigint;
   saatUbahPembulatan: (satuan: bigint) => void;
   saatPilihOrang: (id: string) => void;
+  saatUbahAhliWaris?: (() => void) | undefined;
 }
 
 export function KartuPembagian(props: Props) {
@@ -41,8 +43,13 @@ export function KartuPembagian(props: Props) {
     <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <h2 id="judul-pembagian">Pembagian</h2>
-        {!sedangMenebak && (
-          <div className="alat-pembagian">
+        <div className="alat-pembagian">
+          {props.saatUbahAhliWaris && (
+            <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label="Ubah ahli waris" title="Ubah ahli waris">
+              <Ikon nama="pensil" />
+            </button>
+          )}
+          {!sedangMenebak && <>
             <button type="button" className="tombol-ikon" aria-pressed={sembunyiNominal} onClick={props.saatSembunyi}
               aria-label={sembunyiNominal ? 'Tampilkan nominal' : 'Sembunyikan nominal'} title={sembunyiNominal ? 'Tampilkan nominal' : 'Sembunyikan nominal'}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
@@ -55,8 +62,8 @@ export function KartuPembagian(props: Props) {
                 <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" />
               </svg>
             </button>
-          </div>
-        )}
+          </>}
+        </div>
       </header>
 
       {sedangMenebak ? (
@@ -165,11 +172,12 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
 }) {
   const contoh = ringkasan.penerima.find(orang => orang.nominal % 1000n !== 0n) ?? ringkasan.penerima[0];
   return (
-    <div className="kartu-bulat" data-tur="pembulatan">
-      <div className="kepala-bulat">
-        <b>Ada angka yang nggak bulat</b>
-        <span>Misalnya bagian {contoh?.nama.toLowerCase()} susah dibagi tunai. Mau dibulatkan?</span>
-      </div>
+    // Dilipat: kebanyakan orang tidak mengubah pembulatan, jangan sampai menutupi penjelasan di bawahnya.
+    <details className="kartu-bulat" data-tur="pembulatan">
+      <summary className="kepala-bulat">
+        <b>Ada angka yang nggak bulat · dibulatkan ke {PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuan)?.judul ?? formatRupiah(satuan)}</b>
+        <span>Misalnya bagian {contoh?.nama.toLowerCase()} susah dibagi tunai. Ketuk untuk mengubah.</span>
+      </summary>
       <div className="isi-bulat">
         <div className="pilihan-bulat" role="radiogroup" aria-label="Bulatkan bagian tiap orang ke">
           {PILIHAN_PEMBULATAN.map(pilihan => (
@@ -182,6 +190,6 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
           ? <p>Setelah dibulatkan ke bawah, tersisa <b>{sembunyiNominal ? 'Rp ••••••' : formatRupiah(ringkasan.sisaPembulatan)}</b> yang belum terbagi. Sisa ini tidak dibagi diam-diam; sepakati bersama para ahli waris.</p>
           : <p>Semua bagian sudah pas, tidak ada sisa.</p>}
       </div>
-    </div>
+    </details>
   );
 }

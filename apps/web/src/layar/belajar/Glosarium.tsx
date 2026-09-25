@@ -1,9 +1,11 @@
 // Halaman Glosarium: semua istilah KB bab 15, bisa dicari. `#/glosarium/<id>` menggulir ke istilah itu dan
-// menyorotnya, supaya tautan dari materi/hasil mendarat tepat di entrinya.
+// menyorotnya, supaya tautan dari materi/hasil mendarat tepat di entrinya. Tiap istilah juga menampilkan contoh dari
+// kasus uji KB bab 16 (draf) dan pelajaran yang memakainya.
 
 import { useEffect, useState } from 'react';
-import { GLOSARIUM, cariIstilah, type EntriGlosarium } from '@waris/content';
-import { tautanGlosarium } from '../../rute';
+import { DAFTAR_PELAJARAN, GLOSARIUM, cariIstilah, type Blok, type EntriGlosarium, type Pelajaran, type Potongan } from '@waris/content';
+import { tautanBelajar, tautanGlosarium } from '../../rute';
+import { Bagikan } from '../../ui/Bagikan';
 
 const normal = (teks: string) => teks.toLowerCase().replace(/['’ʿ]/g, '');
 
@@ -39,10 +41,40 @@ export function Glosarium({ id }: { id?: string | undefined }) {
             <dd>
               {entri.artiAwam && <p>{entri.artiAwam}</p>}
               <p className="keterangan">{entri.artiAwam ? 'Makna teknis: ' : ''}{entri.makna}</p>
+              {entri.contoh && <p className="contoh-istilah"><b>Contoh</b> {entri.contoh} <span className="keterangan">(draf, belum direview)</span></p>}
+              {(DIPAKAI_DI.get(entri.id) ?? []).length > 0 && (
+                <p className="dipakai-di">
+                  <span className="keterangan">Dipakai di </span>
+                  {DIPAKAI_DI.get(entri.id)!.map((pelajaran, urutan) => (
+                    <span key={pelajaran.slug}>{urutan > 0 && ', '}<a href={tautanBelajar(pelajaran.slug)}>{pelajaran.judul}</a></span>
+                  ))}
+                </p>
+              )}
+              <Bagikan judul={`${entri.istilah} (glosarium faraidh)`} tautan={tautanGlosarium(entri.id)} label="Bagikan" kecil />
             </dd>
           </div>
         ))}
       </dl>
     </main>
   );
+}
+
+/** Istilah (id kanonik) → pelajaran yang menyebutnya lewat [[istilah]], urut sesuai jalur belajar. */
+const DIPAKAI_DI: Map<string, Pelajaran[]> = (() => {
+  const peta = new Map<string, Pelajaran[]>();
+  for (const pelajaran of DAFTAR_PELAJARAN) {
+    for (const id of new Set(pelajaran.blok.flatMap(potonganBlok).flatMap(potongan => (potongan.jenis === 'istilah' ? [cariIstilah(potongan.id)?.id ?? potongan.id] : [])))) {
+      peta.set(id, [...(peta.get(id) ?? []), pelajaran]);
+    }
+  }
+  return peta;
+})();
+
+function potonganBlok(blok: Blok): Potongan[] {
+  switch (blok.jenis) {
+    case 'judul': case 'paragraf': case 'catatan': return blok.isi;
+    case 'daftar': return blok.butir.flat();
+    case 'tabel': return [...blok.kepala.flat(), ...blok.baris.flat(2)];
+    default: return [];
+  }
 }

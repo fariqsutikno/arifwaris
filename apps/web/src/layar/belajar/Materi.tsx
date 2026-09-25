@@ -1,4 +1,5 @@
 // Satu pelajaran, tata letak e-learning: sidebar (progres + daftar modul & pelajaran) di kiri, isi di kanan.
+// Di HP sidebar jadi laci dari kanan, dibuka lewat tombol yang menempel di tepi layar.
 // Isi = blok Markdown terbatas dari packages/content: teks, tabel, video YouTube, contoh kasus dihitung engine,
 // dan kuis cek pemahaman. Pelajaran ditandai selesai saat dibaca sampai bawah atau saat lanjut ke berikutnya.
 // Navigasi bawah: Sebelumnya · Beranda belajar · Berikutnya, gayanya setara.
@@ -19,6 +20,7 @@ import { KartuSoalKuis } from './KartuSoalKuis';
 import { Sebaris } from './Sebaris';
 import { TombolBukaKasus } from './TombolBukaKasus';
 import { Ikon } from '../../ui/Ikon';
+import { Laci } from '../../ui/Laci';
 
 interface Props {
   slug: string;
@@ -57,7 +59,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
 
   return (
     <div className="tata-materi">
-      <SidebarMateri aktif={pelajaran} />
+      <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
         <p className="label-langkah">Modul {pelajaran.modul} · {modul?.judul} · Pelajaran {indeks + 1} dari {DAFTAR_PELAJARAN.length}</p>
         <h1>{pelajaran.judul}</h1>
@@ -81,19 +83,19 @@ function TautanNavigasi({ tujuan, label, saatKlik }: { tujuan: Pelajaran | undef
   return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={tujuan.judul}>{label}</a>;
 }
 
-/** Sidebar: progres keseluruhan dan daftar modul; di HP menjadi daftar lipat di atas isi. */
+/** Sidebar: progres keseluruhan dan daftar modul; di HP jadi laci (dipasang ulang tiap pindah pelajaran, jadi tertutup lagi). */
 function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
   const selesai = bacaPelajaranSelesai();
   const jumlahSelesai = DAFTAR_PELAJARAN.filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const persen = Math.round((jumlahSelesai / DAFTAR_PELAJARAN.length) * 100);
   return (
-    <aside className="sidebar-materi" aria-label="Daftar materi">
-      <details open={terbukaAwal()} className="lipat-sidebar">
-        <summary>
-          <span className="label-langkah">Progres belajar</span>
-          <span className="angka-progres">{jumlahSelesai}/{DAFTAR_PELAJARAN.length} pelajaran · {persen}%</span>
-          <span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span>
-        </summary>
+    <Laci id="daftar-materi" label="Daftar materi"
+      ringkasan={<>Modul {aktif.modul} · {DAFTAR_PELAJARAN.indexOf(aktif) + 1}/{DAFTAR_PELAJARAN.length}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
+      judul={<>
+      <span className="label-langkah">Progres belajar</span>
+      <span className="angka-progres">{jumlahSelesai}/{DAFTAR_PELAJARAN.length} pelajaran · {persen}%</span>
+      <span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span>
+    </>}>
         {DAFTAR_MODUL.map(modul => {
           const daftar = DAFTAR_PELAJARAN.filter(pelajaran => pelajaran.modul === modul.nomor);
           return (
@@ -113,13 +115,9 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
             </div>
           );
         })}
-      </details>
-    </aside>
+    </Laci>
   );
 }
-
-/** Di layar lebar daftar materi langsung terbuka; di HP tertutup supaya isi pelajaran tidak terdorong ke bawah. */
-const terbukaAwal = () => typeof window === 'undefined' || !window.matchMedia || window.matchMedia('(min-width: 861px)').matches;
 
 export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & Omit<Props, 'slug'>) {
   switch (blok.jenis) {

@@ -34,6 +34,11 @@ describe('glosarium KB bab 15', () => {
     expect(cariIstilah('tidak-ada')).toBeUndefined();
   });
 
+  test('kolom Contoh terbaca dan selalu menyebut kasus uji bab 16', () => {
+    expect(cariIstilah('aul')?.contoh).toMatch(/Kasus 16\.5/);
+    for (const entri of GLOSARIUM.filter(isi => isi.contoh)) expect(entri.contoh).toMatch(/16\.(M?\d+)/);
+  });
+
   test('setiap sinonimIni unik', () => {
     const sinonim = GLOSARIUM.flatMap(e => e.sinonim);
     expect(new Set(sinonim).size).toBe(sinonim.length);

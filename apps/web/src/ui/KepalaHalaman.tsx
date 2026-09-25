@@ -1,0 +1,30 @@
+// Bilah di atas halaman turunan (FAQ, glosarium, materi, rujukan, riwayat, latihan): Kembali di kiri, Bagikan di kanan.
+// Kembali selalu ke halaman induk (naik satu tingkat), bukan ke halaman yang terakhir dibuka.
+
+import { cariPelajaran } from '@waris/content';
+import { tautanInduk, type Rute } from '../rute';
+import { Bagikan } from './Bagikan';
+import { Ikon } from './Ikon';
+
+export function KepalaHalaman({ rute }: { rute: Rute }) {
+  const judul = judulBagikan(rute);
+  return (
+    <div className="kepala-halaman">
+      <a className="tombol-kembali" href={tautanInduk(rute)}>
+        <Ikon nama="kembali" ukuran={18} />Kembali
+      </a>
+      {judul && <Bagikan judul={judul} tautan={window.location.hash} />}
+    </div>
+  );
+}
+
+/** Judul untuk menu bagikan; halaman yang tidak layak dibagikan (riwayat pribadi, latihan) mengembalikan null. */
+function judulBagikan(rute: Rute): string | null {
+  switch (rute.halaman) {
+    case 'materi': return cariPelajaran(rute.slug)?.judul ?? null;
+    case 'faq': return 'Tanya jawab faraidh';
+    case 'glosarium': return 'Glosarium faraidh';
+    case 'rujukan': return 'Rujukan faraidh';
+    default: return null;
+  }
+}

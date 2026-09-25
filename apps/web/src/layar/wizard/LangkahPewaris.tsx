@@ -28,7 +28,7 @@ export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUb
       <div className="kartu-pilihan-deret" role="radiogroup" aria-labelledby="pertanyaan-utama">
         {pilihan.map(([jenisKelamin, label]) => (
           <button key={jenisKelamin} type="button" role="radio" aria-checked={pewaris?.jenisKelamin === jenisKelamin}
-            className="kartu-pilihan" onClick={() => saatKlik(jenisKelamin)}>
+            className={`kartu-pilihan pilih-gender-${jenisKelamin}`} onClick={() => saatKlik(jenisKelamin)}>
             <IkonGender jenisKelamin={jenisKelamin} />
             <span>{label}</span>
           </button>

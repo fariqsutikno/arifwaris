@@ -132,7 +132,8 @@ export function semuaPotongan(daftarBlok: Blok[]): Potongan[] {
   });
 }
 
-const selTabel = (baris: string) => baris.split('|').slice(1, -1).map(isi => isi.trim());
+// `|` di dalam [[tautan|teks]] bukan pemisah sel.
+const selTabel = (baris: string) => baris.split(/\|(?![^[]*\]\])/).slice(1, -1).map(isi => isi.trim());
 
 /**
  * Blok video (YouTube, ditampilkan lewat youtube-nocookie):

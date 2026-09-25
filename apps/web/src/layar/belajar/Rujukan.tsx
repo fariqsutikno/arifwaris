@@ -4,6 +4,7 @@
 // Kitab: baca di aplikasi (PDF berlisensi di public/kitab) atau buka situs sumber; keduanya dari docs/rujukan/kitab.md.
 // `#/rujukan/<kategori>`, `#/rujukan/<kode>` (satu dalil), `#/rujukan/kitab/<nomor>` (penampil PDF).
 
+import { HeroMini } from '../../ui/Hero';
 import { useState } from 'react';
 import {
   DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, DAFTAR_SYAHID, JUDUL_BAB, RUJUKAN, SUMBER_KITAB, TITIK_DIKAJI, cariRujukan,
@@ -11,6 +12,7 @@ import {
 } from '@waris/content';
 import { tautanRujukan } from '../../rute';
 import { Ikon } from '../../ui/Ikon';
+import { Laci } from '../../ui/Laci';
 import { Dalil } from '../Penjelasan';
 
 interface Kategori { id: string; judul: string; jenis?: JenisDalil }
@@ -41,8 +43,11 @@ export function Rujukan({ kode, kategori, kitab }: Props) {
   const aktif = kode ? undefined : DAFTAR_KATEGORI.find(isi => isi.id === kategori) ?? DAFTAR_KATEGORI[0]!;
   return (
     <div className="tata-materi">
-      <aside className="sidebar-materi" aria-label="Kategori rujukan">
-        <p className="label-langkah kepala-sidebar">Urutan dalil</p>
+      {!kode && kitab === undefined && (
+        <HeroMini judul="Rujukan" keterangan="Al-Qur'an, sunnah, atsar, ijma', dan kitab madzhab yang menjadi dasar tiap hukum di aplikasi ini." ikon="rujukan" />
+      )}
+      <Laci key={kode ?? kategori ?? ''} id="kategori-rujukan" label="Kategori dalil"
+        ringkasan={aktif ? <>{aktif.judul} <span className="jumlah-laci">{jumlahDi(aktif)}</span></> : 'Dalil terpilih'} judul={<span className="label-langkah">Kategori dalil</span>}>
         <ol className="daftar-polos modul-sidebar">
           {DAFTAR_KATEGORI.map((isi, urutan) => (
             <li key={isi.id}>
@@ -53,7 +58,7 @@ export function Rujukan({ kode, kategori, kitab }: Props) {
             </li>
           ))}
         </ol>
-      </aside>
+      </Laci>
       <main className="konten-materi konten-rujukan">
         {kode ? <DetailRujukan kode={kode} />
           : aktif!.id === 'kitab' && kitab !== undefined ? <PenampilKitab nomor={Number(kitab)} />
@@ -66,7 +71,7 @@ export function Rujukan({ kode, kategori, kitab }: Props) {
 function IsiKategori({ kategori }: { kategori: Kategori }) {
   return (
     <>
-      <h1>{kategori.judul}</h1>
+      <h2 className="judul-kategori">{kategori.judul}</h2>
       {kategori.id === 'quran' && <section className="blok-rujukan">{DAFTAR_AYAT.map(ayat => <KartuAyat key={`${ayat.surah}-${ayat.ayat}`} ayat={ayat} />)}</section>}
       {kategori.id === 'sunnah' && (
         <section className="blok-rujukan">
@@ -121,7 +126,6 @@ function KartuAyat({ ayat }: { ayat: Ayat }) {
                 <button type="button" className="tombol-hukum" aria-pressed={disorot === urutan} onClick={() => setDisorot(disorot === urutan ? null : urutan)}>
                   {isi.hukum}
                 </button>
-                <a className="tautan-dalil" href={tautanRujukan(isi.rujukan)} aria-label={`Dalil: ${isi.hukum}`}>dalil</a>
               </li>
             ))}
           </ul>

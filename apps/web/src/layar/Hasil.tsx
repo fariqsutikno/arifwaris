@@ -1,5 +1,6 @@
 // Layar hasil. Desktop: kanvas (pohon keluarga / tabel faraidh) di kiri, sidebar di kanan.
-// HP: tanpa tab; kanvas disisipkan di antara kartu (urutan diatur CSS). Semua angka dari engine lewat ringkas().
+// HP: tanpa tab; kanvas disisipkan di antara kartu (urutan diatur CSS), semua kartu selebar layar.
+// Bar aksi bawah: Ubah data · Reset skenario · Ekspor. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
 import { useEffect, useMemo, useState } from 'react';
@@ -23,7 +24,7 @@ import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Ikon } from '../ui/Ikon';
-import { TombolIkon } from '../ui/Tooltip';
+import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { daftarBabDari } from './Penjelasan';
 
 interface Props {
@@ -35,9 +36,11 @@ interface Props {
    * pernah mencoba menjawab. Membuka kunci tanpa mencoba tidak dihitung.
    */
   saatDikerjakan?: (() => void) | undefined;
+  /** Kasus dari latihan/materi di mode belajar: data kasus tidak bisa diubah atau di-reset supaya fokus. */
+  terkunci?: boolean | undefined;
 }
 
-export function Hasil({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
+export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>;
 
@@ -71,15 +74,16 @@ export function Hasil({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
+function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
   const adalahBelajar = tujuan === 'belajar';
+  const bolehUbah = !(terkunci && adalahBelajar);
 
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
@@ -99,6 +103,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
   const [kunciDiubah, setKunciDiubah] = useState<KunciAhliWaris | null>(null);
   const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
   const [eksporTerbuka, setEksporTerbuka] = useState(false);
+  const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
 
@@ -119,17 +124,12 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
               <button type="button" role="tab" aria-selected={tabKanvas === 'pohon'} onClick={() => setTabKanvas('pohon')}>Pohon keluarga</button>
               <button type="button" role="tab" aria-selected={tabKanvas === 'tabel'} onClick={() => setTabKanvas('tabel')}>Tabel faraidh</button>
             </div>
-            <TombolIkon label="Ubah ahli waris" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" />
-                </svg>
-            </TombolIkon>
           </div>
           <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label="Pohon keluarga" data-tur="pohon">
             <Legenda />
             <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
               sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />
-            <p className="petunjuk-kanvas">Klik orang untuk melihat penjelasannya</p>
+            <p className="petunjuk-kanvas">Ketuk orang untuk melihat penjelasannya<span className="hanya-hp"> · geser ke samping kalau terpotong</span></p>
           </section>
           <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label="Tabel faraidh">
             {sedangMenebak
@@ -148,27 +148,35 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan }: Props) {
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
-            saatPilihOrang={setOrangDipilih} />
-          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal || sedangMenebak} saatUbahHarta={() => setUbahHartaTerbuka(true)} />
-          {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
+            saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 4 }) : undefined} />
+          {/* Penjelasan tepat di bawah Pembagian: "kenapa angkanya begini" adalah inti aplikasi. */}
           <KartuLangkah daftarBab={daftarBab} terbukaAwal={adalahBelajar} saatSelesai={bukaJawaban} />
+          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal || sedangMenebak} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
+          {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
           <KartuSelanjutnya />
         </aside>
       </div>
 
       <div className="bar-bawah">
-        <div className="bar-bawah-isi">
-          <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>← Ubah data</Tombol>
+        <div className="bar-bawah-isi bar-aksi-hasil">
+          {bolehUbah && <>
+            <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}><Ikon nama="pensil" /> Ubah data</Tombol>
+            <Tombol varian="secondary" onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /> <span>Reset<span className="label-lebar"> skenario</span></span></Tombol>
+          </>}
           <span className="pengisi" />
           <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> Tersimpan di riwayat</span>
           <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> Ekspor</Tombol>
         </div>
       </div>
+      {konfirmasiUlangi && (
+        <KonfirmasiKasusBaru kasus={kasus} judul="Reset skenario?" labelLanjut="Reset" saatBatal={() => setKonfirmasiUlangi(false)}
+          saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
+      )}
 
       {orangDipilih && (
         <ModalOrang id={orangDipilih} graf={kasus.graf} ringkasan={ringkasan} daftarBab={daftarBab} bentuk={pengaturan.bentuk}
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
-          saatUbah={kunci => { setOrangDipilih(null); setKunciDiubah(kunci); }} />
+          saatUbah={bolehUbah ? kunci => { setOrangDipilih(null); setKunciDiubah(kunci); } : undefined} />
       )}
       {konfirmasiBuka && (
         <DialogKonfirmasi tahan

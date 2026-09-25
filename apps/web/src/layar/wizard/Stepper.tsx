@@ -14,7 +14,7 @@ export function Stepper({ langkahAktif, terjauh, saatPilih }: Props) {
         const adalahAktif = langkah === langkahAktif;
         const sudahLengkap = langkah < terjauh && !adalahAktif && langkah !== LANGKAH_HASIL;
         return (
-          <button key={nama} type="button" className="stepper-item" disabled={langkah > terjauh}
+          <button key={nama} type="button" className={sudahLengkap ? 'stepper-item kelar' : 'stepper-item'} disabled={langkah > terjauh}
             aria-current={adalahAktif ? 'step' : undefined} onClick={() => saatPilih(langkah)}>
             <b aria-hidden="true">{sudahLengkap ? '✓' : langkah === LANGKAH_HASIL ? '★' : langkah}</b>{nama}
           </button>

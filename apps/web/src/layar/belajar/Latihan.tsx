@@ -3,11 +3,12 @@
 //   membuka kasusnya di kalkulator mode Belajar. Soal ditandai selesai saat jawabannya dibuka di sana.
 //   Kuis konsep — daftar paket; sesi kuisnya ada di KuisKonsep.tsx.
 
-import { DAFTAR_SOAL_HITUNG, JUDUL_BAB, type SoalHitung } from '@waris/content';
+import { HeroMini } from '../../ui/Hero';
+import { DAFTAR_SOAL_HITUNG, type SoalHitung, type Tingkat } from '@waris/content';
 import type { Kasus } from '../../kasus';
 import { bacaCatatan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
-import { DaftarPaketKuis, SesiKuis, perBab } from './KuisKonsep';
+import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
 
 interface Props {
@@ -22,7 +23,7 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
   if (tab === 'kuis' && paket) return <main className="halaman tumpuk"><SesiKuis key={paket} paket={paket} /></main>;
   return (
     <main className="halaman tumpuk">
-      <h1>Latihan</h1>
+      <HeroMini judul="Latihan" keterangan="Kerjakan soal hitung dari kasus nyata, atau uji pemahaman konsep lewat kuis per bab." ikon="kuis" />
       <nav className="tab-kecil tab-latihan" aria-label="Jenis latihan">
         <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>Soal hitung</a>
         <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>Kuis konsep</a>
@@ -32,15 +33,34 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
   );
 }
 
+const TINGKAT: Tingkat[] = ['dasar', 'menengah', 'sulit'];
+
 function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | 'paket'>) {
   const catatan = bacaCatatan('soal');
   const jumlahSelesai = DAFTAR_SOAL_HITUNG.filter(soal => catatan[soal.kode]).length;
   return (
     <>
-      <p className="keterangan">{jumlahSelesai} dari {DAFTAR_SOAL_HITUNG.length} soal sudah dikerjakan. Soal dibuka di Hitung mode Belajar, jawabannya tertutup sampai kamu menjawab.</p>
+      <section className="kartu statistik-latihan" aria-label="Progres soal hitung">
+        <div className="stat-utama">
+          <span className="angka-besar">{jumlahSelesai}<small>/{DAFTAR_SOAL_HITUNG.length}</small></span>
+          <span className="keterangan">soal dikerjakan</span>
+          <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / DAFTAR_SOAL_HITUNG.length) * 100}%` }} /></span>
+        </div>
+        <dl className="stat-tingkat">
+          {TINGKAT.map(tingkat => {
+            const daftar = DAFTAR_SOAL_HITUNG.filter(soal => soal.tingkat === tingkat);
+            return (
+              <div key={tingkat}>
+                <dt className={`tingkat tingkat-${tingkat}`}>{tingkat}</dt>
+                <dd>{daftar.filter(soal => catatan[soal.kode]).length}<small>/{daftar.length}</small></dd>
+              </div>
+            );
+          })}
+        </dl>
+      </section>
       {perBab(DAFTAR_SOAL_HITUNG).map(([bab, daftar]) => (
         <section key={bab} className="tumpuk-rapat">
-          <h2 className="judul-bab-latihan">Bab {bab} · {JUDUL_BAB[bab]} <span className="keterangan">{daftar.filter(soal => catatan[soal.kode]).length}/{daftar.length}</span></h2>
+          <h2 className="judul-bab-latihan">{judulTopik(bab)} <span className="keterangan">{daftar.filter(soal => catatan[soal.kode]).length}/{daftar.length}</span></h2>
           <ul className="daftar-polos daftar-soal">
             {daftar.map(soal => {
               const selesai = !!catatan[soal.kode];

@@ -47,16 +47,24 @@ export function Baris({ baris }: { baris: BarisPenjelasan }) {
  */
 export function Dalil({ daftarKode, diHalamanRujukan }: { daftarKode: string[]; diHalamanRujukan?: boolean }) {
   const { daftarEntri, catatan } = dalilUntuk(daftarKode);
+  const isi = (entri: (typeof daftarEntri)[number]) => (
+    <>
+      {entri.sumber && <p className="sumber-dalil">{entri.sumber}</p>}
+      {entri.ayat.filter(ayat => ayat.teks).map(ayat => <q key={ayat.label}>{ayat.teks} ({ayat.label})</q>)}
+      {entri.peringatan.map(peringatan => <p key={peringatan} className="peringatan-dalil">{peringatan}</p>)}
+    </>
+  );
   return (
     <div className="dalil">
-      {daftarEntri.map(entri => (
-        <div key={entri.kode}>
-          {!diHalamanRujukan && <p>{entri.klaim}</p>}
-          {entri.sumber && <p className="sumber-dalil">{entri.sumber}</p>}
-          {entri.ayat.filter(ayat => ayat.teks).map(ayat => <q key={ayat.label}>{ayat.teks} ({ayat.label})</q>)}
-          {entri.peringatan.map(peringatan => <p key={peringatan} className="peringatan-dalil">{peringatan}</p>)}
-          {!diHalamanRujukan && <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>Lihat di halaman Rujukan</a>}
-        </div>
+      {/* Di Hitung tiap dalil dilipat per klaim, supaya deretan dalil yang panjang tetap bisa dipindai. */}
+      {daftarEntri.map(entri => diHalamanRujukan ? <div key={entri.kode}>{isi(entri)}</div> : (
+        <details key={entri.kode} className="lipat-dalil">
+          <summary>{entri.klaim}</summary>
+          <div className="isi-dalil">
+            {isi(entri)}
+            <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>Lihat di halaman Rujukan</a>
+          </div>
+        </details>
       ))}
       {catatan.map(teks => <p key={teks} className="peringatan-dalil">{teks}</p>)}
     </div>

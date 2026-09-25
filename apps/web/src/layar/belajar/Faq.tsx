@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { DAFTAR_FAQ, semuaPotongan, type EntriFaq } from '@waris/content';
 import type { Kasus } from '../../kasus';
 import { tautanFaq } from '../../rute';
+import { Bagikan } from '../../ui/Bagikan';
 import { BlokMateri } from './Materi';
 
 interface Props { id?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
@@ -22,7 +23,7 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
   }, [id]);
 
   return (
-    <main className="halaman tumpuk">
+    <main className="halaman tumpuk halaman-faq">
       <h1>Tanya jawab</h1>
       <p className="lencana-draf">Draf, belum direview tim keilmuan</p>
       <label className="isian">
@@ -38,7 +39,7 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
               <summary><b>{entri.pertanyaan}</b></summary>
               <div className="isi-materi isi-lipat-faq">
                 {entri.jawaban.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
-                <a className="tautan-kecil" href={tautanFaq(entri.id)}>Tautan ke pertanyaan ini</a>
+                <Bagikan judul={entri.pertanyaan} tautan={tautanFaq(entri.id)} label="Bagikan pertanyaan ini" kecil />
               </div>
             </details>
           ))}

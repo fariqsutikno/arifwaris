@@ -34,7 +34,7 @@ it('KE_LAYAR hasil ditolak bila isian belum lengkap', () => {
 
 it('ULANGI menghapus kasus dan kembali ke beranda, tujuan tetap', () => {
   const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L'), tujuan: 'belajar' as const };
-  expect(pengurangKeadaan(keadaan, { jenis: 'ULANGI' })).toMatchObject({ layar: 'beranda', kasus: null, tujuan: 'belajar' });
+  expect(pengurangKeadaan(keadaan, { jenis: 'ULANGI' })).toMatchObject({ layar: 'awal', kasus: null, tujuan: 'belajar' });
 });
 
 it('UBAH_KASUS selalu merapikan urutan wafat', () => {

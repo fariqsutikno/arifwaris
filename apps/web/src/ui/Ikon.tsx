@@ -17,6 +17,12 @@ const JALUR = {
   gambar: <><rect x="3" y="4" width="18" height="16" rx="2" /><circle cx="9" cy="10" r="2" /><path d="M21 16l-5-5-9 9" /></>,
   benar: <path d="M5 12.5l4.5 4.5L19 7.5" />,
   salah: <path d="M6 6l12 12M18 6L6 18" />,
+  pensil: <><path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" /></>,
+  daftar: <><path d="M9 6h11M9 12h11M9 18h11" /><path d="M4 6h.01M4 12h.01M4 18h.01" /></>,
+  sampah: <><path d="M4 7h16M9 7V4h6v3" /><path d="M6 7l1 13h10l1-13M10 11v6M14 11v6" /></>,
+  tambah: <path d="M12 5v14M5 12h14" />,
+  kembali: <path d="M15 5l-7 7 7 7" />,
+  bagikan: <><path d="M12 15V3M7 8l5-5 5 5" /><path d="M5 12v8h14v-8" /></>,
   buka: <><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 14v6H4V6h6" /></>,
 } as const;
 

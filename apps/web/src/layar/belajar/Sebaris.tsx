@@ -1,9 +1,9 @@
-// Potongan sebaris materi → elemen React: istilah jadi tooltip glosarium, kode rujukan jadi tautan kecil "dalil".
+// Potongan sebaris materi → elemen React: istilah jadi tooltip glosarium, kode rujukan jadi chip Dalil (buka lembar dalil).
 
 import { Fragment } from 'react';
-import { cariRujukan, type Potongan } from '@waris/content';
-import { tautanRujukan } from '../../rute';
+import type { Potongan } from '@waris/content';
 import { Istilah } from '../../ui/Tooltip';
+import { ChipDalil } from './ChipDalil';
 
 export function Sebaris({ isi }: { isi: Potongan[] }) {
   return (
@@ -14,9 +14,7 @@ export function Sebaris({ isi }: { isi: Potongan[] }) {
           case 'tebal': return <b key={urutan}>{potongan.teks}</b>;
           case 'miring': return <em key={urutan}>{potongan.teks}</em>;
           case 'istilah': return <Istilah key={urutan} id={potongan.id}>{potongan.teks}</Istilah>;
-          case 'rujukan': return (
-            <a key={urutan} className="tautan-dalil" href={tautanRujukan(potongan.kode)} aria-label={`Dalil: ${cariRujukan(potongan.kode)?.klaim ?? potongan.kode}`}>dalil</a>
-          );
+          case 'rujukan': return <ChipDalil key={urutan} kode={potongan.kode} />;
         }
       })}
     </>

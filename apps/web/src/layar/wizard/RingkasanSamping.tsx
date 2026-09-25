@@ -25,13 +25,25 @@ export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
         )}
         <Baris label="Ahli waris" terisi={ahliWaris.length > 0}>
           {ahliWaris.length === 0 ? 'Belum ada' : (
-            <ul>{ahliWaris.map(id => <li key={id}>{labelOrangChecklist(kasus!.graf, kasus!.graf.idPewaris, id)}</li>)}</ul>
+            <ul>{barisAhliWaris(kasus!).map(teks => <li key={teks}>{teks}</li>)}</ul>
           )}
         </Baris>
         <Baris label="Kondisi khusus" terisi={kondisi > 0}>{kondisi > 0 ? `${kondisi} dicatat` : 'Tidak ada'}</Baris>
       </dl>
     </div>
   );
+}
+
+/** Yang tanpa nama dan sepengan digabung ("Anak perempuan ×2"); yang bernama tetap per orang. */
+function barisAhliWaris(kasus: Kasus): string[] {
+  const { graf } = kasus;
+  return Object.entries(hitungIsian(graf, graf.idPewaris)).flatMap(([, ids = []]) => {
+    const tanpaNama = ids.filter(id => !graf.orang[id]!.nama && !graf.orang[id]!.penghubung);
+    const lainnya = ids.filter(id => !tanpaNama.includes(id)).map(id => labelOrangChecklist(graf, graf.idPewaris, id));
+    if (tanpaNama.length === 0) return lainnya;
+    const label = labelOrangChecklist(graf, graf.idPewaris, tanpaNama[0]!).replace(/ \d+$/, '');
+    return [tanpaNama.length > 1 ? `${label} ×${tanpaNama.length}` : label, ...lainnya];
+  });
 }
 
 function Baris({ label, terisi, children }: { label: string; terisi: boolean; children: React.ReactNode }) {

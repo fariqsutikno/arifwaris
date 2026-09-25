@@ -7,6 +7,7 @@
   --font-display:"Readex Pro",system-ui,sans-serif;--font-sans:"Plus Jakarta Sans",system-ui,sans-serif;--font-arab:"Noto Kufi Arabic",serif;
   --radius-sm:8px;--radius-md:14px;--radius-lg:20px;--radius-pill:999px;
   --shadow-pop:4px 4px 0 #111322;--shadow-pop-sm:2px 2px 0 #111322;--border-w:2px;
+  --lebar-konten:1200px;
 }
 @media (prefers-color-scheme:dark){:root{
   --surface:#16182a;--surface-raised:#1f2238;--surface-sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--motif:#2d3358;

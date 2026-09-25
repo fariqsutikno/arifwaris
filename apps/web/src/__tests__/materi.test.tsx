@@ -27,13 +27,14 @@ describe('contoh kasus di materi = hasil engine', () => {
 });
 
 describe('halaman belajar', () => {
-  it('beranda belajar: lanjutkan pelajaran pertama, angka progres, jalur tiap modul', () => {
+  it('beranda belajar: lanjutkan pelajaran pertama, lalu kelompok Belajar → Latihan → Cari tahu', () => {
     render(<Belajar />);
     const lanjut = screen.getByRole('link', { name: new RegExp(DAFTAR_PELAJARAN[0]!.judul) });
     expect(lanjut.getAttribute('href')).toBe(`#/belajar/${DAFTAR_PELAJARAN[0]!.slug}`);
     expect(screen.getByLabelText(/^Progres 0%/)).toBeTruthy();
-    expect(within(screen.getByRole('region', { name: 'Progres' })).getAllByRole('link')).toHaveLength(3);
-    expect(screen.getAllByText('Menyusul').length).toBeGreaterThan(0);
+    expect(screen.getAllByRole('heading', { level: 2 }).map(judul => judul.textContent)).toEqual(['Belajar', 'Latihan', 'Cari tahu']);
+    expect(within(screen.getByRole('region', { name: 'Latihan' })).getAllByRole('link')).toHaveLength(3);
+    expect(screen.getByText(/^Segera hadir:/)).toBeTruthy();
   });
 
   it('pelajaran dengan contoh: tabel dari engine, tautan dalil, dan selesai tersimpan', () => {
@@ -42,7 +43,12 @@ describe('halaman belajar', () => {
     render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={kasus => dicoba.push(kasus)} />);
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(pelajaran.judul);
     expect(document.querySelector('table.faraidh')).toBeTruthy();
-    expect(document.querySelector('a.tautan-dalil[href^="#/rujukan/R"]')).toBeTruthy();
+    // Chip dalil membuka lembar di halaman yang sama, bukan pindah ke Rujukan.
+    fireEvent.click(document.querySelector<HTMLButtonElement>('button.chip-dalil')!);
+    const lembar = screen.getByRole('dialog');
+    expect(within(lembar).getByRole('link', { name: 'Buka di Rujukan' }).getAttribute('href')).toMatch(/^#\/rujukan\/R/);
+    fireEvent.keyDown(lembar, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
     fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);
     expect(dicoba).toHaveLength(1);
     const navigasi = screen.getByRole('navigation', { name: 'Navigasi pelajaran' });

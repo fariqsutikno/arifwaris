@@ -13,10 +13,14 @@ interface Props {
   saatLanjut: () => void;
   saatBatal: () => void;
   tahan?: boolean;
+  /** Tantangan ketik: tombol lanjut baru aktif setelah kalimat ini diketik persis. Untuk aksi yang tidak bisa dibatalkan. */
+  kataKunci?: string;
 }
 
-export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan }: Props) {
+export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan, kataKunci }: Props) {
   const id = useId();
+  const [ketikan, setKetikan] = useState('');
+  const cocok = !kataKunci || ketikan.trim() === kataKunci;
   const wadah = useRef<HTMLDivElement>(null);
   useEffect(() => { wadah.current?.querySelector<HTMLButtonElement>('[data-batal]')?.focus(); }, []);
   return (
@@ -25,10 +29,16 @@ export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'B
       <div className="konfirmasi-isi">
         <h2 id={`${id}-judul`}>{judul}</h2>
         <div id={`${id}-isi`} className="isi-konfirmasi">{children}</div>
+        {kataKunci && (
+          <label className="isian isian-kecil">
+            <span>Ketik <b>{kataKunci}</b> untuk melanjutkan</span>
+            <input value={ketikan} onChange={event => setKetikan(event.target.value)} autoComplete="off" spellCheck={false} />
+          </label>
+        )}
         <div className="aksi-konfirmasi">
           <Tombol data-batal onClick={saatBatal}>{labelBatal}</Tombol>
           {tahan ? <TombolTahan label={labelLanjut} saatSelesai={saatLanjut} />
-            : <Tombol varian="secondary" onClick={saatLanjut}>{labelLanjut}</Tombol>}
+            : <Tombol varian="secondary" disabled={!cocok} onClick={saatLanjut}>{labelLanjut}</Tombol>}
         </div>
       </div>
     </div>

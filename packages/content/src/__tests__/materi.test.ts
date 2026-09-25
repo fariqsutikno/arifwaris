@@ -63,3 +63,8 @@ describe('materi di docs/materi', () => {
     }
   });
 });
+
+test('tabel: | di dalam [[tautan|teks]] tidak memecah sel', () => {
+  const [tabel] = bacaBlok('uji', '| A | B |\n|---|---|\n| [[bi-nafsihi|Bi nafsihi]] | x |');
+  expect(tabel?.jenis === 'tabel' && tabel.baris[0]!.length).toBe(2);
+});

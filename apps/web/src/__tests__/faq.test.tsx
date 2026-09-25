@@ -8,7 +8,8 @@ it('FAQ: semua pertanyaan tampil per kelompok, bisa dicari, dan id membuka perta
   const { container } = render(<Faq id={pertama.id} kasusSekarang={null} saatCoba={() => {}} />);
   expect(container.querySelectorAll('details').length).toBe(DAFTAR_FAQ.length);
   expect((document.getElementById(`faq-${pertama.id}`) as HTMLDetailsElement).open).toBe(true);
-  expect(container.querySelector('a.tautan-dalil[href^="#/rujukan/R"]')).toBeTruthy();
+  expect(container.querySelector('button.chip-dalil')).toBeTruthy();
+  expect(screen.getAllByRole('button', { name: /^Bagikan pertanyaan ini: / })).toHaveLength(DAFTAR_FAQ.length);
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'anak angkat' } });
   expect(container.querySelectorAll('details').length).toBe(1);
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'zzz tidak ada' } });

@@ -73,6 +73,18 @@ export function catatAktivitas(aktivitas: Aktivitas): void {
   simpan(KUNCI_AKTIVITAS, JSON.stringify([aktivitas, ...lain].slice(0, BATAS_AKTIVITAS)));
 }
 
+/** Hapus satu jejak (jenis+kode), atau semua jejak bila tanpa argumen. */
+export function hapusAktivitas(aktivitas?: Pick<Aktivitas, 'jenis' | 'kode'>): void {
+  const sisa = aktivitas ? bacaAktivitas().filter(isi => isi.jenis !== aktivitas.jenis || isi.kode !== aktivitas.kode) : [];
+  simpan(KUNCI_AKTIVITAS, JSON.stringify(sisa));
+}
+
+/** Reset progres belajar: pelajaran selesai, soal hitung, skor kuis, dan jejak belajar. Riwayat hitung tidak tersentuh. */
+export function resetProgresBelajar(): void {
+  (['pelajaran', 'soal', 'kuis'] as const).forEach(jenis => simpan(AWALAN_CATATAN + jenis, '{}'));
+  hapusAktivitas();
+}
+
 /** Pilihan kecil yang diingat per perangkat (mis. mode pembahasan kuis). */
 export const bacaPilihan = (kunci: string): string | null => baca(`arif-waris:pilihan:${kunci}`);
 export const simpanPilihan = (kunci: string, nilai: string): void => simpan(`arif-waris:pilihan:${kunci}`, nilai);

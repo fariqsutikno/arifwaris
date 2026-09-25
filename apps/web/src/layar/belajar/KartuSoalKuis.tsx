@@ -1,8 +1,8 @@
 // Satu soal kuis pilihan ganda berlabel A, B, C, D.
 // mode 'langsung': setelah memilih, benar/salah dan pembahasan langsung tampil.
-// mode 'akhir': pilihan hanya ditandai terpilih; penilaian ditunda ke halaman hasil.
+// mode 'akhir': pilihan hanya ditandai terpilih dan masih bisa diganti; penilaian ditunda ke halaman hasil.
 
-import { useState, type ReactNode } from 'react';
+import { useState } from 'react';
 import type { SoalKuis } from '@waris/content';
 import { Ikon } from '../../ui/Ikon';
 import { Sebaris } from './Sebaris';
@@ -14,13 +14,14 @@ interface Props {
   soal: SoalKuis;
   label?: string;
   mode?: ModePembahasan;
+  /** Tanpa ini (kuis di materi) muncul tombol "Coba lagi" setelah menjawab; navigasi sesi diurus pemanggil. */
   saatDijawab?: (indeks: number) => void;
-  /** Tombol setelah menjawab (mis. "Soal berikutnya"); tanpa ini muncul "Coba lagi". */
-  aksiSetelahJawab?: ReactNode;
+  /** Jawaban yang sudah dipilih sebelumnya (kembali ke soal di mode ujian). */
+  dipilihAwal?: number | undefined;
 }
 
-export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saatDijawab, aksiSetelahJawab }: Props) {
-  const [dipilih, setDipilih] = useState<number | null>(null);
+export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saatDijawab, dipilihAwal }: Props) {
+  const [dipilih, setDipilih] = useState<number | null>(dipilihAwal ?? null);
   const sudahMenjawab = dipilih !== null;
   const tampilkanNilai = sudahMenjawab && mode === 'langsung';
   const benar = dipilih === soal.indeksBenar;
@@ -35,7 +36,8 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
       <p className="pertanyaan-kuis"><Sebaris isi={soal.pertanyaan} /></p>
       <div className="pilihan-kuis">
         {soal.pilihan.map((pilihan, indeks) => (
-          <button key={indeks} type="button" disabled={sudahMenjawab} onClick={() => pilih(indeks)} className={kelas(indeks)}
+          <button key={indeks} type="button" disabled={sudahMenjawab && mode === 'langsung'} onClick={() => pilih(indeks)} className={kelas(indeks)}
+            aria-pressed={mode === 'akhir' ? indeks === dipilih : undefined}
             aria-label={`${HURUF[indeks]}. ${pilihan.map(potongan => ('teks' in potongan ? potongan.teks : '')).join('')}`}>
             <span className="huruf-pilihan" aria-hidden="true">{HURUF[indeks]}</span>
             <span><Sebaris isi={pilihan} /></span>
@@ -48,9 +50,9 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
           <p><Sebaris isi={soal.pembahasan} /></p>
         </div>
       )}
-      {sudahMenjawab && (
+      {sudahMenjawab && !saatDijawab && (
         <div className="aksi-pembahasan">
-          {aksiSetelahJawab ?? <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>Coba lagi</button>}
+          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>Coba lagi</button>
         </div>
       )}
     </fieldset>

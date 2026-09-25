@@ -1,6 +1,6 @@
 // Konfirmasi sebelum kasus yang sedang ada diganti (Ulangi dari awal, memilih tujuan saat ada kasus tersimpan,
-// membuka kasus dari materi/latihan/riwayat). Kasus yang sudah sampai hasil otomatis tersimpan di riwayat, jadi
-// cukup diberi tahu; isian yang belum sampai hasil tidak masuk riwayat, jadi diberi tahu bahwa ia akan hilang.
+// membuka kasus dari materi/latihan/riwayat). Kasus yang sedang ada selalu tersimpan di riwayat (yang belum sampai
+// hasil ditandai data belum lengkap), jadi cukup diberi tahu di mana melanjutkannya.
 
 import type { Kasus } from '../kasus';
 import { DialogKonfirmasi } from '../ui/Dialog';
@@ -22,7 +22,7 @@ export function KonfirmasiKasusBaru({ kasus, saatLanjut, saatBatal, judul = 'Mul
       <p>
         {kasusLengkap(kasus)
           ? 'Kasus yang sekarang sudah tersimpan di Riwayat hitung, jadi bisa kamu buka lagi kapan saja.'
-          : 'Isian yang sekarang belum sampai hasil, jadi belum masuk riwayat dan akan hilang.'}
+          : 'Isian yang sekarang tersimpan di Riwayat hitung sebagai data belum lengkap. Kamu bisa melanjutkannya kapan saja.'}
       </p>
     </DialogKonfirmasi>
   );

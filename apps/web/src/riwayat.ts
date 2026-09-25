@@ -1,4 +1,5 @@
-// Riwayat hitung: kasus yang pernah sampai ke layar hasil, terakhir dibuka di atas, disimpan di perangkat ini.
+// Riwayat hitung: kasus yang pernah dibuka di wizard atau layar hasil, terakhir dibuka di atas, disimpan di perangkat ini.
+// Kasus yang belum sampai hasil tetap dicatat (ditandai data belum lengkap) supaya bisa dilanjutkan.
 // Satu entri per sesi (mulai kasus / impor / buka dari riwayat, materi, atau latihan): mengubah kasus di layar hasil
 // memperbarui entri sesinya. Tiap entri mencatat sumbernya. Entri yang tidak dibuka lebih dari 30 hari dibuang.
 
@@ -7,6 +8,7 @@ import { hitungIsian, jenisDari } from './checklist';
 import { formatRupiah } from './format';
 import { dariJson, keJson, type Kasus } from './kasus';
 import { LABEL_SEHARI } from './konten/ahliWaris';
+import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
 const KUNCI_RIWAYAT = 'arif-waris:riwayat';
 const HARI = 24 * 60 * 60 * 1000;
@@ -20,7 +22,7 @@ export type SumberRiwayat =
   | { jenis: 'materi' }
   | { jenis: 'latihan'; kode: string };
 
-export interface EntriRiwayat { id: string; waktu: number; sumber: SumberRiwayat; judul: string; keterangan: string; kasus: Kasus }
+export interface EntriRiwayat { id: string; waktu: number; sumber: SumberRiwayat; judul: string; keterangan: string; lengkap: boolean; kasus: Kasus }
 interface EntriTersimpan { id: string; waktu: number; sumber?: SumberRiwayat; kasus: string }
 
 export function bacaRiwayat(): EntriRiwayat[] {
@@ -40,26 +42,33 @@ export function catatRiwayat(id: string, kasus: Kasus, waktu: number, sumber: Su
   simpanTersimpan([{ id, waktu, sumber, kasus: json }, ...lain]);
 }
 
+/** Catat kasus sebagai entri baru hanya bila isinya belum ada di riwayat (mis. kasus tersimpan dari versi lama). */
+export function catatBilaBelumAda(id: string, kasus: Kasus, waktu: number): void {
+  const json = keJson(kasus);
+  if (!bacaTersimpan().some(entri => entri.kasus === json)) catatRiwayat(id, kasus, waktu, { jenis: 'sendiri' });
+}
+
 export const hapusRiwayat = (id?: string): void => simpanTersimpan(id ? bacaTersimpan().filter(entri => entri.id !== id) : []);
 
 export function labelSumber(sumber: SumberRiwayat): string {
   switch (sumber.jenis) {
-    case 'sendiri': return 'Hitung sendiri';
+    case 'sendiri': return 'Skenario pribadi';
     case 'impor': return 'Impor file';
     case 'materi': return 'Contoh materi';
     case 'latihan': return `Soal latihan ${sumber.kode}`;
   }
 }
 
-/** "Istri, 2 Anak perempuan, Ayah" dan "Rp 120.000.000". */
-export function ringkasKasus(kasus: Kasus): { judul: string; keterangan: string } {
+/** "Istri, 2 Anak perempuan, Ayah" dan "Rp 120.000.000" (atau "Data belum lengkap"). */
+export function ringkasKasus(kasus: Kasus): { judul: string; keterangan: string; lengkap: boolean } {
   const isian = hitungIsian(kasus.graf, kasus.graf.idPewaris);
   const judul = Object.entries(isian).map(([kunci, daftar]) => {
     const label = LABEL_SEHARI[kunci as KunciAhliWaris] ?? jenisDari(kunci as KunciAhliWaris)?.label ?? kunci;
     return daftar!.length > 1 ? `${daftar!.length} ${label}` : label;
   }).join(', ') || 'Belum ada ahli waris';
+  if (langkahTerjauh(kasus) !== LANGKAH_HASIL) return { judul, keterangan: 'Data belum lengkap', lengkap: false };
   const munasakhat = kasus.urutanWafat.length > 0 ? ' · ada yang wafat sebelum pembagian' : '';
-  return { judul, keterangan: `${formatRupiah(kasus.tirkah.kotor)}${munasakhat}` };
+  return { judul, keterangan: `${formatRupiah(kasus.tirkah.kotor)}${munasakhat}`, lengkap: true };
 }
 
 function bacaTersimpan(): EntriTersimpan[] {

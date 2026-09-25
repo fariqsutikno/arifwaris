@@ -1,5 +1,6 @@
 // Kuis konsep: daftar paket (per bab + acak) dan satu sesi paket.
-// Sesi: layar awal (mode latihan = jawaban tepat langsung muncul, mode ujian = muncul di akhir) → soal satu per satu →
+// Sesi: layar awal (mode latihan = jawaban tepat langsung muncul, mode ujian = muncul di akhir; di mode ujian jawaban
+// masih bisa diganti dan soal sebelumnya dibuka lagi sampai diselesaikan) → soal satu per satu →
 // hasil: skor lalu pembahasan tiap soal. Keluar di tengah sesi ditanya dulu (usePenjaga).
 
 import { useState } from 'react';
@@ -38,8 +39,14 @@ export function soalPaket(paket: string, acak: () => number = Math.random): Soal
 const judulPaket = (paket: string) => {
   if (paket === PAKET_ACAK) return 'Kuis acak';
   const bab = Number(paket.replace('bab-', ''));
-  return `Bab ${bab} · ${JUDUL_BAB[bab] ?? ''}`;
+  return judulTopik(bab);
 };
+
+/**
+ * Judul bab KB tanpa nomor dan tanpa keterangan dalam kurung. Nomor bab KB sengaja tidak ditampilkan supaya tidak
+ * tertukar dengan nomor Modul di halaman Belajar (keduanya tidak sepadan satu-satu).
+ */
+export const judulTopik = (bab: number) => (JUDUL_BAB[bab] ?? '').replace(/\s*\(.*\)\s*$/, '');
 
 export function DaftarPaketKuis() {
   const catatan = bacaCatatan('kuis');
@@ -55,8 +62,7 @@ export function DaftarPaketKuis() {
         </a>
         {perBab(DAFTAR_SOAL_KUIS).map(([bab, daftar]) => (
           <a key={bab} className="kartu-paket" href={tautanLatihan('kuis', kodePaketBab(bab))}>
-            <span className="label-langkah">Bab {bab}</span>
-            <b>{JUDUL_BAB[bab]}</b>
+            <b>{judulTopik(bab)}</b>
             <span className="keterangan">{daftar.length} soal</span>
             {catatan[kodePaketBab(bab)] && <span className="skor-paket">Skor terakhir {catatan[kodePaketBab(bab)]}</span>}
           </a>
@@ -73,13 +79,14 @@ export function SesiKuis({ paket }: { paket: string }) {
   const [tahap, setTahap] = useState<Tahap>('awal');
   const [mode, setMode] = useState<ModePembahasan>(() => (bacaPilihan(KUNCI_MODE) === 'akhir' ? 'akhir' : 'langsung'));
   const [posisi, setPosisi] = useState(0);
-  const [pilihan, setPilihan] = useState<number[]>([]);
+  // Indeks = nomor soal; kosong = belum dijawab.
+  const [pilihan, setPilihan] = useState<Array<number | undefined>>([]);
   const judul = judulPaket(paket);
 
   usePenjaga(tahap === 'mengerjakan', {
     berlaku: () => true,
     judul: 'Keluar dari kuis?',
-    isi: <p>Jawabanmu di sesi ini ({pilihan.length} dari {daftarSoal.length} soal) tidak disimpan.</p>,
+    isi: <p>Jawabanmu di sesi ini ({pilihan.filter(isi => isi !== undefined).length} dari {daftarSoal.length} soal) tidak disimpan.</p>,
     labelTetap: 'Lanjut mengerjakan',
     labelPergi: 'Keluar',
   });
@@ -128,39 +135,67 @@ export function SesiKuis({ paket }: { paket: string }) {
   if (tahap === 'hasil') return <HasilKuis kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} saatUlang={() => mulai(mode)} />;
 
   const soal = daftarSoal[posisi]!;
-  const sudahDijawab = pilihan.length > posisi;
+  const sudahDijawab = pilihan[posisi] !== undefined;
   const benarSejauhIni = pilihan.filter((indeks, urutan) => indeks === daftarSoal[urutan]!.indeksBenar).length;
   const jawab = (indeks: number) => {
-    const baru = [...pilihan, indeks];
+    const baru = [...pilihan];
+    baru[posisi] = indeks;
     setPilihan(baru);
-    simpanCatatan('kuis', soal.kode, indeks === soal.indeksBenar ? 'benar' : 'salah');
-    if (baru.length === daftarSoal.length) {
-      const skor = `${baru.filter((isi, urutan) => isi === daftarSoal[urutan]!.indeksBenar).length}/${daftarSoal.length}`;
-      simpanCatatan('kuis', paket, skor);
-      catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
-    }
+  };
+  // Penilaian dicatat saat sesi diselesaikan, karena di mode ujian jawaban masih bisa diganti sampai saat itu.
+  const selesaikan = () => {
+    daftarSoal.forEach((soalIni, urutan) => simpanCatatan('kuis', soalIni.kode, pilihan[urutan] === soalIni.indeksBenar ? 'benar' : 'salah'));
+    const skor = `${benarSejauhIni}/${daftarSoal.length}`;
+    simpanCatatan('kuis', paket, skor);
+    catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
+    setTahap('hasil');
   };
   const terakhir = posisi + 1 === daftarSoal.length;
+  // Mode latihan maju satu arah (jawaban langsung dibuka), jadi kotak nomor hanya bisa dipakai loncat di mode ujian.
+  const bolehLoncat = (urutan: number) => mode === 'akhir' && (urutan <= posisi || pilihan[urutan - 1] !== undefined);
   return (
     <section className="sesi-kuis tumpuk-rapat">
       {kepala}
+      <div className="tata-sesi">
+      <div className="tumpuk-rapat">
       <div className="progres-sesi">
         <span className="angka-progres">Soal {posisi + 1} dari {daftarSoal.length}</span>
         {mode === 'langsung' && <span className="angka-progres">Benar {benarSejauhIni}</span>}
       </div>
       <span className="bar-progres" aria-hidden="true"><span style={{ width: `${((posisi + (sudahDijawab ? 1 : 0)) / daftarSoal.length) * 100}%` }} /></span>
-      <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={`Soal ${posisi + 1}`} mode={mode} saatDijawab={jawab}
-        aksiSetelahJawab={
-          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={() => (terakhir ? setTahap('hasil') : setPosisi(posisi + 1))}>
-            {terakhir ? 'Lihat hasil' : 'Soal berikutnya'}
-          </button>
-        } />
+      <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={`Soal ${posisi + 1}`} mode={mode} saatDijawab={jawab} dipilihAwal={pilihan[posisi]} />
+      <div className="nav-langkah">
+        {mode === 'akhir' && posisi > 0
+          ? <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setPosisi(posisi - 1)}>Soal sebelumnya</button>
+          : <span />}
+        <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled={!sudahDijawab} onClick={() => (terakhir ? selesaikan() : setPosisi(posisi + 1))}>
+          {terakhir ? (mode === 'akhir' ? 'Selesaikan' : 'Lihat hasil') : 'Soal berikutnya'}
+        </button>
+      </div>
+      </div>
+      <nav className="nav-soal" aria-labelledby="judul-nav-soal">
+        <h2 id="judul-nav-soal">Navigasi soal</h2>
+        <ol className="kotak-nomor">
+          {daftarSoal.map((soalIni, urutan) => {
+            const terjawab = pilihan[urutan] !== undefined;
+            return (
+              <li key={`${soalIni.kode}-${urutan}`}>
+                <button type="button" className={terjawab ? 'terjawab' : undefined} aria-current={urutan === posisi}
+                  aria-label={`Soal ${urutan + 1}, ${terjawab ? 'terjawab' : 'belum dijawab'}`}
+                  disabled={!bolehLoncat(urutan)} onClick={() => setPosisi(urutan)}>{urutan + 1}</button>
+              </li>
+            );
+          })}
+        </ol>
+        <p className="legenda-nav"><span><i className="terjawab" />Terjawab</span><span><i />Belum</span></p>
+      </nav>
+      </div>
     </section>
   );
 }
 
 function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
-  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: number[]; saatUlang: () => void;
+  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: Array<number | undefined>; saatUlang: () => void;
 }) {
   const benar = daftarSoal.filter((soal, urutan) => pilihan[urutan] === soal.indeksBenar).length;
   const persen = Math.round((benar / daftarSoal.length) * 100);
