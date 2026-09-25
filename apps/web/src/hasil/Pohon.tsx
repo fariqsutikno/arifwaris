@@ -1,13 +1,15 @@
 // Pohon keluarga di kanvas hasil: node per orang (warna kelompok, gelap = almarhum, merah bergaris = terhalang,
 // garis putus = tidak mewarisi),
 // garis menikah (mendatar + lingkaran) dan garis keturunan (turun), diukur dari posisi node sesungguhnya.
+// Saat langkah perhitungan diputar: panah sebab-akibat (mis. penghalang → terhalang) digambar di atas node,
+// dan keterangan warna sorotan tampil di pojok.
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { formatRupiah, namaOrang } from '../format';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
-import { useAtributOrang, useSorot } from './sorot';
+import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
 import { tataLetak, type TataLetak } from './tataLetak';
 
 interface Props {
@@ -54,13 +56,22 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
   const wadah = useRef<HTMLDivElement>(null);
   const garis = useGarisPohon(wadah, letak);
   const atribut = useAtributOrang();
+  const { langkah } = useSorot();
+  const panah = usePanahSorot(wadah, langkah?.panah ?? []);
   return (
     <div className="pohon-wadah">
+      {redup && <LegendaSorot />}
       <div className={redup ? 'pohon redup' : 'pohon'} ref={wadah}>
         <svg className="garis-pohon" aria-hidden="true">
           <path d={garis.jalur} />
           {garis.cincin.map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r={5} />)}
         </svg>
+        {panah.length > 0 && (
+          <svg className="panah-pohon" aria-hidden="true" key={langkah?.ketukan}>
+            <defs><marker id="ujung-panah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" /></marker></defs>
+            {panah.map(jalur => <path key={jalur} d={jalur} pathLength={1} markerEnd="url(#ujung-panah)" />)}
+          </svg>
+        )}
         {letak.baris.map((baris, indeksBaris) => (
           <div className="pohon-baris" key={indeksBaris}>
             {baris.map(id => {
@@ -92,6 +103,41 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
       </div>
     </div>
   );
+}
+
+/** Jalur panah melengkung dari tepi node asal ke tepi node tujuan, diukur ulang tiap daftar panah berubah. */
+function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Array<[IdOrang, IdOrang]>) {
+  const [jalur, setJalur] = useState<string[]>([]);
+  const kunci = JSON.stringify(daftarPanah);
+  useLayoutEffect(() => {
+    const elemen = wadah.current;
+    if (!elemen || daftarPanah.length === 0) { setJalur([]); return; }
+    const dasar = elemen.getBoundingClientRect();
+    const pusat = (id: IdOrang) => {
+      const node = [...elemen.querySelectorAll<HTMLElement>('[data-orang]')].find(isi => isi.dataset.orang === id);
+      if (!node) return null;
+      const r = node.getBoundingClientRect();
+      return { x: (r.left + r.right) / 2 - dasar.left, y: (r.top + r.bottom) / 2 - dasar.top, rx: r.width / 2, ry: r.height / 2 };
+    };
+    setJalur(daftarPanah.flatMap(([dari, ke]) => {
+      const a = pusat(dari);
+      const b = pusat(ke);
+      if (!a || !b) return [];
+      // Mulai dan berhenti di tepi kotak node (bukan di tengahnya), lalu lengkungkan sedikit supaya tidak menimpa garis keluarga.
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const tepi = (kotak: typeof a, arah: number) => Math.min(kotak.rx / Math.abs(dx || 1e-6), kotak.ry / Math.abs(dy || 1e-6)) * arah;
+      const ta = tepi(a, 1);
+      const tb = tepi(b, 1);
+      const x1 = a.x + dx * ta; const y1 = a.y + dy * ta;
+      const x2 = b.x - dx * tb; const y2 = b.y - dy * tb;
+      const lengkung = 0.2;
+      const cx = (x1 + x2) / 2 - (y2 - y1) * lengkung;
+      const cy = (y1 + y2) / 2 + (x2 - x1) * lengkung;
+      return [`M${x1},${y1}Q${cx},${cy} ${x2},${y2}`];
+    }));
+  }, [wadah, kunci]);
+  return jalur;
 }
 
 /** Ukur posisi node lalu susun jalur SVG: garis menikah antar orang tua, batang turun, dan cabang ke tiap anak. */

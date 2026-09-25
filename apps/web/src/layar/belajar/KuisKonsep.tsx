@@ -2,8 +2,9 @@
 // Sesi: layar awal (mode latihan = jawaban tepat langsung muncul, mode ujian = muncul di akhir; di mode ujian jawaban
 // masih bisa diganti dan soal sebelumnya dibuka lagi sampai diselesaikan) → soal satu per satu →
 // hasil: skor lalu pembahasan tiap soal. Keluar di tengah sesi ditanya dulu (usePenjaga).
+// Mode ujian diberi batas waktu (lihat durasiUjian); waktu habis = jawaban otomatis dikumpulkan, yang kosong dihitung salah.
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DAFTAR_SOAL_KUIS, JUDUL_BAB, type SoalKuis } from '@waris/content';
 import { bacaCatatan, bacaPilihan, catatAktivitas, simpanCatatan, simpanPilihan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
@@ -22,6 +23,19 @@ const JUMLAH_SOAL_ACAK = 10;
 export const PAKET_ACAK = 'acak';
 const kodePaketBab = (bab: number) => `bab-${bab}`;
 const KUNCI_MODE = 'mode-pembahasan';
+
+/** Patokan 5 soal = 3 menit (36 detik per soal), dibulatkan ke kelipatan 30 detik supaya angkanya enak dibaca. */
+const DETIK_PER_SOAL = 36;
+const KELIPATAN_DETIK = 30;
+export const durasiUjian = (jumlahSoal: number) =>
+  Math.max(KELIPATAN_DETIK, Math.round((jumlahSoal * DETIK_PER_SOAL) / KELIPATAN_DETIK) * KELIPATAN_DETIK);
+const formatDurasi = (detik: number) => {
+  const menit = Math.floor(detik / 60);
+  const sisa = detik % 60;
+  return [menit > 0 ? `${menit} menit` : '', sisa > 0 ? `${sisa} detik` : ''].filter(Boolean).join(' ');
+};
+const jamDigital = (detik: number) => `${Math.floor(detik / 60)}:${String(detik % 60).padStart(2, '0')}`;
+const DETIK_PERINGATAN = 30;
 
 export function soalPaket(paket: string, acak: () => number = Math.random): SoalKuis[] {
   if (paket === PAKET_ACAK) {
@@ -82,6 +96,9 @@ export function SesiKuis({ paket }: { paket: string }) {
   // Indeks = nomor soal; kosong = belum dijawab.
   const [pilihan, setPilihan] = useState<Array<number | undefined>>([]);
   const judul = judulPaket(paket);
+  const [batasWaktu, setBatasWaktu] = useState<number | null>(null);
+  const saatWaktuHabis = useRef<() => void>(() => {});
+  const sisaDetik = useHitungMundur(tahap === 'mengerjakan' ? batasWaktu : null, () => saatWaktuHabis.current());
 
   usePenjaga(tahap === 'mengerjakan', {
     berlaku: () => true,
@@ -99,6 +116,7 @@ export function SesiKuis({ paket }: { paket: string }) {
     setDaftarSoal(soalPaket(paket));
     setPosisi(0);
     setPilihan([]);
+    setBatasWaktu(modeBaru === 'akhir' ? Date.now() + durasiUjian(daftarSoal.length) * 1000 : null);
     setTahap('mengerjakan');
   };
 
@@ -123,7 +141,7 @@ export function SesiKuis({ paket }: { paket: string }) {
             </label>
             <label className={mode === 'akhir' ? 'opsi-mode dipilih' : 'opsi-mode'}>
               <input type="radio" name="mode" checked={mode === 'akhir'} onChange={() => setMode('akhir')} />
-              <span><b>Mode ujian</b><small>Jawaban yang tepat baru muncul setelah soal terakhir.</small></span>
+              <span><b>Mode ujian</b><small>Waktunya {formatDurasi(durasiUjian(daftarSoal.length))}. Jawaban yang tepat baru muncul setelah selesai atau waktu habis.</small></span>
             </label>
           </fieldset>
           <button type="button" className="aw-btn aw-btn-primary" onClick={() => mulai(mode)}>Mulai kuis</button>
@@ -150,6 +168,7 @@ export function SesiKuis({ paket }: { paket: string }) {
     catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
     setTahap('hasil');
   };
+  saatWaktuHabis.current = selesaikan;
   const terakhir = posisi + 1 === daftarSoal.length;
   // Mode latihan maju satu arah (jawaban langsung dibuka), jadi kotak nomor hanya bisa dipakai loncat di mode ujian.
   const bolehLoncat = (urutan: number) => mode === 'akhir' && (urutan <= posisi || pilihan[urutan - 1] !== undefined);
@@ -161,6 +180,11 @@ export function SesiKuis({ paket }: { paket: string }) {
       <div className="progres-sesi">
         <span className="angka-progres">Soal {posisi + 1} dari {daftarSoal.length}</span>
         {mode === 'langsung' && <span className="angka-progres">Benar {benarSejauhIni}</span>}
+        {sisaDetik !== null && (
+          <span className={sisaDetik <= DETIK_PERINGATAN ? 'sisa-waktu hampir' : 'sisa-waktu'} role="timer" aria-label={`Sisa waktu ${formatDurasi(sisaDetik) || '0 detik'}`}>
+            <Ikon nama="jam" ukuran={16} /> {jamDigital(sisaDetik)}
+          </span>
+        )}
       </div>
       <span className="bar-progres" aria-hidden="true"><span style={{ width: `${((posisi + (sudahDijawab ? 1 : 0)) / daftarSoal.length) * 100}%` }} /></span>
       <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={`Soal ${posisi + 1}`} mode={mode} saatDijawab={jawab} dipilihAwal={pilihan[posisi]} />
@@ -222,7 +246,7 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
         <h2 id="judul-pembahasan">Pembahasan</h2>
         <ol className="daftar-polos tumpuk-rapat">
           {daftarSoal.map((soal, urutan) => {
-            const dipilih = pilihan[urutan]!;
+            const dipilih = pilihan[urutan];
             const tepat = dipilih === soal.indeksBenar;
             return (
               <li key={soal.kode}>
@@ -230,12 +254,13 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
                   <summary>
                     <span className={tepat ? 'status-jawaban benar' : 'status-jawaban salah'}><Ikon nama={tepat ? 'benar' : 'salah'} ukuran={16} /></span>
                     <span className="pertanyaan-pembahasan"><b>Soal {urutan + 1}.</b> <Sebaris isi={soal.pertanyaan} /></span>
-                    <span className="panah-lipat" aria-hidden="true">▾</span>
+                    <span className="panah-lipat" aria-hidden="true" />
                   </summary>
                   <div className="isi-pembahasan">
                     <div className={tepat ? 'baris-jawaban benar' : 'baris-jawaban salah'}>
                       <span className="label-jawaban">Jawabanmu</span>
-                      <span><b>{HURUF[dipilih]}.</b> <Sebaris isi={soal.pilihan[dipilih]!} /></span>
+                      {dipilih === undefined ? <span>Tidak dijawab (waktu habis)</span>
+                        : <span><b>{HURUF[dipilih]}.</b> <Sebaris isi={soal.pilihan[dipilih]!} /></span>}
                     </div>
                     {!tepat && (
                       <div className="baris-jawaban benar">
@@ -256,4 +281,20 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
       </section>
     </section>
   );
+}
+
+/** Sisa detik sampai `batas` (epoch ms), diperbarui tiap seperempat detik; memanggil `saatHabis` sekali saat nol. */
+function useHitungMundur(batas: number | null, saatHabis: () => void): number | null {
+  const [sekarang, setSekarang] = useState(() => Date.now());
+  useEffect(() => {
+    if (batas === null) return;
+    setSekarang(Date.now());
+    const jeda = window.setInterval(() => {
+      const kini = Date.now();
+      setSekarang(kini);
+      if (kini >= batas) { window.clearInterval(jeda); saatHabis(); }
+    }, 250);
+    return () => window.clearInterval(jeda);
+  }, [batas]);
+  return batas === null ? null : Math.max(0, Math.ceil((batas - sekarang) / 1000));
 }

@@ -21,6 +21,7 @@ interface Props {
   sembunyiNominal: boolean;
   saatSembunyi: () => void;
   sedangMenebak: boolean;
+  adalahBelajar: boolean;
   saatTampilkanJawaban: () => void;
   saatTebakanBenar: () => void;
   saatMencobaMenjawab: () => void;
@@ -42,7 +43,7 @@ export function KartuPembagian(props: Props) {
   return (
     <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
-        <h2 id="judul-pembagian">Pembagian</h2>
+        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? 'Jawabanmu' : 'Kunci jawaban') : 'Pembagian'}</h2>
         <div className="alat-pembagian">
           {props.saatUbahAhliWaris && (
             <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label="Ubah ahli waris" title="Ubah ahli waris">
@@ -175,8 +176,9 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
     // Dilipat: kebanyakan orang tidak mengubah pembulatan, jangan sampai menutupi penjelasan di bawahnya.
     <details className="kartu-bulat" data-tur="pembulatan">
       <summary className="kepala-bulat">
+        <span className="label-perhatian">Perlu keputusanmu</span>
         <b>Ada angka yang nggak bulat · dibulatkan ke {PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuan)?.judul ?? formatRupiah(satuan)}</b>
-        <span>Misalnya bagian {contoh?.nama.toLowerCase()} susah dibagi tunai. Ketuk untuk mengubah.</span>
+        <span>Misalnya bagian {contoh?.nama.toLowerCase()} susah dibagi tunai. Buka untuk memilih pembulatan dan melihat sisanya.</span>
       </summary>
       <div className="isi-bulat">
         <div className="pilihan-bulat" role="radiogroup" aria-label="Bulatkan bagian tiap orang ke">

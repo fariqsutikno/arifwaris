@@ -1,11 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
 import { DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, type SoalHitung } from '@waris/content';
 import { ringkas } from '../hasil/ringkasan';
 import { jalankan } from '../jalankan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
 import { Latihan } from '../layar/belajar/Latihan';
-import { PAKET_ACAK, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
+import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
 import { bacaCatatan, simpanCatatan } from '../preferensi';
 
 describe('kunci soal hitung = hasil engine', () => {
@@ -83,5 +83,19 @@ describe('halaman latihan', () => {
       fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya' : 'Selesaikan' }));
     });
     expect(document.querySelector('.skor-besar')?.textContent).toBe(`${daftar.length}/${daftar.length}`);
+  });
+
+  it('mode ujian: 5 soal = 3 menit, dibulatkan ke 30 detik; waktu habis = dikumpulkan otomatis, yang kosong salah', () => {
+    expect([durasiUjian(5), durasiUjian(10), durasiUjian(3), durasiUjian(1)]).toEqual([180, 360, 120, 30]);
+    const daftar = soalPaket('bab-2');
+    vi.useFakeTimers();
+    render(<Latihan tab="kuis" paket="bab-2" kasusSekarang={null} saatKerjakan={() => {}} />);
+    fireEvent.click(screen.getByRole('radio', { name: /Mode ujian/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
+    expect(screen.getByRole('timer')).toBeTruthy();
+    act(() => { vi.advanceTimersByTime(durasiUjian(daftar.length) * 1000 + 500); });
+    vi.useRealTimers();
+    expect(document.querySelector('.skor-besar')?.textContent).toBe(`0/${daftar.length}`);
+    expect(screen.getAllByText('Tidak dijawab (waktu habis)')).toHaveLength(daftar.length);
   });
 });

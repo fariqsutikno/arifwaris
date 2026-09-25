@@ -8,9 +8,14 @@
   --radius-sm:8px;--radius-md:14px;--radius-lg:20px;--radius-pill:999px;
   --shadow-pop:4px 4px 0 #111322;--shadow-pop-sm:2px 2px 0 #111322;--border-w:2px;
   --lebar-konten:1200px;
+  /* Warna sinar sorotan langkah perhitungan, satu per peran; sama di pohon, tabel, dan legenda. */
+  --sorot-pewaris:#5d6487;--sorot-ahli-waris:#2f5bff;--sorot-penyebab:#f07800;--sorot-mahjub:#d62f33;
+  --sorot-bukan:#8a8fa8;--sorot-fardh:#138a4b;--sorot-ashabah:#8b3dff;
 }
 @media (prefers-color-scheme:dark){:root{
   --surface:#16182a;--surface-raised:#1f2238;--surface-sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--motif:#2d3358;
   --ink:#f3f4ff;--ink-muted:#949bc2;--primary:#7c9bff;--on-primary:#111322;--primary-soft:#2a3570;
   --danger:#ff8a80;--on-danger:#111322;--danger-soft:#5a2327;--focus:#ffe14d;--shadow-pop:4px 4px 0 #000000;--shadow-pop-sm:2px 2px 0 #000000;
+  --sorot-pewaris:#b7bddc;--sorot-ahli-waris:#7c9bff;--sorot-penyebab:#ffa94d;--sorot-mahjub:#ff8a80;
+  --sorot-bukan:#8f95b8;--sorot-fardh:#4ade80;--sorot-ashabah:#c4a1ff;
 }}

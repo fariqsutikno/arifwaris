@@ -23,7 +23,7 @@ function Uji({ awal, tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; tujuan?
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
   return <Hasil kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
-const pembagian = () => screen.getByRole('region', { name: 'Pembagian' });
+const pembagian = () => screen.getByRole('region', { name: /^(Pembagian|Jawabanmu|Kunci jawaban)$/ });
 /** Buka jawaban lewat dialog tekan-tahan. */
 const bukaLewatDialog = (namaTombolTahan: RegExp) => {
   vi.useFakeTimers();
@@ -73,6 +73,10 @@ describe('layar hasil', () => {
     expect(screen.queryByText('Rp 16.666.666')).toBeNull();
     expect(screen.queryByText('1/6')).toBeNull();
     expect(screen.queryByText(/Terhalang oleh/)).toBeNull();
+    // Tabel tetap tampil tapi angkanya "?", dan langkah perhitungan terkunci sampai jawaban dibuka.
+    expect(screen.getAllByLabelText('disembunyikan').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: /Pembahasan langkah demi langkah/ }));
+    expect(screen.getByText('Jawab soalnya dulu')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
     expect(screen.getByRole('alertdialog').textContent).toMatch(/belum nyoba/);
     bukaLewatDialog(/Tahan untuk buka/);
@@ -235,6 +239,35 @@ describe('layar hasil', () => {
     expect(screen.getByText(/Langkah 2 dari/)).toBeTruthy();
     expect(screen.queryByText(/langkah kelar/)).toBeNull();
     expect(screen.getAllByText('Kenapa begitu?').length).toBeGreaterThan(0);
+  });
+
+  it('hitung kasus: pindah ke Belajar selalu dikonfirmasi; batal tidak mengirim aksi', () => {
+    render(<Uji awal={c1601()} />);
+    aksiTerakhir = null;
+    fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
+    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Tetap di sini' }));
+    expect(aksiTerakhir).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
+    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Pindah' }));
+    expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
+  });
+
+  it('mode fokus: maju per poin hanya lewat Lanjut, hasil akhir menampilkan hitungan, Lewati langsung selesai', () => {
+    render(<Uji awal={c1601()} />);
+    fireEvent.click(screen.getByRole('button', { name: /Pelajari langkah perhitungan/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Mode fokus/ }));
+    const panel = () => document.querySelector('.panel-hitung')!;
+    const awal = panel().textContent;
+    expect(awal).toMatch(/poin 1 dari/);
+    fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
+    expect(panel().textContent).not.toBe(awal);
+    fireEvent.click(screen.getByRole('button', { name: '← Kembali' }));
+    expect(panel().textContent).toBe(awal);
+    for (let klik = 0; klik < 60 && !panel().querySelector('.rumus-hitung'); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
+    expect(panel().querySelector('.rumus-hitung')!.textContent).toMatch(/× Rp 24\.000\.000/);
+    fireEvent.click(screen.getByRole('button', { name: 'Lewati animasi' }));
+    expect(panel().textContent).toMatch(/Selesai!/);
+    expect(screen.getByRole('button', { name: 'Tutup mode fokus' })).toBeTruthy();
   });
 
   it('kasus yang tidak didukung tampil sebagai pesan', () => {

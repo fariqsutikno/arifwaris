@@ -164,7 +164,7 @@ function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKas
     <figure className="contoh-kasus">
       <figcaption className="label-langkah">Dihitung otomatis</figcaption>
       <div className="wadah-tabel">
-        <TabelFaraidh hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
+        <TabelFaraidh sedangMenebak={false} hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
       </div>
       <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>Buka di Hitung</TombolBukaKasus>
     </figure>

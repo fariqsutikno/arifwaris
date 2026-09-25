@@ -16,8 +16,14 @@ export type Potongan =
   | { jenis: 'orang'; daftarIdOrang: IdOrang[]; teks: string }
   | { jenis: 'istilah'; istilah: IdIstilah; teks: string; contoh?: string };
 
-/** `subjek`: orang yang dibahas baris ini (bagiannya/haknya). Orang lain yang disebut = penyebab/pembanding. */
-export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[] }
+/**
+ * `subjek`: orang yang dibahas baris ini (bagiannya/haknya). Orang lain yang disebut = penyebab/pembanding.
+ * `penekanan`: `subjudul` = kalimat pembuka kelompok baris sesudahnya; `perhatian` = hal yang perlu disikapi pembaca
+ * (mis. selisih pembulatan), supaya UI bisa memisahkannya dari uraian biasa.
+ */
+export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian' }
+
+export const tekankan = (baris: BarisPenjelasan, penekanan: NonNullable<BarisPenjelasan['penekanan']>): BarisPenjelasan => ({ ...baris, penekanan });
 
 export const keTeksBiasa = (baris: BarisPenjelasan): string => baris.daftarPotongan.map(potonganIni => potonganIni.teks).join('');
 

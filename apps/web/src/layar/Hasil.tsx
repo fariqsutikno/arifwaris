@@ -12,6 +12,7 @@ import { jalankan, type HasilOk } from '../jalankan';
 import type { Tujuan } from '../preferensi';
 import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
+import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { ModalOrang } from '../hasil/ModalOrang';
 import { ModalEkspor } from '../hasil/ModalEkspor';
@@ -95,6 +96,7 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
   // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
   // lewat dialog dengan tombol tekan-tahan.
   const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | 'pindah' | null>(null);
+  const [konfirmasiBelajar, setKonfirmasiBelajar] = useState(false);
   const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
   const [sembunyiNominal, setSembunyiNominal] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
@@ -106,14 +108,33 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
+  const pohon = <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
+    sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />;
+  const tabel = <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
+  const kanvasFokus = { pohon, tabel };
+  const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat), [kasus, ringkasan, hasilBiasa]);
 
   return (
-    <main className="halaman-hasil">
+    <main className={adalahBelajar ? 'halaman-hasil mode-belajar' : 'halaman-hasil'}>
       <div className="judul-hasil">
-        <h1>Nah, ini pembagiannya</h1>
+        {adalahBelajar ? (
+          <div className="judul-soal">
+            <span className="lencana-soal">{sedangMenebak ? 'Soal' : 'Pembahasan'}</span>
+            <h1>{sedangMenebak ? 'Tentukan bagian tiap ahli waris' : 'Pembahasan soal'}</h1>
+            <p>{sedangMenebak
+              ? 'Kerjakan di kartu Jawabanmu. Langkah perhitungan dan angka di tabel terbuka setelah jawabanmu benar atau kamu membuka jawaban.'
+              : 'Cocokkan jawabanmu, lalu pelajari cara menghitungnya langkah demi langkah.'}</p>
+          </div>
+        ) : (
+          <div className="judul-soal">
+            <span className="lencana-soal lencana-hitung">Hitung kasus</span>
+            <h1>Nah, ini pembagiannya</h1>
+            <p>Angka di sini hasil hitung kasusmu. Mau latihan menebak pembagiannya dulu? Pindah ke mode Belajar.</p>
+          </div>
+        )}
         <div className="tab-kecil" role="group" aria-label="Tujuan">
           <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>Hitung kasus</button>
-          <button type="button" aria-pressed={adalahBelajar} onClick={() => kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' })}>Belajar</button>
+          <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>Belajar</button>
         </div>
       </div>
 
@@ -127,14 +148,11 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
           </div>
           <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label="Pohon keluarga" data-tur="pohon">
             <Legenda />
-            <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
-              sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />
+            {pohon}
             <p className="petunjuk-kanvas">Ketuk orang untuk melihat penjelasannya<span className="hanya-hp"> · geser ke samping kalau terpotong</span></p>
           </section>
           <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label="Tabel faraidh">
-            {sedangMenebak
-              ? <p className="kosong-ahli-waris">Tabel disembunyikan di mode belajar. Tebak dulu di kartu Pembagian, atau ikuti langkah perhitungan.</p>
-              : <div className="wadah-tabel"><TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} /></div>}
+            <div className="wadah-tabel">{tabel}</div>
           </section>
         </section>
 
@@ -143,16 +161,16 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
             <b>Catatan.</b> Hasil ini menurut madzhab Syafi'i. Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat.
             Nemu yang janggal? <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">Laporkan ke pengembang</a>.
           </div>
-          <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan}
+          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
+          <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 4 }) : undefined} />
-          {/* Penjelasan tepat di bawah Pembagian: "kenapa angkanya begini" adalah inti aplikasi. */}
-          <KartuLangkah daftarBab={daftarBab} terbukaAwal={adalahBelajar} saatSelesai={bukaJawaban} />
-          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal || sedangMenebak} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
+          {/* Urutan mengikuti alur berpikir: harta → pembagian → jenis kasus → cara menghitung → tindak lanjut. */}
           {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
+          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
           <KartuSelanjutnya />
         </aside>
       </div>
@@ -194,6 +212,13 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
             <li>Semua jawaban langsung kebuka, kamu nggak bisa nebak kasus ini lagi.</li>
             {!sudahMencoba && <li>Kamu belum nyoba jawab sama sekali. Sekali coba dulu, yuk.</li>}
           </ul>
+        </DialogKonfirmasi>
+      )}
+      {konfirmasiBelajar && (
+        <DialogKonfirmasi judul="Pindah ke mode Belajar?" labelBatal="Tetap di sini" labelLanjut="Pindah"
+          saatBatal={() => setKonfirmasiBelajar(false)}
+          saatLanjut={() => { setKonfirmasiBelajar(false); kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' }); }}>
+          <p>Jawaban akan disembunyikan dan kamu diminta menebak pembagiannya dulu. Data kasusmu tetap aman.</p>
         </DialogKonfirmasi>
       )}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}

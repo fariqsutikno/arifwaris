@@ -17,7 +17,7 @@ export function KartuHarta({ ringkasan, sembunyiNominal, saatUbahHarta }: { ring
   ];
 
   return (
-    <Lipat judul="Harta yang dibagi" ringkas={uang(tirkah.bersih)} className="urut-harta">
+    <Lipat judul="Harta yang dibagi" ringkas={uang(tirkah.bersih)} className="urut-harta kartu-harta">
       <p className="caption-isian">Harta tidak langsung dibagi. Dipakai dulu untuk mengurus jenazah, lalu melunasi hutang, lalu menunaikan wasiat. Sisanya baru hak ahli waris.</p>
       <div className="hitung-susun">
         <span>Harta peninggalan</span><span className="nilai">{uang(tirkah.kotor)}</span>
