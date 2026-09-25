@@ -104,13 +104,13 @@ it('cucu bisa dari anak laki-laki lain yang sudah wafat', () => {
   expect(hitungIsian(grafTerakhir, 'PEWARIS').ANAK_LK).toHaveLength(1);
 });
 
-it('nama bisa diisi lewat ikon pensil dan dipakai di pilihan induk', () => {
+it('nama bisa diisi lewat tombol Nama; tampil bersama perannya', () => {
   render(<Uji />);
   fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Beri nama Anak laki-laki' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Beri nama Anak laki-laki (opsional)' }));
   const isian = screen.getByRole('textbox', { name: 'Nama Anak laki-laki' });
   fireEvent.change(isian, { target: { value: 'Ahmad' } });
   fireEvent.blur(isian);
   bukaKerabatLain();
-  expect(within(screen.getByRole('combobox', { name: 'Cucu laki-laki dari siapa?' })).getByText('dari Ahmad')).toBeTruthy();
+  expect(within(screen.getByRole('combobox', { name: 'Cucu laki-laki dari siapa?' })).getByText('dari Ahmad (Anak laki-laki)')).toBeTruthy();
 });

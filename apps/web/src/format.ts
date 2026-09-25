@@ -32,11 +32,11 @@ export function penyebutAkhir(tabel: TabelMasalah): bigint {
   throw new Error('tabel tanpa penyebut');
 }
 
-/** Nama tampil: nama isian bila ada, kalau tidak label peran + urutan ("Anak laki-laki 2"). */
+/** Nama tampil: "Ahmad (Anak laki-laki)" bila bernama, kalau tidak label peran + urutan ("Anak laki-laki 2"). */
 export function namaOrang(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>, idOrang: IdOrang): string {
   const nama = graf.orang[idOrang]?.nama;
-  if (nama) return nama;
   const label = labelDari(statusOrang[idOrang]);
+  if (nama) return `${nama} (${label})`;
   const sePeran = Object.keys(statusOrang).filter(id => labelDari(statusOrang[id]) === label && !graf.orang[id]?.penghubung);
   return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
 }

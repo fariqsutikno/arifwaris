@@ -115,7 +115,7 @@ function asalInduk(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>
   const idInduk = kunci && jenisDari(kunci)?.kunciInduk ? graf.orang[id]?.idAyah : undefined;
   if (!idInduk) return '';
   const induk = graf.orang[idInduk]!;
-  return ` · dari ${induk.nama ?? namaOrang(graf, statusOrang, idInduk)}${induk.penghubung || induk.statusHidup === 'wafat' ? ' (sudah wafat)' : ''}`;
+  return ` · dari ${namaOrang(graf, statusOrang, idInduk)}${induk.penghubung || induk.statusHidup === 'wafat' ? ' (sudah wafat)' : ''}`;
 }
 
 // ─── Munasakhat ───────────────────────────────────────────────────────────────

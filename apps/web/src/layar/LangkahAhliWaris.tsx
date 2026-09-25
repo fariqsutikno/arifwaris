@@ -69,6 +69,9 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
   );
 }
 
+/** Contoh di placeholder isian nama, bergantian supaya tiap baris terasa beda. */
+const CONTOH_NAMA = { L: ['Ahmad', 'Hasan', 'Umar'], P: ['Fatimah', 'Aisyah', 'Khadijah'] } as const;
+
 /** Satu baris: label + keterangan hubungan, lalu "− jumlah +". Ikon pensil membuka isian nama per orang.
  * Kerabat bertingkat (cucu, keponakan, sepupu): pilih "dari siapa" sebelum menambah, termasuk induk lain yang sudah wafat. */
 export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saatKurang, saatUbahNama }: {
@@ -99,10 +102,12 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
           )}
         </span>
         {jumlah > 0 && (
-          <TombolIkon className="tombol-nama" label={`Beri nama ${label}`} aria-expanded={namaTerbuka} onClick={() => setNamaTerbuka(!namaTerbuka)}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M4 20h4L19 9l-4-4L4 16v4z" /><path d="M13.5 6.5l4 4" />
-              </svg>
+          <TombolIkon className="tombol-nama" label={`Beri nama ${label} (opsional)`} aria-expanded={namaTerbuka} onClick={() => setNamaTerbuka(!namaTerbuka)}>
+            {/* kartu identitas: menandai "nama", bukan "ubah" */}
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="2.5" /><circle cx="9" cy="11" r="2.2" /><path d="M5.8 16.2c.6-1.5 1.8-2.3 3.2-2.3s2.6.8 3.2 2.3" /><path d="M15 10h3M15 13.5h3" />
+            </svg>
+            <span>Nama</span>
           </TombolIkon>
         )}
         <button type="button" aria-label={`Kurangi ${label}`} disabled={jumlah === 0} onClick={saatKurang}>−</button>
@@ -116,8 +121,11 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
             const labelKe = jumlah > 1 ? `${label} ${indeks + 1}` : label;
             return (
               <li key={idOrang}>
-                <input type="text" aria-label={`Nama ${labelKe}`} placeholder={labelKe} defaultValue={orang.nama ?? ''}
-                  onBlur={e => saatUbahNama(idOrang, e.target.value)} />
+                <label className="isian-nama">
+                  <span>{labelKe}</span>
+                  <input type="text" aria-label={`Nama ${labelKe}`} placeholder={`Nama, misal ${CONTOH_NAMA[orang.jenisKelamin][indeks % 3]}`}
+                    defaultValue={orang.nama ?? ''} onBlur={e => saatUbahNama(idOrang, e.target.value)} />
+                </label>
                 {jenis?.kunciInduk && orang.idAyah && <small>dari {labelOrangChecklist(graf, idMayit, orang.idAyah, jenis.kunciInduk)}</small>}
               </li>
             );
@@ -128,13 +136,13 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   );
 }
 
-/** "Anak laki-laki 2" atau "Anak laki-laki (sudah wafat)" untuk penghubung. Dipakai juga di langkah 5. */
+/** "Anak laki-laki 2", "Ahmad (Anak laki-laki)", atau "Anak laki-laki (sudah wafat)" untuk penghubung. Dipakai juga di langkah 5. */
 export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string {
   const orang = graf.orang[idOrang]!;
-  if (orang.nama) return orang.nama;
   const isian = hitungIsian(graf, idMayit);
   const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
   const label = kunciOrang ? LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label ?? 'Kerabat' : 'Kerabat';
+  if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? ', sudah wafat' : ''})`;
   if (orang.penghubung) return `${label} (sudah wafat)`;
   const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
   return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
