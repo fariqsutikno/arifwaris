@@ -50,6 +50,14 @@ it('ulangi dari awal meminta konfirmasi di halaman', () => {
   expect(screen.getByText(/Mau pakai buat apa/)).toBeTruthy();
 });
 
+it('ringkasan kasus di samping langkah ikut terisi', () => {
+  mulai();
+  fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
+  const ringkasan = screen.getByRole('complementary', { name: 'Ringkasan kasus' });
+  expect(ringkasan.textContent).toMatch(/Perempuan/);
+  expect(ringkasan.textContent).toMatch(/Belum ada/);
+});
+
 it('header tidak punya tombol simpan', () => {
   mulai();
   expect(screen.queryByRole('banner')?.textContent ?? '').not.toMatch(/Simpan file/);

@@ -1,5 +1,6 @@
-// Langkah 2: total harta peninggalan. Dua cara isi (total langsung / rinci per jenis) di atas nilai yang sama,
-// tombol tambah cepat kecil, dan card Pembulatan yang tertutup dengan contoh akibat tiap pilihan.
+// Langkah 2: harta peninggalan, dua kelompok yang jelas terpisah.
+// (1) Total harta: total langsung / rinci per jenis, tambah cepat tepat di bawah isian, catatan gono-gini.
+// (2) Pembulatan hasil: selalu terlihat, dengan penjelasan singkat, pilihan berketerangan, dan contoh akibatnya.
 
 import { useState } from 'react';
 import { formatRupiah } from '../../format';
@@ -26,53 +27,49 @@ export function LangkahHarta({ kasus, ubah }: Props) {
 
   return (
     <>
-      <div className="tab-kecil" role="tablist" aria-label="Cara mengisi harta">
-        <button type="button" role="tab" aria-selected={cara === 'total'} onClick={() => setCara('total')}>Total langsung</button>
-        <button type="button" role="tab" aria-selected={cara === 'rinci'} onClick={() => setCara('rinci')}>Rinci per jenis</button>
-      </div>
-
-      {cara === 'total' ? (
-        <div className="tumpuk-rapat">
-          <IsianUang id="harta-total" label="Total harta peninggalan" besar nilai={kasus.tirkah.kotor} saatUbah={aturTotal}
-            keterangan={TEKS_HARTA.presisi} />
-          <div className="tambah-cepat" aria-label="Tambah cepat">
-            <span className="caption-isian">Tambah cepat:</span>
-            {TEKS_HARTA.tambahCepat.map(nilai => (
-              <button key={String(nilai)} type="button" className="chip-kecil" onClick={() => aturTotal(kasus.tirkah.kotor + nilai)}>
-                {labelTambahCepat(nilai)}
-              </button>
-            ))}
-            {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => aturTotal(0n)}>Kosongkan</button>}
+      <section className="grup-isian" aria-labelledby="judul-total-harta">
+        <div className="kepala-grup">
+          <h2 id="judul-total-harta">Total harta</h2>
+          <div className="tab-kecil" role="tablist" aria-label="Cara mengisi harta">
+            <button type="button" role="tab" aria-selected={cara === 'total'} onClick={() => setCara('total')}>Total langsung</button>
+            <button type="button" role="tab" aria-selected={cara === 'rinci'} onClick={() => setCara('rinci')}>Rinci per jenis</button>
           </div>
         </div>
-      ) : (
-        <div className="rincian-harta">
-          {KATEGORI_HARTA.map(kategori => (
-            <IsianUang key={kategori} id={`harta-${kategori}`} label={KATEGORI_HARTA_TEKS[kategori].label}
-              nilai={kasus.rincianHarta?.[kategori] ?? 0n} saatUbah={jumlah => aturRincian(kategori, jumlah)}
-              keterangan={KATEGORI_HARTA_TEKS[kategori].contoh} />
-          ))}
-          <div className="total-rincian"><span>Total harta peninggalan</span><b>{formatRupiah(kasus.tirkah.kotor)}</b></div>
+
+        {cara === 'total' ? (
+          <div className="tumpuk-rapat">
+            <IsianUang id="harta-total" label="Total harta peninggalan" besar nilai={kasus.tirkah.kotor} saatUbah={aturTotal}
+              info={TEKS_HARTA.presisi} />
+            <div className="tambah-cepat" aria-label="Tambah cepat">
+              <span className="caption-isian">Tambah cepat</span>
+              {TEKS_HARTA.tambahCepat.map(nilai => (
+                <button key={String(nilai)} type="button" className="chip-kecil" onClick={() => aturTotal(kasus.tirkah.kotor + nilai)}>
+                  {labelTambahCepat(nilai)}
+                </button>
+              ))}
+              {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => aturTotal(0n)}>Kosongkan</button>}
+            </div>
+          </div>
+        ) : (
+          <div className="rincian-harta">
+            {KATEGORI_HARTA.map(kategori => (
+              <IsianUang key={kategori} id={`harta-${kategori}`} label={KATEGORI_HARTA_TEKS[kategori].label}
+                nilai={kasus.rincianHarta?.[kategori] ?? 0n} saatUbah={jumlah => aturRincian(kategori, jumlah)}
+                info={KATEGORI_HARTA_TEKS[kategori].contoh} />
+            ))}
+            <div className="total-rincian"><span>Total harta peninggalan</span><b>{formatRupiah(kasus.tirkah.kotor)}</b></div>
+          </div>
+        )}
+
+        <p className="catatan-info"><span aria-hidden="true" className="ikon-info-kecil">i</span>{TEKS_HARTA.gonoGini}</p>
+      </section>
+
+      <section className="grup-isian" aria-labelledby="judul-pembulatan">
+        <div className="kepala-grup">
+          <h2 id="judul-pembulatan">{TEKS_PEMBULATAN.judul}</h2>
         </div>
-      )}
-
-      <p className="caption-isian">{TEKS_HARTA.gonoGini}</p>
-      <KartuPembulatan kasus={kasus} ubah={ubah} />
-    </>
-  );
-}
-
-function KartuPembulatan({ kasus, ubah }: Props) {
-  const terpilih = PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === kasus.satuanPembulatan) ?? PILIHAN_PEMBULATAN[0];
-  return (
-    <details className="kartu-lipat">
-      <summary>
-        <span className="judul-lipat">{TEKS_PEMBULATAN.judul}</span>
-        <span className="ringkas-lipat">Dibulatkan ke {terpilih.judul} (bisa diubah)</span>
-      </summary>
-      <div className="isi-lipat">
         <p className="caption-isian">{TEKS_PEMBULATAN.apa}</p>
-        <div className="pilihan-bulat" role="radiogroup" aria-label="Bulatkan bagian tiap orang ke">
+        <div className="pilihan-bulat" role="radiogroup" aria-labelledby="judul-pembulatan">
           {PILIHAN_PEMBULATAN.map(pilihan => (
             <button key={String(pilihan.satuan)} type="button" role="radio" aria-checked={pilihan.satuan === kasus.satuanPembulatan}
               onClick={() => ubah(k => ({ ...k, satuanPembulatan: pilihan.satuan }))}>
@@ -81,8 +78,8 @@ function KartuPembulatan({ kasus, ubah }: Props) {
           ))}
         </div>
         <ContohPembulatan satuan={kasus.satuanPembulatan} />
-      </div>
-    </details>
+      </section>
+    </>
   );
 }
 
@@ -93,7 +90,7 @@ function ContohPembulatan({ satuan }: { satuan: bigint }) {
   const sisa = harta - perOrang * orang;
   return (
     <p className="contoh-bulat">
-      <b>Contoh:</b> Rp 100.000 dibagi rata 3 orang → tiap orang {formatRupiah(perOrang)}, sisa {formatRupiah(sisa)} disepakati bersama.
+      <b>Contoh:</b> Rp 100.000 dibagi rata 3 orang → tiap orang dapat <b>{formatRupiah(perOrang)}</b>, sisa <b>{formatRupiah(sisa)}</b> disepakati bersama.
     </p>
   );
 }

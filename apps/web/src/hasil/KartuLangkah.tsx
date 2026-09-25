@@ -2,7 +2,7 @@
 // atau semua sekaligus. Tiap baris jadi poin; "Kenapa begitu?" bisa dibuka-tutup berisi dalil. Saat terbuka,
 // kanvas ikut menyorot orang yang disebut dan kolom tabel yang sedang dibahas.
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dalil, Baris, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import { useSorot } from './sorot';
 
@@ -15,6 +15,14 @@ export function KartuLangkah({ daftarBab, terbukaAwal, saatSelesai }: Props) {
   const [dibaca, setDibaca] = useState<Set<number>>(new Set([0]));
   const { setLangkah } = useSorot();
   const babIni = daftarBab[indeks];
+  const jalur = useRef<HTMLElement>(null);
+
+  // Pill langkah aktif selalu terlihat di tengah deret, tanpa pengguna perlu menggeser.
+  useEffect(() => {
+    const wadah = jalur.current;
+    const aktif = wadah?.querySelector<HTMLElement>('[aria-current="step"]');
+    if (wadah && aktif) wadah.scrollLeft = aktif.offsetLeft - (wadah.clientWidth - aktif.offsetWidth) / 2;
+  }, [indeks, terbuka, mode]);
 
   useEffect(() => { setTerbuka(terbukaAwal); }, [terbukaAwal]);
   useEffect(() => {
@@ -42,7 +50,7 @@ export function KartuLangkah({ daftarBab, terbukaAwal, saatSelesai }: Props) {
           </div>
           {mode === 'semua' ? daftarBab.map((bab, nomor) => <KartuSatuLangkah key={nomor} nomor={nomor} total={daftarBab.length} babBerjudul={bab} />) : babIni && (
             <>
-              <nav className="jalur-langkah" aria-label="Langkah">
+              <nav className="jalur-langkah" aria-label="Langkah" ref={jalur}>
                 {daftarBab.map((bab, nomor) => (
                   <button key={nomor} type="button" aria-current={nomor === indeks ? 'step' : undefined}
                     className={dibaca.has(nomor) && nomor !== indeks ? 'kelar' : undefined} onClick={() => keLangkah(nomor)}>

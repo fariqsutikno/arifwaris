@@ -46,13 +46,26 @@ it('rinci per jenis menjumlahkan otomatis ke total', () => {
   expect(screen.getByText('Rp 7.000.000')).toBeTruthy();
 });
 
-it('pembulatan: ringkas saat tertutup, pilihan berlabel jelas saat dibuka', () => {
+it('pembulatan tampil sebagai bagian sendiri dengan penjelasan dan contoh, langsung bisa dipilih', () => {
   render(<Uji Langkah={LangkahHarta} awal={kasusBaru('L')} />);
-  expect(screen.getByText(/Dibulatkan ke Rp 1/)).toBeTruthy();
-  fireEvent.click(screen.getByText(/Pembulatan/));
+  expect(screen.getByRole('heading', { name: 'Mau hasilnya dibulatkan?' })).toBeTruthy();
   fireEvent.click(screen.getByRole('radio', { name: /Rp 1.000/ }));
   expect(terakhir.satuanPembulatan).toBe(1000n);
   expect(screen.getByText(/Contoh/)).toBeTruthy();
+});
+
+it('harta dikelompokkan: total harta dan pembulatan di bagian terpisah', () => {
+  render(<Uji Langkah={LangkahHarta} awal={kasusBaru('L')} />);
+  expect(screen.getByRole('region', { name: 'Total harta' })).toBeTruthy();
+  expect(screen.getByRole('region', { name: 'Mau hasilnya dibulatkan?' })).toBeTruthy();
+});
+
+it('kewajiban: tiap isian punya ikon info, batas wasiat tertulis', () => {
+  const awal = { ...kasusBaru('L'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
+  render(<Uji Langkah={LangkahKewajiban} awal={awal} />);
+  expect(screen.getByRole('button', { name: 'Tentang Wasiat' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Tentang Hutang' })).toBeTruthy();
+  expect(screen.getByText(/Maks\. Rp 30\.000\.000/)).toBeTruthy();
 });
 
 it('kewajiban: hitungan berjalan dari engine, wasiat lebih dari 1/3 dipangkas', () => {

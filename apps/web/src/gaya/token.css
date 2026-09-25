@@ -1,7 +1,7 @@
 /* Token Arif Waris v4 (sumber: design system artifact TAMrFT8QhPmBgB7Ho1gA43, tokens.json). */
 :root{
   --surface:#f5f8ff;--surface-raised:#ffffff;--surface-sunken:#e8eeff;--outline:#111322;--divider:#d5dcf2;--motif:#c9d6f7;
-  --ink:#111322;--ink-muted:#3d4260;--on-fill:#111322;--primary:#2f5bff;--on-primary:#ffffff;--primary-soft:#dfe6ff;
+  --ink:#111322;--ink-muted:#5d6487;--on-fill:#111322;--primary:#2f5bff;--on-primary:#ffffff;--primary-soft:#dfe6ff;
   --sun:#ffe14d;--pink:#ff8fcf;--lime:#b8f35a;--pasangan:#8fb4ff;--keturunan:#6ee7c8;--leluhur:#c6a8ff;--saudara:#ffab5e;
   --danger:#d62f33;--focus:#2f5bff;
   --font-display:"Readex Pro",system-ui,sans-serif;--font-sans:"Plus Jakarta Sans",system-ui,sans-serif;
@@ -10,6 +10,6 @@
 }
 @media (prefers-color-scheme:dark){:root{
   --surface:#16182a;--surface-raised:#1f2238;--surface-sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--motif:#2d3358;
-  --ink:#f3f4ff;--ink-muted:#b3b8d9;--primary:#7c9bff;--on-primary:#111322;--primary-soft:#2a3570;
+  --ink:#f3f4ff;--ink-muted:#949bc2;--primary:#7c9bff;--on-primary:#111322;--primary-soft:#2a3570;
   --danger:#ff8a80;--focus:#ffe14d;--shadow-pop:4px 4px 0 #000000;--shadow-pop-sm:2px 2px 0 #000000;
 }}

@@ -117,7 +117,7 @@ function Kondisi({ judul, keterangan, akibat, terbukaAwal = false, children }: {
     <div className={terbuka ? 'kondisi terbuka' : 'kondisi'}>
       <label className="kondisi-kepala">
         <input type="checkbox" checked={terbuka} onChange={event => setTerbuka(event.target.checked)} />
-        <span><b>{judul}</b><small>{keterangan} <em>Akibatnya:</em> {akibat}</small></span>
+        <span><b>{judul}</b><small>{keterangan}</small><span className="akibat"><em>Akibatnya:</em> {akibat}</span></span>
       </label>
       {terbuka && <div className="kondisi-isi">{children}</div>}
     </div>

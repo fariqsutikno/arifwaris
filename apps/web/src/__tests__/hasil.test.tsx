@@ -87,6 +87,13 @@ describe('layar hasil', () => {
     expect(within(tabel).getByText('72', { selector: 'th small' })).toBeTruthy();
   });
 
+  it('klik baris di tabel faraidh juga membuka penjelasan orang itu', () => {
+    render(<Uji awal={prototipe()} />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
+    fireEvent.click(within(screen.getByRole('table')).getByText('Ibu').closest('tr')!);
+    expect(within(screen.getByRole('dialog')).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
+  });
+
   it('harta yang dibagi disusun seperti hitungan, potongan bertanda minus', () => {
     render(<Uji awal={prototipe()} />);
     const harta = screen.getByRole('button', { name: /Harta yang dibagi/ }).closest('section')!;

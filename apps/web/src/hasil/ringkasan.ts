@@ -18,7 +18,7 @@ export interface Penerima {
   kelompok: Kelompok;
   saham: bigint;
   nominal: bigint;
-  /** "Bagian pasti 1/6", "Sisa (ashabah)", ... */
+  /** "Bagian tertentu 1/6", "Sisa (ashabah)", ... */
   keterangan: string;
   /** Pecahan fardh kelompoknya bila ada (dipakai mencocokkan ahwal). */
   fardh?: { n: bigint; d: bigint };
@@ -88,7 +88,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
       id, nama: namaOrang(graf, hasil.statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham, nominal,
-      keterangan: baris.fardh ? `Bagian pasti ${baris.fardh.n}/${baris.fardh.d}` : 'Sisa (ashabah)',
+      keterangan: baris.fardh ? `Bagian tertentu ${baris.fardh.n}/${baris.fardh.d}` : 'Sisa (ashabah)',
       ...(baris.fardh ? { fardh: { n: baris.fardh.n, d: baris.fardh.d } } : {}),
       ashabah: !!baris.ashabah,
       ...(alasanPerKelompok.has(baris.kelompok) ? { kodeAlasan: alasanPerKelompok.get(baris.kelompok)! } : {}),

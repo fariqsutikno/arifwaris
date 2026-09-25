@@ -2,6 +2,7 @@
 // Nilai diserahkan sebagai bigint; kursor dijaga tetap setelah digit yang sama supaya mengetik di tengah tidak melompat.
 
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
+import { InfoTip } from '../../ui/Tooltip';
 
 const ANGKA_INDONESIA = new Intl.NumberFormat('id-ID');
 
@@ -14,10 +15,12 @@ interface Props {
   nilai: bigint;
   saatUbah: (nilai: bigint) => void;
   keterangan?: ReactNode;
+  /** Penjelasan panjang di balik ikon ⓘ di samping label. */
+  info?: ReactNode;
   besar?: boolean;
 }
 
-export function IsianUang({ id, label, nilai, saatUbah, keterangan, besar }: Props) {
+export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar }: Props) {
   const isian = useRef<HTMLInputElement>(null);
   const digitSebelumKursor = useRef<number | null>(null);
 
@@ -30,7 +33,7 @@ export function IsianUang({ id, label, nilai, saatUbah, keterangan, besar }: Pro
 
   return (
     <div className={besar ? 'isian-uang besar' : 'isian-uang'}>
-      <label htmlFor={id}>{label}</label>
+      <div className="label-isian"><label htmlFor={id}>{label}</label>{info && <InfoTip label={`Tentang ${label}`}>{info}</InfoTip>}</div>
       <div className="kotak-uang">
         <span className="prefix-uang" aria-hidden="true">Rp</span>
         <input id={id} ref={isian} inputMode="numeric" autoComplete="off" placeholder="0" value={teksRibuan(nilai)}

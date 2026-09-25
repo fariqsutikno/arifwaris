@@ -25,8 +25,8 @@ export const PILIHAN_PEMBULATAN = [
 ] as const;
 
 export const TEKS_PEMBULATAN = {
-  judul: 'Pembulatan',
-  apa: 'Hasil bagi waris sering tidak bulat. Bagian tiap orang dibulatkan ke bawah, dan sisanya dicatat terpisah, tidak dibagi diam-diam. Bisa diubah lagi di layar hasil.',
+  judul: 'Mau hasilnya dibulatkan?',
+  apa: 'Bagian tiap orang sering jatuh di angka ganjil, misalnya Rp 33.333. Pilih kelipatan yang enak dibagi. Sisanya dicatat terpisah, nggak dibagi diam-diam, dan pilihan ini bisa diganti lagi di layar hasil.',
 };
 
 export const TEKS_KEWAJIBAN = {

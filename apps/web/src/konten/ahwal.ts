@@ -7,7 +7,7 @@ import type { KunciAhliWaris } from '@waris/engine';
 export const AHWAL_PERLU_CEK = true;
 
 /** Syarat cocok: semua kolom yang diisi harus sama dengan data orang itu di hasil engine. */
-/** `fardh: null` = harus tanpa bagian pasti. */
+/** `fardh: null` = harus tanpa bagian tertentu (fardh). */
 export interface CocokAhwal { fardh?: string | null; ashabah?: boolean; terhalang?: boolean; kodeAlasan?: string }
 export interface BarisAhwal { bagian: string; syarat: string; cocok: CocokAhwal }
 

@@ -3,10 +3,11 @@
 
 import { Fragment } from 'react';
 import type { IdOrang } from '@waris/engine';
-import { cariIstilah, dalilUntuk } from '@waris/content';
+import { dalilUntuk } from '@waris/content';
 import { jelaskan, jelaskanMunasakhat, type BabPenjelasan, type BarisPenjelasan } from '@waris/explain';
 import type { HasilTampil } from '../jalankan';
 import type { Kasus } from '../kasus';
+import { Istilah } from '../ui/Tooltip';
 
 export interface BabBerjudul { judulBagian?: string; bab: BabPenjelasan }
 
@@ -30,11 +31,7 @@ export function Baris({ baris }: { baris: BarisPenjelasan }) {
     <>
       {baris.daftarPotongan.map((potongan, indeks) => {
         if (potongan.jenis === 'istilah') {
-          const entri = cariIstilah(potongan.istilah);
-          const arti = entri?.artiAwam ?? entri?.makna;
-          return arti
-            ? <span key={indeks} className="istilah" tabIndex={0} data-arti={arti}>{potongan.teks}</span>
-            : <Fragment key={indeks}>{potongan.teks}</Fragment>;
+          return <Istilah key={indeks} id={potongan.istilah}>{potongan.teks}</Istilah>;
         }
         if (potongan.jenis === 'orang') return <b key={indeks}>{potongan.teks}</b>;
         return <Fragment key={indeks}>{potongan.teks}</Fragment>;

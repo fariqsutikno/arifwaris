@@ -11,6 +11,7 @@ import { LangkahKewajiban } from './wizard/LangkahKewajiban';
 import { BarBawah } from './wizard/BarBawah';
 import { KerangkaLangkah } from './wizard/KerangkaLangkah';
 import { LangkahPewaris } from './wizard/LangkahPewaris';
+import { RingkasanSamping } from './wizard/RingkasanSamping';
 import { Stepper } from './wizard/Stepper';
 import { alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from './wizard/validasi';
 
@@ -23,7 +24,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
     <main className="halaman halaman-wizard">
       <Stepper langkahAktif={langkah} terjauh={langkahTerjauh(kasus)}
         saatPilih={tujuan => kirim(tujuan === LANGKAH_HASIL ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: tujuan })} />
-      <KerangkaLangkah langkah={langkah}>
+      <KerangkaLangkah langkah={langkah} ringkasan={<RingkasanSamping kasus={kasus} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
         {kasus && langkah === 2 && <LangkahHarta kasus={kasus} ubah={ubah} />}

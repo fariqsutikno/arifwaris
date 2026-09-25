@@ -9,7 +9,7 @@ it('alur penuh: beranda → wizard → hasil', () => {
   fireEvent.click(screen.getByRole('button', { name: /Hitung kasus/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
-  fireEvent.change(screen.getByLabelText(/Total harta/), { target: { value: '24.000.000' } });
+  fireEvent.change(screen.getByLabelText('Total harta peninggalan'), { target: { value: '24.000.000' } });
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Kewajiban/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Ahli waris/ }));
   fireEvent.click(screen.getByLabelText('Tambah Istri'));
