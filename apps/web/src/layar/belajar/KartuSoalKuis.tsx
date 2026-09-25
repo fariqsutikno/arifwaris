@@ -1,27 +1,34 @@
-// Satu soal kuis pilihan ganda: pilihan berlabel A, B, C, D; memilih langsung menampilkan benar/salah dan
-// pembahasan. Dipakai di sesi kuis Latihan (satu per satu) dan di bagian "Cek pemahaman" materi.
+// Satu soal kuis pilihan ganda berlabel A, B, C, D.
+// mode 'langsung': setelah memilih, benar/salah dan pembahasan langsung tampil.
+// mode 'akhir': pilihan hanya ditandai terpilih; penilaian ditunda ke halaman hasil.
 
 import { useState, type ReactNode } from 'react';
 import type { SoalKuis } from '@waris/content';
+import { Ikon } from '../../ui/Ikon';
 import { Sebaris } from './Sebaris';
 
-const HURUF = 'ABCDEFGH';
+export const HURUF = 'ABCDEFGH';
+export type ModePembahasan = 'langsung' | 'akhir';
 
 interface Props {
   soal: SoalKuis;
   label?: string;
-  saatDijawab?: (benar: boolean) => void;
-  /** Tombol di bawah pembahasan (mis. "Soal berikutnya"); tanpa ini muncul "Coba lagi". */
+  mode?: ModePembahasan;
+  saatDijawab?: (indeks: number) => void;
+  /** Tombol setelah menjawab (mis. "Soal berikutnya"); tanpa ini muncul "Coba lagi". */
   aksiSetelahJawab?: ReactNode;
 }
 
-export function KartuSoalKuis({ soal, label = soal.kode, saatDijawab, aksiSetelahJawab }: Props) {
+export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saatDijawab, aksiSetelahJawab }: Props) {
   const [dipilih, setDipilih] = useState<number | null>(null);
   const sudahMenjawab = dipilih !== null;
+  const tampilkanNilai = sudahMenjawab && mode === 'langsung';
   const benar = dipilih === soal.indeksBenar;
-  const pilih = (indeks: number) => { setDipilih(indeks); saatDijawab?.(indeks === soal.indeksBenar); };
+  const pilih = (indeks: number) => { setDipilih(indeks); saatDijawab?.(indeks); };
   const kelas = (indeks: number) => ['pilihan-kuis-item',
-    sudahMenjawab && indeks === soal.indeksBenar && 'benar', sudahMenjawab && indeks === dipilih && !benar && 'salah'].filter(Boolean).join(' ');
+    tampilkanNilai && indeks === soal.indeksBenar && 'benar',
+    tampilkanNilai && indeks === dipilih && !benar && 'salah',
+    !tampilkanNilai && indeks === dipilih && 'dipilih'].filter(Boolean).join(' ');
   return (
     <fieldset className="kartu kartu-kuis">
       <legend className="label-langkah">{label}</legend>
@@ -35,12 +42,15 @@ export function KartuSoalKuis({ soal, label = soal.kode, saatDijawab, aksiSetela
           </button>
         ))}
       </div>
+      {tampilkanNilai && (
+        <div className={benar ? 'hasil-tebak benar' : 'hasil-tebak salah'} role="status">
+          <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? 'Benar' : `Belum tepat, jawabannya ${HURUF[soal.indeksBenar]}`}</b>
+          <p><Sebaris isi={soal.pembahasan} /></p>
+        </div>
+      )}
       {sudahMenjawab && (
-        <div className={benar ? 'pembahasan-kuis benar' : 'pembahasan-kuis salah'} role="status">
-          <b>{benar ? 'Benar!' : `Belum tepat. Jawabannya ${HURUF[soal.indeksBenar]}.`}</b> <Sebaris isi={soal.pembahasan} />
-          <div className="aksi-pembahasan">
-            {aksiSetelahJawab ?? <button type="button" className="tautan-tombol" onClick={() => setDipilih(null)}>Coba lagi</button>}
-          </div>
+        <div className="aksi-pembahasan">
+          {aksiSetelahJawab ?? <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>Coba lagi</button>}
         </div>
       )}
     </fieldset>

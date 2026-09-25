@@ -6,7 +6,7 @@ import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, type Aktivitas } from
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan } from '../../rute';
 import { Ikon, type NamaIkon } from '../../ui/Ikon';
-import { PAKET_ACAK } from './Latihan';
+import { PAKET_ACAK } from './KuisKonsep';
 
 export function Belajar() {
   const selesai = bacaPelajaranSelesai();

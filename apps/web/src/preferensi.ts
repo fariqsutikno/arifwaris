@@ -72,3 +72,7 @@ export function catatAktivitas(aktivitas: Aktivitas): void {
   const lain = bacaAktivitas().filter(isi => isi.jenis !== aktivitas.jenis || isi.kode !== aktivitas.kode);
   simpan(KUNCI_AKTIVITAS, JSON.stringify([aktivitas, ...lain].slice(0, BATAS_AKTIVITAS)));
 }
+
+/** Pilihan kecil yang diingat per perangkat (mis. mode pembahasan kuis). */
+export const bacaPilihan = (kunci: string): string | null => baca(`arif-waris:pilihan:${kunci}`);
+export const simpanPilihan = (kunci: string, nilai: string): void => simpan(`arif-waris:pilihan:${kunci}`, nilai);

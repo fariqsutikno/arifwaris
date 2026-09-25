@@ -4,7 +4,8 @@ import { DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, type SoalHitung } from '@waris/co
 import { ringkas } from '../hasil/ringkasan';
 import { jalankan } from '../jalankan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
-import { Latihan, PAKET_ACAK, soalPaket } from '../layar/belajar/Latihan';
+import { Latihan } from '../layar/belajar/Latihan';
+import { PAKET_ACAK, soalPaket } from '../layar/belajar/KuisKonsep';
 import { bacaCatatan, simpanCatatan } from '../preferensi';
 
 describe('kunci soal hitung = hasil engine', () => {
@@ -42,17 +43,36 @@ describe('halaman latihan', () => {
     expect(acak.length).toBe(Math.min(10, DAFTAR_SOAL_KUIS.length));
   });
 
-  it('sesi kuis: soal satu per satu, pilihan berhuruf, skor di akhir tersimpan', () => {
+  it('sesi kuis mode langsung: fokus (tanpa tab), soal satu per satu, pembahasan langsung, skor + pembahasan di akhir', () => {
     const daftar = soalPaket('bab-1');
     render(<Latihan tab="kuis" paket="bab-1" kasusSekarang={null} saatKerjakan={() => {}} />);
+    expect(screen.queryByRole('link', { name: 'Soal hitung' })).toBeNull();
+    fireEvent.click(screen.getByRole('radio', { name: /Langsung/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
     daftar.forEach((soal, indeks) => {
       expect(screen.getByText(`Soal ${indeks + 1} dari ${daftar.length}`)).toBeTruthy();
-      expect(document.querySelectorAll('fieldset.kartu-kuis').length).toBe(1);
       const huruf = 'ABCD'[indeks === 0 ? soal.indeksBenar : (soal.indeksBenar + 1) % soal.pilihan.length]!;
       fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${huruf}\\. `) }));
-      fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya →' : 'Lihat skor' }));
+      expect(screen.getByRole('status').textContent).toMatch(indeks === 0 ? /^\s*Benar/ : /Belum tepat/);
+      fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya' : 'Lihat hasil' }));
     });
     expect(document.querySelector('.skor-besar')?.textContent).toBe(`1/${daftar.length}`);
+    expect(screen.getByRole('heading', { name: 'Pembahasan' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Pilih kuis lain' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Kerjakan lagi' })).toBeTruthy();
     expect(bacaCatatan('kuis')['bab-1']).toBe(`1/${daftar.length}`);
+  });
+
+  it('sesi kuis mode di akhir: tidak ada penilaian sampai soal terakhir', () => {
+    const daftar = soalPaket('bab-2');
+    render(<Latihan tab="kuis" paket="bab-2" kasusSekarang={null} saatKerjakan={() => {}} />);
+    fireEvent.click(screen.getByRole('radio', { name: /Di akhir/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
+    daftar.forEach((soal, indeks) => {
+      fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${'ABCD'[soal.indeksBenar]}\\. `) }));
+      expect(screen.queryByRole('status')).toBeNull();
+      fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya' : 'Lihat hasil' }));
+    });
+    expect(document.querySelector('.skor-besar')?.textContent).toBe(`${daftar.length}/${daftar.length}`);
   });
 });

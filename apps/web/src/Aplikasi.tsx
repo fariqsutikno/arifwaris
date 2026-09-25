@@ -21,7 +21,8 @@ import { Rujukan } from './layar/belajar/Rujukan';
 import { catatRiwayat, type EntriRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
-import { TAUTAN_KALKULATOR, useRute } from './rute';
+import { TAUTAN_KALKULATOR, bacaRute, useRute } from './rute';
+import { usePenjaga } from './ui/Penjaga';
 
 export function Aplikasi() {
   const [keadaan, kirimAsli] = useReducer(pengurangKeadaan, null, () => keadaanAwal(muatLokal(), bacaTujuan()));
@@ -53,6 +54,16 @@ export function Aplikasi() {
   const rute = useRute();
   const diKalkulator = rute.halaman === 'kalkulator';
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
+  // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
+  usePenjaga(diKalkulator && !!kasus && layar !== 'beranda', {
+    berlaku: href => !['kalkulator', 'riwayat'].includes(bacaRute(href).halaman),
+    judul: 'Tinggalkan Hitung?',
+    isi: <p>{soalAktif ? 'Soal latihan ini belum selesai. Kamu bisa membukanya lagi dari Latihan.'
+      : kasusLengkap(kasus) ? 'Kasusmu sudah tersimpan di Riwayat hitung. Buka menu Hitung kapan saja untuk melanjutkan.'
+      : 'Isianmu tetap tersimpan di perangkat ini. Buka menu Hitung, lalu Lanjutkan kasus terakhir.'}</p>,
+    labelTetap: 'Tetap di sini',
+    labelPergi: 'Pindah',
+  });
   const [turBerjalan, setTurBerjalan] = useState(false);
   // Contoh dari materi dibuka di layar hasil; konfirmasi menimpa kasus lama sudah ditanyakan di halaman materi.
   const cobaDiKalkulator = (kasusContoh: Kasus) => { kirim({ jenis: 'MUAT', kasus: kasusContoh }); window.location.hash = TAUTAN_KALKULATOR; };

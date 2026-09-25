@@ -57,7 +57,7 @@ describe('halaman belajar', () => {
     render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={() => {}} />);
     const kartu = document.querySelector('fieldset.kartu-kuis') as HTMLElement;
     fireEvent.click(within(kartu).getByRole('button', { name: /^A\. / }));
-    expect(within(kartu).getByRole('status').textContent).toMatch(/Benar!|Belum tepat/);
+    expect(within(kartu).getByRole('status').textContent).toMatch(/Benar|Belum tepat/);
   });
 
   it('coba di kalkulator saat ada kasus lain: tanya dulu', () => {
