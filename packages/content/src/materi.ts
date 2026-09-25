@@ -115,9 +115,9 @@ export function bacaPotongan(teks: string): Potongan[] {
   return hasil;
 }
 
-/** Semua potongan di pelajaran (judul, paragraf, daftar, catatan, tabel); dipakai test untuk mengecek rujukan & istilah. */
-export function semuaPotongan(pelajaran: Pelajaran): Potongan[] {
-  return pelajaran.blok.flatMap(blok => {
+/** Semua potongan di daftar blok (judul, paragraf, daftar, catatan, tabel); dipakai test untuk mengecek rujukan & istilah. */
+export function semuaPotongan(daftarBlok: Blok[]): Potongan[] {
+  return daftarBlok.flatMap(blok => {
     switch (blok.jenis) {
       case 'judul': case 'paragraf': case 'catatan': return blok.isi;
       case 'daftar': return blok.butir.flat();

@@ -113,19 +113,19 @@ Status soal & kuis disimpan di perangkat (`localStorage`), tanpa akun.
 Kriteria terima: test memastikan kunci tiap soal hitung = hasil engine; tiap kuis punya tepat satu jawaban benar
 dan rujukan/istilah valid.
 
-### 5. FAQ — P1
+### 5. FAQ (Tanya jawab) — P1
 
-- Dua kelompok: **Fikih** ("Apakah anak angkat dapat warisan?") dan **Pakai aplikasi** ("Apakah data saya dikirim?").
-- Jawaban fikih wajib punya `[Rxx-y]`; yang tidak ada di KB tidak dijawab, diganti arahan ke direktori/konsultasi.
-- Satu file sumber, dirender sebagai daftar lipat + tautan ke materi/glosarium. Ikut dicari oleh kotak cari global.
+- Sumber `docs/faq.md`: `## kelompok` (Fikih, Pakai aplikasi), `### pertanyaan`, jawaban memakai Markdown materi.
+- Halaman `#/faq` (dari beranda Belajar): daftar lipat per kelompok, kotak cari (pertanyaan + isi jawaban),
+  `#/faq/<id>` membuka satu pertanyaan.
+- Jawaban fikih wajib punya `[Rxx-y]` (dijaga test); yang belum ada di KB (haml, mafqud, dzawil arham) tidak
+  dijawab isinya, diarahkan ke ahli faraidh.
 
-### 6. Buku & bacaan — P1
+### 6. Buku & bacaan — digabung ke Rujukan
 
-- Daftar kurasi, **tautan saja**: judul, penulis, bahasa, tingkat, format, tautan resmi/legal, catatan madzhab
-  (mis. "Hanbali, pembanding").
-- Isi awal: bab 17.2 saja (Raudhah, Tashil al-Fara'idh, Al-Fara'idh al-Muyassar, al-Lahim). Tambahan diurus tim
-  keilmuan lewat file data yang sama.
-- Tidak mengunggah PDF ke app kecuali lisensinya jelas mengizinkan.
+Isi awalnya sama dengan bab 17.2, yang sudah tampil di halaman Rujukan bagian "Kitab". Tidak dibuat halaman
+terpisah. Bila tim keilmuan menambah bacaan (buku Indonesia, tautan legal, tingkat), tambahkan kolom/tabel di
+sumber yang sama dan tampilkan di bagian Kitab.
 
 ### 7. Konsultasi (dosen & lembaga) — P1
 
@@ -163,7 +163,7 @@ fatwa/konsultasi waris). Bukan direktori ustadz/konsultan umum.
 | B | Format & parser materi + modul 1–5 | Contoh `kasus` di materi lolos test engine |
 | C | Bank soal hitung (bab 16 + M1–M9) + soal konsep modul 1–5 | Kunci = engine = bab 16 |
 | D | Modul 6–10 + soalnya | idem |
-| E | FAQ, Buku & bacaan | Semua jawaban fikih berujukan valid |
+| E | FAQ (buku digabung ke Rujukan) | Semua jawaban fikih berujukan valid |
 | F | Konsultasi (dosen & lembaga) | Semua entri berizin & bertanggal |
 
 Setelah C, pengerjaan munasakhat lanjutan / haml / mafqud bisa jalan paralel dengan penulisan konten D–E.

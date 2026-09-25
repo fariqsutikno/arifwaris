@@ -13,6 +13,7 @@ import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
 import { Wizard } from './layar/Wizard';
 import { Belajar } from './layar/belajar/Belajar';
+import { Faq } from './layar/belajar/Faq';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
@@ -59,6 +60,7 @@ export function Aplikasi() {
       {rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
+        : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />

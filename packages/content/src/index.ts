@@ -12,3 +12,6 @@ export {
   DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, cariSoalHitung, bacaSoalHitung, bacaSoalKuis,
   type SoalHitung, type SoalKuis, type Tingkat,
 } from './soal.js';
+export {
+  DAFTAR_FAQ, bacaFaq, type EntriFaq,
+} from './faq.js';

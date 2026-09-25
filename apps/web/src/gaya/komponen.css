@@ -547,3 +547,5 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .pembahasan-kuis{padding:12px 14px;border-radius:var(--radius-sm);background:var(--surface-sunken);line-height:1.6}
 .tautan-tombol{margin-top:6px;padding:0;border:0;background:none;color:var(--primary);font:700 14px var(--font-sans);text-decoration:underline;cursor:pointer}
 @media (prefers-color-scheme:dark){.tingkat-dasar{color:#6ee7a8}.tingkat-menengah{color:#ffc266}}
+.entri-faq{max-width:760px;scroll-margin-top:80px}
+.isi-lipat-faq{padding:0 16px 14px;font-size:15px}

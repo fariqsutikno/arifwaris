@@ -8,7 +8,7 @@ import { TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Ru
 
 const MENU: Array<{ label: string; tautan: string; aktifDi: Array<Rute['halaman']> }> = [
   { label: 'Kalkulator', tautan: TAUTAN_KALKULATOR, aktifDi: ['kalkulator'] },
-  { label: 'Belajar', tautan: tautanBelajar(), aktifDi: ['belajar', 'materi', 'glosarium'] },
+  { label: 'Belajar', tautan: tautanBelajar(), aktifDi: ['belajar', 'materi', 'glosarium', 'faq'] },
   { label: 'Latihan', tautan: tautanLatihan(), aktifDi: ['latihan'] },
   { label: 'Rujukan', tautan: tautanRujukan(), aktifDi: ['rujukan'] },
 ];

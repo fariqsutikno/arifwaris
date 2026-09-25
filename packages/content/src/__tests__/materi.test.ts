@@ -49,7 +49,7 @@ describe('materi di docs/materi', () => {
   });
 
   test.each(DAFTAR_PELAJARAN.map(pelajaran => [pelajaran.slug, pelajaran] as const))('%s: rujukan ada di KB, istilah ada di glosarium', (_slug, pelajaran) => {
-    for (const potongan of semuaPotongan(pelajaran)) {
+    for (const potongan of semuaPotongan(pelajaran.blok)) {
       if (potongan.jenis === 'rujukan') expect(cariRujukan(potongan.kode), potongan.kode).toBeDefined();
       if (potongan.jenis === 'istilah') expect(cariIstilah(potongan.id), potongan.id).toBeDefined();
     }

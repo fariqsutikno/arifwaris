@@ -52,7 +52,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   );
 }
 
-function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & Omit<Props, 'slug'>) {
+export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & Omit<Props, 'slug'>) {
   switch (blok.jenis) {
     case 'judul': return blok.tingkat === 2 ? <h2><Sebaris isi={blok.isi} /></h2> : <h3><Sebaris isi={blok.isi} /></h3>;
     case 'paragraf': return <p><Sebaris isi={blok.isi} /></p>;

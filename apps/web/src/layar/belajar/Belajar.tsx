@@ -1,9 +1,9 @@
-// Beranda pusat belajar: lanjutkan pelajaran, daftar modul beserta pelajarannya, dan pintu ke glosarium & rujukan.
+// Beranda pusat belajar: lanjutkan pelajaran, daftar modul beserta pelajarannya, dan pintu ke tanya jawab, glosarium & rujukan.
 // Modul yang belum punya pelajaran tetap tampil sebagai "menyusul" supaya urutan belajarnya terlihat utuh.
 
 import { DAFTAR_MODUL, DAFTAR_PELAJARAN } from '@waris/content';
 import { bacaPelajaranSelesai } from '../../preferensi';
-import { tautanBelajar, tautanGlosarium, tautanRujukan } from '../../rute';
+import { tautanBelajar, tautanFaq, tautanGlosarium, tautanRujukan } from '../../rute';
 
 export function Belajar() {
   const selesai = bacaPelajaranSelesai();
@@ -43,6 +43,7 @@ export function Belajar() {
       </ol>
 
       <div className="kartu-pilihan-deret ringkas">
+        <a className="kartu-pilihan kecil" href={tautanFaq()}>Tanya jawab<small>Pertanyaan yang sering muncul soal waris dan aplikasi ini.</small></a>
         <a className="kartu-pilihan kecil" href={tautanGlosarium()}>Glosarium<small>Arti istilah faraidh dalam bahasa sehari-hari.</small></a>
         <a className="kartu-pilihan kecil" href={tautanRujukan()}>Rujukan<small>Kitab, hadits, dan dalil yang dipakai.</small></a>
       </div>
