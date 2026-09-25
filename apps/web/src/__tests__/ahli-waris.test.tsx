@@ -84,16 +84,42 @@ it('paman & sepupu ditanya bertahap dengan bahasa sederhana', () => {
   expect(hitungIsian(grafTerakhir, 'PEWARIS').SEPUPU_SEBAPAK).toHaveLength(1);
 });
 
-it('kerabat yang bukan ahli waris di sini tetap dicantumkan dengan keterangan', () => {
+it('kerabat yang bukan ahli waris bisa ditambahkan dan ditandai dzawil arham', () => {
   render(<Uji />);
   fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
-  expect(screen.getByText(/Kakek dari pihak ibu/)).toBeTruthy();
-  expect(screen.getAllByText(/dzawil arham/i).length).toBeGreaterThan(0);
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Kakek dari pihak ibu (ayahnya ibu pewaris)' }));
+  const terisi = screen.getByRole('list', { name: 'Kerabat lain yang sudah ditambahkan' });
+  expect(within(terisi).getByText(/Kakek dari pihak ibu/)).toBeTruthy();
+  expect(within(terisi).getByText(/dzawil arham/i)).toBeTruthy();
 });
 
-it('tombol tambah cepat menunjukkan jumlah yang sudah ditambahkan', () => {
+it('urutan kerabat lain: kakek-nenek, cucu, kakak/adik, paman, keponakan', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: /Tambah kerabat lain/ }));
+  const judul = [...document.querySelectorAll('.kerabat-lain legend')].map(legend => legend.textContent);
+  expect(judul.slice(0, 5)).toEqual(['Kakek & nenek', 'Cucu', 'Kakak/adik almarhum', 'Paman & sepupu dari pihak ayah', 'Keponakan']);
+});
+
+it('tambah cepat pakai tombol kurang dan tambah dengan jumlah di tengah', () => {
   render(<Uji />);
   fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
   fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
-  expect(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }).textContent).toMatch(/2/);
+  fireEvent.click(screen.getByRole('button', { name: 'Kurangi Anak laki-laki' }));
+  expect(hitungIsian(grafTerakhir, 'PEWARIS').ANAK_LK).toHaveLength(1);
+  expect(screen.getByRole('button', { name: 'Kurangi Ayah' }).hasAttribute('disabled')).toBe(true);
+});
+
+it('di tampilan pohon, tiap orang bisa dihapus dengan tanda silang', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+  fireEvent.click(screen.getByRole('tab', { name: 'Pohon keluarga' }));
+  fireEvent.click(within(screen.getByRole('region', { name: 'Pohon keluarga' })).getByRole('button', { name: 'Hapus Anak laki-laki' }));
+  expect(hitungIsian(grafTerakhir, 'PEWARIS').ANAK_LK ?? []).toHaveLength(0);
+});
+
+it('tambah cepat menunjukkan jumlah yang sudah ditambahkan', () => {
+  render(<Uji />);
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+  expect(screen.getByRole('group', { name: 'Anak laki-laki' }).textContent).toMatch(/2/);
 });

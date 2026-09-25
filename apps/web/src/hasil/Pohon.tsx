@@ -22,6 +22,7 @@ interface Props {
 export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih }: Props) {
   const penerima = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const terhalang = new Map(ringkasan.terhalang.map(orang => [orang.id, orang]));
+  const bukanAhliWaris = new Map(ringkasan.bukanAhliWaris.map(orang => [orang.id, orang]));
   const { langkah } = useSorot();
   const isiNode = (id: IdOrang): IsiNode => {
     const orang = graf.orang[id]!;
@@ -38,12 +39,12 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
         <span className="angka">{sembunyiNominal ? 'Rp ••••••' : formatRupiah(dapat.nominal)}</span></span>,
     };
     if (halang) return { kelas: 'putus', peran: 'Terhalang (mahjub)', nama, isi: <span className="alasan-node">{halang.alasan}</span> };
-    return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">Tidak mewarisi</span> };
+    return { kelas: 'putus', peran: 'Tidak mewarisi', nama, isi: <span className="alasan-node">{bukanAhliWaris.get(id)?.alasan ?? 'Tidak termasuk ahli waris.'}</span> };
   };
   return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} />;
 }
 
-export interface IsiNode { kelas: string; peran: string; nama: string; isi?: ReactNode }
+export interface IsiNode { kelas: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
 export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
@@ -66,6 +67,16 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
               const node = isiNode(id);
               const { className, ...pemicu } = atribut(id);
               const bisaDipilih = !!saatPilih && node.kelas !== 'penghubung';
+              if (!saatPilih) {
+                return (
+                  <div key={id} {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} role="group" aria-label={node.nama}>
+                    <span className="peran-node">{node.peran}</span>
+                    <b>{node.nama}</b>
+                    {node.isi}
+                    {node.aksi}
+                  </div>
+                );
+              }
               return (
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')}
                   aria-label={bisaDipilih ? `${node.nama}. Lihat penjelasan` : node.nama} disabled={!bisaDipilih}

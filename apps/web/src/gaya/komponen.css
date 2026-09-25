@@ -465,3 +465,16 @@ table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing
 .modal-kecil{max-width:440px}
 .tombol-ubah-harta{align-self:flex-start}
 .tautan-teks{padding:0;border:0;background:none;color:var(--primary);font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+.kontrol-jumlah-deret{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.kontrol-jumlah{display:flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised)}
+.kontrol-jumlah.ada{background:var(--primary-soft)}
+.nama-kontrol{flex:1;font-weight:700;font-size:14px}
+.kontrol-jumlah button{display:grid;place-items:center;width:36px;height:36px;padding:0;border-radius:10px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:800 18px/1 var(--font-sans);cursor:pointer;box-shadow:var(--shadow-pop-sm)}
+.kontrol-jumlah button:active{transform:translate(2px,2px);box-shadow:none}
+.kontrol-jumlah button:disabled{opacity:.35;cursor:not-allowed;box-shadow:none}
+.angka-kontrol{min-width:22px;text-align:center;font:700 17px var(--font-display);font-variant-numeric:tabular-nums}
+.tombol-tambah.lain{border-style:dashed;box-shadow:none;font-weight:600}
+.orang-terisi.lain{background:var(--surface-raised);border-style:dashed;box-shadow:none;color:var(--ink)}
+.node-orang{position:relative}
+.hapus-node{position:absolute;top:-10px;right:-10px;display:grid;place-items:center;width:26px;height:26px;padding:0;border-radius:50%;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:800 15px/1 var(--font-sans);cursor:pointer}
+.hapus-node:hover,.hapus-node:focus-visible{background:var(--danger);color:#fff}

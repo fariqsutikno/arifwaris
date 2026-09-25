@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { KunciAhliWaris } from '@waris/engine';
-import { tambahAhliWaris } from '../checklist';
+import { tambahAhliWaris, tambahKerabatLain } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
 import { jalankan } from '../jalankan';
 import { adaTidakPas, pecahanTeks, persenTeks, ringkas } from '../hasil/ringkasan';
@@ -53,4 +53,13 @@ it('ada tidak pas: hanya bila pembagian dengan pembulatan Rp 1 menyisakan sisa',
   expect(adaTidakPas(buat(['ISTRI', 'ANAK_LK', 'ANAK_PR'], { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }))).toBe(false);
   // Angka tidak kelipatan ribuan tapi habis dibagi tanpa sisa: tidak perlu ditawari pembulatan.
   expect(adaTidakPas(buat(['ISTRI', 'ANAK_LK'], { kotor: 8_000_008n, tajhiz: 0n, hutang: 0n, wasiat: 0n }))).toBe(false);
+});
+
+it('kerabat dzawil arham yang dicatat muncul sebagai tidak mewarisi, dengan alasannya', () => {
+  const kasus = buat(['ANAK_LK'], { kotor: 1_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n });
+  const denganKakek = { ...kasus, graf: tambahKerabatLain(kasus.graf, 'PEWARIS', 'KAKEK_DARI_IBU') };
+  const hasil = ringkas(denganKakek, jalankan(denganKakek));
+  expect(hasil.bukanAhliWaris).toHaveLength(1);
+  expect(hasil.bukanAhliWaris[0]).toMatchObject({ nama: 'Kakek dari pihak ibu (ayahnya ibu pewaris)' });
+  expect(hasil.bukanAhliWaris[0]!.alasan).toMatch(/dzawil arham/);
 });

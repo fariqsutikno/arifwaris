@@ -73,7 +73,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, sorot, saatPilih }: {
             );
           });
         })}
-        {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
+        {[...ringkasan.terhalang, ...ringkasan.bukanAhliWaris].map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
           kolom={4 + (penyesuaian ? 1 : 0) + (tashih !== undefined ? 1 : 0)} />)}
       </tbody>
       <tfoot>
@@ -109,7 +109,7 @@ function TabelMunasakhat({ ringkasan, sembunyi, saatPilih }: { ringkasan: Ringka
             </tr>
           );
         })}
-        {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan} kolom={2} />)}
+        {[...ringkasan.terhalang, ...ringkasan.bukanAhliWaris].map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan} kolom={2} />)}
       </tbody>
     </table>
   );
