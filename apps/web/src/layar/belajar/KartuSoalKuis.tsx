@@ -6,8 +6,12 @@ import { useState } from 'react';
 import type { SoalKuis } from '@waris/content';
 import { Ikon } from '../../ui/Ikon';
 import { Sebaris } from './Sebaris';
+import { bahasaArab, t } from '../../terjemah';
 
-export const HURUF = 'ABCDEFGH';
+const HURUF = 'ABCDEFGH';
+const HURUF_ARAB = 'أبجدهوزح';
+/** Label pilihan: A B C D, atau أ ب ج د di tampilan Arab. */
+export const hurufPilihan = (indeks: number): string => (bahasaArab() ? HURUF_ARAB : HURUF)[indeks] ?? '';
 export type ModePembahasan = 'langsung' | 'akhir';
 
 interface Props {
@@ -38,21 +42,21 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
         {soal.pilihan.map((pilihan, indeks) => (
           <button key={indeks} type="button" disabled={sudahMenjawab && mode === 'langsung'} onClick={() => pilih(indeks)} className={kelas(indeks)}
             aria-pressed={mode === 'akhir' ? indeks === dipilih : undefined}
-            aria-label={`${HURUF[indeks]}. ${pilihan.map(potongan => ('teks' in potongan ? potongan.teks : '')).join('')}`}>
-            <span className="huruf-pilihan" aria-hidden="true">{HURUF[indeks]}</span>
+            aria-label={`${hurufPilihan(indeks)}. ${pilihan.map(potongan => ('teks' in potongan ? potongan.teks : '')).join('')}`}>
+            <span className="huruf-pilihan" aria-hidden="true">{hurufPilihan(indeks)}</span>
             <span><Sebaris isi={pilihan} /></span>
           </button>
         ))}
       </div>
       {tampilkanNilai && (
         <div className={benar ? 'hasil-tebak benar' : 'hasil-tebak salah'} role="status">
-          <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? 'Benar' : `Belum tepat, jawabannya ${HURUF[soal.indeksBenar]}`}</b>
+          <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? t('Benar') : t('Belum tepat, jawabannya {huruf}', { huruf: hurufPilihan(soal.indeksBenar) })}</b>
           <p><Sebaris isi={soal.pembahasan} /></p>
         </div>
       )}
       {sudahMenjawab && !saatDijawab && (
         <div className="aksi-pembahasan">
-          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>Coba lagi</button>
+          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>{t('Coba lagi')}</button>
         </div>
       )}
     </fieldset>

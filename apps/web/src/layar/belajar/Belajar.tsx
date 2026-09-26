@@ -8,7 +8,7 @@ import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, hapusAktivitas, reset
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan, tautanTanyaJawab } from '../../rute';
-import { panah, t } from '../../terjemah';
+import { angka, panah, t } from '../../terjemah';
 import { Ikon, type NamaIkon } from '../../ui/Ikon';
 import { PAKET_ACAK } from './KuisKonsep';
 
@@ -63,7 +63,7 @@ export function Belajar() {
             const isi = (
               <>
                 <span className="nomor-modul">{beres === daftar.length && daftar.length > 0 ? '✓' : modul.nomor}</span>
-                <span className="isi-modul"><b>{modul.judul}</b><span className="keterangan">{beres}/{daftar.length} pelajaran</span></span>
+                <span className="isi-modul"><b>{modul.judul}</b><span className="keterangan">{t('{selesai}/{total} pelajaran', { selesai: beres, total: daftar.length })}</span></span>
                 <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(beres / daftar.length) * 100}%` }} /></span>
               </>
             );
@@ -113,13 +113,13 @@ export function Belajar() {
                 <span className="ikon-aktivitas"><Ikon nama={IKON[isi.jenis]} ukuran={22} /></span>
                 <a className="isi-soal" href={tautanAktivitas(isi)}>
                   <b>{isi.judul}</b>
-                  <span className="keterangan">{LABEL[isi.jenis]}{isi.hasil ? ` · skor ${isi.hasil}` : ''} · {waktuRelatif(isi.waktu, sekarang)}</span>
+                  <span className="keterangan">{LABEL[isi.jenis]}{isi.hasil ? ` · ${t('skor')} ${angka(isi.hasil)}` : ''} · {waktuRelatif(isi.waktu, sekarang)}</span>
                 </a>
-                <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(isi)} aria-label={`Hapus ${isi.judul} dari riwayat`} title="Hapus dari riwayat"><Ikon nama="salah" ukuran={18} /></button>
+                <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(isi)} aria-label={t('Hapus {judul} dari riwayat', { judul: isi.judul })} title={t('Hapus dari riwayat')}><Ikon nama="salah" ukuran={18} /></button>
               </li>
             ))}
           </ul>
-          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />Hapus semua riwayat belajar</button>
+          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />{t('Hapus semua riwayat belajar')}</button>
         </section>
       )}
 
@@ -127,22 +127,22 @@ export function Belajar() {
         <section className="zona-reset" aria-labelledby="judul-reset">
           <div>
             <h2 id="judul-reset">{t('Reset progres belajar')}</h2>
-            <p className="keterangan">Pelajaran selesai, soal hitung, skor kuis, dan riwayat belajar dikosongkan. Riwayat hitung tidak ikut terhapus.</p>
+            <p className="keterangan">{t('Pelajaran selesai, soal hitung, skor kuis, dan riwayat belajar dikosongkan. Riwayat hitung tidak ikut terhapus.')}</p>
           </div>
-          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus('reset')}>Reset progres</button>
+          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus('reset')}>{t('Reset progres')}</button>
         </section>
       )}
 
       {akanDihapus && (
         <DialogKonfirmasi
-          judul={akanDihapus === 'reset' ? 'Reset semua progres belajar?' : akanDihapus === 'semua' ? 'Hapus semua riwayat belajar?' : 'Hapus dari riwayat belajar?'}
-          labelLanjut={akanDihapus === 'reset' ? 'Reset progres' : 'Hapus'}
+          judul={t(akanDihapus === 'reset' ? 'Reset semua progres belajar?' : akanDihapus === 'semua' ? 'Hapus semua riwayat belajar?' : 'Hapus dari riwayat belajar?')}
+          labelLanjut={t(akanDihapus === 'reset' ? 'Reset progres' : 'Hapus')}
           {...(akanDihapus === 'reset' ? { kataKunci: KATA_RESET } : {})}
           saatBatal={() => setAkanDihapus(null)} saatLanjut={jalankanHapus}>
           <p>
-            {akanDihapus === 'reset' ? `${jumlahSelesai} pelajaran selesai, ${soalSelesai} soal hitung, dan semua skor kuis akan kembali ke nol. Ini tidak bisa dibatalkan.`
-              : akanDihapus === 'semua' ? 'Daftar "Terakhir kamu buka" akan dikosongkan. Progres pelajaran dan skor tetap tersimpan.'
-              : `"${akanDihapus.judul}" dihapus dari daftar. Progres dan skornya tetap tersimpan.`}
+            {akanDihapus === 'reset' ? t('{pelajaran} pelajaran selesai, {soal} soal hitung, dan semua skor kuis akan kembali ke nol. Ini tidak bisa dibatalkan.', { pelajaran: jumlahSelesai, soal: soalSelesai })
+              : akanDihapus === 'semua' ? t('Daftar "Terakhir kamu buka" akan dikosongkan. Progres pelajaran dan skor tetap tersimpan.')
+              : t('"{judul}" dihapus dari daftar. Progres dan skornya tetap tersimpan.', { judul: akanDihapus.judul })}
           </p>
         </DialogKonfirmasi>
       )}
@@ -160,7 +160,7 @@ const DAFTAR_CHEATSHEET: { judul: string; berkas: string | null }[] = [
 ];
 const KATA_RESET = 'reset progres';
 const IKON: Record<Aktivitas['jenis'], NamaIkon> = { pelajaran: 'pelajaran', soal: 'hitung', kuis: 'kuis' };
-const LABEL: Record<Aktivitas['jenis'], string> = { pelajaran: 'Pelajaran', soal: 'Soal hitung', kuis: 'Kuis' };
+const LABEL: Record<Aktivitas['jenis'], string> = { pelajaran: t('Pelajaran'), soal: t('Soal hitung'), kuis: t('Kuis') };
 
 function tautanAktivitas(aktivitas: Aktivitas): string {
   if (aktivitas.jenis === 'pelajaran') return tautanBelajar(aktivitas.kode);
@@ -171,7 +171,7 @@ function tautanAktivitas(aktivitas: Aktivitas): string {
 function KotakAngka({ nilai, total, label, tautan }: { nilai: number; total: number; label: string; tautan: string }) {
   return (
     <a className="kotak-angka" href={tautan}>
-      <span className="angka-besar">{nilai}<small>/{total}</small></span>
+      <span className="angka-besar">{angka(String(nilai))}<small>/{angka(String(total))}</small></span>
       <span className="keterangan">{label}</span>
       <span className="bar-progres" aria-hidden="true"><span style={{ width: `${total ? (nilai / total) * 100 : 0}%` }} /></span>
     </a>
@@ -187,12 +187,12 @@ function CincinProgres({ persen, label }: { persen: number; label: string }) {
   const jari = 52;
   const keliling = 2 * Math.PI * jari;
   return (
-    <figure className="cincin-progres" aria-label={`Progres ${persen}%, ${label}`}>
+    <figure className="cincin-progres" aria-label={t('Progres {persen}%, {label}', { persen, label })}>
       <svg viewBox="0 0 120 120" width="140" height="140" aria-hidden="true">
         <circle cx="60" cy="60" r={jari} className="cincin-latar" />
         <circle cx="60" cy="60" r={jari} className="cincin-isi" strokeDasharray={keliling} strokeDashoffset={keliling * (1 - persen / 100)} transform="rotate(-90 60 60)" />
       </svg>
-      <figcaption><b>{persen}%</b><span>{label}</span></figcaption>
+      <figcaption><b>{angka(`${persen}%`)}</b><span>{label}</span></figcaption>
     </figure>
   );
 }

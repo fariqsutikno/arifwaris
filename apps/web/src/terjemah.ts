@@ -23,3 +23,22 @@ export function t(teks: string, sisipan: Record<string, string | number | bigint
   const hasil = (arab ?? teks).replace(/\{(\w+)\}/g, (utuh: string, nama: string) => (nama in sisipan ? String(sisipan[nama]) : utuh));
   return arab ? angkaArab(hasil) : hasil;
 }
+
+/** Istilah ahli waris di teks bebas (soal, pembahasan) → Arab; kata lain tetap Indonesia. Panjang dulu supaya "anak laki-laki" menang atas "anak". */
+const ISTILAH_WARIS: Array<[string, string]> = [
+  ['anak laki-laki', 'الابن'], ['anak perempuan', 'البنت'], ['cucu laki-laki', 'ابن الابن'], ['cucu perempuan', 'بنت الابن'],
+  ['saudara laki-laki kandung', 'الأخ الشقيق'], ['saudara perempuan kandung', 'الأخت الشقيقة'],
+  ['saudara kandung', 'الأخ الشقيق'], ['saudari kandung', 'الأخت الشقيقة'], ['saudara seibu', 'الأخ لأم'], ['saudari seibu', 'الأخت لأم'],
+  ['saudara sebapak', 'الأخ لأب'], ['saudari sebapak', 'الأخت لأب'],
+  ['ahli waris', 'الوارث'], ['suami', 'الزوج'], ['istri', 'الزوجة'], ['ayah', 'الأب'], ['ibu', 'الأم'], ['kakek', 'الجد'], ['nenek', 'الجدة'],
+  ['anak', 'الولد'], ['cucu', 'الحفيد'], ['paman', 'العم'], ['keponakan', 'ابن الأخ'], ['almarhum', 'المتوفى'],
+];
+const POLA_WARIS = new RegExp(`(?<![\\p{L}])(${ISTILAH_WARIS.map(([indonesia]) => indonesia).join('|')})(?![\\p{L}-])`, 'giu');
+const ARAB_WARIS = new Map(ISTILAH_WARIS);
+
+export const terjemahIsi = (teks: string): string => {
+  if (!bahasaArab()) return teks;
+  const utuh = KAMUS_ARAB[teks];
+  if (utuh) return angkaArab(utuh);
+  return angkaArab(teks.replace(POLA_WARIS, kata => ARAB_WARIS.get(kata.toLowerCase()) ?? kata));
+};

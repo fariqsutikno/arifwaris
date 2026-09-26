@@ -10,7 +10,7 @@ import { bacaCatatan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
-import { t } from '../../terjemah';
+import { angka, t, terjemahIsi } from '../../terjemah';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -41,10 +41,10 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
   const jumlahSelesai = DAFTAR_SOAL_HITUNG.filter(soal => catatan[soal.kode]).length;
   return (
     <>
-      <section className="kartu statistik-latihan" aria-label="Progres soal hitung">
+      <section className="kartu statistik-latihan" aria-label={t('Progres soal hitung')}>
         <div className="stat-utama">
-          <span className="angka-besar">{jumlahSelesai}<small>/{DAFTAR_SOAL_HITUNG.length}</small></span>
-          <span className="keterangan">soal dikerjakan</span>
+          <span className="angka-besar">{angka(String(jumlahSelesai))}<small>/{angka(String(DAFTAR_SOAL_HITUNG.length))}</small></span>
+          <span className="keterangan">{t('soal dikerjakan')}</span>
           <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / DAFTAR_SOAL_HITUNG.length) * 100}%` }} /></span>
         </div>
         <dl className="stat-tingkat">
@@ -52,8 +52,8 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
             const daftar = DAFTAR_SOAL_HITUNG.filter(soal => soal.tingkat === tingkat);
             return (
               <div key={tingkat}>
-                <dt className={`tingkat tingkat-${tingkat}`}>{tingkat}</dt>
-                <dd>{daftar.filter(soal => catatan[soal.kode]).length}<small>/{daftar.length}</small></dd>
+                <dt className={`tingkat tingkat-${tingkat}`}>{t(tingkat)}</dt>
+                <dd>{angka(String(daftar.filter(soal => catatan[soal.kode]).length))}<small>/{angka(String(daftar.length))}</small></dd>
               </div>
             );
           })}
@@ -61,22 +61,22 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
       </section>
       {perBab(DAFTAR_SOAL_HITUNG).map(([bab, daftar]) => (
         <section key={bab} className="tumpuk-rapat">
-          <h2 className="judul-bab-latihan">{judulTopik(bab)} <span className="keterangan">{daftar.filter(soal => catatan[soal.kode]).length}/{daftar.length}</span></h2>
+          <h2 className="judul-bab-latihan">{judulTopik(bab)} <span className="keterangan">{angka(`${daftar.filter(soal => catatan[soal.kode]).length}/${daftar.length}`)}</span></h2>
           <ul className="daftar-polos daftar-soal">
             {daftar.map(soal => {
               const selesai = !!catatan[soal.kode];
               return (
                 <li key={soal.kode} className={selesai ? 'baris-soal selesai' : 'baris-soal'}>
-                  <span className="status-soal" aria-label={selesai ? 'sudah dikerjakan' : 'belum dikerjakan'}>{selesai ? '✓' : '○'}</span>
+                  <span className="status-soal" aria-label={t(selesai ? 'sudah dikerjakan' : 'belum dikerjakan')}>{selesai ? '✓' : '○'}</span>
                   <div className="isi-soal">
-                    <b>{soal.judul}</b>
+                    <b>{terjemahIsi(soal.judul)}</b>
                     <span className="keterangan">
-                      <span className={`tingkat tingkat-${soal.tingkat}`}>{soal.tingkat}</span>
-                      {selesai && <> · {soal.topik}</>}
+                      <span className={`tingkat tingkat-${soal.tingkat}`}>{t(soal.tingkat)}</span>
+                      {selesai && <> · {terjemahIsi(soal.topik)}</>}
                     </span>
                   </div>
                   <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={selesai ? 'secondary' : 'primary'}>
-                    {selesai ? 'Ulangi' : 'Kerjakan'}
+                    {t(selesai ? 'Ulangi' : 'Kerjakan')}
                   </TombolBukaKasus>
                 </li>
               );

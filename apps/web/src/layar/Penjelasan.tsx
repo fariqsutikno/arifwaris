@@ -1,6 +1,7 @@
 // Penjelasan: Bab dari packages/explain → baris poin. Istilah fikih jadi tooltip buatan sendiri (glosarium bab 15),
 // rujukan jadi isi kotak "Kenapa begitu?" dari packages/content. Kode rujukan (R01-4, ...) tidak pernah tampil mentah.
 
+import { t } from '../terjemah';
 import { Fragment } from 'react';
 import type { IdOrang } from '@waris/engine';
 import { dalilUntuk } from '@waris/content';
@@ -67,7 +68,7 @@ export function Dalil({ daftarKode, diHalamanRujukan }: { daftarKode: string[]; 
           <summary>{entri.klaim}</summary>
           <div className="isi-dalil">
             {isi(entri)}
-            <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>Lihat di halaman Rujukan</a>
+            <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>{t('Lihat di halaman Rujukan')}</a>
           </div>
         </details>
       ))}

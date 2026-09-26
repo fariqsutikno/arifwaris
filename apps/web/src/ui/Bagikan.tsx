@@ -30,8 +30,8 @@ export function Bagikan({ judul, tautan, label = 'Bagikan', kecil }: Props) {
   };
   return (
     <span className="wadah-bagikan">
-      <button type="button" className={kecil ? 'tombol-bagikan kecil' : 'tombol-bagikan'} onClick={() => void bagikan()} aria-label={`${label}: ${judul}`}>
-        <Ikon nama="bagikan" ukuran={kecil ? 16 : 18} />{label}
+      <button type="button" className={kecil ? 'tombol-bagikan kecil' : 'tombol-bagikan'} onClick={() => void bagikan()} aria-label={`${t(label)}: ${judul}`}>
+        <Ikon nama="bagikan" ukuran={kecil ? 16 : 18} />{t(label)}
       </button>
       <span className="pesan-bagikan" role="status">{pesan}</span>
     </span>

@@ -8,6 +8,7 @@ import { tautanFaq } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
 import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
+import { t, terjemahIsi } from '../../terjemah';
 
 interface Props { id?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
 
@@ -25,19 +26,19 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
 
   return (
     <main className="halaman tumpuk halaman-faq">
-      <HeroMini judul="FAQ" keterangan="Pertanyaan yang sering muncul soal hukum waris dan cara memakai aplikasi ini." ikon="tanya" />
-      <p className="lencana-draf">Draf, belum direview tim keilmuan</p>
+      <HeroMini judul={t('FAQ')} keterangan={t('Pertanyaan yang sering muncul soal hukum waris dan cara memakai aplikasi ini.')} ikon="tanya" />
+      <p className="lencana-draf">{t('Draf, belum direview tim keilmuan')}</p>
       <label className="isian">
-        Cari pertanyaan
-        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder="mis. anak angkat, wasiat, hutang" />
+        {t('Cari pertanyaan')}
+        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder={t('mis. anak angkat, wasiat, hutang')} />
       </label>
-      {cocok.length === 0 && <p className="keterangan">Belum ada pertanyaan yang cocok. Coba kata lain, atau tanyakan ke ahli faraidh.</p>}
+      {cocok.length === 0 && <p className="keterangan">{t('Belum ada pertanyaan yang cocok. Coba kata lain, atau tanyakan ke ahli faraidh.')}</p>}
       {daftarKelompok.map(kelompok => (
         <section key={kelompok} className="tumpuk-rapat">
-          <h2>{kelompok}</h2>
+          <h2>{t(kelompok)}</h2>
           {cocok.filter(entri => entri.kelompok === kelompok).map(entri => (
             <details key={entri.id} id={`faq-${entri.id}`} className="kartu-lipat entri-faq" open={entri.id === id}>
-              <summary><b>{entri.pertanyaan}</b></summary>
+              <summary><b>{terjemahIsi(entri.pertanyaan)}</b></summary>
               <div className="isi-materi isi-lipat-faq">
                 {entri.jawaban.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
                 <Bagikan judul={entri.pertanyaan} tautan={tautanFaq(entri.id)} label="Bagikan pertanyaan ini" kecil />
