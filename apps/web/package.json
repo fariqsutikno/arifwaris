@@ -9,6 +9,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.1",
     "@waris/content": "workspace:*",
     "@waris/data": "workspace:*",
     "@waris/engine": "workspace:*",

@@ -23,6 +23,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.117.1
+        version: 2.117.1
       '@waris/content':
         specifier: workspace:*
         version: link:../../packages/content
