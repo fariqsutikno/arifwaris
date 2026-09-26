@@ -1,4 +1,4 @@
-// Header global: logo, menu utama (Beranda · ArifLab · Belajar · Latihan · Rujukan), tur, dan "Reset skenario"
+// Header global: logo, menu utama (Beranda · Belajar · ArifLab · Latihan · Rujukan), tur, dan "Reset skenario"
 // (hanya di wizard; layar hasil punya tombolnya sendiri di bar aksi). Di HP menu utama pindah ke nav bawah.
 // Tidak memuat tombol simpan (spec: Navigasi global).
 
@@ -23,8 +23,8 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
     { label: 'Beranda', ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
-    { label: 'ArifLab', ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
     { label: 'Belajar', ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
+    { label: 'ArifLab', ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
     { label: 'Latihan', ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
     { label: 'Rujukan', ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
   ];
