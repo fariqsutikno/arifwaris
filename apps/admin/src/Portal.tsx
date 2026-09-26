@@ -1,7 +1,7 @@
 // Gerbang sesi & peran portal admin: memuat sesi lalu peran dari repo.akun, dan hanya merender navigasi + rute
 // setelah keduanya siap. Tanpa sesi → tombol masuk Google; sesi tanpa peran → pesan "belum punya akses" + keluar;
 // galat saat memuat → pesan galat (bukan layar kosong). Rute dibaca dari location.hash (bacaRute/tulisRute).
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { JENIS_KONTEN, type Peran } from '@waris/content';
 import type { Sesi } from '@waris/data';
 import { Tombol } from '@waris/web/ui/komponen';
@@ -11,6 +11,7 @@ import { DaftarKonten } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
 import { AntreanReview } from './layar/AntreanReview';
 import { EditorDiksi } from './layar/EditorDiksi';
+import { KelolaPeran } from './layar/KelolaPeran';
 
 type Tahap =
   | { tahap: 'memuat' }
@@ -72,8 +73,8 @@ function NavigasiPortal({ peran }: { peran: Peran }) {
   );
 }
 
-// Layar rute lain (peran) belum dibuat di task ini; diganti task berikut.
 function LayarRute() {
+  const { peran } = useContext(KonteksRepo)!;
   const [rute, setRute] = useState(() => bacaRute(location.hash));
   useEffect(() => {
     const nyalakan = () => setRute(bacaRute(location.hash));
@@ -85,5 +86,6 @@ function LayarRute() {
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
   if (rute.layar === 'review') return <AntreanReview />;
   if (rute.layar === 'diksi') return <EditorDiksi />;
+  if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
   return <p>Segera</p>;
 }
