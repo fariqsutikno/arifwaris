@@ -49,8 +49,11 @@ bagian "Data pengguna"; aturan di sana tetap berlaku kecuali diubah di sini.
 
 ## Penggabungan (`gabung.ts`, fungsi murni)
 
-Dijalankan tiap login dan tiap aplikasi dibuka dalam keadaan login: tarik data server → gabung dengan lokal → tulis
-hasil ke lokal → kirim baris yang berbeda dari server.
+Dijalankan sekali per perangkat, saat akun pertama kali masuk di perangkat itu: tarik data server → gabung dengan
+lokal → tulis hasil ke lokal → kirim baris yang berbeda dari server. Sesudahnya, tiap aplikasi dibuka: kirim antrean
+dulu; bila antrean kosong, data lokal diganti data server (semua perubahan lokal sudah lewat antrean). Menggabung di
+setiap buka akan menghidupkan lagi kasus tersimpan yang sudah dihapus di perangkat lain.
+Akun lain masuk di perangkat yang masih menyimpan data akun sebelumnya → data lokal dibersihkan dulu, tidak digabung.
 
 - Tersimpan: gabung per id kasus; id sama → `disimpanPada` terbaru.
 - Progres belajar: `selesai` = OR; `diubahPada` = maksimum.
@@ -71,18 +74,20 @@ hasil ke lokal → kirim baris yang berbeda dari server.
 
 1. Kirim antrean (batas tunggu beberapa detik).
 2. Masih ada yang gagal → konfirmasi "N perubahan belum terkirim, tetap keluar?".
-3. Hapus di perangkat: tersimpan, progres, preferensi tersinkron, antrean, dan "Terakhir dibuka".
+3. Hapus di perangkat semua kunci `arif-waris:*` di localStorage (tersimpan, progres, preferensi, antrean,
+   "Terakhir dibuka", kasus yang sedang diisi, aktivitas). Cache konten di IndexedDB tidak disentuh.
 
 ## `log_kegiatan` (fondasi tahap 5)
 
 ```
-log_kegiatan  id bigserial, user_id → auth.users (default auth.uid()),
+log_kegiatan  id uuid (dari klien), user_id → auth.users (default auth.uid()),
               jenis ('pelajaran'|'soal'|'kuis'), slug text, benar bool null,
               terjadi_pada timestamptz default now()
 ```
 
 - RLS: insert & select hanya baris sendiri; tidak ada update/delete.
 - `terjadi_pada` dari server, bukan jam klien.
+- `id uuid` dibuat klien; kirim ulang baris yang sebenarnya sudah masuk diabaikan (tidak dobel).
 - Dicatat hanya saat login, lewat antrean yang sama. Log sebelum login tidak digabung (waktunya tidak bisa
   dipercaya); streak dihitung sejak akun dibuat.
 
