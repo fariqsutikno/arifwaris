@@ -8,9 +8,9 @@ import { t } from '../terjemah';
 
 export function Dok() {
   return (
-    <aside className="dok" aria-label={t('Bantuan cepat')}>
-      <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener" className="dok-lapor">{t('Nemu masalah? Laporkan')}</a>
-      <a href={tautanFaq()} className="dok-faq"><Ikon nama="tanya" ukuran={18} />{t('FAQ')}</a>
+    <aside className="dok" aria-label={t('umum.bantuan_cepat')}>
+      <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener" className="dok-lapor">{t('umum.nemu_masalah_laporkan')}</a>
+      <a href={tautanFaq()} className="dok-faq"><Ikon nama="tanya" ukuran={18} />{t('umum.faq')}</a>
     </aside>
   );
 }

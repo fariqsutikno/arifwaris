@@ -34,7 +34,7 @@ export function Laci({ id, label, judul, children, ringkasan }: Props) {
       <aside id={id} className={terbuka ? 'sidebar-materi terbuka' : 'sidebar-materi'} aria-label={label}>
         <div className="kepala-sidebar-materi">
           <div className="judul-laci">{judul}</div>
-          <button ref={tombolTutup} type="button" className="tombol-tutup-laci" onClick={() => setTerbuka(false)} aria-label={t('Tutup {label}', { label: label.toLowerCase() })}>
+          <button ref={tombolTutup} type="button" className="tombol-tutup-laci" onClick={() => setTerbuka(false)} aria-label={t('hitung.tutup_label', { label: label.toLowerCase() })}>
             <Ikon nama="salah" ukuran={18} />
           </button>
         </div>

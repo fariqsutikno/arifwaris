@@ -12,7 +12,7 @@ export function KepalaHalaman({ rute }: { rute: Rute }) {
   return (
     <div className="kepala-halaman">
       <a className="tombol-kembali" href={tautanInduk(rute)}>
-        <Ikon nama="kembali" ukuran={18} />{t('Kembali')}
+        <Ikon nama="kembali" ukuran={18} />{t('umum.kembali_2')}
       </a>
       {judul && <Bagikan judul={judul} tautan={window.location.hash} />}
     </div>
@@ -23,10 +23,10 @@ export function KepalaHalaman({ rute }: { rute: Rute }) {
 function judulBagikan(rute: Rute): string | null {
   switch (rute.halaman) {
     case 'materi': return cariPelajaran(rute.slug)?.judul ?? null;
-    case 'faq': return t('FAQ faraidh');
-    case 'tanya-jawab': return t('Tanya jawab kasus waris');
-    case 'glosarium': return t('Glosarium faraidh');
-    case 'rujukan': return t('Rujukan faraidh');
+    case 'faq': return t('umum.faq_faraidh');
+    case 'tanya-jawab': return t('umum.tanya_jawab_kasus_waris');
+    case 'glosarium': return t('umum.glosarium_faraidh');
+    case 'rujukan': return t('umum.rujukan_faraidh');
     default: return null;
   }
 }

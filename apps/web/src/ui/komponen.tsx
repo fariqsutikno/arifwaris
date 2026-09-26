@@ -35,7 +35,7 @@ export function KartuAhliWaris(props: {
     <div className={gabungKelas('aw-heir', `aw-g-${kelompok}`, adalahMahjub && 'aw-heir-blocked')}>
       <div className="aw-heir-top">
         <div>
-          <div className="aw-heir-rel">{adalahMahjub ? t('Kehalang (mahjub)') : LABEL_KELOMPOK[kelompok]}</div>
+          <div className="aw-heir-rel">{adalahMahjub ? t('hitung.kehalang_mahjub') : LABEL_KELOMPOK[kelompok]}</div>
           <h3>{nama}</h3>
         </div>
         {bagian && !adalahMahjub ? <LencanaPecahan nilai={bagian} /> : null}
@@ -44,11 +44,11 @@ export function KartuAhliWaris(props: {
       {children}
       {jumlah !== undefined && !adalahMahjub ? (
         <div className="aw-heir-foot">
-          <span className="aw-heir-note">{t('Jumlah')}</span>
+          <span className="aw-heir-note">{t('umum.jumlah')}</span>
           <div className="aw-cnt">
-            <button type="button" aria-label={t('Kurangi {label}', { label: nama })} onClick={saatKurang} disabled={jumlah === 0}>−</button>
+            <button type="button" aria-label={t('hitung.kurangi_label', { label: nama })} onClick={saatKurang} disabled={jumlah === 0}>−</button>
             <span aria-live="polite">{jumlah}</span>
-            <button type="button" aria-label={t('Tambah {label}', { label: nama })} onClick={saatTambah}>+</button>
+            <button type="button" aria-label={t('hitung.tambah_label', { label: nama })} onClick={saatTambah}>+</button>
           </div>
         </div>
       ) : null}
@@ -73,10 +73,10 @@ export function LangkahHitung({ nomor, judul, pengantar, kenapa, sudahDibaca, ch
     <div className={gabungKelas('aw-step', sudahDibaca && 'aw-step-done')}>
       <div className="aw-step-n">{sudahDibaca ? '✓' : nomor}</div>
       <div>
-        {pengantar ? <div className="aw-step-k">{pengantar}{sudahDibaca ? <Stiker warna="lime" miringKanan>{t('Kelar')}</Stiker> : null}</div> : null}
+        {pengantar ? <div className="aw-step-k">{pengantar}{sudahDibaca ? <Stiker warna="lime" miringKanan>{t('umum.kelar')}</Stiker> : null}</div> : null}
         <h4>{judul}</h4>
         <div>{children}</div>
-        {kenapa ? <div className="aw-why"><b>{t('Kenapa?')}</b>{kenapa}</div> : null}
+        {kenapa ? <div className="aw-why"><b>{t('umum.kenapa')}</b>{kenapa}</div> : null}
       </div>
     </div>
   );
@@ -84,7 +84,7 @@ export function LangkahHitung({ nomor, judul, pengantar, kenapa, sudahDibaca, ch
 
 export interface BarisHasil extends RuasBagian { nominal: string; keterangan?: string }
 
-export function KartuHasil({ label = t('Harta yang dibagi'), total, stiker, daftarBaris }: {
+export function KartuHasil({ label = t('hitung.harta_yang_dibagi'), total, stiker, daftarBaris }: {
   label?: string; total: string; stiker?: string; daftarBaris: BarisHasil[];
 }) {
   return (
@@ -122,9 +122,9 @@ function Tanda({ ukuran = 40 }: { ukuran?: number }) {
 
 export function Logo({ saatKlik }: { saatKlik?: () => void }) {
   return (
-    <a className="aw-logo" href="#" aria-label={t('Arif Waris, beranda')} onClick={event => { event.preventDefault(); saatKlik?.(); }}>
+    <a className="aw-logo" href="#" aria-label={t('umum.arif_waris_beranda')} onClick={event => { event.preventDefault(); saatKlik?.(); }}>
       <Tanda />
-      <span><b>{t('Arif Waris')}</b><small>{t('by Prodi HKI STDI Imam Syafi\'i')}</small></span>
+      <span><b>{t('umum.arif_waris')}</b><small>{t('umum.by_prodi_hki_stdi_imam_syafi')}</small></span>
     </a>
   );
 }
