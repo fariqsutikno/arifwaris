@@ -76,7 +76,7 @@ export function sorotKetukan(bab: BabPenjelasan, ketukan: number | null, data: D
       for (const ke of subjek) {
         const perubahan = bab.kolom === 'ahliWaris' && data.terhalang.has(ke) ? HAJB_HIRMAN : bab.kolom === 'bagian' ? data.nuqshan.get(ke) : undefined;
         if (perubahan && lain.length > 0) ubah.set(ke, perubahan);
-        const label = perubahan === HAJB_HIRMAN ? 'menghalangi' : perubahan ? t('mengurangi {dari} → {menjadi}', { dari: String(perubahan.dari), menjadi: String(perubahan.menjadi) }) : 'memengaruhi';
+        const label = perubahan === HAJB_HIRMAN ? 'menghalangi' : perubahan ? t('hitung.mengurangi_dari_menjadi', { dari: String(perubahan.dari), menjadi: String(perubahan.menjadi) }) : 'memengaruhi';
         for (const dari of lain) panah.push([dari, ke, label]);
       }
     }

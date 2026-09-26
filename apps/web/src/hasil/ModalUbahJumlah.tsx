@@ -23,9 +23,9 @@ export function ModalUbahJumlah({ kunci, graf, ubahGraf, saatTutup }: Props) {
   };
   return (
     <div className="modal-latar" onClick={event => { if (event.target === event.currentTarget) saatTutup(); }}>
-      <div className="modal-orang modal-kecil" role="dialog" aria-modal="true" aria-label={t('Ubah jumlah {label}', { label: LABEL_SEHARI[kunci] ?? '' })}
+      <div className="modal-orang modal-kecil" role="dialog" aria-modal="true" aria-label={t('hitung.ubah_jumlah_label', { label: LABEL_SEHARI[kunci] ?? '' })}
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
-        <header className="kepala-modal netral"><div><h2>{t('Ubah jumlah')}</h2></div></header>
+        <header className="kepala-modal netral"><div><h2>{t('hitung.ubah_jumlah')}</h2></div></header>
         <div className="isi-modal">
           {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
           <ul className="daftar-jumlah">
@@ -34,11 +34,11 @@ export function ModalUbahJumlah({ kunci, graf, ubahGraf, saatTutup }: Props) {
               saatKurang={() => coba(g => kurangiAhliWaris(g, idMayit, kunci))}
               saatUbahNama={(idOrang, nama) => coba(g => ubahNama(g, idOrang, nama))} />
           </ul>
-          <p className="caption-isian">{t('Hasil langsung dihitung ulang. Untuk kerabat lain, buka langkah Ahli waris (ikon pensil di atas pohon).')}</p>
+          <p className="caption-isian">{t('hitung.hasil_langsung_dihitung_ulang_untuk_kerabat')}</p>
         </div>
         <footer className="kaki-modal">
           <span className="pengisi" />
-          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>{t('Selesai')}</button>
+          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>{t('umum.selesai_2')}</button>
         </footer>
       </div>
     </div>

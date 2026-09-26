@@ -9,12 +9,12 @@ export function KerangkaLangkah({ langkah, children, ringkasan }: { langkah: num
   return (
     <div className="kerangka-langkah">
       <section className="kerangka-utama" aria-labelledby="pertanyaan-utama">
-        <p className="label-langkah">{t('Langkah {nomor} dari {total}', { nomor: langkah, total: LANGKAH_WIZARD.length })}</p>
+        <p className="label-langkah">{t('hitung.langkah_nomor_dari_total', { nomor: langkah, total: LANGKAH_WIZARD.length })}</p>
         <h1 id="pertanyaan-utama" data-tur="pertanyaan" className="pertanyaan-utama">{tanpaPatahDiTandaHubung(teks.pertanyaan)}</h1>
         <p className="caption-langkah">{teks.caption}</p>
         <div className="tumpuk">{children}</div>
       </section>
-      {ringkasan && <aside className="kerangka-samping" aria-label={t('Ringkasan kasus')}>{ringkasan}</aside>}
+      {ringkasan && <aside className="kerangka-samping" aria-label={t('hitung.ringkasan_kasus')}>{ringkasan}</aside>}
     </div>
   );
 }

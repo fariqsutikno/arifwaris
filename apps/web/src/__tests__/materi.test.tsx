@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { DAFTAR_PELAJARAN, type ContohKasus } from '@waris/content';
+import { type ContohKasus } from '@waris/content';
+import { daftarPelajaran } from '../konten/sumber';
 import { jalankan } from '../jalankan';
 import { ringkas } from '../hasil/ringkasan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
@@ -8,7 +9,7 @@ import { Belajar } from '../layar/belajar/Belajar';
 import { Materi } from '../layar/belajar/Materi';
 import { bacaPelajaranSelesai } from '../preferensi';
 
-const semuaContoh = DAFTAR_PELAJARAN.flatMap(pelajaran => pelajaran.blok.flatMap((blok, urutan) =>
+const semuaContoh = daftarPelajaran().flatMap(pelajaran => pelajaran.blok.flatMap((blok, urutan) =>
   blok.jenis === 'kasus' ? [[`${pelajaran.slug} #${urutan}`, blok.kasus] as [string, ContohKasus]] : []));
 
 describe('contoh kasus di materi = hasil engine', () => {
@@ -29,8 +30,8 @@ describe('contoh kasus di materi = hasil engine', () => {
 describe('halaman belajar', () => {
   it('beranda belajar: lanjutkan pelajaran pertama, lalu kelompok Belajar → Latihan → Cari tahu → Cheatsheet', () => {
     render(<Belajar />);
-    const lanjut = screen.getByRole('link', { name: new RegExp(DAFTAR_PELAJARAN[0]!.judul) });
-    expect(lanjut.getAttribute('href')).toBe(`#/belajar/${DAFTAR_PELAJARAN[0]!.slug}`);
+    const lanjut = screen.getByRole('link', { name: new RegExp(daftarPelajaran()[0]!.judul) });
+    expect(lanjut.getAttribute('href')).toBe(`#/belajar/${daftarPelajaran()[0]!.slug}`);
     expect(screen.getByLabelText(/^Progres 0%/)).toBeTruthy();
     expect(screen.getAllByRole('heading', { level: 2 }).map(judul => judul.textContent)).toEqual(['Belajar', 'Latihan', 'Cari tahu', 'Cheatsheet']);
     expect(within(screen.getByRole('region', { name: 'Latihan' })).getAllByRole('link')).toHaveLength(3);
@@ -38,7 +39,7 @@ describe('halaman belajar', () => {
   });
 
   it('pelajaran dengan contoh: tabel dari engine, tautan dalil, dan selesai tersimpan', () => {
-    const pelajaran = DAFTAR_PELAJARAN.find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
+    const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
     const dicoba: unknown[] = [];
     render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={kasus => dicoba.push(kasus)} />);
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(pelajaran.judul);
@@ -59,7 +60,7 @@ describe('halaman belajar', () => {
   });
 
   it('cek pemahaman di materi: pilihan berhuruf, pembahasan muncul setelah memilih', () => {
-    const pelajaran = DAFTAR_PELAJARAN.find(isi => isi.blok.some(blok => blok.jenis === 'kuis'))!;
+    const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kuis'))!;
     render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={() => {}} />);
     const kartu = document.querySelector('fieldset.kartu-kuis') as HTMLElement;
     fireEvent.click(within(kartu).getByRole('button', { name: /^A\. / }));
@@ -67,7 +68,7 @@ describe('halaman belajar', () => {
   });
 
   it('coba di kalkulator saat ada kasus lain: tanya dulu', () => {
-    const pelajaran = DAFTAR_PELAJARAN.find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
+    const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
     const dicoba: unknown[] = [];
     render(<Materi slug={pelajaran.slug} kasusSekarang={kasusDariContoh(semuaContoh[0]![1])} saatCoba={kasus => dicoba.push(kasus)} />);
     fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);

@@ -17,13 +17,13 @@ interface Props {
 
 export const kasusLengkap = (kasus: Kasus | null): boolean => !!kasus && langkahTerjauh(kasus) === LANGKAH_HASIL;
 
-export function KonfirmasiKasusBaru({ kasus, saatLanjut, saatBatal, judul = t('Mulai kasus baru?'), labelLanjut = t('Mulai baru') }: Props) {
+export function KonfirmasiKasusBaru({ kasus, saatLanjut, saatBatal, judul = t('hitung.mulai_kasus_baru'), labelLanjut = t('hitung.mulai_baru') }: Props) {
   return (
     <DialogKonfirmasi judul={judul} labelLanjut={labelLanjut} saatLanjut={saatLanjut} saatBatal={saatBatal}>
       <p>
         {kasusLengkap(kasus)
-          ? t('Kasus yang sekarang sudah tersimpan di Riwayat hitung, jadi bisa kamu buka lagi kapan saja.')
-          : t('Isian yang sekarang tersimpan di Riwayat hitung sebagai data belum lengkap. Kamu bisa melanjutkannya kapan saja.')}
+          ? t('hitung.kasus_yang_sekarang_sudah_tersimpan_di')
+          : t('hitung.isian_yang_sekarang_tersimpan_di_riwayat')}
       </p>
     </DialogKonfirmasi>
   );

@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, type SoalHitung } from '@waris/content';
+import { type SoalHitung } from '@waris/content';
+import { daftarSoalHitung, daftarSoalKuis } from '../konten/sumber';
 import { ringkas } from '../hasil/ringkasan';
 import { jalankan } from '../jalankan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
@@ -9,7 +10,7 @@ import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar
 import { bacaCatatan, simpanCatatan } from '../preferensi';
 
 describe('kunci soal hitung = hasil engine', () => {
-  it.each(DAFTAR_SOAL_HITUNG.map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
+  it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
     const kasus = kasusDariContoh(soal.kasus);
     const tampil = jalankan(kasus);
     if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(JSON.stringify(tampil));
@@ -23,7 +24,7 @@ describe('kunci soal hitung = hasil engine', () => {
 
 describe('halaman latihan', () => {
   it('soal hitung per bab; Kerjakan membuka soalnya; yang sudah dikerjakan bertanda dan topiknya muncul', () => {
-    const [pertama, kedua] = DAFTAR_SOAL_HITUNG as [SoalHitung, SoalHitung];
+    const [pertama, kedua] = daftarSoalHitung() as [SoalHitung, SoalHitung];
     simpanCatatan('soal', kedua.kode, 'selesai');
     const dikerjakan: SoalHitung[] = [];
     const { container } = render(<Latihan tab="hitung" kasusSekarang={null} saatKerjakan={soal => dikerjakan.push(soal)} />);
@@ -37,10 +38,10 @@ describe('halaman latihan', () => {
   it('kuis: daftar paket per bab + acak; paket acak berisi soal unik', () => {
     render(<Latihan tab="kuis" kasusSekarang={null} saatKerjakan={() => {}} />);
     expect(screen.getByRole('link', { name: /Kuis acak/ }).getAttribute('href')).toBe('#/latihan/kuis/acak');
-    for (const bab of new Set(DAFTAR_SOAL_KUIS.map(soal => soal.bab))) expect(screen.getByRole('link', { name: new RegExp(`^${judulTopik(bab)}`) })).toBeTruthy();
+    for (const bab of new Set(daftarSoalKuis().map(soal => soal.bab))) expect(screen.getByRole('link', { name: new RegExp(`^${judulTopik(bab)}`) })).toBeTruthy();
     const acak = soalPaket(PAKET_ACAK);
     expect(new Set(acak.map(soal => soal.kode)).size).toBe(acak.length);
-    expect(acak.length).toBe(Math.min(10, DAFTAR_SOAL_KUIS.length));
+    expect(acak.length).toBe(Math.min(10, daftarSoalKuis().length));
   });
 
   it('sesi kuis mode latihan: fokus (tanpa tab), soal satu per satu, pembahasan langsung, skor + pembahasan di akhir', () => {

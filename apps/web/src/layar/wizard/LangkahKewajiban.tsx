@@ -17,18 +17,18 @@ export function LangkahKewajiban({ kasus, ubah }: Props) {
     <div className="dua-kolom-isian">
       <section className="grup-isian" aria-labelledby="judul-potongan">
         <div className="kepala-grup">
-          <h2 id="judul-potongan">{t('Dibayar dulu dari harta')}</h2>
+          <h2 id="judul-potongan">{t('hitung.dibayar_dulu_dari_harta')}</h2>
         </div>
-        <p className="caption-isian">{t('Berurutan dari atas.')} {TEKS_KEWAJIBAN.kosong}</p>
+        <p className="caption-isian">{t('hitung.berurutan_dari_atas')} {TEKS_KEWAJIBAN.kosong}</p>
         <ol className="urutan-kewajiban">
           {TEKS_KEWAJIBAN.urutan.map(({ kunci, label, alasan }) => (
             <li key={kunci}>
               <IsianUang id={`kewajiban-${kunci}`} label={label} nilai={kasus.tirkah[kunci]} info={alasan}
-                {...(kunci === 'wasiat' ? { keterangan: t('Maks. {batas} (1/3 dari sisa setelah hutang).', { batas: formatRupiah(jejak.wasiatBatas) }) } : {})}
+                {...(kunci === 'wasiat' ? { keterangan: t('hitung.maks_batas_1_3_dari_sisa', { batas: formatRupiah(jejak.wasiatBatas) }) } : {})}
                 saatUbah={nilai => ubah(k => ({ ...k, tirkah: { ...k.tirkah, [kunci]: nilai } }))} />
               {kunci === 'wasiat' && jejak.wasiatButuhIjazah > 0n && (
                 <p className="peringatan-isian" role="status">
-                  {t('Wasiat dipangkas jadi {dipakai} (batas 1/3). Kelebihan {lebih} hanya berlaku kalau semua ahli waris setuju.',
+                  {t('hitung.wasiat_dipangkas_jadi_dipakai_batas_1',
                     { dipakai: formatRupiah(jejak.wasiatDipakai), lebih: formatRupiah(jejak.wasiatButuhIjazah) })}
                 </p>
               )}
@@ -38,13 +38,13 @@ export function LangkahKewajiban({ kasus, ubah }: Props) {
       </section>
 
       <section className="grup-isian ringkas-hitung" aria-labelledby="judul-dibagi">
-        <div className="kepala-grup"><h2 id="judul-dibagi">{t('Yang akan dibagi')}</h2></div>
+        <div className="kepala-grup"><h2 id="judul-dibagi">{t('hitung.yang_akan_dibagi')}</h2></div>
         <div className="hitungan-berjalan" aria-live="polite">
-          <div><span>{t('Harta peninggalan')}</span><span>{formatRupiah(jejak.kotor)}</span></div>
+          <div><span>{t('hitung.harta_peninggalan')}</span><span>{formatRupiah(jejak.kotor)}</span></div>
           {TEKS_KEWAJIBAN.urutan.map(({ kunci, label }) => (
             <div key={kunci} className="potongan"><span>{label}</span><span>−{formatRupiah(nilaiUntuk[kunci])}</span></div>
           ))}
-          <div className="garis-total"><b>{t('Untuk ahli waris')}</b><b className="hitungan-total">{formatRupiah(jejak.bersih)}</b></div>
+          <div className="garis-total"><b>{t('hitung.untuk_ahli_waris')}</b><b className="hitungan-total">{formatRupiah(jejak.bersih)}</b></div>
         </div>
       </section>
     </div>

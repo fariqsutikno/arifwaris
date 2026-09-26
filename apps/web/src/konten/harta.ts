@@ -1,36 +1,34 @@
-// Teks langkah Harta dan Kewajiban. `perluCek` = belum diverifikasi tim keilmuan.
+// Teks langkah Harta dan Kewajiban.
 
 import type { KategoriHarta } from '../kasus';
-import { angka, t } from '../terjemah';
+import { angka, teksEdukasi } from '../terjemah';
 
 export const KATEGORI_HARTA_TEKS: Record<KategoriHarta, { label: string; contoh: string }> = {
-  tabungan: { label: t('Tabungan & kas'), contoh: t('Rekening bank, deposito, uang tunai') },
-  properti: { label: t('Tanah & bangunan'), contoh: 'Rumah, tanah, ruko; pakai harga pasar saat ini' },
-  kendaraan: { label: t('Kendaraan'), contoh: 'Mobil, motor; pakai harga jual saat ini' },
-  emas: { label: t('Emas & perhiasan'), contoh: t('Emas batangan, perhiasan') },
-  piutang: { label: t('Piutang'), contoh: t('Uang almarhum yang dipinjam orang lain dan bisa ditagih') },
-  lainnya: { label: t('Lainnya'), contoh: t('Saham, barang berharga, usaha') },
+  tabungan: { label: teksEdukasi('harta.tabungan_kas'), contoh: teksEdukasi('harta.rekening_bank_deposito_uang_tunai') },
+  properti: { label: teksEdukasi('harta.tanah_bangunan'), contoh: 'Rumah, tanah, ruko; pakai harga pasar saat ini' },
+  kendaraan: { label: teksEdukasi('harta.kendaraan'), contoh: 'Mobil, motor; pakai harga jual saat ini' },
+  emas: { label: teksEdukasi('harta.emas_perhiasan'), contoh: teksEdukasi('harta.emas_batangan_perhiasan') },
+  piutang: { label: teksEdukasi('harta.piutang'), contoh: teksEdukasi('harta.uang_almarhum_yang_dipinjam_orang_lain') },
+  lainnya: { label: teksEdukasi('harta.lainnya'), contoh: teksEdukasi('harta.saham_barang_berharga_usaha') },
 };
 
 export const TEKS_HARTA = {
-  presisi: t('Untuk belajar, angka kira-kira boleh. Untuk pembagian nyata, pakai nilai taksiran saat harta dibagi.'),
-  gonoGini: t('Harta bersama suami-istri (gono-gini) diatur KHI, belum dihitung di sini. Masukkan bagian milik almarhum saja.'),
-  perluCek: true,
+  presisi: teksEdukasi('harta.untuk_belajar_angka_kira_kira_boleh'),
+  gonoGini: teksEdukasi('harta.harta_bersama_suami_istri_gono_gini'),
   tambahCepat: [1_000_000n, 10_000_000n, 100_000_000n] as const,
 };
 
 export const PILIHAN_PEMBULATAN = [
-  { satuan: 1n, judul: angka('Rp 1'), keterangan: t('Pas sampai rupiah terakhir. Cocok kalau dibagi lewat transfer bank.') },
-  { satuan: 100n, judul: angka('Rp 100'), keterangan: t('Hampir pas, angka lebih rapi.') },
-  { satuan: 1000n, judul: angka('Rp 1.000'), keterangan: t('Paling praktis kalau dibagi tunai.') },
+  { satuan: 1n, judul: angka('Rp 1'), keterangan: teksEdukasi('harta.pas_sampai_rupiah_terakhir_cocok_kalau') },
+  { satuan: 100n, judul: angka('Rp 100'), keterangan: teksEdukasi('harta.hampir_pas_angka_lebih_rapi') },
+  { satuan: 1000n, judul: angka('Rp 1.000'), keterangan: teksEdukasi('harta.paling_praktis_kalau_dibagi_tunai') },
 ] as const;
 
 export const TEKS_KEWAJIBAN = {
   urutan: [
-    { kunci: 'tajhiz', label: t('Pengurusan jenazah'), alasan: t('Biaya memandikan, mengafani, dan menguburkan almarhum. Ini didahulukan dari semuanya.') },
-    { kunci: 'hutang', label: t('Hutang'), alasan: t('Termasuk kewajiban yang tertunda, misalnya zakat yang belum dibayar, haji yang sudah dinazarkan, atau cicilan.') },
-    { kunci: 'wasiat', label: t('Wasiat'), alasan: t('Maksimal 1/3 dari sisa harta setelah hutang. Kalau lebih, otomatis dipangkas.') },
+    { kunci: 'tajhiz', label: teksEdukasi('harta.pengurusan_jenazah'), alasan: teksEdukasi('harta.biaya_memandikan_mengafani_dan_menguburkan_almarhum') },
+    { kunci: 'hutang', label: teksEdukasi('harta.hutang'), alasan: teksEdukasi('harta.termasuk_kewajiban_yang_tertunda_misalnya_zakat') },
+    { kunci: 'wasiat', label: teksEdukasi('harta.wasiat'), alasan: teksEdukasi('harta.maksimal_1_3_dari_sisa_harta') },
   ] as const,
-  kosong: t('Nggak ada? Biarkan kosong, dihitung Rp 0.'),
-  perluCek: true,
+  kosong: teksEdukasi('harta.nggak_ada_biarkan_kosong_dihitung_rp'),
 };

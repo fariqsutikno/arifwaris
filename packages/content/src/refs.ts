@@ -195,3 +195,11 @@ export function dalilUntuk(daftarKode: string[]): { daftarEntri: TampilanDalil[]
   }
   return { daftarEntri, catatan };
 }
+
+/** Isi tabel `daftar_refs` (supabase/seed.sql) dari kode rujukan KB; urut & tanpa duplikat supaya diff seed stabil. */
+export function sqlDaftarRefs(daftar: { kode: string; bab: number }[]): string {
+  const unik = [...new Map(daftar.map(rujukan => [rujukan.kode, rujukan.bab])).entries()]
+    .sort(([kodeA], [kodeB]) => kodeA.localeCompare(kodeB, 'en', { numeric: true }));
+  const baris = unik.map(([kode, bab]) => `  ('${kode}', ${bab})`).join(',\n');
+  return `insert into daftar_refs (kode, bab) values\n${baris}\non conflict (kode) do update set bab = excluded.bab;\n`;
+}

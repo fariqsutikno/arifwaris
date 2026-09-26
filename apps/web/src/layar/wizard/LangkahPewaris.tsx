@@ -16,7 +16,7 @@ interface Props {
 
 export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUbahNama }: Props) {
   const pewaris = kasus?.graf.orang[kasus.graf.idPewaris];
-  const pilihan: Array<['L' | 'P', string]> = [['L', t('Laki-laki')], ['P', t('Perempuan')]];
+  const pilihan: Array<['L' | 'P', string]> = [['L', t('hitung.laki_laki')], ['P', t('hitung.perempuan')]];
   const perluKonfirmasi = !!kasus && !bolehUbahJenisKelamin(kasus.graf, kasus.graf.idPewaris);
   const [tertunda, setTertunda] = useState<'L' | 'P' | null>(null);
   const saatKlik = (jenisKelamin: 'L' | 'P') => {
@@ -35,9 +35,9 @@ export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUb
           </button>
         ))}
       </div>
-      {perluKonfirmasi && <p className="caption-isian">{t('Mengganti jenis kelamin akan mengosongkan isian ahli waris dan kondisi khusus.')}</p>}
+      {perluKonfirmasi && <p className="caption-isian">{t('hitung.mengganti_jenis_kelamin_akan_mengosongkan_isian')}</p>}
       {kasus && (
-        <label className="isian isian-kecil">{t('Nama almarhum')} <span className="opsional">{t('(boleh dikosongkan)')}</span>
+        <label className="isian isian-kecil">{t('hitung.nama_almarhum')} <span className="opsional">{t('hitung.boleh_dikosongkan')}</span>
           <input value={pewaris?.nama ?? ''} onChange={event => saatUbahNama(event.target.value)} />
         </label>
       )}
@@ -55,11 +55,11 @@ function KonfirmasiGanti({ saatBatal, saatLanjut }: { saatBatal: () => void; saa
     <div className="konfirmasi" role="alertdialog" aria-modal="true" aria-labelledby="judul-ganti" ref={wadah}
       onKeyDown={event => { if (event.key === 'Escape') saatBatal(); }}>
       <div className="konfirmasi-isi">
-        <h2 id="judul-ganti">{t('Ganti jenis kelamin almarhum?')}</h2>
-        <p>{t('Pasangan dan hubungan keluarga ikut berubah, jadi isian ahli waris dan kondisi khusus akan dikosongkan. Harta dan kewajiban tetap.')}</p>
+        <h2 id="judul-ganti">{t('hitung.ganti_jenis_kelamin_almarhum')}</h2>
+        <p>{t('hitung.pasangan_dan_hubungan_keluarga_ikut_berubah')}</p>
         <div className="chip-deret">
-          <button type="button" className="aw-btn aw-btn-primary" onClick={saatLanjut}>{t('Ganti dan kosongkan')}</button>
-          <button type="button" className="aw-btn aw-btn-ghost" data-batal onClick={saatBatal}>{t('Batal')}</button>
+          <button type="button" className="aw-btn aw-btn-primary" onClick={saatLanjut}>{t('hitung.ganti_dan_kosongkan')}</button>
+          <button type="button" className="aw-btn aw-btn-ghost" data-batal onClick={saatBatal}>{t('umum.batal')}</button>
         </div>
       </div>
     </div>

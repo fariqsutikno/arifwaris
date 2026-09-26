@@ -7,7 +7,7 @@ import { t } from '../terjemah';
 
 interface Props { judul: string; tautan: string; label?: string; kecil?: boolean }
 
-export function Bagikan({ judul, tautan, label = 'Bagikan', kecil }: Props) {
+export function Bagikan({ judul, tautan, label = t('umum.bagikan'), kecil }: Props) {
   const [pesan, setPesan] = useState('');
   useEffect(() => {
     if (!pesan) return;
@@ -23,15 +23,15 @@ export function Bagikan({ judul, tautan, label = 'Bagikan', kecil }: Props) {
     }
     try {
       await navigator.clipboard.writeText(url);
-      setPesan(t('Tautan disalin'));
+      setPesan(t('umum.tautan_disalin'));
     } catch {
-      setPesan(t('Gagal menyalin. Salin dari bilah alamat.'));
+      setPesan(t('umum.gagal_menyalin_salin_dari_bilah_alamat'));
     }
   };
   return (
     <span className="wadah-bagikan">
-      <button type="button" className={kecil ? 'tombol-bagikan kecil' : 'tombol-bagikan'} onClick={() => void bagikan()} aria-label={`${t(label)}: ${judul}`}>
-        <Ikon nama="bagikan" ukuran={kecil ? 16 : 18} />{t(label)}
+      <button type="button" className={kecil ? 'tombol-bagikan kecil' : 'tombol-bagikan'} onClick={() => void bagikan()} aria-label={`${label}: ${judul}`}>
+        <Ikon nama="bagikan" ukuran={kecil ? 16 : 18} />{label}
       </button>
       <span className="pesan-bagikan" role="status">{pesan}</span>
     </span>

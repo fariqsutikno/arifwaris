@@ -32,7 +32,7 @@ export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'B
         <div id={`${id}-isi`} className="isi-konfirmasi">{children}</div>
         {kataKunci && (
           <label className="isian isian-kecil">
-            <span>{t('Ketik')} <b>{kataKunci}</b> {t('untuk melanjutkan')}</span>
+            <span>{t('umum.ketik')} <b>{kataKunci}</b> {t('hitung.untuk_melanjutkan')}</span>
             <input value={ketikan} onChange={event => setKetikan(event.target.value)} autoComplete="off" spellCheck={false} />
           </label>
         )}

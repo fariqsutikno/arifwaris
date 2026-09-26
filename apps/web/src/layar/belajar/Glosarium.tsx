@@ -3,11 +3,12 @@
 // kasus uji KB bab 16 (draf) dan pelajaran yang memakainya.
 
 import { useEffect, useState } from 'react';
-import { DAFTAR_PELAJARAN, GLOSARIUM, cariIstilah, type Blok, type EntriGlosarium, type Pelajaran, type Potongan } from '@waris/content';
+import { type Blok, type EntriGlosarium, type Pelajaran, type Potongan } from '@waris/content';
+import { cariIstilah, daftarPelajaran, glosarium } from '../../konten/sumber';
 import { tautanBelajar, tautanGlosarium } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
 import { HeroMini } from '../../ui/Hero';
-import { t, terjemahIsi } from '../../terjemah';
+import { t } from '../../terjemah';
 
 const normal = (teks: string) => teks.toLowerCase().replace(/['’ʿ]/g, '');
 
@@ -18,7 +19,7 @@ export const cocokKataKunci = (entri: EntriGlosarium, kataKunci: string) =>
 export function Glosarium({ id }: { id?: string | undefined }) {
   const [kataKunci, setKataKunci] = useState('');
   const idTerpilih = id ? cariIstilah(id)?.id : undefined;
-  const daftar = GLOSARIUM.filter(entri => cocokKataKunci(entri, kataKunci))
+  const daftar = glosarium().filter(entri => cocokKataKunci(entri, kataKunci))
     .sort((a, b) => a.istilah.localeCompare(b.istilah, 'id'));
 
   useEffect(() => {
@@ -27,12 +28,12 @@ export function Glosarium({ id }: { id?: string | undefined }) {
 
   return (
     <main className="halaman tumpuk">
-      <HeroMini judul={t('Glosarium')} keterangan={t('Arti istilah faraidh dalam bahasa sehari-hari, lengkap dengan makna teknisnya.')} ikon="glosarium" />
+      <HeroMini judul={t('umum.glosarium')} keterangan={t('glosarium.arti_istilah_faraidh_dalam_bahasa_sehari')} ikon="glosarium" />
       <label className="isian">
-        {t('Cari istilah')}
-        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder={t('mis. sisa, ashabah, terhalang')} />
+        {t('glosarium.cari_istilah')}
+        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder={t('glosarium.mis_sisa_ashabah_terhalang')} />
       </label>
-      <p className="keterangan" aria-live="polite">{t('{jumlah} istilah', { jumlah: daftar.length })}</p>
+      <p className="keterangan" aria-live="polite">{t('glosarium.jumlah_istilah', { jumlah: daftar.length })}</p>
       <dl className="daftar-istilah">
         {daftar.map(entri => (
           <div key={entri.id} id={`istilah-${entri.id}`} className={entri.id === idTerpilih ? 'kartu entri-istilah terpilih' : 'kartu entri-istilah'}>
@@ -41,18 +42,18 @@ export function Glosarium({ id }: { id?: string | undefined }) {
               {entri.arab && <span lang="ar" dir="rtl" className="teks-arab">{entri.arab}</span>}
             </dt>
             <dd>
-              {entri.artiAwam && <p>{terjemahIsi(entri.artiAwam)}</p>}
-              <p className="keterangan">{entri.artiAwam ? `${t('Makna teknis')}: ` : ''}{terjemahIsi(entri.makna)}</p>
-              {entri.contoh && <p className="contoh-istilah"><b>{t('Contoh')}</b> {terjemahIsi(entri.contoh)} <span className="keterangan">{t('(draf, belum direview)')}</span></p>}
+              {entri.artiAwam && <p>{entri.artiAwam}</p>}
+              <p className="keterangan">{entri.artiAwam ? `${t('glosarium.makna_teknis')}: ` : ''}{entri.makna}</p>
+              {entri.contoh && <p className="contoh-istilah"><b>{t('umum.contoh')}</b> {entri.contoh} <span className="keterangan">{t('glosarium.draf_belum_direview')}</span></p>}
               {(DIPAKAI_DI.get(entri.id) ?? []).length > 0 && (
                 <p className="dipakai-di">
-                  <span className="keterangan">{t('Dipakai di')} </span>
+                  <span className="keterangan">{t('glosarium.dipakai_di')} </span>
                   {DIPAKAI_DI.get(entri.id)!.map(pelajaran => (
                     <a key={pelajaran.slug} className="chip-pelajaran" href={tautanBelajar(pelajaran.slug)}>{pelajaran.judul}</a>
                   ))}
                 </p>
               )}
-              <Bagikan judul={`${entri.istilah} ${t('(glosarium faraidh)')}`} tautan={tautanGlosarium(entri.id)} label="Bagikan" kecil />
+              <Bagikan judul={`${entri.istilah} ${t('glosarium.glosarium_faraidh')}`} tautan={tautanGlosarium(entri.id)} label={t('umum.bagikan')} kecil />
             </dd>
           </div>
         ))}
@@ -64,7 +65,7 @@ export function Glosarium({ id }: { id?: string | undefined }) {
 /** Istilah (id kanonik) → pelajaran yang menyebutnya lewat [[istilah]], urut sesuai jalur belajar. */
 const DIPAKAI_DI: Map<string, Pelajaran[]> = (() => {
   const peta = new Map<string, Pelajaran[]>();
-  for (const pelajaran of DAFTAR_PELAJARAN) {
+  for (const pelajaran of daftarPelajaran()) {
     for (const id of new Set(pelajaran.blok.flatMap(potonganBlok).flatMap(potongan => (potongan.jenis === 'istilah' ? [cariIstilah(potongan.id)?.id ?? potongan.id] : [])))) {
       peta.set(id, [...(peta.get(id) ?? []), pelajaran]);
     }

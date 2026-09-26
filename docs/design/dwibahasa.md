@@ -1,6 +1,6 @@
 # Konsep: Web Dua Bahasa (Indonesia + Arab)
 
-Status: langkah 1–3 dari "Urutan kerja" sudah jalan untuk beranda, ArifLab, wizard, hasil (kamus UI di `apps/web/src/konten/kamusArab.ts`, dijaga test `kamusArab.test.ts`; halaman Belajar/Latihan/Rujukan belum) (`id+ar`, penjelasan langkah berbahasa Arab di `packages/explain/src/arab.ts`). Redaksi Arab masih draf, menunggu cek tim keilmuan.
+Status: langkah 1–3 dari "Urutan kerja" sudah jalan untuk beranda, ArifLab, wizard, hasil (kamus UI di `apps/web/src/konten/kamusArab.ts`, dijaga test `kamusArab.test.ts`; halaman Belajar/Latihan/Rujukan juga sudah) (`id+ar`, penjelasan langkah berbahasa Arab di `packages/explain/src/arab.ts`). Redaksi Arab masih draf, menunggu cek tim keilmuan.
 
 ## Tujuan
 

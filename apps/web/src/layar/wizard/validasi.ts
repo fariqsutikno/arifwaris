@@ -8,9 +8,9 @@ import { t } from '../../terjemah';
 export const LANGKAH_HASIL = 6;
 
 export function alasanBelumLengkap(kasus: Kasus | null, langkah: number): string | null {
-  if (!kasus) return t('Pilih dulu jenis kelamin almarhum.');
-  if (langkah === 2 && kasus.tirkah.kotor <= 0n) return t('Isi total harta peninggalan dulu, harus lebih dari Rp 0.');
-  if (langkah === 4 && !adaAhliWaris(kasus)) return t('Tambahkan minimal satu ahli waris.');
+  if (!kasus) return t('hitung.pilih_dulu_jenis_kelamin_almarhum');
+  if (langkah === 2 && kasus.tirkah.kotor <= 0n) return t('hitung.isi_total_harta_peninggalan_dulu_harus');
+  if (langkah === 4 && !adaAhliWaris(kasus)) return t('hitung.tambahkan_minimal_satu_ahli_waris');
   return null;
 }
 

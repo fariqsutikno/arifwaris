@@ -71,11 +71,11 @@ export function Aplikasi() {
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
   usePenjaga(diKalkulator && !!kasus && layar !== 'awal', {
     berlaku: href => !['kalkulator', 'riwayat'].includes(bacaRute(href).halaman),
-    judul: t('Tinggalkan ArifLab?'),
-    isi: <p>{soalAktif ? t('Soal ini bisa kamu buka lagi kapan saja dari Latihan.')
-      : t('Kasusmu tersimpan di Riwayat hitung. Buka menu ArifLab kapan saja untuk melanjutkan.')}</p>,
-    labelTetap: t('Tetap di sini'),
-    labelPergi: t('Pindah'),
+    judul: t('umum.tinggalkan_ariflab'),
+    isi: <p>{soalAktif ? t('umum.soal_ini_bisa_kamu_buka_lagi')
+      : t('umum.kasusmu_tersimpan_di_riwayat_hitung_buka')}</p>,
+    labelTetap: t('umum.tetap_di_sini'),
+    labelPergi: t('umum.pindah'),
   });
   const [turBerjalan, setTurBerjalan] = useState(false);
   // Kasus lengkap dibuka di layar hasil, yang belum lengkap di langkah wizard pertama yang belum terisi.

@@ -57,7 +57,7 @@ export function Tur({ daftar, kunci, sedangBerjalan, saatSelesai }: Props) {
         <h4>{langkahIni.judul}</h4>
         <p>{langkahIni.isi}</p>
         <div className="tur-aksi">
-          <Tombol varian="ghost" kecil onClick={selesai}>{t('Lewati')}</Tombol>
+          <Tombol varian="ghost" kecil onClick={selesai}>{t('hitung.lewati')}</Tombol>
           <span className="pengisi" />
           <Tombol varian="sun" kecil data-utama onClick={() => (adalahTerakhir ? selesai() : setIndeks(indeks + 1))}>
             {adalahTerakhir ? 'Selesai' : 'Lanjut'}

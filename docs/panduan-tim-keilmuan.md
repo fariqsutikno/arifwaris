@@ -3,9 +3,27 @@
 Panduan menyusun dan mereview konten aplikasi waris. Untuk ustadz, reviewer syariah, dan penulis materi.
 Tidak perlu bisa coding.
 
-**Cara setor:** kirim berkas `.md` (atau teks biasa untuk konten di bagian 10.2–10.8) ke Fariq. Fariq yang memasukkan
-ke repo dan menjalankan pengecekan otomatis. Kalau pengecekan gagal (misalnya angka contoh tidak cocok dengan
-hitungan aplikasi), berkas dikembalikan beserta alasannya.
+> **Berubah per 2026-09-26:** konten (materi, soal, FAQ, tanya jawab, syahid, kitab, glosarium Arab, diksi UI) sudah
+> dipindah ke database. Penyuntingan dan review sekarang lewat **portal admin**. Aturan isi di bawah (format
+> Markdown terbatas, wajib ref `[Rxx-y]`, dst.) tetap berlaku di portal; sebutan lokasi berkas lama hanya sejarah.
+> Salinan konten terbit: `docs/lampiran-konten/`.
+
+**Cara setor:** masuk ke portal admin dengan akun Google. Kalau belum punya peran, minta admin (Fariq)
+menambahkanmu sebagai `penulis` atau `reviewer` lewat email — kamu harus sudah pernah masuk sekali sebelum bisa
+diberi peran. Setelah masuk:
+
+1. Di navigasi ada satu menu per jenis konten (materi, soal kuis, soal hitung, FAQ, tanya jawab, ahwal, syahid,
+   kitab, glosarium Arab), plus menu terpisah **Diksi** untuk teks UI aplikasi. Pilih menunya, lalu sunting
+   entrinya. Materi disunting sebagai blok Markdown; jenis lain lewat kolom teks dan JSON sesuai bentuknya.
+2. Di layar editornya ada tombol **Pratinjau** untuk melihat tampilannya sebelum diajukan.
+3. Ajukan revisi. Revisi masuk ke **Antrean review**.
+4. **Reviewer** (bukan penulisnya sendiri) membuka diffnya, lalu **menyetujui** atau **mengembalikan** disertai
+   catatan wajib. Revisi yang disetujui langsung terbit.
+5. Semua revisi (termasuk yang sudah terbit) tersimpan di **Riwayat revisi**; versi lama bisa diterbitkan ulang
+   (rollback) dari situ kalau perlu.
+
+Kalau pengecekan otomatis gagal saat mengajukan (misalnya angka contoh tidak cocok dengan hitungan aplikasi, atau
+kode rujukan tidak dikenal), portal menolak pengajuan beserta alasannya.
 
 ---
 
@@ -22,17 +40,18 @@ hitungan aplikasi), berkas dikembalikan beserta alasannya.
 9. Rujukan: syahid ayat dan sumber kitab
 10. Teks aplikasi: tanya jawab, habis ini ngapain, label, dan lain-lain
 11. Penjelasan langkah hitung
-12. Menyunting KB (sumber hukum)
-13. Alur review
-14. Checklist sebelum setor
-15. Lampiran: kunci ahli waris
+12. Versi bahasa Arab
+13. Menyunting KB (sumber hukum)
+14. Alur review
+15. Checklist sebelum setor
+16. Lampiran: kunci ahli waris
 
 ---
 
 ## 1. Aturan main
 
 1. **Sumber hukum hanya knowledge base (KB)** di `docs/kb/` bab 00–17. Konten hanya menjelaskan ulang KB dengan
-   bahasa yang lebih mudah. Kalau ingin menulis hukum yang belum ada di KB, usulkan dulu penambahan KB (lihat bagian 12).
+   bahasa yang lebih mudah. Kalau ingin menulis hukum yang belum ada di KB, usulkan dulu penambahan KB (lihat bagian 13).
 2. **Madzhab Syafi'i saja.** Pendapat lain boleh disebut sebagai perbandingan, dan harus ditulis jelas bahwa itu
    bukan pendapat yang dipakai aplikasi.
 3. **Setiap klaim hukum wajib punya kode rujukan** `[Rxx-y]` (lihat bagian 2).
@@ -71,7 +90,7 @@ Ia mendapat [[fardh|bagian pasti]].        ← teks yang tampil: "bagian pasti"
 ```
 
 Bagian kiri adalah id istilah. Kalau ragu id-nya, tulis saja istilahnya dan beri catatan; Fariq yang mencocokkan.
-Istilah yang belum ada di glosarium perlu diusulkan dulu (lihat bagian 12).
+Istilah yang belum ada di glosarium perlu diusulkan dulu (lihat bagian 13).
 
 ---
 
@@ -89,7 +108,7 @@ Istilah yang belum ada di glosarium perlu diusulkan dulu (lihat bagian 12).
 
 ## 4. Materi (pelajaran)
 
-Lokasi: `docs/materi/`. Daftar modul ada di `docs/materi/00-modul.md`.
+Lokasi di portal: jenis konten **Materi** (daftar modul ada di jenis **Modul**).
 
 **Satu berkas = satu pelajaran.** Nama berkas: `<modul>-<urutan>-<slug>.md`, contoh `3-1-enam-bagian-pasti.md`.
 Slug ditulis dengan huruf kecil dan tanda hubung.
@@ -107,7 +126,7 @@ perluCek: true
 ```
 
 - `tujuan`: satu kalimat, apa yang bisa dilakukan pembaca setelah membaca.
-- `perluCek`: `true` untuk draf; diubah ke `false` hanya oleh reviewer (bagian 13).
+- `perluCek`: `true` untuk draf; diubah ke `false` hanya oleh reviewer (bagian 14).
 
 ### Format yang boleh dipakai
 
@@ -135,7 +154,7 @@ harapan: ISTRI 3, ANAK_PR 16, AYAH 5; ashl 24
 ````
 
 - `pewaris`: `L` (laki-laki) atau `P` (perempuan).
-- `ahli waris`: kunci ahli waris (lampiran, bagian 15). Angka di depan = jumlah orang: `2 ANAK_PR` = dua anak perempuan.
+- `ahli waris`: kunci ahli waris (lampiran, bagian 16). Angka di depan = jumlah orang: `2 ANAK_PR` = dua anak perempuan.
 - `harapan`: jawaban yang kamu harapkan. Isinya **saham per jenis ahli waris** (jumlah untuk semua orang sejenis)
   dan **ashl akhir** (setelah 'aul, radd, atau tashih). Ahli waris yang tidak mendapat bagian tidak ditulis.
   Baris ini tidak ditampilkan ke pembaca. Aplikasi menghitung ulang dan menolak kalau hasilnya berbeda.
@@ -173,8 +192,8 @@ Memanggil soal dari bank kuis (bagian 5) berdasarkan kodenya.
 
 ### Menambah modul
 
-Daftar modul ada di tabel `docs/materi/00-modul.md` (No, Judul, Ringkas). Pelajaran dengan `modul: 11` baru
-muncul kalau modul 11 sudah ada di tabel itu. Untuk modul baru, kirim baris tabelnya bersama pelajaran pertamanya.
+Daftar modul ada di jenis konten **Modul** di portal (No, Judul, Ringkas). Pelajaran dengan `modul: 11` baru
+muncul kalau modul 11 sudah ada di daftar itu. Untuk modul baru, buat entri modulnya dulu di portal, lalu pelajaran pertamanya.
 
 Panjang ideal 300–700 kata. Kalau lebih panjang, pecah jadi dua pelajaran.
 
@@ -182,7 +201,7 @@ Panjang ideal 300–700 kata. Kalau lebih panjang, pecah jadi dua pelajaran.
 
 ## 5. Kuis
 
-Lokasi: `docs/soal/kuis.md`. Kuis adalah soal pilihan ganda untuk menguji konsep.
+Lokasi di portal: jenis konten **Soal kuis**. Kuis adalah soal pilihan ganda untuk menguji konsep.
 
 ```
 ## K-12
@@ -205,7 +224,7 @@ pembahasan: Istri mendapat 1/8 bila ada [[faru-warits|far'u warits]] [R04-2]. Ju
 
 ## 6. Soal hitung
 
-Lokasi: `docs/soal/hitung.md`. Soal kasus yang dikerjakan pembaca di kalkulator mode Belajar. Jawaban
+Lokasi di portal: jenis konten **Soal hitung**. Soal kasus yang dikerjakan pembaca di kalkulator mode Belajar. Jawaban
 disembunyikan sampai pembaca membukanya.
 
 Ditulis sebagai satu baris tabel:
@@ -225,7 +244,7 @@ Ditulis sebagai satu baris tabel:
 
 ## 7. FAQ
 
-Lokasi: `docs/faq.md`.
+Lokasi di portal: jenis konten **FAQ**.
 
 ```
 ## Fikih
@@ -270,7 +289,7 @@ di materi/kuis/FAQ, dan tooltip di penjelasan langkah hitung.
 
 ## 9. Rujukan: syahid ayat dan sumber kitab
 
-### Syahid ayat (`docs/rujukan/syahid.md`)
+### Syahid ayat (jenis konten **Syahid**)
 
 Potongan ayat yang menjadi dasar tiap hukum. Di halaman Rujukan, potongan ini disorot saat hukumnya dipilih.
 
@@ -288,7 +307,7 @@ Potongan ayat yang menjadi dasar tiap hukum. Di halaman Rujukan, potongan ini di
   Tafsir: ... (sumber: nama kitab tafsir, jilid, halaman)
   ```
 
-### Sumber kitab (`docs/rujukan/kitab.md`)
+### Sumber kitab (jenis konten **Kitab**)
 
 Mengisi tombol "Baca kitab" di halaman Rujukan.
 
@@ -303,7 +322,7 @@ Mengisi tombol "Baca kitab" di halaman Rujukan.
 ### Menambah atau mengoreksi rujukan di KB
 
 Kode `[Rxx-y]` sendiri hidup di KB, bukan di berkas konten. Untuk menambah dalil atau mengoreksi kutipan, lihat
-bagian 12.
+bagian 13.
 
 ---
 
@@ -317,7 +336,7 @@ mengirimkan daftar teks yang sekarang dipakai, lalu balas dengan koreksinya.
 
 ### 10.1 Tanya jawab (kasus nyata)
 
-Lokasi: `docs/tanya-jawab.md`. Artikel satu kasus waris nyata beserta penyelesaiannya dari ustadz atau lembaga
+Lokasi di portal: jenis konten **Tanya jawab**. Artikel satu kasus waris nyata beserta penyelesaiannya dari ustadz atau lembaga
 fatwa. **Sekarang semuanya masih placeholder.** Hanya isi dengan jawaban yang sumbernya jelas.
 
 ```
@@ -373,7 +392,7 @@ ditampilkan, hanya untuk pengecekan).
 ### 10.4 Label ahli waris
 
 Nama sehari-hari tiap ahli waris di formulir, misalnya `SAUDARI_SEBAPAK` → "Kakak/adik perempuan satu ayah".
-Daftar lengkapnya ada di lampiran (bagian 15). Kirim koreksi dalam bentuk `KUNCI → label baru`.
+Daftar lengkapnya ada di lampiran (bagian 16). Kirim koreksi dalam bentuk `KUNCI → label baru`.
 
 ### 10.5 Keterangan hubungan dan kerabat yang tidak ada di daftar
 
@@ -430,13 +449,13 @@ Setelah menghitung, aplikasi menjelaskan cara hitungnya langkah demi langkah. Ad
 Kalimat penjelasan ini **dirakit otomatis** dari hasil hitungan, jadi tidak bisa ditulis bebas per kasus. Yang
 bisa diperbaiki tim keilmuan adalah pola kalimatnya. Cara review:
 
-1. Buka kalkulator dan masukkan kasus (paling mudah pakai soal hitung di `docs/soal/hitung.md` atau kasus bab 16).
+1. Buka kalkulator dan masukkan kasus (paling mudah pakai soal hitung di jenis konten **Soal hitung**, atau kasus bab 16).
 2. Baca penjelasan tiap langkah, di kedua mode.
 3. Kirim koreksi dengan templat:
 
 ```
 Kasus: H-17 (atau daftar ahli warisnya)
-Mode: cerita / ringkas
+Mode: cerita / ringkas / Arab
 Langkah ke-: 3
 Kalimat sekarang: ...
 Masalah: salah hukum / kurang jelas / istilah keliru / kurang rujukan
@@ -448,7 +467,109 @@ Kesalahan hukum di sini diprioritaskan karena muncul di semua kasus sejenis.
 
 ---
 
-## 12. Menyunting KB (sumber hukum)
+## 12. Versi bahasa Arab
+
+Aplikasi punya mode bahasa Arab (tampilan kanan-ke-kiri, angka ٠١٢) untuk santri yang belajar faraidh dari kitab.
+Latar belakang dan keputusannya ada di `docs/design/dwibahasa.md`.
+
+**Aturan umum:**
+- Versi Arab **hanya menerjemahkan** versi Indonesia. Hukumnya tetap dari KB; tidak boleh ada isi yang tidak ada
+  di versi Indonesia.
+- Teks Arab ditulis **berharakat**. Pengguna bisa memilih tampilan gundul; harakat dibuang otomatis saat tampil,
+  jadi cukup satu sumber.
+- Istilah fikih mengikuti kolom Arab glosarium (bab 15) dan istilah kitab (أصل المسألة، العول، التصحيح).
+- Bagian yang belum diterjemahkan otomatis tampil dalam bahasa Indonesia, jadi terjemahan bisa dicicil.
+- Semua terjemahan yang ada sekarang adalah **draf** dan perlu dicek tim keilmuan.
+
+### 12.1 Materi
+
+Versi Arab ditulis **di berkas yang sama** dengan versi Indonesia:
+
+```
+---
+judul: Apa itu faraidh?
+modul: 1
+urutan: 1
+tujuan: ...
+perluCek: true
+judul-ar: ما الفرائض؟
+tujuan-ar: التعرف على معنى الفرائض وأدلتها الأصلية وسبب تعلم هذا العلم.
+---
+(isi Indonesia)
+
+<!--ar-->
+(isi Arab, format sama: ##, daftar, tabel, [[istilah]], [Rxx-y], blok kasus/kuis)
+```
+
+- `judul-ar` dan `tujuan-ar` wajib diisi berdua kalau ada versi Arab.
+- Baris `<!--ar-->` memisahkan isi Indonesia dan Arab, dan hanya boleh ada **satu** di tiap berkas.
+  Kalau baru judulnya yang diterjemahkan, isinya boleh dikosongkan dulu; nanti isinya tampil dalam bahasa Indonesia.
+
+### 12.2 Daftar modul
+
+Entri jenis **Modul** di portal punya kolom tambahan **Judul (ar)** dan **Ringkas (ar)**.
+
+### 12.3 Tanya jawab
+
+Di jenis konten **Tanya jawab**, tambahkan di kasus yang sama:
+
+```
+judul-ar: ...
+ringkasan-ar: ...
+sumber-ar: ...
+
+### Kasus (ar)
+...
+
+### Penyelesaian (ar)
+...
+```
+
+Kalau salah satu bagian Arab diisi, ketiga baris `judul-ar`, `ringkasan-ar`, dan `sumber-ar` wajib ada.
+
+### 12.4 Glosarium
+
+Jenis konten terpisah di portal: **Glosarium Arab**, karena KB tetap berbahasa Indonesia.
+
+| Istilah | Makna | Arti awam | Contoh |
+|---|---|---|---|
+| 'Aul | ... | ... | ... |
+
+- **Istilah** harus sama persis dengan kolom Istilah di KB bab 15. Salah ketik ditolak pengecekan otomatis.
+- **Makna** wajib; **Arti awam** dan **Contoh** boleh kosong (yang kosong tampil dalam bahasa Indonesia).
+
+### 12.5 Teks tombol, judul, dan layar (kamus UI)
+
+Semua teks antarmuka punya kamus Indonesia → Arab, dipisah per halaman (beranda, hitung, belajar, latihan,
+rujukan, FAQ, glosarium, tanya jawab). Kamus ini tersimpan di kode, jadi cara reviewnya:
+
+1. Pilih bahasa Arab di aplikasi, lalu jelajahi tiap halaman.
+2. Kirim koreksi dengan templat:
+
+```
+Halaman: (misalnya Hasil)
+Teks Indonesia: ...
+Arab sekarang: ...
+Arab usulan: ...
+```
+
+Screenshot sangat membantu, karena teks yang sama bisa muncul di beberapa tempat.
+
+### 12.6 Penjelasan langkah hitung (Arab)
+
+Mode Arab punya penjelasan langkah sendiri yang bergaya kitab: memakai nama fardh (النصف، السدس) dan tabel
+masalah. Seperti versi Indonesia (bagian 11), kalimatnya dirakit otomatis. Termasuk di dalamnya **padanan Arab
+tiap ahli waris** (الزوج، البنت، الأخت الشقيقة) yang diambil dari KB bab 3. Review dengan cara yang sama seperti
+bagian 11; di kolom `Mode` tulis `Arab`.
+
+### 12.7 Yang belum punya versi Arab
+
+Kuis, soal hitung, FAQ, syahid, dan teks konten di bagian 10 (ahwal, habis ini ngapain, dan lain-lain) belum
+punya tempat untuk versi Arab. Kalau ingin menerjemahkannya, kabari Fariq dulu supaya formatnya disiapkan.
+
+---
+
+## 13. Menyunting KB (sumber hukum)
 
 KB (`docs/kb/`) adalah dasar mesin hitung **dan** semua konten. Perubahan di sini berdampak paling luas, jadi
 selalu kirim terpisah dari konten dan sertakan sumbernya.
@@ -503,7 +624,7 @@ Alasan: ...
 
 ---
 
-## 13. Alur review
+## 14. Alur review
 
 ### Status draf
 
@@ -524,17 +645,18 @@ perlu direview" di kepala berkas). Draf yang disusun dengan bantuan AI juga bers
 
 ### Usulan perubahan KB
 
-Pakai templat di bagian 12. Kasus uji baru untuk bab 16 sangat berharga: sertakan jawaban lengkapnya (ashl,
+Pakai templat di bagian 13. Kasus uji baru untuk bab 16 sangat berharga: sertakan jawaban lengkapnya (ashl,
 'aul/radd, tashih, dan saham tiap ahli waris) beserta kitab sumbernya.
 
 ---
 
-## 14. Checklist sebelum setor
+## 15. Checklist sebelum setor
 
 - [ ] Setiap klaim hukum punya kode `[Rxx-y]`, dan kodenya memang membahas klaim itu
 - [ ] Tidak ada hukum di luar KB, dan tidak ada pendapat selain Syafi'i tanpa keterangan
 - [ ] Istilah fikih memakai `[[...]]` dan ejaan glosarium
 - [ ] Glosarium: contoh menyebut `Kasus 16.x`; ganti ejaan istilah sudah dikabarkan
+- [ ] Versi Arab: berharakat, hanya menerjemahkan, `judul-ar`/`tujuan-ar` lengkap, satu `<!--ar-->`
 - [ ] Usulan KB: kode lama tidak diubah, sumber lengkap sampai halaman
 - [ ] Angka di teks sama dengan `harapan` di blok `kasus`
 - [ ] Materi: kepala berkas lengkap, `perluCek: true`
@@ -546,7 +668,7 @@ Pakai templat di bagian 12. Kasus uji baru untuk bab 16 sangat berharga: sertaka
 
 ---
 
-## 15. Lampiran: kunci ahli waris
+## 16. Lampiran: kunci ahli waris
 
 Dipakai di blok `kasus` dan soal hitung.
 

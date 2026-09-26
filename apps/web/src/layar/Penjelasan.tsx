@@ -68,7 +68,7 @@ export function Dalil({ daftarKode, diHalamanRujukan }: { daftarKode: string[]; 
           <summary>{entri.klaim}</summary>
           <div className="isi-dalil">
             {isi(entri)}
-            <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>{t('Lihat di halaman Rujukan')}</a>
+            <a className="tautan-kecil" href={tautanRujukan(entri.kode)}>{t('rujukan.lihat_di_halaman_rujukan')}</a>
           </div>
         </details>
       ))}

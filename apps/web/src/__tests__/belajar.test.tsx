@@ -1,12 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
-import { GLOSARIUM, RUJUKAN } from '@waris/content';
+import { RUJUKAN } from '@waris/content';
+import { glosarium } from '../konten/sumber';
 import { Glosarium } from '../layar/belajar/Glosarium';
 import { KATEGORI_RUJUKAN, Rujukan } from '../layar/belajar/Rujukan';
 
 it('glosarium menampilkan semua istilah dan bisa dicari lewat arti awam', () => {
   render(<Glosarium />);
-  expect(screen.getByText(`${GLOSARIUM.length} istilah`)).toBeTruthy();
+  expect(screen.getByText(`${glosarium().length} istilah`)).toBeTruthy();
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'sisa' } });
   expect(screen.getByRole('link', { name: "Ta'shib / 'Ashabah" })).toBeTruthy();
 });
@@ -40,9 +41,9 @@ it('kode rujukan tak dikenal tidak membuat halaman rusak', () => {
 });
 
 it("rujukan Al-Qur'an: memilih hukum menyorot syahidnya di teks ayat; arti & tafsir berupa placeholder jujur", async () => {
-  const { DAFTAR_SYAHID } = await import('@waris/content');
+  const { daftarSyahid } = await import('../konten/sumber');
   const { container } = render(<Rujukan kategori="quran" />);
-  const pertama = DAFTAR_SYAHID[0]!;
+  const pertama = daftarSyahid()[0]!;
   expect(container.querySelector('mark.syahid')).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: pertama.hukum }));
   expect(container.querySelector('mark.syahid')?.textContent).toBe(pertama.syahid);
