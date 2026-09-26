@@ -8,7 +8,7 @@ import { cariIstilah, daftarPelajaran, glosarium } from '../../konten/sumber';
 import { tautanBelajar, tautanGlosarium } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
 import { HeroMini } from '../../ui/Hero';
-import { t, terjemahIsi } from '../../terjemah';
+import { t } from '../../terjemah';
 
 const normal = (teks: string) => teks.toLowerCase().replace(/['’ʿ]/g, '');
 
@@ -42,9 +42,9 @@ export function Glosarium({ id }: { id?: string | undefined }) {
               {entri.arab && <span lang="ar" dir="rtl" className="teks-arab">{entri.arab}</span>}
             </dt>
             <dd>
-              {entri.artiAwam && <p>{terjemahIsi(entri.artiAwam)}</p>}
-              <p className="keterangan">{entri.artiAwam ? `${t('Makna teknis')}: ` : ''}{terjemahIsi(entri.makna)}</p>
-              {entri.contoh && <p className="contoh-istilah"><b>{t('Contoh')}</b> {terjemahIsi(entri.contoh)} <span className="keterangan">{t('(draf, belum direview)')}</span></p>}
+              {entri.artiAwam && <p>{entri.artiAwam}</p>}
+              <p className="keterangan">{entri.artiAwam ? `${t('Makna teknis')}: ` : ''}{entri.makna}</p>
+              {entri.contoh && <p className="contoh-istilah"><b>{t('Contoh')}</b> {entri.contoh} <span className="keterangan">{t('(draf, belum direview)')}</span></p>}
               {(DIPAKAI_DI.get(entri.id) ?? []).length > 0 && (
                 <p className="dipakai-di">
                   <span className="keterangan">{t('Dipakai di')} </span>

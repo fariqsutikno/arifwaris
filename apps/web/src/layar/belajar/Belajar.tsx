@@ -8,7 +8,7 @@ import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, hapusAktivitas, reset
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan, tautanTanyaJawab } from '../../rute';
-import { angka, bahasaArab, panah, t, terjemahIsi } from '../../terjemah';
+import { angka, bahasaArab, panah, t } from '../../terjemah';
 import { Ikon, type NamaIkon } from '../../ui/Ikon';
 import { PAKET_ACAK } from './KuisKonsep';
 
@@ -45,7 +45,7 @@ export function Belajar() {
           {berikutnya ? (
             <a className="kartu-lanjut" href={tautanBelajar(berikutnya.slug)}>
               <span className="label-langkah">{jumlahSelesai === 0 ? t('Mulai dari sini') : t('Lanjutkan')} · {t('Modul {nomor}', { nomor: berikutnya.modul })}</span>
-              <b>{terjemahIsi(berikutnya.judul)}</b>
+              <b>{berikutnya.judul}</b>
               <span className="panah" aria-hidden="true">{panah()}</span>
             </a>
           ) : <p className="kartu-lanjut"><b>{t('Semua pelajaran sudah selesai. Mantap!')}</b></p>}
@@ -63,16 +63,16 @@ export function Belajar() {
             const isi = (
               <>
                 <span className="nomor-modul">{beres === daftar.length && daftar.length > 0 ? '✓' : angka(String(modul.nomor))}</span>
-                <span className="isi-modul"><b>{terjemahIsi(modul.judul)}</b><span className="keterangan">{t('{selesai}/{total} pelajaran', { selesai: beres, total: daftar.length })}</span></span>
+                <span className="isi-modul"><b>{modul.judul}</b><span className="keterangan">{t('{selesai}/{total} pelajaran', { selesai: beres, total: daftar.length })}</span></span>
                 <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(beres / daftar.length) * 100}%` }} /></span>
               </>
             );
-            return <li key={modul.nomor}><a className="baris-modul" href={tautanBelajar(tujuan!.slug)} title={terjemahIsi(modul.ringkas)}>{isi}</a></li>;
+            return <li key={modul.nomor}><a className="baris-modul" href={tautanBelajar(tujuan!.slug)} title={modul.ringkas}>{isi}</a></li>;
           })}
         </ol>
         {/* Modul yang belum ada materinya cukup satu baris, bukan deretan kartu abu-abu. */}
         {modulMenyusul.length > 0 && (
-          <p className="keterangan">{t('Segera hadir')}: {modulMenyusul.map(modul => `${angka(String(modul.nomor))}.\u00a0${terjemahIsi(modul.judul)}`).join(' · ')}</p>
+          <p className="keterangan">{t('Segera hadir')}: {modulMenyusul.map(modul => `${angka(String(modul.nomor))}.\u00a0${modul.judul}`).join(' · ')}</p>
         )}
       </section>
 
@@ -115,7 +115,7 @@ export function Belajar() {
               <li key={`${isi.jenis}-${isi.kode}`} className="baris-soal">
                 <span className="ikon-aktivitas"><Ikon nama={IKON[isi.jenis]} ukuran={22} /></span>
                 <a className="isi-soal" href={tautanAktivitas(isi)}>
-                  <b>{terjemahIsi(isi.judul)}</b>
+                  <b>{isi.judul}</b>
                   <span className="keterangan">{LABEL[isi.jenis]}{isi.hasil ? ` · ${t('skor')} ${angka(isi.hasil)}` : ''} · {waktuRelatif(isi.waktu, sekarang)}</span>
                 </a>
                 <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(isi)} aria-label={t('Hapus {judul} dari riwayat', { judul: isi.judul })} title={t('Hapus dari riwayat')}><Ikon nama="salah" ukuran={18} /></button>

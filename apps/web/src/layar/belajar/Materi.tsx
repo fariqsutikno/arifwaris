@@ -15,7 +15,7 @@ import { bacaPelajaranSelesai, catatAktivitas, tandaiPelajaranSelesai } from '..
 import { tautanBelajar } from '../../rute';
 import { kasusDariContoh } from './contoh';
 import { KartuSoalKuis } from './KartuSoalKuis';
-import { angka, panah, panahMundur, t, terjemahIsi } from '../../terjemah';
+import { angka, panah, panahMundur, t } from '../../terjemah';
 import { Sebaris } from './Sebaris';
 import { TombolBukaKasus } from './TombolBukaKasus';
 import { Ikon } from '../../ui/Ikon';
@@ -60,10 +60,10 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
     <div className="tata-materi">
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
-        <p className="label-langkah">{t('Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}', { nomor: pelajaran.modul, judul: terjemahIsi(modul?.judul ?? ''), indeks: indeks + 1, total: daftarPelajaran().length })}</p>
-        <h1>{terjemahIsi(pelajaran.judul)}</h1>
+        <p className="label-langkah">{t('Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}', { nomor: pelajaran.modul, judul: modul?.judul ?? '', indeks: indeks + 1, total: daftarPelajaran().length })}</p>
+        <h1>{pelajaran.judul}</h1>
         {pelajaran.perluCek && <p className="lencana-draf">{t('Draf, belum direview tim keilmuan')}</p>}
-        <p className="lead">{terjemahIsi(pelajaran.tujuan)}</p>
+        <p className="lead">{pelajaran.tujuan}</p>
         <article className="isi-materi">
           {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
         </article>
@@ -79,7 +79,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
 
 function TautanNavigasi({ tujuan, label, saatKlik }: { tujuan: Pelajaran | undefined; label: string; saatKlik?: () => void }) {
   if (!tujuan) return <span className="aw-btn aw-btn-secondary nonaktif" aria-disabled="true">{label}</span>;
-  return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={terjemahIsi(tujuan.judul)}>{label}</a>;
+  return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={tujuan.judul}>{label}</a>;
 }
 
 /** Sidebar: progres keseluruhan dan daftar modul; di HP jadi laci (dipasang ulang tiap pindah pelajaran, jadi tertutup lagi). */
@@ -99,14 +99,14 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
           const daftar = daftarPelajaran().filter(pelajaran => pelajaran.modul === modul.nomor);
           return (
             <div key={modul.nomor} className={daftar.length ? 'modul-sidebar' : 'modul-sidebar modul-menyusul'}>
-              <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {terjemahIsi(modul.judul)}{daftar.length ? '' : ` · ${t('menyusul')}`}</p>
+              <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {modul.judul}{daftar.length ? '' : ` · ${t('menyusul')}`}</p>
               <ol className="daftar-polos">
                 {daftar.map(pelajaran => (
                   <li key={pelajaran.slug}>
                     <a href={tautanBelajar(pelajaran.slug)} aria-current={pelajaran === aktif ? 'page' : undefined}
                       className={selesai.has(pelajaran.slug) ? 'pelajaran-sidebar selesai' : 'pelajaran-sidebar'}>
                       <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? t('selesai') : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
-                      {terjemahIsi(pelajaran.judul)}
+                      {pelajaran.judul}
                     </a>
                   </li>
                 ))}

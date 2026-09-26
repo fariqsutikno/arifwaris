@@ -11,7 +11,7 @@ import { tautanTanyaJawab } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
 import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
-import { t, terjemahIsi } from '../../terjemah';
+import { t } from '../../terjemah';
 
 const TEKS_JENIS = (): Record<JenisTanyaJawab, string> => ({ 'Saran ustadz': t('Saran ustadz'), Fatwa: t('Fatwa') });
 
@@ -48,8 +48,8 @@ function DaftarTanyaJawab() {
           <li key={entri.slug}>
             <a className="kartu-artikel" href={tautanTanyaJawab(entri.slug)}>
               <span className="chip-jenis">{TEKS_JENIS()[entri.jenis]}</span>
-              <b>{terjemahIsi(entri.judul)}</b>
-              <span className="keterangan">{terjemahIsi(entri.ringkasan)}</span>
+              <b>{entri.judul}</b>
+              <span className="keterangan">{entri.ringkasan}</span>
             </a>
           </li>
         ))}
@@ -68,7 +68,7 @@ function ArtikelTanyaJawab({ entri, kasusSekarang, saatCoba }: { entri: KasusTan
   return (
     <main className="halaman artikel-tj">
       <span className="chip-jenis">{TEKS_JENIS()[entri.jenis]}</span>
-      <h1>{terjemahIsi(entri.judul)}</h1>
+      <h1>{entri.judul}</h1>
       <div className="meta-artikel">
         <span className="keterangan">{t('Sumber')}: {entri.sumber}</span>
         <span className="pengisi" />

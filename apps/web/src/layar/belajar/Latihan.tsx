@@ -12,7 +12,7 @@ import { tautanLatihan } from '../../rute';
 import { TEKS_TINGKAT } from '../AwalHitung';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
-import { angka, t, terjemahIsi } from '../../terjemah';
+import { angka, t } from '../../terjemah';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -71,10 +71,10 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
                 <li key={soal.kode} className={selesai ? 'baris-soal selesai' : 'baris-soal'}>
                   <span className="status-soal" aria-label={selesai ? t('sudah dikerjakan') : t('belum dikerjakan')}>{selesai ? '✓' : '○'}</span>
                   <div className="isi-soal">
-                    <b>{terjemahIsi(soal.judul)}</b>
+                    <b>{soal.judul}</b>
                     <span className="keterangan">
                       <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
-                      {selesai && <> · {terjemahIsi(soal.topik)}</>}
+                      {selesai && <> · {soal.topik}</>}
                     </span>
                   </div>
                   <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={selesai ? 'secondary' : 'primary'}>

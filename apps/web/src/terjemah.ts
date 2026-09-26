@@ -1,9 +1,9 @@
-// Terjemahan UI untuk bahasa 'ar'. Kunci kamus = teks Indonesia apa adanya, supaya komponen tetap terbaca
-// dan teks yang belum diterjemahkan jatuh kembali ke Indonesia (bisa dicicil). `{nama}` = sisipan.
-// Ganti bahasa memuat ulang halaman (Kepala.tsx), jadi `t` boleh dipakai juga di konstanta modul `konten/*`.
+// Terjemahan UI. `t(kunci)` (kunci = "halaman.id") membaca diksi terbit (portal → DB → snapshot/cache); bahasa 'ar' memakai teks Arab
+// bila ada, selain itu Indonesia. `{nama}` = sisipan. Kunci yang tidak dikenal tampil apa adanya dan ditangkap tes diksi.
+// Ganti bahasa memuat ulang halaman (Kepala.tsx), jadi `t` boleh dipakai di konstanta modul.
 
 import { angkaArab } from '@waris/explain';
-import { KAMUS_ARAB } from './konten/kamusArab';
+import { cariDiksi, teksEdukasiMentah } from './konten/sumber';
 import { bacaBahasa } from './preferensi';
 
 export const bahasaArab = (): boolean => bacaBahasa() === 'ar';
@@ -19,11 +19,20 @@ export const angkaLatin = (teks: string): string =>
 export const panah = (): string => (bahasaArab() ? '←' : '→');
 export const panahMundur = (): string => (bahasaArab() ? '→' : '←');
 
-export function t(teks: string, sisipan: Record<string, string | number | bigint> = {}): string {
-  const arab = bahasaArab() ? KAMUS_ARAB[teks] : undefined;
-  const hasil = (arab ?? teks).replace(/\{(\w+)\}/g, (utuh: string, nama: string) => (nama in sisipan ? String(sisipan[nama]) : utuh));
+export function t(kunci: string, sisipan: Record<string, string | number | bigint> = {}): string {
+  const diksi = cariDiksi(kunci);
+  const arab = bahasaArab() ? diksi?.ar ?? undefined : undefined;
+  const hasil = sisipkan(arab ?? diksi?.id ?? kunci, sisipan);
   return arab ? angkaArab(hasil) : hasil;
 }
 
-/** Konten (judul, isi materi, soal, tanya jawab, glosarium) tampil apa adanya; versi Arabnya diatur di konten masing-masing, bukan dicari di kamus. */
-export const terjemahIsi = (teks: string): string => teks;
+export const sisipkan = (teks: string, sisipan: Record<string, string | number | bigint>): string =>
+  teks.replace(/\{(\w+)\}/g, (utuh: string, nama: string) => (nama in sisipan ? String(sisipan[nama]) : utuh));
+
+/** Teks edukasi (label ahli waris, wizard, tur, harta) dari konten teks_edukasi; aturan bahasanya sama dengan t(). */
+export function teksEdukasi(slug: string): string {
+  const isi = teksEdukasiMentah(slug);
+  const arab = bahasaArab() ? isi?.ar : undefined;
+  return arab ? angkaArab(arab) : isi?.id ?? slug;
+}
+
