@@ -7,6 +7,7 @@ import { kasusBaru, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
+import { semuaTersimpan } from '../tersimpan';
 
 const buat = (kunci: KunciAhliWaris[], tirkah: Kasus['tirkah']): Kasus => {
   const kasus = kasusBaru('L');
@@ -18,10 +19,10 @@ const prototipe = () => buat(['ISTRI', 'IBU', 'AYAH', 'ANAK_LK', 'ANAK_PR', 'SAU
 const c1601 = () => buat(['ISTRI', 'ANAK_LK', 'ANAK_PR'], { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n });
 
 let aksiTerakhir: Aksi | null = null;
-function Uji({ awal, tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; tujuan?: Tujuan; saatDikerjakan?: () => void }) {
+function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; idSesi?: string; tujuan?: Tujuan; saatDikerjakan?: () => void }) {
   const [kasus, setKasus] = useState(awal);
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
-  return <Hasil kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
+  return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
 const pembagian = () => screen.getByRole('region', { name: /^(Pembagian|Jawabanmu|Kunci jawaban)$/ });
 /** Buka jawaban lewat dialog tekan-tahan. */
@@ -276,5 +277,14 @@ describe('layar hasil', () => {
   it('kasus yang tidak didukung tampil sebagai pesan', () => {
     render(<Uji awal={kasusBaru('L')} />);
     expect(screen.getByRole('alert').textContent).toMatch(/belum bisa dihitung/);
+  });
+
+  it('tombol Simpan menyimpan kasus dan berganti jadi status Tersimpan', () => {
+    localStorage.clear();
+    render(<Uji awal={prototipe()} idSesi="sesi-simpan" />);
+    fireEvent.click(screen.getByRole('button', { name: /Simpan/ }));
+    expect(semuaTersimpan()).toHaveLength(1);
+    expect(screen.getByText('Tersimpan')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Simpan/ })).toBeNull();
   });
 });

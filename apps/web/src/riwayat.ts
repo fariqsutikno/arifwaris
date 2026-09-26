@@ -1,7 +1,8 @@
-// Riwayat hitung: kasus yang pernah dibuka di wizard atau layar hasil, terakhir dibuka di atas, disimpan di perangkat ini.
-// Kasus yang belum sampai hasil tetap dicatat (ditandai data belum lengkap) supaya bisa dilanjutkan.
-// Satu entri per sesi (mulai kasus / impor / buka dari riwayat, materi, atau latihan): mengubah kasus di layar hasil
-// memperbarui entri sesinya. Tiap entri mencatat sumbernya. Entri yang tidak dibuka lebih dari 30 hari dibuang.
+// "Terakhir dibuka": kasus yang pernah dibuka di wizard atau layar hasil, terbaru di atas, disimpan di perangkat ini,
+// otomatis tanpa perlu ditekan. Kasus yang belum sampai hasil tetap dicatat (ditandai data belum lengkap) supaya bisa
+// dilanjutkan. Satu entri per sesi (mulai kasus / impor / buka dari riwayat, materi, atau latihan): mengubah kasus
+// di layar hasil memperbarui entri sesinya. Tiap entri mencatat sumbernya. Entri yang tidak dibuka lebih dari 30
+// hari dibuang. Beda dengan tersimpan.ts: hanya yang disimpan manual lewat tombol Simpan, tanpa kedaluwarsa.
 
 import type { KunciAhliWaris } from '@waris/engine';
 import { hitungIsian, jenisDari } from './checklist';

@@ -11745,11 +11745,32 @@
    "versiTerbit": 788
   },
   {
-   "kunci": "hitung.tersimpan_di_riwayat",
+   "kunci": "hitung.tersimpan",
    "halaman": "hitung",
-   "id": "Tersimpan di riwayat",
-   "ar": "محفوظة في السجل",
-   "versiTerbit": 713
+   "id": "Tersimpan",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.kasus_tersimpan",
+   "halaman": "hitung",
+   "id": "Kasus tersimpan",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.terakhir_dibuka",
+   "halaman": "hitung",
+   "id": "Terakhir dibuka",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.belum_ada_kasus_tersimpan",
+   "halaman": "hitung",
+   "id": "Belum ada kasus yang disimpan. Tekan Simpan di layar hasil.",
+   "ar": null,
+   "versiTerbit": 0
   },
   {
    "kunci": "hitung.tetap_belajar",
