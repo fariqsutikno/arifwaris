@@ -29,7 +29,6 @@ interface Props {
   kanvas: { pohon: ReactNode; tabel: ReactNode };
 }
 
-const LEBAR_HP = '(max-width: 720px)';
 const geraknyaDikurangi = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 /** Deret langkah tanpa scrollbar: tepi yang masih menyimpan pill memudar, tanda bahwa deret bisa digeser. */
@@ -103,10 +102,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
     setDibaca(new Set([...dibaca, tujuan]));
     putarLagi();
   };
-  const [fokusDitolak, setFokusDitolak] = useState(false);
   const bukaFokus = () => {
-    // Mode fokus butuh kanvas dan panel berdampingan; di HP tidak muat, jadi arahkan ke desktop.
-    if (window.matchMedia?.(LEBAR_HP).matches) { setFokusDitolak(true); return; }
     setMode('satu'); setPoin(0); setSelesai(false); putarLagi(); setFokus(true);
   };
   const lanjut = () => {
@@ -190,7 +186,6 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
             </div>
             <TombolIkon label="Mode fokus" onClick={bukaFokus}><Ikon nama="fokus" /></TombolIkon>
           </div>
-          {fokusDitolak && <p className="catatan-materi" role="status">Mode fokus tidak tersedia di mobile. Gunakan desktop.</p>}
           {mode === 'semua'
             ? daftarBab.map((bab, nomor) => <KartuSatuLangkah key={nomor} nomor={nomor} total={daftarBab.length} babBerjudul={bab} ketukan={null} />)
             : babIni && <>{jalurLangkah}{langkahIni(null)}{navigasi}</>}

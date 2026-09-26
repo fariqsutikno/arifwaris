@@ -79,6 +79,13 @@ export function FokusLangkah({ judul, nomor, kolom, kanvas, saatTutup, kontrol, 
         {laci && <aside className="laci-langkah" aria-label="Daftar langkah">{laci}</aside>}
       </div>
       <div className="kaki-fokus">{navigasi}</div>
+      {/* Mode fokus butuh kanvas dan panel berdampingan; di layar HP ditutup layar penuh ini (lewat CSS, jadi ikut saat jendela dikecilkan). */}
+      <div className="fokus-tak-muat" role="alert">
+        <button type="button" className="tombol-ikon" onClick={saatTutup} aria-label="Tutup" title="Tutup"><Ikon nama="salah" /></button>
+        <Ikon nama="fokus" ukuran={48} />
+        <b>Mode fokus tidak tersedia di mobile</b>
+        <p>Gunakan desktop untuk membuka mode fokus.</p>
+      </div>
     </div>,
     document.body,
   );
