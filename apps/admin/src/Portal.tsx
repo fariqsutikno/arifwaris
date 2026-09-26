@@ -9,6 +9,7 @@ import { KonteksRepo, type RepoPortal } from './repo';
 import { bacaRute, tulisRute } from './rute';
 import { DaftarKonten } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
+import { AntreanReview } from './layar/AntreanReview';
 
 type Tahap =
   | { tahap: 'memuat' }
@@ -70,7 +71,7 @@ function NavigasiPortal({ peran }: { peran: Peran }) {
   );
 }
 
-// Layar rute lain (review, diksi, peran) belum dibuat di task ini; diganti task berikut.
+// Layar rute lain (diksi, peran) belum dibuat di task ini; diganti task berikut.
 function LayarRute() {
   const [rute, setRute] = useState(() => bacaRute(location.hash));
   useEffect(() => {
@@ -81,5 +82,6 @@ function LayarRute() {
   if (rute.layar === 'konten') return <DaftarKonten jenis={rute.jenis} />;
   if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} />;
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
+  if (rute.layar === 'review') return <AntreanReview />;
   return <p>Segera</p>;
 }
