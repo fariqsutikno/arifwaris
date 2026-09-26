@@ -23,3 +23,4 @@ export {
   JENIS_KONTEN, JENIS_FIKIH, keJson, bacaIsi,
   type JenisKonten, type IsiKonten, type IsiAhwal, type CocokAhwal, type IsiTeksEdukasi, type IsiCheatsheet, type IsiGlosariumAr,
 } from './skema.js';
+export { transisiRevisi, bolehSuntingDraf, periksaRefs, type Peran, type StatusRevisi, type AksiEditorial } from './editorial.js';
