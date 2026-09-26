@@ -94,6 +94,15 @@ export function Belajar() {
         </div>
       </section>
 
+      <section className="tumpuk-rapat" aria-labelledby="judul-cheatsheet">
+        <div className="kepala-bagian"><h2 id="judul-cheatsheet">Cheatsheet</h2><p className="keterangan">Ringkasan satu halaman untuk dicetak atau disimpan.</p></div>
+        <div className="grid-pintu">
+          {DAFTAR_CHEATSHEET.map(lembar => lembar.berkas
+            ? <a key={lembar.judul} className="pintu-belajar" href={lembar.berkas} download><Ikon nama="unduh" ukuran={22} />{lembar.judul}</a>
+            : <span key={lembar.judul} className="pintu-belajar pintu-menyusul" aria-disabled="true"><Ikon nama="unduh" ukuran={22} />{lembar.judul}<small className="keterangan">Segera hadir</small></span>)}
+        </div>
+      </section>
+
       {aktivitas.length > 0 && (
         <section className="tumpuk-rapat" aria-labelledby="judul-jejak">
           <h2 id="judul-jejak">Terakhir kamu buka</h2>
@@ -141,6 +150,13 @@ export function Belajar() {
 }
 
 const JUMLAH_AKTIVITAS = 3;
+// Isi `berkas` (mis. '/cheatsheet/furudh.pdf' di apps/web/public) begitu PDF-nya siap; null = masih placeholder.
+const DAFTAR_CHEATSHEET: { judul: string; berkas: string | null }[] = [
+  { judul: 'Tabel furudh & ahli waris', berkas: null },
+  { judul: 'Peta hajb', berkas: null },
+  { judul: "Ashl, 'aul & radd", berkas: null },
+  { judul: 'Langkah menghitung', berkas: null },
+];
 const KATA_RESET = 'reset progres';
 const IKON: Record<Aktivitas['jenis'], NamaIkon> = { pelajaran: 'pelajaran', soal: 'hitung', kuis: 'kuis' };
 const LABEL: Record<Aktivitas['jenis'], string> = { pelajaran: 'Pelajaran', soal: 'Soal hitung', kuis: 'Kuis' };

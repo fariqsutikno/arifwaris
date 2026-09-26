@@ -27,12 +27,12 @@ describe('contoh kasus di materi = hasil engine', () => {
 });
 
 describe('halaman belajar', () => {
-  it('beranda belajar: lanjutkan pelajaran pertama, lalu kelompok Belajar → Latihan → Cari tahu', () => {
+  it('beranda belajar: lanjutkan pelajaran pertama, lalu kelompok Belajar → Latihan → Cari tahu → Cheatsheet', () => {
     render(<Belajar />);
     const lanjut = screen.getByRole('link', { name: new RegExp(DAFTAR_PELAJARAN[0]!.judul) });
     expect(lanjut.getAttribute('href')).toBe(`#/belajar/${DAFTAR_PELAJARAN[0]!.slug}`);
     expect(screen.getByLabelText(/^Progres 0%/)).toBeTruthy();
-    expect(screen.getAllByRole('heading', { level: 2 }).map(judul => judul.textContent)).toEqual(['Belajar', 'Latihan', 'Cari tahu']);
+    expect(screen.getAllByRole('heading', { level: 2 }).map(judul => judul.textContent)).toEqual(['Belajar', 'Latihan', 'Cari tahu', 'Cheatsheet']);
     expect(within(screen.getByRole('region', { name: 'Latihan' })).getAllByRole('link')).toHaveLength(3);
     expect(screen.getByText(/^Segera hadir:/)).toBeTruthy();
   });
