@@ -5,9 +5,12 @@
 // galat ramah, dan saringValid saat baca.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
-import type { RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna } from '../antarmuka.js';
+import type { PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
-import { keDiksiTerbit, keProgresBelajar, keProgresLatihan, keRevisi, keRevisiDiksi, keRiwayat, keTerbitMentah } from './peta.js';
+import {
+  keDiksiTerbit, keProgresBelajar, keProgresLatihan, keRevisi, keRevisiDiksi, keRingkasanEntri, keRingkasanKunciDiksi,
+  keRiwayat, keTerbitMentah,
+} from './peta.js';
 
 const RELASI_TERBIT = 'revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(id, isi, refs)';
 const RELASI_TERBIT_DIKSI = 'revisi_terbit:revisi_diksi!diksi_revisi_terbit_id_fkey(id_teks, ar_teks)';
@@ -46,6 +49,12 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     async daftarRevisi(entriId) {
       return (await hasil(klien.from('revisi').select('*').eq('entri_id', entriId).order('dibuat_pada')) as any[]).map(keRevisi);
     },
+    async daftarEntri(jenis) {
+      const kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)')
+        .eq('jenis', jenis).order('urutan').order('slug');
+      return (await hasil(kueri) as any[]).map(keRingkasanEntri);
+    },
+    async daftarRefs() { return (await hasil(klien.from('daftar_refs').select('kode, bab').order('kode'))) as { kode: string; bab: number }[]; },
   };
 
   const editorial: RepositoriEditorial = {
@@ -87,6 +96,15 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi_diksi', { p_id: revisiId }),
     async daftarRevisi(kunci) {
       return (await hasil(klien.from('revisi_diksi').select('*').eq('kunci', kunci).order('dibuat_pada')) as any[]).map(keRevisiDiksi);
+    },
+    async daftarKunci() {
+      const kueri = klien.from('diksi')
+        .select(`kunci, halaman, versi_terbit, ${RELASI_TERBIT_DIKSI}, semua_revisi:revisi_diksi!revisi_diksi_kunci_fkey(*)`)
+        .order('halaman').order('kunci');
+      return (await hasil(kueri) as any[]).map(keRingkasanKunciDiksi);
+    },
+    async antreanReview() {
+      return (await hasil(klien.from('revisi_diksi').select('*').eq('status', 'diajukan').order('dibuat_pada')) as any[]).map(keRevisiDiksi);
     },
   };
 
@@ -130,12 +148,10 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       const baris = await hasil(klien.from('peran_pengguna').select('peran').eq('user_id', await userId()).maybeSingle()) as { peran: Peran } | null;
       return baris?.peran ?? null;
     },
-    async aturPeran(targetId: string, peran: Peran | null) {
-      if (peran) await hasil(klien.from('peran_pengguna').upsert({ user_id: targetId, peran }));
-      else await hasil(klien.from('peran_pengguna').delete().eq('user_id', targetId));
-    },
+    async aturPeran(email: string, peran: Peran | null) { await rpc('atur_peran_email', { p_email: email, p_peran: peran }); },
     async daftarPeran() {
-      return (await hasil(klien.from('peran_pengguna').select('user_id, peran')) as any[]).map(baris => ({ userId: baris.user_id, peran: baris.peran }));
+      return (await hasil(klien.rpc('daftar_peran')) as any[])
+        .map((baris): PeranPengguna => ({ userId: baris.user_id, email: baris.email, nama: baris.nama, peran: baris.peran }));
     },
   };
 

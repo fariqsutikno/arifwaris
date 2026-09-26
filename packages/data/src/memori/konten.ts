@@ -7,21 +7,26 @@ import {
   type AksiEditorial, type IsiKonten, type JenisKonten, type Peran, type StatusRevisi,
 } from '@waris/content';
 import type {
-  DiksiTerbit, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RingkasanRevisi, RingkasanRevisiDiksi, Sesi,
+  DiksiTerbit, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RingkasanEntri,
+  RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, Sesi,
 } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
 
 interface EntriMemori { id: string; jenis: JenisKonten; slug: string; urutan: number; revisiTerbitId: string | null; versiTerbit: number | null }
 interface KunciDiksiMemori { kunci: string; halaman: string; revisiTerbitId: string | null; versiTerbit: number | null }
+interface PenggunaMemori { userId: string; email: string; nama: string | null }
 
 export interface MemoriBersama {
   konten: RepositoriKonten;
   editorial: RepositoriEditorial;
   diksi: RepositoriDiksi;
+  akun: RepositoriAkun;
   masukSebagai(sesi: Sesi | null): void;
   aturPeranLangsung(userId: string, peran: Peran | null): void;
   /** Hanya untuk tes: meniru baris jsonb yang disunting manual di DB. */
   isiRevisiMentah(revisiId: string, isi: unknown): void;
+  /** Hanya untuk tes: meniru auth.users, supaya aturPeran(email) bisa menemukan userId-nya. */
+  daftarkanPengguna(p: { userId: string; email: string; nama?: string }): void;
   sesiSekarang(): Sesi | null;
   peranDari(userId: string): Peran | null;
   daftarPeranSemua(): { userId: string; peran: Peran }[];
@@ -39,6 +44,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
   const revisi = new Map<string, RingkasanRevisi>();
   const kunciDiksi = new Map<string, KunciDiksiMemori>();
   const revisiDiksi = new Map<string, RingkasanRevisiDiksi>();
+  const pengguna = new Map<string, PenggunaMemori>(); // kunci: email lowercase, meniru auth.users
 
   const pelaku = () => {
     if (!sesi) throw new Error('belum masuk');
@@ -72,6 +78,9 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     if (aksi === 'kembalikan') target.catatanReview = catatan ?? null;
   };
   const wajibPemeriksa = () => wajibPeran('admin', 'reviewer');
+  const nomorDari = (id: string) => Number(id.slice(id.lastIndexOf('-') + 1));
+  const terakhirDari = <T extends { id: string }>(daftar: T[]): T | null =>
+    daftar.reduce<T | null>((teratas, baris) => (!teratas || nomorDari(baris.id) > nomorDari(teratas.id) ? baris : teratas), null);
 
   const konten: RepositoriKonten = {
     async versiSekarang() { return versi; },
@@ -87,6 +96,14 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       return saringValid(mentah);
     },
     async daftarRevisi(entriId) { return [...revisi.values()].filter(baris => baris.entriId === entriId); },
+    async daftarEntri(jenis) {
+      return [...entri.values()].filter(baris => baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
+        .map((baris): RingkasanEntri => ({
+          entriId: baris.id, jenis: baris.jenis, slug: baris.slug, urutan: baris.urutan, revisiTerbitId: baris.revisiTerbitId,
+          revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
+        }));
+    },
+    async daftarRefs() { return [...refsDikenal].sort().map(kode => ({ kode, bab: Number(kode.slice(1, 3)) })); },
   };
 
   const editorial: RepositoriEditorial = {
@@ -175,13 +192,43 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       tujuan.versiTerbit = ++versi;
     },
     async daftarRevisi(kunci) { return [...revisiDiksi.values()].filter(baris => baris.kunci === kunci); },
+    async daftarKunci() {
+      return [...kunciDiksi.values()].sort((a, b) => a.halaman.localeCompare(b.halaman) || a.kunci.localeCompare(b.kunci))
+        .map((baris): RingkasanKunciDiksi => {
+          const terbit = baris.revisiTerbitId && revisiDiksi.get(baris.revisiTerbitId);
+          return {
+            kunci: baris.kunci, halaman: baris.halaman,
+            terbit: terbit ? { kunci: baris.kunci, halaman: baris.halaman, id: terbit.idTeks, ar: terbit.arTeks, versiTerbit: baris.versiTerbit! } : null,
+            revisiTerakhir: terakhirDari([...revisiDiksi.values()].filter(r => r.kunci === baris.kunci)),
+          };
+        });
+    },
+    async antreanReview() { return [...revisiDiksi.values()].filter(baris => baris.status === 'diajukan'); },
+  };
+
+  const akun: RepositoriAkun = {
+    async sesi() { return sesi; },
+    async masukGoogle() { throw new Error('masuk Google tidak tersedia di memori'); },
+    async keluar() { sesi = null; },
+    async peranSaya() { return sesi ? peran.get(sesi.userId) ?? null : null; },
+    async aturPeran(email, peranBaru) {
+      if (!sesi || peran.get(sesi.userId) !== 'admin') throw new Error('hanya admin yang bisa mengatur peran');
+      const target = pengguna.get(email.trim().toLowerCase());
+      if (!target) throw new Error(`akun belum pernah masuk: ${email}`);
+      if (peranBaru) peran.set(target.userId, peranBaru); else peran.delete(target.userId);
+    },
+    async daftarPeran(): Promise<PeranPengguna[]> {
+      return [...pengguna.values()].flatMap(p => (peran.has(p.userId) ? [{ ...p, peran: peran.get(p.userId)! }] : []))
+        .sort((a, b) => a.email.localeCompare(b.email));
+    },
   };
 
   return {
-    konten, editorial, diksi,
+    konten, editorial, diksi, akun,
     masukSebagai(sesiBaru) { sesi = sesiBaru; },
     aturPeranLangsung(userId, peranBaru) { if (peranBaru) peran.set(userId, peranBaru); else peran.delete(userId); },
     isiRevisiMentah(revisiId, isi) { ambil(revisi, revisiId, 'revisi').isi = isi; },
+    daftarkanPengguna(p) { pengguna.set(p.email.trim().toLowerCase(), { userId: p.userId, email: p.email.trim().toLowerCase(), nama: p.nama ?? null }); },
     sesiSekarang: () => sesi,
     peranDari: userId => peran.get(userId) ?? null,
     daftarPeranSemua: () => [...peran.entries()].map(([userId, peranPengguna]) => ({ userId, peran: peranPengguna })),

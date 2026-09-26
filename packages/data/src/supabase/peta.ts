@@ -2,7 +2,9 @@
 // Peta baris tabel (snake_case) ↔ tipe antarmuka (camelCase). Satu tempat supaya nama kolom SQL tidak tersebar.
 import type { JenisKonten } from '@waris/content';
 import type { BarisTerbitMentah } from '../saring.js';
-import type { DiksiTerbit, ProgresBelajar, ProgresLatihan, RingkasanRevisi, RingkasanRevisiDiksi, RiwayatTersimpan } from '../antarmuka.js';
+import type {
+  DiksiTerbit, ProgresBelajar, ProgresLatihan, RingkasanEntri, RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, RiwayatTersimpan,
+} from '../antarmuka.js';
 
 type Baris = Record<string, any>;
 
@@ -24,6 +26,24 @@ export const keTerbitMentah = (baris: Baris): BarisTerbitMentah => ({
 
 export const keDiksiTerbit = (baris: Baris): DiksiTerbit => ({
   kunci: baris.kunci, halaman: baris.halaman, id: baris.revisi_terbit.id_teks, ar: baris.revisi_terbit.ar_teks, versiTerbit: Number(baris.versi_terbit),
+});
+
+const terakhirDari = <T extends { dibuatPada: string }>(daftar: T[]): T | null =>
+  daftar.reduce<T | null>((teratas, r) => (!teratas || r.dibuatPada > teratas.dibuatPada ? r : teratas), null);
+
+/** Baris entri_konten dengan relasi `revisi!revisi_entri_id_fkey(*)` (semua revisi entri itu). */
+export const keRingkasanEntri = (baris: Baris): RingkasanEntri => ({
+  entriId: baris.id, jenis: baris.jenis as JenisKonten, slug: baris.slug, urutan: baris.urutan,
+  revisiTerbitId: baris.revisi_terbit_id, revisiTerakhir: terakhirDari((baris.revisi as Baris[]).map(keRevisi)),
+});
+
+/** Baris diksi dengan relasi terbit (`RELASI_TERBIT_DIKSI`) & relasi `revisi_diksi!revisi_diksi_kunci_fkey(*)` (semua revisi). */
+export const keRingkasanKunciDiksi = (baris: Baris): RingkasanKunciDiksi => ({
+  kunci: baris.kunci, halaman: baris.halaman,
+  terbit: baris.revisi_terbit
+    ? { kunci: baris.kunci, halaman: baris.halaman, id: baris.revisi_terbit.id_teks, ar: baris.revisi_terbit.ar_teks, versiTerbit: Number(baris.versi_terbit) }
+    : null,
+  revisiTerakhir: terakhirDari((baris.semua_revisi as Baris[]).map(keRevisiDiksi)),
 });
 
 export const keRiwayat = (baris: Baris): RiwayatTersimpan => ({ id: baris.id, kasus: baris.kasus, judul: baris.judul, disimpanPada: baris.disimpan_pada });

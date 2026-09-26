@@ -15,12 +15,23 @@ export interface RingkasanRevisiDiksi {
   id: string; kunci: string; idTeks: string; arTeks: string | null; catatan: string | null; status: StatusRevisi;
   dibuatOleh: string; diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string;
 }
+export interface RingkasanEntri {
+  entriId: string; jenis: JenisKonten; slug: string; urutan: number;
+  revisiTerbitId: string | null; revisiTerakhir: RingkasanRevisi | null;
+}
+export interface RingkasanKunciDiksi {
+  kunci: string; halaman: string; terbit: DiksiTerbit | null; revisiTerakhir: RingkasanRevisiDiksi | null;
+}
+export interface PeranPengguna { userId: string; email: string; nama: string | null; peran: Peran }
 
 export interface RepositoriKonten {
   versiSekarang(): Promise<number>;
   /** Hanya revisi terbit; isi tidak valid dibuang (console.warn), tidak melempar. */
   bacaTerbit(saring?: { jenis?: JenisKonten; sejakVersi?: number }): Promise<KontenTerbit[]>;
   daftarRevisi(entriId: string): Promise<RingkasanRevisi[]>;
+  /** Untuk portal admin: semua entri satu jenis, urut `urutan` lalu slug, dengan revisi terakhir & terbit. */
+  daftarEntri(jenis: JenisKonten): Promise<RingkasanEntri[]>;
+  daftarRefs(): Promise<{ kode: string; bab: number }[]>;
 }
 export interface RepositoriEditorial {
   buatEntri(jenis: JenisKonten, slug: string, urutan: number): Promise<string>;
@@ -42,6 +53,9 @@ export interface RepositoriDiksi {
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
   daftarRevisi(kunci: string): Promise<RingkasanRevisiDiksi[]>;
+  /** Untuk portal admin: semua kunci, urut halaman lalu kunci, dengan revisi terakhir & terbit. */
+  daftarKunci(): Promise<RingkasanKunciDiksi[]>;
+  antreanReview(): Promise<RingkasanRevisiDiksi[]>;
 }
 
 export interface RiwayatTersimpan { id: string; kasus: unknown; judul: string; disimpanPada: string }
@@ -69,8 +83,8 @@ export interface RepositoriAkun {
   masukGoogle(alamatKembali: string): Promise<void>;
   keluar(): Promise<void>;
   peranSaya(): Promise<Peran | null>;
-  /** Admin saja. `null` = cabut peran. */
-  aturPeran(userId: string, peran: Peran | null): Promise<void>;
+  /** Admin saja. `null` = cabut peran. Melempar 'akun belum pernah masuk' bila email tak dikenal. */
+  aturPeran(email: string, peran: Peran | null): Promise<void>;
   /** Admin saja. */
-  daftarPeran(): Promise<{ userId: string; peran: Peran }[]>;
+  daftarPeran(): Promise<PeranPengguna[]>;
 }

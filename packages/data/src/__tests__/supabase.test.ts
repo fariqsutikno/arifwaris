@@ -70,4 +70,19 @@ describe.skipIf(!URL_DB)('supabase lokal', () => {
     expect(await biasa.akun.peranSaya()).toBeNull();
     expect(await penulis.akun.peranSaya()).toBe('penulis');
   });
+
+  test('peran diatur & dibaca lewat email; email tak dikenal dan non-admin ditolak', async () => {
+    const servis = createClient(URL_DB!, KUNCI_SERVIS, { auth: { persistSession: false } });
+    const { data, error } = await servis.auth.admin.createUser({ email: `admin-${akhiran}@tes.local`, password: SANDI_UJI, email_confirm: true });
+    if (error) throw error;
+    await servis.from('peran_pengguna').insert({ user_id: data.user.id, peran: 'admin' });
+    const admin = await masuk(`admin-${akhiran}@tes.local`);
+
+    await admin.akun.aturPeran(email.reviewer, 'reviewer');
+    expect((await admin.akun.daftarPeran()).map(p => p.email)).toContain(email.reviewer);
+    await expect(admin.akun.aturPeran('tidak-ada@tes.local', 'penulis')).rejects.toThrow(/akun belum pernah masuk/);
+
+    const penulis = await masuk(email.penulis);
+    await expect(penulis.akun.daftarPeran()).rejects.toThrow(/admin/);
+  });
 });

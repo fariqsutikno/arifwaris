@@ -36,12 +36,14 @@ describe('memori: pengguna & akun', () => {
 
   test('peran: hanya admin yang bisa mengatur', async () => {
     const bersama = buatMemori({ sesi: A, peran: { a: 'penulis' } });
+    bersama.daftarkanPengguna(A);
+    bersama.daftarkanPengguna(B);
     const { akun } = buatMemoriPengguna(bersama);
     expect(await akun.peranSaya()).toBe('penulis');
-    await expect(akun.aturPeran('b', 'reviewer')).rejects.toThrow(/admin/);
+    await expect(akun.aturPeran(B.email, 'reviewer')).rejects.toThrow(/admin/);
     bersama.aturPeranLangsung('a', 'admin');
-    await akun.aturPeran('b', 'reviewer');
-    expect(await akun.daftarPeran()).toEqual(expect.arrayContaining([{ userId: 'b', peran: 'reviewer' }]));
+    await akun.aturPeran(B.email, 'reviewer');
+    expect(await akun.daftarPeran()).toEqual(expect.arrayContaining([{ userId: 'b', email: B.email, nama: null, peran: 'reviewer' }]));
   });
 
   test('keluar menghapus sesi', async () => {
