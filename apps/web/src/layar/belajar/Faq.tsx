@@ -6,6 +6,7 @@ import { DAFTAR_FAQ, semuaPotongan, type EntriFaq } from '@waris/content';
 import type { Kasus } from '../../kasus';
 import { tautanFaq } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
+import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
 
 interface Props { id?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
@@ -24,7 +25,7 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
 
   return (
     <main className="halaman tumpuk halaman-faq">
-      <h1>FAQ</h1>
+      <HeroMini judul="FAQ" keterangan="Pertanyaan yang sering muncul soal hukum waris dan cara memakai aplikasi ini." ikon="tanya" />
       <p className="lencana-draf">Draf, belum direview tim keilmuan</p>
       <label className="isian">
         Cari pertanyaan

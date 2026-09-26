@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { DAFTAR_PELAJARAN, GLOSARIUM, cariIstilah, type Blok, type EntriGlosarium, type Pelajaran, type Potongan } from '@waris/content';
 import { tautanBelajar, tautanGlosarium } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
+import { HeroMini } from '../../ui/Hero';
 
 const normal = (teks: string) => teks.toLowerCase().replace(/['’ʿ]/g, '');
 
@@ -25,7 +26,7 @@ export function Glosarium({ id }: { id?: string | undefined }) {
 
   return (
     <main className="halaman tumpuk">
-      <h1>Glosarium</h1>
+      <HeroMini judul="Glosarium" keterangan="Arti istilah faraidh dalam bahasa sehari-hari, lengkap dengan makna teknisnya." ikon="glosarium" />
       <label className="isian">
         Cari istilah
         <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder="mis. sisa, ashabah, terhalang" />

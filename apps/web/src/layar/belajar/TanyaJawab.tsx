@@ -7,6 +7,7 @@ import { DAFTAR_TANYA_JAWAB, JENIS_TANYA_JAWAB, type JenisTanyaJawab, type Kasus
 import { UKURAN_BACA, bacaUkuranBaca, simpanUkuranBaca } from '../../preferensi';
 import { tautanTanyaJawab } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
+import { HeroMini } from '../../ui/Hero';
 
 export function TanyaJawab({ slug }: { slug?: string | undefined }) {
   if (!slug) return <DaftarTanyaJawab />;
@@ -22,8 +23,7 @@ function DaftarTanyaJawab() {
   const cocok = DAFTAR_TANYA_JAWAB.filter(entri => (!jenis || entri.jenis === jenis) && normal(teksCari(entri)).includes(cari));
   return (
     <main className="halaman tumpuk halaman-faq">
-      <h1>Tanya jawab</h1>
-      <p className="lead">Kasus waris sungguhan, seperti sengketa keluarga, beserta penyelesaiannya dari ustadz atau lembaga fatwa.</p>
+      <HeroMini judul="Tanya jawab" keterangan="Kasus waris sungguhan, seperti sengketa keluarga, beserta penyelesaiannya dari ustadz atau lembaga fatwa." ikon="tanya" />
       <label className="isian">
         Cari kasus
         <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder="mis. rumah, sengketa, anak tiri" />
