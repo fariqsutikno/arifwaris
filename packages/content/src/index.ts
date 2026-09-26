@@ -19,3 +19,7 @@ export {
   DAFTAR_TANYA_JAWAB, JENIS_TANYA_JAWAB, bacaTanyaJawab, type KasusTanyaJawab, type JenisTanyaJawab,
 } from './tanyaJawab.js';
 export { DAFTAR_SYAHID, SUMBER_KITAB, bacaSyahid, bacaSumberKitab, type Syahid, type SumberKitab } from './pustaka.js';
+export {
+  JENIS_KONTEN, JENIS_FIKIH, keJson, bacaIsi,
+  type JenisKonten, type IsiKonten, type IsiAhwal, type CocokAhwal, type IsiTeksEdukasi, type IsiCheatsheet, type IsiGlosariumAr,
+} from './skema.js';
