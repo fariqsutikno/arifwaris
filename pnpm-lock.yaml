@@ -158,6 +158,9 @@ importers:
       typescript:
         specifier: ^5.5.0
         version: 5.9.3
+      vite:
+        specifier: ^5.4.0
+        version: 5.4.21(@types/node@22.20.4)
       vite-node:
         specifier: ^2.1.9
         version: 2.1.9(@types/node@22.20.4)
