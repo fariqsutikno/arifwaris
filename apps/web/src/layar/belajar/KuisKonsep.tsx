@@ -61,7 +61,7 @@ const judulPaket = (paket: string) => {
  * Judul bab KB tanpa nomor dan tanpa keterangan dalam kurung. Nomor bab KB sengaja tidak ditampilkan supaya tidak
  * tertukar dengan nomor Modul di halaman Belajar (keduanya tidak sepadan satu-satu).
  */
-export const judulTopik = (bab: number) => t((JUDUL_BAB[bab] ?? '').replace(/\s*\(.*\)\s*$/, ''));
+export const judulTopik = (bab: number) => (JUDUL_BAB[bab] ?? '').replace(/\s*\(.*\)\s*$/, '');
 
 export function DaftarPaketKuis() {
   const catatan = bacaCatatan('kuis');

@@ -4,7 +4,6 @@
 
 import { angkaArab } from '@waris/explain';
 import { KAMUS_ARAB } from './konten/kamusArab';
-import { ISTILAH_ARAB } from './konten/kamus/istilah';
 import { bacaBahasa } from './preferensi';
 
 export const bahasaArab = (): boolean => bacaBahasa() === 'ar';
@@ -26,14 +25,5 @@ export function t(teks: string, sisipan: Record<string, string | number | bigint
   return arab ? angkaArab(hasil) : hasil;
 }
 
-/** Istilah di teks bebas (soal, pembahasan, materi) → Arab; kata lain tetap Indonesia. Daftarnya di konten/kamus/istilah.ts. */
-const ISTILAH_URUT = [...ISTILAH_ARAB].sort((a, b) => b[0].length - a[0].length);
-const POLA_WARIS = new RegExp(`(?<![\\p{L}])(${ISTILAH_URUT.map(([indonesia]) => indonesia).join('|')})(?![\\p{L}-])`, 'giu');
-const ARAB_WARIS = new Map(ISTILAH_ARAB);
-
-export const terjemahIsi = (teks: string): string => {
-  if (!bahasaArab()) return teks;
-  const utuh = KAMUS_ARAB[teks];
-  if (utuh) return angkaArab(utuh);
-  return angkaArab(teks.replace(POLA_WARIS, kata => ARAB_WARIS.get(kata.toLowerCase()) ?? kata));
-};
+/** Konten (judul, isi materi, soal, tanya jawab, glosarium) tampil apa adanya; versi Arabnya diatur di konten masing-masing, bukan dicari di kamus. */
+export const terjemahIsi = (teks: string): string => teks;
