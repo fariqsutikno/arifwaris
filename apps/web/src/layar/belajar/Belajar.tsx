@@ -2,19 +2,19 @@
 // sama di semua layar: Belajar (jalur modul) → Latihan (soal hitung, kuis) → Cari tahu (tanya jawab, glosarium,
 // rujukan). Jejak terakhir paling bawah dan hanya tampil bila ada.
 
-import { DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS } from '@waris/content';
+import { daftarCheatsheet, daftarModul, daftarPelajaran, daftarSoalHitung, daftarSoalKuis } from '../../konten/sumber';
 import { useState } from 'react';
 import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, hapusAktivitas, resetProgresBelajar, type Aktivitas } from '../../preferensi';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan, tautanTanyaJawab } from '../../rute';
-import { angka, panah, t, terjemahIsi } from '../../terjemah';
+import { angka, bahasaArab, panah, t, terjemahIsi } from '../../terjemah';
 import { Ikon, type NamaIkon } from '../../ui/Ikon';
 import { PAKET_ACAK } from './KuisKonsep';
 
-const adaMateri = (nomor: number) => DAFTAR_PELAJARAN.some(pelajaran => pelajaran.modul === nomor);
-const modulTersedia = DAFTAR_MODUL.filter(modul => adaMateri(modul.nomor));
-const modulMenyusul = DAFTAR_MODUL.filter(modul => !adaMateri(modul.nomor));
+const adaMateri = (nomor: number) => daftarPelajaran().some(pelajaran => pelajaran.modul === nomor);
+const modulTersedia = daftarModul().filter(modul => adaMateri(modul.nomor));
+const modulMenyusul = daftarModul().filter(modul => !adaMateri(modul.nomor));
 
 export function Belajar() {
   // Angka dibaca ulang dari penyimpanan setiap kali ada yang dihapus/di-reset.
@@ -28,11 +28,11 @@ export function Belajar() {
     setVersi(versi => versi + 1);
   };
   const selesai = bacaPelajaranSelesai();
-  const soalSelesai = Object.keys(bacaCatatan('soal')).filter(kode => DAFTAR_SOAL_HITUNG.some(soal => soal.kode === kode)).length;
-  const kuisBenar = DAFTAR_SOAL_KUIS.filter(soal => bacaCatatan('kuis')[soal.kode] === 'benar').length;
-  const jumlahSelesai = DAFTAR_PELAJARAN.filter(pelajaran => selesai.has(pelajaran.slug)).length;
-  const persen = Math.round((jumlahSelesai / DAFTAR_PELAJARAN.length) * 100);
-  const berikutnya = DAFTAR_PELAJARAN.find(pelajaran => !selesai.has(pelajaran.slug));
+  const soalSelesai = Object.keys(bacaCatatan('soal')).filter(kode => daftarSoalHitung().some(soal => soal.kode === kode)).length;
+  const kuisBenar = daftarSoalKuis().filter(soal => bacaCatatan('kuis')[soal.kode] === 'benar').length;
+  const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
+  const persen = Math.round((jumlahSelesai / daftarPelajaran().length) * 100);
+  const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
   const aktivitas = bacaAktivitas().slice(0, JUMLAH_AKTIVITAS);
   const sekarang = Date.now();
 
@@ -50,14 +50,14 @@ export function Belajar() {
             </a>
           ) : <p className="kartu-lanjut"><b>{t('Semua pelajaran sudah selesai. Mantap!')}</b></p>}
         </div>
-        <CincinProgres persen={persen} label={t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: DAFTAR_PELAJARAN.length })} />
+        <CincinProgres persen={persen} label={t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })} />
       </section>
 
       <section className="tumpuk-rapat" aria-labelledby="judul-jalur">
         <div className="kepala-bagian"><h2 id="judul-jalur">{t('Belajar')}</h2><p className="keterangan">{t('Materi berurutan, dari pengantar sampai menghitung.')}</p></div>
         <ol className="daftar-polos daftar-modul">
           {modulTersedia.map(modul => {
-            const daftar = DAFTAR_PELAJARAN.filter(pelajaran => pelajaran.modul === modul.nomor);
+            const daftar = daftarPelajaran().filter(pelajaran => pelajaran.modul === modul.nomor);
             const beres = daftar.filter(pelajaran => selesai.has(pelajaran.slug)).length;
             const tujuan = daftar.find(pelajaran => !selesai.has(pelajaran.slug)) ?? daftar[0];
             const isi = (
@@ -79,8 +79,8 @@ export function Belajar() {
       <section className="tumpuk-rapat" aria-labelledby="judul-latihan">
         <div className="kepala-bagian"><h2 id="judul-latihan">{t('Latihan')}</h2><p className="keterangan">{t('Uji pemahaman setelah membaca materi.')}</p></div>
         <div className="deret-angka">
-          <KotakAngka nilai={soalSelesai} total={DAFTAR_SOAL_HITUNG.length} label={t('Soal hitung dikerjakan')} tautan={tautanLatihan('hitung')} />
-          <KotakAngka nilai={kuisBenar} total={DAFTAR_SOAL_KUIS.length} label={t('Kuis konsep dijawab benar')} tautan={tautanLatihan('kuis')} />
+          <KotakAngka nilai={soalSelesai} total={daftarSoalHitung().length} label={t('Soal hitung dikerjakan')} tautan={tautanLatihan('hitung')} />
+          <KotakAngka nilai={kuisBenar} total={daftarSoalKuis().length} label={t('Kuis konsep dijawab benar')} tautan={tautanLatihan('kuis')} />
           <a className="kotak-angka kotak-acak" href={tautanLatihan('kuis', PAKET_ACAK)}><Ikon nama="acak" ukuran={24} /><b>{t('Kuis acak')}</b><span className="keterangan">{t('Soal campuran semua bab')}</span></a>
         </div>
       </section>
@@ -98,9 +98,12 @@ export function Belajar() {
       <section className="tumpuk-rapat" aria-labelledby="judul-cheatsheet">
         <div className="kepala-bagian"><h2 id="judul-cheatsheet">{t('Cheatsheet')}</h2><p className="keterangan">{t('Ringkasan satu halaman untuk dicetak atau disimpan.')}</p></div>
         <div className="grid-pintu">
-          {DAFTAR_CHEATSHEET.map(lembar => lembar.berkas
-            ? <a key={lembar.judul} className="pintu-belajar" href={lembar.berkas} download><Ikon nama="unduh" ukuran={22} />{lembar.judul}</a>
-            : <span key={lembar.judul} className="pintu-belajar pintu-menyusul" aria-disabled="true"><Ikon nama="unduh" ukuran={22} />{lembar.judul}<small className="keterangan">Segera hadir</small></span>)}
+          {daftarCheatsheet().map(lembar => {
+            const judul = bahasaArab() && lembar.judulAr ? lembar.judulAr : lembar.judul;
+            return lembar.tautan
+              ? <a key={lembar.judul} className="pintu-belajar" href={lembar.tautan} target="_blank" rel="noopener"><Ikon nama="unduh" ukuran={22} />{judul}</a>
+              : <span key={lembar.judul} className="pintu-belajar pintu-menyusul" aria-disabled="true"><Ikon nama="unduh" ukuran={22} />{judul}<small className="keterangan">Segera hadir</small></span>;
+          })}
         </div>
       </section>
 
@@ -151,13 +154,6 @@ export function Belajar() {
 }
 
 const JUMLAH_AKTIVITAS = 3;
-// Isi `berkas` (mis. '/cheatsheet/furudh.pdf' di apps/web/public) begitu PDF-nya siap; null = masih placeholder.
-const DAFTAR_CHEATSHEET: { judul: string; berkas: string | null }[] = [
-  { judul: 'Tabel furudh & ahli waris', berkas: null },
-  { judul: 'Peta hajb', berkas: null },
-  { judul: "Ashl, 'aul & radd", berkas: null },
-  { judul: 'Langkah menghitung', berkas: null },
-];
 const KATA_RESET = 'reset progres';
 const IKON: Record<Aktivitas['jenis'], NamaIkon> = { pelajaran: 'pelajaran', soal: 'hitung', kuis: 'kuis' };
 const LABEL: Record<Aktivitas['jenis'], string> = { pelajaran: t('Pelajaran'), soal: t('Soal hitung'), kuis: t('Kuis') };

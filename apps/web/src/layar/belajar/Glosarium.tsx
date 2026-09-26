@@ -3,7 +3,8 @@
 // kasus uji KB bab 16 (draf) dan pelajaran yang memakainya.
 
 import { useEffect, useState } from 'react';
-import { DAFTAR_PELAJARAN, GLOSARIUM, cariIstilah, type Blok, type EntriGlosarium, type Pelajaran, type Potongan } from '@waris/content';
+import { type Blok, type EntriGlosarium, type Pelajaran, type Potongan } from '@waris/content';
+import { cariIstilah, daftarPelajaran, glosarium } from '../../konten/sumber';
 import { tautanBelajar, tautanGlosarium } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
 import { HeroMini } from '../../ui/Hero';
@@ -18,7 +19,7 @@ export const cocokKataKunci = (entri: EntriGlosarium, kataKunci: string) =>
 export function Glosarium({ id }: { id?: string | undefined }) {
   const [kataKunci, setKataKunci] = useState('');
   const idTerpilih = id ? cariIstilah(id)?.id : undefined;
-  const daftar = GLOSARIUM.filter(entri => cocokKataKunci(entri, kataKunci))
+  const daftar = glosarium().filter(entri => cocokKataKunci(entri, kataKunci))
     .sort((a, b) => a.istilah.localeCompare(b.istilah, 'id'));
 
   useEffect(() => {
@@ -64,7 +65,7 @@ export function Glosarium({ id }: { id?: string | undefined }) {
 /** Istilah (id kanonik) → pelajaran yang menyebutnya lewat [[istilah]], urut sesuai jalur belajar. */
 const DIPAKAI_DI: Map<string, Pelajaran[]> = (() => {
   const peta = new Map<string, Pelajaran[]>();
-  for (const pelajaran of DAFTAR_PELAJARAN) {
+  for (const pelajaran of daftarPelajaran()) {
     for (const id of new Set(pelajaran.blok.flatMap(potonganBlok).flatMap(potongan => (potongan.jenis === 'istilah' ? [cariIstilah(potongan.id)?.id ?? potongan.id] : [])))) {
       peta.set(id, [...(peta.get(id) ?? []), pelajaran]);
     }

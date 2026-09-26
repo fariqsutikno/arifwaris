@@ -5,7 +5,8 @@
 // Mode ujian diberi batas waktu (lihat durasiUjian); waktu habis = jawaban otomatis dikumpulkan, yang kosong dihitung salah.
 
 import { useEffect, useRef, useState } from 'react';
-import { DAFTAR_SOAL_KUIS, JUDUL_BAB, type SoalKuis } from '@waris/content';
+import { JUDUL_BAB, type SoalKuis } from '@waris/content';
+import { daftarSoalKuis } from '../../konten/sumber';
 import { bacaCatatan, bacaPilihan, catatAktivitas, simpanCatatan, simpanPilihan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
 import { Ikon } from '../../ui/Ikon';
@@ -41,14 +42,14 @@ const DETIK_PERINGATAN = 30;
 export function soalPaket(paket: string, acak: () => number = Math.random): SoalKuis[] {
   if (paket === PAKET_ACAK) {
     // Fisher–Yates; urutan acak hanya di UI, bukan di engine.
-    const salinan = [...DAFTAR_SOAL_KUIS];
+    const salinan = [...daftarSoalKuis()];
     for (let indeks = salinan.length - 1; indeks > 0; indeks--) {
       const tukar = Math.floor(acak() * (indeks + 1));
       [salinan[indeks], salinan[tukar]] = [salinan[tukar]!, salinan[indeks]!];
     }
     return salinan.slice(0, JUMLAH_SOAL_ACAK);
   }
-  return DAFTAR_SOAL_KUIS.filter(soal => kodePaketBab(soal.bab) === paket);
+  return daftarSoalKuis().filter(soal => kodePaketBab(soal.bab) === paket);
 }
 
 const judulPaket = (paket: string) => {
@@ -72,10 +73,10 @@ export function DaftarPaketKuis() {
         <a className="kartu-paket paket-acak" href={tautanLatihan('kuis', PAKET_ACAK)}>
           <Ikon nama="acak" ukuran={24} />
           <b>{t('Kuis acak')}</b>
-          <span className="keterangan">{t('{jumlah} soal dari semua bab', { jumlah: Math.min(JUMLAH_SOAL_ACAK, DAFTAR_SOAL_KUIS.length) })}</span>
+          <span className="keterangan">{t('{jumlah} soal dari semua bab', { jumlah: Math.min(JUMLAH_SOAL_ACAK, daftarSoalKuis().length) })}</span>
           {catatan[PAKET_ACAK] && <span className="skor-paket">{t('Skor terakhir')} {angka(catatan[PAKET_ACAK])}</span>}
         </a>
-        {perBab(DAFTAR_SOAL_KUIS).map(([bab, daftar]) => (
+        {perBab(daftarSoalKuis()).map(([bab, daftar]) => (
           <a key={bab} className="kartu-paket" href={tautanLatihan('kuis', kodePaketBab(bab))}>
             <b>{judulTopik(bab)}</b>
             <span className="keterangan">{t('{jumlah} soal', { jumlah: daftar.length })}</span>

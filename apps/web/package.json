@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@waris/content": "workspace:*",
+    "@waris/data": "workspace:*",
     "@waris/engine": "workspace:*",
     "@waris/explain": "workspace:*",
     "@waris/math": "workspace:*",

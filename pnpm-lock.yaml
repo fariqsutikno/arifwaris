@@ -26,6 +26,9 @@ importers:
       '@waris/content':
         specifier: workspace:*
         version: link:../../packages/content
+      '@waris/data':
+        specifier: workspace:*
+        version: link:../../packages/data
       '@waris/engine':
         specifier: workspace:*
         version: link:../../packages/engine

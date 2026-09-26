@@ -1,7 +1,7 @@
 // Bilah di atas halaman turunan (FAQ, glosarium, materi, rujukan, riwayat, latihan): Kembali di kiri, Bagikan di kanan.
 // Kembali selalu ke halaman induk (naik satu tingkat), bukan ke halaman yang terakhir dibuka.
 
-import { cariPelajaran } from '@waris/content';
+import { cariPelajaran } from '../konten/sumber';
 import { tautanInduk, type Rute } from '../rute';
 import { Bagikan } from './Bagikan';
 import { Ikon } from './Ikon';

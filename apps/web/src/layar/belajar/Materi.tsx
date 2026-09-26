@@ -5,10 +5,8 @@
 // Navigasi bawah: Sebelumnya · Beranda belajar · Berikutnya, gayanya setara.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_KUIS, cariPelajaran,
-  type Blok, type ContohKasus, type Pelajaran,
-} from '@waris/content';
+import { type Blok, type ContohKasus, type Pelajaran } from '@waris/content';
+import { cariPelajaran, daftarModul, daftarPelajaran, daftarSoalKuis } from '../../konten/sumber';
 import { TabelFaraidh } from '../../hasil/TabelFaraidh';
 import { ringkas } from '../../hasil/ringkasan';
 import { jalankan, type HasilOk } from '../../jalankan';
@@ -53,16 +51,16 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   if (!pelajaran) {
     return <main className="halaman tumpuk"><a href={tautanBelajar()}>{panahMundur()} {t('Belajar')}</a><p role="alert">{t('Pelajaran ini tidak ditemukan.')}</p></main>;
   }
-  const indeks = DAFTAR_PELAJARAN.indexOf(pelajaran);
-  const sebelumnya = DAFTAR_PELAJARAN[indeks - 1];
-  const berikutnya = DAFTAR_PELAJARAN[indeks + 1];
-  const modul = DAFTAR_MODUL.find(modulIni => modulIni.nomor === pelajaran.modul);
+  const indeks = daftarPelajaran().indexOf(pelajaran);
+  const sebelumnya = daftarPelajaran()[indeks - 1];
+  const berikutnya = daftarPelajaran()[indeks + 1];
+  const modul = daftarModul().find(modulIni => modulIni.nomor === pelajaran.modul);
 
   return (
     <div className="tata-materi">
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
-        <p className="label-langkah">{t('Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}', { nomor: pelajaran.modul, judul: terjemahIsi(modul?.judul ?? ''), indeks: indeks + 1, total: DAFTAR_PELAJARAN.length })}</p>
+        <p className="label-langkah">{t('Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}', { nomor: pelajaran.modul, judul: terjemahIsi(modul?.judul ?? ''), indeks: indeks + 1, total: daftarPelajaran().length })}</p>
         <h1>{terjemahIsi(pelajaran.judul)}</h1>
         {pelajaran.perluCek && <p className="lencana-draf">{t('Draf, belum direview tim keilmuan')}</p>}
         <p className="lead">{terjemahIsi(pelajaran.tujuan)}</p>
@@ -87,18 +85,18 @@ function TautanNavigasi({ tujuan, label, saatKlik }: { tujuan: Pelajaran | undef
 /** Sidebar: progres keseluruhan dan daftar modul; di HP jadi laci (dipasang ulang tiap pindah pelajaran, jadi tertutup lagi). */
 function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
   const selesai = bacaPelajaranSelesai();
-  const jumlahSelesai = DAFTAR_PELAJARAN.filter(pelajaran => selesai.has(pelajaran.slug)).length;
-  const persen = Math.round((jumlahSelesai / DAFTAR_PELAJARAN.length) * 100);
+  const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
+  const persen = Math.round((jumlahSelesai / daftarPelajaran().length) * 100);
   return (
     <Laci id="daftar-materi" label={t('Daftar materi')}
-      ringkasan={<>{t('Modul {nomor}', { nomor: aktif.modul })} · {angka(`${DAFTAR_PELAJARAN.indexOf(aktif) + 1}/${DAFTAR_PELAJARAN.length}`)}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
+      ringkasan={<>{t('Modul {nomor}', { nomor: aktif.modul })} · {angka(`${daftarPelajaran().indexOf(aktif) + 1}/${daftarPelajaran().length}`)}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
       judul={<>
       <span className="label-langkah">{t('Progres belajar')}</span>
-      <span className="angka-progres">{t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: DAFTAR_PELAJARAN.length })} · {angka(`${persen}%`)}</span>
+      <span className="angka-progres">{t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })} · {angka(`${persen}%`)}</span>
       <span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span>
     </>}>
-        {DAFTAR_MODUL.map(modul => {
-          const daftar = DAFTAR_PELAJARAN.filter(pelajaran => pelajaran.modul === modul.nomor);
+        {daftarModul().map(modul => {
+          const daftar = daftarPelajaran().filter(pelajaran => pelajaran.modul === modul.nomor);
           return (
             <div key={modul.nomor} className={daftar.length ? 'modul-sidebar' : 'modul-sidebar modul-menyusul'}>
               <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {terjemahIsi(modul.judul)}{daftar.length ? '' : ` · ${t('menyusul')}`}</p>
@@ -148,7 +146,7 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & O
     );
     case 'kuis': return (
       <div className="tumpuk-rapat">
-        {blok.daftarKode.map(kode => DAFTAR_SOAL_KUIS.find(soal => soal.kode === kode)).filter(soal => soal !== undefined)
+        {blok.daftarKode.map(kode => daftarSoalKuis().find(soal => soal.kode === kode)).filter(soal => soal !== undefined)
           .map((soal, urutan, semua) => <KartuSoalKuis key={soal.kode} soal={soal} label={t('Soal {nomor} dari {total}', { nomor: urutan + 1, total: semua.length })} />)}
       </div>
     );

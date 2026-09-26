@@ -7,7 +7,8 @@ import {
   GLOSARIUM, SUMBER_KITAB, wajibRef, ambilRefs, bacaIsi, cariRujukan, keJson, periksaKonsistensi, slug,
   type IsiKonten, type JenisKonten,
 } from '@waris/content';
-import { AHWAL, LANGKAH_SELANJUTNYA } from '../../apps/web/src/konten/ahwal';
+import { LANGKAH_SELANJUTNYA } from '../../apps/web/src/konten/ahwal';
+import { AHWAL_LAMA } from './ahwalLama';
 import { KAMUS_ARAB } from '../../apps/web/src/konten/kamusArab';
 import type { PetaDiksi } from '../diksi/rencana';
 
@@ -63,9 +64,9 @@ function barisMentah(peta: PetaDiksi): Mentah[] {
     ...GLOSARIUM.filter(entri => entri.ar).map((entri, i) => ({
       jenis: 'glosarium_ar' as const, slug: entri.id, urutan: i, isi: { istilahId: entri.istilah, ...entri.ar! },
     })),
-    ...Object.entries(AHWAL).map(([kunci, daftar], i) => ({
+    ...Object.entries(AHWAL_LAMA).map(([kunci, daftar], i) => ({
       jenis: 'ahwal' as const, slug: kunci, urutan: i,
-      isi: { kunci, baris: daftar!.map(b => ({ ...b, ...(ar(b.syarat) || ar(b.bagian) ? { ar: { bagian: ar(b.bagian) ?? b.bagian, syarat: ar(b.syarat) ?? b.syarat } } : {}) })) },
+      isi: { kunci, baris: daftar.map(b => ({ ...b, ...(ar(b.syarat) || ar(b.bagian) ? { ar: { bagian: ar(b.bagian) ?? b.bagian, syarat: ar(b.syarat) ?? b.syarat } } : {}) })) },
     })),
     ...peta.edukasi.map((butir, i) => ({
       jenis: 'teks_edukasi' as const, slug: butir.slug, urutan: i, isi: { id: butir.id, ...(butir.ar ? { ar: butir.ar } : {}) },

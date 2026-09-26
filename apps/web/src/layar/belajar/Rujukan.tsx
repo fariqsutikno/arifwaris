@@ -6,10 +6,8 @@
 
 import { HeroMini } from '../../ui/Hero';
 import { useState } from 'react';
-import {
-  DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, DAFTAR_SYAHID, RUJUKAN, SUMBER_KITAB, TITIK_DIKAJI, cariRujukan,
-  type Ayat, type EntriRujukan, type JenisDalil,
-} from '@waris/content';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, RUJUKAN, TITIK_DIKAJI, cariRujukan, type Ayat, type EntriRujukan, type JenisDalil } from '@waris/content';
+import { daftarSyahid, sumberKitab } from '../../konten/sumber';
 import { tautanRujukan } from '../../rute';
 import { angka, t } from '../../terjemah';
 import { judulBab, namaSurah } from '../../konten/judulBab';
@@ -106,7 +104,7 @@ function IsiKategori({ kategori }: { kategori: Kategori }) {
 
 /** Satu ayat: teks Arab, lalu tab Hukum (pilih untuk menyorot syahid) · Arti · Tafsir. */
 function KartuAyat({ ayat }: { ayat: Ayat }) {
-  const daftarHukum = DAFTAR_SYAHID.filter(isi => isi.surah === ayat.surah && isi.ayat === ayat.ayat);
+  const daftarHukum = daftarSyahid().filter(isi => isi.surah === ayat.surah && isi.ayat === ayat.ayat);
   const [tab, setTab] = useState<'hukum' | 'arti' | 'tafsir'>('hukum');
   const [disorot, setDisorot] = useState<number | null>(null);
   const syahid = disorot === null ? undefined : daftarHukum[disorot]?.syahid;
@@ -143,7 +141,7 @@ function KartuAyat({ ayat }: { ayat: Ayat }) {
 
 function KartuKitab({ nomor }: { nomor: number }) {
   const kitab = DAFTAR_KITAB[nomor]!;
-  const sumber = SUMBER_KITAB.find(isi => isi.judul === kitab.judul);
+  const sumber = sumberKitab().find(isi => isi.judul === kitab.judul);
   return (
     <article className="kartu kartu-rujukan kartu-kitab">
       <h2><cite>{kitab.judul}</cite></h2>
@@ -163,7 +161,7 @@ function KartuKitab({ nomor }: { nomor: number }) {
 
 function PenampilKitab({ nomor }: { nomor: number }) {
   const kitab = DAFTAR_KITAB[nomor];
-  const pdf = kitab && SUMBER_KITAB.find(isi => isi.judul === kitab.judul)?.pdf;
+  const pdf = kitab && sumberKitab().find(isi => isi.judul === kitab.judul)?.pdf;
   return (
     <>
       <a href={tautanRujukan('kitab')}>{t('Kembali ke daftar kitab')}</a>

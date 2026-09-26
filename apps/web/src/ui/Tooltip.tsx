@@ -3,7 +3,7 @@
 // Dipakai untuk istilah asing (arti dari glosarium KB bab 15) dan ikon ⓘ penjelasan di wizard.
 
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { cariIstilah } from '@waris/content';
+import { cariIstilah } from '../konten/sumber';
 import { useBahasa } from '../preferensi';
 
 const JARAK = 8;

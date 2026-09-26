@@ -4,7 +4,8 @@
 // Pintasan belajar: beberapa soal latihan yang belum dikerjakan, langsung dibuka di mode Belajar tanpa menyusun skenario.
 
 import { useRef, useState } from 'react';
-import { DAFTAR_SOAL_HITUNG, type SoalHitung, type Tingkat } from '@waris/content';
+import { type SoalHitung, type Tingkat } from '@waris/content';
+import { daftarSoalHitung } from '../konten/sumber';
 import { TEKS_HITUNG } from '../konten/umum';
 import { dariJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
@@ -81,8 +82,8 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
 /** Soal latihan yang belum dikerjakan (urutan daftar latihan, dari yang dasar); kalau semua sudah, ulangi dari awal. */
 function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => void }) {
   const catatan = bacaCatatan('soal');
-  const belum = DAFTAR_SOAL_HITUNG.filter(soal => !catatan[soal.kode]);
-  const daftar = (belum.length > 0 ? belum : DAFTAR_SOAL_HITUNG).slice(0, JUMLAH_SOAL_PINTASAN);
+  const belum = daftarSoalHitung().filter(soal => !catatan[soal.kode]);
+  const daftar = (belum.length > 0 ? belum : daftarSoalHitung()).slice(0, JUMLAH_SOAL_PINTASAN);
   return (
     <section className="pintasan-soal tumpuk-rapat" aria-labelledby="judul-pintasan-soal">
       <div>

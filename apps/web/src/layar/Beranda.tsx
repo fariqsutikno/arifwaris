@@ -2,7 +2,7 @@
 // (kasus terakhir, progres belajar, latihan), pintu ke referensi, dan identitas tim penyusun.
 // Semua angka dari penyimpanan lokal; bila kosong, tampil ajakan memulai, bukan angka nol yang menggantung.
 
-import { DAFTAR_FAQ, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG } from '@waris/content';
+import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
 import type { Kasus } from '../kasus';
 import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai } from '../preferensi';
 import { bacaRiwayat, ringkasKasus, type EntriRiwayat } from '../riwayat';
@@ -28,9 +28,9 @@ const PEMBIMBING: { nama: string; situs?: string }[] = [
 
 export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus | null; saatKeHitung: () => void }) {
   const selesai = bacaPelajaranSelesai();
-  const jumlahSelesai = DAFTAR_PELAJARAN.filter(pelajaran => selesai.has(pelajaran.slug)).length;
-  const berikutnya = DAFTAR_PELAJARAN.find(pelajaran => !selesai.has(pelajaran.slug));
-  const soalSelesai = DAFTAR_SOAL_HITUNG.filter(soal => bacaCatatan('soal')[soal.kode]).length;
+  const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
+  const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
+  const soalSelesai = daftarSoalHitung().filter(soal => bacaCatatan('soal')[soal.kode]).length;
   const kuisTerakhir = bacaAktivitas().find(aktivitas => aktivitas.jenis === 'kuis');
   // Tanpa kasus yang sedang dimuat (misal sesudah reset), tetap tunjukkan entri riwayat terbaru,
   // supaya Beranda tidak bilang "belum ada" sementara Riwayat berisi.
@@ -66,13 +66,13 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
             </a>
             <a className="kotak-status" href={tautanBelajar()}>
               <span className="label-langkah">{t('Belajar')}</span>
-              <b>{t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: DAFTAR_PELAJARAN.length })}</b>
-              <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / DAFTAR_PELAJARAN.length) * 100}%` }} /></span>
+              <b>{t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })}</b>
+              <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / daftarPelajaran().length) * 100}%` }} /></span>
               <span className="aksi-status">{jumlahSelesai === 0 ? t('Mulai belajar') : berikutnya ? t('Lanjutkan belajar') : t('Lihat materi')} {panah()}</span>
             </a>
             <a className="kotak-status" href={tautanLatihan()}>
               <span className="label-langkah">{t('Latihan')}</span>
-              <b>{t('{selesai}/{total} soal hitung', { selesai: soalSelesai, total: DAFTAR_SOAL_HITUNG.length })}</b>
+              <b>{t('{selesai}/{total} soal hitung', { selesai: soalSelesai, total: daftarSoalHitung().length })}</b>
               <span className="keterangan">{kuisTerakhir ? t('Kuis terakhir: {judul}, skor {skor}', { judul: kuisTerakhir.judul, skor: kuisTerakhir.hasil ?? '' }) : t('Belum ada kuis yang dikerjakan.')}</span>
               <span className="aksi-status">{soalSelesai === 0 && !kuisTerakhir ? t('Mulai latihan') : t('Lanjutkan latihan')} {panah()}</span>
             </a>
@@ -83,7 +83,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
           <section className="tumpuk-rapat" aria-labelledby="judul-tanya">
             <h2 id="judul-tanya" className="tanya-tujuan">{t('Dari FAQ')}</h2>
             <ul className="daftar-polos daftar-soal">
-              {DAFTAR_FAQ.slice(0, JUMLAH_TANYA).map(entri => (
+              {daftarFaq().slice(0, JUMLAH_TANYA).map(entri => (
                 <li key={entri.id} className="baris-soal"><a className="isi-soal" href={tautanFaq(entri.id)}><b>{entri.pertanyaan}</b></a></li>
               ))}
             </ul>

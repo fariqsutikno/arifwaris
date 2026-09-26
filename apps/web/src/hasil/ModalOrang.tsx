@@ -7,11 +7,12 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
 import { hitungIsian } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
-import { AHWAL, barisBerlaku } from '../konten/ahwal';
+import { barisBerlaku } from '../konten/ahwal';
+import { ahwalUntuk } from '../konten/sumber';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
-import { angka, t } from '../terjemah';
+import { angka, bahasaArab, t } from '../terjemah';
 import type { Kelompok } from '../checklist';
 
 const TEKS_KELOMPOK = (): Record<Kelompok, string> => ({
@@ -43,7 +44,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   const barisKenapa = semuaBaris.filter(baris => baris.subjek?.includes(id));
   const barisTerdampak = semuaBaris.filter(baris => baris.subjek && !baris.subjek.includes(id) && orangDisebut([baris]).includes(id));
   const refs = [...new Set(barisKenapa.flatMap(baris => baris.refs))];
-  const ahwal = kunci ? AHWAL[kunci] : undefined;
+  const ahwal = kunci ? ahwalUntuk(kunci) : undefined;
   // Ubah langsung dari sini hanya untuk ahli waris pewaris pertama (bukan pewaris, bukan ahli waris mayit munasakhat).
   const bisaDiubah = !!kunci && (hitungIsian(graf, graf.idPewaris)[kunci] ?? []).includes(id);
   const dataCocok = {
@@ -108,8 +109,8 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
                     const berlaku = !sedangMenebak && barisBerlaku(baris, dataCocok);
                     return (
                       <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
-                        <th>{baris.bagian}</th>
-                        <td>{baris.syarat}{berlaku && <span className="stiker-kecil">{t('kasus ini')}</span>}</td>
+                        <th>{bahasaArab() && baris.ar ? baris.ar.bagian : baris.bagian}</th>
+                        <td>{bahasaArab() && baris.ar ? baris.ar.syarat : baris.syarat}{berlaku && <span className="stiker-kecil">{t('kasus ini')}</span>}</td>
                       </tr>
                     );
                   })}

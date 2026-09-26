@@ -4,7 +4,8 @@
 //   Kuis konsep — daftar paket; sesi kuisnya ada di KuisKonsep.tsx.
 
 import { HeroMini } from '../../ui/Hero';
-import { DAFTAR_SOAL_HITUNG, type SoalHitung, type Tingkat } from '@waris/content';
+import { type SoalHitung, type Tingkat } from '@waris/content';
+import { daftarSoalHitung } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
 import { bacaCatatan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
@@ -39,18 +40,18 @@ const TINGKAT: Tingkat[] = ['dasar', 'menengah', 'sulit'];
 
 function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | 'paket'>) {
   const catatan = bacaCatatan('soal');
-  const jumlahSelesai = DAFTAR_SOAL_HITUNG.filter(soal => catatan[soal.kode]).length;
+  const jumlahSelesai = daftarSoalHitung().filter(soal => catatan[soal.kode]).length;
   return (
     <>
       <section className="kartu statistik-latihan" aria-label={t('Progres soal hitung')}>
         <div className="stat-utama">
-          <span className="angka-besar">{angka(String(jumlahSelesai))}<small>/{angka(String(DAFTAR_SOAL_HITUNG.length))}</small></span>
+          <span className="angka-besar">{angka(String(jumlahSelesai))}<small>/{angka(String(daftarSoalHitung().length))}</small></span>
           <span className="keterangan">{t('soal dikerjakan')}</span>
-          <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / DAFTAR_SOAL_HITUNG.length) * 100}%` }} /></span>
+          <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / daftarSoalHitung().length) * 100}%` }} /></span>
         </div>
         <dl className="stat-tingkat">
           {TINGKAT.map(tingkat => {
-            const daftar = DAFTAR_SOAL_HITUNG.filter(soal => soal.tingkat === tingkat);
+            const daftar = daftarSoalHitung().filter(soal => soal.tingkat === tingkat);
             return (
               <div key={tingkat}>
                 <dt className={`tingkat tingkat-${tingkat}`}>{TEKS_TINGKAT()[tingkat]}</dt>
@@ -60,7 +61,7 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
           })}
         </dl>
       </section>
-      {perBab(DAFTAR_SOAL_HITUNG).map(([bab, daftar]) => (
+      {perBab(daftarSoalHitung()).map(([bab, daftar]) => (
         <section key={bab} className="tumpuk-rapat">
           <h2 className="judul-bab-latihan">{judulTopik(bab)} <span className="keterangan">{angka(`${daftar.filter(soal => catatan[soal.kode]).length}/${daftar.length}`)}</span></h2>
           <ul className="daftar-polos daftar-soal">

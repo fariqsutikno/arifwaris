@@ -3,7 +3,8 @@
 // `#/tanya-jawab` = daftar (cari + chip kategori); `#/tanya-jawab/<slug>` = artikel, bisa dibagikan dan diatur ukuran hurufnya.
 
 import { useState } from 'react';
-import { DAFTAR_TANYA_JAWAB, JENIS_TANYA_JAWAB, semuaPotongan, type JenisTanyaJawab, type KasusTanyaJawab } from '@waris/content';
+import { JENIS_TANYA_JAWAB, semuaPotongan, type JenisTanyaJawab, type KasusTanyaJawab } from '@waris/content';
+import { daftarTanyaJawab } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
 import { UKURAN_BACA, bacaUkuranBaca, simpanUkuranBaca } from '../../preferensi';
 import { tautanTanyaJawab } from '../../rute';
@@ -18,7 +19,7 @@ interface Props { slug?: string | undefined; kasusSekarang: Kasus | null; saatCo
 
 export function TanyaJawab({ slug, kasusSekarang, saatCoba }: Props) {
   if (!slug) return <DaftarTanyaJawab />;
-  const entri = DAFTAR_TANYA_JAWAB.find(kasus => kasus.slug === slug);
+  const entri = daftarTanyaJawab().find(kasus => kasus.slug === slug);
   if (!entri) return <main className="halaman tumpuk"><p role="alert">{t('Kasus ini tidak ditemukan.')}</p><a href={tautanTanyaJawab()}>{t('Semua kasus')}</a></main>;
   return <ArtikelTanyaJawab entri={entri} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
 }
@@ -27,7 +28,7 @@ function DaftarTanyaJawab() {
   const [kataKunci, setKataKunci] = useState('');
   const [jenis, setJenis] = useState<JenisTanyaJawab | null>(null);
   const cari = normal(kataKunci.trim());
-  const cocok = DAFTAR_TANYA_JAWAB.filter(entri => (!jenis || entri.jenis === jenis) && normal(teksCari(entri)).includes(cari));
+  const cocok = daftarTanyaJawab().filter(entri => (!jenis || entri.jenis === jenis) && normal(teksCari(entri)).includes(cari));
   return (
     <main className="halaman tumpuk halaman-faq">
       <HeroMini judul={t('Tanya jawab')} keterangan={t('Kasus waris sungguhan, seperti sengketa keluarga, beserta penyelesaiannya dari ustadz atau lembaga fatwa.')} ikon="tanya" />

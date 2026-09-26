@@ -2,7 +2,8 @@
 // `#/faq/<id>` membuka dan menggulir ke satu pertanyaan supaya bisa dibagikan.
 
 import { useEffect, useState } from 'react';
-import { DAFTAR_FAQ, semuaPotongan, type EntriFaq } from '@waris/content';
+import { semuaPotongan, type EntriFaq } from '@waris/content';
+import { daftarFaq } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
 import { tautanFaq } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
@@ -19,7 +20,7 @@ const teksJawaban = (entri: EntriFaq) => semuaPotongan(entri.jawaban).map(potong
 
 export function Faq({ id, kasusSekarang, saatCoba }: Props) {
   const [kataKunci, setKataKunci] = useState('');
-  const cocok = DAFTAR_FAQ.filter(entri => normal(`${entri.pertanyaan} ${teksJawaban(entri)}`).includes(normal(kataKunci.trim())));
+  const cocok = daftarFaq().filter(entri => normal(`${entri.pertanyaan} ${teksJawaban(entri)}`).includes(normal(kataKunci.trim())));
   const daftarKelompok = [...new Set(cocok.map(entri => entri.kelompok))];
 
   useEffect(() => {
