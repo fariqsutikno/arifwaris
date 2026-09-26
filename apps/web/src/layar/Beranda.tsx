@@ -80,7 +80,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
 
         <div className="dua-kolom-dasbor">
           <section className="tumpuk-rapat" aria-labelledby="judul-tanya">
-            <h2 id="judul-tanya" className="tanya-tujuan">Dari tanya jawab</h2>
+            <h2 id="judul-tanya" className="tanya-tujuan">Dari FAQ</h2>
             <ul className="daftar-polos daftar-soal">
               {DAFTAR_FAQ.slice(0, JUMLAH_TANYA).map(entri => (
                 <li key={entri.id} className="baris-soal"><a className="isi-soal" href={tautanFaq(entri.id)}><b>{entri.pertanyaan}</b></a></li>
@@ -93,7 +93,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
             <div className="grid-pintu">
               <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul="Glosarium" />
               <Pintu tautan={tautanRujukan()} ikon="rujukan" judul="Rujukan" />
-              <Pintu tautan={tautanFaq()} ikon="tanya" judul="Tanya jawab" />
+              <Pintu tautan={tautanFaq()} ikon="tanya" judul="FAQ" />
             </div>
           </section>
         </div>

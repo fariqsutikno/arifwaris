@@ -22,7 +22,7 @@ export function KepalaHalaman({ rute }: { rute: Rute }) {
 function judulBagikan(rute: Rute): string | null {
   switch (rute.halaman) {
     case 'materi': return cariPelajaran(rute.slug)?.judul ?? null;
-    case 'faq': return 'Tanya jawab faraidh';
+    case 'faq': return 'FAQ faraidh';
     case 'glosarium': return 'Glosarium faraidh';
     case 'rujukan': return 'Rujukan faraidh';
     default: return null;

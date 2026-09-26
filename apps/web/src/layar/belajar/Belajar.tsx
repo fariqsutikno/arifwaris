@@ -87,7 +87,7 @@ export function Belajar() {
       <section className="tumpuk-rapat" aria-labelledby="judul-cari">
         <div className="kepala-bagian"><h2 id="judul-cari">Cari tahu</h2><p className="keterangan">Buka kapan saja saat ada istilah atau hukum yang belum jelas.</p></div>
         <div className="grid-pintu">
-          <Pintu tautan={tautanFaq()} ikon="tanya" judul="Tanya jawab" />
+          <Pintu tautan={tautanFaq()} ikon="tanya" judul="FAQ" />
           <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul="Glosarium" />
           <Pintu tautan={tautanRujukan()} ikon="rujukan" judul="Rujukan" />
         </div>

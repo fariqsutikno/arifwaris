@@ -24,7 +24,7 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
 
   return (
     <main className="halaman tumpuk halaman-faq">
-      <h1>Tanya jawab</h1>
+      <h1>FAQ</h1>
       <p className="lencana-draf">Draf, belum direview tim keilmuan</p>
       <label className="isian">
         Cari pertanyaan
