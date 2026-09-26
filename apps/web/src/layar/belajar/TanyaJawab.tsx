@@ -13,14 +13,14 @@ import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
 import { t } from '../../terjemah';
 
-const TEKS_JENIS = (): Record<JenisTanyaJawab, string> => ({ 'Saran ustadz': t('Saran ustadz'), Fatwa: t('Fatwa') });
+const TEKS_JENIS = (): Record<JenisTanyaJawab, string> => ({ 'Saran ustadz': t('tanya_jawab.saran_ustadz'), Fatwa: t('tanya_jawab.fatwa') });
 
 interface Props { slug?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
 
 export function TanyaJawab({ slug, kasusSekarang, saatCoba }: Props) {
   if (!slug) return <DaftarTanyaJawab />;
   const entri = daftarTanyaJawab().find(kasus => kasus.slug === slug);
-  if (!entri) return <main className="halaman tumpuk"><p role="alert">{t('Kasus ini tidak ditemukan.')}</p><a href={tautanTanyaJawab()}>{t('Semua kasus')}</a></main>;
+  if (!entri) return <main className="halaman tumpuk"><p role="alert">{t('tanya_jawab.kasus_ini_tidak_ditemukan')}</p><a href={tautanTanyaJawab()}>{t('tanya_jawab.semua_kasus')}</a></main>;
   return <ArtikelTanyaJawab entri={entri} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
 }
 
@@ -31,18 +31,18 @@ function DaftarTanyaJawab() {
   const cocok = daftarTanyaJawab().filter(entri => (!jenis || entri.jenis === jenis) && normal(teksCari(entri)).includes(cari));
   return (
     <main className="halaman tumpuk halaman-faq">
-      <HeroMini judul={t('Tanya jawab')} keterangan={t('Kasus waris sungguhan, seperti sengketa keluarga, beserta penyelesaiannya dari ustadz atau lembaga fatwa.')} ikon="tanya" />
+      <HeroMini judul={t('umum.tanya_jawab')} keterangan={t('tanya_jawab.kasus_waris_sungguhan_seperti_sengketa_keluarga')} ikon="tanya" />
       <label className="isian">
-        {t('Cari kasus')}
-        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder={t('mis. rumah, sengketa, anak tiri')} />
+        {t('tanya_jawab.cari_kasus')}
+        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder={t('tanya_jawab.mis_rumah_sengketa_anak_tiri')} />
       </label>
-      <div className="chip-deret" role="group" aria-label={t('Kategori')}>
-        <button type="button" className="chip-kecil" aria-pressed={jenis === null} onClick={() => setJenis(null)}>{t('Semua')}</button>
+      <div className="chip-deret" role="group" aria-label={t('tanya_jawab.kategori')}>
+        <button type="button" className="chip-kecil" aria-pressed={jenis === null} onClick={() => setJenis(null)}>{t('tanya_jawab.semua')}</button>
         {JENIS_TANYA_JAWAB.map(pilihan => (
           <button key={pilihan} type="button" className="chip-kecil" aria-pressed={jenis === pilihan} onClick={() => setJenis(pilihan)}>{TEKS_JENIS()[pilihan]}</button>
         ))}
       </div>
-      {cocok.length === 0 && <p className="keterangan">{t('Belum ada kasus yang cocok. Coba kata atau kategori lain.')}</p>}
+      {cocok.length === 0 && <p className="keterangan">{t('tanya_jawab.belum_ada_kasus_yang_cocok_coba')}</p>}
       <ul className="daftar-polos grid-artikel">
         {cocok.map(entri => (
           <li key={entri.slug}>
@@ -70,20 +70,20 @@ function ArtikelTanyaJawab({ entri, kasusSekarang, saatCoba }: { entri: KasusTan
       <span className="chip-jenis">{TEKS_JENIS()[entri.jenis]}</span>
       <h1>{entri.judul}</h1>
       <div className="meta-artikel">
-        <span className="keterangan">{t('Sumber')}: {entri.sumber}</span>
+        <span className="keterangan">{t('tanya_jawab.sumber')}: {entri.sumber}</span>
         <span className="pengisi" />
-        <div className="atur-huruf" role="group" aria-label={t('Ukuran huruf')}>
-          <button type="button" className="chip-kecil" onClick={() => ubahUkuran(-1)} disabled={posisi <= 0} aria-label={t('Perkecil huruf')}>A−</button>
-          <button type="button" className="chip-kecil" onClick={() => ubahUkuran(1)} disabled={posisi >= UKURAN_BACA.length - 1} aria-label={t('Perbesar huruf')}>A+</button>
+        <div className="atur-huruf" role="group" aria-label={t('tanya_jawab.ukuran_huruf')}>
+          <button type="button" className="chip-kecil" onClick={() => ubahUkuran(-1)} disabled={posisi <= 0} aria-label={t('tanya_jawab.perkecil_huruf')}>A−</button>
+          <button type="button" className="chip-kecil" onClick={() => ubahUkuran(1)} disabled={posisi >= UKURAN_BACA.length - 1} aria-label={t('tanya_jawab.perbesar_huruf')}>A+</button>
         </div>
       </div>
       <article className="isi-materi isi-artikel" style={{ fontSize: ukuran }}>
-        <h2>{t('Kasus')}</h2>
+        <h2>{t('tanya_jawab.kasus')}</h2>
         {entri.kasus.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
-        <h2>{t('Penyelesaian')}</h2>
+        <h2>{t('tanya_jawab.penyelesaian')}</h2>
         {entri.penyelesaian.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
       </article>
-      <Bagikan judul={entri.judul} tautan={tautanTanyaJawab(entri.slug)} label={t('Bagikan kasus ini')} />
+      <Bagikan judul={entri.judul} tautan={tautanTanyaJawab(entri.slug)} label={t('umum.bagikan_kasus_ini')} />
     </main>
   );
 }

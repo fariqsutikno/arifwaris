@@ -26,10 +26,10 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
   if (tab === 'kuis' && paket) return <main className="halaman tumpuk"><SesiKuis key={paket} paket={paket} /></main>;
   return (
     <main className="halaman tumpuk">
-      <HeroMini judul={t('Latihan')} keterangan={t('Kerjakan soal hitung dari kasus nyata, atau uji pemahaman konsep lewat kuis per bab.')} ikon="kuis" />
-      <nav className="tab-kecil tab-latihan" aria-label={t('Jenis latihan')}>
-        <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('Soal hitung')}</a>
-        <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('Kuis konsep')}</a>
+      <HeroMini judul={t('umum.latihan')} keterangan={t('latihan.kerjakan_soal_hitung_dari_kasus_nyata')} ikon="kuis" />
+      <nav className="tab-kecil tab-latihan" aria-label={t('latihan.jenis_latihan')}>
+        <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('umum.soal_hitung')}</a>
+        <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('latihan.kuis_konsep')}</a>
       </nav>
       {tab === 'hitung' ? <DaftarSoalHitung kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <DaftarPaketKuis />}
     </main>
@@ -43,10 +43,10 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
   const jumlahSelesai = daftarSoalHitung().filter(soal => catatan[soal.kode]).length;
   return (
     <>
-      <section className="kartu statistik-latihan" aria-label={t('Progres soal hitung')}>
+      <section className="kartu statistik-latihan" aria-label={t('latihan.progres_soal_hitung')}>
         <div className="stat-utama">
           <span className="angka-besar">{angka(String(jumlahSelesai))}<small>/{angka(String(daftarSoalHitung().length))}</small></span>
-          <span className="keterangan">{t('soal dikerjakan')}</span>
+          <span className="keterangan">{t('latihan.soal_dikerjakan')}</span>
           <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / daftarSoalHitung().length) * 100}%` }} /></span>
         </div>
         <dl className="stat-tingkat">
@@ -69,7 +69,7 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
               const selesai = !!catatan[soal.kode];
               return (
                 <li key={soal.kode} className={selesai ? 'baris-soal selesai' : 'baris-soal'}>
-                  <span className="status-soal" aria-label={selesai ? t('sudah dikerjakan') : t('belum dikerjakan')}>{selesai ? '✓' : '○'}</span>
+                  <span className="status-soal" aria-label={selesai ? t('latihan.sudah_dikerjakan') : t('latihan.belum_dikerjakan')}>{selesai ? '✓' : '○'}</span>
                   <div className="isi-soal">
                     <b>{soal.judul}</b>
                     <span className="keterangan">
@@ -78,7 +78,7 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
                     </span>
                   </div>
                   <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={selesai ? 'secondary' : 'primary'}>
-                    {selesai ? t('Ulangi') : t('Kerjakan')}
+                    {selesai ? t('latihan.ulangi') : t('hitung.kerjakan')}
                   </TombolBukaKasus>
                 </li>
               );

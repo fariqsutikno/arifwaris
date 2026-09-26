@@ -49,7 +49,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   }, [pelajaran]);
 
   if (!pelajaran) {
-    return <main className="halaman tumpuk"><a href={tautanBelajar()}>{panahMundur()} {t('Belajar')}</a><p role="alert">{t('Pelajaran ini tidak ditemukan.')}</p></main>;
+    return <main className="halaman tumpuk"><a href={tautanBelajar()}>{panahMundur()} {t('umum.belajar')}</a><p role="alert">{t('belajar.pelajaran_ini_tidak_ditemukan')}</p></main>;
   }
   const indeks = daftarPelajaran().indexOf(pelajaran);
   const sebelumnya = daftarPelajaran()[indeks - 1];
@@ -60,17 +60,17 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
     <div className="tata-materi">
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
-        <p className="label-langkah">{t('Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}', { nomor: pelajaran.modul, judul: modul?.judul ?? '', indeks: indeks + 1, total: daftarPelajaran().length })}</p>
+        <p className="label-langkah">{t('belajar.modul_nomor_judul_pelajaran_indeks_dari', { nomor: pelajaran.modul, judul: modul?.judul ?? '', indeks: indeks + 1, total: daftarPelajaran().length })}</p>
         <h1>{pelajaran.judul}</h1>
-        {pelajaran.perluCek && <p className="lencana-draf">{t('Draf, belum direview tim keilmuan')}</p>}
+        {pelajaran.perluCek && <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>}
         <p className="lead">{pelajaran.tujuan}</p>
         <article className="isi-materi">
           {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
         </article>
-        <nav ref={ujung} className="navigasi-materi" aria-label={t('Navigasi pelajaran')}>
-          <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('Sebelumnya')}`} />
-          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}><Ikon nama="rumah" /> {t('Beranda belajar')}</a>
-          <TautanNavigasi tujuan={berikutnya} label={`${t('Berikutnya')} ${panah()}`} saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
+        <nav ref={ujung} className="navigasi-materi" aria-label={t('belajar.navigasi_pelajaran')}>
+          <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('belajar.sebelumnya')}`} />
+          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}><Ikon nama="rumah" /> {t('belajar.beranda_belajar')}</a>
+          <TautanNavigasi tujuan={berikutnya} label={`${t('belajar.berikutnya')} ${panah()}`} saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
         </nav>
       </main>
     </div>
@@ -88,24 +88,24 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
   const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const persen = Math.round((jumlahSelesai / daftarPelajaran().length) * 100);
   return (
-    <Laci id="daftar-materi" label={t('Daftar materi')}
-      ringkasan={<>{t('Modul {nomor}', { nomor: aktif.modul })} · {angka(`${daftarPelajaran().indexOf(aktif) + 1}/${daftarPelajaran().length}`)}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
+    <Laci id="daftar-materi" label={t('belajar.daftar_materi')}
+      ringkasan={<>{t('belajar.modul_nomor', { nomor: aktif.modul })} · {angka(`${daftarPelajaran().indexOf(aktif) + 1}/${daftarPelajaran().length}`)}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
       judul={<>
-      <span className="label-langkah">{t('Progres belajar')}</span>
-      <span className="angka-progres">{t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })} · {angka(`${persen}%`)}</span>
+      <span className="label-langkah">{t('belajar.progres_belajar')}</span>
+      <span className="angka-progres">{t('hitung.selesai_total_pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })} · {angka(`${persen}%`)}</span>
       <span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span>
     </>}>
         {daftarModul().map(modul => {
           const daftar = daftarPelajaran().filter(pelajaran => pelajaran.modul === modul.nomor);
           return (
             <div key={modul.nomor} className={daftar.length ? 'modul-sidebar' : 'modul-sidebar modul-menyusul'}>
-              <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {modul.judul}{daftar.length ? '' : ` · ${t('menyusul')}`}</p>
+              <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {modul.judul}{daftar.length ? '' : ` · ${t('belajar.menyusul')}`}</p>
               <ol className="daftar-polos">
                 {daftar.map(pelajaran => (
                   <li key={pelajaran.slug}>
                     <a href={tautanBelajar(pelajaran.slug)} aria-current={pelajaran === aktif ? 'page' : undefined}
                       className={selesai.has(pelajaran.slug) ? 'pelajaran-sidebar selesai' : 'pelajaran-sidebar'}>
-                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? t('selesai') : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
+                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? t('belajar.selesai') : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
                       {pelajaran.judul}
                     </a>
                   </li>
@@ -147,7 +147,7 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & O
     case 'kuis': return (
       <div className="tumpuk-rapat">
         {blok.daftarKode.map(kode => daftarSoalKuis().find(soal => soal.kode === kode)).filter(soal => soal !== undefined)
-          .map((soal, urutan, semua) => <KartuSoalKuis key={soal.kode} soal={soal} label={t('Soal {nomor} dari {total}', { nomor: urutan + 1, total: semua.length })} />)}
+          .map((soal, urutan, semua) => <KartuSoalKuis key={soal.kode} soal={soal} label={t('umum.soal_nomor_dari_total', { nomor: urutan + 1, total: semua.length })} />)}
       </div>
     );
   }
@@ -157,15 +157,15 @@ function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKas
   const kasus = useMemo(() => kasusDariContoh(contoh), [contoh]);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') {
-    return <p className="kartu kartu-galat" role="alert">{t('Contoh ini tidak bisa dihitung. Laporkan ke pengembang.')}</p>;
+    return <p className="kartu kartu-galat" role="alert">{t('belajar.contoh_ini_tidak_bisa_dihitung_laporkan')}</p>;
   }
   return (
     <figure className="contoh-kasus">
-      <figcaption className="label-langkah">{t('Dihitung otomatis')}</figcaption>
+      <figcaption className="label-langkah">{t('belajar.dihitung_otomatis')}</figcaption>
       <div className="wadah-tabel">
         <TabelFaraidh sedangMenebak={false} hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
       </div>
-      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>{t('Buka di Hitung')}</TombolBukaKasus>
+      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>{t('belajar.buka_di_hitung')}</TombolBukaKasus>
     </figure>
   );
 }

@@ -50,13 +50,13 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
       </div>
       {tampilkanNilai && (
         <div className={benar ? 'hasil-tebak benar' : 'hasil-tebak salah'} role="status">
-          <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? t('Benar') : t('Belum tepat, jawabannya {huruf}', { huruf: hurufPilihan(soal.indeksBenar) })}</b>
+          <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? t('latihan.benar') : t('latihan.belum_tepat_jawabannya_huruf', { huruf: hurufPilihan(soal.indeksBenar) })}</b>
           <p><Sebaris isi={soal.pembahasan} /></p>
         </div>
       )}
       {sudahMenjawab && !saatDijawab && (
         <div className="aksi-pembahasan">
-          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>{t('Coba lagi')}</button>
+          <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setDipilih(null)}>{t('latihan.coba_lagi')}</button>
         </div>
       )}
     </fieldset>
