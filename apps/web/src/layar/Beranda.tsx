@@ -6,7 +6,7 @@ import { DAFTAR_FAQ, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG } from '@waris/content
 import type { Kasus } from '../kasus';
 import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai } from '../preferensi';
 import { bacaRiwayat, ringkasKasus, type EntriRiwayat } from '../riwayat';
-import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan } from '../rute';
+import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanGlosarium, tautanLatihan, tautanRujukan } from '../rute';
 import { Ikon } from '../ui/Ikon';
 import { Pintu } from './belajar/Belajar';
 import { Motif } from '../ui/komponen';
@@ -94,6 +94,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
               <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul="Glosarium" />
               <Pintu tautan={tautanRujukan()} ikon="rujukan" judul="Rujukan" />
               <Pintu tautan={tautanFaq()} ikon="tanya" judul="FAQ" />
+              <Pintu tautan={tautanTanyaJawab()} ikon="tanya" judul="Tanya jawab" />
             </div>
           </section>
         </div>
