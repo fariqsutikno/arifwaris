@@ -24,6 +24,7 @@ import { HalamanRiwayat } from './layar/Riwayat';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, bacaRute, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
+import { Dok } from './ui/Dok';
 import { usePenjaga } from './ui/Penjaga';
 
 export function Aplikasi() {
@@ -122,6 +123,7 @@ export function Aplikasi() {
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} />
         : <Hasil kasus={kasus} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined}  />}
+      <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
   );
