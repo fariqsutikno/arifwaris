@@ -4,6 +4,7 @@
 // Skor terakhir per paket kuis hanya untuk tampilan dan tetap lokal.
 
 import type { ProgresBelajar, ProgresLatihan } from '@waris/data';
+import { antre } from './akun/antrean';
 import { hapusMentah, bacaMentah, simpanMentah } from './penyimpanan';
 import { hapusAktivitas } from './preferensi';
 
@@ -25,8 +26,12 @@ export const bacaPelajaranSelesai = (): Set<string> =>
   new Set(Object.values(bacaProgresBelajar()).filter(progres => progres.selesai).map(progres => progres.pelajaranSlug));
 
 export function tandaiPelajaranSelesai(slug: string): void {
+  // Materi memanggil ini berulang saat menggulir; kegiatan hanya sekali per penyelesaian.
+  if (bacaProgresBelajar()[slug]?.selesai) return;
   const baris: ProgresBelajar = { pelajaranSlug: slug, selesai: true, diubahPada: new Date().toISOString() };
   simpanMentah(KUNCI_BELAJAR, JSON.stringify({ ...bacaProgresBelajar(), [slug]: baris }));
+  antre({ tabel: 'belajar', baris });
+  antre({ tabel: 'kegiatan', baris: { id: crypto.randomUUID(), jenis: 'pelajaran', slug, benar: null } });
 }
 
 export function bacaProgresLatihan(jenis: JenisLatihan): Record<string, ProgresLatihan> {
@@ -43,14 +48,21 @@ export function catatLatihan(jenis: JenisLatihan, soalSlug: string, benar: boole
     jumlahCoba: (sebelumnya?.jumlahCoba ?? 0) + 1, diubahPada: new Date().toISOString(),
   };
   simpanMentah(KUNCI_LATIHAN, JSON.stringify({ ...semua, [kunciLatihan(jenis, soalSlug)]: baris }));
+  antre({ tabel: 'latihan', baris });
+  antre({ tabel: 'kegiatan', baris: { id: crypto.randomUUID(), jenis: jenis === 'hitung' ? 'soal' : 'kuis', slug: soalSlug, benar } });
 }
 
 export const bacaSkorPaket = (): Record<string, string> => bacaObjek<string>(KUNCI_SKOR_PAKET);
 export const simpanSkorPaket = (paket: string, skor: string): void =>
   simpanMentah(KUNCI_SKOR_PAKET, JSON.stringify({ ...bacaSkorPaket(), [paket]: skor }));
 
-/** Reset progres belajar: pelajaran selesai, latihan, skor paket, dan jejak belajar. Riwayat hitung tidak tersentuh. */
+/** Reset progres belajar: pelajaran selesai, latihan, skor paket, dan jejak belajar. Riwayat hitung tidak tersentuh.
+ * ponytail: reset tidak menghapus progres di akun; muncul lagi saat tarik berikutnya, jadi tiap pelajaran yang tadinya
+ * selesai diantre ulang sebagai `selesai: false`. Latihan tidak punya padanan "batal" → tidak diantre, akan muncul
+ * lagi setelah tarik. Tambah hapus di repo bila dikeluhkan. */
 export function resetProgresBelajar(): void {
+  Object.values(bacaProgresBelajar()).filter(baris => baris.selesai)
+    .forEach(baris => antre({ tabel: 'belajar', baris: { ...baris, selesai: false, diubahPada: new Date().toISOString() } }));
   [KUNCI_BELAJAR, KUNCI_LATIHAN, KUNCI_SKOR_PAKET].forEach(kunci => simpanMentah(kunci, '{}'));
   hapusAktivitas();
 }
