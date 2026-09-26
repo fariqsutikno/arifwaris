@@ -55,7 +55,8 @@ function barisMentah(peta: PetaDiksi): Mentah[] {
     ...DAFTAR_PELAJARAN.map(isi => ({ jenis: 'materi' as const, slug: isi.slug, urutan: isi.modul * URUTAN_PER_MODUL + isi.urutan, isi })),
     ...DAFTAR_SOAL_KUIS.map((isi, i) => ({ jenis: 'soal_kuis' as const, slug: isi.kode, urutan: i, isi })),
     ...DAFTAR_SOAL_HITUNG.map((isi, i) => ({ jenis: 'soal_hitung' as const, slug: isi.kode, urutan: i, isi })),
-    ...DAFTAR_TANYA_JAWAB.map((isi, i) => ({ jenis: 'tanya_jawab' as const, slug: isi.slug, urutan: i, isi })),
+    // Entri "[Placeholder]" di docs/tanya-jawab.md belum punya isi hukum; ditambahkan lewat portal setelah ada (keputusan 2026-09-26).
+    ...DAFTAR_TANYA_JAWAB.filter(isi => !isi.judul.startsWith('[Placeholder]')).map((isi, i) => ({ jenis: 'tanya_jawab' as const, slug: isi.slug, urutan: i, isi })),
     ...DAFTAR_FAQ.map((isi, i) => ({ jenis: 'faq' as const, slug: isi.id, urutan: i, isi })),
     ...SUMBER_KITAB.map((isi, i) => ({ jenis: 'kitab' as const, slug: slug(isi.judul), urutan: i, isi })),
     ...DAFTAR_SYAHID.map((isi, i) => ({ jenis: 'syahid' as const, slug: slug(`${isi.surah} ${isi.ayat} ${isi.hukum}`), urutan: i, isi })),

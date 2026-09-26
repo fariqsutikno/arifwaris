@@ -34,6 +34,10 @@ test('FAQ "Pakai aplikasi" tanpa ref tidak dilaporkan', () => {
   expect(galat.filter(pesan => pesan.startsWith('faq/') && /tanpa ref/.test(pesan))).toEqual([]);
 });
 
+test('tanya jawab placeholder tidak diimpor', () => {
+  expect(baris.filter(b => b.jenis === 'tanya_jawab' && /placeholder/i.test(b.slug))).toEqual([]);
+});
+
 test('refs manual digabung; ref manual yang tak dikenal KB dilaporkan', () => {
   const soal = baris.find(b => b.jenis === 'soal_hitung')!;
   const hasil = kumpulkanKontenLama(peta, { [kunciRefsManual('soal_hitung', soal.slug)]: ['R09-7', 'R99-9'] });
