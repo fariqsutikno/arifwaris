@@ -1,6 +1,6 @@
 # Konsep: Web Dua Bahasa (Indonesia + Arab)
 
-Status: langkah 1–2 dari "Urutan kerja" sudah jalan (`id+ar`, penjelasan langkah berbahasa Arab di `packages/explain/src/arab.ts`). Redaksi Arab masih draf, menunggu cek tim keilmuan.
+Status: langkah 1–3 dari "Urutan kerja" sudah jalan untuk beranda, ArifLab, wizard, hasil (kamus UI di `apps/web/src/konten/kamusArab.ts`, dijaga test `kamusArab.test.ts`; halaman Belajar/Latihan/Rujukan belum) (`id+ar`, penjelasan langkah berbahasa Arab di `packages/explain/src/arab.ts`). Redaksi Arab masih draf, menunggu cek tim keilmuan.
 
 ## Tujuan
 
@@ -87,3 +87,10 @@ Perkiraan: beberapa kali lipat Tahap 1+2. Layak hanya bila memang ada target pen
    terpisah di `packages/explain`, memakai `LangkahJejak` yang sama.
 3. UI penuh `ar` + RTL.
 4. Materi & soal versi Arab (konten tim keilmuan).
+
+## Catatan implementasi mode `ar`
+
+- `t('teks Indonesia', { sisipan })` di `apps/web/src/terjemah.ts`; kunci kamus = teks Indonesia apa adanya, yang belum diterjemahkan tampil Indonesia.
+- Ganti bahasa memuat ulang halaman, jadi `t()` boleh dipakai di konstanta `konten/*`.
+- CSS memakai properti logis (`margin-inline-start`, `text-align:start`), `<html dir="rtl">` saat bahasa Arab.
+- Angka tampil sebagai angka Arab (`angka()`), isian menerima ١٢٣ maupun 123 (`angkaLatin()`).
