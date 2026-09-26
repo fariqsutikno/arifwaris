@@ -64,6 +64,8 @@ export interface ProgresLatihan {
   soalSlug: string; jenis: 'kuis' | 'hitung'; jawabanTerakhir: unknown; benar: boolean; jumlahCoba: number; diubahPada: string;
 }
 export interface Preferensi { isi: Record<string, unknown>; diubahPada: string }
+/** Satu kegiatan belajar selesai (spec akun: dasar streak tahap 5). `id` dibuat klien supaya kirim ulang tidak dobel. */
+export interface Kegiatan { id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null }
 
 /** Semua operasi milik pengguna yang sedang masuk; melempar 'belum masuk' bila tanpa sesi. */
 export interface RepositoriPengguna {
@@ -76,6 +78,7 @@ export interface RepositoriPengguna {
   simpanProgresLatihan(progres: ProgresLatihan): Promise<void>;
   bacaPreferensi(): Promise<Preferensi | null>;
   simpanPreferensi(preferensi: Preferensi): Promise<void>;
+  catatKegiatan(kegiatan: Kegiatan): Promise<void>;
 }
 export interface RepositoriAkun {
   sesi(): Promise<Sesi | null>;

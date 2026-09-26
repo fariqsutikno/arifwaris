@@ -132,6 +132,10 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     async simpanPreferensi(baris) {
       await hasil(klien.from('preferensi').upsert({ user_id: await userId(), isi: baris.isi, diubah_pada: baris.diubahPada }));
     },
+    async catatKegiatan(baris) {
+      await hasil(klien.from('log_kegiatan').upsert(
+        { id: baris.id, jenis: baris.jenis, slug: baris.slug, benar: baris.benar }, { onConflict: 'id', ignoreDuplicates: true }));
+    },
   };
 
   const akun: RepositoriAkun = {

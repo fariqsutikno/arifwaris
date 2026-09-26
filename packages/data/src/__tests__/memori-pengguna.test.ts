@@ -28,6 +28,16 @@ describe('memori: pengguna & akun', () => {
     expect(await pengguna.bacaRiwayat()).toEqual([]);
   });
 
+  test('catatKegiatan: id sama diabaikan, tanpa sesi ditolak', async () => {
+    const bersama = buatMemori({ sesi: A });
+    const { pengguna } = buatMemoriPengguna(bersama);
+    const kegiatan = { id: 'u1', jenis: 'kuis' as const, slug: 'K-01', benar: true };
+    await pengguna.catatKegiatan(kegiatan);
+    await expect(pengguna.catatKegiatan(kegiatan)).resolves.toBeUndefined();
+    bersama.masukSebagai(null);
+    await expect(pengguna.catatKegiatan(kegiatan)).rejects.toThrow('belum masuk');
+  });
+
   test('tanpa sesi ditolak', async () => {
     const { pengguna, akun } = buatMemoriPengguna(buatMemori());
     expect(await akun.sesi()).toBeNull();

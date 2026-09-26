@@ -1,7 +1,7 @@
 // packages/data/src/memori/pengguna.ts
 // Data pengguna & akun di memori, berbagi sesi dan peran dengan buatMemori. Tiap simpan = upsert per kunci baris,
 // sama dengan primary key tabel di supabase/migrations/20260926000003_pengguna.sql.
-import type { Preferensi, ProgresBelajar, ProgresLatihan, RepositoriAkun, RepositoriPengguna, RiwayatTersimpan } from '../antarmuka.js';
+import type { Kegiatan, Preferensi, ProgresBelajar, ProgresLatihan, RepositoriAkun, RepositoriPengguna, RiwayatTersimpan } from '../antarmuka.js';
 import type { MemoriBersama } from './konten.js';
 
 export function buatMemoriPengguna(bersama: MemoriBersama): { pengguna: RepositoriPengguna; akun: RepositoriAkun } {
@@ -9,6 +9,7 @@ export function buatMemoriPengguna(bersama: MemoriBersama): { pengguna: Reposito
   const belajar = new Map<string, ProgresBelajar>();
   const latihan = new Map<string, ProgresLatihan>();
   const preferensi = new Map<string, Preferensi>();
+  const kegiatan = new Map<string, Kegiatan>();
 
   const pemilik = () => {
     const sesi = bersama.sesiSekarang();
@@ -31,6 +32,7 @@ export function buatMemoriPengguna(bersama: MemoriBersama): { pengguna: Reposito
     async simpanProgresLatihan(baris) { latihan.set(kunci(baris.jenis, baris.soalSlug), baris); },
     async bacaPreferensi() { return preferensi.get(kunci()) ?? null; },
     async simpanPreferensi(baris) { preferensi.set(kunci(), baris); },
+    async catatKegiatan(baris) { if (!kegiatan.has(kunci(baris.id))) kegiatan.set(kunci(baris.id), baris); },
   };
 
   // akun kini satu sumber di buatMemori (bersama), supaya aturPeran berbasis email tidak diduplikasi di sini.
