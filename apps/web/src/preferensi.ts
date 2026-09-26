@@ -88,3 +88,12 @@ export function resetProgresBelajar(): void {
 /** Pilihan kecil yang diingat per perangkat (mis. mode pembahasan kuis). */
 export const bacaPilihan = (kunci: string): string | null => baca(`arif-waris:pilihan:${kunci}`);
 export const simpanPilihan = (kunci: string, nilai: string): void => simpan(`arif-waris:pilihan:${kunci}`, nilai);
+
+/** Ukuran huruf artikel (px) yang dipilih pembaca lewat tombol A−/A+. */
+const KUNCI_UKURAN_BACA = 'arif-waris:ukuran-baca';
+export const UKURAN_BACA = [15, 16, 18, 20, 22] as const;
+export function bacaUkuranBaca(): number {
+  const nilai = Number(baca(KUNCI_UKURAN_BACA));
+  return (UKURAN_BACA as readonly number[]).includes(nilai) ? nilai : 18;
+}
+export const simpanUkuranBaca = (ukuran: number): void => simpan(KUNCI_UKURAN_BACA, String(ukuran));

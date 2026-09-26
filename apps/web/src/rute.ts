@@ -51,7 +51,8 @@ export const TAUTAN_KALKULATOR = '#/hitung';
 /** Halaman induk untuk tombol Kembali: selalu naik satu tingkat, bukan ke halaman yang terakhir dibuka. */
 export function tautanInduk(rute: Rute): string {
   switch (rute.halaman) {
-    case 'materi': case 'faq': case 'tanya-jawab': case 'glosarium': return tautanBelajar();
+    case 'materi': case 'faq': case 'glosarium': return tautanBelajar();
+    case 'tanya-jawab': return rute.id ? tautanTanyaJawab() : tautanBelajar();
     case 'riwayat': return TAUTAN_KALKULATOR;
     case 'rujukan': return rute.kode || rute.kitab !== undefined ? tautanRujukan(rute.kitab !== undefined ? 'kitab' : undefined) : tautanBelajar();
     case 'latihan': return rute.paket ? tautanLatihan('kuis') : tautanBelajar();

@@ -1172,3 +1172,19 @@ summary.kepala-bulat::after{position:absolute;top:12px;right:14px}
 @media (max-width:720px){.dok{display:none}}
 .dok-lapor{padding:2px 6px;border-radius:6px;background:var(--surface-raised);color:var(--ink-muted);font:600 12px var(--font-sans);text-decoration:underline;opacity:.85}
 .dok-lapor:hover{color:var(--ink);opacity:1}
+
+/* Tanya jawab: daftar kartu artikel dan halaman baca ala Medium (satu kolom sempit, huruf besar, bisa diatur). */
+.chip-kecil[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--surface-raised)}
+.chip-kecil:disabled{opacity:.4;cursor:default}
+.chip-jenis{align-self:flex-start;display:inline-flex;align-items:center;min-height:22px;padding:0 8px;border:1px solid var(--divider);border-radius:999px;background:var(--surface-sunken);color:var(--ink-muted);font:600 12px/1 var(--font-sans)}
+a.kartu-artikel{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;max-width:640px}
+a.kartu-artikel b{font:700 18px/1.35 var(--font-display)}
+a.kartu-artikel:hover{box-shadow:var(--shadow-pop-sm)}
+a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.artikel-tj{display:flex;flex-direction:column;gap:12px;max-width:68ch;margin:0 auto}
+.artikel-tj h1{margin:0;font:700 34px/1.2 var(--font-display)}
+.meta-artikel{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--divider)}
+.atur-huruf{display:flex;gap:6px}
+.isi-artikel{max-width:none;line-height:1.8}
+.isi-artikel h2{font-size:1.3em}
+@media (max-width:600px){.artikel-tj h1{font-size:26px}}
