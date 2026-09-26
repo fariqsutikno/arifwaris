@@ -5,7 +5,8 @@ import type { SoalHitung } from '@waris/content';
 import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
-import { bacaTujuan, catatAktivitas, simpanCatatan, simpanTujuan, sudahLihatTur, bacaBahasa } from './preferensi';
+import { bacaTujuan, catatAktivitas, simpanTujuan, sudahLihatTur, bacaBahasa } from './preferensi';
+import { catatLatihan } from './progres';
 import { t } from './terjemah';
 import { Tur } from './tur/Tur';
 import { AwalHitung } from './layar/AwalHitung';
@@ -146,6 +147,6 @@ const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLoka
 const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 
 function tandaiSoalDikerjakan(soal: SoalHitung): void {
-  simpanCatatan('soal', soal.kode, 'selesai');
+  catatLatihan('hitung', soal.kode, true, null);
   catatAktivitas({ jenis: 'soal', kode: soal.kode, judul: soal.judul, waktu: Date.now() });
 }

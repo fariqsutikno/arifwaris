@@ -7,7 +7,7 @@ import { HeroMini } from '../../ui/Hero';
 import { type SoalHitung, type Tingkat } from '@waris/content';
 import { daftarSoalHitung } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
-import { bacaCatatan } from '../../preferensi';
+import { bacaProgresLatihan } from '../../progres';
 import { tautanLatihan } from '../../rute';
 import { TEKS_TINGKAT } from '../AwalHitung';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
@@ -39,7 +39,7 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
 const TINGKAT: Tingkat[] = ['dasar', 'menengah', 'sulit'];
 
 function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | 'paket'>) {
-  const catatan = bacaCatatan('soal');
+  const catatan = bacaProgresLatihan('hitung');
   const jumlahSelesai = daftarSoalHitung().filter(soal => catatan[soal.kode]).length;
   return (
     <>

@@ -7,7 +7,7 @@ import { jalankan } from '../jalankan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
 import { Latihan } from '../layar/belajar/Latihan';
 import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
-import { bacaCatatan, simpanCatatan } from '../preferensi';
+import { bacaSkorPaket, catatLatihan } from '../progres';
 
 describe('kunci soal hitung = hasil engine', () => {
   it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
@@ -25,7 +25,7 @@ describe('kunci soal hitung = hasil engine', () => {
 describe('halaman latihan', () => {
   it('soal hitung per bab; Kerjakan membuka soalnya; yang sudah dikerjakan bertanda dan topiknya muncul', () => {
     const [pertama, kedua] = daftarSoalHitung() as [SoalHitung, SoalHitung];
-    simpanCatatan('soal', kedua.kode, 'selesai');
+    catatLatihan('hitung', kedua.kode, true, null);
     const dikerjakan: SoalHitung[] = [];
     const { container } = render(<Latihan tab="hitung" kasusSekarang={null} saatKerjakan={soal => dikerjakan.push(soal)} />);
     expect(screen.getByRole('heading', { name: new RegExp(`^${judulTopik(pertama.bab)}`) })).toBeTruthy();
@@ -61,7 +61,7 @@ describe('halaman latihan', () => {
     expect(screen.getByRole('heading', { name: 'Pembahasan' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Pilih kuis lain' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Kerjakan lagi' })).toBeTruthy();
-    expect(bacaCatatan('kuis')['bab-1']).toBe(`1/${daftar.length}`);
+    expect(bacaSkorPaket()['bab-1']).toBe(`1/${daftar.length}`);
   });
 
   it('sesi kuis mode ujian: jawaban bisa diganti dan soal sebelumnya dibuka lagi; penilaian baru saat diselesaikan', () => {

@@ -9,7 +9,7 @@ import { daftarSoalHitung } from '../konten/sumber';
 import { TEKS_HITUNG } from '../konten/umum';
 import { dariJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
-import { bacaCatatan } from '../preferensi';
+import { bacaProgresLatihan } from '../progres';
 import { ringkasKasus, type EntriRiwayat } from '../riwayat';
 import { tautanLatihan } from '../rute';
 import { HeroMini } from '../ui/Hero';
@@ -81,7 +81,7 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
 
 /** Soal latihan yang belum dikerjakan (urutan daftar latihan, dari yang dasar); kalau semua sudah, ulangi dari awal. */
 function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => void }) {
-  const catatan = bacaCatatan('soal');
+  const catatan = bacaProgresLatihan('hitung');
   const belum = daftarSoalHitung().filter(soal => !catatan[soal.kode]);
   const daftar = (belum.length > 0 ? belum : daftarSoalHitung()).slice(0, JUMLAH_SOAL_PINTASAN);
   return (

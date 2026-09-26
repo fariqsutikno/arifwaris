@@ -7,7 +7,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { JUDUL_BAB, type SoalKuis } from '@waris/content';
 import { daftarSoalKuis } from '../../konten/sumber';
-import { bacaCatatan, bacaPilihan, catatAktivitas, simpanCatatan, simpanPilihan } from '../../preferensi';
+import { bacaPilihan, catatAktivitas, simpanPilihan } from '../../preferensi';
+import { bacaSkorPaket, catatLatihan, simpanSkorPaket } from '../../progres';
 import { tautanLatihan } from '../../rute';
 import { Ikon } from '../../ui/Ikon';
 import { usePenjaga } from '../../ui/Penjaga';
@@ -65,7 +66,7 @@ const judulPaket = (paket: string) => {
 export const judulTopik = (bab: number) => (JUDUL_BAB[bab] ?? '').replace(/\s*\(.*\)\s*$/, '');
 
 export function DaftarPaketKuis() {
-  const catatan = bacaCatatan('kuis');
+  const catatan = bacaSkorPaket();
   return (
     <>
       <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>
@@ -164,9 +165,9 @@ export function SesiKuis({ paket }: { paket: string }) {
   };
   // Penilaian dicatat saat sesi diselesaikan, karena di mode ujian jawaban masih bisa diganti sampai saat itu.
   const selesaikan = () => {
-    daftarSoal.forEach((soalIni, urutan) => simpanCatatan('kuis', soalIni.kode, pilihan[urutan] === soalIni.indeksBenar ? 'benar' : 'salah'));
+    daftarSoal.forEach((soalIni, urutan) => catatLatihan('kuis', soalIni.kode, pilihan[urutan] === soalIni.indeksBenar, pilihan[urutan] ?? null));
     const skor = `${benarSejauhIni}/${daftarSoal.length}`;
-    simpanCatatan('kuis', paket, skor);
+    simpanSkorPaket(paket, skor);
     catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
     setTahap('hasil');
   };
