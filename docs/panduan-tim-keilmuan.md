@@ -12,10 +12,10 @@ Tidak perlu bisa coding.
 menambahkanmu sebagai `penulis` atau `reviewer` lewat email — kamu harus sudah pernah masuk sekali sebelum bisa
 diberi peran. Setelah masuk:
 
-1. Buka layar **Konten**, pilih jenis kontennya (materi, soal kuis, soal hitung, FAQ, tanya jawab, ahwal, syahid,
-   kitab, glosarium Arab, atau teks/diksi UI), lalu sunting entrinya. Materi disunting sebagai blok Markdown;
-   jenis lain lewat kolom teks dan JSON sesuai bentuknya.
-2. Buka **Pratinjau** untuk melihat tampilannya sebelum diajukan.
+1. Di navigasi ada satu menu per jenis konten (materi, soal kuis, soal hitung, FAQ, tanya jawab, ahwal, syahid,
+   kitab, glosarium Arab), plus menu terpisah **Diksi** untuk teks UI aplikasi. Pilih menunya, lalu sunting
+   entrinya. Materi disunting sebagai blok Markdown; jenis lain lewat kolom teks dan JSON sesuai bentuknya.
+2. Di layar editornya ada tombol **Pratinjau** untuk melihat tampilannya sebelum diajukan.
 3. Ajukan revisi. Revisi masuk ke **Antrean review**.
 4. **Reviewer** (bukan penulisnya sendiri) membuka diffnya, lalu **menyetujui** atau **mengembalikan** disertai
    catatan wajib. Revisi yang disetujui langsung terbit.

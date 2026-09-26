@@ -96,6 +96,8 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       return saringValid(mentah);
     },
     async daftarRevisi(entriId) { return [...revisi.values()].filter(baris => baris.entriId === entriId); },
+    // Tidak menyaring baris belum terbit menurut peran: RLS Postgres menyembunyikannya dari pengguna tanpa peran,
+    // tapi gerbang portal (Portal.tsx) sudah menolak pengguna tanpa peran sebelum layar ini terpanggil.
     async daftarEntri(jenis) {
       return [...entri.values()].filter(baris => baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
         .map((baris): RingkasanEntri => ({
@@ -147,6 +149,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
     },
+    // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
     async antreanReview() { return [...revisi.values()].filter(baris => baris.status === 'diajukan'); },
   };
 
@@ -192,6 +195,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       tujuan.versiTerbit = ++versi;
     },
     async daftarRevisi(kunci) { return [...revisiDiksi.values()].filter(baris => baris.kunci === kunci); },
+    // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
     async daftarKunci() {
       return [...kunciDiksi.values()].sort((a, b) => a.halaman.localeCompare(b.halaman) || a.kunci.localeCompare(b.kunci))
         .map((baris): RingkasanKunciDiksi => {
@@ -215,9 +219,13 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       if (!sesi || peran.get(sesi.userId) !== 'admin') throw new Error('hanya admin yang bisa mengatur peran');
       const target = pengguna.get(email.trim().toLowerCase());
       if (!target) throw new Error(`akun belum pernah masuk: ${email}`);
+      // [supabase/migrations/20260927000002_cegah_admin_terkunci.sql] admin tidak bisa mencabut/menurunkan perannya sendiri.
+      if (target.userId === sesi.userId && peranBaru !== 'admin') throw new Error('admin tidak bisa mencabut atau menurunkan perannya sendiri');
       if (peranBaru) peran.set(target.userId, peranBaru); else peran.delete(target.userId);
     },
     async daftarPeran(): Promise<PeranPengguna[]> {
+      // [supabase/migrations/20260927000001_portal.sql] daftar_peran() menolak selain admin; disamakan di sini.
+      if (!sesi || peran.get(sesi.userId) !== 'admin') throw new Error('hanya admin yang bisa melihat daftar peran');
       return [...pengguna.values()].flatMap(p => (peran.has(p.userId) ? [{ ...p, peran: peran.get(p.userId)! }] : []))
         .sort((a, b) => a.email.localeCompare(b.email));
     },

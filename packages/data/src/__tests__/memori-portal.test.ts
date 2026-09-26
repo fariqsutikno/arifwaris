@@ -38,6 +38,20 @@ test('aturPeran oleh non-admin ditolak', async () => {
   await expect(m.akun.aturPeran('admin@x.id', null)).rejects.toThrow('hanya admin');
 });
 
+test('daftarPeran oleh non-admin ditolak', async () => {
+  const m = siapkan();
+  m.aturPeranLangsung('u-rev', 'reviewer');
+  m.masukSebagai({ userId: 'u-rev', email: 'rev@x.id' });
+  await expect(m.akun.daftarPeran()).rejects.toThrow('hanya admin yang bisa melihat daftar peran');
+});
+
+test('admin tidak bisa mencabut atau menurunkan perannya sendiri', async () => {
+  const m = siapkan();
+  await expect(m.akun.aturPeran('admin@x.id', 'penulis')).rejects.toThrow('admin tidak bisa mencabut atau menurunkan perannya sendiri');
+  await expect(m.akun.aturPeran('admin@x.id', null)).rejects.toThrow('admin tidak bisa mencabut atau menurunkan perannya sendiri');
+  await expect(m.akun.aturPeran('admin@x.id', 'admin')).resolves.toBeUndefined();
+});
+
 test('daftarKunci & antrean diksi', async () => {
   const m = siapkan();
   await m.diksi.buatKunci('umum.simpan', 'umum');
