@@ -109,7 +109,7 @@ apps/web/src/terjemah.ts                    t() membaca diksi, teksEdukasi()
   - `interface BarisKonten { jenis: JenisKonten; slug: string; isi: unknown }` (isi = hasil `bacaIsi`, bukan JSON mentah)
   - `periksaKonsistensi(daftar: BarisKonten[]): string[]` — pesan `jenis/slug: ...`; `[]` = konsisten.
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // packages/content/src/__tests__/konsistensi.test.ts
@@ -169,12 +169,12 @@ test('ahwal menerima versi Arab per baris', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/content test konsistensi`
 Expected: FAIL — `ambilRefs`/`periksaKonsistensi` tidak diekspor.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 `skema.ts`: ganti `IsiAhwal` dan skema `ahwal`:
 
@@ -261,12 +261,12 @@ Catatan: `syahid.rujukan` berisi kode `Rxx-y` sehingga ikut diperiksa `periksaPo
 
 `index.ts`: tambah `export { ambilRefs, periksaKonsistensi, type BarisKonten } from './konsistensi.js';` dan `type BarisAhwal` di baris ekspor skema.
 
-- [ ] **Step 4: Jalankan tes & typecheck**
+- [x] **Step 4: Jalankan tes & typecheck**
 
 Run: `pnpm --filter @waris/content test && pnpm --filter @waris/content exec tsc --noEmit -p .`
 Expected: semua hijau. Bila tes "konten sekarang konsisten" gagal, itu temuan nyata di berkas konten: laporkan ke pengguna, jangan dilonggarkan.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/content/src/skema.ts packages/content/src/konsistensi.ts packages/content/src/index.ts packages/content/src/__tests__/konsistensi.test.ts
@@ -287,7 +287,7 @@ Dipakai ekspor Markdown (lampiran TA) sekarang dan editor portal di tahap 3.
 **Interfaces:**
 - Produces: `tulisBlok(daftar: Blok[]): string`, `tulisPotongan(daftar: Potongan[]): string`. Hukum: `bacaBlok(x, tulisBlok(b))` deep-equal `b`.
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // packages/content/src/__tests__/tulisBlok.test.ts
@@ -312,11 +312,11 @@ test('potongan: tebal, miring, istilah bertautan teks, rujukan', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/content test tulisBlok` → FAIL (`tulisBlok` tidak ada).
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 Baca dulu `bacaBlok`/`bacaPotongan` dan helper blok `kasus`/`video`/`kuis` di `packages/content/src/materi.ts`
 (bentuk isi pagar ```kasus: `pewaris:`, `ahli waris:`, `harta:`, `harapan:`). `tulisBlok` menulis persis sintaks yang
@@ -374,9 +374,9 @@ menerima jumlah). Tes bolak-balik atas semua konten nyata adalah penentunya; uba
 
 `index.ts`: `export { tulisBlok, tulisPotongan } from './tulisBlok.js';`
 
-- [ ] **Step 4: Jalankan tes** — `pnpm --filter @waris/content test` → hijau.
+- [x] **Step 4: Jalankan tes** — `pnpm --filter @waris/content test` → hijau.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/content/src/tulisBlok.ts packages/content/src/index.ts packages/content/src/__tests__/tulisBlok.test.ts
@@ -409,7 +409,7 @@ git commit -m "content: tulisBlok, kebalikan parser blok Markdown"
   ```
 - `scripts/diksi/peta.json` dibaca Task 4 (impor) dan Task 9 (tulis ulang).
 
-- [ ] **Step 1: Kerangka paket**
+- [x] **Step 1: Kerangka paket**
 
 `pnpm-workspace.yaml` packages: tambah `- 'scripts'`.
 
@@ -442,7 +442,7 @@ git commit -m "content: tulisBlok, kebalikan parser blok Markdown"
 Root `package.json`: `"db:refs"` tetap; tambah `"konten:impor": "pnpm --filter @waris/skrip impor"`, `"konten:ekspor": "pnpm --filter @waris/skrip ekspor"`.
 Run: `pnpm install`.
 
-- [ ] **Step 2: Normalisasi `t()` dinamis (sebelum peta dibuat)**
+- [x] **Step 2: Normalisasi `t()` dinamis (sebelum peta dibuat)**
 
 Peta hanya bisa melihat `t('literal')`. Cari semua pemanggilan non-literal:
 
@@ -468,7 +468,7 @@ Ubah tiap temuan tanpa mengubah teks yang tampil (kamus Arab lama tetap berlaku,
 
 Ulangi grep sampai kosong. Run: `pnpm --filter @waris/web test` → hijau (termasuk `kamusArab.test.ts`).
 
-- [ ] **Step 3: Tulis tes gagal**
+- [x] **Step 3: Tulis tes gagal**
 
 ```ts
 // scripts/diksi/rencana.test.ts
@@ -524,9 +524,9 @@ describe('susunPeta', () => {
 });
 ```
 
-- [ ] **Step 4: Jalankan, pastikan gagal** — `pnpm --filter @waris/skrip test` → FAIL (modul tidak ada).
+- [x] **Step 4: Jalankan, pastikan gagal** — `pnpm --filter @waris/skrip test` → FAIL (modul tidak ada).
 
-- [ ] **Step 5: Implementasi**
+- [x] **Step 5: Implementasi**
 
 ```ts
 // scripts/diksi/rencana.ts
@@ -683,7 +683,7 @@ if (perintah === 'peta') {
 }
 ```
 
-- [ ] **Step 6: Jalankan tes, buat peta, periksa manual**
+- [x] **Step 6: Jalankan tes, buat peta, periksa manual**
 
 Run: `pnpm --filter @waris/skrip test` → hijau.
 Run: `pnpm --filter @waris/skrip diksi:peta` → mencetak jumlah.
@@ -691,7 +691,7 @@ Periksa `scripts/diksi/peta.json` sekilas: kunci terbaca, tidak ada `teks`/`_2` 
 Kunci jelek boleh diperbaiki langsung di `peta.json` (peta itu yang dipakai seterusnya); pastikan tetap cocok regex dan unik:
 `node -e "const p=require('./scripts/diksi/peta.json');const k=p.diksi.map(b=>b.kunci);console.log(k.length===new Set(k).size, k.every(x=>/^[a-z0-9_]+(\.[a-z0-9_]+)+$/.test(x)))"` → `true true`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add pnpm-workspace.yaml pnpm-lock.yaml package.json scripts/package.json scripts/tsconfig.json scripts/vitest.config.ts scripts/diksi apps/web/src
@@ -718,7 +718,7 @@ git commit -m "skrip: paket @waris/skrip, peta ID diksi & teks edukasi; t() dina
     baris: BarisImpor[], diksi: ButirDiksi[]): Promise<{ dibuat: number; dilewati: number }>
   ```
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // scripts/impor/kumpul.test.ts
@@ -819,9 +819,9 @@ test('idempoten: jalan kedua tidak membuat apa pun', async () => {
 
 Catatan: `scripts/tsconfig.json` butuh `"resolveJsonModule": true` untuk `import peta from '../diksi/peta.json'`.
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/skrip test impor` → FAIL.
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/skrip test impor` → FAIL.
 
-- [ ] **Step 3: Implementasi `kumpul.ts`**
+- [x] **Step 3: Implementasi `kumpul.ts`**
 
 ```ts
 // scripts/impor/kumpul.ts
@@ -910,7 +910,7 @@ Catatan: `AHWAL` dievaluasi dengan bahasa Indonesia (tanpa localStorage di Node,
 dalamnya mengembalikan teks Indonesia. Bila `urutan` langkah-selanjutnya bertabrakan secara visual tidak masalah; `urutan`
 hanya dipakai mengurutkan dalam satu jenis.
 
-- [ ] **Step 4: Implementasi `tulis.ts`**
+- [x] **Step 4: Implementasi `tulis.ts`**
 
 ```ts
 // scripts/impor/tulis.ts
@@ -1006,17 +1006,17 @@ if (error) throw error;
 console.log(await tulisKeRepositori(buatRepositoriSupabase(klien), baris, peta.diksi));
 ```
 
-- [ ] **Step 5: Jalankan tes** — `pnpm --filter @waris/skrip test` → `tulis.test.ts` hijau; `kumpul.test.ts` hijau
+- [x] **Step 5: Jalankan tes** — `pnpm --filter @waris/skrip test` → `tulis.test.ts` hijau; `kumpul.test.ts` hijau
 (tes "entri fikih tanpa ref dilaporkan" lolos walau galat masih ada, karena memeriksa pelaporannya).
 
-- [ ] **Step 6: BERHENTI — minta pengguna mengisi refs manual**
+- [x] **Step 6: BERHENTI — minta pengguna mengisi refs manual**
 
 Run: `pnpm --filter @waris/skrip impor:periksa`
 Kirim daftar galat "jenis fikih tanpa ref" ke pengguna. JANGAN mengisi kode sendiri. Pengguna/tim keilmuan mengisi
 `scripts/impor/refs-manual.json` (`{ "soal_hitung/H-01": ["R05-3"], ... }`) dari KB. Galat lain (Zod, konsistensi)
 diperbaiki di berkas asal lalu dilaporkan ke pengguna. Ulangi sampai: `siap: N konten, M diksi`.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add scripts/impor scripts/tsconfig.json
@@ -1043,7 +1043,7 @@ git commit -m "skrip: impor konten lama (terbit + antrean review), refs manual d
   ```
   `sinkronkan` → `null` bila tidak ada perubahan atau gagal (galat dicatat `console.warn`, tidak dilempar).
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // packages/data/src/__tests__/snapshot.test.ts
@@ -1100,9 +1100,9 @@ describe('sinkronkan', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/data test snapshot` → FAIL.
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/data test snapshot` → FAIL.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 ```ts
 // packages/data/src/snapshot.ts
@@ -1146,9 +1146,9 @@ export const keMentah = (baris: KontenTerbit): BarisTerbitMentah => ({ ...baris,
 `package.json` exports: `".": "./src/index.ts", "./snapshot": "./src/snapshot.ts"`.
 `index.ts`: `export { gabungSnapshot, keMentah, pilihAwal, sinkronkan, type Snapshot } from './snapshot.js';`
 
-- [ ] **Step 4: Jalankan tes & typecheck** — `pnpm --filter @waris/data test && pnpm --filter @waris/data exec tsc --noEmit -p .` → hijau.
+- [x] **Step 4: Jalankan tes & typecheck** — `pnpm --filter @waris/data test && pnpm --filter @waris/data exec tsc --noEmit -p .` → hijau.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/data/src/snapshot.ts packages/data/src/__tests__/snapshot.test.ts packages/data/package.json packages/data/src/index.ts
@@ -1171,7 +1171,7 @@ git commit -m "data: snapshot konten (pilih awal, gabung, sinkron sejak versi)"
   export function keMarkdown(konten: KontenTerbit[]): Record<string, string>  // nama berkas `${jenis}.md` → isi
   ```
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // scripts/ekspor/susun.test.ts
@@ -1203,9 +1203,9 @@ test('markdown: satu berkas per jenis, blok ditulis Markdown, refs tercantum', (
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/skrip test ekspor` → FAIL.
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/skrip test ekspor` → FAIL.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 ```ts
 // scripts/ekspor/susun.ts
@@ -1261,9 +1261,9 @@ for (const [nama, isi] of Object.entries(keMarkdown(konten))) writeFileSync(new 
 console.log(`versi ${versi}: ${konten.length} konten, ${diksi.length} diksi`);
 ```
 
-- [ ] **Step 4: Jalankan tes** — `pnpm --filter @waris/skrip test` → hijau.
+- [x] **Step 4: Jalankan tes** — `pnpm --filter @waris/skrip test` → hijau.
 
-- [ ] **Step 5: Impor & ekspor sungguhan (Supabase lokal)**
+- [x] **Step 5: Impor & ekspor sungguhan (Supabase lokal)**
 
 ```bash
 pnpm db:mulai
@@ -1279,7 +1279,7 @@ pnpm konten:ekspor
 Expected: impor pertama `{ dibuat: N, dilewati: 0 }`, kedua `{ dibuat: 0, dilewati: N }`; ekspor mencetak jumlah konten =
 jumlah baris impor dan jumlah diksi = `peta.diksi.length` (verifikasi spec "jumlah entri DB = jumlah dari berkas").
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/ekspor apps/web/src/snapshot.json docs/lampiran-konten
@@ -1316,7 +1316,7 @@ Diksi dan teks edukasi belum dipindah di task ini (Task 9); `t()` masih memakai 
   export function teksEdukasiMentah(slug: string): IsiTeksEdukasi | undefined // dipakai Task 9
   ```
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // apps/web/src/__tests__/snapshot.test.ts
@@ -1361,9 +1361,9 @@ test('pasangSnapshot mengganti isi getter', () => {
 
 (Bila ada tes web yang memeriksa contoh kasus materi/soal hitung terhadap engine lewat `DAFTAR_*`, ubah ke getter yang sama.)
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/web test snapshot` → FAIL.
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/web test snapshot` → FAIL.
 
-- [ ] **Step 3: Implementasi `sumber.ts`**
+- [x] **Step 3: Implementasi `sumber.ts`**
 
 ```ts
 // apps/web/src/konten/sumber.ts
@@ -1428,7 +1428,7 @@ function gabungGlosarium(): EntriGlosarium[] {
 Pastikan `GLOSARIUM` di content masih membawa `ar` dari `glosarium-ar.md` sampai Task 10; `gabungGlosarium` menimpanya dengan
 nilai dari snapshot (sama isinya). Di Task 10 `ar` dari berkas dihapus dari content.
 
-- [ ] **Step 4: Ganti pemakai**
+- [x] **Step 4: Ganti pemakai**
 
 Mekanis, per berkas dari grep di atas: impor dari `../konten/sumber` (jalur relatif sesuai letak) alih-alih `@waris/content`,
 `DAFTAR_PELAJARAN` → `daftarPelajaran()`, `DAFTAR_SOAL_HITUNG` → `daftarSoalHitung()`, `SUMBER_KITAB` → `sumberKitab()`,
@@ -1440,12 +1440,12 @@ Pemakaian di tingkat modul (mis. `const X = DAFTAR_...` di luar komponen) → pi
 - `Belajar.tsx`: `DAFTAR_CHEATSHEET` → `daftarCheatsheet()`; `lembar.berkas` → `lembar.tautan` (tautan luar: `target="_blank" rel="noopener"`, bukan `download`); judul `bahasaArab() && lembar.judulAr ? lembar.judulAr : lembar.judul`.
 - Tes web lama yang mengimpor `DAFTAR_*` dari content → getter dari `sumber`.
 
-- [ ] **Step 5: Jalankan tes & build**
+- [x] **Step 5: Jalankan tes & build**
 
 Run: `pnpm --filter @waris/web test && pnpm --filter @waris/web build` → hijau.
 Run: `grep -rn "DAFTAR_PELAJARAN\|DAFTAR_SOAL\|DAFTAR_FAQ\|DAFTAR_TANYA_JAWAB\|DAFTAR_SYAHID\|SUMBER_KITAB\|DAFTAR_MODUL\|GLOSARIUM\b" apps/web/src` → kosong (kecuali `sumber.ts` `GLOSARIUM`).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/web
@@ -1465,7 +1465,7 @@ git commit -m "web: konten dibaca dari snapshot lewat konten/sumber.ts"
 - Consumes: `pilihAwal`, `sinkronkan`, `Snapshot` (Task 5); `pasangSnapshot`, `snapshotTerpasang` (Task 7).
 - Produces: `bacaCache(): Promise<Snapshot | null>`, `simpanCache(snapshot: Snapshot): Promise<void>` — tidak pernah melempar.
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // apps/web/src/__tests__/cache.test.ts
@@ -1478,9 +1478,9 @@ test('tanpa IndexedDB (jsdom): baca null, simpan tidak melempar', async () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/web test cache` → FAIL.
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/web test cache` → FAIL.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 ```ts
 // apps/web/src/konten/cache.ts
@@ -1555,13 +1555,13 @@ async function sinkronLatar(lokal: Snapshot): Promise<void> {
 Top-level `await` butuh target build `es2022` (cek `vite.config.ts` `build.target`; tambahkan `build: { target: 'es2022' }` bila perlu).
 `apps/web/.env.example`: `VITE_SUPABASE_URL=` dan `VITE_SUPABASE_ANON_KEY=` dengan komentar "kosong = tanpa sinkron, web jalan dari snapshot".
 
-- [ ] **Step 4: Jalankan tes, build, dan cek di browser**
+- [x] **Step 4: Jalankan tes, build, dan cek di browser**
 
 Run: `pnpm --filter @waris/web test && pnpm --filter @waris/web build` → hijau.
 Buka dev server (preview), pastikan beranda & satu materi tampil, konsol tanpa galat. Dengan env Supabase lokal terisi:
 setujui satu revisi di DB (mis. lewat tes integrasi atau SQL sebagai admin), muat ulang dua kali → perubahan tampil di muat kedua.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web/src/konten/cache.ts apps/web/src/main.tsx apps/web/src/__tests__/cache.test.ts apps/web/.env.example apps/web/package.json apps/web/vite.config.ts pnpm-lock.yaml
@@ -1583,7 +1583,7 @@ git commit -m "web: cache konten IndexedDB, boot dari cache/snapshot, sinkron la
 - Produces: `t(kunci: string, sisipan?)` — kunci diksi; `teksEdukasi(slug: string): string` (di `terjemah.ts`).
   Keduanya: Arab bila bahasa Arab dan `ar` ada (angka Arab), selain itu Indonesia, bila tidak ada → kunci mentah (tertangkap tes).
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // apps/web/src/__tests__/diksi.test.ts
@@ -1621,9 +1621,9 @@ test('kunci snapshot yang tidak dipakai kode dilaporkan', () => {
 
 Pindahkan tes "isian dengan angka Arab dibaca sama" dari `kamusArab.test.ts` ke `diksi.test.ts` apa adanya, lalu hapus `kamusArab.test.ts`.
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/web test diksi` → FAIL (masih ada `t('teks Indonesia')`).
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/web test diksi` → FAIL (masih ada `t('teks Indonesia')`).
 
-- [ ] **Step 3: `t()` dan `teksEdukasi` membaca snapshot**
+- [x] **Step 3: `t()` dan `teksEdukasi` membaca snapshot**
 
 ```ts
 // apps/web/src/terjemah.ts — ganti t() dan komentar kepala; fungsi angka/panah tetap
@@ -1659,7 +1659,7 @@ export function teksEdukasi(slug: string): string {
 }
 ```
 
-- [ ] **Step 4: Tulis ulang per kelompok halaman, satu commit per kelompok**
+- [x] **Step 4: Tulis ulang per kelompok halaman, satu commit per kelompok**
 
 Urutan (tiap baris = jalankan, tes, commit):
 
@@ -1685,12 +1685,12 @@ Tangani manual di kelompok `konten/`:
 - Hapus konstanta `PERLU_CEK_LABEL`, `TEKS_HARTA.perluCek`, `TEKS_KEWAJIBAN.perluCek`, `TeksLangkah.perluCek`, `PERLU_CEK_KAMUS`
   (status review kini di DB); hapus pemakainya bila ada.
 
-- [ ] **Step 5: Periksa tampilan Arab**
+- [x] **Step 5: Periksa tampilan Arab**
 
 Preview dev server, pilih bahasa Arab: beranda, wizard, hasil (modal orang: ahwal Arab), satu materi, glosarium tampil Arab
 seperti sebelum migrasi; screenshot untuk pengguna.
 
-- [ ] **Step 6: Commit penutup** (bila ada sisa: terjemah.ts, tes diksi, penghapusan kamusArab.test.ts)
+- [x] **Step 6: Commit penutup** (bila ada sisa: terjemah.ts, tes diksi, penghapusan kamusArab.test.ts)
 
 ```bash
 git add apps/web/src scripts/diksi
@@ -1711,7 +1711,7 @@ git commit -m "web: t() membaca diksi terbit, teksEdukasi dari konten; tes cakup
 - Modify: `scripts/package.json` (hapus script `diksi:*`, `impor*`), root `package.json` (`konten:impor`), `docs/panduan-tim-keilmuan.md`
   (arahkan ke portal; sebut berkas lama sudah dihapus)
 
-- [ ] **Step 1: Hapus loader & parser berkas di content**
+- [x] **Step 1: Hapus loader & parser berkas di content**
 
 - `materi.ts`: hapus `BERKAS`, `DAFTAR_MODUL`, `DAFTAR_PELAJARAN`, `cariPelajaran`, `bacaPelajaran`, `bacaVersiArab`, `bacaDaftarModul`
   dan konstanta penanda Arab; sisakan tipe, `bacaBlok`, `bacaPotongan`, `semuaPotongan`, `bacaDaftarAhliWaris`, `bacaHarapan`.
@@ -1722,7 +1722,7 @@ git commit -m "web: t() membaca diksi terbit, teksEdukasi dari konten; tes cakup
 - `index.ts`: hapus ekspor yang hilang.
 - `glob.d.ts`: hapus bila `import.meta.glob` tidak dipakai lagi.
 
-- [ ] **Step 2: Sesuaikan tes, lalu hapus berkas**
+- [x] **Step 2: Sesuaikan tes, lalu hapus berkas**
 
 ```bash
 git rm -r docs/materi docs/soal docs/faq.md docs/tanya-jawab.md docs/rujukan docs/glosarium-ar.md \
@@ -1733,16 +1733,16 @@ Tes parser yang memakai string sebaris (mis. `bacaBlok('uji', '| A | B |...')`) 
 dipindah/diganti: konsistensi → `snapshot.test.ts` web (sudah ada), bolak-balik skema & `tulisBlok` → fixture sebaris yang
 mencakup tiap jenis blok (judul, paragraf, daftar berurut/tidak, catatan, tabel, kasus, video, kuis) dan tiap jenis potongan.
 
-- [ ] **Step 3: Tidak ada rujukan tersisa**
+- [x] **Step 3: Tidak ada rujukan tersisa**
 
 Run: `grep -rn "docs/materi\|docs/soal\|docs/faq\|tanya-jawab.md\|docs/rujukan\|glosarium-ar\|KAMUS_\|kamusArab\|DAFTAR_PELAJARAN\|DAFTAR_SOAL\|DAFTAR_FAQ" --exclude-dir=node_modules --exclude-dir=superpowers --exclude-dir=lampiran-konten . `
 Expected: kosong (dokumen di `docs/superpowers` boleh menyebut sejarahnya).
 
-- [ ] **Step 4: Semua tes & build**
+- [x] **Step 4: Semua tes & build**
 
 Run: `env -u SUPABASE_URL pnpm test && pnpm --filter @waris/web build` → hijau.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A packages/content packages/data scripts apps/web docs/panduan-tim-keilmuan.md package.json
@@ -1753,13 +1753,13 @@ git commit -m "hapus berkas konten lama: konten & diksi kini di database (snapsh
 
 ### Task 11: Verifikasi tahap 2
 
-- [ ] **Step 1: Tes JS tanpa jaringan** — `env -u SUPABASE_URL pnpm test` → semua hijau; catat angka per paket.
-- [ ] **Step 2: DB dari nol + ekspor ulang stabil** — `pnpm db:reset && pnpm db:tes` → ok. Snapshot tidak bisa diimpor ulang
+- [x] **Step 1: Tes JS tanpa jaringan** — `env -u SUPABASE_URL pnpm test` → semua hijau; catat angka per paket.
+- [x] **Step 2: DB dari nol + ekspor ulang stabil** — `pnpm db:reset && pnpm db:tes` → ok. Snapshot tidak bisa diimpor ulang
   (berkas lama dihapus); cukup pastikan `git status` bersih.
-- [ ] **Step 3: Tes integrasi data dengan Supabase lokal** — seperti tahap 1 (`SUPABASE_URL=$API_URL ... pnpm --filter @waris/data test`) → semua lolos.
-- [ ] **Step 4: Build & tampilan** — `pnpm --filter @waris/web build`; preview: bahasa Indonesia & Arab, offline (matikan jaringan di
+- [x] **Step 3: Tes integrasi data dengan Supabase lokal** — seperti tahap 1 (`SUPABASE_URL=$API_URL ... pnpm --filter @waris/data test`) → semua lolos.
+- [x] **Step 4: Build & tampilan** — `pnpm --filter @waris/web build`; preview: bahasa Indonesia & Arab, offline (matikan jaringan di
   devtools) tetap memuat dari cache/snapshot.
-- [ ] **Step 5: Centang plan & commit**
+- [x] **Step 5: Centang plan & commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-26-database-tahap2-migrasi-konten.md
