@@ -54,13 +54,13 @@ export function Portal({ repo }: { repo: RepoPortal }) {
   }
   return (
     <KonteksRepo.Provider value={{ repo, sesi: status.sesi, peran: status.peran }}>
-      <NavigasiPortal peran={status.peran} />
+      <NavigasiPortal peran={status.peran} onKeluar={() => void repo.akun.keluar().then(() => setStatus({ tahap: 'tamu' }))} />
       <LayarRute />
     </KonteksRepo.Provider>
   );
 }
 
-function NavigasiPortal({ peran }: { peran: Peran }) {
+function NavigasiPortal({ peran, onKeluar }: { peran: Peran; onKeluar: () => void }) {
   return (
     <nav>
       {JENIS_KONTEN.map(jenis => (
@@ -69,6 +69,7 @@ function NavigasiPortal({ peran }: { peran: Peran }) {
       <a href={tulisRute({ layar: 'review' })}>Antrean review</a>
       <a href={tulisRute({ layar: 'diksi' })}>Diksi</a>
       {peran === 'admin' && <a href={tulisRute({ layar: 'peran' })}>Peran</a>}
+      <Tombol onClick={onKeluar}>Keluar</Tombol>
     </nav>
   );
 }
