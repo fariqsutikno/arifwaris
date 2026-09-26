@@ -12,6 +12,11 @@ import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasa
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
 import { angka, t } from '../terjemah';
+import type { Kelompok } from '../checklist';
+
+const TEKS_KELOMPOK = (): Record<Kelompok, string> => ({
+  pasangan: t('pasangan'), keturunan: t('keturunan'), leluhur: t('leluhur'), saudara: t('saudara'),
+});
 
 interface Props {
   id: IdOrang;
@@ -53,7 +58,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
         <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? t('Almarhum') : halang && !sedangMenebak ? t('Terhalang (mahjub)') : kelompok ? t(kelompok) : t('Kerabat')}</p>
+            <p className="peran-modal">{id === graf.idPewaris ? t('Almarhum') : halang && !sedangMenebak ? t('Terhalang (mahjub)') : kelompok ? TEKS_KELOMPOK()[kelompok] : t('Kerabat')}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
           <button type="button" className="tombol-ikon" data-tutup aria-label={t('Tutup')} onClick={saatTutup}>✕</button>

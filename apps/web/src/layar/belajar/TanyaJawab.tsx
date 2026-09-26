@@ -12,6 +12,8 @@ import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
 import { t, terjemahIsi } from '../../terjemah';
 
+const TEKS_JENIS = (): Record<JenisTanyaJawab, string> => ({ 'Saran ustadz': t('Saran ustadz'), Fatwa: t('Fatwa') });
+
 interface Props { slug?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
 
 export function TanyaJawab({ slug, kasusSekarang, saatCoba }: Props) {
@@ -36,7 +38,7 @@ function DaftarTanyaJawab() {
       <div className="chip-deret" role="group" aria-label={t('Kategori')}>
         <button type="button" className="chip-kecil" aria-pressed={jenis === null} onClick={() => setJenis(null)}>{t('Semua')}</button>
         {JENIS_TANYA_JAWAB.map(pilihan => (
-          <button key={pilihan} type="button" className="chip-kecil" aria-pressed={jenis === pilihan} onClick={() => setJenis(pilihan)}>{t(pilihan)}</button>
+          <button key={pilihan} type="button" className="chip-kecil" aria-pressed={jenis === pilihan} onClick={() => setJenis(pilihan)}>{TEKS_JENIS()[pilihan]}</button>
         ))}
       </div>
       {cocok.length === 0 && <p className="keterangan">{t('Belum ada kasus yang cocok. Coba kata atau kategori lain.')}</p>}
@@ -44,7 +46,7 @@ function DaftarTanyaJawab() {
         {cocok.map(entri => (
           <li key={entri.slug}>
             <a className="kartu-artikel" href={tautanTanyaJawab(entri.slug)}>
-              <span className="chip-jenis">{t(entri.jenis)}</span>
+              <span className="chip-jenis">{TEKS_JENIS()[entri.jenis]}</span>
               <b>{terjemahIsi(entri.judul)}</b>
               <span className="keterangan">{terjemahIsi(entri.ringkasan)}</span>
             </a>
@@ -64,7 +66,7 @@ function ArtikelTanyaJawab({ entri, kasusSekarang, saatCoba }: { entri: KasusTan
   };
   return (
     <main className="halaman artikel-tj">
-      <span className="chip-jenis">{t(entri.jenis)}</span>
+      <span className="chip-jenis">{TEKS_JENIS()[entri.jenis]}</span>
       <h1>{terjemahIsi(entri.judul)}</h1>
       <div className="meta-artikel">
         <span className="keterangan">{t('Sumber')}: {entri.sumber}</span>
@@ -80,7 +82,7 @@ function ArtikelTanyaJawab({ entri, kasusSekarang, saatCoba }: { entri: KasusTan
         <h2>{t('Penyelesaian')}</h2>
         {entri.penyelesaian.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
       </article>
-      <Bagikan judul={entri.judul} tautan={tautanTanyaJawab(entri.slug)} label="Bagikan kasus ini" />
+      <Bagikan judul={entri.judul} tautan={tautanTanyaJawab(entri.slug)} label={t('Bagikan kasus ini')} />
     </main>
   );
 }

@@ -1,0 +1,4340 @@
+{
+  "diksi": [
+    {
+      "kunci": "umum.tinggalkan_ariflab",
+      "halaman": "umum",
+      "id": "Tinggalkan ArifLab?",
+      "ar": "مغادرة ArifLab؟"
+    },
+    {
+      "kunci": "umum.soal_ini_bisa_kamu_buka_lagi",
+      "halaman": "umum",
+      "id": "Soal ini bisa kamu buka lagi kapan saja dari Latihan.",
+      "ar": "يمكنك فتح هذا التمرين مرة أخرى من صفحة التمارين."
+    },
+    {
+      "kunci": "umum.kasusmu_tersimpan_di_riwayat_hitung_buka",
+      "halaman": "umum",
+      "id": "Kasusmu tersimpan di Riwayat hitung. Buka menu ArifLab kapan saja untuk melanjutkan.",
+      "ar": "مسألتك محفوظة في سجل الحساب. افتح ArifLab متى شئت لتكملها."
+    },
+    {
+      "kunci": "umum.tetap_di_sini",
+      "halaman": "umum",
+      "id": "Tetap di sini",
+      "ar": "البقاء هنا"
+    },
+    {
+      "kunci": "umum.pindah",
+      "halaman": "umum",
+      "id": "Pindah",
+      "ar": "انتقل"
+    },
+    {
+      "kunci": "hitung.suami",
+      "halaman": "hitung",
+      "id": "Suami",
+      "ar": "الزوج"
+    },
+    {
+      "kunci": "hitung.istri",
+      "halaman": "hitung",
+      "id": "Istri",
+      "ar": "الزوجة"
+    },
+    {
+      "kunci": "hitung.anak_laki_laki",
+      "halaman": "hitung",
+      "id": "Anak laki-laki",
+      "ar": "الابن"
+    },
+    {
+      "kunci": "hitung.anak_perempuan",
+      "halaman": "hitung",
+      "id": "Anak perempuan",
+      "ar": "البنت"
+    },
+    {
+      "kunci": "hitung.cucu_laki_laki_dari_anak_lk",
+      "halaman": "hitung",
+      "id": "Cucu laki-laki (dari anak lk)",
+      "ar": "ابن الابن"
+    },
+    {
+      "kunci": "hitung.cucu_perempuan_dari_anak_lk",
+      "halaman": "hitung",
+      "id": "Cucu perempuan (dari anak lk)",
+      "ar": "بنت الابن"
+    },
+    {
+      "kunci": "hitung.ayah",
+      "halaman": "hitung",
+      "id": "Ayah",
+      "ar": "الأب"
+    },
+    {
+      "kunci": "hitung.ibu",
+      "halaman": "hitung",
+      "id": "Ibu",
+      "ar": "الأم"
+    },
+    {
+      "kunci": "hitung.kakek_ayahnya_ayah",
+      "halaman": "hitung",
+      "id": "Kakek (ayahnya ayah)",
+      "ar": "الجد (أبو الأب)"
+    },
+    {
+      "kunci": "hitung.nenek_ibunya_ayah",
+      "halaman": "hitung",
+      "id": "Nenek (ibunya ayah)",
+      "ar": "الجدة (أم الأب)"
+    },
+    {
+      "kunci": "hitung.nenek_ibunya_ibu",
+      "halaman": "hitung",
+      "id": "Nenek (ibunya ibu)",
+      "ar": "الجدة (أم الأم)"
+    },
+    {
+      "kunci": "hitung.saudara_lk_kandung",
+      "halaman": "hitung",
+      "id": "Saudara lk kandung",
+      "ar": "الأخ الشقيق"
+    },
+    {
+      "kunci": "hitung.saudari_kandung",
+      "halaman": "hitung",
+      "id": "Saudari kandung",
+      "ar": "الأخت الشقيقة"
+    },
+    {
+      "kunci": "hitung.saudara_lk_sebapak",
+      "halaman": "hitung",
+      "id": "Saudara lk sebapak",
+      "ar": "الأخ لأب"
+    },
+    {
+      "kunci": "hitung.saudari_sebapak",
+      "halaman": "hitung",
+      "id": "Saudari sebapak",
+      "ar": "الأخت لأب"
+    },
+    {
+      "kunci": "hitung.saudara_lk_seibu",
+      "halaman": "hitung",
+      "id": "Saudara lk seibu",
+      "ar": "الأخ لأم"
+    },
+    {
+      "kunci": "hitung.saudari_seibu",
+      "halaman": "hitung",
+      "id": "Saudari seibu",
+      "ar": "الأخت لأم"
+    },
+    {
+      "kunci": "hitung.keponakan_lk_dari_saudara_kandung",
+      "halaman": "hitung",
+      "id": "Keponakan lk (dari saudara kandung)",
+      "ar": "ابن الأخ الشقيق"
+    },
+    {
+      "kunci": "hitung.keponakan_lk_dari_saudara_sebapak",
+      "halaman": "hitung",
+      "id": "Keponakan lk (dari saudara sebapak)",
+      "ar": "ابن الأخ لأب"
+    },
+    {
+      "kunci": "hitung.paman_kandung_saudara_ayah",
+      "halaman": "hitung",
+      "id": "Paman kandung (saudara ayah)",
+      "ar": "العم الشقيق"
+    },
+    {
+      "kunci": "hitung.paman_sebapak",
+      "halaman": "hitung",
+      "id": "Paman sebapak",
+      "ar": "العم لأب"
+    },
+    {
+      "kunci": "hitung.sepupu_lk_dari_paman_kandung",
+      "halaman": "hitung",
+      "id": "Sepupu lk (dari paman kandung)",
+      "ar": "ابن العم الشقيق"
+    },
+    {
+      "kunci": "hitung.sepupu_lk_dari_paman_sebapak",
+      "halaman": "hitung",
+      "id": "Sepupu lk (dari paman sebapak)",
+      "ar": "ابن العم لأب"
+    },
+    {
+      "kunci": "hitung.mode_fokus_judul",
+      "halaman": "hitung",
+      "id": "Mode fokus: {judul}",
+      "ar": "وضع التركيز: {judul}"
+    },
+    {
+      "kunci": "umum.tutup",
+      "halaman": "umum",
+      "id": "Tutup",
+      "ar": "إغلاق"
+    },
+    {
+      "kunci": "hitung.mode_fokus",
+      "halaman": "hitung",
+      "id": "Mode fokus",
+      "ar": "وضع التركيز"
+    },
+    {
+      "kunci": "hitung.layar_penuh",
+      "halaman": "hitung",
+      "id": "Layar penuh",
+      "ar": "ملء الشاشة"
+    },
+    {
+      "kunci": "hitung.pohon_keluarga",
+      "halaman": "hitung",
+      "id": "Pohon keluarga",
+      "ar": "شجرة الأسرة"
+    },
+    {
+      "kunci": "hitung.tabel_faraidh",
+      "halaman": "hitung",
+      "id": "Tabel faraidh",
+      "ar": "جدول المسألة"
+    },
+    {
+      "kunci": "hitung.daftar_langkah",
+      "halaman": "hitung",
+      "id": "Daftar langkah",
+      "ar": "قائمة الخطوات"
+    },
+    {
+      "kunci": "hitung.mode_fokus_tidak_tersedia_di_mobile",
+      "halaman": "hitung",
+      "id": "Mode fokus tidak tersedia di mobile",
+      "ar": "وضع التركيز غير متاح في الهاتف"
+    },
+    {
+      "kunci": "hitung.gunakan_desktop_untuk_membuka_mode_fokus",
+      "halaman": "hitung",
+      "id": "Gunakan desktop untuk membuka mode fokus.",
+      "ar": "استعمل الحاسوب لفتح وضع التركيز."
+    },
+    {
+      "kunci": "umum.selesai",
+      "halaman": "umum",
+      "id": "Selesai!",
+      "ar": "تم!"
+    },
+    {
+      "kunci": "hitung.kamu_sudah_mengikuti_seluruh_pembagian_langkah",
+      "halaman": "hitung",
+      "id": "Kamu sudah mengikuti seluruh pembagian, langkah demi langkah. Tabelnya sekarang lengkap.",
+      "ar": "تابعت القسمة كلها خطوة خطوة، واكتمل الجدول الآن."
+    },
+    {
+      "kunci": "hitung.penyebutnya",
+      "halaman": "hitung",
+      "id": "Penyebutnya:",
+      "ar": "المخارج:"
+    },
+    {
+      "kunci": "hitung.ambil_salah_satu",
+      "halaman": "hitung",
+      "id": "ambil salah satu",
+      "ar": "يؤخذ أحدهما"
+    },
+    {
+      "kunci": "hitung.besar_kecil_hasil_habis",
+      "halaman": "hitung",
+      "id": "{besar} ÷ {kecil} = {hasil}, habis",
+      "ar": "{besar} ÷ {kecil} = {hasil}، بلا باق"
+    },
+    {
+      "kunci": "hitung.ambil_yang_besar",
+      "halaman": "hitung",
+      "id": "ambil yang besar",
+      "ar": "يؤخذ الأكبر"
+    },
+    {
+      "kunci": "hitung.fpb_fpb",
+      "halaman": "hitung",
+      "id": "FPB {fpb}",
+      "ar": "القاسم المشترك {fpb}"
+    },
+    {
+      "kunci": "hitung.fpb_1",
+      "halaman": "hitung",
+      "id": "FPB 1",
+      "ar": "القاسم المشترك ١"
+    },
+    {
+      "kunci": "hitung.dan",
+      "halaman": "hitung",
+      "id": "dan",
+      "ar": "و"
+    },
+    {
+      "kunci": "hitung.ashl_masalah",
+      "halaman": "hitung",
+      "id": "Ashl masalah",
+      "ar": "أصل المسألة"
+    },
+    {
+      "kunci": "hitung.dibulatkan_ke_bawah",
+      "halaman": "hitung",
+      "id": "dibulatkan ke bawah",
+      "ar": "مقرب إلى الأدنى"
+    },
+    {
+      "kunci": "hitung.rp",
+      "halaman": "hitung",
+      "id": "Rp ••••••",
+      "ar": null
+    },
+    {
+      "kunci": "hitung.pengurusan_jenazah",
+      "halaman": "hitung",
+      "id": "Pengurusan jenazah",
+      "ar": "مؤن التجهيز"
+    },
+    {
+      "kunci": "hitung.hutang",
+      "halaman": "hitung",
+      "id": "Hutang",
+      "ar": "الديون"
+    },
+    {
+      "kunci": "hitung.wasiat",
+      "halaman": "hitung",
+      "id": "Wasiat",
+      "ar": "الوصية"
+    },
+    {
+      "kunci": "hitung.harta_yang_dibagi",
+      "halaman": "hitung",
+      "id": "Harta yang dibagi",
+      "ar": "ما يقسم"
+    },
+    {
+      "kunci": "hitung.harta_tidak_langsung_dibagi_dipakai_dulu",
+      "halaman": "hitung",
+      "id": "Harta tidak langsung dibagi. Dipakai dulu untuk mengurus jenazah, lalu melunasi hutang, lalu menunaikan wasiat. Sisanya baru hak ahli waris.",
+      "ar": "لا تقسم التركة فورا: يخرج منها التجهيز، ثم الدين، ثم الوصية، والباقي حق الورثة."
+    },
+    {
+      "kunci": "hitung.harta_peninggalan",
+      "halaman": "hitung",
+      "id": "Harta peninggalan",
+      "ar": "التركة"
+    },
+    {
+      "kunci": "hitung.wasiat_dipangkas_ke_batas_1_3",
+      "halaman": "hitung",
+      "id": "Wasiat dipangkas ke batas 1/3. Kelebihan {lebih} hanya berlaku bila semua ahli waris setuju.",
+      "ar": "ردت الوصية إلى الثلث، والزائد {lebih} موقوف على إجازة جميع الورثة."
+    },
+    {
+      "kunci": "hitung.aman_masih_di_bawah_batas_1",
+      "halaman": "hitung",
+      "id": "Aman, masih di bawah batas 1/3 (maks. {batas}).",
+      "ar": "لا بأس، دون الثلث (الحد {batas})."
+    },
+    {
+      "kunci": "hitung.dibagi_ke_ahli_waris",
+      "halaman": "hitung",
+      "id": "Dibagi ke ahli waris",
+      "ar": "يقسم على الورثة"
+    },
+    {
+      "kunci": "hitung.ubah_harta",
+      "halaman": "hitung",
+      "id": "Ubah harta",
+      "ar": "تعديل التركة"
+    },
+    {
+      "kunci": "hitung.rp_2",
+      "halaman": "hitung",
+      "id": "−Rp ••••••",
+      "ar": null
+    },
+    {
+      "kunci": "hitung.normal_adilah",
+      "halaman": "hitung",
+      "id": "Normal ('adilah)",
+      "ar": "عادلة"
+    },
+    {
+      "kunci": "hitung.jumlah_bagian_tertentu_fardh_tidak_melebihi",
+      "halaman": "hitung",
+      "id": "Jumlah bagian tertentu (fardh) tidak melebihi harta; bila ada sisa, diambil ashabah.",
+      "ar": "الفروض لا تزيد على المال؛ وإن بقي شيء فللعصبة."
+    },
+    {
+      "kunci": "hitung.aul",
+      "halaman": "hitung",
+      "id": "'Aul",
+      "ar": "العول"
+    },
+    {
+      "kunci": "hitung.jumlah_bagian_tertentu_melebihi_harta_jadi",
+      "halaman": "hitung",
+      "id": "Jumlah bagian tertentu melebihi harta, jadi semua bagian dikurangi secara seimbang.",
+      "ar": "زادت الفروض على المال، فتنقص كلها بنسبة واحدة."
+    },
+    {
+      "kunci": "hitung.radd",
+      "halaman": "hitung",
+      "id": "Radd",
+      "ar": "الرد"
+    },
+    {
+      "kunci": "hitung.ada_sisa_tanpa_ashabah_sisa_dikembalikan",
+      "halaman": "hitung",
+      "id": "Ada sisa tanpa ashabah; sisa dikembalikan ke pemilik bagian tertentu.",
+      "ar": "بقي شيء ولا عاصب؛ فيرد على أصحاب الفروض."
+    },
+    {
+      "kunci": "hitung.radd_dengan_suami_istri",
+      "halaman": "hitung",
+      "id": "Radd (dengan suami/istri)",
+      "ar": "الرد مع أحد الزوجين"
+    },
+    {
+      "kunci": "hitung.ada_sisa_tanpa_ashabah_sisa_dikembalikan_2",
+      "halaman": "hitung",
+      "id": "Ada sisa tanpa ashabah; sisa dikembalikan ke pemilik bagian tertentu selain suami/istri.",
+      "ar": "بقي شيء ولا عاصب؛ فيرد على أصحاب الفروض غير الزوجين."
+    },
+    {
+      "kunci": "hitung.sama_besar",
+      "halaman": "hitung",
+      "id": "sama besar",
+      "ar": "بالسوية"
+    },
+    {
+      "kunci": "hitung.yang_besar_habis_dibagi_yang_kecil",
+      "halaman": "hitung",
+      "id": "yang besar habis dibagi yang kecil",
+      "ar": "الأكبر يقبل القسمة على الأصغر"
+    },
+    {
+      "kunci": "hitung.punya_faktor_persekutuan",
+      "halaman": "hitung",
+      "id": "punya faktor persekutuan",
+      "ar": "بينهما عامل مشترك"
+    },
+    {
+      "kunci": "hitung.tidak_punya_faktor_persekutuan",
+      "halaman": "hitung",
+      "id": "tidak punya faktor persekutuan",
+      "ar": "لا عامل مشترك بينهما"
+    },
+    {
+      "kunci": "hitung.sudah_habis_dibagi",
+      "halaman": "hitung",
+      "id": "sudah habis dibagi",
+      "ar": "استغرقت القسمة"
+    },
+    {
+      "kunci": "hitung.tentang_kasus_ini",
+      "halaman": "hitung",
+      "id": "Tentang kasus ini",
+      "ar": "عن هذه المسألة"
+    },
+    {
+      "kunci": "hitung.jenis_kasus",
+      "halaman": "hitung",
+      "id": "Jenis kasus",
+      "ar": "نوع المسألة"
+    },
+    {
+      "kunci": "hitung.asal_masalah",
+      "halaman": "hitung",
+      "id": "Asal masalah",
+      "ar": "أصل المسألة"
+    },
+    {
+      "kunci": "hitung.dari_penyebut_daftar_yang",
+      "halaman": "hitung",
+      "id": "Dari penyebut {daftar}, yang",
+      "ar": "من المخارج {daftar}، وهي"
+    },
+    {
+      "kunci": "umum.dan",
+      "halaman": "umum",
+      "id": " dan ",
+      "ar": " و"
+    },
+    {
+      "kunci": "hitung.penyebut_bagian_yang_ada",
+      "halaman": "hitung",
+      "id": "Penyebut bagian yang ada.",
+      "ar": "مخارج الفروض الموجودة."
+    },
+    {
+      "kunci": "hitung.asal_masalah_dinaikkan_supaya_semua_bagian",
+      "halaman": "hitung",
+      "id": "Asal masalah dinaikkan supaya semua bagian muat.",
+      "ar": "يرفع أصل المسألة حتى تتسع الفروض."
+    },
+    {
+      "kunci": "hitung.tashih",
+      "halaman": "hitung",
+      "id": "Tashih",
+      "ar": "التصحيح"
+    },
+    {
+      "kunci": "hitung.bagian_sekelompok_ahli_waris_belum_habis",
+      "halaman": "hitung",
+      "id": "Bagian sekelompok ahli waris belum habis dibagi jumlah orangnya",
+      "ar": "سهام فريق من الورثة لا تنقسم على عدد رؤوسهم"
+    },
+    {
+      "kunci": "hitung.jadi_semua_dikali_kali",
+      "halaman": "hitung",
+      "id": ", jadi semua dikali {kali}.",
+      "ar": "، فتضرب المسألة كلها في {kali}."
+    },
+    {
+      "kunci": "hitung.jami_ah",
+      "halaman": "hitung",
+      "id": "Jami'ah",
+      "ar": "الجامعة"
+    },
+    {
+      "kunci": "hitung.mas_alah_gabungan_untuk_semua_mayit",
+      "halaman": "hitung",
+      "id": "Mas'alah gabungan untuk semua mayit",
+      "ar": "المسألة الجامعة لجميع الأموات"
+    },
+    {
+      "kunci": "hitung.munasakhat",
+      "halaman": "hitung",
+      "id": "munasakhat",
+      "ar": "المناسخات"
+    },
+    {
+      "kunci": "hitung.habis_ini_ngapain",
+      "halaman": "hitung",
+      "id": "Habis ini ngapain?",
+      "ar": "ماذا بعد؟"
+    },
+    {
+      "kunci": "hitung.angka_sudah_ada_ini_urutan_yang",
+      "halaman": "hitung",
+      "id": "Angka sudah ada. Ini urutan yang biasanya dilakukan keluarga. (Draf, menunggu pengecekan tim keilmuan.)",
+      "ar": "الأرقام جاهزة. هذا ما تفعله الأسرة عادة. (مسودة، في انتظار مراجعة الفريق العلمي.)"
+    },
+    {
+      "kunci": "hitung.langkah",
+      "halaman": "hitung",
+      "id": "Langkah",
+      "ar": "الخطوة"
+    },
+    {
+      "kunci": "umum.sebelumnya",
+      "halaman": "umum",
+      "id": "← Sebelumnya",
+      "ar": "السابق →"
+    },
+    {
+      "kunci": "umum.berikutnya",
+      "halaman": "umum",
+      "id": "Berikutnya →",
+      "ar": "← التالي"
+    },
+    {
+      "kunci": "umum.kembali",
+      "halaman": "umum",
+      "id": "← Kembali",
+      "ar": "رجوع →"
+    },
+    {
+      "kunci": "hitung.tutup_mode_fokus",
+      "halaman": "hitung",
+      "id": "Tutup mode fokus",
+      "ar": "إغلاق وضع التركيز"
+    },
+    {
+      "kunci": "umum.lanjut",
+      "halaman": "umum",
+      "id": "Lanjut →",
+      "ar": "← التالي"
+    },
+    {
+      "kunci": "hitung.matikan_animasi",
+      "halaman": "hitung",
+      "id": "Matikan animasi",
+      "ar": "تعطيل الحركة"
+    },
+    {
+      "kunci": "hitung.nyalakan_animasi",
+      "halaman": "hitung",
+      "id": "Nyalakan animasi",
+      "ar": "تفعيل الحركة"
+    },
+    {
+      "kunci": "hitung.animasi",
+      "halaman": "hitung",
+      "id": "Animasi",
+      "ar": "الحركة"
+    },
+    {
+      "kunci": "hitung.putar_animasi",
+      "halaman": "hitung",
+      "id": "Putar animasi",
+      "ar": "تشغيل الحركة"
+    },
+    {
+      "kunci": "hitung.jeda_animasi",
+      "halaman": "hitung",
+      "id": "Jeda animasi",
+      "ar": "إيقاف الحركة"
+    },
+    {
+      "kunci": "hitung.putar",
+      "halaman": "hitung",
+      "id": "Putar",
+      "ar": "تشغيل"
+    },
+    {
+      "kunci": "hitung.jeda",
+      "halaman": "hitung",
+      "id": "Jeda",
+      "ar": "إيقاف"
+    },
+    {
+      "kunci": "hitung.pembahasan_langkah_demi_langkah",
+      "halaman": "hitung",
+      "id": "Pembahasan langkah demi langkah",
+      "ar": "الشرح خطوة خطوة"
+    },
+    {
+      "kunci": "hitung.pelajari_langkah_perhitungan",
+      "halaman": "hitung",
+      "id": "Pelajari langkah perhitungan",
+      "ar": "تعلم خطوات الحساب"
+    },
+    {
+      "kunci": "umum.terkunci",
+      "halaman": "umum",
+      "id": "Terkunci",
+      "ar": "مقفل"
+    },
+    {
+      "kunci": "hitung.jawab_soalnya_dulu",
+      "halaman": "hitung",
+      "id": "Jawab soalnya dulu",
+      "ar": "أجب عن التمرين أولا"
+    },
+    {
+      "kunci": "hitung.langkah_perhitungan_terbuka_setelah_jawabanmu_di",
+      "halaman": "hitung",
+      "id": "Langkah perhitungan terbuka setelah jawabanmu di kartu",
+      "ar": "تفتح خطوات الحساب بعد إجابتك في البطاقة"
+    },
+    {
+      "kunci": "hitung.jawabanmu",
+      "halaman": "hitung",
+      "id": "Jawabanmu",
+      "ar": "إجابتك"
+    },
+    {
+      "kunci": "hitung.benar_atau_setelah_kamu_membuka_jawabannya",
+      "halaman": "hitung",
+      "id": "benar, atau setelah kamu membuka jawabannya. Coba hitung sendiri dulu, lalu cocokkan caranya di sini.",
+      "ar": "صحيحة، أو بعد فتح الحل. جرب الحساب بنفسك أولا، ثم قارن طريقتك هنا."
+    },
+    {
+      "kunci": "hitung.cara_tampil",
+      "halaman": "hitung",
+      "id": "Cara tampil",
+      "ar": "طريقة العرض"
+    },
+    {
+      "kunci": "hitung.langkah_demi_langkah",
+      "halaman": "hitung",
+      "id": "Langkah demi langkah",
+      "ar": "خطوة خطوة"
+    },
+    {
+      "kunci": "hitung.tampilkan_semua",
+      "halaman": "hitung",
+      "id": "Tampilkan semua",
+      "ar": "اعرض الكل"
+    },
+    {
+      "kunci": "hitung.langkah_nomor_dari_total",
+      "halaman": "hitung",
+      "id": "Langkah {nomor} dari {total}",
+      "ar": "الخطوة {nomor} من {total}"
+    },
+    {
+      "kunci": "hitung.belum_dibahas",
+      "halaman": "hitung",
+      "id": "belum dibahas",
+      "ar": "لم يشرح بعد"
+    },
+    {
+      "kunci": "hitung.perlu_diperhatikan",
+      "halaman": "hitung",
+      "id": "Perlu diperhatikan",
+      "ar": "ينبغي الانتباه"
+    },
+    {
+      "kunci": "umum.kenapa_begitu",
+      "halaman": "umum",
+      "id": "Kenapa begitu?",
+      "ar": "ما الدليل؟"
+    },
+    {
+      "kunci": "hitung.kunci_jawaban",
+      "halaman": "hitung",
+      "id": "Kunci jawaban",
+      "ar": "مفتاح الحل"
+    },
+    {
+      "kunci": "hitung.pembagian",
+      "halaman": "hitung",
+      "id": "Pembagian",
+      "ar": "القسمة"
+    },
+    {
+      "kunci": "hitung.ubah_ahli_waris",
+      "halaman": "hitung",
+      "id": "Ubah ahli waris",
+      "ar": "تعديل الورثة"
+    },
+    {
+      "kunci": "hitung.tampilkan_nominal",
+      "halaman": "hitung",
+      "id": "Tampilkan nominal",
+      "ar": "إظهار المبالغ"
+    },
+    {
+      "kunci": "hitung.sembunyikan_nominal",
+      "halaman": "hitung",
+      "id": "Sembunyikan nominal",
+      "ar": "إخفاء المبالغ"
+    },
+    {
+      "kunci": "hitung.atur_tampilan",
+      "halaman": "hitung",
+      "id": "Atur tampilan",
+      "ar": "ضبط العرض"
+    },
+    {
+      "kunci": "hitung.tidak_dapat_bagian",
+      "halaman": "hitung",
+      "id": "tidak dapat bagian.",
+      "ar": "لا نصيب له."
+    },
+    {
+      "kunci": "hitung.tampilkan_di_samping_nominal",
+      "halaman": "hitung",
+      "id": "Tampilkan di samping nominal",
+      "ar": "اعرض بجانب المبلغ"
+    },
+    {
+      "kunci": "hitung.pecahan",
+      "halaman": "hitung",
+      "id": "Pecahan",
+      "ar": "كسر"
+    },
+    {
+      "kunci": "hitung.persen",
+      "halaman": "hitung",
+      "id": "Persen",
+      "ar": "نسبة مئوية"
+    },
+    {
+      "kunci": "hitung.bagian_yang_sama_dalam_persen_misal",
+      "halaman": "hitung",
+      "id": "Bagian yang sama dalam persen, misal 1/6 ≈ 16,67%.",
+      "ar": "النصيب نفسه بالنسبة المئوية، مثل ١/٦ ≈ ١٦٫٦٧٪."
+    },
+    {
+      "kunci": "hitung.bentuk_pecahan",
+      "halaman": "hitung",
+      "id": "Bentuk pecahan",
+      "ar": "صورة الكسر"
+    },
+    {
+      "kunci": "hitung.disederhanakan",
+      "halaman": "hitung",
+      "id": "Disederhanakan",
+      "ar": "مبسط"
+    },
+    {
+      "kunci": "hitung.1_6_13_36_paling_ringkas",
+      "halaman": "hitung",
+      "id": "1/6 · 13/36, paling ringkas",
+      "ar": "١/٦ · ١٣/٣٦، أوجز"
+    },
+    {
+      "kunci": "hitung.penyebut_sama",
+      "halaman": "hitung",
+      "id": "Penyebut sama",
+      "ar": "مقام موحد"
+    },
+    {
+      "kunci": "hitung.12_72_26_72_gampang_dibandingkan",
+      "halaman": "hitung",
+      "id": "12/72 · 26/72, gampang dibandingkan",
+      "ar": "١٢/٧٢ · ٢٦/٧٢، سهل المقارنة"
+    },
+    {
+      "kunci": "hitung.perlu_keputusanmu",
+      "halaman": "hitung",
+      "id": "Perlu keputusanmu",
+      "ar": "يحتاج قرارك"
+    },
+    {
+      "kunci": "hitung.ada_angka_yang_nggak_bulat_dibulatkan",
+      "halaman": "hitung",
+      "id": "Ada angka yang nggak bulat · dibulatkan ke {satuan}",
+      "ar": "أرقام غير صحيحة · تقرب إلى {satuan}"
+    },
+    {
+      "kunci": "hitung.misalnya_bagian_nama_susah_dibagi_tunai",
+      "halaman": "hitung",
+      "id": "Misalnya bagian {nama} susah dibagi tunai. Buka untuk memilih pembulatan dan melihat sisanya.",
+      "ar": "مثل نصيب {nama} يصعب دفعه نقدا. افتح لاختيار التقريب ورؤية الباقي."
+    },
+    {
+      "kunci": "hitung.bulatkan_bagian_tiap_orang_ke",
+      "halaman": "hitung",
+      "id": "Bulatkan bagian tiap orang ke",
+      "ar": "قرب نصيب كل واحد إلى"
+    },
+    {
+      "kunci": "hitung.setelah_dibulatkan_ke_bawah_tersisa",
+      "halaman": "hitung",
+      "id": "Setelah dibulatkan ke bawah, tersisa",
+      "ar": "بعد التقريب إلى الأدنى يبقى"
+    },
+    {
+      "kunci": "hitung.yang_belum_terbagi_sisa_ini_tidak",
+      "halaman": "hitung",
+      "id": "yang belum terbagi. Sisa ini tidak dibagi diam-diam; sepakati bersama para ahli waris.",
+      "ar": "لم يقسم. لا يقسم هذا الباقي خفية؛ اتفقوا عليه مع الورثة."
+    },
+    {
+      "kunci": "hitung.semua_bagian_sudah_pas_tidak_ada",
+      "halaman": "hitung",
+      "id": "Semua bagian sudah pas, tidak ada sisa.",
+      "ar": "الفروض مساوية للأصل، ولا باقي."
+    },
+    {
+      "kunci": "hitung.tebak_pembagian_akhirnya",
+      "halaman": "hitung",
+      "id": "Tebak pembagian akhirnya",
+      "ar": "خمن القسمة النهائية"
+    },
+    {
+      "kunci": "hitung.tulis_bagian_akhir_tiap_orang_dari",
+      "halaman": "hitung",
+      "id": "Tulis bagian akhir tiap orang dari",
+      "ar": "اكتب النصيب النهائي لكل واحد من"
+    },
+    {
+      "kunci": "hitung.seluruh_harta_yang_dibagi",
+      "halaman": "hitung",
+      "id": "seluruh harta yang dibagi",
+      "ar": "كل ما يقسم"
+    },
+    {
+      "kunci": "hitung.sesudah_aul_atau_radd_bila_ada",
+      "halaman": "hitung",
+      "id": ", sesudah 'aul atau radd bila ada. Bukan bagian fardh awalnya.",
+      "ar": "، بعد العول أو الرد إن وجد، لا الفرض الأصلي."
+    },
+    {
+      "kunci": "umum.contoh",
+      "halaman": "umum",
+      "id": "Contoh",
+      "ar": "مثال"
+    },
+    {
+      "kunci": "hitung.atau",
+      "halaman": "hitung",
+      "id": "atau",
+      "ar": "أو"
+    },
+    {
+      "kunci": "hitung.yang_tidak_mendapat_bagian_isi",
+      "halaman": "hitung",
+      "id": ". Yang tidak mendapat bagian, isi",
+      "ar": ". ومن لا نصيب له فاكتب"
+    },
+    {
+      "kunci": "hitung.masih_ada_yang_kosong",
+      "halaman": "hitung",
+      "id": "Masih ada yang kosong",
+      "ar": "بقيت خانات فارغة"
+    },
+    {
+      "kunci": "hitung.isi_dulu_nama",
+      "halaman": "hitung",
+      "id": "Isi dulu: {nama}.",
+      "ar": "أدخل أولا: {nama}."
+    },
+    {
+      "kunci": "hitung.jawabanmu_belum_tepat",
+      "halaman": "hitung",
+      "id": "Jawabanmu belum tepat",
+      "ar": "إجابتك غير صحيحة"
+    },
+    {
+      "kunci": "hitung.benar_dari_total_orang_sudah_benar",
+      "halaman": "hitung",
+      "id": "{benar} dari {total} orang sudah benar. Perbaiki: {nama}.",
+      "ar": "{benar} من {total} صحيحة. صحح: {nama}."
+    },
+    {
+      "kunci": "umum.jawab",
+      "halaman": "umum",
+      "id": "Jawab",
+      "ar": "أجب"
+    },
+    {
+      "kunci": "hitung.lihat_jawaban",
+      "halaman": "hitung",
+      "id": "Lihat jawaban",
+      "ar": "اعرض الحل"
+    },
+    {
+      "kunci": "hitung.benar_semua",
+      "halaman": "hitung",
+      "id": "Benar semua!",
+      "ar": "كلها صحيحة!"
+    },
+    {
+      "kunci": "hitung.pembagianmu_sama_persis_dengan_hasil_perhitungan",
+      "halaman": "hitung",
+      "id": "Pembagianmu sama persis dengan hasil perhitungan. Cocokkan caranya di langkah perhitungan.",
+      "ar": "قسمتك مطابقة للنتيجة. قارن طريقتك بخطوات الحساب."
+    },
+    {
+      "kunci": "hitung.mengurangi_dari_menjadi",
+      "halaman": "hitung",
+      "id": "mengurangi {dari} → {menjadi}",
+      "ar": "ينقص من {dari} إلى {menjadi}"
+    },
+    {
+      "kunci": "hitung.bisa_dibuka_lagi_di_aplikasi_ini",
+      "halaman": "hitung",
+      "id": "Bisa dibuka lagi di aplikasi ini lewat Impor.",
+      "ar": "يمكن فتحه مرة أخرى في هذا التطبيق عبر الاستيراد."
+    },
+    {
+      "kunci": "hitung.gambar_pembagian",
+      "halaman": "hitung",
+      "id": "Gambar pembagian.",
+      "ar": "صورة القسمة."
+    },
+    {
+      "kunci": "hitung.laporan_lengkap_dengan_langkah_hitung",
+      "halaman": "hitung",
+      "id": "Laporan lengkap dengan langkah hitung.",
+      "ar": "تقرير كامل مع خطوات الحساب."
+    },
+    {
+      "kunci": "hitung.ekspor_ke",
+      "halaman": "hitung",
+      "id": "Ekspor ke",
+      "ar": "تصدير إلى"
+    },
+    {
+      "kunci": "umum.segera_hadir",
+      "halaman": "umum",
+      "id": "Segera hadir",
+      "ar": "قريبا"
+    },
+    {
+      "kunci": "hitung.pasangan",
+      "halaman": "hitung",
+      "id": "pasangan",
+      "ar": "الزوجان"
+    },
+    {
+      "kunci": "hitung.keturunan",
+      "halaman": "hitung",
+      "id": "keturunan",
+      "ar": "الفروع"
+    },
+    {
+      "kunci": "hitung.leluhur",
+      "halaman": "hitung",
+      "id": "leluhur",
+      "ar": "الأصول"
+    },
+    {
+      "kunci": "hitung.saudara",
+      "halaman": "hitung",
+      "id": "saudara",
+      "ar": "الحواشي"
+    },
+    {
+      "kunci": "hitung.almarhum",
+      "halaman": "hitung",
+      "id": "Almarhum",
+      "ar": "الميت"
+    },
+    {
+      "kunci": "hitung.terhalang_mahjub",
+      "halaman": "hitung",
+      "id": "Terhalang (mahjub)",
+      "ar": "محجوب"
+    },
+    {
+      "kunci": "hitung.kerabat",
+      "halaman": "hitung",
+      "id": "Kerabat",
+      "ar": "قريب"
+    },
+    {
+      "kunci": "hitung.mode_belajar_bagian_orang_ini_masih",
+      "halaman": "hitung",
+      "id": "Mode belajar: bagian orang ini masih disembunyikan. Lihat \"Kapan dapat berapa?\", lalu tebak kondisi mana yang cocok.",
+      "ar": "وضع التعلم: نصيب هذا الشخص مخفي. اقرأ «متى يأخذ كم؟» ثم خمن الحال المناسبة."
+    },
+    {
+      "kunci": "hitung.bagiannya_di_kasus_ini",
+      "halaman": "hitung",
+      "id": "Bagiannya di kasus ini",
+      "ar": "نصيبه في هذه المسألة"
+    },
+    {
+      "kunci": "hitung.nominal",
+      "halaman": "hitung",
+      "id": "Nominal",
+      "ar": "المبلغ"
+    },
+    {
+      "kunci": "hitung.kenapa_tidak_dapat",
+      "halaman": "hitung",
+      "id": "Kenapa tidak dapat?",
+      "ar": "لماذا لا يرث؟"
+    },
+    {
+      "kunci": "hitung.kenapa_segitu",
+      "halaman": "hitung",
+      "id": "Kenapa segitu?",
+      "ar": "لماذا هذا النصيب؟"
+    },
+    {
+      "kunci": "hitung.cara_menghitungnya",
+      "halaman": "hitung",
+      "id": "Cara menghitungnya",
+      "ar": "طريقة الحساب"
+    },
+    {
+      "kunci": "hitung.harta_dibagi_menjadi_penyebut_bagian_yang",
+      "halaman": "hitung",
+      "id": "Harta dibagi menjadi {penyebut} bagian yang sama; {nama} mendapat {saham} bagian.",
+      "ar": "تقسم التركة {penyebut} سهما متساوية؛ ولـ{nama} {saham} سهما."
+    },
+    {
+      "kunci": "hitung.ahli_waris_lain_yang_terdampak",
+      "halaman": "hitung",
+      "id": "Ahli waris lain yang terdampak",
+      "ar": "ورثة آخرون تأثروا"
+    },
+    {
+      "kunci": "hitung.kapan_dapat_berapa",
+      "halaman": "hitung",
+      "id": "Kapan dapat berapa?",
+      "ar": "متى يأخذ كم؟"
+    },
+    {
+      "kunci": "hitung.semua_kemungkinan_bagian_nama",
+      "halaman": "hitung",
+      "id": "semua kemungkinan bagian {nama}",
+      "ar": "كل أحوال {nama}"
+    },
+    {
+      "kunci": "hitung.kasus_ini",
+      "halaman": "hitung",
+      "id": "kasus ini",
+      "ar": "هذه المسألة"
+    },
+    {
+      "kunci": "umum.draf_menunggu_pengecekan_tim_keilmuan",
+      "halaman": "umum",
+      "id": "Draf, menunggu pengecekan tim keilmuan.",
+      "ar": "مسودة، في انتظار مراجعة الفريق العلمي."
+    },
+    {
+      "kunci": "umum.dalilnya",
+      "halaman": "umum",
+      "id": "Dalilnya",
+      "ar": "الدليل"
+    },
+    {
+      "kunci": "hitung.ubah_jumlah",
+      "halaman": "hitung",
+      "id": "Ubah jumlah",
+      "ar": "تعديل العدد"
+    },
+    {
+      "kunci": "umum.oke_paham",
+      "halaman": "umum",
+      "id": "Oke, paham",
+      "ar": "حسنا، فهمت"
+    },
+    {
+      "kunci": "hitung.ubah_harta_peninggalan",
+      "halaman": "hitung",
+      "id": "Ubah harta peninggalan",
+      "ar": "تعديل التركة"
+    },
+    {
+      "kunci": "hitung.rincian_per_jenis_akan_diganti_dengan",
+      "halaman": "hitung",
+      "id": "Rincian per jenis akan diganti dengan total baru ini.",
+      "ar": "سيستبدل التفصيل بهذا المجموع الجديد."
+    },
+    {
+      "kunci": "hitung.biaya_jenazah_hutang_dan_wasiat_tidak",
+      "halaman": "hitung",
+      "id": "Biaya jenazah, hutang, dan wasiat tidak ikut berubah.",
+      "ar": "مؤن التجهيز والدين والوصية لا تتغير."
+    },
+    {
+      "kunci": "hitung.mau_ubah_juga_buka_langkah_kewajiban",
+      "halaman": "hitung",
+      "id": "Mau ubah juga? Buka langkah Kewajiban.",
+      "ar": "تريد التعديل؟ افتح خطوة الحقوق."
+    },
+    {
+      "kunci": "umum.batal",
+      "halaman": "umum",
+      "id": "Batal",
+      "ar": "إلغاء"
+    },
+    {
+      "kunci": "umum.simpan",
+      "halaman": "umum",
+      "id": "Simpan",
+      "ar": "حفظ"
+    },
+    {
+      "kunci": "hitung.ubah_jumlah_label",
+      "halaman": "hitung",
+      "id": "Ubah jumlah {label}",
+      "ar": "تعديل عدد {label}"
+    },
+    {
+      "kunci": "hitung.hasil_langsung_dihitung_ulang_untuk_kerabat",
+      "halaman": "hitung",
+      "id": "Hasil langsung dihitung ulang. Untuk kerabat lain, buka langkah Ahli waris (ikon pensil di atas pohon).",
+      "ar": "تعاد النتيجة فورا. ولأقارب آخرين افتح خطوة الورثة (أيقونة القلم فوق الشجرة)."
+    },
+    {
+      "kunci": "umum.selesai_2",
+      "halaman": "umum",
+      "id": "Selesai",
+      "ar": "تم"
+    },
+    {
+      "kunci": "hitung.ashl_fardh_porsi_sisa_sisa",
+      "halaman": "hitung",
+      "id": "{ashl} × {fardh} = {porsi}, + sisa {sisa}",
+      "ar": "{ashl} × {fardh} = {porsi}، + الباقي {sisa}"
+    },
+    {
+      "kunci": "hitung.nama_tidak_diisi",
+      "halaman": "hitung",
+      "id": "{nama} (tidak diisi)",
+      "ar": "{nama} (غير معبأ)"
+    },
+    {
+      "kunci": "hitung.wafat_sebelum_dibagi",
+      "halaman": "hitung",
+      "id": "Wafat sebelum dibagi",
+      "ar": "مات قبل القسمة"
+    },
+    {
+      "kunci": "hitung.terhalang",
+      "halaman": "hitung",
+      "id": "Terhalang",
+      "ar": "محجوب"
+    },
+    {
+      "kunci": "hitung.tidak_mewarisi",
+      "halaman": "hitung",
+      "id": "Tidak mewarisi",
+      "ar": "لا يرث"
+    },
+    {
+      "kunci": "hitung.sisa",
+      "halaman": "hitung",
+      "id": " + sisa",
+      "ar": " + الباقي"
+    },
+    {
+      "kunci": "hitung.sisa_2",
+      "halaman": "hitung",
+      "id": "sisa",
+      "ar": "الباقي"
+    },
+    {
+      "kunci": "hitung.nama_lihat_penjelasan",
+      "halaman": "hitung",
+      "id": "{nama}. Lihat penjelasan",
+      "ar": "{nama}. اعرض الشرح"
+    },
+    {
+      "kunci": "hitung.sisa_untuk_dzawil_arham",
+      "halaman": "hitung",
+      "id": "Sisa untuk dzawil arham",
+      "ar": "الباقي لذوي الأرحام"
+    },
+    {
+      "kunci": "hitung.suami_istri_tidak_menerima_sisa",
+      "halaman": "hitung",
+      "id": "Suami/istri tidak menerima sisa",
+      "ar": "لا يرد على الزوجين"
+    },
+    {
+      "kunci": "hitung.sisa_dzawil_arham_baitul_mal",
+      "halaman": "hitung",
+      "id": "Sisa: dzawil arham / baitul mal",
+      "ar": "الباقي: لذوي الأرحام أو بيت المال"
+    },
+    {
+      "kunci": "hitung.untuk_dzawil_arham_bila_ada_bila",
+      "halaman": "hitung",
+      "id": "Untuk dzawil arham bila ada; bila tidak, ke baitul mal",
+      "ar": "لذوي الأرحام إن وجدوا؛ وإلا فلبيت المال"
+    },
+    {
+      "kunci": "hitung.bagian_tertentu_fardh",
+      "halaman": "hitung",
+      "id": "Bagian tertentu {fardh}",
+      "ar": "فرضه {fardh}"
+    },
+    {
+      "kunci": "hitung.sisa_ashabah",
+      "halaman": "hitung",
+      "id": "Sisa (ashabah)",
+      "ar": "العصبة"
+    },
+    {
+      "kunci": "hitung.dari_nama",
+      "halaman": "hitung",
+      "id": " · dari {nama}",
+      "ar": " · من {nama}"
+    },
+    {
+      "kunci": "hitung.sudah_wafat",
+      "halaman": "hitung",
+      "id": " (sudah wafat)",
+      "ar": " (ميت)"
+    },
+    {
+      "kunci": "hitung.saham_dari_jamiah_saham_jami_ah",
+      "halaman": "hitung",
+      "id": "{saham} dari {jamiah} saham jami'ah",
+      "ar": "{saham} من {jamiah} سهام الجامعة"
+    },
+    {
+      "kunci": "hitung.terhalang_oleh_oleh",
+      "halaman": "hitung",
+      "id": "Terhalang oleh {oleh}.",
+      "ar": "محجوب بـ{oleh}."
+    },
+    {
+      "kunci": "hitung.tidak_mewarisi_karena_alasan",
+      "halaman": "hitung",
+      "id": "Tidak mewarisi karena {alasan}.",
+      "ar": "لا يرث بسبب {alasan}."
+    },
+    {
+      "kunci": "hitung.terlibat_dalam_penyebab_kematian_almarhum",
+      "halaman": "hitung",
+      "id": "terlibat dalam penyebab kematian almarhum",
+      "ar": "التسبب في موت الميت"
+    },
+    {
+      "kunci": "hitung.berbeda_agama_dengan_almarhum",
+      "halaman": "hitung",
+      "id": "berbeda agama dengan almarhum",
+      "ar": "اختلاف الدين مع الميت"
+    },
+    {
+      "kunci": "hitung.berstatus_budak",
+      "halaman": "hitung",
+      "id": "berstatus budak",
+      "ar": "الرق"
+    },
+    {
+      "kunci": "hitung.urutan_wafatnya_tidak_diketahui",
+      "halaman": "hitung",
+      "id": "urutan wafatnya tidak diketahui",
+      "ar": "الجهل بترتيب الموت"
+    },
+    {
+      "kunci": "hitung.akan_menimbulkan_hitungan_berputar_daur",
+      "halaman": "hitung",
+      "id": "akan menimbulkan hitungan berputar (daur)",
+      "ar": "لأنه يؤدي إلى الدور"
+    },
+    {
+      "kunci": "hitung.ahli_waris",
+      "halaman": "hitung",
+      "id": "Ahli waris",
+      "ar": "الورثة"
+    },
+    {
+      "kunci": "hitung.bukan_ahli_waris",
+      "halaman": "hitung",
+      "id": "Bukan ahli waris",
+      "ar": "ليس وارثا"
+    },
+    {
+      "kunci": "hitung.fardh_bagian_tertentu",
+      "halaman": "hitung",
+      "id": "Fardh (bagian tertentu)",
+      "ar": "الفرض"
+    },
+    {
+      "kunci": "hitung.ashabah_sisa",
+      "halaman": "hitung",
+      "id": "Ashabah (sisa)",
+      "ar": "العصبة"
+    },
+    {
+      "kunci": "hitung.arti_warna_sorotan",
+      "halaman": "hitung",
+      "id": "Arti warna sorotan",
+      "ar": "معنى ألوان التظليل"
+    },
+    {
+      "kunci": "hitung.disembunyikan",
+      "halaman": "hitung",
+      "id": "disembunyikan",
+      "ar": "مخفي"
+    },
+    {
+      "kunci": "hitung.bagian",
+      "halaman": "hitung",
+      "id": "Bagian",
+      "ar": "النصيب"
+    },
+    {
+      "kunci": "hitung.per_orang",
+      "halaman": "hitung",
+      "id": "Per orang",
+      "ar": "لكل واحد"
+    },
+    {
+      "kunci": "hitung.bagian_tiap_orang_dihitung_dalam_satuan",
+      "halaman": "hitung",
+      "id": "Bagian tiap orang dihitung dalam satuan kecil yang sama (saham), dari jumlah pada kolom sebelumnya.",
+      "ar": "نصيب كل واحد بسهام متساوية من العدد في العمود السابق."
+    },
+    {
+      "kunci": "hitung.saham",
+      "halaman": "hitung",
+      "id": "saham",
+      "ar": "سهام"
+    },
+    {
+      "kunci": "hitung.ashabah",
+      "halaman": "hitung",
+      "id": "Ashabah",
+      "ar": "العصبة"
+    },
+    {
+      "kunci": "hitung.bagian_tertentu_sisa",
+      "halaman": "hitung",
+      "id": "bagian tertentu + sisa",
+      "ar": "فرض وتعصيب"
+    },
+    {
+      "kunci": "hitung.bagian_tertentu",
+      "halaman": "hitung",
+      "id": "bagian tertentu",
+      "ar": "فرض"
+    },
+    {
+      "kunci": "hitung.sisa_dibagi_bersama",
+      "halaman": "hitung",
+      "id": "sisa, dibagi bersama",
+      "ar": "الباقي، يقسم بينهم"
+    },
+    {
+      "kunci": "hitung.sisa_3",
+      "halaman": "hitung",
+      "id": "Sisa",
+      "ar": "الباقي"
+    },
+    {
+      "kunci": "hitung.bukan_untuk_ahli_waris",
+      "halaman": "hitung",
+      "id": "bukan untuk ahli waris",
+      "ar": "ليس للورثة"
+    },
+    {
+      "kunci": "umum.jumlah",
+      "halaman": "umum",
+      "id": "Jumlah",
+      "ar": "العدد"
+    },
+    {
+      "kunci": "hitung.saham_jami_ah",
+      "halaman": "hitung",
+      "id": "Saham jami'ah",
+      "ar": "سهام الجامعة"
+    },
+    {
+      "kunci": "bab.pendahuluan_dan_hak_hak_atas_tirkah",
+      "halaman": "bab",
+      "id": "Pendahuluan dan Hak-hak atas Tirkah",
+      "ar": "مقدمة والحقوق المتعلقة بالتركة"
+    },
+    {
+      "kunci": "bab.asas_kewarisan_syarat_rukun_asbab_mawani",
+      "halaman": "bab",
+      "id": "Asas Kewarisan (Syarat, Rukun, Asbab, Mawani')",
+      "ar": "أسس الميراث (الشروط والأركان والأسباب والموانع)"
+    },
+    {
+      "kunci": "bab.daftar_dan_klasifikasi_ahli_waris",
+      "halaman": "bab",
+      "id": "Daftar dan Klasifikasi Ahli Waris",
+      "ar": "قائمة الورثة وتصنيفهم"
+    },
+    {
+      "kunci": "bab.ashabul_furudh_furudh_muqaddarah_dan_11",
+      "halaman": "bab",
+      "id": "Ashabul Furudh (Furudh Muqaddarah dan 11 Ahli Waris)",
+      "ar": "أصحاب الفروض (الفروض المقدرة وأصحابها الأحد عشر)"
+    },
+    {
+      "kunci": "bab.hajb_penghalangan",
+      "halaman": "bab",
+      "id": "Hajb (Penghalangan)",
+      "ar": "الحجب"
+    },
+    {
+      "kunci": "bab.masalah_khusus_furudh_umariyyatain_dan_musyarrakah",
+      "halaman": "bab",
+      "id": "Masalah Khusus Furudh ('Umariyyatain dan Musyarrakah)",
+      "ar": "مسائل خاصة في الفروض (العمريتان والمشرّكة)"
+    },
+    {
+      "kunci": "bab.kakek_bersama_saudara_al_jadd_wal",
+      "halaman": "bab",
+      "id": "Kakek Bersama Saudara (al-Jadd wal-Ikhwah)",
+      "ar": "الجد والإخوة"
+    },
+    {
+      "kunci": "bab.hisab_ashlul_mas_alah_aul_radd",
+      "halaman": "bab",
+      "id": "Hisab (Ashlul Mas'alah, 'Aul, Radd)",
+      "ar": "الحساب (أصل المسألة والعول والرد)"
+    },
+    {
+      "kunci": "bab.tashih_koreksi_pembagian",
+      "halaman": "bab",
+      "id": "Tashih (Koreksi Pembagian)",
+      "ar": "تصحيح المسائل"
+    },
+    {
+      "kunci": "bab.pembagian_tirkah_qismah_dan_takharuj",
+      "halaman": "bab",
+      "id": "Pembagian Tirkah (Qismah) dan Takharuj",
+      "ar": "قسمة التركة والتخارج"
+    },
+    {
+      "kunci": "bab.munasakhat_kematian_berantai",
+      "halaman": "bab",
+      "id": "Munasakhat (Kematian Berantai)",
+      "ar": "المناسخات"
+    },
+    {
+      "kunci": "bab.kasus_khusus_haml_mafqud_khuntsa_gharqa",
+      "halaman": "bab",
+      "id": "Kasus Khusus (Haml, Mafqud, Khuntsa, Gharqa, Murtad, Anak Li'an/Zina, Laqith)",
+      "ar": "حالات خاصة (الحمل والمفقود والخنثى والغرقى والمرتد وولد اللعان والزنا واللقيط)"
+    },
+    {
+      "kunci": "bab.dzawil_arham",
+      "halaman": "bab",
+      "id": "Dzawil Arham",
+      "ar": "ذوو الأرحام"
+    },
+    {
+      "kunci": "bab.kasus_uji_test_cases_terverifikasi",
+      "halaman": "bab",
+      "id": "Kasus Uji (Test Cases) Terverifikasi",
+      "ar": "مسائل الاختبار الموثقة"
+    },
+    {
+      "kunci": "rujukan.an_nisa",
+      "halaman": "rujukan",
+      "id": "An-Nisa",
+      "ar": "النساء"
+    },
+    {
+      "kunci": "hitung.dasar",
+      "halaman": "hitung",
+      "id": "dasar",
+      "ar": "مبتدئ"
+    },
+    {
+      "kunci": "hitung.menengah",
+      "halaman": "hitung",
+      "id": "menengah",
+      "ar": "متوسط"
+    },
+    {
+      "kunci": "hitung.sulit",
+      "halaman": "hitung",
+      "id": "sulit",
+      "ar": "متقدم"
+    },
+    {
+      "kunci": "hitung.file_nya_nggak_bisa_dibuka_pesan",
+      "halaman": "hitung",
+      "id": "File-nya nggak bisa dibuka: {pesan}",
+      "ar": "تعذر فتح الملف: {pesan}"
+    },
+    {
+      "kunci": "hitung.skenario_baru",
+      "halaman": "hitung",
+      "id": "Skenario baru",
+      "ar": "مسألة جديدة"
+    },
+    {
+      "kunci": "hitung.kasus_sekarang_tetap_tersimpan_di_riwayat",
+      "halaman": "hitung",
+      "id": " Kasus sekarang tetap tersimpan di riwayat.",
+      "ar": " المسألة الحالية تبقى محفوظة في السجل."
+    },
+    {
+      "kunci": "hitung.lanjut_kasus_terakhir",
+      "halaman": "hitung",
+      "id": "Lanjut kasus terakhir",
+      "ar": "أكمل آخر مسألة"
+    },
+    {
+      "kunci": "hitung.impor_file",
+      "halaman": "hitung",
+      "id": "Impor file",
+      "ar": "استيراد ملف"
+    },
+    {
+      "kunci": "hitung.riwayat_hitung",
+      "halaman": "hitung",
+      "id": "Riwayat hitung",
+      "ar": "سجل الحساب"
+    },
+    {
+      "kunci": "hitung.mau_belajar_langsung_kerjakan_soal",
+      "halaman": "hitung",
+      "id": "Mau belajar? Langsung kerjakan soal",
+      "ar": "تريد التعلم؟ حل تمرينا مباشرة"
+    },
+    {
+      "kunci": "hitung.kasusnya_sudah_disiapkan_kamu_tinggal_menebak",
+      "halaman": "hitung",
+      "id": "Kasusnya sudah disiapkan. Kamu tinggal menebak pembagiannya, lalu pelajari cara menghitungnya langkah demi langkah.",
+      "ar": "المسألة جاهزة. خمن القسمة، ثم تعلم طريقة حسابها خطوة خطوة."
+    },
+    {
+      "kunci": "hitung.kerjakan",
+      "halaman": "hitung",
+      "id": "Kerjakan",
+      "ar": "حل"
+    },
+    {
+      "kunci": "hitung.lihat_semua_soal_latihan",
+      "halaman": "hitung",
+      "id": "Lihat semua soal latihan",
+      "ar": "كل التمارين"
+    },
+    {
+      "kunci": "belajar.pusat_belajar_faraidh",
+      "halaman": "belajar",
+      "id": "Pusat belajar faraidh",
+      "ar": "مركز تعلم الفرائض"
+    },
+    {
+      "kunci": "belajar.mulai_dari_sini",
+      "halaman": "belajar",
+      "id": "Mulai dari sini",
+      "ar": "ابدأ من هنا"
+    },
+    {
+      "kunci": "belajar.lanjutkan",
+      "halaman": "belajar",
+      "id": "Lanjutkan",
+      "ar": "تابع"
+    },
+    {
+      "kunci": "belajar.modul_nomor",
+      "halaman": "belajar",
+      "id": "Modul {nomor}",
+      "ar": "الوحدة {nomor}"
+    },
+    {
+      "kunci": "belajar.semua_pelajaran_sudah_selesai_mantap",
+      "halaman": "belajar",
+      "id": "Semua pelajaran sudah selesai. Mantap!",
+      "ar": "أتممت جميع الدروس. أحسنت!"
+    },
+    {
+      "kunci": "hitung.selesai_total_pelajaran",
+      "halaman": "hitung",
+      "id": "{selesai}/{total} pelajaran",
+      "ar": "{selesai}/{total} دروس"
+    },
+    {
+      "kunci": "umum.belajar",
+      "halaman": "umum",
+      "id": "Belajar",
+      "ar": "التعلم"
+    },
+    {
+      "kunci": "belajar.materi_berurutan_dari_pengantar_sampai_menghitung",
+      "halaman": "belajar",
+      "id": "Materi berurutan, dari pengantar sampai menghitung.",
+      "ar": "دروس متسلسلة من المقدمة إلى الحساب."
+    },
+    {
+      "kunci": "umum.latihan",
+      "halaman": "umum",
+      "id": "Latihan",
+      "ar": "التمارين"
+    },
+    {
+      "kunci": "belajar.uji_pemahaman_setelah_membaca_materi",
+      "halaman": "belajar",
+      "id": "Uji pemahaman setelah membaca materi.",
+      "ar": "اختبر فهمك بعد قراءة الدروس."
+    },
+    {
+      "kunci": "belajar.soal_hitung_dikerjakan",
+      "halaman": "belajar",
+      "id": "Soal hitung dikerjakan",
+      "ar": "مسائل حسابية محلولة"
+    },
+    {
+      "kunci": "belajar.kuis_konsep_dijawab_benar",
+      "halaman": "belajar",
+      "id": "Kuis konsep dijawab benar",
+      "ar": "أسئلة مفاهيم أجيب عنها صوابا"
+    },
+    {
+      "kunci": "umum.kuis_acak",
+      "halaman": "umum",
+      "id": "Kuis acak",
+      "ar": "اختبار عشوائي"
+    },
+    {
+      "kunci": "belajar.soal_campuran_semua_bab",
+      "halaman": "belajar",
+      "id": "Soal campuran semua bab",
+      "ar": "أسئلة منوعة من كل الأبواب"
+    },
+    {
+      "kunci": "beranda.cari_tahu",
+      "halaman": "beranda",
+      "id": "Cari tahu",
+      "ar": "اكتشف"
+    },
+    {
+      "kunci": "belajar.buka_kapan_saja_saat_ada_istilah",
+      "halaman": "belajar",
+      "id": "Buka kapan saja saat ada istilah atau hukum yang belum jelas.",
+      "ar": "ارجع إليه متى أشكل عليك مصطلح أو حكم."
+    },
+    {
+      "kunci": "umum.faq",
+      "halaman": "umum",
+      "id": "FAQ",
+      "ar": "أسئلة شائعة"
+    },
+    {
+      "kunci": "umum.tanya_jawab",
+      "halaman": "umum",
+      "id": "Tanya jawab",
+      "ar": "سؤال وجواب"
+    },
+    {
+      "kunci": "umum.glosarium",
+      "halaman": "umum",
+      "id": "Glosarium",
+      "ar": "المصطلحات"
+    },
+    {
+      "kunci": "umum.rujukan",
+      "halaman": "umum",
+      "id": "Rujukan",
+      "ar": "المراجع"
+    },
+    {
+      "kunci": "belajar.cheatsheet",
+      "halaman": "belajar",
+      "id": "Cheatsheet",
+      "ar": "ملخصات"
+    },
+    {
+      "kunci": "belajar.ringkasan_satu_halaman_untuk_dicetak_atau",
+      "halaman": "belajar",
+      "id": "Ringkasan satu halaman untuk dicetak atau disimpan.",
+      "ar": "ملخص في صفحة واحدة للطباعة أو الحفظ."
+    },
+    {
+      "kunci": "belajar.terakhir_kamu_buka",
+      "halaman": "belajar",
+      "id": "Terakhir kamu buka",
+      "ar": "آخر ما فتحته"
+    },
+    {
+      "kunci": "belajar.skor",
+      "halaman": "belajar",
+      "id": "skor",
+      "ar": "النتيجة"
+    },
+    {
+      "kunci": "belajar.hapus_judul_dari_riwayat",
+      "halaman": "belajar",
+      "id": "Hapus {judul} dari riwayat",
+      "ar": "حذف {judul} من السجل"
+    },
+    {
+      "kunci": "belajar.hapus_dari_riwayat",
+      "halaman": "belajar",
+      "id": "Hapus dari riwayat",
+      "ar": "حذف من السجل"
+    },
+    {
+      "kunci": "belajar.hapus_semua_riwayat_belajar",
+      "halaman": "belajar",
+      "id": "Hapus semua riwayat belajar",
+      "ar": "حذف كل سجل التعلم"
+    },
+    {
+      "kunci": "belajar.reset_progres_belajar",
+      "halaman": "belajar",
+      "id": "Reset progres belajar",
+      "ar": "إعادة تعيين تقدم التعلم"
+    },
+    {
+      "kunci": "belajar.pelajaran_selesai_soal_hitung_skor_kuis",
+      "halaman": "belajar",
+      "id": "Pelajaran selesai, soal hitung, skor kuis, dan riwayat belajar dikosongkan. Riwayat hitung tidak ikut terhapus.",
+      "ar": "تصفّر الدروس المنتهية والمسائل الحسابية ونتائج الاختبارات وسجل التعلم. أما سجل الحساب فلا يحذف."
+    },
+    {
+      "kunci": "belajar.reset_progres",
+      "halaman": "belajar",
+      "id": "Reset progres",
+      "ar": "إعادة التعيين"
+    },
+    {
+      "kunci": "belajar.reset_semua_progres_belajar",
+      "halaman": "belajar",
+      "id": "Reset semua progres belajar?",
+      "ar": "إعادة تعيين كل تقدم التعلم؟"
+    },
+    {
+      "kunci": "belajar.hapus_semua_riwayat_belajar_2",
+      "halaman": "belajar",
+      "id": "Hapus semua riwayat belajar?",
+      "ar": "حذف كل سجل التعلم؟"
+    },
+    {
+      "kunci": "belajar.hapus_dari_riwayat_belajar",
+      "halaman": "belajar",
+      "id": "Hapus dari riwayat belajar?",
+      "ar": "الحذف من سجل التعلم؟"
+    },
+    {
+      "kunci": "umum.hapus",
+      "halaman": "umum",
+      "id": "Hapus",
+      "ar": "حذف"
+    },
+    {
+      "kunci": "belajar.pelajaran_pelajaran_selesai_soal_soal_hitung",
+      "halaman": "belajar",
+      "id": "{pelajaran} pelajaran selesai, {soal} soal hitung, dan semua skor kuis akan kembali ke nol. Ini tidak bisa dibatalkan.",
+      "ar": "{pelajaran} درسا منتهيا و{soal} مسألة حسابية وجميع نتائج الاختبارات ستعود إلى الصفر. لا يمكن التراجع عن هذا."
+    },
+    {
+      "kunci": "belajar.daftar_terakhir_kamu_buka_akan_dikosongkan",
+      "halaman": "belajar",
+      "id": "Daftar \"Terakhir kamu buka\" akan dikosongkan. Progres pelajaran dan skor tetap tersimpan.",
+      "ar": "ستفرغ قائمة «آخر ما فتحته». يبقى تقدم الدروس والنتائج محفوظا."
+    },
+    {
+      "kunci": "belajar.judul_dihapus_dari_daftar_progres_dan",
+      "halaman": "belajar",
+      "id": "\"{judul}\" dihapus dari daftar. Progres dan skornya tetap tersimpan.",
+      "ar": "سيحذف «{judul}» من القائمة. يبقى تقدمه ونتيجته محفوظين."
+    },
+    {
+      "kunci": "belajar.pelajaran",
+      "halaman": "belajar",
+      "id": "Pelajaran",
+      "ar": "الدروس"
+    },
+    {
+      "kunci": "umum.soal_hitung",
+      "halaman": "umum",
+      "id": "Soal hitung",
+      "ar": "مسائل حسابية"
+    },
+    {
+      "kunci": "belajar.kuis",
+      "halaman": "belajar",
+      "id": "Kuis",
+      "ar": "الاختبارات"
+    },
+    {
+      "kunci": "belajar.progres_persen_label",
+      "halaman": "belajar",
+      "id": "Progres {persen}%, {label}",
+      "ar": "التقدم {persen}%، {label}"
+    },
+    {
+      "kunci": "rujukan.dalil",
+      "halaman": "rujukan",
+      "id": "Dalil",
+      "ar": "الدليل"
+    },
+    {
+      "kunci": "rujukan.buka_di_rujukan",
+      "halaman": "rujukan",
+      "id": "Buka di Rujukan",
+      "ar": "افتح في المراجع"
+    },
+    {
+      "kunci": "faq.fikih",
+      "halaman": "faq",
+      "id": "Fikih",
+      "ar": "الفقه"
+    },
+    {
+      "kunci": "faq.pakai_aplikasi",
+      "halaman": "faq",
+      "id": "Pakai aplikasi",
+      "ar": "استعمال التطبيق"
+    },
+    {
+      "kunci": "faq.pertanyaan_yang_sering_muncul_soal_hukum",
+      "halaman": "faq",
+      "id": "Pertanyaan yang sering muncul soal hukum waris dan cara memakai aplikasi ini.",
+      "ar": "أسئلة يكثر طرحها عن أحكام الميراث وطريقة استعمال التطبيق."
+    },
+    {
+      "kunci": "umum.draf_belum_direview_tim_keilmuan",
+      "halaman": "umum",
+      "id": "Draf, belum direview tim keilmuan",
+      "ar": "مسودة لم يراجعها الفريق العلمي بعد"
+    },
+    {
+      "kunci": "faq.cari_pertanyaan",
+      "halaman": "faq",
+      "id": "Cari pertanyaan",
+      "ar": "ابحث عن سؤال"
+    },
+    {
+      "kunci": "faq.mis_anak_angkat_wasiat_hutang",
+      "halaman": "faq",
+      "id": "mis. anak angkat, wasiat, hutang",
+      "ar": "مثال: ابن متبنى، وصية، دين"
+    },
+    {
+      "kunci": "faq.belum_ada_pertanyaan_yang_cocok_coba",
+      "halaman": "faq",
+      "id": "Belum ada pertanyaan yang cocok. Coba kata lain, atau tanyakan ke ahli faraidh.",
+      "ar": "لا يوجد سؤال مطابق. جرب كلمة أخرى، أو اسأل أهل الفرائض."
+    },
+    {
+      "kunci": "umum.bagikan_pertanyaan_ini",
+      "halaman": "umum",
+      "id": "Bagikan pertanyaan ini",
+      "ar": "شارك هذا السؤال"
+    },
+    {
+      "kunci": "glosarium.arti_istilah_faraidh_dalam_bahasa_sehari",
+      "halaman": "glosarium",
+      "id": "Arti istilah faraidh dalam bahasa sehari-hari, lengkap dengan makna teknisnya.",
+      "ar": "معاني مصطلحات الفرائض بلغة مبسطة مع معناها الاصطلاحي."
+    },
+    {
+      "kunci": "glosarium.cari_istilah",
+      "halaman": "glosarium",
+      "id": "Cari istilah",
+      "ar": "ابحث عن مصطلح"
+    },
+    {
+      "kunci": "glosarium.mis_sisa_ashabah_terhalang",
+      "halaman": "glosarium",
+      "id": "mis. sisa, ashabah, terhalang",
+      "ar": "مثال: الباقي، العصبة، المحجوب"
+    },
+    {
+      "kunci": "glosarium.jumlah_istilah",
+      "halaman": "glosarium",
+      "id": "{jumlah} istilah",
+      "ar": "{jumlah} مصطلحا"
+    },
+    {
+      "kunci": "glosarium.makna_teknis",
+      "halaman": "glosarium",
+      "id": "Makna teknis",
+      "ar": "المعنى الاصطلاحي"
+    },
+    {
+      "kunci": "glosarium.draf_belum_direview",
+      "halaman": "glosarium",
+      "id": "(draf, belum direview)",
+      "ar": "(مسودة لم تراجع بعد)"
+    },
+    {
+      "kunci": "glosarium.dipakai_di",
+      "halaman": "glosarium",
+      "id": "Dipakai di",
+      "ar": "يستعمل في"
+    },
+    {
+      "kunci": "glosarium.glosarium_faraidh",
+      "halaman": "glosarium",
+      "id": "(glosarium faraidh)",
+      "ar": "(مسرد الفرائض)"
+    },
+    {
+      "kunci": "umum.bagikan",
+      "halaman": "umum",
+      "id": "Bagikan",
+      "ar": "مشاركة"
+    },
+    {
+      "kunci": "latihan.benar",
+      "halaman": "latihan",
+      "id": "Benar",
+      "ar": "صحيح"
+    },
+    {
+      "kunci": "latihan.belum_tepat_jawabannya_huruf",
+      "halaman": "latihan",
+      "id": "Belum tepat, jawabannya {huruf}",
+      "ar": "غير صحيح، الإجابة {huruf}"
+    },
+    {
+      "kunci": "latihan.coba_lagi",
+      "halaman": "latihan",
+      "id": "Coba lagi",
+      "ar": "حاول مجددا"
+    },
+    {
+      "kunci": "latihan.jumlah_menit",
+      "halaman": "latihan",
+      "id": "{jumlah} menit",
+      "ar": "{jumlah} دقيقة"
+    },
+    {
+      "kunci": "latihan.jumlah_detik",
+      "halaman": "latihan",
+      "id": "{jumlah} detik",
+      "ar": "{jumlah} ثانية"
+    },
+    {
+      "kunci": "latihan.jumlah_soal_dari_semua_bab",
+      "halaman": "latihan",
+      "id": "{jumlah} soal dari semua bab",
+      "ar": "{jumlah} أسئلة من كل الأبواب"
+    },
+    {
+      "kunci": "latihan.skor_terakhir",
+      "halaman": "latihan",
+      "id": "Skor terakhir",
+      "ar": "آخر نتيجة"
+    },
+    {
+      "kunci": "latihan.jumlah_soal",
+      "halaman": "latihan",
+      "id": "{jumlah} soal",
+      "ar": "{jumlah} أسئلة"
+    },
+    {
+      "kunci": "latihan.keluar_dari_kuis",
+      "halaman": "latihan",
+      "id": "Keluar dari kuis?",
+      "ar": "الخروج من الاختبار؟"
+    },
+    {
+      "kunci": "latihan.jawabanmu_di_sesi_ini_terjawab_dari",
+      "halaman": "latihan",
+      "id": "Jawabanmu di sesi ini ({terjawab} dari {total} soal) tidak disimpan.",
+      "ar": "إجاباتك في هذه الجلسة ({terjawab} من {total} أسئلة) لن تحفظ."
+    },
+    {
+      "kunci": "latihan.lanjut_mengerjakan",
+      "halaman": "latihan",
+      "id": "Lanjut mengerjakan",
+      "ar": "واصل الحل"
+    },
+    {
+      "kunci": "latihan.keluar",
+      "halaman": "latihan",
+      "id": "Keluar",
+      "ar": "خروج"
+    },
+    {
+      "kunci": "latihan.kuis_ini_tidak_ada",
+      "halaman": "latihan",
+      "id": "Kuis ini tidak ada.",
+      "ar": "هذا الاختبار غير موجود."
+    },
+    {
+      "kunci": "latihan.kembali_ke_daftar_kuis",
+      "halaman": "latihan",
+      "id": "Kembali ke daftar kuis",
+      "ar": "العودة إلى قائمة الاختبارات"
+    },
+    {
+      "kunci": "latihan.pilih_mode",
+      "halaman": "latihan",
+      "id": "Pilih mode",
+      "ar": "اختر النمط"
+    },
+    {
+      "kunci": "latihan.mode_latihan",
+      "halaman": "latihan",
+      "id": "Mode latihan",
+      "ar": "نمط التمرين"
+    },
+    {
+      "kunci": "latihan.jawaban_yang_tepat_dan_pembahasannya_muncul",
+      "halaman": "latihan",
+      "id": "Jawaban yang tepat dan pembahasannya muncul setiap selesai menjawab.",
+      "ar": "تظهر الإجابة الصحيحة وشرحها بعد كل إجابة."
+    },
+    {
+      "kunci": "latihan.mode_ujian",
+      "halaman": "latihan",
+      "id": "Mode ujian",
+      "ar": "نمط الامتحان"
+    },
+    {
+      "kunci": "latihan.waktunya_durasi_jawaban_yang_tepat_baru",
+      "halaman": "latihan",
+      "id": "Waktunya {durasi}. Jawaban yang tepat baru muncul setelah selesai atau waktu habis.",
+      "ar": "مدته {durasi}. لا تظهر الإجابات الصحيحة إلا بعد الانتهاء أو انتهاء الوقت."
+    },
+    {
+      "kunci": "latihan.mulai_kuis",
+      "halaman": "latihan",
+      "id": "Mulai kuis",
+      "ar": "ابدأ الاختبار"
+    },
+    {
+      "kunci": "umum.soal_nomor_dari_total",
+      "halaman": "umum",
+      "id": "Soal {nomor} dari {total}",
+      "ar": "السؤال {nomor} من {total}"
+    },
+    {
+      "kunci": "latihan.benar_jumlah",
+      "halaman": "latihan",
+      "id": "Benar {jumlah}",
+      "ar": "الصحيح {jumlah}"
+    },
+    {
+      "kunci": "latihan.sisa_waktu_durasi",
+      "halaman": "latihan",
+      "id": "Sisa waktu {durasi}",
+      "ar": "الوقت المتبقي {durasi}"
+    },
+    {
+      "kunci": "latihan.soal_nomor",
+      "halaman": "latihan",
+      "id": "Soal {nomor}",
+      "ar": "السؤال {nomor}"
+    },
+    {
+      "kunci": "latihan.soal_sebelumnya",
+      "halaman": "latihan",
+      "id": "Soal sebelumnya",
+      "ar": "السؤال السابق"
+    },
+    {
+      "kunci": "latihan.selesaikan",
+      "halaman": "latihan",
+      "id": "Selesaikan",
+      "ar": "أنهِ"
+    },
+    {
+      "kunci": "hitung.lihat_hasil",
+      "halaman": "hitung",
+      "id": "Lihat hasil",
+      "ar": "اعرض النتيجة"
+    },
+    {
+      "kunci": "latihan.soal_berikutnya",
+      "halaman": "latihan",
+      "id": "Soal berikutnya",
+      "ar": "السؤال التالي"
+    },
+    {
+      "kunci": "latihan.navigasi_soal",
+      "halaman": "latihan",
+      "id": "Navigasi soal",
+      "ar": "التنقل بين الأسئلة"
+    },
+    {
+      "kunci": "latihan.soal_nomor_status",
+      "halaman": "latihan",
+      "id": "Soal {nomor}, {status}",
+      "ar": "السؤال {nomor}، {status}"
+    },
+    {
+      "kunci": "latihan.terjawab",
+      "halaman": "latihan",
+      "id": "terjawab",
+      "ar": "تمت الإجابة"
+    },
+    {
+      "kunci": "latihan.belum_dijawab",
+      "halaman": "latihan",
+      "id": "belum dijawab",
+      "ar": "لم يجب"
+    },
+    {
+      "kunci": "latihan.terjawab_2",
+      "halaman": "latihan",
+      "id": "Terjawab",
+      "ar": "تمت الإجابة"
+    },
+    {
+      "kunci": "latihan.belum",
+      "halaman": "latihan",
+      "id": "Belum",
+      "ar": "لم يجب"
+    },
+    {
+      "kunci": "latihan.skor",
+      "halaman": "latihan",
+      "id": "Skor",
+      "ar": "النتيجة"
+    },
+    {
+      "kunci": "latihan.salah",
+      "halaman": "latihan",
+      "id": "Salah",
+      "ar": "خطأ"
+    },
+    {
+      "kunci": "latihan.nilai",
+      "halaman": "latihan",
+      "id": "Nilai",
+      "ar": "الدرجة"
+    },
+    {
+      "kunci": "latihan.pilih_kuis_lain",
+      "halaman": "latihan",
+      "id": "Pilih kuis lain",
+      "ar": "اختر اختبارا آخر"
+    },
+    {
+      "kunci": "latihan.kerjakan_lagi",
+      "halaman": "latihan",
+      "id": "Kerjakan lagi",
+      "ar": "أعد الحل"
+    },
+    {
+      "kunci": "hitung.pembahasan",
+      "halaman": "hitung",
+      "id": "Pembahasan",
+      "ar": "الحل"
+    },
+    {
+      "kunci": "latihan.soal_nomor_2",
+      "halaman": "latihan",
+      "id": "Soal {nomor}.",
+      "ar": "السؤال {nomor}."
+    },
+    {
+      "kunci": "latihan.tidak_dijawab_waktu_habis",
+      "halaman": "latihan",
+      "id": "Tidak dijawab (waktu habis)",
+      "ar": "لم يجب (انتهى الوقت)"
+    },
+    {
+      "kunci": "latihan.jawaban_tepat",
+      "halaman": "latihan",
+      "id": "Jawaban tepat",
+      "ar": "الإجابة الصحيحة"
+    },
+    {
+      "kunci": "latihan.kerjakan_soal_hitung_dari_kasus_nyata",
+      "halaman": "latihan",
+      "id": "Kerjakan soal hitung dari kasus nyata, atau uji pemahaman konsep lewat kuis per bab.",
+      "ar": "حل مسائل حسابية من وقائع حقيقية، أو اختبر فهمك للمفاهيم باختبارات لكل باب."
+    },
+    {
+      "kunci": "latihan.jenis_latihan",
+      "halaman": "latihan",
+      "id": "Jenis latihan",
+      "ar": "نوع التمرين"
+    },
+    {
+      "kunci": "latihan.kuis_konsep",
+      "halaman": "latihan",
+      "id": "Kuis konsep",
+      "ar": "اختبار المفاهيم"
+    },
+    {
+      "kunci": "latihan.progres_soal_hitung",
+      "halaman": "latihan",
+      "id": "Progres soal hitung",
+      "ar": "تقدم المسائل الحسابية"
+    },
+    {
+      "kunci": "latihan.soal_dikerjakan",
+      "halaman": "latihan",
+      "id": "soal dikerjakan",
+      "ar": "مسألة محلولة"
+    },
+    {
+      "kunci": "latihan.sudah_dikerjakan",
+      "halaman": "latihan",
+      "id": "sudah dikerjakan",
+      "ar": "تم حلها"
+    },
+    {
+      "kunci": "latihan.belum_dikerjakan",
+      "halaman": "latihan",
+      "id": "belum dikerjakan",
+      "ar": "لم تحل بعد"
+    },
+    {
+      "kunci": "latihan.ulangi",
+      "halaman": "latihan",
+      "id": "Ulangi",
+      "ar": "أعد"
+    },
+    {
+      "kunci": "belajar.pelajaran_ini_tidak_ditemukan",
+      "halaman": "belajar",
+      "id": "Pelajaran ini tidak ditemukan.",
+      "ar": "لم يوجد هذا الدرس."
+    },
+    {
+      "kunci": "belajar.modul_nomor_judul_pelajaran_indeks_dari",
+      "halaman": "belajar",
+      "id": "Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}",
+      "ar": "الوحدة {nomor} · {judul} · الدرس {indeks} من {total}"
+    },
+    {
+      "kunci": "belajar.navigasi_pelajaran",
+      "halaman": "belajar",
+      "id": "Navigasi pelajaran",
+      "ar": "التنقل بين الدروس"
+    },
+    {
+      "kunci": "belajar.sebelumnya",
+      "halaman": "belajar",
+      "id": "Sebelumnya",
+      "ar": "السابق"
+    },
+    {
+      "kunci": "belajar.beranda_belajar",
+      "halaman": "belajar",
+      "id": "Beranda belajar",
+      "ar": "الصفحة الرئيسية للتعلم"
+    },
+    {
+      "kunci": "belajar.berikutnya",
+      "halaman": "belajar",
+      "id": "Berikutnya",
+      "ar": "التالي"
+    },
+    {
+      "kunci": "belajar.daftar_materi",
+      "halaman": "belajar",
+      "id": "Daftar materi",
+      "ar": "قائمة الدروس"
+    },
+    {
+      "kunci": "belajar.progres_belajar",
+      "halaman": "belajar",
+      "id": "Progres belajar",
+      "ar": "تقدم التعلم"
+    },
+    {
+      "kunci": "belajar.menyusul",
+      "halaman": "belajar",
+      "id": "menyusul",
+      "ar": "قريبا"
+    },
+    {
+      "kunci": "belajar.selesai",
+      "halaman": "belajar",
+      "id": "selesai",
+      "ar": "منتهٍ"
+    },
+    {
+      "kunci": "belajar.contoh_ini_tidak_bisa_dihitung_laporkan",
+      "halaman": "belajar",
+      "id": "Contoh ini tidak bisa dihitung. Laporkan ke pengembang.",
+      "ar": "تعذر حساب هذا المثال. أبلغ المطورين."
+    },
+    {
+      "kunci": "belajar.dihitung_otomatis",
+      "halaman": "belajar",
+      "id": "Dihitung otomatis",
+      "ar": "محسوب تلقائيا"
+    },
+    {
+      "kunci": "belajar.buka_di_hitung",
+      "halaman": "belajar",
+      "id": "Buka di Hitung",
+      "ar": "افتح في الحساب"
+    },
+    {
+      "kunci": "rujukan.al_qur_an",
+      "halaman": "rujukan",
+      "id": "Al-Qur'an",
+      "ar": "القرآن الكريم"
+    },
+    {
+      "kunci": "rujukan.sunnah",
+      "halaman": "rujukan",
+      "id": "Sunnah",
+      "ar": "السنة"
+    },
+    {
+      "kunci": "rujukan.atsar_sahabat",
+      "halaman": "rujukan",
+      "id": "Atsar sahabat",
+      "ar": "آثار الصحابة"
+    },
+    {
+      "kunci": "rujukan.ijma",
+      "halaman": "rujukan",
+      "id": "Ijma'",
+      "ar": "الإجماع"
+    },
+    {
+      "kunci": "rujukan.kitab_madzhab",
+      "halaman": "rujukan",
+      "id": "Kitab madzhab",
+      "ar": "كتب المذهب"
+    },
+    {
+      "kunci": "rujukan.kaidah_hisab",
+      "halaman": "rujukan",
+      "id": "Kaidah hisab",
+      "ar": "قواعد الحساب"
+    },
+    {
+      "kunci": "rujukan.keterangan",
+      "halaman": "rujukan",
+      "id": "Keterangan",
+      "ar": "فوائد"
+    },
+    {
+      "kunci": "rujukan.masih_dikaji",
+      "halaman": "rujukan",
+      "id": "Masih dikaji",
+      "ar": "قيد الدراسة"
+    },
+    {
+      "kunci": "belajar.hukum",
+      "halaman": "belajar",
+      "id": "Hukum",
+      "ar": "الحكم"
+    },
+    {
+      "kunci": "belajar.arti",
+      "halaman": "belajar",
+      "id": "Arti",
+      "ar": "المعنى"
+    },
+    {
+      "kunci": "belajar.tafsir",
+      "halaman": "belajar",
+      "id": "Tafsir",
+      "ar": "التفسير"
+    },
+    {
+      "kunci": "rujukan.al_qur_an_sunnah_atsar_ijma",
+      "halaman": "rujukan",
+      "id": "Al-Qur'an, sunnah, atsar, ijma', dan kitab madzhab yang menjadi dasar tiap hukum di aplikasi ini.",
+      "ar": "القرآن والسنة والآثار والإجماع وكتب المذهب التي بنيت عليها أحكام هذا التطبيق."
+    },
+    {
+      "kunci": "rujukan.kategori_dalil",
+      "halaman": "rujukan",
+      "id": "Kategori dalil",
+      "ar": "أنواع الأدلة"
+    },
+    {
+      "kunci": "rujukan.dalil_terpilih",
+      "halaman": "rujukan",
+      "id": "Dalil terpilih",
+      "ar": "الدليل المختار"
+    },
+    {
+      "kunci": "rujukan.nomor_hadits_bisa_berbeda_antar_cetakan",
+      "halaman": "rujukan",
+      "id": "Nomor hadits bisa berbeda antar cetakan; cocokkan dengan lafaznya.",
+      "ar": "قد يختلف رقم الحديث بين الطبعات؛ فطابقه باللفظ."
+    },
+    {
+      "kunci": "rujukan.perlu_dicek",
+      "halaman": "rujukan",
+      "id": "Perlu dicek",
+      "ar": "يحتاج تحققا"
+    },
+    {
+      "kunci": "rujukan.keterangan_surah_ayat",
+      "halaman": "rujukan",
+      "id": "Keterangan {surah} {ayat}",
+      "ar": "بيان {surah} {ayat}"
+    },
+    {
+      "kunci": "rujukan.belum_ada_rincian_hukum_untuk_ayat",
+      "halaman": "rujukan",
+      "id": "Belum ada rincian hukum untuk ayat ini.",
+      "ar": "لا توجد أحكام مفصلة لهذه الآية بعد."
+    },
+    {
+      "kunci": "rujukan.arti_ayat_ini_belum_diisi_akan",
+      "halaman": "rujukan",
+      "id": "Arti ayat ini belum diisi. Akan ditambahkan tim keilmuan.",
+      "ar": "معنى هذه الآية لم يكتب بعد. سيضيفه الفريق العلمي."
+    },
+    {
+      "kunci": "rujukan.tafsir_ayat_ini_belum_diisi_akan",
+      "halaman": "rujukan",
+      "id": "Tafsir ayat ini belum diisi. Akan ditambahkan tim keilmuan.",
+      "ar": "تفسير هذه الآية لم يكتب بعد. سيضيفه الفريق العلمي."
+    },
+    {
+      "kunci": "rujukan.baca_di_sini",
+      "halaman": "rujukan",
+      "id": "Baca di sini",
+      "ar": "اقرأ هنا"
+    },
+    {
+      "kunci": "rujukan.baca_di_sini_belum_tersedia",
+      "halaman": "rujukan",
+      "id": "Baca di sini · belum tersedia",
+      "ar": "اقرأ هنا · غير متاح بعد"
+    },
+    {
+      "kunci": "rujukan.situs_sumber",
+      "halaman": "rujukan",
+      "id": "Situs sumber",
+      "ar": "موقع المصدر"
+    },
+    {
+      "kunci": "rujukan.situs_sumber_belum_tersedia",
+      "halaman": "rujukan",
+      "id": "Situs sumber · belum tersedia",
+      "ar": "موقع المصدر · غير متاح بعد"
+    },
+    {
+      "kunci": "rujukan.kembali_ke_daftar_kitab",
+      "halaman": "rujukan",
+      "id": "Kembali ke daftar kitab",
+      "ar": "العودة إلى قائمة الكتب"
+    },
+    {
+      "kunci": "rujukan.berkas_kitab_ini_belum_tersedia",
+      "halaman": "rujukan",
+      "id": "Berkas kitab ini belum tersedia.",
+      "ar": "ملف هذا الكتاب غير متاح بعد."
+    },
+    {
+      "kunci": "rujukan.dipakai_untuk",
+      "halaman": "rujukan",
+      "id": "Dipakai untuk",
+      "ar": "يستعمل في"
+    },
+    {
+      "kunci": "rujukan.masih_dikaji_2",
+      "halaman": "rujukan",
+      "id": "(masih dikaji)",
+      "ar": "(قيد الدراسة)"
+    },
+    {
+      "kunci": "rujukan.kembali_ke_rujukan",
+      "halaman": "rujukan",
+      "id": "Kembali ke rujukan",
+      "ar": "العودة إلى المراجع"
+    },
+    {
+      "kunci": "rujukan.rujukan_kode_tidak_ada_di_daftar",
+      "halaman": "rujukan",
+      "id": "Rujukan {kode} tidak ada di daftar.",
+      "ar": "المرجع {kode} غير موجود في القائمة."
+    },
+    {
+      "kunci": "tanya_jawab.saran_ustadz",
+      "halaman": "tanya_jawab",
+      "id": "Saran ustadz",
+      "ar": "نصيحة الأستاذ"
+    },
+    {
+      "kunci": "tanya_jawab.fatwa",
+      "halaman": "tanya_jawab",
+      "id": "Fatwa",
+      "ar": "فتوى"
+    },
+    {
+      "kunci": "tanya_jawab.kasus_ini_tidak_ditemukan",
+      "halaman": "tanya_jawab",
+      "id": "Kasus ini tidak ditemukan.",
+      "ar": "لم توجد هذه المسألة."
+    },
+    {
+      "kunci": "tanya_jawab.semua_kasus",
+      "halaman": "tanya_jawab",
+      "id": "Semua kasus",
+      "ar": "كل المسائل"
+    },
+    {
+      "kunci": "tanya_jawab.kasus_waris_sungguhan_seperti_sengketa_keluarga",
+      "halaman": "tanya_jawab",
+      "id": "Kasus waris sungguhan, seperti sengketa keluarga, beserta penyelesaiannya dari ustadz atau lembaga fatwa.",
+      "ar": "مسائل ميراث حقيقية، كنزاعات الأسرة، مع حلولها من الأساتذة أو جهات الفتوى."
+    },
+    {
+      "kunci": "tanya_jawab.cari_kasus",
+      "halaman": "tanya_jawab",
+      "id": "Cari kasus",
+      "ar": "ابحث عن مسألة"
+    },
+    {
+      "kunci": "tanya_jawab.mis_rumah_sengketa_anak_tiri",
+      "halaman": "tanya_jawab",
+      "id": "mis. rumah, sengketa, anak tiri",
+      "ar": "مثال: بيت، نزاع، ابن الزوجة"
+    },
+    {
+      "kunci": "tanya_jawab.kategori",
+      "halaman": "tanya_jawab",
+      "id": "Kategori",
+      "ar": "التصنيف"
+    },
+    {
+      "kunci": "tanya_jawab.semua",
+      "halaman": "tanya_jawab",
+      "id": "Semua",
+      "ar": "الكل"
+    },
+    {
+      "kunci": "tanya_jawab.belum_ada_kasus_yang_cocok_coba",
+      "halaman": "tanya_jawab",
+      "id": "Belum ada kasus yang cocok. Coba kata atau kategori lain.",
+      "ar": "لا توجد مسألة مطابقة. جرب كلمة أو تصنيفا آخر."
+    },
+    {
+      "kunci": "tanya_jawab.sumber",
+      "halaman": "tanya_jawab",
+      "id": "Sumber",
+      "ar": "المصدر"
+    },
+    {
+      "kunci": "tanya_jawab.ukuran_huruf",
+      "halaman": "tanya_jawab",
+      "id": "Ukuran huruf",
+      "ar": "حجم الخط"
+    },
+    {
+      "kunci": "tanya_jawab.perkecil_huruf",
+      "halaman": "tanya_jawab",
+      "id": "Perkecil huruf",
+      "ar": "تصغير الخط"
+    },
+    {
+      "kunci": "tanya_jawab.perbesar_huruf",
+      "halaman": "tanya_jawab",
+      "id": "Perbesar huruf",
+      "ar": "تكبير الخط"
+    },
+    {
+      "kunci": "tanya_jawab.kasus",
+      "halaman": "tanya_jawab",
+      "id": "Kasus",
+      "ar": "المسألة"
+    },
+    {
+      "kunci": "tanya_jawab.penyelesaian",
+      "halaman": "tanya_jawab",
+      "id": "Penyelesaian",
+      "ar": "الحل"
+    },
+    {
+      "kunci": "umum.bagikan_kasus_ini",
+      "halaman": "umum",
+      "id": "Bagikan kasus ini",
+      "ar": "شارك هذه المسألة"
+    },
+    {
+      "kunci": "beranda.fariq_bin_sutikno",
+      "halaman": "beranda",
+      "id": "Fariq bin Sutikno",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.menulis_kodenya",
+      "halaman": "beranda",
+      "id": "menulis kodenya",
+      "ar": "البرمجة"
+    },
+    {
+      "kunci": "beranda.ridha_ar_rasyid",
+      "halaman": "beranda",
+      "id": "Ridha Ar Rasyid",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.muhammad_fatih_ikhsan",
+      "halaman": "beranda",
+      "id": "Muhammad Fatih Ikhsan",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.menjaga_ilmunya",
+      "halaman": "beranda",
+      "id": "menjaga ilmunya",
+      "ar": "المراجعة العلمية"
+    },
+    {
+      "kunci": "beranda.riyan_maulana_sidiq",
+      "halaman": "beranda",
+      "id": "Riyan Maulana Sidiq",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.ustaz_muhammad_yassir_m_h",
+      "halaman": "beranda",
+      "id": "Ustaz Muhammad Yassir, M.H.",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.ustaz_arif_husnul_khuluq_m_h",
+      "halaman": "beranda",
+      "id": "Ustaz Arif Husnul Khuluq, M.H.",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.waris_itu_gampang_asal_tahu_urutannya",
+      "halaman": "beranda",
+      "id": "Waris itu gampang, asal tahu urutannya.",
+      "ar": "الميراث سهل إذا عرفت ترتيبه."
+    },
+    {
+      "kunci": "beranda.hitung_pembagian_warisan_menurut_madzhab_syafi",
+      "halaman": "beranda",
+      "id": "Hitung pembagian warisan menurut madzhab Syafi'i, lengkap dengan alasan tiap angkanya, dan pelajari ilmunya pelan-pelan.",
+      "ar": "احسب قسمة التركة على مذهب الشافعي مع تعليل كل رقم، وتعلم العلم خطوة خطوة."
+    },
+    {
+      "kunci": "beranda.coba_di_ariflab",
+      "halaman": "beranda",
+      "id": "Coba di ArifLab",
+      "ar": "جرب في ArifLab"
+    },
+    {
+      "kunci": "beranda.isi_data_almarhum_ahli_waris_dan",
+      "halaman": "beranda",
+      "id": "Isi data almarhum, ahli waris, dan harta. Sekitar 3 menit.",
+      "ar": "أدخل بيانات الميت والورثة والتركة. نحو ٣ دقائق."
+    },
+    {
+      "kunci": "beranda.mulai_belajar",
+      "halaman": "beranda",
+      "id": "Mulai belajar",
+      "ar": "ابدأ التعلم"
+    },
+    {
+      "kunci": "beranda.lanjut_belajar",
+      "halaman": "beranda",
+      "id": "Lanjut belajar",
+      "ar": "أكمل التعلم"
+    },
+    {
+      "kunci": "hitung.berikutnya_judul",
+      "halaman": "hitung",
+      "id": "Berikutnya: {judul}",
+      "ar": "التالي: {judul}"
+    },
+    {
+      "kunci": "beranda.semua_pelajaran_sudah_selesai",
+      "halaman": "beranda",
+      "id": "Semua pelajaran sudah selesai.",
+      "ar": "أتممت جميع الدروس."
+    },
+    {
+      "kunci": "beranda.punyamu_di_perangkat_ini",
+      "halaman": "beranda",
+      "id": "Punyamu di perangkat ini",
+      "ar": "بياناتك على هذا الجهاز"
+    },
+    {
+      "kunci": "beranda.kasus_terakhir",
+      "halaman": "beranda",
+      "id": "Kasus terakhir",
+      "ar": "آخر مسألة"
+    },
+    {
+      "kunci": "beranda.belum_ada_kasus_yang_dihitung",
+      "halaman": "beranda",
+      "id": "Belum ada kasus yang dihitung.",
+      "ar": "لم تحسب أي مسألة بعد."
+    },
+    {
+      "kunci": "beranda.lanjutkan_kasus",
+      "halaman": "beranda",
+      "id": "Lanjutkan kasus",
+      "ar": "أكمل المسألة"
+    },
+    {
+      "kunci": "beranda.mulai_hitung",
+      "halaman": "beranda",
+      "id": "Mulai hitung",
+      "ar": "ابدأ الحساب"
+    },
+    {
+      "kunci": "beranda.lanjutkan_belajar",
+      "halaman": "beranda",
+      "id": "Lanjutkan belajar",
+      "ar": "أكمل التعلم"
+    },
+    {
+      "kunci": "beranda.lihat_materi",
+      "halaman": "beranda",
+      "id": "Lihat materi",
+      "ar": "اعرض الدرس"
+    },
+    {
+      "kunci": "hitung.selesai_total_soal_hitung",
+      "halaman": "hitung",
+      "id": "{selesai}/{total} soal hitung",
+      "ar": "{selesai}/{total} تمارين"
+    },
+    {
+      "kunci": "hitung.kuis_terakhir_judul_skor_skor",
+      "halaman": "hitung",
+      "id": "Kuis terakhir: {judul}, skor {skor}",
+      "ar": "آخر اختبار: {judul}، النتيجة {skor}"
+    },
+    {
+      "kunci": "beranda.belum_ada_kuis_yang_dikerjakan",
+      "halaman": "beranda",
+      "id": "Belum ada kuis yang dikerjakan.",
+      "ar": "لم تحل أي اختبار بعد."
+    },
+    {
+      "kunci": "beranda.mulai_latihan",
+      "halaman": "beranda",
+      "id": "Mulai latihan",
+      "ar": "ابدأ التمارين"
+    },
+    {
+      "kunci": "beranda.lanjutkan_latihan",
+      "halaman": "beranda",
+      "id": "Lanjutkan latihan",
+      "ar": "أكمل التمارين"
+    },
+    {
+      "kunci": "beranda.dari_faq",
+      "halaman": "beranda",
+      "id": "Dari FAQ",
+      "ar": "من الأسئلة الشائعة"
+    },
+    {
+      "kunci": "hitung.semua_pertanyaan",
+      "halaman": "hitung",
+      "id": "Semua pertanyaan",
+      "ar": "كل الأسئلة"
+    },
+    {
+      "kunci": "beranda.tentang_arif",
+      "halaman": "beranda",
+      "id": "Tentang ARIF",
+      "ar": "عن ARIF"
+    },
+    {
+      "kunci": "beranda.arif",
+      "halaman": "beranda",
+      "id": "ARIF",
+      "ar": null
+    },
+    {
+      "kunci": "beranda.singkatan_dari",
+      "halaman": "beranda",
+      "id": "singkatan dari",
+      "ar": "اختصار لـ"
+    },
+    {
+      "kunci": "beranda.aplikasi_representasi_ilmu_faraidh",
+      "halaman": "beranda",
+      "id": "Aplikasi Representasi Ilmu Faraidh",
+      "ar": "تطبيق تمثيل علم الفرائض"
+    },
+    {
+      "kunci": "hitung.tempat_ilmu_waris_islam_dipelajari_lewat",
+      "halaman": "hitung",
+      "id": ": tempat ilmu waris Islam dipelajari lewat penjelasan, latihan, dan",
+      "ar": ": مكان لتعلم علم المواريث بالشرح والتمارين و"
+    },
+    {
+      "kunci": "hitung.ariflab",
+      "halaman": "hitung",
+      "id": "ArifLab",
+      "ar": "ArifLab"
+    },
+    {
+      "kunci": "hitung.ruang_untuk_mencoba_simulasi_hitung_waris",
+      "halaman": "hitung",
+      "id": ", ruang untuk mencoba simulasi hitung waris sendiri.",
+      "ar": "، مساحة لتجربة حساب المواريث بنفسك."
+    },
+    {
+      "kunci": "hitung.aplikasi_ini_berawal_dari_tugas_akhir",
+      "halaman": "hitung",
+      "id": "Aplikasi ini berawal dari tugas akhir beberapa mahasiswa Hukum Keluarga Islam di",
+      "ar": "بدأ هذا التطبيق مشروع تخرج لطلاب الأحوال الشخصية في"
+    },
+    {
+      "kunci": "hitung.kami_ingin_ilmu_faraidh_terasa_dekat",
+      "halaman": "hitung",
+      "id": "Kami ingin ilmu faraidh terasa dekat: bisa dihitung, sekaligus dipahami alasannya.",
+      "ar": "أردنا أن يكون علم الفرائض قريبا: يحسب وتفهم علله."
+    },
+    {
+      "kunci": "hitung.dan_2",
+      "halaman": "hitung",
+      "id": ", dan ",
+      "ar": "، و"
+    },
+    {
+      "kunci": "hitung.teks",
+      "halaman": "hitung",
+      "id": ", ",
+      "ar": "، "
+    },
+    {
+      "kunci": "hitung.semuanya_berjalan_di_bawah_bimbingan",
+      "halaman": "hitung",
+      "id": "Semuanya berjalan di bawah bimbingan",
+      "ar": "وكل ذلك بإشراف"
+    },
+    {
+      "kunci": "hitung.ubah_data",
+      "halaman": "hitung",
+      "id": "← Ubah data",
+      "ar": "تعديل البيانات →"
+    },
+    {
+      "kunci": "hitung.waduh_ada_yang_nggak_beres_di",
+      "halaman": "hitung",
+      "id": "Waduh, ada yang nggak beres di mesin hitungnya",
+      "ar": "عذرا، حدث خلل في محرك الحساب"
+    },
+    {
+      "kunci": "hitung.ini_bukan_salah_isianmu_tolong_laporkan",
+      "halaman": "hitung",
+      "id": "Ini bukan salah isianmu. Tolong laporkan dan lampirkan data kasus di bawah.",
+      "ar": "ليس الخطأ في إدخالك. أبلغنا وأرفق بيانات المسألة أدناه."
+    },
+    {
+      "kunci": "hitung.salin_data_kasus",
+      "halaman": "hitung",
+      "id": "Salin data kasus",
+      "ar": "نسخ بيانات المسألة"
+    },
+    {
+      "kunci": "umum.laporkan_ke_pengembang",
+      "halaman": "umum",
+      "id": "Laporkan ke pengembang",
+      "ar": "أبلغ المطورين"
+    },
+    {
+      "kunci": "hitung.bentar_masih_ada_yang_perlu_diisi",
+      "halaman": "hitung",
+      "id": "Bentar, masih ada yang perlu diisi",
+      "ar": "مهلا، بقي ما يجب إدخاله"
+    },
+    {
+      "kunci": "hitung.kasus_ini_belum_bisa_dihitung_di",
+      "halaman": "hitung",
+      "id": "Kasus ini belum bisa dihitung di sini",
+      "ar": "لا يمكن حساب هذه المسألة هنا بعد"
+    },
+    {
+      "kunci": "hitung.soal",
+      "halaman": "hitung",
+      "id": "Soal",
+      "ar": "التمرين"
+    },
+    {
+      "kunci": "hitung.tentukan_bagian_tiap_ahli_waris",
+      "halaman": "hitung",
+      "id": "Tentukan bagian tiap ahli waris",
+      "ar": "حدد نصيب كل وارث"
+    },
+    {
+      "kunci": "hitung.pembahasan_soal",
+      "halaman": "hitung",
+      "id": "Pembahasan soal",
+      "ar": "حل التمرين"
+    },
+    {
+      "kunci": "hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan",
+      "halaman": "hitung",
+      "id": "Kerjakan di kartu Jawabanmu. Langkah perhitungan dan angka di tabel terbuka setelah jawabanmu benar atau kamu membuka jawaban.",
+      "ar": "حل في بطاقة إجابتك. تفتح الخطوات وأرقام الجدول بعد صحة إجابتك أو فتح الحل."
+    },
+    {
+      "kunci": "hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya",
+      "halaman": "hitung",
+      "id": "Cocokkan jawabanmu, lalu pelajari cara menghitungnya langkah demi langkah.",
+      "ar": "قارن إجابتك، ثم تعلم الحساب خطوة خطوة."
+    },
+    {
+      "kunci": "hitung.hitung_kasus",
+      "halaman": "hitung",
+      "id": "Hitung kasus",
+      "ar": "حساب المسألة"
+    },
+    {
+      "kunci": "hitung.nah_ini_pembagiannya",
+      "halaman": "hitung",
+      "id": "Nah, ini pembagiannya",
+      "ar": "هذه هي القسمة"
+    },
+    {
+      "kunci": "hitung.angka_di_sini_hasil_hitung_kasusmu",
+      "halaman": "hitung",
+      "id": "Angka di sini hasil hitung kasusmu. Mau latihan menebak pembagiannya dulu? Pindah ke mode Belajar.",
+      "ar": "الأرقام هنا نتيجة مسألتك. تريد التدرب على التخمين أولا؟ انتقل إلى وضع التعلم."
+    },
+    {
+      "kunci": "umum.tujuan",
+      "halaman": "umum",
+      "id": "Tujuan",
+      "ar": "الهدف"
+    },
+    {
+      "kunci": "hitung.kanvas_keluarga",
+      "halaman": "hitung",
+      "id": "Kanvas keluarga",
+      "ar": "لوحة الأسرة"
+    },
+    {
+      "kunci": "hitung.tampilan_kanvas",
+      "halaman": "hitung",
+      "id": "Tampilan kanvas",
+      "ar": "عرض اللوحة"
+    },
+    {
+      "kunci": "hitung.ketuk_orang_untuk_melihat_penjelasannya",
+      "halaman": "hitung",
+      "id": "Ketuk orang untuk melihat penjelasannya",
+      "ar": "انقر على شخص لشرح حاله"
+    },
+    {
+      "kunci": "hitung.geser_ke_samping_kalau_terpotong",
+      "halaman": "hitung",
+      "id": "· geser ke samping kalau terpotong",
+      "ar": "· اسحب جانبا إن كان مقطوعا"
+    },
+    {
+      "kunci": "hitung.hasil_perhitungan",
+      "halaman": "hitung",
+      "id": "Hasil perhitungan",
+      "ar": "نتيجة الحساب"
+    },
+    {
+      "kunci": "umum.catatan",
+      "halaman": "umum",
+      "id": "Catatan.",
+      "ar": "تنبيه."
+    },
+    {
+      "kunci": "hitung.hasil_ini_menurut_madzhab_syafi_i",
+      "halaman": "hitung",
+      "id": "Hasil ini menurut madzhab Syafi'i. Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat.",
+      "ar": "هذه النتيجة على مذهب الشافعي. وللقسمة الحقيقية شاوروا أهل الفرائض أو عالما محليا."
+    },
+    {
+      "kunci": "hitung.nemu_yang_janggal",
+      "halaman": "hitung",
+      "id": "Nemu yang janggal?",
+      "ar": "وجدت شيئا غريبا؟"
+    },
+    {
+      "kunci": "hitung.ubah_data_2",
+      "halaman": "hitung",
+      "id": "Ubah data",
+      "ar": "تعديل البيانات"
+    },
+    {
+      "kunci": "umum.reset",
+      "halaman": "umum",
+      "id": "Reset",
+      "ar": "إعادة"
+    },
+    {
+      "kunci": "hitung.skenario",
+      "halaman": "hitung",
+      "id": " skenario",
+      "ar": " المسألة"
+    },
+    {
+      "kunci": "hitung.tersimpan_di_riwayat",
+      "halaman": "hitung",
+      "id": "Tersimpan di riwayat",
+      "ar": "محفوظة في السجل"
+    },
+    {
+      "kunci": "hitung.ekspor",
+      "halaman": "hitung",
+      "id": "Ekspor",
+      "ar": "تصدير"
+    },
+    {
+      "kunci": "umum.reset_skenario",
+      "halaman": "umum",
+      "id": "Reset skenario?",
+      "ar": "إعادة المسألة؟"
+    },
+    {
+      "kunci": "hitung.yakin_mau_lihat_jawaban",
+      "halaman": "hitung",
+      "id": "Yakin mau lihat jawaban?",
+      "ar": "هل تريد رؤية الحل؟"
+    },
+    {
+      "kunci": "hitung.pindah_ke_hitung_kasus",
+      "halaman": "hitung",
+      "id": "Pindah ke Hitung kasus?",
+      "ar": "الانتقال إلى حساب المسألة؟"
+    },
+    {
+      "kunci": "hitung.coba_dulu",
+      "halaman": "hitung",
+      "id": "Coba dulu",
+      "ar": "جرب أولا"
+    },
+    {
+      "kunci": "hitung.tetap_belajar",
+      "halaman": "hitung",
+      "id": "Tetap belajar",
+      "ar": "البقاء في التعلم"
+    },
+    {
+      "kunci": "hitung.tahan_untuk_buka",
+      "halaman": "hitung",
+      "id": "Tahan untuk buka",
+      "ar": "اضغط مطولا للفتح"
+    },
+    {
+      "kunci": "hitung.tahan_untuk_pindah",
+      "halaman": "hitung",
+      "id": "Tahan untuk pindah",
+      "ar": "اضغط مطولا للانتقال"
+    },
+    {
+      "kunci": "hitung.semua_jawaban_langsung_kebuka_kamu_nggak",
+      "halaman": "hitung",
+      "id": "Semua jawaban langsung kebuka, kamu nggak bisa nebak kasus ini lagi.",
+      "ar": "ستفتح كل الإجابات، ولن تستطيع تخمين هذه المسألة مرة أخرى."
+    },
+    {
+      "kunci": "hitung.kamu_belum_nyoba_jawab_sama_sekali",
+      "halaman": "hitung",
+      "id": "Kamu belum nyoba jawab sama sekali. Sekali coba dulu, yuk.",
+      "ar": "لم تجرب الإجابة بعد. جرب مرة واحدة."
+    },
+    {
+      "kunci": "hitung.pindah_ke_mode_belajar",
+      "halaman": "hitung",
+      "id": "Pindah ke mode Belajar?",
+      "ar": "الانتقال إلى وضع التعلم؟"
+    },
+    {
+      "kunci": "hitung.jawaban_akan_disembunyikan_dan_kamu_diminta",
+      "halaman": "hitung",
+      "id": "Jawaban akan disembunyikan dan kamu diminta menebak pembagiannya dulu. Data kasusmu tetap aman.",
+      "ar": "ستخفى الإجابة ويطلب منك تخمين القسمة أولا. بيانات مسألتك محفوظة."
+    },
+    {
+      "kunci": "hitung.keterangan_pohon",
+      "halaman": "hitung",
+      "id": "Keterangan pohon",
+      "ar": "مفتاح الشجرة"
+    },
+    {
+      "kunci": "hitung.pasangan_2",
+      "halaman": "hitung",
+      "id": "Pasangan",
+      "ar": "الزوجان"
+    },
+    {
+      "kunci": "hitung.keturunan_2",
+      "halaman": "hitung",
+      "id": "Keturunan",
+      "ar": "الفروع"
+    },
+    {
+      "kunci": "hitung.orang_tua_leluhur",
+      "halaman": "hitung",
+      "id": "Orang tua & leluhur",
+      "ar": "الأصول"
+    },
+    {
+      "kunci": "hitung.saudara_kerabat",
+      "halaman": "hitung",
+      "id": "Saudara & kerabat",
+      "ar": "الحواشي"
+    },
+    {
+      "kunci": "hitung.garis_putus_tidak_mewarisi",
+      "halaman": "hitung",
+      "id": "Garis putus = tidak mewarisi",
+      "ar": "خط متقطع = لا يرث"
+    },
+    {
+      "kunci": "hitung.mendatar_menikah_turun_anak",
+      "halaman": "hitung",
+      "id": "Mendatar = menikah, turun = anak",
+      "ar": "أفقي = زواج، نازل = ولد"
+    },
+    {
+      "kunci": "umum.beranda",
+      "halaman": "umum",
+      "id": "Beranda",
+      "ar": "الرئيسية"
+    },
+    {
+      "kunci": "umum.menu_utama",
+      "halaman": "umum",
+      "id": "Menu utama",
+      "ar": "القائمة الرئيسية"
+    },
+    {
+      "kunci": "umum.bahasa",
+      "halaman": "umum",
+      "id": "Bahasa",
+      "ar": "اللغة"
+    },
+    {
+      "kunci": "umum.tur_singkat",
+      "halaman": "umum",
+      "id": "Tur singkat",
+      "ar": "جولة قصيرة"
+    },
+    {
+      "kunci": "umum.reset_skenario_2",
+      "halaman": "umum",
+      "id": "Reset skenario",
+      "ar": "إعادة المسألة"
+    },
+    {
+      "kunci": "hitung.mulai_kasus_baru",
+      "halaman": "hitung",
+      "id": "Mulai kasus baru?",
+      "ar": "بدء مسألة جديدة؟"
+    },
+    {
+      "kunci": "hitung.mulai_baru",
+      "halaman": "hitung",
+      "id": "Mulai baru",
+      "ar": "ابدأ من جديد"
+    },
+    {
+      "kunci": "hitung.kasus_yang_sekarang_sudah_tersimpan_di",
+      "halaman": "hitung",
+      "id": "Kasus yang sekarang sudah tersimpan di Riwayat hitung, jadi bisa kamu buka lagi kapan saja.",
+      "ar": "المسألة الحالية محفوظة في سجل الحساب، فيمكنك فتحها متى شئت."
+    },
+    {
+      "kunci": "hitung.isian_yang_sekarang_tersimpan_di_riwayat",
+      "halaman": "hitung",
+      "id": "Isian yang sekarang tersimpan di Riwayat hitung sebagai data belum lengkap. Kamu bisa melanjutkannya kapan saja.",
+      "ar": "ما أدخلته محفوظ في سجل الحساب كبيانات غير مكتملة، ويمكنك إكماله متى شئت."
+    },
+    {
+      "kunci": "hitung.keluarga_inti",
+      "halaman": "hitung",
+      "id": "Keluarga inti",
+      "ar": "الأسرة القريبة"
+    },
+    {
+      "kunci": "hitung.kerabat_lain",
+      "halaman": "hitung",
+      "id": "Kerabat lain",
+      "ar": "أقارب آخرون"
+    },
+    {
+      "kunci": "hitung.tetap_terbuka_karena_sudah_ada_yang",
+      "halaman": "hitung",
+      "id": "Tetap terbuka karena sudah ada yang diisi",
+      "ar": "مفتوح لأن فيه بيانات"
+    },
+    {
+      "kunci": "hitung.kakek_nenek_cucu_kakak_adik_paman",
+      "halaman": "hitung",
+      "id": "kakek-nenek, cucu, kakak/adik, paman, keponakan",
+      "ar": "الأجداد، الأحفاد، الإخوة، الأعمام، أبناء الإخوة"
+    },
+    {
+      "kunci": "hitung.label_dari_siapa",
+      "halaman": "hitung",
+      "id": "{label} dari siapa?",
+      "ar": "{label} من أي أصل؟"
+    },
+    {
+      "kunci": "hitung.dari_nama_2",
+      "halaman": "hitung",
+      "id": "dari {nama}",
+      "ar": "من {nama}"
+    },
+    {
+      "kunci": "hitung.beri_nama_label_opsional",
+      "halaman": "hitung",
+      "id": "Beri nama {label} (opsional)",
+      "ar": "سم {label} (اختياري)"
+    },
+    {
+      "kunci": "umum.nama",
+      "halaman": "umum",
+      "id": "Nama",
+      "ar": "الاسم"
+    },
+    {
+      "kunci": "hitung.kurangi_label",
+      "halaman": "hitung",
+      "id": "Kurangi {label}",
+      "ar": "أنقص {label}"
+    },
+    {
+      "kunci": "hitung.tambah_label",
+      "halaman": "hitung",
+      "id": "Tambah {label}",
+      "ar": "زد {label}"
+    },
+    {
+      "kunci": "hitung.nama_label",
+      "halaman": "hitung",
+      "id": "Nama {label}",
+      "ar": "اسم {label}"
+    },
+    {
+      "kunci": "hitung.nama_misal_contoh",
+      "halaman": "hitung",
+      "id": "Nama, misal {contoh}",
+      "ar": "الاسم، مثل {contoh}"
+    },
+    {
+      "kunci": "hitung.sudah_wafat_2",
+      "halaman": "hitung",
+      "id": ", sudah wafat",
+      "ar": "، ميت"
+    },
+    {
+      "kunci": "hitung.label_sudah_wafat",
+      "halaman": "hitung",
+      "id": "{label} (sudah wafat)",
+      "ar": "{label} (ميت)"
+    },
+    {
+      "kunci": "hitung.orang_ahli_waris_mayit",
+      "halaman": "hitung",
+      "id": "{orang} (ahli waris {mayit})",
+      "ar": "{orang} (وارث {mayit})"
+    },
+    {
+      "kunci": "umum.tidak_ada",
+      "halaman": "umum",
+      "id": "Tidak ada",
+      "ar": "لا يوجد"
+    },
+    {
+      "kunci": "hitung.langsung_lihat_hasil",
+      "halaman": "hitung",
+      "id": "Langsung lihat hasil.",
+      "ar": "اعرض النتيجة مباشرة."
+    },
+    {
+      "kunci": "umum.ada",
+      "halaman": "umum",
+      "id": "Ada",
+      "ar": "نعم"
+    },
+    {
+      "kunci": "hitung.beda_agama_atau_terlibat_dalam_penyebab",
+      "halaman": "hitung",
+      "id": "Beda agama atau terlibat dalam penyebab kematian almarhum.",
+      "ar": "اختلاف الدين أو التسبب في موت الميت."
+    },
+    {
+      "kunci": "hitung.ada_yang_beda_agama_dengan_almarhum",
+      "halaman": "hitung",
+      "id": "Ada yang beda agama dengan almarhum",
+      "ar": "من يخالف الميت في الدين"
+    },
+    {
+      "kunci": "hitung.beda_agama_menggugurkan_hak_waris",
+      "halaman": "hitung",
+      "id": "Beda agama menggugurkan hak waris.",
+      "ar": "اختلاف الدين يمنع الإرث."
+    },
+    {
+      "kunci": "hitung.ada_yang_terlibat_dalam_penyebab_kematian",
+      "halaman": "hitung",
+      "id": "Ada yang terlibat dalam penyebab kematian almarhum",
+      "ar": "من تسبب في موت الميت"
+    },
+    {
+      "kunci": "hitung.apa_pun_bentuknya",
+      "halaman": "hitung",
+      "id": "Apa pun bentuknya.",
+      "ar": "أيا كان نوعه."
+    },
+    {
+      "kunci": "hitung.ada_ahli_waris_yang_wafat_sebelum",
+      "halaman": "hitung",
+      "id": "Ada ahli waris yang wafat sebelum harta dibagi",
+      "ar": "مات أحد الورثة قبل القسمة"
+    },
+    {
+      "kunci": "hitung.ini_namanya_munasakhat",
+      "halaman": "hitung",
+      "id": "Ini namanya munasakhat.",
+      "ar": "وهذه المناسخات."
+    },
+    {
+      "kunci": "hitung.urutin_dari_yang_wafat_duluan",
+      "halaman": "hitung",
+      "id": "Urutin dari yang wafat duluan.",
+      "ar": "رتبهم من الأسبق موتا."
+    },
+    {
+      "kunci": "hitung.nomor_ahli_waris_label",
+      "halaman": "hitung",
+      "id": "{nomor}. Ahli waris {label}",
+      "ar": "{nomor}. ورثة {label}"
+    },
+    {
+      "kunci": "hitung.naikkan_label",
+      "halaman": "hitung",
+      "id": "Naikkan {label}",
+      "ar": "قدم {label}"
+    },
+    {
+      "kunci": "hitung.turunkan_label",
+      "halaman": "hitung",
+      "id": "Turunkan {label}",
+      "ar": "أخر {label}"
+    },
+    {
+      "kunci": "hitung.akibatnya",
+      "halaman": "hitung",
+      "id": "Akibatnya:",
+      "ar": "فأثره:"
+    },
+    {
+      "kunci": "rujukan.lihat_di_halaman_rujukan",
+      "halaman": "rujukan",
+      "id": "Lihat di halaman Rujukan",
+      "ar": "انظر في صفحة المراجع"
+    },
+    {
+      "kunci": "hitung.tidak_ada_yang_dibuka_dua_pekan",
+      "halaman": "hitung",
+      "id": "Tidak ada yang dibuka dua pekan terakhir.",
+      "ar": "لم يفتح شيء في الأسبوعين الأخيرين."
+    },
+    {
+      "kunci": "hitung.lihat_semua_riwayat",
+      "halaman": "hitung",
+      "id": "Lihat semua riwayat",
+      "ar": "السجل كاملا"
+    },
+    {
+      "kunci": "hitung.riwayat_hitung_masih_kosong",
+      "halaman": "hitung",
+      "id": "Riwayat hitung masih kosong",
+      "ar": "سجل الحساب فارغ"
+    },
+    {
+      "kunci": "hitung.tiap_kasus_yang_kamu_mulai_dari",
+      "halaman": "hitung",
+      "id": "Tiap kasus yang kamu mulai, dari skenario sendiri, latihan, atau materi, otomatis tersimpan di sini selama 30 hari.",
+      "ar": "كل مسألة تبدؤها، من إدخالك أو من التمارين أو الدروس، تحفظ هنا تلقائيا لمدة ٣٠ يوما."
+    },
+    {
+      "kunci": "hitung.dibuka_waktu",
+      "halaman": "hitung",
+      "id": "dibuka {waktu}",
+      "ar": "فتح {waktu}"
+    },
+    {
+      "kunci": "hitung.buka",
+      "halaman": "hitung",
+      "id": "Buka",
+      "ar": "افتح"
+    },
+    {
+      "kunci": "hitung.lanjut",
+      "halaman": "hitung",
+      "id": "Lanjut",
+      "ar": "تابع"
+    },
+    {
+      "kunci": "hitung.hapus_judul",
+      "halaman": "hitung",
+      "id": "Hapus {judul}",
+      "ar": "احذف {judul}"
+    },
+    {
+      "kunci": "hitung.lihat_semua_riwayat_jumlah",
+      "halaman": "hitung",
+      "id": "Lihat semua riwayat ({jumlah})",
+      "ar": "السجل كاملا ({jumlah})"
+    },
+    {
+      "kunci": "hitung.hapus_semua_riwayat",
+      "halaman": "hitung",
+      "id": "Hapus semua riwayat",
+      "ar": "حذف السجل كله"
+    },
+    {
+      "kunci": "hitung.hapus_semua_riwayat_2",
+      "halaman": "hitung",
+      "id": "Hapus semua riwayat?",
+      "ar": "حذف السجل كله؟"
+    },
+    {
+      "kunci": "hitung.hapus_kasus_ini",
+      "halaman": "hitung",
+      "id": "Hapus kasus ini?",
+      "ar": "حذف هذه المسألة؟"
+    },
+    {
+      "kunci": "umum.hapus_semua",
+      "halaman": "umum",
+      "id": "Hapus semua",
+      "ar": "حذف الكل"
+    },
+    {
+      "kunci": "hitung.jumlah_kasus",
+      "halaman": "hitung",
+      "id": "{jumlah} kasus",
+      "ar": "{jumlah} مسائل"
+    },
+    {
+      "kunci": "hitung.akan_dihapus_dari_perangkat_ini_dan",
+      "halaman": "hitung",
+      "id": "akan dihapus dari perangkat ini dan tidak bisa dikembalikan.",
+      "ar": "ستحذف من هذا الجهاز ولا يمكن استرجاعها."
+    },
+    {
+      "kunci": "hitung.tersimpan_di_perangkat_ini_selama_30",
+      "halaman": "hitung",
+      "id": "Tersimpan di perangkat ini selama 30 hari sejak terakhir dibuka.",
+      "ar": "محفوظة على هذا الجهاز ٣٠ يوما من آخر فتح."
+    },
+    {
+      "kunci": "umum.kembali_2",
+      "halaman": "umum",
+      "id": "Kembali",
+      "ar": "رجوع"
+    },
+    {
+      "kunci": "hitung.lanjut_nama",
+      "halaman": "hitung",
+      "id": "Lanjut: {nama}",
+      "ar": "التالي: {nama}"
+    },
+    {
+      "kunci": "hitung.tentang_label",
+      "halaman": "hitung",
+      "id": "Tentang {label}",
+      "ar": "عن {label}"
+    },
+    {
+      "kunci": "hitung.rp_3",
+      "halaman": "hitung",
+      "id": "Rp",
+      "ar": null
+    },
+    {
+      "kunci": "hitung.ringkasan_kasus",
+      "halaman": "hitung",
+      "id": "Ringkasan kasus",
+      "ar": "ملخص المسألة"
+    },
+    {
+      "kunci": "hitung.jumlah_jt",
+      "halaman": "hitung",
+      "id": "+{jumlah} jt",
+      "ar": "+{jumlah} مليون"
+    },
+    {
+      "kunci": "hitung.total_harta",
+      "halaman": "hitung",
+      "id": "Total harta",
+      "ar": "مجموع التركة"
+    },
+    {
+      "kunci": "hitung.cara_mengisi_harta",
+      "halaman": "hitung",
+      "id": "Cara mengisi harta",
+      "ar": "طريقة إدخال التركة"
+    },
+    {
+      "kunci": "hitung.total_langsung",
+      "halaman": "hitung",
+      "id": "Total langsung",
+      "ar": "المجموع مباشرة"
+    },
+    {
+      "kunci": "hitung.rinci_per_jenis",
+      "halaman": "hitung",
+      "id": "Rinci per jenis",
+      "ar": "مفصلا حسب النوع"
+    },
+    {
+      "kunci": "hitung.total_harta_peninggalan",
+      "halaman": "hitung",
+      "id": "Total harta peninggalan",
+      "ar": "مجموع التركة"
+    },
+    {
+      "kunci": "hitung.tambah_cepat",
+      "halaman": "hitung",
+      "id": "Tambah cepat",
+      "ar": "إضافة سريعة"
+    },
+    {
+      "kunci": "hitung.kosongkan",
+      "halaman": "hitung",
+      "id": "Kosongkan",
+      "ar": "أفرغ"
+    },
+    {
+      "kunci": "hitung.kosongkan_total_harta",
+      "halaman": "hitung",
+      "id": "Kosongkan total harta?",
+      "ar": "إفراغ مجموع التركة؟"
+    },
+    {
+      "kunci": "hitung.total_jumlah_akan_dihapus_dan_perlu",
+      "halaman": "hitung",
+      "id": "Total {jumlah} akan dihapus dan perlu diisi ulang.",
+      "ar": "سيحذف المجموع {jumlah} ويلزم إدخاله من جديد."
+    },
+    {
+      "kunci": "hitung.dibayar_dulu_dari_harta",
+      "halaman": "hitung",
+      "id": "Dibayar dulu dari harta",
+      "ar": "يخرج أولا من التركة"
+    },
+    {
+      "kunci": "hitung.berurutan_dari_atas",
+      "halaman": "hitung",
+      "id": "Berurutan dari atas.",
+      "ar": "بالترتيب من الأعلى."
+    },
+    {
+      "kunci": "hitung.maks_batas_1_3_dari_sisa",
+      "halaman": "hitung",
+      "id": "Maks. {batas} (1/3 dari sisa setelah hutang).",
+      "ar": "الحد {batas} (ثلث الباقي بعد الدين)."
+    },
+    {
+      "kunci": "hitung.wasiat_dipangkas_jadi_dipakai_batas_1",
+      "halaman": "hitung",
+      "id": "Wasiat dipangkas jadi {dipakai} (batas 1/3). Kelebihan {lebih} hanya berlaku kalau semua ahli waris setuju.",
+      "ar": "ردت الوصية إلى {dipakai} (الثلث). والزائد {lebih} موقوف على إجازة جميع الورثة."
+    },
+    {
+      "kunci": "hitung.yang_akan_dibagi",
+      "halaman": "hitung",
+      "id": "Yang akan dibagi",
+      "ar": "ما يقسم"
+    },
+    {
+      "kunci": "hitung.untuk_ahli_waris",
+      "halaman": "hitung",
+      "id": "Untuk ahli waris",
+      "ar": "للورثة"
+    },
+    {
+      "kunci": "hitung.laki_laki",
+      "halaman": "hitung",
+      "id": "Laki-laki",
+      "ar": "ذكر"
+    },
+    {
+      "kunci": "hitung.perempuan",
+      "halaman": "hitung",
+      "id": "Perempuan",
+      "ar": "أنثى"
+    },
+    {
+      "kunci": "hitung.mengganti_jenis_kelamin_akan_mengosongkan_isian",
+      "halaman": "hitung",
+      "id": "Mengganti jenis kelamin akan mengosongkan isian ahli waris dan kondisi khusus.",
+      "ar": "تغيير الجنس يفرغ خانات الورثة والأحوال الخاصة."
+    },
+    {
+      "kunci": "hitung.nama_almarhum",
+      "halaman": "hitung",
+      "id": "Nama almarhum",
+      "ar": "اسم الميت"
+    },
+    {
+      "kunci": "hitung.boleh_dikosongkan",
+      "halaman": "hitung",
+      "id": "(boleh dikosongkan)",
+      "ar": "(يجوز تركه فارغا)"
+    },
+    {
+      "kunci": "hitung.ganti_jenis_kelamin_almarhum",
+      "halaman": "hitung",
+      "id": "Ganti jenis kelamin almarhum?",
+      "ar": "تغيير جنس الميت؟"
+    },
+    {
+      "kunci": "hitung.pasangan_dan_hubungan_keluarga_ikut_berubah",
+      "halaman": "hitung",
+      "id": "Pasangan dan hubungan keluarga ikut berubah, jadi isian ahli waris dan kondisi khusus akan dikosongkan. Harta dan kewajiban tetap.",
+      "ar": "يتغير الزوج والقرابة، فتفرغ خانات الورثة والأحوال الخاصة. وتبقى التركة والحقوق."
+    },
+    {
+      "kunci": "hitung.ganti_dan_kosongkan",
+      "halaman": "hitung",
+      "id": "Ganti dan kosongkan",
+      "ar": "غير وأفرغ"
+    },
+    {
+      "kunci": "umum.belum_dipilih",
+      "halaman": "umum",
+      "id": "Belum dipilih",
+      "ar": "لم يختر بعد"
+    },
+    {
+      "kunci": "umum.belum_diisi",
+      "halaman": "umum",
+      "id": "Belum diisi",
+      "ar": "لم يعبأ بعد"
+    },
+    {
+      "kunci": "umum.belum_ada",
+      "halaman": "umum",
+      "id": "Belum ada",
+      "ar": "لا يوجد بعد"
+    },
+    {
+      "kunci": "hitung.kondisi_khusus",
+      "halaman": "hitung",
+      "id": "Kondisi khusus",
+      "ar": "أحوال خاصة"
+    },
+    {
+      "kunci": "hitung.hasil",
+      "halaman": "hitung",
+      "id": "Hasil",
+      "ar": "النتيجة"
+    },
+    {
+      "kunci": "hitung.langkah_isian",
+      "halaman": "hitung",
+      "id": "Langkah isian",
+      "ar": "خطوات الإدخال"
+    },
+    {
+      "kunci": "hitung.pilih_dulu_jenis_kelamin_almarhum",
+      "halaman": "hitung",
+      "id": "Pilih dulu jenis kelamin almarhum.",
+      "ar": "اختر جنس الميت أولا."
+    },
+    {
+      "kunci": "hitung.isi_total_harta_peninggalan_dulu_harus",
+      "halaman": "hitung",
+      "id": "Isi total harta peninggalan dulu, harus lebih dari Rp 0.",
+      "ar": "أدخل مجموع التركة أولا، ويجب أن يزيد على الصفر."
+    },
+    {
+      "kunci": "hitung.tambahkan_minimal_satu_ahli_waris",
+      "halaman": "hitung",
+      "id": "Tambahkan minimal satu ahli waris.",
+      "ar": "أضف وارثا واحدا على الأقل."
+    },
+    {
+      "kunci": "hitung.skenario_pribadi",
+      "halaman": "hitung",
+      "id": "Skenario pribadi",
+      "ar": "مسألة خاصة"
+    },
+    {
+      "kunci": "hitung.contoh_materi",
+      "halaman": "hitung",
+      "id": "Contoh materi",
+      "ar": "مثال من درس"
+    },
+    {
+      "kunci": "hitung.soal_latihan_kode",
+      "halaman": "hitung",
+      "id": "Soal latihan {kode}",
+      "ar": "تمرين {kode}"
+    },
+    {
+      "kunci": "hitung.belum_ada_ahli_waris",
+      "halaman": "hitung",
+      "id": "Belum ada ahli waris",
+      "ar": "لا ورثة بعد"
+    },
+    {
+      "kunci": "hitung.data_belum_lengkap",
+      "halaman": "hitung",
+      "id": "Data belum lengkap",
+      "ar": "بيانات غير مكتملة"
+    },
+    {
+      "kunci": "hitung.ada_yang_wafat_sebelum_pembagian",
+      "halaman": "hitung",
+      "id": " · ada yang wafat sebelum pembagian",
+      "ar": " · مات بعضهم قبل القسمة"
+    },
+    {
+      "kunci": "hitung.baru_saja",
+      "halaman": "hitung",
+      "id": "baru saja",
+      "ar": "الآن"
+    },
+    {
+      "kunci": "hitung.lewati",
+      "halaman": "hitung",
+      "id": "Lewati",
+      "ar": "تخط"
+    },
+    {
+      "kunci": "umum.tautan_disalin",
+      "halaman": "umum",
+      "id": "Tautan disalin",
+      "ar": "تم نسخ الرابط"
+    },
+    {
+      "kunci": "umum.gagal_menyalin_salin_dari_bilah_alamat",
+      "halaman": "umum",
+      "id": "Gagal menyalin. Salin dari bilah alamat.",
+      "ar": "تعذر النسخ. انسخ من شريط العنوان."
+    },
+    {
+      "kunci": "umum.ketik",
+      "halaman": "umum",
+      "id": "Ketik",
+      "ar": "اكتب"
+    },
+    {
+      "kunci": "hitung.untuk_melanjutkan",
+      "halaman": "hitung",
+      "id": "untuk melanjutkan",
+      "ar": "للمتابعة"
+    },
+    {
+      "kunci": "umum.bantuan_cepat",
+      "halaman": "umum",
+      "id": "Bantuan cepat",
+      "ar": "مساعدة سريعة"
+    },
+    {
+      "kunci": "umum.nemu_masalah_laporkan",
+      "halaman": "umum",
+      "id": "Nemu masalah? Laporkan",
+      "ar": "وجدت خطأ؟ أبلغنا"
+    },
+    {
+      "kunci": "umum.faq_faraidh",
+      "halaman": "umum",
+      "id": "FAQ faraidh",
+      "ar": "أسئلة شائعة في الفرائض"
+    },
+    {
+      "kunci": "umum.tanya_jawab_kasus_waris",
+      "halaman": "umum",
+      "id": "Tanya jawab kasus waris",
+      "ar": "سؤال وجواب في مسائل الميراث"
+    },
+    {
+      "kunci": "umum.glosarium_faraidh",
+      "halaman": "umum",
+      "id": "Glosarium faraidh",
+      "ar": "مصطلحات الفرائض"
+    },
+    {
+      "kunci": "umum.rujukan_faraidh",
+      "halaman": "umum",
+      "id": "Rujukan faraidh",
+      "ar": "مراجع الفرائض"
+    },
+    {
+      "kunci": "hitung.kehalang_mahjub",
+      "halaman": "hitung",
+      "id": "Kehalang (mahjub)",
+      "ar": "محجوب"
+    },
+    {
+      "kunci": "umum.kelar",
+      "halaman": "umum",
+      "id": "Kelar",
+      "ar": "تم"
+    },
+    {
+      "kunci": "umum.kenapa",
+      "halaman": "umum",
+      "id": "Kenapa?",
+      "ar": "لماذا؟"
+    },
+    {
+      "kunci": "umum.arif_waris_beranda",
+      "halaman": "umum",
+      "id": "Arif Waris, beranda",
+      "ar": "عارف وارث، الرئيسية"
+    },
+    {
+      "kunci": "umum.arif_waris",
+      "halaman": "umum",
+      "id": "Arif Waris",
+      "ar": null
+    },
+    {
+      "kunci": "umum.by_prodi_hki_stdi_imam_syafi",
+      "halaman": "umum",
+      "id": "by Prodi HKI STDI Imam Syafi'i",
+      "ar": "قسم الأحوال الشخصية، المعهد العالي للدراسات الإسلامية الإمام الشافعي"
+    },
+    {
+      "kunci": "hitung.tutup_label",
+      "halaman": "hitung",
+      "id": "Tutup {label}",
+      "ar": "أغلق {label}"
+    }
+  ],
+  "edukasi": [
+    {
+      "slug": "ahli_waris.suami",
+      "id": "Suami",
+      "ar": "الزوج"
+    },
+    {
+      "slug": "ahli_waris.istri",
+      "id": "Istri",
+      "ar": "الزوجة"
+    },
+    {
+      "slug": "ahli_waris.anak_laki_laki",
+      "id": "Anak laki-laki",
+      "ar": "الابن"
+    },
+    {
+      "slug": "ahli_waris.anak_perempuan",
+      "id": "Anak perempuan",
+      "ar": "البنت"
+    },
+    {
+      "slug": "ahli_waris.ayah",
+      "id": "Ayah",
+      "ar": "الأب"
+    },
+    {
+      "slug": "ahli_waris.ibu",
+      "id": "Ibu",
+      "ar": "الأم"
+    },
+    {
+      "slug": "ahli_waris.cucu_laki_laki",
+      "id": "Cucu laki-laki",
+      "ar": "ابن الابن"
+    },
+    {
+      "slug": "ahli_waris.cucu_perempuan",
+      "id": "Cucu perempuan",
+      "ar": "بنت الابن"
+    },
+    {
+      "slug": "ahli_waris.kakek_dari_ayah",
+      "id": "Kakek (dari ayah)",
+      "ar": "الجد (أبو الأب)"
+    },
+    {
+      "slug": "ahli_waris.nenek_dari_ayah",
+      "id": "Nenek (dari ayah)",
+      "ar": "الجدة (أم الأب)"
+    },
+    {
+      "slug": "ahli_waris.nenek_dari_ibu",
+      "id": "Nenek (dari ibu)",
+      "ar": "الجدة (أم الأم)"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_laki_laki_kandung",
+      "id": "Kakak/adik laki-laki kandung",
+      "ar": "الأخ الشقيق"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_perempuan_kandung",
+      "id": "Kakak/adik perempuan kandung",
+      "ar": "الأخت الشقيقة"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_laki_laki_satu_ayah",
+      "id": "Kakak/adik laki-laki satu ayah",
+      "ar": "الأخ لأب"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_perempuan_satu_ayah",
+      "id": "Kakak/adik perempuan satu ayah",
+      "ar": "الأخت لأب"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_laki_laki_satu_ibu",
+      "id": "Kakak/adik laki-laki satu ibu",
+      "ar": "الأخ لأم"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_perempuan_satu_ibu",
+      "id": "Kakak/adik perempuan satu ibu",
+      "ar": "الأخت لأم"
+    },
+    {
+      "slug": "ahli_waris.keponakan_laki_laki_kandung",
+      "id": "Keponakan laki-laki (kandung)",
+      "ar": "ابن الأخ الشقيق"
+    },
+    {
+      "slug": "ahli_waris.keponakan_laki_laki_satu_ayah",
+      "id": "Keponakan laki-laki (satu ayah)",
+      "ar": "ابن الأخ لأب"
+    },
+    {
+      "slug": "ahli_waris.paman_kandung",
+      "id": "Paman (kandung)",
+      "ar": "العم الشقيق"
+    },
+    {
+      "slug": "ahli_waris.paman_satu_ayah",
+      "id": "Paman (satu ayah)",
+      "ar": "العم لأب"
+    },
+    {
+      "slug": "ahli_waris.sepupu_laki_laki_kandung",
+      "id": "Sepupu laki-laki (kandung)",
+      "ar": "ابن العم الشقيق"
+    },
+    {
+      "slug": "ahli_waris.sepupu_laki_laki_satu_ayah",
+      "id": "Sepupu laki-laki (satu ayah)",
+      "ar": "ابن العم لأب"
+    },
+    {
+      "slug": "ahli_waris.dari_anak_laki_laki",
+      "id": "dari anak laki-laki",
+      "ar": "من الابن"
+    },
+    {
+      "slug": "ahli_waris.ayahnya_ayah_almarhum",
+      "id": "ayahnya ayah almarhum",
+      "ar": "أبو أبي الميت"
+    },
+    {
+      "slug": "ahli_waris.ibunya_ayah_almarhum",
+      "id": "ibunya ayah almarhum",
+      "ar": "أم أبي الميت"
+    },
+    {
+      "slug": "ahli_waris.ibunya_ibu_almarhum",
+      "id": "ibunya ibu almarhum",
+      "ar": "أم أم الميت"
+    },
+    {
+      "slug": "ahli_waris.ayahnya_sama_ibunya_beda",
+      "id": "ayahnya sama, ibunya beda",
+      "ar": "الأب واحد والأم مختلفة"
+    },
+    {
+      "slug": "ahli_waris.ibunya_sama_ayahnya_beda",
+      "id": "ibunya sama, ayahnya beda",
+      "ar": "الأم واحدة والأب مختلف"
+    },
+    {
+      "slug": "ahli_waris.anak_dari_kakak_adik_laki_laki",
+      "id": "anak dari kakak/adik laki-laki kandung",
+      "ar": "ابن الأخ الشقيق"
+    },
+    {
+      "slug": "ahli_waris.anak_dari_kakak_adik_laki_laki_2",
+      "id": "anak dari kakak/adik laki-laki satu ayah",
+      "ar": "ابن الأخ لأب"
+    },
+    {
+      "slug": "ahli_waris.saudara_kandung_ayah_almarhum",
+      "id": "saudara kandung ayah almarhum",
+      "ar": "أخو أبي الميت الشقيق"
+    },
+    {
+      "slug": "ahli_waris.saudara_satu_ayah_dari_ayah_almarhum",
+      "id": "saudara satu ayah dari ayah almarhum",
+      "ar": "أخو أبي الميت لأبيه"
+    },
+    {
+      "slug": "ahli_waris.anak_laki_laki_paman_kandung",
+      "id": "anak laki-laki paman kandung",
+      "ar": "ابن العم الشقيق"
+    },
+    {
+      "slug": "ahli_waris.anak_laki_laki_paman_satu_ayah",
+      "id": "anak laki-laki paman satu ayah",
+      "ar": "ابن العم لأب"
+    },
+    {
+      "slug": "ahli_waris.kok_kakek_dari_ibu_cucu_dari",
+      "id": "Kok kakek dari ibu, cucu dari anak perempuan, atau bibi tidak ada?",
+      "ar": "لماذا لا يوجد أبو الأم وأولاد البنت والعمة؟"
+    },
+    {
+      "slug": "ahli_waris.mereka_termasuk_dzawil_arham_kerabat_yang",
+      "id": "Mereka termasuk dzawil arham: kerabat yang tidak punya bagian tertentu dan bukan penerima sisa. ",
+      "ar": "هم من ذوي الأرحام: أقارب ليسوا أصحاب فروض ولا عصبة. "
+    },
+    {
+      "slug": "ahli_waris.contohnya_ayahnya_ibu_anak_dari_anak",
+      "id": "Contohnya ayahnya ibu, anak dari anak perempuan, anak dari kakak/adik perempuan, paman dari pihak ibu, bibi, dan anak dari kakak/adik seibu. ",
+      "ar": "مثل أبي الأم، وأولاد البنت، وأولاد الأخت، والخال، والعمة والخالة، وأولاد الإخوة لأم. "
+    },
+    {
+      "slug": "ahli_waris.mereka_baru_mewarisi_kalau_tidak_ada",
+      "id": "Mereka baru mewarisi kalau tidak ada ahli waris di daftar ini, dan perhitungannya belum didukung aplikasi.",
+      "ar": "لا يرثون إلا عند عدم الورثة في هذه القائمة، وحسابهم غير مدعوم في التطبيق بعد."
+    },
+    {
+      "slug": "ahli_waris.kakek_nenek",
+      "id": "Kakek & nenek",
+      "ar": "الأجداد والجدات"
+    },
+    {
+      "slug": "ahli_waris.cucu",
+      "id": "Cucu",
+      "ar": "الأحفاد"
+    },
+    {
+      "slug": "ahli_waris.kakak_adik_almarhum",
+      "id": "Kakak/adik almarhum",
+      "ar": "إخوة الميت"
+    },
+    {
+      "slug": "ahli_waris.paman_sepupu_dari_pihak_ayah",
+      "id": "Paman & sepupu dari pihak ayah",
+      "ar": "الأعمام وأبناؤهم"
+    },
+    {
+      "slug": "ahli_waris.keponakan",
+      "id": "Keponakan",
+      "ar": "أبناء الإخوة"
+    },
+    {
+      "slug": "harta.tabungan_kas",
+      "id": "Tabungan & kas",
+      "ar": "المدخرات والنقد"
+    },
+    {
+      "slug": "harta.rekening_bank_deposito_uang_tunai",
+      "id": "Rekening bank, deposito, uang tunai",
+      "ar": "حسابات بنكية وودائع ونقد"
+    },
+    {
+      "slug": "harta.tanah_bangunan",
+      "id": "Tanah & bangunan",
+      "ar": "الأراضي والمباني"
+    },
+    {
+      "slug": "harta.kendaraan",
+      "id": "Kendaraan",
+      "ar": "المركبات"
+    },
+    {
+      "slug": "harta.emas_perhiasan",
+      "id": "Emas & perhiasan",
+      "ar": "الذهب والحلي"
+    },
+    {
+      "slug": "harta.emas_batangan_perhiasan",
+      "id": "Emas batangan, perhiasan",
+      "ar": "سبائك ذهب وحلي"
+    },
+    {
+      "slug": "harta.piutang",
+      "id": "Piutang",
+      "ar": "الديون التي للميت"
+    },
+    {
+      "slug": "harta.uang_almarhum_yang_dipinjam_orang_lain",
+      "id": "Uang almarhum yang dipinjam orang lain dan bisa ditagih",
+      "ar": "مال الميت عند غيره مما يمكن تحصيله"
+    },
+    {
+      "slug": "harta.lainnya",
+      "id": "Lainnya",
+      "ar": "غير ذلك"
+    },
+    {
+      "slug": "harta.saham_barang_berharga_usaha",
+      "id": "Saham, barang berharga, usaha",
+      "ar": "أسهم وأشياء ثمينة وتجارة"
+    },
+    {
+      "slug": "harta.untuk_belajar_angka_kira_kira_boleh",
+      "id": "Untuk belajar, angka kira-kira boleh. Untuk pembagian nyata, pakai nilai taksiran saat harta dibagi.",
+      "ar": "للتعلم يكفي التقريب، وللقسمة الحقيقية استعمل القيمة وقت القسمة."
+    },
+    {
+      "slug": "harta.harta_bersama_suami_istri_gono_gini",
+      "id": "Harta bersama suami-istri (gono-gini) diatur KHI, belum dihitung di sini. Masukkan bagian milik almarhum saja.",
+      "ar": "المال المشترك بين الزوجين تنظمه مدونة الأحكام الإندونيسية، ولا يحسب هنا. أدخل ملك الميت فقط."
+    },
+    {
+      "slug": "harta.pas_sampai_rupiah_terakhir_cocok_kalau",
+      "id": "Pas sampai rupiah terakhir. Cocok kalau dibagi lewat transfer bank.",
+      "ar": "دقيق إلى آخر روبية. مناسب للتحويل البنكي."
+    },
+    {
+      "slug": "harta.hampir_pas_angka_lebih_rapi",
+      "id": "Hampir pas, angka lebih rapi.",
+      "ar": "قريب جدا، والأرقام أرتب."
+    },
+    {
+      "slug": "harta.paling_praktis_kalau_dibagi_tunai",
+      "id": "Paling praktis kalau dibagi tunai.",
+      "ar": "الأيسر عند القسمة نقدا."
+    },
+    {
+      "slug": "harta.pengurusan_jenazah",
+      "id": "Pengurusan jenazah",
+      "ar": "مؤن التجهيز"
+    },
+    {
+      "slug": "harta.biaya_memandikan_mengafani_dan_menguburkan_almarhum",
+      "id": "Biaya memandikan, mengafani, dan menguburkan almarhum. Ini didahulukan dari semuanya.",
+      "ar": "نفقة غسل الميت وتكفينه ودفنه، وهي مقدمة على كل شيء."
+    },
+    {
+      "slug": "harta.hutang",
+      "id": "Hutang",
+      "ar": "الديون"
+    },
+    {
+      "slug": "harta.termasuk_kewajiban_yang_tertunda_misalnya_zakat",
+      "id": "Termasuk kewajiban yang tertunda, misalnya zakat yang belum dibayar, haji yang sudah dinazarkan, atau cicilan.",
+      "ar": "ومنها الحقوق المؤجلة كزكاة لم تؤد، أو حج منذور، أو أقساط."
+    },
+    {
+      "slug": "harta.wasiat",
+      "id": "Wasiat",
+      "ar": "الوصية"
+    },
+    {
+      "slug": "harta.maksimal_1_3_dari_sisa_harta",
+      "id": "Maksimal 1/3 dari sisa harta setelah hutang. Kalau lebih, otomatis dipangkas.",
+      "ar": "أقصاها ثلث الباقي بعد الدين، وما زاد يرد تلقائيا."
+    },
+    {
+      "slug": "harta.nggak_ada_biarkan_kosong_dihitung_rp",
+      "id": "Nggak ada? Biarkan kosong, dihitung Rp 0.",
+      "ar": "لا يوجد؟ اتركها فارغة، تحسب صفرا."
+    },
+    {
+      "slug": "tur.lima_langkah_saja",
+      "id": "Lima langkah saja",
+      "ar": "خمس خطوات فقط"
+    },
+    {
+      "slug": "tur.ini_peta_langkahmu_langkah_yang_sudah",
+      "id": "Ini peta langkahmu. Langkah yang sudah diisi bisa diklik untuk diubah.",
+      "ar": "هذه خريطة خطواتك. انقر على خطوة معبأة لتعديلها."
+    },
+    {
+      "slug": "tur.satu_pertanyaan_sekali",
+      "id": "Satu pertanyaan sekali",
+      "ar": "سؤال واحد في كل مرة"
+    },
+    {
+      "slug": "tur.jawab_pertanyaan_besar_ini_tulisan_abu",
+      "id": "Jawab pertanyaan besar ini. Tulisan abu-abu di bawahnya menjelaskan kenapa ditanya.",
+      "ar": "أجب عن هذا السؤال. النص الرمادي تحته يبين سبب السؤال."
+    },
+    {
+      "slug": "tur.maju_dan_mundur",
+      "id": "Maju dan mundur",
+      "ar": "التقدم والرجوع"
+    },
+    {
+      "slug": "tur.kembali_ke_langkah_sebelumnya_atau_lanjut",
+      "id": "Kembali ke langkah sebelumnya, atau lanjut. Kalau masih ada yang kurang, alasannya tertulis di sini.",
+      "ar": "ارجع إلى الخطوة السابقة أو تابع. إن نقص شيء كتب سببه هنا."
+    },
+    {
+      "slug": "tur.pohon_keluarga",
+      "id": "Pohon keluarga",
+      "ar": "شجرة الأسرة"
+    },
+    {
+      "slug": "tur.warna_menunjukkan_kelompok_garis_putus_putus",
+      "id": "Warna menunjukkan kelompok, garis putus-putus berarti tidak dapat bagian. Klik siapa pun untuk penjelasannya.",
+      "ar": "اللون يدل على الفئة، والخط المتقطع يعني لا نصيب له. انقر على أي شخص لشرح حاله."
+    },
+    {
+      "slug": "tur.pembagian",
+      "id": "Pembagian",
+      "ar": "القسمة"
+    },
+    {
+      "slug": "tur.bagian_tiap_orang_ikon_mata_menyembunyikan",
+      "id": "Bagian tiap orang. Ikon mata menyembunyikan nominal, ikon atur memilih pecahan atau persen.",
+      "ar": "نصيب كل واحد. أيقونة العين تخفي المبالغ، وأيقونة الضبط تختار الكسر أو النسبة."
+    },
+    {
+      "slug": "tur.pembulatan",
+      "id": "Pembulatan",
+      "ar": "التقريب"
+    },
+    {
+      "slug": "tur.muncul_hanya_kalau_ada_angka_yang",
+      "id": "Muncul hanya kalau ada angka yang tidak bulat. Pilih sesuai cara membagi: transfer atau tunai.",
+      "ar": "يظهر فقط إذا كانت الأرقام غير صحيحة. اختر حسب طريقة القسمة: تحويل أو نقد."
+    },
+    {
+      "slug": "tur.pelajari_langkahnya",
+      "id": "Pelajari langkahnya",
+      "ar": "تعلم الخطوات"
+    },
+    {
+      "slug": "tur.buka_ini_untuk_melihat_cara_hitungnya",
+      "id": "Buka ini untuk melihat cara hitungnya, satu langkah sekali. Pohon dan tabel ikut menyorot yang sedang dibahas.",
+      "ar": "افتح هذا لترى طريقة الحساب خطوة خطوة، وتظلل الشجرة والجدول ما يشرح."
+    },
+    {
+      "slug": "tur.habis_ini_ngapain",
+      "id": "Habis ini ngapain?",
+      "ar": "ماذا بعد؟"
+    },
+    {
+      "slug": "tur.daftar_hal_yang_biasanya_dilakukan_keluarga",
+      "id": "Daftar hal yang biasanya dilakukan keluarga setelah tahu pembagiannya.",
+      "ar": "أمور تفعلها الأسرة عادة بعد معرفة القسمة."
+    },
+    {
+      "slug": "umum.ruang_buat_nyoba_simulasi_hitung_waris",
+      "id": "Ruang buat nyoba simulasi hitung waris. Masukin kasusnya, ikutin langkahnya, tiap angka dijelasin lengkap sama alasannya.",
+      "ar": "مساحة لتجربة حساب المواريث: أدخل المسألة، واتبع الخطوات، وكل رقم مشروح بعلته."
+    },
+    {
+      "slug": "umum.isi_data_almarhum_ahli_waris_dan",
+      "id": "Isi data almarhum, ahli waris, dan harta dari awal.",
+      "ar": "أدخل بيانات الميت والورثة والتركة من البداية."
+    },
+    {
+      "slug": "umum.buka_file_json_hasil_ekspor_dari",
+      "id": "Buka file .json hasil ekspor dari aplikasi ini.",
+      "ar": "افتح ملف ‎.json‎ المصدر من هذا التطبيق."
+    },
+    {
+      "slug": "wizard.almarhum",
+      "id": "Almarhum",
+      "ar": "الميت"
+    },
+    {
+      "slug": "wizard.almarhum_laki_laki_atau_perempuan",
+      "id": "Almarhum laki-laki atau perempuan?",
+      "ar": "الميت ذكر أم أنثى؟"
+    },
+    {
+      "slug": "wizard.ini_menentukan_pasangan_yang_ditanya_nanti",
+      "id": "Ini menentukan pasangan yang ditanya nanti (istri atau suami) dan besar bagiannya.",
+      "ar": "بهذا يعرف الزوج أو الزوجة ومقدار نصيبه."
+    },
+    {
+      "slug": "wizard.harta",
+      "id": "Harta",
+      "ar": "التركة"
+    },
+    {
+      "slug": "wizard.berapa_harta_peninggalannya",
+      "id": "Berapa harta peninggalannya?",
+      "ar": "كم التركة؟"
+    },
+    {
+      "slug": "wizard.semua_yang_dimiliki_almarhum_saat_wafat",
+      "id": "Semua yang dimiliki almarhum saat wafat: uang, tanah, kendaraan, emas, juga piutang yang bisa ditagih.",
+      "ar": "كل ما ملكه الميت عند موته: نقود وأرض ومركبات وذهب، والديون التي له على غيره."
+    },
+    {
+      "slug": "wizard.kewajiban",
+      "id": "Kewajiban",
+      "ar": "الحقوق المتعلقة بالتركة"
+    },
+    {
+      "slug": "wizard.ada_kewajiban_yang_harus_dibayar_dulu",
+      "id": "Ada kewajiban yang harus dibayar dulu?",
+      "ar": "هل هناك حقوق تقدم على القسمة؟"
+    },
+    {
+      "slug": "wizard.sebelum_dibagi_harta_dipakai_dulu_untuk",
+      "id": "Sebelum dibagi, harta dipakai dulu untuk mengurus jenazah, melunasi hutang, lalu menunaikan wasiat.",
+      "ar": "قبل القسمة يخرج من التركة مؤن التجهيز، ثم الديون، ثم الوصية."
+    },
+    {
+      "slug": "wizard.ahli_waris",
+      "id": "Ahli waris",
+      "ar": "الورثة"
+    },
+    {
+      "slug": "wizard.siapa_saja_keluarga_yang_ditinggalkan",
+      "id": "Siapa saja keluarga yang ditinggalkan?",
+      "ar": "من هم الأقارب الأحياء؟"
+    },
+    {
+      "slug": "wizard.masukkan_semua_kerabat_yang_masih_hidup",
+      "id": "Masukkan semua kerabat yang masih hidup saat almarhum wafat. Nanti dihitung siapa yang dapat.",
+      "ar": "أدخل كل الأقارب الأحياء عند موت الميت، ثم يحسب من يرث."
+    },
+    {
+      "slug": "wizard.kondisi_khusus",
+      "id": "Kondisi khusus",
+      "ar": "أحوال خاصة"
+    },
+    {
+      "slug": "wizard.ada_kondisi_khusus",
+      "id": "Ada kondisi khusus?",
+      "ar": "هل توجد أحوال خاصة؟"
+    },
+    {
+      "slug": "wizard.opsional_kebanyakan_kasus_nggak_butuh_ini",
+      "id": "Opsional. Kebanyakan kasus nggak butuh ini.",
+      "ar": "اختياري. أكثر المسائل لا تحتاجه."
+    }
+  ]
+}

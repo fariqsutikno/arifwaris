@@ -44,7 +44,7 @@ export function Belajar() {
           <h1>{t('Pusat belajar faraidh')}</h1>
           {berikutnya ? (
             <a className="kartu-lanjut" href={tautanBelajar(berikutnya.slug)}>
-              <span className="label-langkah">{t(jumlahSelesai === 0 ? 'Mulai dari sini' : 'Lanjutkan')} · {t('Modul {nomor}', { nomor: berikutnya.modul })}</span>
+              <span className="label-langkah">{jumlahSelesai === 0 ? t('Mulai dari sini') : t('Lanjutkan')} · {t('Modul {nomor}', { nomor: berikutnya.modul })}</span>
               <b>{terjemahIsi(berikutnya.judul)}</b>
               <span className="panah" aria-hidden="true">{panah()}</span>
             </a>
@@ -135,8 +135,8 @@ export function Belajar() {
 
       {akanDihapus && (
         <DialogKonfirmasi
-          judul={t(akanDihapus === 'reset' ? 'Reset semua progres belajar?' : akanDihapus === 'semua' ? 'Hapus semua riwayat belajar?' : 'Hapus dari riwayat belajar?')}
-          labelLanjut={t(akanDihapus === 'reset' ? 'Reset progres' : 'Hapus')}
+          judul={akanDihapus === 'reset' ? t('Reset semua progres belajar?') : akanDihapus === 'semua' ? t('Hapus semua riwayat belajar?') : t('Hapus dari riwayat belajar?')}
+          labelLanjut={akanDihapus === 'reset' ? t('Reset progres') : t('Hapus')}
           {...(akanDihapus === 'reset' ? { kataKunci: KATA_RESET } : {})}
           saatBatal={() => setAkanDihapus(null)} saatLanjut={jalankanHapus}>
           <p>

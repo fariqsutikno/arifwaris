@@ -68,4 +68,7 @@ export const KAMUS_UMUM: Record<string, string> = {
   'Soal hitung': 'مسائل حسابية',
   'Draf, belum direview tim keilmuan': 'مسودة لم يراجعها الفريق العلمي بعد',
   'Soal {nomor} dari {total}': 'السؤال {nomor} من {total}',
+  'Bagikan': 'مشاركة',
+  'Bagikan pertanyaan ini': 'شارك هذا السؤال',
+  'Bagikan kasus ini': 'شارك هذه المسألة',
 };

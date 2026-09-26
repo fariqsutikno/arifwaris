@@ -8,6 +8,7 @@ import { DAFTAR_SOAL_HITUNG, type SoalHitung, type Tingkat } from '@waris/conten
 import type { Kasus } from '../../kasus';
 import { bacaCatatan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
+import { TEKS_TINGKAT } from '../AwalHitung';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
 import { angka, t, terjemahIsi } from '../../terjemah';
@@ -52,7 +53,7 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
             const daftar = DAFTAR_SOAL_HITUNG.filter(soal => soal.tingkat === tingkat);
             return (
               <div key={tingkat}>
-                <dt className={`tingkat tingkat-${tingkat}`}>{t(tingkat)}</dt>
+                <dt className={`tingkat tingkat-${tingkat}`}>{TEKS_TINGKAT()[tingkat]}</dt>
                 <dd>{angka(String(daftar.filter(soal => catatan[soal.kode]).length))}<small>/{angka(String(daftar.length))}</small></dd>
               </div>
             );
@@ -67,16 +68,16 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
               const selesai = !!catatan[soal.kode];
               return (
                 <li key={soal.kode} className={selesai ? 'baris-soal selesai' : 'baris-soal'}>
-                  <span className="status-soal" aria-label={t(selesai ? 'sudah dikerjakan' : 'belum dikerjakan')}>{selesai ? '✓' : '○'}</span>
+                  <span className="status-soal" aria-label={selesai ? t('sudah dikerjakan') : t('belum dikerjakan')}>{selesai ? '✓' : '○'}</span>
                   <div className="isi-soal">
                     <b>{terjemahIsi(soal.judul)}</b>
                     <span className="keterangan">
-                      <span className={`tingkat tingkat-${soal.tingkat}`}>{t(soal.tingkat)}</span>
+                      <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
                       {selesai && <> · {terjemahIsi(soal.topik)}</>}
                     </span>
                   </div>
                   <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={selesai ? 'secondary' : 'primary'}>
-                    {t(selesai ? 'Ulangi' : 'Kerjakan')}
+                    {selesai ? t('Ulangi') : t('Kerjakan')}
                   </TombolBukaKasus>
                 </li>
               );

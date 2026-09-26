@@ -20,4 +20,13 @@ export const KAMUS_BAB: Record<string, string> = {
   'Glosarium Istilah Faraidh': 'مسرد مصطلحات الفرائض',
   'Daftar Rujukan dan Metodologi Pengutipan': 'قائمة المراجع ومنهج الاستشهاد',
   'Dzawil Arham': 'ذوو الأرحام',
+  "Asas Kewarisan (Syarat, Rukun, Asbab, Mawani')": 'أسس الميراث (الشروط والأركان والأسباب والموانع)',
+  'Ashabul Furudh (Furudh Muqaddarah dan 11 Ahli Waris)': 'أصحاب الفروض (الفروض المقدرة وأصحابها الأحد عشر)',
+  'Hajb (Penghalangan)': 'الحجب',
+  "Masalah Khusus Furudh ('Umariyyatain dan Musyarrakah)": 'مسائل خاصة في الفروض (العمريتان والمشرّكة)',
+  'Kakek Bersama Saudara (al-Jadd wal-Ikhwah)': 'الجد والإخوة',
+  "Hisab (Ashlul Mas'alah, 'Aul, Radd)": 'الحساب (أصل المسألة والعول والرد)',
+  'Tashih (Koreksi Pembagian)': 'تصحيح المسائل',
+  'Munasakhat (Kematian Berantai)': 'المناسخات',
+  "Kasus Khusus (Haml, Mafqud, Khuntsa, Gharqa, Murtad, Anak Li'an/Zina, Laqith)": 'حالات خاصة (الحمل والمفقود والخنثى والغرقى والمرتد وولد اللعان والزنا واللقيط)',
 };

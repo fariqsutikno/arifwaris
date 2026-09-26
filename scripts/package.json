@@ -1,0 +1,20 @@
+{
+  "name": "@waris/skrip",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "diksi:peta": "vite-node diksi/main.ts peta",
+    "diksi:tulis": "vite-node diksi/main.ts tulis",
+    "impor": "vite-node impor/main.ts",
+    "impor:periksa": "vite-node impor/main.ts --periksa",
+    "ekspor": "vite-node ekspor/main.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.1",
+    "@waris/content": "workspace:*",
+    "@waris/data": "workspace:*"
+  },
+  "devDependencies": { "@types/node": "^22.0.0", "typescript": "^5.5.0", "vite-node": "^2.1.9", "vitest": "^2.0.0" }
+}

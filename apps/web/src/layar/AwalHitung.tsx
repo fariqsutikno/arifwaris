@@ -4,7 +4,7 @@
 // Pintasan belajar: beberapa soal latihan yang belum dikerjakan, langsung dibuka di mode Belajar tanpa menyusun skenario.
 
 import { useRef, useState } from 'react';
-import { DAFTAR_SOAL_HITUNG, type SoalHitung } from '@waris/content';
+import { DAFTAR_SOAL_HITUNG, type SoalHitung, type Tingkat } from '@waris/content';
 import { TEKS_HITUNG } from '../konten/umum';
 import { dariJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
@@ -15,6 +15,8 @@ import { HeroMini } from '../ui/Hero';
 import { Ikon } from '../ui/Ikon';
 import { DaftarRiwayat } from './Riwayat';
 import { t } from '../terjemah';
+
+export const TEKS_TINGKAT = (): Record<Tingkat, string> => ({ dasar: t('dasar'), menengah: t('menengah'), sulit: t('sulit') });
 
 interface Props {
   kasusTersimpan: Kasus | null;
@@ -91,7 +93,7 @@ function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => vo
         {daftar.map(soal => (
           <li key={soal.kode}>
             <button type="button" className="kartu-pilihan kecil kartu-soal-pintas" onClick={() => saatKerjakan(soal)}>
-              <span className={`tingkat tingkat-${soal.tingkat}`}>{t(soal.tingkat)}</span>
+              <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
               <b>{soal.judul}</b>
               <span className="aksi-soal-pintas">{t('Kerjakan')} <Ikon nama="kembali" ukuran={14} /></span>
             </button>

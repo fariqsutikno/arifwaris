@@ -194,7 +194,7 @@ export function SesiKuis({ paket }: { paket: string }) {
           ? <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setPosisi(posisi - 1)}>{t('Soal sebelumnya')}</button>
           : <span />}
         <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled={!sudahDijawab} onClick={() => (terakhir ? selesaikan() : setPosisi(posisi + 1))}>
-          {t(terakhir ? (mode === 'akhir' ? 'Selesaikan' : 'Lihat hasil') : 'Soal berikutnya')}
+          {terakhir ? (mode === 'akhir' ? t('Selesaikan') : t('Lihat hasil')) : t('Soal berikutnya')}
         </button>
       </div>
       </div>
@@ -206,7 +206,7 @@ export function SesiKuis({ paket }: { paket: string }) {
             return (
               <li key={`${soalIni.kode}-${urutan}`}>
                 <button type="button" className={terjawab ? 'terjawab' : undefined} aria-current={urutan === posisi}
-                  aria-label={t('Soal {nomor}, {status}', { nomor: urutan + 1, status: t(terjawab ? 'terjawab' : 'belum dijawab') })}
+                  aria-label={t('Soal {nomor}, {status}', { nomor: urutan + 1, status: terjawab ? t('terjawab') : t('belum dijawab') })}
                   disabled={!bolehLoncat(urutan)} onClick={() => setPosisi(urutan)}>{angka(String(urutan + 1))}</button>
               </li>
             );

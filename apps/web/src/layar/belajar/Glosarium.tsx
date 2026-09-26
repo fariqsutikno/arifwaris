@@ -52,7 +52,7 @@ export function Glosarium({ id }: { id?: string | undefined }) {
                   ))}
                 </p>
               )}
-              <Bagikan judul={`${entri.istilah} ${t('(glosarium faraidh)')}`} tautan={tautanGlosarium(entri.id)} label="Bagikan" kecil />
+              <Bagikan judul={`${entri.istilah} ${t('(glosarium faraidh)')}`} tautan={tautanGlosarium(entri.id)} label={t('Bagikan')} kecil />
             </dd>
           </div>
         ))}

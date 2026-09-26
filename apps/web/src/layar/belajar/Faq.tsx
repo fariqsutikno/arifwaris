@@ -10,6 +10,8 @@ import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
 import { t, terjemahIsi } from '../../terjemah';
 
+const TEKS_KELOMPOK_FAQ = (): Record<string, string> => ({ Fikih: t('Fikih'), 'Pakai aplikasi': t('Pakai aplikasi') });
+
 interface Props { id?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
 
 const normal = (teks: string) => teks.toLowerCase().replace(/['’]/g, '');
@@ -35,13 +37,13 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
       {cocok.length === 0 && <p className="keterangan">{t('Belum ada pertanyaan yang cocok. Coba kata lain, atau tanyakan ke ahli faraidh.')}</p>}
       {daftarKelompok.map(kelompok => (
         <section key={kelompok} className="tumpuk-rapat">
-          <h2>{t(kelompok)}</h2>
+          <h2>{TEKS_KELOMPOK_FAQ()[kelompok] ?? kelompok}</h2>
           {cocok.filter(entri => entri.kelompok === kelompok).map(entri => (
             <details key={entri.id} id={`faq-${entri.id}`} className="kartu-lipat entri-faq" open={entri.id === id}>
               <summary><b>{terjemahIsi(entri.pertanyaan)}</b></summary>
               <div className="isi-materi isi-lipat-faq">
                 {entri.jawaban.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
-                <Bagikan judul={entri.pertanyaan} tautan={tautanFaq(entri.id)} label="Bagikan pertanyaan ini" kecil />
+                <Bagikan judul={entri.pertanyaan} tautan={tautanFaq(entri.id)} label={t('Bagikan pertanyaan ini')} kecil />
               </div>
             </details>
           ))}
