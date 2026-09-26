@@ -1,6 +1,6 @@
 # Konsep: Web Dua Bahasa (Indonesia + Arab)
 
-Status: **konsep, belum diimplementasikan**. Menunggu keputusan pada bagian "Pertanyaan terbuka".
+Status: langkah 1–2 dari "Urutan kerja" sudah jalan (`id+ar`, penjelasan langkah berbahasa Arab di `packages/explain/src/arab.ts`). Redaksi Arab masih draf, menunggu cek tim keilmuan.
 
 ## Tujuan
 
@@ -51,7 +51,7 @@ Engine, math, dan test regresi bab 16 **tidak tersentuh**.
   ```` ```arab ```` (teks Arab + opsional terjemah). Parser `materi.ts` menambah satu jenis blok.
 - Ayat/hadits hanya dari `docs/kb` atau `docs/rujukan` — aturan "KB sumber kebenaran" tetap berlaku.
 
-## Tahap 3 — Mode `ar` penuh (besar, tunda)
+## Tahap 3 — Mode `ar` penuh (besar; urutan terbaru lihat "Urutan kerja")
 
 Perlu:
 - Kamus UI: `konten/*.ts` diubah jadi `Record<Bahasa, …>` atau berkas `konten/ar/*.ts` paralel.
@@ -60,7 +60,7 @@ Perlu:
 - Materi & soal versi Arab ditulis ulang oleh tim keilmuan.
 - Tata letak RTL: `dir="rtl"` di `<html>`, CSS diganti ke properti logis
   (`margin-inline-start` bukan `margin-left`), ikon panah dicerminkan.
-- Angka: tetap angka Latin atau angka Arab-Hindi (٠١٢٣)? → keputusan pengguna.
+- Angka: angka Arab (٠١٢٣) — diputuskan 2026-09-26.
 
 Perkiraan: beberapa kali lipat Tahap 1+2. Layak hanya bila memang ada target pengguna berbahasa Arab.
 
