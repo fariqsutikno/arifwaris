@@ -1167,3 +1167,5 @@ summary.kepala-bulat::after{position:absolute;top:12px;right:14px}
 .dok-faq:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--outline)}
 .dok a:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 @media (max-width:720px){.dok{display:none}}
+.dok-lapor{padding:2px 6px;border-radius:6px;background:var(--surface-raised);color:var(--ink-muted);font:600 12px var(--font-sans);text-decoration:underline;opacity:.85}
+.dok-lapor:hover{color:var(--ink);opacity:1}
