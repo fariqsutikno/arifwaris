@@ -7,9 +7,9 @@ import { angka, t } from '../../terjemah';
 interface Props { langkahAktif: number; terjauh: number; saatPilih: (langkah: number) => void }
 
 export function Stepper({ langkahAktif, terjauh, saatPilih }: Props) {
-  const daftar = [...LANGKAH_WIZARD.map(teks => teks.nama), t('Hasil')];
+  const daftar = [...LANGKAH_WIZARD.map(teks => teks.nama), t('hitung.hasil')];
   return (
-    <nav className="stepper" data-tur="stepper" aria-label={t('Langkah isian')}>
+    <nav className="stepper" data-tur="stepper" aria-label={t('hitung.langkah_isian')}>
       {daftar.map((nama, indeks) => {
         const langkah = indeks + 1;
         const adalahAktif = langkah === langkahAktif;

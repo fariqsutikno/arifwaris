@@ -12,11 +12,11 @@ export function BarBawah({ langkah, alasan, saatKembali, saatLanjut }: Props) {
   return (
     <div className="bar-bawah" data-tur="bar-bawah">
       <div className="bar-bawah-isi">
-        <Tombol varian="secondary" onClick={saatKembali}>{t('Kembali')}</Tombol>
+        <Tombol varian="secondary" onClick={saatKembali}>{t('umum.kembali_2')}</Tombol>
         <span className="pengisi" />
         {alasan && <span className="alasan" id="alasan-lanjut">{alasan}</span>}
         <Tombol onClick={saatLanjut} disabled={!!alasan} {...(alasan ? { 'aria-describedby': 'alasan-lanjut' } : {})}>
-          {berikut ? t('Lanjut: {nama}', { nama: berikut.nama }) : t('Lihat hasil')}
+          {berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil')}
         </Tombol>
       </div>
     </div>

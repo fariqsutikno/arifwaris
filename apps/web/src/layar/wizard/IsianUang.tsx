@@ -34,9 +34,9 @@ export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar 
 
   return (
     <div className={besar ? 'isian-uang besar' : 'isian-uang'}>
-      <div className="label-isian"><label htmlFor={id}>{label}</label>{info && <InfoTip label={t('Tentang {label}', { label })}>{info}</InfoTip>}</div>
+      <div className="label-isian"><label htmlFor={id}>{label}</label>{info && <InfoTip label={t('hitung.tentang_label', { label })}>{info}</InfoTip>}</div>
       <div className="kotak-uang">
-        <span className="prefix-uang" aria-hidden="true">{t('Rp')}</span>
+        <span className="prefix-uang" aria-hidden="true">{t('hitung.rp_3')}</span>
         <input id={id} ref={isian} inputMode="numeric" autoComplete="off" placeholder="0" value={teksRibuan(nilai)}
           {...(keterangan ? { 'aria-describedby': `${id}-ket` } : {})}
           onChange={event => {

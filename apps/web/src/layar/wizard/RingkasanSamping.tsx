@@ -15,21 +15,21 @@ export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
   const kondisi = kasus ? kasus.urutanWafat.length + ahliWaris.filter(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris).length : 0;
   return (
     <div className="ringkasan-samping">
-      <h2>{t('Ringkasan kasus')}</h2>
+      <h2>{t('hitung.ringkasan_kasus')}</h2>
       <dl>
-        <Baris label={t('Almarhum')} terisi={!!pewaris}>
-          {pewaris ? `${pewaris.jenisKelamin === 'L' ? t('Laki-laki') : t('Perempuan')}${pewaris.nama ? ` · ${pewaris.nama}` : ''}` : t('Belum dipilih')}
+        <Baris label={t('hitung.almarhum')} terisi={!!pewaris}>
+          {pewaris ? `${pewaris.jenisKelamin === 'L' ? t('hitung.laki_laki') : t('hitung.perempuan')}${pewaris.nama ? ` · ${pewaris.nama}` : ''}` : t('umum.belum_dipilih')}
         </Baris>
-        <Baris label={t('Harta peninggalan')} terisi={!!tirkah && tirkah.kotor > 0n}>{tirkah && tirkah.kotor > 0n ? formatRupiah(tirkah.kotor) : t('Belum diisi')}</Baris>
+        <Baris label={t('hitung.harta_peninggalan')} terisi={!!tirkah && tirkah.kotor > 0n}>{tirkah && tirkah.kotor > 0n ? formatRupiah(tirkah.kotor) : t('umum.belum_diisi')}</Baris>
         {tirkah && tirkah.kotor > 0n && (
-          <Baris label={t('Yang akan dibagi')} terisi>{formatRupiah(tirkah.bersih)}</Baris>
+          <Baris label={t('hitung.yang_akan_dibagi')} terisi>{formatRupiah(tirkah.bersih)}</Baris>
         )}
-        <Baris label={t('Ahli waris')} terisi={ahliWaris.length > 0}>
-          {ahliWaris.length === 0 ? t('Belum ada') : (
+        <Baris label={t('hitung.ahli_waris')} terisi={ahliWaris.length > 0}>
+          {ahliWaris.length === 0 ? t('umum.belum_ada') : (
             <ul>{barisAhliWaris(kasus!).map(teks => <li key={teks}>{teks}</li>)}</ul>
           )}
         </Baris>
-        <Baris label={t('Kondisi khusus')} terisi={kondisi > 0}>{kondisi > 0 ? `${kondisi} dicatat` : t('Tidak ada')}</Baris>
+        <Baris label={t('hitung.kondisi_khusus')} terisi={kondisi > 0}>{kondisi > 0 ? `${kondisi} dicatat` : t('umum.tidak_ada')}</Baris>
       </dl>
     </div>
   );
