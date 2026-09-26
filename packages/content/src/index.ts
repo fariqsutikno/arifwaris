@@ -21,6 +21,7 @@ export {
 export { DAFTAR_SYAHID, SUMBER_KITAB, bacaSyahid, bacaSumberKitab, type Syahid, type SumberKitab } from './pustaka.js';
 export {
   JENIS_KONTEN, JENIS_FIKIH, keJson, bacaIsi,
-  type JenisKonten, type IsiKonten, type IsiAhwal, type CocokAhwal, type IsiTeksEdukasi, type IsiCheatsheet, type IsiGlosariumAr,
+  type JenisKonten, type IsiKonten, type IsiAhwal, type BarisAhwal, type CocokAhwal, type IsiTeksEdukasi, type IsiCheatsheet, type IsiGlosariumAr,
 } from './skema.js';
+export { ambilRefs, periksaKonsistensi, type BarisKonten } from './konsistensi.js';
 export { transisiRevisi, bolehSuntingDraf, periksaRefs, type Peran, type StatusRevisi, type AksiEditorial } from './editorial.js';

@@ -18,7 +18,8 @@ export type JenisKonten = (typeof JENIS_KONTEN)[number];
 export const JENIS_FIKIH: readonly JenisKonten[] = ['materi', 'soal_kuis', 'soal_hitung', 'tanya_jawab', 'faq', 'ahwal', 'syahid'];
 
 export interface CocokAhwal { fardh?: string | null; ashabah?: boolean; terhalang?: boolean; kodeAlasan?: string }
-export interface IsiAhwal { kunci: string; baris: { bagian: string; syarat: string; cocok: CocokAhwal }[] }
+export interface BarisAhwal { bagian: string; syarat: string; cocok: CocokAhwal; ar?: { bagian: string; syarat: string } }
+export interface IsiAhwal { kunci: string; baris: BarisAhwal[] }
 export interface IsiTeksEdukasi { id: string; ar?: string }
 export interface IsiCheatsheet { judul: string; judulAr?: string; deskripsi: string; tautan: string | null }
 export interface IsiGlosariumAr { istilahId: string; makna: string; artiAwam?: string; contoh?: string }
@@ -101,6 +102,7 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
     baris: z.array(z.object({
       bagian: z.string(), syarat: z.string(),
       cocok: z.object({ fardh: z.string().nullable().optional(), ashabah: z.boolean().optional(), terhalang: z.boolean().optional(), kodeAlasan: z.string().optional() }),
+      ar: z.object({ bagian: z.string(), syarat: z.string() }).optional(),
     })),
   }),
   teks_edukasi: z.object({ id: z.string().min(1), ar: z.string().optional() }),
