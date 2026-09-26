@@ -57,12 +57,12 @@ export const simpanSkorPaket = (paket: string, skor: string): void =>
   simpanMentah(KUNCI_SKOR_PAKET, JSON.stringify({ ...bacaSkorPaket(), [paket]: skor }));
 
 /** Reset progres belajar: pelajaran selesai, latihan, skor paket, dan jejak belajar. Riwayat hitung tidak tersentuh.
- * ponytail: reset tidak menghapus progres di akun; muncul lagi saat tarik berikutnya, jadi tiap pelajaran yang tadinya
- * selesai diantre ulang sebagai `selesai: false`. Latihan tidak punya padanan "batal" → tidak diantre, akan muncul
- * lagi setelah tarik. Tambah hapus di repo bila dikeluhkan. */
+ * Di akun: pelajaran selesai diantre ulang sebagai `selesai: false`, latihan dihapus semua (antrean berurutan, jadi
+ * latihan yang antre sebelum reset ikut terhapus). */
 export function resetProgresBelajar(): void {
   Object.values(bacaProgresBelajar()).filter(baris => baris.selesai)
     .forEach(baris => antre({ tabel: 'belajar', baris: { ...baris, selesai: false, diubahPada: new Date().toISOString() } }));
+  if (Object.keys(bacaObjek(KUNCI_LATIHAN)).length) antre({ tabel: 'hapus_latihan' });
   [KUNCI_BELAJAR, KUNCI_LATIHAN, KUNCI_SKOR_PAKET].forEach(kunci => simpanMentah(kunci, '{}'));
   hapusAktivitas();
 }

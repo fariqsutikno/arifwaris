@@ -13215,6 +13215,13 @@
    "versiTerbit": 0
   },
   {
+   "kunci": "umum.gagal_keluar",
+   "halaman": "umum",
+   "id": "Gagal keluar. Periksa koneksi lalu coba lagi.",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
    "kunci": "umum.tetap_keluar",
    "halaman": "umum",
    "id": "Tetap keluar",

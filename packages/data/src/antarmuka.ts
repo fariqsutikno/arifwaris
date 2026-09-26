@@ -76,6 +76,8 @@ export interface RepositoriPengguna {
   simpanProgresBelajar(progres: ProgresBelajar): Promise<void>;
   bacaProgresLatihan(): Promise<ProgresLatihan[]>;
   simpanProgresLatihan(progres: ProgresLatihan): Promise<void>;
+  /** Reset progres: hapus semua progres latihan milik pengguna. */
+  hapusSemuaProgresLatihan(): Promise<void>;
   bacaPreferensi(): Promise<Preferensi | null>;
   simpanPreferensi(preferensi: Preferensi): Promise<void>;
   catatKegiatan(kegiatan: Kegiatan): Promise<void>;

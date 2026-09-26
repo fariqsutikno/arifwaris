@@ -16,8 +16,13 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
   if (!repo) return null;
 
   const keluar = async () => {
-    await keluarDanBersihkan(repo);
-    window.location.reload();
+    setBelumTerkirim(0);
+    try {
+      await keluarDanBersihkan(repo);
+      window.location.reload();
+    } catch {
+      setGalat(true);
+    }
   };
   const cobaKeluar = async () => {
     setMenuTerbuka(false);
@@ -49,6 +54,7 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
           <p>{t('umum.perubahan_belum_terkirim', { jumlah: belumTerkirim })}</p>
         </DialogKonfirmasi>
       )}
+      {galat && <p role="alert" className="pesan-akun">{t('umum.gagal_keluar')}</p>}
     </div>
   );
 }

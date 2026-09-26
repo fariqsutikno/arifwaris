@@ -2,7 +2,7 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { akunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
 import { keluarDanBersihkan, kirimSebelumKeluar, mulaiSinkron } from '../akun/sinkron';
-import { bacaPelajaranSelesai, tandaiPelajaranSelesai } from '../progres';
+import { bacaPelajaranSelesai, bacaProgresLatihan, catatLatihan, resetProgresBelajar, tandaiPelajaranSelesai } from '../progres';
 
 const A = { userId: 'a', email: 'a@tes.local' };
 const B = { userId: 'b', email: 'b@tes.local' };
@@ -99,4 +99,16 @@ test('keluar menghapus semua kunci arif-waris', async () => {
   localStorage.setItem('lain', '1');
   await keluarDanBersihkan(repo);
   expect(Object.keys(localStorage)).toEqual(['lain']);
+});
+
+test('reset progres menghapus latihan di akun: tidak muncul lagi setelah sinkron', async () => {
+  const { repo } = siapkan(A);
+  await mulaiSinkron(repo, vi.fn());
+  catatLatihan('kuis', 'K-01', true, 0);
+  await kirimAntrean(repo.pengguna);
+  resetProgresBelajar();
+  catatLatihan('hitung', 'H-01', true, 0); // latihan sesudah reset tetap ada
+  await mulaiSinkron(repo, vi.fn());
+  expect(bacaProgresLatihan('kuis')).toEqual({});
+  expect((await repo.pengguna.bacaProgresLatihan()).map(baris => baris.soalSlug)).toEqual(['H-01']);
 });

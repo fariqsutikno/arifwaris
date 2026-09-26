@@ -125,6 +125,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
         benar: baris.benar, jumlah_coba: baris.jumlahCoba, diubah_pada: baris.diubahPada,
       }));
     },
+    async hapusSemuaProgresLatihan() { await hasil(klien.from('progres_latihan').delete().eq('user_id', await userId())); },
     async bacaPreferensi() {
       const baris = await hasil(klien.from('preferensi').select('*').maybeSingle()) as any;
       return baris ? { isi: baris.isi, diubahPada: baris.diubah_pada } : null;

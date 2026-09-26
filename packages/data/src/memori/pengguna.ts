@@ -30,6 +30,7 @@ export function buatMemoriPengguna(bersama: MemoriBersama): { pengguna: Reposito
     async simpanProgresBelajar(baris) { belajar.set(kunci(baris.pelajaranSlug), baris); },
     async bacaProgresLatihan() { return milikSaya(latihan); },
     async simpanProgresLatihan(baris) { latihan.set(kunci(baris.jenis, baris.soalSlug), baris); },
+    async hapusSemuaProgresLatihan() { milikSaya(latihan).forEach(baris => latihan.delete(kunci(baris.jenis, baris.soalSlug))); },
     async bacaPreferensi() { return preferensi.get(kunci()) ?? null; },
     async simpanPreferensi(baris) { preferensi.set(kunci(), baris); },
     async catatKegiatan(baris) { if (!kegiatan.has(kunci(baris.id))) kegiatan.set(kunci(baris.id), baris); },

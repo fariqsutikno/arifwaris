@@ -11,6 +11,7 @@ export type EntriAntrean =
   | { tabel: 'hapus_tersimpan'; id: string }
   | { tabel: 'belajar'; baris: ProgresBelajar }
   | { tabel: 'latihan'; baris: ProgresLatihan }
+  | { tabel: 'hapus_latihan' }
   | { tabel: 'preferensi'; baris: Preferensi }
   | { tabel: 'kegiatan'; baris: Kegiatan };
 
@@ -49,6 +50,7 @@ const TABEL_BERBARIS = ['tersimpan', 'belajar', 'latihan', 'preferensi', 'kegiat
 // Isi localStorage bisa rusak/versi lama; entri cacat dibuang supaya kunciEntri tidak melempar dari antre().
 const entriUtuh = (entri: any): entri is EntriAntrean =>
   entri?.tabel === 'hapus_tersimpan' ? typeof entri.id === 'string'
+    : entri?.tabel === 'hapus_latihan' ? true
     : TABEL_BERBARIS.includes(entri?.tabel) && typeof entri.baris === 'object' && entri.baris !== null;
 
 /** Kirim berurutan; berhenti di kegagalan pertama supaya urutan terjaga. Mengembalikan jumlah entri yang tersisa. */
@@ -72,6 +74,7 @@ function kirimSatu(pengguna: RepositoriPengguna, entri: EntriAntrean): Promise<v
     case 'hapus_tersimpan': return pengguna.hapusRiwayat(entri.id);
     case 'belajar': return pengguna.simpanProgresBelajar(entri.baris);
     case 'latihan': return pengguna.simpanProgresLatihan(entri.baris);
+    case 'hapus_latihan': return pengguna.hapusSemuaProgresLatihan();
     case 'preferensi': return pengguna.simpanPreferensi(entri.baris);
     case 'kegiatan': return pengguna.catatKegiatan(entri.baris);
   }
@@ -83,6 +86,7 @@ function kunciEntri(entri: EntriAntrean): string {
     case 'hapus_tersimpan': return `tersimpan:${entri.id}`;
     case 'belajar': return `belajar:${entri.baris.pelajaranSlug}`;
     case 'latihan': return `latihan:${entri.baris.jenis}:${entri.baris.soalSlug}`;
+    case 'hapus_latihan': return 'hapus_latihan';
     case 'preferensi': return 'preferensi';
     case 'kegiatan': return `kegiatan:${entri.baris.id}`;
   }
