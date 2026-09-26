@@ -1,8 +1,9 @@
+import { act, renderHook } from '@testing-library/react';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { antre, aturAkunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
 import { catatLatihan, tandaiPelajaranSelesai } from '../progres';
-import { kumpulPreferensi, simpanUkuranBaca, terapkanPreferensi, bacaUkuranBaca } from '../preferensi';
+import { kumpulPreferensi, simpanTujuan, simpanUkuranBaca, terapkanPreferensi, bacaUkuranBaca, useBahasa } from '../preferensi';
 
 const belajar = (slug: string, diubahPada = '2026-09-27T00:00:00Z') => ({ tabel: 'belajar' as const, baris: { pelajaranSlug: slug, selesai: true, diubahPada } });
 beforeEach(() => { localStorage.clear(); aturAkunLokal(null); });
@@ -57,4 +58,29 @@ test('preferensi: kumpul lalu terapkan bolak-balik', () => {
 test('antrean rusak dibaca kosong', () => {
   localStorage.setItem('arif-waris:antrean', 'bukan json');
   expect(bacaAntrean()).toEqual([]);
+});
+
+test('entri rusak (tabel asing, tanpa baris/id) dibuang, antre tetap jalan', () => {
+  aturAkunLokal('u');
+  localStorage.setItem('arif-waris:antrean', JSON.stringify([{ tabel: 'asing', baris: {} }, { tabel: 'belajar' }, { tabel: 'hapus_tersimpan' }, null]));
+  expect(bacaAntrean()).toEqual([]);
+  antre(belajar('a'));
+  expect(bacaAntrean()).toHaveLength(1);
+});
+
+test('simpan preferensi dengan nilai yang sama: waktu ubah & antrean tidak berubah', () => {
+  aturAkunLokal('u');
+  simpanTujuan('hitung');
+  localStorage.setItem('arif-waris:preferensi-diubah', '2000-01-01T00:00:00.000Z');
+  localStorage.setItem('arif-waris:antrean', '[]');
+  simpanTujuan('hitung');
+  expect(localStorage.getItem('arif-waris:preferensi-diubah')).toBe('2000-01-01T00:00:00.000Z');
+  expect(bacaAntrean()).toEqual([]);
+});
+
+test('terapkan preferensi dari akun langsung mengganti bahasa aktif', () => {
+  const { result } = renderHook(() => useBahasa());
+  expect(result.current).toBe('id');
+  act(() => terapkanPreferensi({ isi: { 'arif-waris:bahasa': 'ar' }, diubahPada: '2026-09-27T00:00:00.000Z' }));
+  expect(result.current).toBe('ar');
 });

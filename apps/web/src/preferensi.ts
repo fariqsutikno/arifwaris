@@ -20,6 +20,8 @@ const ikutAkun = (kunci: string) =>
 
 /** Tulis satu kunci preferensi; bila termasuk yang disinkron, antre bentuk terbarunya. */
 function simpanPreferensi(kunci: string, nilai: string): void {
+  // Nilai sama tidak dianggap perubahan: kalau dicap waktu, perangkat ini jadi "terbaru" dan menimpa perangkat lain.
+  if (bacaMentah(kunci) === nilai) return;
   simpanMentah(kunci, nilai);
   if (ikutAkun(kunci)) {
     simpanMentah(KUNCI_PREFERENSI_DIUBAH, new Date().toISOString());
@@ -42,6 +44,7 @@ export function terapkanPreferensi(p: Preferensi | null): void {
   daftarKunci('arif-waris:').filter(ikutAkun).forEach(hapusMentah);
   Object.entries(p.isi).forEach(([kunci, nilai]) => simpanMentah(kunci, nilai as string));
   simpanMentah(KUNCI_PREFERENSI_DIUBAH, p.diubahPada);
+  pendengarBahasa.forEach(dengar => dengar());
 }
 
 export function bacaTujuan(): Tujuan | null {

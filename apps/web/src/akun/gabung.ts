@@ -11,9 +11,9 @@ export function gabung(lokal: DataPengguna, server: DataPengguna): { hasil: Data
   const tersimpan = gabungPerKunci(lokal.tersimpan, server.tersimpan, baris => baris.id,
     (a, b) => (a.disimpanPada >= b.disimpanPada ? a : b));
   const belajar = gabungPerKunci(lokal.belajar, server.belajar, baris => baris.pelajaranSlug,
-    (a, b) => ({ ...a, selesai: a.selesai || b.selesai, diubahPada: terbaru(a.diubahPada, b.diubahPada) }));
+    (a, b) => majukanBilaBeda({ ...a, selesai: a.selesai || b.selesai, diubahPada: terbaru(a.diubahPada, b.diubahPada) }, b));
   const latihan = gabungPerKunci(lokal.latihan, server.latihan, baris => `${baris.jenis}:${baris.soalSlug}`,
-    (a, b) => ({ ...(a.diubahPada >= b.diubahPada ? a : b), jumlahCoba: Math.max(a.jumlahCoba, b.jumlahCoba) }));
+    (a, b) => majukanBilaBeda({ ...(a.diubahPada >= b.diubahPada ? a : b), jumlahCoba: Math.max(a.jumlahCoba, b.jumlahCoba) }, b));
   const preferensi = !lokal.preferensi || !server.preferensi ? lokal.preferensi ?? server.preferensi
     : lokal.preferensi.diubahPada > server.preferensi.diubahPada ? lokal.preferensi : server.preferensi;
 
@@ -31,6 +31,16 @@ export function gabung(lokal: DataPengguna, server: DataPengguna): { hasil: Data
 }
 
 const terbaru = (a: string, b: string) => (a >= b ? a : b);
+
+/**
+ * Trigger server tolak_data_lebih_lama menolak baris yang waktunya <= baris server, sehingga hasil gabungan yang
+ * membawa waktu server akan dibuang diam-diam dan tarikan berikutnya membatalkan penggabungan. Waktu dimajukan 1 ms
+ * dari maksimum (tetap murni, tanpa jam) supaya diterima.
+ */
+function majukanBilaBeda<T extends { diubahPada: string }>(hasil: T, dariServer: T): T {
+  if (JSON.stringify(hasil) === JSON.stringify(dariServer)) return hasil;
+  return { ...hasil, diubahPada: new Date(Date.parse(hasil.diubahPada) + 1).toISOString() };
+}
 
 function gabungPerKunci<T>(lokal: T[], server: T[], kunci: (baris: T) => string, pilih: (lokal: T, server: T) => T): T[] {
   const hasil = new Map(server.map(baris => [kunci(baris), baris]));

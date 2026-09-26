@@ -1,6 +1,6 @@
 import { beforeEach, expect, test, vi } from 'vitest';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
-import { akunLokal, bacaAntrean } from '../akun/antrean';
+import { akunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
 import { keluarDanBersihkan, kirimSebelumKeluar, mulaiSinkron } from '../akun/sinkron';
 import { bacaPelajaranSelesai, tandaiPelajaranSelesai } from '../progres';
 
@@ -73,6 +73,22 @@ test('perubahan lokal masuk antrean selagi menunggu server: tidak ditimpa tarika
   };
   await mulaiSinkron(repo, vi.fn());
   expect(bacaAntrean().length).toBeGreaterThan(0);
+  expect(bacaPelajaranSelesai().has('selama-tarik')).toBe(true);
+});
+
+test('perubahan lokal terkirim & keluar antrean selagi menunggu server: tetap tidak ditimpa tarikan', async () => {
+  const { repo } = siapkan(A);
+  await mulaiSinkron(repo, vi.fn());
+  const asli = repo.pengguna.bacaProgresBelajar.bind(repo.pengguna);
+  repo.pengguna.bacaProgresBelajar = async () => {
+    // Snapshot server diambil sebelum perubahan, lalu perubahan terkirim sehingga antrean kosong lagi.
+    const lama = await asli();
+    tandaiPelajaranSelesai('selama-tarik');
+    await kirimAntrean(repo.pengguna);
+    return lama;
+  };
+  await mulaiSinkron(repo, vi.fn());
+  expect(bacaAntrean()).toEqual([]);
   expect(bacaPelajaranSelesai().has('selama-tarik')).toBe(true);
 });
 

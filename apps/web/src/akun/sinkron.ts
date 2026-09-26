@@ -9,7 +9,7 @@ import { gantiSemuaProgres, semuaProgres } from '../progres';
 import { kumpulPreferensi, terapkanPreferensi } from '../preferensi';
 import { gantiSemuaTersimpan, semuaTersimpan } from '../tersimpan';
 import { hapusSemuaMentah } from '../penyimpanan';
-import { akunLokal, antre, aturAkunLokal, aturPengirim, bacaAntrean, kirimAntrean } from './antrean';
+import { akunLokal, antre, aturAkunLokal, aturPengirim, bacaAntrean, kirimAntrean, versiAntrean } from './antrean';
 import { gabung, type DataPengguna } from './gabung';
 
 export interface RepoAkun { akun: RepositoriAkun; pengguna: RepositoriPengguna }
@@ -30,9 +30,11 @@ export async function mulaiSinkron(repo: RepoAkun, saatDataBerubah: () => void):
     }
     pasangPengirim(repo.pengguna);
     if (await kirimAntrean(repo.pengguna) === 0) {
+      const versiSebelum = versiAntrean();
       const server = await dataServer(repo.pengguna);
-      // Perubahan lokal baru bisa masuk antrean selagi dataServer menunggu jaringan; jangan timpa bila begitu.
-      if (bacaAntrean().length === 0) tulisLokal(server);
+      // Perubahan lokal baru bisa masuk antrean selagi dataServer menunggu jaringan, bahkan sudah terkirim dan keluar
+      // antrean lagi; snapshot server tadi tidak memuatnya, jadi jangan timpa lokal.
+      if (versiAntrean() === versiSebelum && bacaAntrean().length === 0) tulisLokal(server);
     }
     saatDataBerubah();
     return sesi;

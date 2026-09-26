@@ -16,14 +16,27 @@ test('tersimpan: gabung per id, yang terbaru menang; kirim hanya yang beda dari 
 
 test('progres belajar: selesai = OR, waktu = maksimum', () => {
   const { hasil } = gabung(
-    { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: true, diubahPada: '1' }] },
-    { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: false, diubahPada: '2' }] });
-  expect(hasil.belajar).toEqual([{ pelajaranSlug: 'x', selesai: true, diubahPada: '2' }]);
+    { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: true, diubahPada: '2026-09-27T00:00:01.000Z' }] },
+    { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: true, diubahPada: '2026-09-27T00:00:02.000Z' }] });
+  expect(hasil.belajar).toEqual([{ pelajaranSlug: 'x', selesai: true, diubahPada: '2026-09-27T00:00:02.000Z' }]);
+});
+
+// Trigger tolak_data_lebih_lama menolak upsert yang waktunya <= baris server: hasil gabungan harus lebih baru.
+test('hasil gabungan beda dari server yang lebih baru: waktu dimajukan 1 ms supaya tidak ditolak server', () => {
+  const { hasil, kirim } = gabung(
+    { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: true, diubahPada: '2026-09-27T00:00:01.000Z' }],
+      latihan: [latihan('2026-09-27T00:00:01.000Z', false, 5)] },
+    { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: false, diubahPada: '2026-09-27T00:00:02.000Z' }],
+      latihan: [latihan('2026-09-27T00:00:02.000Z', true, 2)] });
+  expect(hasil.belajar).toEqual([{ pelajaranSlug: 'x', selesai: true, diubahPada: '2026-09-27T00:00:02.001Z' }]);
+  expect(hasil.latihan).toEqual([latihan('2026-09-27T00:00:02.001Z', true, 5)]);
+  expect(kirim.map(entri => entri.tabel)).toEqual(['belajar', 'latihan']);
 });
 
 test('progres latihan: terbaru menang, jumlah coba = maksimum', () => {
-  const { hasil } = gabung({ ...kosong, latihan: [latihan('1', false, 5)] }, { ...kosong, latihan: [latihan('2', true, 2)] });
-  expect(hasil.latihan).toEqual([latihan('2', true, 5)]);
+  const { hasil } = gabung({ ...kosong, latihan: [latihan('2026-09-27T00:00:03.000Z', true, 5)] },
+    { ...kosong, latihan: [latihan('2026-09-27T00:00:02.000Z', false, 2)] });
+  expect(hasil.latihan).toEqual([latihan('2026-09-27T00:00:03.001Z', true, 5)]);
 });
 
 test('preferensi: terbaru utuh; server kosong → lokal dikirim', () => {

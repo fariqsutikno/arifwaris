@@ -17,6 +17,10 @@ export type EntriAntrean =
 const KUNCI_ANTREAN = 'arif-waris:antrean';
 const KUNCI_AKUN = 'arif-waris:akun';
 let pengirim: (() => void) | null = null;
+let jumlahAntre = 0;
+
+/** Naik tiap antre(); sinkron.ts membandingkannya untuk tahu ada perubahan lokal meski entrinya sudah terkirim. */
+export const versiAntrean = (): number => jumlahAntre;
 
 export const akunLokal = (): string | null => bacaMentah(KUNCI_AKUN);
 export const aturAkunLokal = (userId: string | null): void => (userId ? simpanMentah(KUNCI_AKUN, userId) : hapusMentah(KUNCI_AKUN));
@@ -25,6 +29,7 @@ export const aturPengirim = (kirim: (() => void) | null): void => { pengirim = k
 
 export function antre(entri: EntriAntrean): void {
   if (!akunLokal()) return;
+  jumlahAntre++;
   const kunci = kunciEntri(entri);
   // Hapus & simpan tersimpan berbagi kunci: yang terakhir yang berlaku.
   tulis([...bacaAntrean().filter(lama => kunciEntri(lama) !== kunci), entri]);
@@ -34,11 +39,17 @@ export function antre(entri: EntriAntrean): void {
 export function bacaAntrean(): EntriAntrean[] {
   try {
     const daftar: unknown = JSON.parse(bacaMentah(KUNCI_ANTREAN) ?? '[]');
-    return Array.isArray(daftar) ? daftar.filter((entri): entri is EntriAntrean => typeof entri?.tabel === 'string') : [];
+    return Array.isArray(daftar) ? daftar.filter(entriUtuh) : [];
   } catch {
     return [];
   }
 }
+
+const TABEL_BERBARIS = ['tersimpan', 'belajar', 'latihan', 'preferensi', 'kegiatan'];
+// Isi localStorage bisa rusak/versi lama; entri cacat dibuang supaya kunciEntri tidak melempar dari antre().
+const entriUtuh = (entri: any): entri is EntriAntrean =>
+  entri?.tabel === 'hapus_tersimpan' ? typeof entri.id === 'string'
+    : TABEL_BERBARIS.includes(entri?.tabel) && typeof entri.baris === 'object' && entri.baris !== null;
 
 /** Kirim berurutan; berhenti di kegagalan pertama supaya urutan terjaga. Mengembalikan jumlah entri yang tersisa. */
 export async function kirimAntrean(pengguna: RepositoriPengguna): Promise<number> {
