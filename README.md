@@ -20,6 +20,7 @@ packages/engine    Tipe, ruleset syafii, tahap pipeline, orkestrator
 packages/content   Rujukan, glosarium, materi, bank soal
 packages/explain   Jejak langkah → narasi bahasa Indonesia
 apps/web           Antarmuka web (Vite + React)
+apps/admin         Portal admin: sunting, review, dan terbitkan konten (Vite + React)
 docs/kb            Knowledge base fikih bab 00–17 (sumber kebenaran)
 docs/design        Dokumen desain (engine-contract.md)
 docs/lampiran-konten  Ekspor Markdown konten terbit (isi aslinya di database)
@@ -48,6 +49,25 @@ pnpm test
 ```bash
 pnpm --filter @waris/web dev
 ```
+
+### Portal admin
+
+Portal admin (`apps/admin`) dipakai tim keilmuan untuk menyunting, mereview, dan menerbitkan konten
+(lihat [docs/panduan-tim-keilmuan.md](docs/panduan-tim-keilmuan.md)). Perlu Supabase (lokal atau proyek Supabase):
+
+```bash
+pnpm admin
+```
+
+Env yang dibutuhkan (`apps/admin/.env` atau env shell):
+
+```
+VITE_SUPABASE_URL=...
+VITE_SUPABASE_ANON_KEY=...
+```
+
+Login memakai Google lewat Supabase Auth: di dashboard Supabase, aktifkan provider Google lalu daftarkan redirect
+URL `<origin portal>` (mis. `http://localhost:5173` untuk dev) di pengaturan Auth > URL Configuration.
 
 ## Prinsip
 

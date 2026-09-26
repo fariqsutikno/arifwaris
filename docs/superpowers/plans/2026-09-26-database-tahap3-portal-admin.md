@@ -116,7 +116,7 @@ daftarkanPengguna(p: { userId: string; email: string; nama?: string }): void; //
 
 `revisiTerakhir` = revisi dengan `dibuat_pada` terbaru (memori: id terakhir) — dipakai daftar untuk kolom status.
 
-- [ ] **Step 1: Tulis tes memori (gagal)** — `memori-portal.test.ts`:
+- [x] **Step 1: Tulis tes memori (gagal)** — `memori-portal.test.ts`:
 
 ```ts
 import { expect, test } from 'vitest';
@@ -172,9 +172,9 @@ test('daftarRefs dari refs awal', async () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/data test memori-portal` → FAIL (metode tidak ada).
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm --filter @waris/data test memori-portal` → FAIL (metode tidak ada).
 
-- [ ] **Step 3: Implementasi memori.** Di `memori/konten.ts`: `pengguna = new Map<string, { userId; email; nama: string | null }>()`
+- [x] **Step 3: Implementasi memori.** Di `memori/konten.ts`: `pengguna = new Map<string, { userId; email; nama: string | null }>()`
   (kunci email); `daftarEntri` menyaring `entri` per jenis, `revisiTerakhir` = revisi entri itu dengan id numerik terbesar;
   `daftarRefs` = `[...refsDikenal].sort().map(kode => ({ kode, bab: Number(kode.slice(1, 3)) }))`;
   `daftarKunci`, `antreanReview` diksi setara versi konten. `akun`:
@@ -200,9 +200,9 @@ const akun: RepositoriAkun = {
 
   `daftarkanPengguna` menyimpan dengan email di-lowercase, `nama ?? null`.
 
-- [ ] **Step 4: Jalankan tes memori** → PASS.
+- [x] **Step 4: Jalankan tes memori** → PASS.
 
-- [ ] **Step 5: Migrasi SQL** `20260927000001_portal.sql`:
+- [x] **Step 5: Migrasi SQL** `20260927000001_portal.sql`:
 
 ```sql
 -- supabase/migrations/20260927000001_portal.sql
@@ -236,7 +236,7 @@ revoke execute on function daftar_peran(), atur_peran_email(text, peran) from pu
 
   Cek dulu nama kolom PK `peran_pengguna` di `20260926000001_konten.sql` (baris 72) untuk `on conflict`.
 
-- [ ] **Step 6: Implementasi Supabase.** `daftarEntri`: `from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)').eq('jenis', jenis).order('urutan')`,
+- [x] **Step 6: Implementasi Supabase.** `daftarEntri`: `from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)').eq('jenis', jenis).order('urutan')`,
   `revisiTerakhir` = elemen `revisi` dengan `dibuat_pada` maks (petakan lewat `keRevisi`; tambah `keRingkasanEntri` di `peta.ts`).
   Cek nama FK sebenarnya dengan `grep -n "references" supabase/migrations/20260926000001_konten.sql`.
   `daftarRefs`: `from('daftar_refs').select('kode, bab').order('kode')`. `daftarKunci`: pola sama atas `diksi` + `revisi_diksi`,
@@ -244,13 +244,13 @@ revoke execute on function daftar_peran(), atur_peran_email(text, peran) from pu
   `aturPeran(email, peran)` → `rpc('atur_peran_email', { p_email: email, p_peran: peran })`;
   `daftarPeran` → `klien.rpc('daftar_peran')` dipetakan ke `PeranPengguna`.
 
-- [ ] **Step 7: Tes integrasi** — di `supabase.test.ts` (dilewati tanpa env) tambah: admin `aturPeran(emailReviewer, 'reviewer')`
+- [x] **Step 7: Tes integrasi** — di `supabase.test.ts` (dilewati tanpa env) tambah: admin `aturPeran(emailReviewer, 'reviewer')` — **belum dijalankan: perlu Supabase lokal.**
   lalu `daftarPeran()` memuat email itu; `aturPeran('tidak-ada@x.id', 'penulis')` rejects `akun belum pernah masuk`;
   penulis memanggil `daftarPeran()` rejects `hanya admin`. Ikuti pola `masuk(email)` di berkas itu.
 
-- [ ] **Step 8:** `pnpm test` hijau, `pnpm -r exec tsc --noEmit` bersih. Perbaiki pemanggil lama `aturPeran(userId, …)` bila ada (`grep -rn aturPeran packages apps scripts`).
+- [x] **Step 8:** `pnpm test` hijau, `pnpm -r exec tsc --noEmit` bersih. Perbaiki pemanggil lama `aturPeran(userId, …)` bila ada (`grep -rn aturPeran packages apps scripts`).
 
-- [ ] **Step 9: Commit** — `data: metode portal (daftar entri/kunci, antrean diksi, refs, peran via email)`.
+- [x] **Step 9: Commit** — `data: metode portal (daftar entri/kunci, antrean diksi, refs, peran via email)`.
 
 ---
 
@@ -279,7 +279,7 @@ export function tulisRute(rute: Rute): string;  // '#/konten/materi', '#/entri/<
 export function Portal({ repo }: { repo: RepoPortal }): JSX.Element;
 ```
 
-- [ ] **Step 1: exports web.** Di `apps/web/package.json` tambah:
+- [x] **Step 1: exports web.** Di `apps/web/package.json` tambah:
 
 ```json
 "exports": {
@@ -291,12 +291,12 @@ export function Portal({ repo }: { repo: RepoPortal }): JSX.Element;
 }
 ```
 
-- [ ] **Step 2: Paket admin.** `package.json` meniru `apps/web/package.json` (nama `@waris/admin`, dependensi `@waris/web`,
+- [x] **Step 2: Paket admin.** `package.json` meniru `apps/web/package.json` (nama `@waris/admin`, dependensi `@waris/web`,
   `@waris/data`, `@waris/content`, `@supabase/supabase-js`, react; devDependencies sama). `vite.config.ts` & `tsconfig.json`
   salin dari web (tsconfig `include`: `["src", "../web/src", "../../packages/content/src/raw.d.ts"]` supaya berkas web yang
   diimpor ikut dicek). `index.html` salin dari web, judul `Arif Waris — Portal`. Jalankan `pnpm install`.
 
-- [ ] **Step 3: Tes rute (gagal)**:
+- [x] **Step 3: Tes rute (gagal)**:
 
 ```ts
 import { expect, test } from 'vitest';
@@ -313,9 +313,9 @@ test('hash tak dikenal / jenis tak sah → review', () => {
 });
 ```
 
-- [ ] **Step 4: Implementasi `rute.ts`** (split `#/a/b`, jenis dicek dengan `JENIS_KONTEN.includes`). Tes → PASS.
+- [x] **Step 4: Implementasi `rute.ts`** (split `#/a/b`, jenis dicek dengan `JENIS_KONTEN.includes`). Tes → PASS.
 
-- [ ] **Step 5: Tes gerbang (gagal)** — `gerbang.test.tsx`:
+- [x] **Step 5: Tes gerbang (gagal)** — `gerbang.test.tsx`:
 
 ```tsx
 import { render, screen } from '@testing-library/react';
@@ -348,21 +348,21 @@ test('galat memuat sesi → pesan galat, bukan layar kosong', async () => {
 });
 ```
 
-- [ ] **Step 6: Implementasi `Portal.tsx`.** State `{ tahap: 'memuat' } | { tahap: 'galat', pesan } | { tahap: 'tamu' } | { tahap: 'tanpaPeran', sesi } | { tahap: 'siap', sesi, peran }`.
+- [x] **Step 6: Implementasi `Portal.tsx`.** State `{ tahap: 'memuat' } | { tahap: 'galat', pesan } | { tahap: 'tamu' } | { tahap: 'tanpaPeran', sesi } | { tahap: 'siap', sesi, peran }`.
   `useEffect` memanggil `akun.sesi()` lalu `akun.peranSaya()`. Siap → `KonteksRepo.Provider`, navigasi (`<a href={tulisRute(...)}>`)
   "Konten" (per jenis `JENIS_KONTEN`), "Antrean review", "Diksi", dan "Peran" hanya untuk admin; rute dari `bacaRute(location.hash)`
   + listener `hashchange`. Layar yang belum dibuat di task ini: render `<p>Segera</p>` per rute (diganti task berikut).
   Masuk: `akun.masukGoogle(location.origin + location.pathname)`. Pakai `Tombol` dari `@waris/web/ui/komponen` dan
   impor `@waris/web/gaya/token.css`, `@waris/web/gaya/komponen.css` di `main.tsx`.
 
-- [ ] **Step 7: `main.tsx`.** Env `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`; tanpa env → render pesan "env Supabase belum diatur".
+- [x] **Step 7: `main.tsx`.** Env `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY`; tanpa env → render pesan "env Supabase belum diatur".
   Ada → `buatRepositoriSupabase(createClient(url, kunci))` (sesi dipersist, default supabase-js) → `<Portal repo={...} />`.
 
-- [ ] **Step 8:** `pnpm --filter @waris/admin test` PASS; `pnpm --filter @waris/admin exec tsc --noEmit -p .` bersih;
+- [x] **Step 8:** `pnpm --filter @waris/admin test` PASS; `pnpm --filter @waris/admin exec tsc --noEmit -p .` bersih;
   `pnpm --filter @waris/web build` masih jalan dan ukuran `dist/assets/index-*.js` tidak berubah (web tidak mengimpor admin).
   Tambah skrip root `"admin": "pnpm --filter @waris/admin dev"`.
 
-- [ ] **Step 9: Commit** — `admin: kerangka portal, gerbang sesi & peran, rute hash`.
+- [x] **Step 9: Commit** — `admin: kerangka portal, gerbang sesi & peran, rute hash`.
 
 ---
 
@@ -378,17 +378,17 @@ test('galat memuat sesi → pesan galat, bukan layar kosong', async () => {
 - Produces: `DaftarKonten({ jenis }: { jenis: JenisKonten })`; helper murni diekspor
   `statusTampil(e: RingkasanEntri): 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf'`.
 
-- [ ] **Step 1: Tes (gagal)** — siapkan memori dengan satu entri terbit + draf baru, satu entri hanya diajukan (pakai `SOAL_HITUNG_UJI`/`DAFTAR_FAQ_UJI`
+- [x] **Step 1: Tes (gagal)** — siapkan memori dengan satu entri terbit + draf baru, satu entri hanya diajukan (pakai `SOAL_HITUNG_UJI`/`DAFTAR_FAQ_UJI`
   dari `packages/data/src/__tests__/contoh.ts`; salin data yang dibutuhkan ke `apps/admin/src/__tests__/contoh.ts` karena berkas tes
   paket lain tidak diekspor). Harapan: baris tampil berurut `urutan`, kolom status "terbit + draf" dan "diajukan";
   filter status (select "Semua / Draf / Diajukan / Dikembalikan / Terbit") menyaring baris; tombol "Entri baru" menuju `#/baru/<jenis>`.
   Tes `statusTampil` untuk kelima kasus.
 
-- [ ] **Step 2: Jalankan → FAIL.**
-- [ ] **Step 3: Implementasi.** Tabel: slug (tautan `#/entri/<id>`), judul (dari `revisiTerakhir.isi` field `judul`/`pertanyaan`/`istilahId`/`kunci`, fallback slug),
+- [x] **Step 2: Jalankan → FAIL.**
+- [x] **Step 3: Implementasi.** Tabel: slug (tautan `#/entri/<id>`), judul (dari `revisiTerakhir.isi` field `judul`/`pertanyaan`/`istilahId`/`kunci`, fallback slug),
   status, refs. Galat repository → teks galat di atas tabel.
-- [ ] **Step 4: Tes → PASS.** 
-- [ ] **Step 5: Commit** — `admin: daftar konten per jenis + filter status`.
+- [x] **Step 4: Tes → PASS.** 
+- [x] **Step 5: Commit** — `admin: daftar konten per jenis + filter status`.
 
 ---
 
@@ -417,7 +417,7 @@ export function dariBentuk<J extends JenisKonten>(jenis: J, slug: string, bentuk
   `keBentuk` memakai `keJson` dulu (bigint → string) lalu memisahkan; `dariBentuk` menggabung, `bacaBlok(slug, blok)` untuk materi,
   lalu `bacaIsi(jenis, gabungan)`. JSON rusak → `{ ok: false, galat: 'JSON tidak sah: <pesan>' }`.
 
-- [ ] **Step 1: Tes bentuk (gagal)**:
+- [x] **Step 1: Tes bentuk (gagal)**:
 
 ```ts
 import { expect, test } from 'vitest';
@@ -448,23 +448,23 @@ test('gagal Zod → galat berjalur', () => {
 
   `PELAJARAN_UJI`: ambil satu pelajaran nyata dari `apps/web/src/snapshot.json` (`jenis === 'materi'`) lewat `bacaIsi`, di `contoh.ts`.
 
-- [ ] **Step 2: → FAIL. Step 3: implementasi `bentuk.ts`. Step 4: → PASS.**
+- [x] **Step 2: → FAIL. Step 3: implementasi `bentuk.ts`. Step 4: → PASS.**
 
-- [ ] **Step 5: Tes editor (gagal)** — `editor.test.tsx` dengan memori (penulis `u-p`, refs `['R09-7','R10-3']`):
+- [x] **Step 5: Tes editor (gagal)** — `editor.test.tsx` dengan memori (penulis `u-p`, refs `['R09-7','R10-3']`):
   1. Entri baru `faq`: isi field, pilih ref lewat `PemilihRefs` (ketik "R09" → klik `R09-7`), "Simpan draf" → `daftarEntri('faq')` berisi 1 entri status draf.
   2. JSON rusak → pesan `JSON tidak sah` tampil, `daftarEntri` tetap kosong (Review Focus 2).
   3. Jenis fikih tanpa ref → pesan galat dari repo (`periksaRefs`) tampil.
   4. Draf milik sendiri: tombol "Ajukan" → status diajukan; setelah diajukan, form jadi baca-saja (`bolehSuntingDraf` false).
   5. Reviewer membuka entri: form baca-saja, tidak ada tombol simpan.
 
-- [ ] **Step 6: Implementasi `EditorEntri`.** Muat `daftarRevisi(entriId)`; basis = revisi terakhir (atau `revisi terbit` bila terakhir bukan draf).
+- [x] **Step 6: Implementasi `EditorEntri`.** Muat `daftarRevisi(entriId)`; basis = revisi terakhir (atau `revisi terbit` bila terakhir bukan draf).
   Boleh sunting = `bolehSuntingDraf({ peran, pelakuId: sesi.userId, pembuatId, status })` untuk draf; bila revisi terakhir
   bukan draf dan peran ≠ reviewer → tombol "Buat draf baru dari versi ini". Simpan: `dariBentuk` → gagal tampilkan galat;
   berhasil → `buatDraf`/`ubahDraf`; entri baru → `buatEntri(jenis, slug(judul), maksUrutan + 10)` dulu, lalu `location.hash = tulisRute({ layar:'entri', entriId })`.
   `PemilihRefs({ nilai, saatUbah })`: `daftarRefs()` sekali, input cari (kode atau "bab 9"), chip terpilih dengan tombol hapus.
   Editor materi: dua `<textarea>` (Indonesia & Arab `dir="rtl"`) untuk blok + input untuk `teks`; `json` di textarea monospace.
 
-- [ ] **Step 7: → PASS. Step 8: Commit** — `admin: editor entri hibrida + pemilih refs`.
+- [x] **Step 7: → PASS. Step 8: Commit** — `admin: editor entri hibrida + pemilih refs`.
 
 ---
 
@@ -480,16 +480,16 @@ test('gagal Zod → galat berjalur', () => {
   `KartuSoalKuis`, `Faq`, `TanyaJawab`; `keJson`.
 - Produces: `Pratinjau({ jenis, slug, isi, saatTutup })`.
 
-- [ ] **Step 1: Tes (gagal)**: render pratinjau materi dengan judul diubah jadi `"JUDUL PRATINJAU"` → teks tampil; setelah `saatTutup`
+- [x] **Step 1: Tes (gagal)**: render pratinjau materi dengan judul diubah jadi `"JUDUL PRATINJAU"` → teks tampil; setelah `saatTutup`
   (unmount), `cariPelajaran(slug)?.judul` kembali ke judul snapshot bawaan (Review Focus 4). Jenis tanpa layar
   (`ahwal`, `teks_edukasi`, `glosarium_ar`, `kitab`, `syahid`, `cheatsheet`, `modul`, `soal_hitung`) → tampil JSON berindentasi + catatan "belum ada pratinjau".
-- [ ] **Step 2: → FAIL.**
-- [ ] **Step 3: Implementasi.** Saat mount: simpan `const asal = snapshotTerpasang()`, pasang
+- [x] **Step 2: → FAIL.**
+- [x] **Step 3: Implementasi.** Saat mount: simpan `const asal = snapshotTerpasang()`, pasang
   `{ ...asal, konten: [...asal.konten.filter(b => !(b.jenis === jenis && b.slug === slug)), { entriId: 'pratinjau', jenis, slug, urutan: 0, revisiId: 'pratinjau', isi: keJson(jenis, isi), refs: [], versiTerbit: asal.versi }] }`;
   cleanup `useEffect` → `pasangSnapshot(asal)`. Render di `<div className="aw-pratinjau">` dengan `saatCoba={() => {}}`, `kasusSekarang={null}`
   (cek tipe Props aktual di `Materi.tsx:31`). Pasang di `useLayoutEffect` supaya render anak sudah melihat snapshot pratinjau.
   ponytail: pratinjau memakai snapshot bawaan build sebagai latar, bukan data DB terbaru; cukup untuk melihat tampilan satu entri.
-- [ ] **Step 4: → PASS. Step 5: Commit** — `admin: pratinjau draf dengan layar web`.
+- [x] **Step 4: → PASS. Step 5: Commit** — `admin: pratinjau draf dengan layar web`.
 
 ---
 
@@ -509,7 +509,7 @@ export function diffBaris(lama: string, baru: string): BarisDiff[];
 export function teksBanding(jenis: JenisKonten, isi: unknown): string; // materi: meta JSON + '\n---\n' + tulisBlok(blok); lainnya JSON 2 spasi
 ```
 
-- [ ] **Step 1: Tes diff (gagal)**:
+- [x] **Step 1: Tes diff (gagal)**:
 
 ```ts
 import { expect, test } from 'vitest';
@@ -525,20 +525,20 @@ test('lama kosong (entri baru) = semua tambah', () => {
 });
 ```
 
-- [ ] **Step 2: → FAIL. Step 3: implementasi LCS (tabel panjang, jalan balik). Step 4: → PASS.**
+- [x] **Step 2: → FAIL. Step 3: implementasi LCS (tabel panjang, jalan balik). Step 4: → PASS.**
 
-- [ ] **Step 5: Tes review (gagal)** — memori: penulis `u-p` membuat & mengajukan draf faq dan draf diksi; reviewer `u-r` masuk:
+- [x] **Step 5: Tes review (gagal)** — memori: penulis `u-p` membuat & mengajukan draf faq dan draf diksi; reviewer `u-r` masuk:
   1. Antrean menampilkan dua butir (konten & diksi) dengan diff.
   2. "Setujui" butir konten → hilang dari antrean; `konten.bacaTerbit({ jenis: 'faq' })` berisi entri itu.
   3. "Kembalikan" tanpa catatan → tombol nonaktif; dengan catatan → status dikembalikan.
   4. Reviewer yang sama mengajukan drafnya sendiri (peran diubah sementara lewat `aturPeranLangsung`) → butir itu tampil tanpa tombol aksi
      dan berlabel "revisi Anda" (Review Focus 1).
   5. Penulis membuka antrean → butir tampil baca-saja.
-- [ ] **Step 6: Implementasi.** Muat `editorial.antreanReview()` + `diksi.antreanReview()`. Untuk konten: basis diff = revisi terbit entri
+- [x] **Step 6: Implementasi.** Muat `editorial.antreanReview()` + `diksi.antreanReview()`. Untuk konten: basis diff = revisi terbit entri
   (`daftarRevisi(entriId)` cari `id === revisiTerbitId` dari `daftarEntri`, atau revisi berstatus disetujui terakhir; tidak ada → `''`).
   Diksi: basis = `daftarKunci()` → `terbit`. Tombol tampil hanya bila `transisiRevisi({ ..., aksi: 'setujui' }).ok`.
   Galat repo (mis. RLS menolak) tampil di butir itu. Tautan "Pratinjau" untuk konten (pakai `Pratinjau` dari Task 5).
-- [ ] **Step 7: → PASS. Step 8: Commit** — `admin: antrean review dengan diff, setujui/kembalikan`.
+- [x] **Step 7: → PASS. Step 8: Commit** — `admin: antrean review dengan diff, setujui/kembalikan`.
 
 ---
 
@@ -553,14 +553,14 @@ test('lama kosong (entri baru) = semua tambah', () => {
 - Consumes: `konten.daftarRevisi`, `editorial.terbitkanUlang`, `diffBaris`, `teksBanding`.
 - Produces: `RiwayatRevisi({ entriId, jenis, revisiTerbitId, saatBerubah })`.
 
-- [ ] **Step 1: Tes (gagal)** — entri dengan dua revisi disetujui (r1 lalu r2, terbit = r2), reviewer masuk:
+- [x] **Step 1: Tes (gagal)** — entri dengan dua revisi disetujui (r1 lalu r2, terbit = r2), reviewer masuk:
   daftar menampilkan r2 berlabel "terbit", r1 dengan tombol "Terbitkan ulang"; klik → `bacaTerbit` memuat `revisiId === r1`
   dan `saatBerubah` dipanggil. Penulis: tombol tidak tampil. Catatan review revisi dikembalikan tampil.
-- [ ] **Step 2: → FAIL.**
-- [ ] **Step 3: Implementasi.** Urut terbaru di atas; tiap revisi: status, pembuat (id singkat), tanggal, catatan review,
+- [x] **Step 2: → FAIL.**
+- [x] **Step 3: Implementasi.** Urut terbaru di atas; tiap revisi: status, pembuat (id singkat), tanggal, catatan review,
   tombol "Lihat beda dengan terbit" (diff inline). Tombol rollback hanya untuk status `disetujui`, bukan yang sedang terbit,
   peran reviewer/admin (cermin `terbitkan_ulang_revisi`). Minta konfirmasi `window.confirm` sebelum rollback.
-- [ ] **Step 4: → PASS. Step 5: Commit** — `admin: riwayat revisi & rollback`.
+- [x] **Step 4: → PASS. Step 5: Commit** — `admin: riwayat revisi & rollback`.
 
 ---
 
@@ -575,15 +575,15 @@ test('lama kosong (entri baru) = semua tambah', () => {
 - Consumes: `diksi.daftarKunci`, `diksi.buatDraf`, `diksi.ajukan`, `diksi.daftarRevisi`, `diksi.terbitkanUlang`.
 - Produces: `EditorDiksi()`; helper murni `saringDiksi(daftar: RingkasanKunciDiksi[], saring: { halaman?: string; arKosong?: boolean; belumTerbit?: boolean; cari?: string })`.
 
-- [ ] **Step 1: Tes (gagal)**: `saringDiksi` untuk tiap filter (Arab kosong = `terbit?.ar` null/kosong; belum terbit = `terbit === null` atau
+- [x] **Step 1: Tes (gagal)**: `saringDiksi` untuk tiap filter (Arab kosong = `terbit?.ar` null/kosong; belum terbit = `terbit === null` atau
   revisi terakhir bukan disetujui; cari mencocokkan kunci atau teks id). Komponen: tabel dikelompokkan per halaman;
   penulis mengubah kolom Arab satu baris → "Simpan & ajukan" membuat revisi diajukan dengan `idTeks` lama + `arTeks` baru;
   reviewer: sel baca-saja.
-- [ ] **Step 2: → FAIL.**
-- [ ] **Step 3: Implementasi.** Kolom: kunci, Indonesia (input), Arab (input `dir="rtl"`), status. Baris yang berubah ditandai;
+- [x] **Step 2: → FAIL.**
+- [x] **Step 3: Implementasi.** Kolom: kunci, Indonesia (input), Arab (input `dir="rtl"`), status. Baris yang berubah ditandai;
   satu tombol per baris "Simpan & ajukan" (`buatDraf` lalu `ajukan`). Tanpa tambah kunci baru dari portal (kunci lahir dari kode + tes cakupan
   diksi; ponytail: admin menambah kunci lewat SQL/impor bila perlu).
-- [ ] **Step 4: → PASS. Step 5: Commit** — `admin: editor diksi dengan filter Arab kosong & belum terbit`.
+- [x] **Step 4: → PASS. Step 5: Commit** — `admin: editor diksi dengan filter Arab kosong & belum terbit`.
 
 ---
 
@@ -598,14 +598,14 @@ test('lama kosong (entri baru) = semua tambah', () => {
 - Consumes: `akun.daftarPeran(): PeranPengguna[]`, `akun.aturPeran(email, peran | null)`.
 - Produces: `KelolaPeran()`.
 
-- [ ] **Step 1: Tes (gagal)** — memori admin + pengguna terdaftar `rev@x.id` (nama "Ustadz"):
+- [x] **Step 1: Tes (gagal)** — memori admin + pengguna terdaftar `rev@x.id` (nama "Ustadz"):
   1. Tabel menampilkan nama + email + peran.
   2. Form email + select peran → "Beri peran" → baris baru tampil.
   3. Email tak dikenal → pesan "akun belum pernah masuk" tampil, tabel tidak berubah (Review Focus 3).
   4. "Cabut" (dengan `window.confirm`) → baris hilang. Admin tidak bisa mencabut dirinya sendiri (tombol nonaktif; mencegah terkunci).
   5. Rute `#/peran` untuk non-admin → "hanya admin".
-- [ ] **Step 2: → FAIL. Step 3: implementasi. Step 4: → PASS.**
-- [ ] **Step 5: Commit** — `admin: kelola peran lewat email`.
+- [x] **Step 2: → FAIL. Step 3: implementasi. Step 4: → PASS.**
+- [x] **Step 5: Commit** — `admin: kelola peran lewat email`.
 
 ---
 
@@ -614,11 +614,11 @@ test('lama kosong (entri baru) = semua tambah', () => {
 **Files:**
 - Modify: `docs/panduan-tim-keilmuan.md`, `README.md`, `docs/superpowers/plans/2026-09-26-database-tahap3-portal-admin.md` (centang)
 
-- [ ] **Step 1:** Panduan: ganti catatan "Berubah per 2026-09-26" dan bagian "Cara setor" dengan alur portal (masuk Google → minta peran ke admin →
+- [x] **Step 1:** Panduan: ganti catatan "Berubah per 2026-09-26" dan bagian "Cara setor" dengan alur portal (masuk Google → minta peran ke admin →
   sunting → pratinjau → ajukan → reviewer setujui/kembalikan). Setiap sebutan lokasi berkas lama (`docs/materi/…`, `docs/soal/…`, dll.)
   diganti nama jenis konten di portal; aturan isi (Markdown terbatas, ref wajib) tetap. `grep -n "docs/materi\|docs/soal\|docs/faq\|tanya-jawab.md\|docs/rujukan\|glosarium-ar" docs/panduan-tim-keilmuan.md` → kosong.
-- [ ] **Step 2:** README: cara menjalankan portal (`pnpm admin`, env `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, redirect URL Google di dashboard Supabase).
-- [ ] **Step 3:** `pnpm test` hijau semua paket; `pnpm -r exec tsc --noEmit` bersih; `pnpm --filter @waris/admin build` dan `pnpm --filter @waris/web build` berhasil.
-- [ ] **Step 4:** Uji manual dengan Supabase lokal (`pnpm db:mulai && pnpm db:reset`, impor konten): masuk, sunting FAQ, ajukan, setujui sebagai akun lain,
+- [x] **Step 2:** README: cara menjalankan portal (`pnpm admin`, env `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, redirect URL Google di dashboard Supabase).
+- [x] **Step 3:** `pnpm test` hijau semua paket; `pnpm -r exec tsc --noEmit` bersih; `pnpm --filter @waris/admin build` dan `pnpm --filter @waris/web build` berhasil.
+- [x] **Step 4:** Uji manual dengan Supabase lokal (`pnpm db:mulai && pnpm db:reset`, impor konten): masuk, sunting FAQ, ajukan, setujui sebagai akun lain, — **belum dijalankan: perlu Supabase lokal** (lihat perintah di laporan Task 10).
   cek web memuat versi baru setelah reload kedua. Catat hasilnya di pesan commit.
-- [ ] **Step 5: Commit** — `docs: panduan tim keilmuan memakai portal; centang plan tahap 3`.
+- [x] **Step 5: Commit** — `docs: panduan tim keilmuan memakai portal; centang plan tahap 3`.

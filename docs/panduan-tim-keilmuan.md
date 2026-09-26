@@ -4,14 +4,26 @@ Panduan menyusun dan mereview konten aplikasi waris. Untuk ustadz, reviewer syar
 Tidak perlu bisa coding.
 
 > **Berubah per 2026-09-26:** konten (materi, soal, FAQ, tanya jawab, syahid, kitab, glosarium Arab, diksi UI) sudah
-> dipindah ke database dan berkas `docs/materi/`, `docs/soal/`, `docs/faq.md`, `docs/tanya-jawab.md`, `docs/rujukan/`,
-> `docs/glosarium-ar.md` sudah dihapus. Penyuntingan dan review berikutnya lewat portal admin (sedang dibangun). Aturan
-> isi di bawah (format Markdown terbatas, wajib ref `[Rxx-y]`, dst.) tetap berlaku di portal; sebutan lokasi berkas
-> hanya sejarah. Salinan konten terbit: `docs/lampiran-konten/`.
+> dipindah ke database. Penyuntingan dan review sekarang lewat **portal admin**. Aturan isi di bawah (format
+> Markdown terbatas, wajib ref `[Rxx-y]`, dst.) tetap berlaku di portal; sebutan lokasi berkas lama hanya sejarah.
+> Salinan konten terbit: `docs/lampiran-konten/`.
 
-**Cara setor:** kirim berkas `.md` (atau teks biasa untuk konten di bagian 10.2–10.8) ke Fariq. Fariq yang memasukkan
-ke repo dan menjalankan pengecekan otomatis. Kalau pengecekan gagal (misalnya angka contoh tidak cocok dengan
-hitungan aplikasi), berkas dikembalikan beserta alasannya.
+**Cara setor:** masuk ke portal admin dengan akun Google. Kalau belum punya peran, minta admin (Fariq)
+menambahkanmu sebagai `penulis` atau `reviewer` lewat email — kamu harus sudah pernah masuk sekali sebelum bisa
+diberi peran. Setelah masuk:
+
+1. Buka layar **Konten**, pilih jenis kontennya (materi, soal kuis, soal hitung, FAQ, tanya jawab, ahwal, syahid,
+   kitab, glosarium Arab, atau teks/diksi UI), lalu sunting entrinya. Materi disunting sebagai blok Markdown;
+   jenis lain lewat kolom teks dan JSON sesuai bentuknya.
+2. Buka **Pratinjau** untuk melihat tampilannya sebelum diajukan.
+3. Ajukan revisi. Revisi masuk ke **Antrean review**.
+4. **Reviewer** (bukan penulisnya sendiri) membuka diffnya, lalu **menyetujui** atau **mengembalikan** disertai
+   catatan wajib. Revisi yang disetujui langsung terbit.
+5. Semua revisi (termasuk yang sudah terbit) tersimpan di **Riwayat revisi**; versi lama bisa diterbitkan ulang
+   (rollback) dari situ kalau perlu.
+
+Kalau pengecekan otomatis gagal saat mengajukan (misalnya angka contoh tidak cocok dengan hitungan aplikasi, atau
+kode rujukan tidak dikenal), portal menolak pengajuan beserta alasannya.
 
 ---
 
@@ -96,7 +108,7 @@ Istilah yang belum ada di glosarium perlu diusulkan dulu (lihat bagian 13).
 
 ## 4. Materi (pelajaran)
 
-Lokasi: `docs/materi/`. Daftar modul ada di `docs/materi/00-modul.md`.
+Lokasi di portal: jenis konten **Materi** (daftar modul ada di jenis **Modul**).
 
 **Satu berkas = satu pelajaran.** Nama berkas: `<modul>-<urutan>-<slug>.md`, contoh `3-1-enam-bagian-pasti.md`.
 Slug ditulis dengan huruf kecil dan tanda hubung.
@@ -180,8 +192,8 @@ Memanggil soal dari bank kuis (bagian 5) berdasarkan kodenya.
 
 ### Menambah modul
 
-Daftar modul ada di tabel `docs/materi/00-modul.md` (No, Judul, Ringkas). Pelajaran dengan `modul: 11` baru
-muncul kalau modul 11 sudah ada di tabel itu. Untuk modul baru, kirim baris tabelnya bersama pelajaran pertamanya.
+Daftar modul ada di jenis konten **Modul** di portal (No, Judul, Ringkas). Pelajaran dengan `modul: 11` baru
+muncul kalau modul 11 sudah ada di daftar itu. Untuk modul baru, buat entri modulnya dulu di portal, lalu pelajaran pertamanya.
 
 Panjang ideal 300–700 kata. Kalau lebih panjang, pecah jadi dua pelajaran.
 
@@ -189,7 +201,7 @@ Panjang ideal 300–700 kata. Kalau lebih panjang, pecah jadi dua pelajaran.
 
 ## 5. Kuis
 
-Lokasi: `docs/soal/kuis.md`. Kuis adalah soal pilihan ganda untuk menguji konsep.
+Lokasi di portal: jenis konten **Soal kuis**. Kuis adalah soal pilihan ganda untuk menguji konsep.
 
 ```
 ## K-12
@@ -212,7 +224,7 @@ pembahasan: Istri mendapat 1/8 bila ada [[faru-warits|far'u warits]] [R04-2]. Ju
 
 ## 6. Soal hitung
 
-Lokasi: `docs/soal/hitung.md`. Soal kasus yang dikerjakan pembaca di kalkulator mode Belajar. Jawaban
+Lokasi di portal: jenis konten **Soal hitung**. Soal kasus yang dikerjakan pembaca di kalkulator mode Belajar. Jawaban
 disembunyikan sampai pembaca membukanya.
 
 Ditulis sebagai satu baris tabel:
@@ -232,7 +244,7 @@ Ditulis sebagai satu baris tabel:
 
 ## 7. FAQ
 
-Lokasi: `docs/faq.md`.
+Lokasi di portal: jenis konten **FAQ**.
 
 ```
 ## Fikih
@@ -277,7 +289,7 @@ di materi/kuis/FAQ, dan tooltip di penjelasan langkah hitung.
 
 ## 9. Rujukan: syahid ayat dan sumber kitab
 
-### Syahid ayat (`docs/rujukan/syahid.md`)
+### Syahid ayat (jenis konten **Syahid**)
 
 Potongan ayat yang menjadi dasar tiap hukum. Di halaman Rujukan, potongan ini disorot saat hukumnya dipilih.
 
@@ -295,7 +307,7 @@ Potongan ayat yang menjadi dasar tiap hukum. Di halaman Rujukan, potongan ini di
   Tafsir: ... (sumber: nama kitab tafsir, jilid, halaman)
   ```
 
-### Sumber kitab (`docs/rujukan/kitab.md`)
+### Sumber kitab (jenis konten **Kitab**)
 
 Mengisi tombol "Baca kitab" di halaman Rujukan.
 
@@ -324,7 +336,7 @@ mengirimkan daftar teks yang sekarang dipakai, lalu balas dengan koreksinya.
 
 ### 10.1 Tanya jawab (kasus nyata)
 
-Lokasi: `docs/tanya-jawab.md`. Artikel satu kasus waris nyata beserta penyelesaiannya dari ustadz atau lembaga
+Lokasi di portal: jenis konten **Tanya jawab**. Artikel satu kasus waris nyata beserta penyelesaiannya dari ustadz atau lembaga
 fatwa. **Sekarang semuanya masih placeholder.** Hanya isi dengan jawaban yang sumbernya jelas.
 
 ```
@@ -437,7 +449,7 @@ Setelah menghitung, aplikasi menjelaskan cara hitungnya langkah demi langkah. Ad
 Kalimat penjelasan ini **dirakit otomatis** dari hasil hitungan, jadi tidak bisa ditulis bebas per kasus. Yang
 bisa diperbaiki tim keilmuan adalah pola kalimatnya. Cara review:
 
-1. Buka kalkulator dan masukkan kasus (paling mudah pakai soal hitung di `docs/soal/hitung.md` atau kasus bab 16).
+1. Buka kalkulator dan masukkan kasus (paling mudah pakai soal hitung di jenis konten **Soal hitung**, atau kasus bab 16).
 2. Baca penjelasan tiap langkah, di kedua mode.
 3. Kirim koreksi dengan templat:
 
@@ -495,11 +507,11 @@ tujuan-ar: التعرف على معنى الفرائض وأدلتها الأصل
 
 ### 12.2 Daftar modul
 
-Tabel `docs/materi/00-modul.md` punya kolom tambahan **Judul (ar)** dan **Ringkas (ar)**.
+Entri jenis **Modul** di portal punya kolom tambahan **Judul (ar)** dan **Ringkas (ar)**.
 
 ### 12.3 Tanya jawab
 
-Di `docs/tanya-jawab.md`, tambahkan di kasus yang sama:
+Di jenis konten **Tanya jawab**, tambahkan di kasus yang sama:
 
 ```
 judul-ar: ...
@@ -517,7 +529,7 @@ Kalau salah satu bagian Arab diisi, ketiga baris `judul-ar`, `ringkasan-ar`, dan
 
 ### 12.4 Glosarium
 
-Berkas terpisah: `docs/glosarium-ar.md`, karena KB tetap berbahasa Indonesia.
+Jenis konten terpisah di portal: **Glosarium Arab**, karena KB tetap berbahasa Indonesia.
 
 | Istilah | Makna | Arti awam | Contoh |
 |---|---|---|---|
