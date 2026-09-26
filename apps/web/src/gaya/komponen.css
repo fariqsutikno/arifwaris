@@ -1177,7 +1177,8 @@ summary.kepala-bulat::after{position:absolute;top:12px;right:14px}
 .chip-kecil[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--surface-raised)}
 .chip-kecil:disabled{opacity:.4;cursor:default}
 .chip-jenis{align-self:flex-start;display:inline-flex;align-items:center;min-height:22px;padding:0 8px;border:1px solid var(--divider);border-radius:999px;background:var(--surface-sunken);color:var(--ink-muted);font:600 12px/1 var(--font-sans)}
-a.kartu-artikel{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;max-width:640px}
+a.kartu-artikel{display:flex;flex-direction:column;gap:6px;padding:16px 18px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;height:100%;box-sizing:border-box}
+.grid-artikel{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:12px}
 a.kartu-artikel b{font:700 18px/1.35 var(--font-display)}
 a.kartu-artikel:hover{box-shadow:var(--shadow-pop-sm)}
 a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}

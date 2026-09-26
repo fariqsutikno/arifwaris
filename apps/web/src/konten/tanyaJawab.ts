@@ -6,7 +6,7 @@ export const JENIS_TANYA_JAWAB = ['Saran ustadz', 'Fatwa'] as const;
 export type JenisTanyaJawab = (typeof JENIS_TANYA_JAWAB)[number];
 
 export interface KasusTanyaJawab {
-  id: string;
+  slug: string;
   judul: string;
   jenis: JenisTanyaJawab;
   /** Satu kalimat untuk kartu daftar. */
@@ -20,13 +20,13 @@ export interface KasusTanyaJawab {
 }
 
 export const DAFTAR_TANYA_JAWAB: KasusTanyaJawab[] = [
-  { id: 'contoh-sengketa-rumah', judul: '[Placeholder] Sengketa rumah peninggalan', jenis: 'Saran ustadz',
+  { slug: 'contoh-sengketa-rumah', judul: '[Placeholder] Sengketa rumah peninggalan', jenis: 'Saran ustadz',
     ringkasan: 'Ringkasan satu kalimat tentang kasus ini akan ditulis di sini.',
     kasus: ['Cerita kasus akan ditulis di sini: siapa yang wafat, siapa ahli warisnya, dan apa yang dipersengketakan.',
       'Paragraf kedua cerita kasus.'],
     penyelesaian: ['Penyelesaian dari ustadz akan ditulis di sini.', 'Paragraf kedua penyelesaian.'],
     sumber: 'Nama ustadz · sumber (menyusul)' },
-  { id: 'contoh-harta-belum-dibagi', judul: '[Placeholder] Harta belum dibagi bertahun-tahun', jenis: 'Fatwa',
+  { slug: 'contoh-harta-belum-dibagi', judul: '[Placeholder] Harta belum dibagi bertahun-tahun', jenis: 'Fatwa',
     ringkasan: 'Ringkasan satu kalimat tentang kasus ini akan ditulis di sini.',
     kasus: ['Cerita kasus akan ditulis di sini.'],
     penyelesaian: ['Ringkasan fatwa akan ditulis di sini.'],
