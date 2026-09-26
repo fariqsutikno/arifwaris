@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from 'react';
 import { Ikon } from './Ikon';
+import { t } from '../terjemah';
 
 interface Props { judul: string; tautan: string; label?: string; kecil?: boolean }
 
@@ -22,9 +23,9 @@ export function Bagikan({ judul, tautan, label = 'Bagikan', kecil }: Props) {
     }
     try {
       await navigator.clipboard.writeText(url);
-      setPesan('Tautan disalin');
+      setPesan(t('Tautan disalin'));
     } catch {
-      setPesan('Gagal menyalin. Salin dari bilah alamat.');
+      setPesan(t('Gagal menyalin. Salin dari bilah alamat.'));
     }
   };
   return (

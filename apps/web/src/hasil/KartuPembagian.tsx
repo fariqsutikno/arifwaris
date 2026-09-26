@@ -11,6 +11,7 @@ import { Confetti } from '../ui/Confetti';
 import { KartuTebak, UmpanBalikBenar } from './KartuTebak';
 import { useAtributOrang } from './sorot';
 import { Ikon } from '../ui/Ikon';
+import { t } from '../terjemah';
 
 export interface PengaturanTampil { pecahan: boolean; persen: boolean; bentuk: BentukPecahan }
 
@@ -38,27 +39,27 @@ export function KartuPembagian(props: Props) {
   const { ringkasan, pengaturan, sembunyiNominal, sedangMenebak } = props;
   const [aturTerbuka, setAturTerbuka] = useState(false);
   const atribut = useAtributOrang();
-  const uang = (nilai: bigint) => (sembunyiNominal ? 'Rp ••••••' : formatRupiah(nilai));
+  const uang = (nilai: bigint) => (sembunyiNominal ? t('Rp ••••••') : formatRupiah(nilai));
 
   return (
     <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
-        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? 'Jawabanmu' : 'Kunci jawaban') : 'Pembagian'}</h2>
+        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? 'Jawabanmu' : t('Kunci jawaban')) : 'Pembagian'}</h2>
         <div className="alat-pembagian">
           {props.saatUbahAhliWaris && (
-            <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label="Ubah ahli waris" title="Ubah ahli waris">
+            <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('Ubah ahli waris')} title={t('Ubah ahli waris')}>
               <Ikon nama="pensil" />
             </button>
           )}
           {!sedangMenebak && <>
             <button type="button" className="tombol-ikon" aria-pressed={sembunyiNominal} onClick={props.saatSembunyi}
-              aria-label={sembunyiNominal ? 'Tampilkan nominal' : 'Sembunyikan nominal'} title={sembunyiNominal ? 'Tampilkan nominal' : 'Sembunyikan nominal'}>
+              aria-label={sembunyiNominal ? t('Tampilkan nominal') : t('Sembunyikan nominal')} title={sembunyiNominal ? t('Tampilkan nominal') : t('Sembunyikan nominal')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
                 <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" />
                 {sembunyiNominal && <path d="M4 4l16 16" />}
               </svg>
             </button>
-            <button type="button" className="tombol-ikon" aria-expanded={aturTerbuka} onClick={() => setAturTerbuka(!aturTerbuka)} aria-label="Atur tampilan" title="Atur tampilan">
+            <button type="button" className="tombol-ikon" aria-expanded={aturTerbuka} onClick={() => setAturTerbuka(!aturTerbuka)} aria-label={t('Atur tampilan')} title={t('Atur tampilan')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
                 <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" />
               </svg>
@@ -126,7 +127,7 @@ export function KartuPembagian(props: Props) {
             return (
               <button key={orang.id} type="button" {...pemicu} className={['tidak-dapat', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
                 <span className="titik putus" aria-hidden="true" />
-                <span><b>{orang.nama}</b> tidak dapat bagian. {orang.alasan}</span>
+                <span><b>{orang.nama}</b> {t('tidak dapat bagian.')} {orang.alasan}</span>
               </button>
             );
           })}
@@ -143,24 +144,24 @@ function PanelAtur({ pengaturan, saatUbah }: { pengaturan: PengaturanTampil; saa
   return (
     <div className="panel-atur">
       <div>
-        <h3>Tampilkan di samping nominal</h3>
+        <h3>{t('Tampilkan di samping nominal')}</h3>
         <label className="cek">
           <input type="checkbox" checked={pengaturan.pecahan} onChange={event => saatUbah({ ...pengaturan, pecahan: event.target.checked })} />
-          <span><b>Pecahan</b><small>Bagian dari harta yang dibagi, misal 1/6 = satu dari enam bagian.</small></span>
+          <span><b>{t('Pecahan')}</b><small>Bagian dari harta yang dibagi, misal 1/6 = satu dari enam bagian.</small></span>
         </label>
         <label className="cek">
           <input type="checkbox" checked={pengaturan.persen} onChange={event => saatUbah({ ...pengaturan, persen: event.target.checked })} />
-          <span><b>Persen</b><small>Bagian yang sama dalam persen, misal 1/6 ≈ 16,67%.</small></span>
+          <span><b>{t('Persen')}</b><small>{t('Bagian yang sama dalam persen, misal 1/6 ≈ 16,67%.')}</small></span>
         </label>
       </div>
       <div>
-        <h3 id="judul-bentuk">Bentuk pecahan</h3>
+        <h3 id="judul-bentuk">{t('Bentuk pecahan')}</h3>
         <div className="pilihan-bulat" role="radiogroup" aria-labelledby="judul-bentuk">
           <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sederhana'} onClick={() => saatUbah({ ...pengaturan, bentuk: 'sederhana' })}>
-            <b>Disederhanakan</b><small>1/6 · 13/36, paling ringkas</small>
+            <b>{t('Disederhanakan')}</b><small>{t('1/6 · 13/36, paling ringkas')}</small>
           </button>
           <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sama'} onClick={() => saatUbah({ ...pengaturan, bentuk: 'sama' })}>
-            <b>Penyebut sama</b><small>12/72 · 26/72, gampang dibandingkan</small>
+            <b>{t('Penyebut sama')}</b><small>{t('12/72 · 26/72, gampang dibandingkan')}</small>
           </button>
         </div>
       </div>
@@ -176,12 +177,12 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
     // Dilipat: kebanyakan orang tidak mengubah pembulatan, jangan sampai menutupi penjelasan di bawahnya.
     <details className="kartu-bulat" data-tur="pembulatan">
       <summary className="kepala-bulat">
-        <span className="label-perhatian">Perlu keputusanmu</span>
-        <b>Ada angka yang nggak bulat · dibulatkan ke {PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuan)?.judul ?? formatRupiah(satuan)}</b>
-        <span>Misalnya bagian {contoh?.nama.toLowerCase()} susah dibagi tunai. Buka untuk memilih pembulatan dan melihat sisanya.</span>
+        <span className="label-perhatian">{t('Perlu keputusanmu')}</span>
+        <b>{t('Ada angka yang nggak bulat · dibulatkan ke {satuan}', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuan)?.judul ?? formatRupiah(satuan) })}</b>
+        <span>{t('Misalnya bagian {nama} susah dibagi tunai. Buka untuk memilih pembulatan dan melihat sisanya.', { nama: contoh?.nama.toLowerCase() ?? '' })}</span>
       </summary>
       <div className="isi-bulat">
-        <div className="pilihan-bulat" role="radiogroup" aria-label="Bulatkan bagian tiap orang ke">
+        <div className="pilihan-bulat" role="radiogroup" aria-label={t('Bulatkan bagian tiap orang ke')}>
           {PILIHAN_PEMBULATAN.map(pilihan => (
             <button key={String(pilihan.satuan)} type="button" role="radio" aria-checked={pilihan.satuan === satuan} onClick={() => saatUbah(pilihan.satuan)}>
               <b>{pilihan.judul}</b><small>{pilihan.keterangan}</small>
@@ -189,8 +190,8 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
           ))}
         </div>
         {ringkasan.sisaPembulatan > 0n
-          ? <p>Setelah dibulatkan ke bawah, tersisa <b>{sembunyiNominal ? 'Rp ••••••' : formatRupiah(ringkasan.sisaPembulatan)}</b> yang belum terbagi. Sisa ini tidak dibagi diam-diam; sepakati bersama para ahli waris.</p>
-          : <p>Semua bagian sudah pas, tidak ada sisa.</p>}
+          ? <p>{t('Setelah dibulatkan ke bawah, tersisa')} <b>{sembunyiNominal ? t('Rp ••••••') : formatRupiah(ringkasan.sisaPembulatan)}</b> {t('yang belum terbagi. Sisa ini tidak dibagi diam-diam; sepakati bersama para ahli waris.')}</p>
+          : <p>{t('Semua bagian sudah pas, tidak ada sisa.')}</p>}
       </div>
     </details>
   );

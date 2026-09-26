@@ -5,6 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import type { LangkahTur } from '../konten/tur';
 import { tandaiTurDilihat } from '../preferensi';
 import { Tombol } from '../ui/komponen';
+import { t } from '../terjemah';
 
 interface Props { daftar: LangkahTur[]; kunci: string; sedangBerjalan: boolean; saatSelesai: () => void }
 
@@ -56,7 +57,7 @@ export function Tur({ daftar, kunci, sedangBerjalan, saatSelesai }: Props) {
         <h4>{langkahIni.judul}</h4>
         <p>{langkahIni.isi}</p>
         <div className="tur-aksi">
-          <Tombol varian="ghost" kecil onClick={selesai}>Lewati</Tombol>
+          <Tombol varian="ghost" kecil onClick={selesai}>{t('Lewati')}</Tombol>
           <span className="pengisi" />
           <Tombol varian="sun" kecil data-utama onClick={() => (adalahTerakhir ? selesai() : setIndeks(indeks + 1))}>
             {adalahTerakhir ? 'Selesai' : 'Lanjut'}

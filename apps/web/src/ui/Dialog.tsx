@@ -4,6 +4,7 @@
 
 import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { Tombol } from './komponen';
+import { t } from '../terjemah';
 
 interface Props {
   judul: string;
@@ -31,7 +32,7 @@ export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'B
         <div id={`${id}-isi`} className="isi-konfirmasi">{children}</div>
         {kataKunci && (
           <label className="isian isian-kecil">
-            <span>Ketik <b>{kataKunci}</b> untuk melanjutkan</span>
+            <span>{t('Ketik')} <b>{kataKunci}</b> {t('untuk melanjutkan')}</span>
             <input value={ketikan} onChange={event => setKetikan(event.target.value)} autoComplete="off" spellCheck={false} />
           </label>
         )}

@@ -9,6 +9,7 @@ import type { BabPenjelasan, BarisPenjelasan, KolomBab } from '@waris/explain';
 import { orangDisebut } from '../layar/Penjelasan';
 import type { RingkasanHasil } from './ringkasan';
 import type { PeranSorot, SorotLangkah, UbahBagian } from './sorot';
+import { t } from '../terjemah';
 
 export interface DataPeran {
   idPewaris: IdOrang;
@@ -75,7 +76,7 @@ export function sorotKetukan(bab: BabPenjelasan, ketukan: number | null, data: D
       for (const ke of subjek) {
         const perubahan = bab.kolom === 'ahliWaris' && data.terhalang.has(ke) ? HAJB_HIRMAN : bab.kolom === 'bagian' ? data.nuqshan.get(ke) : undefined;
         if (perubahan && lain.length > 0) ubah.set(ke, perubahan);
-        const label = perubahan === HAJB_HIRMAN ? 'menghalangi' : perubahan ? `mengurangi ${perubahan.dari} → ${perubahan.menjadi}` : 'memengaruhi';
+        const label = perubahan === HAJB_HIRMAN ? 'menghalangi' : perubahan ? t('mengurangi {dari} → {menjadi}', { dari: String(perubahan.dari), menjadi: String(perubahan.menjadi) }) : 'memengaruhi';
         for (const dari of lain) panah.push([dari, ke, label]);
       }
     }

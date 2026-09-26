@@ -7,6 +7,7 @@ import { jenisDari, type Kelompok } from '../checklist';
 import { namaOrang, penyebutAkhir } from '../format';
 import { jalankan, type HasilMunasakhatOk, type HasilOk, type HasilTampil } from '../jalankan';
 import type { Kasus } from '../kasus';
+import { t } from '../terjemah';
 
 type LangkahTirkah = Extract<LangkahJejak, { jenis: 'TIRKAH' }>;
 type Nisbah = Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>['hubungan'];
@@ -80,8 +81,8 @@ export function adaTidakPas(kasus: Kasus): boolean {
 
 // [R09-9] pasangan tidak menerima radd; sisa ke dzawil arham [R14-3], bila tidak ada ke baitul mal [R02-1].
 const TEKS_SISA_KELUAR = {
-  dzawilArham: { judul: 'Sisa untuk dzawil arham', keterangan: 'Suami/istri tidak menerima sisa' },
-  baitulMal: { judul: 'Sisa: dzawil arham / baitul mal', keterangan: 'Untuk dzawil arham bila ada; bila tidak, ke baitul mal' },
+  dzawilArham: { judul: t('Sisa untuk dzawil arham'), keterangan: t('Suami/istri tidak menerima sisa') },
+  baitulMal: { judul: t('Sisa: dzawil arham / baitul mal'), keterangan: t('Untuk dzawil arham bila ada; bila tidak, ke baitul mal') },
 } as const;
 
 // ─── Kasus biasa ──────────────────────────────────────────────────────────────
@@ -108,7 +109,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
       id, nama: namaOrang(graf, hasil.statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham, nominal,
-      keterangan: (baris.fardh ? `Bagian tertentu ${baris.fardh.n}/${baris.fardh.d}` : 'Sisa (ashabah)') + asalInduk(graf, hasil.statusOrang, id, kunci),
+      keterangan: (baris.fardh ? t('Bagian tertentu {fardh}', { fardh: `${baris.fardh.n}/${baris.fardh.d}` }) : t('Sisa (ashabah)')) + asalInduk(graf, hasil.statusOrang, id, kunci),
       ...(baris.fardh ? { fardh: { n: baris.fardh.n, d: baris.fardh.d } } : {}),
       ashabah: !!baris.ashabah,
       ...(alasanPerKelompok.has(baris.kelompok) ? { kodeAlasan: alasanPerKelompok.get(baris.kelompok)! } : {}),
@@ -130,7 +131,7 @@ function asalInduk(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>
   const idInduk = kunci && jenisDari(kunci)?.kunciInduk ? graf.orang[id]?.idAyah : undefined;
   if (!idInduk) return '';
   const induk = graf.orang[idInduk]!;
-  return ` · dari ${namaOrang(graf, statusOrang, idInduk)}${induk.penghubung || induk.statusHidup === 'wafat' ? ' (sudah wafat)' : ''}`;
+  return t(' · dari {nama}', { nama: namaOrang(graf, statusOrang, idInduk) }) + (induk.penghubung || induk.statusHidup === 'wafat' ? t(' (sudah wafat)') : '');
 }
 
 // ─── Munasakhat ───────────────────────────────────────────────────────────────
@@ -147,7 +148,7 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): Ringka
     const kunci = kunciDari(statusOrang[id]);
     return {
       id, nama: namaOrang(graf, statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham,
-      nominal: hasil.nominal[id] ?? 0n, keterangan: `${saham} dari ${hasil.jamiah} saham jami'ah`, ashabah: false,
+      nominal: hasil.nominal[id] ?? 0n, keterangan: t("{saham} dari {jamiah} saham jami'ah", { saham, jamiah: hasil.jamiah }), ashabah: false,
     };
   }));
   const terhalang = menurutKelompok(hasil.daftarLangkah.flatMap(({ hasil: hasilMayit }) => daftarTerhalang(graf, hasilMayit.statusOrang))
@@ -197,15 +198,15 @@ function daftarTerhalang(graf: GrafKeluarga, statusOrang: Record<IdOrang, Status
     if (graf.orang[id]?.penghubung || (status.jenis !== 'mahjub' && status.jenis !== 'mamnu')) return [];
     const kunci = kunciDari(status);
     const alasan = status.jenis === 'mahjub'
-      ? `Terhalang oleh ${status.oleh.map(idLain => namaOrang(graf, statusOrang, idLain)).join(' dan ')}.`
-      : `Tidak mewarisi karena ${ALASAN_MANI[status.mani]}.`;
+      ? t('Terhalang oleh {oleh}.', { oleh: status.oleh.map(idLain => namaOrang(graf, statusOrang, idLain)).join(t(' dan ')) })
+      : t('Tidak mewarisi karena {alasan}.', { alasan: ALASAN_MANI[status.mani] });
     return [{ id, nama: namaOrang(graf, statusOrang, id), kunci, kelompok: kelompokDari(kunci), alasan }];
   });
 }
 
 const ALASAN_MANI: Record<Extract<StatusOrang, { jenis: 'mamnu' }>['mani'], string> = {
-  qatl: 'terlibat dalam penyebab kematian almarhum', ikhtilafDin: 'berbeda agama dengan almarhum', riqq: 'berstatus budak',
-  istibham: 'urutan wafatnya tidak diketahui', daur: 'akan menimbulkan hitungan berputar (daur)',
+  qatl: t('terlibat dalam penyebab kematian almarhum'), ikhtilafDin: t('berbeda agama dengan almarhum'), riqq: t('berstatus budak'),
+  istibham: t('urutan wafatnya tidak diketahui'), daur: t('akan menimbulkan hitungan berputar (daur)'),
 };
 
 function kunciDari(status: StatusOrang | undefined): KunciAhliWaris | undefined {

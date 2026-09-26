@@ -5,6 +5,7 @@
 import type { Kasus } from '../kasus';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { LANGKAH_HASIL, langkahTerjauh } from './wizard/validasi';
+import { t } from '../terjemah';
 
 interface Props {
   kasus: Kasus;
@@ -16,13 +17,13 @@ interface Props {
 
 export const kasusLengkap = (kasus: Kasus | null): boolean => !!kasus && langkahTerjauh(kasus) === LANGKAH_HASIL;
 
-export function KonfirmasiKasusBaru({ kasus, saatLanjut, saatBatal, judul = 'Mulai kasus baru?', labelLanjut = 'Mulai baru' }: Props) {
+export function KonfirmasiKasusBaru({ kasus, saatLanjut, saatBatal, judul = t('Mulai kasus baru?'), labelLanjut = t('Mulai baru') }: Props) {
   return (
     <DialogKonfirmasi judul={judul} labelLanjut={labelLanjut} saatLanjut={saatLanjut} saatBatal={saatBatal}>
       <p>
         {kasusLengkap(kasus)
-          ? 'Kasus yang sekarang sudah tersimpan di Riwayat hitung, jadi bisa kamu buka lagi kapan saja.'
-          : 'Isian yang sekarang tersimpan di Riwayat hitung sebagai data belum lengkap. Kamu bisa melanjutkannya kapan saja.'}
+          ? t('Kasus yang sekarang sudah tersimpan di Riwayat hitung, jadi bisa kamu buka lagi kapan saja.')
+          : t('Isian yang sekarang tersimpan di Riwayat hitung sebagai data belum lengkap. Kamu bisa melanjutkannya kapan saja.')}
       </p>
     </DialogKonfirmasi>
   );

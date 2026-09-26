@@ -9,6 +9,7 @@ import { tautanRiwayat } from '../rute';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Ikon } from '../ui/Ikon';
 import { TombolBukaKasus } from './belajar/TombolBukaKasus';
+import { t } from '../terjemah';
 
 interface Props { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void; ringkas?: boolean }
 
@@ -21,13 +22,13 @@ export function DaftarRiwayat({ kasusSekarang, saatBuka, ringkas }: Props) {
   const hapus = (id?: string) => { hapusRiwayat(id); setDaftar(bacaRiwayat()); };
   if (tampil.length === 0) {
     if (ringkas && daftar.length > 0) {
-      return <p className="keterangan">Tidak ada yang dibuka dua pekan terakhir. <a href={tautanRiwayat()}>Lihat semua riwayat</a></p>;
+      return <p className="keterangan">{t('Tidak ada yang dibuka dua pekan terakhir.')} <a href={tautanRiwayat()}>{t('Lihat semua riwayat')}</a></p>;
     }
     return (
       <div className="kartu-kosong">
         <Ikon nama="riwayat" ukuran={32} />
-        <b>Riwayat hitung masih kosong</b>
-        <p className="keterangan">Tiap kasus yang kamu mulai, dari skenario sendiri, latihan, atau materi, otomatis tersimpan di sini selama 30 hari.</p>
+        <b>{t('Riwayat hitung masih kosong')}</b>
+        <p className="keterangan">{t('Tiap kasus yang kamu mulai, dari skenario sendiri, latihan, atau materi, otomatis tersimpan di sini selama 30 hari.')}</p>
       </div>
     );
   }
@@ -39,22 +40,22 @@ export function DaftarRiwayat({ kasusSekarang, saatBuka, ringkas }: Props) {
             <div className="isi-soal">
               <b>{entri.judul}</b>
               <span className="keterangan">
-                <span className="sumber-riwayat">{labelSumber(entri.sumber)}</span> · {entri.keterangan} · dibuka {waktuRelatif(entri.waktu, sekarang)}
+                <span className="sumber-riwayat">{labelSumber(entri.sumber)}</span> · {entri.keterangan} · {t('dibuka {waktu}', { waktu: waktuRelatif(entri.waktu, sekarang) })}
               </span>
             </div>
             <TombolBukaKasus kasusSekarang={kasusSekarang && keJson(kasusSekarang) !== keJson(entri.kasus) ? kasusSekarang : null}
-              saatBuka={() => saatBuka(entri)}>{entri.lengkap ? 'Buka' : 'Lanjut'}</TombolBukaKasus>
-            <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(entri)} aria-label={`Hapus ${entri.judul}`} title="Hapus"><Ikon nama="sampah" ukuran={18} /></button>
+              saatBuka={() => saatBuka(entri)}>{entri.lengkap ? t('Buka') : t('Lanjut')}</TombolBukaKasus>
+            <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(entri)} aria-label={t('Hapus {judul}', { judul: entri.judul })} title={t('Hapus')}><Ikon nama="sampah" ukuran={18} /></button>
           </li>
         ))}
       </ul>
-      {ringkas ? <a href={tautanRiwayat()}>Lihat semua riwayat ({daftar.length})</a>
-        : <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />Hapus semua riwayat</button>}
+      {ringkas ? <a href={tautanRiwayat()}>{t('Lihat semua riwayat ({jumlah})', { jumlah: daftar.length })}</a>
+        : <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />{t('Hapus semua riwayat')}</button>}
       {akanDihapus && (
-        <DialogKonfirmasi judul={akanDihapus === 'semua' ? 'Hapus semua riwayat?' : 'Hapus kasus ini?'}
-          labelLanjut={akanDihapus === 'semua' ? 'Hapus semua' : 'Hapus'} saatBatal={() => setAkanDihapus(null)}
+        <DialogKonfirmasi judul={akanDihapus === 'semua' ? t('Hapus semua riwayat?') : t('Hapus kasus ini?')}
+          labelLanjut={akanDihapus === 'semua' ? t('Hapus semua') : t('Hapus')} saatBatal={() => setAkanDihapus(null)}
           saatLanjut={() => { setAkanDihapus(null); hapus(akanDihapus === 'semua' ? undefined : akanDihapus.id); }}>
-          <p>{akanDihapus === 'semua' ? `${daftar.length} kasus` : `"${akanDihapus.judul}"`} akan dihapus dari perangkat ini dan tidak bisa dikembalikan.</p>
+          <p>{akanDihapus === 'semua' ? t('{jumlah} kasus', { jumlah: daftar.length }) : `"${akanDihapus.judul}"`} {t('akan dihapus dari perangkat ini dan tidak bisa dikembalikan.')}</p>
         </DialogKonfirmasi>
       )}
     </>
@@ -64,8 +65,8 @@ export function DaftarRiwayat({ kasusSekarang, saatBuka, ringkas }: Props) {
 export function HalamanRiwayat(props: Omit<Props, 'ringkas'>) {
   return (
     <main className="halaman tumpuk">
-      <h1>Riwayat hitung</h1>
-      <p className="keterangan">Tersimpan di perangkat ini selama 30 hari sejak terakhir dibuka.</p>
+      <h1>{t('Riwayat hitung')}</h1>
+      <p className="keterangan">{t('Tersimpan di perangkat ini selama 30 hari sejak terakhir dibuka.')}</p>
       <DaftarRiwayat {...props} />
     </main>
   );

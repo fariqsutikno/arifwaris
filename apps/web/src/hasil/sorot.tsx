@@ -5,12 +5,13 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import type { IdOrang } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
+import { t } from '../terjemah';
 
 export type PeranSorot = 'pewaris' | 'ahliWaris' | 'penyebab' | 'mahjub' | 'bukan' | 'fardh' | 'ashabah';
 
 export const LABEL_PERAN_SOROT: Record<PeranSorot, string> = {
-  pewaris: 'Pewaris', ahliWaris: 'Ahli waris', penyebab: 'Penyebab', mahjub: 'Terhalang',
-  bukan: 'Bukan ahli waris', fardh: 'Fardh (bagian tertentu)', ashabah: 'Ashabah (sisa)',
+  pewaris: 'Pewaris', ahliWaris: t('Ahli waris'), penyebab: 'Penyebab', mahjub: 'Terhalang',
+  bukan: t('Bukan ahli waris'), fardh: t('Fardh (bagian tertentu)'), ashabah: t('Ashabah (sisa)'),
 };
 
 /** Hajb sebagai perubahan: bagian semula dicoret, diganti bagian baru (mis. 1/3 → 1/6, ahli waris → terhalang). */
@@ -72,7 +73,7 @@ export function LegendaSorot() {
   const daftarPeran = [...new Set(langkah?.peran.values() ?? [])];
   if (daftarPeran.length === 0) return null;
   return (
-    <div className="legenda-sorot" aria-label="Arti warna sorotan">
+    <div className="legenda-sorot" aria-label={t('Arti warna sorotan')}>
       {daftarPeran.map(peran => <span key={peran}><i className={`titik-sorot sorot-${peran}`} />{LABEL_PERAN_SOROT[peran]}</span>)}
     </div>
   );

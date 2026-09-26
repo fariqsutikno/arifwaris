@@ -14,6 +14,7 @@ import { tautanLatihan } from '../rute';
 import { HeroMini } from '../ui/Hero';
 import { Ikon } from '../ui/Ikon';
 import { DaftarRiwayat } from './Riwayat';
+import { t } from '../terjemah';
 
 interface Props {
   kasusTersimpan: Kasus | null;
@@ -33,7 +34,7 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
     if (!file) return;
     const hasil = dariJson(await file.text());
     if (hasil.berhasil) saatImpor(hasil.kasus);
-    else setPesan(`File-nya nggak bisa dibuka: ${hasil.pesan}`);
+    else setPesan(t('File-nya nggak bisa dibuka: {pesan}', { pesan: hasil.pesan }));
   };
   // Kasus yang sedang ada sudah tercatat di riwayat, jadi aman ditinggal tanpa dialog.
   const mulaiBaru = () => {
@@ -48,17 +49,17 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
 
       <div className="kartu-pilihan-deret pilihan-mulai">
         <button type="button" className="kartu-pilihan kecil pilihan-utama" onClick={mulaiBaru}>
-          <span className="judul-pilihan"><Ikon nama="tambah" ukuran={22} />Skenario baru</span>
-          <small>{TEKS_HITUNG.mulai.baru}{kasusTersimpan ? ' Kasus sekarang tetap tersimpan di riwayat.' : ''}</small>
+          <span className="judul-pilihan"><Ikon nama="tambah" ukuran={22} />{t('Skenario baru')}</span>
+          <small>{TEKS_HITUNG.mulai.baru}{kasusTersimpan ? t(' Kasus sekarang tetap tersimpan di riwayat.') : ''}</small>
         </button>
         {kasusTersimpan && terakhir && (
           <button type="button" className="kartu-pilihan kecil" onClick={() => saatLanjut(kasusTersimpan)}>
-            <span className="judul-pilihan"><Ikon nama="riwayat" ukuran={22} />Lanjut kasus terakhir</span>
+            <span className="judul-pilihan"><Ikon nama="riwayat" ukuran={22} />{t('Lanjut kasus terakhir')}</span>
             <small>{terakhir.judul} · {terakhir.keterangan}</small>
           </button>
         )}
         <button type="button" className="kartu-pilihan kecil" onClick={() => inputFile.current?.click()}>
-          <span className="judul-pilihan"><Ikon nama="berkas" ukuran={22} />Impor file</span>
+          <span className="judul-pilihan"><Ikon nama="berkas" ukuran={22} />{t('Impor file')}</span>
           <small>{TEKS_HITUNG.mulai.impor}</small>
         </button>
         <input ref={inputFile} type="file" accept="application/json,.json" hidden onChange={event => void saatPilihFile(event.target.files?.[0])} />
@@ -68,7 +69,7 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
       <PintasanSoal saatKerjakan={saatKerjakanSoal} />
 
       <section className="tumpuk-rapat riwayat-beranda" aria-labelledby="judul-riwayat">
-        <h2 id="judul-riwayat" className="tanya-tujuan">Riwayat hitung</h2>
+        <h2 id="judul-riwayat" className="tanya-tujuan">{t('Riwayat hitung')}</h2>
         <DaftarRiwayat kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} ringkas />
       </section>
     </main>
@@ -83,21 +84,21 @@ function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => vo
   return (
     <section className="pintasan-soal tumpuk-rapat" aria-labelledby="judul-pintasan-soal">
       <div>
-        <h2 id="judul-pintasan-soal" className="tanya-tujuan">Mau belajar? Langsung kerjakan soal</h2>
-        <p className="keterangan">Kasusnya sudah disiapkan. Kamu tinggal menebak pembagiannya, lalu pelajari cara menghitungnya langkah demi langkah.</p>
+        <h2 id="judul-pintasan-soal" className="tanya-tujuan">{t('Mau belajar? Langsung kerjakan soal')}</h2>
+        <p className="keterangan">{t('Kasusnya sudah disiapkan. Kamu tinggal menebak pembagiannya, lalu pelajari cara menghitungnya langkah demi langkah.')}</p>
       </div>
       <ul className="daftar-polos grid-pintasan-soal">
         {daftar.map(soal => (
           <li key={soal.kode}>
             <button type="button" className="kartu-pilihan kecil kartu-soal-pintas" onClick={() => saatKerjakan(soal)}>
-              <span className={`tingkat tingkat-${soal.tingkat}`}>{soal.tingkat}</span>
+              <span className={`tingkat tingkat-${soal.tingkat}`}>{t(soal.tingkat)}</span>
               <b>{soal.judul}</b>
-              <span className="aksi-soal-pintas">Kerjakan <Ikon nama="kembali" ukuran={14} /></span>
+              <span className="aksi-soal-pintas">{t('Kerjakan')} <Ikon nama="kembali" ukuran={14} /></span>
             </button>
           </li>
         ))}
       </ul>
-      <a className="aw-btn aw-btn-secondary aw-btn-sm tombol-semua-soal" href={tautanLatihan('hitung')}>Lihat semua soal latihan</a>
+      <a className="aw-btn aw-btn-secondary aw-btn-sm tombol-semua-soal" href={tautanLatihan('hitung')}>{t('Lihat semua soal latihan')}</a>
     </section>
   );
 }

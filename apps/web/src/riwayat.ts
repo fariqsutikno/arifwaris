@@ -9,6 +9,7 @@ import { formatRupiah } from './format';
 import { dariJson, keJson, type Kasus } from './kasus';
 import { LABEL_SEHARI } from './konten/ahliWaris';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
+import { angka, bahasaArab, t } from './terjemah';
 
 const KUNCI_RIWAYAT = 'arif-waris:riwayat';
 const HARI = 24 * 60 * 60 * 1000;
@@ -52,10 +53,10 @@ export const hapusRiwayat = (id?: string): void => simpanTersimpan(id ? bacaTers
 
 export function labelSumber(sumber: SumberRiwayat): string {
   switch (sumber.jenis) {
-    case 'sendiri': return 'Skenario pribadi';
-    case 'impor': return 'Impor file';
-    case 'materi': return 'Contoh materi';
-    case 'latihan': return `Soal latihan ${sumber.kode}`;
+    case 'sendiri': return t('Skenario pribadi');
+    case 'impor': return t('Impor file');
+    case 'materi': return t('Contoh materi');
+    case 'latihan': return t('Soal latihan {kode}', { kode: sumber.kode });
   }
 }
 
@@ -64,10 +65,10 @@ export function ringkasKasus(kasus: Kasus): { judul: string; keterangan: string;
   const isian = hitungIsian(kasus.graf, kasus.graf.idPewaris);
   const judul = Object.entries(isian).map(([kunci, daftar]) => {
     const label = LABEL_SEHARI[kunci as KunciAhliWaris] ?? jenisDari(kunci as KunciAhliWaris)?.label ?? kunci;
-    return daftar!.length > 1 ? `${daftar!.length} ${label}` : label;
-  }).join(', ') || 'Belum ada ahli waris';
-  if (langkahTerjauh(kasus) !== LANGKAH_HASIL) return { judul, keterangan: 'Data belum lengkap', lengkap: false };
-  const munasakhat = kasus.urutanWafat.length > 0 ? ' · ada yang wafat sebelum pembagian' : '';
+    return daftar!.length > 1 ? `${angka(String(daftar!.length))} ${label}` : label;
+  }).join(t(', ')) || t('Belum ada ahli waris');
+  if (langkahTerjauh(kasus) !== LANGKAH_HASIL) return { judul, keterangan: t('Data belum lengkap'), lengkap: false };
+  const munasakhat = kasus.urutanWafat.length > 0 ? t(' · ada yang wafat sebelum pembagian') : '';
   return { judul, keterangan: `${formatRupiah(kasus.tirkah.kotor)}${munasakhat}`, lengkap: true };
 }
 
@@ -91,10 +92,12 @@ function simpanTersimpan(daftar: EntriTersimpan[]): void {
 /** "baru saja", "5 menit lalu", "kemarin", atau tanggal; hanya untuk tampilan. */
 export function waktuRelatif(waktu: number, sekarang: number): string {
   const menit = Math.floor((sekarang - waktu) / 60_000);
-  if (menit < 1) return 'baru saja';
-  const rtf = new Intl.RelativeTimeFormat('id', { numeric: 'auto' });
+  if (menit < 1) return t('baru saja');
+  // Bahasa Arab: format bawaan Intl dengan angka Arab (٠١٢).
+  const lokal = bahasaArab() ? 'ar-u-nu-arab' : 'id';
+  const rtf = new Intl.RelativeTimeFormat(lokal, { numeric: 'auto' });
   if (menit < 60) return rtf.format(-menit, 'minute');
   if (menit < 60 * 24) return rtf.format(-Math.round(menit / 60), 'hour');
   if (menit < 60 * 24 * 7) return rtf.format(-Math.round(menit / (60 * 24)), 'day');
-  return new Date(waktu).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+  return new Date(waktu).toLocaleDateString(bahasaArab() ? 'ar-u-nu-arab' : 'id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
 }

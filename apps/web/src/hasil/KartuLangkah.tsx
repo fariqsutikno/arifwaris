@@ -16,6 +16,7 @@ import { kolomTerbukaSampai, sorotKetukan, type DataPeran } from './ketukan';
 import { durasiPutaran, peragaKetukan, tundaSelDari } from './peraga';
 import type { RingkasanHasil } from './ringkasan';
 import { useSorot } from './sorot';
+import { angka, t } from '../terjemah';
 
 interface Props {
   daftarBab: BabBerjudul[];
@@ -33,8 +34,8 @@ const geraknyaDikurangi = () => typeof window !== 'undefined' && !!window.matchM
 
 /** Deret langkah tanpa scrollbar: tepi yang masih menyimpan pill memudar, tanda bahwa deret bisa digeser. */
 const tandaiTepi = (wadah: HTMLElement) => {
-  wadah.dataset.kiri = String(wadah.scrollLeft > 1);
-  wadah.dataset.kanan = String(wadah.scrollLeft + wadah.clientWidth < wadah.scrollWidth - 1);
+  wadah.dataset.kiri = angka(String(wadah.scrollLeft > 1));
+  wadah.dataset.kanan = angka(String(wadah.scrollLeft + wadah.clientWidth < wadah.scrollWidth - 1));
 };
 
 /** "4b" untuk baris kedua langkah 4; langkah yang hanya satu baris cukup "4". */
@@ -118,7 +119,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   const aturAnimasi = (nyala: boolean) => { setAnimasi(nyala); setDijeda(false); setPoin(0); putarLagi(); };
 
   const jalurLangkah = (
-    <nav className="jalur-langkah" aria-label="Langkah" ref={jalur} onScroll={event => tandaiTepi(event.currentTarget)}>
+    <nav className="jalur-langkah" aria-label={t('Langkah')} ref={jalur} onScroll={event => tandaiTepi(event.currentTarget)}>
       {daftarBab.map((bab, nomor) => (
         <button key={nomor} type="button" aria-current={nomor === indeks ? 'step' : undefined}
           className={dibaca.has(nomor) && nomor !== indeks ? 'kelar' : undefined} onClick={() => keLangkah(nomor)}>
@@ -129,31 +130,31 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   );
   const navigasi = (
     <div className="nav-langkah">
-      <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" disabled={indeks === 0} onClick={() => keLangkah(indeks - 1)}>← Sebelumnya</button>
+      <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" disabled={indeks === 0} onClick={() => keLangkah(indeks - 1)}>{t('← Sebelumnya')}</button>
       <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={() => keLangkah(indeks + 1)}>
-        {indeks === daftarBab.length - 1 ? 'Selesai' : 'Berikutnya →'}
+        {indeks === daftarBab.length - 1 ? 'Selesai' : t('Berikutnya →')}
       </button>
     </div>
   );
   const navigasiFokus = (
     <div className="nav-langkah nav-fokus">
-      <button type="button" className="aw-btn aw-btn-ghost" disabled={!selesai && indeks === 0 && (poin === 0 || !animasi)} onClick={kembali}>← Kembali</button>
+      <button type="button" className="aw-btn aw-btn-ghost" disabled={!selesai && indeks === 0 && (poin === 0 || !animasi)} onClick={kembali}>{t('← Kembali')}</button>
       {selesai
-        ? <button type="button" className="aw-btn aw-btn-primary" onClick={() => setFokus(false)}>Tutup mode fokus</button>
-        : <button type="button" className="aw-btn aw-btn-primary" onClick={lanjut}>Lanjut →</button>}
+        ? <button type="button" className="aw-btn aw-btn-primary" onClick={() => setFokus(false)}>{t('Tutup mode fokus')}</button>
+        : <button type="button" className="aw-btn aw-btn-primary" onClick={lanjut}>{t('Lanjut →')}</button>}
     </div>
   );
   const kontrolFokus = (
     <>
-      <button type="button" role="switch" aria-checked={animasi} className="saklar-animasi" onClick={() => aturAnimasi(!animasi)} title={animasi ? 'Matikan animasi' : 'Nyalakan animasi'}>
-        <span className="rel-saklar" aria-hidden="true" />Animasi
+      <button type="button" role="switch" aria-checked={animasi} className="saklar-animasi" onClick={() => aturAnimasi(!animasi)} title={animasi ? t('Matikan animasi') : t('Nyalakan animasi')}>
+        <span className="rel-saklar" aria-hidden="true" />{t('Animasi')}
       </button>
       {animasi && (
-        <button type="button" className="tombol-ikon" onClick={() => setDijeda(!dijeda)} aria-label={dijeda ? 'Putar animasi' : 'Jeda animasi'} title={dijeda ? 'Putar' : 'Jeda'}>
+        <button type="button" className="tombol-ikon" onClick={() => setDijeda(!dijeda)} aria-label={dijeda ? t('Putar animasi') : t('Jeda animasi')} title={dijeda ? t('Putar') : t('Jeda')}>
           <Ikon nama={dijeda ? 'putar' : 'jeda'} />
         </button>
       )}
-      <button type="button" className="tombol-ikon" aria-pressed={laciTerbuka} onClick={() => setLaciTerbuka(!laciTerbuka)} aria-label="Daftar langkah" title="Daftar langkah">
+      <button type="button" className="tombol-ikon" aria-pressed={laciTerbuka} onClick={() => setLaciTerbuka(!laciTerbuka)} aria-label={t('Daftar langkah')} title={t('Daftar langkah')}>
         <Ikon nama="daftar" />
       </button>
     </>
@@ -165,26 +166,25 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   return (
     <section className="kartu-sisi urut-langkah" data-tur="langkah">
       <button type="button" className="kepala-lipat" aria-expanded={terbuka} onClick={() => setTerbuka(!terbuka)}>
-        <h2>{adalahBelajar ? 'Pembahasan langkah demi langkah' : 'Pelajari langkah perhitungan'}</h2>
-        {terkunci && <span className="lencana-kunci"><Ikon nama="kunci" ukuran={14} /> Terkunci</span>}
+        <h2>{adalahBelajar ? t('Pembahasan langkah demi langkah') : t('Pelajari langkah perhitungan')}</h2>
+        {terkunci && <span className="lencana-kunci"><Ikon nama="kunci" ukuran={14} /> {t('Terkunci')}</span>}
         <span className="panah-lipat" aria-hidden="true" />
       </button>
       {terbuka && (terkunci ? (
         <div className="isi-kartu-sisi">
           <div className="langkah-terkunci">
-            <b>Jawab soalnya dulu</b>
-            <p>Langkah perhitungan terbuka setelah jawabanmu di kartu <i>Jawabanmu</i> benar, atau setelah kamu membuka jawabannya.
-              Coba hitung sendiri dulu, lalu cocokkan caranya di sini.</p>
+            <b>{t('Jawab soalnya dulu')}</b>
+            <p>{t('Langkah perhitungan terbuka setelah jawabanmu di kartu')} <i>{t('Jawabanmu')}</i> {t('benar, atau setelah kamu membuka jawabannya. Coba hitung sendiri dulu, lalu cocokkan caranya di sini.')}</p>
           </div>
         </div>
       ) : (
         <div className="isi-kartu-sisi">
           <div className="alat-langkah">
-            <div className="tab-kecil" role="group" aria-label="Cara tampil">
-              <button type="button" aria-pressed={mode === 'satu'} onClick={() => setMode('satu')}>Langkah demi langkah</button>
-              <button type="button" aria-pressed={mode === 'semua'} onClick={() => setMode('semua')}>Tampilkan semua</button>
+            <div className="tab-kecil" role="group" aria-label={t('Cara tampil')}>
+              <button type="button" aria-pressed={mode === 'satu'} onClick={() => setMode('satu')}>{t('Langkah demi langkah')}</button>
+              <button type="button" aria-pressed={mode === 'semua'} onClick={() => setMode('semua')}>{t('Tampilkan semua')}</button>
             </div>
-            <TombolIkon label="Mode fokus" onClick={bukaFokus}><Ikon nama="fokus" /></TombolIkon>
+            <TombolIkon label={t('Mode fokus')} onClick={bukaFokus}><Ikon nama="fokus" /></TombolIkon>
           </div>
           {mode === 'semua'
             ? daftarBab.map((bab, nomor) => <KartuSatuLangkah key={nomor} nomor={nomor} total={daftarBab.length} babBerjudul={bab} ketukan={null} />)
@@ -194,7 +194,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
       {fokus && !terkunci && babIni && (
         <FokusLangkah judul={judulFokus} nomor={indeks} kolom={babIni.bab.kolom} kanvas={kanvas} saatTutup={() => setFokus(false)}
           kontrol={kontrolFokus} dijeda={dijeda && ketukan !== null} navigasi={navigasiFokus}
-          atasTabel={<PanelHitung key={putaran} posisi={`Langkah ${indeks + 1} dari ${daftarBab.length}`} label={labelSubLangkah(indeks, ketukan, jumlahPoin)} judul={judulFokus} selesai={selesai}
+          atasTabel={<PanelHitung key={putaran} posisi={t('Langkah {nomor} dari {total}', { nomor: indeks + 1, total: daftarBab.length })} label={labelSubLangkah(indeks, ketukan, jumlahPoin)} judul={judulFokus} selesai={selesai}
             baris={ketukan === null ? null : babIni.bab.daftarBaris[ketukan] ?? null} semuaBaris={babIni.bab.daftarBaris} peraga={peraga} />}
           laci={laciTerbuka ? <>{jalurLangkah}{langkahIni(ketukan, baris => { setPoin(baris); setSelesai(false); putarLagi(); })}</> : null} />
       )}
@@ -231,7 +231,7 @@ function KartuSatuLangkah({ nomor, total, babBerjudul, ketukan, saatPilihBaris }
     ketukan === null ? undefined : nomorBaris === ketukan ? 'ketukan-kini' : nomorBaris > ketukan ? 'ketukan-nanti' : 'ketukan-lewat';
   const baris = ({ baris: isi, nomor: nomorBaris }: { baris: BarisPenjelasan; nomor: number }) => (
     <li key={nomorBaris} className={kelasBaris(nomorBaris)} onClick={saatPilihBaris ? () => saatPilihBaris(nomorBaris) : undefined}>
-      {kelasBaris(nomorBaris) === 'ketukan-nanti' ? <span className="baris-rahasia" aria-label="belum dibahas">?</span> : <Baris baris={isi} />}
+      {kelasBaris(nomorBaris) === 'ketukan-nanti' ? <span className="baris-rahasia" aria-label={t('belum dibahas')}>?</span> : <Baris baris={isi} />}
     </li>
   );
   return (
@@ -241,7 +241,7 @@ function KartuSatuLangkah({ nomor, total, babBerjudul, ketukan, saatPilihBaris }
       <div className="kelompok-langkah">
         {kelompokkan(bab.daftarBaris).map((kelompok, urutan) => kelompok.jenis === 'perhatian' ? (
           <div key={urutan} className={['kotak-perhatian', kelasBaris(kelompok.isi[0]!.nomor)].filter(Boolean).join(' ')} role="note">
-            <p className="label-perhatian">Perlu diperhatikan</p>
+            <p className="label-perhatian">{t('Perlu diperhatikan')}</p>
             <p>{kelasBaris(kelompok.isi[0]!.nomor) === 'ketukan-nanti' ? '?' : <Baris baris={kelompok.isi[0]!.baris} />}</p>
           </div>
         ) : (
@@ -254,7 +254,7 @@ function KartuSatuLangkah({ nomor, total, babBerjudul, ketukan, saatPilihBaris }
       </div>
       {refs.length > 0 && (
         <div className="kenapa">
-          <button type="button" aria-expanded={kenapaTerbuka} onClick={() => setKenapaTerbuka(!kenapaTerbuka)}>Kenapa begitu?</button>
+          <button type="button" aria-expanded={kenapaTerbuka} onClick={() => setKenapaTerbuka(!kenapaTerbuka)}>{t('Kenapa begitu?')}</button>
           {kenapaTerbuka && <div className="isi-kenapa"><Dalil daftarKode={refs} /></div>}
         </div>
       )}

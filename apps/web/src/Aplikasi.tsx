@@ -5,7 +5,8 @@ import type { SoalHitung } from '@waris/content';
 import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
-import { bacaTujuan, catatAktivitas, simpanCatatan, simpanTujuan, sudahLihatTur } from './preferensi';
+import { bacaTujuan, catatAktivitas, simpanCatatan, simpanTujuan, sudahLihatTur, bacaBahasa } from './preferensi';
+import { t } from './terjemah';
 import { Tur } from './tur/Tur';
 import { AwalHitung } from './layar/AwalHitung';
 import { Beranda } from './layar/Beranda';
@@ -56,6 +57,13 @@ export function Aplikasi() {
     if (keadaan.layar !== 'awal' && keadaan.kasus) catatRiwayat(idSesi, keadaan.kasus, Date.now(), sumberSesi);
   }, [keadaan.layar, keadaan.kasus, idSesi, sumberSesi]);
 
+  // Bahasa 'ar': seluruh halaman kanan-ke-kiri. Ganti bahasa memuat ulang halaman (Kepala), jadi cukup dipasang sekali.
+  useEffect(() => {
+    const arab = bacaBahasa() === 'ar';
+    document.documentElement.lang = arab ? 'ar' : 'id';
+    document.documentElement.dir = arab ? 'rtl' : 'ltr';
+  }, []);
+
   const { kasus, layar } = keadaan;
   const rute = useRute();
   const diKalkulator = rute.halaman === 'kalkulator';
@@ -63,11 +71,11 @@ export function Aplikasi() {
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
   usePenjaga(diKalkulator && !!kasus && layar !== 'awal', {
     berlaku: href => !['kalkulator', 'riwayat'].includes(bacaRute(href).halaman),
-    judul: 'Tinggalkan ArifLab?',
-    isi: <p>{soalAktif ? 'Soal ini bisa kamu buka lagi kapan saja dari Latihan.'
-      : 'Kasusmu tersimpan di Riwayat hitung. Buka menu ArifLab kapan saja untuk melanjutkan.'}</p>,
-    labelTetap: 'Tetap di sini',
-    labelPergi: 'Pindah',
+    judul: t('Tinggalkan ArifLab?'),
+    isi: <p>{soalAktif ? t('Soal ini bisa kamu buka lagi kapan saja dari Latihan.')
+      : t('Kasusmu tersimpan di Riwayat hitung. Buka menu ArifLab kapan saja untuk melanjutkan.')}</p>,
+    labelTetap: t('Tetap di sini'),
+    labelPergi: t('Pindah'),
   });
   const [turBerjalan, setTurBerjalan] = useState(false);
   // Kasus lengkap dibuka di layar hasil, yang belum lengkap di langkah wizard pertama yang belum terisi.

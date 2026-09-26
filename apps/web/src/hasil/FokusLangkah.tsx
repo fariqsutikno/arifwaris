@@ -12,6 +12,7 @@ import { Baris } from '../layar/Penjelasan';
 import { Ikon } from '../ui/Ikon';
 import { JEDA_BAGIAN, type Peraga } from './peraga';
 import { LegendaSorot, useSorot, type PeranSorot } from './sorot';
+import { angka, panah, t } from '../terjemah';
 
 interface Props {
   judul: string;
@@ -63,28 +64,28 @@ export function FokusLangkah({ judul, nomor, kolom, kanvas, saatTutup, kontrol, 
 
   return createPortal(
     <div className={['fokus-langkah', dijeda && 'dijeda', laci && 'laci-terbuka'].filter(Boolean).join(' ')} role="dialog" aria-modal="true"
-      aria-label={`Mode fokus: ${judul}`} ref={wadah} onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
+      aria-label={t('Mode fokus: {judul}', { judul })} ref={wadah} onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
       <header className="kepala-fokus">
-        <button type="button" className="tombol-ikon" data-tutup onClick={saatTutup} aria-label="Tutup" title="Tutup"><Ikon nama="salah" /></button>
-        <p><b>Mode fokus</b></p>
+        <button type="button" className="tombol-ikon" data-tutup onClick={saatTutup} aria-label={t('Tutup')} title={t('Tutup')}><Ikon nama="salah" /></button>
+        <p><b>{t('Mode fokus')}</b></p>
         <LegendaSorot />
         <div className="kontrol-fokus">
           {kontrol}
-          <button type="button" className="tombol-ikon" onClick={layarPenuh} aria-label="Layar penuh" title="Layar penuh"><Ikon nama="perbesar" /></button>
+          <button type="button" className="tombol-ikon" onClick={layarPenuh} aria-label={t('Layar penuh')} title={t('Layar penuh')}><Ikon nama="perbesar" /></button>
         </div>
       </header>
       <div className="kanvas-fokus">
-        <section className="fokus-pohon" aria-label="Pohon keluarga">{kanvas.pohon}</section>
-        <section className="fokus-tabel" aria-label="Tabel faraidh">{atasTabel}<div className="wadah-tabel">{kanvas.tabel}</div></section>
-        {laci && <aside className="laci-langkah" aria-label="Daftar langkah">{laci}</aside>}
+        <section className="fokus-pohon" aria-label={t('Pohon keluarga')}>{kanvas.pohon}</section>
+        <section className="fokus-tabel" aria-label={t('Tabel faraidh')}>{atasTabel}<div className="wadah-tabel">{kanvas.tabel}</div></section>
+        {laci && <aside className="laci-langkah" aria-label={t('Daftar langkah')}>{laci}</aside>}
       </div>
       <div className="kaki-fokus">{navigasi}</div>
       {/* Mode fokus butuh kanvas dan panel berdampingan; di layar HP ditutup layar penuh ini (lewat CSS, jadi ikut saat jendela dikecilkan). */}
       <div className="fokus-tak-muat" role="alert">
-        <button type="button" className="tombol-ikon" onClick={saatTutup} aria-label="Tutup" title="Tutup"><Ikon nama="salah" /></button>
+        <button type="button" className="tombol-ikon" onClick={saatTutup} aria-label={t('Tutup')} title={t('Tutup')}><Ikon nama="salah" /></button>
         <Ikon nama="fokus" ukuran={48} />
-        <b>Mode fokus tidak tersedia di mobile</b>
-        <p>Gunakan desktop untuk membuka mode fokus.</p>
+        <b>{t('Mode fokus tidak tersedia di mobile')}</b>
+        <p>{t('Gunakan desktop untuk membuka mode fokus.')}</p>
       </div>
     </div>,
     document.body,
@@ -101,8 +102,8 @@ export function PanelHitung({ posisi, label, judul, baris, semuaBaris, peraga, s
   if (selesai) {
     return (
       <div className="panel-hitung panel-hitung-selesai" aria-live="polite">
-        <p className="judul-panel-hitung">Selesai!</p>
-        <p className="narasi-hitung">Kamu sudah mengikuti seluruh pembagian, langkah demi langkah. Tabelnya sekarang lengkap.</p>
+        <p className="judul-panel-hitung">{t('Selesai!')}</p>
+        <p className="narasi-hitung">{t('Kamu sudah mengikuti seluruh pembagian, langkah demi langkah. Tabelnya sekarang lengkap.')}</p>
       </div>
     );
   }
@@ -124,35 +125,35 @@ function TampilPeraga({ peraga }: { peraga: Peraga }) {
     case 'penyebut':
       return (
         <div className="peraga">
-          <span className="label-peraga" style={tunda(0)}>Penyebutnya:</span>
-          {peraga.daftarPenyebut.map((penyebut, urutan) => <span key={urutan} className="kotak-angka" style={tunda(urutan + 1)}>{String(penyebut)}</span>)}
+          <span className="label-peraga" style={tunda(0)}>{t('Penyebutnya:')}</span>
+          {peraga.daftarPenyebut.map((penyebut, urutan) => <span key={urutan} className="kotak-angka" style={tunda(urutan + 1)}>{angka(String(penyebut))}</span>)}
         </div>
       );
     case 'nisab': {
       const { a, b, hubungan, fpb, hasil } = peraga.langkah;
       const [kecil, besar] = a < b ? [a, b] : [b, a];
-      const [keterangan, rumus] = hubungan === 'tamatsul' ? [`${a} = ${b}`, `ambil salah satu`]
-        : hubungan === 'tadakhul' ? [`${besar} ÷ ${kecil} = ${besar / kecil}, habis`, `ambil yang besar`]
-          : hubungan === 'tawafuq' ? [`FPB ${fpb}`, `${a} × (${b} ÷ ${fpb})`]
-            : [`FPB 1`, `${a} × ${b}`];
+      const [keterangan, rumus] = hubungan === 'tamatsul' ? [`${a} = ${b}`, t('ambil salah satu')]
+        : hubungan === 'tadakhul' ? [t('{besar} ÷ {kecil} = {hasil}, habis', { besar, kecil, hasil: besar / kecil }), t('ambil yang besar')]
+          : hubungan === 'tawafuq' ? [t('FPB {fpb}', { fpb }), `${a} × (${b} ÷ ${fpb})`]
+            : [t('FPB 1'), `${a} × ${b}`];
       return (
         <div className="peraga">
-          <span className="kotak-angka" style={tunda(0)}>{String(a)}</span><span className="label-peraga" style={tunda(0)}>dan</span>
-          <span className="kotak-angka" style={tunda(0)}>{String(b)}</span>
-          <span className="label-peraga" style={tunda(1)}>→ {keterangan} ({hubungan})</span>
+          <span className="kotak-angka" style={tunda(0)}>{angka(String(a))}</span><span className="label-peraga" style={tunda(0)}>{t('dan')}</span>
+          <span className="kotak-angka" style={tunda(0)}>{angka(String(b))}</span>
+          <span className="label-peraga" style={tunda(1)}>{panah()} {keterangan} ({hubungan})</span>
           <span className="rumus-peraga" style={tunda(2)}>{rumus} =</span>
-          <span className="kotak-angka kotak-hasil" style={tunda(3)}>{String(hasil)}</span>
+          <span className="kotak-angka kotak-hasil" style={tunda(3)}>{angka(String(hasil))}</span>
         </div>
       );
     }
     case 'kali':
       return (
         <div className="peraga peraga-kali">
-          <p style={tunda(0)}>Ashl masalah = <span className="kotak-angka kotak-hasil">{String(peraga.ashl)}</span></p>
+          <p style={tunda(0)}>{t('Ashl masalah')} = <span className="kotak-angka kotak-hasil">{angka(String(peraga.ashl))}</span></p>
           {peraga.daftar.map((baris, urutan) => (
             <p key={urutan} style={tunda(urutan + 1)}>
               <span className="nama-peraga">{baris.nama}</span> <span className="rumus-peraga">{baris.rumus} =</span>{' '}
-              <span className="kotak-angka" style={tunda(urutan + 1, JEDA_BAGIAN / 3)}>{String(baris.hasil)}</span>
+              <span className="kotak-angka" style={tunda(urutan + 1, JEDA_BAGIAN / 3)}>{angka(String(baris.hasil))}</span>
             </p>
           ))}
         </div>
@@ -163,10 +164,10 @@ function TampilPeraga({ peraga }: { peraga: Peraga }) {
       const pas = nominal * penyebut === saham * harta;
       return (
         <p className="rumus-hitung">
-          <span style={tunda(0)}>{String(saham)}/{String(penyebut)}</span>
+          <span style={tunda(0)}>{angka(String(saham))}/{angka(String(penyebut))}</span>
           <span style={tunda(1)}> × {formatRupiah(harta)}</span>
           <b style={tunda(2)}> {pas ? '=' : '≈'} <span className="kotak-angka kotak-hasil">{formatRupiah(nominal)}</span></b>
-          {!pas && <small style={tunda(3)}>dibulatkan ke bawah</small>}
+          {!pas && <small style={tunda(3)}>{t('dibulatkan ke bawah')}</small>}
         </p>
       );
     }

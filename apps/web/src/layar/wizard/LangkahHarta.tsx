@@ -7,6 +7,7 @@ import { KATEGORI_HARTA, type Kasus, type KategoriHarta } from '../../kasus';
 import { KATEGORI_HARTA_TEKS, TEKS_HARTA } from '../../konten/harta';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { IsianUang } from './IsianUang';
+import { t } from '../../terjemah';
 
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
 
@@ -30,29 +31,29 @@ export function LangkahHarta({ kasus, ubah }: Props) {
     <>
       <section className="grup-isian" aria-labelledby="judul-total-harta">
         <div className="kepala-grup">
-          <h2 id="judul-total-harta">Total harta</h2>
-          <div className="tab-kecil" role="tablist" aria-label="Cara mengisi harta">
-            <button type="button" role="tab" aria-selected={cara === 'total'} onClick={() => setCara('total')}>Total langsung</button>
-            <button type="button" role="tab" aria-selected={cara === 'rinci'} onClick={() => setCara('rinci')}>Rinci per jenis</button>
+          <h2 id="judul-total-harta">{t('Total harta')}</h2>
+          <div className="tab-kecil" role="tablist" aria-label={t('Cara mengisi harta')}>
+            <button type="button" role="tab" aria-selected={cara === 'total'} onClick={() => setCara('total')}>{t('Total langsung')}</button>
+            <button type="button" role="tab" aria-selected={cara === 'rinci'} onClick={() => setCara('rinci')}>{t('Rinci per jenis')}</button>
           </div>
         </div>
 
         {cara === 'total' ? (
           <div className="tumpuk-rapat">
-            <IsianUang id="harta-total" label="Total harta peninggalan" besar nilai={kasus.tirkah.kotor} saatUbah={aturTotal}
+            <IsianUang id="harta-total" label={t('Total harta peninggalan')} besar nilai={kasus.tirkah.kotor} saatUbah={aturTotal}
               info={TEKS_HARTA.presisi} />
-            <div className="tambah-cepat" aria-label="Tambah cepat">
-              <span className="caption-isian">Tambah cepat</span>
+            <div className="tambah-cepat" aria-label={t('Tambah cepat')}>
+              <span className="caption-isian">{t('Tambah cepat')}</span>
               {TEKS_HARTA.tambahCepat.map(nilai => (
                 <button key={String(nilai)} type="button" className="chip-kecil" onClick={() => aturTotal(kasus.tirkah.kotor + nilai)}>
                   {labelTambahCepat(nilai)}
                 </button>
               ))}
-              {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => setTanyaKosongkan(true)}>Kosongkan</button>}
+              {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => setTanyaKosongkan(true)}>{t('Kosongkan')}</button>}
               {tanyaKosongkan && (
-                <DialogKonfirmasi judul="Kosongkan total harta?" labelLanjut="Kosongkan" saatBatal={() => setTanyaKosongkan(false)}
+                <DialogKonfirmasi judul={t('Kosongkan total harta?')} labelLanjut={t('Kosongkan')} saatBatal={() => setTanyaKosongkan(false)}
                   saatLanjut={() => { setTanyaKosongkan(false); aturTotal(0n); }}>
-                  <p>Total {formatRupiah(kasus.tirkah.kotor)} akan dihapus dan perlu diisi ulang.</p>
+                  <p>{t('Total {jumlah} akan dihapus dan perlu diisi ulang.', { jumlah: formatRupiah(kasus.tirkah.kotor) })}</p>
                 </DialogKonfirmasi>
               )}
             </div>
@@ -64,7 +65,7 @@ export function LangkahHarta({ kasus, ubah }: Props) {
                 nilai={kasus.rincianHarta?.[kategori] ?? 0n} saatUbah={jumlah => aturRincian(kategori, jumlah)}
                 info={KATEGORI_HARTA_TEKS[kategori].contoh} />
             ))}
-            <div className="total-rincian"><span>Total harta peninggalan</span><b>{formatRupiah(kasus.tirkah.kotor)}</b></div>
+            <div className="total-rincian"><span>{t('Total harta peninggalan')}</span><b>{formatRupiah(kasus.tirkah.kotor)}</b></div>
           </div>
         )}
 

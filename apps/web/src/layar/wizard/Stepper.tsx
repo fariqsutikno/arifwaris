@@ -2,13 +2,14 @@
 
 import { LANGKAH_WIZARD } from '../../konten/wizard';
 import { LANGKAH_HASIL } from './validasi';
+import { angka, t } from '../../terjemah';
 
 interface Props { langkahAktif: number; terjauh: number; saatPilih: (langkah: number) => void }
 
 export function Stepper({ langkahAktif, terjauh, saatPilih }: Props) {
-  const daftar = [...LANGKAH_WIZARD.map(teks => teks.nama), 'Hasil'];
+  const daftar = [...LANGKAH_WIZARD.map(teks => teks.nama), t('Hasil')];
   return (
-    <nav className="stepper" data-tur="stepper" aria-label="Langkah isian">
+    <nav className="stepper" data-tur="stepper" aria-label={t('Langkah isian')}>
       {daftar.map((nama, indeks) => {
         const langkah = indeks + 1;
         const adalahAktif = langkah === langkahAktif;
@@ -16,7 +17,7 @@ export function Stepper({ langkahAktif, terjauh, saatPilih }: Props) {
         return (
           <button key={nama} type="button" className={sudahLengkap ? 'stepper-item kelar' : 'stepper-item'} disabled={langkah > terjauh}
             aria-current={adalahAktif ? 'step' : undefined} onClick={() => saatPilih(langkah)}>
-            <b aria-hidden="true">{sudahLengkap ? '✓' : langkah === LANGKAH_HASIL ? '★' : langkah}</b>{nama}
+            <b aria-hidden="true">{sudahLengkap ? '✓' : langkah === LANGKAH_HASIL ? '★' : angka(String(langkah))}</b>{nama}
           </button>
         );
       })}

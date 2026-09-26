@@ -7,6 +7,7 @@ import {
   KONFIGURASI_BAWAAN, tambahKerabat, turunkanPeran,
   type GrafKeluarga, type IdOrang, type KunciAhliWaris, type Orang,
 } from '@waris/engine';
+import { t } from './terjemah';
 
 export type Kelompok = 'pasangan' | 'keturunan' | 'leluhur' | 'saudara';
 
@@ -23,29 +24,29 @@ export interface JenisAhliWaris {
 
 // ponytail: cucu hanya satu tingkat dan mu'tiq tidak ditawarkan; tambah bila bab 16 butuh lewat UI.
 export const DAFTAR_JENIS: JenisAhliWaris[] = [
-  { kunci: 'SUAMI', label: 'Suami', kelompok: 'pasangan', maksimal: 1, hanyaUntuk: 'P' },
-  { kunci: 'ISTRI', label: 'Istri', kelompok: 'pasangan', maksimal: 4, hanyaUntuk: 'L' },
-  { kunci: 'ANAK_LK', label: 'Anak laki-laki', kelompok: 'keturunan' },
-  { kunci: 'ANAK_PR', label: 'Anak perempuan', kelompok: 'keturunan' },
-  { kunci: 'CUCU_LK', label: 'Cucu laki-laki (dari anak lk)', kelompok: 'keturunan', kunciInduk: 'ANAK_LK' },
-  { kunci: 'CUCU_PR', label: 'Cucu perempuan (dari anak lk)', kelompok: 'keturunan', kunciInduk: 'ANAK_LK' },
-  { kunci: 'AYAH', label: 'Ayah', kelompok: 'leluhur', maksimal: 1 },
-  { kunci: 'IBU', label: 'Ibu', kelompok: 'leluhur', maksimal: 1 },
-  { kunci: 'KAKEK', label: 'Kakek (ayahnya ayah)', kelompok: 'leluhur', maksimal: 1 },
-  { kunci: 'NENEK_DARI_AYAH', label: 'Nenek (ibunya ayah)', kelompok: 'leluhur', maksimal: 1 },
-  { kunci: 'NENEK_DARI_IBU', label: 'Nenek (ibunya ibu)', kelompok: 'leluhur', maksimal: 1 },
-  { kunci: 'SAUDARA_KANDUNG', label: 'Saudara lk kandung', kelompok: 'saudara' },
-  { kunci: 'SAUDARI_KANDUNG', label: 'Saudari kandung', kelompok: 'saudara' },
-  { kunci: 'SAUDARA_SEBAPAK', label: 'Saudara lk sebapak', kelompok: 'saudara' },
-  { kunci: 'SAUDARI_SEBAPAK', label: 'Saudari sebapak', kelompok: 'saudara' },
-  { kunci: 'SAUDARA_SEIBU', label: 'Saudara lk seibu', kelompok: 'saudara' },
-  { kunci: 'SAUDARI_SEIBU', label: 'Saudari seibu', kelompok: 'saudara' },
-  { kunci: 'KEPONAKAN_KANDUNG', label: 'Keponakan lk (dari saudara kandung)', kelompok: 'saudara', kunciInduk: 'SAUDARA_KANDUNG' },
-  { kunci: 'KEPONAKAN_SEBAPAK', label: 'Keponakan lk (dari saudara sebapak)', kelompok: 'saudara', kunciInduk: 'SAUDARA_SEBAPAK' },
-  { kunci: 'PAMAN_KANDUNG', label: 'Paman kandung (saudara ayah)', kelompok: 'saudara' },
-  { kunci: 'PAMAN_SEBAPAK', label: 'Paman sebapak', kelompok: 'saudara' },
-  { kunci: 'SEPUPU_KANDUNG', label: 'Sepupu lk (dari paman kandung)', kelompok: 'saudara', kunciInduk: 'PAMAN_KANDUNG' },
-  { kunci: 'SEPUPU_SEBAPAK', label: 'Sepupu lk (dari paman sebapak)', kelompok: 'saudara', kunciInduk: 'PAMAN_SEBAPAK' },
+  { kunci: 'SUAMI', label: t('Suami'), kelompok: 'pasangan', maksimal: 1, hanyaUntuk: 'P' },
+  { kunci: 'ISTRI', label: t('Istri'), kelompok: 'pasangan', maksimal: 4, hanyaUntuk: 'L' },
+  { kunci: 'ANAK_LK', label: t('Anak laki-laki'), kelompok: 'keturunan' },
+  { kunci: 'ANAK_PR', label: t('Anak perempuan'), kelompok: 'keturunan' },
+  { kunci: 'CUCU_LK', label: t('Cucu laki-laki (dari anak lk)'), kelompok: 'keturunan', kunciInduk: 'ANAK_LK' },
+  { kunci: 'CUCU_PR', label: t('Cucu perempuan (dari anak lk)'), kelompok: 'keturunan', kunciInduk: 'ANAK_LK' },
+  { kunci: 'AYAH', label: t('Ayah'), kelompok: 'leluhur', maksimal: 1 },
+  { kunci: 'IBU', label: t('Ibu'), kelompok: 'leluhur', maksimal: 1 },
+  { kunci: 'KAKEK', label: t('Kakek (ayahnya ayah)'), kelompok: 'leluhur', maksimal: 1 },
+  { kunci: 'NENEK_DARI_AYAH', label: t('Nenek (ibunya ayah)'), kelompok: 'leluhur', maksimal: 1 },
+  { kunci: 'NENEK_DARI_IBU', label: t('Nenek (ibunya ibu)'), kelompok: 'leluhur', maksimal: 1 },
+  { kunci: 'SAUDARA_KANDUNG', label: t('Saudara lk kandung'), kelompok: 'saudara' },
+  { kunci: 'SAUDARI_KANDUNG', label: t('Saudari kandung'), kelompok: 'saudara' },
+  { kunci: 'SAUDARA_SEBAPAK', label: t('Saudara lk sebapak'), kelompok: 'saudara' },
+  { kunci: 'SAUDARI_SEBAPAK', label: t('Saudari sebapak'), kelompok: 'saudara' },
+  { kunci: 'SAUDARA_SEIBU', label: t('Saudara lk seibu'), kelompok: 'saudara' },
+  { kunci: 'SAUDARI_SEIBU', label: t('Saudari seibu'), kelompok: 'saudara' },
+  { kunci: 'KEPONAKAN_KANDUNG', label: t('Keponakan lk (dari saudara kandung)'), kelompok: 'saudara', kunciInduk: 'SAUDARA_KANDUNG' },
+  { kunci: 'KEPONAKAN_SEBAPAK', label: t('Keponakan lk (dari saudara sebapak)'), kelompok: 'saudara', kunciInduk: 'SAUDARA_SEBAPAK' },
+  { kunci: 'PAMAN_KANDUNG', label: t('Paman kandung (saudara ayah)'), kelompok: 'saudara' },
+  { kunci: 'PAMAN_SEBAPAK', label: t('Paman sebapak'), kelompok: 'saudara' },
+  { kunci: 'SEPUPU_KANDUNG', label: t('Sepupu lk (dari paman kandung)'), kelompok: 'saudara', kunciInduk: 'PAMAN_KANDUNG' },
+  { kunci: 'SEPUPU_SEBAPAK', label: t('Sepupu lk (dari paman sebapak)'), kelompok: 'saudara', kunciInduk: 'PAMAN_SEBAPAK' },
 ];
 
 export const jenisDari = (kunci: KunciAhliWaris): JenisAhliWaris | undefined =>

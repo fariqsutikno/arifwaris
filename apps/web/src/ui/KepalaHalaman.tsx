@@ -5,13 +5,14 @@ import { cariPelajaran } from '@waris/content';
 import { tautanInduk, type Rute } from '../rute';
 import { Bagikan } from './Bagikan';
 import { Ikon } from './Ikon';
+import { t } from '../terjemah';
 
 export function KepalaHalaman({ rute }: { rute: Rute }) {
   const judul = judulBagikan(rute);
   return (
     <div className="kepala-halaman">
       <a className="tombol-kembali" href={tautanInduk(rute)}>
-        <Ikon nama="kembali" ukuran={18} />Kembali
+        <Ikon nama="kembali" ukuran={18} />{t('Kembali')}
       </a>
       {judul && <Bagikan judul={judul} tautan={window.location.hash} />}
     </div>
@@ -22,10 +23,10 @@ export function KepalaHalaman({ rute }: { rute: Rute }) {
 function judulBagikan(rute: Rute): string | null {
   switch (rute.halaman) {
     case 'materi': return cariPelajaran(rute.slug)?.judul ?? null;
-    case 'faq': return 'FAQ faraidh';
-    case 'tanya-jawab': return 'Tanya jawab kasus waris';
-    case 'glosarium': return 'Glosarium faraidh';
-    case 'rujukan': return 'Rujukan faraidh';
+    case 'faq': return t('FAQ faraidh');
+    case 'tanya-jawab': return t('Tanya jawab kasus waris');
+    case 'glosarium': return t('Glosarium faraidh');
+    case 'rujukan': return t('Rujukan faraidh');
     default: return null;
   }
 }

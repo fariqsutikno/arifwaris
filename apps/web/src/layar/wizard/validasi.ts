@@ -3,13 +3,14 @@
 
 import { hitungIsian } from '../../checklist';
 import type { Kasus } from '../../kasus';
+import { t } from '../../terjemah';
 
 export const LANGKAH_HASIL = 6;
 
 export function alasanBelumLengkap(kasus: Kasus | null, langkah: number): string | null {
-  if (!kasus) return 'Pilih dulu jenis kelamin almarhum.';
-  if (langkah === 2 && kasus.tirkah.kotor <= 0n) return 'Isi total harta peninggalan dulu, harus lebih dari Rp 0.';
-  if (langkah === 4 && !adaAhliWaris(kasus)) return 'Tambahkan minimal satu ahli waris.';
+  if (!kasus) return t('Pilih dulu jenis kelamin almarhum.');
+  if (langkah === 2 && kasus.tirkah.kotor <= 0n) return t('Isi total harta peninggalan dulu, harus lebih dari Rp 0.');
+  if (langkah === 4 && !adaAhliWaris(kasus)) return t('Tambahkan minimal satu ahli waris.');
   return null;
 }
 

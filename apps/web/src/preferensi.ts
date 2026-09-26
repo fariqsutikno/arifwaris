@@ -102,11 +102,11 @@ export const simpanUkuranBaca = (ukuran: number): void => simpan(KUNCI_UKURAN_BA
 
 /**
  * Bahasa tampilan untuk santri: 'id+ar' = istilah & ahli waris diberi padanan Arab;
- * 'ar' = itu ditambah penjelasan langkah hitung berbahasa Arab. UI lain tetap Indonesia (tahap 3 belum).
+ * 'ar' = tampilan Arab kanan-ke-kiri + penjelasan langkah berbahasa Arab (materi/FAQ/soal masih Indonesia).
  */
 export type Bahasa = 'id' | 'id+ar' | 'ar';
 export const DAFTAR_BAHASA: Array<{ nilai: Bahasa; label: string }> = [
-  { nilai: 'id', label: 'Indonesia' }, { nilai: 'id+ar', label: 'Indonesia + istilah Arab' }, { nilai: 'ar', label: 'Penjelasan berbahasa Arab' },
+  { nilai: 'id', label: 'Indonesia' }, { nilai: 'id+ar', label: 'Indonesia + istilah Arab' }, { nilai: 'ar', label: 'العربية' },
 ];
 const KUNCI_BAHASA = 'arif-waris:bahasa';
 const pendengarBahasa = new Set<() => void>();

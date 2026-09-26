@@ -6,6 +6,7 @@ import { hitungTirkah } from '@waris/engine';
 import { formatRupiah } from '../format';
 import type { Kasus } from '../kasus';
 import { IsianUang } from '../layar/wizard/IsianUang';
+import { t } from '../terjemah';
 
 interface Props { kasus: Kasus; saatSimpan: (kotor: bigint) => void; saatTutup: () => void; saatBukaKewajiban: () => void }
 
@@ -17,28 +18,28 @@ export function ModalUbahHarta({ kasus, saatSimpan, saatTutup, saatBukaKewajiban
 
   return (
     <div className="modal-latar" onClick={event => { if (event.target === event.currentTarget) saatTutup(); }}>
-      <div className="modal-orang modal-kecil" role="dialog" aria-modal="true" aria-label="Ubah harta peninggalan" ref={wadah}
+      <div className="modal-orang modal-kecil" role="dialog" aria-modal="true" aria-label={t('Ubah harta peninggalan')} ref={wadah}
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
-        <header className="kepala-modal netral"><div><h2>Ubah harta peninggalan</h2></div></header>
+        <header className="kepala-modal netral"><div><h2>{t('Ubah harta peninggalan')}</h2></div></header>
         <div className="isi-modal">
-          <IsianUang id="ubah-harta" label="Harta peninggalan" nilai={kotor} saatUbah={setKotor} besar />
-          {kasus.rincianHarta && <p className="catatan-info">Rincian per jenis akan diganti dengan total baru ini.</p>}
+          <IsianUang id="ubah-harta" label={t('Harta peninggalan')} nilai={kotor} saatUbah={setKotor} besar />
+          {kasus.rincianHarta && <p className="catatan-info">{t('Rincian per jenis akan diganti dengan total baru ini.')}</p>}
           <div className="hitungan-berjalan">
-            <div className="potongan"><span>Pengurusan jenazah</span><span>−{formatRupiah(jejak.tajhiz)}</span></div>
-            <div className="potongan"><span>Hutang</span><span>−{formatRupiah(jejak.hutang)}</span></div>
-            <div className="potongan"><span>Wasiat</span><span>−{formatRupiah(jejak.wasiatDipakai)}</span></div>
-            <div className="garis-total"><b>Dibagi ke ahli waris</b><b className="hitungan-total">{formatRupiah(jejak.bersih)}</b></div>
+            <div className="potongan"><span>{t('Pengurusan jenazah')}</span><span>−{formatRupiah(jejak.tajhiz)}</span></div>
+            <div className="potongan"><span>{t('Hutang')}</span><span>−{formatRupiah(jejak.hutang)}</span></div>
+            <div className="potongan"><span>{t('Wasiat')}</span><span>−{formatRupiah(jejak.wasiatDipakai)}</span></div>
+            <div className="garis-total"><b>{t('Dibagi ke ahli waris')}</b><b className="hitungan-total">{formatRupiah(jejak.bersih)}</b></div>
           </div>
           <p className="caption-isian">
-            Biaya jenazah, hutang, dan wasiat tidak ikut berubah.{' '}
-            <button type="button" className="tautan-teks" onClick={saatBukaKewajiban}>Mau ubah juga? Buka langkah Kewajiban.</button>
+            {t('Biaya jenazah, hutang, dan wasiat tidak ikut berubah.')}{' '}
+            <button type="button" className="tautan-teks" onClick={saatBukaKewajiban}>{t('Mau ubah juga? Buka langkah Kewajiban.')}</button>
           </p>
           {jejak.bersih === 0n && kotor > 0n && <p className="peringatan-isian" role="status">Hutang dan biaya jenazah menghabiskan seluruh harta; tidak ada yang dibagi.</p>}
         </div>
         <footer className="kaki-modal">
-          <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={saatTutup}>Batal</button>
+          <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={saatTutup}>{t('Batal')}</button>
           <span className="pengisi" />
-          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled={kotor === 0n} onClick={() => saatSimpan(kotor)}>Simpan</button>
+          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled={kotor === 0n} onClick={() => saatSimpan(kotor)}>{t('Simpan')}</button>
         </footer>
       </div>
     </div>

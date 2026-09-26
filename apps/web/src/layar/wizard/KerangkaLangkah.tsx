@@ -2,18 +2,19 @@
 
 import type { ReactNode } from 'react';
 import { LANGKAH_WIZARD } from '../../konten/wizard';
+import { t } from '../../terjemah';
 
 export function KerangkaLangkah({ langkah, children, ringkasan }: { langkah: number; children: ReactNode; ringkasan?: ReactNode }) {
   const teks = LANGKAH_WIZARD[langkah - 1]!;
   return (
     <div className="kerangka-langkah">
       <section className="kerangka-utama" aria-labelledby="pertanyaan-utama">
-        <p className="label-langkah">Langkah {langkah} dari {LANGKAH_WIZARD.length}</p>
+        <p className="label-langkah">{t('Langkah {nomor} dari {total}', { nomor: langkah, total: LANGKAH_WIZARD.length })}</p>
         <h1 id="pertanyaan-utama" data-tur="pertanyaan" className="pertanyaan-utama">{tanpaPatahDiTandaHubung(teks.pertanyaan)}</h1>
         <p className="caption-langkah">{teks.caption}</p>
         <div className="tumpuk">{children}</div>
       </section>
-      {ringkasan && <aside className="kerangka-samping" aria-label="Ringkasan kasus">{ringkasan}</aside>}
+      {ringkasan && <aside className="kerangka-samping" aria-label={t('Ringkasan kasus')}>{ringkasan}</aside>}
     </div>
   );
 }
