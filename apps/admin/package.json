@@ -1,15 +1,8 @@
 {
-  "name": "@waris/web",
+  "name": "@waris/admin",
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "exports": {
-    "./sumber": "./src/konten/sumber.ts",
-    "./terjemah": "./src/terjemah.ts",
-    "./ui/*": "./src/ui/*.tsx",
-    "./gaya/*": "./src/gaya/*",
-    "./belajar/*": "./src/layar/belajar/*.tsx"
-  },
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p . && vite build",
@@ -19,9 +12,7 @@
     "@supabase/supabase-js": "^2.117.1",
     "@waris/content": "workspace:*",
     "@waris/data": "workspace:*",
-    "@waris/engine": "workspace:*",
-    "@waris/explain": "workspace:*",
-    "@waris/math": "workspace:*",
+    "@waris/web": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

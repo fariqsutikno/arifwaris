@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "pnpm -r test",
+    "admin": "pnpm --filter @waris/admin dev",
     "db:mulai": "supabase start",
     "db:reset": "supabase db reset",
     "db:tes": "supabase test db",
