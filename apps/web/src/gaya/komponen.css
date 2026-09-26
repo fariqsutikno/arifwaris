@@ -103,7 +103,7 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .kepala-menu[aria-current=page]{background:var(--sun);color:var(--on-fill)}
 .pengisi{flex:1}
 .konfirmasi{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(17,19,34,.5)}
-.konfirmasi-isi{max-width:440px;width:100%;background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:var(--radius-lg);box-shadow:var(--shadow-pop);padding:22px;display:flex;flex-direction:column;gap:12px}
+.konfirmasi-isi{max-width:440px;width:100%;box-sizing:border-box;max-height:calc(100dvh - 32px);overflow-y:auto;background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:var(--radius-lg);box-shadow:var(--shadow-pop);padding:22px;display:flex;flex-direction:column;gap:12px}
 .konfirmasi-isi h2{font-family:var(--font-display);margin:0;font-size:22px}
 .konfirmasi-isi p{margin:0}
 .halaman-wizard{padding-bottom:120px}
@@ -385,7 +385,7 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .istilah{text-decoration:underline dotted 2px;text-underline-offset:3px;cursor:pointer;position:relative}
 .istilah:hover::after,.istilah:focus::after{content:attr(data-arti);position:absolute;left:0;bottom:calc(100% + 8px);z-index:30;width:max-content;max-width:240px;background:var(--ink);color:var(--surface-raised);font:500 12.5px/1.45 var(--font-sans);padding:8px 10px;border-radius:10px;box-shadow:var(--shadow-pop-sm);white-space:normal}
 .modal-latar{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(17,19,34,.5)}
-.modal-orang{width:100%;max-width:540px;max-height:calc(100vh - 32px);display:flex;flex-direction:column;background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:20px;box-shadow:var(--shadow-pop);overflow:hidden}
+.modal-orang{width:100%;box-sizing:border-box;max-width:540px;max-height:calc(100dvh - 32px);display:flex;flex-direction:column;background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:20px;box-shadow:var(--shadow-pop);overflow:hidden}
 .kepala-modal{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 16px;border-bottom:var(--border-w) solid var(--outline);color:var(--on-fill)}
 .kepala-modal.netral{background:var(--surface-sunken);color:var(--ink)}
 .kepala-modal>div{flex:1}
@@ -888,10 +888,18 @@ a.aw-btn{text-decoration:none;color:inherit}
 .chip-dalil:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .isi-lembar-dalil{font-size:15px;line-height:1.6}
 .isi-lembar-dalil .kutipan-arab{margin:0}
-/* Lembar: di HP modal menempel di bawah seperti lembar aplikasi, mudah ditutup dengan jempol. */
+/* HP: modal lebih rapat supaya isi tidak berdesakan, tombol kaki boleh turun baris. */
+@media (max-width:560px){
+  .konfirmasi-isi{padding:18px}
+  .kepala-modal{padding:14px 16px 12px}
+  .kepala-modal h2{font-size:20px}
+  .isi-modal{padding:14px 16px}
+  .kaki-modal{flex-wrap:wrap;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px))}
+}
+/* Lembar: di HP semua modal menempel di bawah seperti lembar aplikasi, mudah ditutup dengan jempol. */
 @media (max-width:720px){
-  .modal-latar:has(.lembar){place-items:end stretch;padding:0}
-  .modal-orang.lembar{max-width:none;max-height:85vh;border-radius:var(--radius-lg) var(--radius-lg) 0 0;border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .modal-latar{place-items:end stretch;padding:0}
+  .modal-orang{max-width:none;max-height:85dvh;border-radius:var(--radius-lg) var(--radius-lg) 0 0;border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px)}
 }
 
 /* Aksi utama (Skenario baru, Hitung skenario): terisi warna primer seperti tombol Ekspor, supaya paling menonjol. */
