@@ -70,9 +70,20 @@ Perkiraan: beberapa kali lipat Tahap 1+2. Layak hanya bila memang ada target pen
 - Tidak memakai pustaka i18n (react-i18next dsb.) untuk Tahap 1–2: cukup satu preferensi dan satu tabel label.
   Pertimbangkan ulang bila Tahap 3 dikerjakan.
 
-## Pertanyaan terbuka
+## Keputusan (2026-09-26)
 
-1. Target utama: pelajar Indonesia yang belajar istilah Arab (→ Tahap 1–2), atau juga penutur Arab (→ Tahap 3)?
-2. Harakat pada istilah: lengkap (عَوْل) atau gundul (عول)? Untuk pelajar pemula disarankan lengkap.
-3. Posisi padanan Arab: di samping (sebaris) atau di bawah (ruby/baris kecil)?
-4. Siapa yang memverifikasi `LABEL_PERAN_ARAB` dan kolom `arab` glosarium — tim keilmuan?
+1. **Target utama: santri pondok** yang belajar faraidh sepenuhnya berbahasa Arab.
+   → Mode `ar` bukan lagi "tunda"; urutan kerja diubah (lihat bawah).
+2. **Tasykil bisa dipilih pengguna** (berharakat / gundul). Teks Arab selalu *disimpan berharakat*;
+   versi gundul = buang harakat saat tampil (`/[\u064B-\u0652\u0670]/g`), jadi cukup satu sumber data.
+3. Posisi padanan Arab: bebas → sebaris di samping istilah (paling sederhana).
+4. **Tim keilmuan** memverifikasi semua teks Arab (label peran, kolom `arab` glosarium, narasi Arab).
+
+## Urutan kerja (setelah keputusan)
+
+1. Tahap 1 `id+ar` + saklar tasykil — cepat, langsung terpakai.
+2. **Hasil & langkah hitung dalam bahasa Arab** — prioritas bagi santri: tabel masalah
+   (أصل المسألة، العول، التصحيح، السهام) dan narasi langkah seperti di kitab. Generator narasi Arab
+   terpisah di `packages/explain`, memakai `LangkahJejak` yang sama.
+3. UI penuh `ar` + RTL.
+4. Materi & soal versi Arab (konten tim keilmuan).
