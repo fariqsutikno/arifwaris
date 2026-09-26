@@ -3,7 +3,7 @@
 Panduan menyusun dan mereview konten aplikasi waris. Untuk ustadz, reviewer syariah, dan penulis materi.
 Tidak perlu bisa coding.
 
-**Cara setor:** kirim berkas `.md` (atau teks biasa untuk konten di bagian 10) ke Fariq. Fariq yang memasukkan
+**Cara setor:** kirim berkas `.md` (atau teks biasa untuk konten di bagian 10.2–10.8) ke Fariq. Fariq yang memasukkan
 ke repo dan menjalankan pengecekan otomatis. Kalau pengecekan gagal (misalnya angka contoh tidak cocok dengan
 hitungan aplikasi), berkas dikembalikan beserta alasannya.
 
@@ -317,22 +317,26 @@ mengirimkan daftar teks yang sekarang dipakai, lalu balas dengan koreksinya.
 
 ### 10.1 Tanya jawab (kasus nyata)
 
-Artikel satu kasus waris nyata beserta penyelesaiannya dari ustadz atau lembaga fatwa. **Sekarang semuanya masih
-placeholder.** Hanya isi dengan jawaban yang sumbernya jelas.
+Lokasi: `docs/tanya-jawab.md`. Artikel satu kasus waris nyata beserta penyelesaiannya dari ustadz atau lembaga
+fatwa. **Sekarang semuanya masih placeholder.** Hanya isi dengan jawaban yang sumbernya jelas.
 
 ```
-Judul: Sengketa rumah peninggalan
-Jenis: Saran ustadz   (atau: Fatwa)
-Ringkasan (1 kalimat untuk kartu daftar): ...
-Kasus (boleh beberapa paragraf):
-  ...
-Penyelesaian (boleh beberapa paragraf):
-  ...
-Sumber: Nama ustadz / lembaga · tempat & tanggal terbit / nomor fatwa
-Izin: sudah / belum ada izin dari yang bersangkutan untuk dimuat
+## Sengketa rumah peninggalan
+jenis: Saran ustadz
+ringkasan: Satu kalimat untuk kartu daftar.
+sumber: Nama ustadz / lembaga · tempat & tanggal terbit / nomor fatwa
+
+### Kasus
+Cerita kasusnya, boleh beberapa paragraf.
+
+### Penyelesaian
+Penyelesaiannya, boleh memakai [[istilah]] dan [Rxx-y] seperti materi.
 ```
 
-Samarkan nama dan detail yang bisa mengenali keluarga yang bersangkutan.
+- `jenis`: `Saran ustadz` atau `Fatwa`.
+- Tautan artikel dibentuk dari judul. Mengganti judul berarti tautan lama yang sudah dibagikan tidak berlaku lagi.
+- Samarkan nama dan detail yang bisa mengenali keluarga yang bersangkutan, dan sertakan keterangan izin dari
+  yang bersangkutan saat mengirim ke Fariq.
 
 ### 10.2 Habis ini ngapain?
 

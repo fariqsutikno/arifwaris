@@ -3,17 +3,21 @@
 // `#/tanya-jawab` = daftar (cari + chip kategori); `#/tanya-jawab/<slug>` = artikel, bisa dibagikan dan diatur ukuran hurufnya.
 
 import { useState } from 'react';
-import { DAFTAR_TANYA_JAWAB, JENIS_TANYA_JAWAB, type JenisTanyaJawab, type KasusTanyaJawab } from '../../konten/tanyaJawab';
+import { DAFTAR_TANYA_JAWAB, JENIS_TANYA_JAWAB, semuaPotongan, type JenisTanyaJawab, type KasusTanyaJawab } from '@waris/content';
+import type { Kasus } from '../../kasus';
 import { UKURAN_BACA, bacaUkuranBaca, simpanUkuranBaca } from '../../preferensi';
 import { tautanTanyaJawab } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
 import { HeroMini } from '../../ui/Hero';
+import { BlokMateri } from './Materi';
 
-export function TanyaJawab({ slug }: { slug?: string | undefined }) {
+interface Props { slug?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
+
+export function TanyaJawab({ slug, kasusSekarang, saatCoba }: Props) {
   if (!slug) return <DaftarTanyaJawab />;
   const entri = DAFTAR_TANYA_JAWAB.find(kasus => kasus.slug === slug);
   if (!entri) return <main className="halaman tumpuk"><p role="alert">Kasus ini tidak ditemukan.</p><a href={tautanTanyaJawab()}>Semua kasus</a></main>;
-  return <ArtikelTanyaJawab entri={entri} />;
+  return <ArtikelTanyaJawab entri={entri} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
 }
 
 function DaftarTanyaJawab() {
@@ -50,7 +54,7 @@ function DaftarTanyaJawab() {
   );
 }
 
-function ArtikelTanyaJawab({ entri }: { entri: KasusTanyaJawab }) {
+function ArtikelTanyaJawab({ entri, kasusSekarang, saatCoba }: { entri: KasusTanyaJawab } & Omit<Props, 'slug'>) {
   const [ukuran, setUkuran] = useState(bacaUkuranBaca);
   const posisi = UKURAN_BACA.indexOf(ukuran as (typeof UKURAN_BACA)[number]);
   const ubahUkuran = (arah: -1 | 1) => {
@@ -71,9 +75,9 @@ function ArtikelTanyaJawab({ entri }: { entri: KasusTanyaJawab }) {
       </div>
       <article className="isi-materi isi-artikel" style={{ fontSize: ukuran }}>
         <h2>Kasus</h2>
-        {entri.kasus.map(paragraf => <p key={paragraf}>{paragraf}</p>)}
+        {entri.kasus.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
         <h2>Penyelesaian</h2>
-        {entri.penyelesaian.map(paragraf => <p key={paragraf}>{paragraf}</p>)}
+        {entri.penyelesaian.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
       </article>
       <Bagikan judul={entri.judul} tautan={tautanTanyaJawab(entri.slug)} label="Bagikan kasus ini" />
     </main>
@@ -81,4 +85,5 @@ function ArtikelTanyaJawab({ entri }: { entri: KasusTanyaJawab }) {
 }
 
 const normal = (teks: string) => teks.toLowerCase().replace(/['’]/g, '');
-const teksCari = (entri: KasusTanyaJawab) => [entri.judul, entri.ringkasan, ...entri.kasus, ...entri.penyelesaian].join(' ');
+const teksCari = (entri: KasusTanyaJawab) => [entri.judul, entri.ringkasan,
+  ...semuaPotongan([...entri.kasus, ...entri.penyelesaian]).map(potongan => ('teks' in potongan ? potongan.teks : ''))].join(' ');

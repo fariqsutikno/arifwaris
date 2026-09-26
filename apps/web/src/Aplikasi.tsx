@@ -118,7 +118,7 @@ export function Aplikasi() {
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
-        : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} />
+        : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />

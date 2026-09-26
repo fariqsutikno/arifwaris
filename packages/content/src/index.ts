@@ -15,4 +15,7 @@ export {
 export {
   DAFTAR_FAQ, bacaFaq, type EntriFaq,
 } from './faq.js';
+export {
+  DAFTAR_TANYA_JAWAB, JENIS_TANYA_JAWAB, bacaTanyaJawab, type KasusTanyaJawab, type JenisTanyaJawab,
+} from './tanyaJawab.js';
 export { DAFTAR_SYAHID, SUMBER_KITAB, bacaSyahid, bacaSumberKitab, type Syahid, type SumberKitab } from './pustaka.js';
