@@ -2,7 +2,7 @@
 // (input teks, Markdown blok materi Indonesia/Arab, sisa JSON) + PemilihRefs. Memutuskan boleh sunting lewat
 // bolehSuntingDraf (UI saja; database tetap penjaga), lalu menyimpan lewat repo.editorial (buatEntri/buatDraf/
 // ubahDraf/ajukan). Galat validasi (dariBentuk) maupun galat repo ditampilkan, tidak ditelan.
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { bacaIsi, bolehSuntingDraf, periksaRefs, JENIS_KONTEN, slug as buatSlug, type JenisKonten } from '@waris/content';
 import type { RingkasanRevisi } from '@waris/data';
 import { Tombol } from '@waris/web/ui/komponen';
@@ -161,7 +161,11 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
 // Menggabung bentuk form jadi isi konten lewat dariBentuk sebelum diserahkan ke <Pratinjau>; kalau bentuknya
 // tidak sah (JSON/Markdown rusak, gagal validasi), galat itu sendiri ditampilkan menggantikan pratinjau.
 function Pratinjauan({ jenis, slug, bentuk, saatTutup }: { jenis: JenisKonten; slug: string; bentuk: BentukEditor; saatTutup: () => void }) {
-  const hasil = dariBentuk(jenis, slug, bentuk);
+  // Di-memo lewat bentuk (bukan dipanggil ulang tiap render): EditorEntri re-render untuk alasan lain saat
+  // pratinjau terbuka (state refs, mode, dst.) tanpa bentuk berubah; tanpa memo, dariBentuk membuat objek `isi`
+  // baru tiap kali walau isinya sama, sehingga <Pratinjau> lihat props berubah dan pasang-ulang snapshotnya
+  // (kehilangan state di dalam pratinjau, mis. pilihan kuis yang sudah dijawab).
+  const hasil = useMemo(() => dariBentuk(jenis, slug, bentuk), [jenis, slug, bentuk]);
   if (!hasil.ok) return <p role="alert">{hasil.galat}</p>;
   return <Pratinjau jenis={jenis} slug={slug} isi={hasil.isi} saatTutup={saatTutup} />;
 }

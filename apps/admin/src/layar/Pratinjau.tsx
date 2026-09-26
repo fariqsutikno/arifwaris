@@ -19,6 +19,11 @@ export function Pratinjau<J extends JenisKonten>({ jenis, slug, isi, saatTutup }
   // siap baru true setelah efek terpasang: anak (Materi dkk.) digerbang di baliknya supaya render pertamanya
   // sudah melihat snapshot pratinjau, bukan snapshot lama.
   const [siap, setSiap] = useState(false);
+  // Kunci efek = isi yang sudah diserialisasi, bukan referensi `isi` itu sendiri: pemanggil (Pratinjauan di
+  // EditorEntri) idealnya memoize `isi`, tapi kalau suatu saat ada pemanggil lain yang lupa, referensi baru
+  // dengan konten sama tidak boleh memicu pasang-ulang snapshot (kehilangan state di dalam pratinjau, mis.
+  // pilihan kuis yang sudah dijawab).
+  const kunciIsi = JSON.stringify(keJson(jenis, isi));
   // asal ditangkap DI DALAM efek (bukan lazy-init state) supaya benar di StrictMode: efek mount di-run-cleanup-
   // run-ulang (dev only), jadi tiap kali efek ini jalan, asal = snapshot yang terpasang saat itu (yang di run
   // kedua sudah snapshot asli lagi karena cleanup run pertama sudah memulihkannya) — bukan snapshot pratinjau
@@ -34,7 +39,7 @@ export function Pratinjau<J extends JenisKonten>({ jenis, slug, isi, saatTutup }
     });
     setSiap(true);
     return () => { pasangSnapshot(asal); setSiap(false); };
-  }, [jenis, slug, isi]);
+  }, [jenis, slug, kunciIsi]);
 
   return (
     <div className="aw-pratinjau">
