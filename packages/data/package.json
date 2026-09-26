@@ -3,8 +3,18 @@
   "version": "0.0.1",
   "type": "module",
   "main": "./src/index.ts",
-  "exports": { ".": "./src/index.ts" },
-  "scripts": { "test": "vitest run" },
-  "dependencies": { "@waris/content": "workspace:*" },
-  "devDependencies": { "typescript": "^5.5.0", "vitest": "^2.0.0" }
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.1",
+    "@waris/content": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
 }
