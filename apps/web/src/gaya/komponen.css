@@ -350,7 +350,15 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .urutan-selanjutnya{margin:0;padding-left:22px;display:grid;gap:10px;font-size:14px}
 .urutan-selanjutnya li::marker{font:700 14px var(--font-display);color:var(--primary)}
 .urutan-selanjutnya span{display:block;color:var(--ink-muted);font-size:13px}
-.jalur-langkah{position:relative;display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;scroll-behavior:smooth}
+.jalur-langkah{position:relative;display:flex;gap:6px;overflow-x:auto;padding:2px 2px 8px;scroll-behavior:smooth;scrollbar-width:none;
+  --pudar-kiri:0px;--pudar-kanan:0px;mask-image:linear-gradient(to right,transparent,#000 var(--pudar-kiri),#000 calc(100% - var(--pudar-kanan)),transparent)}
+.jalur-langkah::-webkit-scrollbar{display:none}
+.jalur-langkah button{max-width:80%}
+.jalur-langkah span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.jalur-langkah[data-kiri=true]{--pudar-kiri:40px}
+.jalur-langkah[data-kanan=true]{--pudar-kanan:40px}
+.ajakan-fokus{width:100%;justify-content:center;gap:6px}
+.urut-langkah .tab-kecil button{white-space:nowrap;padding:0 12px}
 .jalur-langkah button{flex:none;scroll-snap-align:start;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 12.5px var(--font-sans);cursor:pointer}
 .jalur-langkah b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--ink);color:var(--surface-raised);font-size:12px;font-weight:800}
 .jalur-langkah [aria-current=step] b{background:var(--on-primary);color:var(--primary)}
@@ -620,6 +628,7 @@ a.isi-soal:hover b{text-decoration:underline}
 .pintu-belajar{display:flex;align-items:center;gap:10px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;font-weight:800}
 .ikon{flex:none;display:block}
 .pintu-belajar:hover{background:var(--sun);color:var(--on-fill)}
+.pintu-menyusul{opacity:.6;cursor:not-allowed}.pintu-menyusul:hover{background:var(--surface-raised);color:var(--ink)}.pintu-menyusul small{margin-left:auto;font-weight:400}
 @media (max-width:760px){
   .hero-belajar{flex-direction:column-reverse;align-items:stretch;padding:18px}
   .cincin-progres{align-self:center}
@@ -738,7 +747,7 @@ a.aw-btn{text-decoration:none;color:inherit}
 .pohon.redup .node-orang:not(.sorot-langkah)::after{content:"";position:absolute;inset:-2px;border-radius:16px;background:var(--surface);opacity:.62;pointer-events:none}
 
 /* Kartu lipat (FAQ, rujukan, pembahasan) memakai tombol panah kotak yang sama dengan kartu di Hitung */
-.pembahasan-item>summary::after{content:none}
+.kartu-lipat.pembahasan-item>summary::after,.kartu-lipat.pembahasan-item[open]>summary::after{content:none}
 .pembahasan-item .panah-lipat{margin-left:auto}
 .pertanyaan-pembahasan{flex:1;line-height:1.5}
 .tab-latihan .tab-tautan{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;font:800 13px var(--font-sans);color:var(--ink);background:var(--surface-raised);text-decoration:none}
@@ -1042,7 +1051,6 @@ summary.kepala-bulat::after{position:absolute;top:12px;right:14px}
 .kotak-perhatian{padding:12px 14px;border:var(--border-w) solid var(--outline);border-radius:12px;background:var(--sun);color:var(--on-fill);box-shadow:var(--shadow-pop-sm);font-size:14px;line-height:1.5;transition:opacity .2s}
 .kotak-perhatian p{margin:0}
 .kotak-perhatian.ketukan-kini{box-shadow:var(--shadow-pop)}
-.alat-langkah{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px}
 .nav-langkah{align-items:center}
 .lencana-kunci{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:var(--radius-pill);background:var(--ink);color:var(--surface-raised);font:800 12px var(--font-sans)}
 .langkah-terkunci{padding:14px 16px;border:var(--border-w) dashed var(--outline);border-radius:12px;background:var(--surface-sunken)}

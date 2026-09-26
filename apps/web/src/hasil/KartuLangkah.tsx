@@ -30,6 +30,12 @@ interface Props {
 
 const geraknyaDikurangi = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
+/** Deret langkah tanpa scrollbar: tepi yang masih menyimpan pill memudar, tanda bahwa deret bisa digeser. */
+const tandaiTepi = (wadah: HTMLElement) => {
+  wadah.dataset.kiri = String(wadah.scrollLeft > 1);
+  wadah.dataset.kanan = String(wadah.scrollLeft + wadah.clientWidth < wadah.scrollWidth - 1);
+};
+
 /** "4b" untuk baris kedua langkah 4; langkah yang hanya satu baris cukup "4". */
 export const labelSubLangkah = (nomorBab: number, ketukan: number | null, jumlahBaris: number) =>
   `Langkah ${nomorBab + 1}${ketukan !== null && jumlahBaris > 1 ? String.fromCharCode(97 + ketukan) : ''}`;
@@ -63,6 +69,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
     const wadah = jalur.current;
     const aktif = wadah?.querySelector<HTMLElement>('[aria-current="step"]');
     if (wadah && aktif) wadah.scrollLeft = aktif.offsetLeft - (wadah.clientWidth - aktif.offsetWidth) / 2;
+    if (wadah) tandaiTepi(wadah);
   }, [indeks, terbuka, mode, fokus, laciTerbuka]);
 
   useEffect(() => {
@@ -108,11 +115,11 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   const aturAnimasi = (nyala: boolean) => { setAnimasi(nyala); setDijeda(false); setPoin(0); putarLagi(); };
 
   const jalurLangkah = (
-    <nav className="jalur-langkah" aria-label="Langkah" ref={jalur}>
+    <nav className="jalur-langkah" aria-label="Langkah" ref={jalur} onScroll={event => tandaiTepi(event.currentTarget)}>
       {daftarBab.map((bab, nomor) => (
         <button key={nomor} type="button" aria-current={nomor === indeks ? 'step' : undefined}
           className={dibaca.has(nomor) && nomor !== indeks ? 'kelar' : undefined} onClick={() => keLangkah(nomor)}>
-          <b aria-hidden="true">{dibaca.has(nomor) && nomor !== indeks ? '✓' : nomor + 1}</b>{bab.bab.judul}
+          <b aria-hidden="true">{dibaca.has(nomor) && nomor !== indeks ? '✓' : nomor + 1}</b><span>{bab.bab.judul.replace(/^Langkah \d+ — /, '')}</span>
         </button>
       ))}
     </nav>
@@ -169,24 +176,23 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
         </div>
       ) : (
         <div className="isi-kartu-sisi">
-          <div className="alat-langkah">
-            <div className="tab-kecil" role="group" aria-label="Cara tampil">
-              <button type="button" aria-pressed={mode === 'satu'} onClick={() => setMode('satu')}>Langkah demi langkah</button>
-              <button type="button" aria-pressed={mode === 'semua'} onClick={() => setMode('semua')}>Tampilkan semua</button>
-            </div>
-            <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-fokus" onClick={bukaFokus}>
-              <Ikon nama="perbesar" ukuran={16} /> Mode fokus
-            </button>
+          <div className="tab-kecil" role="group" aria-label="Cara tampil">
+            <button type="button" aria-pressed={mode === 'satu'} onClick={() => setMode('satu')}>Langkah demi langkah</button>
+            <button type="button" aria-pressed={mode === 'semua'} onClick={() => setMode('semua')}>Tampilkan semua</button>
           </div>
           {mode === 'semua'
             ? daftarBab.map((bab, nomor) => <KartuSatuLangkah key={nomor} nomor={nomor} total={daftarBab.length} babBerjudul={bab} ketukan={null} />)
-            : babIni && <>{jalurLangkah}{langkahIni(null)}{navigasi}</>}
+            : babIni && <>{jalurLangkah}{langkahIni(null)}
+              <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm ajakan-fokus" onClick={bukaFokus}>
+                <Ikon nama="perbesar" ukuran={16} /> Belajar pelan-pelan dengan mode fokus
+              </button>
+              {navigasi}</>}
         </div>
       ))}
       {fokus && !terkunci && babIni && (
-        <FokusLangkah judul={judulFokus} nomor={indeks} total={daftarBab.length} kolom={babIni.bab.kolom} kanvas={kanvas} saatTutup={() => setFokus(false)}
+        <FokusLangkah judul={judulFokus} nomor={indeks} kolom={babIni.bab.kolom} kanvas={kanvas} saatTutup={() => setFokus(false)}
           kontrol={kontrolFokus} dijeda={dijeda && ketukan !== null} navigasi={navigasiFokus}
-          atasTabel={<PanelHitung key={putaran} label={labelSubLangkah(indeks, ketukan, jumlahPoin)} judul={judulFokus} selesai={selesai}
+          atasTabel={<PanelHitung key={putaran} posisi={`Langkah ${indeks + 1} dari ${daftarBab.length}`} label={labelSubLangkah(indeks, ketukan, jumlahPoin)} judul={judulFokus} selesai={selesai}
             baris={ketukan === null ? null : babIni.bab.daftarBaris[ketukan] ?? null} semuaBaris={babIni.bab.daftarBaris} peraga={peraga} />}
           laci={laciTerbuka ? <>{jalurLangkah}{langkahIni(ketukan, baris => { setPoin(baris); setSelesai(false); putarLagi(); })}</> : null} />
       )}

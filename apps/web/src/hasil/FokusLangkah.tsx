@@ -16,7 +16,6 @@ import { LegendaSorot, useSorot, type PeranSorot } from './sorot';
 interface Props {
   judul: string;
   nomor: number;
-  total: number;
   kolom: KolomBab | undefined;
   kanvas: { pohon: ReactNode; tabel: ReactNode };
   saatTutup: () => void;
@@ -31,7 +30,7 @@ interface Props {
 const DURASI_TERBANG = 1400;
 const LEBAR_BERDAMPINGAN = '(min-width: 900px)';
 
-export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, kontrol, atasTabel, laci, navigasi, dijeda }: Props) {
+export function FokusLangkah({ judul, nomor, kolom, kanvas, saatTutup, kontrol, atasTabel, laci, navigasi, dijeda }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
   const { langkah } = useSorot();
 
@@ -67,7 +66,7 @@ export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, ko
       aria-label={`Mode fokus: ${judul}`} ref={wadah} onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
       <header className="kepala-fokus">
         <button type="button" className="tombol-ikon" data-tutup onClick={saatTutup} aria-label="Tutup" title="Tutup"><Ikon nama="salah" /></button>
-        <p><span className="ke-langkah">Langkah {nomor + 1} dari {total}</span> <b>{judul}</b></p>
+        <p><b>Mode fokus</b></p>
         <LegendaSorot />
         <div className="kontrol-fokus">
           {kontrol}
@@ -89,8 +88,8 @@ export function FokusLangkah({ judul, nomor, total, kolom, kanvas, saatTutup, ko
  * Kepala panel: sub-langkah yang sedang dibahas dan kalimatnya, lalu peraga hitungannya. Tanpa ketukan (animasi mati)
  * seluruh baris langkah tampil sekaligus. selesai = semua langkah sudah diikuti.
  */
-export function PanelHitung({ label, judul, baris, semuaBaris, peraga, selesai }: {
-  label: string; judul: string; baris: BarisPenjelasan | null; semuaBaris: BarisPenjelasan[]; peraga: Peraga | null; selesai: boolean;
+export function PanelHitung({ posisi, label, judul, baris, semuaBaris, peraga, selesai }: {
+  posisi: string; label: string; judul: string; baris: BarisPenjelasan | null; semuaBaris: BarisPenjelasan[]; peraga: Peraga | null; selesai: boolean;
 }) {
   if (selesai) {
     return (
@@ -102,6 +101,7 @@ export function PanelHitung({ label, judul, baris, semuaBaris, peraga, selesai }
   }
   return (
     <div className="panel-hitung" aria-live="polite">
+      <p className="ke-langkah">{posisi}</p>
       <p className="judul-panel-hitung"><b>{label}</b> — {judul}</p>
       {baris ? <p className="narasi-hitung"><Baris baris={baris} /></p>
         : <ul className="narasi-semua">{semuaBaris.map((isi, nomor) => <li key={nomor}><Baris baris={isi} /></li>)}</ul>}
