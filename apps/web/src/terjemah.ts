@@ -11,6 +11,10 @@ export const bahasaArab = (): boolean => bacaBahasa() === 'ar';
 /** Angka Arab (٠١٢) bila bahasa Arab (keputusan 2026-09-26). */
 export const angka = (teks: string): string => (bahasaArab() ? angkaArab(teks) : teks);
 
+/** Isian dari keyboard Arab (٠١٢ atau ۰۱۲ Persia) → angka Latin, supaya parser angka tetap satu jalur. */
+export const angkaLatin = (teks: string): string =>
+  teks.replace(/[٠-٩۰-۹]/g, digit => String(digit.charCodeAt(0) % 16)).replace(/٬/g, '.');
+
 /** Panah "maju": di tampilan kanan-ke-kiri arahnya berbalik. */
 export const panah = (): string => (bahasaArab() ? '←' : '→');
 

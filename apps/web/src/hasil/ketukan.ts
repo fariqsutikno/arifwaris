@@ -9,7 +9,7 @@ import type { BabPenjelasan, BarisPenjelasan, KolomBab } from '@waris/explain';
 import { orangDisebut } from '../layar/Penjelasan';
 import type { RingkasanHasil } from './ringkasan';
 import type { PeranSorot, SorotLangkah, UbahBagian } from './sorot';
-import { t } from '../terjemah';
+import { angka, t } from '../terjemah';
 
 export interface DataPeran {
   idPewaris: IdOrang;
@@ -33,7 +33,7 @@ export function dataPeranDari(graf: GrafKeluarga, ringkasan: RingkasanHasil, tab
     id !== graf.idPewaris && !graf.orang[id]!.penghubung && !urutanWafat.includes(id) && !menerima.has(id) && !terhalang.has(id));
   const nuqshan = new Map<IdOrang, UbahBagian>();
   for (const langkah of jejak) {
-    if (langkah.jenis === 'HAJB_NUQSHAN') nuqshan.set(langkah.terdampak, { dari: `${langkah.dari.n}/${langkah.dari.d}`, menjadi: `${langkah.menjadi.n}/${langkah.menjadi.d}` });
+    if (langkah.jenis === 'HAJB_NUQSHAN') nuqshan.set(langkah.terdampak, { dari: angka(`${langkah.dari.n}/${langkah.dari.d}`), menjadi: angka(`${langkah.menjadi.n}/${langkah.menjadi.d}`) });
   }
   return { idPewaris: graf.idPewaris, pembagian, terhalang, bukanAhliWaris, nuqshan };
 }

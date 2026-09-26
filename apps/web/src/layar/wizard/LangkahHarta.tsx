@@ -11,7 +11,7 @@ import { t } from '../../terjemah';
 
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
 
-const labelTambahCepat = (nilai: bigint) => `+${nilai / 1_000_000n} jt`;
+const labelTambahCepat = (nilai: bigint) => t('+{jumlah} jt', { jumlah: nilai / 1_000_000n });
 
 export function LangkahHarta({ kasus, ubah }: Props) {
   const [cara, setCara] = useState<'total' | 'rinci'>(kasus.rincianHarta ? 'rinci' : 'total');

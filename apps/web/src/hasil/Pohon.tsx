@@ -12,7 +12,7 @@ import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
 import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
 import { tataLetak, type TataLetak } from './tataLetak';
-import { panah, t } from '../terjemah';
+import { angka, panah, t } from '../terjemah';
 
 interface Props {
   graf: GrafKeluarga;
@@ -56,7 +56,7 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
 
 /** Bagian sebelum dijadikan saham: "1/8", "1/6 + sisa", atau "sisa". */
 const bagianFardh = ({ fardh, ashabah }: { fardh?: { n: bigint; d: bigint }; ashabah: boolean }) =>
-  fardh ? `${fardh.n}/${fardh.d}${ashabah ? t(' + sisa') : ''}` : 'sisa';
+  fardh ? `${angka(`${fardh.n}/${fardh.d}`)}${ashabah ? t(' + sisa') : ''}` : t('sisa');
 
 function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
   return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">{panah()}</span><b>{ubah.menjadi}</b></span>;

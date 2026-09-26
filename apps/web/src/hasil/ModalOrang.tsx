@@ -42,7 +42,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   // Ubah langsung dari sini hanya untuk ahli waris pewaris pertama (bukan pewaris, bukan ahli waris mayit munasakhat).
   const bisaDiubah = !!kunci && (hitungIsian(graf, graf.idPewaris)[kunci] ?? []).includes(id);
   const dataCocok = {
-    ...(dapat?.fardh ? { fardh: `${dapat.fardh.n}/${dapat.fardh.d}` } : {}),
+    ...(dapat?.fardh ? { fardh: angka(`${dapat.fardh.n}/${dapat.fardh.d}`) } : {}),
     ashabah: !!dapat?.ashabah, terhalang: !!halang,
     ...(dapat?.kodeAlasan ? { kodeAlasan: dapat.kodeAlasan } : {}),
   };
@@ -53,7 +53,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
         <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? 'Almarhum' : halang && !sedangMenebak ? t('Terhalang (mahjub)') : kelompok ?? 'Kerabat'}</p>
+            <p className="peran-modal">{id === graf.idPewaris ? t('Almarhum') : halang && !sedangMenebak ? t('Terhalang (mahjub)') : kelompok ? t(kelompok) : t('Kerabat')}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
           <button type="button" className="tombol-ikon" data-tutup aria-label={t('Tutup')} onClick={saatTutup}>✕</button>

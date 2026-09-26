@@ -4,7 +4,7 @@ import { fpb } from '@waris/math';
 import type { GrafKeluarga, IdOrang, StatusOrang, TabelMasalah } from '@waris/engine';
 import { jenisDari } from './checklist';
 import { LABEL_SEHARI } from './konten/ahliWaris';
-import { angka } from './terjemah';
+import { angka, angkaLatin } from './terjemah';
 
 const ANGKA_INDONESIA = new Intl.NumberFormat('id-ID');
 const URUTAN_PENYEBUT = ['ashl', 'aul', 'radd', 'tashih'] as const;
@@ -13,7 +13,7 @@ export const formatRupiah = (nilai: bigint): string => angka(`Rp ${ANGKA_INDONES
 
 /** Isian uang dari pengguna: digit dan titik ribuan saja. Kosong = 0. */
 export function bacaInputUang(teks: string): bigint | null {
-  const bersih = teks.replace(/\./g, '').trim();
+  const bersih = angkaLatin(teks).replace(/\./g, '').trim();
   if (bersih === '') return 0n;
   return /^\d+$/.test(bersih) ? BigInt(bersih) : null;
 }
@@ -39,7 +39,7 @@ export function namaOrang(graf: GrafKeluarga, statusOrang: Record<IdOrang, Statu
   const label = labelDari(statusOrang[idOrang]);
   if (nama) return `${nama} (${label})`;
   const sePeran = Object.keys(statusOrang).filter(id => labelDari(statusOrang[id]) === label && !graf.orang[id]?.penghubung);
-  return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
+  return sePeran.length > 1 ? `${label} ${angka(String(sePeran.indexOf(idOrang) + 1))}` : label;
 }
 
 function labelDari(status: StatusOrang | undefined): string {

@@ -7,7 +7,7 @@ import { jenisDari, type Kelompok } from '../checklist';
 import { namaOrang, penyebutAkhir } from '../format';
 import { jalankan, type HasilMunasakhatOk, type HasilOk, type HasilTampil } from '../jalankan';
 import type { Kasus } from '../kasus';
-import { t } from '../terjemah';
+import { angka, bahasaArab, t } from '../terjemah';
 
 type LangkahTirkah = Extract<LangkahJejak, { jenis: 'TIRKAH' }>;
 type Nisbah = Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>['hubungan'];
@@ -61,15 +61,15 @@ export function ringkas(kasus: Kasus, tampil: HasilTampil): RingkasanHasil {
 export type BentukPecahan = 'sederhana' | 'sama';
 
 export function pecahanTeks(saham: bigint, penyebut: bigint, bentuk: BentukPecahan): string {
-  if (bentuk === 'sama' || saham === 0n) return `${saham}/${penyebut}`;
+  if (bentuk === 'sama' || saham === 0n) return angka(`${saham}/${penyebut}`);
   const faktor = fpb(saham, penyebut);
-  return `${saham / faktor}/${penyebut / faktor}`;
+  return angka(`${saham / faktor}/${penyebut / faktor}`);
 }
 
 /** Persen untuk tampilan saja (dua desimal, format Indonesia); bukan jalur hitung. */
 export function persenTeks(saham: bigint, penyebut: bigint): string {
   const perSepuluhRibu = (saham * 10000n * 10n / penyebut + 5n) / 10n;   // dibulatkan ke 0,01%
-  return `${(Number(perSepuluhRibu) / 100).toLocaleString('id-ID', { maximumFractionDigits: 2 })}%`;
+  return `${(Number(perSepuluhRibu) / 100).toLocaleString(bahasaArab() ? 'ar-u-nu-arab' : 'id-ID', { maximumFractionDigits: 2 })}%`;
 }
 
 /** Kartu pembulatan hanya muncul bila pembagian dengan pembulatan Rp 1 masih menyisakan sisa (tidak habis dibagi). */
@@ -109,7 +109,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
       id, nama: namaOrang(graf, hasil.statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham, nominal,
-      keterangan: (baris.fardh ? t('Bagian tertentu {fardh}', { fardh: `${baris.fardh.n}/${baris.fardh.d}` }) : t('Sisa (ashabah)')) + asalInduk(graf, hasil.statusOrang, id, kunci),
+      keterangan: (baris.fardh ? t('Bagian tertentu {fardh}', { fardh: angka(`${baris.fardh.n}/${baris.fardh.d}`) }) : t('Sisa (ashabah)')) + asalInduk(graf, hasil.statusOrang, id, kunci),
       ...(baris.fardh ? { fardh: { n: baris.fardh.n, d: baris.fardh.d } } : {}),
       ashabah: !!baris.ashabah,
       ...(alasanPerKelompok.has(baris.kelompok) ? { kodeAlasan: alasanPerKelompok.get(baris.kelompok)! } : {}),

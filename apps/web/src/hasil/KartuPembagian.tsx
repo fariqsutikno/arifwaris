@@ -44,7 +44,7 @@ export function KartuPembagian(props: Props) {
   return (
     <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
-        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? 'Jawabanmu' : t('Kunci jawaban')) : 'Pembagian'}</h2>
+        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('Jawabanmu') : t('Kunci jawaban')) : t('Pembagian')}</h2>
         <div className="alat-pembagian">
           {props.saatUbahAhliWaris && (
             <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('Ubah ahli waris')} title={t('Ubah ahli waris')}>

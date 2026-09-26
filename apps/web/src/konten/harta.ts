@@ -1,7 +1,7 @@
 // Teks langkah Harta dan Kewajiban. `perluCek` = belum diverifikasi tim keilmuan.
 
 import type { KategoriHarta } from '../kasus';
-import { t } from '../terjemah';
+import { angka, t } from '../terjemah';
 
 export const KATEGORI_HARTA_TEKS: Record<KategoriHarta, { label: string; contoh: string }> = {
   tabungan: { label: t('Tabungan & kas'), contoh: t('Rekening bank, deposito, uang tunai') },
@@ -20,9 +20,9 @@ export const TEKS_HARTA = {
 };
 
 export const PILIHAN_PEMBULATAN = [
-  { satuan: 1n, judul: t('Rp 1'), keterangan: t('Pas sampai rupiah terakhir. Cocok kalau dibagi lewat transfer bank.') },
-  { satuan: 100n, judul: t('Rp 100'), keterangan: t('Hampir pas, angka lebih rapi.') },
-  { satuan: 1000n, judul: t('Rp 1.000'), keterangan: t('Paling praktis kalau dibagi tunai.') },
+  { satuan: 1n, judul: angka('Rp 1'), keterangan: t('Pas sampai rupiah terakhir. Cocok kalau dibagi lewat transfer bank.') },
+  { satuan: 100n, judul: angka('Rp 100'), keterangan: t('Hampir pas, angka lebih rapi.') },
+  { satuan: 1000n, judul: angka('Rp 1.000'), keterangan: t('Paling praktis kalau dibagi tunai.') },
 ] as const;
 
 export const TEKS_KEWAJIBAN = {

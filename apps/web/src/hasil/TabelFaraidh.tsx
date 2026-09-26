@@ -89,7 +89,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
             <th className={kepala('tashih')}><Istilah id="tashih">{t('Tashih')}</Istilah><small>{angka('tashih', tashih)}</small>
               {langkah?.kolom === 'tashih' && dasarTashih !== undefined && dasarTashih > 0n && tashih % dasarTashih === 0n && <span className="pengali-tashih">{angkaTampil(String(dasarTashih))} × {angkaTampil(String(tashih / dasarTashih))}</span>}</th>
           )}
-          <th>{t('Per orang')}<small><Istilah arti="Bagian tiap orang dihitung dalam satuan kecil yang sama (saham), dari jumlah pada kolom sebelumnya.">saham</Istilah></small></th>
+          <th>{t('Per orang')}<small><Istilah arti={t('Bagian tiap orang dihitung dalam satuan kecil yang sama (saham), dari jumlah pada kolom sebelumnya.')}>{t('saham')}</Istilah></small></th>
           <th className={kepala('nominal')}>{t('Nominal')}<small>{sembunyi ? uangAtau(ringkasan.tirkah.bersih, true) : <AngkaMasuk teks={formatRupiah(ringkasan.tirkah.bersih)} pemicu={pemicu('nominal', [])} />}</small></th>
         </tr>
       </thead>
@@ -107,7 +107,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
                 {indeks === 0 && <>
                   <td rowSpan={anggota.length} className={sel('bagian', anggota)} data-anggota={anggota.join(' ')}>
                     {tertutup('bagian', anggota) ? RAHASIA : (
-                      <span className="bagian-sel">{baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : <Istilah id="ashabah">{t('Ashabah')}</Istilah>}
+                      <span className="bagian-sel">{baris.fardh ? angkaTampil(`${baris.fardh.n}/${baris.fardh.d}`) : <Istilah id="ashabah">{t('Ashabah')}</Istilah>}
                         <small>{baris.fardh ? (baris.ashabah ? t('bagian tertentu + sisa') : t('bagian tertentu')) : anggota.length > 1 ? t('sisa, dibagi bersama') : 'sisa'}</small></span>
                     )}
                   </td>
@@ -162,7 +162,7 @@ function TabelSoal({ ringkasan, saatPilih }: { ringkasan: RingkasanHasil; saatPi
       <thead>
         <tr>
           <th className="kiri">{t('Ahli waris')}</th><th>{t('Bagian')}</th><th><Istilah id="ashlul-masalah">{t('Asal masalah')}</Istilah><small>{RAHASIA}</small></th>
-          <th>{t('Per orang')}<small>saham</small></th><th>{t('Nominal')}<small>{formatRupiah(ringkasan.tirkah.bersih)}</small></th>
+          <th>{t('Per orang')}<small>{t('saham')}</small></th><th>{t('Nominal')}<small>{formatRupiah(ringkasan.tirkah.bersih)}</small></th>
         </tr>
       </thead>
       <tbody>

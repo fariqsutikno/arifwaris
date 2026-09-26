@@ -591,4 +591,13 @@ export const KAMUS_ARAB: Record<string, string> = {
   'Pilih dulu jenis kelamin almarhum.': 'اختر جنس الميت أولا.',
   'Isi total harta peninggalan dulu, harus lebih dari Rp 0.': 'أدخل مجموع التركة أولا، ويجب أن يزيد على الصفر.',
   'Tambahkan minimal satu ahli waris.': 'أضف وارثا واحدا على الأقل.',
+  '+{jumlah} jt': '+{jumlah} مليون',
+  'saham': 'سهام',
+  'sisa': 'الباقي',
+  'Bagian tiap orang dihitung dalam satuan kecil yang sama (saham), dari jumlah pada kolom sebelumnya.': 'نصيب كل واحد بسهام متساوية من العدد في العمود السابق.',
+  // nama kelompok (kode kelompok ahli waris)
+  'pasangan': 'الزوجان',
+  'keturunan': 'الفروع',
+  'leluhur': 'الأصول',
+  'saudara': 'الحواشي',
 };

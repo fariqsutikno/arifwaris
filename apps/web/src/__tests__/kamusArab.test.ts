@@ -18,3 +18,11 @@ it('kamus Arab lengkap untuk semua t()', () => {
   const belum = [...new Set(kunci)].filter(teks => !(teks in KAMUS_ARAB) && !TANPA_TERJEMAHAN.has(teks));
   expect(belum).toEqual([]);
 });
+
+it('isian dengan angka Arab dibaca sama dengan angka Latin', async () => {
+  const { bacaInputUang } = await import('../format');
+  const { bacaPecahan } = await import('../hasil/tebak');
+  expect(bacaInputUang('١٢٠٬٠٠٠')).toBe(120000n);
+  expect(bacaPecahan('١/٨')).toEqual({ n: 1n, d: 8n });
+  expect(bacaPecahan('۳/۲۴')).toEqual({ n: 3n, d: 24n });
+});

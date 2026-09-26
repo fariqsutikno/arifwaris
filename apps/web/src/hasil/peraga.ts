@@ -8,7 +8,7 @@ import type { IdOrang, LangkahJejak } from '@waris/engine';
 import type { BabPenjelasan } from '@waris/explain';
 import type { HasilOk } from '../jalankan';
 import { urutkanBaris, type RingkasanHasil } from './ringkasan';
-import { t } from '../terjemah';
+import { angka, t } from '../terjemah';
 
 type LangkahNisab = Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>;
 
@@ -75,7 +75,7 @@ function barisKali(hasil: HasilOk, ringkasan: RingkasanHasil, ashl: bigint): Bar
     const { fardh } = barisTabel;
     const rumus = !fardh ? `sisa: ${ashl} − ${jumlahFardh}`
       : barisTabel.ashabah && hasilSel > porsiFardh(fardh) ? t('{ashl} × {fardh} = {porsi}, + sisa {sisa}', { ashl, fardh: `${fardh.n}/${fardh.d}`, porsi: porsiFardh(fardh), sisa: hasilSel - porsiFardh(fardh) })
-        : `${ashl} × ${fardh.n}/${fardh.d}`;
+        : angka(`${ashl} × ${fardh.n}/${fardh.d}`);
     return { daftarId, nama: daftarId.map(id => nama.get(id) ?? id).join(' & '), rumus, hasil: hasilSel };
   });
 }
