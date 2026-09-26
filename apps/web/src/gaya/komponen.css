@@ -627,8 +627,8 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .ikon-aktivitas{flex:none;color:var(--primary)}
 a.isi-soal{color:var(--ink);text-decoration:none}
 a.isi-soal:hover b{text-decoration:underline}
-.grid-pintu{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.pintu-belajar{display:flex;align-items:center;gap:10px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;font-weight:800}
+.grid-pintu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pintu-belajar{display:flex;align-items:center;gap:10px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;font-weight:800;min-width:0;flex-wrap:wrap;overflow-wrap:break-word}
 .ikon{flex:none;display:block}
 .pintu-belajar:hover{background:var(--sun);color:var(--on-fill)}
 .pintu-menyusul{opacity:.6;cursor:not-allowed}.pintu-menyusul:hover{background:var(--surface-raised);color:var(--ink)}.pintu-menyusul small{margin-left:auto;font-weight:400}
