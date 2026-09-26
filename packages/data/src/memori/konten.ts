@@ -22,6 +22,9 @@ export interface MemoriBersama {
   aturPeranLangsung(userId: string, peran: Peran | null): void;
   /** Hanya untuk tes: meniru baris jsonb yang disunting manual di DB. */
   isiRevisiMentah(revisiId: string, isi: unknown): void;
+  sesiSekarang(): Sesi | null;
+  peranDari(userId: string): Peran | null;
+  daftarPeranSemua(): { userId: string; peran: Peran }[];
 }
 
 export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: Record<string, Peran> } = {}): MemoriBersama {
@@ -179,5 +182,8 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     masukSebagai(sesiBaru) { sesi = sesiBaru; },
     aturPeranLangsung(userId, peranBaru) { if (peranBaru) peran.set(userId, peranBaru); else peran.delete(userId); },
     isiRevisiMentah(revisiId, isi) { ambil(revisi, revisiId, 'revisi').isi = isi; },
+    sesiSekarang: () => sesi,
+    peranDari: userId => peran.get(userId) ?? null,
+    daftarPeranSemua: () => [...peran.entries()].map(([userId, peranPengguna]) => ({ userId, peran: peranPengguna })),
   };
 }

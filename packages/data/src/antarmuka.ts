@@ -1,6 +1,6 @@
 // Antarmuka repository (spec "Arsitektur"). App hanya mengenal antarmuka ini; implementasinya memori/ (tes & snapshot)
 // dan supabase/ (sekarang), nanti http/ (VPS). Pesan galat dari semua implementasi = Error berpesan Indonesia.
-import type { IsiKonten, JenisKonten, StatusRevisi } from '@waris/content';
+import type { IsiKonten, JenisKonten, Peran, StatusRevisi } from '@waris/content';
 
 export interface Sesi { userId: string; email: string }
 export interface KontenTerbit<J extends JenisKonten = JenisKonten> {
@@ -42,4 +42,35 @@ export interface RepositoriDiksi {
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
   daftarRevisi(kunci: string): Promise<RingkasanRevisiDiksi[]>;
+}
+
+export interface RiwayatTersimpan { id: string; kasus: unknown; judul: string; disimpanPada: string }
+export interface ProgresBelajar { pelajaranSlug: string; selesai: boolean; diubahPada: string }
+export interface ProgresLatihan {
+  soalSlug: string; jenis: 'kuis' | 'hitung'; jawabanTerakhir: unknown; benar: boolean; jumlahCoba: number; diubahPada: string;
+}
+export interface Preferensi { isi: Record<string, unknown>; diubahPada: string }
+
+/** Semua operasi milik pengguna yang sedang masuk; melempar 'belum masuk' bila tanpa sesi. */
+export interface RepositoriPengguna {
+  bacaRiwayat(): Promise<RiwayatTersimpan[]>;
+  simpanRiwayat(riwayat: RiwayatTersimpan): Promise<void>;
+  hapusRiwayat(id: string): Promise<void>;
+  bacaProgresBelajar(): Promise<ProgresBelajar[]>;
+  simpanProgresBelajar(progres: ProgresBelajar): Promise<void>;
+  bacaProgresLatihan(): Promise<ProgresLatihan[]>;
+  simpanProgresLatihan(progres: ProgresLatihan): Promise<void>;
+  bacaPreferensi(): Promise<Preferensi | null>;
+  simpanPreferensi(preferensi: Preferensi): Promise<void>;
+}
+export interface RepositoriAkun {
+  sesi(): Promise<Sesi | null>;
+  /** Mengarahkan ke Google; kembali ke `alamatKembali`. */
+  masukGoogle(alamatKembali: string): Promise<void>;
+  keluar(): Promise<void>;
+  peranSaya(): Promise<Peran | null>;
+  /** Admin saja. `null` = cabut peran. */
+  aturPeran(userId: string, peran: Peran | null): Promise<void>;
+  /** Admin saja. */
+  daftarPeran(): Promise<{ userId: string; peran: Peran }[]>;
 }
