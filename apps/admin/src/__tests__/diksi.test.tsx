@@ -1,7 +1,8 @@
 // Tes EditorDiksi: saringDiksi untuk tiap filter (Arab kosong, belum terbit, cari), tabel dikelompokkan per
-// halaman, alur "Simpan & ajukan" (buatDraf lalu ajukan), dan sel baca-saja untuk peran reviewer.
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import { expect, test } from 'vitest';
+// halaman, alur "Simpan & ajukan" (buatDraf lalu ajukan), sel baca-saja untuk peran reviewer, dan riwayat +
+// rollback (terbitkanUlang) per kunci.
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
 import type { RingkasanKunciDiksi } from '@waris/data';
 import { KonteksRepo } from '../repo';
@@ -98,4 +99,54 @@ test('reviewer: sel baca-saja, tanpa tombol simpan', async () => {
   await screen.findByText('halaman1.judul');
   expect(screen.queryByLabelText('Arab halaman1.judul')).toBeNull();
   expect(screen.queryByRole('button', { name: /simpan.*ajukan/i })).toBeNull();
+});
+
+/** Kunci dengan dua revisi disetujui berurutan (id-lama diterbitkan lalu digantikan id-baru), supaya ada
+ * revisi disetujui lama yang bisa di-rollback. Aktor admin supaya bebas dari penjaga peran buatDraf/setujui. */
+async function siapkanRiwayatDiksi() {
+  const m = buatMemori({ refs: ['R05-1'], sesi: { userId: 'u1', email: 'admin@x.id' }, peran: { u1: 'admin' } });
+  await m.diksi.buatKunci('halaman1.judul', 'halaman1');
+  const draf1 = await m.diksi.buatDraf('halaman1.judul', 'id-lama', 'ar-lama', null);
+  await m.diksi.ajukan(draf1);
+  await m.diksi.setujui(draf1);
+  const draf2 = await m.diksi.buatDraf('halaman1.judul', 'id-baru', 'ar-baru', null);
+  await m.diksi.ajukan(draf2);
+  await m.diksi.setujui(draf2);
+  return m;
+}
+
+test('reviewer: riwayat menawarkan "Terbitkan ulang" pada revisi disetujui lama; klik → bacaTerbit kembali ke teks itu', async () => {
+  const m = await siapkanRiwayatDiksi();
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  render(
+    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u1', email: 'admin@x.id' }, peran: 'reviewer' }}>
+      <EditorDiksi />
+    </KonteksRepo.Provider>,
+  );
+  await screen.findByText('halaman1.judul');
+  const baris = screen.getByText('halaman1.judul').closest('tr')!;
+  fireEvent.click(within(baris).getByRole('button', { name: /riwayat/i }));
+
+  const tombolRollback = await screen.findByRole('button', { name: /terbitkan ulang/i });
+  fireEvent.click(tombolRollback);
+
+  await waitFor(async () => {
+    const terbit = await m.diksi.bacaTerbit();
+    expect(terbit.find(t => t.kunci === 'halaman1.judul')?.id).toBe('id-lama');
+  });
+});
+
+test('penulis: riwayat tidak menawarkan tombol "Terbitkan ulang"', async () => {
+  const m = await siapkanRiwayatDiksi();
+  render(
+    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u1', email: 'admin@x.id' }, peran: 'penulis' }}>
+      <EditorDiksi />
+    </KonteksRepo.Provider>,
+  );
+  await screen.findByText('halaman1.judul');
+  const baris = screen.getByText('halaman1.judul').closest('tr')!;
+  fireEvent.click(within(baris).getByRole('button', { name: /riwayat/i }));
+
+  await screen.findByText(/id-lama/);
+  expect(screen.queryByRole('button', { name: /terbitkan ulang/i })).toBeNull();
 });
