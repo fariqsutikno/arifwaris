@@ -4,6 +4,7 @@
 
 import { useId, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { cariIstilah } from '@waris/content';
+import { useBahasa } from '../preferensi';
 
 const JARAK = 8;
 
@@ -51,9 +52,16 @@ export function Istilah({ id, arti, children }: { id?: string; arti?: string; ch
   const entri = id ? cariIstilah(id) : undefined;
   const teks = arti ?? entri?.artiAwam ?? entri?.makna;
   const { pemicuProps, isi } = useTooltip();
-  if (!teks) return <>{children}</>;
-  return <span className="istilah" tabIndex={0} {...pemicuProps}>{children}{isi(teks)}</span>;
+  const arab = useBahasa() === 'id+ar' && entri?.arab ? <> <Arab>{entri.arab}</Arab></> : null;
+  if (!teks) return <>{children}{arab}</>;
+  return <><span className="istilah" tabIndex={0} {...pemicuProps}>{children}{isi(teks)}</span>{arab}</>;
 }
+
+const HARAKAT = /[\u064B-\u0652\u0670]/g;
+
+/** Padanan Arab sebaris; tampil tanpa harakat (keputusan 2026-09-26), sumber boleh berharakat. */
+export const Arab = ({ children }: { children: string }) =>
+  <span lang="ar" dir="rtl" className="arab-sebaris">{children.replace(HARAKAT, '')}</span>;
 
 /** Ikon ⓘ kecil di samping label; penjelasan muncul di tooltip, bukan paragraf panjang yang menempel. */
 export function InfoTip({ label, children }: { label: string; children: ReactNode }) {

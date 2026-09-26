@@ -54,3 +54,11 @@ it('preferensi tersimpan, dan tetap jalan bila localStorage melempar error', () 
   expect(bacaTujuan()).toBe('hitung');
   setItem.mockRestore(); getItem.mockRestore();
 });
+
+it('bahasa: bawaan id, tersimpan id+ar', async () => {
+  const { bacaBahasa, simpanBahasa } = await import('../preferensi');
+  expect(bacaBahasa()).toBe('id');
+  simpanBahasa('id+ar');
+  expect(bacaBahasa()).toBe('id+ar');
+  simpanBahasa('id');
+});

@@ -7,6 +7,7 @@ import { Logo, Tombol } from '../ui/komponen';
 import type { Kasus } from '../kasus';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
+import { simpanBahasa, useBahasa } from '../preferensi';
 import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
 
 export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, saatUlangi }: Props) {
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
+  const bahasa = useBahasa();
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
     { label: 'Beranda', ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
     { label: 'Belajar', ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
@@ -40,6 +42,9 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
         <Logo saatKlik={() => { window.location.hash = TAUTAN_BERANDA; }} />
         <nav aria-label="Menu utama" className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
         <span className="pengisi" />
+        {/* Mode santri: istilah & ahli waris diberi padanan Arab. */}
+        <Tombol varian="secondary" kecil className="tombol-kepala" aria-pressed={bahasa === 'id+ar'} title="Tampilkan istilah Arab"
+          onClick={() => simpanBahasa(bahasa === 'id+ar' ? 'id' : 'id+ar')}><span lang="ar">عربي</span></Tombol>
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
         {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Tur singkat" title="Tur singkat" onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">Tur singkat</span></Tombol>}
         {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Reset skenario" title="Reset skenario" onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">Reset skenario</span></Tombol>}

@@ -1206,3 +1206,5 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
   .fokus-tak-muat p{margin:0;opacity:.8}
   .fokus-tak-muat .tombol-ikon{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px}
 }
+.arab-sebaris{font:500 1.05em/1 var(--font-arab);color:var(--ink-muted);unicode-bidi:isolate}
+.tombol-kepala[aria-pressed="true"]{background:var(--ink);color:var(--surface-raised)}

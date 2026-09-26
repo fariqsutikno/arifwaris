@@ -2,6 +2,8 @@
 // (pelajaran selesai, soal dikerjakan, jawaban kuis).
 // Bukan bagian Kasus. Bila localStorage tidak bisa dipakai, nilai disimpan di memori selama sesi.
 
+import { useSyncExternalStore } from 'react';
+
 export type Tujuan = 'hitung' | 'belajar';
 
 const KUNCI_TUJUAN = 'arif-waris:tujuan';
@@ -97,3 +99,20 @@ export function bacaUkuranBaca(): number {
   return (UKURAN_BACA as readonly number[]).includes(nilai) ? nilai : 18;
 }
 export const simpanUkuranBaca = (ukuran: number): void => simpan(KUNCI_UKURAN_BACA, String(ukuran));
+
+/** Bahasa tampilan: 'id' saja, atau 'id+ar' (istilah & ahli waris diberi padanan Arab) untuk santri. */
+export type Bahasa = 'id' | 'id+ar';
+const KUNCI_BAHASA = 'arif-waris:bahasa';
+const pendengarBahasa = new Set<() => void>();
+
+export const bacaBahasa = (): Bahasa => (baca(KUNCI_BAHASA) === 'id+ar' ? 'id+ar' : 'id');
+export function simpanBahasa(bahasa: Bahasa): void {
+  simpan(KUNCI_BAHASA, bahasa);
+  pendengarBahasa.forEach(dengar => dengar());
+}
+
+/** Bahasa aktif sebagai state React: semua komponen ikut berganti saat tombol bahasa ditekan. */
+export const useBahasa = (): Bahasa => useSyncExternalStore(dengar => {
+  pendengarBahasa.add(dengar);
+  return () => pendengarBahasa.delete(dengar);
+}, bacaBahasa);

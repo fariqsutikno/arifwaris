@@ -17,6 +17,19 @@ export const LABEL_SEHARI: Partial<Record<KunciAhliWaris, string>> = {
   SEPUPU_KANDUNG: 'Sepupu laki-laki (kandung)', SEPUPU_SEBAPAK: 'Sepupu laki-laki (satu ayah)',
 };
 
+/**
+ * Padanan Arab untuk mode 'id+ar', ditulis dari transliterasi di tabel KB bab 3.1–3.2 [R03-1].
+ * Tanpa harakat (keputusan 2026-09-26). Draf: `perluCek` sampai dicek tim keilmuan.
+ */
+export const LABEL_ARAB: Record<KunciAhliWaris, string> = {
+  ANAK_LK: 'الابن', CUCU_LK: 'ابن الابن', AYAH: 'الأب', KAKEK: 'الجد', SAUDARA_KANDUNG: 'الأخ الشقيق',
+  SAUDARA_SEBAPAK: 'الأخ لأب', SAUDARA_SEIBU: 'الأخ لأم', KEPONAKAN_KANDUNG: 'ابن الأخ الشقيق', KEPONAKAN_SEBAPAK: 'ابن الأخ لأب',
+  PAMAN_KANDUNG: 'العم الشقيق', PAMAN_SEBAPAK: 'العم لأب', SEPUPU_KANDUNG: 'ابن العم الشقيق', SEPUPU_SEBAPAK: 'ابن العم لأب',
+  SUAMI: 'الزوج', MUTIQ: 'المعتق',
+  ANAK_PR: 'البنت', CUCU_PR: 'بنت الابن', IBU: 'الأم', NENEK_DARI_IBU: 'أم الأم', NENEK_DARI_AYAH: 'أم الأب',
+  SAUDARI_KANDUNG: 'الأخت الشقيقة', SAUDARI_SEBAPAK: 'الأخت لأب', SAUDARI_SEIBU: 'الأخت لأم', ISTRI: 'الزوجة', MUTIQAH: 'المعتقة',
+};
+
 /** Keterangan kecil di bawah label, hanya bila labelnya belum cukup jelas. */
 export const KETERANGAN_HUBUNGAN: Partial<Record<KunciAhliWaris, string>> = {
   CUCU_LK: 'dari anak laki-laki', CUCU_PR: 'dari anak laki-laki',

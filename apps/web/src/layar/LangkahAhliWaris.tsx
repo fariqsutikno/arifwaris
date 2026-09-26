@@ -5,8 +5,9 @@
 import { useState } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
 import { daftarInduk, hitungIsian, INDUK_BARU_WAFAT, jenisDari, kurangiAhliWaris, tambahAhliWaris, ubahNama } from '../checklist';
-import { INFO_TIDAK_ADA, KELUARGA_INTI, KERABAT_LAIN, KETERANGAN_HUBUNGAN, LABEL_SEHARI, sebutAlmarhum } from '../konten/ahliWaris';
-import { TombolIkon } from '../ui/Tooltip';
+import { INFO_TIDAK_ADA, KELUARGA_INTI, KERABAT_LAIN, KETERANGAN_HUBUNGAN, LABEL_ARAB, LABEL_SEHARI, sebutAlmarhum } from '../konten/ahliWaris';
+import { Arab, TombolIkon } from '../ui/Tooltip';
+import { useBahasa } from '../preferensi';
 
 interface Props { graf: GrafKeluarga; idMayit: IdOrang; ubahGraf: (ubah: (graf: GrafKeluarga) => GrafKeluarga) => void }
 
@@ -82,6 +83,7 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   const jenisKelaminMayit = graf.orang[idMayit]!.jenisKelamin;
   const label = sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenis?.label ?? kunci, jenisKelaminMayit);
   const keterangan = KETERANGAN_HUBUNGAN[kunci];
+  const bahasa = useBahasa();
   const calonInduk = jenis?.kunciInduk ? daftarInduk(graf, idMayit, jenis.kunciInduk) : [];
   const [idInduk, setIdInduk] = useState<string | undefined>(undefined);
   const [namaTerbuka, setNamaTerbuka] = useState(false);
@@ -92,7 +94,7 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   return (
     <li className={jumlah > 0 ? 'kontrol-jumlah ada' : 'kontrol-jumlah'} role="group" aria-label={label}>
       <div className="baris-kontrol">
-        <span className="nama-kontrol">{label}
+        <span className="nama-kontrol">{label}{bahasa === 'id+ar' && <> <Arab>{LABEL_ARAB[kunci]}</Arab></>}
           {keterangan && <small>{sebutAlmarhum(keterangan, jenisKelaminMayit)}</small>}
           {jenis?.kunciInduk && (
             <select aria-label={`${label} dari siapa?`} value={indukTerpilih} onChange={e => setIdInduk(e.target.value)}>
