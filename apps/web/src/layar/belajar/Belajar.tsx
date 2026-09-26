@@ -8,6 +8,7 @@ import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, hapusAktivitas, reset
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan, tautanTanyaJawab } from '../../rute';
+import { panah, t } from '../../terjemah';
 import { Ikon, type NamaIkon } from '../../ui/Ikon';
 import { PAKET_ACAK } from './KuisKonsep';
 
@@ -40,20 +41,20 @@ export function Belajar() {
       {/* Satu aksi utama di atas: lanjut dari titik terakhir. Sisanya dikelompokkan menurut niat: belajar, berlatih, mencari. */}
       <section className="hero-belajar">
         <div className="tumpuk-rapat">
-          <h1>Pusat belajar faraidh</h1>
+          <h1>{t('Pusat belajar faraidh')}</h1>
           {berikutnya ? (
             <a className="kartu-lanjut" href={tautanBelajar(berikutnya.slug)}>
-              <span className="label-langkah">{jumlahSelesai === 0 ? 'Mulai dari sini' : 'Lanjutkan'} · Modul {berikutnya.modul}</span>
+              <span className="label-langkah">{t(jumlahSelesai === 0 ? 'Mulai dari sini' : 'Lanjutkan')} · {t('Modul {nomor}', { nomor: berikutnya.modul })}</span>
               <b>{berikutnya.judul}</b>
-              <span className="panah" aria-hidden="true">→</span>
+              <span className="panah" aria-hidden="true">{panah()}</span>
             </a>
-          ) : <p className="kartu-lanjut"><b>Semua pelajaran sudah selesai. Mantap!</b></p>}
+          ) : <p className="kartu-lanjut"><b>{t('Semua pelajaran sudah selesai. Mantap!')}</b></p>}
         </div>
-        <CincinProgres persen={persen} label={`${jumlahSelesai}/${DAFTAR_PELAJARAN.length} pelajaran`} />
+        <CincinProgres persen={persen} label={t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: DAFTAR_PELAJARAN.length })} />
       </section>
 
       <section className="tumpuk-rapat" aria-labelledby="judul-jalur">
-        <div className="kepala-bagian"><h2 id="judul-jalur">Belajar</h2><p className="keterangan">Materi berurutan, dari pengantar sampai menghitung.</p></div>
+        <div className="kepala-bagian"><h2 id="judul-jalur">{t('Belajar')}</h2><p className="keterangan">{t('Materi berurutan, dari pengantar sampai menghitung.')}</p></div>
         <ol className="daftar-polos daftar-modul">
           {modulTersedia.map(modul => {
             const daftar = DAFTAR_PELAJARAN.filter(pelajaran => pelajaran.modul === modul.nomor);
@@ -71,31 +72,31 @@ export function Belajar() {
         </ol>
         {/* Modul yang belum ada materinya cukup satu baris, bukan deretan kartu abu-abu. */}
         {modulMenyusul.length > 0 && (
-          <p className="keterangan">Segera hadir: {modulMenyusul.map(modul => `${modul.nomor}.\u00a0${modul.judul}`).join(' · ')}</p>
+          <p className="keterangan">{t('Segera hadir')}: {modulMenyusul.map(modul => `${modul.nomor}.\u00a0${modul.judul}`).join(' · ')}</p>
         )}
       </section>
 
       <section className="tumpuk-rapat" aria-labelledby="judul-latihan">
-        <div className="kepala-bagian"><h2 id="judul-latihan">Latihan</h2><p className="keterangan">Uji pemahaman setelah membaca materi.</p></div>
+        <div className="kepala-bagian"><h2 id="judul-latihan">{t('Latihan')}</h2><p className="keterangan">{t('Uji pemahaman setelah membaca materi.')}</p></div>
         <div className="deret-angka">
-          <KotakAngka nilai={soalSelesai} total={DAFTAR_SOAL_HITUNG.length} label="Soal hitung dikerjakan" tautan={tautanLatihan('hitung')} />
-          <KotakAngka nilai={kuisBenar} total={DAFTAR_SOAL_KUIS.length} label="Kuis konsep dijawab benar" tautan={tautanLatihan('kuis')} />
-          <a className="kotak-angka kotak-acak" href={tautanLatihan('kuis', PAKET_ACAK)}><Ikon nama="acak" ukuran={24} /><b>Kuis acak</b><span className="keterangan">Soal campuran semua bab</span></a>
+          <KotakAngka nilai={soalSelesai} total={DAFTAR_SOAL_HITUNG.length} label={t('Soal hitung dikerjakan')} tautan={tautanLatihan('hitung')} />
+          <KotakAngka nilai={kuisBenar} total={DAFTAR_SOAL_KUIS.length} label={t('Kuis konsep dijawab benar')} tautan={tautanLatihan('kuis')} />
+          <a className="kotak-angka kotak-acak" href={tautanLatihan('kuis', PAKET_ACAK)}><Ikon nama="acak" ukuran={24} /><b>{t('Kuis acak')}</b><span className="keterangan">{t('Soal campuran semua bab')}</span></a>
         </div>
       </section>
 
       <section className="tumpuk-rapat" aria-labelledby="judul-cari">
-        <div className="kepala-bagian"><h2 id="judul-cari">Cari tahu</h2><p className="keterangan">Buka kapan saja saat ada istilah atau hukum yang belum jelas.</p></div>
+        <div className="kepala-bagian"><h2 id="judul-cari">{t('Cari tahu')}</h2><p className="keterangan">{t('Buka kapan saja saat ada istilah atau hukum yang belum jelas.')}</p></div>
         <div className="grid-pintu">
-          <Pintu tautan={tautanFaq()} ikon="tanya" judul="FAQ" />
-          <Pintu tautan={tautanTanyaJawab()} ikon="tanya" judul="Tanya jawab" />
-          <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul="Glosarium" />
-          <Pintu tautan={tautanRujukan()} ikon="rujukan" judul="Rujukan" />
+          <Pintu tautan={tautanFaq()} ikon="tanya" judul={t('FAQ')} />
+          <Pintu tautan={tautanTanyaJawab()} ikon="tanya" judul={t('Tanya jawab')} />
+          <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul={t('Glosarium')} />
+          <Pintu tautan={tautanRujukan()} ikon="rujukan" judul={t('Rujukan')} />
         </div>
       </section>
 
       <section className="tumpuk-rapat" aria-labelledby="judul-cheatsheet">
-        <div className="kepala-bagian"><h2 id="judul-cheatsheet">Cheatsheet</h2><p className="keterangan">Ringkasan satu halaman untuk dicetak atau disimpan.</p></div>
+        <div className="kepala-bagian"><h2 id="judul-cheatsheet">{t('Cheatsheet')}</h2><p className="keterangan">{t('Ringkasan satu halaman untuk dicetak atau disimpan.')}</p></div>
         <div className="grid-pintu">
           {DAFTAR_CHEATSHEET.map(lembar => lembar.berkas
             ? <a key={lembar.judul} className="pintu-belajar" href={lembar.berkas} download><Ikon nama="unduh" ukuran={22} />{lembar.judul}</a>
@@ -105,7 +106,7 @@ export function Belajar() {
 
       {aktivitas.length > 0 && (
         <section className="tumpuk-rapat" aria-labelledby="judul-jejak">
-          <h2 id="judul-jejak">Terakhir kamu buka</h2>
+          <h2 id="judul-jejak">{t('Terakhir kamu buka')}</h2>
           <ul className="daftar-polos daftar-soal">
             {aktivitas.map(isi => (
               <li key={`${isi.jenis}-${isi.kode}`} className="baris-soal">
@@ -125,7 +126,7 @@ export function Belajar() {
       {(jumlahSelesai > 0 || soalSelesai > 0 || Object.keys(bacaCatatan('kuis')).length > 0) && (
         <section className="zona-reset" aria-labelledby="judul-reset">
           <div>
-            <h2 id="judul-reset">Reset progres belajar</h2>
+            <h2 id="judul-reset">{t('Reset progres belajar')}</h2>
             <p className="keterangan">Pelajaran selesai, soal hitung, skor kuis, dan riwayat belajar dikosongkan. Riwayat hitung tidak ikut terhapus.</p>
           </div>
           <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus('reset')}>Reset progres</button>

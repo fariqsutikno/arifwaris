@@ -11,6 +11,7 @@ import {
   type Ayat, type EntriRujukan, type JenisDalil,
 } from '@waris/content';
 import { tautanRujukan } from '../../rute';
+import { t } from '../../terjemah';
 import { Ikon } from '../../ui/Ikon';
 import { Laci } from '../../ui/Laci';
 import { Dalil } from '../Penjelasan';
@@ -44,16 +45,16 @@ export function Rujukan({ kode, kategori, kitab }: Props) {
   return (
     <div className="tata-materi">
       {!kode && kitab === undefined && (
-        <HeroMini judul="Rujukan" keterangan="Al-Qur'an, sunnah, atsar, ijma', dan kitab madzhab yang menjadi dasar tiap hukum di aplikasi ini." ikon="rujukan" />
+        <HeroMini judul={t('Rujukan')} keterangan={t("Al-Qur'an, sunnah, atsar, ijma', dan kitab madzhab yang menjadi dasar tiap hukum di aplikasi ini.")} ikon="rujukan" />
       )}
-      <Laci key={kode ?? kategori ?? ''} id="kategori-rujukan" label="Kategori dalil"
-        ringkasan={aktif ? <>{aktif.judul} <span className="jumlah-laci">{jumlahDi(aktif)}</span></> : 'Dalil terpilih'} judul={<span className="label-langkah">Kategori dalil</span>}>
+      <Laci key={kode ?? kategori ?? ''} id="kategori-rujukan" label={t('Kategori dalil')}
+        ringkasan={aktif ? <>{t(aktif.judul)} <span className="jumlah-laci">{jumlahDi(aktif)}</span></> : t('Dalil terpilih')} judul={<span className="label-langkah">{t('Kategori dalil')}</span>}>
         <ol className="daftar-polos modul-sidebar">
           {DAFTAR_KATEGORI.map((isi, urutan) => (
             <li key={isi.id}>
               <a href={tautanRujukan(isi.id)} className="pelajaran-sidebar" aria-current={isi === aktif ? 'page' : undefined}>
                 <span className="tanda-pelajaran">{isi.jenis ? urutan + 1 : ''}</span>
-                <span className="isi-sidebar-rujukan">{isi.judul}<small>{jumlahDi(isi)}</small></span>
+                <span className="isi-sidebar-rujukan">{t(isi.judul)}<small>{jumlahDi(isi)}</small></span>
               </a>
             </li>
           ))}
@@ -71,7 +72,7 @@ export function Rujukan({ kode, kategori, kitab }: Props) {
 function IsiKategori({ kategori }: { kategori: Kategori }) {
   return (
     <>
-      <h2 className="judul-kategori">{kategori.judul}</h2>
+      <h2 className="judul-kategori">{t(kategori.judul)}</h2>
       {kategori.id === 'quran' && <section className="blok-rujukan">{DAFTAR_AYAT.map(ayat => <KartuAyat key={`${ayat.surah}-${ayat.ayat}`} ayat={ayat} />)}</section>}
       {kategori.id === 'sunnah' && (
         <section className="blok-rujukan">

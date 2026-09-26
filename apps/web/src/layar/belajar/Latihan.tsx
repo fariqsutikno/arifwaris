@@ -10,6 +10,7 @@ import { bacaCatatan } from '../../preferensi';
 import { tautanLatihan } from '../../rute';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
+import { t } from '../../terjemah';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -23,10 +24,10 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
   if (tab === 'kuis' && paket) return <main className="halaman tumpuk"><SesiKuis key={paket} paket={paket} /></main>;
   return (
     <main className="halaman tumpuk">
-      <HeroMini judul="Latihan" keterangan="Kerjakan soal hitung dari kasus nyata, atau uji pemahaman konsep lewat kuis per bab." ikon="kuis" />
-      <nav className="tab-kecil tab-latihan" aria-label="Jenis latihan">
-        <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>Soal hitung</a>
-        <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>Kuis konsep</a>
+      <HeroMini judul={t('Latihan')} keterangan={t('Kerjakan soal hitung dari kasus nyata, atau uji pemahaman konsep lewat kuis per bab.')} ikon="kuis" />
+      <nav className="tab-kecil tab-latihan" aria-label={t('Jenis latihan')}>
+        <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('Soal hitung')}</a>
+        <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('Kuis konsep')}</a>
       </nav>
       {tab === 'hitung' ? <DaftarSoalHitung kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <DaftarPaketKuis />}
     </main>
