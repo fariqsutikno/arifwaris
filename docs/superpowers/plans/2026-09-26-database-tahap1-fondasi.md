@@ -84,11 +84,11 @@ packages/data/                                 BARU: antarmuka, memori/, supabas
   - `bacaIsi<J extends JenisKonten>(jenis: J, json: unknown): { ok: true; isi: IsiKonten[J] } | { ok: false; galat: string }`
   - tipe `IsiAhwal`, `IsiTeksEdukasi`, `IsiCheatsheet`, `IsiGlosariumAr`
 
-- [ ] **Step 1: Pasang zod**
+- [x] **Step 1: Pasang zod**
 
 Run: `pnpm --filter @waris/content add zod@^3.23.0`
 
-- [ ] **Step 2: Tulis tes gagal**
+- [x] **Step 2: Tulis tes gagal**
 
 ```ts
 // packages/content/src/__tests__/skema.test.ts
@@ -139,12 +139,12 @@ describe('skema isi konten', () => {
 });
 ```
 
-- [ ] **Step 3: Jalankan, pastikan gagal**
+- [x] **Step 3: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/content test -- skema`
 Expected: FAIL, `bacaIsi` tidak diekspor.
 
-- [ ] **Step 4: Implementasi**
+- [x] **Step 4: Implementasi**
 
 ```ts
 // packages/content/src/skema.ts
@@ -271,12 +271,12 @@ Catatan untuk pelaksana: `exactOptionalPropertyTypes` aktif. Zod `.optional()` m
 Bila ada konten nyata yang gagal (mis. `tautan` kitab bukan URL, `idYoutube` bukan 11 karakter), JANGAN longgarkan
 skema diam-diam — laporkan ke pengguna jenis/slug dan galatnya.
 
-- [ ] **Step 5: Jalankan tes & typecheck**
+- [x] **Step 5: Jalankan tes & typecheck**
 
 Run: `pnpm --filter @waris/content test && pnpm --filter @waris/content exec tsc --noEmit -p .`
 Expected: semua PASS (48 lama + 4 baru), tanpa galat tipe.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/content pnpm-lock.yaml
@@ -302,7 +302,7 @@ git commit -m "content: skema Zod isi konten per jenis + serialisasi bigint"
   - `bolehSuntingDraf(p: { status: StatusRevisi; peran: Peran | null; pelakuId: string; pembuatId: string }): boolean`
   - `periksaRefs(jenis: JenisKonten, refs: string[], refsDikenal: ReadonlySet<string>): string | null` — `null` = sah, selain itu pesan galat
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // packages/content/src/__tests__/editorial.test.ts
@@ -370,12 +370,12 @@ describe('periksa refs', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/content test -- editorial`
 Expected: FAIL, `transisiRevisi` tidak diekspor.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 ```ts
 // packages/content/src/editorial.ts
@@ -425,12 +425,12 @@ Tambahkan ke `index.ts`:
 export { transisiRevisi, bolehSuntingDraf, periksaRefs, type Peran, type StatusRevisi, type AksiEditorial } from './editorial.js';
 ```
 
-- [ ] **Step 4: Jalankan tes**
+- [x] **Step 4: Jalankan tes**
 
 Run: `pnpm --filter @waris/content test`
 Expected: PASS semua.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/content/src/editorial.ts packages/content/src/index.ts packages/content/src/__tests__/editorial.test.ts
@@ -453,7 +453,7 @@ git commit -m "content: aturan editorial murni (transisi revisi, sunting draf, p
   `versi_konten(satu, angka)`, `peran_pengguna(user_id, peran)`, enum `status_revisi`, enum `peran`,
   fungsi `peran_saya() returns peran`.
 
-- [ ] **Step 1: Pasang CLI dan inisialisasi**
+- [x] **Step 1: Pasang CLI dan inisialisasi**
 
 ```bash
 pnpm add -Dw supabase@^2 vite-node@^2
@@ -477,7 +477,7 @@ Tambahkan `supabase/.temp/` dan `supabase/.branches/` ke `.gitignore` bila `supa
 Run: `pnpm db:mulai`
 Expected: menampilkan `API URL: http://127.0.0.1:54321`, `DB URL: postgresql://postgres:postgres@127.0.0.1:54322/postgres`, `anon key`, `service_role key`.
 
-- [ ] **Step 2: Tulis tes pgTAP gagal**
+- [x] **Step 2: Tulis tes pgTAP gagal**
 
 ```sql
 -- supabase/tests/database/01_skema.test.sql
@@ -519,12 +519,12 @@ select * from finish();
 rollback;
 ```
 
-- [ ] **Step 3: Jalankan, pastikan gagal**
+- [x] **Step 3: Jalankan, pastikan gagal**
 
 Run: `pnpm db:tes`
 Expected: FAIL, `relation "daftar_refs" does not exist`.
 
-- [ ] **Step 4: Tulis migrasi**
+- [x] **Step 4: Tulis migrasi**
 
 ```sql
 -- supabase/migrations/20260926000001_konten.sql
@@ -643,14 +643,14 @@ create trigger bekukan before update on revisi for each row execute function bek
 create trigger bekukan before update on revisi_diksi for each row execute function bekukan_revisi();
 ```
 
-- [ ] **Step 5: Terapkan & jalankan tes**
+- [x] **Step 5: Terapkan & jalankan tes**
 
 Run: `pnpm db:reset && pnpm db:tes`
 Expected: `01_skema.test.sql .. ok`, 8/8.
 
 (Bila `db:reset` mengeluh `seed.sql` tidak ada: buat `supabase/seed.sql` kosong berisi komentar `-- diisi scripts/daftar-refs.ts`; Task 6 menimpanya.)
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml .gitignore supabase/config.toml supabase/seed.sql supabase/migrations/20260926000001_konten.sql supabase/tests/database/01_skema.test.sql
@@ -672,7 +672,7 @@ git commit -m "db: supabase lokal, tabel konten/diksi/refs/peran dengan trigger 
   - `ajukan_revisi_diksi(p_id uuid)`, `setujui_revisi_diksi(p_id uuid)`, `kembalikan_revisi_diksi(p_id uuid, p_catatan text)`, `terbitkan_ulang_revisi_diksi(p_id uuid)`
   - semuanya `returns void`, melempar `P0001` dengan pesan Indonesia bila ditolak.
 
-- [ ] **Step 1: Tulis tes pgTAP gagal**
+- [x] **Step 1: Tulis tes pgTAP gagal**
 
 ```sql
 -- supabase/tests/database/02_transisi.test.sql
@@ -733,12 +733,12 @@ select * from finish();
 rollback;
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm db:tes`
 Expected: FAIL, `function ajukan_revisi(unknown) does not exist`.
 
-- [ ] **Step 3: Tulis migrasi**
+- [x] **Step 3: Tulis migrasi**
 
 ```sql
 -- supabase/migrations/20260926000002_transisi.sql
@@ -856,12 +856,12 @@ end $$;
 revoke execute on function naikkan_versi_konten(), periksa_boleh_memeriksa(uuid) from public, anon, authenticated;
 ```
 
-- [ ] **Step 4: Terapkan & jalankan tes**
+- [x] **Step 4: Terapkan & jalankan tes**
 
 Run: `pnpm db:reset && pnpm db:tes`
 Expected: `01_skema` 8/8, `02_transisi` 13/13.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add supabase/migrations/20260926000002_transisi.sql supabase/tests/database/02_transisi.test.sql
@@ -881,7 +881,7 @@ git commit -m "db: fungsi transisi editorial atomik (ajukan, setujui, kembalikan
   `progres_latihan(user_id, soal_slug, jenis, jawaban_terakhir, benar, jumlah_coba, diubah_pada)`, `preferensi(user_id, isi, diubah_pada)`.
   RLS aktif di semua tabel `public`.
 
-- [ ] **Step 1: Tulis tes pgTAP gagal**
+- [x] **Step 1: Tulis tes pgTAP gagal**
 
 ```sql
 -- supabase/tests/database/03_rls.test.sql
@@ -944,12 +944,12 @@ select * from finish();
 rollback;
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm db:tes`
 Expected: FAIL, `relation "progres_belajar" does not exist`.
 
-- [ ] **Step 3: Migrasi tabel pengguna**
+- [x] **Step 3: Migrasi tabel pengguna**
 
 ```sql
 -- supabase/migrations/20260926000003_pengguna.sql
@@ -993,7 +993,7 @@ create table preferensi (
 
 (`riwayat_hitung.id` = id kasus dari klien, bertipe `text`, supaya gabung-duplikat berdasarkan id kasus di tahap 4 cukup `upsert`.)
 
-- [ ] **Step 4: Migrasi RLS**
+- [x] **Step 4: Migrasi RLS**
 
 ```sql
 -- supabase/migrations/20260926000004_rls.sql
@@ -1072,12 +1072,12 @@ tersebut menjadi `throws_ok($$update revisi set status = 'disetujui' where id = 
 membuktikan hal yang sama; pilih yang cocok dengan perilaku nyata dan jangan longgarkan kebijakannya. Untuk reviewer,
 `using` tidak cocok sehingga update diam-diam 0 baris dan `select is(...)` benar.
 
-- [ ] **Step 5: Terapkan & jalankan tes**
+- [x] **Step 5: Terapkan & jalankan tes**
 
 Run: `pnpm db:reset && pnpm db:tes`
 Expected: tiga berkas tes ok (8 + 13 + 12). Jalankan ulang `02_transisi` juga harus tetap lolos dengan RLS aktif (fungsi security definer).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add supabase/migrations/20260926000003_pengguna.sql supabase/migrations/20260926000004_rls.sql supabase/tests/database/03_rls.test.sql
@@ -1097,7 +1097,7 @@ git commit -m "db: tabel data pengguna dan RLS semua tabel"
 - Consumes: `RUJUKAN` dari `@waris/content` (`kode`, `bab`)
 - Produces: `sqlDaftarRefs(daftar: { kode: string; bab: number }[]): string` di `packages/content/src/refs.ts`; `supabase/seed.sql` berisi `insert into daftar_refs ... on conflict do nothing`.
 
-- [ ] **Step 1: Tes gagal**
+- [x] **Step 1: Tes gagal**
 
 Tambahkan di `packages/content/src/__tests__/refs.test.ts`:
 
@@ -1117,12 +1117,12 @@ test('semua kode RUJUKAN cocok dengan pola kolom daftar_refs', () => {
 
 (Gabungkan `import` dengan impor yang sudah ada di berkas itu.)
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/content test -- refs`
 Expected: FAIL, `sqlDaftarRefs` tidak diekspor.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 Di akhir `packages/content/src/refs.ts`:
 
@@ -1152,7 +1152,7 @@ console.log(`daftar_refs: ${new Set(RUJUKAN.map(rujukan => rujukan.kode)).size} 
 
 Agar `@waris/content` bisa diimpor dari root: `pnpm add -Dw @waris/content@workspace:*`.
 
-- [ ] **Step 4: Jalankan tes, skrip, dan reset DB**
+- [x] **Step 4: Jalankan tes, skrip, dan reset DB**
 
 ```bash
 pnpm --filter @waris/content test
@@ -1170,7 +1170,7 @@ menjadi `select ok((select count(*) from daftar_refs) >= 1, 'anonim bisa membaca
 Run: `pnpm db:tes`
 Expected: semua ok.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add scripts/daftar-refs.ts supabase/seed.sql supabase/tests packages/content/src/refs.ts packages/content/src/index.ts packages/content/src/__tests__/refs.test.ts package.json pnpm-lock.yaml
@@ -1238,7 +1238,7 @@ export interface RepositoriDiksi {
   - `buatMemori(awal?: { refs?: string[]; sesi?: Sesi | null; peran?: Record<string, Peran> }): MemoriBersama` di `memori/konten.ts`,
     dengan `MemoriBersama = { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi: RepositoriDiksi; masukSebagai(sesi: Sesi | null): void; aturPeranLangsung(userId: string, peran: Peran | null): void; isiRevisiMentah(revisiId: string, isi: unknown): void }`
 
-- [ ] **Step 1: Kerangka paket**
+- [x] **Step 1: Kerangka paket**
 
 ```json
 // packages/data/package.json
@@ -1259,7 +1259,7 @@ export interface RepositoriDiksi {
 
 Run: `pnpm install`
 
-- [ ] **Step 2: Tulis tes gagal**
+- [x] **Step 2: Tulis tes gagal**
 
 ```ts
 // packages/data/src/__tests__/memori-konten.test.ts
@@ -1368,12 +1368,12 @@ describe('memori: konten & editorial', () => {
 });
 ```
 
-- [ ] **Step 3: Jalankan, pastikan gagal**
+- [x] **Step 3: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/data test`
 Expected: FAIL, `buatMemori` tidak ada.
 
-- [ ] **Step 4: Implementasi antarmuka, saring, memori**
+- [x] **Step 4: Implementasi antarmuka, saring, memori**
 
 `packages/data/src/antarmuka.ts`: tempel persis blok antarmuka di bagian **Interfaces** di atas, dibuka dengan:
 
@@ -1600,12 +1600,12 @@ export { buatMemori, type MemoriBersama } from './memori/konten.js';
 Catatan: `saringValid` memanggil `bacaIsi` pada JSON tersimpan, sehingga bigint di `soal_hitung` kembali jadi bigint —
 itulah yang diuji tes "bigint tetap bigint".
 
-- [ ] **Step 5: Jalankan tes & typecheck**
+- [x] **Step 5: Jalankan tes & typecheck**
 
 Run: `pnpm --filter @waris/data test && pnpm --filter @waris/data exec tsc --noEmit -p .`
 Expected: 7 PASS, tanpa galat tipe.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/data pnpm-lock.yaml
@@ -1661,7 +1661,7 @@ export interface RepositoriAkun {
   - `buatMemoriPengguna(bersama: MemoriBersama): { pengguna: RepositoriPengguna; akun: RepositoriAkun }` — memakai sesi & peran dari `MemoriBersama`.
     Untuk itu `MemoriBersama` mendapat dua fungsi baca: `sesiSekarang(): Sesi | null` dan `peranDari(userId: string): Peran | null`, serta `daftarPeranSemua(): { userId: string; peran: Peran }[]`.
 
-- [ ] **Step 1: Tulis tes gagal**
+- [x] **Step 1: Tulis tes gagal**
 
 ```ts
 // packages/data/src/__tests__/memori-pengguna.test.ts
@@ -1719,12 +1719,12 @@ describe('memori: pengguna & akun', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/data test -- pengguna`
 Expected: FAIL, `buatMemoriPengguna` tidak ada.
 
-- [ ] **Step 3: Implementasi**
+- [x] **Step 3: Implementasi**
 
 Tempel blok antarmuka di **Interfaces** ke akhir `antarmuka.ts`.
 
@@ -1798,12 +1798,12 @@ export function buatMemoriPengguna(bersama: MemoriBersama): { pengguna: Reposito
 
 Tambahkan ke `index.ts`: `export { buatMemoriPengguna } from './memori/pengguna.js';`
 
-- [ ] **Step 4: Jalankan tes & typecheck**
+- [x] **Step 4: Jalankan tes & typecheck**
 
 Run: `pnpm --filter @waris/data test && pnpm --filter @waris/data exec tsc --noEmit -p .`
 Expected: 12 PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add packages/data
@@ -1824,11 +1824,11 @@ git commit -m "data: antarmuka + memori untuk data pengguna dan akun"
 - Consumes: semua antarmuka Task 7–8, `keJson`, `periksaRefs`/`bacaIsi` (validasi sebelum simpan), `saringValid`
 - Produces: `buatRepositoriSupabase(klien: SupabaseClient): { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi: RepositoriDiksi; pengguna: RepositoriPengguna; akun: RepositoriAkun }`
 
-- [ ] **Step 1: Pasang dependensi**
+- [x] **Step 1: Pasang dependensi**
 
 Run: `pnpm --filter @waris/data add @supabase/supabase-js@^2`
 
-- [ ] **Step 2: Tulis tes integrasi gagal**
+- [x] **Step 2: Tulis tes integrasi gagal**
 
 ```ts
 // packages/data/src/__tests__/supabase.test.ts
@@ -1906,7 +1906,7 @@ describe.skipIf(!URL_DB)('supabase lokal', () => {
 
 Catatan: `R09-7` harus ada di `supabase/seed.sql` (Task 6). Bila tidak, pakai kode pertama dari seed.
 
-- [ ] **Step 3: Jalankan, pastikan gagal**
+- [x] **Step 3: Jalankan, pastikan gagal**
 
 ```bash
 pnpm db:reset
@@ -1916,7 +1916,7 @@ pnpm --filter @waris/data test -- supabase
 
 Expected: FAIL, `buatRepositoriSupabase` tidak ada. (Periksa nama variabel keluaran `supabase status -o env` di versi CLI terpasang; sesuaikan `sed` bila berbeda.)
 
-- [ ] **Step 4: Implementasi**
+- [x] **Step 4: Implementasi**
 
 ```ts
 // packages/data/src/supabase/peta.ts
@@ -2106,7 +2106,7 @@ dokumentasikan di JSDoc antarmuka bahwa pemeriksaan admin untuk baca dilakukan R
 
 Tambahkan ke `index.ts`: `export { buatRepositoriSupabase } from './supabase/index.js';`
 
-- [ ] **Step 5: Jalankan tes (lokal + tanpa jaringan) & typecheck**
+- [x] **Step 5: Jalankan tes (lokal + tanpa jaringan) & typecheck**
 
 ```bash
 pnpm --filter @waris/data test -- supabase        # dengan env dari Step 3: 3 PASS
@@ -2114,7 +2114,7 @@ env -u SUPABASE_URL pnpm --filter @waris/data test # tanpa env: 12 PASS, 3 skipp
 pnpm --filter @waris/data exec tsc --noEmit -p .
 ```
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add packages/data pnpm-lock.yaml
@@ -2127,22 +2127,22 @@ git commit -m "data: implementasi repository supabase + tes integrasi ke supabas
 
 **Files:** tidak ada yang baru (kecuali perbaikan bila ada yang merah).
 
-- [ ] **Step 1: Semua tes JS tanpa jaringan**
+- [x] **Step 1: Semua tes JS tanpa jaringan**
 
 Run: `env -u SUPABASE_URL pnpm test`
 Expected: math 19, content 48 + tes baru, engine 166, explain 36, web 193, data 12 (+3 skipped) — semua hijau.
 
-- [ ] **Step 2: Semua tes DB dari nol**
+- [x] **Step 2: Semua tes DB dari nol**
 
 Run: `pnpm db:reset && pnpm db:tes`
 Expected: `01_skema`, `02_transisi`, `03_rls` semuanya ok.
 
-- [ ] **Step 3: Build web tidak berubah**
+- [x] **Step 3: Build web tidak berubah**
 
 Run: `pnpm --filter @waris/web build`
 Expected: sukses (UI belum menyentuh `packages/data`).
 
-- [ ] **Step 4: Centang checklist tahap 1 di spec bila perlu & commit**
+- [x] **Step 4: Centang checklist tahap 1 di spec bila perlu & commit**
 
 ```bash
 git add docs/superpowers/plans/2026-09-26-database-tahap1-fondasi.md
