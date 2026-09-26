@@ -10,6 +10,7 @@ import { dariBentuk, keBentuk, type BentukEditor } from '../editor/bentuk';
 import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
 import { PemilihRefs } from './PemilihRefs';
+import { Pratinjau } from './Pratinjau';
 
 const JARAK_URUTAN = 10;
 const FIELD_CALON_JUDUL = ['judul', 'pertanyaan', 'slug', 'id', 'kode', 'kunci', 'istilahId'] as const;
@@ -26,6 +27,7 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
   const [mode, setMode] = useState<Mode>({ mode: 'baca' });
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
+  const [pratinjau, setPratinjau] = useState(false);
   const entriIdProp = 'entriId' in props ? props.entriId : null;
   const jenisProp = 'jenis' in props ? props.jenis : null;
 
@@ -145,6 +147,8 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
         <textarea rows={12} style={{ fontFamily: 'monospace' }} value={bentuk.json} readOnly={bacaSaja} onChange={e => setBentuk({ ...bentuk, json: e.target.value })} />
       </label>
       <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={bacaSaja} />
+      <Tombol varian="secondary" onClick={() => setPratinjau(true)}>Pratinjau</Tombol>
+      {pratinjau ? <Pratinjauan jenis={muatan.jenis} slug={muatan.slug ?? 'pratinjau'} bentuk={bentuk} saatTutup={() => setPratinjau(false)} /> : null}
       {!bacaSaja ? <Tombol onClick={() => void simpan()}>Simpan draf</Tombol> : null}
       {mode.mode === 'suntingDraf' ? <Tombol varian="secondary" onClick={() => void ajukan()}>Ajukan</Tombol> : null}
       {bacaSaja && peran !== 'reviewer' && muatan.entriId && muatan.terakhir?.status !== 'draf' && muatan.terakhir?.status !== 'diajukan' ? (
@@ -152,6 +156,14 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
       ) : null}
     </div>
   );
+}
+
+// Menggabung bentuk form jadi isi konten lewat dariBentuk sebelum diserahkan ke <Pratinjau>; kalau bentuknya
+// tidak sah (JSON/Markdown rusak, gagal validasi), galat itu sendiri ditampilkan menggantikan pratinjau.
+function Pratinjauan({ jenis, slug, bentuk, saatTutup }: { jenis: JenisKonten; slug: string; bentuk: BentukEditor; saatTutup: () => void }) {
+  const hasil = dariBentuk(jenis, slug, bentuk);
+  if (!hasil.ok) return <p role="alert">{hasil.galat}</p>;
+  return <Pratinjau jenis={jenis} slug={slug} isi={hasil.isi} saatTutup={saatTutup} />;
 }
 
 function muatBaru(jenis: JenisKonten) {
