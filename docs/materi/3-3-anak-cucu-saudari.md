@@ -3,6 +3,8 @@ judul: Anak perempuan, cucu perempuan, dan saudari
 modul: 3
 urutan: 3
 tujuan: Menentukan bagian anak dan cucu perempuan, saudari kandung/sebapak, dan saudara seibu.
+judul-ar: البنت وبنت الابن والأخت
+tujuan-ar: تحديد نصيب البنت وبنت الابن والأخت الشقيقة أو لأب والأخ لأم.
 perluCek: true
 ---
 ## Anak perempuan

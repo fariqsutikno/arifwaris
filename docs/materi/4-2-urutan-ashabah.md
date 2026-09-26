@@ -3,6 +3,8 @@ judul: Siapa yang didahulukan mengambil sisa?
 modul: 4
 urutan: 2
 tujuan: Mengurutkan ashabah dengan kaidah arah, kedekatan, dan kekuatan.
+judul-ar: من يقدم في أخذ الباقي؟
+tujuan-ar: ترتيب العصبة بقواعد الجهة والقرب والقوة.
 perluCek: true
 ---
 ## Tiga langkah

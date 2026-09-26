@@ -3,6 +3,8 @@ judul: Enam bagian pasti, dan bagian suami-istri
 modul: 3
 urutan: 1
 tujuan: Mengenal enam fardh dalam Al-Qur'an dan menghitung bagian suami atau istri.
+judul-ar: الفروض الستة ونصيب الزوجين
+tujuan-ar: التعرف على الفروض الستة في القرآن وحساب نصيب الزوج أو الزوجة.
 perluCek: true
 ---
 ## Enam angka

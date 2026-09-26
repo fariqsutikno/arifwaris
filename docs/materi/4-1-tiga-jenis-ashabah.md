@@ -3,6 +3,8 @@ judul: Tiga jenis ashabah
 modul: 4
 urutan: 1
 tujuan: Membedakan ashabah bi nafsihi, bil ghair, dan ma'al ghair.
+judul-ar: أنواع العصبة الثلاثة
+tujuan-ar: التمييز بين العصبة بالنفس وبالغير ومع الغير.
 perluCek: true
 ---
 ## Pengambil sisa

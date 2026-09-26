@@ -3,6 +3,8 @@ judul: Ayah, ibu, kakek, dan nenek
 modul: 3
 urutan: 2
 tujuan: Menentukan bagian orang tua dan kakek-nenek dalam tiap keadaan.
+judul-ar: الأب والأم والجد والجدة
+tujuan-ar: تحديد نصيب الوالدين والجد والجدة في كل حال.
 perluCek: true
 ---
 ## Ayah

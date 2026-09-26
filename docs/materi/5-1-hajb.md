@@ -3,6 +3,8 @@ judul: Hajb, ketika ahli waris terhalang
 modul: 5
 urutan: 1
 tujuan: Membedakan hajb hirman dan hajb nuqshan, serta tahu siapa menghalangi siapa.
+judul-ar: الحجب حين يحجب الوارث
+tujuan-ar: التمييز بين حجب الحرمان وحجب النقصان ومعرفة من يحجب من.
 perluCek: true
 ---
 ## Dua jenis hajb

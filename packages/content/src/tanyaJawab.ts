@@ -18,6 +18,8 @@ export interface KasusTanyaJawab {
   penyelesaian: Blok[];
   /** Siapa yang menjawab: nama ustadz / lembaga fatwa, beserta rujukan terbitnya. */
   sumber: string;
+  /** Versi Arab di berkas yang sama: baris `judul-ar:`/`ringkasan-ar:`/`sumber-ar:` dan bagian `### Kasus (ar)`/`### Penyelesaian (ar)`. */
+  ar?: { judul: string; ringkasan: string; sumber: string; kasus?: Blok[]; penyelesaian?: Blok[] };
 }
 
 export function bacaTanyaJawab(teksMarkdown: string): KasusTanyaJawab[] {
@@ -31,16 +33,25 @@ export function bacaTanyaJawab(teksMarkdown: string): KasusTanyaJawab[] {
       if (!nilai) throw galat(`baris ${nama}: kosong`);
       return nilai;
     };
-    const isi = (nama: string) => {
+    const isiOpsional = (nama: string) => {
       const ditemukan = subbagian.find(teks => teks.split('\n')[0]!.trim() === nama);
-      if (!ditemukan) throw galat(`bagian ### ${nama} tidak ada`);
-      return bacaBlok(`tanya jawab ${judul}`, ditemukan.split('\n').slice(1).join('\n'));
+      return ditemukan === undefined ? undefined : bacaBlok(`tanya jawab ${judul}`, ditemukan.split('\n').slice(1).join('\n'));
     };
+    const isi = (nama: string) => isiOpsional(nama) ?? (() => { throw galat(`bagian ### ${nama} tidak ada`); })();
+    const kolomOpsional = (nama: string) => barisKepala.find(baris => baris.startsWith(`${nama}:`))?.slice(nama.length + 1).trim();
+    const kasusArab = isiOpsional('Kasus (ar)');
+    const penyelesaianArab = isiOpsional('Penyelesaian (ar)');
+    const ada = kolomOpsional('judul-ar') || kolomOpsional('ringkasan-ar') || kolomOpsional('sumber-ar') || kasusArab || penyelesaianArab;
+    const kolomArab = (nama: string) => kolomOpsional(`${nama}-ar`) || (() => { throw galat(`baris ${nama}-ar: kosong padahal ada versi Arab`); })();
     const jenis = kolom('jenis');
     if (!(JENIS_TANYA_JAWAB as readonly string[]).includes(jenis)) throw galat(`jenis "${jenis}" tidak dikenal`);
     return {
       slug: slug(judul), judul, jenis: jenis as JenisTanyaJawab, ringkasan: kolom('ringkasan'),
       kasus: isi('Kasus'), penyelesaian: isi('Penyelesaian'), sumber: kolom('sumber'),
+      ...(ada ? { ar: {
+        judul: kolomArab('judul'), ringkasan: kolomArab('ringkasan'), sumber: kolomArab('sumber'),
+        ...(kasusArab ? { kasus: kasusArab } : {}), ...(penyelesaianArab ? { penyelesaian: penyelesaianArab } : {}),
+      } } : {}),
     };
   });
 }

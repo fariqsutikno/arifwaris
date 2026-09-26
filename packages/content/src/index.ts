@@ -6,7 +6,7 @@ export {
 export {
   DAFTAR_MODUL, DAFTAR_PELAJARAN, cariPelajaran, bacaPelajaran, bacaBlok, bacaPotongan, bacaDaftarModul, semuaPotongan,
   bacaDaftarAhliWaris, bacaHarapan,
-  type Pelajaran, type Modul, type Blok, type Potongan, type ContohKasus,
+  type Pelajaran, type Modul, type VersiArab, type Blok, type Potongan, type ContohKasus,
 } from './materi.js';
 export {
   DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, cariSoalHitung, bacaSoalHitung, bacaSoalKuis,

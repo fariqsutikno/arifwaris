@@ -3,6 +3,8 @@ judul: Rukun, syarat, dan sebab mewarisi
 modul: 2
 urutan: 1
 tujuan: Tahu kapan warisan terjadi dan hubungan apa yang membuat seseorang mewarisi.
+judul-ar: أركان الإرث وشروطه وأسبابه
+tujuan-ar: معرفة متى يقع الإرث وأي علاقة تجعل الشخص وارثا.
 perluCek: true
 ---
 ## Tiga rukun

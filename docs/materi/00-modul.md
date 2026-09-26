@@ -7,18 +7,18 @@ sampai direview.
 Cara menulis pelajaran: lihat `README` di bagian bawah berkas ini.
 
 ## Daftar Modul
-| No | Judul | Ringkas |
-|---|---|---|
-| 1 | Pengantar | Apa itu faraidh dan apa yang dibereskan sebelum harta dibagi |
-| 2 | Siapa ahli waris | Rukun, syarat, sebab, penghalang, dan daftar ahli waris |
-| 3 | Bagian pasti (furudh) | Enam bagian dalam Al-Qur'an dan siapa pemiliknya |
-| 4 | Sisa (ashabah) | Yang mengambil sisa, jenis-jenisnya, dan urutannya |
-| 5 | Penghalang (hajb) | Ahli waris yang terhalang atau berkurang bagiannya |
-| 6 | Kakek & saudara | Muqasamah dan akdariyyah |
-| 7 | Menghitung | Ashlul mas'alah, 'aul, dan radd |
-| 8 | Tashih | Supaya bagian tiap orang jadi bilangan bulat |
-| 9 | Pembagian nominal | Dari saham ke rupiah |
-| 10 | Munasakhat | Ahli waris wafat sebelum harta dibagi |
+| No | Judul | Ringkas | Judul (ar) | Ringkas (ar) |
+|---|---|---|---|---|
+| 1 | Pengantar | Apa itu faraidh dan apa yang dibereskan sebelum harta dibagi | مقدمة | ما الفرائض وما الذي يقدم قبل قسمة المال |
+| 2 | Siapa ahli waris | Rukun, syarat, sebab, penghalang, dan daftar ahli waris | من هم الورثة | الأركان والشروط والأسباب والموانع وقائمة الورثة |
+| 3 | Bagian pasti (furudh) | Enam bagian dalam Al-Qur'an dan siapa pemiliknya | الأنصبة المقدرة (الفروض) | الفروض الستة في القرآن ومن يستحقها |
+| 4 | Sisa (ashabah) | Yang mengambil sisa, jenis-jenisnya, dan urutannya | الباقي (العصبة) | من يأخذ الباقي وأنواعه وترتيبه |
+| 5 | Penghalang (hajb) | Ahli waris yang terhalang atau berkurang bagiannya | الحجب | الوارث المحجوب أو الذي ينقص نصيبه |
+| 6 | Kakek & saudara | Muqasamah dan akdariyyah | الجد والإخوة | المقاسمة والأكدرية |
+| 7 | Menghitung | Ashlul mas'alah, 'aul, dan radd | الحساب | أصل المسألة والعول والرد |
+| 8 | Tashih | Supaya bagian tiap orang jadi bilangan bulat | التصحيح | ليصير نصيب كل واحد عددا صحيحا |
+| 9 | Pembagian nominal | Dari saham ke rupiah | القسمة بالمبالغ | من السهام إلى الروبية |
+| 10 | Munasakhat | Ahli waris wafat sebelum harta dibagi | المناسخات | موت الوارث قبل قسمة التركة |
 
 ## README
 

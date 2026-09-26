@@ -3,6 +3,8 @@ judul: Apa itu faraidh?
 modul: 1
 urutan: 1
 tujuan: Mengenal arti faraidh, dalil pokoknya, dan kenapa ilmu ini dipelajari.
+judul-ar: ما الفرائض؟
+tujuan-ar: التعرف على معنى الفرائض وأدلتها الأصلية وسبب تعلم هذا العلم.
 perluCek: true
 ---
 ```video

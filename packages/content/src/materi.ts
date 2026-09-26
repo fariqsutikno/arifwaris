@@ -34,6 +34,9 @@ export type Blok =
   | { jenis: 'video'; idYoutube: string; judul: string }
   | { jenis: 'kuis'; daftarKode: string[] };
 
+/** Versi Arab satu artikel, ditulis di berkas yang sama: `judul-ar`/`tujuan-ar` di frontmatter, isinya setelah baris `<!--ar-->`. Tanpa `blok` = isi masih Indonesia. */
+export interface VersiArab { judul: string; tujuan: string; blok?: Blok[] }
+
 export interface Pelajaran {
   slug: string;
   judul: string;
@@ -42,9 +45,10 @@ export interface Pelajaran {
   tujuan: string;
   perluCek: boolean;
   blok: Blok[];
+  ar?: VersiArab;
 }
 
-export interface Modul { nomor: number; judul: string; ringkas: string }
+export interface Modul { nomor: number; judul: string; ringkas: string; ar?: { judul: string; ringkas: string } }
 
 export function bacaPelajaran(slug: string, teksMarkdown: string): Pelajaran {
   const cocok = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(teksMarkdown);
@@ -54,10 +58,23 @@ export function bacaPelajaran(slug: string, teksMarkdown: string): Pelajaran {
     return [baris.slice(0, pemisah).trim(), baris.slice(pemisah + 1).trim()];
   }));
   for (const kunci of ['judul', 'modul', 'urutan', 'tujuan']) if (!meta[kunci]) throw new Error(`${slug}: frontmatter "${kunci}" kosong`);
+  const [isiIndonesia = '', isiArab, ...lebih] = cocok[2]!.split(PEMISAH_ARAB);
+  if (lebih.length > 0) throw new Error(`${slug}: penanda ${PENANDA_ARAB} lebih dari satu`);
+  const versiArab = bacaVersiArab(slug, meta, isiArab);
   return {
     slug, judul: meta.judul!, modul: Number(meta.modul), urutan: Number(meta.urutan), tujuan: meta.tujuan!,
-    perluCek: meta.perluCek !== 'false', blok: bacaBlok(slug, cocok[2]!),
+    perluCek: meta.perluCek !== 'false', blok: bacaBlok(slug, isiIndonesia),
+    ...(versiArab ? { ar: versiArab } : {}),
   };
+}
+
+const PENANDA_ARAB = '<!--ar-->';
+const PEMISAH_ARAB = /^<!--ar-->[ \t]*$/m;
+
+function bacaVersiArab(slug: string, meta: Record<string, string>, isiArab: string | undefined): VersiArab | undefined {
+  if (!meta['judul-ar'] && !meta['tujuan-ar'] && isiArab === undefined) return undefined;
+  for (const kunci of ['judul-ar', 'tujuan-ar']) if (!meta[kunci]) throw new Error(`${slug}: frontmatter "${kunci}" kosong padahal ada versi Arab`);
+  return { judul: meta['judul-ar']!, tujuan: meta['tujuan-ar']!, ...(isiArab?.trim() ? { blok: bacaBlok(`${slug} (ar)`, isiArab) } : {}) };
 }
 
 export function bacaBlok(slug: string, isi: string): Blok[] {
@@ -193,7 +210,9 @@ export function bacaHarapan(teks: string, galat: (pesan: string) => Error): Cont
 
 export function bacaDaftarModul(teksMarkdown: string): Modul[] {
   return barisTabelBagian(teksMarkdown, 'Daftar Modul')
-    .map(([nomor = '', judul = '', ringkas = '']) => ({ nomor: Number(nomor), judul, ringkas }));
+    .map(([nomor = '', judul = '', ringkas = '', judulArab = '', ringkasArab = '']) => ({
+      nomor: Number(nomor), judul, ringkas, ...(judulArab ? { ar: { judul: judulArab, ringkas: ringkasArab || ringkas } } : {}),
+    }));
 }
 
 // ─── Data dari docs/materi ────────────────────────────────────────────────────

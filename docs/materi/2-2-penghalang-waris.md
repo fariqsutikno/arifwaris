@@ -3,6 +3,8 @@ judul: Penghalang mewarisi (mawani')
 modul: 2
 urutan: 2
 tujuan: Mengenal lima hal yang membuat kerabat tidak mewarisi sama sekali.
+judul-ar: موانع الإرث
+tujuan-ar: التعرف على خمسة أمور تمنع القريب من الميراث تماما.
 perluCek: true
 ---
 ## Lima penghalang

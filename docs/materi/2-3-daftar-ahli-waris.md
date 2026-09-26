@@ -3,6 +3,8 @@ judul: Siapa saja ahli waris?
 modul: 2
 urutan: 3
 tujuan: Menghafal 15 ahli waris laki-laki dan 10 perempuan, serta tahu siapa yang bukan ahli waris.
+judul-ar: من هم الورثة؟
+tujuan-ar: حفظ الورثة الخمسة عشر من الرجال والعشرة من النساء، ومعرفة من ليس بوارث.
 perluCek: true
 ---
 ## 15 laki-laki

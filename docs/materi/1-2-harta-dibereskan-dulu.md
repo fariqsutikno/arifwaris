@@ -3,6 +3,8 @@ judul: Harta dibereskan dulu, baru dibagi
 modul: 1
 urutan: 2
 tujuan: Memahami urutan hak yang diambil dari tirkah sebelum sisanya dibagi ke ahli waris.
+judul-ar: تسوية التركة أولا ثم قسمتها
+tujuan-ar: فهم ترتيب الحقوق التي تؤخذ من التركة قبل قسمة الباقي على الورثة.
 perluCek: true
 ---
 ## Apa saja yang termasuk tirkah?
