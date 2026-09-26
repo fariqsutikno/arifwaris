@@ -2,6 +2,10 @@
 
 import { useEffect, useReducer, useState } from 'react';
 import type { SoalHitung } from '@waris/content';
+import type { Sesi } from '@waris/data';
+import { muatRepoAkun, type RepoAkun } from './akun/klien';
+import { mulaiSinkron } from './akun/sinkron';
+import { TombolAkun } from './akun/TombolAkun';
 import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
@@ -39,6 +43,19 @@ export function Aplikasi() {
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(buatIdSesi);
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>({ jenis: 'sendiri' });
+  // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
+  const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
+  const [sesi, setSesi] = useState<Sesi | null>(null);
+  // ponytail: layar yang menyimpan data di useState awal (mis. DaftarRiwayat) baru segar setelah pindah halaman.
+  const [, segarkanData] = useReducer((n: number) => n + 1, 0);
+  useEffect(() => {
+    void muatRepoAkun().then(async repo => {
+      if (!repo) return;
+      setRepoAkun(repo);
+      setSesi(await mulaiSinkron(repo, segarkanData));
+      if (location.search.includes('code=')) history.replaceState(null, '', location.pathname + location.hash);
+    });
+  }, []);
   const kirim = (aksi: Aksi) => {
     if (aksi.jenis === 'ULANGI') simpanLokal(null);
     if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') {
@@ -119,7 +136,7 @@ export function Aplikasi() {
     <>
       <Kepala halaman={rute.halaman} kasusWizard={diKalkulator && layar === 'wizard' ? kasus : null}
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)}
-        saatUlangi={() => kirim({ jenis: 'ULANGI' })} />
+        saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<TombolAkun sesi={sesi} repo={repoAkun} />} />
       {!['beranda', 'kalkulator', 'belajar'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} />
         : rute.halaman === 'belajar' ? <Belajar />

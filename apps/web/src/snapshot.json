@@ -13192,6 +13192,41 @@
    "id": "Tutup",
    "ar": "إغلاق",
    "versiTerbit": 242
+  },
+  {
+   "kunci": "umum.masuk_dengan_google",
+   "halaman": "umum",
+   "id": "Masuk dengan Google",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.layanan_akun_tidak_tersedia",
+   "halaman": "umum",
+   "id": "Layanan akun sedang tidak tersedia. Data di perangkat ini tetap aman.",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.keluar",
+   "halaman": "umum",
+   "id": "Keluar",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.tetap_keluar",
+   "halaman": "umum",
+   "id": "Tetap keluar",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.perubahan_belum_terkirim",
+   "halaman": "umum",
+   "id": "{jumlah} perubahan belum terkirim ke akun dan akan hilang dari perangkat ini. Tetap keluar?",
+   "ar": null,
+   "versiTerbit": 0
   }
  ]
 }
