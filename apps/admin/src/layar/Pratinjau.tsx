@@ -4,7 +4,7 @@
 // Jenis tanpa layar web (ahwal, teks_edukasi, dst.) ditampilkan sebagai JSON berindentasi.
 // ponytail: pratinjau memakai snapshot bawaan build sebagai latar, bukan data DB terbaru; cukup untuk melihat
 // tampilan satu entri.
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { keJson, type EntriFaq, type IsiKonten, type JenisKonten, type SoalKuis } from '@waris/content';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
 import { Materi } from '@waris/web/belajar/Materi';
@@ -16,23 +16,30 @@ import { Tombol } from '@waris/web/ui/komponen';
 interface Props<J extends JenisKonten> { jenis: J; slug: string; isi: IsiKonten[J]; saatTutup: () => void }
 
 export function Pratinjau<J extends JenisKonten>({ jenis, slug, isi, saatTutup }: Props<J>) {
-  // asal ditangkap sekali (state lazy-init), dipulihkan lewat cleanup useEffect saat unmount (Review Focus 4).
-  const [asal] = useState(() => snapshotTerpasang());
-  // Dipasang langsung di badan render (bukan efek): React merender anak (Materi dkk.) sebagai bagian dari render
-  // ini juga, sebelum efek mana pun sempat jalan, jadi snapshot pratinjau harus sudah terpasang di titik ini.
-  pasangSnapshot({
-    ...asal,
-    konten: [
-      ...asal.konten.filter(baris => !(baris.jenis === jenis && baris.slug === slug)),
-      { entriId: 'pratinjau', jenis, slug, urutan: 0, revisiId: 'pratinjau', isi: keJson(jenis, isi), refs: [], versiTerbit: asal.versi },
-    ],
-  });
-  useEffect(() => () => pasangSnapshot(asal), [asal]);
+  // siap baru true setelah efek terpasang: anak (Materi dkk.) digerbang di baliknya supaya render pertamanya
+  // sudah melihat snapshot pratinjau, bukan snapshot lama.
+  const [siap, setSiap] = useState(false);
+  // asal ditangkap DI DALAM efek (bukan lazy-init state) supaya benar di StrictMode: efek mount di-run-cleanup-
+  // run-ulang (dev only), jadi tiap kali efek ini jalan, asal = snapshot yang terpasang saat itu (yang di run
+  // kedua sudah snapshot asli lagi karena cleanup run pertama sudah memulihkannya) — bukan snapshot pratinjau
+  // yang terlanjur ditangkap sebagai "asal" oleh invocation kedua.
+  useLayoutEffect(() => {
+    const asal = snapshotTerpasang();
+    pasangSnapshot({
+      ...asal,
+      konten: [
+        ...asal.konten.filter(baris => !(baris.jenis === jenis && baris.slug === slug)),
+        { entriId: 'pratinjau', jenis, slug, urutan: 0, revisiId: 'pratinjau', isi: keJson(jenis, isi), refs: [], versiTerbit: asal.versi },
+      ],
+    });
+    setSiap(true);
+    return () => { pasangSnapshot(asal); setSiap(false); };
+  }, [jenis, slug, isi]);
 
   return (
     <div className="aw-pratinjau">
       <Tombol varian="secondary" onClick={saatTutup}>Tutup pratinjau</Tombol>
-      <LayarUntukJenis jenis={jenis} slug={slug} isi={isi} />
+      {siap ? <LayarUntukJenis jenis={jenis} slug={slug} isi={isi} /> : null}
     </div>
   );
 }
