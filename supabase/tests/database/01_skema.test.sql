@@ -1,7 +1,7 @@
 -- supabase/tests/database/01_skema.test.sql
 -- Tabel & constraint dasar: refs harus dikenal, jenis fikih wajib ref, revisi beku setelah diajukan.
 begin;
-select plan(8);
+select plan(9);
 
 insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000000a', 'penulis@tes.local');
 insert into daftar_refs (kode, bab) values ('R09-7', 9), ('R04-2', 4) on conflict do nothing;
@@ -22,6 +22,9 @@ select throws_ok(
 select lives_ok(
   $$insert into revisi (entri_id, isi, refs, dibuat_oleh) values ('10000000-0000-0000-0000-000000000002', '{}', '{}', '00000000-0000-0000-0000-00000000000a')$$,
   'jenis non-fikih boleh tanpa ref');
+select lives_ok(
+  $$insert into revisi (entri_id, isi, refs, dibuat_oleh) values ('10000000-0000-0000-0000-000000000001', '{"kelompok": "Pakai aplikasi"}', '{}', '00000000-0000-0000-0000-00000000000a')$$,
+  'faq Pakai aplikasi boleh tanpa ref');
 
 insert into revisi (id, entri_id, isi, refs, status, dibuat_oleh) values
   ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '{"a":1}', '{R09-7}', 'diajukan', '00000000-0000-0000-0000-00000000000a');

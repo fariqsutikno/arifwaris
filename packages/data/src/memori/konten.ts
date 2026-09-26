@@ -57,7 +57,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     const json = keJson(jenis, isi);
     const hasil = bacaIsi(jenis, json);
     if (!hasil.ok) throw new Error(`isi ${jenis} tidak sah: ${hasil.galat}`);
-    const galatRefs = periksaRefs(jenis, refs, refsDikenal);
+    const galatRefs = periksaRefs(jenis, json, refs, refsDikenal);
     if (galatRefs) throw new Error(galatRefs);
     return json;
   };

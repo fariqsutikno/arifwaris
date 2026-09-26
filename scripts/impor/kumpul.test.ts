@@ -1,6 +1,6 @@
 // scripts/impor/kumpul.test.ts
 import { expect, test } from 'vitest';
-import { DAFTAR_FAQ, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, JENIS_FIKIH, bacaIsi, keJson } from '@waris/content';
+import { DAFTAR_FAQ, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, bacaIsi, keJson, wajibRef } from '@waris/content';
 import peta from '../diksi/peta.json';
 import { kumpulkanKontenLama, kunciRefsManual } from './kumpul';
 
@@ -26,8 +26,12 @@ test('slug unik per jenis; semua isi lolos Zod setelah keJson', () => {
 test('ref diambil dari isi; entri fikih tanpa ref dilaporkan, bukan dikarang', () => {
   const materi = baris.find(b => b.jenis === 'materi')!;
   expect(materi.refs.length).toBeGreaterThan(0);
-  const tanpaRef = baris.filter(b => JENIS_FIKIH.includes(b.jenis) && b.refs.length === 0);
+  const tanpaRef = baris.filter(b => wajibRef(b.jenis, b.isi) && b.refs.length === 0);
   for (const b of tanpaRef) expect(galat).toContain(`${kunciRefsManual(b.jenis, b.slug)}: jenis fikih tanpa ref, isi di refs-manual.json`);
+});
+
+test('FAQ "Pakai aplikasi" tanpa ref tidak dilaporkan', () => {
+  expect(galat.filter(pesan => pesan.startsWith('faq/') && /tanpa ref/.test(pesan))).toEqual([]);
 });
 
 test('refs manual digabung; ref manual yang tak dikenal KB dilaporkan', () => {

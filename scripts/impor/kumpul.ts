@@ -4,7 +4,7 @@
 // Menyerahkan baris + daftar galat (Zod, ref kosong/tak dikenal, konsistensi KB) ke main.ts; ada galat = tidak menulis apa pun.
 import {
   DAFTAR_FAQ, DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, DAFTAR_SYAHID, DAFTAR_TANYA_JAWAB,
-  GLOSARIUM, JENIS_FIKIH, SUMBER_KITAB, ambilRefs, bacaIsi, cariRujukan, keJson, periksaKonsistensi, slug,
+  GLOSARIUM, SUMBER_KITAB, wajibRef, ambilRefs, bacaIsi, cariRujukan, keJson, periksaKonsistensi, slug,
   type IsiKonten, type JenisKonten,
 } from '@waris/content';
 import { AHWAL, LANGKAH_SELANJUTNYA } from '../../apps/web/src/konten/ahwal';
@@ -37,7 +37,7 @@ function periksa(baris: BarisImpor[]): string[] {
     const zod = bacaIsi(b.jenis, keJson(b.jenis, b.isi));
     return [
       ...(zod.ok ? [] : [`${kunci}: ${zod.galat}`]),
-      ...(JENIS_FIKIH.includes(b.jenis) && b.refs.length === 0 ? [`${kunci}: jenis fikih tanpa ref, isi di refs-manual.json`] : []),
+      ...(wajibRef(b.jenis, b.isi) && b.refs.length === 0 ? [`${kunci}: jenis fikih tanpa ref, isi di refs-manual.json`] : []),
       ...b.refs.filter(kode => !cariRujukan(kode)).map(kode => `${kunci}: ref ${kode} tidak ada di KB`),
     ];
   });

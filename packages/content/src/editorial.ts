@@ -2,7 +2,7 @@
 // Aturan alur editorial (spec bagian "Alur editorial") sebagai fungsi murni. Menerima status revisi, aksi, dan siapa
 // pelakunya; memutuskan boleh/tidak dan status berikutnya. Dipakai repository `memori/`; Postgres menegakkan aturan
 // yang sama di fungsi transisi + RLS (supabase/migrations). Kalau salah satu diubah, ubah keduanya.
-import { JENIS_FIKIH, type JenisKonten } from './skema.js';
+import { wajibRef, type JenisKonten } from './skema.js';
 
 export type Peran = 'admin' | 'penulis' | 'reviewer';
 export type StatusRevisi = 'draf' | 'diajukan' | 'disetujui' | 'dikembalikan';
@@ -29,10 +29,10 @@ export function transisiRevisi(p: Pelaku & { status: StatusRevisi; aksi: AksiEdi
 export const bolehSuntingDraf = (p: Pelaku & { status: StatusRevisi }): boolean =>
   p.peran !== null && p.peran !== 'reviewer' && p.status === 'draf' && milikSendiriAtauAdmin(p);
 
-export function periksaRefs(jenis: JenisKonten, refs: string[], refsDikenal: ReadonlySet<string>): string | null {
+export function periksaRefs(jenis: JenisKonten, isi: unknown, refs: string[], refsDikenal: ReadonlySet<string>): string | null {
   const takDikenal = refs.filter(kode => !refsDikenal.has(kode));
   if (takDikenal.length > 0) return `ref tidak ada di KB: ${takDikenal.join(', ')}`;
-  if (JENIS_FIKIH.includes(jenis) && refs.length === 0) return `${jenis} wajib punya minimal satu ref`;
+  if (wajibRef(jenis, isi) && refs.length === 0) return `${jenis} wajib punya minimal satu ref`;
   return null;
 }
 

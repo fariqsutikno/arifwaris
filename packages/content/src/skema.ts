@@ -16,6 +16,12 @@ export const JENIS_KONTEN = [
 export type JenisKonten = (typeof JENIS_KONTEN)[number];
 /** Jenis yang memuat klaim fikih: wajib punya minimal satu ref `[Rxx-y]`. */
 export const JENIS_FIKIH: readonly JenisKonten[] = ['materi', 'soal_kuis', 'soal_hitung', 'tanya_jawab', 'faq', 'ahwal', 'syahid'];
+/** FAQ kelompok ini menjawab cara pakai aplikasi, bukan klaim fikih (keputusan 2026-09-26). Sama dengan trigger periksa_refs_revisi. */
+export const KELOMPOK_FAQ_NON_FIKIH = 'Pakai aplikasi';
+
+export const wajibRef = (jenis: JenisKonten, isi: unknown): boolean =>
+  JENIS_FIKIH.includes(jenis)
+  && !(jenis === 'faq' && (isi as { kelompok?: unknown } | null)?.kelompok === KELOMPOK_FAQ_NON_FIKIH);
 
 export interface CocokAhwal { fardh?: string | null; ashabah?: boolean; terhalang?: boolean; kodeAlasan?: string }
 export interface BarisAhwal { bagian: string; syarat: string; cocok: CocokAhwal; ar?: { bagian: string; syarat: string } }

@@ -51,13 +51,17 @@ describe('sunting draf', () => {
 describe('periksa refs', () => {
   const dikenal = new Set(['R09-7', 'R04-2']);
   test('jenis fikih wajib minimal satu ref', () => {
-    expect(periksaRefs('materi', [], dikenal)).toMatch(/minimal satu/);
-    expect(periksaRefs('materi', ['R09-7'], dikenal)).toBeNull();
+    expect(periksaRefs('materi', {}, [], dikenal)).toMatch(/minimal satu/);
+    expect(periksaRefs('materi', {}, ['R09-7'], dikenal)).toBeNull();
   });
   test('jenis non-fikih boleh tanpa ref', () => {
-    expect(periksaRefs('cheatsheet', [], dikenal)).toBeNull();
+    expect(periksaRefs('cheatsheet', {}, [], dikenal)).toBeNull();
+  });
+  test('FAQ kelompok "Pakai aplikasi" bukan klaim fikih: boleh tanpa ref; FAQ Fikih tetap wajib', () => {
+    expect(periksaRefs('faq', { kelompok: 'Pakai aplikasi' }, [], dikenal)).toBeNull();
+    expect(periksaRefs('faq', { kelompok: 'Fikih' }, [], dikenal)).toMatch(/minimal satu/);
   });
   test('ref tak dikenal ditolak dan disebut', () => {
-    expect(periksaRefs('faq', ['R09-7', 'R99-1'], dikenal)).toMatch(/R99-1/);
+    expect(periksaRefs('faq', {}, ['R09-7', 'R99-1'], dikenal)).toMatch(/R99-1/);
   });
 });

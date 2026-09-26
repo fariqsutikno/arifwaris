@@ -20,7 +20,7 @@ export {
 } from './tanyaJawab.js';
 export { DAFTAR_SYAHID, SUMBER_KITAB, bacaSyahid, bacaSumberKitab, type Syahid, type SumberKitab } from './pustaka.js';
 export {
-  JENIS_KONTEN, JENIS_FIKIH, keJson, bacaIsi,
+  JENIS_KONTEN, JENIS_FIKIH, KELOMPOK_FAQ_NON_FIKIH, wajibRef, keJson, bacaIsi,
   type JenisKonten, type IsiKonten, type IsiAhwal, type BarisAhwal, type CocokAhwal, type IsiTeksEdukasi, type IsiCheatsheet, type IsiGlosariumAr,
 } from './skema.js';
 export { tulisBlok, tulisPotongan } from './tulisBlok.js';
