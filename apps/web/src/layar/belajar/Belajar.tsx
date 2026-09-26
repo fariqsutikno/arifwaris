@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, hapusAktivitas, resetProgresBelajar, type Aktivitas } from '../../preferensi';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { waktuRelatif } from '../../riwayat';
-import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan } from '../../rute';
+import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan, tautanTanyaJawab } from '../../rute';
 import { Ikon, type NamaIkon } from '../../ui/Ikon';
 import { PAKET_ACAK } from './KuisKonsep';
 
@@ -88,6 +88,7 @@ export function Belajar() {
         <div className="kepala-bagian"><h2 id="judul-cari">Cari tahu</h2><p className="keterangan">Buka kapan saja saat ada istilah atau hukum yang belum jelas.</p></div>
         <div className="grid-pintu">
           <Pintu tautan={tautanFaq()} ikon="tanya" judul="FAQ" />
+          <Pintu tautan={tautanTanyaJawab()} ikon="tanya" judul="Tanya jawab" />
           <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul="Glosarium" />
           <Pintu tautan={tautanRujukan()} ikon="rujukan" judul="Rujukan" />
         </div>

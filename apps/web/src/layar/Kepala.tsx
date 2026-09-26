@@ -24,7 +24,7 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
     { label: 'Beranda', ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
     { label: 'ArifLab', ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
-    { label: 'Belajar', ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq'].includes(halaman) },
+    { label: 'Belajar', ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
     { label: 'Latihan', ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
     { label: 'Rujukan', ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
   ];

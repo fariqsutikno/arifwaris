@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { TAUTAN_KALKULATOR, bacaRute, tautanInduk, tautanBelajar, tautanFaq, tautanLatihan, tautanGlosarium, tautanRujukan } from '../rute';
+import { TAUTAN_KALKULATOR, bacaRute, tautanInduk, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanLatihan, tautanGlosarium, tautanRujukan } from '../rute';
 
 it('hash dibaca jadi rute; yang tak dikenal jatuh ke beranda', () => {
   expect(bacaRute('')).toEqual({ halaman: 'beranda' });
@@ -9,6 +9,7 @@ it('hash dibaca jadi rute; yang tak dikenal jatuh ke beranda', () => {
   expect(bacaRute('#/glosarium')).toEqual({ halaman: 'glosarium' });
   expect(bacaRute('#/riwayat')).toEqual({ halaman: 'riwayat' });
   expect(bacaRute(tautanFaq('apa-itu'))).toEqual({ halaman: 'faq', id: 'apa-itu' });
+  expect(bacaRute(tautanTanyaJawab('sengketa'))).toEqual({ halaman: 'tanya-jawab', id: 'sengketa' });
   expect(bacaRute(tautanLatihan())).toEqual({ halaman: 'latihan', tab: 'hitung' });
   expect(bacaRute(tautanLatihan('kuis'))).toEqual({ halaman: 'latihan', tab: 'kuis' });
   expect(bacaRute(tautanLatihan('kuis', 'bab-4'))).toEqual({ halaman: 'latihan', tab: 'kuis', paket: 'bab-4' });

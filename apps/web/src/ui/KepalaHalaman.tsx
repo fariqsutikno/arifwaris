@@ -23,6 +23,7 @@ function judulBagikan(rute: Rute): string | null {
   switch (rute.halaman) {
     case 'materi': return cariPelajaran(rute.slug)?.judul ?? null;
     case 'faq': return 'FAQ faraidh';
+    case 'tanya-jawab': return 'Tanya jawab kasus waris';
     case 'glosarium': return 'Glosarium faraidh';
     case 'rujukan': return 'Rujukan faraidh';
     default: return null;

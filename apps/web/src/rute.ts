@@ -11,6 +11,7 @@ export type Rute =
   | { halaman: 'materi'; slug: string }
   | { halaman: 'latihan'; tab: 'hitung' | 'kuis'; paket?: string }
   | { halaman: 'faq'; id?: string }
+  | { halaman: 'tanya-jawab'; id?: string }
   | { halaman: 'riwayat' }
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
@@ -25,6 +26,7 @@ export function bacaRute(hash: string): Rute {
   }
   if (halaman === 'riwayat') return { halaman };
   if (halaman === 'faq') return parameter ? { halaman, id: parameter } : { halaman };
+  if (halaman === 'tanya-jawab') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'glosarium') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'rujukan') {
     if (!parameter) return { halaman };
@@ -40,6 +42,7 @@ export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung', paket?: string)
   (tab === 'kuis' ? `#/latihan/kuis${paket ? `/${encodeURIComponent(paket)}` : ''}` : '#/latihan');
 export const tautanRiwayat = () => '#/riwayat';
 export const tautanFaq = (id?: string) => `#/faq${id ? `/${encodeURIComponent(id)}` : ''}`;
+export const tautanTanyaJawab = (id?: string) => `#/tanya-jawab${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanGlosarium = (id?: string) => `#/glosarium${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanRujukan = (kode?: string) => `#/rujukan${kode ? `/${encodeURIComponent(kode)}` : ''}`;
 export const TAUTAN_BERANDA = '#/';
@@ -48,7 +51,7 @@ export const TAUTAN_KALKULATOR = '#/hitung';
 /** Halaman induk untuk tombol Kembali: selalu naik satu tingkat, bukan ke halaman yang terakhir dibuka. */
 export function tautanInduk(rute: Rute): string {
   switch (rute.halaman) {
-    case 'materi': case 'faq': case 'glosarium': return tautanBelajar();
+    case 'materi': case 'faq': case 'tanya-jawab': case 'glosarium': return tautanBelajar();
     case 'riwayat': return TAUTAN_KALKULATOR;
     case 'rujukan': return rute.kode || rute.kitab !== undefined ? tautanRujukan(rute.kitab !== undefined ? 'kitab' : undefined) : tautanBelajar();
     case 'latihan': return rute.paket ? tautanLatihan('kuis') : tautanBelajar();
