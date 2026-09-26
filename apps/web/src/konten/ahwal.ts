@@ -3,7 +3,7 @@
 // bukan ditebak UI. SELURUH ISI INI DRAF dan perlu dicek tim keilmuan terhadap KB [SYF] sebelum dipakai sungguhan.
 
 import type { BarisAhwal } from '@waris/content';
-import { t } from '../terjemah';
+import { teksEdukasi } from '../terjemah';
 
 export function barisBerlaku(baris: BarisAhwal, data: { fardh?: string; ashabah: boolean; terhalang: boolean; kodeAlasan?: string }): boolean {
   const { cocok } = baris;
@@ -14,11 +14,12 @@ export function barisBerlaku(baris: BarisAhwal, data: { fardh?: string; ashabah:
   return true;
 }
 
+// Satu baris literal per langkah, supaya tes cakupan melihat slug teks edukasinya.
 export const LANGKAH_SELANJUTNYA = [
-  { judul: t('Pastikan biaya jenazah dan hutang sudah beres.'), isi: t('Termasuk hutang yang belum tercatat, misalnya zakat atau nazar.') },
-  { judul: t('Tunaikan wasiat.'), isi: t('Maksimal 1/3 dari sisa harta setelah hutang.') },
-  { judul: t('Musyawarahkan hasil ini dengan semua ahli waris.'), isi: t('Bagikan file kasus atau tunjukkan layar ini supaya semua melihat angka yang sama.') },
-  { judul: t('Sepakati sisa pembulatan dan cara membagi.'), isi: t('Transfer, tunai, atau barang yang dinilai dengan harga saat dibagi.') },
-  { judul: t('Urus dokumen yang dibutuhkan.'), isi: t('Misalnya surat keterangan ahli waris untuk balik nama atau pencairan rekening.') },
-  { judul: t('Kalau ragu atau ada perselisihan, tanya ahlinya.'), isi: t('Ustadz yang paham faraidh atau lembaga yang berwenang.') },
+  { judul: teksEdukasi('selanjutnya.langkah_1_judul'), isi: teksEdukasi('selanjutnya.langkah_1_isi') },
+  { judul: teksEdukasi('selanjutnya.langkah_2_judul'), isi: teksEdukasi('selanjutnya.langkah_2_isi') },
+  { judul: teksEdukasi('selanjutnya.langkah_3_judul'), isi: teksEdukasi('selanjutnya.langkah_3_isi') },
+  { judul: teksEdukasi('selanjutnya.langkah_4_judul'), isi: teksEdukasi('selanjutnya.langkah_4_isi') },
+  { judul: teksEdukasi('selanjutnya.langkah_5_judul'), isi: teksEdukasi('selanjutnya.langkah_5_isi') },
+  { judul: teksEdukasi('selanjutnya.langkah_6_judul'), isi: teksEdukasi('selanjutnya.langkah_6_isi') },
 ];

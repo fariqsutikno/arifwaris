@@ -1,40 +1,39 @@
 // Label sehari-hari untuk isian ahli waris dan pengelompokannya. Istilah fikih (label checklist) tampil sebagai caption.
-// Label menyebut hubungannya dengan almarhum supaya tidak perlu menebak. Semua masih draf; `perluCek` sampai dicek tim keilmuan.
+// Label menyebut hubungannya dengan almarhum supaya tidak perlu menebak.
 
 import type { KunciAhliWaris } from '@waris/engine';
-import { t } from '../terjemah';
+import { teksEdukasi } from '../terjemah';
 
-export const PERLU_CEK_LABEL = true;
 
 export const LABEL_SEHARI: Partial<Record<KunciAhliWaris, string>> = {
-  SUAMI: t('Suami'), ISTRI: t('Istri'), ANAK_LK: t('Anak laki-laki'), ANAK_PR: t('Anak perempuan'), AYAH: t('Ayah'), IBU: t('Ibu'),
-  CUCU_LK: t('Cucu laki-laki'), CUCU_PR: t('Cucu perempuan'),
-  KAKEK: t('Kakek (dari ayah)'), NENEK_DARI_AYAH: t('Nenek (dari ayah)'), NENEK_DARI_IBU: t('Nenek (dari ibu)'),
-  SAUDARA_KANDUNG: t('Kakak/adik laki-laki kandung'), SAUDARI_KANDUNG: t('Kakak/adik perempuan kandung'),
-  SAUDARA_SEBAPAK: t('Kakak/adik laki-laki satu ayah'), SAUDARI_SEBAPAK: t('Kakak/adik perempuan satu ayah'),
-  SAUDARA_SEIBU: t('Kakak/adik laki-laki satu ibu'), SAUDARI_SEIBU: t('Kakak/adik perempuan satu ibu'),
-  KEPONAKAN_KANDUNG: t('Keponakan laki-laki (kandung)'), KEPONAKAN_SEBAPAK: t('Keponakan laki-laki (satu ayah)'),
-  PAMAN_KANDUNG: t('Paman (kandung)'), PAMAN_SEBAPAK: t('Paman (satu ayah)'),
-  SEPUPU_KANDUNG: t('Sepupu laki-laki (kandung)'), SEPUPU_SEBAPAK: t('Sepupu laki-laki (satu ayah)'),
+  SUAMI: teksEdukasi('ahli_waris.suami'), ISTRI: teksEdukasi('ahli_waris.istri'), ANAK_LK: teksEdukasi('ahli_waris.anak_laki_laki'), ANAK_PR: teksEdukasi('ahli_waris.anak_perempuan'), AYAH: teksEdukasi('ahli_waris.ayah'), IBU: teksEdukasi('ahli_waris.ibu'),
+  CUCU_LK: teksEdukasi('ahli_waris.cucu_laki_laki'), CUCU_PR: teksEdukasi('ahli_waris.cucu_perempuan'),
+  KAKEK: teksEdukasi('ahli_waris.kakek_dari_ayah'), NENEK_DARI_AYAH: teksEdukasi('ahli_waris.nenek_dari_ayah'), NENEK_DARI_IBU: teksEdukasi('ahli_waris.nenek_dari_ibu'),
+  SAUDARA_KANDUNG: teksEdukasi('ahli_waris.kakak_adik_laki_laki_kandung'), SAUDARI_KANDUNG: teksEdukasi('ahli_waris.kakak_adik_perempuan_kandung'),
+  SAUDARA_SEBAPAK: teksEdukasi('ahli_waris.kakak_adik_laki_laki_satu_ayah'), SAUDARI_SEBAPAK: teksEdukasi('ahli_waris.kakak_adik_perempuan_satu_ayah'),
+  SAUDARA_SEIBU: teksEdukasi('ahli_waris.kakak_adik_laki_laki_satu_ibu'), SAUDARI_SEIBU: teksEdukasi('ahli_waris.kakak_adik_perempuan_satu_ibu'),
+  KEPONAKAN_KANDUNG: teksEdukasi('ahli_waris.keponakan_laki_laki_kandung'), KEPONAKAN_SEBAPAK: teksEdukasi('ahli_waris.keponakan_laki_laki_satu_ayah'),
+  PAMAN_KANDUNG: teksEdukasi('ahli_waris.paman_kandung'), PAMAN_SEBAPAK: teksEdukasi('ahli_waris.paman_satu_ayah'),
+  SEPUPU_KANDUNG: teksEdukasi('ahli_waris.sepupu_laki_laki_kandung'), SEPUPU_SEBAPAK: teksEdukasi('ahli_waris.sepupu_laki_laki_satu_ayah'),
 };
 
 /** Keterangan kecil di bawah label, hanya bila labelnya belum cukup jelas. */
 export const KETERANGAN_HUBUNGAN: Partial<Record<KunciAhliWaris, string>> = {
-  CUCU_LK: t('dari anak laki-laki'), CUCU_PR: t('dari anak laki-laki'),
-  KAKEK: t('ayahnya ayah almarhum'), NENEK_DARI_AYAH: t('ibunya ayah almarhum'), NENEK_DARI_IBU: t('ibunya ibu almarhum'),
-  SAUDARA_SEBAPAK: t('ayahnya sama, ibunya beda'), SAUDARI_SEBAPAK: t('ayahnya sama, ibunya beda'),
-  SAUDARA_SEIBU: t('ibunya sama, ayahnya beda'), SAUDARI_SEIBU: t('ibunya sama, ayahnya beda'),
-  KEPONAKAN_KANDUNG: t('anak dari kakak/adik laki-laki kandung'), KEPONAKAN_SEBAPAK: t('anak dari kakak/adik laki-laki satu ayah'),
-  PAMAN_KANDUNG: t('saudara kandung ayah almarhum'), PAMAN_SEBAPAK: t('saudara satu ayah dari ayah almarhum'),
-  SEPUPU_KANDUNG: t('anak laki-laki paman kandung'), SEPUPU_SEBAPAK: t('anak laki-laki paman satu ayah'),
+  CUCU_LK: teksEdukasi('ahli_waris.dari_anak_laki_laki'), CUCU_PR: teksEdukasi('ahli_waris.dari_anak_laki_laki'),
+  KAKEK: teksEdukasi('ahli_waris.ayahnya_ayah_almarhum'), NENEK_DARI_AYAH: teksEdukasi('ahli_waris.ibunya_ayah_almarhum'), NENEK_DARI_IBU: teksEdukasi('ahli_waris.ibunya_ibu_almarhum'),
+  SAUDARA_SEBAPAK: teksEdukasi('ahli_waris.ayahnya_sama_ibunya_beda'), SAUDARI_SEBAPAK: teksEdukasi('ahli_waris.ayahnya_sama_ibunya_beda'),
+  SAUDARA_SEIBU: teksEdukasi('ahli_waris.ibunya_sama_ayahnya_beda'), SAUDARI_SEIBU: teksEdukasi('ahli_waris.ibunya_sama_ayahnya_beda'),
+  KEPONAKAN_KANDUNG: teksEdukasi('ahli_waris.anak_dari_kakak_adik_laki_laki'), KEPONAKAN_SEBAPAK: teksEdukasi('ahli_waris.anak_dari_kakak_adik_laki_laki_2'),
+  PAMAN_KANDUNG: teksEdukasi('ahli_waris.saudara_kandung_ayah_almarhum'), PAMAN_SEBAPAK: teksEdukasi('ahli_waris.saudara_satu_ayah_dari_ayah_almarhum'),
+  SEPUPU_KANDUNG: teksEdukasi('ahli_waris.anak_laki_laki_paman_kandung'), SEPUPU_SEBAPAK: teksEdukasi('ahli_waris.anak_laki_laki_paman_satu_ayah'),
 };
 
 /** [R14-4] kerabat yang bukan ashabul furudh dan bukan ashabah (bab 14.2): sengaja tidak ada di daftar. */
 export const INFO_TIDAK_ADA = {
-  judul: t('Kok kakek dari ibu, cucu dari anak perempuan, atau bibi tidak ada?'),
-  isi: t('Mereka termasuk dzawil arham: kerabat yang tidak punya bagian tertentu dan bukan penerima sisa. ') +
-    t('Contohnya ayahnya ibu, anak dari anak perempuan, anak dari kakak/adik perempuan, paman dari pihak ibu, bibi, dan anak dari kakak/adik seibu. ') +
-    t('Mereka baru mewarisi kalau tidak ada ahli waris di daftar ini, dan perhitungannya belum didukung aplikasi.'),
+  judul: teksEdukasi('ahli_waris.kok_kakek_dari_ibu_cucu_dari'),
+  isi: teksEdukasi('ahli_waris.mereka_termasuk_dzawil_arham_kerabat_yang') +
+    teksEdukasi('ahli_waris.contohnya_ayahnya_ibu_anak_dari_anak') +
+    teksEdukasi('ahli_waris.mereka_baru_mewarisi_kalau_tidak_ada'),
 };
 
 /** Keluarga inti: selalu tampil di atas. Pasangan menyesuaikan jenis kelamin almarhum. */
@@ -44,11 +43,11 @@ export interface KelompokKerabat { judul: string; pilihan: KunciAhliWaris[] }
 
 /** Kerabat lain, urut silsilah: kakek-nenek, cucu, kakak/adik, paman & sepupu, keponakan. */
 export const KERABAT_LAIN: KelompokKerabat[] = [
-  { judul: t('Kakek & nenek'), pilihan: ['KAKEK', 'NENEK_DARI_AYAH', 'NENEK_DARI_IBU'] },
-  { judul: t('Cucu'), pilihan: ['CUCU_LK', 'CUCU_PR'] },
-  { judul: t('Kakak/adik almarhum'), pilihan: ['SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU'] },
-  { judul: t('Paman & sepupu dari pihak ayah'), pilihan: ['PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'] },
-  { judul: t('Keponakan'), pilihan: ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK'] },
+  { judul: teksEdukasi('ahli_waris.kakek_nenek'), pilihan: ['KAKEK', 'NENEK_DARI_AYAH', 'NENEK_DARI_IBU'] },
+  { judul: teksEdukasi('ahli_waris.cucu'), pilihan: ['CUCU_LK', 'CUCU_PR'] },
+  { judul: teksEdukasi('ahli_waris.kakak_adik_almarhum'), pilihan: ['SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU'] },
+  { judul: teksEdukasi('ahli_waris.paman_sepupu_dari_pihak_ayah'), pilihan: ['PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'] },
+  { judul: teksEdukasi('ahli_waris.keponakan'), pilihan: ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK'] },
 ];
 
 /** "almarhum" → "almarhumah" bila almarhum perempuan. */

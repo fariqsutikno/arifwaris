@@ -1,15 +1,15 @@
 // Teks umum di luar wizard.
 
-import { t } from '../terjemah';
+import { teksEdukasi } from '../terjemah';
 
 /** Ganti dengan URL repo sungguhan saat dipublikasikan. */
 export const TAUTAN_LAPORAN = 'https://github.com/NAMA-ORG/arif-waris/issues';
 
 export const TEKS_HITUNG = {
   judul: 'ArifLab',
-  janji: t('Ruang buat nyoba simulasi hitung waris. Masukin kasusnya, ikutin langkahnya, tiap angka dijelasin lengkap sama alasannya.'),
+  janji: teksEdukasi('umum.ruang_buat_nyoba_simulasi_hitung_waris'),
   mulai: {
-    baru: t('Isi data almarhum, ahli waris, dan harta dari awal.'),
-    impor: t('Buka file .json hasil ekspor dari aplikasi ini.'),
+    baru: teksEdukasi('umum.isi_data_almarhum_ahli_waris_dan'),
+    impor: teksEdukasi('umum.buka_file_json_hasil_ekspor_dari'),
   },
 } as const;

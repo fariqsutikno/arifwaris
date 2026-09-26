@@ -13,7 +13,6 @@ import { KAMUS_GLOSARIUM } from './kamus/glosarium';
 import { KAMUS_TANYA_JAWAB } from './kamus/tanyaJawab';
 import { KAMUS_BAB } from './kamus/bab';
 
-export const PERLU_CEK_KAMUS = true;
 
 export const KAMUS_ARAB: Record<string, string> = {
   ...KAMUS_UMUM,
