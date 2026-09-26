@@ -39,27 +39,27 @@ export function KartuPembagian(props: Props) {
   const { ringkasan, pengaturan, sembunyiNominal, sedangMenebak } = props;
   const [aturTerbuka, setAturTerbuka] = useState(false);
   const atribut = useAtributOrang();
-  const uang = (nilai: bigint) => (sembunyiNominal ? t('Rp ••••••') : formatRupiah(nilai));
+  const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
 
   return (
     <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
-        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('Jawabanmu') : t('Kunci jawaban')) : t('Pembagian')}</h2>
+        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
         <div className="alat-pembagian">
           {props.saatUbahAhliWaris && (
-            <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('Ubah ahli waris')} title={t('Ubah ahli waris')}>
+            <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('hitung.ubah_ahli_waris')} title={t('hitung.ubah_ahli_waris')}>
               <Ikon nama="pensil" />
             </button>
           )}
           {!sedangMenebak && <>
             <button type="button" className="tombol-ikon" aria-pressed={sembunyiNominal} onClick={props.saatSembunyi}
-              aria-label={sembunyiNominal ? t('Tampilkan nominal') : t('Sembunyikan nominal')} title={sembunyiNominal ? t('Tampilkan nominal') : t('Sembunyikan nominal')}>
+              aria-label={sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')} title={sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
                 <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" />
                 {sembunyiNominal && <path d="M4 4l16 16" />}
               </svg>
             </button>
-            <button type="button" className="tombol-ikon" aria-expanded={aturTerbuka} onClick={() => setAturTerbuka(!aturTerbuka)} aria-label={t('Atur tampilan')} title={t('Atur tampilan')}>
+            <button type="button" className="tombol-ikon" aria-expanded={aturTerbuka} onClick={() => setAturTerbuka(!aturTerbuka)} aria-label={t('hitung.atur_tampilan')} title={t('hitung.atur_tampilan')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
                 <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" />
               </svg>
@@ -127,7 +127,7 @@ export function KartuPembagian(props: Props) {
             return (
               <button key={orang.id} type="button" {...pemicu} className={['tidak-dapat', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
                 <span className="titik putus" aria-hidden="true" />
-                <span><b>{orang.nama}</b> {t('tidak dapat bagian.')} {orang.alasan}</span>
+                <span><b>{orang.nama}</b> {t('hitung.tidak_dapat_bagian')} {orang.alasan}</span>
               </button>
             );
           })}
@@ -144,24 +144,24 @@ function PanelAtur({ pengaturan, saatUbah }: { pengaturan: PengaturanTampil; saa
   return (
     <div className="panel-atur">
       <div>
-        <h3>{t('Tampilkan di samping nominal')}</h3>
+        <h3>{t('hitung.tampilkan_di_samping_nominal')}</h3>
         <label className="cek">
           <input type="checkbox" checked={pengaturan.pecahan} onChange={event => saatUbah({ ...pengaturan, pecahan: event.target.checked })} />
-          <span><b>{t('Pecahan')}</b><small>Bagian dari harta yang dibagi, misal 1/6 = satu dari enam bagian.</small></span>
+          <span><b>{t('hitung.pecahan')}</b><small>Bagian dari harta yang dibagi, misal 1/6 = satu dari enam bagian.</small></span>
         </label>
         <label className="cek">
           <input type="checkbox" checked={pengaturan.persen} onChange={event => saatUbah({ ...pengaturan, persen: event.target.checked })} />
-          <span><b>{t('Persen')}</b><small>{t('Bagian yang sama dalam persen, misal 1/6 ≈ 16,67%.')}</small></span>
+          <span><b>{t('hitung.persen')}</b><small>{t('hitung.bagian_yang_sama_dalam_persen_misal')}</small></span>
         </label>
       </div>
       <div>
-        <h3 id="judul-bentuk">{t('Bentuk pecahan')}</h3>
+        <h3 id="judul-bentuk">{t('hitung.bentuk_pecahan')}</h3>
         <div className="pilihan-bulat" role="radiogroup" aria-labelledby="judul-bentuk">
           <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sederhana'} onClick={() => saatUbah({ ...pengaturan, bentuk: 'sederhana' })}>
-            <b>{t('Disederhanakan')}</b><small>{t('1/6 · 13/36, paling ringkas')}</small>
+            <b>{t('hitung.disederhanakan')}</b><small>{t('hitung.1_6_13_36_paling_ringkas')}</small>
           </button>
           <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sama'} onClick={() => saatUbah({ ...pengaturan, bentuk: 'sama' })}>
-            <b>{t('Penyebut sama')}</b><small>{t('12/72 · 26/72, gampang dibandingkan')}</small>
+            <b>{t('hitung.penyebut_sama')}</b><small>{t('hitung.12_72_26_72_gampang_dibandingkan')}</small>
           </button>
         </div>
       </div>
@@ -177,12 +177,12 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
     // Dilipat: kebanyakan orang tidak mengubah pembulatan, jangan sampai menutupi penjelasan di bawahnya.
     <details className="kartu-bulat" data-tur="pembulatan">
       <summary className="kepala-bulat">
-        <span className="label-perhatian">{t('Perlu keputusanmu')}</span>
-        <b>{t('Ada angka yang nggak bulat · dibulatkan ke {satuan}', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuan)?.judul ?? formatRupiah(satuan) })}</b>
-        <span>{t('Misalnya bagian {nama} susah dibagi tunai. Buka untuk memilih pembulatan dan melihat sisanya.', { nama: contoh?.nama.toLowerCase() ?? '' })}</span>
+        <span className="label-perhatian">{t('hitung.perlu_keputusanmu')}</span>
+        <b>{t('hitung.ada_angka_yang_nggak_bulat_dibulatkan', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuan)?.judul ?? formatRupiah(satuan) })}</b>
+        <span>{t('hitung.misalnya_bagian_nama_susah_dibagi_tunai', { nama: contoh?.nama.toLowerCase() ?? '' })}</span>
       </summary>
       <div className="isi-bulat">
-        <div className="pilihan-bulat" role="radiogroup" aria-label={t('Bulatkan bagian tiap orang ke')}>
+        <div className="pilihan-bulat" role="radiogroup" aria-label={t('hitung.bulatkan_bagian_tiap_orang_ke')}>
           {PILIHAN_PEMBULATAN.map(pilihan => (
             <button key={String(pilihan.satuan)} type="button" role="radio" aria-checked={pilihan.satuan === satuan} onClick={() => saatUbah(pilihan.satuan)}>
               <b>{pilihan.judul}</b><small>{pilihan.keterangan}</small>
@@ -190,8 +190,8 @@ function KartuPembulatan({ ringkasan, satuan, saatUbah, sembunyiNominal }: {
           ))}
         </div>
         {ringkasan.sisaPembulatan > 0n
-          ? <p>{t('Setelah dibulatkan ke bawah, tersisa')} <b>{sembunyiNominal ? t('Rp ••••••') : formatRupiah(ringkasan.sisaPembulatan)}</b> {t('yang belum terbagi. Sisa ini tidak dibagi diam-diam; sepakati bersama para ahli waris.')}</p>
-          : <p>{t('Semua bagian sudah pas, tidak ada sisa.')}</p>}
+          ? <p>{t('hitung.setelah_dibulatkan_ke_bawah_tersisa')} <b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.sisaPembulatan)}</b> {t('hitung.yang_belum_terbagi_sisa_ini_tidak')}</p>
+          : <p>{t('hitung.semua_bagian_sudah_pas_tidak_ada')}</p>}
       </div>
     </details>
   );

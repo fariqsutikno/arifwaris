@@ -33,9 +33,9 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     const almarhum = id === graf.idPewaris || urutanWafat.includes(id);
     const dapat = penerima.get(id);
     const halang = terhalang.get(id);
-    const nama = id === graf.idPewaris ? orang.nama ?? t('Almarhum') : namaOrang(graf, ringkasan.statusOrang, id);
-    if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: t('{nama} (tidak diisi)', { nama }) };
-    if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? t('Almarhum') : t('Wafat sebelum dibagi'), nama };
+    const nama = id === graf.idPewaris ? orang.nama ?? t('hitung.almarhum') : namaOrang(graf, ringkasan.statusOrang, id);
+    if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: t('hitung.nama_tidak_diisi', { nama }) };
+    if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? t('hitung.almarhum') : t('hitung.wafat_sebelum_dibagi'), nama };
     if (sedangMenebak) return { kelas: dapat || halang ? `g-${(dapat ?? halang)!.kelompok}` : 'putus', peran: '', nama };
     const ubah = langkah?.ubah?.get(id);
     if (ubah) return { kelas: dapat ? `g-${dapat.kelompok}` : 'terhalang', peran: '', nama, isi: <UbahNode key={langkah!.ketukan} ubah={ubah} /> };
@@ -46,17 +46,17 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     if (dapat) return {
       kelas: `g-${dapat.kelompok}`, peran: '', nama,
       isi: <span className="dapat-node"><span className="frac">{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</span>
-        <span className="angka">{sembunyiNominal ? t('Rp ••••••') : formatRupiah(dapat.nominal)}</span></span>,
+        <span className="angka">{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</span></span>,
     };
-    if (halang) return { kelas: 'terhalang', peran: t('Terhalang'), nama, isi: <span className="alasan-node">{halang.alasan}</span> };
-    return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">{t('Tidak mewarisi')}</span> };
+    if (halang) return { kelas: 'terhalang', peran: t('hitung.terhalang'), nama, isi: <span className="alasan-node">{halang.alasan}</span> };
+    return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">{t('hitung.tidak_mewarisi')}</span> };
   };
   return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} />;
 }
 
 /** Bagian sebelum dijadikan saham: "1/8", "1/6 + sisa", atau "sisa". */
 const bagianFardh = ({ fardh, ashabah }: { fardh?: { n: bigint; d: bigint }; ashabah: boolean }) =>
-  fardh ? `${angka(`${fardh.n}/${fardh.d}`)}${ashabah ? t(' + sisa') : ''}` : t('sisa');
+  fardh ? `${angka(`${fardh.n}/${fardh.d}`)}${ashabah ? t('hitung.sisa') : ''}` : t('hitung.sisa_2');
 
 function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
   return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">{panah()}</span><b>{ubah.menjadi}</b></span>;
@@ -109,7 +109,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
               }
               return (
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')}
-                  aria-label={bisaDipilih ? t('{nama}. Lihat penjelasan', { nama: node.nama }) : node.nama} disabled={!bisaDipilih}
+                  aria-label={bisaDipilih ? t('hitung.nama_lihat_penjelasan', { nama: node.nama }) : node.nama} disabled={!bisaDipilih}
                   onClick={() => saatPilih?.(id)}>
                   {node.peran && <span className="peran-node">{node.peran}</span>}
                   <b>{node.nama}</b>

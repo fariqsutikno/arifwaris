@@ -16,7 +16,7 @@ import { angka, bahasaArab, t } from '../terjemah';
 import type { Kelompok } from '../checklist';
 
 const TEKS_KELOMPOK = (): Record<Kelompok, string> => ({
-  pasangan: t('pasangan'), keturunan: t('keturunan'), leluhur: t('leluhur'), saudara: t('saudara'),
+  pasangan: t('hitung.pasangan'), keturunan: t('hitung.keturunan'), leluhur: t('hitung.leluhur'), saudara: t('hitung.saudara'),
 });
 
 interface Props {
@@ -59,26 +59,26 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
         <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? t('Almarhum') : halang && !sedangMenebak ? t('Terhalang (mahjub)') : kelompok ? TEKS_KELOMPOK()[kelompok] : t('Kerabat')}</p>
+            <p className="peran-modal">{id === graf.idPewaris ? t('hitung.almarhum') : halang && !sedangMenebak ? t('hitung.terhalang_mahjub') : kelompok ? TEKS_KELOMPOK()[kelompok] : t('hitung.kerabat')}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
-          <button type="button" className="tombol-ikon" data-tutup aria-label={t('Tutup')} onClick={saatTutup}>✕</button>
+          <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}>✕</button>
         </header>
         <div className="isi-modal">
-          {sedangMenebak && <p className="caption-isian">{t('Mode belajar: bagian orang ini masih disembunyikan. Lihat "Kapan dapat berapa?", lalu tebak kondisi mana yang cocok.')}</p>}
+          {sedangMenebak && <p className="caption-isian">{t('hitung.mode_belajar_bagian_orang_ini_masih')}</p>}
           {dapat && !sedangMenebak && (
             <div>
-              <h3>{t('Bagiannya di kasus ini')}</h3>
+              <h3>{t('hitung.bagiannya_di_kasus_ini')}</h3>
               <div className="angka-modal">
-                <div><small>{t('Pecahan')}</small><b>{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</b></div>
-                <div><small>{t('Persen')}</small><b>{persenTeks(dapat.saham, ringkasan.penyebut)}</b></div>
-                <div><small>{t('Nominal')}</small><b>{sembunyiNominal ? t('Rp ••••••') : formatRupiah(dapat.nominal)}</b></div>
+                <div><small>{t('hitung.pecahan')}</small><b>{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</b></div>
+                <div><small>{t('hitung.persen')}</small><b>{persenTeks(dapat.saham, ringkasan.penyebut)}</b></div>
+                <div><small>{t('hitung.nominal')}</small><b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</b></div>
               </div>
             </div>
           )}
           {!sedangMenebak && (barisKenapa.length > 0 || halang) && (
             <div className="kenapa-utama">
-              <h3>{halang ? t('Kenapa tidak dapat?') : t('Kenapa segitu?')}</h3>
+              <h3>{halang ? t('hitung.kenapa_tidak_dapat') : t('hitung.kenapa_segitu')}</h3>
               <ul>
                 {barisKenapa.length === 0 && halang && <li>{halang.alasan}</li>}
                 {barisKenapa.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}
@@ -87,22 +87,22 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
           )}
           {dapat && !sedangMenebak && (
             <div>
-              <h3>{t('Cara menghitungnya')}</h3>
+              <h3>{t('hitung.cara_menghitungnya')}</h3>
               <p className="cara-hitung">
-                {t('Harta dibagi menjadi {penyebut} bagian yang sama; {nama} mendapat {saham} bagian.', { penyebut: ringkasan.penyebut, nama, saham: dapat.saham })}<br />
-                {angka(String(dapat.saham))}/{angka(String(ringkasan.penyebut))} × {sembunyiNominal ? t('Rp ••••••') : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? t('Rp ••••••') : formatRupiah(dapat.nominal)}</b>
-                {ringkasan.sisaPembulatan > 0n && <small> ({t('dibulatkan ke bawah')})</small>}
+                {t('hitung.harta_dibagi_menjadi_penyebut_bagian_yang', { penyebut: ringkasan.penyebut, nama, saham: dapat.saham })}<br />
+                {angka(String(dapat.saham))}/{angka(String(ringkasan.penyebut))} × {sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</b>
+                {ringkasan.sisaPembulatan > 0n && <small> ({t('hitung.dibulatkan_ke_bawah')})</small>}
               </p>
             </div>
           )}
           {!sedangMenebak && barisTerdampak.length > 0 && (
             <div>
-              <h3>{t('Ahli waris lain yang terdampak')}</h3>
+              <h3>{t('hitung.ahli_waris_lain_yang_terdampak')}</h3>
               <ul>{barisTerdampak.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}</ul>
             </div>
           )}
           {ahwal && (
-            <Lipatan judul={t('Kapan dapat berapa?')} catatan={t('semua kemungkinan bagian {nama}', { nama: nama.toLowerCase() })}>
+            <Lipatan judul={t('hitung.kapan_dapat_berapa')} catatan={t('hitung.semua_kemungkinan_bagian_nama', { nama: nama.toLowerCase() })}>
               <table>
                 <tbody>
                   {ahwal.map(baris => {
@@ -110,23 +110,23 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
                     return (
                       <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
                         <th>{bahasaArab() && baris.ar ? baris.ar.bagian : baris.bagian}</th>
-                        <td>{bahasaArab() && baris.ar ? baris.ar.syarat : baris.syarat}{berlaku && <span className="stiker-kecil">{t('kasus ini')}</span>}</td>
+                        <td>{bahasaArab() && baris.ar ? baris.ar.syarat : baris.syarat}{berlaku && <span className="stiker-kecil">{t('hitung.kasus_ini')}</span>}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-              <p className="caption-isian">{t('Draf, menunggu pengecekan tim keilmuan.')}</p>
+              <p className="caption-isian">{t('umum.draf_menunggu_pengecekan_tim_keilmuan')}</p>
             </Lipatan>
           )}
           {refs.length > 0 && !sedangMenebak && (
-            <Lipatan judul={t('Dalilnya')}><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
+            <Lipatan judul={t('umum.dalilnya')}><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
           )}
         </div>
         <footer className="kaki-modal">
-          {bisaDiubah && kunci && saatUbah && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>{t('Ubah jumlah')}</button>}
+          {bisaDiubah && kunci && saatUbah && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>{t('hitung.ubah_jumlah')}</button>}
           <span className="pengisi" />
-          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>{t('Oke, paham')}</button>
+          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>{t('umum.oke_paham')}</button>
         </footer>
       </div>
     </div>

@@ -74,7 +74,7 @@ function barisKali(hasil: HasilOk, ringkasan: RingkasanHasil, ashl: bigint): Bar
     const hasilSel = barisTabel.sel['ashl']!;
     const { fardh } = barisTabel;
     const rumus = !fardh ? `sisa: ${ashl} − ${jumlahFardh}`
-      : barisTabel.ashabah && hasilSel > porsiFardh(fardh) ? t('{ashl} × {fardh} = {porsi}, + sisa {sisa}', { ashl, fardh: `${fardh.n}/${fardh.d}`, porsi: porsiFardh(fardh), sisa: hasilSel - porsiFardh(fardh) })
+      : barisTabel.ashabah && hasilSel > porsiFardh(fardh) ? t('hitung.ashl_fardh_porsi_sisa_sisa', { ashl, fardh: `${fardh.n}/${fardh.d}`, porsi: porsiFardh(fardh), sisa: hasilSel - porsiFardh(fardh) })
         : angka(`${ashl} × ${fardh.n}/${fardh.d}`);
     return { daftarId, nama: daftarId.map(id => nama.get(id) ?? id).join(' & '), rumus, hasil: hasilSel };
   });
