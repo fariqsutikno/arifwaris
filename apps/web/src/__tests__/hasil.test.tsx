@@ -255,7 +255,7 @@ describe('layar hasil', () => {
   it('mode fokus: maju per sub-langkah lewat Lanjut, hasil akhir menampilkan hitungan, animasi bisa dimatikan', () => {
     render(<Uji awal={c1601()} />);
     fireEvent.click(screen.getByRole('button', { name: /Pelajari langkah perhitungan/ }));
-    fireEvent.click(screen.getByRole('button', { name: /mode fokus/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Mode fokus/ }));
     const panel = () => document.querySelector('.panel-hitung')!;
     const awal = panel().textContent;
     expect(awal).toMatch(/Langkah 1/);

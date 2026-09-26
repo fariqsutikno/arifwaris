@@ -357,7 +357,7 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .jalur-langkah span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .jalur-langkah[data-kiri=true]{--pudar-kiri:40px}
 .jalur-langkah[data-kanan=true]{--pudar-kanan:40px}
-.ajakan-fokus{width:100%;justify-content:center;gap:6px}
+.alat-langkah{display:flex;align-items:center;gap:8px}
 .urut-langkah .tab-kecil button{white-space:nowrap;padding:0 12px}
 .jalur-langkah button{flex:none;scroll-snap-align:start;display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 12.5px var(--font-sans);cursor:pointer}
 .jalur-langkah b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:7px;background:var(--ink);color:var(--surface-raised);font-size:12px;font-weight:800}

@@ -10,6 +10,7 @@ import type { BarisPenjelasan } from '@waris/explain';
 import type { HasilOk } from '../jalankan';
 import { Dalil, Baris, type BabBerjudul } from '../layar/Penjelasan';
 import { Ikon } from '../ui/Ikon';
+import { TombolIkon } from '../ui/Tooltip';
 import { FokusLangkah, PanelHitung } from './FokusLangkah';
 import { kolomTerbukaSampai, sorotKetukan, type DataPeran } from './ketukan';
 import { durasiPutaran, peragaKetukan, tundaSelDari } from './peraga';
@@ -176,17 +177,16 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
         </div>
       ) : (
         <div className="isi-kartu-sisi">
-          <div className="tab-kecil" role="group" aria-label="Cara tampil">
-            <button type="button" aria-pressed={mode === 'satu'} onClick={() => setMode('satu')}>Langkah demi langkah</button>
-            <button type="button" aria-pressed={mode === 'semua'} onClick={() => setMode('semua')}>Tampilkan semua</button>
+          <div className="alat-langkah">
+            <div className="tab-kecil" role="group" aria-label="Cara tampil">
+              <button type="button" aria-pressed={mode === 'satu'} onClick={() => setMode('satu')}>Langkah demi langkah</button>
+              <button type="button" aria-pressed={mode === 'semua'} onClick={() => setMode('semua')}>Tampilkan semua</button>
+            </div>
+            <TombolIkon label="Mode fokus" onClick={bukaFokus}><Ikon nama="fokus" /></TombolIkon>
           </div>
           {mode === 'semua'
             ? daftarBab.map((bab, nomor) => <KartuSatuLangkah key={nomor} nomor={nomor} total={daftarBab.length} babBerjudul={bab} ketukan={null} />)
-            : babIni && <>{jalurLangkah}{langkahIni(null)}
-              <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm ajakan-fokus" onClick={bukaFokus}>
-                <Ikon nama="perbesar" ukuran={16} /> Belajar pelan-pelan dengan mode fokus
-              </button>
-              {navigasi}</>}
+            : babIni && <>{jalurLangkah}{langkahIni(null)}{navigasi}</>}
         </div>
       ))}
       {fokus && !terkunci && babIni && (
