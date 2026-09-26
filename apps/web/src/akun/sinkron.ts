@@ -29,7 +29,11 @@ export async function mulaiSinkron(repo: RepoAkun, saatDataBerubah: () => void):
       kirim.forEach(antre);
     }
     pasangPengirim(repo.pengguna);
-    if (await kirimAntrean(repo.pengguna) === 0) tulisLokal(await dataServer(repo.pengguna));
+    if (await kirimAntrean(repo.pengguna) === 0) {
+      const server = await dataServer(repo.pengguna);
+      // Perubahan lokal baru bisa masuk antrean selagi dataServer menunggu jaringan; jangan timpa bila begitu.
+      if (bacaAntrean().length === 0) tulisLokal(server);
+    }
     saatDataBerubah();
     return sesi;
   } catch (galat) {

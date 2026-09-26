@@ -60,6 +60,22 @@ test('antrean gagal terkirim: data lokal tidak ditimpa server', async () => {
   expect(await kirimSebelumKeluar(repo, 50)).toBeGreaterThan(0);
 });
 
+test('perubahan lokal masuk antrean selagi menunggu server: tidak ditimpa tarikan', async () => {
+  const { repo } = siapkan(A);
+  await mulaiSinkron(repo, vi.fn());
+  const asli = repo.pengguna.bacaProgresBelajar.bind(repo.pengguna);
+  // Kirim gagal (mis. jaringan putus tepat saat entri baru diantre) supaya entri tetap di antrean, apa pun urutan microtask.
+  repo.pengguna.simpanProgresBelajar = vi.fn().mockRejectedValue(new Error('luring'));
+  repo.pengguna.bacaProgresBelajar = async () => {
+    // Simulasikan: pengguna menandai pelajaran selesai tepat selagi tarikan server masih menunggu jaringan.
+    tandaiPelajaranSelesai('selama-tarik');
+    return asli();
+  };
+  await mulaiSinkron(repo, vi.fn());
+  expect(bacaAntrean().length).toBeGreaterThan(0);
+  expect(bacaPelajaranSelesai().has('selama-tarik')).toBe(true);
+});
+
 test('keluar menghapus semua kunci arif-waris', async () => {
   const { repo } = siapkan(A);
   await mulaiSinkron(repo, vi.fn());
