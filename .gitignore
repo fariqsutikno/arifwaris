@@ -2,3 +2,5 @@ node_modules/
 dist/
 *.tsbuildinfo
 .superpowers
+supabase/.temp/
+supabase/.branches/
