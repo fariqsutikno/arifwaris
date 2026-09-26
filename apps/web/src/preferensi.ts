@@ -100,12 +100,21 @@ export function bacaUkuranBaca(): number {
 }
 export const simpanUkuranBaca = (ukuran: number): void => simpan(KUNCI_UKURAN_BACA, String(ukuran));
 
-/** Bahasa tampilan: 'id' saja, atau 'id+ar' (istilah & ahli waris diberi padanan Arab) untuk santri. */
-export type Bahasa = 'id' | 'id+ar';
+/**
+ * Bahasa tampilan untuk santri: 'id+ar' = istilah & ahli waris diberi padanan Arab;
+ * 'ar' = itu ditambah penjelasan langkah hitung berbahasa Arab. UI lain tetap Indonesia (tahap 3 belum).
+ */
+export type Bahasa = 'id' | 'id+ar' | 'ar';
+export const DAFTAR_BAHASA: Array<{ nilai: Bahasa; label: string }> = [
+  { nilai: 'id', label: 'Indonesia' }, { nilai: 'id+ar', label: 'Indonesia + istilah Arab' }, { nilai: 'ar', label: 'Penjelasan berbahasa Arab' },
+];
 const KUNCI_BAHASA = 'arif-waris:bahasa';
 const pendengarBahasa = new Set<() => void>();
 
-export const bacaBahasa = (): Bahasa => (baca(KUNCI_BAHASA) === 'id+ar' ? 'id+ar' : 'id');
+export function bacaBahasa(): Bahasa {
+  const nilai = baca(KUNCI_BAHASA);
+  return DAFTAR_BAHASA.some(bahasa => bahasa.nilai === nilai) ? nilai as Bahasa : 'id';
+}
 export function simpanBahasa(bahasa: Bahasa): void {
   simpan(KUNCI_BAHASA, bahasa);
   pendengarBahasa.forEach(dengar => dengar());

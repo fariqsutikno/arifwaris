@@ -63,7 +63,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   const peraga = babIni && !sembunyiNominal ? peragaKetukan(babIni.bab, ketukan, hasil, ringkasan) : null;
   const lamaPutaran = durasiPutaran(peraga);
   // Judul bab dari explain sudah bernomor ("Langkah 4 — ..."); mode fokus menulis nomornya sendiri (4a, 4b).
-  const judulFokus = babIni?.bab.judul.replace(/^Langkah \d+ — /, '') ?? '';
+  const judulFokus = babIni?.bab.judul.replace(/^(Langkah|الخطوة) \S+ — /, '') ?? '';
 
   // Pill langkah aktif selalu terlihat di tengah deret, tanpa pengguna perlu menggeser.
   useEffect(() => {
@@ -122,7 +122,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
       {daftarBab.map((bab, nomor) => (
         <button key={nomor} type="button" aria-current={nomor === indeks ? 'step' : undefined}
           className={dibaca.has(nomor) && nomor !== indeks ? 'kelar' : undefined} onClick={() => keLangkah(nomor)}>
-          <b aria-hidden="true">{dibaca.has(nomor) && nomor !== indeks ? '✓' : nomor + 1}</b><span>{bab.bab.judul.replace(/^Langkah \d+ — /, '')}</span>
+          <b aria-hidden="true">{dibaca.has(nomor) && nomor !== indeks ? '✓' : nomor + 1}</b><span>{bab.bab.judul.replace(/^(Langkah|الخطوة) \S+ — /, '')}</span>
         </button>
       ))}
     </nav>

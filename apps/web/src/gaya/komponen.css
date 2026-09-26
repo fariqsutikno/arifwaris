@@ -1207,4 +1207,5 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
   .fokus-tak-muat .tombol-ikon{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px}
 }
 .arab-sebaris{font:500 1.05em/1 var(--font-arab);color:var(--ink-muted);unicode-bidi:isolate}
-.tombol-kepala[aria-pressed="true"]{background:var(--ink);color:var(--surface-raised)}
+.pilih-bahasa{max-width:11em;font:600 13px var(--font-sans);padding:6px 8px;border-radius:10px;border:2px solid var(--ink);background:var(--surface-raised);color:var(--ink)}
+.narasi-arab{display:block;direction:rtl;text-align:right;font-family:var(--font-arab);line-height:2}

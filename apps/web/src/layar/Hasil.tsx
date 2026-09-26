@@ -9,7 +9,7 @@ import { TAUTAN_LAPORAN } from '../konten/umum';
 import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
-import type { Tujuan } from '../preferensi';
+import { useBahasa, type Tujuan } from '../preferensi';
 import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
@@ -81,7 +81,8 @@ export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
 function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
-  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil), [kasus, tampil]);
+  const bahasa = useBahasa();
+  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa), [kasus, tampil, bahasa]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
   const adalahBelajar = tujuan === 'belajar';
   const bolehUbah = !(terkunci && adalahBelajar);

@@ -52,7 +52,9 @@ export function Istilah({ id, arti, children }: { id?: string; arti?: string; ch
   const entri = id ? cariIstilah(id) : undefined;
   const teks = arti ?? entri?.artiAwam ?? entri?.makna;
   const { pemicuProps, isi } = useTooltip();
-  const arab = useBahasa() === 'id+ar' && entri?.arab ? <> <Arab>{entri.arab}</Arab></> : null;
+  // Penjelasan berbahasa Arab sudah menulis istilahnya dalam Arab: jangan ditempeli padanan lagi.
+  const sudahArab = typeof children === 'string' && /[\u0600-\u06FF]/.test(children);
+  const arab = useBahasa() !== 'id' && entri?.arab && !sudahArab ? <> <Arab>{entri.arab}</Arab></> : null;
   if (!teks) return <>{children}{arab}</>;
   return <><span className="istilah" tabIndex={0} {...pemicuProps}>{children}{isi(teks)}</span>{arab}</>;
 }

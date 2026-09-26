@@ -4,7 +4,7 @@ import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { ID_ISTILAH, jelaskan, narasiNisab, keTeksBiasa, type Penjelasan } from '../index.js';
 
-function jelaskanKasus(input: InputEngine, mode?: 'cerita' | 'ringkas'): Penjelasan {
+function jelaskanKasus(input: InputEngine, mode?: 'cerita' | 'ringkas' | 'arab'): Penjelasan {
   const hasil = hitung(input);
   if (hasil.status !== 'OK') throw new Error(hasil.status);
   return jelaskan(hasil, input.graf, mode ? { mode } : {});
@@ -204,7 +204,7 @@ describe('keterkaitan dengan glosarium dan dalil', () => {
       if (hasil.status !== 'OK') continue;
       const daftarKode = [
         ...hasil.jejak.flatMap(langkah => langkah.refs),
-        ...(['cerita', 'ringkas'] as const).flatMap(mode =>
+        ...(['cerita', 'ringkas', 'arab'] as const).flatMap(mode =>
           jelaskan(hasil, fixture.input.graf, { mode }).daftarBab.flatMap(babIni => babIni.daftarBaris.flatMap(l => l.refs))),
       ];
       daftarKode.filter(kode => !cariRujukan(kode)).forEach(kode => belumAda.add(`${fixture.id}: ${kode}`));
@@ -247,5 +247,23 @@ describe('penjelasan per orang: subjek, ashabah terdekat, sisa keluar', () => {
     const teks = semuaBaris(jelaskanKasus(hanyaIstri)).map(keTeksBiasa).join(' ');
     expect(teks).toMatch(/tersisa 3 bagian/);
     expect(teks).toMatch(/baitul mal/);
+  });
+});
+
+describe('mode arab (santri)', () => {
+  test('kasus 10: gaya kitab, angka Arab', () => {
+    const e = jelaskanKasus(bab16.case10.input, 'arab');
+    const ashl = e.daftarBab.find(babIni => babIni.judul.endsWith('أصل المسألة'))!.daftarBaris.map(keTeksBiasa);
+    expect(ashl[0]).toBe('المخرجان ٤ و٢ متداخلان، فيكتفى بالأكبر: ٤.');
+    expect(ashl[1]).toBe('المخرجان ٤ و٦ متوافقان بـ٢، فيضرب وفق أحدهما في الآخر: ٤ × (٦ ÷ ٢) = ١٢.');
+  });
+
+  test('semua kasus bab 16: tanpa angka Latin di narasi', () => {
+    for (const fixture of bab16.BAB16_FIXTURES) {
+      const hasil = hitung(fixture.input);
+      if (hasil.status !== 'OK') continue;
+      const teks = jelaskan(hasil, fixture.input.graf, { mode: 'arab' }).daftarBab.flatMap(babIni => babIni.daftarBaris.map(keTeksBiasa));
+      expect(teks.filter(baris => /\d/.test(baris)), fixture.id).toEqual([]);
+    }
   });
 });

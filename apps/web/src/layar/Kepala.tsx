@@ -7,7 +7,7 @@ import { Logo, Tombol } from '../ui/komponen';
 import type { Kasus } from '../kasus';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
-import { simpanBahasa, useBahasa } from '../preferensi';
+import { DAFTAR_BAHASA, simpanBahasa, useBahasa, type Bahasa } from '../preferensi';
 import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 
 interface Props {
@@ -42,9 +42,10 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
         <Logo saatKlik={() => { window.location.hash = TAUTAN_BERANDA; }} />
         <nav aria-label="Menu utama" className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
         <span className="pengisi" />
-        {/* Mode santri: istilah & ahli waris diberi padanan Arab. */}
-        <Tombol varian="secondary" kecil className="tombol-kepala" aria-pressed={bahasa === 'id+ar'} title="Tampilkan istilah Arab"
-          onClick={() => simpanBahasa(bahasa === 'id+ar' ? 'id' : 'id+ar')}><span lang="ar">عربي</span></Tombol>
+        {/* Mode santri: padanan Arab untuk istilah, atau penjelasan berbahasa Arab. */}
+        <select className="pilih-bahasa" aria-label="Bahasa" value={bahasa} onChange={e => simpanBahasa(e.target.value as Bahasa)}>
+          {DAFTAR_BAHASA.map(pilihan => <option key={pilihan.nilai} value={pilihan.nilai}>{pilihan.label}</option>)}
+        </select>
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
         {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Tur singkat" title="Tur singkat" onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">Tur singkat</span></Tombol>}
         {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label="Reset skenario" title="Reset skenario" onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">Reset skenario</span></Tombol>}
