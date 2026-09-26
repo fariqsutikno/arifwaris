@@ -22,7 +22,7 @@ packages/explain   Jejak langkah → narasi bahasa Indonesia
 apps/web           Antarmuka web (Vite + React)
 docs/kb            Knowledge base fikih bab 00–17 (sumber kebenaran)
 docs/design        Dokumen desain (engine-contract.md)
-docs/materi, soal  Materi belajar & bank soal
+docs/lampiran-konten  Ekspor Markdown konten terbit (isi aslinya di database)
 ```
 
 ## Alur hitung (pipeline)
@@ -68,7 +68,7 @@ pnpm --filter @waris/web dev
 
 ## Rujukan
 
-Daftar kitab: [docs/kb/17_daftar_rujukan.md](docs/kb/17_daftar_rujukan.md), [docs/rujukan/kitab.md](docs/rujukan/kitab.md).
+Daftar kitab: [docs/kb/17_daftar_rujukan.md](docs/kb/17_daftar_rujukan.md).
 
 ## Disclaimer
 

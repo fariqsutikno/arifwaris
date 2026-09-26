@@ -3,6 +3,12 @@
 Panduan menyusun dan mereview konten aplikasi waris. Untuk ustadz, reviewer syariah, dan penulis materi.
 Tidak perlu bisa coding.
 
+> **Berubah per 2026-09-26:** konten (materi, soal, FAQ, tanya jawab, syahid, kitab, glosarium Arab, diksi UI) sudah
+> dipindah ke database dan berkas `docs/materi/`, `docs/soal/`, `docs/faq.md`, `docs/tanya-jawab.md`, `docs/rujukan/`,
+> `docs/glosarium-ar.md` sudah dihapus. Penyuntingan dan review berikutnya lewat portal admin (sedang dibangun). Aturan
+> isi di bawah (format Markdown terbatas, wajib ref `[Rxx-y]`, dst.) tetap berlaku di portal; sebutan lokasi berkas
+> hanya sejarah. Salinan konten terbit: `docs/lampiran-konten/`.
+
 **Cara setor:** kirim berkas `.md` (atau teks biasa untuk konten di bagian 10.2–10.8) ke Fariq. Fariq yang memasukkan
 ke repo dan menjalankan pengecekan otomatis. Kalau pengecekan gagal (misalnya angka contoh tidak cocok dengan
 hitungan aplikasi), berkas dikembalikan beserta alasannya.

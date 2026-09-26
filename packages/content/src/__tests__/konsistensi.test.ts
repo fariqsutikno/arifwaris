@@ -1,21 +1,8 @@
 // packages/content/src/__tests__/konsistensi.test.ts
 import { describe, expect, test } from 'vitest';
-import {
-  DAFTAR_FAQ, DAFTAR_MODUL, DAFTAR_PELAJARAN, DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, DAFTAR_SYAHID, DAFTAR_TANYA_JAWAB,
-  SUMBER_KITAB, GLOSARIUM, ambilRefs, bacaIsi, periksaKonsistensi, type BarisKonten,
-} from '../index.js';
+import { ambilRefs, bacaIsi, periksaKonsistensi } from '../index.js';
+import { CONTOH_FAQ, CONTOH_PELAJARAN, CONTOH_SOAL_HITUNG, CONTOH_SOAL_KUIS, CONTOH_SYAHID } from './contoh.js';
 
-const semuaSekarang = (): BarisKonten[] => [
-  ...DAFTAR_MODUL.map(isi => ({ jenis: 'modul' as const, slug: String(isi.nomor), isi })),
-  ...DAFTAR_PELAJARAN.map(isi => ({ jenis: 'materi' as const, slug: isi.slug, isi })),
-  ...DAFTAR_SOAL_KUIS.map(isi => ({ jenis: 'soal_kuis' as const, slug: isi.kode, isi })),
-  ...DAFTAR_SOAL_HITUNG.map(isi => ({ jenis: 'soal_hitung' as const, slug: isi.kode, isi })),
-  ...DAFTAR_TANYA_JAWAB.map(isi => ({ jenis: 'tanya_jawab' as const, slug: isi.slug, isi })),
-  ...DAFTAR_FAQ.map(isi => ({ jenis: 'faq' as const, slug: isi.id, isi })),
-  ...SUMBER_KITAB.map(isi => ({ jenis: 'kitab' as const, slug: isi.judul, isi })),
-  ...DAFTAR_SYAHID.map((isi, i) => ({ jenis: 'syahid' as const, slug: String(i), isi })),
-  ...GLOSARIUM.filter(e => e.ar).map(e => ({ jenis: 'glosarium_ar' as const, slug: e.id, isi: { istilahId: e.istilah, ...e.ar! } })),
-];
 
 describe('ambilRefs', () => {
   test('dari potongan rujukan dan teks bebas, unik & terurut', () => {
@@ -26,11 +13,19 @@ describe('ambilRefs', () => {
 });
 
 describe('periksaKonsistensi', () => {
-  test('konten sekarang konsisten dengan KB', () => {
-    expect(periksaKonsistensi(semuaSekarang())).toEqual([]);
+  test('konten yang benar konsisten dengan KB', () => {
+    expect(periksaKonsistensi([
+      { jenis: 'materi', slug: 'uji', isi: CONTOH_PELAJARAN },
+      { jenis: 'soal_kuis', slug: 'K-01', isi: CONTOH_SOAL_KUIS },
+      { jenis: 'soal_kuis', slug: 'K-02', isi: { ...CONTOH_SOAL_KUIS, kode: 'K-02' } },
+      { jenis: 'soal_hitung', slug: 'H-01', isi: CONTOH_SOAL_HITUNG },
+      { jenis: 'faq', slug: 'f', isi: CONTOH_FAQ },
+      { jenis: 'syahid', slug: 's', isi: CONTOH_SYAHID },
+      { jenis: 'glosarium_ar', slug: 'g', isi: { istilahId: "Ta'shib / 'Ashabah", makna: 'عصبة' } },
+    ])).toEqual([]);
   });
   test('ref tak dikenal, istilah tak dikenal, kuis hilang, istilah glosarium_ar di luar KB', () => {
-    const pelajaran = { ...DAFTAR_PELAJARAN[0]!, blok: [
+    const pelajaran = { ...CONTOH_PELAJARAN, blok: [
       { jenis: 'paragraf' as const, isi: [{ jenis: 'rujukan' as const, kode: 'R99-1' }, { jenis: 'istilah' as const, id: 'tak-ada', teks: 'x' }] },
       { jenis: 'kuis' as const, daftarKode: ['K-999'] },
     ] };
@@ -44,8 +39,7 @@ describe('periksaKonsistensi', () => {
     expect(galat.join('\n')).toMatch(/glosarium_ar\/x: istilah "Bukan Istilah KB"/);
   });
   test('syahid yang tidak ada di teks ayat KB ditolak', () => {
-    const [syahid] = DAFTAR_SYAHID;
-    expect(periksaKonsistensi([{ jenis: 'syahid', slug: 's', isi: { ...syahid!, syahid: 'ليس في الآية' } }])[0]).toMatch(/syahid\/s/);
+    expect(periksaKonsistensi([{ jenis: 'syahid', slug: 's', isi: { ...CONTOH_SYAHID, syahid: 'ليس في الآية' } }])[0]).toMatch(/syahid\/s/);
   });
 });
 

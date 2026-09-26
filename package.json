@@ -9,7 +9,6 @@
     "db:reset": "supabase db reset",
     "db:tes": "supabase test db",
     "db:refs": "vite-node scripts/daftar-refs.ts",
-    "konten:impor": "pnpm --filter @waris/skrip impor",
     "konten:ekspor": "pnpm --filter @waris/skrip ekspor"
   },
   "devDependencies": {

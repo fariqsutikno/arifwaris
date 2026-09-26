@@ -1,7 +1,7 @@
 // Halaman Rujukan, tersusun menurut hierarki dalil KB bab 17.1: Al-Qur'an → Sunnah → Atsar → Ijma' → Kitab
 // madzhab → Kaidah hisab, ditambah Keterangan dan Masih dikaji (17.4). Sidebar kategori di kiri, isi di kanan.
-// Ayat: hukum yang tercantum (docs/rujukan/syahid.md) bisa dipilih untuk menyorot potongan ayatnya.
-// Kitab: baca di aplikasi (PDF berlisensi di public/kitab) atau buka situs sumber; keduanya dari docs/rujukan/kitab.md.
+// Ayat: hukum yang tercantum (konten syahid) bisa dipilih untuk menyorot potongan ayatnya.
+// Kitab: baca di aplikasi (PDF berlisensi di public/kitab) atau buka situs sumber; keduanya dari konten kitab.
 // `#/rujukan/<kategori>`, `#/rujukan/<kode>` (satu dalil), `#/rujukan/kitab/<nomor>` (penampil PDF).
 
 import { HeroMini } from '../../ui/Hero';
@@ -133,7 +133,7 @@ function KartuAyat({ ayat }: { ayat: Ayat }) {
           </ul>
         )
       )}
-      {/* TODO: arti dan tafsir diisi tim keilmuan di docs/rujukan/syahid.md bagian "Arti dan Tafsir". */}
+      {/* TODO: arti dan tafsir ayat belum punya tempat di konten; ditambahkan lewat portal (tahap 3). */}
       {tab !== 'hukum' && <p className="keterangan" role="tabpanel">{tab === 'arti' ? t('rujukan.arti_ayat_ini_belum_diisi_akan') : t('rujukan.tafsir_ayat_ini_belum_diisi_akan')}</p>}
     </article>
   );

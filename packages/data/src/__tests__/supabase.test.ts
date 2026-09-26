@@ -4,7 +4,7 @@
 // (nilai kunci dari `supabase status`). Tanpa variabel itu, tes dilewati supaya `pnpm test` tetap tanpa jaringan.
 import { createClient } from '@supabase/supabase-js';
 import { beforeAll, describe, expect, test } from 'vitest';
-import { DAFTAR_FAQ, DAFTAR_SOAL_HITUNG } from '@waris/content';
+import { DAFTAR_FAQ_UJI, SOAL_HITUNG_UJI } from './contoh.js';
 import { buatRepositoriSupabase } from '../index.js';
 
 declare const process: { env: Record<string, string | undefined> };
@@ -38,7 +38,7 @@ describe.skipIf(!URL_DB)('supabase lokal', () => {
   test('alur editorial end-to-end dan bigint utuh', async () => {
     const penulis = await masuk(email.penulis);
     const entriId = await penulis.editorial.buatEntri('soal_hitung', `uji-${akhiran}`, 1);
-    const revisiId = await penulis.editorial.buatDraf(entriId, 'soal_hitung', DAFTAR_SOAL_HITUNG[0]!, ['R09-7']);
+    const revisiId = await penulis.editorial.buatDraf(entriId, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
     await expect(penulis.editorial.setujui(revisiId)).rejects.toThrow();
     await penulis.editorial.ajukan(revisiId);
 
@@ -49,14 +49,14 @@ describe.skipIf(!URL_DB)('supabase lokal', () => {
 
     const anonim = buatRepositoriSupabase(createClient(URL_DB!, KUNCI_ANON, { auth: { persistSession: false } }));
     const terbit = await anonim.konten.bacaTerbit({ jenis: 'soal_hitung', sejakVersi: versiSebelum });
-    expect(terbit.find(baris => baris.revisiId === revisiId)?.isi).toEqual(DAFTAR_SOAL_HITUNG[0]);
+    expect(terbit.find(baris => baris.revisiId === revisiId)?.isi).toEqual(SOAL_HITUNG_UJI);
   });
 
   test('draf tidak terlihat anonim; ref tak dikenal ditolak dengan pesan', async () => {
     const penulis = await masuk(email.penulis);
     const entriId = await penulis.editorial.buatEntri('faq', `draf-${akhiran}`, 1);
-    await expect(penulis.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ[0]!, ['R99-1'])).rejects.toThrow(/R99-1/);
-    await penulis.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ[0]!, ['R09-7']);
+    await expect(penulis.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R99-1'])).rejects.toThrow(/R99-1/);
+    await penulis.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
     const anonim = buatRepositoriSupabase(createClient(URL_DB!, KUNCI_ANON, { auth: { persistSession: false } }));
     expect((await anonim.konten.bacaTerbit({ jenis: 'faq' })).some(baris => baris.entriId === entriId)).toBe(false);
   });

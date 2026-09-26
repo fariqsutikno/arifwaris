@@ -1,5 +1,5 @@
 // packages/content/src/tulisBlok.ts
-// Kebalikan bacaBlok/bacaPotongan: Blok[] → Markdown terbatas yang sama dengan docs/materi. Dipakai ekspor lampiran
+// Kebalikan bacaBlok/bacaPotongan: Blok[] → Markdown terbatas yang sama dengan bacaBlok. Dipakai ekspor lampiran
 // dan editor portal (sunting sebagai Markdown, simpan sebagai Blok[]). Hukum: bacaBlok(tulisBlok(b)) = b.
 import type { Blok, ContohKasus, Potongan } from './materi.js';
 

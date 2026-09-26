@@ -5,10 +5,6 @@
   "type": "module",
   "scripts": {
     "test": "vitest run",
-    "diksi:peta": "vite-node diksi/main.ts peta",
-    "diksi:tulis": "vite-node diksi/main.ts tulis",
-    "impor": "vite-node impor/main.ts",
-    "impor:periksa": "vite-node impor/main.ts --periksa",
     "ekspor": "vite-node ekspor/main.ts"
   },
   "dependencies": {
