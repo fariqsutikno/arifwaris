@@ -15,6 +15,13 @@ test('tidak ada lagi t() berisi teks Indonesia', () => {
   expect(sisa).toEqual([]);
 });
 
+test('t() hanya menerima kunci literal (kunci dinamis lolos dari cek cakupan)', () => {
+  const dinamis = Object.entries(SUMBER).flatMap(([jalur, isi]) =>
+    isi.split('\n').filter(baris => !/^\s*(\/\/|\/?\*)/.test(baris) && !/function t\(/.test(baris))
+      .filter(baris => /(?<![\w.])t\((?!['"])/.test(baris)).map(baris => `${jalur}: ${baris.trim()}`));
+  expect(dinamis).toEqual([]);
+});
+
 test('setiap kunci diksi di kode ada di snapshot', () => {
   const ada = new Set(snapshotTerpasang().diksi.map(d => d.kunci));
   expect([...KUNCI_T].filter(kunci => !ada.has(kunci))).toEqual([]);

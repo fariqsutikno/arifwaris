@@ -102,3 +102,9 @@ describe('memori: konten & editorial', () => {
     expect(await db.diksi.bacaTerbit()).toEqual([{ kunci: 'hitung.lanjut', halaman: 'hitung', id: 'Lanjut', ar: null, versiTerbit: 1 }]);
   });
 });
+
+test('saringDiksiValid membuang diksi rusak dari cache', async () => {
+  const { saringDiksiValid } = await import('../snapshot.js');
+  const baik = { kunci: 'a.b', halaman: 'x', id: 'Teks', ar: null, versiTerbit: 1 };
+  expect(saringDiksiValid([baik, { kunci: 'a.c', id: 5 }, null])).toEqual([baik]);
+});

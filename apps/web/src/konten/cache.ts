@@ -11,7 +11,10 @@ const KUNCI = 'terakhir';
 const BATAS_TUNGGU_MS = 1500;
 
 export async function bacaCache(): Promise<Snapshot | null> {
-  const batas = new Promise<null>(selesai => setTimeout(() => selesai(null), BATAS_TUNGGU_MS));
+  const batas = new Promise<null>(selesai => setTimeout(() => {
+    console.warn(`baca cache konten melewati ${BATAS_TUNGGU_MS} ms, memakai snapshot bawaan`);
+    selesai(null);
+  }, BATAS_TUNGGU_MS));
   return Promise.race([batas, pakaiDb(db => permintaan<Snapshot | undefined>(db.transaction(TOKO).objectStore(TOKO).get(KUNCI)))
     .then(nilai => nilai ?? null).catch(() => null)]);
 }

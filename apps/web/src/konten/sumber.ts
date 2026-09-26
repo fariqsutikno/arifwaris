@@ -4,7 +4,7 @@
 // (tetap di repo) + terjemahan Arab dari konten glosarium_ar.
 import { GLOSARIUM, type BarisAhwal, type EntriGlosarium, type IsiKonten, type IsiTeksEdukasi, type JenisKonten, type Pelajaran, type SoalHitung } from '@waris/content';
 import type { DiksiTerbit, KontenTerbit } from '@waris/data';
-import { saringValid, type Snapshot } from '@waris/data/snapshot';
+import { saringDiksiValid, saringValid, type Snapshot } from '@waris/data/snapshot';
 import bawaan from '../snapshot.json';
 
 let terpasang: Snapshot;
@@ -18,7 +18,7 @@ export function pasangSnapshot(snapshot: Snapshot): void {
   perJenis = new Map();
   for (const baris of saringValid(snapshot.konten)) perJenis.set(baris.jenis, [...(perJenis.get(baris.jenis) ?? []), baris]);
   for (const daftar of perJenis.values()) daftar.sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug));
-  diksi = new Map(snapshot.diksi.map(butir => [butir.kunci, butir]));
+  diksi = new Map(saringDiksiValid(snapshot.diksi).map(butir => [butir.kunci, butir]));
   glosariumTergabung = gabungGlosarium();
   istilahMenurutSinonim = new Map(glosariumTergabung.flatMap(entri => entri.sinonim.map(sinonim => [sinonim, entri] as const)));
 }

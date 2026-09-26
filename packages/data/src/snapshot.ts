@@ -5,7 +5,7 @@
 import type { DiksiTerbit, KontenTerbit, RepositoriDiksi, RepositoriKonten } from './antarmuka.js';
 import { keJson, type JenisKonten } from '@waris/content';
 import type { BarisTerbitMentah } from './saring.js';
-export { saringValid, type BarisTerbitMentah } from './saring.js';
+export { saringDiksiValid, saringValid, type BarisTerbitMentah } from './saring.js';
 
 export interface Snapshot { versi: number; konten: BarisTerbitMentah[]; diksi: DiksiTerbit[] }
 
