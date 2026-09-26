@@ -922,7 +922,10 @@ a.baris-modul:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 
 /* Glosarium: contoh dan pelajaran yang memakai istilah. */
 .contoh-istilah{padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface-sunken)}
-.dipakai-di{font-size:14px}
+.dipakai-di{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:14px}
+/* Chip kecil, bukan stabilo: pelajaran mudah dikenali tanpa menenggelamkan arti istilah. */
+.dipakai-di a.chip-pelajaran{display:inline-flex;align-items:center;min-height:22px;padding:0 8px;border:1px solid var(--divider);border-radius:999px;background:var(--surface-sunken);background-image:none;color:var(--ink-muted);font:600 12px/1 var(--font-sans);text-decoration:none}
+.dipakai-di a.chip-pelajaran:hover{border-color:var(--outline);color:var(--ink)}
 .entri-istilah dd>*+*{margin-top:8px}
 .aksi-dasbor .kartu-pilihan,.pilihan-mulai .kartu-pilihan{min-height:0}
 /* Belajar (HP): cincin progres dikecilkan supaya kartu Lanjutkan, aksi utamanya, tetap di layar pertama. */

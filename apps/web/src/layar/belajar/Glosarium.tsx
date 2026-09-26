@@ -45,8 +45,8 @@ export function Glosarium({ id }: { id?: string | undefined }) {
               {(DIPAKAI_DI.get(entri.id) ?? []).length > 0 && (
                 <p className="dipakai-di">
                   <span className="keterangan">Dipakai di </span>
-                  {DIPAKAI_DI.get(entri.id)!.map((pelajaran, urutan) => (
-                    <span key={pelajaran.slug}>{urutan > 0 && ', '}<a href={tautanBelajar(pelajaran.slug)}>{pelajaran.judul}</a></span>
+                  {DIPAKAI_DI.get(entri.id)!.map(pelajaran => (
+                    <a key={pelajaran.slug} className="chip-pelajaran" href={tautanBelajar(pelajaran.slug)}>{pelajaran.judul}</a>
                   ))}
                 </p>
               )}
