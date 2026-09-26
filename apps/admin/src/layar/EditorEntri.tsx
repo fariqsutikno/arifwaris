@@ -11,13 +11,17 @@ import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
 import { PemilihRefs } from './PemilihRefs';
 import { Pratinjau } from './Pratinjau';
+import { RiwayatRevisi } from './RiwayatRevisi';
 
 const JARAK_URUTAN = 10;
 const FIELD_CALON_JUDUL = ['judul', 'pertanyaan', 'slug', 'id', 'kode', 'kunci', 'istilahId'] as const;
 
 type Mode = { mode: 'baca' } | { mode: 'suntingDraf'; revisiId: string } | { mode: 'drafBaru' };
 // basis = revisi yang isinya dimuat ke form; terakhir = revisi terbaru (status & catatan review ditampilkan dari sini).
-interface Muatan { jenis: JenisKonten; slug: string | null; entriId: string | null; basis: RingkasanRevisi | null; terakhir: RingkasanRevisi | null }
+interface Muatan {
+  jenis: JenisKonten; slug: string | null; entriId: string | null; basis: RingkasanRevisi | null; terakhir: RingkasanRevisi | null;
+  revisiTerbitId: string | null;
+}
 
 export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten }) {
   const { repo, sesi, peran } = usePortal();
@@ -56,7 +60,7 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
     const basis = entri.revisiTerbitId && terakhir?.status === 'disetujui'
       ? (await repo.konten.daftarRevisi(entriId)).find(r => r.id === entri.revisiTerbitId) ?? terakhir
       : terakhir;
-    const muatan: Muatan = { jenis: entri.jenis, slug: entri.slug, entriId, basis, terakhir };
+    const muatan: Muatan = { jenis: entri.jenis, slug: entri.slug, entriId, basis, terakhir, revisiTerbitId: entri.revisiTerbitId };
     return { muatan, bentuk: basis ? bentukDariRevisi(entri.jenis, basis) : bentukKosong(entri.jenis) };
   }
 
@@ -154,6 +158,14 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
       {bacaSaja && peran !== 'reviewer' && muatan.entriId && muatan.terakhir?.status !== 'draf' && muatan.terakhir?.status !== 'diajukan' ? (
         <Tombol varian="secondary" onClick={() => setMode({ mode: 'drafBaru' })}>Buat draf baru dari versi ini</Tombol>
       ) : null}
+      {muatan.entriId ? (
+        <RiwayatRevisi
+          entriId={muatan.entriId}
+          jenis={muatan.jenis}
+          revisiTerbitId={muatan.revisiTerbitId}
+          saatBerubah={() => setMuatUlang(n => n + 1)}
+        />
+      ) : null}
     </div>
   );
 }
@@ -171,7 +183,10 @@ function Pratinjauan({ jenis, slug, bentuk, saatTutup }: { jenis: JenisKonten; s
 }
 
 function muatBaru(jenis: JenisKonten) {
-  return { muatan: { jenis, slug: null, entriId: null, basis: null, terakhir: null } satisfies Muatan, bentuk: bentukKosong(jenis) };
+  return {
+    muatan: { jenis, slug: null, entriId: null, basis: null, terakhir: null, revisiTerbitId: null } satisfies Muatan,
+    bentuk: bentukKosong(jenis),
+  };
 }
 
 function bentukKosong(jenis: JenisKonten): BentukEditor {
