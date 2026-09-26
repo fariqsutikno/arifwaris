@@ -17,6 +17,7 @@ import { bacaPelajaranSelesai, catatAktivitas, tandaiPelajaranSelesai } from '..
 import { tautanBelajar } from '../../rute';
 import { kasusDariContoh } from './contoh';
 import { KartuSoalKuis } from './KartuSoalKuis';
+import { angka, panah, panahMundur, t, terjemahIsi } from '../../terjemah';
 import { Sebaris } from './Sebaris';
 import { TombolBukaKasus } from './TombolBukaKasus';
 import { Ikon } from '../../ui/Ikon';
@@ -50,7 +51,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   }, [pelajaran]);
 
   if (!pelajaran) {
-    return <main className="halaman tumpuk"><a href={tautanBelajar()}>← Belajar</a><p role="alert">Pelajaran ini tidak ditemukan.</p></main>;
+    return <main className="halaman tumpuk"><a href={tautanBelajar()}>{panahMundur()} {t('Belajar')}</a><p role="alert">{t('Pelajaran ini tidak ditemukan.')}</p></main>;
   }
   const indeks = DAFTAR_PELAJARAN.indexOf(pelajaran);
   const sebelumnya = DAFTAR_PELAJARAN[indeks - 1];
@@ -61,17 +62,17 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
     <div className="tata-materi">
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
-        <p className="label-langkah">Modul {pelajaran.modul} · {modul?.judul} · Pelajaran {indeks + 1} dari {DAFTAR_PELAJARAN.length}</p>
-        <h1>{pelajaran.judul}</h1>
-        {pelajaran.perluCek && <p className="lencana-draf">Draf, belum direview tim keilmuan</p>}
-        <p className="lead">{pelajaran.tujuan}</p>
+        <p className="label-langkah">{t('Modul {nomor} · {judul} · Pelajaran {indeks} dari {total}', { nomor: pelajaran.modul, judul: terjemahIsi(modul?.judul ?? ''), indeks: indeks + 1, total: DAFTAR_PELAJARAN.length })}</p>
+        <h1>{terjemahIsi(pelajaran.judul)}</h1>
+        {pelajaran.perluCek && <p className="lencana-draf">{t('Draf, belum direview tim keilmuan')}</p>}
+        <p className="lead">{terjemahIsi(pelajaran.tujuan)}</p>
         <article className="isi-materi">
           {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
         </article>
-        <nav ref={ujung} className="navigasi-materi" aria-label="Navigasi pelajaran">
-          <TautanNavigasi tujuan={sebelumnya} label="← Sebelumnya" />
-          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}><Ikon nama="rumah" /> Beranda belajar</a>
-          <TautanNavigasi tujuan={berikutnya} label="Berikutnya →" saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
+        <nav ref={ujung} className="navigasi-materi" aria-label={t('Navigasi pelajaran')}>
+          <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('Sebelumnya')}`} />
+          <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}><Ikon nama="rumah" /> {t('Beranda belajar')}</a>
+          <TautanNavigasi tujuan={berikutnya} label={`${t('Berikutnya')} ${panah()}`} saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
         </nav>
       </main>
     </div>
@@ -80,7 +81,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
 
 function TautanNavigasi({ tujuan, label, saatKlik }: { tujuan: Pelajaran | undefined; label: string; saatKlik?: () => void }) {
   if (!tujuan) return <span className="aw-btn aw-btn-secondary nonaktif" aria-disabled="true">{label}</span>;
-  return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={tujuan.judul}>{label}</a>;
+  return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={terjemahIsi(tujuan.judul)}>{label}</a>;
 }
 
 /** Sidebar: progres keseluruhan dan daftar modul; di HP jadi laci (dipasang ulang tiap pindah pelajaran, jadi tertutup lagi). */
@@ -89,25 +90,25 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
   const jumlahSelesai = DAFTAR_PELAJARAN.filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const persen = Math.round((jumlahSelesai / DAFTAR_PELAJARAN.length) * 100);
   return (
-    <Laci id="daftar-materi" label="Daftar materi"
-      ringkasan={<>Modul {aktif.modul} · {DAFTAR_PELAJARAN.indexOf(aktif) + 1}/{DAFTAR_PELAJARAN.length}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
+    <Laci id="daftar-materi" label={t('Daftar materi')}
+      ringkasan={<>{t('Modul {nomor}', { nomor: aktif.modul })} · {angka(`${DAFTAR_PELAJARAN.indexOf(aktif) + 1}/${DAFTAR_PELAJARAN.length}`)}<span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span></>}
       judul={<>
-      <span className="label-langkah">Progres belajar</span>
-      <span className="angka-progres">{jumlahSelesai}/{DAFTAR_PELAJARAN.length} pelajaran · {persen}%</span>
+      <span className="label-langkah">{t('Progres belajar')}</span>
+      <span className="angka-progres">{t('{selesai}/{total} pelajaran', { selesai: jumlahSelesai, total: DAFTAR_PELAJARAN.length })} · {angka(`${persen}%`)}</span>
       <span className="bar-progres" aria-hidden="true"><span style={{ width: `${persen}%` }} /></span>
     </>}>
         {DAFTAR_MODUL.map(modul => {
           const daftar = DAFTAR_PELAJARAN.filter(pelajaran => pelajaran.modul === modul.nomor);
           return (
             <div key={modul.nomor} className={daftar.length ? 'modul-sidebar' : 'modul-sidebar modul-menyusul'}>
-              <p className="judul-modul-sidebar">{modul.nomor}. {modul.judul}{daftar.length ? '' : ' · menyusul'}</p>
+              <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {terjemahIsi(modul.judul)}{daftar.length ? '' : ` · ${t('menyusul')}`}</p>
               <ol className="daftar-polos">
                 {daftar.map(pelajaran => (
                   <li key={pelajaran.slug}>
                     <a href={tautanBelajar(pelajaran.slug)} aria-current={pelajaran === aktif ? 'page' : undefined}
                       className={selesai.has(pelajaran.slug) ? 'pelajaran-sidebar selesai' : 'pelajaran-sidebar'}>
-                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? 'selesai' : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
-                      {pelajaran.judul}
+                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? t('selesai') : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
+                      {terjemahIsi(pelajaran.judul)}
                     </a>
                   </li>
                 ))}
@@ -148,7 +149,7 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & O
     case 'kuis': return (
       <div className="tumpuk-rapat">
         {blok.daftarKode.map(kode => DAFTAR_SOAL_KUIS.find(soal => soal.kode === kode)).filter(soal => soal !== undefined)
-          .map((soal, urutan, semua) => <KartuSoalKuis key={soal.kode} soal={soal} label={`Soal ${urutan + 1} dari ${semua.length}`} />)}
+          .map((soal, urutan, semua) => <KartuSoalKuis key={soal.kode} soal={soal} label={t('Soal {nomor} dari {total}', { nomor: urutan + 1, total: semua.length })} />)}
       </div>
     );
   }
@@ -158,15 +159,15 @@ function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKas
   const kasus = useMemo(() => kasusDariContoh(contoh), [contoh]);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') {
-    return <p className="kartu kartu-galat" role="alert">Contoh ini tidak bisa dihitung. Laporkan ke pengembang.</p>;
+    return <p className="kartu kartu-galat" role="alert">{t('Contoh ini tidak bisa dihitung. Laporkan ke pengembang.')}</p>;
   }
   return (
     <figure className="contoh-kasus">
-      <figcaption className="label-langkah">Dihitung otomatis</figcaption>
+      <figcaption className="label-langkah">{t('Dihitung otomatis')}</figcaption>
       <div className="wadah-tabel">
         <TabelFaraidh sedangMenebak={false} hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
       </div>
-      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>Buka di Hitung</TombolBukaKasus>
+      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>{t('Buka di Hitung')}</TombolBukaKasus>
     </figure>
   );
 }

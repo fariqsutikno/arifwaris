@@ -4,6 +4,7 @@
 
 import { angkaArab } from '@waris/explain';
 import { KAMUS_ARAB } from './konten/kamusArab';
+import { ISTILAH_ARAB } from './konten/kamus/istilah';
 import { bacaBahasa } from './preferensi';
 
 export const bahasaArab = (): boolean => bacaBahasa() === 'ar';
@@ -17,6 +18,7 @@ export const angkaLatin = (teks: string): string =>
 
 /** Panah "maju": di tampilan kanan-ke-kiri arahnya berbalik. */
 export const panah = (): string => (bahasaArab() ? '←' : '→');
+export const panahMundur = (): string => (bahasaArab() ? '→' : '←');
 
 export function t(teks: string, sisipan: Record<string, string | number | bigint> = {}): string {
   const arab = bahasaArab() ? KAMUS_ARAB[teks] : undefined;
@@ -24,17 +26,10 @@ export function t(teks: string, sisipan: Record<string, string | number | bigint
   return arab ? angkaArab(hasil) : hasil;
 }
 
-/** Istilah ahli waris di teks bebas (soal, pembahasan) → Arab; kata lain tetap Indonesia. Panjang dulu supaya "anak laki-laki" menang atas "anak". */
-const ISTILAH_WARIS: Array<[string, string]> = [
-  ['anak laki-laki', 'الابن'], ['anak perempuan', 'البنت'], ['cucu laki-laki', 'ابن الابن'], ['cucu perempuan', 'بنت الابن'],
-  ['saudara laki-laki kandung', 'الأخ الشقيق'], ['saudara perempuan kandung', 'الأخت الشقيقة'],
-  ['saudara kandung', 'الأخ الشقيق'], ['saudari kandung', 'الأخت الشقيقة'], ['saudara seibu', 'الأخ لأم'], ['saudari seibu', 'الأخت لأم'],
-  ['saudara sebapak', 'الأخ لأب'], ['saudari sebapak', 'الأخت لأب'],
-  ['ahli waris', 'الوارث'], ['suami', 'الزوج'], ['istri', 'الزوجة'], ['ayah', 'الأب'], ['ibu', 'الأم'], ['kakek', 'الجد'], ['nenek', 'الجدة'],
-  ['anak', 'الولد'], ['cucu', 'الحفيد'], ['paman', 'العم'], ['keponakan', 'ابن الأخ'], ['almarhum', 'المتوفى'],
-];
-const POLA_WARIS = new RegExp(`(?<![\\p{L}])(${ISTILAH_WARIS.map(([indonesia]) => indonesia).join('|')})(?![\\p{L}-])`, 'giu');
-const ARAB_WARIS = new Map(ISTILAH_WARIS);
+/** Istilah di teks bebas (soal, pembahasan, materi) → Arab; kata lain tetap Indonesia. Daftarnya di konten/kamus/istilah.ts. */
+const ISTILAH_URUT = [...ISTILAH_ARAB].sort((a, b) => b[0].length - a[0].length);
+const POLA_WARIS = new RegExp(`(?<![\\p{L}])(${ISTILAH_URUT.map(([indonesia]) => indonesia).join('|')})(?![\\p{L}-])`, 'giu');
+const ARAB_WARIS = new Map(ISTILAH_ARAB);
 
 export const terjemahIsi = (teks: string): string => {
   if (!bahasaArab()) return teks;
