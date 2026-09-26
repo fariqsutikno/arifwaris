@@ -24,6 +24,16 @@ test('masukGoogle gagal: pesan layanan tidak tersedia', async () => {
   expect(await screen.findByText(/sedang tidak tersedia/i)).toBeTruthy();
 });
 
+test('Esc menutup menu akun', () => {
+  const repo = buatMemoriPengguna(buatMemori({ sesi: { userId: 'a', email: 'a@tes.local' } }));
+  render(<TombolAkun sesi={{ userId: 'a', email: 'a@tes.local' }} repo={repo} />);
+  const tombol = screen.getByRole('button', { name: /a@tes.local/i });
+  fireEvent.click(tombol);
+  expect(screen.getByRole('menu')).toBeTruthy();
+  fireEvent.keyDown(tombol, { key: 'Escape' });
+  expect(screen.queryByRole('menu')).toBeNull();
+});
+
 test('keluar dengan perubahan belum terkirim: tanya dulu', async () => {
   const repo = buatMemoriPengguna(buatMemori({ sesi: { userId: 'a', email: 'a@tes.local' } }));
   localStorage.setItem('arif-waris:akun', 'a');

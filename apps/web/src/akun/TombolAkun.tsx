@@ -34,11 +34,11 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
     </>
   );
   return (
-    <div className="menu-akun">
+    <div className="menu-akun" onKeyDown={event => { if (event.key === 'Escape') setMenuTerbuka(false); }}>
       <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={sesi.email} aria-haspopup="menu" aria-expanded={menuTerbuka}
         onClick={() => setMenuTerbuka(!menuTerbuka)}>{sesi.email.slice(0, 1).toUpperCase()}</Tombol>
       {menuTerbuka && (
-        <div role="menu" className="menu-akun-isi" onKeyDown={event => { if (event.key === 'Escape') setMenuTerbuka(false); }}>
+        <div role="menu" className="menu-akun-isi">
           <span className="keterangan">{sesi.email}</span>
           <button type="button" role="menuitem" onClick={() => void cobaKeluar()}>{t('umum.keluar')}</button>
         </div>
