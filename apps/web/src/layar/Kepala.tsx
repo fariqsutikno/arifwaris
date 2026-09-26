@@ -25,11 +25,11 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
   const bahasa = useBahasa();
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
-    { label: t('Beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
-    { label: t('Belajar'), ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
+    { label: t('umum.beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
+    { label: t('umum.belajar'), ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
     { label: 'ArifLab', ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
-    { label: t('Latihan'), ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
-    { label: t('Rujukan'), ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
+    { label: t('umum.latihan'), ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
+    { label: t('umum.rujukan'), ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
   ];
   const tautanMenu = (kelas: string, denganIkon: boolean) => menu.map(item => (
     <a key={item.label} href={item.tautan} className={kelas} aria-current={item.aktif ? 'page' : undefined}
@@ -41,19 +41,19 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
     <>
       <header className="kepala" role="banner">
         <Logo saatKlik={() => { window.location.hash = TAUTAN_BERANDA; }} />
-        <nav aria-label={t('Menu utama')} className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
+        <nav aria-label={t('umum.menu_utama')} className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
         <span className="pengisi" />
         {/* Mode santri: padanan Arab untuk istilah, atau penjelasan berbahasa Arab. */}
-        <select className="pilih-bahasa" aria-label={t('Bahasa')} value={bahasa} onChange={e => { simpanBahasa(e.target.value as Bahasa); window.location.reload(); }}>
+        <select className="pilih-bahasa" aria-label={t('umum.bahasa')} value={bahasa} onChange={e => { simpanBahasa(e.target.value as Bahasa); window.location.reload(); }}>
           {DAFTAR_BAHASA.map(pilihan => <option key={pilihan.nilai} value={pilihan.nilai}>{pilihan.label}</option>)}
         </select>
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
-        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('Tur singkat')} title={t('Tur singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('Tur singkat')}</span></Tombol>}
-        {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('Reset skenario')} title={t('Reset skenario')} onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">{t('Reset skenario')}</span></Tombol>}
+        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.tur_singkat')} title={t('umum.tur_singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('umum.tur_singkat')}</span></Tombol>}
+        {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.reset_skenario_2')} title={t('umum.reset_skenario_2')} onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">{t('umum.reset_skenario_2')}</span></Tombol>}
       </header>
-      <nav aria-label={t('Menu utama')} className="nav-bawah">{tautanMenu('nav-bawah-item', true)}</nav>
+      <nav aria-label={t('umum.menu_utama')} className="nav-bawah">{tautanMenu('nav-bawah-item', true)}</nav>
       {sedangKonfirmasi && kasusWizard && (
-        <KonfirmasiKasusBaru kasus={kasusWizard} judul={t('Reset skenario?')} labelLanjut={t('Reset')} saatBatal={() => setSedangKonfirmasi(false)}
+        <KonfirmasiKasusBaru kasus={kasusWizard} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setSedangKonfirmasi(false)}
           saatLanjut={() => { setSedangKonfirmasi(false); saatUlangi(); }} />
       )}
     </>

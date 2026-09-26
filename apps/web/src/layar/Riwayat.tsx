@@ -22,13 +22,13 @@ export function DaftarRiwayat({ kasusSekarang, saatBuka, ringkas }: Props) {
   const hapus = (id?: string) => { hapusRiwayat(id); setDaftar(bacaRiwayat()); };
   if (tampil.length === 0) {
     if (ringkas && daftar.length > 0) {
-      return <p className="keterangan">{t('Tidak ada yang dibuka dua pekan terakhir.')} <a href={tautanRiwayat()}>{t('Lihat semua riwayat')}</a></p>;
+      return <p className="keterangan">{t('hitung.tidak_ada_yang_dibuka_dua_pekan')} <a href={tautanRiwayat()}>{t('hitung.lihat_semua_riwayat')}</a></p>;
     }
     return (
       <div className="kartu-kosong">
         <Ikon nama="riwayat" ukuran={32} />
-        <b>{t('Riwayat hitung masih kosong')}</b>
-        <p className="keterangan">{t('Tiap kasus yang kamu mulai, dari skenario sendiri, latihan, atau materi, otomatis tersimpan di sini selama 30 hari.')}</p>
+        <b>{t('hitung.riwayat_hitung_masih_kosong')}</b>
+        <p className="keterangan">{t('hitung.tiap_kasus_yang_kamu_mulai_dari')}</p>
       </div>
     );
   }
@@ -40,22 +40,22 @@ export function DaftarRiwayat({ kasusSekarang, saatBuka, ringkas }: Props) {
             <div className="isi-soal">
               <b>{entri.judul}</b>
               <span className="keterangan">
-                <span className="sumber-riwayat">{labelSumber(entri.sumber)}</span> · {entri.keterangan} · {t('dibuka {waktu}', { waktu: waktuRelatif(entri.waktu, sekarang) })}
+                <span className="sumber-riwayat">{labelSumber(entri.sumber)}</span> · {entri.keterangan} · {t('hitung.dibuka_waktu', { waktu: waktuRelatif(entri.waktu, sekarang) })}
               </span>
             </div>
             <TombolBukaKasus kasusSekarang={kasusSekarang && keJson(kasusSekarang) !== keJson(entri.kasus) ? kasusSekarang : null}
-              saatBuka={() => saatBuka(entri)}>{entri.lengkap ? t('Buka') : t('Lanjut')}</TombolBukaKasus>
-            <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(entri)} aria-label={t('Hapus {judul}', { judul: entri.judul })} title={t('Hapus')}><Ikon nama="sampah" ukuran={18} /></button>
+              saatBuka={() => saatBuka(entri)}>{entri.lengkap ? t('hitung.buka') : t('hitung.lanjut')}</TombolBukaKasus>
+            <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(entri)} aria-label={t('hitung.hapus_judul', { judul: entri.judul })} title={t('umum.hapus')}><Ikon nama="sampah" ukuran={18} /></button>
           </li>
         ))}
       </ul>
-      {ringkas ? <a href={tautanRiwayat()}>{t('Lihat semua riwayat ({jumlah})', { jumlah: daftar.length })}</a>
-        : <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />{t('Hapus semua riwayat')}</button>}
+      {ringkas ? <a href={tautanRiwayat()}>{t('hitung.lihat_semua_riwayat_jumlah', { jumlah: daftar.length })}</a>
+        : <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />{t('hitung.hapus_semua_riwayat')}</button>}
       {akanDihapus && (
-        <DialogKonfirmasi judul={akanDihapus === 'semua' ? t('Hapus semua riwayat?') : t('Hapus kasus ini?')}
-          labelLanjut={akanDihapus === 'semua' ? t('Hapus semua') : t('Hapus')} saatBatal={() => setAkanDihapus(null)}
+        <DialogKonfirmasi judul={akanDihapus === 'semua' ? t('hitung.hapus_semua_riwayat_2') : t('hitung.hapus_kasus_ini')}
+          labelLanjut={akanDihapus === 'semua' ? t('umum.hapus_semua') : t('umum.hapus')} saatBatal={() => setAkanDihapus(null)}
           saatLanjut={() => { setAkanDihapus(null); hapus(akanDihapus === 'semua' ? undefined : akanDihapus.id); }}>
-          <p>{akanDihapus === 'semua' ? t('{jumlah} kasus', { jumlah: daftar.length }) : `"${akanDihapus.judul}"`} {t('akan dihapus dari perangkat ini dan tidak bisa dikembalikan.')}</p>
+          <p>{akanDihapus === 'semua' ? t('hitung.jumlah_kasus', { jumlah: daftar.length }) : `"${akanDihapus.judul}"`} {t('hitung.akan_dihapus_dari_perangkat_ini_dan')}</p>
         </DialogKonfirmasi>
       )}
     </>
@@ -65,8 +65,8 @@ export function DaftarRiwayat({ kasusSekarang, saatBuka, ringkas }: Props) {
 export function HalamanRiwayat(props: Omit<Props, 'ringkas'>) {
   return (
     <main className="halaman tumpuk">
-      <h1>{t('Riwayat hitung')}</h1>
-      <p className="keterangan">{t('Tersimpan di perangkat ini selama 30 hari sejak terakhir dibuka.')}</p>
+      <h1>{t('hitung.riwayat_hitung')}</h1>
+      <p className="keterangan">{t('hitung.tersimpan_di_perangkat_ini_selama_30')}</p>
       <DaftarRiwayat {...props} />
     </main>
   );

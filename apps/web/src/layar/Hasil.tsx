@@ -44,18 +44,18 @@ interface Props {
 
 export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
-  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('← Ubah data')}</Tombol>;
+  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
   if (tampil.jenis === 'galat') {
     return (
       <main className="halaman tumpuk">
         <div className="kartu kartu-galat tumpuk" role="alert">
-          <h1 className="judul-langkah">{t('Waduh, ada yang nggak beres di mesin hitungnya')}</h1>
-          <p>{t('Ini bukan salah isianmu. Tolong laporkan dan lampirkan data kasus di bawah.')}</p>
+          <h1 className="judul-langkah">{t('hitung.waduh_ada_yang_nggak_beres_di')}</h1>
+          <p>{t('hitung.ini_bukan_salah_isianmu_tolong_laporkan')}</p>
           <p className="keterangan">{tampil.pesan}</p>
           <div className="chip-deret">
-            <Tombol varian="secondary" onClick={() => void navigator.clipboard?.writeText(keJson(kasus)).catch(() => {})}>{t('Salin data kasus')}</Tombol>
-            <a className="aw-btn aw-btn-ghost" href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('Laporkan ke pengembang')}</a>
+            <Tombol varian="secondary" onClick={() => void navigator.clipboard?.writeText(keJson(kasus)).catch(() => {})}>{t('hitung.salin_data_kasus')}</Tombol>
+            <a className="aw-btn aw-btn-ghost" href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>
           </div>
         </div>
         {tombolUbah}
@@ -67,7 +67,7 @@ export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
     return (
       <main className="halaman tumpuk">
         <div className="kartu kartu-peringatan tumpuk" role="alert">
-          <h1 className="judul-langkah">{hasil.status === 'PERLU_INPUT' ? t('Bentar, masih ada yang perlu diisi') : t('Kasus ini belum bisa dihitung di sini')}</h1>
+          <h1 className="judul-langkah">{hasil.status === 'PERLU_INPUT' ? t('hitung.bentar_masih_ada_yang_perlu_diisi') : t('hitung.kasus_ini_belum_bisa_dihitung_di')}</h1>
           {hasil.status === 'PERLU_INPUT'
             ? <ul>{hasil.pertanyaan.map((pertanyaan, indeks) => <li key={indeks}>{pertanyaan.alasan}</li>)}</ul>
             : <p>{hasil.alasan}</p>}
@@ -121,47 +121,47 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
       <div className="judul-hasil">
         {adalahBelajar ? (
           <div className="judul-soal">
-            <span className="lencana-soal">{sedangMenebak ? t('Soal') : t('Pembahasan')}</span>
-            <h1>{sedangMenebak ? t('Tentukan bagian tiap ahli waris') : t('Pembahasan soal')}</h1>
+            <span className="lencana-soal">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</span>
+            <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
             <p>{sedangMenebak
-              ? t('Kerjakan di kartu Jawabanmu. Langkah perhitungan dan angka di tabel terbuka setelah jawabanmu benar atau kamu membuka jawaban.')
-              : t('Cocokkan jawabanmu, lalu pelajari cara menghitungnya langkah demi langkah.')}</p>
+              ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')
+              : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya')}</p>
           </div>
         ) : (
           <div className="judul-soal">
-            <span className="lencana-soal lencana-hitung">{t('Hitung kasus')}</span>
-            <h1>{t('Nah, ini pembagiannya')}</h1>
-            <p>{t('Angka di sini hasil hitung kasusmu. Mau latihan menebak pembagiannya dulu? Pindah ke mode Belajar.')}</p>
+            <span className="lencana-soal lencana-hitung">{t('hitung.hitung_kasus')}</span>
+            <h1>{t('hitung.nah_ini_pembagiannya')}</h1>
+            <p>{t('hitung.angka_di_sini_hasil_hitung_kasusmu')}</p>
           </div>
         )}
-        <div className="tab-kecil" role="group" aria-label={t('Tujuan')}>
-          <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('Hitung kasus')}</button>
-          <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('Belajar')}</button>
+        <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
+          <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
+          <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('umum.belajar')}</button>
         </div>
       </div>
 
       <div className="tata-hasil">
-        <section className="kanvas-hasil" aria-label={t('Kanvas keluarga')}>
+        <section className="kanvas-hasil" aria-label={t('hitung.kanvas_keluarga')}>
           <div className="kepala-kanvas">
-            <div className="tab-kecil" role="tablist" aria-label={t('Tampilan kanvas')}>
-              <button type="button" role="tab" aria-selected={tabKanvas === 'pohon'} onClick={() => setTabKanvas('pohon')}>{t('Pohon keluarga')}</button>
-              <button type="button" role="tab" aria-selected={tabKanvas === 'tabel'} onClick={() => setTabKanvas('tabel')}>{t('Tabel faraidh')}</button>
+            <div className="tab-kecil" role="tablist" aria-label={t('hitung.tampilan_kanvas')}>
+              <button type="button" role="tab" aria-selected={tabKanvas === 'pohon'} onClick={() => setTabKanvas('pohon')}>{t('hitung.pohon_keluarga')}</button>
+              <button type="button" role="tab" aria-selected={tabKanvas === 'tabel'} onClick={() => setTabKanvas('tabel')}>{t('hitung.tabel_faraidh')}</button>
             </div>
           </div>
-          <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label={t('Pohon keluarga')} data-tur="pohon">
+          <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label={t('hitung.pohon_keluarga')} data-tur="pohon">
             <Legenda />
             {pohon}
-            <p className="petunjuk-kanvas">{t('Ketuk orang untuk melihat penjelasannya')}<span className="hanya-hp"> {t('· geser ke samping kalau terpotong')}</span></p>
+            <p className="petunjuk-kanvas">{t('hitung.ketuk_orang_untuk_melihat_penjelasannya')}<span className="hanya-hp"> {t('hitung.geser_ke_samping_kalau_terpotong')}</span></p>
           </section>
-          <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label={t('Tabel faraidh')}>
+          <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label={t('hitung.tabel_faraidh')}>
             <div className="wadah-tabel">{tabel}</div>
           </section>
         </section>
 
-        <aside className="sidebar-hasil" aria-label={t('Hasil perhitungan')}>
+        <aside className="sidebar-hasil" aria-label={t('hitung.hasil_perhitungan')}>
           <div className="catatan-hasil">
-            <b>{t('Catatan.')}</b> {t("Hasil ini menurut madzhab Syafi'i. Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat.")}
-            {' '}{t('Nemu yang janggal?')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('Laporkan ke pengembang')}</a>.
+            <b>{t('umum.catatan')}</b> {t('hitung.hasil_ini_menurut_madzhab_syafi_i')}
+            {' '}{t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.
           </div>
           <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
           <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
@@ -180,16 +180,16 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
       <div className="bar-bawah">
         <div className="bar-bawah-isi bar-aksi-hasil">
           {bolehUbah && <>
-            <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}><Ikon nama="pensil" /> {t('Ubah data')}</Tombol>
-            <Tombol varian="secondary" onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /> <span>{t('Reset')}<span className="label-lebar">{t(' skenario')}</span></span></Tombol>
+            <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}><Ikon nama="pensil" /> {t('hitung.ubah_data_2')}</Tombol>
+            <Tombol varian="secondary" onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /> <span>{t('umum.reset')}<span className="label-lebar">{t('hitung.skenario')}</span></span></Tombol>
           </>}
           <span className="pengisi" />
-          <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> {t('Tersimpan di riwayat')}</span>
-          <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('Ekspor')}</Tombol>
+          <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> {t('hitung.tersimpan_di_riwayat')}</span>
+          <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</Tombol>
         </div>
       </div>
       {konfirmasiUlangi && (
-        <KonfirmasiKasusBaru kasus={kasus} judul={t('Reset skenario?')} labelLanjut={t('Reset')} saatBatal={() => setKonfirmasiUlangi(false)}
+        <KonfirmasiKasusBaru kasus={kasus} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setKonfirmasiUlangi(false)}
           saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
 
@@ -200,9 +200,9 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
       )}
       {konfirmasiBuka && (
         <DialogKonfirmasi tahan
-          judul={konfirmasiBuka === 'lihat' ? t('Yakin mau lihat jawaban?') : t('Pindah ke Hitung kasus?')}
-          labelBatal={konfirmasiBuka === 'lihat' ? t('Coba dulu') : t('Tetap belajar')}
-          labelLanjut={konfirmasiBuka === 'lihat' ? t('Tahan untuk buka') : t('Tahan untuk pindah')}
+          judul={konfirmasiBuka === 'lihat' ? t('hitung.yakin_mau_lihat_jawaban') : t('hitung.pindah_ke_hitung_kasus')}
+          labelBatal={konfirmasiBuka === 'lihat' ? t('hitung.coba_dulu') : t('hitung.tetap_belajar')}
+          labelLanjut={konfirmasiBuka === 'lihat' ? t('hitung.tahan_untuk_buka') : t('hitung.tahan_untuk_pindah')}
           saatBatal={() => setKonfirmasiBuka(null)}
           saatLanjut={() => {
             const jenis = konfirmasiBuka;
@@ -211,16 +211,16 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
             else kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
           }}>
           <ul className="poin-konfirmasi">
-            <li>{t('Semua jawaban langsung kebuka, kamu nggak bisa nebak kasus ini lagi.')}</li>
-            {!sudahMencoba && <li>{t('Kamu belum nyoba jawab sama sekali. Sekali coba dulu, yuk.')}</li>}
+            <li>{t('hitung.semua_jawaban_langsung_kebuka_kamu_nggak')}</li>
+            {!sudahMencoba && <li>{t('hitung.kamu_belum_nyoba_jawab_sama_sekali')}</li>}
           </ul>
         </DialogKonfirmasi>
       )}
       {konfirmasiBelajar && (
-        <DialogKonfirmasi judul={t('Pindah ke mode Belajar?')} labelBatal={t('Tetap di sini')} labelLanjut={t('Pindah')}
+        <DialogKonfirmasi judul={t('hitung.pindah_ke_mode_belajar')} labelBatal={t('umum.tetap_di_sini')} labelLanjut={t('umum.pindah')}
           saatBatal={() => setKonfirmasiBelajar(false)}
           saatLanjut={() => { setKonfirmasiBelajar(false); kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' }); }}>
-          <p>{t('Jawaban akan disembunyikan dan kamu diminta menebak pembagiannya dulu. Data kasusmu tetap aman.')}</p>
+          <p>{t('hitung.jawaban_akan_disembunyikan_dan_kamu_diminta')}</p>
         </DialogKonfirmasi>
       )}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
@@ -239,15 +239,15 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
 
 function Legenda() {
   return (
-    <div className="legenda" aria-label={t('Keterangan pohon')}>
-      <span><i className="kotak g-pasangan" />{t('Pasangan')}</span>
-      <span><i className="kotak g-keturunan" />{t('Keturunan')}</span>
-      <span><i className="kotak g-leluhur" />{t('Orang tua & leluhur')}</span>
-      <span><i className="kotak g-saudara" />{t('Saudara & kerabat')}</span>
-      <span><i className="kotak almarhum" />{t('Almarhum')}</span>
-      <span><i className="kotak terhalang" />{t('Terhalang')}</span>
-      <span><i className="kotak putus" />{t('Garis putus = tidak mewarisi')}</span>
-      <span><i className="garis-l" />{t('Mendatar = menikah, turun = anak')}</span>
+    <div className="legenda" aria-label={t('hitung.keterangan_pohon')}>
+      <span><i className="kotak g-pasangan" />{t('hitung.pasangan_2')}</span>
+      <span><i className="kotak g-keturunan" />{t('hitung.keturunan_2')}</span>
+      <span><i className="kotak g-leluhur" />{t('hitung.orang_tua_leluhur')}</span>
+      <span><i className="kotak g-saudara" />{t('hitung.saudara_kerabat')}</span>
+      <span><i className="kotak almarhum" />{t('hitung.almarhum')}</span>
+      <span><i className="kotak terhalang" />{t('hitung.terhalang')}</span>
+      <span><i className="kotak putus" />{t('hitung.garis_putus_tidak_mewarisi')}</span>
+      <span><i className="garis-l" />{t('hitung.mendatar_menikah_turun_anak')}</span>
     </div>
   );
 }
