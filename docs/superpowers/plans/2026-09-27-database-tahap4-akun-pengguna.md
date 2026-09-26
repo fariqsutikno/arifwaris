@@ -69,7 +69,7 @@ menjaga "yang terbaru menang" dengan trigger.
 - Produces: `export interface Kegiatan { id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null }`
   dan `RepositoriPengguna.catatKegiatan(kegiatan: Kegiatan): Promise<void>` (id sama dua kali = diabaikan).
 
-- [ ] **Step 1: Tulis tes pgTAP yang gagal** — `supabase/tests/database/04_akun.test.sql`:
+- [x] **Step 1: Tulis tes pgTAP yang gagal** — `supabase/tests/database/04_akun.test.sql`:
 
 ```sql
 -- supabase/tests/database/04_akun.test.sql
@@ -114,9 +114,9 @@ select * from finish();
 rollback;
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal** — `pnpm db:reset && pnpm db:tes`. Expected: FAIL (`log_kegiatan` tidak ada, upsert lama menimpa).
+- [x] **Step 2: Jalankan, pastikan gagal** — `pnpm db:reset && pnpm db:tes`. Expected: FAIL (`log_kegiatan` tidak ada, upsert lama menimpa).
 
-- [ ] **Step 3: Tulis migrasi** — `supabase/migrations/20260927000003_akun.sql`:
+- [x] **Step 3: Tulis migrasi** — `supabase/migrations/20260927000003_akun.sql`:
 
 ```sql
 -- supabase/migrations/20260927000003_akun.sql
@@ -160,9 +160,9 @@ revoke insert on log_kegiatan from authenticated;
 grant insert (id, jenis, slug, benar) on log_kegiatan to authenticated;
 ```
 
-- [ ] **Step 4: Jalankan** — `pnpm db:reset && pnpm db:tes`. Expected: semua PASS (termasuk 01–03).
+- [x] **Step 4: Jalankan** — `pnpm db:reset && pnpm db:tes`. Expected: semua PASS (termasuk 01–03).
 
-- [ ] **Step 5: Tes memori yang gagal** — tambahkan ke `memori-pengguna.test.ts` di dalam `describe`:
+- [x] **Step 5: Tes memori yang gagal** — tambahkan ke `memori-pengguna.test.ts` di dalam `describe`:
 
 ```ts
   test('catatKegiatan: id sama diabaikan, tanpa sesi ditolak', async () => {
@@ -176,9 +176,9 @@ grant insert (id, jenis, slug, benar) on log_kegiatan to authenticated;
   });
 ```
 
-- [ ] **Step 6: Jalankan** — `pnpm --filter @waris/data test`. Expected: FAIL `catatKegiatan is not a function`.
+- [x] **Step 6: Jalankan** — `pnpm --filter @waris/data test`. Expected: FAIL `catatKegiatan is not a function`.
 
-- [ ] **Step 7: Implementasi**
+- [x] **Step 7: Implementasi**
 
 `antarmuka.ts` — setelah `Preferensi`:
 ```ts
@@ -201,9 +201,9 @@ dan di `RepositoriPengguna`: `catatKegiatan(kegiatan: Kegiatan): Promise<void>;`
 ```
 (`index.ts` sudah `export * from './antarmuka.js'`, jadi `Kegiatan` ikut terekspor.)
 
-- [ ] **Step 8: Jalankan** — `pnpm --filter @waris/data test`. Expected: PASS.
+- [x] **Step 8: Jalankan** — `pnpm --filter @waris/data test`. Expected: PASS.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add supabase/migrations/20260927000003_akun.sql supabase/tests/database/04_akun.test.sql packages/data/src
@@ -238,7 +238,7 @@ git commit -m "db: terbaru menang per baris & log_kegiatan untuk tahap 5"
     `hapusSemuaMentah(awalan: string): void` — localStorage dengan cadangan memori (dipakai progres, tersimpan,
     preferensi, antrean, sinkron; dibuat di task ini supaya tidak ada impor melingkar nanti).
 
-- [ ] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/progres.test.ts`:
+- [x] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/progres.test.ts`:
 
 ```ts
 import { beforeEach, expect, test, vi } from 'vitest';
@@ -290,9 +290,9 @@ test('reset menghapus progres & skor paket', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan** — `pnpm --filter @waris/web test progres`. Expected: FAIL (modul tidak ada).
+- [x] **Step 2: Jalankan** — `pnpm --filter @waris/web test progres`. Expected: FAIL (modul tidak ada).
 
-- [ ] **Step 3: Implementasi** — `apps/web/src/progres.ts`:
+- [x] **Step 3: Implementasi** — `apps/web/src/progres.ts`:
 
 ```ts
 // Progres belajar (pelajaran selesai) dan latihan (kuis & soal hitung) di perangkat, berbentuk sama dengan tabel
@@ -459,7 +459,7 @@ semua pemanggilan. Hapus `AWALAN_CATATAN`, `JenisCatatan`, `bacaCatatan`, `simpa
 `tandaiPelajaranSelesai`, `resetProgresBelajar`. Perbarui komentar kepala berkas (catatan belajar pindah ke `progres.ts`,
 akses penyimpanan ke `penyimpanan.ts`).
 
-- [ ] **Step 4: Ganti pemakai**
+- [x] **Step 4: Ganti pemakai**
   - `Aplikasi.tsx` `tandaiSoalDikerjakan`: `catatLatihan('hitung', soal.kode, true, null);` (tetap "jawaban dibuka" = benar,
     sama dengan migrasi).
   - `Materi.tsx`: impor `bacaPelajaranSelesai`, `tandaiPelajaranSelesai` dari `../../progres`.
@@ -474,11 +474,11 @@ akses penyimpanan ke `penyimpanan.ts`).
     simpanSkorPaket(paket, skor);
     ```
 
-- [ ] **Step 5: Jalankan semua tes web** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`.
+- [x] **Step 5: Jalankan semua tes web** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`.
   Expected: PASS; perbaiki tes lama (`belajar.test.tsx`, `latihan.test.tsx`, `materi.test.tsx`) yang menulis kunci
   `arif-waris:catatan:*` langsung — ganti ke `tandaiPelajaranSelesai`/`catatLatihan`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add apps/web/src
@@ -501,7 +501,7 @@ git commit -m "web: progres belajar & latihan berformat tabel, migrasi catatan l
   - `simpanKasus(id: string, kasus: Kasus): void`, `hapusTersimpan(id: string): void`, `sudahTersimpan(id: string, kasus: Kasus): boolean`
   - `semuaTersimpan(): RiwayatTersimpan[]`, `gantiSemuaTersimpan(daftar: RiwayatTersimpan[]): void`
 
-- [ ] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/tersimpan.test.ts`:
+- [x] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/tersimpan.test.ts`:
 
 ```ts
 import { beforeEach, expect, test } from 'vitest';
@@ -533,9 +533,9 @@ test('isi rusak diabaikan', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan** — `pnpm --filter @waris/web test tersimpan`. Expected: FAIL.
+- [x] **Step 2: Jalankan** — `pnpm --filter @waris/web test tersimpan`. Expected: FAIL.
 
-- [ ] **Step 3: Implementasi** — `apps/web/src/tersimpan.ts`:
+- [x] **Step 3: Implementasi** — `apps/web/src/tersimpan.ts`:
 
 ```ts
 // Kasus tersimpan: hanya yang pengguna simpan lewat tombol Simpan di layar hasil; tanpa kedaluwarsa; ikut disinkron
@@ -581,9 +581,9 @@ export const gantiSemuaTersimpan = (daftar: RiwayatTersimpan[]): void => simpanM
 (Pastikan `keJson` menghasilkan JSON dengan urutan kunci stabil — `sudahTersimpan` membandingkan teks. Bila `keJson` tidak
 memakai `JSON.stringify` biasa, bandingkan `keJson(dariJson(JSON.stringify(baris.kasus)).kasus)` dengan `keJson(kasus)`.)
 
-- [ ] **Step 4: Jalankan** — Expected: PASS.
+- [x] **Step 4: Jalankan** — Expected: PASS.
 
-- [ ] **Step 5: UI**
+- [x] **Step 5: UI**
   - `Hasil.tsx`: terima prop `idSesi: string` (diteruskan dari `Aplikasi.tsx`, yang sudah punya `idSesi`). Ganti
     `<span className="status-simpan">…tersimpan_di_riwayat…</span>` dengan:
     ```tsx
@@ -602,12 +602,12 @@ memakai `JSON.stringify` biasa, bandingkan `keJson(dariJson(JSON.stringify(baris
     `hitung.belum_ada_kasus_tersimpan` "Belum ada kasus yang disimpan. Tekan Simpan di layar hasil."
     Hapus `hitung.tersimpan_di_riwayat` bila tak lagi dipakai (tes diksi melaporkan kunci yatim).
 
-- [ ] **Step 6: Tes UI** — tambahkan ke `apps/web/src/__tests__/hasil.test.tsx` (ikuti cara render layar hasil di berkas itu):
+- [x] **Step 6: Tes UI** — tambahkan ke `apps/web/src/__tests__/hasil.test.tsx` (ikuti cara render layar hasil di berkas itu):
   klik tombol "Simpan" → `semuaTersimpan()` berisi 1 entri dan tombol berganti teks "Tersimpan".
 
-- [ ] **Step 7: Jalankan** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`. Expected: PASS.
+- [x] **Step 7: Jalankan** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`. Expected: PASS.
 
-- [ ] **Step 8: Commit** — `git add apps/web/src && git commit -m "web: kasus tersimpan manual terpisah dari Terakhir dibuka"`
+- [x] **Step 8: Commit** — `git add apps/web/src && git commit -m "web: kasus tersimpan manual terpisah dari Terakhir dibuka"`
 
 ---
 
@@ -637,7 +637,7 @@ memakai `JSON.stringify` biasa, bandingkan `keJson(dariJson(JSON.stringify(baris
   ```
   di `preferensi.ts`: `kumpulPreferensi(): Preferensi | null` (null = belum pernah diubah) dan `terapkanPreferensi(p: Preferensi | null): void`.
 
-- [ ] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/antrean.test.ts`:
+- [x] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/antrean.test.ts`:
 
 ```ts
 import { beforeEach, expect, test, vi } from 'vitest';
@@ -702,9 +702,9 @@ test('antrean rusak dibaca kosong', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan** — Expected: FAIL.
+- [x] **Step 2: Jalankan** — Expected: FAIL.
 
-- [ ] **Step 3: Implementasi** — `apps/web/src/akun/antrean.ts`:
+- [x] **Step 3: Implementasi** — `apps/web/src/akun/antrean.ts`:
 
 ```ts
 // Antrean perubahan data pengguna yang belum terkirim ke akun (spec akun pengguna "Sinkron"). Hanya aktif bila perangkat
@@ -789,7 +789,7 @@ function kunciEntri(entri: EntriAntrean): string {
 const tulis = (daftar: EntriAntrean[]): void => simpanMentah(KUNCI_ANTREAN, JSON.stringify(daftar));
 ```
 
-- [ ] **Step 4: Penulis data mengantre**
+- [x] **Step 4: Penulis data mengantre**
   - `progres.ts` `tandaiPelajaranSelesai`: setelah simpan,
     `antre({ tabel: 'belajar', baris }); antre({ tabel: 'kegiatan', baris: { id: crypto.randomUUID(), jenis: 'pelajaran', slug, benar: null } });`
     Lewati keduanya bila pelajaran sudah `selesai` sebelumnya (Materi memanggilnya berulang saat menggulir; kegiatan hanya
@@ -815,9 +815,9 @@ const tulis = (daftar: EntriAntrean[]): void => simpanMentah(KUNCI_ANTREAN, JSON
     set `KUNCI_PREFERENSI_DIUBAH = p.diubahPada` (tanpa mengantre). Tambahkan `const AWALAN_PILIHAN = 'arif-waris:pilihan:';`
     dan pakai di `bacaPilihan`/`simpanPilihan`. `bahasa`: `simpanBahasa` tetap memanggil pendengar.
 
-- [ ] **Step 5: Jalankan** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`. Expected: PASS.
+- [x] **Step 5: Jalankan** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`. Expected: PASS.
 
-- [ ] **Step 6: Commit** — `git add apps/web/src && git commit -m "web: antrean perubahan akun, penulis data mengantre"`
+- [x] **Step 6: Commit** — `git add apps/web/src && git commit -m "web: antrean perubahan akun, penulis data mengantre"`
 
 ---
 
@@ -833,7 +833,7 @@ const tulis = (daftar: EntriAntrean[]): void => simpanMentah(KUNCI_ANTREAN, JSON
   export function gabung(lokal: DataPengguna, server: DataPengguna): { hasil: DataPengguna; kirim: EntriAntrean[] };
   ```
 
-- [ ] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/gabung.test.ts`:
+- [x] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/gabung.test.ts`:
 
 ```ts
 import { expect, test } from 'vitest';
@@ -879,9 +879,9 @@ test('sama persis di kedua sisi → tidak ada yang dikirim', () => {
 
 (`diubahPada` berupa teks ISO; perbandingan teks cukup karena format sama. Tes memakai '1'/'2' demi ringkas.)
 
-- [ ] **Step 2: Jalankan** — Expected: FAIL.
+- [x] **Step 2: Jalankan** — Expected: FAIL.
 
-- [ ] **Step 3: Implementasi** — `apps/web/src/akun/gabung.ts`:
+- [x] **Step 3: Implementasi** — `apps/web/src/akun/gabung.ts`:
 
 ```ts
 // Penggabungan data perangkat dengan data akun saat akun pertama kali masuk di perangkat ini (spec akun pengguna
@@ -932,8 +932,8 @@ Catatan: data dari server berformat waktu Postgres (`2026-09-27T10:00:00+00:00`)
 (`...000Z`). Perbandingan teks keliru bila formatnya beda → di Task 6, normalkan semua waktu dari server dengan
 `new Date(x).toISOString()` sebelum masuk `gabung` dan sebelum ditulis ke lokal.
 
-- [ ] **Step 4: Jalankan** — Expected: PASS.
-- [ ] **Step 5: Commit** — `git add apps/web/src/akun/gabung.ts apps/web/src/__tests__/gabung.test.ts && git commit -m "web: penggabungan data lokal dan akun"`
+- [x] **Step 4: Jalankan** — Expected: PASS.
+- [x] **Step 5: Commit** — `git add apps/web/src/akun/gabung.ts apps/web/src/__tests__/gabung.test.ts && git commit -m "web: penggabungan data lokal dan akun"`
 
 ---
 
@@ -956,7 +956,7 @@ Catatan: data dari server berformat waktu Postgres (`2026-09-27T10:00:00+00:00`)
   export function keluarDanBersihkan(repo: RepoAkun): Promise<void>;
   ```
 
-- [ ] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/sinkron-akun.test.ts`:
+- [x] **Step 1: Tes yang gagal** — `apps/web/src/__tests__/sinkron-akun.test.ts`:
 
 ```ts
 import { beforeEach, expect, test, vi } from 'vitest';
@@ -1031,9 +1031,9 @@ test('keluar menghapus semua kunci arif-waris', async () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan** — Expected: FAIL.
+- [x] **Step 2: Jalankan** — Expected: FAIL.
 
-- [ ] **Step 3: Implementasi** — `apps/web/src/akun/sinkron.ts`:
+- [x] **Step 3: Implementasi** — `apps/web/src/akun/sinkron.ts`:
 
 ```ts
 // Sinkron data pengguna dengan akun (spec akun pengguna "Penggabungan", "Sinkron", "Keluar").
@@ -1131,8 +1131,8 @@ async function dataServer(pengguna: RepositoriPengguna): Promise<DataPengguna> {
 const bersihkanPerangkat = (): void => hapusSemuaMentah(AWALAN_DATA);
 ```
 
-- [ ] **Step 4: Jalankan** — `pnpm --filter @waris/web test sinkron-akun`. Expected: PASS. Lalu semua tes web.
-- [ ] **Step 5: Commit** — `git add apps/web/src && git commit -m "web: sinkron akun (login pertama, antrean, tarik, keluar)"`
+- [x] **Step 4: Jalankan** — `pnpm --filter @waris/web test sinkron-akun`. Expected: PASS. Lalu semua tes web.
+- [x] **Step 5: Commit** — `git add apps/web/src && git commit -m "web: sinkron akun (login pertama, antrean, tarik, keluar)"`
 
 ---
 
@@ -1150,7 +1150,7 @@ const bersihkanPerangkat = (): void => hapusSemuaMentah(AWALAN_DATA);
     — null bila env kosong; satu instans per halaman.
   - `TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun | null })`.
 
-- [ ] **Step 1: Klien** — `apps/web/src/akun/klien.ts`:
+- [x] **Step 1: Klien** — `apps/web/src/akun/klien.ts`:
 
 ```ts
 // Satu klien Supabase untuk web: dipakai sinkron konten dan akun pengguna. Sesi login disimpan (persistSession) dan
@@ -1180,7 +1180,7 @@ secara otomatis saat klien dibuat; hapus query itu dari alamat sesudahnya:
 `history.replaceState(null, '', location.pathname + location.hash)` di `mulaiSinkron` pemanggil (Aplikasi) bila
 `location.search.includes('code=')`.
 
-- [ ] **Step 2: Tes UI yang gagal** — `apps/web/src/__tests__/akun.test.tsx`:
+- [x] **Step 2: Tes UI yang gagal** — `apps/web/src/__tests__/akun.test.tsx`:
 
 ```tsx
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -1221,9 +1221,9 @@ test('keluar dengan perubahan belum terkirim: tanya dulu', async () => {
 });
 ```
 
-- [ ] **Step 3: Jalankan** — Expected: FAIL.
+- [x] **Step 3: Jalankan** — Expected: FAIL.
 
-- [ ] **Step 4: Implementasi** — `apps/web/src/akun/TombolAkun.tsx`:
+- [x] **Step 4: Implementasi** — `apps/web/src/akun/TombolAkun.tsx`:
 
 ```tsx
 // Tombol akun di header (spec akun pengguna "Login"): belum masuk → "Masuk dengan Google"; sudah masuk → tombol berinisial
@@ -1291,7 +1291,7 @@ Data di perangkat ini tetap aman.", `umum.keluar` "Keluar", `umum.tetap_keluar` 
 `umum.perubahan_belum_terkirim` "{jumlah} perubahan belum terkirim ke akun dan akan hilang dari perangkat ini. Tetap keluar?"
 (cek dulu apakah `umum.keluar` sudah ada).
 
-- [ ] **Step 5: Pasang di Aplikasi & Kepala**
+- [x] **Step 5: Pasang di Aplikasi & Kepala**
   - `Kepala.tsx`: prop baru `akun: ReactNode`, dirender sebelum `<select className="pilih-bahasa">`.
   - `Aplikasi.tsx`:
     ```tsx
@@ -1310,22 +1310,22 @@ Data di perangkat ini tetap aman.", `umum.keluar` "Keluar", `umum.tetap_keluar` 
     dan `<Kepala … akun={<TombolAkun sesi={sesi} repo={repoAkun} />} />`.
     `// ponytail: layar yang menyimpan data di useState awal (mis. DaftarRiwayat) baru segar setelah pindah halaman.`
 
-- [ ] **Step 6: Jalankan** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`. Expected: PASS.
+- [x] **Step 6: Jalankan** — `pnpm --filter @waris/web test && pnpm --filter @waris/web build`. Expected: PASS.
 
-- [ ] **Step 7: Uji manual di browser** (butuh `pnpm db:mulai` dan Google OAuth lokal di `supabase/config.toml`
+- [x] **Step 7: Uji manual di browser** (butuh `pnpm db:mulai` dan Google OAuth lokal di `supabase/config.toml`
   `[auth.external.google]`; bila belum dikonfigurasi, catat & lewati — portal admin memakai konfigurasi yang sama):
   masuk dari `#/belajar` → kembali ke `#/belajar` tanpa `?code=`; tandai pelajaran selesai → baris muncul di
   `progres_belajar` dan `log_kegiatan`; Keluar → localStorage tanpa kunci `arif-waris:*`.
 
-- [ ] **Step 8: Commit** — `git add apps/web/src && git commit -m "web: login Google opsional & menu akun di header"`
+- [x] **Step 8: Commit** — `git add apps/web/src && git commit -m "web: login Google opsional & menu akun di header"`
 
 ---
 
 ### Task 8: Penutup
 
-- [ ] Perbarui `docs/panduan-tim-keilmuan.md` hanya bila ada bagian tentang riwayat/"tersimpan otomatis" yang kini salah
+- [x] Perbarui `docs/panduan-tim-keilmuan.md` hanya bila ada bagian tentang riwayat/"tersimpan otomatis" yang kini salah
   (cari "riwayat").
-- [ ] Beri tahu pengguna: kunci diksi baru (Task 3 & 7) dibuat di snapshot dengan `versiTerbit: 0`; perlu dibuat juga
+- [x] Beri tahu pengguna: kunci diksi baru (Task 3 & 7) dibuat di snapshot dengan `versiTerbit: 0`; perlu dibuat juga
   di DB lewat portal (editor diksi) supaya tim bisa menyunting/menerjemahkan.
-- [ ] `pnpm test && pnpm db:tes` — semua PASS.
-- [ ] Centang plan ini, commit `docs: centang plan tahap 4`.
+- [x] `pnpm test && pnpm db:tes` — semua PASS.
+- [x] Centang plan ini, commit `docs: centang plan tahap 4`.
