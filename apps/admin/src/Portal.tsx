@@ -7,6 +7,7 @@ import type { Sesi } from '@waris/data';
 import { Tombol } from '@waris/web/ui/komponen';
 import { KonteksRepo, type RepoPortal } from './repo';
 import { bacaRute, tulisRute } from './rute';
+import { DaftarKonten } from './layar/DaftarKonten';
 
 type Tahap =
   | { tahap: 'memuat' }
@@ -68,7 +69,7 @@ function NavigasiPortal({ peran }: { peran: Peran }) {
   );
 }
 
-// Layar tiap rute belum dibuat di task ini; diganti task berikut.
+// Layar rute lain (entri, entriBaru, review, diksi, peran) belum dibuat di task ini; diganti task berikut.
 function LayarRute() {
   const [rute, setRute] = useState(() => bacaRute(location.hash));
   useEffect(() => {
@@ -76,6 +77,6 @@ function LayarRute() {
     window.addEventListener('hashchange', nyalakan);
     return () => window.removeEventListener('hashchange', nyalakan);
   }, []);
-  void rute;
+  if (rute.layar === 'konten') return <DaftarKonten jenis={rute.jenis} />;
   return <p>Segera</p>;
 }
