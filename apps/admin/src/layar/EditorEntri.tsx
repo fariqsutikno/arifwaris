@@ -3,7 +3,7 @@
 // bolehSuntingDraf (UI saja; database tetap penjaga), lalu menyimpan lewat repo.editorial (buatEntri/buatDraf/
 // ubahDraf/ajukan). Galat validasi (dariBentuk) maupun galat repo ditampilkan, tidak ditelan.
 import { useEffect, useState } from 'react';
-import { bacaIsi, bolehSuntingDraf, JENIS_KONTEN, slug as buatSlug, type JenisKonten } from '@waris/content';
+import { bacaIsi, bolehSuntingDraf, periksaRefs, JENIS_KONTEN, slug as buatSlug, type JenisKonten } from '@waris/content';
 import type { RingkasanRevisi } from '@waris/data';
 import { Tombol } from '@waris/web/ui/komponen';
 import { dariBentuk, keBentuk, type BentukEditor } from '../editor/bentuk';
@@ -15,7 +15,8 @@ const JARAK_URUTAN = 10;
 const FIELD_CALON_JUDUL = ['judul', 'pertanyaan', 'slug', 'id', 'kode', 'kunci', 'istilahId'] as const;
 
 type Mode = { mode: 'baca' } | { mode: 'suntingDraf'; revisiId: string } | { mode: 'drafBaru' };
-interface Muatan { jenis: JenisKonten; slug: string | null; entriId: string | null; basis: RingkasanRevisi | null }
+// basis = revisi yang isinya dimuat ke form; terakhir = revisi terbaru (status & catatan review ditampilkan dari sini).
+interface Muatan { jenis: JenisKonten; slug: string | null; entriId: string | null; basis: RingkasanRevisi | null; terakhir: RingkasanRevisi | null }
 
 export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten }) {
   const { repo, sesi, peran } = usePortal();
@@ -48,11 +49,13 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
     const entri = semua.find(e => e.entriId === entriId);
     if (!entri) throw new Error(`entri ${entriId} tidak ditemukan`);
     const terakhir = entri.revisiTerakhir;
-    const terbit = entri.revisiTerbitId && terakhir?.status !== 'draf'
+    // Draf/diajukan/dikembalikan: isinya sendiri jadi basis (dikembalikan boleh didrafkan ulang dari isinya).
+    // Disetujui: basis = revisi yang sedang terbit (bisa berbeda bila pernah terbitkanUlang revisi lama).
+    const basis = entri.revisiTerbitId && terakhir?.status === 'disetujui'
       ? (await repo.konten.daftarRevisi(entriId)).find(r => r.id === entri.revisiTerbitId) ?? terakhir
       : terakhir;
-    const muatan: Muatan = { jenis: entri.jenis, slug: entri.slug, entriId, basis: terbit };
-    return { muatan, bentuk: terbit ? bentukDariRevisi(entri.jenis, terbit) : bentukKosong(entri.jenis) };
+    const muatan: Muatan = { jenis: entri.jenis, slug: entri.slug, entriId, basis, terakhir };
+    return { muatan, bentuk: basis ? bentukDariRevisi(entri.jenis, basis) : bentukKosong(entri.jenis) };
   }
 
   function tentukanMode(m: Muatan): Mode {
@@ -75,14 +78,21 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
         setMuatUlang(n => n + 1);
       } else if (muatan.entriId) {
         await repo.editorial.buatDraf(muatan.entriId, muatan.jenis, hasil.isi, refs);
-        setMuatUlang(n => n + 1);
+        if (entriIdProp) setMuatUlang(n => n + 1);
+        else location.hash = tulisRute({ layar: 'entri', entriId: muatan.entriId });
       } else {
         const slugBaru = slugDariIsi(hasil.isi);
         if (!slugBaru) { setGalat(`isi butuh salah satu field: ${FIELD_CALON_JUDUL.join(', ')} (untuk slug)`); return; }
+        // Periksa refs di klien sebelum buatEntri supaya entri kosong tidak tertinggal; database tetap penjaga.
+        const refsDikenal = new Set((await repo.konten.daftarRefs()).map(ref => ref.kode));
+        const galatRefs = periksaRefs(muatan.jenis, hasil.isi, refs, refsDikenal);
+        if (galatRefs) { setGalat(galatRefs); return; }
         const daftar = await repo.konten.daftarEntri(muatan.jenis);
         const maksUrutan = Math.max(0, ...daftar.map(e => e.urutan));
-        // ponytail: entri dibuat dulu lalu draf; bila buatDraf gagal, entri kosong tertinggal. Pindah ke RPC atomik bila mengganggu.
+        // ponytail: entri & draf dua panggilan, tidak atomik. entriId disimpan dulu supaya bila buatDraf gagal,
+        // simpan ulang memakai entri yang sama (cabang di atas). RPC atomik bila perlu.
         const entriId = await repo.editorial.buatEntri(muatan.jenis, slugBaru, maksUrutan + JARAK_URUTAN);
+        setMuatan({ ...muatan, entriId, slug: slugBaru });
         await repo.editorial.buatDraf(entriId, muatan.jenis, hasil.isi, refs);
         location.hash = tulisRute({ layar: 'entri', entriId });
       }
@@ -109,8 +119,8 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
   return (
     <div>
       <h2>{muatan.jenis}: {muatan.slug ?? 'entri baru'}</h2>
-      {muatan.basis ? <p>Status: {muatan.basis.status}</p> : null}
-      {muatan.basis?.catatanReview ? <p>Catatan review: {muatan.basis.catatanReview}</p> : null}
+      {muatan.terakhir ? <p>Status: {muatan.terakhir.status}</p> : null}
+      {muatan.terakhir?.catatanReview ? <p>Catatan review: {muatan.terakhir.catatanReview}</p> : null}
       {galat ? <p role="alert">{galat}</p> : null}
       {Object.entries(bentuk.teks).map(([kunci, nilai]) => (
         <label key={kunci} style={{ display: 'block' }}>
@@ -137,7 +147,7 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
       <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={bacaSaja} />
       {!bacaSaja ? <Tombol onClick={() => void simpan()}>Simpan draf</Tombol> : null}
       {mode.mode === 'suntingDraf' ? <Tombol varian="secondary" onClick={() => void ajukan()}>Ajukan</Tombol> : null}
-      {bacaSaja && peran !== 'reviewer' && muatan.basis?.status !== 'draf' ? (
+      {bacaSaja && peran !== 'reviewer' && muatan.entriId && muatan.terakhir?.status !== 'draf' && muatan.terakhir?.status !== 'diajukan' ? (
         <Tombol varian="secondary" onClick={() => setMode({ mode: 'drafBaru' })}>Buat draf baru dari versi ini</Tombol>
       ) : null}
     </div>
@@ -145,7 +155,7 @@ export function EditorEntri(props: { entriId: string } | { jenis: JenisKonten })
 }
 
 function muatBaru(jenis: JenisKonten) {
-  return { muatan: { jenis, slug: null, entriId: null, basis: null } satisfies Muatan, bentuk: bentukKosong(jenis) };
+  return { muatan: { jenis, slug: null, entriId: null, basis: null, terakhir: null } satisfies Muatan, bentuk: bentukKosong(jenis) };
 }
 
 function bentukKosong(jenis: JenisKonten): BentukEditor {

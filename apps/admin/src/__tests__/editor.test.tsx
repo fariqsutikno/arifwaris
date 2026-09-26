@@ -53,6 +53,51 @@ test('jenis fikih tanpa ref → galat repo tampil', async () => {
   isiJson(JSON.stringify(keJson('faq', DAFTAR_FAQ_UJI[0]!)));
   simpan();
   expect((await screen.findByRole('alert')).textContent).toMatch(/wajib punya minimal satu ref/);
+  expect(await m.konten.daftarEntri('faq')).toHaveLength(0);
+
+  fireEvent.change(screen.getByLabelText('Cari ref'), { target: { value: 'R09' } });
+  fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
+  simpan();
+  await waitFor(async () => {
+    const daftar = await m.konten.daftarEntri('faq');
+    expect(daftar).toHaveLength(1);
+    expect(daftar[0]!.revisiTerakhir?.status).toBe('draf');
+  });
+});
+
+test('buatDraf gagal setelah buatEntri → simpan ulang memakai entri yang sama', async () => {
+  const m = siapkan();
+  const buatDrafAsli = m.editorial.buatDraf;
+  let gagalSekali = true;
+  m.editorial.buatDraf = async (...a) => {
+    if (gagalSekali) { gagalSekali = false; throw new Error('jaringan putus'); }
+    return buatDrafAsli(...a);
+  };
+  tampilkan(m, { jenis: 'faq' });
+  isiJson(JSON.stringify(keJson('faq', DAFTAR_FAQ_UJI[0]!)));
+  fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
+  fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
+  simpan();
+  expect((await screen.findByRole('alert')).textContent).toMatch(/jaringan putus/);
+  simpan();
+  await waitFor(async () => {
+    const daftar = await m.konten.daftarEntri('faq');
+    expect(daftar).toHaveLength(1);
+    expect(daftar[0]!.revisiTerakhir?.status).toBe('draf');
+  });
+});
+
+test('terbit + revisi diajukan: status diajukan tampil, tanpa "Buat draf baru"', async () => {
+  const m = buatMemori({ refs: ['R09-7'], sesi: { userId: 'u-a', email: 'a@x.id' }, peran: { 'u-a': 'admin' } });
+  const entriId = await m.editorial.buatEntri('faq', 'apa-itu-tirkah', 10);
+  const pertama = await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+  await m.editorial.ajukan(pertama);
+  await m.editorial.setujui(pertama);
+  const kedua = await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[1]!, ['R09-7']);
+  await m.editorial.ajukan(kedua);
+  tampilkan(m, { entriId }, 'penulis', 'u-p');
+  await screen.findByText('Status: diajukan');
+  expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
 });
 
 async function drafSendiri(m: Memori) {
