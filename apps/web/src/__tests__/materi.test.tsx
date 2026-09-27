@@ -2,9 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { type ContohKasus } from '@waris/content';
 import { daftarPelajaran } from '../konten/sumber';
-import { jalankan } from '../jalankan';
-import { ringkas } from '../hasil/ringkasan';
-import { kasusDariContoh } from '../layar/belajar/contoh';
+import { hitungHarapan, kasusDariContoh } from '../layar/belajar/contoh';
 import { Belajar } from '../layar/belajar/Belajar';
 import { Materi } from '../layar/belajar/Materi';
 import { bacaPelajaranSelesai } from '../progres';
@@ -16,14 +14,7 @@ describe('contoh kasus di materi = hasil engine', () => {
   it('setiap pelajaran yang punya contoh ikut diuji', () => expect(semuaContoh.length).toBeGreaterThan(0));
 
   it.each(semuaContoh)('%s', (_nama, contoh) => {
-    const kasus = kasusDariContoh(contoh);
-    const tampil = jalankan(kasus);
-    if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(JSON.stringify(tampil));
-    const { penerima, penyebut } = ringkas(kasus, tampil);
-    const sahamPerKunci: Record<string, bigint> = {};
-    for (const orang of penerima) if (orang.saham > 0n) sahamPerKunci[orang.kunci!] = (sahamPerKunci[orang.kunci!] ?? 0n) + orang.saham;
-    expect(sahamPerKunci).toEqual(contoh.harapan.saham);
-    expect(penyebut).toBe(contoh.harapan.ashlAkhir);
+    expect(hitungHarapan(contoh)).toEqual({ ok: true, harapan: contoh.harapan });
   });
 });
 
