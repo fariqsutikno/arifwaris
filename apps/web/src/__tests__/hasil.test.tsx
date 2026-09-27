@@ -19,7 +19,7 @@ const prototipe = () => buat(['ISTRI', 'IBU', 'AYAH', 'ANAK_LK', 'ANAK_PR', 'SAU
 const c1601 = () => buat(['ISTRI', 'ANAK_LK', 'ANAK_PR'], { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n });
 
 let aksiTerakhir: Aksi | null = null;
-function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; idSesi?: string; tujuan?: Tujuan; saatDikerjakan?: () => void }) {
+function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; idSesi?: string; tujuan?: Tujuan; saatDikerjakan?: (benar: boolean) => void }) {
   const [kasus, setKasus] = useState(awal);
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
   return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
@@ -85,16 +85,16 @@ describe('layar hasil', () => {
   });
 
   it('mode belajar: tebakan salah ditolak; benar membuka jawaban dan dihitung dikerjakan', () => {
-    let dikerjakan = 0;
-    render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={() => { dikerjakan++; }} />);
+    const dikerjakan: boolean[] = [];
+    render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
     const isi = (nama: RegExp, nilai: string) => fireEvent.change(within(pembagian()).getByRole('textbox', { name: nama }), { target: { value: nilai } });
     isi(/Istri/, '1/4'); isi(/Anak laki-laki/, '7/12'); isi(/Anak perempuan/, '7/24');
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
     expect(screen.getByRole('alert').textContent).toMatch(/belum tepat.*2 dari 3 orang sudah benar.*Perbaiki: Istri/);
-    expect(dikerjakan).toBe(0);
+    expect(dikerjakan).toEqual([]);
     isi(/Istri/, '3/24');
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
-    expect(dikerjakan).toBe(1);
+    expect(dikerjakan).toEqual([true]);
     expect(screen.queryByRole('button', { name: 'Jawab' })).toBeNull();
     expect(within(pembagian()).getByRole('status').textContent).toMatch(/Benar semua/);
   });
@@ -114,20 +114,21 @@ describe('layar hasil', () => {
     expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
   });
 
-  it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung', () => {
-    let dikerjakan = 0;
-    const { unmount } = render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={() => { dikerjakan++; }} />);
+  it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung tapi tidak benar', () => {
+    const dikerjakan: boolean[] = [];
+    const { unmount } = render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
     bukaLewatDialog(/Tahan untuk buka/);
-    expect(dikerjakan).toBe(0);
+    expect(dikerjakan).toEqual([]);
     unmount();
-    render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={() => { dikerjakan++; }} />);
+    render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
     for (const kotak of within(pembagian()).getAllByRole('textbox')) fireEvent.change(kotak, { target: { value: '0' } });
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
     expect(screen.getByRole('alertdialog').textContent).not.toMatch(/belum nyoba/);
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/tidak memberi XP/);
     bukaLewatDialog(/Tahan untuk buka/);
-    expect(dikerjakan).toBe(1);
+    expect(dikerjakan).toEqual([false]);
   });
 
   it('klik orang di pohon membuka penjelasan dengan ahwal, baris kasus ini disorot', () => {

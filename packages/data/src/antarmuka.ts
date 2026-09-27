@@ -7,8 +7,9 @@ export interface Sesi { userId: string; email: string; nama?: string | null; ava
 export interface KontenTerbit<J extends JenisKonten = JenisKonten> {
   entriId: string; jenis: J; slug: string; urutan: number; revisiId: string; isi: IsiKonten[J]; refs: string[]; versiTerbit: number;
 }
+/** `hapus` = revisi penghapusan: isinya salinan revisi terbit; bila disetujui, entri hilang dari web. */
 export interface RingkasanRevisi {
-  id: string; entriId: string; status: StatusRevisi; refs: string[]; isi: unknown; dibuatOleh: string;
+  id: string; entriId: string; status: StatusRevisi; hapus: boolean; refs: string[]; isi: unknown; dibuatOleh: string;
   diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string; diperiksaPada: string | null;
 }
 export interface DiksiTerbit { kunci: string; halaman: string; id: string; ar: string | null; versiTerbit: number }
@@ -16,9 +17,15 @@ export interface RingkasanRevisiDiksi {
   id: string; kunci: string; idTeks: string; arTeks: string | null; catatan: string | null; status: StatusRevisi;
   dibuatOleh: string; diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string;
 }
+/** Entri di Sampah bila `dihapus` (revisi terbitnya revisi penghapusan; tidak tampil di web walau revisiTerbitId
+ * terisi) atau `dibuang` (belum pernah terbit, dibuang langsung). */
 export interface RingkasanEntri {
   entriId: string; jenis: JenisKonten; slug: string; urutan: number;
-  revisiTerbitId: string | null; revisiTerakhir: RingkasanRevisi | null;
+  revisiTerbitId: string | null; dihapus: boolean; dibuang: boolean; revisiTerakhir: RingkasanRevisi | null;
+}
+/** Kejadian Sampah satu entri (tabel jejak_entri); suntingan & review tercatat di revisinya sendiri. */
+export interface JejakEntri {
+  id: string; entriId: string; aksi: 'dibuang' | 'buang_diajukan' | 'dipulihkan'; pelaku: string; pada: string; catatan: string | null;
 }
 export interface RingkasanKunciDiksi {
   kunci: string; halaman: string; terbit: DiksiTerbit | null; revisiTerakhir: RingkasanRevisiDiksi | null;
@@ -27,9 +34,12 @@ export interface PeranPengguna { userId: string; email: string; nama: string | n
 
 export interface RepositoriKonten {
   versiSekarang(): Promise<number>;
-  /** Hanya revisi terbit; isi tidak valid dibuang (console.warn), tidak melempar. */
+  /** Hanya revisi terbit, tanpa entri yang dihapus; isi tidak valid dibuang (console.warn), tidak melempar. */
   bacaTerbit(saring?: { jenis?: JenisKonten; sejakVersi?: number }): Promise<KontenTerbit[]>;
+  /** entriId yang penghapusannya terbit sejak `sejakVersi`, supaya cache web membuangnya. */
+  bacaDihapus(sejakVersi: number): Promise<string[]>;
   daftarRevisi(entriId: string): Promise<RingkasanRevisi[]>;
+  daftarJejak(entriId: string): Promise<JejakEntri[]>;
   /** Untuk portal admin: entri satu jenis (tanpa jenis = semua jenis, satu kueri), urut `urutan` lalu slug,
    * dengan revisi terakhir & terbit. */
   daftarEntri(jenis?: JenisKonten): Promise<RingkasanEntri[]>;
@@ -47,6 +57,14 @@ export interface RepositoriEditorial {
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
   antreanReview(): Promise<RingkasanRevisi[]>;
+  /** Pembuat (atau admin) menarik kembali pengajuannya: diajukan → draf (pengajuan ke Sampah: ditutup). */
+  tarik(revisiId: string): Promise<void>;
+  /** Admin: draf langsung terbit tanpa antrean. */
+  terbitkanLangsung(revisiId: string): Promise<void>;
+  /** Pindah ke Sampah (tidak ada hapus permanen). 'diajukan' = penulis pada entri terbit, menunggu review;
+   * 'dibuang' = langsung masuk Sampah. */
+  buangEntri(entriId: string, alasan?: string): Promise<'dibuang' | 'diajukan'>;
+  pulihkanEntri(entriId: string): Promise<void>;
 }
 export interface RepositoriDiksi {
   bacaTerbit(sejakVersi?: number): Promise<DiksiTerbit[]>;
@@ -116,4 +134,6 @@ export interface RepositoriAkun {
   aturPeran(email: string, peran: Peran | null): Promise<void>;
   /** Admin saja. */
   daftarPeran(): Promise<PeranPengguna[]>;
+  /** Nama anggota tim (tanpa email) untuk riwayat; semua pengguna berperan. */
+  daftarNamaTim(): Promise<{ userId: string; nama: string }[]>;
 }

@@ -1,6 +1,6 @@
 // Antrean review: memuat revisi berstatus diajukan dari editorial (konten) & diksi, lalu menampilkan tiap butir
 // dengan diff terhadap versi terbitnya (konten: revisi terbit entri; diksi: teks terbit kunci; belum ada → semua
-// baris tambah). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
+// baris tambah; pengajuan ke Sampah → semua baris terbit tampil terhapus). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
 // penjaga); revisi milik sendiri berlabel "revisi Anda". Galat repo ditampilkan di butir yang bersangkutan.
 import { useEffect, useState } from 'react';
 import { bacaIsi, transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
@@ -22,6 +22,7 @@ interface Butir {
   judul: string;
   status: StatusRevisi;
   dibuatOleh: string;
+  hapus: boolean;
   teksLama: string;
   teksBaru: string;
   konten: { jenis: JenisKonten; slug: string; isi: unknown } | null;
@@ -49,9 +50,9 @@ export function AntreanReview() {
         if (!e) throw new Error(`entri ${revisi.entriId} tidak ditemukan`);
         const basis = await basisTerbit(e);
         return {
-          id: revisi.id, judul: `${e.jenis}: ${e.slug}`, status: revisi.status, dibuatOleh: revisi.dibuatOleh,
-          teksLama: basis === null ? '' : teksBanding(e.jenis, basis), teksBaru: teksBanding(e.jenis, revisi.isi),
-          konten: { jenis: e.jenis, slug: e.slug, isi: revisi.isi },
+          id: revisi.id, judul: `${e.jenis}: ${e.slug}`, status: revisi.status, dibuatOleh: revisi.dibuatOleh, hapus: revisi.hapus,
+          teksLama: basis === null ? '' : teksBanding(e.jenis, basis), teksBaru: revisi.hapus ? '' : teksBanding(e.jenis, revisi.isi),
+          konten: revisi.hapus ? null : { jenis: e.jenis, slug: e.slug, isi: revisi.isi },
           setujui: () => repo.editorial.setujui(revisi.id),
           kembalikan: catatan => repo.editorial.kembalikan(revisi.id, catatan),
         };
@@ -59,7 +60,7 @@ export function AntreanReview() {
       const butirDiksi = revisiDiksi.map((revisi): Butir => {
         const terbit = kunciDiksi.find(k => k.kunci === revisi.kunci)?.terbit ?? null;
         return {
-          id: revisi.id, judul: `diksi: ${revisi.kunci}`, status: revisi.status, dibuatOleh: revisi.dibuatOleh,
+          id: revisi.id, judul: `diksi: ${revisi.kunci}`, status: revisi.status, dibuatOleh: revisi.dibuatOleh, hapus: false,
           teksLama: terbit ? teksDiksi(terbit) : '', teksBaru: teksDiksi({ id: revisi.idTeks, ar: revisi.arTeks }),
           konten: null,
           setujui: () => repo.diksi.setujui(revisi.id),
@@ -112,10 +113,12 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
     <Card role="article" aria-labelledby={idJudul}>
       <CardHeader className="flex flex-wrap items-center gap-2">
         <CardTitle id={idJudul}>{butir.judul}</CardTitle>
+        {butir.hapus ? <Badge variant="destructive">pengajuan ke Sampah</Badge> : null}
         {butir.dibuatOleh === sesi.userId ? <Badge variant="secondary">revisi Anda</Badge> : null}
       </CardHeader>
       <CardContent className="space-y-3">
         {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
+        {butir.hapus ? <p className="text-sm text-muted-foreground">Bila disetujui, entri pindah ke Sampah dan hilang dari web. Bisa dipulihkan kapan saja.</p> : null}
         <Diff baris={diffBaris(butir.teksLama, butir.teksBaru)} />
         {butir.konten ? <Button variant="outline" size="sm" onClick={() => setPratinjau(true)}>Pratinjau</Button> : null}
         {pratinjau && butir.konten ? <PratinjauButir {...butir.konten} saatTutup={() => setPratinjau(false)} /> : null}

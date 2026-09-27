@@ -57,6 +57,7 @@ export function PesanGalat({ pesan, onCobaLagi }: { pesan: string; onCobaLagi: (
 
 export function ChipStatus({ status }: { status: StatusTampil }) {
   if (status === 'terbit + draf') return <span className="inline-flex gap-1"><Badge>Terbit</Badge><Badge variant="secondary">+ draf</Badge></span>;
+  if (status === 'sampah') return <Badge variant="secondary">{LABEL_TAB[status]}</Badge>;
   const varian = status === 'terbit' ? 'default' : status === 'dikembalikan' ? 'destructive' : status === 'diajukan' ? 'outline' : 'secondary';
   return <Badge variant={varian}>{LABEL_TAB[status]}</Badge>;
 }

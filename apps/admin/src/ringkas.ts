@@ -2,21 +2,25 @@
 // pindah urutan, dan waktu relatif. Menerima RingkasanEntri dari repo.konten.daftarEntri; komponen hanya menampilkan.
 import type { RingkasanEntri } from '@waris/data';
 
-export type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf';
-export type TabStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit';
-export const TAB_STATUS: readonly TabStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit'];
+export type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf' | 'sampah';
+export type TabStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit' | 'sampah';
+export const TAB_STATUS: readonly TabStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit', 'sampah'];
 export const LABEL_TAB: Record<TabStatus, string> = {
-  semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit',
+  semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit', sampah: 'Sampah',
 };
 export const BATAS_BERANDA = 8;
 const FIELD_JUDUL = ['judul', 'pertanyaan', 'istilahId', 'kunci', 'id', 'kode'] as const;
 
-/** Entri bisa punya revisi terbit dan draf baru sekaligus ("terbit + draf"); revisi terakhir yang diajukan/
- * dikembalikan di atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). */
+export const diSampah = (entri: RingkasanEntri) => entri.dihapus || entri.dibuang;
+
+/** Entri bisa punya revisi terbit dan draf sekaligus ("terbit + draf"); revisi terakhir yang diajukan/dikembalikan di
+ * atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). Entri di Sampah selalu "sampah". */
 export function statusTampil(entri: RingkasanEntri): StatusTampil {
+  if (diSampah(entri)) return 'sampah';
   const { revisiTerbitId, revisiTerakhir } = entri;
   if (!revisiTerakhir) return revisiTerbitId ? 'terbit' : 'draf';
-  if (revisiTerbitId && revisiTerakhir.id === revisiTerbitId) return 'terbit';
+  // Disetujui tapi bukan revisi terbit = sesudah rollback; yang menentukan tetap apa yang sedang terbit.
+  if (revisiTerakhir.status === 'disetujui') return 'terbit';
   if (revisiTerbitId && revisiTerakhir.status === 'draf') return 'terbit + draf';
   if (revisiTerakhir.status === 'diajukan') return 'diajukan';
   if (revisiTerakhir.status === 'draf') return 'draf';
@@ -29,9 +33,10 @@ export function judulEntri(entri: RingkasanEntri, isi: unknown = entri.revisiTer
   return typeof kandidat === 'string' ? kandidat : entri.slug;
 }
 
+/** "Semua" tidak memuat Sampah (seperti WordPress); Sampah punya tabnya sendiri. */
 export function cocokTab(entri: RingkasanEntri, tab: TabStatus): boolean {
   const status = statusTampil(entri);
-  if (tab === 'semua') return true;
+  if (tab === 'semua') return status !== 'sampah';
   if (status === 'terbit + draf') return tab === 'draf' || tab === 'terbit';
   return status === tab;
 }
@@ -70,7 +75,8 @@ export interface RingkasanBeranda {
 }
 
 /** `antreanDiksi` = jumlah revisi diksi yang diajukan, supaya "Menunggu review" sama dengan lencana antrean. */
-export function ringkasBeranda(semua: RingkasanEntri[], userId: string, antreanDiksi = 0): RingkasanBeranda {
+export function ringkasBeranda(semuaEntri: RingkasanEntri[], userId: string, antreanDiksi = 0): RingkasanBeranda {
+  const semua = semuaEntri.filter(entri => !diSampah(entri));
   const milikSaya = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatOleh === userId;
   const berstatus = (entri: RingkasanEntri, status: string) => entri.revisiTerakhir?.status === status;
   const waktu = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatPada ?? '';

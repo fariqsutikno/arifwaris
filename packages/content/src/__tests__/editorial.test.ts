@@ -1,6 +1,6 @@
 // packages/content/src/__tests__/editorial.test.ts
 import { describe, expect, test } from 'vitest';
-import { bolehSuntingDraf, periksaRefs, transisiRevisi } from '../index.js';
+import { bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, periksaRefs, transisiRevisi } from '../index.js';
 
 const dasar = { pelakuId: 'a', pembuatId: 'a' } as const;
 
@@ -63,5 +63,48 @@ describe('periksa refs', () => {
   });
   test('ref tak dikenal ditolak dan disebut', () => {
     expect(periksaRefs('faq', {}, ['R09-7', 'R99-1'], dikenal)).toMatch(/R99-1/);
+  });
+});
+
+describe('tarik & terbitkan langsung', () => {
+  test('pembuat (atau admin) menarik kembali pengajuannya; reviewer & orang lain tidak', () => {
+    expect(transisiRevisi({ ...dasar, status: 'diajukan', aksi: 'tarik', peran: 'penulis' })).toEqual({ ok: true, status: 'draf' });
+    expect(transisiRevisi({ status: 'diajukan', aksi: 'tarik', peran: 'admin', pelakuId: 'a', pembuatId: 'b' }).ok).toBe(true);
+    expect(transisiRevisi({ status: 'diajukan', aksi: 'tarik', peran: 'penulis', pelakuId: 'a', pembuatId: 'b' }).ok).toBe(false);
+    expect(transisiRevisi({ ...dasar, status: 'diajukan', aksi: 'tarik', peran: 'reviewer' }).ok).toBe(false);
+    expect(transisiRevisi({ ...dasar, status: 'draf', aksi: 'tarik', peran: 'penulis' }).ok).toBe(false);
+  });
+  test('hanya admin menerbitkan draf langsung', () => {
+    expect(transisiRevisi({ ...dasar, status: 'draf', aksi: 'terbitkan', peran: 'admin' })).toEqual({ ok: true, status: 'disetujui' });
+    expect(transisiRevisi({ ...dasar, status: 'draf', aksi: 'terbitkan', peran: 'penulis' }).ok).toBe(false);
+    expect(transisiRevisi({ ...dasar, status: 'diajukan', aksi: 'terbitkan', peran: 'admin' }).ok).toBe(false);
+  });
+});
+
+describe('Sampah', () => {
+  const entri = { pelakuId: 'p', pernahTerbit: true, diSampah: false, buangSedangDiajukan: false, pembuatRevisi: ['p'] } as const;
+  test('entri terbit: penulis mengajukan, admin langsung', () => {
+    expect(caraBuangEntri({ ...entri, peran: 'penulis' })).toEqual({ ok: true, cara: 'ajukan' });
+    expect(caraBuangEntri({ ...entri, peran: 'admin', pembuatRevisi: ['lain'] })).toEqual({ ok: true, cara: 'langsung' });
+  });
+  test('reviewer, entri sudah di Sampah, atau pengajuan ganda ditolak', () => {
+    expect(caraBuangEntri({ ...entri, peran: 'reviewer' }).ok).toBe(false);
+    expect(caraBuangEntri({ ...entri, peran: 'penulis', diSampah: true })).toEqual({ ok: false, galat: 'entri sudah di Sampah' });
+    expect(caraBuangEntri({ ...entri, peran: 'penulis', buangSedangDiajukan: true }).ok).toBe(false);
+  });
+  test('entri belum terbit: langsung; penulis hanya bila semua revisinya milik sendiri', () => {
+    const belumTerbit = { ...entri, pernahTerbit: false };
+    expect(caraBuangEntri({ ...belumTerbit, peran: 'penulis' })).toEqual({ ok: true, cara: 'langsung' });
+    expect(caraBuangEntri({ ...belumTerbit, peran: 'penulis', pembuatRevisi: ['p', 'lain'] }).ok).toBe(false);
+  });
+  test('pulihkan: pernah terbit oleh reviewer/admin; belum terbit oleh pembuatnya/admin', () => {
+    const terbit = { ...entri, diSampah: true };
+    expect(bolehPulihkanEntri({ ...terbit, peran: 'reviewer' }).ok).toBe(true);
+    expect(bolehPulihkanEntri({ ...terbit, peran: 'penulis' }).ok).toBe(false);
+    const belumTerbit = { ...terbit, pernahTerbit: false };
+    expect(bolehPulihkanEntri({ ...belumTerbit, peran: 'penulis' }).ok).toBe(true);
+    expect(bolehPulihkanEntri({ ...belumTerbit, peran: 'penulis', pembuatRevisi: ['lain'] }).ok).toBe(false);
+    expect(bolehPulihkanEntri({ ...belumTerbit, peran: 'reviewer' }).ok).toBe(false);
+    expect(bolehPulihkanEntri({ ...entri, peran: 'admin' }).ok).toBe(false);
   });
 });

@@ -16,6 +16,8 @@ export type EntriAntrean =
   | { tabel: 'kegiatan'; baris: Kegiatan };
 
 const KUNCI_ANTREAN = 'arif-waris:antrean';
+/** Dipancarkan di window setelah ≥1 kegiatan sampai server: XP & streak bisa dimuat ulang (StreakKepala). */
+export const PERISTIWA_KEGIATAN_TERKIRIM = 'arif-waris:kegiatan-terkirim';
 const KUNCI_AKUN = 'arif-waris:akun';
 let pengirim: (() => void) | null = null;
 let jumlahAntre = 0;
@@ -55,16 +57,21 @@ const entriUtuh = (entri: any): entri is EntriAntrean =>
 
 /** Kirim berurutan; berhenti di kegagalan pertama supaya urutan terjaga. Mengembalikan jumlah entri yang tersisa. */
 export async function kirimAntrean(pengguna: RepositoriPengguna): Promise<number> {
+  let adaKegiatanTerkirim = false;
+  const kabari = () => { if (adaKegiatanTerkirim) window.dispatchEvent(new Event(PERISTIWA_KEGIATAN_TERKIRIM)); };
   for (const entri of bacaAntrean()) {
     try {
       await kirimSatu(pengguna, entri);
     } catch (galat) {
       console.warn('kirim perubahan akun gagal, dicoba lagi nanti:', galat);
+      kabari();
       return bacaAntrean().length;
     }
+    if (entri.tabel === 'kegiatan') adaKegiatanTerkirim = true;
     // Entri bisa sudah ditimpa versi baru selama menunggu: hanya buang bila masih sama persis.
     tulis(bacaAntrean().filter(sisa => JSON.stringify(sisa) !== JSON.stringify(entri)));
   }
+  kabari();
   return bacaAntrean().length;
 }
 

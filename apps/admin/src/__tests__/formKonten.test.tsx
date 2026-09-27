@@ -16,15 +16,20 @@ function Uji({ jenis, awal, bacaSaja = false }: { jenis: JenisKonten; awal: Nila
   return <FormKonten jenis={jenis} form={form} saatUbah={setForm} bacaSaja={bacaSaja} galatBidang={{}} opsi={OPSI} />;
 }
 const ketik = (label: string, nilai: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: nilai } });
+/** Bidang blok/potongan memakai editor rich text; tes mengetik lewat mode Markdown-nya. */
+function ketikMarkdown(label: string, nilai: string) {
+  fireEvent.click(screen.getByRole('button', { name: `Sunting ${label} sebagai Markdown` }));
+  ketik(`${label} (Markdown)`, nilai);
+}
 
 test('soal kuis: tambah pilihan, pilih benar, hapus pilihan menggeser indeks benar', () => {
   render(<Uji jenis="soal_kuis" awal={nilaiFormKosong('soal_kuis')} />);
   ketik('Kode soal', 'K-1');
   ketik('Bab KB', '4');
-  ketik('Pilihan 1', '1/2');
-  ketik('Pilihan 2', '1/4');
+  ketikMarkdown('Pilihan 1', '1/2');
+  ketikMarkdown('Pilihan 2', '1/4');
   fireEvent.click(screen.getByRole('button', { name: 'Tambah pilihan' }));
-  ketik('Pilihan 3', '1/8');
+  ketikMarkdown('Pilihan 3', '1/8');
   fireEvent.click(screen.getByLabelText('Pilihan 3 benar'));
   fireEvent.click(screen.getByRole('button', { name: 'Hapus pilihan 1' }));
   const hasil = dariNilaiForm('soal_kuis', 'x', terakhir);

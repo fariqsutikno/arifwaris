@@ -1,13 +1,14 @@
 // scripts/ekspor/main.ts
 // CLI: baca konten & diksi terbit sebagai anonim (sama seperti web) → apps/web/src/snapshot.json + docs/lampiran-konten/.
 // Versi dibaca lebih dulu: bila ada yang terbit di tengah jalan, sinkron web berikutnya tetap mengunduhnya.
+import '../env';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
 import { buatRepositoriSupabase } from '@waris/data';
 import { keMarkdown, susunSnapshot } from './susun';
 
 const { SUPABASE_URL: url, SUPABASE_ANON_KEY: anon } = process.env;
-if (!url || !anon) throw new Error('SUPABASE_URL dan SUPABASE_ANON_KEY wajib diisi');
+if (!url || !anon) throw new Error('SUPABASE_URL dan SUPABASE_ANON_KEY wajib diisi (di shell, atau salin scripts/.env.example jadi scripts/.env)');
 const repo = buatRepositoriSupabase(createClient(url, anon, { auth: { persistSession: false } }));
 const versi = await repo.konten.versiSekarang();
 const [konten, diksi] = await Promise.all([repo.konten.bacaTerbit(), repo.diksi.bacaTerbit()]);
