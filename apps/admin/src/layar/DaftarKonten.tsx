@@ -24,7 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LABEL_ISI, menuDari, type IsiMenu, type KunciMenu } from '../navigasi';
 import {
-  adaSaringLanjut, bacaSaring, diSampah, indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, LABEL_URUTAN, nilaiBerbeda,
+  adaSaringLanjut, bacaSaring, saringTanpaStatus, diSampah, indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, LABEL_URUTAN, nilaiBerbeda,
   nilaiIsi, pindahkan, SARING_AWAL, statusTampil, TAB_STATUS, tanggalLengkap, terapkanSaring, tulisSaring, waktuRelatif,
   type BidangSaring, type GrupModul, type SaringDaftar, type UrutanDaftar,
 } from '../ringkas';
@@ -207,7 +207,8 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   if (galat) return <PesanGalat pesan={galat} onCobaLagi={() => setMuatUlang(n => n + 1)} />;
   if (!daftar) return <div aria-busy="true" className="space-y-2"><Skeleton className="h-11" /><Skeleton className="h-11" /><Skeleton className="h-11" /></div>;
 
-  const jumlah = jumlahPerTab(daftar);
+  // Angka tab mengikuti cari & saring lanjutan yang aktif, supaya sama dengan jumlah baris yang akan tampil.
+  const jumlah = jumlahPerTab(saringTanpaStatus(daftar, saring, sesi.userId));
   const tampil = urutanDraf ?? terapkanSaring(daftar, saring, sesi.userId);
   const bolehAturUrutan = peran !== 'reviewer' && saring.status !== 'sampah' && daftar.length > 1;
   // Di tab Sampah tiap baris punya tombol Pulihkan. Izin pastinya (pembuat semua revisi) dijaga repo/database;

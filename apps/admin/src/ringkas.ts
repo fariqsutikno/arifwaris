@@ -96,11 +96,17 @@ export function nilaiIsi(entri: RingkasanEntri, kunci: string): string {
 }
 
 export function terapkanSaring(daftar: RingkasanEntri[], saring: SaringDaftar, userId: string): RingkasanEntri[] {
-  const hasil = saringDaftar(daftar, saring.status, saring.cari).filter(entri =>
-    (!saring.milikSaya || entri.revisiTerakhir?.dibuatOleh === userId)
+  return urutkan(saringTanpaStatus(daftar, saring, userId).filter(entri => cocokTab(entri, saring.status)), saring.urut);
+}
+
+/** Cari & saring lanjutan tanpa tab status, untuk angka di tiap tab (termasuk Sampah). */
+export function saringTanpaStatus(daftar: RingkasanEntri[], saring: SaringDaftar, userId: string): RingkasanEntri[] {
+  const kata = saring.cari.trim().toLowerCase();
+  return daftar.filter(entri =>
+    (!kata || [judulEntri(entri), entri.slug, ...(entri.revisiTerakhir?.refs ?? [])].some(teks => teks.toLowerCase().includes(kata)))
+    && (!saring.milikSaya || entri.revisiTerakhir?.dibuatOleh === userId)
     && (!saring.perluCek || (entri.revisiTerakhir?.isi as { perluCek?: unknown } | undefined)?.perluCek === true)
     && Object.entries(saring.bidang).every(([kunci, nilai]) => !nilai || nilaiIsi(entri, kunci) === nilai));
-  return urutkan(hasil, saring.urut);
 }
 
 const URUTAN_STATUS: Record<StatusTampil, number> = { dikembalikan: 0, draf: 1, 'terbit + draf': 2, diajukan: 3, terbit: 4, sampah: 5 };
