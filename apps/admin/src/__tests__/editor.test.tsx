@@ -5,7 +5,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
-import { keJson, type Peran } from '@waris/content';
+import { keJson, type JenisKonten, type Peran } from '@waris/content';
 import { KonteksRepo } from '../repo';
 import { EditorEntri } from '../layar/EditorEntri';
 import { DAFTAR_FAQ_UJI } from './contoh';
@@ -22,7 +22,7 @@ type Memori = ReturnType<typeof siapkan>;
 
 afterEach(() => { vi.restoreAllMocks(); });
 
-function tampilkan(m: Memori, props: { entriId: string } | { jenis: 'faq' | 'soal_kuis' }, peran: Peran = 'penulis', userId = 'u-p') {
+function tampilkan(m: Memori, props: { entriId: string } | { jenis: JenisKonten; awal?: Record<string, string> }, peran: Peran = 'penulis', userId = 'u-p') {
   m.masukSebagai({ userId, email: `${userId}@x.id` });
   render(
     <KonteksRepo.Provider value={{ repo: m, sesi: { userId, email: 'x@x.id' }, peran }}>
@@ -273,4 +273,10 @@ test('Sampah entri belum tayang: batal prompt tidak berbuat apa-apa; pindahkan (
   expect(await m.konten.daftarRevisi(entriId)).toHaveLength(1);
   klik('Pulihkan');
   await screen.findByText(/Draf tersimpan · belum dikirim/);
+});
+
+test('entri baru dengan isian awal dari URL (?modul=3) → modul terisi', async () => {
+  const m = siapkan();
+  tampilkan(m, { jenis: 'materi', awal: { modul: '3', bukanBidang: 'x' } });
+  await waitFor(() => expect((screen.getByLabelText('Modul') as HTMLSelectElement).value).toBe('3'));
 });

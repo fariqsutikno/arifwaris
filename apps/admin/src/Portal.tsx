@@ -103,9 +103,9 @@ function LayarRute({ onKeluar }: { onKeluar: () => void }) {
 
 function IsiRute({ rute, saatJenisEntri }: { rute: Rute; saatJenisEntri: (jenis: JenisKonten) => void }) {
   const { peran } = usePortal();
-  if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}`} menu={rute.menu} tab={rute.tab} />;
+  if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}-${JSON.stringify(rute.kueri ?? {})}`} menu={rute.menu} tab={rute.tab} kueri={rute.kueri} />;
   if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} saatJenisDiketahui={saatJenisEntri} />;
-  if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
+  if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}-${JSON.stringify(rute.kueri ?? {})}`} jenis={rute.jenis} awal={rute.kueri} />;
   if (rute.layar === 'review') return <AntreanReview />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
   return <Beranda />;

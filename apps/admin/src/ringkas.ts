@@ -50,6 +50,78 @@ export function saringDaftar(daftar: RingkasanEntri[], tab: TabStatus, cari: str
     .some(teks => teks.toLowerCase().includes(kata))));
 }
 
+// ─── Saring & urut lanjutan daftar konten (tersimpan di URL: #/menu/<menu>/<tab>?status=draf&urut=diubah&…) ───
+
+export type UrutanDaftar = 'manual' | 'diubah' | 'judul' | 'status';
+export const LABEL_URUTAN: Record<UrutanDaftar, string> = {
+  manual: 'Urutan tampil di web', diubah: 'Terakhir diubah', judul: 'Judul A–Z', status: 'Status',
+};
+/** Bidang isi yang bisa disaring; tampil hanya untuk jenis yang memilikinya (lihat BIDANG_SARING_JENIS). */
+export type BidangSaring = 'bab' | 'tingkat' | 'kelompok';
+
+export interface SaringDaftar {
+  status: TabStatus; cari: string; urut: UrutanDaftar; milikSaya: boolean; perluCek: boolean;
+  bidang: Partial<Record<BidangSaring, string>>;
+}
+export const SARING_AWAL: SaringDaftar = { status: 'semua', cari: '', urut: 'manual', milikSaya: false, perluCek: false, bidang: {} };
+const BIDANG_SARING: readonly BidangSaring[] = ['bab', 'tingkat', 'kelompok'];
+
+/** Kueri URL → SaringDaftar; nilai tak dikenal diabaikan (jatuh ke bawaan). */
+export function bacaSaring(kueri: Readonly<Record<string, string>> = {}): SaringDaftar {
+  const status = TAB_STATUS.find(tab => tab === kueri.status) ?? 'semua';
+  const urut = (Object.keys(LABEL_URUTAN) as UrutanDaftar[]).find(u => u === kueri.urut) ?? 'manual';
+  const bidang = Object.fromEntries(BIDANG_SARING.filter(kunci => kueri[kunci]).map(kunci => [kunci, kueri[kunci]!]));
+  return { status, cari: kueri.cari ?? '', urut, milikSaya: kueri.milik === '1', perluCek: kueri.perluCek === '1', bidang };
+}
+
+/** Kebalikan bacaSaring; nilai bawaan tidak ditulis supaya URL tetap pendek. */
+export function tulisSaring(saring: SaringDaftar): Record<string, string> {
+  const kueri: Record<string, string> = {};
+  if (saring.status !== 'semua') kueri.status = saring.status;
+  if (saring.cari) kueri.cari = saring.cari;
+  if (saring.urut !== 'manual') kueri.urut = saring.urut;
+  if (saring.milikSaya) kueri.milik = '1';
+  if (saring.perluCek) kueri.perluCek = '1';
+  for (const kunci of BIDANG_SARING) if (saring.bidang[kunci]) kueri[kunci] = saring.bidang[kunci]!;
+  return kueri;
+}
+
+export const adaSaringLanjut = (saring: SaringDaftar): boolean =>
+  saring.milikSaya || saring.perluCek || Object.values(saring.bidang).some(Boolean);
+
+/** Nilai satu bidang isi revisi terakhir sebagai teks ('' bila tidak ada). */
+export function nilaiIsi(entri: RingkasanEntri, kunci: string): string {
+  const nilai = (entri.revisiTerakhir?.isi as Record<string, unknown> | undefined)?.[kunci];
+  return typeof nilai === 'string' || typeof nilai === 'number' ? String(nilai) : '';
+}
+
+export function terapkanSaring(daftar: RingkasanEntri[], saring: SaringDaftar, userId: string): RingkasanEntri[] {
+  const hasil = saringDaftar(daftar, saring.status, saring.cari).filter(entri =>
+    (!saring.milikSaya || entri.revisiTerakhir?.dibuatOleh === userId)
+    && (!saring.perluCek || (entri.revisiTerakhir?.isi as { perluCek?: unknown } | undefined)?.perluCek === true)
+    && Object.entries(saring.bidang).every(([kunci, nilai]) => !nilai || nilaiIsi(entri, kunci) === nilai));
+  return urutkan(hasil, saring.urut);
+}
+
+const URUTAN_STATUS: Record<StatusTampil, number> = { dikembalikan: 0, draf: 1, 'terbit + draf': 2, diajukan: 3, terbit: 4, sampah: 5 };
+const pembandingJudul = new Intl.Collator('id', { numeric: true, sensitivity: 'base' });
+
+/** 'manual' = urutan dari database (sama dengan web); lainnya salinan terurut, stabil. */
+export function urutkan(daftar: RingkasanEntri[], urut: UrutanDaftar): RingkasanEntri[] {
+  const waktu = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatPada ?? '';
+  switch (urut) {
+    case 'manual': return daftar;
+    case 'diubah': return [...daftar].sort((a, b) => waktu(b).localeCompare(waktu(a)));
+    case 'judul': return [...daftar].sort((a, b) => pembandingJudul.compare(judulEntri(a), judulEntri(b)));
+    case 'status': return [...daftar].sort((a, b) => URUTAN_STATUS[statusTampil(a)] - URUTAN_STATUS[statusTampil(b)]);
+  }
+}
+
+/** Nilai berbeda satu bidang di seluruh daftar, terurut, untuk isi dropdown saring. */
+export function nilaiBerbeda(daftar: RingkasanEntri[], kunci: string): string[] {
+  return [...new Set(daftar.map(entri => nilaiIsi(entri, kunci)).filter(Boolean))].sort(pembandingJudul.compare);
+}
+
 export interface GrupModul { modul: RingkasanEntri | null; nomor: number | null; judul: string; materi: RingkasanEntri[] }
 
 /** Materi dikelompokkan per isi.modul di bawah modulnya (urut nomor). Nomor & judul modul diambil dari revisi terbitnya
@@ -107,6 +179,11 @@ export function indeksSeret(ids: readonly string[], aktif: string, tujuan: strin
   const ke = tujuan === null ? -1 : ids.indexOf(tujuan);
   return dari < 0 || ke < 0 || dari === ke ? null : [dari, ke];
 }
+
+const formatTanggal = new Intl.DateTimeFormat('id', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+/** "27 Sep 2026, 14.05" — untuk tooltip di samping waktu relatif. */
+export const tanggalLengkap = (iso: string): string => formatTanggal.format(new Date(iso));
 
 const SATUAN_WAKTU: [Intl.RelativeTimeFormatUnit, number][] = [['day', 86_400], ['hour', 3_600], ['minute', 60]];
 const formatWaktu = new Intl.RelativeTimeFormat('id', { numeric: 'auto' });

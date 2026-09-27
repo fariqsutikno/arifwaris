@@ -1,7 +1,7 @@
-// Tes daftar konten: tab status + jumlah, cari, grup modul pada menu materi, tab jenis pada menu bertab,
-// tombol buat baru per peran, kondisi kosong & galat.
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import { expect, test } from 'vitest';
+// Tes daftar konten: tab status + jumlah, cari, urut, saring tersimpan di URL, aksi massal, grup modul pada menu
+// materi, tab jenis pada menu bertab, tombol buat baru per peran, kondisi kosong & galat.
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
 import type { Peran } from '@waris/content';
 import { KonteksRepo } from '../repo';
@@ -20,10 +20,10 @@ async function siapkan() {
   return m;
 }
 
-function pasang(m: ReturnType<typeof buatMemori>, menu: KunciMenu, tab: IsiMenu, peran: Peran = 'admin') {
+function pasang(m: ReturnType<typeof buatMemori>, menu: KunciMenu, tab: IsiMenu, peran: Peran = 'admin', kueri?: Record<string, string>) {
   return render(
     <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u1', email: 'a@x.id' }, peran }}>
-      <LayarMenu menu={menu} tab={tab} />
+      <LayarMenu menu={menu} tab={tab} kueri={kueri} />
     </KonteksRepo.Provider>,
   );
 }
@@ -100,4 +100,68 @@ test('Sampah: entri yang dibuang hilang dari Semua, muncul di tab Sampah, Pulihk
   await screen.findByRole('tab', { name: 'Sampah 0' });
   pilihTab('Semua 2');
   expect(await screen.findByText('Siapa ashabah?')).toBeTruthy();
+});
+
+const judulBaris = () => screen.getAllByRole('link').filter(el => el.getAttribute('href')?.startsWith('#/entri/')).map(el => el.textContent);
+
+test('urutkan judul A–Z & saring tersimpan di URL; kueri awal dipulihkan', async () => {
+  const m = await siapkan();
+  const { unmount } = pasang(m, 'faq', 'faq');
+  await screen.findByText('Apa itu tirkah?');
+  fireEvent.change(screen.getByRole('combobox', { name: 'Urutkan' }), { target: { value: 'judul' } });
+  expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']);
+  pilihTab('Draf 1');
+  expect(location.hash).toBe('#/menu/faq/faq?status=draf&urut=judul');
+  unmount();
+  pasang(m, 'faq', 'faq', 'admin', { status: 'draf' });
+  await screen.findByText('Siapa ashabah?');
+  expect(screen.queryByText('Apa itu tirkah?')).toBeNull();
+  location.hash = '';
+});
+
+test('baris menampilkan info ringkas: kelompok & pembuat', async () => {
+  pasang(await siapkan(), 'faq', 'faq');
+  const baris = (await screen.findByText('Siapa ashabah?')).closest('div')!;
+  expect(within(baris).getByText(/Fikih · oleh Anda/)).toBeTruthy();
+});
+
+test('aksi massal: pilih semua → Ajukan hanya draf yang boleh diajukan', async () => {
+  const m = await siapkan();
+  pasang(m, 'faq', 'faq');
+  fireEvent.click(await screen.findByLabelText(/Pilih semua yang tampil/));
+  expect(screen.getByText('2 dipilih')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Ajukan (1)' }));
+  expect(await screen.findByText('1 revisi diajukan.')).toBeTruthy();
+  const faq = await m.konten.daftarEntri('faq');
+  expect(faq.find(e => e.slug === 'siapa-ashabah')!.revisiTerakhir!.status).toBe('diajukan');
+});
+
+test('aksi massal reviewer: Setujui setelah konfirmasi; yang gagal dilaporkan', async () => {
+  const m = await siapkan();
+  const [, kedua] = await m.konten.daftarEntri('faq');
+  await m.editorial.ajukan(kedua!.revisiTerakhir!.id);
+  m.aturPeranLangsung('u2', 'reviewer');
+  m.masukSebagai({ userId: 'u2', email: 'r@x.id' });
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  render(
+    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u2', email: 'r@x.id' }, peran: 'reviewer' }}>
+      <LayarMenu menu="faq" tab="faq" />
+    </KonteksRepo.Provider>,
+  );
+  fireEvent.click(await screen.findByLabelText('Pilih Siapa ashabah?'));
+  expect(screen.queryByRole('button', { name: /^Ajukan/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Setujui (1)' }));
+  await screen.findByText('1 revisi disetujui.');
+  expect((await m.konten.bacaTerbit({ jenis: 'faq' })).map(t => t.slug).sort()).toEqual(['apa-itu-tirkah', 'siapa-ashabah']);
+  vi.restoreAllMocks();
+});
+
+test('menu materi: tombol "Materi di modul ini" menaut ke entri baru dengan modul terisi', async () => {
+  const m = buatMemori({ refs: ['R05-1'], sesi: { userId: 'u1', email: 'a@x.id' }, peran: { u1: 'admin' } });
+  const id = await m.editorial.buatEntri('modul', '3', 30);
+  await m.editorial.buatDraf(id, 'modul', { nomor: 3, judul: 'Furudh', ringkas: 'r' }, []);
+  pasang(m, 'materi', 'materi');
+  const tautan = await screen.findByRole('link', { name: /Materi di modul ini/ });
+  expect(tautan.getAttribute('href')).toBe('#/baru/materi?modul=3');
+  await waitFor(() => expect(screen.getByRole('region', { name: 'Modul 3: Furudh' })).toBeTruthy());
 });
