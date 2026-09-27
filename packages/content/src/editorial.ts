@@ -29,6 +29,27 @@ export function transisiRevisi(p: Pelaku & { status: StatusRevisi; aksi: AksiEdi
 export const bolehSuntingDraf = (p: Pelaku & { status: StatusRevisi }): boolean =>
   p.peran !== null && p.peran !== 'reviewer' && p.status === 'draf' && milikSendiriAtauAdmin(p);
 
+/** Penghapusan entri (supabase/migrations/20260927000006_hapus_entri.sql): yang pernah terbit lewat pengajuan
+ * (revisi penghapusan yang direview), yang belum pernah terbit langsung dihapus permanen. Penulis hanya boleh
+ * menghapus langsung entri yang semua revisinya miliknya sendiri. */
+export type CaraHapusEntri = { ok: true; cara: 'ajukan' | 'langsung' } | { ok: false; galat: string };
+
+export function caraHapusEntri(p: {
+  peran: Peran | null; pelakuId: string; pernahTerbit: boolean; sudahDihapus: boolean;
+  hapusSedangDiajukan: boolean; pembuatRevisi: readonly string[];
+}): CaraHapusEntri {
+  if (p.peran !== 'admin' && p.peran !== 'penulis') return { ok: false, galat: 'perlu peran admin/penulis' };
+  if (p.pernahTerbit) {
+    if (p.sudahDihapus) return { ok: false, galat: 'entri sudah dihapus' };
+    if (p.hapusSedangDiajukan) return { ok: false, galat: 'penghapusan entri ini sudah diajukan' };
+    return { ok: true, cara: 'ajukan' };
+  }
+  if (p.peran === 'penulis' && p.pembuatRevisi.some(pembuat => pembuat !== p.pelakuId)) {
+    return { ok: false, galat: 'entri ini memuat revisi orang lain; hanya admin yang bisa menghapusnya' };
+  }
+  return { ok: true, cara: 'langsung' };
+}
+
 export function periksaRefs(jenis: JenisKonten, isi: unknown, refs: string[], refsDikenal: ReadonlySet<string>): string | null {
   const takDikenal = refs.filter(kode => !refsDikenal.has(kode));
   if (takDikenal.length > 0) return `ref tidak ada di KB: ${takDikenal.join(', ')}`;

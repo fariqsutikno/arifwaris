@@ -1,9 +1,11 @@
 // Editor entri: memuat entri (jenis, slug, revisi terakhir & terbit), menampilkan isi sebagai form per jenis (FormKonten,
 // tahap B) atau JSON mentah (tab JSON, semua peran) + PemilihRefs. Memutuskan boleh sunting lewat
-// bolehSuntingDraf (UI saja; database tetap penjaga), lalu menyimpan lewat repo.editorial (buatEntri/buatDraf/
-// ubahDraf/ajukan). Galat validasi (dariBentuk) maupun galat repo ditampilkan, tidak ditelan.
+// bolehSuntingDraf (UI saja; database tetap penjaga): draf sendiri disunting di tempat, entri terbit/dikembalikan
+// langsung bisa disunting dan disimpan sebagai draf baru (versi terbit tetap tampil sampai disetujui). Menyimpan
+// lewat repo.editorial (buatEntri/buatDraf/ubahDraf/ajukan) dan menghapus lewat caraHapusEntri (ajukanHapus bila
+// pernah terbit, hapusEntri bila belum). Galat validasi (dariBentuk) maupun galat repo ditampilkan, tidak ditelan.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { bacaIsi, bolehSuntingDraf, GLOSARIUM, keJson, periksaRefs, slug as buatSlug, type IsiKonten, type JenisKonten } from '@waris/content';
+import { bacaIsi, bolehSuntingDraf, caraHapusEntri, GLOSARIUM, keJson, periksaRefs, slug as buatSlug, type IsiKonten, type JenisKonten } from '@waris/content';
 import type { RingkasanRevisi } from '@waris/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -11,7 +13,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
-import { LABEL_ISI } from '../navigasi';
+import { LABEL_ISI, menuUntukJenis } from '../navigasi';
 import { dariNilaiForm, keNilaiForm, nilaiFormKosong, type HasilForm, type NilaiForm } from '../editor/nilaiForm';
 import { FormKonten, type OpsiRuntime } from './FormKonten';
 import { usePortal } from '../repo';
@@ -27,9 +29,10 @@ const FIELD_CALON_JUDUL = ['judul', 'pertanyaan', 'slug', 'id', 'kode', 'kunci',
 
 type Mode = { mode: 'baca' } | { mode: 'suntingDraf'; revisiId: string } | { mode: 'drafBaru' };
 // basis = revisi yang isinya dimuat ke form; terakhir = revisi terbaru (status & catatan review ditampilkan dari sini).
+// dihapus = revisi terbitnya revisi penghapusan; semuaRevisi dipakai caraHapusEntri (pembuat & pengajuan hapus).
 interface Muatan {
   jenis: JenisKonten; slug: string | null; entriId: string | null; basis: RingkasanRevisi | null; terakhir: RingkasanRevisi | null;
-  revisiTerbitId: string | null;
+  revisiTerbitId: string | null; dihapus: boolean; semuaRevisi: RingkasanRevisi[];
 }
 
 export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jenis: JenisKonten) => void } | { jenis: JenisKonten }) {
@@ -77,12 +80,16 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     const entri = semua.find(e => e.entriId === entriId);
     if (!entri) throw new Error(`entri ${entriId} tidak ditemukan`);
     const terakhir = entri.revisiTerakhir;
+    const semuaRevisi = await repo.konten.daftarRevisi(entriId);
     // Draf/diajukan/dikembalikan: isinya sendiri jadi basis (dikembalikan boleh didrafkan ulang dari isinya).
-    // Disetujui: basis = revisi yang sedang terbit (bisa berbeda bila pernah terbitkanUlang revisi lama).
+    // Disetujui: basis = revisi yang sedang terbit (bisa berbeda bila pernah terbitkanUlang revisi lama). Entri yang
+    // dihapus: basis = revisi penghapusan, isinya salinan versi terakhir, jadi menyuntingnya = memulihkan.
     const basis = entri.revisiTerbitId && terakhir?.status === 'disetujui'
-      ? (await repo.konten.daftarRevisi(entriId)).find(r => r.id === entri.revisiTerbitId) ?? terakhir
+      ? semuaRevisi.find(r => r.id === entri.revisiTerbitId) ?? terakhir
       : terakhir;
-    const muatan: Muatan = { jenis: entri.jenis, slug: entri.slug, entriId, basis, terakhir, revisiTerbitId: entri.revisiTerbitId };
+    const muatan: Muatan = {
+      jenis: entri.jenis, slug: entri.slug, entriId, basis, terakhir, revisiTerbitId: entri.revisiTerbitId, dihapus: entri.dihapus, semuaRevisi,
+    };
     return { muatan, bentuk: basis ? bentukDariRevisi(entri.jenis, basis) : bentukKosong(entri.jenis) };
   }
 
@@ -92,7 +99,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     if (basis?.status === 'draf' && bolehSuntingDraf({ peran, pelakuId: sesi.userId, pembuatId: basis.dibuatOleh, status: basis.status })) {
       return { mode: 'suntingDraf', revisiId: basis.id };
     }
-    return { mode: 'baca' };
+    // Terbit/dikembalikan: langsung bisa disunting; simpan = draf baru. Selama ada draf (orang lain) atau revisi yang
+    // sedang diajukan, entri dibaca saja supaya tidak ada dua suntingan bersaing.
+    const bolehDrafBaru = (peran === 'admin' || peran === 'penulis') && m.terakhir?.status !== 'draf' && m.terakhir?.status !== 'diajukan';
+    return bolehDrafBaru ? { mode: 'drafBaru' } : { mode: 'baca' };
   }
 
   // Isi dari tab aktif: form lewat dariNilaiForm, JSON lewat bacaIsi. Keduanya berakhir di Zod.
@@ -154,6 +164,27 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     }
   }
 
+  async function hapus(cara: 'ajukan' | 'langsung') {
+    if (!muatan?.entriId) return;
+    const tanya = cara === 'ajukan'
+      ? 'Ajukan penghapusan entri ini? Entri tetap tampil di web sampai reviewer menyetujui.'
+      : 'Hapus entri ini beserta semua drafnya? Entri belum pernah terbit, jadi langsung terhapus permanen.';
+    if (!window.confirm(tanya)) return;
+    setGalat(null);
+    try {
+      if (cara === 'ajukan') {
+        await repo.editorial.ajukanHapus(muatan.entriId);
+        setMuatUlang(n => n + 1);
+      } else {
+        await repo.editorial.hapusEntri(muatan.entriId);
+        const menu = menuUntukJenis(muatan.jenis);
+        location.hash = tulisRute({ layar: 'menu', menu: menu.kunci, tab: muatan.jenis });
+      }
+    } catch (e) {
+      setGalat(pesan(e));
+    }
+  }
+
   async function ajukan() {
     if (mode.mode !== 'suntingDraf') return;
     setGalat(null);
@@ -167,19 +198,33 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
 
   if (!muatan || !bentuk) return galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null;
   const bacaSaja = mode.mode === 'baca';
-  const bolehDrafBaru = bacaSaja && peran !== 'reviewer' && muatan.entriId && muatan.terakhir?.status !== 'draf' && muatan.terakhir?.status !== 'diajukan';
+  const tampilDiWeb = !!muatan.revisiTerbitId && !muatan.dihapus;
+  const caraHapus = muatan.entriId ? caraHapusEntri({
+    peran, pelakuId: sesi.userId, pernahTerbit: !!muatan.revisiTerbitId, sudahDihapus: muatan.dihapus,
+    hapusSedangDiajukan: muatan.semuaRevisi.some(r => r.hapus && r.status === 'diajukan'),
+    pembuatRevisi: muatan.semuaRevisi.map(r => r.dibuatOleh),
+  }) : null;
 
   return (
     <div className="space-y-4">
       <div>
         <p className="text-sm font-semibold text-muted-foreground">{LABEL_ISI[muatan.jenis]}</p>
         <h1 className="text-2xl font-bold break-words">{muatan.slug ?? 'Entri baru'}</h1>
-        {muatan.terakhir ? <p className="text-sm text-muted-foreground">Status: {muatan.terakhir.status}</p> : null}
+        {muatan.terakhir ? <p className="text-sm text-muted-foreground">{teksStatus(muatan)}</p> : null}
       </div>
       {muatan.terakhir?.catatanReview ? (
         <Alert><AlertTitle>Catatan review</AlertTitle><AlertDescription>{muatan.terakhir.catatanReview}</AlertDescription></Alert>
       ) : null}
       {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
+      {mode.mode === 'drafBaru' && muatan.entriId ? (
+        <p className="text-sm text-muted-foreground">
+          {tampilDiWeb
+            ? 'Suntingan disimpan sebagai draf baru; versi terbit tetap tampil di web sampai draf disetujui.'
+            : muatan.dihapus
+              ? 'Entri ini sudah dihapus dari web. Simpan & ajukan suntingan untuk memulihkannya.'
+              : 'Suntingan disimpan sebagai draf baru.'}
+        </p>
+      ) : null}
       <Card>
         <CardContent className="grid gap-4">
           <Tabs value={tab} onValueChange={gantiTab}>
@@ -202,8 +247,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       <div className="flex flex-wrap gap-2">
         {!bacaSaja ? <Button onClick={() => void simpan()}>Simpan draf</Button> : null}
         {mode.mode === 'suntingDraf' ? <Button variant="secondary" onClick={() => void ajukan()}>Ajukan</Button> : null}
-        {bolehDrafBaru ? <Button variant="secondary" onClick={() => setMode({ mode: 'drafBaru' })}>Buat draf baru dari versi ini</Button> : null}
         <Button variant="outline" onClick={() => setPratinjau(true)}>Pratinjau</Button>
+        {caraHapus?.ok ? (
+          <Button variant="destructive" className="ml-auto" onClick={() => void hapus(caraHapus.cara)}>
+            {caraHapus.cara === 'ajukan' ? 'Ajukan hapus' : 'Hapus entri'}
+          </Button>
+        ) : null}
       </div>
       {pratinjau ? <Pratinjauan jenis={muatan.jenis} slug={muatan.slug ?? 'pratinjau'} hitungIsi={isiSekarang} kunci={[bentuk, teksJson, tab]} saatTutup={() => setPratinjau(false)} /> : null}
       {muatan.entriId ? (
@@ -216,6 +265,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       ) : null}
     </div>
   );
+}
+
+function teksStatus(m: Muatan): string {
+  if (m.terakhir?.hapus && m.terakhir.status === 'diajukan') return 'Status: penghapusan diajukan (masih tampil di web sampai disetujui)';
+  if (m.dihapus && m.terakhir?.status === 'disetujui') return 'Status: dihapus (tidak tampil di web)';
+  return `Status: ${m.terakhir!.status}`;
 }
 
 function Bidang({ label, children }: { label: string; children: ReactNode }) {
@@ -238,7 +293,7 @@ function Pratinjauan({ jenis, slug, hitungIsi, kunci, saatTutup }: {
 
 function muatBaru(jenis: JenisKonten) {
   return {
-    muatan: { jenis, slug: null, entriId: null, basis: null, terakhir: null, revisiTerbitId: null } satisfies Muatan,
+    muatan: { jenis, slug: null, entriId: null, basis: null, terakhir: null, revisiTerbitId: null, dihapus: false, semuaRevisi: [] } satisfies Muatan,
     bentuk: bentukKosong(jenis),
   };
 }
@@ -279,7 +334,7 @@ async function muatOpsi(repo: ReturnType<typeof usePortal>['repo']): Promise<Ops
     const hasil = bacaIsi(jenis, isi);
     return hasil.ok ? hasil.isi : null;
   };
-  const modul = daftarModul.flatMap(e => {
+  const modul = daftarModul.filter(e => !e.dihapus).flatMap(e => {
     const isi = isiDari('modul', e.revisiTerakhir?.isi);
     return isi ? [{ nilai: String(isi.nomor), label: `${isi.nomor}. ${isi.judul}` }] : [];
   }).sort((a, b) => Number(a.nilai) - Number(b.nilai));

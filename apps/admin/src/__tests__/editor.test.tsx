@@ -1,7 +1,8 @@
 // Tes EditorEntri + PemilihRefs dengan repo memori: buat entri baru lewat form, galat bidang & refs wajib tampil,
-// tab JSON (bolak-balik, JSON rusak), ajukan draf sendiri lalu form jadi baca-saja, dan reviewer hanya bisa membaca.
+// tab JSON (bolak-balik, JSON rusak), ajukan draf sendiri lalu form jadi baca-saja, reviewer hanya bisa membaca,
+// entri terbit langsung bisa disunting (simpan = draf baru), dan hapus (lewat pengajuan / langsung bila belum terbit).
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
 import { keJson, type Peran } from '@waris/content';
 import { KonteksRepo } from '../repo';
@@ -160,4 +161,60 @@ test('reviewer membuka entri: baca-saja, tanpa tombol simpan', async () => {
   expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
   expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
+});
+
+async function terbitOlehAdmin(m: Memori) {
+  m.aturPeranLangsung('u-a', 'admin');
+  m.masukSebagai({ userId: 'u-a', email: 'a@x.id' });
+  const entriId = await m.editorial.buatEntri('faq', 'apa-itu-tirkah', 10);
+  const revisi = await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+  await m.editorial.ajukan(revisi);
+  await m.editorial.setujui(revisi);
+  m.masukSebagai(SESI_PENULIS);
+  return { entriId, revisi };
+}
+
+test('entri terbit: langsung bisa disunting, simpan → draf baru, versi terbit tetap', async () => {
+  const m = siapkan();
+  const { entriId, revisi } = await terbitOlehAdmin(m);
+  tampilkan(m, { entriId });
+  await screen.findByText(/versi terbit tetap tampil di web/);
+  expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
+  ketik('Pertanyaan', 'Apa itu tirkah, ya?');
+  simpan();
+  await screen.findByText('Status: draf');
+  const [entri] = await m.konten.daftarEntri('faq');
+  expect(entri).toMatchObject({ revisiTerbitId: revisi, revisiTerakhir: { status: 'draf', dibuatOleh: 'u-p' } });
+  expect((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.isi).toMatchObject({ pertanyaan: DAFTAR_FAQ_UJI[0]!.pertanyaan });
+  expect(screen.getByRole('button', { name: 'Ajukan' })).toBeTruthy();
+});
+
+test('entri terbit: Ajukan hapus → penghapusan diajukan, entri tetap terbit', async () => {
+  const m = siapkan();
+  const { entriId } = await terbitOlehAdmin(m);
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  tampilkan(m, { entriId });
+  fireEvent.click(await screen.findByRole('button', { name: 'Ajukan hapus' }));
+  await screen.findByText(/penghapusan diajukan/);
+  expect(screen.queryByRole('button', { name: 'Ajukan hapus' })).toBeNull();
+  expect(await m.editorial.antreanReview()).toMatchObject([{ hapus: true, status: 'diajukan' }]);
+  expect(await m.konten.bacaTerbit({ jenis: 'faq' })).toHaveLength(1);
+});
+
+test('entri belum terbit: Hapus entri → terhapus langsung', async () => {
+  const m = siapkan();
+  const entriId = await drafSendiri(m);
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  tampilkan(m, { entriId });
+  fireEvent.click(await screen.findByRole('button', { name: 'Hapus entri' }));
+  await waitFor(async () => expect(await m.konten.daftarEntri('faq')).toEqual([]));
+  expect(location.hash).toBe('#/menu/faq/faq');
+});
+
+test('reviewer tidak melihat tombol hapus', async () => {
+  const m = siapkan();
+  const { entriId } = await terbitOlehAdmin(m);
+  tampilkan(m, { entriId }, 'reviewer', 'u-r');
+  await screen.findByText('Status: disetujui');
+  expect(screen.queryByRole('button', { name: /hapus/i })).toBeNull();
 });

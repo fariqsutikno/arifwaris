@@ -3,7 +3,7 @@
 // lewat aturan murni di packages/content, supaya tes app tanpa jaringan tetap setia pada perilaku DB.
 // Isi disimpan dalam bentuk JSON (keJson) seperti di jsonb, lalu dibaca ulang lewat saringValid.
 import {
-  bolehSuntingDraf, keJson, periksaRefs, transisiRevisi, bacaIsi,
+  bolehSuntingDraf, caraHapusEntri, keJson, periksaRefs, transisiRevisi, bacaIsi,
   type AksiEditorial, type IsiKonten, type JenisKonten, type Peran, type StatusRevisi,
 } from '@waris/content';
 import type {
@@ -82,11 +82,13 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
   const terakhirDari = <T extends { id: string }>(daftar: T[]): T | null =>
     daftar.reduce<T | null>((teratas, baris) => (!teratas || nomorDari(baris.id) > nomorDari(teratas.id) ? baris : teratas), null);
 
+  const dihapus = (baris: EntriMemori) => !!baris.revisiTerbitId && revisi.get(baris.revisiTerbitId)!.hapus;
+
   const konten: RepositoriKonten = {
     async versiSekarang() { return versi; },
     async bacaTerbit(saring = {}) {
       const mentah = [...entri.values()]
-        .filter(baris => baris.revisiTerbitId && (!saring.jenis || baris.jenis === saring.jenis)
+        .filter(baris => baris.revisiTerbitId && !dihapus(baris) && (!saring.jenis || baris.jenis === saring.jenis)
           && (saring.sejakVersi === undefined || (baris.versiTerbit ?? 0) > saring.sejakVersi))
         .sort((a, b) => a.urutan - b.urutan)
         .map(baris => {
@@ -95,6 +97,9 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
         });
       return saringValid(mentah);
     },
+    async bacaDihapus(sejakVersi) {
+      return [...entri.values()].filter(baris => dihapus(baris) && (baris.versiTerbit ?? 0) > sejakVersi).map(baris => baris.id);
+    },
     async daftarRevisi(entriId) { return [...revisi.values()].filter(baris => baris.entriId === entriId); },
     // Tidak menyaring baris belum terbit menurut peran: RLS Postgres menyembunyikannya dari pengguna tanpa peran,
     // tapi gerbang portal (Portal.tsx) sudah menolak pengguna tanpa peran sebelum layar ini terpanggil.
@@ -102,7 +107,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       return [...entri.values()].filter(baris => jenis === undefined || baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
         .map((baris): RingkasanEntri => ({
           entriId: baris.id, jenis: baris.jenis, slug: baris.slug, urutan: baris.urutan, revisiTerbitId: baris.revisiTerbitId,
-          revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
+          dihapus: dihapus(baris), revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
         }));
     },
     async daftarRefs() { return [...refsDikenal].sort().map(kode => ({ kode, bab: Number(kode.slice(1, 3)) })); },
@@ -134,7 +139,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       ambil(entri, entriId, 'entri');
       const id = idBaru();
       revisi.set(id, {
-        id, entriId, status: 'draf', refs: [...refs], isi: periksaIsi(jenis, isi, refs), dibuatOleh: pelaku().pelakuId,
+        id, entriId, status: 'draf', hapus: false, refs: [...refs], isi: periksaIsi(jenis, isi, refs), dibuatOleh: pelaku().pelakuId,
         diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(), diperiksaPada: null,
       });
       return id;
@@ -164,7 +169,37 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
     // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
     async antreanReview() { return [...revisi.values()].filter(baris => baris.status === 'diajukan'); },
+    // [supabase/migrations/20260927000006_hapus_entri.sql] ajukan_hapus_entri & hapus_entri_belum_terbit.
+    async ajukanHapus(entriId) {
+      const terbit = revisi.get(periksaCaraHapus(entriId, 'ajukan').revisiTerbitId!)!;
+      const id = idBaru();
+      revisi.set(id, {
+        ...terbit, id, status: 'diajukan', hapus: true, refs: [...terbit.refs], dibuatOleh: pelaku().pelakuId,
+        diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(), diperiksaPada: null,
+      });
+      return id;
+    },
+    async hapusEntri(entriId) {
+      periksaCaraHapus(entriId, 'langsung');
+      for (const [id, baris] of revisi) if (baris.entriId === entriId) revisi.delete(id);
+      entri.delete(entriId);
+    },
   };
+
+  // Melempar bila pelaku tidak boleh menghapus entri ini dengan cara `diharapkan`.
+  function periksaCaraHapus(entriId: string, diharapkan: 'ajukan' | 'langsung'): EntriMemori {
+    const baris = ambil(entri, entriId, 'entri');
+    const milikEntri = [...revisi.values()].filter(r => r.entriId === entriId);
+    const hasil = caraHapusEntri({
+      ...pelaku(), pernahTerbit: !!baris.revisiTerbitId, sudahDihapus: dihapus(baris),
+      hapusSedangDiajukan: milikEntri.some(r => r.hapus && r.status === 'diajukan'), pembuatRevisi: milikEntri.map(r => r.dibuatOleh),
+    });
+    if (!hasil.ok) throw new Error(hasil.galat);
+    if (hasil.cara !== diharapkan) {
+      throw new Error(diharapkan === 'ajukan' ? 'entri belum terbit; hapus langsung tanpa pengajuan' : 'entri pernah terbit; penghapusan harus diajukan untuk direview');
+    }
+    return baris;
+  }
 
   const diksi: RepositoriDiksi = {
     async bacaTerbit(sejakVersi) {

@@ -13,9 +13,13 @@ export interface Snapshot { versi: number; konten: BarisTerbitMentah[]; diksi: D
 export const pilihAwal = (bawaan: Snapshot, cache: Snapshot | null): Snapshot =>
   cache && cache.versi > bawaan.versi ? cache : bawaan;
 
-export function gabungSnapshot(lama: Snapshot, versi: number, konten: BarisTerbitMentah[], diksi: DiksiTerbit[]): Snapshot {
+/** `dihapus` = entriId yang penghapusannya terbit sejak versi lama; dibuang dari cache. */
+export function gabungSnapshot(
+  lama: Snapshot, versi: number, konten: BarisTerbitMentah[], diksi: DiksiTerbit[], dihapus: readonly string[] = [],
+): Snapshot {
   const menurutEntri = new Map(lama.konten.map(baris => [baris.entriId, baris]));
   for (const baris of konten) menurutEntri.set(baris.entriId, baris);
+  for (const entriId of dihapus) menurutEntri.delete(entriId);
   const menurutKunci = new Map(lama.diksi.map(butir => [butir.kunci, butir]));
   for (const butir of diksi) menurutKunci.set(butir.kunci, butir);
   return { versi, konten: [...menurutEntri.values()], diksi: [...menurutKunci.values()] };
@@ -25,8 +29,10 @@ export async function sinkronkan(repo: { konten: RepositoriKonten; diksi: Reposi
   try {
     const versi = await repo.konten.versiSekarang();
     if (versi <= lokal.versi) return null;
-    const [konten, diksi] = await Promise.all([repo.konten.bacaTerbit({ sejakVersi: lokal.versi }), repo.diksi.bacaTerbit(lokal.versi)]);
-    return gabungSnapshot(lokal, versi, konten.map(keMentah), diksi);
+    const [konten, diksi, dihapus] = await Promise.all([
+      repo.konten.bacaTerbit({ sejakVersi: lokal.versi }), repo.diksi.bacaTerbit(lokal.versi), repo.konten.bacaDihapus(lokal.versi),
+    ]);
+    return gabungSnapshot(lokal, versi, konten.map(keMentah), diksi, dihapus);
   } catch (galat) {
     console.warn('sinkron konten gagal, tetap memakai versi lokal:', galat);
     return null;

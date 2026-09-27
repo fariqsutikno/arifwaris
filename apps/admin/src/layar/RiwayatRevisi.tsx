@@ -1,6 +1,6 @@
 // Riwayat revisi satu entri: daftar semua revisi (terbaru di atas) dengan status, pembuat, tanggal, catatan
 // review, dan diff terhadap revisi yang sedang terbit. Rollback (terbitkanUlang) hanya ditawarkan untuk revisi
-// berstatus disetujui yang bukan revisi terbit sekarang, mencerminkan penjaga SQL terbitkan_ulang_revisi
+// berstatus disetujui yang bukan revisi terbit sekarang (termasuk untuk memulihkan entri yang dihapus), mencerminkan penjaga SQL terbitkan_ulang_revisi
 // (peran reviewer/admin) — database tetap penjaga sebenarnya, tombol ini cuma sinyal UI.
 import { useEffect, useState } from 'react';
 import type { JenisKonten } from '@waris/content';
@@ -76,7 +76,8 @@ function BarisRiwayat(props: {
         <p className="text-sm">
           {sedangTerbit ? 'terbit' : revisi.status} · {revisi.dibuatOleh.slice(0, 8)} · {revisi.dibuatPada}
         </p>
-        {sedangTerbit ? <Badge>Terbit</Badge> : null}
+        {revisi.hapus ? <Badge variant="destructive">penghapusan</Badge> : null}
+        {sedangTerbit && !revisi.hapus ? <Badge>Terbit</Badge> : null}
         <span className="ml-auto flex gap-2">
           <Button variant="outline" size="sm" onClick={() => setTampilDiff(v => !v)}>Lihat beda dengan terbit</Button>
           {bolehTombolRollback ? <Button size="sm" onClick={() => void rollback()}>Terbitkan ulang</Button> : null}

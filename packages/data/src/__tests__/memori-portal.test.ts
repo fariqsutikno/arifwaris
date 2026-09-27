@@ -1,7 +1,7 @@
 // Tes portal admin di memori: daftar entri/kunci untuk kolom status, antrean review, refs, dan peran berbasis email.
 import { expect, test } from 'vitest';
 import { buatMemori } from '../index.js';
-import { SOAL_HITUNG_UJI } from './contoh.js';
+import { DAFTAR_FAQ_UJI, SOAL_HITUNG_UJI } from './contoh.js';
 
 const ADMIN = { userId: 'u-admin', email: 'admin@x.id' };
 function siapkan() {
@@ -98,4 +98,36 @@ test('aturUrutan: reviewer, campur jenis, ganda, kosong ditolak', async () => {
   await expect(m.editorial.aturUrutan([])).rejects.toThrow('kosong');
   m.aturPeranLangsung('u-admin', 'reviewer');
   await expect(m.editorial.aturUrutan([a])).rejects.toThrow('perlu peran');
+});
+
+test('hapus entri terbit lewat pengajuan: tetap terbit sampai disetujui, lalu hilang dari bacaTerbit', async () => {
+  const m = siapkan();
+  const id = await m.editorial.buatEntri('soal_hitung', SOAL_HITUNG_UJI.kode, 10);
+  const r1 = await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await m.editorial.ajukan(r1);
+  await m.editorial.setujui(r1);
+  await expect(m.editorial.hapusEntri(id)).rejects.toThrow('penghapusan harus diajukan');
+  const hapus = await m.editorial.ajukanHapus(id);
+  await expect(m.editorial.ajukanHapus(id)).rejects.toThrow('sudah diajukan');
+  expect(await m.editorial.antreanReview()).toMatchObject([{ id: hapus, hapus: true, status: 'diajukan', refs: ['R09-7'] }]);
+  expect(await m.konten.bacaTerbit()).toHaveLength(1);
+  await m.editorial.setujui(hapus);
+  expect(await m.konten.bacaTerbit()).toEqual([]);
+  expect(await m.konten.bacaDihapus(0)).toEqual([id]);
+  expect((await m.konten.daftarEntri())[0]).toMatchObject({ entriId: id, revisiTerbitId: hapus, dihapus: true });
+  await expect(m.editorial.ajukanHapus(id)).rejects.toThrow('sudah dihapus');
+});
+
+test('hapus entri belum terbit: langsung; penulis tidak bisa menghapus entri yang memuat revisi orang lain', async () => {
+  const m = siapkan();
+  m.aturPeranLangsung('u-pen', 'penulis');
+  const id = await m.editorial.buatEntri('faq', 'f', 10);
+  await m.editorial.buatDraf(id, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+  await expect(m.editorial.ajukanHapus(id)).rejects.toThrow('belum terbit');
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  await expect(m.editorial.hapusEntri(id)).rejects.toThrow('revisi orang lain');
+  m.masukSebagai(ADMIN);
+  await m.editorial.hapusEntri(id);
+  expect(await m.konten.daftarEntri()).toEqual([]);
+  expect(await m.konten.daftarRevisi(id)).toEqual([]);
 });

@@ -1,6 +1,6 @@
 // packages/content/src/__tests__/editorial.test.ts
 import { describe, expect, test } from 'vitest';
-import { bolehSuntingDraf, periksaRefs, transisiRevisi } from '../index.js';
+import { bolehSuntingDraf, caraHapusEntri, periksaRefs, transisiRevisi } from '../index.js';
 
 const dasar = { pelakuId: 'a', pembuatId: 'a' } as const;
 
@@ -63,5 +63,27 @@ describe('periksa refs', () => {
   });
   test('ref tak dikenal ditolak dan disebut', () => {
     expect(periksaRefs('faq', {}, ['R09-7', 'R99-1'], dikenal)).toMatch(/R99-1/);
+  });
+});
+
+describe('cara hapus entri', () => {
+  const entri = { pelakuId: 'p', pernahTerbit: true, sudahDihapus: false, hapusSedangDiajukan: false, pembuatRevisi: ['p'] } as const;
+  test('entri terbit dihapus lewat pengajuan, oleh penulis maupun admin', () => {
+    expect(caraHapusEntri({ ...entri, peran: 'penulis' })).toEqual({ ok: true, cara: 'ajukan' });
+    expect(caraHapusEntri({ ...entri, peran: 'admin', pembuatRevisi: ['lain'] })).toEqual({ ok: true, cara: 'ajukan' });
+  });
+  test('reviewer dan tanpa peran tidak bisa menghapus', () => {
+    expect(caraHapusEntri({ ...entri, peran: 'reviewer' }).ok).toBe(false);
+    expect(caraHapusEntri({ ...entri, peran: null }).ok).toBe(false);
+  });
+  test('entri yang sudah dihapus atau sedang diajukan hapus ditolak', () => {
+    expect(caraHapusEntri({ ...entri, peran: 'penulis', sudahDihapus: true })).toEqual({ ok: false, galat: 'entri sudah dihapus' });
+    expect(caraHapusEntri({ ...entri, peran: 'penulis', hapusSedangDiajukan: true }).ok).toBe(false);
+  });
+  test('entri belum terbit dihapus langsung; penulis hanya bila semua revisinya milik sendiri', () => {
+    const belumTerbit = { ...entri, pernahTerbit: false };
+    expect(caraHapusEntri({ ...belumTerbit, peran: 'penulis' })).toEqual({ ok: true, cara: 'langsung' });
+    expect(caraHapusEntri({ ...belumTerbit, peran: 'penulis', pembuatRevisi: ['p', 'lain'] }).ok).toBe(false);
+    expect(caraHapusEntri({ ...belumTerbit, peran: 'admin', pembuatRevisi: ['lain'] })).toEqual({ ok: true, cara: 'langsung' });
   });
 });

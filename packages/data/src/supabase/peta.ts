@@ -9,7 +9,7 @@ import type {
 type Baris = Record<string, any>;
 
 export const keRevisi = (baris: Baris): RingkasanRevisi => ({
-  id: baris.id, entriId: baris.entri_id, status: baris.status, refs: baris.refs, isi: baris.isi, dibuatOleh: baris.dibuat_oleh,
+  id: baris.id, entriId: baris.entri_id, status: baris.status, hapus: baris.hapus ?? false, refs: baris.refs, isi: baris.isi, dibuatOleh: baris.dibuat_oleh,
   diperiksaOleh: baris.diperiksa_oleh, catatanReview: baris.catatan_review, dibuatPada: baris.dibuat_pada, diperiksaPada: baris.diperiksa_pada,
 });
 
@@ -32,10 +32,14 @@ const terakhirDari = <T extends { dibuatPada: string }>(daftar: T[]): T | null =
   daftar.reduce<T | null>((teratas, r) => (!teratas || r.dibuatPada > teratas.dibuatPada ? r : teratas), null);
 
 /** Baris entri_konten dengan relasi `revisi!revisi_entri_id_fkey(*)` (semua revisi entri itu). */
-export const keRingkasanEntri = (baris: Baris): RingkasanEntri => ({
-  entriId: baris.id, jenis: baris.jenis as JenisKonten, slug: baris.slug, urutan: baris.urutan,
-  revisiTerbitId: baris.revisi_terbit_id, revisiTerakhir: terakhirDari((baris.revisi as Baris[]).map(keRevisi)),
-});
+export const keRingkasanEntri = (baris: Baris): RingkasanEntri => {
+  const semuaRevisi = (baris.revisi as Baris[]).map(keRevisi);
+  return {
+    entriId: baris.id, jenis: baris.jenis as JenisKonten, slug: baris.slug, urutan: baris.urutan,
+    revisiTerbitId: baris.revisi_terbit_id, dihapus: semuaRevisi.some(r => r.id === baris.revisi_terbit_id && r.hapus),
+    revisiTerakhir: terakhirDari(semuaRevisi),
+  };
+};
 
 /** Baris diksi dengan relasi terbit (`RELASI_TERBIT_DIKSI`) & relasi `revisi_diksi!revisi_diksi_kunci_fkey(*)` (semua revisi). */
 export const keRingkasanKunciDiksi = (baris: Baris): RingkasanKunciDiksi => ({

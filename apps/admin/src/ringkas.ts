@@ -2,22 +2,25 @@
 // pindah urutan, dan waktu relatif. Menerima RingkasanEntri dari repo.konten.daftarEntri; komponen hanya menampilkan.
 import type { RingkasanEntri } from '@waris/data';
 
-export type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf';
-export type TabStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit';
-export const TAB_STATUS: readonly TabStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit'];
+export type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf' | 'dihapus';
+export type TabStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit' | 'dihapus';
+export const TAB_STATUS: readonly TabStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit', 'dihapus'];
 export const LABEL_TAB: Record<TabStatus, string> = {
-  semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit',
+  semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit', dihapus: 'Dihapus',
 };
 export const BATAS_BERANDA = 8;
 const FIELD_JUDUL = ['judul', 'pertanyaan', 'istilahId', 'kunci', 'id', 'kode'] as const;
 
 /** Entri bisa punya revisi terbit dan draf baru sekaligus ("terbit + draf"); revisi terakhir yang diajukan/
- * dikembalikan di atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). */
+ * dikembalikan di atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). Entri yang
+ * penghapusannya terbit diperlakukan seperti belum terbit: "dihapus", atau status draf pemulihannya. */
 export function statusTampil(entri: RingkasanEntri): StatusTampil {
-  const { revisiTerbitId, revisiTerakhir } = entri;
-  if (!revisiTerakhir) return revisiTerbitId ? 'terbit' : 'draf';
-  if (revisiTerbitId && revisiTerakhir.id === revisiTerbitId) return 'terbit';
-  if (revisiTerbitId && revisiTerakhir.status === 'draf') return 'terbit + draf';
+  const { revisiTerakhir } = entri;
+  const tampilDiWeb = !!entri.revisiTerbitId && !entri.dihapus;
+  if (!revisiTerakhir) return tampilDiWeb ? 'terbit' : 'draf';
+  // Disetujui tapi bukan revisi terbit = sesudah rollback; yang menentukan tetap apa yang sedang terbit.
+  if (revisiTerakhir.status === 'disetujui') return entri.dihapus ? 'dihapus' : 'terbit';
+  if (tampilDiWeb && revisiTerakhir.status === 'draf') return 'terbit + draf';
   if (revisiTerakhir.status === 'diajukan') return 'diajukan';
   if (revisiTerakhir.status === 'draf') return 'draf';
   return 'dikembalikan';
@@ -81,7 +84,7 @@ export function ringkasBeranda(semua: RingkasanEntri[], userId: string, antreanD
     drafSaya: drafSaya.length,
     menungguReview: diajukan.length + antreanDiksi,
     dikembalikanKeSaya: dikembalikan.length,
-    terbit: semua.filter(entri => entri.revisiTerbitId).length,
+    terbit: semua.filter(entri => entri.revisiTerbitId && !entri.dihapus).length,
     lanjutkan: [...dikembalikan, ...drafSaya].sort((a, b) => waktu(b).localeCompare(waktu(a))).slice(0, BATAS_BERANDA),
     antreanTertua: [...diajukan].sort((a, b) => waktu(a).localeCompare(waktu(b))).slice(0, BATAS_BERANDA),
   };

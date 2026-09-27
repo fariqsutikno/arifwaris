@@ -12,7 +12,7 @@ import {
   keRiwayat, keTerbitMentah,
 } from './peta.js';
 
-const RELASI_TERBIT = 'revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(id, isi, refs)';
+const RELASI_TERBIT = 'revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(id, isi, refs, hapus)';
 const RELASI_TERBIT_DIKSI = 'revisi_terbit:revisi_diksi!diksi_revisi_terbit_id_fkey(id_teks, ar_teks)';
 
 export function buatRepositoriSupabase(klien: SupabaseClient) {
@@ -44,7 +44,13 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
         .not('revisi_terbit_id', 'is', null).order('urutan');
       if (saring.jenis) kueri = kueri.eq('jenis', saring.jenis);
       if (saring.sejakVersi !== undefined) kueri = kueri.gt('versi_terbit', saring.sejakVersi);
-      return saringValid((await hasil(kueri) as any[]).map(keTerbitMentah));
+      return saringValid((await hasil(kueri) as any[]).filter(baris => !baris.revisi_terbit.hapus).map(keTerbitMentah));
+    },
+    async bacaDihapus(sejakVersi) {
+      // Penanda hapus sedikit; saring di klien supaya tidak bergantung pada filter relasi PostgREST.
+      const baris = await hasil(klien.from('entri_konten').select('id, revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(hapus)')
+        .not('revisi_terbit_id', 'is', null).gt('versi_terbit', sejakVersi)) as any[];
+      return baris.filter(b => b.revisi_terbit.hapus).map(b => b.id as string);
     },
     async daftarRevisi(entriId) {
       return (await hasil(klien.from('revisi').select('*').eq('entri_id', entriId).order('dibuat_pada')) as any[]).map(keRevisi);
@@ -76,6 +82,8 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     setujui: revisiId => rpc('setujui_revisi', { p_id: revisiId }),
     kembalikan: (revisiId, catatan) => rpc('kembalikan_revisi', { p_id: revisiId, p_catatan: catatan }),
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi', { p_id: revisiId }),
+    async ajukanHapus(entriId) { return await hasil(klien.rpc('ajukan_hapus_entri', { p_entri: entriId })) as string; },
+    hapusEntri: entriId => rpc('hapus_entri_belum_terbit', { p_entri: entriId }),
     async antreanReview() {
       return (await hasil(klien.from('revisi').select('*').eq('status', 'diajukan').order('dibuat_pada')) as any[]).map(keRevisi);
     },

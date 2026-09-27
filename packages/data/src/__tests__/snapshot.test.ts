@@ -50,3 +50,21 @@ describe('sinkronkan', () => {
     expect(peringatan).toHaveBeenCalled();
   });
 });
+
+describe('sinkronkan penghapusan', () => {
+  test('entri yang penghapusannya disetujui dibuang dari cache; rollback memunculkannya lagi', async () => {
+    const memori = buatMemori({ sesi: { userId: 'x', email: 'x' }, peran: { x: 'admin' } });
+    const entri = await memori.editorial.buatEntri('kitab', 'k', 0);
+    const revisi = await memori.editorial.buatDraf(entri, 'kitab', { judul: 'K' }, []);
+    await memori.editorial.ajukan(revisi);
+    await memori.editorial.setujui(revisi);
+    const awal = (await sinkronkan(memori, kosong))!;
+    const hapus = await memori.editorial.ajukanHapus(entri);
+    expect(await sinkronkan(memori, awal)).toBeNull();
+    await memori.editorial.setujui(hapus);
+    const setelahHapus = (await sinkronkan(memori, awal))!;
+    expect(setelahHapus.konten).toEqual([]);
+    await memori.editorial.terbitkanUlang(revisi);
+    expect((await sinkronkan(memori, setelahHapus))!.konten.map(b => b.slug)).toEqual(['k']);
+  });
+});

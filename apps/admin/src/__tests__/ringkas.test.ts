@@ -1,24 +1,24 @@
 import { expect, test } from 'vitest';
 import type { RingkasanEntri, RingkasanRevisi, } from '@waris/data';
 import {
-  indeksSeret, jumlahPerTab, kelompokkanPerModul, pindahkan, ringkasBeranda, saringDaftar, waktuRelatif,
+  indeksSeret, jumlahPerTab, kelompokkanPerModul, pindahkan, ringkasBeranda, saringDaftar, statusTampil, waktuRelatif,
 } from '../ringkas';
 
 function entri(id: string, sisa: { status?: RingkasanRevisi['status'] | null; terbit?: boolean; oleh?: string; isi?: unknown;
   refs?: string[]; pada?: string; catatan?: string } = {}): RingkasanEntri {
   const revisiTerakhir = sisa.status === null ? null : {
-    id: `r-${id}`, entriId: id, status: sisa.status ?? 'draf', refs: sisa.refs ?? [], isi: sisa.isi ?? {},
+    id: `r-${id}`, entriId: id, status: sisa.status ?? 'draf', hapus: false, refs: sisa.refs ?? [], isi: sisa.isi ?? {},
     dibuatOleh: sisa.oleh ?? 'u1', diperiksaOleh: null, catatanReview: sisa.catatan ?? null,
     dibuatPada: sisa.pada ?? '2026-09-27T00:00:00.000Z', diperiksaPada: null,
   } satisfies RingkasanRevisi;
   const revisiTerbitId = sisa.terbit ? (sisa.status === 'disetujui' ? `r-${id}` : `lama-${id}`) : null;
-  return { entriId: id, jenis: 'faq', slug: id, urutan: 0, revisiTerbitId, revisiTerakhir };
+  return { entriId: id, jenis: 'faq', slug: id, urutan: 0, revisiTerbitId, dihapus: false, revisiTerakhir };
 }
 
 test('jumlahPerTab: terbit + draf dihitung di Draf dan Terbit', () => {
   const daftar = [entri('a', { status: 'disetujui', terbit: true }), entri('b', { status: 'draf', terbit: true }),
     entri('c', { status: 'diajukan' }), entri('d', { status: 'dikembalikan' })];
-  expect(jumlahPerTab(daftar)).toEqual({ semua: 4, draf: 1, diajukan: 1, dikembalikan: 1, terbit: 2 });
+  expect(jumlahPerTab(daftar)).toEqual({ semua: 4, draf: 1, diajukan: 1, dikembalikan: 1, terbit: 2, dihapus: 0 });
 });
 
 test('saringDaftar: cari judul, slug, atau ref tanpa beda huruf besar', () => {
@@ -86,4 +86,14 @@ test('indeksSeret: posisi asal & tujuan, null bila tak berpindah', () => {
   expect(indeksSeret(['a', 'b'], 'a', 'a')).toBeNull();
   expect(indeksSeret(['a', 'b'], 'a', null)).toBeNull();
   expect(indeksSeret(['a', 'b'], 'a', 'x')).toBeNull();
+});
+
+test('statusTampil: entri dihapus, draf pemulihannya, dan sesudah rollback', () => {
+  const dihapus = { ...entri('a', { status: 'disetujui', terbit: true }), dihapus: true };
+  expect(statusTampil(dihapus)).toBe('dihapus');
+  expect(statusTampil({ ...entri('b', { status: 'draf', terbit: true }), dihapus: true })).toBe('draf');
+  // Rollback sesudah hapus: revisi terakhir (penghapusan) disetujui tapi yang terbit revisi lama.
+  expect(statusTampil({ ...entri('d', { status: 'disetujui' }), revisiTerbitId: 'lama-d' })).toBe('terbit');
+  expect(ringkasBeranda([dihapus], 'u1').terbit).toBe(0);
+  expect(jumlahPerTab([dihapus]).dihapus).toBe(1);
 });
