@@ -10,6 +10,7 @@ import { KonteksRepo, usePortal, type RepoPortal } from './repo';
 import { bacaRute, type Rute } from './rute';
 import { DaftarKonten } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
+import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
 import { EditorDiksi } from './layar/EditorDiksi';
 import { KelolaPeran } from './layar/KelolaPeran';
@@ -77,5 +78,5 @@ function IsiRute({ rute }: { rute: Rute }) {
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
   if (rute.layar === 'review') return <AntreanReview />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
-  return <p>Segera</p>;
+  return <Beranda />;
 }
