@@ -4,7 +4,8 @@
 import type { JenisKonten } from '@waris/content';
 import { AppWindow, BookOpen, Calculator, CircleHelp, GraduationCap, Library, ListChecks, MessagesSquare, type LucideIcon } from 'lucide-react';
 
-export type IsiMenu = JenisKonten | 'diksi';
+/** 'diksi' & 'layar' (sunting teks di layar) bukan jenis konten, tapi tab menu Teks aplikasi. */
+export type IsiMenu = JenisKonten | 'diksi' | 'layar';
 export type KunciMenu = 'materi' | 'soal_kuis' | 'soal_hitung' | 'tanya_jawab' | 'faq' | 'pustaka' | 'kamus' | 'aplikasi';
 export type GrupMenu = 'Belajar' | 'Bank soal' | 'Tanya jawab' | 'Pustaka' | 'Aplikasi';
 export interface Menu { kunci: KunciMenu; label: string; grup: GrupMenu; ikon: LucideIcon; isi: readonly IsiMenu[] }
@@ -17,13 +18,13 @@ export const MENU_PORTAL: readonly Menu[] = [
   { kunci: 'faq', label: 'FAQ', grup: 'Tanya jawab', ikon: CircleHelp, isi: ['faq'] },
   { kunci: 'pustaka', label: 'Kitab & syahid', grup: 'Pustaka', ikon: Library, isi: ['kitab', 'syahid'] },
   { kunci: 'kamus', label: 'Glosarium & ahwal', grup: 'Pustaka', ikon: BookOpen, isi: ['glosarium_ar', 'ahwal'] },
-  { kunci: 'aplikasi', label: 'Teks aplikasi', grup: 'Aplikasi', ikon: AppWindow, isi: ['teks_edukasi', 'diksi', 'cheatsheet'] },
+  { kunci: 'aplikasi', label: 'Teks aplikasi', grup: 'Aplikasi', ikon: AppWindow, isi: ['layar', 'teks_edukasi', 'diksi', 'cheatsheet'] },
 ];
 
 export const LABEL_ISI: Record<IsiMenu, string> = {
   modul: 'Modul', materi: 'Materi', soal_kuis: 'Soal kuis', soal_hitung: 'Soal hitung', tanya_jawab: 'Kasus tanya jawab',
   faq: 'FAQ', kitab: 'Kitab', syahid: 'Syahid', glosarium_ar: 'Glosarium', ahwal: 'Ahwal', teks_edukasi: 'Teks edukasi',
-  cheatsheet: 'Cheatsheet', diksi: 'Diksi',
+  cheatsheet: 'Cheatsheet', diksi: 'Diksi', layar: 'Sunting di layar',
 };
 
 export const menuDari = (kunci: string): Menu | undefined => MENU_PORTAL.find(menu => menu.kunci === kunci);

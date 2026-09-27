@@ -13,7 +13,7 @@ test('hash kosong / tak dikenal / jenis tak sah → beranda', () => {
   expect(bacaRute('#/menu/bukan')).toEqual({ layar: 'beranda' });
 });
 test('menu tanpa tab / tab bukan miliknya → tab bawaan', () => {
-  expect(bacaRute('#/menu/aplikasi')).toEqual({ layar: 'menu', menu: 'aplikasi', tab: 'teks_edukasi' });
+  expect(bacaRute('#/menu/aplikasi')).toEqual({ layar: 'menu', menu: 'aplikasi', tab: 'layar' });
   expect(bacaRute('#/menu/pustaka/faq')).toEqual({ layar: 'menu', menu: 'pustaka', tab: 'kitab' });
 });
 test('kueri saring pada menu & isian awal entri baru ikut bolak-balik', () => {

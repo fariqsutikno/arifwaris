@@ -36,6 +36,7 @@ import { useNamaTim } from '../hooks/useNamaTim';
 import { tulisRute, type Kueri } from '../rute';
 import { ChipStatus, PesanGalat } from './Beranda';
 import { EditorDiksi } from './EditorDiksi';
+import { EditorTeksAplikasi } from './EditorTeksAplikasi';
 import { pesanGalat } from '../pesanGalat';
 
 // Bidang isi yang bisa disaring per jenis; sisanya hanya status/cari/milik saya.
@@ -50,7 +51,7 @@ export function LayarMenu({ menu: kunci, tab, kueri }: { menu: KunciMenu; tab: I
   const menu = menuDari(kunci)!;
   const bertab = menu.isi.length > 1 && kunci !== 'materi';
   // Teks edukasi & diksi berkunci tetap dari kode aplikasi: hanya disunting, tidak dibuat dari portal.
-  const jenisBaru = kunci === 'materi' ? (['materi', 'modul'] as const) : tab === 'diksi' || tab === 'teks_edukasi' ? [] : [tab];
+  const jenisBaru = kunci === 'materi' ? (['materi', 'modul'] as const) : tab === 'diksi' || tab === 'layar' || tab === 'teks_edukasi' ? [] : [tab];
   // Saring ditulis ke URL tanpa hashchange: tautan bisa dibagikan & kembali dari editor memulihkan saring.
   const simpanSaringKeUrl = (saring: SaringDaftar) =>
     history.replaceState(null, '', tulisRute({ layar: 'menu', menu: kunci, tab, kueri: tulisSaring(saring) }));
@@ -79,7 +80,7 @@ export function LayarMenu({ menu: kunci, tab, kueri }: { menu: KunciMenu; tab: I
           ))}
         </nav>
       ) : null}
-      {tab === 'diksi'
+      {tab === 'layar' ? <EditorTeksAplikasi /> : tab === 'diksi'
         ? <EditorDiksi />
         : <DaftarKonten key={tab} jenis={tab} menuMateri={kunci === 'materi'} saringAwal={bacaSaring(kueri)} saatSaring={simpanSaringKeUrl} />}
     </div>
