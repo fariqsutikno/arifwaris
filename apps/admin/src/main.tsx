@@ -2,6 +2,7 @@
 // punya snapshot bawaan). Ada env → repo Supabase (sesi dipersist bawaan supabase-js) diteruskan ke <Portal/>.
 import '@waris/web/gaya/token.css';
 import '@waris/web/gaya/komponen.css';
+import './admin.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createClient } from '@supabase/supabase-js';

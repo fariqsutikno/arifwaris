@@ -50,8 +50,9 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return (await hasil(klien.from('revisi').select('*').eq('entri_id', entriId).order('dibuat_pada')) as any[]).map(keRevisi);
     },
     async daftarEntri(jenis) {
-      const kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)')
-        .eq('jenis', jenis).order('urutan').order('slug');
+      let kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)');
+      if (jenis !== undefined) kueri = kueri.eq('jenis', jenis);
+      kueri = kueri.order('urutan').order('slug');
       return (await hasil(kueri) as any[]).map(keRingkasanEntri);
     },
     async daftarRefs() { return (await hasil(klien.from('daftar_refs').select('kode, bab').order('kode'))) as { kode: string; bab: number }[]; },
@@ -62,6 +63,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       const baris = await hasil(klien.from('entri_konten').insert({ jenis, slug, urutan }).select('id').single());
       return (baris as { id: string }).id;
     },
+    aturUrutan: entriIds => rpc('atur_urutan', { p_entri: entriIds }),
     async buatDraf(entriId, jenis, isi, refs) {
       const baris = await hasil(klien.from('revisi').insert({ entri_id: entriId, isi: isiSah(jenis, isi), refs }).select('id').single());
       return (baris as { id: string }).id;
@@ -125,12 +127,17 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
         benar: baris.benar, jumlah_coba: baris.jumlahCoba, diubah_pada: baris.diubahPada,
       }));
     },
+    async hapusSemuaProgresLatihan() { await hasil(klien.from('progres_latihan').delete().eq('user_id', await userId())); },
     async bacaPreferensi() {
       const baris = await hasil(klien.from('preferensi').select('*').maybeSingle()) as any;
       return baris ? { isi: baris.isi, diubahPada: baris.diubah_pada } : null;
     },
     async simpanPreferensi(baris) {
       await hasil(klien.from('preferensi').upsert({ user_id: await userId(), isi: baris.isi, diubah_pada: baris.diubahPada }));
+    },
+    async catatKegiatan(baris) {
+      await hasil(klien.from('log_kegiatan').upsert(
+        { id: baris.id, jenis: baris.jenis, slug: baris.slug, benar: baris.benar }, { onConflict: 'id', ignoreDuplicates: true }));
     },
   };
 

@@ -29,12 +29,15 @@ export interface RepositoriKonten {
   /** Hanya revisi terbit; isi tidak valid dibuang (console.warn), tidak melempar. */
   bacaTerbit(saring?: { jenis?: JenisKonten; sejakVersi?: number }): Promise<KontenTerbit[]>;
   daftarRevisi(entriId: string): Promise<RingkasanRevisi[]>;
-  /** Untuk portal admin: semua entri satu jenis, urut `urutan` lalu slug, dengan revisi terakhir & terbit. */
-  daftarEntri(jenis: JenisKonten): Promise<RingkasanEntri[]>;
+  /** Untuk portal admin: entri satu jenis (tanpa jenis = semua jenis, satu kueri), urut `urutan` lalu slug,
+   * dengan revisi terakhir & terbit. */
+  daftarEntri(jenis?: JenisKonten): Promise<RingkasanEntri[]>;
   daftarRefs(): Promise<{ kode: string; bab: number }[]>;
 }
 export interface RepositoriEditorial {
   buatEntri(jenis: JenisKonten, slug: string, urutan: number): Promise<string>;
+  /** Seret di portal: urutan = posisi * 10, tanpa revisi; semua id satu jenis. admin/penulis. */
+  aturUrutan(entriIds: string[]): Promise<void>;
   /** Validasi isi (Zod) & refs sebelum simpan; melempar Error berpesan Indonesia bila tidak sah. */
   buatDraf<J extends JenisKonten>(entriId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<string>;
   ubahDraf<J extends JenisKonten>(revisiId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<void>;
@@ -64,6 +67,8 @@ export interface ProgresLatihan {
   soalSlug: string; jenis: 'kuis' | 'hitung'; jawabanTerakhir: unknown; benar: boolean; jumlahCoba: number; diubahPada: string;
 }
 export interface Preferensi { isi: Record<string, unknown>; diubahPada: string }
+/** Satu kegiatan belajar selesai (spec akun: dasar streak tahap 5). `id` dibuat klien supaya kirim ulang tidak dobel. */
+export interface Kegiatan { id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null }
 
 /** Semua operasi milik pengguna yang sedang masuk; melempar 'belum masuk' bila tanpa sesi. */
 export interface RepositoriPengguna {
@@ -74,8 +79,11 @@ export interface RepositoriPengguna {
   simpanProgresBelajar(progres: ProgresBelajar): Promise<void>;
   bacaProgresLatihan(): Promise<ProgresLatihan[]>;
   simpanProgresLatihan(progres: ProgresLatihan): Promise<void>;
+  /** Reset progres: hapus semua progres latihan milik pengguna. */
+  hapusSemuaProgresLatihan(): Promise<void>;
   bacaPreferensi(): Promise<Preferensi | null>;
   simpanPreferensi(preferensi: Preferensi): Promise<void>;
+  catatKegiatan(kegiatan: Kegiatan): Promise<void>;
 }
 export interface RepositoriAkun {
   sesi(): Promise<Sesi | null>;

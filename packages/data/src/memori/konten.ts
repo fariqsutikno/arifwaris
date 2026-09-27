@@ -99,7 +99,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     // Tidak menyaring baris belum terbit menurut peran: RLS Postgres menyembunyikannya dari pengguna tanpa peran,
     // tapi gerbang portal (Portal.tsx) sudah menolak pengguna tanpa peran sebelum layar ini terpanggil.
     async daftarEntri(jenis) {
-      return [...entri.values()].filter(baris => baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
+      return [...entri.values()].filter(baris => jenis === undefined || baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
         .map((baris): RingkasanEntri => ({
           entriId: baris.id, jenis: baris.jenis, slug: baris.slug, urutan: baris.urutan, revisiTerbitId: baris.revisiTerbitId,
           revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
@@ -115,6 +115,19 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       const id = idBaru();
       entri.set(id, { id, jenis, slug, urutan, revisiTerbitId: null, versiTerbit: null });
       return id;
+    },
+    // [supabase/migrations/20260927000004_atur_urutan.sql] aturan disamakan dengan fungsi database.
+    async aturUrutan(entriIds) {
+      wajibPeran('admin', 'penulis');
+      if (entriIds.length === 0) throw new Error('daftar entri kosong');
+      if (new Set(entriIds).size !== entriIds.length) throw new Error('ada entri ganda');
+      const daftar = entriIds.map(id => ambil(entri, id, 'entri'));
+      if (new Set(daftar.map(baris => baris.jenis)).size !== 1) throw new Error('urutan hanya untuk entri satu jenis');
+      const versiBaru = daftar.some(baris => baris.revisiTerbitId) ? ++versi : null;
+      daftar.forEach((baris, indeks) => {
+        baris.urutan = (indeks + 1) * 10;
+        if (baris.revisiTerbitId) baris.versiTerbit = versiBaru;
+      });
     },
     async buatDraf(entriId, jenis, isi, refs) {
       wajibPeran('admin', 'penulis');

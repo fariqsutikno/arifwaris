@@ -7,7 +7,7 @@ import { ringkas } from '../hasil/ringkasan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
 import { Belajar } from '../layar/belajar/Belajar';
 import { Materi } from '../layar/belajar/Materi';
-import { bacaPelajaranSelesai } from '../preferensi';
+import { bacaPelajaranSelesai } from '../progres';
 
 const semuaContoh = daftarPelajaran().flatMap(pelajaran => pelajaran.blok.flatMap((blok, urutan) =>
   blok.jenis === 'kasus' ? [[`${pelajaran.slug} #${urutan}`, blok.kasus] as [string, ContohKasus]] : []));

@@ -22,6 +22,14 @@ test('daftarEntri memuat revisi terakhir dan terbit', async () => {
   expect(entri).toMatchObject({ entriId: id, revisiTerbitId: r1, revisiTerakhir: { id: r2, status: 'draf' } });
 });
 
+test('daftarEntri tanpa jenis memuat semua jenis', async () => {
+  const m = siapkan();
+  await m.editorial.buatEntri('soal_hitung', 'h', 10);
+  await m.editorial.buatEntri('faq', 'f', 10);
+  expect((await m.konten.daftarEntri()).map(entri => entri.jenis).sort()).toEqual(['faq', 'soal_hitung']);
+  expect((await m.konten.daftarEntri('faq')).map(entri => entri.slug)).toEqual(['f']);
+});
+
 test('aturPeran lewat email; email tak dikenal ditolak', async () => {
   const m = siapkan();
   await m.akun.aturPeran('rev@x.id', 'reviewer');
@@ -63,4 +71,31 @@ test('daftarKunci & antrean diksi', async () => {
 
 test('daftarRefs dari refs awal', async () => {
   expect(await siapkan().konten.daftarRefs()).toEqual([{ kode: 'R09-7', bab: 9 }]);
+});
+test('aturUrutan: urutan = posisi * 10, status tetap, entri terbit naik versi', async () => {
+  const m = siapkan();
+  const a = await m.editorial.buatEntri('soal_hitung', 'a', 10);
+  const b = await m.editorial.buatEntri('soal_hitung', 'b', 20);
+  const r = await m.editorial.buatDraf(a, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await m.editorial.ajukan(r);
+  await m.editorial.setujui(r);
+  const versiSebelum = await m.konten.versiSekarang();
+  await m.editorial.aturUrutan([b, a]);
+  const daftar = await m.konten.daftarEntri('soal_hitung');
+  expect(daftar.map(e => [e.slug, e.urutan])).toEqual([['b', 10], ['a', 20]]);
+  expect(daftar[1]!.revisiTerakhir?.status).toBe('disetujui');
+  expect(await m.konten.versiSekarang()).toBe(versiSebelum + 1);
+  const [terbit] = await m.konten.bacaTerbit({ jenis: 'soal_hitung' });
+  expect(terbit!.versiTerbit).toBe(versiSebelum + 1);
+});
+
+test('aturUrutan: reviewer, campur jenis, ganda, kosong ditolak', async () => {
+  const m = siapkan();
+  const a = await m.editorial.buatEntri('soal_hitung', 'a', 10);
+  const k = await m.editorial.buatEntri('kitab', 'k', 10);
+  await expect(m.editorial.aturUrutan([a, k])).rejects.toThrow('satu jenis');
+  await expect(m.editorial.aturUrutan([a, a])).rejects.toThrow('ganda');
+  await expect(m.editorial.aturUrutan([])).rejects.toThrow('kosong');
+  m.aturPeranLangsung('u-admin', 'reviewer');
+  await expect(m.editorial.aturUrutan([a])).rejects.toThrow('perlu peran');
 });

@@ -4,7 +4,8 @@
 
 import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
 import type { Kasus } from '../kasus';
-import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai } from '../preferensi';
+import { bacaAktivitas } from '../preferensi';
+import { bacaPelajaranSelesai, bacaProgresLatihan } from '../progres';
 import { bacaRiwayat, ringkasKasus, type EntriRiwayat } from '../riwayat';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanGlosarium, tautanLatihan, tautanRujukan } from '../rute';
 import { Ikon } from '../ui/Ikon';
@@ -30,7 +31,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
   const selesai = bacaPelajaranSelesai();
   const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
-  const soalSelesai = daftarSoalHitung().filter(soal => bacaCatatan('soal')[soal.kode]).length;
+  const soalSelesai = daftarSoalHitung().filter(soal => bacaProgresLatihan('hitung')[soal.kode]).length;
   const kuisTerakhir = bacaAktivitas().find(aktivitas => aktivitas.jenis === 'kuis');
   // Tanpa kasus yang sedang dimuat (misal sesudah reset), tetap tunjukkan entri riwayat terbaru,
   // supaya Beranda tidak bilang "belum ada" sementara Riwayat berisi.

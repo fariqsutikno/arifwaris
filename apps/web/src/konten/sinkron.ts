@@ -24,8 +24,10 @@ export async function sinkronLatar(lokal: Snapshot, { url, kunci, daring, muatRe
   }
 }
 
-/** Pustaka Supabase dimuat dinamis supaya tidak masuk bundel awal. */
+/** Klien bersama dengan akun pengguna (akun/klien.ts): satu instans dipakai konten maupun sinkron akun. */
 export async function muatRepoSupabase(url: string, kunci: string): Promise<Repo> {
-  const [{ createClient }, { buatRepositoriSupabase }] = await Promise.all([import('@supabase/supabase-js'), import('@waris/data')]);
-  return buatRepositoriSupabase(createClient(url, kunci, { auth: { persistSession: false } }));
+  const { muatRepoAkun } = await import('../akun/klien');
+  const repo = await muatRepoAkun(url, kunci);
+  if (!repo) throw new Error('repo tidak tersedia');
+  return repo;
 }

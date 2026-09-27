@@ -7,8 +7,19 @@
 import { useEffect, useState } from 'react';
 import type { Peran } from '@waris/content';
 import type { DiksiTerbit, RingkasanKunciDiksi, RingkasanRevisiDiksi } from '@waris/data';
-import { Tombol } from '@waris/web/ui/komponen';
+import { Search } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePortal } from '../repo';
+
+const JUMLAH_KOLOM = 5;
 
 type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf';
 
@@ -66,46 +77,47 @@ export function EditorDiksi() {
     return () => { dibatalkan = true; };
   }, [repo, muatUlang]);
 
-  if (galat) return <p role="alert">{galat}</p>;
-  if (!daftar) return null;
+  if (galat) return <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert>;
+  if (!daftar) return <Skeleton className="h-48" />;
 
   const tampil = saringDiksi(daftar, halaman ? { halaman, arKosong, belumTerbit, cari } : { arKosong, belumTerbit, cari });
   const daftarHalaman = [...new Set(daftar.map(k => k.halaman))];
   const kelompok = kelompokkanPerHalaman(tampil);
 
   return (
-    <div>
-      <h2>Diksi</h2>
-      <label>
-        Halaman{' '}
-        <select value={halaman} onChange={e => setHalaman(e.target.value)}>
-          <option value="">Semua</option>
-          {daftarHalaman.map(h => <option key={h} value={h}>{h}</option>)}
-        </select>
-      </label>{' '}
-      <label>
-        <input type="checkbox" checked={arKosong} onChange={e => setArKosong(e.target.checked)} /> Arab kosong
-      </label>{' '}
-      <label>
-        <input type="checkbox" checked={belumTerbit} onChange={e => setBelumTerbit(e.target.checked)} /> Belum terbit
-      </label>{' '}
-      <label>
-        Cari{' '}
-        <input value={cari} onChange={e => setCari(e.target.value)} />
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <Label>
+          Halaman
+          <NativeSelect value={halaman} onChange={e => setHalaman(e.target.value)}>
+            <NativeSelectOption value="">Semua</NativeSelectOption>
+            {daftarHalaman.map(h => <NativeSelectOption key={h} value={h}>{h}</NativeSelectOption>)}
+          </NativeSelect>
+        </Label>
+        <Label><input type="checkbox" className="size-4 accent-primary" checked={arKosong} onChange={e => setArKosong(e.target.checked)} />Arab kosong</Label>
+        <Label><input type="checkbox" className="size-4 accent-primary" checked={belumTerbit} onChange={e => setBelumTerbit(e.target.checked)} />Belum terbit</Label>
+      </div>
+      <label className="relative block">
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+        <Input type="search" aria-label="Cari" className="pl-9" placeholder="Cari kunci atau teks Indonesia" value={cari} onChange={e => setCari(e.target.value)} />
       </label>
       {kelompok.map(([h, baris]) => (
-        <table key={h}>
-          <caption>{h}</caption>
-          <thead><tr><th>Kunci</th><th>Indonesia</th><th>Arab</th><th>Status</th>{bolehEdit ? <th /> : null}<th /></tr></thead>
-          <tbody>
-            {baris.map(k => (
-              <BarisDiksi
-                key={k.kunci} k={k} bolehEdit={bolehEdit} peran={peran}
-                onSimpanSelesai={() => setMuatUlang(n => n + 1)}
-              />
-            ))}
-          </tbody>
-        </table>
+        <Card key={h} className="gap-0 py-0">
+          <Table>
+            <caption className="border-b bg-muted px-4 py-2 text-left font-semibold">{h}</caption>
+            <TableHeader>
+              <TableRow><TableHead>Kunci</TableHead><TableHead>Indonesia</TableHead><TableHead>Arab</TableHead><TableHead>Status</TableHead><TableHead /></TableRow>
+            </TableHeader>
+            <TableBody>
+              {baris.map(k => (
+                <BarisDiksi
+                  key={k.kunci} k={k} bolehEdit={bolehEdit} peran={peran}
+                  onSimpanSelesai={() => setMuatUlang(n => n + 1)}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
       ))}
     </div>
   );
@@ -132,7 +144,6 @@ function BarisDiksi(
   const [menyimpan, setMenyimpan] = useState(false);
   const [riwayatTerbuka, setRiwayatTerbuka] = useState(false);
   const berubah = idTeks !== idTeksTampil(k) || arTeks !== arTeksTampil(k);
-  const jumlahKolom = 4 + (bolehEdit ? 1 : 0) + 1;
 
   async function simpanDanAjukan() {
     setGalat(null);
@@ -157,27 +168,25 @@ function BarisDiksi(
 
   return (
     <>
-      <tr className={berubah ? 'aw-baris-berubah' : undefined}>
-        <td>{k.kunci}</td>
-        <td>{bolehEdit ? <input aria-label={`Indonesia ${k.kunci}`} value={idTeks} onChange={e => setIdTeks(e.target.value)} /> : idTeks}</td>
-        <td>{bolehEdit ? <input aria-label={`Arab ${k.kunci}`} dir="rtl" value={arTeks} onChange={e => setArTeks(e.target.value)} /> : arTeks}</td>
-        <td>{statusTampilDiksi(k)}</td>
-        {bolehEdit ? (
-          <td>
-            {galat ? <span role="alert">{galat}</span> : null}
-            <Tombol disabled={!berubah || menyimpan} onClick={() => void simpanDanAjukan()}>Simpan &amp; ajukan</Tombol>
-          </td>
-        ) : null}
-        <td>
-          <Tombol varian="secondary" onClick={() => setRiwayatTerbuka(v => !v)}>Riwayat</Tombol>
-        </td>
-      </tr>
+      <TableRow className={berubah ? 'bg-accent/40' : undefined}>
+        <TableCell className="font-mono text-xs">{k.kunci}</TableCell>
+        <TableCell className="min-w-48">{bolehEdit ? <Input aria-label={`Indonesia ${k.kunci}`} value={idTeks} onChange={e => setIdTeks(e.target.value)} /> : idTeks}</TableCell>
+        <TableCell className="min-w-40">{bolehEdit ? <Input aria-label={`Arab ${k.kunci}`} dir="rtl" lang="ar" value={arTeks} onChange={e => setArTeks(e.target.value)} /> : arTeks}</TableCell>
+        <TableCell><Badge variant="secondary">{statusTampilDiksi(k)}</Badge></TableCell>
+        <TableCell>
+          <span className="flex justify-end gap-2">
+            {bolehEdit ? <Button size="sm" disabled={!berubah || menyimpan} onClick={() => void simpanDanAjukan()}>Simpan &amp; ajukan</Button> : null}
+            <Button variant="outline" size="sm" onClick={() => setRiwayatTerbuka(v => !v)}>Riwayat</Button>
+          </span>
+          {galat ? <span role="alert" className="block text-sm whitespace-normal text-destructive">{galat}</span> : null}
+        </TableCell>
+      </TableRow>
       {riwayatTerbuka ? (
-        <tr>
-          <td colSpan={jumlahKolom}>
+        <TableRow>
+          <TableCell colSpan={JUMLAH_KOLOM} className="bg-muted/50 whitespace-normal">
             <RiwayatDiksi kunci={k.kunci} terbit={k.terbit} peran={peran} saatBerubah={onSimpanSelesai} />
-          </td>
-        </tr>
+          </TableCell>
+        </TableRow>
       ) : null}
     </>
   );
@@ -203,7 +212,7 @@ function RiwayatDiksi(
     return () => { dibatalkan = true; };
   }, [repo, kunci]);
 
-  if (galat) return <p role="alert">{galat}</p>;
+  if (galat) return <p role="alert" className="text-sm text-destructive">{galat}</p>;
   if (!daftar) return null;
   const bolehRollback = peran === 'reviewer' || peran === 'admin';
   const idTerbit = terbit
@@ -211,7 +220,7 @@ function RiwayatDiksi(
     : null;
 
   return (
-    <div>
+    <div className="divide-y">
       {[...daftar].reverse().map(revisi => (
         <BarisRiwayatDiksi
           key={revisi.id} revisi={revisi} sedangTerbit={revisi.id === idTerbit}
@@ -242,13 +251,13 @@ function BarisRiwayatDiksi(
   }
 
   return (
-    <article aria-label={`revisi ${revisi.id.slice(0, 8)}`}>
-      <p>
+    <article aria-label={`revisi ${revisi.id.slice(0, 8)}`} className="flex flex-wrap items-center gap-2 py-2">
+      <p className="text-sm">
         {sedangTerbit ? 'terbit' : revisi.status} · id: {revisi.idTeks} · ar: {revisi.arTeks ?? ''}
       </p>
-      {revisi.catatanReview ? <p>Catatan review: {revisi.catatanReview}</p> : null}
-      {galat ? <p role="alert">{galat}</p> : null}
-      {bolehTombolRollback ? <Tombol onClick={() => void rollback()}>Terbitkan ulang</Tombol> : null}
+      {bolehTombolRollback ? <Button size="sm" className="ml-auto" onClick={() => void rollback()}>Terbitkan ulang</Button> : null}
+      {revisi.catatanReview ? <p className="w-full text-sm text-muted-foreground">Catatan review: {revisi.catatanReview}</p> : null}
+      {galat ? <p role="alert" className="w-full text-sm text-destructive">{galat}</p> : null}
     </article>
   );
 }

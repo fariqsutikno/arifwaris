@@ -5,7 +5,9 @@
 import { useEffect, useState } from 'react';
 import type { JenisKonten } from '@waris/content';
 import type { RingkasanRevisi } from '@waris/data';
-import { Tombol } from '@waris/web/ui/komponen';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { diffBaris, teksBanding } from '../editor/diff';
 import { usePortal, type RepoPortal } from '../repo';
 
@@ -22,14 +24,15 @@ export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revi
     return () => { dibatalkan = true; };
   }, [repo, props.entriId]);
 
-  if (galat) return <p role="alert">{galat}</p>;
+  if (galat) return <p role="alert" className="text-sm text-destructive">{galat}</p>;
   if (!daftar) return null;
   const terbit = daftar.find(r => r.id === props.revisiTerbitId) ?? null;
   const bolehRollback = peran === 'reviewer' || peran === 'admin';
 
   return (
-    <section>
-      <h3>Riwayat revisi</h3>
+    <section className="space-y-2">
+      <h2 className="text-lg font-bold">Riwayat revisi</h2>
+      <Card className="gap-0 divide-y py-0">
       {[...daftar].reverse().map(revisi => (
         <BarisRiwayat
           key={revisi.id}
@@ -42,6 +45,7 @@ export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revi
           saatBerubah={props.saatBerubah}
         />
       ))}
+      </Card>
     </section>
   );
 }
@@ -67,22 +71,32 @@ function BarisRiwayat(props: {
   }
 
   return (
-    <article aria-label={`revisi ${revisi.id.slice(0, 8)}`}>
-      <p>
-        {sedangTerbit ? 'terbit' : revisi.status} · {revisi.dibuatOleh.slice(0, 8)} · {revisi.dibuatPada}
-      </p>
-      {revisi.catatanReview ? <p>Catatan review: {revisi.catatanReview}</p> : null}
-      {galat ? <p role="alert">{galat}</p> : null}
-      <Tombol varian="secondary" onClick={() => setTampilDiff(v => !v)}>Lihat beda dengan terbit</Tombol>
-      {tampilDiff ? (
-        <pre>
-          {diffBaris(terbit ? teksBanding(jenis, terbit.isi) : '', teksBanding(jenis, revisi.isi)).map((baris, i) => (
-            <div key={i} className={`aw-diff-${baris.jenis}`}>{PENANDA_DIFF[baris.jenis]}{baris.teks}</div>
-          ))}
-        </pre>
-      ) : null}
-      {bolehTombolRollback ? <Tombol onClick={() => void rollback()}>Terbitkan ulang</Tombol> : null}
+    <article aria-label={`revisi ${revisi.id.slice(0, 8)}`} className="space-y-2 px-4 py-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <p className="text-sm">
+          {sedangTerbit ? 'terbit' : revisi.status} · {revisi.dibuatOleh.slice(0, 8)} · {revisi.dibuatPada}
+        </p>
+        {sedangTerbit ? <Badge>Terbit</Badge> : null}
+        <span className="ml-auto flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setTampilDiff(v => !v)}>Lihat beda dengan terbit</Button>
+          {bolehTombolRollback ? <Button size="sm" onClick={() => void rollback()}>Terbitkan ulang</Button> : null}
+        </span>
+      </div>
+      {revisi.catatanReview ? <p className="text-sm text-muted-foreground">Catatan review: {revisi.catatanReview}</p> : null}
+      {galat ? <p role="alert" className="text-sm text-destructive">{galat}</p> : null}
+      {tampilDiff ? <Diff baris={diffBaris(terbit ? teksBanding(jenis, terbit.isi) : '', teksBanding(jenis, revisi.isi))} /> : null}
     </article>
+  );
+}
+
+const WARNA_DIFF = { sama: '', tambah: 'bg-primary/15', hapus: 'bg-destructive/15' } as const;
+
+/** Diff baris (hasil diffBaris) dengan penanda +/- dan latar berwarna; dipakai riwayat & antrean review. */
+export function Diff({ baris: daftarBaris }: { baris: ReturnType<typeof diffBaris> }) {
+  return (
+    <pre className="max-h-96 overflow-auto rounded-lg border bg-muted p-3 font-mono text-xs">
+      {daftarBaris.map((baris, i) => <div key={i} className={WARNA_DIFF[baris.jenis]}>{PENANDA_DIFF[baris.jenis]}{baris.teks}</div>)}
+    </pre>
   );
 }
 

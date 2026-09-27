@@ -11745,11 +11745,32 @@
    "versiTerbit": 788
   },
   {
-   "kunci": "hitung.tersimpan_di_riwayat",
+   "kunci": "hitung.tersimpan",
    "halaman": "hitung",
-   "id": "Tersimpan di riwayat",
-   "ar": "محفوظة في السجل",
-   "versiTerbit": 713
+   "id": "Tersimpan",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.kasus_tersimpan",
+   "halaman": "hitung",
+   "id": "Kasus tersimpan",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.terakhir_dibuka",
+   "halaman": "hitung",
+   "id": "Terakhir dibuka",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.belum_ada_kasus_tersimpan",
+   "halaman": "hitung",
+   "id": "Belum ada kasus yang disimpan. Tekan Simpan di layar hasil.",
+   "ar": null,
+   "versiTerbit": 0
   },
   {
    "kunci": "hitung.tetap_belajar",
@@ -13171,6 +13192,48 @@
    "id": "Tutup",
    "ar": "إغلاق",
    "versiTerbit": 242
+  },
+  {
+   "kunci": "umum.masuk_dengan_google",
+   "halaman": "umum",
+   "id": "Masuk dengan Google",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.layanan_akun_tidak_tersedia",
+   "halaman": "umum",
+   "id": "Layanan akun sedang tidak tersedia. Data di perangkat ini tetap aman.",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.keluar",
+   "halaman": "umum",
+   "id": "Keluar",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.gagal_keluar",
+   "halaman": "umum",
+   "id": "Gagal keluar. Periksa koneksi lalu coba lagi.",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.tetap_keluar",
+   "halaman": "umum",
+   "id": "Tetap keluar",
+   "ar": null,
+   "versiTerbit": 0
+  },
+  {
+   "kunci": "umum.perubahan_belum_terkirim",
+   "halaman": "umum",
+   "id": "{jumlah} perubahan belum terkirim ke akun dan akan hilang dari perangkat ini. Tetap keluar?",
+   "ar": null,
+   "versiTerbit": 0
   }
  ]
 }

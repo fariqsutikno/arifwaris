@@ -3,7 +3,7 @@
 // Bar aksi bawah: Ubah data · Reset skenario · Ekspor. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useReducer, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import { keJson, type Kasus } from '../kasus';
@@ -22,6 +22,7 @@ import { Pohon } from '../hasil/Pohon';
 import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
+import { simpanKasus, sudahTersimpan } from '../tersimpan';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Ikon } from '../ui/Ikon';
@@ -31,6 +32,7 @@ import { t } from '../terjemah';
 
 interface Props {
   kasus: Kasus;
+  idSesi: string;
   tujuan: Tujuan | null;
   kirim: (aksi: Aksi) => void;
   /**
@@ -42,7 +44,7 @@ interface Props {
   terkunci?: boolean | undefined;
 }
 
-export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -76,10 +78,11 @@ export function Hasil({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
+  const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const bahasa = useBahasa();
@@ -184,7 +187,9 @@ function HasilOkLayar({ kasus, tujuan, kirim, saatDikerjakan, terkunci }: Props)
             <Tombol varian="secondary" onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /> <span>{t('umum.reset')}<span className="label-lebar">{t('hitung.skenario')}</span></span></Tombol>
           </>}
           <span className="pengisi" />
-          <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> {t('hitung.tersimpan_di_riwayat')}</span>
+          {sudahTersimpan(idSesi, kasus)
+            ? <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> {t('hitung.tersimpan')}</span>
+            : <Tombol varian="secondary" onClick={() => { simpanKasus(idSesi, kasus); segarkan(); }}><Ikon nama="berkas" /> {t('umum.simpan')}</Tombol>}
           <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</Tombol>
         </div>
       </div>

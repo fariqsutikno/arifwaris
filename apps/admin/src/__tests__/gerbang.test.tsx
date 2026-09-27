@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { buatMemori } from '@waris/data';
 import { Portal } from '../Portal';
@@ -19,6 +19,12 @@ test('peran reviewer → navigasi tanpa menu Peran', async () => {
   render(<Portal repo={m} />);
   expect(await screen.findByRole('link', { name: /antrean review/i })).toBeTruthy();
   expect(screen.queryByRole('link', { name: /peran/i })).toBeNull();
+});
+test('peran ada → tombol keluar di navigasi, klik kembali ke layar masuk', async () => {
+  const m = buatMemori({ sesi: { userId: 'u1', email: 'a@x.id' }, peran: { u1: 'admin' } });
+  render(<Portal repo={m} />);
+  fireEvent.click(await screen.findByRole('button', { name: /keluar/i }));
+  expect(await screen.findByRole('button', { name: /masuk dengan google/i })).toBeTruthy();
 });
 test('galat memuat sesi → pesan galat, bukan layar kosong', async () => {
   const m = buatMemori();

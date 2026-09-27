@@ -4,7 +4,8 @@
 
 import { daftarCheatsheet, daftarModul, daftarPelajaran, daftarSoalHitung, daftarSoalKuis } from '../../konten/sumber';
 import { useState } from 'react';
-import { bacaAktivitas, bacaCatatan, bacaPelajaranSelesai, hapusAktivitas, resetProgresBelajar, type Aktivitas } from '../../preferensi';
+import { bacaAktivitas, hapusAktivitas, type Aktivitas } from '../../preferensi';
+import { bacaPelajaranSelesai, bacaProgresLatihan, bacaSkorPaket, resetProgresBelajar } from '../../progres';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { waktuRelatif } from '../../riwayat';
 import { tautanBelajar, tautanFaq, tautanGlosarium, tautanLatihan, tautanRujukan, tautanTanyaJawab } from '../../rute';
@@ -28,8 +29,10 @@ export function Belajar() {
     setVersi(versi => versi + 1);
   };
   const selesai = bacaPelajaranSelesai();
-  const soalSelesai = Object.keys(bacaCatatan('soal')).filter(kode => daftarSoalHitung().some(soal => soal.kode === kode)).length;
-  const kuisBenar = daftarSoalKuis().filter(soal => bacaCatatan('kuis')[soal.kode] === 'benar').length;
+  const progresHitung = bacaProgresLatihan('hitung');
+  const progresKuis = bacaProgresLatihan('kuis');
+  const soalSelesai = Object.keys(progresHitung).filter(kode => daftarSoalHitung().some(soal => soal.kode === kode)).length;
+  const kuisBenar = daftarSoalKuis().filter(soal => progresKuis[soal.kode]?.benar).length;
   const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const persen = Math.round((jumlahSelesai / daftarPelajaran().length) * 100);
   const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
@@ -126,7 +129,7 @@ export function Belajar() {
         </section>
       )}
 
-      {(jumlahSelesai > 0 || soalSelesai > 0 || Object.keys(bacaCatatan('kuis')).length > 0) && (
+      {(jumlahSelesai > 0 || soalSelesai > 0 || Object.keys(progresKuis).length > 0 || Object.keys(bacaSkorPaket()).length > 0) && (
         <section className="zona-reset" aria-labelledby="judul-reset">
           <div>
             <h2 id="judul-reset">{t('belajar.reset_progres_belajar')}</h2>

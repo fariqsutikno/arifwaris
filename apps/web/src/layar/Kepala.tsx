@@ -2,7 +2,7 @@
 // (hanya di wizard; layar hasil punya tombolnya sendiri di bar aksi). Di HP menu utama pindah ke nav bawah.
 // Tidak memuat tombol simpan (spec: Navigasi global).
 
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Logo, Tombol } from '../ui/komponen';
 import type { Kasus } from '../kasus';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
@@ -19,9 +19,10 @@ interface Props {
   saatKeHitung: () => void;
   saatTur: () => void;
   saatUlangi: () => void;
+  akun: ReactNode;
 }
 
-export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, saatUlangi }: Props) {
+export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, saatUlangi, akun }: Props) {
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
   const bahasa = useBahasa();
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
@@ -43,6 +44,7 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
         <Logo saatKlik={() => { window.location.hash = TAUTAN_BERANDA; }} />
         <nav aria-label={t('umum.menu_utama')} className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
         <span className="pengisi" />
+        {akun}
         {/* Mode santri: padanan Arab untuk istilah, atau penjelasan berbahasa Arab. */}
         <select className="pilih-bahasa" aria-label={t('umum.bahasa')} value={bahasa} onChange={e => { simpanBahasa(e.target.value as Bahasa); window.location.reload(); }}>
           {DAFTAR_BAHASA.map(pilihan => <option key={pilihan.nilai} value={pilihan.nilai}>{pilihan.label}</option>)}
