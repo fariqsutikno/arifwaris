@@ -35,6 +35,8 @@ export interface RepositoriKonten {
 }
 export interface RepositoriEditorial {
   buatEntri(jenis: JenisKonten, slug: string, urutan: number): Promise<string>;
+  /** Seret di portal: urutan = posisi * 10, tanpa revisi; semua id satu jenis. admin/penulis. */
+  aturUrutan(entriIds: string[]): Promise<void>;
   /** Validasi isi (Zod) & refs sebelum simpan; melempar Error berpesan Indonesia bila tidak sah. */
   buatDraf<J extends JenisKonten>(entriId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<string>;
   ubahDraf<J extends JenisKonten>(revisiId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<void>;

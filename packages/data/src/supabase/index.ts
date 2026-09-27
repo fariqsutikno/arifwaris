@@ -62,6 +62,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       const baris = await hasil(klien.from('entri_konten').insert({ jenis, slug, urutan }).select('id').single());
       return (baris as { id: string }).id;
     },
+    aturUrutan: entriIds => rpc('atur_urutan', { p_entri: entriIds }),
     async buatDraf(entriId, jenis, isi, refs) {
       const baris = await hasil(klien.from('revisi').insert({ entri_id: entriId, isi: isiSah(jenis, isi), refs }).select('id').single());
       return (baris as { id: string }).id;

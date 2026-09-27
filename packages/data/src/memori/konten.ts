@@ -116,6 +116,19 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       entri.set(id, { id, jenis, slug, urutan, revisiTerbitId: null, versiTerbit: null });
       return id;
     },
+    // [supabase/migrations/20260927000004_atur_urutan.sql] aturan disamakan dengan fungsi database.
+    async aturUrutan(entriIds) {
+      wajibPeran('admin', 'penulis');
+      if (entriIds.length === 0) throw new Error('daftar entri kosong');
+      if (new Set(entriIds).size !== entriIds.length) throw new Error('ada entri ganda');
+      const daftar = entriIds.map(id => ambil(entri, id, 'entri'));
+      if (new Set(daftar.map(baris => baris.jenis)).size !== 1) throw new Error('urutan hanya untuk entri satu jenis');
+      const versiBaru = daftar.some(baris => baris.revisiTerbitId) ? ++versi : null;
+      daftar.forEach((baris, indeks) => {
+        baris.urutan = (indeks + 1) * 10;
+        if (baris.revisiTerbitId) baris.versiTerbit = versiBaru;
+      });
+    },
     async buatDraf(entriId, jenis, isi, refs) {
       wajibPeran('admin', 'penulis');
       ambil(entri, entriId, 'entri');
