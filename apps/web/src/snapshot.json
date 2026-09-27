@@ -13335,6 +13335,251 @@
    "id": "Tutup",
    "ar": "إغلاق",
    "versiTerbit": 856
+  },
+  {
+   "kunci": "akun.belajar_hari_ini_untuk_menjaga_streak",
+   "halaman": "akun",
+   "id": "Selesaikan satu pelajaran, soal, atau kuis hari ini untuk menjaga streak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.belum_ada_peserta",
+   "halaman": "akun",
+   "id": "Belum ada peserta di papan peringkat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.belum_ada_xp_minggu_ini",
+   "halaman": "akun",
+   "id": "Belum ada yang mengumpulkan XP minggu ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.hari_berganti_pukul_00_00_di_zona_ini",
+   "halaman": "akun",
+   "id": "Hari berganti pukul 00.00 di zona ini. Kegiatan sebelum pukul 02.00 masih bisa menutup hari kemarin.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.hari_ini_sudah_aktif",
+   "halaman": "akun",
+   "id": "Hari ini sudah tercatat aktif.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.ikut_papan_hanya_menampilkan_nama",
+   "halaman": "akun",
+   "id": "Yang tampil hanya nama tampilan, XP, dan streak. Bisa dimatikan kapan saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.ikut_papan_peringkat",
+   "halaman": "akun",
+   "id": "Ikut papan peringkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.jumlah_xp",
+   "halaman": "akun",
+   "id": "{jumlah} XP",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.kamu",
+   "halaman": "akun",
+   "id": "(kamu)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.lihat_papan_peringkat",
+   "halaman": "akun",
+   "id": "Lihat papan peringkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.masuk_untuk_ikut_papan_peringkat",
+   "halaman": "akun",
+   "id": "Masuk untuk mengumpulkan XP dan ikut papan peringkat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.memuat",
+   "halaman": "akun",
+   "id": "Memuat…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.minggu_ini",
+   "halaman": "akun",
+   "id": "Minggu ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.nama_tampilan",
+   "halaman": "akun",
+   "id": "Nama tampilan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.nama_tampilan_wajib_diisi",
+   "halaman": "akun",
+   "id": "Nama tampilan wajib diisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.namamu_belum_tampil_di_papan",
+   "halaman": "akun",
+   "id": "Namamu belum tampil di papan peringkat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.nomor_peringkat",
+   "halaman": "akun",
+   "id": "#{nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.papan_gagal_dimuat",
+   "halaman": "akun",
+   "id": "Papan peringkat belum bisa dimuat. Coba lagi nanti.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.papan_peringkat",
+   "halaman": "akun",
+   "id": "Papan peringkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.periode",
+   "halaman": "akun",
+   "id": "Periode",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.profil",
+   "halaman": "akun",
+   "id": "Profil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.profil_gagal_dimuat",
+   "halaman": "akun",
+   "id": "Profil belum bisa dimuat. Coba lagi nanti.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.profil_gagal_disimpan",
+   "halaman": "akun",
+   "id": "Profil belum tersimpan. Periksa koneksi lalu coba lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.sepanjang_waktu",
+   "halaman": "akun",
+   "id": "Sepanjang waktu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.streak_dan_xp",
+   "halaman": "akun",
+   "id": "Streak & XP",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.streak_hari",
+   "halaman": "akun",
+   "id": "🔥 {jumlah} hari beruntun",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tampilkan_foto_google",
+   "halaman": "akun",
+   "id": "Tampilkan foto profil Google",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tampilkan_namaku_di_papan_peringkat",
+   "halaman": "akun",
+   "id": "Tampilkan namaku di papan peringkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.ubah_profil",
+   "halaman": "akun",
+   "id": "Ubah profil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.xp_dari_pelajaran_soal_dan_kuis",
+   "halaman": "akun",
+   "id": "XP didapat dari pelajaran, soal, dan kuis yang pertama kali diselesaikan, ditambah 2 XP tiap hari aktif. Papan mingguan dimulai Senin pukul 00.00 WIB.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.xp_total_dan_minggu_ini",
+   "halaman": "akun",
+   "id": "{total} XP · {minggu} XP minggu ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.zona_waktu",
+   "halaman": "akun",
+   "id": "Zona waktu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.zona_wib",
+   "halaman": "akun",
+   "id": "WIB (Jakarta)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.zona_wit",
+   "halaman": "akun",
+   "id": "WIT (Jayapura)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.zona_wita",
+   "halaman": "akun",
+   "id": "WITA (Makassar)",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

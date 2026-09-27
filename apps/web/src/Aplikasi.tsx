@@ -5,6 +5,7 @@ import type { SoalHitung } from '@waris/content';
 import type { Sesi } from '@waris/data';
 import { muatRepoAkun, type RepoAkun } from './akun/klien';
 import { mulaiSinkron } from './akun/sinkron';
+import { KartuStreak } from './akun/KartuStreak';
 import { TombolAkun } from './akun/TombolAkun';
 import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
@@ -28,6 +29,7 @@ import { kasusDariContoh } from './layar/belajar/contoh';
 import { Rujukan } from './layar/belajar/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
+import { Peringkat } from './layar/Peringkat';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, bacaRute, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
@@ -138,10 +140,11 @@ export function Aplikasi() {
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)}
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<TombolAkun sesi={sesi} repo={repoAkun} />} />
       {!['beranda', 'kalkulator', 'belajar'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}
-      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} />
+      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} kartuAkun={<KartuStreak sesi={sesi} repo={repoAkun} />} />
         : rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
+        : rute.halaman === 'peringkat' ? <Peringkat sesi={sesi} repo={repoAkun} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
@@ -150,7 +153,7 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} />
         : <Hasil kasus={kasus} idSesi={idSesi} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
-            saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined}  />}
+            saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
@@ -163,7 +166,8 @@ const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLoka
 /** Id sesi riwayat; cukup unik di satu perangkat. */
 const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 
-function tandaiSoalDikerjakan(soal: SoalHitung): void {
-  catatLatihan('hitung', soal.kode, true, null);
+/** `benar` = tebakan tepat sebelum jawaban dibuka; hanya itu yang memberi XP soal hitung (spec tahap 5). */
+function tandaiSoalDikerjakan(soal: SoalHitung, benar: boolean): void {
+  catatLatihan('hitung', soal.kode, benar, null);
   catatAktivitas({ jenis: 'soal', kode: soal.kode, judul: soal.judul, waktu: Date.now() });
 }

@@ -24,6 +24,11 @@ describe('skema isi konten', () => {
     bolakBalik('syahid', CONTOH_SYAHID);
   });
 
+  test('tingkat kuis opsional (kosong = dasar, spec tahap 5), nilainya tetap dibatasi', () => {
+    bolakBalik('soal_kuis', { ...CONTOH_SOAL_KUIS, tingkat: 'sulit' });
+    expect(bacaIsi('soal_kuis', { ...CONTOH_SOAL_KUIS, tingkat: 'mudah' }).ok).toBe(false);
+  });
+
   test('bigint disimpan sebagai string digit', () => {
     const soal = CONTOH_SOAL_HITUNG;
     const json = keJson('soal_hitung', soal) as { kasus: { harta: unknown } };

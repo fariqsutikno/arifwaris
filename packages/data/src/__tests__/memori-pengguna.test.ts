@@ -28,6 +28,29 @@ describe('memori: pengguna & akun', () => {
     expect(await pengguna.bacaRiwayat()).toEqual([]);
   });
 
+  test('profil per pengguna, nama dirapikan', async () => {
+    const bersama = buatMemori({ sesi: A });
+    const { pengguna } = buatMemoriPengguna(bersama);
+    expect(await pengguna.bacaProfil()).toBeNull();
+    await pengguna.simpanProfil({ namaTampilan: ' Umar ', ikutPapanPeringkat: true, tampilkanAvatar: false, zonaWaktu: 'Asia/Jakarta' });
+    expect((await pengguna.bacaProfil())?.namaTampilan).toBe('Umar');
+    bersama.masukSebagai(B);
+    expect(await pengguna.bacaProfil()).toBeNull();
+  });
+
+  test('peringkat: papan dibatasi tapi baris sendiri tetap ada; ringkasan butuh sesi', async () => {
+    const bersama = buatMemori({ sesi: null });
+    const { peringkat, aturPeringkat } = buatMemoriPengguna(bersama);
+    await expect(peringkat.papan('minggu')).rejects.toThrow('tidak tersedia');
+    const baris = (namaTampilan: string, saya = false) => ({ peringkat: 1, namaTampilan, avatar: null, xp: 5, streakSekarang: 1, saya });
+    const ringkasan = { xpTotal: 5, xpMingguIni: 5, streakSekarang: 1, streakTerpanjang: 1, aktifHariIni: true };
+    aturPeringkat({ ringkasan, papan: { minggu: [baris('a'), baris('b'), baris('c', true)], semua: [] } });
+    expect((await peringkat.papan('minggu', 1)).map(b => b.namaTampilan)).toEqual(['a', 'c']);
+    await expect(peringkat.ringkasanSaya()).rejects.toThrow('belum masuk');
+    bersama.masukSebagai(A);
+    expect(await peringkat.ringkasanSaya()).toEqual(ringkasan);
+  });
+
   test('catatKegiatan: id sama diabaikan, tanpa sesi ditolak', async () => {
     const bersama = buatMemori({ sesi: A });
     const { pengguna } = buatMemoriPengguna(bersama);

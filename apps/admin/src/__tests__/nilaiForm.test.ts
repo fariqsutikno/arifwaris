@@ -82,7 +82,7 @@ test('soal kuis: pilihan & jawaban benar', () => {
     pilihan: { daftar: ['1/4', '1/8', '1/2'], benar: 1 },
   } });
   expect(hasil).toMatchObject({ ok: true, isi: {
-    kode: 'K-1', bab: 4, indeksBenar: 1, pilihan: [[{ jenis: 'teks', teks: '1/4' }], [{ jenis: 'teks', teks: '1/8' }], [{ jenis: 'teks', teks: '1/2' }]],
+    kode: 'K-1', bab: 4, tingkat: 'dasar', indeksBenar: 1, pilihan: [[{ jenis: 'teks', teks: '1/4' }], [{ jenis: 'teks', teks: '1/8' }], [{ jenis: 'teks', teks: '1/2' }]],
     pertanyaan: [{ jenis: 'teks', teks: 'Bagian ' }, { jenis: 'tebal', teks: 'istri' }, { jenis: 'teks', teks: '?' }],
   } });
 });
