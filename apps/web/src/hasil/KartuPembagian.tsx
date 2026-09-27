@@ -147,7 +147,7 @@ function PanelAtur({ pengaturan, saatUbah }: { pengaturan: PengaturanTampil; saa
         <h3>{t('hitung.tampilkan_di_samping_nominal')}</h3>
         <label className="cek">
           <input type="checkbox" checked={pengaturan.pecahan} onChange={event => saatUbah({ ...pengaturan, pecahan: event.target.checked })} />
-          <span><b>{t('hitung.pecahan')}</b><small>Bagian dari harta yang dibagi, misal 1/6 = satu dari enam bagian.</small></span>
+          <span><b>{t('hitung.pecahan')}</b><small>{t('hitung.bagian_dari_harta_yang_dibagi_misal_1_6')}</small></span>
         </label>
         <label className="cek">
           <input type="checkbox" checked={pengaturan.persen} onChange={event => saatUbah({ ...pengaturan, persen: event.target.checked })} />

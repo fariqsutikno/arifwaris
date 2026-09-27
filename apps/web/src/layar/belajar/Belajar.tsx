@@ -105,7 +105,7 @@ export function Belajar() {
             const judul = bahasaArab() && lembar.judulAr ? lembar.judulAr : lembar.judul;
             return lembar.tautan
               ? <a key={lembar.judul} className="pintu-belajar" href={lembar.tautan} target="_blank" rel="noopener"><Ikon nama="unduh" ukuran={22} />{judul}</a>
-              : <span key={lembar.judul} className="pintu-belajar pintu-menyusul" aria-disabled="true"><Ikon nama="unduh" ukuran={22} />{judul}<small className="keterangan">Segera hadir</small></span>;
+              : <span key={lembar.judul} className="pintu-belajar pintu-menyusul" aria-disabled="true"><Ikon nama="unduh" ukuran={22} />{judul}<small className="keterangan">{t('umum.segera_hadir')}</small></span>;
           })}
         </div>
       </section>

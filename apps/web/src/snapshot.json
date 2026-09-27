@@ -8696,6 +8696,30 @@
    },
    "refs": [],
    "versiTerbit": 207
+  },
+  {
+   "entriId": "45b64d5e-832c-40e3-b99a-0be7b59a80d1",
+   "jenis": "teks_edukasi",
+   "slug": "harta.rumah_tanah_ruko_harga_pasar",
+   "urutan": 46,
+   "revisiId": "4a465a9b-615e-4ba9-8b52-8fe9420dad57",
+   "isi": {
+    "id": "Rumah, tanah, ruko; pakai harga pasar saat ini"
+   },
+   "refs": [],
+   "versiTerbit": 851
+  },
+  {
+   "entriId": "2781a7b9-e3dd-42f0-807e-b28dd8045786",
+   "jenis": "teks_edukasi",
+   "slug": "harta.mobil_motor_harga_jual",
+   "urutan": 47,
+   "revisiId": "6cd68e3d-dd44-4b65-9e83-d1510431a44f",
+   "isi": {
+    "id": "Mobil, motor; pakai harga jual saat ini"
+   },
+   "refs": [],
+   "versiTerbit": 851
   }
  ],
  "diksi": [
@@ -13234,6 +13258,83 @@
    "id": "{jumlah} perubahan belum terkirim ke akun dan akan hilang dari perangkat ini. Tetap keluar?",
    "ar": null,
    "versiTerbit": 0
+  },
+  {
+   "kunci": "hitung.bagian_dari_harta_yang_dibagi_misal_1_6",
+   "halaman": "hitung",
+   "id": "Bagian dari harta yang dibagi, misal 1/6 = satu dari enam bagian.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.hutang_dan_biaya_jenazah_menghabiskan_seluruh_harta",
+   "halaman": "hitung",
+   "id": "Hutang dan biaya jenazah menghabiskan seluruh harta; tidak ada yang dibagi.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.file_tidak_bisa_dibaca",
+   "halaman": "hitung",
+   "id": "File tidak bisa dibaca.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.versi_file_tidak_dikenal",
+   "halaman": "hitung",
+   "id": "Versi file tidak dikenal. Pakai file dari Arif Waris versi ini.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.satuan_pembulatan_harus_1_100_1000",
+   "halaman": "hitung",
+   "id": "Satuan pembulatan harus 1, 100, atau 1000.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.daftar_wafat_berisi_orang_tidak_ada",
+   "halaman": "hitung",
+   "id": "Daftar yang wafat berisi orang yang tidak ada.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.pewaris_tidak_boleh_di_daftar_wafat",
+   "halaman": "hitung",
+   "id": "Pewaris tidak boleh ada di daftar yang wafat sesudahnya.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.orang_tercatat_wafat_dua_kali",
+   "halaman": "hitung",
+   "id": "Ada orang yang tercatat wafat dua kali.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.pewaris_tidak_ada_di_file",
+   "halaman": "hitung",
+   "id": "Pewaris tidak ada di file.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.data_pernikahan_rusak",
+   "halaman": "hitung",
+   "id": "Data pernikahan rusak.",
+   "ar": null,
+   "versiTerbit": 851
+  },
+  {
+   "kunci": "hitung.data_orang_rusak",
+   "halaman": "hitung",
+   "id": "Data orang {id} rusak.",
+   "ar": null,
+   "versiTerbit": 851
   }
  ]
 }
