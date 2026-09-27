@@ -7,6 +7,7 @@ import type { ReactNode } from 'react';
 import { Lock, Plus, Trash2 } from 'lucide-react';
 import type { BarisAhwal, ContohKasus, JenisKonten } from '@waris/content';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
@@ -131,7 +132,12 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
       return (
         bungkus(
           <div className="grid gap-1.5">
-            <span className="text-sm font-medium">{label}</span>
+            <span className="flex items-center gap-2 text-sm font-medium">
+              {label}
+              {bidang.templat && !teks.trim() && !bacaSaja ? (
+                <Button type="button" variant="link" size="sm" className="ml-auto h-auto p-0 text-xs" onClick={() => saatUbah(bidang.templat!)}>Pakai templat</Button>
+              ) : null}
+            </span>
             {padananId ? <Padanan teks={padananId} panjang={bidang.jenis === 'markdownBlok'} /> : null}
             <EditorBlok label={bidang.label} nilai={teks} saatUbah={saatUbah} mode={bidang.jenis === 'markdownBlok' ? 'blok' : 'potongan'}
               slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} arab={bidang.arab} galat={!!galat} />
@@ -234,6 +240,8 @@ function Panduan({ jenis }: { jenis: JenisKonten }) {
   );
 }
 
+const HURUF_A = 65;
+
 interface PropsPilihanKuis { label: ReactNode; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean; konteks: KonteksEditor }
 
 function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsPilihanKuis) {
@@ -245,26 +253,33 @@ function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsP
   return (
     <fieldset className="grid gap-2">
       <legend className="mb-1 text-sm font-medium">{label}</legend>
-      {nilai.daftar.map((teks, indeks) => (
-        <div key={indeks} className="flex items-center gap-2">
-          <input type="radio" name="jawaban-benar" aria-label={`Pilihan ${indeks + 1} benar`} checked={nilai.benar === indeks}
-            disabled={bacaSaja} onChange={() => saatUbah({ ...nilai, benar: indeks })} />
-          <div className="min-w-0 flex-1">
-            <EditorBlok key={`${indeks}/${nilai.daftar.length}`} label={`Pilihan ${indeks + 1}`} nilai={teks} saatUbah={t => ubahTeks(indeks, t)}
+      {nilai.daftar.map((teks, indeks) => {
+        const huruf = String.fromCharCode(HURUF_A + indeks);
+        const benar = nilai.benar === indeks;
+        return (
+          <div key={indeks} className={cn('grid gap-2 rounded-lg border p-2', benar && 'border-emerald-600 bg-emerald-500/5 dark:border-emerald-500')}>
+            <div className="flex items-center gap-2 text-sm">
+              <span className="flex size-6 items-center justify-center rounded-full border font-semibold" aria-hidden>{huruf}</span>
+              <Label className={cn('gap-1.5 font-normal', benar && 'font-medium text-emerald-700 dark:text-emerald-400')}>
+                <input type="radio" name="jawaban-benar" aria-label={`Pilihan ${huruf} jawaban benar`} checked={benar}
+                  disabled={bacaSaja} onChange={() => saatUbah({ ...nilai, benar: indeks })} />
+                {benar ? 'Jawaban benar' : 'Tandai sebagai jawaban benar'}
+              </Label>
+              {!bacaSaja ? (
+                <Button type="button" size="icon-sm" variant="ghost" className="ml-auto" aria-label={`Hapus pilihan ${huruf}`} disabled={nilai.daftar.length <= 2}
+                  onClick={() => hapus(indeks)}><Trash2 /></Button>
+              ) : null}
+            </div>
+            <EditorBlok key={`${indeks}/${nilai.daftar.length}`} label={`Pilihan ${huruf}`} nilai={teks} saatUbah={t => ubahTeks(indeks, t)}
               mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
           </div>
-          {!bacaSaja ? (
-            <Button type="button" size="icon-sm" variant="ghost" aria-label={`Hapus pilihan ${indeks + 1}`} disabled={nilai.daftar.length <= 2}
-              onClick={() => hapus(indeks)}><Trash2 /></Button>
-          ) : null}
-        </div>
-      ))}
+        );
+      })}
       {!bacaSaja ? (
-        <Button type="button" variant="outline" size="sm" className="w-fit" onClick={() => saatUbah({ ...nilai, daftar: [...nilai.daftar, ''] })}>
-          <Plus /> Tambah pilihan
+        <Button type="button" variant="link" size="sm" className="h-auto w-fit p-0" onClick={() => saatUbah({ ...nilai, daftar: [...nilai.daftar, ''] })}>
+          + Tambah pilihan
         </Button>
       ) : null}
-      <p className="text-xs text-muted-foreground">Tandai bulatan di pilihan yang benar.</p>
     </fieldset>
   );
 }

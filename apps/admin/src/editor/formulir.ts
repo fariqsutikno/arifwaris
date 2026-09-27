@@ -35,6 +35,8 @@ export interface Bidang {
   bolehBaru?: boolean;
   /** Apa yang diisi & di mana tampil di web. */
   bantuan?: string;
+  /** Isi awal yang bisa dipakai penulis saat bidang masih kosong (tautan "Pakai templat"). */
+  templat?: string;
   /** Contoh isian: placeholder bidang pendek, baris "Contoh:" untuk bidang panjang. */
   contoh?: string;
   /** Metadata: tampil di panel Info di samping isi, bukan di kolom utama. */
@@ -52,6 +54,21 @@ export interface Bagian {
 const BANTUAN_IDENTITAS = 'Dipakai sebagai alamat tautan di web. Kosongkan: dibuat otomatis dari judul.';
 const BANTUAN_KODE_SOAL = 'Diisi otomatis. Dipakai untuk menyimpan progres latihan pengguna.';
 const BANTUAN_BAB = 'Bab KB yang menjadi dasar isi ini. Dipakai untuk mengelompokkan dan menyaring.';
+
+// Susunan penyelesaian tanya jawab yang disarankan: siapa ahli warisnya, pembagiannya, lalu catatan.
+const TEMPLAT_PENYELESAIAN = `## Ahli waris
+
+- 
+
+## Pembagian
+
+| Ahli waris | Bagian | Alasan |
+| --- | --- | --- |
+|  |  |  |
+
+## Catatan
+
+`;
 
 const blokArab = (jalur: string, label: string): Bidang => ({ jalur, label, jenis: 'markdownBlok', arab: true, opsional: true });
 
@@ -100,9 +117,14 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
         bantuan: 'Satu pertanyaan yang menguji satu konsep. Tulis seperti bertanya ke orang awam.' },
       { jalur: 'pilihan', label: 'Pilihan jawaban', jenis: 'pilihanKuis',
         bantuan: 'Minimal dua, tepat satu yang benar. Pilihan salah sebaiknya kesalahan yang memang sering terjadi, bukan jawaban ngawur.' },
-      { jalur: 'pembahasan', label: 'Pembahasan', jenis: 'markdownPotongan',
-        contoh: 'Istri mendapat 1/8 bila suami punya anak atau cucu dari anak laki-laki. Jumlah istri tidak mengubah besar bagian.',
-        bantuan: 'Tampil setelah pengguna menjawab. Jelaskan kenapa jawaban benar, dan sisipkan dalilnya.' },
+      { jalur: 'pembahasan', label: 'Kenapa jawaban ini benar', jenis: 'markdownPotongan',
+        contoh: 'Istri mendapat 1/8 bila suami punya anak atau cucu dari anak laki-laki.',
+        bantuan: 'Bagian pertama pembahasan, tampil setelah pengguna menjawab. Sisipkan dalilnya.' },
+      { jalur: 'pengecoh', label: 'Kenapa pilihan lain salah', jenis: 'markdownPotongan', opsional: true,
+        contoh: 'Jumlah istri tidak mengubah besar bagian; mereka berbagi rata.',
+        bantuan: 'Luruskan salah paham yang membuat orang memilih jawaban lain.' },
+      { jalur: 'catatan', label: 'Catatan tambahan', jenis: 'markdownPotongan', opsional: true,
+        bantuan: 'Hal kecil yang perlu diingat, tampil paling bawah dengan huruf lebih kecil.' },
       { jalur: 'bab', label: 'Bab', jenis: 'angka', sumberOpsi: 'bab', samping: true, bantuan: BANTUAN_BAB },
       { jalur: 'kode', label: 'Kode soal', jenis: 'teks', samping: true, identitas: { awalan: 'K-' }, bantuan: BANTUAN_KODE_SOAL },
     ] },
@@ -131,8 +153,8 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
         bantuan: 'Satu kalimat di bawah judul pada daftar Tanya jawab.' },
       { jalur: 'kasus', label: 'Kasus', jenis: 'markdownBlok',
         bantuan: 'Cerita kasus seperti yang ditanyakan: siapa yang wafat, siapa ahli warisnya, hartanya apa.' },
-      { jalur: 'penyelesaian', label: 'Penyelesaian', jenis: 'markdownBlok',
-        bantuan: 'Jawaban ustadz atau lembaga fatwa. Hanya isi bila sumbernya jelas.' },
+      { jalur: 'penyelesaian', label: 'Penyelesaian', jenis: 'markdownBlok', templat: TEMPLAT_PENYELESAIAN,
+        bantuan: 'Jawaban ustadz atau lembaga fatwa. Hanya isi bila sumbernya jelas. Pakai templat supaya susunannya seragam.' },
       { jalur: 'jenis', label: 'Bentuk jawaban', jenis: 'pilihan', opsi: ['Saran ustadz', 'Fatwa'], samping: true },
       { jalur: 'sumber', label: 'Sumber', jenis: 'teks', samping: true, contoh: 'Ustadz Fulan, kajian 12 Mei 2025',
         bantuan: 'Siapa yang menjawab dan di mana.' },

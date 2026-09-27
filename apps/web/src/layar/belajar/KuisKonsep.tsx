@@ -12,7 +12,7 @@ import { bacaSkorPaket, catatLatihan, simpanSkorPaket } from '../../progres';
 import { tautanLatihan } from '../../rute';
 import { Ikon } from '../../ui/Ikon';
 import { usePenjaga } from '../../ui/Penjaga';
-import { hurufPilihan, KartuSoalKuis, type ModePembahasan } from './KartuSoalKuis';
+import { hurufPilihan, KartuSoalKuis, PembahasanTambahan, type ModePembahasan } from './KartuSoalKuis';
 import { Sebaris } from './Sebaris';
 import { angka, t } from '../../terjemah';
 
@@ -274,6 +274,7 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
                     <div className="teks-pembahasan">
                       <span className="label-jawaban">{t('hitung.pembahasan')}</span>
                       <p><Sebaris isi={soal.pembahasan} /></p>
+                      <PembahasanTambahan soal={soal} />
                     </div>
                   </div>
                 </details>

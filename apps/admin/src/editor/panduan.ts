@@ -19,7 +19,7 @@ export const PANDUAN_JENIS: Partial<Record<JenisKonten, readonly string[]>> = {
   soal_kuis: [
     'Satu soal menguji satu konsep.',
     'Tepat satu jawaban benar. Pilihan salah sebaiknya kesalahan yang sering terjadi, bukan jawaban ngawur.',
-    'Pembahasan menjelaskan kenapa jawaban benar dan wajib punya dalil.',
+    'Pembahasan: kenapa jawaban benar (wajib, dengan dalil), lalu bila perlu kenapa pilihan lain salah dan catatan singkat.',
   ],
   soal_hitung: [
     'Judul menyebut susunan ahli waris dalam bahasa sehari-hari, tanpa membocorkan topik atau jawaban.',

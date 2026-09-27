@@ -23,5 +23,10 @@ export interface SoalKuis {
   pertanyaan: Potongan[];
   pilihan: Potongan[][];
   indeksBenar: number;
+  /** Kenapa jawaban benar itu benar (wajib, dengan dalil). */
   pembahasan: Potongan[];
+  /** Kenapa pilihan lain salah; opsional. */
+  pengecoh?: Potongan[];
+  /** Catatan tambahan setelah pembahasan; opsional. */
+  catatan?: Potongan[];
 }

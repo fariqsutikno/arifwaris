@@ -26,12 +26,12 @@ test('soal kuis: tambah pilihan, pilih benar, hapus pilihan menggeser indeks ben
   render(<Uji jenis="soal_kuis" awal={nilaiFormKosong('soal_kuis')} />);
   ketik('Kode soal', 'K-1');
   ketik('Bab', '4');
-  ketikMarkdown('Pilihan 1', '1/2');
-  ketikMarkdown('Pilihan 2', '1/4');
-  fireEvent.click(screen.getByRole('button', { name: 'Tambah pilihan' }));
-  ketikMarkdown('Pilihan 3', '1/8');
-  fireEvent.click(screen.getByLabelText('Pilihan 3 benar'));
-  fireEvent.click(screen.getByRole('button', { name: 'Hapus pilihan 1' }));
+  ketikMarkdown('Pilihan A', '1/2');
+  ketikMarkdown('Pilihan B', '1/4');
+  fireEvent.click(screen.getByRole('button', { name: '+ Tambah pilihan' }));
+  ketikMarkdown('Pilihan C', '1/8');
+  fireEvent.click(screen.getByLabelText('Pilihan C jawaban benar'));
+  fireEvent.click(screen.getByRole('button', { name: 'Hapus pilihan A' }));
   const hasil = dariNilaiForm('soal_kuis', 'x', terakhir);
   expect(hasil).toMatchObject({ ok: true, isi: { indeksBenar: 1, pilihan: [[{ teks: '1/4' }], [{ teks: '1/8' }]] } });
 });
@@ -63,4 +63,17 @@ test('mode baca: input readOnly, tanpa tombol tambah', () => {
   render(<Uji jenis="soal_kuis" awal={nilaiFormKosong('soal_kuis')} bacaSaja />);
   expect((screen.getByLabelText('Kode soal') as HTMLInputElement).readOnly).toBe(true);
   expect(screen.queryByRole('button', { name: 'Tambah pilihan' })).toBeNull();
+});
+
+test('soal kuis: bagian pembahasan opsional yang kosong tidak ikut disimpan, yang diisi ikut', () => {
+  render(<Uji jenis="soal_kuis" awal={nilaiFormKosong('soal_kuis')} />);
+  ketik('Kode soal', 'K-1');
+  ketik('Bab', '4');
+  ketikMarkdown('Pilihan A', '1/2');
+  ketikMarkdown('Pilihan B', '1/4');
+  ketikMarkdown('Kenapa jawaban ini benar', 'Karena ada anak.');
+  expect(dariNilaiForm('soal_kuis', 'x', terakhir)).toMatchObject({ ok: true, isi: { pembahasan: [{ teks: 'Karena ada anak.' }] } });
+  expect((dariNilaiForm('soal_kuis', 'x', terakhir) as { isi: object }).isi).not.toHaveProperty('pengecoh');
+  ketikMarkdown('Kenapa pilihan lain salah', 'Jumlah istri tidak berpengaruh.');
+  expect(dariNilaiForm('soal_kuis', 'x', terakhir)).toMatchObject({ ok: true, isi: { pengecoh: [{ teks: 'Jumlah istri tidak berpengaruh.' }] } });
 });

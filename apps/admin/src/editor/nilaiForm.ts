@@ -140,7 +140,11 @@ function tulisBidang(hasil: Objek, bidang: Bidang, nilai: NilaiBidang | undefine
       if (bidang.opsional && teks.trim() === '') return hapus(hasil, bidang.jalur);
       return pasang(hasil, bidang.jalur, bacaBlok(slug, teks));
     }
-    case 'markdownPotongan': return pasang(hasil, bidang.jalur, bacaPotongan(String(nilai ?? '').trim()));
+    case 'markdownPotongan': {
+      const teks = String(nilai ?? '').trim();
+      if (bidang.opsional && teks === '') return hapus(hasil, bidang.jalur);
+      return pasang(hasil, bidang.jalur, bacaPotongan(teks));
+    }
     case 'pilihanKuis': {
       const { daftar, benar } = nilai as NilaiPilihanKuis;
       pasang(hasil, bidang.jalur, daftar.map(teks => bacaPotongan(teks.trim())));

@@ -52,6 +52,7 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
         <div className={benar ? 'hasil-tebak benar' : 'hasil-tebak salah'} role="status">
           <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? t('latihan.benar') : t('latihan.belum_tepat_jawabannya_huruf', { huruf: hurufPilihan(soal.indeksBenar) })}</b>
           <p><Sebaris isi={soal.pembahasan} /></p>
+          <PembahasanTambahan soal={soal} />
         </div>
       )}
       {sudahMenjawab && !saatDijawab && (
@@ -60,5 +61,15 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
         </div>
       )}
     </fieldset>
+  );
+}
+
+/** Bagian opsional pembahasan: kenapa pilihan lain salah, lalu catatan. Dipakai juga di hasil kuis konsep. */
+export function PembahasanTambahan({ soal }: { soal: SoalKuis }) {
+  return (
+    <>
+      {soal.pengecoh?.length ? <p><b>{t('latihan.kenapa_pilihan_lain_salah')}:</b> <Sebaris isi={soal.pengecoh} /></p> : null}
+      {soal.catatan?.length ? <p className="keterangan"><b>{t('umum.catatan')}</b> <Sebaris isi={soal.catatan} /></p> : null}
+    </>
   );
 }
