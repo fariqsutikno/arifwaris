@@ -128,6 +128,8 @@ test('baris menampilkan info ringkas: kelompok & pembuat', async () => {
 test('aksi massal: pilih semua → Ajukan hanya draf yang boleh diajukan', async () => {
   const m = await siapkan();
   pasang(m, 'faq', 'faq');
+  expect(screen.queryByLabelText(/Pilih semua yang tampil/)).toBeNull();
+  fireEvent.click(await screen.findByRole('button', { name: 'Pilih beberapa' }));
   fireEvent.click(await screen.findByLabelText(/Pilih semua yang tampil/));
   expect(screen.getByText('2 dipilih')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Ajukan (1)' }));
@@ -148,6 +150,7 @@ test('aksi massal reviewer: Setujui setelah konfirmasi; yang gagal dilaporkan', 
       <LayarMenu menu="faq" tab="faq" />
     </KonteksRepo.Provider>,
   );
+  fireEvent.click(await screen.findByRole('button', { name: 'Pilih beberapa' }));
   fireEvent.click(await screen.findByLabelText('Pilih Siapa ashabah?'));
   expect(screen.queryByRole('button', { name: /^Ajukan/ })).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: 'Setujui (1)' }));
@@ -172,4 +175,14 @@ test('angka tab status mengikuti cari yang aktif', async () => {
   fireEvent.change(screen.getByRole('searchbox', { name: 'Cari' }), { target: { value: 'tirkah' } });
   expect(screen.getByRole('tab', { name: 'Semua 1' })).toBeTruthy();
   location.hash = '';
+});
+
+test('saring lewat tombol Saring: chip aktif bisa dihapus', async () => {
+  pasang(await siapkan(), 'faq', 'faq');
+  await screen.findByText('Apa itu tirkah?');
+  fireEvent.click(screen.getByRole('button', { name: 'Saring' }));
+  fireEvent.click(await screen.findByLabelText('Hanya milik saya'));
+  expect(screen.getByRole('button', { name: /^Saring/ }).textContent).toBe('Saring1');
+  fireEvent.click(screen.getByRole('button', { name: 'Hapus saring Milik saya' }));
+  expect(screen.queryByRole('button', { name: 'Hapus saring Milik saya' })).toBeNull();
 });

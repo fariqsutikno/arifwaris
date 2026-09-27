@@ -1,7 +1,7 @@
 // Layar menu konten (spec tahap A "Daftar konten"): kepala (jejak grup, judul menu, tombol buat baru), tab jenis
 // untuk menu bertab, lalu daftar entri dengan tab status + jumlah, cari (judul/slug/ref), urut, saring lanjutan
-// (milik saya, bab/tingkat/kelompok, perlu dicek), dan baris berstatus + info ringkas. Saring & urut tersimpan di URL
-// (replaceState, tanpa memicu pindah rute). Centang baris → aksi massal Ajukan/Setujui (hanya yang diizinkan
+// (tombol Saring: milik saya, bab/tingkat/kelompok, perlu dicek; chip saring aktif), dan baris berstatus + info ringkas. Saring & urut tersimpan di URL
+// (replaceState, tanpa memicu pindah rute). "Pilih beberapa" menyalakan centang baris → aksi massal Ajukan/Setujui (hanya yang diizinkan
 // transisiRevisi; database tetap penjaga). Menu materi mengelompokkan materi di bawah modulnya. Urutan diubah lewat mode
 // "Atur urutan" (admin/penulis): seret & naik/turun hanya mengubah susunan lokal, lalu Simpan urutan mengirim satu
 // kali. Data dari repo.konten.daftarEntri; perhitungan di ringkas.ts.
@@ -9,7 +9,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ArrowUpDown, ChevronDown, ChevronUp, GripVertical, Pencil, Plus, Search } from 'lucide-react';
+import { ChevronDown, ChevronUp, GripVertical, ListFilter, Pencil, Plus, Search, X } from 'lucide-react';
 import { JUDUL_BAB, transisiRevisi, type JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -19,12 +19,13 @@ import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LABEL_ISI, menuDari, type IsiMenu, type KunciMenu } from '../navigasi';
 import {
-  adaSaringLanjut, bacaSaring, saringTanpaStatus, diSampah, indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, LABEL_URUTAN, nilaiBerbeda,
+  bacaSaring, saringTanpaStatus, diSampah, indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, LABEL_URUTAN, nilaiBerbeda,
   nilaiIsi, pindahkan, SARING_AWAL, statusTampil, TAB_STATUS, tanggalLengkap, terapkanSaring, tulisSaring, waktuRelatif,
   type BidangSaring, type GrupModul, type SaringDaftar, type UrutanDaftar,
 } from '../ringkas';
@@ -98,6 +99,8 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
   const [saring, setSaring] = useState<SaringDaftar>(saringAwal);
+  // Mode pilih (kotak centang + aksi massal) hanya menyala lewat "Pilih beberapa", supaya daftar biasa tetap tenang.
+  const [modePilih, setModePilih] = useState(false);
   const [terpilih, setTerpilih] = useState<ReadonlySet<string>>(new Set());
   const [sibukMassal, setSibukMassal] = useState<AksiMassal | null>(null);
   const [hasilMassal, setHasilMassal] = useState<{ jenis: 'sukses' | 'galat'; teks: string } | null>(null);
@@ -138,6 +141,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
     if (!daftar) return;
     ubahSaring(SARING_AWAL);
     setTerpilih(new Set());
+    setModePilih(false);
     setGalatUrutan(null);
     setUrutanDraf(daftar);
   }
@@ -212,6 +216,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   const jumlah = jumlahPerTab(saringTanpaStatus(daftar, saring, sesi.userId));
   const tampil = urutanDraf ?? terapkanSaring(daftar, saring, sesi.userId);
   const bolehAturUrutan = peran !== 'reviewer' && saring.status !== 'sampah' && daftar.length > 1;
+  const bolehPilih = saring.status !== 'sampah' && tampil.length > 0;
   // Di tab Sampah tiap baris punya tombol Pulihkan. Izin pastinya (pembuat semua revisi) dijaga repo/database;
   // galatnya ditampilkan di atas daftar.
   async function pulihkan(entri: RingkasanEntri) {
@@ -233,7 +238,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
     aksi: saring.status === 'sampah' ? entri => (
       <Button variant="outline" size="sm" onClick={() => void pulihkan(entri)}>Pulihkan</Button>
     ) : undefined,
-    pilih: modeUrutan || saring.status === 'sampah' ? null : {
+    pilih: !modePilih || modeUrutan || saring.status === 'sampah' ? null : {
       terpilih,
       saatUbah: (entriId, pilih) => setTerpilih(sekarang => {
         const baru = new Set(sekarang);
@@ -258,7 +263,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
       ) : (
         <>
           <div className="flex flex-wrap items-center gap-2">
-            <Tabs value={saring.status} onValueChange={nilai => ubahSaring({ status: nilai as SaringDaftar['status'] })} className="min-w-0 overflow-x-auto">
+            <Tabs value={saring.status} onValueChange={nilai => ubahSaring({ status: nilai as SaringDaftar['status'] })} className="min-w-0 overflow-x-auto overflow-y-hidden [scrollbar-width:none]">
               <TabsList aria-label="Status">
                 {TAB_STATUS.map(t => (
                   <TabsTrigger key={t} value={t} title={t === 'draf' || t === 'terbit' ? KETERANGAN_TERBIT_DRAF : undefined}>
@@ -267,11 +272,25 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
                 ))}
               </TabsList>
             </Tabs>
-            {bolehAturUrutan ? (
-              <Button size="sm" variant="outline" className="ml-auto" onClick={mulaiAturUrutan}><ArrowUpDown />Atur urutan</Button>
-            ) : null}
           </div>
           <BilahSaring jenis={jenis} menuMateri={menuMateri} daftar={daftar} saring={saring} ubah={ubahSaring} />
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 px-1 text-sm text-muted-foreground">
+            {modePilih && tampil.length > 0 ? (
+              <Label className="gap-2 font-normal">
+                <input type="checkbox" className="size-4 accent-primary" checked={semuaTampilDipilih}
+                  onChange={e => setTerpilih(e.target.checked ? new Set(tampil.map(entri => entri.entriId)) : new Set())} />
+                Pilih semua yang tampil ({tampil.length})
+              </Label>
+            ) : <span>{tampil.length} entri</span>}
+            <span className="flex gap-4">
+              {bolehPilih ? (
+                <Button variant="link" size="sm" className="h-auto p-0" onClick={() => { setModePilih(!modePilih); setTerpilih(new Set()); }}>
+                  {modePilih ? 'Selesai memilih' : 'Pilih beberapa'}
+                </Button>
+              ) : null}
+              {bolehAturUrutan ? <Button variant="link" size="sm" className="h-auto p-0" onClick={mulaiAturUrutan}>Atur urutan</Button> : null}
+            </span>
+          </div>
           {dipilih.length > 0 ? (
             <div className="sticky top-0 z-10 flex flex-wrap items-center gap-2 rounded-lg border bg-muted/95 px-4 py-2 backdrop-blur" role="toolbar" aria-label="Aksi massal">
               <b className="text-sm">{dipilih.length} dipilih</b>
@@ -308,13 +327,6 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
         </p>
       ) : null}
       {galatUrutan ? <Alert variant="destructive" role="alert"><AlertDescription>{galatUrutan}</AlertDescription></Alert> : null}
-      {!modeUrutan && tampil.length > 0 ? (
-        <Label className="flex w-fit items-center gap-2 px-4 text-sm font-normal text-muted-foreground">
-          <input type="checkbox" className="size-4 accent-primary" checked={semuaTampilDipilih}
-            onChange={e => setTerpilih(e.target.checked ? new Set(tampil.map(entri => entri.entriId)) : new Set())} />
-          Pilih semua yang tampil ({tampil.length})
-        </Label>
-      ) : null}
       {menuMateri
         ? kelompokkanPerModul(tampil, modul.filter(entri => !diSampah(entri)), isiModulTerbit).map(grup => (
           <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} baris={baris} bolehSeret={modeUrutan} saatPindah={pindahLokal}
@@ -329,51 +341,68 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   );
 }
 
-/** Cari, urut, dan saring lanjutan (milik saya, bidang per jenis, perlu dicek untuk materi). */
+/** Satu bilah: cari, tombol Saring (popover berisi milik saya, bidang per jenis, perlu dicek), dan urutan; saring aktif
+ * tampil sebagai chip yang bisa dihapus satu per satu. */
 function BilahSaring({ jenis, menuMateri, daftar, saring, ubah }: {
   jenis: JenisKonten; menuMateri: boolean; daftar: RingkasanEntri[]; saring: SaringDaftar; ubah: (perubahan: Partial<SaringDaftar>) => void;
 }) {
-  const ubahBidang = (kunci: BidangSaring, nilai: string) => ubah({ bidang: { ...saring.bidang, [kunci]: nilai || undefined } });
+  const ubahBidang = (kunci: BidangSaring, nilai: string | undefined) => ubah({ bidang: { ...saring.bidang, [kunci]: nilai || undefined } });
   const labelNilai = (kunci: BidangSaring, nilai: string) => (kunci === 'bab' ? `Bab ${nilai}${JUDUL_BAB[Number(nilai)] ? ` · ${JUDUL_BAB[Number(nilai)]}` : ''}` : nilai);
+  const chip: { label: string; hapus: () => void }[] = [
+    ...(saring.milikSaya ? [{ label: 'Milik saya', hapus: () => ubah({ milikSaya: false }) }] : []),
+    ...(saring.perluCek ? [{ label: 'Perlu dicek', hapus: () => ubah({ perluCek: false }) }] : []),
+    ...(Object.entries(saring.bidang) as [BidangSaring, string | undefined][]).flatMap(([kunci, nilai]) =>
+      nilai ? [{ label: `${LABEL_BIDANG_SARING[kunci]}: ${labelNilai(kunci, nilai)}`, hapus: () => ubahBidang(kunci, undefined) }] : []),
+  ];
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-center gap-2">
-        <label className="relative block min-w-60 flex-1">
+        <label className="relative block min-w-52 flex-1">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-          <Input type="search" aria-label="Cari" className="pl-9" placeholder="Cari judul, slug, atau kode rujukan"
+          <Input type="search" aria-label="Cari" className="pl-9" placeholder="Cari judul atau alamat"
             value={saring.cari} onChange={e => ubah({ cari: e.target.value })} />
         </label>
-        <Label className="gap-2 text-sm font-normal">
-          Urutkan
-          <NativeSelect aria-label="Urutkan" value={saring.urut} onChange={e => ubah({ urut: e.target.value as UrutanDaftar })}>
-            {(Object.keys(LABEL_URUTAN) as UrutanDaftar[]).map(u => <NativeSelectOption key={u} value={u}>{LABEL_URUTAN[u]}</NativeSelectOption>)}
-          </NativeSelect>
-        </Label>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline"><ListFilter />Saring{chip.length ? <Badge className="ml-0.5 h-4 px-1.5">{chip.length}</Badge> : null}</Button>
+          </PopoverTrigger>
+          <PopoverContent aria-label="Saring" className="grid gap-3 text-sm">
+            <Label className="gap-2 font-normal">
+              <input type="checkbox" className="size-4 accent-primary" checked={saring.milikSaya} onChange={e => ubah({ milikSaya: e.target.checked })} />
+              Hanya milik saya
+            </Label>
+            {menuMateri ? (
+              <Label className="gap-2 font-normal">
+                <input type="checkbox" className="size-4 accent-primary" checked={saring.perluCek} onChange={e => ubah({ perluCek: e.target.checked })} />
+                Perlu dicek tim keilmuan
+              </Label>
+            ) : null}
+            {(BIDANG_SARING_JENIS[jenis] ?? []).map(kunci => (
+              <Label key={kunci} className="grid gap-1.5 font-normal">
+                {LABEL_BIDANG_SARING[kunci]}
+                <NativeSelect className="w-full" value={saring.bidang[kunci] ?? ''} onChange={e => ubahBidang(kunci, e.target.value)}>
+                  <NativeSelectOption value="">Semua</NativeSelectOption>
+                  {nilaiBerbeda(daftar, kunci).map(nilai => <NativeSelectOption key={nilai} value={nilai}>{labelNilai(kunci, nilai)}</NativeSelectOption>)}
+                </NativeSelect>
+              </Label>
+            ))}
+          </PopoverContent>
+        </Popover>
+        <NativeSelect aria-label="Urutkan" value={saring.urut} onChange={e => ubah({ urut: e.target.value as UrutanDaftar })}>
+          {(Object.keys(LABEL_URUTAN) as UrutanDaftar[]).map(u => <NativeSelectOption key={u} value={u}>{LABEL_URUTAN[u]}</NativeSelectOption>)}
+        </NativeSelect>
       </div>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-        <Label className="gap-2 font-normal">
-          <input type="checkbox" className="size-4 accent-primary" checked={saring.milikSaya} onChange={e => ubah({ milikSaya: e.target.checked })} />
-          Milik saya
-        </Label>
-        {menuMateri ? (
-          <Label className="gap-2 font-normal">
-            <input type="checkbox" className="size-4 accent-primary" checked={saring.perluCek} onChange={e => ubah({ perluCek: e.target.checked })} />
-            Perlu dicek tim keilmuan
-          </Label>
-        ) : null}
-        {(BIDANG_SARING_JENIS[jenis] ?? []).map(kunci => (
-          <Label key={kunci} className="gap-2 font-normal">
-            {LABEL_BIDANG_SARING[kunci]}
-            <NativeSelect size="sm" value={saring.bidang[kunci] ?? ''} onChange={e => ubahBidang(kunci, e.target.value)}>
-              <NativeSelectOption value="">Semua</NativeSelectOption>
-              {nilaiBerbeda(daftar, kunci).map(nilai => <NativeSelectOption key={nilai} value={nilai}>{labelNilai(kunci, nilai)}</NativeSelectOption>)}
-            </NativeSelect>
-          </Label>
-        ))}
-        {adaSaringLanjut(saring) ? (
-          <Button variant="link" size="sm" className="h-auto p-0" onClick={() => ubah({ milikSaya: false, perluCek: false, bidang: {} })}>Reset saring</Button>
-        ) : null}
-      </div>
+      {chip.length ? (
+        <div className="flex flex-wrap items-center gap-1.5 text-sm">
+          {chip.map(({ label, hapus }) => (
+            <Badge key={label} variant="secondary" className="gap-1">
+              {label}
+              <button type="button" className="rounded-sm hover:text-destructive" aria-label={`Hapus saring ${label}`} onClick={hapus}><X className="size-3" /></button>
+            </Badge>
+          ))}
+          <Button variant="link" size="sm" className="h-auto p-0" onClick={() => ubah({ milikSaya: false, perluCek: false, bidang: {} })}>Hapus semua saring</Button>
+        </div>
+      ) : null}
     </div>
   );
 }

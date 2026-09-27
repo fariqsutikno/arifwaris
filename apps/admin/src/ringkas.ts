@@ -86,9 +86,6 @@ export function tulisSaring(saring: SaringDaftar): Record<string, string> {
   return kueri;
 }
 
-export const adaSaringLanjut = (saring: SaringDaftar): boolean =>
-  saring.milikSaya || saring.perluCek || Object.values(saring.bidang).some(Boolean);
-
 /** Nilai satu bidang isi revisi terakhir sebagai teks ('' bila tidak ada). */
 export function nilaiIsi(entri: RingkasanEntri, kunci: string): string {
   const nilai = (entri.revisiTerakhir?.isi as Record<string, unknown> | undefined)?.[kunci];
