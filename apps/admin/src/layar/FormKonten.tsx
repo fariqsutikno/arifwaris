@@ -9,11 +9,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { Textarea } from '@/components/ui/textarea';
-import { FORM_KONTEN, type Bidang, type SumberOpsi } from '../editor/formulir';
+import { FORM_KONTEN, type Bidang, type Opsi, type SumberOpsi } from '../editor/formulir';
 import type { NilaiBidang, NilaiForm, NilaiPilihanKuis } from '../editor/nilaiForm';
+import { EditorBlok } from './EditorBlok';
 import { EditorKasus } from './EditorKasus';
 
-export interface Opsi { nilai: string; label: string }
+export type { Opsi };
 export type OpsiRuntime = Record<SumberOpsi, Opsi[]>;
 
 interface Props {
@@ -27,6 +28,8 @@ interface Props {
 
 export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi }: Props) {
   const ubah = (jalur: string, nilai: NilaiBidang) => saatUbah({ ...form, nilai: { ...form.nilai, [jalur]: nilai } });
+  // Slug hanya untuk pesan galat bacaBlok; istilah untuk sisipan di editor blok.
+  const konteks: KonteksEditor = { slug: String(form.nilai.slug || form.nilai.id || form.nilai.kode || jenis), istilah: opsi.istilah };
   return (
     <div className="grid gap-6">
       {FORM_KONTEN[jenis].map((bagian, i) => {
@@ -47,7 +50,7 @@ export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi 
             ) : null}
             {aktif ? bagian.bidang.map(bidang => (
               <BidangForm key={bidang.jalur} bidang={bidang} nilai={form.nilai[bidang.jalur]} saatUbah={nilai => ubah(bidang.jalur, nilai)}
-                bacaSaja={bacaSaja} galat={galatBidang[bidang.jalur]} opsi={bidang.sumberOpsi ? opsi[bidang.sumberOpsi] : undefined} />
+                bacaSaja={bacaSaja} galat={galatBidang[bidang.jalur]} opsi={bidang.sumberOpsi ? opsi[bidang.sumberOpsi] : undefined} konteks={konteks} />
             )) : null}
           </section>
         );
@@ -56,12 +59,14 @@ export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi 
   );
 }
 
+interface KonteksEditor { slug: string; istilah: Opsi[] }
+
 interface PropsBidang {
   bidang: Bidang; nilai: NilaiBidang | undefined; saatUbah: (nilai: NilaiBidang) => void;
-  bacaSaja: boolean; galat: string | undefined; opsi: Opsi[] | undefined;
+  bacaSaja: boolean; galat: string | undefined; opsi: Opsi[] | undefined; konteks: KonteksEditor;
 }
 
-function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi }: PropsBidang) {
+function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks }: PropsBidang) {
   const arah = bidang.arab ? { dir: 'rtl' as const, lang: 'ar' } : {};
   const teks = typeof nilai === 'string' ? nilai : '';
   const label = bidang.opsional ? `${bidang.label} (opsional)` : bidang.label;
@@ -71,7 +76,17 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi }: PropsBid
     case 'barisAhwal':
       return <Bungkus galat={galat}><EditorBarisAhwal label={label} nilai={nilai as BarisAhwal[]} saatUbah={saatUbah} bacaSaja={bacaSaja} /></Bungkus>;
     case 'pilihanKuis':
-      return <Bungkus galat={galat}><EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} /></Bungkus>;
+      return <Bungkus galat={galat}><EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} konteks={konteks} /></Bungkus>;
+    case 'markdownBlok': case 'markdownPotongan':
+      return (
+        <Bungkus galat={galat}>
+          <div className="grid gap-1.5">
+            <span className="text-sm font-medium">{label}</span>
+            <EditorBlok label={bidang.label} nilai={teks} saatUbah={saatUbah} mode={bidang.jenis === 'markdownBlok' ? 'blok' : 'potongan'}
+              slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} arab={bidang.arab} galat={!!galat} bantuanMarkdown={bidang.bantuan} />
+          </div>
+        </Bungkus>
+      );
     case 'centang':
       return (
         <Bungkus galat={galat}>
@@ -109,10 +124,8 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi }: PropsBid
         </>
       );
     }
-    if (bidang.jenis === 'teksPanjang' || bidang.jenis === 'markdownBlok' || bidang.jenis === 'markdownPotongan') {
-      const baris = bidang.jenis === 'markdownBlok' ? 14 : bidang.jenis === 'teksPanjang' ? 3 : 2;
-      const kelas = bidang.jenis === 'markdownBlok' ? 'font-mono text-sm' : undefined;
-      return <Textarea rows={baris} className={kelas} value={teks} readOnly={bacaSaja} onChange={e => saatUbah(e.target.value)} {...arah} {...galatAria} />;
+    if (bidang.jenis === 'teksPanjang') {
+      return <Textarea rows={3} value={teks} readOnly={bacaSaja} onChange={e => saatUbah(e.target.value)} {...arah} {...galatAria} />;
     }
     const tipe = bidang.jenis === 'tautan' ? 'url' : 'text';
     const mode = bidang.jenis === 'angka' ? 'numeric' as const : undefined;
@@ -130,7 +143,9 @@ function Bungkus({ galat, bantuan, children }: { galat: string | undefined; bant
   );
 }
 
-function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja }: { label: string; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean }) {
+interface PropsPilihanKuis { label: string; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean; konteks: KonteksEditor }
+
+function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsPilihanKuis) {
   const ubahTeks = (indeks: number, teks: string) => saatUbah({ ...nilai, daftar: nilai.daftar.map((t, i) => (i === indeks ? teks : t)) });
   const hapus = (indeks: number) => saatUbah({
     daftar: nilai.daftar.filter((_, i) => i !== indeks),
@@ -143,7 +158,10 @@ function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja }: { label: string
         <div key={indeks} className="flex items-center gap-2">
           <input type="radio" name="jawaban-benar" aria-label={`Pilihan ${indeks + 1} benar`} checked={nilai.benar === indeks}
             disabled={bacaSaja} onChange={() => saatUbah({ ...nilai, benar: indeks })} />
-          <Input aria-label={`Pilihan ${indeks + 1}`} value={teks} readOnly={bacaSaja} onChange={e => ubahTeks(indeks, e.target.value)} />
+          <div className="min-w-0 flex-1">
+            <EditorBlok key={`${indeks}/${nilai.daftar.length}`} label={`Pilihan ${indeks + 1}`} nilai={teks} saatUbah={t => ubahTeks(indeks, t)}
+              mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
+          </div>
           {!bacaSaja ? (
             <Button type="button" size="icon-sm" variant="ghost" aria-label={`Hapus pilihan ${indeks + 1}`} disabled={nilai.daftar.length <= 2}
               onClick={() => hapus(indeks)}><Trash2 /></Button>

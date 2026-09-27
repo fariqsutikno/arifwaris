@@ -7,6 +7,9 @@ export type JenisBidang =
   | 'teks' | 'teksPanjang' | 'angka' | 'pilihan' | 'centang' | 'tautan'
   | 'markdownBlok' | 'markdownPotongan' | 'pilihanKuis' | 'kasus' | 'barisAhwal';
 
+/** Satu opsi dropdown runtime. */
+export interface Opsi { nilai: string; label: string }
+
 /** Sumber opsi yang baru diketahui saat runtime (daftar modul, kelompok FAQ, istilah glosarium). */
 export type SumberOpsi = 'modul' | 'kelompokFaq' | 'istilah';
 

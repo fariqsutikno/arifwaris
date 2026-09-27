@@ -22,11 +22,16 @@ function tampilkan(m: Memori, props: { entriId: string } | { jenis: 'faq' | 'soa
 const isiJson = (teks: string) => fireEvent.change(screen.getByRole('textbox', { name: 'JSON' }), { target: { value: teks } });
 const bukaTab = (nama: 'Form' | 'JSON') => fireEvent.mouseDown(screen.getByRole('tab', { name: nama }));
 const ketik = (label: string, nilai: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: nilai } });
+/** Bidang blok/potongan memakai editor rich text; tes mengetik lewat mode Markdown-nya. */
+function ketikMarkdown(label: string, nilai: string) {
+  fireEvent.click(screen.getByRole('button', { name: `Sunting ${label} sebagai Markdown` }));
+  ketik(`${label} (Markdown)`, nilai);
+}
 function isiFormFaq() {
   ketik('Id', 'apa-itu-tirkah');
   ketik('Kelompok', 'Fikih');
   ketik('Pertanyaan', 'Apa itu tirkah?');
-  ketik('Jawaban', 'Harta peninggalan.');
+  ketikMarkdown('Jawaban', 'Harta peninggalan.');
 }
 const simpan = () => fireEvent.click(screen.getByRole('button', { name: 'Simpan draf' }));
 

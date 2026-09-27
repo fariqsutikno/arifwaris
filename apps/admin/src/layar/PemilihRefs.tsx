@@ -20,7 +20,7 @@ export function PemilihRefs({ nilai, saatUbah, bacaSaja = false }: { nilai: stri
     repo.konten.daftarRefs().then(setDaftarRefs).catch(e => setGalat(e instanceof Error ? e.message : String(e)));
   }, [repo]);
 
-  const saran = cari.trim() ? daftarRefs.filter(ref => !nilai.includes(ref.kode) && cocok(ref, cari)).slice(0, BATAS_SARAN) : [];
+  const saran = cari.trim() ? daftarRefs.filter(ref => !nilai.includes(ref.kode) && cocokRef(ref, cari)).slice(0, BATAS_SARAN) : [];
 
   return (
     <fieldset className="grid gap-2">
@@ -56,7 +56,7 @@ export function PemilihRefs({ nilai, saatUbah, bacaSaja = false }: { nilai: stri
   );
 }
 
-function cocok(ref: { kode: string; bab: number }, cari: string): boolean {
+export function cocokRef(ref: { kode: string; bab: number }, cari: string): boolean {
   const bab = /^bab\s*(\d+)$/i.exec(cari.trim());
   return bab ? ref.bab === Number(bab[1]) : ref.kode.toLowerCase().includes(cari.trim().toLowerCase());
 }
