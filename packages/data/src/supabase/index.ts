@@ -50,8 +50,9 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return (await hasil(klien.from('revisi').select('*').eq('entri_id', entriId).order('dibuat_pada')) as any[]).map(keRevisi);
     },
     async daftarEntri(jenis) {
-      const kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)')
-        .eq('jenis', jenis).order('urutan').order('slug');
+      let kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, revisi!revisi_entri_id_fkey(*)');
+      if (jenis !== undefined) kueri = kueri.eq('jenis', jenis);
+      kueri = kueri.order('urutan').order('slug');
       return (await hasil(kueri) as any[]).map(keRingkasanEntri);
     },
     async daftarRefs() { return (await hasil(klien.from('daftar_refs').select('kode, bab').order('kode'))) as { kode: string; bab: number }[]; },

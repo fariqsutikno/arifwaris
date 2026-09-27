@@ -99,7 +99,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     // Tidak menyaring baris belum terbit menurut peran: RLS Postgres menyembunyikannya dari pengguna tanpa peran,
     // tapi gerbang portal (Portal.tsx) sudah menolak pengguna tanpa peran sebelum layar ini terpanggil.
     async daftarEntri(jenis) {
-      return [...entri.values()].filter(baris => baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
+      return [...entri.values()].filter(baris => jenis === undefined || baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
         .map((baris): RingkasanEntri => ({
           entriId: baris.id, jenis: baris.jenis, slug: baris.slug, urutan: baris.urutan, revisiTerbitId: baris.revisiTerbitId,
           revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),

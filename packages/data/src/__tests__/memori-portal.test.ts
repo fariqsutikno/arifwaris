@@ -22,6 +22,14 @@ test('daftarEntri memuat revisi terakhir dan terbit', async () => {
   expect(entri).toMatchObject({ entriId: id, revisiTerbitId: r1, revisiTerakhir: { id: r2, status: 'draf' } });
 });
 
+test('daftarEntri tanpa jenis memuat semua jenis', async () => {
+  const m = siapkan();
+  await m.editorial.buatEntri('soal_hitung', 'h', 10);
+  await m.editorial.buatEntri('faq', 'f', 10);
+  expect((await m.konten.daftarEntri()).map(entri => entri.jenis).sort()).toEqual(['faq', 'soal_hitung']);
+  expect((await m.konten.daftarEntri('faq')).map(entri => entri.slug)).toEqual(['f']);
+});
+
 test('aturPeran lewat email; email tak dikenal ditolak', async () => {
   const m = siapkan();
   await m.akun.aturPeran('rev@x.id', 'reviewer');

@@ -29,8 +29,9 @@ export interface RepositoriKonten {
   /** Hanya revisi terbit; isi tidak valid dibuang (console.warn), tidak melempar. */
   bacaTerbit(saring?: { jenis?: JenisKonten; sejakVersi?: number }): Promise<KontenTerbit[]>;
   daftarRevisi(entriId: string): Promise<RingkasanRevisi[]>;
-  /** Untuk portal admin: semua entri satu jenis, urut `urutan` lalu slug, dengan revisi terakhir & terbit. */
-  daftarEntri(jenis: JenisKonten): Promise<RingkasanEntri[]>;
+  /** Untuk portal admin: entri satu jenis (tanpa jenis = semua jenis, satu kueri), urut `urutan` lalu slug,
+   * dengan revisi terakhir & terbit. */
+  daftarEntri(jenis?: JenisKonten): Promise<RingkasanEntri[]>;
   daftarRefs(): Promise<{ kode: string; bab: number }[]>;
 }
 export interface RepositoriEditorial {
