@@ -5,9 +5,9 @@
 const UUID = /\s*[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\s*/gi;
 
 const TERJEMAHAN: [RegExp, string | ((cocok: RegExpMatchArray) => string)][] = [
-  [/wajib punya minimal satu ref/i, 'Tambahkan minimal satu rujukan di bagian Refs.'],
-  [/ref tidak ada di KB: (.+)/i, cocok => `Rujukan ${cocok[1]} tidak ada di KB. Pilih rujukan dari daftar.`],
-  [/duplicate key|23505|unique constraint/i, 'Alamat atau kode ini sudah dipakai entri lain. Ganti slug/kode entri ini.'],
+  [/wajib punya minimal satu ref/i, 'Tambahkan minimal satu rujukan di bagian Rujukan dalil.'],
+  [/ref tidak ada di KB: (.+)/i, cocok => 'Ada rujukan yang tidak dikenal. Pilih rujukan dari daftar.'],
+  [/duplicate key|23505|unique constraint/i, 'Alamat tautan atau kode ini sudah dipakai entri lain. Ganti alamat tautan/kode entri ini.'],
   [/failed to fetch|networkerror|fetch failed|load failed/i, 'Tidak tersambung ke server. Periksa koneksi internet lalu coba lagi.'],
   [/jwt|not authenticated|belum masuk/i, 'Sesi Anda sudah habis. Keluar lalu masuk lagi.'],
   [/permission denied|row-level security|42501/i, 'Anda tidak punya izin untuk tindakan ini.'],

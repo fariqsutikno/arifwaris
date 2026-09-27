@@ -90,3 +90,13 @@ test('soal kuis: pilihan & jawaban benar', () => {
 test('form kosong setiap jenis tidak melempar', () => {
   for (const jenis of JENIS_KONTEN) expect(() => nilaiFormKosong(jenis)).not.toThrow();
 });
+
+test('syahid: potongan yang tidak persis ada di teks ayat → galat di bidang potongan; ayat tak dikenal → galat di bidang ayat', () => {
+  const [, , isi] = semuaEntri.find(([, jenis]) => jenis === 'syahid')!;
+  const form = keNilaiForm('syahid', isi as never);
+  expect(dariNilaiForm('syahid', 's', form).ok).toBe(true);
+  const salah = dariNilaiForm('syahid', 's', { ...form, nilai: { ...form.nilai, syahid: 'بسم' } });
+  expect(!salah.ok && salah.galatBidang.syahid).toMatch(/tidak ditemukan persis/);
+  const ayatLain = dariNilaiForm('syahid', 's', { ...form, nilai: { ...form.nilai, ayat: '99' } });
+  expect(!ayatLain.ok && ayatLain.galatBidang.ayat).toMatch(/belum ada di daftar ayat/);
+});

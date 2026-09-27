@@ -3,7 +3,7 @@
 import type { JenisKonten } from '@waris/content';
 
 export const PANDUAN_UMUM: readonly string[] = [
-  'Sumber hukum hanya KB madzhab Syafi\'i. Pendapat lain boleh disebut sebagai perbandingan, dengan keterangan jelas.',
+  'Sumber hukum hanya rujukan madzhab Syafi\'i yang ada di aplikasi. Pendapat lain boleh disebut sebagai perbandingan, dengan keterangan jelas.',
   'Setiap klaim hukum diberi dalil lewat tombol Sisip rujukan. Hal yang masih dikaji jangan dijawab; arahkan ke ahli.',
   'Pembaca utama orang awam: kalimat pendek, satu paragraf satu gagasan, istilah Arab dijelaskan saat pertama muncul.',
   'Contoh angka pakai harta Rp 120.000.000 supaya mudah dibagi 6, 8, 12, dan 24.',
@@ -28,9 +28,9 @@ export const PANDUAN_JENIS: Partial<Record<JenisKonten, readonly string[]>> = {
   tanya_jawab: ['Hanya isi dengan jawaban yang sumbernya jelas (ustadz atau lembaga fatwa), dan sebut sumbernya.'],
   faq: [
     'Tulis pertanyaan seperti orang awam bertanya. Kalimat pertama jawaban langsung menjawab.',
-    'Kelompok Fikih wajib punya dalil. Pertanyaan yang belum dibahas KB dijawab: "belum dibahas di aplikasi ini, tanyakan ke ustadz atau lembaga yang berwenang".',
+    'Kelompok Fikih wajib punya dalil. Pertanyaan yang belum dibahas rujukan aplikasi dijawab: "belum dibahas di aplikasi ini, tanyakan ke ustadz atau lembaga yang berwenang".',
   ],
-  kitab: ['Judul sama dengan KB bab 17.2. Tautan hanya ke situs resmi atau legal.'],
-  syahid: ['Potongan ayat harus sama persis dengan KB bab 1.2, termasuk harakat. Salin langsung dari KB.'],
-  glosarium_ar: ['Hanya menerjemahkan makna di glosarium KB; jangan menambah hukum.'],
+  kitab: ['Judul dipilih dari daftar kitab rujukan. Tautan hanya ke situs resmi atau legal.'],
+  syahid: ['Potongan ayat harus sama persis dengan teks ayatnya, termasuk harakat. Salin langsung dari teks ayat.'],
+  glosarium_ar: ['Hanya menerjemahkan makna di glosarium; jangan menambah hukum.'],
 };

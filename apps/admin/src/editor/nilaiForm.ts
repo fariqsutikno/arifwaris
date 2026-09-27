@@ -3,7 +3,7 @@
 // angka dari teks, kosong → hapus/null). Isi asal dipakai sebagai dasar supaya field tanpa bidang (mis. urutan materi)
 // tidak hilang. Hasil akhir SELALU lewat bacaIsi (Zod); galat dikembalikan per jalur bidang, tidak dilempar.
 import {
-  bacaBlok, bacaIsi, bacaPotongan, keJson, tulisBlok, tulisPotongan,
+  bacaBlok, bacaIsi, bacaPotongan, DAFTAR_AYAT, keJson, tulisBlok, tulisPotongan,
   type BarisAhwal, type Blok, type ContohKasus, type IsiKonten, type JenisKonten, type Potongan,
 } from '@waris/content';
 import { FORM_KONTEN, ISI_AWAL, type Bidang } from './formulir';
@@ -77,9 +77,22 @@ export function dariNilaiForm<J extends JenisKonten>(jenis: J, slug: string, for
   // keJson mengubah bigint (bacaBlok kasus, editor kasus) jadi string digit seperti di database.
   const mentah = keJson(jenis, hasil as unknown as IsiKonten[J]);
   const sah = bacaIsi(jenis, mentah);
-  if (sah.ok) return sah;
+  if (sah.ok) {
+    const galatSyahid = jenis === 'syahid' ? periksaPotonganAyat(sah.isi as IsiKonten['syahid']) : {};
+    return Object.keys(galatSyahid).length > 0 ? { ok: false, galat: 'Ada bidang yang belum benar.', galatBidang: galatSyahid, mentah } : sah;
+  }
   // mentah: isi apa adanya (bidang yang gagal dibaca tetap nilai asal) supaya tab JSON bisa dibuka dari form yang belum sah.
   return { ok: false, ...petakanGalat(jenis, sah.galat), mentah };
+}
+
+/** Potongan ayat harus persis ada di teks ayat rujukan (aturan yang sama dengan periksaKonsistensi saat build). */
+function periksaPotonganAyat({ surah, ayat, syahid }: IsiKonten['syahid']): Record<string, string> {
+  const teks = DAFTAR_AYAT.find(a => a.surah === surah && a.ayat === ayat)?.teks;
+  if (teks === undefined) {
+    const tersedia = DAFTAR_AYAT.map(a => `${a.surah} ${a.ayat}`).join(', ');
+    return { ayat: `Teks ${surah} ayat ${ayat} belum ada di daftar ayat rujukan. Yang tersedia: ${tersedia}.` };
+  }
+  return teks.includes(syahid) ? {} : { syahid: `Potongan ini tidak ditemukan persis di teks ${surah} ayat ${ayat}. Salin langsung dari teks ayatnya, termasuk harakat.` };
 }
 
 /** Galat bacaIsi ("jalur: pesan; ...") → galat per bidang (awalan jalur terpanjang) + sisanya di galat umum. */

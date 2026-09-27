@@ -11,7 +11,7 @@
 // Database tetap penjaga sebenarnya; galat validasi (dariNilaiForm) maupun galat repo ditampilkan, tidak ditelan.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, Globe, PencilLine } from 'lucide-react';
-import { bacaIsi, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
+import { bacaIsi, DAFTAR_KITAB, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
 import { KUNCI_CONTOH } from '@waris/web/contoh';
 import type { RingkasanRevisi } from '@waris/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -45,6 +45,7 @@ const OPSI_STATIS: OpsiRuntime = {
   istilah: GLOSARIUM.map(entri => ({ nilai: entri.id, label: `${entri.istilah} (${entri.id})` })),
   bab: Object.entries(JUDUL_BAB).map(([bab, judul]) => ({ nilai: bab, label: `${bab}. ${judul}` })).sort((a, b) => Number(a.nilai) - Number(b.nilai)),
   kunciAhliWaris: KUNCI_CONTOH.map(({ kunci, label }) => ({ nilai: kunci, label })),
+  kitab: DAFTAR_KITAB.map(({ judul }) => ({ nilai: judul, label: judul })),
 };
 const PESAN_BUKA_KUNCI = 'Identitas ini dipakai di tautan yang sudah dibagikan dan progres belajar pengguna. Mengubahnya bisa memutus keduanya. Tetap buka kunci?';
 const ENTRI_BARU: EntriSunting = { revisiTerbitId: null, dihapus: false, dibuang: false, semuaRevisi: [] };
@@ -262,7 +263,6 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       <div>
         <p className="text-sm font-semibold text-muted-foreground">{LABEL_ISI[muatan.jenis]}</p>
         <h1 className="text-2xl font-bold break-words">{judul}</h1>
-        {muatan.slug && muatan.slug !== judul ? <p className="font-mono text-xs text-muted-foreground">{muatan.slug}</p> : null}
       </div>
       <section aria-label="Status entri" className="grid gap-1.5 rounded-lg border bg-muted/40 p-3 text-sm">
         <p className="flex items-center gap-2"><Globe className="size-4 shrink-0" aria-hidden />{teksTayang(muatan.entri, relatif)}</p>

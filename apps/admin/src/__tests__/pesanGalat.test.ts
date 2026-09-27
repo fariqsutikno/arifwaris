@@ -3,7 +3,7 @@ import { pesanGalat } from '../pesanGalat';
 
 test('pola yang dikenal diterjemahkan jadi kalimat yang bisa ditindaklanjuti', () => {
   expect(pesanGalat(new Error('faq wajib punya minimal satu ref'))).toMatch(/minimal satu rujukan/);
-  expect(pesanGalat(new Error('ref tidak ada di KB: R99-1'))).toBe('Rujukan R99-1 tidak ada di KB. Pilih rujukan dari daftar.');
+  expect(pesanGalat(new Error('ref tidak ada di KB: R99-1'))).toBe('Ada rujukan yang tidak dikenal. Pilih rujukan dari daftar.');
   expect(pesanGalat(new Error('duplicate key value violates unique constraint "entri_konten_jenis_slug_key"'))).toMatch(/sudah dipakai entri lain/);
   expect(pesanGalat(new TypeError('Failed to fetch'))).toMatch(/Tidak tersambung/);
   expect(pesanGalat({ message: 'JWT expired', code: 'PGRST301' })).toMatch(/Sesi Anda sudah habis/);

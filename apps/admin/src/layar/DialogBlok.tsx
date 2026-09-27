@@ -68,7 +68,7 @@ function IsiBlokKhusus({ blok, slug, saatSimpan }: { blok: Blok; slug: string; s
       <DialogHeader>
         <DialogTitle>{JUDUL_DIALOG[jenis]}</DialogTitle>
         <DialogDescription>
-          {jenis === 'kasus' ? 'Contoh ini dihitung engine di aplikasi; harapan dicek oleh tes.'
+          {jenis === 'kasus' ? 'Contoh ini dihitung ulang oleh kalkulator setiap kali ditampilkan.'
             : jenis === 'video' ? 'Ditampilkan lewat youtube-nocookie.' : 'Kode soal kuis dipisah koma, mis. K-01, K-02.'}
         </DialogDescription>
       </DialogHeader>

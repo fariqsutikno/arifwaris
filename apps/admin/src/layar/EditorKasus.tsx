@@ -31,7 +31,6 @@ export function EditorKasus({ nilai, saatUbah, bacaSaja }: Props) {
   const hasilHitung = useMemo(() => hitungHarapan(nilai), [nilai]);
   const berbeda = hasilHitung.ok && !samaHarapan(hasilHitung.harapan, nilai.harapan);
 
-
   // Perubahan kasus → kunci jawaban ikut dihitung ulang; yang gagal dikosongkan supaya tidak tersimpan kunci basi.
   function ubahKasus(kasus: Omit<ContohKasus, 'harapan'>) {
     const hasil = hitungHarapan({ ...kasus, harapan: HARAPAN_KOSONG });

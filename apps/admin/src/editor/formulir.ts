@@ -11,8 +11,8 @@ export type JenisBidang =
 export interface Opsi { nilai: string; label: string }
 
 /** Sumber opsi dropdown: runtime (modul, kelompok FAQ, refs, alasan ahwal yang sudah dipakai) atau statis dari KB
- * (istilah glosarium, judul bab, kunci ahli waris). */
-export type SumberOpsi = 'modul' | 'kelompokFaq' | 'istilah' | 'bab' | 'refs' | 'kunciAhliWaris' | 'kodeAlasan';
+ * (istilah glosarium, judul bab, kunci ahli waris, judul kitab). */
+export type SumberOpsi = 'modul' | 'kelompokFaq' | 'istilah' | 'bab' | 'refs' | 'kunciAhliWaris' | 'kodeAlasan' | 'kitab';
 
 /** Bidang identitas: kunci yang dipakai web (URL, progres pengguna), jadi slug entri diambil dari sini dan bidangnya
  * terkunci setelah pernah terbit. Kosong saat simpan → diisi otomatis: `dari` = slug dari bidang itu; `awalan` = kode
@@ -53,7 +53,7 @@ export interface Bagian {
 
 const BANTUAN_IDENTITAS = 'Dipakai sebagai alamat tautan di web. Kosongkan: dibuat otomatis dari judul.';
 const BANTUAN_KODE_SOAL = 'Diisi otomatis. Dipakai untuk menyimpan progres latihan pengguna.';
-const BANTUAN_BAB = 'Bab KB yang menjadi dasar isi ini. Dipakai untuk mengelompokkan dan menyaring.';
+const BANTUAN_BAB = 'Bab pembahasan yang menjadi dasar isi ini. Dipakai untuk mengelompokkan dan menyaring.';
 
 // Susunan penyelesaian tanya jawab yang disarankan: siapa ahli warisnya, pembagiannya, lalu catatan.
 const TEMPLAT_PENYELESAIAN = `## Ahli waris
@@ -136,11 +136,11 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
       { jalur: 'topik', label: 'Topik', jenis: 'teks', contoh: "'Aul",
         bantuan: 'Konsep yang dilatih. Baru ditampilkan setelah soal dikerjakan.' },
       { jalur: 'kasus', label: 'Kasus', jenis: 'kasus',
-        bantuan: 'Ahli waris dan jawaban yang diharapkan. Harta selalu Rp 120.000.000; kalkulator memeriksa jawabannya.' },
+        bantuan: 'Pilih ahli waris; kunci jawabannya dihitung otomatis oleh kalkulator. Harta selalu Rp 120.000.000.' },
       { jalur: 'bab', label: 'Bab', jenis: 'angka', sumberOpsi: 'bab', samping: true, bantuan: BANTUAN_BAB },
       { jalur: 'tingkat', label: 'Tingkat', jenis: 'pilihan', opsi: ['dasar', 'menengah', 'sulit'], samping: true },
-      { jalur: 'sumber', label: 'Sumber', jenis: 'teks', samping: true, contoh: 'KB 16 #5',
-        bantuan: 'Asal kasus: nomor kasus uji bab 16, atau nama kitab dan halamannya.' },
+      { jalur: 'sumber', label: 'Sumber', jenis: 'teks', samping: true, contoh: 'Kasus uji no. 5',
+        bantuan: 'Asal kasus: nomor kasus uji tim keilmuan, atau nama kitab dan halamannya.' },
       { jalur: 'kode', label: 'Kode soal', jenis: 'teks', samping: true, identitas: { awalan: 'H-' }, bantuan: BANTUAN_KODE_SOAL },
     ] },
   ],
@@ -182,8 +182,8 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
   ],
   kitab: [
     { bidang: [
-      { jalur: 'judul', label: 'Judul kitab', jenis: 'teks', contoh: "Raudhah ath-Thalibin wa 'Umdah al-Muftin",
-        bantuan: 'Harus sama dengan daftar kitab di KB bab 17.2.' },
+      { jalur: 'judul', label: 'Judul kitab', jenis: 'pilihan', sumberOpsi: 'kitab',
+        bantuan: 'Pilih dari daftar kitab rujukan aplikasi.' },
       { jalur: 'tautan', label: 'Tautan baca', jenis: 'tautan', opsional: true, contoh: 'https://…',
         bantuan: 'Mengisi tombol "Baca kitab" di halaman Rujukan. Hanya situs resmi atau yang legal.' },
       { jalur: 'pdf', label: 'Tautan PDF', jenis: 'tautan', opsional: true,
@@ -195,16 +195,16 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
       { jalur: 'hukum', label: 'Hukum', jenis: 'teks', contoh: 'Istri mendapat 1/8 bila suami punya anak',
         bantuan: 'Hukum yang didasari potongan ayat ini; tampil sebagai pilihan di halaman Rujukan.' },
       { jalur: 'syahid', label: 'Potongan ayat', jenis: 'teksPanjang', arab: true,
-        bantuan: 'Harus sama persis dengan teks ayat di KB bab 1.2, termasuk harakat. Paling aman: salin dari KB.' },
+        bantuan: 'Salin persis dari teks ayatnya, termasuk harakat. Diperiksa otomatis saat disimpan.' },
       { jalur: 'surah', label: 'Surah', jenis: 'teks', samping: true, contoh: 'An-Nisa' },
       { jalur: 'ayat', label: 'Ayat', jenis: 'angka', samping: true, contoh: '12' },
-      { jalur: 'rujukan', label: 'Dalil di KB', jenis: 'pilihan', sumberOpsi: 'refs', samping: true },
+      { jalur: 'rujukan', label: 'Dalil', jenis: 'pilihan', sumberOpsi: 'refs', samping: true },
     ] },
   ],
   glosarium_ar: [
     { bidang: [
       { jalur: 'istilahId', label: 'Istilah', jenis: 'pilihan', sumberOpsi: 'istilah', identitas: {},
-        bantuan: 'Istilah dari glosarium KB yang diberi versi Arab.' },
+        bantuan: 'Istilah glosarium yang diberi versi Arab.' },
       { jalur: 'makna', label: 'Makna (Arab)', jenis: 'teksPanjang', arab: true },
       { jalur: 'artiAwam', label: 'Arti awam (Arab)', jenis: 'teksPanjang', arab: true, opsional: true },
       { jalur: 'contoh', label: 'Contoh (Arab)', jenis: 'teksPanjang', arab: true, opsional: true },
