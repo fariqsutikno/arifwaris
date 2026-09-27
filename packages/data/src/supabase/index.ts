@@ -5,7 +5,10 @@
 // galat ramah, dan saringValid saat baca.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
-import type { PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna } from '../antarmuka.js';
+import type {
+  BarisPeringkat, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
+  RepositoriPeringkat,
+} from '../antarmuka.js';
 import { saringValid } from '../saring.js';
 import {
   keDiksiTerbit, keProgresBelajar, keProgresLatihan, keRevisi, keRevisiDiksi, keRingkasanEntri, keRingkasanKunciDiksi,
@@ -139,12 +142,47 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       await hasil(klien.from('log_kegiatan').upsert(
         { id: baris.id, jenis: baris.jenis, slug: baris.slug, benar: baris.benar }, { onConflict: 'id', ignoreDuplicates: true }));
     },
+    async bacaProfil() {
+      const baris = await hasil(klien.from('profil').select('*').eq('user_id', await userId()).maybeSingle()) as any;
+      return baris && {
+        namaTampilan: baris.nama_tampilan, ikutPapanPeringkat: baris.ikut_papan_peringkat,
+        tampilkanAvatar: baris.tampilkan_avatar, zonaWaktu: baris.zona_waktu,
+      };
+    },
+    async simpanProfil(profil) {
+      await hasil(klien.from('profil').upsert({
+        user_id: await userId(), nama_tampilan: profil.namaTampilan.trim(), ikut_papan_peringkat: profil.ikutPapanPeringkat,
+        tampilkan_avatar: profil.tampilkanAvatar, zona_waktu: profil.zonaWaktu,
+      }));
+    },
+  };
+
+  const peringkat: RepositoriPeringkat = {
+    async ringkasanSaya() {
+      await userId();
+      const [baris] = await hasil(klien.rpc('ringkasan_saya')) as any[];
+      return {
+        xpTotal: baris.xp_total, xpMingguIni: baris.xp_minggu_ini, streakSekarang: baris.streak_sekarang,
+        streakTerpanjang: baris.streak_terpanjang, aktifHariIni: baris.aktif_hari_ini,
+      };
+    },
+    async papan(periode, batas = 50) {
+      return (await hasil(klien.rpc('papan_peringkat', { p_periode: periode, p_batas: batas })) as any[])
+        .map((baris): BarisPeringkat => ({
+          peringkat: baris.peringkat, namaTampilan: baris.nama_tampilan, avatar: baris.avatar, xp: baris.xp,
+          streakSekarang: baris.streak_sekarang, saya: baris.saya,
+        }));
+    },
   };
 
   const akun: RepositoriAkun = {
     async sesi() {
       const { data } = await klien.auth.getUser();
-      return data.user ? { userId: data.user.id, email: data.user.email ?? '' } : null;
+      const meta = data.user?.user_metadata ?? {};
+      return data.user ? {
+        userId: data.user.id, email: data.user.email ?? '',
+        nama: meta.full_name ?? meta.name ?? null, avatar: meta.avatar_url ?? meta.picture ?? null,
+      } : null;
     },
     async masukGoogle(alamatKembali) {
       const { error } = await klien.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: alamatKembali } });
@@ -162,5 +200,5 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     },
   };
 
-  return { konten, editorial, diksi, pengguna, akun };
+  return { konten, editorial, diksi, pengguna, akun, peringkat };
 }
