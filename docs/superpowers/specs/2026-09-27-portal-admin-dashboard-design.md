@@ -1,6 +1,6 @@
 # Portal Admin — Tahap A: Kerangka Dashboard — Desain
 
-Status: disetujui dalam diskusi 2026-09-27, menunggu review spec.
+Status: disetujui dalam diskusi 2026-09-27. Revisi 2026-09-27: UI admin memakai shadcn/ui (bukan CSS tulisan sendiri).
 Branch: `fitur/database-portal-admin`. Melanjutkan [database-portal-admin](2026-09-26-database-portal-admin-design.md);
 alur editorial (draf → ajukan → review → terbit) dan RLS di sana tetap berlaku kecuali diubah di sini.
 
@@ -31,8 +31,8 @@ boleh perlu paham skema. Perombakan dipecah tiga, berurutan, tiap tahap spec sen
 | Hal | Keputusan |
 |---|---|
 | Layout | Sidebar kiri berkelompok (pilihan A dari mockup), konten di kanan; layar sempit → sidebar jadi laci |
-| Gaya | `@waris/web/gaya/token.css` + `komponen.css` + satu `apps/admin/src/admin.css` |
-| Ikon | Komponen `Ikon` web; jalur yang kurang ditambahkan di `apps/web/src/ui/Ikon.tsx` |
+| Gaya | shadcn/ui (Tailwind v4 + Radix) khusus `apps/admin`; variabel warna shadcn dipetakan ke token Arif Waris v4 di `apps/admin/src/admin.css`. `token.css`/`komponen.css` web tetap dimuat untuk layar lama |
+| Ikon | `lucide-react` (bawaan shadcn), selalu dengan label teks; `Ikon.tsx` web tidak diubah |
 | Urutan | Seret di dalam satu kelompok mengubah kolom `entri_konten.urutan` (bukan revisi) lewat RPC `atur_urutan` |
 | Siapa boleh seret | admin dan penulis; reviewer tidak (tanpa pegangan seret) |
 | Data beranda | Dihitung di klien dari `daftarEntri` semua jenis |
@@ -87,8 +87,8 @@ sesuai rute (termasuk saat membuka editor entri jenis itu). Rute tetap `location
 
 - Seret hanya di dalam satu kelompok (satu modul, atau satu daftar datar) dan hanya saat tab "Semua" tanpa
   kata cari (urutan parsial tak bermakna).
-- Implementasi: HTML drag-and-drop bawaan + tombol naik/turun per baris untuk keyboard (aksesibilitas);
-  tanpa dependency baru.
+- Implementasi: `@dnd-kit/sortable` (pointer, sentuh, keyboard) + tombol naik/turun per baris sebagai jalur
+  yang jelas di layar sentuh dan yang diuji di jsdom.
 - Setelah lepas: UI langsung memakai urutan baru, lalu `repo.editorial.aturUrutan(entriIds)`. Gagal → urutan
   dikembalikan ke semula + pesan galat.
 - Database: fungsi baru

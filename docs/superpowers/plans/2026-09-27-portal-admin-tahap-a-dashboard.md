@@ -6,15 +6,15 @@
 
 **Architecture:** Satu konstanta `MENU_PORTAL` memetakan menu → jenis konten dan dipakai sidebar, rute, dan daftar. Perhitungan (ringkasan beranda, saring tab/cari, grup modul, pindah urutan) berupa fungsi murni di `apps/admin/src/ringkas.ts`; komponen hanya menampilkan. Urutan disimpan lewat fungsi Postgres baru `atur_urutan` (security definer, hanya kolom `urutan`) yang dibungkus `RepositoriEditorial.aturUrutan`.
 
-**Tech Stack:** React 18, Vite, Vitest + Testing Library (jsdom), `@waris/data` (memori & Supabase), Supabase Postgres + pgTAP, CSS token Arif Waris v4.
+**Tech Stack:** React 18, Vite, Vitest + Testing Library (jsdom), `@waris/data` (memori & Supabase), Supabase Postgres + pgTAP, shadcn/ui (Tailwind v4 + Radix, warna dipetakan ke token Arif Waris v4), lucide-react, @dnd-kit.
 
 **Spec:** `docs/superpowers/specs/2026-09-27-portal-admin-dashboard-design.md`
 
 ## Global Constraints
 
-- Tanpa emoji di UI; pakai komponen `Ikon` (`apps/web/src/ui/Ikon.tsx`), selalu disertai label teks.
-- Gaya: `@waris/web/gaya/token.css` + `komponen.css` + satu `apps/admin/src/admin.css`; warna hanya lewat token (`var(--…)`).
-- Tanpa dependency baru (seret = HTML drag-and-drop bawaan + tombol naik/turun).
+- Tanpa emoji di UI; ikon `lucide-react`, selalu disertai label teks (atau `aria-label` pada tombol ikon).
+- Gaya: komponen shadcn/ui di `apps/admin/src/components/ui` + kelas Tailwind; warna hanya lewat variabel shadcn yang dipetakan ke token (`apps/admin/src/admin.css`), tanpa warna mentah.
+- Dependency baru hanya di `apps/admin`: Tailwind v4, shadcn/Radix (lewat CLI), lucide-react, @dnd-kit. Paket lain tidak berubah.
 - Seret boleh: admin & penulis. Reviewer: tanpa pegangan seret dan tanpa tombol buat.
 - Seret tidak membuat revisi dan tidak mengubah status; policy `ubah` `entri_konten` tetap admin saja.
 - Nama variabel/fungsi/komentar bahasa Indonesia; tiap file dibuka komentar pendek (menerima apa, memutuskan apa, menyerahkan apa).
@@ -42,8 +42,8 @@
 | `apps/admin/src/navigasi.ts` (baru) | `MENU_PORTAL`, label jenis, cari menu |
 | `apps/admin/src/rute.ts` | rute `beranda` & `menu` (ganti `konten`/`diksi`) |
 | `apps/admin/src/ringkas.ts` (baru) | fungsi murni beranda/daftar/urutan |
-| `apps/web/src/ui/Ikon.tsx` | jalur ikon baru |
-| `apps/admin/src/admin.css` (baru) | gaya portal |
+| `apps/admin/components.json`, `src/components/ui/*`, `src/lib/utils.ts` (baru, CLI shadcn) | komponen UI |
+| `apps/admin/src/admin.css` (baru) | Tailwind + pemetaan token ke variabel shadcn |
 | `apps/admin/src/Kerangka.tsx` (baru) | sidebar, laci, akun |
 | `apps/admin/src/Portal.tsx` | pakai Kerangka, rute baru |
 | `apps/admin/src/layar/Beranda.tsx` (baru) | beranda |
@@ -275,7 +275,7 @@ git commit -m "data: aturUrutan di repositori editorial"
   export type IsiMenu = JenisKonten | 'diksi';
   export type KunciMenu = 'materi' | 'soal_kuis' | 'soal_hitung' | 'tanya_jawab' | 'faq' | 'pustaka' | 'kamus' | 'aplikasi';
   export type GrupMenu = 'Belajar' | 'Bank soal' | 'Tanya jawab' | 'Pustaka' | 'Aplikasi';
-  export interface Menu { kunci: KunciMenu; label: string; grup: GrupMenu; ikon: NamaIkon; isi: readonly IsiMenu[] }
+  export interface Menu { kunci: KunciMenu; label: string; grup: GrupMenu; ikon: LucideIcon; isi: readonly IsiMenu[] }
   export const MENU_PORTAL: readonly Menu[];
   export const LABEL_ISI: Record<IsiMenu, string>;
   export function menuDari(kunci: string): Menu | undefined;
@@ -294,7 +294,7 @@ git commit -m "data: aturUrutan di repositori editorial"
   ```
   Hash: `#/` beranda, `#/menu/<kunci>/<tab>`, `#/entri/<id>`, `#/baru/<jenis>`, `#/review`, `#/peran`. Tak dikenal → beranda. `#/menu/<kunci>` tanpa tab / tab bukan milik menu → tab bawaan.
 
-  Ikon `NamaIkon` yang dipakai `MENU_PORTAL` (`pelajaran`, `kuis`, `hitung`, `tanya`, `pustaka`, `glosarium`, `aplikasi`) — `pustaka` dan `aplikasi` baru ada di Task 5; di task ini tambahkan dulu dua jalur itu ke `Ikon.tsx` (lihat Step 3) supaya tipe lolos.
+  Ikon = komponen `lucide-react` (`LucideIcon`); dependency dipasang di Step 3.
 
 - [ ] **Step 1: Tulis tes gagal**
 
@@ -350,12 +350,7 @@ Expected: FAIL, `Cannot find module '../navigasi'`.
 
 - [ ] **Step 3: Implementasi**
 
-Tambahkan ke `JALUR` di `apps/web/src/ui/Ikon.tsx` (sebelum `} as const;`):
-
-```tsx
-  pustaka: <><path d="M4 4h4v16H4zM10 4h4v16h-4z" /><path d="M15.5 5.2l3.9-1 3.1 14.6-3.9 1z" /></>,
-  aplikasi: <><rect x="3" y="3" width="8" height="8" rx="2" /><rect x="13" y="3" width="8" height="8" rx="2" /><rect x="3" y="13" width="8" height="8" rx="2" /><rect x="13" y="13" width="8" height="8" rx="2" /></>,
-```
+Pasang ikon: `pnpm --filter @waris/admin add lucide-react`.
 
 `apps/admin/src/navigasi.ts`:
 
@@ -364,22 +359,22 @@ Tambahkan ke `JALUR` di `apps/web/src/ui/Ikon.tsx` (sebelum `} as const;`):
 // Menerima JENIS_KONTEN + diksi, mengelompokkannya menjadi menu berlabel manusiawi (spec tahap A "Kerangka & navigasi").
 // isi[0] = tab bawaan; menu materi menampilkan modul sebagai kepala grup, bukan tab.
 import type { JenisKonten } from '@waris/content';
-import type { NamaIkon } from '@waris/web/ui/Ikon';
+import { AppWindow, BookOpen, Calculator, CircleHelp, GraduationCap, Library, ListChecks, MessagesSquare, type LucideIcon } from 'lucide-react';
 
 export type IsiMenu = JenisKonten | 'diksi';
 export type KunciMenu = 'materi' | 'soal_kuis' | 'soal_hitung' | 'tanya_jawab' | 'faq' | 'pustaka' | 'kamus' | 'aplikasi';
 export type GrupMenu = 'Belajar' | 'Bank soal' | 'Tanya jawab' | 'Pustaka' | 'Aplikasi';
-export interface Menu { kunci: KunciMenu; label: string; grup: GrupMenu; ikon: NamaIkon; isi: readonly IsiMenu[] }
+export interface Menu { kunci: KunciMenu; label: string; grup: GrupMenu; ikon: LucideIcon; isi: readonly IsiMenu[] }
 
 export const MENU_PORTAL: readonly Menu[] = [
-  { kunci: 'materi', label: 'Modul & Materi', grup: 'Belajar', ikon: 'pelajaran', isi: ['materi', 'modul'] },
-  { kunci: 'soal_kuis', label: 'Soal kuis', grup: 'Bank soal', ikon: 'kuis', isi: ['soal_kuis'] },
-  { kunci: 'soal_hitung', label: 'Soal hitung', grup: 'Bank soal', ikon: 'hitung', isi: ['soal_hitung'] },
-  { kunci: 'tanya_jawab', label: 'Kasus tanya jawab', grup: 'Tanya jawab', ikon: 'tanya', isi: ['tanya_jawab'] },
-  { kunci: 'faq', label: 'FAQ', grup: 'Tanya jawab', ikon: 'daftar', isi: ['faq'] },
-  { kunci: 'pustaka', label: 'Kitab & syahid', grup: 'Pustaka', ikon: 'pustaka', isi: ['kitab', 'syahid'] },
-  { kunci: 'kamus', label: 'Glosarium & ahwal', grup: 'Pustaka', ikon: 'glosarium', isi: ['glosarium_ar', 'ahwal'] },
-  { kunci: 'aplikasi', label: 'Teks aplikasi', grup: 'Aplikasi', ikon: 'aplikasi', isi: ['teks_edukasi', 'diksi', 'cheatsheet'] },
+  { kunci: 'materi', label: 'Modul & Materi', grup: 'Belajar', ikon: GraduationCap, isi: ['materi', 'modul'] },
+  { kunci: 'soal_kuis', label: 'Soal kuis', grup: 'Bank soal', ikon: ListChecks, isi: ['soal_kuis'] },
+  { kunci: 'soal_hitung', label: 'Soal hitung', grup: 'Bank soal', ikon: Calculator, isi: ['soal_hitung'] },
+  { kunci: 'tanya_jawab', label: 'Kasus tanya jawab', grup: 'Tanya jawab', ikon: MessagesSquare, isi: ['tanya_jawab'] },
+  { kunci: 'faq', label: 'FAQ', grup: 'Tanya jawab', ikon: CircleHelp, isi: ['faq'] },
+  { kunci: 'pustaka', label: 'Kitab & syahid', grup: 'Pustaka', ikon: Library, isi: ['kitab', 'syahid'] },
+  { kunci: 'kamus', label: 'Glosarium & ahwal', grup: 'Pustaka', ikon: BookOpen, isi: ['glosarium_ar', 'ahwal'] },
+  { kunci: 'aplikasi', label: 'Teks aplikasi', grup: 'Aplikasi', ikon: AppWindow, isi: ['teks_edukasi', 'diksi', 'cheatsheet'] },
 ];
 
 export const LABEL_ISI: Record<IsiMenu, string> = {
@@ -460,7 +455,7 @@ Expected: PASS (tes `gerbang` tetap lulus: link "Antrean review" & tombol "Kelua
 - [ ] **Step 5: Commit**
 
 ```bash
-git add apps/admin/src/navigasi.ts apps/admin/src/rute.ts apps/admin/src/Portal.tsx apps/admin/src/__tests__/navigasi.test.ts apps/admin/src/__tests__/rute.test.ts apps/web/src/ui/Ikon.tsx
+git add apps/admin/src/navigasi.ts apps/admin/src/rute.ts apps/admin/src/Portal.tsx apps/admin/src/__tests__/navigasi.test.ts apps/admin/src/__tests__/rute.test.ts apps/admin/package.json pnpm-lock.yaml
 git commit -m "admin: peta menu portal & rute beranda/menu"
 ```
 
@@ -709,14 +704,14 @@ git commit -m "admin: fungsi murni ringkasan beranda, saring, grup modul"
 
 ---
 
-### Task 5: Kerangka (sidebar, laci, akun) + gaya portal
+### Task 5: Pasang shadcn/ui + kerangka (sidebar, laci, akun)
 
 **Files:**
-- Modify: `apps/web/src/ui/Ikon.tsx` (jalur baru)
-- Create: `apps/admin/src/admin.css`
+- Modify: `apps/admin/package.json` (dependency baru), `apps/admin/vite.config.ts` (plugin Tailwind, alias `@`, `setupFiles`), `apps/admin/tsconfig.json` (`baseUrl`/`paths` `@/*`)
+- Create: `apps/admin/components.json`, `apps/admin/src/lib/utils.ts`, `apps/admin/src/components/ui/*` (hasil CLI shadcn), `apps/admin/src/hooks/use-mobile.ts` (hasil CLI)
+- Create: `apps/admin/src/admin.css` (Tailwind + pemetaan token), `apps/admin/src/__tests__/siapkan.ts` (polyfill jsdom)
 - Create: `apps/admin/src/Kerangka.tsx`
-- Modify: `apps/admin/src/main.tsx` (impor `./admin.css`)
-- Modify: `apps/admin/src/Portal.tsx` (hapus `NavigasiPortal`; bungkus `LayarRute` dengan `Kerangka`)
+- Modify: `apps/admin/src/main.tsx` (impor `./admin.css`), `apps/admin/src/Portal.tsx` (hapus `NavigasiPortal`; bungkus rute dengan `Kerangka`)
 - Test: `apps/admin/src/__tests__/kerangka.test.tsx` (baru), `apps/admin/src/__tests__/gerbang.test.tsx`
 
 **Interfaces:**
@@ -726,23 +721,126 @@ git commit -m "admin: fungsi murni ringkasan beranda, saring, grup modul"
   export function Kerangka(props: { rute: Rute; onKeluar: () => void; children: ReactNode }): JSX.Element
   export function menuAktif(rute: Rute, menuTerakhir: KunciMenu | null): 'beranda' | 'review' | 'peran' | KunciMenu | null
   ```
-  `Kerangka` membaca `usePortal()` untuk peran/sesi/repo dan memuat jumlah antrean (`repo.editorial.antreanReview()` + `repo.diksi.antreanReview()`) sekali saat pasang. Rute `entri`/`entriBaru` menyorot menu terakhir yang dibuka (disimpan di state `Kerangka`; `entriBaru` langsung dari `menuUntukJenis(jenis)`).
-- Jalur ikon baru di `Ikon.tsx`: `kotakMasuk`, `peran`, `cari`, `pegangan`, `naik`, `turun`, `menu`.
+  Komponen shadcn yang tersedia untuk Task 6–8: `button`, `card`, `badge`, `input`, `tabs`, `skeleton`, `alert`, `sidebar` (+ `sheet`, `separator`, `tooltip` yang ditarik `sidebar`), impor dari `@/components/ui/<nama>`.
 
-- [ ] **Step 1: Tulis tes gagal**
+- [ ] **Step 1: Pasang Tailwind v4 + shadcn**
 
-`apps/admin/src/__tests__/kerangka.test.tsx`:
+```bash
+pnpm --filter @waris/admin add tailwindcss @tailwindcss/vite lucide-react class-variance-authority clsx tailwind-merge
+pnpm --filter @waris/admin add -D @types/node
+```
+
+`apps/admin/tsconfig.json` → tambah di `compilerOptions`: `"baseUrl": ".", "paths": { "@/*": ["./src/*"] }`.
+
+`apps/admin/vite.config.ts`:
+
+```ts
+import { fileURLToPath, URL } from 'node:url';
+import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: { alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) } },
+  build: { target: 'es2022' },  // top-level await di main.tsx
+  test: { environment: 'jsdom', globals: true, setupFiles: ['./src/__tests__/siapkan.ts'] },  // globals: Testing Library membersihkan DOM antar test
+});
+```
+
+`apps/admin/src/admin.css` (sementara, CLI menambah variabel):
+
+```css
+@import "tailwindcss";
+```
+
+Lalu dari `apps/admin`:
+
+```bash
+pnpm dlx shadcn@latest init -b neutral --css-variables
+pnpm dlx shadcn@latest add button card badge input tabs skeleton alert sidebar
+```
+
+Bila CLI bertanya lokasi CSS: `src/admin.css`; alias komponen `@/components`. Setelah selesai, pastikan `components.json`, `src/lib/utils.ts`, `src/components/ui/*`, `src/hooks/use-mobile.ts` ada dan dependency Radix ditambahkan ke `package.json`.
+
+- [ ] **Step 2: Petakan token Arif Waris ke variabel shadcn**
+
+Di `apps/admin/src/admin.css`, ganti nilai variabel `:root` hasil CLI dengan token (blok `.dark` hapus; token web sudah menangani mode gelap). Buka komentar pembuka berkas:
+
+```css
+/* Gaya portal admin: Tailwind + shadcn/ui, warnanya dipetakan ke token Arif Waris v4 (token.css web) supaya
+   portal dan web satu identitas. Hanya var(--…) token, tanpa warna mentah. */
+:root {
+  --background: var(--surface);
+  --foreground: var(--ink);
+  --card: var(--surface-raised);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-raised);
+  --popover-foreground: var(--ink);
+  --primary: var(--primary);   /* lihat catatan di bawah */
+  --primary-foreground: var(--on-fill);
+  --secondary: var(--surface-sunken);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-sunken);
+  --muted-foreground: var(--ink-muted);
+  --accent: var(--primary-soft);
+  --accent-foreground: var(--ink);
+  --destructive: var(--danger);
+  --border: var(--outline);
+  --input: var(--outline);
+  --ring: var(--focus);
+  --radius: var(--radius-md);
+  --sidebar: var(--surface-raised);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--on-fill);
+  --sidebar-accent: var(--primary-soft);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--outline);
+  --sidebar-ring: var(--focus);
+}
+body { font-family: var(--font-sans); }
+```
+
+Catatan: shadcn dan token web sama-sama memakai nama `--primary`/`--border`. Cek dulu nama token di `apps/web/src/gaya/token.css`; bila bentrok (variabel menunjuk dirinya sendiri), jangan tulis `--primary: var(--primary)` — biarkan baris itu dihapus sehingga nilai token web yang dipakai langsung. Hapus baris lain yang namanya sama persis dengan token web dengan alasan yang sama. Token yang tidak ada di `token.css` (mis. `--danger`) diganti dengan token terdekat yang ada; jangan menulis warna mentah.
+
+- [ ] **Step 3: Polyfill jsdom** `apps/admin/src/__tests__/siapkan.ts`
+
+```ts
+// Polyfill jsdom untuk komponen shadcn/Radix: matchMedia (hook use-mobile sidebar) dan ResizeObserver.
+if (!window.matchMedia) {
+  window.matchMedia = (query: string) => ({
+    matches: false, media: query, onchange: null,
+    addEventListener: () => {}, removeEventListener: () => {}, addListener: () => {}, removeListener: () => {},
+    dispatchEvent: () => false,
+  }) as MediaQueryList;
+}
+globalThis.ResizeObserver ??= class { observe() {} unobserve() {} disconnect() {} };
+```
+
+Run: `pnpm --filter @waris/admin test && pnpm --filter @waris/admin exec tsc --noEmit -p .`
+Expected: tes lama tetap PASS (pemasangan tidak mengubah perilaku). Commit langkah pasang:
+
+```bash
+git add apps/admin/package.json apps/admin/vite.config.ts apps/admin/tsconfig.json apps/admin/components.json apps/admin/src/lib apps/admin/src/components apps/admin/src/hooks apps/admin/src/admin.css apps/admin/src/__tests__/siapkan.ts pnpm-lock.yaml
+git commit -m "admin: pasang Tailwind v4 + shadcn/ui, token Arif Waris"
+```
+
+- [ ] **Step 4: Tulis tes gagal** `apps/admin/src/__tests__/kerangka.test.tsx`
 
 ```tsx
 // Tes Kerangka: sidebar berkelompok per peran, lencana antrean, menu aktif, laci layar sempit.
-import { fireEvent, render, screen, within } from '@testing-library/react';
-import { expect, test, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { afterEach, expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
 import type { Peran } from '@waris/content';
 import { KonteksRepo } from '../repo';
 import { Kerangka, menuAktif } from '../Kerangka';
 import type { Rute } from '../rute';
 import { DAFTAR_FAQ_UJI } from './contoh';
+
+const LEBAR_AWAL = window.innerWidth;
+afterEach(() => { window.innerWidth = LEBAR_AWAL; });
 
 async function pasang(peran: Peran, rute: Rute = { layar: 'beranda' }) {
   const m = buatMemori({ refs: ['R05-1'], sesi: { userId: 'u1', email: 'fariq@x.id' }, peran: { u1: peran, u2: 'penulis' } });
@@ -788,46 +886,37 @@ test('menuAktif: entri memakai menu terakhir, entriBaru dari jenisnya', () => {
   expect(menuAktif({ layar: 'review' }, 'faq')).toBe('review');
 });
 
-test('laci: tombol Menu membuka, memilih menu menutup', async () => {
+test('layar sempit: tombol Menu membuka laci, memilih menu menutupnya', async () => {
+  window.innerWidth = 500;
   await pasang('admin');
-  const tombol = screen.getByRole('button', { name: 'Menu' });
-  expect(tombol.getAttribute('aria-expanded')).toBe('false');
-  fireEvent.click(tombol);
-  expect(tombol.getAttribute('aria-expanded')).toBe('true');
-  fireEvent.click(screen.getByRole('link', { name: /FAQ/ }));
-  expect(tombol.getAttribute('aria-expanded')).toBe('false');
+  expect(screen.queryByRole('link', { name: /FAQ/ })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Menu' }));
+  const laci = await screen.findByRole('dialog');
+  fireEvent.click(within(laci).getByRole('link', { name: /FAQ/ }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 });
 ```
 
-Di `gerbang.test.tsx` tidak perlu ubah bila lulus; bila tes `'peran ada → tombol keluar di navigasi'` kini menemukan dua tombol "Keluar", ganti `findByRole('button', { name: /keluar/i })` menjadi `findByRole('button', { name: 'Keluar' })`.
+Di `gerbang.test.tsx`: bila tes `'peran ada → tombol keluar di navigasi'` menemukan lebih dari satu tombol, ganti pencarinya menjadi `findByRole('button', { name: 'Keluar' })`.
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [ ] **Step 5: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/admin test -- kerangka`
 Expected: FAIL, `Cannot find module '../Kerangka'`.
 
-- [ ] **Step 3: Implementasi**
-
-Tambahkan ke `JALUR` di `apps/web/src/ui/Ikon.tsx`:
+- [ ] **Step 6: Implementasi** `apps/admin/src/Kerangka.tsx`
 
 ```tsx
-  kotakMasuk: <><path d="M3 13h5l2 3h4l2-3h5" /><path d="M5.5 5h13L21 13v6H3v-6z" /></>,
-  peran: <><circle cx="9" cy="8" r="3.5" /><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6" /><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14c2 .8 3 2.8 3 6" /></>,
-  cari: <><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4" /></>,
-  pegangan: <path d="M9 6h.01M15 6h.01M9 12h.01M15 12h.01M9 18h.01M15 18h.01" />,
-  naik: <path d="M6 15l6-6 6 6" />,
-  turun: <path d="M6 9l6 6 6-6" />,
-  menu: <path d="M4 6h16M4 12h16M4 18h16" />,
-```
-
-`apps/admin/src/Kerangka.tsx`:
-
-```tsx
-// Kerangka portal (spec tahap A "Kerangka & navigasi"): sidebar berkelompok dari MENU_PORTAL, lencana antrean review,
-// email + peran + Keluar di bawah, dan isi layar di kanan. Layar sempit: sidebar jadi laci (tombol Menu), menutup
-// setelah memilih menu. Menu aktif dari rute; layar entri menyorot menu terakhir yang dibuka.
+// Kerangka portal (spec tahap A "Kerangka & navigasi") di atas Sidebar shadcn: menu berkelompok dari MENU_PORTAL,
+// lencana antrean review, email + peran + Keluar di kaki sidebar, isi layar di kanan. Layar sempit: sidebar jadi
+// laci (Sheet) lewat tombol Menu dan menutup setelah memilih menu. Layar entri menyorot menu terakhir yang dibuka.
 import { useEffect, useState, type ReactNode } from 'react';
-import { Ikon, type NamaIkon } from '@waris/web/ui/Ikon';
+import { House, Inbox, LogOut, Menu as IkonMenu, Users, type LucideIcon } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import {
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu,
+  SidebarMenuBadge, SidebarMenuButton, SidebarMenuItem, SidebarProvider, useSidebar,
+} from '@/components/ui/sidebar';
 import { MENU_PORTAL, menuUntukJenis, type GrupMenu, type KunciMenu } from './navigasi';
 import { usePortal } from './repo';
 import { tulisRute, type Rute } from './rute';
@@ -846,8 +935,30 @@ export function menuAktif(rute: Rute, menuTerakhir: KunciMenu | null): KunciAkti
 }
 
 export function Kerangka({ rute, onKeluar, children }: { rute: Rute; onKeluar: () => void; children: ReactNode }) {
+  return (
+    <SidebarProvider>
+      <SisiPortal rute={rute} onKeluar={onKeluar} />
+      <SidebarInset>
+        <KepalaSempit />
+        <main className="w-full max-w-6xl p-4 md:p-8">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}
+
+function KepalaSempit() {
+  const { toggleSidebar } = useSidebar();
+  return (
+    <header className="flex items-center gap-3 border-b px-4 py-2 md:hidden">
+      <Button variant="outline" size="sm" onClick={toggleSidebar}><IkonMenu />Menu</Button>
+      <b>Arif Waris</b>
+    </header>
+  );
+}
+
+function SisiPortal({ rute, onKeluar }: { rute: Rute; onKeluar: () => void }) {
   const { repo, sesi, peran } = usePortal();
-  const [lacilTerbuka, setLaciTerbuka] = useState(false);
+  const { setOpenMobile } = useSidebar();
   const [menuTerakhir, setMenuTerakhir] = useState<KunciMenu | null>(null);
   const [jumlahAntrean, setJumlahAntrean] = useState(0);
 
@@ -861,143 +972,57 @@ export function Kerangka({ rute, onKeluar, children }: { rute: Rute; onKeluar: (
   }, [repo]);
 
   const aktif = menuAktif(rute, menuTerakhir);
-  const tautan = (kunci: KunciAktif, href: string, ikon: NamaIkon, label: string, lencana?: number) => (
-    <a key={String(kunci)} href={href} className="nav-portal" aria-current={aktif === kunci ? 'page' : undefined}
-      onClick={() => setLaciTerbuka(false)}>
-      <Ikon nama={ikon} ukuran={18} /><span>{label}</span>
-      {lencana ? <span className="lencana-portal" aria-label={`${lencana} menunggu review`}>{lencana}</span> : null}
-    </a>
+  const tautan = (kunci: KunciAktif, href: string, Ikon: LucideIcon, label: string, lencana?: number) => (
+    <SidebarMenuItem key={String(kunci)}>
+      <SidebarMenuButton asChild isActive={aktif === kunci}>
+        <a href={href} aria-current={aktif === kunci ? 'page' : undefined} onClick={() => setOpenMobile(false)}>
+          <Ikon /><span>{label}</span>
+        </a>
+      </SidebarMenuButton>
+      {lencana ? <SidebarMenuBadge aria-label={`${lencana} menunggu review`}>{lencana}</SidebarMenuBadge> : null}
+    </SidebarMenuItem>
   );
 
   return (
-    <div className={lacilTerbuka ? 'kerangka-portal laci-terbuka' : 'kerangka-portal'}>
-      <header className="kepala-portal">
-        <button type="button" className="tombol-laci" aria-expanded={lacilTerbuka} aria-controls="sisi-portal"
-          onClick={() => setLaciTerbuka(!lacilTerbuka)}>
-          <Ikon nama="menu" /><span>Menu</span>
-        </button>
-        <b>Arif Waris</b>
-      </header>
-      <aside id="sisi-portal" className="sisi-portal">
-        <div className="logo-portal">Arif Waris<small>Portal Konten</small></div>
+    <Sidebar>
+      <SidebarHeader>
+        <div className="px-2 py-1 font-bold">Arif Waris<small className="block font-semibold text-muted-foreground">Portal Konten</small></div>
+      </SidebarHeader>
+      <SidebarContent>
         <nav aria-label="Navigasi portal">
-          {tautan('beranda', tulisRute({ layar: 'beranda' }), 'rumah', 'Beranda')}
-          {tautan('review', tulisRute({ layar: 'review' }), 'kotakMasuk', 'Antrean review', jumlahAntrean)}
+          <SidebarGroup>
+            <SidebarMenu>
+              {tautan('beranda', tulisRute({ layar: 'beranda' }), House, 'Beranda')}
+              {tautan('review', tulisRute({ layar: 'review' }), Inbox, 'Antrean review', jumlahAntrean)}
+            </SidebarMenu>
+          </SidebarGroup>
           {URUTAN_GRUP.map(grup => (
-            <div key={grup} className="grup-nav">
-              <div className="label-grup">{grup}</div>
-              {MENU_PORTAL.filter(menu => menu.grup === grup).map(menu =>
-                tautan(menu.kunci, tulisRute({ layar: 'menu', menu: menu.kunci, tab: menu.isi[0]! }), menu.ikon, menu.label))}
-            </div>
+            <SidebarGroup key={grup}>
+              <SidebarGroupLabel>{grup}</SidebarGroupLabel>
+              <SidebarMenu>
+                {MENU_PORTAL.filter(menu => menu.grup === grup).map(menu =>
+                  tautan(menu.kunci, tulisRute({ layar: 'menu', menu: menu.kunci, tab: menu.isi[0]! }), menu.ikon, menu.label))}
+              </SidebarMenu>
+            </SidebarGroup>
           ))}
-          {peran === 'admin' ? <div className="grup-nav">{tautan('peran', tulisRute({ layar: 'peran' }), 'peran', 'Peran')}</div> : null}
+          {peran === 'admin' ? (
+            <SidebarGroup><SidebarMenu>{tautan('peran', tulisRute({ layar: 'peran' }), Users, 'Peran')}</SidebarMenu></SidebarGroup>
+          ) : null}
         </nav>
-        <div className="akun-portal">
-          <span className="email-portal">{sesi.email}</span>
-          <span className="keterangan">{LABEL_PERAN[peran]}</span>
-          <button type="button" className="tombol-keluar-portal" onClick={onKeluar}><Ikon nama="keluar" ukuran={18} />Keluar</button>
-        </div>
-      </aside>
-      {lacilTerbuka ? <div className="tirai-laci" aria-hidden="true" onClick={() => setLaciTerbuka(false)} /> : null}
-      <main className="utama-portal">{children}</main>
-    </div>
+      </SidebarContent>
+      <SidebarFooter>
+        <span className="font-semibold break-all">{sesi.email}</span>
+        <span className="text-sm text-muted-foreground">{LABEL_PERAN[peran]}</span>
+        <Button variant="outline" size="sm" onClick={onKeluar}><LogOut />Keluar</Button>
+      </SidebarFooter>
+    </Sidebar>
   );
 }
 ```
 
-`apps/admin/src/admin.css`:
+`apps/admin/src/main.tsx`: tambahkan `import './admin.css';` setelah dua impor CSS web (urutan ini membuat variabel shadcn menimpa nilai yang sama namanya).
 
-```css
-/* Gaya portal admin di atas token & komponen web (Arif Waris v4). Hanya token (var(--…)), tanpa warna mentah. */
-body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--font-sans)}
-.kerangka-portal{display:grid;grid-template-columns:248px 1fr;min-height:100vh}
-.kepala-portal{display:none}
-.sisi-portal{position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:4px;
-  padding:18px 14px;background:var(--surface-raised);border-right:var(--border-w) solid var(--outline)}
-.logo-portal{font:700 18px var(--font-display);margin:0 6px 14px}
-.logo-portal small{display:block;font:600 12px var(--font-sans);color:var(--ink-muted)}
-.label-grup{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted);margin:16px 10px 4px}
-.nav-portal{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);color:var(--ink);
-  text-decoration:none;font-weight:600;border:var(--border-w) solid transparent}
-.nav-portal:hover{background:var(--surface-sunken)}
-.nav-portal[aria-current="page"]{background:var(--primary-soft);border-color:var(--outline)}
-.nav-portal:focus-visible,.tombol-laci:focus-visible,.tombol-keluar-portal:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.lencana-portal{margin-left:auto;background:var(--pink);color:var(--on-fill);border:1.5px solid var(--outline);
-  border-radius:var(--radius-pill);padding:0 8px;font-size:12px;font-weight:700}
-.akun-portal{margin-top:auto;padding:14px 10px 0;border-top:1px solid var(--divider);display:flex;flex-direction:column;gap:4px}
-.email-portal{font-weight:700;overflow-wrap:anywhere}
-.tombol-keluar-portal{display:inline-flex;align-items:center;gap:8px;margin-top:8px;background:none;border:var(--border-w) solid var(--outline);
-  border-radius:var(--radius-sm);padding:6px 10px;font:inherit;font-weight:700;color:var(--ink);cursor:pointer}
-.utama-portal{padding:28px 32px;min-width:0;max-width:var(--lebar-konten)}
-
-/* Layar kepala halaman, kartu, tab, baris daftar */
-.jejak-portal{color:var(--ink-muted);font-weight:600;margin:0 0 4px}
-.judul-halaman-portal{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.judul-halaman-portal h1{font:700 26px var(--font-display);margin:0}
-.kartu-portal{background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);
-  box-shadow:var(--shadow-pop-sm);padding:14px 16px}
-.kisi-angka{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
-.angka-besar{font:700 28px var(--font-display)}
-.kartu-portal.peringatan{background:var(--danger-soft)}
-.dua-kolom-portal{display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
-.tab-portal{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.tab-portal button{border:var(--border-w) solid var(--outline);border-radius:var(--radius-pill);padding:5px 14px;
-  background:var(--surface-raised);color:var(--ink);font:inherit;font-weight:700;cursor:pointer}
-.tab-portal button[aria-pressed="true"],.tab-portal a[aria-current="page"]{background:var(--ink);color:var(--surface)}
-.tab-portal a{border:var(--border-w) solid var(--outline);border-radius:var(--radius-pill);padding:5px 14px;color:var(--ink);text-decoration:none;font-weight:700}
-.alat-portal{display:flex;gap:8px;margin-bottom:14px}
-.cari-portal{flex:1;display:flex;align-items:center;gap:8px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-sm);
-  padding:0 10px;background:var(--surface-raised)}
-.cari-portal input{flex:1;border:0;background:none;padding:9px 0;font:inherit;color:var(--ink)}
-.cari-portal input:focus{outline:none}.cari-portal:focus-within{outline:3px solid var(--focus);outline-offset:2px}
-.grup-daftar{background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);
-  box-shadow:var(--shadow-pop-sm);overflow:hidden;margin-bottom:14px}
-.kepala-grup{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface-sunken);border-bottom:var(--border-w) solid var(--outline)}
-.kepala-grup b{font-family:var(--font-display)}
-.nomor-grup{min-width:28px;height:28px;display:grid;place-items:center;border:var(--border-w) solid var(--outline);
-  border-radius:var(--radius-sm);background:var(--sun);color:var(--on-fill);font-weight:700}
-.baris-entri{display:grid;grid-template-columns:auto 1fr auto auto auto;gap:12px;align-items:center;padding:10px 14px;
-  border-bottom:1px solid var(--divider)}
-.baris-entri:last-child{border-bottom:0}
-.baris-entri.diseret{opacity:.5}
-.baris-entri a{color:var(--ink);font-weight:700;text-decoration:none}
-.baris-entri a:hover{text-decoration:underline}
-.pegangan-seret{display:flex;align-items:center;gap:2px;color:var(--ink-muted);cursor:grab}
-.pegangan-seret button{background:none;border:0;padding:2px;color:inherit;cursor:pointer;border-radius:4px}
-.pegangan-seret button:disabled{opacity:.3;cursor:default}
-.chip-status{display:inline-block;border:1.5px solid var(--outline);border-radius:var(--radius-pill);padding:1px 9px;
-  font-size:12px;font-weight:700;color:var(--on-fill);white-space:nowrap}
-.chip-status.draf{background:var(--surface-sunken);color:var(--ink)}.chip-status.diajukan{background:var(--sun)}
-.chip-status.dikembalikan{background:var(--danger-soft);color:var(--ink)}.chip-status.terbit{background:var(--lime)}
-.chip-ref{font:12px ui-monospace,monospace;background:var(--primary-soft);color:var(--ink);border-radius:6px;padding:1px 6px;margin-right:4px}
-.catatan-baris{display:block;color:var(--ink-muted);font-size:13px;font-weight:500}
-.kosong-portal{border:var(--border-w) dashed var(--ink-muted);border-radius:var(--radius-md);padding:28px;text-align:center;color:var(--ink-muted)}
-.kerangka-abu{height:44px;border-radius:var(--radius-sm);background:var(--surface-sunken);margin-bottom:8px}
-.galat-portal{background:var(--danger-soft);border:var(--border-w) solid var(--outline);border-radius:var(--radius-sm);padding:10px 14px;color:var(--ink)}
-
-@media (max-width:900px){
-  .kerangka-portal{grid-template-columns:1fr}
-  .kepala-portal{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--surface-raised);
-    border-bottom:var(--border-w) solid var(--outline);position:sticky;top:0;z-index:20}
-  .tombol-laci{display:inline-flex;align-items:center;gap:6px;background:none;border:var(--border-w) solid var(--outline);
-    border-radius:var(--radius-sm);padding:6px 10px;font:inherit;font-weight:700;color:var(--ink)}
-  .sisi-portal{position:fixed;inset:0 auto 0 0;width:min(280px,85vw);z-index:40;transform:translateX(-105%);transition:transform .2s}
-  .laci-terbuka .sisi-portal{transform:none}
-  .tirai-laci{position:fixed;inset:0;background:rgb(0 0 0 / .35);z-index:30}
-  .utama-portal{padding:18px 16px}
-  .kisi-angka{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .dua-kolom-portal{grid-template-columns:1fr}
-  .baris-entri{grid-template-columns:auto 1fr auto}
-  .baris-entri .kolom-ref,.baris-entri .kolom-waktu{display:none}
-}
-@media (prefers-reduced-motion:reduce){.sisi-portal{transition:none}}
-```
-
-Catatan: `.tombol-laci` di layar lebar tidak tampil karena `.kepala-portal{display:none}`; jsdom tidak menerapkan CSS, jadi tes tetap bisa mengklik tombolnya.
-
-`apps/admin/src/main.tsx`: tambahkan `import './admin.css';` setelah dua impor CSS web.
-
-`apps/admin/src/Portal.tsx`: hapus fungsi `NavigasiPortal` dan impor `MENU_PORTAL`/`Tombol` yang tak terpakai di cabang siap; `LayarRute` menerima `onKeluar` dan membungkus hasil rute:
+`apps/admin/src/Portal.tsx`: hapus `NavigasiPortal` dan impor yang tak terpakai; cabang siap jadi:
 
 ```tsx
   return (
@@ -1028,18 +1053,18 @@ function IsiRute({ rute }: { rute: Rute }) {
 }
 ```
 
-(impor `Kerangka` dari `./Kerangka`, `usePortal` dari `./repo`, `type Rute` dari `./rute`; `Tombol` tetap diimpor untuk layar tamu/tanpa peran.)
+(impor `Kerangka` dari `./Kerangka`, `usePortal` dari `./repo`, `type Rute` dari `./rute`; `Tombol` tetap untuk layar tamu/tanpa peran.)
 
-- [ ] **Step 4: Jalankan, pastikan lulus**
+- [ ] **Step 7: Jalankan, pastikan lulus**
 
-Run: `pnpm --filter @waris/admin test && pnpm --filter @waris/admin exec tsc --noEmit -p . && pnpm --filter @waris/web exec tsc --noEmit`
-Expected: PASS.
+Run: `pnpm --filter @waris/admin test && pnpm --filter @waris/admin exec tsc --noEmit -p .`
+Expected: PASS. Bila tes laci gagal karena `use-mobile` membaca lebar hanya lewat `matchMedia`, sesuaikan polyfill (`matches` = `window.innerWidth < 768` untuk query `max-width`), bukan komponennya.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
-git add apps/web/src/ui/Ikon.tsx apps/admin/src/admin.css apps/admin/src/Kerangka.tsx apps/admin/src/main.tsx apps/admin/src/Portal.tsx apps/admin/src/__tests__/kerangka.test.tsx apps/admin/src/__tests__/gerbang.test.tsx
-git commit -m "admin: kerangka dashboard dengan sidebar berkelompok & laci"
+git add apps/admin/src/Kerangka.tsx apps/admin/src/main.tsx apps/admin/src/Portal.tsx apps/admin/src/__tests__/kerangka.test.tsx apps/admin/src/__tests__/gerbang.test.tsx
+git commit -m "admin: kerangka dashboard dengan sidebar shadcn & laci"
 ```
 
 ---
@@ -1048,18 +1073,14 @@ git commit -m "admin: kerangka dashboard dengan sidebar berkelompok & laci"
 
 **Files:**
 - Create: `apps/admin/src/layar/Beranda.tsx`
-- Modify: `apps/admin/src/Portal.tsx` (`IsiRute`: `if (rute.layar === 'beranda') return <Beranda />;` menggantikan `<p>Segera</p>`; cabang akhir jadi `return null;` tidak diperlukan karena semua layar tertangani — hapus)
+- Modify: `apps/admin/src/Portal.tsx` (`IsiRute`: `beranda` → `<Beranda />`, hapus `<p>Segera</p>`)
 - Test: `apps/admin/src/__tests__/beranda.test.tsx` (baru)
 
 **Interfaces:**
-- Consumes: `ringkasBeranda`, `judulEntri`, `statusTampil`, `waktuRelatif`, `RingkasanBeranda` (Task 4); `menuUntukJenis`, `LABEL_ISI`, `MENU_PORTAL` (Task 3); `tulisRute` (Task 3).
-- Produces: `export function Beranda(): JSX.Element` — memuat `repo.konten.daftarEntri(jenis)` untuk semua `JENIS_KONTEN` paralel.
+- Consumes: `ringkasBeranda`, `judulEntri`, `statusTampil`, `waktuRelatif`, `RingkasanBeranda` (Task 4); `LABEL_ISI` (Task 3); `tulisRute` (Task 3); `Card`, `Badge`, `Button`, `Skeleton`, `Alert` (Task 5).
+- Produces: `export function Beranda(): JSX.Element`; `export function ChipStatus(props: { status: StatusTampil }): JSX.Element` (dipakai ulang Task 7).
 
-Tombol "Buat baru" (bukan reviewer): Materi, Soal kuis, Soal hitung, Kasus tanya jawab, FAQ → `tulisRute({ layar: 'entriBaru', jenis })`.
-
-- [ ] **Step 1: Tulis tes gagal**
-
-`apps/admin/src/__tests__/beranda.test.tsx`:
+- [ ] **Step 1: Tulis tes gagal** `apps/admin/src/__tests__/beranda.test.tsx`
 
 ```tsx
 // Tes Beranda: angka ringkasan, "Lanjutkan pekerjaan" dengan catatan review, tombol buat baru disembunyikan untuk reviewer.
@@ -1117,12 +1138,17 @@ Expected: FAIL, `Cannot find module '../layar/Beranda'`.
 ```tsx
 // Beranda portal (spec tahap A "Beranda"): memuat daftarEntri semua jenis, meringkasnya lewat ringkasBeranda
 // (angka milik saya & antrean, lanjutkan pekerjaan, antrean tertua untuk reviewer), dan menampilkan tombol buat baru
-// untuk admin/penulis. Galat repo tampil sebagai pesan dengan tombol coba lagi.
+// untuk admin/penulis. Galat repo tampil sebagai Alert dengan tombol coba lagi.
 import { useEffect, useState } from 'react';
 import { JENIS_KONTEN, type JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { LABEL_ISI } from '../navigasi';
-import { judulEntri, ringkasBeranda, statusTampil, waktuRelatif, type RingkasanBeranda } from '../ringkas';
+import { judulEntri, LABEL_TAB, ringkasBeranda, statusTampil, waktuRelatif, type RingkasanBeranda, type StatusTampil } from '../ringkas';
 import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
 
@@ -1144,55 +1170,69 @@ export function Beranda() {
     return () => { dibatalkan = true; };
   }, [repo, sesi.userId, muatUlang]);
 
-  const nama = sesi.email.split('@')[0];
   return (
-    <div>
-      <div className="judul-halaman-portal">
-        <div>
-          <h1>Assalamu'alaikum, {nama}</h1>
-          <p className="keterangan">{LABEL_PERAN[peran]}</p>
-        </div>
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold">Assalamu'alaikum, {sesi.email.split('@')[0]}</h1>
+        <p className="text-muted-foreground">{LABEL_PERAN[peran]}</p>
       </div>
-      {galat ? (
-        <p role="alert" className="galat-portal">{galat} <button type="button" onClick={() => setMuatUlang(n => n + 1)}>Coba lagi</button></p>
-      ) : null}
-      {!ringkasan && !galat ? <><div className="kerangka-abu" /><div className="kerangka-abu" /></> : null}
-      {ringkasan ? <IsiBeranda ringkasan={ringkasan} bolehBuat={peran !== 'reviewer'} reviewer={peran === 'reviewer'} /> : null}
+      {galat ? <PesanGalat pesan={galat} onCobaLagi={() => setMuatUlang(n => n + 1)} /> : null}
+      {!ringkasan && !galat ? <div className="space-y-2"><Skeleton className="h-24" /><Skeleton className="h-48" /></div> : null}
+      {ringkasan ? <IsiBeranda ringkasan={ringkasan} reviewer={peran === 'reviewer'} /> : null}
     </div>
   );
 }
 
-function IsiBeranda({ ringkasan, bolehBuat, reviewer }: { ringkasan: RingkasanBeranda; bolehBuat: boolean; reviewer: boolean }) {
+export function PesanGalat({ pesan, onCobaLagi }: { pesan: string; onCobaLagi: () => void }) {
+  return (
+    <Alert variant="destructive" role="alert">
+      <AlertDescription className="flex items-center justify-between gap-3">
+        {pesan}<Button variant="outline" size="sm" onClick={onCobaLagi}>Coba lagi</Button>
+      </AlertDescription>
+    </Alert>
+  );
+}
+
+export function ChipStatus({ status }: { status: StatusTampil }) {
+  if (status === 'terbit + draf') return <span className="inline-flex gap-1"><Badge>Terbit</Badge><Badge variant="secondary">+ draf</Badge></span>;
+  const varian = status === 'terbit' ? 'default' : status === 'dikembalikan' ? 'destructive' : status === 'diajukan' ? 'outline' : 'secondary';
+  return <Badge variant={varian}>{LABEL_TAB[status]}</Badge>;
+}
+
+function IsiBeranda({ ringkasan, reviewer }: { ringkasan: RingkasanBeranda; reviewer: boolean }) {
   const sekarang = new Date();
   const daftarUtama = reviewer ? ringkasan.antreanTertua : ringkasan.lanjutkan;
   const judulDaftar = reviewer ? 'Menunggu review' : 'Lanjutkan pekerjaan';
   return (
     <>
-      <section aria-label="Ringkasan" className="kisi-angka">
+      <section aria-label="Ringkasan" className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <KartuAngka label="Draf saya" angka={ringkasan.drafSaya} />
         <KartuAngka label="Menunggu review" angka={ringkasan.menungguReview} />
         <KartuAngka label="Dikembalikan ke saya" angka={ringkasan.dikembalikanKeSaya} peringatan={ringkasan.dikembalikanKeSaya > 0} />
         <KartuAngka label="Terbit" angka={ringkasan.terbit} />
       </section>
-      <div className="dua-kolom-portal">
-        <section aria-label={judulDaftar} className="kartu-portal">
-          <h2>{judulDaftar}</h2>
-          {daftarUtama.length === 0 ? <p className="keterangan">Tidak ada yang tertunda.</p> : (
-            <ul className="daftar-polos">
-              {daftarUtama.map(entri => <BarisBeranda key={entri.entriId} entri={entri} sekarang={sekarang} />)}
-            </ul>
-          )}
-          {reviewer ? <a href={tulisRute({ layar: 'review' })}>Buka antrean review</a> : null}
-        </section>
-        {bolehBuat ? (
-          <section aria-label="Buat baru" className="kartu-portal">
-            <h2>Buat baru</h2>
-            <p className="keterangan">Pilih jenis, lalu isi formnya.</p>
-            <div className="tab-portal">
-              {JENIS_BUAT_BARU.map(jenis => <a key={jenis} href={tulisRute({ layar: 'entriBaru', jenis })}>+ {LABEL_ISI[jenis]}</a>)}
-            </div>
-          </section>
-        ) : null}
+      <div className="grid gap-4 md:grid-cols-[3fr_2fr]">
+        <Card aria-label={judulDaftar} role="region">
+          <CardHeader><CardTitle>{judulDaftar}</CardTitle></CardHeader>
+          <CardContent>
+            {daftarUtama.length === 0 ? <p className="text-muted-foreground">Tidak ada yang tertunda.</p> : (
+              <ul className="divide-y">{daftarUtama.map(entri => <BarisBeranda key={entri.entriId} entri={entri} sekarang={sekarang} />)}</ul>
+            )}
+            {reviewer ? <a className="font-semibold underline" href={tulisRute({ layar: 'review' })}>Buka antrean review</a> : null}
+          </CardContent>
+        </Card>
+        {reviewer ? null : (
+          <Card aria-label="Buat baru" role="region">
+            <CardHeader><CardTitle>Buat baru</CardTitle></CardHeader>
+            <CardContent className="flex flex-wrap gap-2">
+              {JENIS_BUAT_BARU.map(jenis => (
+                <Button key={jenis} variant="outline" size="sm" asChild>
+                  <a href={tulisRute({ layar: 'entriBaru', jenis })}>+ {LABEL_ISI[jenis]}</a>
+                </Button>
+              ))}
+            </CardContent>
+          </Card>
+        )}
       </div>
     </>
   );
@@ -1200,29 +1240,34 @@ function IsiBeranda({ ringkasan, bolehBuat, reviewer }: { ringkasan: RingkasanBe
 
 function KartuAngka({ label, angka, peringatan }: { label: string; angka: number; peringatan?: boolean }) {
   return (
-    <div className={peringatan ? 'kartu-portal peringatan' : 'kartu-portal'}>
-      <div className="angka-besar">{angka}</div>
-      <div className="keterangan">{label}</div>
-    </div>
+    <Card className={peringatan ? 'border-destructive' : undefined}>
+      <CardContent className="pt-6">
+        <div className="text-3xl font-bold">{angka}</div>
+        <div className="text-sm text-muted-foreground">{label}</div>
+      </CardContent>
+    </Card>
   );
 }
 
 function BarisBeranda({ entri, sekarang }: { entri: RingkasanEntri; sekarang: Date }) {
-  const status = statusTampil(entri);
+  const catatan = entri.revisiTerakhir?.catatanReview;
   return (
-    <li className="baris-entri" style={{ gridTemplateColumns: '1fr auto auto' }}>
-      <span>
-        <a href={tulisRute({ layar: 'entri', entriId: entri.entriId })}>{judulEntri(entri)}</a>
-        <span className="catatan-baris">{LABEL_ISI[entri.jenis]}{entri.revisiTerakhir?.catatanReview ? ` · ${entri.revisiTerakhir.catatanReview}` : ''}</span>
+    <li className="flex items-center gap-3 py-2">
+      <span className="min-w-0 flex-1">
+        <a className="font-semibold hover:underline" href={tulisRute({ layar: 'entri', entriId: entri.entriId })}>{judulEntri(entri)}</a>
+        <span className="block text-sm text-muted-foreground">{LABEL_ISI[entri.jenis]}</span>
+        {catatan ? <span className="block text-sm text-muted-foreground">{catatan}</span> : null}
       </span>
-      <span className={`chip-status ${status === 'terbit + draf' ? 'draf' : status}`}>{status}</span>
-      <span className="keterangan kolom-waktu">{entri.revisiTerakhir ? waktuRelatif(entri.revisiTerakhir.dibuatPada, sekarang) : ''}</span>
+      <ChipStatus status={statusTampil(entri)} />
+      <span className="hidden text-sm text-muted-foreground md:inline">
+        {entri.revisiTerakhir ? waktuRelatif(entri.revisiTerakhir.dibuatPada, sekarang) : ''}
+      </span>
     </li>
   );
 }
 ```
 
-Catatan: `catatanReview` ditampilkan di dalam `<span>` yang sama dengan jenis; tes mencari teks `'Lengkapi dalil'` dengan `getByText` — bila gagal karena teks tergabung, pecah menjadi `<span className="catatan-baris">{LABEL_ISI[...]}</span>{catatan ? <span className="catatan-baris">{catatan}</span> : null}` (dua span terpisah).
+Catatan: `LABEL_TAB` diindeks dengan `StatusTampil` selain `'terbit + draf'` — keempat nilai itu juga kunci `TabStatus`, jadi tipe lolos setelah penyempitan; bila tidak, pakai `LABEL_TAB[status as TabStatus]`.
 
 - [ ] **Step 4: Jalankan, pastikan lulus**
 
@@ -1242,18 +1287,18 @@ git commit -m "admin: beranda ringkasan & lanjutkan pekerjaan"
 
 **Files:**
 - Modify: `apps/admin/src/layar/DaftarKonten.tsx` (tulis ulang seluruhnya)
-- Modify: `apps/admin/src/Portal.tsx` (`IsiRute` cabang menu: `return <LayarMenu menu={rute.menu} tab={rute.tab} />;`)
+- Modify: `apps/admin/src/Portal.tsx` (`IsiRute` cabang menu → `LayarMenu`)
 - Test: `apps/admin/src/__tests__/daftar.test.tsx` (tulis ulang)
 
 **Interfaces:**
-- Consumes: Task 3 (`menuDari`, `LABEL_ISI`, `KunciMenu`, `IsiMenu`, `tulisRute`), Task 4 (`saringDaftar`, `jumlahPerTab`, `kelompokkanPerModul`, `statusTampil`, `judulEntri`, `waktuRelatif`, `TAB_STATUS`, `LABEL_TAB`, `TabStatus`, `GrupModul`).
+- Consumes: Task 3 (`menuDari`, `LABEL_ISI`, `KunciMenu`, `IsiMenu`, `tulisRute`), Task 4 (`saringDaftar`, `jumlahPerTab`, `kelompokkanPerModul`, `statusTampil`, `judulEntri`, `waktuRelatif`, `TAB_STATUS`, `LABEL_TAB`, `TabStatus`, `GrupModul`), Task 6 (`ChipStatus`, `PesanGalat`), shadcn `Tabs`, `Input`, `Card`, `Button`, `Skeleton`.
 - Produces:
   ```tsx
-  export function LayarMenu(props: { menu: KunciMenu; tab: IsiMenu }): JSX.Element  // kepala + tab jenis + isi
+  export function LayarMenu(props: { menu: KunciMenu; tab: IsiMenu }): JSX.Element
   export function DaftarKonten(props: { jenis: JenisKonten; menuMateri?: boolean }): JSX.Element
   export function BarisEntri(props: { entri: RingkasanEntri; sekarang: Date; pegangan?: ReactNode }): JSX.Element
   ```
-  `LayarMenu` menampilkan tab jenis (link `tulisRute({layar:'menu',…})`) bila `menu.isi.length > 1` dan `menu !== 'materi'`; tab `diksi` merender `<EditorDiksi />`. Menu materi merender `<DaftarKonten jenis="materi" menuMateri />` yang juga memuat `modul` dan menampilkan grup. Task 8 menambahkan seret ke `DaftarKonten`.
+  Tab status = shadcn `Tabs` (role `tab`, nama "Draf 1"); tab jenis menu bertab = tautan bergaya tombol dengan `aria-current`.
 
 - [ ] **Step 1: Tulis tes gagal** — ganti seluruh isi `apps/admin/src/__tests__/daftar.test.tsx`:
 
@@ -1288,13 +1333,16 @@ function pasang(m: ReturnType<typeof buatMemori>, menu: KunciMenu, tab: IsiMenu,
   );
 }
 
+// Radix Tabs berpindah pada mouseDown (bukan click) di jsdom.
+const pilihTab = (nama: string) => fireEvent.mouseDown(screen.getByRole('tab', { name: nama }), { button: 0 });
+
 test('tab status dengan jumlah menyaring baris', async () => {
   pasang(await siapkan(), 'faq', 'faq');
   await screen.findByText('Apa itu tirkah?');
-  fireEvent.click(screen.getByRole('button', { name: 'Draf 1' }));
+  pilihTab('Draf 1');
   expect(screen.queryByText('Apa itu tirkah?')).toBeNull();
   expect(screen.getByText('Siapa ashabah?')).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Terbit 1' }));
+  pilihTab('Terbit 1');
   expect(screen.getByText('Apa itu tirkah?')).toBeTruthy();
 });
 
@@ -1346,7 +1394,7 @@ test('galat repo tampil dengan tombol coba lagi', async () => {
 });
 ```
 
-Catatan untuk tes materi: `PELAJARAN_UJI` memuat refs di blok-bloknya; bila `buatDraf` menolak karena ref tak dikenal, isi `refs` awal `buatMemori` dengan semua kode ref di `PELAJARAN_UJI` (kumpulkan dengan `JSON.stringify(PELAJARAN_UJI).match(/R\d\d-\d+/g)`).
+Catatan tes materi: bila `buatDraf` menolak ref tak dikenal, isi `refs` `buatMemori` dengan semua kode ref di `PELAJARAN_UJI` (`JSON.stringify(PELAJARAN_UJI).match(/R\d\d-\d+/g)`). Bila `mouseDown` tidak memindah tab Radix di versi terpasang, pakai `userEvent.click` bila `@testing-library/user-event` sudah ada, atau `fireEvent.mouseDown` + `fireEvent.click` — jangan mengganti Tabs dengan tombol biasa.
 
 - [ ] **Step 2: Jalankan, pastikan gagal**
 
@@ -1360,9 +1408,15 @@ Expected: FAIL, `LayarMenu` tidak diekspor.
 // untuk menu bertab, lalu daftar entri dengan tab status + jumlah, cari (judul/slug/ref), dan baris berstatus.
 // Menu materi mengelompokkan materi di bawah modulnya. Data dari repo.konten.daftarEntri; perhitungan di ringkas.ts.
 import { useEffect, useState, type ReactNode } from 'react';
+import { Pencil, Search } from 'lucide-react';
 import type { JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
-import { Ikon } from '@waris/web/ui/Ikon';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LABEL_ISI, menuDari, type IsiMenu, type KunciMenu } from '../navigasi';
 import {
   jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, saringDaftar, statusTampil, TAB_STATUS, waktuRelatif,
@@ -1370,6 +1424,7 @@ import {
 } from '../ringkas';
 import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
+import { ChipStatus, PesanGalat } from './Beranda';
 import { EditorDiksi } from './EditorDiksi';
 
 export function LayarMenu({ menu: kunci, tab }: { menu: KunciMenu; tab: IsiMenu }) {
@@ -1378,22 +1433,26 @@ export function LayarMenu({ menu: kunci, tab }: { menu: KunciMenu; tab: IsiMenu 
   const bertab = menu.isi.length > 1 && kunci !== 'materi';
   const jenisBaru = kunci === 'materi' ? (['materi', 'modul'] as const) : tab === 'diksi' ? [] : [tab];
   return (
-    <div>
-      <p className="jejak-portal">{menu.grup} /</p>
-      <div className="judul-halaman-portal">
-        <h1>{menu.label}</h1>
-        {peran !== 'reviewer' ? (
-          <div className="tab-portal">
-            {jenisBaru.map(jenis => (
-              <a key={jenis} href={tulisRute({ layar: 'entriBaru', jenis })}>+ {LABEL_ISI[jenis]} baru</a>
-            ))}
-          </div>
-        ) : null}
+    <div className="space-y-4">
+      <div>
+        <p className="text-sm font-semibold text-muted-foreground">{menu.grup} /</p>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-bold">{menu.label}</h1>
+          {peran !== 'reviewer' ? (
+            <div className="flex gap-2">
+              {jenisBaru.map(jenis => (
+                <Button key={jenis} size="sm" asChild><a href={tulisRute({ layar: 'entriBaru', jenis })}>+ {LABEL_ISI[jenis]} baru</a></Button>
+              ))}
+            </div>
+          ) : null}
+        </div>
       </div>
       {bertab ? (
-        <nav className="tab-portal" aria-label="Jenis">
+        <nav aria-label="Jenis" className="flex gap-2">
           {menu.isi.map(isi => (
-            <a key={isi} href={tulisRute({ layar: 'menu', menu: kunci, tab: isi })} aria-current={isi === tab ? 'page' : undefined}>{LABEL_ISI[isi]}</a>
+            <Button key={isi} size="sm" variant={isi === tab ? 'default' : 'outline'} asChild>
+              <a href={tulisRute({ layar: 'menu', menu: kunci, tab: isi })} aria-current={isi === tab ? 'page' : undefined}>{LABEL_ISI[isi]}</a>
+            </Button>
           ))}
         </nav>
       ) : null}
@@ -1420,33 +1479,36 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
     return () => { dibatalkan = true; };
   }, [repo, jenis, menuMateri, muatUlang]);
 
-  if (galat) return <p role="alert" className="galat-portal">{galat} <button type="button" onClick={() => setMuatUlang(n => n + 1)}>Coba lagi</button></p>;
-  if (!daftar) return <div aria-busy="true"><div className="kerangka-abu" /><div className="kerangka-abu" /><div className="kerangka-abu" /></div>;
+  if (galat) return <PesanGalat pesan={galat} onCobaLagi={() => setMuatUlang(n => n + 1)} />;
+  if (!daftar) return <div aria-busy="true" className="space-y-2"><Skeleton className="h-11" /><Skeleton className="h-11" /><Skeleton className="h-11" /></div>;
 
   const jumlah = jumlahPerTab(daftar);
   const tampil = saringDaftar(daftar, tab, cari);
   const sekarang = new Date();
   return (
-    <div>
-      <div className="tab-portal" role="group" aria-label="Status">
-        {TAB_STATUS.map(t => (
-          <button key={t} type="button" aria-pressed={tab === t} onClick={() => setTab(t)}>{LABEL_TAB[t]} {jumlah[t]}</button>
-        ))}
-      </div>
-      <div className="alat-portal">
-        <label className="cari-portal">
-          <Ikon nama="cari" ukuran={18} />
-          <input type="search" aria-label="Cari" placeholder="Cari judul, slug, atau kode rujukan" value={cari} onChange={e => setCari(e.target.value)} />
-        </label>
-      </div>
-      {daftar.length === 0 && !menuMateri ? <p className="kosong-portal">Belum ada {LABEL_ISI[jenis].toLowerCase()}. Buat entri pertama lewat tombol di atas.</p> : null}
-      {daftar.length > 0 && tampil.length === 0 ? <p className="kosong-portal">Tidak ada yang cocok.</p> : null}
+    <div className="space-y-3">
+      <Tabs value={tab} onValueChange={nilai => setTab(nilai as TabStatus)}>
+        <TabsList aria-label="Status">
+          {TAB_STATUS.map(t => <TabsTrigger key={t} value={t}>{LABEL_TAB[t]} {jumlah[t]}</TabsTrigger>)}
+        </TabsList>
+      </Tabs>
+      <label className="relative block">
+        <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+        <Input type="search" aria-label="Cari" className="pl-9" placeholder="Cari judul, slug, atau kode rujukan"
+          value={cari} onChange={e => setCari(e.target.value)} />
+      </label>
+      {daftar.length === 0 && !menuMateri ? (
+        <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">
+          Belum ada {LABEL_ISI[jenis].toLowerCase()}. Buat entri pertama lewat tombol di atas.
+        </p>
+      ) : null}
+      {daftar.length > 0 && tampil.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Tidak ada yang cocok.</p> : null}
       {menuMateri
         ? kelompokkanPerModul(tampil, modul).map(grup => <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} />)
         : tampil.length > 0 ? (
-          <section className="grup-daftar" aria-label={LABEL_ISI[jenis]}>
+          <Card role="region" aria-label={LABEL_ISI[jenis]} className="gap-0 divide-y py-0">
             {tampil.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}
-          </section>
+          </Card>
         ) : null}
     </div>
   );
@@ -1455,47 +1517,45 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
 function GrupMateri({ grup, sekarang }: { grup: GrupModul; sekarang: Date }) {
   const label = grup.nomor === null ? grup.judul : `Modul ${grup.nomor}: ${grup.judul}`;
   return (
-    <section className="grup-daftar" aria-label={label}>
-      <div className="kepala-grup">
-        <span className="nomor-grup">{grup.nomor ?? '–'}</span>
+    <Card role="region" aria-label={label} className="gap-0 divide-y py-0">
+      <div className="flex items-center gap-3 bg-muted px-4 py-2">
+        <Badge variant="outline">{grup.nomor ?? '–'}</Badge>
         <b>{grup.judul}</b>
-        <span className="keterangan">{grup.materi.length} materi</span>
+        <span className="text-sm text-muted-foreground">{grup.materi.length} materi</span>
         {grup.modul ? (
-          <a href={tulisRute({ layar: 'entri', entriId: grup.modul.entriId })} aria-label={`Edit modul ${grup.judul}`} style={{ marginLeft: 'auto' }}>
-            <Ikon nama="pensil" ukuran={18} />
-          </a>
+          <Button variant="ghost" size="icon" className="ml-auto" asChild>
+            <a href={tulisRute({ layar: 'entri', entriId: grup.modul.entriId })} aria-label={`Edit modul ${grup.judul}`}><Pencil /></a>
+          </Button>
         ) : null}
       </div>
-      {grup.materi.length === 0 ? <p className="keterangan" style={{ padding: '10px 14px', margin: 0 }}>Belum ada materi.</p> : null}
+      {grup.materi.length === 0 ? <p className="px-4 py-2 text-sm text-muted-foreground">Belum ada materi.</p> : null}
       {grup.materi.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}
-    </section>
+    </Card>
   );
 }
 
 export function BarisEntri({ entri, sekarang, pegangan }: { entri: RingkasanEntri; sekarang: Date; pegangan?: ReactNode }) {
-  const status = statusTampil(entri);
   const catatan = entri.revisiTerakhir?.status === 'dikembalikan' ? entri.revisiTerakhir.catatanReview : null;
   return (
-    <div className="baris-entri">
-      <span>{pegangan}</span>
-      <span>
-        <a href={tulisRute({ layar: 'entri', entriId: entri.entriId })}>{judulEntri(entri)}</a>
-        {catatan ? <span className="catatan-baris">Catatan: {catatan}</span> : null}
+    <div className="flex items-center gap-3 bg-card px-4 py-2">
+      {pegangan}
+      <span className="min-w-0 flex-1">
+        <a className="font-semibold hover:underline" href={tulisRute({ layar: 'entri', entriId: entri.entriId })}>{judulEntri(entri)}</a>
+        {catatan ? <span className="block text-sm text-muted-foreground">Catatan: {catatan}</span> : null}
       </span>
-      <span><ChipStatus status={status} /></span>
-      <span className="kolom-ref">{(entri.revisiTerakhir?.refs ?? []).map(kode => <span key={kode} className="chip-ref">{kode}</span>)}</span>
-      <span className="keterangan kolom-waktu">{entri.revisiTerakhir ? waktuRelatif(entri.revisiTerakhir.dibuatPada, sekarang) : ''}</span>
+      <ChipStatus status={statusTampil(entri)} />
+      <span className="hidden gap-1 md:flex">
+        {(entri.revisiTerakhir?.refs ?? []).map(kode => <Badge key={kode} variant="secondary" className="font-mono">{kode}</Badge>)}
+      </span>
+      <span className="hidden text-sm text-muted-foreground md:inline">
+        {entri.revisiTerakhir ? waktuRelatif(entri.revisiTerakhir.dibuatPada, sekarang) : ''}
+      </span>
     </div>
   );
 }
-
-function ChipStatus({ status }: { status: ReturnType<typeof statusTampil> }) {
-  if (status === 'terbit + draf') return <><span className="chip-status terbit">Terbit</span> <span className="chip-status draf">+ draf</span></>;
-  return <span className={`chip-status ${status}`}>{LABEL_TAB[status]}</span>;
-}
 ```
 
-`apps/admin/src/Portal.tsx`, di `IsiRute`: ganti cabang menu menjadi `if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}`} menu={rute.menu} tab={rute.tab} />;`, impor `LayarMenu` (bukan `DaftarKonten`) dari `./layar/DaftarKonten`, dan hapus impor `EditorDiksi` dari Portal bila tak terpakai lagi.
+`apps/admin/src/Portal.tsx`, `IsiRute`: `if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}`} menu={rute.menu} tab={rute.tab} />;`, impor `LayarMenu` (bukan `DaftarKonten`), hapus impor `EditorDiksi` bila tak terpakai.
 
 - [ ] **Step 4: Jalankan, pastikan lulus**
 
@@ -1511,24 +1571,41 @@ git commit -m "admin: daftar konten bertab, cari, dan grup modul"
 
 ---
 
-### Task 8: Seret urutan (+ tombol naik/turun, rollback)
+### Task 8: Seret urutan (@dnd-kit + tombol naik/turun, rollback)
 
 **Files:**
-- Modify: `apps/admin/src/layar/DaftarKonten.tsx` (`DaftarKonten`, `GrupMateri`)
-- Test: `apps/admin/src/__tests__/urutan.test.tsx` (baru)
+- Modify: `apps/admin/package.json` (`@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`)
+- Modify: `apps/admin/src/ringkas.ts` (`indeksSeret`)
+- Modify: `apps/admin/src/layar/DaftarKonten.tsx` (`DaftarKonten`, `GrupMateri`, komponen `KelompokSeret`, `BarisSeret`)
+- Test: `apps/admin/src/__tests__/urutan.test.tsx` (baru), `apps/admin/src/__tests__/ringkas.test.ts`
 
 **Interfaces:**
 - Consumes: `repo.editorial.aturUrutan(entriIds: string[])` (Task 2); `pindahkan` (Task 4); `BarisEntri` prop `pegangan` (Task 7).
-- Produces: perilaku saja. Aturan:
-  - Pegangan tampil hanya bila `peran !== 'reviewer'`, `tab === 'semua'`, dan `cari.trim() === ''`.
-  - Pindah terjadi di dalam satu kelompok (satu modul pada menu materi, atau seluruh daftar pada menu lain).
-  - Menu materi: yang dikirim ke `aturUrutan` adalah **semua** id materi, diratakan menurut urutan grup (modul 1, modul 2, …, "Tanpa modul") setelah perpindahan — supaya urutan global web tetap mengikuti urutan modul (Review Focus 1).
-  - Sebelum menunggu repo, state `daftar` langsung diganti dengan urutan baru (nilai `urutan` diisi `(i+1)*10`); gagal → `daftar` dikembalikan ke salinan sebelumnya dan pesan galat tampil (`role="alert"`, teks "Urutan gagal disimpan: <pesan>").
+- Produces: `export function indeksSeret(ids: readonly string[], aktif: string, tujuan: string | null): [number, number] | null` di `ringkas.ts` (null bila tujuan kosong/sama/tak dikenal). Aturan perilaku:
+  - Pegangan & tombol hanya bila `peran !== 'reviewer'`, `tab === 'semua'`, `cari.trim() === ''`.
+  - Pindah terjadi di dalam satu kelompok (satu modul, atau seluruh daftar datar); tiap kelompok satu `SortableContext`.
+  - Menu materi: `aturUrutan` menerima **semua** id materi diratakan per grup (modul 1, 2, …, "Tanpa modul") (Review Focus 1).
+  - `daftar` langsung diganti urutan baru (`urutan = (i+1)*10`); gagal → kembali ke salinan lama + `role="alert"` "Urutan gagal disimpan: <pesan>".
+- Seret pointer/sentuh/keyboard dari @dnd-kit diuji lewat `indeksSeret` (jsdom tidak punya tata letak, jadi seret nyata dicek di Task 9); tombol naik/turun diuji sebagai komponen.
 
-- [ ] **Step 1: Tulis tes gagal** `apps/admin/src/__tests__/urutan.test.tsx`
+- [ ] **Step 1: Tulis tes gagal**
+
+Tambahkan ke `apps/admin/src/__tests__/ringkas.test.ts` (dan `indeksSeret` ke impornya):
+
+```ts
+test('indeksSeret: posisi asal & tujuan, null bila tak berpindah', () => {
+  expect(indeksSeret(['a', 'b', 'c'], 'a', 'c')).toEqual([0, 2]);
+  expect(indeksSeret(['a', 'b', 'c'], 'c', 'a')).toEqual([2, 0]);
+  expect(indeksSeret(['a', 'b'], 'a', 'a')).toBeNull();
+  expect(indeksSeret(['a', 'b'], 'a', null)).toBeNull();
+  expect(indeksSeret(['a', 'b'], 'a', 'x')).toBeNull();
+});
+```
+
+`apps/admin/src/__tests__/urutan.test.tsx`:
 
 ```tsx
-// Tes seret urutan: tombol turun memanggil aturUrutan dengan urutan baru, rollback saat gagal, pegangan hilang untuk
+// Tes urutan: tombol turun memanggil aturUrutan dengan urutan baru, rollback saat gagal, pegangan hilang untuk
 // reviewer / tab tersaring / saat mencari, dan materi mengirim urutan global rata per modul.
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
@@ -1536,7 +1613,7 @@ import { buatMemori } from '@waris/data';
 import type { Peran } from '@waris/content';
 import { KonteksRepo } from '../repo';
 import { LayarMenu } from '../layar/DaftarKonten';
-import { DAFTAR_FAQ_UJI, SOAL_HITUNG_UJI } from './contoh';
+import { DAFTAR_FAQ_UJI } from './contoh';
 
 async function siapkanFaq() {
   const m = buatMemori({ refs: ['R05-1'], sesi: { userId: 'u1', email: 'a@x.id' }, peran: { u1: 'penulis' } });
@@ -1577,26 +1654,16 @@ test('reviewer, tab tersaring, atau sedang mencari → tanpa pegangan', async ()
   const { unmount } = pasang(m, 'reviewer');
   await screen.findByText('Apa itu tirkah?');
   expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Seret/ })).toBeNull();
   unmount();
   pasang(m, 'penulis');
   await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' });
-  fireEvent.click(screen.getByRole('button', { name: 'Draf 2' }));
+  expect(screen.getByRole('button', { name: 'Seret Apa itu tirkah?' })).toBeTruthy();
+  fireEvent.mouseDown(screen.getByRole('tab', { name: 'Draf 2' }), { button: 0 });
   expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
-  fireEvent.click(screen.getByRole('button', { name: 'Semua 2' }));
+  fireEvent.mouseDown(screen.getByRole('tab', { name: 'Semua 2' }), { button: 0 });
   fireEvent.change(screen.getByRole('searchbox', { name: 'Cari' }), { target: { value: 'tirkah' } });
   expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
-});
-
-test('seret (drop) memindah baris', async () => {
-  const { m, a, b } = await siapkanFaq();
-  const mata = vi.spyOn(m.editorial, 'aturUrutan');
-  pasang(m, 'penulis');
-  await screen.findByText('Apa itu tirkah?');
-  const baris = screen.getAllByTestId('baris-seret');
-  fireEvent.dragStart(baris[1]!);
-  fireEvent.dragOver(baris[0]!);
-  fireEvent.drop(baris[0]!);
-  await waitFor(() => expect(mata).toHaveBeenCalledWith([b, a]));
 });
 
 test('materi: pindah di modul 2 mengirim semua materi rata per modul', async () => {
@@ -1615,7 +1682,7 @@ test('materi: pindah di modul 2 mengirim semua materi rata per modul', async () 
     }, ['R05-1']);
     return id;
   };
-  // Urutan global awal sengaja acak antar-modul: m2 dibuat duluan dengan urutan kecil.
+  // Urutan global awal sengaja acak antar-modul: materi modul 2 dibuat duluan dengan urutan kecil.
   const x = await buatMateri('x', 2, 10);
   const y = await buatMateri('y', 2, 20);
   const p = await buatMateri('p', 1, 30);
@@ -1627,23 +1694,42 @@ test('materi: pindah di modul 2 mengirim semua materi rata per modul', async () 
 });
 ```
 
-Catatan untuk tes materi: bila skema `materi` menolak isi di atas (field wajib lain), salin bentuk dari `PELAJARAN_UJI` (`{ ...PELAJARAN_UJI, slug, judul, modul, urutan }`) dan tambahkan semua kode ref `PELAJARAN_UJI` ke `refs` `buatMemori`.
+Catatan tes materi: bila skema `materi` menolak isi di atas, salin bentuk `PELAJARAN_UJI` (`{ ...PELAJARAN_UJI, slug, judul, modul, urutan }`) dan tambahkan kode refnya ke `refs` `buatMemori`.
 
 - [ ] **Step 2: Jalankan, pastikan gagal**
 
-Run: `pnpm --filter @waris/admin test -- urutan`
-Expected: FAIL, tombol "Turunkan …" tidak ditemukan.
+Run: `pnpm --filter @waris/admin add @dnd-kit/core @dnd-kit/sortable @dnd-kit/utilities && pnpm --filter @waris/admin test -- urutan ringkas`
+Expected: FAIL — `indeksSeret` tidak diekspor; tombol "Turunkan …" tidak ditemukan.
 
-- [ ] **Step 3: Implementasi** — perubahan di `apps/admin/src/layar/DaftarKonten.tsx`:
+- [ ] **Step 3: Implementasi**
 
-Impor tambahan: `import { pindahkan } from '../ringkas';` (gabungkan ke impor `../ringkas` yang ada).
+`apps/admin/src/ringkas.ts`, setelah `pindahkan`:
 
-Di `DaftarKonten`, setelah deklarasi state yang ada, tambahkan state & fungsi simpan, lalu teruskan ke daftar/grup:
+```ts
+/** Hasil seret @dnd-kit (id aktif → id tujuan) sebagai pasangan indeks untuk pindahkan; null bila tidak berpindah. */
+export function indeksSeret(ids: readonly string[], aktif: string, tujuan: string | null): [number, number] | null {
+  const dari = ids.indexOf(aktif);
+  const ke = tujuan === null ? -1 : ids.indexOf(tujuan);
+  return dari < 0 || ke < 0 || dari === ke ? null : [dari, ke];
+}
+```
+
+`apps/admin/src/layar/DaftarKonten.tsx`:
+
+Impor tambahan:
 
 ```tsx
-  const { peran } = usePortal();   // gabungkan dengan `const { repo } = usePortal();` → `const { repo, peran } = usePortal();`
-  const [galatUrutan, setGalatUrutan] = useState<string | null>(null);
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
+// gabungkan ke impor ../ringkas: indeksSeret, pindahkan
+```
 
+Di `DaftarKonten`: `const { repo, peran } = usePortal();`, lalu setelah state lain:
+
+```tsx
+  const [galatUrutan, setGalatUrutan] = useState<string | null>(null);
   const bolehSeret = peran !== 'reviewer' && tab === 'semua' && cari.trim() === '';
 
   /** Ganti isi satu kelompok dengan urutan barunya, lalu simpan. Materi dikirim utuh rata per modul supaya urutan
@@ -1651,12 +1737,10 @@ Di `DaftarKonten`, setelah deklarasi state yang ada, tambahkan state & fungsi si
   async function simpanUrutan(kelompokLama: RingkasanEntri[], kelompokBaru: RingkasanEntri[]) {
     if (!daftar) return;
     const sebelum = daftar;
-    const posisiLama = new Set(kelompokLama.map(entri => entri.entriId));
-    let sisaBaru = [...kelompokBaru];
-    const tersusun = daftar.map(entri => (posisiLama.has(entri.entriId) ? sisaBaru.shift()! : entri));
-    const urutanKirim = menuMateri
-      ? kelompokkanPerModul(tersusun, modul).flatMap(grup => grup.materi)
-      : tersusun;
+    const anggotaKelompok = new Set(kelompokLama.map(entri => entri.entriId));
+    const sisaBaru = [...kelompokBaru];
+    const tersusun = daftar.map(entri => (anggotaKelompok.has(entri.entriId) ? sisaBaru.shift()! : entri));
+    const urutanKirim = menuMateri ? kelompokkanPerModul(tersusun, modul).flatMap(grup => grup.materi) : tersusun;
     setDaftar(urutanKirim.map((entri, indeks) => ({ ...entri, urutan: (indeks + 1) * 10 })));
     setGalatUrutan(null);
     try {
@@ -1668,11 +1752,7 @@ Di `DaftarKonten`, setelah deklarasi state yang ada, tambahkan state & fungsi si
   }
 ```
 
-(Catatan: `daftar` dari repo sudah terurut `urutan`; pada menu materi `kelompokkanPerModul` mempertahankan urutan dalam grup, jadi perataan per grup menghasilkan urutan modul 1, 2, …, "Tanpa modul".)
-
-Tampilkan `galatUrutan` tepat di atas daftar: `{galatUrutan ? <p role="alert" className="galat-portal">{galatUrutan}</p> : null}`.
-
-Ganti render daftar datar & grup agar memakai komponen `KelompokSeret`:
+Tampilkan `{galatUrutan ? <Alert variant="destructive" role="alert"><AlertDescription>{galatUrutan}</AlertDescription></Alert> : null}` tepat di atas daftar (impor `Alert`, `AlertDescription`). Daftar datar & grup:
 
 ```tsx
       {menuMateri
@@ -1680,69 +1760,76 @@ Ganti render daftar datar & grup agar memakai komponen `KelompokSeret`:
           <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
         ))
         : tampil.length > 0 ? (
-          <section className="grup-daftar" aria-label={LABEL_ISI[jenis]}>
+          <Card role="region" aria-label={LABEL_ISI[jenis]} className="gap-0 divide-y py-0">
             <KelompokSeret daftar={tampil} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
-          </section>
+          </Card>
         ) : null}
 ```
 
-`GrupMateri` menerima `bolehSeret` & `saatPindah` dan mengganti `grup.materi.map(… <BarisEntri …/>)` dengan
-`<KelompokSeret daftar={grup.materi} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={saatPindah} />`.
+`GrupMateri` menerima `bolehSeret` & `saatPindah` dan mengganti `grup.materi.map(… <BarisEntri …/>)` dengan `<KelompokSeret daftar={grup.materi} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={saatPindah} />`.
 
-Komponen baru di berkas yang sama (di bawah `GrupMateri`):
+Komponen baru di bawah `GrupMateri`:
 
 ```tsx
 type SaatPindah = (kelompokLama: RingkasanEntri[], kelompokBaru: RingkasanEntri[]) => void;
 
-/** Satu kelompok yang bisa diurutkan: seret (HTML drag-and-drop bawaan) atau tombol naik/turun untuk keyboard. */
+/** Satu kelompok yang bisa diurutkan: seret @dnd-kit (pointer, sentuh, keyboard lewat pegangan) atau tombol naik/turun. */
 function KelompokSeret({ daftar, sekarang, bolehSeret, saatPindah }: {
   daftar: RingkasanEntri[]; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah;
 }) {
-  const [diseret, setDiseret] = useState<number | null>(null);
+  const sensor = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+  const ids = daftar.map(entri => entri.entriId);
   const pindah = (dari: number, ke: number) => { if (dari !== ke) void saatPindah(daftar, pindahkan(daftar, dari, ke)); };
+  if (!bolehSeret) return <>{daftar.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}</>;
+  const saatLepas = ({ active, over }: DragEndEvent) => {
+    const indeks = indeksSeret(ids, String(active.id), over ? String(over.id) : null);
+    if (indeks) pindah(...indeks);
+  };
   return (
-    <>
-      {daftar.map((entri, indeks) => {
-        const judul = judulEntri(entri);
-        const pegangan = bolehSeret ? (
-          <span className="pegangan-seret">
-            <Ikon nama="pegangan" ukuran={18} />
-            <button type="button" aria-label={`Naikkan ${judul}`} disabled={indeks === 0} onClick={() => pindah(indeks, indeks - 1)}>
-              <Ikon nama="naik" ukuran={16} />
-            </button>
-            <button type="button" aria-label={`Turunkan ${judul}`} disabled={indeks === daftar.length - 1} onClick={() => pindah(indeks, indeks + 1)}>
-              <Ikon nama="turun" ukuran={16} />
-            </button>
-          </span>
-        ) : undefined;
-        if (!bolehSeret) return <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />;
-        return (
-          <div key={entri.entriId} data-testid="baris-seret" draggable className={diseret === indeks ? 'diseret' : undefined}
-            onDragStart={e => { setDiseret(indeks); e.dataTransfer?.setData('text/plain', entri.entriId); }}
-            onDragOver={e => e.preventDefault()}
-            onDrop={e => { e.preventDefault(); if (diseret !== null) pindah(diseret, indeks); setDiseret(null); }}
-            onDragEnd={() => setDiseret(null)}>
-            <BarisEntri entri={entri} sekarang={sekarang} pegangan={pegangan} />
-          </div>
-        );
-      })}
-    </>
+    <DndContext sensors={sensor} collisionDetection={closestCenter} onDragEnd={saatLepas}>
+      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+        {daftar.map((entri, indeks) => (
+          <BarisSeret key={entri.entriId} entri={entri} sekarang={sekarang}
+            naik={indeks > 0 ? () => pindah(indeks, indeks - 1) : undefined}
+            turun={indeks < daftar.length - 1 ? () => pindah(indeks, indeks + 1) : undefined} />
+        ))}
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function BarisSeret({ entri, sekarang, naik, turun }: { entri: RingkasanEntri; sekarang: Date; naik?: () => void; turun?: () => void }) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: entri.entriId });
+  const judul = judulEntri(entri);
+  const pegangan = (
+    <span className="flex items-center text-muted-foreground">
+      <Button ref={setActivatorNodeRef} variant="ghost" size="icon" className="cursor-grab touch-none" aria-label={`Seret ${judul}`} {...attributes} {...listeners}>
+        <GripVertical />
+      </Button>
+      <Button variant="ghost" size="icon" aria-label={`Naikkan ${judul}`} disabled={!naik} onClick={naik}><ChevronUp /></Button>
+      <Button variant="ghost" size="icon" aria-label={`Turunkan ${judul}`} disabled={!turun} onClick={turun}><ChevronDown /></Button>
+    </span>
+  );
+  return (
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className={isDragging ? 'opacity-50' : undefined}>
+      <BarisEntri entri={entri} sekarang={sekarang} pegangan={pegangan} />
+    </div>
   );
 }
 ```
 
-Tambahkan ke `admin.css`: `[data-testid="baris-seret"].diseret{opacity:.5}` (atau pakai kelas `.diseret` yang sudah ada dengan selektor `.diseret .baris-entri{opacity:.5}`).
+Catatan: `attributes` @dnd-kit memberi `role="button"` dan `aria-roledescription="sortable"`; `aria-label` eksplisit di atas yang dipakai tes. Bila `Button` shadcn terpasang tidak meneruskan `ref` (React 18 butuh `forwardRef`), ganti pegangan dengan `<button type="button" ref={setActivatorNodeRef} className={buttonVariants({ variant: 'ghost', size: 'icon' })} …>`.
 
 - [ ] **Step 4: Jalankan, pastikan lulus**
 
 Run: `pnpm --filter @waris/admin test && pnpm --filter @waris/admin exec tsc --noEmit -p .`
-Expected: PASS semua tes admin (termasuk `daftar`, `kerangka`, `beranda`).
+Expected: PASS semua tes admin (termasuk `daftar`, `kerangka`, `beranda`, `ringkas`).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add apps/admin/src/layar/DaftarKonten.tsx apps/admin/src/admin.css apps/admin/src/__tests__/urutan.test.tsx
-git commit -m "admin: seret & naik/turun urutan tanpa revisi, rollback saat gagal"
+git add apps/admin/package.json pnpm-lock.yaml apps/admin/src/ringkas.ts apps/admin/src/layar/DaftarKonten.tsx apps/admin/src/__tests__/urutan.test.tsx apps/admin/src/__tests__/ringkas.test.ts
+git commit -m "admin: seret urutan dengan dnd-kit + naik/turun, rollback saat gagal"
 ```
 
 ---
@@ -1770,7 +1857,7 @@ Expected: semua PASS; build admin sukses.
 Pastikan Supabase lokal jalan (`pnpm db:mulai`) dan `apps/admin/.env.local` berisi `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` lokal. `preview_start {name: "admin"}`, masuk sebagai akun seed yang punya peran, lalu periksa:
 - Beranda: 4 kartu angka, "Lanjutkan pekerjaan", tombol buat baru.
 - Sidebar: grup & ikon, menu aktif, lencana antrean; lebar 375px → tombol Menu membuka laci, memilih menu menutupnya.
-- Modul & Materi: grup per modul; turunkan satu materi → muat ulang halaman → urutan bertahan; status chip tidak berubah.
+- Modul & Materi: grup per modul; seret satu materi dengan pegangan (mouse & keyboard: Spasi, panah, Spasi) lalu turunkan satu materi dengan tombol → muat ulang halaman → urutan bertahan; status chip tidak berubah.
 - Pustaka/Teks aplikasi: tab jenis; tab Diksi memuat editor diksi lama.
 - `read_console_messages` tanpa galat. Ambil screenshot beranda & daftar materi sebagai bukti.
 
