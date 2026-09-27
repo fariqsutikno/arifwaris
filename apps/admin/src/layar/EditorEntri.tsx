@@ -26,6 +26,7 @@ import { tulisRute } from '../rute';
 import { PemilihRefs } from './PemilihRefs';
 import { Pratinjau } from './Pratinjau';
 import { RiwayatRevisi } from './RiwayatRevisi';
+import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { pesanGalat } from '../pesanGalat';
 
 const JARAK_URUTAN = 10;
@@ -90,12 +91,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     (tab === 'json' ? teksJson !== teksJsonAwal : JSON.stringify(bentuk) !== JSON.stringify(bentukAwal))
     || JSON.stringify(refs) !== JSON.stringify(refsAwal));
 
-  useEffect(() => {
-    if (!kotor) return;
-    const peringatkan = (e: BeforeUnloadEvent) => { e.preventDefault(); };
-    window.addEventListener('beforeunload', peringatkan);
-    return () => window.removeEventListener('beforeunload', peringatkan);
-  }, [kotor]);
+  usePenjagaPerubahan(kotor);
 
   const pratinjauKunci = useMemo(() => [bentuk, teksJson, tab], [bentuk, teksJson, tab]);
 
@@ -187,6 +183,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       const entriId = await aksi();
       if (entriId === null) return;
       // Entri baru pindah ke rutenya sendiri (layar dipasang ulang); entri lama cukup dimuat ulang.
+      lepasPenjaga();
       if (entriId && !entriIdProp) location.hash = tulisRute({ layar: 'entri', entriId });
       else setMuatUlang(n => n + 1);
     } catch (e) {

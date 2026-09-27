@@ -15,6 +15,7 @@ import { EditorEntri } from './layar/EditorEntri';
 import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
 import { KelolaPeran } from './layar/KelolaPeran';
+import { bolehTinggalkan } from './penjaga';
 import { pesanGalat } from './pesanGalat';
 
 type Tahap =
@@ -84,7 +85,12 @@ function LayarRute({ onKeluar }: { onKeluar: () => void }) {
   const [rute, setRute] = useState(() => bacaRute(location.hash));
   const [jenisEntri, setJenisEntri] = useState<JenisKonten | null>(null);
   useEffect(() => {
-    const nyalakan = () => setRute(bacaRute(location.hash));
+    // Pindah rute saat ada perubahan belum disimpan: tanya dulu; batal → hash dikembalikan tanpa memicu
+    // hashchange lagi (replaceState), rute tetap.
+    const nyalakan = (event: HashChangeEvent) => {
+      if (!bolehTinggalkan()) { history.replaceState(null, '', new URL(event.oldURL).hash); return; }
+      setRute(bacaRute(location.hash));
+    };
     window.addEventListener('hashchange', nyalakan);
     return () => window.removeEventListener('hashchange', nyalakan);
   }, []);
