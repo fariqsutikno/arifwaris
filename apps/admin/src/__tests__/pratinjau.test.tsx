@@ -1,5 +1,5 @@
 // Tes Pratinjau: entri materi dengan judul diubah tampil lewat layar web sungguhan, dan snapshot asal dipulihkan
-// utuh setelah unmount (Review Focus: pratinjau tidak boleh bocor ke layar lain). Jenis tanpa layar → JSON mentah.
+// utuh setelah unmount (Review Focus: pratinjau tidak boleh bocor ke layar lain). Jenis tanpa layar → teks sederhana.
 // Tes StrictMode wajib ada: portal (main.tsx) merender di dalam <StrictMode>, yang di dev me-mount efek dua kali
 // (run-cleanup-run) — pemulihan snapshot harus tetap benar walau lewat siklus ganda itu.
 // Tes lewat EditorEntri (bukan <Pratinjau> langsung) memverifikasi Pratinjauan: re-render EditorEntri yang tidak
@@ -74,9 +74,22 @@ test('EditorEntri: re-render yang tidak mengubah bentuk (pilih ref) tidak me-rem
   expect(screen.getByRole('status')).toBeTruthy();
 });
 
-test('jenis tanpa layar (ahwal): tampil JSON berindentasi + catatan belum ada pratinjau', () => {
-  const isi = { kunci: 'anak-lk-dg-anak-pr', baris: [] };
-  render(<Pratinjau jenis="ahwal" slug="anak-lk-dg-anak-pr" isi={isi} saatTutup={() => {}} />);
-  expect(screen.getByText(/belum ada pratinjau/)).toBeTruthy();
-  expect(screen.getByText(/"kunci": "anak-lk-dg-anak-pr"/)).toBeTruthy();
+test('jenis tanpa layar (ahwal): tampil sebagai daftar teks, bukan JSON', () => {
+  const isi = { kunci: 'ISTRI', baris: [{ bagian: '1/4', syarat: 'tanpa anak', cocok: {} }] };
+  render(<Pratinjau jenis="ahwal" slug="ISTRI" isi={isi} saatTutup={() => {}} />);
+  expect(screen.getByText('1/4')).toBeTruthy();
+  expect(screen.queryByText(/"kunci"/)).toBeNull();
+});
+
+test('Perbesar → layar penuh (Esc menutup); klik tautan internal di pratinjau tidak mengubah rute portal', () => {
+  location.hash = '#/entri/abc';
+  render(<Pratinjau jenis="materi" slug={PELAJARAN_UJI.slug} isi={PELAJARAN_UJI} saatTutup={() => {}} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Perbesar' }));
+  expect(screen.getByRole('dialog', { name: 'Pratinjau layar penuh' })).toBeTruthy();
+  fireEvent.keyDown(window, { key: 'Escape' });
+  expect(screen.queryByRole('dialog')).toBeNull();
+  const tautanInternal = document.querySelector<HTMLAnchorElement>('a[href^="#"]')!;
+  fireEvent.click(tautanInternal);
+  expect(location.hash).toBe('#/entri/abc');
+  expect(screen.getByRole('status').textContent).toMatch(/tidak dibuka di pratinjau/);
 });
