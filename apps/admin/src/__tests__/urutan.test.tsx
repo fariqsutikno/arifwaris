@@ -1,5 +1,5 @@
-// Tes urutan: tombol turun memanggil aturUrutan dengan urutan baru, rollback saat gagal, pegangan hilang untuk
-// reviewer / tab tersaring / saat mencari, dan materi mengirim urutan global rata per modul.
+// Tes mode atur urutan: pegangan hanya di mode, pindahan lokal dikirim sekali saat Simpan urutan, Batal membuang,
+// gagal simpan tetap di mode, reviewer tanpa tombol, dan materi mengirim urutan global rata per modul.
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
@@ -23,60 +23,73 @@ const pasang = (m: ReturnType<typeof buatMemori>, peran: Peran, menu: 'faq' | 'm
 );
 const judulBaris = () => screen.getAllByRole('link').filter(el => el.getAttribute('href')?.startsWith('#/entri/')).map(el => el.textContent);
 
-test('penulis: turunkan baris pertama → aturUrutan([b, a]) dan tampilan ikut', async () => {
+const aturUrutan = async () => fireEvent.click(await screen.findByRole('button', { name: 'Atur urutan' }));
+const simpanUrutan = () => fireEvent.click(screen.getByRole('button', { name: 'Simpan urutan' }));
+
+test('tampilan biasa tanpa pegangan; mode atur urutan menampilkannya', async () => {
+  const { m } = await siapkanFaq();
+  pasang(m, 'penulis');
+  await screen.findByText('Apa itu tirkah?');
+  expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
+  await aturUrutan();
+  expect(screen.getByRole('button', { name: 'Seret Apa itu tirkah?' })).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Turunkan Apa itu tirkah?' })).toBeTruthy();
+});
+
+test('beberapa pindahan lokal → satu kali aturUrutan saat Simpan urutan, lalu mode keluar', async () => {
   const { m, a, b } = await siapkanFaq();
   const mata = vi.spyOn(m.editorial, 'aturUrutan');
   pasang(m, 'penulis');
-  fireEvent.click(await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
+  await aturUrutan();
+  expect((screen.getByRole('button', { name: 'Simpan urutan' }) as HTMLButtonElement).disabled).toBe(true);
+  fireEvent.click(screen.getByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Naikkan Apa itu tirkah?' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
   expect(judulBaris()).toEqual(['Siapa ashabah?', 'Apa itu tirkah?']);
-  await waitFor(() => expect(mata).toHaveBeenCalledWith([b, a]));
+  expect(mata).not.toHaveBeenCalled();
+  simpanUrutan();
+  await screen.findByRole('button', { name: 'Atur urutan' });
+  expect(mata).toHaveBeenCalledTimes(1);
+  expect(mata).toHaveBeenCalledWith([b, a]);
   expect((await m.konten.daftarEntri('faq')).map(e => e.slug)).toEqual(['b', 'a']);
 });
 
-test('gagal simpan → urutan kembali + pesan galat', async () => {
+test('Batal → susunan kembali, tidak ada yang dikirim', async () => {
+  const { m } = await siapkanFaq();
+  const mata = vi.spyOn(m.editorial, 'aturUrutan');
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  pasang(m, 'penulis');
+  await aturUrutan();
+  fireEvent.click(screen.getByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
+  expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']);
+  expect(mata).not.toHaveBeenCalled();
+  vi.restoreAllMocks();
+});
+
+test('gagal simpan → pesan galat, tetap di mode dengan susunan lokal', async () => {
   const { m } = await siapkanFaq();
   m.editorial.aturUrutan = async () => { throw new Error('jaringan putus'); };
   pasang(m, 'penulis');
-  fireEvent.click(await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
+  await aturUrutan();
+  fireEvent.click(screen.getByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
+  simpanUrutan();
   expect(await screen.findByText(/Urutan gagal disimpan: jaringan putus/)).toBeTruthy();
-  expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']);
+  expect(judulBaris()).toEqual(['Siapa ashabah?', 'Apa itu tirkah?']);
+  expect(screen.getByRole('button', { name: 'Simpan urutan' })).toBeTruthy();
 });
 
-test('simpan beruntun: dikirim berurutan; yang pertama gagal → daftar dimuat ulang dari database', async () => {
-  const { m, a, b } = await siapkanFaq();
-  const asli = m.editorial.aturUrutan.bind(m.editorial);
-  const kiriman: string[][] = [];
-  let panggilan = 0;
-  m.editorial.aturUrutan = async ids => {
-    kiriman.push(ids);
-    if (++panggilan === 1) { await new Promise(r => setTimeout(r, 10)); throw new Error('jaringan putus'); }
-    return asli(ids);
-  };
-  pasang(m, 'penulis');
-  fireEvent.click(await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Turunkan Siapa ashabah?' }));
-  expect(await screen.findByText(/Urutan gagal disimpan: jaringan putus/)).toBeTruthy();
-  expect(kiriman).toEqual([[b, a], [a, b]]);
-  // yang kedua tersimpan (a, b) → tampilan mengikuti database, bukan snapshot sebelum seret pertama
-  await waitFor(() => expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']));
-  expect((await m.konten.daftarEntri('faq')).map(e => e.slug)).toEqual(['a', 'b']);
-});
-
-test('reviewer, tab tersaring, atau sedang mencari → tanpa pegangan', async () => {
+test('reviewer tanpa tombol Atur urutan; masuk mode mengosongkan filter & cari', async () => {
   const { m } = await siapkanFaq();
   const { unmount } = pasang(m, 'reviewer');
   await screen.findByText('Apa itu tirkah?');
-  expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
-  expect(screen.queryByRole('button', { name: /^Seret/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Atur urutan' })).toBeNull();
   unmount();
   pasang(m, 'penulis');
-  await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' });
-  expect(screen.getByRole('button', { name: 'Seret Apa itu tirkah?' })).toBeTruthy();
-  fireEvent.mouseDown(screen.getByRole('tab', { name: 'Draf 2' }), { button: 0 });
-  expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
-  fireEvent.mouseDown(screen.getByRole('tab', { name: 'Semua 2' }), { button: 0 });
-  fireEvent.change(screen.getByRole('searchbox', { name: 'Cari' }), { target: { value: 'tirkah' } });
-  expect(screen.queryByRole('button', { name: /^Turunkan/ })).toBeNull();
+  fireEvent.change(await screen.findByRole('searchbox', { name: 'Cari' }), { target: { value: 'tirkah' } });
+  expect(judulBaris()).toEqual(['Apa itu tirkah?']);
+  await aturUrutan();
+  expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']);
 });
 
 test('materi: pindah di modul 2 mengirim semua materi rata per modul', async () => {
@@ -101,7 +114,9 @@ test('materi: pindah di modul 2 mengirim semua materi rata per modul', async () 
   const p = await buatMateri('p', 1, 30);
   const mata = vi.spyOn(m.editorial, 'aturUrutan');
   pasang(m, 'admin', 'materi');
+  await aturUrutan();
   const grup2 = await screen.findByRole('region', { name: 'Modul 2: Modul 2' });
   fireEvent.click(within(grup2).getByRole('button', { name: 'Turunkan X' }));
+  simpanUrutan();
   await waitFor(() => expect(mata).toHaveBeenCalledWith([p, y, x]));
 });
