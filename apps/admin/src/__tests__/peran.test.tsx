@@ -31,8 +31,7 @@ test('tabel menampilkan nama + email + peran', async () => {
   render_(m);
   await screen.findByText('rev@x.id');
   expect(screen.getByText('Ustadz')).toBeTruthy();
-  const baris = screen.getByText('rev@x.id').closest('tr')!;
-  expect(within(baris).getByText('reviewer')).toBeTruthy();
+  expect((screen.getByLabelText('Peran rev@x.id') as HTMLSelectElement).value).toBe('reviewer');
 });
 
 test('form email + peran → "Beri peran" menambah baris', async () => {
@@ -45,8 +44,19 @@ test('form email + peran → "Beri peran" menambah baris', async () => {
   fireEvent.click(screen.getByRole('button', { name: /beri peran/i }));
 
   await screen.findByText('rev@x.id');
-  const baris = screen.getByText('rev@x.id').closest('tr')!;
-  expect(within(baris).getByText('reviewer')).toBeTruthy();
+  expect((screen.getByLabelText('Peran rev@x.id') as HTMLSelectElement).value).toBe('reviewer');
+  expect(screen.getByText('rev@x.id sekarang Reviewer.')).toBeTruthy();
+});
+
+test('ubah peran langsung di baris; peran diri sendiri terkunci', async () => {
+  const m = siapkan();
+  await m.akun.aturPeran('rev@x.id', 'reviewer');
+  render_(m);
+  await screen.findByText('rev@x.id');
+  expect((screen.getByLabelText('Peran admin@x.id') as HTMLSelectElement).disabled).toBe(true);
+  fireEvent.change(screen.getByLabelText('Peran rev@x.id'), { target: { value: 'penulis' } });
+  await screen.findByText('rev@x.id sekarang Penulis.');
+  expect((await m.akun.daftarPeran()).find(p => p.email === 'rev@x.id')!.peran).toBe('penulis');
 });
 
 test('email tak dikenal → pesan tampil, tabel tidak berubah', async () => {
@@ -69,11 +79,11 @@ test('"Cabut" (dengan confirm) menghapus baris; admin tidak bisa mencabut diriny
   await screen.findByText('rev@x.id');
 
   const barisAdmin = screen.getByText('admin@x.id').closest('tr')!;
-  expect((barisAdmin.querySelector('button') as HTMLButtonElement).disabled).toBe(true);
+  expect((within(barisAdmin).getByRole('button', { name: 'Cabut' }) as HTMLButtonElement).disabled).toBe(true);
 
   vi.spyOn(window, 'confirm').mockReturnValue(true);
   const barisRev = screen.getByText('rev@x.id').closest('tr')!;
-  fireEvent.click(barisRev.querySelector('button')!);
+  fireEvent.click(within(barisRev).getByRole('button', { name: 'Cabut' }));
 
   await waitForElementToBeRemoved(() => screen.queryByText('rev@x.id'));
 });

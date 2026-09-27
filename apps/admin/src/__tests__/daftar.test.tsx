@@ -151,3 +151,11 @@ test('menu materi: tombol "Materi di modul ini" menaut ke entri baru dengan modu
   expect(tautan.getAttribute('href')).toBe('#/baru/materi?modul=3');
   await waitFor(() => expect(screen.getByRole('region', { name: 'Modul 3: Furudh' })).toBeTruthy());
 });
+
+test('angka tab status mengikuti cari yang aktif', async () => {
+  pasang(await siapkan(), 'faq', 'faq');
+  await screen.findByRole('tab', { name: 'Semua 2' });
+  fireEvent.change(screen.getByRole('searchbox', { name: 'Cari' }), { target: { value: 'tirkah' } });
+  expect(screen.getByRole('tab', { name: 'Semua 1' })).toBeTruthy();
+  location.hash = '';
+});

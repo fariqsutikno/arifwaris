@@ -49,3 +49,20 @@ test('editor dengan perubahan belum disimpan: pindah rute ditanya dulu; batal â†
   tanya.mockRestore();
   location.hash = '';
 });
+test('lencana antrean: hanya revisi yang boleh diperiksa (penulis tanpa lencana, reviewer tanpa revisinya sendiri)', async () => {
+  const m = buatMemori({ refs: ['R09-7'], sesi: { userId: 'u-p', email: 'p@x.id' }, peran: { 'u-p': 'penulis', 'u-r': 'reviewer' } });
+  await m.diksi.buatKunci('a.b', 'a');
+  await m.diksi.ajukan(await m.diksi.buatDraf('a.b', 'teks', null, null));
+  const { unmount } = render(<Portal repo={m} />);
+  await screen.findByRole('link', { name: /antrean review/i });
+  expect(screen.queryByLabelText(/menunggu review/)).toBeNull();
+  unmount();
+
+  m.masukSebagai({ userId: 'u-r', email: 'r@x.id' });
+  m.aturPeranLangsung('u-r', 'penulis');
+  await m.diksi.buatKunci('c.d', 'c');
+  await m.diksi.ajukan(await m.diksi.buatDraf('c.d', 'milik reviewer', null, null));
+  m.aturPeranLangsung('u-r', 'reviewer');
+  render(<Portal repo={m} />);
+  expect(await screen.findByLabelText('1 menunggu review')).toBeTruthy();
+});

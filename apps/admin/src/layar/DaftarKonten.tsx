@@ -207,7 +207,8 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   if (galat) return <PesanGalat pesan={galat} onCobaLagi={() => setMuatUlang(n => n + 1)} />;
   if (!daftar) return <div aria-busy="true" className="space-y-2"><Skeleton className="h-11" /><Skeleton className="h-11" /><Skeleton className="h-11" /></div>;
 
-  const jumlah = jumlahPerTab(daftar);
+  // Angka tab mengikuti cari & saring lanjutan yang aktif, supaya sama dengan jumlah baris yang akan tampil.
+  const jumlah = jumlahPerTab(terapkanSaring(daftar, { ...saring, status: 'semua' }, sesi.userId));
   const tampil = urutanDraf ?? terapkanSaring(daftar, saring, sesi.userId);
   const bolehAturUrutan = peran !== 'reviewer' && daftar.length > 1;
   const dipilih = daftar.filter(entri => terpilih.has(entri.entriId));

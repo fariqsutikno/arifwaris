@@ -8,7 +8,6 @@ import { useEffect, useState } from 'react';
 import type { Peran } from '@waris/content';
 import type { DiksiTerbit, RingkasanKunciDiksi, RingkasanRevisiDiksi } from '@waris/data';
 import { Search } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -18,11 +17,12 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePortal } from '../repo';
-import { ChipStatus } from './Beranda';
+import { ChipStatus, PesanGalat } from './Beranda';
 import { LABEL_STATUS_REVISI, tanggalLengkap, waktuRelatif } from '../ringkas';
 import { pesanGalat } from '../pesanGalat';
 
 const JUMLAH_KOLOM = 5;
+const BATAS_BARIS = 60;
 
 type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf';
 
@@ -69,6 +69,8 @@ export function EditorDiksi() {
   const [arKosong, setArKosong] = useState(false);
   const [belumTerbit, setBelumTerbit] = useState(false);
   const [cari, setCari] = useState('');
+  // Ratusan kunci sekaligus membuat tabel berat & sulit dipindai: tampilkan sebagian, sisanya lewat tombol.
+  const [batas, setBatas] = useState(BATAS_BARIS);
   const bolehEdit = peran === 'penulis' || peran === 'admin';
 
   useEffect(() => {
@@ -80,12 +82,12 @@ export function EditorDiksi() {
     return () => { dibatalkan = true; };
   }, [repo, muatUlang]);
 
-  if (galat) return <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert>;
+  if (galat) return <PesanGalat pesan={galat} onCobaLagi={() => setMuatUlang(n => n + 1)} />;
   if (!daftar) return <Skeleton className="h-48" />;
 
   const tampil = saringDiksi(daftar, halaman ? { halaman, arKosong, belumTerbit, cari } : { arKosong, belumTerbit, cari });
   const daftarHalaman = [...new Set(daftar.map(k => k.halaman))];
-  const kelompok = kelompokkanPerHalaman(tampil);
+  const kelompok = kelompokkanPerHalaman(tampil.slice(0, batas));
 
   return (
     <div className="space-y-3">
@@ -122,6 +124,10 @@ export function EditorDiksi() {
           </Table>
         </Card>
       ))}
+      <p className="text-sm text-muted-foreground">
+        Menampilkan {Math.min(batas, tampil.length)} dari {tampil.length} kunci.{' '}
+        {tampil.length > batas ? <Button variant="link" className="h-auto p-0" onClick={() => setBatas(tampil.length)}>Tampilkan semua</Button> : null}
+      </p>
     </div>
   );
 }

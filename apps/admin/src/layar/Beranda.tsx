@@ -1,8 +1,8 @@
 // Beranda portal (spec tahap A "Beranda"): memuat daftarEntri semua jenis, meringkasnya lewat ringkasBeranda
 // (angka milik saya & antrean, lanjutkan pekerjaan, antrean tertua untuk reviewer), dan menampilkan tombol buat baru
-// untuk admin/penulis. Galat repo tampil sebagai Alert dengan tombol coba lagi.
-import { useEffect, useState } from 'react';
-import { type JenisKonten } from '@waris/content';
+// untuk admin/penulis; admin melihat daftar lanjutkan & antrean sekaligus. Galat repo tampil sebagai Alert dengan tombol coba lagi.
+import { useEffect, useState, type ReactNode } from 'react';
+import { type JenisKonten, type Peran } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +41,7 @@ export function Beranda() {
       </div>
       {galat ? <PesanGalat pesan={galat} onCobaLagi={() => setMuatUlang(n => n + 1)} /> : null}
       {!ringkasan && !galat ? <div className="space-y-2"><Skeleton className="h-24" /><Skeleton className="h-48" /></div> : null}
-      {ringkasan ? <IsiBeranda ringkasan={ringkasan} reviewer={peran === 'reviewer'} /> : null}
+      {ringkasan ? <IsiBeranda ringkasan={ringkasan} peran={peran} /> : null}
     </div>
   );
 }
@@ -62,10 +62,11 @@ export function ChipStatus({ status }: { status: StatusTampil }) {
   return <Badge variant={varian}>{LABEL_TAB[status]}</Badge>;
 }
 
-function IsiBeranda({ ringkasan, reviewer }: { ringkasan: RingkasanBeranda; reviewer: boolean }) {
+// Penulis: lanjutkan pekerjaan + buat baru. Reviewer: antrean tertua. Admin (menulis sekaligus memeriksa): ketiganya.
+function IsiBeranda({ ringkasan, peran }: { ringkasan: RingkasanBeranda; peran: Peran }) {
   const sekarang = new Date();
-  const daftarUtama = reviewer ? ringkasan.antreanTertua : ringkasan.lanjutkan;
-  const judulDaftar = reviewer ? 'Menunggu review' : 'Lanjutkan pekerjaan';
+  const menulis = peran !== 'reviewer';
+  const memeriksa = peran !== 'penulis';
   return (
     <>
       <section aria-label="Ringkasan" className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -75,16 +76,15 @@ function IsiBeranda({ ringkasan, reviewer }: { ringkasan: RingkasanBeranda; revi
         <KartuAngka label="Terbit" angka={ringkasan.terbit} />
       </section>
       <div className="grid gap-4 md:grid-cols-[3fr_2fr]">
-        <Card aria-label={judulDaftar} role="region">
-          <CardHeader><CardTitle>{judulDaftar}</CardTitle></CardHeader>
-          <CardContent>
-            {daftarUtama.length === 0 ? <p className="text-muted-foreground">Tidak ada yang tertunda.</p> : (
-              <ul className="divide-y">{daftarUtama.map(entri => <BarisBeranda key={entri.entriId} entri={entri} sekarang={sekarang} />)}</ul>
-            )}
-            {reviewer ? <a className="font-semibold underline" href={tulisRute({ layar: 'review' })}>Buka antrean review</a> : null}
-          </CardContent>
-        </Card>
-        {reviewer ? null : (
+        <div className="grid gap-4">
+          {menulis ? <DaftarBeranda judul="Lanjutkan pekerjaan" daftar={ringkasan.lanjutkan} sekarang={sekarang} /> : null}
+          {memeriksa ? (
+            <DaftarBeranda judul="Menunggu review" daftar={ringkasan.antreanTertua} sekarang={sekarang}>
+              <a className="font-semibold underline" href={tulisRute({ layar: 'review' })}>Buka antrean review</a>
+            </DaftarBeranda>
+          ) : null}
+        </div>
+        {!menulis ? null : (
           <Card aria-label="Buat baru" role="region">
             <CardHeader><CardTitle>Buat baru</CardTitle></CardHeader>
             <CardContent className="flex flex-wrap gap-2">
@@ -98,6 +98,20 @@ function IsiBeranda({ ringkasan, reviewer }: { ringkasan: RingkasanBeranda; revi
         )}
       </div>
     </>
+  );
+}
+
+function DaftarBeranda({ judul, daftar, sekarang, children }: { judul: string; daftar: RingkasanEntri[]; sekarang: Date; children?: ReactNode }) {
+  return (
+    <Card aria-label={judul} role="region">
+      <CardHeader><CardTitle>{judul}</CardTitle></CardHeader>
+      <CardContent>
+        {daftar.length === 0 ? <p className="text-muted-foreground">Tidak ada yang tertunda.</p> : (
+          <ul className="divide-y">{daftar.map(entri => <BarisBeranda key={entri.entriId} entri={entri} sekarang={sekarang} />)}</ul>
+        )}
+        {children}
+      </CardContent>
+    </Card>
   );
 }
 

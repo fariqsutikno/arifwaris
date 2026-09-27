@@ -41,3 +41,16 @@ test('reviewer: tanpa tombol buat baru', async () => {
   await screen.findByRole('region', { name: 'Ringkasan' });
   expect(screen.queryByRole('link', { name: '+ Materi' })).toBeNull();
 });
+
+test('admin: lanjutkan pekerjaan, menunggu review, dan buat baru tampil bersamaan; penulis tanpa daftar review', async () => {
+  await pasang('admin');
+  expect(await screen.findByRole('region', { name: 'Lanjutkan pekerjaan' })).toBeTruthy();
+  expect(screen.getByRole('region', { name: 'Menunggu review' })).toBeTruthy();
+  expect(screen.getByRole('region', { name: 'Buat baru' })).toBeTruthy();
+});
+
+test('penulis: tanpa daftar menunggu review', async () => {
+  await pasang('penulis');
+  await screen.findByRole('region', { name: 'Lanjutkan pekerjaan' });
+  expect(screen.queryByRole('region', { name: 'Menunggu review' })).toBeNull();
+});
