@@ -1,6 +1,6 @@
 // Antrean review: memuat revisi berstatus diajukan dari editorial (konten) & diksi, lalu menampilkan tiap butir
-// dengan diff terhadap versi terbitnya (konten: revisi terbit entri; diksi: teks terbit kunci; belum ada → semua
-// baris tambah; pengajuan ke Sampah → semua baris terbit tampil terhapus). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
+// dengan perbandingan per bidang terhadap versi terbitnya (konten: revisi terbit entri; diksi: teks terbit kunci;
+// belum ada → semua isi tambah; pengajuan ke Sampah → cukup keterangan). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
 // penjaga); revisi milik sendiri berlabel "revisi Anda". Tiap butir berjudul jenis + judul entri, menyebut pembuat &
 // waktu, dan menaut ke editor entrinya; terlama di atas. Galat repo ditampilkan (lewat pesanGalat) di butirnya.
 import { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
-import { diffBaris, teksBanding } from '../editor/diff';
+import { bidangBanding, daftarPerubahan, type BidangBanding, type PerubahanBidang } from '../editor/banding';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { LABEL_ISI } from '../navigasi';
 import { pesanGalat } from '../pesanGalat';
@@ -21,7 +21,7 @@ import { usePortal } from '../repo';
 import { judulEntri, waktuRelatif } from '../ringkas';
 import { tulisRute } from '../rute';
 import { Pratinjau } from './Pratinjau';
-import { Diff } from './RiwayatRevisi';
+import { Perbandingan } from './Perbandingan';
 
 interface Butir {
   id: string;
@@ -32,8 +32,9 @@ interface Butir {
   status: StatusRevisi;
   dibuatOleh: string;
   hapus: boolean;
-  teksLama: string;
-  teksBaru: string;
+  /** null = pengajuan ke Sampah (tidak ada isi baru untuk dibandingkan). */
+  perubahan: PerubahanBidang[] | null;
+  baru: boolean;
   konten: { jenis: JenisKonten; slug: string; isi: unknown } | null;
   setujui: () => Promise<void>;
   kembalikan: (catatan: string) => Promise<void>;
@@ -61,7 +62,8 @@ export function AntreanReview() {
         return {
           id: revisi.id, jenis: LABEL_ISI[e.jenis], judul: judulEntri(e, revisi.hapus ? e.revisiTerakhir?.isi : revisi.isi),
           tautan: tulisRute({ layar: 'entri', entriId: e.entriId }), dibuatPada: revisi.dibuatPada, status: revisi.status, dibuatOleh: revisi.dibuatOleh, hapus: revisi.hapus,
-          teksLama: basis === null ? '' : teksBanding(e.jenis, basis), teksBaru: revisi.hapus ? '' : teksBanding(e.jenis, revisi.isi),
+          perubahan: revisi.hapus ? null : daftarPerubahan(basis && bidangBanding(e.jenis, basis.isi, basis.refs), bidangBanding(e.jenis, revisi.isi, revisi.refs)),
+          baru: basis === null,
           konten: revisi.hapus ? null : { jenis: e.jenis, slug: e.slug, isi: revisi.isi },
           setujui: () => repo.editorial.setujui(revisi.id),
           kembalikan: catatan => repo.editorial.kembalikan(revisi.id, catatan),
@@ -72,7 +74,7 @@ export function AntreanReview() {
         return {
           id: revisi.id, jenis: 'Diksi', judul: revisi.kunci, tautan: tulisRute({ layar: 'menu', menu: 'aplikasi', tab: 'diksi' }),
           dibuatPada: revisi.dibuatPada, status: revisi.status, dibuatOleh: revisi.dibuatOleh, hapus: false,
-          teksLama: terbit ? teksDiksi(terbit) : '', teksBaru: teksDiksi({ id: revisi.idTeks, ar: revisi.arTeks }),
+          perubahan: daftarPerubahan(terbit && bidangDiksi(terbit), bidangDiksi({ id: revisi.idTeks, ar: revisi.arTeks })), baru: !terbit,
           konten: null,
           setujui: () => repo.diksi.setujui(revisi.id),
           kembalikan: catatan => repo.diksi.kembalikan(revisi.id, catatan),
@@ -82,10 +84,9 @@ export function AntreanReview() {
     })().catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
 
-    async function basisTerbit(e: RingkasanEntri): Promise<unknown> {
+    async function basisTerbit(e: RingkasanEntri) {
       const revisi = await repo.konten.daftarRevisi(e.entriId);
-      const terbit = revisi.find(r => r.id === e.revisiTerbitId) ?? revisi.filter(r => r.status === 'disetujui').at(-1);
-      return terbit?.isi ?? null;
+      return revisi.find(r => r.id === e.revisiTerbitId) ?? revisi.filter(r => r.status === 'disetujui').at(-1) ?? null;
     }
   }, [repo, muatUlang]);
 
@@ -147,7 +148,7 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
       <CardContent className="space-y-3">
         {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
         {butir.hapus ? <p className="text-sm text-muted-foreground">Bila disetujui, entri pindah ke Sampah dan hilang dari web. Bisa dipulihkan kapan saja.</p> : null}
-        <Diff baris={diffBaris(butir.teksLama, butir.teksBaru)} />
+        {butir.perubahan ? <Perbandingan perubahan={butir.perubahan} keterangan={butir.baru ? 'Entri baru: semua isi ditambahkan.' : 'Dibandingkan dengan versi yang tayang.'} /> : null}
         {butir.konten ? <Button variant="outline" size="sm" onClick={() => setPratinjau(true)}>Pratinjau</Button> : null}
         {pratinjau && butir.konten ? <PratinjauButir {...butir.konten} saatTutup={() => setPratinjau(false)} /> : null}
         {bolehPeriksa ? (
@@ -173,4 +174,7 @@ function PratinjauButir({ jenis, slug, isi, saatTutup }: { jenis: JenisKonten; s
   return <Pratinjau jenis={jenis} slug={slug} isi={hasil.isi} saatTutup={saatTutup} />;
 }
 
-const teksDiksi = (d: Pick<DiksiTerbit, 'id' | 'ar'>) => `id: ${d.id}\nar: ${d.ar ?? ''}`;
+const bidangDiksi = (d: Pick<DiksiTerbit, 'id' | 'ar'>): BidangBanding[] => [
+  { label: 'Bahasa Indonesia', arab: false, teks: d.id },
+  { label: 'Bahasa Arab', arab: true, teks: d.ar ?? '' },
+];

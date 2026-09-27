@@ -9,11 +9,12 @@ import type { JejakEntri, RingkasanRevisi } from '@waris/data';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { diffBaris, teksBanding } from '../editor/diff';
+import { bidangBanding, daftarPerubahan } from '../editor/banding';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { waktuRelatif } from '../ringkas';
 import { usePortal, type RepoPortal } from '../repo';
 import { pesanGalat } from '../pesanGalat';
+import { Perbandingan } from './Perbandingan';
 
 const CATATAN_TARIK = 'pengajuan ditarik kembali';
 type NamaDari = (userId: string) => string;
@@ -21,7 +22,8 @@ type Butir =
   | { jenis: 'revisi'; pada: string; revisi: RingkasanRevisi }
   | { jenis: 'jejak'; pada: string; jejak: JejakEntri };
 
-export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revisiTerbitId: string | null; saatBerubah: () => void }) {
+/** `versi` berubah tiap kali editor menyimpan, supaya draf baru langsung muncul di riwayat. */
+export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revisiTerbitId: string | null; versi?: number; saatBerubah: () => void }) {
   const { repo, peran } = usePortal();
   const namaDari = useNamaTim();
   const [data, setData] = useState<{ revisi: RingkasanRevisi[]; jejak: JejakEntri[] } | null>(null);
@@ -33,7 +35,7 @@ export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revi
       .then(([revisi, jejak]) => { if (!dibatalkan) setData({ revisi, jejak }); })
       .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
-  }, [repo, props.entriId, props.revisiTerbitId]);
+  }, [repo, props.entriId, props.revisiTerbitId, props.versi]);
 
   if (galat) return <p role="alert" className="text-sm text-destructive">{galat}</p>;
   if (!data) return null;
@@ -128,16 +130,19 @@ function BarisRevisi(props: {
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm">{kalimatRevisi(revisi, props.namaDari)} · <Waktu iso={revisi.diperiksaPada ?? revisi.dibuatPada} sekarang={props.sekarang} /></p>
         {props.sedangTayang ? <Badge>Tayang</Badge> : null}
-        {!revisi.hapus ? (
+        {!revisi.hapus && !props.sedangTayang ? (
           <span className="ml-auto flex gap-2">
-            <Button variant="ghost" size="sm" onClick={() => setTampilDiff(v => !v)}>{tampilDiff ? 'Tutup beda' : 'Lihat beda dengan versi tayang'}</Button>
+            <Button variant="link" size="sm" className="h-auto p-0" onClick={() => setTampilDiff(v => !v)}>{tampilDiff ? 'Tutup perbandingan' : 'Bandingkan dengan versi tayang'}</Button>
             {props.bolehTayangkanLagi ? <Button variant="outline" size="sm" onClick={() => void tayangkanLagi()}>Tayangkan lagi</Button> : null}
           </span>
         ) : null}
       </div>
       {revisi.catatanReview && revisi.catatanReview !== CATATAN_TARIK ? <p className="text-sm text-muted-foreground">Catatan review: {revisi.catatanReview}</p> : null}
       {galat ? <p role="alert" className="text-sm text-destructive">{galat}</p> : null}
-      {tampilDiff ? <Diff baris={diffBaris(terbit ? teksBanding(jenis, terbit.isi) : '', teksBanding(jenis, revisi.isi))} /> : null}
+      {tampilDiff ? (
+        <Perbandingan perubahan={daftarPerubahan(terbit && bidangBanding(jenis, terbit.isi, terbit.refs), bidangBanding(jenis, revisi.isi, revisi.refs))}
+          keterangan={terbit ? 'Dibandingkan dengan versi yang tayang.' : 'Belum ada versi tayang: semua isi ditambahkan.'} />
+      ) : null}
     </article>
   );
 }
@@ -145,16 +150,3 @@ function BarisRevisi(props: {
 function Waktu({ iso, sekarang }: { iso: string; sekarang: Date }) {
   return <time dateTime={iso} title={new Date(iso).toLocaleString('id-ID')} className="text-muted-foreground">{waktuRelatif(iso, sekarang)}</time>;
 }
-
-const WARNA_DIFF = { sama: '', tambah: 'bg-primary/15', hapus: 'bg-destructive/15' } as const;
-
-/** Diff baris (hasil diffBaris) dengan penanda +/- dan latar berwarna; dipakai riwayat & antrean review. */
-export function Diff({ baris: daftarBaris }: { baris: ReturnType<typeof diffBaris> }) {
-  return (
-    <pre className="max-h-96 overflow-auto rounded-lg border bg-muted p-3 font-mono text-xs">
-      {daftarBaris.map((baris, i) => <div key={i} className={WARNA_DIFF[baris.jenis]}>{PENANDA_DIFF[baris.jenis]}{baris.teks}</div>)}
-    </pre>
-  );
-}
-
-const PENANDA_DIFF = { sama: '  ', tambah: '+ ', hapus: '- ' } as const;

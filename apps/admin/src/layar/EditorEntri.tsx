@@ -331,7 +331,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       </div>
       {pratinjau ? <Pratinjauan jenis={muatan.jenis} slug={muatan.slug ?? 'pratinjau'} hitungIsi={isiSekarang} kunci={pratinjauKunci} saatTutup={() => setPratinjau(false)} /> : null}
       {muatan.entriId ? (
-        <RiwayatRevisi entriId={muatan.entriId} jenis={muatan.jenis} revisiTerbitId={muatan.entri.revisiTerbitId} saatBerubah={() => setMuatUlang(n => n + 1)} />
+        <RiwayatRevisi entriId={muatan.entriId} jenis={muatan.jenis} revisiTerbitId={muatan.entri.revisiTerbitId} versi={muatUlang} saatBerubah={() => setMuatUlang(n => n + 1)} />
       ) : null}
     </div>
   );
