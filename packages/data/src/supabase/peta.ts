@@ -3,7 +3,7 @@
 import type { JenisKonten } from '@waris/content';
 import type { BarisTerbitMentah } from '../saring.js';
 import type {
-  DiksiTerbit, ProgresBelajar, ProgresLatihan, RingkasanEntri, RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, RiwayatTersimpan,
+  DiksiTerbit, JejakEntri, ProgresBelajar, ProgresLatihan, RingkasanEntri, RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, RiwayatTersimpan,
 } from '../antarmuka.js';
 
 type Baris = Record<string, any>;
@@ -24,6 +24,10 @@ export const keTerbitMentah = (baris: Baris): BarisTerbitMentah => ({
   revisiId: baris.revisi_terbit.id, isi: baris.revisi_terbit.isi, refs: baris.revisi_terbit.refs, versiTerbit: Number(baris.versi_terbit),
 });
 
+export const keJejak = (baris: Baris): JejakEntri => ({
+  id: baris.id, entriId: baris.entri_id, aksi: baris.aksi, pelaku: baris.pelaku, pada: baris.pada, catatan: baris.catatan,
+});
+
 export const keDiksiTerbit = (baris: Baris): DiksiTerbit => ({
   kunci: baris.kunci, halaman: baris.halaman, id: baris.revisi_terbit.id_teks, ar: baris.revisi_terbit.ar_teks, versiTerbit: Number(baris.versi_terbit),
 });
@@ -37,6 +41,7 @@ export const keRingkasanEntri = (baris: Baris): RingkasanEntri => {
   return {
     entriId: baris.id, jenis: baris.jenis as JenisKonten, slug: baris.slug, urutan: baris.urutan,
     revisiTerbitId: baris.revisi_terbit_id, dihapus: semuaRevisi.some(r => r.id === baris.revisi_terbit_id && r.hapus),
+    dibuang: baris.dibuang_pada != null,
     revisiTerakhir: terakhirDari(semuaRevisi),
   };
 };

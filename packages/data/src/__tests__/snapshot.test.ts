@@ -59,12 +59,10 @@ describe('sinkronkan penghapusan', () => {
     await memori.editorial.ajukan(revisi);
     await memori.editorial.setujui(revisi);
     const awal = (await sinkronkan(memori, kosong))!;
-    const hapus = await memori.editorial.ajukanHapus(entri);
-    expect(await sinkronkan(memori, awal)).toBeNull();
-    await memori.editorial.setujui(hapus);
+    await memori.editorial.buangEntri(entri);
     const setelahHapus = (await sinkronkan(memori, awal))!;
     expect(setelahHapus.konten).toEqual([]);
-    await memori.editorial.terbitkanUlang(revisi);
+    await memori.editorial.pulihkanEntri(entri);
     expect((await sinkronkan(memori, setelahHapus))!.konten.map(b => b.slug)).toEqual(['k']);
   });
 });

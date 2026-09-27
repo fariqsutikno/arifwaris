@@ -1,6 +1,6 @@
 // Antrean review: memuat revisi berstatus diajukan dari editorial (konten) & diksi, lalu menampilkan tiap butir
 // dengan diff terhadap versi terbitnya (konten: revisi terbit entri; diksi: teks terbit kunci; belum ada → semua
-// baris tambah; pengajuan hapus → semua baris terbit tampil terhapus). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
+// baris tambah; pengajuan ke Sampah → semua baris terbit tampil terhapus). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
 // penjaga); revisi milik sendiri berlabel "revisi Anda". Galat repo ditampilkan di butir yang bersangkutan.
 import { useEffect, useState } from 'react';
 import { bacaIsi, transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
@@ -113,12 +113,12 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
     <Card role="article" aria-labelledby={idJudul}>
       <CardHeader className="flex flex-wrap items-center gap-2">
         <CardTitle id={idJudul}>{butir.judul}</CardTitle>
-        {butir.hapus ? <Badge variant="destructive">pengajuan hapus</Badge> : null}
+        {butir.hapus ? <Badge variant="destructive">pengajuan ke Sampah</Badge> : null}
         {butir.dibuatOleh === sesi.userId ? <Badge variant="secondary">revisi Anda</Badge> : null}
       </CardHeader>
       <CardContent className="space-y-3">
         {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
-        {butir.hapus ? <p className="text-sm text-muted-foreground">Bila disetujui, entri ini hilang dari web. Bisa dipulihkan lewat Riwayat revisi.</p> : null}
+        {butir.hapus ? <p className="text-sm text-muted-foreground">Bila disetujui, entri pindah ke Sampah dan hilang dari web. Bisa dipulihkan kapan saja.</p> : null}
         <Diff baris={diffBaris(butir.teksLama, butir.teksBaru)} />
         {butir.konten ? <Button variant="outline" size="sm" onClick={() => setPratinjau(true)}>Pratinjau</Button> : null}
         {pratinjau && butir.konten ? <PratinjauButir {...butir.konten} saatTutup={() => setPratinjau(false)} /> : null}

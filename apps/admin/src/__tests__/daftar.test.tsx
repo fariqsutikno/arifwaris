@@ -87,3 +87,17 @@ test('galat repo tampil dengan tombol coba lagi', async () => {
   expect(await screen.findByText(/jaringan putus/)).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Coba lagi' })).toBeTruthy();
 });
+
+test('Sampah: entri yang dibuang hilang dari Semua, muncul di tab Sampah, Pulihkan mengembalikannya', async () => {
+  const m = await siapkan();
+  const [, draf] = await m.konten.daftarEntri('faq');
+  await m.editorial.buangEntri(draf!.entriId);
+  pasang(m, 'faq', 'faq');
+  await screen.findByText('Apa itu tirkah?');
+  expect(screen.queryByText('Siapa ashabah?')).toBeNull();
+  pilihTab('Sampah 1');
+  fireEvent.click(await screen.findByRole('button', { name: 'Pulihkan' }));
+  await screen.findByRole('tab', { name: 'Sampah 0' });
+  pilihTab('Semua 2');
+  expect(await screen.findByText('Siapa ashabah?')).toBeTruthy();
+});

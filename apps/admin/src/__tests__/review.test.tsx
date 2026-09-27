@@ -92,16 +92,16 @@ test('galat repo tampil di butir itu', async () => {
   expect((await within(konten).findByRole('alert')).textContent).toMatch(/ditolak RLS/);
 });
 
-test('pengajuan hapus: berlabel, isi terbit tampil terhapus, tanpa pratinjau; Setujui → hilang dari web', async () => {
+test('pengajuan ke Sampah: berlabel, isi terbit tampil terhapus, tanpa pratinjau; Setujui → hilang dari web', async () => {
   const { m, revisiFaq } = await siapkan();
   await m.editorial.setujui(revisiFaq);
   m.masukSebagai({ userId: 'u-p', email: 'p@x.id' });
   const [entri] = await m.konten.daftarEntri('faq');
-  await m.editorial.ajukanHapus(entri!.entriId);
+  await m.editorial.buangEntri(entri!.entriId);
   m.masukSebagai({ userId: 'u-r', email: 'r@x.id' });
   tampilkan(m);
   const hapus = await butir(/faq: apa-itu-tirkah/);
-  expect(within(hapus).getByText('pengajuan hapus')).toBeTruthy();
+  expect(within(hapus).getByText('pengajuan ke Sampah')).toBeTruthy();
   expect(within(hapus).getByText(/Apa itu tirkah\?/).textContent).toMatch(/^-/);
   expect(within(hapus).queryByRole('button', { name: 'Pratinjau' })).toBeNull();
   fireEvent.click(within(hapus).getByRole('button', { name: 'Setujui' }));
