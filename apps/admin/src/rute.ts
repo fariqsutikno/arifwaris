@@ -1,45 +1,43 @@
-// Rute portal admin ↔ location.hash. bacaRute mem-parse hash menjadi Rute (tak dikenal/tak sah → 'review',
-// layar aman default); tulisRute kebalikannya, dipakai untuk href navigasi.
+// Rute portal admin ↔ location.hash. bacaRute mem-parse hash menjadi Rute (tak dikenal/tak sah → beranda);
+// tulisRute kebalikannya, dipakai untuk href navigasi. Menu & tab divalidasi terhadap MENU_PORTAL.
 import { JENIS_KONTEN, type JenisKonten } from '@waris/content';
+import { menuDari, type IsiMenu, type KunciMenu } from './navigasi';
 
 export type Rute =
-  | { layar: 'konten'; jenis: JenisKonten }
+  | { layar: 'beranda' }
+  | { layar: 'menu'; menu: KunciMenu; tab: IsiMenu }
   | { layar: 'entri'; entriId: string }
   | { layar: 'entriBaru'; jenis: JenisKonten }
   | { layar: 'review' }
-  | { layar: 'diksi' }
   | { layar: 'peran' };
 
-const RUTE_DEFAULT: Rute = { layar: 'review' };
+const BERANDA: Rute = { layar: 'beranda' };
+const jenisSah = (teks: string | undefined): teks is JenisKonten => !!teks && (JENIS_KONTEN as readonly string[]).includes(teks);
 
 export function bacaRute(hash: string): Rute {
-  const bagian = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
-  const [segmenA, segmenB] = bagian;
+  const [segmenA, segmenB, segmenC] = hash.replace(/^#\/?/, '').split('/').filter(Boolean);
   switch (segmenA) {
-    case 'konten':
-      return segmenB && (JENIS_KONTEN as readonly string[]).includes(segmenB) ? { layar: 'konten', jenis: segmenB as JenisKonten } : RUTE_DEFAULT;
-    case 'entri':
-      return segmenB ? { layar: 'entri', entriId: segmenB } : RUTE_DEFAULT;
-    case 'baru':
-      return segmenB && (JENIS_KONTEN as readonly string[]).includes(segmenB) ? { layar: 'entriBaru', jenis: segmenB as JenisKonten } : RUTE_DEFAULT;
-    case 'review':
-      return { layar: 'review' };
-    case 'diksi':
-      return { layar: 'diksi' };
-    case 'peran':
-      return { layar: 'peran' };
-    default:
-      return RUTE_DEFAULT;
+    case 'menu': {
+      const menu = segmenB ? menuDari(segmenB) : undefined;
+      if (!menu) return BERANDA;
+      const tab = menu.isi.find(isi => isi === segmenC) ?? menu.isi[0]!;
+      return { layar: 'menu', menu: menu.kunci, tab };
+    }
+    case 'entri': return segmenB ? { layar: 'entri', entriId: segmenB } : BERANDA;
+    case 'baru': return jenisSah(segmenB) ? { layar: 'entriBaru', jenis: segmenB } : BERANDA;
+    case 'review': return { layar: 'review' };
+    case 'peran': return { layar: 'peran' };
+    default: return BERANDA;
   }
 }
 
 export function tulisRute(rute: Rute): string {
   switch (rute.layar) {
-    case 'konten': return `#/konten/${rute.jenis}`;
+    case 'beranda': return '#/';
+    case 'menu': return `#/menu/${rute.menu}/${rute.tab}`;
     case 'entri': return `#/entri/${rute.entriId}`;
     case 'entriBaru': return `#/baru/${rute.jenis}`;
     case 'review': return '#/review';
-    case 'diksi': return '#/diksi';
     case 'peran': return '#/peran';
   }
 }

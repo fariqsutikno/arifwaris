@@ -2,10 +2,11 @@
 // setelah keduanya siap. Tanpa sesi → tombol masuk Google; sesi tanpa peran → pesan "belum punya akses" + keluar;
 // galat saat memuat → pesan galat (bukan layar kosong). Rute dibaca dari location.hash (bacaRute/tulisRute).
 import { useContext, useEffect, useState } from 'react';
-import { JENIS_KONTEN, type Peran } from '@waris/content';
+import type { Peran } from '@waris/content';
 import type { Sesi } from '@waris/data';
 import { Tombol } from '@waris/web/ui/komponen';
 import { KonteksRepo, type RepoPortal } from './repo';
+import { MENU_PORTAL } from './navigasi';
 import { bacaRute, tulisRute } from './rute';
 import { DaftarKonten } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
@@ -63,11 +64,10 @@ export function Portal({ repo }: { repo: RepoPortal }) {
 function NavigasiPortal({ peran, onKeluar }: { peran: Peran; onKeluar: () => void }) {
   return (
     <nav>
-      {JENIS_KONTEN.map(jenis => (
-        <a key={jenis} href={tulisRute({ layar: 'konten', jenis })}>{jenis}</a>
+      {MENU_PORTAL.map(menu => (
+        <a key={menu.kunci} href={tulisRute({ layar: 'menu', menu: menu.kunci, tab: menu.isi[0]! })}>{menu.label}</a>
       ))}
       <a href={tulisRute({ layar: 'review' })}>Antrean review</a>
-      <a href={tulisRute({ layar: 'diksi' })}>Diksi</a>
       {peran === 'admin' && <a href={tulisRute({ layar: 'peran' })}>Peran</a>}
       <Tombol onClick={onKeluar}>Keluar</Tombol>
     </nav>
@@ -82,11 +82,10 @@ function LayarRute() {
     window.addEventListener('hashchange', nyalakan);
     return () => window.removeEventListener('hashchange', nyalakan);
   }, []);
-  if (rute.layar === 'konten') return <DaftarKonten jenis={rute.jenis} />;
+  if (rute.layar === 'menu') return rute.tab === 'diksi' ? <EditorDiksi /> : <DaftarKonten jenis={rute.tab} />;
   if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} />;
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
   if (rute.layar === 'review') return <AntreanReview />;
-  if (rute.layar === 'diksi') return <EditorDiksi />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
   return <p>Segera</p>;
 }
