@@ -18,6 +18,8 @@ export interface SoalHitung {
 export interface SoalKuis {
   kode: string;
   bab: number;
+  /** Menentukan XP (spec tahap 5); kosong = dasar. */
+  tingkat?: Tingkat;
   pertanyaan: Potongan[];
   pilihan: Potongan[][];
   indeksBenar: number;

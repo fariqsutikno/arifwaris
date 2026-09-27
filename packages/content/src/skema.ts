@@ -88,7 +88,7 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
     perluCek: z.boolean(), blok: z.array(blok), ar: versiArab.optional(),
   }),
   soal_kuis: z.object({
-    kode: z.string(), bab: z.number().int(), pertanyaan: z.array(potongan), pilihan: z.array(z.array(potongan)).min(2),
+    kode: z.string(), bab: z.number().int(), tingkat: tingkat.optional(), pertanyaan: z.array(potongan), pilihan: z.array(z.array(potongan)).min(2),
     indeksBenar: z.number().int().nonnegative(), pembahasan: z.array(potongan),
   }).refine(soal => soal.indeksBenar < soal.pilihan.length, { message: 'indeksBenar di luar pilihan' }),
   soal_hitung: z.object({

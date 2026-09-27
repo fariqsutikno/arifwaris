@@ -70,6 +70,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
     { bidang: [
       { jalur: 'kode', label: 'Kode soal', jenis: 'teks' },
       { jalur: 'bab', label: 'Bab KB', jenis: 'angka' },
+      { jalur: 'tingkat', label: 'Tingkat (kosong = dasar)', jenis: 'pilihan', opsi: ['dasar', 'menengah', 'sulit'], opsional: true },
       { jalur: 'pertanyaan', label: 'Pertanyaan', jenis: 'markdownPotongan', bantuan: BANTUAN_MARKDOWN },
       { jalur: 'pilihan', label: 'Pilihan jawaban', jenis: 'pilihanKuis' },
       { jalur: 'pembahasan', label: 'Pembahasan', jenis: 'markdownPotongan', bantuan: BANTUAN_MARKDOWN },
@@ -161,7 +162,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
 /** Isi awal entri baru: field yang wajib di skema tapi tidak punya bidang (mis. urutan materi). */
 export const ISI_AWAL: Partial<Record<JenisKonten, Record<string, unknown>>> = {
   materi: { urutan: 0, perluCek: true },
-  soal_kuis: { indeksBenar: 0 },
+  soal_kuis: { tingkat: 'dasar', indeksBenar: 0 },
   soal_hitung: { tingkat: 'dasar', kasus: { pewaris: 'L', ahliWaris: [], harta: '0', harapan: { saham: {}, ashlAkhir: '0' } } },
   ahwal: { baris: [] },
 };
