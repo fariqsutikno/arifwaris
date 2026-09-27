@@ -34,7 +34,7 @@ export function ModalUbahHarta({ kasus, saatSimpan, saatTutup, saatBukaKewajiban
             {t('hitung.biaya_jenazah_hutang_dan_wasiat_tidak')}{' '}
             <button type="button" className="tautan-teks" onClick={saatBukaKewajiban}>{t('hitung.mau_ubah_juga_buka_langkah_kewajiban')}</button>
           </p>
-          {jejak.bersih === 0n && kotor > 0n && <p className="peringatan-isian" role="status">Hutang dan biaya jenazah menghabiskan seluruh harta; tidak ada yang dibagi.</p>}
+          {jejak.bersih === 0n && kotor > 0n && <p className="peringatan-isian" role="status">{t('hitung.hutang_dan_biaya_jenazah_menghabiskan_seluruh_harta')}</p>}
         </div>
         <footer className="kaki-modal">
           <button type="button" className="aw-btn aw-btn-ghost aw-btn-sm" onClick={saatTutup}>{t('umum.batal')}</button>

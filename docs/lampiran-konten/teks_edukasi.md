@@ -414,6 +414,14 @@
 }
 ```
 
+## harta.rumah_tanah_ruko_harga_pasar
+
+```json
+{
+  "id": "Rumah, tanah, ruko; pakai harga pasar saat ini"
+}
+```
+
 ## harta.tanah_bangunan
 
 ```json
@@ -429,6 +437,14 @@
 {
   "id": "Kendaraan",
   "ar": "المركبات"
+}
+```
+
+## harta.mobil_motor_harga_jual
+
+```json
+{
+  "id": "Mobil, motor; pakai harga jual saat ini"
 }
 ```
 

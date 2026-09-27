@@ -59,7 +59,8 @@ test('EditorEntri: re-render yang tidak mengubah bentuk (pilih ref) tidak me-rem
       <EditorEntri jenis="soal_kuis" />
     </KonteksRepo.Provider>,
   );
-  fireEvent.change(screen.getByLabelText('JSON'), { target: { value: JSON.stringify(keJson('soal_kuis', soalKuis as never)) } });
+  fireEvent.mouseDown(screen.getByRole('tab', { name: 'JSON' }));
+  fireEvent.change(screen.getByRole('textbox', { name: 'JSON' }), { target: { value: JSON.stringify(keJson('soal_kuis', soalKuis as never)) } });
   fireEvent.click(screen.getByRole('button', { name: 'Pratinjau' }));
   fireEvent.click(await screen.findByRole('button', { name: /^B\. 1\/4$/ }));
   expect(screen.getByRole('status')).toBeTruthy(); // hasil-tebak tampil setelah menjawab

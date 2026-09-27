@@ -8,7 +8,8 @@
     "./terjemah": "./src/terjemah.ts",
     "./ui/*": "./src/ui/*.tsx",
     "./gaya/*": "./src/gaya/*",
-    "./belajar/*": "./src/layar/belajar/*.tsx"
+    "./belajar/*": "./src/layar/belajar/*.tsx",
+    "./contoh": "./src/layar/belajar/contoh.ts"
   },
   "scripts": {
     "dev": "vite",

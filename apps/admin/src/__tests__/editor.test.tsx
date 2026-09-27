@@ -1,5 +1,5 @@
-// Tes EditorEntri + PemilihRefs dengan repo memori: buat entri baru, galat JSON rusak & refs wajib tampil,
-// ajukan draf sendiri lalu form jadi baca-saja, dan reviewer hanya bisa membaca.
+// Tes EditorEntri + PemilihRefs dengan repo memori: buat entri baru lewat form, galat bidang & refs wajib tampil,
+// tab JSON (bolak-balik, JSON rusak), ajukan draf sendiri lalu form jadi baca-saja, dan reviewer hanya bisa membaca.
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { buatMemori } from '@waris/data';
@@ -12,20 +12,28 @@ const SESI_PENULIS = { userId: 'u-p', email: 'p@x.id' };
 const siapkan = () => buatMemori({ refs: ['R09-7', 'R10-3'], sesi: SESI_PENULIS, peran: { 'u-p': 'penulis', 'u-r': 'reviewer' } });
 type Memori = ReturnType<typeof siapkan>;
 
-function tampilkan(m: Memori, props: { entriId: string } | { jenis: 'faq' }, peran: Peran = 'penulis', userId = 'u-p') {
+function tampilkan(m: Memori, props: { entriId: string } | { jenis: 'faq' | 'soal_kuis' }, peran: Peran = 'penulis', userId = 'u-p') {
   render(
     <KonteksRepo.Provider value={{ repo: m, sesi: { userId, email: 'x@x.id' }, peran }}>
       <EditorEntri {...props} />
     </KonteksRepo.Provider>,
   );
 }
-const isiJson = (teks: string) => fireEvent.change(screen.getByLabelText('JSON'), { target: { value: teks } });
+const isiJson = (teks: string) => fireEvent.change(screen.getByRole('textbox', { name: 'JSON' }), { target: { value: teks } });
+const bukaTab = (nama: 'Form' | 'JSON') => fireEvent.mouseDown(screen.getByRole('tab', { name: nama }));
+const ketik = (label: string, nilai: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: nilai } });
+function isiFormFaq() {
+  ketik('Id', 'apa-itu-tirkah');
+  ketik('Kelompok', 'Fikih');
+  ketik('Pertanyaan', 'Apa itu tirkah?');
+  ketik('Jawaban', 'Harta peninggalan.');
+}
 const simpan = () => fireEvent.click(screen.getByRole('button', { name: 'Simpan draf' }));
 
 test('entri baru faq: isi, pilih ref, simpan → satu entri draf', async () => {
   const m = siapkan();
   tampilkan(m, { jenis: 'faq' });
-  isiJson(JSON.stringify(keJson('faq', DAFTAR_FAQ_UJI[0]!)));
+  isiFormFaq();
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
   fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
   expect(screen.getByRole('button', { name: 'Hapus R09-7' })).toBeTruthy();
@@ -38,19 +46,47 @@ test('entri baru faq: isi, pilih ref, simpan → satu entri draf', async () => {
   });
 });
 
-test('JSON rusak → pesan tampil, tidak ada entri tersimpan', async () => {
+test('angka tidak sah → galat di bawah bidang, tidak ada entri tersimpan', async () => {
   const m = siapkan();
-  tampilkan(m, { jenis: 'faq' });
+  tampilkan(m, { jenis: 'soal_kuis' });
+  ketik('Kode soal', 'K-9');
+  ketik('Bab KB', 'empat');
+  simpan();
+  expect((await screen.findByRole('alert')).textContent).toMatch(/Ada bidang yang belum benar/);
+  expect(screen.getByText('harus bilangan bulat')).toBeTruthy();
+  expect(await m.konten.daftarEntri('soal_kuis')).toHaveLength(0);
+});
+
+test('tab JSON: memuat isi form, JSON rusak → galat & tetap di JSON, perbaikan kembali ke form', async () => {
+  const m = siapkan();
+  const entriId = await drafSendiri(m);
+  tampilkan(m, { entriId });
+  await screen.findByText('Status: draf');
+  ketik('Pertanyaan', 'Apa itu tirkah, ya?');
+  bukaTab('JSON');
+  expect((screen.getByRole('textbox', { name: 'JSON' }) as HTMLTextAreaElement).value).toContain('"pertanyaan": "Apa itu tirkah, ya?"');
+
   isiJson('{ rusak');
+  bukaTab('Form');
+  expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
+  expect((screen.getByRole('textbox', { name: 'JSON' }) as HTMLTextAreaElement).value).toBe('{ rusak');
   simpan();
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
-  expect(await m.konten.daftarEntri('faq')).toHaveLength(0);
+
+  isiJson(JSON.stringify(keJson('faq', { ...DAFTAR_FAQ_UJI[0]!, pertanyaan: 'Dari JSON' })));
+  bukaTab('Form');
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('Dari JSON');
+  simpan();
+  await waitFor(async () => {
+    const [entri] = await m.konten.daftarEntri('faq');
+    expect((entri!.revisiTerakhir?.isi as { pertanyaan: string }).pertanyaan).toBe('Dari JSON');
+  });
 });
 
 test('jenis fikih tanpa ref → galat repo tampil', async () => {
   const m = siapkan();
   tampilkan(m, { jenis: 'faq' });
-  isiJson(JSON.stringify(keJson('faq', DAFTAR_FAQ_UJI[0]!)));
+  isiFormFaq();
   simpan();
   expect((await screen.findByRole('alert')).textContent).toMatch(/wajib punya minimal satu ref/);
   expect(await m.konten.daftarEntri('faq')).toHaveLength(0);
@@ -74,7 +110,7 @@ test('buatDraf gagal setelah buatEntri → simpan ulang memakai entri yang sama'
     return buatDrafAsli(...a);
   };
   tampilkan(m, { jenis: 'faq' });
-  isiJson(JSON.stringify(keJson('faq', DAFTAR_FAQ_UJI[0]!)));
+  isiFormFaq();
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
   fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
   simpan();
@@ -113,7 +149,7 @@ test('draf sendiri: Ajukan → diajukan, form jadi baca-saja', async () => {
   fireEvent.click(await screen.findByRole('button', { name: 'Ajukan' }));
   await screen.findByText('Status: diajukan');
   expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
-  expect((screen.getByLabelText('JSON') as HTMLTextAreaElement).readOnly).toBe(true);
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
 });
 
 test('reviewer membuka entri: baca-saja, tanpa tombol simpan', async () => {
@@ -123,5 +159,5 @@ test('reviewer membuka entri: baca-saja, tanpa tombol simpan', async () => {
   await screen.findByText('Status: draf');
   expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
   expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
-  expect((screen.getByLabelText('JSON') as HTMLTextAreaElement).readOnly).toBe(true);
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
 });
