@@ -53,13 +53,14 @@ test('EditorEntri: re-render yang tidak mengubah bentuk (pilih ref) tidak me-rem
     indeksBenar: 1,
     pembahasan: [{ jenis: 'teks', teks: 'Istri dapat 1/4 tanpa anak. [R05-1]' }],
   };
-  const m = buatMemori({ refs: ['R09-7'], sesi: { userId: 'u-p', email: 'p@x.id' }, peran: { 'u-p': 'penulis' } });
+  // Admin: tab JSON hanya untuk admin.
+  const m = buatMemori({ refs: ['R09-7'], sesi: { userId: 'u-a', email: 'a@x.id' }, peran: { 'u-a': 'admin' } });
   render(
-    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u-p', email: 'p@x.id' }, peran: 'penulis' }}>
+    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u-a', email: 'a@x.id' }, peran: 'admin' }}>
       <EditorEntri jenis="soal_kuis" />
     </KonteksRepo.Provider>,
   );
-  fireEvent.mouseDown(screen.getByRole('tab', { name: 'JSON' }));
+  fireEvent.mouseDown(await screen.findByRole('tab', { name: /JSON/ }));
   fireEvent.change(screen.getByRole('textbox', { name: 'JSON' }), { target: { value: JSON.stringify(keJson('soal_kuis', soalKuis as never)) } });
   fireEvent.click(screen.getByRole('button', { name: 'Pratinjau' }));
   fireEvent.click(await screen.findByRole('button', { name: /^B\. 1\/4$/ }));

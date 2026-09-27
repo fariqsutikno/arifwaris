@@ -1,7 +1,7 @@
 // Tes portal admin di memori: daftar entri/kunci untuk kolom status, antrean review, refs, dan peran berbasis email.
 import { expect, test } from 'vitest';
 import { buatMemori } from '../index.js';
-import { SOAL_HITUNG_UJI } from './contoh.js';
+import { DAFTAR_FAQ_UJI, SOAL_HITUNG_UJI } from './contoh.js';
 
 const ADMIN = { userId: 'u-admin', email: 'admin@x.id' };
 function siapkan() {
@@ -98,4 +98,89 @@ test('aturUrutan: reviewer, campur jenis, ganda, kosong ditolak', async () => {
   await expect(m.editorial.aturUrutan([])).rejects.toThrow('kosong');
   m.aturPeranLangsung('u-admin', 'reviewer');
   await expect(m.editorial.aturUrutan([a])).rejects.toThrow('perlu peran');
+});
+
+async function terbitkan(m: ReturnType<typeof siapkan>) {
+  const id = await m.editorial.buatEntri('soal_hitung', SOAL_HITUNG_UJI.kode, 10);
+  const r1 = await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await m.editorial.terbitkanLangsung(r1);
+  return { id, r1 };
+}
+
+test('terbitkanLangsung: hanya admin, draf langsung terbit', async () => {
+  const m = siapkan();
+  const { id, r1 } = await terbitkan(m);
+  expect((await m.konten.daftarEntri())[0]).toMatchObject({ entriId: id, revisiTerbitId: r1, revisiTerakhir: { status: 'disetujui', diperiksaOleh: 'u-admin' } });
+  m.aturPeranLangsung('u-pen', 'penulis');
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  const r2 = await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await expect(m.editorial.terbitkanLangsung(r2)).rejects.toThrow('hanya admin');
+});
+
+test('tarik: pengajuan kembali jadi draf dan bisa disunting lagi', async () => {
+  const m = siapkan();
+  const { id } = await terbitkan(m);
+  const r2 = await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await m.editorial.ajukan(r2);
+  await m.editorial.tarik(r2);
+  expect(await m.editorial.antreanReview()).toEqual([]);
+  await m.editorial.ubahDraf(r2, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+});
+
+test('Sampah entri terbit: penulis mengajukan (tetap tayang), disetujui → hilang dari web, jejak tercatat, pulihkan', async () => {
+  const m = siapkan();
+  const { id, r1 } = await terbitkan(m);
+  m.aturPeranLangsung('u-pen', 'penulis');
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  expect(await m.editorial.buangEntri(id, 'duplikat')).toBe('diajukan');
+  await expect(m.editorial.buangEntri(id)).rejects.toThrow('sudah diajukan');
+  expect(await m.konten.bacaTerbit()).toHaveLength(1);
+  m.masukSebagai(ADMIN);
+  const [pengajuan] = await m.editorial.antreanReview();
+  expect(pengajuan).toMatchObject({ hapus: true, refs: ['R09-7'] });
+  await m.editorial.setujui(pengajuan!.id);
+  expect(await m.konten.bacaTerbit()).toEqual([]);
+  expect(await m.konten.bacaDihapus(0)).toEqual([id]);
+  expect((await m.konten.daftarEntri())[0]).toMatchObject({ dihapus: true, dibuang: false });
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  await expect(m.editorial.pulihkanEntri(id)).rejects.toThrow('reviewer atau admin');
+  m.masukSebagai(ADMIN);
+  await m.editorial.pulihkanEntri(id);
+  expect((await m.konten.bacaTerbit()).map(b => b.revisiId)).toEqual([r1]);
+  expect((await m.konten.daftarJejak(id)).map(j => [j.aksi, j.pelaku, j.catatan])).toEqual([
+    ['buang_diajukan', 'u-pen', 'duplikat'], ['dipulihkan', 'u-admin', null],
+  ]);
+});
+
+test('Sampah entri terbit oleh admin: langsung', async () => {
+  const m = siapkan();
+  const { id } = await terbitkan(m);
+  expect(await m.editorial.buangEntri(id)).toBe('dibuang');
+  expect(await m.konten.bacaTerbit()).toEqual([]);
+  await expect(m.editorial.buangEntri(id)).rejects.toThrow('sudah di Sampah');
+});
+
+test('Sampah entri belum terbit: langsung, tidak ada hapus permanen, pengajuan ditarik, tidak bisa disunting sampai dipulihkan', async () => {
+  const m = siapkan();
+  m.aturPeranLangsung('u-pen', 'penulis');
+  const id = await m.editorial.buatEntri('faq', 'f', 10);
+  const r = await m.editorial.buatDraf(id, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+  await m.editorial.ajukan(r);
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  await expect(m.editorial.buangEntri(id)).rejects.toThrow('revisi orang lain');
+  m.masukSebagai(ADMIN);
+  expect(await m.editorial.buangEntri(id)).toBe('dibuang');
+  expect(await m.editorial.antreanReview()).toEqual([]);
+  expect((await m.konten.daftarEntri())[0]).toMatchObject({ entriId: id, dibuang: true });
+  expect(await m.konten.daftarRevisi(id)).toHaveLength(1);
+  await expect(m.editorial.buatDraf(id, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7'])).rejects.toThrow('Sampah');
+  await m.editorial.pulihkanEntri(id);
+  expect((await m.konten.daftarEntri())[0]).toMatchObject({ dibuang: false, revisiTerakhir: { status: 'draf' } });
+});
+
+test('daftarNamaTim: nama atau bagian depan email', async () => {
+  const m = siapkan();
+  m.daftarkanPengguna({ userId: 'u-pen', email: 'penulis.satu@x.id' });
+  m.aturPeranLangsung('u-pen', 'penulis');
+  expect(await m.akun.daftarNamaTim()).toEqual([{ userId: 'u-admin', nama: 'Admin' }, { userId: 'u-pen', nama: 'penulis.satu' }]);
 });

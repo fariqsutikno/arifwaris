@@ -91,3 +91,20 @@ test('galat repo tampil di butir itu', async () => {
   fireEvent.click(within(konten).getByRole('button', { name: 'Setujui' }));
   expect((await within(konten).findByRole('alert')).textContent).toMatch(/ditolak RLS/);
 });
+
+test('pengajuan ke Sampah: berlabel, isi terbit tampil terhapus, tanpa pratinjau; Setujui → hilang dari web', async () => {
+  const { m, revisiFaq } = await siapkan();
+  await m.editorial.setujui(revisiFaq);
+  m.masukSebagai({ userId: 'u-p', email: 'p@x.id' });
+  const [entri] = await m.konten.daftarEntri('faq');
+  await m.editorial.buangEntri(entri!.entriId);
+  m.masukSebagai({ userId: 'u-r', email: 'r@x.id' });
+  tampilkan(m);
+  const hapus = await butir(/faq: apa-itu-tirkah/);
+  expect(within(hapus).getByText('pengajuan ke Sampah')).toBeTruthy();
+  expect(within(hapus).getByText(/Apa itu tirkah\?/).textContent).toMatch(/^-/);
+  expect(within(hapus).queryByRole('button', { name: 'Pratinjau' })).toBeNull();
+  fireEvent.click(within(hapus).getByRole('button', { name: 'Setujui' }));
+  await waitFor(() => expect(screen.queryByRole('article', { name: /faq: / })).toBeNull());
+  expect(await m.konten.bacaTerbit({ jenis: 'faq' })).toEqual([]);
+});

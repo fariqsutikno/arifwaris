@@ -18,7 +18,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LABEL_ISI, menuDari, type IsiMenu, type KunciMenu } from '../navigasi';
 import {
-  indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, pindahkan, saringDaftar, statusTampil, TAB_STATUS, waktuRelatif,
+  diSampah, indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, pindahkan, saringDaftar, statusTampil, TAB_STATUS, waktuRelatif,
   type GrupModul, type TabStatus,
 } from '../ringkas';
 import { usePortal } from '../repo';
@@ -130,6 +130,20 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
   const jumlah = jumlahPerTab(daftar);
   const tampil = saringDaftar(daftar, tab, cari);
   const sekarang = new Date();
+  // Di tab Sampah tiap baris punya tombol Pulihkan. Izin pastinya (pembuat semua revisi) dijaga repo/database;
+  // galatnya ditampilkan di atas daftar.
+  const aksiUntuk = tab === 'sampah' && peran ? (entri: RingkasanEntri) => (
+    <Button variant="outline" size="sm" onClick={() => void pulihkan(entri)}>Pulihkan</Button>
+  ) : undefined;
+  async function pulihkan(entri: RingkasanEntri) {
+    setGalatUrutan(null);
+    try {
+      await repo.editorial.pulihkanEntri(entri.entriId);
+      setMuatUlang(n => n + 1);
+    } catch (e) {
+      setGalatUrutan(`Gagal memulihkan: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
   return (
     <div className="space-y-3">
       <Tabs value={tab} onValueChange={nilai => setTab(nilai as TabStatus)} className="overflow-x-auto">
@@ -150,20 +164,22 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
       {daftar.length > 0 && tampil.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Tidak ada yang cocok.</p> : null}
       {galatUrutan ? <Alert variant="destructive" role="alert"><AlertDescription>{galatUrutan}</AlertDescription></Alert> : null}
       {menuMateri
-        ? kelompokkanPerModul(tampil, modul, isiModulTerbit).map(grup => (
-          <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
+        ? kelompokkanPerModul(tampil, modul.filter(entri => !diSampah(entri)), isiModulTerbit).map(grup => (
+          <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} aksiUntuk={aksiUntuk} />
         ))
         : tampil.length > 0 ? (
           <Card role="region" aria-label={LABEL_ISI[jenis]} className="gap-0 divide-y py-0">
-            <KelompokSeret daftar={tampil} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
+            <KelompokSeret daftar={tampil} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} aksiUntuk={aksiUntuk} />
           </Card>
         ) : null}
     </div>
   );
 }
 
-function GrupMateri({ grup, sekarang, bolehSeret, saatPindah }: {
-  grup: GrupModul; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah;
+type AksiUntuk = ((entri: RingkasanEntri) => ReactNode) | undefined;
+
+function GrupMateri({ grup, sekarang, bolehSeret, saatPindah, aksiUntuk }: {
+  grup: GrupModul; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah; aksiUntuk: AksiUntuk;
 }) {
   const label = grup.nomor === null ? grup.judul : `Modul ${grup.nomor}: ${grup.judul}`;
   return (
@@ -179,7 +195,7 @@ function GrupMateri({ grup, sekarang, bolehSeret, saatPindah }: {
         ) : null}
       </div>
       {grup.materi.length === 0 ? <p className="px-4 py-2 text-sm text-muted-foreground">Belum ada materi.</p> : null}
-      <KelompokSeret daftar={grup.materi} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={saatPindah} />
+      <KelompokSeret daftar={grup.materi} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={saatPindah} aksiUntuk={aksiUntuk} />
     </Card>
   );
 }
@@ -187,13 +203,13 @@ function GrupMateri({ grup, sekarang, bolehSeret, saatPindah }: {
 type SaatPindah = (kelompokLama: RingkasanEntri[], kelompokBaru: RingkasanEntri[]) => void;
 
 /** Satu kelompok yang bisa diurutkan: seret @dnd-kit (pointer, sentuh, keyboard lewat pegangan) atau tombol naik/turun. */
-function KelompokSeret({ daftar, sekarang, bolehSeret, saatPindah }: {
-  daftar: RingkasanEntri[]; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah;
+function KelompokSeret({ daftar, sekarang, bolehSeret, saatPindah, aksiUntuk }: {
+  daftar: RingkasanEntri[]; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah; aksiUntuk?: AksiUntuk;
 }) {
   const sensor = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
   const ids = daftar.map(entri => entri.entriId);
   const pindah = (dari: number, ke: number) => { if (dari !== ke) void saatPindah(daftar, pindahkan(daftar, dari, ke)); };
-  if (!bolehSeret) return <>{daftar.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}</>;
+  if (!bolehSeret) return <>{daftar.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} aksi={aksiUntuk?.(entri)} />)}</>;
   const saatLepas = ({ active, over }: DragEndEvent) => {
     const indeks = indeksSeret(ids, String(active.id), over ? String(over.id) : null);
     if (indeks) pindah(...indeks);
@@ -231,7 +247,7 @@ function BarisSeret({ entri, sekarang, naik, turun }: { entri: RingkasanEntri; s
   );
 }
 
-export function BarisEntri({ entri, sekarang, pegangan }: { entri: RingkasanEntri; sekarang: Date; pegangan?: ReactNode }) {
+export function BarisEntri({ entri, sekarang, pegangan, aksi }: { entri: RingkasanEntri; sekarang: Date; pegangan?: ReactNode; aksi?: ReactNode }) {
   const catatan = entri.revisiTerakhir?.status === 'dikembalikan' ? entri.revisiTerakhir.catatanReview : null;
   return (
     <div className="flex items-center gap-3 bg-card px-4 py-2">
@@ -247,6 +263,7 @@ export function BarisEntri({ entri, sekarang, pegangan }: { entri: RingkasanEntr
       <span className="hidden text-sm text-muted-foreground md:inline">
         {entri.revisiTerakhir ? waktuRelatif(entri.revisiTerakhir.dibuatPada, sekarang) : ''}
       </span>
+      {aksi}
     </div>
   );
 }
