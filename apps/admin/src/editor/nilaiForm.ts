@@ -25,6 +25,10 @@ export type HasilForm<J extends JenisKonten> =
 
 type Objek = Record<string, unknown>;
 
+/** Dua NilaiForm sama isinya? Nilai kasus memuat bigint (harta, saham) yang tidak bisa di-JSON.stringify biasa. */
+export const samaForm = (a: NilaiForm | null, b: NilaiForm | null): boolean => teksForm(a) === teksForm(b);
+const teksForm = (form: NilaiForm | null) => JSON.stringify(form, (_, nilai: unknown) => (typeof nilai === 'bigint' ? `${nilai}n` : nilai));
+
 export function keNilaiForm<J extends JenisKonten>(jenis: J, isi: IsiKonten[J]): NilaiForm {
   const dasar = keJson(jenis, isi) as Objek;
   const nilai: Record<string, NilaiBidang> = {};

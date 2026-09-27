@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { LABEL_ISI } from '../navigasi';
-import { dariNilaiForm, keNilaiForm, nilaiFormKosong, type HasilForm, type NilaiForm } from '../editor/nilaiForm';
+import { dariNilaiForm, keNilaiForm, nilaiFormKosong, samaForm, type HasilForm, type NilaiForm } from '../editor/nilaiForm';
 import { caraBuang, keadaanSunting, revisiBasis, teksTayang, type EntriSunting, type KeadaanSunting } from '../editor/keadaanSunting';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { judulEntri, waktuRelatif } from '../ringkas';
@@ -108,7 +108,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     : null;
   const bisaSunting = keadaan?.jenis === 'sunting';
   const kotor = bisaSunting && (
-    (tab === 'json' ? teksJson !== teksJsonAwal : JSON.stringify(bentuk) !== JSON.stringify(bentukAwal))
+    (tab === 'json' ? teksJson !== teksJsonAwal : !samaForm(bentuk, bentukAwal))
     || JSON.stringify(refs) !== JSON.stringify(refsAwal));
 
   usePenjagaPerubahan(kotor);
@@ -151,7 +151,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     // JSON yang tidak diubah tidak dikonversi balik, supaya form tetap sama persis (tidak tampak berubah).
     if (tujuan !== 'json' && teksJson === teksJsonAwal) { setGalat(null); setTab(tujuan); return; }
     const hasil = isiSekarang();
-    const formKotor = JSON.stringify(bentuk) !== JSON.stringify(bentukAwal);
+    const formKotor = !samaForm(bentuk, bentukAwal);
     if (!hasil.ok && tujuan === 'json' && hasil.mentah !== undefined) {
       // Form belum sah tetap boleh dibuka sebagai JSON (bidang yang gagal dibaca memakai nilai asal); galat tetap tampil.
       setGalat(hasil.galat);
@@ -276,7 +276,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         </Alert>
       ) : null}
       {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      {/* Pratinjau terbuka: form & Info bertumpuk di kiri, pratinjau menempel di kanan supaya perubahan langsung terlihat. */}
+      <div className={`grid items-start gap-4 ${pratinjau ? 'lg:grid-cols-2' : 'lg:grid-cols-[minmax(0,1fr)_18rem]'}`}>
+        <div className={pratinjau ? 'grid gap-4' : 'contents'}>
         <Card>
           <CardContent>
             {adaArab || peran === 'admin' ? (
@@ -300,7 +302,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
             ) : formKonten('utama')}
           </CardContent>
         </Card>
-        <Card className="lg:sticky lg:top-4">
+        <Card className={pratinjau ? undefined : 'lg:sticky lg:top-4'}>
           <CardHeader><CardTitle className="text-base">Info</CardTitle></CardHeader>
           <CardContent className="grid gap-4">
             {bisaSunting && tab !== 'json' ? <Kelengkapan butir={kelengkapan()} /> : null}
@@ -310,6 +312,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
             <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
           </CardContent>
         </Card>
+        </div>
+        {pratinjau ? (
+          <div className="lg:sticky lg:top-4 lg:max-h-[calc(100svh-2rem)] lg:overflow-auto">
+            <Pratinjauan jenis={muatan.jenis} slug={muatan.slug ?? 'pratinjau'} hitungIsi={isiSekarang} kunci={pratinjauKunci} saatTutup={() => setPratinjau(false)} />
+          </div>
+        ) : null}
       </div>
       <div className="flex flex-wrap gap-2">
         {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => void terbitkan()}>Terbitkan</Button> : null}
@@ -322,14 +330,13 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           </Button>
         ) : null}
         {keadaan.jenis === 'sampah' && keadaan.bolehPulihkan ? <Button disabled={sibuk} onClick={() => void pulihkan()}>Pulihkan</Button> : null}
-        <Button variant="ghost" onClick={() => setPratinjau(true)}>Pratinjau</Button>
+        <Button variant="ghost" aria-pressed={pratinjau} onClick={() => setPratinjau(!pratinjau)}>{pratinjau ? 'Tutup pratinjau' : 'Pratinjau'}</Button>
         {cara?.ok ? (
           <Button variant="ghost" className="ml-auto text-destructive" disabled={sibuk} onClick={() => buang(cara.cara)}>
             {cara.cara === 'ajukan' ? 'Ajukan ke Sampah' : 'Pindahkan ke Sampah'}
           </Button>
         ) : null}
       </div>
-      {pratinjau ? <Pratinjauan jenis={muatan.jenis} slug={muatan.slug ?? 'pratinjau'} hitungIsi={isiSekarang} kunci={pratinjauKunci} saatTutup={() => setPratinjau(false)} /> : null}
       {muatan.entriId ? (
         <RiwayatRevisi entriId={muatan.entriId} jenis={muatan.jenis} revisiTerbitId={muatan.entri.revisiTerbitId} versi={muatUlang} saatBerubah={() => setMuatUlang(n => n + 1)} />
       ) : null}

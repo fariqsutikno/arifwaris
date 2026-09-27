@@ -371,3 +371,10 @@ test('Kelengkapan menandai bidang wajib & rujukan; Batalkan perubahan kembali ke
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('');
   expect(screen.queryByRole('button', { name: 'Batalkan perubahan' })).toBeNull();
 });
+
+test('soal hitung (kasus berisi bigint) terbuka tanpa galat dan bisa ditandai berubah', async () => {
+  tampilkan(siapkan(), { jenis: 'soal_hitung' });
+  await screen.findByText('Entri baru · belum disimpan');
+  ketik('Judul', 'Suami, dua saudari kandung');
+  expect(await screen.findByText('Ada perubahan yang belum disimpan')).toBeTruthy();
+});

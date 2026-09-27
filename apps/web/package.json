@@ -9,7 +9,8 @@
     "./ui/*": "./src/ui/*.tsx",
     "./gaya/*": "./src/gaya/*",
     "./belajar/*": "./src/layar/belajar/*.tsx",
-    "./contoh": "./src/layar/belajar/contoh.ts"
+    "./contoh": "./src/layar/belajar/contoh.ts",
+    "./layar/*": "./src/layar/*.tsx"
   },
   "scripts": {
     "dev": "vite",
