@@ -8,11 +8,10 @@ import { Tombol } from '@waris/web/ui/komponen';
 import { Kerangka } from './Kerangka';
 import { KonteksRepo, usePortal, type RepoPortal } from './repo';
 import { bacaRute, type Rute } from './rute';
-import { DaftarKonten } from './layar/DaftarKonten';
+import { LayarMenu } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
 import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
-import { EditorDiksi } from './layar/EditorDiksi';
 import { KelolaPeran } from './layar/KelolaPeran';
 
 type Tahap =
@@ -73,7 +72,7 @@ function LayarRute({ onKeluar }: { onKeluar: () => void }) {
 
 function IsiRute({ rute }: { rute: Rute }) {
   const { peran } = usePortal();
-  if (rute.layar === 'menu') return rute.tab === 'diksi' ? <EditorDiksi /> : <DaftarKonten jenis={rute.tab} />;
+  if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}`} menu={rute.menu} tab={rute.tab} />;
   if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} />;
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
   if (rute.layar === 'review') return <AntreanReview />;
