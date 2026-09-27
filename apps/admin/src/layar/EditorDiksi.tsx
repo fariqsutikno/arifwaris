@@ -18,6 +18,9 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePortal } from '../repo';
+import { ChipStatus } from './Beranda';
+import { LABEL_STATUS_REVISI, tanggalLengkap, waktuRelatif } from '../ringkas';
+import { pesanGalat } from '../pesanGalat';
 
 const JUMLAH_KOLOM = 5;
 
@@ -73,7 +76,7 @@ export function EditorDiksi() {
     setGalat(null);
     repo.diksi.daftarKunci()
       .then(hasil => { if (!dibatalkan) setDaftar(hasil); })
-      .catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, muatUlang]);
 
@@ -152,14 +155,14 @@ function BarisDiksi(
     try {
       idRevisi = await repo.diksi.buatDraf(k.kunci, idTeks, arTeks || null, null);
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
       setMenyimpan(false);
       return;
     }
     try {
       await repo.diksi.ajukan(idRevisi);
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     } finally {
       setMenyimpan(false);
       onSimpanSelesai(); // draf sudah tersimpan meski ajukan gagal → muat ulang agar daftar mencerminkannya.
@@ -172,7 +175,7 @@ function BarisDiksi(
         <TableCell className="font-mono text-xs">{k.kunci}</TableCell>
         <TableCell className="min-w-48">{bolehEdit ? <Input aria-label={`Indonesia ${k.kunci}`} value={idTeks} onChange={e => setIdTeks(e.target.value)} /> : idTeks}</TableCell>
         <TableCell className="min-w-40">{bolehEdit ? <Input aria-label={`Arab ${k.kunci}`} dir="rtl" lang="ar" value={arTeks} onChange={e => setArTeks(e.target.value)} /> : arTeks}</TableCell>
-        <TableCell><Badge variant="secondary">{statusTampilDiksi(k)}</Badge></TableCell>
+        <TableCell><ChipStatus status={statusTampilDiksi(k)} /></TableCell>
         <TableCell>
           <span className="flex justify-end gap-2">
             {bolehEdit ? <Button size="sm" disabled={!berubah || menyimpan} onClick={() => void simpanDanAjukan()}>Simpan &amp; ajukan</Button> : null}
@@ -208,7 +211,7 @@ function RiwayatDiksi(
     let dibatalkan = false;
     repo.diksi.daftarRevisi(kunci)
       .then(hasil => { if (!dibatalkan) setDaftar(hasil); })
-      .catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, kunci]);
 
@@ -221,39 +224,42 @@ function RiwayatDiksi(
 
   return (
     <div className="divide-y">
-      {[...daftar].reverse().map(revisi => (
+      {daftar.map((revisi, indeks) => (
         <BarisRiwayatDiksi
-          key={revisi.id} revisi={revisi} sedangTerbit={revisi.id === idTerbit}
+          key={revisi.id} nomor={indeks + 1} revisi={revisi} sedangTerbit={revisi.id === idTerbit}
           bolehRollback={bolehRollback} saatBerubah={saatBerubah}
         />
-      ))}
+      )).reverse()}
     </div>
   );
 }
 
 function BarisRiwayatDiksi(
-  { revisi, sedangTerbit, bolehRollback, saatBerubah }:
-  { revisi: RingkasanRevisiDiksi; sedangTerbit: boolean; bolehRollback: boolean; saatBerubah: () => void },
+  { nomor, revisi, sedangTerbit, bolehRollback, saatBerubah }:
+  { nomor: number; revisi: RingkasanRevisiDiksi; sedangTerbit: boolean; bolehRollback: boolean; saatBerubah: () => void },
 ) {
   const { repo } = usePortal();
   const [galat, setGalat] = useState<string | null>(null);
   const bolehTombolRollback = bolehRollback && revisi.status === 'disetujui' && !sedangTerbit;
 
   async function rollback() {
-    if (!window.confirm(`Terbitkan ulang revisi ${revisi.id.slice(0, 8)}? Ini akan menggantikan revisi yang sedang terbit.`)) return;
+    if (!window.confirm(`Terbitkan ulang revisi ${nomor}? Teksnya akan menggantikan teks yang sedang terbit.`)) return;
     setGalat(null);
     try {
       await repo.diksi.terbitkanUlang(revisi.id);
       saatBerubah();
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     }
   }
 
   return (
-    <article aria-label={`revisi ${revisi.id.slice(0, 8)}`} className="flex flex-wrap items-center gap-2 py-2">
-      <p className="text-sm">
-        {sedangTerbit ? 'terbit' : revisi.status} · id: {revisi.idTeks} · ar: {revisi.arTeks ?? ''}
+    <article aria-label={`Revisi ${nomor}`} className="flex flex-wrap items-center gap-2 py-2">
+      <b className="text-sm">Revisi {nomor}</b>
+      {sedangTerbit ? <Badge>Terbit</Badge> : <Badge variant="secondary">{LABEL_STATUS_REVISI[revisi.status]}</Badge>}
+      <span className="text-xs text-muted-foreground" title={tanggalLengkap(revisi.dibuatPada)}>{waktuRelatif(revisi.dibuatPada, new Date())}</span>
+      <p className="w-full text-sm">
+        {revisi.idTeks}{revisi.arTeks ? <span dir="rtl" lang="ar" className="ms-3">{revisi.arTeks}</span> : null}
       </p>
       {bolehTombolRollback ? <Button size="sm" className="ml-auto" onClick={() => void rollback()}>Terbitkan ulang</Button> : null}
       {revisi.catatanReview ? <p className="w-full text-sm text-muted-foreground">Catatan review: {revisi.catatanReview}</p> : null}
@@ -262,4 +268,3 @@ function BarisRiwayatDiksi(
   );
 }
 
-const pesan = (e: unknown) => (e instanceof Error ? e.message : String(e));

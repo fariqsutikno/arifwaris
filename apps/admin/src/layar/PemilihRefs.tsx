@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { usePortal } from '../repo';
+import { pesanGalat } from '../pesanGalat';
 
 const BATAS_SARAN = 20;
 
@@ -17,7 +18,7 @@ export function PemilihRefs({ nilai, saatUbah, bacaSaja = false }: { nilai: stri
   const [cari, setCari] = useState('');
 
   useEffect(() => {
-    repo.konten.daftarRefs().then(setDaftarRefs).catch(e => setGalat(e instanceof Error ? e.message : String(e)));
+    repo.konten.daftarRefs().then(setDaftarRefs).catch(e => setGalat(pesanGalat(e)));
   }, [repo]);
 
   const saran = cari.trim() ? daftarRefs.filter(ref => !nilai.includes(ref.kode) && cocok(ref, cari)).slice(0, BATAS_SARAN) : [];

@@ -33,17 +33,20 @@ const butir = (nama: RegExp) => screen.findByRole('article', { name: nama });
 test('antrean menampilkan butir konten & diksi dengan diff', async () => {
   const { m } = await siapkan();
   tampilkan(m);
-  const konten = await butir(/faq: apa-itu-tirkah/);
-  expect(within(konten).getByText(/Apa itu tirkah\?/).textContent).toMatch(/^\+/);
-  const diksi = await butir(/diksi: beranda.judul/);
+  const konten = await butir(/^Apa itu tirkah/);
+  expect(within(konten).getAllByText(/Apa itu tirkah\?/).some(el => /^\+/.test(el.textContent ?? ''))).toBe(true);
+  expect(within(konten).getByText('FAQ')).toBeTruthy();
+  expect(within(konten).getByRole('link', { name: 'Buka entri' }).getAttribute('href')).toMatch(/^#\/entri\//);
+  expect(within(konten).getByText(/oleh penulis lain/)).toBeTruthy();
+  const diksi = await butir(/^beranda\.judul/);
   expect(within(diksi).getByText(/Kalkulator Waris/).textContent).toMatch(/^\+/);
 });
 
 test('Setujui butir konten → hilang dari antrean dan terbit', async () => {
   const { m } = await siapkan();
   tampilkan(m);
-  fireEvent.click(within(await butir(/faq: /)).getByRole('button', { name: 'Setujui' }));
-  await waitFor(() => expect(screen.queryByRole('article', { name: /faq: / })).toBeNull());
+  fireEvent.click(within(await butir(/^Apa itu tirkah/)).getByRole('button', { name: 'Setujui' }));
+  await waitFor(() => expect(screen.queryByRole('article', { name: /^Apa itu tirkah/ })).toBeNull());
   const terbit = await m.konten.bacaTerbit({ jenis: 'faq' });
   expect(terbit.map(t => t.slug)).toEqual(['apa-itu-tirkah']);
 });
@@ -51,7 +54,7 @@ test('Setujui butir konten → hilang dari antrean dan terbit', async () => {
 test('Kembalikan: tanpa catatan nonaktif, dengan catatan → dikembalikan', async () => {
   const { m } = await siapkan();
   tampilkan(m);
-  const diksi = await butir(/diksi: /);
+  const diksi = await butir(/^beranda\.judul/);
   const tombol = within(diksi).getByRole('button', { name: 'Kembalikan' }) as HTMLButtonElement;
   expect(tombol.disabled).toBe(true);
   fireEvent.change(within(diksi).getByLabelText('Catatan'), { target: { value: 'ejaan' } });
@@ -67,18 +70,18 @@ test('revisi reviewer sendiri: tanpa tombol, berlabel "revisi Anda"', async () =
   await m.editorial.ajukan(await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[1]!, ['R09-7']));
   m.aturPeranLangsung('u-r', 'reviewer');
   tampilkan(m);
-  const milikSendiri = await butir(/faq: siapa-ashabah/);
+  const milikSendiri = await butir(/^Siapa ashabah/);
   expect(within(milikSendiri).getByText('revisi Anda')).toBeTruthy();
   expect(within(milikSendiri).queryByRole('button', { name: 'Setujui' })).toBeNull();
-  expect(within(await butir(/faq: apa-itu-tirkah/)).getByRole('button', { name: 'Setujui' })).toBeTruthy();
+  expect(within(await butir(/^Apa itu tirkah/)).getByRole('button', { name: 'Setujui' })).toBeTruthy();
 });
 
 test('penulis membuka antrean: baca-saja', async () => {
   const { m } = await siapkan();
   m.masukSebagai({ userId: 'u-p', email: 'p@x.id' });
   tampilkan(m, 'penulis', 'u-p');
-  await butir(/faq: /);
-  await butir(/diksi: /);
+  await butir(/^Apa itu tirkah/);
+  await butir(/^beranda\.judul/);
   expect(screen.queryByRole('button', { name: 'Setujui' })).toBeNull();
   expect(screen.queryByRole('button', { name: 'Kembalikan' })).toBeNull();
 });
@@ -87,7 +90,7 @@ test('galat repo tampil di butir itu', async () => {
   const { m } = await siapkan();
   m.editorial.setujui = async () => { throw new Error('ditolak RLS'); };
   tampilkan(m);
-  const konten = await butir(/faq: /);
+  const konten = await butir(/^Apa itu tirkah/);
   fireEvent.click(within(konten).getByRole('button', { name: 'Setujui' }));
-  expect((await within(konten).findByRole('alert')).textContent).toMatch(/ditolak RLS/);
+  expect((await within(konten).findByRole('alert')).textContent).toMatch(/Ditolak RLS/);
 });

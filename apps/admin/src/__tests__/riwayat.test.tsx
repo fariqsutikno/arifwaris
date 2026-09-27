@@ -1,6 +1,7 @@
 // Tes RiwayatRevisi dengan repo memori: entri faq dengan dua revisi disetujui (r1 lalu r2, terbit = r2). Reviewer
 // melihat r2 berlabel "terbit" dan r1 dengan tombol "Terbitkan ulang"; klik (setelah confirm) → terbit balik ke r1
-// dan saatBerubah dipanggil. Penulis tidak melihat tombol rollback. Catatan review revisi tampil.
+// dan saatBerubah dipanggil. Penulis tidak melihat tombol rollback. Catatan review revisi tampil. Baris bernomor dan
+// menyebut pembuat ("Anda"), tanpa UUID; perubahan dibanding revisi sebelumnya bisa dibuka.
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
@@ -42,8 +43,8 @@ test('reviewer: r2 berlabel terbit, r1 punya tombol Terbitkan ulang; klik → ro
       <RiwayatRevisi entriId={entriId} jenis="faq" revisiTerbitId={r1} saatBerubah={saatBerubah} />
     </KonteksRepo.Provider>,
   );
-  const barisR1 = await screen.findByLabelText(`revisi ${r1.slice(0, 8)}`);
-  expect(within(barisR1).getByText(/^terbit ·/)).toBeTruthy();
+  const barisR1 = await screen.findByRole('article', { name: 'Revisi 1' });
+  expect(within(barisR1).getByText('Terbit')).toBeTruthy();
   const semuaBaris = screen.getAllByRole('article');
   const barisR2 = semuaBaris.find(b => b !== barisR1)!;
   expect(within(barisR2).getByRole('button', { name: 'Terbitkan ulang' })).toBeTruthy();
@@ -75,4 +76,20 @@ test('catatan review revisi tampil', async () => {
   await m.editorial.kembalikan(r1, 'perbaiki ejaan');
   tampilkan(m, entriId);
   expect(await screen.findByText(/perbaiki ejaan/)).toBeTruthy();
+});
+
+test('baris bernomor, pembuat "Anda" / "penulis lain" tanpa UUID; Lihat perubahan membandingkan dengan revisi sebelumnya', async () => {
+  const { m, entriId, r2 } = await siapkan();
+  m.masukSebagai({ userId: 'u-p', email: 'p@x.id' });
+  render(
+    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u-p', email: 'p@x.id' }, peran: 'penulis' }}>
+      <RiwayatRevisi entriId={entriId} jenis="faq" revisiTerbitId={r2} saatBerubah={() => {}} />
+    </KonteksRepo.Provider>,
+  );
+  const barisR2 = await screen.findByRole('article', { name: 'Revisi 2' });
+  expect(within(barisR2).getByText(/oleh Anda/)).toBeTruthy();
+  expect(document.body.textContent).not.toMatch(/[0-9a-f]{8}-[0-9a-f]{4}|u-p/);
+  fireEvent.click(within(barisR2).getByRole('button', { name: 'Lihat perubahan' }));
+  expect(within(barisR2).getByText(/baris ditambah/)).toBeTruthy();
+  expect(within(barisR2).getByText(/Siapa ashabah\?/)).toBeTruthy();
 });

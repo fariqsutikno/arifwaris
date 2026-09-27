@@ -95,7 +95,7 @@ test('tab JSON: memuat isi form, JSON rusak → galat & tetap di JSON, perbaikan
   const m = siapkan();
   const entriId = await drafSendiri(m);
   tampilkan(m, { entriId });
-  await screen.findByText('Draf');
+  await screen.findAllByText('Draf');
   ketik('Pertanyaan', 'Apa itu tirkah, ya?');
   bukaTab('JSON');
   expect((screen.getByRole('textbox', { name: 'JSON' }) as HTMLTextAreaElement).value).toContain('"pertanyaan": "Apa itu tirkah, ya?"');
@@ -122,7 +122,7 @@ test('jenis fikih tanpa ref → galat repo tampil', async () => {
   tampilkan(m, { jenis: 'faq' });
   await isiFormFaq();
   simpan();
-  expect((await screen.findByRole('alert')).textContent).toMatch(/wajib punya minimal satu ref/);
+  expect((await screen.findByRole('alert')).textContent).toMatch(/minimal satu rujukan/);
   expect(await m.konten.daftarEntri('faq')).toHaveLength(0);
 
   fireEvent.change(screen.getByLabelText('Cari ref'), { target: { value: 'R09' } });
@@ -148,7 +148,7 @@ test('buatDraf gagal setelah buatEntri → simpan ulang memakai entri yang sama'
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
   fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
   simpan();
-  expect((await screen.findByRole('alert')).textContent).toMatch(/jaringan putus/);
+  expect((await screen.findByRole('alert')).textContent).toMatch(/Jaringan putus/);
   simpan();
   await waitFor(async () => {
     const daftar = await m.konten.daftarEntri('faq');
@@ -166,7 +166,7 @@ test('terbit + revisi diajukan: status diajukan tampil, tanpa "Buat draf baru"',
   const kedua = await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[1]!, ['R09-7']);
   await m.editorial.ajukan(kedua);
   tampilkan(m, { entriId }, 'penulis', 'u-p');
-  await screen.findByText('Diajukan');
+  await screen.findAllByText('Diajukan');
   expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
 });
 
@@ -181,7 +181,7 @@ test('draf sendiri: Simpan & ajukan → diajukan, form jadi baca-saja dengan ala
   const entriId = await drafSendiri(m);
   tampilkan(m, { entriId });
   fireEvent.click(await screen.findByRole('button', { name: 'Simpan & ajukan' }));
-  await screen.findByText('Diajukan');
+  await screen.findAllByText('Diajukan');
   expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
   expect(screen.getByText(/sedang menunggu review, jadi belum bisa diubah/)).toBeTruthy();
@@ -192,7 +192,7 @@ test('reviewer membuka entri: baca-saja, tanpa tombol simpan', async () => {
   const m = siapkan();
   const entriId = await drafSendiri(m);
   tampilkan(m, { entriId }, 'reviewer', 'u-r');
-  await screen.findByText('Draf');
+  await screen.findAllByText('Draf');
   expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
   expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
@@ -202,11 +202,11 @@ test('Simpan & ajukan menyimpan editan form dulu: yang diajukan isi terbaru, buk
   const m = siapkan();
   const entriId = await drafSendiri(m);
   tampilkan(m, { entriId });
-  await screen.findByText('Draf');
+  await screen.findAllByText('Draf');
   ketik('Pertanyaan', 'Pertanyaan yang sudah diperbaiki');
   expect(screen.getByText('Ada perubahan belum disimpan')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Simpan & ajukan' }));
-  await screen.findByText('Diajukan');
+  await screen.findAllByText('Diajukan');
   const [entri] = await m.konten.daftarEntri('faq');
   expect(entri!.revisiTerakhir?.status).toBe('diajukan');
   expect((entri!.revisiTerakhir?.isi as { pertanyaan: string }).pertanyaan).toBe('Pertanyaan yang sudah diperbaiki');
@@ -230,7 +230,7 @@ test('draf milik penulis lain → baca-saja dengan alasan, bukan buntu tanpa pes
   const entriId = await drafSendiri(m);
   tampilkan(m, { entriId });
   expect(await screen.findByText(/draf milik penulis lain/)).toBeTruthy();
-  expect(screen.getByText(/revisi penulis lain/)).toBeTruthy();
+  expect(screen.getAllByText(/oleh penulis lain/).length).toBeGreaterThan(0);
   expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
 });
 

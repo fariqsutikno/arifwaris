@@ -27,12 +27,14 @@ import { labelKunci } from '../editor/kasus';
 import { FormKonten, type OpsiRuntime } from './FormKonten';
 import { usePortal } from '../repo';
 import { ambilKilat, lepasPenjaga, setelKilat, usePenjagaPerubahan, type Kilat } from '../penjaga';
-import { judulEntri, statusTampil, waktuRelatif } from '../ringkas';
+import { judulEntri, statusTampil, tanggalLengkap, waktuRelatif } from '../ringkas';
+import { useNamaPengguna } from '../pengguna';
 import { tulisRute } from '../rute';
 import { ChipStatus } from './Beranda';
 import { PemilihRefs } from './PemilihRefs';
 import { Pratinjau } from './Pratinjau';
 import { RiwayatRevisi } from './RiwayatRevisi';
+import { pesanGalat } from '../pesanGalat';
 
 const JARAK_URUTAN = 10;
 type Tab = 'isi' | 'arab' | 'json';
@@ -54,6 +56,7 @@ interface Muatan {
 
 export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jenis: JenisKonten) => void } | { jenis: JenisKonten }) {
   const { repo, sesi, peran } = usePortal();
+  const namaPengguna = useNamaPengguna();
   const [muatan, setMuatan] = useState<Muatan | null>(null);
   const [bentuk, setBentuk] = useState<NilaiForm | null>(null);
   const [tab, setTab] = useState<Tab>('isi');
@@ -95,7 +98,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       setRefs(hasil.muatan.basis?.refs ?? []);
       setMode(tentukanMode(hasil.muatan));
       setBerubah(false);
-    })().catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+    })().catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, entriIdProp, jenisProp, muatUlang]);
 
@@ -209,7 +212,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     // Periksa refs di klien sebelum buatEntri supaya entri kosong tidak tertinggal; database tetap penjaga.
     const refsDikenal = new Set((await repo.konten.daftarRefs()).map(ref => ref.kode));
     const galatRefs = periksaRefs(muatan.jenis, hasil.isi, refs, refsDikenal);
-    if (galatRefs) { setGalat(galatRefs); return null; }
+    if (galatRefs) { setGalat(pesanGalat(galatRefs)); return null; }
     const daftar = await repo.konten.daftarEntri(muatan.jenis);
     const maksUrutan = Math.max(0, ...daftar.map(e => e.urutan));
     // ponytail: entri & draf dua panggilan, tidak atomik. entriId disimpan dulu supaya bila buatDraf gagal,
@@ -237,7 +240,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           await repo.editorial.ajukan(tersimpan.revisiId);
           kilat = { jenis: 'sukses', teks: 'Tersimpan dan diajukan ke antrean review.' };
         } catch (e) {
-          kilat = { jenis: 'galat', teks: `Draf tersimpan, tapi gagal diajukan: ${pesan(e)}` };
+          kilat = { jenis: 'galat', teks: `Draf tersimpan, tapi gagal diajukan: ${pesanGalat(e)}` };
         }
       }
       if (tersimpan.entriId === entriIdProp) {
@@ -248,7 +251,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         location.hash = tulisRute({ layar: 'entri', entriId: tersimpan.entriId });
       }
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     } finally {
       setSibuk(null);
     }
@@ -290,7 +293,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           {status ? <ChipStatus status={status} /> : <Badge variant="outline">Belum disimpan</Badge>}
           {muatan.terakhir ? (
             <span>
-              {muatan.terakhir.dibuatOleh === sesi.userId ? 'revisi Anda' : 'revisi penulis lain'} · {waktuRelatif(muatan.terakhir.dibuatPada, new Date())}
+              oleh {namaPengguna(muatan.terakhir.dibuatOleh)} ·{' '}
+              <time dateTime={muatan.terakhir.dibuatPada} title={tanggalLengkap(muatan.terakhir.dibuatPada)}>{waktuRelatif(muatan.terakhir.dibuatPada, new Date())}</time>
             </span>
           ) : null}
           {muatan.slug ? <span className="font-mono text-xs">{muatan.slug}</span> : null}
@@ -415,14 +419,13 @@ function bentukDariRevisi(jenis: JenisKonten, revisi: RingkasanRevisi): NilaiFor
   return keNilaiForm(jenis, hasil.isi);
 }
 
-const pesan = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
 function bacaJson(jenis: JenisKonten, teks: string): HasilForm<JenisKonten> {
   let json: unknown;
   try {
     json = JSON.parse(teks);
   } catch (e) {
-    return { ok: false, galat: `JSON tidak sah: ${pesan(e)}`, galatBidang: {} };
+    return { ok: false, galat: `JSON tidak sah: ${pesanGalat(e)}`, galatBidang: {} };
   }
   const hasil = bacaIsi(jenis, json);
   return hasil.ok ? hasil : { ok: false, galat: hasil.galat, galatBidang: {} };

@@ -102,6 +102,15 @@ export function indeksSeret(ids: readonly string[], aktif: string, tujuan: strin
   return dari < 0 || ke < 0 || dari === ke ? null : [dari, ke];
 }
 
+export const LABEL_STATUS_REVISI: Record<string, string> = {
+  draf: 'Draf', diajukan: 'Diajukan', disetujui: 'Disetujui', dikembalikan: 'Dikembalikan',
+};
+
+const formatTanggal = new Intl.DateTimeFormat('id', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+/** "27 Sep 2026, 14.05" — untuk tooltip di samping waktu relatif. */
+export const tanggalLengkap = (iso: string): string => formatTanggal.format(new Date(iso));
+
 const SATUAN_WAKTU: [Intl.RelativeTimeFormatUnit, number][] = [['day', 86_400], ['hour', 3_600], ['minute', 60]];
 const formatWaktu = new Intl.RelativeTimeFormat('id', { numeric: 'auto' });
 

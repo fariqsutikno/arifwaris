@@ -30,7 +30,7 @@ test('galat memuat sesi → pesan galat, bukan layar kosong', async () => {
   const m = buatMemori();
   m.akun.sesi = async () => { throw new Error('jaringan putus'); };
   render(<Portal repo={m} />);
-  expect(await screen.findByText(/jaringan putus/)).toBeTruthy();
+  expect(await screen.findByText(/Jaringan putus/)).toBeTruthy();
 });
 test('editor dengan perubahan belum disimpan: pindah rute ditanya dulu; batal → tetap di editor', async () => {
   const m = buatMemori({ sesi: { userId: 'u1', email: 'a@x.id' }, peran: { u1: 'admin' } });

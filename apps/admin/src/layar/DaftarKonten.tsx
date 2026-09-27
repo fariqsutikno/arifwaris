@@ -28,6 +28,7 @@ import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { tulisRute } from '../rute';
 import { ChipStatus, PesanGalat } from './Beranda';
 import { EditorDiksi } from './EditorDiksi';
+import { pesanGalat } from '../pesanGalat';
 
 export function LayarMenu({ menu: kunci, tab }: { menu: KunciMenu; tab: IsiMenu }) {
   const { peran } = usePortal();
@@ -96,7 +97,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
         setModul(daftarModul);
         setIsiModulTerbit(new Map(modulTerbit.map(baris => [baris.entriId, baris.isi])));
       })
-      .catch(e => { if (!dibatalkan) setGalat(e instanceof Error ? e.message : String(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, jenis, menuMateri, muatUlang]);
 
@@ -130,7 +131,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
       setUrutanDraf(null);
       setMuatUlang(n => n + 1);
     } catch (e) {
-      setGalatUrutan(`Urutan gagal disimpan: ${e instanceof Error ? e.message : String(e)}`);
+      setGalatUrutan(`Urutan gagal disimpan: ${pesanGalat(e)}`);
     } finally {
       setMenyimpanUrutan(false);
     }

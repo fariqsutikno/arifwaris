@@ -85,7 +85,7 @@ test('penulis: ubah Arab lalu "Simpan & ajukan" membuat revisi diajukan dengan i
   const tombol = within(inputArab.closest('tr')!).getByRole('button', { name: /simpan.*ajukan/i });
   fireEvent.click(tombol);
 
-  await screen.findByText('diajukan');
+  await screen.findByText('Diajukan');
   const revisi = await m.diksi.daftarRevisi('halaman1.judul');
   expect(revisi).toHaveLength(1);
   expect(revisi[0]!.status).toBe('diajukan');

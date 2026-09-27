@@ -39,3 +39,26 @@ export function teksBanding(jenis: JenisKonten, isi: unknown): string {
   }
   return JSON.stringify(isi, null, 2);
 }
+
+export type BagianDiff = { jenis: 'baris'; baris: BarisDiff } | { jenis: 'lipat'; baris: BarisDiff[] };
+const KONTEKS_DIFF = 3;
+
+/** Baris sama yang berjarak lebih dari `konteks` dari perubahan mana pun dilipat jadi satu bagian, supaya perubahan
+ * kecil di materi panjang langsung terlihat. Lipatan satu baris tidak ada gunanya, jadi dibiarkan tampil. */
+export function lipatDiff(daftar: BarisDiff[], konteks = KONTEKS_DIFF): BagianDiff[] {
+  const dekatPerubahan = daftar.map((_, i) =>
+    daftar.slice(Math.max(0, i - konteks), i + konteks + 1).some(baris => baris.jenis !== 'sama'));
+  const hasil: BagianDiff[] = [];
+  let lipatan: BarisDiff[] = [];
+  const tutupLipatan = () => {
+    if (lipatan.length === 1) hasil.push({ jenis: 'baris', baris: lipatan[0]! });
+    else if (lipatan.length > 1) hasil.push({ jenis: 'lipat', baris: lipatan });
+    lipatan = [];
+  };
+  daftar.forEach((baris, i) => {
+    if (dekatPerubahan[i]) { tutupLipatan(); hasil.push({ jenis: 'baris', baris }); }
+    else lipatan.push(baris);
+  });
+  tutupLipatan();
+  return hasil;
+}

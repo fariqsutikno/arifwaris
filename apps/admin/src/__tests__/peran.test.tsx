@@ -57,7 +57,7 @@ test('email tak dikenal → pesan tampil, tabel tidak berubah', async () => {
   fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'siapa@x.id' } });
   fireEvent.click(screen.getByRole('button', { name: /beri peran/i }));
 
-  await screen.findByText(/akun belum pernah masuk/);
+  await screen.findByText(/belum pernah masuk ke portal/);
   expect(screen.queryByText('siapa@x.id')).toBeNull();
   expect(screen.getAllByRole('row')).toHaveLength(2); // header + admin saja
 });

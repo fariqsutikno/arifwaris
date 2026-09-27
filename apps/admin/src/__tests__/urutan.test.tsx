@@ -74,7 +74,7 @@ test('gagal simpan → pesan galat, tetap di mode dengan susunan lokal', async (
   await aturUrutan();
   fireEvent.click(screen.getByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
   simpanUrutan();
-  expect(await screen.findByText(/Urutan gagal disimpan: jaringan putus/)).toBeTruthy();
+  expect(await screen.findByText(/Urutan gagal disimpan: Jaringan putus/)).toBeTruthy();
   expect(judulBaris()).toEqual(['Siapa ashabah?', 'Apa itu tirkah?']);
   expect(screen.getByRole('button', { name: 'Simpan urutan' })).toBeTruthy();
 });
