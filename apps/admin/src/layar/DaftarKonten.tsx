@@ -2,18 +2,23 @@
 // untuk menu bertab, lalu daftar entri dengan tab status + jumlah, cari (judul/slug/ref), dan baris berstatus.
 // Menu materi mengelompokkan materi di bawah modulnya. Data dari repo.konten.daftarEntri; perhitungan di ringkas.ts.
 import { useEffect, useState, type ReactNode } from 'react';
-import { Pencil, Search } from 'lucide-react';
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { ChevronDown, ChevronUp, GripVertical, Pencil, Search } from 'lucide-react';
 import type { JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LABEL_ISI, menuDari, type IsiMenu, type KunciMenu } from '../navigasi';
 import {
-  jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, saringDaftar, statusTampil, TAB_STATUS, waktuRelatif,
+  indeksSeret, jumlahPerTab, judulEntri, kelompokkanPerModul, LABEL_TAB, pindahkan, saringDaftar, statusTampil, TAB_STATUS, waktuRelatif,
   type GrupModul, type TabStatus,
 } from '../ringkas';
 import { usePortal } from '../repo';
@@ -56,13 +61,34 @@ export function LayarMenu({ menu: kunci, tab }: { menu: KunciMenu; tab: IsiMenu 
 }
 
 export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten; menuMateri?: boolean }) {
-  const { repo } = usePortal();
+  const { repo, peran } = usePortal();
   const [daftar, setDaftar] = useState<RingkasanEntri[] | null>(null);
   const [modul, setModul] = useState<RingkasanEntri[]>([]);
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
   const [tab, setTab] = useState<TabStatus>('semua');
   const [cari, setCari] = useState('');
+  const [galatUrutan, setGalatUrutan] = useState<string | null>(null);
+  const bolehSeret = peran !== 'reviewer' && tab === 'semua' && cari.trim() === '';
+
+  /** Ganti isi satu kelompok dengan urutan barunya, lalu simpan. Materi dikirim utuh rata per modul supaya urutan
+   * global web (pelajaran berikutnya) tetap mengikuti urutan modul. Gagal → kembalikan urutan lama. */
+  async function simpanUrutan(kelompokLama: RingkasanEntri[], kelompokBaru: RingkasanEntri[]) {
+    if (!daftar) return;
+    const sebelum = daftar;
+    const anggotaKelompok = new Set(kelompokLama.map(entri => entri.entriId));
+    const sisaBaru = [...kelompokBaru];
+    const tersusun = daftar.map(entri => (anggotaKelompok.has(entri.entriId) ? sisaBaru.shift()! : entri));
+    const urutanKirim = menuMateri ? kelompokkanPerModul(tersusun, modul).flatMap(grup => grup.materi) : tersusun;
+    setDaftar(urutanKirim.map((entri, indeks) => ({ ...entri, urutan: (indeks + 1) * 10 })));
+    setGalatUrutan(null);
+    try {
+      await repo.editorial.aturUrutan(urutanKirim.map(entri => entri.entriId));
+    } catch (e) {
+      setDaftar(sebelum);
+      setGalatUrutan(`Urutan gagal disimpan: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  }
 
   useEffect(() => {
     let dibatalkan = false;
@@ -97,18 +123,23 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
         </p>
       ) : null}
       {daftar.length > 0 && tampil.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Tidak ada yang cocok.</p> : null}
+      {galatUrutan ? <Alert variant="destructive" role="alert"><AlertDescription>{galatUrutan}</AlertDescription></Alert> : null}
       {menuMateri
-        ? kelompokkanPerModul(tampil, modul).map(grup => <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} />)
+        ? kelompokkanPerModul(tampil, modul).map(grup => (
+          <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
+        ))
         : tampil.length > 0 ? (
           <Card role="region" aria-label={LABEL_ISI[jenis]} className="gap-0 divide-y py-0">
-            {tampil.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}
+            <KelompokSeret daftar={tampil} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
           </Card>
         ) : null}
     </div>
   );
 }
 
-function GrupMateri({ grup, sekarang }: { grup: GrupModul; sekarang: Date }) {
+function GrupMateri({ grup, sekarang, bolehSeret, saatPindah }: {
+  grup: GrupModul; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah;
+}) {
   const label = grup.nomor === null ? grup.judul : `Modul ${grup.nomor}: ${grup.judul}`;
   return (
     <Card role="region" aria-label={label} className="gap-0 divide-y py-0">
@@ -123,8 +154,55 @@ function GrupMateri({ grup, sekarang }: { grup: GrupModul; sekarang: Date }) {
         ) : null}
       </div>
       {grup.materi.length === 0 ? <p className="px-4 py-2 text-sm text-muted-foreground">Belum ada materi.</p> : null}
-      {grup.materi.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}
+      <KelompokSeret daftar={grup.materi} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={saatPindah} />
     </Card>
+  );
+}
+
+type SaatPindah = (kelompokLama: RingkasanEntri[], kelompokBaru: RingkasanEntri[]) => void;
+
+/** Satu kelompok yang bisa diurutkan: seret @dnd-kit (pointer, sentuh, keyboard lewat pegangan) atau tombol naik/turun. */
+function KelompokSeret({ daftar, sekarang, bolehSeret, saatPindah }: {
+  daftar: RingkasanEntri[]; sekarang: Date; bolehSeret: boolean; saatPindah: SaatPindah;
+}) {
+  const sensor = useSensors(useSensor(PointerSensor), useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }));
+  const ids = daftar.map(entri => entri.entriId);
+  const pindah = (dari: number, ke: number) => { if (dari !== ke) void saatPindah(daftar, pindahkan(daftar, dari, ke)); };
+  if (!bolehSeret) return <>{daftar.map(entri => <BarisEntri key={entri.entriId} entri={entri} sekarang={sekarang} />)}</>;
+  const saatLepas = ({ active, over }: DragEndEvent) => {
+    const indeks = indeksSeret(ids, String(active.id), over ? String(over.id) : null);
+    if (indeks) pindah(...indeks);
+  };
+  return (
+    <DndContext sensors={sensor} collisionDetection={closestCenter} onDragEnd={saatLepas}>
+      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
+        {daftar.map((entri, indeks) => (
+          <BarisSeret key={entri.entriId} entri={entri} sekarang={sekarang}
+            naik={indeks > 0 ? () => pindah(indeks, indeks - 1) : undefined}
+            turun={indeks < daftar.length - 1 ? () => pindah(indeks, indeks + 1) : undefined} />
+        ))}
+      </SortableContext>
+    </DndContext>
+  );
+}
+
+function BarisSeret({ entri, sekarang, naik, turun }: { entri: RingkasanEntri; sekarang: Date; naik: (() => void) | undefined; turun: (() => void) | undefined }) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: entri.entriId });
+  const judul = judulEntri(entri);
+  const pegangan = (
+    <span className="flex items-center text-muted-foreground">
+      <button type="button" ref={setActivatorNodeRef} className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'cursor-grab touch-none')}
+        {...attributes} {...listeners} aria-label={`Seret ${judul}`}>
+        <GripVertical />
+      </button>
+      <Button variant="ghost" size="icon" aria-label={`Naikkan ${judul}`} disabled={!naik} onClick={naik}><ChevronUp /></Button>
+      <Button variant="ghost" size="icon" aria-label={`Turunkan ${judul}`} disabled={!turun} onClick={turun}><ChevronDown /></Button>
+    </span>
+  );
+  return (
+    <div ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className={isDragging ? 'opacity-50' : undefined}>
+      <BarisEntri entri={entri} sekarang={sekarang} pegangan={pegangan} />
+    </div>
   );
 }
 

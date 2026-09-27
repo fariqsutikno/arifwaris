@@ -90,6 +90,13 @@ export function pindahkan<T>(daftar: readonly T[], dari: number, ke: number): T[
   return hasil;
 }
 
+/** Hasil seret @dnd-kit (id aktif → id tujuan) sebagai pasangan indeks untuk pindahkan; null bila tidak berpindah. */
+export function indeksSeret(ids: readonly string[], aktif: string, tujuan: string | null): [number, number] | null {
+  const dari = ids.indexOf(aktif);
+  const ke = tujuan === null ? -1 : ids.indexOf(tujuan);
+  return dari < 0 || ke < 0 || dari === ke ? null : [dari, ke];
+}
+
 const SATUAN_WAKTU: [Intl.RelativeTimeFormatUnit, number][] = [['day', 86_400], ['hour', 3_600], ['minute', 60]];
 const formatWaktu = new Intl.RelativeTimeFormat('id', { numeric: 'auto' });
 

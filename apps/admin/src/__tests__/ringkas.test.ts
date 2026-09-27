@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import type { RingkasanEntri, RingkasanRevisi, } from '@waris/data';
 import {
-  jumlahPerTab, kelompokkanPerModul, pindahkan, ringkasBeranda, saringDaftar, waktuRelatif,
+  indeksSeret, jumlahPerTab, kelompokkanPerModul, pindahkan, ringkasBeranda, saringDaftar, waktuRelatif,
 } from '../ringkas';
 
 function entri(id: string, sisa: { status?: RingkasanRevisi['status'] | null; terbit?: boolean; oleh?: string; isi?: unknown;
@@ -67,4 +67,12 @@ test('waktuRelatif', () => {
   expect(waktuRelatif('2026-09-27T11:59:30Z', sekarang)).toBe('baru saja');
   expect(waktuRelatif('2026-09-27T10:00:00Z', sekarang)).toBe('2 jam yang lalu');
   expect(waktuRelatif('2026-09-26T12:00:00Z', sekarang)).toBe('kemarin');
+});
+
+test('indeksSeret: posisi asal & tujuan, null bila tak berpindah', () => {
+  expect(indeksSeret(['a', 'b', 'c'], 'a', 'c')).toEqual([0, 2]);
+  expect(indeksSeret(['a', 'b', 'c'], 'c', 'a')).toEqual([2, 0]);
+  expect(indeksSeret(['a', 'b'], 'a', 'a')).toBeNull();
+  expect(indeksSeret(['a', 'b'], 'a', null)).toBeNull();
+  expect(indeksSeret(['a', 'b'], 'a', 'x')).toBeNull();
 });
