@@ -15,6 +15,7 @@ import { EditorEntri } from './layar/EditorEntri';
 import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
 import { KelolaPeran } from './layar/KelolaPeran';
+import { bolehTinggalkan } from './penjaga';
 import { pesanGalat } from './pesanGalat';
 
 type Tahap =
@@ -84,7 +85,12 @@ function LayarRute({ onKeluar }: { onKeluar: () => void }) {
   const [rute, setRute] = useState(() => bacaRute(location.hash));
   const [jenisEntri, setJenisEntri] = useState<JenisKonten | null>(null);
   useEffect(() => {
-    const nyalakan = () => setRute(bacaRute(location.hash));
+    // Pindah rute saat ada perubahan belum disimpan: tanya dulu; batal → hash dikembalikan tanpa memicu
+    // hashchange lagi (replaceState), rute tetap.
+    const nyalakan = (event: HashChangeEvent) => {
+      if (!bolehTinggalkan()) { history.replaceState(null, '', new URL(event.oldURL).hash); return; }
+      setRute(bacaRute(location.hash));
+    };
     window.addEventListener('hashchange', nyalakan);
     return () => window.removeEventListener('hashchange', nyalakan);
   }, []);
@@ -97,9 +103,9 @@ function LayarRute({ onKeluar }: { onKeluar: () => void }) {
 
 function IsiRute({ rute, saatJenisEntri }: { rute: Rute; saatJenisEntri: (jenis: JenisKonten) => void }) {
   const { peran } = usePortal();
-  if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}`} menu={rute.menu} tab={rute.tab} />;
+  if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}-${JSON.stringify(rute.kueri ?? {})}`} menu={rute.menu} tab={rute.tab} kueri={rute.kueri} />;
   if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} saatJenisDiketahui={saatJenisEntri} />;
-  if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
+  if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}-${JSON.stringify(rute.kueri ?? {})}`} jenis={rute.jenis} awal={rute.kueri} />;
   if (rute.layar === 'review') return <AntreanReview />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
   return <Beranda />;

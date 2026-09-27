@@ -22,10 +22,11 @@ import { useNamaTim } from '../hooks/useNamaTim';
 import { waktuRelatif } from '../ringkas';
 import { FormKonten, type OpsiRuntime } from './FormKonten';
 import { usePortal } from '../repo';
-import { tulisRute } from '../rute';
+import { tulisRute, type Kueri } from '../rute';
 import { PemilihRefs } from './PemilihRefs';
 import { Pratinjau } from './Pratinjau';
 import { RiwayatRevisi } from './RiwayatRevisi';
+import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { pesanGalat } from '../pesanGalat';
 
 const JARAK_URUTAN = 10;
@@ -37,7 +38,7 @@ const ENTRI_BARU: EntriSunting = { revisiTerbitId: null, dihapus: false, dibuang
 // basis = revisi yang isinya dimuat ke form (revisiBasis). entriId null = entri baru yang belum pernah disimpan.
 interface Muatan { jenis: JenisKonten; slug: string | null; entriId: string | null; entri: EntriSunting; basis: RingkasanRevisi | null }
 
-export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jenis: JenisKonten) => void } | { jenis: JenisKonten }) {
+export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jenis: JenisKonten) => void } | { jenis: JenisKonten; awal?: Kueri | undefined }) {
   const { repo, sesi, peran } = usePortal();
   const namaDari = useNamaTim();
   const [muatan, setMuatan] = useState<Muatan | null>(null);
@@ -62,7 +63,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     let dibatalkan = false;
     setGalat(null);
     (async () => {
-      const hasil = entriIdProp ? await muatEntri(entriIdProp) : muatBaru(jenisProp!);
+      const hasil = entriIdProp ? await muatEntri(entriIdProp) : muatBaru(jenisProp!, 'awal' in props ? props.awal : undefined);
       if (dibatalkan) return;
       if ('saatJenisDiketahui' in props) props.saatJenisDiketahui?.(hasil.muatan.jenis);
       setMuatan(hasil.muatan);
@@ -90,12 +91,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     (tab === 'json' ? teksJson !== teksJsonAwal : JSON.stringify(bentuk) !== JSON.stringify(bentukAwal))
     || JSON.stringify(refs) !== JSON.stringify(refsAwal));
 
-  useEffect(() => {
-    if (!kotor) return;
-    const peringatkan = (e: BeforeUnloadEvent) => { e.preventDefault(); };
-    window.addEventListener('beforeunload', peringatkan);
-    return () => window.removeEventListener('beforeunload', peringatkan);
-  }, [kotor]);
+  usePenjagaPerubahan(kotor);
 
   const pratinjauKunci = useMemo(() => [bentuk, teksJson, tab], [bentuk, teksJson, tab]);
 
@@ -187,6 +183,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       const entriId = await aksi();
       if (entriId === null) return;
       // Entri baru pindah ke rutenya sendiri (layar dipasang ulang); entri lama cukup dimuat ulang.
+      lepasPenjaga();
       if (entriId && !entriIdProp) location.hash = tulisRute({ layar: 'entri', entriId });
       else setMuatUlang(n => n + 1);
     } catch (e) {
@@ -330,8 +327,11 @@ function Pratinjauan({ jenis, slug, hitungIsi, kunci, saatTutup }: {
   return <Pratinjau jenis={jenis} slug={slug} isi={hasil.isi} saatTutup={saatTutup} />;
 }
 
-function muatBaru(jenis: JenisKonten) {
-  return { muatan: { jenis, slug: null, entriId: null, entri: ENTRI_BARU, basis: null } satisfies Muatan, bentuk: nilaiFormKosong(jenis) };
+function muatBaru(jenis: JenisKonten, awal: Kueri | undefined) {
+  const bentuk = nilaiFormKosong(jenis);
+  // Isian awal dari URL (mis. "Materi di modul ini" → ?modul=3), hanya untuk bidang teks yang memang ada di form.
+  for (const [jalur, nilai] of Object.entries(awal ?? {})) if (typeof bentuk.nilai[jalur] === 'string') bentuk.nilai[jalur] = nilai;
+  return { muatan: { jenis, slug: null, entriId: null, entri: ENTRI_BARU, basis: null } satisfies Muatan, bentuk };
 }
 
 function bentukDariRevisi(jenis: JenisKonten, revisi: RingkasanRevisi): NilaiForm {
