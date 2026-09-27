@@ -1,6 +1,6 @@
 // Fungsi murni editor kasus soal hitung. Menerima ContohKasus; memutuskan jumlah orang per kunci (ahliWaris disimpan
 // satu entri per orang), apakah harapan tertulis sama dengan hasil engine, dan label kunci yang terbaca. Angka saham
-// hanya dari engine [SYF] (hitungHarapan di web) atau diketik penulis; di sini tidak ada hitungan fikih.
+// hanya dari kalkulator [SYF] (hitungHarapan di web) atau diketik penulis; di sini tidak ada hitungan fikih.
 import type { ContohKasus } from '@waris/content';
 
 export function jumlahPerKunci(ahliWaris: readonly string[]): Record<string, number> {
@@ -33,3 +33,7 @@ export function bacaBigint(teks: string): bigint | null {
   const bersih = teks.replace(/[.\s_]/g, '');
   return /^\d+$/.test(bersih) ? BigInt(bersih) : null;
 }
+
+const RIBUAN = new Intl.NumberFormat('id-ID');
+/** 120000000n → "120.000.000" untuk isian rupiah. */
+export const formatRibuan = (nilai: bigint): string => RIBUAN.format(nilai);

@@ -1,10 +1,10 @@
-// Tes editor kasus soal hitung: fungsi murni jumlah/urutan ahli waris, lalu komponen — tambah ahli waris, tombol
-// Hitung mengisi harapan dari engine, harapan manual yang beda memunculkan peringatan, kasus tak didukung → galat.
+// Tes editor kasus soal hitung: fungsi murni jumlah/urutan ahli waris, lalu komponen — tambah ahli waris langsung
+// mengisi kunci jawaban dari kalkulator, isian manual yang beda memunculkan peringatan, kasus tak didukung → galat.
 import { useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import type { ContohKasus } from '@waris/content';
-import { aturJumlah, bacaBigint, jumlahPerKunci, samaHarapan } from '../editor/kasus';
+import { aturJumlah, bacaBigint, formatRibuan, jumlahPerKunci, samaHarapan } from '../editor/kasus';
 import { EditorKasus } from '../layar/EditorKasus';
 import { SOAL_HITUNG_UJI } from './contoh';
 
@@ -21,6 +21,7 @@ test('samaHarapan & bacaBigint', () => {
   expect(samaHarapan(h, { ...h, saham: { ...h.saham, IBU: 5n } })).toBe(false);
   expect(bacaBigint('120.000.000')).toBe(120_000_000n);
   expect(bacaBigint('1,5')).toBeNull();
+  expect(formatRibuan(120_000_000n)).toBe('120.000.000');
 });
 
 function Uji({ awal }: { awal: ContohKasus }) {
@@ -29,25 +30,38 @@ function Uji({ awal }: { awal: ContohKasus }) {
 }
 const isi = () => screen.getByTestId('isi').textContent!;
 
-test('tambah ahli waris lalu Hitung → harapan dari engine, tanpa peringatan', () => {
+test('tambah ahli waris → kunci jawaban dihitung otomatis, tampil sebagai tabel', () => {
   render(<Uji awal={{ pewaris: 'L', ahliWaris: ['ISTRI'], harta: 100n, harapan: { saham: {}, ashlAkhir: 0n } }} />);
   fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
-  fireEvent.click(screen.getByRole('button', { name: /Hitung dengan engine/ }));
   expect(isi()).toContain('"ahliWaris":["ISTRI","ANAK_LK"]');
   expect(isi()).toContain('"saham":{"ISTRI":"1n","ANAK_LK":"7n"},"ashlAkhir":"8n"');
-  expect(screen.queryByText('Harapan berbeda dari hasil engine.')).toBeNull();
+  expect(screen.getByRole('table')).toBeTruthy();
+  expect(screen.queryByText(/berbeda dari hasil kalkulator/)).toBeNull();
 });
 
-test('harapan manual beda dari engine → peringatan', () => {
+test('harta tampil dengan titik ribuan', () => {
+  render(<Uji awal={{ ...SOAL_HITUNG_UJI.kasus, harta: 1_000n }} />);
+  const harta = screen.getByLabelText(/^Harta/) as HTMLInputElement;
+  expect(harta.value).toBe('1.000');
+  fireEvent.change(harta, { target: { value: '1.2345' } });
+  expect(harta.value).toBe('12.345');
+  expect(isi()).toContain('"harta":"12345n"');
+});
+
+test('isian manual beda dari kalkulator → peringatan', () => {
   render(<Uji awal={SOAL_HITUNG_UJI.kasus} />);
-  expect(screen.queryByText('Harapan berbeda dari hasil engine.')).toBeNull();
+  expect(screen.queryByText(/berbeda dari hasil kalkulator/)).toBeNull();
   fireEvent.change(screen.getByLabelText('Ashl akhir'), { target: { value: '12' } });
-  expect(screen.getByText('Harapan berbeda dari hasil engine.')).toBeTruthy();
+  expect(screen.getByText(/berbeda dari hasil kalkulator/)).toBeTruthy();
 });
 
-test('kunci tak dikenal checklist → galat, harapan tidak berubah', () => {
+test('tanpa ahli waris → pesan kalimat, bukan kode', () => {
+  render(<Uji awal={{ pewaris: 'L', ahliWaris: [], harta: 100n, harapan: { saham: {}, ashlAkhir: 0n } }} />);
+  expect(screen.getByText('Pilih minimal satu ahli waris.')).toBeTruthy();
+});
+
+test('kunci tak dikenal → galat, kunci jawaban tidak berubah', () => {
   render(<Uji awal={{ pewaris: 'L', ahliWaris: ['BUKAN_KUNCI'], harta: 100n, harapan: { saham: {}, ashlAkhir: 0n } }} />);
-  fireEvent.click(screen.getByRole('button', { name: /Hitung dengan engine/ }));
-  expect(screen.getByText(/Engine tidak bisa menghitung kasus ini/)).toBeTruthy();
+  expect(screen.getByText(/Kalkulator tidak bisa menyusun kasus ini/)).toBeTruthy();
   expect(isi()).toContain('"ashlAkhir":"0n"');
 });
