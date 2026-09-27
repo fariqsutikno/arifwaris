@@ -35,11 +35,16 @@ const bukaTab = (nama: RegExp) => fireEvent.mouseDown(screen.getByRole('tab', { 
 const ketik = (label: string, nilai: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: nilai } });
 const tombol = (nama: string) => screen.getByRole('button', { name: nama }) as HTMLButtonElement;
 const klik = (nama: string) => fireEvent.click(tombol(nama));
+/** Bidang blok/potongan memakai editor rich text; tes mengetik lewat mode Markdown-nya. */
+function ketikMarkdown(label: string, nilai: string) {
+  fireEvent.click(screen.getByRole('button', { name: `Sunting ${label} sebagai Markdown` }));
+  ketik(`${label} (Markdown)`, nilai);
+}
 function isiFormFaq() {
   ketik('Id', 'apa-itu-tirkah');
   ketik('Kelompok', 'Fikih');
   ketik('Pertanyaan', 'Apa itu tirkah?');
-  ketik('Jawaban', 'Harta peninggalan.');
+  ketikMarkdown('Jawaban', 'Harta peninggalan.');
 }
 async function pilihRef(kode = 'R09-7') {
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: kode.slice(0, 3) } });
