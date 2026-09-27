@@ -1,7 +1,7 @@
 // Dialog editor blok. DialogBlokKhusus menyunting satu blok kasus/video/kuis sebagai draf; Simpan memvalidasinya lewat
 // bacaBlok(tulisBlok(...)) supaya aturan sama persis dengan yang dipakai saat simpan entri, lalu menyerahkan blok ke
-// EditorBlok. DialogIstilah & DialogRujukan: cari lalu pilih; hanya istilah dari daftar dan kode dari daftar_refs.
-import { useEffect, useState } from 'react';
+// EditorBlok. DialogIstilah: cari lalu pilih; hanya istilah dari daftar. (DialogRujukan ada di PemilihRujukan.tsx.)
+import { useState } from 'react';
 import { bacaBlok, tulisBlok, type Blok, type ContohKasus } from '@waris/content';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -9,9 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { Opsi } from '../editor/formulir';
-import { usePortal } from '../repo';
 import { EditorKasus } from './EditorKasus';
-import { cocokRef } from './PemilihRefs';
 import { pesanGalat } from '../pesanGalat';
 
 export type JenisBlokKhusus = Extract<Blok, { jenis: 'kasus' | 'video' | 'kuis' }>['jenis'];
@@ -105,29 +103,6 @@ export function DialogIstilah({ buka, opsi, saatPilih, saatTutup }: PropsIstilah
       ))}
     </DialogPemilih>
   );
-}
-
-export function DialogRujukan({ buka, saatPilih, saatTutup }: { buka: boolean; saatPilih: (kode: string) => void; saatTutup: () => void }) {
-  const [cari, setCari] = useState('');
-  return (
-    <DialogPemilih judul="Sisip rujukan" keterangan='Kode dalil dari daftar refs; cari dengan kode ("R09") atau "bab 9".'
-      buka={buka} saatTutup={() => { setCari(''); saatTutup(); }} cari={cari} setCari={setCari}>
-      {buka ? <SaranRujukan cari={cari} saatPilih={kode => { setCari(''); saatPilih(kode); }} /> : null}
-    </DialogPemilih>
-  );
-}
-
-/** Dipasang hanya saat dialog terbuka, supaya daftar_refs dimuat seperlunya. */
-function SaranRujukan({ cari, saatPilih }: { cari: string; saatPilih: (kode: string) => void }) {
-  const { repo } = usePortal();
-  const [daftarRefs, setDaftarRefs] = useState<{ kode: string; bab: number }[]>([]);
-  const [galat, setGalat] = useState<string | null>(null);
-  useEffect(() => {
-    repo.konten.daftarRefs().then(setDaftarRefs).catch(e => setGalat(pesanGalat(e)));
-  }, [repo]);
-  if (galat) return <p role="alert" className="text-sm text-destructive">{galat}</p>;
-  const saran = (cari.trim() ? daftarRefs.filter(ref => cocokRef(ref, cari)) : daftarRefs).slice(0, BATAS_SARAN);
-  return <>{saran.map(ref => <Button key={ref.kode} type="button" variant="outline" size="sm" className="font-mono" onClick={() => saatPilih(ref.kode)}>{ref.kode}</Button>)}</>;
 }
 
 interface PropsPemilih {

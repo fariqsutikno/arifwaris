@@ -67,8 +67,8 @@ test('EditorEntri: re-render yang tidak mengubah bentuk (pilih ref) tidak me-rem
   expect(screen.getByRole('status')).toBeTruthy(); // hasil-tebak tampil setelah menjawab
 
   // Memicu re-render EditorEntri tanpa mengubah bentuk (pilih ref, hanya mengubah state `refs`).
-  fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
-  fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
+  fireEvent.click(await screen.findByRole('button', { name: '+ Tambah rujukan' }));
+  fireEvent.click(await screen.findByRole('button', { name: /^Cara pembagian radd/ }));
 
   // Kalau <Pratinjau>/<KartuSoalKuis> remount, jawaban yang sudah dipilih hilang dan hasil-tebak ikut hilang.
   expect(screen.getByRole('status')).toBeTruthy();

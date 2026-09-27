@@ -18,7 +18,8 @@ import { dariDokumen, dariPotonganDokumen, keDokumen, kePotonganDokumen } from '
 import { ekstensiEditor, type BukaDialogBlok, type ModeEditor } from '../editor/ekstensi';
 import { labelKunci } from '../editor/kasus';
 import type { Opsi } from '../editor/formulir';
-import { blokKhususBaru, DialogBlokKhusus, DialogIstilah, DialogRujukan, type JenisBlokKhusus } from './DialogBlok';
+import { blokKhususBaru, DialogBlokKhusus, DialogIstilah, type JenisBlokKhusus } from './DialogBlok';
+import { DialogRujukan } from './PemilihRujukan';
 
 interface Props {
   label: string;

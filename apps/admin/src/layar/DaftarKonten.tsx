@@ -29,6 +29,7 @@ import {
   type BidangSaring, type GrupModul, type SaringDaftar, type UrutanDaftar,
 } from '../ringkas';
 import { usePortal } from '../repo';
+import { teksRujukan } from '../editor/rujukan';
 import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { tulisRute, type Kueri } from '../rute';
@@ -491,7 +492,9 @@ function BarisEntri({ entri, baris, pegangan }: { entri: RingkasanEntri; baris: 
       </span>
       <ChipStatus status={statusTampil(entri)} />
       <span className="hidden gap-1 md:flex">
-        {(revisi?.refs ?? []).map(kode => <Badge key={kode} variant="secondary" className="font-mono">{kode}</Badge>)}
+        {revisi?.refs.length ? (
+          <span className="text-xs text-muted-foreground" title={revisi.refs.map(teksRujukan).join('\n')}>{revisi.refs.length} rujukan</span>
+        ) : null}
       </span>
       <span className="hidden text-sm text-muted-foreground md:inline" title={revisi ? tanggalLengkap(revisi.dibuatPada) : undefined}>
         {revisi ? waktuRelatif(revisi.dibuatPada, baris.sekarang) : ''}

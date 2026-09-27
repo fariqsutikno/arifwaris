@@ -30,7 +30,7 @@ test('nilai awal: istilah & rujukan jadi chip, kasus jadi kartu; mount tidak mem
   render(<Uji awal={`## Judul\n\nAnak jadi [[ashabah|para ashabah]] [R09-7].\n\n${KASUS}\n`} />);
   expect(editor().querySelector('h2')?.textContent).toBe('Judul');
   expect(editor().querySelector('[data-istilah="ashabah"]')?.textContent).toBe('para ashabah');
-  expect(editor().querySelector('[data-rujukan="R09-7"]')?.textContent).toBe('[R09-7]');
+  expect(editor().querySelector('[data-rujukan="R09-7"]')?.textContent).toBe('Dalil: Cara pembagian radd');
   expect(await screen.findByText(/Contoh kasus: pewaris laki-laki/)).toBeTruthy();
   expect(terakhir).toBe(`## Judul\n\nAnak jadi [[ashabah|para ashabah]] [R09-7].\n\n${KASUS}\n`);
 });
@@ -86,8 +86,8 @@ test('sisip istilah & rujukan dari daftar', async () => {
   fireEvent.click(await screen.findByRole('button', { name: 'Ashabah (ashabah)' }));
   await waitFor(() => expect(terakhir).toContain('[[ashabah|Ashabah]]'));
   fireEvent.click(tombol('Sisip rujukan'));
-  fireEvent.change(await screen.findByLabelText('Cari: Sisip rujukan'), { target: { value: 'bab 10' } });
-  fireEvent.click(await screen.findByRole('button', { name: 'R10-3' }));
+  fireEvent.change(await screen.findByLabelText('Cari: Sisip rujukan'), { target: { value: 'inkisar' } });
+  fireEvent.click(await screen.findByRole('button', { name: /^Inkisar maksimal 4 kelompok/ }));
   await waitFor(() => expect(terakhir).toContain('[R10-3]'));
-  expect(screen.queryByRole('button', { name: 'R09-7' })).toBeNull();
+  expect(screen.queryByRole('button', { name: /Cara pembagian radd/ })).toBeNull();
 });

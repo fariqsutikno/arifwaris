@@ -45,9 +45,10 @@ function isiFormFaq() {
   ketik('Pertanyaan', 'Apa itu tirkah?');
   ketikMarkdown('Jawaban', 'Harta peninggalan.');
 }
-async function pilihRef(kode = 'R09-7') {
-  fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: kode.slice(0, 3) } });
-  fireEvent.click(await screen.findByRole('button', { name: kode }));
+async function pilihRef(klaim = 'Cara pembagian radd') {
+  fireEvent.click(await screen.findByRole('button', { name: '+ Tambah rujukan' }));
+  fireEvent.change(await screen.findByLabelText('Cari: Tambah rujukan'), { target: { value: klaim } });
+  fireEvent.click(await screen.findByRole('button', { name: new RegExp(`^${klaim}`) }));
 }
 
 async function drafMilik(m: Memori, sesi = SESI_PENULIS) {

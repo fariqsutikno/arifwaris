@@ -26,10 +26,11 @@ import { judulEntri, waktuRelatif } from '../ringkas';
 import { bidangIdentitas, punyaVersiArab } from '../editor/formulir';
 import { kodeBerikutnya, lengkapiIdentitas, slugEntri } from '../editor/identitas';
 import { labelKunci } from '../editor/kasus';
+import { opsiRujukan } from '../editor/rujukan';
 import { FormKonten, type OpsiRuntime, type PotonganForm } from './FormKonten';
 import { usePortal } from '../repo';
 import { tulisRute, type Kueri } from '../rute';
-import { PemilihRefs } from './PemilihRefs';
+import { PemilihRefs } from './PemilihRujukan';
 import { Pratinjau } from './Pratinjau';
 import { RiwayatRevisi } from './RiwayatRevisi';
 import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
@@ -424,7 +425,7 @@ async function muatOpsi(repo: ReturnType<typeof usePortal>['repo']): Promise<Ops
     ...OPSI_STATIS,
     modul,
     kelompokFaq: [...kelompok].sort().map(k => ({ nilai: k, label: k })),
-    refs: daftarRefs.map(ref => ({ nilai: ref.kode, label: ref.kode })),
+    refs: opsiRujukan(daftarRefs).map(ref => ({ nilai: ref.kode, label: `Bab ${ref.bab} · ${ref.klaim}` })),
     kodeAlasan: [...alasan].sort().map(k => ({ nilai: k, label: k })),
   };
 }
