@@ -33,7 +33,8 @@ export function LayarMenu({ menu: kunci, tab }: { menu: KunciMenu; tab: IsiMenu 
   const { peran } = usePortal();
   const menu = menuDari(kunci)!;
   const bertab = menu.isi.length > 1 && kunci !== 'materi';
-  const jenisBaru = kunci === 'materi' ? (['materi', 'modul'] as const) : tab === 'diksi' ? [] : [tab];
+  // Teks edukasi & diksi berkunci tetap dari kode aplikasi: hanya disunting, tidak dibuat dari portal.
+  const jenisBaru = kunci === 'materi' ? (['materi', 'modul'] as const) : tab === 'diksi' || tab === 'teks_edukasi' ? [] : [tab];
   return (
     <div className="space-y-4">
       <div>

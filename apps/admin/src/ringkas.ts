@@ -24,9 +24,9 @@ export function statusTampil(entri: Pick<RingkasanEntri, 'revisiTerbitId' | 'rev
 }
 
 export function judulEntri(entri: Pick<RingkasanEntri, 'slug' | 'revisiTerakhir'>, isi: unknown = entri.revisiTerakhir?.isi): string {
-  const kandidat = FIELD_JUDUL.map(kunci => (isi as Record<string, unknown> | undefined)?.[kunci])
-    .find(nilai => typeof nilai === 'string' && nilai.length > 0);
-  return typeof kandidat === 'string' ? kandidat : entri.slug;
+  const kandidat = FIELD_JUDUL.map(kunci => teksDari((isi as Record<string, unknown> | undefined)?.[kunci]))
+    .find(nilai => nilai.length > 0);
+  return kandidat ?? entri.slug;
 }
 
 export function cocokTab(entri: RingkasanEntri, tab: TabStatus): boolean {
@@ -110,6 +110,13 @@ export function waktuRelatif(iso: string, sekarang: Date): string {
   if (Math.abs(detik) < 60) return 'baru saja';
   const [satuan, besar] = SATUAN_WAKTU.find(([, ukuran]) => Math.abs(detik) >= ukuran)!;
   return formatWaktu.format(Math.round(detik / besar), satuan);
+}
+
+/** Teks polos dari string atau potongan Markdown (pertanyaan soal kuis = [{ jenis, teks }, …]). */
+function teksDari(nilai: unknown): string {
+  if (typeof nilai === 'string') return nilai;
+  if (!Array.isArray(nilai)) return '';
+  return nilai.map(potongan => (typeof potongan?.teks === 'string' ? potongan.teks : '')).join('').trim();
 }
 
 function angkaDari(isi: unknown, kunci: string): number | null {

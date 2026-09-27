@@ -33,12 +33,12 @@ test('soal kuis: tambah pilihan, pilih benar, hapus pilihan menggeser indeks ben
 
 test('ahwal: tambah baris, fardh "-" = tanpa fardh, ashabah ya', () => {
   render(<Uji jenis="ahwal" awal={nilaiFormKosong('ahwal')} />);
-  ketik('Kunci ahli waris', 'IBU');
+  ketik('Ahli waris', 'IBU');
   fireEvent.click(screen.getByRole('button', { name: 'Tambah baris' }));
   ketik('Bagian', 'Sisa');
   ketik('Syarat', 'tidak ada anak');
-  ketik('Cocok: fardh', '-');
-  ketik('Cocok: ashabah', 'ya');
+  ketik('Fardh', '-');
+  ketik('Ashabah', 'ya');
   expect(dariNilaiForm('ahwal', 'x', terakhir)).toEqual({ ok: true, isi: {
     kunci: 'IBU', baris: [{ bagian: 'Sisa', syarat: 'tidak ada anak', cocok: { fardh: null, ashabah: true } }],
   } });

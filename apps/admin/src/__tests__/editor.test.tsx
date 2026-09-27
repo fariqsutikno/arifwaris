@@ -1,9 +1,9 @@
 // Tes EditorEntri + PemilihRefs dengan repo memori: buat entri baru lewat form, galat bidang & refs wajib tampil,
 // tab JSON (bolak-balik, JSON rusak), ajukan draf sendiri lalu form jadi baca-saja, dan reviewer hanya bisa membaca.
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { expect, test } from 'vitest';
+import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
-import { keJson, type Peran } from '@waris/content';
+import { keJson, type JenisKonten, type Peran } from '@waris/content';
 import { KonteksRepo } from '../repo';
 import { EditorEntri } from '../layar/EditorEntri';
 import { DAFTAR_FAQ_UJI } from './contoh';
@@ -12,7 +12,7 @@ const SESI_PENULIS = { userId: 'u-p', email: 'p@x.id' };
 const siapkan = () => buatMemori({ refs: ['R09-7', 'R10-3'], sesi: SESI_PENULIS, peran: { 'u-p': 'penulis', 'u-r': 'reviewer' } });
 type Memori = ReturnType<typeof siapkan>;
 
-function tampilkan(m: Memori, props: { entriId: string } | { jenis: 'faq' | 'soal_kuis' }, peran: Peran = 'penulis', userId = 'u-p') {
+function tampilkan(m: Memori, props: { entriId: string } | { jenis: JenisKonten }, peran: Peran = 'penulis', userId = 'u-p') {
   render(
     <KonteksRepo.Provider value={{ repo: m, sesi: { userId, email: 'x@x.id' }, peran }}>
       <EditorEntri {...props} />
@@ -20,10 +20,10 @@ function tampilkan(m: Memori, props: { entriId: string } | { jenis: 'faq' | 'soa
   );
 }
 const isiJson = (teks: string) => fireEvent.change(screen.getByRole('textbox', { name: 'JSON' }), { target: { value: teks } });
-const bukaTab = (nama: 'Form' | 'JSON') => fireEvent.mouseDown(screen.getByRole('tab', { name: nama }));
+const bukaTab = (nama: 'Isi' | 'JSON') => fireEvent.mouseDown(screen.getByRole('tab', { name: nama }));
 const ketik = (label: string, nilai: string) => fireEvent.change(screen.getByLabelText(label), { target: { value: nilai } });
-function isiFormFaq() {
-  ketik('Id', 'apa-itu-tirkah');
+async function isiFormFaq() {
+  await screen.findByLabelText('Pertanyaan');
   ketik('Kelompok', 'Fikih');
   ketik('Pertanyaan', 'Apa itu tirkah?');
   ketik('Jawaban', 'Harta peninggalan.');
@@ -33,7 +33,7 @@ const simpan = () => fireEvent.click(screen.getByRole('button', { name: 'Simpan 
 test('entri baru faq: isi, pilih ref, simpan → satu entri draf', async () => {
   const m = siapkan();
   tampilkan(m, { jenis: 'faq' });
-  isiFormFaq();
+  await isiFormFaq();
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
   fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
   expect(screen.getByRole('button', { name: 'Hapus R09-7' })).toBeTruthy();
@@ -43,18 +43,52 @@ test('entri baru faq: isi, pilih ref, simpan → satu entri draf', async () => {
     expect(daftar).toHaveLength(1);
     expect(daftar[0]!.revisiTerakhir?.status).toBe('draf');
     expect(daftar[0]!.revisiTerakhir?.refs).toEqual(['R09-7']);
+    // alamat (id) dikosongkan → otomatis dari pertanyaan, dan slug entri = id itu
+    expect(daftar[0]!.slug).toBe('apa-itu-tirkah');
+    expect((daftar[0]!.revisiTerakhir?.isi as { id: string }).id).toBe('apa-itu-tirkah');
   });
 });
 
 test('angka tidak sah → galat di bawah bidang, tidak ada entri tersimpan', async () => {
   const m = siapkan();
-  tampilkan(m, { jenis: 'soal_kuis' });
-  ketik('Kode soal', 'K-9');
-  ketik('Bab KB', 'empat');
+  tampilkan(m, { jenis: 'modul' });
+  fireEvent.change(await screen.findByLabelText('Nomor modul'), { target: { value: 'empat' } });
+  ketik('Judul', 'Pengantar');
   simpan();
   expect((await screen.findByRole('alert')).textContent).toMatch(/Ada bidang yang belum benar/);
   expect(screen.getByText('harus bilangan bulat')).toBeTruthy();
-  expect(await m.konten.daftarEntri('soal_kuis')).toHaveLength(0);
+  expect(await m.konten.daftarEntri('modul')).toHaveLength(0);
+});
+
+test('soal kuis baru: kode diisi otomatis kode berikutnya, bab berupa pilihan judul bab KB', async () => {
+  const m = siapkan();
+  const lama = await m.editorial.buatEntri('soal_kuis', 'K-07', 10);
+  await m.editorial.buatDraf(lama, 'soal_kuis', {
+    kode: 'K-07', bab: 4, pertanyaan: [{ jenis: 'teks', teks: 'q' }], pilihan: [[{ jenis: 'teks', teks: 'a' }], [{ jenis: 'teks', teks: 'b' }]],
+    indeksBenar: 0, pembahasan: [{ jenis: 'teks', teks: 'p' }],
+  }, ['R09-7']);
+  tampilkan(m, { jenis: 'soal_kuis' });
+  await waitFor(() => expect((screen.getByLabelText('Kode soal') as HTMLInputElement).value).toBe('K-08'));
+  const bab = screen.getByLabelText('Bab KB') as HTMLSelectElement;
+  expect(bab.tagName).toBe('SELECT');
+  expect([...bab.options].some(o => o.value === '9' && /^9\. /.test(o.text))).toBe(true);
+});
+
+test('entri terbit: identitas terkunci; admin bisa membuka kunci setelah konfirmasi', async () => {
+  const m = buatMemori({ refs: ['R09-7'], sesi: { userId: 'u-a', email: 'a@x.id' }, peran: { 'u-a': 'admin' } });
+  const entriId = await m.editorial.buatEntri('faq', 'apa-itu-tirkah', 10);
+  const revisi = await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+  await m.editorial.ajukan(revisi);
+  await m.editorial.setujui(revisi);
+  tampilkan(m, { entriId }, 'admin', 'u-a');
+  fireEvent.click(await screen.findByRole('button', { name: /buat draf baru/i }));
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(false);
+  expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).readOnly).toBe(true);
+  expect(screen.getByText(/Terkunci karena sudah terbit/)).toBeTruthy();
+  const tanya = vi.spyOn(window, 'confirm').mockReturnValue(true);
+  fireEvent.click(screen.getByRole('button', { name: 'Buka kunci' }));
+  expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).readOnly).toBe(false);
+  tanya.mockRestore();
 });
 
 test('tab JSON: memuat isi form, JSON rusak → galat & tetap di JSON, perbaikan kembali ke form', async () => {
@@ -67,14 +101,14 @@ test('tab JSON: memuat isi form, JSON rusak → galat & tetap di JSON, perbaikan
   expect((screen.getByRole('textbox', { name: 'JSON' }) as HTMLTextAreaElement).value).toContain('"pertanyaan": "Apa itu tirkah, ya?"');
 
   isiJson('{ rusak');
-  bukaTab('Form');
+  bukaTab('Isi');
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
   expect((screen.getByRole('textbox', { name: 'JSON' }) as HTMLTextAreaElement).value).toBe('{ rusak');
   simpan();
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
 
   isiJson(JSON.stringify(keJson('faq', { ...DAFTAR_FAQ_UJI[0]!, pertanyaan: 'Dari JSON' })));
-  bukaTab('Form');
+  bukaTab('Isi');
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('Dari JSON');
   simpan();
   await waitFor(async () => {
@@ -86,7 +120,7 @@ test('tab JSON: memuat isi form, JSON rusak → galat & tetap di JSON, perbaikan
 test('jenis fikih tanpa ref → galat repo tampil', async () => {
   const m = siapkan();
   tampilkan(m, { jenis: 'faq' });
-  isiFormFaq();
+  await isiFormFaq();
   simpan();
   expect((await screen.findByRole('alert')).textContent).toMatch(/wajib punya minimal satu ref/);
   expect(await m.konten.daftarEntri('faq')).toHaveLength(0);
@@ -110,7 +144,7 @@ test('buatDraf gagal setelah buatEntri → simpan ulang memakai entri yang sama'
     return buatDrafAsli(...a);
   };
   tampilkan(m, { jenis: 'faq' });
-  isiFormFaq();
+  await isiFormFaq();
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
   fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
   simpan();
@@ -181,7 +215,7 @@ test('Simpan & ajukan menyimpan editan form dulu: yang diajukan isi terbaru, buk
 test('klik simpan dua kali beruntun → tombol terkunci, hanya satu entri dibuat', async () => {
   const m = siapkan();
   tampilkan(m, { jenis: 'faq' });
-  isiFormFaq();
+  await isiFormFaq();
   fireEvent.change(await screen.findByLabelText('Cari ref'), { target: { value: 'R09' } });
   fireEvent.click(await screen.findByRole('button', { name: 'R09-7' }));
   simpan();
@@ -218,12 +252,12 @@ test('revisi dikembalikan ke pembuatnya → langsung bisa disunting, simpan jadi
   expect(entri!.revisiTerakhir?.status).toBe('draf');
 });
 
-test('galat bidang → bidang pertama yang salah difokuskan', async () => {
+test('galat bidang → bidang pertama yang salah difokuskan (juga di panel Info)', async () => {
   const m = siapkan();
-  tampilkan(m, { jenis: 'soal_kuis' });
-  ketik('Kode soal', 'K-9');
-  ketik('Bab KB', 'empat');
+  tampilkan(m, { jenis: 'modul' });
+  fireEvent.change(await screen.findByLabelText('Nomor modul'), { target: { value: 'empat' } });
+  ketik('Judul', 'Pengantar');
   simpan();
   await screen.findByText('harus bilangan bulat');
-  await waitFor(() => expect(document.activeElement).toBe(screen.getByLabelText('Bab KB')));
+  await waitFor(() => expect(document.activeElement).toBe(screen.getByLabelText('Nomor modul')));
 });
