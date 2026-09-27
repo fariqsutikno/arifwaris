@@ -49,6 +49,8 @@ docs/design        dokumen desain (baca engine-contract.md sebelum menulis kode 
 ## Cara kerja dengan pengguna
 - Konfirmasi dulu asumsi penting sebelum menulis banyak kode; cukup yang relevan.
 - Urutan project: engine dulu, UI belakangan.
+- UI web: aksi sekunder/ajakan pakai **teks atau tautan**, bukan tombol berbingkai (keputusan pengguna 2026-09-28).
+  Tombol hanya untuk aksi utama di form/dialog (Simpan, Batal).
 
 ## Standar kode
 

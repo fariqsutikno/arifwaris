@@ -8,11 +8,11 @@ import { type SoalHitung, type Tingkat } from '@waris/content';
 import { daftarSoalHitung } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
 import { bacaProgresLatihan } from '../../progres';
-import { tautanLatihan } from '../../rute';
+import { tautanLatihan, tautanPeringkat } from '../../rute';
 import { TEKS_TINGKAT } from '../AwalHitung';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
-import { angka, t } from '../../terjemah';
+import { angka, panah, t } from '../../terjemah';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -27,6 +27,8 @@ export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
   return (
     <main className="halaman tumpuk">
       <HeroMini judul={t('umum.latihan')} keterangan={t('latihan.kerjakan_soal_hitung_dari_kasus_nyata')} ikon="kuis" />
+      {/* Pintu papan peringkat untuk semua orang, termasuk yang belum login (tahap 5). */}
+      <a className="tautan-lembut" href={tautanPeringkat()}>{t('akun.kumpulkan_xp_lihat_papan_peringkat')} {panah()}</a>
       <nav className="tab-kecil tab-latihan" aria-label={t('latihan.jenis_latihan')}>
         <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('umum.soal_hitung')}</a>
         <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('latihan.kuis_konsep')}</a>

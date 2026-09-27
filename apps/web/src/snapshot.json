@@ -13580,6 +13580,62 @@
    "id": "WITA (Makassar)",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.kumpulkan_xp_lihat_papan_peringkat",
+   "halaman": "akun",
+   "id": "Kumpulkan XP dari latihan, lihat papan peringkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.mulai_streak",
+   "halaman": "akun",
+   "id": "🔥 Mulai streak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.namamu_disembunyikan_dari_papan",
+   "halaman": "akun",
+   "id": "Namamu sedang disembunyikan dari papan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.pengguna",
+   "halaman": "akun",
+   "id": "Pengguna",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.streak_keterangan",
+   "halaman": "akun",
+   "id": "Streak {jumlah} hari, {xp} XP.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.streak_singkat",
+   "halaman": "akun",
+   "id": "🔥 {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tambahan_xp",
+   "halaman": "akun",
+   "id": "+{jumlah} XP",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.soal_yang_jawabannya_dibuka_tidak_memberi_xp",
+   "halaman": "hitung",
+   "id": "Soal yang jawabannya dibuka tidak memberi XP; XP hanya dari tebakan yang benar.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

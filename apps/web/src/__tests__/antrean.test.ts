@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
-import { antre, aturAkunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
+import { PERISTIWA_KEGIATAN_TERKIRIM, antre, aturAkunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
 import { catatLatihan, tandaiPelajaranSelesai } from '../progres';
 import { kumpulPreferensi, simpanTujuan, simpanUkuranBaca, terapkanPreferensi, bacaUkuranBaca, useBahasa } from '../preferensi';
 
@@ -36,6 +36,20 @@ test('gagal di tengah: yang terkirim keluar, sisanya tetap berurutan', async () 
   pengguna.simpanProgresBelajar = asli;
   expect(await kirimAntrean(pengguna)).toBe(0);
   expect((await pengguna.bacaProgresBelajar()).map(baris => baris.pelajaranSlug).sort()).toEqual(['a', 'b', 'c']);
+});
+
+test('sinyal kegiatan terkirim hanya bila ada kegiatan yang sampai server (untuk streak di header)', async () => {
+  aturAkunLokal('u');
+  const { pengguna } = buatMemoriPengguna(buatMemori({ sesi: { userId: 'u', email: 'u@tes.local' } }));
+  const pendengar = vi.fn();
+  window.addEventListener(PERISTIWA_KEGIATAN_TERKIRIM, pendengar);
+  antre(belajar('a'));
+  await kirimAntrean(pengguna);
+  expect(pendengar).not.toHaveBeenCalled();
+  antre({ tabel: 'kegiatan', baris: { id: 'k1', jenis: 'kuis', slug: 'K-01', benar: true } });
+  await kirimAntrean(pengguna);
+  expect(pendengar).toHaveBeenCalledTimes(1);
+  window.removeEventListener(PERISTIWA_KEGIATAN_TERKIRIM, pendengar);
 });
 
 test('penulis data mengantre: progres, latihan + kegiatan, preferensi', () => {
