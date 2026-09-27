@@ -13,11 +13,13 @@ interface Repo { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi
 export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: BarisSnapshot[]; diksi: DiksiSnapshot[] }) {
   const sudahKonten = new Set((await repo.konten.bacaTerbit()).map(b => `${b.jenis}/${b.slug}`));
   const sudahDiksi = new Set((await repo.diksi.bacaTerbit()).map(d => d.kunci));
+  // Entri yang sudah dibuat tapi belum terbit (jalan sebelumnya gagal di buatDraf) dipakai ulang, bukan dibuat lagi.
+  const entriAda = new Map((await repo.konten.daftarEntri()).map(e => [`${e.jenis}/${e.slug}`, e.entriId]));
   let dibuat = 0;
   for (const b of snapshot.konten) {
     if (sudahKonten.has(`${b.jenis}/${b.slug}`)) continue;
     const jenis = b.jenis as JenisKonten;
-    const entriId = await repo.editorial.buatEntri(jenis, b.slug, b.urutan);
+    const entriId = entriAda.get(`${b.jenis}/${b.slug}`) ?? await repo.editorial.buatEntri(jenis, b.slug, b.urutan);
     const revisi = await repo.editorial.buatDraf(entriId, jenis, b.isi as never, b.refs);
     await repo.editorial.ajukan(revisi);
     await repo.editorial.setujui(revisi);
