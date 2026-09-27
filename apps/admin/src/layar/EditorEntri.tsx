@@ -4,14 +4,17 @@
 // ("tayang di web" & "perubahan Anda") dan satu tombol utama per peran: penulis "Kirim untuk review", admin "Terbitkan",
 // dengan "Simpan dulu" sebagai tombol kedua. Suntingan pertama membuat salinan kerja, berikutnya memperbaruinya.
 // Tombol mati bila tidak ada perubahan, dan meninggalkan halaman dengan perubahan belum disimpan diperingatkan.
+// Tata letak dua kolom: isi (tab Form / Arab / JSON) di kiri, panel Info (identitas & metadata + refs) di kanan.
+// Identitas entri (kode soal, slug, id) diisi otomatis bila kosong dan terkunci setelah terbit (admin bisa membuka).
 // Database tetap penjaga sebenarnya; galat validasi (dariNilaiForm) maupun galat repo ditampilkan, tidak ditelan.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Globe, PencilLine } from 'lucide-react';
-import { bacaIsi, GLOSARIUM, keJson, periksaRefs, slug as buatSlug, type IsiKonten, type JenisKonten } from '@waris/content';
+import { bacaIsi, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
+import { KUNCI_CONTOH } from '@waris/web/contoh';
 import type { RingkasanRevisi } from '@waris/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,8 +22,11 @@ import { LABEL_ISI } from '../navigasi';
 import { dariNilaiForm, keNilaiForm, nilaiFormKosong, type HasilForm, type NilaiForm } from '../editor/nilaiForm';
 import { caraBuang, keadaanSunting, revisiBasis, teksTayang, type EntriSunting, type KeadaanSunting } from '../editor/keadaanSunting';
 import { useNamaTim } from '../hooks/useNamaTim';
-import { waktuRelatif } from '../ringkas';
-import { FormKonten, type OpsiRuntime } from './FormKonten';
+import { judulEntri, waktuRelatif } from '../ringkas';
+import { bidangIdentitas, punyaVersiArab } from '../editor/formulir';
+import { kodeBerikutnya, lengkapiIdentitas, slugEntri } from '../editor/identitas';
+import { labelKunci } from '../editor/kasus';
+import { FormKonten, type OpsiRuntime, type PotonganForm } from './FormKonten';
 import { usePortal } from '../repo';
 import { tulisRute, type Kueri } from '../rute';
 import { PemilihRefs } from './PemilihRefs';
@@ -30,9 +36,14 @@ import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { pesanGalat } from '../pesanGalat';
 
 const JARAK_URUTAN = 10;
-type Tab = 'form' | 'json';
-const OPSI_ISTILAH = GLOSARIUM.map(entri => ({ nilai: entri.id, label: `${entri.istilah} (${entri.id})` }));
-const FIELD_CALON_JUDUL = ['judul', 'pertanyaan', 'slug', 'id', 'kode', 'kunci', 'istilahId'] as const;
+type Tab = 'form' | 'arab' | 'json';
+// Opsi dropdown yang tetap (dari KB & daftar ahli waris engine); yang bergantung isi database dimuat muatOpsi.
+const OPSI_STATIS: OpsiRuntime = {
+  istilah: GLOSARIUM.map(entri => ({ nilai: entri.id, label: `${entri.istilah} (${entri.id})` })),
+  bab: Object.entries(JUDUL_BAB).map(([bab, judul]) => ({ nilai: bab, label: `${bab}. ${judul}` })).sort((a, b) => Number(a.nilai) - Number(b.nilai)),
+  kunciAhliWaris: KUNCI_CONTOH.map(({ kunci }) => ({ nilai: kunci, label: labelKunci(kunci) })),
+};
+const PESAN_BUKA_KUNCI = 'Identitas ini dipakai di tautan yang sudah dibagikan dan progres belajar pengguna. Mengubahnya bisa memutus keduanya. Tetap buka kunci?';
 const ENTRI_BARU: EntriSunting = { revisiTerbitId: null, dihapus: false, dibuang: false, semuaRevisi: [] };
 
 // basis = revisi yang isinya dimuat ke form (revisiBasis). entriId null = entri baru yang belum pernah disimpan.
@@ -50,7 +61,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const [teksJson, setTeksJson] = useState('');
   const [teksJsonAwal, setTeksJsonAwal] = useState('');
   const [galatBidang, setGalatBidang] = useState<Record<string, string>>({});
-  const [opsi, setOpsi] = useState<OpsiRuntime>({ modul: [], kelompokFaq: [], istilah: OPSI_ISTILAH });
+  const [opsi, setOpsi] = useState<OpsiRuntime>(OPSI_STATIS);
+  const [bukaKunci, setBukaKunci] = useState(false);
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
   const [pratinjau, setPratinjau] = useState(false);
@@ -63,7 +75,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     let dibatalkan = false;
     setGalat(null);
     (async () => {
-      const hasil = entriIdProp ? await muatEntri(entriIdProp) : muatBaru(jenisProp!, 'awal' in props ? props.awal : undefined);
+      const hasil = entriIdProp ? await muatEntri(entriIdProp) : await muatBaru(repo, jenisProp!, 'awal' in props ? props.awal : undefined);
       if (dibatalkan) return;
       if ('saatJenisDiketahui' in props) props.saatJenisDiketahui?.(hasil.muatan.jenis);
       setMuatan(hasil.muatan);
@@ -71,6 +83,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       setBentukAwal(hasil.bentuk);
       setTab('form');
       setGalatBidang({});
+      setBukaKunci(false);
       setRefs(hasil.muatan.basis?.refs ?? []);
       setRefsAwal(hasil.muatan.basis?.refs ?? []);
     })().catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
@@ -112,13 +125,18 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   // Isi dari tab aktif: form lewat dariNilaiForm, JSON lewat bacaIsi. Keduanya berakhir di Zod.
   function isiSekarang(): HasilForm<JenisKonten> {
     if (!muatan || !bentuk) return { ok: false, galat: 'belum dimuat', galatBidang: {} };
-    return tab === 'json' ? bacaJson(muatan.jenis, teksJson) : dariNilaiForm(muatan.jenis, muatan.slug ?? 'baru', bentuk);
+    return tab === 'json'
+      ? bacaJson(muatan.jenis, teksJson)
+      : dariNilaiForm(muatan.jenis, muatan.slug ?? 'baru', lengkapiIdentitas(muatan.jenis, bentuk));
   }
 
-  function gantiTab(tujuan: string) {
+  // Isi ↔ Arab = form yang sama, tanpa konversi. Ke/dari JSON dikonversi lewat Zod.
+  function gantiTab(tujuanMentah: string) {
+    const tujuan = tujuanMentah as Tab;
     if (!muatan || !bentuk || tujuan === tab) return;
+    if (tab !== 'json' && tujuan !== 'json') { setTab(tujuan); return; }
     // JSON yang tidak diubah tidak dikonversi balik, supaya form tetap sama persis (tidak tampak berubah).
-    if (tujuan === 'form' && teksJson === teksJsonAwal) { setGalat(null); setTab('form'); return; }
+    if (tujuan !== 'json' && teksJson === teksJsonAwal) { setGalat(null); setTab(tujuan); return; }
     const hasil = isiSekarang();
     const formKotor = JSON.stringify(bentuk) !== JSON.stringify(bentukAwal);
     if (!hasil.ok && tujuan === 'json' && hasil.mentah !== undefined) {
@@ -132,7 +150,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     setGalatBidang({});
     if (tujuan === 'json') { bukaJson(JSON.stringify(keJson(muatan.jenis, hasil.isi), null, 2), formKotor); return; }
     setBentuk(keNilaiForm(muatan.jenis, hasil.isi));
-    setTab('form');
+    setTab(tujuan);
   }
 
   // Perubahan form yang belum disimpan tetap terhitung setelah pindah ke JSON (awal dibuat berbeda).
@@ -154,8 +172,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       return { revisiId: keadaan.salinanKerjaId, entriId: muatan.entriId! };
     }
     if (muatan.entriId) return { revisiId: await repo.editorial.buatDraf(muatan.entriId, muatan.jenis, hasil.isi, refs), entriId: muatan.entriId };
-    const slugBaru = slugDariIsi(hasil.isi);
-    if (!slugBaru) { setGalat(`isi butuh salah satu field: ${FIELD_CALON_JUDUL.join(', ')} (untuk slug)`); return null; }
+    const slugBaru = slugEntri(muatan.jenis, hasil.isi);
+    if (!slugBaru) { setGalat('Isi judul dulu: alamat entri dibentuk dari judul.'); return null; }
     // Periksa refs di klien sebelum buatEntri supaya entri kosong tidak tertinggal; database tetap penjaga.
     const refsDikenal = new Set((await repo.konten.daftarRefs()).map(ref => ref.kode));
     const galatRefs = periksaRefs(muatan.jenis, hasil.isi, refs, refsDikenal);
@@ -225,13 +243,16 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const salinanKerjaId = keadaan.jenis === 'sunting' ? keadaan.salinanKerjaId : null;
   const bolehKirim = !sibuk && (kotor || !!salinanKerjaId || !muatan.entriId);
   const cara = muatan.entriId && keadaan.jenis !== 'sampah' ? caraBuang(muatan.entri, { peran, userId: sesi.userId, namaDari }) : null;
+  const adaArab = punyaVersiArab(muatan.jenis);
+  const judul = muatan.slug ? judulEntri({ slug: muatan.slug, revisiTerakhir: muatan.basis }) : `${LABEL_ISI[muatan.jenis]} baru`;
   const dikembalikan = keadaan.jenis === 'sunting' && !salinanKerjaId && terakhir?.status === 'dikembalikan' && !terakhir.hapus ? terakhir : null;
 
   return (
     <div className="space-y-4">
       <div>
         <p className="text-sm font-semibold text-muted-foreground">{LABEL_ISI[muatan.jenis]}</p>
-        <h1 className="text-2xl font-bold break-words">{muatan.slug ?? 'Entri baru'}</h1>
+        <h1 className="text-2xl font-bold break-words">{judul}</h1>
+        {muatan.slug && muatan.slug !== judul ? <p className="font-mono text-xs text-muted-foreground">{muatan.slug}</p> : null}
       </div>
       <section aria-label="Status entri" className="grid gap-1.5 rounded-lg border bg-muted/40 p-3 text-sm">
         <p className="flex items-center gap-2"><Globe className="size-4 shrink-0" aria-hidden />{teksTayang(muatan.entri, relatif)}</p>
@@ -244,25 +265,39 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         </Alert>
       ) : null}
       {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
-      <Card>
-        <CardContent className="grid gap-4">
-          {peran === 'admin' ? (
-            <Tabs value={tab} onValueChange={gantiTab}>
-              <TabsList>
-                <TabsTrigger value="form">Form</TabsTrigger>
-                <TabsTrigger value="json">JSON (lanjutan)</TabsTrigger>
-              </TabsList>
-              <TabsContent value="form" className="pt-2">{formKonten()}</TabsContent>
-              <TabsContent value="json" className="pt-2">
-                <Bidang label="JSON">
-                  <Textarea rows={20} className="font-mono text-xs" value={teksJson} readOnly={!bisaSunting} onChange={e => setTeksJson(e.target.value)} />
-                </Bidang>
-              </TabsContent>
-            </Tabs>
-          ) : formKonten()}
-          <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
-        </CardContent>
-      </Card>
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+        <Card>
+          <CardContent>
+            {adaArab || peran === 'admin' ? (
+              <Tabs value={tab} onValueChange={gantiTab}>
+                <TabsList>
+                  <TabsTrigger value="form">Form</TabsTrigger>
+                  {adaArab ? <TabsTrigger value="arab">Arab</TabsTrigger> : null}
+                  {peran === 'admin' ? <TabsTrigger value="json">JSON (lanjutan)</TabsTrigger> : null}
+                </TabsList>
+                <TabsContent value="form" className="pt-2">{formKonten('utama')}</TabsContent>
+                {adaArab ? <TabsContent value="arab" className="pt-2">{formKonten('arab')}</TabsContent> : null}
+                {peran === 'admin' ? (
+                  <TabsContent value="json" className="pt-2">
+                    <Bidang label="JSON">
+                      <Textarea rows={20} className="font-mono text-xs" value={teksJson} readOnly={!bisaSunting} onChange={e => setTeksJson(e.target.value)} />
+                    </Bidang>
+                  </TabsContent>
+                ) : null}
+              </Tabs>
+            ) : formKonten('utama')}
+          </CardContent>
+        </Card>
+        <Card className="lg:sticky lg:top-4">
+          <CardHeader><CardTitle className="text-base">Info</CardTitle></CardHeader>
+          <CardContent className="grid gap-4">
+            {tab === 'json'
+              ? <p className="text-sm text-muted-foreground">Selama di tab JSON, info entri diubah lewat JSON.</p>
+              : formKonten('samping')}
+            <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
+          </CardContent>
+        </Card>
+      </div>
       <div className="flex flex-wrap gap-2">
         {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => void terbitkan()}>Terbitkan</Button> : null}
         {bisaSunting && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => void kirim()}>Kirim untuk review</Button> : null}
@@ -287,8 +322,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     </div>
   );
 
-  function formKonten() {
-    return <FormKonten jenis={muatan!.jenis} form={bentuk!} saatUbah={setBentuk} bacaSaja={!bisaSunting} galatBidang={galatBidang} opsi={opsi} />;
+  function formKonten(bagian: PotonganForm) {
+    const bukaKunciIdentitas = peran === 'admin' ? () => { if (window.confirm(PESAN_BUKA_KUNCI)) setBukaKunci(true); } : undefined;
+    return (
+      <FormKonten jenis={muatan!.jenis} form={bentuk!} saatUbah={setBentuk} bacaSaja={!bisaSunting} galatBidang={galatBidang} opsi={opsi}
+        bagian={bagian} identitasTerkunci={!!muatan!.entri.revisiTerbitId && !bukaKunci} saatBukaKunci={bukaKunciIdentitas} />
+    );
   }
 
   function teksPerubahan(): string {
@@ -327,8 +366,16 @@ function Pratinjauan({ jenis, slug, hitungIsi, kunci, saatTutup }: {
   return <Pratinjau jenis={jenis} slug={slug} isi={hasil.isi} saatTutup={saatTutup} />;
 }
 
-function muatBaru(jenis: JenisKonten, awal: Kueri | undefined) {
+/** Entri baru: isian awal dari URL, dan kode soal langsung diisi kode berikutnya (K-12 → K-13) supaya penulis
+ * tidak perlu mengarang. */
+async function muatBaru(repo: ReturnType<typeof usePortal>['repo'], jenis: JenisKonten, awal: Kueri | undefined) {
   const bentuk = nilaiFormKosong(jenis);
+  const bidang = bidangIdentitas(jenis);
+  if (bidang?.identitas?.awalan) {
+    const kodeAda = (await repo.konten.daftarEntri(jenis)).map(entri => (entri.revisiTerakhir?.isi as { kode?: unknown } | undefined)?.kode)
+      .filter((kode): kode is string => typeof kode === 'string');
+    bentuk.nilai[bidang.jalur] = kodeBerikutnya(bidang.identitas.awalan, kodeAda);
+  }
   // Isian awal dari URL (mis. "Materi di modul ini" → ?modul=3), hanya untuk bidang teks yang memang ada di form.
   for (const [jalur, nilai] of Object.entries(awal ?? {})) if (typeof bentuk.nilai[jalur] === 'string') bentuk.nilai[jalur] = nilai;
   return { muatan: { jenis, slug: null, entriId: null, entri: ENTRI_BARU, basis: null } satisfies Muatan, bentuk };
@@ -338,12 +385,6 @@ function bentukDariRevisi(jenis: JenisKonten, revisi: RingkasanRevisi): NilaiFor
   const hasil = bacaIsi(jenis, revisi.isi);
   if (!hasil.ok) throw new Error(`isi revisi tidak sah: ${hasil.galat}`);
   return keNilaiForm(jenis, hasil.isi);
-}
-
-function slugDariIsi(isi: unknown): string | null {
-  const objek = isi as Record<string, unknown>;
-  const calon = FIELD_CALON_JUDUL.map(kunci => objek[kunci]).find((n): n is string => typeof n === 'string' && n.length > 0);
-  return calon ? buatSlug(calon) : null;
 }
 
 const jam = (waktu: Date) => waktu.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
@@ -362,7 +403,9 @@ function bacaJson(jenis: JenisKonten, teks: string): HasilForm<JenisKonten> {
 // Opsi dropdown dari konten yang ada: nomor modul (materi) dan kelompok FAQ. Istilah dari glosarium KB (statis).
 // Entri di Sampah tidak ditawarkan.
 async function muatOpsi(repo: ReturnType<typeof usePortal>['repo']): Promise<OpsiRuntime> {
-  const [daftarModul, daftarFaq] = await Promise.all([repo.konten.daftarEntri('modul'), repo.konten.daftarEntri('faq')]);
+  const [daftarModul, daftarFaq, daftarAhwal, daftarRefs] = await Promise.all([
+    repo.konten.daftarEntri('modul'), repo.konten.daftarEntri('faq'), repo.konten.daftarEntri('ahwal'), repo.konten.daftarRefs(),
+  ]);
   const isiDari = <J extends JenisKonten>(jenis: J, isi: unknown): IsiKonten[J] | null => {
     const hasil = bacaIsi(jenis, isi);
     return hasil.ok ? hasil.isi : null;
@@ -375,5 +418,13 @@ async function muatOpsi(repo: ReturnType<typeof usePortal>['repo']): Promise<Ops
     const isi = isiDari('faq', e.revisiTerakhir?.isi);
     return isi ? [isi.kelompok] : [];
   }));
-  return { modul, kelompokFaq: [...kelompok].sort().map(k => ({ nilai: k, label: k })), istilah: OPSI_ISTILAH };
+  // Kode alasan = kode AlasanFardh engine yang sudah dipakai baris ahwal lain; hanya saran, boleh diketik.
+  const alasan = new Set(daftarAhwal.flatMap(e => isiDari('ahwal', e.revisiTerakhir?.isi)?.baris.flatMap(b => b.cocok.kodeAlasan ?? []) ?? []));
+  return {
+    ...OPSI_STATIS,
+    modul,
+    kelompokFaq: [...kelompok].sort().map(k => ({ nilai: k, label: k })),
+    refs: daftarRefs.map(ref => ({ nilai: ref.kode, label: ref.kode })),
+    kodeAlasan: [...alasan].sort().map(k => ({ nilai: k, label: k })),
+  };
 }
