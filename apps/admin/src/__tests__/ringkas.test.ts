@@ -38,6 +38,17 @@ test('kelompokkanPerModul: urut nomor modul, modul kosong tetap tampil, modul ta
   ]);
 });
 
+test('kelompokkanPerModul: nomor & judul modul dari revisi terbit, bukan draf', () => {
+  const modul = [entri('m1', { isi: { nomor: 9, judul: 'Draf baru' } })];
+  const materi = [entri('x', { isi: { modul: 1, judul: 'X' } })];
+  const grup = kelompokkanPerModul(materi, modul, new Map([[modul[0]!.entriId, { nomor: 1, judul: 'Pengantar' }]]));
+  expect(grup.map(g => [g.nomor, g.judul, g.materi.map(e => e.slug)])).toEqual([[1, 'Pengantar', ['x']]]);
+});
+
+test('ringkasBeranda: antrean diksi ikut dihitung di "Menunggu review" (sama dengan lencana)', () => {
+  expect(ringkasBeranda([entri('d', { status: 'diajukan', oleh: 'lain' })], 'u1', 2).menungguReview).toBe(3);
+});
+
 test('ringkasBeranda: angka milik saya & antrean, lanjutkan terbaru dulu maks 8', () => {
   const semua = [
     entri('a', { status: 'draf', pada: '2026-09-27T01:00:00.000Z' }),

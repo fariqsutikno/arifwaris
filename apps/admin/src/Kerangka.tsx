@@ -1,7 +1,9 @@
 // Kerangka portal (spec tahap A "Kerangka & navigasi") di atas Sidebar shadcn: menu berkelompok dari MENU_PORTAL,
 // lencana antrean review, email + peran + Keluar di kaki sidebar, isi layar di kanan. Layar sempit: sidebar jadi
-// laci (Sheet) lewat tombol Menu dan menutup setelah memilih menu. Layar entri menyorot menu terakhir yang dibuka.
+// laci (Sheet) lewat tombol Menu dan menutup setelah memilih menu. Layar entri menyorot menu jenis entri itu (jenisEntri
+// dilaporkan editor setelah entri dimuat, jadi tautan langsung ke entri juga menyala). Lencana dimuat ulang tiap rute berubah.
 import { useEffect, useState, type ReactNode } from 'react';
+import type { JenisKonten } from '@waris/content';
 import { House, Inbox, LogOut, Menu as IkonMenu, Users, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,19 +18,21 @@ type KunciAktif = 'beranda' | 'review' | 'peran' | KunciMenu | null;
 const URUTAN_GRUP: GrupMenu[] = ['Belajar', 'Bank soal', 'Tanya jawab', 'Pustaka', 'Aplikasi'];
 const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' } as const;
 
-export function menuAktif(rute: Rute, menuTerakhir: KunciMenu | null): KunciAktif {
+export function menuAktif(rute: Rute, jenisEntri: JenisKonten | null): KunciAktif {
   switch (rute.layar) {
     case 'beranda': case 'review': case 'peran': return rute.layar;
     case 'menu': return rute.menu;
     case 'entriBaru': return menuUntukJenis(rute.jenis).kunci;
-    case 'entri': return menuTerakhir;
+    case 'entri': return jenisEntri ? menuUntukJenis(jenisEntri).kunci : null;
   }
 }
 
-export function Kerangka({ rute, onKeluar, children }: { rute: Rute; onKeluar: () => void; children: ReactNode }) {
+export function Kerangka({ rute, jenisEntri = null, onKeluar, children }: {
+  rute: Rute; jenisEntri?: JenisKonten | null; onKeluar: () => void; children: ReactNode;
+}) {
   return (
     <SidebarProvider>
-      <SisiPortal rute={rute} onKeluar={onKeluar} />
+      <SisiPortal rute={rute} jenisEntri={jenisEntri} onKeluar={onKeluar} />
       <SidebarInset>
         <KepalaPortal />
         <main className="w-full max-w-6xl p-4 md:p-8">{children}</main>
@@ -48,22 +52,20 @@ function KepalaPortal() {
   );
 }
 
-function SisiPortal({ rute, onKeluar }: { rute: Rute; onKeluar: () => void }) {
+function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: JenisKonten | null; onKeluar: () => void }) {
   const { repo, sesi, peran } = usePortal();
   const { setOpenMobile } = useSidebar();
-  const [menuTerakhir, setMenuTerakhir] = useState<KunciMenu | null>(null);
   const [jumlahAntrean, setJumlahAntrean] = useState(0);
 
-  useEffect(() => { if (rute.layar === 'menu') setMenuTerakhir(rute.menu); }, [rute]);
   useEffect(() => {
     let dibatalkan = false;
     Promise.all([repo.editorial.antreanReview(), repo.diksi.antreanReview()])
       .then(([konten, diksi]) => { if (!dibatalkan) setJumlahAntrean(konten.length + diksi.length); })
       .catch(() => { /* lencana hanya pelengkap; layar antrean menampilkan galatnya sendiri */ });
     return () => { dibatalkan = true; };
-  }, [repo]);
+  }, [repo, rute]);
 
-  const aktif = menuAktif(rute, menuTerakhir);
+  const aktif = menuAktif(rute, jenisEntri);
   const tautan = (kunci: KunciAktif, href: string, Ikon: LucideIcon, label: string, lencana?: number) => (
     <SidebarMenuItem key={String(kunci)}>
       <SidebarMenuButton asChild isActive={aktif === kunci}>

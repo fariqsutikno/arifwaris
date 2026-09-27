@@ -23,9 +23,9 @@ export function statusTampil(entri: RingkasanEntri): StatusTampil {
   return 'dikembalikan';
 }
 
-export function judulEntri(entri: RingkasanEntri): string {
-  const isi = entri.revisiTerakhir?.isi as Record<string, unknown> | undefined;
-  const kandidat = FIELD_JUDUL.map(kunci => isi?.[kunci]).find(nilai => typeof nilai === 'string' && nilai.length > 0);
+export function judulEntri(entri: RingkasanEntri, isi: unknown = entri.revisiTerakhir?.isi): string {
+  const kandidat = FIELD_JUDUL.map(kunci => (isi as Record<string, unknown> | undefined)?.[kunci])
+    .find(nilai => typeof nilai === 'string' && nilai.length > 0);
   return typeof kandidat === 'string' ? kandidat : entri.slug;
 }
 
@@ -47,16 +47,20 @@ export function saringDaftar(daftar: RingkasanEntri[], tab: TabStatus, cari: str
 
 export interface GrupModul { modul: RingkasanEntri | null; nomor: number | null; judul: string; materi: RingkasanEntri[] }
 
-/** Materi dikelompokkan per isi.modul di bawah modulnya (urut nomor). Modul tanpa materi tetap tampil; materi yang
- * modulnya tidak dikenal atau isinya rusak masuk grup "Tanpa modul" di akhir. Urutan materi dalam grup dipertahankan. */
-export function kelompokkanPerModul(materi: RingkasanEntri[], modul: RingkasanEntri[]): GrupModul[] {
-  const nomorModul = (entri: RingkasanEntri) => angkaDari(entri, 'nomor');
+/** Materi dikelompokkan per isi.modul di bawah modulnya (urut nomor). Nomor & judul modul diambil dari revisi terbitnya
+ * (`isiModulTerbit`, entriId → isi) seperti yang dilihat web; modul yang belum pernah terbit memakai revisi terakhir.
+ * Modul tanpa materi tetap tampil; materi yang modulnya tidak dikenal atau isinya rusak masuk grup "Tanpa modul" di
+ * akhir. Urutan materi dalam grup dipertahankan. */
+export function kelompokkanPerModul(
+  materi: RingkasanEntri[], modul: RingkasanEntri[], isiModulTerbit: ReadonlyMap<string, unknown> = new Map(),
+): GrupModul[] {
+  const isiModul = (entri: RingkasanEntri) => isiModulTerbit.get(entri.entriId) ?? entri.revisiTerakhir?.isi;
   const grup: GrupModul[] = modul
-    .filter(entri => nomorModul(entri) !== null)
-    .sort((a, b) => nomorModul(a)! - nomorModul(b)!)
-    .map(entri => ({ modul: entri, nomor: nomorModul(entri), judul: judulEntri(entri), materi: [] }));
+    .map(entri => ({ modul: entri, nomor: angkaDari(isiModul(entri), 'nomor'), judul: judulEntri(entri, isiModul(entri)), materi: [] as RingkasanEntri[] }))
+    .filter(calon => calon.nomor !== null)
+    .sort((a, b) => a.nomor! - b.nomor!);
   const tanpaModul: GrupModul = { modul: null, nomor: null, judul: 'Tanpa modul', materi: [] };
-  for (const entri of materi) (grup.find(g => g.nomor === angkaDari(entri, 'modul')) ?? tanpaModul).materi.push(entri);
+  for (const entri of materi) (grup.find(g => g.nomor === angkaDari(entri.revisiTerakhir?.isi, 'modul')) ?? tanpaModul).materi.push(entri);
   return tanpaModul.materi.length ? [...grup, tanpaModul] : grup;
 }
 
@@ -65,7 +69,8 @@ export interface RingkasanBeranda {
   lanjutkan: RingkasanEntri[]; antreanTertua: RingkasanEntri[];
 }
 
-export function ringkasBeranda(semua: RingkasanEntri[], userId: string): RingkasanBeranda {
+/** `antreanDiksi` = jumlah revisi diksi yang diajukan, supaya "Menunggu review" sama dengan lencana antrean. */
+export function ringkasBeranda(semua: RingkasanEntri[], userId: string, antreanDiksi = 0): RingkasanBeranda {
   const milikSaya = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatOleh === userId;
   const berstatus = (entri: RingkasanEntri, status: string) => entri.revisiTerakhir?.status === status;
   const waktu = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatPada ?? '';
@@ -74,7 +79,7 @@ export function ringkasBeranda(semua: RingkasanEntri[], userId: string): Ringkas
   const diajukan = semua.filter(entri => berstatus(entri, 'diajukan'));
   return {
     drafSaya: drafSaya.length,
-    menungguReview: diajukan.length,
+    menungguReview: diajukan.length + antreanDiksi,
     dikembalikanKeSaya: dikembalikan.length,
     terbit: semua.filter(entri => entri.revisiTerbitId).length,
     lanjutkan: [...dikembalikan, ...drafSaya].sort((a, b) => waktu(b).localeCompare(waktu(a))).slice(0, BATAS_BERANDA),
@@ -107,7 +112,7 @@ export function waktuRelatif(iso: string, sekarang: Date): string {
   return formatWaktu.format(Math.round(detik / besar), satuan);
 }
 
-function angkaDari(entri: RingkasanEntri, kunci: string): number | null {
-  const nilai = (entri.revisiTerakhir?.isi as Record<string, unknown> | undefined)?.[kunci];
+function angkaDari(isi: unknown, kunci: string): number | null {
+  const nilai = (isi as Record<string, unknown> | undefined)?.[kunci];
   return typeof nilai === 'number' && Number.isInteger(nilai) ? nilai : null;
 }

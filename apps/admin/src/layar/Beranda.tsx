@@ -2,7 +2,7 @@
 // (angka milik saya & antrean, lanjutkan pekerjaan, antrean tertua untuk reviewer), dan menampilkan tombol buat baru
 // untuk admin/penulis. Galat repo tampil sebagai Alert dengan tombol coba lagi.
 import { useEffect, useState } from 'react';
-import { JENIS_KONTEN, type JenisKonten } from '@waris/content';
+import { type JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -26,8 +26,8 @@ export function Beranda() {
   useEffect(() => {
     let dibatalkan = false;
     setGalat(null);
-    Promise.all(JENIS_KONTEN.map(jenis => repo.konten.daftarEntri(jenis)))
-      .then(semua => { if (!dibatalkan) setRingkasan(ringkasBeranda(semua.flat(), sesi.userId)); })
+    Promise.all([repo.konten.daftarEntri(), repo.diksi.antreanReview()])
+      .then(([semua, antreanDiksi]) => { if (!dibatalkan) setRingkasan(ringkasBeranda(semua, sesi.userId, antreanDiksi.length)); })
       .catch(e => { if (!dibatalkan) setGalat(e instanceof Error ? e.message : String(e)); });
     return () => { dibatalkan = true; };
   }, [repo, sesi.userId, muatUlang]);

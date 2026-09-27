@@ -49,8 +49,9 @@ test('menu aktif ditandai aria-current', async () => {
   expect(screen.getByRole('link', { name: /Kitab & syahid/ }).getAttribute('aria-current')).toBe('page');
 });
 
-test('menuAktif: entri memakai menu terakhir, entriBaru dari jenisnya', () => {
-  expect(menuAktif({ layar: 'entri', entriId: 'x' }, 'faq')).toBe('faq');
+test('menuAktif: entri & entriBaru dari jenisnya', () => {
+  expect(menuAktif({ layar: 'entri', entriId: 'x' }, 'kitab')).toBe('pustaka');
+  expect(menuAktif({ layar: 'entri', entriId: 'x' }, null)).toBe(null);
   expect(menuAktif({ layar: 'entriBaru', jenis: 'modul' }, null)).toBe('materi');
   expect(menuAktif({ layar: 'review' }, 'faq')).toBe('review');
 });

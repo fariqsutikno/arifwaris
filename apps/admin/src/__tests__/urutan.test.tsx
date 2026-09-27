@@ -42,6 +42,26 @@ test('gagal simpan → urutan kembali + pesan galat', async () => {
   expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']);
 });
 
+test('simpan beruntun: dikirim berurutan; yang pertama gagal → daftar dimuat ulang dari database', async () => {
+  const { m, a, b } = await siapkanFaq();
+  const asli = m.editorial.aturUrutan.bind(m.editorial);
+  const kiriman: string[][] = [];
+  let panggilan = 0;
+  m.editorial.aturUrutan = async ids => {
+    kiriman.push(ids);
+    if (++panggilan === 1) { await new Promise(r => setTimeout(r, 10)); throw new Error('jaringan putus'); }
+    return asli(ids);
+  };
+  pasang(m, 'penulis');
+  fireEvent.click(await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Turunkan Siapa ashabah?' }));
+  expect(await screen.findByText(/Urutan gagal disimpan: jaringan putus/)).toBeTruthy();
+  expect(kiriman).toEqual([[b, a], [a, b]]);
+  // yang kedua tersimpan (a, b) → tampilan mengikuti database, bukan snapshot sebelum seret pertama
+  await waitFor(() => expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']));
+  expect((await m.konten.daftarEntri('faq')).map(e => e.slug)).toEqual(['a', 'b']);
+});
+
 test('reviewer, tab tersaring, atau sedang mencari → tanpa pegangan', async () => {
   const { m } = await siapkanFaq();
   const { unmount } = pasang(m, 'reviewer');

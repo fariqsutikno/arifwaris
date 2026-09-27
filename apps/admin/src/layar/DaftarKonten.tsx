@@ -1,7 +1,7 @@
 // Layar menu konten (spec tahap A "Daftar konten"): kepala (jejak grup, judul menu, tombol buat baru), tab jenis
 // untuk menu bertab, lalu daftar entri dengan tab status + jumlah, cari (judul/slug/ref), dan baris berstatus.
 // Menu materi mengelompokkan materi di bawah modulnya. Data dari repo.konten.daftarEntri; perhitungan di ringkas.ts.
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -64,6 +64,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
   const { repo, peran } = usePortal();
   const [daftar, setDaftar] = useState<RingkasanEntri[] | null>(null);
   const [modul, setModul] = useState<RingkasanEntri[]>([]);
+  const [isiModulTerbit, setIsiModulTerbit] = useState<ReadonlyMap<string, unknown>>(new Map());
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
   const [tab, setTab] = useState<TabStatus>('semua');
@@ -71,30 +72,54 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
   const [galatUrutan, setGalatUrutan] = useState<string | null>(null);
   const bolehSeret = peran !== 'reviewer' && tab === 'semua' && cari.trim() === '';
 
+  // Simpan urutan diantrekan satu per satu supaya urutan tiba di database sesuai urutan seret. Bila ada yang gagal,
+  // setelah antrean kosong daftar dimuat ulang dari database: tampilan optimistis bisa sudah ditumpuk seret berikutnya,
+  // jadi "kembalikan ke sebelum" tidak lagi benar.
+  const antreanUrutan = useRef(Promise.resolve());
+  const jumlahTertunda = useRef(0);
+  const galatTertunda = useRef<string | null>(null);
+
   /** Ganti isi satu kelompok dengan urutan barunya, lalu simpan. Materi dikirim utuh rata per modul supaya urutan
-   * global web (pelajaran berikutnya) tetap mengikuti urutan modul. Gagal → kembalikan urutan lama. */
+   * global web (pelajaran berikutnya) tetap mengikuti urutan modul. */
   async function simpanUrutan(kelompokLama: RingkasanEntri[], kelompokBaru: RingkasanEntri[]) {
     if (!daftar) return;
-    const sebelum = daftar;
     const anggotaKelompok = new Set(kelompokLama.map(entri => entri.entriId));
     const sisaBaru = [...kelompokBaru];
     const tersusun = daftar.map(entri => (anggotaKelompok.has(entri.entriId) ? sisaBaru.shift()! : entri));
-    const urutanKirim = menuMateri ? kelompokkanPerModul(tersusun, modul).flatMap(grup => grup.materi) : tersusun;
+    const urutanKirim = menuMateri ? kelompokkanPerModul(tersusun, modul, isiModulTerbit).flatMap(grup => grup.materi) : tersusun;
     setDaftar(urutanKirim.map((entri, indeks) => ({ ...entri, urutan: (indeks + 1) * 10 })));
     setGalatUrutan(null);
+    jumlahTertunda.current += 1;
+    const tugas = antreanUrutan.current.then(() => repo.editorial.aturUrutan(urutanKirim.map(entri => entri.entriId)));
+    antreanUrutan.current = tugas.catch(() => {});
     try {
-      await repo.editorial.aturUrutan(urutanKirim.map(entri => entri.entriId));
+      await tugas;
     } catch (e) {
-      setDaftar(sebelum);
-      setGalatUrutan(`Urutan gagal disimpan: ${e instanceof Error ? e.message : String(e)}`);
+      galatTertunda.current = `Urutan gagal disimpan: ${e instanceof Error ? e.message : String(e)}`;
+    } finally {
+      jumlahTertunda.current -= 1;
+      if (jumlahTertunda.current === 0 && galatTertunda.current) {
+        setGalatUrutan(galatTertunda.current);
+        galatTertunda.current = null;
+        setMuatUlang(n => n + 1);
+      }
     }
   }
 
   useEffect(() => {
     let dibatalkan = false;
     setGalat(null);
-    Promise.all([repo.konten.daftarEntri(jenis), menuMateri ? repo.konten.daftarEntri('modul') : Promise.resolve([])])
-      .then(([entri, daftarModul]) => { if (!dibatalkan) { setDaftar(entri); setModul(daftarModul); } })
+    Promise.all([
+      repo.konten.daftarEntri(jenis),
+      menuMateri ? repo.konten.daftarEntri('modul') : Promise.resolve([]),
+      menuMateri ? repo.konten.bacaTerbit({ jenis: 'modul' }) : Promise.resolve([]),
+    ])
+      .then(([entri, daftarModul, modulTerbit]) => {
+        if (dibatalkan) return;
+        setDaftar(entri);
+        setModul(daftarModul);
+        setIsiModulTerbit(new Map(modulTerbit.map(baris => [baris.entriId, baris.isi])));
+      })
       .catch(e => { if (!dibatalkan) setGalat(e instanceof Error ? e.message : String(e)); });
     return () => { dibatalkan = true; };
   }, [repo, jenis, menuMateri, muatUlang]);
@@ -107,7 +132,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
   const sekarang = new Date();
   return (
     <div className="space-y-3">
-      <Tabs value={tab} onValueChange={nilai => setTab(nilai as TabStatus)}>
+      <Tabs value={tab} onValueChange={nilai => setTab(nilai as TabStatus)} className="overflow-x-auto">
         <TabsList aria-label="Status">
           {TAB_STATUS.map(t => <TabsTrigger key={t} value={t}>{LABEL_TAB[t]} {jumlah[t]}</TabsTrigger>)}
         </TabsList>
@@ -125,7 +150,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
       {daftar.length > 0 && tampil.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Tidak ada yang cocok.</p> : null}
       {galatUrutan ? <Alert variant="destructive" role="alert"><AlertDescription>{galatUrutan}</AlertDescription></Alert> : null}
       {menuMateri
-        ? kelompokkanPerModul(tampil, modul).map(grup => (
+        ? kelompokkanPerModul(tampil, modul, isiModulTerbit).map(grup => (
           <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} sekarang={sekarang} bolehSeret={bolehSeret} saatPindah={simpanUrutan} />
         ))
         : tampil.length > 0 ? (
