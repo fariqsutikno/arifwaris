@@ -21,7 +21,7 @@ export interface NilaiForm {
 
 export type HasilForm<J extends JenisKonten> =
   | { ok: true; isi: IsiKonten[J] }
-  | { ok: false; galat: string; galatBidang: Record<string, string> };
+  | { ok: false; galat: string; galatBidang: Record<string, string>; mentah?: unknown };
 
 type Objek = Record<string, unknown>;
 
@@ -68,12 +68,14 @@ export function dariNilaiForm<J extends JenisKonten>(jenis: J, slug: string, for
     }
   }
   if (Object.keys(galatBidang).length > 0) {
-    return { ok: false, galat: 'Ada bidang yang belum benar.', galatBidang };
+    return { ok: false, galat: 'Ada bidang yang belum benar.', galatBidang, mentah: keJson(jenis, hasil as unknown as IsiKonten[J]) };
   }
   // keJson mengubah bigint (bacaBlok kasus, editor kasus) jadi string digit seperti di database.
-  const sah = bacaIsi(jenis, keJson(jenis, hasil as unknown as IsiKonten[J]));
+  const mentah = keJson(jenis, hasil as unknown as IsiKonten[J]);
+  const sah = bacaIsi(jenis, mentah);
   if (sah.ok) return sah;
-  return { ok: false, ...petakanGalat(jenis, sah.galat) };
+  // mentah: isi apa adanya (bidang yang gagal dibaca tetap nilai asal) supaya tab JSON bisa dibuka dari form yang belum sah.
+  return { ok: false, ...petakanGalat(jenis, sah.galat), mentah };
 }
 
 /** Galat bacaIsi ("jalur: pesan; ...") → galat per bidang (awalan jalur terpanjang) + sisanya di galat umum. */

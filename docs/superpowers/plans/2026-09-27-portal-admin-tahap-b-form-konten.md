@@ -38,34 +38,34 @@ database, atau repo.
 | `apps/admin/src/editor/bentuk.ts` + tes | dihapus di Task 7 |
 
 ### Task 1: `FORM_KONTEN` dan tipe bidang
-- [ ] Tes: mencakup semua `JENIS_KONTEN`; jalur bidang unik per jenis.
-- [ ] Tulis `formulir.ts` sesuai tabel spec.
+- [x] Tes: mencakup semua `JENIS_KONTEN`; jalur bidang unik per jenis.
+- [x] Tulis `formulir.ts` sesuai tabel spec.
 
 ### Task 2: `keNilaiForm` / `dariNilaiForm`
-- [ ] Tes bolak-balik semua jenis (contoh admin + snapshot web), sakelar Arab, tautan kosong → `null`,
+- [x] Tes bolak-balik semua jenis (contoh admin + snapshot web), sakelar Arab, tautan kosong → `null`,
       Markdown rusak → galat pada jalur bidang, Zod `path` → jalur bidang.
-- [ ] Implementasi murni; akhir selalu `bacaIsi`.
+- [x] Implementasi murni; akhir selalu `bacaIsi`.
 
 ### Task 3: `hitungHarapan` di web
-- [ ] Pindah logika penjumlahan saham dari `materi.test.tsx` ke `hitungHarapan(contoh)` →
+- [x] Pindah logika penjumlahan saham dari `materi.test.tsx` ke `hitungHarapan(contoh)` →
       `{ ok: true; harapan } | { ok: false; galat }`; tes materi web memakai fungsi ini.
-- [ ] Tambah ekspor `"./contoh"` di `apps/web/package.json`.
+- [x] Tambah ekspor `"./contoh"` di `apps/web/package.json`.
 
 ### Task 4: `editor/kasus.ts` + `EditorKasus`
-- [ ] Tes unit `bandingkanHarapan`; tes komponen: ± ahli waris, Hitung mengisi harapan, ubah manual → peringatan,
+- [x] Tes unit `bandingkanHarapan`; tes komponen: ± ahli waris, Hitung mengisi harapan, ubah manual → peringatan,
       kasus tak didukung → galat.
-- [ ] Implementasi.
+- [x] Implementasi.
 
 ### Task 5: `FormKonten`
-- [ ] Tes komponen: soal kuis (tambah/hapus pilihan, radio benar), ahwal (tambah baris), sakelar Versi Arab,
+- [x] Tes komponen: soal kuis (tambah/hapus pilihan, radio benar), ahwal (tambah baris), sakelar Versi Arab,
       mode baca tanpa input yang bisa diubah, galat bidang tampil di bawah bidang.
-- [ ] Implementasi dengan komponen shadcn; Arab `dir="rtl" lang="ar"`.
+- [x] Implementasi dengan komponen shadcn; Arab `dir="rtl" lang="ar"`.
 
 ### Task 6: `EditorEntri` tab Form / JSON
-- [ ] Tes: simpan dari form memanggil `buatDraf`/`ubahDraf` dengan isi benar; Form → JSON → Form; JSON rusak →
+- [x] Tes: simpan dari form memanggil `buatDraf`/`ubahDraf` dengan isi benar; Form → JSON → Form; JSON rusak →
       tetap di tab JSON + galat; pratinjau tetap jalan; entri baru mendapat slug seperti sebelumnya.
-- [ ] Implementasi; sesuaikan `editor.test.tsx`, `pratinjau.test.tsx`.
+- [x] Implementasi; sesuaikan `editor.test.tsx`, `pratinjau.test.tsx`.
 
 ### Task 7: Bersih-bersih
-- [ ] Hapus `bentuk.ts` + `bentuk.test.ts` bila tak dipakai lagi.
-- [ ] `pnpm -r test`, typecheck, build admin.
+- [x] Hapus `bentuk.ts` + `bentuk.test.ts` bila tak dipakai lagi.
+- [x] `pnpm -r test`, typecheck, build admin.
