@@ -153,7 +153,7 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} />
         : <Hasil kasus={kasus} idSesi={idSesi} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
-            saatDikerjakan={soalAktif ? () => tandaiSoalDikerjakan(soalAktif) : undefined}  />}
+            saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
@@ -166,7 +166,8 @@ const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLoka
 /** Id sesi riwayat; cukup unik di satu perangkat. */
 const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 
-function tandaiSoalDikerjakan(soal: SoalHitung): void {
-  catatLatihan('hitung', soal.kode, true, null);
+/** `benar` = tebakan tepat sebelum jawaban dibuka; hanya itu yang memberi XP soal hitung (spec tahap 5). */
+function tandaiSoalDikerjakan(soal: SoalHitung, benar: boolean): void {
+  catatLatihan('hitung', soal.kode, benar, null);
   catatAktivitas({ jenis: 'soal', kode: soal.kode, judul: soal.judul, waktu: Date.now() });
 }

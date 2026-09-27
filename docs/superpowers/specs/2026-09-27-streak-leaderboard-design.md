@@ -105,8 +105,9 @@ Dipanggil klien (`security definer`, `search_path` dikunci):
 
 ## Risiko
 
-- **Soal hitung**: web mencatat `benar = true` saat jawaban dibuka (`tandaiSoalDikerjakan`), belum dari tebakan yang
-  benar. Artinya XP soal hitung = "pertama kali dikerjakan". Dipisah bila nanti ada penilaian jawaban.
+- **Soal hitung** (diputuskan 2026-09-27): `benar = true` hanya bila tebakan di mode Belajar tepat sebelum jawaban
+  dibuka. Membuka jawaban setelah mencoba tetap tercatat dikerjakan tapi `benar = false`, jadi tanpa XP. Log lama
+  (sebelum perubahan ini) yang tercatat benar saat jawaban dibuka tetap dihitung.
 - Nama tampilan kasar belum bisa dimoderasi; admin bisa menghapus baris profil lewat dashboard Supabase.
 - Ganti zona waktu bisa menggeser batas hari sekali; diterima (tidak memberi XP konten baru).
 - Hitungan dilakukan tiap panggilan atas seluruh log; bila lambat nanti → materialized view / tabel ringkasan.

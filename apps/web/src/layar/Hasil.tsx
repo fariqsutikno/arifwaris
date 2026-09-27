@@ -36,10 +36,10 @@ interface Props {
   tujuan: Tujuan | null;
   kirim: (aksi: Aksi) => void;
   /**
-   * Mode belajar: kasus ini dihitung "sudah dikerjakan" bila tebakan dijawab benar, atau jawaban dibuka setelah
-   * pernah mencoba menjawab. Membuka kunci tanpa mencoba tidak dihitung.
+   * Mode belajar: kasus ini dihitung "sudah dikerjakan" bila tebakan dijawab benar (`benar` = true), atau jawaban
+   * dibuka setelah pernah mencoba menjawab (`benar` = false, tanpa XP, spec tahap 5). Membuka tanpa mencoba tidak dihitung.
    */
-  saatDikerjakan?: (() => void) | undefined;
+  saatDikerjakan?: ((benar: boolean) => void) | undefined;
   /** Kasus dari latihan/materi di mode belajar: data kasus tidak bisa diubah atau di-reset supaya fokus. */
   terkunci?: boolean | undefined;
 }
@@ -95,9 +95,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
   const [sudahMencoba, setSudahMencoba] = useState(false);
-  const bukaJawaban = () => { setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(); };
+  const bukaJawaban = () => { setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
   const [tebakanBenar, setTebakanBenar] = useState(false);
-  const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(); };
+  const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
   // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
   // lewat dialog dengan tombol tekan-tahan.
   const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | 'pindah' | null>(null);
