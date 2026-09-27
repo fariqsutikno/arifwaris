@@ -83,3 +83,17 @@
     @apply font-sans;
     }
 }
+/* layar lama (editor, diksi, review, peran) memakai elemen polos tanpa kelas; preflight Tailwind me-reset-nya, jadi
+   gaya dasarnya dikembalikan di sini sampai layar itu pindah ke komponen shadcn (tahap B/C). Komponen shadcn
+   memakai data-slot / kelas, jadi tidak terkena. */
+@layer base {
+  :is(input, textarea, select):not([data-slot]):not([type="checkbox"]):not([type="radio"]) {
+    border: 1.5px solid var(--outline); border-radius: var(--radius-sm); background: var(--surface-raised);
+    color: var(--ink); padding: 6px 10px;
+  }
+  :is(input, textarea, select):not([data-slot]):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  h2:not([class]) { font-size: 1.375rem; font-weight: 700; margin: 1.25rem 0 .5rem; }
+  h3:not([class]) { font-size: 1.125rem; font-weight: 700; margin: 1rem 0 .5rem; }
+  p:not([class]) { margin: .5rem 0; }
+  table:not([class]) :is(th, td) { padding: 6px 10px; border-bottom: 1px solid var(--divider); text-align: left; }
+}

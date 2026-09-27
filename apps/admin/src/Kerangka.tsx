@@ -30,19 +30,20 @@ export function Kerangka({ rute, onKeluar, children }: { rute: Rute; onKeluar: (
     <SidebarProvider>
       <SisiPortal rute={rute} onKeluar={onKeluar} />
       <SidebarInset>
-        <KepalaSempit />
+        <KepalaPortal />
         <main className="w-full max-w-6xl p-4 md:p-8">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );
 }
 
-function KepalaSempit() {
+// Tombol Menu tampil di semua lebar: laci di layar sempit, ciut/buka sidebar di layar lebar (juga lewat Ctrl+B).
+function KepalaPortal() {
   const { toggleSidebar } = useSidebar();
   return (
-    <header className="flex items-center gap-3 border-b px-4 py-2 md:hidden">
+    <header className="flex items-center gap-3 border-b px-4 py-2">
       <Button variant="outline" size="sm" onClick={toggleSidebar}><IkonMenu />Menu</Button>
-      <b>Arif Waris</b>
+      <b className="md:hidden">Arif Waris</b>
     </header>
   );
 }

@@ -64,3 +64,13 @@ test('layar sempit: tombol Menu membuka laci, memilih menu menutupnya', async ()
   fireEvent.click(within(laci).getByRole('link', { name: /FAQ/ }));
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 });
+
+test('layar lebar: tombol Menu tetap tampil supaya sidebar yang diciutkan (Ctrl+B) bisa dibuka lagi', async () => {
+  await pasang('admin');
+  const tombol = screen.getByRole('button', { name: 'Menu' });
+  expect(tombol.closest('header')!.className).not.toMatch(/\bmd:hidden\b/);
+  fireEvent.keyDown(window, { key: 'b', ctrlKey: true });
+  expect(document.querySelector('[data-state="collapsed"]')).toBeTruthy();
+  fireEvent.click(tombol);
+  expect(document.querySelector('[data-state="expanded"]')).toBeTruthy();
+});
