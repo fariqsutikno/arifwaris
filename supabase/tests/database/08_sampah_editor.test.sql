@@ -1,4 +1,4 @@
--- supabase/tests/database/06_sampah_editor.test.sql
+-- supabase/tests/database/08_sampah_editor.test.sql
 -- Sampah (tanpa hapus permanen) & alur sunting: buang entri belum terbit langsung (penulis hanya bila semua revisinya
 -- miliknya), entri terbit lewat pengajuan (admin langsung), pulihkan, jejak tercatat, entri di Sampah tidak disunting,
 -- draf biasa tak bisa jadi penanda hapus, tarik kembali, terbitkan langsung khusus admin, nama tim.

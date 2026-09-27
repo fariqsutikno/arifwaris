@@ -188,7 +188,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
     // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
     async antreanReview() { return [...revisi.values()].filter(baris => baris.status === 'diajukan'); },
-    // [supabase/migrations/20260927000006_sampah_editor.sql] tarik_revisi, terbitkan_langsung, buang_entri, pulihkan_entri.
+    // [supabase/migrations/20260927000007_sampah_editor.sql] tarik_revisi, terbitkan_langsung, buang_entri, pulihkan_entri.
     async tarik(revisiId) {
       const target = ambil(revisi, revisiId, 'revisi');
       if (!target.hapus) { jalankanTransisi(target, 'tarik'); return; }
@@ -322,7 +322,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       return [...pengguna.values()].flatMap(p => (peran.has(p.userId) ? [{ ...p, peran: peran.get(p.userId)! }] : []))
         .sort((a, b) => a.email.localeCompare(b.email));
     },
-    // [20260927000006_sampah_editor.sql] daftar_nama_tim: full_name, atau bagian depan email.
+    // [20260927000007_sampah_editor.sql] daftar_nama_tim: full_name, atau bagian depan email.
     async daftarNamaTim() {
       if (!sesi || !peran.get(sesi.userId)) throw new Error('belum punya peran');
       return [...pengguna.values()].filter(p => peran.has(p.userId)).map(p => ({ userId: p.userId, nama: p.nama ?? p.email.split('@')[0]! }));

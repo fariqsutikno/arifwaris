@@ -39,7 +39,7 @@ export function transisiRevisi(p: Pelaku & { status: StatusRevisi; aksi: AksiEdi
 export const bolehSuntingDraf = (p: Pelaku & { status: StatusRevisi }): boolean =>
   p.peran !== null && p.peran !== 'reviewer' && p.status === 'draf' && milikSendiriAtauAdmin(p);
 
-/** Keadaan entri yang dibutuhkan aturan Sampah (supabase/migrations/20260927000006_sampah_editor.sql). */
+/** Keadaan entri yang dibutuhkan aturan Sampah (supabase/migrations/20260927000007_sampah_editor.sql). */
 export interface KeadaanSampah {
   pernahTerbit: boolean; diSampah: boolean; buangSedangDiajukan: boolean; pembuatRevisi: readonly string[];
 }
