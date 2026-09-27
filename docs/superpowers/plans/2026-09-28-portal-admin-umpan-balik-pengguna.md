@@ -1,6 +1,6 @@
 # Portal admin — telaah umpan balik pengguna & rencana perbaikan
 
-Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **draf, menunggu keputusan di bagian C**
+Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **keputusan C1–C7 sudah ada (bagian D); bagian F (KB di portal) masih dibahas**
 
 Dokumen ini menelaah 24 keluhan pengguna tentang portal admin (`apps/admin`), mencari akar masalahnya di kode,
 lalu menyusun perbaikan bertahap. Belum ada kode yang diubah.
@@ -156,3 +156,123 @@ Temuan awal untuk dibahas:
 - **C6. Kurasi teks aplikasi**: setuju dengan aturan "sembunyikan label ≤ 2 kata kecuali admin buka semua"?
 - **C7. AI**: kunci di Supabase Edge Function oke? Siapa yang boleh memakai (penulis + admin)? Kuota harian? Draf kuis
   dari AI selalu wajib lewat review?
+
+---
+
+## D. Keputusan pengguna (2026-09-28)
+
+| # | Keputusan | Akibat ke rencana |
+|---|-----------|-------------------|
+| C1 | Dalil induk: **ayat & hadis**. Tiap dalil boleh punya **tautan rujukan detail** (Quran Kemenag, situs hadis, dst.) yang diisi admin. | Bidang `tautan: { label, alamat }[]` di dalil induk; alamat wajib `https://`. Tampil di web sebagai "Baca di Quran Kemenag ↗". |
+| C2 | Glosarium Indonesia **pindah ke portal** supaya bisa disunting. | Istilah menjadi jenis konten penuh (Indonesia + Arab satu entri); `glosarium_ar` dilebur. Lihat juga bagian F: glosarium adalah bagian KB (bab 15). |
+| C3 | Penjelasan kuis fleksibel: **umum saja**, atau **per pilihan** dan bila per pilihan, **semua pilihan wajib** ada penjelasannya. | Skema: `alasanPilihan` opsional; bila ada, panjangnya = jumlah pilihan dan tidak ada yang kosong (Zod `refine`). Editor: sakelar "Jelaskan tiap pilihan". `pengecoh` lama digabung ke pembahasan umum lewat migrasi (isinya tidak hilang). |
+| C4 | FAQ sudah punya kelompok (Fikih, Pakai aplikasi); tidak perlu sub-kelompok. Tanya jawab cukup **diatur urutannya**. | Daftar FAQ di portal dikelompokkan per kelompok + atur urutan di dalam kelompok. Tanya jawab: tidak ada bidang baru; "Atur urutan" yang sudah ada dipakai. |
+| C5 | Sisip istilah/rujukan: selain sunting, bisa **tambah baru** langsung dari dialog. | Lihat bagian F: rujukan & istilah adalah bagian KB, jadi "tambah" = usulan KB yang ikut review. |
+| C6 | Kurasi teks aplikasi disetujui. | — |
+| C7 | AI lewat Edge Function; penulis + admin; ada kuota; draf kuis AI selalu wajib review. | — |
+
+---
+
+## E. Teks aplikasi: disimpan di mana, bentuknya seperti apa
+
+### Sekarang (tidak berubah di database)
+
+Teks aplikasi tersimpan di **dua tempat**. Keduanya punya alur yang sama (draf → diajukan → disetujui → terbit, dengan riwayat):
+
+| | Teks edukasi | Diksi |
+|---|---|---|
+| Isinya | Paragraf penjelasan di kalkulator (langkah harta, "habis ini ngapain", nama ahli waris, tur) | Kata-kata antarmuka: judul, label tombol, petunjuk, pesan kosong/galat |
+| Tabel | `entri_konten` + `revisi` (jenis `teks_edukasi`) | `diksi` + `revisi_diksi` |
+| Kunci | slug, mis. `harta.penjelasan_utang` | `halaman.nama`, mis. `beranda.judul` |
+| Isi | `{ "id": "…", "ar": "…" }` | `id_teks`, `ar_teks`, `halaman` |
+| Jumlah | 114 | 703 |
+| Dipanggil web | `teksEdukasi('harta.penjelasan_utang')` | `t('beranda.judul')` (859 panggilan di 59 berkas) |
+
+Alur ke pengguna: teks yang terbit menaikkan `versi_konten` → web mengunduh yang berubah ke cache (dan `snapshot.json`
+saat build) → `t()`/`teksEdukasi()` membaca dari situ; bila kunci tidak ditemukan, kuncinya sendiri yang tampil.
+
+**Batas penting:** *letak* teks ditentukan kode web (baris `t('beranda.judul')`). Dari portal, admin bisa **mengubah
+bunyi** teks yang sudah ada, tapi **tidak bisa menambah teks di posisi baru** tanpa developer.
+
+### Rencana: satu pintu, penyimpanan tetap dua tabel
+
+Dua tabel **tidak digabung**. Menggabungkannya butuh migrasi dan mengubah semua pemanggil, sedangkan manfaatnya bagi
+admin nol. Yang disatukan adalah tampilannya: portal membaca keduanya lalu menampilkannya sebagai satu daftar
+"Teks aplikasi". Saat disimpan, portal sendiri yang memilih tabel tujuannya.
+
+Satu butir teks di mata admin:
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ Harta yang dibagi                               ● Terbit     │
+│ Tampil di: Kalkulator › Langkah harta · Hasil hitung         │
+│ Arab: التركة المقسومة                                         │
+│ Sunting · Lihat di layar · Riwayat                           │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Data di baliknya (tidak ditampilkan): `{ sumber: 'diksi', kunci: 'hitung.harta_dibagi', id: 'Harta yang dibagi', ar: '…' }`.
+
+Informasi "Tampil di" dibuat otomatis saat build: skrip memindai panggilan `t('…')`/`teksEdukasi('…')` di
+`apps/web/src`, memetakan berkas ke nama layar (daftar kecil `berkas → layar`), lalu menyimpan hasilnya sebagai JSON
+yang dibaca portal. Kurasi (C6) memakai data yang sama: label ≤ 2 kata disembunyikan kecuali admin memilih
+"Tampilkan semua".
+
+---
+
+## F. KB dimatangkan lewat portal (usulan, perlu dibahas)
+
+### Masalahnya
+
+Tim keilmuan akan mengoreksi KB, dan semuanya harus bisa dikerjakan tanpa kode. Saat ini KB berupa berkas
+Markdown di git (`docs/kb/00–17`). Dari berkas itu dibaca: daftar rujukan `[Rxx-y]` (`refs.ts`), glosarium
+(`glossary.ts`), teks ayat 1.2, kitab/hadis/titik dikaji bab 17, dan kasus uji bab 16. Engine memakai 135 anotasi
+`[Rxx-y]`. Artinya mengoreksi KB sekarang = mengedit berkas di git.
+
+Permintaan C2 dan C5 (glosarium bisa disunting, istilah & rujukan bisa ditambah dari dialog sisip) sebenarnya sudah
+berarti *mengubah KB dari portal*. Jadi C2, C5, dan dalil induk (C1) sebaiknya dirancang bersama bagian ini, bukan
+ditempel satu-satu.
+
+### Lapisan KB dan nasibnya
+
+| Lapisan KB | Contoh | Bisa pindah ke portal? |
+|---|---|---|
+| Tabel rujukan per bab | R09-7: klaim, jenis, sumber, kutipan | **Ya**, jenis konten "Rujukan" |
+| Glosarium (bab 15) | Istilah, Arab, makna, arti awam, contoh | **Ya** (C2) |
+| Ayat (1.2) & hadis (17.3) | Teks lengkap + identitas | **Ya**, menjadi "Dalil induk" (C1) |
+| Kitab (17.2), titik dikaji (17.4) | Daftar kitab, hal yang masih tertahan | **Ya** |
+| Kasus uji (bab 16) | Ahli waris → ashl → saham | **Ya**. Engine dites terhadapnya secara otomatis. |
+| Uraian bab (prosa) | Penjelasan per subbab | **Ya**, sebagai blok per subbab (tahap akhir) |
+| Aturan hitung di engine | Kode `packages/engine` | **Tidak.** Tetap dikerjakan developer. Portal hanya menunjukkan dampaknya (lihat bawah). |
+
+### Cara kerjanya
+
+1. **Database jadi sumber KB**, dengan alur review yang sudah ada (draf → review → terbit, riwayat, perbandingan).
+   Perubahan KB wajib disetujui reviewer yang bukan penulisnya.
+2. **Status kematangan per klaim**: `draf` → `perlu verifikasi` → `terverifikasi` (oleh siapa, kapan, catatan).
+   Status "perlu verifikasi lanjut" (17.4) bukan lagi teks bebas. Beranda portal menampilkan "Kematangan KB":
+   jumlah klaim terverifikasi per bab.
+3. **Peta dampak**: tiap rujukan menampilkan siapa saja yang memakainya: materi, soal, FAQ (dari isi database) dan
+   aturan engine (dari pemindaian anotasi `[Rxx-y]` saat build). Bila klaim yang dipakai engine berubah, portal
+   membuat butir **"Perlu tindak lanjut developer"**, dan konten yang merujuknya ditandai "dasarnya berubah, cek ulang".
+4. **Kasus uji sebagai jembatan ke engine**: tim keilmuan menulis kasus + jawaban yang benar di portal. Tes otomatis
+   menjalankan engine pada semua kasus terbit. Kalau hasilnya beda, kasus itu tampil "kalkulator belum sesuai" dan
+   masuk daftar tindak lanjut developer. Dengan begitu tim keilmuan bisa mengoreksi hasil hitung tanpa menyentuh kode.
+5. **Berkas Markdown tetap ada, tapi hasil ekspor**: skrip `ekspor-kb` menulis ulang `docs/kb/*.md` dari database
+   (dijalankan developer atau CI), sehingga engine, tes, dan asisten AI tetap membaca KB dari git. Berkas itu tidak lagi
+   diedit tangan, dan CI menolak perubahan manual. CLAUDE.md perlu diperbarui: "sumber KB = portal; `docs/kb` = ekspor".
+6. **Tambah dari dialog sisip (C5)**: "Istilah baru" / "Rujukan baru" membuat draf KB (kode rujukan berikutnya dibuat
+   otomatis, mis. R09-12). Konten boleh langsung menyisipkannya, tapi **tidak bisa terbit sebelum istilah/rujukannya
+   terbit**. Portal memberi tahu: "menunggu rujukan R09-12 disetujui".
+
+### Alternatif yang lebih ringan
+
+Portal hanya membuat **usulan perubahan**, lalu Edge Function membuka Pull Request ke berkas Markdown di GitHub, dan
+developer yang me-merge. Git tetap sumber utama, dan migrasinya kecil. Kekurangannya: tiap koreksi menunggu developer,
+dan parser Markdown makin rapuh bila tabelnya diedit mesin. Tidak disarankan kalau tujuannya tim keilmuan mandiri.
+
+### Urutan bila disetujui
+
+F1 rujukan + dalil induk + glosarium + kitab + titik dikaji ke database (sekaligus menjawab C1, C2, C5) → F2 status
+kematangan + peta dampak → F3 kasus uji di portal + tes engine otomatis → F4 ekspor Markdown + penjaga CI →
+F5 uraian bab. F1 menggantikan butir Fase 3.1, 3.3, dan 3.5 di bagian B.
