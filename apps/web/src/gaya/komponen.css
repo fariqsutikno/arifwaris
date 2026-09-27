@@ -786,6 +786,20 @@ a.aw-btn{text-decoration:none;color:inherit}
 .menu-akun-isi .keterangan{padding:4px 8px;font-size:13px;color:var(--ink-muted);overflow-wrap:anywhere}
 .menu-akun-isi button{padding:8px;border:none;background:none;text-align:start;border-radius:var(--radius-sm);cursor:pointer;font:inherit}
 .menu-akun-isi button:hover{background:var(--surface)}
+.menu-akun-isi a{padding:8px;border-radius:var(--radius-sm);color:var(--ink);text-decoration:none}
+.menu-akun-isi a:hover{background:var(--surface)}
+/* Tahap 5: profil & papan peringkat. */
+.isian-centang{display:flex;align-items:center;gap:10px;font-size:15px}
+.isian-centang input{width:20px;height:20px;accent-color:var(--ink)}
+.isian select{height:42px;padding:0 12px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:600 15px var(--font-sans)}
+.kartu-streak{max-width:420px}
+.daftar-peringkat{display:flex;flex-direction:column;gap:8px}
+.baris-peringkat{display:flex;align-items:center;gap:12px;padding:10px 14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised)}
+.baris-saya{border-color:var(--ink);box-shadow:var(--shadow-pop)}
+.nomor-peringkat{min-width:2.5ch;font:800 16px var(--font-display);text-align:center}
+.avatar-peringkat{display:inline-grid;place-items:center;flex:none;width:36px;height:36px;border-radius:50%;background:var(--sun);font-weight:800;object-fit:cover}
+.nama-peringkat{display:flex;flex-direction:column;flex:1;min-width:0;overflow-wrap:anywhere}
+.xp-peringkat{flex:none;font:800 16px var(--font-display)}
 .pesan-akun{position:absolute;inset-inline-end:0;top:100%;max-width:240px;font-size:12px;color:var(--danger,#b3261e)}
 
 /* Tautan teks di dalam tumpukan flex selebar teksnya saja, supaya stabilo tidak memanjang sampai ujung baris. */

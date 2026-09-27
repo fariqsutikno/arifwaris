@@ -83,16 +83,16 @@ Dipanggil klien (`security definer`, `search_path` dikunci):
 - **`#/peringkat`**: tab Mingguan / Sepanjang waktu. Belum login → ajakan masuk. Login tapi belum ikut → kartu
   "Tampilkan namaku di papan" (isi nama → ikut). Baris sendiri disorot.
 - **Menu akun** → "Profil": nama tampilan, ikut papan, tampilkan avatar, zona waktu.
-- Ringkasan dimuat ulang setelah antrean terkirim; gagal jaringan → kartu disembunyikan, tidak ada angka palsu.
+- Ringkasan dimuat tiap Beranda dibuka (antrean sudah dikirim saat aplikasi dibuka); kegiatan yang masih di antrean
+  baru terhitung setelah terkirim. Gagal jaringan → kartu disembunyikan, tidak ada angka palsu.
 - Semua teks lewat diksi (halaman `akun`), masuk DB lewat `konten:pulihkan`.
 
 ## Repository (`@waris/data`)
 
-- `RepositoriPengguna`: `bacaProfil()`, `simpanProfil(profil)`, `ringkasanSaya()`.
-- `RepositoriAkun` (tanpa login pun jalan): `papanPeringkat(periode, batas)`.
-- `Sesi` ditambah `nama` dan `avatar` (dari metadata Google) untuk nilai bawaan form.
-- Implementasi `memori/` untuk tes: menghitung XP/streak dengan aturan yang sama secara sederhana tidak perlu —
-  cukup nilai yang bisa diset tes.
+- `RepositoriPengguna`: `bacaProfil()`, `simpanProfil(profil)` (langsung, tanpa antrean).
+- `RepositoriPeringkat` (baru, `repo.peringkat`): `ringkasanSaya()` (butuh login), `papan(periode, batas)` (tanpa login pun jalan).
+- `Sesi` ditambah `nama` dan `avatar` opsional (metadata Google) untuk nilai bawaan form profil.
+- `memori/`: hitungan tidak ditiru; tes mengeset nilai lewat `aturPeringkat` (null = layanan gagal). Hitungan diuji pgTAP.
 
 ## Pengujian
 
