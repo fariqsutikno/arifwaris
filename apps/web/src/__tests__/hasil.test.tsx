@@ -7,6 +7,7 @@ import { kasusBaru, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
+import { semuaTersimpan } from '../tersimpan';
 
 const buat = (kunci: KunciAhliWaris[], tirkah: Kasus['tirkah']): Kasus => {
   const kasus = kasusBaru('L');
@@ -18,12 +19,12 @@ const prototipe = () => buat(['ISTRI', 'IBU', 'AYAH', 'ANAK_LK', 'ANAK_PR', 'SAU
 const c1601 = () => buat(['ISTRI', 'ANAK_LK', 'ANAK_PR'], { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n });
 
 let aksiTerakhir: Aksi | null = null;
-function Uji({ awal, tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; tujuan?: Tujuan; saatDikerjakan?: () => void }) {
+function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; idSesi?: string; tujuan?: Tujuan; saatDikerjakan?: () => void }) {
   const [kasus, setKasus] = useState(awal);
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
-  return <Hasil kasus={kasus} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
+  return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
-const pembagian = () => screen.getByRole('region', { name: 'Pembagian' });
+const pembagian = () => screen.getByRole('region', { name: /^(Pembagian|Jawabanmu|Kunci jawaban)$/ });
 /** Buka jawaban lewat dialog tekan-tahan. */
 const bukaLewatDialog = (namaTombolTahan: RegExp) => {
   vi.useFakeTimers();
@@ -73,6 +74,10 @@ describe('layar hasil', () => {
     expect(screen.queryByText('Rp 16.666.666')).toBeNull();
     expect(screen.queryByText('1/6')).toBeNull();
     expect(screen.queryByText(/Terhalang oleh/)).toBeNull();
+    // Tabel tetap tampil tapi angkanya "?", dan langkah perhitungan terkunci sampai jawaban dibuka.
+    expect(screen.getAllByLabelText('disembunyikan').length).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole('button', { name: /Pembahasan langkah demi langkah/ }));
+    expect(screen.getByText('Jawab soalnya dulu')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
     expect(screen.getByRole('alertdialog').textContent).toMatch(/belum nyoba/);
     bukaLewatDialog(/Tahan untuk buka/);
@@ -237,8 +242,49 @@ describe('layar hasil', () => {
     expect(screen.getAllByText('Kenapa begitu?').length).toBeGreaterThan(0);
   });
 
+  it('hitung kasus: pindah ke Belajar selalu dikonfirmasi; batal tidak mengirim aksi', () => {
+    render(<Uji awal={c1601()} />);
+    aksiTerakhir = null;
+    fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
+    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Tetap di sini' }));
+    expect(aksiTerakhir).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
+    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Pindah' }));
+    expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
+  });
+
+  it('mode fokus: maju per sub-langkah lewat Lanjut, hasil akhir menampilkan hitungan, animasi bisa dimatikan', () => {
+    render(<Uji awal={c1601()} />);
+    fireEvent.click(screen.getByRole('button', { name: /Pelajari langkah perhitungan/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Mode fokus/ }));
+    const panel = () => document.querySelector('.panel-hitung')!;
+    const awal = panel().textContent;
+    expect(awal).toMatch(/Langkah 1/);
+    fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
+    expect(panel().textContent).not.toBe(awal);
+    fireEvent.click(screen.getByRole('button', { name: '← Kembali' }));
+    expect(panel().textContent).toBe(awal);
+    for (let klik = 0; klik < 60 && !panel().querySelector('.rumus-hitung'); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
+    expect(panel().querySelector('.rumus-hitung')!.textContent).toMatch(/× Rp 24\.000\.000/);
+    expect(screen.getByRole('button', { name: 'Jeda animasi' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('switch', { name: /Animasi/ }));
+    expect(screen.queryByRole('button', { name: 'Jeda animasi' })).toBeNull();
+    for (let klik = 0; klik < 20 && !/Selesai!/.test(panel().textContent ?? ''); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
+    expect(panel().textContent).toMatch(/Selesai!/);
+    expect(screen.getByRole('button', { name: 'Tutup mode fokus' })).toBeTruthy();
+  });
+
   it('kasus yang tidak didukung tampil sebagai pesan', () => {
     render(<Uji awal={kasusBaru('L')} />);
     expect(screen.getByRole('alert').textContent).toMatch(/belum bisa dihitung/);
+  });
+
+  it('tombol Simpan menyimpan kasus dan berganti jadi status Tersimpan', () => {
+    localStorage.clear();
+    render(<Uji awal={prototipe()} idSesi="sesi-simpan" />);
+    fireEvent.click(screen.getByRole('button', { name: /Simpan/ }));
+    expect(semuaTersimpan()).toHaveLength(1);
+    expect(screen.getByText('Tersimpan')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Simpan/ })).toBeNull();
   });
 });

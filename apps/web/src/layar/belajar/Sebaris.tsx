@@ -4,6 +4,7 @@ import { Fragment } from 'react';
 import type { Potongan } from '@waris/content';
 import { Istilah } from '../../ui/Tooltip';
 import { ChipDalil } from './ChipDalil';
+import { } from '../../terjemah';
 
 export function Sebaris({ isi }: { isi: Potongan[] }) {
   return (

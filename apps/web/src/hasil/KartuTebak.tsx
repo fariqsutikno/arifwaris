@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Ikon } from '../ui/Ikon';
 import { nilaiTebakan, type HasilTebakan } from './tebak';
 import type { RingkasanHasil } from './ringkasan';
+import { angka, t } from '../terjemah';
 
 interface Props {
   ringkasan: RingkasanHasil;
@@ -34,9 +35,9 @@ export function KartuTebak({ ringkasan, saatBenar, saatMencoba, saatLihatJawaban
   return (
     <form className="tebak" onSubmit={event => { event.preventDefault(); jawab(); }} aria-labelledby="judul-tebak">
       <div className="petunjuk-tebak">
-        <h3 id="judul-tebak">Tebak pembagian akhirnya</h3>
-        <p>Tulis bagian akhir tiap orang dari <b>seluruh harta yang dibagi</b>, sesudah 'aul atau radd bila ada. Bukan bagian fardh awalnya.</p>
-        <p className="contoh-tebak">Contoh <code>1/8</code> atau <code>3/24</code>. Yang tidak mendapat bagian, isi <code>0</code>.</p>
+        <h3 id="judul-tebak">{t('hitung.tebak_pembagian_akhirnya')}</h3>
+        <p>{t('hitung.tulis_bagian_akhir_tiap_orang_dari')} <b>{t('hitung.seluruh_harta_yang_dibagi')}</b>{t('hitung.sesudah_aul_atau_radd_bila_ada')}</p>
+        <p className="contoh-tebak">{t('umum.contoh')} <code>{angka('1/8')}</code> {t('hitung.atau')} <code>{angka('3/24')}</code>{t('hitung.yang_tidak_mendapat_bagian_isi')} <code>{angka('0')}</code>.</p>
       </div>
 
       <div className="isian-tebak">
@@ -51,20 +52,20 @@ export function KartuTebak({ ringkasan, saatBenar, saatMencoba, saatLihatJawaban
 
       {hasil?.jenis === 'belumLengkap' && (
         <div className="hasil-tebak kurang" role="alert">
-          <b>Masih ada yang kosong</b>
-          <p>Isi dulu: {namaDari(hasil.idKosong)}.</p>
+          <b>{t('hitung.masih_ada_yang_kosong')}</b>
+          <p>{t('hitung.isi_dulu_nama', { nama: namaDari(hasil.idKosong) })}</p>
         </div>
       )}
       {hasil?.jenis === 'dinilai' && hasil.idSalah.length > 0 && (
         <div className="hasil-tebak salah" role="alert">
-          <b><Ikon nama="salah" ukuran={18} /> Jawabanmu belum tepat</b>
-          <p>{hasil.idBenar.length} dari {daftarOrang.length} orang sudah benar. Perbaiki: {namaDari(hasil.idSalah)}.</p>
+          <b><Ikon nama="salah" ukuran={18} /> {t('hitung.jawabanmu_belum_tepat')}</b>
+          <p>{t('hitung.benar_dari_total_orang_sudah_benar', { benar: hasil.idBenar.length, total: daftarOrang.length, nama: namaDari(hasil.idSalah) })}</p>
         </div>
       )}
 
       <div className="aksi-tebak">
-        <button type="submit" className="aw-btn aw-btn-primary aw-btn-sm">Jawab</button>
-        <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={saatLihatJawaban}>Lihat jawaban</button>
+        <button type="submit" className="aw-btn aw-btn-primary aw-btn-sm">{t('umum.jawab')}</button>
+        <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={saatLihatJawaban}>{t('hitung.lihat_jawaban')}</button>
       </div>
     </form>
   );
@@ -74,8 +75,8 @@ export function KartuTebak({ ringkasan, saatBenar, saatMencoba, saatLihatJawaban
 export function UmpanBalikBenar() {
   return (
     <div className="hasil-tebak benar" role="status">
-      <b><Ikon nama="benar" ukuran={20} /> Benar semua!</b>
-      <p>Pembagianmu sama persis dengan hasil perhitungan. Cocokkan caranya di langkah perhitungan.</p>
+      <b><Ikon nama="benar" ukuran={20} /> {t('hitung.benar_semua')}</b>
+      <p>{t('hitung.pembagianmu_sama_persis_dengan_hasil_perhitungan')}</p>
     </div>
   );
 }

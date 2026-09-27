@@ -6,7 +6,10 @@ import { useState } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
 import { daftarInduk, hitungIsian, INDUK_BARU_WAFAT, jenisDari, kurangiAhliWaris, tambahAhliWaris, ubahNama } from '../checklist';
 import { INFO_TIDAK_ADA, KELUARGA_INTI, KERABAT_LAIN, KETERANGAN_HUBUNGAN, LABEL_SEHARI, sebutAlmarhum } from '../konten/ahliWaris';
-import { TombolIkon } from '../ui/Tooltip';
+import { Arab, TombolIkon } from '../ui/Tooltip';
+import { useBahasa } from '../preferensi';
+import { LABEL_ARAB } from '@waris/explain';
+import { t } from '../terjemah';
 
 interface Props { graf: GrafKeluarga; idMayit: IdOrang; ubahGraf: (ubah: (graf: GrafKeluarga) => GrafKeluarga) => void }
 
@@ -42,14 +45,14 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
       {pesan && <p className="isian-salah" role="alert">{pesan}</p>}
 
       <section className="kelompok-kerabat" aria-labelledby={`judul-inti-${idMayit}`}>
-        <h3 id={`judul-inti-${idMayit}`} className="judul-bagian-kecil">Keluarga inti</h3>
+        <h3 id={`judul-inti-${idMayit}`} className="judul-bagian-kecil">{t('hitung.keluarga_inti')}</h3>
         <ul className="daftar-jumlah">{KELUARGA_INTI.filter(tampilUntukMayit).map(baris)}</ul>
       </section>
 
       <button type="button" className="buka-kerabat" aria-expanded={kerabatLainTerbuka} disabled={adaKerabatLain}
         onClick={() => setKerabatLainDibuka(!kerabatLainDibuka)}>
-        Kerabat lain {kerabatLainTerbuka ? '▴' : '▾'}
-        <small>{adaKerabatLain ? 'Tetap terbuka karena sudah ada yang diisi' : 'kakek-nenek, cucu, kakak/adik, paman, keponakan'}</small>
+        {t('hitung.kerabat_lain')} {kerabatLainTerbuka ? '▴' : '▾'}
+        <small>{adaKerabatLain ? t('hitung.tetap_terbuka_karena_sudah_ada_yang') : t('hitung.kakek_nenek_cucu_kakak_adik_paman')}</small>
       </button>
 
       {kerabatLainTerbuka && KERABAT_LAIN.map(kelompok => (
@@ -82,6 +85,7 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   const jenisKelaminMayit = graf.orang[idMayit]!.jenisKelamin;
   const label = sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenis?.label ?? kunci, jenisKelaminMayit);
   const keterangan = KETERANGAN_HUBUNGAN[kunci];
+  const bahasa = useBahasa();
   const calonInduk = jenis?.kunciInduk ? daftarInduk(graf, idMayit, jenis.kunciInduk) : [];
   const [idInduk, setIdInduk] = useState<string | undefined>(undefined);
   const [namaTerbuka, setNamaTerbuka] = useState(false);
@@ -92,27 +96,27 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   return (
     <li className={jumlah > 0 ? 'kontrol-jumlah ada' : 'kontrol-jumlah'} role="group" aria-label={label}>
       <div className="baris-kontrol">
-        <span className="nama-kontrol">{label}
+        <span className="nama-kontrol">{label}{bahasa !== 'id' && <> <Arab>{LABEL_ARAB[kunci]}</Arab></>}
           {keterangan && <small>{sebutAlmarhum(keterangan, jenisKelaminMayit)}</small>}
           {jenis?.kunciInduk && (
-            <select aria-label={`${label} dari siapa?`} value={indukTerpilih} onChange={e => setIdInduk(e.target.value)}>
-              {calonInduk.map(id => <option key={id} value={id}>dari {labelOrangChecklist(graf, idMayit, id, jenis.kunciInduk!)}</option>)}
+            <select aria-label={t('hitung.label_dari_siapa', { label })} value={indukTerpilih} onChange={e => setIdInduk(e.target.value)}>
+              {calonInduk.map(id => <option key={id} value={id}>{t('hitung.dari_nama_2', { nama: labelOrangChecklist(graf, idMayit, id, jenis.kunciInduk!) })}</option>)}
               <option value={INDUK_BARU_WAFAT}>dari {labelInduk} lain (sudah wafat)</option>
             </select>
           )}
         </span>
         {jumlah > 0 && (
-          <TombolIkon className="tombol-nama" label={`Beri nama ${label} (opsional)`} aria-expanded={namaTerbuka} onClick={() => setNamaTerbuka(!namaTerbuka)}>
+          <TombolIkon className="tombol-nama" label={t('hitung.beri_nama_label_opsional', { label })} aria-expanded={namaTerbuka} onClick={() => setNamaTerbuka(!namaTerbuka)}>
             {/* kartu identitas: menandai "nama", bukan "ubah" */}
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <rect x="3" y="5" width="18" height="14" rx="2.5" /><circle cx="9" cy="11" r="2.2" /><path d="M5.8 16.2c.6-1.5 1.8-2.3 3.2-2.3s2.6.8 3.2 2.3" /><path d="M15 10h3M15 13.5h3" />
             </svg>
-            <span>Nama</span>
+            <span>{t('umum.nama')}</span>
           </TombolIkon>
         )}
-        <button type="button" aria-label={`Kurangi ${label}`} disabled={jumlah === 0} onClick={saatKurang}>−</button>
+        <button type="button" aria-label={t('hitung.kurangi_label', { label })} disabled={jumlah === 0} onClick={saatKurang}>−</button>
         <span className="angka-kontrol" aria-live="polite">{jumlah}</span>
-        <button type="button" aria-label={`Tambah ${label}`} disabled={penuh} onClick={() => saatTambah(jenis?.kunciInduk ? indukTerpilih : undefined)}>+</button>
+        <button type="button" aria-label={t('hitung.tambah_label', { label })} disabled={penuh} onClick={() => saatTambah(jenis?.kunciInduk ? indukTerpilih : undefined)}>+</button>
       </div>
       {namaTerbuka && jumlah > 0 && (
         <ul className="daftar-nama">
@@ -123,7 +127,7 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
               <li key={idOrang}>
                 <label className="isian-nama">
                   <span>{labelKe}</span>
-                  <input type="text" aria-label={`Nama ${labelKe}`} placeholder={`Nama, misal ${CONTOH_NAMA[orang.jenisKelamin][indeks % 3]}`}
+                  <input type="text" aria-label={t('hitung.nama_label', { label: labelKe })} placeholder={t('hitung.nama_misal_contoh', { contoh: CONTOH_NAMA[orang.jenisKelamin][indeks % 3]! })}
                     defaultValue={orang.nama ?? ''} onBlur={e => saatUbahNama(idOrang, e.target.value)} />
                 </label>
                 {jenis?.kunciInduk && orang.idAyah && <small>dari {labelOrangChecklist(graf, idMayit, orang.idAyah, jenis.kunciInduk)}</small>}
@@ -141,9 +145,9 @@ export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOran
   const orang = graf.orang[idOrang]!;
   const isian = hitungIsian(graf, idMayit);
   const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
-  const label = kunciOrang ? LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label ?? 'Kerabat' : 'Kerabat';
-  if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? ', sudah wafat' : ''})`;
-  if (orang.penghubung) return `${label} (sudah wafat)`;
+  const label = kunciOrang ? LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label ?? t('hitung.kerabat') : t('hitung.kerabat');
+  if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? t('hitung.sudah_wafat_2') : ''})`;
+  if (orang.penghubung) return t('hitung.label_sudah_wafat', { label });
   const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
   return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
 }

@@ -8,6 +8,7 @@ import { hitungIsian } from '../checklist';
 import type { Kasus } from '../kasus';
 import { Tombol } from '../ui/komponen';
 import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
+import { t } from '../terjemah';
 
 const TAMPILKAN_MUNASAKHAT = false;
 
@@ -28,7 +29,7 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
   const labelDasar = (idOrang: IdOrang) => labelOrangChecklist(kasus.graf, mayitDari[idOrang] ?? kasus.graf.idPewaris, idOrang);
   const label = (idOrang: IdOrang) => {
     const idMayit = mayitDari[idOrang];
-    return idMayit && idMayit !== kasus.graf.idPewaris ? `${labelDasar(idOrang)} (ahli waris ${labelDasar(idMayit)})` : labelDasar(idOrang);
+    return idMayit && idMayit !== kasus.graf.idPewaris ? t('hitung.orang_ahli_waris_mayit', { orang: labelDasar(idOrang), mayit: labelDasar(idMayit) }) : labelDasar(idOrang);
   };
 
   const adaTerisi = kasus.urutanWafat.length > 0
@@ -49,21 +50,21 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
     <div className="tumpuk">
       <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby="pertanyaan-utama">
         <button type="button" role="radio" aria-checked={!adaKondisi} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
-          <span>Tidak ada</span><small>Langsung lihat hasil.</small>
+          <span>{t('umum.tidak_ada')}</span><small>{t('hitung.langsung_lihat_hasil')}</small>
         </button>
         <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
-          <span>Ada</span><small>Beda agama atau terlibat dalam penyebab kematian almarhum.</small>
+          <span>{t('umum.ada')}</span><small>{t('hitung.beda_agama_atau_terlibat_dalam_penyebab')}</small>
         </button>
       </div>
       {adaKondisi && <>
-      <Kondisi judul="Ada yang beda agama dengan almarhum" keterangan="Beda agama menggugurkan hak waris."
+      <Kondisi judul={t('hitung.ada_yang_beda_agama_dengan_almarhum')} keterangan={t('hitung.beda_agama_menggugurkan_hak_waris')}
         akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
         {semuaAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={kasus.graf.orang[id]!.agama === 'nonIslam'}
             saatUbah={tercentang => ubahOrang(id, { agama: tercentang ? 'nonIslam' : 'islam' })} />
         ))}
       </Kondisi>
-      <Kondisi judul="Ada yang terlibat dalam penyebab kematian almarhum" keterangan="Apa pun bentuknya."
+      <Kondisi judul={t('hitung.ada_yang_terlibat_dalam_penyebab_kematian')} keterangan={t('hitung.apa_pun_bentuknya')}
         akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
         {daftarAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={!!kasus.graf.orang[id]!.membunuhPewaris}
@@ -86,22 +87,22 @@ function PanelMunasakhat({ kasus, ubah, daftarAhliWaris, label }: Props & { daft
     aturUrutan(baru);
   };
   return (
-    <Kondisi judul="Ada ahli waris yang wafat sebelum harta dibagi" keterangan="Ini namanya munasakhat."
+    <Kondisi judul={t('hitung.ada_ahli_waris_yang_wafat_sebelum')} keterangan={t('hitung.ini_namanya_munasakhat')}
       akibat="bagian orang itu diteruskan ke ahli warisnya sendiri, dihitung bertingkat."
       terbukaAwal={urutan.length > 0}>
       {daftarAhliWaris.map(id => (
         <Centang key={id} label={label(id)} tercentang={urutan.includes(id)}
           saatUbah={tercentang => aturUrutan(tercentang ? [...urutan, id] : urutan.filter(idLain => idLain !== id))} />
       ))}
-      {urutan.length > 1 && <p className="keterangan">Urutin dari yang wafat duluan.</p>}
+      {urutan.length > 1 && <p className="keterangan">{t('hitung.urutin_dari_yang_wafat_duluan')}</p>}
       {urutan.map((idMayit, indeks) => (
         <section key={idMayit} className="kartu tumpuk">
           <div className="chip-deret" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 className="judul-langkah" style={{ fontSize: 20 }}>{indeks + 1}. Ahli waris {label(idMayit)}</h2>
+            <h2 className="judul-langkah" style={{ fontSize: 20 }}>{t('hitung.nomor_ahli_waris_label', { nomor: indeks + 1, label: label(idMayit) })}</h2>
             {urutan.length > 1 && (
               <span className="chip-deret">
-                <Tombol varian="secondary" kecil disabled={indeks === 0} onClick={() => geser(indeks, -1)} aria-label={`Naikkan ${label(idMayit)}`}>↑</Tombol>
-                <Tombol varian="secondary" kecil disabled={indeks === urutan.length - 1} onClick={() => geser(indeks, 1)} aria-label={`Turunkan ${label(idMayit)}`}>↓</Tombol>
+                <Tombol varian="secondary" kecil disabled={indeks === 0} onClick={() => geser(indeks, -1)} aria-label={t('hitung.naikkan_label', { label: label(idMayit) })}>↑</Tombol>
+                <Tombol varian="secondary" kecil disabled={indeks === urutan.length - 1} onClick={() => geser(indeks, 1)} aria-label={t('hitung.turunkan_label', { label: label(idMayit) })}>↓</Tombol>
               </span>
             )}
           </div>
@@ -120,7 +121,7 @@ function Kondisi({ judul, keterangan, akibat, terbukaAwal = false, children }: {
     <div className={terbuka ? 'kondisi terbuka' : 'kondisi'}>
       <label className="kondisi-kepala">
         <input type="checkbox" checked={terbuka} onChange={event => setTerbuka(event.target.checked)} />
-        <span><b>{judul}</b><small>{keterangan}</small><span className="akibat"><em>Akibatnya:</em> {akibat}</span></span>
+        <span><b>{judul}</b><small>{keterangan}</small><span className="akibat"><em>{t('hitung.akibatnya')}</em> {akibat}</span></span>
       </label>
       {terbuka && <div className="kondisi-isi">{children}</div>}
     </div>

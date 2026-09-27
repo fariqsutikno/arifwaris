@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_MODUL, DAFTAR_PELAJARAN, bacaBlok, bacaPelajaran, bacaPotongan, cariIstilah, cariRujukan, semuaPotongan } from '../index.js';
+import { bacaBlok, bacaPotongan } from '../index.js';
 
 describe('parser materi', () => {
   test('potongan sebaris: tebal, miring, istilah, rujukan', () => {
@@ -33,34 +33,8 @@ describe('parser materi', () => {
     expect(bacaBlok('k', '```kuis\nK-01, K-02\nK-03\n```')).toEqual([{ jenis: 'kuis', daftarKode: ['K-01', 'K-02', 'K-03'] }]);
   });
 
-  test('frontmatter atau blok kasus rusak = galat, bukan diam-diam', () => {
-    expect(() => bacaPelajaran('x', 'tanpa frontmatter')).toThrow(/frontmatter/);
-    expect(() => bacaPelajaran('x', '---\njudul: A\nmodul: 1\nurutan: 1\n---\nisi')).toThrow(/tujuan/);
+  test('blok kasus rusak = galat, bukan diam-diam', () => {
     expect(() => bacaBlok('x', '```kasus\npewaris: X\n```')).toThrow(/pewaris/);
-  });
-});
-
-describe('materi di docs/materi', () => {
-  test('modul dan pelajaran terbaca, berurutan, slug unik', () => {
-    expect(DAFTAR_MODUL.map(modul => modul.nomor)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    expect(DAFTAR_PELAJARAN.length).toBeGreaterThan(0);
-    expect(new Set(DAFTAR_PELAJARAN.map(pelajaran => pelajaran.slug)).size).toBe(DAFTAR_PELAJARAN.length);
-    for (const pelajaran of DAFTAR_PELAJARAN) expect(DAFTAR_MODUL.map(modul => modul.nomor)).toContain(pelajaran.modul);
-  });
-
-  test('tidak ada paragraf yang diawali spasi (sisa butir daftar yang terputus)', () => {
-    for (const pelajaran of DAFTAR_PELAJARAN) {
-      for (const blok of pelajaran.blok) {
-        if (blok.jenis === 'paragraf' && blok.isi[0]?.jenis === 'teks') expect(blok.isi[0].teks, pelajaran.slug).not.toMatch(/^\s/);
-      }
-    }
-  });
-
-  test.each(DAFTAR_PELAJARAN.map(pelajaran => [pelajaran.slug, pelajaran] as const))('%s: rujukan ada di KB, istilah ada di glosarium', (_slug, pelajaran) => {
-    for (const potongan of semuaPotongan(pelajaran.blok)) {
-      if (potongan.jenis === 'rujukan') expect(cariRujukan(potongan.kode), potongan.kode).toBeDefined();
-      if (potongan.jenis === 'istilah') expect(cariIstilah(potongan.id), potongan.id).toBeDefined();
-    }
   });
 });
 

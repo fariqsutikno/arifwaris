@@ -1,15 +1,16 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
-import { DAFTAR_SOAL_HITUNG, DAFTAR_SOAL_KUIS, type SoalHitung } from '@waris/content';
+import { act, fireEvent, render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import { type SoalHitung } from '@waris/content';
+import { daftarSoalHitung, daftarSoalKuis } from '../konten/sumber';
 import { ringkas } from '../hasil/ringkasan';
 import { jalankan } from '../jalankan';
 import { kasusDariContoh } from '../layar/belajar/contoh';
 import { Latihan } from '../layar/belajar/Latihan';
-import { PAKET_ACAK, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
-import { bacaCatatan, simpanCatatan } from '../preferensi';
+import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
+import { bacaSkorPaket, catatLatihan } from '../progres';
 
 describe('kunci soal hitung = hasil engine', () => {
-  it.each(DAFTAR_SOAL_HITUNG.map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
+  it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
     const kasus = kasusDariContoh(soal.kasus);
     const tampil = jalankan(kasus);
     if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(JSON.stringify(tampil));
@@ -23,8 +24,8 @@ describe('kunci soal hitung = hasil engine', () => {
 
 describe('halaman latihan', () => {
   it('soal hitung per bab; Kerjakan membuka soalnya; yang sudah dikerjakan bertanda dan topiknya muncul', () => {
-    const [pertama, kedua] = DAFTAR_SOAL_HITUNG as [SoalHitung, SoalHitung];
-    simpanCatatan('soal', kedua.kode, 'selesai');
+    const [pertama, kedua] = daftarSoalHitung() as [SoalHitung, SoalHitung];
+    catatLatihan('hitung', kedua.kode, true, null);
     const dikerjakan: SoalHitung[] = [];
     const { container } = render(<Latihan tab="hitung" kasusSekarang={null} saatKerjakan={soal => dikerjakan.push(soal)} />);
     expect(screen.getByRole('heading', { name: new RegExp(`^${judulTopik(pertama.bab)}`) })).toBeTruthy();
@@ -37,10 +38,10 @@ describe('halaman latihan', () => {
   it('kuis: daftar paket per bab + acak; paket acak berisi soal unik', () => {
     render(<Latihan tab="kuis" kasusSekarang={null} saatKerjakan={() => {}} />);
     expect(screen.getByRole('link', { name: /Kuis acak/ }).getAttribute('href')).toBe('#/latihan/kuis/acak');
-    for (const bab of new Set(DAFTAR_SOAL_KUIS.map(soal => soal.bab))) expect(screen.getByRole('link', { name: new RegExp(`^${judulTopik(bab)}`) })).toBeTruthy();
+    for (const bab of new Set(daftarSoalKuis().map(soal => soal.bab))) expect(screen.getByRole('link', { name: new RegExp(`^${judulTopik(bab)}`) })).toBeTruthy();
     const acak = soalPaket(PAKET_ACAK);
     expect(new Set(acak.map(soal => soal.kode)).size).toBe(acak.length);
-    expect(acak.length).toBe(Math.min(10, DAFTAR_SOAL_KUIS.length));
+    expect(acak.length).toBe(Math.min(10, daftarSoalKuis().length));
   });
 
   it('sesi kuis mode latihan: fokus (tanpa tab), soal satu per satu, pembahasan langsung, skor + pembahasan di akhir', () => {
@@ -60,7 +61,7 @@ describe('halaman latihan', () => {
     expect(screen.getByRole('heading', { name: 'Pembahasan' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Pilih kuis lain' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Kerjakan lagi' })).toBeTruthy();
-    expect(bacaCatatan('kuis')['bab-1']).toBe(`1/${daftar.length}`);
+    expect(bacaSkorPaket()['bab-1']).toBe(`1/${daftar.length}`);
   });
 
   it('sesi kuis mode ujian: jawaban bisa diganti dan soal sebelumnya dibuka lagi; penilaian baru saat diselesaikan', () => {
@@ -83,5 +84,19 @@ describe('halaman latihan', () => {
       fireEvent.click(screen.getByRole('button', { name: indeks + 1 < daftar.length ? 'Soal berikutnya' : 'Selesaikan' }));
     });
     expect(document.querySelector('.skor-besar')?.textContent).toBe(`${daftar.length}/${daftar.length}`);
+  });
+
+  it('mode ujian: 5 soal = 3 menit, dibulatkan ke 30 detik; waktu habis = dikumpulkan otomatis, yang kosong salah', () => {
+    expect([durasiUjian(5), durasiUjian(10), durasiUjian(3), durasiUjian(1)]).toEqual([180, 360, 120, 30]);
+    const daftar = soalPaket('bab-2');
+    vi.useFakeTimers();
+    render(<Latihan tab="kuis" paket="bab-2" kasusSekarang={null} saatKerjakan={() => {}} />);
+    fireEvent.click(screen.getByRole('radio', { name: /Mode ujian/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
+    expect(screen.getByRole('timer')).toBeTruthy();
+    act(() => { vi.advanceTimersByTime(durasiUjian(daftar.length) * 1000 + 500); });
+    vi.useRealTimers();
+    expect(document.querySelector('.skor-besar')?.textContent).toBe(`0/${daftar.length}`);
+    expect(screen.getAllByText('Tidak dijawab (waktu habis)')).toHaveLength(daftar.length);
   });
 });

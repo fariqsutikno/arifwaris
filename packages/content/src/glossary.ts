@@ -15,6 +15,8 @@ export interface EntriGlosarium {
   artiAwam?: string;
   /** Contoh dari kasus uji bab 16 (draf, perlu review); kosong bila belum ada kasus yang pas. */
   contoh?: string;
+  /** Terjemahan Arab dari konten glosarium_ar (diisi web); kolom yang kosong tampil Indonesia. */
+  ar?: { makna: string; artiAwam?: string; contoh?: string };
 }
 
 export const slug = (istilah: string): string =>
@@ -22,14 +24,16 @@ export const slug = (istilah: string): string =>
 
 /** Parse tabel glosarium (bab 15): | Istilah | Arab | Makna | Arti awam | Contoh |. */
 export function bacaGlosarium(teksMarkdown: string): EntriGlosarium[] {
-  return teksMarkdown.split('\n')
+  const daftar = teksMarkdown.split('\n')
     .filter(baris => baris.startsWith('| ') && !baris.startsWith('| Istilah'))
     .map(baris => {
       const [istilah = '', arab = '', makna = '', artiAwam = '', contoh = ''] = baris.split('|').slice(1, -1).map(isi => isi.trim());
       const sinonim = istilah.split('/').map(slug);
       return { id: sinonim[0]!, sinonim, istilah, arab, makna, ...(artiAwam ? { artiAwam } : {}), ...(contoh ? { contoh } : {}) };
     });
+  return daftar;
 }
+
 
 export const GLOSARIUM: EntriGlosarium[] = bacaGlosarium(glosariumMd);
 

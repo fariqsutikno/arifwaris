@@ -1,11 +1,13 @@
 // Menilai tebakan mode Belajar: tiap orang ditebak bagiannya sebagai pecahan dari harta ("1/8", "0", "1").
 // Tebakan benar bila senilai dengan saham/penyebut dari engine (3/24 sama dengan 1/8). Tanpa number: bigint saja.
 
+import { angkaLatin } from '../terjemah';
+
 export interface Pecahan { n: bigint; d: bigint }
 
 /** "1/8" → {1, 8}; "0" / "1" → bilangan bulat; selain itu (kosong, "0,5", "1/0") → null. */
 export function bacaPecahan(teks: string): Pecahan | null {
-  const cocok = /^\s*(\d+)\s*(?:\/\s*(\d+)\s*)?$/.exec(teks);
+  const cocok = /^\s*(\d+)\s*(?:\/\s*(\d+)\s*)?$/.exec(angkaLatin(teks));
   if (!cocok) return null;
   const d = BigInt(cocok[2] ?? '1');
   return d === 0n ? null : { n: BigInt(cocok[1]!), d };

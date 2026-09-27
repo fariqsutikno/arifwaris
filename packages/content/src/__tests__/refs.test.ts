@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan } from '../index.js';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs } from '../index.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
   const teksBab = [
@@ -111,4 +111,15 @@ describe('daftar pustaka bab 17', () => {
     expect(JUDUL_BAB[4]).toMatch(/^Ashabul Furudh/);
     expect(Object.keys(JUDUL_BAB).length).toBe(15);
   });
+});
+
+
+test('sqlDaftarRefs: satu baris per kode, terurut, idempoten', () => {
+  const sql = sqlDaftarRefs([{ kode: 'R09-7', bab: 9 }, { kode: 'R04-2', bab: 4 }, { kode: 'R04-2', bab: 4 }]);
+  expect(sql).toBe(
+    "insert into daftar_refs (kode, bab) values\n  ('R04-2', 4),\n  ('R09-7', 9)\non conflict (kode) do update set bab = excluded.bab;\n");
+});
+
+test('semua kode RUJUKAN cocok dengan pola kolom daftar_refs', () => {
+  for (const rujukan of RUJUKAN) expect(rujukan.kode).toMatch(/^R\d{2}-\d+$/);
 });

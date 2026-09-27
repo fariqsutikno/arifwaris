@@ -4,9 +4,18 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "test": "pnpm -r test"
+    "test": "pnpm -r test",
+    "admin": "pnpm --filter @waris/admin dev",
+    "db:mulai": "supabase start",
+    "db:reset": "supabase db reset",
+    "db:tes": "supabase test db",
+    "db:refs": "vite-node scripts/daftar-refs.ts",
+    "konten:ekspor": "pnpm --filter @waris/skrip ekspor"
   },
   "devDependencies": {
-    "typescript": "^5.5.0"
+    "@waris/content": "workspace:*",
+    "supabase": "^2.117.0",
+    "typescript": "^5.5.0",
+    "vite-node": "^2.1.9"
   }
 }

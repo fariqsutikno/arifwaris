@@ -6,47 +6,48 @@ import { LANGKAH_SELANJUTNYA } from '../konten/ahwal';
 import { Istilah } from '../ui/Tooltip';
 import { Lipat } from './Lipat';
 import type { RingkasanHasil, TentangKasus } from './ringkasan';
+import { angka, panah, t } from '../terjemah';
 
 export function KartuHarta({ ringkasan, sembunyiNominal, saatUbahHarta }: { ringkasan: RingkasanHasil; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined }) {
   const { tirkah } = ringkasan;
-  const uang = (nilai: bigint) => (sembunyiNominal ? 'Rp ••••••' : formatRupiah(nilai));
+  const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
   const potongan = [
-    { label: 'Pengurusan jenazah', nilai: tirkah.tajhiz },
-    { label: 'Hutang', nilai: tirkah.hutang },
-    { label: 'Wasiat', nilai: tirkah.wasiatDipakai },
+    { label: t('hitung.pengurusan_jenazah'), nilai: tirkah.tajhiz },
+    { label: t('hitung.hutang'), nilai: tirkah.hutang },
+    { label: t('hitung.wasiat'), nilai: tirkah.wasiatDipakai },
   ];
 
   return (
-    <Lipat judul="Harta yang dibagi" ringkas={uang(tirkah.bersih)} className="urut-harta">
-      <p className="caption-isian">Harta tidak langsung dibagi. Dipakai dulu untuk mengurus jenazah, lalu melunasi hutang, lalu menunaikan wasiat. Sisanya baru hak ahli waris.</p>
+    <Lipat judul={t('hitung.harta_yang_dibagi')} ringkas={uang(tirkah.bersih)} className="urut-harta kartu-harta">
+      <p className="caption-isian">{t('hitung.harta_tidak_langsung_dibagi_dipakai_dulu')}</p>
       <div className="hitung-susun">
-        <span>Harta peninggalan</span><span className="nilai">{uang(tirkah.kotor)}</span>
+        <span>{t('hitung.harta_peninggalan')}</span><span className="nilai">{uang(tirkah.kotor)}</span>
         {potongan.map(bagian => <FragmenPotongan key={bagian.label} label={bagian.label} nilai={bagian.nilai} sembunyi={sembunyiNominal} />)}
         {tirkah.wasiatButuhIjazah > 0n
-          ? <span className="ket">Wasiat dipangkas ke batas 1/3. Kelebihan {uang(tirkah.wasiatButuhIjazah)} hanya berlaku bila semua ahli waris setuju.</span>
-          : tirkah.wasiatDipakai > 0n && <span className="ket">Aman, masih di bawah batas 1/3 (maks. {uang(tirkah.wasiatBatas)}).</span>}
+          ? <span className="ket">{t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</span>
+          : tirkah.wasiatDipakai > 0n && <span className="ket">{t('hitung.aman_masih_di_bawah_batas_1', { batas: uang(tirkah.wasiatBatas) })}</span>}
         <span className="garis" />
-        <b>Dibagi ke ahli waris</b><b className="nilai total">{uang(tirkah.bersih)}</b>
+        <b>{t('hitung.dibagi_ke_ahli_waris')}</b><b className="nilai total">{uang(tirkah.bersih)}</b>
       </div>
-      {saatUbahHarta && <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-ubah-harta" onClick={saatUbahHarta}>Ubah harta</button>}
+      {saatUbahHarta && <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-ubah-harta" onClick={saatUbahHarta}>{t('hitung.ubah_harta')}</button>}
     </Lipat>
   );
 }
 
 function FragmenPotongan({ label, nilai, sembunyi }: { label: string; nilai: bigint; sembunyi: boolean }) {
-  return <><span>{label}</span><span className="nilai kurang">{sembunyi ? '−Rp ••••••' : `−${formatRupiah(nilai)}`}</span></>;
+  return <><span>{label}</span><span className="nilai kurang">{sembunyi ? t('hitung.rp_2') : `−${formatRupiah(nilai)}`}</span></>;
 }
 
 // Bagian tertentu = fardh (1/2, 1/4, 1/8, 2/3, 1/3, 1/6): besarnya sudah ditentukan nash.
 const JENIS_KASUS: Record<NonNullable<TentangKasus['kelas']>, { nama: string; istilah: string; arti: string }> = {
-  adilah: { nama: "Normal ('adilah)", istilah: 'adilah', arti: 'Jumlah bagian tertentu (fardh) tidak melebihi harta; bila ada sisa, diambil ashabah.' },
-  ailah: { nama: "'Aul", istilah: 'aul', arti: 'Jumlah bagian tertentu melebihi harta, jadi semua bagian dikurangi secara seimbang.' },
-  raddA: { nama: 'Radd', istilah: 'radd', arti: 'Ada sisa tanpa ashabah; sisa dikembalikan ke pemilik bagian tertentu.' },
-  raddB: { nama: 'Radd (dengan suami/istri)', istilah: 'radd', arti: 'Ada sisa tanpa ashabah; sisa dikembalikan ke pemilik bagian tertentu selain suami/istri.' },
+  adilah: { nama: t('hitung.normal_adilah'), istilah: 'adilah', arti: t('hitung.jumlah_bagian_tertentu_fardh_tidak_melebihi') },
+  ailah: { nama: t('hitung.aul'), istilah: 'aul', arti: t('hitung.jumlah_bagian_tertentu_melebihi_harta_jadi') },
+  raddA: { nama: t('hitung.radd'), istilah: 'radd', arti: t('hitung.ada_sisa_tanpa_ashabah_sisa_dikembalikan') },
+  raddB: { nama: t('hitung.radd_dengan_suami_istri'), istilah: 'radd', arti: t('hitung.ada_sisa_tanpa_ashabah_sisa_dikembalikan_2') },
 };
 const ARTI_NISBAH: Record<string, string> = {
-  tamatsul: 'sama besar', tadakhul: 'yang besar habis dibagi yang kecil',
-  tawafuq: 'punya faktor persekutuan', tabayun: 'tidak punya faktor persekutuan', habis: 'sudah habis dibagi',
+  tamatsul: t('hitung.sama_besar'), tadakhul: t('hitung.yang_besar_habis_dibagi_yang_kecil'),
+  tawafuq: t('hitung.punya_faktor_persekutuan'), tabayun: t('hitung.tidak_punya_faktor_persekutuan'), habis: t('hitung.sudah_habis_dibagi'),
 };
 const Nisbah = ({ hubungan }: { hubungan: string }) =>
   hubungan === 'habis' ? <>{ARTI_NISBAH.habis}</> : <>{ARTI_NISBAH[hubungan] ?? hubungan} (<Istilah id={hubungan}>{hubungan}</Istilah>)</>;
@@ -54,21 +55,21 @@ const Nisbah = ({ hubungan }: { hubungan: string }) =>
 export function KartuTentang({ tentang }: { tentang: TentangKasus }) {
   const jenis = tentang.kelas ? JENIS_KASUS[tentang.kelas] : undefined;
   return (
-    <Lipat judul="Tentang kasus ini" ringkas={jenis?.nama} className="urut-tentang">
+    <Lipat judul={t('hitung.tentang_kasus_ini')} ringkas={jenis?.nama} className="urut-tentang">
       <div className="fakta-kasus">
-        {jenis && <div><span className="lbl">Jenis kasus</span><b><Istilah id={jenis.istilah}>{jenis.nama}</Istilah></b><p>{jenis.arti}</p></div>}
+        {jenis && <div><span className="lbl">{t('hitung.jenis_kasus')}</span><b><Istilah id={jenis.istilah}>{jenis.nama}</Istilah></b><p>{jenis.arti}</p></div>}
         {tentang.ashl && (
-          <div><span className="lbl"><Istilah id="ashlul-masalah">Asal masalah</Istilah></span><b>{String(tentang.ashl.nilai)}</b>
+          <div><span className="lbl"><Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah></span><b>{angka(String(tentang.ashl.nilai))}</b>
             <p>{tentang.ashl.penyebut.length > 1
-              ? <>Dari penyebut {tentang.ashl.penyebut.map(String).join(' dan ')}, yang <Nisbah hubungan={tentang.ashl.hubungan ?? ''} />.</>
-              : 'Penyebut bagian yang ada.'}</p></div>
+              ? <>{t('hitung.dari_penyebut_daftar_yang', { daftar: angka(tentang.ashl.penyebut.map(String).join(t('umum.dan'))) })} <Nisbah hubungan={tentang.ashl.hubungan ?? ''} />.</>
+              : t('hitung.penyebut_bagian_yang_ada')}</p></div>
         )}
-        {tentang.aul && <div><span className="lbl"><Istilah id="aul">'Aul</Istilah></span><b>{`${tentang.aul.dari} → ${tentang.aul.menjadi}`}</b><p>Asal masalah dinaikkan supaya semua bagian muat.</p></div>}
+        {tentang.aul && <div><span className="lbl"><Istilah id="aul">{t('hitung.aul')}</Istilah></span><b>{angka(`${tentang.aul.dari} ${panah()} ${tentang.aul.menjadi}`)}</b><p>{t('hitung.asal_masalah_dinaikkan_supaya_semua_bagian')}</p></div>}
         {tentang.tashih && (
-          <div><span className="lbl"><Istilah id="tashih">Tashih</Istilah></span><b>{`${tentang.tashih.dari} → ${tentang.tashih.jadi}`}</b>
-            <p>Bagian sekelompok ahli waris belum habis dibagi jumlah orangnya{tentang.tashih.hubungan ? <>, <Nisbah hubungan={tentang.tashih.hubungan} /></> : ''}, jadi semua dikali {String(tentang.tashih.jadi / tentang.tashih.dari)}.</p></div>
+          <div><span className="lbl"><Istilah id="tashih">{t('hitung.tashih')}</Istilah></span><b>{angka(`${tentang.tashih.dari} ${panah()} ${tentang.tashih.jadi}`)}</b>
+            <p>{t('hitung.bagian_sekelompok_ahli_waris_belum_habis')}{tentang.tashih.hubungan ? <>, <Nisbah hubungan={tentang.tashih.hubungan} /></> : ''}{t('hitung.jadi_semua_dikali_kali', { kali: String(tentang.tashih.jadi / tentang.tashih.dari) })}</p></div>
         )}
-        {tentang.jamiah !== undefined && <div><span className="lbl"><Istilah id="jamiah">Jami'ah</Istilah></span><b>{String(tentang.jamiah)}</b><p>Mas'alah gabungan untuk semua mayit (<Istilah id="munasakhat">munasakhat</Istilah>).</p></div>}
+        {tentang.jamiah !== undefined && <div><span className="lbl"><Istilah id="jamiah">{t('hitung.jami_ah')}</Istilah></span><b>{angka(String(tentang.jamiah))}</b><p>{t('hitung.mas_alah_gabungan_untuk_semua_mayit')} (<Istilah id="munasakhat">{t('hitung.munasakhat')}</Istilah>).</p></div>}
       </div>
     </Lipat>
   );
@@ -76,8 +77,8 @@ export function KartuTentang({ tentang }: { tentang: TentangKasus }) {
 
 export function KartuSelanjutnya() {
   return (
-    <Lipat judul="Habis ini ngapain?" dataTur="selanjutnya" className="urut-selanjutnya">
-      <p className="caption-isian">Angka sudah ada. Ini urutan yang biasanya dilakukan keluarga. (Draf, menunggu pengecekan tim keilmuan.)</p>
+    <Lipat judul={t('hitung.habis_ini_ngapain')} dataTur="selanjutnya" className="urut-selanjutnya">
+      <p className="caption-isian">{t('hitung.angka_sudah_ada_ini_urutan_yang')}</p>
       <ol className="urutan-selanjutnya">
         {LANGKAH_SELANJUTNYA.map(langkah => <li key={langkah.judul}><b>{langkah.judul}</b><span>{langkah.isi}</span></li>)}
       </ol>

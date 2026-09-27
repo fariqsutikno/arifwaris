@@ -1,4 +1,4 @@
-// Hero mini di kepala halaman utama tiap menu (Hitung, Latihan, Rujukan): judul dan satu kalimat sebagai satu grup,
+// Hero mini di kepala halaman utama tiap menu (Hitung, Latihan, Rujukan, FAQ, Glosarium, Tanya jawab): judul dan satu kalimat sebagai satu grup,
 // ikon menu di kanan. Gayanya sama dengan hero Pusat belajar.
 
 import { Ikon, type NamaIkon } from './Ikon';

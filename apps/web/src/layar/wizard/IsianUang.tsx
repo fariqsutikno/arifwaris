@@ -3,6 +3,7 @@
 
 import { useLayoutEffect, useRef, type ReactNode } from 'react';
 import { InfoTip } from '../../ui/Tooltip';
+import { angkaLatin, t } from '../../terjemah';
 
 const ANGKA_INDONESIA = new Intl.NumberFormat('id-ID');
 
@@ -33,13 +34,14 @@ export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar 
 
   return (
     <div className={besar ? 'isian-uang besar' : 'isian-uang'}>
-      <div className="label-isian"><label htmlFor={id}>{label}</label>{info && <InfoTip label={`Tentang ${label}`}>{info}</InfoTip>}</div>
+      <div className="label-isian"><label htmlFor={id}>{label}</label>{info && <InfoTip label={t('hitung.tentang_label', { label })}>{info}</InfoTip>}</div>
       <div className="kotak-uang">
-        <span className="prefix-uang" aria-hidden="true">Rp</span>
+        <span className="prefix-uang" aria-hidden="true">{t('hitung.rp_3')}</span>
         <input id={id} ref={isian} inputMode="numeric" autoComplete="off" placeholder="0" value={teksRibuan(nilai)}
           {...(keterangan ? { 'aria-describedby': `${id}-ket` } : {})}
           onChange={event => {
-            const { value, selectionStart } = event.target;
+            const { selectionStart } = event.target;
+            const value = angkaLatin(event.target.value);
             digitSebelumKursor.current = value.slice(0, selectionStart ?? value.length).replace(/\D/g, '').length;
             const digit = value.replace(/\D/g, '').replace(/^0+(?=\d)/, '');
             saatUbah(digit ? BigInt(digit) : 0n);

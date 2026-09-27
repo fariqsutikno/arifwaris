@@ -5,7 +5,7 @@
 import type { AlasanFardh, PilihanJadd, IdOrang } from '@waris/engine';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
-import { gabungDan, buatBaris, kalimat, type BarisPenjelasan, type Potongan } from './segments.js';
+import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Potongan } from './segments.js';
 import { istilah } from './terms.js';
 
 /** Kolom tabel faraidh yang dibahas bab ini, untuk penyorotan di UI (tidak memengaruhi narasi). */
@@ -38,9 +38,9 @@ function babHarta(konteks: Konteks): Bab | undefined {
     ], langkahTirkah.refs));
   }
   if (langkahTirkah.wasiatButuhIjazah > 0n) {
-    daftarBaris.push(buatBaris(kalimat`Wasiat ${konteks.sebutan.pewaris()} sebesar ${rupiah(langkahTirkah.wasiatDiminta)} melebihi batas sepertiga harta (${rupiah(langkahTirkah.wasiatBatas)}), `
+    daftarBaris.push(tekankan(buatBaris(kalimat`Wasiat ${konteks.sebutan.pewaris()} sebesar ${rupiah(langkahTirkah.wasiatDiminta)} melebihi batas sepertiga harta (${rupiah(langkahTirkah.wasiatBatas)}), `
       .concat(kalimat`jadi yang dijalankan hanya ${rupiah(langkahTirkah.wasiatDipakai)}. Kelebihan ${rupiah(langkahTirkah.wasiatButuhIjazah)} baru boleh dijalankan `,
-        kalimat`jika semua ahli waris menyetujuinya (ijazah).`), ['R01-4']));
+        kalimat`jika semua ahli waris menyetujuinya (ijazah).`), ['R01-4']), 'perhatian'));
   } else if (langkahTirkah.wasiatDiminta > 0n) {
     daftarBaris.push(buatBaris(kalimat`Wasiat ${konteks.sebutan.pewaris()} sebesar ${rupiah(langkahTirkah.wasiatDipakai)} dijalankan karena tidak melebihi sepertiga harta (${rupiah(langkahTirkah.wasiatBatas)}).`, ['R01-4']));
   }
@@ -406,27 +406,27 @@ function babPembulatan(konteks: Konteks): Bab | undefined {
 function babHasil(konteks: Konteks): Bab {
   const { tabel, pembulatan } = konteks.hasil;
   const penyebut = konteks.penyebutAkhir;
-  const daftarBaris = [buatBaris(kalimat`Harta dibagi menjadi ${penyebut} bagian:`)];
+  const daftarBaris = [tekankan(buatBaris(kalimat`Harta dibagi menjadi ${penyebut} bagian:`), 'subjudul')];
   for (const barisTabel of tabel.baris) {
     for (const [id, { saham, nominal }] of Object.entries(barisTabel.perOrang)) {
       const siapa = konteks.sebutan.sebut([id]);
       daftarBaris.push(buatBaris(saham === 0n
         ? kalimat`${siapa}: tidak mendapat bagian karena sisa harta sudah habis.`
-        : kalimat`${siapa}: ${saham} bagian (${saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(nominal)}` : ''}.`, ['R11-1']));
+        : kalimat`${siapa}: ${saham} bagian (${saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(nominal)}` : ''}.`, ['R11-1'], [id]));
     }
   }
   const { sisaKeluar } = konteks.hasil;
   if (sisaKeluar) {
-    daftarBaris.push(buatBaris(kalimat`Sisa: ${sisaKeluar.saham} bagian (${sisaKeluar.saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(sisaKeluar.nominal)}` : ''}, `
-      .concat(kalimat`${sisaKeluar.tujuan === 'dzawilArham' ? 'untuk dzawil arham' : 'untuk dzawil arham bila ada, bila tidak ke baitul mal'}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []));
+    daftarBaris.push(tekankan(buatBaris(kalimat`Sisa: ${sisaKeluar.saham} bagian (${sisaKeluar.saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(sisaKeluar.nominal)}` : ''}, `
+      .concat(kalimat`${sisaKeluar.tujuan === 'dzawilArham' ? 'untuk dzawil arham' : 'untuk dzawil arham bila ada, bila tidak ke baitul mal'}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []), 'perhatian'));
   }
   if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     const perSatuan = pembulatan.satuan > 1n;
-    daftarBaris.push(buatBaris([
+    daftarBaris.push(tekankan(buatBaris([
       ...kalimat`Karena setiap bagian dibulatkan ke bawah${perSatuan ? ` per ${rupiah(pembulatan.satuan)}` : ' ke rupiah'}, ada selisih ${rupiah(pembulatan.sisaPembulatan)} yang belum dibagikan. `,
       ...kalimat`Uang ini tetap milik para ahli waris dan perlu disepakati bersama penyalurannya.`,
       ...(perSatuan ? kalimat` Jika dibagikan lewat transfer bank, pembulatan bisa per rupiah sehingga selisihnya lebih kecil.` : []),
-    ]));
+    ]), 'perhatian'));
   }
   return { judul: 'Hasil akhir', daftarBaris, kolom: 'nominal' };
 }

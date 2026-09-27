@@ -12,7 +12,7 @@ export function Lipat({ judul, ringkas, terbukaAwal = false, children, className
       <button type="button" className="kepala-lipat" aria-expanded={terbuka} aria-controls={idIsi} onClick={() => setTerbuka(!terbuka)}>
         <h2>{judul}</h2>
         {ringkas && <span className="ringkas-kepala">{ringkas}</span>}
-        <span className="panah-lipat" aria-hidden="true">▾</span>
+        <span className="panah-lipat" aria-hidden="true" />
       </button>
       {terbuka && <div id={idIsi} className="isi-kartu-sisi">{children}</div>}
     </section>

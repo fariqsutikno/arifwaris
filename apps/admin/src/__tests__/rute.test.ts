@@ -1,0 +1,18 @@
+import { expect, test } from 'vitest';
+import { bacaRute, tulisRute, type Rute } from '../rute';
+
+const CONTOH: Rute[] = [
+  { layar: 'beranda' }, { layar: 'menu', menu: 'pustaka', tab: 'syahid' }, { layar: 'entri', entriId: 'abc' },
+  { layar: 'entriBaru', jenis: 'faq' }, { layar: 'review' }, { layar: 'peran' },
+];
+test.each(CONTOH)('bolak-balik %o', rute => expect(bacaRute(tulisRute(rute))).toEqual(rute));
+test('hash kosong / tak dikenal / jenis tak sah → beranda', () => {
+  expect(bacaRute('')).toEqual({ layar: 'beranda' });
+  expect(bacaRute('#/konten/faq')).toEqual({ layar: 'beranda' });
+  expect(bacaRute('#/baru/bukan_jenis')).toEqual({ layar: 'beranda' });
+  expect(bacaRute('#/menu/bukan')).toEqual({ layar: 'beranda' });
+});
+test('menu tanpa tab / tab bukan miliknya → tab bawaan', () => {
+  expect(bacaRute('#/menu/aplikasi')).toEqual({ layar: 'menu', menu: 'aplikasi', tab: 'teks_edukasi' });
+  expect(bacaRute('#/menu/pustaka/faq')).toEqual({ layar: 'menu', menu: 'pustaka', tab: 'kitab' });
+});

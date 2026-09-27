@@ -7,10 +7,17 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
 import { hitungIsian } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
-import { AHWAL, barisBerlaku } from '../konten/ahwal';
+import { barisBerlaku } from '../konten/ahwal';
+import { ahwalUntuk } from '../konten/sumber';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
+import { angka, bahasaArab, t } from '../terjemah';
+import type { Kelompok } from '../checklist';
+
+const TEKS_KELOMPOK = (): Record<Kelompok, string> => ({
+  pasangan: t('hitung.pasangan'), keturunan: t('hitung.keturunan'), leluhur: t('hitung.leluhur'), saudara: t('hitung.saudara'),
+});
 
 interface Props {
   id: IdOrang;
@@ -37,11 +44,11 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   const barisKenapa = semuaBaris.filter(baris => baris.subjek?.includes(id));
   const barisTerdampak = semuaBaris.filter(baris => baris.subjek && !baris.subjek.includes(id) && orangDisebut([baris]).includes(id));
   const refs = [...new Set(barisKenapa.flatMap(baris => baris.refs))];
-  const ahwal = kunci ? AHWAL[kunci] : undefined;
+  const ahwal = kunci ? ahwalUntuk(kunci) : undefined;
   // Ubah langsung dari sini hanya untuk ahli waris pewaris pertama (bukan pewaris, bukan ahli waris mayit munasakhat).
   const bisaDiubah = !!kunci && (hitungIsian(graf, graf.idPewaris)[kunci] ?? []).includes(id);
   const dataCocok = {
-    ...(dapat?.fardh ? { fardh: `${dapat.fardh.n}/${dapat.fardh.d}` } : {}),
+    ...(dapat?.fardh ? { fardh: angka(`${dapat.fardh.n}/${dapat.fardh.d}`) } : {}),
     ashabah: !!dapat?.ashabah, terhalang: !!halang,
     ...(dapat?.kodeAlasan ? { kodeAlasan: dapat.kodeAlasan } : {}),
   };
@@ -52,26 +59,26 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
         <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? 'Almarhum' : halang && !sedangMenebak ? 'Terhalang (mahjub)' : kelompok ?? 'Kerabat'}</p>
+            <p className="peran-modal">{id === graf.idPewaris ? t('hitung.almarhum') : halang && !sedangMenebak ? t('hitung.terhalang_mahjub') : kelompok ? TEKS_KELOMPOK()[kelompok] : t('hitung.kerabat')}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
-          <button type="button" className="tombol-ikon" data-tutup aria-label="Tutup" onClick={saatTutup}>✕</button>
+          <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}>✕</button>
         </header>
         <div className="isi-modal">
-          {sedangMenebak && <p className="caption-isian">Mode belajar: bagian orang ini masih disembunyikan. Lihat "Kapan dapat berapa?", lalu tebak kondisi mana yang cocok.</p>}
+          {sedangMenebak && <p className="caption-isian">{t('hitung.mode_belajar_bagian_orang_ini_masih')}</p>}
           {dapat && !sedangMenebak && (
             <div>
-              <h3>Bagiannya di kasus ini</h3>
+              <h3>{t('hitung.bagiannya_di_kasus_ini')}</h3>
               <div className="angka-modal">
-                <div><small>Pecahan</small><b>{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</b></div>
-                <div><small>Persen</small><b>{persenTeks(dapat.saham, ringkasan.penyebut)}</b></div>
-                <div><small>Nominal</small><b>{sembunyiNominal ? 'Rp ••••••' : formatRupiah(dapat.nominal)}</b></div>
+                <div><small>{t('hitung.pecahan')}</small><b>{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</b></div>
+                <div><small>{t('hitung.persen')}</small><b>{persenTeks(dapat.saham, ringkasan.penyebut)}</b></div>
+                <div><small>{t('hitung.nominal')}</small><b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</b></div>
               </div>
             </div>
           )}
           {!sedangMenebak && (barisKenapa.length > 0 || halang) && (
             <div className="kenapa-utama">
-              <h3>{halang ? 'Kenapa tidak dapat?' : 'Kenapa segitu?'}</h3>
+              <h3>{halang ? t('hitung.kenapa_tidak_dapat') : t('hitung.kenapa_segitu')}</h3>
               <ul>
                 {barisKenapa.length === 0 && halang && <li>{halang.alasan}</li>}
                 {barisKenapa.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}
@@ -80,46 +87,46 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
           )}
           {dapat && !sedangMenebak && (
             <div>
-              <h3>Cara menghitungnya</h3>
+              <h3>{t('hitung.cara_menghitungnya')}</h3>
               <p className="cara-hitung">
-                Harta dibagi menjadi {String(ringkasan.penyebut)} bagian yang sama; {nama} mendapat {String(dapat.saham)} bagian.<br />
-                {String(dapat.saham)}/{String(ringkasan.penyebut)} × {sembunyiNominal ? 'Rp ••••••' : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? 'Rp ••••••' : formatRupiah(dapat.nominal)}</b>
-                {ringkasan.sisaPembulatan > 0n && <small> (dibulatkan ke bawah)</small>}
+                {t('hitung.harta_dibagi_menjadi_penyebut_bagian_yang', { penyebut: ringkasan.penyebut, nama, saham: dapat.saham })}<br />
+                {angka(String(dapat.saham))}/{angka(String(ringkasan.penyebut))} × {sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</b>
+                {ringkasan.sisaPembulatan > 0n && <small> ({t('hitung.dibulatkan_ke_bawah')})</small>}
               </p>
             </div>
           )}
           {!sedangMenebak && barisTerdampak.length > 0 && (
             <div>
-              <h3>Ahli waris lain yang terdampak</h3>
+              <h3>{t('hitung.ahli_waris_lain_yang_terdampak')}</h3>
               <ul>{barisTerdampak.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}</ul>
             </div>
           )}
           {ahwal && (
-            <Lipatan judul="Kapan dapat berapa?" catatan={`semua kemungkinan bagian ${nama.toLowerCase()}`}>
+            <Lipatan judul={t('hitung.kapan_dapat_berapa')} catatan={t('hitung.semua_kemungkinan_bagian_nama', { nama: nama.toLowerCase() })}>
               <table>
                 <tbody>
                   {ahwal.map(baris => {
                     const berlaku = !sedangMenebak && barisBerlaku(baris, dataCocok);
                     return (
                       <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
-                        <th>{baris.bagian}</th>
-                        <td>{baris.syarat}{berlaku && <span className="stiker-kecil">kasus ini</span>}</td>
+                        <th>{bahasaArab() && baris.ar ? baris.ar.bagian : baris.bagian}</th>
+                        <td>{bahasaArab() && baris.ar ? baris.ar.syarat : baris.syarat}{berlaku && <span className="stiker-kecil">{t('hitung.kasus_ini')}</span>}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-              <p className="caption-isian">Draf, menunggu pengecekan tim keilmuan.</p>
+              <p className="caption-isian">{t('umum.draf_menunggu_pengecekan_tim_keilmuan')}</p>
             </Lipatan>
           )}
           {refs.length > 0 && !sedangMenebak && (
-            <Lipatan judul="Dalilnya"><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
+            <Lipatan judul={t('umum.dalilnya')}><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
           )}
         </div>
         <footer className="kaki-modal">
-          {bisaDiubah && kunci && saatUbah && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>Ubah jumlah</button>}
+          {bisaDiubah && kunci && saatUbah && <button type="button" className="aksi-kecil" onClick={() => saatUbah(kunci)}>{t('hitung.ubah_jumlah')}</button>}
           <span className="pengisi" />
-          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>Oke, paham</button>
+          <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" onClick={saatTutup}>{t('umum.oke_paham')}</button>
         </footer>
       </div>
     </div>

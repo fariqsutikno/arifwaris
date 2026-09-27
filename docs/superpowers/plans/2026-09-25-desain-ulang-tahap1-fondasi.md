@@ -1,6 +1,6 @@
 # Desain ulang UI — Tahap 1: Fondasi — Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Pondasi desain ulang: file kasus versi 2, keadaan aplikasi dengan tujuan (Hitung/Belajar) dan validasi per langkah, kerangka wizard (header, stepper, pertanyaan utama, bar bawah), beranda dengan pertanyaan pembuka, dan tur singkat dengan sorotan gelap.
 
@@ -43,7 +43,7 @@
   - `interface Kasus { versi: 2; graf; tirkah; satuanPembulatan: bigint; urutanWafat: IdOrang[]; rincianHarta?: Partial<Record<KategoriHarta, bigint>> }`
   - `kasusBaru` menghasilkan `versi: 2`; `dariJson` menerima versi 1 dan 2, selalu mengembalikan versi 2 yang sudah dirapikan.
 
-- [ ] **Step 1: Ubah dan tambah test** — di `kasus.test.ts`, ganti test "menolak versi lain" dan tambahkan:
+- [x] **Step 1: Ubah dan tambah test** — di `kasus.test.ts`, ganti test "menolak versi lain" dan tambahkan:
 
 ```ts
   it('menolak versi lain', () => {
@@ -84,12 +84,12 @@
   });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/web test kasus`
 Expected: FAIL — "menolak versi lain" (masih versi 1), "versi 1 jadi 2", "rincian harta", "kategori", "pewaris/ganda", "penghubung dirapikan".
 
-- [ ] **Step 3: Implementasi** di `kasus.ts`:
+- [x] **Step 3: Implementasi** di `kasus.ts`:
 
 Tambahkan di bawah `SATUAN_PEMBULATAN`:
 
@@ -158,12 +158,12 @@ function bacaRincianHarta(nilai: unknown): Partial<Record<KategoriHarta, bigint>
 }
 ```
 
-- [ ] **Step 4: Jalankan test web + typecheck**
+- [x] **Step 4: Jalankan test web + typecheck**
 
 Run: `pnpm --filter @waris/web test && pnpm --filter @waris/web exec tsc --noEmit -p .`
 Expected: PASS semua. Bila test lain memakai `versi: 1` literal, ubah ke `2`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add apps/web/src/kasus.ts apps/web/src/__tests__/kasus.test.ts
@@ -189,7 +189,7 @@ git commit -m "web: file kasus versi 2 (rincian harta, migrasi v1, rapikan uruta
     - `type Aksi = { jenis:'PILIH_TUJUAN'; tujuan: Tujuan } | { jenis:'MULAI' } | { jenis:'PILIH_PEWARIS'; jenisKelamin:'L'|'P' } | { jenis:'MUAT'; kasus: Kasus } | { jenis:'KE_LANGKAH'; langkah: number } | { jenis:'UBAH_KASUS'; ubah:(kasus: Kasus) => Kasus } | { jenis:'KE_LAYAR'; layar: Layar } | { jenis:'ULANGI' }`
     - `keadaanAwal(kasusTersimpan: Kasus | null, tujuan: Tujuan | null): KeadaanAplikasi`
 
-- [ ] **Step 1: Test validasi** — `src/__tests__/validasi.test.ts`:
+- [x] **Step 1: Test validasi** — `src/__tests__/validasi.test.ts`:
 
 ```ts
 import { expect, it } from 'vitest';
@@ -220,7 +220,7 @@ it('minimal satu ahli waris sebelum lanjut dari langkah 4', () => {
 });
 ```
 
-- [ ] **Step 2: Test keadaan** — ganti isi `src/__tests__/keadaan.test.ts`:
+- [x] **Step 2: Test keadaan** — ganti isi `src/__tests__/keadaan.test.ts`:
 
 ```ts
 import { beforeEach, expect, it, vi } from 'vitest';
@@ -281,12 +281,12 @@ it('preferensi tersimpan, dan tetap jalan bila localStorage melempar error', () 
 });
 ```
 
-- [ ] **Step 3: Jalankan, pastikan gagal**
+- [x] **Step 3: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/web test keadaan validasi`
 Expected: FAIL — modul `preferensi` dan `layar/wizard/validasi` belum ada.
 
-- [ ] **Step 4: `src/preferensi.ts`**
+- [x] **Step 4: `src/preferensi.ts`**
 
 ```ts
 // Preferensi per pengguna di perangkat ini: tujuan pemakaian dan tur yang sudah dilihat.
@@ -325,7 +325,7 @@ export const sudahLihatTur = (kunci: string): boolean => baca(AWALAN_TUR + kunci
 export const tandaiTurDilihat = (kunci: string): void => simpan(AWALAN_TUR + kunci, '1');
 ```
 
-- [ ] **Step 5: `src/layar/wizard/validasi.ts`**
+- [x] **Step 5: `src/layar/wizard/validasi.ts`**
 
 ```ts
 // Syarat lanjut tiap langkah wizard. Menerima Kasus (null = jenis kelamin belum dipilih);
@@ -355,7 +355,7 @@ const adaAhliWaris = (kasus: Kasus): boolean =>
   Object.values(hitungIsian(kasus.graf, kasus.graf.idPewaris)).some(daftar => (daftar?.length ?? 0) > 0);
 ```
 
-- [ ] **Step 6: Tulis ulang `src/keadaan.ts`**
+- [x] **Step 6: Tulis ulang `src/keadaan.ts`**
 
 ```ts
 // Keadaan aplikasi: layar aktif, langkah wizard, Kasus, dan tujuan pemakaian. Satu reducer, tanpa library state.
@@ -415,7 +415,7 @@ function pilihPewaris(kasus: Kasus | null, jenisKelamin: 'L' | 'P'): Kasus {
 }
 ```
 
-- [ ] **Step 7: Sesuaikan pemanggil lama supaya build tetap jalan.**
+- [x] **Step 7: Sesuaikan pemanggil lama supaya build tetap jalan.**
   - `Aplikasi.tsx`: `keadaanAwal(muatLokal())` → `keadaanAwal(muatLokal(), bacaTujuan())` (import `bacaTujuan` dari `./preferensi`).
   - `layar/Beranda.tsx`: `kirim({ jenis: 'MULAI', jenisKelamin: 'L' })` → `kirim({ jenis: 'MULAI' })`.
   - `layar/Wizard.tsx`: sementara, di awal fungsi `Wizard` tambahkan penjaga supaya langkah 1 tetap bisa dipakai saat `kasus` null (akan diganti Task 3):
@@ -448,12 +448,12 @@ function pilihPewaris(kasus: Kasus | null, jenisKelamin: 'L' | 'P'): Kasus {
     ```
     dan hapus loop `for (let langkah = 1; langkah <= 3; ...)`.
 
-- [ ] **Step 8: Jalankan semua test + typecheck**
+- [x] **Step 8: Jalankan semua test + typecheck**
 
 Run: `pnpm --filter @waris/web test && pnpm --filter @waris/web exec tsc --noEmit -p .`
 Expected: PASS.
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add apps/web/src
@@ -482,7 +482,7 @@ git commit -m "web: keadaan dengan tujuan & validasi langkah, preferensi lokal"
   - `Stepper({ langkahAktif, terjauh, saatPilih })`, `BarBawah({ langkah, alasan, saatKembali, saatLanjut })`,
     `KerangkaLangkah({ langkah, children, ringkasan? })`, `LangkahPewaris({ kasus, saatPilih, saatUbahNama })`.
 
-- [ ] **Step 1: Test kerangka** — `src/__tests__/kerangka.test.tsx`:
+- [x] **Step 1: Test kerangka** — `src/__tests__/kerangka.test.tsx`:
 
 ```tsx
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -567,12 +567,12 @@ it('autosave: kasus muncul lagi setelah render ulang', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/web test kerangka asap`
 Expected: FAIL (tombol "Hitung kasus" belum ada).
 
-- [ ] **Step 3: Konten** — `src/konten/wizard.ts`:
+- [x] **Step 3: Konten** — `src/konten/wizard.ts`:
 
 ```ts
 // Teks kerangka wizard: nama langkah (stepper & tombol Lanjut), pertanyaan utama, dan caption penjelas.
@@ -614,7 +614,7 @@ export const TEKS_BERANDA = {
 } as const;
 ```
 
-- [ ] **Step 4: `src/berkas.ts`** (dipindah dari `Aplikasi.tsx`):
+- [x] **Step 4: `src/berkas.ts`** (dipindah dari `Aplikasi.tsx`):
 
 ```ts
 // Simpan kasus sebagai file JSON di perangkat pengguna.
@@ -630,7 +630,7 @@ export function unduhKasus(kasus: Kasus): void {
 }
 ```
 
-- [ ] **Step 5: `src/layar/Kepala.tsx`**
+- [x] **Step 5: `src/layar/Kepala.tsx`**
 
 ```tsx
 // Header global: logo (ke beranda), menu utama, tur, dan "Ulangi dari awal" dengan konfirmasi di halaman.
@@ -677,7 +677,7 @@ export function Kepala({ adaKasus, adaTur, saatKeBeranda, saatTur, saatUlangi, s
 }
 ```
 
-- [ ] **Step 6: Kerangka wizard**
+- [x] **Step 6: Kerangka wizard**
 
 `src/layar/wizard/Stepper.tsx`:
 
@@ -805,7 +805,7 @@ function IkonGender({ jenisKelamin }: { jenisKelamin: 'L' | 'P' }) {
 }
 ```
 
-- [ ] **Step 7: `src/layar/Wizard.tsx`** — ganti fungsi `Wizard` (fungsi `LangkahHarta`, `LangkahKewajiban`, `IsianUang` tetap; hapus `LangkahPewaris` lama, `JUDUL_LANGKAH`, dan penjaga sementara dari Task 2):
+- [x] **Step 7: `src/layar/Wizard.tsx`** — ganti fungsi `Wizard` (fungsi `LangkahHarta`, `LangkahKewajiban`, `IsianUang` tetap; hapus `LangkahPewaris` lama, `JUDUL_LANGKAH`, dan penjaga sementara dari Task 2):
 
 ```tsx
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
@@ -841,7 +841,7 @@ function ubahNamaPewaris(kasus: Kasus, nama: string): Kasus {
 Impor di atas file: `Stepper`, `BarBawah`, `KerangkaLangkah`, `LangkahPewaris` dari `./wizard/*`; `alasanBelumLengkap`, `langkahTerjauh`, `LANGKAH_HASIL` dari `./wizard/validasi`. Hapus impor `Stiker` dan `bolehUbahJenisKelamin` bila tak terpakai.
 Di `IsianUang`, pastikan label mengandung "Total harta" (sudah: "Total harta peninggalan (Rp)").
 
-- [ ] **Step 8: `src/layar/Beranda.tsx`** — ganti isi komponen:
+- [x] **Step 8: `src/layar/Beranda.tsx`** — ganti isi komponen:
 
 ```tsx
 // Beranda: janji singkat, pertanyaan pembuka (Hitung kasus / Belajar), lanjutkan kasus tersimpan, buka file.
@@ -892,7 +892,7 @@ export function Beranda({ kasusTersimpan, kirim }: { kasusTersimpan: Kasus | nul
 
 Catatan: memilih tujuan saat sudah ada kasus tersimpan memulai kasus baru; ini sama dengan "Ulangi" dan boleh, karena kasus lama tetap bisa dibuka lewat "Lanjutkan kasus terakhir" sampai kasus baru mengisi jenis kelamin. (Autosave baru menimpa saat `kasus` tidak null.) Pastikan `simpanLokal` di `Aplikasi.tsx` hanya dipanggil bila `keadaan.kasus` tidak null **atau** aksi terakhir `ULANGI` — lihat Step 9.
 
-- [ ] **Step 9: `src/Aplikasi.tsx`**
+- [x] **Step 9: `src/Aplikasi.tsx`**
 
 ```tsx
 // Rangkaian aplikasi: reducer keadaan, autosave, header global, dan pemilihan layar.
@@ -948,7 +948,7 @@ Di `layar/Hasil.tsx`, pada `baris-tombol` hasil OK tambahkan tombol simpan (sebe
 
 dengan `import { unduhKasus } from '../berkas';`. Hapus `BilahNavigasi` dari impor `Aplikasi.tsx` (komponennya tetap ada di `ui/komponen.tsx`).
 
-- [ ] **Step 10: CSS** — tambahkan di akhir `src/gaya/komponen.css`:
+- [x] **Step 10: CSS** — tambahkan di akhir `src/gaya/komponen.css`:
 
 ```css
 /* ─── Kerangka desain ulang (tahap 1) ─── */
@@ -996,16 +996,16 @@ dengan `import { unduhKasus } from '../berkas';`. Hapus `BilahNavigasi` dari imp
 @media (max-width:560px){.kepala{padding:8px 16px;gap:10px}.kepala .aw-logo small{display:none}.alasan{text-align:left;max-width:none;order:-1;width:100%}}
 ```
 
-- [ ] **Step 11: Jalankan semua test + typecheck + build**
+- [x] **Step 11: Jalankan semua test + typecheck + build**
 
 Run: `pnpm --filter @waris/web test && pnpm --filter @waris/web build`
 Expected: PASS; build sukses. Test lama yang mencari teks "Mulai hitung" / "Lanjutin kasus terakhir" / "Gas, langkah berikutnya" diperbarui ke label baru (`Hitung kasus`, `Lanjutkan kasus terakhir`, `Lanjut: …`).
 
-- [ ] **Step 12: Cek manual**
+- [x] **Step 12: Cek manual**
 
 Run: `pnpm --filter @waris/web dev`, buka `http://localhost:5173`: beranda → Belajar → kartu gender tanpa pilihan → lanjut nonaktif dengan alasan → pilih → stepper → Ulangi dari awal (konfirmasi). Cek lebar 375px: tanpa scroll ke samping.
 
-- [ ] **Step 13: Commit**
+- [x] **Step 13: Commit**
 
 ```bash
 git add apps/web/src
@@ -1027,7 +1027,7 @@ git commit -m "web: kerangka wizard (stepper, pertanyaan utama, bar bawah), head
   - `konten/tur.ts`: `interface LangkahTur { sasaran: string; judul: string; isi: string }` (sasaran = nilai atribut `data-tur`), `TUR: Partial<Record<Layar, LangkahTur[]>>`.
   - `Tur({ daftar, kunci, sedangBerjalan, saatSelesai })`: overlay; memanggil `tandaiTurDilihat(kunci)` saat selesai/dilewati.
 
-- [ ] **Step 1: Test** — `src/__tests__/tur.test.tsx`:
+- [x] **Step 1: Test** — `src/__tests__/tur.test.tsx`:
 
 ```tsx
 import { fireEvent, render, screen } from '@testing-library/react';
@@ -1073,12 +1073,12 @@ it('Esc dan klik area gelap menutup tur', () => {
 });
 ```
 
-- [ ] **Step 2: Jalankan, pastikan gagal**
+- [x] **Step 2: Jalankan, pastikan gagal**
 
 Run: `pnpm --filter @waris/web test tur`
 Expected: FAIL (modul `../tur/Tur` belum ada).
 
-- [ ] **Step 3: `src/konten/tur.ts`**
+- [x] **Step 3: `src/konten/tur.ts`**
 
 ```ts
 // Isi tur singkat per layar. `sasaran` = nilai atribut data-tur pada elemen yang disorot.
@@ -1096,7 +1096,7 @@ export const TUR: Partial<Record<Layar, LangkahTur[]>> = {
 };
 ```
 
-- [ ] **Step 4: `src/tur/Tur.tsx`**
+- [x] **Step 4: `src/tur/Tur.tsx`**
 
 ```tsx
 // Tur singkat: menyorot satu elemen [data-tur] sekali, sisanya digelapkan. Lubang sorot digambar di level halaman
@@ -1193,12 +1193,12 @@ function hitungPosisiPopup(kotak: DOMRect | null): { top: number; left: number }
 
 `Tombol` meneruskan atribut `data-utama` karena menyebarkan `...sisa` ke `<button>`.
 
-- [ ] **Step 5: Pasang atribut sasaran**
+- [x] **Step 5: Pasang atribut sasaran**
   - `Stepper.tsx`: `<nav className="stepper" data-tur="stepper" …>`
   - `KerangkaLangkah.tsx`: `<h1 … data-tur="pertanyaan">`
   - `BarBawah.tsx`: `<div className="bar-bawah" data-tur="bar-bawah">`
 
-- [ ] **Step 6: Sambungkan di `Aplikasi.tsx`** — tambahkan state dan render:
+- [x] **Step 6: Sambungkan di `Aplikasi.tsx`** — tambahkan state dan render:
 
 ```tsx
 import { useState } from 'react';   // gabungkan dengan impor react yang ada
@@ -1225,7 +1225,7 @@ Ubah `Kepala`: `adaTur={daftarTur.length > 0}` dan `saatTur={() => setTurBerjala
 
 Test lama yang merender `<Aplikasi />` di wizard akan terhalang tur otomatis. Di `kerangka.test.tsx` dan `asap.test.tsx`, dalam `beforeEach` setelah `localStorage.clear()` tambahkan `localStorage.setItem('arif-waris:tur:wizard', '1');`.
 
-- [ ] **Step 7: CSS** — tambahkan di akhir `src/gaya/komponen.css`:
+- [x] **Step 7: CSS** — tambahkan di akhir `src/gaya/komponen.css`:
 
 ```css
 /* ─── Tur singkat ─── */
@@ -1240,14 +1240,14 @@ Test lama yang merender `<Aplikasi />` di wizard akan terhalang tur otomatis. Di
 @media (prefers-reduced-motion:reduce){.tur-lubang{transition:none}}
 ```
 
-- [ ] **Step 8: Jalankan semua test + build**
+- [x] **Step 8: Jalankan semua test + build**
 
 Run: `pnpm test && pnpm --filter @waris/web build`
 Expected: seluruh workspace PASS; build sukses.
 
-- [ ] **Step 9: Cek manual** — `pnpm --filter @waris/web dev`: buka wizard pertama kali → tur jalan otomatis, sekeliling gelap, Esc menutup, "Tur singkat" di header mengulang. Reload → tur tidak otomatis lagi.
+- [x] **Step 9: Cek manual** — `pnpm --filter @waris/web dev`: buka wizard pertama kali → tur jalan otomatis, sekeliling gelap, Esc menutup, "Tur singkat" di header mengulang. Reload → tur tidak otomatis lagi.
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add apps/web/src

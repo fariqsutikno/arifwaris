@@ -2,11 +2,16 @@
 // `#/faq/<id>` membuka dan menggulir ke satu pertanyaan supaya bisa dibagikan.
 
 import { useEffect, useState } from 'react';
-import { DAFTAR_FAQ, semuaPotongan, type EntriFaq } from '@waris/content';
+import { semuaPotongan, type EntriFaq } from '@waris/content';
+import { daftarFaq } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
 import { tautanFaq } from '../../rute';
 import { Bagikan } from '../../ui/Bagikan';
+import { HeroMini } from '../../ui/Hero';
 import { BlokMateri } from './Materi';
+import { t } from '../../terjemah';
+
+const TEKS_KELOMPOK_FAQ = (): Record<string, string> => ({ Fikih: t('faq.fikih'), 'Pakai aplikasi': t('faq.pakai_aplikasi') });
 
 interface Props { id?: string | undefined; kasusSekarang: Kasus | null; saatCoba: (kasus: Kasus) => void }
 
@@ -15,7 +20,7 @@ const teksJawaban = (entri: EntriFaq) => semuaPotongan(entri.jawaban).map(potong
 
 export function Faq({ id, kasusSekarang, saatCoba }: Props) {
   const [kataKunci, setKataKunci] = useState('');
-  const cocok = DAFTAR_FAQ.filter(entri => normal(`${entri.pertanyaan} ${teksJawaban(entri)}`).includes(normal(kataKunci.trim())));
+  const cocok = daftarFaq().filter(entri => normal(`${entri.pertanyaan} ${teksJawaban(entri)}`).includes(normal(kataKunci.trim())));
   const daftarKelompok = [...new Set(cocok.map(entri => entri.kelompok))];
 
   useEffect(() => {
@@ -24,22 +29,22 @@ export function Faq({ id, kasusSekarang, saatCoba }: Props) {
 
   return (
     <main className="halaman tumpuk halaman-faq">
-      <h1>Tanya jawab</h1>
-      <p className="lencana-draf">Draf, belum direview tim keilmuan</p>
+      <HeroMini judul={t('umum.faq')} keterangan={t('faq.pertanyaan_yang_sering_muncul_soal_hukum')} ikon="tanya" />
+      <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>
       <label className="isian">
-        Cari pertanyaan
-        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder="mis. anak angkat, wasiat, hutang" />
+        {t('faq.cari_pertanyaan')}
+        <input type="search" value={kataKunci} onChange={event => setKataKunci(event.target.value)} placeholder={t('faq.mis_anak_angkat_wasiat_hutang')} />
       </label>
-      {cocok.length === 0 && <p className="keterangan">Belum ada pertanyaan yang cocok. Coba kata lain, atau tanyakan ke ahli faraidh.</p>}
+      {cocok.length === 0 && <p className="keterangan">{t('faq.belum_ada_pertanyaan_yang_cocok_coba')}</p>}
       {daftarKelompok.map(kelompok => (
         <section key={kelompok} className="tumpuk-rapat">
-          <h2>{kelompok}</h2>
+          <h2>{TEKS_KELOMPOK_FAQ()[kelompok] ?? kelompok}</h2>
           {cocok.filter(entri => entri.kelompok === kelompok).map(entri => (
             <details key={entri.id} id={`faq-${entri.id}`} className="kartu-lipat entri-faq" open={entri.id === id}>
               <summary><b>{entri.pertanyaan}</b></summary>
               <div className="isi-materi isi-lipat-faq">
                 {entri.jawaban.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
-                <Bagikan judul={entri.pertanyaan} tautan={tautanFaq(entri.id)} label="Bagikan pertanyaan ini" kecil />
+                <Bagikan judul={entri.pertanyaan} tautan={tautanFaq(entri.id)} label={t('umum.bagikan_pertanyaan_ini')} kecil />
               </div>
             </details>
           ))}

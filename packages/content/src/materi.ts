@@ -1,12 +1,9 @@
-/// <reference path="./raw.d.ts" />
-// Materi pembelajaran dari `docs/materi/*.md` (versi ajar dari KB, bukan hukum baru).
-// Satu berkas = satu pelajaran: frontmatter (judul, modul, urutan, tujuan, perluCek) + isi Markdown terbatas:
+// Tipe & parser Markdown terbatas materi (isinya konten jenis materi/modul di database). Portal menyunting blok sebagai
+// Markdown lalu menyimpannya sebagai Blok[] lewat bacaBlok; tulisBlok adalah kebalikannya. Sintaks:
 //   ## / ###, paragraf, daftar (- / 1.), catatan (>), tabel, **tebal**, *miring*,
 //   [[id-istilah]] atau [[id-istilah|teks]] → istilah glosarium, [R04-2] → tautan dalil,
 //   blok ```kasus → contoh yang dihitung engine di aplikasi (harapan dicek oleh test, tidak ditampilkan),
-//   blok ```video → video YouTube, blok ```kuis → kode soal dari docs/soal/kuis.md (cek pemahaman).
-// Daftar modul diambil dari tabel `docs/materi/00-modul.md`.
-import { barisTabelBagian } from './refs.js';
+//   blok ```video → video YouTube, blok ```kuis → kode soal kuis (cek pemahaman).
 
 export type Potongan =
   | { jenis: 'teks'; teks: string }
@@ -34,6 +31,9 @@ export type Blok =
   | { jenis: 'video'; idYoutube: string; judul: string }
   | { jenis: 'kuis'; daftarKode: string[] };
 
+/** Versi Arab satu artikel. Tanpa `blok` = isi masih Indonesia. */
+export interface VersiArab { judul: string; tujuan: string; blok?: Blok[] }
+
 export interface Pelajaran {
   slug: string;
   judul: string;
@@ -42,23 +42,10 @@ export interface Pelajaran {
   tujuan: string;
   perluCek: boolean;
   blok: Blok[];
+  ar?: VersiArab;
 }
 
-export interface Modul { nomor: number; judul: string; ringkas: string }
-
-export function bacaPelajaran(slug: string, teksMarkdown: string): Pelajaran {
-  const cocok = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/.exec(teksMarkdown);
-  if (!cocok) throw new Error(`${slug}: frontmatter tidak ada`);
-  const meta = Object.fromEntries(cocok[1]!.split('\n').map(baris => {
-    const pemisah = baris.indexOf(':');
-    return [baris.slice(0, pemisah).trim(), baris.slice(pemisah + 1).trim()];
-  }));
-  for (const kunci of ['judul', 'modul', 'urutan', 'tujuan']) if (!meta[kunci]) throw new Error(`${slug}: frontmatter "${kunci}" kosong`);
-  return {
-    slug, judul: meta.judul!, modul: Number(meta.modul), urutan: Number(meta.urutan), tujuan: meta.tujuan!,
-    perluCek: meta.perluCek !== 'false', blok: bacaBlok(slug, cocok[2]!),
-  };
-}
+export interface Modul { nomor: number; judul: string; ringkas: string; ar?: { judul: string; ringkas: string } }
 
 export function bacaBlok(slug: string, isi: string): Blok[] {
   const daftarBlok: Blok[] = [];
@@ -190,21 +177,3 @@ export function bacaHarapan(teks: string, galat: (pesan: string) => Error): Cont
   if (!ashl) throw galat('harapan harus diakhiri "; ashl N"');
   return { saham, ashlAkhir: BigInt(ashl[1]!) };
 }
-
-export function bacaDaftarModul(teksMarkdown: string): Modul[] {
-  return barisTabelBagian(teksMarkdown, 'Daftar Modul')
-    .map(([nomor = '', judul = '', ringkas = '']) => ({ nomor: Number(nomor), judul, ringkas }));
-}
-
-// ─── Data dari docs/materi ────────────────────────────────────────────────────
-
-const BERKAS = import.meta.glob('../../../docs/materi/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-const namaBerkas = (jalur: string) => jalur.split('/').pop()!.replace(/\.md$/, '');
-
-export const DAFTAR_MODUL: Modul[] = bacaDaftarModul(BERKAS['../../../docs/materi/00-modul.md'] ?? '');
-export const DAFTAR_PELAJARAN: Pelajaran[] = Object.entries(BERKAS)
-  .filter(([jalur]) => !jalur.endsWith('00-modul.md'))
-  .map(([jalur, teks]) => bacaPelajaran(namaBerkas(jalur), teks))
-  .sort((a, b) => a.modul - b.modul || a.urutan - b.urutan);
-
-export const cariPelajaran = (slug: string): Pelajaran | undefined => DAFTAR_PELAJARAN.find(pelajaran => pelajaran.slug === slug);
