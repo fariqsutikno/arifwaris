@@ -3,7 +3,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-@custom-variant dark (&:is(.dark *));
+/* Varian dark: bawaan Tailwind v4 (prefers-color-scheme), sama dengan pemicu mode gelap token.css. */
 
 @theme inline {
     --color-sidebar-ring: var(--sidebar-ring);
@@ -59,7 +59,7 @@
     --accent-foreground: var(--ink);
     --destructive: var(--danger);
     --border: var(--divider);
-    --input: var(--outline);
+    --input: var(--divider);
     --ring: var(--focus);
     --radius: 0.875rem;
     --sidebar: var(--surface-raised);
@@ -83,17 +83,7 @@
     @apply font-sans;
     }
 }
-/* layar lama (editor, diksi, review, peran) memakai elemen polos tanpa kelas; preflight Tailwind me-reset-nya, jadi
-   gaya dasarnya dikembalikan di sini sampai layar itu pindah ke komponen shadcn (tahap B/C). Komponen shadcn
-   memakai data-slot / kelas, jadi tidak terkena. */
-@layer base {
-  :is(input, textarea, select):not([data-slot]):not([type="checkbox"]):not([type="radio"]) {
-    border: 1.5px solid var(--outline); border-radius: var(--radius-sm); background: var(--surface-raised);
-    color: var(--ink); padding: 6px 10px;
-  }
-  :is(input, textarea, select):not([data-slot]):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  h2:not([class]) { font-size: 1.375rem; font-weight: 700; margin: 1.25rem 0 .5rem; }
-  h3:not([class]) { font-size: 1.125rem; font-weight: 700; margin: 1rem 0 .5rem; }
-  p:not([class]) { margin: .5rem 0; }
-  table:not([class]) :is(th, td) { padding: 6px 10px; border-bottom: 1px solid var(--divider); text-align: left; }
-}
+/* komponen.css web (dipakai Pratinjau) memberi body line-height 26px tetap dan padding bawah untuk nav-bawah web.
+   Aturan itu tidak berlapis sehingga mengalahkan @layer base; ditimpa di sini (juga tidak berlapis, dimuat sesudahnya)
+   supaya komponen shadcn memakai tinggi baris proporsional dan tidak ada ruang kosong di bawah layar HP. */
+body { line-height: 1.5; padding-bottom: 0; }
