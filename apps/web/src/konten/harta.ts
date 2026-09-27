@@ -5,8 +5,8 @@ import { angka, teksEdukasi } from '../terjemah';
 
 export const KATEGORI_HARTA_TEKS: Record<KategoriHarta, { label: string; contoh: string }> = {
   tabungan: { label: teksEdukasi('harta.tabungan_kas'), contoh: teksEdukasi('harta.rekening_bank_deposito_uang_tunai') },
-  properti: { label: teksEdukasi('harta.tanah_bangunan'), contoh: 'Rumah, tanah, ruko; pakai harga pasar saat ini' },
-  kendaraan: { label: teksEdukasi('harta.kendaraan'), contoh: 'Mobil, motor; pakai harga jual saat ini' },
+  properti: { label: teksEdukasi('harta.tanah_bangunan'), contoh: teksEdukasi('harta.rumah_tanah_ruko_harga_pasar') },
+  kendaraan: { label: teksEdukasi('harta.kendaraan'), contoh: teksEdukasi('harta.mobil_motor_harga_jual') },
   emas: { label: teksEdukasi('harta.emas_perhiasan'), contoh: teksEdukasi('harta.emas_batangan_perhiasan') },
   piutang: { label: teksEdukasi('harta.piutang'), contoh: teksEdukasi('harta.uang_almarhum_yang_dipinjam_orang_lain') },
   lainnya: { label: teksEdukasi('harta.lainnya'), contoh: teksEdukasi('harta.saham_barang_berharga_usaha') },
