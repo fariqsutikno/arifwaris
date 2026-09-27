@@ -1,6 +1,6 @@
 # Portal admin — telaah umpan balik pengguna & rencana perbaikan
 
-Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **keputusan C1–C7 sudah ada (bagian D); bagian F (KB di portal) masih dibahas**
+Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **keputusan C1–C7 sudah ada (bagian D); bagian F disetujui; urutan pengerjaan dibahas terpisah**
 
 Dokumen ini menelaah 24 keluhan pengguna tentang portal admin (`apps/admin`), mencari akar masalahnya di kode,
 lalu menyusun perbaikan bertahap. Belum ada kode yang diubah.
@@ -276,3 +276,10 @@ dan parser Markdown makin rapuh bila tabelnya diedit mesin. Tidak disarankan kal
 F1 rujukan + dalil induk + glosarium + kitab + titik dikaji ke database (sekaligus menjawab C1, C2, C5) → F2 status
 kematangan + peta dampak → F3 kasus uji di portal + tes engine otomatis → F4 ekspor Markdown + penjaga CI →
 F5 uraian bab. F1 menggantikan butir Fase 3.1, 3.3, dan 3.5 di bagian B.
+
+### Keputusan bagian F (2026-09-28)
+
+- **F disetujui**: database menjadi sumber KB; `docs/kb` menjadi hasil ekspor. CLAUDE.md diperbarui saat F4.
+- **Penyetuju perubahan KB = reviewer** (dosen). Tim keilmuan berperan **penulis**. Tidak ada peran baru; aturan
+  "penyetuju bukan penulisnya" tetap berlaku.
+- Urutan pengerjaan dibahas di sesi terpisah.
