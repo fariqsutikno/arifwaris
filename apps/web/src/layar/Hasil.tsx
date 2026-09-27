@@ -218,6 +218,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
           <ul className="poin-konfirmasi">
             <li>{t('hitung.semua_jawaban_langsung_kebuka_kamu_nggak')}</li>
             {!sudahMencoba && <li>{t('hitung.kamu_belum_nyoba_jawab_sama_sekali')}</li>}
+            {/* Hanya soal latihan yang tercatat; XP-nya hanya dari tebakan benar (spec tahap 5). */}
+            {konfirmasiBuka === 'lihat' && saatDikerjakan && <li>{t('hitung.soal_yang_jawabannya_dibuka_tidak_memberi_xp')}</li>}
           </ul>
         </DialogKonfirmasi>
       )}

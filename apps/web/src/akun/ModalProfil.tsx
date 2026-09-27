@@ -1,6 +1,6 @@
-// Profil untuk papan peringkat (spec tahap 5 "Web"): nama tampilan, ikut papan (opt-in), avatar, zona waktu batas hari.
-// Dibaca & disimpan langsung ke server (tidak lewat antrean). Belum pernah diatur → nama depan dari Google, tidak ikut,
-// zona waktu perangkat bila termasuk pilihan, selain itu WIB.
+// Profil untuk papan peringkat (spec tahap 5 "Web"): nama tampilan, ikut papan (opt-out, keputusan 2026-09-28), avatar,
+// zona waktu batas hari. Dibaca & disimpan langsung ke server (tidak lewat antrean). Belum pernah diatur → nama depan
+// dari Google, ikut papan, zona waktu perangkat bila termasuk pilihan, selain itu WIB.
 
 import { useEffect, useState } from 'react';
 import type { Profil, Sesi } from '@waris/data';
@@ -13,19 +13,17 @@ const ZONA_INDONESIA = ['Asia/Jakarta', 'Asia/Makassar', 'Asia/Jayapura'];
 interface Props {
   sesi: Sesi;
   repo: RepoAkun;
-  /** Dibuka dari ajakan "ikut papan": sakelar ikut sudah menyala. */
-  ajakIkut?: boolean;
   saatTutup: () => void;
   saatTersimpan: (profil: Profil) => void;
 }
 
-export function ModalProfil({ sesi, repo, ajakIkut, saatTutup, saatTersimpan }: Props) {
+export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
   const [profil, setProfil] = useState<Profil | null>(null);
   const [galat, setGalat] = useState<'muat' | 'simpan' | null>(null);
   const [sedangSimpan, setSedangSimpan] = useState(false);
   useEffect(() => {
     repo.pengguna.bacaProfil()
-      .then(tersimpan => setProfil(tersimpan ? { ...tersimpan, ikutPapanPeringkat: tersimpan.ikutPapanPeringkat || !!ajakIkut } : profilBawaan(sesi, !!ajakIkut)))
+      .then(tersimpan => setProfil(tersimpan ?? profilBawaan(sesi)))
       .catch(() => setGalat('muat'));
   }, []);
 
@@ -89,11 +87,12 @@ export function ModalProfil({ sesi, repo, ajakIkut, saatTutup, saatTersimpan }: 
   );
 }
 
-function profilBawaan(sesi: Sesi, ikut: boolean): Profil {
-  const namaDepan = (sesi.nama ?? sesi.email.split('@')[0] ?? '').trim().split(/\s+/)[0] ?? '';
+function profilBawaan(sesi: Sesi): Profil {
+  // Sama dengan nama_bawaan di SQL: bukan awalan email, supaya alamatnya tidak tampil di papan.
+  const namaDepan = (sesi.nama ?? '').trim().split(/\s+/)[0] || t('akun.pengguna');
   const zonaPerangkat = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return {
-    namaTampilan: namaDepan.slice(0, PANJANG_NAMA_MAKS), ikutPapanPeringkat: ikut, tampilkanAvatar: false,
+    namaTampilan: namaDepan.slice(0, PANJANG_NAMA_MAKS), ikutPapanPeringkat: true, tampilkanAvatar: false,
     zonaWaktu: ZONA_INDONESIA.includes(zonaPerangkat) ? zonaPerangkat : 'Asia/Jakarta',
   };
 }

@@ -1,8 +1,7 @@
 // Beranda (dashboard): dua aksi utama (hitung skenario, lanjut belajar), status pengguna di perangkat ini
-// (kasus terakhir, progres belajar, latihan), streak & XP akun bila login, pintu ke referensi, dan identitas tim penyusun.
+// (kasus terakhir, progres belajar, latihan), pintu ke referensi, dan identitas tim penyusun.
 // Semua angka dari penyimpanan lokal; bila kosong, tampil ajakan memulai, bukan angka nol yang menggantung.
 
-import type { ReactNode } from 'react';
 import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
 import type { Kasus } from '../kasus';
 import { bacaAktivitas } from '../preferensi';
@@ -28,11 +27,7 @@ const PEMBIMBING: { nama: string; situs?: string }[] = [
   { nama: t('beranda.ustaz_arif_husnul_khuluq_m_h'), situs: 'https://www.instagram.com/arifhusnulkhuluq' },
 ];
 
-export function Beranda({ kasusTerakhir, saatKeHitung, kartuAkun }: {
-  kasusTerakhir: Kasus | null; saatKeHitung: () => void;
-  /** Kartu streak & XP (hanya bila login, spec tahap 5); di luar "di perangkat ini" karena datanya milik akun. */
-  kartuAkun?: ReactNode;
-}) {
+export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus | null; saatKeHitung: () => void }) {
   const selesai = bacaPelajaranSelesai();
   const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
@@ -60,8 +55,6 @@ export function Beranda({ kasusTerakhir, saatKeHitung, kartuAkun }: {
             <small>{berikutnya ? t('hitung.berikutnya_judul', { judul: berikutnya.judul }) : t('beranda.semua_pelajaran_sudah_selesai')}</small>
           </a>
         </div>
-
-        {kartuAkun}
 
         <section className="tumpuk-rapat" aria-labelledby="judul-status">
           <h2 id="judul-status" className="tanya-tujuan">{t('beranda.punyamu_di_perangkat_ini')}</h2>

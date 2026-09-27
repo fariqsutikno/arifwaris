@@ -7,7 +7,7 @@ di sana dan tidak berubah; tahap ini membaca `log_kegiatan` untuk streak, XP, da
 ## Tujuan
 
 1. Pengguna yang login melihat streak harian (check-in otomatis) dan XP-nya.
-2. Papan peringkat mingguan dan sepanjang waktu, hanya berisi pengguna yang memilih ikut (opt-in).
+2. Papan peringkat mingguan dan sepanjang waktu. Semua yang login ikut otomatis; bisa menyembunyikan diri (opt-out).
 3. Kuis punya tingkat kesulitan seperti soal hitung, supaya XP-nya bisa dibedakan.
 
 ## Bukan tujuan
@@ -27,7 +27,8 @@ di sana dan tidak berubah; tahap ini membaca `log_kegiatan` untuk streak, XP, da
 | Streak freeze | Tidak ada |
 | XP | Tabel di bawah; hanya **pertama kali** per konten; jawaban salah 0 |
 | Periode papan | Mingguan (mulai Senin 00:00 WIB, sama untuk semua) dan sepanjang waktu |
-| Ikut papan | Opt-in; default tidak ikut |
+| Ikut papan | ~~Opt-in~~ → **opt-out** (revisi 2026-09-28): semua yang login ikut; tanpa profil = nama depan Google, bukan email |
+| Streak | Di header (teks "🔥 N"), bukan kartu Beranda (revisi 2026-09-28) |
 | Hitungan | Di Postgres dari `log_kegiatan`; klien hanya menampilkan |
 | Tingkat kuis | Field `tingkat` opsional di `soal_kuis`, kosong = `dasar`; diisi dari form portal |
 
@@ -78,13 +79,16 @@ Dipanggil klien (`security definer`, `search_path` dikunci):
 
 ## Web
 
-- **Beranda** (login): kartu streak & XP — "🔥 N hari", XP total, XP minggu ini, sudah/belum aktif hari ini,
-  tautan ke papan peringkat. Tanpa login: tidak tampil.
-- **`#/peringkat`**: tab Mingguan / Sepanjang waktu. Belum login → ajakan masuk. Login tapi belum ikut → kartu
-  "Tampilkan namaku di papan" (isi nama → ikut). Baris sendiri disorot.
+Revisi 2026-09-28 (audit UX): aksi sekunder berupa **teks/tautan**, bukan tombol.
+
+- **Header** (login): teks "🔥 N" (atau "🔥 Mulai streak") menuju papan, redup bila hari ini belum aktif; keterangan
+  lengkap di `aria-label`/`title`. Dimuat saat login dan tiap kegiatan sampai server (`arif-waris:kegiatan-terkirim`
+  dari antrean); XP yang naik tampil sebentar sebagai "+N XP". Gagal jaringan → tidak tampil, tidak ada angka palsu.
+- **`#/peringkat`**: tab Mingguan / Sepanjang waktu. Belum login → tautan teks "Masuk untuk …". Login → tautan
+  "Ubah profil" (plus keterangan bila sedang disembunyikan). Baris sendiri disorot.
+- **Latihan**: tautan teks ke papan peringkat, juga untuk yang belum login.
+- **Dialog "Lihat jawaban"** soal latihan: satu baris bahwa membuka jawaban tidak memberi XP.
 - **Menu akun** → "Profil": nama tampilan, ikut papan, tampilkan avatar, zona waktu.
-- Ringkasan dimuat tiap Beranda dibuka (antrean sudah dikirim saat aplikasi dibuka); kegiatan yang masih di antrean
-  baru terhitung setelah terkirim. Gagal jaringan → kartu disembunyikan, tidak ada angka palsu.
 - Semua teks lewat diksi (halaman `akun`), masuk DB lewat `konten:pulihkan`.
 
 ## Repository (`@waris/data`)
@@ -98,7 +102,7 @@ Dipanggil klien (`security definer`, `search_path` dikunci):
 
 - pgTAP `06_peringkat.test.sql`: XP per tingkat (hitung & kuis, kuis tanpa tingkat = dasar), pertama kali saja,
   salah = 0, slug tak terbit = 0, bonus hari aktif, streak berturut/putus, toleransi 00:00–01:59 (menutup kemarin
-  hanya bila kemarin kosong), minggu WIB, papan hanya opt-in, anon bisa baca papan tapi tidak profil, RLS profil,
+  hanya bila kemarin kosong), minggu WIB, papan opt-out (`07_peringkat_otomatis`), anon bisa baca papan tapi tidak profil, RLS profil,
   fungsi internal tidak bisa dipanggil klien, zona waktu tidak sah ditolak.
 - Web: rute `#/peringkat`, kartu beranda (ada/tanpa sesi), form profil.
 - Konten: skema kuis menerima tanpa/dengan `tingkat`; form portal punya bidang tingkat kuis.
