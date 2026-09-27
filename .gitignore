@@ -4,4 +4,6 @@ dist/
 .superpowers
 supabase/.temp/
 supabase/.branches/
-.env.local
+.env
+.env.*
+!.env.example

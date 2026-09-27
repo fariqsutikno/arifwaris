@@ -69,6 +69,12 @@ VITE_SUPABASE_ANON_KEY=...
 Login memakai Google lewat Supabase Auth: di dashboard Supabase, aktifkan provider Google lalu daftarkan redirect
 URL `<origin portal>` (mis. `http://localhost:5173` untuk dev) di pengaturan Auth > URL Configuration.
 
+### Skrip konten
+
+`pnpm konten:ekspor` (database → snapshot web) dan `pnpm konten:pulihkan` (snapshot → database, mis. memasukkan diksi
+baru) membaca `SUPABASE_URL`, `SUPABASE_ANON_KEY`, dan untuk pulihkan `SUPABASE_SERVICE_ROLE_KEY`. Isi sekali di
+`scripts/.env` (salin dari `scripts/.env.example`; file ini diabaikan git), atau set di shell (shell menang).
+
 ## Prinsip
 
 1. **Sumber hukum hanya `docs/kb/`**. Aturan di luar KB atau yang belum terverifikasi tidak diimplementasikan (`TIDAK_DIDUKUNG`).
