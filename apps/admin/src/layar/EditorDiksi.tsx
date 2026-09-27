@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePortal } from '../repo';
 import { PesanGalat } from './Beranda';
@@ -178,8 +179,8 @@ function BarisDiksi(
     <>
       <TableRow className={berubah ? 'bg-accent/40' : undefined}>
         <TableCell className="font-mono text-xs">{k.kunci}</TableCell>
-        <TableCell className="min-w-48">{bolehEdit ? <Input aria-label={`Indonesia ${k.kunci}`} value={idTeks} onChange={e => setIdTeks(e.target.value)} /> : idTeks}</TableCell>
-        <TableCell className="min-w-40">{bolehEdit ? <Input aria-label={`Arab ${k.kunci}`} dir="rtl" lang="ar" value={arTeks} onChange={e => setArTeks(e.target.value)} /> : arTeks}</TableCell>
+        <TableCell className="min-w-48 whitespace-normal">{bolehEdit ? <Textarea rows={1} className="min-h-8" aria-label={`Indonesia ${k.kunci}`} value={idTeks} onChange={e => setIdTeks(e.target.value)} /> : idTeks}</TableCell>
+        <TableCell className="min-w-40 whitespace-normal">{bolehEdit ? <Textarea rows={1} className="min-h-8" aria-label={`Arab ${k.kunci}`} dir="rtl" lang="ar" value={arTeks} onChange={e => setArTeks(e.target.value)} /> : arTeks}</TableCell>
         <TableCell><Badge variant="secondary">{statusTampilDiksi(k)}</Badge></TableCell>
         <TableCell>
           <span className="flex justify-end gap-2">

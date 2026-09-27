@@ -201,7 +201,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
 function Padanan({ teks, panjang }: { teks: string; panjang: boolean }) {
   if (!teks.trim()) return null;
   return (
-    <span className={`block overflow-auto rounded-md bg-muted px-2 py-1 text-xs font-normal whitespace-pre-wrap text-muted-foreground ${panjang ? 'max-h-40' : 'line-clamp-3'}`}>
+    <span className={`block overflow-auto rounded-md bg-muted px-2 py-1 text-xs font-normal whitespace-pre-wrap text-muted-foreground ${panjang ? 'max-h-40' : ''}`}>
       <span className="font-semibold">Indonesia: </span>{teks}
     </span>
   );

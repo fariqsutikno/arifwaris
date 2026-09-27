@@ -137,7 +137,7 @@ export function EditorTeksAplikasi() {
             {hasilCari.map(sumber => (
               <li key={`${sumber.sumber}/${sumber.kunci}`}>
                 <button type="button" className="grid w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted" onClick={() => setDipilih({ sumber: [sumber], simpul: null })}>
-                  <span className="line-clamp-2">{sumber.id}</span>
+                  <span className="whitespace-pre-wrap">{sumber.id}</span>
                   <span className="text-xs text-muted-foreground">{namaKelompok(sumber)}</span>
                 </button>
               </li>
