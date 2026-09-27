@@ -26,6 +26,7 @@ import { tulisRute } from '../rute';
 import { PemilihRefs } from './PemilihRefs';
 import { Pratinjau } from './Pratinjau';
 import { RiwayatRevisi } from './RiwayatRevisi';
+import { pesanGalat } from '../pesanGalat';
 
 const JARAK_URUTAN = 10;
 type Tab = 'form' | 'json';
@@ -71,7 +72,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       setGalatBidang({});
       setRefs(hasil.muatan.basis?.refs ?? []);
       setRefsAwal(hasil.muatan.basis?.refs ?? []);
-    })().catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+    })().catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, entriIdProp, jenisProp, muatUlang]);
 
@@ -189,7 +190,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       if (entriId && !entriIdProp) location.hash = tulisRute({ layar: 'entri', entriId });
       else setMuatUlang(n => n + 1);
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     } finally {
       setSibuk(false);
     }
@@ -346,14 +347,13 @@ function slugDariIsi(isi: unknown): string | null {
 }
 
 const jam = (waktu: Date) => waktu.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-const pesan = (e: unknown) => (e instanceof Error ? e.message : String(e));
 
 function bacaJson(jenis: JenisKonten, teks: string): HasilForm<JenisKonten> {
   let json: unknown;
   try {
     json = JSON.parse(teks);
   } catch (e) {
-    return { ok: false, galat: `JSON tidak sah: ${pesan(e)}`, galatBidang: {} };
+    return { ok: false, galat: `JSON tidak sah: ${pesanGalat(e)}`, galatBidang: {} };
   }
   const hasil = bacaIsi(jenis, json);
   return hasil.ok ? hasil : { ok: false, galat: hasil.galat, galatBidang: {} };

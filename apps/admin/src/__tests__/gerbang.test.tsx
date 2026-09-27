@@ -30,5 +30,5 @@ test('galat memuat sesi → pesan galat, bukan layar kosong', async () => {
   const m = buatMemori();
   m.akun.sesi = async () => { throw new Error('jaringan putus'); };
   render(<Portal repo={m} />);
-  expect(await screen.findByText(/jaringan putus/)).toBeTruthy();
+  expect(await screen.findByText(/jaringan putus/i)).toBeTruthy();
 });

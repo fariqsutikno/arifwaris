@@ -18,6 +18,7 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePortal } from '../repo';
+import { pesanGalat } from '../pesanGalat';
 
 const JUMLAH_KOLOM = 5;
 
@@ -73,7 +74,7 @@ export function EditorDiksi() {
     setGalat(null);
     repo.diksi.daftarKunci()
       .then(hasil => { if (!dibatalkan) setDaftar(hasil); })
-      .catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, muatUlang]);
 
@@ -152,14 +153,14 @@ function BarisDiksi(
     try {
       idRevisi = await repo.diksi.buatDraf(k.kunci, idTeks, arTeks || null, null);
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
       setMenyimpan(false);
       return;
     }
     try {
       await repo.diksi.ajukan(idRevisi);
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     } finally {
       setMenyimpan(false);
       onSimpanSelesai(); // draf sudah tersimpan meski ajukan gagal → muat ulang agar daftar mencerminkannya.
@@ -208,7 +209,7 @@ function RiwayatDiksi(
     let dibatalkan = false;
     repo.diksi.daftarRevisi(kunci)
       .then(hasil => { if (!dibatalkan) setDaftar(hasil); })
-      .catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, kunci]);
 
@@ -246,7 +247,7 @@ function BarisRiwayatDiksi(
       await repo.diksi.terbitkanUlang(revisi.id);
       saatBerubah();
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     }
   }
 
@@ -262,4 +263,3 @@ function BarisRiwayatDiksi(
   );
 }
 
-const pesan = (e: unknown) => (e instanceof Error ? e.message : String(e));

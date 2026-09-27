@@ -15,6 +15,7 @@ import { EditorEntri } from './layar/EditorEntri';
 import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
 import { KelolaPeran } from './layar/KelolaPeran';
+import { pesanGalat } from './pesanGalat';
 
 type Tahap =
   | { tahap: 'memuat' }
@@ -36,7 +37,7 @@ export function Portal({ repo }: { repo: RepoPortal }) {
         if (dibatalkan) return;
         setStatus(peran ? { tahap: 'siap', sesi, peran } : { tahap: 'tanpaPeran', sesi });
       } catch (e) {
-        if (!dibatalkan) setStatus({ tahap: 'galat', pesan: e instanceof Error ? e.message : String(e) });
+        if (!dibatalkan) setStatus({ tahap: 'galat', pesan: pesanGalat(e) });
       }
     })();
     return () => { dibatalkan = true; };

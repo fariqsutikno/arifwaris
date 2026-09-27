@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { pesanGalat } from '../pesanGalat';
 
 const DAFTAR_PERAN: Peran[] = ['admin', 'penulis', 'reviewer'];
 
@@ -28,7 +29,7 @@ export function KelolaPeran() {
   }
 
   useEffect(() => {
-    muatUlang().catch(e => setGalat(e instanceof Error ? e.message : String(e)));
+    muatUlang().catch(e => setGalat(pesanGalat(e)));
   }, [repo]);
 
   async function beriPeran() {
@@ -38,7 +39,7 @@ export function KelolaPeran() {
       setEmail('');
       await muatUlang();
     } catch (e) {
-      setGalat(e instanceof Error ? e.message : String(e));
+      setGalat(pesanGalat(e));
     }
   }
 
@@ -49,7 +50,7 @@ export function KelolaPeran() {
       await repo.akun.aturPeran(baris.email, null);
       await muatUlang();
     } catch (e) {
-      setGalat(e instanceof Error ? e.message : String(e));
+      setGalat(pesanGalat(e));
     }
   }
 

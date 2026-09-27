@@ -25,6 +25,7 @@ import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
 import { ChipStatus, PesanGalat } from './Beranda';
 import { EditorDiksi } from './EditorDiksi';
+import { pesanGalat } from '../pesanGalat';
 
 export function LayarMenu({ menu: kunci, tab }: { menu: KunciMenu; tab: IsiMenu }) {
   const { peran } = usePortal();
@@ -95,7 +96,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
     try {
       await tugas;
     } catch (e) {
-      galatTertunda.current = `Urutan gagal disimpan: ${e instanceof Error ? e.message : String(e)}`;
+      galatTertunda.current = `Urutan gagal disimpan: ${pesanGalat(e)}`;
     } finally {
       jumlahTertunda.current -= 1;
       if (jumlahTertunda.current === 0 && galatTertunda.current) {
@@ -120,7 +121,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
         setModul(daftarModul);
         setIsiModulTerbit(new Map(modulTerbit.map(baris => [baris.entriId, baris.isi])));
       })
-      .catch(e => { if (!dibatalkan) setGalat(e instanceof Error ? e.message : String(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, jenis, menuMateri, muatUlang]);
 
@@ -141,7 +142,7 @@ export function DaftarKonten({ jenis, menuMateri = false }: { jenis: JenisKonten
       await repo.editorial.pulihkanEntri(entri.entriId);
       setMuatUlang(n => n + 1);
     } catch (e) {
-      setGalatUrutan(`Gagal memulihkan: ${e instanceof Error ? e.message : String(e)}`);
+      setGalatUrutan(`Gagal memulihkan: ${pesanGalat(e)}`);
     }
   }
   return (

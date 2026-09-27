@@ -84,7 +84,7 @@ test('galat repo tampil dengan tombol coba lagi', async () => {
   const m = await siapkan();
   m.konten.daftarEntri = async () => { throw new Error('jaringan putus'); };
   pasang(m, 'faq', 'faq');
-  expect(await screen.findByText(/jaringan putus/)).toBeTruthy();
+  expect(await screen.findByText(/jaringan putus/i)).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Coba lagi' })).toBeTruthy();
 });
 

@@ -13,6 +13,7 @@ import { LABEL_ISI } from '../navigasi';
 import { judulEntri, LABEL_TAB, ringkasBeranda, statusTampil, waktuRelatif, type RingkasanBeranda, type StatusTampil } from '../ringkas';
 import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
+import { pesanGalat } from '../pesanGalat';
 
 const JENIS_BUAT_BARU: JenisKonten[] = ['materi', 'soal_kuis', 'soal_hitung', 'tanya_jawab', 'faq'];
 const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' } as const;
@@ -28,7 +29,7 @@ export function Beranda() {
     setGalat(null);
     Promise.all([repo.konten.daftarEntri(), repo.diksi.antreanReview()])
       .then(([semua, antreanDiksi]) => { if (!dibatalkan) setRingkasan(ringkasBeranda(semua, sesi.userId, antreanDiksi.length)); })
-      .catch(e => { if (!dibatalkan) setGalat(e instanceof Error ? e.message : String(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, sesi.userId, muatUlang]);
 
