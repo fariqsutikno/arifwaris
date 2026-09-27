@@ -25,7 +25,7 @@ function ketikMarkdown(label: string, nilai: string) {
 test('soal kuis: tambah pilihan, pilih benar, hapus pilihan menggeser indeks benar', () => {
   render(<Uji jenis="soal_kuis" awal={nilaiFormKosong('soal_kuis')} />);
   ketik('Kode soal', 'K-1');
-  ketik('Bab KB', '4');
+  ketik('Bab', '4');
   ketikMarkdown('Pilihan 1', '1/2');
   ketikMarkdown('Pilihan 2', '1/4');
   fireEvent.click(screen.getByRole('button', { name: 'Tambah pilihan' }));
@@ -51,10 +51,10 @@ test('ahwal: tambah baris, fardh "-" = tanpa fardh, ashabah ya', () => {
 
 test('sakelar Versi Arab menampilkan bidang Arab rtl', () => {
   render(<Uji jenis="modul" awal={keNilaiForm('modul', { nomor: 1, judul: 'J', ringkas: 'r' })} />);
-  expect(screen.queryByLabelText('Judul (Arab)')).toBeNull();
+  expect(screen.queryByLabelText('Judul modul (Arab)')).toBeNull();
   fireEvent.click(screen.getByLabelText('Ada versi arab'));
-  expect(screen.getByLabelText('Judul (Arab)').getAttribute('dir')).toBe('rtl');
-  ketik('Judul (Arab)', 'مقدمة');
+  expect(screen.getByLabelText('Judul modul (Arab)').getAttribute('dir')).toBe('rtl');
+  ketik('Judul modul (Arab)', 'مقدمة');
   ketik('Ringkasan (Arab)', 'ر');
   expect(dariNilaiForm('modul', 'x', terakhir)).toEqual({ ok: true, isi: { nomor: 1, judul: 'J', ringkas: 'r', ar: { judul: 'مقدمة', ringkas: 'ر' } } });
 });

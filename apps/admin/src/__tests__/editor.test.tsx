@@ -92,7 +92,7 @@ test('angka tidak sah → galat di bawah bidang, tidak ada entri tersimpan', asy
   tampilkan(m, { jenis: 'modul' });
   await screen.findByText('Entri baru · belum disimpan');
   ketik('Nomor modul', 'empat');
-  ketik('Judul', 'Pengantar');
+  ketik('Judul modul', 'Pengantar');
   klik('Simpan dulu');
   expect((await screen.findByRole('alert')).textContent).toMatch(/Ada bidang yang belum benar/);
   expect(screen.getByText('harus bilangan bulat')).toBeTruthy();
@@ -108,7 +108,7 @@ test('soal kuis baru: kode diisi otomatis kode berikutnya, bab berupa pilihan ju
   }, ['R09-7']);
   tampilkan(m, { jenis: 'soal_kuis' });
   await waitFor(() => expect((screen.getByLabelText('Kode soal') as HTMLInputElement).value).toBe('K-08'));
-  const bab = screen.getByLabelText('Bab KB') as HTMLSelectElement;
+  const bab = screen.getByLabelText('Bab') as HTMLSelectElement;
   expect(bab.tagName).toBe('SELECT');
   expect([...bab.options].some(o => o.value === '9' && /^9\. /.test(o.text))).toBe(true);
 });
@@ -163,7 +163,7 @@ test('soal kuis baru: kode diisi kode berikutnya, bab berupa pilihan judul bab K
   }, ['R09-7']);
   tampilkan(m, { jenis: 'soal_kuis' });
   await waitFor(() => expect((screen.getByLabelText('Kode soal') as HTMLInputElement).value).toBe('K-08'));
-  const bab = screen.getByLabelText('Bab KB') as HTMLSelectElement;
+  const bab = screen.getByLabelText('Bab') as HTMLSelectElement;
   expect(bab.tagName).toBe('SELECT');
   expect([...bab.options].some(o => o.value === '9' && /^9\. /.test(o.text))).toBe(true);
 });
@@ -208,7 +208,7 @@ test('tab JSON tidak tampil untuk penulis', async () => {
   const { entriId } = await drafMilik(m);
   tampilkan(m, { entriId });
   await screen.findByText(/Draf tersimpan/);
-  expect(screen.queryByRole('tab', { name: /JSON/ })).toBeNull();
+  expect(screen.queryByRole('tab', { name: /Kode mentah/ })).toBeNull();
 });
 
 test('admin, tab JSON: JSON rusak → galat & tetap di JSON, perbaikan kembali ke form', async () => {
@@ -217,16 +217,16 @@ test('admin, tab JSON: JSON rusak → galat & tetap di JSON, perbaikan kembali k
   tampilkan(m, { entriId }, 'admin', 'u-a');
   await screen.findByText(/Draf tersimpan/);
   ketik('Pertanyaan', 'Apa itu tirkah, ya?');
-  bukaTab(/JSON/);
+  bukaTab(/Kode mentah/);
   expect((screen.getByRole('textbox', { name: 'JSON' }) as HTMLTextAreaElement).value).toContain('"pertanyaan": "Apa itu tirkah, ya?"');
   isiJson('{ rusak');
-  bukaTab(/Form/);
+  bukaTab(/Bahasa Indonesia/);
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
   klik('Simpan dulu');
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
 
   isiJson(JSON.stringify(keJson('faq', { ...DAFTAR_FAQ_UJI[0]!, pertanyaan: 'Dari JSON' })));
-  bukaTab(/Form/);
+  bukaTab(/Bahasa Indonesia/);
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('Dari JSON');
   klik('Simpan dulu');
   await waitFor(async () => {
@@ -348,4 +348,26 @@ test('entri baru dengan isian awal dari URL (?modul=3) → modul terisi', async 
   const m = siapkan();
   tampilkan(m, { jenis: 'materi', awal: { modul: '3', bukanBidang: 'x' } });
   await waitFor(() => expect((screen.getByLabelText('Modul') as HTMLSelectElement).value).toBe('3'));
+});
+
+test('validasi langsung: galat bidang tampil begitu bidangnya ditinggalkan, sebelum Simpan', async () => {
+  tampilkan(siapkan(), { jenis: 'modul' });
+  await screen.findByText('Entri baru · belum disimpan');
+  ketik('Nomor modul', 'empat');
+  expect(screen.queryByText('harus bilangan bulat')).toBeNull();
+  fireEvent.blur(screen.getByLabelText('Nomor modul'));
+  expect(await screen.findByText('harus bilangan bulat')).toBeTruthy();
+});
+
+test('Kelengkapan menandai bidang wajib & rujukan; Batalkan perubahan kembali ke versi tersimpan', async () => {
+  tampilkan(siapkan(), { jenis: 'faq' });
+  const kelengkapan = await screen.findByRole('region', { name: 'Kelengkapan' });
+  expect(kelengkapan.textContent).toMatch(/Pertanyaan.*belum diisi/);
+  expect(kelengkapan.textContent).toMatch(/Rujukan dalil.*belum diisi/);
+  ketik('Pertanyaan', 'Apa itu tirkah?');
+  expect(kelengkapan.textContent).toMatch(/Pertanyaan: sudah benar/);
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  klik('Batalkan perubahan');
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('');
+  expect(screen.queryByRole('button', { name: 'Batalkan perubahan' })).toBeNull();
 });

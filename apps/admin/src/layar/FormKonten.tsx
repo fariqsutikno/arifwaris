@@ -11,7 +11,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
 import { Textarea } from '@/components/ui/textarea';
-import { FORM_KONTEN, type Bagian, type Bidang, type Opsi, type SumberOpsi } from '../editor/formulir';
+import { bidangWajib, FORM_KONTEN, type Bagian, type Bidang, type Opsi, type SumberOpsi } from '../editor/formulir';
+import { PANDUAN_JENIS, PANDUAN_UMUM } from '../editor/panduan';
 import { identitasOtomatis } from '../editor/identitas';
 import type { NilaiBidang, NilaiForm, NilaiPilihanKuis } from '../editor/nilaiForm';
 import { EditorBlok } from './EditorBlok';
@@ -31,11 +32,13 @@ interface Props {
   identitasTerkunci?: boolean;
   /** Ada = pengguna boleh membuka kunci identitas (admin). */
   saatBukaKunci?: (() => void) | undefined;
+  /** Fokus meninggalkan satu bidang: induk mulai menampilkan galat bidang itu. */
+  saatSelesaiIsi?: ((jalur: string) => void) | undefined;
 }
 
 export type PotonganForm = 'utama' | 'samping' | 'arab';
 
-export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi, bagian: potongan, identitasTerkunci = false, saatBukaKunci }: Props) {
+export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi, bagian: potongan, identitasTerkunci = false, saatBukaKunci, saatSelesaiIsi }: Props) {
   const ubah = (jalur: string, nilai: NilaiBidang) => saatUbah({ ...form, nilai: { ...form.nilai, [jalur]: nilai } });
   // Slug hanya untuk pesan galat bacaBlok; istilah untuk sisipan di editor blok.
   const konteks: KonteksEditor = { slug: String(form.nilai.slug || form.nilai.id || form.nilai.kode || jenis), istilah: opsi.istilah ?? [] };
@@ -47,11 +50,18 @@ export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi,
       <BidangForm key={bidang.jalur} bidang={bidang} nilai={form.nilai[bidang.jalur]} saatUbah={nilai => ubah(bidang.jalur, nilai)}
         bacaSaja={bacaSaja || terkunci} galat={galatBidang[bidang.jalur]} opsi={bidang.sumberOpsi ? opsi[bidang.sumberOpsi] : undefined}
         placeholder={otomatis ? `Otomatis: ${otomatis}` : undefined} padananId={typeof padanan === 'string' ? padanan : undefined}
-        kunci={terkunci ? { saatBuka: bacaSaja ? undefined : saatBukaKunci } : undefined} konteks={konteks} />
+        kunci={terkunci ? { saatBuka: bacaSaja ? undefined : saatBukaKunci } : undefined} konteks={konteks}
+        saatSelesai={() => saatSelesaiIsi?.(bidang.jalur)} />
     );
   };
   return (
     <div className="grid gap-6">
+      {potongan !== 'samping' && !bacaSaja ? (
+        <div className="grid gap-2">
+          <Panduan jenis={jenis} />
+          <p className="text-xs text-muted-foreground">Bertanda <span className="text-destructive">*</span> wajib diisi.</p>
+        </div>
+      ) : null}
       {pilihBagian(FORM_KONTEN[jenis], potongan).map((bagian, i) => {
         const aktif = !bagian.objekOpsional || form.aktif[bagian.objekOpsional];
         return (
@@ -95,49 +105,58 @@ interface PropsBidang {
   /** Teks Indonesia padanan bidang Arab ini, ditampilkan sebagai rujukan penerjemah. */
   padananId?: string | undefined;
   kunci?: { saatBuka: (() => void) | undefined } | undefined;
+  saatSelesai: () => void;
 }
 
-function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, placeholder, padananId, kunci }: PropsBidang) {
+function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, placeholder: placeholderOtomatis, padananId, kunci, saatSelesai }: PropsBidang) {
   const arah = bidang.arab ? { dir: 'rtl' as const, lang: 'ar' } : {};
   const teks = typeof nilai === 'string' ? nilai : '';
-  const label = bidang.opsional ? `${bidang.label} (opsional)` : bidang.label;
+  const wajib = bidangWajib(bidang);
+  const label = <span className={wajib ? TANDA_WAJIB : undefined}>{bidang.label}</span>;
+  const placeholder = placeholderOtomatis ?? (bidang.contoh ? `Contoh: ${bidang.contoh}` : undefined);
+  const bungkus = (isi: ReactNode, tambahan: { bantuan?: string | undefined; contoh?: string | undefined } = {}) => (
+    <BungkusBidang jalur={bidang.jalur} galat={galat} saatSelesai={saatSelesai}
+      bantuan={'bantuan' in tambahan ? tambahan.bantuan : bidang.bantuan} contoh={tambahan.contoh}>
+      {isi}
+    </BungkusBidang>
+  );
   switch (bidang.jenis) {
     case 'kasus':
-      return <Bungkus galat={galat}><EditorKasus nilai={nilai as ContohKasus} saatUbah={saatUbah} bacaSaja={bacaSaja} /></Bungkus>;
+      return bungkus(<EditorKasus nilai={nilai as ContohKasus} saatUbah={saatUbah} bacaSaja={bacaSaja} />);
     case 'barisAhwal':
-      return <Bungkus galat={galat}><EditorBarisAhwal label={label} nilai={nilai as BarisAhwal[]} saatUbah={saatUbah} bacaSaja={bacaSaja} opsiAlasan={opsi ?? []} /></Bungkus>;
+      return bungkus(<EditorBarisAhwal label={label} nilai={nilai as BarisAhwal[]} saatUbah={saatUbah} bacaSaja={bacaSaja} opsiAlasan={opsi ?? []} />);
     case 'pilihanKuis':
-      return <Bungkus galat={galat}><EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} konteks={konteks} /></Bungkus>;
+      return bungkus(<EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} konteks={konteks} />);
     case 'markdownBlok': case 'markdownPotongan':
       return (
-        <Bungkus galat={galat}>
+        bungkus(
           <div className="grid gap-1.5">
             <span className="text-sm font-medium">{label}</span>
             {padananId ? <Padanan teks={padananId} panjang={bidang.jenis === 'markdownBlok'} /> : null}
             <EditorBlok label={bidang.label} nilai={teks} saatUbah={saatUbah} mode={bidang.jenis === 'markdownBlok' ? 'blok' : 'potongan'}
-              slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} arab={bidang.arab} galat={!!galat} bantuanMarkdown={bidang.bantuan} />
-          </div>
-        </Bungkus>
+              slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} arab={bidang.arab} galat={!!galat} />
+          </div>,
+          { contoh: bidang.contoh },
+        )
       );
     case 'centang':
-      return (
-        <Bungkus galat={galat}>
-          <Label className="flex items-center gap-2">
-            <input type="checkbox" checked={nilai === true} disabled={bacaSaja} onChange={e => saatUbah(e.target.checked)} />{label}
-          </Label>
-        </Bungkus>
+      return bungkus(
+        <Label className="flex items-center gap-2">
+          <input type="checkbox" checked={nilai === true} disabled={bacaSaja} onChange={e => saatUbah(e.target.checked)} />{bidang.label}
+        </Label>,
       );
     default:
-      return (
-        <Bungkus galat={galat} bantuan={kunci ? undefined : bidang.bantuan}>
+      return bungkus(
+        <>
           <Label className="grid gap-1.5">{label}{padananId ? <Padanan teks={padananId} panjang={false} /> : null}{masukan()}</Label>
           {kunci ? <CatatanKunci saatBuka={kunci.saatBuka} /> : null}
-        </Bungkus>
+        </>,
+        { bantuan: kunci ? undefined : bidang.bantuan },
       );
   }
 
   function masukan(): ReactNode {
-    const galatAria = { 'aria-invalid': galat ? true : undefined };
+    const galatAria = { 'aria-invalid': galat ? true : undefined, 'aria-required': wajib || undefined };
     if ((bidang.jenis === 'pilihan' || bidang.jenis === 'angka') && (bidang.opsi || opsi) && !bidang.bolehBaru) {
       const daftar = opsi ?? bidang.opsi!.map(o => ({ nilai: o, label: o }));
       const adaNilai = daftar.some(o => o.nilai === teks);
@@ -185,17 +204,37 @@ function CatatanKunci({ saatBuka }: { saatBuka: (() => void) | undefined }) {
   );
 }
 
-function Bungkus({ galat, bantuan, children }: { galat: string | undefined; bantuan?: string | undefined; children: ReactNode }) {
+const TANDA_WAJIB = "after:ml-0.5 after:text-destructive after:content-['*']";
+
+function BungkusBidang({ jalur, galat, bantuan, contoh, saatSelesai, children }: {
+  jalur: string; galat: string | undefined; bantuan: string | undefined; contoh: string | undefined; saatSelesai: () => void; children: ReactNode;
+}) {
   return (
-    <div className="grid gap-1">
+    <div className="grid gap-1" data-jalur={jalur} data-galat={galat ? true : undefined}
+      onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) saatSelesai(); }}>
       {children}
       {bantuan ? <p className="text-xs text-muted-foreground">{bantuan}</p> : null}
+      {contoh ? <p className="text-xs text-muted-foreground"><span className="font-medium">Contoh:</span> {contoh}</p> : null}
       {galat ? <p className="text-sm text-destructive">{galat}</p> : null}
     </div>
   );
 }
 
-interface PropsPilihanKuis { label: string; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean; konteks: KonteksEditor }
+function Panduan({ jenis }: { jenis: JenisKonten }) {
+  const khusus = PANDUAN_JENIS[jenis] ?? [];
+  const umum = jenis === 'teks_edukasi' || jenis === 'cheatsheet' || jenis === 'ahwal' ? [] : PANDUAN_UMUM;
+  if (khusus.length + umum.length === 0) return null;
+  return (
+    <details className="rounded-lg border bg-muted/40 px-3 py-2 text-sm">
+      <summary className="cursor-pointer font-medium">Standar konten yang baik</summary>
+      <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
+        {[...khusus, ...umum].map(poin => <li key={poin}>{poin}</li>)}
+      </ul>
+    </details>
+  );
+}
+
+interface PropsPilihanKuis { label: ReactNode; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean; konteks: KonteksEditor }
 
 function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsPilihanKuis) {
   const ubahTeks = (indeks: number, teks: string) => saatUbah({ ...nilai, daftar: nilai.daftar.map((t, i) => (i === indeks ? teks : t)) });
@@ -245,7 +284,7 @@ const OPSI_FARDH = [
 ];
 
 function EditorBarisAhwal({ label, nilai, saatUbah, bacaSaja, opsiAlasan }: {
-  label: string; nilai: BarisAhwal[]; saatUbah: (n: BarisAhwal[]) => void; bacaSaja: boolean; opsiAlasan: Opsi[];
+  label: ReactNode; nilai: BarisAhwal[]; saatUbah: (n: BarisAhwal[]) => void; bacaSaja: boolean; opsiAlasan: Opsi[];
 }) {
   const ubah = (indeks: number, baris: BarisAhwal) => saatUbah(nilai.map((b, i) => (i === indeks ? rapikan(baris) : b)));
   return (

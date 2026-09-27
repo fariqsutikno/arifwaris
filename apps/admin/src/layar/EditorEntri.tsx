@@ -4,11 +4,13 @@
 // ("tayang di web" & "perubahan Anda") dan satu tombol utama per peran: penulis "Kirim untuk review", admin "Terbitkan",
 // dengan "Simpan dulu" sebagai tombol kedua. Suntingan pertama membuat salinan kerja, berikutnya memperbaruinya.
 // Tombol mati bila tidak ada perubahan, dan meninggalkan halaman dengan perubahan belum disimpan diperingatkan.
-// Tata letak dua kolom: isi (tab Form / Arab / JSON) di kiri, panel Info (identitas & metadata + refs) di kanan.
+// Tata letak dua kolom: isi (tab Bahasa Indonesia / Bahasa Arab / Kode mentah) di kiri, panel Info (Kelengkapan,
+// identitas & metadata, rujukan) di kanan. Galat bidang tampil begitu bidangnya ditinggalkan (validasi langsung);
+// "Batalkan perubahan" mengembalikan form ke versi tersimpan terakhir.
 // Identitas entri (kode soal, slug, id) diisi otomatis bila kosong dan terkunci setelah terbit (admin bisa membuka).
 // Database tetap penjaga sebenarnya; galat validasi (dariNilaiForm) maupun galat repo ditampilkan, tidak ditelan.
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Globe, PencilLine } from 'lucide-react';
+import { CircleAlert, CircleCheck, CircleDashed, Globe, PencilLine } from 'lucide-react';
 import { bacaIsi, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
 import { KUNCI_CONTOH } from '@waris/web/contoh';
 import type { RingkasanRevisi } from '@waris/data';
@@ -27,6 +29,7 @@ import { bidangIdentitas, punyaVersiArab } from '../editor/formulir';
 import { kodeBerikutnya, lengkapiIdentitas, slugEntri } from '../editor/identitas';
 import { labelKunci } from '../editor/kasus';
 import { opsiRujukan } from '../editor/rujukan';
+import { daftarKelengkapan, type ButirKelengkapan } from '../editor/kelengkapan';
 import { FormKonten, type OpsiRuntime, type PotonganForm } from './FormKonten';
 import { usePortal } from '../repo';
 import { tulisRute, type Kueri } from '../rute';
@@ -61,7 +64,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const [tab, setTab] = useState<Tab>('form');
   const [teksJson, setTeksJson] = useState('');
   const [teksJsonAwal, setTeksJsonAwal] = useState('');
-  const [galatBidang, setGalatBidang] = useState<Record<string, string>>({});
+  // Galat bidang tampil setelah bidangnya ditinggalkan (disentuh), atau semuanya setelah gagal simpan.
+  const [disentuh, setDisentuh] = useState<ReadonlySet<string>>(new Set());
+  const [tampilSemuaGalat, setTampilSemuaGalat] = useState(false);
   const [opsi, setOpsi] = useState<OpsiRuntime>(OPSI_STATIS);
   const [bukaKunci, setBukaKunci] = useState(false);
   const [galat, setGalat] = useState<string | null>(null);
@@ -83,7 +88,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       setBentuk(hasil.bentuk);
       setBentukAwal(hasil.bentuk);
       setTab('form');
-      setGalatBidang({});
+      setDisentuh(new Set());
+      setTampilSemuaGalat(false);
       setBukaKunci(false);
       setRefs(hasil.muatan.basis?.refs ?? []);
       setRefsAwal(hasil.muatan.basis?.refs ?? []);
@@ -108,6 +114,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   usePenjagaPerubahan(kotor);
 
   const pratinjauKunci = useMemo(() => [bentuk, teksJson, tab], [bentuk, teksJson, tab]);
+  const validasi = useMemo(
+    () => (muatan && bentuk && tab !== 'json' ? dariNilaiForm(muatan.jenis, muatan.slug ?? 'baru', lengkapiIdentitas(muatan.jenis, bentuk)) : null),
+    [muatan, bentuk, tab],
+  );
+  const semuaGalatBidang = validasi && !validasi.ok ? validasi.galatBidang : {};
+  const galatBidang = tampilSemuaGalat ? semuaGalatBidang : Object.fromEntries(Object.entries(semuaGalatBidang).filter(([jalur]) => disentuh.has(jalur)));
 
   async function muatEntri(entriId: string) {
     // ponytail: memuat semua entri untuk menemukan jenis/slug satu entri; ganti dengan repo.konten.bacaEntri(entriId) bila jumlah entri besar.
@@ -146,9 +158,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       bukaJson(JSON.stringify(hasil.mentah, null, 2), formKotor);
       return;
     }
-    if (!hasil.ok) { setGalat(hasil.galat); setGalatBidang(hasil.galatBidang); return; }
+    if (!hasil.ok) { setGalat(hasil.galat); setTampilSemuaGalat(true); return; }
     setGalat(null);
-    setGalatBidang({});
     if (tujuan === 'json') { bukaJson(JSON.stringify(keJson(muatan.jenis, hasil.isi), null, 2), formKotor); return; }
     setBentuk(keNilaiForm(muatan.jenis, hasil.isi));
     setTab(tujuan);
@@ -165,9 +176,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
    * revisi & entrinya, atau null bila isi belum sah. */
   async function simpanSalinan(): Promise<{ revisiId: string; entriId: string } | null> {
     if (!muatan || keadaan?.jenis !== 'sunting') return null;
-    setGalatBidang({});
     const hasil = isiSekarang();
-    if (!hasil.ok) { setGalat(hasil.galat); setGalatBidang(hasil.galatBidang); return null; }
+    if (!hasil.ok) { setGalat(hasil.galat); setTampilSemuaGalat(true); return null; }
     if (keadaan.salinanKerjaId) {
       await repo.editorial.ubahDraf(keadaan.salinanKerjaId, muatan.jenis, hasil.isi, refs);
       return { revisiId: keadaan.salinanKerjaId, entriId: muatan.entriId! };
@@ -272,14 +282,15 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
             {adaArab || peran === 'admin' ? (
               <Tabs value={tab} onValueChange={gantiTab}>
                 <TabsList>
-                  <TabsTrigger value="form">Form</TabsTrigger>
-                  {adaArab ? <TabsTrigger value="arab">Arab</TabsTrigger> : null}
-                  {peran === 'admin' ? <TabsTrigger value="json">JSON (lanjutan)</TabsTrigger> : null}
+                  <TabsTrigger value="form">Bahasa Indonesia</TabsTrigger>
+                  {adaArab ? <TabsTrigger value="arab">Bahasa Arab</TabsTrigger> : null}
+                  {peran === 'admin' ? <TabsTrigger value="json">Kode mentah</TabsTrigger> : null}
                 </TabsList>
                 <TabsContent value="form" className="pt-2">{formKonten('utama')}</TabsContent>
                 {adaArab ? <TabsContent value="arab" className="pt-2">{formKonten('arab')}</TabsContent> : null}
                 {peran === 'admin' ? (
                   <TabsContent value="json" className="pt-2">
+                    <p className="mb-2 text-xs text-muted-foreground">Untuk admin: isi entri dalam bentuk JSON, untuk perbaikan yang tidak bisa lewat form.</p>
                     <Bidang label="JSON">
                       <Textarea rows={20} className="font-mono text-xs" value={teksJson} readOnly={!bisaSunting} onChange={e => setTeksJson(e.target.value)} />
                     </Bidang>
@@ -292,8 +303,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         <Card className="lg:sticky lg:top-4">
           <CardHeader><CardTitle className="text-base">Info</CardTitle></CardHeader>
           <CardContent className="grid gap-4">
+            {bisaSunting && tab !== 'json' ? <Kelengkapan butir={kelengkapan()} /> : null}
             {tab === 'json'
-              ? <p className="text-sm text-muted-foreground">Selama di tab JSON, info entri diubah lewat JSON.</p>
+              ? <p className="text-sm text-muted-foreground">Selama di tab Kode mentah, info entri diubah lewat kode.</p>
               : formKonten('samping')}
             <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
           </CardContent>
@@ -303,6 +315,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => void terbitkan()}>Terbitkan</Button> : null}
         {bisaSunting && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => void kirim()}>Kirim untuk review</Button> : null}
         {bisaSunting ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan dulu</Button> : null}
+        {kotor ? <Button variant="link" disabled={sibuk} onClick={batalkanPerubahan}>Batalkan perubahan</Button> : null}
         {keadaan.jenis === 'menungguReview' && keadaan.bolehTarik ? (
           <Button variant="outline" disabled={sibuk} onClick={() => void tarik(keadaan.revisi.id)}>
             {keadaan.revisi.hapus ? 'Batalkan pengajuan' : 'Tarik kembali'}
@@ -327,8 +340,26 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     const bukaKunciIdentitas = peran === 'admin' ? () => { if (window.confirm(PESAN_BUKA_KUNCI)) setBukaKunci(true); } : undefined;
     return (
       <FormKonten jenis={muatan!.jenis} form={bentuk!} saatUbah={setBentuk} bacaSaja={!bisaSunting} galatBidang={galatBidang} opsi={opsi}
-        bagian={bagian} identitasTerkunci={!!muatan!.entri.revisiTerbitId && !bukaKunci} saatBukaKunci={bukaKunciIdentitas} />
+        bagian={bagian} identitasTerkunci={!!muatan!.entri.revisiTerbitId && !bukaKunci} saatBukaKunci={bukaKunciIdentitas}
+        saatSelesaiIsi={jalur => setDisentuh(lama => (lama.has(jalur) ? lama : new Set(lama).add(jalur)))} />
     );
+  }
+
+  function kelengkapan() {
+    const isi = validasi?.ok ? validasi.isi : validasi?.mentah;
+    // Rujukan wajib bila periksaRefs menolak isi ini tanpa rujukan sama sekali.
+    const rujukanWajib = periksaRefs(muatan!.jenis, isi, [], new Set()) !== null;
+    return daftarKelengkapan(muatan!.jenis, bentuk!, semuaGalatBidang, rujukanWajib ? refs.length === 0 : null);
+  }
+
+  function batalkanPerubahan() {
+    if (!window.confirm('Buang semua perubahan yang belum disimpan dan kembali ke versi tersimpan terakhir?')) return;
+    setBentuk(bentukAwal);
+    setRefs(refsAwal);
+    setTeksJson(teksJsonAwal);
+    setDisentuh(new Set());
+    setTampilSemuaGalat(false);
+    setGalat(null);
   }
 
   function teksPerubahan(): string {
@@ -347,6 +378,31 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       case 'sampah': return keadaan!.bolehPulihkan ? 'Pulihkan untuk menyunting lagi.' : keadaan!.alasan ?? '';
     }
   }
+}
+
+const IKON_BUTIR = { benar: CircleCheck, kosong: CircleDashed, salah: CircleAlert } as const;
+const WARNA_BUTIR = { benar: 'text-emerald-700 dark:text-emerald-400', kosong: 'text-muted-foreground', salah: 'text-destructive' } as const;
+const KETERANGAN_BUTIR = { benar: 'sudah benar', kosong: 'belum diisi', salah: 'belum benar' } as const;
+
+function Kelengkapan({ butir }: { butir: ButirKelengkapan[] }) {
+  const beres = butir.filter(b => b.status === 'benar').length;
+  return (
+    <section aria-label="Kelengkapan" className="grid gap-1.5">
+      <p className="text-sm font-medium">Kelengkapan <span className="font-normal text-muted-foreground">{beres}/{butir.length}</span></p>
+      <ul className="grid gap-1 text-sm">
+        {butir.map(({ jalur, label, status }) => {
+          const Ikon = IKON_BUTIR[status];
+          return (
+            <li key={jalur} className={`flex items-center gap-2 ${WARNA_BUTIR[status]}`}>
+              <Ikon className="size-4 shrink-0" aria-hidden />
+              <span>{label}{status === 'benar' ? <span className="sr-only">: {KETERANGAN_BUTIR.benar}</span> : null}</span>
+              {status !== 'benar' ? <span className="ml-auto text-xs">{KETERANGAN_BUTIR[status]}</span> : null}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
 }
 
 function Bidang({ label, children }: { label: string; children: ReactNode }) {

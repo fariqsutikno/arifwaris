@@ -32,12 +32,17 @@ interface Props {
   arab?: boolean | undefined;
   galat?: boolean;
   /** Ringkasan sintaks, tampil di mode Markdown. */
-  bantuanMarkdown?: string | undefined;
 }
 
 type Dialog = { jenis: 'istilah' } | { jenis: 'rujukan' } | { jenis: 'blok'; blok: Blok; saatSimpan: (blok: Blok) => void };
 
-export function EditorBlok({ label, nilai, saatUbah, mode, slug, bacaSaja, istilah, arab = false, galat = false, bantuanMarkdown }: Props) {
+const BANTUAN_MARKDOWN_POTONGAN = 'Markdown: **tebal**, *miring*, [[id-istilah]], [R04-2] untuk dalil.';
+const BANTUAN_MARKDOWN: Record<ModeEditor, string> = {
+  potongan: BANTUAN_MARKDOWN_POTONGAN,
+  blok: `${BANTUAN_MARKDOWN_POTONGAN} Blok: ## judul, - daftar, > catatan, tabel, \`\`\`kasus / \`\`\`video / \`\`\`kuis.`,
+};
+
+export function EditorBlok({ label, nilai, saatUbah, mode, slug, bacaSaja, istilah, arab = false, galat = false }: Props) {
   const awal = useMemo(() => bacaMarkdown(mode, slug, nilai), []); // eslint-disable-line react-hooks/exhaustive-deps -- hanya nilai awal
   const [modeMarkdown, setModeMarkdown] = useState(!awal.ok);
   const [galatMarkdown, setGalatMarkdown] = useState(awal.ok ? null : awal.galat);
@@ -117,7 +122,7 @@ export function EditorBlok({ label, nilai, saatUbah, mode, slug, bacaSaja, istil
         <div className="grid gap-1 p-1">
           <Textarea aria-label={`${label} (Markdown)`} rows={mode === 'blok' ? 14 : 2} className={cn(mode === 'blok' && 'font-mono text-sm')}
             value={nilai} readOnly={bacaSaja} onChange={e => saatUbah(e.target.value)} {...(arab ? { dir: 'rtl', lang: 'ar' } : {})} />
-          {bantuanMarkdown ? <p className="px-2 text-xs text-muted-foreground">{bantuanMarkdown}</p> : null}
+          <p className="px-2 text-xs text-muted-foreground">{BANTUAN_MARKDOWN[mode]}</p>
           {galatMarkdown ? <p className="px-2 text-sm text-destructive">Markdown belum terbaca: {galatMarkdown}</p> : null}
         </div>
       ) : null}

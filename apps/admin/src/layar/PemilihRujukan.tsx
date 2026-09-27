@@ -50,7 +50,7 @@ export function DialogRujukan({ buka, saatPilih, saatTutup, judul = 'Sisip rujuk
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{judul}</DialogTitle>
-          <DialogDescription>Cari dengan kata biasa, mis. "radd", "ibu sepertiga", atau "hadits".</DialogDescription>
+          <DialogDescription>Cari dengan kata biasa, mis. "radd", "keadaan ibu", atau "hadits".</DialogDescription>
         </DialogHeader>
         <Input aria-label={`Cari: ${judul}`} placeholder="Cari rujukan…" value={cari} onChange={e => setCari(e.target.value)} autoFocus />
         {buka ? <DaftarRujukan cari={cari} kecuali={kecuali} saatPilih={kode => { setCari(''); saatPilih(kode); }} /> : null}
