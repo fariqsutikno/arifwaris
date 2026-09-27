@@ -41,7 +41,6 @@ function ketikMarkdown(label: string, nilai: string) {
   ketik(`${label} (Markdown)`, nilai);
 }
 function isiFormFaq() {
-  ketik('Id', 'apa-itu-tirkah');
   ketik('Kelompok', 'Fikih');
   ketik('Pertanyaan', 'Apa itu tirkah?');
   ketikMarkdown('Jawaban', 'Harta peninggalan.');
@@ -89,14 +88,83 @@ test('entri baru: Kirim untuk review → langsung diajukan', async () => {
 
 test('angka tidak sah → galat di bawah bidang, tidak ada entri tersimpan', async () => {
   const m = siapkan();
-  tampilkan(m, { jenis: 'soal_kuis' });
+  tampilkan(m, { jenis: 'modul' });
   await screen.findByText('Entri baru · belum disimpan');
-  ketik('Kode soal', 'K-9');
-  ketik('Bab KB', 'empat');
+  ketik('Nomor modul', 'empat');
+  ketik('Judul', 'Pengantar');
   klik('Simpan dulu');
   expect((await screen.findByRole('alert')).textContent).toMatch(/Ada bidang yang belum benar/);
   expect(screen.getByText('harus bilangan bulat')).toBeTruthy();
-  expect(await m.konten.daftarEntri('soal_kuis')).toHaveLength(0);
+  expect(await m.konten.daftarEntri('modul')).toHaveLength(0);
+});
+
+test('soal kuis baru: kode diisi otomatis kode berikutnya, bab berupa pilihan judul bab KB', async () => {
+  const m = siapkan();
+  const lama = await m.editorial.buatEntri('soal_kuis', 'K-07', 10);
+  await m.editorial.buatDraf(lama, 'soal_kuis', {
+    kode: 'K-07', bab: 4, pertanyaan: [{ jenis: 'teks', teks: 'q' }], pilihan: [[{ jenis: 'teks', teks: 'a' }], [{ jenis: 'teks', teks: 'b' }]],
+    indeksBenar: 0, pembahasan: [{ jenis: 'teks', teks: 'p' }],
+  }, ['R09-7']);
+  tampilkan(m, { jenis: 'soal_kuis' });
+  await waitFor(() => expect((screen.getByLabelText('Kode soal') as HTMLInputElement).value).toBe('K-08'));
+  const bab = screen.getByLabelText('Bab KB') as HTMLSelectElement;
+  expect(bab.tagName).toBe('SELECT');
+  expect([...bab.options].some(o => o.value === '9' && /^9\. /.test(o.text))).toBe(true);
+});
+
+test('entri terbit: identitas terkunci; admin bisa membuka kunci setelah konfirmasi', async () => {
+  const m = buatMemori({ refs: ['R09-7'], sesi: { userId: 'u-a', email: 'a@x.id' }, peran: { 'u-a': 'admin' } });
+  const entriId = await m.editorial.buatEntri('faq', 'apa-itu-tirkah', 10);
+  const revisi = await m.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+  await m.editorial.ajukan(revisi);
+  await m.editorial.setujui(revisi);
+  tampilkan(m, { entriId }, 'admin', 'u-a');
+  await screen.findByLabelText('Pertanyaan');
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(false);
+  expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).readOnly).toBe(true);
+  expect(screen.getByText(/Terkunci karena sudah terbit/)).toBeTruthy();
+  const tanya = vi.spyOn(window, 'confirm').mockReturnValue(true);
+  fireEvent.click(screen.getByRole('button', { name: 'Buka kunci' }));
+  expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).readOnly).toBe(false);
+  tanya.mockRestore();
+});
+
+test('entri terbit, penulis: identitas terkunci tanpa tombol Buka kunci', async () => {
+  const m = siapkan();
+  const { entriId } = await tayang(m);
+  tampilkan(m, { entriId });
+  await screen.findByLabelText('Pertanyaan');
+  expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).readOnly).toBe(true);
+  expect(screen.queryByRole('button', { name: 'Buka kunci' })).toBeNull();
+});
+
+test('entri baru: alamat tautan dikosongkan → diisi otomatis dari pertanyaan, jadi slug entri', async () => {
+  const m = siapkan();
+  tampilkan(m, { jenis: 'faq' });
+  await screen.findByText('Entri baru · belum disimpan');
+  isiFormFaq();
+  expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).placeholder).toBe('Otomatis: apa-itu-tirkah');
+  await pilihRef();
+  klik('Simpan dulu');
+  await waitFor(async () => {
+    const [entri] = await m.konten.daftarEntri('faq');
+    expect(entri!.slug).toBe('apa-itu-tirkah');
+    expect((entri!.revisiTerakhir?.isi as { id: string }).id).toBe('apa-itu-tirkah');
+  });
+});
+
+test('soal kuis baru: kode diisi kode berikutnya, bab berupa pilihan judul bab KB', async () => {
+  const m = siapkan();
+  const lama = await m.editorial.buatEntri('soal_kuis', 'K-07', 10);
+  await m.editorial.buatDraf(lama, 'soal_kuis', {
+    kode: 'K-07', bab: 4, pertanyaan: [{ jenis: 'teks', teks: 'q' }], pilihan: [[{ jenis: 'teks', teks: 'a' }], [{ jenis: 'teks', teks: 'b' }]],
+    indeksBenar: 0, pembahasan: [{ jenis: 'teks', teks: 'p' }],
+  }, ['R09-7']);
+  tampilkan(m, { jenis: 'soal_kuis' });
+  await waitFor(() => expect((screen.getByLabelText('Kode soal') as HTMLInputElement).value).toBe('K-08'));
+  const bab = screen.getByLabelText('Bab KB') as HTMLSelectElement;
+  expect(bab.tagName).toBe('SELECT');
+  expect([...bab.options].some(o => o.value === '9' && /^9\. /.test(o.text))).toBe(true);
 });
 
 test('jenis fikih tanpa ref → galat repo tampil', async () => {
