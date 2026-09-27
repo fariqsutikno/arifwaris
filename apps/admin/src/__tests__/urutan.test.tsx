@@ -38,7 +38,7 @@ test('gagal simpan → urutan kembali + pesan galat', async () => {
   m.editorial.aturUrutan = async () => { throw new Error('jaringan putus'); };
   pasang(m, 'penulis');
   fireEvent.click(await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
-  expect(await screen.findByText(/Urutan gagal disimpan: jaringan putus/)).toBeTruthy();
+  expect(await screen.findByText(/Urutan gagal disimpan: Jaringan putus/)).toBeTruthy();
   expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']);
 });
 
@@ -55,7 +55,7 @@ test('simpan beruntun: dikirim berurutan; yang pertama gagal → daftar dimuat u
   pasang(m, 'penulis');
   fireEvent.click(await screen.findByRole('button', { name: 'Turunkan Apa itu tirkah?' }));
   fireEvent.click(screen.getByRole('button', { name: 'Turunkan Siapa ashabah?' }));
-  expect(await screen.findByText(/Urutan gagal disimpan: jaringan putus/)).toBeTruthy();
+  expect(await screen.findByText(/Urutan gagal disimpan: Jaringan putus/)).toBeTruthy();
   expect(kiriman).toEqual([[b, a], [a, b]]);
   // yang kedua tersimpan (a, b) → tampilan mengikuti database, bukan snapshot sebelum seret pertama
   await waitFor(() => expect(judulBaris()).toEqual(['Apa itu tirkah?', 'Siapa ashabah?']));

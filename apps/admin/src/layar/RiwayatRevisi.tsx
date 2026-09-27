@@ -13,6 +13,7 @@ import { diffBaris, teksBanding } from '../editor/diff';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { waktuRelatif } from '../ringkas';
 import { usePortal, type RepoPortal } from '../repo';
+import { pesanGalat } from '../pesanGalat';
 
 const CATATAN_TARIK = 'pengajuan ditarik kembali';
 type NamaDari = (userId: string) => string;
@@ -30,7 +31,7 @@ export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revi
     let dibatalkan = false;
     Promise.all([repo.konten.daftarRevisi(props.entriId), repo.konten.daftarJejak(props.entriId)])
       .then(([revisi, jejak]) => { if (!dibatalkan) setData({ revisi, jejak }); })
-      .catch(e => { if (!dibatalkan) setGalat(pesan(e)); });
+      .catch(e => { if (!dibatalkan) setGalat(pesanGalat(e)); });
     return () => { dibatalkan = true; };
   }, [repo, props.entriId, props.revisiTerbitId]);
 
@@ -118,7 +119,7 @@ function BarisRevisi(props: {
       await props.repo.editorial.terbitkanUlang(revisi.id);
       props.saatBerubah();
     } catch (e) {
-      setGalat(pesan(e));
+      setGalat(pesanGalat(e));
     }
   }
 
@@ -157,4 +158,3 @@ export function Diff({ baris: daftarBaris }: { baris: ReturnType<typeof diffBari
 }
 
 const PENANDA_DIFF = { sama: '  ', tambah: '+ ', hapus: '- ' } as const;
-const pesan = (e: unknown) => (e instanceof Error ? e.message : String(e));

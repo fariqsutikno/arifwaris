@@ -125,7 +125,7 @@ test('buatDraf gagal setelah buatEntri → simpan ulang memakai entri yang sama'
   isiFormFaq();
   await pilihRef();
   klik('Simpan dulu');
-  expect((await screen.findByRole('alert')).textContent).toMatch(/jaringan putus/);
+  expect((await screen.findByRole('alert')).textContent).toMatch(/jaringan putus/i);
   klik('Simpan dulu');
   await waitFor(async () => {
     const daftar = await m.konten.daftarEntri('faq');

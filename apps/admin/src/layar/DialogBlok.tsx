@@ -12,6 +12,7 @@ import type { Opsi } from '../editor/formulir';
 import { usePortal } from '../repo';
 import { EditorKasus } from './EditorKasus';
 import { cocokRef } from './PemilihRefs';
+import { pesanGalat } from '../pesanGalat';
 
 export type JenisBlokKhusus = Extract<Blok, { jenis: 'kasus' | 'video' | 'kuis' }>['jenis'];
 
@@ -52,7 +53,7 @@ function IsiBlokKhusus({ blok, slug, saatSimpan }: { blok: Blok; slug: string; s
       if (!hasil || (hasil.jenis === 'kuis' && hasil.daftarKode.length === 0)) throw new Error('Isi minimal satu kode soal.');
       saatSimpan(hasil);
     } catch (e) {
-      setGalat(e instanceof Error ? e.message : String(e));
+      setGalat(pesanGalat(e));
     }
   }
 
@@ -122,7 +123,7 @@ function SaranRujukan({ cari, saatPilih }: { cari: string; saatPilih: (kode: str
   const [daftarRefs, setDaftarRefs] = useState<{ kode: string; bab: number }[]>([]);
   const [galat, setGalat] = useState<string | null>(null);
   useEffect(() => {
-    repo.konten.daftarRefs().then(setDaftarRefs).catch(e => setGalat(e instanceof Error ? e.message : String(e)));
+    repo.konten.daftarRefs().then(setDaftarRefs).catch(e => setGalat(pesanGalat(e)));
   }, [repo]);
   if (galat) return <p role="alert" className="text-sm text-destructive">{galat}</p>;
   const saran = (cari.trim() ? daftarRefs.filter(ref => cocokRef(ref, cari)) : daftarRefs).slice(0, BATAS_SARAN);
