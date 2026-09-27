@@ -2,7 +2,8 @@
 // dan supabase/ (sekarang), nanti http/ (VPS). Pesan galat dari semua implementasi = Error berpesan Indonesia.
 import type { IsiKonten, JenisKonten, Peran, StatusRevisi } from '@waris/content';
 
-export interface Sesi { userId: string; email: string }
+/** `nama` & `avatar` dari metadata Google, hanya untuk nilai bawaan profil (spec tahap 5). */
+export interface Sesi { userId: string; email: string; nama?: string | null; avatar?: string | null }
 export interface KontenTerbit<J extends JenisKonten = JenisKonten> {
   entriId: string; jenis: J; slug: string; urutan: number; revisiId: string; isi: IsiKonten[J]; refs: string[]; versiTerbit: number;
 }
@@ -70,6 +71,16 @@ export interface Preferensi { isi: Record<string, unknown>; diubahPada: string }
 /** Satu kegiatan belajar selesai (spec akun: dasar streak tahap 5). `id` dibuat klien supaya kirim ulang tidak dobel. */
 export interface Kegiatan { id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null }
 
+/** Profil untuk papan peringkat (spec tahap 5). Tanpa baris = tidak ikut papan, zona Asia/Jakarta. */
+export interface Profil { namaTampilan: string; ikutPapanPeringkat: boolean; tampilkanAvatar: boolean; zonaWaktu: string }
+export interface RingkasanPeringkat {
+  xpTotal: number; xpMingguIni: number; streakSekarang: number; streakTerpanjang: number; aktifHariIni: boolean;
+}
+export type PeriodePeringkat = 'minggu' | 'semua';
+export interface BarisPeringkat {
+  peringkat: number; namaTampilan: string; avatar: string | null; xp: number; streakSekarang: number; saya: boolean;
+}
+
 /** Semua operasi milik pengguna yang sedang masuk; melempar 'belum masuk' bila tanpa sesi. */
 export interface RepositoriPengguna {
   bacaRiwayat(): Promise<RiwayatTersimpan[]>;
@@ -84,6 +95,16 @@ export interface RepositoriPengguna {
   bacaPreferensi(): Promise<Preferensi | null>;
   simpanPreferensi(preferensi: Preferensi): Promise<void>;
   catatKegiatan(kegiatan: Kegiatan): Promise<void>;
+  bacaProfil(): Promise<Profil | null>;
+  /** Langsung ke server, tidak lewat antrean: profil hanya dipakai di halaman yang butuh jaringan. */
+  simpanProfil(profil: Profil): Promise<void>;
+}
+/** Streak, XP & papan dihitung server dari log_kegiatan (supabase/migrations/20260927000006_peringkat.sql). */
+export interface RepositoriPeringkat {
+  /** Melempar 'belum masuk' bila tanpa sesi. */
+  ringkasanSaya(): Promise<RingkasanPeringkat>;
+  /** Tanpa login pun bisa; hanya pengguna yang ikut. Baris pemanggil ditambahkan bila di luar `batas`. */
+  papan(periode: PeriodePeringkat, batas?: number): Promise<BarisPeringkat[]>;
 }
 export interface RepositoriAkun {
   sesi(): Promise<Sesi | null>;

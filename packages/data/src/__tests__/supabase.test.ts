@@ -85,4 +85,18 @@ describe.skipIf(!URL_DB)('supabase lokal', () => {
     const penulis = await masuk(email.penulis);
     await expect(penulis.akun.daftarPeran()).rejects.toThrow(/admin/);
   });
+
+  test('profil & peringkat: profil milik sendiri, ringkasan nol tanpa kegiatan, papan terbaca anonim', async () => {
+    const biasa = await masuk(email.biasa);
+    expect(await biasa.pengguna.bacaProfil()).toBeNull();
+    await biasa.pengguna.simpanProfil({ namaTampilan: 'Uji', ikutPapanPeringkat: true, tampilkanAvatar: false, zonaWaktu: 'Asia/Makassar' });
+    expect(await biasa.pengguna.bacaProfil()).toEqual({ namaTampilan: 'Uji', ikutPapanPeringkat: true, tampilkanAvatar: false, zonaWaktu: 'Asia/Makassar' });
+    await expect(biasa.pengguna.simpanProfil({ namaTampilan: 'Uji', ikutPapanPeringkat: true, tampilkanAvatar: false, zonaWaktu: 'Mars/Olympus' }))
+      .rejects.toThrow(/zona waktu/);
+    expect((await biasa.peringkat.ringkasanSaya()).xpTotal).toBe(0);
+
+    const anonim = buatRepositoriSupabase(createClient(URL_DB!, KUNCI_ANON, { auth: { persistSession: false } }));
+    await expect(anonim.peringkat.papan('minggu')).resolves.toBeInstanceOf(Array);
+    await expect(anonim.peringkat.ringkasanSaya()).rejects.toThrow(/belum masuk/);
+  });
 });
