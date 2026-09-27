@@ -1,7 +1,8 @@
 import { expect, test } from 'vitest';
 import type { RingkasanEntri, RingkasanRevisi, } from '@waris/data';
 import {
-  indeksSeret, jumlahPerTab, kelompokkanPerModul, pindahkan, ringkasBeranda, saringDaftar, waktuRelatif,
+  bacaSaring, indeksSeret, jumlahPerTab, kelompokkanPerModul, pindahkan, ringkasBeranda, SARING_AWAL, saringDaftar, terapkanSaring,
+  tulisSaring, urutkan, waktuRelatif,
 } from '../ringkas';
 
 function entri(id: string, sisa: { status?: RingkasanRevisi['status'] | null; terbit?: boolean; oleh?: string; isi?: unknown;
@@ -86,4 +87,37 @@ test('indeksSeret: posisi asal & tujuan, null bila tak berpindah', () => {
   expect(indeksSeret(['a', 'b'], 'a', 'a')).toBeNull();
   expect(indeksSeret(['a', 'b'], 'a', null)).toBeNull();
   expect(indeksSeret(['a', 'b'], 'a', 'x')).toBeNull();
+});
+
+test('bacaSaring/tulisSaring: bolak-balik, bawaan tidak ditulis, nilai asing diabaikan', () => {
+  const saring = { ...SARING_AWAL, status: 'draf' as const, cari: 'ibu', urut: 'judul' as const, milikSaya: true, bidang: { bab: '4' } };
+  expect(tulisSaring(saring)).toEqual({ status: 'draf', cari: 'ibu', urut: 'judul', milik: '1', bab: '4' });
+  expect(bacaSaring(tulisSaring(saring))).toEqual(saring);
+  expect(tulisSaring(SARING_AWAL)).toEqual({});
+  expect(bacaSaring({ status: 'ngawur', urut: 'acak', lain: 'x' })).toEqual(SARING_AWAL);
+});
+
+test('terapkanSaring: milik saya, bidang isi, perlu dicek', () => {
+  const daftar = [
+    entri('a', { oleh: 'u1', isi: { bab: 4, perluCek: true } }),
+    entri('b', { oleh: 'u2', isi: { bab: 4 } }),
+    entri('c', { oleh: 'u1', isi: { bab: 9 } }),
+  ];
+  const slug = (hasil: RingkasanEntri[]) => hasil.map(e => e.slug);
+  expect(slug(terapkanSaring(daftar, { ...SARING_AWAL, milikSaya: true }, 'u1'))).toEqual(['a', 'c']);
+  expect(slug(terapkanSaring(daftar, { ...SARING_AWAL, bidang: { bab: '4' } }, 'u1'))).toEqual(['a', 'b']);
+  expect(slug(terapkanSaring(daftar, { ...SARING_AWAL, perluCek: true }, 'u1'))).toEqual(['a']);
+});
+
+test('urutkan: manual apa adanya; diubah terbaru dulu; judul alfabet dengan angka alami; status dikembalikan dulu', () => {
+  const daftar = [
+    entri('b', { isi: { judul: 'Soal 10' }, pada: '2026-01-01T00:00:00Z', status: 'disetujui', terbit: true }),
+    entri('a', { isi: { judul: 'Soal 2' }, pada: '2026-03-01T00:00:00Z', status: 'dikembalikan' }),
+    entri('c', { isi: { judul: 'soal 1' }, pada: '2026-02-01T00:00:00Z' }),
+  ];
+  const slug = (hasil: RingkasanEntri[]) => hasil.map(e => e.slug);
+  expect(slug(urutkan(daftar, 'manual'))).toEqual(['b', 'a', 'c']);
+  expect(slug(urutkan(daftar, 'diubah'))).toEqual(['a', 'c', 'b']);
+  expect(slug(urutkan(daftar, 'judul'))).toEqual(['c', 'a', 'b']);
+  expect(slug(urutkan(daftar, 'status'))).toEqual(['a', 'c', 'b']);
 });

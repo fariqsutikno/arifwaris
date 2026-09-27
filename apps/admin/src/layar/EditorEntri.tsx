@@ -29,7 +29,7 @@ import { usePortal } from '../repo';
 import { ambilKilat, lepasPenjaga, setelKilat, usePenjagaPerubahan, type Kilat } from '../penjaga';
 import { judulEntri, statusTampil, tanggalLengkap, waktuRelatif } from '../ringkas';
 import { useNamaPengguna } from '../pengguna';
-import { tulisRute } from '../rute';
+import { tulisRute, type Kueri } from '../rute';
 import { ChipStatus } from './Beranda';
 import { PemilihRefs } from './PemilihRefs';
 import { Pratinjau } from './Pratinjau';
@@ -54,7 +54,7 @@ interface Muatan {
   revisiTerbitId: string | null;
 }
 
-export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jenis: JenisKonten) => void } | { jenis: JenisKonten }) {
+export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jenis: JenisKonten) => void } | { jenis: JenisKonten; awal?: Kueri | undefined }) {
   const { repo, sesi, peran } = usePortal();
   const namaPengguna = useNamaPengguna();
   const [muatan, setMuatan] = useState<Muatan | null>(null);
@@ -75,6 +75,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const wadahForm = useRef<HTMLDivElement>(null);
   const entriIdProp = 'entriId' in props ? props.entriId : null;
   const jenisProp = 'jenis' in props ? props.jenis : null;
+  const awalProp = 'awal' in props ? props.awal : undefined;
   const bacaSaja = mode.mode === 'baca';
   usePenjagaPerubahan(berubah && !bacaSaja);
 
@@ -140,6 +141,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   async function muatBaru(jenis: JenisKonten) {
     const muatan: Muatan = { jenis, slug: null, entriId: null, basis: null, terakhir: null, revisiTerbitId: null };
     const bentuk = bentukKosong(jenis);
+    // Isian awal dari URL (mis. "+ Materi di modul ini" → ?modul=3), hanya untuk bidang teks yang memang ada di form.
+    for (const [jalur, nilai] of Object.entries(awalProp ?? {})) if (typeof bentuk.nilai[jalur] === 'string') bentuk.nilai[jalur] = nilai;
     const bidang = bidangIdentitas(jenis);
     if (bidang?.identitas?.awalan) {
       const kodeAda = (await repo.konten.daftarEntri(jenis)).map(entri => (entri.revisiTerakhir?.isi as { kode?: unknown } | undefined)?.kode)

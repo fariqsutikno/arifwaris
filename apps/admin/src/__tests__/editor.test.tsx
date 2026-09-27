@@ -12,7 +12,7 @@ const SESI_PENULIS = { userId: 'u-p', email: 'p@x.id' };
 const siapkan = () => buatMemori({ refs: ['R09-7', 'R10-3'], sesi: SESI_PENULIS, peran: { 'u-p': 'penulis', 'u-r': 'reviewer' } });
 type Memori = ReturnType<typeof siapkan>;
 
-function tampilkan(m: Memori, props: { entriId: string } | { jenis: JenisKonten }, peran: Peran = 'penulis', userId = 'u-p') {
+function tampilkan(m: Memori, props: { entriId: string } | { jenis: JenisKonten; awal?: Record<string, string> }, peran: Peran = 'penulis', userId = 'u-p') {
   render(
     <KonteksRepo.Provider value={{ repo: m, sesi: { userId, email: 'x@x.id' }, peran }}>
       <EditorEntri {...props} />
@@ -260,4 +260,10 @@ test('galat bidang → bidang pertama yang salah difokuskan (juga di panel Info)
   simpan();
   await screen.findByText('harus bilangan bulat');
   await waitFor(() => expect(document.activeElement).toBe(screen.getByLabelText('Nomor modul')));
+});
+
+test('entri baru dengan isian awal dari URL (?modul=3) → modul terisi', async () => {
+  const m = siapkan();
+  tampilkan(m, { jenis: 'materi', awal: { modul: '3', bukanBidang: 'x' } });
+  await waitFor(() => expect((screen.getByLabelText('Modul') as HTMLSelectElement).value).toBe('3'));
 });
