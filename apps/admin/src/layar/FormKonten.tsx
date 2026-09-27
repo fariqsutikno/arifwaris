@@ -154,7 +154,14 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
     default:
       return bungkus(
         <>
-          <Label className="grid gap-1.5">{label}{padananId ? <Padanan teks={padananId} panjang={false} /> : null}{masukan()}</Label>
+          <Label className="grid gap-1.5">{label}{padananId ? <Padanan teks={padananId} panjang={false} /> : null}
+            {kunci ? (
+              <span className="relative flex items-center [&_input]:pr-8">
+                {masukan()}
+                <Lock className="pointer-events-none absolute right-2.5 size-4 text-muted-foreground" aria-hidden="true" />
+              </span>
+            ) : masukan()}
+          </Label>
           {kunci ? <CatatanKunci saatBuka={kunci.saatBuka} /> : null}
         </>,
         { bantuan: kunci ? undefined : bidang.bantuan },

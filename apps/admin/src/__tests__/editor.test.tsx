@@ -63,13 +63,13 @@ async function tayang(m: Memori) {
   return { entriId, revisi };
 }
 
-test('entri baru faq: isi, pilih ref, Simpan dulu → satu entri dengan draf', async () => {
+test('entri baru faq: isi, pilih ref, Simpan draf → satu entri dengan draf', async () => {
   const m = siapkan();
   tampilkan(m, { jenis: 'faq' });
   expect(await screen.findByText('Entri baru · belum disimpan')).toBeTruthy();
   isiFormFaq();
   await pilihRef();
-  klik('Simpan dulu');
+  klik('Simpan draf');
   await waitFor(async () => {
     const daftar = await m.konten.daftarEntri('faq');
     expect(daftar).toHaveLength(1);
@@ -93,7 +93,7 @@ test('angka tidak sah → galat di bawah bidang, tidak ada entri tersimpan', asy
   await screen.findByText('Entri baru · belum disimpan');
   ketik('Nomor modul', 'empat');
   ketik('Judul modul', 'Pengantar');
-  klik('Simpan dulu');
+  klik('Simpan draf');
   expect((await screen.findByRole('alert')).textContent).toMatch(/Ada bidang yang belum benar/);
   expect(screen.getByText('harus bilangan bulat')).toBeTruthy();
   expect(await m.konten.daftarEntri('modul')).toHaveLength(0);
@@ -146,7 +146,7 @@ test('entri baru: alamat tautan dikosongkan → diisi otomatis dari pertanyaan, 
   isiFormFaq();
   expect((screen.getByLabelText('Alamat tautan') as HTMLInputElement).placeholder).toBe('Otomatis: apa-itu-tirkah');
   await pilihRef();
-  klik('Simpan dulu');
+  klik('Simpan draf');
   await waitFor(async () => {
     const [entri] = await m.konten.daftarEntri('faq');
     expect(entri!.slug).toBe('apa-itu-tirkah');
@@ -173,11 +173,11 @@ test('jenis fikih tanpa ref → galat repo tampil', async () => {
   tampilkan(m, { jenis: 'faq' });
   await screen.findByText('Entri baru · belum disimpan');
   isiFormFaq();
-  klik('Simpan dulu');
+  klik('Simpan draf');
   expect((await screen.findByRole('alert')).textContent).toMatch(/wajib punya minimal satu ref/);
   expect(await m.konten.daftarEntri('faq')).toHaveLength(0);
   await pilihRef();
-  klik('Simpan dulu');
+  klik('Simpan draf');
   await waitFor(async () => expect(await m.konten.daftarEntri('faq')).toHaveLength(1));
 });
 
@@ -193,9 +193,9 @@ test('buatDraf gagal setelah buatEntri → simpan ulang memakai entri yang sama'
   await screen.findByText('Entri baru · belum disimpan');
   isiFormFaq();
   await pilihRef();
-  klik('Simpan dulu');
+  klik('Simpan draf');
   expect((await screen.findByRole('alert')).textContent).toMatch(/jaringan putus/i);
-  klik('Simpan dulu');
+  klik('Simpan draf');
   await waitFor(async () => {
     const daftar = await m.konten.daftarEntri('faq');
     expect(daftar).toHaveLength(1);
@@ -222,13 +222,13 @@ test('admin, tab JSON: JSON rusak → galat & tetap di JSON, perbaikan kembali k
   isiJson('{ rusak');
   bukaTab(/Bahasa Indonesia/);
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
-  klik('Simpan dulu');
+  klik('Simpan draf');
   expect((await screen.findByRole('alert')).textContent).toMatch(/JSON tidak sah/);
 
   isiJson(JSON.stringify(keJson('faq', { ...DAFTAR_FAQ_UJI[0]!, pertanyaan: 'Dari JSON' })));
   bukaTab(/Bahasa Indonesia/);
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('Dari JSON');
-  klik('Simpan dulu');
+  klik('Simpan draf');
   await waitFor(async () => {
     const [entri] = await m.konten.daftarEntri('faq');
     expect((entri!.revisiTerakhir?.isi as { pertanyaan: string }).pertanyaan).toBe('Dari JSON');
@@ -243,7 +243,7 @@ test('entri tayang: langsung disunting; tombol mati tanpa perubahan; kirim → m
   expect(screen.getByText(/Belum ada perubahan/)).toBeTruthy();
   expect(screen.queryByRole('button', { name: /buat draf baru/i })).toBeNull();
   expect(tombol('Kirim untuk review').disabled).toBe(true);
-  expect(tombol('Simpan dulu').disabled).toBe(true);
+  expect(tombol('Simpan draf').disabled).toBe(true);
 
   ketik('Pertanyaan', 'Apa itu tirkah, ya?');
   expect(screen.getByText('Ada perubahan yang belum disimpan')).toBeTruthy();
@@ -258,13 +258,13 @@ test('entri tayang: langsung disunting; tombol mati tanpa perubahan; kirim → m
   expect(await m.editorial.antreanReview()).toEqual([]);
 });
 
-test('salinan kerja: Simpan dulu memperbarui draf yang sama, tidak menggandakan', async () => {
+test('salinan kerja: Simpan draf memperbarui draf yang sama, tidak menggandakan', async () => {
   const m = siapkan();
   const { entriId } = await drafMilik(m);
   tampilkan(m, { entriId });
   await screen.findByText(/Draf tersimpan · belum dikirim/);
   ketik('Pertanyaan', 'Versi dua');
-  klik('Simpan dulu');
+  klik('Simpan draf');
   await screen.findByText(/Draf tersimpan pukul/);
   expect(await m.konten.daftarRevisi(entriId)).toHaveLength(1);
   expect(tombol('Kirim untuk review').disabled).toBe(false);
@@ -277,7 +277,7 @@ test('admin: Terbitkan → langsung tayang tanpa antrean', async () => {
   await screen.findByText(/Tayang di web/);
   expect(screen.queryByRole('button', { name: 'Kirim untuk review' })).toBeNull();
   ketik('Pertanyaan', 'Langsung terbit');
-  klik('Terbitkan');
+  klik('Terbitkan sekarang');
   await waitFor(async () => expect(((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.isi as { pertanyaan: string }).pertanyaan).toBe('Langsung terbit'));
   expect(await m.editorial.antreanReview()).toEqual([]);
 });
@@ -287,7 +287,7 @@ test('draf orang lain → terkunci dengan nama penyuntingnya', async () => {
   const { entriId } = await drafMilik(m, { userId: 'u-q', email: 'q@x.id' });
   tampilkan(m, { entriId });
   await screen.findByText('Sedang disunting oleh Fulan (belum dikirim).');
-  expect(screen.queryByRole('button', { name: 'Simpan dulu' })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Simpan draf' })).toBeNull();
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
 });
 

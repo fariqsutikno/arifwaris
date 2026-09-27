@@ -30,7 +30,7 @@ export function EditorKasus({ nilai, saatUbah, bacaSaja }: Props) {
   const daftarKunci = KUNCI_CONTOH.filter(({ hanyaUntuk }) => !hanyaUntuk || hanyaUntuk === nilai.pewaris);
   const hasilHitung = useMemo(() => hitungHarapan(nilai), [nilai]);
   const berbeda = hasilHitung.ok && !samaHarapan(hasilHitung.harapan, nilai.harapan);
-  const label = (kunci: string) => KUNCI_CONTOH.find(k => k.kunci === kunci)?.label ?? labelKunci(kunci);
+
 
   // Perubahan kasus → kunci jawaban ikut dihitung ulang; yang gagal dikosongkan supaya tidak tersimpan kunci basi.
   function ubahKasus(kasus: Omit<ContohKasus, 'harapan'>) {
@@ -68,7 +68,7 @@ export function EditorKasus({ nilai, saatUbah, bacaSaja }: Props) {
               <ul className="grid gap-1.5 sm:grid-cols-2">
                 {anggota.map(({ kunci, maksimal }) => {
                   const banyak = jumlah[kunci] ?? 0;
-                  const nama = label(kunci);
+                  const nama = labelKunci(kunci);
                   return (
                     <li key={kunci} className={cn('flex items-center justify-between gap-2 rounded-md border px-2 py-1',
                       banyak > 0 && 'border-primary/50 bg-primary/5 font-medium')}>
@@ -96,7 +96,7 @@ export function EditorKasus({ nilai, saatUbah, bacaSaja }: Props) {
             <thead><tr className="border-b text-left text-muted-foreground"><th className="py-1 font-normal">Ahli waris</th><th className="py-1 text-right font-normal">Saham</th></tr></thead>
             <tbody>
               {Object.entries(hasilHitung.harapan.saham).map(([kunci, saham]) => (
-                <tr key={kunci} className="border-b last:border-0"><td className="py-1">{label(kunci)}</td><td className="py-1 text-right tabular-nums">{String(saham)}</td></tr>
+                <tr key={kunci} className="border-b last:border-0"><td className="py-1">{labelKunci(kunci)}</td><td className="py-1 text-right tabular-nums">{String(saham)}</td></tr>
               ))}
             </tbody>
             <tfoot><tr className="border-t font-medium"><td className="py-1">Ashl akhir</td><td className="py-1 text-right tabular-nums">{String(hasilHitung.harapan.ashlAkhir)}</td></tr></tfoot>
@@ -111,7 +111,7 @@ export function EditorKasus({ nilai, saatUbah, bacaSaja }: Props) {
           </p>
           <div className="mt-2 grid gap-2 sm:grid-cols-2">
             {kunciSaham.map(kunci => (
-              <Label key={kunci} className="grid gap-1.5">Saham {label(kunci)}
+              <Label key={kunci} className="grid gap-1.5">Saham {labelKunci(kunci)}
                 <InputAngka nilai={nilai.harapan.saham[kunci] ?? 0n} bacaSaja={bacaSaja} saatUbah={saham => ubahSaham(kunci, saham)} />
               </Label>
             ))}

@@ -2,6 +2,7 @@
 // satu entri per orang), apakah harapan tertulis sama dengan hasil engine, dan label kunci yang terbaca. Angka saham
 // hanya dari kalkulator [SYF] (hitungHarapan di web) atau diketik penulis; di sini tidak ada hitungan fikih.
 import type { ContohKasus } from '@waris/content';
+import { KUNCI_CONTOH } from '@waris/web/contoh';
 
 export function jumlahPerKunci(ahliWaris: readonly string[]): Record<string, number> {
   const jumlah: Record<string, number> = {};
@@ -22,8 +23,10 @@ export function samaHarapan(a: ContohKasus['harapan'], b: ContohKasus['harapan']
   return a.ashlAkhir === b.ashlAkhir && [...kunci].every(k => a.saham[k] === b.saham[k]);
 }
 
-/** ANAK_LK → "Anak lk"; label resmi ada di diksi web yang tidak dimuat portal. */
+/** Label resmi dari checklist web (ANAK_LK → "Anak laki-laki"); kunci di luar checklist dibentuk dari namanya. */
 export const labelKunci = (kunci: string): string => {
+  const resmi = KUNCI_CONTOH.find(k => k.kunci === kunci)?.label;
+  if (resmi) return resmi;
   const teks = kunci.toLowerCase().replace(/_/g, ' ').replace(/\blk\b/, 'laki-laki').replace(/\bpr\b/, 'perempuan');
   return teks.charAt(0).toUpperCase() + teks.slice(1);
 };

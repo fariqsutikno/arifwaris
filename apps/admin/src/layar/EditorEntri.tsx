@@ -1,8 +1,8 @@
 // Editor entri: memuat entri beserta semua revisinya, menampilkan isi sebagai form per jenis (FormKonten; admin juga
 // punya tab JSON sebagai bagian lanjutan) + PemilihRefs. Keadaan layar (bisa disunting, menunggu review, terkunci
 // beserta alasannya, atau di Sampah) diputuskan keadaanSunting; di sini hanya ditampilkan sebagai banner dua jalur
-// ("tayang di web" & "perubahan Anda") dan satu tombol utama per peran: penulis "Kirim untuk review", admin "Terbitkan",
-// dengan "Simpan dulu" sebagai tombol kedua. Suntingan pertama membuat salinan kerja, berikutnya memperbaruinya.
+// ("tayang di web" & "perubahan Anda") dan satu tombol utama per peran: penulis "Kirim untuk review", admin
+// "Terbitkan sekarang", dengan "Simpan draf" sebagai tombol kedua dan satu baris keterangan beda keduanya. Suntingan pertama membuat salinan kerja, berikutnya memperbaruinya.
 // Tombol mati bila tidak ada perubahan, dan meninggalkan halaman dengan perubahan belum disimpan diperingatkan.
 // Tata letak dua kolom: isi (tab Bahasa Indonesia / Bahasa Arab / Kode mentah) di kiri, panel Info (Kelengkapan,
 // identitas & metadata, rujukan) di kanan. Galat bidang tampil begitu bidangnya ditinggalkan (validasi langsung);
@@ -27,7 +27,6 @@ import { useNamaTim } from '../hooks/useNamaTim';
 import { judulEntri, waktuRelatif } from '../ringkas';
 import { bidangIdentitas, punyaVersiArab } from '../editor/formulir';
 import { kodeBerikutnya, lengkapiIdentitas, slugEntri } from '../editor/identitas';
-import { labelKunci } from '../editor/kasus';
 import { opsiRujukan } from '../editor/rujukan';
 import { daftarKelengkapan, type ButirKelengkapan } from '../editor/kelengkapan';
 import { FormKonten, type OpsiRuntime, type PotonganForm } from './FormKonten';
@@ -45,7 +44,7 @@ type Tab = 'form' | 'arab' | 'json';
 const OPSI_STATIS: OpsiRuntime = {
   istilah: GLOSARIUM.map(entri => ({ nilai: entri.id, label: `${entri.istilah} (${entri.id})` })),
   bab: Object.entries(JUDUL_BAB).map(([bab, judul]) => ({ nilai: bab, label: `${bab}. ${judul}` })).sort((a, b) => Number(a.nilai) - Number(b.nilai)),
-  kunciAhliWaris: KUNCI_CONTOH.map(({ kunci }) => ({ nilai: kunci, label: labelKunci(kunci) })),
+  kunciAhliWaris: KUNCI_CONTOH.map(({ kunci, label }) => ({ nilai: kunci, label })),
 };
 const PESAN_BUKA_KUNCI = 'Identitas ini dipakai di tautan yang sudah dibagikan dan progres belajar pengguna. Mengubahnya bisa memutus keduanya. Tetap buka kunci?';
 const ENTRI_BARU: EntriSunting = { revisiTerbitId: null, dihapus: false, dibuang: false, semuaRevisi: [] };
@@ -320,9 +319,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         ) : null}
       </div>
       <div className="flex flex-wrap gap-2">
-        {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => void terbitkan()}>Terbitkan</Button> : null}
+        {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => void terbitkan()}>Terbitkan sekarang</Button> : null}
         {bisaSunting && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => void kirim()}>Kirim untuk review</Button> : null}
-        {bisaSunting ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan dulu</Button> : null}
+        {bisaSunting ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan draf</Button> : null}
         {kotor ? <Button variant="link" disabled={sibuk} onClick={batalkanPerubahan}>Batalkan perubahan</Button> : null}
         {keadaan.jenis === 'menungguReview' && keadaan.bolehTarik ? (
           <Button variant="outline" disabled={sibuk} onClick={() => void tarik(keadaan.revisi.id)}>
@@ -337,6 +336,14 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           </Button>
         ) : null}
       </div>
+      {bisaSunting ? (
+        <p className="text-xs text-muted-foreground">
+          <span className="font-medium">Simpan draf</span>: belum tampil di web, bisa dilanjutkan nanti.{' '}
+          {peran === 'admin'
+            ? <><span className="font-medium">Terbitkan sekarang</span>: langsung tampil di web.</>
+            : <><span className="font-medium">Kirim untuk review</span>: reviewer memeriksa dulu sebelum tampil di web.</>}
+        </p>
+      ) : null}
       {muatan.entriId ? (
         <RiwayatRevisi entriId={muatan.entriId} jenis={muatan.jenis} revisiTerbitId={muatan.entri.revisiTerbitId} versi={muatUlang} saatBerubah={() => setMuatUlang(n => n + 1)} />
       ) : null}
