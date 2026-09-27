@@ -13,7 +13,7 @@ const FIELD_JUDUL = ['judul', 'pertanyaan', 'istilahId', 'kunci', 'id', 'kode'] 
 
 /** Entri bisa punya revisi terbit dan draf baru sekaligus ("terbit + draf"); revisi terakhir yang diajukan/
  * dikembalikan di atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). */
-export function statusTampil(entri: RingkasanEntri): StatusTampil {
+export function statusTampil(entri: Pick<RingkasanEntri, 'revisiTerbitId' | 'revisiTerakhir'>): StatusTampil {
   const { revisiTerbitId, revisiTerakhir } = entri;
   if (!revisiTerakhir) return revisiTerbitId ? 'terbit' : 'draf';
   if (revisiTerbitId && revisiTerakhir.id === revisiTerbitId) return 'terbit';
@@ -23,7 +23,7 @@ export function statusTampil(entri: RingkasanEntri): StatusTampil {
   return 'dikembalikan';
 }
 
-export function judulEntri(entri: RingkasanEntri, isi: unknown = entri.revisiTerakhir?.isi): string {
+export function judulEntri(entri: Pick<RingkasanEntri, 'slug' | 'revisiTerakhir'>, isi: unknown = entri.revisiTerakhir?.isi): string {
   const kandidat = FIELD_JUDUL.map(kunci => (isi as Record<string, unknown> | undefined)?.[kunci])
     .find(nilai => typeof nilai === 'string' && nilai.length > 0);
   return typeof kandidat === 'string' ? kandidat : entri.slug;

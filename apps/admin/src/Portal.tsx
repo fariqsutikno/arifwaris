@@ -7,9 +7,11 @@ import type { Sesi } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Kerangka } from './Kerangka';
 import { KonteksRepo, usePortal, type RepoPortal } from './repo';
 import { bacaRute, type Rute } from './rute';
+import { bolehTinggalkan } from './penjaga';
 import { LayarMenu } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
 import { Beranda } from './layar/Beranda';
@@ -42,7 +44,7 @@ export function Portal({ repo }: { repo: RepoPortal }) {
     return () => { dibatalkan = true; };
   }, [repo]);
 
-  if (status.tahap === 'memuat') return null;
+  if (status.tahap === 'memuat') return <LayarGerbang><Skeleton aria-label="Memuat" className="h-9" /></LayarGerbang>;
   if (status.tahap === 'galat') {
     return <LayarGerbang><Alert variant="destructive" role="alert"><AlertDescription>{status.pesan}</AlertDescription></Alert></LayarGerbang>;
   }
@@ -56,7 +58,7 @@ export function Portal({ repo }: { repo: RepoPortal }) {
   if (status.tahap === 'tanpaPeran') {
     return (
       <LayarGerbang>
-        <p className="text-sm">Belum punya akses. Hubungi admin untuk diberi peran.</p>
+        <p className="text-sm">Akun <b className="break-all">{status.sesi.email}</b> belum punya akses. Hubungi admin untuk diberi peran, atau keluar lalu masuk dengan akun lain.</p>
         <Button variant="outline" className="w-full" onClick={() => void repo.akun.keluar().then(() => setStatus({ tahap: 'tamu' }))}>Keluar</Button>
       </LayarGerbang>
     );
@@ -83,7 +85,12 @@ function LayarRute({ onKeluar }: { onKeluar: () => void }) {
   const [rute, setRute] = useState(() => bacaRute(location.hash));
   const [jenisEntri, setJenisEntri] = useState<JenisKonten | null>(null);
   useEffect(() => {
-    const nyalakan = () => setRute(bacaRute(location.hash));
+    // Pindah rute saat editor punya perubahan belum disimpan: tanya dulu; batal → hash dikembalikan tanpa memicu
+    // hashchange lagi (replaceState), rute tetap.
+    const nyalakan = (event: HashChangeEvent) => {
+      if (!bolehTinggalkan()) { history.replaceState(null, '', new URL(event.oldURL).hash); return; }
+      setRute(bacaRute(location.hash));
+    };
     window.addEventListener('hashchange', nyalakan);
     return () => window.removeEventListener('hashchange', nyalakan);
   }, []);

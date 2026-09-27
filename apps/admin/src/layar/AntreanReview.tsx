@@ -93,18 +93,23 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
   const [catatan, setCatatan] = useState('');
   const [galat, setGalat] = useState<string | null>(null);
   const [pratinjau, setPratinjau] = useState(false);
+  const [sibuk, setSibuk] = useState(false);
   const pelaku = { peran, pelakuId: sesi.userId, pembuatId: butir.dibuatOleh, status: butir.status };
   const bolehPeriksa = transisiRevisi({ ...pelaku, aksi: 'setujui' }).ok;
   const bolehKembalikan = transisiRevisi({ ...pelaku, aksi: 'kembalikan', catatan }).ok;
   const idJudul = `review-${butir.id}`;
 
   async function jalankan(aksi: () => Promise<void>) {
+    if (sibuk) return;
+    setSibuk(true);
     setGalat(null);
     try {
       await aksi();
       saatSelesai();
     } catch (e) {
       setGalat(pesan(e));
+    } finally {
+      setSibuk(false);
     }
   }
 
@@ -126,8 +131,8 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
               <Textarea value={catatan} placeholder="Wajib diisi bila dikembalikan" onChange={e => setCatatan(e.target.value)} />
             </Label>
             <div className="flex flex-wrap gap-2">
-              <Button onClick={() => void jalankan(butir.setujui)}>Setujui</Button>
-              <Button variant="outline" disabled={!bolehKembalikan} onClick={() => void jalankan(() => butir.kembalikan(catatan))}>Kembalikan</Button>
+              <Button disabled={sibuk} onClick={() => void jalankan(butir.setujui)}>Setujui</Button>
+              <Button variant="outline" disabled={sibuk || !bolehKembalikan} onClick={() => void jalankan(() => butir.kembalikan(catatan))}>Kembalikan</Button>
             </div>
           </div>
         ) : null}

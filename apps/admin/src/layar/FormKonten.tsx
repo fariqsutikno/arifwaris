@@ -122,7 +122,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi }: PropsBid
 
 function Bungkus({ galat, bantuan, children }: { galat: string | undefined; bantuan?: string | undefined; children: ReactNode }) {
   return (
-    <div className="grid gap-1">
+    <div className="grid gap-1" data-galat={galat ? '' : undefined}>
       {children}
       {bantuan ? <p className="text-xs text-muted-foreground">{bantuan}</p> : null}
       {galat ? <p className="text-sm text-destructive">{galat}</p> : null}

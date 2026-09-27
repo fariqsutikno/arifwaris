@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { expect, test } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
 import { Portal } from '../Portal';
 
@@ -31,4 +31,21 @@ test('galat memuat sesi → pesan galat, bukan layar kosong', async () => {
   m.akun.sesi = async () => { throw new Error('jaringan putus'); };
   render(<Portal repo={m} />);
   expect(await screen.findByText(/jaringan putus/)).toBeTruthy();
+});
+test('editor dengan perubahan belum disimpan: pindah rute ditanya dulu; batal → tetap di editor', async () => {
+  const m = buatMemori({ sesi: { userId: 'u1', email: 'a@x.id' }, peran: { u1: 'admin' } });
+  location.hash = '#/baru/faq';
+  render(<Portal repo={m} />);
+  fireEvent.change(await screen.findByLabelText('Pertanyaan'), { target: { value: 'Belum disimpan' } });
+  const tanya = vi.spyOn(window, 'confirm').mockReturnValue(false);
+  location.hash = '#/review';
+  await waitFor(() => expect(tanya).toHaveBeenCalled());
+  expect(location.hash).toBe('#/baru/faq');
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('Belum disimpan');
+
+  tanya.mockReturnValue(true);
+  location.hash = '#/review';
+  expect(await screen.findByRole('heading', { name: 'Antrean review' })).toBeTruthy();
+  tanya.mockRestore();
+  location.hash = '';
 });
