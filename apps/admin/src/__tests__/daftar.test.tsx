@@ -5,7 +5,8 @@ import { expect, test } from 'vitest';
 import { buatMemori } from '@waris/data';
 import type { RingkasanEntri, RingkasanRevisi } from '@waris/data';
 import { KonteksRepo } from '../repo';
-import { DaftarKonten, statusTampil } from '../layar/DaftarKonten';
+import { DaftarKonten } from '../layar/DaftarKonten';
+import { statusTampil } from '../ringkas';
 import { DAFTAR_FAQ_UJI, SOAL_HITUNG_UJI } from './contoh';
 
 const REVISI_DASAR = { refs: [] as string[], dibuatOleh: 'u1', diperiksaOleh: null, catatanReview: null, dibuatPada: '', diperiksaPada: null };

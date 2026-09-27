@@ -6,32 +6,13 @@ import type { JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
+import { judulEntri, statusTampil } from '../ringkas';
 
-type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf';
 type FilterStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit';
 const FILTER_STATUS: FilterStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit'];
 const LABEL_FILTER: Record<FilterStatus, string> = {
   semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit',
 };
-
-/** Status ringkas satu entri untuk ditampilkan di tabel. Entri bisa punya revisi terbit dan draf baru sekaligus
- * ("terbit + draf"); untuk revisi terakhir yang diajukan/dikembalikan di atas revisi terbit, statusnya sendiri
- * yang ditampilkan (lebih relevan bagi reviewer daripada menyembunyikannya di balik "terbit"). */
-export function statusTampil(entri: RingkasanEntri): StatusTampil {
-  const { revisiTerbitId, revisiTerakhir } = entri;
-  if (!revisiTerakhir) return revisiTerbitId ? 'terbit' : 'draf';
-  if (revisiTerbitId && revisiTerakhir.id === revisiTerbitId) return 'terbit';
-  if (revisiTerbitId && revisiTerakhir.status === 'draf') return 'terbit + draf';
-  if (revisiTerakhir.status === 'diajukan') return 'diajukan';
-  if (revisiTerakhir.status === 'draf') return 'draf';
-  return 'dikembalikan';
-}
-
-function judulEntri(entri: RingkasanEntri): string {
-  const isi = entri.revisiTerakhir?.isi as Record<string, unknown> | undefined;
-  const kandidat = isi?.judul ?? isi?.pertanyaan ?? isi?.istilahId ?? isi?.kunci;
-  return typeof kandidat === 'string' && kandidat.length > 0 ? kandidat : entri.slug;
-}
 
 export function DaftarKonten({ jenis }: { jenis: JenisKonten }) {
   const { repo } = usePortal();
