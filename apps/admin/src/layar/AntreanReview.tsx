@@ -3,12 +3,19 @@
 // baris tambah). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
 // penjaga); revisi milik sendiri berlabel "revisi Anda". Galat repo ditampilkan di butir yang bersangkutan.
 import { useEffect, useState } from 'react';
-import { bacaIsi, transisiRevisi, JENIS_KONTEN, type JenisKonten, type StatusRevisi } from '@waris/content';
+import { bacaIsi, transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
 import type { DiksiTerbit, RingkasanEntri } from '@waris/data';
-import { Tombol } from '@waris/web/ui/komponen';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 import { diffBaris, teksBanding } from '../editor/diff';
 import { usePortal } from '../repo';
 import { Pratinjau } from './Pratinjau';
+import { Diff } from './RiwayatRevisi';
 
 interface Butir {
   id: string;
@@ -35,8 +42,7 @@ export function AntreanReview() {
         repo.editorial.antreanReview(),
         repo.diksi.antreanReview(),
         repo.diksi.daftarKunci(),
-        // ponytail: memindai daftarEntri semua jenis untuk menemukan jenis/slug entri (sama seperti EditorEntri).
-        Promise.all(JENIS_KONTEN.map(jenis => repo.konten.daftarEntri(jenis))).then(d => d.flat()),
+        repo.konten.daftarEntri(),
       ]);
       const butirKonten = await Promise.all(revisiKonten.map(async (revisi): Promise<Butir> => {
         const e = entri.find(x => x.entriId === revisi.entriId);
@@ -71,12 +77,13 @@ export function AntreanReview() {
     }
   }, [repo, muatUlang]);
 
-  if (galat) return <p role="alert">{galat}</p>;
-  if (!daftar) return null;
-  if (daftar.length === 0) return <p>Antrean review kosong.</p>;
   return (
-    <div>
-      {daftar.map(butir => <ButirReview key={butir.id} butir={butir} saatSelesai={() => setMuatUlang(n => n + 1)} />)}
+    <div className="space-y-4">
+      <h1 className="text-2xl font-bold">Antrean review</h1>
+      {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
+      {!daftar && !galat ? <Skeleton className="h-48" /> : null}
+      {daftar?.length === 0 ? <p className="rounded-lg border border-dashed p-8 text-center text-muted-foreground">Antrean review kosong.</p> : null}
+      {daftar?.map(butir => <ButirReview key={butir.id} butir={butir} saatSelesai={() => setMuatUlang(n => n + 1)} />)}
     </div>
   );
 }
@@ -102,37 +109,38 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
   }
 
   return (
-    <article aria-labelledby={idJudul}>
-      <h3 id={idJudul}>{butir.judul}</h3>
-      {butir.dibuatOleh === sesi.userId ? <p>revisi Anda</p> : null}
-      {galat ? <p role="alert">{galat}</p> : null}
-      <pre>
-        {diffBaris(butir.teksLama, butir.teksBaru).map((baris, i) => (
-          <div key={i} className={`aw-diff-${baris.jenis}`}>{PENANDA_DIFF[baris.jenis]}{baris.teks}</div>
-        ))}
-      </pre>
-      {butir.konten ? <Tombol varian="secondary" onClick={() => setPratinjau(true)}>Pratinjau</Tombol> : null}
-      {pratinjau && butir.konten ? <PratinjauButir {...butir.konten} saatTutup={() => setPratinjau(false)} /> : null}
-      {bolehPeriksa ? (
-        <div>
-          <Tombol onClick={() => void jalankan(butir.setujui)}>Setujui</Tombol>
-          <label style={{ display: 'block' }}>
-            Catatan
-            <textarea value={catatan} onChange={e => setCatatan(e.target.value)} />
-          </label>
-          <Tombol varian="secondary" disabled={!bolehKembalikan} onClick={() => void jalankan(() => butir.kembalikan(catatan))}>Kembalikan</Tombol>
-        </div>
-      ) : null}
-    </article>
+    <Card role="article" aria-labelledby={idJudul}>
+      <CardHeader className="flex flex-wrap items-center gap-2">
+        <CardTitle id={idJudul}>{butir.judul}</CardTitle>
+        {butir.dibuatOleh === sesi.userId ? <Badge variant="secondary">revisi Anda</Badge> : null}
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
+        <Diff baris={diffBaris(butir.teksLama, butir.teksBaru)} />
+        {butir.konten ? <Button variant="outline" size="sm" onClick={() => setPratinjau(true)}>Pratinjau</Button> : null}
+        {pratinjau && butir.konten ? <PratinjauButir {...butir.konten} saatTutup={() => setPratinjau(false)} /> : null}
+        {bolehPeriksa ? (
+          <div className="grid gap-3 border-t pt-3">
+            <Label className="grid gap-1.5">
+              Catatan
+              <Textarea value={catatan} placeholder="Wajib diisi bila dikembalikan" onChange={e => setCatatan(e.target.value)} />
+            </Label>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => void jalankan(butir.setujui)}>Setujui</Button>
+              <Button variant="outline" disabled={!bolehKembalikan} onClick={() => void jalankan(() => butir.kembalikan(catatan))}>Kembalikan</Button>
+            </div>
+          </div>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }
 
 function PratinjauButir({ jenis, slug, isi, saatTutup }: { jenis: JenisKonten; slug: string; isi: unknown; saatTutup: () => void }) {
   const hasil = bacaIsi(jenis, isi);
-  if (!hasil.ok) return <p role="alert">isi revisi tidak sah: {hasil.galat}</p>;
+  if (!hasil.ok) return <p role="alert" className="text-sm text-destructive">isi revisi tidak sah: {hasil.galat}</p>;
   return <Pratinjau jenis={jenis} slug={slug} isi={hasil.isi} saatTutup={saatTutup} />;
 }
 
-const PENANDA_DIFF = { sama: '  ', tambah: '+ ', hapus: '- ' } as const;
 const teksDiksi = (d: Pick<DiksiTerbit, 'id' | 'ar'>) => `id: ${d.id}\nar: ${d.ar ?? ''}`;
 const pesan = (e: unknown) => (e instanceof Error ? e.message : String(e));

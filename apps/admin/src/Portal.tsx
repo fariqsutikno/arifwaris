@@ -1,10 +1,12 @@
 // Gerbang sesi & peran portal admin: memuat sesi lalu peran dari repo.akun, dan hanya merender navigasi + rute
 // setelah keduanya siap. Tanpa sesi → tombol masuk Google; sesi tanpa peran → pesan "belum punya akses" + keluar;
 // galat saat memuat → pesan galat (bukan layar kosong). Rute dibaca dari location.hash (bacaRute/tulisRute).
-import { useEffect, useState } from 'react';
-import type { Peran } from '@waris/content';
+import { useEffect, useState, type ReactNode } from 'react';
+import type { JenisKonten, Peran } from '@waris/content';
 import type { Sesi } from '@waris/data';
-import { Tombol } from '@waris/web/ui/komponen';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Kerangka } from './Kerangka';
 import { KonteksRepo, usePortal, type RepoPortal } from './repo';
 import { bacaRute, type Rute } from './rute';
@@ -41,16 +43,22 @@ export function Portal({ repo }: { repo: RepoPortal }) {
   }, [repo]);
 
   if (status.tahap === 'memuat') return null;
-  if (status.tahap === 'galat') return <p role="alert">{status.pesan}</p>;
+  if (status.tahap === 'galat') {
+    return <LayarGerbang><Alert variant="destructive" role="alert"><AlertDescription>{status.pesan}</AlertDescription></Alert></LayarGerbang>;
+  }
   if (status.tahap === 'tamu') {
-    return <Tombol onClick={() => void repo.akun.masukGoogle(location.origin + location.pathname)}>Masuk dengan Google</Tombol>;
+    return (
+      <LayarGerbang>
+        <Button className="w-full" onClick={() => void repo.akun.masukGoogle(location.origin + location.pathname)}>Masuk dengan Google</Button>
+      </LayarGerbang>
+    );
   }
   if (status.tahap === 'tanpaPeran') {
     return (
-      <div>
-        <p>Belum punya akses. Hubungi admin untuk diberi peran.</p>
-        <Tombol onClick={() => void repo.akun.keluar().then(() => setStatus({ tahap: 'tamu' }))}>Keluar</Tombol>
-      </div>
+      <LayarGerbang>
+        <p className="text-sm">Belum punya akses. Hubungi admin untuk diberi peran.</p>
+        <Button variant="outline" className="w-full" onClick={() => void repo.akun.keluar().then(() => setStatus({ tahap: 'tamu' }))}>Keluar</Button>
+      </LayarGerbang>
     );
   }
   return (
@@ -60,20 +68,36 @@ export function Portal({ repo }: { repo: RepoPortal }) {
   );
 }
 
+function LayarGerbang({ children }: { children: ReactNode }) {
+  return (
+    <div className="grid min-h-svh place-items-center p-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader><CardTitle>Arif Waris</CardTitle><CardDescription>Portal Konten</CardDescription></CardHeader>
+        <CardContent className="space-y-3">{children}</CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function LayarRute({ onKeluar }: { onKeluar: () => void }) {
   const [rute, setRute] = useState(() => bacaRute(location.hash));
+  const [jenisEntri, setJenisEntri] = useState<JenisKonten | null>(null);
   useEffect(() => {
     const nyalakan = () => setRute(bacaRute(location.hash));
     window.addEventListener('hashchange', nyalakan);
     return () => window.removeEventListener('hashchange', nyalakan);
   }, []);
-  return <Kerangka rute={rute} onKeluar={onKeluar}><IsiRute rute={rute} /></Kerangka>;
+  return (
+    <Kerangka rute={rute} jenisEntri={rute.layar === 'entri' ? jenisEntri : null} onKeluar={onKeluar}>
+      <IsiRute rute={rute} saatJenisEntri={setJenisEntri} />
+    </Kerangka>
+  );
 }
 
-function IsiRute({ rute }: { rute: Rute }) {
+function IsiRute({ rute, saatJenisEntri }: { rute: Rute; saatJenisEntri: (jenis: JenisKonten) => void }) {
   const { peran } = usePortal();
   if (rute.layar === 'menu') return <LayarMenu key={`${rute.menu}-${rute.tab}`} menu={rute.menu} tab={rute.tab} />;
-  if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} />;
+  if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} saatJenisDiketahui={saatJenisEntri} />;
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}`} jenis={rute.jenis} />;
   if (rute.layar === 'review') return <AntreanReview />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
