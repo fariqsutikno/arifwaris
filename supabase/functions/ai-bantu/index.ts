@@ -1,27 +1,30 @@
-// Edge Function ai-bantu: satu-satunya jalan portal ke Gemini, supaya GEMINI_API_KEY tidak pernah ada di bundel web/admin.
-// Memeriksa sesi + peran (penulis/admin), kuota harian per pengguna (tabel pemakaian_ai), memanggil Gemini dengan
-// prompt & skema dari logika.ts, memeriksa jawabannya, lalu mencatat pemakaian. Secret: GEMINI_API_KEY (wajib),
-// GEMINI_MODEL & GEMINI_MODEL_CADANGAN (opsional). SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY disediakan Supabase.
+// Edge Function ai-bantu: satu-satunya jalan portal ke layanan AI, supaya AI_API_KEY tidak pernah ada di bundel web/admin.
+// Memeriksa sesi + peran (penulis/admin), kuota harian per pengguna (tabel pemakaian_ai), memanggil layanan AI berformat
+// OpenAI chat completions (bawaan SumoPod) dengan prompt & skema dari logika.ts, memeriksa jawabannya, lalu mencatat
+// pemakaian. Secret: AI_API_KEY (wajib), AI_MODEL, AI_MODEL_CADANGAN, AI_BASE_URL (opsional). SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY disediakan Supabase.
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { awalHariWib, bacaPermintaan, KUOTA_HARIAN, olahJawaban, susunPrompt, type Permintaan } from './logika.ts';
 
-const MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
-// Dipakai bila model utama sibuk (503/429) setelah dicoba ulang; kosongkan secret = sama dengan model utama.
-const MODEL_CADANGAN = Deno.env.get('GEMINI_MODEL_CADANGAN') ?? 'gemini-2.5-flash';
-const STATUS_SIBUK = new Set([429, 500, 503]);
+const BASE_URL = Deno.env.get('AI_BASE_URL') ?? 'https://ai.sumopod.com/v1';
+const MODEL = Deno.env.get('AI_MODEL') ?? 'gpt-4o-mini';
+// Dipakai bila model utama sibuk (setelah dicoba ulang); sama dengan model utama = tanpa cadangan.
+const MODEL_CADANGAN = Deno.env.get('AI_MODEL_CADANGAN') ?? MODEL;
+const STATUS_SIBUK = new Set([429, 500, 502, 503]);
 const JEDA_ULANG_MS = 1500;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Sebab umum dari Gemini dalam kalimat yang bisa ditindaklanjuti admin (rincian lengkap ada di log fungsi).
-const PESAN_STATUS_GEMINI: Record<number, string> = {
-  400: `Permintaan ditolak Gemini. Periksa GEMINI_MODEL (sekarang "${MODEL}") dan GEMINI_API_KEY.`,
-  403: 'GEMINI_API_KEY ditolak (tidak sah atau tidak punya akses ke model ini).',
-  404: `Model "${MODEL}" tidak dikenal Gemini. Periksa secret GEMINI_MODEL.`,
-  429: 'Kuota Gemini (dari Google) habis atau terlalu banyak permintaan. Coba lagi nanti.',
-  503: 'Server Gemini sedang penuh. Coba lagi beberapa menit lagi.',
+// Sebab umum dari layanan AI dalam kalimat yang bisa ditindaklanjuti admin (rincian lengkap ada di log fungsi).
+const PESAN_STATUS: Record<number, string> = {
+  400: `Permintaan ditolak layanan AI. Periksa AI_MODEL (sekarang "${MODEL}").`,
+  401: 'AI_API_KEY ditolak (tidak sah).',
+  402: 'Saldo layanan AI habis.',
+  403: 'AI_API_KEY tidak punya akses ke model ini.',
+  404: `Model "${MODEL}" tidak dikenal layanan AI. Periksa secret AI_MODEL.`,
+  429: 'Layanan AI kehabisan kuota atau terlalu banyak permintaan. Coba lagi nanti.',
+  503: 'Layanan AI sedang penuh. Coba lagi beberapa menit lagi.',
 };
 
 const balas = (status: number, isi: unknown) =>
@@ -30,8 +33,8 @@ const balas = (status: number, isi: unknown) =>
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   const url = Deno.env.get('SUPABASE_URL')!;
-  const kunciGemini = Deno.env.get('GEMINI_API_KEY');
-  if (!kunciGemini) return balas(503, { galat: 'Fitur AI belum diaktifkan (GEMINI_API_KEY belum dipasang).' });
+  const kunciAi = Deno.env.get('AI_API_KEY');
+  if (!kunciAi) return balas(503, { galat: 'Fitur AI belum diaktifkan (AI_API_KEY belum dipasang).' });
 
   const klien = createClient(url, Deno.env.get('SUPABASE_ANON_KEY')!, {
     global: { headers: { Authorization: req.headers.get('Authorization') ?? '' } }, auth: { persistSession: false },
@@ -48,7 +51,7 @@ Deno.serve(async req => {
 
   const baca = bacaPermintaan(await req.json().catch(() => null));
   if (!baca.ok) return balas(400, { galat: baca.galat });
-  const jawaban = await tanyaGemini(baca.permintaan, kunciGemini);
+  const jawaban = await tanyaAi(baca.permintaan, kunciAi);
   const hasil = jawaban.ok ? olahJawaban(baca.permintaan, jawaban.teks) : jawaban;
   await servis.from('pemakaian_ai').insert({
     user_id: user.id, fitur: baca.permintaan.fitur, berhasil: hasil.ok,
@@ -59,16 +62,20 @@ Deno.serve(async req => {
   return hasil.ok ? balas(200, { hasil: hasil.hasil, sisaKuota }) : balas(422, { galat: hasil.galat, sisaKuota });
 });
 
-async function tanyaGemini(permintaan: Permintaan, kunci: string):
+async function tanyaAi(permintaan: Permintaan, kunci: string):
   Promise<{ ok: true; teks: string; tokenMasuk: number | null; tokenKeluar: number | null } | { ok: false; galat: string }> {
   const { sistem, pengguna, skema, suhu } = susunPrompt(permintaan);
-  const panggil = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+  // json_object (bukan json_schema) supaya jalan di semua model (GPT, DeepSeek); bentuknya dijelaskan di prompt sistem.
+  const sistemJson = `${sistem}\nJawab HANYA dengan satu objek JSON sesuai skema berikut, tanpa teks lain:\n${JSON.stringify(skema)}`;
+  const panggil = (model: string) => fetch(`${BASE_URL}/chat/completions`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-goog-api-key': kunci },
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${kunci}` },
     body: JSON.stringify({
-      systemInstruction: { parts: [{ text: sistem }] },
-      contents: [{ role: 'user', parts: [{ text: pengguna }] }],
-      generationConfig: { responseMimeType: 'application/json', responseSchema: skema, temperature: suhu },
+      model,
+      messages: [{ role: 'system', content: sistemJson }, { role: 'user', content: pengguna }],
+      response_format: { type: 'json_object' },
+      // Model penalaran (gpt-5*) hanya menerima suhu bawaan.
+      ...(model.startsWith('gpt-5') ? {} : { temperature: suhu }),
     }),
   }).catch(() => null);
   // Model utama dicoba dua kali, lalu cadangan sekali; hanya galat "sibuk" yang dicoba ulang.
@@ -78,14 +85,16 @@ async function tanyaGemini(permintaan: Permintaan, kunci: string):
     if (i > 0) await new Promise(selesai => setTimeout(selesai, JEDA_ULANG_MS));
     respons = await panggil(model);
     if (respons?.ok || !STATUS_SIBUK.has(respons?.status ?? 503)) break;
-    console.warn('gemini sibuk', model, respons?.status);
+    console.warn('ai sibuk', model, respons?.status);
   }
   if (!respons?.ok) {
-    console.error('gemini gagal', respons?.status, await respons?.text().catch(() => ''));
-    return { ok: false, galat: PESAN_STATUS_GEMINI[respons?.status ?? 0] ?? 'Layanan AI sedang tidak bisa dihubungi. Coba lagi sebentar lagi.' };
+    console.error('ai gagal', respons?.status, await respons?.text().catch(() => ''));
+    return { ok: false, galat: PESAN_STATUS[respons?.status ?? 0] ?? 'Layanan AI sedang tidak bisa dihubungi. Coba lagi sebentar lagi.' };
   }
   const json = await respons.json();
-  const teks = json?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (typeof teks !== 'string') return { ok: false, galat: 'AI tidak memberi jawaban. Coba lagi.' };
-  return { ok: true, teks, tokenMasuk: json.usageMetadata?.promptTokenCount ?? null, tokenKeluar: json.usageMetadata?.candidatesTokenCount ?? null };
+  const isi = json?.choices?.[0]?.message?.content;
+  if (typeof isi !== 'string') return { ok: false, galat: 'AI tidak memberi jawaban. Coba lagi.' };
+  // Sebagian model membungkus JSON dengan pagar ```json … ```.
+  const teks = isi.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
+  return { ok: true, teks, tokenMasuk: json.usage?.prompt_tokens ?? null, tokenKeluar: json.usage?.completion_tokens ?? null };
 }

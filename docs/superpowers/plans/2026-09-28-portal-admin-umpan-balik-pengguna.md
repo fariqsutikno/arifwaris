@@ -136,9 +136,10 @@ Satu pintu, kurasi, layar tambahan, penjelasan, dialog sunting yang menampilkan 
 
 ### Fase 5: AI Gemini (#10) — **kode selesai 2026-09-28, menunggu deploy**
 Edge Function `supabase/functions/ai-bantu` (logika murni di `logika.ts`, dites vitest lewat `scripts`), tabel
-`pemakaian_ai`, kuota 50/hari per pengguna (WIB), model `GEMINI_MODEL` (bawaan gemini-2.5-flash). Portal: Rapikan dengan AI
+`pemakaian_ai`, kuota 50/hari per pengguna (WIB), model lewat secret. Portal: Rapikan dengan AI
 (bidang teks, non-Arab), Buat draf dengan AI (soal kuis, dasar hukum satu bab), Saran AI (panel Info materi/FAQ).
-Draf kuis AI membawa `dibantuAi`; `terbitkan_langsung` menolaknya sebelum pernah lolos review.
+Penyedia AI diganti ke SumoPod (format OpenAI chat completions; secret AI_API_KEY, AI_MODEL bawaan gpt-4o-mini,
+AI_MODEL_CADANGAN, AI_BASE_URL). Draf kuis AI membawa `dibantuAi`; `terbitkan_langsung` menolaknya sebelum pernah lolos review.
 ponytail: penanda `dibantuAi` masih bisa dihapus admin lewat Kode mentah; kunci di database bila perlu.
 Edge Function `ai-bantu` (secret, cek peran, kuota, log) → Rapikan teks → Draf soal kuis → Saran kelengkapan.
 

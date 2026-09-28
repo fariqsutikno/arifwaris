@@ -1,5 +1,5 @@
 // Logika murni Edge Function ai-bantu (tanpa I/O, tanpa impor, jadi bisa dijalankan Deno dan dites vitest):
-// membaca & memvalidasi permintaan, menyusun prompt + skema JSON Gemini per fitur, lalu memeriksa jawaban AI.
+// membaca & memvalidasi permintaan, menyusun prompt + skema JSON per fitur, lalu memeriksa jawaban AI.
 // Batas dari pengguna (rencana portal, A6/C7): AI TIDAK membuat hukum di materi/FAQ; di sana hanya merapikan bahasa dan
 // memberi saran kelengkapan. Hanya draf soal kuis yang boleh dibuat AI, dengan rujukan dari bab itu saja, dan wajib review.
 
