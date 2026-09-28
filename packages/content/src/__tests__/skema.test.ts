@@ -62,3 +62,11 @@ test('soal_kuis: pengecoh lama digabung ke pembahasan; alasanPilihan harus lengk
   expect(!kurang.ok && kurang.galat).toMatch(/^alasanPilihan: /);
   expect(bacaIsi('soal_kuis', { ...soal, alasanPilihan: [[], ...lengkap.slice(1)] }).ok).toBe(false);
 });
+
+test('rujukan: tanda | ditolak, bab harus sesuai kode, kode kosong boleh sebelum disimpan', () => {
+  const sah = { kode: 'R09-3', bab: 9, klaim: 'k', jenis: 'RDH', sumber: 's', kutipan: '' };
+  expect(bacaIsi('rujukan', sah).ok).toBe(true);
+  expect(bacaIsi('rujukan', { ...sah, kode: '', bab: 4 }).ok).toBe(true);
+  expect(bacaIsi('rujukan', { ...sah, bab: 10 })).toMatchObject({ ok: false, galat: expect.stringMatching(/Bab tidak bisa diubah/) });
+  expect(bacaIsi('rujukan', { ...sah, sumber: 'a | b' })).toMatchObject({ ok: false, galat: expect.stringMatching(/Tanda \|/) });
+});

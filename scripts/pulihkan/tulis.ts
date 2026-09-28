@@ -2,8 +2,9 @@
 // Memulihkan database dari apps/web/src/snapshot.json: tiap baris konten & diksi terbit ditulis ulang lewat repository
 // (sebagai admin) dan langsung disetujui, supaya database kosong (mis. proyek Supabase produksi yang belum pernah
 // diimpor) berisi sama dengan yang tampil di web. Idempoten: jenis/slug dan kunci diksi yang sudah terbit dilewati.
-// Antrean review lama (revisi kedua "perlu dicek") tidak ada di snapshot, jadi tidak ikut pulih.
-import type { JenisKonten } from '@waris/content';
+// Antrean review lama (revisi kedua "perlu dicek") tidak ada di snapshot, jadi tidak ikut pulih. Rujukan KB tidak ada di
+// snapshot; sumbernya tabel docs/kb (barisRujukanKb), yang juga dipakai untuk impor pertama.
+import { RUJUKAN_MENTAH, type JenisKonten } from '@waris/content';
 import type { RepositoriDiksi, RepositoriEditorial, RepositoriKonten } from '@waris/data';
 
 export interface BarisSnapshot { jenis: string; slug: string; urutan: number; isi: unknown; refs: string[] }
@@ -35,3 +36,8 @@ export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: Baris
   }
   return { dibuat, dilewati: snapshot.konten.length + snapshot.diksi.length - dibuat };
 }
+
+const JARAK_URUTAN = 10;
+/** Tabel "Dasar dan Rujukan" docs/kb sebagai baris konten jenis rujukan; urutan = urutan baris di berkas KB. */
+export const barisRujukanKb = (): BarisSnapshot[] =>
+  RUJUKAN_MENTAH.map((isi, indeks) => ({ jenis: 'rujukan', slug: isi.kode, urutan: (indeks + 1) * JARAK_URUTAN, isi, refs: [] }));

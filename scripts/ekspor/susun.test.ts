@@ -1,7 +1,7 @@
 // scripts/ekspor/susun.test.ts
 import { expect, test } from 'vitest';
 import type { KontenTerbit } from '@waris/data';
-import { keMarkdown, susunSnapshot } from './susun';
+import { keMarkdown, susunSnapshot, tulisBerkasKb } from './susun';
 
 const faq: KontenTerbit = { entriId: 'e1', jenis: 'faq', slug: 'b', urutan: 1, revisiId: 'r1', refs: ['R01-1'], versiTerbit: 1,
   isi: { id: 'b', kelompok: 'Fikih', pertanyaan: 'Apa itu tirkah?', jawaban: [{ jenis: 'paragraf', isi: [{ jenis: 'teks', teks: 'Harta.' }] }] } };
@@ -24,4 +24,19 @@ test('markdown: satu berkas per jenis, blok ditulis Markdown, refs tercantum', (
   expect(md['faq.md']).toContain('Harta.');
   expect(md['faq.md']).toContain('R01-1');
   expect(md['soal_hitung.md']).toContain('"harta": "120000000"');
+});
+
+const rujukan = (kode: string, urutan: number, klaim: string): KontenTerbit => ({
+  entriId: kode, jenis: 'rujukan', slug: kode, urutan, revisiId: `r-${kode}`, refs: [], versiTerbit: 1,
+  isi: { kode, bab: Number(kode.slice(1, 3)), klaim, jenis: 'RDH', sumber: 's', kutipan: 'k' },
+});
+const babKb = ['# 99', '## Dasar dan Rujukan Bab Ini', '| Kode | Klaim | Jenis | Sumber | Kutipan |', '|---|---|---|---|---|', '| R99-1 | lama | RDH | s | k |', ''].join('\n');
+
+test('berkas KB: tabel rujukan ditulis ulang menurut urutan; tanpa rujukan di database tidak menulis apa pun', () => {
+  const hasil = tulisBerkasKb([rujukan('R99-2', 20, 'dua'), rujukan('R99-1', 10, 'satu')], { '99_contoh.md': babKb, 'README.md': 'x' });
+  expect(Object.keys(hasil)).toEqual(['99_contoh.md']);
+  expect(hasil['99_contoh.md']!.split('\n').slice(4, 6)).toEqual(['| R99-1 | satu | RDH | s | k |', '| R99-2 | dua | RDH | s | k |']);
+  expect(tulisBerkasKb([faq], { '99_contoh.md': babKb })).toEqual({});
+  expect(tulisBerkasKb([rujukan('R99-1', 10, 'lama')], { '99_contoh.md': babKb })).toEqual({});
+  expect(susunSnapshot(1, [rujukan('R99-1', 10, 'x'), faq], []).konten.map(b => b.jenis)).toEqual(['faq']);
 });

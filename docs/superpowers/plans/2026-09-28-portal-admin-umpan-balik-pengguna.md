@@ -288,3 +288,10 @@ F5 uraian bab. F1 menggantikan butir Fase 3.1, 3.3, dan 3.5 di bagian B.
 - **Penyetuju perubahan KB = reviewer** (dosen). Tim keilmuan berperan **penulis**. Tidak ada peran baru; aturan
   "penyetuju bukan penulisnya" tetap berlaku.
 - Urutan pengerjaan dibahas di sesi terpisah.
+- **Urutan (2026-09-28): per lapisan**, tiap lapisan tuntas (impor → sunting & review di portal → ekspor ke docs/kb).
+  Aturan kalkulator jarang berubah (paling bertambah: haml, mafqud, dst.); yang utama KB bisa dikoreksi & saling terhubung.
+- **Lapisan 1 selesai: dasar hukum** (jenis konten `rujukan`, menu Pustaka › Dasar hukum). Impor lewat
+  `pnpm konten:pulihkan`, ekspor menulis ulang tabel "Dasar dan Rujukan" lewat `pnpm konten:ekspor` (lalu `pnpm db:refs`).
+  Rujukan terbit otomatis masuk `daftar_refs`. Panel "Dipakai di" (konten + jumlah tempat di aturan kalkulator),
+  tautan "Buka dasar hukum" dari kartu rujukan. Web masih membaca KB dari berkas (tampil setelah ekspor + build).
+  Berikutnya: glosarium Indonesia, ayat/hadis (dalil induk), kitab & titik dikaji, tanda "dasarnya berubah, cek ulang".

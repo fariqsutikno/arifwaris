@@ -265,6 +265,21 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
       { jalur: 'ar', label: 'Teks (Arab)', jenis: 'teksPanjang', arab: true, opsional: true },
     ] },
   ],
+  // Baris tabel "Dasar dan Rujukan" KB. Kodenya (R09-7) tidak tampil: dibuat otomatis dari bab saat pertama disimpan.
+  rujukan: [
+    { bidang: [
+      { jalur: 'klaim', label: 'Klaim', jenis: 'teksPanjang', contoh: 'Bagian istri 1/8 bila suami punya anak',
+        bantuan: 'Hukum atau kaidah yang didasari sumber ini, satu kalimat. Tampil di bawah langkah hitung dan di materi yang merujuknya.' },
+      { jalur: 'jenis', label: 'Jenis dalil', jenis: 'teks', contoh: 'Q + RDH',
+        bantuan: "Q Al-Qur'an · H hadits · A atsar sahabat · IJ ijma' · RDH Raudhah ath-Thalibin · KH kaidah hisab. Gabungkan dengan +, mis. Q + RDH. Tulis — bila hanya keterangan." },
+      { jalur: 'sumber', label: 'Sumber', jenis: 'teks', contoh: "An-Nisa' 12 · Bab 1, far' 3",
+        bantuan: 'Ayat, hadits beserta perawinya, atau bab & halaman kitab. "Idem" berarti sama dengan sumber baris sebelumnya di bab yang sama.' },
+      { jalur: 'kutipan', label: 'Kutipan / keterangan', jenis: 'teksPanjang', opsional: true,
+        bantuan: 'Nash Arab ditulis di antara «…», boleh diikuti keterangan Indonesia.' },
+      { jalur: 'bab', label: 'Bab', jenis: 'angka', sumberOpsi: 'bab', samping: true,
+        bantuan: 'Bab KB tempat dasar hukum ini dicantumkan. Tidak bisa diubah setelah disimpan.' },
+    ] },
+  ],
   cheatsheet: [
     { bidang: [
       { jalur: 'judul', label: 'Judul', jenis: 'teks', contoh: 'Tabel bagian pasti' },
@@ -291,4 +306,5 @@ export const ISI_AWAL: Partial<Record<JenisKonten, Record<string, unknown>>> = {
   soal_kuis: { tingkat: 'dasar', indeksBenar: 0 },
   soal_hitung: { tingkat: 'dasar', kasus: { pewaris: 'L', ahliWaris: [], harta: '0', harapan: { saham: {}, ashlAkhir: '0' } } },
   ahwal: { baris: [] },
+  rujukan: { kode: '' },
 };

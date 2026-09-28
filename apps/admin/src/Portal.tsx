@@ -2,7 +2,7 @@
 // setelah keduanya siap. Tanpa sesi → tombol masuk Google; sesi tanpa peran → pesan "belum punya akses" + keluar;
 // galat saat memuat → pesan galat (bukan layar kosong). Rute dibaca dari location.hash (bacaRute/tulisRute).
 import { useEffect, useState, type ReactNode } from 'react';
-import type { JenisKonten, Peran } from '@waris/content';
+import type { IsiRujukan, JenisKonten, Peran } from '@waris/content';
 import type { Sesi } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -17,6 +17,7 @@ import { AntreanReview } from './layar/AntreanReview';
 import { KelolaPeran } from './layar/KelolaPeran';
 import { bolehTinggalkan } from './penjaga';
 import { pesanGalat } from './pesanGalat';
+import { catatRujukanDatabase } from './editor/rujukan';
 
 type Tahap =
   | { tahap: 'memuat' }
@@ -35,6 +36,8 @@ export function Portal({ repo }: { repo: RepoPortal }) {
         const sesi = await repo.akun.sesi();
         if (!sesi) { if (!dibatalkan) setStatus({ tahap: 'tamu' }); return; }
         const peran = await repo.akun.peranSaya();
+        // Gagal memuat dasar hukum dari database tidak menghalangi portal: klaim jatuh ke berkas KB.
+        if (peran) await repo.konten.bacaTerbit({ jenis: 'rujukan' }).then(daftar => catatRujukanDatabase(daftar as { entriId: string; isi: IsiRujukan }[]), () => {});
         if (dibatalkan) return;
         setStatus(peran ? { tahap: 'siap', sesi, peran } : { tahap: 'tanpaPeran', sesi });
       } catch (e) {

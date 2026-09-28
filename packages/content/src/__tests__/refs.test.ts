@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs } from '../index.js';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs, RUJUKAN_MENTAH, barisRujukanMentah, tulisTabelRujukan } from '../index.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
   const teksBab = [
@@ -122,4 +122,28 @@ test('sqlDaftarRefs: satu baris per kode, terurut, idempoten', () => {
 
 test('semua kode RUJUKAN cocok dengan pola kolom daftar_refs', () => {
   for (const rujukan of RUJUKAN) expect(rujukan.kode).toMatch(/^R\d{2}-\d+$/);
+});
+
+describe('rujukan sebagai konten portal', () => {
+  test('baca mentah → tulis ulang menghasilkan berkas KB yang sama persis', async () => {
+    const { readFileSync, readdirSync } = await import('node:fs');
+    const folder = new URL('../../../../docs/kb/', import.meta.url);
+    for (const nama of readdirSync(folder).filter(n => /^\d{2}_/.test(n))) {
+      const teks = readFileSync(new URL(nama, folder), 'utf8');
+      if (!teks.includes('## Dasar dan Rujukan')) continue;
+      expect(tulisTabelRujukan(teks, barisRujukanMentah(teks, Number(nama.slice(0, 2)))), nama).toBe(teks);
+    }
+    expect(RUJUKAN_MENTAH.map(r => r.kode)).toEqual(RUJUKAN.map(r => r.kode));
+  });
+
+  test('baris baru ditambah, yang hilang dibuang, teks lain utuh; baris baru di bab kosong masuk di bawah kepala', () => {
+    const md = ['# Bab', '## Dasar dan Rujukan Bab Ini', '| Kode | Klaim | Jenis | Sumber | Kutipan |', '|---|---|---|---|---|',
+      '| R99-1 | a | Q | s | k |', '| R99-2 | b | Q | s | k |', '', '## Lain', '| R99-9 | bukan | x | x | x |'].join('\n');
+    const baru = { kode: 'R99-3', bab: 99, klaim: 'c\nbaris dua', jenis: 'H', sumber: 's', kutipan: 'k' };
+    expect(tulisTabelRujukan(md, [{ ...baru, kode: 'R99-1', klaim: 'a' }, baru]).split('\n').slice(4, 7))
+      .toEqual(['| R99-1 | a | H | s | k |', '| R99-3 | c baris dua | H | s | k |', '']);
+    const kosong = tulisTabelRujukan(md, []);
+    expect(kosong.split('\n').slice(3, 5)).toEqual(['|---|---|---|---|---|', '']);
+    expect(tulisTabelRujukan(kosong, [baru]).split('\n')[4]).toBe('| R99-3 | c baris dua | H | s | k |');
+  });
 });

@@ -196,6 +196,43 @@ export function dalilUntuk(daftarKode: string[]): { daftarEntri: TampilanDalil[]
   return { daftarEntri, catatan };
 }
 
+// ─── Rujukan sebagai konten portal (KB bagian F) ──────────────────────────────
+// Database jadi sumber tabel "Dasar dan Rujukan"; berkas KB ditulis ulang dari sana oleh `pnpm konten:ekspor`.
+// Sel disimpan apa adanya (sumber "Idem" tidak diganti) supaya baca → tulis ulang menghasilkan berkas yang sama.
+
+export interface IsiRujukan { kode: string; bab: number; klaim: string; jenis: string; sumber: string; kutipan: string }
+
+const POLA_BARIS_RUJUKAN = /^\| R\d{2}-\d+ /;
+
+export const barisRujukanMentah = (teksMarkdown: string, bab: number): IsiRujukan[] =>
+  barisTabelBagian(teksMarkdown, 'Dasar dan Rujukan')
+    .filter(([kode = '']) => /^R\d{2}-\d+$/.test(kode))
+    .map(([kode = '', klaim = '', jenis = '', sumber = '', kutipan = '']) => ({ kode, bab, klaim, jenis, sumber, kutipan }));
+
+/** Semua baris rujukan KB dalam urutan berkas; dipakai skrip impor ke database. */
+export const RUJUKAN_MENTAH: IsiRujukan[] = DAFTAR_BAB.flatMap(([bab, teksBab]) => barisRujukanMentah(teksBab, bab));
+
+/** Ganti baris-baris rujukan di bagian "## Dasar dan Rujukan" dengan `daftar` (urutan dipertahankan); teks lain tidak disentuh. */
+export function tulisTabelRujukan(teksMarkdown: string, daftar: IsiRujukan[]): string {
+  const daftarBaris = teksMarkdown.split('\n');
+  const awalBagian = daftarBaris.findIndex(baris => baris.startsWith('## Dasar dan Rujukan'));
+  if (awalBagian < 0) throw new Error('bagian "Dasar dan Rujukan" tidak ditemukan');
+  const akhirBagian = daftarBaris.findIndex((baris, indeks) => indeks > awalBagian && baris.startsWith('## '));
+  const batas = akhirBagian < 0 ? daftarBaris.length : akhirBagian;
+  const indeksRujukan = daftarBaris.map((baris, indeks) => (indeks > awalBagian && indeks < batas && POLA_BARIS_RUJUKAN.test(baris) ? indeks : -1))
+    .filter(indeks => indeks >= 0);
+  // Bab tanpa baris rujukan: sisipkan tepat di bawah baris pemisah kepala tabel.
+  const pemisah = daftarBaris.findIndex((baris, indeks) => indeks > awalBagian && indeks < batas && /^\|[\s|:-]+\|$/.test(baris));
+  const mulai = indeksRujukan[0] ?? pemisah + 1;
+  if (mulai === 0) throw new Error('tabel "Dasar dan Rujukan" tidak ditemukan');
+  const jumlahLama = indeksRujukan.length ? indeksRujukan[indeksRujukan.length - 1]! - mulai + 1 : 0;
+  const barisBaru = daftar.map(({ kode, klaim, jenis, sumber, kutipan }) => `| ${[kode, klaim, jenis, sumber, kutipan].map(satuBaris).join(' | ')} |`);
+  daftarBaris.splice(mulai, jumlahLama, ...barisBaru);
+  return daftarBaris.join('\n');
+}
+
+const satuBaris = (teks: string) => teks.replace(/\s*\n\s*/g, ' ').trim();
+
 /** Isi tabel `daftar_refs` (supabase/seed.sql) dari kode rujukan KB; urut & tanpa duplikat supaya diff seed stabil. */
 export function sqlDaftarRefs(daftar: { kode: string; bab: number }[]): string {
   const unik = [...new Map(daftar.map(rujukan => [rujukan.kode, rujukan.bab])).entries()]

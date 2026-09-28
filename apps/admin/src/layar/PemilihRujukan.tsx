@@ -7,7 +7,8 @@ import { TriangleAlert, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { cariOpsiRujukan, opsiRujukan, teksRujukan, type OpsiRujukan } from '../editor/rujukan';
+import { cariOpsiRujukan, entriRujukan, opsiRujukan, teksRujukan, type OpsiRujukan } from '../editor/rujukan';
+import { tulisRute } from '../rute';
 import { usePortal } from '../repo';
 import { pesanGalat } from '../pesanGalat';
 
@@ -20,7 +21,12 @@ export function PemilihRefs({ nilai, saatUbah, bacaSaja = false }: { nilai: stri
         <ul className="grid gap-1.5">
           {nilai.map(kode => (
             <li key={kode} className="flex items-start gap-2 rounded-md border bg-muted/40 px-2 py-1.5 text-sm">
-              <span className="min-w-0 flex-1">{teksRujukan(kode)}</span>
+              <span className="min-w-0 flex-1">
+                {teksRujukan(kode)}
+                {entriRujukan(kode) ? (
+                  <a className="ml-1.5 text-xs text-primary underline-offset-2 hover:underline" href={tulisRute({ layar: 'entri', entriId: entriRujukan(kode)! })}>Buka dasar hukum</a>
+                ) : null}
+              </span>
               {bacaSaja ? null : (
                 <button type="button" className="mt-0.5 rounded-sm text-muted-foreground hover:text-destructive" aria-label={`Hapus rujukan ${teksRujukan(kode)}`}
                   onClick={() => saatUbah(nilai.filter(k => k !== kode))}>

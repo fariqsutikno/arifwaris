@@ -1,7 +1,7 @@
 // Tes konversi isi ↔ NilaiForm: bolak-balik lossless untuk SEMUA entri di snapshot web (semua jenis), cakupan
 // FORM_KONTEN, sakelar Versi Arab, tautan kosong → null, dan galat per bidang (angka, Markdown, Zod).
 import { describe, expect, test } from 'vitest';
-import { bacaIsi, JENIS_KONTEN, type JenisKonten } from '@waris/content';
+import { bacaIsi, JENIS_KONTEN, RUJUKAN_MENTAH, type IsiKonten, type JenisKonten } from '@waris/content';
 import snapshot from '../../../web/src/snapshot.json';
 import { FORM_KONTEN } from '../editor/formulir';
 import { dariNilaiForm, keNilaiForm, nilaiFormKosong } from '../editor/nilaiForm';
@@ -11,8 +11,8 @@ const semuaEntri = snapshot.konten.map((baris, i) => {
   const jenis = baris.jenis as JenisKonten;
   const hasil = bacaIsi(jenis, baris.isi);
   if (!hasil.ok) throw new Error(`snapshot ${jenis} #${i} tidak sah: ${hasil.galat}`);
-  return [`${jenis} #${i}`, jenis, hasil.isi] as const;
-});
+  return [`${jenis} #${i}` as string, jenis, hasil.isi as IsiKonten[JenisKonten]] as const;
+}).concat(RUJUKAN_MENTAH.map(isi => [`rujukan ${isi.kode}` as string, 'rujukan' as JenisKonten, isi as IsiKonten[JenisKonten]] as const));
 
 test('FORM_KONTEN mencakup semua jenis, jalur unik per jenis', () => {
   expect(Object.keys(FORM_KONTEN).sort()).toEqual([...JENIS_KONTEN].sort());

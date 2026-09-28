@@ -64,11 +64,13 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     if (!nilai) throw new Error(`${nama} ${id} tidak ditemukan`);
     return nilai;
   };
+  // Meniru trigger daftarkan_rujukan: rujukan KB yang sudah terbit ikut dikenal.
+  const refsKini = () => new Set([...refsDikenal, ...[...entri.values()].filter(e => e.jenis === 'rujukan' && e.revisiTerbitId).map(e => e.slug)]);
   const periksaIsi = <J extends JenisKonten>(jenis: J, isi: IsiKonten[J], refs: string[]) => {
     const json = keJson(jenis, isi);
     const hasil = bacaIsi(jenis, json);
     if (!hasil.ok) throw new Error(`isi ${jenis} tidak sah: ${hasil.galat}`);
-    const galatRefs = periksaRefs(jenis, json, refs, refsDikenal);
+    const galatRefs = periksaRefs(jenis, json, refs, refsKini());
     if (galatRefs) throw new Error(galatRefs);
     return json;
   };
@@ -129,7 +131,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
           dihapus: dihapus(baris), dibuang: baris.dibuang, revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
         }));
     },
-    async daftarRefs() { return [...refsDikenal].sort().map(kode => ({ kode, bab: Number(kode.slice(1, 3)) })); },
+    async daftarRefs() { return [...refsKini()].sort().map(kode => ({ kode, bab: Number(kode.slice(1, 3)) })); },
   };
 
   const editorial: RepositoriEditorial = {

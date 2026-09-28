@@ -1,6 +1,7 @@
 export { GLOSARIUM, cariIstilah, bacaGlosarium, slug, type EntriGlosarium } from './glossary.js';
 export {
-  DAFTAR_AYAT, RUJUKAN, JUDUL_BAB, DAFTAR_KITAB, DAFTAR_HADITS, TITIK_DIKAJI, barisTabelBagian, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs,
+  DAFTAR_AYAT, RUJUKAN, JUDUL_BAB, DAFTAR_KITAB, DAFTAR_HADITS, TITIK_DIKAJI, barisTabelBagian, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs, RUJUKAN_MENTAH, barisRujukanMentah, tulisTabelRujukan,
+  type IsiRujukan,
   type Ayat, type TampilanDalil, type RujukanTerbaca, type EntriRujukan, type JenisDalil, type Kitab, type Hadits, type TitikDikaji,
 } from './refs.js';
 export {

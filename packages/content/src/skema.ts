@@ -6,12 +6,13 @@ import { z } from 'zod';
 import type { EntriFaq } from './faq.js';
 import type { Blok, ContohKasus, Modul, Pelajaran, Potongan, VersiArab } from './materi.js';
 import type { SumberKitab, Syahid } from './pustaka.js';
+import type { IsiRujukan } from './refs.js';
 import type { SoalHitung, SoalKuis } from './soal.js';
 import type { KasusTanyaJawab } from './tanyaJawab.js';
 
 export const JENIS_KONTEN = [
   'modul', 'materi', 'soal_kuis', 'soal_hitung', 'tanya_jawab', 'faq', 'kitab', 'syahid',
-  'glosarium_ar', 'ahwal', 'teks_edukasi', 'cheatsheet',
+  'glosarium_ar', 'ahwal', 'teks_edukasi', 'cheatsheet', 'rujukan',
 ] as const;
 export type JenisKonten = (typeof JENIS_KONTEN)[number];
 /** Jenis yang memuat klaim fikih: wajib punya minimal satu ref `[Rxx-y]`. */
@@ -33,7 +34,7 @@ export interface IsiGlosariumAr { istilahId: string; makna: string; artiAwam?: s
 export interface IsiKonten {
   modul: Modul; materi: Pelajaran; soal_kuis: SoalKuis; soal_hitung: SoalHitung; tanya_jawab: KasusTanyaJawab;
   faq: EntriFaq; kitab: SumberKitab; syahid: Syahid; glosarium_ar: IsiGlosariumAr; ahwal: IsiAhwal;
-  teks_edukasi: IsiTeksEdukasi; cheatsheet: IsiCheatsheet;
+  teks_edukasi: IsiTeksEdukasi; cheatsheet: IsiCheatsheet; rujukan: IsiRujukan;
 }
 
 export function keJson<J extends JenisKonten>(_jenis: J, isi: IsiKonten[J]): unknown {
@@ -78,6 +79,9 @@ const blok: z.ZodType<Blok> = z.discriminatedUnion('jenis', [
   z.object({ jenis: z.literal('kuis'), daftarKode: z.array(z.string()) }),
 ]) as unknown as z.ZodType<Blok>;
 
+// Sel tabel "Dasar dan Rujukan" KB: tanda | memutus kolom tabel Markdown.
+const selTabel = z.string().refine(teks => !teks.includes('|'), 'Tanda | tidak boleh dipakai.');
+
 const versiArab: z.ZodType<VersiArab> = z.object({ judul: z.string(), tujuan: z.string(), blok: z.array(blok).optional() }) as z.ZodType<VersiArab>;
 const tingkat = z.enum(['dasar', 'menengah', 'sulit']);
 
@@ -119,5 +123,11 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
     })),
   }),
   teks_edukasi: z.object({ id: z.string().min(1), ar: z.string().optional() }),
+  // kode kosong hanya selama entri baru belum disimpan (editor mengisinya dari bab); bab mengikuti kode.
+  rujukan: z.object({
+    kode: z.string().regex(/^(R\d{2}-\d+)?$/), bab: z.number().int(),
+    klaim: selTabel.pipe(z.string().min(1)), jenis: selTabel, sumber: selTabel, kutipan: selTabel.default(''),
+  }).refine(rujukan => !rujukan.kode || Number(rujukan.kode.slice(1, 3)) === rujukan.bab,
+    { message: 'Bab tidak bisa diubah setelah dasar hukum ini dibuat.', path: ['bab'] }),
   cheatsheet: z.object({ judul: z.string().min(1), judulAr: z.string().optional(), deskripsi: z.string(), tautan: z.string().url().nullable() }),
 };

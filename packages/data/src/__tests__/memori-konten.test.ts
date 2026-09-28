@@ -8,6 +8,20 @@ const REVIEWER = { userId: 'r', email: 'r@tes.local' };
 const siapkan = () => buatMemori({ refs: ['R09-7', 'R04-2'], peran: { p: 'penulis', r: 'reviewer' }, sesi: PENULIS });
 
 describe('memori: konten & editorial', () => {
+  test('rujukan KB yang terbit bisa dirujuk konten lain; sebelum terbit belum', async () => {
+    const db = siapkan();
+    const entriId = await db.editorial.buatEntri('rujukan', 'R09-99', 1);
+    const revisiId = await db.editorial.buatDraf(entriId, 'rujukan', { kode: 'R09-99', bab: 9, klaim: 'k', jenis: 'RDH', sumber: 's', kutipan: '' }, []);
+    const faq = await db.editorial.buatEntri('faq', 'contoh', 1);
+    await expect(db.editorial.buatDraf(faq, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-99'])).rejects.toThrow();
+    await db.editorial.ajukan(revisiId);
+    db.masukSebagai(REVIEWER);
+    await db.editorial.setujui(revisiId);
+    expect((await db.konten.daftarRefs()).find(r => r.kode === 'R09-99')).toEqual({ kode: 'R09-99', bab: 9 });
+    db.masukSebagai(PENULIS);
+    await expect(db.editorial.buatDraf(faq, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-99'])).resolves.toBeTruthy();
+  });
+
   test('alur lengkap: draf → ajukan → setujui → terbit, versi naik', async () => {
     const db = siapkan();
     const entriId = await db.editorial.buatEntri('faq', 'contoh', 1);

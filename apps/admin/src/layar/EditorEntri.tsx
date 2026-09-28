@@ -30,13 +30,14 @@ import { caraBuang, keadaanSunting, revisiBasis, teksTayang, type EntriSunting, 
 import { useNamaTim } from '../hooks/useNamaTim';
 import { judulEntri, waktuRelatif } from '../ringkas';
 import { bidangIdentitas, punyaVersiArab } from '../editor/formulir';
-import { kodeBerikutnya, lengkapiIdentitas, slugEntri } from '../editor/identitas';
+import { kodeBerikutnya, kodeRujukanBerikutnya, lengkapiIdentitas, slugEntri } from '../editor/identitas';
 import { opsiRujukan } from '../editor/rujukan';
 import { daftarKelengkapan, type ButirKelengkapan } from '../editor/kelengkapan';
 import { FormKonten, type OpsiRuntime, type PotonganForm } from './FormKonten';
 import { usePortal } from '../repo';
 import { tulisRute, type Kueri } from '../rute';
 import { PemilihRefs } from './PemilihRujukan';
+import { DipakaiDi } from './DipakaiDi';
 import { Pratinjau } from './Pratinjau';
 import { AksiReview } from './AksiReview';
 import { Perbandingan } from './Perbandingan';
@@ -192,6 +193,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       return { revisiId: keadaan.salinanKerjaId, entriId: muatan.entriId! };
     }
     if (muatan.entriId) return { revisiId: await repo.editorial.buatDraf(muatan.entriId, muatan.jenis, hasil.isi, refs), entriId: muatan.entriId };
+    if (muatan.jenis === 'rujukan') await isiKodeRujukan(hasil.isi as IsiKonten['rujukan']);
     const slugBaru = slugEntri(muatan.jenis, hasil.isi);
     if (!slugBaru) { setGalat('Isi judul dulu: alamat entri dibentuk dari judul.'); return null; }
     // Periksa refs di klien sebelum buatEntri supaya entri kosong tidak tertinggal; database tetap penjaga.
@@ -205,6 +207,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     const entriId = await repo.editorial.buatEntri(muatan.jenis, slugBaru, maksUrutan + JARAK_URUTAN);
     setMuatan({ ...muatan, entriId, slug: slugBaru });
     return { revisiId: await repo.editorial.buatDraf(entriId, muatan.jenis, hasil.isi, refs), entriId };
+  }
+
+  /** Rujukan KB baru: kode diambil nomor berikutnya di babnya, dari rujukan terbit maupun draf. */
+  async function isiKodeRujukan(isi: IsiKonten['rujukan']) {
+    const [terbit, entri] = await Promise.all([repo.konten.daftarRefs(), repo.konten.daftarEntri('rujukan')]);
+    isi.kode = kodeRujukanBerikutnya(isi.bab, [...terbit.map(ref => ref.kode), ...entri.map(e => e.slug)]);
   }
 
   /** Salinan kerja yang siap dikirim/diterbitkan: disimpan dulu bila ada perubahan. */
@@ -325,7 +333,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
             {tab === 'json'
               ? <p className="text-sm text-muted-foreground">Selama di tab Kode mentah, info entri diubah lewat kode.</p>
               : formKonten('samping')}
-            <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
+            {muatan.jenis === 'rujukan'
+              ? (muatan.slug ? <DipakaiDi kode={muatan.slug} /> : null)
+              : <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />}
           </CardContent>
         </Card>
         </div>
