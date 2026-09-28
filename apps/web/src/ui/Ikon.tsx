@@ -10,6 +10,7 @@ const JALUR = {
   glosarium: <><path d="M5 3h11l3 3v15H5z" /><path d="M9 15l3-7 3 7M10 13h4" /></>,
   rujukan: <><path d="M7 3h11a2 2 0 0 1 2 2v2h-4" /><path d="M16 7v12a2 2 0 0 1-4 0v-1H4v1a2 2 0 0 0 2 2h10" /><path d="M7 3a2 2 0 0 0-2 2v13M9 8h3M9 12h3" /></>,
   rumah: <><path d="M3 11l9-7 9 7" /><path d="M5 10v10h14V10" /><path d="M10 20v-5h4v5" /></>,
+  segarkan: <><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8" /><path d="M21 3v5h-5" /></>,
   riwayat: <><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5M12 7v5l3 2" /></>,
   keluar: <><path d="M14 4h5v16h-5" /><path d="M10 8l-4 4 4 4M6 12h10" /></>,
   unduh: <><path d="M12 4v11M7 10l5 5 5-5" /><path d="M4 19h16" /></>,
