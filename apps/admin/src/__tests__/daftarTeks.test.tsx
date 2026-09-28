@@ -109,7 +109,7 @@ test('penulis: teks dikembalikan → buang perubahan, kembali ke teks tayang tan
   tampilkan(m, 'penulis', 'u-p');
   fireEvent.click(within(await screen.findByRole('article', { name: 'Judul salah' })).getByRole('button', { name: 'Sunting' }));
   expect(await screen.findByText('terlalu kaku', { exact: false })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'buang perubahan ini' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Buang perubahan ini' }));
   await waitFor(async () => {
     expect((await m.diksi.daftarRevisi('beranda.judul')).find(r => r.id === revisiId)).toMatchObject({ status: 'dikembalikan', diabaikan: true });
   });

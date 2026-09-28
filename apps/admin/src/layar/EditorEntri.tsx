@@ -280,6 +280,19 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const bolehBuangPerubahan = !!dikembalikan && !!muatan.entri.revisiTerbitId
     && bolehAbaikanRevisi({ peran, pelakuId: sesi.userId, pembuatId: dikembalikan.dibuatOleh, status: dikembalikan.status });
 
+  // Bantuan AI menyatu dengan isi: draf soal di atas form kuis, saran di bawah isi materi/FAQ; dengan atau tanpa tab.
+  const isiUtama = (
+    <>
+      {bisaSunting && muatan.jenis === 'soal_kuis'
+        ? <TautanDrafKuis babAwal={Number(bentuk.nilai.bab) || null} saatDraf={terapkanDrafAi} /> : null}
+      {formKonten('utama')}
+      {bisaSunting && (muatan.jenis === 'materi' || muatan.jenis === 'faq') ? (
+        <PanelSaranAi jenis={muatan.jenis} judul={String(bentuk.nilai.judul ?? bentuk.nilai.pertanyaan ?? '')}
+          teks={String(bentuk.nilai.blok ?? bentuk.nilai.jawaban ?? '')} />
+      ) : null}
+    </>
+  );
+
   return (
     <div className="space-y-4">
       <div>
@@ -295,9 +308,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           <AlertTitle>Dikembalikan oleh {dikembalikan.diperiksaOleh ? namaDari(dikembalikan.diperiksaOleh) : 'reviewer'}</AlertTitle>
           <AlertDescription>{dikembalikan.catatanReview} · Perbaiki di bawah lalu kirim lagi.
             {bolehBuangPerubahan ? (
-              <> Atau <Button variant="link" className="h-auto p-0 align-baseline" disabled={sibuk} onClick={() => void abaikan(dikembalikan.id)}>
-                buang perubahan ini
-              </Button> dan kembali ke versi tayang.</>
+              <span className="mt-2 flex flex-wrap items-center gap-2">
+                <Button variant="outline" size="sm" disabled={sibuk} onClick={() => void abaikan(dikembalikan.id)}>Buang perubahan ini</Button>
+                <span className="text-muted-foreground">Kembali ke versi tayang tanpa menyunting.</span>
+              </span>
             ) : null}
           </AlertDescription>
         </Alert>
@@ -330,11 +344,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
                   {muatan.entriId ? <TabsTrigger value="riwayat">Riwayat</TabsTrigger> : null}
                   {peran === 'admin' ? <TabsTrigger value="json">Kode mentah</TabsTrigger> : null}
                 </TabsList>
-                <TabsContent value="form" className="grid gap-3 pt-2">
-                  {bisaSunting && muatan.jenis === 'soal_kuis'
-                    ? <TautanDrafKuis babAwal={Number(bentuk.nilai.bab) || null} saatDraf={terapkanDrafAi} /> : null}
-                  {formKonten('utama')}
-                </TabsContent>
+                <TabsContent value="form" className="grid gap-3 pt-2">{isiUtama}</TabsContent>
                 {adaArab ? <TabsContent value="arab" className="pt-2">{formKonten('arab')}</TabsContent> : null}
                 {muatan.entriId ? (
                   <TabsContent value="riwayat" className="pt-2">
@@ -351,7 +361,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
                   </TabsContent>
                 ) : null}
               </Tabs>
-            ) : formKonten('utama')}
+            ) : <div className="grid gap-3">{isiUtama}</div>}
           </CardContent>
         </Card>
         <Card className={pratinjau ? undefined : 'lg:sticky lg:top-4'}>
@@ -362,10 +372,6 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
               ? <p className="text-sm text-muted-foreground">Selama di tab Kode mentah, info entri diubah lewat kode.</p>
               : formKonten('samping')}
             <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
-            {bisaSunting && (muatan.jenis === 'materi' || muatan.jenis === 'faq') ? (
-              <PanelSaranAi jenis={muatan.jenis} judul={String(bentuk.nilai.judul ?? bentuk.nilai.pertanyaan ?? '')}
-                teks={String(bentuk.nilai.blok ?? bentuk.nilai.jawaban ?? '')} />
-            ) : null}
           </CardContent>
         </Card>
         </div>

@@ -51,7 +51,7 @@ test('draf kuis: dasar hukum bab dikirim, form terisi, ditandai AI, admin hanya 
   await waitFor(async () => expect(await m.editorial.antreanReview()).toMatchObject([{ refs: ['R04-2'], isi: { dibantuAi: true, indeksBenar: 1 } }]));
 });
 
-test('saran kelengkapan tampil di panel Info materi/FAQ', async () => {
+test('saran kelengkapan tampil di bawah isi materi/FAQ', async () => {
   tampilkan('faq', 'penulis');
   expect(await screen.findByRole('heading', { name: 'Saran AI' })).toBeTruthy();
 });

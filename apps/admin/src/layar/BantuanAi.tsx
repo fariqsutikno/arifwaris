@@ -35,7 +35,7 @@ export function TautanRapikan({ teks, saatTerima }: { teks: string; saatTerima: 
   };
   return (
     <>
-      <Button type="button" variant="link" size="sm" className="h-auto p-0 text-xs" disabled={keadaan === 'memuat'} onClick={() => void minta()}>
+      <Button type="button" variant="outline" size="sm" className="h-7 text-xs" disabled={keadaan === 'memuat'} onClick={() => void minta()}>
         <Sparkles />{keadaan === 'memuat' ? 'Merapikan…' : 'Rapikan dengan AI'}
       </Button>
       {keadaan && keadaan !== 'memuat' ? (
@@ -64,7 +64,7 @@ export function TautanRapikan({ teks, saatTerima }: { teks: string; saatTerima: 
 const DAFTAR_BAB = Object.entries(JUDUL_BAB).map(([bab, judul]) => ({ bab: Number(bab), judul }))
   .filter(({ bab }) => RUJUKAN.some(r => r.bab === bab)).sort((a, b) => a.bab - b.bab);
 
-/** Tautan + dialog draf soal kuis. `babAwal` = bab di form (bila sudah dipilih). */
+/** Tombol + dialog draf soal kuis. `babAwal` = bab di form (bila sudah dipilih). */
 export function TautanDrafKuis({ babAwal, saatDraf }: { babAwal: number | null; saatDraf: (draf: DrafKuisAi, bab: number) => void }) {
   const ai = useAi();
   const [buka, setBuka] = useState(false);
@@ -89,7 +89,7 @@ export function TautanDrafKuis({ babAwal, saatDraf }: { babAwal: number | null; 
   };
   return (
     <>
-      <Button type="button" variant="link" size="sm" className="h-auto w-fit p-0" onClick={() => { setBab(babAwal ?? bab); setBuka(true); }}>
+      <Button type="button" variant="outline" size="sm" className="w-fit" onClick={() => { setBab(babAwal ?? bab); setBuka(true); }}>
         <Sparkles />Buat draf dengan AI
       </Button>
       <Dialog open={buka} onOpenChange={setBuka}>
@@ -136,7 +136,7 @@ export function PanelSaranAi({ jenis, judul, teks }: { jenis: 'materi' | 'faq'; 
           : keadaan.saran.length ? <ul className="grid list-disc gap-1 ps-5 text-sm">{keadaan.saran.map((s, i) => <li key={i}>{s}</li>)}</ul>
             : <p className="text-sm text-muted-foreground">Tidak ada saran.</p>
       ) : <p className="text-xs text-muted-foreground">Hal yang bisa dilengkapi. Hanya saran; isi tidak diubah.</p>}
-      <Button type="button" variant="link" size="sm" className="h-auto w-fit p-0" disabled={keadaan === 'memuat' || !teks.trim()} onClick={() => void minta()}>
+      <Button type="button" variant="outline" size="sm" className="w-fit" disabled={keadaan === 'memuat' || !teks.trim()} onClick={() => void minta()}>
         <Sparkles />{keadaan === 'memuat' ? 'Meminta saran…' : keadaan ? 'Minta saran lagi' : 'Minta saran'}
       </Button>
     </section>

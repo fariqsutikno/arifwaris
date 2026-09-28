@@ -354,14 +354,17 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
           </p>
         ) : null}
         {keadaan.status === 'dikembalikan' && keadaan.revisi ? (
-          <p className="text-sm text-muted-foreground">
-            Dikembalikan reviewer{keadaan.revisi.catatanReview ? `: ${keadaan.revisi.catatanReview}` : ''}. Perbaiki di bawah lalu ajukan lagi.
+          <div className="grid gap-2">
+            <p className="text-sm text-muted-foreground">
+              Dikembalikan reviewer{keadaan.revisi.catatanReview ? `: ${keadaan.revisi.catatanReview}` : ''}. Perbaiki di bawah lalu ajukan lagi.
+            </p>
             {bolehBuang ? (
-              <> Atau <Button variant="link" className="h-auto p-0 align-baseline" disabled={sibuk} onClick={() => void buangPerubahan()}>
-                buang perubahan ini
-              </Button> dan kembali ke teks yang tayang.</>
+              <div className="flex flex-wrap items-center gap-2">
+                <Button variant="outline" size="sm" disabled={sibuk} onClick={() => void buangPerubahan()}>Buang perubahan ini</Button>
+                <span className="text-sm text-muted-foreground">Kembali ke teks yang tayang tanpa menyunting.</span>
+              </div>
             ) : null}
-          </p>
+          </div>
         ) : null}
         <Label className="grid gap-1.5">
           Bahasa Indonesia
