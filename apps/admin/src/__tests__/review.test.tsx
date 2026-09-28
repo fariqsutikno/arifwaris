@@ -54,13 +54,20 @@ test('Setujui butir konten → hilang dari antrean dan terbit', async () => {
   expect(terbit.map(t => t.slug)).toEqual(['apa-itu-tirkah']);
 });
 
-test('Kembalikan: tanpa catatan nonaktif, dengan catatan → dikembalikan', async () => {
+test('Kembalikan: kolom catatan baru muncul setelah diklik (terfokus), kirim tanpa catatan nonaktif, Batal kembali', async () => {
   const { m } = await siapkan();
   tampilkan(m);
   const diksi = await butir(/^Kalkulator Waris/);
-  const tombol = within(diksi).getByRole('button', { name: 'Kembalikan' }) as HTMLButtonElement;
+  expect(within(diksi).queryByLabelText('Apa yang perlu diperbaiki?')).toBeNull();
+  fireEvent.click(within(diksi).getByRole('button', { name: 'Kembalikan' }));
+  const kolom = within(diksi).getByLabelText('Apa yang perlu diperbaiki?');
+  await waitFor(() => expect(document.activeElement).toBe(kolom));
+  fireEvent.click(within(diksi).getByRole('button', { name: 'Batal' }));
+  expect(within(diksi).getByRole('button', { name: 'Setujui' })).toBeTruthy();
+  fireEvent.click(within(diksi).getByRole('button', { name: 'Kembalikan' }));
+  const tombol = within(diksi).getByRole('button', { name: 'Kirim pengembalian' }) as HTMLButtonElement;
   expect(tombol.disabled).toBe(true);
-  fireEvent.change(within(diksi).getByLabelText('Catatan'), { target: { value: 'ejaan' } });
+  fireEvent.change(within(diksi).getByLabelText('Apa yang perlu diperbaiki?'), { target: { value: 'ejaan' } });
   expect(tombol.disabled).toBe(false);
   fireEvent.click(tombol);
   await waitFor(async () => expect((await m.diksi.daftarRevisi('beranda.judul'))[0]!.status).toBe('dikembalikan'));
