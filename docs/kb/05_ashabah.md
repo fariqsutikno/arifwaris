@@ -78,11 +78,11 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R05-1 | Ashabah mengambil sisa; laki-laki terdekat | H | Al-Bukhari no. 6732; Muslim no. 1615 | «فما بقي فلأولى رجل ذكر» |
+| R05-1 | Ashabah mengambil sisa; laki-laki terdekat | H | Al-Bukhari no. 6732; Muslim no. 1615 · hadits:bukhari:6732 hadits:muslim:1615 | «فما بقي فلأولى رجل ذكر» |
 | R05-2 | Urutan ashabah menurut [SYF] | RDH | Bab 2, Bayan al-'Ashabat | «ويقدم منهم الأبناء، ثم بنوهم وإن سفلوا، ثم الأب، ثم الجد والإخوة للأبوين أو للأب، وهم في درجة... ويسقط ابن الأخ بالجد العالي سقوطه بالأدنى» |
 | R05-3 | Kaidah jihah → darajah → quwwah | RDH | Bab 2, far' | «البعيد من الجهة المقدمة، يقدم على القريب من الجهة المؤخرة... وإذا اتحدت الجهة، قدم الأقرب. فإن استويا في القرب، قدم من يدلي بالأبوين على من يدلي بالأب» |
 | R05-4 | Tiga jenis ashabah | RDH | Bab 1 | «وقد يقال: العصبة ثلاثة: عصبة بنفسه، وبغيره، ومع غيره» |
-| R05-5 | Saudari bersama anak pr menjadi ashabah | H + RDH | Al-Bukhari no. 6736 · RDH Bab 1 | RDH: «الأخوات للأبوين وللأب مع البنات وبنات الابن عصبات كالإخوة»; saudari kandung ma'al ghair menggugurkan saudara sebapak: «وسقط الأخ بها كسقوطه بالأخ للأبوين» |
+| R05-5 | Saudari bersama anak pr menjadi ashabah | H + RDH | Al-Bukhari no. 6736 · RDH Bab 1 · hadits:bukhari:6736 | RDH: «الأخوات للأبوين وللأب مع البنات وبنات الابن عصبات كالإخوة»; saudari kandung ma'al ghair menggugurkan saudara sebapak: «وسقط الأخ بها كسقوطه بالأخ للأبوين» |
 | R05-6 | Anak saudara berbeda dengan saudara dalam 7 hal | RDH | Bab 1, far' Bani al-Ikhwah | Antara lain: tidak mengurangi ibu, gugur oleh kakek, tidak masuk musyarrakah, tidak mengashabahkan saudarinya. |
 | R05-7 | Ashabah wala' = ashabah bi nafsihi mu'tiq | RDH | Bab 2, Fashl 'Ashabat al-Mu'tiq | «فالاستحقاق لعصباته من النسب الذين يتعصبون بأنفسهم... فلا ترث النساء بالولاء إلا ممن أعتقن» |
 | R05-8 | Tidak ada fardh dalam wala' | RDH | Bab 2 | «وفي الولاء لا يمكن توريثه بالفرضية» |

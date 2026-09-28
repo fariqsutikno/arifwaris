@@ -18,8 +18,8 @@ tags: [rujukan, referensi, takhrij, dalil, metodologi]
 Kolom "Sumber" boleh menyertakan token berikut di samping teks manusiawi (judul kitab, juz/halaman cetak); satu baris boleh punya lebih dari satu token:
 | Token | Contoh | URL |
 |---|---|---|
-| `shamela:<book_id>/<page_id>` | `shamela:5423/5974` | `https://shamela.ws/book/<book_id>/<page_id>` |
-| `hadits:<koleksi>:<nomor-standar>` | `hadits:bukhari:6732` | `https://sunnah.com/<koleksi>:<nomor>` |
+| `shamela:<book_id>/<page_id>` | shamela:5423/5974 | `https://shamela.ws/book/<book_id>/<page_id>` |
+| `hadits:<koleksi>:<nomor-standar>` | hadits:bukhari:6732 | `https://sunnah.com/<koleksi>:<nomor>` |
 | `quran:<surah>:<ayat>` atau `quran:<surah>:<ayat>-<ayat>` | `quran:4:11`, `quran:4:11-12` | `https://quran.com/<surah>/<ayat>` (rentang: `.../<ayat>-<ayat>`) |
 | `islamqa:<id>` | `islamqa:12345` | `https://islamqa.info/ar/answers/<id>` |
 
@@ -44,21 +44,21 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 
 | Hadits | Takhrij | Status |
 |---|---|---|
-| «ألحقوا الفرائض بأهلها، فما بقي فلأولى رجل ذكر» | Al-Bukhari 6732; Muslim 1615 | Muttafaq 'alaih |
-| «لا يرث المسلم الكافر، ولا الكافر المسلم» | Al-Bukhari 6764; Muslim 1614 | Muttafaq 'alaih |
-| «للابنة النصف، ولابنة الابن السدس تكملة الثلثين...» | Al-Bukhari 6736 | Shahih |
-| «الثلث، والثلث كثير» | Al-Bukhari 2742; Muslim 1628 | Muttafaq 'alaih |
-| «إنما الولاء لمن أعتق» | Al-Bukhari 2156; Muslim 1504 | Muttafaq 'alaih |
-| «ابن أخت القوم منهم» | Al-Bukhari 3528; Muslim 1059 | Muttafaq 'alaih |
-| «فلا وصية لوارث» | Abu Dawud 2870; at-Tirmidzi 2120; Ibnu Majah 2713 | Hasan shahih (at-Tirmidzi) |
-| Nenek diberi 1/6 (hadits Qabishah) | Abu Dawud 2894; at-Tirmidzi 2100; Ibnu Majah 2724 | Diperselisihkan sanadnya; diamalkan ahli ilmu |
-| «الخال وارث من لا وارث له» | Abu Dawud 2899; at-Tirmidzi 2103; Ibnu Majah 2737 | Hasan (at-Tirmidzi); dilemahkan Ibnu Ma'in dan al-Baihaqi (dinukil Ibnu 'Utsaimin) |
-| «القاتل لا يرث» | At-Tirmidzi 2109; Ibnu Majah 2645 | Dibicarakan sanadnya; dikuatkan riwayat lain dan amal |
-| «إذا استهل المولود ورث» | Abu Dawud 2920 | Shahih menurut sebagian muhaddits |
-| «قضى رسول الله ﷺ بالدين قبل الوصية» | At-Tirmidzi 2094; Ibnu Majah 2715 | Sanad lemah; hukumnya tetap berdasar ijma' |
-| «الولاء لحمة كلحمة النسب» | Ibnu Hibban 4950; al-Hakim 4/341 | Marfu'-nya diperselisihkan; al-Baihaqi: yang benar mursal dari al-Hasan |
-| «تعلموا الفرائض...» | Ibnu Majah 2719 | Dha'if |
-| «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 | Shahih |
+| «ألحقوا الفرائض بأهلها، فما بقي فلأولى رجل ذكر» | Al-Bukhari 6732; Muslim 1615 · hadits:bukhari:6732 hadits:muslim:1615 | Muttafaq 'alaih |
+| «لا يرث المسلم الكافر، ولا الكافر المسلم» | Al-Bukhari 6764; Muslim 1614 · hadits:bukhari:6764 hadits:muslim:1614 | Muttafaq 'alaih |
+| «للابنة النصف، ولابنة الابن السدس تكملة الثلثين...» | Al-Bukhari 6736 · hadits:bukhari:6736 | Shahih |
+| «الثلث، والثلث كثير» | Al-Bukhari 2742; Muslim 1628 · hadits:bukhari:2742 hadits:muslim:1628 | Muttafaq 'alaih |
+| «إنما الولاء لمن أعتق» | Al-Bukhari 2156; Muslim 1504 · hadits:bukhari:2156 hadits:muslim:1504 | Muttafaq 'alaih |
+| «ابن أخت القوم منهم» | Al-Bukhari 3528; Muslim 1059 · hadits:bukhari:3528 hadits:muslim:1059 | Muttafaq 'alaih |
+| «فلا وصية لوارث» | Abu Dawud 2870; at-Tirmidzi 2120; Ibnu Majah 2713 · hadits:abudawud:2870 hadits:tirmidhi:2120 hadits:ibnmajah:2713 | Hasan shahih (at-Tirmidzi) |
+| Nenek diberi 1/6 (hadits Qabishah) | Abu Dawud 2894; at-Tirmidzi 2100; Ibnu Majah 2724 · hadits:abudawud:2894 hadits:tirmidhi:2100 hadits:ibnmajah:2724 | Diperselisihkan sanadnya; diamalkan ahli ilmu |
+| «الخال وارث من لا وارث له» | Abu Dawud 2899; at-Tirmidzi 2103; Ibnu Majah 2737 · hadits:abudawud:2899 hadits:tirmidhi:2103 hadits:ibnmajah:2737 | Hasan (at-Tirmidzi); dilemahkan Ibnu Ma'in dan al-Baihaqi (dinukil Ibnu 'Utsaimin) |
+| «القاتل لا يرث» | At-Tirmidzi 2109; Ibnu Majah 2645 · hadits:tirmidhi:2109 hadits:ibnmajah:2645 | Dibicarakan sanadnya; dikuatkan riwayat lain dan amal |
+| «إذا استهل المولود ورث» | Abu Dawud 2920 · hadits:abudawud:2920 | Shahih menurut sebagian muhaddits |
+| «قضى رسول الله ﷺ بالدين قبل الوصية» | At-Tirmidzi 2094; Ibnu Majah 2715 · hadits:tirmidhi:2094 hadits:ibnmajah:2715 | Sanad lemah; hukumnya tetap berdasar ijma' |
+| «الولاء لحمة كلحمة النسب» | Ibnu Hibban 4950; al-Hakim 4/341 · shamela:148486/7081 (as-Sunan al-Kubra al-Baihaqi) | Marfu'-nya diperselisihkan; al-Baihaqi: yang benar mursal dari al-Hasan |
+| «تعلموا الفرائض...» | Ibnu Majah 2719 · hadits:ibnmajah:2719 | Dha'if |
+| «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 · hadits:ibnmajah:154 | Shahih |
 
 ## 17.4 Titik yang Masih Ditandai `[perlu verifikasi lanjut]`
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:

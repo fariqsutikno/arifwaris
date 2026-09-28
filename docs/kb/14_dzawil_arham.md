@@ -140,8 +140,8 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
 | R14-1 | Dasar pewarisan kerabat | Q | Al-Anfal 75 quran:8:75; Al-Ahzab 6 quran:33:6 | «وأولو الأرحام بعضهم أولى ببعض في كتاب الله» |
-| R14-2 | Paman dari ibu mewarisi | H | Abu Dawud no. 2899; at-Tirmidzi no. 2103 (hasan); Ibnu Majah no. 2737, dari al-Miqdam | «الخال وارث من لا وارث له» |
-| R14-3 | Anak saudari termasuk kaumnya | H | Al-Bukhari no. 3528; Muslim no. 1059, dari Anas | «ابن أخت القوم منهم» |
+| R14-2 | Paman dari ibu mewarisi | H | Abu Dawud no. 2899; at-Tirmidzi no. 2103 (hasan); Ibnu Majah no. 2737, dari al-Miqdam · hadits:abudawud:2899 hadits:tirmidhi:2103 hadits:ibnmajah:2737 | «الخال وارث من لا وارث له» |
+| R14-3 | Anak saudari termasuk kaumnya | H | Al-Bukhari no. 3528; Muslim no. 1059, dari Anas · hadits:bukhari:3528 hadits:muslim:1059 | «ابن أخت القوم منهم» |
 | R14-4 | Definisi dan sepuluh golongan | RDH | Bab 1, Fashl Dzawil Arham | «كل قريب ليس بذي فرض ولا عصبة... فهم عشرة أصناف» |
 | R14-5 | Mewarisi ketika baitul mal tidak tegak | RDH | Idem | Lihat blok KHILAF 14.3 (kutipan lengkap). |
 | R14-6 | Metode tanzil | RDH | Bab 8 | «قلت: الأصح الأقيس: مذهب أهل التنزيل» |

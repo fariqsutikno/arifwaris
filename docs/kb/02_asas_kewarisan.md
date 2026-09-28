@@ -82,12 +82,12 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R02-1 | Sebab waris empat (termasuk jihat al-Islam) | RDH | Bab 1, Fashl Asbab at-Tauris | «أسباب التوريث أربعة: قرابة، ونكاح، وولاء، وجهة الإسلام... كان ماله لبيت المال يرثه المسلمون بالعصوبة... هذا هو الصحيح المشهور» |
 | R02-2 | Penghalang waris lima | RDH | Bab 5, Bayan Mani' al-Mirats | «هو خمسة... الأول: اختلاف الدين... الثاني: الرق... الثالث: القتل... الرابع: استبهام وقت الموت... الخامس: الدور» |
 | R02-3 | Talak ba'in di maradh al-maut | RDH | Bab 1, akhir Fashl Asbab | «وذلك في المبتوتة في مرض الموت إذا قلنا بالقديم: إنها ترث» → qaul jadid: tidak mewarisi. |
-| R02-4 | Muslim dan kafir tidak saling mewarisi | H + RDH | Al-Bukhari no. 6764; Muslim no. 1614, dari Usamah bin Zaid · RDH Bab 5 | H: «لا يرث المسلم الكافر، ولا الكافر المسلم». RDH: «ولا فرق بين النسيب والمعتق والزوج، ولا بين من يسلم قبل القسمة أم لا» |
+| R02-4 | Muslim dan kafir tidak saling mewarisi | H + RDH | Al-Bukhari no. 6764; Muslim no. 1614, dari Usamah bin Zaid · RDH Bab 5 · hadits:bukhari:6764 hadits:muslim:1614 | H: «لا يرث المسلم الكافر، ولا الكافر المسلم». RDH: «ولا فرق بين النسيب والمعتق والزوج، ولا بين من يسلم قبل القسمة أم لا» |
 | R02-5 | Sesama kafir beda millah saling mewarisi | RDH | Bab 5, mas'alah 2 | «يرث الكفار بعضهم بعضا، كاليهودي من النصراني... والصحيح المعروف، هو الأول» |
 | R02-6 | Murtad tidak mewarisi dan tidak diwarisi | RDH | Bab 5, mas'alah 3 | «لا يرث المرتد أحدا، ولا يرثه أحد، وماله فيء سواء كسبه في الإسلام أو في الردة» |
 | R02-7 | Budak tidak mewarisi dan tidak diwarisi | RDH | Bab 5, mani' 2 | «فلا يرث رقيق وإن عتق قبل القسمة، ولا يورث رقيق إذ لا ملك له» |
-| R02-8 | Pembunuh tidak mewarisi | H | At-Tirmidzi no. 2109; Ibnu Majah no. 2645, dari Abu Hurairah | «القاتل لا يرث». Diperkuat riwayat 'Umar dalam Muwaththa' Malik: «ليس لقاتل شيء». |
+| R02-8 | Pembunuh tidak mewarisi | H | At-Tirmidzi no. 2109; Ibnu Majah no. 2645, dari Abu Hurairah · hadits:tirmidhi:2109 hadits:ibnmajah:2645 | «القاتل لا يرث». Diperkuat riwayat 'Umar dalam Muwaththa' Malik: «ليس لقاتل شيء». |
 | R02-9 | Semua jenis pembunuhan menghalangi | RDH | Bab 5, mani' 3 | «والمذهب وظاهر نص الشافعي في الصور كلها: منع الإرث». Termasuk khatha' dan tasabbub: «وسواء كان القتل عمدا أو خطأ» |
-| R02-10 | Wala' untuk yang memerdekakan | H | Al-Bukhari no. 2156; Muslim no. 1504, dari 'Aisyah (kisah Barirah) | «إنما الولاء لمن أعتق» |
-| R02-11 | Wala' seperti nasab | H | Ibnu Hibban dan al-Hakim, dari Ibnu 'Umar | «الولاء لحمة كلحمة النسب، لا يباع ولا يوهب». Ibnu Hibban no. 4950 (al-Ihsan 11/326); al-Hakim 4/341. Al-Baihaqi menukil bahwa sanad marfu'-nya keliru, yang benar mursal dari al-Hasan. |
+| R02-10 | Wala' untuk yang memerdekakan | H | Al-Bukhari no. 2156; Muslim no. 1504, dari 'Aisyah (kisah Barirah) · hadits:bukhari:2156 hadits:muslim:1504 | «إنما الولاء لمن أعتق» |
+| R02-11 | Wala' seperti nasab | H | Ibnu Hibban dan al-Hakim, dari Ibnu 'Umar | «الولاء لحمة كلحمة النسب، لا يباع ولا يوهب». Ibnu Hibban no. 4950 (al-Ihsan 11/326); al-Hakim 4/341. Al-Baihaqi menukil bahwa sanad marfu'-nya keliru, yang benar mursal dari al-Hasan (dikonfirmasi di *as-Sunan al-Kubra* al-Baihaqi, ia sendiri menyebut jalur-jalur lain semuanya dha'if) · shamela:148486/7081 |
 | R02-12 | Suami-istri saling mewarisi | Q | An-Nisa' 12 quran:4:12 | «ولكم نصف ما ترك أزواجكم...» |
