@@ -10,7 +10,7 @@ sumber: [Al-Faraidh al-Muyassar (Alukah), Tashil al-Faraidh (Ibn Utsaimin)]
 Knowledge base ilmu faraidh untuk sistem AI platform waris. Disusun dari dua sumber: **Al-Faraidh al-Muyassar** (bercorak didaktis, mengikuti jumhur) dan **Tashil al-Faraidh** karya Syaikh Muhammad bin Shalih al-Utsaimin (bercorak tahqiq dan tarjih, bermazhab Hanbali dengan tarjih mandiri). Keduanya kini hanya pembanding; hukum yang dipakai sistem adalah [SYF].
 
 ## Konvensi Wajib bagi AI
-1. **Default perhitungan = madzhab Syafi'i** (menyesuaikan konteks mayoritas Indonesia). Setiap titik khilaf diberi blok `KHILAF` berisi pendapat Syafi'i (ditandai **[SYF]**, satu-satunya yang dipakai sistem) dan pendapat lain yang dicatat hanya sebagai perbandingan, disebut dengan nama ulama atau kitabnya.
+1. **Default perhitungan = madzhab Syafi'i [SYF]** (konteks mayoritas Indonesia). Sistem juga menjalankan **[HNB]** Hanbali, **[HNF]** Hanafi, **[MLK]** Maliki sebagai *overlay*: hanya titik yang berbeda dari [SYF]. Setiap titik khilaf punya kode `Kxx-y` dan satu baris di **bab 18 (matriks khilaf)**; blok `KHILAF` di bab 01–14 tetap menjelaskan dalilnya. Status tiap sel: `primer` (dicek ke teks madzhab) atau `sekunder` (nukilan kitab lain: Lahim, Ithraa, Ibnu 'Utsaimin). Pendapat perorangan (Ibnu 'Utsaimin dsb.) tetap perbandingan, bukan ruleset.
 2. **Rujukan verifikasi madzhab Syafi'i**: disusun dari pernyataan eksplisit kitab mu'tabar — **Raudhah ath-Thalibin wa 'Umdah al-Muftin karya Imam an-Nawawi** (dicek langsung dari teks Kitab al-Fara'idh untuk titik-titik kunci: radd, dzawil arham, wala', jadd wal-ikhwah), serta fatwa lembaga berbasis Syafi'i (Dar al-Ifta Mesir) untuk titik lain (talak di masa sakit). Titik yang belum ditemukan rujukan tegas ditandai `[perlu verifikasi lanjut]`.
 2. **Urutan kerja standar** setiap kasus: (a) hak-hak tirkah → (b) validasi syarat dan mawani' → (c) daftar ahli waris → (d) hajb → (e) tentukan furudh dan ashabah → (f) ashlul mas'alah → (g) 'aul atau radd → (h) tashih → (i) konversi ke nominal.
 3. **Pecahan dikerjakan dalam bilangan bulat (saham)**, bukan desimal, sampai langkah akhir.
@@ -33,8 +33,13 @@ Knowledge base ilmu faraidh untuk sistem AI platform waris. Disusun dari dua sum
 | 10 | 10_tashih.md | Nisab arba' dan inkisar |
 | 11 | 11_qismah_dan_takharuj.md | Konversi ke nominal, takharuj |
 | 12 | 12_munasakhat.md | Kematian berantai |
-| 13 | 13_kasus_khusus.md | Haml, mafqud, khuntsa, gharqa, murtad, anak li'an/zina, laqith |
+| 13 | 13_kasus_khusus.md | Prinsip taqdir & mauquf, murtad, anak li'an/zina, laqith |
+| 13a | 13a_haml.md | Janin |
+| 13b | 13b_mafqud.md | Orang hilang |
+| 13c | 13c_khuntsa.md | Khuntsa musykil |
+| 13d | 13d_gharqa.md | Mati bersamaan (gharqa, hadma, harqa) |
 | 14 | 14_dzawil_arham.md | Kerabat non-furudh non-ashabah |
 | 15 | 15_glosarium.md | Istilah |
 | 16 | 16_kasus_uji.md | Kasus uji dengan jawaban terverifikasi |
 | 17 | 17_daftar_rujukan.md | Daftar rujukan, takhrij hadits, metodologi, jejak koreksi |
+| 18 | 18_matriks_khilaf.md | Matriks khilaf SYF/HNB/HNF/MLK, kode `Kxx-y` |

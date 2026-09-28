@@ -6,12 +6,16 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 
 ## Sumber kebenaran
 - `docs/kb/00–17_*.md` adalah SATU-SATUNYA sumber hukum fikih. Jangan ambil aturan dari pengetahuan umum.
-- Madzhab: **Syafi'i [SYF] saja**. Pendapat lain di KB (Ibnu 'Utsaimin, Al-Fara'idh al-Muyassar, Hanbali, dst.) hanya perbandingan, tidak diimplementasikan.
+- Madzhab: **multi-madzhab** (keputusan pengguna 2026-09-29). **[SYF] = default** dan satu-satunya yang
+  terverifikasi ke teks primer (Raudhah). [HNB], [HNF], [MLK] = ruleset overlay: hanya titik yang berbeda,
+  masing-masing baris di `docs/kb/18_matriks_khilaf.md`. Posisi madzhab yang hanya bersumber nukilan
+  (Lahim, Ithraa, Ibnu 'Utsaimin) berstatus `sekunder` dan UI wajib menampilkannya "menurut nukilan <kitab>".
+- Tarjih Lahim/Ithraa condong Hanbali: JANGAN pernah dipakai sebagai posisi [SYF].
 - Setiap cabang kode fikih WAJIB diberi anotasi rujukan, contoh: `// [R09-7] radd, bab 9.4`.
 - Aturan yang tidak ada di KB, atau berstatus `[perlu verifikasi lanjut]` (bab 17.4), JANGAN dikarang.
   Kembalikan `TIDAK_DIDUKUNG` / tandai `blocked` dan beri tahu pengguna.
-- KHI = fase 4, ruleset terpisah (`docs/kb-khi/`), selalu ditandai "hukum positif, bukan fikih [SYF]".
-  Jangan campur ke ruleset `syafii`.
+- KHI = fase 4, ruleset terpisah (`docs/kb-khi/`), selalu ditandai "hukum positif, bukan fikih".
+  Bukan overlay madzhab; jangan campur ke ruleset fikih.
 
 ## Prinsip engine (tidak boleh dilanggar)
 1. **Deterministik**: fungsi murni, tanpa I/O, `Date`, `Math.random`.
@@ -37,7 +41,7 @@ packages/engine    types, rulesets/syafii, pipeline stages, orchestrators
 packages/content   EntriRujukan dari tabel "Dasar dan Rujukan" KB, glosarium, materi, bank soal
 packages/explain   LangkahJejak → narasi Indonesia
 apps/web           (belakangan) UI
-docs/kb            knowledge base fikih 00–17
+docs/kb            knowledge base fikih 00–18 (18 = matriks khilaf antar-madzhab)
 docs/design        dokumen desain (baca engine-contract.md sebelum menulis kode engine)
 ```
 
@@ -94,4 +98,6 @@ Contoh buruk: `// tambah 1 ke total` di atas `total += 1`.
 
 ## Titik blocked (jangan diimplementasikan sebagai default)
 - R13-5 (batas kehamilan), R13-14 (laqith), R01-7 (ijazah wasiat), R11-3 (takharuj): perlu verifikasi.
-- Bab 13 haml & mafqud: default di KB bukan [SYF]; rincian [SYF] belum ada. Tunggu KB dilengkapi (fase 2).
+- Haml [SYF] (bab 13a): jumlah janin tak dibatasi → ashabah yang berbagi dengan haml tidak diberi apa pun;
+  model 6 taqdir hanya untuk [HNB]. Batas kehamilan maksimal tetap input hakim (R13-5).
+- Kombinatorik taqdir: batas keras jumlah "dunia" (engine-contract); lewat batas → `PERLU_INPUT`, bukan macet.
