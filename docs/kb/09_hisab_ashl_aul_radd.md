@@ -56,7 +56,7 @@ Contoh: suami, 2 saudari kandung → ashl 6: suami 3, saudari 4 → 'aul ke **7*
 
 **Syarat**: ada ashabul furudh, ada sisa, tidak ada ashabah.
 
-> **KHILAF — Siapa yang menerima radd**
+> **KHILAF K09-1 — Siapa yang menerima radd**
 > Dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Kitab al-Fara'idh: **"وَقَوْلُنَا: إِنَّ الصَّحِيحَ أَنَّهُمْ لَا يَرِثُونَ وَلَا يُرَدُّ، هُوَ فِيمَا إِذَا اسْتَقَامَ أَمْرُ بَيْتِ الْمَالِ، بِأَنْ وَلِيَ إِمَامٌ عَادِلٌ"** — pendapat asal (tidak ada radd) hanya berlaku ketika baitul mal tegak dengan adanya imam yang adil.
 > - **Asal madzhab [SYF] dan Maliki**: sisa ke **baitul mal**, dengan syarat baitul mal **teratur** (ada imam/pemerintahan adil yang mengelolanya sesuai syariat).
 > - **[SYF] — pendapat al-ashah menurut muhaqqiqin madzhab**, dinukil eksplisit oleh Nawawi: *"هَذَا الثَّانِي، هُوَ الْأَصَحُّ أَوِ الصَّحِيحُ عِنْدَ مُحَقِّقِي أَصْحَابِنَا"*, dan disebutkan pula: **"وَعَلَيْهِ الْفَتْوَى الْيَوْمَ فِي الْأَمْصَارِ"** (dan inilah fatwa yang berlaku di setiap negeri pada masanya) — bahwa ketika baitul mal **tidak** tegak/tidak berjalan sesuai syariat, **radd berlaku** kepada ashabul furudh (kecuali suami/istri).

@@ -9,11 +9,11 @@ tags: [jadd, ikhwah, muqasamah, tsuluts, sudus, muaddah, akdariyyah, khilaf]
 **Cakupan**: kakek shahih bersama saudara/saudari **kandung atau sebapak**. (Saudara seibu terhijab kakek secara ijma'.)
 
 ## 8.1 Titik Khilaf Induk [R08-1] [R08-6] [R08-7]
-> **KHILAF — Apakah kakek menghijab saudara kandung/sebapak?**
+> **KHILAF K05-1/K08-1 — Apakah kakek menghijab saudara kandung/sebapak?**
 > - **Pendapat 1 — [SYF] (default)**: Zaid bin Tsabit, Ali; diikuti **Syafi'i, Malik, dan riwayat masyhur Ahmad**, Abu Yusuf, Muhammad. Dinukil eksplisit: *"وذهب إليه الشافعي ومالك وأحمد في المشهور عنه أنه لا يحجبهم"* (Syafi'i, Malik, dan riwayat masyhur Ahmad berpendapat kakek **tidak** menghijab saudara). **Saudara tetap mewarisi bersama kakek** dengan rincian 8.2–8.5 (madzhab Zaid).
 > - **Pendapat 2 — Ibnu 'Utsaimin (rajih menurut beliau, bukan pendapat Syafi'i)**: Abu Bakr ash-Shiddiq, Abu Musa, Ibnu Abbas, dan sekitar 14 sahabat; Abu Hanifah; pilihan Ibnu Taimiyah dan Ibnul Qayyim. **Kakek = ayah**: menghijab semua saudara secara mutlak. Seluruh rincian muqasamah, mu'addah, akdariyyah **tidak diperlukan** menurut pendapat ini. Disediakan sebagai opsi, bukan default.
 >
-> **Aturan sistem**: sistem hanya memakai [SYF] → jalankan 8.2–8.5. Pendapat 2 dicatat sebagai perbandingan, tidak diimplementasikan.
+> **Aturan sistem**: [SYF], [HNB], [MLK] → jalankan 8.2–8.5. [HNF] → pendapat 2 (kakek = ayah), lihat bab 18 K05-1. Ibnu 'Utsaimin tetap pembanding.
 
 Dalil pendapat 2 (ringkas, untuk pembanding): kakek disebut "ayah" dalam Al-Qur'an (مِّلَّةَ أَبِيكُمْ إِبْرَاهِيمَ); ia menghijab saudara seibu secara ijma', maka menurut pendapat ini ia lebih utama menghijab saudara kandung; hadits «فما بقي فلأولى رجل ذكر» dan kakek lebih dekat (jihah ubuwwah).
 

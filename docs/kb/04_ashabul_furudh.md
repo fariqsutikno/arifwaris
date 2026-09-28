@@ -83,10 +83,10 @@ Dalil: hadits al-Mughirah dan Muhammad bin Maslamah, Rasulullah ﷺ memberi nene
 - **Ayah** menghijab nenek dari pihak ayah (yang bernasab melalui dia); **tidak** menghijab nenek dari pihak ibu.
 - **Kakek** menghijab nenek yang melalui dia (ibunya kakek); tidak menghijab ibunya ayah.
 - **Nenek yang lebih dekat menghijab nenek yang lebih jauh**:
-  > **KHILAF (2 lawan 2)** — **[SYF] dan Maliki (default)**: nenek dekat dari pihak **ibu** menghijab nenek jauh dari pihak ayah, tetapi nenek dekat dari pihak **ayah** tidak menghijab nenek jauh dari pihak ibu; keduanya berbagi 1/6 bila sama-sama tidak terhijab.
+  > **KHILAF K04-1 (2 lawan 2)** — **[SYF] dan Maliki (default)**: nenek dekat dari pihak **ibu** menghijab nenek jauh dari pihak ayah, tetapi nenek dekat dari pihak **ayah** tidak menghijab nenek jauh dari pihak ibu; keduanya berbagi 1/6 bila sama-sama tidak terhijab.
   > **Hanafi & Hanbali**: nenek yang lebih dekat menghijab yang lebih jauh secara mutlak, dari pihak mana pun, disediakan sebagai opsi.
 
-> **KHILAF – Nenek bersama anaknya (ummul ab bersama ab)** — **[SYF] dan jumhur (default)**: terhijab oleh ayah. **Sebagian riwayat Hanbali (dan Ibnu 'Utsaimin)**: ummul ab tetap mewarisi bersama anaknya (ayah), berdasarkan atsar Ibnu Mas'ud; dicatat sebagai perbandingan.
+> **KHILAF K04-2 – Nenek bersama anaknya (ummul ab bersama ab)** — **[SYF] dan jumhur (default)**: terhijab oleh ayah. **Sebagian riwayat Hanbali (dan Ibnu 'Utsaimin)**: ummul ab tetap mewarisi bersama anaknya (ayah), berdasarkan atsar Ibnu Mas'ud; dicatat sebagai perbandingan.
 
 ## 4.9 Saudara/Saudari Seibu (Awlad al-Umm) [R04-16] [R04-17]
 | Kondisi | Bagian |

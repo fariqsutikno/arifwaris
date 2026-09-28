@@ -46,7 +46,7 @@ Dalil wasiat: hadits Sa'd, «الثُّلُثُ، وَالثُّلُثُ كَث�
 
 Catatan tertib: meski dalam ayat wasiat disebut lebih dulu dari hutang, **hutang didahulukan secara ijma'** (atsar Ali: قضى رسول الله ﷺ بالدين قبل الوصية). Wasiat disebut lebih dulu untuk menekankan kepedulian padanya karena ia tanpa imbalan dan sering dilalaikan ahli waris.
 
-> **KHILAF – Ijazah (persetujuan) ahli waris atas wasiat > 1/3 atau untuk ahli waris**
+> **KHILAF K01-1 – Ijazah (persetujuan) ahli waris atas wasiat > 1/3 atau untuk ahli waris**
 > - **[SYF] (default)**: ijazah hanya sah dan mengikat jika diberikan **setelah kematian** pewaris. Sebelum itu (termasuk saat maradh al-maut) dianggap janji semata, ahli waris tetap berhak menariknya.
 > - **Ibnu 'Utsaimin** (pembanding): ijazah yang diberikan saat pewaris dalam **sakit menjelang wafat** (*maradh al-maut*) sudah sah dan tidak bisa ditarik; jika di luar itu tidak sah. (Pendapat Malik, pilihan Ibnu Taimiyah.)
 

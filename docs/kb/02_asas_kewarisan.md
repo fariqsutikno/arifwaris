@@ -39,7 +39,7 @@ Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**
 | **Ikhtilaf ad-din** (beda agama) | Muslim tidak mewarisi kafir, dan sebaliknya. | «لَا يَرِثُ الْمُسْلِمُ الْكَافِرَ، وَلَا الْكَافِرُ الْمُسْلِمَ» (متفق عليه) |
 
 ### Rincian pembunuhan yang menghalangi [R02-9]
-> **KHILAF – Jenis pembunuhan**
+> **KHILAF K02-1 – Jenis pembunuhan**
 > - **[SYF] (default)**: **semua bentuk pembunuhan** menghalangi warisan, termasuk yang berhak (qishash, hadd, membela diri, pelaksanaan hukum oleh hakim), karena keumuman hadits «لَيْسَ لِلْقَاتِلِ مِنَ الْمِيرَاثِ شَيْءٌ» tanpa perincian.
 > - **Hanabilah**: hanya pembunuhan **tanpa hak** yang mewajibkan qishash, diyat, atau kafarat (termasuk khatha') yang menghalangi.
 > - **Malikiyyah**: hanya pembunuhan sengaja ('amd) dan zalim; khatha' tidak menghalangi dari harta, tapi menghalangi dari diyat.
@@ -47,7 +47,7 @@ Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**
 
 ### Rincian beda agama [R02-4] [R02-5] [R02-6]
 - Orang kafir dengan sesama kafir beda agama:
-  > **KHILAF** — Jumhur (Hanafi, Syafi'i): kekafiran satu millah, saling mewarisi. Hanbali dan Maliki: beda millah (Yahudi, Nasrani, dll.) tidak saling mewarisi. *Tidak relevan bagi platform muslim; cukup ditandai.*
+  > **KHILAF K02-2** — Jumhur (Hanafi, Syafi'i): kekafiran satu millah, saling mewarisi. Hanbali dan Maliki: beda millah (Yahudi, Nasrani, dll.) tidak saling mewarisi. *Tidak relevan bagi platform muslim; cukup ditandai.*
 - **Pengecualian yang dibahas ulama** (Hanbali): (1) kafir yang masuk Islam sebelum tirkah dibagi; (2) wala'.
   > **Ibnu 'Utsaimin** (pembanding): yang benar, **tidak ada pengecualian**; beda agama menghalangi mutlak, termasuk pada wala', karena keumuman dalil.
   > **Default sistem**: beda agama menghalangi mutlak; status agama dinilai **pada saat kematian** pewaris.
@@ -56,7 +56,7 @@ Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**
 
 ## 2.5 Kasus Talak di Maradh al-Maut (Tuhmah) [R02-3]
 Jika suami menalak ba'in istrinya dalam sakit menjelang wafat dengan dugaan hendak menghalanginya dari waris, para ulama berbeda pendapat apakah istri tetap mewarisi.
-> **KHILAF — Istri ditalak ba'in tanpa ridhanya saat maradh al-maut**
+> **KHILAF K02-3 — Istri ditalak ba'in tanpa ridhanya saat maradh al-maut**
 > - **[SYF] qaul jadid (default)**: istri yang ditalak ba'in **tidak mewarisi**, karena ikatan nikah sudah terputus. Raudhah menyebut pewarisan *al-mabtutah fi maradh al-maut* hanya **"jika kita mengambil qaul qadim"** [R02-3], yang berarti qaul jadid (mu'tamad) menafikannya.
 > - **[SYF] qaul qadim** (opsi): istri tetap mewarisi (sejalan dengan jumhur). Fatwa Dar al-Ifta Mesir yang memberi warisan selama masih iddah mengikuti arah ini (dan hukum positif Mesir), bukan qaul jadid.
 > - **Hanabilah**: istri tetap mewarisi meski iddah telah selesai, selama belum menikah lagi.

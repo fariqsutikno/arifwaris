@@ -32,7 +32,7 @@ Haml → `13a_haml.md` · Mafqud → `13b_mafqud.md` · Khuntsa → `13c_khuntsa
 ## 13.5 Murtad [R13-13]
 - Murtad **tidak mewarisi** siapa pun, muslim maupun kafir.
 - Harta murtad yang mati dalam kemurtadannya:
-  > **KHILAF**
+  > **KHILAF K13-1**
   > - **Malik, Syafi'i, masyhur Hanabilah (default)**: menjadi **fai'** untuk baitul mal.
   > - Abu Hanifah: harta yang diperoleh saat masih Islam diwarisi ahli waris muslimnya.
   > - **Ibnu 'Utsaimin**: beda agama menghalangi mutlak tanpa pengecualian, sehingga ahli waris muslim tidak mewarisinya (sejalan dengan default).
@@ -43,7 +43,7 @@ Haml → `13a_haml.md` · Mafqud → `13b_mafqud.md` · Khuntsa → `13c_khuntsa
 - Tidak ada saling mewarisi dengan **ayah biologis** dan kerabat ayah.
 - Saling mewarisi dengan **ibu** dan kerabat ibu. Saudara-saudara dari ibunya adalah saudara seibu baginya.
 - Ashabah-nya:
-  > **KHILAF** — **[SYF] dan Malik (default, konsisten dengan bab 09)**: tidak ada ashabah baginya; sisa harta dikembalikan dengan **radd** kepada ibu/saudara seibu (mengikuti kaidah radd Syafi'i untuk kondisi baitul mal tidak teratur), atau ke baitul mal jika baitul mal syar'i berjalan.
+  > **KHILAF K13-2** — **[SYF] dan Malik (default, konsisten dengan bab 09)**: tidak ada ashabah baginya; sisa harta dikembalikan dengan **radd** kepada ibu/saudara seibu (mengikuti kaidah radd Syafi'i untuk kondisi baitul mal tidak teratur), atau ke baitul mal jika baitul mal syar'i berjalan.
   > **Hanabilah (satu riwayat) & Hanafi**: **ashabah ibunya** menjadi ashabahnya, disediakan sebagai opsi.
 
 ## 13.7 Laqith (Anak Temuan) [R13-14]
