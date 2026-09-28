@@ -19,7 +19,7 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 ### Syarat, mawani', hak tirkah
 | Kode | Titik | [SYF] | [HNB] | [HNF] | [MLK] | Bab |
 |---|---|---|---|---|---|---|
-| K01-1 | Ijazah wasiat > 1/3 | hanya setelah wafat `[perlu verifikasi]` | ? | ? | sah juga saat maradh al-maut (s) | 01 |
+| K01-1 | Ijazah wasiat > 1/3 | hanya setelah wafat (Bahr al-Madzhab) | hanya setelah wafat (Mughni 6/147) | hanya setelah wafat (Mabsuth 27/154) | di masa sehat boleh ditarik; di maradh al-maut mengikat (Mughni) | 01 |
 | K02-1 | Pembunuhan yang menghalangi | semua bentuk | tanpa hak yang mewajibkan qishash/diyat/kafarat (s) | yang mewajibkan qawad atau kafarat, atau dianjurkan kafarat (s) | hanya 'amd zalim; khatha' tidak menghalangi dari harta (s) | 02 |
 | K02-2 | Beda millah antar kafir | satu millah | beda millah menghalangi (s) | satu millah (s) | beda millah menghalangi (s) | 02 (tidak relevan platform) |
 | K02-3 | Istri ditalak ba'in saat maradh al-maut | tidak mewarisi · opsi: qaul qadim mewarisi | mewarisi selama belum menikah lagi (s) | mewarisi bila suami wafat saat ia masih dalam iddah (s) | mewarisi walau sudah menikah lagi (s) | 02 |
@@ -40,34 +40,31 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 | Kode | Titik | [SYF] | [HNB] | [HNF] | [MLK] | Bab |
 |---|---|---|---|---|---|---|
 | K05-1 | Urutan jihah; kakek vs saudara | kakek sejajar saudara | = [SYF] (riwayat masyhur) (s) | kakek = ayah, menghijab saudara (s) | = [SYF] (s) | 05, 08 |
-| K05-2 | Furudh dalam wala' | tidak ada | ayah mu'tiq 1/6 bersama anak lk mu'tiq (s) | ? | ? | 05 |
+| K05-2 | Furudh dalam wala' | tidak ada | ayah mu'tiq 1/6 bersama anak lk mu'tiq (s) | tidak ada — semua untuk anak lk mu'tiq (Mabsuth 30/39; Abu Yusuf akhir: ayah 1/6, marjuh) | tidak ada (Ibnu Syas, 'Iqd al-Jawahir 3/1197) | 05 |
 | K08-1 | Rincian muqasamah/akdariyyah | madzhab Zaid (bab 08) | = [SYF] (s) | tidak berlaku (K05-1) | = [SYF] (s) | 08 |
-| K09-1 | Sisa harta tanpa ashabah | radd bila baitul mal tidak tegak · opsi: `kebijakanSisa` | radd mutlak, kecuali pasangan (s) | radd mutlak, kecuali pasangan (s) | baitul mal mutlak (masyhur) (s) | 09 |
+| K09-1 | Sisa harta tanpa ashabah | radd bila baitul mal tidak tegak · opsi: `kebijakanSisa` | radd mutlak, kecuali pasangan (s) | wala' → radd (kecuali pasangan) → dzawil arham (Mabsuth 29/175) | baitul mal mutlak (masyhur) (s) | 09 |
 
 ### Kasus khusus
 | Kode | Titik | [SYF] | [HNB] | [HNF] | [MLK] | Bab |
 |---|---|---|---|---|---|---|
 | K13a-1 | Batas maksimal kehamilan | 4 th (s) | 4 th (s) | 2 th (s) | 4 th masyhur; 5 th yang diamalkan (s) | 13a |
 | K13a-2 | Dibagi sebelum haml lahir | boleh | boleh (s) | boleh (s) | tidak (s) | 13a |
-| K13a-3 | Yang ditahan untuk haml | jumlah tak dibatasi; mitra ashabah haml 0 (s) | terbesar dari 2 lk/2 pr; mitra diberi aqall (s) | 1 anak + kafil (s) | — | 13a |
+| K13a-3 | Yang ditahan untuk haml | jumlah tak dibatasi; mitra ashabah haml 0 (s) | terbesar dari 2 lk/2 pr; mitra diberi aqall (s) | fatwa: bagian **1 anak lk** (Abu Yusuf); kafil diambil dari ahli waris lain bila di antara mereka ada anak (Takmilah ath-Thuri 'ala al-Bahr ar-Ra'iq 8/574; Lahim: lk atau pr mana yang lebih besar) | — | 13a |
 | K13b-1 | Masa tunggu mafqud | ijtihad hakim | 4 th (binasa) / 90 th dari lahir (selamat) (s) | ijtihad hakim (zhahir) (s) | 70/75/80 th dari lahir (s) | 13b |
 | K13b-2 | Ahli waris hadir bersama mafqud | al-aswa' (aqall) | al-aswa' (s) | al-aswa' (s) | al-aswa' (s) | 13b |
 | K13c-1 | Khuntsa musykil | aqall semua + mauquf sampai jelas/ishtilah | diharapkan jelas: aqall+mauquf; tidak: setengah-setengah (s) | khuntsa paling rugi, tanpa mauquf (s) | setengah-setengah (s) | 13c |
 | K13d-1 | Gharqa keadaan 3–5 | tidak saling mewarisi; keadaan 3 ditahan | saling mewarisi dari tilad (s) | tidak saling mewarisi (s) | tidak saling mewarisi (s) | 13d |
 | K14-1 | Dzawil arham mewarisi | bila baitul mal tidak tegak | ya (s) | ya (s) | tidak, ke baitul mal (s) | 14 |
-| K14-2 | Metode dzawil arham | tanzil | tanzil (s) | qarabah (s) — rincian belum cukup → `TIDAK_DIDUKUNG` | — | 14 |
-| K14-3 | lk vs pr dalam dzawil arham | 2:1 kecuali cabang perantara seibu | sama rata (s) | 2:1 (s) | — | 14 |
+| K14-2 | Metode dzawil arham | tanzil | tanzil (s) | qarabah, 7 shinf (14.11; Mabsuth 30/6–7). Satu orang dua jalur belum ada nash | — | 14 |
+| K14-3 | lk vs pr dalam dzawil arham | 2:1 kecuali cabang perantara seibu | sama rata (s) | 2:1 dihitung per tingkat ushul (qaul Muhammad, zhahir madzhab) | — | 14 |
 
-## 18.3 Yang Belum Ada (per 2026-09-29)
-Sudah dicari di Lahim, Ithraa, Tashil, Al-Muyassar; belum ketemu:
-
-| Kode | Titik | Madzhab kosong | Dampak ke engine |
-|---|---|---|---|
-| K01-1 | Ijazah wasiat > 1/3 atau untuk ahli waris: kapan sah | [HNB], [HNF] | kecil — engine hanya menerima nilai wasiat yang sudah disetujui |
-| K05-2 | Ayah/kakek mu'tiq bersama anak lk mu'tiq (furudh dalam wala') | [HNF], [MLK] | kecil — kasus wala' langka |
-| K14-2 | Rincian qarabah dalam satu jihah & derajat (kekuatan qarabah, cabang dua sisi) | [HNF] | **besar** — dzawil arham [HNF] = `TIDAK_DIDUKUNG` |
-| — | Urutan ashabah [HNF] selain soal kakek (bani al-ikhwah vs 'umumah dst.) | [HNF] | diduga sama; perlu satu nukilan untuk memastikan |
-| — | Munasakhat, 'aul, tashih, qismah | semua | diduga tidak ada khilaf ([KH] sama); belum ada nukilan yang menyatakannya |
+## 18.3 Yang Belum Ada (per 2026-09-29, setelah pencarian Shamela)
+| Titik | Madzhab | Dampak ke engine |
+|---|---|---|
+| Satu dzawil arham lewat dua jalur menurut qarabah | [HNF] | kecil — kasus dua jalur mode [HNF] = `TIDAK_DIDUKUNG`, sisanya jalan |
+| Posisi baitul mal dalam urutan [HNF] | [HNF] | tidak ada — engine tidak mengirim harta ke baitul mal selama ada dzawil arham |
+| Nash eksplisit "tidak ada khilaf" untuk munasakhat/'aul/tashih | semua | tidak ada — dianggap [KH] sama: bab munasakhat/tashih ada di keempat madzhab dengan cara hitung sama ('Iqd al-Jawahir, al-Wasith, al-Hawi, al-Hidayah Abu al-Khaththab), dan 'aul disepakati kecuali Ibnu 'Abbas |
+| Contoh kitab gabungan haml + khuntsa + mafqud | semua | 13.0b tetap aturan susunan kita; tidak ditemukan di 8.598 kitab Shamela lokal |
 
 Daftar pencarian lengkap dengan kata kunci Arab: [`docs/referensi-dicari.md`](../referensi-dicari.md).
 

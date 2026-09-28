@@ -97,7 +97,7 @@ Contoh buruk: `// tambah 1 ke total` di atas `total += 1`.
 > keterbacaan > DRY. Jangan korbankan kejelasan atau ketertelusuran demi kode yang lebih "elegan".
 
 ## Titik blocked (jangan diimplementasikan sebagai default)
-- R13-14 (laqith), R01-7 (ijazah wasiat), R11-3 (takharuj): perlu verifikasi.
+- R13-14 (laqith), R11-3 (takharuj): perlu verifikasi.
 - Haml [SYF] (bab 13a): jumlah janin tak dibatasi → ashabah yang berbagi dengan haml tidak diberi apa pun;
   model 6 taqdir hanya untuk [HNB]. Batas kehamilan maksimal [SYF] = 4 tahun (R13-5, Ithraa).
 - Kombinatorik taqdir: batas keras jumlah "dunia" (engine-contract); lewat batas → `PERLU_INPUT`, bukan macet.

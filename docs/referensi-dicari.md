@@ -1,5 +1,7 @@
 # Referensi yang Dicari
 
+> **Status 2026-09-29 (jawaban Shamela, kutipan dicek ke teks):** A1 ✔ (kecuali satu orang dua jalur), B1 ✔, B2 ✔, B3 ✔ (kecuali posisi baitul mal), B4 ✔, C1 ≈ (inferensi kuat, diterima), C2 ✘ tidak ada di kitab, D1 ✔, D2 ✔, D3 ✘ nomor atsar belum ketemu, D4 ≈ sebagian. Rincian di bab 18.3.
+
 Daftar semua titik yang **masih kosong** di knowledge base, per 2026-09-29. Sumber yang sudah disisir: Lahim (bab munasakhat, gharqa, haml, khuntsa, mafqud, dzawil arham), slide Ithraa, Tashil al-Fara'idh (Ibnu 'Utsaimin), Al-Fara'idh al-Muyassar, dan Raudhah (Kitab al-Fara'idh).
 
 Nukilan Lahim atau Ithraa sudah cukup sebagai dasar. Satu nukilan yang jelas menyebut nama madzhabnya sudah bisa menutup satu baris.

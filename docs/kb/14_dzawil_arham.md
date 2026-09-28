@@ -106,6 +106,32 @@ Hanya **ashl 6**, paling jauh ke **7**: ashl 12, 24, dan 'aul di atas 7 selalu m
 > **KHILAF K14-3 – lk vs pr**
 > - **[SYF]**: 2:1, kecuali cabang dari perantara yang aslinya sama rata (anak saudara seibu) (primer, 14.5). [HNB]: **sama rata** mutlak (sekunder: Lahim hlm. 195). [HNF]: 2:1 (sekunder).
 
+## 14.11 Metode Qarabah — khusus [HNF] [R14-14] [R14-15]
+Sumber: *al-Mabsuth* as-Sarakhsi 30/6–7 (primer Hanafi). Mengganti ringkasan 4 jihah dari Lahim di 14.7.
+
+**Tujuh shinf, berurutan** (shinf awal menghalangi shinf sesudahnya):
+1. Anak-anak dari anak pr (dan cucu pr dari anak lk) ke bawah.
+2. Anak pr saudara lk, anak-anak saudari.
+3. Kakek fasid dan nenek fasidah.
+4. Paman seibu, 'ammah (kandung/sebapak/seibu), khal, khalah.
+5. Anak-anak shinf 4.
+6. Paman seibu ayah, 'ammah ayah, khal ayah, khalah ayah.
+7. Anak-anak shinf 6.
+
+**Dalam satu shinf:**
+1. Yang **lebih dekat derajatnya ke mayit** didahulukan, meski yang jauh adalah anak ahli waris.
+2. Derajat sama → **anak ahli waris** (anak ashabul furudh atau ashabah) didahulukan atas anak dzawil arham. Anak ashabul furudh vs anak ashabah = sama, tidak saling menghijab.
+3. Masih sama → **quwwat al-qarabah**: kandung, lalu sebapak, lalu seibu.
+
+**Cara membagi** (qaul Muhammad = zhahir madzhab; Abu Yusuf rujuk ke "per badan" = riwayat syadz):
+- Pusat dan cabang sama sifat → dibagi per badan, lk 2:1.
+- Sifat ushul berbeda di suatu tingkat → bagi dulu di **tingkat pertama yang berbeda** (lk 2:1), kumpulkan bagian kelompok lk dan kelompok pr, turunkan ke keturunannya, ulangi sampai ke badan.
+- Kerabat pihak ayah bersama kerabat pihak ibu dalam satu shinf → **2/3 pihak ayah, 1/3 pihak ibu** (dasar: ijma' sahabat 'ammah 2/3, khalah 1/3).
+
+**Belum ada nash**: satu orang lewat dua jalur → mode [HNF] = `TIDAK_DIDUKUNG` untuk kasus itu.
+
+Contoh (Mabsuth): anak pr dari anak pr anak lk vs anak pr dari anak pr anak pr → derajat sama, yang pertama anak ashabul furudh → **semua untuknya**. Anak pr dari anak pr dari anak pr vs anak pr dari anak pr dari anak lk dari anak lk → yang pertama lebih dekat satu derajat → **semua untuknya**.
+
 ---
 
 ## Dasar dan Rujukan Bab Ini
@@ -126,3 +152,5 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R14-11 | Satu orang dua jalur | — (nukilan) | Lahim hlm. 194–195 | «ألا تحجب إحداهما الأخرى... يرث بهما... أن تحجب إحداهما الأخرى... يرث بالجهة الحاجبة» |
 | R14-12 | Pasangan fardh penuh; tata kerja munasakhat keadaan 3 | — (nukilan) | Lahim hlm. 207–208 | «أعطي أحد الزوجين فرضه من مخرجه من غير حجب ولا عول» |
 | R14-13 | 'Aul hanya 6→7 | KH | Lahim hlm. 217 | «نهاية عوله إلى سبعة» |
+| R14-14 | Qarabah [HNF]: 7 shinf, derajat, anak ahli waris | — (Hanafi primer) | al-Mabsuth, as-Sarakhsi, 30/6 (Shamela 5423/5974) | «ثم ذوو الأرحام في الحاصل سبعة أصناف ... وفي كل ذلك عند التساوي في الدرجة إذا كان أحدهما ولد صاحب فرض أو ولد عصبة والآخر ليس كذلك فولد صاحب الفرض والعصبة أولى» |
+| R14-15 | Qarabah [HNF]: cara membagi per tingkat ushul (qaul Muhammad) | — (Hanafi primer) | al-Mabsuth 30/6–7 (Shamela 5423/5974–5975) | «وهذا قول محمد، وهو الظاهر من مذهب أبي حنيفة، ثم رجع أبو يوسف ... وهو رواية شاذة» |

@@ -24,7 +24,7 @@ Satu kasus bisa memuat haml, beberapa mafqud, khuntsa, dan kelompok gharqa sekal
 2. Di tiap taqdir gabungan kasus menjadi pasti → pipeline biasa + munasakhat (bab 12).
 3. Semua taqdir gabungan dijami'ahkan sekaligus; tiap orang diberi aqall; sisanya mauquf beserta tabel "jika terbukti X".
 4. Taqdir yang tidak mengubah mas'alah mana pun boleh digabung (hasilnya identik). Ini hanya penghematan hitung, bukan hukum.
-5. Aturan pemberian (aqall / setengah-setengah / paling merugikan khuntsa) diterapkan per sumber sesuai madzhab; bila satu kasus mencampur aturan yang tidak bisa digabung dengan aqall (mis. [HNB] khuntsa tak jelas + haml), engine memisahkan: rata-rata dulu untuk khuntsa di dalam tiap taqdir haml, lalu aqall atas taqdir haml. `[perlu verifikasi lanjut]` — belum ada contoh kitab untuk gabungan semacam ini.
+5. Aturan pemberian (aqall / setengah-setengah / paling merugikan khuntsa) diterapkan per sumber sesuai madzhab; bila satu kasus mencampur aturan yang tidak bisa digabung dengan aqall (mis. [HNB] khuntsa tak jelas + haml), engine memisahkan: rata-rata dulu untuk khuntsa di dalam tiap taqdir haml, lalu aqall atas taqdir haml. Tidak ada contoh kitab untuk gabungan semacam ini (dicari di 8.598 kitab Shamela, 2026-09-29; *as-Sabikah adz-Dzahabiyyah* hanya membahas ketiganya berurutan). Aturan ini susunan kita, dan sejalan dengan kaidah umum al-aqall.
 
 ## 13.1–13.4 Dipindah
 Haml → `13a_haml.md` · Mafqud → `13b_mafqud.md` · Khuntsa → `13c_khuntsa.md` · Gharqa → `13d_gharqa.md`. Kode R13-1…R13-10 tetap, tabelnya ikut pindah.

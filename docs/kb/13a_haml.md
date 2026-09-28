@@ -40,7 +40,7 @@ Anak manusia yang masih dalam kandungan ketika muwarrits wafat, yang mewarisi at
 >   - Ahli waris ber-**fardh** yang tidak gugur → diberi fardh-nya dalam keadaan **'aul terbesar** yang mungkin (Raudhah: «وإن أمكن العول، دفع إليه ذلك القدر عائلا»).
 >   - Ahli waris yang **berbagi ashabah dengan haml** (mis. anak lk bersama janin saudara kandungnya) → **tidak diberi apa pun**, karena bagiannya bergantung pada jumlah janin yang tak terbatas. Seluruh bagiannya dan bagian haml ditahan. Dinukil Lahim hlm. 145 dan Ithraa («مع إيقاف نصيب مشاركه، وهو قول الشافعية»); dua nukilan ini diterima sebagai dasar (R13-15).
 > - **[HNB]**: ditahan yang **paling menguntungkan haml** dari 2 lk atau 2 pr; mitra ashabah haml **tetap diberi** bagian terkecilnya; tanpa kafil. Inilah model 6 taqdir (13a.5). (sekunder: Lahim hlm. 146, tarjih Lahim.)
-> - **[HNF]**: ditahan bagian **satu** anak (lk atau pr, mana yang lebih besar); hakim mengambil kafil dari yang memegang bagian yang diragukan. (sekunder)
+> - **[HNF]**: ada tiga qaul (Abu Hanifah: 4 anak; Muhammad: 2; Abu Yusuf: 1). **Fatwa: bagian 1 anak lk.** Bila di antara ahli waris ada anak (yang bagiannya bergantung jumlah janin), **kafil diambil dari ahli waris itu**; bila kurang, ditagih dari mereka. Ahli waris yang bagiannya tidak bergantung jumlah janin (mis. istri 1/8) tidak perlu kafil. (Takmilah ath-Thuri 'ala al-Bahr ar-Ra'iq 8/574; Lahim: lk atau pr mana yang lebih besar: «والفتوى على الأول ... ويؤخذ من الورثة على قوله كفيل لاحتمال أن يكون أكثر وهذا إذا كان في الورثة ولد»)
 > - [MLK]: tidak berlaku (tidak dibagi, K13a-2).
 >
 > **Catatan koreksi**: versi KB sebelumnya menyebut 6 taqdir sebagai posisi [SYF]. Itu model [HNB]. Untuk ahli waris ber-fardh hasilnya sama (menambah janin di atas 2 pr tidak mengubah fardh siapa pun), tetapi untuk mitra ashabah haml [SYF] memberi 0.
@@ -50,7 +50,7 @@ Enam taqdir: **mati, 1 lk, 1 pr, 2 lk, 2 pr, 1 lk + 1 pr**. Lebih dari 2 = nadir
 
 - [HNB]: keenamnya → aqall per ahli waris, termasuk mitra ashabah haml.
 - [SYF]: keenamnya dipakai **hanya untuk ahli waris ber-fardh dan ahli waris yang tidak berbagi ashabah dengan haml**; mitra ashabah haml diberi 0 apa pun taqdirnya.
-- [HNF]: taqdir mati, 1 lk, 1 pr.
+- [HNF]: taqdir mati, 1 lk, 1 pr (fatwa: yang ditahan = bagian 1 anak lk).
 
 ### Tiga Kelas Ahli Waris [R13-4]
 - **A — tidak berubah** di semua taqdir → bagian penuh sekarang.

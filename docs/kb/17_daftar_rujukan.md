@@ -21,6 +21,11 @@ tags: [rujukan, referensi, takhrij, dalil, metodologi]
 | — | *Tashil al-Fara'idh* | Syaikh Muhammad bin Shalih al-'Utsaimin (w. 1421 H) | Hanbali dengan tarjih mandiri. Pembanding saja, tidak dipakai sistem. |
 | — | *Al-Fara'idh al-Muyassar* | 'Abdusy-Syakur Mu'allim 'Abd Farah | Syabakah al-Alukah, 2019. Menyertakan Matn ar-Rahbiyyah. Sumber struktur dan contoh; pendapatnya pembanding saja. |
 | Lahim | *Kitab al-Fara'idh* | Dr. 'Abdul Karim bin Muhammad al-Lahim | Dipakai untuk bab 12 (munasakhat), 13a–d (haml, mafqud, khuntsa, gharqa), 14 (dzawil arham). Penerbit dan edisi belum dicatat; nomor halaman mengikuti cetakan milik pemilik project. **Tarjih-nya condong Hanbali**; nukilannya atas madzhab lain berstatus `sekunder` di bab 18. |
+| Mabsuth | *Al-Mabsuth* | Syamsul A'immah as-Sarakhsi (w. 483 H) | Hanafi primer. Kitab al-Fara'idh juz 29–30 (Shamela 5423). Dipakai: qarabah dzawil arham, urutan ashabah, wala'. |
+| Mughni | *Al-Mughni* | Ibnu Qudamah (w. 620 H) | Hanbali primer; ed. Maktabah al-Qahirah (Shamela 8463). Dipakai: ijazah wasiat. |
+| Bahr ar-Ra'iq | *Al-Bahr ar-Ra'iq Syarh Kanz ad-Daqa'iq* | Ibnu Nujaim (w. 970 H) | Hanafi primer (Shamela 12227). Dipakai: haml. |
+| 'Iqd al-Jawahir | *'Iqd al-Jawahir ats-Tsaminah* | Ibnu Syas (w. 616 H) | Maliki primer (Shamela 14594). Dipakai: wala'. |
+| Bahr al-Madzhab | *Bahr al-Madzhab* | ar-Ruyani (w. 502 H) | Syafi'i (Shamela 16934). Dipakai: ijazah wasiat. |
 | Ithraa | *Al-'Urudh at-Taqdimiyyah li Muqarrar al-Fara'idh* | Syarikah Ithraa al-Mutun (Riyadh) | Slide kuliah berbasis *Hasyiyah ar-Rahbiyyah*. Dipakai sebagai nukilan posisi 4 madzhab (bab 18). Teks hasil ekstrak PDF rusak di beberapa tempat; angka tabelnya tidak dipakai. |
 
 ## 17.3 Sumber Hadits
@@ -40,7 +45,7 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 | «القاتل لا يرث» | At-Tirmidzi 2109; Ibnu Majah 2645 | Dibicarakan sanadnya; dikuatkan riwayat lain dan amal |
 | «إذا استهل المولود ورث» | Abu Dawud 2920 | Shahih menurut sebagian muhaddits |
 | «قضى رسول الله ﷺ بالدين قبل الوصية» | At-Tirmidzi 2094; Ibnu Majah 2715 | Sanad lemah; hukumnya tetap berdasar ijma' |
-| «الولاء لحمة كلحمة النسب» | Ibnu Hibban; al-Hakim | `[nomor perlu dicek]` |
+| «الولاء لحمة كلحمة النسب» | Ibnu Hibban 4950; al-Hakim 4/341 | Marfu'-nya diperselisihkan; al-Baihaqi: yang benar mursal dari al-Hasan |
 | «تعلموا الفرائض...» | Ibnu Majah 2719 | Dha'if |
 | «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 | Shahih |
 
@@ -48,8 +53,6 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| R01-7 | Ijazah wasiat setelah wafat | Raudhah, Kitab al-Washaya |
-| R02-11 | Nomor hadits «الولاء لحمة» | Cek Shahih Ibnu Hibban / al-Mustadrak |
 | R11-3 | Atsar takharuj 'Abdurrahman bin 'Auf | Cek Mushannaf 'Abdurrazzaq / Sunan al-Baihaqi |
 | R13-14 | Hukum laqith | Raudhah, Kitab al-Laqith |
 
