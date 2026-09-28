@@ -18,6 +18,7 @@ import { LayarMenu } from './layar/DaftarKonten';
 import { EditorEntri } from './layar/EditorEntri';
 import { Beranda } from './layar/Beranda';
 import { AntreanReview } from './layar/AntreanReview';
+import { AjuanSaya } from './layar/AjuanSaya';
 import { KelolaPeran } from './layar/KelolaPeran';
 import { bolehTinggalkan } from './penjaga';
 import { pesanGalat } from './pesanGalat';
@@ -114,6 +115,7 @@ function IsiRute({ rute, saatJenisEntri }: { rute: Rute; saatJenisEntri: (jenis:
   if (rute.layar === 'entri') return <EditorEntri key={rute.entriId} entriId={rute.entriId} saatJenisDiketahui={saatJenisEntri} />;
   if (rute.layar === 'entriBaru') return <EditorEntri key={`baru-${rute.jenis}-${JSON.stringify(rute.kueri ?? {})}`} jenis={rute.jenis} awal={rute.kueri} />;
   if (rute.layar === 'review') return <AntreanReview />;
+  if (rute.layar === 'ajuan') return <AjuanSaya />;
   if (rute.layar === 'peran') return peran === 'admin' ? <KelolaPeran /> : <p>Hanya admin.</p>;
   return <Beranda />;
 }

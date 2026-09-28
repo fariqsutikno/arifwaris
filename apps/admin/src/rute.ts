@@ -10,6 +10,7 @@ export type Rute =
   | { layar: 'entri'; entriId: string }
   | { layar: 'entriBaru'; jenis: JenisKonten; kueri?: Kueri }
   | { layar: 'review' }
+  | { layar: 'ajuan' }
   | { layar: 'peran' };
 
 const BERANDA: Rute = { layar: 'beranda' };
@@ -32,6 +33,7 @@ export function bacaRute(hash: string): Rute {
     case 'entri': return segmenB ? { layar: 'entri', entriId: segmenB } : BERANDA;
     case 'baru': return jenisSah(segmenB) ? { layar: 'entriBaru', jenis: segmenB, ...denganKueri } : BERANDA;
     case 'review': return { layar: 'review' };
+    case 'ajuan': return { layar: 'ajuan' };
     case 'peran': return { layar: 'peran' };
     default: return BERANDA;
   }
@@ -44,6 +46,7 @@ export function tulisRute(rute: Rute): string {
     case 'entri': return `#/entri/${rute.entriId}`;
     case 'entriBaru': return `#/baru/${rute.jenis}${tulisKueri(rute.kueri)}`;
     case 'review': return '#/review';
+    case 'ajuan': return '#/ajuan';
     case 'peran': return '#/peran';
   }
 }

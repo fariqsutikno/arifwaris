@@ -3,10 +3,12 @@
 // laci (Sheet) lewat tombol Menu dan menutup setelah memilih menu. Layar entri menyorot menu jenis entri itu (jenisEntri
 // dilaporkan editor setelah entri dimuat, jadi tautan langsung ke entri juga menyala). Lencana antrean = revisi yang
 // boleh diperiksa pengguna ini (transisiRevisi; penulis tidak mendapat lencana, reviewer tidak menghitung revisinya
-// sendiri), dimuat ulang tiap rute berubah. Kepala menampilkan judul halaman aktif.
+// sendiri), dimuat ulang tiap rute berubah. Lencana Ajuan saya = kabar review baru sejak menu itu terakhir dibuka
+// (editor/ajuanSaya.ts; penulis & admin). Kepala menampilkan judul halaman aktif.
 import { useEffect, useState, type ReactNode } from 'react';
 import { transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
-import { House, Inbox, LogOut, Menu as IkonMenu, Users, type LucideIcon } from 'lucide-react';
+import { House, Inbox, LogOut, Menu as IkonMenu, Send, Users, type LucideIcon } from 'lucide-react';
+import { bacaTerakhirDibuka, jumlahKabarBaru, susunAjuan } from './editor/ajuanSaya';
 import { Button } from '@/components/ui/button';
 import {
   Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel, SidebarHeader, SidebarInset, SidebarMenu,
@@ -16,13 +18,13 @@ import { MENU_PORTAL, menuUntukJenis, type GrupMenu, type KunciMenu } from './na
 import { usePortal } from './repo';
 import { tulisRute, type Rute } from './rute';
 
-type KunciAktif = 'beranda' | 'review' | 'peran' | KunciMenu | null;
+type KunciAktif = 'beranda' | 'review' | 'ajuan' | 'peran' | KunciMenu | null;
 const URUTAN_GRUP: GrupMenu[] = ['Belajar', 'Bank soal', 'Tanya jawab', 'Pustaka', 'Aplikasi'];
 const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' } as const;
 
 export function menuAktif(rute: Rute, jenisEntri: JenisKonten | null): KunciAktif {
   switch (rute.layar) {
-    case 'beranda': case 'review': case 'peran': return rute.layar;
+    case 'beranda': case 'review': case 'ajuan': case 'peran': return rute.layar;
     case 'menu': return rute.menu;
     case 'entriBaru': return menuUntukJenis(rute.jenis).kunci;
     case 'entri': return jenisEntri ? menuUntukJenis(jenisEntri).kunci : null;
@@ -55,7 +57,7 @@ function KepalaPortal({ judul }: { judul: string }) {
   );
 }
 
-const JUDUL_TETAP = { beranda: 'Beranda', review: 'Antrean review', peran: 'Peran' } as const;
+const JUDUL_TETAP = { beranda: 'Beranda', review: 'Antrean review', ajuan: 'Ajuan saya', peran: 'Peran' } as const;
 function judulHalaman(aktif: KunciAktif): string {
   if (!aktif) return '';
   if (aktif in JUDUL_TETAP) return JUDUL_TETAP[aktif as keyof typeof JUDUL_TETAP];
@@ -69,6 +71,8 @@ function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: Je
   const bolehPeriksa = (revisi: { dibuatOleh: string; status: StatusRevisi }) =>
     transisiRevisi({ peran, pelakuId: sesi.userId, pembuatId: revisi.dibuatOleh, status: revisi.status, aksi: 'setujui' }).ok;
   const [jumlahAntrean, setJumlahAntrean] = useState(0);
+  const [kabarBaru, setKabarBaru] = useState(0);
+  const menulis = peran !== 'reviewer';
 
   useEffect(() => {
     let dibatalkan = false;
@@ -78,15 +82,24 @@ function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: Je
     return () => { dibatalkan = true; };
   }, [repo, rute, peran, sesi.userId]);
 
+  useEffect(() => {
+    if (!menulis || rute.layar === 'ajuan') { setKabarBaru(0); return; }
+    let dibatalkan = false;
+    Promise.all([repo.editorial.revisiSaya(sesi.userId), repo.diksi.revisiSaya(sesi.userId)])
+      .then(([konten, diksi]) => { if (!dibatalkan) setKabarBaru(jumlahKabarBaru(susunAjuan(konten, diksi), bacaTerakhirDibuka())); })
+      .catch(() => { /* lencana hanya pelengkap */ });
+    return () => { dibatalkan = true; };
+  }, [repo, rute, menulis, sesi.userId]);
+
   const aktif = menuAktif(rute, jenisEntri);
-  const tautan = (kunci: KunciAktif, href: string, Ikon: LucideIcon, label: string, lencana?: number) => (
+  const tautan = (kunci: KunciAktif, href: string, Ikon: LucideIcon, label: string, lencana?: number, labelLencana = 'menunggu review') => (
     <SidebarMenuItem key={String(kunci)}>
       <SidebarMenuButton asChild isActive={aktif === kunci}>
         <a href={href} aria-current={aktif === kunci ? 'page' : undefined} onClick={() => setOpenMobile(false)}>
           <Ikon /><span>{label}</span>
         </a>
       </SidebarMenuButton>
-      {lencana ? <SidebarMenuBadge aria-label={`${lencana} menunggu review`}>{lencana}</SidebarMenuBadge> : null}
+      {lencana ? <SidebarMenuBadge aria-label={`${lencana} ${labelLencana}`}>{lencana}</SidebarMenuBadge> : null}
     </SidebarMenuItem>
   );
 
@@ -101,6 +114,7 @@ function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: Je
             <SidebarMenu>
               {tautan('beranda', tulisRute({ layar: 'beranda' }), House, 'Beranda')}
               {tautan('review', tulisRute({ layar: 'review' }), Inbox, 'Antrean review', jumlahAntrean)}
+              {menulis ? tautan('ajuan', tulisRute({ layar: 'ajuan' }), Send, 'Ajuan saya', kabarBaru, 'kabar baru') : null}
             </SidebarMenu>
           </SidebarGroup>
           {URUTAN_GRUP.map(grup => (

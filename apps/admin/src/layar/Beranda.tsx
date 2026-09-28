@@ -73,7 +73,8 @@ function IsiBeranda({ ringkasan, peran }: { ringkasan: RingkasanBeranda; peran: 
       <section aria-label="Ringkasan" className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <KartuAngka label="Draf saya" angka={ringkasan.drafSaya} />
         <KartuAngka label="Menunggu review" angka={ringkasan.menungguReview} />
-        <KartuAngka label="Dikembalikan ke saya" angka={ringkasan.dikembalikanKeSaya} peringatan={ringkasan.dikembalikanKeSaya > 0} />
+        <KartuAngka label="Dikembalikan ke saya" angka={ringkasan.dikembalikanKeSaya} peringatan={ringkasan.dikembalikanKeSaya > 0}
+          href={menulis ? tulisRute({ layar: 'ajuan' }) : undefined} />
         <KartuAngka label="Terbit" angka={ringkasan.terbit} />
       </section>
       <div className="grid gap-4 md:grid-cols-[3fr_2fr]">
@@ -116,12 +117,12 @@ function DaftarBeranda({ judul, daftar, sekarang, children }: { judul: string; d
   );
 }
 
-function KartuAngka({ label, angka, peringatan }: { label: string; angka: number; peringatan?: boolean }) {
+function KartuAngka({ label, angka, peringatan, href }: { label: string; angka: number; peringatan?: boolean; href?: string | undefined }) {
   return (
     <Card className={peringatan ? 'border-destructive' : undefined}>
       <CardContent className="pt-6">
         <div className="text-3xl font-bold">{angka}</div>
-        <div className="text-sm text-muted-foreground">{label}</div>
+        <div className="text-sm text-muted-foreground">{href ? <a className="hover:underline" href={href}>{label}</a> : label}</div>
       </CardContent>
     </Card>
   );

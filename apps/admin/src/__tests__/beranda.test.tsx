@@ -29,7 +29,9 @@ test('penulis: angka, lanjutkan pekerjaan dengan catatan, tombol buat baru', asy
   await pasang('penulis');
   const angka = await screen.findByRole('region', { name: 'Ringkasan' });
   expect(within(angka).getByText('Draf saya').parentElement!.textContent).toContain('1');
-  expect(within(angka).getByText('Dikembalikan ke saya').parentElement!.textContent).toContain('1');
+  const dikembalikan = within(angka).getByRole('link', { name: 'Dikembalikan ke saya' });
+  expect(dikembalikan.closest('[data-slot="card"]')!.textContent).toContain('1');
+  expect(dikembalikan.getAttribute('href')).toBe('#/ajuan');
   const lanjut = screen.getByRole('region', { name: 'Lanjutkan pekerjaan' });
   expect(within(lanjut).getByText('Lengkapi dalil')).toBeTruthy();
   expect(within(lanjut).getByRole('link', { name: /Apa itu tirkah\?/ })).toBeTruthy();

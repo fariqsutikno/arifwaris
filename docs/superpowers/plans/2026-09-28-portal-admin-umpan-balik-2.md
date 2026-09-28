@@ -171,7 +171,8 @@ orang lain tetap melihat kartu review; hanya pembuat ajuan yang menyunting di te
 5. Web: tautan "Ada pembaruan konten · Muat ulang" (A9.2).
 6. `EditorEntri`: "Tarik" diganti menyunting ajuan langsung.
 
-### Fase 2 — Review & kabar untuk penulis (A4, A5)
+### Fase 2 — Review & kabar untuk penulis (A4, A5) — **selesai 2026-09-28**
+Terbitan langsung admin (pemeriksa = pembuat) tidak dihitung sebagai hasil review di Ajuan saya.
 1. `AksiReview`: Kembalikan → baru muncul kolom catatan.
 2. Repo `revisiSaya()` (konten + diksi) + menu **Ajuan saya** + badge; Beranda menaut ke sana.
 
