@@ -44,7 +44,11 @@ export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi,
   const ubah = (jalur: string, nilai: NilaiBidang) => saatUbah({ ...form, nilai: { ...form.nilai, [jalur]: nilai } });
   // Slug hanya untuk pesan galat bacaBlok; istilah untuk sisipan di editor blok.
   const konteks: KonteksEditor = { slug: String(form.nilai.slug || form.nilai.id || form.nilai.kode || jenis), istilah: opsi.istilah ?? [] };
+  // Soal kuis dengan penjelasan per pilihan: "Kenapa jawaban ini benar" ditulis di bawah pilihan yang benar (kotak yang
+  // sama dengan bidang pembahasan), jadi bidang pembahasan terpisah disembunyikan.
+  const pembahasanDiPilihan = jenis === 'soal_kuis' && (form.nilai.pilihan as NilaiPilihanKuis | undefined)?.alasan != null;
   const tampilBidang = (bidang: Bidang) => {
+    if (pembahasanDiPilihan && bidang.jalur === 'pembahasan') return null;
     const terkunci = !!bidang.identitas && identitasTerkunci;
     const otomatis = bidang.identitas?.dari ? identitasOtomatis(jenis, form) : '';
     const padanan = potongan === 'arab' ? form.nilai[bidang.jalur.replace(/^ar\./, '')] : undefined;
@@ -53,7 +57,9 @@ export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi,
         bacaSaja={bacaSaja || terkunci} galat={galatBidang[bidang.jalur]} opsi={bidang.sumberOpsi ? opsi[bidang.sumberOpsi] : undefined}
         placeholder={otomatis ? `Otomatis: ${otomatis}` : undefined} padananId={typeof padanan === 'string' ? padanan : undefined}
         kunci={terkunci ? { saatBuka: bacaSaja ? undefined : saatBukaKunci } : undefined} konteks={konteks}
-        saatSelesai={() => saatSelesaiIsi?.(bidang.jalur)} />
+        saatSelesai={() => saatSelesaiIsi?.(bidang.jalur)}
+        pembahasan={bidang.jenis === 'pilihanKuis'
+          ? { nilai: String(form.nilai.pembahasan ?? ''), saatUbah: teks => ubah('pembahasan', teks), galat: galatBidang.pembahasan } : undefined} />
     );
   };
   return (
@@ -108,9 +114,11 @@ interface PropsBidang {
   padananId?: string | undefined;
   kunci?: { saatBuka: (() => void) | undefined } | undefined;
   saatSelesai: () => void;
+  /** Pilihan kuis: bidang pembahasan, disunting di bawah pilihan yang benar saat penjelasan per pilihan menyala. */
+  pembahasan?: { nilai: string; saatUbah: (teks: string) => void; galat: string | undefined } | undefined;
 }
 
-function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, placeholder: placeholderOtomatis, padananId, kunci, saatSelesai }: PropsBidang) {
+function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, placeholder: placeholderOtomatis, padananId, kunci, saatSelesai, pembahasan }: PropsBidang) {
   const arah = bidang.arab ? { dir: 'rtl' as const, lang: 'ar' } : {};
   const teks = typeof nilai === 'string' ? nilai : '';
   const wajib = bidangWajib(bidang);
@@ -132,7 +140,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
     case 'barisAhwal':
       return bungkus(<>{tautanTemplat}<EditorBarisAhwal label={label} nilai={nilai as BarisAhwal[]} saatUbah={saatUbah} bacaSaja={bacaSaja} opsiAlasan={opsi ?? []} /></>);
     case 'pilihanKuis':
-      return bungkus(<EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} konteks={konteks} />);
+      return bungkus(<EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} konteks={konteks} pembahasan={pembahasan} />);
     case 'markdownBlok': case 'markdownPotongan':
       return (
         bungkus(
@@ -255,9 +263,12 @@ function Panduan({ jenis }: { jenis: JenisKonten }) {
 
 const HURUF_A = 65;
 
-interface PropsPilihanKuis { label: ReactNode; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean; konteks: KonteksEditor }
+interface PropsPilihanKuis {
+  label: ReactNode; nilai: NilaiPilihanKuis; saatUbah: (n: NilaiPilihanKuis) => void; bacaSaja: boolean; konteks: KonteksEditor;
+  pembahasan: PropsBidang['pembahasan'];
+}
 
-function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsPilihanKuis) {
+function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks, pembahasan }: PropsPilihanKuis) {
   const ubahTeks = (indeks: number, teks: string) => saatUbah({ ...nilai, daftar: nilai.daftar.map((t, i) => (i === indeks ? teks : t)) });
   const ubahAlasan = (indeks: number, teks: string) => saatUbah({ ...nilai, alasan: nilai.alasan?.map((t, i) => (i === indeks ? teks : t)) ?? null });
   const hapus = (indeks: number) => saatUbah({
@@ -296,11 +307,17 @@ function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsP
             </div>
             <EditorBlok key={`${indeks}/${nilai.daftar.length}`} label={`Pilihan ${huruf}`} nilai={teks} saatUbah={t => ubahTeks(indeks, t)}
               mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
-            {nilai.alasan && benar ? (
-              <p className="border-l-2 pl-2 text-xs text-muted-foreground">Penjelasan pilihan ini memakai isi "Kenapa jawaban ini benar".</p>
+            {nilai.alasan && benar && pembahasan ? (
+              // Kotak ini = bidang "Kenapa jawaban ini benar" (pembahasan); saat disimpan ikut jadi penjelasan pilihan ini.
+              <div className="grid gap-1 border-l-2 border-emerald-600 pl-2" data-galat={pembahasan.galat ? true : undefined}>
+                <span className="text-xs font-medium text-muted-foreground">Kenapa {huruf} benar</span>
+                <EditorBlok key={`pembahasan-${indeks}`} label="Kenapa jawaban ini benar" nilai={pembahasan.nilai}
+                  saatUbah={pembahasan.saatUbah} mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} galat={!!pembahasan.galat} />
+                {pembahasan.galat ? <p className="text-xs text-destructive">{pembahasan.galat}</p> : null}
+              </div>
             ) : nilai.alasan ? (
               <div className="grid gap-1 border-l-2 pl-2">
-                <span className="text-xs font-medium text-muted-foreground">{benar ? `Kenapa ${huruf} benar` : `Kenapa ${huruf} kurang tepat`}</span>
+                <span className="text-xs font-medium text-muted-foreground">Kenapa {huruf} kurang tepat</span>
                 <EditorBlok key={`alasan-${indeks}/${nilai.daftar.length}`} label={`Penjelasan pilihan ${huruf}`} nilai={nilai.alasan[indeks] ?? ''}
                   saatUbah={t => ubahAlasan(indeks, t)} mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
               </div>
