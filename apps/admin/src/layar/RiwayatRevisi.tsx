@@ -109,6 +109,8 @@ export function kalimatJejak(j: JejakEntri, namaDari: NamaDari): string {
     case 'dibuang': return `${pelaku} memindahkan entri ke Sampah`;
     case 'buang_diajukan': return `${pelaku} mengajukan pemindahan ke Sampah`;
     case 'dipulihkan': return `${pelaku} memulihkan entri dari Sampah`;
+    case 'diarsipkan': return `${pelaku} mengarsipkan entri (ditarik dari web)`;
+    case 'dikeluarkan_arsip': return `${pelaku} mengeluarkan entri dari Arsip`;
   }
 }
 

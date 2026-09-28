@@ -9,7 +9,7 @@ const r = (id: string, status: RingkasanRevisi['status'], dibuatOleh = 'p', sisa
   dibuatPada: `2026-01-01T00:00:0${id}Z`, diperiksaPada: null, ...sisa,
 });
 const entri = (semuaRevisi: RingkasanRevisi[], sisa: Partial<EntriSunting> = {}): EntriSunting =>
-  ({ revisiTerbitId: null, dihapus: false, dibuang: false, semuaRevisi, ...sisa });
+  ({ revisiTerbitId: null, dihapus: false, dibuang: false, diarsipkan: false, semuaRevisi, ...sisa });
 const penulis = { peran: 'penulis' as const, userId: 'p', namaDari: (id: string) => `nama-${id}` };
 
 test('tayang tanpa draf → sunting dengan salinan kerja baru; draf sendiri → salinan itu', () => {

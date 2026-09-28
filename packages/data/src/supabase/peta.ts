@@ -43,7 +43,7 @@ export const keRingkasanEntri = (baris: Baris): RingkasanEntri => {
   return {
     entriId: baris.id, jenis: baris.jenis as JenisKonten, slug: baris.slug, urutan: baris.urutan,
     revisiTerbitId: baris.revisi_terbit_id, dihapus: semuaRevisi.some(r => r.id === baris.revisi_terbit_id && r.hapus),
-    dibuang: baris.dibuang_pada != null,
+    dibuang: baris.dibuang_pada != null, diarsipkan: baris.diarsipkan_pada != null,
     revisiTerakhir: terakhir,
     ...(terakhir?.diabaikan ? { isiTerbit: semuaRevisi.find(r => r.id === baris.revisi_terbit_id)?.isi } : {}),
   };

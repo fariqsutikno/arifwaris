@@ -197,6 +197,8 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
       case 'kembalikan': return repo.editorial.kembalikan(revisiId, catatan);
       case 'sampah': return repo.editorial.buangEntri(entri.entriId, catatan);
       case 'pulihkan': return repo.editorial.pulihkanEntri(entri.entriId);
+      case 'arsipkan': return repo.editorial.arsipkanEntri(entri.entriId, catatan);
+      case 'keluarkanArsip': return repo.editorial.keluarkanArsipEntri(entri.entriId);
     }
   }
 
@@ -205,6 +207,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
     const sasaran = jumlah === 1 ? 'entri ini' : `${jumlah} entri`;
     if (aksi === 'terbitkan' || aksi === 'setujui') return window.confirm(`${LABEL_AKSI[aksi]} ${sasaran}? Langsung tampil di web.`) ? '' : null;
     if (aksi === 'sampah') return window.prompt(`Pindahkan ${sasaran} ke Sampah? Bisa dipulihkan kapan saja. Entri yang sudah terbit diajukan dulu bila Anda penulis.\nAlasan (opsional):`, '');
+    if (aksi === 'arsipkan') return window.prompt(`Arsipkan ${sasaran}? Ditarik dari web tapi tidak dibuang; bisa dikeluarkan dari Arsip kapan saja.\nAlasan (opsional):`, '');
     if (aksi === 'kembalikan') {
       const catatan = window.prompt(`Kembalikan ${sasaran} ke penulisnya. Catatan untuk penulis (wajib):`, '');
       return catatan?.trim() ? catatan : null;
@@ -241,10 +244,9 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   // Angka tab mengikuti cari & saring lanjutan yang aktif, supaya sama dengan jumlah baris yang akan tampil.
   const jumlah = jumlahPerTab(saringTanpaStatus(daftar, saring, sesi.userId));
   const tampil = urutanDraf ?? terapkanSaring(daftar, saring, sesi.userId);
-  const bolehAturUrutan = peran !== 'reviewer' && saring.status !== 'sampah' && daftar.length > 1;
+  const bolehAturUrutan = peran !== 'reviewer' && saring.status !== 'sampah' && saring.status !== 'arsip' && daftar.length > 1;
   const bolehPilih = tampil.length > 0;
-  const tabSampah = saring.status === 'sampah';
-  const aksiTersedia = aksiPeran(peran, tabSampah);
+  const aksiTersedia = aksiPeran(peran, saring.status);
   const dipilih = daftar.filter(entri => terpilih.has(entri.entriId));
   const semuaTampilDipilih = tampil.length > 0 && tampil.every(entri => terpilih.has(entri.entriId));
   const baris: KonteksBaris = {

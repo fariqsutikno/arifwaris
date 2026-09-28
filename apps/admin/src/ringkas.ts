@@ -2,21 +2,24 @@
 // pindah urutan, dan waktu relatif. Menerima RingkasanEntri dari repo.konten.daftarEntri; komponen hanya menampilkan.
 import type { RingkasanEntri } from '@waris/data';
 
-export type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf' | 'sampah';
-export type TabStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit' | 'sampah';
-export const TAB_STATUS: readonly TabStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit', 'sampah'];
+export type StatusTampil = 'terbit' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit + draf' | 'arsip' | 'sampah';
+export type TabStatus = 'semua' | 'draf' | 'diajukan' | 'dikembalikan' | 'terbit' | 'arsip' | 'sampah';
+export const TAB_STATUS: readonly TabStatus[] = ['semua', 'draf', 'diajukan', 'dikembalikan', 'terbit', 'arsip', 'sampah'];
 export const LABEL_TAB: Record<TabStatus, string> = {
-  semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit', sampah: 'Sampah',
+  semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit', arsip: 'Arsip', sampah: 'Sampah',
 };
 export const BATAS_BERANDA = 8;
 const FIELD_JUDUL = ['judul', 'pertanyaan', 'istilahId', 'kunci', 'id', 'kode'] as const;
 
 export const diSampah = (entri: RingkasanEntri) => entri.dihapus || entri.dibuang;
+/** Sampah & Arsip sama-sama keluar dari daftar kerja (tab Semua, beranda). */
+const diLuarDaftarKerja = (entri: RingkasanEntri) => diSampah(entri) || entri.diarsipkan;
 
 /** Entri bisa punya revisi terbit dan draf sekaligus ("terbit + draf"); revisi terakhir yang diajukan/dikembalikan di
- * atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). Entri di Sampah selalu "sampah". */
+ * atas revisi terbit ditampilkan statusnya sendiri (lebih relevan bagi reviewer). Entri di Sampah selalu "sampah", lalu yang diarsipkan "arsip". */
 export function statusTampil(entri: RingkasanEntri): StatusTampil {
   if (diSampah(entri)) return 'sampah';
+  if (entri.diarsipkan) return 'arsip';
   const { revisiTerbitId, revisiTerakhir } = entri;
   // Revisi dikembalikan yang sudah dibuang pembuatnya tidak lagi dihitung.
   if (!revisiTerakhir || revisiTerakhir.diabaikan) return revisiTerbitId ? 'terbit' : 'draf';
@@ -34,10 +37,10 @@ export function judulEntri(entri: Pick<RingkasanEntri, 'slug' | 'revisiTerakhir'
   return kandidat ?? entri.slug;
 }
 
-/** "Semua" tidak memuat Sampah (seperti WordPress); Sampah punya tabnya sendiri. */
+/** "Semua" tidak memuat Arsip & Sampah (seperti WordPress); keduanya punya tab sendiri. */
 export function cocokTab(entri: RingkasanEntri, tab: TabStatus): boolean {
   const status = statusTampil(entri);
-  if (tab === 'semua') return status !== 'sampah';
+  if (tab === 'semua') return status !== 'sampah' && status !== 'arsip';
   if (status === 'terbit + draf') return tab === 'draf' || tab === 'terbit';
   return status === tab;
 }
@@ -107,7 +110,7 @@ export function saringTanpaStatus(daftar: RingkasanEntri[], saring: SaringDaftar
     && Object.entries(saring.bidang).every(([kunci, nilai]) => !nilai || nilaiIsi(entri, kunci) === nilai));
 }
 
-const URUTAN_STATUS: Record<StatusTampil, number> = { dikembalikan: 0, draf: 1, 'terbit + draf': 2, diajukan: 3, terbit: 4, sampah: 5 };
+const URUTAN_STATUS: Record<StatusTampil, number> = { dikembalikan: 0, draf: 1, 'terbit + draf': 2, diajukan: 3, terbit: 4, arsip: 5, sampah: 6 };
 const pembandingJudul = new Intl.Collator('id', { numeric: true, sensitivity: 'base' });
 
 /** 'manual' = urutan dari database (sama dengan web); lainnya salinan terurut, stabil. */
@@ -152,7 +155,7 @@ export interface RingkasanBeranda {
 
 /** `antreanDiksi` = jumlah revisi diksi yang diajukan, supaya "Menunggu review" sama dengan lencana antrean. */
 export function ringkasBeranda(semuaEntri: RingkasanEntri[], userId: string, antreanDiksi = 0): RingkasanBeranda {
-  const semua = semuaEntri.filter(entri => !diSampah(entri));
+  const semua = semuaEntri.filter(entri => !diLuarDaftarKerja(entri));
   const milikSaya = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatOleh === userId;
   const berstatus = (entri: RingkasanEntri, status: string) => entri.revisiTerakhir?.status === status;
   const waktu = (entri: RingkasanEntri) => entri.revisiTerakhir?.dibuatPada ?? '';

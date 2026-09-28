@@ -14,7 +14,7 @@ import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
 
 interface EntriMemori {
-  id: string; jenis: JenisKonten; slug: string; urutan: number; revisiTerbitId: string | null; versiTerbit: number | null; dibuang: boolean;
+  id: string; jenis: JenisKonten; slug: string; urutan: number; revisiTerbitId: string | null; versiTerbit: number | null; dibuang: boolean; diarsipkan: boolean;
 }
 interface KunciDiksiMemori { kunci: string; halaman: string; revisiTerbitId: string | null; versiTerbit: number | null }
 interface PenggunaMemori { userId: string; email: string; nama: string | null }
@@ -105,6 +105,11 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       buangSedangDiajukan: milikEntri.some(r => r.hapus && r.status === 'diajukan'), pembuatRevisi: milikEntri.map(r => r.dibuatOleh),
     };
   };
+  // Entri terbit dapat versi baru supaya web yang menyinkron membuang/mengambil lagi entri itu.
+  const aturArsip = (baris: EntriMemori, diarsipkan: boolean) => {
+    baris.diarsipkan = diarsipkan;
+    if (baris.revisiTerbitId) baris.versiTerbit = ++versi;
+  };
   const catatJejak = (entriId: string, aksi: JejakEntri['aksi'], catatan: string | null = null) => {
     jejak.push({ id: idBaru(), entriId, aksi, pelaku: pelaku().pelakuId, pada: sekarang(), catatan });
   };
@@ -113,7 +118,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     async versiSekarang() { return versi; },
     async bacaTerbit(saring = {}) {
       const mentah = [...entri.values()]
-        .filter(baris => baris.revisiTerbitId && !dihapus(baris) && (!saring.jenis || baris.jenis === saring.jenis)
+        .filter(baris => baris.revisiTerbitId && !dihapus(baris) && !baris.diarsipkan && (!saring.jenis || baris.jenis === saring.jenis)
           && (saring.sejakVersi === undefined || (baris.versiTerbit ?? 0) > saring.sejakVersi))
         .sort((a, b) => a.urutan - b.urutan)
         .map(baris => {
@@ -123,7 +128,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       return saringValid(mentah);
     },
     async bacaDihapus(sejakVersi) {
-      return [...entri.values()].filter(baris => dihapus(baris) && (baris.versiTerbit ?? 0) > sejakVersi).map(baris => baris.id);
+      return [...entri.values()].filter(baris => (dihapus(baris) || baris.diarsipkan) && (baris.versiTerbit ?? 0) > sejakVersi).map(baris => baris.id);
     },
     async daftarRevisi(entriId) { return [...revisi.values()].filter(baris => baris.entriId === entriId); },
     async daftarJejak(entriId) { return jejak.filter(baris => baris.entriId === entriId); },
@@ -133,7 +138,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       return [...entri.values()].filter(baris => jenis === undefined || baris.jenis === jenis).sort((a, b) => a.urutan - b.urutan || a.slug.localeCompare(b.slug))
         .map((baris): RingkasanEntri => ({
           entriId: baris.id, jenis: baris.jenis, slug: baris.slug, urutan: baris.urutan, revisiTerbitId: baris.revisiTerbitId,
-          dihapus: dihapus(baris), dibuang: baris.dibuang, revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
+          dihapus: dihapus(baris), dibuang: baris.dibuang, diarsipkan: baris.diarsipkan, revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
         })).map(ringkasan => (ringkasan.revisiTerakhir?.diabaikan
           ? { ...ringkasan, isiTerbit: ringkasan.revisiTerbitId ? revisi.get(ringkasan.revisiTerbitId)?.isi : undefined } : ringkasan));
     },
@@ -145,7 +150,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       wajibPeran('admin', 'penulis');
       if ([...entri.values()].some(baris => baris.jenis === jenis && baris.slug === slug)) throw new Error(`${jenis}/${slug} sudah ada`);
       const id = idBaru();
-      entri.set(id, { id, jenis, slug, urutan, revisiTerbitId: null, versiTerbit: null, dibuang: false });
+      entri.set(id, { id, jenis, slug, urutan, revisiTerbitId: null, versiTerbit: null, dibuang: false, diarsipkan: false });
       return id;
     },
     // [supabase/migrations/20260927000004_atur_urutan.sql] aturan disamakan dengan fungsi database.
@@ -274,6 +279,19 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
         baris.versiTerbit = ++versi;
       }
       catatJejak(entriId, 'dipulihkan');
+    },
+    async arsipkanEntri(entriId, alasan) {
+      const baris = ambil(entri, entriId, 'entri');
+      if (baris.diarsipkan) throw new Error('entri sudah diarsipkan');
+      if (keadaanSampah(baris).diSampah) throw new Error('entri ada di Sampah; pulihkan dulu');
+      aturArsip(baris, true);
+      catatJejak(entriId, 'diarsipkan', alasan?.trim() || null);
+    },
+    async keluarkanArsipEntri(entriId) {
+      const baris = ambil(entri, entriId, 'entri');
+      if (!baris.diarsipkan) throw new Error('entri tidak diarsipkan');
+      aturArsip(baris, false);
+      catatJejak(entriId, 'dikeluarkan_arsip');
     },
   };
 

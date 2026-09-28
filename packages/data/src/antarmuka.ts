@@ -25,12 +25,14 @@ export interface AjuanKonten extends RingkasanRevisi { jenis: JenisKonten; slug:
 export interface RingkasanEntri {
   entriId: string; jenis: JenisKonten; slug: string; urutan: number;
   revisiTerbitId: string | null; dihapus: boolean; dibuang: boolean; revisiTerakhir: RingkasanRevisi | null;
+  /** Ditarik dari web tanpa dibuang; isi & revisi tetap. */
+  diarsipkan: boolean;
   /** Isi revisi tayang, hanya terisi bila revisiTerakhir sudah dibuang (`diabaikan`): isinya bukan lagi yang berlaku. */
   isiTerbit?: unknown;
 }
-/** Kejadian Sampah satu entri (tabel jejak_entri); suntingan & review tercatat di revisinya sendiri. */
+/** Kejadian Sampah & Arsip satu entri (tabel jejak_entri); suntingan & review tercatat di revisinya sendiri. */
 export interface JejakEntri {
-  id: string; entriId: string; aksi: 'dibuang' | 'buang_diajukan' | 'dipulihkan'; pelaku: string; pada: string; catatan: string | null;
+  id: string; entriId: string; aksi: 'dibuang' | 'buang_diajukan' | 'dipulihkan' | 'diarsipkan' | 'dikeluarkan_arsip'; pelaku: string; pada: string; catatan: string | null;
 }
 export interface RingkasanKunciDiksi {
   kunci: string; halaman: string; terbit: DiksiTerbit | null; revisiTerakhir: RingkasanRevisiDiksi | null;
@@ -39,9 +41,9 @@ export interface PeranPengguna { userId: string; email: string; nama: string | n
 
 export interface RepositoriKonten {
   versiSekarang(): Promise<number>;
-  /** Hanya revisi terbit, tanpa entri yang dihapus; isi tidak valid dibuang (console.warn), tidak melempar. */
+  /** Hanya revisi terbit, tanpa entri yang dihapus/diarsipkan; isi tidak valid dibuang (console.warn), tidak melempar. */
   bacaTerbit(saring?: { jenis?: JenisKonten; sejakVersi?: number }): Promise<KontenTerbit[]>;
-  /** entriId yang penghapusannya terbit sejak `sejakVersi`, supaya cache web membuangnya. */
+  /** entriId yang penghapusan/pengarsipannya terbit sejak `sejakVersi`, supaya cache web membuangnya. */
   bacaDihapus(sejakVersi: number): Promise<string[]>;
   daftarRevisi(entriId: string): Promise<RingkasanRevisi[]>;
   daftarJejak(entriId: string): Promise<JejakEntri[]>;
@@ -76,6 +78,9 @@ export interface RepositoriEditorial {
    * 'dibuang' = langsung masuk Sampah. */
   buangEntri(entriId: string, alasan?: string): Promise<'dibuang' | 'diajukan'>;
   pulihkanEntri(entriId: string): Promise<void>;
+  /** Semua peran, langsung tanpa review: tarik dari web (arsipkan) / tayangkan lagi (keluarkan). */
+  arsipkanEntri(entriId: string, alasan?: string): Promise<void>;
+  keluarkanArsipEntri(entriId: string): Promise<void>;
 }
 export interface RepositoriDiksi {
   bacaTerbit(sejakVersi?: number): Promise<DiksiTerbit[]>;

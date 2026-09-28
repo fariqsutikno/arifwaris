@@ -7,7 +7,7 @@ import { bolehPerbaruiAjuan, bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntr
 import type { RingkasanRevisi } from '@waris/data';
 
 export interface EntriSunting {
-  revisiTerbitId: string | null; dihapus: boolean; dibuang: boolean; semuaRevisi: RingkasanRevisi[];
+  revisiTerbitId: string | null; dihapus: boolean; dibuang: boolean; diarsipkan: boolean; semuaRevisi: RingkasanRevisi[];
 }
 interface Pelaku { peran: Peran; userId: string; namaDari: (userId: string) => string }
 
@@ -74,6 +74,7 @@ export function revisiBasis(entri: EntriSunting): RingkasanRevisi | null {
 export function teksTayang(entri: EntriSunting, sekarangRelatif: (iso: string) => string): string {
   if (entri.dibuang) return 'Di Sampah · belum pernah tayang di web';
   if (entri.dihapus) return 'Di Sampah · tidak tampil di web';
+  if (entri.diarsipkan) return 'Diarsipkan · tidak tampil di web';
   const terbit = entri.semuaRevisi.find(r => r.id === entri.revisiTerbitId);
   if (!terbit) return 'Belum pernah tayang di web';
   const sejak = terbit.diperiksaPada ?? terbit.dibuatPada;

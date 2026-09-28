@@ -45,17 +45,17 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return Number((baris as { angka: number }).angka);
     },
     async bacaTerbit(saring = {}) {
-      let kueri = klien.from('entri_konten').select(`id, jenis, slug, urutan, versi_terbit, ${RELASI_TERBIT}`)
+      let kueri = klien.from('entri_konten').select(`id, jenis, slug, urutan, versi_terbit, diarsipkan_pada, ${RELASI_TERBIT}`)
         .not('revisi_terbit_id', 'is', null).order('urutan');
       if (saring.jenis) kueri = kueri.eq('jenis', saring.jenis);
       if (saring.sejakVersi !== undefined) kueri = kueri.gt('versi_terbit', saring.sejakVersi);
-      return saringValid((await hasil(kueri) as any[]).filter(baris => !baris.revisi_terbit.hapus).map(keTerbitMentah));
+      return saringValid((await hasil(kueri) as any[]).filter(baris => !baris.revisi_terbit.hapus && !baris.diarsipkan_pada).map(keTerbitMentah));
     },
     async bacaDihapus(sejakVersi) {
       // Penanda hapus sedikit; saring di klien supaya tidak bergantung pada filter relasi PostgREST.
-      const baris = await hasil(klien.from('entri_konten').select('id, revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(hapus)')
+      const baris = await hasil(klien.from('entri_konten').select('id, diarsipkan_pada, revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(hapus)')
         .not('revisi_terbit_id', 'is', null).gt('versi_terbit', sejakVersi)) as any[];
-      return baris.filter(b => b.revisi_terbit.hapus).map(b => b.id as string);
+      return baris.filter(b => b.revisi_terbit.hapus || b.diarsipkan_pada).map(b => b.id as string);
     },
     async daftarJejak(entriId) {
       return (await hasil(klien.from('jejak_entri').select('*').eq('entri_id', entriId).order('pada')) as any[]).map(keJejak);
@@ -64,7 +64,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return (await hasil(klien.from('revisi').select('*').eq('entri_id', entriId).order('dibuat_pada')) as any[]).map(keRevisi);
     },
     async daftarEntri(jenis) {
-      let kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, dibuang_pada, revisi!revisi_entri_id_fkey(*)');
+      let kueri = klien.from('entri_konten').select('id, jenis, slug, urutan, revisi_terbit_id, dibuang_pada, diarsipkan_pada, revisi!revisi_entri_id_fkey(*)');
       if (jenis !== undefined) kueri = kueri.eq('jenis', jenis);
       kueri = kueri.order('urutan').order('slug');
       return (await hasil(kueri) as any[]).map(keRingkasanEntri);
@@ -98,6 +98,8 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return await hasil(klien.rpc('buang_entri', { p_entri: entriId, p_alasan: alasan ?? null })) as 'dibuang' | 'diajukan';
     },
     pulihkanEntri: entriId => rpc('pulihkan_entri', { p_entri: entriId }),
+    arsipkanEntri: (entriId, alasan) => rpc('arsipkan_entri', { p_entri: entriId, p_alasan: alasan ?? null }),
+    keluarkanArsipEntri: entriId => rpc('keluarkan_arsip_entri', { p_entri: entriId }),
     async antreanReview() {
       return (await hasil(klien.from('revisi').select('*').eq('status', 'diajukan').order('dibuat_pada')) as any[]).map(keRevisi);
     },

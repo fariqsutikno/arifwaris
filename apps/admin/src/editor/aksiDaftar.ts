@@ -4,31 +4,32 @@
 // pembuat semua revisi, sedangkan daftar hanya membawa revisi terakhir; sisanya ditolak database dengan pesan galat.
 import { bolehPulihkanEntri, caraBuangEntri, transisiRevisi, type KeadaanSampah, type Peran } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
-import { diSampah, statusTampil, type StatusTampil } from '../ringkas';
+import { diSampah, statusTampil, type StatusTampil, type TabStatus } from '../ringkas';
 
-export type AksiDaftar = 'terbitkan' | 'ajukan' | 'setujui' | 'kembalikan' | 'sampah' | 'pulihkan';
+export type AksiDaftar = 'terbitkan' | 'ajukan' | 'setujui' | 'kembalikan' | 'sampah' | 'pulihkan' | 'arsipkan' | 'keluarkanArsip';
 interface Pelaku { peran: Peran; userId: string }
 
 export const LABEL_AKSI: Record<AksiDaftar, string> = {
   terbitkan: 'Terbitkan', ajukan: 'Kirim untuk review', setujui: 'Setujui', kembalikan: 'Kembalikan',
-  sampah: 'Pindahkan ke Sampah', pulihkan: 'Pulihkan',
+  sampah: 'Pindahkan ke Sampah', pulihkan: 'Pulihkan', arsipkan: 'Arsipkan', keluarkanArsip: 'Keluarkan dari Arsip',
 };
 export const HASIL_AKSI: Record<AksiDaftar, string> = {
   terbitkan: 'diterbitkan', ajukan: 'dikirim untuk review', setujui: 'disetujui', kembalikan: 'dikembalikan',
-  sampah: 'dipindahkan ke Sampah', pulihkan: 'dipulihkan',
+  sampah: 'dipindahkan ke Sampah', pulihkan: 'dipulihkan', arsipkan: 'diarsipkan', keluarkanArsip: 'dikeluarkan dari Arsip',
 };
 
 /** Aksi yang ditawarkan ke satu peran (tombol tampil); boleh-tidaknya per entri diputuskan alasanTolak. */
-export function aksiPeran(peran: Peran, tabSampah: boolean): AksiDaftar[] {
-  if (tabSampah) return ['pulihkan'];
-  if (peran === 'admin') return ['terbitkan', 'ajukan', 'setujui', 'kembalikan', 'sampah'];
-  if (peran === 'penulis') return ['ajukan', 'sampah'];
-  return ['setujui', 'kembalikan'];
+export function aksiPeran(peran: Peran, tab: TabStatus): AksiDaftar[] {
+  if (tab === 'sampah') return ['pulihkan'];
+  if (tab === 'arsip') return ['keluarkanArsip'];
+  if (peran === 'admin') return ['terbitkan', 'ajukan', 'setujui', 'kembalikan', 'arsipkan', 'sampah'];
+  if (peran === 'penulis') return ['ajukan', 'arsipkan', 'sampah'];
+  return ['setujui', 'kembalikan', 'arsipkan'];
 }
 
 const KETERANGAN_STATUS: Record<StatusTampil, string> = {
   terbit: 'sudah terbit', draf: 'masih draf', 'terbit + draf': 'masih draf', diajukan: 'menunggu review',
-  dikembalikan: 'dikembalikan, perlu diperbaiki dulu', sampah: 'di Sampah',
+  dikembalikan: 'dikembalikan, perlu diperbaiki dulu', arsip: 'diarsipkan', sampah: 'di Sampah',
 };
 
 /** null = aksi boleh dijalankan pada entri ini. */
@@ -39,6 +40,9 @@ export function alasanTolak(aksi: AksiDaftar, entri: RingkasanEntri, pelaku: Pel
     return boleh.ok ? null : diSampah(entri) ? 'perlu reviewer atau admin' : 'tidak di Sampah';
   }
   if (diSampah(entri)) return KETERANGAN_STATUS.sampah;
+  // Arsip langsung untuk semua peran, tanpa review (keputusan pengguna 2026-09-28); DB tetap menolak yang di Sampah.
+  if (aksi === 'arsipkan') return entri.diarsipkan ? KETERANGAN_STATUS.arsip : null;
+  if (aksi === 'keluarkanArsip') return entri.diarsipkan ? null : 'tidak diarsipkan';
   if (aksi === 'sampah') {
     const cara = caraBuangEntri({ ...keadaanSampah(entri), peran: pelaku.peran, pelakuId: pelaku.userId });
     if (cara.ok) return null;

@@ -56,7 +56,7 @@ const OPSI_STATIS: OpsiRuntime = {
   kitab: DAFTAR_KITAB.map(({ judul }) => ({ nilai: judul, label: judul })),
 };
 const PESAN_BUKA_KUNCI = 'Identitas ini dipakai di tautan yang sudah dibagikan dan progres belajar pengguna. Mengubahnya bisa memutus keduanya. Tetap buka kunci?';
-const ENTRI_BARU: EntriSunting = { revisiTerbitId: null, dihapus: false, dibuang: false, semuaRevisi: [] };
+const ENTRI_BARU: EntriSunting = { revisiTerbitId: null, dihapus: false, dibuang: false, diarsipkan: false, semuaRevisi: [] };
 
 // basis = revisi yang isinya dimuat ke form (revisiBasis). entriId null = entri baru yang belum pernah disimpan.
 interface Muatan { jenis: JenisKonten; slug: string | null; entriId: string | null; entri: EntriSunting; basis: RingkasanRevisi | null }
@@ -137,7 +137,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     const ringkasan = semua.find(e => e.entriId === entriId);
     if (!ringkasan) throw new Error(`entri ${entriId} tidak ditemukan`);
     const entri: EntriSunting = {
-      revisiTerbitId: ringkasan.revisiTerbitId, dihapus: ringkasan.dihapus, dibuang: ringkasan.dibuang,
+      revisiTerbitId: ringkasan.revisiTerbitId, dihapus: ringkasan.dihapus, dibuang: ringkasan.dibuang, diarsipkan: ringkasan.diarsipkan,
       semuaRevisi: await repo.konten.daftarRevisi(entriId),
     };
     const basis = revisiBasis(entri);

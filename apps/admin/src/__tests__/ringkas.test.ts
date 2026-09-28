@@ -13,13 +13,13 @@ function entri(id: string, sisa: { status?: RingkasanRevisi['status'] | null; te
     dibuatPada: sisa.pada ?? '2026-09-27T00:00:00.000Z', diperiksaPada: null,
   } satisfies RingkasanRevisi;
   const revisiTerbitId = sisa.terbit ? (sisa.status === 'disetujui' ? `r-${id}` : `lama-${id}`) : null;
-  return { entriId: id, jenis: 'faq', slug: id, urutan: 0, revisiTerbitId, dihapus: false, dibuang: false, revisiTerakhir };
+  return { entriId: id, jenis: 'faq', slug: id, urutan: 0, revisiTerbitId, dihapus: false, dibuang: false, diarsipkan: false, revisiTerakhir };
 }
 
 test('jumlahPerTab: terbit + draf dihitung di Draf dan Terbit', () => {
   const daftar = [entri('a', { status: 'disetujui', terbit: true }), entri('b', { status: 'draf', terbit: true }),
     entri('c', { status: 'diajukan' }), entri('d', { status: 'dikembalikan' })];
-  expect(jumlahPerTab(daftar)).toEqual({ semua: 4, draf: 1, diajukan: 1, dikembalikan: 1, terbit: 2, sampah: 0 });
+  expect(jumlahPerTab(daftar)).toEqual({ semua: 4, draf: 1, diajukan: 1, dikembalikan: 1, terbit: 2, arsip: 0, sampah: 0 });
 });
 
 test('saringDaftar: cari judul, slug, atau ref tanpa beda huruf besar', () => {
@@ -135,4 +135,12 @@ test('urutkan: manual apa adanya; diubah terbaru dulu; judul alfabet dengan angk
 test('statusTampil: revisi dikembalikan yang dibuang tidak dihitung', () => {
   const e = entri('x', { status: 'dikembalikan', terbit: true });
   expect(statusTampil({ ...e, revisiTerakhir: { ...e.revisiTerakhir!, diabaikan: true } })).toBe('terbit');
+});
+
+test('Arsip: status arsip, keluar dari Semua & beranda; Sampah tetap menang', () => {
+  const arsip = { ...entri('a', { status: 'draf', oleh: 'u1' }), diarsipkan: true };
+  expect(statusTampil(arsip)).toBe('arsip');
+  expect(statusTampil({ ...arsip, dibuang: true })).toBe('sampah');
+  expect(jumlahPerTab([arsip, entri('b')])).toMatchObject({ semua: 1, arsip: 1, draf: 1 });
+  expect(ringkasBeranda([arsip], 'u1')).toMatchObject({ drafSaya: 0 });
 });

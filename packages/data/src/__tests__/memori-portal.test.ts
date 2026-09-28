@@ -236,3 +236,19 @@ test('revisiSaya: hanya milik sendiri yang sudah dikirim, terbaru dulu, dengan e
   expect(diksi).toMatchObject({ id: d1, status: 'disetujui', diperiksaOleh: 'u-rev' });
   expect(diksi!.diperiksaPada).toBeTruthy();
 });
+
+test('Arsip: penulis langsung menarik entri terbit dari web, cache membuangnya, keluarkan → tayang lagi', async () => {
+  const m = siapkan();
+  const { id, r1 } = await terbitkan(m);
+  m.aturPeranLangsung('u-pen', 'penulis');
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  const versiAwal = await m.konten.versiSekarang();
+  await m.editorial.arsipkanEntri(id, 'belum relevan');
+  await expect(m.editorial.arsipkanEntri(id)).rejects.toThrow('sudah diarsipkan');
+  expect(await m.konten.bacaTerbit()).toEqual([]);
+  expect(await m.konten.bacaDihapus(versiAwal)).toEqual([id]);
+  expect((await m.konten.daftarEntri())[0]).toMatchObject({ diarsipkan: true, dihapus: false, dibuang: false });
+  await m.editorial.keluarkanArsipEntri(id);
+  expect((await m.konten.bacaTerbit({ sejakVersi: versiAwal + 1 })).map(b => b.revisiId)).toEqual([r1]);
+  expect((await m.konten.daftarJejak(id)).map(j => [j.aksi, j.catatan])).toEqual([['diarsipkan', 'belum relevan'], ['dikeluarkan_arsip', null]]);
+});
