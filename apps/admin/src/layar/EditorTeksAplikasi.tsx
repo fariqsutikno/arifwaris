@@ -1,15 +1,17 @@
 // Sunting teks aplikasi langsung di layar: menampilkan layar web asli (beranda, kalkulator, hasil, belajar, …) dan
 // menandai setiap teks yang berasal dari teks edukasi atau diksi (lewat buatPencocok) dengan kotak bergaris. Klik teks →
-// dialog sunting Indonesia/Arab → admin menerbitkan (teks edukasi) atau mengajukan (diksi & penulis), sama dengan jalur
-// layar daftar. Kotak digambar sebagai lapisan di atas layar, bukan dengan mengubah DOM React milik layar web.
+// dialog sunting Indonesia/Arab → admin langsung menerbitkan, penulis mengajukan; ajuan yang masih menunggu bisa
+// disunting pembuatnya (menggantikan ajuan itu), sama dengan jalur layar daftar. Kotak digambar sebagai lapisan di atas layar, bukan dengan mengubah DOM React milik layar web.
 // Teks yang tidak tampil di layar mana pun dicari lewat kotak "Cari teks" atau tab Daftar teks. Dialog sunting menulis
 // "Tampil di" (modul virtual lokasi-teks) dan pratinjau kalimatnya; tempat simpan (teks edukasi/diksi) diurus di sini.
-// ponytail: layar web memakai snapshot bawaan build dan membaca teksnya sekali saat dimuat; teks yang baru disimpan
-// ditulis langsung ke simpul teksnya supaya terlihat, bukan dirender ulang oleh layar web.
+// Layar web membaca snapshot yang terpasang (terbaru dari database, lihat Portal.tsx) ditimpa draf/ajuan yang belum
+// terbit, lalu dipasang ulang tiap kali data berubah: semua tempat yang memakai teks sama ikut berubah dan tetap bergaris.
+// Batas: teks yang dibaca web di konstanta tingkat modul baru berubah setelah portal dimuat ulang.
 import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import type { IsiTeksEdukasi } from '@waris/content';
+import { bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
-import { snapshotTerpasang } from '@waris/web/sumber';
+import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
+import type { Snapshot } from '@waris/data/snapshot';
 import { Beranda as BerandaWeb } from '@waris/web/layar/Beranda';
 import { LangkahPewaris } from '@waris/web/layar/wizard/LangkahPewaris';
 import { LangkahAhliWaris } from '@waris/web/layar/LangkahAhliWaris';
@@ -105,6 +107,7 @@ export function EditorTeksAplikasi() {
   const [bagianId, setBagianId] = useState(BAGIAN[0]!.id);
   const [modeSunting, setModeSunting] = useState(true);
   const [daftarSumber, setDaftarSumber] = useState<SumberTeks[]>(sumberDariSnapshot);
+  const [versiLayar, setVersiLayar] = useState(0);
   const [dipilih, setDipilih] = useState<{ sumber: SumberTeks[]; simpul: Text | null } | null>(null);
   const [cari, setCari] = useState('');
   const pencocok = useMemo(() => buatPencocok(daftarSumber), [daftarSumber]);
@@ -117,16 +120,21 @@ export function EditorTeksAplikasi() {
     return () => { dibatalkan = true; };
   }, [repo, muatUlang]);
 
+  // asal ditangkap di dalam efek (bukan saat render) supaya benar di StrictMode; lihat Pratinjau.tsx.
+  useLayoutEffect(() => {
+    if (!data) return;
+    const asal = snapshotTerpasang();
+    pasangSnapshot(timpaBelumTerbit(asal, data));
+    setDaftarSumber(sumberDariSnapshot());
+    setVersiLayar(n => n + 1);
+    return () => pasangSnapshot(asal);
+  }, [data]);
+
   const bagian = BAGIAN.find(b => b.id === bagianId)!;
   const kata = rapikan(cari).toLowerCase();
   const hasilCari = kata ? daftarSumber.filter(s => s.id.toLowerCase().includes(kata) || (s.ar ?? '').includes(cari.trim())).slice(0, BATAS_HASIL_CARI) : [];
 
-  function setelahSimpan(sumber: SumberTeks, idBaru: string, arBaru: string | null) {
-    // Simpul teks ditulis langsung (lihat ponytail di atas); hanya bila isinya memang persis teks lama.
-    if (dipilih?.simpul && rapikan(dipilih.simpul.data) === rapikan(sumber.id)) dipilih.simpul.data = idBaru;
-    setDaftarSumber(lama => lama.map(s => (s === sumber ? { ...s, id: idBaru, ar: arBaru } : s)));
-    setMuatUlang(n => n + 1);
-  }
+  const setelahSimpan = () => setMuatUlang(n => n + 1);
 
   return (
     <div className="space-y-3">
@@ -148,7 +156,7 @@ export function EditorTeksAplikasi() {
       </div>
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
         <Card className="gap-0 overflow-hidden py-0">
-          <PenjagaGalat key={bagian.id}>
+          <PenjagaGalat key={`${bagian.id}-${versiLayar}`}>
             <LayarBisaDisunting pencocok={pencocok} aktif={modeSunting} saatPilih={(sumber, simpul) => setDipilih({ sumber, simpul })}>
               {bagian.layar()}
             </LayarBisaDisunting>
@@ -241,7 +249,7 @@ function kumpulkanKotak(el: HTMLElement, pencocok: PencocokTeks): KotakTeks[] {
 
 export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutup, saatTersimpan }: {
   pilihan: SumberTeks[]; data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }; bacaSaja: boolean; layarSekarang?: string | undefined;
-  saatTutup: () => void; saatTersimpan: (sumber: SumberTeks, id: string, ar: string | null) => void;
+  saatTutup: () => void; saatTersimpan: () => void;
 }) {
   const { repo, peran, sesi } = usePortal();
   const [indeks, setIndeks] = useState(0);
@@ -252,9 +260,13 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
   const [galat, setGalat] = useState<string | null>(null);
   const [sibuk, setSibuk] = useState(false);
   const menunggu = keadaan.status === 'diajukan';
-  const terkunci = bacaSaja || menunggu;
+  // [K2] ajuan yang menunggu disunting di tempat oleh pembuatnya (atau admin); tetap di antrean.
+  const perbaruiAjuan = menunggu && !!keadaan.revisi
+    && bolehPerbaruiAjuan({ peran, pelakuId: sesi.userId, pembuatId: keadaan.revisi.dibuatOleh, status: 'diajukan' });
+  const terkunci = bacaSaja || (menunggu && !perbaruiAjuan);
   const berubah = teksId !== keadaan.id || teksAr !== (keadaan.ar ?? '');
-  const langsungTerbit = sumber.sumber === 'teks' && peran === 'admin';
+  // [K1] admin menerbitkan teks aplikasi langsung, tanpa antrean.
+  const langsungTerbit = peran === 'admin' && !menunggu;
 
   function ganti(i: number) {
     const lain = keadaanSumber(pilihan[i]!, data);
@@ -268,8 +280,13 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
     setGalat(null);
     try {
       const ar = teksAr.trim() || null;
-      if (sumber.sumber === 'diksi') {
-        await repo.diksi.ajukan(await repo.diksi.buatDraf(sumber.kunci, teksId, ar, null));
+      if (perbaruiAjuan) {
+        await (sumber.sumber === 'diksi'
+          ? repo.diksi.perbaruiAjuan(keadaan.revisi!.id, teksId, ar)
+          : repo.editorial.perbaruiAjuan(keadaan.revisi!.id, 'teks_edukasi', ar ? { id: teksId, ar } : { id: teksId }, []));
+      } else if (sumber.sumber === 'diksi') {
+        const revisiId = await repo.diksi.buatDraf(sumber.kunci, teksId, ar, null);
+        await (langsungTerbit ? repo.diksi.terbitkanLangsung(revisiId) : repo.diksi.ajukan(revisiId));
       } else {
         const entri = data.entri.find(e => e.slug === sumber.kunci);
         if (!entri) throw new Error('Teks ini belum ada di database; minta admin menambahkannya.');
@@ -280,7 +297,7 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
           : await repo.editorial.buatDraf(entri.entriId, 'teks_edukasi', isi, []);
         await (langsungTerbit ? repo.editorial.terbitkanLangsung(revisiId) : repo.editorial.ajukan(revisiId));
       }
-      saatTersimpan(sumber, teksId, ar);
+      saatTersimpan();
       saatTutup();
     } catch (e) {
       setGalat(pesanGalat(e));
@@ -307,7 +324,13 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
             ))}
           </fieldset>
         ) : null}
-        {menunggu ? <p className="text-sm text-muted-foreground">Perubahan teks ini sedang menunggu review. Tunggu disetujui dulu sebelum menyunting lagi.</p> : null}
+        {menunggu ? (
+          <p className="text-sm text-muted-foreground">
+            {perbaruiAjuan
+              ? 'Perubahan teks ini sedang menunggu review. Suntingan Anda menggantikan ajuan itu, dan tetap menunggu review.'
+              : 'Perubahan teks ini sedang menunggu review. Tunggu disetujui dulu sebelum menyunting lagi.'}
+          </p>
+        ) : null}
         <Label className="grid gap-1.5">
           Bahasa Indonesia
           <Textarea rows={3} value={teksId} readOnly={terkunci} onChange={e => setTeksId(e.target.value)} />
@@ -329,7 +352,7 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
           <Button variant="ghost" onClick={saatTutup}>Batal</Button>
           {terkunci ? null : (
             <Button disabled={!berubah || !teksId.trim() || sibuk} onClick={() => void simpan()}>
-              {sibuk ? 'Menyimpan…' : langsungTerbit ? 'Simpan & terbitkan' : 'Simpan & ajukan'}
+              {sibuk ? 'Menyimpan…' : perbaruiAjuan ? 'Simpan perubahan ajuan' : langsungTerbit ? 'Simpan & terbitkan' : 'Simpan & ajukan'}
             </Button>
           )}
         </DialogFooter>
@@ -352,17 +375,39 @@ function PratinjauTeks({ teks }: { teks: string }) {
     : <span key={i}>{bagian}</span>))}</>;
 }
 
-/** Nilai terbaru satu teks di database (draf/ajuan bila ada, selain itu yang terbit), jatuh ke nilai layar. */
+/** Nilai terbaru satu teks di database (draf/ajuan bila ada, selain itu yang terbit), jatuh ke nilai layar; `revisi` =
+ * revisi terakhir yang belum terbit, untuk memperbarui ajuan. */
 function keadaanSumber(sumber: SumberTeks, data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }) {
   if (sumber.sumber === 'diksi') {
     const kunci = data.diksi.find(k => k.kunci === sumber.kunci);
     const revisi = kunci?.revisiTerakhir;
-    if (revisi && revisi.status !== 'disetujui') return { id: revisi.idTeks, ar: revisi.arTeks, status: revisi.status };
-    return { id: kunci?.terbit?.id ?? sumber.id, ar: kunci?.terbit?.ar ?? sumber.ar, status: 'terbit' as const };
+    if (revisi && revisi.status !== 'disetujui') return { id: revisi.idTeks, ar: revisi.arTeks, status: revisi.status, revisi };
+    return { id: kunci?.terbit?.id ?? sumber.id, ar: kunci?.terbit?.ar ?? sumber.ar, status: 'terbit' as const, revisi: null };
   }
   const revisi = data.entri.find(e => e.slug === sumber.kunci)?.revisiTerakhir;
   const isi = revisi?.isi as IsiTeksEdukasi | undefined;
-  return { id: isi?.id ?? sumber.id, ar: isi?.ar ?? sumber.ar, status: revisi?.status ?? 'terbit' };
+  return { id: isi?.id ?? sumber.id, ar: isi?.ar ?? sumber.ar, status: revisi?.status ?? 'terbit', revisi: revisi?.status === 'disetujui' ? null : revisi ?? null };
+}
+
+/** Snapshot layar web: yang terbit, ditimpa teks yang sedang disunting (draf/ajuan terakhir) supaya hasil suntingan
+ * langsung terlihat di semua tempat. Revisi dikembalikan tidak ditimpakan (belum layak tampil). */
+function timpaBelumTerbit(asal: Snapshot, data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }): Snapshot {
+  const tampil = (status: string) => status === 'draf' || status === 'diajukan' || status === 'disetujui';
+  const teks = new Map(data.entri.filter(e => e.revisiTerakhir && tampil(e.revisiTerakhir.status))
+    .map(e => [e.slug, e.revisiTerakhir!.isi as IsiTeksEdukasi]));
+  const diksi = new Map(data.diksi.map(k => {
+    const revisi = k.revisiTerakhir;
+    return [k.kunci, revisi && tampil(revisi.status) ? { id: revisi.idTeks, ar: revisi.arTeks } : k.terbit] as const;
+  }));
+  return {
+    ...asal,
+    konten: asal.konten.map(baris => (baris.jenis === 'teks_edukasi' && teks.has(baris.slug)
+      ? { ...baris, isi: keJson('teks_edukasi', teks.get(baris.slug)!) } : baris)),
+    diksi: asal.diksi.map(butir => {
+      const baru = diksi.get(butir.kunci);
+      return baru ? { ...butir, id: baru.id, ar: baru.ar } : butir;
+    }),
+  };
 }
 
 function sumberDariSnapshot(): SumberTeks[] {

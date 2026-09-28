@@ -1,9 +1,13 @@
 // Gerbang sesi & peran portal admin: memuat sesi lalu peran dari repo.akun, dan hanya merender navigasi + rute
 // setelah keduanya siap. Tanpa sesi → tombol masuk Google; sesi tanpa peran → pesan "belum punya akses" + keluar;
 // galat saat memuat → pesan galat (bukan layar kosong). Rute dibaca dari location.hash (bacaRute/tulisRute).
+// Sebelum layar tampil, konten & teks terbit terbaru diunduh ke snapshot web yang terpasang (sinkronkan, sama dengan web),
+// supaya Pratinjau & Sunting di layar tidak memakai snapshot lama bawaan build.
 import { useEffect, useState, type ReactNode } from 'react';
 import type { JenisKonten, Peran } from '@waris/content';
 import type { Sesi } from '@waris/data';
+import { sinkronkan } from '@waris/data/snapshot';
+import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -35,7 +39,10 @@ export function Portal({ repo }: { repo: RepoPortal }) {
         const sesi = await repo.akun.sesi();
         if (!sesi) { if (!dibatalkan) setStatus({ tahap: 'tamu' }); return; }
         const peran = await repo.akun.peranSaya();
+        // Gagal sinkron tidak menghalangi portal (sinkronkan mencatat & mengembalikan null): layar memakai snapshot bawaan.
+        const terbaru = peran ? await sinkronkan(repo, snapshotTerpasang()) : null;
         if (dibatalkan) return;
+        if (terbaru) pasangSnapshot(terbaru);
         setStatus(peran ? { tahap: 'siap', sesi, peran } : { tahap: 'tanpaPeran', sesi });
       } catch (e) {
         if (!dibatalkan) setStatus({ tahap: 'galat', pesan: pesanGalat(e) });
