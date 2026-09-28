@@ -288,3 +288,6 @@ F5 uraian bab. F1 menggantikan butir Fase 3.1, 3.3, dan 3.5 di bagian B.
 - **Penyetuju perubahan KB = reviewer** (dosen). Tim keilmuan berperan **penulis**. Tidak ada peran baru; aturan
   "penyetuju bukan penulisnya" tetap berlaku.
 - Urutan pengerjaan dibahas di sesi terpisah.
+- **Ditunda (2026-09-28).** Lapisan 1 (dasar hukum di portal, commit `0d337bd`) sudah dibuat lalu di-revert (`8734e19`):
+  KB saat ini hanya dipakai untuk RAG & pengembangan engine (munasakhat, dst.), jadi cukup disunting di `docs/kb` (git).
+  Kodenya tetap ada di riwayat git bila bagian F dilanjutkan.
