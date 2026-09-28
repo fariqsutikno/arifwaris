@@ -5,7 +5,7 @@ Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **keputusan C1–C7 
 **Progres (2026-09-28):** Fase 1 selesai (semua butir). Fase 2 selesai (semua butir; "Lihat di web" di menu ⋯ belum, portal
 belum tahu alamat web). Fase 3.2 (penjelasan per pilihan kuis) selesai; `pengecoh` lama digabung ke pembahasan saat dibaca
 (Zod), tanpa migrasi SQL. Fase 3.4 tidak perlu kerja (C4). Fase 4 selesai kecuali layar akun yang butuh login.
-Belum: F (menggantikan 3.1/3.3/3.5), Fase 5 (AI), templat ringkasan modul & baris ahwal.
+Templat ringkasan modul & baris ahwal selesai. Belum: F (menggantikan 3.1/3.3/3.5), Fase 5 (AI).
 
 Dokumen ini menelaah 24 keluhan pengguna tentang portal admin (`apps/admin`), mencari akar masalahnya di kode,
 lalu menyusun perbaikan bertahap. Belum ada kode yang diubah.

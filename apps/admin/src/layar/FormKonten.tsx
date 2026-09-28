@@ -115,6 +115,10 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
   const wajib = bidangWajib(bidang);
   const label = <span className={wajib ? TANDA_WAJIB : undefined}>{bidang.label}</span>;
   const placeholder = placeholderOtomatis ?? (bidang.contoh ? `Contoh: ${bidang.contoh}` : undefined);
+  const kosong = Array.isArray(nilai) ? nilai.length === 0 : !teks.trim();
+  const tautanTemplat = bidang.templat && kosong && !bacaSaja ? (
+    <Button type="button" variant="link" size="sm" className="ml-auto h-auto w-fit p-0 text-xs" onClick={() => saatUbah(bidang.templat!)}>Pakai templat</Button>
+  ) : null;
   const bungkus = (isi: ReactNode, tambahan: { bantuan?: string | undefined; contoh?: string | undefined } = {}) => (
     <BungkusBidang jalur={bidang.jalur} galat={galat} saatSelesai={saatSelesai}
       bantuan={'bantuan' in tambahan ? tambahan.bantuan : bidang.bantuan} contoh={tambahan.contoh}>
@@ -125,7 +129,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
     case 'kasus':
       return bungkus(<EditorKasus nilai={nilai as ContohKasus} saatUbah={saatUbah} bacaSaja={bacaSaja} />);
     case 'barisAhwal':
-      return bungkus(<EditorBarisAhwal label={label} nilai={nilai as BarisAhwal[]} saatUbah={saatUbah} bacaSaja={bacaSaja} opsiAlasan={opsi ?? []} />);
+      return bungkus(<>{tautanTemplat}<EditorBarisAhwal label={label} nilai={nilai as BarisAhwal[]} saatUbah={saatUbah} bacaSaja={bacaSaja} opsiAlasan={opsi ?? []} /></>);
     case 'pilihanKuis':
       return bungkus(<EditorPilihanKuis label={label} nilai={nilai as NilaiPilihanKuis} saatUbah={saatUbah} bacaSaja={bacaSaja} konteks={konteks} />);
     case 'markdownBlok': case 'markdownPotongan':
@@ -134,9 +138,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
           <div className="grid gap-1.5">
             <span className="flex items-center gap-2 text-sm font-medium">
               {label}
-              {bidang.templat && !teks.trim() && !bacaSaja ? (
-                <Button type="button" variant="link" size="sm" className="ml-auto h-auto p-0 text-xs" onClick={() => saatUbah(bidang.templat!)}>Pakai templat</Button>
-              ) : null}
+              {tautanTemplat}
             </span>
             {padananId ? <Padanan teks={padananId} panjang={bidang.jenis === 'markdownBlok'} /> : null}
             <EditorBlok label={bidang.label} nilai={teks} saatUbah={saatUbah} mode={bidang.jenis === 'markdownBlok' ? 'blok' : 'potongan'}
@@ -163,6 +165,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
             ) : masukan()}
           </Label>
           {kunci ? <CatatanKunci saatBuka={kunci.saatBuka} /> : null}
+          {tautanTemplat}
         </>,
         { bantuan: kunci ? undefined : bidang.bantuan },
       );

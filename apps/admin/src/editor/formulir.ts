@@ -1,7 +1,7 @@
 // Deskripsi form per jenis konten (data, bukan JSX). Menerima: jenis konten. Memutuskan: bidang apa saja yang tampil,
 // labelnya, dan cara nilainya dibentuk (teks, angka, Markdown, dst.). Menyerahkan ke nilaiForm.ts (konversi isi ↔ nilai)
 // dan FormKonten.tsx (perender). Field isi yang tidak disebut di sini tidak hilang: nilaiForm mempertahankannya dari isi asal.
-import type { JenisKonten } from '@waris/content';
+import type { BarisAhwal, JenisKonten } from '@waris/content';
 
 export type JenisBidang =
   | 'teks' | 'teksPanjang' | 'angka' | 'pilihan' | 'centang' | 'tautan'
@@ -36,7 +36,7 @@ export interface Bidang {
   /** Apa yang diisi & di mana tampil di web. */
   bantuan?: string;
   /** Isi awal yang bisa dipakai penulis saat bidang masih kosong (tautan "Pakai templat"). */
-  templat?: string;
+  templat?: string | BarisAhwal[];
   /** Contoh isian: placeholder bidang pendek, baris "Contoh:" untuk bidang panjang. */
   contoh?: string;
   /** Metadata: tampil di panel Info di samping isi, bukan di kolom utama. */
@@ -106,6 +106,15 @@ const TEMPLAT_CERITA_KASUS = `(Siapa yang wafat, laki-laki atau perempuan.)
 
 const TEMPLAT_PEMBAHASAN_KUIS = '(Satu kalimat: kenapa jawaban ini benar, lalu dalilnya lewat Sisip rujukan.)';
 
+const TEMPLAT_RINGKASAN_MODUL = '(Satu kalimat: apa yang dipelajari di modul ini, dengan kata sehari-hari.)';
+
+// Tiga keadaan umum; bagian dan syaratnya diisi penulis sesuai ahli waris (isi hukumnya bukan dari templat).
+const TEMPLAT_BARIS_AHWAL: BarisAhwal[] = [
+  { bagian: '', syarat: '(Bila sendirian, tanpa ahli waris lain yang memengaruhi bagiannya.)', cocok: {} },
+  { bagian: '', syarat: '(Bila bersama anak atau cucu dari anak laki-laki.)', cocok: {} },
+  { bagian: 'Terhalang', syarat: '(Bila ada ahli waris yang menghalanginya; sebutkan siapa.)', cocok: { terhalang: true } },
+];
+
 const blokArab = (jalur: string, label: string): Bidang => ({ jalur, label, jenis: 'markdownBlok', arab: true, opsional: true });
 
 export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
@@ -113,7 +122,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
     { bidang: [
       { jalur: 'judul', label: 'Judul modul', jenis: 'teks', contoh: 'Bagian pasti (furudh)',
         bantuan: 'Tampil sebagai judul kelompok di halaman Belajar. Singkat, 2–5 kata.' },
-      { jalur: 'ringkas', label: 'Ringkasan', jenis: 'teksPanjang', contoh: 'Enam bagian pasti dan siapa saja yang mendapatkannya.',
+      { jalur: 'ringkas', label: 'Ringkasan', jenis: 'teksPanjang', templat: TEMPLAT_RINGKASAN_MODUL, contoh: 'Enam bagian pasti dan siapa saja yang mendapatkannya.',
         bantuan: 'Satu kalimat tentang isi modul; muncul saat kursor diarahkan ke modul di halaman Belajar.' },
       { jalur: 'nomor', label: 'Nomor modul', jenis: 'angka', samping: true, identitas: {},
         bantuan: 'Menentukan urutan modul dan dipakai materi untuk menunjuk modulnya.' },
@@ -246,7 +255,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
   ahwal: [
     { bidang: [
       { jalur: 'kunci', label: 'Ahli waris', jenis: 'pilihan', sumberOpsi: 'kunciAhliWaris', identitas: {} },
-      { jalur: 'baris', label: 'Kemungkinan bagian', jenis: 'barisAhwal', sumberOpsi: 'kodeAlasan',
+      { jalur: 'baris', label: 'Kemungkinan bagian', jenis: 'barisAhwal', sumberOpsi: 'kodeAlasan', templat: TEMPLAT_BARIS_AHWAL,
         bantuan: 'Satu baris = satu keadaan (mis. 1/2 bila sendirian). Baris yang cocok dengan hasil hitung disorot di tabel ahwal.' },
     ] },
   ],
