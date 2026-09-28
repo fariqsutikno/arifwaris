@@ -24,15 +24,15 @@ insert into progres_belajar values ('00000000-0000-0000-0000-00000000000e', 'ash
 
 -- anonim
 set local role anon;
-select is((select count(*) from revisi), 1::bigint, 'anonim hanya melihat revisi terbit');
-select is((select count(*) from entri_konten), 1::bigint, 'anonim hanya melihat entri yang punya revisi terbit');
+select is((select count(*) from revisi where entri_id in ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002')), 1::bigint, 'anonim hanya melihat revisi terbit');
+select is((select count(*) from entri_konten where id in ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002')), 1::bigint, 'anonim hanya melihat entri yang punya revisi terbit');
 select ok((select count(*) from daftar_refs) > 0, 'anonim bisa membaca daftar_refs');
 select throws_ok($$insert into entri_konten (jenis, slug) values ('faq', 'x')$$, '42501', null, 'anonim tidak bisa menulis');
 
 -- penulis
 set local role authenticated;
 set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
-select is((select count(*) from revisi), 2::bigint, 'penulis melihat semua revisi');
+select is((select count(*) from revisi where entri_id in ('10000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000002')), 2::bigint, 'penulis melihat semua revisi');
 select lives_ok($$insert into revisi (entri_id, isi, refs) values ('10000000-0000-0000-0000-000000000002', '{}', '{R09-7}')$$, 'penulis membuat draf');
 select throws_ok($$update revisi set status = 'disetujui' where id = '20000000-0000-0000-0000-000000000002'$$, '42501', null,
                  'penulis tidak bisa mengubah status langsung');

@@ -1,6 +1,6 @@
 # Portal admin — umpan balik putaran 2: telaah & rencana
 
-Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **telaah selesai, menunggu keputusan K1–K4 sebelum eksekusi**
+Tanggal: 2026-09-28 · Cabang: `admin/manusiawi` · Status: **K1–K4 disetujui (semua usulan: ya), Fase 1 dikerjakan; Fase 5–6 ditunda bersama bagian F (KB lewat portal)**
 
 Lanjutan dari `2026-09-28-portal-admin-umpan-balik-pengguna.md`. Sembilan keluhan baru, dicari akar masalahnya di kode,
 lalu disusun jadi fase. Belum ada kode yang diubah.
