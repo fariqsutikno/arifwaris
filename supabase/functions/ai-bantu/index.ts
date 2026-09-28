@@ -1,11 +1,15 @@
 // Edge Function ai-bantu: satu-satunya jalan portal ke Gemini, supaya GEMINI_API_KEY tidak pernah ada di bundel web/admin.
 // Memeriksa sesi + peran (penulis/admin), kuota harian per pengguna (tabel pemakaian_ai), memanggil Gemini dengan
 // prompt & skema dari logika.ts, memeriksa jawabannya, lalu mencatat pemakaian. Secret: GEMINI_API_KEY (wajib),
-// GEMINI_MODEL (opsional). SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY disediakan Supabase.
+// GEMINI_MODEL & GEMINI_MODEL_CADANGAN (opsional). SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY disediakan Supabase.
 import { createClient } from 'jsr:@supabase/supabase-js@2';
 import { awalHariWib, bacaPermintaan, KUOTA_HARIAN, olahJawaban, susunPrompt, type Permintaan } from './logika.ts';
 
 const MODEL = Deno.env.get('GEMINI_MODEL') ?? 'gemini-2.5-flash';
+// Dipakai bila model utama sibuk (503/429) setelah dicoba ulang; kosongkan secret = sama dengan model utama.
+const MODEL_CADANGAN = Deno.env.get('GEMINI_MODEL_CADANGAN') ?? 'gemini-2.5-flash';
+const STATUS_SIBUK = new Set([429, 500, 503]);
+const JEDA_ULANG_MS = 1500;
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -17,6 +21,7 @@ const PESAN_STATUS_GEMINI: Record<number, string> = {
   403: 'GEMINI_API_KEY ditolak (tidak sah atau tidak punya akses ke model ini).',
   404: `Model "${MODEL}" tidak dikenal Gemini. Periksa secret GEMINI_MODEL.`,
   429: 'Kuota Gemini (dari Google) habis atau terlalu banyak permintaan. Coba lagi nanti.',
+  503: 'Server Gemini sedang penuh. Coba lagi beberapa menit lagi.',
 };
 
 const balas = (status: number, isi: unknown) =>
@@ -38,7 +43,7 @@ Deno.serve(async req => {
 
   const servis = createClient(url, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!, { auth: { persistSession: false } });
   const { count } = await servis.from('pemakaian_ai').select('id', { count: 'exact', head: true })
-    .eq('user_id', user.id).gte('pada', awalHariWib(new Date()));
+    .eq('user_id', user.id).eq('berhasil', true).gte('pada', awalHariWib(new Date()));
   if ((count ?? 0) >= KUOTA_HARIAN) return balas(429, { galat: `Kuota AI hari ini (${KUOTA_HARIAN} kali) sudah habis. Coba lagi besok.` });
 
   const baca = bacaPermintaan(await req.json().catch(() => null));
@@ -49,14 +54,15 @@ Deno.serve(async req => {
     user_id: user.id, fitur: baca.permintaan.fitur, berhasil: hasil.ok,
     token_masuk: jawaban.ok ? jawaban.tokenMasuk : null, token_keluar: jawaban.ok ? jawaban.tokenKeluar : null,
   });
-  const sisaKuota = KUOTA_HARIAN - (count ?? 0) - 1;
+  // Kuota hanya berkurang bila bantuan berhasil sampai ke pengguna.
+  const sisaKuota = KUOTA_HARIAN - (count ?? 0) - (hasil.ok ? 1 : 0);
   return hasil.ok ? balas(200, { hasil: hasil.hasil, sisaKuota }) : balas(422, { galat: hasil.galat, sisaKuota });
 });
 
 async function tanyaGemini(permintaan: Permintaan, kunci: string):
   Promise<{ ok: true; teks: string; tokenMasuk: number | null; tokenKeluar: number | null } | { ok: false; galat: string }> {
   const { sistem, pengguna, skema, suhu } = susunPrompt(permintaan);
-  const respons = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
+  const panggil = (model: string) => fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'x-goog-api-key': kunci },
     body: JSON.stringify({
@@ -65,6 +71,15 @@ async function tanyaGemini(permintaan: Permintaan, kunci: string):
       generationConfig: { responseMimeType: 'application/json', responseSchema: skema, temperature: suhu },
     }),
   }).catch(() => null);
+  // Model utama dicoba dua kali, lalu cadangan sekali; hanya galat "sibuk" yang dicoba ulang.
+  const urutan = [MODEL, MODEL, ...(MODEL_CADANGAN !== MODEL ? [MODEL_CADANGAN] : [])];
+  let respons: Response | null = null;
+  for (const [i, model] of urutan.entries()) {
+    if (i > 0) await new Promise(selesai => setTimeout(selesai, JEDA_ULANG_MS));
+    respons = await panggil(model);
+    if (respons?.ok || !STATUS_SIBUK.has(respons?.status ?? 503)) break;
+    console.warn('gemini sibuk', model, respons?.status);
+  }
   if (!respons?.ok) {
     console.error('gemini gagal', respons?.status, await respons?.text().catch(() => ''));
     return { ok: false, galat: PESAN_STATUS_GEMINI[respons?.status ?? 0] ?? 'Layanan AI sedang tidak bisa dihubungi. Coba lagi sebentar lagi.' };
