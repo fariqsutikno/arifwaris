@@ -7,6 +7,15 @@ Salin satu blok ke sesi AI yang tersambung ke MCP **Shamela, Hadith, Quran, Isla
 2. Derajat hadits → sebutkan **semua** penilai yang ditemukan, jangan pilih satu.
 3. Konten (`docs/lampiran-konten/*`) yang berkaitan dengan rujukan/dalil → **langsung diubah**.
 
+**Format tiap MCP (dicek 2026-09-29, berlaku untuk semua prompt):**
+
+| MCP | ID yang dikembalikan | URL publik | Jebakan |
+|---|---|---|---|
+| Shamela | `book_id`, `page_id`, `printed_page` ("6/ 147") | `https://shamela.ws/book/<book_id>/<page_id>` | `page_id` ≠ halaman cetak. Simpan keduanya: token pakai `page_id`, teks pakai juz/hal cetak. Pakai `shamela_verify_quote` dan pastikan `field: body`, bukan `foot`. |
+| Hadith | `hadith_id` / `id_in_book` + `url` search.hadith-mcp.org | sunnah.com: `https://sunnah.com/<koleksi>:<nomor>` | **ID MCP ≠ nomor standar.** `bukhari` #6732 di MCP = hadits mimpi; «ألحقوا الفرائض» ada di ID MCP 6492/6487/6501, padahal nomor standar (Fu'ad 'Abdul Baqi/Fath al-Bari) = 6732. Token WAJIB nomor standar; ID MCP hanya alat cari. Pencarian `keyword` Arab bisa kosong → pakai `semantic`, lalu pastikan nomor standar lewat Shamela (kitab hadits yang sama) atau sunnah.com. |
+| Quran | edisi `ar-uthmani`, `ar-simple-clean`; terjemah `id-id` = Kemenag RI | `https://quran.com/<surah>/<ayat>` | Wajib `fetch_grounding_rules` dulu. Tidak boleh mengutip ayat dari ingatan. |
+| IslamQA | `answer_id`, `source_url_ar` | `https://islamqa.info/ar/answers/<answer_id>` | Hanya pendukung; condong Hanbali. |
+
 ---
 
 ## Prompt 0 — Standar format tautan (kerjakan pertama)
@@ -18,8 +27,8 @@ Tugas: tetapkan SATU format tautan rujukan yang dipakai seluruh KB dan konten, l
 
 Format token (ditulis di kolom "Sumber" tabel "Dasar dan Rujukan" dan di konten):
 - Shamela: `shamela:<book_id>/<page_id>` → https://shamela.ws/book/<book_id>/<page_id>
-- Hadits: `hadits:<koleksi>:<nomor>` (koleksi: bukhari, muslim, abudawud, tirmidzi, nasai, ibnumajah, ahmad, malik, ...) → URL dari MCP Hadith / sunnah.com
-- Al-Qur'an: `quran:<surah>:<ayat>` atau `quran:<surah>:<ayat>-<ayat>` → https://quran.com/<surah>/<ayat>
+- Hadits: `hadits:<koleksi>:<nomor-standar>` (slug sunnah.com: bukhari, muslim, abudawud, tirmidhi, nasai, ibnmajah, ahmad, malik) → https://sunnah.com/<koleksi>:<nomor>. Nomor standar = penomoran Fu'ad 'Abdul Baqi (Bukhari/Muslim) / umum (Sunan), BUKAN id MCP Hadith.
+- Al-Qur'an: `quran:<surah>:<ayat>` atau `quran:<surah>:<ayat>-<ayat>` → https://quran.com/<surah>/<ayat> (rentang: https://quran.com/<surah>/<ayat>-<ayat>)
 - IslamQA: `islamqa:<id>` → https://islamqa.info/ar/answers/<id>  (HANYA pendukung, tidak pernah satu-satunya dasar)
 Satu baris boleh punya beberapa token. Teks manusiawi (judul kitab, juz/halaman cetak) tetap ada di samping token.
 
@@ -38,9 +47,9 @@ Konteks: docs/prompt-verifikasi.md (keputusan pengguna) dan konvensi token dari 
 
 Panggil fetch_grounding_rules MCP Quran dulu.
 Untuk setiap rujukan berjenis [Q] di docs/kb/*.md, teks ayat di bab 1.2, dan setiap ayat yang dikutip di docs/lampiran-konten/*.md:
-1. Ambil teks kanonik (fetch_quran) dan cocokkan huruf per huruf dengan teks di repo. Beda → ganti dengan teks kanonik (pertahankan harakat bila sumber kanonik berharakat).
+1. Ambil teks kanonik (fetch_quran, edisi ar-uthmani; bandingkan juga ar-simple-clean bila repo memakai rasm imla'i) dan cocokkan huruf per huruf dengan teks di repo. Beda → ganti dengan teks kanonik (pertahankan harakat bila sumber kanonik berharakat).
 2. Pastikan nomor surah:ayat benar; tambahkan token `quran:s:a`.
-3. Terjemah Indonesia yang ada di konten: cocokkan maknanya dengan terjemah resmi (Kemenag bila tersedia di MCP); beda makna → betulkan.
+3. Terjemah Indonesia di konten: bandingkan dengan edisi `id-id` (Kemenag RI) via fetch_translation; beda makna → ganti dengan teks Kemenag dan sebut sumbernya.
 Laporan: tabel Kode | Status (✔ / diperbaiki / ⚑) | Temuan. Commit.
 ```
 
@@ -52,11 +61,12 @@ Konteks: docs/prompt-verifikasi.md dan token Prompt 0.
 Panggil fetch_grounding_rules MCP Hadith dulu.
 Cakupan: tabel 17.3, semua rujukan berjenis [H] di docs/kb/*.md, dan semua hadits yang dikutip di docs/lampiran-konten/*.md.
 Untuk tiap hadits:
-1. Cari (search_hadith keyword + semantic) dan ambil teks (fetch_hadith). Cocokkan lafaz yang dikutip; beda → betulkan sesuai riwayat yang disebut.
-2. Nomor per koleksi (Bukhari, Muslim, Abu Dawud, Tirmidzi, Nasa'i, Ibnu Majah, Ahmad bila ada). Sebutkan edisi penomoran.
-3. Derajat: SEMUA penilai yang ditemukan (penulis kitab, al-Albani, Syu'aib al-Arna'uth, dll.). Jangan memilih satu. Hadits dha'if tetap ditandai "dha'if", jangan dihapus.
-4. Hadits di luar koleksi MCP Hadith (mis. Ibnu Hibban, al-Hakim) → cari di Shamela, pakai token shamela:.
-5. Tambahkan token hadits:/shamela: di kolom Sumber.
+1. Cari dengan search_hadith mode semantic (keyword Arab sering kosong), ambil teks (fetch_hadith). Cocokkan lafaz yang dikutip; beda → betulkan sesuai riwayat yang disebut.
+2. INGAT: id MCP ≠ nomor standar. Tentukan nomor standar lewat Shamela (kitab hadits yang sama, cari lafaznya) atau sunnah.com; token memakai nomor standar.
+3. Nomor per koleksi (Bukhari, Muslim, Abu Dawud, Tirmidzi, Nasa'i, Ibnu Majah, Ahmad bila ada). Sebutkan edisi penomoran.
+4. Derajat: SEMUA penilai yang ditemukan (penulis kitab, al-Albani, Syu'aib al-Arna'uth, dll.). Jangan memilih satu. Hadits dha'if tetap ditandai "dha'if", jangan dihapus.
+5. Hadits di luar koleksi MCP Hadith (mis. Ibnu Hibban, al-Hakim) → cari di Shamela, pakai token shamela:.
+6. Tambahkan token hadits:/shamela: di kolom Sumber.
 Klaim hukum yang ternyata bersandar HANYA pada hadits dha'if → ⚑ laporkan, jangan ubah hukumnya.
 Laporan tabel + commit.
 ```
