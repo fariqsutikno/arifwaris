@@ -86,4 +86,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R05-6 | Anak saudara berbeda dengan saudara dalam 7 hal | RDH | Bab 1, far' Bani al-Ikhwah | Antara lain: tidak mengurangi ibu, gugur oleh kakek, tidak masuk musyarrakah, tidak mengashabahkan saudarinya. |
 | R05-7 | Ashabah wala' = ashabah bi nafsihi mu'tiq | RDH | Bab 2, Fashl 'Ashabat al-Mu'tiq | «فالاستحقاق لعصباته من النسب الذين يتعصبون بأنفسهم... فلا ترث النساء بالولاء إلا ممن أعتقن» |
 | R05-8 | Tidak ada fardh dalam wala' | RDH | Bab 2 | «وفي الولاء لا يمكن توريثه بالفرضية» |
-| R05-9 | Hikmah 2:1 | — | Penjelasan fuqaha (ta'lil), bukan dalil | Hukumnya ditetapkan nash «للذكر مثل حظ الأنثيين» (An-Nisa' 11, 176); hikmah adalah keterangan tambahan. |
+| R05-9 | Hikmah 2:1 | — | Penjelasan fuqaha (ta'lil), bukan dalil | Hukumnya ditetapkan nash «للذكر مثل حظ الأنثيين» (An-Nisa' 11 quran:4:11, 176 quran:4:176); hikmah adalah keterangan tambahan. |

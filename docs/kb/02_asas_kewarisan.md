@@ -90,4 +90,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R02-9 | Semua jenis pembunuhan menghalangi | RDH | Bab 5, mani' 3 | «والمذهب وظاهر نص الشافعي في الصور كلها: منع الإرث». Termasuk khatha' dan tasabbub: «وسواء كان القتل عمدا أو خطأ» |
 | R02-10 | Wala' untuk yang memerdekakan | H | Al-Bukhari no. 2156; Muslim no. 1504, dari 'Aisyah (kisah Barirah) | «إنما الولاء لمن أعتق» |
 | R02-11 | Wala' seperti nasab | H | Ibnu Hibban dan al-Hakim, dari Ibnu 'Umar | «الولاء لحمة كلحمة النسب، لا يباع ولا يوهب». Ibnu Hibban no. 4950 (al-Ihsan 11/326); al-Hakim 4/341. Al-Baihaqi menukil bahwa sanad marfu'-nya keliru, yang benar mursal dari al-Hasan. |
-| R02-12 | Suami-istri saling mewarisi | Q | An-Nisa' 12 | «ولكم نصف ما ترك أزواجكم...» |
+| R02-12 | Suami-istri saling mewarisi | Q | An-Nisa' 12 quran:4:12 | «ولكم نصف ما ترك أزواجكم...» |

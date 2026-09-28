@@ -27,9 +27,9 @@ Hampir semua bagian pasti disebut dalam tiga ayat surah An-Nisa' [R01-2]:
 
 | Ayat | Isinya |
 |---|---|
-| An-Nisa' 11 | Anak dan orang tua |
-| An-Nisa' 12 | Suami, istri, dan saudara seibu |
-| An-Nisa' 176 | Saudara kandung dan sebapak ([[kalalah]]) |
+| An-Nisa' 11 quran:4:11 | Anak dan orang tua |
+| An-Nisa' 12 quran:4:12 | Suami, istri, dan saudara seibu |
+| An-Nisa' 176 quran:4:176 | Saudara kandung dan sebapak ([[kalalah]]) |
 
 Yang tidak punya bagian pasti mengambil sisanya. Dasarnya hadits: "Berikan bagian-bagian pasti kepada pemiliknya; sisanya untuk laki-laki yang paling dekat" [R01-3]. Orang yang mengambil sisa ini disebut [[ashabah]].
 

@@ -192,7 +192,9 @@ export const DAFTAR_AYAT: Ayat[] = bacaAyat(bab01);
 
 /** Bagian Al-Qur'an di kolom Sumber (sebelum "·"): "An-Nisa' 11, 12, 176", "Al-Anfal 75; Al-Ahzab 6". */
 export function rujukanAyat(sumber: string): Array<{ surah: string; ayat: number }> {
-  return sumber.split('·')[0]!.split(';').flatMap(porsi => {
+  // Token tautan (mis. "quran:4:11") boleh disisipkan di kolom Sumber (bab 17.1); abaikan saat menguraikan nama surah + ayat.
+  const tanpaToken = sumber.replace(/\bquran:[\d:-]+/g, '').trim();
+  return tanpaToken.split('·')[0]!.split(';').flatMap(porsi => {
     const cocok = /^\s*([A-Z][A-Za-z'-]+)\s+([\d,\s]+?)\s*$/.exec(porsi);
     return cocok ? cocok[2]!.split(',').map(nomor => ({ surah: cocok[1]!, ayat: Number(nomor.trim()) })) : [];
   });
