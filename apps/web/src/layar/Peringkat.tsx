@@ -7,6 +7,7 @@ import type { BarisPeringkat, PeriodePeringkat, Profil, Sesi } from '@waris/data
 import { ModalProfil } from '../akun/ModalProfil';
 import type { RepoAkun } from '../akun/sinkron';
 import { t } from '../terjemah';
+import { IkonApi, tanpaEmojiApi } from '../ui/Ikon';
 
 type Papan = { status: 'memuat' } | { status: 'gagal' } | { status: 'siap'; daftar: BarisPeringkat[] };
 
@@ -86,7 +87,7 @@ function DaftarPeringkat({ daftar }: { daftar: BarisPeringkat[] }) {
             : <span className="avatar-peringkat" aria-hidden="true">{baris.namaTampilan.slice(0, 1).toUpperCase()}</span>}
           <span className="nama-peringkat">
             <b>{baris.namaTampilan}</b>{baris.saya && <small> {t('akun.kamu')}</small>}
-            {baris.streakSekarang > 0 && <small className="keterangan">{t('akun.streak_hari', { jumlah: baris.streakSekarang })}</small>}
+            {baris.streakSekarang > 0 && <small className="keterangan streak-hari"><IkonApi ukuran={14} />{tanpaEmojiApi(t('akun.streak_hari', { jumlah: baris.streakSekarang }))}</small>}
           </span>
           <b className="xp-peringkat">{t('akun.jumlah_xp', { jumlah: baris.xp })}</b>
         </li>

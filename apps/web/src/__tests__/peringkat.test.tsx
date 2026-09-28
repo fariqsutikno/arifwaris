@@ -30,7 +30,7 @@ test('streak header: tanpa login tidak tampil', () => {
 test('streak header: teks tautan ke papan, redup bila hari ini belum aktif', async () => {
   render(<StreakKepala sesi={SESI} repo={siapkan(SESI)} />);
   const tautan = await screen.findByRole('link', { name: /streak 3 hari, 63 xp/i });
-  expect(tautan.textContent).toBe('🔥 3');
+  expect(tautan.textContent).toBe('3');
   expect(tautan.getAttribute('href')).toBe('#/peringkat');
   expect(tautan.className).toContain('redup');
 });
@@ -38,10 +38,10 @@ test('streak header: teks tautan ke papan, redup bila hari ini belum aktif', asy
 test('streak header: kegiatan terkirim → dimuat ulang, XP yang naik tampil sebentar', async () => {
   const repo = siapkan(SESI);
   render(<StreakKepala sesi={SESI} repo={repo} />);
-  await screen.findByText('🔥 3');
+  await screen.findByText('3');
   repo.aturPeringkat({ ...NILAI, ringkasan: { ...RINGKASAN, xpTotal: 75, streakSekarang: 4, aktifHariIni: true } });
   act(() => { window.dispatchEvent(new Event(PERISTIWA_KEGIATAN_TERKIRIM)); });
-  expect(await screen.findByText('🔥 4')).toBeTruthy();
+  expect(await screen.findByText('4')).toBeTruthy();
   expect(screen.getByRole('status').textContent).toBe('+12 XP');
 });
 

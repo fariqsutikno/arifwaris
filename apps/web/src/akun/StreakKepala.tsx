@@ -1,4 +1,4 @@
-// Streak di header (keputusan 2026-09-28, menggantikan kartu Beranda): teks "🔥 N" yang menuju papan peringkat, redup
+// Streak di header (keputusan 2026-09-28, menggantikan kartu Beranda): ikon api + angka N yang menuju papan peringkat, redup
 // bila hari ini belum aktif. Dimuat saat login dan tiap kegiatan sampai server (PERISTIWA_KEGIATAN_TERKIRIM); bila XP
 // naik, "+N XP" tampil sebentar sebagai umpan balik. Tanpa login, memuat, atau gagal: tidak tampil apa-apa.
 
@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { RingkasanPeringkat, Sesi } from '@waris/data';
 import { tautanPeringkat } from '../rute';
 import { t } from '../terjemah';
+import { IkonApi, tanpaEmojiApi } from '../ui/Ikon';
 import { PERISTIWA_KEGIATAN_TERKIRIM } from './antrean';
 import type { RepoAkun } from './sinkron';
 
@@ -47,7 +48,7 @@ export function StreakKepala({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun
     <span className="streak-kepala">
       <a href={tautanPeringkat()} className={ringkasan.aktifHariIni ? 'tautan-streak' : 'tautan-streak redup'}
         aria-label={keterangan} title={keterangan}>
-        {ringkasan.streakSekarang > 0 ? t('akun.streak_singkat', { jumlah: ringkasan.streakSekarang }) : t('akun.mulai_streak')}
+        <IkonApi />{tanpaEmojiApi(ringkasan.streakSekarang > 0 ? t('akun.streak_singkat', { jumlah: ringkasan.streakSekarang }) : t('akun.mulai_streak'))}
       </a>
       <span className="tambahan-xp" role="status">{tambahanXp > 0 ? t('akun.tambahan_xp', { jumlah: tambahanXp }) : ''}</span>
     </span>
