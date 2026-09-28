@@ -9,9 +9,15 @@ export { saringDiksiValid, saringValid, type BarisTerbitMentah } from './saring.
 
 export interface Snapshot { versi: number; konten: BarisTerbitMentah[]; diksi: DiksiTerbit[] }
 
-/** Cache dipakai hanya bila lebih baru dari snapshot bawaan; deploy baru bisa membawa versi lebih tinggi dari cache lama. */
-export const pilihAwal = (bawaan: Snapshot, cache: Snapshot | null): Snapshot =>
-  cache && cache.versi > bawaan.versi ? cache : bawaan;
+/** Cache dipakai hanya bila lebih baru dari snapshot bawaan; deploy baru bisa membawa versi lebih tinggi dari cache lama.
+ * Kunci diksi yang baru ditambahkan kode (ada di bawaan, belum ada di cache/server) tetap diambil dari bawaan, supaya
+ * layar tidak menampilkan kunci mentah. */
+export function pilihAwal(bawaan: Snapshot, cache: Snapshot | null): Snapshot {
+  if (!cache || cache.versi <= bawaan.versi) return bawaan;
+  const kunciCache = new Set(cache.diksi.map(butir => butir.kunci));
+  const diksiBaru = bawaan.diksi.filter(butir => !kunciCache.has(butir.kunci));
+  return diksiBaru.length ? { ...cache, diksi: [...cache.diksi, ...diksiBaru] } : cache;
+}
 
 /** `dihapus` = entriId yang penghapusannya terbit sejak versi lama; dibuang dari cache. */
 export function gabungSnapshot(

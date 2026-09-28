@@ -443,6 +443,7 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .kepala-grup{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
 .kepala-grup h2{margin:0;font:700 17px/1.25 var(--font-display)}
 .label-isian{display:flex;align-items:center;gap:6px}
+.pembaruan-konten{box-sizing:border-box;width:calc(100% - 32px);max-width:calc(var(--lebar-konten) - 32px);margin:8px auto 0;padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface-sunken);font-size:13.5px;line-height:1.5}
 .catatan-info{margin:0;padding:10px 12px;border-radius:var(--radius-sm);background:var(--surface-sunken);color:var(--ink);font-size:13.5px;line-height:1.5}
 .dua-kolom-isian{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start;max-width:680px}
 .ringkas-hitung{position:static}

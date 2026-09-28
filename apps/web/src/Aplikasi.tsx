@@ -35,6 +35,7 @@ import { TAUTAN_KALKULATOR, bacaRute, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
 import { usePenjaga } from './ui/Penjaga';
+import { PembaruanKonten } from './ui/PembaruanKonten';
 
 export function Aplikasi() {
   const [keadaan, kirimAsli] = useReducer(pengurangKeadaan, null, () => keadaanAwal(muatLokal(), bacaTujuan()));
@@ -139,6 +140,7 @@ export function Aplikasi() {
       <Kepala halaman={rute.halaman} kasusWizard={diKalkulator && layar === 'wizard' ? kasus : null}
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)}
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
+      <PembaruanKonten />
       {!['beranda', 'kalkulator', 'belajar'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} />
         : rute.halaman === 'belajar' ? <Belajar />

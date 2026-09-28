@@ -13155,6 +13155,13 @@
    "versiTerbit": 829
   },
   {
+   "kunci": "umum.muat_ulang",
+   "halaman": "umum",
+   "id": "Muat ulang",
+   "ar": "إعادة التحميل",
+   "versiTerbit": 873
+  },
+  {
    "kunci": "umum.nama",
    "halaman": "umum",
    "id": "Nama",
@@ -13174,6 +13181,13 @@
    "id": "Oke, paham",
    "ar": "حسنا، فهمت",
    "versiTerbit": 832
+  },
+  {
+   "kunci": "umum.pembaruan_konten",
+   "halaman": "umum",
+   "id": "Ada pembaruan konten.",
+   "ar": "يوجد تحديث للمحتوى.",
+   "versiTerbit": 873
   },
   {
    "kunci": "umum.perubahan_belum_terkirim",

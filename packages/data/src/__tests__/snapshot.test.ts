@@ -15,6 +15,12 @@ describe('pilihAwal', () => {
     expect(pilihAwal(baru, lama)).toBe(baru);
     expect(pilihAwal(lama, null)).toBe(lama);
   });
+  test('cache dipakai, tapi kunci diksi baru dari bawaan ikut; kunci yang sudah ada di cache tetap versi cache', () => {
+    const diksi = (kunci: string, id: string) => ({ kunci, halaman: 'u', id, ar: null, versiTerbit: 1 });
+    const bawaan = { ...kosong, versi: 3, diksi: [diksi('u.a', 'A lama'), diksi('u.baru', 'Baru')] };
+    const cache = { ...kosong, versi: 5, diksi: [diksi('u.a', 'A server')] };
+    expect(pilihAwal(bawaan, cache).diksi.map(d => d.id)).toEqual(['A server', 'Baru']);
+  });
 });
 
 describe('gabungSnapshot', () => {
