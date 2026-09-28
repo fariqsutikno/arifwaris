@@ -176,7 +176,7 @@ Terbitan langsung admin (pemeriksa = pembuat) tidak dihitung sebagai hasil revie
 1. `AksiReview`: Kembalikan → baru muncul kolom catatan.
 2. Repo `revisiSaya()` (konten + diksi) + menu **Ajuan saya** + badge; Beranda menaut ke sana.
 
-### Fase 3 — Pratinjau di iframe (A3)
+### Fase 3 — Pratinjau di iframe (A3) — **selesai 2026-09-28**
 1. Komponen `BingkaiWeb` (iframe + `createPortal` + CSS `?inline`), tinggi mengikuti isi.
 2. `Pratinjau` & Sunting di layar memakai `BingkaiWeb`; CSS web dicabut dari impor global portal; tambalan
    `admin.css` dibuang. Tes: lebar HP → kelas tata letak HP aktif (cek `getComputedStyle` di iframe).

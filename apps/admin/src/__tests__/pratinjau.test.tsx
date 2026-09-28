@@ -14,6 +14,7 @@ import { KonteksRepo } from '../repo';
 import { EditorEntri } from '../layar/EditorEntri';
 import { Pratinjau } from '../layar/Pratinjau';
 import { PELAJARAN_UJI } from './contoh';
+import { dokumenWeb, layarWeb } from './layarWeb';
 
 afterEach(cleanup);
 
@@ -23,7 +24,7 @@ test('pratinjau materi: judul diubah tampil, snapshot asal pulih setelah tutup',
   const { unmount } = render(
     <Pratinjau jenis="materi" slug={PELAJARAN_UJI.slug} isi={pelajaranDiubah} saatTutup={() => {}} />,
   );
-  expect(screen.getByRole('heading', { name: 'JUDUL PRATINJAU' })).toBeTruthy();
+  expect(layarWeb().getByRole('heading', { name: 'JUDUL PRATINJAU' })).toBeTruthy();
   unmount();
   expect(cariPelajaran(PELAJARAN_UJI.slug)?.judul).toBe(judulAsal);
 });
@@ -36,7 +37,7 @@ test('pratinjau materi di StrictMode: judul tampil, snapshot asal tetap pulih se
       <Pratinjau jenis="materi" slug={PELAJARAN_UJI.slug} isi={pelajaranDiubah} saatTutup={() => {}} />
     </StrictMode>,
   );
-  expect(screen.getByRole('heading', { name: 'JUDUL PRATINJAU' })).toBeTruthy();
+  expect(layarWeb().getByRole('heading', { name: 'JUDUL PRATINJAU' })).toBeTruthy();
   unmount();
   expect(cariPelajaran(PELAJARAN_UJI.slug)?.judul).toBe(judulAsal);
 });
@@ -63,22 +64,22 @@ test('EditorEntri: re-render yang tidak mengubah bentuk (pilih ref) tidak me-rem
   fireEvent.mouseDown(await screen.findByRole('tab', { name: /Kode mentah/ }));
   fireEvent.change(screen.getByRole('textbox', { name: 'JSON' }), { target: { value: JSON.stringify(keJson('soal_kuis', soalKuis as never)) } });
   fireEvent.click(screen.getByRole('button', { name: 'Pratinjau' }));
-  fireEvent.click(await screen.findByRole('button', { name: /^B\. 1\/4$/ }));
-  expect(screen.getByRole('status')).toBeTruthy(); // hasil-tebak tampil setelah menjawab
+  fireEvent.click(await layarWeb().findByRole('button', { name: /^B\. 1\/4$/ }));
+  expect(layarWeb().getByRole('status')).toBeTruthy(); // hasil-tebak tampil setelah menjawab
 
   // Memicu re-render EditorEntri tanpa mengubah bentuk (pilih ref, hanya mengubah state `refs`).
   fireEvent.click(await screen.findByRole('button', { name: '+ Tambah rujukan' }));
   fireEvent.click(await screen.findByRole('button', { name: /^Cara pembagian radd/ }));
 
   // Kalau <Pratinjau>/<KartuSoalKuis> remount, jawaban yang sudah dipilih hilang dan hasil-tebak ikut hilang.
-  expect(screen.getByRole('status')).toBeTruthy();
+  expect(layarWeb().getByRole('status')).toBeTruthy();
 });
 
 test('jenis tanpa layar (ahwal): tampil sebagai daftar teks, bukan JSON', () => {
   const isi = { kunci: 'ISTRI', baris: [{ bagian: '1/4', syarat: 'tanpa anak', cocok: {} }] };
   render(<Pratinjau jenis="ahwal" slug="ISTRI" isi={isi} saatTutup={() => {}} />);
-  expect(screen.getByText('1/4')).toBeTruthy();
-  expect(screen.queryByText(/"kunci"/)).toBeNull();
+  expect(layarWeb().getByText('1/4')).toBeTruthy();
+  expect(layarWeb().queryByText(/"kunci"/)).toBeNull();
 });
 
 test('Perbesar → layar penuh (Esc menutup); klik tautan internal di pratinjau tidak mengubah rute portal', () => {
@@ -88,7 +89,7 @@ test('Perbesar → layar penuh (Esc menutup); klik tautan internal di pratinjau 
   expect(screen.getByRole('dialog', { name: 'Pratinjau layar penuh' })).toBeTruthy();
   fireEvent.keyDown(window, { key: 'Escape' });
   expect(screen.queryByRole('dialog')).toBeNull();
-  const tautanInternal = document.querySelector<HTMLAnchorElement>('a[href^="#"]')!;
+  const tautanInternal = dokumenWeb().querySelector<HTMLAnchorElement>('a[href^="#"]')!;
   fireEvent.click(tautanInternal);
   expect(location.hash).toBe('#/entri/abc');
   expect(screen.getByRole('status').textContent).toMatch(/tidak dibuka di pratinjau/);

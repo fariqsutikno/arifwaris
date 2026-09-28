@@ -116,10 +116,6 @@
     @apply font-sans;
     }
 }
-/* komponen.css web (dipakai Pratinjau) memberi body line-height 26px tetap dan padding bawah untuk nav-bawah web.
-   Aturan itu tidak berlapis sehingga mengalahkan @layer base; ditimpa di sini (juga tidak berlapis, dimuat sesudahnya)
-   supaya komponen shadcn memakai tinggi baris proporsional dan tidak ada ruang kosong di bawah layar HP. */
-body { line-height: 1.5; padding-bottom: 0; background: var(--background); color: var(--foreground); }
 
 /* Isi editor blok (Tiptap): tampilan dekat dengan web, tanpa plugin typography. */
 @layer components {

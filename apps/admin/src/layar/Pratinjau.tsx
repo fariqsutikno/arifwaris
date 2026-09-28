@@ -24,6 +24,9 @@ import { Maximize2, Minimize2, Monitor, Smartphone, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { BingkaiWeb } from './BingkaiWeb';
+
+const LEBAR_HP = 375;
 
 interface Props<J extends JenisKonten> { jenis: J; slug: string; isi: IsiKonten[J]; saatTutup: () => void }
 
@@ -79,11 +82,11 @@ export function Pratinjau<J extends JenisKonten>({ jenis, slug, isi, saatTutup }
           Tautan itu menuju halaman lain di aplikasi, jadi tidak dibuka di pratinjau.
         </p>
       ) : null}
-      {/* Layar web memakai gaya komponen.css sendiri (body 16px/26px), bukan Tailwind. transform menjadikan kotak ini
-          acuan elemen position:fixed web (bar bawah Hasil), supaya tidak keluar menutupi portal. */}
-      <div className={cn('overflow-auto bg-background p-4 text-base leading-[26px] [transform:translateZ(0)]', besar && 'min-h-0 flex-1')}
-        onClickCapture={cegatTautanInternal}>
-        <div className={lebarHp ? 'mx-auto max-w-[375px] rounded-lg border' : undefined}>{siap ? <LayarUntukJenis jenis={jenis} slug={slug} isi={isi} /> : null}</div>
+      {/* Layar web di iframe (BingkaiWeb): gaya & media query web berlaku persis seperti di web, termasuk lebar HP. */}
+      <div className={cn('overflow-auto bg-muted/30', besar ? 'min-h-0 flex-1' : 'max-h-[75vh]')}>
+        <BingkaiWeb judul="Pratinjau layar web" lebar={lebarHp ? LEBAR_HP : undefined} penuh={besar}>
+          <div onClickCapture={cegatTautanInternal}>{siap ? <LayarUntukJenis jenis={jenis} slug={slug} isi={isi} /> : null}</div>
+        </BingkaiWeb>
       </div>
     </Card>
   );

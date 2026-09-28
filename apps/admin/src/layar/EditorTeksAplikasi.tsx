@@ -7,10 +7,11 @@
 // Layar web membaca snapshot yang terpasang (terbaru dari database, lihat Portal.tsx) ditimpa draf/ajuan yang belum
 // terbit, lalu dipasang ulang tiap kali data berubah: semua tempat yang memakai teks sama ikut berubah dan tetap bergaris.
 // Batas: teks yang dibaca web di konstanta tingkat modul baru berubah setelah portal dimuat ulang.
-import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Component, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from 'react';
 import { bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
+import { BingkaiWeb } from './BingkaiWeb';
 import type { Snapshot } from '@waris/data/snapshot';
 import { Beranda as BerandaWeb } from '@waris/web/layar/Beranda';
 import { LangkahPewaris } from '@waris/web/layar/wizard/LangkahPewaris';
@@ -43,6 +44,9 @@ import { usePortal } from '../repo';
 import { pesanGalat } from '../pesanGalat';
 
 const tanpaAksi = () => {};
+const CSS_KOTAK = `.kotak-sunting{position:absolute;padding:0;border:0;border-radius:3px;background:none;cursor:pointer;
+outline:1px dashed color-mix(in srgb,var(--pink) 70%,transparent)}
+.kotak-sunting:hover,.kotak-sunting:focus-visible{background:color-mix(in srgb,var(--pink) 18%,transparent);outline-width:2px}`;
 const KASUS_CONTOH = kasusDariContoh({ pewaris: 'L', ahliWaris: ['ISTRI', 'IBU', 'ANAK_LK', 'ANAK_PR'], harta: 120_000_000n, harapan: { saham: {}, ashlAkhir: 0n } });
 const BATAS_HASIL_CARI = 30;
 const SLUG_MATERI_CONTOH = snapshotTerpasang().konten.find(baris => baris.jenis === 'materi')?.slug ?? '';
@@ -197,32 +201,38 @@ export function EditorTeksAplikasi() {
 function LayarBisaDisunting({ pencocok, aktif, saatPilih, children }: {
   pencocok: PencocokTeks; aktif: boolean; saatPilih: (sumber: SumberTeks[], simpul: Text) => void; children: ReactNode;
 }) {
-  const wadah = useRef<HTMLDivElement>(null);
+  // Callback ref: isi baru terpasang setelah iframe BingkaiWeb siap, jadi efek harus jalan ulang saat wadah muncul.
+  const [wadah, setWadah] = useState<HTMLDivElement | null>(null);
   const [kotak, setKotak] = useState<KotakTeks[]>([]);
 
   useLayoutEffect(() => {
-    const el = wadah.current;
+    const el = wadah;
     if (!el || !aktif) { setKotak([]); return; }
     let bingkai = 0;
     const ukur = () => { cancelAnimationFrame(bingkai); bingkai = requestAnimationFrame(() => setKotak(kumpulkanKotak(el, pencocok))); };
     ukur();
-    const pengamat = new MutationObserver(ukur);
+    const jendela = el.ownerDocument.defaultView ?? window;
+    const pengamat = new jendela.MutationObserver(ukur);
     pengamat.observe(el, { subtree: true, childList: true, characterData: true });
-    const pengamatUkuran = new ResizeObserver(ukur);
+    const pengamatUkuran = new (jendela.ResizeObserver ?? ResizeObserver)(ukur);
     pengamatUkuran.observe(el);
     return () => { pengamat.disconnect(); pengamatUkuran.disconnect(); cancelAnimationFrame(bingkai); };
-  }, [pencocok, aktif]);
+  }, [pencocok, aktif, wadah]);
 
   return (
-    // Sama dengan Pratinjau: gaya komponen.css web, dan transform supaya elemen fixed web tetap di dalam kotak.
-    <div className="relative max-h-[75vh] overflow-auto bg-background p-4 text-base leading-[26px] [transform:translateZ(0)]">
-      <div ref={wadah}>{children}</div>
-      {kotak.map((k, i) => (
-        <button key={i} type="button" aria-label={`Sunting teks: ${rapikan(k.simpul.data)}`}
-          className="absolute rounded-sm outline-1 outline-primary/60 outline-dashed hover:bg-primary/15 focus-visible:bg-primary/15 focus-visible:outline-2"
-          style={{ left: k.kiri, top: k.atas, width: k.lebar, height: k.tinggi }}
-          onClick={() => saatPilih(k.sumber, k.simpul)} />
-      ))}
+    // Layar web di iframe (BingkaiWeb) supaya tata letaknya persis web; kotak bergaris ikut di dalam iframe, jadi gayanya
+    // CSS biasa (CSS_KOTAK), bukan Tailwind portal.
+    <div className="max-h-[75vh] overflow-auto">
+      <BingkaiWeb judul="Layar web yang bisa disunting" gayaTambahan={CSS_KOTAK}>
+        <div style={{ position: 'relative' }}>
+          <div ref={setWadah}>{children}</div>
+          {kotak.map((k, i) => (
+            <button key={i} type="button" aria-label={`Sunting teks: ${rapikan(k.simpul.data)}`} className="kotak-sunting"
+              style={{ left: k.kiri, top: k.atas, width: k.lebar, height: k.tinggi }}
+              onClick={() => saatPilih(k.sumber, k.simpul)} />
+          ))}
+        </div>
+      </BingkaiWeb>
     </div>
   );
 }
@@ -231,11 +241,12 @@ function kumpulkanKotak(el: HTMLElement, pencocok: PencocokTeks): KotakTeks[] {
   const acuan = el.parentElement!;
   const dasar = acuan.getBoundingClientRect();
   const hasil: KotakTeks[] = [];
-  const penjelajah = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const dok = el.ownerDocument;
+  const penjelajah = dok.createTreeWalker(el, NodeFilter.SHOW_TEXT);
   for (let simpul = penjelajah.nextNode() as Text | null; simpul; simpul = penjelajah.nextNode() as Text | null) {
     const sumber = pencocok.cari(simpul.data);
     if (sumber.length === 0) continue;
-    const rentang = document.createRange();
+    const rentang = dok.createRange();
     rentang.selectNodeContents(simpul);
     const kotak = rentang.getBoundingClientRect();
     if (kotak.width === 0 || kotak.height === 0) continue;

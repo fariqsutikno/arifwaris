@@ -5,6 +5,7 @@ import { expect, test } from 'vitest';
 import { buatMemori } from '@waris/data';
 import { KonteksRepo } from '../repo';
 import { EditorTeksAplikasi } from '../layar/EditorTeksAplikasi';
+import { layarWeb } from './layarWeb';
 
 test('cari teks → sunting → Simpan & terbitkan membuat revisi terbit', async () => {
   const m = buatMemori({ refs: [], sesi: { userId: 'u-a', email: 'a@x.id' }, peran: { 'u-a': 'admin' } });
@@ -48,7 +49,7 @@ test('admin: diksi langsung terbit; layar web dipasang ulang dengan teks baru da
   await sunting('mulai hitung', /^Mulai hitung\s*Beranda$/, 'Hitung sekarang');
   fireEvent.click(screen.getByRole('button', { name: 'Simpan & terbitkan' }));
   await waitFor(async () => expect((await m.diksi.bacaTerbit()).find(d => d.kunci === 'beranda.mulai_hitung')?.id).toBe('Hitung sekarang'));
-  expect(await screen.findByText(/Hitung sekarang/, { selector: '.aksi-status' })).toBeTruthy();
+  expect(await layarWeb().findByText(/Hitung sekarang/, { selector: '.aksi-status' })).toBeTruthy();
   fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'hitung sekarang' } });
   expect(await screen.findAllByRole('button', { name: /^Hitung sekarang\s*Beranda$/ })).not.toHaveLength(0);
 });
