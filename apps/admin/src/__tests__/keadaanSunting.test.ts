@@ -22,10 +22,9 @@ test('draf orang lain & reviewer → terkunci dengan alasan', () => {
   expect(keadaanSunting(entri([r('1', 'disetujui')]), { ...penulis, peran: 'reviewer' }).jenis).toBe('terkunci');
 });
 
-test('diajukan → menunggu review; hanya pembuat/admin boleh tarik', () => {
-  const k = keadaanSunting(entri([r('1', 'diajukan')]), penulis);
-  expect(k).toMatchObject({ jenis: 'menungguReview', bolehTarik: true });
-  expect(keadaanSunting(entri([r('1', 'diajukan', 'q')]), penulis)).toMatchObject({ bolehTarik: false });
+test('diajukan: pembuat menyunting ajuannya langsung; orang lain melihat menunggu review, hanya admin boleh tarik', () => {
+  expect(keadaanSunting(entri([r('1', 'diajukan')]), penulis)).toEqual({ jenis: 'sunting', salinanKerjaId: '1', ajuan: true });
+  expect(keadaanSunting(entri([r('1', 'diajukan', 'q')]), penulis)).toMatchObject({ jenis: 'menungguReview', bolehTarik: false });
   expect(keadaanSunting(entri([r('1', 'diajukan', 'q')]), { ...penulis, peran: 'admin' })).toMatchObject({ bolehTarik: true });
 });
 

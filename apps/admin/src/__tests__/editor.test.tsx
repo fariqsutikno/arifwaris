@@ -236,7 +236,7 @@ test('admin, tab JSON: JSON rusak → galat & tetap di JSON, perbaikan kembali k
   });
 });
 
-test('entri tayang: langsung disunting; tombol mati tanpa perubahan; kirim → menunggu review, versi tayang tetap; tarik kembali', async () => {
+test('entri tayang: langsung disunting; tombol mati tanpa perubahan; kirim → menunggu review, versi tayang tetap; ajuan disunting di tempat', async () => {
   const m = siapkan();
   const { entriId, revisi } = await tayang(m);
   tampilkan(m, { entriId });
@@ -250,14 +250,17 @@ test('entri tayang: langsung disunting; tombol mati tanpa perubahan; kirim → m
   expect(screen.getByText('Ada perubahan yang belum disimpan')).toBeTruthy();
   klik('Kirim untuk review');
   klik('Ya, kirim');
-  await screen.findByText('Perubahan dari Anda menunggu review');
-  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
+  await screen.findByText('Ajuan · menunggu review');
   expect((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.revisiId).toBe(revisi);
+  expect(tombol('Simpan perubahan ajuan').disabled).toBe(true);
+  expect(screen.queryByRole('button', { name: 'Kirim untuk review' })).toBeNull();
 
-  klik('Tarik kembali');
-  await screen.findByText(/Draf tersimpan · belum dikirim/);
-  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe('Apa itu tirkah, ya?');
-  expect(await m.editorial.antreanReview()).toEqual([]);
+  ketik('Pertanyaan', 'Apa itu tirkah?');
+  klik('Simpan perubahan ajuan');
+  await screen.findByText(/Ajuan diperbarui pukul/);
+  const [ajuan] = await m.editorial.antreanReview();
+  expect(ajuan).toMatchObject({ status: 'diajukan', isi: { pertanyaan: 'Apa itu tirkah?' } });
+  expect(await m.konten.daftarRevisi(entriId)).toHaveLength(2);
 });
 
 test('salinan kerja: Simpan draf memperbarui draf yang sama, tidak menggandakan', async () => {
@@ -314,7 +317,7 @@ test('dikembalikan: catatan reviewer tampil, perbaikan langsung bisa dikirim lag
   ketik('Pertanyaan', 'Sudah diperbaiki');
   klik('Kirim untuk review');
   klik('Ya, kirim');
-  await screen.findByText('Perubahan dari Anda menunggu review');
+  await screen.findByText('Ajuan · menunggu review');
 });
 
 test('Sampah entri tayang (penulis): ajukan dengan alasan, lalu batalkan', async () => {

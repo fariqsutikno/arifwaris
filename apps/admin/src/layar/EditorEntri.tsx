@@ -188,7 +188,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     const hasil = isiSekarang();
     if (!hasil.ok) { setGalat(hasil.galat); setTampilSemuaGalat(true); return null; }
     if (keadaan.salinanKerjaId) {
-      await repo.editorial.ubahDraf(keadaan.salinanKerjaId, muatan.jenis, hasil.isi, refs);
+      await (keadaan.ajuan
+        ? repo.editorial.perbaruiAjuan(keadaan.salinanKerjaId, muatan.jenis, hasil.isi, refs)
+        : repo.editorial.ubahDraf(keadaan.salinanKerjaId, muatan.jenis, hasil.isi, refs));
       return { revisiId: keadaan.salinanKerjaId, entriId: muatan.entriId! };
     }
     if (muatan.entriId) return { revisiId: await repo.editorial.buatDraf(muatan.entriId, muatan.jenis, hasil.isi, refs), entriId: muatan.entriId };
@@ -261,6 +263,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const relatif = (iso: string) => waktuRelatif(iso, sekarang);
   const terakhir = muatan.entri.semuaRevisi.at(-1) ?? null;
   const salinanKerjaId = keadaan.jenis === 'sunting' ? keadaan.salinanKerjaId : null;
+  const ajuanSaya = keadaan.jenis === 'sunting' && !!keadaan.ajuan;
   const bolehKirim = !sibuk && (kotor || !!salinanKerjaId || !muatan.entriId);
   const cara = muatan.entriId && keadaan.jenis !== 'sampah' ? caraBuang(muatan.entri, { peran, userId: sesi.userId, namaDari }) : null;
   const adaArab = punyaVersiArab(muatan.jenis);
@@ -282,6 +285,12 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         <Alert>
           <AlertTitle>Dikembalikan oleh {dikembalikan.diperiksaOleh ? namaDari(dikembalikan.diperiksaOleh) : 'reviewer'}</AlertTitle>
           <AlertDescription>{dikembalikan.catatanReview} · Perbaiki di bawah lalu kirim lagi.</AlertDescription>
+        </Alert>
+      ) : null}
+      {ajuanSaya ? (
+        <Alert>
+          <AlertTitle>Menunggu review</AlertTitle>
+          <AlertDescription>Anda masih bisa menyunting. Perubahan yang disimpan menggantikan ajuan ini dan tetap menunggu review.</AlertDescription>
         </Alert>
       ) : null}
       {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
@@ -337,9 +346,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         ) : null}
       </div>
       <div className="flex flex-wrap gap-2">
-        {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('terbitkan')}>Terbitkan sekarang</Button> : null}
-        {bisaSunting && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('kirim')}>Kirim untuk review</Button> : null}
-        {bisaSunting ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan draf</Button> : null}
+        {ajuanSaya ? <Button disabled={sibuk || !kotor} onClick={() => void simpanDulu()}>Simpan perubahan ajuan</Button> : null}
+        {bisaSunting && !ajuanSaya && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('terbitkan')}>Terbitkan sekarang</Button> : null}
+        {bisaSunting && !ajuanSaya && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('kirim')}>Kirim untuk review</Button> : null}
+        {bisaSunting && !ajuanSaya ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan draf</Button> : null}
         {kotor ? <Button variant="link" disabled={sibuk} onClick={batalkanPerubahan}>Batalkan perubahan</Button> : null}
         {keadaan.jenis === 'menungguReview' && keadaan.bolehTarik ? (
           <Button variant="outline" disabled={sibuk} onClick={() => void tarik(keadaan.revisi.id)}>
@@ -388,7 +398,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      {bisaSunting ? (
+      {bisaSunting && !ajuanSaya ? (
         <p className="text-xs text-muted-foreground">
           <span className="font-medium">Simpan draf</span>: belum tampil di web, bisa dilanjutkan nanti.{' '}
           {peran === 'admin'
@@ -408,7 +418,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     void jalankan(async () => {
       const isi = bacaIsi(muatan!.jenis, revisi.isi);
       if (!isi.ok) throw new Error(`Isi versi ini tidak bisa dibaca: ${isi.galat}`);
-      if (salinanKerjaId) await repo.editorial.ubahDraf(salinanKerjaId, muatan!.jenis, isi.isi, revisi.refs);
+      if (salinanKerjaId && ajuanSaya) await repo.editorial.perbaruiAjuan(salinanKerjaId, muatan!.jenis, isi.isi, revisi.refs);
+      else if (salinanKerjaId) await repo.editorial.ubahDraf(salinanKerjaId, muatan!.jenis, isi.isi, revisi.refs);
       else await repo.editorial.buatDraf(muatan!.entriId!, muatan!.jenis, isi.isi, revisi.refs);
     });
   }
@@ -470,6 +481,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     switch (keadaan!.jenis) {
       case 'sunting':
         if (kotor) return 'Ada perubahan yang belum disimpan';
+        if (ajuanSaya) return `Ajuan${disimpanPada ? ` diperbarui pukul ${jam(disimpanPada)}` : ''} · menunggu review`;
         if (salinanKerjaId) return `Draf tersimpan${disimpanPada ? ` pukul ${jam(disimpanPada)}` : ''} · belum dikirim`;
         return muatan!.entriId ? 'Belum ada perubahan · langsung sunting di bawah' : 'Entri baru · belum disimpan';
       case 'menungguReview': {

@@ -3,7 +3,7 @@
 // (beserta alasannya dalam bahasa manusia), atau ada di Sampah; serta teks "tayang di web". EditorEntri hanya
 // menampilkan hasilnya. Pengguna tidak pernah melihat istilah "draf baru": suntingan pertama membuat salinan kerja,
 // suntingan berikutnya memperbaruinya.
-import { bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, transisiRevisi, type KeadaanSampah, type Peran } from '@waris/content';
+import { bolehPerbaruiAjuan, bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, transisiRevisi, type KeadaanSampah, type Peran } from '@waris/content';
 import type { RingkasanRevisi } from '@waris/data';
 
 export interface EntriSunting {
@@ -12,7 +12,8 @@ export interface EntriSunting {
 interface Pelaku { peran: Peran; userId: string; namaDari: (userId: string) => string }
 
 export type KeadaanSunting =
-  | { jenis: 'sunting'; salinanKerjaId: string | null }
+  /** ajuan: salinan kerja adalah ajuan milik pelaku yang masih menunggu review; menyimpan = memperbarui ajuan itu. */
+  | { jenis: 'sunting'; salinanKerjaId: string | null; ajuan?: boolean }
   | { jenis: 'menungguReview'; revisi: RingkasanRevisi; bolehTarik: boolean }
   | { jenis: 'terkunci'; alasan: string }
   | { jenis: 'sampah'; bolehPulihkan: boolean; alasan: string | null };
@@ -25,6 +26,12 @@ export function keadaanSunting(entri: EntriSunting, pelaku: Pelaku): KeadaanSunt
   }
   const terakhir = revisiTerakhir(entri.semuaRevisi);
   if (terakhir?.status === 'diajukan') {
+    // [K2] pembuat menyunting ajuannya langsung (tetap di antrean). Admin yang memeriksa ajuan orang lain tetap melihat
+    // kartu review, bukan form.
+    if (!terakhir.hapus && terakhir.dibuatOleh === pelaku.userId
+        && bolehPerbaruiAjuan({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: 'diajukan' })) {
+      return { jenis: 'sunting', salinanKerjaId: terakhir.id, ajuan: true };
+    }
     const bolehTarik = transisiRevisi({ peran: pelaku.peran, pelakuId: pelaku.userId, pembuatId: terakhir.dibuatOleh, status: 'diajukan', aksi: 'tarik' }).ok;
     return { jenis: 'menungguReview', revisi: terakhir, bolehTarik };
   }
