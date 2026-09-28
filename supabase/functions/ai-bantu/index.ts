@@ -11,6 +11,14 @@ const CORS = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Sebab umum dari Gemini dalam kalimat yang bisa ditindaklanjuti admin (rincian lengkap ada di log fungsi).
+const PESAN_STATUS_GEMINI: Record<number, string> = {
+  400: `Permintaan ditolak Gemini. Periksa GEMINI_MODEL (sekarang "${MODEL}") dan GEMINI_API_KEY.`,
+  403: 'GEMINI_API_KEY ditolak (tidak sah atau tidak punya akses ke model ini).',
+  404: `Model "${MODEL}" tidak dikenal Gemini. Periksa secret GEMINI_MODEL.`,
+  429: 'Kuota Gemini (dari Google) habis atau terlalu banyak permintaan. Coba lagi nanti.',
+};
+
 const balas = (status: number, isi: unknown) =>
   new Response(JSON.stringify(isi), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
 
@@ -59,7 +67,7 @@ async function tanyaGemini(permintaan: Permintaan, kunci: string):
   }).catch(() => null);
   if (!respons?.ok) {
     console.error('gemini gagal', respons?.status, await respons?.text().catch(() => ''));
-    return { ok: false, galat: 'Layanan AI sedang tidak bisa dihubungi. Coba lagi sebentar lagi.' };
+    return { ok: false, galat: PESAN_STATUS_GEMINI[respons?.status ?? 0] ?? 'Layanan AI sedang tidak bisa dihubungi. Coba lagi sebentar lagi.' };
   }
   const json = await respons.json();
   const teks = json?.candidates?.[0]?.content?.parts?.[0]?.text;
