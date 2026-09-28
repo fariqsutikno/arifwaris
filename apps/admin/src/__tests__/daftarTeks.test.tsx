@@ -1,11 +1,15 @@
-// Tes Daftar teks aplikasi: teks edukasi & diksi tampil bersama tanpa kunci teknis, label pendek disembunyikan kecuali
-// admin menampilkan semua, sunting diksi lewat dialog → diajukan, dan riwayat diksi bisa menayangkan lagi versi lama.
+// Tes panel Teks aplikasi (PanelTeks): teks di layar ini tampil, pencarian mencakup semua teks dari dua tempat simpan
+// tanpa kunci teknis, label pendek disembunyikan kecuali dicentang, sunting diksi lewat dialog → diajukan, dan riwayat
+// diksi bisa menayangkan lagi versi lama.
+import { useEffect, useState } from 'react';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test, vi } from 'vitest';
-import { buatMemori } from '@waris/data';
+import { buatMemori, type RingkasanEntri, type RingkasanKunciDiksi } from '@waris/data';
 import type { Peran } from '@waris/content';
-import { KonteksRepo } from '../repo';
-import { DaftarTeksAplikasi } from '../layar/DaftarTeksAplikasi';
+import { KonteksRepo, usePortal } from '../repo';
+import { PanelTeks } from '../layar/PanelTeks';
+import { DialogSunting } from '../layar/EditorTeksAplikasi';
+import type { ButirTeks } from '../editor/teksAplikasi';
 import { layakDisunting } from '../editor/teksAplikasi';
 
 async function siapkan() {
@@ -25,8 +29,26 @@ async function siapkan() {
 
 function tampilkan(m: Awaited<ReturnType<typeof siapkan>>, peran: Peran, userId: string) {
   m.masukSebagai({ userId, email: `${userId}@x.id` });
-  render(<KonteksRepo.Provider value={{ repo: m, sesi: { userId, email: 'x@x.id' }, peran }}><DaftarTeksAplikasi /></KonteksRepo.Provider>);
+  render(<KonteksRepo.Provider value={{ repo: m, sesi: { userId, email: 'x@x.id' }, peran }}><Panel /></KonteksRepo.Provider>);
 }
+
+/** Seperti di EditorTeksAplikasi: data dimuat, "Hitung warisan dengan tenang" tampil di layar, dialog sunting di luar panel. */
+function Panel() {
+  const { repo, peran } = usePortal();
+  const [data, setData] = useState<{ entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] } | null>(null);
+  const [dipilih, setDipilih] = useState<ButirTeks | null>(null);
+  const [muat, setMuat] = useState(0);
+  useEffect(() => { void Promise.all([repo.konten.daftarEntri('teks_edukasi'), repo.diksi.daftarKunci()]).then(([entri, diksi]) => setData({ entri, diksi })); }, [repo, muat]);
+  if (!data) return null;
+  return (
+    <>
+      <PanelTeks data={data} diLayar={['diksi/beranda.judul']} saatSorot={() => {}} saatSunting={setDipilih} saatBerubah={() => setMuat(n => n + 1)} />
+      {dipilih ? <DialogSunting pilihan={[dipilih]} data={data} bacaSaja={peran === 'reviewer'} saatTutup={() => setDipilih(null)} saatTersimpan={() => setMuat(n => n + 1)} /> : null}
+    </>
+  );
+}
+
+const cari = (kata: string) => fireEvent.change(screen.getByRole('searchbox', { name: 'Cari teks' }), { target: { value: kata } });
 
 test('layakDisunting: label ≤ 2 kata tidak, kalimat ya, sisipan tidak dihitung', () => {
   expect(layakDisunting('Kembali')).toBe(false);
@@ -34,13 +56,16 @@ test('layakDisunting: label ≤ 2 kata tidak, kalimat ya, sisipan tidak dihitung
   expect(layakDisunting('Harta yang dibagi')).toBe(true);
 });
 
-test('dua sumber tampil bersama tanpa kunci; label pendek disembunyikan, admin bisa menampilkan semua', async () => {
-  tampilkan(await siapkan(), 'admin', 'u-a');
-  await screen.findByText('Hitung warisan dengan tenang');
+test('tanpa cari: teks di layar ini; cari: semua teks dari dua sumber tanpa kunci, label pendek bisa ditampilkan', async () => {
+  tampilkan(await siapkan(), 'penulis', 'u-p');
+  await screen.findByText('Teks di layar ini (1)');
+  expect(screen.getByText('Hitung warisan dengan tenang')).toBeTruthy();
+  expect(screen.queryByText('Utang dilunasi sebelum harta dibagi.')).toBeNull();
+  cari('e');
   expect(screen.getByText('Utang dilunasi sebelum harta dibagi.')).toBeTruthy();
   expect(screen.queryByText('Kembali')).toBeNull();
   expect(screen.queryByText(/beranda\.judul|harta\.penjelasan/)).toBeNull();
-  fireEvent.click(screen.getByLabelText(/Tampilkan semua teks/));
+  fireEvent.click(screen.getByLabelText(/Tampilkan juga label pendek/));
   expect(screen.getByText('Kembali')).toBeTruthy();
 });
 
@@ -48,7 +73,6 @@ test('penulis: sunting teks → diajukan untuk review', async () => {
   const m = await siapkan();
   tampilkan(m, 'penulis', 'u-p');
   const butir = await screen.findByRole('article', { name: 'Hitung warisan dengan tenang' });
-  expect(screen.queryByLabelText(/Tampilkan semua teks/)).toBeNull();
   fireEvent.click(within(butir).getByRole('button', { name: 'Sunting' }));
   fireEvent.change(await screen.findByLabelText('Bahasa Indonesia'), { target: { value: 'Hitung warisan dengan tenang dan benar' } });
   expect(screen.getByText('Pratinjau:', { exact: false })).toBeTruthy();

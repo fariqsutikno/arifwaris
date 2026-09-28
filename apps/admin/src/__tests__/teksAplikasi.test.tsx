@@ -1,6 +1,6 @@
 // Tes EditorTeksAplikasi lewat kotak "Cari teks" (jsdom tidak punya tata letak, jadi kotak di atas layar tidak diuji):
 // cari → sunting → admin menerbitkan teks edukasi langsung.
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { buatMemori } from '@waris/data';
 import { KonteksRepo } from '../repo';
@@ -16,9 +16,7 @@ test('cari teks → sunting → Simpan & terbitkan membuat revisi terbit', async
       <EditorTeksAplikasi />
     </KonteksRepo.Provider>,
   );
-  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'kendaraan' } });
-  fireEvent.click((await screen.findAllByRole('button', { name: /^Kendaraan\s*Langkah harta$/ }))[0]!);
-  fireEvent.change(await screen.findByLabelText('Bahasa Indonesia'), { target: { value: 'Kendaraan bermotor' } });
+  await sunting('kendaraan', 'Kendaraan', 'Kendaraan bermotor');
   fireEvent.click(screen.getByRole('button', { name: 'Simpan & terbitkan' }));
   await waitFor(async () => {
     const [entri] = await m.konten.daftarEntri('teks_edukasi');
@@ -34,9 +32,15 @@ function pasang(m: ReturnType<typeof buatMemori>, sesi: { userId: string; email:
   );
 }
 
-async function sunting(cari: string, pilihan: RegExp, teksBaru: string) {
-  fireEvent.change(screen.getByRole('searchbox'), { target: { value: cari } });
-  fireEvent.click((await screen.findAllByRole('button', { name: pilihan }))[0]!);
+async function cari(kata: string) {
+  fireEvent.change(await screen.findByRole('searchbox', { name: 'Cari teks' }), { target: { value: kata } });
+  const semua = screen.getByLabelText(/Tampilkan juga label pendek/) as HTMLInputElement;
+  if (!semua.checked) fireEvent.click(semua);
+}
+
+async function sunting(kata: string, teks: string, teksBaru: string) {
+  await cari(kata);
+  fireEvent.click(within(await screen.findByRole('article', { name: teks })).getByRole('button', { name: 'Sunting' }));
   fireEvent.change(await screen.findByLabelText('Bahasa Indonesia'), { target: { value: teksBaru } });
 }
 
@@ -46,12 +50,12 @@ test('admin: diksi langsung terbit; layar web dipasang ulang dengan teks baru da
   await m.diksi.buatKunci('beranda.mulai_hitung', 'beranda');
   await m.diksi.terbitkanLangsung(await m.diksi.buatDraf('beranda.mulai_hitung', 'Mulai hitung', null, null));
   pasang(m, ADMIN, 'admin');
-  await sunting('mulai hitung', /^Mulai hitung\s*Beranda$/, 'Hitung sekarang');
+  await sunting('mulai hitung', 'Mulai hitung', 'Hitung sekarang');
   fireEvent.click(screen.getByRole('button', { name: 'Simpan & terbitkan' }));
   await waitFor(async () => expect((await m.diksi.bacaTerbit()).find(d => d.kunci === 'beranda.mulai_hitung')?.id).toBe('Hitung sekarang'));
   expect(await layarWeb().findByText(/Hitung sekarang/, { selector: '.aksi-status' })).toBeTruthy();
-  fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'hitung sekarang' } });
-  expect(await screen.findAllByRole('button', { name: /^Hitung sekarang\s*Beranda$/ })).not.toHaveLength(0);
+  await cari('hitung sekarang');
+  expect(await screen.findByRole('article', { name: 'Hitung sekarang' })).toBeTruthy();
 });
 
 test('penulis: ajuan yang menunggu bisa disunting di tempat dan tetap di antrean', async () => {
@@ -61,7 +65,7 @@ test('penulis: ajuan yang menunggu bisa disunting di tempat dan tetap di antrean
   const ajuan = await m.diksi.buatDraf('beranda.mulai_hitung', 'Mulai menghitung', null, null);
   await m.diksi.ajukan(ajuan);
   pasang(m, PENULIS, 'penulis');
-  await sunting('mulai menghitung', /^Mulai menghitung\s*Beranda$/, 'Ayo hitung');
+  await sunting('mulai menghitung', 'Mulai menghitung', 'Ayo hitung');
   fireEvent.click(screen.getByRole('button', { name: 'Simpan perubahan ajuan' }));
   await waitFor(async () => expect(await m.diksi.antreanReview()).toMatchObject([{ id: ajuan, idTeks: 'Ayo hitung', status: 'diajukan' }]));
 });

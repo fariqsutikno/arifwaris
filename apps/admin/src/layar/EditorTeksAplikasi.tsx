@@ -2,7 +2,8 @@
 // menandai setiap teks yang berasal dari teks edukasi atau diksi (lewat buatPencocok) dengan kotak bergaris. Klik teks →
 // dialog sunting Indonesia/Arab → admin langsung menerbitkan, penulis mengajukan; ajuan yang masih menunggu bisa
 // disunting pembuatnya (menggantikan ajuan itu), sama dengan jalur layar daftar. Kotak digambar sebagai lapisan di atas layar, bukan dengan mengubah DOM React milik layar web.
-// Teks yang tidak tampil di layar mana pun dicari lewat kotak "Cari teks" atau tab Daftar teks. Dialog sunting menulis
+// Panel kanan (PanelTeks) mendaftar teks di layar ini dan mencari semua teks, termasuk yang tidak tampil di layar mana
+// pun (satu tampilan, putaran 2 A8). Dialog sunting menulis
 // "Tampil di" (modul virtual lokasi-teks) dan pratinjau kalimatnya; tempat simpan (teks edukasi/diksi) diurus di sini.
 // Layar web membaca snapshot yang terpasang (terbaru dari database, lihat Portal.tsx) ditimpa draf/ajuan yang belum
 // terbit, lalu dipasang ulang tiap kali data berubah: semua tempat yang memakai teks sama ikut berubah dan tetap bergaris.
@@ -12,6 +13,7 @@ import { bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi } from '@waris/content'
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
 import { BingkaiWeb } from './BingkaiWeb';
+import { kunciTeks, PanelTeks } from './PanelTeks';
 import type { Snapshot } from '@waris/data/snapshot';
 import { Beranda as BerandaWeb } from '@waris/web/layar/Beranda';
 import { LangkahPewaris } from '@waris/web/layar/wizard/LangkahPewaris';
@@ -46,9 +48,8 @@ import { pesanGalat } from '../pesanGalat';
 const tanpaAksi = () => {};
 const CSS_KOTAK = `.kotak-sunting{position:absolute;padding:0;border:0;border-radius:3px;background:none;cursor:pointer;
 outline:1px dashed color-mix(in srgb,var(--pink) 70%,transparent)}
-.kotak-sunting:hover,.kotak-sunting:focus-visible{background:color-mix(in srgb,var(--pink) 18%,transparent);outline-width:2px}`;
+.kotak-sunting:hover,.kotak-sunting:focus-visible,.kotak-sunting.disorot{background:color-mix(in srgb,var(--pink) 18%,transparent);outline-width:2px}`;
 const KASUS_CONTOH = kasusDariContoh({ pewaris: 'L', ahliWaris: ['ISTRI', 'IBU', 'ANAK_LK', 'ANAK_PR'], harta: 120_000_000n, harapan: { saham: {}, ashlAkhir: 0n } });
-const BATAS_HASIL_CARI = 30;
 const SLUG_MATERI_CONTOH = snapshotTerpasang().konten.find(baris => baris.jenis === 'materi')?.slug ?? '';
 
 // Nama kelompok teks untuk manusia (awalan kunci teks edukasi / halaman diksi).
@@ -113,7 +114,8 @@ export function EditorTeksAplikasi() {
   const [daftarSumber, setDaftarSumber] = useState<SumberTeks[]>(sumberDariSnapshot);
   const [versiLayar, setVersiLayar] = useState(0);
   const [dipilih, setDipilih] = useState<{ sumber: SumberTeks[]; simpul: Text | null } | null>(null);
-  const [cari, setCari] = useState('');
+  const [diLayar, setDiLayar] = useState<string[]>([]);
+  const [sorot, setSorot] = useState<string | null>(null);
   const pencocok = useMemo(() => buatPencocok(daftarSumber), [daftarSumber]);
 
   useEffect(() => {
@@ -135,8 +137,6 @@ export function EditorTeksAplikasi() {
   }, [data]);
 
   const bagian = BAGIAN.find(b => b.id === bagianId)!;
-  const kata = rapikan(cari).toLowerCase();
-  const hasilCari = kata ? daftarSumber.filter(s => s.id.toLowerCase().includes(kata) || (s.ar ?? '').includes(cari.trim())).slice(0, BATAS_HASIL_CARI) : [];
 
   const setelahSimpan = () => setMuatUlang(n => n + 1);
 
@@ -158,34 +158,20 @@ export function EditorTeksAplikasi() {
           Mode sunting
         </Label>
       </div>
-      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <Card className="gap-0 overflow-hidden py-0">
           <PenjagaGalat key={`${bagian.id}-${versiLayar}`}>
-            <LayarBisaDisunting pencocok={pencocok} aktif={modeSunting} saatPilih={(sumber, simpul) => setDipilih({ sumber, simpul })}>
+            <LayarBisaDisunting pencocok={pencocok} aktif={modeSunting} sorot={sorot} saatKotak={setDiLayar}
+              saatPilih={(sumber, simpul) => setDipilih({ sumber, simpul })}>
               {bagian.layar()}
             </LayarBisaDisunting>
           </PenjagaGalat>
         </Card>
-        <Card className="gap-2 p-4 lg:sticky lg:top-4">
-          <Label className="grid gap-1.5">
-            Cari teks
-            <span className="relative">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
-              <Input type="search" className="pl-9" placeholder="mis. Harta yang dibagi" value={cari} onChange={e => setCari(e.target.value)} />
-            </span>
-          </Label>
-          <p className="text-xs text-muted-foreground">Untuk teks yang tidak terlihat di layar mana pun, mis. tur pengenalan.</p>
-          <ul className="grid gap-1">
-            {hasilCari.map(sumber => (
-              <li key={`${sumber.sumber}/${sumber.kunci}`}>
-                <button type="button" className="grid w-full rounded-md px-2 py-1.5 text-left text-sm hover:bg-muted" onClick={() => setDipilih({ sumber: [sumber], simpul: null })}>
-                  <span className="whitespace-pre-wrap">{sumber.id}</span>
-                  <span className="text-xs text-muted-foreground">{namaKelompok(sumber)}</span>
-                </button>
-              </li>
-            ))}
-            {kata && hasilCari.length === 0 ? <li className="text-sm text-muted-foreground">Tidak ada teks yang cocok.</li> : null}
-          </ul>
+        <Card className="gap-2 p-4 lg:sticky lg:top-4 lg:max-h-[calc(100svh-2rem)] lg:overflow-auto">
+          {data ? (
+            <PanelTeks data={data} diLayar={diLayar} saatSorot={setSorot} saatBerubah={setelahSimpan}
+              saatSunting={butir => setDipilih({ sumber: [butir], simpul: null })} />
+          ) : <Skeleton className="h-24" />}
         </Card>
       </div>
       {dipilih ? (
@@ -198,12 +184,17 @@ export function EditorTeksAplikasi() {
   );
 }
 
-function LayarBisaDisunting({ pencocok, aktif, saatPilih, children }: {
-  pencocok: PencocokTeks; aktif: boolean; saatPilih: (sumber: SumberTeks[], simpul: Text) => void; children: ReactNode;
+function LayarBisaDisunting({ pencocok, aktif, sorot, saatKotak, saatPilih, children }: {
+  pencocok: PencocokTeks; aktif: boolean; sorot: string | null; saatKotak: (kunci: string[]) => void;
+  saatPilih: (sumber: SumberTeks[], simpul: Text) => void; children: ReactNode;
 }) {
   // Callback ref: isi baru terpasang setelah iframe BingkaiWeb siap, jadi efek harus jalan ulang saat wadah muncul.
   const [wadah, setWadah] = useState<HTMLDivElement | null>(null);
   const [kotak, setKotak] = useState<KotakTeks[]>([]);
+  // Teks yang tampil dilaporkan ke panel kanan (tanpa duplikat, urut kemunculan).
+  useEffect(() => {
+    saatKotak([...new Set(kotak.flatMap(k => k.sumber.map(kunciTeks)))]);
+  }, [kotak, saatKotak]);
 
   useLayoutEffect(() => {
     const el = wadah;
@@ -227,7 +218,8 @@ function LayarBisaDisunting({ pencocok, aktif, saatPilih, children }: {
         <div style={{ position: 'relative' }}>
           <div ref={setWadah}>{children}</div>
           {kotak.map((k, i) => (
-            <button key={i} type="button" aria-label={`Sunting teks: ${rapikan(k.simpul.data)}`} className="kotak-sunting"
+            <button key={i} type="button" aria-label={`Sunting teks: ${rapikan(k.simpul.data)}`}
+              className={sorot && k.sumber.some(s => kunciTeks(s) === sorot) ? 'kotak-sunting disorot' : 'kotak-sunting'}
               style={{ left: k.kiri, top: k.atas, width: k.lebar, height: k.tinggi }}
               onClick={() => saatPilih(k.sumber, k.simpul)} />
           ))}

@@ -71,7 +71,7 @@ export function AntreanReview() {
       const butirDiksi = revisiDiksi.map((revisi): Butir => {
         const terbit = kunciDiksi.find(k => k.kunci === revisi.kunci)?.terbit ?? null;
         return {
-          id: revisi.id, jenis: 'Teks aplikasi', judul: revisi.idTeks, tautan: tulisRute({ layar: 'menu', menu: 'aplikasi', tab: 'teks' }),
+          id: revisi.id, jenis: 'Teks aplikasi', judul: revisi.idTeks, tautan: tulisRute({ layar: 'menu', menu: 'aplikasi', tab: 'layar' }),
           dibuatPada: revisi.dibuatPada, status: revisi.status, dibuatOleh: revisi.dibuatOleh, hapus: false,
           perubahan: daftarPerubahan(terbit && bidangDiksi(terbit), bidangDiksi({ id: revisi.idTeks, ar: revisi.arTeks })), baru: !terbit,
           konten: null,
