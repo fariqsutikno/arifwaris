@@ -5,7 +5,7 @@ import type { RingkasanRevisi } from '@waris/data';
 import { keadaanSunting, revisiBasis, type EntriSunting } from '../editor/keadaanSunting';
 
 const r = (id: string, status: RingkasanRevisi['status'], dibuatOleh = 'p', sisa: Partial<RingkasanRevisi> = {}): RingkasanRevisi => ({
-  id, entriId: 'e', status, hapus: false, refs: [], isi: {}, dibuatOleh, diperiksaOleh: null, catatanReview: null,
+  id, entriId: 'e', status, hapus: false, diabaikan: false, refs: [], isi: {}, dibuatOleh, diperiksaOleh: null, catatanReview: null,
   dibuatPada: `2026-01-01T00:00:0${id}Z`, diperiksaPada: null, ...sisa,
 });
 const entri = (semuaRevisi: RingkasanRevisi[], sisa: Partial<EntriSunting> = {}): EntriSunting =>
@@ -38,4 +38,11 @@ test('revisiBasis: pengajuan Sampah yang ditolak → mulai dari versi tayang', (
   const tayang = r('1', 'disetujui');
   expect(revisiBasis(entri([tayang, r('2', 'dikembalikan', 'p', { hapus: true })], { revisiTerbitId: '1' }))).toBe(tayang);
   expect(revisiBasis(entri([tayang, r('2', 'dikembalikan')], { revisiTerbitId: '1' }))!.id).toBe('2');
+});
+
+test('revisiBasis & keadaan: revisi dikembalikan yang dibuang → mulai dari versi tayang, tanpa salinan kerja', () => {
+  const tayang = r('1', 'disetujui');
+  const e = entri([tayang, r('2', 'dikembalikan', 'p', { diabaikan: true })], { revisiTerbitId: '1' });
+  expect(revisiBasis(e)).toBe(tayang);
+  expect(keadaanSunting(e, penulis)).toEqual({ jenis: 'sunting', salinanKerjaId: null });
 });

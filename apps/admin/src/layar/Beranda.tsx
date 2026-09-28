@@ -129,7 +129,7 @@ function KartuAngka({ label, angka, peringatan, href }: { label: string; angka: 
 }
 
 function BarisBeranda({ entri, sekarang }: { entri: RingkasanEntri; sekarang: Date }) {
-  const catatan = entri.revisiTerakhir?.catatanReview;
+  const catatan = entri.revisiTerakhir?.diabaikan ? null : entri.revisiTerakhir?.catatanReview;
   return (
     <li className="flex items-center gap-3 py-2">
       <span className="min-w-0 flex-1">

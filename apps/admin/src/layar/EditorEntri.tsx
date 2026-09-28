@@ -14,7 +14,7 @@
 // langsung di sini (AksiReview, sama dengan Antrean review).
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, Globe, PencilLine } from 'lucide-react';
-import { bacaIsi, DAFTAR_KITAB, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
+import { bacaIsi, bolehAbaikanRevisi, DAFTAR_KITAB, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
 import { KUNCI_CONTOH } from '@waris/web/contoh';
 import type { DrafKuisAi, RingkasanRevisi } from '@waris/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -250,6 +250,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     return hasil?.entriId ?? null;
   });
   const tarik = (revisiId: string) => jalankan(() => repo.editorial.tarik(revisiId));
+  const abaikan = (revisiId: string) => jalankan(() => repo.editorial.abaikan(revisiId));
   const pulihkan = () => jalankan(() => repo.editorial.pulihkanEntri(muatan!.entriId!));
   function buang(cara: 'langsung' | 'ajukan') {
     const alasan = window.prompt(cara === 'ajukan'
@@ -274,7 +275,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const adaArab = punyaVersiArab(muatan.jenis);
   const judul = muatan.slug ? judulEntri({ slug: muatan.slug, revisiTerakhir: muatan.basis }) : `${LABEL_ISI[muatan.jenis]} baru`;
   const revisiTayang = muatan.entri.semuaRevisi.find(r => r.id === muatan.entri.revisiTerbitId) ?? null;
-  const dikembalikan = keadaan.jenis === 'sunting' && !salinanKerjaId && terakhir?.status === 'dikembalikan' && !terakhir.hapus ? terakhir : null;
+  const dikembalikan = keadaan.jenis === 'sunting' && !salinanKerjaId && terakhir?.status === 'dikembalikan' && !terakhir.hapus && !terakhir.diabaikan ? terakhir : null;
+  // Entri yang belum pernah tayang tidak punya versi tayang untuk kembali; drafnya cukup disunting atau entrinya dibuang ke Sampah.
+  const bolehBuangPerubahan = !!dikembalikan && !!muatan.entri.revisiTerbitId
+    && bolehAbaikanRevisi({ peran, pelakuId: sesi.userId, pembuatId: dikembalikan.dibuatOleh, status: dikembalikan.status });
 
   return (
     <div className="space-y-4">
@@ -289,7 +293,13 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       {dikembalikan ? (
         <Alert>
           <AlertTitle>Dikembalikan oleh {dikembalikan.diperiksaOleh ? namaDari(dikembalikan.diperiksaOleh) : 'reviewer'}</AlertTitle>
-          <AlertDescription>{dikembalikan.catatanReview} · Perbaiki di bawah lalu kirim lagi.</AlertDescription>
+          <AlertDescription>{dikembalikan.catatanReview} · Perbaiki di bawah lalu kirim lagi.
+            {bolehBuangPerubahan ? (
+              <> Atau <Button variant="link" className="h-auto p-0 align-baseline" disabled={sibuk} onClick={() => void abaikan(dikembalikan.id)}>
+                buang perubahan ini
+              </Button> dan kembali ke versi tayang.</>
+            ) : null}
+          </AlertDescription>
         </Alert>
       ) : null}
       {ajuanSaya ? (

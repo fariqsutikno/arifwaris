@@ -3,7 +3,7 @@
 // lewat aturan murni di packages/content, supaya tes app tanpa jaringan tetap setia pada perilaku DB.
 // Isi disimpan dalam bentuk JSON (keJson) seperti di jsonb, lalu dibaca ulang lewat saringValid.
 import {
-  bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, keJson, periksaRefs, transisiRevisi, bacaIsi,
+  bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, keJson, periksaRefs, transisiRevisi, bolehAbaikanRevisi, bacaIsi,
   type AksiEditorial, type IsiKonten, type JenisKonten, type Peran, type StatusRevisi,
 } from '@waris/content';
 import type {
@@ -165,7 +165,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       if (ambil(entri, entriId, 'entri').dibuang) throw new Error('entri ada di Sampah; pulihkan dulu');
       const id = idBaru();
       revisi.set(id, {
-        id, entriId, status: 'draf', hapus: false, refs: [...refs], isi: periksaIsi(jenis, isi, refs), dibuatOleh: pelaku().pelakuId,
+        id, entriId, status: 'draf', hapus: false, diabaikan: false, refs: [...refs], isi: periksaIsi(jenis, isi, refs), dibuatOleh: pelaku().pelakuId,
         diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(), diperiksaPada: null,
       });
       return id;
@@ -210,6 +210,13 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       }
       Object.assign(target, { status: 'dikembalikan', diperiksaOleh: pelaku().pelakuId, diperiksaPada: sekarang(), catatanReview: 'pengajuan ditarik kembali' });
     },
+    async abaikan(revisiId) {
+      const target = ambil(revisi, revisiId, 'revisi');
+      if (!bolehAbaikanRevisi({ ...pelaku(), pembuatId: target.dibuatOleh, status: target.status }) || target.diabaikan) {
+        throw new Error(`revisi ${revisiId} tidak bisa dibuang`);
+      }
+      target.diabaikan = true;
+    },
     async terbitkanLangsung(revisiId) {
       const target = ambil(revisi, revisiId, 'revisi');
       const tujuan = ambil(entri, target.entriId, 'entri');
@@ -242,7 +249,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       const terbit = revisi.get(baris.revisiTerbitId)!;
       const id = idBaru();
       revisi.set(id, {
-        ...terbit, id, status: 'diajukan', hapus: true, refs: [...terbit.refs], dibuatOleh: pelaku().pelakuId,
+        ...terbit, id, status: 'diajukan', hapus: true, diabaikan: false, refs: [...terbit.refs], dibuatOleh: pelaku().pelakuId,
         diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(), diperiksaPada: null,
       });
       if (cara.cara === 'ajukan') { catatJejak(entriId, 'buang_diajukan', catatan); return 'diajukan'; }

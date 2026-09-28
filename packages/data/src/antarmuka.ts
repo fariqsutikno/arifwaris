@@ -7,9 +7,10 @@ export interface Sesi { userId: string; email: string; nama?: string | null; ava
 export interface KontenTerbit<J extends JenisKonten = JenisKonten> {
   entriId: string; jenis: J; slug: string; urutan: number; revisiId: string; isi: IsiKonten[J]; refs: string[]; versiTerbit: number;
 }
-/** `hapus` = revisi penghapusan: isinya salinan revisi terbit; bila disetujui, entri hilang dari web. */
+/** `diabaikan` = revisi dikembalikan yang dibuang pembuatnya: tetap di riwayat, tidak lagi dianggap revisi terbaru.
+ * `hapus` = revisi penghapusan: isinya salinan revisi terbit; bila disetujui, entri hilang dari web. */
 export interface RingkasanRevisi {
-  id: string; entriId: string; status: StatusRevisi; hapus: boolean; refs: string[]; isi: unknown; dibuatOleh: string;
+  id: string; entriId: string; status: StatusRevisi; hapus: boolean; diabaikan: boolean; refs: string[]; isi: unknown; dibuatOleh: string;
   diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string; diperiksaPada: string | null;
 }
 export interface DiksiTerbit { kunci: string; halaman: string; id: string; ar: string | null; versiTerbit: number }
@@ -63,6 +64,8 @@ export interface RepositoriEditorial {
   revisiSaya(userId: string): Promise<AjuanKonten[]>;
   /** Pembuat (atau admin) menarik kembali pengajuannya: diajukan → draf (pengajuan ke Sampah: ditutup). */
   tarik(revisiId: string): Promise<void>;
+  /** Pembuat (atau admin) membuang revisi yang dikembalikan tanpa menyuntingnya; riwayat tetap. */
+  abaikan(revisiId: string): Promise<void>;
   /** Admin: draf langsung terbit tanpa antrean. */
   terbitkanLangsung(revisiId: string): Promise<void>;
   /** Pembuat (atau admin) mengganti isi ajuannya yang masih menunggu; tetap di antrean. */

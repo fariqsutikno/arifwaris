@@ -558,7 +558,7 @@ function BarisSeret({ entri, baris, naik, turun }: { entri: RingkasanEntri; bari
 
 function BarisEntri({ entri, baris, pegangan }: { entri: RingkasanEntri; baris: KonteksBaris; pegangan?: ReactNode }) {
   const revisi = entri.revisiTerakhir;
-  const catatan = revisi?.status === 'dikembalikan' ? revisi.catatanReview : null;
+  const catatan = revisi?.status === 'dikembalikan' && !revisi.diabaikan ? revisi.catatanReview : null;
   const judul = judulEntri(entri);
   const info = [
     nilaiIsi(entri, 'bab') ? `Bab ${nilaiIsi(entri, 'bab')}` : '',

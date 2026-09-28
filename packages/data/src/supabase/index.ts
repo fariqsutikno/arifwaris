@@ -91,6 +91,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     kembalikan: (revisiId, catatan) => rpc('kembalikan_revisi', { p_id: revisiId, p_catatan: catatan }),
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi', { p_id: revisiId }),
     tarik: revisiId => rpc('tarik_revisi', { p_id: revisiId }),
+    abaikan: revisiId => rpc('abaikan_revisi', { p_id: revisiId }),
     terbitkanLangsung: revisiId => rpc('terbitkan_langsung', { p_id: revisiId }),
     perbaruiAjuan: (revisiId, jenis, isi, refs) => rpc('perbarui_ajuan', { p_id: revisiId, p_isi: isiSah(jenis, isi), p_refs: refs }),
     async buangEntri(entriId, alasan) {

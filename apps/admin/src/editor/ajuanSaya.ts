@@ -20,7 +20,7 @@ export interface ButirAjuan {
 const TAB_DARI_STATUS = { dikembalikan: 'perbaiki', diajukan: 'menunggu', disetujui: 'disetujui' } as const;
 
 export function susunAjuan(konten: readonly AjuanKonten[], diksi: readonly RingkasanRevisiDiksi[]): ButirAjuan[] {
-  const dariKonten = terbaruPer(konten, r => r.entriId).filter(bukanTerbitSendiri).flatMap((r): ButirAjuan[] => (r.status === 'draf' ? [] : [{
+  const dariKonten = terbaruPer(konten, r => r.entriId).filter(r => !r.diabaikan).filter(bukanTerbitSendiri).flatMap((r): ButirAjuan[] => (r.status === 'draf' ? [] : [{
     id: r.id, tab: TAB_DARI_STATUS[r.status], jenis: r.hapus ? `${LABEL_ISI[r.jenis]} · ke Sampah` : LABEL_ISI[r.jenis],
     judul: judulEntri({ slug: r.slug, revisiTerakhir: r }), catatan: r.catatanReview, pemeriksa: r.diperiksaOleh,
     waktu: r.diperiksaPada ?? r.dibuatPada, tujuan: { entriId: r.entriId },

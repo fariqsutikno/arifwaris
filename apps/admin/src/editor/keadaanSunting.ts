@@ -61,6 +61,8 @@ export function caraBuang(entri: EntriSunting, pelaku: Pelaku) {
  * (bisa berbeda dari revisi terakhir sesudah rollback), atau revisi terakhir (dikembalikan). */
 export function revisiBasis(entri: EntriSunting): RingkasanRevisi | null {
   const terakhir = revisiTerakhir(entri.semuaRevisi);
+  // Revisi dikembalikan yang dibuang: mulai dari versi tayang (atau isi terakhir bila belum pernah tayang).
+  if (terakhir?.diabaikan) return entri.semuaRevisi.find(r => r.id === entri.revisiTerbitId) ?? terakhir;
   if (terakhir?.status === 'disetujui') return entri.semuaRevisi.find(r => r.id === entri.revisiTerbitId) ?? terakhir;
   if (terakhir?.hapus && terakhir.status === 'dikembalikan') {
     // Pengajuan ke Sampah yang ditolak/ditarik: isinya salinan versi tayang, jadi mulai dari versi tayang.

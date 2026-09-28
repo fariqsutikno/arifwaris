@@ -44,6 +44,10 @@ export function transisiRevisi(p: Pelaku & { status: StatusRevisi; aksi: AksiEdi
 export const bolehSuntingDraf = (p: Pelaku & { status: StatusRevisi }): boolean =>
   p.peran !== null && p.peran !== 'reviewer' && p.status === 'draf' && milikSendiriAtauAdmin(p);
 
+/** Revisi yang dikembalikan boleh dibuang pembuatnya (atau admin) tanpa disunting; riwayatnya tetap ada (supabase/migrations/20260928000004). */
+export const bolehAbaikanRevisi = (p: Pelaku & { status: StatusRevisi }): boolean =>
+  p.peran !== null && p.peran !== 'reviewer' && p.status === 'dikembalikan' && milikSendiriAtauAdmin(p);
+
 /** Ajuan yang masih menunggu review boleh disunting pembuatnya (atau admin) tanpa ditarik dulu. */
 export const bolehPerbaruiAjuan = (p: Pelaku & { status: StatusRevisi }): boolean =>
   p.peran !== null && p.peran !== 'reviewer' && p.status === 'diajukan' && milikSendiriAtauAdmin(p);

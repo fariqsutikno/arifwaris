@@ -1,6 +1,6 @@
 // packages/content/src/__tests__/editorial.test.ts
 import { describe, expect, test } from 'vitest';
-import { bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, periksaRefs, transisiRevisi } from '../index.js';
+import { bolehAbaikanRevisi, bolehPulihkanEntri, bolehSuntingDraf, caraBuangEntri, periksaRefs, transisiRevisi } from '../index.js';
 
 const dasar = { pelakuId: 'a', pembuatId: 'a' } as const;
 
@@ -113,5 +113,16 @@ describe('Sampah', () => {
     expect(bolehPulihkanEntri({ ...belumTerbit, peran: 'penulis', pembuatRevisi: ['lain'] }).ok).toBe(false);
     expect(bolehPulihkanEntri({ ...belumTerbit, peran: 'reviewer' }).ok).toBe(false);
     expect(bolehPulihkanEntri({ ...entri, peran: 'admin' }).ok).toBe(false);
+  });
+});
+
+describe('bolehAbaikanRevisi', () => {
+  const dasarAbaikan = { pelakuId: 'a', pembuatId: 'a', status: 'dikembalikan' } as const;
+  test('pembuat & admin boleh; reviewer, orang lain, dan status lain tidak', () => {
+    expect(bolehAbaikanRevisi({ ...dasarAbaikan, peran: 'penulis' })).toBe(true);
+    expect(bolehAbaikanRevisi({ ...dasarAbaikan, peran: 'admin', pelakuId: 'x' })).toBe(true);
+    expect(bolehAbaikanRevisi({ ...dasarAbaikan, peran: 'reviewer' })).toBe(false);
+    expect(bolehAbaikanRevisi({ ...dasarAbaikan, peran: 'penulis', pelakuId: 'x' })).toBe(false);
+    expect(bolehAbaikanRevisi({ ...dasarAbaikan, peran: 'penulis', status: 'diajukan' })).toBe(false);
   });
 });

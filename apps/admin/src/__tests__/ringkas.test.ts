@@ -8,7 +8,7 @@ import {
 function entri(id: string, sisa: { status?: RingkasanRevisi['status'] | null; terbit?: boolean; oleh?: string; isi?: unknown;
   refs?: string[]; pada?: string; catatan?: string } = {}): RingkasanEntri {
   const revisiTerakhir = sisa.status === null ? null : {
-    id: `r-${id}`, entriId: id, status: sisa.status ?? 'draf', hapus: false, refs: sisa.refs ?? [], isi: sisa.isi ?? {},
+    id: `r-${id}`, entriId: id, status: sisa.status ?? 'draf', hapus: false, diabaikan: false, refs: sisa.refs ?? [], isi: sisa.isi ?? {},
     dibuatOleh: sisa.oleh ?? 'u1', diperiksaOleh: null, catatanReview: sisa.catatan ?? null,
     dibuatPada: sisa.pada ?? '2026-09-27T00:00:00.000Z', diperiksaPada: null,
   } satisfies RingkasanRevisi;
@@ -130,4 +130,9 @@ test('urutkan: manual apa adanya; diubah terbaru dulu; judul alfabet dengan angk
   expect(slug(urutkan(daftar, 'diubah'))).toEqual(['a', 'c', 'b']);
   expect(slug(urutkan(daftar, 'judul'))).toEqual(['c', 'a', 'b']);
   expect(slug(urutkan(daftar, 'status'))).toEqual(['a', 'c', 'b']);
+});
+
+test('statusTampil: revisi dikembalikan yang dibuang tidak dihitung', () => {
+  const e = entri('x', { status: 'dikembalikan', terbit: true });
+  expect(statusTampil({ ...e, revisiTerakhir: { ...e.revisiTerakhir!, diabaikan: true } })).toBe('terbit');
 });

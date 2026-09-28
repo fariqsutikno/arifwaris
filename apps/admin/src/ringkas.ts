@@ -18,7 +18,8 @@ export const diSampah = (entri: RingkasanEntri) => entri.dihapus || entri.dibuan
 export function statusTampil(entri: RingkasanEntri): StatusTampil {
   if (diSampah(entri)) return 'sampah';
   const { revisiTerbitId, revisiTerakhir } = entri;
-  if (!revisiTerakhir) return revisiTerbitId ? 'terbit' : 'draf';
+  // Revisi dikembalikan yang sudah dibuang pembuatnya tidak lagi dihitung.
+  if (!revisiTerakhir || revisiTerakhir.diabaikan) return revisiTerbitId ? 'terbit' : 'draf';
   // Disetujui tapi bukan revisi terbit = sesudah rollback; yang menentukan tetap apa yang sedang terbit.
   if (revisiTerakhir.status === 'disetujui') return 'terbit';
   if (revisiTerbitId && revisiTerakhir.status === 'draf') return 'terbit + draf';

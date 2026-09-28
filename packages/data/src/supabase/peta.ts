@@ -9,7 +9,7 @@ import type {
 type Baris = Record<string, any>;
 
 export const keRevisi = (baris: Baris): RingkasanRevisi => ({
-  id: baris.id, entriId: baris.entri_id, status: baris.status, hapus: baris.hapus ?? false, refs: baris.refs, isi: baris.isi, dibuatOleh: baris.dibuat_oleh,
+  id: baris.id, entriId: baris.entri_id, status: baris.status, hapus: baris.hapus ?? false, diabaikan: baris.diabaikan ?? false, refs: baris.refs, isi: baris.isi, dibuatOleh: baris.dibuat_oleh,
   diperiksaOleh: baris.diperiksa_oleh, catatanReview: baris.catatan_review, dibuatPada: baris.dibuat_pada, diperiksaPada: baris.diperiksa_pada,
 });
 

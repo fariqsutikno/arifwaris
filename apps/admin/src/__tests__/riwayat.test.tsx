@@ -84,7 +84,7 @@ test('Sampah di linimasa: alasan & pemulihan tercatat; penanda hapus admin tidak
 
 test('kalimatRevisi & susunLinimasa: terbit langsung, tarik pengajuan Sampah, urutan terbaru di atas', () => {
   const nama = (id: string) => id.toUpperCase();
-  const dasar = { entriId: 'e', refs: [] as string[], isi: {}, catatanReview: null, diperiksaOleh: null, diperiksaPada: null, hapus: false };
+  const dasar = { entriId: 'e', refs: [] as string[], isi: {}, catatanReview: null, diperiksaOleh: null, diperiksaPada: null, hapus: false, diabaikan: false };
   const r = (sisa: Partial<RingkasanRevisi> & Pick<RingkasanRevisi, 'id' | 'status' | 'dibuatOleh' | 'dibuatPada'>): RingkasanRevisi => ({ ...dasar, ...sisa });
   expect(kalimatRevisi(r({ id: '1', status: 'disetujui', dibuatOleh: 'a', diperiksaOleh: 'a', dibuatPada: 't' }), nama)).toBe('A menerbitkan perubahan');
   expect(kalimatRevisi(r({ id: '2', status: 'dikembalikan', hapus: true, dibuatOleh: 'p', catatanReview: 'pengajuan ditarik kembali', dibuatPada: 't' }), nama))
