@@ -138,8 +138,8 @@ Satu pintu, kurasi, layar tambahan, penjelasan, dialog sunting yang menampilkan 
 Edge Function `supabase/functions/ai-bantu` (logika murni di `logika.ts`, dites vitest lewat `scripts`), tabel
 `pemakaian_ai`, kuota 50/hari per pengguna (WIB), model lewat secret. Portal: Rapikan dengan AI
 (bidang teks, non-Arab), Buat draf dengan AI (soal kuis, dasar hukum satu bab), Saran AI (panel Info materi/FAQ).
-Penyedia AI diganti ke SumoPod (format OpenAI chat completions; secret AI_API_KEY, AI_MODEL bawaan gpt-4o-mini,
-AI_MODEL_CADANGAN, AI_BASE_URL). Draf kuis AI membawa `dibantuAi`; `terbitkan_langsung` menolaknya sebelum pernah lolos review.
+Penyedia AI berurutan: Gemini (gratis, endpoint format OpenAI) lalu SumoPod (berbayar); tiap model yang gagal diganti
+model berikutnya. Secret GEMINI_API_KEY + GEMINI_MODELS, SUMOPOD_API_KEY + SUMOPOD_MODELS (daftar dipisah koma). Draf kuis AI membawa `dibantuAi`; `terbitkan_langsung` menolaknya sebelum pernah lolos review.
 ponytail: penanda `dibantuAi` masih bisa dihapus admin lewat Kode mentah; kunci di database bila perlu.
 Edge Function `ai-bantu` (secret, cek peran, kuota, log) → Rapikan teks → Draf soal kuis → Saran kelengkapan.
 
