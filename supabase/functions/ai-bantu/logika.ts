@@ -77,9 +77,13 @@ export function susunPrompt(permintaan: Permintaan): Prompt {
     };
     case 'saran': return {
       sistem: `${ATURAN_UMUM} Kamu penyunting materi belajar waris (faraidh). Beri paling banyak 6 saran singkat agar `
-        + `${permintaan.jenis === 'faq' ? 'jawaban FAQ' : 'materi'} ini lebih lengkap dan mudah dipahami, mis. contoh kasus yang belum ada, `
-        + 'istilah yang dipakai tanpa penjelasan, atau klaim yang belum diberi dalil. Saran berupa hal yang perlu dikerjakan penulis; '
-        + 'JANGAN menulis hukum, jawaban, atau dalil baru.',
+        + `${permintaan.jenis === 'faq' ? 'jawaban FAQ' : 'materi'} ini lebih jelas bagi orang awam. `
+        + 'Konteks aplikasi, JANGAN disarankan ulang: [[istilah]] sudah tertaut ke glosarium (pembaca bisa mengetuknya untuk melihat arti); '
+        + '[Rxx-y] adalah rujukan yang sudah tertaut ke dalil lengkap beserta sumber kitab dan perawinya; '
+        + 'materi dipecah per pelajaran, jadi topik di luar judul ini sudah dibahas di pelajaran lain dan jangan diminta ditambahkan. '
+        + 'Fokus pada isi pelajaran ini saja: bagian yang membingungkan atau terlalu padat, urutan penjelasan, contoh yang kurang tepat '
+        + 'untuk poin yang sudah ada, atau klaim hukum yang sama sekali belum diberi [Rxx-y]. Tiap saran menyebut bagian mana yang dimaksud. '
+        + 'Bila materi sudah baik, kembalikan daftar kosong; jangan mengarang saran. JANGAN menulis hukum, jawaban, atau dalil baru.',
       pengguna: `Judul: ${permintaan.judul}\n\n${permintaan.teks}`,
       skema: { type: 'object', properties: { saran: { type: 'array', items: { type: 'string' } } }, required: ['saran'] },
       suhu: 0.4,

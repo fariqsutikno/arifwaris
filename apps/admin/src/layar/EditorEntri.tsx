@@ -354,7 +354,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
                 ) : null}
                 {peran === 'admin' ? (
                   <TabsContent value="json" className="pt-2">
-                    <p className="mb-2 text-xs text-muted-foreground">Untuk admin: isi entri dalam bentuk JSON, untuk perbaikan yang tidak bisa lewat form.</p>
+                    <div className="mb-2 flex items-baseline justify-between gap-2">
+                      <p className="text-xs text-muted-foreground">Untuk admin: isi entri dalam bentuk JSON, untuk perbaikan yang tidak bisa lewat form.</p>
+                      <TautanSalin teks={teksJson} />
+                    </div>
                     <Bidang label="JSON">
                       <Textarea rows={20} className="font-mono text-xs" value={teksJson} readOnly={!bisaSunting} onChange={e => setTeksJson(e.target.value)} />
                     </Bidang>
@@ -656,4 +659,19 @@ async function muatOpsi(repo: ReturnType<typeof usePortal>['repo']): Promise<Ops
     refs: opsiRujukan(daftarRefs).map(ref => ({ nilai: ref.kode, label: `Bab ${ref.bab} · ${ref.klaim}` })),
     kodeAlasan: [...alasan].sort().map(k => ({ nilai: k, label: k })),
   };
+}
+
+/** Tautan teks (aksi sekunder) untuk menyalin JSON entri ke papan klip. */
+function TautanSalin({ teks }: { teks: string }) {
+  const [tersalin, setTersalin] = useState(false);
+  const salin = async () => {
+    await navigator.clipboard.writeText(teks);
+    setTersalin(true);
+    setTimeout(() => setTersalin(false), 2000);
+  };
+  return (
+    <button type="button" className="shrink-0 text-xs text-primary underline-offset-4 hover:underline" onClick={() => void salin()}>
+      {tersalin ? 'Tersalin' : 'Salin JSON'}
+    </button>
+  );
 }
