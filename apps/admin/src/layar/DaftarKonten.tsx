@@ -315,7 +315,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
                   const bisa = dipilih.filter(entri => bolehAksi(entri, aksi));
                   const alasan = dipilih.length ? ringkasAlasan(aksi, dipilih, pelaku) : null;
                   return (
-                    <li key={aksi} className="flex flex-wrap items-center gap-x-2">
+                    <li key={aksi} className="grid justify-items-start gap-0.5">
                       <Button size="sm" variant={aksi === 'sampah' ? 'ghost' : 'secondary'} className={aksi === 'sampah' ? 'text-destructive' : undefined}
                         disabled={!!sibukMassal || bisa.length === 0} onClick={() => void jalankanMassal(aksi, bisa)}>
                         {sibukMassal === aksi ? 'Memproses…' : `${LABEL_AKSI[aksi]} (${bisa.length})`}
