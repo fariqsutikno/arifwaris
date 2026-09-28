@@ -34,7 +34,7 @@ select throws_ok(
 select throws_ok(
   $$update revisi set refs = '{R04-2}' where id = '20000000-0000-0000-0000-000000000001'$$,
   'P0001', 'revisi yang sudah diajukan tidak bisa diubah', 'refs revisi beku setelah diajukan');
-select is((select angka from versi_konten), 0::bigint, 'versi_konten mulai dari 0');
+select is((select count(*) from versi_konten), 1::bigint, 'versi_konten satu baris');
 
 select * from finish();
 rollback;

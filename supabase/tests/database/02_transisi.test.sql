@@ -2,6 +2,9 @@
 -- Transisi status lewat fungsi: aturan peran sama dengan transisiRevisi di packages/content, dan penerbitan atomik.
 begin;
 select plan(13);
+-- Versi dihitung relatif terhadap awal tes: database lokal bisa sudah berisi terbitan lain.
+create temp table versi_awal as select angka from versi_konten;
+grant select on versi_awal to authenticated;
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'penulis@tes.local'),
@@ -40,8 +43,8 @@ select lives_ok($$select setujui_revisi_diksi('30000000-0000-0000-0000-000000000
 reset role;
 select is((select revisi_terbit_id from entri_konten where id = '10000000-0000-0000-0000-000000000001'),
           '20000000-0000-0000-0000-000000000001'::uuid, 'setujui menunjuk revisi terbit');
-select is((select angka from versi_konten), 2::bigint, 'versi_konten naik sekali per penerbitan');
-select is((select versi_terbit from entri_konten where id = '10000000-0000-0000-0000-000000000001'), 1::bigint, 'entri mencatat versi terbitnya');
+select is((select angka from versi_konten) - (select angka from versi_awal), 2::bigint, 'versi_konten naik sekali per penerbitan');
+select is((select versi_terbit from entri_konten where id = '10000000-0000-0000-0000-000000000001') - (select angka from versi_awal), 1::bigint, 'entri mencatat versi terbitnya');
 
 -- rollback: admin menyetujui revisi reviewer, lalu menerbitkan ulang revisi lama
 set local role authenticated;
