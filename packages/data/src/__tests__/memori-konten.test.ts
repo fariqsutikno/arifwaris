@@ -38,6 +38,20 @@ describe('memori: konten & editorial', () => {
     await expect(db.editorial.abaikan(revisiId)).rejects.toThrow(/tidak bisa dibuang/);
   });
 
+  test('teks aplikasi (diksi): revisi dikembalikan dibuang pembuatnya, teks tayang tetap', async () => {
+    const db = siapkan();
+    await db.diksi.buatKunci('uji.satu', 'uji');
+    const revisiId = await db.diksi.buatDraf('uji.satu', 'Lama', null, null);
+    await db.diksi.ajukan(revisiId);
+    db.masukSebagai(REVIEWER);
+    await db.diksi.kembalikan(revisiId, 'perbaiki');
+    await expect(db.diksi.abaikan(revisiId)).rejects.toThrow(/tidak bisa dibuang/);
+    db.masukSebagai(PENULIS);
+    await db.diksi.abaikan(revisiId);
+    expect((await db.diksi.daftarRevisi('uji.satu'))[0]).toMatchObject({ status: 'dikembalikan', diabaikan: true });
+    await expect(db.diksi.abaikan(revisiId)).rejects.toThrow(/tidak bisa dibuang/);
+  });
+
   test('bigint tetap bigint setelah disimpan dan dibaca', async () => {
     const db = siapkan();
     const entriId = await db.editorial.buatEntri('soal_hitung', 'H-01', 1);

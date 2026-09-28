@@ -25,7 +25,7 @@ export function susunAjuan(konten: readonly AjuanKonten[], diksi: readonly Ringk
     judul: judulEntri({ slug: r.slug, revisiTerakhir: r }), catatan: r.catatanReview, pemeriksa: r.diperiksaOleh,
     waktu: r.diperiksaPada ?? r.dibuatPada, tujuan: { entriId: r.entriId },
   }]));
-  const dariDiksi = terbaruPer(diksi, r => r.kunci).filter(bukanTerbitSendiri).flatMap((r): ButirAjuan[] => (r.status === 'draf' ? [] : [{
+  const dariDiksi = terbaruPer(diksi, r => r.kunci).filter(r => !r.diabaikan).filter(bukanTerbitSendiri).flatMap((r): ButirAjuan[] => (r.status === 'draf' ? [] : [{
     id: r.id, tab: TAB_DARI_STATUS[r.status], jenis: 'Teks aplikasi', judul: r.idTeks, catatan: r.catatanReview, pemeriksa: r.diperiksaOleh,
     waktu: r.diperiksaPada ?? r.dibuatPada, tujuan: { kunciTeks: r.kunci, id: r.idTeks, ar: r.arTeks },
   }]));

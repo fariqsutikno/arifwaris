@@ -14,7 +14,7 @@ export const keRevisi = (baris: Baris): RingkasanRevisi => ({
 });
 
 export const keRevisiDiksi = (baris: Baris): RingkasanRevisiDiksi => ({
-  id: baris.id, kunci: baris.kunci, idTeks: baris.id_teks, arTeks: baris.ar_teks, catatan: baris.catatan, status: baris.status,
+  id: baris.id, kunci: baris.kunci, idTeks: baris.id_teks, arTeks: baris.ar_teks, catatan: baris.catatan, status: baris.status, diabaikan: baris.diabaikan ?? false,
   dibuatOleh: baris.dibuat_oleh, diperiksaOleh: baris.diperiksa_oleh, catatanReview: baris.catatan_review, dibuatPada: baris.dibuat_pada,
   diperiksaPada: baris.diperiksa_pada,
 });
@@ -39,11 +39,13 @@ const terakhirDari = <T extends { dibuatPada: string }>(daftar: T[]): T | null =
 /** Baris entri_konten dengan relasi `revisi!revisi_entri_id_fkey(*)` (semua revisi entri itu). */
 export const keRingkasanEntri = (baris: Baris): RingkasanEntri => {
   const semuaRevisi = (baris.revisi as Baris[]).map(keRevisi);
+  const terakhir = terakhirDari(semuaRevisi);
   return {
     entriId: baris.id, jenis: baris.jenis as JenisKonten, slug: baris.slug, urutan: baris.urutan,
     revisiTerbitId: baris.revisi_terbit_id, dihapus: semuaRevisi.some(r => r.id === baris.revisi_terbit_id && r.hapus),
     dibuang: baris.dibuang_pada != null,
-    revisiTerakhir: terakhirDari(semuaRevisi),
+    revisiTerakhir: terakhir,
+    ...(terakhir?.diabaikan ? { isiTerbit: semuaRevisi.find(r => r.id === baris.revisi_terbit_id)?.isi } : {}),
   };
 };
 

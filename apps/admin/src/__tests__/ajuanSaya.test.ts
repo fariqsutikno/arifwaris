@@ -8,7 +8,7 @@ const konten = (id: string, entriId: string, status: AjuanKonten['status'], wakt
   jenis: 'faq', slug: entriId, ...lain,
 });
 const diksi = (id: string, status: RingkasanRevisiDiksi['status'], waktu: string): RingkasanRevisiDiksi => ({
-  id, kunci: 'u.a', idTeks: 'Bagikan', arTeks: null, catatan: null, status, dibuatOleh: 'p', diperiksaOleh: 'r', catatanReview: null,
+  id, kunci: 'u.a', idTeks: 'Bagikan', arTeks: null, catatan: null, status, diabaikan: false, dibuatOleh: 'p', diperiksaOleh: 'r', catatanReview: null,
   dibuatPada: waktu, diperiksaPada: status === 'diajukan' ? null : waktu,
 });
 

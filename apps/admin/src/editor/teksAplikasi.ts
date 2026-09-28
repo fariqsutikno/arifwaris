@@ -25,15 +25,16 @@ export function susunButir(
 ): ButirTeks[] {
   const dariTeks = entri.filter(e => !e.dihapus && !e.dibuang && e.revisiTerakhir).map((e): ButirTeks => {
     const revisi = e.revisiTerakhir!;
-    const isi = revisi.isi as IsiTeksEdukasi;
+    // Revisi dikembalikan yang dibuang tidak lagi berlaku: pakai isi tayang.
+    const isi = (revisi.diabaikan ? e.isiTerbit ?? revisi.isi : revisi.isi) as IsiTeksEdukasi;
     return {
       sumber: 'teks', kunci: e.slug, id: isi.id, ar: isi.ar ?? null, entriId: e.entriId,
-      status: revisi.status === 'disetujui' ? 'terbit' : revisi.status, lokasi: lokasi[e.slug] ?? [],
+      status: revisi.status === 'disetujui' || revisi.diabaikan ? 'terbit' : revisi.status, lokasi: lokasi[e.slug] ?? [],
     };
   });
   const dariDiksi = diksi.map((k): ButirTeks => {
     const revisi = k.revisiTerakhir;
-    const baru = revisi && revisi.status !== 'disetujui' ? revisi : null;
+    const baru = revisi && revisi.status !== 'disetujui' && !revisi.diabaikan ? revisi : null;
     return {
       sumber: 'diksi', kunci: k.kunci, id: baru?.idTeks ?? k.terbit?.id ?? revisi?.idTeks ?? '', ar: baru ? baru.arTeks : k.terbit?.ar ?? null,
       status: baru ? baru.status as Exclude<typeof baru.status, 'disetujui'> : 'terbit', terbit: k.terbit, lokasi: lokasi[k.kunci] ?? [],

@@ -2,7 +2,7 @@
 -- Revisi dikembalikan boleh dibuang (diabaikan) oleh pembuat atau admin; reviewer, penulis lain, dan revisi yang
 -- bukan dikembalikan ditolak. Isi revisi tidak berubah.
 begin;
-select plan(7);
+select plan(9);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'penulis@tes.local'),
@@ -31,6 +31,19 @@ reset role;
 select is((select diabaikan from revisi where id = '20000000-0000-0000-0000-000000000001'), true, 'revisi bertanda diabaikan');
 select is((select (isi, status)::text from revisi where id = '20000000-0000-0000-0000-000000000001'),
   ('{"v": 1}'::jsonb, 'dikembalikan'::status_revisi)::text, 'isi & status tetap (riwayat utuh)');
+
+-- teks aplikasi (diksi): aturan sama
+insert into diksi (kunci, halaman) values ('uji.satu', 'uji');
+insert into revisi_diksi (id, kunci, id_teks, dibuat_oleh, status) values
+  ('30000000-0000-0000-0000-000000000001', 'uji.satu', 'lama', '00000000-0000-0000-0000-00000000000a', 'dikembalikan');
+set local role authenticated;
+set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}';
+select throws_ok($$select abaikan_revisi_diksi('30000000-0000-0000-0000-000000000001')$$, 'P0001', null, 'reviewer tidak bisa membuang teks');
+set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000a","role":"authenticated"}';
+select lives_ok($$select abaikan_revisi_diksi('30000000-0000-0000-0000-000000000001')$$, 'pembuat membuang revisi teks dikembalikan');
+reset role;
+select is((select (id_teks, status, diabaikan)::text from revisi_diksi where id = '30000000-0000-0000-0000-000000000001'),
+  ('lama', 'dikembalikan'::status_revisi, true)::text, 'teks & status tetap, bertanda diabaikan');
 
 select * from finish();
 rollback;

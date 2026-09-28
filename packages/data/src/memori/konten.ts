@@ -134,7 +134,8 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
         .map((baris): RingkasanEntri => ({
           entriId: baris.id, jenis: baris.jenis, slug: baris.slug, urutan: baris.urutan, revisiTerbitId: baris.revisiTerbitId,
           dihapus: dihapus(baris), dibuang: baris.dibuang, revisiTerakhir: terakhirDari([...revisi.values()].filter(r => r.entriId === baris.id)),
-        }));
+        })).map(ringkasan => (ringkasan.revisiTerakhir?.diabaikan
+          ? { ...ringkasan, isiTerbit: ringkasan.revisiTerbitId ? revisi.get(ringkasan.revisiTerbitId)?.isi : undefined } : ringkasan));
     },
     async daftarRefs() { return [...refsDikenal].sort().map(kode => ({ kode, bab: Number(kode.slice(1, 3)) })); },
   };
@@ -295,7 +296,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       ambil(kunciDiksi, kunci, 'kunci diksi');
       const id = idBaru();
       revisiDiksi.set(id, {
-        id, kunci, idTeks, arTeks, catatan, status: 'draf', dibuatOleh: pelaku().pelakuId,
+        id, kunci, idTeks, arTeks, catatan, status: 'draf', diabaikan: false, dibuatOleh: pelaku().pelakuId,
         diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(), diperiksaPada: null,
       });
       return id;
@@ -316,6 +317,13 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       const tujuan = ambil(kunciDiksi, target.kunci, 'kunci diksi');
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
+    },
+    async abaikan(revisiId) {
+      const target = ambil(revisiDiksi, revisiId, 'revisi diksi');
+      if (!bolehAbaikanRevisi({ ...pelaku(), pembuatId: target.dibuatOleh, status: target.status }) || target.diabaikan) {
+        throw new Error(`revisi diksi ${revisiId} tidak bisa dibuang`);
+      }
+      target.diabaikan = true;
     },
     async terbitkanLangsung(revisiId) {
       const target = ambil(revisiDiksi, revisiId, 'revisi diksi');

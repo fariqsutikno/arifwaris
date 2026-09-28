@@ -9,7 +9,7 @@
 // terbit, lalu dipasang ulang tiap kali data berubah: semua tempat yang memakai teks sama ikut berubah dan tetap bergaris.
 // Batas: teks yang dibaca web di konstanta tingkat modul baru berubah setelah portal dimuat ulang.
 import { Component, useEffect, useLayoutEffect, useMemo, useState, type ReactNode } from 'react';
-import { bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi } from '@waris/content';
+import { bolehAbaikanRevisi, bolehPerbaruiAjuan, keJson, type IsiTeksEdukasi } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
 import { BingkaiWeb } from './BingkaiWeb';
@@ -268,6 +268,11 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
     && bolehPerbaruiAjuan({ peran, pelakuId: sesi.userId, pembuatId: keadaan.revisi.dibuatOleh, status: 'diajukan' });
   const terkunci = bacaSaja || (menunggu && !perbaruiAjuan);
   const berubah = teksId !== keadaan.id || teksAr !== (keadaan.ar ?? '');
+  // Revisi dikembalikan boleh dibuang pembuatnya tanpa disunting; tanpa teks tayang tidak ada yang bisa dikembalikan.
+  const punyaTayang = sumber.sumber === 'diksi'
+    ? !!data.diksi.find(k => k.kunci === sumber.kunci)?.terbit : !!data.entri.find(e => e.slug === sumber.kunci)?.revisiTerbitId;
+  const bolehBuang = !bacaSaja && keadaan.status === 'dikembalikan' && !!keadaan.revisi && punyaTayang
+    && bolehAbaikanRevisi({ peran, pelakuId: sesi.userId, pembuatId: keadaan.revisi.dibuatOleh, status: 'dikembalikan' });
   // [K1] admin menerbitkan teks aplikasi langsung, tanpa antrean.
   const langsungTerbit = peran === 'admin' && !menunggu;
 
@@ -276,6 +281,20 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
     setIndeks(i);
     setTeksId(lain.id);
     setTeksAr(lain.ar ?? '');
+  }
+
+  async function buangPerubahan() {
+    setSibuk(true);
+    setGalat(null);
+    try {
+      await (sumber.sumber === 'diksi' ? repo.diksi.abaikan(keadaan.revisi!.id) : repo.editorial.abaikan(keadaan.revisi!.id));
+      saatTersimpan();
+      saatTutup();
+    } catch (e) {
+      setGalat(pesanGalat(e));
+    } finally {
+      setSibuk(false);
+    }
   }
 
   async function simpan() {
@@ -334,6 +353,16 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
               : 'Perubahan teks ini sedang menunggu review. Tunggu disetujui dulu sebelum menyunting lagi.'}
           </p>
         ) : null}
+        {keadaan.status === 'dikembalikan' && keadaan.revisi ? (
+          <p className="text-sm text-muted-foreground">
+            Dikembalikan reviewer{keadaan.revisi.catatanReview ? `: ${keadaan.revisi.catatanReview}` : ''}. Perbaiki di bawah lalu ajukan lagi.
+            {bolehBuang ? (
+              <> Atau <Button variant="link" className="h-auto p-0 align-baseline" disabled={sibuk} onClick={() => void buangPerubahan()}>
+                buang perubahan ini
+              </Button> dan kembali ke teks yang tayang.</>
+            ) : null}
+          </p>
+        ) : null}
         <Label className="grid gap-1.5">
           Bahasa Indonesia
           <Textarea rows={3} value={teksId} readOnly={terkunci} onChange={e => setTeksId(e.target.value)} />
@@ -384,12 +413,14 @@ function keadaanSumber(sumber: SumberTeks, data: { entri: RingkasanEntri[]; diks
   if (sumber.sumber === 'diksi') {
     const kunci = data.diksi.find(k => k.kunci === sumber.kunci);
     const revisi = kunci?.revisiTerakhir;
-    if (revisi && revisi.status !== 'disetujui') return { id: revisi.idTeks, ar: revisi.arTeks, status: revisi.status, revisi };
+    if (revisi && revisi.status !== 'disetujui' && !revisi.diabaikan) return { id: revisi.idTeks, ar: revisi.arTeks, status: revisi.status, revisi };
     return { id: kunci?.terbit?.id ?? sumber.id, ar: kunci?.terbit?.ar ?? sumber.ar, status: 'terbit' as const, revisi: null };
   }
-  const revisi = data.entri.find(e => e.slug === sumber.kunci)?.revisiTerakhir;
-  const isi = revisi?.isi as IsiTeksEdukasi | undefined;
-  return { id: isi?.id ?? sumber.id, ar: isi?.ar ?? sumber.ar, status: revisi?.status ?? 'terbit', revisi: revisi?.status === 'disetujui' ? null : revisi ?? null };
+  const entri = data.entri.find(e => e.slug === sumber.kunci);
+  const dibuang = !!entri?.revisiTerakhir?.diabaikan;
+  const revisi = dibuang ? null : entri?.revisiTerakhir ?? null;
+  const isi = (dibuang ? entri?.isiTerbit : revisi?.isi) as IsiTeksEdukasi | undefined;
+  return { id: isi?.id ?? sumber.id, ar: isi?.ar ?? sumber.ar, status: revisi?.status ?? 'terbit', revisi: revisi?.status === 'disetujui' ? null : revisi };
 }
 
 /** Snapshot layar web: yang terbit, ditimpa teks yang sedang disunting (draf/ajuan terakhir) supaya hasil suntingan

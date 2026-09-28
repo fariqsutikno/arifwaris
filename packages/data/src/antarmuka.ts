@@ -15,7 +15,7 @@ export interface RingkasanRevisi {
 }
 export interface DiksiTerbit { kunci: string; halaman: string; id: string; ar: string | null; versiTerbit: number }
 export interface RingkasanRevisiDiksi {
-  id: string; kunci: string; idTeks: string; arTeks: string | null; catatan: string | null; status: StatusRevisi;
+  id: string; kunci: string; idTeks: string; arTeks: string | null; catatan: string | null; status: StatusRevisi; diabaikan: boolean;
   dibuatOleh: string; diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string; diperiksaPada: string | null;
 }
 /** Revisi konten milik pengguna yang sedang masuk, beserta entrinya (menu Ajuan saya). */
@@ -25,6 +25,8 @@ export interface AjuanKonten extends RingkasanRevisi { jenis: JenisKonten; slug:
 export interface RingkasanEntri {
   entriId: string; jenis: JenisKonten; slug: string; urutan: number;
   revisiTerbitId: string | null; dihapus: boolean; dibuang: boolean; revisiTerakhir: RingkasanRevisi | null;
+  /** Isi revisi tayang, hanya terisi bila revisiTerakhir sudah dibuang (`diabaikan`): isinya bukan lagi yang berlaku. */
+  isiTerbit?: unknown;
 }
 /** Kejadian Sampah satu entri (tabel jejak_entri); suntingan & review tercatat di revisinya sendiri. */
 export interface JejakEntri {
@@ -83,6 +85,8 @@ export interface RepositoriDiksi {
   setujui(revisiId: string): Promise<void>;
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
+  /** Pembuat (atau admin) membuang revisi teks yang dikembalikan; teks tayang & riwayat tetap. */
+  abaikan(revisiId: string): Promise<void>;
   /** Admin: draf langsung terbit tanpa antrean. */
   terbitkanLangsung(revisiId: string): Promise<void>;
   /** Pembuat (atau admin) mengganti teks ajuannya yang masih menunggu; tetap di antrean. */

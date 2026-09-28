@@ -98,3 +98,20 @@ test('reviewer: riwayat teks menayangkan lagi versi lama', async () => {
   await waitFor(async () => expect((await m.diksi.bacaTerbit()).find(t => t.kunci === 'beranda.judul')?.id).toBe('Hitung warisan dengan tenang'));
   vi.restoreAllMocks();
 });
+
+test('penulis: teks dikembalikan → buang perubahan, kembali ke teks tayang tanpa menyunting', async () => {
+  const m = await siapkan();
+  m.masukSebagai({ userId: 'u-p', email: 'p@x.id' });
+  const revisiId = await m.diksi.buatDraf('beranda.judul', 'Judul salah', null, null);
+  await m.diksi.ajukan(revisiId);
+  m.masukSebagai({ userId: 'u-r', email: 'r@x.id' });
+  await m.diksi.kembalikan(revisiId, 'terlalu kaku');
+  tampilkan(m, 'penulis', 'u-p');
+  fireEvent.click(within(await screen.findByRole('article', { name: 'Judul salah' })).getByRole('button', { name: 'Sunting' }));
+  expect(await screen.findByText('terlalu kaku', { exact: false })).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'buang perubahan ini' }));
+  await waitFor(async () => {
+    expect((await m.diksi.daftarRevisi('beranda.judul')).find(r => r.id === revisiId)).toMatchObject({ status: 'dikembalikan', diabaikan: true });
+  });
+  expect(await screen.findByRole('article', { name: 'Hitung warisan dengan tenang' })).toBeTruthy();
+});

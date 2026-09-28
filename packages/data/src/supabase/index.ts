@@ -124,6 +124,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     kembalikan: (revisiId, catatan) => rpc('kembalikan_revisi_diksi', { p_id: revisiId, p_catatan: catatan }),
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi_diksi', { p_id: revisiId }),
     terbitkanLangsung: revisiId => rpc('terbitkan_langsung_diksi', { p_id: revisiId }),
+    abaikan: revisiId => rpc('abaikan_revisi_diksi', { p_id: revisiId }),
     perbaruiAjuan: (revisiId, idTeks, arTeks) => rpc('perbarui_ajuan_diksi', { p_id: revisiId, p_id_teks: idTeks, p_ar_teks: arTeks }),
     async daftarRevisi(kunci) {
       return (await hasil(klien.from('revisi_diksi').select('*').eq('kunci', kunci).order('dibuat_pada')) as any[]).map(keRevisiDiksi);
