@@ -10,7 +10,7 @@ import { useEffect, useState, type ReactNode } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ChevronDown, ChevronUp, Ellipsis, GripVertical, ListFilter, Pencil, Plus, Search, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Ellipsis, GripVertical, ListFilter, Plus, Search, X } from 'lucide-react';
 import { JUDUL_BAB, type JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -488,17 +488,14 @@ function GrupMateri({ grup, baris, bolehSeret, saatPindah, bolehBuat }: {
     <Card role="region" aria-label={label} className="gap-0 divide-y py-0">
       <div className="flex items-center gap-3 bg-muted px-4 py-2">
         <Badge variant="outline">{grup.nomor ?? '–'}</Badge>
-        <b>{grup.judul}</b>
+        {grup.modul ? (
+          <a className="font-semibold hover:underline" href={tulisRute({ layar: 'entri', entriId: grup.modul.entriId })} aria-label={`Edit modul ${grup.judul}`}>{grup.judul}</a>
+        ) : <b>{grup.judul}</b>}
         <span className="text-sm text-muted-foreground">{grup.materi.length} materi</span>
         <span className="ml-auto flex gap-1">
           {bolehBuat && grup.nomor !== null ? (
             <Button variant="ghost" size="sm" asChild>
               <a href={tulisRute({ layar: 'entriBaru', jenis: 'materi', kueri: { modul: String(grup.nomor) } })}><Plus />Materi di modul ini</a>
-            </Button>
-          ) : null}
-          {grup.modul ? (
-            <Button variant="ghost" size="icon" asChild>
-              <a href={tulisRute({ layar: 'entri', entriId: grup.modul.entriId })} aria-label={`Edit modul ${grup.judul}`}><Pencil /></a>
             </Button>
           ) : null}
         </span>
