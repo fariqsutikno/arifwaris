@@ -65,13 +65,14 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
 }
 
 /** Bagian opsional pembahasan, dipakai juga di hasil kuis konsep: penjelasan pilihan yang dijawab langsung tampil,
- * penjelasan pilihan lain bisa dibuka; lalu catatan. */
+ * penjelasan pilihan lain bisa dibuka; lalu catatan. Penjelasan pilihan yang benar = pembahasan (sudah tampil), jadi
+ * tidak diulang. */
 export function PembahasanTambahan({ soal, dipilih }: { soal: SoalKuis; dipilih?: number | null | undefined }) {
   const alasan = soal.alasanPilihan;
-  const lainnya = alasan ? soal.pilihan.map((_, indeks) => indeks).filter(indeks => indeks !== dipilih) : [];
+  const lainnya = alasan ? soal.pilihan.map((_, indeks) => indeks).filter(indeks => indeks !== dipilih && indeks !== soal.indeksBenar) : [];
   return (
     <>
-      {alasan && dipilih != null && alasan[dipilih] ? (
+      {alasan && dipilih != null && dipilih !== soal.indeksBenar && alasan[dipilih] ? (
         <p><b>{t('latihan.pilihan_huruf', { huruf: hurufPilihan(dipilih) })}:</b> <Sebaris isi={alasan[dipilih]} /></p>
       ) : null}
       {alasan && lainnya.length ? (

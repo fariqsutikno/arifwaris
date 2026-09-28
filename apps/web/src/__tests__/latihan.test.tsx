@@ -102,7 +102,7 @@ describe('halaman latihan', () => {
 });
 
 describe('KartuSoalKuis: penjelasan per pilihan', () => {
-  it('pilihan yang dijawab langsung dijelaskan, pilihan lain bisa dibuka', async () => {
+  it('pilihan salah yang dijawab langsung dijelaskan, pilihan salah lain bisa dibuka, pilihan benar tidak diulang (sudah di pembahasan)', async () => {
     const { KartuSoalKuis } = await import('../layar/belajar/KartuSoalKuis');
     const soal = daftarSoalKuis()[0]!;
     const alasanPilihan = soal.pilihan.map((_, i) => [{ jenis: 'teks' as const, teks: `alasan-${i}` }]);
@@ -110,6 +110,8 @@ describe('KartuSoalKuis: penjelasan per pilihan', () => {
     const salah = soal.indeksBenar === 0 ? 1 : 0;
     fireEvent.click(screen.getAllByRole('button')[salah]!);
     expect(screen.getByText(`alasan-${salah}`)).toBeTruthy();
-    expect(screen.getByText(`alasan-${soal.indeksBenar}`).closest('details')).toBeTruthy();
+    expect(screen.queryByText(`alasan-${soal.indeksBenar}`)).toBeNull();
+    const salahLain = soal.pilihan.map((_, i) => i).find(i => i !== salah && i !== soal.indeksBenar);
+    if (salahLain !== undefined) expect(screen.getByText(`alasan-${salahLain}`).closest('details')).toBeTruthy();
   });
 });

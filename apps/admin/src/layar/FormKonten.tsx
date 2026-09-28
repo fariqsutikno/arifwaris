@@ -296,7 +296,9 @@ function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsP
             </div>
             <EditorBlok key={`${indeks}/${nilai.daftar.length}`} label={`Pilihan ${huruf}`} nilai={teks} saatUbah={t => ubahTeks(indeks, t)}
               mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
-            {nilai.alasan ? (
+            {nilai.alasan && benar ? (
+              <p className="border-l-2 pl-2 text-xs text-muted-foreground">Penjelasan pilihan ini memakai isi "Kenapa jawaban ini benar".</p>
+            ) : nilai.alasan ? (
               <div className="grid gap-1 border-l-2 pl-2">
                 <span className="text-xs font-medium text-muted-foreground">{benar ? `Kenapa ${huruf} benar` : `Kenapa ${huruf} kurang tepat`}</span>
                 <EditorBlok key={`alasan-${indeks}/${nilai.daftar.length}`} label={`Penjelasan pilihan ${huruf}`} nilai={nilai.alasan[indeks] ?? ''}

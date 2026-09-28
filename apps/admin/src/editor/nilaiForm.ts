@@ -77,6 +77,10 @@ export function dariNilaiForm<J extends JenisKonten>(jenis: J, slug: string, for
       }
     }
   }
+  // Penjelasan pilihan yang benar = "Kenapa jawaban ini benar": ditulis sekali, tidak diketik dua kali.
+  if (jenis === 'soal_kuis' && Array.isArray(hasil.alasanPilihan) && Array.isArray(hasil.pembahasan)) {
+    (hasil.alasanPilihan as unknown[])[hasil.indeksBenar as number] = hasil.pembahasan;
+  }
   if (Object.keys(galatBidang).length > 0) {
     return { ok: false, galat: 'Ada bidang yang belum benar.', galatBidang, mentah: keJson(jenis, hasil as unknown as IsiKonten[J]) };
   }
@@ -169,8 +173,8 @@ function tulisBidang(hasil: Objek, bidang: Bidang, nilai: NilaiBidang | undefine
       pasang(hasil, bidang.jalur, daftar.map(teks => bacaPotongan(teks.trim())));
       pasang(hasil, 'indeksBenar', benar);
       if (!alasan) return hapus(hasil, 'alasanPilihan');
-      // [C3] per pilihan = semua pilihan wajib berpenjelasan.
-      const kosong = alasan.flatMap((teks, i) => (teks.trim() ? [] : [String.fromCharCode(HURUF_A + i)]));
+      // [C3] per pilihan = semua pilihan wajib berpenjelasan. Pilihan yang benar memakai pembahasan (diisi dariNilaiForm).
+      const kosong = alasan.flatMap((teks, i) => (i === benar || teks.trim() ? [] : [String.fromCharCode(HURUF_A + i)]));
       if (kosong.length) throw new Error(`Penjelasan pilihan ${kosong.join(', ')} belum diisi. Isi semua, atau matikan "Jelaskan tiap pilihan".`);
       return pasang(hasil, 'alasanPilihan', alasan.map(teks => bacaPotongan(teks.trim())));
     }
