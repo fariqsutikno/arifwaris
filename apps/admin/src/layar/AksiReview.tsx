@@ -1,7 +1,7 @@
 // Tombol Setujui/Kembalikan untuk satu revisi yang diajukan. Menerima pembuat & status revisi serta dua aksi repo; tombol
 // hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap penjaga). Kolom catatan baru muncul setelah
 // Kembalikan diklik (wajib diisi); Setujui tidak menyimpan catatan, jadi tidak diberi kolom. Dipakai Antrean review dan editor entri (reviewer menyetujui langsung dari entri yang dibukanya).
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { transisiRevisi, type StatusRevisi } from '@waris/content';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -24,8 +24,6 @@ export function AksiReview({ pembuatId, status, setujui, kembalikan, saatSelesai
   const [galat, setGalat] = useState<string | null>(null);
   const [sibuk, setSibuk] = useState(false);
   const [mengembalikan, setMengembalikan] = useState(false);
-  const kolomCatatan = useRef<HTMLTextAreaElement>(null);
-  useEffect(() => { if (mengembalikan) kolomCatatan.current?.focus(); }, [mengembalikan]);
   const pelaku = { peran, pelakuId: sesi.userId, pembuatId, status };
   if (!transisiRevisi({ ...pelaku, aksi: 'setujui' }).ok) return null;
   const bolehKembalikan = transisiRevisi({ ...pelaku, aksi: 'kembalikan', catatan }).ok;
@@ -51,7 +49,7 @@ export function AksiReview({ pembuatId, status, setujui, kembalikan, saatSelesai
         <>
           <Label className="grid gap-1.5">
             Apa yang perlu diperbaiki?
-            <Textarea ref={kolomCatatan} value={catatan} placeholder="Catatan ini dibaca penulis" onChange={e => setCatatan(e.target.value)} />
+            <Textarea autoFocus value={catatan} placeholder="Catatan ini dibaca penulis" onChange={e => setCatatan(e.target.value)} />
           </Label>
           <div className="flex flex-wrap gap-2">
             <Button disabled={sibuk || !bolehKembalikan} onClick={() => void jalankan(() => kembalikan(catatan))}>Kirim pengembalian</Button>
