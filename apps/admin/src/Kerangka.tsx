@@ -5,6 +5,7 @@
 // boleh diperiksa pengguna ini (transisiRevisi; penulis tidak mendapat lencana, reviewer tidak menghitung revisinya
 // sendiri), dimuat ulang tiap rute berubah. Lencana Ajuan saya = kabar review baru sejak menu itu terakhir dibuka
 // (editor/ajuanSaya.ts; penulis & admin). Kepala menampilkan judul halaman aktif.
+import { NAMA_APLIKASI } from '@waris/web/terjemah';
 import { useEffect, useState, type ReactNode } from 'react';
 import { transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
 import { House, Inbox, LogOut, Menu as IkonMenu, Send, Users, type LucideIcon } from 'lucide-react';
@@ -51,7 +52,7 @@ function KepalaPortal({ judul }: { judul: string }) {
   return (
     <header className="flex items-center gap-3 border-b px-4 py-2">
       <Button variant="outline" size="sm" onClick={toggleSidebar}><IkonMenu />Menu</Button>
-      <b className="md:hidden">Arif Waris</b>
+      <b className="md:hidden">{NAMA_APLIKASI}</b>
       <span className="hidden text-sm text-muted-foreground md:inline">{judul}</span>
     </header>
   );
@@ -106,7 +107,7 @@ function SisiPortal({ rute, jenisEntri, onKeluar }: { rute: Rute; jenisEntri: Je
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="px-2 py-1 font-bold">Arif Waris<small className="block font-semibold text-muted-foreground">Portal Konten</small></div>
+        <div className="px-2 py-1 font-bold">{NAMA_APLIKASI}<small className="block font-semibold text-muted-foreground">Portal Konten</small></div>
       </SidebarHeader>
       <SidebarContent>
         <nav aria-label="Navigasi portal">

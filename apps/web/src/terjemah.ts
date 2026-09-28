@@ -19,10 +19,19 @@ export const angkaLatin = (teks: string): string =>
 export const panah = (): string => (bahasaArab() ? '←' : '→');
 export const panahMundur = (): string => (bahasaArab() ? '→' : '←');
 
+/** Mode rahasia pra-peluncuran: env VITE_SAMARKAN_MEREK=1 → nama "Arif Waris"/"ArifLab"/"ARIF" diganti nama netral. */
+export const merekDisamarkan = import.meta.env.VITE_SAMARKAN_MEREK === '1';
+export const NAMA_APLIKASI = merekDisamarkan ? 'Kalkulator Waris' : 'Arif Waris';
+export const NAMA_LAB = merekDisamarkan ? 'Lab Hitung' : 'ArifLab';
+
+/** Penyaring semua teks tampil; case-sensitive supaya nama orang ("Arif Husnul Khuluq") tidak ikut terganti. */
+export const samarkanMerek = (teks: string): string =>
+  merekDisamarkan ? teks.replace(/Arif Waris/g, NAMA_APLIKASI).replace(/ArifLab/g, NAMA_LAB).replace(/\bARIF\b/g, NAMA_APLIKASI) : teks;
+
 export function t(kunci: string, sisipan: Record<string, string | number | bigint> = {}): string {
   const diksi = cariDiksi(kunci);
   const arab = bahasaArab() ? diksi?.ar ?? undefined : undefined;
-  const hasil = sisipkan(arab ?? diksi?.id ?? kunci, sisipan);
+  const hasil = samarkanMerek(sisipkan(arab ?? diksi?.id ?? kunci, sisipan));
   return arab ? angkaArab(hasil) : hasil;
 }
 
@@ -33,6 +42,6 @@ export const sisipkan = (teks: string, sisipan: Record<string, string | number |
 export function teksEdukasi(slug: string): string {
   const isi = teksEdukasiMentah(slug);
   const arab = bahasaArab() ? isi?.ar : undefined;
-  return arab ? angkaArab(arab) : isi?.id ?? slug;
+  return samarkanMerek(arab ? angkaArab(arab) : isi?.id ?? slug);
 }
 

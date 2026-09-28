@@ -7,7 +7,10 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createClient } from '@supabase/supabase-js';
 import { buatRepositoriSupabase } from '@waris/data';
+import { NAMA_APLIKASI } from '@waris/web/terjemah';
 import { Portal } from './Portal';
+
+document.title = `${NAMA_APLIKASI} — Portal`;
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const kunci = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;

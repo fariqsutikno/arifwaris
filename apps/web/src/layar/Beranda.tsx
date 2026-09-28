@@ -11,7 +11,7 @@ import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanGl
 import { Ikon } from '../ui/Ikon';
 import { Pintu } from './belajar/Belajar';
 import { Motif } from '../ui/komponen';
-import { panah, t } from '../terjemah';
+import { merekDisamarkan, panah, t } from '../terjemah';
 
 const JUMLAH_TANYA = 3;
 // Situs pribadi masih PLACEHOLDER (tebakan), ganti dengan akun asli; nama tanpa situs tampil sebagai teks biasa.
@@ -103,9 +103,9 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
 
         <footer className="tentang-tim" aria-labelledby="judul-tentang">
           <h2 id="judul-tentang" className="label-langkah">{t('beranda.tentang_arif')}</h2>
-          <p>
+          {!merekDisamarkan && <p>
             <b>{t('beranda.arif')}</b> {t('beranda.singkatan_dari')} <b>{t('beranda.aplikasi_representasi_ilmu_faraidh')}</b>{t('hitung.tempat_ilmu_waris_islam_dipelajari_lewat')} <b>{t('hitung.ariflab')}</b>{t('hitung.ruang_untuk_mencoba_simulasi_hitung_waris')}
-          </p>
+          </p>}
           <p>
             {t('hitung.aplikasi_ini_berawal_dari_tugas_akhir')} <Nama {...KAMPUS} />.
             {' '}{t('hitung.kami_ingin_ilmu_faraidh_terasa_dekat')}

@@ -3,6 +3,7 @@
 // galat saat memuat → pesan galat (bukan layar kosong). Rute dibaca dari location.hash (bacaRute/tulisRute).
 // Sebelum layar tampil, konten & teks terbit terbaru diunduh ke snapshot web yang terpasang (sinkronkan, sama dengan web),
 // supaya Pratinjau & Sunting di layar tidak memakai snapshot lama bawaan build.
+import { NAMA_APLIKASI } from '@waris/web/terjemah';
 import { useEffect, useState, type ReactNode } from 'react';
 import type { JenisKonten, Peran } from '@waris/content';
 import type { Sesi } from '@waris/data';
@@ -82,7 +83,7 @@ function LayarGerbang({ children }: { children: ReactNode }) {
   return (
     <div className="grid min-h-svh place-items-center p-4">
       <Card className="w-full max-w-sm">
-        <CardHeader><CardTitle>Arif Waris</CardTitle><CardDescription>Portal Konten</CardDescription></CardHeader>
+        <CardHeader><CardTitle>{NAMA_APLIKASI}</CardTitle><CardDescription>Portal Konten</CardDescription></CardHeader>
         <CardContent className="space-y-3">{children}</CardContent>
       </Card>
     </div>

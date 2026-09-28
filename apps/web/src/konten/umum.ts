@@ -1,12 +1,12 @@
 // Teks umum di luar wizard.
 
-import { teksEdukasi } from '../terjemah';
+import { NAMA_LAB, teksEdukasi } from '../terjemah';
 
 /** Ganti dengan URL repo sungguhan saat dipublikasikan. */
 export const TAUTAN_LAPORAN = 'https://github.com/NAMA-ORG/arif-waris/issues';
 
 export const TEKS_HITUNG = {
-  judul: 'ArifLab',
+  judul: NAMA_LAB,
   janji: teksEdukasi('umum.ruang_buat_nyoba_simulasi_hitung_waris'),
   mulai: {
     baru: teksEdukasi('umum.isi_data_almarhum_ahli_waris_dan'),

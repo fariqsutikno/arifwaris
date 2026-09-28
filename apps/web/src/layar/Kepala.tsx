@@ -9,7 +9,7 @@ import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { DAFTAR_BAHASA, simpanBahasa, useBahasa, type Bahasa } from '../preferensi';
 import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
-import { t } from '../terjemah';
+import { NAMA_LAB, t } from '../terjemah';
 
 interface Props {
   halaman: Rute['halaman'];
@@ -28,7 +28,7 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
     { label: t('umum.beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
     { label: t('umum.belajar'), ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
-    { label: 'ArifLab', ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
+    { label: NAMA_LAB, ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
     { label: t('umum.latihan'), ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
     { label: t('umum.rujukan'), ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
   ];

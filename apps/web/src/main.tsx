@@ -11,7 +11,9 @@ import { pilihAwal } from '@waris/data/snapshot';
 import { bacaCache, simpanCache } from './konten/cache';
 import { muatRepoSupabase, PERISTIWA_KONTEN_BARU, sinkronLatar } from './konten/sinkron';
 import { pasangSnapshot, snapshotTerpasang } from './konten/sumber';
+import { NAMA_APLIKASI } from './terjemah';
 
+document.title = NAMA_APLIKASI;
 pasangSnapshot(pilihAwal(snapshotTerpasang(), await bacaCache()));
 const [{ Aplikasi }, { PenyediaPenjaga }] = await Promise.all([import('./Aplikasi'), import('./ui/Penjaga')]);
 createRoot(document.getElementById('akar')!).render(<StrictMode><PenyediaPenjaga><Aplikasi /></PenyediaPenjaga></StrictMode>);
