@@ -2,7 +2,8 @@
 // menandai setiap teks yang berasal dari teks edukasi atau diksi (lewat buatPencocok) dengan kotak bergaris. Klik teks →
 // dialog sunting Indonesia/Arab → admin menerbitkan (teks edukasi) atau mengajukan (diksi & penulis), sama dengan jalur
 // layar daftar. Kotak digambar sebagai lapisan di atas layar, bukan dengan mengubah DOM React milik layar web.
-// Teks yang tidak tampil di layar mana pun (tur, akun, dst.) dicari lewat kotak "Cari teks".
+// Teks yang tidak tampil di layar mana pun dicari lewat kotak "Cari teks" atau tab Daftar teks. Dialog sunting menulis
+// "Tampil di" (modul virtual lokasi-teks) dan pratinjau kalimatnya; tempat simpan (teks edukasi/diksi) diurus di sini.
 // ponytail: layar web memakai snapshot bawaan build dan membaca teksnya sekali saat dimuat; teks yang baru disimpan
 // ditulis langsung ke simpul teksnya supaya terlihat, bukan dirender ulang oleh layar web.
 import { Component, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -17,6 +18,14 @@ import { LangkahKewajiban } from '@waris/web/layar/wizard/LangkahKewajiban';
 import { Hasil } from '@waris/web/layar/Hasil';
 import { Belajar } from '@waris/web/belajar/Belajar';
 import { Latihan } from '@waris/web/belajar/Latihan';
+import { Materi } from '@waris/web/belajar/Materi';
+import { Faq } from '@waris/web/belajar/Faq';
+import { TanyaJawab } from '@waris/web/belajar/TanyaJawab';
+import { Glosarium } from '@waris/web/belajar/Glosarium';
+import { Rujukan } from '@waris/web/belajar/Rujukan';
+import { Peringkat } from '@waris/web/layar/Peringkat';
+import { TUR } from '@waris/web/tur';
+import lokasiTeks from 'virtual:lokasi-teks';
 import { kasusDariContoh } from '@waris/web/contoh';
 import { Search } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -34,6 +43,7 @@ import { pesanGalat } from '../pesanGalat';
 const tanpaAksi = () => {};
 const KASUS_CONTOH = kasusDariContoh({ pewaris: 'L', ahliWaris: ['ISTRI', 'IBU', 'ANAK_LK', 'ANAK_PR'], harta: 120_000_000n, harapan: { saham: {}, ashlAkhir: 0n } });
 const BATAS_HASIL_CARI = 30;
+const SLUG_MATERI_CONTOH = snapshotTerpasang().konten.find(baris => baris.jenis === 'materi')?.slug ?? '';
 
 // Nama kelompok teks untuk manusia (awalan kunci teks edukasi / halaman diksi).
 const NAMA_KELOMPOK: Record<string, string> = {
@@ -56,7 +66,27 @@ const BAGIAN: readonly Bagian[] = [
   { id: 'hasil', judul: 'Hasil hitung', layar: () => <Hasil kasus={KASUS_CONTOH} idSesi="sunting-teks" tujuan="hitung" kirim={tanpaAksi} /> },
   { id: 'belajar', judul: 'Belajar', layar: () => <Belajar /> },
   { id: 'latihan', judul: 'Latihan', layar: () => <Latihan tab="hitung" kasusSekarang={null} saatKerjakan={tanpaAksi} /> },
+  { id: 'materi', judul: 'Materi (contoh)', layar: () => <Materi slug={SLUG_MATERI_CONTOH} kasusSekarang={null} saatCoba={tanpaAksi} /> },
+  { id: 'faq', judul: 'FAQ', layar: () => <Faq kasusSekarang={null} saatCoba={tanpaAksi} /> },
+  { id: 'tanya-jawab', judul: 'Tanya jawab', layar: () => <TanyaJawab kasusSekarang={null} saatCoba={tanpaAksi} /> },
+  { id: 'glosarium', judul: 'Glosarium', layar: () => <Glosarium /> },
+  { id: 'rujukan', judul: 'Rujukan', layar: () => <Rujukan /> },
+  { id: 'peringkat', judul: 'Peringkat (tamu)', layar: () => <Peringkat sesi={null} repo={null} /> },
+  { id: 'tur', judul: 'Tur pengenalan', layar: () => <TurStatis /> },
 ];
+
+/** Tur tampil sebagai sorotan di atas layar lain; di portal tiap langkahnya ditampilkan sebagai kartu biasa. */
+function TurStatis() {
+  return (
+    <main className="halaman tumpuk">
+      {Object.entries(TUR).map(([layar, langkah]) => (
+        <section key={layar} className="tumpuk-rapat">
+          {langkah!.map(l => <div key={l.sasaran} className="kartu tumpuk-rapat"><h3>{l.judul}</h3><p>{l.isi}</p></div>)}
+        </section>
+      ))}
+    </main>
+  );
+}
 
 type Kasus = typeof KASUS_CONTOH;
 function LayarKasus({ children }: { children: (kasus: Kasus, ubah: (f: (kasus: Kasus) => Kasus) => void) => ReactNode }) {
@@ -148,7 +178,7 @@ export function EditorTeksAplikasi() {
       </div>
       {dipilih ? (
         data ? (
-          <DialogSunting pilihan={dipilih.sumber} data={data} bacaSaja={peran === 'reviewer'} judulLayar={dipilih.simpul ? bagian.judul : null}
+          <DialogSunting pilihan={dipilih.sumber} data={data} bacaSaja={peran === 'reviewer'} layarSekarang={dipilih.simpul ? bagian.judul : undefined}
             saatTutup={() => setDipilih(null)} saatTersimpan={setelahSimpan} />
         ) : <Skeleton className="h-10" />
       ) : null}
@@ -209,8 +239,8 @@ function kumpulkanKotak(el: HTMLElement, pencocok: PencocokTeks): KotakTeks[] {
   return hasil;
 }
 
-function DialogSunting({ pilihan, data, bacaSaja, judulLayar, saatTutup, saatTersimpan }: {
-  pilihan: SumberTeks[]; data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }; bacaSaja: boolean; judulLayar: string | null;
+export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutup, saatTersimpan }: {
+  pilihan: SumberTeks[]; data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }; bacaSaja: boolean; layarSekarang?: string | undefined;
   saatTutup: () => void; saatTersimpan: (sumber: SumberTeks, id: string, ar: string | null) => void;
 }) {
   const { repo, peran, sesi } = usePortal();
@@ -264,9 +294,7 @@ function DialogSunting({ pilihan, data, bacaSaja, judulLayar, saatTutup, saatTer
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Sunting teks</DialogTitle>
-          <DialogDescription>
-            {judulLayar ? `Tampil di layar ${judulLayar}. ` : ''}Kelompok: {namaKelompok(sumber)}.
-          </DialogDescription>
+          <DialogDescription>Tampil di: {teksLokasi(sumber, layarSekarang)}.</DialogDescription>
         </DialogHeader>
         {pilihan.length > 1 ? (
           <fieldset className="grid gap-1.5 text-sm">
@@ -274,7 +302,7 @@ function DialogSunting({ pilihan, data, bacaSaja, judulLayar, saatTutup, saatTer
             {pilihan.map((s, i) => (
               <Label key={`${s.sumber}/${s.kunci}`} className="gap-2 font-normal">
                 <input type="radio" name="sumber-teks" checked={i === indeks} onChange={() => ganti(i)} />
-                {namaKelompok(s)}
+                {teksLokasi(s, undefined)}
               </Label>
             ))}
           </fieldset>
@@ -284,6 +312,11 @@ function DialogSunting({ pilihan, data, bacaSaja, judulLayar, saatTutup, saatTer
           Bahasa Indonesia
           <Textarea rows={3} value={teksId} readOnly={terkunci} onChange={e => setTeksId(e.target.value)} />
         </Label>
+        {teksId.trim() ? (
+          <div className="rounded-md bg-muted/50 px-3 py-2 text-sm">
+            <span className="text-xs text-muted-foreground">Pratinjau: </span><PratinjauTeks teks={teksId} />
+          </div>
+        ) : null}
         {/\{\w+\}/.test(keadaan.id) ? (
           <p className="text-xs text-muted-foreground">Bagian bertanda kurung kurawal, mis. {'{jumlah}'}, diisi otomatis oleh aplikasi. Biarkan apa adanya.</p>
         ) : null}
@@ -303,6 +336,20 @@ function DialogSunting({ pilihan, data, bacaSaja, judulLayar, saatTutup, saatTer
       </DialogContent>
     </Dialog>
   );
+}
+
+/** "Beranda · Hasil hitung": lokasi dari pemindaian kode web, ditambah layar tempat teks diklik. */
+function teksLokasi(sumber: SumberTeks, layarSekarang: string | undefined): string {
+  const lokasi = new Set(lokasiTeks[sumber.kunci] ?? []);
+  if (layarSekarang) lokasi.add(layarSekarang);
+  return lokasi.size ? [...lokasi].join(' · ') : `belum diketahui (kelompok ${namaKelompok(sumber)})`;
+}
+
+/** Teks apa adanya, bagian {sisipan} ditandai sebagai isian otomatis. */
+function PratinjauTeks({ teks }: { teks: string }) {
+  return <>{teks.split(/(\{\w+\})/).map((bagian, i) => (/^\{\w+\}$/.test(bagian)
+    ? <span key={i} className="rounded bg-primary/15 px-1 text-xs" title="Diisi otomatis oleh aplikasi">{bagian.slice(1, -1)}</span>
+    : <span key={i}>{bagian}</span>))}</>;
 }
 
 /** Nilai terbaru satu teks di database (draf/ajuan bila ada, selain itu yang terbit), jatuh ke nilai layar. */

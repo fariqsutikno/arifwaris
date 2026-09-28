@@ -40,7 +40,7 @@ test('antrean menampilkan butir konten & diksi dengan perbandingan per bidang', 
   expect(within(konten).getByText('FAQ')).toBeTruthy();
   expect(within(konten).getByRole('link', { name: 'Buka entri' }).getAttribute('href')).toMatch(/^#\/entri\//);
   expect(within(konten).getByText(/^oleh /)).toBeTruthy();
-  const diksi = await butir(/^beranda\.judul/);
+  const diksi = await butir(/^Kalkulator Waris/);
   expect(diksi.querySelector('dd ins')?.textContent).toMatch(/Kalkulator Waris/);
   expect(within(diksi).getByText('Bahasa Indonesia')).toBeTruthy();
 });
@@ -57,7 +57,7 @@ test('Setujui butir konten → hilang dari antrean dan terbit', async () => {
 test('Kembalikan: tanpa catatan nonaktif, dengan catatan → dikembalikan', async () => {
   const { m } = await siapkan();
   tampilkan(m);
-  const diksi = await butir(/^beranda\.judul/);
+  const diksi = await butir(/^Kalkulator Waris/);
   const tombol = within(diksi).getByRole('button', { name: 'Kembalikan' }) as HTMLButtonElement;
   expect(tombol.disabled).toBe(true);
   fireEvent.change(within(diksi).getByLabelText('Catatan'), { target: { value: 'ejaan' } });
@@ -84,7 +84,7 @@ test('penulis membuka antrean: baca-saja', async () => {
   m.masukSebagai({ userId: 'u-p', email: 'p@x.id' });
   tampilkan(m, 'penulis', 'u-p');
   await butir(/^Apa itu tirkah/);
-  await butir(/^beranda\.judul/);
+  await butir(/^Kalkulator Waris/);
   expect(screen.queryByRole('button', { name: 'Setujui' })).toBeNull();
   expect(screen.queryByRole('button', { name: 'Kembalikan' })).toBeNull();
 });
