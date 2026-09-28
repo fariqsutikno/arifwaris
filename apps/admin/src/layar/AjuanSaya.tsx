@@ -106,10 +106,10 @@ export function AjuanSaya() {
                           : `Disetujui${butir.pemeriksa ? ` oleh ${namaDari(butir.pemeriksa)}` : ''} ${waktuRelatif(butir.waktu, sekarang)}`}
                       </p>
                     )}
-                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    <div className="flex flex-wrap gap-2">
                       <TautanAksi butir={butir} bukaTeks={bukaTeks} />
                       {bolehBuang(butir) ? (
-                        <Button variant="link" className="h-auto w-fit p-0 text-sm text-muted-foreground" onClick={() => void buang(butir)}>Buang perubahan ini</Button>
+                        <Button variant="outline" size="sm" onClick={() => void buang(butir)}>Buang perubahan ini</Button>
                       ) : null}
                     </div>
                   </CardContent>
@@ -129,9 +129,10 @@ export function AjuanSaya() {
 
 function TautanAksi({ butir, bukaTeks }: { butir: ButirAjuan; bukaTeks: (tujuan: { kunciTeks: string; id: string; ar: string | null }) => void }) {
   const label = butir.tab === 'perbaiki' ? 'Perbaiki →' : butir.tab === 'menunggu' ? 'Sunting ajuan →' : 'Lihat →';
+  const varian = butir.tab === 'perbaiki' ? 'default' : 'outline';
   if ('entriId' in butir.tujuan) {
-    return <a className="w-fit text-sm font-semibold text-primary hover:underline" href={tulisRute({ layar: 'entri', entriId: butir.tujuan.entriId })}>{label}</a>;
+    return <Button variant={varian} size="sm" asChild><a href={tulisRute({ layar: 'entri', entriId: butir.tujuan.entriId })}>{label}</a></Button>;
   }
   const tujuan = butir.tujuan;
-  return <Button variant="link" className="h-auto w-fit p-0 text-sm font-semibold" onClick={() => void bukaTeks(tujuan)}>{label}</Button>;
+  return <Button variant={varian} size="sm" onClick={() => void bukaTeks(tujuan)}>{label}</Button>;
 }
