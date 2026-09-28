@@ -22,6 +22,18 @@ test('t() hanya menerima kunci literal (kunci dinamis lolos dari cek cakupan)', 
   expect(dinamis).toEqual([]);
 });
 
+test('tidak ada teks tampilan yang ditulis langsung di JSX (harus lewat t()/teksEdukasi supaya bisa disunting di portal)', () => {
+  const TEKS_JSX = />([^<>{}]*\p{L}{3,}[^<>{}]*)</gu;
+  const ATRIBUT = /\b(?:aria-label|title|placeholder|alt)="([^"]*\p{L}{3,}[^"]*)"/gu;
+  const literal = Object.entries(SUMBER).filter(([jalur]) => jalur.endsWith('.tsx')).flatMap(([jalur, isi]) =>
+    isi.split('\n').filter(baris => !/^\s*(\/\/|\/?\*)/.test(baris))
+      .flatMap(baris => [...baris.matchAll(TEKS_JSX), ...baris.matchAll(ATRIBUT)])
+      // `>` juga muncul di kode (generik, perbandingan); teks tampilan = kalimat berawal huruf kapital.
+      .map(c => c[1]!.trim()).filter(teks => /^\p{Lu}[\p{L}\s,'’]*[.!?]?$/u.test(teks))
+      .map(teks => `${jalur}: ${teks}`));
+  expect(literal).toEqual([]);
+});
+
 test('setiap kunci diksi di kode ada di snapshot', () => {
   const ada = new Set(snapshotTerpasang().diksi.map(d => d.kunci));
   expect([...KUNCI_T].filter(kunci => !ada.has(kunci))).toEqual([]);

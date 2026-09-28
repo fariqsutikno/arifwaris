@@ -52,7 +52,7 @@ export function Tur({ daftar, kunci, sedangBerjalan, saatSelesai }: Props) {
           width: kotak.width + JARAK_SOROT * 2, height: kotak.height + JARAK_SOROT * 2,
         }} />
       )}
-      <div ref={popup} className="tur-pop" role="dialog" aria-label="Tur singkat" style={posisiPopup}>
+      <div ref={popup} className="tur-pop" role="dialog" aria-label={t('umum.tur_singkat')} style={posisiPopup}>
         <small>{indeks + 1} / {tersedia.length}</small>
         <h4>{langkahIni.judul}</h4>
         <p>{langkahIni.isi}</p>

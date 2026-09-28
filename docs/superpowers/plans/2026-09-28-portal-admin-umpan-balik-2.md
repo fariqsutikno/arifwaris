@@ -181,7 +181,8 @@ Terbitan langsung admin (pemeriksa = pembuat) tidak dihitung sebagai hasil revie
 2. `Pratinjau` & Sunting di layar memakai `BingkaiWeb`; CSS web dicabut dari impor global portal; tambalan
    `admin.css` dibuang. Tes: lebar HP → kelas tata letak HP aktif (cek `getComputedStyle` di iframe).
 
-### Fase 4 — Teks aplikasi satu tampilan (A8)
+### Fase 4 — Teks aplikasi satu tampilan (A8) — **selesai 2026-09-28**
+Inventaris A9.4: satu teks literal (label tur) dipindah ke diksi; tes `diksi.test.ts` menolak teks JSX/atribut literal baru.
 Panel "Teks di layar ini" + cari semua teks; hapus tab Daftar teks; alihkan rute lama. Tes inventaris teks literal (A9.4).
 
 ### Fase 5 — KB lapisan 2: glosarium + ahwal lengkap (A6)
