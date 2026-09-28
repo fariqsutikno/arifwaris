@@ -312,8 +312,9 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           </CardContent>
         </Card>
         </div>
+        {/* sticky membuat stacking context; saat pratinjau layar penuh dilepas supaya pratinjau menutupi seluruh portal. */}
         {pratinjau ? (
-          <div className="lg:sticky lg:top-4 lg:max-h-[calc(100svh-2rem)] lg:overflow-auto">
+          <div className="lg:sticky lg:top-4 lg:max-h-[calc(100svh-2rem)] lg:overflow-auto lg:has-[[aria-modal=true]]:static">
             <Pratinjauan jenis={muatan.jenis} slug={muatan.slug ?? 'pratinjau'} hitungIsi={isiSekarang} kunci={pratinjauKunci} saatTutup={() => setPratinjau(false)} />
           </div>
         ) : null}

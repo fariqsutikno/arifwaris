@@ -64,7 +64,7 @@ export function EditorKasus({ nilai, saatUbah, bacaSaja }: Props) {
           return (
             <section key={kelompok} className="grid gap-1.5">
               <h4 className="text-xs font-medium text-muted-foreground">{JUDUL_KELOMPOK[kelompok]}</h4>
-              <ul className="grid gap-1.5 sm:grid-cols-2">
+              <ul className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-1.5">
                 {anggota.map(({ kunci, maksimal }) => {
                   const banyak = jumlah[kunci] ?? 0;
                   const nama = labelKunci(kunci);

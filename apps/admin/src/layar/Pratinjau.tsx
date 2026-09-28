@@ -65,7 +65,7 @@ export function Pratinjau<J extends JenisKonten>({ jenis, slug, isi, saatTutup }
   return (
     <Card className={cn('gap-0 overflow-hidden py-0', besar && 'fixed inset-0 z-50 rounded-none')}
       role={besar ? 'dialog' : undefined} aria-modal={besar || undefined} aria-label={besar ? 'Pratinjau layar penuh' : undefined}>
-      <div className="flex items-center gap-1 border-b bg-muted px-4 py-2">
+      <div className="flex flex-wrap items-center gap-1 border-b bg-muted px-4 py-2">
         <span className="mr-auto text-sm font-semibold">Pratinjau</span>
         <Button variant={lebarHp ? 'secondary' : 'ghost'} size="icon-sm" aria-label="Lebar HP" aria-pressed={lebarHp} onClick={() => setLebarHp(true)}><Smartphone /></Button>
         <Button variant={lebarHp ? 'ghost' : 'secondary'} size="icon-sm" aria-label="Lebar desktop" aria-pressed={!lebarHp} onClick={() => setLebarHp(false)}><Monitor /></Button>
