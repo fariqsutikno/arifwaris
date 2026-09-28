@@ -120,13 +120,13 @@ export function TautanDrafKuis({ babAwal, saatDraf }: { babAwal: number | null; 
   );
 }
 
-export function PanelSaranAi({ jenis, judul, teks }: { jenis: 'materi' | 'faq'; judul: string; teks: string }) {
+export function PanelSaranAi({ jenis, judul, tujuan, teks }: { jenis: 'materi' | 'faq'; judul: string; tujuan?: string | undefined; teks: string }) {
   const ai = useAi();
   const [keadaan, setKeadaan] = useState<null | 'memuat' | { saran: string[] } | { galat: string }>(null);
   if (!ai) return null;
   const minta = async () => {
     setKeadaan('memuat');
-    try { setKeadaan({ saran: (await ai({ fitur: 'saran', jenis, judul, teks })).saran }); } catch (e) { setKeadaan({ galat: pesanGalat(e) }); }
+    try { setKeadaan({ saran: (await ai({ fitur: 'saran', jenis, judul, tujuan, teks })).saran }); } catch (e) { setKeadaan({ galat: pesanGalat(e) }); }
   };
   return (
     <section className="grid gap-2">

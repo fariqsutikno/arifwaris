@@ -43,3 +43,8 @@ test('awal hari WIB', () => {
   expect(awalHariWib(new Date('2026-09-28T20:00:00Z'))).toBe('2026-09-28T17:00:00.000Z');
   expect(awalHariWib(new Date('2026-09-28T16:00:00Z'))).toBe('2026-09-27T17:00:00.000Z');
 });
+
+test('saran: tujuan pelajaran ikut ke prompt', () => {
+  const baca = bacaPermintaan({ fitur: 'saran', jenis: 'materi', judul: 'Apa itu faraidh?', tujuan: 'Mengenal arti faraidh.', teks: 'Isi' });
+  expect(baca.ok && susunPrompt(baca.permintaan).pengguna).toContain('Tujuan pelajaran: Mengenal arti faraidh.');
+});

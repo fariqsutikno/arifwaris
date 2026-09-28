@@ -288,6 +288,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       {formKonten('utama')}
       {bisaSunting && (muatan.jenis === 'materi' || muatan.jenis === 'faq') ? (
         <PanelSaranAi jenis={muatan.jenis} judul={String(bentuk.nilai.judul ?? bentuk.nilai.pertanyaan ?? '')}
+          tujuan={typeof bentuk.nilai.tujuan === 'string' ? bentuk.nilai.tujuan : undefined}
           teks={String(bentuk.nilai.blok ?? bentuk.nilai.jawaban ?? '')} />
       ) : null}
     </>

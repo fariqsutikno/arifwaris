@@ -10,7 +10,7 @@ const JUMLAH_PILIHAN = 4;
 export type Permintaan =
   | { fitur: 'rapikan'; teks: string }
   | { fitur: 'drafKuis'; bab: number; judulBab: string; rujukan: RujukanKonteks[]; pertanyaan: string }
-  | { fitur: 'saran'; jenis: 'materi' | 'faq'; judul: string; teks: string };
+  | { fitur: 'saran'; jenis: 'materi' | 'faq'; judul: string; tujuan?: string | undefined; teks: string };
 export interface RujukanKonteks { kode: string; klaim: string; sumber: string; kutipan: string }
 
 export interface DrafKuis {
@@ -29,8 +29,8 @@ export function bacaPermintaan(json: unknown): { ok: true; permintaan: Permintaa
   const p = json as Record<string, unknown> | null;
   const teks = (nilai: unknown) => typeof nilai === 'string' && nilai.length <= BATAS_PANJANG;
   if (p?.fitur === 'rapikan' && teks(p.teks) && (p.teks as string).trim()) return { ok: true, permintaan: { fitur: 'rapikan', teks: p.teks as string } };
-  if (p?.fitur === 'saran' && (p.jenis === 'materi' || p.jenis === 'faq') && teks(p.judul) && teks(p.teks)) {
-    return { ok: true, permintaan: { fitur: 'saran', jenis: p.jenis, judul: p.judul as string, teks: p.teks as string } };
+  if (p?.fitur === 'saran' && (p.jenis === 'materi' || p.jenis === 'faq') && teks(p.judul) && teks(p.teks) && (p.tujuan === undefined || teks(p.tujuan))) {
+    return { ok: true, permintaan: { fitur: 'saran', jenis: p.jenis, judul: p.judul as string, tujuan: (p.tujuan as string | undefined) || undefined, teks: p.teks as string } };
   }
   if (p?.fitur === 'drafKuis' && Number.isInteger(p.bab) && teks(p.judulBab) && teks(p.pertanyaan ?? '') && Array.isArray(p.rujukan)
     && p.rujukan.length > 0 && p.rujukan.every(r => typeof r?.kode === 'string' && teks(r.klaim) && teks(r.sumber) && teks(r.kutipan))) {
@@ -80,11 +80,11 @@ export function susunPrompt(permintaan: Permintaan): Prompt {
         + `${permintaan.jenis === 'faq' ? 'jawaban FAQ' : 'materi'} ini lebih jelas bagi orang awam. `
         + 'Konteks aplikasi, JANGAN disarankan ulang: [[istilah]] sudah tertaut ke glosarium (pembaca bisa mengetuknya untuk melihat arti); '
         + '[Rxx-y] adalah rujukan yang sudah tertaut ke dalil lengkap beserta sumber kitab dan perawinya; '
-        + 'materi dipecah per pelajaran, jadi topik di luar judul ini sudah dibahas di pelajaran lain dan jangan diminta ditambahkan. '
+        + 'materi dipecah per pelajaran, jadi topik di luar judul dan tujuan pelajaran ini sudah dibahas di pelajaran lain dan jangan diminta ditambahkan. '
         + 'Fokus pada isi pelajaran ini saja: bagian yang membingungkan atau terlalu padat, urutan penjelasan, contoh yang kurang tepat '
         + 'untuk poin yang sudah ada, atau klaim hukum yang sama sekali belum diberi [Rxx-y]. Tiap saran menyebut bagian mana yang dimaksud. '
         + 'Bila materi sudah baik, kembalikan daftar kosong; jangan mengarang saran. JANGAN menulis hukum, jawaban, atau dalil baru.',
-      pengguna: `Judul: ${permintaan.judul}\n\n${permintaan.teks}`,
+      pengguna: `Judul: ${permintaan.judul}\n${permintaan.tujuan ? `Tujuan pelajaran: ${permintaan.tujuan}\n` : ''}\n${permintaan.teks}`,
       skema: { type: 'object', properties: { saran: { type: 'array', items: { type: 'string' } } }, required: ['saran'] },
       suhu: 0.4,
     };

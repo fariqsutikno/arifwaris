@@ -151,7 +151,7 @@ export interface RujukanKonteksAi { kode: string; klaim: string; sumber: string;
 export type PermintaanAi =
   | { fitur: 'rapikan'; teks: string }
   | { fitur: 'drafKuis'; bab: number; judulBab: string; rujukan: RujukanKonteksAi[]; pertanyaan: string }
-  | { fitur: 'saran'; jenis: 'materi' | 'faq'; judul: string; teks: string };
+  | { fitur: 'saran'; jenis: 'materi' | 'faq'; judul: string; tujuan?: string | undefined; teks: string };
 export interface DrafKuisAi {
   pertanyaan: string; pilihan: string[]; indeksBenar: number; alasanPilihan: string[]; pembahasan: string; rujukan: string[];
 }
