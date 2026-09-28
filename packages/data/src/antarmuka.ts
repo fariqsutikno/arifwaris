@@ -139,6 +139,24 @@ export interface RepositoriPeringkat {
   /** Tanpa login pun bisa; hanya pengguna yang ikut. Baris pemanggil ditambahkan bila di luar `batas`. */
   papan(periode: PeriodePeringkat, batas?: number): Promise<BarisPeringkat[]>;
 }
+// Bantuan AI lewat Edge Function ai-bantu (supabase/functions/ai-bantu/logika.ts memegang aturan & validasinya).
+export interface RujukanKonteksAi { kode: string; klaim: string; sumber: string; kutipan: string }
+export type PermintaanAi =
+  | { fitur: 'rapikan'; teks: string }
+  | { fitur: 'drafKuis'; bab: number; judulBab: string; rujukan: RujukanKonteksAi[]; pertanyaan: string }
+  | { fitur: 'saran'; jenis: 'materi' | 'faq'; judul: string; teks: string };
+export interface DrafKuisAi {
+  pertanyaan: string; pilihan: string[]; indeksBenar: number; alasanPilihan: string[]; pembahasan: string; rujukan: string[];
+}
+export type HasilAi =
+  | { fitur: 'rapikan'; teks: string }
+  | { fitur: 'drafKuis'; draf: DrafKuisAi }
+  | { fitur: 'saran'; saran: string[] };
+export interface RepositoriAi {
+  /** Melempar Error berpesan Indonesia (kuota habis, AI belum aktif, jawaban ditolak pemeriksa). */
+  bantu(permintaan: PermintaanAi): Promise<{ hasil: HasilAi; sisaKuota: number }>;
+}
+
 export interface RepositoriAkun {
   sesi(): Promise<Sesi | null>;
   /** Mengarahkan ke Google; kembali ke `alamatKembali`. */

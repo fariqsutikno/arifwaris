@@ -25,6 +25,8 @@ export interface SoalKuis {
   indeksBenar: number;
   /** Kenapa jawaban benar itu benar (wajib, dengan dalil). */
   pembahasan: Potongan[];
+  /** Draf dibuat dengan AI (portal): wajib lewat review sebelum pertama kali tayang. */
+  dibantuAi?: boolean;
   /** Penjelasan per pilihan, sejajar dengan `pilihan`; opsional, tapi bila ada tiap pilihan wajib berpenjelasan. */
   alasanPilihan?: Potongan[][];
   /** Catatan tambahan setelah pembahasan; opsional. */

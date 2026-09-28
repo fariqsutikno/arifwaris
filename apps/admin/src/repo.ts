@@ -2,9 +2,9 @@
 // Portal.tsx setelah gerbang sesi/peran lolos. Layar-layar di bawah Portal memakai usePortal() untuk mengaksesnya.
 import { createContext, useContext } from 'react';
 import type { Peran } from '@waris/content';
-import type { RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, Sesi } from '@waris/data';
+import type { RepositoriAi, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, Sesi } from '@waris/data';
 
-export type RepoPortal = { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi: RepositoriDiksi; akun: RepositoriAkun };
+export type RepoPortal = { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi: RepositoriDiksi; akun: RepositoriAkun; ai: RepositoriAi };
 
 export const KonteksRepo = createContext<{ repo: RepoPortal; sesi: Sesi; peran: Peran } | null>(null);
 

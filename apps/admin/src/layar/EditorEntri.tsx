@@ -16,7 +16,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, Globe, PencilLine } from 'lucide-react';
 import { bacaIsi, DAFTAR_KITAB, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
 import { KUNCI_CONTOH } from '@waris/web/contoh';
-import type { RingkasanRevisi } from '@waris/data';
+import type { DrafKuisAi, RingkasanRevisi } from '@waris/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,6 +37,7 @@ import { FormKonten, type OpsiRuntime, type PotonganForm } from './FormKonten';
 import { usePortal } from '../repo';
 import { tulisRute, type Kueri } from '../rute';
 import { PemilihRefs } from './PemilihRujukan';
+import { PanelSaranAi, TautanDrafKuis } from './BantuanAi';
 import { Pratinjau } from './Pratinjau';
 import { AksiReview } from './AksiReview';
 import { Perbandingan } from './Perbandingan';
@@ -264,6 +265,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const terakhir = muatan.entri.semuaRevisi.at(-1) ?? null;
   const salinanKerjaId = keadaan.jenis === 'sunting' ? keadaan.salinanKerjaId : null;
   const ajuanSaya = keadaan.jenis === 'sunting' && !!keadaan.ajuan;
+  // [C7] draf yang dibuat dengan AI wajib lewat review sebelum pertama kali tayang, termasuk bila penulisnya admin.
+  const dibantuAi = bentuk.dasar.dibantuAi === true;
+  const wajibReview = dibantuAi && !muatan.entri.revisiTerbitId;
+  const terbitLangsung = peran === 'admin' && !wajibReview;
   const bolehKirim = !sibuk && (kotor || !!salinanKerjaId || !muatan.entriId);
   const cara = muatan.entriId && keadaan.jenis !== 'sampah' ? caraBuang(muatan.entri, { peran, userId: sesi.userId, namaDari }) : null;
   const adaArab = punyaVersiArab(muatan.jenis);
@@ -293,6 +298,14 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
           <AlertDescription>Anda masih bisa menyunting. Perubahan yang disimpan menggantikan ajuan ini dan tetap menunggu review.</AlertDescription>
         </Alert>
       ) : null}
+      {dibantuAi ? (
+        <Alert>
+          <AlertTitle>Dibantu AI · perlu dicek</AlertTitle>
+          <AlertDescription>
+            Periksa pertanyaan, pilihan, dan dalilnya satu per satu.{wajibReview ? ' Draf ini wajib lewat review sebelum tayang.' : ''}
+          </AlertDescription>
+        </Alert>
+      ) : null}
       {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
       {/* Pratinjau terbuka: form & Info bertumpuk di kiri, pratinjau menempel di kanan supaya perubahan langsung terlihat. */}
       <div className={`grid items-start gap-4 ${pratinjau ? 'lg:grid-cols-2' : 'lg:grid-cols-[minmax(0,1fr)_18rem]'}`}>
@@ -307,7 +320,11 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
                   {muatan.entriId ? <TabsTrigger value="riwayat">Riwayat</TabsTrigger> : null}
                   {peran === 'admin' ? <TabsTrigger value="json">Kode mentah</TabsTrigger> : null}
                 </TabsList>
-                <TabsContent value="form" className="pt-2">{formKonten('utama')}</TabsContent>
+                <TabsContent value="form" className="grid gap-3 pt-2">
+                  {bisaSunting && muatan.jenis === 'soal_kuis'
+                    ? <TautanDrafKuis babAwal={Number(bentuk.nilai.bab) || null} saatDraf={terapkanDrafAi} /> : null}
+                  {formKonten('utama')}
+                </TabsContent>
                 {adaArab ? <TabsContent value="arab" className="pt-2">{formKonten('arab')}</TabsContent> : null}
                 {muatan.entriId ? (
                   <TabsContent value="riwayat" className="pt-2">
@@ -335,6 +352,10 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
               ? <p className="text-sm text-muted-foreground">Selama di tab Kode mentah, info entri diubah lewat kode.</p>
               : formKonten('samping')}
             <PemilihRefs nilai={refs} saatUbah={setRefs} bacaSaja={!bisaSunting} />
+            {bisaSunting && (muatan.jenis === 'materi' || muatan.jenis === 'faq') ? (
+              <PanelSaranAi jenis={muatan.jenis} judul={String(bentuk.nilai.judul ?? bentuk.nilai.pertanyaan ?? '')}
+                teks={String(bentuk.nilai.blok ?? bentuk.nilai.jawaban ?? '')} />
+            ) : null}
           </CardContent>
         </Card>
         </div>
@@ -347,8 +368,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       </div>
       <div className="flex flex-wrap gap-2">
         {ajuanSaya ? <Button disabled={sibuk || !kotor} onClick={() => void simpanDulu()}>Simpan perubahan ajuan</Button> : null}
-        {bisaSunting && !ajuanSaya && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('terbitkan')}>Terbitkan sekarang</Button> : null}
-        {bisaSunting && !ajuanSaya && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('kirim')}>Kirim untuk review</Button> : null}
+        {bisaSunting && !ajuanSaya && terbitLangsung ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('terbitkan')}>Terbitkan sekarang</Button> : null}
+        {bisaSunting && !ajuanSaya && !terbitLangsung ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('kirim')}>Kirim untuk review</Button> : null}
         {bisaSunting && !ajuanSaya ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan draf</Button> : null}
         {kotor ? <Button variant="link" disabled={sibuk} onClick={batalkanPerubahan}>Batalkan perubahan</Button> : null}
         {keadaan.jenis === 'menungguReview' && keadaan.bolehTarik ? (
@@ -401,7 +422,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       {bisaSunting && !ajuanSaya ? (
         <p className="text-xs text-muted-foreground">
           <span className="font-medium">Simpan draf</span>: belum tampil di web, bisa dilanjutkan nanti.{' '}
-          {peran === 'admin'
+          {terbitLangsung
             ? <><span className="font-medium">Terbitkan sekarang</span>: langsung tampil di web.</>
             : <><span className="font-medium">Kirim untuk review</span>: reviewer memeriksa dulu sebelum tampil di web.</>}
         </p>
@@ -422,6 +443,20 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       else if (salinanKerjaId) await repo.editorial.ubahDraf(salinanKerjaId, muatan!.jenis, isi.isi, revisi.refs);
       else await repo.editorial.buatDraf(muatan!.entriId!, muatan!.jenis, isi.isi, revisi.refs);
     });
+  }
+
+  /** Draf AI menggantikan pertanyaan, pilihan, dan pembahasan di form (belum disimpan); dalilnya ditambahkan ke rujukan. */
+  function terapkanDrafAi(draf: DrafKuisAi, bab: number) {
+    if (String(bentuk!.nilai.pertanyaan ?? '').trim() && !window.confirm('Pertanyaan, pilihan, dan pembahasan di form akan diganti draf AI. Lanjutkan?')) return;
+    setBentuk({
+      ...bentuk!,
+      dasar: { ...bentuk!.dasar, dibantuAi: true },
+      nilai: {
+        ...bentuk!.nilai, bab: String(bab), pertanyaan: draf.pertanyaan, pembahasan: draf.pembahasan,
+        pilihan: { daftar: draf.pilihan, benar: draf.indeksBenar, alasan: draf.alasanPilihan },
+      },
+    });
+    setRefs([...new Set([...refs, ...draf.rujukan])]);
   }
 
   function mintaKonfirmasi(aksi: 'terbitkan' | 'kirim') {

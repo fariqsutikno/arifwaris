@@ -3,6 +3,7 @@
 // yang dirender: utama (isi), samping (metadata di panel Info), arab (Versi Arab, dengan teks Indonesia padanannya
 // sebagai rujukan); tanpa `bagian` = semua. Bidang identitas terkunci bila identitasTerkunci (sudah terbit). Galat per
 // bidang tampil tepat di bawah bidangnya (ditandai data-galat untuk difokuskan). Field Arab: dir="rtl" lang="ar".
+import { TautanRapikan } from './BantuanAi';
 import type { ReactNode } from 'react';
 import { Lock, Plus, Trash2 } from 'lucide-react';
 import type { BarisAhwal, ContohKasus, JenisKonten } from '@waris/content';
@@ -139,6 +140,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
             <span className="flex items-center gap-2 text-sm font-medium">
               {label}
               {tautanTemplat}
+              {!bacaSaja && !bidang.arab ? <TautanRapikan teks={teks} saatTerima={saatUbah} /> : null}
             </span>
             {padananId ? <Padanan teks={padananId} panjang={bidang.jenis === 'markdownBlok'} /> : null}
             <EditorBlok label={bidang.label} nilai={teks} saatUbah={saatUbah} mode={bidang.jenis === 'markdownBlok' ? 'blok' : 'potongan'}
@@ -166,6 +168,7 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
           </Label>
           {kunci ? <CatatanKunci saatBuka={kunci.saatBuka} /> : null}
           {tautanTemplat}
+          {bidang.jenis === 'teksPanjang' && !bacaSaja && !bidang.arab ? <TautanRapikan teks={teks} saatTerima={saatUbah} /> : null}
         </>,
         { bantuan: kunci ? undefined : bidang.bantuan },
       );

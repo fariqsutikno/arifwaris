@@ -90,7 +90,7 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
   soal_kuis: z.object({
     kode: z.string(), bab: z.number().int(), tingkat: tingkat.optional(), pertanyaan: z.array(potongan), pilihan: z.array(z.array(potongan)).min(2),
     indeksBenar: z.number().int().nonnegative(), pembahasan: z.array(potongan),
-    alasanPilihan: z.array(z.array(potongan)).optional(), catatan: z.array(potongan).optional(),
+    alasanPilihan: z.array(z.array(potongan)).optional(), catatan: z.array(potongan).optional(), dibantuAi: z.boolean().optional(),
     // Bentuk lama: satu teks "kenapa pilihan lain salah" untuk semua pilihan; dibaca lalu digabung ke pembahasan.
     pengecoh: z.array(potongan).optional(),
   })

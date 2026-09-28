@@ -7,7 +7,7 @@ import {
   type AksiEditorial, type IsiKonten, type JenisKonten, type Peran, type StatusRevisi,
 } from '@waris/content';
 import type {
-  DiksiTerbit, JejakEntri, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RingkasanEntri,
+  DiksiTerbit, HasilAi, PermintaanAi, RepositoriAi, JejakEntri, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RingkasanEntri,
   RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, Sesi,
 } from '../antarmuka.js';
 import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
@@ -24,6 +24,7 @@ export interface MemoriBersama {
   editorial: RepositoriEditorial;
   diksi: RepositoriDiksi;
   akun: RepositoriAkun;
+  ai: RepositoriAi;
   masukSebagai(sesi: Sesi | null): void;
   aturPeranLangsung(userId: string, peran: Peran | null): void;
   /** Hanya untuk tes: meniru baris jsonb yang disunting manual di DB. */
@@ -35,7 +36,8 @@ export interface MemoriBersama {
   daftarPeranSemua(): { userId: string; peran: Peran }[];
 }
 
-export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: Record<string, Peran> } = {}): MemoriBersama {
+/** `ai` = jawaban tiruan untuk tes/mode memori; tanpa itu bantuan AI melempar "tidak tersedia". */
+export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: Record<string, Peran>; ai?: (p: PermintaanAi) => HasilAi } = {}): MemoriBersama {
   const refsDikenal = new Set(awal.refs ?? []);
   const peran = new Map(Object.entries(awal.peran ?? {}));
   let sesi = awal.sesi ?? null;
@@ -212,6 +214,8 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       const target = ambil(revisi, revisiId, 'revisi');
       const tujuan = ambil(entri, target.entriId, 'entri');
       if (tujuan.dibuang) throw new Error('entri ada di Sampah; pulihkan dulu');
+      // [supabase/migrations/20260928000003_ai_bantu.sql] draf AI wajib review sebelum pertama kali tayang.
+      if ((target.isi as { dibantuAi?: unknown }).dibantuAi === true && !tujuan.revisiTerbitId) throw new Error('draf yang dibuat dengan AI wajib lewat review');
       jalankanTransisi(target, 'terbitkan');
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
@@ -361,8 +365,16 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
   };
 
+  const ai: RepositoriAi = {
+    async bantu(permintaan) {
+      wajibPeran('admin', 'penulis');
+      if (!awal.ai) throw new Error('Fitur AI tidak tersedia di mode ini.');
+      return { hasil: awal.ai(permintaan), sisaKuota: 49 };
+    },
+  };
+
   return {
-    konten, editorial, diksi, akun,
+    konten, editorial, diksi, akun, ai,
     masukSebagai(sesiBaru) { sesi = sesiBaru; },
     aturPeranLangsung(userId, peranBaru) { if (peranBaru) peran.set(userId, peranBaru); else peran.delete(userId); },
     isiRevisiMentah(revisiId, isi) { ambil(revisi, revisiId, 'revisi').isi = isi; },

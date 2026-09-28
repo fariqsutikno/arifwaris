@@ -7,6 +7,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
 import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
 import type {
+  HasilAi, RepositoriAi,
   BarisPeringkat, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
   RepositoriPeringkat,
 } from '../antarmuka.js';
@@ -232,5 +233,16 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     },
   };
 
-  return { konten, editorial, diksi, pengguna, akun, peringkat };
+  const ai: RepositoriAi = {
+    async bantu(permintaan) {
+      const { data, error } = await klien.functions.invoke('ai-bantu', { body: permintaan });
+      if (error) {
+        // Galat HTTP dari fungsi membawa pesan Indonesia di badan respons; selain itu (jaringan) pesan umum.
+        const badan = await (error as { context?: Response }).context?.json?.().catch(() => null);
+        throw new Error(badan?.galat ?? 'Layanan AI tidak bisa dihubungi.');
+      }
+      return data as { hasil: HasilAi; sisaKuota: number };
+    },
+  };
+  return { konten, editorial, diksi, pengguna, akun, peringkat, ai };
 }
