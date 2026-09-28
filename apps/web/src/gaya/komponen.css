@@ -1245,3 +1245,6 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 [dir="rtl"] .saklar-animasi[aria-checked="true"] .rel-saklar::after{transform:translateX(-14px)}
 [dir="rtl"] body{font-family:var(--font-arab)}
 .penjelasan-pilihan>summary{cursor:pointer;font-weight:600;margin-block:4px}
+
+/* Mode samaran pra-peluncuran: nama di logo tetap ada tapi diburamkan dan tidak bisa diseleksi. */
+.merek-samar { filter: blur(5px); user-select: none; }

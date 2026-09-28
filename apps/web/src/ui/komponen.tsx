@@ -5,7 +5,7 @@
 
 import { useId, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import type { Kelompok } from '../checklist';
-import { t } from '../terjemah';
+import { merekDisamarkan, t } from '../terjemah';
 
 const gabungKelas = (...daftar: Array<string | false | undefined>) => daftar.filter(Boolean).join(' ');
 const LABEL_KELOMPOK: Record<Kelompok, string> = { pasangan: 'Pasangan', keturunan: 'Keturunan', leluhur: 'Leluhur', saudara: 'Saudara' };
@@ -124,7 +124,7 @@ export function Logo({ saatKlik }: { saatKlik?: () => void }) {
   return (
     <a className="aw-logo" href="#" aria-label={t('umum.arif_waris_beranda')} onClick={event => { event.preventDefault(); saatKlik?.(); }}>
       <Tanda />
-      <span><b>{t('umum.arif_waris')}</b><small>{t('umum.by_prodi_hki_stdi_imam_syafi')}</small></span>
+      <span><b className={merekDisamarkan ? 'merek-samar' : undefined} aria-hidden={merekDisamarkan || undefined}>{merekDisamarkan ? 'Arif Waris' : t('umum.arif_waris')}</b><small>{t('umum.by_prodi_hki_stdi_imam_syafi')}</small></span>
     </a>
   );
 }
