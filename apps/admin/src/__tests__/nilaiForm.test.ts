@@ -79,7 +79,7 @@ test('soal kuis: pilihan & jawaban benar', () => {
   const form = nilaiFormKosong('soal_kuis');
   const hasil = dariNilaiForm('soal_kuis', 'x', { ...form, nilai: {
     ...form.nilai, kode: 'K-1', bab: '4', pertanyaan: 'Bagian **istri**?', pembahasan: 'Lihat [R04-2]',
-    pilihan: { daftar: ['1/4', '1/8', '1/2'], benar: 1 },
+    pilihan: { daftar: ['1/4', '1/8', '1/2'], benar: 1, alasan: null },
   } });
   expect(hasil).toMatchObject({ ok: true, isi: {
     kode: 'K-1', bab: 4, tingkat: 'dasar', indeksBenar: 1, pilihan: [[{ jenis: 'teks', teks: '1/4' }], [{ jenis: 'teks', teks: '1/8' }], [{ jenis: 'teks', teks: '1/2' }]],

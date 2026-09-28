@@ -49,3 +49,16 @@ describe('skema isi konten', () => {
     expect(bacaIsi('glosarium_ar', { istilahId: 'ashabah', makna: 'عصبة' }).ok).toBe(true);
   });
 });
+
+test('soal_kuis: pengecoh lama digabung ke pembahasan; alasanPilihan harus lengkap untuk semua pilihan', () => {
+  const soal = keJson('soal_kuis', CONTOH_SOAL_KUIS) as Record<string, unknown>;
+  const lama = bacaIsi('soal_kuis', { ...soal, pengecoh: [{ jenis: 'teks', teks: 'Pilihan lain keliru.' }] });
+  expect(lama.ok && lama.isi).not.toHaveProperty('pengecoh');
+  expect(lama.ok && lama.isi.pembahasan.at(-1)).toEqual({ jenis: 'teks', teks: 'Pilihan lain keliru.' });
+  const jumlahPilihan = CONTOH_SOAL_KUIS.pilihan.length;
+  const lengkap = Array.from({ length: jumlahPilihan }, () => [{ jenis: 'teks', teks: 'alasan' }]);
+  expect(bacaIsi('soal_kuis', { ...soal, alasanPilihan: lengkap }).ok).toBe(true);
+  const kurang = bacaIsi('soal_kuis', { ...soal, alasanPilihan: lengkap.slice(1) });
+  expect(!kurang.ok && kurang.galat).toMatch(/^alasanPilihan: /);
+  expect(bacaIsi('soal_kuis', { ...soal, alasanPilihan: [[], ...lengkap.slice(1)] }).ok).toBe(false);
+});

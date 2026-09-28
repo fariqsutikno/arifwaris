@@ -253,13 +253,24 @@ interface PropsPilihanKuis { label: ReactNode; nilai: NilaiPilihanKuis; saatUbah
 
 function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsPilihanKuis) {
   const ubahTeks = (indeks: number, teks: string) => saatUbah({ ...nilai, daftar: nilai.daftar.map((t, i) => (i === indeks ? teks : t)) });
+  const ubahAlasan = (indeks: number, teks: string) => saatUbah({ ...nilai, alasan: nilai.alasan?.map((t, i) => (i === indeks ? teks : t)) ?? null });
   const hapus = (indeks: number) => saatUbah({
     daftar: nilai.daftar.filter((_, i) => i !== indeks),
     benar: nilai.benar === indeks ? 0 : nilai.benar > indeks ? nilai.benar - 1 : nilai.benar,
+    alasan: nilai.alasan?.filter((_, i) => i !== indeks) ?? null,
   });
+  // Mematikan sakelar membuang penjelasan per pilihan; dikonfirmasi bila sudah ada isinya.
+  function alihAlasan(nyala: boolean) {
+    if (!nyala && nilai.alasan?.some(t => t.trim()) && !window.confirm('Hapus semua penjelasan per pilihan?')) return;
+    saatUbah({ ...nilai, alasan: nyala ? nilai.daftar.map(() => '') : null });
+  }
   return (
     <fieldset className="grid gap-2">
       <legend className="mb-1 text-sm font-medium">{label}</legend>
+      <Label className="w-fit gap-2 text-sm font-normal">
+        <input type="checkbox" checked={nilai.alasan !== null} disabled={bacaSaja} onChange={e => alihAlasan(e.target.checked)} />
+        Jelaskan tiap pilihan
+      </Label>
       {nilai.daftar.map((teks, indeks) => {
         const huruf = String.fromCharCode(HURUF_A + indeks);
         const benar = nilai.benar === indeks;
@@ -279,11 +290,18 @@ function EditorPilihanKuis({ label, nilai, saatUbah, bacaSaja, konteks }: PropsP
             </div>
             <EditorBlok key={`${indeks}/${nilai.daftar.length}`} label={`Pilihan ${huruf}`} nilai={teks} saatUbah={t => ubahTeks(indeks, t)}
               mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
+            {nilai.alasan ? (
+              <div className="grid gap-1 border-l-2 pl-2">
+                <span className="text-xs font-medium text-muted-foreground">{benar ? `Kenapa ${huruf} benar` : `Kenapa ${huruf} kurang tepat`}</span>
+                <EditorBlok key={`alasan-${indeks}/${nilai.daftar.length}`} label={`Penjelasan pilihan ${huruf}`} nilai={nilai.alasan[indeks] ?? ''}
+                  saatUbah={t => ubahAlasan(indeks, t)} mode="potongan" slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} />
+              </div>
+            ) : null}
           </div>
         );
       })}
       {!bacaSaja ? (
-        <Button type="button" variant="link" size="sm" className="h-auto w-fit p-0" onClick={() => saatUbah({ ...nilai, daftar: [...nilai.daftar, ''] })}>
+        <Button type="button" variant="link" size="sm" className="h-auto w-fit p-0" onClick={() => saatUbah({ ...nilai, daftar: [...nilai.daftar, ''], alasan: nilai.alasan ? [...nilai.alasan, ''] : null })}>
           + Tambah pilihan
         </Button>
       ) : null}

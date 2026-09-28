@@ -8,7 +8,10 @@ import {
 } from '@waris/content';
 import { FORM_KONTEN, ISI_AWAL, type Bidang } from './formulir';
 
-export interface NilaiPilihanKuis { daftar: string[]; benar: number }
+const HURUF_A = 65;
+
+/** alasan: penjelasan per pilihan (sejajar dengan daftar), null = hanya pembahasan umum. */
+export interface NilaiPilihanKuis { daftar: string[]; benar: number; alasan: string[] | null }
 export type NilaiBidang = string | boolean | NilaiPilihanKuis | ContohKasus | BarisAhwal[];
 
 export interface NilaiForm {
@@ -37,7 +40,10 @@ export function keNilaiForm<J extends JenisKonten>(jenis: J, isi: IsiKonten[J]):
     if (bagian.objekOpsional) aktif[bagian.objekOpsional] = ambil(isi, bagian.objekOpsional) !== undefined;
     for (const bidang of bagian.bidang) {
       nilai[bidang.jalur] = bidang.jenis === 'pilihanKuis'
-        ? { daftar: (ambil(isi, bidang.jalur) as Potongan[][]).map(tulisPotongan), benar: ambil(isi, 'indeksBenar') as number }
+        ? {
+          daftar: (ambil(isi, bidang.jalur) as Potongan[][]).map(tulisPotongan), benar: ambil(isi, 'indeksBenar') as number,
+          alasan: (ambil(isi, 'alasanPilihan') as Potongan[][] | undefined)?.map(tulisPotongan) ?? null,
+        }
         : keNilaiBidang(bidang, ambil(isi, bidang.jalur));
     }
   }
@@ -129,7 +135,7 @@ function nilaiAwal(bidang: Bidang, dasar: Objek): NilaiBidang {
   const dariDasar = ambil(dasar, bidang.jalur);
   switch (bidang.jenis) {
     case 'centang': return dariDasar === true;
-    case 'pilihanKuis': return { daftar: ['', ''], benar: 0 };
+    case 'pilihanKuis': return { daftar: ['', ''], benar: 0, alasan: null };
     case 'kasus': {
       const hasil = bacaIsi('soal_hitung', { kode: 'x', bab: 0, tingkat: 'dasar', judul: '', topik: '', sumber: '', kasus: dariDasar });
       if (!hasil.ok) throw new Error(`ISI_AWAL kasus tidak sah: ${hasil.galat}`);
@@ -159,9 +165,14 @@ function tulisBidang(hasil: Objek, bidang: Bidang, nilai: NilaiBidang | undefine
       return pasang(hasil, bidang.jalur, bacaPotongan(teks));
     }
     case 'pilihanKuis': {
-      const { daftar, benar } = nilai as NilaiPilihanKuis;
+      const { daftar, benar, alasan } = nilai as NilaiPilihanKuis;
       pasang(hasil, bidang.jalur, daftar.map(teks => bacaPotongan(teks.trim())));
-      return pasang(hasil, 'indeksBenar', benar);
+      pasang(hasil, 'indeksBenar', benar);
+      if (!alasan) return hapus(hasil, 'alasanPilihan');
+      // [C3] per pilihan = semua pilihan wajib berpenjelasan.
+      const kosong = alasan.flatMap((teks, i) => (teks.trim() ? [] : [String.fromCharCode(HURUF_A + i)]));
+      if (kosong.length) throw new Error(`Penjelasan pilihan ${kosong.join(', ')} belum diisi. Isi semua, atau matikan "Jelaskan tiap pilihan".`);
+      return pasang(hasil, 'alasanPilihan', alasan.map(teks => bacaPotongan(teks.trim())));
     }
     case 'kasus': case 'barisAhwal': return pasang(hasil, bidang.jalur, nilai);
     default: {

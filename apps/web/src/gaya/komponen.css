@@ -1240,3 +1240,4 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 @media (max-width:860px){[dir="rtl"] .sidebar-materi:not(.terbuka){transform:translateX(-105%)}}
 [dir="rtl"] .saklar-animasi[aria-checked="true"] .rel-saklar::after{transform:translateX(-14px)}
 [dir="rtl"] body{font-family:var(--font-arab)}
+.penjelasan-pilihan>summary{cursor:pointer;font-weight:600;margin-block:4px}

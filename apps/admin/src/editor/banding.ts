@@ -46,8 +46,9 @@ function teksNilai(bidang: Bidang, nilai: NilaiBidang | undefined): string {
     return nilai;
   }
   if (bidang.jenis === 'pilihanKuis') {
-    const { daftar, benar } = nilai as NilaiPilihanKuis;
-    return daftar.map((teks, i) => `${String.fromCharCode(65 + i)}. ${bersihkanMarkdown(teks)}${i === benar ? ' (jawaban benar)' : ''}`).join('\n');
+    const { daftar, benar, alasan } = nilai as NilaiPilihanKuis;
+    return daftar.map((teks, i) => `${String.fromCharCode(65 + i)}. ${bersihkanMarkdown(teks)}${i === benar ? ' (jawaban benar)' : ''}`
+      + (alasan ? `\n   Penjelasan: ${bersihkanMarkdown(alasan[i] ?? '')}` : '')).join('\n');
   }
   if (bidang.jenis === 'barisAhwal') return (nilai as BarisAhwal[]).map(baris => `${baris.bagian} — ${baris.syarat}`).join('\n');
   return teksKasus(nilai as ContohKasus);

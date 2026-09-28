@@ -52,7 +52,7 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
         <div className={benar ? 'hasil-tebak benar' : 'hasil-tebak salah'} role="status">
           <b><Ikon nama={benar ? 'benar' : 'salah'} ukuran={18} /> {benar ? t('latihan.benar') : t('latihan.belum_tepat_jawabannya_huruf', { huruf: hurufPilihan(soal.indeksBenar) })}</b>
           <p><Sebaris isi={soal.pembahasan} /></p>
-          <PembahasanTambahan soal={soal} />
+          <PembahasanTambahan soal={soal} dipilih={dipilih} />
         </div>
       )}
       {sudahMenjawab && !saatDijawab && (
@@ -64,11 +64,24 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
   );
 }
 
-/** Bagian opsional pembahasan: kenapa pilihan lain salah, lalu catatan. Dipakai juga di hasil kuis konsep. */
-export function PembahasanTambahan({ soal }: { soal: SoalKuis }) {
+/** Bagian opsional pembahasan, dipakai juga di hasil kuis konsep: penjelasan pilihan yang dijawab langsung tampil,
+ * penjelasan pilihan lain bisa dibuka; lalu catatan. */
+export function PembahasanTambahan({ soal, dipilih }: { soal: SoalKuis; dipilih?: number | null | undefined }) {
+  const alasan = soal.alasanPilihan;
+  const lainnya = alasan ? soal.pilihan.map((_, indeks) => indeks).filter(indeks => indeks !== dipilih) : [];
   return (
     <>
-      {soal.pengecoh?.length ? <p><b>{t('latihan.kenapa_pilihan_lain_salah')}:</b> <Sebaris isi={soal.pengecoh} /></p> : null}
+      {alasan && dipilih != null && alasan[dipilih] ? (
+        <p><b>{t('latihan.pilihan_huruf', { huruf: hurufPilihan(dipilih) })}:</b> <Sebaris isi={alasan[dipilih]} /></p>
+      ) : null}
+      {alasan && lainnya.length ? (
+        <details className="penjelasan-pilihan">
+          <summary>{t('latihan.penjelasan_pilihan_lain')}</summary>
+          <ul className="daftar-polos tumpuk-rapat">
+            {lainnya.map(indeks => <li key={indeks}><b>{hurufPilihan(indeks)}.</b> <Sebaris isi={alasan[indeks]!} /></li>)}
+          </ul>
+        </details>
+      ) : null}
       {soal.catatan?.length ? <p className="keterangan"><b>{t('umum.catatan')}</b> <Sebaris isi={soal.catatan} /></p> : null}
     </>
   );

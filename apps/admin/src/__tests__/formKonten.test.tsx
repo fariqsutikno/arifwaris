@@ -65,7 +65,7 @@ test('mode baca: input readOnly, tanpa tombol tambah', () => {
   expect(screen.queryByRole('button', { name: 'Tambah pilihan' })).toBeNull();
 });
 
-test('soal kuis: bagian pembahasan opsional yang kosong tidak ikut disimpan, yang diisi ikut', () => {
+test('soal kuis: penjelasan per pilihan opsional; bila dinyalakan semua pilihan wajib diisi', () => {
   render(<Uji jenis="soal_kuis" awal={nilaiFormKosong('soal_kuis')} />);
   ketik('Kode soal', 'K-1');
   ketik('Bab', '4');
@@ -73,7 +73,11 @@ test('soal kuis: bagian pembahasan opsional yang kosong tidak ikut disimpan, yan
   ketikMarkdown('Pilihan B', '1/4');
   ketikMarkdown('Kenapa jawaban ini benar', 'Karena ada anak.');
   expect(dariNilaiForm('soal_kuis', 'x', terakhir)).toMatchObject({ ok: true, isi: { pembahasan: [{ teks: 'Karena ada anak.' }] } });
-  expect((dariNilaiForm('soal_kuis', 'x', terakhir) as { isi: object }).isi).not.toHaveProperty('pengecoh');
-  ketikMarkdown('Kenapa pilihan lain salah', 'Jumlah istri tidak berpengaruh.');
-  expect(dariNilaiForm('soal_kuis', 'x', terakhir)).toMatchObject({ ok: true, isi: { pengecoh: [{ teks: 'Jumlah istri tidak berpengaruh.' }] } });
+  expect((dariNilaiForm('soal_kuis', 'x', terakhir) as { isi: object }).isi).not.toHaveProperty('alasanPilihan');
+  fireEvent.click(screen.getByLabelText('Jelaskan tiap pilihan'));
+  ketikMarkdown('Penjelasan pilihan A', 'Ini bagian bila tanpa anak.');
+  const belumLengkap = dariNilaiForm('soal_kuis', 'x', terakhir);
+  expect(!belumLengkap.ok && belumLengkap.galatBidang.pilihan).toMatch(/Penjelasan pilihan B belum diisi/);
+  ketikMarkdown('Penjelasan pilihan B', 'Benar: ada anak.');
+  expect(dariNilaiForm('soal_kuis', 'x', terakhir)).toMatchObject({ ok: true, isi: { alasanPilihan: [[{ teks: 'Ini bagian bila tanpa anak.' }], [{ teks: 'Benar: ada anak.' }]] } });
 });

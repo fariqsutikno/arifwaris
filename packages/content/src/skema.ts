@@ -90,8 +90,14 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
   soal_kuis: z.object({
     kode: z.string(), bab: z.number().int(), tingkat: tingkat.optional(), pertanyaan: z.array(potongan), pilihan: z.array(z.array(potongan)).min(2),
     indeksBenar: z.number().int().nonnegative(), pembahasan: z.array(potongan),
-    pengecoh: z.array(potongan).optional(), catatan: z.array(potongan).optional(),
-  }).refine(soal => soal.indeksBenar < soal.pilihan.length, { message: 'indeksBenar di luar pilihan' }),
+    alasanPilihan: z.array(z.array(potongan)).optional(), catatan: z.array(potongan).optional(),
+    // Bentuk lama: satu teks "kenapa pilihan lain salah" untuk semua pilihan; dibaca lalu digabung ke pembahasan.
+    pengecoh: z.array(potongan).optional(),
+  })
+    .refine(soal => soal.indeksBenar < soal.pilihan.length, { message: 'indeksBenar di luar pilihan' })
+    .refine(soal => !soal.alasanPilihan || (soal.alasanPilihan.length === soal.pilihan.length && soal.alasanPilihan.every(alasan => alasan.length > 0)),
+      { message: 'penjelasan per pilihan harus ada untuk semua pilihan', path: ['alasanPilihan'] })
+    .transform(({ pengecoh, ...soal }) => (pengecoh?.length ? { ...soal, pembahasan: [...soal.pembahasan, { jenis: 'teks' as const, teks: ' ' }, ...pengecoh] } : soal)),
   soal_hitung: z.object({
     kode: z.string(), bab: z.number().int(), tingkat, judul: z.string(), kasus: contohKasus, topik: z.string(), sumber: z.string(),
   }),

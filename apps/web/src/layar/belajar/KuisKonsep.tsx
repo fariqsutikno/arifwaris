@@ -274,7 +274,7 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
                     <div className="teks-pembahasan">
                       <span className="label-jawaban">{t('hitung.pembahasan')}</span>
                       <p><Sebaris isi={soal.pembahasan} /></p>
-                      <PembahasanTambahan soal={soal} />
+                      <PembahasanTambahan soal={soal} dipilih={dipilih} />
                     </div>
                   </div>
                 </details>

@@ -12203,6 +12203,20 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "latihan.penjelasan_pilihan_lain",
+   "halaman": "latihan",
+   "id": "Penjelasan pilihan lain",
+   "ar": "شرح الخيارات الأخرى",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.pilihan_huruf",
+   "halaman": "latihan",
+   "id": "Pilihan {huruf}",
+   "ar": "الخيار {huruf}",
+   "versiTerbit": 873
+  },
+  {
    "kunci": "latihan.jawaban_yang_tepat_dan_pembahasannya_muncul",
    "halaman": "latihan",
    "id": "Jawaban yang tepat dan pembahasannya muncul setiap selesai menjawab.",
