@@ -14,19 +14,30 @@ tags: [rujukan, referensi, takhrij, dalil, metodologi]
 5. **Pendapat madzhab** — kode [RDH] untuk nash Syafi'iyyah dari Raudhah ath-Thalibin. Tashil al-Fara'idh dan Al-Fara'idh al-Muyassar disebut dengan namanya, hanya sebagai pembanding.
 6. **Kaidah hisab** — kode [KH]. Teknik matematika (KPK, FPB, konversi desimal). Ini bukan hukum syar'i dan tidak memerlukan dalil, tetapi hasilnya wajib sesuai hukum yang berdalil.
 
+### Format token tautan rujukan
+Kolom "Sumber" boleh menyertakan token berikut di samping teks manusiawi (judul kitab, juz/halaman cetak); satu baris boleh punya lebih dari satu token:
+| Token | Contoh | URL |
+|---|---|---|
+| `shamela:<book_id>/<page_id>` | `shamela:5423/5974` | `https://shamela.ws/book/<book_id>/<page_id>` |
+| `hadits:<koleksi>:<nomor-standar>` | `hadits:bukhari:6732` | `https://sunnah.com/<koleksi>:<nomor>` |
+| `quran:<surah>:<ayat>` atau `quran:<surah>:<ayat>-<ayat>` | `quran:4:11`, `quran:4:11-12` | `https://quran.com/<surah>/<ayat>` (rentang: `.../<ayat>-<ayat>`) |
+| `islamqa:<id>` | `islamqa:12345` | `https://islamqa.info/ar/answers/<id>` |
+
+Koleksi hadits yang dikenal (slug sunnah.com): `bukhari, muslim, abudawud, tirmidhi, nasai, ibnmajah, ahmad, malik`. Nomor standar = penomoran Fu'ad 'Abdul Baqi (Bukhari/Muslim) atau penomoran umum (Sunan) sebagaimana bab 17.3 — **bukan** id internal MCP Hadith. Token IslamQA hanya pendukung, tidak pernah satu-satunya dasar (bab 00 konvensi 5). Token tidak dikenal atau salah format ditolak oleh `packages/content/src/refs.ts` (error saat tes), bukan diabaikan diam-diam.
+
 ## 17.2 Sumber Primer
 | Kode | Judul | Penulis | Keterangan |
 |---|---|---|---|
 | [RDH] | *Raudhah ath-Thalibin wa 'Umdah al-Muftin* | Imam Yahya bin Syaraf an-Nawawi (w. 676 H) | Al-Maktab al-Islami, Beirut, cet. 3, 1412 H/1991 M, tahqiq Zuhair asy-Syawisy. Dipakai: **Kitab al-Fara'idh** (juz 6), bab 1–10. Kitab pokok madzhab Syafi'i dalam furu'. |
-| — | *Tashil al-Fara'idh* | Syaikh Muhammad bin Shalih al-'Utsaimin (w. 1421 H) | Hanbali dengan tarjih mandiri. Pembanding saja, tidak dipakai sistem. |
-| — | *Al-Fara'idh al-Muyassar* | 'Abdusy-Syakur Mu'allim 'Abd Farah | Syabakah al-Alukah, 2019. Menyertakan Matn ar-Rahbiyyah. Sumber struktur dan contoh; pendapatnya pembanding saja. |
-| Lahim | *Kitab al-Fara'idh* | Dr. 'Abdul Karim bin Muhammad al-Lahim | Dipakai untuk bab 12 (munasakhat), 13a–d (haml, mafqud, khuntsa, gharqa), 14 (dzawil arham). Penerbit dan edisi belum dicatat; nomor halaman mengikuti cetakan milik pemilik project. **Tarjih-nya condong Hanbali**; nukilannya atas madzhab lain berstatus `sekunder` di bab 18. |
-| Mabsuth | *Al-Mabsuth* | Syamsul A'immah as-Sarakhsi (w. 483 H) | Hanafi primer. Kitab al-Fara'idh juz 29–30 (Shamela 5423). Dipakai: qarabah dzawil arham, urutan ashabah, wala'. |
-| Mughni | *Al-Mughni* | Ibnu Qudamah (w. 620 H) | Hanbali primer; ed. Maktabah al-Qahirah (Shamela 8463). Dipakai: ijazah wasiat. |
-| Bahr ar-Ra'iq | *Al-Bahr ar-Ra'iq Syarh Kanz ad-Daqa'iq* | Ibnu Nujaim (w. 970 H) | Hanafi primer (Shamela 12227). Dipakai: haml. |
-| 'Iqd al-Jawahir | *'Iqd al-Jawahir ats-Tsaminah* | Ibnu Syas (w. 616 H) | Maliki primer (Shamela 14594). Dipakai: wala'. |
-| Bahr al-Madzhab | *Bahr al-Madzhab* | ar-Ruyani (w. 502 H) | Syafi'i (Shamela 16934). Dipakai: ijazah wasiat. |
-| Ithraa | *Al-'Urudh at-Taqdimiyyah li Muqarrar al-Fara'idh* | Syarikah Ithraa al-Mutun (Riyadh) | Slide kuliah berbasis *Hasyiyah ar-Rahbiyyah*. Dipakai sebagai nukilan posisi 4 madzhab (bab 18). Teks hasil ekstrak PDF rusak di beberapa tempat; angka tabelnya tidak dipakai. |
+| TSH | *Tashil al-Fara'idh* | Syaikh Muhammad bin Shalih al-'Utsaimin (w. 1421 H) | Hanbali dengan tarjih mandiri. Pembanding saja, tidak dipakai sistem. |
+| MYS | *Al-Fara'idh al-Muyassar* | 'Abdusy-Syakur Mu'allim 'Abd Farah | Syabakah al-Alukah, 2019. Menyertakan Matn ar-Rahbiyyah. Sumber struktur dan contoh; pendapatnya pembanding saja. |
+| LHM | *Kitab al-Fara'idh* | Dr. 'Abdul Karim bin Muhammad al-Lahim | Dipakai untuk bab 12 (munasakhat), 13a–d (haml, mafqud, khuntsa, gharqa), 14 (dzawil arham). Penerbit dan edisi belum dicatat; nomor halaman mengikuti cetakan milik pemilik project. **Tarjih-nya condong Hanbali**; nukilannya atas madzhab lain berstatus `sekunder` di bab 18. |
+| MBS | *Al-Mabsuth* | Syamsul A'immah as-Sarakhsi (w. 483 H) | Hanafi primer. Kitab al-Fara'idh juz 29–30 (Shamela 5423). Dipakai: qarabah dzawil arham, urutan ashabah, wala'. |
+| MGN | *Al-Mughni* | Ibnu Qudamah (w. 620 H) | Hanbali primer; ed. Maktabah al-Qahirah (Shamela 8463). Dipakai: ijazah wasiat. |
+| BHR | *Al-Bahr ar-Ra'iq Syarh Kanz ad-Daqa'iq* (juga *Takmilah ath-Thuri 'ala al-Bahr ar-Ra'iq*) | Ibnu Nujaim (w. 970 H) | Hanafi primer (Shamela 12227). Dipakai: haml. |
+| IQD | *'Iqd al-Jawahir ats-Tsaminah* | Ibnu Syas (w. 616 H) | Maliki primer (Shamela 14594). Dipakai: wala'. |
+| BMZ | *Bahr al-Madzhab* | ar-Ruyani (w. 502 H) | Syafi'i (Shamela 16934). Dipakai: ijazah wasiat. |
+| ITH | *Al-'Urudh at-Taqdimiyyah li Muqarrar al-Fara'idh* | Syarikah Ithraa al-Mutun (Riyadh) | Slide kuliah berbasis *Hasyiyah ar-Rahbiyyah*. Dipakai sebagai nukilan posisi 4 madzhab (bab 18). Teks hasil ekstrak PDF rusak di beberapa tempat; angka tabelnya tidak dipakai. |
 
 ## 17.3 Sumber Hadits
 Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shahih Muslim cetakan dengan penomoran Muhammad Fu'ad 'Abdul Baqi; Sunan at-Tirmidzi, Abu Dawud, Ibnu Majah penomoran umum). Nomor bisa berbeda antar cetakan; cocokkan dengan **lafaz**, bukan hanya nomor.

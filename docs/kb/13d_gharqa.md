@@ -57,4 +57,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
 | R13-10 | Gharqa: tidak saling mewarisi; keadaan 5 ditunggu | RDH | Bab 5, mani' 4 | «ففي هذه الصور الثلاث لا نورث أحدهما من صاحبه... الخامسة: أن يعلم سبق موته، ثم يلتبس فيوقف الميراث حتى يتبين أو يصطلحا» |
-| R13-19 | Metode tilad–tharif ([HNB]) | KH + nukilan | Lahim hlm. 110–111 | «يفرض أن أحدهم مات أولاً ويجعل له مسألة ... وتسمى مسألة التلاد» |
+| R13-19 | Metode tilad–tharif ([HNB]) | KH + LHM | Lahim hlm. 110–111 | «يفرض أن أحدهم مات أولاً ويجعل له مسألة ... وتسمى مسألة التلاد» |

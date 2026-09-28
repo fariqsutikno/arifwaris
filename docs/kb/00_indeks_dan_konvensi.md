@@ -17,6 +17,7 @@ Knowledge base ilmu faraidh untuk sistem AI platform waris. Disusun dari dua sum
 4. Istilah Arab ditulis dalam transliterasi baku; dalil ditulis dalam teks Arab asli.
 3. **Setiap bab memiliki tabel "Dasar dan Rujukan"** di bagian akhir. Penanda seperti `[R04-7]` di judul subbab merujuk ke baris tabel tersebut. Kode jenis dalil: [Q] Al-Qur'an, [H] hadits, [A] atsar, [IJ] ijma' beserta penukilnya, [RDH] nash Raudhah ath-Thalibin, [KH] kaidah hisab (bukan hukum syar'i). Metodologi lengkap: bab 17.
 4. Jika data kasus tidak lengkap (misalnya status hidup ahli waris, agama, jenis kelamin), AI **wajib bertanya**, bukan berasumsi.
+5. **Tautan rujukan**: kolom "Sumber" boleh menyertakan token terverifikasi mesin di samping teks manusiawi (judul kitab, juz/halaman): `shamela:<book_id>/<page_id>`, `hadits:<koleksi>:<nomor-standar>`, `quran:<surah>:<ayat>` (atau `quran:<surah>:<ayat>-<ayat>` untuk rentang), `islamqa:<id>`. IslamQA hanya pendukung, tidak pernah satu-satunya dasar. Format lengkap dan cara parsing: bab 17.1.
 
 ## Daftar Bab
 | No | File | Isi |

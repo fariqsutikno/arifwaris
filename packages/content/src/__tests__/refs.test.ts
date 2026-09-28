@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs } from '../index.js';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs, uraiTokenTautan, uraiTautan } from '../index.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
   const teksBab = [
@@ -100,7 +100,7 @@ describe('teks ayat dari KB bab 1.2', () => {
 
 describe('daftar pustaka bab 17', () => {
   test('kitab, hadits, dan titik dikaji terbaca dari tabelnya masing-masing', () => {
-    expect(DAFTAR_KITAB.map(kitab => kitab.kode)).toEqual(['[RDH]', '—', '—', 'Lahim', 'Mabsuth', 'Mughni', "Bahr ar-Ra'iq", "'Iqd al-Jawahir", 'Bahr al-Madzhab', 'Ithraa']);
+    expect(DAFTAR_KITAB.map(kitab => kitab.kode)).toEqual(['[RDH]', 'TSH', 'MYS', 'LHM', 'MBS', 'MGN', 'BHR', 'IQD', 'BMZ', 'ITH']);
     expect(DAFTAR_KITAB[0]!.judul).toBe("Raudhah ath-Thalibin wa 'Umdah al-Muftin");
     expect(DAFTAR_HADITS.length).toBe(15);
     expect(DAFTAR_HADITS[0]).toMatchObject({ takhrij: 'Al-Bukhari 6732; Muslim 1615', status: "Muttafaq 'alaih" });
@@ -122,4 +122,63 @@ test('sqlDaftarRefs: satu baris per kode, terurut, idempoten', () => {
 
 test('semua kode RUJUKAN cocok dengan pola kolom daftar_refs', () => {
   for (const rujukan of RUJUKAN) expect(rujukan.kode).toMatch(/^R\d{2}-\d+$/);
+});
+
+describe('uraiTokenTautan — format bab 00 konvensi 5 & bab 17.1', () => {
+  test('shamela:<book_id>/<page_id>', () => {
+    expect(uraiTokenTautan('shamela:5423/5974')).toEqual({ jenis: 'shamela', url: 'https://shamela.ws/book/5423/5974', label: 'shamela:5423/5974' });
+  });
+
+  test('hadits:<koleksi>:<nomor-standar>', () => {
+    expect(uraiTokenTautan('hadits:bukhari:6732')).toEqual({ jenis: 'hadits', url: 'https://sunnah.com/bukhari:6732', label: 'hadits:bukhari:6732' });
+  });
+
+  test('quran:<surah>:<ayat> tunggal', () => {
+    expect(uraiTokenTautan('quran:4:11')).toEqual({ jenis: 'quran', url: 'https://quran.com/4/11', label: 'quran:4:11' });
+  });
+
+  test('quran:<surah>:<ayat>-<ayat> rentang', () => {
+    expect(uraiTokenTautan('quran:4:11-12')).toEqual({ jenis: 'quran', url: 'https://quran.com/4/11-12', label: 'quran:4:11-12' });
+  });
+
+  test('islamqa:<id>', () => {
+    expect(uraiTokenTautan('islamqa:12345')).toEqual({ jenis: 'islamqa', url: 'https://islamqa.info/ar/answers/12345', label: 'islamqa:12345' });
+  });
+
+  test('jenis token tidak dikenal → throw', () => {
+    expect(() => uraiTokenTautan('quran.com:4:11')).toThrow('tidak dikenal');
+  });
+
+  test('koleksi hadits tidak dikenal → throw', () => {
+    expect(() => uraiTokenTautan('hadits:sahih9:1')).toThrow('Token hadits tidak valid');
+  });
+
+  test('format shamela salah (tanpa page_id) → throw', () => {
+    expect(() => uraiTokenTautan('shamela:5423')).toThrow('Token shamela tidak valid');
+  });
+
+  test('format quran salah (bukan angka) → throw', () => {
+    expect(() => uraiTokenTautan('quran:an-nisa:11')).toThrow('Token quran tidak valid');
+  });
+
+  test('format islamqa salah (bukan angka) → throw', () => {
+    expect(() => uraiTokenTautan('islamqa:abc')).toThrow('Token islamqa tidak valid');
+  });
+});
+
+describe('uraiTautan — cari token di dalam teks kolom Sumber', () => {
+  test('beberapa token dalam satu baris, diakhiri tanda baca', () => {
+    expect(uraiTautan('Al-Bukhari, hadits:bukhari:6732; lihat juga quran:4:11.')).toEqual([
+      { jenis: 'hadits', url: 'https://sunnah.com/bukhari:6732', label: 'hadits:bukhari:6732' },
+      { jenis: 'quran', url: 'https://quran.com/4/11', label: 'quran:4:11' },
+    ]);
+  });
+
+  test('tanpa token → array kosong', () => {
+    expect(uraiTautan('Bahr al-Madzhab, ar-Ruyani, Kitab al-Washaya, 8/42 (Shamela 16934/3737)')).toEqual([]);
+  });
+
+  test('token salah di dalam teks tetap throw', () => {
+    expect(() => uraiTautan('lihat islamqa:xyz')).toThrow('Token islamqa tidak valid');
+  });
 });

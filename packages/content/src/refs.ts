@@ -45,6 +45,57 @@ export interface EntriRujukan extends RujukanTerbaca {
   /** 'perluVerifikasi' bila tercantum di tabel bab 17.4. */
   status: 'terverifikasi' | 'perluVerifikasi';
   dhaif: boolean;
+  /** Token tautan (shamela/hadits/quran/islamqa) yang ditemukan di kolom Sumber, bab 00 konvensi 5 & bab 17.1. */
+  tautan: TautanRujukan[];
+}
+
+// ─── Token tautan rujukan (bab 00 konvensi 5, bab 17.1) ───────────────────────
+
+export type JenisTautan = 'shamela' | 'hadits' | 'quran' | 'islamqa';
+
+export interface TautanRujukan {
+  jenis: JenisTautan;
+  url: string;
+  label: string;
+}
+
+/** Slug koleksi hadits di sunnah.com yang dikenal (bab 17.1). */
+const KOLEKSI_HADITS = ['bukhari', 'muslim', 'abudawud', 'tirmidhi', 'nasai', 'ibnmajah', 'ahmad', 'malik'];
+
+/** Uraikan satu token tautan (mis. "shamela:5423/5974") menjadi jenis, URL, dan label. Token salah = throw. */
+export function uraiTokenTautan(token: string): TautanRujukan {
+  const pemisah = token.indexOf(':');
+  const jenis = pemisah === -1 ? token : token.slice(0, pemisah);
+  const sisa = pemisah === -1 ? '' : token.slice(pemisah + 1);
+  if (jenis === 'shamela') {
+    const cocok = /^(\d+)\/(\d+)$/.exec(sisa);
+    if (!cocok) throw new Error(`Token shamela tidak valid: "${token}"`);
+    return { jenis, url: `https://shamela.ws/book/${cocok[1]}/${cocok[2]}`, label: token };
+  }
+  if (jenis === 'hadits') {
+    const cocok = /^([a-z]+):(\d+)$/.exec(sisa);
+    if (!cocok || !KOLEKSI_HADITS.includes(cocok[1]!)) throw new Error(`Token hadits tidak valid: "${token}"`);
+    return { jenis, url: `https://sunnah.com/${cocok[1]}:${cocok[2]}`, label: token };
+  }
+  if (jenis === 'quran') {
+    const cocok = /^(\d{1,3}):(\d+)(?:-(\d+))?$/.exec(sisa);
+    if (!cocok) throw new Error(`Token quran tidak valid: "${token}"`);
+    const url = cocok[3] !== undefined
+      ? `https://quran.com/${cocok[1]}/${cocok[2]}-${cocok[3]}` : `https://quran.com/${cocok[1]}/${cocok[2]}`;
+    return { jenis, url, label: token };
+  }
+  if (jenis === 'islamqa') {
+    const cocok = /^(\d+)$/.exec(sisa);
+    if (!cocok) throw new Error(`Token islamqa tidak valid: "${token}"`);
+    return { jenis, url: `https://islamqa.info/ar/answers/${cocok[1]}`, label: token };
+  }
+  throw new Error(`Jenis token tautan tidak dikenal: "${token}"`);
+}
+
+/** Cari semua token tautan (shamela:/hadits:/quran:/islamqa:) di sebuah teks, mis. kolom Sumber. */
+export function uraiTautan(teks: string): TautanRujukan[] {
+  return [...teks.matchAll(/\b(?:shamela|hadits|quran|islamqa):\S+/g)]
+    .map(cocok => uraiTokenTautan(cocok[0].replace(/[.,;)\]]+$/, '')));
 }
 
 const JENIS_DALIL: JenisDalil[] = ['Q', 'H', 'A', 'IJ', 'RDH', 'KH'];
@@ -117,6 +168,7 @@ export const RUJUKAN: EntriRujukan[] = DAFTAR_BAB.flatMap(([bab, teksBab]) => ba
   ...rujukan,
   status: perluVerifikasi.has(rujukan.kode) ? 'perluVerifikasi' : 'terverifikasi',
   dhaif: rujukan.jenis.includes("dha'if"),
+  tautan: uraiTautan(rujukan.sumber),
 }));
 
 const menurutKode = new Map(RUJUKAN.map(rujukan => [rujukan.kode, rujukan]));

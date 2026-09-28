@@ -70,4 +70,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R13-6 | Masa tunggu mafqud [SYF] = ijtihad hakim | RDH + Lahim | RDH Bab 6, sabab 1; Lahim hlm. 169 | RDH: «وهذه المدة ليست مقدرة عند الجمهور». Lahim hlm. 169 eksplisit: «وهذا هو الصحيح من مذهب الشافعية» — ash-shahih Syafi'iyyah tidak menetapkan angka, diserahkan ijtihad hakim. |
 | R13-7 | Harta mafqud untuk ahli waris saat vonis | RDH | Idem | «ثم إنا ننظر إلى من يرثه حين حكم الحاكم بموته» |
 | R13-8 | Mafqud sebagai ahli waris: diambil yang terburuk | RDH | Idem | «وأخذنا في حق كل واحد من الحاضرين بالأسوأ» |
-| R13-18 | Nasib bagian mauquf mafqud (5 keadaan) | — (nukilan) | Lahim hlm. 174–175 | «الحالة الأولى: أن يتضح أنه حي... الحالة الخامسة: ... حكم الغرقى» |
+| R13-18 | Nasib bagian mauquf mafqud (5 keadaan) | LHM | Lahim hlm. 174–175 | «الحالة الأولى: أن يتضح أنه حي... الحالة الخامسة: ... حكم الغرقى» |
