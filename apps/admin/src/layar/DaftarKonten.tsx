@@ -498,6 +498,7 @@ function GrupMateri({ grup, baris, bolehSeret, saatPindah, bolehBuat }: {
               <a href={tulisRute({ layar: 'entriBaru', jenis: 'materi', kueri: { modul: String(grup.nomor) } })}><Plus />Materi di modul ini</a>
             </Button>
           ) : null}
+          {grup.modul ? baris.aksi?.(grup.modul) : null}
         </span>
       </div>
       {grup.materi.length === 0 ? <p className="px-4 py-2 text-sm text-muted-foreground">Belum ada materi.</p> : null}
