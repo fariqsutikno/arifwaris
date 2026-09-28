@@ -100,3 +100,13 @@ test('syahid: potongan yang tidak persis ada di teks ayat → galat di bidang po
   const ayatLain = dariNilaiForm('syahid', 's', { ...form, nilai: { ...form.nilai, ayat: '99' } });
   expect(!ayatLain.ok && ayatLain.galatBidang.ayat).toMatch(/belum ada di daftar ayat/);
 });
+
+test('semua templat terbaca sebagai Markdown yang sah untuk bidangnya', () => {
+  for (const jenis of JENIS_KONTEN) {
+    for (const bidang of FORM_KONTEN[jenis].flatMap(bagian => bagian.bidang).filter(b => b.templat)) {
+      const form = nilaiFormKosong(jenis);
+      const hasil = dariNilaiForm(jenis, 'uji', { ...form, nilai: { ...form.nilai, [bidang.jalur]: bidang.templat! } });
+      expect(hasil.ok ? undefined : hasil.galatBidang[bidang.jalur], `${jenis}.${bidang.jalur}`).toBeUndefined();
+    }
+  }
+});

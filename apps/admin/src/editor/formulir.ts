@@ -70,6 +70,42 @@ const TEMPLAT_PENYELESAIAN = `## Ahli waris
 
 `;
 
+// Templat berikut hanya kerangka susunan (judul bagian + petunjuk dalam kurung), bukan isi hukum; penulis menggantinya.
+const TEMPLAT_PELAJARAN = `## Masalahnya
+
+(Situasi yang sering ditanyakan, satu atau dua kalimat.)
+
+## Aturannya
+
+(Aturan beserta dalilnya; sisipkan dalil lewat tombol Sisip rujukan. Tabel sangat membantu.)
+
+## Contoh
+
+(Sisipkan contoh lewat tombol Sisip contoh kasus, lalu jelaskan langkahnya.)
+
+## Cek pemahaman
+
+(Sisipkan soal lewat tombol Sisip kuis.)
+`;
+
+const TEMPLAT_JAWABAN_FAQ = `(Kalimat pertama langsung menjawab: ya / tidak / tergantung.)
+
+(Dalilnya; sisipkan lewat tombol Sisip rujukan.)
+
+**Catatan:** (hal yang perlu diperhatikan, bila ada)
+`;
+
+const TEMPLAT_CERITA_KASUS = `(Siapa yang wafat, laki-laki atau perempuan.)
+
+(Siapa saja keluarga yang masih hidup saat ia wafat.)
+
+(Hartanya apa saja, berapa utang dan wasiatnya.)
+
+(Apa yang ditanyakan.)
+`;
+
+const TEMPLAT_PEMBAHASAN_KUIS = '(Satu kalimat: kenapa jawaban ini benar, lalu dalilnya lewat Sisip rujukan.)';
+
 const blokArab = (jalur: string, label: string): Bidang => ({ jalur, label, jenis: 'markdownBlok', arab: true, opsional: true });
 
 export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
@@ -94,7 +130,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
       { jalur: 'tujuan', label: 'Tujuan pembelajaran', jenis: 'teksPanjang',
         contoh: 'Setelah pelajaran ini, Anda bisa menyebut enam bagian pasti dan kapan suami/istri mendapat 1/2, 1/4, atau 1/8.',
         bantuan: 'Tampil tepat di bawah judul. Satu atau dua kalimat: apa yang bisa dilakukan pembaca setelah membaca.' },
-      { jalur: 'blok', label: 'Isi pelajaran', jenis: 'markdownBlok',
+      { jalur: 'blok', label: 'Isi pelajaran', jenis: 'markdownBlok', templat: TEMPLAT_PELAJARAN,
         contoh: 'Masalahnya apa → aturannya (dengan dalil) → contoh kasus → cek pemahaman.',
         bantuan: 'Isi utama halaman pelajaran. Panjang ideal 300–700 kata; setiap klaim hukum diberi dalil lewat tombol Sisip rujukan.' },
       { jalur: 'modul', label: 'Modul', jenis: 'angka', sumberOpsi: 'modul', samping: true,
@@ -117,7 +153,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
         bantuan: 'Satu pertanyaan yang menguji satu konsep. Tulis seperti bertanya ke orang awam.' },
       { jalur: 'pilihan', label: 'Pilihan jawaban', jenis: 'pilihanKuis',
         bantuan: 'Minimal dua, tepat satu yang benar. Pilihan salah sebaiknya kesalahan yang memang sering terjadi, bukan jawaban ngawur.' },
-      { jalur: 'pembahasan', label: 'Kenapa jawaban ini benar', jenis: 'markdownPotongan',
+      { jalur: 'pembahasan', label: 'Kenapa jawaban ini benar', jenis: 'markdownPotongan', templat: TEMPLAT_PEMBAHASAN_KUIS,
         contoh: 'Istri mendapat 1/8 bila suami punya anak atau cucu dari anak laki-laki.',
         bantuan: 'Bagian pertama pembahasan, tampil setelah pengguna menjawab. Sisipkan dalilnya.' },
       { jalur: 'pengecoh', label: 'Kenapa pilihan lain salah', jenis: 'markdownPotongan', opsional: true,
@@ -151,7 +187,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
       { jalur: 'ringkasan', label: 'Ringkasan', jenis: 'teksPanjang',
         contoh: 'Rumah peninggalan ayah ditempati salah satu anak; bagaimana membaginya?',
         bantuan: 'Satu kalimat di bawah judul pada daftar Tanya jawab.' },
-      { jalur: 'kasus', label: 'Kasus', jenis: 'markdownBlok',
+      { jalur: 'kasus', label: 'Kasus', jenis: 'markdownBlok', templat: TEMPLAT_CERITA_KASUS,
         bantuan: 'Cerita kasus seperti yang ditanyakan: siapa yang wafat, siapa ahli warisnya, hartanya apa.' },
       { jalur: 'penyelesaian', label: 'Penyelesaian', jenis: 'markdownBlok', templat: TEMPLAT_PENYELESAIAN,
         bantuan: 'Jawaban ustadz atau lembaga fatwa. Hanya isi bila sumbernya jelas. Pakai templat supaya susunannya seragam.' },
@@ -172,7 +208,7 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
     { bidang: [
       { jalur: 'pertanyaan', label: 'Pertanyaan', jenis: 'teks', contoh: 'Apakah anak angkat mendapat warisan?',
         bantuan: 'Tulis seperti orang awam bertanya, bukan seperti judul bab.' },
-      { jalur: 'jawaban', label: 'Jawaban', jenis: 'markdownBlok',
+      { jalur: 'jawaban', label: 'Jawaban', jenis: 'markdownBlok', templat: TEMPLAT_JAWABAN_FAQ,
         contoh: 'Tidak lewat jalur waris. Sebab mewarisi hanya empat: kekerabatan, pernikahan, wala\', dan Islam.',
         bantuan: 'Kalimat pertama langsung menjawab. Kelompok Fikih wajib diberi dalil.' },
       { jalur: 'kelompok', label: 'Kelompok', jenis: 'pilihan', sumberOpsi: 'kelompokFaq', bolehBaru: true, samping: true, contoh: 'Fikih',
