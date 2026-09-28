@@ -9,6 +9,9 @@
 // "Batalkan perubahan" mengembalikan form ke versi tersimpan terakhir.
 // Identitas entri (kode soal, slug, id) diisi otomatis bila kosong dan terkunci setelah terbit (admin bisa membuka).
 // Database tetap penjaga sebenarnya; galat validasi (dariNilaiForm) maupun galat repo ditampilkan, tidak ditelan.
+// Perubahan terhadap versi tayang bisa dilihat kapan saja ("Lihat perubahan") dan selalu diringkas di dialog konfirmasi
+// Terbitkan/Kirim. Entri yang menunggu review menampilkan perubahan yang diajukan; reviewer menyetujui/mengembalikan
+// langsung di sini (AksiReview, sama dengan Antrean review).
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CircleAlert, CircleCheck, CircleDashed, Globe, PencilLine } from 'lucide-react';
 import { bacaIsi, DAFTAR_KITAB, GLOSARIUM, JUDUL_BAB, keJson, periksaRefs, type IsiKonten, type JenisKonten } from '@waris/content';
@@ -17,6 +20,7 @@ import type { RingkasanRevisi } from '@waris/data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
@@ -34,6 +38,9 @@ import { usePortal } from '../repo';
 import { tulisRute, type Kueri } from '../rute';
 import { PemilihRefs } from './PemilihRujukan';
 import { Pratinjau } from './Pratinjau';
+import { AksiReview } from './AksiReview';
+import { Perbandingan } from './Perbandingan';
+import { bidangBanding, daftarPerubahan, type PerubahanBidang } from '../editor/banding';
 import { RiwayatRevisi } from './RiwayatRevisi';
 import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { pesanGalat } from '../pesanGalat';
@@ -74,6 +81,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const [pratinjau, setPratinjau] = useState(false);
   const [sibuk, setSibuk] = useState(false);
   const [disimpanPada, setDisimpanPada] = useState<Date | null>(null);
+  const [lihatPerubahan, setLihatPerubahan] = useState(false);
+  const [konfirmasi, setKonfirmasi] = useState<'terbitkan' | 'kirim' | null>(null);
   const entriIdProp = 'entriId' in props ? props.entriId : null;
   const jenisProp = 'jenis' in props ? props.jenis : null;
 
@@ -256,6 +265,7 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
   const cara = muatan.entriId && keadaan.jenis !== 'sampah' ? caraBuang(muatan.entri, { peran, userId: sesi.userId, namaDari }) : null;
   const adaArab = punyaVersiArab(muatan.jenis);
   const judul = muatan.slug ? judulEntri({ slug: muatan.slug, revisiTerakhir: muatan.basis }) : `${LABEL_ISI[muatan.jenis]} baru`;
+  const revisiTayang = muatan.entri.semuaRevisi.find(r => r.id === muatan.entri.revisiTerbitId) ?? null;
   const dikembalikan = keadaan.jenis === 'sunting' && !salinanKerjaId && terakhir?.status === 'dikembalikan' && !terakhir.hapus ? terakhir : null;
 
   return (
@@ -320,8 +330,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         ) : null}
       </div>
       <div className="flex flex-wrap gap-2">
-        {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => void terbitkan()}>Terbitkan sekarang</Button> : null}
-        {bisaSunting && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => void kirim()}>Kirim untuk review</Button> : null}
+        {bisaSunting && peran === 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('terbitkan')}>Terbitkan sekarang</Button> : null}
+        {bisaSunting && peran !== 'admin' ? <Button disabled={!bolehKirim} onClick={() => mintaKonfirmasi('kirim')}>Kirim untuk review</Button> : null}
         {bisaSunting ? <Button variant="outline" disabled={sibuk || (!kotor && !!muatan.entriId)} onClick={() => void simpanDulu()}>Simpan draf</Button> : null}
         {kotor ? <Button variant="link" disabled={sibuk} onClick={batalkanPerubahan}>Batalkan perubahan</Button> : null}
         {keadaan.jenis === 'menungguReview' && keadaan.bolehTarik ? (
@@ -331,12 +341,46 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         ) : null}
         {keadaan.jenis === 'sampah' && keadaan.bolehPulihkan ? <Button disabled={sibuk} onClick={() => void pulihkan()}>Pulihkan</Button> : null}
         <Button variant="ghost" aria-pressed={pratinjau} onClick={() => setPratinjau(!pratinjau)}>{pratinjau ? 'Tutup pratinjau' : 'Pratinjau'}</Button>
+        {bisaSunting && muatan.entriId ? (
+          <Button variant="ghost" aria-pressed={lihatPerubahan} onClick={() => setLihatPerubahan(!lihatPerubahan)}>
+            {lihatPerubahan ? 'Sembunyikan perubahan' : 'Lihat perubahan'}
+          </Button>
+        ) : null}
         {cara?.ok ? (
           <Button variant="ghost" className="ml-auto text-destructive" disabled={sibuk} onClick={() => buang(cara.cara)}>
             {cara.cara === 'ajukan' ? 'Ajukan ke Sampah' : 'Pindahkan ke Sampah'}
           </Button>
         ) : null}
       </div>
+      {lihatPerubahan && bisaSunting ? <PanelPerubahan perubahan={perubahanSekarang()} baru={!revisiTayang} /> : null}
+      {keadaan.jenis === 'menungguReview' ? (
+        <Card>
+          <CardHeader><CardTitle className="text-base">Perubahan yang diajukan</CardTitle></CardHeader>
+          <CardContent className="grid gap-3">
+            {keadaan.revisi.hapus
+              ? <p className="text-sm text-muted-foreground">Diajukan ke Sampah. Bila disetujui, entri hilang dari web dan bisa dipulihkan kapan saja.</p>
+              : <PanelPerubahan perubahan={perubahanRevisi(keadaan.revisi)} baru={!revisiTayang} />}
+            <AksiReview pembuatId={keadaan.revisi.dibuatOleh} status={keadaan.revisi.status}
+              setujui={() => repo.editorial.setujui(keadaan.revisi.id)} kembalikan={catatan => repo.editorial.kembalikan(keadaan.revisi.id, catatan)}
+              saatSelesai={() => setMuatUlang(n => n + 1)} />
+          </CardContent>
+        </Card>
+      ) : null}
+      <Dialog open={konfirmasi !== null} onOpenChange={buka => { if (!buka) setKonfirmasi(null); }}>
+        <DialogContent className="max-h-[85svh] overflow-y-auto sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>{konfirmasi === 'terbitkan' ? 'Terbitkan sekarang?' : 'Kirim untuk review?'}</DialogTitle>
+            <DialogDescription>
+              {konfirmasi === 'terbitkan' ? 'Perubahan berikut langsung tampil di web.' : 'Reviewer akan memeriksa perubahan berikut sebelum tampil di web.'}
+            </DialogDescription>
+          </DialogHeader>
+          {konfirmasi ? <PanelPerubahan perubahan={perubahanSekarang()} baru={!revisiTayang} /> : null}
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setKonfirmasi(null)}>Batal</Button>
+            <Button disabled={sibuk} onClick={jalankanKonfirmasi}>{konfirmasi === 'terbitkan' ? 'Ya, terbitkan' : 'Ya, kirim'}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       {bisaSunting ? (
         <p className="text-xs text-muted-foreground">
           <span className="font-medium">Simpan draf</span>: belum tampil di web, bisa dilanjutkan nanti.{' '}
@@ -350,6 +394,33 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
       ) : null}
     </div>
   );
+
+  function mintaKonfirmasi(aksi: 'terbitkan' | 'kirim') {
+    // Isi belum sah: tampilkan galat bidang sekarang, tidak perlu membuka dialog.
+    const hasil = isiSekarang();
+    if (!hasil.ok) { setGalat(hasil.galat); setTampilSemuaGalat(true); return; }
+    setKonfirmasi(aksi);
+  }
+
+  function jalankanKonfirmasi() {
+    const aksi = konfirmasi;
+    setKonfirmasi(null);
+    void (aksi === 'terbitkan' ? terbitkan() : kirim());
+  }
+
+  /** Isi form sekarang dibanding versi tayang; null = isian belum sah sehingga belum bisa dibandingkan. */
+  function perubahanSekarang(): PerubahanBidang[] | null {
+    const hasil = isiSekarang();
+    if (!hasil.ok) return null;
+    return daftarPerubahan(bidangTayang(), bidangBanding(muatan!.jenis, keJson(muatan!.jenis, hasil.isi), refs));
+  }
+
+  function perubahanRevisi(revisi: RingkasanRevisi) {
+    return daftarPerubahan(bidangTayang(), bidangBanding(muatan!.jenis, revisi.isi, revisi.refs));
+  }
+  function bidangTayang() {
+    return revisiTayang && bidangBanding(muatan!.jenis, revisiTayang.isi, revisiTayang.refs);
+  }
 
   function formKonten(bagian: PotonganForm) {
     const bukaKunciIdentitas = peran === 'admin' ? () => { if (window.confirm(PESAN_BUKA_KUNCI)) setBukaKunci(true); } : undefined;
@@ -418,6 +489,11 @@ function Kelengkapan({ butir }: { butir: ButirKelengkapan[] }) {
       </ul>
     </section>
   );
+}
+
+function PanelPerubahan({ perubahan, baru }: { perubahan: PerubahanBidang[] | null; baru: boolean }) {
+  if (!perubahan) return <p className="text-sm text-muted-foreground">Lengkapi isian yang belum benar dulu untuk melihat perubahannya.</p>;
+  return <Perbandingan perubahan={perubahan} keterangan={baru ? 'Belum pernah tayang: semua isi ditambahkan.' : 'Dibandingkan dengan versi yang tayang di web.'} />;
 }
 
 function Bidang({ label, children }: { label: string; children: ReactNode }) {

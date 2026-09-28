@@ -1,18 +1,16 @@
 // Antrean review: memuat revisi berstatus diajukan dari editorial (konten) & diksi, lalu menampilkan tiap butir
 // dengan perbandingan per bidang terhadap versi terbitnya (konten: revisi terbit entri; diksi: teks terbit kunci;
-// belum ada → semua isi tambah; pengajuan ke Sampah → cukup keterangan). Tombol Setujui/Kembalikan hanya tampil bila transisiRevisi mengizinkan (UI saja; database tetap
-// penjaga); revisi milik sendiri berlabel "revisi Anda". Tiap butir berjudul jenis + judul entri, menyebut pembuat &
+// belum ada → semua isi tambah; pengajuan ke Sampah → cukup keterangan). Tombol Setujui/Kembalikan lewat AksiReview (hanya bila
+// transisiRevisi mengizinkan); revisi milik sendiri berlabel "revisi Anda". Tiap butir berjudul jenis + judul entri, menyebut pembuat &
 // waktu, dan menaut ke editor entrinya; terlama di atas. Galat repo ditampilkan (lewat pesanGalat) di butirnya.
 import { useEffect, useState } from 'react';
-import { bacaIsi, transisiRevisi, type JenisKonten, type StatusRevisi } from '@waris/content';
+import { bacaIsi, type JenisKonten, type StatusRevisi } from '@waris/content';
 import type { DiksiTerbit, RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
 import { bidangBanding, daftarPerubahan, type BidangBanding, type PerubahanBidang } from '../editor/banding';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { LABEL_ISI } from '../navigasi';
@@ -20,6 +18,7 @@ import { pesanGalat } from '../pesanGalat';
 import { usePortal } from '../repo';
 import { judulEntri, waktuRelatif } from '../ringkas';
 import { tulisRute } from '../rute';
+import { AksiReview } from './AksiReview';
 import { Pratinjau } from './Pratinjau';
 import { Perbandingan } from './Perbandingan';
 
@@ -105,30 +104,10 @@ export function AntreanReview() {
 }
 
 function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => void }) {
-  const { sesi, peran } = usePortal();
+  const { sesi } = usePortal();
   const namaDari = useNamaTim();
-  const [catatan, setCatatan] = useState('');
-  const [galat, setGalat] = useState<string | null>(null);
   const [pratinjau, setPratinjau] = useState(false);
-  const [sibuk, setSibuk] = useState(false);
-  const pelaku = { peran, pelakuId: sesi.userId, pembuatId: butir.dibuatOleh, status: butir.status };
-  const bolehPeriksa = transisiRevisi({ ...pelaku, aksi: 'setujui' }).ok;
-  const bolehKembalikan = transisiRevisi({ ...pelaku, aksi: 'kembalikan', catatan }).ok;
   const idJudul = `review-${butir.id}`;
-
-  async function jalankan(aksi: () => Promise<void>) {
-    if (sibuk) return;
-    setSibuk(true);
-    setGalat(null);
-    try {
-      await aksi();
-      saatSelesai();
-    } catch (e) {
-      setGalat(pesanGalat(e));
-    } finally {
-      setSibuk(false);
-    }
-  }
 
   return (
     <Card role="article" aria-labelledby={idJudul}>
@@ -146,23 +125,11 @@ function ButirReview({ butir, saatSelesai }: { butir: Butir; saatSelesai: () => 
         <a className="text-sm text-primary underline-offset-4 hover:underline" href={butir.tautan}>Buka entri</a>
       </CardHeader>
       <CardContent className="space-y-3">
-        {galat ? <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert> : null}
         {butir.hapus ? <p className="text-sm text-muted-foreground">Bila disetujui, entri pindah ke Sampah dan hilang dari web. Bisa dipulihkan kapan saja.</p> : null}
         {butir.perubahan ? <Perbandingan perubahan={butir.perubahan} keterangan={butir.baru ? 'Entri baru: semua isi ditambahkan.' : 'Dibandingkan dengan versi yang tayang.'} /> : null}
         {butir.konten ? <Button variant="outline" size="sm" onClick={() => setPratinjau(true)}>Pratinjau</Button> : null}
         {pratinjau && butir.konten ? <PratinjauButir {...butir.konten} saatTutup={() => setPratinjau(false)} /> : null}
-        {bolehPeriksa ? (
-          <div className="grid gap-3 border-t pt-3">
-            <Label className="grid gap-1.5">
-              Catatan
-              <Textarea value={catatan} placeholder="Wajib diisi bila dikembalikan" onChange={e => setCatatan(e.target.value)} />
-            </Label>
-            <div className="flex flex-wrap gap-2">
-              <Button disabled={sibuk} onClick={() => void jalankan(butir.setujui)}>Setujui</Button>
-              <Button variant="outline" disabled={sibuk || !bolehKembalikan} onClick={() => void jalankan(() => butir.kembalikan(catatan))}>Kembalikan</Button>
-            </div>
-          </div>
-        ) : null}
+        <AksiReview pembuatId={butir.dibuatOleh} status={butir.status} setujui={butir.setujui} kembalikan={butir.kembalikan} saatSelesai={saatSelesai} />
       </CardContent>
     </Card>
   );

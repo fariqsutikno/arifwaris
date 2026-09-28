@@ -84,6 +84,7 @@ test('entri baru: Kirim untuk review → langsung diajukan', async () => {
   isiFormFaq();
   await pilihRef();
   klik('Kirim untuk review');
+  klik('Ya, kirim');
   await waitFor(async () => expect(await m.editorial.antreanReview()).toHaveLength(1));
 });
 
@@ -248,6 +249,7 @@ test('entri tayang: langsung disunting; tombol mati tanpa perubahan; kirim → m
   ketik('Pertanyaan', 'Apa itu tirkah, ya?');
   expect(screen.getByText('Ada perubahan yang belum disimpan')).toBeTruthy();
   klik('Kirim untuk review');
+  klik('Ya, kirim');
   await screen.findByText('Perubahan dari Anda menunggu review');
   expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).readOnly).toBe(true);
   expect((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.revisiId).toBe(revisi);
@@ -278,6 +280,7 @@ test('admin: Terbitkan → langsung tayang tanpa antrean', async () => {
   expect(screen.queryByRole('button', { name: 'Kirim untuk review' })).toBeNull();
   ketik('Pertanyaan', 'Langsung terbit');
   klik('Terbitkan sekarang');
+  klik('Ya, terbitkan');
   await waitFor(async () => expect(((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.isi as { pertanyaan: string }).pertanyaan).toBe('Langsung terbit'));
   expect(await m.editorial.antreanReview()).toEqual([]);
 });
@@ -310,6 +313,7 @@ test('dikembalikan: catatan reviewer tampil, perbaikan langsung bisa dikirim lag
   expect(screen.getByText(/perbaiki ejaan · Perbaiki di bawah/)).toBeTruthy();
   ketik('Pertanyaan', 'Sudah diperbaiki');
   klik('Kirim untuk review');
+  klik('Ya, kirim');
   await screen.findByText('Perubahan dari Anda menunggu review');
 });
 
@@ -377,4 +381,32 @@ test('soal hitung (kasus berisi bigint) terbuka tanpa galat dan bisa ditandai be
   await screen.findByText('Entri baru · belum disimpan');
   ketik('Judul', 'Suami, dua saudari kandung');
   expect(await screen.findByText('Ada perubahan yang belum disimpan')).toBeTruthy();
+});
+
+test('reviewer membuka entri yang diajukan: perubahan tampil, Setujui di tempat → tayang', async () => {
+  const m = siapkan();
+  const { entriId } = await tayang(m);
+  m.masukSebagai(SESI_PENULIS);
+  const revisi = await m.editorial.buatDraf(entriId, 'faq', { ...DAFTAR_FAQ_UJI[0]!, pertanyaan: 'Pertanyaan baru' }, ['R09-7']);
+  await m.editorial.ajukan(revisi);
+  tampilkan(m, { entriId }, 'reviewer', 'u-r');
+  await screen.findByText('Perubahan yang diajukan');
+  expect(screen.getAllByRole('insertion').map(e => e.textContent).join(' ')).toContain('baru');
+  klik('Setujui');
+  await waitFor(async () => expect((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.revisiId).toBe(revisi));
+});
+
+test('Lihat perubahan & dialog konfirmasi membandingkan isi form dengan versi tayang', async () => {
+  const m = siapkan();
+  const { entriId } = await tayang(m);
+  tampilkan(m, { entriId });
+  await screen.findByText(/Tayang di web/);
+  ketik('Pertanyaan', 'Apa itu tirkah, ya?');
+  klik('Lihat perubahan');
+  expect(screen.getByText('Dibandingkan dengan versi yang tayang di web.', { exact: false })).toBeTruthy();
+  expect(screen.getAllByText(', ya?', { exact: false }).length).toBeGreaterThan(0);
+  klik('Kirim untuk review');
+  expect(screen.getByRole('dialog', { name: 'Kirim untuk review?' })).toBeTruthy();
+  klik('Batal');
+  expect(await m.editorial.antreanReview()).toEqual([]);
 });
