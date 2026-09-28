@@ -1,6 +1,7 @@
 // Layar "Ajuan saya" (putaran 2 A5): hasil review perubahan milik pengguna, dibagi Perlu diperbaiki · Menunggu review ·
 // Disetujui (editor/ajuanSaya.ts). Membuka layar = menandai semua kabar sudah dilihat (lencana sidebar hilang).
 // Konten dibuka di editornya; teks aplikasi disunting di tempat lewat dialog yang sama dengan menu Teks aplikasi.
+import { ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { bolehAbaikanRevisi } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
@@ -86,29 +87,33 @@ export function AjuanSaya() {
         {TAB_AJUAN.map(tab => (
           <TabsContent key={tab} value={tab} className="grid gap-3 pt-2">
             {perTab(tab).length === 0 ? <p className="text-sm text-muted-foreground">Tidak ada.</p> : perTab(tab).map(butir => (
-              <Card key={butir.id} className="py-4">
-                <CardContent className="grid gap-2">
-                  <div className="flex flex-wrap items-start gap-2">
+              <Card key={butir.id} className="py-3">
+                {/* Native <details>: judul & status selalu terlihat, catatan & aksi dibuka bila perlu. Yang perlu diperbaiki terbuka. */}
+                <details className="group" open={butir.tab === 'perbaiki'}>
+                  <summary className="flex cursor-pointer list-none flex-wrap items-center gap-2 px-6 [&::-webkit-details-marker]:hidden">
+                    <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" aria-hidden />
                     <p className="min-w-0 flex-1"><span className="text-sm text-muted-foreground">{butir.jenis} · </span><b className="break-words">{butir.judul}</b></p>
                     <Badge variant={VARIAN_TAB[butir.tab]}>{STATUS_TAB[butir.tab]}</Badge>
-                  </div>
-                  {butir.catatan ? (
-                    <blockquote className="border-l-2 pl-3 text-sm">
-                      “{butir.catatan}” <span className="text-muted-foreground">— {butir.pemeriksa ? namaDari(butir.pemeriksa) : 'reviewer'}, {waktuRelatif(butir.waktu, sekarang)}</span>
-                    </blockquote>
-                  ) : (
-                    <p className="text-sm text-muted-foreground">
-                      {butir.tab === 'menunggu' ? `Dikirim ${waktuRelatif(butir.waktu, sekarang)}`
-                        : `Disetujui${butir.pemeriksa ? ` oleh ${namaDari(butir.pemeriksa)}` : ''} ${waktuRelatif(butir.waktu, sekarang)}`}
-                    </p>
-                  )}
-                  <div className="flex flex-wrap gap-x-4 gap-y-1">
-                    <TautanAksi butir={butir} bukaTeks={bukaTeks} />
-                    {bolehBuang(butir) ? (
-                      <Button variant="link" className="h-auto w-fit p-0 text-sm text-muted-foreground" onClick={() => void buang(butir)}>Buang perubahan ini</Button>
-                    ) : null}
-                  </div>
-                </CardContent>
+                  </summary>
+                  <CardContent className="mt-2 grid gap-2 pl-12">
+                    {butir.catatan ? (
+                      <blockquote className="border-l-2 pl-3 text-sm">
+                        “{butir.catatan}” <span className="text-muted-foreground">— {butir.pemeriksa ? namaDari(butir.pemeriksa) : 'reviewer'}, {waktuRelatif(butir.waktu, sekarang)}</span>
+                      </blockquote>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">
+                        {butir.tab === 'menunggu' ? `Dikirim ${waktuRelatif(butir.waktu, sekarang)}`
+                          : `Disetujui${butir.pemeriksa ? ` oleh ${namaDari(butir.pemeriksa)}` : ''} ${waktuRelatif(butir.waktu, sekarang)}`}
+                      </p>
+                    )}
+                    <div className="flex flex-wrap gap-x-4 gap-y-1">
+                      <TautanAksi butir={butir} bukaTeks={bukaTeks} />
+                      {bolehBuang(butir) ? (
+                        <Button variant="link" className="h-auto w-fit p-0 text-sm text-muted-foreground" onClick={() => void buang(butir)}>Buang perubahan ini</Button>
+                      ) : null}
+                    </div>
+                  </CardContent>
+                </details>
               </Card>
             ))}
           </TabsContent>
