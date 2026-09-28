@@ -15,11 +15,15 @@ if (!url || !anon || !servis) throw new Error('SUPABASE_URL, SUPABASE_ANON_KEY, 
 const EMAIL_IMPOR = 'impor@arif-waris.local';
 const sandi = randomUUID();
 const admin = createClient(url, servis, { auth: { persistSession: false } });
-const { data: daftar } = await admin.auth.admin.listUsers();
-const ada = daftar?.users.find(u => u.email === EMAIL_IMPOR);
-const userId = ada
-  ? (await admin.auth.admin.updateUserById(ada.id, { password: sandi })).data.user!.id
-  : (await admin.auth.admin.createUser({ email: EMAIL_IMPOR, password: sandi, email_confirm: true })).data.user!.id;
+// listUsers berhalaman (bawaan 50): akun impor bisa ada di halaman lain. Galat Auth dilempar dengan pesannya.
+const { data: daftar, error: galatDaftar } = await admin.auth.admin.listUsers({ perPage: 1000 });
+if (galatDaftar) throw new Error(`gagal membaca pengguna: ${galatDaftar.message} (periksa SUPABASE_SERVICE_ROLE_KEY)`);
+const ada = daftar.users.find(u => u.email === EMAIL_IMPOR);
+const { data: akun, error: galatAkun } = ada
+  ? await admin.auth.admin.updateUserById(ada.id, { password: sandi })
+  : await admin.auth.admin.createUser({ email: EMAIL_IMPOR, password: sandi, email_confirm: true });
+if (galatAkun || !akun.user) throw new Error(`gagal menyiapkan akun impor: ${galatAkun?.message ?? 'akun kosong'}`);
+const userId = akun.user.id;
 await admin.from('peran_pengguna').upsert({ user_id: userId, peran: 'admin' });
 
 const klien = createClient(url, anon, { auth: { persistSession: false } });
