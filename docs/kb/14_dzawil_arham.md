@@ -70,6 +70,42 @@ Contoh perbedaan (dari Ibnu 'Utsaimin): cicit pr dari anak pr + anak pr saudara 
 | Anak pr dari anak pr dari anak pr; anak pr dari cicit pr (bint ibn ibn) | Yang kedua sampai ke ahli waris dalam 1 langkah, yang pertama 2 langkah | Semua untuk yang kedua (1/2 + radd) |
 | Ayahnya ibu, anak pr saudari seibu, anak pr saudari kandung, anak pr saudari sebapak | Sebagai ibu (1/6 karena ada saudari 2+), saudari seibu (1/6), saudari kandung (1/2), saudari sebapak (1/6) | 6: 1, 1, 3, 1 |
 
+## 14.7 Jihah dan Hajb Antar Dzawil Arham [R14-10]
+**Ahl at-Tanzil** ([SYF], [HNB]) mengenal **tiga jihah**: **bunuwwah** (lewat anak mayit), **ubuwwah** (lewat ayah: anak saudari kandung/sebapak, anak pr saudara kandung/sebapak, 'ammah, paman seibu, anak pr paman, khal/khalah ayah, kakek/nenek fasid pihak ayah), **umumah** (lewat ibu: anak saudara seibu, khal, khalah, kakek/nenek fasid pihak ibu) (Lahim hlm. 192–193).
+- **Jihah sama** → yang **lebih dekat ke ahli waris perantara** menghijab yang lebih jauh (inilah R14-7), walau yang jauh lebih dekat ke mayit.
+- **Jihah berbeda** → jarak tidak berpengaruh; masing-masing mengambil hukum perantaranya, **termasuk hajb antar-perantara**.
+- Contoh (Lahim hlm. 222): 'ammah kandung (→ ayah), anak lk saudari kandung (→ saudari kandung), anak lk anak pr (→ anak pr). Kasus perantara: ayah, saudari, anak pr → saudari terhijab ayah; anak pr 3, ayah 3 dari 6 → **'ammah 1, anak lk anak pr 1, anak lk saudari 0**.
+
+Ahl al-Qarabah ([HNF]): **empat jihah berurutan** — bunuwwah → ubuwwah (kakek/nenek fasid) → ukhuwwah → 'umumah & khu'ulah. Jihah yang lebih dulu menghalangi yang sesudahnya sepenuhnya; dalam satu jihah yang lebih dekat ke **mayit** menang; lalu kekuatan qarabah; lk 2:1 (Lahim hlm. 192–194). Rincian dalam satu jihah & derajat tidak dibahas Lahim → `sekunder`, **belum cukup untuk engine** (mode [HNF] dzawil arham = `TIDAK_DIDUKUNG` sampai ada rujukan Hanafi).
+
+## 14.8 Satu Orang Lewat Dua Jalur [R14-11]
+- Kedua jalur tidak saling menghijab → ia **mewarisi dengan keduanya** seperti dua orang.
+- Salah satu menghijab yang lain → ia mewarisi dengan jalur **yang menghijab** saja.
+Contoh (Lahim hlm. 194): satu orang yang sekaligus anak lk dari anak pr saudara seibu **dan** anak lk dari saudari kandung, bersama cucu lk dari saudari sebapak → mas'alah 5: jalur saudara seibu 1 + jalur saudari kandung 3 = **4** untuknya, cucu saudari sebapak 1.
+
+## 14.9 Bersama Salah Satu Pasangan [R14-12]
+Pasangan mengambil fardh-nya **penuh dari makhraj-nya sendiri, tanpa hijab dan tanpa 'aul**: suami 1/2, istri 1/4 — tidak turun ke 1/4 atau 1/8 karena ada anak dari anak pr, sebab dzawil arham bukan far'u warits. Sisanya untuk dzawil arham.
+
+Tata kerja = **munasakhat keadaan 3** (bab 12): *mas'alah zaujiyyah* = mas'alah pertama, *mas'alah dzawil arham* = mas'alah kedua, sisa setelah fardh pasangan = saham "mayit kedua" (Lahim hlm. 208).
+1. Mas'alah zaujiyyah dari makhraj fardh pasangan (tashih bila istri >1).
+2. Mas'alah dzawil arham (menurut perantara, lalu per kelompok).
+3. Nisab sisa dengan mas'alah dzawil arham: inqisam → mas'alah zaujiyyah = jami'ah; tabayun → kali penuh; tawafuq → kali wafq.
+4. Beberapa kelompok dengan perantara berbeda dan bagian berbeda → tingkat ketiga seperti munasakhat keadaan 2 (jami'ah kedua).
+
+Contoh: suami + anak lk anak pr → 2: 1, 1. Istri + anak saudari kandung → 4: 1, 3. 4 istri + anak pr saudara → 16: tiap istri 1, anak pr saudara 12.
+
+## 14.10 'Aul dalam Bab Dzawil Arham [R14-13]
+Hanya **ashl 6**, paling jauh ke **7**: ashl 12, 24, dan 'aul di atas 7 selalu melibatkan pasangan, padahal pasangan dikeluarkan ke mas'alah tersendiri (Lahim hlm. 217). Engine: pelanggaran = throw (invarian).
+
+> **KHILAF K14-1 – Apakah dzawil arham mewarisi** (lihat 14.3)
+> - **[SYF]**: hanya jika baitul mal tidak tegak (primer). [MLK]: tidak, ke baitul mal (sekunder). [HNF], [HNB]: ya, mutlak (sekunder).
+>
+> **KHILAF K14-2 – Metode**
+> - **[SYF]**, [HNB]: tanzil. [HNF]: qarabah. Ahl ar-rahm: ditinggalkan, tidak diimplementasikan.
+>
+> **KHILAF K14-3 – lk vs pr**
+> - **[SYF]**: 2:1, kecuali cabang dari perantara yang aslinya sama rata (anak saudara seibu) (primer, 14.5). [HNB]: **sama rata** mutlak (sekunder: Lahim hlm. 195). [HNF]: 2:1 (sekunder).
+
 ---
 
 ## Dasar dan Rujukan Bab Ini
@@ -86,3 +122,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R14-7 | Yang lebih dulu sampai ke ahli waris didahulukan | RDH | Bab 8 | «ويقدمون منهم من سبق إلى الوارث» |
 | R14-8 | 2:1 kecuali anak saudara seibu | RDH | Bab 8 | Lihat blok KHILAF 14.5. |
 | R14-9 | Dzawil arham tunggal mengambil semua | RDH | Bab 8 | «والمذهبان متفقان على أن من انفرد من ذوي الأرحام، يحوز جميع المال ذكرا كان أو أنثى» |
+| R14-10 | Tiga jihah tanzil; hajb dalam satu jihah vs lintas jihah | — (nukilan) | Lahim hlm. 192–194 | «إذا اتحدت جهتهم حجب القريب من الوارث البعيد منه... إذا اختلفت الجهة أخذوا حكم الوارث الذي يدلون به إرثاً وحجباً» |
+| R14-11 | Satu orang dua jalur | — (nukilan) | Lahim hlm. 194–195 | «ألا تحجب إحداهما الأخرى... يرث بهما... أن تحجب إحداهما الأخرى... يرث بالجهة الحاجبة» |
+| R14-12 | Pasangan fardh penuh; tata kerja munasakhat keadaan 3 | — (nukilan) | Lahim hlm. 207–208 | «أعطي أحد الزوجين فرضه من مخرجه من غير حجب ولا عول» |
+| R14-13 | 'Aul hanya 6→7 | KH | Lahim hlm. 217 | «نهاية عوله إلى سبعة» |
