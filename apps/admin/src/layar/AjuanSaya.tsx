@@ -2,6 +2,7 @@
 // Disetujui (editor/ajuanSaya.ts). Membuka layar = menandai semua kabar sudah dilihat (lencana sidebar hilang).
 // Konten dibuka di editornya; teks aplikasi disunting di tempat lewat dialog yang sama dengan menu Teks aplikasi.
 import { useEffect, useState } from 'react';
+import { bolehAbaikanRevisi } from '@waris/content';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -29,12 +30,15 @@ export function AjuanSaya() {
   const [teksDipilih, setTeksDipilih] = useState<SumberTeks | null>(null);
   const [galat, setGalat] = useState<string | null>(null);
   const [muatUlang, setMuatUlang] = useState(0);
+  // Entri/teks yang sudah punya versi tayang: hanya itu yang bisa "kembali ke versi tayang" (buang perubahan).
+  const [tayang, setTayang] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     let dibatalkan = false;
-    Promise.all([repo.editorial.revisiSaya(sesi.userId), repo.diksi.revisiSaya(sesi.userId)])
-      .then(([konten, diksi]) => {
+    Promise.all([repo.editorial.revisiSaya(sesi.userId), repo.diksi.revisiSaya(sesi.userId), repo.konten.daftarEntri(), repo.diksi.daftarKunci()])
+      .then(([konten, diksi, entri, kunci]) => {
         if (dibatalkan) return;
+        setTayang(new Set([...entri.filter(e => e.revisiTerbitId).map(e => e.entriId), ...kunci.filter(k => k.terbit).map(k => k.kunci)]));
         setDaftar(susunAjuan(konten, diksi));
         catatDibuka(new Date().toISOString());
       })
@@ -53,6 +57,19 @@ export function AjuanSaya() {
       setGalat(pesanGalat(e));
     }
   }
+
+  async function buang(butir: ButirAjuan) {
+    try {
+      await ('entriId' in butir.tujuan ? repo.editorial.abaikan(butir.id) : repo.diksi.abaikan(butir.id));
+      setMuatUlang(n => n + 1);
+    } catch (e) {
+      setGalat(pesanGalat(e));
+    }
+  }
+  // Semua butir di sini milik pengguna sendiri (revisiSaya).
+  const bolehBuang = (butir: ButirAjuan) => butir.tab === 'perbaiki'
+    && tayang.has('entriId' in butir.tujuan ? butir.tujuan.entriId : butir.tujuan.kunciTeks)
+    && bolehAbaikanRevisi({ peran, pelakuId: sesi.userId, pembuatId: sesi.userId, status: 'dikembalikan' });
 
   if (galat) return <Alert variant="destructive" role="alert"><AlertDescription>{galat}</AlertDescription></Alert>;
   if (!daftar) return <Skeleton className="h-40" />;
@@ -85,7 +102,12 @@ export function AjuanSaya() {
                         : `Disetujui${butir.pemeriksa ? ` oleh ${namaDari(butir.pemeriksa)}` : ''} ${waktuRelatif(butir.waktu, sekarang)}`}
                     </p>
                   )}
-                  <TautanAksi butir={butir} bukaTeks={bukaTeks} />
+                  <div className="flex flex-wrap gap-x-4 gap-y-1">
+                    <TautanAksi butir={butir} bukaTeks={bukaTeks} />
+                    {bolehBuang(butir) ? (
+                      <Button variant="link" className="h-auto w-fit p-0 text-sm text-muted-foreground" onClick={() => void buang(butir)}>Buang perubahan ini</Button>
+                    ) : null}
+                  </div>
                 </CardContent>
               </Card>
             ))}

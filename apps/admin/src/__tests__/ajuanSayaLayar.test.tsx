@@ -39,3 +39,27 @@ test('dikembalikan & disetujui tampil di tabnya; Perbaiki menaut ke editor; teks
   expect(await screen.findByRole('dialog', { name: 'Sunting teks' })).toBeTruthy();
   await waitFor(() => expect((screen.getByLabelText('Bahasa Indonesia') as HTMLTextAreaElement).value).toBe('Bagikan'));
 });
+
+test('Buang perubahan ini: hanya untuk entri yang sudah tayang; ajuan hilang dari Perlu diperbaiki', async () => {
+  const PENULIS = { userId: 'u1', email: 'a@x.id' };
+  const m = buatMemori({ refs: ['R05-1'], sesi: { userId: 'adm', email: 'adm@x.id' }, peran: { adm: 'admin', u1: 'penulis', rev: 'reviewer' } });
+  const tayang = await m.editorial.buatEntri('faq', 'sudah-tayang', 10);
+  await m.editorial.terbitkanLangsung(await m.editorial.buatDraf(tayang, 'faq', DAFTAR_FAQ_UJI[0]!, ['R05-1']));
+  const belum = await m.editorial.buatEntri('faq', 'belum-tayang', 20);
+  m.masukSebagai(PENULIS);
+  for (const entri of [tayang, belum]) await m.editorial.ajukan(await m.editorial.buatDraf(entri, 'faq', DAFTAR_FAQ_UJI[0]!, ['R05-1']));
+  m.masukSebagai({ userId: 'rev', email: 'rev@x.id' });
+  for (const revisi of await m.editorial.antreanReview()) await m.editorial.kembalikan(revisi.id, 'perbaiki');
+  m.masukSebagai(PENULIS);
+  render(
+    <KonteksRepo.Provider value={{ repo: m, sesi: PENULIS, peran: 'penulis' }}>
+      <AjuanSaya />
+    </KonteksRepo.Provider>,
+  );
+  expect(await screen.findByRole('tab', { name: 'Perlu diperbaiki (2)' })).toBeTruthy();
+  const buang = await screen.findAllByRole('button', { name: 'Buang perubahan ini' });
+  expect(buang).toHaveLength(1);
+  fireEvent.click(buang[0]!);
+  expect(await screen.findByRole('tab', { name: 'Perlu diperbaiki (1)' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Buang perubahan ini' })).toBeNull();
+});
