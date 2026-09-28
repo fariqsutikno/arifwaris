@@ -61,7 +61,7 @@ Tirkah Rp 150.000.000; tajhiz Rp 5.000.000; hutang Rp 25.000.000; wasiat untuk m
 ## Uji Negatif (sistem harus menolak / bertanya)
 - Ahli waris beda agama → dikeluarkan, tidak menghijab.
 - Pembunuh pewaris → dikeluarkan.
-- Status hidup ahli waris tidak jelas → tanyakan; jika hilang → bab 13.2.
+- Status hidup ahli waris tidak jelas → tanyakan; jika hilang → bab 13b.
 - Wasiat kepada ahli waris → tandai perlu ijazah.
 - Jumlah istri > 4 → validasi gagal.
 

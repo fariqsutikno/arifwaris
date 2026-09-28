@@ -30,7 +30,7 @@ export function validasiInput(input: InputEngine, daftarPeran: Record<IdOrang, P
     const orangIni = graf.orang[peran.idOrang]!;
     if (orangIni.penghubung) continue;
     if (orangIni.statusHidup === 'tidakDiketahui') {
-      pertanyaan.push({ idOrang: orangIni.id, isian: 'statusHidup', alasan: 'Apakah masih hidup saat pewaris wafat? Jika hilang → mafqud (bab 13.2).' });
+      pertanyaan.push({ idOrang: orangIni.id, isian: 'statusHidup', alasan: 'Apakah masih hidup saat pewaris wafat? Jika hilang → mafqud (bab 13b).' });
     } else if (orangIni.statusHidup === 'hidup' && orangIni.agama === 'tidakDiketahui') {
       pertanyaan.push({ idOrang: orangIni.id, isian: 'agama', alasan: 'Agama belum diisi; beda agama menghalangi waris (bab 2.4).' });
     }

@@ -17,6 +17,10 @@ import bab10 from '../../../docs/kb/10_tashih.md?raw';
 import bab11 from '../../../docs/kb/11_qismah_dan_takharuj.md?raw';
 import bab12 from '../../../docs/kb/12_munasakhat.md?raw';
 import bab13 from '../../../docs/kb/13_kasus_khusus.md?raw';
+import bab13a from '../../../docs/kb/13a_haml.md?raw';
+import bab13b from '../../../docs/kb/13b_mafqud.md?raw';
+import bab13c from '../../../docs/kb/13c_khuntsa.md?raw';
+import bab13d from '../../../docs/kb/13d_gharqa.md?raw';
 import bab14 from '../../../docs/kb/14_dzawil_arham.md?raw';
 import bab16 from '../../../docs/kb/16_kasus_uji.md?raw';
 import bab17 from '../../../docs/kb/17_daftar_rujukan.md?raw';
@@ -84,7 +88,9 @@ export const bacaPerluVerifikasi = (teksMarkdown: string): string[] =>
 
 const DAFTAR_BAB: Array<[number, string]> = [
   [1, bab01], [2, bab02], [3, bab03], [4, bab04], [5, bab05], [6, bab06], [7, bab07], [8, bab08],
-  [9, bab09], [10, bab10], [11, bab11], [12, bab12], [13, bab13], [14, bab14], [16, bab16],
+  [9, bab09], [10, bab10], [11, bab11], [12, bab12],
+  // Bab 13 dipecah ke 13a–d; digabung agar kode R13-x tetap satu bab dan judulnya dari berkas induk.
+  [13, [bab13, bab13a, bab13b, bab13c, bab13d].join('\n')], [14, bab14], [16, bab16],
 ];
 const perluVerifikasi = new Set(bacaPerluVerifikasi(bab17));
 

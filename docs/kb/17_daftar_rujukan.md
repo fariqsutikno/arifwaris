@@ -20,7 +20,8 @@ tags: [rujukan, referensi, takhrij, dalil, metodologi]
 | [RDH] | *Raudhah ath-Thalibin wa 'Umdah al-Muftin* | Imam Yahya bin Syaraf an-Nawawi (w. 676 H) | Al-Maktab al-Islami, Beirut, cet. 3, 1412 H/1991 M, tahqiq Zuhair asy-Syawisy. Dipakai: **Kitab al-Fara'idh** (juz 6), bab 1–10. Kitab pokok madzhab Syafi'i dalam furu'. |
 | — | *Tashil al-Fara'idh* | Syaikh Muhammad bin Shalih al-'Utsaimin (w. 1421 H) | Hanbali dengan tarjih mandiri. Pembanding saja, tidak dipakai sistem. |
 | — | *Al-Fara'idh al-Muyassar* | 'Abdusy-Syakur Mu'allim 'Abd Farah | Syabakah al-Alukah, 2019. Menyertakan Matn ar-Rahbiyyah. Sumber struktur dan contoh; pendapatnya pembanding saja. |
-| Lahim | *Kitab al-Fara'idh* | Dr. 'Abdul Karim bin Muhammad al-Lahim | Dipakai untuk bab 12 (kaidah tiga keadaan munasakhat, ikhtishar, dan contoh soal M1–M9) dan bab 13 (haml, mafqud). Penerbit dan edisi belum dicatat; nomor halaman mengikuti cetakan milik pemilik project. |
+| Lahim | *Kitab al-Fara'idh* | Dr. 'Abdul Karim bin Muhammad al-Lahim | Dipakai untuk bab 12 (munasakhat), 13a–d (haml, mafqud, khuntsa, gharqa), 14 (dzawil arham). Penerbit dan edisi belum dicatat; nomor halaman mengikuti cetakan milik pemilik project. **Tarjih-nya condong Hanbali**; nukilannya atas madzhab lain berstatus `sekunder` di bab 18. |
+| Ithraa | *Al-'Urudh at-Taqdimiyyah li Muqarrar al-Fara'idh* | Syarikah Ithraa al-Mutun (Riyadh) | Slide kuliah berbasis *Hasyiyah ar-Rahbiyyah*. Dipakai sebagai nukilan posisi 4 madzhab (bab 18). Teks hasil ekstrak PDF rusak di beberapa tempat; angka tabelnya tidak dipakai. |
 
 ## 17.3 Sumber Hadits
 Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shahih Muslim cetakan dengan penomoran Muhammad Fu'ad 'Abdul Baqi; Sunan at-Tirmidzi, Abu Dawud, Ibnu Majah penomoran umum). Nomor bisa berbeda antar cetakan; cocokkan dengan **lafaz**, bukan hanya nomor.
@@ -52,6 +53,7 @@ Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarn
 | R11-3 | Atsar takharuj 'Abdurrahman bin 'Auf | Cek Mushannaf 'Abdurrazzaq / Sunan al-Baihaqi |
 | R13-5 | Batas maksimal kehamilan 4 tahun | Raudhah, Kitab al-'Idad |
 | R13-14 | Hukum laqith | Raudhah, Kitab al-Laqith |
+| R13-15 | [SYF] haml: mitra ashabah haml tidak diberi apa pun (baru nukilan Lahim & Ithraa) | Raudhah, Kitab al-Fara'idh bab 6 sabab 3, lanjutan kutipan R13-4 |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:

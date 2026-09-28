@@ -31,7 +31,7 @@ Dalil wala': «إِنَّمَا الْوَلَاءُ لِمَنْ أَعْتَق
 > **Catatan implementasi**: di konteks modern, wala' praktis tidak terjadi. Sistem boleh menyembunyikannya dari input default, tapi mempertahankannya dalam aturan urutan ashabah.
 
 ## 2.4 Mawani' (Penghalang) [R02-2] [R02-4] [R02-7] [R02-8]
-Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**: (1) beda agama, (2) riqq, (3) qatl, (4) **istibham waqt al-maut** (tidak diketahui siapa yang wafat lebih dulu, lihat bab 13.4), (5) **daur** (pewarisan yang justru meniadakan dirinya sendiri, mis. pengakuan nasab oleh saudara yang membuat anak itu menghijab saudara tsb.) [R02-2].
+Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**: (1) beda agama, (2) riqq, (3) qatl, (4) **istibham waqt al-maut** (tidak diketahui siapa yang wafat lebih dulu, lihat bab 13d), (5) **daur** (pewarisan yang justru meniadakan dirinya sendiri, mis. pengakuan nasab oleh saudara yang membuat anak itu menghijab saudara tsb.) [R02-2].
 | Mani' | Hukum | Dalil |
 |------|-------|-------|
 | **Riqq** (perbudakan) | Budak tidak mewarisi dan tidak diwarisi. | Budak tidak memiliki harta. |

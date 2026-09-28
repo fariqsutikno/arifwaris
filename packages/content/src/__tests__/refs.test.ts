@@ -39,7 +39,7 @@ describe('rujukan KB (bab 01–14, 16)', () => {
   test('kode unik dan lengkap', () => {
     const daftarKode = RUJUKAN.map(r => r.kode);
     expect(new Set(daftarKode).size).toBe(daftarKode.length);
-    expect(daftarKode.length).toBe(129);
+    expect(daftarKode.length).toBe(134);
   });
 
   test('status dan jenis', () => {
@@ -100,11 +100,11 @@ describe('teks ayat dari KB bab 1.2', () => {
 
 describe('daftar pustaka bab 17', () => {
   test('kitab, hadits, dan titik dikaji terbaca dari tabelnya masing-masing', () => {
-    expect(DAFTAR_KITAB.map(kitab => kitab.kode)).toEqual(['[RDH]', '—', '—', 'Lahim']);
+    expect(DAFTAR_KITAB.map(kitab => kitab.kode)).toEqual(['[RDH]', '—', '—', 'Lahim', 'Ithraa']);
     expect(DAFTAR_KITAB[0]!.judul).toBe("Raudhah ath-Thalibin wa 'Umdah al-Muftin");
     expect(DAFTAR_HADITS.length).toBe(15);
     expect(DAFTAR_HADITS[0]).toMatchObject({ takhrij: 'Al-Bukhari 6732; Muslim 1615', status: "Muttafaq 'alaih" });
-    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R01-7', 'R02-11', 'R11-3', 'R13-5', 'R13-14']);
+    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R01-7', 'R02-11', 'R11-3', 'R13-5', 'R13-14', 'R13-15']);
   });
 
   test('judul bab dari frontmatter', () => {
