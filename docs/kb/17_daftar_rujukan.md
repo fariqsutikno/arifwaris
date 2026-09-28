@@ -53,7 +53,6 @@ Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarn
 | R11-3 | Atsar takharuj 'Abdurrahman bin 'Auf | Cek Mushannaf 'Abdurrazzaq / Sunan al-Baihaqi |
 | R13-5 | Batas maksimal kehamilan 4 tahun | Raudhah, Kitab al-'Idad |
 | R13-14 | Hukum laqith | Raudhah, Kitab al-Laqith |
-| R13-15 | [SYF] haml: mitra ashabah haml tidak diberi apa pun (baru nukilan Lahim & Ithraa) | Raudhah, Kitab al-Fara'idh bab 6 sabab 3, lanjutan kutipan R13-4 |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:

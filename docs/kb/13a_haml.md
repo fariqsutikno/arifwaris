@@ -38,7 +38,7 @@ Anak manusia yang masih dalam kandungan ketika muwarrits wafat, yang mewarisi at
 > - **[SYF]**: **jumlah janin tidak dibatasi** (Raudhah: «الأصح أو الصحيح: أنه لا ضبط له»). Akibatnya:
 >   - Ahli waris yang **bisa terhijab** oleh haml → tidak diberi apa pun.
 >   - Ahli waris ber-**fardh** yang tidak gugur → diberi fardh-nya dalam keadaan **'aul terbesar** yang mungkin (Raudhah: «وإن أمكن العول، دفع إليه ذلك القدر عائلا»).
->   - Ahli waris yang **berbagi ashabah dengan haml** (mis. anak lk bersama janin saudara kandungnya) → **tidak diberi apa pun**, karena bagiannya bergantung pada jumlah janin yang tak terbatas. Seluruh bagiannya dan bagian haml ditahan. Dinukil Lahim hlm. 145 dan Ithraa («مع إيقاف نصيب مشاركه، وهو قول الشافعية»); nash Raudhah untuk poin ini belum dikutip → R13-15 `[perlu verifikasi lanjut]`.
+>   - Ahli waris yang **berbagi ashabah dengan haml** (mis. anak lk bersama janin saudara kandungnya) → **tidak diberi apa pun**, karena bagiannya bergantung pada jumlah janin yang tak terbatas. Seluruh bagiannya dan bagian haml ditahan. Dinukil Lahim hlm. 145 dan Ithraa («مع إيقاف نصيب مشاركه، وهو قول الشافعية»); dua nukilan ini diterima sebagai dasar (R13-15).
 > - **[HNB]**: ditahan yang **paling menguntungkan haml** dari 2 lk atau 2 pr; mitra ashabah haml **tetap diberi** bagian terkecilnya; tanpa kafil. Inilah model 6 taqdir (13a.5). (sekunder: Lahim hlm. 146, tarjih Lahim.)
 > - **[HNF]**: ditahan bagian **satu** anak (lk atau pr, mana yang lebih besar); hakim mengambil kafil dari yang memegang bagian yang diragukan. (sekunder)
 > - [MLK]: tidak berlaku (tidak dibagi, K13a-2).
@@ -97,6 +97,6 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R13-3 | Jumlah janin tak dibatasi [SYF]; >2 nadir untuk taqdir operasional | RDH + Lahim | RDH Bab 6, sabab 3 (al-Haml); Lahim hlm. 144–146 | RDH: «الأصح أو الصحيح: أنه لا ضبط له». Lahim menetapkan 6 taqdir operasional (model [HNB]); >2 anak = nadir. |
 | R13-4 | 3 kelas ahli waris + al-aqall | RDH + Lahim | RDH Idem; Lahim idem | RDH: «فمن احتمل حجبه بالحمل، لم يدفع إليه شيء ومن لا يحجبه الحمل بحال وله مقدر لا ينقص دفع إليه. وإن أمكن العول، دفع إليه ذلك القدر عائلا». Algoritma 8 langkah dari Lahim. |
 | R13-5 | Batas kehamilan [SYF] = ijtihad hakim | RDH (bab lain) | Raudhah, Kitab al-'Idad — di luar file | `[perlu verifikasi lanjut]`. Di Kitab al-Fara'idh hanya disebut «أكثر مدة الحمل» tanpa angka. Default [SYF] = tidak ada angka pasti; 4 tahun = Hanabilah masyhur. |
-| R13-15 | [SYF]: mitra ashabah haml tidak diberi apa pun | — (nukilan) | Lahim hlm. 145; Ithraa, Muqarrar al-Fara'idh, Mirats al-Haml slide 12 | Ithraa: «يوقف الأحظ للحمل من نصيب ذكرين أو أنثيين، مع إيقاف نصيب مشاركه، وهو قول الشافعية». Nash Raudhah belum dikutip. |
+| R13-15 | [SYF]: mitra ashabah haml tidak diberi apa pun | — (nukilan) | Lahim hlm. 145; Ithraa, Muqarrar al-Fara'idh, Mirats al-Haml slide 12 | Ithraa: «يوقف الأحظ للحمل من نصيب ذكرين أو أنثيين، مع إيقاف نصيب مشاركه، وهو قول الشافعية». Diterima sebagai dasar tanpa menunggu nash Raudhah (keputusan pengguna 2026-09-29). |
 | R13-16 | Tata kerja taqdir → jami'ah → aqall | KH | Lahim hlm. 146 | Lima langkah «صفة العمل في مسائل الحمل». |
 | R13-17 | Pembagian sebelum lahir boleh; [MLK] menunggu | — (nukilan) | Lahim hlm. 143–144; Ithraa slide 11 | «وهذا مذهب الحنابلة والحنفية والراجح عند الشافعية» |

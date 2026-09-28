@@ -8,8 +8,8 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 - `docs/kb/00–17_*.md` adalah SATU-SATUNYA sumber hukum fikih. Jangan ambil aturan dari pengetahuan umum.
 - Madzhab: **multi-madzhab** (keputusan pengguna 2026-09-29). **[SYF] = default** dan satu-satunya yang
   terverifikasi ke teks primer (Raudhah). [HNB], [HNF], [MLK] = ruleset overlay: hanya titik yang berbeda,
-  masing-masing baris di `docs/kb/18_matriks_khilaf.md`. Posisi madzhab yang hanya bersumber nukilan
-  (Lahim, Ithraa, Ibnu 'Utsaimin) berstatus `sekunder` dan UI wajib menampilkannya "menurut nukilan <kitab>".
+  masing-masing baris di `docs/kb/18_matriks_khilaf.md`. Nukilan Lahim & Ithraa **cukup sebagai dasar**
+  implementasi (tidak menunggu teks primer/Raudhah); berstatus `sekunder` dan UI menyebut sumbernya.
 - Tarjih Lahim/Ithraa condong Hanbali: JANGAN pernah dipakai sebagai posisi [SYF].
 - Setiap cabang kode fikih WAJIB diberi anotasi rujukan, contoh: `// [R09-7] radd, bab 9.4`.
 - Aturan yang tidak ada di KB, atau berstatus `[perlu verifikasi lanjut]` (bab 17.4), JANGAN dikarang.
