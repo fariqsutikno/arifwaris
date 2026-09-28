@@ -238,7 +238,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       const { data, error } = await klien.functions.invoke('ai-bantu', { body: permintaan });
       if (error) {
         // Galat HTTP dari fungsi membawa pesan Indonesia di badan respons; selain itu (jaringan) pesan umum.
-        const badan = await (error as { context?: Response }).context?.json?.().catch(() => null);
+        const badan = await (error as { context?: Response }).context?.json?.().catch(() => null) as { galat?: string } | null | undefined;
         throw new Error(badan?.galat ?? 'Layanan AI tidak bisa dihubungi.');
       }
       return data as { hasil: HasilAi; sisaKuota: number };

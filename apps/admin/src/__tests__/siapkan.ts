@@ -14,3 +14,17 @@ Range.prototype.getBoundingClientRect ??= kotakKosong;
 Range.prototype.getClientRects ??= daftarKotakKosong;
 Element.prototype.getClientRects ??= daftarKotakKosong;
 document.elementFromPoint ??= () => null;
+// Layar web di iframe (BingkaiWeb) punya window & Range sendiri: pasang polyfill yang sama saat dokumennya diambil.
+const dokumenIframe = Object.getOwnPropertyDescriptor(HTMLIFrameElement.prototype, 'contentDocument')!;
+Object.defineProperty(HTMLIFrameElement.prototype, 'contentDocument', {
+  get(this: HTMLIFrameElement) {
+    const dok = dokumenIframe.get!.call(this) as Document | null;
+    const jendela = dok?.defaultView as (Window & typeof globalThis) | null | undefined;
+    if (jendela) {
+      jendela.Range.prototype.getBoundingClientRect ??= kotakKosong;
+      jendela.Range.prototype.getClientRects ??= daftarKotakKosong;
+      (jendela as { ResizeObserver?: unknown }).ResizeObserver ??= globalThis.ResizeObserver;
+    }
+    return dok;
+  },
+});
