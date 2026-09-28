@@ -9,7 +9,7 @@ export const LABEL_TAB: Record<TabStatus, string> = {
   semua: 'Semua', draf: 'Draf', diajukan: 'Diajukan', dikembalikan: 'Dikembalikan', terbit: 'Terbit', sampah: 'Sampah',
 };
 export const BATAS_BERANDA = 8;
-const FIELD_JUDUL = ['judul', 'pertanyaan', 'klaim', 'istilahId', 'kunci', 'id', 'kode'] as const;
+const FIELD_JUDUL = ['judul', 'pertanyaan', 'istilahId', 'kunci', 'id', 'kode'] as const;
 
 export const diSampah = (entri: RingkasanEntri) => entri.dihapus || entri.dibuang;
 

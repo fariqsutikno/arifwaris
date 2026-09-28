@@ -19,13 +19,6 @@ export function kodeBerikutnya(awalan: string, kodeAda: readonly string[]): stri
   return `${awalan}${String(Math.max(0, ...nomor) + 1).padStart(LEBAR_NOMOR_KODE, '0')}`;
 }
 
-/** Kode rujukan KB berikutnya di satu bab: R09-10, R09-11 → R09-12 (tanpa nol di depan, sama dengan KB). */
-export function kodeRujukanBerikutnya(bab: number, kodeAda: readonly string[]): string {
-  const awalan = `R${String(bab).padStart(2, '0')}-`;
-  const nomor = kodeAda.filter(kode => kode.startsWith(awalan)).map(kode => Number(kode.slice(awalan.length)));
-  return `${awalan}${Math.max(0, ...nomor) + 1}`;
-}
-
 /** Nilai otomatis untuk identitas yang dikosongkan: slug dari bidang asalnya; '' bila tidak bisa dibentuk. */
 export function identitasOtomatis(jenis: JenisKonten, form: NilaiForm): string {
   const dari = bidangIdentitas(jenis)?.identitas?.dari;
@@ -48,7 +41,6 @@ export function slugEntri(jenis: JenisKonten, isi: unknown): string | null {
     const nilai = objek[bidang.jalur];
     return typeof nilai === 'string' || typeof nilai === 'number' ? String(nilai) || null : null;
   }
-  if (jenis === 'rujukan') return typeof objek.kode === 'string' && objek.kode ? objek.kode : null;
   if (jenis === 'syahid') return buatSlug([objek.surah, objek.ayat, objek.hukum].join(' ')) || null;
   const calon = FIELD_CALON_JUDUL.map(kunci => objek[kunci]).find((n): n is string => typeof n === 'string' && n.length > 0);
   return calon ? buatSlug(calon) : null;

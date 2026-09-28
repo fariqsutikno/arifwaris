@@ -126,10 +126,6 @@ function LayarUntukJenis<J extends JenisKonten>({ jenis, slug, isi }: { jenis: J
           {(isi as IsiKonten['ahwal']).baris.map((baris, i) => <li key={i}><b>{baris.bagian}</b>: {baris.syarat}</li>)}
         </ul>
       );
-    case 'rujukan': {
-      const rujukan = isi as IsiKonten['rujukan'];
-      return <div className="tumpuk"><b>{rujukan.klaim}</b><span className="keterangan">{rujukan.sumber}</span><p>{rujukan.kutipan}</p></div>;
-    }
     default:
       return <p className="keterangan">Jenis ini belum ada pratinjaunya.</p>;
   }

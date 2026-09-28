@@ -43,7 +43,7 @@ import { pesanGalat } from '../pesanGalat';
 
 // Bidang isi yang bisa disaring per jenis; sisanya hanya status/cari/milik saya.
 const BIDANG_SARING_JENIS: Partial<Record<JenisKonten, BidangSaring[]>> = {
-  soal_kuis: ['bab'], rujukan: ['bab'], soal_hitung: ['bab', 'tingkat'], faq: ['kelompok'],
+  soal_kuis: ['bab'], soal_hitung: ['bab', 'tingkat'], faq: ['kelompok'],
 };
 const LABEL_BIDANG_SARING: Record<BidangSaring, string> = { bab: 'Bab', tingkat: 'Tingkat', kelompok: 'Kelompok' };
 const KETERANGAN_TERBIT_DRAF = 'Entri terbit yang punya draf baru dihitung di Draf dan di Terbit.';
