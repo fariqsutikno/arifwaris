@@ -158,7 +158,10 @@ perubahan "tidak masuk":
 Tiap fase = satu PR, tes per layar (vitest + testing-library, pola `apps/admin/src/__tests__`), SQL diuji di
 `supabase/tests/database`, repo memori (`packages/data/src/memori`) diperbarui bersama repo Supabase. Commit per perubahan.
 
-### Fase 1 — Alur teks aplikasi yang benar (A1, A2, A9)
+### Fase 1 — Alur teks aplikasi yang benar (A1, A2, A9) — **selesai 2026-09-28**
+Migrasi `20260928000002_ajuan_diksi.sql` perlu di-push ke Supabase; dua kunci diksi baru (`umum.pembaruan_konten`,
+`umum.muat_ulang`) ada di snapshot bawaan dan masuk database lewat `pnpm konten:pulihkan`. Admin yang memeriksa ajuan
+orang lain tetap melihat kartu review; hanya pembuat ajuan yang menyunting di tempat.
 1. SQL `terbitkan_langsung_diksi`, `perbarui_ajuan`, `perbarui_ajuan_diksi` + tes pgTAP + repo memori & Supabase.
    Aturan peran juga di `transisiRevisi` (`packages/content/src/editorial.ts`, aksi baru `perbarui`).
 2. `DialogSunting`: admin diksi → langsung terbit; ajuan milik sendiri bisa disunting ("Simpan perubahan ajuan").
