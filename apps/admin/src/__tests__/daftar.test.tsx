@@ -209,3 +209,9 @@ test('saring lewat tombol Saring: chip aktif bisa dihapus', async () => {
   fireEvent.click(screen.getByRole('button', { name: 'Hapus saring Milik saya' }));
   expect(screen.queryByRole('button', { name: 'Hapus saring Milik saya' })).toBeNull();
 });
+
+test('FAQ dikelompokkan per kelompok', async () => {
+  pasang(await siapkan(), 'faq', 'faq');
+  const fikih = await screen.findByRole('region', { name: 'Kelompok Fikih' });
+  expect(within(fikih).getByText('Siapa ashabah?')).toBeTruthy();
+});

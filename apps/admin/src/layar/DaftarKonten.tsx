@@ -3,7 +3,7 @@
 // (tombol Saring: milik saya, bab/tingkat/kelompok, perlu dicek; chip saring aktif), dan baris berstatus + info ringkas. Saring & urut tersimpan di URL
 // (replaceState, tanpa memicu pindah rute). "Pilih beberapa" menyalakan centang baris + bilah aksi massal lengkap per
 // peran (Terbitkan, Kirim untuk review, Setujui, Kembalikan, Sampah, Pulihkan), tiap tombol menyebut berapa yang bisa
-// dan alasan sisanya (aksiDaftar.ts). Tiap baris punya menu ⋯ berisi aksi yang berlaku untuk entri itu; database tetap penjaga. Menu materi mengelompokkan materi di bawah modulnya. Urutan diubah lewat mode
+// dan alasan sisanya (aksiDaftar.ts). Tiap baris punya menu ⋯ berisi aksi yang berlaku untuk entri itu; database tetap penjaga. Menu materi mengelompokkan materi di bawah modulnya, FAQ per kelompok (urutan diatur di dalam kelompok). Urutan diubah lewat mode
 // "Atur urutan" (admin/penulis): seret & naik/turun hanya mengubah susunan lokal, lalu Simpan urutan mengirim satu
 // kali. Data dari repo.konten.daftarEntri; perhitungan di ringkas.ts.
 import { useEffect, useState, type ReactNode } from 'react';
@@ -351,13 +351,32 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
           <GrupMateri key={grup.nomor ?? 'tanpa'} grup={grup} baris={baris} bolehSeret={modeUrutan} saatPindah={pindahLokal}
             bolehBuat={peran !== 'reviewer' && !modeUrutan} />
         ))
-        : tampil.length > 0 ? (
+        : jenis === 'faq' && tampil.length > 0 ? (
+          kelompokkanPerKelompok(tampil).map(([kelompok, anggota]) => (
+            <Card key={kelompok} role="region" aria-label={`Kelompok ${kelompok}`} className="gap-0 divide-y py-0">
+              <div className="flex items-center gap-3 bg-muted px-4 py-2">
+                <b>{kelompok}</b><span className="text-sm text-muted-foreground">{anggota.length} pertanyaan</span>
+              </div>
+              <KelompokSeret daftar={anggota} baris={baris} bolehSeret={modeUrutan} saatPindah={pindahLokal} />
+            </Card>
+          ))
+        ) : tampil.length > 0 ? (
           <Card role="region" aria-label={LABEL_ISI[jenis]} className="gap-0 divide-y py-0">
             <KelompokSeret daftar={tampil} baris={baris} bolehSeret={modeUrutan} saatPindah={pindahLokal} />
           </Card>
         ) : null}
     </div>
   );
+}
+
+/** FAQ per kelompok, urutan kelompok = kemunculan pertama (sama dengan halaman FAQ web). */
+function kelompokkanPerKelompok(daftar: RingkasanEntri[]): [string, RingkasanEntri[]][] {
+  const grup = new Map<string, RingkasanEntri[]>();
+  for (const entri of daftar) {
+    const kelompok = nilaiIsi(entri, 'kelompok') || 'Tanpa kelompok';
+    grup.set(kelompok, [...(grup.get(kelompok) ?? []), entri]);
+  }
+  return [...grup];
 }
 
 /** Satu bilah: cari, tombol Saring (popover berisi milik saya, bidang per jenis, perlu dicek), dan urutan; saring aktif
