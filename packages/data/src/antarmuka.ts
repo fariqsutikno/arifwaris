@@ -15,8 +15,10 @@ export interface RingkasanRevisi {
 export interface DiksiTerbit { kunci: string; halaman: string; id: string; ar: string | null; versiTerbit: number }
 export interface RingkasanRevisiDiksi {
   id: string; kunci: string; idTeks: string; arTeks: string | null; catatan: string | null; status: StatusRevisi;
-  dibuatOleh: string; diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string;
+  dibuatOleh: string; diperiksaOleh: string | null; catatanReview: string | null; dibuatPada: string; diperiksaPada: string | null;
 }
+/** Revisi konten milik pengguna yang sedang masuk, beserta entrinya (menu Ajuan saya). */
+export interface AjuanKonten extends RingkasanRevisi { jenis: JenisKonten; slug: string }
 /** Entri di Sampah bila `dihapus` (revisi terbitnya revisi penghapusan; tidak tampil di web walau revisiTerbitId
  * terisi) atau `dibuang` (belum pernah terbit, dibuang langsung). */
 export interface RingkasanEntri {
@@ -57,6 +59,8 @@ export interface RepositoriEditorial {
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
   antreanReview(): Promise<RingkasanRevisi[]>;
+  /** Revisi buatan `userId` yang sudah dikirim (bukan draf), terbaru dulu, paling banyak BATAS_AJUAN_SAYA. */
+  revisiSaya(userId: string): Promise<AjuanKonten[]>;
   /** Pembuat (atau admin) menarik kembali pengajuannya: diajukan → draf (pengajuan ke Sampah: ditutup). */
   tarik(revisiId: string): Promise<void>;
   /** Admin: draf langsung terbit tanpa antrean. */
@@ -84,7 +88,12 @@ export interface RepositoriDiksi {
   /** Untuk portal admin: semua kunci, urut halaman lalu kunci, dengan revisi terakhir & terbit. */
   daftarKunci(): Promise<RingkasanKunciDiksi[]>;
   antreanReview(): Promise<RingkasanRevisiDiksi[]>;
+  /** Revisi teks buatan `userId` yang sudah dikirim (bukan draf), terbaru dulu, paling banyak BATAS_AJUAN_SAYA. */
+  revisiSaya(userId: string): Promise<RingkasanRevisiDiksi[]>;
 }
+
+// ponytail: batas jumlah, bukan rentang waktu; cukup untuk kabar terbaru. Tambah paging bila ada yang mencari ajuan lama.
+export const BATAS_AJUAN_SAYA = 100;
 
 export interface RiwayatTersimpan { id: string; kasus: unknown; judul: string; disimpanPada: string }
 export interface ProgresBelajar { pelajaranSlug: string; selesai: boolean; diubahPada: string }

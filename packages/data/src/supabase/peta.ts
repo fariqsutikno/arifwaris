@@ -16,6 +16,7 @@ export const keRevisi = (baris: Baris): RingkasanRevisi => ({
 export const keRevisiDiksi = (baris: Baris): RingkasanRevisiDiksi => ({
   id: baris.id, kunci: baris.kunci, idTeks: baris.id_teks, arTeks: baris.ar_teks, catatan: baris.catatan, status: baris.status,
   dibuatOleh: baris.dibuat_oleh, diperiksaOleh: baris.diperiksa_oleh, catatanReview: baris.catatan_review, dibuatPada: baris.dibuat_pada,
+  diperiksaPada: baris.diperiksa_pada,
 });
 
 /** Baris entri_konten dengan relasi `revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(*)`. */

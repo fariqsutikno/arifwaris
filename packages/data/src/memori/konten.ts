@@ -10,6 +10,7 @@ import type {
   DiksiTerbit, JejakEntri, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RingkasanEntri,
   RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, Sesi,
 } from '../antarmuka.js';
+import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
 
 interface EntriMemori {
@@ -90,6 +91,10 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
   const terakhirDari = <T extends { id: string }>(daftar: T[]): T | null =>
     daftar.reduce<T | null>((teratas, baris) => (!teratas || nomorDari(baris.id) > nomorDari(teratas.id) ? baris : teratas), null);
 
+  // Urutan id (m-1, m-2, …) = urutan dibuat; jam tiruan tidak dipakai supaya perbaruiAjuan tidak mengubah urutan.
+  const milikTerbaru = <T extends { id: string; dibuatOleh: string; status: StatusRevisi }>(daftar: T[], userId: string) =>
+    daftar.filter(r => r.dibuatOleh === userId && r.status !== 'draf')
+      .sort((a, b) => nomorDari(b.id) - nomorDari(a.id)).slice(0, BATAS_AJUAN_SAYA);
   const dihapus = (baris: EntriMemori) => !!baris.revisiTerbitId && revisi.get(baris.revisiTerbitId)!.hapus;
   const keadaanSampah = (baris: EntriMemori) => {
     const milikEntri = [...revisi.values()].filter(r => r.entriId === baris.id);
@@ -188,6 +193,12 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
     // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
     async antreanReview() { return [...revisi.values()].filter(baris => baris.status === 'diajukan'); },
+    async revisiSaya(userId) {
+      return milikTerbaru([...revisi.values()], userId).map(r => {
+        const { jenis, slug } = ambil(entri, r.entriId, 'entri');
+        return { ...r, jenis, slug };
+      });
+    },
     // [supabase/migrations/20260927000007_sampah_editor.sql] tarik_revisi, terbitkan_langsung, buang_entri, pulihkan_entri.
     async tarik(revisiId) {
       const target = ambil(revisi, revisiId, 'revisi');
@@ -274,7 +285,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       const id = idBaru();
       revisiDiksi.set(id, {
         id, kunci, idTeks, arTeks, catatan, status: 'draf', dibuatOleh: pelaku().pelakuId,
-        diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(),
+        diperiksaOleh: null, catatanReview: null, dibuatPada: sekarang(), diperiksaPada: null,
       });
       return id;
     },
@@ -321,6 +332,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
         });
     },
     async antreanReview() { return [...revisiDiksi.values()].filter(baris => baris.status === 'diajukan'); },
+    async revisiSaya(userId) { return milikTerbaru([...revisiDiksi.values()], userId); },
   };
 
   const akun: RepositoriAkun = {

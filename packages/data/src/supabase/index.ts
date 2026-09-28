@@ -5,6 +5,7 @@
 // galat ramah, dan saringValid saat baca.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
+import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
 import type {
   BarisPeringkat, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
   RepositoriPeringkat,
@@ -98,6 +99,11 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     async antreanReview() {
       return (await hasil(klien.from('revisi').select('*').eq('status', 'diajukan').order('dibuat_pada')) as any[]).map(keRevisi);
     },
+    async revisiSaya(userId) {
+      const kueri = klien.from('revisi').select('*, entri:entri_konten!revisi_entri_id_fkey(jenis, slug)')
+        .eq('dibuat_oleh', userId).neq('status', 'draf').order('dibuat_pada', { ascending: false }).limit(BATAS_AJUAN_SAYA);
+      return (await hasil(kueri) as any[]).map(baris => ({ ...keRevisi(baris), jenis: baris.entri.jenis, slug: baris.entri.slug }));
+    },
   };
 
   const diksi: RepositoriDiksi = {
@@ -125,6 +131,11 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
         .select(`kunci, halaman, versi_terbit, ${RELASI_TERBIT_DIKSI}, semua_revisi:revisi_diksi!revisi_diksi_kunci_fkey(*)`)
         .order('halaman').order('kunci');
       return (await hasil(kueri) as any[]).map(keRingkasanKunciDiksi);
+    },
+    async revisiSaya(userId) {
+      const kueri = klien.from('revisi_diksi').select('*')
+        .eq('dibuat_oleh', userId).neq('status', 'draf').order('dibuat_pada', { ascending: false }).limit(BATAS_AJUAN_SAYA);
+      return (await hasil(kueri) as any[]).map(keRevisiDiksi);
     },
     async antreanReview() {
       return (await hasil(klien.from('revisi_diksi').select('*').eq('status', 'diajukan').order('dibuat_pada')) as any[]).map(keRevisiDiksi);

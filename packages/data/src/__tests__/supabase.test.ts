@@ -23,6 +23,12 @@ async function masuk(email: string) {
   return buatRepositoriSupabase(klien);
 }
 
+async function idPengguna(alamat: string): Promise<string> {
+  const servis = createClient(URL_DB!, KUNCI_SERVIS, { auth: { persistSession: false } });
+  const { data } = await servis.auth.admin.listUsers({ perPage: 1000 });
+  return data.users.find(u => u.email === alamat)!.id;
+}
+
 describe.skipIf(!URL_DB)('supabase lokal', () => {
   const email = { penulis: `penulis-${akhiran}@tes.local`, reviewer: `reviewer-${akhiran}@tes.local`, biasa: `biasa-${akhiran}@tes.local` };
 
@@ -50,6 +56,24 @@ describe.skipIf(!URL_DB)('supabase lokal', () => {
     const anonim = buatRepositoriSupabase(createClient(URL_DB!, KUNCI_ANON, { auth: { persistSession: false } }));
     const terbit = await anonim.konten.bacaTerbit({ jenis: 'soal_hitung', sejakVersi: versiSebelum });
     expect(terbit.find(baris => baris.revisiId === revisiId)?.isi).toEqual(SOAL_HITUNG_UJI);
+  });
+
+  test('perbarui ajuan tetap diajukan; revisiSaya memuat entri; diksi mencatat waktu diperiksa', async () => {
+    const penulis = await masuk(email.penulis);
+    const entriId = await penulis.editorial.buatEntri('faq', `ajuan-${akhiran}`, 1);
+    const revisiId = await penulis.editorial.buatDraf(entriId, 'faq', DAFTAR_FAQ_UJI[0]!, ['R09-7']);
+    await penulis.editorial.ajukan(revisiId);
+    await penulis.editorial.perbaruiAjuan(revisiId, 'faq', DAFTAR_FAQ_UJI[1]!, ['R09-7']);
+    const [ajuan] = (await penulis.editorial.revisiSaya(await idPengguna(email.penulis))).filter(r => r.id === revisiId);
+    expect(ajuan).toMatchObject({ status: 'diajukan', isi: DAFTAR_FAQ_UJI[1], jenis: 'faq', slug: `ajuan-${akhiran}` });
+
+    await penulis.diksi.buatKunci(`uji.k${akhiran}`, 'uji');
+    const diksiId = await penulis.diksi.buatDraf(`uji.k${akhiran}`, 'A', null, null);
+    await penulis.diksi.ajukan(diksiId);
+    const reviewer = await masuk(email.reviewer);
+    await reviewer.diksi.setujui(diksiId);
+    const [diksi] = (await penulis.diksi.revisiSaya(await idPengguna(email.penulis))).filter(r => r.id === diksiId);
+    expect(diksi?.diperiksaPada).toBeTruthy();
   });
 
   test('draf tidak terlihat anonim; ref tak dikenal ditolak dengan pesan', async () => {

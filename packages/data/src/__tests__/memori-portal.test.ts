@@ -215,3 +215,24 @@ test('daftarNamaTim: nama atau bagian depan email', async () => {
   m.aturPeranLangsung('u-pen', 'penulis');
   expect(await m.akun.daftarNamaTim()).toEqual([{ userId: 'u-admin', nama: 'Admin' }, { userId: 'u-pen', nama: 'penulis.satu' }]);
 });
+
+test('revisiSaya: hanya milik sendiri yang sudah dikirim, terbaru dulu, dengan entri; diksi mencatat waktu diperiksa', async () => {
+  const m = siapkan();
+  m.aturPeranLangsung('u-pen', 'penulis');
+  m.aturPeranLangsung('u-rev', 'reviewer');
+  const { id } = await terbitkan(m);
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  const r2 = await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await m.editorial.ajukan(r2);
+  await m.diksi.buatKunci('uji.a', 'uji');
+  const d1 = await m.diksi.buatDraf('uji.a', 'A', null, null);
+  await m.diksi.ajukan(d1);
+  m.masukSebagai({ userId: 'u-rev', email: 'rev@x.id' });
+  await m.editorial.kembalikan(r2, 'perbaiki');
+  await m.diksi.setujui(d1);
+  expect(await m.editorial.revisiSaya('u-pen')).toMatchObject([{ id: r2, status: 'dikembalikan', catatanReview: 'perbaiki', jenis: 'soal_hitung', slug: 'H-01' }]);
+  const [diksi] = await m.diksi.revisiSaya('u-pen');
+  expect(diksi).toMatchObject({ id: d1, status: 'disetujui', diperiksaOleh: 'u-rev' });
+  expect(diksi!.diperiksaPada).toBeTruthy();
+});
