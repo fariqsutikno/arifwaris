@@ -96,6 +96,7 @@ test('Sampah: entri yang dibuang hilang dari Semua, muncul di tab Sampah, Pulihk
   await screen.findByText('Apa itu tirkah?');
   expect(screen.queryByText('Siapa ashabah?')).toBeNull();
   pilihTab('Sampah 1');
+  fireEvent.click(await screen.findByRole('button', { name: 'Aksi untuk Siapa ashabah?' }));
   fireEvent.click(await screen.findByRole('button', { name: 'Pulihkan' }));
   await screen.findByRole('tab', { name: 'Sampah 0' });
   pilihTab('Semua 2');
@@ -132,8 +133,9 @@ test('aksi massal: pilih semua → Ajukan hanya draf yang boleh diajukan', async
   fireEvent.click(await screen.findByRole('button', { name: 'Pilih beberapa' }));
   fireEvent.click(await screen.findByLabelText(/Pilih semua yang tampil/));
   expect(screen.getByText('2 dipilih')).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Ajukan (1)' }));
-  expect(await screen.findByText('1 revisi diajukan.')).toBeTruthy();
+  expect(screen.getByText('1 dari 2 bisa dikirim untuk review · 1 sudah terbit')).toBeTruthy();
+  fireEvent.click(screen.getByRole('button', { name: 'Kirim untuk review (1)' }));
+  expect(await screen.findByText('1 entri dikirim untuk review.')).toBeTruthy();
   const faq = await m.konten.daftarEntri('faq');
   expect(faq.find(e => e.slug === 'siapa-ashabah')!.revisiTerakhir!.status).toBe('diajukan');
 });
@@ -152,10 +154,31 @@ test('aksi massal reviewer: Setujui setelah konfirmasi; yang gagal dilaporkan', 
   );
   fireEvent.click(await screen.findByRole('button', { name: 'Pilih beberapa' }));
   fireEvent.click(await screen.findByLabelText('Pilih Siapa ashabah?'));
-  expect(screen.queryByRole('button', { name: /^Ajukan/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /^Kirim untuk review/ })).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: 'Setujui (1)' }));
-  await screen.findByText('1 revisi disetujui.');
+  await screen.findByText('1 entri disetujui.');
   expect((await m.konten.bacaTerbit({ jenis: 'faq' })).map(t => t.slug).sort()).toEqual(['apa-itu-tirkah', 'siapa-ashabah']);
+  vi.restoreAllMocks();
+});
+
+test('menu ⋯ baris: Kembalikan meminta catatan lalu mengembalikan revisi', async () => {
+  const m = await siapkan();
+  const [, kedua] = await m.konten.daftarEntri('faq');
+  await m.editorial.ajukan(kedua!.revisiTerakhir!.id);
+  m.aturPeranLangsung('u2', 'reviewer');
+  m.masukSebagai({ userId: 'u2', email: 'r@x.id' });
+  vi.spyOn(window, 'prompt').mockReturnValue('perbaiki dalil');
+  render(
+    <KonteksRepo.Provider value={{ repo: m, sesi: { userId: 'u2', email: 'r@x.id' }, peran: 'reviewer' }}>
+      <LayarMenu menu="faq" tab="faq" />
+    </KonteksRepo.Provider>,
+  );
+  fireEvent.click(await screen.findByRole('button', { name: 'Aksi untuk Siapa ashabah?' }));
+  expect(screen.queryByRole('button', { name: 'Pindahkan ke Sampah' })).toBeNull();
+  fireEvent.click(await screen.findByRole('button', { name: 'Kembalikan' }));
+  await screen.findByText('1 entri dikembalikan.');
+  const revisi = (await m.konten.daftarEntri('faq')).find(e => e.slug === 'siapa-ashabah')!.revisiTerakhir!;
+  expect([revisi.status, revisi.catatanReview]).toEqual(['dikembalikan', 'perbaiki dalil']);
   vi.restoreAllMocks();
 });
 

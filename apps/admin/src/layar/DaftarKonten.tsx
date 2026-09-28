@@ -1,16 +1,17 @@
 // Layar menu konten (spec tahap A "Daftar konten"): kepala (jejak grup, judul menu, tombol buat baru), tab jenis
 // untuk menu bertab, lalu daftar entri dengan tab status + jumlah, cari (judul/slug/ref), urut, saring lanjutan
 // (tombol Saring: milik saya, bab/tingkat/kelompok, perlu dicek; chip saring aktif), dan baris berstatus + info ringkas. Saring & urut tersimpan di URL
-// (replaceState, tanpa memicu pindah rute). "Pilih beberapa" menyalakan centang baris → aksi massal Ajukan/Setujui (hanya yang diizinkan
-// transisiRevisi; database tetap penjaga). Menu materi mengelompokkan materi di bawah modulnya. Urutan diubah lewat mode
+// (replaceState, tanpa memicu pindah rute). "Pilih beberapa" menyalakan centang baris + bilah aksi massal lengkap per
+// peran (Terbitkan, Kirim untuk review, Setujui, Kembalikan, Sampah, Pulihkan), tiap tombol menyebut berapa yang bisa
+// dan alasan sisanya (aksiDaftar.ts). Tiap baris punya menu ⋯ berisi aksi yang berlaku untuk entri itu; database tetap penjaga. Menu materi mengelompokkan materi di bawah modulnya. Urutan diubah lewat mode
 // "Atur urutan" (admin/penulis): seret & naik/turun hanya mengubah susunan lokal, lalu Simpan urutan mengirim satu
 // kali. Data dari repo.konten.daftarEntri; perhitungan di ringkas.ts.
 import { useEffect, useState, type ReactNode } from 'react';
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { ChevronDown, ChevronUp, GripVertical, ListFilter, Pencil, Plus, Search, X } from 'lucide-react';
-import { JUDUL_BAB, transisiRevisi, type JenisKonten } from '@waris/content';
+import { ChevronDown, ChevronUp, Ellipsis, GripVertical, ListFilter, Pencil, Plus, Search, X } from 'lucide-react';
+import { JUDUL_BAB, type JenisKonten } from '@waris/content';
 import type { RingkasanEntri } from '@waris/data';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,7 @@ import {
 } from '../ringkas';
 import { usePortal } from '../repo';
 import { teksRujukan } from '../editor/rujukan';
+import { aksiPeran, alasanTolak, HASIL_AKSI, LABEL_AKSI, ringkasAlasan, type AksiDaftar } from '../editor/aksiDaftar';
 import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { useNamaTim } from '../hooks/useNamaTim';
 import { tulisRute, type Kueri } from '../rute';
@@ -87,7 +89,6 @@ export function LayarMenu({ menu: kunci, tab, kueri }: { menu: KunciMenu; tab: I
   );
 }
 
-type AksiMassal = 'ajukan' | 'setujui';
 
 export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AWAL, saatSaring }: {
   jenis: JenisKonten; menuMateri?: boolean; saringAwal?: SaringDaftar; saatSaring?: (saring: SaringDaftar) => void;
@@ -103,7 +104,7 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   // Mode pilih (kotak centang + aksi massal) hanya menyala lewat "Pilih beberapa", supaya daftar biasa tetap tenang.
   const [modePilih, setModePilih] = useState(false);
   const [terpilih, setTerpilih] = useState<ReadonlySet<string>>(new Set());
-  const [sibukMassal, setSibukMassal] = useState<AksiMassal | null>(null);
+  const [sibukMassal, setSibukMassal] = useState<AksiDaftar | null>(null);
   const [hasilMassal, setHasilMassal] = useState<{ jenis: 'sukses' | 'galat'; teks: string } | null>(null);
   // Mode atur urutan: urutanDraf = susunan lokal yang belum dikirim; null = mode mati. Semua seret/naik/turun hanya
   // mengubah susunan lokal; "Simpan urutan" mengirim satu kali (atur_urutan langsung terbit = satu versi konten).
@@ -181,30 +182,51 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
     setGalatUrutan(null);
   }
 
-  // Cerminan transisiRevisi (UI saja): ajukan = draf milik sendiri (atau admin); setujui = diajukan orang lain.
-  const bolehAksi = (entri: RingkasanEntri, aksi: AksiMassal) => {
-    const revisi = entri.revisiTerakhir;
-    return !!revisi && transisiRevisi({ peran, pelakuId: sesi.userId, pembuatId: revisi.dibuatOleh, status: revisi.status, aksi }).ok;
-  };
+  const pelaku = { peran, userId: sesi.userId };
+  const bolehAksi = (entri: RingkasanEntri, aksi: AksiDaftar) => alasanTolak(aksi, entri, pelaku) === null;
+
+  function jalankanPada(aksi: AksiDaftar, entri: RingkasanEntri, catatan: string): Promise<unknown> {
+    const revisiId = entri.revisiTerakhir?.id ?? '';
+    switch (aksi) {
+      case 'terbitkan': return repo.editorial.terbitkanLangsung(revisiId);
+      case 'ajukan': return repo.editorial.ajukan(revisiId);
+      case 'setujui': return repo.editorial.setujui(revisiId);
+      case 'kembalikan': return repo.editorial.kembalikan(revisiId, catatan);
+      case 'sampah': return repo.editorial.buangEntri(entri.entriId, catatan);
+      case 'pulihkan': return repo.editorial.pulihkanEntri(entri.entriId);
+    }
+  }
+
+  /** Konfirmasi / catatan sebelum aksi; null = dibatalkan pengguna. Kembalikan wajib bercatatan (satu untuk semua). */
+  function mintaCatatan(aksi: AksiDaftar, jumlah: number): string | null {
+    const sasaran = jumlah === 1 ? 'entri ini' : `${jumlah} entri`;
+    if (aksi === 'terbitkan' || aksi === 'setujui') return window.confirm(`${LABEL_AKSI[aksi]} ${sasaran}? Langsung tampil di web.`) ? '' : null;
+    if (aksi === 'sampah') return window.prompt(`Pindahkan ${sasaran} ke Sampah? Bisa dipulihkan kapan saja. Entri yang sudah terbit diajukan dulu bila Anda penulis.\nAlasan (opsional):`, '');
+    if (aksi === 'kembalikan') {
+      const catatan = window.prompt(`Kembalikan ${sasaran} ke penulisnya. Catatan untuk penulis (wajib):`, '');
+      return catatan?.trim() ? catatan : null;
+    }
+    return '';
+  }
 
   // Dijalankan berurutan supaya satu kegagalan tidak membatalkan yang lain; hasilnya diringkas dalam satu pesan.
-  async function jalankanMassal(aksi: AksiMassal, sasaran: RingkasanEntri[]) {
-    if (aksi === 'setujui' && !window.confirm(`Setujui ${sasaran.length} revisi? Semuanya langsung terbit di web.`)) return;
+  async function jalankanMassal(aksi: AksiDaftar, sasaran: RingkasanEntri[]) {
+    const catatan = mintaCatatan(aksi, sasaran.length);
+    if (catatan === null) return;
     setSibukMassal(aksi);
     setHasilMassal(null);
     const gagal: string[] = [];
     for (const entri of sasaran) {
       try {
-        await (aksi === 'ajukan' ? repo.editorial.ajukan(entri.revisiTerakhir!.id) : repo.editorial.setujui(entri.revisiTerakhir!.id));
+        await jalankanPada(aksi, entri, catatan);
       } catch (e) {
         gagal.push(`${judulEntri(entri)}: ${pesanGalat(e)}`);
       }
     }
     const berhasil = sasaran.length - gagal.length;
-    const kerja = aksi === 'ajukan' ? 'diajukan' : 'disetujui';
     setHasilMassal(gagal.length
-      ? { jenis: 'galat', teks: `${berhasil} ${kerja}, ${gagal.length} gagal. ${gagal.join(' · ')}` }
-      : { jenis: 'sukses', teks: `${berhasil} revisi ${kerja}.` });
+      ? { jenis: 'galat', teks: `${berhasil} ${HASIL_AKSI[aksi]}, ${gagal.length} gagal. ${gagal.join(' · ')}` }
+      : { jenis: 'sukses', teks: `${berhasil} entri ${HASIL_AKSI[aksi]}.` });
     setTerpilih(new Set());
     setSibukMassal(null);
     setMuatUlang(n => n + 1);
@@ -217,29 +239,19 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
   const jumlah = jumlahPerTab(saringTanpaStatus(daftar, saring, sesi.userId));
   const tampil = urutanDraf ?? terapkanSaring(daftar, saring, sesi.userId);
   const bolehAturUrutan = peran !== 'reviewer' && saring.status !== 'sampah' && daftar.length > 1;
-  const bolehPilih = saring.status !== 'sampah' && tampil.length > 0;
-  // Di tab Sampah tiap baris punya tombol Pulihkan. Izin pastinya (pembuat semua revisi) dijaga repo/database;
-  // galatnya ditampilkan di atas daftar.
-  async function pulihkan(entri: RingkasanEntri) {
-    setGalatUrutan(null);
-    try {
-      await repo.editorial.pulihkanEntri(entri.entriId);
-      setMuatUlang(n => n + 1);
-    } catch (e) {
-      setGalatUrutan(`Gagal memulihkan: ${pesanGalat(e)}`);
-    }
-  }
+  const bolehPilih = tampil.length > 0;
+  const tabSampah = saring.status === 'sampah';
+  const aksiTersedia = aksiPeran(peran, tabSampah);
   const dipilih = daftar.filter(entri => terpilih.has(entri.entriId));
-  const bisaDiajukan = dipilih.filter(entri => bolehAksi(entri, 'ajukan'));
-  const bisaDisetujui = dipilih.filter(entri => bolehAksi(entri, 'setujui'));
   const semuaTampilDipilih = tampil.length > 0 && tampil.every(entri => terpilih.has(entri.entriId));
   const baris: KonteksBaris = {
     sekarang: new Date(),
     namaPengguna,
-    aksi: saring.status === 'sampah' ? entri => (
-      <Button variant="outline" size="sm" onClick={() => void pulihkan(entri)}>Pulihkan</Button>
-    ) : undefined,
-    pilih: !modePilih || modeUrutan || saring.status === 'sampah' ? null : {
+    aksi: modeUrutan ? undefined : entri => (
+      <MenuBaris entri={entri} aksi={aksiTersedia.filter(aksi => bolehAksi(entri, aksi))} bacaSaja={peran === 'reviewer'}
+        saatAksi={aksi => void jalankanMassal(aksi, [entri])} />
+    ),
+    pilih: !modePilih || modeUrutan ? null : {
       terpilih,
       saatUbah: (entriId, pilih) => setTerpilih(sekarang => {
         const baru = new Set(sekarang);
@@ -292,21 +304,27 @@ export function DaftarKonten({ jenis, menuMateri = false, saringAwal = SARING_AW
               {bolehAturUrutan ? <Button variant="link" size="sm" className="h-auto p-0" onClick={mulaiAturUrutan}>Atur urutan</Button> : null}
             </span>
           </div>
-          {dipilih.length > 0 ? (
-            <div className="sticky top-0 z-10 flex flex-wrap items-center gap-2 rounded-lg border bg-muted/95 px-4 py-2 backdrop-blur" role="toolbar" aria-label="Aksi massal">
-              <b className="text-sm">{dipilih.length} dipilih</b>
-              {peran !== 'reviewer' ? (
-                <Button size="sm" disabled={!!sibukMassal || bisaDiajukan.length === 0} onClick={() => void jalankanMassal('ajukan', bisaDiajukan)}>
-                  {sibukMassal === 'ajukan' ? 'Mengajukan…' : `Ajukan (${bisaDiajukan.length})`}
-                </Button>
-              ) : null}
-              {peran !== 'penulis' ? (
-                <Button size="sm" disabled={!!sibukMassal || bisaDisetujui.length === 0} onClick={() => void jalankanMassal('setujui', bisaDisetujui)}>
-                  {sibukMassal === 'setujui' ? 'Menyetujui…' : `Setujui (${bisaDisetujui.length})`}
-                </Button>
-              ) : null}
-              <Button size="sm" variant="ghost" disabled={!!sibukMassal} onClick={() => setTerpilih(new Set())}>Batal pilih</Button>
-              <span className="text-xs text-muted-foreground">Hanya revisi yang boleh Anda ajukan/setujui yang ikut diproses.</span>
+          {modePilih ? (
+            <div className="sticky top-0 z-10 grid gap-2 rounded-lg border bg-muted/95 px-4 py-2 backdrop-blur" role="toolbar" aria-label="Aksi massal">
+              <div className="flex flex-wrap items-center gap-2">
+                <b className="text-sm">{dipilih.length ? `${dipilih.length} dipilih` : 'Centang entri yang ingin diproses'}</b>
+                {dipilih.length ? <Button size="sm" variant="ghost" disabled={!!sibukMassal} onClick={() => setTerpilih(new Set())}>Batal pilih</Button> : null}
+              </div>
+              <ul className="grid gap-1.5 sm:grid-cols-2">
+                {aksiTersedia.map(aksi => {
+                  const bisa = dipilih.filter(entri => bolehAksi(entri, aksi));
+                  const alasan = dipilih.length ? ringkasAlasan(aksi, dipilih, pelaku) : null;
+                  return (
+                    <li key={aksi} className="flex flex-wrap items-center gap-x-2">
+                      <Button size="sm" variant={aksi === 'sampah' ? 'ghost' : 'secondary'} className={aksi === 'sampah' ? 'text-destructive' : undefined}
+                        disabled={!!sibukMassal || bisa.length === 0} onClick={() => void jalankanMassal(aksi, bisa)}>
+                        {sibukMassal === aksi ? 'Memproses…' : `${LABEL_AKSI[aksi]} (${bisa.length})`}
+                      </Button>
+                      {alasan ? <span className="text-xs text-muted-foreground">{alasan}</span> : null}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           ) : null}
         </>
@@ -408,12 +426,35 @@ function BilahSaring({ jenis, menuMateri, daftar, saring, ubah }: {
   );
 }
 
+/** Menu ⋯ satu baris: buka/sunting entri, lalu aksi yang berlaku untuk entri ini saja. */
+function MenuBaris({ entri, aksi, bacaSaja, saatAksi }: {
+  entri: RingkasanEntri; aksi: AksiDaftar[]; bacaSaja: boolean; saatAksi: (aksi: AksiDaftar) => void;
+}) {
+  const [buka, setBuka] = useState(false);
+  const judul = judulEntri(entri);
+  const pilih = (a: AksiDaftar) => { setBuka(false); saatAksi(a); };
+  return (
+    <Popover open={buka} onOpenChange={setBuka}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon-sm" aria-label={`Aksi untuk ${judul}`}><Ellipsis /></Button>
+      </PopoverTrigger>
+      <PopoverContent align="end" className="grid w-56 gap-0.5 p-1 text-sm">
+        <a className="rounded-sm px-2 py-1.5 hover:bg-muted" href={tulisRute({ layar: 'entri', entriId: entri.entriId })}>{bacaSaja ? 'Buka' : 'Sunting'}</a>
+        {aksi.map(a => (
+          <button key={a} type="button" className={cn('rounded-sm px-2 py-1.5 text-left hover:bg-muted', a === 'sampah' && 'text-destructive')}
+            onClick={() => pilih(a)}>{LABEL_AKSI[a]}</button>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 /** Data yang sama untuk semua baris: waktu acuan, nama pembuat, dan pilihan (null = mode atur urutan). */
 interface KonteksBaris {
   sekarang: Date;
   namaPengguna: (userId: string) => string;
   pilih: { terpilih: ReadonlySet<string>; saatUbah: (entriId: string, pilih: boolean) => void } | null;
-  /** Aksi per baris (tombol Pulihkan di tab Sampah). */
+  /** Menu aksi per baris; tidak ada selama mode atur urutan. */
   aksi?: ((entri: RingkasanEntri) => ReactNode) | undefined;
 }
 
