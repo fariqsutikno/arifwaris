@@ -47,7 +47,7 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 ### Kasus khusus
 | Kode | Titik | [SYF] | [HNB] | [HNF] | [MLK] | Bab |
 |---|---|---|---|---|---|---|
-| K13a-1 | Batas maksimal kehamilan | input hakim | 4 th (s) | 2 th (s) | 4–5 th (s) | 13a |
+| K13a-1 | Batas maksimal kehamilan | 4 th (s) | 4 th (s) | 2 th (s) | 4 th masyhur; 5 th yang diamalkan (s) | 13a |
 | K13a-2 | Dibagi sebelum haml lahir | boleh | boleh (s) | boleh (s) | tidak (s) | 13a |
 | K13a-3 | Yang ditahan untuk haml | jumlah tak dibatasi; mitra ashabah haml 0 (s) | terbesar dari 2 lk/2 pr; mitra diberi aqall (s) | 1 anak + kafil (s) | — | 13a |
 | K13b-1 | Masa tunggu mafqud | ijtihad hakim | 4 th (binasa) / 90 th dari lahir (selamat) (s) | ijtihad hakim (zhahir) (s) | 70/75/80 th dari lahir (s) | 13b |
@@ -68,5 +68,7 @@ Sudah dicari di Lahim, Ithraa, Tashil, Al-Muyassar; belum ketemu:
 | K14-2 | Rincian qarabah dalam satu jihah & derajat (kekuatan qarabah, cabang dua sisi) | [HNF] | **besar** — dzawil arham [HNF] = `TIDAK_DIDUKUNG` |
 | — | Urutan ashabah [HNF] selain soal kakek (bani al-ikhwah vs 'umumah dst.) | [HNF] | diduga sama; perlu satu nukilan untuk memastikan |
 | — | Munasakhat, 'aul, tashih, qismah | semua | diduga tidak ada khilaf ([KH] sama); belum ada nukilan yang menyatakannya |
+
+Daftar pencarian lengkap dengan kata kunci Arab: [`docs/referensi-dicari.md`](../referensi-dicari.md).
 
 Rujukan yang bisa menutup: [HNF] *as-Sirajiyyah* + syarahnya; [MLK] *Mukhtashar Khalil* + *Syarh ad-Dardir*; [HNB] *al-Mughni* / *Kasysyaf al-Qina'*.

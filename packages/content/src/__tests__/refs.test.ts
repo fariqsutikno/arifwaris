@@ -104,7 +104,7 @@ describe('daftar pustaka bab 17', () => {
     expect(DAFTAR_KITAB[0]!.judul).toBe("Raudhah ath-Thalibin wa 'Umdah al-Muftin");
     expect(DAFTAR_HADITS.length).toBe(15);
     expect(DAFTAR_HADITS[0]).toMatchObject({ takhrij: 'Al-Bukhari 6732; Muslim 1615', status: "Muttafaq 'alaih" });
-    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R01-7', 'R02-11', 'R11-3', 'R13-5', 'R13-14']);
+    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R01-7', 'R02-11', 'R11-3', 'R13-14']);
   });
 
   test('judul bab dari frontmatter', () => {

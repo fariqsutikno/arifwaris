@@ -51,7 +51,6 @@ Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarn
 | R01-7 | Ijazah wasiat setelah wafat | Raudhah, Kitab al-Washaya |
 | R02-11 | Nomor hadits «الولاء لحمة» | Cek Shahih Ibnu Hibban / al-Mustadrak |
 | R11-3 | Atsar takharuj 'Abdurrahman bin 'Auf | Cek Mushannaf 'Abdurrazzaq / Sunan al-Baihaqi |
-| R13-5 | Batas maksimal kehamilan 4 tahun | Raudhah, Kitab al-'Idad |
 | R13-14 | Hukum laqith | Raudhah, Kitab al-Laqith |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah

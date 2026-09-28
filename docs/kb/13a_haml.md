@@ -20,9 +20,9 @@ Anak manusia yang masih dalam kandungan ketika muwarrits wafat, yang mewarisi at
 **Syarat 2 — Lahir hidup dengan hayah mustaqirrah**: istihlal (teriak/menangis), bersin, menyusu, gerak atau nafas yang signifikan. Dalil: «إذا استهل المولود ورث» [R13-2].
 
 > **KHILAF K13a-1 – Batas maksimal masa kehamilan** [R13-5]
-> - **[SYF]**: tidak ada angka di Kitab al-Fara'idh (hanya «أكثر مدة الحمل»); diserahkan ke hakim per kasus. `[perlu verifikasi lanjut]`.
-> - [HNB] masyhur: 4 tahun. [HNF]: 2 tahun. [MLK]: 4–5 tahun. (sekunder)
-> - **Engine**: [SYF] = input hakim, bukan konstanta. Batas minimal 6 bulan = ijma' (QS 46:15 + 31:14).
+> - **[SYF]**: **4 tahun** (Ithraa: «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة»). Kitab al-Fara'idh Raudhah hanya menyebut «أكثر مدة الحمل» tanpa angka.
+> - [HNB]: 4 tahun. [HNF]: 2 tahun. [MLK]: 4 tahun (masyhur), 5 tahun (yang diamalkan). (sekunder)
+> - **Engine**: konstanta per madzhab `// [R13-5]`, tetap bisa ditimpa putusan hakim. Batas minimal 6 bulan = ijma' (QS 46:15 + 31:14).
 
 ## 13a.3 Kapan Tirkah Dibagi [R13-17]
 - Jika ahli waris rela menunggu kelahiran: **menunggu lebih utama** (keluar dari khilaf, pembagian sekali).
@@ -96,7 +96,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R13-2 | Tanda hidup | H + RDH | Abu Dawud no. 2920, dari Abu Hurairah · RDH | H: «إذا استهل المولود ورث». RDH: «بصراخه، وكذا بالبكاء، أو العطاس، أو التثاؤب، أو امتصاص الثدي» |
 | R13-3 | Jumlah janin tak dibatasi [SYF]; >2 nadir untuk taqdir operasional | RDH + Lahim | RDH Bab 6, sabab 3 (al-Haml); Lahim hlm. 144–146 | RDH: «الأصح أو الصحيح: أنه لا ضبط له». Lahim menetapkan 6 taqdir operasional (model [HNB]); >2 anak = nadir. |
 | R13-4 | 3 kelas ahli waris + al-aqall | RDH + Lahim | RDH Idem; Lahim idem | RDH: «فمن احتمل حجبه بالحمل، لم يدفع إليه شيء ومن لا يحجبه الحمل بحال وله مقدر لا ينقص دفع إليه. وإن أمكن العول، دفع إليه ذلك القدر عائلا». Algoritma 8 langkah dari Lahim. |
-| R13-5 | Batas kehamilan [SYF] = ijtihad hakim | RDH (bab lain) | Raudhah, Kitab al-'Idad — di luar file | `[perlu verifikasi lanjut]`. Di Kitab al-Fara'idh hanya disebut «أكثر مدة الحمل» tanpa angka. Default [SYF] = tidak ada angka pasti; 4 tahun = Hanabilah masyhur. |
+| R13-5 | Batas kehamilan [SYF] = 4 tahun | — (nukilan) | Ithraa, Mirats al-Haml slide 9; Raudhah Kitab al-Fara'idh hanya «أكثر مدة الحمل» | «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة» |
 | R13-15 | [SYF]: mitra ashabah haml tidak diberi apa pun | — (nukilan) | Lahim hlm. 145; Ithraa, Muqarrar al-Fara'idh, Mirats al-Haml slide 12 | Ithraa: «يوقف الأحظ للحمل من نصيب ذكرين أو أنثيين، مع إيقاف نصيب مشاركه، وهو قول الشافعية». Diterima sebagai dasar tanpa menunggu nash Raudhah (keputusan pengguna 2026-09-29). |
 | R13-16 | Tata kerja taqdir → jami'ah → aqall | KH | Lahim hlm. 146 | Lima langkah «صفة العمل في مسائل الحمل». |
 | R13-17 | Pembagian sebelum lahir boleh; [MLK] menunggu | — (nukilan) | Lahim hlm. 143–144; Ithraa slide 11 | «وهذا مذهب الحنابلة والحنفية والراجح عند الشافعية» |
