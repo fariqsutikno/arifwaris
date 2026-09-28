@@ -1,7 +1,8 @@
 // Riwayat satu entri sebagai linimasa (terbaru di atas): tiap revisi dan tiap kejadian Sampah (jejak_entri) ditulis
-// sebagai kalimat manusia — siapa, melakukan apa, kapan — lengkap dengan catatan review/alasan. Revisi biasa bisa
-// dibandingkan dengan versi tayang; reviewer/admin bisa menayangkan lagi revisi disetujui yang bukan versi tayang
-// (terbitkanUlang). Database tetap penjaga sebenarnya; tombol ini cuma sinyal UI. Entri di Sampah dipulihkan lewat
+// sebagai kalimat manusia — siapa, melakukan apa, kapan — lengkap dengan catatan review/alasan. Tiap versi bisa
+// dibandingkan dengan versi sebelumnya (alur "awalnya begini → diperbaiki begini"), dilihat isinya, dan dipakai sebagai
+// draf baru (lewat EditorEntri; versi tayang tidak ditimpa); reviewer/admin bisa menayangkan lagi revisi disetujui
+// yang bukan versi tayang (terbitkanUlang). Database tetap penjaga sebenarnya; tombol ini cuma sinyal UI. Entri di Sampah dipulihkan lewat
 // tombol Pulihkan di editor, bukan dari sini, supaya pemulihan tercatat.
 import { useEffect, useState } from 'react';
 import type { JenisKonten } from '@waris/content';
@@ -23,7 +24,11 @@ type Butir =
   | { jenis: 'jejak'; pada: string; jejak: JejakEntri };
 
 /** `versi` berubah tiap kali editor menyimpan, supaya draf baru langsung muncul di riwayat. */
-export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revisiTerbitId: string | null; versi?: number; saatBerubah: () => void }) {
+export function RiwayatRevisi(props: {
+  entriId: string; jenis: JenisKonten; revisiTerbitId: string | null; versi?: number; saatBerubah: () => void;
+  /** Ada = pengguna boleh menyunting entri ini; isi versi lama disalin menjadi draf. */
+  pakaiSebagaiDraf?: ((revisi: RingkasanRevisi) => void) | undefined;
+}) {
   const { repo, peran } = usePortal();
   const namaDari = useNamaTim();
   const [data, setData] = useState<{ revisi: RingkasanRevisi[]; jejak: JejakEntri[] } | null>(null);
@@ -40,12 +45,12 @@ export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revi
   if (galat) return <p role="alert" className="text-sm text-destructive">{galat}</p>;
   if (!data) return null;
   const terbit = data.revisi.find(r => r.id === props.revisiTerbitId) ?? null;
+  const versi = data.revisi.filter(r => !r.hapus);
   const bolehTayangkanLagi = (peran === 'reviewer' || peran === 'admin') && !terbit?.hapus;
   const sekarang = new Date();
 
   return (
-    <section className="space-y-2">
-      <h2 className="text-lg font-bold">Riwayat</h2>
+    <section aria-label="Riwayat" className="space-y-2">
       <Card className="gap-0 divide-y py-0">
         {susunLinimasa(data.revisi, data.jejak).map(butir => butir.jenis === 'jejak' ? (
           <article key={butir.jejak.id} aria-label="kejadian Sampah" className="space-y-1 px-4 py-3">
@@ -57,7 +62,8 @@ export function RiwayatRevisi(props: { entriId: string; jenis: JenisKonten; revi
             key={butir.revisi.id}
             revisi={butir.revisi}
             jenis={props.jenis}
-            terbit={terbit}
+            sebelumnya={versi[versi.indexOf(butir.revisi) - 1] ?? null}
+            pakaiSebagaiDraf={props.pakaiSebagaiDraf && !butir.revisi.hapus && butir.revisi.status !== 'draf' ? () => props.pakaiSebagaiDraf!(butir.revisi) : undefined}
             sedangTayang={butir.revisi.id === props.revisiTerbitId && !butir.revisi.hapus}
             bolehTayangkanLagi={bolehTayangkanLagi && butir.revisi.status === 'disetujui' && !butir.revisi.hapus && butir.revisi.id !== props.revisiTerbitId}
             namaDari={namaDari}
@@ -107,11 +113,12 @@ export function kalimatJejak(j: JejakEntri, namaDari: NamaDari): string {
 }
 
 function BarisRevisi(props: {
-  revisi: RingkasanRevisi; jenis: JenisKonten; terbit: RingkasanRevisi | null; sedangTayang: boolean; bolehTayangkanLagi: boolean;
-  namaDari: NamaDari; sekarang: Date; repo: RepoPortal; saatBerubah: () => void;
+  revisi: RingkasanRevisi; jenis: JenisKonten; sebelumnya: RingkasanRevisi | null; sedangTayang: boolean; bolehTayangkanLagi: boolean;
+  namaDari: NamaDari; sekarang: Date; repo: RepoPortal; saatBerubah: () => void; pakaiSebagaiDraf: (() => void) | undefined;
 }) {
-  const { revisi, jenis, terbit } = props;
-  const [tampilDiff, setTampilDiff] = useState(false);
+  const { revisi, jenis, sebelumnya } = props;
+  const [tampil, setTampil] = useState<'banding' | 'isi' | null>(null);
+  const alih = (bagian: 'banding' | 'isi') => setTampil(v => (v === bagian ? null : bagian));
   const [galat, setGalat] = useState<string | null>(null);
 
   async function tayangkanLagi() {
@@ -130,18 +137,30 @@ function BarisRevisi(props: {
       <div className="flex flex-wrap items-center gap-2">
         <p className="text-sm">{kalimatRevisi(revisi, props.namaDari)} · <Waktu iso={revisi.diperiksaPada ?? revisi.dibuatPada} sekarang={props.sekarang} /></p>
         {props.sedangTayang ? <Badge>Tayang</Badge> : null}
-        {!revisi.hapus && !props.sedangTayang ? (
-          <span className="ml-auto flex gap-2">
-            <Button variant="link" size="sm" className="h-auto p-0" onClick={() => setTampilDiff(v => !v)}>{tampilDiff ? 'Tutup perbandingan' : 'Bandingkan dengan versi tayang'}</Button>
-            {props.bolehTayangkanLagi ? <Button variant="outline" size="sm" onClick={() => void tayangkanLagi()}>Tayangkan lagi</Button> : null}
+        {!revisi.hapus ? (
+          <span className="ml-auto flex flex-wrap gap-x-3 gap-y-1">
+            <Button variant="link" size="sm" className="h-auto p-0" aria-pressed={tampil === 'banding'} onClick={() => alih('banding')}>Bandingkan dengan versi sebelumnya</Button>
+            <Button variant="link" size="sm" className="h-auto p-0" aria-pressed={tampil === 'isi'} onClick={() => alih('isi')}>Lihat isi versi ini</Button>
+            {props.pakaiSebagaiDraf ? <Button variant="link" size="sm" className="h-auto p-0" onClick={props.pakaiSebagaiDraf}>Pakai versi ini sebagai draf</Button> : null}
+            {props.bolehTayangkanLagi ? <Button variant="link" size="sm" className="h-auto p-0" onClick={() => void tayangkanLagi()}>Tayangkan lagi</Button> : null}
           </span>
         ) : null}
       </div>
       {revisi.catatanReview && revisi.catatanReview !== CATATAN_TARIK ? <p className="text-sm text-muted-foreground">Catatan review: {revisi.catatanReview}</p> : null}
       {galat ? <p role="alert" className="text-sm text-destructive">{galat}</p> : null}
-      {tampilDiff ? (
-        <Perbandingan perubahan={daftarPerubahan(terbit && bidangBanding(jenis, terbit.isi, terbit.refs), bidangBanding(jenis, revisi.isi, revisi.refs))}
-          keterangan={terbit ? 'Dibandingkan dengan versi yang tayang.' : 'Belum ada versi tayang: semua isi ditambahkan.'} />
+      {tampil === 'banding' ? (
+        <Perbandingan perubahan={daftarPerubahan(sebelumnya && bidangBanding(jenis, sebelumnya.isi, sebelumnya.refs), bidangBanding(jenis, revisi.isi, revisi.refs))}
+          keterangan={sebelumnya ? 'Dibandingkan dengan versi sebelumnya.' : 'Versi pertama: semua isi ditambahkan.'} />
+      ) : null}
+      {tampil === 'isi' ? (
+        <dl className="grid gap-2 rounded-lg border bg-muted/30 p-3">
+          {bidangBanding(jenis, revisi.isi, revisi.refs).filter(b => b.teks).map(b => (
+            <div key={b.label} className="grid gap-0.5">
+              <dt className="text-xs font-semibold text-muted-foreground">{b.label}</dt>
+              <dd className="text-sm whitespace-pre-wrap" {...(b.arab ? { dir: 'rtl', lang: 'ar' } : {})}>{b.teks}</dd>
+            </div>
+          ))}
+        </dl>
       ) : null}
     </article>
   );

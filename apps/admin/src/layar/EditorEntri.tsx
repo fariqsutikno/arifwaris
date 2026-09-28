@@ -4,7 +4,7 @@
 // ("tayang di web" & "perubahan Anda") dan satu tombol utama per peran: penulis "Kirim untuk review", admin
 // "Terbitkan sekarang", dengan "Simpan draf" sebagai tombol kedua dan satu baris keterangan beda keduanya. Suntingan pertama membuat salinan kerja, berikutnya memperbaruinya.
 // Tombol mati bila tidak ada perubahan, dan meninggalkan halaman dengan perubahan belum disimpan diperingatkan.
-// Tata letak dua kolom: isi (tab Bahasa Indonesia / Bahasa Arab / Kode mentah) di kiri, panel Info (Kelengkapan,
+// Tata letak dua kolom: isi (tab Bahasa Indonesia / Bahasa Arab / Riwayat / Kode mentah) di kiri, panel Info (Kelengkapan,
 // identitas & metadata, rujukan) di kanan. Galat bidang tampil begitu bidangnya ditinggalkan (validasi langsung);
 // "Batalkan perubahan" mengembalikan form ke versi tersimpan terakhir.
 // Identitas entri (kode soal, slug, id) diisi otomatis bila kosong dan terkunci setelah terbit (admin bisa membuka).
@@ -46,7 +46,7 @@ import { lepasPenjaga, usePenjagaPerubahan } from '../penjaga';
 import { pesanGalat } from '../pesanGalat';
 
 const JARAK_URUTAN = 10;
-type Tab = 'form' | 'arab' | 'json';
+type Tab = 'form' | 'arab' | 'json' | 'riwayat';
 // Opsi dropdown yang tetap (dari KB & daftar ahli waris engine); yang bergantung isi database dimuat muatOpsi.
 const OPSI_STATIS: OpsiRuntime = {
   istilah: GLOSARIUM.map(entri => ({ nilai: entri.id, label: `${entri.istilah} (${entri.id})` })),
@@ -290,15 +290,22 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
         <div className={pratinjau ? 'grid gap-4' : 'contents'}>
         <Card>
           <CardContent>
-            {adaArab || peran === 'admin' ? (
+            {adaArab || peran === 'admin' || muatan.entriId ? (
               <Tabs value={tab} onValueChange={gantiTab}>
                 <TabsList>
                   <TabsTrigger value="form">Bahasa Indonesia</TabsTrigger>
                   {adaArab ? <TabsTrigger value="arab">Bahasa Arab</TabsTrigger> : null}
+                  {muatan.entriId ? <TabsTrigger value="riwayat">Riwayat</TabsTrigger> : null}
                   {peran === 'admin' ? <TabsTrigger value="json">Kode mentah</TabsTrigger> : null}
                 </TabsList>
                 <TabsContent value="form" className="pt-2">{formKonten('utama')}</TabsContent>
                 {adaArab ? <TabsContent value="arab" className="pt-2">{formKonten('arab')}</TabsContent> : null}
+                {muatan.entriId ? (
+                  <TabsContent value="riwayat" className="pt-2">
+                    <RiwayatRevisi entriId={muatan.entriId} jenis={muatan.jenis} revisiTerbitId={muatan.entri.revisiTerbitId} versi={muatUlang}
+                      saatBerubah={() => setMuatUlang(n => n + 1)} pakaiSebagaiDraf={bisaSunting ? pakaiSebagaiDraf : undefined} />
+                  </TabsContent>
+                ) : null}
                 {peran === 'admin' ? (
                   <TabsContent value="json" className="pt-2">
                     <p className="mb-2 text-xs text-muted-foreground">Untuk admin: isi entri dalam bentuk JSON, untuk perbaikan yang tidak bisa lewat form.</p>
@@ -389,11 +396,22 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
             : <><span className="font-medium">Kirim untuk review</span>: reviewer memeriksa dulu sebelum tampil di web.</>}
         </p>
       ) : null}
-      {muatan.entriId ? (
-        <RiwayatRevisi entriId={muatan.entriId} jenis={muatan.jenis} revisiTerbitId={muatan.entri.revisiTerbitId} versi={muatUlang} saatBerubah={() => setMuatUlang(n => n + 1)} />
-      ) : null}
     </div>
   );
+
+  /** Isi versi lama → salinan kerja (dibuat atau diganti); versi tayang tidak berubah sampai diterbitkan lagi. */
+  function pakaiSebagaiDraf(revisi: RingkasanRevisi) {
+    const pesan = salinanKerjaId || kotor
+      ? 'Draf Anda yang belum dikirim akan diganti isi versi ini. Lanjutkan?'
+      : 'Buat draf baru dari isi versi ini? Versi yang tayang di web tidak berubah sampai draf diterbitkan.';
+    if (!window.confirm(pesan)) return;
+    void jalankan(async () => {
+      const isi = bacaIsi(muatan!.jenis, revisi.isi);
+      if (!isi.ok) throw new Error(`Isi versi ini tidak bisa dibaca: ${isi.galat}`);
+      if (salinanKerjaId) await repo.editorial.ubahDraf(salinanKerjaId, muatan!.jenis, isi.isi, revisi.refs);
+      else await repo.editorial.buatDraf(muatan!.entriId!, muatan!.jenis, isi.isi, revisi.refs);
+    });
+  }
 
   function mintaKonfirmasi(aksi: 'terbitkan' | 'kirim') {
     // Isi belum sah: tampilkan galat bidang sekarang, tidak perlu membuka dialog.

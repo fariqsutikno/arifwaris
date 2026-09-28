@@ -2,7 +2,7 @@
 // wajib), tab JSON khusus admin, entri tayang langsung disunting (tombol mati tanpa perubahan, kirim → menunggu review,
 // tarik kembali), salinan kerja diperbarui bukan digandakan, admin Terbitkan langsung, alasan terkunci (draf orang
 // lain, reviewer), catatan dikembalikan, dan Sampah (ajukan/batalkan, pindahkan & pulihkan).
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, expect, test, vi } from 'vitest';
 import { buatMemori } from '@waris/data';
 import { keJson, type JenisKonten, type Peran } from '@waris/content';
@@ -409,4 +409,21 @@ test('Lihat perubahan & dialog konfirmasi membandingkan isi form dengan versi ta
   expect(screen.getByRole('dialog', { name: 'Kirim untuk review?' })).toBeTruthy();
   klik('Batal');
   expect(await m.editorial.antreanReview()).toEqual([]);
+});
+
+test('Riwayat: pakai versi lama sebagai draf → salinan kerja berisi versi itu, versi tayang tetap', async () => {
+  const m = siapkan();
+  const { entriId, revisi: pertama } = await tayang(m);
+  m.masukSebagai(SESI_ADMIN);
+  const kedua = await m.editorial.buatDraf(entriId, 'faq', { ...DAFTAR_FAQ_UJI[0]!, pertanyaan: 'Versi dua' }, ['R09-7']);
+  await m.editorial.terbitkanLangsung(kedua);
+  vi.spyOn(window, 'confirm').mockReturnValue(true);
+  tampilkan(m, { entriId });
+  await screen.findByText(/Tayang di web/);
+  bukaTab(/Riwayat/);
+  const baris = await screen.findByLabelText(`revisi ${pertama.slice(0, 8)}`);
+  fireEvent.click(within(baris).getByRole('button', { name: 'Pakai versi ini sebagai draf' }));
+  await screen.findByText(/Draf tersimpan · belum dikirim/);
+  expect((screen.getByLabelText('Pertanyaan') as HTMLInputElement).value).toBe(DAFTAR_FAQ_UJI[0]!.pertanyaan);
+  expect((await m.konten.bacaTerbit({ jenis: 'faq' }))[0]!.revisiId).toBe(kedua);
 });

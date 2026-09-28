@@ -95,3 +95,16 @@ test('kalimatRevisi & susunLinimasa: terbit langsung, tarik pengajuan Sampah, ur
   );
   expect(urut.map(b => (b.jenis === 'revisi' ? b.revisi.id : b.jejak.id))).toEqual(['j', '1']);
 });
+
+test('bandingkan dengan versi sebelumnya & lihat isi versi', async () => {
+  const { m, entriId, r1, r2 } = await siapkan();
+  tampilkan(m, entriId, r2);
+  const barisR2 = await screen.findByLabelText(`revisi ${r2.slice(0, 8)}`);
+  fireEvent.click(within(barisR2).getByRole('button', { name: 'Bandingkan dengan versi sebelumnya' }));
+  expect(within(barisR2).getByText(/Dibandingkan dengan versi sebelumnya/)).toBeTruthy();
+  const barisR1 = screen.getByLabelText(`revisi ${r1.slice(0, 8)}`);
+  fireEvent.click(within(barisR1).getByRole('button', { name: 'Bandingkan dengan versi sebelumnya' }));
+  expect(within(barisR1).getByText(/Versi pertama/)).toBeTruthy();
+  fireEvent.click(within(barisR1).getByRole('button', { name: 'Lihat isi versi ini' }));
+  expect(within(barisR1).getByText(DAFTAR_FAQ_UJI[0]!.pertanyaan)).toBeTruthy();
+});
