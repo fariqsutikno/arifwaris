@@ -6,8 +6,9 @@ import { wajibRef, type JenisKonten } from './skema.js';
 
 export type Peran = 'admin' | 'penulis' | 'reviewer';
 export type StatusRevisi = 'draf' | 'diajukan' | 'disetujui' | 'dikembalikan';
-/** tarik: pembuat menarik kembali pengajuannya (diajukan → draf). terbitkan: admin menerbitkan draf tanpa antrean. */
-export type AksiEditorial = 'ajukan' | 'setujui' | 'kembalikan' | 'tarik' | 'terbitkan';
+/** tarik: pembuat menarik kembali pengajuannya (diajukan → draf). terbitkan: admin menerbitkan draf tanpa antrean.
+ * perbarui: pembuat (atau admin) mengganti isi ajuannya yang masih menunggu; tetap diajukan. */
+export type AksiEditorial = 'ajukan' | 'setujui' | 'kembalikan' | 'tarik' | 'terbitkan' | 'perbarui';
 
 interface Pelaku { peran: Peran | null; pelakuId: string; pembuatId: string }
 type HasilTransisi = { ok: true; status: StatusRevisi } | { ok: false; galat: string };
@@ -28,6 +29,10 @@ export function transisiRevisi(p: Pelaku & { status: StatusRevisi; aksi: AksiEdi
     if (p.status !== 'diajukan' || p.peran === 'reviewer' || !milikSendiriAtauAdmin(p)) return { ok: false, galat: 'revisi ini tidak bisa ditarik kembali' };
     return { ok: true, status: 'draf' };
   }
+  if (p.aksi === 'perbarui') {
+    if (!bolehPerbaruiAjuan({ ...p, status: p.status })) return { ok: false, galat: 'ajuan ini tidak bisa diperbarui' };
+    return { ok: true, status: 'diajukan' };
+  }
   if (p.status !== 'diajukan') return { ok: false, galat: `hanya revisi diajukan yang bisa diperiksa (sekarang ${p.status})` };
   if (p.peran === 'penulis') return { ok: false, galat: 'penulis tidak bisa memeriksa revisi' };
   if (p.peran === 'reviewer' && p.pelakuId === p.pembuatId) return { ok: false, galat: 'reviewer tidak bisa memeriksa revisinya sendiri' };
@@ -38,6 +43,10 @@ export function transisiRevisi(p: Pelaku & { status: StatusRevisi; aksi: AksiEdi
 
 export const bolehSuntingDraf = (p: Pelaku & { status: StatusRevisi }): boolean =>
   p.peran !== null && p.peran !== 'reviewer' && p.status === 'draf' && milikSendiriAtauAdmin(p);
+
+/** Ajuan yang masih menunggu review boleh disunting pembuatnya (atau admin) tanpa ditarik dulu. */
+export const bolehPerbaruiAjuan = (p: Pelaku & { status: StatusRevisi }): boolean =>
+  p.peran !== null && p.peran !== 'reviewer' && p.status === 'diajukan' && milikSendiriAtauAdmin(p);
 
 /** Keadaan entri yang dibutuhkan aturan Sampah (supabase/migrations/20260927000007_sampah_editor.sql). */
 export interface KeadaanSampah {

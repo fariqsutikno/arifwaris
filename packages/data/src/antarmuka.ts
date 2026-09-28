@@ -61,6 +61,8 @@ export interface RepositoriEditorial {
   tarik(revisiId: string): Promise<void>;
   /** Admin: draf langsung terbit tanpa antrean. */
   terbitkanLangsung(revisiId: string): Promise<void>;
+  /** Pembuat (atau admin) mengganti isi ajuannya yang masih menunggu; tetap di antrean. */
+  perbaruiAjuan<J extends JenisKonten>(revisiId: string, jenis: J, isi: IsiKonten[J], refs: string[]): Promise<void>;
   /** Pindah ke Sampah (tidak ada hapus permanen). 'diajukan' = penulis pada entri terbit, menunggu review;
    * 'dibuang' = langsung masuk Sampah. */
   buangEntri(entriId: string, alasan?: string): Promise<'dibuang' | 'diajukan'>;
@@ -74,6 +76,10 @@ export interface RepositoriDiksi {
   setujui(revisiId: string): Promise<void>;
   kembalikan(revisiId: string, catatan: string): Promise<void>;
   terbitkanUlang(revisiId: string): Promise<void>;
+  /** Admin: draf langsung terbit tanpa antrean. */
+  terbitkanLangsung(revisiId: string): Promise<void>;
+  /** Pembuat (atau admin) mengganti teks ajuannya yang masih menunggu; tetap di antrean. */
+  perbaruiAjuan(revisiId: string, idTeks: string, arTeks: string | null): Promise<void>;
   daftarRevisi(kunci: string): Promise<RingkasanRevisiDiksi[]>;
   /** Untuk portal admin: semua kunci, urut halaman lalu kunci, dengan revisi terakhir & terbit. */
   daftarKunci(): Promise<RingkasanKunciDiksi[]>;

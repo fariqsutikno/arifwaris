@@ -90,6 +90,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi', { p_id: revisiId }),
     tarik: revisiId => rpc('tarik_revisi', { p_id: revisiId }),
     terbitkanLangsung: revisiId => rpc('terbitkan_langsung', { p_id: revisiId }),
+    perbaruiAjuan: (revisiId, jenis, isi, refs) => rpc('perbarui_ajuan', { p_id: revisiId, p_isi: isiSah(jenis, isi), p_refs: refs }),
     async buangEntri(entriId, alasan) {
       return await hasil(klien.rpc('buang_entri', { p_entri: entriId, p_alasan: alasan ?? null })) as 'dibuang' | 'diajukan';
     },
@@ -114,6 +115,8 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     setujui: revisiId => rpc('setujui_revisi_diksi', { p_id: revisiId }),
     kembalikan: (revisiId, catatan) => rpc('kembalikan_revisi_diksi', { p_id: revisiId, p_catatan: catatan }),
     terbitkanUlang: revisiId => rpc('terbitkan_ulang_revisi_diksi', { p_id: revisiId }),
+    terbitkanLangsung: revisiId => rpc('terbitkan_langsung_diksi', { p_id: revisiId }),
+    perbaruiAjuan: (revisiId, idTeks, arTeks) => rpc('perbarui_ajuan_diksi', { p_id: revisiId, p_id_teks: idTeks, p_ar_teks: arTeks }),
     async daftarRevisi(kunci) {
       return (await hasil(klien.from('revisi_diksi').select('*').eq('kunci', kunci).order('dibuat_pada')) as any[]).map(keRevisiDiksi);
     },

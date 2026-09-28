@@ -127,6 +127,37 @@ test('tarik: pengajuan kembali jadi draf dan bisa disunting lagi', async () => {
   await m.editorial.ubahDraf(r2, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
 });
 
+test('perbaruiAjuan: isi ajuan diganti, tetap di antrean; penulis lain & reviewer ditolak', async () => {
+  const m = siapkan();
+  const { id } = await terbitkan(m);
+  m.aturPeranLangsung('u-pen', 'penulis');
+  m.aturPeranLangsung('u-rev', 'reviewer');
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  const r2 = await m.editorial.buatDraf(id, 'soal_hitung', SOAL_HITUNG_UJI, ['R09-7']);
+  await m.editorial.ajukan(r2);
+  const baru = { ...SOAL_HITUNG_UJI, judul: 'Judul baru' };
+  await m.editorial.perbaruiAjuan(r2, 'soal_hitung', baru, ['R09-7']);
+  expect(await m.editorial.antreanReview()).toMatchObject([{ id: r2, status: 'diajukan', isi: { judul: 'Judul baru' } }]);
+  m.masukSebagai({ userId: 'u-rev', email: 'rev@x.id' });
+  await expect(m.editorial.perbaruiAjuan(r2, 'soal_hitung', baru, ['R09-7'])).rejects.toThrow('tidak bisa diperbarui');
+});
+
+test('diksi: admin terbitkan langsung; pembuat memperbarui ajuan', async () => {
+  const m = siapkan();
+  await m.diksi.buatKunci('uji.a', 'uji');
+  const r1 = await m.diksi.buatDraf('uji.a', 'Bagi', null, null);
+  await m.diksi.terbitkanLangsung(r1);
+  expect(await m.diksi.bacaTerbit()).toMatchObject([{ kunci: 'uji.a', id: 'Bagi' }]);
+  const r2 = await m.diksi.buatDraf('uji.a', 'Bagikn', null, null);
+  await m.diksi.ajukan(r2);
+  await m.diksi.perbaruiAjuan(r2, 'Bagikan', 'شارك');
+  expect(await m.diksi.antreanReview()).toMatchObject([{ id: r2, idTeks: 'Bagikan', arTeks: 'شارك', status: 'diajukan' }]);
+  m.aturPeranLangsung('u-pen', 'penulis');
+  m.masukSebagai({ userId: 'u-pen', email: 'pen@x.id' });
+  const r3 = await m.diksi.buatDraf('uji.a', 'x', null, null);
+  await expect(m.diksi.terbitkanLangsung(r3)).rejects.toThrow('hanya admin');
+});
+
 test('Sampah entri terbit: penulis mengajukan (tetap tayang), disetujui → hilang dari web, jejak tercatat, pulihkan', async () => {
   const m = siapkan();
   const { id, r1 } = await terbitkan(m);

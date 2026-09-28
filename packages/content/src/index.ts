@@ -18,6 +18,6 @@ export {
 export { tulisBlok, tulisPotongan } from './tulisBlok.js';
 export { ambilRefs, periksaKonsistensi, type BarisKonten } from './konsistensi.js';
 export {
-  transisiRevisi, bolehSuntingDraf, caraBuangEntri, bolehPulihkanEntri, periksaRefs,
+  transisiRevisi, bolehSuntingDraf, bolehPerbaruiAjuan, caraBuangEntri, bolehPulihkanEntri, periksaRefs,
   type Peran, type StatusRevisi, type AksiEditorial, type CaraBuangEntri, type KeadaanSampah,
 } from './editorial.js';

@@ -79,6 +79,13 @@ describe('tarik & terbitkan langsung', () => {
     expect(transisiRevisi({ ...dasar, status: 'draf', aksi: 'terbitkan', peran: 'penulis' }).ok).toBe(false);
     expect(transisiRevisi({ ...dasar, status: 'diajukan', aksi: 'terbitkan', peran: 'admin' }).ok).toBe(false);
   });
+  test('perbarui ajuan: pembuat atau admin, hanya selagi diajukan; tetap diajukan', () => {
+    expect(transisiRevisi({ ...dasar, status: 'diajukan', aksi: 'perbarui', peran: 'penulis' })).toEqual({ ok: true, status: 'diajukan' });
+    expect(transisiRevisi({ status: 'diajukan', aksi: 'perbarui', peran: 'admin', pelakuId: 'a', pembuatId: 'b' }).ok).toBe(true);
+    expect(transisiRevisi({ status: 'diajukan', aksi: 'perbarui', peran: 'penulis', pelakuId: 'a', pembuatId: 'b' }).ok).toBe(false);
+    expect(transisiRevisi({ ...dasar, status: 'diajukan', aksi: 'perbarui', peran: 'reviewer' }).ok).toBe(false);
+    expect(transisiRevisi({ ...dasar, status: 'disetujui', aksi: 'perbarui', peran: 'penulis' }).ok).toBe(false);
+  });
 });
 
 describe('Sampah', () => {

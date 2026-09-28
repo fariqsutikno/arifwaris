@@ -79,7 +79,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     const hasil = transisiRevisi({ ...pelaku(), pembuatId: target.dibuatOleh, status: target.status, aksi, ...(catatan === undefined ? {} : { catatan }) });
     if (!hasil.ok) throw new Error(hasil.galat);
     target.status = hasil.status;
-    if (aksi !== 'ajukan' && aksi !== 'tarik') {
+    if (aksi !== 'ajukan' && aksi !== 'tarik' && aksi !== 'perbarui') {
       target.diperiksaOleh = pelaku().pelakuId;
       if ('diperiksaPada' in target) target.diperiksaPada = sekarang();
     }
@@ -205,6 +205,14 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
     },
+    async perbaruiAjuan(revisiId, jenis, isi, refs) {
+      const target = ambil(revisi, revisiId, 'revisi');
+      if (target.hapus) throw new Error(`ajuan ${revisiId} tidak bisa diperbarui`);
+      jalankanTransisi(target, 'perbarui');
+      target.isi = periksaIsi(jenis, isi, refs);
+      target.refs = [...refs];
+      target.dibuatPada = sekarang();
+    },
     async buangEntri(entriId, alasan) {
       const baris = ambil(entri, entriId, 'entri');
       const cara = caraBuangEntri(keadaanSampah(baris));
@@ -286,6 +294,18 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
       const tujuan = ambil(kunciDiksi, target.kunci, 'kunci diksi');
       tujuan.revisiTerbitId = revisiId;
       tujuan.versiTerbit = ++versi;
+    },
+    async terbitkanLangsung(revisiId) {
+      const target = ambil(revisiDiksi, revisiId, 'revisi diksi');
+      jalankanTransisi(target, 'terbitkan');
+      const tujuan = ambil(kunciDiksi, target.kunci, 'kunci diksi');
+      tujuan.revisiTerbitId = revisiId;
+      tujuan.versiTerbit = ++versi;
+    },
+    async perbaruiAjuan(revisiId, idTeks, arTeks) {
+      const target = ambil(revisiDiksi, revisiId, 'revisi diksi');
+      jalankanTransisi(target, 'perbarui');
+      Object.assign(target, { idTeks, arTeks, dibuatPada: sekarang() });
     },
     async daftarRevisi(kunci) { return [...revisiDiksi.values()].filter(baris => baris.kunci === kunci); },
     // Sama seperti daftarEntri: penyaringan peran ditegakkan lewat gerbang portal, bukan diulang di memori.
