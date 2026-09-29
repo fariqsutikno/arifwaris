@@ -186,6 +186,8 @@ function ceritaKasusKhusus(nama: Langkah<'KASUS_KHUSUS'>['nama']): Potongan[] {
   switch (nama) {
     case 'umariyyatain': return kalimat`Ini termasuk kasus khusus ${istilah('umariyyatain', "al-'Umariyyatain")}.`;
     case 'musyarrakah': return kalimat`Ini termasuk kasus khusus ${istilah('musyarrakah', 'al-Musyarrakah')}.`;
+    case 'musyarrakahTanpaTasyrik':
+      return kalimat`Susunan ini dikenal sebagai ${istilah('musyarrakah', 'al-Musyarrakah')}, tetapi menurut madzhab ini saudara kandung tidak digabung dengan saudara seibu, jadi ia tidak mendapat sisa.`;
     case 'akdariyyah': return kalimat`Ini termasuk kasus khusus ${istilah('akdariyyah', 'al-Akdariyyah')}.`;
     case 'muaddah':
       return kalimat`Ini termasuk kasus khusus ${istilah('muaddah', "al-Mu'addah")}: saudara sebapak ikut dihitung saat menentukan bagian kakek, lalu bagiannya diserahkan kepada saudara kandung.`;

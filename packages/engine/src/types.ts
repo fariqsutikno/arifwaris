@@ -147,7 +147,7 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'ASHABAH'; kelompok: IdKelompok; jenisAshabah: 'binNafsi' | 'bilGhair' | 'maalGhair';
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
       pilihanJadd?: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }> }
-  | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
+  | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'musyarrakahTanpaTasyrik' | 'akdariyyah' | 'muaddah' }
   | { jenis: 'TIRKAH'; kotor: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
       wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
   // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).

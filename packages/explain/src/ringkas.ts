@@ -82,7 +82,9 @@ function babBagian(konteks: Konteks): Bab {
         : langkah.jenisAshabah === 'bilGhair' ? istilah('bil-ghair', 'ashabah bil ghair (2 : 1)') : istilah('maal-ghair', "ashabah ma'al ghair");
       daftarBaris.push(buatBaris(kalimat`${sebutKelompok(konteks, langkah.kelompok)}: ${jenis}${langkah.pilihanJadd ? kalimat` — kakek ${pilihanJadd(langkah.pilihanJadd)}` : '.'}`, langkah.refs));
     } else if (langkah.jenis === 'KASUS_KHUSUS') {
-      daftarBaris.push(buatBaris(kalimat`Kasus khusus: ${istilah(langkah.nama, langkah.nama)}.`, langkah.refs));
+      daftarBaris.push(buatBaris(langkah.nama === 'musyarrakahTanpaTasyrik'
+        ? kalimat`Kasus khusus: ${istilah('musyarrakah', 'musyarrakah')}, tanpa tasyrik.`
+        : kalimat`Kasus khusus: ${istilah(langkah.nama, langkah.nama)}.`, langkah.refs));
     }
   }
   return { judul: 'Bagian masing-masing', daftarBaris };

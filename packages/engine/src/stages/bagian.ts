@@ -7,7 +7,7 @@
 
 import { bandingkan, kali, kurang, pecahan, tambah, type Pecahan } from '@waris/math';
 import type { AlasanFardh, IdKelompok, IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
-import { ATURAN, type AturanMadzhab } from '../rulesets/madzhab.js';
+import { ATURAN, rujukanTitik, type AturanMadzhab } from '../rulesets/madzhab.js';
 import { jaddWalIkhwah } from './jaddWalIkhwah.js';
 import { adalahAkdariyyah, adalahMusyarrakah, adalahUmariyyatain } from './khusus.js';
 import { bobotRata, buatKelompok, penerimaSisa, satuanRuus, type AhliWaris, type KelompokBagian, type TidakDidukung } from './model.js';
@@ -27,8 +27,7 @@ const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAP
 type JenisAshabah = 'binNafsi' | 'bilGhair' | 'maalGhair';
 type HasilTahapBagian = { daftarKelompok: KelompokBagian[]; jejak: LangkahJejak[] };
 
-// `aturan` belum dipakai; diisi overlay K07-1 pada task berikutnya.
-export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[], _aturan: AturanMadzhab = ATURAN.syafii): HasilTahapBagian | TidakDidukung {
+export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[], aturan: AturanMadzhab = ATURAN.syafii): HasilTahapBagian | TidakDidukung {
   const penyusun = buatPenyusun(efektif, kandidat);
 
   const fardhPasangan = bagianPasangan(penyusun);
@@ -37,7 +36,7 @@ export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[], _atu
   bagianKeturunan(penyusun);
   const [ayah] = penyusun.dari('AYAH');
   if (ayah) bagianAyahAtauKakek(penyusun, 'AYAH', ayah, ['R04-5']);
-  const musyarrakah = bagianSaudaraSeibu(penyusun);
+  const musyarrakah = bagianSaudaraSeibu(penyusun, aturan);
   const [kakek] = penyusun.dari('KAKEK');
   if (kakek) {
     const tidakDidukung = bagianKakek(penyusun, kakek);
@@ -175,12 +174,17 @@ function bagianAyahAtauKakek(penyusun: Penyusun, idKelompok: IdKelompok, ahliWar
 // ─── Saudara seibu [R04-16], musyarrakah [R07-2] ──────────────────────────────
 
 /** Mengembalikan true bila musyarrakah (saudara kandung ikut berbagi 1/3 dengan saudara seibu). */
-function bagianSaudaraSeibu(penyusun: Penyusun): boolean {
+function bagianSaudaraSeibu(penyusun: Penyusun, aturan: AturanMadzhab): boolean {
   const awladUmm = penyusun.dari('SAUDARA_SEIBU', 'SAUDARI_SEIBU');
   if (adalahMusyarrakah(penyusun.efektif)) {
-    penyusun.jejak.push({ tahap: 'furudh', refs: ['R07-2'], jenis: 'KASUS_KHUSUS', nama: 'musyarrakah' });
-    penyusun.tambahFardh('MUSYARRAKAH', [...awladUmm, ...penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG')], TSULUTS, { kode: 'MUSYARRAKAH' }, ['R07-2']);
-    return true;
+    const rujukan = rujukanTitik(aturan, 'K07-1', 'R07-2');
+    if (aturan.tasyrik) {
+      penyusun.jejak.push({ tahap: 'furudh', refs: [rujukan], jenis: 'KASUS_KHUSUS', nama: 'musyarrakah' });
+      penyusun.tambahFardh('MUSYARRAKAH', [...awladUmm, ...penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG')], TSULUTS, { kode: 'MUSYARRAKAH' }, [rujukan]);
+      return true;
+    }
+    // [K07-1] [HNB]/[HNF] tanpa tasyrik: saudara seibu tetap 1/3, saudara kandung ashabah atas sisa yang sudah habis.
+    penyusun.jejak.push({ tahap: 'furudh', refs: ['K07-1'], jenis: 'KASUS_KHUSUS', nama: 'musyarrakahTanpaTasyrik' });
   }
   if (awladUmm.length > 0) {
     penyusun.tambahFardh('AWLAD_UMM', awladUmm, awladUmm.length === 1 ? SUDUS : TSULUTS, { kode: 'KALALAH', banyaknya: awladUmm.length }, ['R04-16']);

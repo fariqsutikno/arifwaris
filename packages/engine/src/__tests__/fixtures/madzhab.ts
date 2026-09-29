@@ -154,4 +154,30 @@ export const KASUS_NENEK: KasusMadzhab[] = [
     hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG', maliki: 'TIDAK_DIDUKUNG' } },
 ];
 
-export const KASUS_MADZHAB: KasusMadzhab[] = [...KASUS_NENEK];
+// ─── K07-1: suami, ibu, 2 saudara seibu, saudara lk kandung (bab 7 contoh) ───
+// [SYF]/[MLK] tasyrik: ashl 6 → tashih 18: suami 9, ibu 3, tiap saudara (3 orang) 2.
+// [HNB]/[HNF] tanpa tasyrik: suami 3, ibu 1, tiap saudara seibu 1, saudara kandung 0 (ashl 6).
+const grafK07_1: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'P', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+    A: p('A', 'L', penghubung),
+    AT: p('AT', 'L', penghubung),
+    I: p('I', 'P'),
+    H: p('H', 'L'),
+    SI1: p('SI1', 'L', { idAyah: 'AT', idIbu: 'I' }),
+    SI2: p('SI2', 'P', { idAyah: 'AT', idIbu: 'I' }),
+    SK: p('SK', 'L', { idAyah: 'A', idIbu: 'I' }),
+  },
+  pernikahan: [{ idSuami: 'H', idIstri: 'PW', status: 'utuh' }],
+};
+
+export const KASUS_MUSYARRAKAH: KasusMadzhab[] = [
+  { id: 'MZ8', kode: 'K07-1', menguji: 'musyarrakah', graf: grafK07_1, harapan: {
+    syafii: { saham: { H: 9n, I: 3n, SI1: 2n, SI2: 2n, SK: 2n }, penyebut: 18n },
+    maliki: { saham: { H: 9n, I: 3n, SI1: 2n, SI2: 2n, SK: 2n }, penyebut: 18n },
+    hanbali: { saham: { H: 3n, I: 1n, SI1: 1n, SI2: 1n }, penyebut: 6n },
+    hanafi: { saham: { H: 3n, I: 1n, SI1: 1n, SI2: 1n }, penyebut: 6n } } },
+];
+
+export const KASUS_MADZHAB: KasusMadzhab[] = [...KASUS_NENEK, ...KASUS_MUSYARRAKAH];

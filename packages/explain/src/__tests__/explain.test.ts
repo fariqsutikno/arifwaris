@@ -279,3 +279,12 @@ describe('mode arab (santri)', () => {
     }
   });
 });
+
+describe('K07-1 musyarrakah [HNB] tanpa tasyrik', () => {
+  test('cerita menyebut saudara kandung tidak digabung', async () => {
+    const { KASUS_MUSYARRAKAH } = await import('../../../engine/src/__tests__/fixtures/madzhab.js');
+    const e = jelaskanKasus({ ...bab16.case10.input, graf: KASUS_MUSYARRAKAH[0]!.graf, ruleset: 'hanbali' });
+    expect(e.daftarBab.flatMap(babIni => babIni.daftarBaris.map(keTeksBiasa)).join(' '))
+      .toContain('saudara kandung tidak digabung dengan saudara seibu');
+  });
+});
