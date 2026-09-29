@@ -72,3 +72,9 @@ describe('sinkronkan penghapusan', () => {
     expect((await sinkronkan(memori, setelahHapus))!.konten.map(b => b.slug)).toEqual(['k']);
   });
 });
+
+test('cache lebih baru tanpa kunci narasi tetap mendapat kunci narasi dari bawaan', () => {
+  const bawaan = { versi: 1, konten: [], diksi: [{ kunci: 'narasi.cerita.harta.dibagi', halaman: 'narasi', id: 'x', ar: null, versiTerbit: 1 }] };
+  const cache = { versi: 2, konten: [], diksi: [] };
+  expect(pilihAwal(bawaan, cache).diksi.map(butir => butir.kunci)).toContain('narasi.cerita.harta.dibagi');
+});

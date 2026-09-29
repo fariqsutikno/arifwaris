@@ -16751,6 +16751,181 @@
    "id": "Sisa {sisa} dan masalah radd {ashl_radd} {tabayun}, maka masalah radd dikalikan dengan masalah zawjiyyah: {ashl_zawjiyyah} × {ashl_radd} = {hasil}.",
    "ar": "الباقي {sisa} ومسألة الرد {ashl_radd} {tabayun}، فتضرب مسألة الرد في مسألة الزوجية: {ashl_zawjiyyah} × {ashl_radd} = {hasil}.",
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.munasakhat",
+   "halaman": "narasi",
+   "id": "munasakhat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.jamiah",
+   "halaman": "narasi",
+   "id": "jami'ah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.pembagian_pertama",
+   "halaman": "narasi",
+   "id": "Pembagian harta {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.diteruskan",
+   "halaman": "narasi",
+   "id": "Bagian {mayit} diteruskan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.kematian_berantai",
+   "halaman": "narasi",
+   "id": "Kematian berantai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.apa_yang_terjadi",
+   "halaman": "narasi",
+   "id": "Apa yang terjadi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.penggabungan",
+   "halaman": "narasi",
+   "id": "Menggabungkan dengan pembagian sebelumnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.hasil_akhir",
+   "halaman": "narasi",
+   "id": "Hasil akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.judul.bagian_akhir",
+   "halaman": "narasi",
+   "id": "Bagian akhir tiap ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.label_dari",
+   "halaman": "narasi",
+   "id": "{label} dari {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.sisa_harta",
+   "halaman": "narasi",
+   "id": "Sisa harta {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.pembukaan.wafat_berantai",
+   "halaman": "narasi",
+   "id": "{pewaris} wafat. Sebelum hartanya dibagi, {berikutnya} ikut wafat, berurutan seperti itu. Kasus seperti ini disebut {munasakhat}: bagian yang sudah menjadi hak orang yang wafat belakangan diteruskan kepada ahli warisnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.pembukaan.keadaan.1",
+   "halaman": "narasi",
+   "id": "Yang wafat belakangan hanya meninggalkan ahli waris yang sama dengan sisa ahli waris {pewaris}, dan bagian mereka tidak berubah (keadaan pertama). Karena itu hasil akhirnya sama dengan membagi harta {pewaris} langsung kepada yang masih hidup, seolah yang wafat belakangan tidak ada. Langkah bertahap di bawah tetap ditampilkan sebagai buktinya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.pembukaan.keadaan.2",
+   "halaman": "narasi",
+   "id": "Ahli waris masing-masing yang wafat belakangan tidak ikut mewarisi dari {pewaris} maupun dari yang lain (keadaan kedua). Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus; langkah bertahap di bawah memberi hasil yang sama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.pembukaan.keadaan.3",
+   "halaman": "narasi",
+   "id": "Susunan ahli warisnya berubah dari satu kematian ke kematian berikutnya (keadaan ketiga), jadi bagian tiap orang yang wafat diteruskan satu per satu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.pembukaan.hanya_bagian",
+   "halaman": "narasi",
+   "id": "Yang diteruskan hanyalah bagian dari harta {pewaris} yang sampai kepada mereka, bukan pembagian waris atas seluruh harta mereka. Hutang, wasiat, dan harta lain milik mereka diselesaikan oleh ahli warisnya masing-masing.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.pembukaan.dilewati",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mendapat bagian dari harta {pewaris}, jadi tidak ada yang diteruskan kepada ahli warisnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.penggabungan.bagian_mayit",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} dari {sebelum} bagian. Bagian itu dibagi kepada ahli warisnya, yang pembagiannya memakai {masalah} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.penggabungan.jamiah",
+   "halaman": "narasi",
+   "id": "Angka pembagi gabungan ({jamiah}) sekarang {nilai}:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.hubungan.tamatsul",
+   "halaman": "narasi",
+   "id": "{saham} sama dengan {masalah} ({tamatsul}), jadi angka pembagi tidak perlu diperbesar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.hubungan.habis",
+   "halaman": "narasi",
+   "id": "{saham} habis dibagi {masalah}, jadi angka pembagi tidak perlu diperbesar; bagian ahli waris {siapa} dikali {wafq_saham}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.hubungan.tawafuq",
+   "halaman": "narasi",
+   "id": "{saham} dan {masalah} sama-sama habis dibagi {fpb} ({tawafuq}). Angka pembagi sebelumnya dikali {masalah} ÷ {fpb} = {wafq_masalah} ({wafq}), dan bagian ahli waris {siapa} dikali {saham} ÷ {fpb} = {wafq_saham}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.hubungan.tabayun",
+   "halaman": "narasi",
+   "id": "{saham} dan {masalah} tidak bisa sama-sama dibagi kecuali oleh 1 ({tabayun}). Angka pembagi sebelumnya dikali {masalah}, dan bagian ahli waris {siapa} dikali {saham}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.hasil.diringkas_semua",
+   "halaman": "narasi",
+   "id": "Semua angka bisa diringkas dengan membagi {faktor}: {jamiah} menjadi {ringkas}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.munasakhat.hasil.diringkas",
+   "halaman": "narasi",
+   "id": "diringkas {saham}/{jamiah}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
