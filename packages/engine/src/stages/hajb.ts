@@ -72,11 +72,16 @@ function cariHajib(ahliWaris: AhliWaris, efektif: AhliWaris[], aturan: AturanMad
       return hajibDari(olehNenek, rujukanTitik(aturan, 'K04-1', 'R04-9'));
     }
 
-    case 'SAUDARA_KANDUNG': case 'SAUDARI_KANDUNG':
-      return hajibDari([...faruMudzakkar, ...ayah], 'R06-4');
+    case 'SAUDARA_KANDUNG': case 'SAUDARI_KANDUNG': {
+      const penghalangDasar = [...faruMudzakkar, ...ayah];
+      // [K05-1] [HNF] kakek = ayah: menghijab saudara kandung/sebapak.
+      if (aturan.kakekMenghijabSaudara && penghalangDasar.length === 0 && kakek.length > 0) return hajibDari(kakek, 'K05-1');
+      return hajibDari(penghalangDasar, 'R06-4');
+    }
 
     case 'SAUDARA_SEBAPAK': case 'SAUDARI_SEBAPAK': {
       const penghalangDasar = [...faruMudzakkar, ...ayah];
+      if (aturan.kakekMenghijabSaudara && penghalangDasar.length === 0 && kakek.length > 0) return hajibDari(kakek, 'K05-1');
       // [R08-4] bersama kakek, saudara sebapak tidak digugurkan kandung di sini; mu'addah (bab 08) yang mengatur.
       if (kakek.length > 0) return hajibDari(penghalangDasar, 'R06-3');
       const olehKandung = [...denganKunci(efektif, ['SAUDARA_KANDUNG']), ...saudariMaalGhair(efektif, 'SAUDARI_KANDUNG')];

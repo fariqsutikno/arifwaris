@@ -39,7 +39,7 @@ export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[], atur
   const musyarrakah = bagianSaudaraSeibu(penyusun, aturan);
   const [kakek] = penyusun.dari('KAKEK');
   if (kakek) {
-    const tidakDidukung = bagianKakek(penyusun, kakek);
+    const tidakDidukung = bagianKakek(penyusun, kakek, aturan);
     if (tidakDidukung) return tidakDidukung;
   }
   // Bersama kakek, bagian saudara kandung/sebapak sudah diatur bab 08 di atas.
@@ -194,7 +194,7 @@ function bagianSaudaraSeibu(penyusun: Penyusun, aturan: AturanMadzhab): boolean 
 
 // ─── Kakek [R04-6] dan bab 08 ─────────────────────────────────────────────────
 
-function bagianKakek(penyusun: Penyusun, kakek: AhliWaris): TidakDidukung | undefined {
+function bagianKakek(penyusun: Penyusun, kakek: AhliWaris, aturan: AturanMadzhab): TidakDidukung | undefined {
   const saudaraBersamaKakek = penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK');
 
   if (adalahAkdariyyah(penyusun.efektif)) {
@@ -208,7 +208,8 @@ function bagianKakek(penyusun: Penyusun, kakek: AhliWaris): TidakDidukung | unde
   }
 
   if (saudaraBersamaKakek.length === 0) {
-    bagianAyahAtauKakek(penyusun, 'KAKEK', kakek, ['R04-6']);
+    // [K05-1] [HNF] kakek = ayah; R04-6 berbeda hanya pada butir saudara, yang sudah dihijab di tahap hajb.
+    bagianAyahAtauKakek(penyusun, 'KAKEK', kakek, [aturan.kakekMenghijabSaudara ? 'K05-1' : 'R04-6']);
     return undefined;
   }
 

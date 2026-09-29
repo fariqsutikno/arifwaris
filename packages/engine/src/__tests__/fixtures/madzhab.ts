@@ -180,4 +180,63 @@ export const KASUS_MUSYARRAKAH: KasusMadzhab[] = [
     hanafi: { saham: { H: 3n, I: 1n, SI1: 1n, SI2: 1n }, penyebut: 6n } } },
 ];
 
-export const KASUS_MADZHAB: KasusMadzhab[] = [...KASUS_NENEK, ...KASUS_MUSYARRAKAH];
+// ─── K05-1: istri, kakek, saudara lk kandung ───
+// [SYF]/[HNB]/[MLK] (bab 08): istri 1/4; sisa 3/4, muqasamah 3/8 terbaik → tashih 8: istri 2, kakek 3, saudara 3.
+// [HNF]: kakek menghijab saudara (Mabsuth 29/180) → istri 1, kakek 3 (ashl 4).
+const grafK05_1: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+    A: p('A', 'L', { ...penghubung, idAyah: 'K' }),
+    I: p('I', 'P', penghubung),
+    K: p('K', 'L'),
+    W: p('W', 'P'),
+    SK: p('SK', 'L', { idAyah: 'A', idIbu: 'I' }),
+  },
+  pernikahan: [{ idSuami: 'PW', idIstri: 'W', status: 'utuh' }],
+};
+
+// ─── K08-1 akdariyyah: suami, ibu, kakek, saudari kandung (= bab 16 kasus 12) ───
+// [SYF]/[HNB]/[MLK]: 27 → suami 9, ibu 6, saudari 4, kakek 8. [HNF]: saudari terhijab → suami 3, ibu 2, kakek 1.
+const grafAkdariyyah: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'P', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+    A: p('A', 'L', { ...penghubung, idAyah: 'K' }),
+    K: p('K', 'L'),
+    I: p('I', 'P'),
+    H: p('H', 'L'),
+    SK: p('SK', 'P', { idAyah: 'A', idIbu: 'I' }),
+  },
+  pernikahan: [{ idSuami: 'H', idIstri: 'PW', status: 'utuh' }],
+};
+
+// ─── K08-1 mu'addah: kakek, saudari kandung, saudara lk sebapak ───
+// [SYF]/[HNB]/[MLK]: muqasamah 5 kepala, kakek 2/5; saudari 1/2; sebapak sisanya 1/10 → kakek 4, saudari 5, sebapak 1 (10).
+// [HNF]: kakek menghijab keduanya → kakek seluruhnya.
+const grafMuaddah: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+    A: p('A', 'L', { ...penghubung, idAyah: 'K' }),
+    I: p('I', 'P', penghubung),
+    IT: p('IT', 'P', penghubung),
+    K: p('K', 'L'),
+    SK: p('SK', 'P', { idAyah: 'A', idIbu: 'I' }),
+    SB: p('SB', 'L', { idAyah: 'A', idIbu: 'IT' }),
+  },
+  pernikahan: [],
+};
+
+const tigaMadzhab = (hasil: { saham: Record<string, bigint>; penyebut: bigint }) => ({ syafii: hasil, hanbali: hasil, maliki: hasil });
+
+export const KASUS_KAKEK: KasusMadzhab[] = [
+  { id: 'MZ9', kode: 'K05-1', menguji: 'kakek bersama saudara kandung', graf: grafK05_1, harapan: {
+    ...tigaMadzhab({ saham: { W: 2n, K: 3n, SK: 3n }, penyebut: 8n }), hanafi: { saham: { W: 1n, K: 3n }, penyebut: 4n } } },
+  { id: 'MZ10', kode: 'K08-1', menguji: 'akdariyyah', graf: grafAkdariyyah, harapan: {
+    ...tigaMadzhab({ saham: { H: 9n, I: 6n, SK: 4n, K: 8n }, penyebut: 27n }), hanafi: { saham: { H: 3n, I: 2n, K: 1n }, penyebut: 6n } } },
+  { id: 'MZ11', kode: 'K08-1', menguji: "mu'addah", graf: grafMuaddah, harapan: {
+    ...tigaMadzhab({ saham: { K: 4n, SK: 5n, SB: 1n }, penyebut: 10n }), hanafi: { saham: { K: 1n }, penyebut: 1n } } },
+];
+
+export const KASUS_MADZHAB: KasusMadzhab[] = [...KASUS_NENEK, ...KASUS_MUSYARRAKAH, ...KASUS_KAKEK];
