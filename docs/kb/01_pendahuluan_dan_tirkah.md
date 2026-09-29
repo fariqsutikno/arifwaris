@@ -63,7 +63,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R01-1 | Urutan hak atas tirkah | RDH | Kitab al-Fara'idh, pembuka Bab 1 | «أن يبدأ من تركة الميت بمؤنة تجهيزه بالمعروف ما لم يتعلق به حق غيره. فإن تعلق كالمرهون، وما يتعلق به زكاة... قدم حق الغير، ثم تقضى ديونه من تركته... ثم تنفذ وصاياه من ثلث الباقي، ثم يقسم الباقي بين الورثة» |
+| R01-1 | Urutan hak atas tirkah | RDH | Raudhah 6/3 (Kitab al-Fara'idh, pembuka Bab 1) · shamela:499/2292 | «أن يبدأ من تركة الميت بمؤنة تجهيزه بالمعروف ما لم يتعلق به حق غيره. فإن تعلق كالمرهون، وما يتعلق به زكاة... قدم حق الغير، ثم تقضى ديونه من تركته... ثم تنفذ وصاياه من ثلث الباقي، ثم يقسم الباقي بين الورثة» |
 | R01-2 | Dalil pokok furudh | Q | An-Nisa' 11, 12, 176 quran:4:11 quran:4:12 quran:4:176 | Teks ayat dikutip di 1.2. |
 | R01-3 | Ashabah mengambil sisa | H | Al-Bukhari no. 6732; Muslim no. 1615, dari Ibnu 'Abbas · hadits:bukhari:6732 hadits:muslim:1615 | «ألحقوا الفرائض بأهلها، فما بقي فلأولى رجل ذكر» |
 | R01-4 | Wasiat maksimal 1/3 | H | Al-Bukhari no. 2742; Muslim no. 1628, hadits Sa'd bin Abi Waqqash · hadits:bukhari:2742 hadits:muslim:1628 | «الثلث، والثلث كثير» |

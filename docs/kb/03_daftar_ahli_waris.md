@@ -76,10 +76,10 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R03-1 | 15 ahli waris laki-laki, 10 perempuan | RDH | Bab 1, Fashl al-Mujma' 'ala Tauritsihim | «الرجال الوارثون خمسة عشر... والنساء الوارثات عشر» |
-| R03-2 | Paman mencakup paman ayah dan kakek | RDH | Idem | «ويدخل في لفظ العم عم الميت، وعم أبيه، وعم جده إلى حيث ينتهي... بخلاف الأخ، فإن المراد به أخو الميت فقط» |
-| R03-3 | Jika semua ahli waris berkumpul | RDH | Idem, far' | «إذا اجتمع الرجال الوارثون ورث منهم الابن، والأب، والزوج فقط. وإذا اجتمع النساء، فالبنت، وبنت الابن، والأم، والزوجة، والأخت للأبوين. وإذا اجتمع الصنفان... ورث خمسة: الأبوان، والابن، والبنت، وأحد الزوجين» |
-| R03-4 | Nenek di atas kakek mewarisi | RDH | Bab 1, Fashl al-Jaddah | «وفي أم أب الأب، وأم من فوقه من الأجداد وأمهاتهن قولان. المشهور: أنهن وارثات» |
-| R03-5 | Nenek fasidah bukan ahli waris | RDH | Idem | «وأما الجدة المدلية بذكر بين أنثيين، كأم أبي الأم فلا ترث، بل هي من ذوي الأرحام» |
-| R03-6 | Klasifikasi furudh/ashabah | RDH | Bab 1, Fashl Bayan ma Yastahiqquhu | «منهم من لا يرث إلا بالفرضية، وهم: الزوجان، والأم، والجدة، وولد الأم... ومنهم من يرث بهما جمعا وانفرادا، وهما: الأب، والجد» |
-| R03-7 | Hanya saudara seibu, laki-laki yang bernasab lewat perempuan dan mewarisi | RDH | Bab 1, qultu Nawawi | «وليس في الورثة ذكر يدلي بأنثى فيرث إلا الأخ للأم» |
+| R03-1 | 15 ahli waris laki-laki, 10 perempuan | RDH | Raudhah 6/4 (Bab 1, Fashl al-Mujma' 'ala Tauritsihim) · shamela:499/2293 | «الرجال الوارثون خمسة عشر... والنساء الوارثات عشر» |
+| R03-2 | Paman mencakup paman ayah dan kakek | RDH | Raudhah 6/5 · shamela:499/2294 | «ويدخل في لفظ العم عم الميت، وعم أبيه، وعم جده إلى حيث ينتهي... بخلاف الأخ، فإن المراد به أخو الميت فقط» |
+| R03-3 | Jika semua ahli waris berkumpul | RDH | Raudhah 6/5 (far') · shamela:499/2294 | «إذا اجتمع الرجال الوارثون ورث منهم الابن، والأب، والزوج فقط. وإذا اجتمع النساء، فالبنت، وبنت الابن، والأم، والزوجة، والأخت للأبوين. وإذا اجتمع الصنفان... ورث خمسة: الأبوان، والابن، والبنت، وأحد الزوجين» |
+| R03-4 | Nenek di atas kakek mewarisi | RDH | Raudhah 6/9 (Bab 1, Fashl al-Jaddah) · shamela:499/2298 | «وفي أم أب الأب، وأم من فوقه من الأجداد وأمهاتهن قولان. المشهور: أنهن وارثات» |
+| R03-5 | Nenek fasidah bukan ahli waris | RDH | Raudhah 6/9 · shamela:499/2298 | «وأما الجدة المدلية بذكر بين أنثيين، كأم أبي الأم فلا ترث، بل هي من ذوي الأرحام» |
+| R03-6 | Klasifikasi furudh/ashabah | RDH | Raudhah 6/8 (Bab 1, Fashl Bayan ma Yastahiqquhu) · shamela:499/2297 | «منهم من لا يرث إلا بالفرضية، وهم: الزوجان، والأم، والجدة، وولد الأم... ومنهم من يرث بهما جمعا وانفرادا، وهما: الأب، والجد» |
+| R03-7 | Hanya saudara seibu, laki-laki yang bernasab lewat perempuan dan mewarisi | RDH | Raudhah 6/5 (Bab 1, tambahan an-Nawawi setelah «قلت») · shamela:499/2294 | «وليس في الورثة ذكر يدلي بأنثى فيرث إلا الأخ للأم» |
