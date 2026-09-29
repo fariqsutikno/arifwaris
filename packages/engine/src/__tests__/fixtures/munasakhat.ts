@@ -23,10 +23,10 @@ export interface MunasakhatFixture {
   };
 }
 
-const munasakhat = (graf: GrafKeluarga, urutanWafat: string[], lahirSetelahWafat?: Record<string, string>): InputMunasakhat => ({
+const munasakhat = (graf: GrafKeluarga, urutanWafat: string[], dikandungSetelahWafat?: Record<string, string>): InputMunasakhat => ({
   dasar: input(graf),
   urutanWafat,
-  ...(lahirSetelahWafat ? { lahirSetelahWafat } : {}),
+  ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
 });
 
 const placeholder = (id: string, jenisKelamin: 'L' | 'P', extra = {}) => p(id, jenisKelamin, { statusHidup: 'wafat', penghubung: true, ...extra });
@@ -208,7 +208,7 @@ export const M8: MunasakhatFixture = {
   },
 };
 
-// ─── M9: 4 mayit berantai (kitab mencetak ibn 613; 525 + 168 = 693) ───
+// ─── M9: 4 mayit berantai (kitab salah cetak ibn 613; 525 + 168 = 693) ───
 export const M9: MunasakhatFixture = {
   id: 'M9', menguji: '4 mayit berantai, semua tabayun',
   input: munasakhat({
@@ -234,3 +234,19 @@ export const M9: MunasakhatFixture = {
 };
 
 export const MUNASAKHAT_FIXTURES = [M1, M2, M3, M4, M5, M6, M7, M8, M9];
+
+// ─── Di luar bab 16: sisa harta mayit kedua keluar [R09-9] ───
+// Istri D wafat: suami H 1/4, anak lk S (dari suami terdahulu) 3/4 → 4: H 1, S 3.
+// H wafat, ahli warisnya hanya istri kedua W2: 1/4, sisa 3/4 keluar → 4: W2 1, sisa 3.
+// Saham H 1 vs 4 tabayun → jami'ah 16: S 12, W2 1, sisa H 3.
+export const SISA_KELUAR_MAYIT_KEDUA: InputMunasakhat = munasakhat({
+  idPewaris: 'D',
+  orang: {
+    D: p('D', 'P', { statusHidup: 'wafat' }),
+    X: placeholder('X', 'L'),
+    S: p('S', 'L', { idAyah: 'X', idIbu: 'D' }),
+    H: p('H', 'L'),
+    W2: p('W2', 'P'),
+  },
+  pernikahan: [{ idSuami: 'H', idIstri: 'D', status: 'utuh' }, { idSuami: 'H', idIstri: 'W2', status: 'utuh' }],
+}, ['H']);

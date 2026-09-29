@@ -8,7 +8,8 @@ import { daftarInduk, hitungIsian, INDUK_BARU_WAFAT, jenisDari, kurangiAhliWaris
 import { INFO_TIDAK_ADA, KELUARGA_INTI, KERABAT_LAIN, KETERANGAN_HUBUNGAN, LABEL_SEHARI, sebutAlmarhum } from '../konten/ahliWaris';
 import { Arab, TombolIkon } from '../ui/Tooltip';
 import { useBahasa } from '../preferensi';
-import { LABEL_ARAB } from '@waris/explain';
+import { labelArab } from '@waris/explain';
+import { kamusNarasi } from '../konten/kamusNarasi';
 import { t } from '../terjemah';
 
 interface Props { graf: GrafKeluarga; idMayit: IdOrang; ubahGraf: (ubah: (graf: GrafKeluarga) => GrafKeluarga) => void }
@@ -96,7 +97,7 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   return (
     <li className={jumlah > 0 ? 'kontrol-jumlah ada' : 'kontrol-jumlah'} role="group" aria-label={label}>
       <div className="baris-kontrol">
-        <span className="nama-kontrol">{label}{bahasa !== 'id' && <> <Arab>{LABEL_ARAB[kunci]}</Arab></>}
+        <span className="nama-kontrol">{label}{bahasa !== 'id' && <> <Arab>{labelArab({ kamus: kamusNarasi, bahasa: 'ar' }, kunci)}</Arab></>}
           {keterangan && <small>{sebutAlmarhum(keterangan, jenisKelaminMayit)}</small>}
           {jenis?.kunciInduk && (
             <select aria-label={t('hitung.label_dari_siapa', { label })} value={indukTerpilih} onChange={e => setIdInduk(e.target.value)}>

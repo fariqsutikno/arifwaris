@@ -164,3 +164,16 @@ Satu blok = satu prompt. Pertanyaan ditulis dalam bahasa Arab karena korpus Sham
 ```
 عند الشافعية: من يرث اللقيط إذا مات ولا وارث له من النسب؟ وهل يرثه الملتقط؟ وما حكم ميراثه إذا استلحقه رجل؟ أريد نص روضة الطالبين (كتاب اللقيط) أو المنهاج وشروحه، مع الجزء والصفحة.
 ```
+
+### D5 — Verifikasi 18.4 (2026-09-29): yang belum ketemu
+Dicari di Mughni (8463), Mabsuth (5423), 'Iqd (14594), Mawahib (569), Minah al-Jalil (21614), Tuhfat al-Muluk (6173). Kata kunci pencarian pendek karena pencarian memakai AND semua kata.
+```
+R01-1 [HNB]: مؤنة التجهيز الرهن مقدم / الكفن من رأس المال / الحقوق المتعلقة بالتركة — tidak ada di Mughni; hanya catatan Hasyiyah al-Lubdi (sekunder). Perlu Kasysyaf al-Qina' atau Muntaha.
+R01-1 [HNF]: urutan rahn vs tajhiz — Mabsuth 29/136 hanya menyebut tajhiz lalu dain; perlu as-Sirajiyyah + syarahnya.
+R09-2 [HNB][HNF]: عدد الرءوس / جعلت كل ذكر باثنين — tidak ada pernyataan eksplisit.
+R13-1 [MLK]: الحمل يرث إن استهل / شرطان — tidak ada di 'Iqd/Mawahib/Minah; perlu Mukhtashar Khalil bab al-fara'id (fashl al-haml) + Syarh ad-Dardir.
+R04-6 [MLK]: زوج وأم وجد — 'umariyyatain dengan kakek belum eksplisit di 'Iqd.
+R03-2 [MLK]: عم الأب — belum eksplisit.
+R02-1 [HNB]: أسباب الإرث ثلاثة/أربعة — belum ada pernyataan setara di Mughni.
+R04-8 [HNF][MLK]: جدة ذات قرابتين — hanya dinukil Mughni 6/303; belum ke Mabsuth (Abu Yusuf vs Muhammad) atau 'Iqd/Mawahib.
+```

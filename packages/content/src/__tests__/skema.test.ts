@@ -62,3 +62,7 @@ test('soal_kuis: pengecoh lama digabung ke pembahasan; alasanPilihan harus lengk
   expect(!kurang.ok && kurang.galat).toMatch(/^alasanPilihan: /);
   expect(bacaIsi('soal_kuis', { ...soal, alasanPilihan: [[], ...lengkap.slice(1)] }).ok).toBe(false);
 });
+
+test('jenis tak dikenal (mis. dari DB yang lebih baru dari kode) ditolak, bukan melempar', () => {
+  expect(bacaIsi('jenis_baru' as JenisKonten, {})).toEqual({ ok: false, galat: 'jenis konten tidak dikenal: jenis_baru' });
+});

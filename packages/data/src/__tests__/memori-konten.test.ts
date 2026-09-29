@@ -130,6 +130,22 @@ describe('memori: konten & editorial', () => {
     await db.diksi.setujui(revisiId);
     expect(await db.diksi.bacaTerbit()).toEqual([{ kunci: 'hitung.lanjut', halaman: 'hitung', id: 'Lanjut', ar: null, versiTerbit: 1 }]);
   });
+
+  test('revisi diksi yang mengubah himpunan sisipan ditolak', async () => {
+    const db = siapkan();
+    await db.diksi.buatKunci('narasi.tes.contoh', 'narasi');
+    const revisiId = await db.diksi.buatDraf('narasi.tes.contoh', 'Harta {jumlah} untuk {orang}.', null, null);
+    await db.diksi.ajukan(revisiId);
+    db.masukSebagai(REVIEWER);
+    await db.diksi.setujui(revisiId);
+    db.masukSebagai(PENULIS);
+    await expect(db.diksi.buatDraf('narasi.tes.contoh', 'Harta untuk {orang}.', null, null))
+      .rejects.toThrow('Teks harus tetap memuat bagian otomatis: {jumlah}, {orang}');
+    await expect(db.diksi.buatDraf('narasi.tes.contoh', 'Harta {jumlah} untuk {orang}.', 'لـ{orang}', null)).rejects.toThrow(/bagian otomatis/);
+    const bolehId = await db.diksi.buatDraf('narasi.tes.contoh', 'Untuk {orang}: {jumlah}.', null, null);
+    await db.diksi.ajukan(bolehId);
+    await expect(db.diksi.perbaruiAjuan(bolehId, 'Untuk {orang}.', null)).rejects.toThrow(/bagian otomatis/);
+  });
 });
 
 test('saringDiksiValid membuang diksi rusak dari cache', async () => {

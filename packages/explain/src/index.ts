@@ -1,7 +1,7 @@
-export { jelaskan, type BabPenjelasan, type Penjelasan } from './narasi.js';
+export { jelaskan, type BabPenjelasan, type OpsiPenjelasan, type Penjelasan } from './narasi.js';
 export type { KolomBab } from './cerita.js';
 export { narasiNisab } from './nisab.js';
-export { keTeksBiasa, type BarisPenjelasan, type Potongan } from './segments.js';
+export { keTeksBiasa, susun, teksKamus, type Bahasa, type Kamus, type Penyusun, type BarisPenjelasan, type Potongan } from './segments.js';
 export { ID_ISTILAH, type IdIstilah } from './terms.js';
 export { jelaskanMunasakhat, type PenjelasanMunasakhat, type BagianMunasakhat } from './munasakhat.js';
-export { LABEL_ARAB, angkaArab } from './arab.js';
+export { labelArab, angkaArab } from './arab.js';

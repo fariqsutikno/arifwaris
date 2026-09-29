@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, sqlDaftarRefs, uraiTokenTautan, uraiTautan } from '../index.js';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, KEBERLAKUAN, MATRIKS_KHILAF, cariTitikKhilaf, sqlDaftarRefs, uraiTokenTautan, uraiTautan } from '../index.js';
+import { BERLAKU_LINTAS_MADZHAB } from '../../../engine/src/rulesets/berlaku.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
   const teksBab = [
@@ -180,5 +181,43 @@ describe('uraiTautan — cari token di dalam teks kolom Sumber', () => {
 
   test('token salah di dalam teks tetap throw', () => {
     expect(() => uraiTautan('lihat islamqa:xyz')).toThrow('Token islamqa tidak valid');
+  });
+});
+
+describe('KB 18.4 keberlakuan token', () => {
+  // Token Rxx-y yang dipakai kode engine (di luar tes), per 2026-09-29.
+  const TOKEN_ENGINE = ['R01-1', 'R01-4', 'R01-7', 'R01-9', 'R02-1', 'R02-3', 'R02-4', 'R02-9', 'R03-1', 'R03-2', 'R03-4', 'R03-5', 'R04-10', 'R04-11', 'R04-12', 'R04-13', 'R04-14', 'R04-16', 'R04-2', 'R04-3', 'R04-4', 'R04-5', 'R04-6', 'R04-7', 'R04-8', 'R04-9', 'R05-2', 'R05-3', 'R05-4', 'R05-5', 'R06-2', 'R06-3', 'R06-4', 'R06-5', 'R06-6', 'R07-1', 'R07-2', 'R07-3', 'R08-2', 'R08-3', 'R08-4', 'R08-5', 'R09-1', 'R09-10', 'R09-2', 'R09-3', 'R09-4', 'R09-7', 'R09-8', 'R09-9', 'R10-1', 'R10-2', 'R10-3', 'R11-1', 'R12-1', 'R12-2', 'R12-3', 'R13-1', 'R13-2', 'R14-3', 'R14-4', 'R14-5'];
+
+  test('setiap token engine tercantum tepat sekali', () => {
+    const tokens = KEBERLAKUAN.map(baris => baris.token);
+    expect(new Set(tokens).size).toBe(tokens.length);
+    expect([...tokens].sort()).toEqual([...TOKEN_ENGINE].sort());
+  });
+
+  test('konstanta engine sama persis dengan tabel KB', () => {
+    for (const madzhab of ['hanbali', 'hanafi', 'maliki'] as const) {
+      const dariKb = KEBERLAKUAN.filter(baris => baris[madzhab]).map(baris => baris.token).sort();
+      expect([...BERLAKU_LINTAS_MADZHAB[madzhab]].sort(), madzhab).toEqual(dariKb);
+    }
+  });
+});
+
+describe('Matriks khilaf bab 18.2', () => {
+  test('memuat kode Kxx-y unik', () => {
+    const kode = MATRIKS_KHILAF.map(titik => titik.kode);
+    expect(kode).toEqual(expect.arrayContaining(['K03-1', 'K04-1', 'K04-2', 'K05-1', 'K07-1', 'K08-1', 'K09-1', 'K13a-1']));
+    expect(new Set(kode).size).toBe(kode.length);
+  });
+
+  test('K04-2 [HNB] berisi sel Mughni dan tautannya', () => {
+    const titik = cariTitikKhilaf('K04-2')!;
+    expect(titik.sel.hanbali).toContain('tidak terhijab');
+    expect(titik.tautan.hanbali.map(tautan => tautan.label).join(' ')).toContain('8463/2625');
+  });
+
+  // grep -rohE "K[0-9]{2}[a-d]?-[0-9]+" packages/engine/src --exclude-dir=__tests__ | sort -u
+  const KODE_ENGINE = ['K02-3', 'K03-1', 'K04-1', 'K04-2', 'K04-3', 'K05-1', 'K07-1', 'K08-1', 'K09-1'];
+  test.each(KODE_ENGINE)('%s yang dipakai engine ada di matriks', kode => {
+    expect(cariTitikKhilaf(kode)).toBeDefined();
   });
 });

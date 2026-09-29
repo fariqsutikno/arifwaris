@@ -42,7 +42,9 @@ export function keJson<J extends JenisKonten>(_jenis: J, isi: IsiKonten[J]): unk
 
 export function bacaIsi<J extends JenisKonten>(jenis: J, json: unknown):
   { ok: true; isi: IsiKonten[J] } | { ok: false; galat: string } {
-  const hasil = SKEMA[jenis].safeParse(json);
+  const skema: z.ZodTypeAny | undefined = SKEMA[jenis];
+  if (!skema) return { ok: false, galat: `jenis konten tidak dikenal: ${jenis}` };
+  const hasil = skema.safeParse(json);
   return hasil.success
     ? { ok: true, isi: hasil.data as IsiKonten[J] }
     : { ok: false, galat: hasil.error.issues.map(isu => `${isu.path.join('.')}: ${isu.message}`).join('; ') };

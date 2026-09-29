@@ -72,3 +72,20 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R01-7 | Ijazah wasiat baru sah setelah wafat | BMZ | Bahr al-Madzhab, ar-Ruyani, Kitab al-Washaya, 8/42 · shamela:16934/3737 | «فأجازها في حياته، لم يلزمه الإجازة وكان مخيرًا بعد الموت بين الإجازة والرد وبه قال أبو حنيفة، وأكثر الفقهاء». Fitur ijazah tetap tidak diimplementasikan. |
 | R01-9 | Auto-cap wasiat ke 1/3 = keputusan scope engine | — | Keputusan desain (bukan klaim fikih independen) | Dalil batas 1/3: R01-4 (hadits Sa'd). Engine ini tidak mengimplementasikan mekanisme ijazah, sehingga setiap wasiat > 1/3 dipangkas otomatis. Hasil ini kebetulan sama dengan hukum asal *pada kondisi tanpa ijazah*, tapi TIDAK mencakup skenario ijazah. R01-7 tetap terbuka untuk fase lanjut. |
 | R01-8 | Mempelajari faraidh fardhu kifayah | H (dha'if) | Ibnu Majah no. 2719, dari Abu Hurairah — sanadnya dha'if · hadits:ibnmajah:2719 | «تعلموا الفرائض وعلموها، فإنها نصف العلم». Status fardhu kifayah adalah ketetapan fuqaha, hadits ini hanya penguat. |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R01-1 | [HNB] | Dalil ath-Thalib, catatan Hasyiyah al-Lubdi hlm. 117 · shamela:11196/88 (sekunder) | «يبدأ من تركة الميت أولا بمؤنة تجهيزه ... ثم تنفذ الوصايا, ثم يقسم الباقي على الورثة» |
+| R01-1 | [HNF] | Mabsuth 29/136–137 · shamela:5423/5893 shamela:5423/5894 | «ثم بعد الكفن يقدم الدين على الوصية والميراث» |
+| R01-1 | [MLK] | Mawahib al-Jalil 6/406–407 (syarh atas matan Khalil) · shamela:569/3058 shamela:569/3059 | Matan Khalil dikutip syarh: «حق تعلق بعين»; «ثم مؤنة تجهيزه بالمعروف ثم تقضى ديونه»; lalu «وصاياه» dan «ثم الباقي لوارثه». Urutan sama dengan [SYF]. |
+| R01-1 (catatan) | semua | — | Token engine hanya memakai urutan tajhiz → dain → wasiat → waris; butir hak 'ain dipisah ke K01-2 karena engine tidak memodelkannya. |
+| R01-4 | [HNB] | Mughni 6/146 · shamela:8463/2468 | «وجملة ذلك أن الوصية لغير الوارث تلزم في الثلث من غير إجازة، وما زاد على الثلث يقف على إجازتهم، فإن أجازوه جاز، وإن ردوه بطل. في قول جميع العلماء» |
+| R01-4 | [HNF] | Mabsuth 29/138 · shamela:5423/5895 | «فأما ما زاد عن الثلث لا يظهر فيه تقديم الوصية لأن حق الوارث فيه يمنع الوصية إلا أن يجيز الوارث»; dalil «إن الله تعالى تصدق عليكم بثلث أموالكم» |
+| R01-4 | [MLK] | 'Iqd 3/1223 · shamela:14594/1221 | «فدليلها هو أنه قد ثبت أنه ليس للموصي أن يوصي بأكثر من الثلث» |
+| R01-9 | [HNB] [HNF] [MLK] | (ikut R01-4) | Auto-cap ke 1/3 adalah keputusan desain di atas R01-4; sah untuk madzhab yang R01-4-nya `ya`. Ijazah tetap di luar lingkup (lihat K01-1). |
+
+> **KHILAF K01-2 – Urutan hak 'ain vs mu'nah tajhiz** — **[SYF] dan [MLK]**: hak yang terkait 'ain tirkah (rahn, zakat yang sudah wajib) didahulukan atas tajhiz. **[HNB]**: tajhiz didahulukan, baru nadzr mu'ayyan, udhhiyah mu'ayyanah, dain bi rahn, zakat (Dalil ath-Thalib, catatan Hasyiyah al-Lubdi hlm. 117 · shamela:11196/88; sekunder, belum ke Mughni). **[HNF]**: «فأول ما يبدأ به تجهيزه وتكفينه ودفنه بالمعروف» dan kafan didahulukan atas dain (Mabsuth 29/136–137 · shamela:5423/5893 shamela:5423/5894); rahn tidak dibahas di halaman itu. Diringkas di 18.2 (K01-2).

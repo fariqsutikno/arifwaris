@@ -45,7 +45,7 @@ test('setiap teksEdukasi di kode ada di snapshot', () => {
 });
 
 test('kunci snapshot yang tidak dipakai kode dilaporkan', () => {
-  const tidakDipakai = snapshotTerpasang().diksi.map(d => d.kunci).filter(kunci => !KUNCI_T.has(kunci));
+  const tidakDipakai = snapshotTerpasang().diksi.map(d => d.kunci).filter(kunci => !KUNCI_T.has(kunci) && !kunci.startsWith('narasi.'));
   if (tidakDipakai.length) console.warn(`diksi tidak dipakai kode (${tidakDipakai.length}):`, tidakDipakai);
 });
 

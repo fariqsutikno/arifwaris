@@ -2,26 +2,29 @@
 //   jejak + tabel (data) → konteks → bab-bab (cerita atau ringkas) → tiap bab berisi baris kalimat.
 // Tiap baris = potongan berjenis (teks, sebutan orang, istilah bertooltip) + `refs` untuk lapis dalil.
 
-import type { HasilEngine, GrafKeluarga } from '@waris/engine';
-import { angkaArab, babArab } from './arab.js';
-import { babCerita, type Bab } from './cerita.js';
-import { buatKonteks } from './context.js';
+import type { GrafKeluarga } from '@waris/engine';
+import { angkaArab, babArab, pembukaanMadzhabArab } from './arab.js';
+import { babCerita, pembukaanMadzhab, type Bab } from './cerita.js';
+import { buatKonteks, type HasilOk } from './context.js';
 import { babRingkas } from './ringkas.js';
+import { teksKamus, type Bahasa, type Kamus } from './segments.js';
 
 export type BabPenjelasan = Bab;
 export interface Penjelasan { daftarBab: BabPenjelasan[] }
+export interface OpsiPenjelasan { gaya?: 'cerita' | 'ringkas' | undefined; bahasa?: Bahasa; kamus: Kamus }
 
 /**
- * Mode 'cerita' (default) untuk orang awam; 'ringkas' untuk pelajar/ustadz; 'arab' = ringkas berbahasa Arab untuk santri.
- * Nama berubah → panggil ulang (murah).
+ * Gaya 'cerita' (default) untuk orang awam; 'ringkas' untuk pelajar/ustadz. Bahasa 'ar' = pohon kalimat bergaya kitab
+ * (arab.ts; gaya diabaikan). Nama berubah → panggil ulang (murah).
  */
-export function jelaskan(
-  hasil: Extract<HasilEngine, { status: 'OK' }>,
-  graf: GrafKeluarga,
-  opsi: { mode?: 'cerita' | 'ringkas' | 'arab' } = {},
-): Penjelasan {
-  const konteks = buatKonteks(hasil, graf);
-  const daftarBab = opsi.mode === 'arab' ? babArab(konteks, graf) : opsi.mode === 'ringkas' ? babRingkas(konteks) : babCerita(konteks);
-  const nomorLangkah = (i: number) => (opsi.mode === 'arab' ? `الخطوة ${angkaArab(String(i + 1))}` : `Langkah ${i + 1}`);
+export function jelaskan(hasil: HasilOk, graf: GrafKeluarga, opsi: OpsiPenjelasan): Penjelasan {
+  const bahasa = opsi.bahasa ?? 'id';
+  const arab = bahasa === 'ar';
+  const konteks = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa });
+  const daftarBab = arab ? babArab(konteks, graf) : opsi.gaya === 'ringkas' ? babRingkas(konteks) : babCerita(konteks);
+  const pembukaan = arab ? pembukaanMadzhabArab(konteks.penyusun, hasil.ruleset) : pembukaanMadzhab(konteks.penyusun, hasil.ruleset);
+  const [babPertama] = daftarBab;
+  if (pembukaan && babPertama) daftarBab[0] = { ...babPertama, daftarBaris: [pembukaan, ...babPertama.daftarBaris] };
+  const nomorLangkah = (i: number) => (arab ? teksKamus(konteks.penyusun, 'narasi.arab.langkah', { nomor: angkaArab(String(i + 1)) }) : teksKamus(konteks.penyusun, 'narasi.umum.langkah', { nomor: String(i + 1) }));
   return { daftarBab: daftarBab.map((bab, i) => ({ ...bab, judul: `${nomorLangkah(i)} — ${bab.judul}` })) };
 }

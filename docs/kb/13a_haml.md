@@ -100,3 +100,16 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R13-15 | [SYF]: mitra ashabah haml tidak diberi apa pun | LHM + ITH | Lahim hlm. 145; Ithraa, Muqarrar al-Fara'idh, Mirats al-Haml slide 12 | Ithraa: «يوقف الأحظ للحمل من نصيب ذكرين أو أنثيين، مع إيقاف نصيب مشاركه، وهو قول الشافعية». Diterima sebagai dasar tanpa menunggu nash Raudhah (keputusan pengguna 2026-09-29). |
 | R13-16 | Tata kerja taqdir → jami'ah → aqall | KH | Lahim hlm. 146 | Lima langkah «صفة العمل في مسائل الحمل». |
 | R13-17 | Pembagian sebelum lahir boleh; [MLK] menunggu | LHM + ITH | Lahim hlm. 143–144; Ithraa slide 11 | «وهذا مذهب الحنابلة والحنفية والراجح عند الشافعية» |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R13-1 | [HNB] | Mughni 6/384 · shamela:8463/2706 | «ولا يرث الحمل إلا بشرطين؛ أحدهما، أن يعلم أنه كان موجودا حال الموت ... والثاني، أن تضعه حيا» |
+| R13-1 | [HNF] | Mabsuth 30/50 · shamela:5423/6018 | «اعلم بأن الحمل من جملة الورثة إذا علم بأنه كان موجودا في البطن عند موت المورث وانفصل حيا» |
+
+Catatan R13-1: batas waktu kehamilan berbeda dan sudah tercatat di K13a-1. R13-1 untuk [MLK] belum ditemukan pernyataan langsungnya. R13-2 **berbeda** (K13a-4) sehingga tetap `tidak`.
+
+> **KHILAF K13a-4 – Tanda hidup janin** — **[SYF]**: istihlal, tangis, bersin, menyusu (R13-2). **[HNB]**: yang masyhur dari Ahmad hanya istihlal berupa teriak: «فالمشهور عن أحمد أنه لا يرث حتى يستهل» (Mughni 6/385 · shamela:8463/2707); riwayat lain: teriak, bersin, menangis; riwayat ketiga: tiap tanda hidup. **[HNF]**: teriak, bersin, atau gerak anggota badan (Mabsuth 30/50 · shamela:5423/6018), dan cukup bila sebagian besar tubuh keluar lalu terlihat hidup (Mughni 6/385 menisbatkan kepada Abu Hanifah dan sahabatnya). **[MLK]**: Mughni 6/385 memasukkan Malik ke yang mensyaratkan istihlal; syarah Tuhfat al-Hukkam: «ويوقف القسم مع الحمل إلى ... أن يستهل صارخا» (at-Tauzari, Taudhih al-Ahkam 4/171 · shamela:133369/758). Sekunder.

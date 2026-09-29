@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { hitungMunasakhat } from '../munasakhat.js';
 import type { InputMunasakhat, HasilMunasakhat } from '../types.js';
-import { M2, MUNASAKHAT_FIXTURES } from './fixtures/munasakhat.js';
+import { M2, MUNASAKHAT_FIXTURES, SISA_KELUAR_MAYIT_KEDUA } from './fixtures/munasakhat.js';
 
 type Ok = Extract<HasilMunasakhat, { status: 'OK' }>;
 
@@ -28,6 +28,7 @@ describe('Munasakhat bab 12 — kasus uji M1–M9 (bab 16)', () => {
 
       expect(sebagaiPecahan(hasil.saham, hasil.jamiah)).toEqual(sebagaiPecahan(expected.saham, expected.jamiah));
       expect(Object.values(hasil.saham).reduce((a, b) => a + b, 0n), 'Σ saham = jami\'ah').toBe(hasil.jamiah);
+      expect(hasil.sisaKeluar).toEqual([]);
       if (expected.jamiahEksak) {
         expect(hasil.jamiah).toBe(expected.jamiah);
         expect(hasil.saham).toEqual(expected.saham);
@@ -60,6 +61,10 @@ describe('Munasakhat — penolakan dan pertanyaan', () => {
     expect(hasil.saham).toEqual({ W: 16n, S: 56n });
   });
 
+  test('mayit di urutan wafat yang tidak ada di graf → error, bukan dilewati diam-diam', () => {
+    expect(() => hitungMunasakhat({ ...M2.input, urutanWafat: ['XX'] })).toThrow('tidak ada di graf');
+  });
+
   test('data kurang pada mayit berikutnya → PERLU_INPUT dengan mayit-nya', () => {
     const graf = salinGraf();
     graf.orang['HB'] = { id: 'HB', jenisKelamin: 'L', statusHidup: 'hidup', agama: 'tidakDiketahui' };
@@ -74,5 +79,16 @@ describe('Munasakhat — nominal', () => {
     const hasil = ok({ ...M2.input, dasar: { ...M2.input.dasar, tirkah: { kotor: 72_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } } });
     expect(hasil.nominal).toEqual({ W: 16_000_000n, S: 56_000_000n });
     expect(hasil.pembulatan.sisaPembulatan).toBe(0n);
+  });
+});
+
+describe('Munasakhat — sisa harta mayit berikutnya keluar ke dzawil arham/baitul mal', () => {
+  test('sisa jadi baris tersendiri di jami\'ah, bukan ditolak', () => {
+    const kasus = SISA_KELUAR_MAYIT_KEDUA;
+    const hasil = ok({ ...kasus, dasar: { ...kasus.dasar, tirkah: { kotor: 16_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } } });
+    expect(hasil.jamiah).toBe(16n);
+    expect(hasil.saham).toEqual({ S: 12n, W2: 1n });
+    expect(hasil.sisaKeluar).toEqual([{ mayit: 'H', tujuan: 'baitulMal', saham: 3n, nominal: 3_000_000n }]);
+    expect(hasil.nominal).toEqual({ S: 12_000_000n, W2: 1_000_000n });
   });
 });

@@ -56,6 +56,8 @@ export interface PeranAhliWaris {
   kunci: KunciAhliWaris | 'DZAWIL_ARHAM' | 'BUKAN_AHLI_WARIS';
   kekerabatan: PosisiKekerabatan;
   lintasan: IdOrang[];
+  /** Rujukan keputusan peran bila berasal dari titik khilaf (mis. 'K03-1'), dipakai mawani untuk status dzawil arham. */
+  rujukan?: string;
 }
 
 export type StatusOrang =
@@ -66,7 +68,7 @@ export type StatusOrang =
 
 // ─── Konfigurasi ──────────────────────────────────────────────────────────────
 
-export type Ruleset = 'syafii';
+export type Ruleset = 'syafii' | 'hanbali' | 'hanafi' | 'maliki';
 
 export interface KonfigurasiMadzhab {
   kebijakanSisa: 'radd' | 'baitulMal';          // default 'radd'   [R09-8] [R14-5]
@@ -82,8 +84,13 @@ export const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = {
 
 export type IdKelompok = string;
 
-/** [R14-3] ada dzawil arham → mereka; tidak ada → baitul mal [R02-1]. */
-export type TujuanSisa = 'dzawilArham' | 'baitulMal';
+/**
+ * Tujuan sisa yang tidak dibagi ke ahli waris:
+ * - dzawilArham: hanya pasangan mewarisi dan ada dzawil arham [R09-9] [R14-3];
+ * - baitulMal: hanya pasangan mewarisi, tidak ada dzawil arham di data [R02-1];
+ * - baitulMalTeratur: kebijakan sisa = baitul mal karena baitul mal teratur [R09-8], K09-1.
+ */
+export type TujuanSisa = 'dzawilArham' | 'baitulMal' | 'baitulMalTeratur';
 
 export interface TabelMasalah {
   kolom: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perOrang' | 'nominal'>;
@@ -132,6 +139,8 @@ export type AlasanFardh =
   | { kode: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
   | { kode: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
 
+export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1';
+
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
   | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
@@ -141,6 +150,8 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
       pilihanJadd?: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }> }
   | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
+  // Cabang overlay madzhab yang hasilnya berbeda dari [SYF] untuk orang itu; refs = [kode].
+  | { jenis: 'KHILAF_MADZHAB'; kode: KodeKhilafOverlay; ruleset: Ruleset; idOrang: IdOrang[] }
   | { jenis: 'TIRKAH'; kotor: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
       wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
   // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).
@@ -162,7 +173,8 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MUNASAKHAT'; mayit: IdOrang; saham: bigint; masalah: bigint; hubungan: HubunganInkisar;
       fpb: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;
       /** Per orang: saham sebelum × wafqMasalah + saham dari mayit × wafqSaham = sesudah. */
-      rincian: Record<IdOrang, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
+      /** Termasuk baris sisa harta mayit sebelumnya (`IdSisaKeluar`) bila ada. */
+      rincian: Record<IdOrang | IdSisaKeluar, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
   // Yang wafat tidak mendapat bagian dari mayit sebelumnya → tidak ada yang diteruskan; diabaikan [R12-1].
   | { jenis: 'MUNASAKHAT_DILEWATI'; mayit: IdOrang }
 );
@@ -222,11 +234,21 @@ export interface InputMunasakhat {
    * harta pribadi, hutang, dan wasiat mereka sendiri bukan bagian munasakhat (bab 12.5).
    */
   urutanWafat: IdOrang[];
-  /** Orang yang lahir setelah wafatnya mayit tertentu: belum ada saat mayit itu dan sebelumnya wafat. */
-  lahirSetelahWafat?: Record<IdOrang, IdOrang>;
+  /**
+   * Orang yang belum dikandung saat mayit tertentu wafat: bukan ahli waris mayit itu dan mayit sebelumnya.
+   * Yang sudah di rahim saat mayit wafat lalu lahir hidup tetap ahli warisnya [R13-1] [R13-2], jadi tidak dicantumkan.
+   * Pembagian munasakhat terjadi setelah ia lahir, sehingga tidak perlu taqdir haml (13a.5).
+   */
+  dikandungSetelahWafat?: Record<IdOrang, IdOrang>;
 }
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
+
+/**
+ * Kunci baris sisa harta seorang mayit di jami'ah (bab 12): sisa yang tidak di-radd ke pasangan [R09-9]
+ * ikut dihitung seperti satu penerima, supaya Σ saham = jami'ah tetap berlaku.
+ */
+export type IdSisaKeluar = `sisaKeluar:${IdOrang}`;
 
 export type HasilMunasakhat =
   | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit: IdOrang })
@@ -237,8 +259,10 @@ export type HasilMunasakhat =
       keadaan: 1 | 2 | 3;
       jamiah: bigint;
       saham: Record<IdOrang, bigint>;
-      /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. */
-      ikhtishar: { jamiah: bigint; saham: Record<IdOrang, bigint> };
+      /** Sisa harta tiap mayit yang keluar ke dzawil arham/baitul mal [R09-9]. Σ saham + Σ sisaKeluar = jami'ah. */
+      sisaKeluar: Array<{ mayit: IdOrang; tujuan: TujuanSisa; saham: bigint; nominal: Uang }>;
+      /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. Baris sisa memakai `IdSisaKeluar`. */
+      ikhtishar: { jamiah: bigint; saham: Record<IdOrang | IdSisaKeluar, bigint> };
       nominal: Record<IdOrang, Uang>;
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       jejak: LangkahJejak[] };
