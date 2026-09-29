@@ -1,8 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import { case24, p } from '../../__tests__/fixtures/bab16.js';
-import { grafDA03, grafDA04, grafDA07 } from '../../__tests__/fixtures/dzawilArham.js';
+import { dengan, grafDA03, grafDA04, grafDA07, grafDA11 } from '../../__tests__/fixtures/dzawilArham.js';
+import { hitung } from '../../pipeline.js';
 import { KONFIGURASI_BAWAAN, type GrafKeluarga } from '../../types.js';
 import { turunkanPeran } from '../derivasi.js';
+import { maniDari } from '../mawani.js';
+import { bagiAntarPerantara, grafPosisi, periksaAulDzawilArham, samakanDalamSatuKelompok } from '../perantara.js';
 import { cariRuteTanzil as cariRuteMentah, saringJihah, semuaLintasan } from '../tanzil.js';
 
 // Untuk graf normal hasilnya selalu daftar rute; TIDAK_DIDUKUNG diuji terpisah.
@@ -67,4 +70,40 @@ describe('saringJihah [R14-10]', () => {
     expect(hasil.lolos.map(r => r.idOrang)).toEqual(['X2']);
     expect(hasil.jejak).toContainEqual({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH', idOrang: 'X1', perantara: 'AP', oleh: ['X2'] });
   });
+});
+
+describe('perantara', () => {
+  test("graf posisi: hanya perantara hidup (muslim, bukan pembunuh), pewaris muslim, pernikahan dibuang", () => {
+    const graf = grafPosisi(case24.input.graf, 'D', ['M1', 'F1']);
+    expect(graf.orang.M1).toMatchObject({ statusHidup: 'hidup', agama: 'islam', membunuhPewaris: false });
+    expect(graf.orang.KL1).toMatchObject({ statusHidup: 'wafat', penghubung: true });
+    expect(graf.pernikahan).toEqual([]);
+  });
+
+  test("mas'alah perantara 'ammah/khalah: ayah 2, ibu 1 dari 3", () => {
+    const graf = case24.input.graf;
+    const peran = turunkanPeran(graf, KONFIGURASI_BAWAAN).daftarPeran;
+    const lolos = [...cariRuteTanzil(graf, peran, 'KL1'), ...cariRuteTanzil(graf, peran, 'AM1')];
+    const hasil = bagiAntarPerantara(case24.input, lolos);
+    expect(hasil).toMatchObject({ saham: { M1: 1n, F1: 2n }, masalah: 3n });
+  });
+
+  test("'aul dzawil arham hanya 6 → 7 [R14-13]", () => {
+    expect(() => periksaAulDzawilArham({ ashl: 6n, aul: 7n })).not.toThrow();
+    expect(() => periksaAulDzawilArham({ ashl: 6n, aul: 8n })).toThrow('R14-13');
+    expect(() => periksaAulDzawilArham({ ashl: 12n, aul: 13n })).toThrow('R14-13');
+  });
+
+  test('sama rata hanya bila semua penerima satu kelompok', () => {
+    const graf = grafPosisi(grafDA11, 'AP', ['XL', 'XP']);
+    const hasil = hitung(dengan(graf));
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    expect(samakanDalamSatuKelompok(hasil)).toEqual({ saham: { XL: 1n, XP: 1n }, masalah: 2n });
+  });
+});
+
+test('maniDari: beda agama dan pembunuh', () => {
+  expect(maniDari({ id: 'A', jenisKelamin: 'L', statusHidup: 'hidup', agama: 'nonIslam' })).toEqual({ mani: 'ikhtilafDin', rujukanAturan: 'R02-4' });
+  expect(maniDari({ id: 'A', jenisKelamin: 'L', statusHidup: 'hidup', agama: 'islam', membunuhPewaris: true })).toEqual({ mani: 'qatl', rujukanAturan: 'R02-9' });
+  expect(maniDari({ id: 'A', jenisKelamin: 'L', statusHidup: 'hidup', agama: 'islam' })).toBeUndefined();
 });
