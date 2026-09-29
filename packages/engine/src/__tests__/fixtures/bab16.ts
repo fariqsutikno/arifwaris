@@ -728,7 +728,7 @@ export const case24: Fixture = {
     },
     pernikahan: [],
   }),
-  // [R14-1] Fase 3. Target kelak: ashl 3, khalah 1 ('ammah 2).
+  // [R14-1] Pipeline berhenti di fase dzawil arham; hasil tanzil diuji di dzawilArham.test.ts (DA-01).
   expected: { status: 'TIDAK_DIDUKUNG' },
 };
 

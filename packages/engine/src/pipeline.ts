@@ -103,7 +103,7 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
     .some(peran => peran.kunci === 'DZAWIL_ARHAM' && graf.orang[peran.idOrang]!.statusHidup === 'hidup');
   if (kandidat.length === 0) {
     return adaDzawilArham
-      ? { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham (fase 3).', refs: ['R14-4'] }
+      ? { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham.', refs: ['R14-4'], kode: 'FASE_DZAWIL_ARHAM' }
       : { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ahli waris; harta ke baitul mal.', refs: ['R02-1'] };
   }
 
