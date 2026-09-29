@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, KEBERLAKUAN, sqlDaftarRefs, uraiTokenTautan, uraiTautan } from '../index.js';
+import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, JUDUL_BAB, TITIK_DIKAJI, RUJUKAN, rujukanAyat, dalilUntuk, cariRujukan, bacaAyat, bacaPerluVerifikasi, bacaRujukan, KEBERLAKUAN, MATRIKS_KHILAF, cariTitikKhilaf, sqlDaftarRefs, uraiTokenTautan, uraiTautan } from '../index.js';
 import { BERLAKU_LINTAS_MADZHAB } from '../../../engine/src/rulesets/berlaku.js';
 
 describe('parseRefs — tabel "Dasar dan Rujukan"', () => {
@@ -199,5 +199,25 @@ describe('KB 18.4 keberlakuan token', () => {
       const dariKb = KEBERLAKUAN.filter(baris => baris[madzhab]).map(baris => baris.token).sort();
       expect([...BERLAKU_LINTAS_MADZHAB[madzhab]].sort(), madzhab).toEqual(dariKb);
     }
+  });
+});
+
+describe('Matriks khilaf bab 18.2', () => {
+  test('memuat kode Kxx-y unik', () => {
+    const kode = MATRIKS_KHILAF.map(titik => titik.kode);
+    expect(kode).toEqual(expect.arrayContaining(['K03-1', 'K04-1', 'K04-2', 'K05-1', 'K07-1', 'K08-1', 'K09-1', 'K13a-1']));
+    expect(new Set(kode).size).toBe(kode.length);
+  });
+
+  test('K04-2 [HNB] berisi sel Mughni dan tautannya', () => {
+    const titik = cariTitikKhilaf('K04-2')!;
+    expect(titik.sel.hanbali).toContain('tidak terhijab');
+    expect(titik.tautan.hanbali.map(tautan => tautan.label).join(' ')).toContain('8463/2625');
+  });
+
+  // grep -rohE "K[0-9]{2}[a-d]?-[0-9]+" packages/engine/src --exclude-dir=__tests__ | sort -u
+  const KODE_ENGINE = ['K02-3', 'K03-1', 'K04-1', 'K04-2', 'K04-3', 'K05-1', 'K07-1', 'K08-1', 'K09-1'];
+  test.each(KODE_ENGINE)('%s yang dipakai engine ada di matriks', kode => {
+    expect(cariTitikKhilaf(kode)).toBeDefined();
   });
 });

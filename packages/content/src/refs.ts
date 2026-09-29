@@ -150,6 +150,26 @@ export const bacaKeberlakuan = (teksMarkdown: string): Keberlakuan[] =>
 
 export const KEBERLAKUAN: Keberlakuan[] = bacaKeberlakuan(bab18);
 
+type Ruleset = 'syafii' | 'hanbali' | 'hanafi' | 'maliki';
+
+export interface TitikKhilaf {
+  kode: string; titik: string; bab: string;
+  sel: Record<Ruleset, string>;
+  tautan: Record<Ruleset, TautanRujukan[]>;
+}
+
+/** Baris matriks bab 18.2 (beberapa sub-tabel ###; baris kepala ulang tersaring oleh pola kode). */
+export const MATRIKS_KHILAF: TitikKhilaf[] = barisTabelBagian(bab18, '18.2')
+  .filter(([kode = '']) => /^K\d{2}[a-d]?-\d+$/.test(kode))
+  .map(([kode = '', titik = '', syafii = '', hanbali = '', hanafi = '', maliki = '', bab = '']) => {
+    const sel = { syafii, hanbali, hanafi, maliki };
+    const tautan = { syafii: uraiTautan(syafii), hanbali: uraiTautan(hanbali), hanafi: uraiTautan(hanafi), maliki: uraiTautan(maliki) };
+    return { kode, titik, bab, sel, tautan };
+  });
+
+const titikMenurutKode = new Map(MATRIKS_KHILAF.map(titik => [titik.kode, titik]));
+export const cariTitikKhilaf = (kode: string): TitikKhilaf | undefined => titikMenurutKode.get(kode);
+
 const DAFTAR_BAB: Array<[number, string]> = [
   [1, bab01], [2, bab02], [3, bab03], [4, bab04], [5, bab05], [6, bab06], [7, bab07], [8, bab08],
   [9, bab09], [10, bab10], [11, bab11], [12, bab12],
