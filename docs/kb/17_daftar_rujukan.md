@@ -67,11 +67,12 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 | «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 · hadits:tirmidhi:3790 hadits:ibnmajah:154 | Hasan gharib (at-Tirmidzi); shahih (Darussalam, sunnah.com) |
 
 ## 17.4 Titik yang Masih Ditandai `[perlu verifikasi lanjut]`
+Selain tabel: K05-2 [MLK] (tidak ada fardh dalam wala') menunggu halaman 'Iqd al-Jawahir yang menyatakannya eksplisit.
+
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
 | R13-14 | Hukum laqith (dua butir: «merdeka», «penemu tidak mewarisi») | Raudhah, Kitab al-Laqith |
-| K05-2 [MLK] | Tidak ada fardh dalam wala' | Halaman 'Iqd al-Jawahir yang menyatakannya eksplisit |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:
