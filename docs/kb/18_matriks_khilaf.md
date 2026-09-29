@@ -47,9 +47,9 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 ### Kasus khusus
 | Kode | Titik | [SYF] | [HNB] | [HNF] | [MLK] | Bab |
 |---|---|---|---|---|---|---|
-| K13a-1 | Batas maksimal kehamilan | 4 th (s) | 4 th (s) | 2 th (Mabsuth 30/50 · shamela:5423/6018) | 4 th masyhur; 5 th yang diamalkan (s) | 13a |
+| K13a-1 | Batas maksimal kehamilan | 4 th (Raudhah 8/377, Kitab al-'Iddah · shamela:499/3487) | 4 th (s) | 2 th (Mabsuth 30/50 · shamela:5423/6018) | 4 th masyhur; 5 th yang diamalkan (s) | 13a |
 | K13a-2 | Dibagi sebelum haml lahir | boleh | boleh (s) | boleh (s) | tidak (s) | 13a |
-| K13a-3 | Yang ditahan untuk haml | jumlah tak dibatasi; mitra ashabah haml 0 (s) | terbesar dari 2 lk/2 pr; mitra diberi aqall (s) | fatwa: bagian **1 anak lk** (Abu Yusuf); kafil diambil dari ahli waris lain bila di antara mereka ada anak (Takmilah ath-Thuri 'ala al-Bahr ar-Ra'iq 8/574; Lahim: lk atau pr mana yang lebih besar) | — | 13a |
+| K13a-3 | Yang ditahan untuk haml | jumlah tak dibatasi; mitra ashabah haml 0 (Raudhah 6/39 · shamela:499/2328) | terbesar dari 2 lk/2 pr; mitra diberi aqall (s) | fatwa: bagian **1 anak lk** (Abu Yusuf); kafil diambil dari ahli waris lain bila di antara mereka ada anak (Takmilah ath-Thuri 'ala al-Bahr ar-Ra'iq 8/574; Lahim: lk atau pr mana yang lebih besar) | — | 13a |
 | K13b-1 | Masa tunggu mafqud | ijtihad hakim | 4 th (binasa) / 90 th dari lahir (selamat) ⚑ (Mughni 6/389–390: untuk yang selamat ada dua riwayat — ijtihad hakim dan 90 th; sel semula hanya memuat 90 th · shamela:8463/2711 shamela:8463/2712) | ijtihad hakim (zhahir) (s) | 70/75/80 th dari lahir (s) ⚑ ('Iqd 3/1249: batas «سبعون، وقيل ثمانون، وتسعون» (70; ada yang 80; 90), bukan 70/75/80 · shamela:14594/1247; isi sel semula tidak diubah) | 13b |
 | K13b-2 | Ahli waris hadir bersama mafqud | al-aswa' (aqall) | al-aswa' (s) | al-aswa' (s) | al-aswa' ('Iqd 3/1250 · shamela:14594/1248) | 13b |
 | K13c-1 | Khuntsa musykil | aqall semua + mauquf sampai jelas/ishtilah | diharapkan jelas: aqall+mauquf; tidak: setengah-setengah (s) | khuntsa paling rugi, tanpa mauquf (s) | setengah-setengah ('Iqd 3/1250 · shamela:14594/1248) | 13c |
