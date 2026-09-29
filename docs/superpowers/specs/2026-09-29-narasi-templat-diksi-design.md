@@ -23,8 +23,11 @@ Kriteria berhasil: keluaran narasi semua kasus bab 16 × semua mode identik deng
 export type Kamus = (kunci: string) => { id: string; ar?: string } | undefined;
 jelaskan(hasil, graf, { gaya?: 'cerita' | 'ringkas'; bahasa?: 'id' | 'ar'; kamus: Kamus })
 ```
-- Mode lama `arab` = `gaya: 'ringkas', bahasa: 'ar'`; `arab.ts` dilebur ke templat ringkas. Kunci tanpa `ar_teks`
-  → fallback Indonesia (aturan sama dengan `t()`). Angka Arab tetap diterapkan explain saat `bahasa: 'ar'`.
+- Mode lama `arab` = `bahasa: 'ar'` (gaya diabaikan). `arab.ts` **tetap punya susunan kalimat sendiri** (pemecahan
+  kalimat, dhamir هم/هن, dan nisab bergaya kitab tidak sejajar dengan ringkas; disatukan paksa = keluaran berubah).
+  Kuncinya `narasi.arab.*`: `ar_teks` = redaksi Arab, `id_teks` = terjemahan Indonesia (draf) supaya admin paham
+  maksudnya. Penyatuan dengan ringkas ditunda sampai redaksi memang mau diseragamkan (keputusan pengguna 2026-09-29).
+  Pemilihan teks: `bahasa: 'ar'` → `ar ?? id`; angka Arab tetap diterapkan `arab.ts`.
 - Helper `susun(kamus, bahasa, kunci, sisipan)` menggantikan `kalimat\`…\``: parse `{nama}`, sisipkan `Potongan`,
   gabung teks bersebelahan. Kunci tidak ada, sisipan di templat tidak disediakan, atau sisipan disediakan tapi tidak
   dipakai → `throw` (tidak diam-diam).
@@ -39,9 +42,9 @@ Kata bersama lintas gaya: `narasi.umum.*` (label ahli waris, nama fardh, penghub
 Pola kunci wajib cocok dengan check constraint `diksi.kunci`.
 
 ## Migrasi teks
-Urutan per file: `cerita.ts` → `ringkas.ts` → `arab.ts` → `munasakhat.ts` (plus `nisab.ts`, `people.ts`, `terms.ts`
-bila memuat kalimat). Teks dimasukkan ke seed diksi dan `snapshot.json`. Kalimat Arab dari `arab.ts` menjadi `ar_teks`
-kunci ringkas yang sepadan; yang tanpa padanan mendapat `id_teks` terjemahan. Redaksi Arab tetap draf (`PERLU_CEK_ARAB`).
+Urutan per file: `cerita.ts` → `ringkas.ts` (+`nisab.ts`) → `arab.ts` → `munasakhat.ts` (plus `people.ts`, `narasi.ts`
+bila memuat kalimat). Teks dimasukkan ke seed diksi dan `snapshot.json`. Kalimat `arab.ts` menjadi kunci `narasi.arab.*`
+(lihat Arsitektur). Potongan yang hanya tanda baca/spasi boleh tetap literal di kode. Redaksi Arab tetap draf (`PERLU_CEK_ARAB`).
 **Tidak ada perubahan redaksi** di langkah ini.
 
 ## Pengujian
@@ -52,8 +55,12 @@ kunci ringkas yang sepadan; yang tanpa padanan mendapat `id_teks` terjemahan. Re
 3. Tes explain yang ada tetap hijau dengan kamus dari `snapshot.json`.
 
 ## Web & admin
-- Web: `jelaskan(…, { gaya, bahasa: bacaBahasa(), kamus })`; pilihan mode `arab` jadi gaya ringkas + bahasa Arab.
-- Admin: tidak ada perubahan kode di luar yang dibutuhkan agar halaman `narasi` tampil dan sisipan tampil sebagai chip.
+- Web: `jelaskan(…, { gaya, bahasa: bacaBahasa(), kamus })`; `LABEL_ARAB` di web diganti `labelArab(kamus, kunci)`.
+- **Penjaga sisipan di database**: revisi diksi yang himpunan `{nama}`-nya (di `id_teks`, dan `ar_teks` bila diisi)
+  berbeda dari teks terbit kunci itu ditolak trigger. Berlaku untuk semua diksi (juga `t()`), karena narasi yang
+  kehilangan sisipan membuat explain melempar error di produksi. Repositori memori meniru aturan yang sama.
+- Tampilan sisipan sebagai chip di editor admin **ditunda ke langkah 5** (semua tampilan sekaligus); sampai itu,
+  admin melihat `{nama}` apa adanya dan penjaga di atas mencegah kerusakan.
 
 ## Di luar cakupan
 Narasi bab 13/14 (langkah 3), perbaikan redaksi, tabel baru.
