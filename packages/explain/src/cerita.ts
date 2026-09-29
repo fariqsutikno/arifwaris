@@ -2,7 +2,7 @@
 // Urutan bab: harta → siapa mewarisi → bagian masing-masing → menyamakan penyebut
 //             → 'adilah/'aul/radd → pembulatan (tashih) → hasil akhir.
 
-import type { AlasanFardh, PilihanJadd, IdOrang, TujuanSisa } from '@waris/engine';
+import type { AlasanFardh, PilihanJadd, IdOrang, KodeKhilafOverlay, Ruleset, TujuanSisa } from '@waris/engine';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
 import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Potongan } from './segments.js';
@@ -72,8 +72,24 @@ function babAhliWaris(konteks: Konteks): Bab {
     daftarBaris.push(buatBaris(kalimat`${sebutSemua(konteks, mahjub)} tidak mendapat bagian karena terhalang oleh ${sebutSemua(konteks, langkah.hajib)} `
       .concat(kalimat`(${istilah('hajb-hirman', 'hajb hirman')}).`), langkah.refs, mahjub));
   }
+  for (const langkah of konteks.daftarLangkah('KHILAF_MADZHAB')) {
+    daftarBaris.push(buatBaris(kalimat`Menurut madzhab ${NAMA_MADZHAB[langkah.ruleset]}, ${KALIMAT_KHILAF[langkah.kode]}.`, langkah.refs, langkah.idOrang));
+  }
   return { judul: 'Siapa yang mendapat warisan', daftarBaris, kolom: 'ahliWaris' };
 }
+
+const NAMA_MADZHAB: Record<Ruleset, string> = { syafii: "Syafi'i", hanbali: 'Hanbali', hanafi: 'Hanafi', maliki: 'Maliki' };
+const KALIMAT_KHILAF: Record<KodeKhilafOverlay, string> = {
+  'K03-1': 'nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham',
+  'K04-1': 'nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun',
+  'K04-2': 'nenek dari pihak ayah tetap mewarisi bersama ayah',
+  'K05-1': 'kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak',
+  'K07-1': 'saudara kandung tidak digabung dengan saudara seibu dalam kasus musyarrakah, jadi ia tidak mendapat sisa',
+};
+
+/** Baris pembuka bila perhitungan bukan [SYF] (default); dipakai mode cerita dan ringkas. */
+export const pembukaanMadzhab = (ruleset: Ruleset): BarisPenjelasan | undefined =>
+  ruleset === 'syafii' ? undefined : buatBaris(kalimat`Perhitungan ini menurut madzhab ${NAMA_MADZHAB[ruleset]}.`);
 
 // ─── Langkah: bagian masing-masing ────────────────────────────────────────────
 
@@ -186,8 +202,6 @@ function ceritaKasusKhusus(nama: Langkah<'KASUS_KHUSUS'>['nama']): Potongan[] {
   switch (nama) {
     case 'umariyyatain': return kalimat`Ini termasuk kasus khusus ${istilah('umariyyatain', "al-'Umariyyatain")}.`;
     case 'musyarrakah': return kalimat`Ini termasuk kasus khusus ${istilah('musyarrakah', 'al-Musyarrakah')}.`;
-    case 'musyarrakahTanpaTasyrik':
-      return kalimat`Susunan ini dikenal sebagai ${istilah('musyarrakah', 'al-Musyarrakah')}, tetapi menurut madzhab ini saudara kandung tidak digabung dengan saudara seibu, jadi ia tidak mendapat sisa.`;
     case 'akdariyyah': return kalimat`Ini termasuk kasus khusus ${istilah('akdariyyah', 'al-Akdariyyah')}.`;
     case 'muaddah':
       return kalimat`Ini termasuk kasus khusus ${istilah('muaddah', "al-Mu'addah")}: saudara sebapak ikut dihitung saat menentukan bagian kakek, lalu bagiannya diserahkan kepada saudara kandung.`;

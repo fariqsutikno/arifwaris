@@ -72,3 +72,26 @@ describe('Overlay madzhab — kasus bab 18.2', () => {
     }
   }
 });
+
+describe('Jejak KHILAF_MADZHAB', () => {
+  const khilaf = (id: string, ruleset: InputEngine['ruleset']) => {
+    const hasil = hitung(denganRuleset(input(KASUS_MADZHAB.find(kasus => kasus.id === id)!.graf), ruleset));
+    return hasil.status === 'OK' ? hasil.jejak.flatMap(l => (l.jenis === 'KHILAF_MADZHAB' ? [`${l.kode}:${l.idOrang.join(',')}`] : [])) : [];
+  };
+
+  test.each([
+    ['MZ1', 'hanbali', ['K04-2:NA']],
+    ['MZ2', 'hanbali', ['K04-1:N3']],
+    ['MZ3', 'maliki', ['K03-1:UK']],
+    ['MZ4', 'hanbali', ['K03-1:UKB']],
+    ['MZ8', 'hanafi', ['K07-1:SK']],
+    ['MZ9', 'hanafi', ['K05-1:SK']],
+    ['MZ11', 'hanafi', ['K05-1:SK', 'K05-1:SB']],
+  ] as const)('%s [%s] memancarkan %j', (id, ruleset, harapan) => {
+    expect(khilaf(id, ruleset).sort()).toEqual([...harapan].sort());
+  });
+
+  test('[SYF] tidak pernah memancarkan KHILAF_MADZHAB', () => {
+    for (const kasus of KASUS_MADZHAB) expect(khilaf(kasus.id, 'syafii'), kasus.id).toEqual([]);
+  });
+});

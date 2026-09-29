@@ -139,6 +139,8 @@ export type AlasanFardh =
   | { kode: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
   | { kode: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
 
+export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1';
+
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
   | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
@@ -147,7 +149,9 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'ASHABAH'; kelompok: IdKelompok; jenisAshabah: 'binNafsi' | 'bilGhair' | 'maalGhair';
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
       pilihanJadd?: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }> }
-  | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'musyarrakahTanpaTasyrik' | 'akdariyyah' | 'muaddah' }
+  | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
+  // Cabang overlay madzhab yang hasilnya berbeda dari [SYF] untuk orang itu; refs = [kode].
+  | { jenis: 'KHILAF_MADZHAB'; kode: KodeKhilafOverlay; ruleset: Ruleset; idOrang: IdOrang[] }
   | { jenis: 'TIRKAH'; kotor: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
       wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
   // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).

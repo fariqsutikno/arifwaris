@@ -96,7 +96,7 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   }
 
   // 1b. Mawani': keluarkan pembunuh, beda agama, dst.
-  const mawani = terapkanMawani(graf, daftarPeran);
+  const mawani = terapkanMawani(graf, daftarPeran, input.ruleset);
   const kandidat = Object.values(mawani.statusOrang)
     .flatMap(status => (status.jenis === 'ahliWaris' && punyaKunciAhliWaris(status.peran) ? [status.peran] : []));
   const adaDzawilArham = Object.values(daftarPeran)

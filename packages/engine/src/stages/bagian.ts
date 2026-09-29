@@ -184,7 +184,10 @@ function bagianSaudaraSeibu(penyusun: Penyusun, aturan: AturanMadzhab): boolean 
       return true;
     }
     // [K07-1] [HNB]/[HNF] tanpa tasyrik: saudara seibu tetap 1/3, saudara kandung ashabah atas sisa yang sudah habis.
-    penyusun.jejak.push({ tahap: 'furudh', refs: ['K07-1'], jenis: 'KASUS_KHUSUS', nama: 'musyarrakahTanpaTasyrik' });
+    penyusun.jejak.push({
+      tahap: 'furudh', refs: ['K07-1'], jenis: 'KHILAF_MADZHAB', kode: 'K07-1', ruleset: aturan.ruleset,
+      idOrang: penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG').map(saudara => saudara.idOrang),
+    });
   }
   if (awladUmm.length > 0) {
     penyusun.tambahFardh('AWLAD_UMM', awladUmm, awladUmm.length === 1 ? SUDUS : TSULUTS, { kode: 'KALALAH', banyaknya: awladUmm.length }, ['R04-16']);

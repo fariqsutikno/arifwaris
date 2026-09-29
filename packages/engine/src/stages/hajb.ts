@@ -4,7 +4,7 @@
 // Caranya: urutkan kandidat dari penghalang terkuat (bab 6.7 no. 2), lalu periksa satu per satu.
 // Setiap orang cukup dibandingkan dengan yang sudah pasti tidak terhalang (`efektif`).
 
-import type { IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
+import type { IdOrang, KodeKhilafOverlay, KunciAhliWaris, LangkahJejak } from '../types.js';
 import { ATURAN, rujukanTitik, type AturanMadzhab } from '../rulesets/madzhab.js';
 import type { AhliWaris } from './model.js';
 
@@ -28,8 +28,22 @@ export function terapkanHajb(kandidat: AhliWaris[], aturan: AturanMadzhab = ATUR
     } else {
       efektif.push(ahliWaris);
     }
+    const kode = kodeKhilaf(penghalang, cariHajib(ahliWaris, efektif, ATURAN.syafii));
+    if (kode) jejak.push({ tahap: 'hajb', refs: [kode], jenis: 'KHILAF_MADZHAB', kode, ruleset: aturan.ruleset, idOrang: [ahliWaris.idOrang] });
   }
   return { mahjub, efektif, jejak };
+}
+
+/** Titik khilaf bila keputusan hajb madzhab ini berbeda dari [SYF] pada keadaan `efektif` yang sama. */
+function kodeKhilaf(penghalang: Mahjub | undefined, menurutSyafii: Mahjub | undefined): KodeKhilafOverlay | undefined {
+  if (Boolean(penghalang) === Boolean(menurutSyafii)) return undefined;
+  if (penghalang) {
+    if (penghalang.rujukanAturan !== 'K04-1' && penghalang.rujukanAturan !== 'K05-1') throw new Error(`Hajb di luar [SYF] tanpa titik khilaf: ${penghalang.rujukanAturan}`);
+    return penghalang.rujukanAturan;
+  }
+  // Satu-satunya hajb [SYF] yang gugur di overlay: ayah atas ummul ab [R04-10] → [K04-2].
+  if (menurutSyafii!.rujukanAturan !== 'R04-10') throw new Error(`Hajb [SYF] gugur tanpa titik khilaf: ${menurutSyafii!.rujukanAturan}`);
+  return 'K04-2';
 }
 
 // ─── Siapa menghalangi siapa ──────────────────────────────────────────────────

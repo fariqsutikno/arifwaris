@@ -4,11 +4,12 @@
 //                                                            tidak menghijab siapa pun [R06-6])
 //   sisanya                                               → ahliWaris, lanjut ke tahap hajb.
 
-import type { GrafKeluarga, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak } from '../types.js';
+import type { GrafKeluarga, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak, Ruleset } from '../types.js';
 
 export function terapkanMawani(
   graf: GrafKeluarga,
   daftarPeran: Record<IdOrang, PeranAhliWaris>,
+  ruleset: Ruleset = 'syafii',
 ): { statusOrang: Record<IdOrang, StatusOrang>; jejak: LangkahJejak[] } {
   const statusOrang: Record<IdOrang, StatusOrang> = {};
   const jejak: LangkahJejak[] = [];
@@ -21,6 +22,8 @@ export function terapkanMawani(
         : { jenis: 'bukanAhliWaris', alasan: 'tidak ada sebab waris' };
     } else if (peran.kunci === 'DZAWIL_ARHAM') {
       statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'dzawil arham', rujukanAturan: peran.rujukan ?? 'R14-4' };
+      // [K03-1] nenek di luar batas madzhab ini; di [SYF] ia ahli waris.
+      if (peran.rujukan === 'K03-1' && orangIni.statusHidup === 'hidup') jejak.push({ tahap: 'mawani', refs: ['K03-1'], jenis: 'KHILAF_MADZHAB', kode: 'K03-1', ruleset, idOrang: [idOrang] });
     } else if (orangIni.statusHidup !== 'hidup') {
       // Syarat 2 (bab 2.2): warits harus hidup saat muwarrits wafat.
       statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'tidak hidup saat pewaris wafat' };

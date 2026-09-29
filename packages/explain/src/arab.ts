@@ -3,7 +3,7 @@
 // nama fardh (النصف، السدس) alih-alih "1/2". Urutan bab & `kolom` sama dengan cerita supaya sorotan UI tetap jalan.
 // Semua redaksi Arab di sini draf: perlu dicek tim keilmuan (bukan hukum baru; hukumnya tetap dari jejak engine).
 
-import type { AlasanFardh, GrafKeluarga, IdOrang, KunciAhliWaris, PilihanJadd, TujuanSisa } from '@waris/engine';
+import type { AlasanFardh, GrafKeluarga, IdOrang, KodeKhilafOverlay, KunciAhliWaris, PilihanJadd, Ruleset, TujuanSisa } from '@waris/engine';
 import type { Pecahan } from '@waris/math';
 import type { Bab } from './cerita.js';
 import type { Konteks, Langkah } from './context.js';
@@ -106,8 +106,23 @@ function babWaratsah(konteks: Konteks, sebut: SebutArab): Bab {
   for (const langkah of konteks.daftarLangkah('HAJB_HIRMAN')) {
     daftarBaris.push(baris(kalimat`${sebut([langkah.mahjub])} ${istilah('hajb-hirman', 'محجوب حجب حرمان')} بـ${sebut(langkah.hajib)}.`, langkah.refs, [langkah.mahjub]));
   }
+  for (const langkah of konteks.daftarLangkah('KHILAF_MADZHAB')) {
+    daftarBaris.push(baris(kalimat`على المذهب ${NAMA_MADZHAB_AR[langkah.ruleset]}: ${KALIMAT_KHILAF_AR[langkah.kode]}.`, langkah.refs, langkah.idOrang));
+  }
   return { judul: 'الورثة', daftarBaris, kolom: 'ahliWaris' };
 }
+
+const NAMA_MADZHAB_AR: Record<Ruleset, string> = { syafii: 'الشافعي', hanbali: 'الحنبلي', hanafi: 'الحنفي', maliki: 'المالكي' };
+const KALIMAT_KHILAF_AR: Record<KodeKhilafOverlay, string> = {
+  'K03-1': 'ليست هذه الجدة من الجدات الوارثات، فهي من ذوي الأرحام',
+  'K04-1': 'الجدة القربى تحجب البعدى من أي جهة كانت',
+  'K04-2': 'الجدة من قبل الأب ترث مع الأب',
+  'K05-1': 'الجد بمنزلة الأب فيحجب الإخوة الأشقاء ولأب',
+  'K07-1': 'لا تشريك في المشركة، فلا شيء للأخ الشقيق',
+};
+
+export const pembukaanMadzhabArab = (ruleset: Ruleset): BarisPenjelasan | undefined =>
+  ruleset === 'syafii' ? undefined : baris(kalimat`هذه المسألة على المذهب ${NAMA_MADZHAB_AR[ruleset]}.`);
 
 const OPSI_JADD: Record<PilihanJadd, string> = { muqasamah: 'المقاسمة', tsuluts: 'ثلث المال', tsulutsBaqi: 'ثلث الباقي', sudus: 'سدس المال' };
 
