@@ -101,6 +101,8 @@ function perbandinganSama(langsung: Saham, saham: Saham, jamiah: bigint): boolea
 function urutanKematian(input: InputMunasakhat): IdOrang[] {
   const urutan = [input.dasar.graf.idPewaris, ...input.urutanWafat];
   if (new Set(urutan).size !== urutan.length) throw new Error('munasakhat: seseorang tercatat wafat dua kali');
+  const tidakDiGraf = urutan.find(idMayit => !input.dasar.graf.orang[idMayit]);
+  if (tidakDiGraf) throw new Error(`munasakhat: ${tidakDiGraf} di urutan wafat tidak ada di graf`);
   for (const idMayitAcuan of Object.values(input.lahirSetelahWafat ?? {})) {
     if (!urutan.includes(idMayitAcuan)) throw new Error(`munasakhat: lahirSetelahWafat merujuk ${idMayitAcuan} yang tidak ada di urutan wafat`);
   }

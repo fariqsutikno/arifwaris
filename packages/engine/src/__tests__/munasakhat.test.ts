@@ -60,6 +60,10 @@ describe('Munasakhat — penolakan dan pertanyaan', () => {
     expect(hasil.saham).toEqual({ W: 16n, S: 56n });
   });
 
+  test('mayit di urutan wafat yang tidak ada di graf → error, bukan dilewati diam-diam', () => {
+    expect(() => hitungMunasakhat({ ...M2.input, urutanWafat: ['XX'] })).toThrow('tidak ada di graf');
+  });
+
   test('data kurang pada mayit berikutnya → PERLU_INPUT dengan mayit-nya', () => {
     const graf = salinGraf();
     graf.orang['HB'] = { id: 'HB', jenisKelamin: 'L', statusHidup: 'hidup', agama: 'tidakDiketahui' };
