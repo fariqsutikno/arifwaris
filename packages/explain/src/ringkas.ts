@@ -189,7 +189,8 @@ function babHasil(konteks: Konteks): Bab {
   const daftarBaris: BarisPenjelasan[] = [];
   for (const barisTabel of tabel.baris) {
     for (const [id, { saham, nominal }] of Object.entries(barisTabel.perOrang) as Array<[IdOrang, { saham: bigint; nominal: bigint }]>) {
-      daftarBaris.push(buatBaris(kalimat`${konteks.sebutan.sebut([id])}: ${saham}/${konteks.penyebutAkhir}${konteks.tampilkanNominal ? ` = ${rupiah(nominal)}` : ''}.`, ['R11-1']));
+      const teksNominal = konteks.tampilkanNominal ? ` = ${rupiah(nominal)}` : '';
+      daftarBaris.push(buatBaris(kalimat`${konteks.sebutan.sebut([id])}: ${saham}/${konteks.penyebutAkhir}${teksNominal}.`, ['R11-1']));
     }
   }
   if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {

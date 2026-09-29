@@ -160,14 +160,15 @@ function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: 
   }
   const teksRingkas = (id: string): Potongan[] => (diringkas
     ? kalimat` (${munasakhat(penyusun, 'hasil.diringkas', { saham: ikhtishar.saham[id]!, jamiah: ikhtishar.jamiah })})` : []);
+  const teksNominal = (uang: bigint): string => (tampilkanNominal ? ` = ${rupiah(uang)}` : '');
   for (const [id, saham] of Object.entries(hasil.saham)) {
     const ringkas = teksRingkas(id);
-    daftarBaris.push(buatBaris(kalimat`${sebut(id)}: ${saham}/${hasil.jamiah}${ringkas}${tampilkanNominal ? ` = ${rupiah(nominal[id]!)}` : ''}.`, ['R11-1']));
+    daftarBaris.push(buatBaris(kalimat`${sebut(id)}: ${saham}/${hasil.jamiah}${ringkas}${teksNominal(nominal[id]!)}.`, ['R11-1']));
   }
   for (const sisa of hasil.sisaKeluar) {
     const id = `${AWALAN_SISA}${sisa.mayit}`;
     const ringkas = teksRingkas(id);
-    daftarBaris.push(tekankan(buatBaris(kalimat`${sebutPenerima(penyusun, id, sebut)}: ${sisa.saham}/${hasil.jamiah}${ringkas}${tampilkanNominal ? ` = ${rupiah(sisa.nominal)}` : ''}, `
+    daftarBaris.push(tekankan(buatBaris(kalimat`${sebutPenerima(penyusun, id, sebut)}: ${sisa.saham}/${hasil.jamiah}${ringkas}${teksNominal(sisa.nominal)}, `
       .concat(kalimat`${teksTujuanSisa(penyusun, sisa.tujuan)}.`), ['R09-9']), 'perhatian'));
   }
   if (tampilkanNominal && pembulatan.sisaPembulatan > 0n) {

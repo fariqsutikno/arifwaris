@@ -29,7 +29,8 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
    Munasakhat (12), kasus khusus (13), dzawil arham (14) = orkestrator di atas pipeline, bukan cabang di dalamnya.
 5. **Data kurang → tanya**, jangan asumsi (bab 00 konvensi 4): kembalikan `PERLU_INPUT`.
 6. **Trace terstruktur**: setiap keputusan memancarkan `LangkahJejak` (data, bukan kalimat) + `refs`.
-   Narasi dibuat di `packages/explain`.
+   Narasi dibuat di `packages/explain` sebagai templat diksi `narasi.*` (kamus diberikan lewat argumen);
+   kalimat baru ditambah ke snapshot dengan `pnpm diksi:tambah <file.json>`, jangan hardcode.
 7. **Invarian sebagai assertion**: 'aul hanya 6→7..10, 12→13/15/17, 24→27 [R09-4]; inkisar ≤ 4 kelompok [R10-3];
    Σ saham individu = tashih; semua saham bulat; rasio 2:1 pada ashabah bil ghair (bab 10.5).
    Pelanggaran = throw error, bukan lanjut diam-diam.
