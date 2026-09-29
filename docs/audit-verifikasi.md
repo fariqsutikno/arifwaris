@@ -41,7 +41,7 @@ Auditor: sesi baru, 2026-09-29. Semua cek dari berkas + MCP (Shamela, Quran, sun
 | 15 | lampiran-konten/materi.md:39 | terlewat | «Sumber utamanya An-Nisa' 11, 12, 176…» tanpa kode | diperbaiki: [R01-2] [R01-3] |
 | 16 | kb/17:53-67 | — | Seluruh nomor hadits (27 token) cocok dengan sunnah.com: lafaz kunci ada di teks 26 dari 27 (Muslim 1059 memuat «ابن أخت القوم» pada sub-riwayat 1059d, penomoran Fu'ad yang sama). **Catatan MCP Hadith: nomornya tidak standar** (mis. `tirmidhi:3790` dan `ibnmajah:154` di MCP = hadits lain). Token di repo benar karena diambil dari nomor standar | tidak ada perubahan |
 
-## ⚑ Butuh keputusan pengguna (tidak diubah)
+## ⚑ Ditindaklanjuti (2026-09-29, pengguna: «selama benar dan aman, silakan»)
 
 | # | Berkas | Temuan |
 |---|---|---|
@@ -60,3 +60,8 @@ Catatan informasi (bukan temuan): commit Prompt 6 (`2550a59`) menyatakan di kont
 - R04-12 dan sel bab 18 lain yang «not_found» pada uji pertama hanya karena saya menguji kutipan hadits dengan halaman Raudhah; kutipan RDH-nya ada (`differs` diakritik saja).
 - Kode [Rxx-y]/Kxx-y yang dirujuk di kode dan konten semua ada di KB. Yang tidak ada hanya fixture tes (R99-x) dan contoh di rencana (R09-12, dokumen rencana).
 - Tidak ada rujukan patah ke `islamqa:`; satu-satunya token IslamQA adalah fixture tes (12345).
+
+## Tindak lanjut ⚑
+- ⚑1: dikonfirmasi pengguna; dicatat di 17.5 butir 8 dan 9.
+- ⚑2: sel K05-2 [MLK] diubah menjadi «belum terverifikasi» dan masuk 17.4 (tidak ada klaim tanpa dasar).
+- ⚑3: rujukan Takmilah dihapus dari K13a-3; hukumnya tetap didukung Mabsuth 30/52.

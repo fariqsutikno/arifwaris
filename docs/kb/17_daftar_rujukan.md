@@ -70,7 +70,8 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| R13-14 | Hukum laqith | Raudhah, Kitab al-Laqith |
+| R13-14 | Hukum laqith (dua butir: «merdeka», «penemu tidak mewarisi») | Raudhah, Kitab al-Laqith |
+| K05-2 [MLK] | Tidak ada fardh dalam wala' | Halaman 'Iqd al-Jawahir yang menyatakannya eksplisit |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:
@@ -80,3 +81,6 @@ Dicatat agar jejak audit transparan:
 4. **Urutan jihah ashabah (bab 05)**: [SYF] menempatkan kakek sejajar dengan saudara setelah ayah, bukan di jihah ubuwwah.
 5. **Musyarrakah (bab 07)**: dihapus klaim tanpa dasar bahwa Syafi'i secara ushul tidak menyetujui tasyrik; diganti nash Raudhah.
 6. **Wala' (bab 05)** dan **rasio 2:1 dzawil arham (bab 14)**: dikonfirmasi dari teks.
+7. **Audit 2026-09-29 (Prompt 6.5)**, koreksi lafaz/nomor/token: lihat `docs/audit-verifikasi.md`.
+8. **Koreksi isi sel overlay bab 18 (commit 5ca162f, dikonfirmasi pengguna 2026-09-29)**: K13-2 [HNF] kerabat ibu saja (bukan «ashabah ibu»); K09-1 dan K14-1 [MLK] bersyarat imam adil (bukan «mutlak»/«tidak»); K13b-1 [HNB] dua riwayat untuk yang umumnya selamat, [MLK] 70/80/90 th; K14-3 [HNB] pengecualian khal 2/3 dan khalah 1/3; bab 14.3 atribusi «غلط الشيخ أبو حامد» ke Ibnu Suraqah. Semuanya mengikuti isi kitab.
+9. **Ijazah wasiat (konten, Prompt 6)**: menurut [SYF] (Bahr al-Madzhab, R01-7) persetujuan baru sah setelah wafat; mekanismenya tetap tidak dihitung engine.
