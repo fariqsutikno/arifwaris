@@ -53799,6 +53799,750 @@
    }
   ]
  },
+ "madzhab:MZ7:hanbali/cerita": {
+  "daftarBab": [
+   {
+    "judul": "Langkah 1 — Siapa yang mendapat warisan",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Perhitungan ini menurut madzhab Hanbali."
+       }
+      ],
+      "refs": []
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Ahli waris ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "warits",
+        "teks": "warits"
+       },
+       {
+        "jenis": "teks",
+        "teks": ") "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "PW"
+        ],
+        "teks": "almarhum"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " dan "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": []
+     }
+    ],
+    "kolom": "ahliWaris"
+   },
+   {
+    "judul": "Langkah 2 — Bagian masing-masing",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "Nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " mendapat 1/6 karena tidak ada ibu."
+       }
+      ],
+      "refs": [
+       "R04-7",
+       "R04-8"
+      ],
+      "subjek": [
+       "G"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "Anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": " mengambil seluruh sisa harta setelah bagian tertentu (fardh) dibagikan ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "ashabah",
+        "teks": "ashabah"
+       },
+       {
+        "jenis": "teks",
+        "teks": ")."
+       }
+      ],
+      "refs": [
+       "R05-4"
+      ],
+      "subjek": [
+       "AL"
+      ]
+     }
+    ],
+    "kolom": "bagian"
+   },
+   {
+    "judul": "Langkah 3 — Menyamakan penyebut",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian yang sudah pasti: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1/6. Penyebutnya 6, jadi angka itu langsung dipakai sebagai penyebut bersama ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "ashlul-masalah",
+        "teks": "ashlul mas'alah",
+        "contoh": "Di kasus ini: 6."
+       },
+       {
+        "jenis": "teks",
+        "teks": ")."
+       }
+      ],
+      "refs": [
+       "R09-1"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Jadi harta kita bayangkan dipotong menjadi 6 bagian yang sama ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "saham",
+        "teks": "saham"
+       },
+       {
+        "jenis": "teks",
+        "teks": "): "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1 dan sisanya 5 untuk "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": []
+     }
+    ],
+    "kolom": "ashl"
+   },
+   {
+    "judul": "Langkah 4 — Memeriksa jumlah bagian",
+    "kolom": "penyesuaian",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Jumlah semua bagian 1 + 5 = 6, pas sama dengan 6 ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "adilah",
+        "teks": "'adilah"
+       },
+       {
+        "jenis": "teks",
+        "teks": "). Tidak perlu penyesuaian."
+       }
+      ],
+      "refs": [
+       "R09-3"
+      ]
+     }
+    ]
+   },
+   {
+    "judul": "Langkah 5 — Hasil akhir",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Harta dibagi menjadi 6 bagian:"
+       }
+      ],
+      "refs": [],
+      "penekanan": "subjudul"
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "Nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1 bagian (1/6)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "G"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "Anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 5 bagian (5/6)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "AL"
+      ]
+     }
+    ],
+    "kolom": "nominal"
+   }
+  ]
+ },
+ "madzhab:MZ7:hanbali/ringkas": {
+  "daftarBab": [
+   {
+    "judul": "Langkah 1 — Ahli waris",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Perhitungan ini menurut madzhab Hanbali."
+       }
+      ],
+      "refs": []
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Yang mewarisi: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " dan "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": []
+     }
+    ]
+   },
+   {
+    "judul": "Langkah 2 — Bagian masing-masing",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "Nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1/6 — tanpa ibu."
+       }
+      ],
+      "refs": [
+       "R04-7",
+       "R04-8"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "Anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "bi-nafsihi",
+        "teks": "ashabah bi nafsihi"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R05-4"
+      ]
+     }
+    ]
+   },
+   {
+    "judul": "Langkah 3 — Ashlul mas'alah",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "istilah",
+        "istilah": "ashlul-masalah",
+        "teks": "Ashl"
+       },
+       {
+        "jenis": "teks",
+        "teks": " = 6. "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "saham",
+        "teks": "Saham"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1; "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 5."
+       }
+      ],
+      "refs": []
+     }
+    ]
+   },
+   {
+    "judul": "Langkah 4 — Klasifikasi",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Σ saham 6 = ashl 6 → "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "adilah",
+        "teks": "'adilah"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R09-3"
+      ]
+     }
+    ]
+   },
+   {
+    "judul": "Langkah 5 — Hasil",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "Nenek dari pihak ibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1/6."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "Anak laki-laki"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 5/6."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ "madzhab:MZ7:hanbali/arab": {
+  "daftarBab": [
+   {
+    "judul": "الخطوة ١ — الورثة",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "هذه المسألة على المذهب الحنبلي."
+       }
+      ],
+      "refs": []
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "istilah",
+        "istilah": "warits",
+        "teks": "الورثة"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "أم الأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": " و"
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "الابن"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": []
+     }
+    ],
+    "kolom": "ahliWaris"
+   },
+   {
+    "judul": "الخطوة ٢ — الفروض والتعصيب",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "أم الأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": السدس، لعدم الأم."
+       }
+      ],
+      "refs": [
+       "R04-7",
+       "R04-8"
+      ],
+      "subjek": [
+       "G"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "الابن"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "bi-nafsihi",
+        "teks": "عصبة بالنفس"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R05-4"
+      ],
+      "subjek": [
+       "AL"
+      ]
+     }
+    ],
+    "kolom": "bagian"
+   },
+   {
+    "judul": "الخطوة ٣ — أصل المسألة",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "istilah",
+        "istilah": "ashlul-masalah",
+        "teks": "أصل المسألة"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ٦. "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "saham",
+        "teks": "السهام"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "أم الأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ١، "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "الابن"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ٥."
+       }
+      ],
+      "refs": []
+     }
+    ],
+    "kolom": "ashl"
+   },
+   {
+    "judul": "الخطوة ٤ — العول والرد",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "مجموع السهام ٦ مساو للأصل ٦، فالمسألة "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "adilah",
+        "teks": "عادلة"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R09-3"
+      ]
+     }
+    ],
+    "kolom": "penyesuaian"
+   },
+   {
+    "judul": "الخطوة ٥ — القسمة",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "G"
+        ],
+        "teks": "أم الأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": ١ من ٦."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "G"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "AL"
+        ],
+        "teks": "الابن"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": ٥ من ٦."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "AL"
+      ]
+     }
+    ],
+    "kolom": "nominal"
+   }
+  ]
+ },
  "madzhab:MZ8:syafii/cerita": {
   "daftarBab": [
    {

@@ -151,7 +151,9 @@ export const KASUS_NENEK: KasusMadzhab[] = [
     hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG' } },
   { id: 'MZ7', kode: 'R03-5', menguji: 'jalur terpendek fasidah, jalur lain shahihah', graf: grafNenekJalurKedua, harapan: {
     syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
-    hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG', maliki: 'TIDAK_DIDUKUNG' } },
+    // [HNB]: R14-4 (penanda dzawil arham pada jalur fasidah) kini berlaku (KB 18.4), R03-5 juga; hasil sama dengan [SYF].
+    hanbali: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
+    hanafi: 'TIDAK_DIDUKUNG', maliki: 'TIDAK_DIDUKUNG' } },
 ];
 
 // ─── K07-1: suami, ibu, 2 saudara seibu, saudara lk kandung (bab 7 contoh) ───

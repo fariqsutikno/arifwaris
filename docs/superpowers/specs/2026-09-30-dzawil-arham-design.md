@@ -140,7 +140,7 @@ Regression (fixture, [SYF] kecuali disebut):
 | 14.6 | ayahnya ibu, anak pr saudari seibu / kandung / sebapak | 6: 1, 1, 3, 1 |
 | 14.4 | cicit pr dari anak pr + anak pr saudara lk | masing-masing 1/2 |
 | 14.7 | 'ammah kandung, anak lk saudari kandung, anak lk anak pr | 'ammah 1, anak lk anak pr 1, anak lk saudari 0 |
-| 14.8 | satu orang dua jalur + cucu saudari sebapak | 5: 4, 1 |
+| 14.8 | satu orang (anak lk dari anak lk saudari kandung, dari ayahnya; anak lk dari anak pr saudara seibu, dari ibunya) dua jalur + cucu lk saudari sebapak | 5: 4, 1 |
 | 14.9 | suami + anak lk anak pr | 2: 1, 1 |
 | 14.9 | istri + anak saudari kandung | 4: 1, 3 |
 | 14.9 | 4 istri + anak pr saudara | 16: 1×4, 12 |
