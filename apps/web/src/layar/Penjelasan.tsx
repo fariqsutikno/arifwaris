@@ -11,6 +11,7 @@ import type { Kasus } from '../kasus';
 import { tautanRujukan } from '../rute';
 import { Istilah } from '../ui/Tooltip';
 import type { Bahasa } from '../preferensi';
+import { kamusNarasi } from '../konten/kamusNarasi';
 
 const HURUF_ARAB = /[\u0600-\u06FF]/;
 
@@ -19,10 +20,10 @@ export interface BabBerjudul { judulBagian?: string; bab: BabPenjelasan }
 /** Bahasa 'ar' → penjelasan gaya kitab berbahasa Arab; munasakhat belum punya versi Arab, tetap Indonesia. */
 export function daftarBabDari(kasus: Kasus, tampil: HasilTampil, bahasa: Bahasa = 'id'): BabBerjudul[] {
   if (tampil.jenis === 'biasa' && tampil.hasil.status === 'OK') {
-    return jelaskan(tampil.hasil, kasus.graf, bahasa === 'ar' ? { mode: 'arab' } : {}).daftarBab.map(bab => ({ bab }));
+    return jelaskan(tampil.hasil, kasus.graf, { bahasa: bahasa === 'ar' ? 'ar' : 'id', kamus: kamusNarasi }).daftarBab.map(bab => ({ bab }));
   }
   if (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK') {
-    return jelaskanMunasakhat(tampil.hasil, kasus.graf).daftarBagian
+    return jelaskanMunasakhat(tampil.hasil, kasus.graf, { kamus: kamusNarasi }).daftarBagian
       .flatMap(bagian => bagian.daftarBab.map(bab => ({ judulBagian: bagian.judul, bab })));
   }
   return [];

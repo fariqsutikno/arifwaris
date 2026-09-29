@@ -3,13 +3,15 @@
 
 import type { HasilEngine, GrafKeluarga, IdOrang, LangkahJejak } from '@waris/engine';
 import { buatSebutan, type Sebutan } from './people.js';
-import { gabungDan, type Potongan } from './segments.js';
+import { gabungDan, type Penyusun, type Potongan } from './segments.js';
 
 export type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 export type Langkah<K extends LangkahJejak['jenis']> = Extract<LangkahJejak, { jenis: K }>;
 
 export interface Konteks {
   hasil: HasilOk;
+  /** Kamus diksi + bahasa; semua kalimat bab disusun lewat ini. */
+  penyusun: Penyusun;
   sebutan: Sebutan;
   daftarLangkah<K extends LangkahJejak['jenis']>(jenis: K): Array<Langkah<K>>;
   anggotaDari(kelompok: string): IdOrang[];
@@ -18,10 +20,11 @@ export interface Konteks {
   tampilkanNominal: boolean;
 }
 
-export function buatKonteks(hasil: HasilOk, graf: GrafKeluarga): Konteks {
+export function buatKonteks(hasil: HasilOk, graf: GrafKeluarga, penyusun: Penyusun): Konteks {
   const { totalKolom } = hasil.tabel;
   return {
     hasil,
+    penyusun,
     sebutan: buatSebutan(hasil, graf),
     daftarLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((langkahIni): langkahIni is Langkah<K> => langkahIni.jenis === jenis),
     anggotaDari: kelompok => hasil.tabel.baris.find(r => r.kelompok === kelompok)?.anggota ?? [],

@@ -8,7 +8,7 @@ import { TEKS_TUJUAN_SISA } from './cerita.js';
 import { rupiah } from './format.js';
 import { jelaskan, type BabPenjelasan } from './narasi.js';
 import { labelPeran } from './people.js';
-import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Potongan } from './segments.js';
+import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Kamus, type Potongan } from './segments.js';
 import { istilah } from './terms.js';
 
 type HasilOk = Extract<HasilMunasakhat, { status: 'OK' }>;
@@ -20,7 +20,7 @@ export interface PenjelasanMunasakhat { daftarBagian: BagianMunasakhat[] }
 const AWALAN_SISA = 'sisaKeluar:';
 const URUTAN_KE = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
-export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { mode?: 'cerita' | 'ringkas' } = {}): PenjelasanMunasakhat {
+export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { gaya?: 'cerita' | 'ringkas' | undefined; kamus: Kamus }): PenjelasanMunasakhat {
   const sebut = buatSebut(hasil, graf);
   const daftarGabungan = hasil.jejak.filter((langkahIni): langkahIni is LangkahGabungan => langkahIni.jenis === 'MUNASAKHAT');
 
@@ -29,7 +29,7 @@ export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { m
     // Mayit berikutnya disebut dengan perannya ("anak perempuan"), bukan "almarhumah", supaya jelas siapa yang wafat.
     const bernama = urutanKe === 0 ? graf
       : { ...graf, orang: { ...graf.orang, [langkah.mayit]: { ...graf.orang[langkah.mayit]!, nama: sebut(langkah.mayit).teks } } };
-    const daftarBab = jelaskan(langkah.hasil, { ...bernama, idPewaris: langkah.mayit }, opsi).daftarBab;
+    const daftarBab = jelaskan(langkah.hasil, { ...bernama, idPewaris: langkah.mayit }, { gaya: opsi.gaya, kamus: opsi.kamus }).daftarBab;
     const gabunganMayit = daftarGabungan.find(langkahIni => langkahIni.mayit === langkah.mayit);
     if (gabunganMayit) daftarBab.push(penggabungan(gabunganMayit, sebut));
     daftarBagian.push({

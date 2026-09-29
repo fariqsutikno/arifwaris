@@ -3,13 +3,16 @@ import { hitung, type InputEngine, type LangkahJejak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
+import { kamusSnapshot } from './kamus.js';
 import { ID_ISTILAH, jelaskan, narasiNisab, keTeksBiasa, type Penjelasan } from '../index.js';
 
 function jelaskanKasus(input: InputEngine, mode?: 'cerita' | 'ringkas' | 'arab'): Penjelasan {
   const hasil = hitung(input);
   if (hasil.status !== 'OK') throw new Error(hasil.status);
-  return jelaskan(hasil, input.graf, mode ? { mode } : {});
+  return jelaskan(hasil, input.graf, opsiMode(mode));
 }
+const opsiMode = (mode?: 'cerita' | 'ringkas' | 'arab') =>
+  mode === 'arab' ? { bahasa: 'ar' as const, kamus: kamusSnapshot } : { gaya: mode, kamus: kamusSnapshot };
 
 const daftarTeks = (e: Penjelasan, langkah: number) => e.daftarBab[langkah - 1]!.daftarBaris.map(keTeksBiasa);
 
@@ -206,7 +209,7 @@ describe('keterkaitan dengan glosarium dan dalil', () => {
       const daftarKode = [
         ...hasil.jejak.flatMap(langkah => langkah.refs),
         ...(['cerita', 'ringkas', 'arab'] as const).flatMap(mode =>
-          jelaskan(hasil, fixture.input.graf, { mode }).daftarBab.flatMap(babIni => babIni.daftarBaris.flatMap(l => l.refs))),
+          jelaskan(hasil, fixture.input.graf, opsiMode(mode)).daftarBab.flatMap(babIni => babIni.daftarBaris.flatMap(l => l.refs))),
       ];
       daftarKode.filter(kode => !cariRujukan(kode)).forEach(kode => belumAda.add(`${fixture.id}: ${kode}`));
     }
@@ -234,7 +237,7 @@ describe('penjelasan per orang: subjek, ashabah terdekat, sisa keluar', () => {
     if (hasil.status !== 'OK') throw new Error(hasil.status);
     const ashabah = hasil.jejak.find((langkahIni): langkahIni is Extract<LangkahJejak, { jenis: 'ASHABAH' }> => langkahIni.jenis === 'ASHABAH')!;
     const anggota = hasil.tabel.baris.find(barisIni => barisIni.kelompok === ashabah.kelompok)!.anggota;
-    const teks = semuaBaris(jelaskan(hasil, case19.input.graf)).filter(barisIni => barisIni.subjek?.includes(anggota[0]!)).map(keTeksBiasa).join(' ');
+    const teks = semuaBaris(jelaskan(hasil, case19.input.graf, opsiMode())).filter(barisIni => barisIni.subjek?.includes(anggota[0]!)).map(keTeksBiasa).join(' ');
     expect(teks).toMatch(/tidak ada yang lebih dekat darinya: anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, atau saudara laki-laki kandung/);
   });
 
@@ -275,7 +278,7 @@ describe('mode arab (santri)', () => {
     for (const fixture of bab16.BAB16_FIXTURES) {
       const hasil = hitung(fixture.input);
       if (hasil.status !== 'OK') continue;
-      const teks = jelaskan(hasil, fixture.input.graf, { mode: 'arab' }).daftarBab.flatMap(babIni => babIni.daftarBaris.map(keTeksBiasa));
+      const teks = jelaskan(hasil, fixture.input.graf, opsiMode('arab')).daftarBab.flatMap(babIni => babIni.daftarBaris.map(keTeksBiasa));
       expect(teks.filter(baris => /\d/.test(baris)), fixture.id).toEqual([]);
     }
   });

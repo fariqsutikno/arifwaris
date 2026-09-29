@@ -1,12 +1,13 @@
 import { hitungMunasakhat, type InputMunasakhat } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import { M2, M7, M8, M9, SISA_KELUAR_MAYIT_KEDUA } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
+import { kamusSnapshot } from './kamus.js';
 import { jelaskanMunasakhat, keTeksBiasa, type PenjelasanMunasakhat } from '../index.js';
 
 function jelaskanKasus(input: InputMunasakhat, mode?: 'cerita' | 'ringkas'): PenjelasanMunasakhat {
   const hasil = hitungMunasakhat(input);
   if (hasil.status !== 'OK') throw new Error(hasil.status);
-  return jelaskanMunasakhat(hasil, input.dasar.graf, mode ? { mode } : {});
+  return jelaskanMunasakhat(hasil, input.dasar.graf, { gaya: mode, kamus: kamusSnapshot });
 }
 
 const daftarTeks = (e: PenjelasanMunasakhat, porsi: number, bab = 0) =>
