@@ -27,7 +27,7 @@ Tidak. Muslim tidak mewarisi non-muslim dan sebaliknya [R02-4]. Yang dilihat ada
 
 Rujukan: R01-5, R01-7
 
-Wasiat untuk ahli waris tidak berlaku [R01-5]. Rincian bila ahli waris lain menyetujuinya masih dikaji dan belum dipakai kalkulator [R01-7].
+Wasiat untuk ahli waris tidak berlaku tanpa persetujuan ahli waris lain [R01-5]. Menurut madzhab Syafi'i persetujuan itu baru sah bila diberikan setelah pewaris wafat; bila diberikan semasa hidup pewaris, ahli waris masih boleh menariknya [R01-7]. Mekanisme persetujuan ini belum dipakai kalkulator.
 
 ## Mana yang dibayar dulu: hutang atau wasiat?
 
@@ -39,7 +39,7 @@ Hutang. Urutannya: hak yang melekat pada barang tertentu, biaya jenazah, hutang,
 
 Rujukan: R04-16, R04-4, R04-5, R05-9
 
-Ketentuannya dari nash: "bagian laki-laki sama dengan dua perempuan" (An-Nisa' 11, 176) [R05-9]. Hikmah yang disebut fuqaha: laki-laki menanggung nafkah istri, anak, dan kerabat, juga mahar; perempuan tidak menanggung nafkah siapa pun.
+Ketentuannya dari nash: "bagian seorang anak laki-laki sama dengan bagian dua orang anak perempuan" (An-Nisa' 11, terjemah Kemenag RI); untuk saudara, "bagian seorang saudara laki-laki sama dengan bagian dua saudari perempuan" (An-Nisa' 176) [R05-9]. Hikmah yang disebut fuqaha: laki-laki menanggung nafkah istri, anak, dan kerabat, juga mahar; perempuan tidak menanggung nafkah siapa pun.
 
 Aturan 2:1 **tidak berlaku umum**. Saudara seibu laki-laki dan perempuan mendapat bagian sama [R04-16], dan ayah serta ibu masing-masing 1/6 bila ada anak laki-laki [R04-4] [R04-5].
 
@@ -53,13 +53,13 @@ Dikembalikan kepadanya sebagai [[radd]], sehingga ia menerima seluruh harta: 1/2
 
 Rujukan: R03-7
 
-Cucu dari anak perempuan bukan termasuk 25 ahli waris; ia termasuk [[dzawil-arham]] [R03-7]. Pembagian untuk dzawil arham belum dihitung kalkulator ini.
+Cucu dari anak perempuan bukan termasuk 25 ahli waris; ia termasuk [[dzawil-arham]] [R03-7]. Menurut pendapat al-ashah para muhaqqiq madzhab Syafi'i, dzawil arham mewarisi bila baitul mal tidak tegak, asal tidak ada ashabah dan tidak ada ahli waris berbagian pasti selain suami/istri (yang tetap mengambil bagiannya) [R14-5]. Pembagian untuk dzawil arham belum dihitung kalkulator ini.
 
 ## Bagaimana dengan anak dalam kandungan atau orang yang hilang?
 
 Rujukan: R13-1
 
-Kasus [[haml|anak dalam kandungan]] dan [[mafqud|orang hilang]] punya aturan khusus: sebagian harta ditahan sampai statusnya jelas. Rincian menurut madzhab Syafi'i masih dilengkapi, jadi kalkulator belum menghitungnya [R13-1]. Untuk kasus seperti ini, tanyakan langsung kepada ahli faraidh.
+Kasus [[haml|anak dalam kandungan]] dan [[mafqud|orang hilang]] punya aturan khusus: sebagian harta ditahan sampai statusnya jelas. Janin baru mewarisi bila terbukti ada saat pewaris wafat dan lahir hidup [R13-1]. Menurut madzhab Syafi'i jumlah janin tidak dibatasi, jadi ahli waris yang bagiannya bisa gugur karena janin tidak diberi apa pun dulu, dan yang berbagi sisa dengan janin menurut Lahim dan Ithraa juga belum diberi [R13-3] [R13-15]. Untuk orang hilang, hukum asalnya hidup dan lamanya menunggu diputuskan hakim [R13-6]. Kalkulator belum menghitung keduanya; tanyakan langsung kepada ahli faraidh.
 
 ## Apakah data yang saya isi dikirim ke server?
 
@@ -67,7 +67,7 @@ Tidak. Semua hitungan berjalan di perangkatmu. Kasus disimpan otomatis di browse
 
 ## Madzhab apa yang dipakai?
 
-Madzhab Syafi'i saja. Pendapat lain di kitab rujukan hanya dicatat sebagai perbandingan. Kompilasi Hukum Islam (hukum positif) belum dipakai.
+Bawaannya madzhab Syafi'i, dan hanya itu yang saat ini dihitung kalkulator. Titik-titik yang berbeda di madzhab Hanbali, Hanafi, dan Maliki sudah dicatat di matriks khilaf (KB bab 18) sebagai rencana pilihan; sumbernya disebut, baik kitab primer maupun nukilan Lahim dan Ithraa. Pendapat perorangan hanya pembanding. Kompilasi Hukum Islam (hukum positif) belum dipakai.
 
 ## Kenapa ada "selisih pembulatan"?
 

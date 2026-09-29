@@ -20,7 +20,7 @@ export function keMarkdown(konten: KontenTerbit[]): Record<string, string> {
 /** Entri berblok (materi, faq, tanya jawab) ditulis sebagai Markdown terbatas; jenis lain sebagai JSON berpagar. */
 function tulisEntri(baris: KontenTerbit): string {
   const isi = baris.isi as unknown as Record<string, unknown>;
-  const judul = String(isi.judul ?? isi.pertanyaan ?? baris.slug);
+  const judul = String(isi.judul ?? (typeof isi.pertanyaan === 'string' ? isi.pertanyaan : isi.kode) ?? baris.slug);
   const refs = baris.refs.length ? `Rujukan: ${baris.refs.join(', ')}\n\n` : '';
   const blok = (['blok', 'jawaban', 'kasus', 'penyelesaian'] as const).filter(kunci => Array.isArray(isi[kunci]) && baris.jenis !== 'soal_hitung');
   const badan = blok.length

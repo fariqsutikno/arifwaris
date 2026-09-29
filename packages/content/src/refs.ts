@@ -156,7 +156,7 @@ export interface Kitab { kode: string; judul: string; penulis: string; keteranga
 export interface Hadits { hadits: string; takhrij: string; status: string }
 export interface TitikDikaji { kode: string; topik: string; yangDibutuhkan: string }
 
-const tanpaMiring = (teks: string) => teks.replace(/^\*(.*)\*$/, '$1');
+const tanpaMiring = (teks: string) => teks.replace(/\*/g, '');
 export const DAFTAR_KITAB: Kitab[] = barisTabelBagian(bab17, '17.2')
   .map(([kode = '', judul = '', penulis = '', keterangan = '']) => ({ kode, judul: tanpaMiring(judul), penulis, keterangan }));
 export const DAFTAR_HADITS: Hadits[] = barisTabelBagian(bab17, '17.3')

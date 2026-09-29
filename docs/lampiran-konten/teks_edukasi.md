@@ -346,8 +346,8 @@
 
 ```json
 {
-  "id": "Mereka baru mewarisi kalau tidak ada ahli waris di daftar ini, dan perhitungannya belum didukung aplikasi.",
-  "ar": "لا يرثون إلا عند عدم الورثة في هذه القائمة، وحسابهم غير مدعوم في التطبيق بعد."
+  "id": "Mereka baru mewarisi kalau tidak ada ashabah dan tidak ada ahli waris berbagian pasti selain suami/istri, dan perhitungannya belum didukung aplikasi.",
+  "ar": "لا يرثون إلا عند عدم العصبة وعدم أصحاب الفروض غير الزوجين، وحسابهم غير مدعوم في التطبيق بعد."
 }
 ```
 
@@ -560,8 +560,8 @@
 
 ```json
 {
-  "id": "Biaya memandikan, mengafani, dan menguburkan almarhum. Ini didahulukan dari semuanya.",
-  "ar": "نفقة غسل الميت وتكفينه ودفنه، وهي مقدمة على كل شيء."
+  "id": "Biaya memandikan, mengafani, dan menguburkan almarhum. Ini didahulukan sebelum hutang, wasiat, dan warisan (kecuali hak atas barang tertentu, misalnya barang yang sedang digadaikan).",
+  "ar": "نفقة غسل الميت وتكفينه ودفنه، وهي مقدمة على الديون والوصية والإرث، إلا ما تعلق بعين التركة كالمرهون."
 }
 ```
 
@@ -578,8 +578,8 @@
 
 ```json
 {
-  "id": "Termasuk kewajiban yang tertunda, misalnya zakat yang belum dibayar, haji yang sudah dinazarkan, atau cicilan.",
-  "ar": "ومنها الحقوق المؤجلة كزكاة لم تؤد، أو حج منذور، أو أقساط."
+  "id": "Termasuk kewajiban yang tertunda, misalnya zakat yang belum dibayar, haji wajib yang belum ditunaikan, nazar, atau cicilan.",
+  "ar": "ومنها الحقوق المؤجلة كزكاة لم تؤد، أو حج واجب لم يؤد، أو نذر، أو أقساط."
 }
 ```
 

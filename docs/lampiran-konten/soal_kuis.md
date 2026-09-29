@@ -1,6 +1,6 @@
 # soal_kuis
 
-## [object Object]
+## K-01
 
 Rujukan: R01-1
 
@@ -58,7 +58,7 @@ Rujukan: R01-1
 }
 ```
 
-## [object Object]
+## K-02
 
 Rujukan: R01-4
 
@@ -116,7 +116,7 @@ Rujukan: R01-4
 }
 ```
 
-## [object Object]
+## K-03
 
 Rujukan: R02-8, R02-9
 
@@ -182,7 +182,7 @@ Rujukan: R02-8, R02-9
 }
 ```
 
-## [object Object]
+## K-04
 
 Rujukan: R02-4, R06-6
 
@@ -257,7 +257,7 @@ Rujukan: R02-4, R06-6
 }
 ```
 
-## [object Object]
+## K-05
 
 Rujukan: R03-3
 
@@ -315,7 +315,7 @@ Rujukan: R03-3
 }
 ```
 
-## [object Object]
+## K-06
 
 Rujukan: R04-2
 
@@ -382,7 +382,7 @@ Rujukan: R04-2
 }
 ```
 
-## [object Object]
+## K-07
 
 Rujukan: R04-4, R06-6
 
@@ -448,7 +448,7 @@ Rujukan: R04-4, R06-6
 }
 ```
 
-## [object Object]
+## K-08
 
 Rujukan: R05-3
 
@@ -506,7 +506,7 @@ Rujukan: R05-3
 }
 ```
 
-## [object Object]
+## K-09
 
 Rujukan: R05-4, R05-5
 
@@ -581,7 +581,7 @@ Rujukan: R05-4, R05-5
 }
 ```
 
-## [object Object]
+## K-10
 
 Rujukan: R06-2
 
@@ -639,7 +639,7 @@ Rujukan: R06-2
 }
 ```
 
-## [object Object]
+## K-11
 
 Rujukan: R06-5
 

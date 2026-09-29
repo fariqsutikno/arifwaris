@@ -78,7 +78,7 @@ Rujukan: R04-4, R07-1
   "baris": [
     {
       "bagian": "1/6",
-      "syarat": "Ada anak/cucu, atau ada dua saudara atau lebih.",
+      "syarat": "Ada anak atau cucu dari anak laki-laki, atau ada dua saudara atau lebih.",
       "cocok": {
         "fardh": "1/6"
       },
@@ -89,7 +89,7 @@ Rujukan: R04-4, R07-1
     },
     {
       "bagian": "1/3",
-      "syarat": "Tidak ada anak/cucu dan saudaranya kurang dari dua.",
+      "syarat": "Tidak ada anak atau cucu dari anak laki-laki, dan saudaranya kurang dari dua.",
       "cocok": {
         "fardh": "1/3",
         "kodeAlasan": "TANPA_FARU_WARITS_DAN_IKHWAH"
@@ -136,7 +136,7 @@ Rujukan: R04-5
     },
     {
       "bagian": "1/6 + sisa",
-      "syarat": "Hanya ada anak/cucu perempuan.",
+      "syarat": "Hanya ada anak perempuan atau cucu perempuan dari anak laki-laki.",
       "cocok": {
         "fardh": "1/6",
         "ashabah": true
@@ -148,7 +148,7 @@ Rujukan: R04-5
     },
     {
       "bagian": "Sisa (ashabah)",
-      "syarat": "Tidak ada anak maupun cucu.",
+      "syarat": "Tidak ada anak maupun cucu dari anak laki-laki.",
       "cocok": {
         "fardh": null,
         "ashabah": true
