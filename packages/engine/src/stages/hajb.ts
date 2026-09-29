@@ -5,6 +5,7 @@
 // Setiap orang cukup dibandingkan dengan yang sudah pasti tidak terhalang (`efektif`).
 
 import type { IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
+import { ATURAN, type AturanMadzhab } from '../rulesets/madzhab.js';
 import type { AhliWaris } from './model.js';
 
 export interface Mahjub { oleh: IdOrang[]; rujukanAturan: string }
@@ -13,7 +14,8 @@ const FARU_MUDZAKKAR: KunciAhliWaris[] = ['ANAK_LK', 'CUCU_LK'];
 const FARU_WARITS: KunciAhliWaris[] = ['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR'];
 const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'];
 
-export function terapkanHajb(kandidat: AhliWaris[]): { mahjub: Record<IdOrang, Mahjub>; efektif: AhliWaris[]; jejak: LangkahJejak[] } {
+// `aturan` belum dipakai; diisi overlay K04-1/K05-1 pada task berikutnya.
+export function terapkanHajb(kandidat: AhliWaris[], _aturan: AturanMadzhab = ATURAN.syafii): { mahjub: Record<IdOrang, Mahjub>; efektif: AhliWaris[]; jejak: LangkahJejak[] } {
   const efektif: AhliWaris[] = [];
   const mahjub: Record<IdOrang, Mahjub> = {};
   const jejak: LangkahJejak[] = [];

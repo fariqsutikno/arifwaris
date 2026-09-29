@@ -5,6 +5,7 @@
 // Urutan cek per orang: pasangan? → leluhur? → keturunan? → hawasyi (saudara, keponakan, paman, sepupu).
 
 import type { GrafKeluarga, KunciAhliWaris, PeranAhliWaris, PosisiKekerabatan, KonfigurasiMadzhab, Orang, IdOrang } from '../types.js';
+import { ATURAN, type AturanMadzhab } from '../rulesets/madzhab.js';
 
 type Jalur = PosisiKekerabatan['jalur'];
 type KunciPeran = PeranAhliWaris['kunci'];
@@ -22,7 +23,8 @@ export interface HasilDerivasi {
  * Tahap 1a: turunkan peran tiap orang dari graf (bab 3.1–3.2). Jenis saudara/paman ditentukan dari
  * kesamaan idAyah/idIbu, tidak pernah diinput langsung.
  */
-export function turunkanPeran(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab): HasilDerivasi {
+// `aturan` belum dipakai di tahap ini; diisi overlay nenek (K03-1) pada task berikutnya.
+export function turunkanPeran(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab, _aturan: AturanMadzhab = ATURAN.syafii): HasilDerivasi {
   const jalurPewaris = jalurKeAtas(graf, graf.idPewaris);
   const daftarPeran: Record<IdOrang, PeranAhliWaris> = {};
   const duaJihah: IdOrang[] = [];

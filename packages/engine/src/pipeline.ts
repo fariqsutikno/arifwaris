@@ -3,6 +3,8 @@
 //   jalankanTahapAhliWaris()    → bagian "siapa mewarisi dan dapat berapa" (tahap 1–2)
 // Tiap tahap ada di stages/*.ts, menerima data dari tahap sebelumnya, dan menambah jejak (bukan kalimat).
 
+import { periksaKeberlakuan, periksaKonfigurasi } from './rulesets/gerbang.js';
+import { ATURAN } from './rulesets/madzhab.js';
 import { hitungAshl } from './stages/ashl.js';
 import { tetapkanBagian } from './stages/bagian.js';
 import { turunkanPeran } from './stages/derivasi.js';
@@ -30,6 +32,8 @@ export interface HasilTahapAhliWaris {
 /** Pipeline lengkap (bab 00.2). */
 export function hitung(input: InputEngine): HasilEngine {
   // 0. Harta bersih: tirkah dikurangi tajhiz, hutang, dan wasiat (maks. 1/3).
+  const konfigurasiTidakSah = periksaKonfigurasi(input);
+  if (konfigurasiTidakSah) return konfigurasiTidakSah;
   const tirkah = hitungTirkah(input.tirkah);
 
   // 1–2. Siapa ahli warisnya dan apa bagiannya (fardh/ashabah).
@@ -50,7 +54,7 @@ export function hitung(input: InputEngine): HasilEngine {
   // Sisa yang keluar (hanya pasangan mewarisi): harta bersih × sisa ÷ tashih, dibulatkan ke bawah ke rupiah.
   const nominalSisaKeluar = klasifikasi.sisaKeluar ? tirkah.bersih * tashih.sisaKeluar / tashih.tashih : 0n;
 
-  return {
+  const hasil: Extract<HasilEngine, { status: 'OK' }> = {
     status: 'OK',
     statusOrang: ahliWaris.statusOrang,
     tabel: susunTabel(masalah, klasifikasi, tashih, nominal.nominal, ahliWaris.statusOrang),
@@ -63,6 +67,8 @@ export function hitung(input: InputEngine): HasilEngine {
     konfigurasi: input.konfigurasi,
     versiKb: input.versiKb,
   };
+  // Gerbang 18.4: mode non-[SYF] menolak hasil yang menyentuh aturan yang belum dikaji.
+  return periksaKeberlakuan(input.ruleset, hasil) ?? hasil;
 }
 
 /** Tahap 1–2: peran → validasi → mawani' → hajb → furudh/ashabah (+ bab 07/08). */
@@ -75,7 +81,8 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   }
 
   // 1a. Dari graf keluarga, tentukan peran tiap orang terhadap pewaris (anak, saudara, paman, ...).
-  const { daftarPeran, duaJihah } = turunkanPeran(graf, konfigurasi);
+  const aturan = ATURAN[input.ruleset];
+  const { daftarPeran, duaJihah } = turunkanPeran(graf, konfigurasi, aturan);
 
   // Data kurang → tanya dulu, jangan menebak.
   const pertanyaan = validasiInput(input, daftarPeran);
@@ -97,7 +104,7 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   }
 
   // 1c. Hajb hirman: yang lebih dekat menghalangi yang lebih jauh.
-  const hajb = terapkanHajb(kandidat);
+  const hajb = terapkanHajb(kandidat, aturan);
   const statusOrang = { ...mawani.statusOrang };
   for (const ahliWaris of kandidat) {
     const penghalang = hajb.mahjub[ahliWaris.idOrang];
@@ -106,7 +113,7 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
 
   // 2. Bagian tiap kelompok: fardh, ashabah, dan kasus khusus (bab 07/08).
   // Semua kandidat ikut dikirim karena yang mahjub tetap bisa mengurangi bagian orang lain [R06-6].
-  const hasilBagian = tetapkanBagian(hajb.efektif, kandidat);
+  const hasilBagian = tetapkanBagian(hajb.efektif, kandidat, aturan);
   if ('status' in hasilBagian) return hasilBagian;
 
   return {

@@ -66,7 +66,7 @@ export type StatusOrang =
 
 // ─── Konfigurasi ──────────────────────────────────────────────────────────────
 
-export type Ruleset = 'syafii';
+export type Ruleset = 'syafii' | 'hanbali' | 'hanafi' | 'maliki';
 
 export interface KonfigurasiMadzhab {
   kebijakanSisa: 'radd' | 'baitulMal';          // default 'radd'   [R09-8] [R14-5]

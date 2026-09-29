@@ -91,7 +91,7 @@ Rujukan yang bisa menutup: [HNF] *as-Sirajiyyah* + syarahnya; [MLK] *Mukhtashar 
 Token `Rxx-y` yang dipakai engine. **ya** = keputusan yang sama berlaku untuk madzhab itu; **tidak** = belum dikaji
 atau berbeda tanpa overlay → engine mode itu `TIDAK_DIDUKUNG` bila kasus menyentuh token ini. Titik yang punya baris di 18.2
 mengikuti barisnya: sel "= [SYF]" → ya; sel berbeda → tidak (overlay memakai kode `Kxx-y`, bukan token ini).
-Status: **draf 2026-09-29, menunggu review pengguna.**
+Status: **disetujui pengguna 2026-09-29** (setelah verifikasi kitab; R01-1 dipecah).
 
 | Token | [HNB] | [HNF] | [MLK] | Dasar |
 |---|---|---|---|---|

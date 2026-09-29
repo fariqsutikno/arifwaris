@@ -7,6 +7,7 @@
 
 import { bandingkan, kali, kurang, pecahan, tambah, type Pecahan } from '@waris/math';
 import type { AlasanFardh, IdKelompok, IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
+import { ATURAN, type AturanMadzhab } from '../rulesets/madzhab.js';
 import { jaddWalIkhwah } from './jaddWalIkhwah.js';
 import { adalahAkdariyyah, adalahMusyarrakah, adalahUmariyyatain } from './khusus.js';
 import { bobotRata, buatKelompok, penerimaSisa, satuanRuus, type AhliWaris, type KelompokBagian, type TidakDidukung } from './model.js';
@@ -26,7 +27,8 @@ const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAP
 type JenisAshabah = 'binNafsi' | 'bilGhair' | 'maalGhair';
 type HasilTahapBagian = { daftarKelompok: KelompokBagian[]; jejak: LangkahJejak[] };
 
-export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[]): HasilTahapBagian | TidakDidukung {
+// `aturan` belum dipakai; diisi overlay K07-1 pada task berikutnya.
+export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[], _aturan: AturanMadzhab = ATURAN.syafii): HasilTahapBagian | TidakDidukung {
   const penyusun = buatPenyusun(efektif, kandidat);
 
   const fardhPasangan = bagianPasangan(penyusun);

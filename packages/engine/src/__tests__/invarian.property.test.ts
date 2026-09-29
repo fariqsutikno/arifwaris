@@ -105,4 +105,5 @@ export function jalankanProperty(ruleset: Ruleset): void {
 
 describe('Invarian pipeline — susunan acak', () => {
   test('[SYF]', () => jalankanProperty('syafii'));
+  test.each(['hanbali', 'hanafi', 'maliki'] as const)('[%s]', ruleset => jalankanProperty(ruleset));
 });
