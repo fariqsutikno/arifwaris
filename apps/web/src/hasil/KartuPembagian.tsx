@@ -84,7 +84,7 @@ export function KartuPembagian(props: Props) {
                 </span>
               );
             })}
-            {ringkasan.sisaKeluar && <span className="sisa-keluar" style={{ flex: Number(ringkasan.sisaKeluar.saham) }}>{pecahanTeks(ringkasan.sisaKeluar.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
+            {ringkasan.daftarSisaKeluar.map(sisa => <span key={sisa.id} className="sisa-keluar" style={{ flex: Number(sisa.saham) }}>{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>)}
           </div>
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => {
@@ -106,21 +106,21 @@ export function KartuPembagian(props: Props) {
                 </li>
               );
             })}
-            {ringkasan.sisaKeluar && (
-              <li>
+            {ringkasan.daftarSisaKeluar.map(sisa => (
+              <li key={sisa.id}>
                 <div className="baris-bagian sisa">
                   <span className="titik putus" aria-hidden="true" />
-                  <span className="nama-bagian">{ringkasan.sisaKeluar.judul}<small>{ringkasan.sisaKeluar.keterangan}</small></span>
+                  <span className="nama-bagian">{sisa.judul}<small>{sisa.keterangan}</small></span>
                   <span className="jumlah-bagian">
-                    <span className="angka">{uang(ringkasan.sisaKeluar.nominal)}</span>
+                    <span className="angka">{uang(sisa.nominal)}</span>
                     <span className="sub-bagian">
-                      {pengaturan.pecahan && <span className="frac">{pecahanTeks(ringkasan.sisaKeluar.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
-                      {pengaturan.persen && <span>{persenTeks(ringkasan.sisaKeluar.saham, ringkasan.penyebut)}</span>}
+                      {pengaturan.pecahan && <span className="frac">{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
+                      {pengaturan.persen && <span>{persenTeks(sisa.saham, ringkasan.penyebut)}</span>}
                     </span>
                   </span>
                 </div>
               </li>
-            )}
+            ))}
           </ul>
           {ringkasan.terhalang.map(orang => {
             const { className, ...pemicu } = atribut(orang.id);

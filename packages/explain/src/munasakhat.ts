@@ -7,7 +7,7 @@ import type { GrafKeluarga, HasilMunasakhat, IdOrang, LangkahJejak } from '@wari
 import { rupiah } from './format.js';
 import { jelaskan, type BabPenjelasan } from './narasi.js';
 import { labelPeran } from './people.js';
-import { gabungDan, buatBaris, kalimat, type BarisPenjelasan, type Potongan } from './segments.js';
+import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Potongan } from './segments.js';
 import { istilah } from './terms.js';
 
 type HasilOk = Extract<HasilMunasakhat, { status: 'OK' }>;
@@ -16,6 +16,8 @@ type LangkahGabungan = Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>;
 export interface BagianMunasakhat { judul: string; daftarBab: BabPenjelasan[] }
 export interface PenjelasanMunasakhat { daftarBagian: BagianMunasakhat[] }
 
+const AWALAN_SISA = 'sisaKeluar:';
+const TEKS_TUJUAN_SISA = { dzawilArham: 'untuk dzawil arham', baitulMal: 'untuk dzawil arham bila ada, bila tidak ke baitul mal' } as const;
 const URUTAN_KE = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
 export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { mode?: 'cerita' | 'ringkas' } = {}): PenjelasanMunasakhat {
@@ -78,6 +80,11 @@ function buatSebut(hasil: HasilOk, graf: GrafKeluarga): (id: IdOrang) => Potonga
   };
 }
 
+/** Penerima di jami'ah: orang, atau baris sisa harta seorang mayit (kunci `sisaKeluar:<mayit>`, IdSisaKeluar engine). */
+function sebutPenerima(id: string, sebut: (id: IdOrang) => Potongan): Potongan[] {
+  return id.startsWith(AWALAN_SISA) ? kalimat`Sisa harta ${sebut(id.slice(AWALAN_SISA.length))}` : [sebut(id)];
+}
+
 // ─── Bagian ───────────────────────────────────────────────────────────────────
 
 function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMunasakhat {
@@ -130,7 +137,7 @@ function penggabungan(langkahIni: LangkahGabungan, sebut: (id: IdOrang) => Poton
         ...(rincianOrang.sebelum > 0n ? [`${rincianOrang.sebelum} × ${langkahIni.wafqMasalah}`] : []),
         ...(rincianOrang.dariMayit > 0n ? [`${rincianOrang.dariMayit} × ${langkahIni.wafqSaham}`] : []),
       ];
-      return buatBaris(kalimat`${sebut(id)}: ${istilahIstilah.join(' + ')} = ${rincianOrang.sesudah}.`);
+      return buatBaris(kalimat`${sebutPenerima(id, sebut)}: ${istilahIstilah.join(' + ')} = ${rincianOrang.sesudah}.`);
     }),
   ];
   return { judul: 'Menggabungkan dengan pembagian sebelumnya', daftarBaris };
@@ -164,6 +171,12 @@ function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMun
   for (const [id, saham] of Object.entries(hasil.saham)) {
     const ringkas = diringkas ? ` (diringkas ${ikhtishar.saham[id]}/${ikhtishar.jamiah})` : '';
     daftarBaris.push(buatBaris(kalimat`${sebut(id)}: ${saham}/${hasil.jamiah}${ringkas}${tampilkanNominal ? ` = ${rupiah(nominal[id]!)}` : ''}.`, ['R11-1']));
+  }
+  for (const sisa of hasil.sisaKeluar) {
+    const id = `${AWALAN_SISA}${sisa.mayit}`;
+    const ringkas = diringkas ? ` (diringkas ${ikhtishar.saham[id]}/${ikhtishar.jamiah})` : '';
+    daftarBaris.push(tekankan(buatBaris(kalimat`${sebutPenerima(id, sebut)}: ${sisa.saham}/${hasil.jamiah}${ringkas}${tampilkanNominal ? ` = ${rupiah(sisa.nominal)}` : ''}, `
+      .concat(kalimat`${TEKS_TUJUAN_SISA[sisa.tujuan]}.`), ['R09-9']), 'perhatian'));
   }
   if (tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     daftarBaris.push(buatBaris(kalimat`Selisih pembulatan ${rupiah(pembulatan.sisaPembulatan)} (per ${rupiah(pembulatan.satuan)}), belum dibagikan.`));

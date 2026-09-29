@@ -63,7 +63,9 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
   const nama = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const { ashl, aul, radd, tashih } = tabel.totalKolom;
   const penyesuaian = aul !== undefined ? { judul: t('hitung.aul'), nilai: aul, kunci: 'aul' } : radd !== undefined ? { judul: t('hitung.radd'), nilai: radd, kunci: 'radd' } : null;
-  const totalNominal = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, ringkasan.sisaKeluar?.nominal ?? 0n);
+  // Tabel hanya untuk kasus biasa: paling banyak satu baris sisa.
+  const [sisaKeluar] = ringkasan.daftarSisaKeluar;
+  const totalNominal = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, sisaKeluar?.nominal ?? 0n);
   const angka = (kolom: KolomBab | 'perOrang', nilai: bigint | undefined, daftarId?: IdOrang[]) =>
     tertutup(kolom, daftarId) ? RAHASIA : nilai === undefined ? '-' : kolom === 'perOrang' ? angkaTampil(String(nilai))
       : <AngkaMasuk teks={angkaTampil(String(nilai))} pemicu={pemicu(kolom as KolomBab, daftarId)} tunda={tunda(daftarId)} />;
@@ -121,15 +123,15 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
             );
           });
         })}
-        {ringkasan.sisaKeluar && (
+        {sisaKeluar && (
           <tr className="baris-sisa">
-            <td className="kiri"><span className="orang-sel"><span className="titik putus" />{ringkasan.sisaKeluar.judul}</span></td>
+            <td className="kiri"><span className="orang-sel"><span className="titik putus" />{sisaKeluar.judul}</span></td>
             <td><span className="bagian-sel">{t('hitung.sisa_3')}<small>{t('hitung.bukan_untuk_ahli_waris')}</small></span></td>
-            <td className="angka">{angka('ashl', ringkasan.sisaKeluar.saham * ashl! / ringkasan.penyebut)}</td>
+            <td className="angka">{angka('ashl', sisaKeluar.saham * ashl! / ringkasan.penyebut)}</td>
             {penyesuaian && <td className="angka">-</td>}
-            {tashih !== undefined && <td className="angka">{angka('tashih', ringkasan.sisaKeluar.saham)}</td>}
-            <td className="angka">{angka('perOrang', ringkasan.sisaKeluar.saham)}</td>
-            <td className="uang">{tertutup('nominal') ? RAHASIA : uangAtau(ringkasan.sisaKeluar.nominal, sembunyi)}</td>
+            {tashih !== undefined && <td className="angka">{angka('tashih', sisaKeluar.saham)}</td>}
+            <td className="angka">{angka('perOrang', sisaKeluar.saham)}</td>
+            <td className="uang">{tertutup('nominal') ? RAHASIA : uangAtau(sisaKeluar.nominal, sembunyi)}</td>
           </tr>
         )}
         {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}

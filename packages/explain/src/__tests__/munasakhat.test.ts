@@ -1,6 +1,6 @@
 import { hitungMunasakhat, type InputMunasakhat } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
-import { M2, M7, M8, M9 } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
+import { M2, M7, M8, M9, SISA_KELUAR_MAYIT_KEDUA } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
 import { jelaskanMunasakhat, keTeksBiasa, type PenjelasanMunasakhat } from '../index.js';
 
 function jelaskanKasus(input: InputMunasakhat, mode?: 'cerita' | 'ringkas'): PenjelasanMunasakhat {
@@ -116,5 +116,17 @@ describe('sebutan lintas mayit dan catatan', () => {
   test('mode ringkas memakai penjelas per mayit versi ringkas', () => {
     const e = jelaskanKasus(M2.input, 'ringkas');
     expect(e.daftarBagian[1]!.daftarBab.map(babIni => babIni.judul)).toContain("Langkah 3 — Ashlul mas'alah");
+  });
+});
+
+describe('Sisa harta mayit kedua keluar — penjelasan', () => {
+  const e = jelaskanKasus(SISA_KELUAR_MAYIT_KEDUA);
+
+  test('penggabungan menyebut sisa harta suami, bukan "kerabat"', () => {
+    expect(babTerakhir(e, 2).daftarBaris.map(keTeksBiasa)).toContain('Sisa harta suami: 3 × 1 = 3.');
+  });
+
+  test('hasil akhir memuat baris sisa beserta tujuannya', () => {
+    expect(daftarTeks(e, 3)).toContain('Sisa harta suami: 3/16, untuk dzawil arham bila ada, bila tidak ke baitul mal.');
   });
 });

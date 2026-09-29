@@ -46,8 +46,8 @@ export interface RingkasanHasil {
   penyebut: bigint;
   tirkah: LangkahTirkah;
   sisaPembulatan: bigint;
-  /** Hanya pasangan yang mewarisi: sisa harta keluar dari ahli waris (engine `sisaKeluar`). */
-  sisaKeluar?: { saham: bigint; nominal: bigint; judul: string; keterangan: string };
+  /** Hanya pasangan yang mewarisi: sisa harta keluar dari ahli waris (engine `sisaKeluar`). Munasakhat: satu per mayit. */
+  daftarSisaKeluar: Array<{ id: string; saham: bigint; nominal: bigint; judul: string; keterangan: string }>;
   tentang: TentangKasus;
   statusOrang: Record<IdOrang, StatusOrang>;
 }
@@ -120,7 +120,8 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     terhalang: menurutKelompok(daftarTerhalang(graf, hasil.statusOrang)),
     tirkah: langkahTirkah(hasil.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
-    ...(hasil.sisaKeluar ? { sisaKeluar: { saham: hasil.sisaKeluar.saham, nominal: hasil.sisaKeluar.nominal, ...TEKS_SISA_KELUAR[hasil.sisaKeluar.tujuan] } } : {}),
+    daftarSisaKeluar: hasil.sisaKeluar
+      ? [{ id: 'sisaKeluar', saham: hasil.sisaKeluar.saham, nominal: hasil.sisaKeluar.nominal, ...TEKS_SISA_KELUAR[hasil.sisaKeluar.tujuan] }] : [],
     tentang: tentangKasus(hasil.jejak),
     statusOrang: hasil.statusOrang,
   };
@@ -156,6 +157,10 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): Ringka
   const pertama = hasil.daftarLangkah[0]!.hasil;
   return {
     jenis: 'munasakhat', penerima, terhalang, penyebut: hasil.jamiah,
+    daftarSisaKeluar: hasil.sisaKeluar.map(sisa => ({
+      id: `sisaKeluar:${sisa.mayit}`, saham: sisa.saham, nominal: sisa.nominal,
+      judul: TEKS_SISA_KELUAR[sisa.tujuan].judul, keterangan: t('hitung.dari_nama', { nama: namaOrang(graf, statusOrang, sisa.mayit) }),
+    })),
     tirkah: langkahTirkah(pertama.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
     tentang: { ...tentangKasus(pertama.jejak), jamiah: hasil.jamiah },

@@ -162,7 +162,8 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MUNASAKHAT'; mayit: IdOrang; saham: bigint; masalah: bigint; hubungan: HubunganInkisar;
       fpb: bigint; wafqMasalah: bigint; wafqSaham: bigint; jamiah: bigint;
       /** Per orang: saham sebelum × wafqMasalah + saham dari mayit × wafqSaham = sesudah. */
-      rincian: Record<IdOrang, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
+      /** Termasuk baris sisa harta mayit sebelumnya (`IdSisaKeluar`) bila ada. */
+      rincian: Record<IdOrang | IdSisaKeluar, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
   // Yang wafat tidak mendapat bagian dari mayit sebelumnya → tidak ada yang diteruskan; diabaikan [R12-1].
   | { jenis: 'MUNASAKHAT_DILEWATI'; mayit: IdOrang }
 );
@@ -232,6 +233,12 @@ export interface InputMunasakhat {
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 
+/**
+ * Kunci baris sisa harta seorang mayit di jami'ah (bab 12): sisa yang tidak di-radd ke pasangan [R09-9]
+ * ikut dihitung seperti satu penerima, supaya Σ saham = jami'ah tetap berlaku.
+ */
+export type IdSisaKeluar = `sisaKeluar:${IdOrang}`;
+
 export type HasilMunasakhat =
   | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit: IdOrang })
   | { status: 'OK';
@@ -241,8 +248,10 @@ export type HasilMunasakhat =
       keadaan: 1 | 2 | 3;
       jamiah: bigint;
       saham: Record<IdOrang, bigint>;
-      /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. */
-      ikhtishar: { jamiah: bigint; saham: Record<IdOrang, bigint> };
+      /** Sisa harta tiap mayit yang keluar ke dzawil arham/baitul mal [R09-9]. Σ saham + Σ sisaKeluar = jami'ah. */
+      sisaKeluar: Array<{ mayit: IdOrang; tujuan: TujuanSisa; saham: bigint; nominal: Uang }>;
+      /** Ikhtishar as-siham (bab 12.4 jenis 3): semua saham ÷ FPB-nya; untuk penyajian. Baris sisa memakai `IdSisaKeluar`. */
+      ikhtishar: { jamiah: bigint; saham: Record<IdOrang | IdSisaKeluar, bigint> };
       nominal: Record<IdOrang, Uang>;
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       jejak: LangkahJejak[] };
