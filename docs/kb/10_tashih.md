@@ -73,8 +73,8 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R10-1 | Nisab arba' | RDH | Bab 9, muqaddimah 2 | «كل عددين فهما متماثلان، أو متداخلان، أو متوافقان، أو متباينان» |
-| R10-2 | Tashih satu kelompok | RDH | Bab 9, Fashl 2 | «إن كانا متباينين، ضربت عدد رءوسهم في أصل المسألة بعولها إن عالت. وإن كانا متوافقين، ضربت جزء الوفق من عدد رءوسهم» |
-| R10-3 | Inkisar maksimal 4 kelompok, beserta alasannya | RDH | Idem | «ولا تتصور الزيادة؛ لأن الوارثين في الفريضة لا يزيدون على خمسة أصناف... ولا بد من صحة نصيب أحد الأصناف عليه» |
+| R10-1 | Nisab arba' | RDH | Raudhah 6/60 (Bab 9, muqaddimah 2) · shamela:499/2349 | «كل عددين فهما متماثلان، أو متداخلان، أو متوافقان، أو متباينان» |
+| R10-2 | Tashih satu kelompok | RDH | Raudhah 6/64 (Bab 9, Fashl 2) · shamela:499/2353 | «إن كانا متباينين، ضربت عدد رءوسهم في أصل المسألة بعولها إن عالت. وإن كانا متوافقين، ضربت جزء الوفق من عدد رءوسهم» |
+| R10-3 | Inkisar maksimal 4 kelompok, beserta alasannya | RDH | Raudhah 6/65 · shamela:499/2354 | «ولا تتصور الزيادة؛ لأن الوارثين في الفريضة لا يزيدون على خمسة أصناف... ولا بد من صحة نصيب أحد الأصناف عليه» |
 | R10-4 | Perhitungan KPK/FPB | KH | Kaidah hisab | Setara dengan metode klasik; bukan hukum syar'i. |
 | R10-5 | Kaidah angka 1 = tabayun | KH | Kaidah hisab | «كل عدد مع الواحد فهو متباين» — didahulukan atas pengecekan tadakhul. |
