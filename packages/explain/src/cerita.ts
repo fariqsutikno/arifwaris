@@ -2,7 +2,7 @@
 // Urutan bab: harta → siapa mewarisi → bagian masing-masing → menyamakan penyebut
 //             → 'adilah/'aul/radd → pembulatan (tashih) → hasil akhir.
 
-import type { AlasanFardh, PilihanJadd, IdOrang } from '@waris/engine';
+import type { AlasanFardh, PilihanJadd, IdOrang, KodeKhilafOverlay, Ruleset, TujuanSisa } from '@waris/engine';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
 import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Potongan } from './segments.js';
@@ -72,8 +72,24 @@ function babAhliWaris(konteks: Konteks): Bab {
     daftarBaris.push(buatBaris(kalimat`${sebutSemua(konteks, mahjub)} tidak mendapat bagian karena terhalang oleh ${sebutSemua(konteks, langkah.hajib)} `
       .concat(kalimat`(${istilah('hajb-hirman', 'hajb hirman')}).`), langkah.refs, mahjub));
   }
+  for (const langkah of konteks.daftarLangkah('KHILAF_MADZHAB')) {
+    daftarBaris.push(buatBaris(kalimat`Menurut madzhab ${NAMA_MADZHAB[langkah.ruleset]}, ${KALIMAT_KHILAF[langkah.kode]}.`, langkah.refs, langkah.idOrang));
+  }
   return { judul: 'Siapa yang mendapat warisan', daftarBaris, kolom: 'ahliWaris' };
 }
+
+const NAMA_MADZHAB: Record<Ruleset, string> = { syafii: "Syafi'i", hanbali: 'Hanbali', hanafi: 'Hanafi', maliki: 'Maliki' };
+const KALIMAT_KHILAF: Record<KodeKhilafOverlay, string> = {
+  'K03-1': 'nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham',
+  'K04-1': 'nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun',
+  'K04-2': 'nenek dari pihak ayah tetap mewarisi bersama ayah',
+  'K05-1': 'kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak',
+  'K07-1': 'saudara kandung tidak digabung dengan saudara seibu dalam kasus musyarrakah, jadi ia tidak mendapat sisa',
+};
+
+/** Baris pembuka bila perhitungan bukan [SYF] (default); dipakai mode cerita dan ringkas. */
+export const pembukaanMadzhab = (ruleset: Ruleset): BarisPenjelasan | undefined =>
+  ruleset === 'syafii' ? undefined : buatBaris(kalimat`Perhitungan ini menurut madzhab ${NAMA_MADZHAB[ruleset]}.`);
 
 // ─── Langkah: bagian masing-masing ────────────────────────────────────────────
 
@@ -308,8 +324,16 @@ function babPenyesuaian(konteks: Konteks): Bab {
   }
 }
 
+export const TEKS_TUJUAN_SISA: Record<TujuanSisa, string> = {
+  dzawilArham: 'untuk dzawil arham', baitulMal: 'untuk dzawil arham bila ada, bila tidak ke baitul mal', baitulMalTeratur: 'untuk baitul mal',
+};
+
 /** Hanya pasangan yang mewarisi [R09-9]: fardh penuh, sisanya keluar dari ahli waris [R14-3] [R02-1]. */
 export function ceritaSisaKeluar(konteks: Konteks, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
+  // [R09-8] kebijakan baitul mal: sisa tidak di-radd ke siapa pun, bukan karena hanya pasangan yang mewarisi.
+  if (langkah.tujuan === 'baitulMalTeratur') {
+    return buatBaris(kalimat`Dari ${langkah.ashl} bagian, ahli waris mendapat ${langkah.ashl - langkah.saham}. Sisa ${langkah.saham} bagian tidak dikembalikan (${istilah('radd', 'radd')}) kepada mereka, tetapi diserahkan ke baitul mal (kas umum umat Islam) karena baitul mal dianggap teratur.`, langkah.refs);
+  }
   const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
   const tujuan = langkah.tujuan === 'dzawilArham'
     ? kalimat`diberikan kepada kerabat dzawil arham (kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan).`
@@ -418,7 +442,7 @@ function babHasil(konteks: Konteks): Bab {
   const { sisaKeluar } = konteks.hasil;
   if (sisaKeluar) {
     daftarBaris.push(tekankan(buatBaris(kalimat`Sisa: ${sisaKeluar.saham} bagian (${sisaKeluar.saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(sisaKeluar.nominal)}` : ''}, `
-      .concat(kalimat`${sisaKeluar.tujuan === 'dzawilArham' ? 'untuk dzawil arham' : 'untuk dzawil arham bila ada, bila tidak ke baitul mal'}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []), 'perhatian'));
+      .concat(kalimat`${TEKS_TUJUAN_SISA[sisaKeluar.tujuan]}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []), 'perhatian'));
   }
   if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     const perSatuan = pembulatan.satuan > 1n;

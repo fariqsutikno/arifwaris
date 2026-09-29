@@ -2,6 +2,7 @@ import { cariRujukan, cariIstilah } from '@waris/content';
 import { hitung, type InputEngine, type LangkahJejak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
 import { ID_ISTILAH, jelaskan, narasiNisab, keTeksBiasa, type Penjelasan } from '../index.js';
 
 function jelaskanKasus(input: InputEngine, mode?: 'cerita' | 'ringkas' | 'arab'): Penjelasan {
@@ -248,6 +249,18 @@ describe('penjelasan per orang: subjek, ashabah terdekat, sisa keluar', () => {
     expect(teks).toMatch(/tersisa 3 bagian/);
     expect(teks).toMatch(/baitul mal/);
   });
+
+  test('kebijakan sisa baitul mal: sisa ibu + anak pr ke baitul mal, bukan radd [R09-8]', () => {
+    const graf = { idPewaris: 'PW', pernikahan: [], orang: {
+      PW: bab16.p('PW', 'L', { statusHidup: 'wafat', idIbu: 'I' }), I: bab16.p('I', 'P'), AP: bab16.p('AP', 'P', { idAyah: 'PW' }) } };
+    const input = bab16.input(graf, { kebijakanSisa: 'baitulMal', talakBainSaatMaradh: 'qaulJadid' });
+    const teks = semuaBaris(jelaskanKasus(input)).map(keTeksBiasa).join(' ');
+    expect(teks).toContain('untuk baitul mal.');
+    expect(teks).not.toMatch(/dzawil arham|suami\/istri/);
+    const arab = semuaBaris(jelaskanKasus(input, 'arab')).map(keTeksBiasa).join(' ');
+    expect(arab).toContain('لبيت المال');
+    expect(arab).not.toMatch(/الأرحام|الزوجين/);
+  });
 });
 
 describe('mode arab (santri)', () => {
@@ -265,5 +278,42 @@ describe('mode arab (santri)', () => {
       const teks = jelaskan(hasil, fixture.input.graf, { mode: 'arab' }).daftarBab.flatMap(babIni => babIni.daftarBaris.map(keTeksBiasa));
       expect(teks.filter(baris => /\d/.test(baris)), fixture.id).toEqual([]);
     }
+  });
+});
+
+describe('K07-1 musyarrakah [HNB] tanpa tasyrik', () => {
+  test('cerita menyebut saudara kandung tidak digabung', async () => {
+    const { KASUS_MUSYARRAKAH } = await import('../../../engine/src/__tests__/fixtures/madzhab.js');
+    const e = jelaskanKasus({ ...bab16.case10.input, graf: KASUS_MUSYARRAKAH[0]!.graf, ruleset: 'hanbali' });
+    expect(e.daftarBab.flatMap(babIni => babIni.daftarBaris.map(keTeksBiasa)).join(' '))
+      .toContain('saudara kandung tidak digabung dengan saudara seibu');
+  });
+});
+
+describe('Narasi overlay madzhab', () => {
+  const teksKasus = (id: string, ruleset: InputEngine['ruleset'], mode?: 'arab') => {
+    const kasus = KASUS_MADZHAB.find(k => k.id === id)!;
+    return jelaskanKasus({ ...bab16.input(kasus.graf), ruleset }, mode).daftarBab.flatMap(bab => bab.daftarBaris.map(keTeksBiasa));
+  };
+
+  test("pembukaan menyebut madzhab bila bukan Syafi'i", () => {
+    expect(teksKasus('MZ1', 'hanbali')[0]).toBe('Perhitungan ini menurut madzhab Hanbali.');
+    expect(teksKasus('MZ1', 'syafii').some(t => t.startsWith('Perhitungan ini menurut madzhab'))).toBe(false);
+  });
+
+  test.each([
+    ['MZ1', 'hanbali', 'Menurut madzhab Hanbali, nenek dari pihak ayah tetap mewarisi bersama ayah.'],
+    ['MZ2', 'hanbali', 'Menurut madzhab Hanbali, nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun.'],
+    ['MZ3', 'maliki', 'Menurut madzhab Maliki, nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham.'],
+    ['MZ8', 'hanafi', 'Menurut madzhab Hanafi, saudara kandung tidak digabung dengan saudara seibu dalam kasus musyarrakah, jadi ia tidak mendapat sisa.'],
+    ['MZ9', 'hanafi', 'Menurut madzhab Hanafi, kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak.'],
+  ] as const)('%s [%s]', (id, ruleset, kalimat) => {
+    expect(teksKasus(id, ruleset)).toContain(kalimat);
+  });
+
+  test('mode Arab MZ1 [HNB]', () => {
+    const teks = teksKasus('MZ1', 'hanbali', 'arab');
+    expect(teks[0]).toContain('على المذهب الحنبلي');
+    expect(teks.some(t => t.startsWith('على المذهب الحنبلي: الجدة من قبل الأب ترث مع الأب'))).toBe(true);
   });
 });

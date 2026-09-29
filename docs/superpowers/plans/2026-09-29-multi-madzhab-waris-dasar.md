@@ -1117,6 +1117,153 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
+### Task 8b: Narasi overlay madzhab (id + ar)
+
+Ditambahkan 2026-09-29 atas permintaan pengguna. Narasi hajb sekarang generik: "X tidak mendapat bagian karena terhalang oleh Y".
+Karena itu cabang khilaf yang **tidak** menghasilkan hajb tidak terlihat di penjelasan, misalnya [HNB] nenek tetap mewarisi bersama ayah.
+Engine memancarkan jejak data `KHILAF_MADZHAB` tiap kali cabang overlay dipakai. Explain menerjemahkannya ke kalimat.
+Narasi masih ditulis di kode; migrasi ke templat database adalah rencana terpisah berikutnya.
+
+**Files:**
+- Modify: `packages/engine/src/types.ts` (varian `LangkahJejak` baru)
+- Modify: `packages/engine/src/stages/derivasi.ts`, `hajb.ts`, `bagian.ts`, `pipeline.ts` (pancarkan jejak di cabang Task 5–7)
+- Modify: `packages/explain/src/cerita.ts`, `ringkas.ts`, `arab.ts`
+- Test: `packages/engine/src/__tests__/madzhab.test.ts`, `packages/explain/src/__tests__/explain.test.ts`
+
+**Interfaces:**
+- Consumes: `KASUS_MADZHAB` (Task 5–7), `AturanMadzhab`
+- Produces:
+  ```ts
+  | { tahap: Tahap; refs: string[]; jenis: 'KHILAF_MADZHAB'; kode: 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1'; ruleset: Ruleset; idOrang: IdOrang[] }
+  ```
+  Dipancarkan **hanya bila hasil cabang berbeda dari [SYF]** untuk orang itu, dengan `refs: [kode]`.
+
+- [ ] **Step 1: Tes engine yang gagal**
+
+Tambahkan ke `madzhab.test.ts`:
+
+```ts
+const khilaf = (hasil: ReturnType<typeof hitung>) =>
+  hasil.status === 'OK' ? hasil.jejak.flatMap(l => (l.jenis === 'KHILAF_MADZHAB' ? [`${l.kode}:${l.idOrang.join(',')}`] : [])) : [];
+
+test.each([
+  ['MZ1', 'hanbali', ['K04-2:NA']],
+  ['MZ2', 'hanbali', ['K04-1:N3']],
+  ['MZ3', 'maliki', ['K03-1:UK']],
+  ['MZ4', 'hanbali', ['K03-1:UKB']],
+  ['MZ5', 'hanafi', ['K07-1:SK']],
+  ['MZ6', 'hanafi', ['K05-1:SK']],
+  ['MZ1', 'syafii', []],
+] as const)('%s [%s] memancarkan KHILAF_MADZHAB %j', (id, ruleset, harapan) => {
+  const kasus = KASUS_MADZHAB.find(k => k.id === id)!;
+  expect(khilaf(hitung({ ...input(kasus.graf), ruleset }))).toEqual(harapan);
+});
+```
+
+Run: `pnpm --filter @waris/engine exec vitest run src/__tests__/madzhab.test.ts`
+Expected: FAIL.
+
+- [ ] **Step 2: Pancarkan jejak**
+
+| Kode | Di mana | Kapan | `idOrang` |
+|---|---|---|---|
+| K03-1 | `derivasi.ts` → diteruskan lewat `PeranAhliWaris.rujukan === 'K03-1'`; jejak dibuat di `mawani.ts` (tahap `mawani`) | nenek jadi dzawil arham karena `melewatiBatas` | nenek itu |
+| K04-1 | `hajb.ts` cabang nenek | dihijab `olehNenek` **dan** penghalangnya tidak akan menghijab di [SYF] (nenek penghalang pihak ayah, yang dihijab pihak ibu) | nenek yang dihijab |
+| K04-2 | `hajb.ts` cabang nenek | `pihak === 'NENEK_DARI_AYAH'`, ada `ayah` efektif, `!aturan.ummulAbTerhijabAyah` | nenek itu |
+| K05-1 | `hajb.ts` cabang saudara | dihijab `olehKakek` | saudara yang dihijab |
+| K07-1 | `bagian.ts` `bagianSaudaraSeibu` | `adalahMusyarrakah && !aturan.tasyrik` | saudara kandung |
+
+`terapkanHajb` mengumpulkan jejak ini ke array `jejak` yang sudah ada. Untuk K04-2, yang tidak menghasilkan `Mahjub`, tambahkan
+`jejakKhilaf: LangkahJejak[]` lokal di `terapkanHajb` dan isi dari `cariHajib` lewat parameter callback, atau kembalikan
+`{ mahjub?: Mahjub; khilaf?: LangkahJejak }` dari `cariHajib`. Pilih yang diff-nya paling kecil dan tetap satu pintu keluar.
+
+Hapus jejak `KASUS_KHUSUS nama:'musyarrakahTanpaTasyrik'` dari Task 6: `KHILAF_MADZHAB K07-1` menggantikannya. Kembalikan union `nama`
+dan kalimat explain Task 6 ke keadaan semula.
+
+Run: tes madzhab. Expected: PASS.
+
+- [ ] **Step 3: Tes explain yang gagal**
+
+```ts
+describe('Narasi overlay madzhab', () => {
+  const jelaskanKasus = (id: string, ruleset: Ruleset, opsi = {}) => {
+    const kasus = KASUS_MADZHAB.find(k => k.id === id)!;
+    const hasil = hitung({ ...input(kasus.graf), ruleset });
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    return jelaskan(hasil, kasus.graf, opsi).daftarBab.flatMap(bab => bab.daftarBaris.map(keTeksBiasa));
+  };
+
+  test('pembukaan menyebut madzhab bila bukan Syafi\'i', () => {
+    expect(jelaskanKasus('MZ1', 'hanbali')).toContain('Perhitungan ini menurut madzhab Hanbali.');
+    expect(jelaskanKasus('MZ1', 'syafii').some(t => t.startsWith('Perhitungan ini menurut madzhab'))).toBe(false);
+  });
+
+  test.each([
+    ['MZ1', 'hanbali', 'Menurut madzhab Hanbali, nenek dari pihak ayah tetap mewarisi bersama ayah.'],
+    ['MZ2', 'hanbali', 'Menurut madzhab Hanbali, nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun.'],
+    ['MZ3', 'maliki', 'Menurut madzhab Maliki, nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham.'],
+    ['MZ5', 'hanafi', 'Menurut madzhab Hanafi, saudara kandung tidak digabung dengan saudara seibu dalam kasus musyarrakah, jadi ia tidak mendapat sisa.'],
+    ['MZ6', 'hanafi', 'Menurut madzhab Hanafi, kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak.'],
+  ] as const)('%s [%s]', (id, ruleset, kalimat) => {
+    expect(jelaskanKasus(id, ruleset).some(t => t.startsWith(kalimat))).toBe(true);
+  });
+});
+```
+
+Impor `KASUS_MADZHAB` dan `input` lewat path relatif ke fixture engine, dengan pola yang sama seperti impor fixture munasakhat di `explain/src/__tests__/munasakhat.test.ts`.
+
+Run: `pnpm --filter @waris/explain test`
+Expected: FAIL.
+
+- [ ] **Step 4: Kalimat (id + ar)**
+
+Di `cerita.ts`, tambahkan konstanta berikut. Kalimat untuk tiap `kode` diletakkan di bab "Siapa yang mendapat warisan", **setelah** baris hajb. Setiap baris diberi `refs: [kode]` dan `subjek: idOrang`.
+
+```ts
+const NAMA_MADZHAB: Record<Ruleset, string> = { syafii: "Syafi'i", hanbali: 'Hanbali', hanafi: 'Hanafi', maliki: 'Maliki' };
+const KALIMAT_KHILAF: Record<Langkah<'KHILAF_MADZHAB'>['kode'], string> = {
+  'K03-1': 'nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham',
+  'K04-1': 'nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun',
+  'K04-2': 'nenek dari pihak ayah tetap mewarisi bersama ayah',
+  'K05-1': 'kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak',
+  'K07-1': 'saudara kandung tidak digabung dengan saudara seibu dalam kasus musyarrakah, jadi ia tidak mendapat sisa',
+};
+// baris: kalimat`Menurut madzhab ${NAMA_MADZHAB[l.ruleset]}, ${KALIMAT_KHILAF[l.kode]}.`
+// pembukaan (bab pertama, baris pertama) bila hasil.ruleset !== 'syafii': kalimat`Perhitungan ini menurut madzhab ${...}.`
+```
+
+`ringkas.ts`: cukup baris pembukaan madzhab.
+
+`arab.ts`: padanan Arab. Kalimat berikut **draf**, menunggu cek tim keilmuan (sesuai `docs/design/dwibahasa.md`):
+
+```ts
+const NAMA_MADZHAB_AR: Record<Ruleset, string> = { syafii: 'الشافعي', hanbali: 'الحنبلي', hanafi: 'الحنفي', maliki: 'المالكي' };
+const KALIMAT_KHILAF_AR: Record<Langkah<'KHILAF_MADZHAB'>['kode'], string> = {
+  'K03-1': 'ليست هذه الجدة من الجدات الوارثات، فهي من ذوي الأرحام',
+  'K04-1': 'الجدة القربى تحجب البعدى من أي جهة كانت',
+  'K04-2': 'الجدة من قبل الأب ترث مع الأب',
+  'K05-1': 'الجد بمنزلة الأب فيحجب الإخوة الأشقاء ولأب',
+  'K07-1': 'لا تشريك في المشركة، فلا شيء للأخ الشقيق',
+};
+// baris: `على المذهب ${NAMA_MADZHAB_AR[r]}: ${KALIMAT_KHILAF_AR[k]}.`   pembukaan: `هذه المسألة على المذهب ${...}.`
+```
+
+Tambahkan satu tes explain Arab untuk MZ1 [HNB] (mode `ar`, dengan pola tes Arab yang sudah ada) yang memeriksa `على المذهب الحنبلي` muncul.
+
+Run: `pnpm -r test`
+Expected: semua PASS.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add packages/engine packages/explain
+git commit -m "engine+explain: jejak KHILAF_MADZHAB dan narasi overlay madzhab (id + ar draf)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+```
+
+---
+
 ### Task 9 (DITUNDA, keputusan pengguna 2026-09-29): Web — pilihan madzhab, label hasil, chip rujukan Kxx-y
 
 **Files:**
@@ -1216,6 +1363,9 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ## Di luar rencana ini (dicatat, bukan dikerjakan)
 
+- **Urutan setelah rencana ini** (keputusan pengguna 2026-09-29): migrasi narasi explain ke templat database (diksi, id + ar,
+  varian tata bahasa Arab) → bab 14 dzawil arham → bab 13 (gharqa, khuntsa, mafqud, haml) → logika pohon bebas → semua tampilan
+  (termasuk Task 9 dan editor templat di portal admin) → mode cerita AI.
 - **Task 9 ditunda** (keputusan pengguna 2026-09-29): seluruh tampilan dikerjakan sekaligus setelah logika dzawil arham,
   kasus khusus bab 13, dan pohon bebas selesai. Task 2 tetap menyentuh web seperlunya saja (teks tujuan sisa baru),
   supaya typecheck web tidak rusak.

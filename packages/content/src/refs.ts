@@ -24,6 +24,7 @@ import bab13d from '../../../docs/kb/13d_gharqa.md?raw';
 import bab14 from '../../../docs/kb/14_dzawil_arham.md?raw';
 import bab16 from '../../../docs/kb/16_kasus_uji.md?raw';
 import bab17 from '../../../docs/kb/17_daftar_rujukan.md?raw';
+import bab18 from '../../../docs/kb/18_matriks_khilaf.md?raw';
 
 /** Kode jenis dalil KB (bab 00 konvensi 3). */
 export type JenisDalil = 'Q' | 'H' | 'A' | 'IJ' | 'RDH' | 'KH';
@@ -136,6 +137,38 @@ export function barisTabelBagian(teksMarkdown: string, awalanJudul: string): str
 /** Kode di tabel bab 17.4 ("Titik yang Masih Ditandai [perlu verifikasi lanjut]"). */
 export const bacaPerluVerifikasi = (teksMarkdown: string): string[] =>
   barisTabelBagian(teksMarkdown, '17.4').map(([kode = '']) => kode).filter(kode => /^R\d{2}-\d+$/.test(kode));
+
+export interface Keberlakuan { token: string; hanbali: boolean; hanafi: boolean; maliki: boolean; dasar: string }
+
+/** Tabel bab 18.4: token engine yang berlaku untuk tiap madzhab non-[SYF]. */
+export const bacaKeberlakuan = (teksMarkdown: string): Keberlakuan[] =>
+  barisTabelBagian(teksMarkdown, '18.4')
+    .filter(([token = '']) => /^R\d{2}[a-d]?-\d+$/.test(token))
+    .map(([token = '', hanbali = '', hanafi = '', maliki = '', dasar = '']) => ({
+      token, hanbali: hanbali === 'ya', hanafi: hanafi === 'ya', maliki: maliki === 'ya', dasar,
+    }));
+
+export const KEBERLAKUAN: Keberlakuan[] = bacaKeberlakuan(bab18);
+
+type Ruleset = 'syafii' | 'hanbali' | 'hanafi' | 'maliki';
+
+export interface TitikKhilaf {
+  kode: string; titik: string; bab: string;
+  sel: Record<Ruleset, string>;
+  tautan: Record<Ruleset, TautanRujukan[]>;
+}
+
+/** Baris matriks bab 18.2 (beberapa sub-tabel ###; baris kepala ulang tersaring oleh pola kode). */
+export const MATRIKS_KHILAF: TitikKhilaf[] = barisTabelBagian(bab18, '18.2')
+  .filter(([kode = '']) => /^K\d{2}[a-d]?-\d+$/.test(kode))
+  .map(([kode = '', titik = '', syafii = '', hanbali = '', hanafi = '', maliki = '', bab = '']) => {
+    const sel = { syafii, hanbali, hanafi, maliki };
+    const tautan = { syafii: uraiTautan(syafii), hanbali: uraiTautan(hanbali), hanafi: uraiTautan(hanafi), maliki: uraiTautan(maliki) };
+    return { kode, titik, bab, sel, tautan };
+  });
+
+const titikMenurutKode = new Map(MATRIKS_KHILAF.map(titik => [titik.kode, titik]));
+export const cariTitikKhilaf = (kode: string): TitikKhilaf | undefined => titikMenurutKode.get(kode);
 
 const DAFTAR_BAB: Array<[number, string]> = [
   [1, bab01], [2, bab02], [3, bab03], [4, bab04], [5, bab05], [6, bab06], [7, bab07], [8, bab08],

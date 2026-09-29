@@ -56,6 +56,8 @@ export interface PeranAhliWaris {
   kunci: KunciAhliWaris | 'DZAWIL_ARHAM' | 'BUKAN_AHLI_WARIS';
   kekerabatan: PosisiKekerabatan;
   lintasan: IdOrang[];
+  /** Rujukan keputusan peran bila berasal dari titik khilaf (mis. 'K03-1'), dipakai mawani untuk status dzawil arham. */
+  rujukan?: string;
 }
 
 export type StatusOrang =
@@ -66,7 +68,7 @@ export type StatusOrang =
 
 // ─── Konfigurasi ──────────────────────────────────────────────────────────────
 
-export type Ruleset = 'syafii';
+export type Ruleset = 'syafii' | 'hanbali' | 'hanafi' | 'maliki';
 
 export interface KonfigurasiMadzhab {
   kebijakanSisa: 'radd' | 'baitulMal';          // default 'radd'   [R09-8] [R14-5]
@@ -82,8 +84,13 @@ export const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = {
 
 export type IdKelompok = string;
 
-/** [R14-3] ada dzawil arham → mereka; tidak ada → baitul mal [R02-1]. */
-export type TujuanSisa = 'dzawilArham' | 'baitulMal';
+/**
+ * Tujuan sisa yang tidak dibagi ke ahli waris:
+ * - dzawilArham: hanya pasangan mewarisi dan ada dzawil arham [R09-9] [R14-3];
+ * - baitulMal: hanya pasangan mewarisi, tidak ada dzawil arham di data [R02-1];
+ * - baitulMalTeratur: kebijakan sisa = baitul mal karena baitul mal teratur [R09-8], K09-1.
+ */
+export type TujuanSisa = 'dzawilArham' | 'baitulMal' | 'baitulMalTeratur';
 
 export interface TabelMasalah {
   kolom: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perOrang' | 'nominal'>;
@@ -132,6 +139,8 @@ export type AlasanFardh =
   | { kode: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
   | { kode: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
 
+export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1';
+
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
   | { jenis: 'HAJB_HIRMAN'; mahjub: IdOrang; hajib: IdOrang[] }
@@ -141,6 +150,8 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
       // Diisi bila kakek memilih muqasamah bersama saudara (tidak ada langkah FARDH untuknya).
       pilihanJadd?: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }> }
   | { jenis: 'KASUS_KHUSUS'; nama: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah' }
+  // Cabang overlay madzhab yang hasilnya berbeda dari [SYF] untuk orang itu; refs = [kode].
+  | { jenis: 'KHILAF_MADZHAB'; kode: KodeKhilafOverlay; ruleset: Ruleset; idOrang: IdOrang[] }
   | { jenis: 'TIRKAH'; kotor: Uang; tajhiz: Uang; hutang: Uang; wasiatDiminta: Uang; wasiatBatas: Uang;
       wasiatDipakai: Uang; wasiatButuhIjazah: Uang; bersih: Uang }
   // ashl/juzSahm: nisab arba' (a = hasil sejauh ini, b = bilangan berikutnya).

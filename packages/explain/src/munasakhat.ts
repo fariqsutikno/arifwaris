@@ -4,6 +4,7 @@
 //   3. hasil akhir per orang
 
 import type { GrafKeluarga, HasilMunasakhat, IdOrang, LangkahJejak } from '@waris/engine';
+import { TEKS_TUJUAN_SISA } from './cerita.js';
 import { rupiah } from './format.js';
 import { jelaskan, type BabPenjelasan } from './narasi.js';
 import { labelPeran } from './people.js';
@@ -17,7 +18,6 @@ export interface BagianMunasakhat { judul: string; daftarBab: BabPenjelasan[] }
 export interface PenjelasanMunasakhat { daftarBagian: BagianMunasakhat[] }
 
 const AWALAN_SISA = 'sisaKeluar:';
-const TEKS_TUJUAN_SISA = { dzawilArham: 'untuk dzawil arham', baitulMal: 'untuk dzawil arham bila ada, bila tidak ke baitul mal' } as const;
 const URUTAN_KE = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
 export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { mode?: 'cerita' | 'ringkas' } = {}): PenjelasanMunasakhat {

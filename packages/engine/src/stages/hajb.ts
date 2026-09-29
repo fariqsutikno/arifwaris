@@ -4,7 +4,8 @@
 // Caranya: urutkan kandidat dari penghalang terkuat (bab 6.7 no. 2), lalu periksa satu per satu.
 // Setiap orang cukup dibandingkan dengan yang sudah pasti tidak terhalang (`efektif`).
 
-import type { IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
+import type { IdOrang, KodeKhilafOverlay, KunciAhliWaris, LangkahJejak } from '../types.js';
+import { ATURAN, rujukanTitik, type AturanMadzhab } from '../rulesets/madzhab.js';
 import type { AhliWaris } from './model.js';
 
 export interface Mahjub { oleh: IdOrang[]; rujukanAturan: string }
@@ -13,27 +14,41 @@ const FARU_MUDZAKKAR: KunciAhliWaris[] = ['ANAK_LK', 'CUCU_LK'];
 const FARU_WARITS: KunciAhliWaris[] = ['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR'];
 const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'];
 
-export function terapkanHajb(kandidat: AhliWaris[]): { mahjub: Record<IdOrang, Mahjub>; efektif: AhliWaris[]; jejak: LangkahJejak[] } {
+export function terapkanHajb(kandidat: AhliWaris[], aturan: AturanMadzhab = ATURAN.syafii): { mahjub: Record<IdOrang, Mahjub>; efektif: AhliWaris[]; jejak: LangkahJejak[] } {
   const efektif: AhliWaris[] = [];
   const mahjub: Record<IdOrang, Mahjub> = {};
   const jejak: LangkahJejak[] = [];
 
   const urutPenghalangTerkuat = [...kandidat].sort((a, b) => bandingkanUrutan(urutanEvaluasi(a), urutanEvaluasi(b)));
   for (const ahliWaris of urutPenghalangTerkuat) {
-    const penghalang = cariHajib(ahliWaris, efektif);
+    const penghalang = cariHajib(ahliWaris, efektif, aturan);
     if (penghalang) {
       mahjub[ahliWaris.idOrang] = penghalang;
       jejak.push({ tahap: 'hajb', refs: [penghalang.rujukanAturan], jenis: 'HAJB_HIRMAN', mahjub: ahliWaris.idOrang, hajib: penghalang.oleh });
     } else {
       efektif.push(ahliWaris);
     }
+    const kode = kodeKhilaf(penghalang, cariHajib(ahliWaris, efektif, ATURAN.syafii));
+    if (kode) jejak.push({ tahap: 'hajb', refs: [kode], jenis: 'KHILAF_MADZHAB', kode, ruleset: aturan.ruleset, idOrang: [ahliWaris.idOrang] });
   }
   return { mahjub, efektif, jejak };
 }
 
+/** Titik khilaf bila keputusan hajb madzhab ini berbeda dari [SYF] pada keadaan `efektif` yang sama. */
+function kodeKhilaf(penghalang: Mahjub | undefined, menurutSyafii: Mahjub | undefined): KodeKhilafOverlay | undefined {
+  if (Boolean(penghalang) === Boolean(menurutSyafii)) return undefined;
+  if (penghalang) {
+    if (penghalang.rujukanAturan !== 'K04-1' && penghalang.rujukanAturan !== 'K05-1') throw new Error(`Hajb di luar [SYF] tanpa titik khilaf: ${penghalang.rujukanAturan}`);
+    return penghalang.rujukanAturan;
+  }
+  // Satu-satunya hajb [SYF] yang gugur di overlay: ayah atas ummul ab [R04-10] → [K04-2].
+  if (menurutSyafii!.rujukanAturan !== 'R04-10') throw new Error(`Hajb [SYF] gugur tanpa titik khilaf: ${menurutSyafii!.rujukanAturan}`);
+  return 'K04-2';
+}
+
 // ─── Siapa menghalangi siapa ──────────────────────────────────────────────────
 
-function cariHajib(ahliWaris: AhliWaris, efektif: AhliWaris[]): Mahjub | undefined {
+function cariHajib(ahliWaris: AhliWaris, efektif: AhliWaris[], aturan: AturanMadzhab): Mahjub | undefined {
   const { generasiLeluhur: generasi, kedalamanKeturunan: kedalaman } = ahliWaris.kekerabatan;
   const faruMudzakkar = denganKunci(efektif, FARU_MUDZAKKAR);
   const ayah = denganKunci(efektif, ['AYAH']);
@@ -57,23 +72,30 @@ function cariHajib(ahliWaris: AhliWaris, efektif: AhliWaris[]): Mahjub | undefin
 
     case 'NENEK_DARI_IBU': case 'NENEK_DARI_AYAH': {
       const pihak = ahliWaris.kunci;
-      const penghalang = [
-        ...denganKunci(efektif, ['IBU']),
-        ...(pihak === 'NENEK_DARI_AYAH' ? ayah : []),                                 // [R04-10]
-        ...kakek.filter(kakekIni => ahliWaris.lintasan.includes(kakekIni.idOrang)),                // [R04-6] hanya nenek yang lewat kakek itu
-        // [R04-9] [SYF]: nenek dekat sepihak menghijab yang jauh; nenek dekat pihak ibu juga menghijab
-        // nenek jauh pihak ayah, tidak sebaliknya.
-        ...denganKunci(efektif, ['NENEK_DARI_IBU', 'NENEK_DARI_AYAH']).filter(nenek =>
-          nenek.kekerabatan.generasiLeluhur < generasi && (nenek.kunci === pihak || nenek.kunci === 'NENEK_DARI_IBU')),
-      ];
-      return hajibDari(penghalang, 'R04-9');
+      const olehIbu = denganKunci(efektif, ['IBU']);
+      // [R04-10] ayah menghijab nenek dari pihaknya; [K04-2] [HNB] tidak.
+      const olehAyah = pihak === 'NENEK_DARI_AYAH' && aturan.ummulAbTerhijabAyah ? ayah : [];
+      const olehKakek = kakek.filter(kakekIni => ahliWaris.lintasan.includes(kakekIni.idOrang));   // [R04-6] hanya nenek yang lewat kakek itu
+      // [R04-9] [SYF]/[MLK]: nenek dekat sepihak menghijab yang jauh; nenek dekat pihak ibu juga menghijab nenek jauh pihak ayah,
+      // tidak sebaliknya. [K04-1] [HNB]/[HNF]: yang lebih dekat menghijab mutlak.
+      const olehNenek = denganKunci(efektif, ['NENEK_DARI_IBU', 'NENEK_DARI_AYAH']).filter(nenek => nenek.kekerabatan.generasiLeluhur < generasi
+        && (aturan.nenekDekatMenghijabMutlak || nenek.kunci === pihak || nenek.kunci === 'NENEK_DARI_IBU'));
+      if (olehIbu.length > 0) return hajibDari(olehIbu, 'R04-9');
+      if (olehAyah.length > 0) return hajibDari(olehAyah, 'R04-10');
+      if (olehKakek.length > 0) return hajibDari(olehKakek, 'R04-6');
+      return hajibDari(olehNenek, rujukanTitik(aturan, 'K04-1', 'R04-9'));
     }
 
-    case 'SAUDARA_KANDUNG': case 'SAUDARI_KANDUNG':
-      return hajibDari([...faruMudzakkar, ...ayah], 'R06-4');
+    case 'SAUDARA_KANDUNG': case 'SAUDARI_KANDUNG': {
+      const penghalangDasar = [...faruMudzakkar, ...ayah];
+      // [K05-1] [HNF] kakek = ayah: menghijab saudara kandung/sebapak.
+      if (aturan.kakekMenghijabSaudara && penghalangDasar.length === 0 && kakek.length > 0) return hajibDari(kakek, 'K05-1');
+      return hajibDari(penghalangDasar, 'R06-4');
+    }
 
     case 'SAUDARA_SEBAPAK': case 'SAUDARI_SEBAPAK': {
       const penghalangDasar = [...faruMudzakkar, ...ayah];
+      if (aturan.kakekMenghijabSaudara && penghalangDasar.length === 0 && kakek.length > 0) return hajibDari(kakek, 'K05-1');
       // [R08-4] bersama kakek, saudara sebapak tidak digugurkan kandung di sini; mu'addah (bab 08) yang mengatur.
       if (kakek.length > 0) return hajibDari(penghalangDasar, 'R06-3');
       const olehKandung = [...denganKunci(efektif, ['SAUDARA_KANDUNG']), ...saudariMaalGhair(efektif, 'SAUDARI_KANDUNG')];

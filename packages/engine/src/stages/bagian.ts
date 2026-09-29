@@ -7,6 +7,7 @@
 
 import { bandingkan, kali, kurang, pecahan, tambah, type Pecahan } from '@waris/math';
 import type { AlasanFardh, IdKelompok, IdOrang, KunciAhliWaris, LangkahJejak } from '../types.js';
+import { ATURAN, rujukanTitik, type AturanMadzhab } from '../rulesets/madzhab.js';
 import { jaddWalIkhwah } from './jaddWalIkhwah.js';
 import { adalahAkdariyyah, adalahMusyarrakah, adalahUmariyyatain } from './khusus.js';
 import { bobotRata, buatKelompok, penerimaSisa, satuanRuus, type AhliWaris, type KelompokBagian, type TidakDidukung } from './model.js';
@@ -26,7 +27,7 @@ const HAWASYI_ASHABAH: KunciAhliWaris[] = ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAP
 type JenisAshabah = 'binNafsi' | 'bilGhair' | 'maalGhair';
 type HasilTahapBagian = { daftarKelompok: KelompokBagian[]; jejak: LangkahJejak[] };
 
-export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[]): HasilTahapBagian | TidakDidukung {
+export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[], aturan: AturanMadzhab = ATURAN.syafii): HasilTahapBagian | TidakDidukung {
   const penyusun = buatPenyusun(efektif, kandidat);
 
   const fardhPasangan = bagianPasangan(penyusun);
@@ -35,10 +36,10 @@ export function tetapkanBagian(efektif: AhliWaris[], kandidat: AhliWaris[]): Has
   bagianKeturunan(penyusun);
   const [ayah] = penyusun.dari('AYAH');
   if (ayah) bagianAyahAtauKakek(penyusun, 'AYAH', ayah, ['R04-5']);
-  const musyarrakah = bagianSaudaraSeibu(penyusun);
+  const musyarrakah = bagianSaudaraSeibu(penyusun, aturan);
   const [kakek] = penyusun.dari('KAKEK');
   if (kakek) {
-    const tidakDidukung = bagianKakek(penyusun, kakek);
+    const tidakDidukung = bagianKakek(penyusun, kakek, aturan);
     if (tidakDidukung) return tidakDidukung;
   }
   // Bersama kakek, bagian saudara kandung/sebapak sudah diatur bab 08 di atas.
@@ -173,12 +174,20 @@ function bagianAyahAtauKakek(penyusun: Penyusun, idKelompok: IdKelompok, ahliWar
 // ─── Saudara seibu [R04-16], musyarrakah [R07-2] ──────────────────────────────
 
 /** Mengembalikan true bila musyarrakah (saudara kandung ikut berbagi 1/3 dengan saudara seibu). */
-function bagianSaudaraSeibu(penyusun: Penyusun): boolean {
+function bagianSaudaraSeibu(penyusun: Penyusun, aturan: AturanMadzhab): boolean {
   const awladUmm = penyusun.dari('SAUDARA_SEIBU', 'SAUDARI_SEIBU');
   if (adalahMusyarrakah(penyusun.efektif)) {
-    penyusun.jejak.push({ tahap: 'furudh', refs: ['R07-2'], jenis: 'KASUS_KHUSUS', nama: 'musyarrakah' });
-    penyusun.tambahFardh('MUSYARRAKAH', [...awladUmm, ...penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG')], TSULUTS, { kode: 'MUSYARRAKAH' }, ['R07-2']);
-    return true;
+    const rujukan = rujukanTitik(aturan, 'K07-1', 'R07-2');
+    if (aturan.tasyrik) {
+      penyusun.jejak.push({ tahap: 'furudh', refs: [rujukan], jenis: 'KASUS_KHUSUS', nama: 'musyarrakah' });
+      penyusun.tambahFardh('MUSYARRAKAH', [...awladUmm, ...penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG')], TSULUTS, { kode: 'MUSYARRAKAH' }, [rujukan]);
+      return true;
+    }
+    // [K07-1] [HNB]/[HNF] tanpa tasyrik: saudara seibu tetap 1/3, saudara kandung ashabah atas sisa yang sudah habis.
+    penyusun.jejak.push({
+      tahap: 'furudh', refs: ['K07-1'], jenis: 'KHILAF_MADZHAB', kode: 'K07-1', ruleset: aturan.ruleset,
+      idOrang: penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG').map(saudara => saudara.idOrang),
+    });
   }
   if (awladUmm.length > 0) {
     penyusun.tambahFardh('AWLAD_UMM', awladUmm, awladUmm.length === 1 ? SUDUS : TSULUTS, { kode: 'KALALAH', banyaknya: awladUmm.length }, ['R04-16']);
@@ -188,7 +197,7 @@ function bagianSaudaraSeibu(penyusun: Penyusun): boolean {
 
 // ─── Kakek [R04-6] dan bab 08 ─────────────────────────────────────────────────
 
-function bagianKakek(penyusun: Penyusun, kakek: AhliWaris): TidakDidukung | undefined {
+function bagianKakek(penyusun: Penyusun, kakek: AhliWaris, aturan: AturanMadzhab): TidakDidukung | undefined {
   const saudaraBersamaKakek = penyusun.dari('SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK');
 
   if (adalahAkdariyyah(penyusun.efektif)) {
@@ -202,7 +211,8 @@ function bagianKakek(penyusun: Penyusun, kakek: AhliWaris): TidakDidukung | unde
   }
 
   if (saudaraBersamaKakek.length === 0) {
-    bagianAyahAtauKakek(penyusun, 'KAKEK', kakek, ['R04-6']);
+    // [K05-1] [HNF] kakek = ayah; R04-6 berbeda hanya pada butir saudara, yang sudah dihijab di tahap hajb.
+    bagianAyahAtauKakek(penyusun, 'KAKEK', kakek, [aturan.kakekMenghijabSaudara ? 'K05-1' : 'R04-6']);
     return undefined;
   }
 

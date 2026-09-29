@@ -125,3 +125,16 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R09-8 | Radd hanya ketika baitul mal tidak tegak | RDH | Raudhah 6/5–7 (Bab 1, Fashl Dzawil Arham) · shamela:499/2294 shamela:499/2295 shamela:499/2296 | Lihat blok KHILAF 9.4 (kutipan lengkap). |
 | R09-9 | Pasangan tidak menerima radd | RDH | Raudhah 6/5 (Bab 1, far') · shamela:499/2294 | «ومن قال بالرد، يثبت لكلهن الحيازة إلا الزوجة» dan «لا يستثني إلا الزوج» |
 | R09-10 | Teknik hitung (zawjiyyah, raddiyyah) | KH | Kaidah hisab | Metode operasional; hasilnya harus sesuai R09-7. |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R09-1 | [HNB] | Mughni 6/286 · shamela:8463/2608 | «وأصول المسائل كلها سبعة؛ لأن الفروض المحدودة في كتاب الله تعالى ستة» |
+| R09-1 | [HNF] | Mabsuth 29/201, 29/203 · shamela:5423/5958 shamela:5423/5960 | «ثم جملة ما تخرج منه هذه الفرائض أصول سبعة»; «وبعض الفرضيين زاد أصلين على قول زيد ثمانية عشر وستة وثلاثين» |
+| R09-1 | [MLK] | 'Iqd 3/1253 · shamela:14594/1251 | «فالأصول التي تنشأ منها مسائل [الفروض]، على قول المتقدمين، سبعة أعداد»; angka 18/36 tidak disebut di sini, muncul lewat tashih |
+| R09-2 | [MLK] | 'Iqd 3/1253 · shamela:14594/1251 | «فإن تمحضوا ذكورا: فالمسألة تقام من عدد رؤوسهم. وإن كانوا ذكورا وإناثا، فمن عدد الإناث وضعف عدد الذكور، لأن الذكر في التعصيب باثنين» |
+
+Catatan R09-2: pernyataan eksplisit «ashl = jumlah kepala, lk = 2» belum ditemukan di Mughni dan Mabsuth (hanya rasio 2:1 di Mughni 6/272–274 dan Mabsuth 29/141); tetap `tidak` untuk [HNB]/[HNF].

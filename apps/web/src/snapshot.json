@@ -11615,6 +11615,20 @@
    "versiTerbit": 615
   },
   {
+   "kunci": "hitung.sisa_untuk_baitul_mal",
+   "halaman": "hitung",
+   "id": "Sisa untuk baitul mal",
+   "ar": "الباقي لبيت المال",
+   "versiTerbit": 616
+  },
+  {
+   "kunci": "hitung.baitul_mal_teratur",
+   "halaman": "hitung",
+   "id": "Karena baitul mal dianggap teratur",
+   "ar": "لانتظام بيت المال",
+   "versiTerbit": 616
+  },
+  {
    "kunci": "hitung.sisa_untuk_dzawil_arham",
    "halaman": "hitung",
    "id": "Sisa untuk dzawil arham",

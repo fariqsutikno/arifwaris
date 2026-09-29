@@ -180,3 +180,40 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R04-15 | Saudari sebapak hanya diashabahkan yang sederajat | RDH | Raudhah 6/16 · shamela:499/2305 | «ولا يعصب الأخت إلا من في درجتها بخلاف بنت الابن، فإنه يعصبها من هو أسفل منها» |
 | R04-16 | Saudara seibu dan lima kekhususannya | Q + RDH | An-Nisa' 12 quran:4:12 · RDH 6/16 (Bab 1) · shamela:499/2305 | «لواحدهم السدس ذكرا كان أو أنثى، وللاثنين فصاعدا الثلث يقسم بين ذكورهم وإناثهم بالسوية» dan «أولاد الأم يخالفون غيرهم في خمسة أشياء» |
 | R04-17 | Qira'ah «من أم» pada ayat kalalah | A | Qira'ah Sa'd bin Abi Waqqash (syadz): «وله أخ أو أخت من أم», diriwayatkan al-Baihaqi, BHQ 6/379 (ed. 'Ilmiyyah) · shamela:7861/14190 | Menjelaskan bahwa saudara di An-Nisa' 12 adalah saudara seibu; maknanya disepakati. |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R04-2 | [HNB] | Mughni 6/277 · shamela:8463/2599 | «وفرض الزوج النصف مع عدم ولد الميتة وولد ابنها، والربع مع الولد أو ولد الابن. وفرض الزوجة والزوجات الربع مع عدم ولد الزوج وولد ابنه، والثمن مع الولد أو ولد الابن ... بإجماع أهل العلم» |
+| R04-2 | [HNF] | Mabsuth 29/148 · shamela:5423/5905 | «فأما الزوج فهو صاحب فرض وله حالان النصف عند عدم الولد وولد الابن ذكرا كان أو أنثى والربع عند وجوده» (istri: rubu'/tsumun sama) |
+| R04-2 | [MLK] | 'Iqd 3/1241–1242 · shamela:14594/1239 shamela:14594/1240 | «والثمن: فرض الزوجة أو الزوجات مع وجود الحاجب»; «الأزواج، ينقلهم الأولد، وأولاد ذكورهم، من النصف إلى الربع» |
+| R04-5 | [HNB] | Mughni 6/276–277 · shamela:8463/2598 shamela:8463/2599 | Tiga keadaan ayah (fardh, ta'shib, fardh+ta'shib bersama anak pr): «وأجمع أهل العلم على هذا كله» |
+| R04-5 | [HNF] | Tuhfat al-Muluk hlm. 246–247 · shamela:6173/222 shamela:6173/223 | «فالأب له السدس مع الابن أو ابن الابن والتعصيب عند عدم الولد وولد الابن وكلاهما مع البنت وبنت الابن» |
+| R04-5 | [MLK] | 'Iqd 3/1244 · shamela:14594/1242 | «فأما ميراثه مع ولد الصلب وولد الابن فيفرض له من ذكورهم وإناثهم السدس، ثم إن فضل عن إناثهم فضل أخذه بالتعصيب» |
+| R04-6 | [HNB] | Mughni 6/277 · shamela:8463/2599; 6/306 · shamela:8463/2628 | Ijma' dinukil Ibnu al-Mundzir: «وأنزلوا الجد في الحجب والميراث منزلة الأب في جميع المواضع، إلا في ثلاثة أشياء» (زوج وأبوان، زوجة وأبوان، ثم الجد مع الإخوة). Butir «tidak menghijab ibunya ayah» tidak dibahas di sini (lihat K04-2). |
+| R04-7 | [HNB] | Mughni 6/299 · shamela:8463/2621 | «قال أبو بكر بن المنذر: أجمع أهل العلم على أن للجدة السدس إذا لم يكن للميت أم»; hadits Qabishah (al-Mughirah, Muhammad bin Maslamah) |
+| R04-7 | [HNF] | Mabsuth 29/167 · shamela:5423/5924; Tuhfat al-Muluk hlm. 249 · shamela:6173/225 | «فتبين بهذه الآثار أنه لا يزاد في فريضة الجدات على السدس»; «الجدة أم الأم وأم الأب لها السدس واحدة كانت أو أكثر» |
+| R04-7 | [MLK] | 'Iqd 3/1246 · shamela:14594/1244 | «وأما الجدات ففرضهن السدس، في الانفراد والاجتماع» |
+| R04-8 | [HNB] | Mukhtashar al-Khiraqi hlm. 89 · shamela:2977/121; Mughni 6/300 · shamela:8463/2622 | «وكذلك إن كثرن لم يزدن على السدس فرضا» |
+| R04-8 | [HNF] | Syarh Mukhtashar ath-Thahawi (al-Jashshash) 4/90 · shamela:16546/1655; Mabsuth 29/197 · shamela:5423/5954 | «والجدات وإن كثرن فلهن السدس», «وهو اتفاق الصحابة»; contoh: «للجدات السدس بينهن أثلاثا» |
+| R04-8 | [MLK] | ar-Risalah hlm. 291 · shamela:1430/286; 'Iqd 3/1246 · shamela:14594/1244 | «فإن اجتمعتا فالسدس بينهما»; «ففرضهن السدس، في الانفراد والاجتماع» |
+| R04-8 (catatan) | semua | — | Token engine hanya memakai «para nenek berbagi 1/6»; butir nenek dua qarabah = K04-3. Engine menolak kasus dua qarabah di luar [SYF]. |
+| R04-12 | [HNB] | Mughni 6/273 · shamela:8463/2595 | «فلابنة الصلب النصف، ولبنات الابن واحدة كانت أو أكثر من ذلك السدس، تكملة الثلثين» ... «وهذا أيضا مجمع عليه بين العلماء» |
+| R04-12 | [HNF] | Mabsuth 29/141 · shamela:5423/5898 | «فإن كانت ابنة الصلب واحدة فلها النصف ولبنات الابن السدس تكملة الثلثين واحدة كانت أو أكثر من ذلك لحديث ابن مسعود» |
+| R04-12 | [MLK] | 'Iqd 3/1244 · shamela:14594/1242 | «فأما إناثهم (فيأخذن) مع بنت الصلب السدس تكملة الثلثين، الواحدة والجماعة» |
+| R04-13 | [HNB] | Mughni 6/271 · shamela:8463/2593 | «وأجمع أهل العلم على أن بنات الصلب متى استكملن الثلثين، سقط بنات الابن، ما لم يكن بإزائهن، أو أسفل منهن ذكر يعصبهن» |
+| R04-13 | [HNF] | Mabsuth 29/141, 29/143 · shamela:5423/5898 shamela:5423/5900 | «وإن كانت ابنة الصلب بنتين فلهما الثلثان، ولا شيء لبنات الابن»; mu'ashshib lebih rendah: «فظاهر المذهب عندنا أن الباقي بينهما للذكر مثل حظ الأنثيين» |
+| R04-13 | [MLK] | 'Iqd 3/1244 · shamela:14594/1242 | «ويسقطن مع الاثنتين فصاعدًا، إلا أن يكون معها أو أنزل منها ذكر فيعصبها» |
+| R04-14 | [HNB] | Mughni 6/274 · shamela:8463/2596 | «فللأخت للأب والأم النصف، وللأخوات من الأب واحدة كانت أو أكثر من ذلك السدس، تكملة الثلثين» ... «وهذه الجملة كلها مجمع عليها بين علماء الأمصار» |
+| R04-14 | [HNF] | Mabsuth 29/155–156 · shamela:5423/5912 shamela:5423/5913 | «فلها النصف وللمثنى فصاعدا الثلثان»; «ولبني العلات إذا كن إناثا مفردات السدس تكملة الثلثين» |
+| R04-14 | [MLK] | 'Iqd 3/1246 · shamela:14594/1244 | «ويأخذ إناثهم مع الواحدة من إناث ولد الأب والأم السدس تكملة الثلثين»; «فرض الواحدة إذا انفردت النصف» |
+| R04-16 | [HNB] | Mughni 6/268, 6/278 · shamela:8463/2590 shamela:8463/2600 | «إلا ولد الأم، فإن ذكرهم وأنثاهم سواء؛ لأنهم يرثون بالرحم»; ayat «فهم شركاء في الثلث» |
+| R04-16 | [HNF] | Mabsuth 29/154 · shamela:5423/5911 | «للواحد منهم السدس ذكرا كان أو أنثى وللمثنى فصاعدا منهم الثلث بين الذكر والأنثى بالسوية» |
+| R04-16 | [MLK] | 'Iqd 3/1246 · shamela:14594/1244 | «وأما ولد الأم فللواحد السدس، وللاثنين فصاعدًا الثلث، والذكر والأنثى سواء» |
+
+Catatan R04-16: daftar «lima kekhususan» tidak ditemukan sebagai daftar di ketiga kitab; klaim inti (1/6, 1/3, sama rata) sama. Catatan R04-8: hanya bagian «para nenek berbagi 1/6» yang sama ([HNB] Mughni 6/300 · shamela:8463/2622 «أجمع أهل العلم على أن ميراث الجدات السدس، وإن كثرن»; [HNF] Mabsuth 29/167; [MLK] 'Iqd 3/1246). Bagian «nenek dua jalur tetap satu bagian» **berbeda** (K04-3), sehingga R04-8 tetap `tidak`.
+
+> **KHILAF K04-3 – Nenek dengan dua qarabah** — **[SYF]** (juga ats-Tsauri, Abu Yusuf): satu bagian, 1/6 dibagi dua. **[HNB]**: «فوجب أن ترث بكل واحدة منهما» (Mughni 6/303 · shamela:8463/2625). Mughni menisbatkan pendapat yang sama kepada Muhammad bin al-Hasan, Zufar, al-Hasan bin Ziyad dan menyebut «قياس قول مالك» sama dengan [SYF]; belum diteliti ke Mabsuth/'Iqd.
