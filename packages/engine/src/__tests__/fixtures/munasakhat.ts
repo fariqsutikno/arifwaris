@@ -208,7 +208,7 @@ export const M8: MunasakhatFixture = {
   },
 };
 
-// ─── M9: 4 mayit berantai (kitab mencetak ibn 613; 525 + 168 = 693) ───
+// ─── M9: 4 mayit berantai (kitab salah cetak ibn 613; 525 + 168 = 693) ───
 export const M9: MunasakhatFixture = {
   id: 'M9', menguji: '4 mayit berantai, semua tabayun',
   input: munasakhat({
