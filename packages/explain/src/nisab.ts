@@ -1,65 +1,71 @@
-// Narasi perbandingan dua bilangan (mode ringkas).
+// Narasi perbandingan dua bilangan (mode ringkas); kalimat = diksi `narasi.nisab.*`.
 //   ashl & juzSahm      : nisab arba' — tamatsul/tadakhul/tawafuq/tabayun (bab 10.2, [R10-1]).
 //   inkisar & raddVsSisa: hanya FPB — habis/tawafuq/tabayun (bab 9.4, 10.3).
 
 import type { LangkahJejak } from '@waris/engine';
-import { kalimat, type Potongan } from './segments.js';
-import { istilah } from './terms.js';
+import { kalimat, susun, teksKamus, type Penyusun, type Potongan, type Sisipan } from './segments.js';
+import { istilahNarasi } from './terms.js';
 
 type LangkahNisab = Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>;
 
-export function narasiNisab(langkah: LangkahNisab, opsi: { berbobot?: boolean } = {}): Potongan[] {
+export function narasiNisab(penyusun: Penyusun, langkah: LangkahNisab, opsi: { berbobot?: boolean } = {}): Potongan[] {
   switch (langkah.tujuan) {
-    case 'ashl': return narasiArba(langkah, 'Penyebut');
-    case 'juzSahm': return narasiArba(langkah, 'Simpanan');
-    case 'inkisar': return narasiInkisar(langkah, opsi.berbobot === true);
-    case 'raddVsSisa': return narasiRaddVsSisa(langkah);
+    case 'ashl': return narasiArba(penyusun, langkah, teksKamus(penyusun, 'narasi.nisab.kata_benda.ashl'));
+    case 'juzSahm': return narasiArba(penyusun, langkah, teksKamus(penyusun, 'narasi.nisab.kata_benda.juz_sahm'));
+    case 'inkisar': return narasiInkisar(penyusun, langkah, opsi.berbobot === true);
+    case 'raddVsSisa': return narasiRaddVsSisa(penyusun, langkah);
   }
 }
 
-function narasiArba({ a, b, hubungan, fpb, hasil }: LangkahNisab, kataBenda: string): Potongan[] {
+const nisab = (penyusun: Penyusun, kunci: string, sisipan: Record<string, Sisipan>): Potongan[] =>
+  susun(penyusun, `narasi.nisab.${kunci}`, sisipan);
+
+function narasiArba(penyusun: Penyusun, { a, b, hubungan, fpb, hasil }: LangkahNisab, kataBenda: string): Potongan[] {
   const [kecil, besar] = a < b ? [a, b] : [b, a];
   switch (hubungan) {
     case 'tamatsul':
-      return kalimat`${kataBenda} ${a} dan ${b} sama → ${istilah('tamatsul', 'tamatsul')}. Ambil salah satunya: ${hasil}.`;
+      return nisab(penyusun, 'arba.tamatsul', { benda: kataBenda, a, b, tamatsul: istilahNarasi(penyusun, 'tamatsul'), hasil });
     case 'tadakhul':
-      return kalimat`${kataBenda} ${a} dan ${b}: ${besar} habis dibagi ${kecil} → ${istilah('tadakhul', 'tadakhul')}. Ambil yang besar: ${hasil}.`;
+      return nisab(penyusun, 'arba.tadakhul', { benda: kataBenda, a, b, besar, kecil, tadakhul: istilahNarasi(penyusun, 'tadakhul'), hasil });
     case 'tawafuq':
-      return kalimat`${kataBenda} ${a} dan ${b}: tidak saling habis membagi, FPB ${fpb} → ${istilah('tawafuq', 'tawafuq')}. `
-        .concat(kalimat`Kalikan salah satu dengan ${istilah('wafq', 'wafq')} yang lain: ${a} × (${b} ÷ ${fpb}) = ${hasil}.`);
+      return nisab(penyusun, 'arba.tawafuq', {
+        benda: kataBenda, a, b, fpb, tawafuq: istilahNarasi(penyusun, 'tawafuq'), wafq: istilahNarasi(penyusun, 'wafq'), hasil,
+      });
     case 'tabayun':
       // [R10-5] «كل عدد مع الواحد فهو متباين»
-      return kecil === 1n
-        ? kalimat`${kataBenda} ${a} dan ${b}: setiap bilangan bertemu 1 dihukumi ${istilah('tabayun', 'tabayun')}. Kalikan keduanya: ${a} × ${b} = ${hasil}.`
-        : kalimat`${kataBenda} ${a} dan ${b}: FPB 1 → ${istilah('tabayun', 'tabayun')}. Kalikan keduanya: ${a} × ${b} = ${hasil}.`;
+      return nisab(penyusun, kecil === 1n ? 'arba.tabayun_satu' : 'arba.tabayun', { benda: kataBenda, a, b, tabayun: istilahNarasi(penyusun, 'tabayun'), hasil });
     default:
       throw new Error(`relasi ${hubungan} tidak berlaku untuk nisab arba'`);
   }
 }
 
-function narasiInkisar({ a: saham, b: ruus, hubungan, fpb, hasil }: LangkahNisab, berbobot: boolean): Potongan[] {
-  const teksRuus = kalimat`${istilah('ruus', "ru'us")} ${ruus}${berbobot ? ' (laki-laki dihitung 2)' : ''}`;
+function narasiInkisar(penyusun: Penyusun, { a: saham, b: ruus, hubungan, fpb, hasil }: LangkahNisab, berbobot: boolean): Potongan[] {
+  const istilahRuus = istilahNarasi(penyusun, 'ruus');
+  const teksRuus = berbobot ? nisab(penyusun, 'inkisar.ruus_berbobot', { ruus: istilahRuus, jumlah: ruus }) : kalimat`${istilahRuus} ${ruus}`;
   switch (hubungan) {
-    case 'habis': return kalimat`Saham ${saham} habis dibagi ${teksRuus} → tidak perlu dikoreksi.`;
+    case 'habis': return nisab(penyusun, 'inkisar.habis', { saham, ruus: teksRuus });
     case 'tawafuq':
-      return kalimat`Saham ${saham} tidak habis dibagi ${teksRuus}, FPB ${fpb} → ${istilah('tawafuq', 'tawafuq')}. Simpan ${istilah('wafq', 'wafq')} ru'us: ${ruus} ÷ ${fpb} = ${hasil}.`;
+      return nisab(penyusun, 'inkisar.tawafuq', {
+        saham, ruus: teksRuus, fpb, tawafuq: istilahNarasi(penyusun, 'tawafuq'), wafq: istilahNarasi(penyusun, 'wafq'), jumlah_ruus: ruus, hasil,
+      });
     case 'tabayun':
-      return kalimat`Saham ${saham} tidak habis dibagi ${teksRuus}, FPB 1 → ${istilah('tabayun', 'tabayun')}. Simpan seluruh ru'us: ${hasil}.`;
+      return nisab(penyusun, 'inkisar.tabayun', { saham, ruus: teksRuus, tabayun: istilahNarasi(penyusun, 'tabayun'), hasil });
     default: throw new Error(`relasi ${hubungan} tidak berlaku untuk inkisar`);
   }
 }
 
-function narasiRaddVsSisa({ a: sisa, b: ashlRadd, hubungan, fpb, hasil }: LangkahNisab): Potongan[] {
+function narasiRaddVsSisa(penyusun: Penyusun, { a: sisa, b: ashlRadd, hubungan, fpb, hasil }: LangkahNisab): Potongan[] {
   const ashlZawjiyyah = hasil / (ashlRadd / fpb);
   switch (hubungan) {
     case 'habis':
-      return kalimat`Sisa ${sisa} habis dibagi ashl radd ${ashlRadd} → cukup dengan ashl zawjiyyah: ${hasil}.`;
+      return nisab(penyusun, 'radd.habis', { sisa, ashl_radd: ashlRadd, hasil });
     case 'tawafuq':
-      return kalimat`Sisa ${sisa} dibanding ashl radd ${ashlRadd}: FPB ${fpb} → ${istilah('tawafuq', 'tawafuq')}. `
-        .concat(kalimat`Kalikan ashl zawjiyyah dengan ${istilah('wafq', 'wafq')} ashl radd: ${ashlZawjiyyah} × (${ashlRadd} ÷ ${fpb}) = ${hasil}.`);
+      return nisab(penyusun, 'radd.tawafuq', {
+        sisa, ashl_radd: ashlRadd, fpb, tawafuq: istilahNarasi(penyusun, 'tawafuq'), wafq: istilahNarasi(penyusun, 'wafq'),
+        ashl_zawjiyyah: ashlZawjiyyah, hasil,
+      });
     case 'tabayun':
-      return kalimat`Sisa ${sisa} dibanding ashl radd ${ashlRadd}: FPB 1 → ${istilah('tabayun', 'tabayun')}. `
-        .concat(kalimat`Kalikan ashl zawjiyyah dengan seluruh ashl radd: ${ashlZawjiyyah} × ${ashlRadd} = ${hasil}.`);
+      return nisab(penyusun, 'radd.tabayun', { sisa, ashl_radd: ashlRadd, tabayun: istilahNarasi(penyusun, 'tabayun'), ashl_zawjiyyah: ashlZawjiyyah, hasil });
     default: throw new Error(`relasi ${hubungan} tidak berlaku untuk radd`);
   }
 }

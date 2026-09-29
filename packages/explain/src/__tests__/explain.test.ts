@@ -3,7 +3,7 @@ import { hitung, type InputEngine, type LangkahJejak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
-import { kamusSnapshot } from './kamus.js';
+import { kamusSnapshot, penyusunTes } from './kamus.js';
 import { ID_ISTILAH, jelaskan, narasiNisab, keTeksBiasa, type Penjelasan } from '../index.js';
 
 function jelaskanKasus(input: InputEngine, mode?: 'cerita' | 'ringkas' | 'arab'): Penjelasan {
@@ -186,7 +186,7 @@ describe('mode ringkas', () => {
   });
 
   test('narasi nisab: angka 1 dan inkisar', () => {
-    const bandingkanNisab = (isianIsian: Partial<Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>>) => keTeksBiasa({ refs: [], daftarPotongan: narasiNisab({
+    const bandingkanNisab = (isianIsian: Partial<Extract<LangkahJejak, { jenis: 'PERBANDINGAN_NISAB' }>>) => keTeksBiasa({ refs: [], daftarPotongan: narasiNisab(penyusunTes(), {
       tahap: 'ashl', refs: [], jenis: 'PERBANDINGAN_NISAB', tujuan: 'ashl', a: 0n, b: 0n, hubungan: 'tamatsul', fpb: 0n, hasil: 0n, ...isianIsian,
     }) });
     expect(bandingkanNisab({ tujuan: 'juzSahm', a: 1n, b: 4n, hubungan: 'tabayun', fpb: 1n, hasil: 4n }))
