@@ -1,6 +1,7 @@
 // scripts/pulihkan/main.ts
 // CLI: isi database dari apps/web/src/snapshot.json. Butuh SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
-// dari proyek tujuan. Memastikan akun impor ber-peran admin (kata sandi acak per jalan), masuk, lalu menulis.
+// dari proyek tujuan (shell atau scripts/.env). Memastikan akun impor ber-peran admin (kata sandi acak per jalan), masuk, lalu menulis.
+import '../env';
 import { randomUUID } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { createClient } from '@supabase/supabase-js';
@@ -9,7 +10,7 @@ import { pulihkanDariSnapshot } from './tulis';
 
 const snapshot = JSON.parse(readFileSync(new URL('../../apps/web/src/snapshot.json', import.meta.url), 'utf8'));
 const { SUPABASE_URL: url, SUPABASE_ANON_KEY: anon, SUPABASE_SERVICE_ROLE_KEY: servis } = process.env;
-if (!url || !anon || !servis) throw new Error('SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY wajib diisi');
+if (!url || !anon || !servis) throw new Error('SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY wajib diisi (di shell, atau salin scripts/.env.example jadi scripts/.env)');
 
 const EMAIL_IMPOR = 'impor@arif-waris.local';
 const sandi = randomUUID();
