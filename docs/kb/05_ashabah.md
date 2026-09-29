@@ -21,7 +21,7 @@ Dalil: «أَلْحِقُوا الْفَرَائِضَ بِأَهْلِهَا، 
 | **Bil ghair** | Anak pr (bersama anak lk), cucu pr (bersama cucu lk sederajat, atau lebih rendah jika butuh), saudari kandung (bersama saudara lk kandung), saudari sebapak (bersama saudara lk sebapak) | Dibagi **2:1**. Mu'ashshib harus sederajat dan sekuat (kecuali qarib mubarak pada cucu). |
 | **Ma'al ghair** | Saudari kandung / sebapak **bersama far'u warits perempuan** (anak pr/cucu pr) | Tidak dibagi 2:1 dengan anak pr; saudari mengambil **sisa** setelah furudh. |
 
-Dalil ma'al ghair: hadits Ibnu Mas'ud (bab 04.11) dan kaidah «اجْعَلُوا الْأَخَوَاتِ مَعَ الْبَنَاتِ عَصَبَةً».
+Dalil ma'al ghair: hadits Ibnu Mas'ud (bab 04.11) dan kaidah «اجْعَلُوا الْأَخَوَاتِ مَعَ الْبَنَاتِ عَصَبَةً» — judul bab dalam Shahih al-Bukhari (Fath al-Bari 8/448), bukan teks hadits marfu' yang terverifikasi di sini (dinukil Al-Mausu'ah al-Fiqhiyyah al-Kuwaitiyyah 3/40 · shamela:11430/1413).
 
 **Kekuatan ma'al ghair**: saudari kandung yang menjadi ashabah ma'al ghair berkedudukan seperti **saudara lk kandung**, sehingga menghijab saudara/saudari sebapak dan semua ashabah setelahnya (anak saudara, paman, dll.). Saudari sebapak yang menjadi ma'al ghair berkedudukan seperti saudara lk sebapak.
 

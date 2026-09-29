@@ -152,5 +152,5 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R14-11 | Satu orang dua jalur | LHM | Lahim hlm. 194–195 | «ألا تحجب إحداهما الأخرى... يرث بهما... أن تحجب إحداهما الأخرى... يرث بالجهة الحاجبة» |
 | R14-12 | Pasangan fardh penuh; tata kerja munasakhat keadaan 3 | LHM | Lahim hlm. 207–208 | «أعطي أحد الزوجين فرضه من مخرجه من غير حجب ولا عول» |
 | R14-13 | 'Aul hanya 6→7 | KH | Lahim hlm. 217 | «نهاية عوله إلى سبعة» |
-| R14-14 | Qarabah [HNF]: 7 shinf, derajat, anak ahli waris | — (Hanafi primer) | al-Mabsuth, as-Sarakhsi, 30/6 (Shamela 5423/5974) | «ثم ذوو الأرحام في الحاصل سبعة أصناف ... وفي كل ذلك عند التساوي في الدرجة إذا كان أحدهما ولد صاحب فرض أو ولد عصبة والآخر ليس كذلك فولد صاحب الفرض والعصبة أولى» |
-| R14-15 | Qarabah [HNF]: cara membagi per tingkat ushul (qaul Muhammad) | — (Hanafi primer) | al-Mabsuth 30/6–7 (Shamela 5423/5974–5975) | «وهذا قول محمد، وهو الظاهر من مذهب أبي حنيفة، ثم رجع أبو يوسف ... وهو رواية شاذة» |
+| R14-14 | Qarabah [HNF]: 7 shinf, derajat, anak ahli waris | — (Hanafi primer) | al-Mabsuth, as-Sarakhsi, 30/6 · shamela:5423/5974 | «ثم ذوو الأرحام في الحاصل سبعة أصناف ... وفي كل ذلك عند التساوي في الدرجة إذا كان أحدهما ولد صاحب فرض أو ولد عصبة والآخر ليس كذلك فولد صاحب الفرض والعصبة أولى» |
+| R14-15 | Qarabah [HNF]: cara membagi per tingkat ushul (qaul Muhammad) | — (Hanafi primer) | al-Mabsuth 30/6 · shamela:5423/5974 | «وهذا قول محمد، وهو الظاهر من مذهب أبي حنيفة، ثم رجع أبو يوسف ... وهو رواية شاذة» |

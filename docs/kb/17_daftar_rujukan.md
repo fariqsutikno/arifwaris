@@ -52,7 +52,7 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 |---|---|---|
 | «ألحقوا الفرائض بأهلها، فما بقي فلأولى رجل ذكر» | Al-Bukhari 6732; Muslim 1615 · hadits:bukhari:6732 hadits:muslim:1615 | Muttafaq 'alaih |
 | «لا يرث المسلم الكافر، ولا الكافر المسلم» | Al-Bukhari 6764; Muslim 1614 · hadits:bukhari:6764 hadits:muslim:1614 | Muttafaq 'alaih |
-| «للابنة النصف، ولابنة الابن السدس تكملة الثلثين...» | Al-Bukhari 6736 · hadits:bukhari:6736 | Shahih |
+| «للابنة النصف، ولابنة ابن السدس تكملة الثلثين...» | Al-Bukhari 6736 · hadits:bukhari:6736 | Shahih |
 | «الثلث، والثلث كثير» | Al-Bukhari 2742; Muslim 1628 · hadits:bukhari:2742 hadits:muslim:1628 | Muttafaq 'alaih |
 | «إنما الولاء لمن أعتق» | Al-Bukhari 2156; Muslim 1504 · hadits:bukhari:2156 hadits:muslim:1504 | Muttafaq 'alaih |
 | «ابن أخت القوم منهم» | Al-Bukhari 3528; Muslim 1059 · hadits:bukhari:3528 hadits:muslim:1059 | Muttafaq 'alaih |
@@ -64,7 +64,7 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 | «قضى رسول الله ﷺ بالدين قبل الوصية» | At-Tirmidzi 2094; Ibnu Majah 2715 · hadits:tirmidhi:2094 hadits:ibnmajah:2715 | Sanad lemah; hukumnya tetap berdasar ijma' |
 | «الولاء لحمة كلحمة النسب» | Ibnu Hibban 4950; al-Hakim 4/341 · shamela:148486/7081 (as-Sunan al-Kubra al-Baihaqi) | Marfu'-nya diperselisihkan; al-Baihaqi: yang benar mursal dari al-Hasan |
 | «تعلموا الفرائض...» | Ibnu Majah 2719 · hadits:ibnmajah:2719 | Dha'if |
-| «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 · hadits:ibnmajah:154 | Shahih |
+| «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 · hadits:tirmidhi:3790 hadits:ibnmajah:154 | Hasan gharib (at-Tirmidzi); shahih (Darussalam, sunnah.com) |
 
 ## 17.4 Titik yang Masih Ditandai `[perlu verifikasi lanjut]`
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:

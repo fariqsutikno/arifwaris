@@ -36,7 +36,7 @@ Yang tidak punya bagian pasti mengambil sisanya. Dasarnya hadits: "Berikan bagia
 ## Ringkasnya
 
 - Faraidh = bagian yang sudah ditentukan syariat.
-- Sumber utamanya An-Nisa' 11, 12, 176, ditambah hadits tentang sisa harta.
+- Sumber utamanya An-Nisa' 11, 12, 176, ditambah hadits tentang sisa harta [R01-2] [R01-3].
 - Ada dua cara mewarisi: lewat bagian pasti (fardh) dan lewat sisa (ashabah).
 
 ## Harta dibereskan dulu, baru dibagi

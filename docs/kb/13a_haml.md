@@ -22,7 +22,7 @@ Anak manusia yang masih dalam kandungan ketika muwarrits wafat, yang mewarisi at
 > **KHILAF K13a-1 – Batas maksimal masa kehamilan** [R13-5]
 > - **[SYF]**: **4 tahun** (Ithraa: «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة»). Kitab al-Fara'idh Raudhah hanya menyebut «أكثر مدة الحمل» tanpa angka.
 > - [HNB]: 4 tahun. [HNF]: 2 tahun. [MLK]: 4 tahun (masyhur), 5 tahun (yang diamalkan). (sekunder)
-> - **Engine**: konstanta per madzhab `// [R13-5]`, tetap bisa ditimpa putusan hakim. Batas minimal 6 bulan = ijma' (QS 46:15 + 31:14).
+> - **Engine**: konstanta per madzhab `// [R13-5]`, tetap bisa ditimpa putusan hakim. Batas minimal 6 bulan = ijma' (QS 46:15 quran:46:15 + 31:14 quran:31:14).
 
 ## 13a.3 Kapan Tirkah Dibagi [R13-17]
 - Jika ahli waris rela menunggu kelahiran: **menunggu lebih utama** (keluar dari khilaf, pembagian sekali).

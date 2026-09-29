@@ -122,7 +122,7 @@ Anak perempuan tidak pernah terhijab hirman.
 | Ada anak lk | **Terhijab** |
 | Ada **2+ anak pr** tanpa mu'ashshib | **Terhijab** |
 
-Dalil 1/6: hadits Ibnu Mas'ud tentang bint, bint ibn, dan ukht: «لِلابْنَةِ النِّصْفُ، وَلابْنَةِ الابْنِ السُّدُسُ تَكْمِلَةَ الثُّلُثَيْنِ، وَمَا بَقِيَ فَلِلأُخْتِ» (البخاري).
+Dalil 1/6: hadits Ibnu Mas'ud tentang bint, bint ibn, dan ukht: «لِلابْنَةِ النِّصْفُ، وَلِابْنَةِ ابْنٍ السُّدُسُ تَكْمِلَةَ الثُّلُثَيْنِ، وَمَا بَقِيَ فَلِلأُخْتِ» (البخاري).
 
 **Al-Qarib al-Mubarak** (kerabat pembawa berkah): cucu lk **lebih rendah** derajatnya menarik cucu pr yang lebih tinggi menjadi ashabah **hanya jika** cucu pr itu tidak mendapat apa-apa dari 2/3 (karena sudah dihabiskan 2 anak pr atau lebih). Jika cucu pr sudah mendapat furudh (misalnya 1/6), cucu lk yang lebih rendah tidak mengashabahkannya.
 Kebalikannya, **al-Qarib al-Masy'um** (kerabat pembawa sial): saudara lk sebapak yang membuat saudari sebapak kehilangan 1/6 dengan menjadikannya ashabah padahal sisa habis (misal: suami, ibu, saudari kandung, saudara sebapak + saudari sebapak).
@@ -174,7 +174,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R04-9 | Hajb antar nenek | RDH | Raudhah 6/26–27 (Bab 4, al-Hajb) · shamela:499/2315 shamela:499/2316 | «القربى من كل جهة تحجب البعدى من تلك الجهة... القربى من جهة الأم... تحجب البعدى من جهة الأب... والقربى من جهة الأب كأم الأب، هل تحجب البعدى من جهة الأم، كأم أم الأم؟ فيه قولان: أظهرهما: لا» |
 | R04-10 | Ayah menghijab nenek dari pihaknya, tidak dari pihak ibu | RDH + IJ | Bab 4 (RDH 6/26 · shamela:499/2315). IJ: Ibnu al-Mundzir, IMN no. 306 (hal. 73: bapak tidak menghijab ibu dari ibu); "para kakek" tercakup lewat no. 312 (hukum kakek = bapak) · shamela:12445/72 | «والأب يحجب كل جدة من جهته... والأب والأجداد لا يحجبون الجدة من جهة الأم قريبة كانت أو بعيدة بالإجماع» |
 | R04-11 | Anak lk menghabiskan harta; bagian anak pr | Q + IJ | An-Nisa' 11 quran:4:11 · ijma' dinukil RDH 6/13 · shamela:499/2302. Ibnu al-Mundzir, IMN no. 277–278 (hal. 69) hanya menukil ijma' pembagian anak (lk:pr = 2:1) dan 2/3 untuk dua putri · shamela:12445/68; ijma' "satu anak lk mengambil seluruh harta" secara eksplisit baru ditemukan pada RDH | «فالابن الواحد يستغرق جميع المال بالإجماع... وللبنت النصف، وللبنتين فصاعدا الثلثان» |
-| R04-12 | Cucu pr 1/6 bersama anak pr | H + RDH | Al-Bukhari no. 6736, dari Ibnu Mas'ud · RDH 6/13 (Bab 1) · shamela:499/2302 hadits:bukhari:6736 | H: «للابنة النصف، ولابنة الابن السدس تكملة الثلثين، وما بقي فللأخت». RDH: «وإن كان ولد الابن بنتا، فلها السدس» |
+| R04-12 | Cucu pr 1/6 bersama anak pr | H + RDH | Al-Bukhari no. 6736, dari Ibnu Mas'ud · RDH 6/13 (Bab 1) · shamela:499/2302 hadits:bukhari:6736 | H: «للابنة النصف، ولابنة ابن السدس تكملة الثلثين، وما بقي فللأخت». RDH: «وإن كان ولد الابن بنتا، فلها السدس» |
 | R04-13 | Cucu pr gugur oleh 2 anak pr kecuali ada mu'ashshib (termasuk yang lebih rendah) | RDH | Raudhah 6/13 (Bab 1, far' aulad) · shamela:499/2302 | «فلهن الثلثان، ولا شيء لبنات الابن. فإن كان معهن أو أسفل منهن ذكر، عصبهن» |
 | R04-14 | Bagian saudari kandung/sebapak | Q + RDH | An-Nisa' 176 quran:4:176 · RDH 6/14, 6/16 (Bab 1, Fashl al-Ikhwah) · shamela:499/2303 shamela:499/2305 | «وللأخت الفردة النصف، وللأختين فصاعدا الثلثان»; saudari sebapak: «فلهن أو لها السدس تكملة الثلثين» |
 | R04-15 | Saudari sebapak hanya diashabahkan yang sederajat | RDH | Raudhah 6/16 · shamela:499/2305 | «ولا يعصب الأخت إلا من في درجتها بخلاف بنت الابن، فإنه يعصبها من هو أسفل منها» |

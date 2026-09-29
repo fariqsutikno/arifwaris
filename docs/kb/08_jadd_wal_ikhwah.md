@@ -15,7 +15,7 @@ tags: [jadd, ikhwah, muqasamah, tsuluts, sudus, muaddah, akdariyyah, khilaf]
 >
 > **Aturan sistem**: [SYF], [HNB], [MLK] → jalankan 8.2–8.5. [HNF] → pendapat 2 (kakek = ayah), lihat bab 18 K05-1. Ibnu 'Utsaimin tetap pembanding.
 
-Dalil pendapat 2 (ringkas, untuk pembanding): kakek disebut "ayah" dalam Al-Qur'an (مِّلَّةَ أَبِيكُمْ إِبْرَاهِيمَ); ia menghijab saudara seibu secara ijma', maka menurut pendapat ini ia lebih utama menghijab saudara kandung; hadits «فما بقي فلأولى رجل ذكر» dan kakek lebih dekat (jihah ubuwwah).
+Dalil pendapat 2 (ringkas, untuk pembanding): kakek disebut "ayah" dalam Al-Qur'an (مِّلَّةَ أَبِيكُمْ إِبْرَاهِيمَ، Al-Hajj 78 quran:22:78); ia menghijab saudara seibu secara ijma', maka menurut pendapat ini ia lebih utama menghijab saudara kandung; hadits «فما بقي فلأولى رجل ذكر» dan kakek lebih dekat (jihah ubuwwah).
 
 ---
 
@@ -97,4 +97,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R08-4 | Mu'addah | RDH | Raudhah 6/24 · shamela:499/2313 | «لكن هنا يعد أولاد الأبوين أولاد الأب على الجد في القسمة... والواحدة تأخذ إلى النصف. فإن بقي شيء، فلأولاد الأب» |
 | R08-5 | Saudari tidak diberi fardh bersama kakek, kecuali akdariyyah | RDH | Raudhah 6/25 · shamela:499/2314 | «فلا يفرض لهن معه ولا تعال مسألة بسببهن... وهذا أصل مطرد إلا في المسألة الأكدرية... وتصح من سبعة وعشرين، للزوج تسعة، وللأم ستة، وللأخت أربعة، وللجد ثمانية» |
 | R08-6 | Madzhab Zaid bin Tsabit dalam jadd | A | Madzhab Zaid dalam jadd: BHQ 6/409 no. 12445 (jalur Ibrahim an-Nakha'i; termasuk akdariyyah) · shamela:7861/14334; ad-Darimi (ed. az-Zahrani) 2/965 · shamela:36114/965; hadits keutamaan Zaid «وأفرضهم زيد بن ثابت» (at-Tirmidzi no. 3790; Ibnu Majah no. 154) | Dasar penisbatan madzhab Syafi'i pada Zaid dalam fara'idh. |
-| R08-7 | Pendapat kakek = ayah (Ibnu 'Utsaimin) | A | Abu Bakr ash-Shiddiq, Ibnu 'Abbas; dinukil al-Bukhari secara mu'allaq (Kitab al-Fara'idh, bab Mirats al-Jadd ma'a al-Ab wal-Ikhwah): «وقال أبو بكر وابن عباس وابن الزبير: الجد أب» (Ibnu az-Zubair juga disebut) · terbaca lewat Ibnu Baththal, Syarh Shahih al-Bukhari 8/351 · shamela:10486/4135 | Perbandingan; tidak dipakai sistem. |
+| R08-7 | Pendapat kakek = ayah (Ibnu 'Utsaimin) | A | Abu Bakr ash-Shiddiq, Ibnu 'Abbas; dinukil al-Bukhari secara mu'allaq (Kitab al-Fara'idh, bab Mirats al-Jadd ma'a al-Ab wal-Ikhwah): «وَقَالَ أَبُو بَكْرٍ، وَابْنُ الزُّبَيْرِ، وَابْنُ عَبَّاسٍ: الْجَدُّ أَبٌ» (Ibnu az-Zubair juga disebut) · terbaca lewat Ibnu Baththal, Syarh Shahih al-Bukhari 8/351 · shamela:10486/4135 | Perbandingan; tidak dipakai sistem. |

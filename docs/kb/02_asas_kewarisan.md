@@ -35,12 +35,12 @@ Tiga penghalang di tabel ini disepakati semua madzhab. [SYF] menghitung **lima**
 | Mani' | Hukum | Dalil |
 |------|-------|-------|
 | **Riqq** (perbudakan) | Budak tidak mewarisi dan tidak diwarisi. | Budak tidak memiliki harta. |
-| **Qatl** (pembunuhan) | Pembunuh tidak mewarisi yang dibunuh. | «لَيْسَ لِلْقَاتِلِ مِنَ الْمِيرَاثِ شَيْءٌ» |
+| **Qatl** (pembunuhan) | Pembunuh tidak mewarisi yang dibunuh. | «الْقَاتِلُ لَا يَرِثُ» [R02-8] |
 | **Ikhtilaf ad-din** (beda agama) | Muslim tidak mewarisi kafir, dan sebaliknya. | «لَا يَرِثُ الْمُسْلِمُ الْكَافِرَ، وَلَا الْكَافِرُ الْمُسْلِمَ» (متفق عليه) |
 
 ### Rincian pembunuhan yang menghalangi [R02-9]
 > **KHILAF K02-1 – Jenis pembunuhan**
-> - **[SYF] (default)**: **semua bentuk pembunuhan** menghalangi warisan, termasuk yang berhak (qishash, hadd, membela diri, pelaksanaan hukum oleh hakim), karena keumuman hadits «لَيْسَ لِلْقَاتِلِ مِنَ الْمِيرَاثِ شَيْءٌ» tanpa perincian.
+> - **[SYF] (default)**: **semua bentuk pembunuhan** menghalangi warisan, termasuk yang berhak (qishash, hadd, membela diri, pelaksanaan hukum oleh hakim), karena keumuman hadits «الْقَاتِلُ لَا يَرِثُ» [R02-8] tanpa perincian.
 > - **Hanabilah**: hanya pembunuhan **tanpa hak** yang mewajibkan qishash, diyat, atau kafarat (termasuk khatha') yang menghalangi.
 > - **Malikiyyah**: hanya pembunuhan sengaja ('amd) dan zalim; khatha' tidak menghalangi dari harta, tapi menghalangi dari diyat.
 > - Sistem tetap menandai setiap kasus pembunuhan untuk verifikasi manusia/hakim, apa pun mode yang dipakai.
@@ -86,7 +86,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R02-5 | Sesama kafir beda millah saling mewarisi | RDH | Raudhah 6/29 (Bab 5, mas'alah 2) · shamela:499/2318 | «يرث الكفار بعضهم بعضا، كاليهودي من النصراني... والصحيح المعروف، هو الأول» |
 | R02-6 | Murtad tidak mewarisi dan tidak diwarisi | RDH | Raudhah 6/30 (Bab 5, mas'alah 3) · shamela:499/2319 | «لا يرث المرتد أحدا، ولا يرثه أحد، وماله فيء سواء كسبه في الإسلام أو في الردة» |
 | R02-7 | Budak tidak mewarisi dan tidak diwarisi | RDH | Raudhah 6/30 (Bab 5, mani' 2) · shamela:499/2319 | «فلا يرث رقيق وإن عتق قبل القسمة، ولا يورث رقيق إذ لا ملك له» |
-| R02-8 | Pembunuh tidak mewarisi | H | At-Tirmidzi no. 2109; Ibnu Majah no. 2645, dari Abu Hurairah · hadits:tirmidhi:2109 hadits:ibnmajah:2645 | «القاتل لا يرث». Diperkuat riwayat 'Umar dalam Muwaththa' Malik: «ليس لقاتل شيء». |
+| R02-8 | Pembunuh tidak mewarisi | H | At-Tirmidzi no. 2109; Ibnu Majah no. 2645, dari Abu Hurairah · hadits:tirmidhi:2109 hadits:ibnmajah:2645 | «القاتل لا يرث». Diperkuat riwayat 'Umar dalam Muwaththa' Malik: «ليس لقاتل شيء». Lafaz serupa: «لَيْسَ لِقَاتِلٍ مِيرَاثٌ» (Ibnu Majah no. 2646, hasan menurut Darussalam · hadits:ibnmajah:2646); «لَيْسَ لِلْقَاتِلِ شَىْءٌ» (Abu Dawud no. 4564, hasan menurut al-Albani · hadits:abudawud:4564). At-Tirmidzi sendiri berkata «هذا حديث لا يصح» (2109); Ibnu Majah 2645 hasan (Darussalam). |
 | R02-9 | Semua jenis pembunuhan menghalangi | RDH | Raudhah 6/31–32 (Bab 5, mani' 3) · shamela:499/2320 shamela:499/2321 | «والمذهب وظاهر نص الشافعي في الصور كلها: منع الإرث». Termasuk khatha' dan tasabbub: «وسواء كان القتل عمدا أو خطأ» |
 | R02-10 | Wala' untuk yang memerdekakan | H | Al-Bukhari no. 2156; Muslim no. 1504, dari 'Aisyah (kisah Barirah) · hadits:bukhari:2156 hadits:muslim:1504 | «إنما الولاء لمن أعتق» |
 | R02-11 | Wala' seperti nasab | H | Ibnu Hibban dan al-Hakim, dari Ibnu 'Umar | «الولاء لحمة كلحمة النسب، لا يباع ولا يوهب». Ibnu Hibban no. 4950 (al-Ihsan 11/326); al-Hakim 4/341. Al-Baihaqi menukil bahwa sanad marfu'-nya keliru, yang benar mursal dari al-Hasan (dikonfirmasi di *as-Sunan al-Kubra* al-Baihaqi, ia sendiri menyebut jalur-jalur lain semuanya dha'if) · shamela:148486/7081 |
