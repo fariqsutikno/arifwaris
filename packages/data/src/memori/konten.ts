@@ -58,6 +58,10 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     if (!sesi) throw new Error('belum masuk');
     return { pelakuId: sesi.userId, peran: peran.get(sesi.userId) ?? null };
   };
+  const teksTerbitDiksi = (kunci: string) => {
+    const terbitId = kunciDiksi.get(kunci)?.revisiTerbitId;
+    return terbitId ? revisiDiksi.get(terbitId)?.idTeks : undefined;
+  };
   const wajibPeran = (...boleh: Peran[]) => {
     const { peran: peranSaya } = pelaku();
     if (!peranSaya || !boleh.includes(peranSaya)) throw new Error(`perlu peran ${boleh.join('/')}`);
@@ -312,6 +316,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     async buatDraf(kunci, idTeks, arTeks, catatan) {
       wajibPeran('admin', 'penulis');
       ambil(kunciDiksi, kunci, 'kunci diksi');
+      jagaSisipan(teksTerbitDiksi(kunci), idTeks, arTeks);
       const id = idBaru();
       revisiDiksi.set(id, {
         id, kunci, idTeks, arTeks, catatan, status: 'draf', diabaikan: false, dibuatOleh: pelaku().pelakuId,
@@ -352,6 +357,7 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
     async perbaruiAjuan(revisiId, idTeks, arTeks) {
       const target = ambil(revisiDiksi, revisiId, 'revisi diksi');
+      jagaSisipan(teksTerbitDiksi(target.kunci), idTeks, arTeks);
       jalankanTransisi(target, 'perbarui');
       Object.assign(target, { idTeks, arTeks, dibuatPada: sekarang() });
     },
@@ -416,4 +422,13 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     peranDari: userId => peran.get(userId) ?? null,
     daftarPeranSemua: () => [...peran.entries()].map(([userId, peranPengguna]) => ({ userId, peran: peranPengguna })),
   };
+}
+
+/** Cermin trigger jaga_sisipan_diksi: himpunan {sisipan} revisi = himpunan teks terbit (urutan bebas). */
+function jagaSisipan(teksTerbit: string | undefined, idTeks: string, arTeks: string | null): void {
+  if (teksTerbit === undefined) return;
+  const himpunan = (teks: string) => [...new Set([...teks.matchAll(/\{(\w+)\}/g)].map(cocok => cocok[1]!))].sort().join(',');
+  const harapan = himpunan(teksTerbit);
+  if (himpunan(idTeks) === harapan && (arTeks === null || himpunan(arTeks) === harapan)) return;
+  throw new Error(`Teks harus tetap memuat bagian otomatis: ${harapan.split(',').filter(Boolean).map(nama => `{${nama}}`).join(', ')}`);
 }
