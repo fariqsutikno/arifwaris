@@ -95,7 +95,7 @@ Status: **draf 2026-09-29, menunggu review pengguna.**
 
 | Token | [HNB] | [HNF] | [MLK] | Dasar |
 |---|---|---|---|---|
-| R01-1 | tidak | tidak | ya | [MLK] ya: Mawahib 6/406–407 (matan Khalil). [HNB]/[HNF] berbeda urutan: K01-2 |
+| R01-1 | ya | ya | ya | Dipecah (keputusan 2026-09-29): token engine = urutan tajhiz → dain → wasiat → waris; sama di semua madzhab ([HNF] Mabsuth 29/136–137 primer; [HNB] Dalil ath-Thalib sekunder (s); [MLK] Mawahib 6/406–407). Butir «hak 'ain sebelum tajhiz» = K01-2, tidak dimodelkan engine |
 | R01-4 | ya | ya | ya | 01, nukilan lintas-madzhab: Mughni 6/146 «في قول جميع العلماء»; Mabsuth 29/138; 'Iqd 3/1223 |
 | R01-7 | ya | ya | tidak | K01-1: [HNB]/[HNF] sama isi dengan [SYF] (hanya setelah wafat); [MLK] berbeda |
 | R01-9 | ya | ya | ya | ikut R01-4 (keputusan scope engine) |

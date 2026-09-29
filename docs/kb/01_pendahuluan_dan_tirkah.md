@@ -79,7 +79,10 @@ Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi,
 
 | Token | Madzhab | Sumber | Kutipan / Keterangan |
 |---|---|---|---|
+| R01-1 | [HNB] | Dalil ath-Thalib, catatan Hasyiyah al-Lubdi hlm. 117 · shamela:11196/88 (sekunder) | «يبدأ من تركة الميت أولا بمؤنة تجهيزه ... ثم تنفذ الوصايا, ثم يقسم الباقي على الورثة» |
+| R01-1 | [HNF] | Mabsuth 29/136–137 · shamela:5423/5893 shamela:5423/5894 | «ثم بعد الكفن يقدم الدين على الوصية والميراث» |
 | R01-1 | [MLK] | Mawahib al-Jalil 6/406–407 (syarh atas matan Khalil) · shamela:569/3058 shamela:569/3059 | Matan Khalil dikutip syarh: «حق تعلق بعين»; «ثم مؤنة تجهيزه بالمعروف ثم تقضى ديونه»; lalu «وصاياه» dan «ثم الباقي لوارثه». Urutan sama dengan [SYF]. |
+| R01-1 (catatan) | semua | — | Token engine hanya memakai urutan tajhiz → dain → wasiat → waris; butir hak 'ain dipisah ke K01-2 karena engine tidak memodelkannya. |
 | R01-4 | [HNB] | Mughni 6/146 · shamela:8463/2468 | «وجملة ذلك أن الوصية لغير الوارث تلزم في الثلث من غير إجازة، وما زاد على الثلث يقف على إجازتهم، فإن أجازوه جاز، وإن ردوه بطل. في قول جميع العلماء» |
 | R01-4 | [HNF] | Mabsuth 29/138 · shamela:5423/5895 | «فأما ما زاد عن الثلث لا يظهر فيه تقديم الوصية لأن حق الوارث فيه يمنع الوصية إلا أن يجيز الوارث»; dalil «إن الله تعالى تصدق عليكم بثلث أموالكم» |
 | R01-4 | [MLK] | 'Iqd 3/1223 · shamela:14594/1221 | «فدليلها هو أنه قد ثبت أنه ليس للموصي أن يوصي بأكثر من الثلث» |
