@@ -4,6 +4,7 @@
 //           dalam jihah yang sama, yang lebih dulu sampai menghijab yang lain.
 //   Keluar: rute yang lolos → mas'alah perantara (stages/perantara.ts).
 
+import type { TidakDidukung } from './model.js';
 import type { GrafKeluarga, IdOrang, Jihah, KunciAhliWaris, LangkahJejak, PeranAhliWaris } from '../types.js';
 
 export interface RuteTanzil {
@@ -23,8 +24,11 @@ const BUKAN_PERANTARA = new Set<PeranAhliWaris['kunci']>(['DZAWIL_ARHAM', 'BUKAN
 const JIHAH_BUNUWWAH = new Set<KunciAhliWaris>(['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR']);
 const JIHAH_UMUMAH = new Set<KunciAhliWaris>(['IBU', 'NENEK_DARI_IBU', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU']);
 
-export function cariRuteTanzil(graf: GrafKeluarga, daftarPeran: Record<IdOrang, PeranAhliWaris>, idOrang: IdOrang): RuteTanzil[] {
-  const daftarRute = semuaLintasan(graf, idOrang).flatMap(lintasan => {
+export function cariRuteTanzil(graf: GrafKeluarga, daftarPeran: Record<IdOrang, PeranAhliWaris>, idOrang: IdOrang): RuteTanzil[] | TidakDidukung {
+  const { lintasan: semua, terlewat } = kumpulkanLintasan(graf, idOrang);
+  // [R14-11] KB tidak mengatur kerabat yang sekaligus keturunan saudara leluhur pewaris (leluhur yang juga paman); jangan dibuang diam-diam.
+  if (terlewat) return { status: 'TIDAK_DIDUKUNG', alasan: 'kekerabatan ganda lewat leluhur pewaris (pernikahan antarkerabat) belum didukung', refs: ['R14-11'] };
+  const daftarRute = semua.flatMap(lintasan => {
     const rute = naikKePerantara(daftarPeran, idOrang, lintasan);
     return rute ? [rute] : [];
   });
@@ -55,26 +59,35 @@ export function saringJihah(daftarRute: RuteTanzil[]): { lolos: RuteTanzil[]; te
  * langsung sampai ke ibu dan 'ammah ke ayah (pengecualian 14.5 langkah 1).
  */
 export function semuaLintasan(graf: GrafKeluarga, idOrang: IdOrang): IdOrang[][] {
+  return kumpulkanLintasan(graf, idOrang).lintasan;
+}
+
+/** `terlewat`: lintasan hawasyi tanpa simpul berulang yang sengaja tidak dipakai karena X-nya leluhur pewaris. */
+function kumpulkanLintasan(graf: GrafKeluarga, idOrang: IdOrang): { lintasan: IdOrang[][]; terlewat: boolean } {
   const { idPewaris } = graf;
   const naikPewaris = lintasanKeAtas(graf, idPewaris);
   const naikOrang = lintasanKeAtas(graf, idOrang);
   const leluhurPewaris = new Set(naikPewaris.map(lintasan => lintasan.at(-1)!));
   const hasil = new Map<string, IdOrang[]>();
+  const tanpaUlang = (lintasan: IdOrang[]) => new Set(lintasan).size === lintasan.length;
   const simpan = (lintasan: IdOrang[]) => {
-    if (new Set(lintasan).size === lintasan.length) hasil.set(lintasan.join('>'), lintasan);
+    if (tanpaUlang(lintasan)) hasil.set(lintasan.join('>'), lintasan);
   };
+  const dilewati = new Map<string, IdOrang[]>();
 
   for (const naik of naikOrang) if (naik.at(-1) === idPewaris) simpan([...naik].reverse());
   for (const naik of naikPewaris) if (naik.at(-1) === idOrang) simpan(naik);
   for (const naik of naikOrang) {
     if (naik.length < 2) continue;
     const idX = naik.at(-2)!;
-    if (leluhurPewaris.has(idX)) continue;
     for (const jalurY of naikPewaris) {
-      if (jalurY.length >= 2 && jalurY.at(-1) === naik.at(-1)) simpan([...jalurY.slice(0, -1), ...naik.slice(0, -1).reverse()]);
+      if (jalurY.length < 2 || jalurY.at(-1) !== naik.at(-1)) continue;
+      const gabungan = [...jalurY.slice(0, -1), ...naik.slice(0, -1).reverse()];
+      if (!leluhurPewaris.has(idX)) simpan(gabungan);
+      else if (tanpaUlang(gabungan)) dilewati.set(gabungan.join('>'), gabungan);
     }
   }
-  return [...hasil.values()];
+  return { lintasan: [...hasil.values()], terlewat: [...dilewati.keys()].some(kunci => !hasil.has(kunci)) };
 }
 
 // ─── Bantuan ──────────────────────────────────────────────────────────────────
