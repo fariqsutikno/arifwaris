@@ -71,3 +71,74 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 Daftar pencarian lengkap dengan kata kunci Arab: [`docs/referensi-dicari.md`](../referensi-dicari.md).
 
 Rujukan yang bisa menutup: [HNF] *as-Sirajiyyah* + syarahnya; [MLK] *Mukhtashar Khalil* + *Syarh ad-Dardir*; [HNB] *al-Mughni* / *Kasysyaf al-Qina'*.
+
+## 18.4 Keberlakuan Token Engine per Madzhab
+Token `Rxx-y` yang dipakai engine. **ya** = keputusan yang sama berlaku untuk madzhab itu; **tidak** = belum dikaji
+atau berbeda tanpa overlay → engine mode itu `TIDAK_DIDUKUNG` bila kasus menyentuh token ini. Titik yang punya baris di 18.2
+mengikuti barisnya: sel "= [SYF]" → ya; sel berbeda → tidak (overlay memakai kode `Kxx-y`, bukan token ini).
+Status: **draf 2026-09-29, menunggu review pengguna.**
+
+| Token | [HNB] | [HNF] | [MLK] | Dasar |
+|---|---|---|---|---|
+| R01-1 | tidak | tidak | tidak | belum dikaji |
+| R01-4 | tidak | tidak | tidak | belum dikaji |
+| R01-7 | ya | ya | tidak | K01-1: [HNB]/[HNF] sama isi dengan [SYF] (hanya setelah wafat); [MLK] berbeda |
+| R01-9 | tidak | tidak | tidak | keputusan scope engine di atas R01-4; ikut R01-4 |
+| R02-1 | tidak | tidak | tidak | 2.3: tiga sebab pertama disepakati semua madzhab; sebab keempat (jihat al-Islam) yang dipakai engine tidak; belum dikaji |
+| R02-3 | tidak | tidak | tidak | K02-3 berbeda di ketiga madzhab |
+| R02-4 | ya | ya | ya | 2.4: «Tiga penghalang di tabel ini disepakati semua madzhab» (beda agama) |
+| R02-9 | tidak | tidak | tidak | K02-1 berbeda; ditunda (keputusan 2026-09-29) |
+| R03-1 | tidak | tidak | tidak | belum dikaji |
+| R03-2 | tidak | tidak | tidak | belum dikaji |
+| R03-4 | tidak | ya | tidak | K03-1: [HNF] ahli waris (= [SYF]); [HNB]/[MLK] dzawil arham |
+| R03-5 | ya | ya | ya | 3.2: nenek fasidah «disepakati bukan ahli waris furudh» |
+| R04-2 | tidak | tidak | tidak | Q + RDH; bab 4 tidak menyebut ijma'/jumhur untuk token ini; belum dikaji |
+| R04-3 | ya | ya | ya | Jenis IJ: ijma' dinukil an-Nawawi (RDH 6/9) dan Ibnu al-Mundzir |
+| R04-4 | ya | ya | ya | 4.7 KHILAF: «[SYF] dan jumhur»: ikhwah minimal 2, 1/3 al-baqi |
+| R04-5 | tidak | tidak | tidak | belum dikaji |
+| R04-6 | tidak | tidak | tidak | belum dikaji |
+| R04-7 | tidak | tidak | tidak | belum dikaji |
+| R04-8 | tidak | tidak | tidak | belum dikaji |
+| R04-9 | tidak | tidak | ya | K04-1: [MLK] = [SYF]; [HNB]/[HNF] dekat menghijab mutlak |
+| R04-10 | tidak | ya | ya | K04-2: [HNF]/[MLK] terhijab (= [SYF]); [HNB] tidak terhijab |
+| R04-11 | ya | ya | ya | Jenis IJ: ijma' dinukil RDH 6/13 dan Ibnu al-Mundzir |
+| R04-12 | tidak | tidak | tidak | belum dikaji |
+| R04-13 | tidak | tidak | tidak | belum dikaji |
+| R04-14 | tidak | tidak | tidak | belum dikaji |
+| R04-16 | tidak | tidak | tidak | belum dikaji |
+| R05-2 | ya | tidak | ya | K05-1/K08-1: [HNB]/[MLK] = [SYF]; [HNF] kakek = ayah |
+| R05-3 | tidak | tidak | tidak | belum dikaji |
+| R05-4 | tidak | tidak | tidak | belum dikaji |
+| R05-5 | tidak | tidak | tidak | belum dikaji |
+| R06-2 | tidak | tidak | tidak | belum dikaji |
+| R06-3 | tidak | tidak | tidak | belum dikaji |
+| R06-4 | ya | ya | ya | Jenis IJ: «بالإجماع» (RDH 6/27) dan Ibnu al-Mundzir |
+| R06-5 | tidak | tidak | tidak | RDH; ijma' di 8.1 hanya untuk kakek, bukan seluruh token; belum dikaji |
+| R06-6 | ya | ya | ya | 6.1: yang terhijab tetap hajb nuqshan «menurut jumhur» |
+| R07-1 | ya | ya | ya | 7.1: «Hukum (jumhur, keputusan Umar)»; dengan kakek 1/3 penuh «menurut jumhur» |
+| R07-2 | tidak | tidak | ya | K07-1: [MLK] tasyrik (= [SYF]); [HNB]/[HNF] tanpa tasyrik |
+| R07-3 | tidak | tidak | ya | K07-1: [MLK] tasyrik (= [SYF]); [HNB]/[HNF] tanpa tasyrik |
+| R08-2 | ya | tidak | ya | K05-1/K08-1: [HNB]/[MLK] = [SYF]; [HNF] tidak berlaku |
+| R08-3 | ya | tidak | ya | K05-1/K08-1: [HNB]/[MLK] = [SYF]; [HNF] tidak berlaku |
+| R08-4 | ya | tidak | ya | K05-1/K08-1: [HNB]/[MLK] = [SYF]; [HNF] tidak berlaku |
+| R08-5 | ya | tidak | ya | K05-1/K08-1: [HNB]/[MLK] = [SYF]; [HNF] tidak berlaku |
+| R09-1 | tidak | tidak | tidak | belum dikaji |
+| R09-2 | tidak | tidak | tidak | belum dikaji |
+| R09-3 | ya | ya | ya | 9.3: «ijma' setelahnya menetapkan 'aul»; 18.3 'aul disepakati kecuali Ibnu 'Abbas |
+| R09-4 | ya | ya | ya | 9.3: 'aul ijma'; batas 'aul = KH, 18.3 |
+| R09-7 | tidak | tidak | tidak | K09-1 berbeda di ketiga madzhab |
+| R09-8 | tidak | tidak | tidak | K09-1 berbeda di ketiga madzhab |
+| R09-9 | tidak | tidak | tidak | K09-1 berbeda di ketiga madzhab |
+| R09-10 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R10-1 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R10-2 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R10-3 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R11-1 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R12-1 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R12-2 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R12-3 | ya | ya | ya | KH, 18.3 baris munasakhat/'aul/tashih |
+| R13-1 | tidak | tidak | tidak | belum dikaji |
+| R13-2 | tidak | tidak | tidak | belum dikaji |
+| R14-3 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
+| R14-4 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
+| R14-5 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
