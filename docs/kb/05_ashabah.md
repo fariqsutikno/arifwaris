@@ -79,11 +79,11 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
 | R05-1 | Ashabah mengambil sisa; laki-laki terdekat | H | Al-Bukhari no. 6732; Muslim no. 1615 · hadits:bukhari:6732 hadits:muslim:1615 | «فما بقي فلأولى رجل ذكر» |
-| R05-2 | Urutan ashabah menurut [SYF] | RDH | Bab 2, Bayan al-'Ashabat | «ويقدم منهم الأبناء، ثم بنوهم وإن سفلوا، ثم الأب، ثم الجد والإخوة للأبوين أو للأب، وهم في درجة... ويسقط ابن الأخ بالجد العالي سقوطه بالأدنى» |
-| R05-3 | Kaidah jihah → darajah → quwwah | RDH | Bab 2, far' | «البعيد من الجهة المقدمة، يقدم على القريب من الجهة المؤخرة... وإذا اتحدت الجهة، قدم الأقرب. فإن استويا في القرب، قدم من يدلي بالأبوين على من يدلي بالأب» |
-| R05-4 | Tiga jenis ashabah | RDH | Bab 1 | «وقد يقال: العصبة ثلاثة: عصبة بنفسه، وبغيره، ومع غيره» |
-| R05-5 | Saudari bersama anak pr menjadi ashabah | H + RDH | Al-Bukhari no. 6736 · RDH Bab 1 · hadits:bukhari:6736 | RDH: «الأخوات للأبوين وللأب مع البنات وبنات الابن عصبات كالإخوة»; saudari kandung ma'al ghair menggugurkan saudara sebapak: «وسقط الأخ بها كسقوطه بالأخ للأبوين» |
-| R05-6 | Anak saudara berbeda dengan saudara dalam 7 hal | RDH | Bab 1, far' Bani al-Ikhwah | Antara lain: tidak mengurangi ibu, gugur oleh kakek, tidak masuk musyarrakah, tidak mengashabahkan saudarinya. |
-| R05-7 | Ashabah wala' = ashabah bi nafsihi mu'tiq | RDH | Bab 2, Fashl 'Ashabat al-Mu'tiq | «فالاستحقاق لعصباته من النسب الذين يتعصبون بأنفسهم... فلا ترث النساء بالولاء إلا ممن أعتقن» |
-| R05-8 | Tidak ada fardh dalam wala' | RDH | Bab 2 | «وفي الولاء لا يمكن توريثه بالفرضية» |
+| R05-2 | Urutan ashabah menurut [SYF] | RDH | Raudhah 6/18–19 (Bab 2, Bayan al-'Ashabat) · shamela:499/2307 shamela:499/2308 | «ويقدم منهم الأبناء، ثم بنوهم وإن سفلوا، ثم الأب، ثم الجدة [sic، maksudnya الجد] والإخوة للأبوين أو للأب، وهم في درجة... ويسقط ابن الأخ بالجد العالي سقوطه بالأدنى» |
+| R05-3 | Kaidah jihah → darajah → quwwah | RDH | Raudhah 6/19 (Bab 2, far') · shamela:499/2308 | «البعيد من الجهة المقدمة، يقدم على القريب من الجهة المؤخرة... وإذا اتحدت الجهة، قدم الأقرب. فإن استويا في القرب، قدم من يدلي بالأبوين على من يدلي بالأب» |
+| R05-4 | Tiga jenis ashabah | RDH | Raudhah 6/8 (Bab 1) · shamela:499/2297 | «وقد يقال: العصبة ثلاثة: عصبة بنفسه، وبغيره، ومع غيره» |
+| R05-5 | Saudari bersama anak pr menjadi ashabah | H + RDH | Al-Bukhari no. 6736 · RDH 6/17–18 (Bab 1) · shamela:499/2306 shamela:499/2307 hadits:bukhari:6736 | RDH: «الأخوات للأبوين وللأب مع البنات وبنات الابن عصبات كالإخوة»; saudari kandung ma'al ghair menggugurkan saudara sebapak: «وسقط الأخ بها كسقوطه بالأخ للأبوين» |
+| R05-6 | Anak saudara berbeda dengan saudara dalam 7 hal | RDH | Raudhah 6/16–17 (Bab 1, far' Bani al-Ikhwah; 4 hal + 3 tambahan an-Nawawi) · shamela:499/2305 shamela:499/2306 | Antara lain: tidak mengurangi ibu, gugur oleh kakek, tidak masuk musyarrakah, tidak mengashabahkan saudarinya. |
+| R05-7 | Ashabah wala' = ashabah bi nafsihi mu'tiq | RDH | Raudhah 6/21 (Bab 2, Fashl 'Ashabat al-Mu'tiq) · shamela:499/2310 | «فالاستحقاق لعصباته من النسب الذين يتعصبون بأنفسهم... فلا ترث النساء بالولاء إلا ممن أعتقن» |
+| R05-8 | Tidak ada fardh dalam wala' | RDH | Raudhah 6/20 (Bab 2; dalam uraian tharīq pertama tentang ibnu 'amm yang juga suami, sedang tharīq madzhab = mengikuti nash di kedua tempat; tidak berlawanan dengan klaim) · shamela:499/2309 | «وفي الولاء لا يمكن توريثه بالفرضية» |
 | R05-9 | Hikmah 2:1 | — | Penjelasan fuqaha (ta'lil), bukan dalil | Hukumnya ditetapkan nash «للذكر مثل حظ الأنثيين» (An-Nisa' 11 quran:4:11, 176 quran:4:176); hikmah adalah keterangan tambahan. |
