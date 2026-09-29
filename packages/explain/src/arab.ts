@@ -3,7 +3,7 @@
 // nama fardh (النصف، السدس) alih-alih "1/2". Urutan bab & `kolom` sama dengan cerita supaya sorotan UI tetap jalan.
 // Semua redaksi Arab di sini draf: perlu dicek tim keilmuan (bukan hukum baru; hukumnya tetap dari jejak engine).
 
-import type { AlasanFardh, GrafKeluarga, IdOrang, KunciAhliWaris, PilihanJadd } from '@waris/engine';
+import type { AlasanFardh, GrafKeluarga, IdOrang, KunciAhliWaris, PilihanJadd, TujuanSisa } from '@waris/engine';
 import type { Pecahan } from '@waris/math';
 import type { Bab } from './cerita.js';
 import type { Konteks, Langkah } from './context.js';
@@ -195,9 +195,16 @@ function barisRadd(konteks: Konteks, sebut: SebutArab, kelas: Langkah<'KELAS_MAS
   return daftarBaris;
 }
 
+const TUJUAN_SISA_ARAB: Record<TujuanSisa, string> = {
+  dzawilArham: 'لذوي الأرحام', baitulMal: 'لذوي الأرحام إن وجدوا، وإلا فلبيت المال', baitulMalTeratur: 'لبيت المال',
+};
+
 function barisSisaKeluar(konteks: Konteks, sebut: SebutArab, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
   const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
-  const tujuan = langkah.tujuan === 'dzawilArham' ? 'لذوي الأرحام' : 'لذوي الأرحام إن وجدوا، وإلا فلبيت المال';
+  if (langkah.tujuan === 'baitulMalTeratur') {
+    return baris(kalimat`من ${langkah.ashl}: ${langkah.ashl - langkah.saham} لأصحاب الفروض، والباقي ${langkah.saham} ${TUJUAN_SISA_ARAB.baitulMalTeratur}.`, langkah.refs);
+  }
+  const tujuan = TUJUAN_SISA_ARAB[langkah.tujuan];
   return baris(kalimat`من ${langkah.ashl}: ${sebut(pasangan)} ${langkah.ashl - langkah.saham}، والباقي ${langkah.saham} لا يرد على الزوجين، فهو ${tujuan}.`, langkah.refs, pasangan);
 }
 

@@ -83,6 +83,8 @@ export function adaTidakPas(kasus: Kasus): boolean {
 const TEKS_SISA_KELUAR = {
   dzawilArham: { judul: t('hitung.sisa_untuk_dzawil_arham'), keterangan: t('hitung.suami_istri_tidak_menerima_sisa') },
   baitulMal: { judul: t('hitung.sisa_dzawil_arham_baitul_mal'), keterangan: t('hitung.untuk_dzawil_arham_bila_ada_bila') },
+  // [R09-8] kebijakan sisa ke baitul mal teratur (K09-1).
+  baitulMalTeratur: { judul: t('hitung.sisa_untuk_baitul_mal'), keterangan: t('hitung.baitul_mal_teratur') },
 } as const;
 
 // ─── Kasus biasa ──────────────────────────────────────────────────────────────

@@ -101,10 +101,6 @@ describe('tahap 4 — klasifikasi, \'aul, radd [R09-3] [R09-7]', () => {
     expect(hitung(denganKakekDariIbu)).toMatchObject({ status: 'OK', sisaKeluar: { tujuan: 'dzawilArham', saham: 3n } });
   });
 
-  test('kebijakanSisa baitulMal belum didukung', () => {
-    const input = { ...bab16.case09.input, konfigurasi: { ...bab16.case09.input.konfigurasi, kebijakanSisa: 'baitulMal' as const } };
-    expect(hitung(input)).toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['R09-8'] });
-  });
 });
 
 describe('tahap 5 — tashih [R10-2] [R10-3]', () => {
@@ -183,5 +179,34 @@ describe('end-to-end bab 08 [SYF]', () => {
     }, [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }]);
     expect(sahamDari(input)).toEqual({ W1: 3n, B1: 8n, B2: 8n, M: 4n, PGF: 4n, AK1: 0n });
     expect(daftarLangkah(input, 'AUL')).toMatchObject([{ dari: 24n, menjadi: 27n }]);
+  });
+});
+
+describe('Sisa ke baitul mal teratur [R09-8]', () => {
+  // Ibu 1/6, anak pr 1/2, tanpa ashabah → sisa 2/6 ke baitul mal, bukan radd.
+  const graf = {
+    idPewaris: 'PW',
+    orang: {
+      PW: bab16.p('PW', 'L', { statusHidup: 'wafat', idIbu: 'I' }),
+      I: bab16.p('I', 'P'),
+      AP: bab16.p('AP', 'P', { idAyah: 'PW' }),
+    },
+    pernikahan: [],
+  };
+
+  test('kebijakan baitulMal: sisa jadi baris baitul mal, ashl tidak berubah', () => {
+    const hasil = hitung({ ...bab16.input(graf, { kebijakanSisa: 'baitulMal', talakBainSaatMaradh: 'qaulJadid' }),
+      tirkah: { kotor: 6_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } });
+    if (hasil.status !== 'OK') throw new Error(JSON.stringify(hasil));
+    expect(hasil.tabel.totalKolom).toEqual({ ashl: 6n });
+    expect(hasil.sisaKeluar).toEqual({ tujuan: 'baitulMalTeratur', saham: 2n, nominal: 2_000_000n });
+    expect(hasil.jejak).toContainEqual({ tahap: 'klasifikasi', refs: ['R09-8'], jenis: 'SISA_KELUAR', saham: 2n, ashl: 6n, tujuan: 'baitulMalTeratur' });
+  });
+
+  test('kebijakan radd (bawaan) tidak berubah: sisa di-radd', () => {
+    const hasil = hitung(bab16.input(graf));
+    if (hasil.status !== 'OK') throw new Error(JSON.stringify(hasil));
+    expect(hasil.sisaKeluar).toBeUndefined();
+    expect(hasil.tabel.totalKolom.radd).toBe(4n);
   });
 });

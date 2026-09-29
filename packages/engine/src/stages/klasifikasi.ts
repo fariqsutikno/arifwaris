@@ -6,7 +6,7 @@
 
 import { fpb } from '@waris/math';
 import type { IdKelompok, HubunganInkisar, KonfigurasiMadzhab, LangkahJejak, TujuanSisa } from '../types.js';
-import { penerimaSisa, type Masalah, type TidakDidukung } from './model.js';
+import { penerimaSisa, type Masalah } from './model.js';
 
 // [R09-4] hanya 6, 12, 24 yang bisa 'aul, dengan batas masing-masing.
 const VALID_AUL: Record<string, bigint[]> = { 6: [7n, 8n, 9n, 10n], 12: [13n, 15n, 17n], 24: [27n] };
@@ -25,7 +25,7 @@ export interface HasilKlasifikasi {
 
 const jumlahkan = (daftar: bigint[]) => daftar.reduce((a, b) => a + b, 0n);
 
-export function klasifikasikanMasalah(masalah: Masalah, konfigurasi: KonfigurasiMadzhab, adaDzawilArham: boolean): HasilKlasifikasi | TidakDidukung {
+export function klasifikasikanMasalah(masalah: Masalah, konfigurasi: KonfigurasiMadzhab, adaDzawilArham: boolean): HasilKlasifikasi {
   const { ashl, saham, daftarKelompok } = masalah;
   const total = jumlahkan(Object.values(saham));
 
@@ -50,11 +50,10 @@ export function klasifikasikanMasalah(masalah: Masalah, konfigurasi: Konfigurasi
 //   raddA: tanpa pasangan → ashl diganti jumlah saham penerima radd.
 //   raddB: ada pasangan → pasangan ambil fardhnya dulu dari mas'alah zawjiyyah, sisanya dibagi radd.
 
-function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiMadzhab, adaDzawilArham: boolean): HasilKlasifikasi | TidakDidukung {
+function terapkanRadd(masalah: Masalah, total: bigint, konfigurasi: KonfigurasiMadzhab, adaDzawilArham: boolean): HasilKlasifikasi {
   const { ashl, saham, daftarKelompok } = masalah;
-  if (konfigurasi.kebijakanSisa === 'baitulMal') {
-    return { status: 'TIDAK_DIDUKUNG', alasan: 'Sisa harta ke baitul mal belum didukung output engine.', refs: ['R09-8'] };
-  }
+  // [R09-8] asal madzhab: sisa ke baitul mal bila baitul mal teratur; ashl tidak berubah.
+  if (konfigurasi.kebijakanSisa === 'baitulMal') return sisaKeBaitulMal(ashl, saham, total);
   const pasangan = daftarKelompok.find(kelompok => KELOMPOK_PASANGAN.includes(kelompok.id));
   const penerima = daftarKelompok.filter(kelompok => kelompok !== pasangan);
   if (penerima.length === 0) return sisaKeluarDariPasangan(ashl, saham, total, adaDzawilArham);
@@ -106,5 +105,13 @@ function sisaKeluarDariPasangan(ashl: bigint, saham: Record<IdKelompok, bigint>,
   return {
     dasar: ashl, saham, sisaKeluar: { saham: sisa, tujuan },
     jejak: [{ tahap: 'klasifikasi', refs: ['R09-9', adaDzawilArham ? 'R14-3' : 'R02-1'], jenis: 'SISA_KELUAR', saham: sisa, ashl, tujuan }],
+  };
+}
+
+function sisaKeBaitulMal(ashl: bigint, saham: Record<IdKelompok, bigint>, total: bigint): HasilKlasifikasi {
+  const sisa = ashl - total;
+  return {
+    dasar: ashl, saham, sisaKeluar: { saham: sisa, tujuan: 'baitulMalTeratur' },
+    jejak: [{ tahap: 'klasifikasi', refs: ['R09-8'], jenis: 'SISA_KELUAR', saham: sisa, ashl, tujuan: 'baitulMalTeratur' }],
   };
 }

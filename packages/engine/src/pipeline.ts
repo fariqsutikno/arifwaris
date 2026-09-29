@@ -41,7 +41,6 @@ export function hitung(input: InputEngine): HasilEngine {
 
   // 4. Cocokkan jumlah saham dengan ashl: pas ('adilah), lebih ('aul), atau kurang (radd).
   const klasifikasi = klasifikasikanMasalah(masalah, input.konfigurasi, ahliWaris.adaDzawilArham);
-  if ('status' in klasifikasi) return klasifikasi;
 
   // 5. Tashih: perbesar ashl supaya saham tiap orang bulat.
   const tashih = terapkanTashih(ahliWaris.daftarKelompok, klasifikasi.saham, klasifikasi.dasar, klasifikasi.sisaKeluar?.saham);

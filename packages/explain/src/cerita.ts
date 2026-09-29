@@ -2,7 +2,7 @@
 // Urutan bab: harta → siapa mewarisi → bagian masing-masing → menyamakan penyebut
 //             → 'adilah/'aul/radd → pembulatan (tashih) → hasil akhir.
 
-import type { AlasanFardh, PilihanJadd, IdOrang } from '@waris/engine';
+import type { AlasanFardh, PilihanJadd, IdOrang, TujuanSisa } from '@waris/engine';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
 import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Potongan } from './segments.js';
@@ -308,8 +308,16 @@ function babPenyesuaian(konteks: Konteks): Bab {
   }
 }
 
+export const TEKS_TUJUAN_SISA: Record<TujuanSisa, string> = {
+  dzawilArham: 'untuk dzawil arham', baitulMal: 'untuk dzawil arham bila ada, bila tidak ke baitul mal', baitulMalTeratur: 'untuk baitul mal',
+};
+
 /** Hanya pasangan yang mewarisi [R09-9]: fardh penuh, sisanya keluar dari ahli waris [R14-3] [R02-1]. */
 export function ceritaSisaKeluar(konteks: Konteks, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
+  // [R09-8] kebijakan baitul mal: sisa tidak di-radd ke siapa pun, bukan karena hanya pasangan yang mewarisi.
+  if (langkah.tujuan === 'baitulMalTeratur') {
+    return buatBaris(kalimat`Dari ${langkah.ashl} bagian, ahli waris mendapat ${langkah.ashl - langkah.saham}. Sisa ${langkah.saham} bagian tidak dikembalikan (${istilah('radd', 'radd')}) kepada mereka, tetapi diserahkan ke baitul mal (kas umum umat Islam) karena baitul mal dianggap teratur.`, langkah.refs);
+  }
   const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
   const tujuan = langkah.tujuan === 'dzawilArham'
     ? kalimat`diberikan kepada kerabat dzawil arham (kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan).`
@@ -418,7 +426,7 @@ function babHasil(konteks: Konteks): Bab {
   const { sisaKeluar } = konteks.hasil;
   if (sisaKeluar) {
     daftarBaris.push(tekankan(buatBaris(kalimat`Sisa: ${sisaKeluar.saham} bagian (${sisaKeluar.saham}/${penyebut})${konteks.tampilkanNominal ? ` = ${rupiah(sisaKeluar.nominal)}` : ''}, `
-      .concat(kalimat`${sisaKeluar.tujuan === 'dzawilArham' ? 'untuk dzawil arham' : 'untuk dzawil arham bila ada, bila tidak ke baitul mal'}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []), 'perhatian'));
+      .concat(kalimat`${TEKS_TUJUAN_SISA[sisaKeluar.tujuan]}.`), konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []), 'perhatian'));
   }
   if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     const perSatuan = pembulatan.satuan > 1n;

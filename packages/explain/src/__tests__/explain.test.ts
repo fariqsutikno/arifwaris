@@ -248,6 +248,18 @@ describe('penjelasan per orang: subjek, ashabah terdekat, sisa keluar', () => {
     expect(teks).toMatch(/tersisa 3 bagian/);
     expect(teks).toMatch(/baitul mal/);
   });
+
+  test('kebijakan sisa baitul mal: sisa ibu + anak pr ke baitul mal, bukan radd [R09-8]', () => {
+    const graf = { idPewaris: 'PW', pernikahan: [], orang: {
+      PW: bab16.p('PW', 'L', { statusHidup: 'wafat', idIbu: 'I' }), I: bab16.p('I', 'P'), AP: bab16.p('AP', 'P', { idAyah: 'PW' }) } };
+    const input = bab16.input(graf, { kebijakanSisa: 'baitulMal', talakBainSaatMaradh: 'qaulJadid' });
+    const teks = semuaBaris(jelaskanKasus(input)).map(keTeksBiasa).join(' ');
+    expect(teks).toContain('untuk baitul mal.');
+    expect(teks).not.toMatch(/dzawil arham|suami\/istri/);
+    const arab = semuaBaris(jelaskanKasus(input, 'arab')).map(keTeksBiasa).join(' ');
+    expect(arab).toContain('لبيت المال');
+    expect(arab).not.toMatch(/الأرحام|الزوجين/);
+  });
 });
 
 describe('mode arab (santri)', () => {

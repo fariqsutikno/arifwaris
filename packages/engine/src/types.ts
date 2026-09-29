@@ -82,8 +82,13 @@ export const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = {
 
 export type IdKelompok = string;
 
-/** [R14-3] ada dzawil arham → mereka; tidak ada → baitul mal [R02-1]. */
-export type TujuanSisa = 'dzawilArham' | 'baitulMal';
+/**
+ * Tujuan sisa yang tidak dibagi ke ahli waris:
+ * - dzawilArham: hanya pasangan mewarisi dan ada dzawil arham [R09-9] [R14-3];
+ * - baitulMal: hanya pasangan mewarisi, tidak ada dzawil arham di data [R02-1];
+ * - baitulMalTeratur: kebijakan sisa = baitul mal karena baitul mal teratur [R09-8], K09-1.
+ */
+export type TujuanSisa = 'dzawilArham' | 'baitulMal' | 'baitulMalTeratur';
 
 export interface TabelMasalah {
   kolom: Array<'fardh' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'perOrang' | 'nominal'>;
