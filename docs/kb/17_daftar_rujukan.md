@@ -70,7 +70,6 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| R11-3 | Atsar takharuj 'Abdurrahman bin 'Auf | Cek Mushannaf 'Abdurrazzaq / Sunan al-Baihaqi |
 | R13-14 | Hukum laqith | Raudhah, Kitab al-Laqith |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah

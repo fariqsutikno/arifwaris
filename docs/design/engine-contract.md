@@ -309,4 +309,4 @@ Output ke pengguna = 3 lapis dari trace yang sama:
 5. `packages/content` (parser tabel rujukan KB) + `packages/explain`.
 
 ## 6. Blocked
-R13-5, R13-14, R01-7, R11-3; haml & mafqud [SYF] (bab 13) — tunggu KB dilengkapi.
+R13-5, R13-14, R01-7; haml & mafqud [SYF] (bab 13) — tunggu KB dilengkapi.

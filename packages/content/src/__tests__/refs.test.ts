@@ -44,7 +44,7 @@ describe('rujukan KB (bab 01–14, 16)', () => {
 
   test('status dan jenis', () => {
     expect(cariRujukan('R04-2')).toMatchObject({ bab: 4, daftarJenis: ['Q', 'RDH'], status: 'terverifikasi' });
-    expect(cariRujukan('R11-3')).toMatchObject({ status: 'perluVerifikasi' });
+    expect(cariRujukan('R13-14')).toMatchObject({ status: 'perluVerifikasi' });
     expect(cariRujukan('R09-10')).toMatchObject({ daftarJenis: ['KH'] });
     expect(cariRujukan('R01-8')).toMatchObject({ daftarJenis: ['H'], dhaif: true });
   });
@@ -60,7 +60,7 @@ describe('dalilFor — lapis 3 per baris penjelasan', () => {
   test('peringatan: kaidah hisab, perlu verifikasi, dha\'if, bukan dalil', () => {
     const warn = (kode: string) => dalilUntuk([kode]).daftarEntri[0]!.peringatan;
     expect(warn('R09-10')).toEqual(["Kaidah hisab (cara menghitung), bukan dalil syar'i."]);
-    expect(warn('R11-3')).toEqual(['Dasar ini belum dicek ke teks aslinya (bab 17.4).']);
+    expect(warn('R13-14')).toEqual(['Dasar ini belum dicek ke teks aslinya (bab 17.4).']);
     expect(warn('R01-8')).toEqual(["Sanad hadits ini dha'if (lemah)."]);
     expect(warn('R05-9')).toEqual(['Keterangan tambahan, bukan dalil.']);
   });
@@ -104,7 +104,7 @@ describe('daftar pustaka bab 17', () => {
     expect(DAFTAR_KITAB[0]!.judul).toBe("Raudhah ath-Thalibin wa 'Umdah al-Muftin");
     expect(DAFTAR_HADITS.length).toBe(15);
     expect(DAFTAR_HADITS[0]).toMatchObject({ takhrij: 'Al-Bukhari 6732; Muslim 1615 · hadits:bukhari:6732 hadits:muslim:1615', status: "Muttafaq 'alaih" });
-    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R11-3', 'R13-14']);
+    expect(TITIK_DIKAJI.map(titik => titik.kode)).toEqual(['R13-14']);
   });
 
   test('judul bab dari frontmatter', () => {
