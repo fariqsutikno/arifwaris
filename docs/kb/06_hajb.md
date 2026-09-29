@@ -85,3 +85,20 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R06-5 | Saudara seibu gugur oleh far'u warits, ayah, kakek | RDH | Raudhah 6/27 · shamela:499/2316 | «فالإخوة والأخوات للأم يحجبهم أربعة: الولد، وولد الابن، والأب، والجد» |
 | R06-6 | Yang terkena mani' tidak menghijab; yang terhijab tetap bisa hajb nuqshan | RDH | Raudhah 6/28 (Bab 4, far') · shamela:499/2317 | «إن كان امتناع الإرث لنقص كالرق وغيره من الموانع، فلا يحجب لا حجب حرمان، ولا حجب نقصان. وإن كان لا يرث لتقدم غيره عليه، فقد يحجب غيره حجب نقصان». Contoh: «مات عن أبوين وأخوين، فللأم السدس، والباقي للأب» |
 | R06-7 | Ashabah gugur bila furudh menghabiskan harta | RDH | Raudhah 6/28 (Bab 4) · shamela:499/2317 | «وكل عصبة يحجبه أصحاب الفروض المستغرقة» |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R06-2 | [HNB] | Mughni 6/306 · shamela:8463/2628 | «ومن لا يسقط بحال خمسة؛ الزوجان، والأبوان، وولد الصلب؛ لأنهم يمتون بأنفسهم من غير واسطة» |
+| R06-2 | [HNF] | Tuhfat al-Muluk hlm. 255 · shamela:6173/231 | «الورثة الذين لا يحجبون حجب حرمان ستة لا يسقطون بحال الأبوان والزوجان والابن والبنت» |
+| R06-2 | [MLK] | 'Iqd 3/1241 · shamela:14594/1239 | «فأما حجب الإسقاط فلا يلحق من يتسبب (إلى الميت) بنفسه أصلا كالبنين والبنات والآباء والأمهات، وفي معناهم الأزواج والزوجات» |
+| R06-3 | [HNB] | Mughni 6/268, 6/306 · shamela:8463/2590 shamela:8463/2628 | «فيسقط ولد الأبوين، ذكرهم وأنثاهم بثلاثة؛ بالابن، وابن الابن وإن سفل، وبالأب. ويسقط ولد الأب بهؤلاء الثلاثة، وبالأخ من الأبوين»; «فيسقط بمن هو أولى بالميت منه» |
+| R06-3 | [MLK] | 'Iqd 3/1241–1242 · shamela:14594/1239 shamela:14594/1240 | «وأما الإخوة فيحجبهم الابن، وابنه وإن سفل، والأب. وأما بنو الإخوة فيحجبهم آباؤهم ومن يحجبهم، والجد لأنه كالأب معهم. وأما العمومة فيحجبهم بنو الاخوة ومن حجبهم» |
+| R06-5 | [HNB] | Mughni 6/268 · shamela:8463/2590 | «أن ولد الأم، ذكرهم وأنثاهم، يسقطون بأربعة؛ بالولد، وولد الابن، والأب، والجد أب الأب وإن علا، أجمع على هذا أهل العلم» |
+| R06-5 | [HNF] | Mabsuth 29/154 · shamela:5423/5911 | «ثم هم لا يرثون مع أربعة نفر بالاتفاق مع الولد وولد الابن ذكرا كان أو أنثى ومع الأب والجد» |
+| R06-5 | [MLK] | 'Iqd 3/1242 · shamela:14594/1240 | «أما ولد الأم فيحجبهم عمودا النسب: الأب والجد والولد وولد الابن» |
+
+Catatan R06-3: untuk [HNF] tetap `tidak`: Tuhfat al-Muluk hlm. 256 · shamela:6173/232 memasukkan kakek sebagai penghalang saudara («الإخوة والأخوات بالابن وابن الابن والأب والجد»), sejalan dengan K05-1.

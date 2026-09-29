@@ -91,3 +91,13 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R02-10 | Wala' untuk yang memerdekakan | H | Al-Bukhari no. 2156; Muslim no. 1504, dari 'Aisyah (kisah Barirah) · hadits:bukhari:2156 hadits:muslim:1504 | «إنما الولاء لمن أعتق» |
 | R02-11 | Wala' seperti nasab | H | Ibnu Hibban dan al-Hakim, dari Ibnu 'Umar | «الولاء لحمة كلحمة النسب، لا يباع ولا يوهب». Ibnu Hibban no. 4950 (al-Ihsan 11/326); al-Hakim 4/341. Al-Baihaqi menukil bahwa sanad marfu'-nya keliru, yang benar mursal dari al-Hasan (dikonfirmasi di *as-Sunan al-Kubra* al-Baihaqi, ia sendiri menyebut jalur-jalur lain semuanya dha'if) · shamela:148486/7081 |
 | R02-12 | Suami-istri saling mewarisi | Q | An-Nisa' 12 quran:4:12 | «ولكم نصف ما ترك أزواجكم...» |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R02-1 | [MLK] | 'Iqd 3/1239 · shamela:14594/1237 | «والتوريث: إما بسبب، وإما بنسب. والسبب إما عام كجهة الإسلام في صرف الميراث إلى بيت المال على المشهور. وإما خاص كالإعتاق ... أو كالنكاح» |
+
+Catatan: [HNF] menyebut **tiga** sebab (Mabsuth 29/138 · shamela:5423/5895: «الأسباب التي بها يتوارث ثلاثة الرحم والنكاح والولاء»); jihat al-Islam tidak disebut sebagai sebab, sehingga R02-1 tetap `tidak` untuk [HNF]. [HNB] belum ditemukan pernyataan setara.

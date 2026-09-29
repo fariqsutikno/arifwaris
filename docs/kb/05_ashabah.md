@@ -87,3 +87,21 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R05-7 | Ashabah wala' = ashabah bi nafsihi mu'tiq | RDH | Raudhah 6/21 (Bab 2, Fashl 'Ashabat al-Mu'tiq) · shamela:499/2310 | «فالاستحقاق لعصباته من النسب الذين يتعصبون بأنفسهم... فلا ترث النساء بالولاء إلا ممن أعتقن» |
 | R05-8 | Tidak ada fardh dalam wala' | RDH | Raudhah 6/20 (Bab 2; dalam uraian tharīq pertama tentang ibnu 'amm yang juga suami, sedang tharīq madzhab = mengikuti nash di kedua tempat; tidak berlawanan dengan klaim) · shamela:499/2309 | «وفي الولاء لا يمكن توريثه بالفرضية» |
 | R05-9 | Hikmah 2:1 | — | Penjelasan fuqaha (ta'lil), bukan dalil | Hukumnya ditetapkan nash «للذكر مثل حظ الأنثيين» (An-Nisa' 11 quran:4:11, 176 quran:4:176); hikmah adalah keterangan tambahan. |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R05-3 | [HNB] | Mughni 6/277, 6/306 · shamela:8463/2599 shamela:8463/2628 | «والأب أولى رجل بعد الابن وابنه»; urutan «الابن، وابنه وإن نزل، والأب، وأبوه وإن علا، والأخ من الأبوين، والأخ من الأب وابناهما...» |
+| R05-3 | [HNF] | Tuhfat al-Muluk hlm. 252 · shamela:6173/228; Mabsuth 29/174–175 · shamela:5423/5931 shamela:5423/5932 | «فإن اجتمع اثنان من صنف واحد قدم أعلاهما درجة فإن استويا في الدرجة قدم ذو الجهتين»; «الأخ لأب وأم أقرب من الأخ لأب» |
+| R05-3 | [MLK] | 'Iqd 3/1242 · shamela:14594/1240 | «فإن اختلف ذوو طبقة واحدة في القرب، فالأقرب أولى... وإن تساووا في الطبقة والقرب ولأحدهم زيادة ترجيح بمعنى مناسب لجهة التعصيب، قدم الأرجح كالأخ الشقيق مع الأخ للأب» |
+| R05-4 | [HNF] | Tuhfat al-Muluk hlm. 252 · shamela:6173/228; Mabsuth 29/138 · shamela:5423/5895 | «فعصبة النسب ثلاثة أصناف عصبة بنفسه وعصبة بغيره وعصبة مع غيره» |
+| R05-4 | [HNB] | Mughni 6/269, 6/275 · shamela:8463/2591 shamela:8463/2597 | Isinya sama, tanpa klasifikasi tiga sebutan: «أربعة من الذكور يعصبون أخواتهم» (bi ghairihi); «والأخوات مع البنات عصبة» (ma'a ghairihi) |
+| R05-4 | [MLK] | 'Iqd 3/1240 · shamela:14594/1238 | Isinya sama, tanpa klasifikasi tiga sebutan: «ويرث به كل ذكر يدلي بنفسه أو بذكر»; «ويعصبهن أربعة أصناف: الجد، والأخ في درجتهن، وبنا الصلب، وبنات الابن» |
+| R05-5 | [HNB] | Mughni 6/269 · shamela:8463/2591 | «والأخوات مع البنات عصبة، لهن ما فضل» ... «وهذا قول عامة أهل العلم» |
+| R05-5 | [HNF] | Tuhfat al-Muluk hlm. 253 · shamela:6173/229; Mabsuth 29/138 · shamela:5423/5895 | «الأخوات لأب وأم أو لأب يصرن عصبة مع البنات وبنات الابن» |
+| R05-5 | [MLK] | 'Iqd 3/1240 · shamela:14594/1238 | «ويعصبهن أربعة أصناف: الجد، والأخ في درجتهن، وبنا الصلب، وبنات الابن» |
+
+Catatan R05-5: bagian «saudari kandung ma'al ghair menggugurkan saudara sebapak» tidak dinukil langsung dari ketiga kitab; yang sama adalah status ashabah ma'al ghair.

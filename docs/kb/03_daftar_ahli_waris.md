@@ -83,3 +83,17 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R03-5 | Nenek fasidah bukan ahli waris | RDH | Raudhah 6/9 · shamela:499/2298 | «وأما الجدة المدلية بذكر بين أنثيين، كأم أبي الأم فلا ترث، بل هي من ذوي الأرحام» |
 | R03-6 | Klasifikasi furudh/ashabah | RDH | Raudhah 6/8 (Bab 1, Fashl Bayan ma Yastahiqquhu) · shamela:499/2297 | «منهم من لا يرث إلا بالفرضية، وهم: الزوجان، والأم، والجدة، وولد الأم... ومنهم من يرث بهما جمعا وانفرادا، وهما: الأب، والجد» |
 | R03-7 | Hanya saudara seibu, laki-laki yang bernasab lewat perempuan dan mewarisi | RDH | Raudhah 6/5 (Bab 1, tambahan an-Nawawi setelah «قلت») · shamela:499/2294 | «وليس في الورثة ذكر يدلي بأنثى فيرث إلا الأخ للأم» |
+
+
+## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)
+Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi, ar-Razi), dan [MLK] 'Iqd al-Jawahir / Mawahib al-Jalil yang menyatakan klaim yang sama dengan token di tabel di atas; dasar sel `ya` di 18.4. Kutipan tanpa harakat, diambil dari teks kitab. Tabel ini memuat hanya yang sama; yang berbeda ada di 18.2.
+
+| Token | Madzhab | Sumber | Kutipan / Keterangan |
+|---|---|---|---|
+| R03-1 | [HNB] | Mughni 6/305 · shamela:8463/2627 | «ويرث من الرجال الابن، ثم ابن الابن وإن سفل، والأب، ثم الجد وإن علا، والأخ، ثم ابن الأخ، والعم، ثم ابن العم، والزوج، ومولى النعمة. ومن النساء البنت، وبنت الابن، والأم، والجدة، والأخت، والزوجة، ومولاة النعمة» ... «فهؤلاء مجمع على توريثهم» |
+| R03-1 | [HNF] | Mabsuth 29/174 · shamela:5423/5931; Tuhfat al-Muluk hlm. 246 · shamela:6173/222 | «أصحاب الفرائض اثنا عشر نفرا أربعة من الرجال وثمانية من النساء», ditambah rantai ashabah (ibn, ibn al-ibn, ab, jadd, akh, ibn akh, 'amm, ibn 'amm, 'amm al-ab, 'amm al-jadd) |
+| R03-1 | [MLK] | 'Iqd 3/1240 · shamela:14594/1238 | «والوارثت من النساء سبع: البنت، وبنت الإبن وإن سفل، والأم، والجدة وإن علت، والأخت، والزوجة، ومولاة النعمة»; laki-laki «عشرة» (halaman sebelumnya, 3/1239) |
+| R03-2 | [HNB] | Mughni 6/305 · shamela:8463/2627 | «وأما ابن الأخ للأبوين أو للأب، والعم وابنه، وعم الأب وابنه، فثبت ميراثهم بقول النبي ﷺ «ما أبقت الفروض فلأولى رجل ذكر»»; juga 6/306 · shamela:8463/2628 «وعما الأب، وابناهما كذلك أبدا» |
+| R03-2 | [HNF] | Mabsuth 29/174 · shamela:5423/5931 | «ثم عم الأب لأم، ثم عم الأب لأب، ثم ابن عم الأب لأب وأم، ثم ابن عم الأب لأب، ثم عم الجد هكذا» |
+
+Catatan: hitungan 15/10 di Raudhah membagi saudara/saudari per jihat; Mughni dan 'Iqd mengelompokkan (10 lk dan 7 pr) dengan **anggota yang sama**. [HNF] menambah wala' muwalah (Mabsuth 29/138), tidak dipakai engine. Perbedaan nenek di atas kakek tetap di R03-4/K03-1. R03-2 untuk [MLK]: 'Iqd hanya menyebut «الأعمام وبنيهم وإن بعدوا», belum eksplisit tentang paman ayah/kakek, sehingga tetap `tidak`.
