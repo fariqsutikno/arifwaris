@@ -13685,6 +13685,1504 @@
    "id": "Soal yang jawabannya dibuka tidak memberi XP; XP hanya dari tebakan yang benar.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.anak_lk",
+   "halaman": "narasi",
+   "id": "anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.cucu_lk",
+   "halaman": "narasi",
+   "id": "cucu laki-laki dari anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.ayah",
+   "halaman": "narasi",
+   "id": "ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.kakek",
+   "halaman": "narasi",
+   "id": "kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.saudara_kandung",
+   "halaman": "narasi",
+   "id": "saudara laki-laki kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.saudara_sebapak",
+   "halaman": "narasi",
+   "id": "saudara laki-laki sebapak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.saudara_seibu",
+   "halaman": "narasi",
+   "id": "saudara laki-laki seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.keponakan_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki saudara kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.keponakan_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki saudara sebapak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.paman_kandung",
+   "halaman": "narasi",
+   "id": "paman kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.paman_sebapak",
+   "halaman": "narasi",
+   "id": "paman sebapak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.sepupu_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki paman kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.sepupu_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki paman sebapak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.suami",
+   "halaman": "narasi",
+   "id": "suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.mutiq",
+   "halaman": "narasi",
+   "id": "mu'tiq",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.anak_pr",
+   "halaman": "narasi",
+   "id": "anak perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.cucu_pr",
+   "halaman": "narasi",
+   "id": "cucu perempuan dari anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.ibu",
+   "halaman": "narasi",
+   "id": "ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.nenek_dari_ibu",
+   "halaman": "narasi",
+   "id": "nenek dari pihak ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.nenek_dari_ayah",
+   "halaman": "narasi",
+   "id": "nenek dari pihak ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.saudari_kandung",
+   "halaman": "narasi",
+   "id": "saudara perempuan kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.saudari_sebapak",
+   "halaman": "narasi",
+   "id": "saudara perempuan sebapak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.saudari_seibu",
+   "halaman": "narasi",
+   "id": "saudara perempuan seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.istri",
+   "halaman": "narasi",
+   "id": "istri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.ahli_waris.mutiqah",
+   "halaman": "narasi",
+   "id": "mu'tiqah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kerabat",
+   "halaman": "narasi",
+   "id": "kerabat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.leluhur.3",
+   "halaman": "narasi",
+   "id": "ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.leluhur.4",
+   "halaman": "narasi",
+   "id": "kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.leluhur.lain",
+   "halaman": "narasi",
+   "id": "leluhur ke-{nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.1",
+   "halaman": "narasi",
+   "id": "pertama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.2",
+   "halaman": "narasi",
+   "id": "kedua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.3",
+   "halaman": "narasi",
+   "id": "ketiga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.4",
+   "halaman": "narasi",
+   "id": "keempat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.5",
+   "halaman": "narasi",
+   "id": "kelima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.6",
+   "halaman": "narasi",
+   "id": "keenam",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.7",
+   "halaman": "narasi",
+   "id": "ketujuh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.8",
+   "halaman": "narasi",
+   "id": "kedelapan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.9",
+   "halaman": "narasi",
+   "id": "kesembilan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.10",
+   "halaman": "narasi",
+   "id": "kesepuluh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.urutan_ke.lain",
+   "halaman": "narasi",
+   "id": "ke-{nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.2",
+   "halaman": "narasi",
+   "id": "kedua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.3",
+   "halaman": "narasi",
+   "id": "ketiga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.4",
+   "halaman": "narasi",
+   "id": "keempat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.5",
+   "halaman": "narasi",
+   "id": "kelima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.6",
+   "halaman": "narasi",
+   "id": "keenam",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.7",
+   "halaman": "narasi",
+   "id": "ketujuh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.8",
+   "halaman": "narasi",
+   "id": "kedelapan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.9",
+   "halaman": "narasi",
+   "id": "kesembilan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.kolektif.10",
+   "halaman": "narasi",
+   "id": "kesepuluh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.pewaris.l",
+   "halaman": "narasi",
+   "id": "almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.pewaris.p",
+   "halaman": "narasi",
+   "id": "almarhumah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.penghubung.dan",
+   "halaman": "narasi",
+   "id": " dan ",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.penghubung.dan_terakhir",
+   "halaman": "narasi",
+   "id": ", dan ",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.penghubung.atau",
+   "halaman": "narasi",
+   "id": ", atau ",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.langkah",
+   "halaman": "narasi",
+   "id": "Langkah {nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.madzhab.syafii",
+   "halaman": "narasi",
+   "id": "Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.madzhab.hanbali",
+   "halaman": "narasi",
+   "id": "Hanbali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.madzhab.hanafi",
+   "halaman": "narasi",
+   "id": "Hanafi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.madzhab.maliki",
+   "halaman": "narasi",
+   "id": "Maliki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.pembukaan_madzhab",
+   "halaman": "narasi",
+   "id": "Perhitungan ini menurut madzhab {madzhab}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.tujuan_sisa.dzawil_arham",
+   "halaman": "narasi",
+   "id": "untuk dzawil arham",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.tujuan_sisa.baitul_mal",
+   "halaman": "narasi",
+   "id": "untuk dzawil arham bila ada, bila tidak ke baitul mal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.tujuan_sisa.baitul_mal_teratur",
+   "halaman": "narasi",
+   "id": "untuk baitul mal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tirkah",
+   "halaman": "narasi",
+   "id": "tirkah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.warits",
+   "halaman": "narasi",
+   "id": "warits",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.mani",
+   "halaman": "narasi",
+   "id": "mani'",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.hajb_hirman",
+   "halaman": "narasi",
+   "id": "hajb hirman",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.hajb_nuqshan",
+   "halaman": "narasi",
+   "id": "hajb nuqshan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.faru_warits",
+   "halaman": "narasi",
+   "id": "far'u warits",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.jam_min_al_ikhwah",
+   "halaman": "narasi",
+   "id": "jam' min al-ikhwah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.takmilah_tsulutsain",
+   "halaman": "narasi",
+   "id": "takmilah ats-tsulutsain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.muashshib",
+   "halaman": "narasi",
+   "id": "mu'ashshib",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.kalalah",
+   "halaman": "narasi",
+   "id": "kalalah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.ashabah",
+   "halaman": "narasi",
+   "id": "ashabah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.bil_ghair",
+   "halaman": "narasi",
+   "id": "ashabah bil ghair",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.maal_ghair",
+   "halaman": "narasi",
+   "id": "ashabah ma'al ghair",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.muqasamah",
+   "halaman": "narasi",
+   "id": "muqasamah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tamatsul",
+   "halaman": "narasi",
+   "id": "tamatsul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tadakhul",
+   "halaman": "narasi",
+   "id": "tadakhul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tawafuq",
+   "halaman": "narasi",
+   "id": "tawafuq",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tabayun",
+   "halaman": "narasi",
+   "id": "tabayun",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.ashlul_masalah",
+   "halaman": "narasi",
+   "id": "ashlul mas'alah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.saham",
+   "halaman": "narasi",
+   "id": "saham",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.ruus",
+   "halaman": "narasi",
+   "id": "ru'us",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.adilah",
+   "halaman": "narasi",
+   "id": "'adilah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.aul",
+   "halaman": "narasi",
+   "id": "'aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.radd",
+   "halaman": "narasi",
+   "id": "radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.inkisar",
+   "halaman": "narasi",
+   "id": "inkisar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tashih",
+   "halaman": "narasi",
+   "id": "tashih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.juz_as_sahm",
+   "halaman": "narasi",
+   "id": "juz' as-sahm",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.harta.judul",
+   "halaman": "narasi",
+   "id": "Menghitung harta yang dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.harta.biaya_dan_hutang",
+   "halaman": "narasi",
+   "id": "Sebelum dibagi, harta peninggalan ({tirkah}) {kotor} dipakai dulu untuk biaya pengurusan jenazah {tajhiz} dan melunasi hutang {hutang}, sehingga tersisa {tersisa}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.harta.hutang_menghabiskan",
+   "halaman": "narasi",
+   "id": "Hutang menghabiskan seluruh harta, sehingga tidak ada yang dibagi sebagai warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.harta.wasiat_melebihi",
+   "halaman": "narasi",
+   "id": "Wasiat {pewaris} sebesar {diminta} melebihi batas sepertiga harta ({batas}), jadi yang dijalankan hanya {dipakai}. Kelebihan {kelebihan} baru boleh dijalankan jika semua ahli waris menyetujuinya (ijazah).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.harta.wasiat_dijalankan",
+   "halaman": "narasi",
+   "id": "Wasiat {pewaris} sebesar {dipakai} dijalankan karena tidak melebihi sepertiga harta ({batas}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.harta.dibagi",
+   "halaman": "narasi",
+   "id": "Harta yang dibagi kepada ahli waris: {bersih}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.judul",
+   "halaman": "narasi",
+   "id": "Siapa yang mendapat warisan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.daftar",
+   "halaman": "narasi",
+   "id": "Ahli waris ({warits}) {pewaris}: {daftar_ahli_waris}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.mani_qatl",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mendapat warisan karena membunuh {pewaris}; pembunuh terhalang dari warisan ({mani}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.mani_beda_agama",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mendapat warisan karena berbeda agama dengan {pewaris} ({mani}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.terhalang",
+   "halaman": "narasi",
+   "id": "{mahjub} tidak mendapat bagian karena terhalang oleh {hajib} ({hajb_hirman}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.khilaf",
+   "halaman": "narasi",
+   "id": "Menurut madzhab {madzhab}, {isi}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.isi_khilaf.k03_1",
+   "halaman": "narasi",
+   "id": "nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.isi_khilaf.k04_1",
+   "halaman": "narasi",
+   "id": "nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.isi_khilaf.k04_2",
+   "halaman": "narasi",
+   "id": "nenek dari pihak ayah tetap mewarisi bersama ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.isi_khilaf.k05_1",
+   "halaman": "narasi",
+   "id": "kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ahli_waris.isi_khilaf.k07_1",
+   "halaman": "narasi",
+   "id": "saudara kandung tidak digabung dengan saudara seibu dalam kasus musyarrakah, jadi ia tidak mendapat sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.judul",
+   "halaman": "narasi",
+   "id": "Bagian masing-masing",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.opsi_kakek.muqasamah",
+   "halaman": "narasi",
+   "id": "dihitung sebagai saudara ({muqasamah})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.opsi_kakek.tsuluts",
+   "halaman": "narasi",
+   "id": "sepertiga harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.opsi_kakek.tsuluts_baqi",
+   "halaman": "narasi",
+   "id": "sepertiga sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.opsi_kakek.sudus",
+   "halaman": "narasi",
+   "id": "seperenam harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.catatan_nuqshan",
+   "halaman": "narasi",
+   "id": "Pengurangan seperti ini disebut {hajb_nuqshan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.bukan",
+   "halaman": "narasi",
+   "id": "bukan {dari}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.paling_dekat",
+   "halaman": "narasi",
+   "id": "Sisa harta diberikan kepada kerabat laki-laki yang paling dekat. {siapa} yang mengambilnya karena tidak ada yang lebih dekat darinya: {lebih_dekat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.pilihan_kakek",
+   "halaman": "narasi",
+   "id": "Bersama saudara, {kakek} mendapat pilihan yang paling menguntungkan baginya: {opsi}. Yang terbesar {terpilih}, yaitu {nilai}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.kasus_khusus",
+   "halaman": "narasi",
+   "id": "Ini termasuk kasus khusus {kasus}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.kasus_khusus_muaddah",
+   "halaman": "narasi",
+   "id": "Ini termasuk kasus khusus {muaddah}: saudara sebapak ikut dihitung saat menentukan bagian kakek, lalu bagiannya diserahkan kepada saudara kandung.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.istilah_umariyyatain",
+   "halaman": "narasi",
+   "id": "al-'Umariyyatain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.istilah_musyarrakah",
+   "halaman": "narasi",
+   "id": "al-Musyarrakah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.istilah_akdariyyah",
+   "halaman": "narasi",
+   "id": "al-Akdariyyah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.istilah_muaddah",
+   "halaman": "narasi",
+   "id": "al-Mu'addah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.cucu_lk",
+   "halaman": "narasi",
+   "id": "anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.ayah",
+   "halaman": "narasi",
+   "id": "anak laki-laki atau cucu laki-laki dari anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.kakek",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, atau ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.saudara_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, atau ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.saudara_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, atau saudara laki-laki kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.keponakan_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, atau saudara laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.keponakan_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, atau keponakan laki-laki kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.paman_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, atau keponakan laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.paman_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, keponakan laki-laki, atau paman kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.sepupu_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, keponakan laki-laki, atau paman",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.bagian.lebih_dekat_dari.sepupu_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki, cucu laki-laki dari anak laki-laki, ayah, kakek, saudara laki-laki, keponakan laki-laki, paman, atau sepupu laki-laki kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.mendapat.mufrad",
+   "halaman": "narasi",
+   "id": "mendapat {pecahan}{bukan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.mendapat.jamak",
+   "halaman": "narasi",
+   "id": "berbagi {pecahan}{bukan} sama rata",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.ada_faru_warits",
+   "halaman": "narasi",
+   "id": "{subjek} {mendapat} karena {pewaris} meninggalkan keturunan yang ikut mewarisi ({faru_warits}): {oleh}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.tanpa_faru_warits",
+   "halaman": "narasi",
+   "id": "{subjek} {mendapat} karena {pewaris} tidak meninggalkan keturunan yang ikut mewarisi ({faru_warits}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.jam_ikhwah",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan}{bukan} karena {pewaris} punya dua saudara atau lebih ({jam_min_al_ikhwah}): {oleh}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.jam_ikhwah_terhalang",
+   "halaman": "narasi",
+   "id": "Mereka tetap dihitung walaupun tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.tanpa_faru_warits_dan_ikhwah",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan} karena {pewaris} tidak meninggalkan keturunan yang ikut mewarisi dan tidak punya dua saudara atau lebih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.umariyyatain",
+   "halaman": "narasi",
+   "id": "{subjek} tidak mendapat 1/3 dari seluruh harta, melainkan 1/3 dari sisa setelah bagian {pasangan} ({fardh_pasangan}), yaitu {pecahan} dari seluruh harta. Dengan begitu bagian ayah tidak lebih kecil dari bagian ibu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.nenek_tanpa_ibu.mufrad",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan} karena tidak ada ibu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.nenek_tanpa_ibu.jamak",
+   "halaman": "narasi",
+   "id": "{subjek} berbagi {pecahan} sama rata karena tidak ada ibu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.tanpa_muashshib.mufrad",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan} karena ia sendirian dan tidak ada laki-laki sederajat yang membuatnya ikut mengambil sisa ({muashshib}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.tanpa_muashshib.jamak",
+   "halaman": "narasi",
+   "id": "{subjek} berbagi {pecahan} sama rata karena jumlahnya lebih dari satu dan tidak ada laki-laki sederajat yang membuat mereka ikut mengambil sisa ({muashshib}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.takmilah",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan}{bukan} sebagai pelengkap agar bagiannya bersama {bersama} genap 2/3 ({takmilah_tsulutsain}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.kalalah.mufrad",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan} karena {pewaris} tidak meninggalkan anak/cucu maupun ayah/kakek ({kalalah}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.kalalah.jamak",
+   "halaman": "narasi",
+   "id": "{subjek} berbagi {pecahan} sama rata karena {pewaris} tidak meninggalkan anak/cucu maupun ayah/kakek ({kalalah}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.ada_faru_mudzakkar",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan} saja karena ada keturunan laki-laki: {oleh}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.ada_faru_muannats",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {pecahan}, ditambah sisa harta nanti ({ashabah}), karena keturunan {pewaris} hanya perempuan: {oleh}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.musyarrakah",
+   "halaman": "narasi",
+   "id": "{subjek} berbagi {pecahan} sama rata per orang: saudara kandung digabung dengan saudara seibu karena mereka sama-sama anak dari ibu yang sama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.akdariyyah_kakek",
+   "halaman": "narasi",
+   "id": "{kakek} diberi 1/6.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.akdariyyah_saudari",
+   "halaman": "narasi",
+   "id": "{saudari} diberi 1/2. Bagian keduanya lalu digabung (1/6 + 1/2 = 2/3) dan dibagi ulang: kakek mendapat dua kali bagian saudari.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.fardh.jadd_sisa_sedikit",
+   "halaman": "narasi",
+   "id": "Setelah bagian yang lain, sisa harta tinggal {sisa}, tidak lebih dari 1/6. Karena itu {subjek} mendapat 1/6 dan para saudara tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ashabah.bin_nafsi",
+   "halaman": "narasi",
+   "id": "{subjek} mengambil seluruh sisa harta setelah bagian tertentu (fardh) dibagikan ({ashabah}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ashabah.bil_ghair",
+   "halaman": "narasi",
+   "id": "{subjek} mengambil sisa harta bersama-sama ({bil_ghair}): laki-laki mendapat dua kali bagian perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.ashabah.maal_ghair",
+   "halaman": "narasi",
+   "id": "{subjek} mengambil sisa harta ({maal_ghair}) karena {pewaris} meninggalkan anak/cucu perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.judul",
+   "halaman": "narasi",
+   "id": "Menyamakan penyebut",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.contoh_arba",
+   "halaman": "narasi",
+   "id": "Di kasus ini: {a} dan {b} → {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.contoh_ashl",
+   "halaman": "narasi",
+   "id": "Di kasus ini: {ashl}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.arba.tamatsul",
+   "halaman": "narasi",
+   "id": "{awalan}: keduanya sama ({tamatsul}), jadi cukup pakai {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.arba.tadakhul",
+   "halaman": "narasi",
+   "id": "{awalan}: {besar} sudah habis dibagi {kecil} ({tadakhul}), jadi cukup pakai {besar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.arba.tawafuq",
+   "halaman": "narasi",
+   "id": "{awalan}: tidak ada yang habis membagi yang lain, tetapi keduanya sama-sama bisa dibagi {fpb} ({tawafuq}). Caranya: {a} × ({b} ÷ {fpb}) = {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.arba.tabayun_satu",
+   "halaman": "narasi",
+   "id": "{awalan}: angka 1 selalu dianggap tidak punya faktor bersama ({tabayun}), jadi dikalikan: {a} × {b} = {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.arba.tabayun",
+   "halaman": "narasi",
+   "id": "{awalan}: keduanya tidak punya faktor bersama selain 1 ({tabayun}), jadi dikalikan langsung: {a} × {b} = {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.semua_ashabah",
+   "halaman": "narasi",
+   "id": "Semua ahli waris mengambil sisa ({ashabah}), jadi harta langsung dibagi per kepala ({ruus}): laki-laki dihitung 2, perempuan 1. Totalnya {ashl} bagian ({ashlul_masalah}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.sudah_sama.jamak",
+   "halaman": "narasi",
+   "id": "Bagian yang sudah pasti: {pecahan}. Semua penyebutnya sama, yaitu {ashl}, jadi angka itu langsung dipakai sebagai penyebut bersama ({ashlul_masalah}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.sudah_sama.mufrad",
+   "halaman": "narasi",
+   "id": "Bagian yang sudah pasti: {pecahan}. Penyebutnya {ashl}, jadi angka itu langsung dipakai sebagai penyebut bersama ({ashlul_masalah}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.masih_pecahan",
+   "halaman": "narasi",
+   "id": "Bagian-bagian di atas masih berupa pecahan: {pecahan}. Supaya bisa dijumlah, kita cari satu angka yang bisa dibagi oleh semua penyebutnya. Angka ini disebut {ashlul_masalah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.awalan_pertama",
+   "halaman": "narasi",
+   "id": "Mulai dari {a} dan {b}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.awalan_lanjut",
+   "halaman": "narasi",
+   "id": "Lalu {a} dengan {b}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.bagian_sisa",
+   "halaman": "narasi",
+   "id": "sisanya {saham} untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.bagian_fardh_dan_sisa",
+   "halaman": "narasi",
+   "id": "{siapa} {fardh} + sisa {sisa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.dipotong",
+   "halaman": "narasi",
+   "id": "Jadi harta kita bayangkan dipotong menjadi {ashl} bagian yang sama ({saham}): {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyesuaian.judul_sisa",
+   "halaman": "narasi",
+   "id": "Masih ada sisa, untuk siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyesuaian.judul_adilah",
+   "halaman": "narasi",
+   "id": "Memeriksa jumlah bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyesuaian.judul_aul",
+   "halaman": "narasi",
+   "id": "Bagiannya melebihi harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyesuaian.adilah",
+   "halaman": "narasi",
+   "id": "Jumlah semua bagian {rincian}{jumlah}, pas sama dengan {ashl} ({adilah}). Tidak perlu penyesuaian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyesuaian.contoh_aul",
+   "halaman": "narasi",
+   "id": "Di kasus ini: {ashl} menjadi {jumlah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyesuaian.aul",
+   "halaman": "narasi",
+   "id": "Jumlah semua bagian {rincian}{jumlah}, lebih besar dari {ashl}. Supaya adil, penyebutnya dinaikkan menjadi {jumlah} ({aul}): setiap orang tetap mendapat jumlah bagian yang sama, tetapi karena harta sekarang dibagi {jumlah}, semua bagian berkurang secara sebanding.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.sisa_keluar.baitul_mal_teratur",
+   "halaman": "narasi",
+   "id": "Dari {ashl} bagian, ahli waris mendapat {didapat}. Sisa {sisa} bagian tidak dikembalikan ({radd}) kepada mereka, tetapi diserahkan ke baitul mal (kas umum umat Islam) karena baitul mal dianggap teratur.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.sisa_keluar.tujuan_dzawil_arham",
+   "halaman": "narasi",
+   "id": "diberikan kepada kerabat dzawil arham (kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.sisa_keluar.tujuan_baitul_mal",
+   "halaman": "narasi",
+   "id": "diberikan kepada kerabat dzawil arham bila ada (misalnya ayahnya ibu atau anak dari anak perempuan); bila tidak ada, diserahkan ke baitul mal (kas umum umat Islam).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.sisa_keluar.pasangan",
+   "halaman": "narasi",
+   "id": "Dari {ashl} bagian, {pasangan} mendapat {didapat}. Masih tersisa {sisa} bagian, tetapi suami/istri tidak menerima tambahan dari sisa ({radd}). Sisa itu {tujuan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.pembuka",
+   "halaman": "narasi",
+   "id": "Jumlah semua bagian {rincian}{jumlah}, padahal ada {ashl}. Masih tersisa {sisa} bagian, dan tidak ada ahli waris yang berhak atas sisa ({ashabah}). Sisa itu dikembalikan kepada {penerima} sesuai besar bagian mereka ({radd}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.pasangan_tidak_ikut",
+   "halaman": "narasi",
+   "id": "{pasangan} tidak ikut, karena suami/istri tidak menerima radd.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.tanpa_pasangan",
+   "halaman": "narasi",
+   "id": "Karena tidak ada suami/istri, harta cukup dibagi menurut perbandingan bagian mereka: {rincian}, jumlahnya {ashl} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.pasangan_dulu",
+   "halaman": "narasi",
+   "id": "Pertama, bagian {pasangan} diselesaikan dulu: {fardh} berarti dari {ashl} bagian ia mendapat {saham}, dan sisanya {sisa} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.kedua.jamak",
+   "halaman": "narasi",
+   "id": "Kedua, {penerima} berbagi sisa itu dengan perbandingan {perbandingan}, totalnya {ashl} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.kedua.mufrad",
+   "halaman": "narasi",
+   "id": "Kedua, sisa {sisa} bagian itu seluruhnya untuk {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.ketiga.habis",
+   "halaman": "narasi",
+   "id": "Ketiga, {sisa} bagian bisa dibagi rata dengan perbandingan tadi (total {ashl_radd}), jadi penyebutnya tetap {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.ketiga.tawafuq",
+   "halaman": "narasi",
+   "id": "Ketiga, {sisa} bagian tidak bisa dibagi rata menjadi {ashl_radd}, tetapi keduanya sama-sama bisa dibagi {fpb} ({tawafuq}). Maka semuanya dikalikan {pengali}: harta dibagi menjadi {hasil} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.ketiga.tabayun",
+   "halaman": "narasi",
+   "id": "Ketiga, {sisa} bagian tidak bisa dibagi rata menjadi {ashl_radd}, dan keduanya tidak punya faktor bersama ({tabayun}). Maka semuanya dikalikan {ashl_radd}: harta dibagi menjadi {hasil} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.hasil_pasangan",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} bagian (tetap {fardh})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.hasil_penerima",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.radd.hasil",
+   "halaman": "narasi",
+   "id": "Hasilnya: {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.judul",
+   "halaman": "narasi",
+   "id": "Membulatkan bagian per orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.pengantar",
+   "halaman": "narasi",
+   "id": "Bagian sebuah kelompok kadang tidak bisa dibagi rata ke anggotanya ({inkisar}). Kalau begitu, jumlah bagian diperbesar supaya setiap orang mendapat bilangan bulat ({tashih}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.untuk_kepala",
+   "halaman": "narasi",
+   "id": "{jumlah} kepala ({ruus}, laki-laki dihitung 2)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.untuk_orang",
+   "halaman": "narasi",
+   "id": "{jumlah} orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.inkisar.habis",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} bagian untuk {untuk}, pas dibagi rata.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.inkisar.tawafuq",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} bagian untuk {untuk}. {saham} tidak bisa dibagi {ruus}, tetapi keduanya sama-sama bisa dibagi {fpb} ({tawafuq}), jadi yang disimpan {ruus} ÷ {fpb} = {hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.inkisar.tabayun",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} bagian untuk {untuk}. {saham} tidak bisa dibagi {ruus} dan keduanya tidak punya faktor bersama ({tabayun}), jadi angka {ruus} disimpan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.awalan_juz_sahm",
+   "halaman": "narasi",
+   "id": "Angka yang disimpan, {a} dan {b}, digabung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.dikalikan",
+   "halaman": "narasi",
+   "id": "Semua bagian dikalikan {pengali} ({juz_as_sahm}): {dasar} × {pengali} = {hasil} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.tashih.tidak_perlu",
+   "halaman": "narasi",
+   "id": "Semua kelompok bisa dibagi rata, jadi tidak perlu pembulatan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.judul",
+   "halaman": "narasi",
+   "id": "Hasil akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.pembuka",
+   "halaman": "narasi",
+   "id": "Harta dibagi menjadi {penyebut} bagian:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.orang_nol",
+   "halaman": "narasi",
+   "id": "{siapa}: tidak mendapat bagian karena sisa harta sudah habis.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.orang",
+   "halaman": "narasi",
+   "id": "{siapa}: {saham} bagian ({saham}/{penyebut}){nominal}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.sisa",
+   "halaman": "narasi",
+   "id": "Sisa: {saham} bagian ({saham}/{penyebut}){nominal}, {tujuan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.selisih.per_satuan",
+   "halaman": "narasi",
+   "id": "Karena setiap bagian dibulatkan ke bawah per {satuan}, ada selisih {selisih} yang belum dibagikan. Uang ini tetap milik para ahli waris dan perlu disepakati bersama penyalurannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.selisih.per_rupiah",
+   "halaman": "narasi",
+   "id": "Karena setiap bagian dibulatkan ke bawah ke rupiah, ada selisih {selisih} yang belum dibagikan. Uang ini tetap milik para ahli waris dan perlu disepakati bersama penyalurannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.hasil.saran_transfer",
+   "halaman": "narasi",
+   "id": "Jika dibagikan lewat transfer bank, pembulatan bisa per rupiah sehingga selisihnya lebih kecil.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

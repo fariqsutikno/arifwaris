@@ -4,11 +4,11 @@
 //   3. hasil akhir per orang
 
 import type { GrafKeluarga, HasilMunasakhat, IdOrang, LangkahJejak } from '@waris/engine';
-import { TEKS_TUJUAN_SISA } from './cerita.js';
+import { teksTujuanSisa } from './cerita.js';
 import { rupiah } from './format.js';
 import { jelaskan, type BabPenjelasan } from './narasi.js';
-import { labelPeran } from './people.js';
-import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Kamus, type Potongan } from './segments.js';
+import { labelPeran, urutanKe } from './people.js';
+import { gabungDan, buatBaris, kalimat, tekankan, type BarisPenjelasan, type Kamus, type Penyusun, type Potongan } from './segments.js';
 import { istilah } from './terms.js';
 
 type HasilOk = Extract<HasilMunasakhat, { status: 'OK' }>;
@@ -18,13 +18,13 @@ export interface BagianMunasakhat { judul: string; daftarBab: BabPenjelasan[] }
 export interface PenjelasanMunasakhat { daftarBagian: BagianMunasakhat[] }
 
 const AWALAN_SISA = 'sisaKeluar:';
-const URUTAN_KE = ['pertama', 'kedua', 'ketiga', 'keempat', 'kelima', 'keenam', 'ketujuh', 'kedelapan', 'kesembilan', 'kesepuluh'];
 
 export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { gaya?: 'cerita' | 'ringkas' | undefined; kamus: Kamus }): PenjelasanMunasakhat {
-  const sebut = buatSebut(hasil, graf);
+  const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
+  const sebut = buatSebut(hasil, graf, penyusun);
   const daftarGabungan = hasil.jejak.filter((langkahIni): langkahIni is LangkahGabungan => langkahIni.jenis === 'MUNASAKHAT');
 
-  const daftarBagian: BagianMunasakhat[] = [pembukaan(hasil, sebut)];
+  const daftarBagian: BagianMunasakhat[] = [pembukaan(hasil, sebut, penyusun)];
   for (const [urutanKe, langkah] of hasil.daftarLangkah.entries()) {
     // Mayit berikutnya disebut dengan perannya ("anak perempuan"), bukan "almarhumah", supaya jelas siapa yang wafat.
     const bernama = urutanKe === 0 ? graf
@@ -37,7 +37,7 @@ export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { g
       daftarBab,
     });
   }
-  daftarBagian.push(hasilAkhir(hasil, sebut));
+  daftarBagian.push(hasilAkhir(hasil, sebut, penyusun));
   return { daftarBagian };
 }
 
@@ -47,7 +47,7 @@ export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { g
  * Tanpa nama, peran disebut terhadap mayit pertama yang ia warisi: "istri", "anak laki-laki dari istri".
  * Sebutan yang sama untuk dua orang diberi urutan ("anak perempuan pertama").
  */
-function buatSebut(hasil: HasilOk, graf: GrafKeluarga): (id: IdOrang) => Potongan {
+function buatSebut(hasil: HasilOk, graf: GrafKeluarga, penyusun: Penyusun): (id: IdOrang) => Potongan {
   const idPewaris = hasil.daftarLangkah[0]!.mayit;
   const ahliWarisDari = (id: IdOrang) => {
     for (const langkah of hasil.daftarLangkah) {
@@ -62,7 +62,7 @@ function buatSebut(hasil: HasilOk, graf: GrafKeluarga): (id: IdOrang) => Potonga
     if (id === idPewaris) return orangIni?.jenisKelamin === 'P' ? 'almarhumah' : 'almarhum';
     const peran = ahliWarisDari(id);
     if (!peran) return 'kerabat';
-    const label = labelPeran(peran.peran);
+    const label = labelPeran(penyusun, peran.peran);
     return peran.mayit === idPewaris ? label : `${label} dari ${labelDasar(peran.mayit)}`;
   };
 
@@ -75,7 +75,7 @@ function buatSebut(hasil: HasilOk, graf: GrafKeluarga): (id: IdOrang) => Potonga
   return id => {
     const label = labelDasar(id);
     const samaDengan = sePeran.get(label) ?? [id];
-    const teks = samaDengan.length > 1 && !graf.orang[id]?.nama ? `${label} ${URUTAN_KE[samaDengan.indexOf(id)] ?? `ke-${samaDengan.indexOf(id) + 1}`}` : label;
+    const teks = samaDengan.length > 1 && !graf.orang[id]?.nama ? `${label} ${urutanKe(penyusun, samaDengan.indexOf(id))}` : label;
     return { jenis: 'orang', daftarIdOrang: [id], teks };
   };
 }
@@ -87,11 +87,11 @@ function sebutPenerima(id: string, sebut: (id: IdOrang) => Potongan): Potongan[]
 
 // ─── Bagian ───────────────────────────────────────────────────────────────────
 
-function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMunasakhat {
+function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BagianMunasakhat {
   const [pertama, ...berikutnya] = [hasil.daftarLangkah[0]!.mayit, ...urutanWafatSebenarnya(hasil)];
   const pewaris = sebut(pertama!);
   const daftarBaris: BarisPenjelasan[] = [
-    buatBaris(kalimat`${pewaris} wafat. Sebelum hartanya dibagi, ${gabungDan(berikutnya.map(id => [sebut(id)]))} ikut wafat, berurutan seperti itu. `
+    buatBaris(kalimat`${pewaris} wafat. Sebelum hartanya dibagi, ${gabungDan(penyusun, berikutnya.map(id => [sebut(id)]))} ikut wafat, berurutan seperti itu. `
       .concat(kalimat`Kasus seperti ini disebut ${istilah('munasakhat', 'munasakhat')}: bagian yang sudah menjadi hak orang yang wafat belakangan `,
         kalimat`diteruskan kepada ahli warisnya.`), ['R12-1']),
     buatBaris(teksKeadaan(hasil.keadaan, pewaris), ['R12-2', 'R12-3']),
@@ -159,7 +159,7 @@ function teksHubungan(langkahIni: LangkahGabungan, siapa: Potongan): Potongan[] 
   }
 }
 
-function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMunasakhat {
+function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BagianMunasakhat {
   const { ikhtishar, nominal, pembulatan } = hasil;
   const tampilkanNominal = hasil.jejak.some(langkahIni => langkahIni.jenis === 'TIRKAH' && langkahIni.kotor > 0n);
   const daftarBaris: BarisPenjelasan[] = [];
@@ -176,7 +176,7 @@ function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan): BagianMun
     const id = `${AWALAN_SISA}${sisa.mayit}`;
     const ringkas = diringkas ? ` (diringkas ${ikhtishar.saham[id]}/${ikhtishar.jamiah})` : '';
     daftarBaris.push(tekankan(buatBaris(kalimat`${sebutPenerima(id, sebut)}: ${sisa.saham}/${hasil.jamiah}${ringkas}${tampilkanNominal ? ` = ${rupiah(sisa.nominal)}` : ''}, `
-      .concat(kalimat`${TEKS_TUJUAN_SISA[sisa.tujuan]}.`), ['R09-9']), 'perhatian'));
+      .concat(kalimat`${teksTujuanSisa(penyusun, sisa.tujuan)}.`), ['R09-9']), 'perhatian'));
   }
   if (tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     daftarBaris.push(buatBaris(kalimat`Selisih pembulatan ${rupiah(pembulatan.sisaPembulatan)} (per ${rupiah(pembulatan.satuan)}), belum dibagikan.`));

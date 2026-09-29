@@ -25,7 +25,7 @@ export function buatKonteks(hasil: HasilOk, graf: GrafKeluarga, penyusun: Penyus
   return {
     hasil,
     penyusun,
-    sebutan: buatSebutan(hasil, graf),
+    sebutan: buatSebutan(hasil, graf, penyusun),
     daftarLangkah: <K extends LangkahJejak['jenis']>(jenis: K) => hasil.jejak.filter((langkahIni): langkahIni is Langkah<K> => langkahIni.jenis === jenis),
     anggotaDari: kelompok => hasil.tabel.baris.find(r => r.kelompok === kelompok)?.anggota ?? [],
     penyebutAkhir: totalKolom.tashih ?? totalKolom.radd ?? totalKolom.aul ?? totalKolom.ashl!,
@@ -40,7 +40,7 @@ export function sebutSemua(konteks: Konteks, ids: IdOrang[]): Potongan[] {
     const kunci = konteks.sebutan.peranDari(id)?.kunci ?? id;
     perPeran.set(kunci, [...(perPeran.get(kunci) ?? []), id]);
   }
-  return gabungDan([...perPeran.values()].map(anggota => [konteks.sebutan.sebut(anggota)]));
+  return gabungDan(konteks.penyusun, [...perPeran.values()].map(anggota => [konteks.sebutan.sebut(anggota)]));
 }
 
 export const sebutKelompok = (konteks: Konteks, idKelompok: string): Potongan[] => sebutSemua(konteks, konteks.anggotaDari(idKelompok));

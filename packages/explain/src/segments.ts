@@ -96,11 +96,12 @@ export function buatBaris(daftarPotongan: Potongan[], refs: string[] = [], subje
   return { daftarPotongan: hasilPotongan, refs, ...(subjek ? { subjek } : {}) };
 }
 
-/** "a", "a dan b", "a, b, dan c" — untuk daftar Potongan[]. */
-export function gabungDan(daftar: Potongan[][]): Potongan[] {
+/** "a", "a dan b", "a, b, dan c" — untuk daftar Potongan[]; penghubung dari diksi `narasi.umum.penghubung.*`. */
+export function gabungDan(penyusun: Penyusun, daftar: Potongan[][]): Potongan[] {
+  const penghubungAkhir = daftar.length > 2 ? teksKamus(penyusun, 'narasi.umum.penghubung.dan_terakhir') : teksKamus(penyusun, 'narasi.umum.penghubung.dan');
   return daftar.flatMap((unsur, i) => {
     if (i === 0) return unsur;
-    const pemisah = i === daftar.length - 1 ? (daftar.length > 2 ? ', dan ' : ' dan ') : ', ';
+    const pemisah = i === daftar.length - 1 ? penghubungAkhir : ', ';
     return [{ jenis: 'teks' as const, teks: pemisah }, ...unsur];
   });
 }
