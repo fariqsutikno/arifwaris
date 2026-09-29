@@ -90,6 +90,44 @@ const grafK04_3: GrafKeluarga = {
   pernikahan: [],
 };
 
+// ─── K04-3 pihak yang sama: G nenek dari dua jalur, keduanya lewat ayah (B & C sepupu, ibu mereka kakak-adik) ───
+// Jalur PW→A→B→E→G (L L P, 2 lk) dan PW→A→C→F→G (L P P, 1 lk); keduanya shahihah.
+// [SYF]: satu bagian. [HNB] (batas 2 lk): dua jalur sah → dua qarabah → TIDAK_DIDUKUNG. [HNF] sama.
+// [MLK] (batas 1 lk): jalur pertama lewat batas, tinggal satu qarabah → G 1, anak lk 5.
+const grafK04_3SatuPihak: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'L', { statusHidup: 'wafat', idAyah: 'A' }),
+    A: p('A', 'L', { ...penghubung, idAyah: 'B', idIbu: 'C' }),
+    B: p('B', 'L', { ...penghubung, idIbu: 'E' }),
+    C: p('C', 'P', { ...penghubung, idIbu: 'F' }),
+    E: p('E', 'P', { ...penghubung, idIbu: 'G' }),
+    F: p('F', 'P', { ...penghubung, idIbu: 'G' }),
+    G: p('G', 'P'),
+    AL: p('AL', 'L', { idAyah: 'PW' }),
+  },
+  pernikahan: [],
+};
+
+// ─── Jalur terpendek fasidah, jalur lain shahihah: G tetap nenek shahihah lewat jalur ibu ───
+// PW→A→B→C→G (L P L: fasidah, 4 generasi) dan PW→I→J→K→G (P P P: shahihah, 4 generasi). [SYF]: G 1, anak lk 5.
+// Madzhab lain tertahan gerbang R14-4 karena C (jadd fasid) ada di graf.
+const grafNenekJalurKedua: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+    A: p('A', 'L', { ...penghubung, idIbu: 'B' }),
+    B: p('B', 'P', { ...penghubung, idAyah: 'C' }),
+    C: p('C', 'L', { ...penghubung, idIbu: 'G' }),
+    I: p('I', 'P', { ...penghubung, idIbu: 'J' }),
+    J: p('J', 'P', { ...penghubung, idIbu: 'K' }),
+    K: p('K', 'P', { ...penghubung, idIbu: 'G' }),
+    G: p('G', 'P'),
+    AL: p('AL', 'L', { idAyah: 'PW' }),
+  },
+  pernikahan: [],
+};
+
 const sendiri ={ saham: { AL: 1n }, penyebut: 1n };
 
 export const KASUS_NENEK: KasusMadzhab[] = [
@@ -106,6 +144,12 @@ export const KASUS_NENEK: KasusMadzhab[] = [
     syafii: { saham: { UKB: 1n, AL: 5n }, penyebut: 6n }, hanafi: { saham: { UKB: 1n, AL: 5n }, penyebut: 6n },
     hanbali: sendiri, maliki: sendiri } },
   { id: 'MZ5', kode: 'K04-3', menguji: 'nenek dua qarabah', graf: grafK04_3, harapan: {
+    syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
+    hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG', maliki: 'TIDAK_DIDUKUNG' } },
+  { id: 'MZ6', kode: 'K04-3', menguji: 'nenek dua qarabah, pihak yang sama', graf: grafK04_3SatuPihak, harapan: {
+    syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, maliki: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
+    hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG' } },
+  { id: 'MZ7', kode: 'R03-5', menguji: 'jalur terpendek fasidah, jalur lain shahihah', graf: grafNenekJalurKedua, harapan: {
     syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
     hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG', maliki: 'TIDAK_DIDUKUNG' } },
 ];
