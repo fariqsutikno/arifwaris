@@ -81,7 +81,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R06-1 | Dua jenis hajb | RDH | Bab 4, al-Hajb | «هو نوعان: حجب نقصان - كحجب الولد الزوج من النصف إلى الربع... - وحجب حرمان» |
 | R06-2 | Enam ahli waris tidak terhijab hirman | RDH | Idem | «قسم لا يتوسط بينهم وبين الميت غيرهم، وهم: الأبوان، والزوجان، والأولاد، فهؤلاء لا يحجبهم أحد» |
 | R06-3 | Tabel hajib–mahjub | RDH | Idem, adh-dharb 1–3 | Daftar lengkap penghalang saudara, anak saudara, paman, dan anak paman sesuai tabel 6.5. |
-| R06-4 | Saudara kandung gugur oleh ayah, anak lk, cucu lk | IJ | Dinukil ijma'-nya dalam RDH Bab 4 | «والأخ للأبوين يحجبه الأب، والابن، وابن الابن بالإجماع» |
+| R06-4 | Saudara kandung gugur oleh ayah, anak lk, cucu lk | IJ | Dinukil ijma'-nya dalam RDH 6/27 · shamela:499/2316; dinukil pula Ibnu al-Mundzir, IMN no. 298 (hal. 72) · shamela:12445/71 | «والأخ للأبوين يحجبه الأب، والابن، وابن الابن بالإجماع» |
 | R06-5 | Saudara seibu gugur oleh far'u warits, ayah, kakek | RDH | Idem | «فالإخوة والأخوات للأم يحجبهم أربعة: الولد، وولد الابن، والأب، والجد» |
 | R06-6 | Yang terkena mani' tidak menghijab; yang terhijab tetap bisa hajb nuqshan | RDH | Bab 4, far' | «إن كان امتناع الإرث لنقص كالرق وغيره من الموانع، فلا يحجب لا حجب حرمان، ولا حجب نقصان. وإن كان لا يرث لتقدم غيره عليه، فقد يحجب غيره حجب نقصان». Contoh: «مات عن أبوين وأخوين، فللأم السدس، والباقي للأب» |
 | R06-7 | Ashabah gugur bila furudh menghabiskan harta | RDH | Bab 4 | «وكل عصبة يحجبه أصحاب الفروض المستغرقة» |

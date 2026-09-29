@@ -23,7 +23,7 @@ Contoh: tirkah bersih Rp 120.000.000; suami, ibu, ayah (Umariyyah, ashl 6: 3, 1,
 Suami 60.000.000; ibu 20.000.000; ayah 40.000.000.
 
 ## 11.2 Takharuj [R11-2] [R11-3]
-**Definisi**: kesepakatan ahli waris agar salah satu (atau beberapa) dari mereka **keluar** dari pembagian dengan menerima imbalan tertentu, baik dari tirkah maupun dari harta ahli waris lain. Dasar: atsar Abdurrahman bin 'Auf yang berdamai dengan salah satu istrinya (Tumadhir) atas bagiannya; hukumnya shulh (perdamaian) yang sah dengan kerelaan.
+**Definisi**: kesepakatan ahli waris agar salah satu (atau beberapa) dari mereka **keluar** dari pembagian dengan menerima imbalan tertentu, baik dari tirkah maupun dari harta ahli waris lain. Dasar: atsar 'Utsman bin 'Affan — 'Abdurrahman bin 'Auf menalak Tumadhir di sakit maut lalu wafat dalam masa 'iddah, 'Utsman mewariskannya, dan ahli waris berdamai dengannya atas 1/4 dari 1/8 dengan imbalan 80.000 (riwayat lain menyebut angka berbeda); hukumnya shulh (perdamaian) yang sah dengan kerelaan.
 
 **Tiga bentuk**:
 | Bentuk | Cara hitung |
@@ -45,4 +45,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 |---|---|---|---|---|
 | R11-1 | Qismah at-tirkah | RDH | Bab 9, al-maqshud ats-tsani «قسمة التركات» | Metode konversi saham ke nominal; implementasi desimal adalah [KH]. |
 | R11-2 | Kebolehan shulh/tawahub di antara ahli waris | RDH | Bab 6, far' khuntsa | «لو اصطلح الذين وقف المال بينهم على تساو أو تفاوت جاز... ولو أخرج بعضهم نفسه من البين، ووهبه لهم... جاز أيضا». Menjadi dasar fikih takharuj. |
-| R11-3 | Atsar 'Abdurrahman bin 'Auf dan Tumadhir | A | Diriwayatkan 'Abdurrazzaq dan al-Baihaqi | `[perlu verifikasi lanjut]` — nomor dan lafaz belum dicek. |
+| R11-3 | Atsar 'Abdurrahman bin 'Auf dan Tumadhir | A | Sa'id bin Manshur, Sunan (Fara'idh) 2/66 no. 1959 · shamela:13122/1984; al-Baihaqi, Kubra 6/107 no. 11355 · shamela:7861/13096 (ed. Turki 11/527 no. 11467 · shamela:148486/6509); 'Abdurrazzaq, Mushannaf 7/62 no. 12193 (hanya putusan 'Utsman mewariskan, tanpa shulh) · shamela:13174/13198. Ibnu Sa'd, Thabaqat 3/136 menyebut 100.000 · shamela:9351/1018. Tidak ditemukan di Mushannaf Ibnu Abi Syaibah maupun Nashb ar-Rayah. | «صولحت امرأة عبد الرحمن من نصيبها ربع الثمن على ثمانين ألفا». Atsar sudah ditemukan; status blocked takharuj di bab 17.4 tetap sampai pengguna memutuskan. Nilai sanad belum diteliti. |

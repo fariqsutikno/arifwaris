@@ -38,6 +38,12 @@ Koleksi hadits yang dikenal (slug sunnah.com): `bukhari, muslim, abudawud, tirmi
 | IQD | *'Iqd al-Jawahir ats-Tsaminah* | Ibnu Syas (w. 616 H) | Maliki primer (Shamela 14594). Dipakai: wala'. |
 | BMZ | *Bahr al-Madzhab* | ar-Ruyani (w. 502 H) | Syafi'i (Shamela 16934). Dipakai: ijazah wasiat. |
 | ITH | *Al-'Urudh at-Taqdimiyyah li Muqarrar al-Fara'idh* | Syarikah Ithraa al-Mutun (Riyadh) | Slide kuliah berbasis *Hasyiyah ar-Rahbiyyah*. Dipakai sebagai nukilan posisi 4 madzhab (bab 18). Teks hasil ekstrak PDF rusak di beberapa tempat; angka tabelnya tidak dipakai. |
+| IMN | *Al-Ijma'* | Ibnu al-Mundzir (w. 319 H) | Penukil ijma' fara'idh no. 277–324; ed. Fu'ad 'Abdul Mun'im (Shamela 12445). Nomor = nomor butir dalam kitab. |
+| IQN | *Al-Iqna' fi Masa'il al-Ijma'* | Ibnu al-Qaththan (w. 628 H) | Penukil ijma' (Shamela 13624), ed. ash-Sha'idi. |
+| BHQ | *As-Sunan al-Kubra* | al-Baihaqi (w. 458 H) | Atsar sahabat. Nomor mengikuti ed. 'Ilmiyyah (Shamela 7861) kecuali disebut ed. Turki (148486). |
+| SSM | *Sunan Sa'id bin Manshur* | Sa'id bin Manshur (w. 227 H) | Atsar, ed. A'zhami (Shamela 13122). |
+| MAR | *Al-Mushannaf* | 'Abdurrazzaq ash-Shan'ani (w. 211 H) | Atsar, ed. A'zhami (Shamela 13174). |
+| MIS | *Al-Mushannaf* | Ibnu Abi Syaibah (w. 235 H) | Atsar, ed. al-Haut (Shamela 9944). |
 
 ## 17.3 Sumber Hadits
 Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shahih Muslim cetakan dengan penomoran Muhammad Fu'ad 'Abdul Baqi; Sunan at-Tirmidzi, Abu Dawud, Ibnu Majah penomoran umum). Nomor bisa berbeda antar cetakan; cocokkan dengan **lafaz**, bukan hanya nomor.

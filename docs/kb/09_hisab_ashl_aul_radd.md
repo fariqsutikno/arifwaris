@@ -119,8 +119,8 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R09-2 | Ashl bila semua ashabah = jumlah kepala | RDH | Idem | «قدرنا كل ذكر اثنين... فعدد الرءوس في هذا النوع هو أصل المسألة» |
 | R09-3 | Definisi dan cara 'aul | RDH | Bab 9, muqaddimah 4 | «إذا ضاق المال عن الفروض، فتعال المسألة، أي: ترفع سهامها ليدخل النقص على كل واحد بقدر فرضه، كأصحاب الديون والوصايا» |
 | R09-4 | Hanya 6, 12, 24 yang bisa 'aul; batasnya | RDH | Idem | «فتعول الستة أربع مرات... وتسمى هذه الأخيرة: الشريحية... وأما اثنا عشر، فتعول ثلاث مرات... وأما أربعة وعشرون، فتعول مرة فقط إلى سبعة وعشرين» |
-| R09-5 | Al-Minbariyyah | A + RDH | Fatwa 'Ali di atas mimbar (al-Baihaqi) · RDH | «سئل عنها وهو على المنبر، فقال ارتجالا: صار ثمنها تسعا» |
-| R09-6 | 'Aul pertama kali oleh 'Umar | A | Diriwayatkan al-Hakim dan al-Baihaqi dari Ibnu 'Abbas | Kesepakatan sahabat setelahnya; Ibnu 'Abbas menyelisihi. |
+| R09-5 | Al-Minbariyyah | A + RDH | Fatwa 'Ali «صار ثمنها تسعا»: BHQ 6/414 no. 12455 (jalur al-Harits) · shamela:7861/14346; Ibnu Abi Syaibah 6/258 (ed. al-Haut) · shamela:9944/35437. Kedua riwayat ini TIDAK menyebut "di atas mimbar": Ibnu Hajar (dinukil catatan Nihayah al-Mathlab 9/358) menyebut lafaz mimbar hanya pada jalur ath-Thahawi dari al-Harits · RDH | «سئل عنها وهو على المنبر، فقال ارتجالا: صار ثمنها تسعا» |
+| R09-6 | 'Aul pertama kali oleh 'Umar | A | Ibnu 'Abbas: «أول من أعال الفرائض عمر»: al-Hakim, al-Mustadrak (ed. 'Ilmiyyah) 4/378 · shamela:2266/8845; al-Baihaqi 6/414 no. 12457 (kisah dengan Zufar bin Aus) · shamela:7861/14347 | Kesepakatan sahabat setelahnya; Ibnu 'Abbas menyelisihi. |
 | R09-7 | Cara pembagian radd | RDH | Bab 8 | «فإن كان شخصا واحدا، دفع إليه الفرض، والباقي بالرد. وإن كانوا جماعة، فالباقي بينهم بالسوية. وإن اجتمع صنفان فأكثر، رد الفاضل عليهم بنسبة سهامهم» |
 | R09-8 | Radd hanya ketika baitul mal tidak tegak | RDH | Bab 1, Fashl Dzawil Arham | Lihat blok KHILAF 9.4 (kutipan lengkap). |
 | R09-9 | Pasangan tidak menerima radd | RDH | Bab 1, far' | «ومن قال بالرد، يثبت لكلهن الحيازة إلا الزوجة» dan «لا يستثني إلا الزوج» |
