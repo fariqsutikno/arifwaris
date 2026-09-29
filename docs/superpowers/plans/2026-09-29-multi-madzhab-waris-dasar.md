@@ -1117,7 +1117,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 9: Web — pilihan madzhab, label hasil, chip rujukan Kxx-y
+### Task 9 (DITUNDA, keputusan pengguna 2026-09-29): Web — pilihan madzhab, label hasil, chip rujukan Kxx-y
 
 **Files:**
 - Modify: `apps/web/src/kasus.ts` (`Kasus.ruleset?`, `bacaKasus`)
@@ -1215,6 +1215,10 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 ---
 
 ## Di luar rencana ini (dicatat, bukan dikerjakan)
+
+- **Task 9 ditunda** (keputusan pengguna 2026-09-29): seluruh tampilan dikerjakan sekaligus setelah logika dzawil arham,
+  kasus khusus bab 13, dan pohon bebas selesai. Task 2 tetap menyentuh web seperlunya saja (teks tujuan sisa baru),
+  supaya typecheck web tidak rusak.
 
 - K02-x mawani' antar-madzhab (ditunda; gerbang menolak kasusnya).
 - K05-2 wala' dengan ayah mu'tiq: engine belum memodelkan 'ashabah mu'tiq, jadi titik ini belum tersentuh.
