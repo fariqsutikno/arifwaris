@@ -16,10 +16,18 @@ dan `hitung()` (pipeline) tidak berubah perilakunya.
 |---|---|---|
 | [SYF] | tanzil, mewarisi hanya bila `kebijakanSisa = 'radd'` (baitul mal tidak tegak); lk:pr 2:1 kecuali cabang saudara seibu (sama rata) | R14-5, R14-6, R14-8 |
 | [HNB] | tanzil, sama rata mutlak → jejak `KHILAF_MADZHAB` K14-3 | K14-3 |
-| [MLK] | tidak mewarisi → sisa ke baitul mal (hasil `hitung()` apa adanya) | K14-1 |
+| [MLK] | `kebijakanSisa = 'baitulMal'` → harta ke baitul mal (`TIDAK_DIDUKUNG` K14-1); `'radd'` (imam tidak adil) → mewarisi, tetapi metodenya belum ada di matriks → `TIDAK_DIDUKUNG` K14-2 | K14-1, K14-2 |
 | [HNF] | `TIDAK_DIDUKUNG`, refs `['K14-2']` (qarabah = fase berikutnya) | K14-2 |
 
-Bila `kebijakanSisa = 'baitulMal'` pada [SYF], orkestrator tidak mengambil alih (R14-5).
+Bila `kebijakanSisa = 'baitulMal'` pada [SYF] dan hanya ada dzawil arham → `TIDAK_DIDUKUNG` "harta ke baitul mal" refs R14-5.
+Kasus pasangan + baitul mal tidak pernah diambil alih (pipeline sudah memberi tujuan `baitulMalTeratur`).
+
+**Gerbang 18.4**: hasil [HNB] memakai token R14-4, R14-7, R14-9..13. Baris KB 18.4 untuk token itu harus diputuskan
+pengguna dulu (checkpoint Task 1 plan); tanpa itu gerbang yang ada menolak hasil [HNB] — perilaku benar, bukan bug.
+
+**[HNB] K14-3 di engine** (usulan, dikonfirmasi di checkpoint): di bawah satu perantara, penerima dalam **satu kelompok**
+dibagi sama rata; khal + khalah (di bawah perantara ibu) tetap 2:1 (Mughni 6/324); penerima di beberapa kelompok
+→ `TIDAK_DIDUKUNG` K14-3 (rinciannya belum ada di KB).
 
 ## Arsitektur
 
@@ -51,7 +59,10 @@ kekerabatannya) sampai posisi itu berperan ahli waris menurut `derivasi` yang ad
 
 - Pengecualian R14-7: khal & khalah → didudukkan sebagai **ibu**; 'ammah & paman seibu → sebagai **ayah**.
 - Jihah menurut 14.7 (Lahim hlm. 192–193).
-- Graf putus (tidak pernah sampai ke ahli waris) → `TIDAK_DIDUKUNG`, bukan tebakan.
+- Lintasan selalu memuat orang tua/anak/saudara pewaris (semuanya ahli waris), jadi "tidak sampai ke perantara" mustahil
+  → throw invarian, bukan cabang `TIDAK_DIDUKUNG`.
+- Mawani' tetap berlaku bagi dzawil arham sendiri (bab 02): agama belum diisi → `PERLU_INPUT`; beda agama / pembunuh →
+  dikeluarkan sebelum tahap 1 (supaya tidak menempati kursi perantara). Aturan diambil dari `mawani.ts` (fungsi bersama).
 
 ### Tahap 1b — `saringJihah` [R14-10] [R14-7]
 
@@ -69,15 +80,19 @@ Invarian: ashl mas'alah perantara yang ber-'aul hanya 6 → 7 (R14-13); selain i
 
 ### Tahap 3 — `turunkanBagian` [R14-8] [R14-11]
 
-Bagian tiap perantara diturunkan tingkat demi tingkat ke cabang yang bernasab melaluinya, seolah perantara wafat
-meninggalkan mereka:
+Bagian tiap perantara diberikan kepada dzawil arham yang bernasab melaluinya **seolah perantara wafat meninggalkan
+mereka** (14.5 langkah 4): `hitungDzawilArham` dipanggil **rekursif** dengan perantara sebagai pewaris dan penerimanya sebagai
+satu-satunya yang hidup. Hubungan mereka ke perantara diturunkan `derivasi` (anak → ashabah 2:1; ayahnya ibu menghijab
+khalah di bawah perantara ibu; cucu lewat perempuan → dzawil arham perantara → rekursi). Hasil tiap perantara digabung
+ke mas'alah perantara dengan `gabungkan` (nisab saham vs mas'alah, R12-2), satu perantara per langkah:
 
-- [SYF]: lk 2:1 pr; **kecuali** cabang perantara saudara/saudari seibu → sama rata (R14-8).
-- [HNB]: sama rata di semua tingkat (K14-3) + jejak `KHILAF_MADZHAB`.
+- [SYF]: hasil rekursi apa adanya (2:1 lewat ashabah bil ghair); **kecuali** perantara saudara/saudari seibu → penerima
+  dalam satu kelompok sama rata (R14-8).
+- [HNB]: aturan K14-3 di atas + jejak `KHILAF_MADZHAB`.
 - Satu orang lewat dua jalur (R14-11): kedua jalur tidak saling menghijab → dijumlahkan; salah satu menghijab → hanya jalur
   penghijab.
 
-Saham diperbesar (kpk penyebut) supaya bulat; jejak memuat faktor pengali.
+Saham tetap bulat karena tiap penggabungan memakai wafq (seperti jami'ah munasakhat).
 
 ### Pasangan [R14-12]
 
