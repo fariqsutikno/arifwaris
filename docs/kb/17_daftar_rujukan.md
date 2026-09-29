@@ -67,12 +67,12 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 | «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 · hadits:tirmidhi:3790 hadits:ibnmajah:154 | Hasan gharib (at-Tirmidzi); shahih (Darussalam, sunnah.com) |
 
 ## 17.4 Titik yang Masih Ditandai `[perlu verifikasi lanjut]`
-Selain tabel: K05-2 [MLK] (tidak ada fardh dalam wala') menunggu halaman 'Iqd al-Jawahir yang menyatakannya eksplisit.
+Selain tabel: K05-2 [MLK] (furudh dalam wala') belum terverifikasi; 'Iqd 3/1197 hanya memuat urutan wala'. Engine mode [MLK] = `TIDAK_DIDUKUNG` untuk titik ini. Sisa lain (K13-1 [HNF] harta murtaddah, satu orang dua jalur [HNF]) tercatat di bab 18 dan `docs/rencana-verifikasi.md`.
 
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| R13-14 | Hukum laqith (dua butir: «merdeka», «penemu tidak mewarisi») | Raudhah, Kitab al-Laqith |
+| R13-14 | Hukum laqith, sisa dua butir: «merdeka», «penemu tidak mewarisi» (harta ke baitul mal, hukum Islam, istilhaq sudah terverifikasi di Raudhah 5/435, 5/437) | Raudhah, Kitab al-Laqith |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:
@@ -85,3 +85,4 @@ Dicatat agar jejak audit transparan:
 7. **Audit 2026-09-29 (Prompt 6.5)**, koreksi lafaz/nomor/token: lihat `docs/audit-verifikasi.md`.
 8. **Koreksi isi sel overlay bab 18 (commit 5ca162f, dikonfirmasi pengguna 2026-09-29)**: K13-2 [HNF] kerabat ibu saja (bukan «ashabah ibu»); K09-1 dan K14-1 [MLK] bersyarat imam adil (bukan «mutlak»/«tidak»); K13b-1 [HNB] dua riwayat untuk yang umumnya selamat, [MLK] 70/80/90 th; K14-3 [HNB] pengecualian khal 2/3 dan khalah 1/3; bab 14.3 atribusi «غلط الشيخ أبو حامد» ke Ibnu Suraqah. Semuanya mengikuti isi kitab.
 9. **Ijazah wasiat (konten, Prompt 6)**: menurut [SYF] (Bahr al-Madzhab, R01-7) persetujuan baru sah setelah wafat; mekanismenya tetap tidak dihitung engine.
+10. **Tutup ⚑ (2026-09-29)**: R01-7, R02-11, R11-3 keluar dari 17.4 (terverifikasi, Prompt 1–4); K05-2 [MLK] dinyatakan belum terverifikasi (bukan «tidak ada fardh»); rujukan Takmilah di K13a-3 [HNF] dihapus. Daftar lengkap: `docs/rencana-verifikasi.md`, «Keputusan tertunda».

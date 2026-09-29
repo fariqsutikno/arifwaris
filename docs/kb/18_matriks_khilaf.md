@@ -61,6 +61,8 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 ## 18.3 Yang Belum Ada (per 2026-09-29, setelah pencarian Shamela)
 | Titik | Madzhab | Dampak ke engine |
 |---|---|---|
+| Furudh dalam wala' (K05-2) | [MLK] | kecil — mode [MLK] = `TIDAK_DIDUKUNG` untuk kasus wala' dengan ayah mu'tiq; 'Iqd 3/1197 belum menyebut fardh |
+| Harta murtaddah untuk ahli waris muslim (K13-1) | [HNF] | tidak ada — kasus murtad bukan lingkup platform; klaim belum dicek ke Mabsuth |
 | Satu dzawil arham lewat dua jalur menurut qarabah | [HNF] | kecil — kasus dua jalur mode [HNF] = `TIDAK_DIDUKUNG`, sisanya jalan |
 | Posisi baitul mal dalam urutan [HNF] | [HNF] | tidak ada — engine tidak mengirim harta ke baitul mal selama ada dzawil arham |
 | Nash eksplisit "tidak ada khilaf" untuk munasakhat/'aul/tashih | semua | tidak ada — dianggap [KH] sama: bab munasakhat/tashih ada di keempat madzhab dengan cara hitung sama ('Iqd al-Jawahir, al-Wasith, al-Hawi, al-Hidayah Abu al-Khaththab), dan 'aul disepakati kecuali Ibnu 'Abbas |

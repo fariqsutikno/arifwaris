@@ -14,10 +14,10 @@ Kode `Kxx-y` merujuk ke [bab 18](kb/18_matriks_khilaf.md), sedangkan `Rxx-y` mer
 
 | Madzhab | Titik yang masih kosong | Yang menghambat engine |
 |---|---|---|
-| **[HNF] Hanafi** | 5 (A1, B1, B2, B3, B4) | **Dzawil arham mode Hanafi tidak bisa dihitung** (A1) |
-| **[MLK] Maliki** | 1 (B2) | tidak ada |
-| **[HNB] Hanbali** | 1 (B1) | tidak ada |
-| **[SYF] Syafi'i** | 4 (D, verifikasi lama) | tidak ada |
+| **[HNF] Hanafi** | 2 (A1 sisa satu orang dua jalur, B3 sisa baitul mal) | **Dzawil arham mode Hanafi tidak bisa dihitung** (A1) |
+| **[MLK] Maliki** | 1 (B2: K05-2 belum terverifikasi) | tidak ada (mode [MLK] `TIDAK_DIDUKUNG` untuk titik ini) |
+| **[HNB] Hanbali** | 0 (B1 selesai) | tidak ada |
+| **[SYF] Syafi'i** | 1 (D4: R13-14 dua butir) | tidak ada |
 | Semua madzhab | 2 (C1, C2) | tidak ada (diduga tidak ada khilaf); C2 = aturan gabungan kita sendiri |
 
 ---
@@ -85,10 +85,10 @@ Kitab: *al-'Adzb al-Fa'idh Syarh 'Umdah al-Faridh* (Ibrahim al-Faridh, Hanbali) 
 
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| R01-7 | Ijazah wasiat baru sah setelah wafat | Raudhah, Kitab al-Washaya — atau nukilan Lahim/Ithraa |
-| R02-11 | Nomor hadits «الولاء لحمة كلحمة النسب» | Shahih Ibnu Hibban / al-Mustadrak al-Hakim |
-| R11-3 | Atsar takharuj 'Abdurrahman bin 'Auf (istri Tumadhir) | Mushannaf 'Abdurrazzaq / Sunan al-Baihaqi |
-| R13-14 | Hukum laqith (anak temuan) dalam waris | Raudhah, Kitab al-Laqith — atau nukilan lain |
+| R01-7 | ✔ selesai: Bahr al-Madzhab 8/42 (shamela:16934/3737) | — |
+| R02-11 | ✔ selesai: Ibnu Hibban 4950, al-Hakim 4/341; marfu'-nya diperselisihkan (shamela:148486/7081) | — |
+| R11-3 | ✔ selesai: Sa'id bin Manshur no. 1959, al-Baihaqi no. 11355 | — |
+| R13-14 | Hukum laqith (anak temuan): harta ke baitul mal dan istilhaq terverifikasi (Raudhah 5/435, 5/437); **sisa** «merdeka» dan «penemu tidak mewarisi» | Raudhah, Kitab al-Laqith — atau nukilan lain |
 
 ---
 

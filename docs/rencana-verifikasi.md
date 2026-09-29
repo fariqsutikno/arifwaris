@@ -35,3 +35,19 @@ Satu commit per tahap, disertai tabel ringkas:
 1. **Boleh Claude langsung membetulkan lafaz/nomor** (tanpa mengubah hukum) dan melapor sesudahnya? Usulan: **ya**.
 2. **Derajat hadits pakai penilai siapa** bila berbeda? Usulan: sebutkan semua penilai yang ditemukan (mis. at-Tirmidzi, al-Albani), jangan pilih satu.
 3. **Konten (tahap 6) juga diubah langsung**, atau hanya dilaporkan dulu karena tim keilmuan yang memegangnya? Usulan: **dilaporkan dulu**, lalu diubah setelah disetujui.
+
+## Keputusan tertunda
+Semua ⚑ dari commit Prompt 1–6 dan `docs/audit-verifikasi.md`, per 2026-09-29. **Terbuka** = masih menunggu bukti atau keputusan; **Selesai** = sudah dijawab dan tercatat.
+
+| # | Titik | Asal | Temuan | Status | Tercatat di |
+|---|---|---|---|---|---|
+| 1 | R13-14 laqith: «merdeka», «penemu tidak mewarisi» | `11c87b0` | Raudhah 5/435 dan 5/437 hanya menutup harta ke baitul mal, hukum Islam, istilhaq; dua butir ini belum eksplisit | **Terbuka** | 17.4 |
+| 2 | K05-2 [MLK] furudh dalam wala' | audit ⚑2 | 'Iqd 3/1197 hanya memuat urutan wala', tidak menafikan fardh; sel diubah menjadi «belum terverifikasi», engine mode [MLK] = `TIDAK_DIDUKUNG` | **Terbuka** | 17.4 (catatan), 18.2 |
+| 3 | K13-1 [HNF] harta murtaddah | `03d13b7` | Mabsuth 10/101–107 memuat pembedaan kasb Islam/riddah; klaim harta murtaddah untuk ahli waris muslim belum diperiksa | **Terbuka** | 18.2 (sel) |
+| 4 | Satu dzawil arham dua jalur [HNF] | tahap 7 | Belum ada nash | **Terbuka** | 18.3 |
+| 5 | K13-2 [HNF], K09-1 dan K14-1 [MLK] | `03d13b7`, `5ca162f`, audit ⚑1 | Isi sel diubah mengikuti kitab (kerabat ibu saja; baitul mal bersyarat imam adil) | Selesai (dikonfirmasi pengguna) | 17.5 butir 8 |
+| 6 | K13b-1 [HNB] dan [MLK] masa tunggu mafqud | `ac970f9`, `5ca162f`, audit ⚑1 | Dua riwayat untuk yang selamat; [MLK] 70/80/90 th | Selesai (dikonfirmasi) | 17.5 butir 8 |
+| 7 | K14-3 [HNB] khal 2/3, khalah 1/3 | `ac970f9`, `5ca162f`, audit ⚑1 | Pengecualian sesuai Mughni 6/324 | Selesai (dikonfirmasi) | 17.5 butir 8 |
+| 8 | Bab 14.3 atribusi «غلط الشيخ أبو حامد» | `5396163`, `5ca162f`, audit ⚑1 | Dikembalikan ke Ibnu Suraqah | Selesai (dikonfirmasi) | 17.5 butir 8 |
+| 9 | K13a-3 [HNF] rujukan Takmilah | audit ⚑3 | Tidak ketemu di Shamela; rujukan dihapus, hukum tetap didukung Mabsuth 30/52 | Selesai | audit-verifikasi.md |
+| 10 | Ijazah wasiat di konten «sah setelah wafat» | audit (informasi) | Pernyataan baru di konten; cocok dengan R01-7 dan K01-1 | Selesai (dicatat) | 17.5 butir 9 |
