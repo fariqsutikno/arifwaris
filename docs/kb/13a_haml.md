@@ -20,7 +20,7 @@ Anak manusia yang masih dalam kandungan ketika muwarrits wafat, yang mewarisi at
 **Syarat 2 — Lahir hidup dengan hayah mustaqirrah**: istihlal (teriak/menangis), bersin, menyusu, gerak atau nafas yang signifikan. Dalil: «إذا استهل المولود ورث» [R13-2].
 
 > **KHILAF K13a-1 – Batas maksimal masa kehamilan** [R13-5]
-> - **[SYF]**: **4 tahun** (Ithraa: «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة»). Kitab al-Fara'idh Raudhah hanya menyebut «أكثر مدة الحمل» tanpa angka.
+> - **[SYF]**: **4 tahun** (Ithraa: «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة»). Raudhah, Kitab al-'Iddah 8/377 · shamela:499/3487: «أَكْثَرُ مُدَّةِ الْحَمْلِ أَرْبَعُ سِنِينَ» (Kitab al-Fara'idh sendiri hanya menyebut «أكثر مدة الحمل» tanpa angka).
 > - [HNB]: 4 tahun. [HNF]: 2 tahun. [MLK]: 4 tahun (masyhur), 5 tahun (yang diamalkan). (sekunder)
 > - **Engine**: konstanta per madzhab `// [R13-5]`, tetap bisa ditimpa putusan hakim. Batas minimal 6 bulan = ijma' (QS 46:15 quran:46:15 + 31:14 quran:31:14).
 
