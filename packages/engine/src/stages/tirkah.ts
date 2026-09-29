@@ -12,7 +12,7 @@ export function hitungTirkah(tirkah: InputTirkah): { bersih: Uang; jejak: Extrac
   // [R01-4] wasiat maksimal 1/3 sisa setelah hutang; dibulatkan ke bawah ke rupiah [KH].
   const wasiatBatas = setelahHutang / 3n;
   const wasiatDipakai = tirkah.wasiat < wasiatBatas ? tirkah.wasiat : wasiatBatas;
-  // Kelebihan hanya berlaku dengan ijazah ahli waris; aturan ijazah [R01-7] belum diverifikasi → tidak diterapkan.
+  // Kelebihan hanya berlaku dengan ijazah ahli waris, sah setelah wafat [R01-7]; mekanismenya sengaja tidak dihitung [R01-9].
   const wasiatButuhIjazah = tirkah.wasiat - wasiatDipakai;
   const bersih = setelahHutang - wasiatDipakai;
   return {

@@ -848,7 +848,7 @@ export const caseNeg3: Fixture = {
 };
 
 // ─── Negatif (terhalang): wasiat kepada ahli waris → tandai perlu ijazah.
-// Tidak dibuat fixture: R01-7 (ijazah wasiat) masih [perlu verifikasi lanjut] — lihat CLAUDE.md.
+// Tidak dibuat fixture: mekanisme ijazah (R01-7) sengaja tidak diimplementasikan [R01-9].
 
 // ─── Negatif 4: Jumlah istri > 4 → validasi gagal ────────────────────────────
 export const caseNeg4: Fixture = {
