@@ -103,8 +103,8 @@ function urutanKematian(input: InputMunasakhat): IdOrang[] {
   if (new Set(urutan).size !== urutan.length) throw new Error('munasakhat: seseorang tercatat wafat dua kali');
   const tidakDiGraf = urutan.find(idMayit => !input.dasar.graf.orang[idMayit]);
   if (tidakDiGraf) throw new Error(`munasakhat: ${tidakDiGraf} di urutan wafat tidak ada di graf`);
-  for (const idMayitAcuan of Object.values(input.lahirSetelahWafat ?? {})) {
-    if (!urutan.includes(idMayitAcuan)) throw new Error(`munasakhat: lahirSetelahWafat merujuk ${idMayitAcuan} yang tidak ada di urutan wafat`);
+  for (const idMayitAcuan of Object.values(input.dikandungSetelahWafat ?? {})) {
+    if (!urutan.includes(idMayitAcuan)) throw new Error(`munasakhat: dikandungSetelahWafat merujuk ${idMayitAcuan} yang tidak ada di urutan wafat`);
   }
   return urutan;
 }
@@ -112,15 +112,15 @@ function urutanKematian(input: InputMunasakhat): IdOrang[] {
 /** Graf saat mayit ke-`urutanKe` wafat: yang wafat lebih dulu 'wafat', yang wafat belakangan masih 'hidup'. */
 function grafPada(input: InputMunasakhat, urutan: IdOrang[], urutanKe: number): GrafKeluarga {
   const { graf } = input.dasar;
-  const belumLahir = new Set(Object.entries(input.lahirSetelahWafat ?? {})
+  const belumDikandung = new Set(Object.entries(input.dikandungSetelahWafat ?? {})
     .filter(([, idMayitAcuan]) => urutanKe <= urutan.indexOf(idMayitAcuan))
     .map(([idOrang]) => idOrang));
 
-  const orang = Object.fromEntries(Object.entries(graf.orang).filter(([id]) => !belumLahir.has(id)));
+  const orang = Object.fromEntries(Object.entries(graf.orang).filter(([id]) => !belumDikandung.has(id)));
   for (const [posisi, idOrang] of urutan.entries()) {
     orang[idOrang] = { ...graf.orang[idOrang]!, statusHidup: posisi <= urutanKe ? 'wafat' : 'hidup' };
   }
-  const pernikahan = graf.pernikahan.filter(nikah => !belumLahir.has(nikah.idSuami) && !belumLahir.has(nikah.idIstri));
+  const pernikahan = graf.pernikahan.filter(nikah => !belumDikandung.has(nikah.idSuami) && !belumDikandung.has(nikah.idIstri));
   return { idPewaris: urutan[urutanKe]!, orang, pernikahan };
 }
 

@@ -23,10 +23,10 @@ export interface MunasakhatFixture {
   };
 }
 
-const munasakhat = (graf: GrafKeluarga, urutanWafat: string[], lahirSetelahWafat?: Record<string, string>): InputMunasakhat => ({
+const munasakhat = (graf: GrafKeluarga, urutanWafat: string[], dikandungSetelahWafat?: Record<string, string>): InputMunasakhat => ({
   dasar: input(graf),
   urutanWafat,
-  ...(lahirSetelahWafat ? { lahirSetelahWafat } : {}),
+  ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
 });
 
 const placeholder = (id: string, jenisKelamin: 'L' | 'P', extra = {}) => p(id, jenisKelamin, { statusHidup: 'wafat', penghubung: true, ...extra });

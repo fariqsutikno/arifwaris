@@ -222,8 +222,12 @@ export interface InputMunasakhat {
    * harta pribadi, hutang, dan wasiat mereka sendiri bukan bagian munasakhat (bab 12.5).
    */
   urutanWafat: IdOrang[];
-  /** Orang yang lahir setelah wafatnya mayit tertentu: belum ada saat mayit itu dan sebelumnya wafat. */
-  lahirSetelahWafat?: Record<IdOrang, IdOrang>;
+  /**
+   * Orang yang belum dikandung saat mayit tertentu wafat: bukan ahli waris mayit itu dan mayit sebelumnya.
+   * Yang sudah di rahim saat mayit wafat lalu lahir hidup tetap ahli warisnya [R13-1] [R13-2], jadi tidak dicantumkan.
+   * Pembagian munasakhat terjadi setelah ia lahir, sehingga tidak perlu taqdir haml (13a.5).
+   */
+  dikandungSetelahWafat?: Record<IdOrang, IdOrang>;
 }
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;

@@ -27,7 +27,7 @@ menghasilkan saham dan nominal identik dengan hasil engine di test.
 ```
 Wizard (langkah 1–5)
   ↓ checklist → graf via tambahKerabat/opsiRelasi (+ node penghubung untuk saudara dst.)
-Kasus { graf, tirkah, pembulatan, urutanWafat, lahirSetelahWafat? }  ⇄ localStorage / JSON
+Kasus { graf, tirkah, pembulatan, urutanWafat, dikandungSetelahWafat? }  ⇄ localStorage / JSON
   ↓
 urutanWafat kosong ? hitung(input) : hitungMunasakhat(input)
   ↓
