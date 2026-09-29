@@ -3,6 +3,7 @@ import { hitung, type InputEngine, type LangkahJejak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
+import snapshot from '../../../../apps/web/src/snapshot.json';
 import { kamusSnapshot, penyusunTes } from './kamus.js';
 import { ID_ISTILAH, jelaskan, narasiNisab, keTeksBiasa, type Penjelasan } from '../index.js';
 
@@ -319,4 +320,10 @@ describe('Narasi overlay madzhab', () => {
     expect(teks[0]).toContain('على المذهب الحنبلي');
     expect(teks.some(t => t.startsWith('على المذهب الحنبلي: الجدة من قبل الأب ترث مع الأب'))).toBe(true);
   });
+});
+
+test('kunci narasi.arab punya ar dan id (id terjemahan, tanpa huruf Arab)', () => {
+  const arab = snapshot.diksi.filter(butir => butir.kunci.startsWith('narasi.arab.'));
+  expect(arab.length).toBeGreaterThan(50);
+  expect(arab.filter(butir => !butir.ar || !butir.id || /[؀-ۿ]/.test(butir.id)).map(butir => butir.kunci)).toEqual([]);
 });

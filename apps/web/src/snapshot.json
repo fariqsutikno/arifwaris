@@ -15708,6 +15708,1049 @@
    "id": "Sisa {sisa} dibanding ashl radd {ashl_radd}: FPB 1 → {tabayun}. Kalikan ashl zawjiyyah dengan seluruh ashl radd: {ashl_zawjiyyah} × {ashl_radd} = {hasil}.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.anak_lk",
+   "halaman": "narasi",
+   "id": "anak laki-laki",
+   "ar": "الابن",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.cucu_lk",
+   "halaman": "narasi",
+   "id": "cucu laki-laki dari anak laki-laki",
+   "ar": "ابن الابن",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.ayah",
+   "halaman": "narasi",
+   "id": "ayah",
+   "ar": "الأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.kakek",
+   "halaman": "narasi",
+   "id": "kakek",
+   "ar": "الجد",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.saudara_kandung",
+   "halaman": "narasi",
+   "id": "saudara laki-laki kandung",
+   "ar": "الأخ الشقيق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.saudara_sebapak",
+   "halaman": "narasi",
+   "id": "saudara laki-laki sebapak",
+   "ar": "الأخ لأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.saudara_seibu",
+   "halaman": "narasi",
+   "id": "saudara laki-laki seibu",
+   "ar": "الأخ لأم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.keponakan_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki saudara kandung",
+   "ar": "ابن الأخ الشقيق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.keponakan_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki saudara sebapak",
+   "ar": "ابن الأخ لأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.paman_kandung",
+   "halaman": "narasi",
+   "id": "paman kandung",
+   "ar": "العم الشقيق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.paman_sebapak",
+   "halaman": "narasi",
+   "id": "paman sebapak",
+   "ar": "العم لأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.sepupu_kandung",
+   "halaman": "narasi",
+   "id": "anak laki-laki paman kandung",
+   "ar": "ابن العم الشقيق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.sepupu_sebapak",
+   "halaman": "narasi",
+   "id": "anak laki-laki paman sebapak",
+   "ar": "ابن العم لأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.suami",
+   "halaman": "narasi",
+   "id": "suami",
+   "ar": "الزوج",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.mutiq",
+   "halaman": "narasi",
+   "id": "mu'tiq",
+   "ar": "المعتق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.anak_pr",
+   "halaman": "narasi",
+   "id": "anak perempuan",
+   "ar": "البنت",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.cucu_pr",
+   "halaman": "narasi",
+   "id": "cucu perempuan dari anak laki-laki",
+   "ar": "بنت الابن",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.ibu",
+   "halaman": "narasi",
+   "id": "ibu",
+   "ar": "الأم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.nenek_dari_ibu",
+   "halaman": "narasi",
+   "id": "nenek dari pihak ibu",
+   "ar": "أم الأم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.nenek_dari_ayah",
+   "halaman": "narasi",
+   "id": "nenek dari pihak ayah",
+   "ar": "أم الأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.saudari_kandung",
+   "halaman": "narasi",
+   "id": "saudara perempuan kandung",
+   "ar": "الأخت الشقيقة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.saudari_sebapak",
+   "halaman": "narasi",
+   "id": "saudara perempuan sebapak",
+   "ar": "الأخت لأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.saudari_seibu",
+   "halaman": "narasi",
+   "id": "saudara perempuan seibu",
+   "ar": "الأخت لأم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.istri",
+   "halaman": "narasi",
+   "id": "istri",
+   "ar": "الزوجة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ahli_waris.mutiqah",
+   "halaman": "narasi",
+   "id": "mu'tiqah",
+   "ar": "المعتقة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.qarib",
+   "halaman": "narasi",
+   "id": "kerabat",
+   "ar": "قريب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.fardh.1_2",
+   "halaman": "narasi",
+   "id": "setengah",
+   "ar": "النصف",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.fardh.1_4",
+   "halaman": "narasi",
+   "id": "seperempat",
+   "ar": "الربع",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.fardh.1_8",
+   "halaman": "narasi",
+   "id": "seperdelapan",
+   "ar": "الثمن",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.fardh.2_3",
+   "halaman": "narasi",
+   "id": "dua pertiga",
+   "ar": "الثلثان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.fardh.1_3",
+   "halaman": "narasi",
+   "id": "sepertiga",
+   "ar": "الثلث",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.fardh.1_6",
+   "halaman": "narasi",
+   "id": "seperenam",
+   "ar": "السدس",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.uang",
+   "halaman": "narasi",
+   "id": "Rp{jumlah}",
+   "ar": "{jumlah} روبية",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.penghubung.wa",
+   "halaman": "narasi",
+   "id": " dan ",
+   "ar": " و",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.langkah",
+   "halaman": "narasi",
+   "id": "Langkah {nomor}",
+   "ar": "الخطوة {nomor}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.madzhab.syafii",
+   "halaman": "narasi",
+   "id": "Syafi'i",
+   "ar": "الشافعي",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.madzhab.hanbali",
+   "halaman": "narasi",
+   "id": "Hanbali",
+   "ar": "الحنبلي",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.madzhab.hanafi",
+   "halaman": "narasi",
+   "id": "Hanafi",
+   "ar": "الحنفي",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.madzhab.maliki",
+   "halaman": "narasi",
+   "id": "Maliki",
+   "ar": "المالكي",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.pembukaan_madzhab",
+   "halaman": "narasi",
+   "id": "Masalah ini menurut madzhab {madzhab}.",
+   "ar": "هذه المسألة على المذهب {madzhab}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.dhamir.mudzakkar",
+   "halaman": "narasi",
+   "id": "mereka",
+   "ar": "هم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.dhamir.muannats",
+   "halaman": "narasi",
+   "id": "mereka (perempuan)",
+   "ar": "هن",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.tirkah",
+   "halaman": "narasi",
+   "id": "Harta peninggalan",
+   "ar": "التركة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.waratsah",
+   "halaman": "narasi",
+   "id": "Ahli waris",
+   "ar": "الورثة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.furudh",
+   "halaman": "narasi",
+   "id": "Fardh dan ashabah",
+   "ar": "الفروض والتعصيب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.ashl",
+   "halaman": "narasi",
+   "id": "Ashlul mas'alah",
+   "ar": "أصل المسألة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.kelas",
+   "halaman": "narasi",
+   "id": "'Aul dan radd",
+   "ar": "العول والرد",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.tashih",
+   "halaman": "narasi",
+   "id": "Tashih",
+   "ar": "التصحيح",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.judul.hasil",
+   "halaman": "narasi",
+   "id": "Pembagian",
+   "ar": "القسمة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.tirkah",
+   "halaman": "narasi",
+   "id": "tirkah",
+   "ar": "التركة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.warits",
+   "halaman": "narasi",
+   "id": "ahli waris",
+   "ar": "الورثة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mani",
+   "halaman": "narasi",
+   "id": "karena mani'",
+   "ar": "لمانع",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mahjub_hirman",
+   "halaman": "narasi",
+   "id": "mahjub hirman",
+   "ar": "محجوب حجب حرمان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.hajb_nuqshan",
+   "halaman": "narasi",
+   "id": "hajb nuqshan",
+   "ar": "حجب نقصان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.faru_warits",
+   "halaman": "narasi",
+   "id": "far'u warits",
+   "ar": "الفرع الوارث",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.jam_min_al_ikhwah",
+   "halaman": "narasi",
+   "id": "jam' min al-ikhwah",
+   "ar": "جمع من الإخوة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.umariyyatain",
+   "halaman": "narasi",
+   "id": "al-'Umariyyatain",
+   "ar": "العمريتان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.muashshib",
+   "halaman": "narasi",
+   "id": "mu'ashshib",
+   "ar": "المعصب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.takmilah_tsulutsain",
+   "halaman": "narasi",
+   "id": "takmilah ats-tsulutsain",
+   "ar": "تكملة الثلثين",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.kalalah",
+   "halaman": "narasi",
+   "id": "kalalah",
+   "ar": "كلالة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.musyarrakah",
+   "halaman": "narasi",
+   "id": "al-Musyarrakah",
+   "ar": "المشركة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.akdariyyah",
+   "halaman": "narasi",
+   "id": "al-Akdariyyah",
+   "ar": "الأكدرية",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.bi_nafsihi",
+   "halaman": "narasi",
+   "id": "ashabah bi nafsihi",
+   "ar": "عصبة بالنفس",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.bil_ghair",
+   "halaman": "narasi",
+   "id": "ashabah bil ghair, laki-laki dua kali bagian perempuan",
+   "ar": "عصبة بالغير، للذكر مثل حظ الأنثيين",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.maal_ghair",
+   "halaman": "narasi",
+   "id": "ashabah ma'al ghair",
+   "ar": "عصبة مع الغير",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.ashlul_masalah",
+   "halaman": "narasi",
+   "id": "ashlul mas'alah",
+   "ar": "أصل المسألة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.saham",
+   "halaman": "narasi",
+   "id": "saham",
+   "ar": "السهام",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.adilah",
+   "halaman": "narasi",
+   "id": "'adilah",
+   "ar": "عادلة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.aul",
+   "halaman": "narasi",
+   "id": "'ailah",
+   "ar": "عائلة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.radd",
+   "halaman": "narasi",
+   "id": "radd",
+   "ar": "الرد",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.juz_as_sahm",
+   "halaman": "narasi",
+   "id": "juz' as-sahm",
+   "ar": "جزء السهم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.tashih",
+   "halaman": "narasi",
+   "id": "tashih",
+   "ar": "التصحيح",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.inkisar",
+   "halaman": "narasi",
+   "id": "inkisar",
+   "ar": "انكسار",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mutamatsilan",
+   "halaman": "narasi",
+   "id": "mutamatsil",
+   "ar": "متماثلان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mutadakhilan",
+   "halaman": "narasi",
+   "id": "mutadakhil",
+   "ar": "متداخلان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mutawafiqan",
+   "halaman": "narasi",
+   "id": "mutawafiq",
+   "ar": "متوافقان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mutabayinan",
+   "halaman": "narasi",
+   "id": "mutabayin",
+   "ar": "متباينان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.wafq",
+   "halaman": "narasi",
+   "id": "wafq",
+   "ar": "وفق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.muwafaqah",
+   "halaman": "narasi",
+   "id": "muwafaqah",
+   "ar": "موافقة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.mubayanah",
+   "halaman": "narasi",
+   "id": "mubayanah",
+   "ar": "مباينة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.istilah.ruus",
+   "halaman": "narasi",
+   "id": "ru'us {dhamir}",
+   "ar": "رؤوس{dhamir}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tirkah.potongan",
+   "halaman": "narasi",
+   "id": "{tirkah} {kotor}, dikurangi biaya pengurusan jenazah {tajhiz} dan hutang {hutang}, tersisa {tersisa}.",
+   "ar": "{tirkah} {kotor}، يخرج منها مؤن التجهيز {tajhiz} والدين {hutang}، فيبقى {tersisa}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tirkah.wasiat.cukup",
+   "halaman": "narasi",
+   "id": "Wasiat {diminta}, batasnya sepertiga {batas}, yang dijalankan {dipakai}.",
+   "ar": "الوصية {diminta}، وحدها الثلث {batas}، فينفذ منها {dipakai}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tirkah.wasiat.lebih",
+   "halaman": "narasi",
+   "id": "Wasiat {diminta}, batasnya sepertiga {batas}, yang dijalankan {dipakai}; kelebihan {kelebihan} bergantung pada izin ahli waris.",
+   "ar": "الوصية {diminta}، وحدها الثلث {batas}، فينفذ منها {dipakai}، والزائد {kelebihan} موقوف على إجازة الورثة.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tirkah.dibagi",
+   "halaman": "narasi",
+   "id": "Yang dibagi di antara ahli waris: {bersih}.",
+   "ar": "ما يقسم بين الورثة: {bersih}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.daftar",
+   "halaman": "narasi",
+   "id": "{warits}: {daftar}.",
+   "ar": "{warits}: {daftar}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.mani",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mewarisi, {mani} {sebab}.",
+   "ar": "{siapa} لا يرث، {mani} {sebab}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.sebab_mani.qatl",
+   "halaman": "narasi",
+   "id": "pembunuhan",
+   "ar": "القتل",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.sebab_mani.beda_agama",
+   "halaman": "narasi",
+   "id": "perbedaan agama",
+   "ar": "اختلاف الدين",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.terhalang",
+   "halaman": "narasi",
+   "id": "{siapa} {mahjub_hirman} oleh {hajib}.",
+   "ar": "{siapa} {mahjub_hirman} بـ{hajib}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.khilaf",
+   "halaman": "narasi",
+   "id": "Menurut madzhab {madzhab}: {isi}.",
+   "ar": "على المذهب {madzhab}: {isi}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.isi_khilaf.k03_1",
+   "halaman": "narasi",
+   "id": "nenek ini tidak termasuk nenek yang mewarisi, jadi ia tergolong dzawil arham",
+   "ar": "ليست هذه الجدة من الجدات الوارثات، فهي من ذوي الأرحام",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.isi_khilaf.k04_1",
+   "halaman": "narasi",
+   "id": "nenek yang lebih dekat menghalangi nenek yang lebih jauh dari pihak mana pun",
+   "ar": "الجدة القربى تحجب البعدى من أي جهة كانت",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.isi_khilaf.k04_2",
+   "halaman": "narasi",
+   "id": "nenek dari pihak ayah mewarisi bersama ayah",
+   "ar": "الجدة من قبل الأب ترث مع الأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.isi_khilaf.k05_1",
+   "halaman": "narasi",
+   "id": "kakek berkedudukan seperti ayah sehingga menghalangi saudara kandung dan sebapak",
+   "ar": "الجد بمنزلة الأب فيحجب الإخوة الأشقاء ولأب",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.waratsah.isi_khilaf.k07_1",
+   "halaman": "narasi",
+   "id": "tidak ada penggabungan dalam musyarrakah, jadi saudara kandung tidak mendapat apa-apa",
+   "ar": "لا تشريك في المشركة، فلا شيء للأخ الشقيق",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.opsi_jadd.muqasamah",
+   "halaman": "narasi",
+   "id": "muqasamah",
+   "ar": "المقاسمة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.opsi_jadd.tsuluts",
+   "halaman": "narasi",
+   "id": "sepertiga harta",
+   "ar": "ثلث المال",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.opsi_jadd.tsuluts_baqi",
+   "halaman": "narasi",
+   "id": "sepertiga sisa",
+   "ar": "ثلث الباقي",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.opsi_jadd.sudus",
+   "halaman": "narasi",
+   "id": "seperenam harta",
+   "ar": "سدس المال",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.pilihan_jadd",
+   "halaman": "narasi",
+   "id": "Ia mendapat yang paling menguntungkan dari: {opsi}, yaitu {terpilih}.",
+   "ar": "له الأحظ من: {opsi}، وهو {terpilih}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.ada_faru_warits",
+   "halaman": "narasi",
+   "id": "karena ada {faru_warits} ({oleh})",
+   "ar": "لوجود {faru_warits} ({oleh})",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.tanpa_faru_warits",
+   "halaman": "narasi",
+   "id": "karena tidak ada {faru_warits}",
+   "ar": "لعدم {faru_warits}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.jam_ikhwah",
+   "halaman": "narasi",
+   "id": "karena ada {jam_min_al_ikhwah} ({oleh})",
+   "ar": "لوجود {jam_min_al_ikhwah} ({oleh})",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.tanpa_faru_warits_dan_ikhwah",
+   "halaman": "narasi",
+   "id": "karena tidak ada far'u warits dan tidak ada jam' min al-ikhwah",
+   "ar": "لعدم الفرع الوارث وعدم الجمع من الإخوة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.umariyyatain",
+   "halaman": "narasi",
+   "id": "{umariyyatain}: sepertiga sisa setelah fardh salah satu pasangan {fardh_pasangan}",
+   "ar": "{umariyyatain}: ثلث الباقي بعد فرض أحد الزوجين {fardh_pasangan}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.nenek_tanpa_ibu",
+   "halaman": "narasi",
+   "id": "karena tidak ada ibu",
+   "ar": "لعدم الأم",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.tanpa_muashshib.mufrad",
+   "halaman": "narasi",
+   "id": "karena ia sendirian dan tidak ada {muashshib}",
+   "ar": "لانفرادها وعدم {muashshib}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.tanpa_muashshib.jamak",
+   "halaman": "narasi",
+   "id": "karena mereka lebih dari satu dan tidak ada {muashshib}",
+   "ar": "لتعددهن وعدم {muashshib}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.takmilah",
+   "halaman": "narasi",
+   "id": "{takmilah_tsulutsain} bersama {bersama}",
+   "ar": "{takmilah_tsulutsain} مع {bersama}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.kalalah.mufrad",
+   "halaman": "narasi",
+   "id": "karena ia sendirian, dan masalahnya {kalalah}",
+   "ar": "لانفراده، والمسألة {kalalah}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.kalalah.jamak",
+   "halaman": "narasi",
+   "id": "karena mereka lebih dari satu, dan masalahnya {kalalah}",
+   "ar": "لتعددهم، والمسألة {kalalah}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.ada_faru_mudzakkar",
+   "halaman": "narasi",
+   "id": "karena ada far'u warits laki-laki ({oleh})",
+   "ar": "لوجود الفرع الوارث الذكر ({oleh})",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.ada_faru_muannats",
+   "halaman": "narasi",
+   "id": "karena ada far'u warits perempuan ({oleh}), maka ia mendapat seperenam dan sisanya sebagai ashabah",
+   "ar": "لوجود الفرع الوارث الأنثى ({oleh})، فله السدس والباقي تعصيبا",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.musyarrakah",
+   "halaman": "narasi",
+   "id": "{musyarrakah}, dibagi rata di antara mereka",
+   "ar": "{musyarrakah}، يقسم بينهم بالسوية",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.akdariyyah.kakek",
+   "halaman": "narasi",
+   "id": "{akdariyyah} (kakek seperenam)",
+   "ar": "{akdariyyah} (للجد السدس)",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.akdariyyah.saudari",
+   "halaman": "narasi",
+   "id": "{akdariyyah} (saudari setengah, lalu digabung dengan bagian kakek dan dibagi laki-laki dua kali perempuan)",
+   "ar": "{akdariyyah} (للأخت النصف، ثم يضم إلى نصيب الجد ويقسم للذكر مثل حظ الأنثيين)",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sebab.jadd_sisa_sedikit",
+   "halaman": "narasi",
+   "id": "sisa {sisa} tidak lebih dari seperenam, maka kakek seperenam dan para saudara gugur",
+   "ar": "الباقي {sisa} لا يزيد على السدس، فللجد السدس وسقط الإخوة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.furudh.nuqshan",
+   "halaman": "narasi",
+   "id": "{hajb_nuqshan}: {siapa} dari {dari} menjadi {menjadi}.",
+   "ar": "{hajb_nuqshan}: {siapa} من {dari} إلى {menjadi}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.furudh.ashabah_jadd",
+   "halaman": "narasi",
+   "id": "dan kakek: {pilihan}",
+   "ar": "والجد {pilihan}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.kata_benda.ashl",
+   "halaman": "narasi",
+   "id": "Kedua penyebut",
+   "ar": "المخرجان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.kata_benda.juz_sahm",
+   "halaman": "narasi",
+   "id": "Kedua angka simpanan",
+   "ar": "المثبتان",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.ashl.rincian",
+   "halaman": "narasi",
+   "id": "{ashl} {nilai}. {saham}: {rincian}.",
+   "ar": "{ashl} {nilai}. {saham}: {rincian}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.kelas.adilah",
+   "halaman": "narasi",
+   "id": "Jumlah saham {jumlah} sama dengan ashl {ashl}, maka masalahnya {adilah}.",
+   "ar": "مجموع السهام {jumlah} مساو للأصل {ashl}، فالمسألة {adilah}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.kelas.aul",
+   "halaman": "narasi",
+   "id": "Jumlah saham {jumlah} lebih dari ashl {ashl}, maka masalahnya {aul}, naik menjadi {jumlah}.",
+   "ar": "مجموع السهام {jumlah} أكثر من الأصل {ashl}، فالمسألة {aul}، تعول إلى {jumlah}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.kelas.radd.a",
+   "halaman": "narasi",
+   "id": "Jumlah saham {jumlah} kurang dari ashl {ashl} dan tidak ada ashabah, maka terjadi {radd}.",
+   "ar": "مجموع السهام {jumlah} أقل من الأصل {ashl} ولا عاصب، ففيها {radd}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.kelas.radd.b",
+   "halaman": "narasi",
+   "id": "Jumlah saham {jumlah} kurang dari ashl {ashl} dan tidak ada ashabah, maka terjadi {radd}, dan tidak dikembalikan kepada suami/istri.",
+   "ar": "مجموع السهام {jumlah} أقل من الأصل {ashl} ولا عاصب، ففيها {radd}، ولا يرد على الزوجين.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.kelas.zawjiyyah",
+   "halaman": "narasi",
+   "id": "Masalah zawjiyyah dari {ashl}: {pasangan} {saham}, sisanya {sisa}. Masalah radd: {perbandingan}, ashl-nya {ashl_radd}.",
+   "ar": "مسألة الزوجية من {ashl}: {pasangan} {saham}، والباقي {sisa}. مسألة الرد: {perbandingan}، فأصلها {ashl_radd}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.kelas.tanpa_zawjiyyah",
+   "halaman": "narasi",
+   "id": "Ashl masalah radd adalah jumlah saham ahli radd: {ashl_radd}.",
+   "ar": "أصل مسألة الرد مجموع سهام أهل الرد: {ashl_radd}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tujuan_sisa.dzawil_arham",
+   "halaman": "narasi",
+   "id": "untuk dzawil arham",
+   "ar": "لذوي الأرحام",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tujuan_sisa.baitul_mal",
+   "halaman": "narasi",
+   "id": "untuk dzawil arham bila ada, bila tidak untuk baitul mal",
+   "ar": "لذوي الأرحام إن وجدوا، وإلا فلبيت المال",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tujuan_sisa.baitul_mal_teratur",
+   "halaman": "narasi",
+   "id": "untuk baitul mal",
+   "ar": "لبيت المال",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sisa_keluar.teratur",
+   "halaman": "narasi",
+   "id": "Dari {ashl}: {didapat} untuk ashabul furudh, sisanya {sisa} {tujuan}.",
+   "ar": "من {ashl}: {didapat} لأصحاب الفروض، والباقي {sisa} {tujuan}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.sisa_keluar.pasangan",
+   "halaman": "narasi",
+   "id": "Dari {ashl}: {pasangan} {didapat}, sisanya {sisa} tidak dikembalikan kepada suami/istri, jadi {tujuan}.",
+   "ar": "من {ashl}: {pasangan} {didapat}، والباقي {sisa} لا يرد على الزوجين، فهو {tujuan}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tashih.dikalikan",
+   "halaman": "narasi",
+   "id": "{juz_as_sahm} {pengali}, dan {tashih}: {dasar} × {pengali} = {hasil}.",
+   "ar": "{juz_as_sahm} {pengali}، و{tashih}: {dasar} × {pengali} = {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.tashih.tidak_perlu",
+   "halaman": "narasi",
+   "id": "Tidak ada {inkisar}, jadi tidak perlu tashih.",
+   "ar": "لا {inkisar}، فلا حاجة إلى التصحيح.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.hasil.orang",
+   "halaman": "narasi",
+   "id": "{siapa}: {saham} dari {penyebut}{nominal}.",
+   "ar": "{siapa}: {saham} من {penyebut}{nominal}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.hasil.selisih",
+   "halaman": "narasi",
+   "id": "Selisih pembulatan {selisih} (per {satuan}), belum dibagikan.",
+   "ar": "فرق التقريب {selisih} (بوحدة {satuan})، لم يقسم.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.arba.tamatsul",
+   "halaman": "narasi",
+   "id": "{benda} {a} dan {b} {tamatsul}, cukup salah satunya: {hasil}.",
+   "ar": "{benda} {a} و{b} {tamatsul}، فيكتفى بأحدهما: {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.arba.tadakhul",
+   "halaman": "narasi",
+   "id": "{benda} {a} dan {b} {tadakhul}, cukup yang terbesar: {hasil}.",
+   "ar": "{benda} {a} و{b} {tadakhul}، فيكتفى بالأكبر: {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.arba.tawafuq",
+   "halaman": "narasi",
+   "id": "{benda} {a} dan {b} {tawafuq} dengan {fpb}, maka {wafq} salah satunya dikalikan dengan yang lain: {a} × ({b} ÷ {fpb}) = {hasil}.",
+   "ar": "{benda} {a} و{b} {tawafuq} بـ{fpb}، فيضرب {wafq} أحدهما في الآخر: {a} × ({b} ÷ {fpb}) = {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.arba.tabayun",
+   "halaman": "narasi",
+   "id": "{benda} {a} dan {b} {tabayun}, maka keduanya dikalikan: {a} × {b} = {hasil}.",
+   "ar": "{benda} {a} و{b} {tabayun}، فيضرب أحدهما في الآخر: {a} × {b} = {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.inkisar.ruus_berbobot",
+   "halaman": "narasi",
+   "id": "{ruus} {jumlah} (laki-laki dihitung dua)",
+   "ar": "{ruus} {jumlah} (الذكر برأسين)",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.inkisar.habis",
+   "halaman": "narasi",
+   "id": "Saham {dhamir} {saham} habis dibagi {ruus}.",
+   "ar": "سهام{dhamir} {saham} تنقسم على {ruus}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.inkisar.tawafuq",
+   "halaman": "narasi",
+   "id": "Saham {dhamir} {saham} tidak habis dibagi {ruus} dan keduanya {muwafaqah} dengan {fpb}, maka disimpan {wafq} ru'us: {jumlah_ruus} ÷ {fpb} = {hasil}.",
+   "ar": "سهام{dhamir} {saham} لا تنقسم على {ruus} وبينهما {muwafaqah} بـ{fpb}، فيثبت {wafq} الرؤوس: {jumlah_ruus} ÷ {fpb} = {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.inkisar.tabayun",
+   "halaman": "narasi",
+   "id": "Saham {dhamir} {saham} tidak habis dibagi {ruus} dan keduanya {mubayanah}, maka seluruh ru'us disimpan: {hasil}.",
+   "ar": "سهام{dhamir} {saham} لا تنقسم على {ruus} وبينهما {mubayanah}، فتثبت الرؤوس كلها: {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.radd.habis",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} habis dibagi masalah radd {ashl_radd}, maka cukup dari masalah zawjiyyah: {hasil}.",
+   "ar": "الباقي {sisa} ينقسم على مسألة الرد {ashl_radd}، فتصح من مسألة الزوجية: {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.radd.tawafuq",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} dan masalah radd {ashl_radd} {tawafuq} dengan {fpb}, maka wafq masalah radd dikalikan dengan masalah zawjiyyah: {ashl_zawjiyyah} × ({ashl_radd} ÷ {fpb}) = {hasil}.",
+   "ar": "الباقي {sisa} ومسألة الرد {ashl_radd} {tawafuq} بـ{fpb}، فيضرب وفق مسألة الرد في مسألة الزوجية: {ashl_zawjiyyah} × ({ashl_radd} ÷ {fpb}) = {hasil}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.arab.nisab.radd.tabayun",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} dan masalah radd {ashl_radd} {tabayun}, maka masalah radd dikalikan dengan masalah zawjiyyah: {ashl_zawjiyyah} × {ashl_radd} = {hasil}.",
+   "ar": "الباقي {sisa} ومسألة الرد {ashl_radd} {tabayun}، فتضرب مسألة الرد في مسألة الزوجية: {ashl_zawjiyyah} × {ashl_radd} = {hasil}.",
+   "versiTerbit": 873
   }
  ]
 }

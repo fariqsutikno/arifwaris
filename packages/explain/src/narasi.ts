@@ -22,9 +22,9 @@ export function jelaskan(hasil: HasilOk, graf: GrafKeluarga, opsi: OpsiPenjelasa
   const arab = bahasa === 'ar';
   const konteks = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa });
   const daftarBab = arab ? babArab(konteks, graf) : opsi.gaya === 'ringkas' ? babRingkas(konteks) : babCerita(konteks);
-  const pembukaan = arab ? pembukaanMadzhabArab(hasil.ruleset) : pembukaanMadzhab(konteks.penyusun, hasil.ruleset);
+  const pembukaan = arab ? pembukaanMadzhabArab(konteks.penyusun, hasil.ruleset) : pembukaanMadzhab(konteks.penyusun, hasil.ruleset);
   const [babPertama] = daftarBab;
   if (pembukaan && babPertama) daftarBab[0] = { ...babPertama, daftarBaris: [pembukaan, ...babPertama.daftarBaris] };
-  const nomorLangkah = (i: number) => (arab ? `الخطوة ${angkaArab(String(i + 1))}` : teksKamus(konteks.penyusun, 'narasi.umum.langkah', { nomor: String(i + 1) }));
+  const nomorLangkah = (i: number) => (arab ? teksKamus(konteks.penyusun, 'narasi.arab.langkah', { nomor: angkaArab(String(i + 1)) }) : teksKamus(konteks.penyusun, 'narasi.umum.langkah', { nomor: String(i + 1) }));
   return { daftarBab: daftarBab.map((bab, i) => ({ ...bab, judul: `${nomorLangkah(i)} — ${bab.judul}` })) };
 }

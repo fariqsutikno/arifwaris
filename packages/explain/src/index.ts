@@ -4,4 +4,4 @@ export { narasiNisab } from './nisab.js';
 export { keTeksBiasa, susun, teksKamus, type Bahasa, type Kamus, type Penyusun, type BarisPenjelasan, type Potongan } from './segments.js';
 export { ID_ISTILAH, type IdIstilah } from './terms.js';
 export { jelaskanMunasakhat, type PenjelasanMunasakhat, type BagianMunasakhat } from './munasakhat.js';
-export { LABEL_ARAB, angkaArab } from './arab.js';
+export { labelArab, angkaArab } from './arab.js';
