@@ -91,10 +91,10 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R08-1 | Saudara tidak gugur oleh kakek | RDH | Bab 3, Mirats al-Jadd ma'a al-Ikhwah | «لم يسقطوا على الصحيح. وقال المزني: يسقطون، واختاره... ابن سريج، وابن اللبان» |
-| R08-2 | Tanpa ashabul furudh: terbaik dari muqasamah atau 1/3 | RDH | Idem | «فللجد الأوفر من مقاسمتهم وثلث جميع المال... وضابطه أن الإخوة والأخوات، إن كانوا مثليه، فالقسمة والثلث سواء. وإن كانوا دون مثليه، فالقسمة أوفر» |
-| R08-3 | Dengan ashabul furudh: terbaik dari tiga; sisa ≤ 1/6 | RDH | Idem | «فللجد خير الأمور الثلاثة، وهي مقاسمة الإخوة والأخوات، وثلث ما يبقى، وسدس جميع المال»; bila sisa ≤ 1/6: «فيفرض للجد السدس... وعلى هذه التقديرات الثلاثة يسقط الإخوة والأخوات» |
-| R08-4 | Mu'addah | RDH | Idem | «لكن هنا يعد أولاد الأبوين أولاد الأب على الجد في القسمة... والواحدة تأخذ إلى النصف. فإن بقي شيء، فلأولاد الأب» |
-| R08-5 | Saudari tidak diberi fardh bersama kakek, kecuali akdariyyah | RDH | Idem | «فلا يفرض لهن معه ولا تعال مسألة بسببهن... وهذا أصل مطرد إلا في المسألة الأكدرية... وتصح من سبعة وعشرين، للزوج تسعة، وللأم ستة، وللأخت أربعة، وللجد ثمانية» |
+| R08-1 | Saudara tidak gugur oleh kakek | RDH | Raudhah 6/23 (Bab 3, Mirats al-Jadd ma'a al-Ikhwah) · shamela:499/2312 | «لم يسقطوا على الصحيح. وقال المزني: يسقطون، واختاره... ابن سريج، وابن اللبان» |
+| R08-2 | Tanpa ashabul furudh: terbaik dari muqasamah atau 1/3 | RDH | Raudhah 6/23–24 · shamela:499/2312 shamela:499/2313 | «فللجد الأوفر من مقاسمتهم وثلث جميع المال... وضابطه أن الإخوة والأخوات، إن كانوا مثليه، فالقسمة والثلث سواء. وإن كانوا دون مثليه، فالقسمة أوفر» |
+| R08-3 | Dengan ashabul furudh: terbaik dari tiga; sisa ≤ 1/6 | RDH | Raudhah 6/24 · shamela:499/2313 | «فللجد خير الأمور الثلاثة، وهي مقاسمة الإخوة والأخوات، وثلث ما يبقى، وسدس جميع المال»; bila sisa ≤ 1/6: «فيفرض للجد السدس... وعلى هذه التقديرات الثلاثة يسقط الإخوة والأخوات» |
+| R08-4 | Mu'addah | RDH | Raudhah 6/24 · shamela:499/2313 | «لكن هنا يعد أولاد الأبوين أولاد الأب على الجد في القسمة... والواحدة تأخذ إلى النصف. فإن بقي شيء، فلأولاد الأب» |
+| R08-5 | Saudari tidak diberi fardh bersama kakek, kecuali akdariyyah | RDH | Raudhah 6/25 · shamela:499/2314 | «فلا يفرض لهن معه ولا تعال مسألة بسببهن... وهذا أصل مطرد إلا في المسألة الأكدرية... وتصح من سبعة وعشرين، للزوج تسعة، وللأم ستة، وللأخت أربعة، وللجد ثمانية» |
 | R08-6 | Madzhab Zaid bin Tsabit dalam jadd | A | Madzhab Zaid dalam jadd: BHQ 6/409 no. 12445 (jalur Ibrahim an-Nakha'i; termasuk akdariyyah) · shamela:7861/14334; ad-Darimi (ed. az-Zahrani) 2/965 · shamela:36114/965; hadits keutamaan Zaid «وأفرضهم زيد بن ثابت» (at-Tirmidzi no. 3790; Ibnu Majah no. 154) | Dasar penisbatan madzhab Syafi'i pada Zaid dalam fara'idh. |
 | R08-7 | Pendapat kakek = ayah (Ibnu 'Utsaimin) | A | Abu Bakr ash-Shiddiq, Ibnu 'Abbas; dinukil al-Bukhari secara mu'allaq (Kitab al-Fara'idh, bab Mirats al-Jadd ma'a al-Ab wal-Ikhwah): «وقال أبو بكر وابن عباس وابن الزبير: الجد أب» (Ibnu az-Zubair juga disebut) · terbaca lewat Ibnu Baththal, Syarh Shahih al-Bukhari 8/351 · shamela:10486/4135 | Perbandingan; tidak dipakai sistem. |
