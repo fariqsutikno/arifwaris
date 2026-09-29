@@ -125,12 +125,46 @@ Untuk setiap berkas:
 Jalankan tes packages/content (ada tes konsistensi). Laporan per berkas + commit.
 ```
 
+## Prompt 6.5 — Audit menyeluruh (kerjakan di sesi BARU, sebelum Prompt 7)
+
+```
+Konteks: docs/prompt-verifikasi.md. Kamu adalah AUDITOR, bukan pelaksana Prompt 1–6. Jangan percaya laporan commit sebelumnya; cek ulang dari berkas.
+
+Tujuan: menemukan yang terlewat, terluput, atau salah dari Prompt 0–6. Kerjakan berurutan:
+
+A. Cakupan (apa yang belum disentuh)
+1. Daftar SEMUA baris "| Rxx-y |" di docs/kb/*.md. Untuk tiap baris: punya token (shamela:/hadits:/quran:/islamqa:) ATAU alasan tertulis tanpa token (mis. Lahim/Ithraa tidak ada di Shamela)? Yang tidak punya keduanya = TERLEWAT.
+2. Cari kutipan «…» dan teks Arab di LUAR tabel rujukan: blok KHILAF, bab 18, bab 16, docs/lampiran-konten/*, docs/design/*. Tiap kutipan harus punya asal yang bisa ditunjuk. Yang belum = TERLEWAT.
+3. Cari penyebutan ayat ("QS", "An-Nisa'", "surah"), hadits ("HR.", "riwayat", "Bukhari", "Muslim"), dan kitab di konten yang tidak memakai kode [Rxx-y] maupun token = TERLEWAT.
+4. Kode [Rxx-y] dan Kxx-y yang dirujuk di konten/kode (grep packages/, apps/, docs/) tetapi tidak ada di KB = rujukan patah.
+
+B. Sampel ulang (apa yang mungkin salah)
+5. Ambil acak ±20% token dari tiap jenis (minimal 5 per jenis) dan buka ulang di MCP:
+   - shamela: → shamela_verify_quote pada book/page itu; kutipan harus ada di BODY, bukan foot.
+   - hadits: → pastikan nomor STANDAR (bukan id MCP Hadith) dan lafaz cocok.
+   - quran: → fetch_quran; teks & nomor ayat cocok.
+   - islamqa: → pastikan tidak menjadi satu-satunya dasar klaim hukum.
+6. Cek khusus kesalahan yang paling mungkin: page_id tertukar dengan halaman cetak; nomor hadits tertukar id MCP; kutipan dari catatan kaki muhaqqiq; lafaz hasil "perbaikan" yang justru menyimpang dari kitab.
+
+C. Konsistensi
+7. Klaim yang sama di beberapa tempat (KB bab asal, bab 18, konten, glosarium, soal) harus sama isinya dan rujukannya.
+8. Setiap koreksi hukum di commit Prompt 1–6 harus tercatat sebagai ⚑ atau di 17.5; koreksi hukum yang masuk diam-diam = TEMUAN.
+9. soal_hitung.md: jalankan ulang seluruh soal lewat packages/engine; semua harus cocok.
+10. Jalankan semua tes (packages/content, packages/engine, packages/explain, apps/*).
+
+Keluaran: docs/audit-verifikasi.md berisi tabel
+| # | Berkas:baris | Jenis (terlewat / salah / patah / tidak konsisten / hukum diam-diam) | Temuan | Tindakan |
+- Temuan lafaz/nomor/token → LANGSUNG dibetulkan (sesuai keputusan pengguna), tandai "diperbaiki".
+- Temuan yang mengubah hukum → ⚑, jangan diubah.
+Commit per kelompok perbaikan. Terakhir tulis ringkasan: berapa baris dicek, berapa diperbaiki, berapa ⚑.
+```
+
 ## Prompt 7 — Penutup
 
 ```
-Konteks: docs/prompt-verifikasi.md.
+Konteks: docs/prompt-verifikasi.md dan docs/audit-verifikasi.md (hasil Prompt 6.5).
 
-1. Kumpulkan semua ⚑ dari commit Prompt 1–6 ke satu tabel di docs/rencana-verifikasi.md bagian "Keputusan tertunda".
+1. Kumpulkan semua ⚑ dari commit Prompt 1–6 DAN dari docs/audit-verifikasi.md ke satu tabel di docs/rencana-verifikasi.md bagian "Keputusan tertunda".
 2. Perbarui 17.4 (hapus yang selesai), 17.5 (jejak koreksi), bab 18.3, docs/referensi-dicari.md.
 3. Tes: setiap baris rujukan punya minimal satu token ATAU alasan tertulis kenapa tidak (mis. Lahim tidak ada di Shamela). Tambahkan tes itu di packages/content.
 Commit.
