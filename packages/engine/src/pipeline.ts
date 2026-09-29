@@ -82,13 +82,17 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
 
   // 1a. Dari graf keluarga, tentukan peran tiap orang terhadap pewaris (anak, saudara, paman, ...).
   const aturan = ATURAN[input.ruleset];
-  const { daftarPeran, duaJihah } = turunkanPeran(graf, konfigurasi, aturan);
+  const { daftarPeran, duaJihah, nenekDuaQarabah } = turunkanPeran(graf, konfigurasi, aturan);
 
   // Data kurang → tanya dulu, jangan menebak.
   const pertanyaan = validasiInput(input, daftarPeran);
   if (pertanyaan.length > 0) return { status: 'PERLU_INPUT', pertanyaan };
   if (duaJihah.length > 0) {
     return { status: 'TIDAK_DIDUKUNG', alasan: `Ahli waris dengan dua jihah (pasangan sekaligus kerabat): ${duaJihah.join(', ')}.`, refs: [] };
+  }
+  // [K04-3] [HNB]/[HNF] nenek dua qarabah mewarisi dengan tiap qarabah; [MLK] baru nukilan sekunder. Belum dimodelkan.
+  if (input.ruleset !== 'syafii' && nenekDuaQarabah.length > 0) {
+    return { status: 'TIDAK_DIDUKUNG', alasan: `Nenek dengan dua qarabah (${nenekDuaQarabah.join(', ')}) belum didukung untuk madzhab ini.`, refs: ['K04-3'] };
   }
 
   // 1b. Mawani': keluarkan pembunuh, beda agama, dst.

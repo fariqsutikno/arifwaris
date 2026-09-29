@@ -17,26 +17,39 @@ export interface HasilDerivasi {
   daftarPeran: Record<IdOrang, PeranAhliWaris>;
   /** Orang yang sekaligus pasangan dan kerabat pewaris — tidak diatur KB, orkestrator menolak. */
   duaJihah: IdOrang[];
+  nenekDuaQarabah: IdOrang[];
 }
 
 /**
  * Tahap 1a: turunkan peran tiap orang dari graf (bab 3.1–3.2). Jenis saudara/paman ditentukan dari
  * kesamaan idAyah/idIbu, tidak pernah diinput langsung.
  */
-// `aturan` belum dipakai di tahap ini; diisi overlay nenek (K03-1) pada task berikutnya.
-export function turunkanPeran(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab, _aturan: AturanMadzhab = ATURAN.syafii): HasilDerivasi {
+export function turunkanPeran(graf: GrafKeluarga, konfigurasi: KonfigurasiMadzhab, aturan: AturanMadzhab = ATURAN.syafii): HasilDerivasi {
   const jalurPewaris = jalurKeAtas(graf, graf.idPewaris);
   const daftarPeran: Record<IdOrang, PeranAhliWaris> = {};
   const duaJihah: IdOrang[] = [];
 
   for (const idOrang of Object.keys(graf.orang)) {
     if (idOrang === graf.idPewaris) continue;
-    const kerabat = peranKekerabatan(graf, idOrang, jalurPewaris);
+    const kerabat = peranKekerabatan(graf, idOrang, jalurPewaris, aturan);
     const pasangan = peranPasangan(graf, idOrang, konfigurasi);
     if (pasangan && kerabat.kunci !== 'BUKAN_AHLI_WARIS' && kerabat.kunci !== 'DZAWIL_ARHAM') duaJihah.push(idOrang);
     daftarPeran[idOrang] = pasangan ?? kerabat;
   }
-  return { daftarPeran, duaJihah };
+  return { daftarPeran, duaJihah, nenekDuaQarabah: cariNenekDuaQarabah(graf, daftarPeran) };
+}
+
+// [K04-3] nenek yang sampai ke pewaris lewat ayah sekaligus lewat ibu. Derivasi hanya menyimpan satu jalur,
+// jadi hasilnya satu bagian [R04-8]; madzhab yang berbeda harus menolak kasus ini.
+// ponytail: hanya mendeteksi dua qarabah beda pihak; dua jalur di pihak yang sama belum dideteksi.
+function cariNenekDuaQarabah(graf: GrafKeluarga, daftarPeran: Record<IdOrang, PeranAhliWaris>): IdOrang[] {
+  const pewaris = graf.orang[graf.idPewaris]!;
+  const leluhurDari = (id: IdOrang | undefined) => (id && graf.orang[id] ? jalurKeAtas(graf, id) : new Map());
+  const pihakAyah = leluhurDari(pewaris.idAyah);
+  const pihakIbu = leluhurDari(pewaris.idIbu);
+  return Object.values(daftarPeran)
+    .filter(peran => (peran.kunci === 'NENEK_DARI_AYAH' || peran.kunci === 'NENEK_DARI_IBU') && pihakAyah.has(peran.idOrang) && pihakIbu.has(peran.idOrang))
+    .map(peran => peran.idOrang);
 }
 
 // ─── Pasangan ─────────────────────────────────────────────────────────────────
@@ -76,9 +89,9 @@ function jalurKeAtas(graf: GrafKeluarga, idAwal: IdOrang): Map<IdOrang, IdOrang[
   return daftarJalur;
 }
 
-function peranKekerabatan(graf: GrafKeluarga, idOrang: IdOrang, jalurPewaris: Map<IdOrang, IdOrang[]>): PeranAhliWaris {
+function peranKekerabatan(graf: GrafKeluarga, idOrang: IdOrang, jalurPewaris: Map<IdOrang, IdOrang[]>, aturan: AturanMadzhab): PeranAhliWaris {
   const jalurLeluhur = jalurPewaris.get(idOrang);
-  if (jalurLeluhur) return peranLeluhur(graf, idOrang, jalurLeluhur);
+  if (jalurLeluhur) return peranLeluhur(graf, idOrang, jalurLeluhur, aturan);
 
   const jalurOrang = jalurKeAtas(graf, idOrang);
   const jalurKeturunan = jalurOrang.get(graf.idPewaris);
@@ -91,7 +104,7 @@ const jenisKelaminDari = (graf: GrafKeluarga, id: IdOrang): Orang['jenisKelamin'
 const adaPerempuan = (graf: GrafKeluarga, ids: IdOrang[]) => ids.some(id => jenisKelaminDari(graf, id) === 'P');
 
 /** `lintasan` = [pewaris, ayah/ibu, ..., orang ini]. */
-function peranLeluhur(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[]): PeranAhliWaris {
+function peranLeluhur(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[], aturan: AturanMadzhab): PeranAhliWaris {
   const generasi = lintasan.length - 1;
   const tautan = lintasan.slice(1);
   const perantara = lintasan.slice(1, -1);
@@ -113,7 +126,12 @@ function peranLeluhur(graf: GrafKeluarga, idOrang: IdOrang, lintasan: IdOrang[])
     // [R03-4] [R03-5] nenek shahihah: tidak ada laki-laki diapit dua perempuan → pola jalur L* P*.
     const daftarJenisKelamin = perantara.map(id => jenisKelaminDari(graf, id));
     const fasidah = daftarJenisKelamin.some((jenisKelamin, i) => jenisKelamin === 'L' && daftarJenisKelamin.slice(0, i).includes('P'));
-    kunci = fasidah ? 'DZAWIL_ARHAM' : kekerabatan.jalur === 'sebapak' ? 'NENEK_DARI_AYAH' : 'NENEK_DARI_IBU';
+    // [K03-1] [HNB] tiga nenek (lewat ayah paling tinggi ummul jadd); [MLK] hanya ummul umm & ummul ab.
+    // Pola shahihah L*P*, jadi banyaknya L = laki-laki di pangkal jalur.
+    const lakiLakiDiJalur = daftarJenisKelamin.filter(jenisKelamin => jenisKelamin === 'L').length;
+    const melewatiBatas = aturan.batasLakiLakiJalurNenek !== undefined && lakiLakiDiJalur > aturan.batasLakiLakiJalurNenek;
+    kunci = fasidah || melewatiBatas ? 'DZAWIL_ARHAM' : kekerabatan.jalur === 'sebapak' ? 'NENEK_DARI_AYAH' : 'NENEK_DARI_IBU';
+    if (melewatiBatas && !fasidah) return { idOrang, kunci, kekerabatan, lintasan, rujukan: 'K03-1' };
   }
   return { idOrang, kunci, kekerabatan, lintasan };
 }

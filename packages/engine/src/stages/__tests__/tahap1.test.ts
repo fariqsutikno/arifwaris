@@ -138,7 +138,8 @@ describe('1c hajb hirman [R06-3]', () => {
     // Kakek menghijab nenek yang lewat dia, bukan ibunya ayah [R04-6].
     const kakek = keluarga({ PGF: { jenisKelamin: 'L' }, PGM: { jenisKelamin: 'P' }, PPGM: { jenisKelamin: 'P' } });
     expect(mahjubBy(kakek, 'PGM')).toBeNull();
-    expect(mahjubBy(kakek, 'PPGM')).toEqual(['PGF', 'PGM']);
+    // Penghalang dilaporkan satu per keputusan: kakek [R04-6] didahulukan dari nenek dekat [R04-9].
+    expect(mahjubBy(kakek, 'PPGM')).toEqual(['PGF']);
   });
 
   test('keturunan perempuan', () => {

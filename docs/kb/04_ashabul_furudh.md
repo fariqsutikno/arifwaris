@@ -197,6 +197,10 @@ Nukilan kitab [HNB] al-Mughni, [HNF] al-Mabsuth / Tuhfat al-Muluk (matan Hanafi,
 | R04-7 | [HNB] | Mughni 6/299 · shamela:8463/2621 | «قال أبو بكر بن المنذر: أجمع أهل العلم على أن للجدة السدس إذا لم يكن للميت أم»; hadits Qabishah (al-Mughirah, Muhammad bin Maslamah) |
 | R04-7 | [HNF] | Mabsuth 29/167 · shamela:5423/5924; Tuhfat al-Muluk hlm. 249 · shamela:6173/225 | «فتبين بهذه الآثار أنه لا يزاد في فريضة الجدات على السدس»; «الجدة أم الأم وأم الأب لها السدس واحدة كانت أو أكثر» |
 | R04-7 | [MLK] | 'Iqd 3/1246 · shamela:14594/1244 | «وأما الجدات ففرضهن السدس، في الانفراد والاجتماع» |
+| R04-8 | [HNB] | Mukhtashar al-Khiraqi hlm. 89 · shamela:2977/121; Mughni 6/300 · shamela:8463/2622 | «وكذلك إن كثرن لم يزدن على السدس فرضا» |
+| R04-8 | [HNF] | Syarh Mukhtashar ath-Thahawi (al-Jashshash) 4/90 · shamela:16546/1655; Mabsuth 29/197 · shamela:5423/5954 | «والجدات وإن كثرن فلهن السدس», «وهو اتفاق الصحابة»; contoh: «للجدات السدس بينهن أثلاثا» |
+| R04-8 | [MLK] | ar-Risalah hlm. 291 · shamela:1430/286; 'Iqd 3/1246 · shamela:14594/1244 | «فإن اجتمعتا فالسدس بينهما»; «ففرضهن السدس، في الانفراد والاجتماع» |
+| R04-8 (catatan) | semua | — | Token engine hanya memakai «para nenek berbagi 1/6»; butir nenek dua qarabah = K04-3. Engine menolak kasus dua qarabah di luar [SYF]. |
 | R04-12 | [HNB] | Mughni 6/273 · shamela:8463/2595 | «فلابنة الصلب النصف، ولبنات الابن واحدة كانت أو أكثر من ذلك السدس، تكملة الثلثين» ... «وهذا أيضا مجمع عليه بين العلماء» |
 | R04-12 | [HNF] | Mabsuth 29/141 · shamela:5423/5898 | «فإن كانت ابنة الصلب واحدة فلها النصف ولبنات الابن السدس تكملة الثلثين واحدة كانت أو أكثر من ذلك لحديث ابن مسعود» |
 | R04-12 | [MLK] | 'Iqd 3/1244 · shamela:14594/1242 | «فأما إناثهم (فيأخذن) مع بنت الصلب السدس تكملة الثلثين، الواحدة والجماعة» |

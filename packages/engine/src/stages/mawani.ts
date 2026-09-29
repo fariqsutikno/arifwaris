@@ -20,7 +20,7 @@ export function terapkanMawani(
         ? { jenis: 'bukanAhliWaris', alasan: "talak ba'in memutus sebab nikah", rujukanAturan: 'R02-3' }
         : { jenis: 'bukanAhliWaris', alasan: 'tidak ada sebab waris' };
     } else if (peran.kunci === 'DZAWIL_ARHAM') {
-      statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'dzawil arham', rujukanAturan: 'R14-4' };
+      statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'dzawil arham', rujukanAturan: peran.rujukan ?? 'R14-4' };
     } else if (orangIni.statusHidup !== 'hidup') {
       // Syarat 2 (bab 2.2): warits harus hidup saat muwarrits wafat.
       statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'tidak hidup saat pewaris wafat' };

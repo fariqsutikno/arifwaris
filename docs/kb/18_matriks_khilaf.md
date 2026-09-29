@@ -113,7 +113,7 @@ Status: **disetujui pengguna 2026-09-29** (setelah verifikasi kitab; R01-1 dipec
 | R04-5 | ya | ya | ya | 04, nukilan: Mughni 6/276–277 «أجمع أهل العلم على هذا كله»; Tuhfat al-Muluk hlm. 246; 'Iqd 3/1244 |
 | R04-6 | ya | tidak | tidak | [HNB] Mughni 6/306 (ijma' IMN, kecuali 3 hal). [HNF] beda (K05-1); [MLK] belum ditemukan |
 | R04-7 | ya | ya | ya | 04, nukilan: Mughni 6/299 (ijma' IMN); Mabsuth 29/167; 'Iqd 3/1246 |
-| R04-8 | tidak | tidak | tidak | nenek dua qarabah berbeda: K04-3; bagian «berbagi 1/6» sama (Mughni 6/300, Mabsuth 29/167, 'Iqd 3/1246) |
+| R04-8 | ya | ya | ya | Dipecah (keputusan 2026-09-29): token engine = para nenek berbagi 1/6 ([HNB] Khiraqi hlm. 89, Mughni 6/300; [HNF] Jashshash 4/90, Mabsuth 29/197; [MLK] Risalah hlm. 291, 'Iqd 3/1246). Butir nenek dua qarabah = K04-3; engine menolak kasusnya di luar [SYF] |
 | R04-9 | tidak | tidak | ya | K04-1: [MLK] = [SYF]; [HNB]/[HNF] dekat menghijab mutlak |
 | R04-10 | tidak | ya | ya | K04-2: [HNF]/[MLK] terhijab (= [SYF]); [HNB] tidak terhijab |
 | R04-11 | ya | ya | ya | Jenis IJ: ijma' dinukil RDH 6/13 dan Ibnu al-Mundzir |

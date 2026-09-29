@@ -4,6 +4,8 @@ import { hitungMunasakhat } from '../munasakhat.js';
 import type { InputEngine } from '../types.js';
 import { BAB16_FIXTURES, input, p } from './fixtures/bab16.js';
 import { M2 } from './fixtures/munasakhat.js';
+import { KASUS_MADZHAB } from './fixtures/madzhab.js';
+import { periksaInvarian } from './invarian.property.test.js';
 
 const denganRuleset = (dasar: InputEngine, ruleset: InputEngine['ruleset']): InputEngine => ({ ...dasar, ruleset });
 
@@ -48,4 +50,25 @@ describe('Kerangka ruleset', () => {
       expect(hasil.status).toBe('TIDAK_DIDUKUNG');
     }
   });
+});
+
+function sahamAkhir(hasil: Extract<ReturnType<typeof hitung>, { status: 'OK' }>) {
+  const { totalKolom, baris } = hasil.tabel;
+  const penyebut = totalKolom.tashih ?? totalKolom.radd ?? totalKolom.aul ?? totalKolom.ashl!;
+  const saham = Object.fromEntries(baris.flatMap(b => Object.entries(b.perOrang)).filter(([, sel]) => sel.saham > 0n).map(([id, sel]) => [id, sel.saham]));
+  return { saham, penyebut };
+}
+
+describe('Overlay madzhab — kasus bab 18.2', () => {
+  for (const kasus of KASUS_MADZHAB) {
+    for (const [ruleset, harapan] of Object.entries(kasus.harapan)) {
+      test(`${kasus.id} ${kasus.kode} ${kasus.menguji} [${ruleset}]`, () => {
+        const hasil = hitung({ ...input(kasus.graf), ruleset: ruleset as InputEngine['ruleset'] });
+        if (harapan === 'TIDAK_DIDUKUNG') { expect(hasil.status).toBe('TIDAK_DIDUKUNG'); return; }
+        if (hasil.status !== 'OK') throw new Error(JSON.stringify(hasil));
+        periksaInvarian(kasus.graf, hasil);
+        expect(sahamAkhir(hasil)).toEqual(harapan);
+      });
+    }
+  }
 });

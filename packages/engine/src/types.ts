@@ -56,6 +56,8 @@ export interface PeranAhliWaris {
   kunci: KunciAhliWaris | 'DZAWIL_ARHAM' | 'BUKAN_AHLI_WARIS';
   kekerabatan: PosisiKekerabatan;
   lintasan: IdOrang[];
+  /** Rujukan keputusan peran bila berasal dari titik khilaf (mis. 'K03-1'), dipakai mawani untuk status dzawil arham. */
+  rujukan?: string;
 }
 
 export type StatusOrang =
