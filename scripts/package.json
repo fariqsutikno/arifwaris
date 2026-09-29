@@ -6,7 +6,8 @@
   "scripts": {
     "test": "vitest run",
     "ekspor": "vite-node ekspor/main.ts",
-    "pulihkan": "vite-node pulihkan/main.ts"
+    "pulihkan": "vite-node pulihkan/main.ts",
+    "diksi:tambah": "vite-node tambah-diksi.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.1",

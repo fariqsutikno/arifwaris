@@ -27,7 +27,7 @@ export const tekankan = (baris: BarisPenjelasan, penekanan: NonNullable<BarisPen
 
 export const keTeksBiasa = (baris: BarisPenjelasan): string => baris.daftarPotongan.map(potonganIni => potonganIni.teks).join('');
 
-type Sisipan = string | number | bigint | Pecahan | Potongan | Potongan[];
+export type Sisipan = string | number | bigint | Pecahan | Potongan | Potongan[];
 
 const adalahPecahan = (porsi: object): porsi is Pecahan => 'n' in porsi && 'd' in porsi;
 
@@ -50,6 +50,38 @@ export function kalimat(teksTetap: TemplateStringsArray, ...sisipan: Sisipan[]):
     else if (adalahPecahan(porsi)) tambahTeks(`${porsi.n}/${porsi.d}`);
   });
   return hasilPotongan;
+}
+
+export type Bahasa = 'id' | 'ar';
+/** Pembaca diksi terbit; web membangunnya dari snapshot, tes dari snapshot.json. Explain tidak tahu asal datanya. */
+export type Kamus = (kunci: string) => { id: string; ar?: string | null } | undefined;
+export interface Penyusun { kamus: Kamus; bahasa: Bahasa }
+
+const POLA_SISIPAN = /\{(\w+)\}/g;
+
+/** Templat diksi → Potongan[]. Kunci/sisipan yang tidak cocok dilempar supaya tidak tampil kalimat rusak diam-diam. */
+export function susun(penyusun: Penyusun, kunci: string, sisipan: Record<string, Sisipan> = {}): Potongan[] {
+  const templat = pilihTeks(penyusun, kunci);
+  const dipakai = new Set([...templat.matchAll(POLA_SISIPAN)].map(cocok => cocok[1]!));
+  for (const nama of dipakai) if (!(nama in sisipan)) throw new Error(`sisipan {${nama}} tidak disediakan untuk ${kunci}`);
+  const lebih = Object.keys(sisipan).filter(nama => !dipakai.has(nama));
+  if (lebih.length) throw new Error(`sisipan tidak dipakai templat ${kunci}: ${lebih.join(', ')}`);
+  // split dengan grup tangkap: [teks, nama, teks, nama, teks, …] → bentuk argumen template bertag.
+  const bagian = templat.split(POLA_SISIPAN);
+  const daftarTeks = bagian.filter((_, i) => i % 2 === 0);
+  const daftarSisipan = bagian.filter((_, i) => i % 2 === 1).map(nama => sisipan[nama]!);
+  return kalimat(Object.assign([...daftarTeks], { raw: daftarTeks }) as TemplateStringsArray, ...daftarSisipan);
+}
+
+/** Teks polos dari kamus (judul bab, label, penggalan yang dipilih kode). */
+export function teksKamus(penyusun: Penyusun, kunci: string, sisipan: Record<string, string> = {}): string {
+  return susun(penyusun, kunci, sisipan).map(potonganIni => potonganIni.teks).join('');
+}
+
+function pilihTeks({ kamus, bahasa }: Penyusun, kunci: string): string {
+  const butir = kamus(kunci);
+  if (!butir) throw new Error(`kunci narasi tidak ada: ${kunci}`);
+  return (bahasa === 'ar' ? butir.ar : undefined) ?? butir.id;
 }
 
 /** Baris kalimat: potongan yang membuka kalimat (awal baris atau setelah ". ") diberi huruf kapital. */
