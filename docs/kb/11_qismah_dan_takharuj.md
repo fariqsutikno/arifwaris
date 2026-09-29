@@ -43,6 +43,6 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R11-1 | Qismah at-tirkah | RDH | Bab 9, al-maqshud ats-tsani «قسمة التركات» | Metode konversi saham ke nominal; implementasi desimal adalah [KH]. |
-| R11-2 | Kebolehan shulh/tawahub di antara ahli waris | RDH | Bab 6, far' khuntsa | «لو اصطلح الذين وقف المال بينهم على تساو أو تفاوت جاز... ولو أخرج بعضهم نفسه من البين، ووهبه لهم... جاز أيضا». Menjadi dasar fikih takharuj. |
+| R11-1 | Qismah at-tirkah | RDH | Raudhah 6/75 (Bab 9, al-maqshud ats-tsani «قسمة التركات») · shamela:499/2364 | Metode konversi saham ke nominal; implementasi desimal adalah [KH]. |
+| R11-2 | Kebolehan shulh/tawahub di antara ahli waris | RDH | Raudhah 6/41 (Bab 6, far' khuntsa) · shamela:499/2330 | «لو اصطلح الذين وقف المال بينهم على تساو أو تفاوت جاز... ولو أخرج بعضهم نفسه من البين، ووهبه لهم... جاز أيضا». Menjadi dasar fikih takharuj. |
 | R11-3 | Atsar 'Abdurrahman bin 'Auf dan Tumadhir | A | Sa'id bin Manshur, Sunan (Fara'idh) 2/66 no. 1959 · shamela:13122/1984; al-Baihaqi, Kubra 6/107 no. 11355 · shamela:7861/13096 (ed. Turki 11/527 no. 11467 · shamela:148486/6509); 'Abdurrazzaq, Mushannaf 7/62 no. 12193 (hanya putusan 'Utsman mewariskan, tanpa shulh) · shamela:13174/13198. Ibnu Sa'd, Thabaqat 3/136 menyebut 100.000 · shamela:9351/1018. Tidak ditemukan di Mushannaf Ibnu Abi Syaibah maupun Nashb ar-Rayah. | «صولحت امرأة عبد الرحمن من نصيبها ربع الثمن على ثمانين ألفا». Atsar terverifikasi; status blocked dicabut (keputusan pengguna 2026-09-29). Nilai sanad belum diteliti. |

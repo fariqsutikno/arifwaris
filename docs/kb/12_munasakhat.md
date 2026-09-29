@@ -149,7 +149,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R12-1 | Definisi dan kedudukan munasakhat | RDH | Bab 9, Fashl 2, nazhar 2 | «التصحيح إذا مات وارثان فأكثر قبل القسمة، وتعرف: بالمناسخات» |
+| R12-1 | Definisi dan kedudukan munasakhat | RDH | Raudhah 6/64 (Bab 9, Fashl 2, nazhar 2) · shamela:499/2353 | «التصحيح إذا مات وارثان فأكثر قبل القسمة، وتعرف: بالمناسخات» |
 | R12-2 | Kaidah 3 keadaan, 3 jenis ikhtishar, teknik jami'ah | KH + Lahim | Lahim hal. 72 (kaidah pembeda), hal. 91 Amr 1–3 (ikhtishar), RDH Bab 9 | Lahim: kaidah pembeda pakai istilah *baqiyyah* vs *ba'dh*. Tabel jami'ah: 3 cabang (inqisam/tawafuq/tabayun), tidak ada tadakhul. |
 | R12-3 | Jalur hitung dasar = Keadaan 3; Keadaan 1 & 2 ikhtishar opsional | Lahim | Lahim Amr Keempat "Shifatul 'Amal al-'Ammah" | «طريقة العمل العامة لجميع الحالات هي طريقة العمل في الحالة الثالثة... وإلا فلو قسمت المسألة في الحالتين بطريقة الحالة الثالثة، ثم اختصر بعد العمل لكانت النتيجة واحدة» |
 | R12-4 | Contoh 12.6 | KH + Lahim | Contoh terverifikasi dari Lahim | Contoh 1: tamatsul (inqisam). Contoh 2: tabayun. |

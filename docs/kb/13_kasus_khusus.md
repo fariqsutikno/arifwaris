@@ -59,7 +59,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R13-11 | Li'an memutus waris dengan ayah; tidak ada ashabah dari pihak ibu | RDH | Bab 7, fashl 1 | «اللعان يقطع التوارث بين الملاعن والولد... فلا عصبة للمنفي إلا من صلبه، أو بالولاء... وعصبة الأم لا يكونون عصبة له» |
-| R13-12 | Anak zina seperti anak li'an | RDH | Bab 7, fashl 2 | «ولد الزنا كالمنفي باللعان إلا في ثلاثة أشياء»; tidak bisa di-istilhaq. |
-| R13-13 | Harta murtad menjadi fai' | RDH | Bab 5 | Lihat R02-6. |
+| R13-11 | Li'an memutus waris dengan ayah; tidak ada ashabah dari pihak ibu | RDH | Raudhah 6/43 (Bab 7, fashl 1) · shamela:499/2332 | «اللعان يقطع التوارث بين الملاعن والولد... فلا عصبة للمنفي إلا من صلبه، أو بالولاء... وعصبة الأم لا يكونون عصبة له» |
+| R13-12 | Anak zina seperti anak li'an | RDH | Raudhah 6/44 (Bab 7, fashl 2) · shamela:499/2333 | «ولد الزنا كالمنفي باللعان إلا في ثلاثة أشياء»; tidak bisa di-istilhaq. |
+| R13-13 | Harta murtad menjadi fai' | RDH | Raudhah 6/30 (Bab 5) · shamela:499/2319 | Lihat R02-6. |
 | R13-14 | Laqith | RDH (bab lain) | Raudhah, Kitab al-Laqith — di luar file | `[perlu verifikasi lanjut]` |
