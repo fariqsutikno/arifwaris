@@ -19,8 +19,8 @@ Orang-orang yang saling mewarisi dan **waktu wafatnya samar**: tenggelam, runtuh
 Pada keadaan 3–5, jika ahli waris masing-masing mengklaim muwarrits-nya wafat belakangan: diputus dengan bayyinah; tanpa bayyinah atau bayyinah bertentangan → saling bersumpah, lalu tidak saling mewarisi (Lahim hlm. 108).
 
 > **KHILAF K13d-1 – Keadaan 3–5 (tanpa sengketa)**
-> - **[SYF]**, [HNF], [MLK], satu riwayat Ahmad — jumhur: **tidak saling mewarisi**. Harta tiap orang untuk ahli warisnya yang hidup, tanpa yang wafat bersamanya. (primer: RDH «ففي هذه الصور الثلاث لا نورث أحدهما من صاحبه».)
-> - **[SYF] tambahan keadaan 3**: **ditahan** sampai ingat atau para ahli waris berdamai (RDH «فيوقف الميراث حتى يتبين أو يصطلحا»). Engine: status `MAUQUF` dengan dua skenario urutan.
+> - **[SYF]**, [HNF], [MLK], satu riwayat Ahmad — jumhur: **tidak saling mewarisi**. Harta tiap orang untuk ahli warisnya yang hidup, tanpa yang wafat bersamanya. (primer: RDH 6/33 · shamela:499/2322 «ففي هذه الصور الثلاث لا نورث أحدهما من صاحبه».)
+> - **[SYF] tambahan keadaan 3**: **ditahan** sampai ingat atau para ahli waris berdamai (RDH 6/33 · shamela:499/2322 «فيوقف الميراث حتى يتبين أو يصطلحا»). Engine: status `MAUQUF` dengan dua skenario urutan.
 > - **[HNB]** masyhur: **saling mewarisi dari tilad**, bukan dari tharif (13d.3). (sekunder: Lahim hlm. 108–110; tarjih Lahim justru memilih pendapat jumhur.)
 
 ## 13d.3 Metode Tilad–Tharif (khusus [HNB]) [R13-19]
@@ -56,5 +56,5 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R13-10 | Gharqa: tidak saling mewarisi; keadaan 5 ditunggu | RDH | Bab 5, mani' 4 | «ففي هذه الصور الثلاث لا نورث أحدهما من صاحبه... الخامسة: أن يعلم سبق موته، ثم يلتبس فيوقف الميراث حتى يتبين أو يصطلحا» |
+| R13-10 | Gharqa: tidak saling mewarisi; keadaan 5 ditunggu | RDH | Raudhah 6/32–33 (Bab 5, mani' 4) · shamela:499/2321 shamela:499/2322 | «ففي هذه الصور الثلاث لا نورث أحدهما من صاحبه... الخامسة: أن يعلم سبق موته، ثم يلتبس فيوقف الميراث حتى يتبين أو يصطلحا» |
 | R13-19 | Metode tilad–tharif ([HNB]) | KH + LHM | Lahim hlm. 110–111 | «يفرض أن أحدهم مات أولاً ويجعل له مسألة ... وتسمى مسألة التلاد» |

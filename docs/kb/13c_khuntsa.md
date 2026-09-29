@@ -16,13 +16,13 @@ Manusia yang memiliki alat kelamin lk dan pr, atau lubang yang tidak menyerupai 
 - **Musykil yang diharapkan jelas**: belum baligh.
 - **Musykil yang tidak diharapkan jelas**: sudah baligh tetap musykil, atau wafat kecil.
 
-**Tanda penentu**: tempat keluar air seni (lebih banyak, lalu lebih dulu), mani, kecenderungan syahwat, janggut (lk); haid, hamil, payudara, air susu (pr). Pemeriksaan medis modern = qarinah; sistem meminta putusan medis/hakim. Pengakuan khuntsa sendiri diterima menurut [SYF] (RDH: «قطع الإمام بأنه يقضى بقوله»).
+**Tanda penentu**: tempat keluar air seni (lebih banyak, lalu lebih dulu), mani, kecenderungan syahwat, janggut (lk); haid, hamil, payudara, air susu (pr). Pemeriksaan medis modern = qarinah; sistem meminta putusan medis/hakim. Pengakuan khuntsa sendiri diterima menurut [SYF] (RDH 6/41 · shamela:499/2330: «قطع الإمام بأنه يقضى بقوله»).
 
 ## 13c.2 Empat Pola Warisan Khuntsa
 Mewarisi sebagai lk saja; sebagai pr saja; sebagai keduanya berbeda besar; sebagai keduanya sama besar. Pola terakhir → **tanpa khilaf**, diberi penuh.
 
 > **KHILAF K13c-1 – Perlakuan khuntsa dan ahli waris lain**
-> - **[SYF]**: khuntsa **dan** yang lain diberi **yang yakin (aqall)**; sisanya **ditahan sampai jelas atau mereka berdamai** — baik diharapkan jelas maupun tidak. (primer: RDH «أخذ في حق الخنثى ومن معه من الورثة باليقين، ويوقف المشكوك فيه».)
+> - **[SYF]**: khuntsa **dan** yang lain diberi **yang yakin (aqall)**; sisanya **ditahan sampai jelas atau mereka berdamai** — baik diharapkan jelas maupun tidak. (primer: RDH 6/40 · shamela:499/2329 «أخذ في حق الخنثى ومن معه من الورثة باليقين، ويوقف المشكوك فيه».)
 > - **[HNB]**: diharapkan jelas → seperti [SYF] (aqall + mauquf); **tidak diharapkan jelas → setengah bagian lk + setengah bagian pr** untuk semua, tanpa mauquf. (sekunder: Lahim hlm. 155; tarjih Lahim.)
 > - **[HNF]**: **khuntsa saja** diberi yang paling merugikannya; ahli waris lain diberi menurut taqdir itu; tanpa mauquf. Cukup satu mas'alah. (sekunder)
 > - **[MLK]**: semua diberi **setengah dari dua taqdir** (seperti [HNB] tidak-diharapkan-jelas), di kedua keadaan. (sekunder)
@@ -62,4 +62,4 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R13-9 | Khuntsa: yakin dan mauquf | RDH | Bab 6, sabab 4 | «أخذ في حق الخنثى ومن معه من الورثة باليقين، ويوقف المشكوك فيه». Pengakuan khuntsa diterima: «قطع الإمام بأنه يقضى بقوله» |
+| R13-9 | Khuntsa: yakin dan mauquf | RDH | Raudhah 6/40–41 (Bab 6, sabab 4) · shamela:499/2329 shamela:499/2330 | «أخذ في حق الخنثى ومن معه من الورثة باليقين، ويوقف المشكوك فيه». Pengakuan khuntsa diterima: «قطع الإمام بأنه يقضى بقوله» |

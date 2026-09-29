@@ -14,7 +14,7 @@ Orang yang hilang dan putus kabarnya, tidak diketahui hidup atau matinya. **Huku
 Dua keadaan (Lahim hlm. 169): **biasanya selamat** (bepergian dagang, menuntut ilmu) dan **biasanya binasa** (hilang di tengah keluarga, di medan perang, kapal tenggelam sebagian penumpang). Pembedaan ini hanya berpengaruh pada [HNB].
 
 > **KHILAF K13b-1 – Masa menunggu sebelum vonis mati**
-> - **[SYF]** (ash-shahih): **ijtihad hakim**, tanpa angka. Hujjah: asal hidup; masa berbeda menurut orang, keadaan, zaman, tempat; tidak ada nash. (primer: RDH «وهذه المدة ليست مقدرة عند الجمهور»; Lahim hlm. 170.) Juga zhahir [HNF] dan satu riwayat Ahmad.
+> - **[SYF]** (ash-shahih): **ijtihad hakim**, tanpa angka. Hujjah: asal hidup; masa berbeda menurut orang, keadaan, zaman, tempat; tidak ada nash. (primer: RDH 6/34 · shamela:499/2323 «وهذه المدة ليست مقدرة عند الجمهور»; Lahim hlm. 170.) Juga zhahir [HNF] dan satu riwayat Ahmad.
 > - [HNB] masyhur: biasanya binasa → **4 tahun** sejak hilang; biasanya selamat → sampai **90 tahun** sejak lahir. (sekunder)
 > - [MLK]: 70 / 75 / 80 tahun sejak lahir (khilaf internal). (sekunder)
 > - [HNF] (pendapat yang membatasi): 60 / 70 / 90 / 100 / 120 tahun. (sekunder)
@@ -30,7 +30,7 @@ Hartanya ditahan selama masa menunggu. Setelah vonis, dibagi kepada ahli warisny
 Tiga keadaan ahli waris yang hadir (Lahim hlm. 173): tidak terpengaruh; gugur karena mafqud; berkurang karena mafqud.
 
 > **KHILAF K13b-2 – Perlakuan ahli waris yang hadir**
-> - **[SYF]** (yang dipakai), [HNB], [HNF], [MLK] — jumhur: **al-aswa'** (paling merugikan): yang bisa gugur → 0; yang bisa berkurang → aqall. (primer: RDH «وأخذنا في حق كل واحد من الحاضرين بالأسوأ».)
+> - **[SYF]** (yang dipakai), [HNB], [HNF], [MLK] — jumhur: **al-aswa'** (paling merugikan): yang bisa gugur → 0; yang bisa berkurang → aqall. (primer: RDH 6/35 · shamela:499/2324 «وأخذنا في حق كل واحد من الحاضرين بالأسوأ».)
 > - Dua wajh lemah dalam Syafi'iyyah: diperlakukan seolah mafqud mati / seolah hidup. Tidak diimplementasikan.
 
 ## 13b.4 Nasib Bagian yang Ditahan [R13-18]
@@ -67,7 +67,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R13-6 | Masa tunggu mafqud [SYF] = ijtihad hakim | RDH + Lahim | RDH Bab 6, sabab 1; Lahim hlm. 169 | RDH: «وهذه المدة ليست مقدرة عند الجمهور». Lahim hlm. 169 eksplisit: «وهذا هو الصحيح من مذهب الشافعية» — ash-shahih Syafi'iyyah tidak menetapkan angka, diserahkan ijtihad hakim. |
-| R13-7 | Harta mafqud untuk ahli waris saat vonis | RDH | Idem | «ثم إنا ننظر إلى من يرثه حين حكم الحاكم بموته» |
-| R13-8 | Mafqud sebagai ahli waris: diambil yang terburuk | RDH | Idem | «وأخذنا في حق كل واحد من الحاضرين بالأسوأ» |
+| R13-6 | Masa tunggu mafqud [SYF] = ijtihad hakim | RDH + Lahim | RDH 6/34 (Bab 6, sabab 1) · shamela:499/2323; Lahim hlm. 169 | RDH: «وهذه المدة ليست مقدرة عند الجمهور». Lahim hlm. 169 eksplisit: «وهذا هو الصحيح من مذهب الشافعية» — ash-shahih Syafi'iyyah tidak menetapkan angka, diserahkan ijtihad hakim. |
+| R13-7 | Harta mafqud untuk ahli waris saat vonis | RDH | Raudhah 6/35 (Bab 6, sabab 1) · shamela:499/2324 | «ثم إنا ننظر إلى من يرثه حين حكم الحاكم بموته» |
+| R13-8 | Mafqud sebagai ahli waris: diambil yang terburuk | RDH | Raudhah 6/35 (Bab 6, sabab 1) · shamela:499/2324 | «وأخذنا في حق كل واحد من الحاضرين بالأسوأ» |
 | R13-18 | Nasib bagian mauquf mafqud (5 keadaan) | LHM | Lahim hlm. 174–175 | «الحالة الأولى: أن يتضح أنه حي... الحالة الخامسة: ... حكم الغرقى» |

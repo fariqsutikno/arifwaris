@@ -20,9 +20,9 @@ tags: [dzawil arham, tanzil, qarabah, rahm, khal, ammah, anak perempuan]
 Catatan: ummul ab al-jadd (nenek di atas kakek melalui laki-laki) → khilaf; default sistem = ahli waris furudh (bab 03).
 
 ## 14.3 Apakah Mereka Mewarisi? [R14-1] [R14-2] [R14-3] [R14-5]
-> **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Kitab al-Fara'idh**, sumber sama dengan bab 09:
+> **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Kitab al-Fara'idh** (6/6 · shamela:499/2295), sumber sama dengan bab 09:
 > - **Asal madzhab [SYF] dan Maliki**: tidak mewarisi; harta ke baitul mal (syarat: baitul mal teratur, ada imam yang adil mengelolanya).
-> - **[SYF] — pendapat al-ashah menurut muhaqqiqin madzhab (dikutip Nawawi dari Ibnu Suraqah: *"وَعَلَيْهِ الْفَتْوَى الْيَوْمَ فِي الْأَمْصَارِ"*), sejalan dengan Hanafi, Hanbali, Ibnu 'Utsaimin**: dzawil arham **mewarisi** ketika baitul mal **tidak** teratur (kondisi Indonesia saat ini), dengan syarat **tidak ada ashabah** dan **tidak ada ashabul furudh yang menerima radd** (yaitu selain pasangan). Nawawi bahkan mengoreksi ulama lain yang keliru mengira ini bukan pendapat Syafi'i: *"غَلِطَ الشَّيْخُ أَبُو حَامِدٍ فِي مُخَالَفَتِهِ ... وَإِنَّمَا مَذْهَبُ الشَّافِعِيِّ مَنْعُهُمْ إِذَا اسْتَقَامَ بَيْتُ الْمَالِ"* (mazhab Syafi'i hanya melarang mereka mewarisi ketika baitul mal tegak — implikasinya, boleh mewarisi ketika baitul mal tidak tegak).
+> - **[SYF] — pendapat al-ashah menurut muhaqqiqin madzhab (dikutip Nawawi dari Ibnu Suraqah: *"وَعَلَيْهِ الْفَتْوَى الْيَوْمَ فِي الْأَمْصَارِ"*), sejalan dengan Hanafi, Hanbali, Ibnu 'Utsaimin**: dzawil arham **mewarisi** ketika baitul mal **tidak** teratur (kondisi Indonesia saat ini), dengan syarat **tidak ada ashabah** dan **tidak ada ashabul furudh yang menerima radd** (yaitu selain pasangan). ⚑ Nawawi bahkan mengoreksi ulama lain yang keliru mengira ini bukan pendapat Syafi'i [⚑ verifikasi Raudhah 6/6: kalimat «وغلط الشيخ أبو حامد في مخالفته» adalah ucapan Ibnu Suraqah/penukilan pengarang al-Hawi yang dinukil an-Nawawi, bukan koreksi an-Nawawi sendiri; isi KB tidak diubah]: *"غَلِطَ الشَّيْخُ أَبُو حَامِدٍ فِي مُخَالَفَتِهِ ... وَإِنَّمَا مَذْهَبُ الشَّافِعِيِّ مَنْعُهُمْ إِذَا اسْتَقَامَ بَيْتُ الْمَالِ"* (mazhab Syafi'i hanya melarang mereka mewarisi ketika baitul mal tegak — implikasinya, boleh mewarisi ketika baitul mal tidak tegak).
 > - **Catatan konsistensi**: keputusan ini sejalan dengan bab 09 (radd) — keduanya bergantung pada status baitul mal, dan keduanya kini didukung kutipan langsung dari sumber utama Syafi'i.
 
 **Dalil**:
@@ -33,7 +33,7 @@ Catatan: ummul ab al-jadd (nenek di atas kakek melalui laki-laki) → khilaf; de
 **Bersama pasangan**: pasangan mengambil fardh **penuh** (1/2 atau 1/4, tidak berkurang karena dzawil arham), sisanya untuk dzawil arham.
 
 ## 14.4 Metode Pewarisan [R14-6]
-> **Catatan sumber**: dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Bab ar-Radd wa Dzawil Arham: **Syafi'iyyah secara mazhab hanya mengenal satu metode, yaitu Ahl at-Tanzil** (dinukil eksplisit: *"الْأَصَحُّ الْأَقْيَسُ: مَذْهَبُ أَهْلِ التَّنْزِيلِ"* — "yang paling shahih dan paling sesuai qiyas adalah madzhab Ahl at-Tanzil"). **Ahl al-Qarabah bukan pendapat internal Syafi'i**, melainkan murni madzhab Abu Hanifah — disebut di sini hanya sebagai perbandingan lintas madzhab, bukan opsi dalam Syafi'i.
+> **Catatan sumber**: dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Bab ar-Radd wa Dzawil Arham (6/45 · shamela:499/2334): **Syafi'iyyah secara mazhab hanya mengenal satu metode, yaitu Ahl at-Tanzil** (dinukil eksplisit: *"الْأَصَحُّ الْأَقْيَسُ: مَذْهَبُ أَهْلِ التَّنْزِيلِ"* — "yang paling shahih dan paling sesuai qiyas adalah madzhab Ahl at-Tanzil"). **Ahl al-Qarabah bukan pendapat internal Syafi'i**, melainkan murni madzhab Abu Hanifah — disebut di sini hanya sebagai perbandingan lintas madzhab, bukan opsi dalam Syafi'i.
 >
 > **Tiga metode (lintas madzhab)**:
 > 1. **Ahl ar-Rahm**: semua sama rata, dekat maupun jauh. (Ditinggalkan semua madzhab.)
@@ -52,7 +52,7 @@ Contoh perbedaan (dari Ibnu 'Utsaimin): cicit pr dari anak pr + anak pr saudara 
 3. Bagi harta (atau sisa setelah pasangan) kepada **para perantara** seolah mayit wafat meninggalkan mereka. Perantara yang terhijab → dzawil arham di bawahnya ikut terhijab.
 4. Bagian tiap perantara dibagi kepada dzawil arham yang bernasab melaluinya, seolah perantara itu wafat meninggalkan mereka.
 
-> **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin*, Bab ar-Radd wa Dzawil Arham, Fashl (aulad al-ikhwah wal-akhawat)**:
+> **KHILAF — dikonfirmasi dari *Raudhah ath-Thalibin*, Bab ar-Radd wa Dzawil Arham, Fashl (aulad al-ikhwah wal-akhawat)** (6/49–50 · shamela:499/2338 shamela:499/2339):
 > - **[SYF] (default, dikonfirmasi)** — dinukil eksplisit: *"وَأَمَّا أَوْلَادُ الْإِخْوَةِ وَالْأَخَوَاتِ مِنَ الْأَبَوَيْنِ وَمِنَ الْأَبِ، فَيُفَضَّلُ ذَكَرُهُمْ عِنْدَ الْمُنَزِّلِينَ"* (anak-anak saudara/i kandung dan sebapak, **laki-lakinya diutamakan 2:1** menurut Ahl at-Tanzil), **kecuali** anak-anak saudara/i **seibu**: *"يُسَوَّى بَيْنَهُمْ فِي الْقِسْمَةِ عِنْدَ الْجُمْهُورِ مِنَ الْمُنَزِّلِينَ"* (mereka **disamakan/sama rata**, mengikuti pola bagian orang tua mereka yang juga sama rata). Kaidah yang sama (2:1, kecuali cabang dari perantara yang aslinya sama rata) berlaku juga pada dzawil arham lain seperti aulad al-banat, sesuai prinsip tanzil: cabang mengikuti hukum bagian perantaranya.
 > - **Masyhur Hanbali & Ibnu 'Utsaimin**: laki-laki dan perempuan **sama rata** di seluruh dzawil arham tanpa kecuali — dicatat sebagai perbandingan.
 > - Titik ini semula ditandai `[perlu verifikasi lanjut]`; kini terkonfirmasi dari teks utama Syafi'i dan **selaras dengan Al-Fara'idh al-Muyassar** (aturan 2:1 kecuali anak-anak saudara seibu), sehingga kitab itu pada titik ini sebenarnya identik dengan [SYF], bukan alternatif Hanbali seperti dugaan sebelumnya.
@@ -142,12 +142,12 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R14-1 | Dasar pewarisan kerabat | Q | Al-Anfal 75 quran:8:75; Al-Ahzab 6 quran:33:6 | «وأولو الأرحام بعضهم أولى ببعض في كتاب الله» |
 | R14-2 | Paman dari ibu mewarisi | H | Abu Dawud no. 2899; at-Tirmidzi no. 2103 (hasan); Ibnu Majah no. 2737, dari al-Miqdam · hadits:abudawud:2899 hadits:tirmidhi:2103 hadits:ibnmajah:2737 | «الخال وارث من لا وارث له» |
 | R14-3 | Anak saudari termasuk kaumnya | H | Al-Bukhari no. 3528; Muslim no. 1059, dari Anas · hadits:bukhari:3528 hadits:muslim:1059 | «ابن أخت القوم منهم» |
-| R14-4 | Definisi dan sepuluh golongan | RDH | Bab 1, Fashl Dzawil Arham | «كل قريب ليس بذي فرض ولا عصبة... فهم عشرة أصناف» |
-| R14-5 | Mewarisi ketika baitul mal tidak tegak | RDH | Idem | Lihat blok KHILAF 14.3 (kutipan lengkap). |
-| R14-6 | Metode tanzil | RDH | Bab 8 | «قلت: الأصح الأقيس: مذهب أهل التنزيل» |
-| R14-7 | Yang lebih dulu sampai ke ahli waris didahulukan | RDH | Bab 8 | «ويقدمون منهم من سبق إلى الوارث» |
-| R14-8 | 2:1 kecuali anak saudara seibu | RDH | Bab 8 | Lihat blok KHILAF 14.5. |
-| R14-9 | Dzawil arham tunggal mengambil semua | RDH | Bab 8 | «والمذهبان متفقان على أن من انفرد من ذوي الأرحام، يحوز جميع المال ذكرا كان أو أنثى» |
+| R14-4 | Definisi dan sepuluh golongan | RDH | Raudhah 6/5 (Bab 1, Fashl Dzawil Arham) · shamela:499/2294 | «كل قريب ليس بذي فرض ولا عصبة... فهم عشرة أصناف» |
+| R14-5 | Mewarisi ketika baitul mal tidak tegak | RDH | Raudhah 6/6 · shamela:499/2295 | Lihat blok KHILAF 14.3 (kutipan lengkap). |
+| R14-6 | Metode tanzil | RDH | Raudhah 6/45 (Bab 8) · shamela:499/2334 | «قلت: الأصح الأقيس: مذهب أهل التنزيل» |
+| R14-7 | Yang lebih dulu sampai ke ahli waris didahulukan | RDH | Raudhah 6/46 (Bab 8) · shamela:499/2335 | «ويقدمون منهم من سبق إلى الوارث» |
+| R14-8 | 2:1 kecuali anak saudara seibu | RDH | Raudhah 6/49–50 (Bab 8) · shamela:499/2338 shamela:499/2339 | Lihat blok KHILAF 14.5. |
+| R14-9 | Dzawil arham tunggal mengambil semua | RDH | Raudhah 6/46 (Bab 8) · shamela:499/2335 | «والمذهبان متفقان على أن من انفرد من ذوي الأرحام، يحوز جميع المال ذكرا كان أو أنثى» |
 | R14-10 | Tiga jihah tanzil; hajb dalam satu jihah vs lintas jihah | LHM | Lahim hlm. 192–194 | «إذا اتحدت جهتهم حجب القريب من الوارث البعيد منه... إذا اختلفت الجهة أخذوا حكم الوارث الذي يدلون به إرثاً وحجباً» |
 | R14-11 | Satu orang dua jalur | LHM | Lahim hlm. 194–195 | «ألا تحجب إحداهما الأخرى... يرث بهما... أن تحجب إحداهما الأخرى... يرث بالجهة الحاجبة» |
 | R14-12 | Pasangan fardh penuh; tata kerja munasakhat keadaan 3 | LHM | Lahim hlm. 207–208 | «أعطي أحد الزوجين فرضه من مخرجه من غير حجب ولا عول» |

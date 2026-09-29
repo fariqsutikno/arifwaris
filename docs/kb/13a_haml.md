@@ -92,10 +92,10 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R13-1 | Syarat janin mewarisi | RDH | Bab 6, sabab 3 (al-Haml) | «وإنما يرث بشرطين. أحدهما: أن يعلم وجوده عند الموت... الشرط الثاني: أن ينفصل حيا» |
-| R13-2 | Tanda hidup | H + RDH | Abu Dawud no. 2920, dari Abu Hurairah · RDH · hadits:abudawud:2920 | H: «إذا استهل المولود ورث». RDH: «بصراخه، وكذا بالبكاء، أو العطاس، أو التثاؤب، أو امتصاص الثدي» |
-| R13-3 | Jumlah janin tak dibatasi [SYF]; >2 nadir untuk taqdir operasional | RDH + Lahim | RDH Bab 6, sabab 3 (al-Haml); Lahim hlm. 144–146 | RDH: «الأصح أو الصحيح: أنه لا ضبط له». Lahim menetapkan 6 taqdir operasional (model [HNB]); >2 anak = nadir. |
-| R13-4 | 3 kelas ahli waris + al-aqall | RDH + Lahim | RDH Idem; Lahim idem | RDH: «فمن احتمل حجبه بالحمل، لم يدفع إليه شيء ومن لا يحجبه الحمل بحال وله مقدر لا ينقص دفع إليه. وإن أمكن العول، دفع إليه ذلك القدر عائلا». Algoritma 8 langkah dari Lahim. |
+| R13-1 | Syarat janin mewarisi | RDH | Raudhah 6/36 (Bab 6, sabab 3, al-Haml) · shamela:499/2325 | «وإنما يرث بشرطين. أحدهما: أن يعلم وجوده عند الموت... الشرط الثاني: أن ينفصل حيا» |
+| R13-2 | Tanda hidup | H + RDH | Abu Dawud no. 2920, dari Abu Hurairah · RDH 6/37 · shamela:499/2326 hadits:abudawud:2920 | H: «إذا استهل المولود ورث». RDH: «بصراخه، وكذا بالبكاء، أو العطاس، أو التثاؤب، أو امتصاص الثدي» |
+| R13-3 | Jumlah janin tak dibatasi [SYF]; >2 nadir untuk taqdir operasional | RDH + Lahim | RDH 6/39 (Bab 6, sabab 3, al-Haml) · shamela:499/2328; Lahim hlm. 144–146 | RDH: «الأصح أو الصحيح: أنه لا ضبط له». Lahim menetapkan 6 taqdir operasional (model [HNB]); >2 anak = nadir. |
+| R13-4 | 3 kelas ahli waris + al-aqall | RDH + Lahim | RDH 6/38–39 · shamela:499/2327 shamela:499/2328; Lahim idem | RDH: «فمن احتمل حجبه بالحمل، لم يدفع إليه شيء ومن لا يحجبه الحمل بحال وله مقدر لا ينقص دفع إليه. وإن أمكن العول، دفع إليه ذلك القدر عائلا». Algoritma 8 langkah dari Lahim. |
 | R13-5 | Batas kehamilan [SYF] = 4 tahun | ITH | Ithraa, Mirats al-Haml slide 9; Raudhah Kitab al-Fara'idh hanya «أكثر مدة الحمل» | «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة» |
 | R13-15 | [SYF]: mitra ashabah haml tidak diberi apa pun | LHM + ITH | Lahim hlm. 145; Ithraa, Muqarrar al-Fara'idh, Mirats al-Haml slide 12 | Ithraa: «يوقف الأحظ للحمل من نصيب ذكرين أو أنثيين، مع إيقاف نصيب مشاركه، وهو قول الشافعية». Diterima sebagai dasar tanpa menunggu nash Raudhah (keputusan pengguna 2026-09-29). |
 | R13-16 | Tata kerja taqdir → jami'ah → aqall | KH | Lahim hlm. 146 | Lima langkah «صفة العمل في مسائل الحمل». |

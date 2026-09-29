@@ -72,11 +72,11 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 
 | Kode | Klaim | Jenis | Sumber | Kutipan / Keterangan |
 |---|---|---|---|---|
-| R16-1 | Kasus 5, 6, 7 ('aul 7, 27, 10) | RDH | Bab 9, muqaddimah 4 | Contoh identik di Raudhah: zawj + 2 ukht (7); Minbariyyah (27); Syuraihiyyah (10). |
-| R16-2 | Kasus 12 (akdariyyah 27) | RDH | Bab 3 | «للزوج تسعة، وللأم ستة، وللأخت أربعة، وللجد ثمانية» |
-| R16-3 | Kasus 15 (ayah, ibu, 2 saudara) | RDH | Bab 4, far' | «مات عن أبوين وأخوين، فللأم السدس، والباقي للأب» |
-| R16-4 | Kasus 13 (musyarrakah) | RDH | Bab 1 | Rukun terpenuhi; pembagian sama rata (R07-2). |
-| R16-5 | Kasus 22–23 (tashih) | RDH + KH | Bab 9, Fashl 2 | Metode tabayun/tawafuq sesuai R10-2. |
+| R16-1 | Kasus 5, 6, 7 ('aul 7, 27, 10) | RDH | Raudhah 6/63 (Bab 9, muqaddimah 4) · shamela:499/2352 | Contoh identik di Raudhah: zawj + 2 ukht (7); Minbariyyah (27); Syuraihiyyah (10). |
+| R16-2 | Kasus 12 (akdariyyah 27) | RDH | Raudhah 6/25 (Bab 3) · shamela:499/2314 | «للزوج تسعة، وللأم ستة، وللأخت أربعة، وللجد ثمانية» |
+| R16-3 | Kasus 15 (ayah, ibu, 2 saudara) | RDH | Raudhah 6/28 (Bab 4, far') · shamela:499/2317 | «مات عن أبوين وأخوين، فللأم السدس، والباقي للأب» |
+| R16-4 | Kasus 13 (musyarrakah) | RDH | Raudhah 6/14–15 (Bab 1) · shamela:499/2303 shamela:499/2304 | Rukun terpenuhi; pembagian sama rata (R07-2). |
+| R16-5 | Kasus 22–23 (tashih) | RDH + KH | Raudhah 6/64 (Bab 9, Fashl 2) · shamela:499/2353 | Metode tabayun/tawafuq sesuai R10-2. |
 | R16-6 | Kasus M1–M2 (munasakhat dasar) | KH + Lahim | Lahim contoh Bab Munasakhat | Angka sudah terverifikasi dari contoh Lahim (R12-4). |
 | R16-7 | Kasus M3 (6 akh + ibu, 3 wafat berantai, asal 3) | Lahim | Lahim, contoh Keadaan 1 (ikhtishar al-masa'il) | «هلك هالك عن ستة إخوة أشقاء وأم فلم تقسم التركة حتى مات ثلاثة من الأخوة واحداً بعد واحد، ثم ماتت الأم، فالمال للباقين على عدد رؤوسهم». |
 | R16-8 | Kasus M4 (3 akh syaqiq, 2 wafat masing² tinggalkan zawjah+bint, jami'ah 384) | Lahim | Lahim, contoh Keadaan 3 (bertahap) | «توفي شخص عن ثلاثة إخوة أشقاء، فلم تقسم التركة حتى مات اثنان منهم، وخلف كل منهما زوجة وبنتاً». Jawaban akhir dari tabel kitab: akh 209، زوجة١ ١٦، بنت١ ٦٤، زوجة٢ ١٩، بنت٢ ٧٦. |
