@@ -2,6 +2,7 @@ import { beforeEach, expect, it, vi } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru } from '../kasus';
 import { keadaanAwal, pengurangKeadaan } from '../keadaan';
+import { terapkanKeadaan } from '../keadaanOrang';
 import { bacaTujuan, simpanTujuan, sudahLihatTur, tandaiTurDilihat } from '../preferensi';
 
 beforeEach(() => localStorage.clear());
@@ -61,4 +62,19 @@ it('bahasa: bawaan id, tersimpan id+ar', async () => {
   simpanBahasa('id+ar');
   expect(bacaBahasa()).toBe('id+ar');
   simpanBahasa('id');
+});
+
+it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari langkah 5 ke babak terakhir', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
+  const anak = Object.values(keadaan.kasus!.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => terapkanKeadaan(k, anak, { jenis: 'wafatSesudah', hartaSudahDibagi: false }) });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 4 });
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_BABAK', babak: 5 }).babak).toBe(1);
+  keadaan = { ...keadaan, langkah: 5 };
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 4 })).toMatchObject({ langkah: 4, babak: 1 });
+});
+it('layar cerita hanya bila semua langkah lengkap', () => {
+  expect(pengurangKeadaan(keadaanAwal(null, null), { jenis: 'KE_LAYAR', layar: 'cerita' }).layar).toBe('awal');
 });

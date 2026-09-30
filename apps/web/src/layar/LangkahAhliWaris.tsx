@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
-import { daftarInduk, hitungIsian, INDUK_BARU_WAFAT, jenisDari, kurangiAhliWaris, tambahAhliWaris, ubahNama } from '../checklist';
+import { daftarInduk, hitungIsian, INDUK_BARU_WAFAT, jenisDari, kurangiAhliWaris, labelOrangChecklist, tambahAhliWaris, ubahNama } from '../checklist';
 import { INFO_TIDAK_ADA, KELUARGA_INTI, KERABAT_LAIN, KETERANGAN_HUBUNGAN, LABEL_SEHARI, sebutAlmarhum } from '../konten/ahliWaris';
 import { Arab, TombolIkon } from '../ui/Tooltip';
 import { useBahasa } from '../preferensi';
@@ -141,14 +141,4 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   );
 }
 
-/** "Anak laki-laki 2", "Ahmad (Anak laki-laki)", atau "Anak laki-laki (sudah wafat)" untuk penghubung. Dipakai juga di langkah 5. */
-export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string {
-  const orang = graf.orang[idOrang]!;
-  const isian = hitungIsian(graf, idMayit);
-  const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
-  const label = kunciOrang ? LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label ?? t('hitung.kerabat') : t('hitung.kerabat');
-  if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? t('hitung.sudah_wafat_2') : ''})`;
-  if (orang.penghubung) return t('hitung.label_sudah_wafat', { label });
-  const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
-  return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
-}
+export { labelOrangChecklist } from '../checklist';

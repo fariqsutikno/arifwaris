@@ -2,6 +2,8 @@
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil'.
 
 import { kasusBaru, type Kasus } from '../kasus';
+import { daftarAlmarhum, namaSingkat, perluPeriksaCerita } from '../keadaanOrang';
+import { t } from '../terjemah';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
@@ -13,29 +15,43 @@ import { KerangkaLangkah } from './wizard/KerangkaLangkah';
 import { LangkahPewaris } from './wizard/LangkahPewaris';
 import { RingkasanSamping } from './wizard/RingkasanSamping';
 import { Stepper } from './wizard/Stepper';
-import { alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from './wizard/validasi';
+import { adaAhliWaris, alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from './wizard/validasi';
 
 
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
-  const { kasus, langkah } = keadaan;
+  const { kasus, langkah, babak } = keadaan;
+  const almarhum = kasus ? daftarAlmarhum(kasus) : [];
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
-  const alasan = alasanBelumLengkap(kasus, langkah);
+  const alasan = langkah === 4 && kasus
+    ? (babak === 0 && !adaAhliWaris(kasus) ? t('hitung.tambahkan_minimal_satu_ahli_waris') : alasanBabak(kasus, babak))
+    : alasanBelumLengkap(kasus, langkah);
+  const subjudul = langkah === 4 && babak > 0 && kasus
+    ? t('hitung.babak.subjudul', { nomor: babak + 1, total: almarhum.length, nama: namaSingkat(kasus, almarhum[babak]!) })
+    : undefined;
+  const saatLanjut = () => {
+    if (langkah === 4 && babak < almarhum.length - 1) return kirim({ jenis: 'KE_BABAK', babak: babak + 1 });
+    if (langkah === TOTAL_LANGKAH) return kirim({ jenis: 'KE_LAYAR', layar: kasus && perluPeriksaCerita(kasus) ? 'cerita' : 'hasil' });
+    kirim({ jenis: 'KE_LANGKAH', langkah: langkah + 1 });
+  };
+  const saatKembali = () => {
+    if (langkah === 4 && babak > 0) return kirim({ jenis: 'KE_BABAK', babak: babak - 1 });
+    kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'awal' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 });
+  };
   return (
     <main className="halaman halaman-wizard">
       <Stepper langkahAktif={langkah} terjauh={langkahTerjauh(kasus)}
         saatPilih={tujuan => kirim(tujuan === LANGKAH_HASIL ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: tujuan })} />
-      <KerangkaLangkah langkah={langkah} ringkasan={<RingkasanSamping kasus={kasus} />}>
+      <KerangkaLangkah langkah={langkah} subjudul={subjudul} ringkasan={<RingkasanSamping kasus={kasus} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
           saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiPewarisDanKosongkan(k, jenisKelamin))}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
         {kasus && langkah === 2 && <LangkahHarta kasus={kasus} ubah={ubah} />}
         {kasus && langkah === 3 && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
-        {kasus && langkah === 4 && <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />}
+        {kasus && langkah === 4 && babak === 0 && <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />}
         {kasus && langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}
       </KerangkaLangkah>
       <BarBawah langkah={langkah} alasan={alasan}
-        saatKembali={() => kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'awal' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 })}
-        saatLanjut={() => kirim(langkah === TOTAL_LANGKAH ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: langkah + 1 })} />
+        saatKembali={saatKembali} saatLanjut={saatLanjut} />
     </main>
   );
 }

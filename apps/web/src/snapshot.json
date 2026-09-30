@@ -17465,6 +17465,20 @@
    "id": "Data keadaan orang di file ini rusak.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.subjudul",
+   "halaman": "hitung",
+   "id": "Babak {nomor} dari {total} · {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.tambahkan_keluarga_almarhum",
+   "halaman": "hitung",
+   "id": "Tambahkan dulu keluarga yang ditinggalkan almarhum di babak ini.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -4,12 +4,13 @@ import type { ReactNode } from 'react';
 import { LANGKAH_WIZARD } from '../../konten/wizard';
 import { t } from '../../terjemah';
 
-export function KerangkaLangkah({ langkah, children, ringkasan }: { langkah: number; children: ReactNode; ringkasan?: ReactNode }) {
+export function KerangkaLangkah({ langkah, children, ringkasan, subjudul }: { langkah: number; children: ReactNode; ringkasan?: ReactNode; subjudul?: string | undefined }) {
   const teks = LANGKAH_WIZARD[langkah - 1]!;
   return (
     <div className="kerangka-langkah">
       <section className="kerangka-utama" aria-labelledby="pertanyaan-utama">
         <p className="label-langkah">{t('hitung.langkah_nomor_dari_total', { nomor: langkah, total: LANGKAH_WIZARD.length })}</p>
+        {subjudul && <p className="subjudul-babak">{subjudul}</p>}
         <h1 id="pertanyaan-utama" data-tur="pertanyaan" className="pertanyaan-utama">{tanpaPatahDiTandaHubung(teks.pertanyaan)}</h1>
         <p className="caption-langkah">{teks.caption}</p>
         <div className="tumpuk">{children}</div>

@@ -7,6 +7,7 @@ import {
   KONFIGURASI_BAWAAN, tambahKerabat, turunkanPeran,
   type GrafKeluarga, type IdOrang, type KunciAhliWaris, type Orang,
 } from '@waris/engine';
+import { LABEL_SEHARI } from './konten/ahliWaris';
 import { t } from './terjemah';
 
 export type Kelompok = 'pasangan' | 'keturunan' | 'leluhur' | 'saudara';
@@ -242,4 +243,16 @@ const ubahOrang = (graf: GrafKeluarga, idOrang: IdOrang, perubahan: Partial<Oran
 function idBaru(graf: GrafKeluarga): IdOrang {
   const nomorTerbesar = Object.keys(graf.orang).reduce((maks, id) => Math.max(maks, Number(/^O(\d+)$/.exec(id)?.[1] ?? 0)), 0);
   return `O${nomorTerbesar + 1}`;
+}
+
+/** "Anak laki-laki 2", "Ahmad (Anak laki-laki)", atau "Anak laki-laki (sudah wafat)" untuk penghubung. Dipakai juga di langkah 5. */
+export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string {
+  const orang = graf.orang[idOrang]!;
+  const isian = hitungIsian(graf, idMayit);
+  const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
+  const label = kunciOrang ? LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label ?? t('hitung.kerabat') : t('hitung.kerabat');
+  if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? t('hitung.sudah_wafat_2') : ''})`;
+  if (orang.penghubung) return t('hitung.label_sudah_wafat', { label });
+  const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
+  return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
 }

@@ -1,7 +1,7 @@
 import { expect, it } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
-import { alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from '../layar/wizard/validasi';
+import { alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from '../layar/wizard/validasi';
 
 const denganHarta = (kasus: Kasus, kotor: bigint): Kasus => ({ ...kasus, tirkah: { ...kasus.tirkah, kotor } });
 
@@ -23,4 +23,14 @@ it('minimal satu ahli waris sebelum lanjut dari langkah 4', () => {
   expect(alasanBelumLengkap(kasus, 4)).toMatch(/ahli waris/);
   const lengkap = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
   expect(langkahTerjauh(lengkap)).toBe(LANGKAH_HASIL);
+});
+
+it('babak almarhum tanpa kerabat belum lengkap', () => {
+  let kasus = { ...kasusBaru('L'), tirkah: { kotor: 10n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
+  kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
+  const anak = Object.values(kasus.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
+  kasus = { ...kasus, urutanWafat: [anak] };
+  expect(alasanBabak(kasus, 0)).toBeNull();                 // pewaris punya anak
+  expect(alasanBabak(kasus, 1)).not.toBeNull();             // anak belum punya kerabat selain yang wafat
+  expect(alasanBelumLengkap(kasus, 4)).not.toBeNull();
 });

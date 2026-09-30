@@ -3,7 +3,7 @@
 // yaitu almarhum pertama (pewaris, lalu urutan wafat) yang menjadikan orang itu kerabat.
 
 import { KONFIGURASI_BAWAAN, turunkanPeran, type IdOrang, type InputTirkah, type KeadaanGharqa } from '@waris/engine';
-import { hapusAhliWaris } from './checklist';
+import { hapusAhliWaris, labelOrangChecklist } from './checklist';
 import { rapikanKeadaan, type Kasus } from './kasus';
 
 export type KeadaanTampil = 'hidup' | 'wafatSebelum' | 'wafatSesudah' | 'wafatSesudahDibagi' | 'bersamaan' | 'hilang' | 'dalamKandungan' | 'khuntsa';
@@ -104,3 +104,7 @@ export function perluPeriksaCerita(kasus: Kasus): boolean {
   return kasus.urutanWafat.length > 0 || !!kasus.gharqa || !!kasus.wafatSesudahDibagi?.length
     || Object.values(kasus.graf.orang).some(o => o.statusHidup === 'mafqud' || o.statusHidup === 'dalamKandungan' || !!o.khuntsa);
 }
+
+/** Nama untuk kalimat: nama isian, atau label hubungan dari babak asalnya ("Anak laki-laki"). */
+export const namaSingkat = (kasus: Kasus, idOrang: IdOrang): string =>
+  kasus.graf.orang[idOrang]!.nama ?? labelOrangChecklist(kasus.graf, babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris, idOrang);
