@@ -8,6 +8,7 @@ import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
 import { LangkahBabak } from './LangkahBabak';
+import { PertanyaanHamil } from './keadaan/PertanyaanHamil';
 import { PertanyaanPenutup } from './keadaan/PertanyaanPenutup';
 import { LangkahKondisi } from './LangkahKondisi';
 import { LangkahHarta } from './wizard/LangkahHarta';
@@ -53,6 +54,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
           <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
           <PertanyaanPenutup kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
+          <PertanyaanHamil kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
         </>}
         {kasus && langkah === 4 && babak > 0 && <LangkahBabak kasus={kasus} babak={babak} ubah={ubah} />}
         {kasus && langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}

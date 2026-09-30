@@ -6,6 +6,7 @@ import { PohonDasar } from '../hasil/Pohon';
 import type { Kasus } from '../kasus';
 import { aturDikandung, babakAsal, calonPasangan, daftarAlmarhum, kerabatDari, namaSingkat, nikahkan } from '../keadaanOrang';
 import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
+import { PertanyaanHamil } from './keadaan/PertanyaanHamil';
 import { PertanyaanPenutup } from './keadaan/PertanyaanPenutup';
 import { t } from '../terjemah';
 
@@ -79,6 +80,7 @@ export function LangkahBabak({ kasus, babak, ubah }: Props) {
         </section>
       )}
       <PertanyaanPenutup kasus={kasus} idMayit={idMayit} ubah={ubah} />
+      <PertanyaanHamil kasus={kasus} idMayit={idMayit} ubah={ubah} />
     </div>
   );
 }

@@ -3,7 +3,7 @@
 // yaitu almarhum pertama (pewaris, lalu urutan wafat) yang menjadikan orang itu kerabat.
 
 import { KONFIGURASI_BAWAAN, turunkanPeran, type IdOrang, type InputTirkah, type KeadaanGharqa } from '@waris/engine';
-import { hapusAhliWaris, labelOrangChecklist } from './checklist';
+import { hapusAhliWaris, labelOrangChecklist, tambahOrangBaru } from './checklist';
 import { rapikanKeadaan, type Kasus } from './kasus';
 
 export type KeadaanTampil = 'hidup' | 'wafatSebelum' | 'wafatSesudah' | 'wafatSesudahDibagi' | 'bersamaan' | 'hilang' | 'dalamKandungan' | 'khuntsa';
@@ -130,4 +130,48 @@ export function calonPasangan(kasus: Kasus, idMayit: IdOrang): IdOrang[] {
 export function nikahkan(kasus: Kasus, idMayit: IdOrang, idPasangan: IdOrang): Kasus {
   const [idSuami, idIstri] = kasus.graf.orang[idMayit]!.jenisKelamin === 'L' ? [idMayit, idPasangan] : [idPasangan, idMayit];
   return rapikanKeadaan({ ...kasus, graf: { ...kasus.graf, pernikahan: [...kasus.graf.pernikahan, { idSuami, idIstri, status: 'utuh' }] } });
+}
+
+/** [R13-1] 13a.1: perempuan yang janinnya — dari suaminya di data, atau dari suami lain — punya peran ahli waris bagi `idMayit`. */
+export function calonIbuJanin(kasus: Kasus, idMayit: IdOrang): Array<{ idIbu: IdOrang; idAyahSah?: IdOrang }> {
+  const { graf } = kasus;
+  const perempuan = Object.values(graf.orang).filter(o => o.jenisKelamin === 'P' && !o.penghubung && o.statusHidup === 'hidup' && o.id !== idMayit);
+  const mewarisi = (idIbu: IdOrang, idAyah?: IdOrang) => {
+    const uji = tambahOrangBaru(graf, { jenisKelamin: 'L', idIbu, ...(idAyah ? { idAyah } : {}) });
+    const kunci = turunkanPeran({ ...uji.graf, idPewaris: idMayit }, KONFIGURASI_BAWAAN).daftarPeran[uji.idOrang]?.kunci;
+    return !!kunci && kunci !== 'BUKAN_AHLI_WARIS' && kunci !== 'DZAWIL_ARHAM';
+  };
+  return perempuan.flatMap(ibu => {
+    const suami = graf.pernikahan.find(n => n.idIstri === ibu.id && n.status !== 'talakBain')?.idSuami;
+    if (suami && mewarisi(ibu.id, suami)) return [{ idIbu: ibu.id, idAyahSah: suami }];
+    return mewarisi(ibu.id) ? [{ idIbu: ibu.id }] : [];
+  });
+}
+
+/** Satu node mewakili seluruh janin (types.ts); jenis kelamin hanya pengisi, taqdir menentukan. [R13-3] */
+export const tambahJanin = (kasus: Kasus, idIbu: IdOrang, idAyah?: IdOrang): Kasus => {
+  const { graf } = tambahOrangBaru(kasus.graf, { jenisKelamin: 'L', idIbu, ...(idAyah ? { idAyah } : {}), statusHidup: 'dalamKandungan' });
+  return rapikanKeadaan({ ...kasus, graf });
+};
+
+export type KelahiranJanin =
+  | { jenis: 'belum' } | { jenis: 'hidup'; anak: Array<'L' | 'P'> }
+  | { jenis: 'lahirLaluWafat'; jenisKelamin: 'L' | 'P' } | { jenis: 'tanpaKehidupan' };
+
+export function janinLahir(kasus: Kasus, idJanin: IdOrang, kelahiran: KelahiranJanin): { kasus: Kasus; idBayiWafat?: IdOrang } {
+  const janin = kasus.graf.orang[idJanin]!;
+  const induk = { ...(janin.idAyah ? { idAyah: janin.idAyah } : {}), ...(janin.idIbu ? { idIbu: janin.idIbu } : {}) };
+  const tanpaJanin = { ...kasus, graf: hapusAhliWaris(kasus.graf, idJanin) };
+  switch (kelahiran.jenis) {
+    case 'belum': return { kasus };
+    case 'tanpaKehidupan': return { kasus: rapikanKeadaan(tanpaJanin) };   // [R13-2] syarat istihlal tidak terpenuhi
+    case 'hidup': {
+      const graf = kelahiran.anak.reduce((g, jenisKelamin) => tambahOrangBaru(g, { jenisKelamin, ...induk }).graf, tanpaJanin.graf);
+      return { kasus: rapikanKeadaan({ ...tanpaJanin, graf }) };
+    }
+    case 'lahirLaluWafat': {
+      const bayi = tambahOrangBaru(tanpaJanin.graf, { jenisKelamin: kelahiran.jenisKelamin, ...induk });
+      return { kasus: rapikanKeadaan({ ...tanpaJanin, graf: bayi.graf }), idBayiWafat: bayi.idOrang };
+    }
+  }
 }

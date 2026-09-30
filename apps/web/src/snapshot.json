@@ -17976,6 +17976,188 @@
    "id": "Tidak",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya",
+   "halaman": "hitung",
+   "id": "Waktu {mayit} wafat, apakah ada yang sedang hamil di keluarga ini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_ket",
+   "halaman": "hitung",
+   "id": "Janin bisa ikut mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tidak_ada",
+   "halaman": "hitung",
+   "id": "Tidak ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.ada",
+   "halaman": "hitung",
+   "id": "Ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.siapa",
+   "halaman": "hitung",
+   "id": "Siapa yang sedang hamil?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.siapa_ket",
+   "halaman": "hitung",
+   "id": "Hanya orang yang janinnya bisa mewarisi {mayit}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.dari_siapa",
+   "halaman": "hitung",
+   "id": "Janin {ibu} dari siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.suami_lain",
+   "halaman": "hitung",
+   "id": "Suami lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.sudah_lahir",
+   "halaman": "hitung",
+   "id": "Bayinya sudah lahir?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.belum_lahir",
+   "halaman": "hitung",
+   "id": "Belum lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.lahir_hidup",
+   "halaman": "hitung",
+   "id": "Sudah lahir, masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.lahir_lalu_wafat",
+   "halaman": "hitung",
+   "id": "Sudah lahir, lalu wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.lahir_lalu_wafat_ket",
+   "halaman": "hitung",
+   "id": "Bayi ikut mewarisi, lalu bagiannya diteruskan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanpa_kehidupan",
+   "halaman": "hitung",
+   "id": "Lahir tanpa tanda kehidupan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanpa_kehidupan_ket",
+   "halaman": "hitung",
+   "id": "Tidak ikut mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.jenis_kelamin",
+   "halaman": "hitung",
+   "id": "Bayinya laki-laki atau perempuan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.laki_laki",
+   "halaman": "hitung",
+   "id": "Laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.perempuan",
+   "halaman": "hitung",
+   "id": "Perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tambah_kembar",
+   "halaman": "hitung",
+   "id": "Kembar? Tambah satu bayi lagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.baris",
+   "halaman": "hitung",
+   "id": "Janin {ibu} · belum lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.hapus_judul",
+   "halaman": "hitung",
+   "id": "Hapus data janin?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.hapus_isi",
+   "halaman": "hitung",
+   "id": "Data janin di babak ini akan dihapus.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tambah",
+   "halaman": "hitung",
+   "id": "Tambah yang hamil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.ubah",
+   "halaman": "hitung",
+   "id": "Ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.hapus",
+   "halaman": "hitung",
+   "id": "Hapus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tidak_ada_calon",
+   "halaman": "hitung",
+   "id": "Tidak ada anggota keluarga yang janinnya bisa mewarisi.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
 import {
-  alasanTidakDidukung, babakAsal, daftarAlmarhum, keadaanOrang, kerabatDari, orangTerputus, perluPeriksaCerita, terapkanKeadaan,
+  alasanTidakDidukung, babakAsal, calonIbuJanin, janinLahir, tambahJanin, daftarAlmarhum, keadaanOrang, kerabatDari, orangTerputus, perluPeriksaCerita, terapkanKeadaan,
 } from '../keadaanOrang';
 
 const TANPA_HARTA = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
@@ -99,4 +99,17 @@ describe('keadaanOrang', () => {
     expect(alasanTidakDidukung(g, rina, { jenis: 'wafatSesudah', hartaSudahDibagi: false })).toBe('hitung.keadaan.belum_didukung');
     expect(alasanTidakDidukung(kasus, rina, { jenis: 'wafatSesudah', hartaSudahDibagi: false })).toBeNull();
   });
+});
+
+it('janin: calon ibu hanya yang janinnya bisa mewarisi; lahir hidup/tanpa kehidupan', () => {
+  const { kasus, siti } = keluargaAhmad();
+  expect(calonIbuJanin(kasus, 'PEWARIS').map(c => c.idIbu)).toContain(siti);           // istri pewaris
+  const k = tambahJanin(kasus, siti, 'PEWARIS');
+  const janin = Object.values(k.graf.orang).find(o => o.statusHidup === 'dalamKandungan')!;
+  expect(janin).toMatchObject({ idIbu: siti, idAyah: 'PEWARIS' });
+  const kembar = janinLahir(k, janin.id, { jenis: 'hidup', anak: ['L', 'P'] }).kasus;
+  expect(Object.values(kembar.graf.orang).filter(o => o.idIbu === siti && o.idAyah === 'PEWARIS' && o.statusHidup === 'hidup').length).toBeGreaterThanOrEqual(2);
+  expect(janinLahir(k, janin.id, { jenis: 'tanpaKehidupan' }).kasus.graf.orang[janin.id]).toBeUndefined();   // [R13-2]
+  const { kasus: w, idBayiWafat } = janinLahir(k, janin.id, { jenis: 'lahirLaluWafat', jenisKelamin: 'P' });
+  expect(w.graf.orang[idBayiWafat!]).toMatchObject({ statusHidup: 'hidup', jenisKelamin: 'P' });
 });

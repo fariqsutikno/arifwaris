@@ -236,6 +236,9 @@ function tambahOrang(graf: GrafKeluarga, data: Omit<Orang, 'id' | 'statusHidup' 
   return { graf: { ...graf, orang: { ...graf.orang, [idOrang]: orang } }, idOrang };
 }
 
+/** Dipakai keadaanOrang.ts untuk janin dan bayi (orang tanpa jenis checklist). */
+export const tambahOrangBaru = tambahOrang;
+
 const ubahOrang = (graf: GrafKeluarga, idOrang: IdOrang, perubahan: Partial<Orang>): GrafKeluarga =>
   ({ ...graf, orang: { ...graf.orang, [idOrang]: { ...graf.orang[idOrang]!, ...perubahan } } });
 
