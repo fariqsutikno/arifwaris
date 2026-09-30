@@ -18,7 +18,7 @@ Pekerjaan inti mereka sama: memasukkan keadaan sebuah keluarga, lalu memahami me
 
 ## Product Purpose
 
-Kalkulator waris (faraidh) yang sekaligus tempat belajar. Pengguna memasukkan pewaris, harta, kewajiban, ahli waris, dan kondisi khusus; aplikasi memberi bagian tiap orang (pecahan dan nominal) beserta penjelasan langkah demi langkah, dari halangan waris sampai pembagian akhir, dengan dalil di tiap keputusan. Modul Belajar (materi bertahap, glosarium, latihan hitung, kuis, rujukan) tersedia tanpa harus punya kasus.
+**Arif Waris** (ARIF = *Aplikasi Representasi Ilmu Faraidh*) adalah portal edukasi waris: kalkulator dan tempat belajar dalam satu produk, dengan penjelasan gamblang langkah demi langkah sebagai intinya. Pengguna memasukkan pewaris, harta, kewajiban, ahli waris, dan kondisi khusus; aplikasi memberi bagian tiap orang (pecahan dan nominal) beserta penjelasan langkah demi langkah, dari halangan waris sampai pembagian akhir, dengan dalil di tiap keputusan. Modul Belajar (materi bertahap, glosarium, latihan hitung, kuis, rujukan) tersedia tanpa harus punya kasus.
 
 Keberhasilan: orang yang tidak pernah belajar faraidh dapat memasukkan keluarga yang rumit, tidak tersesat di tengah pengisian, dan keluar dengan pemahaman yang bisa ia jelaskan lagi ke keluarganya. Pelajar dan praktisi bisa mengecek setiap angka ke sumbernya.
 
@@ -26,7 +26,7 @@ Keberhasilan: orang yang tidak pernah belajar faraidh dapat memasukkan keluarga 
 
 Klaim yang tidak bisa ditiru begitu saja oleh kalkulator waris lain:
 
-1. **Setiap hasil bisa ditelusuri ke kitab.** Hitungan dijalankan engine yang deterministik dan eksak (pecahan bigint, tanpa floating point); tiap keputusan (hajb, fardh, ashabah, 'aul/radd, tashih) membawa rujukan ke basis pengetahuan fikih yang dikurasi tim keilmuan. Bukan kotak hitam, bukan jawaban dari model bahasa.
+1. **Setiap hasil bisa ditelusuri ke kitab, dan dijelaskan gamblang langkah demi langkah.** Hitungan dijalankan engine yang deterministik dan eksak (pecahan bigint, tanpa floating point); tiap keputusan (hajb, fardh, ashabah, 'aul/radd, tashih) dijelaskan dengan bahasa awam dan membawa rujukan ke basis pengetahuan fikih yang dikurasi tim keilmuan. Bukan kotak hitam; angka dan penjelasan dasarnya tidak berasal dari model bahasa.
 2. **Kasus rumit tetap terjawab.** Kondisi bersusun ditangani dalam satu kasus: kematian berlapis (munasakhat), janin (haml), mafqud, khuntsa, wafat bersamaan (gharqa), hingga dzawil arham; termasuk kasus iftiradhiyah (istilah pemilik produk untuk kasus rumit/hipotetis), yang biasanya hanya dikerjakan pakar dengan tangan. Data yang kurang ditanyakan, tidak ditebak.
 3. **Multi-madzhab dengan default Syafi'i.** Syafi'i adalah dasar; Hanbali, Hanafi, dan Maliki berupa selisih pendapat yang tertelusur per titik khilaf, bukan tiga kalkulator terpisah.
 4. **Ramah bagi orang awam untuk kasus yang tidak ramah.** Pengisian dipandu satu pertanyaan pada satu waktu, silsilah ditampilkan sebagai pohon keluarga, hasil sebagai tabel dan langkah yang bisa dibaca pelan-pelan. Kerumitan fikih ditanggung engine dan antarmuka, bukan pengguna.
@@ -43,11 +43,13 @@ Klaim yang tidak bisa ditiru begitu saja oleh kalkulator waris lain:
 
 Sudah ada: wizard kasus, hasil dengan pohon, tabel dan penjelasan langkah, mode Hitung/Belajar, Pusat Belajar (materi, glosarium, latihan hitung, kuis, FAQ, tanya jawab, rujukan), riwayat, tur singkat, akun opsional, streak dan peringkat, tampilan Indonesia + Arab (redaksi Arab masih draf).
 
-Sedang dikerjakan / menyusul (urutan disepakati: logika dulu, tampilan sekaligus di akhir): pilihan madzhab, tampilan kondisi khusus bab 13 dan dzawil arham, pohon keluarga bebas dengan label bertingkat, kematian berlapis dengan mode biasa (urutan wafat) dan mode lanjutan "Atur linimasa lengkap" (satu model data, pindah mode tidak menghapus isian), mode cerita (pengguna mengetik cerita, AI menyusun draf silsilah).
+Logika engine untuk semua fitur di bawah sudah selesai; yang tersisa adalah tampilannya (dirancang sekali untuk semuanya): pilihan madzhab, kondisi khusus bab 13 dan dzawil arham, pohon keluarga bebas dengan label bertingkat, kematian berlapis dengan mode biasa (urutan wafat) dan mode lanjutan "Atur linimasa lengkap" (satu model data, pindah mode tidak menghapus isian), dan mode cerita (pengguna mengetik cerita, AI menyusun draf silsilah).
+
+Rencana ke depan: chatbot **AMIN** (*AI Mawaris Interaktif*) yang menjelaskan ulang bagian penjelasan yang belum dipahami pengguna. Belum dirancang; rincian (letak, batas jawaban, sumber rujukan, kuota) belum diputuskan.
 
 Batas yang mengikat produk:
 
-- **Engine memutuskan, bukan AI.** AI (mode cerita) hanya menerjemahkan cerita menjadi draf silsilah; pengguna mengonfirmasi pohonnya dan engine yang menentukan siapa dapat berapa. Mode cerita wajib login, berkuota, dan meminta pengguna tanpa nama asli.
+- **Engine memutuskan, bukan AI.** AI di mode cerita hanya menerjemahkan cerita menjadi draf silsilah; pengguna mengonfirmasi pohonnya dan engine yang menentukan siapa dapat berapa. Mode cerita wajib login, berkuota, dan meminta pengguna tanpa nama asli. AMIN kelak hanya menjelaskan ulang penjelasan yang sudah ada, tidak menetapkan hukum atau mengubah hasil hitung.
 - **Hanya hukum yang ada di basis pengetahuan.** Aturan yang belum terverifikasi tidak dikarang; tampil sebagai "sedang dikaji" (contoh: laqith, dan aturan haml khusus Syafi'i di luar yang tercatat). Kombinatorik terlalu besar berakhir "perlu input", bukan macet.
 - **Sumber bertingkat harus jujur.** Syafi'i adalah yang terverifikasi ke teks primer. Pendapat dari al-Lahim dan Ithraa berstatus sumber sekunder dan UI menyebut sumbernya. Tarjih yang condong Hanbali tidak pernah ditampilkan sebagai posisi Syafi'i.
 - **KHI bukan fikih.** Bila kelak ada, ditandai jelas sebagai hukum positif dan tidak dicampur ke pilihan madzhab.
@@ -57,9 +59,9 @@ Batas yang mengikat produk:
 
 ## Brand Commitments
 
-- Nama: **Arif Waris**; ruang latihan hitung bernama **ArifLab**. Ada mode pra-peluncuran yang menyamarkan nama menjadi "Kalkulator Waris" / "Lab Hitung"; teks tampil tidak boleh mengeraskan nama itu di luar lapisan terjemah.
-- Sistem visual yang sedang dipakai adalah Arif Waris v4 (token dan komponen yang sudah ada); pemilik produk menetapkan penggantian gaya sebagai pekerjaan terpisah.
-- Keputusan pemilik yang mengikat: ikon SVG, tanpa emoji, di UI maupun mockup; aksi sekunder dan ajakan berupa teks atau tautan, tombol berbingkai hanya untuk aksi utama di form/dialog (Simpan, Batal).
+- Nama: **Arif Waris** (*Aplikasi Representasi Ilmu Faraidh*); ruang latihan hitung **ArifLab**; chatbot mendatang **AMIN** (*AI Mawaris Interaktif*). Ada mode pra-peluncuran yang menyamarkan nama menjadi "Kalkulator Waris" / "Lab Hitung"; teks tampil tidak boleh mengeraskan nama itu di luar lapisan terjemah.
+- Sistem visual akan **dirombak ulang** oleh pemilik produk memakai Impeccable. Arif Waris v4 (token dan komponen yang ada) hanya bukti tentang kondisi sekarang, bukan acuan yang harus dipertahankan.
+- Keputusan pemilik yang tetap mengikat: ikon SVG, tanpa emoji, di UI maupun mockup; aksi sekunder dan ajakan berupa teks atau tautan, tombol berbingkai hanya untuk aksi utama di form/dialog (Simpan, Batal).
 - Bahasa: Indonesia, dengan istilah fikih bertransliterasi baku sesuai glosarium; istilah Arab tampil bila mode Indonesia + Arab aktif. Portal admin tidak menampilkan kode teknis, kunci teks, atau JSON kepada penulis konten.
 
 ## Evidence on Hand
