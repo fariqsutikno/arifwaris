@@ -35,7 +35,7 @@ const gabungAtau = (konteks: Konteks, daftar: Potongan[][]) => daftar.flatMap((u
 
 // ─── Langkah: harta ───────────────────────────────────────────────────────────
 
-function babHarta(konteks: Konteks): Bab | undefined {
+export function babHarta(konteks: Konteks): Bab | undefined {
   const [langkahTirkah] = konteks.daftarLangkah('TIRKAH');
   if (!langkahTirkah || langkahTirkah.kotor === 0n) return undefined;
   const daftarBaris: BarisPenjelasan[] = [];
@@ -449,7 +449,7 @@ function babPembulatan(konteks: Konteks): Bab | undefined {
 
 // ─── Langkah: hasil ───────────────────────────────────────────────────────────
 
-function babHasil(konteks: Konteks): Bab {
+export function babHasil(konteks: Konteks): Bab {
   const { tabel, pembulatan } = konteks.hasil;
   const penyebut = konteks.penyebutAkhir;
   const nominalBila = (uang: bigint): Potongan[] => (konteks.tampilkanNominal ? kalimat` = ${rupiah(uang)}` : []);

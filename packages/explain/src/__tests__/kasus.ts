@@ -1,6 +1,7 @@
 // Semua kasus uji (bab 16, overlay madzhab per ruleset, munasakhat) × semua mode → penjelasannya; dipakai tes emas & cakupan.
-import { hitung, hitungMunasakhat, type InputEngine, type Ruleset } from '@waris/engine';
+import { hitung, hitungDzawilArham, hitungMunasakhat, type InputEngine, type Ruleset } from '@waris/engine';
 import * as bab16 from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { DZAWIL_ARHAM_FIXTURES, KASUS_DZAWIL_ARHAM_MADZHAB, dengan } from '../../../engine/src/__tests__/fixtures/dzawilArham.js';
 import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
 import { MUNASAKHAT_FIXTURES } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
 import { jelaskan, jelaskanMunasakhat } from '../index.js';
@@ -21,6 +22,20 @@ export function semuaPenjelasan(): Record<string, unknown> {
     if (hasilHitung.status !== 'OK') continue;
     for (const mode of MODE) {
       hasil[`${nama}/${mode}`] = jelaskan(hasilHitung, input.graf,
+        mode === 'arab' ? { bahasa: 'ar', kamus: kamusSnapshot } : { gaya: mode, kamus: kamusSnapshot });
+    }
+  }
+  const kasusDzawilArham: Array<readonly [string, InputEngine]> = [
+    ...DZAWIL_ARHAM_FIXTURES.map(fixture => [fixture.id, fixture.input] as const),
+    ...KASUS_DZAWIL_ARHAM_MADZHAB.flatMap(kasus => (Object.entries(kasus.harapan) as Array<[Ruleset, { status: string }]>)
+      .filter(([, harapan]) => harapan.status === 'OK')
+      .map(([ruleset]) => [`${kasus.id}:${ruleset}`, dengan(kasus.graf, ruleset, kasus.konfigurasi)] as const)),
+  ];
+  for (const [nama, input] of kasusDzawilArham) {
+    const hasilHitung = hitungDzawilArham(input);
+    if (hasilHitung.status !== 'OK') continue;
+    for (const mode of MODE) {
+      hasil[`dzawilArham:${nama}/${mode}`] = jelaskan(hasilHitung, input.graf,
         mode === 'arab' ? { bahasa: 'ar', kamus: kamusSnapshot } : { gaya: mode, kamus: kamusSnapshot });
     }
   }
