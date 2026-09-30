@@ -7,11 +7,11 @@ import type { IdOrang } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
 import { t } from '../terjemah';
 
-export type PeranSorot = 'pewaris' | 'ahliWaris' | 'penyebab' | 'mahjub' | 'bukan' | 'fardh' | 'ashabah';
+export type PeranSorot = 'pewaris' | 'ahliWaris' | 'penyebab' | 'mahjub' | 'bukan' | 'fardh' | 'ashabah' | 'dzawilArham';
 
 export const LABEL_PERAN_SOROT: Record<PeranSorot, string> = {
   pewaris: 'Pewaris', ahliWaris: t('hitung.ahli_waris'), penyebab: 'Penyebab', mahjub: 'Terhalang',
-  bukan: t('hitung.bukan_ahli_waris'), fardh: t('hitung.fardh_bagian_tertentu'), ashabah: t('hitung.ashabah_sisa'),
+  bukan: t('hitung.bukan_ahli_waris'), fardh: t('hitung.fardh_bagian_tertentu'), ashabah: t('hitung.ashabah_sisa'), dzawilArham: t('hitung.dzawil_arham'),
 };
 
 /** Hajb sebagai perubahan: bagian semula dicoret, diganti bagian baru (mis. 1/3 → 1/6, ahli waris → terhalang). */

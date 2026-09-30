@@ -9,7 +9,7 @@ import type { IdOrang, TabelMasalah } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
 import type { HasilOk } from '../jalankan';
-import { urutkanBaris, type RingkasanHasil } from './ringkasan';
+import { adalahDzawilArham, urutkanBaris, type RingkasanHasil } from './ringkasan';
 import { AngkaMasuk } from '../ui/AngkaMasuk';
 import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
@@ -108,7 +108,9 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
                 </td>
                 {indeks === 0 && <>
                   <td rowSpan={anggota.length} className={sel('bagian', anggota)} data-anggota={anggota.join(' ')}>
-                    {tertutup('bagian', anggota) ? RAHASIA : (
+                    {tertutup('bagian', anggota) ? RAHASIA : adalahDzawilArham(ringkasan.statusOrang[id]) ? (
+                      <span className="bagian-sel"><Istilah id="dzawil-arham">{t('hitung.dzawil_arham')}</Istilah><small>{t('hitung.menurut_tanzil')}</small></span>
+                    ) : (
                       <span className="bagian-sel">{baris.fardh ? angkaTampil(`${baris.fardh.n}/${baris.fardh.d}`) : <Istilah id="ashabah">{t('hitung.ashabah')}</Istilah>}
                         <small>{baris.fardh ? (baris.ashabah ? t('hitung.bagian_tertentu_sisa') : t('hitung.bagian_tertentu')) : anggota.length > 1 ? t('hitung.sisa_dibagi_bersama') : 'sisa'}</small></span>
                     )}

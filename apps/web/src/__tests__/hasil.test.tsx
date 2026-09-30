@@ -8,6 +8,9 @@ import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
 import { semuaTersimpan } from '../tersimpan';
+import { jalankan } from '../jalankan';
+import { dataPeranDari } from '../hasil/ketukan';
+import { ringkas } from '../hasil/ringkasan';
 
 const buat = (kunci: KunciAhliWaris[], tirkah: Kasus['tirkah']): Kasus => {
   const kasus = kasusBaru('L');
@@ -212,6 +215,29 @@ describe('layar hasil', () => {
     render(<Uji awal={buat(['ISTRI'], { kotor: 4_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n })} />);
     expect(within(pembagian()).getByText(/Sisa: dzawil arham \/ baitul mal/)).toBeTruthy();
     expect(within(pembagian()).getByText('Rp 3.000.000')).toBeTruthy();
+  });
+
+  it('dzawil arham (khalah + \'ammah, kasus 16.24) berlabel dzawil arham, bukan ashabah', () => {
+    const orang = (id: string, jenisKelamin: 'L' | 'P', lain: object = {}) => ({ id, jenisKelamin, statusHidup: 'hidup' as const, agama: 'islam' as const, ...lain });
+    const wafat = { statusHidup: 'wafat' as const, penghubung: true };
+    const kasus: Kasus = { ...kasusBaru('L'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, graf: {
+      idPewaris: 'D', pernikahan: [], orang: {
+        D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+        F1: orang('F1', 'L', { ...wafat, idAyah: 'PGF', idIbu: 'PGM' }), M1: orang('M1', 'P', { ...wafat, idAyah: 'MGF', idIbu: 'MGM' }),
+        PGF: orang('PGF', 'L', wafat), PGM: orang('PGM', 'P', wafat), MGF: orang('MGF', 'L', wafat), MGM: orang('MGM', 'P', wafat),
+        KL1: orang('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }), AM1: orang('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),
+      } } };
+    render(<Uji awal={kasus} />);
+    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
+    const tabel = screen.getByRole('table');
+    expect(within(tabel).getAllByText('Dzawil arham')).toHaveLength(2);
+    expect(within(tabel).queryByText('Ashabah')).toBeNull();
+    expect(within(tabel).queryByText('sisa')).toBeNull();
+    const ringkasan = ringkas(kasus, jalankan(kasus));
+    expect(ringkasan.penerima.map(orang => [orang.keterangan, orang.ashabah])).toEqual([['Dzawil arham', false], ['Dzawil arham', false]]);
+    const tampil = jalankan(kasus);
+    if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error('harus OK');
+    expect([...dataPeranDari(kasus.graf, ringkasan, tampil.hasil.tabel, []).pembagian.values()]).toEqual(['dzawilArham', 'dzawilArham']);
   });
 
   it('pintasan "Ubah ahli waris" membuka langkah ahli waris', () => {
