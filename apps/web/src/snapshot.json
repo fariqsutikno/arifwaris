@@ -17479,6 +17479,286 @@
    "id": "Tambahkan dulu keluarga yang ditinggalkan almarhum di babak ini.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.tanya",
+   "halaman": "hitung",
+   "id": "Bagaimana keadaan {nama} sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.masih_hidup",
+   "halaman": "hitung",
+   "id": "Masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sudah_wafat",
+   "halaman": "hitung",
+   "id": "Sudah wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.hilang",
+   "halaman": "hitung",
+   "id": "Hilang, tidak ada kabar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.keadaan_lain",
+   "halaman": "hitung",
+   "id": "Keadaan lain ›",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.kelamin_belum_jelas",
+   "halaman": "hitung",
+   "id": "Kelaminnya belum bisa ditentukan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.kelamin_belum_jelas_ket",
+   "halaman": "hitung",
+   "id": "Pilih ini hanya bila dokter atau hakim belum bisa memastikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sebelum_atau_sesudah",
+   "halaman": "hitung",
+   "id": "{nama} wafat sebelum atau sesudah {mayit}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.kenapa_waktu",
+   "halaman": "hitung",
+   "id": "Orang yang wafat lebih dulu dari {mayit} tidak mendapat warisan darinya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sebelum",
+   "halaman": "hitung",
+   "id": "Sebelum {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sesudah",
+   "halaman": "hitung",
+   "id": "Sesudah {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.bersamaan_atau_tidak_tahu",
+   "halaman": "hitung",
+   "id": "Bersamaan, atau tidak tahu siapa yang duluan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.harta_sudah_dibagi",
+   "halaman": "hitung",
+   "id": "Waktu {nama} wafat, apakah harta {pewaris} sudah dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.arti_dibagi",
+   "halaman": "hitung",
+   "id": "Sudah dibagi artinya: sudah dihitung bagian masing-masing dan sudah diserahkan. Rumah yang ditempati bersama belum termasuk dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.belum_dibagi",
+   "halaman": "hitung",
+   "id": "Belum dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sudah_dibagi",
+   "halaman": "hitung",
+   "id": "Sudah dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.siapa_lebih_dulu",
+   "halaman": "hitung",
+   "id": "Siapa yang wafat lebih dulu?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sudah_baligh",
+   "halaman": "hitung",
+   "id": "{nama} sudah dewasa (baligh)?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.baligh_ket",
+   "halaman": "hitung",
+   "id": "Kalau sudah jelas laki-laki atau perempuan, pilih yang jelas itu di daftar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.belum_baligh",
+   "halaman": "hitung",
+   "id": "Belum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.belum_baligh_ket",
+   "halaman": "hitung",
+   "id": "Masih mungkin menjadi jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sudah_baligh_tetap",
+   "halaman": "hitung",
+   "id": "Sudah, dan tetap belum jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.sudah_baligh_tetap_ket",
+   "halaman": "hitung",
+   "id": "Atau wafat saat masih kecil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.belum_didukung",
+   "halaman": "hitung",
+   "id": "Keadaan ini belum bisa dihitung otomatis",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.belum_didukung_ket",
+   "halaman": "hitung",
+   "id": "Tanyakan ke ahli faraidh. Jawaban ini tidak disimpan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hilang.ada_putusan",
+   "halaman": "hitung",
+   "id": "Sudah ada putusan pengadilan bahwa {nama} dianggap wafat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hilang.belum_ada",
+   "halaman": "hitung",
+   "id": "Belum ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hilang.sudah_ada",
+   "halaman": "hitung",
+   "id": "Sudah ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hilang.pasti_wafat_tak_tahu_kapan",
+   "halaman": "hitung",
+   "id": "Ternyata sudah pasti wafat, tapi tidak tahu kapan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.pasti_bersamaan",
+   "halaman": "hitung",
+   "id": "Apakah {nama} dan {mayit} pasti wafat di saat yang sama persis?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.contoh",
+   "halaman": "hitung",
+   "id": "Contoh: dalam satu kecelakaan, dan keduanya meninggal di tempat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.ya_pasti",
+   "halaman": "hitung",
+   "id": "Ya, pasti bersamaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.tidak_pasti",
+   "halaman": "hitung",
+   "id": "Tidak pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.pernah_tahu",
+   "halaman": "hitung",
+   "id": "Dulu, pernah ada yang tahu siapa yang wafat terakhir?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.pernah_tahu_lupa",
+   "halaman": "hitung",
+   "id": "Pernah tahu, tapi sekarang lupa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.tidak_pernah_tahu",
+   "halaman": "hitung",
+   "id": "Tidak pernah ada yang tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.sekarang_tahu",
+   "halaman": "hitung",
+   "id": "Sekarang tahu siapa yang terakhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.harta_sendiri",
+   "halaman": "hitung",
+   "id": "{nama} juga punya harta sendiri?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.harta_sendiri_ket",
+   "halaman": "hitung",
+   "id": "Karena wafat bersamaan, harta masing-masing dibagi sendiri-sendiri. Boleh dikosongkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bersamaan.harta_label",
+   "halaman": "hitung",
+   "id": "Harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

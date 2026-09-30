@@ -1251,3 +1251,14 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .ikon-api{flex:none;filter:drop-shadow(0 1px 1.5px rgba(232,69,44,.35))}
 .tautan-streak.redup .ikon-api{filter:grayscale(1)}
 .streak-hari{display:inline-flex;align-items:center;gap:3px}
+
+/* ─── Dialog keadaan orang ─── */
+.dialog-langkah{display:flex;flex-direction:column;gap:12px;max-width:480px}
+.dialog-langkah h2{font:700 24px/1.2 var(--font-display);margin:0;text-wrap:balance}
+.pilihan-dialog{display:flex;flex-direction:column;gap:8px}
+.opsi-dialog{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px 14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);font:700 16px/1.3 var(--font-sans);text-align:start;cursor:pointer}
+.opsi-dialog small{font-weight:500;font-size:13px;color:var(--ink-muted)}
+.opsi-dialog[aria-checked=true]{background:var(--primary);color:var(--on-primary);box-shadow:var(--shadow-pop-sm)}
+.opsi-dialog[aria-checked=true] small{color:var(--on-primary)}
+.opsi-dialog:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.tautan{background:none;border:0;padding:0;color:var(--primary);font:700 14px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start}
