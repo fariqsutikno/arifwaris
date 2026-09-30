@@ -63,3 +63,13 @@ it('"Tidak ada" dengan janin terisi meminta konfirmasi lalu menghapus janin', ()
   fireEvent.click(screen.getByRole('button', { name: /Ya, hapus/ }));
   expect(Object.values(terakhir.graf.orang).some(o => o.statusHidup === 'dalamKandungan')).toBe(false);
 });
+
+it('pilihan ayah janin menyebut almarhum, bukan "Kerabat"', () => {
+  render(<Uji awal={keluargaAhmad()} />);
+  fireEvent.click(screen.getByRole('radio', { name: /^Ada$/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Tambah/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Istri/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut/ }));
+  expect(screen.getByRole('radio', { name: 'Almarhum' })).toBeTruthy();
+  expect(screen.queryByRole('radio', { name: 'Kerabat' })).toBeNull();
+});

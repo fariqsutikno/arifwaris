@@ -4,6 +4,7 @@
 
 import { KONFIGURASI_BAWAAN, turunkanPeran, type IdOrang, type InputTirkah, type KeadaanGharqa } from '@waris/engine';
 import { hapusAhliWaris, labelOrangChecklist, tambahOrangBaru } from './checklist';
+import { t } from './terjemah';
 import { rapikanKeadaan, type Kasus } from './kasus';
 
 export type KeadaanTampil = 'hidup' | 'wafatSebelum' | 'wafatSesudah' | 'wafatSesudahDibagi' | 'bersamaan' | 'hilang' | 'dalamKandungan' | 'khuntsa';
@@ -108,7 +109,7 @@ export function perluPeriksaCerita(kasus: Kasus): boolean {
 
 /** Nama untuk kalimat: nama isian, atau label hubungan dari babak asalnya ("Anak laki-laki"). */
 export const namaSingkat = (kasus: Kasus, idOrang: IdOrang): string =>
-  kasus.graf.orang[idOrang]!.nama ?? labelOrangChecklist(kasus.graf, babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris, idOrang);
+  kasus.graf.orang[idOrang]!.nama ?? (idOrang === kasus.graf.idPewaris ? t('hitung.almarhum') : labelOrangChecklist(kasus.graf, babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris, idOrang));
 /** [R13-1] Anak yang baru dikandung sesudah `idMayit` wafat bukan ahli warisnya; null = sudah ada sebelum semua almarhum. */
 export function aturDikandung(kasus: Kasus, idAnak: IdOrang, idMayit: IdOrang | null): Kasus {
   const { [idAnak]: _lama, ...sisa } = kasus.dikandungSetelahWafat ?? {};
