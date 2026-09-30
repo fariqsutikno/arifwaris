@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { hitungMunasakhat } from '../munasakhat.js';
-import type { InputMunasakhat, HasilMunasakhat } from '../types.js';
+import type { GrafKeluarga, InputMunasakhat, HasilMunasakhat } from '../types.js';
+import { input, p } from './fixtures/bab16.js';
 import { M2, MUNASAKHAT_FIXTURES, SISA_KELUAR_MAYIT_KEDUA } from './fixtures/munasakhat.js';
 
 type Ok = Extract<HasilMunasakhat, { status: 'OK' }>;
@@ -90,5 +91,22 @@ describe('Munasakhat — sisa harta mayit berikutnya keluar ke dzawil arham/bait
     expect(hasil.saham).toEqual({ S: 12n, W2: 1n });
     expect(hasil.sisaKeluar).toEqual([{ mayit: 'H', tujuan: 'baitulMal', saham: 3n, nominal: 3_000_000n }]);
     expect(hasil.nominal).toEqual({ S: 12_000_000n, W2: 1_000_000n });
+  });
+});
+
+// 02.3: nikah hanya sebab waris antara dua pasangan, dinilai saat salah satunya wafat. Satu status statis
+// (status saat pasangan pertama wafat) sudah cukup untuk seluruh rantai; tidak perlu nikah/talak berwaktu.
+describe('Munasakhat — pernikahan dalam rantai', () => {
+  // A wafat meninggalkan istri W dan anak S. W lalu menikah dengan B, kemudian W wafat.
+  const graf: GrafKeluarga = {
+    idPewaris: 'A',
+    orang: { A: p('A', 'L', { statusHidup: 'wafat' }), W: p('W', 'P'), S: p('S', 'L', { idAyah: 'A', idIbu: 'W' }), B: p('B', 'L') },
+    pernikahan: [{ idSuami: 'A', idIstri: 'W', status: 'utuh' }, { idSuami: 'B', idIstri: 'W', status: 'utuh' }],
+  };
+
+  test('janda yang menikah lagi: suami barunya mewarisi bagiannya, pernikahan lama tidak ganda', () => {
+    const hasil = ok({ dasar: input(graf), urutanWafat: ['W'] });
+    // A: istri 1/8, anak 7/8. W: suami B 1/4 (ada anak), anak S sisa 3/4 → B = 1/32, S = 31/32.
+    expect(sebagaiPecahan(hasil.saham, hasil.jamiah)).toEqual({ B: '1/32', S: '31/32' });
   });
 });
