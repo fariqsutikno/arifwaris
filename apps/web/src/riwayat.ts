@@ -9,6 +9,7 @@ import { hitungIsian, jenisDari } from './checklist';
 import { formatRupiah } from './format';
 import { dariJson, keJson, type Kasus } from './kasus';
 import { LABEL_SEHARI } from './konten/ahliWaris';
+import { perluPeriksaCerita } from './keadaanOrang';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 import { angka, bahasaArab, t } from './terjemah';
 
@@ -69,7 +70,7 @@ export function ringkasKasus(kasus: Kasus): { judul: string; keterangan: string;
     return daftar!.length > 1 ? `${angka(String(daftar!.length))} ${label}` : label;
   }).join(t('hitung.teks')) || t('hitung.belum_ada_ahli_waris');
   if (langkahTerjauh(kasus) !== LANGKAH_HASIL) return { judul, keterangan: t('hitung.data_belum_lengkap'), lengkap: false };
-  const munasakhat = kasus.urutanWafat.length > 0 ? t('hitung.ada_yang_wafat_sebelum_pembagian') : '';
+  const munasakhat = perluPeriksaCerita(kasus) ? t('hitung.penutup.ada_kondisi_khusus') : '';
   return { judul, keterangan: `${formatRupiah(kasus.tirkah.kotor)}${munasakhat}`, lengkap: true };
 }
 

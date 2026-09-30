@@ -7,6 +7,7 @@ import { t } from '../terjemah';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
+import { PertanyaanPenutup } from './keadaan/PertanyaanPenutup';
 import { LangkahKondisi } from './LangkahKondisi';
 import { LangkahHarta } from './wizard/LangkahHarta';
 import { LangkahKewajiban } from './wizard/LangkahKewajiban';
@@ -47,7 +48,11 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
         {kasus && langkah === 2 && <LangkahHarta kasus={kasus} ubah={ubah} />}
         {kasus && langkah === 3 && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
-        {kasus && langkah === 4 && babak === 0 && <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />}
+        {kasus && langkah === 4 && babak === 0 && <>
+          <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
+          <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
+          <PertanyaanPenutup kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
+        </>}
         {kasus && langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}
       </KerangkaLangkah>
       <BarBawah langkah={langkah} alasan={alasan}

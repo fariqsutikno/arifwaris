@@ -1,16 +1,12 @@
-// Langkah 5: kondisi khusus yang didukung engine [SYF] — beda agama, membunuh pewaris [bab 02],
-// dan munasakhat [bab 12]. Menerima Kasus; menyerahkan Kasus dengan field mawani' / urutanWafat terisi.
-// Hamil & mafqud sengaja tidak ada (blocked, CLAUDE.md).
+// Langkah 5: kondisi mawani' [SYF] — beda agama, membunuh pewaris [bab 02]. Menerima Kasus; menyerahkan Kasus
+// dengan field mawani' terisi. Munasakhat, janin, hilang, dan wafat bersamaan ditanyakan di langkah 4 (babak).
 
 import { useState, type ReactNode } from 'react';
 import type { IdOrang, Orang } from '@waris/engine';
 import { hitungIsian } from '../checklist';
 import type { Kasus } from '../kasus';
-import { Tombol } from '../ui/komponen';
-import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
+import { labelOrangChecklist } from '../checklist';
 import { t } from '../terjemah';
-
-const TAMPILKAN_MUNASAKHAT = false;
 
 interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
 
@@ -32,15 +28,13 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
     return idMayit && idMayit !== kasus.graf.idPewaris ? t('hitung.orang_ahli_waris_mayit', { orang: labelDasar(idOrang), mayit: labelDasar(idMayit) }) : labelDasar(idOrang);
   };
 
-  const adaTerisi = kasus.urutanWafat.length > 0
-    || semuaAhliWaris.some(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris);
+  const adaTerisi = semuaAhliWaris.some(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris);
   const [adaKondisi, setAdaKondisi] = useState(adaTerisi);
   // "Tidak ada" berarti benar-benar tidak ada: kondisi yang sempat dicentang dibersihkan supaya hasil tidak berubah diam-diam.
   const pilihTidakAda = () => {
     setAdaKondisi(false);
     ubah(k => ({
       ...k,
-      urutanWafat: [],
       graf: { ...k.graf, orang: Object.fromEntries(Object.entries(k.graf.orang).map(([id, orang]) =>
         [id, id === k.graf.idPewaris ? orang : { ...orang, agama: orang.agama === 'nonIslam' ? 'islam' : orang.agama, membunuhPewaris: false }])) },
     }));
@@ -71,45 +65,8 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
             saatUbah={tercentang => ubahOrang(id, { membunuhPewaris: tercentang })} />
         ))}
       </Kondisi>
-      {/* Munasakhat disembunyikan sementara dari UI; engine & panel tetap ada. */}
-      {TAMPILKAN_MUNASAKHAT && <PanelMunasakhat kasus={kasus} ubah={ubah} daftarAhliWaris={daftarAhliWaris} label={label} />}
       </>}
     </div>
-  );
-}
-
-function PanelMunasakhat({ kasus, ubah, daftarAhliWaris, label }: Props & { daftarAhliWaris: IdOrang[]; label: (id: IdOrang) => string }) {
-  const urutan = kasus.urutanWafat;
-  const aturUrutan = (urutanBaru: IdOrang[]) => ubah(k => ({ ...k, urutanWafat: urutanBaru }));
-  const geser = (indeks: number, arah: -1 | 1) => {
-    const baru = [...urutan];
-    [baru[indeks], baru[indeks + arah]] = [baru[indeks + arah]!, baru[indeks]!];
-    aturUrutan(baru);
-  };
-  return (
-    <Kondisi judul={t('hitung.ada_ahli_waris_yang_wafat_sebelum')} keterangan={t('hitung.ini_namanya_munasakhat')}
-      akibat="bagian orang itu diteruskan ke ahli warisnya sendiri, dihitung bertingkat."
-      terbukaAwal={urutan.length > 0}>
-      {daftarAhliWaris.map(id => (
-        <Centang key={id} label={label(id)} tercentang={urutan.includes(id)}
-          saatUbah={tercentang => aturUrutan(tercentang ? [...urutan, id] : urutan.filter(idLain => idLain !== id))} />
-      ))}
-      {urutan.length > 1 && <p className="keterangan">{t('hitung.urutin_dari_yang_wafat_duluan')}</p>}
-      {urutan.map((idMayit, indeks) => (
-        <section key={idMayit} className="kartu tumpuk">
-          <div className="chip-deret" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2 className="judul-langkah" style={{ fontSize: 20 }}>{t('hitung.nomor_ahli_waris_label', { nomor: indeks + 1, label: label(idMayit) })}</h2>
-            {urutan.length > 1 && (
-              <span className="chip-deret">
-                <Tombol varian="secondary" kecil disabled={indeks === 0} onClick={() => geser(indeks, -1)} aria-label={t('hitung.naikkan_label', { label: label(idMayit) })}>↑</Tombol>
-                <Tombol varian="secondary" kecil disabled={indeks === urutan.length - 1} onClick={() => geser(indeks, 1)} aria-label={t('hitung.turunkan_label', { label: label(idMayit) })}>↓</Tombol>
-              </span>
-            )}
-          </div>
-          <LangkahAhliWaris graf={kasus.graf} idMayit={idMayit} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
-        </section>
-      ))}
-    </Kondisi>
   );
 }
 

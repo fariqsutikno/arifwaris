@@ -6,13 +6,14 @@ import { hitungIsian } from '../../checklist';
 import { formatRupiah } from '../../format';
 import type { Kasus } from '../../kasus';
 import { labelOrangChecklist } from '../LangkahAhliWaris';
+import { perluPeriksaCerita } from '../../keadaanOrang';
 import { t } from '../../terjemah';
 
 export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
   const pewaris = kasus?.graf.orang[kasus.graf.idPewaris];
   const tirkah = kasus ? hitungTirkah(kasus.tirkah).jejak : null;
   const ahliWaris = kasus ? Object.values(hitungIsian(kasus.graf, kasus.graf.idPewaris)).flat() as IdOrang[] : [];
-  const kondisi = kasus ? kasus.urutanWafat.length + ahliWaris.filter(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris).length : 0;
+  const kondisi = kasus ? (perluPeriksaCerita(kasus) ? 1 : 0) + ahliWaris.filter(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris).length : 0;
   return (
     <div className="ringkasan-samping">
       <h2>{t('hitung.ringkasan_kasus')}</h2>

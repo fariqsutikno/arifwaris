@@ -1262,3 +1262,10 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .opsi-dialog[aria-checked=true] small{color:var(--on-primary)}
 .opsi-dialog:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .tautan{background:none;border:0;padding:0;color:var(--primary);font:700 14px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;align-self:flex-start}
+
+.penutup-babak{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+.daftar-keadaan{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.baris-keadaan{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);font:500 15px var(--font-sans);cursor:pointer;text-align:start}
+.baris-keadaan:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.lencana-keadaan{flex:none;border-radius:999px;padding:2px 10px;font:700 12px/1.5 var(--font-sans);background:var(--surface-sunken)}
+.lencana-keadaan:not(.hidup){background:var(--sun);color:var(--on-fill)}

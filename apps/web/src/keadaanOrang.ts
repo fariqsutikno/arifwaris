@@ -87,7 +87,8 @@ function bersihkanKeadaan(kasus: Kasus, idOrang: IdOrang): Kasus {
 export function orangTerputus(sebelum: Kasus, sesudah: Kasus): IdOrang[] {
   const kerabatSesudah = new Set(daftarAlmarhum(sesudah).flatMap(idMayit => [idMayit, ...kerabatDari(sesudah, idMayit)]));
   const kerabatSebelum = new Set(daftarAlmarhum(sebelum).flatMap(idMayit => kerabatDari(sebelum, idMayit)));
-  return [...kerabatSebelum].filter(id => sesudah.graf.orang[id] && !kerabatSesudah.has(id));
+  // Sudah terhapus dari `sesudah` (mis. hasil terapkanKeadaan) tetap terhitung terputus: pemanggil memakainya untuk konfirmasi.
+  return [...kerabatSebelum].filter(id => !kerabatSesudah.has(id));
 }
 
 /** Kunci diksi pesan penolakan, atau null bila didukung engine (spec 1.7, celah E1/E2). */

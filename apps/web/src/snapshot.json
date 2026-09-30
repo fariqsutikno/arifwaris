@@ -17759,6 +17759,125 @@
    "id": "Harta {nama}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.tanya",
+   "halaman": "hitung",
+   "id": "Semua orang di atas masih hidup?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.ya_semua_hidup",
+   "halaman": "hitung",
+   "id": "Ya, masih hidup semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.ada_yang_wafat",
+   "halaman": "hitung",
+   "id": "Ada yang sudah wafat atau hilang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.ketuk_orangnya",
+   "halaman": "hitung",
+   "id": "Ketuk orangnya untuk mengubah keadaannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.masukkan_yang_wafat",
+   "halaman": "hitung",
+   "id": "Masukkan juga keluarga yang sudah wafat sesudah {mayit}. Nanti kita tanyakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_hidup",
+   "halaman": "hitung",
+   "id": "masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_wafat_sebelum",
+   "halaman": "hitung",
+   "id": "wafat sebelum {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_wafat_sesudah",
+   "halaman": "hitung",
+   "id": "wafat sesudah {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_wafat_sesudah_dibagi",
+   "halaman": "hitung",
+   "id": "wafat sesudah harta dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_bersamaan",
+   "halaman": "hitung",
+   "id": "wafat bersamaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_hilang",
+   "halaman": "hitung",
+   "id": "hilang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_dalam_kandungan",
+   "halaman": "hitung",
+   "id": "belum lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_khuntsa",
+   "halaman": "hitung",
+   "id": "kelamin belum jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.hapus_judul",
+   "halaman": "hitung",
+   "id": "Keluarga yang sudah diisi ikut terhapus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.hapus_isi",
+   "halaman": "hitung",
+   "id": "Orang ini akan dihapus karena tidak lagi berhubungan dengan almarhum mana pun: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.ya_hapus",
+   "halaman": "hitung",
+   "id": "Ya, hapus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.ada_kondisi_khusus",
+   "halaman": "hitung",
+   "id": "Ada kondisi khusus",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

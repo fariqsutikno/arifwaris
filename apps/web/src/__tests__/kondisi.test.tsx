@@ -24,7 +24,6 @@ it('memilih "Ada" menampilkan dua kondisi dengan akibatnya (munasakhat disembuny
   fireEvent.click(screen.getByRole('radio', { name: /^Ada/ }));
   expect(screen.getByLabelText(/beda agama/)).toBeTruthy();
   expect(screen.getByLabelText(/terlibat dalam penyebab kematian/)).toBeTruthy();
-  expect(screen.queryByLabelText(/wafat sebelum harta dibagi/)).toBeNull();
   expect(screen.getAllByText(/Akibatnya:/).length).toBe(2);
 });
 
@@ -41,6 +40,14 @@ it('kembali ke "Tidak ada" menghapus kondisi yang sempat diisi', () => {
 it('kasus yang sudah punya kondisi langsung terbuka di "Ada"', () => {
   const kasus = denganAnak();
   const idAnak = Object.keys(kasus.graf.orang).find(id => id !== 'PEWARIS')!;
-  render(<Uji awal={{ ...kasus, urutanWafat: [idAnak] }} />);
+  render(<Uji awal={{ ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [idAnak]: { ...kasus.graf.orang[idAnak]!, agama: 'nonIslam' } } } }} />);
   expect(screen.getByRole('radio', { name: /^Ada/ }).getAttribute('aria-checked')).toBe('true');
+});
+
+it('memilih "Tidak ada" tidak menyentuh urutan wafat (munasakhat bukan urusan langkah 5)', () => {
+  const kasus = denganAnak();
+  const idAnak = Object.keys(kasus.graf.orang).find(id => id !== 'PEWARIS')!;
+  render(<Uji awal={{ ...kasus, urutanWafat: [idAnak] }} />);
+  fireEvent.click(screen.getByRole('radio', { name: /Tidak ada/ }));
+  expect(terakhir.urutanWafat).toEqual([idAnak]);
 });
