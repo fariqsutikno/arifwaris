@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Perjalanan Bu Rahma</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Readex+Pro:wght@400;600;700&display=swap">
+<style>
+/* Token Arif Waris v4. Dari keresahan pengguna ke layar. Yang berlabel USULAN belum ada di spec. */
+:root{--surface:#f5f8ff;--raised:#fff;--sunken:#e8eeff;--outline:#111322;--divider:#d5dcf2;--ink:#111322;--muted:#5d6487;
+--primary:#2f5bff;--on-primary:#fff;--soft:#dfe6ff;--sun:#ffe14d;--ok:#138a4b;--ok-soft:#d9f5e5;--danger:#d62f33;--dsoft:#ffdcdc;
+--pop:4px 4px 0 #111322;--pop-sm:2px 2px 0 #111322;--display:"Readex Pro",system-ui,sans-serif;--sans:"Plus Jakarta Sans",system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--surface:#16182a;--raised:#1f2238;--sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--ink:#f3f4ff;--muted:#949bc2;
+--primary:#7c9bff;--on-primary:#111322;--soft:#2a3570;--ok:#4ade80;--ok-soft:#14392a;--danger:#ff8a80;--dsoft:#5a2327;--pop:4px 4px 0 #000;--pop-sm:2px 2px 0 #000}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sunken);color:var(--ink);font:400 15px/1.55 var(--sans)}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.25}p{margin:0}
+a{color:var(--primary);font-weight:600}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:26px}
+.kecil{font-size:13px;color:var(--muted)}
+.kartu{background:var(--raised);border:2px solid var(--outline);border-radius:14px;padding:16px;box-shadow:var(--pop-sm)}
+.chip{display:inline-block;font:700 12px var(--sans);padding:3px 10px;border:2px solid var(--outline);border-radius:999px;background:var(--soft);color:var(--ink)}
+.chip.ada{background:var(--ok-soft)}.chip.sebagian{background:var(--sun);color:#111322}.chip.baru{background:var(--primary);color:var(--on-primary)}
+.tbl{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;font:700 14px var(--sans);border:2px solid var(--outline);border-radius:14px;background:var(--raised);box-shadow:var(--pop-sm)}
+.tbl.utama{background:var(--primary);color:var(--on-primary)}
+
+/* perjalanan */
+.langkah{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:18px;align-items:start}
+@media(max-width:860px){.langkah{grid-template-columns:1fr}}
+.resah{display:flex;flex-direction:column;gap:10px}
+.resah .no{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--outline);color:var(--surface);font:700 14px var(--display)}
+.suara{font:600 19px/1.4 var(--display);border-left:5px solid var(--sun);padding-left:12px}
+.jawab{display:flex;flex-direction:column;gap:8px}
+.jawab ul{margin:0;padding-left:18px;font-size:14px}
+.brp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* mini layar */
+.mini{background:var(--surface);border:2px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--pop-sm)}
+.mini h3{font-size:16px}
+.op{display:flex;gap:10px;align-items:center;min-height:40px;padding:6px 12px;border:2px solid var(--outline);border-radius:12px;background:var(--raised);font-size:14px}
+.op.pil{background:var(--soft);font-weight:700}
+.in{min-height:40px;padding:8px 12px;border:2px solid var(--outline);border-radius:8px;background:var(--raised);color:var(--muted);font-size:14px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:baseline;padding:6px 0;border-bottom:1px dashed var(--divider);font-size:14px}
+.row:last-child{border:0}
+.uang{font:700 15px var(--display);font-variant-numeric:tabular-nums}
+.naik{color:var(--ok);font-weight:700}.turun{color:var(--danger);font-weight:700}
+.tenang{background:var(--sunken);border:2px solid var(--outline);border-radius:12px;padding:12px}
+.tenang b{font-family:var(--display)}
+.label{font:700 11px var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.kertas{background:#fff;color:#111;border:1px solid #999;border-radius:4px;padding:14px;font-size:12.5px;box-shadow:3px 3px 0 rgba(0,0,0,.25)}
+.kertas h3{font-size:14px;color:#111}.kertas table{width:100%;border-collapse:collapse;margin-top:6px}
+.kertas td{padding:3px 4px;border-bottom:1px solid #ccc}.kertas td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+table.ring{width:100%;border-collapse:collapse;font-size:14px}
+table.ring th,table.ring td{padding:9px 8px;border-bottom:1px solid var(--divider);text-align:left;vertical-align:top}
+table.ring th{font:700 12px var(--display);text-transform:uppercase;color:var(--muted)}
+.tw{overflow-x:auto}.tw table{min-width:640px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1 style="font-size:26px">Perjalanan Bu Rahma: dari keresahan ke layar</h1>
+  <p class="kecil" style="margin-top:6px;max-width:80ch">Bu Rahma (48 th) adalah Sari dalam kasus contoh turun-temurun: cucu Mbah Karto, anak Budi. Rumah Mbah belum pernah dibagi dan keluarga mau menjualnya. Tiap langkah di bawah memuat apa yang ia rasakan, layar yang menjawabnya, dan apakah itu <span class="chip ada">sudah di spec</span> <span class="chip sebagian">sebagian</span> atau <span class="chip baru">usulan baru</span>.</p>
+</header>
+
+<!-- 1 -->
+<section class="langkah">
+  <div class="resah"><span class="no">1</span><p class="suara">"Rumah Mbah mau dijual. Dulu tidak pernah dibagi. Saya tidak paham mulai dari mana."</p>
+    <div class="jawab"><div class="brp"><span class="chip sebagian">Sebagian</span></div>
+      <p>Ia datang karena ada keperluan, bukan karena ingin belajar faraidh. Pintu masuk sebaiknya menyebut <b>situasinya</b>, bukan istilah. Spec sudah punya pertanyaan pintu, tetapi letaknya baru di langkah Keluarga.</p>
+      <ul><li>Tambah satu tautan di Beranda: "Harta keluarga belum dibagi, sudah lama" yang langsung membuka alur silsilah (5b) dengan kalimat pembuka yang menenangkan.</li></ul></div></div>
+  <div class="mini"><span class="label">Beranda</span><h3>Apa yang ingin Anda ketahui?</h3>
+    <div class="op pil">Harta keluarga belum dibagi sejak lama</div>
+    <div class="op">Seseorang baru saja meninggal</div>
+    <div class="op">Saya sedang belajar faraidh</div>
+    <p class="kecil">Dua pilihan pertama membuka ArifLab. Yang pertama langsung memakai jalur silsilah; yang ketiga ke Belajar.</p></div>
+</section>
+
+<!-- 2 -->
+<section class="langkah">
+  <div class="resah"><span class="no">2</span><p class="suara">"Tahun wafat Budi saya lupa. Saya cuma tahu sebelum Lebaran."</p>
+    <div class="jawab"><div class="brp"><span class="chip sebagian">Sebagian</span></div>
+      <p>Spec sudah mengizinkan tahun kira-kira dan "tidak tahu", dengan daftar "belum dipastikan". Yang kurang: <b>menyimpan dan kembali besok</b> tanpa merasa gagal, dan kalimat yang tidak menyalahkan.</p>
+      <ul><li>Tombol "Simpan, lanjut nanti" di tiap layar silsilah; kasus masuk Riwayat sebagai "belum selesai" dengan daftar tinggal apa.</li></ul></div></div>
+  <div class="mini"><span class="label">Silsilah · tahun wafat</span><h3>Kira-kira tahun berapa Budi wafat?</h3>
+    <div class="in">—</div>
+    <div class="op pil">Tidak ingat, lewati dulu</div>
+    <p class="kecil">Tidak apa-apa. Kita catat sebagai "belum dipastikan" dan Anda bisa melengkapinya nanti.</p>
+    <div style="display:flex;justify-content:space-between;align-items:center"><a>Simpan, lanjut nanti</a><span class="tbl utama">Lanjut</span></div></div>
+</section>
+
+<!-- 3 -->
+<section class="langkah">
+  <div class="resah"><span class="no">3</span><p class="suara">"Yang hafal silsilahnya Bibi. Saya cuma tahu garis Bapak."</p>
+    <div class="jawab"><div class="brp"><span class="chip baru">Usulan baru</span></div>
+      <p><b>Kirim ke keluarga untuk dilengkapi.</b> Pemilik kasus membuat tautan; kerabat yang membukanya bisa menambah orang, tahun, dan keadaan di silsilah, tetapi <b>tidak</b> bisa mengubah harta atau melihat hasil sebelum pemilik membukanya.</p>
+      <ul><li>Butuh login pemilik dan tempat menyimpan kasus bersama (tidak cocok dengan "semua dihitung di perangkat"). Ini yang paling mahal dari tiga usulan.</li>
+      <li>Versi murah: ekspor berkas silsilah, kerabat mengisi lalu mengirim balik. Tanpa server.</li></ul></div></div>
+  <div class="mini"><span class="label">Silsilah · bagikan</span><h3>Minta keluarga melengkapi silsilah</h3>
+    <div class="in">arifwaris.id/lengkapi/k7x2…</div>
+    <div class="tenang"><b>Yang bisa dilakukan penerima tautan</b><p class="kecil" style="margin-top:4px">Menambah orang, tahun lahir dan wafat, catatan. Tidak bisa melihat harta atau hasil pembagian.</p></div>
+    <div class="row"><span>Bibi Yanti · melengkapi</span><span class="kecil">+4 orang</span></div>
+    <div class="row"><span>Pak Dhe Joko · belum membuka</span><span class="kecil">—</span></div>
+    <span class="tbl utama" style="align-self:flex-start">Salin tautan</span></div>
+</section>
+
+<!-- 4 -->
+<section class="langkah">
+  <div class="resah"><span class="no">4</span><p class="suara">"Kalau ternyata Budi wafat sebelum Mbah, hasilnya berubah berapa?"</p>
+    <div class="jawab"><div class="brp"><span class="chip baru">Usulan baru</span></div>
+      <p><b>"Bagaimana kalau…"</b> di Hasil. Untuk tiap jawaban yang ia tandai kira-kira atau tidak tahu, tampilkan selisih per orang bila jawabannya lain. Ini memakai mesin uji hipotetis yang sudah dirancang (babak §8.4) dan berjalan di perangkat.</p>
+      <ul><li>Orang tidak perlu percaya ingatannya sempurna; ia melihat seberapa besar ketidakpastian itu berpengaruh.</li>
+      <li>Jika selisihnya nol, pertanyaan itu tidak perlu dikejar.</li></ul></div></div>
+  <div class="mini"><span class="label">Hasil · lapis 2</span><h3>Bagaimana kalau…</h3>
+    <div class="op pil">Budi wafat sesudah Mbah Karto (jawaban sekarang)</div>
+    <div class="op">Budi wafat sebelum Mbah Karto</div>
+    <div class="row"><span>Rina</span><span><span class="uang">Rp 3,02 M</span> <span class="naik">+Rp 0,60 M</span></span></div>
+    <div class="row"><span>Sari</span><span><span class="uang">Rp 1,43 M</span> <span class="turun">−Rp 1,43 M</span></span></div>
+    <div class="row"><span>Dimas</span><span><span class="uang">Rp 2,02 M</span> <span class="turun">−Rp 2,02 M</span></span></div>
+    <p class="kecil">Angka contoh untuk ilustrasi. Pilihan ini hanya membandingkan, tidak mengubah kasus.</p></div>
+</section>
+
+<!-- 5 -->
+<section class="langkah">
+  <div class="resah"><span class="no">5</span><p class="suara">"Kok keluarga Bu Dewi dapat bagian? Dan kok cucu dari Pak Slamet tidak dapat? Itu tidak adil."</p>
+    <div class="jawab"><div class="brp"><span class="chip sebagian">Sebagian</span> <span class="chip baru">Blok baru</span></div>
+      <p>Di sinilah keluarga biasanya ribut, dan angkanya sendiri jarang jadi pemicu. Usul: di lapis 2 ada blok tenang <b>"Bagian yang sering dipertanyakan"</b> yang muncul hanya bila kasusnya memang mengandung pola itu (besan menerima, atau cucu dari anak yang wafat lebih dulu tidak menerima).</p>
+      <ul><li>Jelaskan dua hal terpisah: menurut fikih (dari KB) dan menurut hukum positif KHI, berlabel "hukum positif, bukan fikih", tanpa memutuskan mana yang dipakai keluarga.</li>
+      <li>Sebut jalan keluar yang sah: musyawarah dan kerelaan ahli waris (takharuj, bab 11), wasiat untuk cucu. Bukan nasihat hukum.</li>
+      <li>Isi kalimatnya harus lewat tim keilmuan; saya tidak mengarang aturan di luar KB.</li></ul></div></div>
+  <div class="mini"><span class="label">Hasil · lapis 2</span><h3>Bagian yang sering dipertanyakan</h3>
+    <div class="tenang"><b>Mengapa keluarga Bu Dewi menerima bagian?</b><p class="kecil" style="margin-top:4px">Bu Dewi menerima bagian dari Pak Budi sebagai istri. Bagian itu sudah menjadi miliknya, lalu diteruskan ke anak-anaknya.</p></div>
+    <div class="tenang"><b>Mengapa cucu dari Pak Slamet tidak menerima?</b><p class="kecil" style="margin-top:4px">Menurut fikih, cucu terhalang bila anaknya masih ada, dan Pak Slamet wafat lebih dulu sehingga tidak mewarisi. <span class="chip" style="font-size:11px">Hukum positif, bukan fikih</span> KHI mengatur hal ini secara berbeda.</p></div>
+    <p class="kecil">Cara yang sah untuk menyikapinya: <a>musyawarah dan kerelaan</a> · <a>wasiat</a></p></div>
+</section>
+
+<!-- 6 -->
+<section class="langkah">
+  <div class="resah"><span class="no">6</span><p class="suara">"Saya harus menjelaskan ini ke Paman di rapat keluarga. Paman 70 tahun, tidak pakai HP."</p>
+    <div class="jawab"><div class="brp"><span class="chip baru">Usulan baru</span></div>
+      <p><b>Lembar ringkas untuk musyawarah.</b> Satu halaman cetak (A4): judul, pohon kecil, tabel nama-Rupiah, satu kalimat alasan per orang, dan catatan "hasil edukasi, bukan putusan". Tanpa tabel munasakhat, tanpa istilah Arab kecuali diminta.</p>
+      <ul><li>Bukan fitur baru besar: tata letak cetak (CSS `@media print`) dari data yang sudah ada.</li>
+      <li>Tabel lengkap tetap ada di "Ekspor" untuk praktisi.</li></ul></div></div>
+  <div class="kertas"><h3>Pembagian harta Mbah Karto (menurut madzhab Syafi'i)</h3>
+    <p style="font-size:11px;color:#555">Harta Rp 10.368.000.000 · dihitung 1 Oktober 2026 · hasil edukasi untuk musyawarah</p>
+    <p style="margin:8px 0 2px;font-size:11px;color:#555">[pohon keluarga kecil, tanpa angka]</p>
+    <table><tr><td>Rina</td><td>Rp 3.024.000.000</td></tr><tr><td>Mbah Sumi</td><td>Rp 2.304.000.000</td></tr><tr><td>Dimas</td><td>Rp 2.023.000.000</td></tr>
+      <tr><td>Sari</td><td>Rp 1.428.000.000</td></tr><tr><td>Dewi</td><td>Rp 1.232.000.000</td></tr><tr><td>Lina</td><td>Rp 357.000.000</td></tr></table>
+    <p style="margin-top:8px;font-size:11px">Budi dan Andi wafat sebelum harta dibagi; bagian mereka diteruskan ke keluarga masing-masing.</p></div>
+</section>
+
+<!-- 7 -->
+<section class="langkah">
+  <div class="resah"><span class="no">7</span><p class="suara">"Notaris bilang butuh surat keterangan waris. Apakah hasil ini bisa dipakai?"</p>
+    <div class="jawab"><div class="brp"><span class="chip ada">Sudah</span> <span class="chip sebagian">bisa diperjelas</span></div>
+      <p>Catatan "hasil untuk belajar, tanyakan ke ahli faraidh" sudah ada. Untuk kasus yang berujung ke balik-nama, tambahkan satu kalimat jujur di lembar dan di Hasil: aplikasi ini bukan dokumen resmi; urusan administrasi di Indonesia memakai ketentuan lembaga berwenang, dan KHI adalah fase terpisah.</p></div></div>
+  <div class="mini"><span class="label">Hasil · catatan</span>
+    <div class="tenang"><b>Sebelum dipakai untuk urusan resmi</b><p class="kecil" style="margin-top:4px">Hasil ini membantu keluarga memahami pembagian menurut fikih. Surat keterangan waris dan balik-nama mengikuti ketentuan lembaga berwenang. Tanyakan ke ahli faraidh atau kantor pengadilan agama setempat.</p></div></div>
+</section>
+
+<!-- ringkasan -->
+<section class="kartu">
+  <h2 style="font-size:19px;margin-bottom:10px">Ringkasan usulan</h2>
+  <div class="tw"><table class="ring">
+    <tr><th>Usulan</th><th>Menjawab</th><th>Biaya</th><th>Saran</th></tr>
+    <tr><td><b>Lembar ringkas musyawarah</b></td><td>#6</td><td>Kecil. Tata letak cetak, data sudah ada.</td><td>Masuk fase 3 (Hasil)</td></tr>
+    <tr><td><b>Blok "Bagian yang sering dipertanyakan"</b></td><td>#5</td><td>Sedang. Teks dari tim keilmuan (besan, cucu yatim, takharuj); logika pemicu kecil.</td><td>Masuk fase 3, teks menunggu tim keilmuan</td></tr>
+    <tr><td><b>"Bagaimana kalau…"</b></td><td>#4</td><td>Sedang. Memakai uji hipotetis §8.4; berjalan di perangkat.</td><td>Sesudah jalur silsilah jadi</td></tr>
+    <tr><td><b>Simpan dan lanjut nanti</b></td><td>#2</td><td>Kecil. Riwayat sudah ada; tambah status "belum selesai".</td><td>Fase 1 (Riwayat)</td></tr>
+    <tr><td><b>Pintu masuk dari situasi</b></td><td>#1</td><td>Kecil. Satu pilihan di Beranda.</td><td>Fase 1 (Beranda)</td></tr>
+    <tr><td><b>Kirim ke keluarga untuk dilengkapi</b></td><td>#3</td><td>Besar. Butuh login dan penyimpanan bersama; versi murah lewat berkas.</td><td>Tunda; mulai dari versi berkas</td></tr>
+  </table></div>
+  <p class="kecil" style="margin-top:10px">Belum ada yang mengubah engine. Semua usulan hanya mengatur tampilan dan cara membagikan hasil.</p>
+</section>
+</main>
+</body>
+</html>
