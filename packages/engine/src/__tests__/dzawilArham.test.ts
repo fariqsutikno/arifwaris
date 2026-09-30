@@ -77,3 +77,24 @@ describe('Gerbang radd [HNB] di luar tanzil', () => {
     expect(hitungDzawilArham(masukan)).toEqual(hasil);
   });
 });
+
+describe('Dzawil arham — invarian di semua fixture OK', () => {
+  for (const fixture of DZAWIL_ARHAM_FIXTURES.filter(f => f.harapan.status === 'OK')) {
+    test(fixture.id, () => {
+      const hasil = hitungDzawilArham(fixture.input);
+      if (hasil.status !== 'OK') throw new Error(hasil.status);
+      const saham = sahamPerOrang(hasil);
+      expect(Object.values(saham).every(s => s >= 0n), 'saham bulat ≥ 0').toBe(true);
+      expect(Object.values(saham).reduce((a, b) => a + b, 0n), 'Σ saham = tashih').toBe(hasil.tabel.totalKolom.tashih);
+      for (const langkah of hasil.jejak) {
+        if (langkah.jenis === 'DZAWIL_ARHAM_MASALAH_PERANTARA' && langkah.aul !== undefined) {
+          expect([langkah.ashl, langkah.aul], "'aul hanya 6 → 7 [R14-13]").toEqual([6n, 7n]);
+        }
+      }
+      // Tiap dzawil arham hidup yang tidak mendapat saham harus tercatat alasannya.
+      for (const [id, status] of Object.entries(hasil.statusOrang)) {
+        if (status.jenis === 'ahliWaris' && status.peran.kunci === 'DZAWIL_ARHAM') expect(saham[id], id).toBeGreaterThan(0n);
+      }
+    });
+  }
+});
