@@ -307,6 +307,8 @@ export interface DuniaTaqdir {
   saham: Record<string, bigint>;
   /** Status tiap orang di dunia ini (mayit pertama), untuk sebutan peran di penjelasan. */
   statusOrang: Record<IdOrang, StatusOrang>;
+  /** Status tiap mas'alah di dunia ini (mayit pertama, lalu mayit munasakhat/tharif berikutnya). */
+  daftarStatus: Array<{ mayit: IdOrang; statusOrang: Record<IdOrang, StatusOrang> }>;
 }
 
 export type HasilTaqdir =

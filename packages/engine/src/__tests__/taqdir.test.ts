@@ -81,6 +81,14 @@ describe('Taqdir — perilaku lain', () => {
     if (hasil.status !== 'OK') throw new Error(JSON.stringify(hasil));
     expect(positif(hasil.diberikan)).toEqual({ I: 2n * hasil.jamiah / 12n, N: 5n * hasil.jamiah / 12n });
     expect(hasil.mauquf * 12n).toBe(5n * hasil.jamiah);
+    // Status tiap mas'alah (pewaris, lalu S) ikut dicatat per dunia, untuk sebutan peran di rantai munasakhat.
+    expect(hasil.daftarDunia[0]!.daftarStatus.map(butir => butir.mayit)).toEqual([graf.idPewaris, 'S']);
+  });
+
+  test('13.0b butir 4: node belum pasti yang bukan kerabat pewaris tidak menambah dunia', () => {
+    const graf = { ...GRAF.grafF1, orang: { ...GRAF.grafF1.orang,
+      ASING: { id: 'ASING', jenisKelamin: 'L' as const, statusHidup: 'mafqud' as const, agama: 'islam' as const } } };
+    expect(ok(input(graf)).daftarDunia).toHaveLength(ok(input(GRAF.grafF1)).daftarDunia.length);
   });
 
   test('13.0b butir 2: taqdir + dzawil arham — mafqud menghalangi dzawil arham di taqdir hidup', () => {

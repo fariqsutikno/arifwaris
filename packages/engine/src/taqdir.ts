@@ -10,7 +10,9 @@ import { hitungDzawilArham } from './dzawilArham.js';
 import { idSisaKeluar, sahamDari, totalSaham, type Saham } from './gabung.js';
 import { hitungMunasakhat } from './munasakhat.js';
 import { bagikanNominal } from './stages/pembagian.js';
+import { turunkanPeran } from './stages/derivasi.js';
 import { hitungTirkah } from './stages/tirkah.js';
+import { ATURAN } from './rulesets/madzhab.js';
 import type {
   DuniaTaqdir, GrafKeluarga, HasilEngine, HasilTaqdir, IdOrang, InputEngine, InputMunasakhat, LangkahJejak, NilaiTaqdir, Orang, Pertanyaan, Ruleset,
 } from './types.js';
@@ -21,15 +23,19 @@ type Taqdir = Record<IdOrang, NilaiTaqdir>;
 type Pemberian = 'aqall' | 'setengah' | 'terburuk';
 
 interface Sumber { id: IdOrang; jenis: 'haml' | 'mafqud' | 'khuntsa'; taqdir: NilaiTaqdir[]; pemberian: Pemberian }
-interface HasilDunia { saham: Saham; masalah: bigint; statusOrang: HasilOk['statusOrang']; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
+type DaftarStatus = DuniaTaqdir['daftarStatus'];
+interface HasilDunia { saham: Saham; masalah: bigint; statusOrang: HasilOk['statusOrang']; daftarStatus: DaftarStatus; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
+type HasilMayit = { mayit: IdOrang; hasil: HasilOk };
 
 export interface OpsiTaqdir {
   urutanWafat?: IdOrang[];
   dikandungSetelahWafat?: InputMunasakhat['dikandungSetelahWafat'];
   /** Penghitung satu dunia pasti selain pipeline/munasakhat, mis. tilad–tharif gharqa [HNB] (13.0b butir 2). */
   hitungDuniaPasti?: HitungDuniaPasti;
+  /** Mayit lain yang hartanya ikut dihitung di tiap dunia (mis. rekan tilad), untuk menyaring sumber yang berpengaruh. */
+  mayitTambahan?: IdOrang[];
 }
-export type HitungDuniaPasti = (input: InputEngine) => { saham: Saham; daftarHasil: HasilOk[] } | Gagal;
+export type HitungDuniaPasti = (input: InputEngine) => { saham: Saham; daftarHasil: HasilMayit[] } | Gagal;
 
 // Batas keras kombinatorik (CLAUDE.md): lewat batas → PERLU_INPUT, bukan macet.
 export const BATAS_DUNIA = 256;
@@ -48,8 +54,10 @@ const TAQDIR_HAML: Record<Ruleset, NilaiTaqdir[] | undefined> = {
 export function hitungTaqdir(input: InputEngine, opsi: OpsiTaqdir = {}): HasilTaqdir {
   const tidakSah = periksaSumber(input.graf);
   if (tidakSah) return tidakSah;
-  const sumber = kumpulkanSumber(input);
+  const sumber = kumpulkanSumber(input, [input.graf.idPewaris, ...(opsi.urutanWafat ?? []), ...(opsi.mayitTambahan ?? [])]);
   if (!Array.isArray(sumber)) return sumber;
+  // 13.0b butir 4: node belum pasti yang bukan kerabat mayit mana pun tidak mengubah mas'alah; ditetapkan pada satu taqdir.
+  input = { ...input, graf: grafPasti(input.graf, taqdirTetap(input.graf, sumber)) };
 
   const luar = sumber.filter(sumberIni => sumberIni.pemberian === 'aqall');
   const dalam = sumber.filter(sumberIni => sumberIni.pemberian !== 'aqall');
@@ -78,7 +86,7 @@ export function hitungTaqdir(input: InputEngine, opsi: OpsiTaqdir = {}): HasilTa
   const daftarDunia: DuniaTaqdir[] = mentah.map(dunia => {
     const juzSahm = jamiah / dunia.masalah;
     jejak.push({ tahap: 'taqdir', refs: ['R13-16'], jenis: 'TAQDIR_DUNIA', taqdir: dunia.taqdir, masalah: dunia.masalah, juzSahm, jamiah });
-    return { taqdir: dunia.taqdir, masalah: dunia.masalah, statusOrang: dunia.statusOrang, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])) };
+    return { taqdir: dunia.taqdir, masalah: dunia.masalah, statusOrang: dunia.statusOrang, daftarStatus: dunia.daftarStatus, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])) };
   });
 
   const ditahan = new Set(sumber.filter(sumberIni => sumberIni.jenis !== 'khuntsa').map(sumberIni => sumberIni.id));
@@ -116,9 +124,11 @@ function periksaSumber(graf: GrafKeluarga): Gagal | undefined {
   return pertanyaan.length > 0 ? { status: 'PERLU_INPUT', pertanyaan } : undefined;
 }
 
-function kumpulkanSumber(input: InputEngine): Sumber[] | Gagal {
+function kumpulkanSumber(input: InputEngine, daftarMayit: IdOrang[]): Sumber[] | Gagal {
   const sumber: Sumber[] = [];
+  const kerabat = kerabatSalahSatu(input, daftarMayit);
   for (const orangIni of Object.values(input.graf.orang)) {
+    if (!kerabat.has(orangIni.id)) continue;
     if (orangIni.statusHidup === 'dalamKandungan') {
       const taqdir = TAQDIR_HAML[input.ruleset];
       if (!taqdir) return { status: 'MAUQUF_SEMUA', alasan: 'Tirkah tidak dibagi sampai janin lahir.', refs: ['K13a-2'] };
@@ -134,6 +144,29 @@ function kumpulkanSumber(input: InputEngine): Sumber[] | Gagal {
     return { status: 'TIDAK_DIDUKUNG', alasan: 'Lebih dari satu khuntsa dalam madzhab Hanafi belum diatur KB.', refs: ['K13c-1'] };
   }
   return sumber;
+}
+
+/** Orang yang punya peran (ahli waris, mahjub, atau dzawil arham) bagi setidaknya satu mayit; selebihnya bukan kerabat. */
+function kerabatSalahSatu(input: InputEngine, daftarMayit: IdOrang[]): Set<IdOrang> {
+  const kerabat = new Set<IdOrang>();
+  for (const mayit of daftarMayit) {
+    const { daftarPeran } = turunkanPeran({ ...input.graf, idPewaris: mayit }, input.konfigurasi, ATURAN[input.ruleset]);
+    for (const peran of Object.values(daftarPeran)) if (peran.kunci !== 'BUKAN_AHLI_WARIS') kerabat.add(peran.idOrang);
+  }
+  return kerabat;
+}
+
+/** Node belum pasti di luar `sumber` → taqdir pertama yang mungkin (hasilnya sama di taqdir mana pun). */
+function taqdirTetap(graf: GrafKeluarga, sumber: Sumber[]): Taqdir {
+  const idSumber = new Set(sumber.map(sumberIni => sumberIni.id));
+  const taqdir: Taqdir = {};
+  for (const orangIni of Object.values(graf.orang)) {
+    if (idSumber.has(orangIni.id)) continue;
+    if (orangIni.statusHidup === 'dalamKandungan') taqdir[orangIni.id] = 'mati';
+    else if (orangIni.statusHidup === 'mafqud') taqdir[orangIni.id] = 'hidup';
+    else if (orangIni.khuntsa) taqdir[orangIni.id] = 'lk';
+  }
+  return taqdir;
 }
 
 /** [K13c-1] [SYF] aqall; [HNB] aqall bila diharapkan jelas, selain itu setengah; [HNF] terburuk; [MLK] setengah. */
@@ -181,7 +214,7 @@ function leburDalam(input: InputEngine, opsi: OpsiTaqdir, taqdirLuar: Taqdir, da
   }
   jejak.push({ tahap: 'taqdir', refs: ['K13c-1'], jenis: 'TAQDIR_LEBUR', aturan: 'setengah', sumber: idDalam });
   return {
-    saham, masalah: jamiahDalam * BigInt(daftarHasil.length), statusOrang: daftarHasil[0]!.statusOrang,
+    saham, masalah: jamiahDalam * BigInt(daftarHasil.length), statusOrang: daftarHasil[0]!.statusOrang, daftarStatus: daftarHasil[0]!.daftarStatus,
     mitraAshabahHaml: new Set(daftarHasil.flatMap(dunia => [...dunia.mitraAshabahHaml])),
     mitraFardhHaml: new Set(daftarHasil.flatMap(dunia => [...dunia.mitraFardhHaml])),
   };
@@ -194,7 +227,7 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
   const haml = new Set(Object.entries(taqdir).filter(([id]) => input.graf.orang[id]!.statusHidup === 'dalamKandungan')
     .flatMap(([id]) => [id, id + AKHIRAN_KEMBAR]));
 
-  let daftarHasil: HasilOk[];
+  let daftarHasil: HasilMayit[];
   let saham: Saham;
   if (opsi.hitungDuniaPasti) {
     const hasil = opsi.hitungDuniaPasti(inputDunia);
@@ -203,15 +236,19 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
   } else if (opsi.urutanWafat) {
     const hasil = hitungMunasakhat({ dasar: inputDunia, urutanWafat: opsi.urutanWafat, ...(opsi.dikandungSetelahWafat ? { dikandungSetelahWafat: opsi.dikandungSetelahWafat } : {}) });
     if (hasil.status !== 'OK') return hasil;
-    daftarHasil = hasil.daftarLangkah.map(langkah => langkah.hasil);
+    daftarHasil = hasil.daftarLangkah.map(langkah => ({ mayit: langkah.mayit, hasil: langkah.hasil }));
     saham = { ...hasil.saham, ...Object.fromEntries(hasil.sisaKeluar.map(sisa => [idSisaKeluar(sisa.mayit), sisa.saham])) };
   } else {
     const hasil = hitungDzawilArham(inputDunia);
     if (hasil.status !== 'OK') return hasil;
-    daftarHasil = [hasil];
+    daftarHasil = [{ mayit: graf.idPewaris, hasil }];
     saham = tanpaTashihJanin(gabungKembar(sahamDari(graf.idPewaris, hasil)), hasil, haml);
   }
-  return { saham: gabungKembar(saham), masalah: totalSaham(saham), statusOrang: daftarHasil[0]!.statusOrang, ...mitraHaml(daftarHasil, haml) };
+  return {
+    saham: gabungKembar(saham), masalah: totalSaham(saham), statusOrang: daftarHasil[0]!.hasil.statusOrang,
+    daftarStatus: daftarHasil.map(({ mayit, hasil }) => ({ mayit, statusOrang: hasil.statusOrang })),
+    ...mitraHaml(daftarHasil.map(({ hasil }) => hasil), haml),
+  };
 }
 
 /**

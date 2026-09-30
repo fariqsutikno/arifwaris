@@ -117,6 +117,24 @@ describe('Gharqa × taqdir (13.0b)', () => {
     for (const harta of hasil.harta) expect(harta.mauqufSemua?.refs).toEqual(['K13a-2']);
   });
 
+  test('janin yang bukan kerabat seorang anggota tidak menahan hartanya [MLK], tidak menambah dunia [SYF] (13.0b butir 4)', () => {
+    // Janin anak saudara seibu Bakr: kerabat Bakr saja, bukan kerabat Zaid dan 'Amr.
+    const { AD1: _a, AD2: _b, ZD: _c, ...orang } = grafG1.orang;
+    const graf: GrafKeluarga = { ...grafG1, orang: { ...orang, IS: p('IS', 'P'), JANIN_SB: p('JANIN_SB', 'L', { idAyah: 'SB', idIbu: 'IS', statusHidup: 'dalamKandungan' }) },
+      pernikahan: [...grafG1.pernikahan, { idSuami: 'SB', idIstri: 'IS', status: 'utuh' }] };
+    const maliki = ok(hitungGharqa({ dasar: { ...input(graf), ruleset: 'maliki' }, anggota: ['ZAID', 'AMR', 'BAKR'], keadaan: 'tidakDiketahui' }));
+    expect(maliki.harta.map(harta => harta.mauqufSemua !== undefined)).toEqual([false, false, true]);
+    const syafii = ok(hitungGharqa({ dasar: { ...input(graf), ruleset: 'syafii' }, anggota: ['ZAID', 'AMR', 'BAKR'], keadaan: 'tidakDiketahui' }));
+    expect(syafii.harta[0]!.daftarDunia).toHaveLength(1);
+    expect(syafii.harta[0]!.mauquf).toBe(0n);
+  });
+
+  test('[SYF] keadaan 3 + mafqud: status mas\'alah mayit berikutnya ikut dicatat untuk sebutan peran', () => {
+    const hasil = hitungGharqa({ dasar: { ...input(grafMafqud), ruleset: 'syafii' }, anggota: ['ZAID', 'AMR'], keadaan: 'terlupakan' });
+    if (hasil.status !== 'MAUQUF') throw new Error(hasil.status);
+    expect(new Set(hasil.skenario[0]!.harta[0]!.daftarStatus.map(butir => butir.mayit))).toEqual(new Set(['ZAID', 'AMR']));
+  });
+
   test('tanpa ketidakpastian: mauquf 0 dan tanpa daftar dunia', () => {
     for (const harta of ok(gharqa('syafii')).harta) {
       expect(harta.mauquf).toBe(0n);

@@ -79,9 +79,11 @@ function tilad(input: InputGharqa): HasilGharqa {
       // 13.0b butir 2: di tiap dunia pasti, tilad–tharif dihitung penuh; aqall atas dunia oleh hitungTaqdir.
       const hitungDuniaPasti: HitungDuniaPasti = inputDunia => {
         const hasil = tiladSatuMayit(inputDunia, mayit, rekan);
-        return 'status' in hasil ? hasil : { saham: hasil.saham, daftarHasil: hasil.daftarHasil };
+        if ('status' in hasil) return hasil;
+        const urutanMayit = [mayit, ...hasil.urutanTharif];
+        return { saham: hasil.saham, daftarHasil: hasil.daftarHasil.map((hasilIni, indeks) => ({ mayit: urutanMayit[indeks]!, hasil: hasilIni })) };
       };
-      const hasil = hartaTaqdir(input, mayit, inputMayit, { hitungDuniaPasti });
+      const hasil = hartaTaqdir(input, mayit, inputMayit, { hitungDuniaPasti, mayitTambahan: rekan });
       if ('status' in hasil) return hasil;
       harta.push(hasil);
       continue;
@@ -170,7 +172,7 @@ function hartaTaqdir(input: InputGharqa, mayit: IdOrang, inputMayit: InputEngine
   if (hasil.status !== 'OK') return { ...hasil, mayit };
   return {
     mayit, jamiah: hasil.jamiah, saham: hasil.diberikan, nominal: hasil.nominal, jejak: [...jejakAwal, ...hasil.jejak],
-    daftarStatus: [{ mayit, statusOrang: hasil.daftarDunia[0]!.statusOrang }],
+    daftarStatus: hasil.daftarDunia.flatMap(dunia => dunia.daftarStatus),
     mauquf: hasil.mauquf, nominalMauquf: hasil.nominalMauquf, daftarDunia: hasil.daftarDunia,
   };
 }
