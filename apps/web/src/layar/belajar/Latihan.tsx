@@ -13,6 +13,7 @@ import { TEKS_TINGKAT } from '../AwalHitung';
 import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
 import { angka, panah, t } from '../../terjemah';
+import { Ikon } from '../../ui/Ikon';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -71,7 +72,7 @@ function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | '
               const selesai = !!catatan[soal.kode];
               return (
                 <li key={soal.kode} className={selesai ? 'baris-soal selesai' : 'baris-soal'}>
-                  <span className="status-soal" aria-label={selesai ? t('latihan.sudah_dikerjakan') : t('latihan.belum_dikerjakan')}>{selesai ? '✓' : '○'}</span>
+                  <span className="status-soal" aria-label={selesai ? t('latihan.sudah_dikerjakan') : t('latihan.belum_dikerjakan')}>{selesai ? <Ikon nama="benar" ukuran={16} /> : null}</span>
                   <div className="isi-soal">
                     <b>{soal.judul}</b>
                     <span className="keterangan">

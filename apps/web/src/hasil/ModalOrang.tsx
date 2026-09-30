@@ -12,6 +12,7 @@ import { ahwalUntuk } from '../konten/sumber';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
+import { Ikon } from '../ui/Ikon';
 import { angka, bahasaArab, t } from '../terjemah';
 import type { Kelompok } from '../checklist';
 
@@ -62,7 +63,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
             <p className="peran-modal">{id === graf.idPewaris ? t('hitung.almarhum') : halang && !sedangMenebak ? t('hitung.terhalang_mahjub') : kelompok ? TEKS_KELOMPOK()[kelompok] : t('hitung.kerabat')}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
-          <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}>✕</button>
+          <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}><Ikon nama="salah" ukuran={18} /></button>
         </header>
         <div className="isi-modal">
           {sedangMenebak && <p className="caption-isian">{t('hitung.mode_belajar_bagian_orang_ini_masih')}</p>}

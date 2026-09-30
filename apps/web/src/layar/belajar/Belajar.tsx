@@ -65,7 +65,7 @@ export function Belajar() {
             const tujuan = daftar.find(pelajaran => !selesai.has(pelajaran.slug)) ?? daftar[0];
             const isi = (
               <>
-                <span className="nomor-modul">{beres === daftar.length && daftar.length > 0 ? '✓' : angka(String(modul.nomor))}</span>
+                <span className="nomor-modul">{beres === daftar.length && daftar.length > 0 ? <Ikon nama="benar" ukuran={16} /> : angka(String(modul.nomor))}</span>
                 <span className="isi-modul"><b>{modul.judul}</b><span className="keterangan">{t('hitung.selesai_total_pelajaran', { selesai: beres, total: daftar.length })}</span></span>
                 <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(beres / daftar.length) * 100}%` }} /></span>
               </>

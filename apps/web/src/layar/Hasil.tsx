@@ -128,7 +128,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
       <div className="judul-hasil">
         {adalahBelajar ? (
           <div className="judul-soal">
-            <span className="lencana-soal">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</span>
             <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
             <p>{sedangMenebak
               ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')
@@ -136,7 +135,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
           </div>
         ) : (
           <div className="judul-soal">
-            <span className="lencana-soal lencana-hitung">{t('hitung.hitung_kasus')}</span>
             <h1>{t('hitung.nah_ini_pembagiannya')}</h1>
             <p>{t('hitung.angka_di_sini_hasil_hitung_kasusmu')}</p>
           </div>
@@ -187,13 +185,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
       <div className="bar-bawah">
         <div className="bar-bawah-isi bar-aksi-hasil">
           {bolehUbah && <>
-            <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}><Ikon nama="pensil" /> {t('hitung.ubah_data_2')}</Tombol>
-            <Tombol varian="secondary" onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /> <span>{t('umum.reset')}<span className="label-lebar">{t('hitung.skenario')}</span></span></Tombol>
+            <Tombol varian="ghost" aria-label={t('hitung.ubah_data_2')} title={t('hitung.ubah_data_2')} onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}><Ikon nama="pensil" /><span className="teks-aksi">{t('hitung.ubah_data_2')}</span></Tombol>
+            <Tombol varian="ghost" aria-label={`${t('umum.reset')} ${t('hitung.skenario')}`} title={`${t('umum.reset')} ${t('hitung.skenario')}`} onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /><span className="teks-aksi">{t('umum.reset')}<span className="label-lebar">{t('hitung.skenario')}</span></span></Tombol>
           </>}
           <span className="pengisi" />
           {sudahTersimpan(idSesi, kasus)
             ? <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> {t('hitung.tersimpan')}</span>
-            : <Tombol varian="secondary" onClick={() => { simpanKasus(idSesi, kasus); segarkan(); }}><Ikon nama="berkas" /> {t('umum.simpan')}</Tombol>}
+            : <Tombol varian="ghost" aria-label={t('umum.simpan')} title={t('umum.simpan')} onClick={() => { simpanKasus(idSesi, kasus); segarkan(); }}><Ikon nama="berkas" /><span className="teks-aksi">{t('umum.simpan')}</span></Tombol>}
           <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</Tombol>
         </div>
       </div>

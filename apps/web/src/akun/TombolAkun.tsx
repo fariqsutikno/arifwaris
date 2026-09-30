@@ -7,6 +7,7 @@ import type { Sesi } from '@waris/data';
 import { t } from '../terjemah';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Tombol } from '../ui/komponen';
+import { Ikon } from '../ui/Ikon';
 import { tautanPeringkat } from '../rute';
 import { ModalProfil } from './ModalProfil';
 import { keluarDanBersihkan, kirimSebelumKeluar, type RepoAkun } from './sinkron';
@@ -36,8 +37,8 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
 
   if (!sesi) return (
     <>
-      <Tombol varian="secondary" kecil className="tombol-kepala"
-        onClick={() => repo.akun.masukGoogle(window.location.href).catch(() => setGalat(true))}>{t('umum.masuk_dengan_google')}</Tombol>
+      <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.masuk_dengan_google')} title={t('umum.masuk_dengan_google')}
+        onClick={() => repo.akun.masukGoogle(window.location.href).catch(() => setGalat(true))}><Ikon nama="masuk" ukuran={18} /><span className="label-lebar">{t('umum.masuk_dengan_google')}</span></Tombol>
       {galat && <p role="alert" className="pesan-akun">{t('umum.layanan_akun_tidak_tersedia')}</p>}
     </>
   );

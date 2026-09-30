@@ -25,15 +25,15 @@ interface Props {
 export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, saatUlangi, akun }: Props) {
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
   const bahasa = useBahasa();
-  const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
-    { label: t('umum.beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
-    { label: t('umum.belajar'), ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
-    { label: NAMA_LAB, ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
-    { label: t('umum.latihan'), ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
-    { label: t('umum.rujukan'), ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
+  const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; jalur: 'hitung' | 'belajar' | 'umum'; saatKlik?: () => void }> = [
+    { label: t('umum.beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda', jalur: 'umum' },
+    { label: t('umum.belajar'), ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman), jalur: 'belajar' },
+    { label: NAMA_LAB, ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', jalur: 'hitung', saatKlik: saatKeHitung },
+    { label: t('umum.latihan'), ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan', jalur: 'belajar' },
+    { label: t('umum.rujukan'), ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan', jalur: 'belajar' },
   ];
   const tautanMenu = (kelas: string, denganIkon: boolean) => menu.map(item => (
-    <a key={item.label} href={item.tautan} className={kelas} aria-current={item.aktif ? 'page' : undefined}
+    <a key={item.label} href={item.tautan} className={kelas} data-jalur={item.jalur} aria-current={item.aktif ? 'page' : undefined}
       onClick={item.saatKlik}>
       {denganIkon && <Ikon nama={item.ikon} ukuran={22} />}{item.label}
     </a>
@@ -50,8 +50,8 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
           {DAFTAR_BAHASA.map(pilihan => <option key={pilihan.nilai} value={pilihan.nilai}>{pilihan.label}</option>)}
         </select>
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
-        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.tur_singkat')} title={t('umum.tur_singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('umum.tur_singkat')}</span></Tombol>}
-        {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.reset_skenario_2')} title={t('umum.reset_skenario_2')} onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">{t('umum.reset_skenario_2')}</span></Tombol>}
+        {adaTur && <Tombol varian="ghost" kecil className="tombol-kepala" aria-label={t('umum.tur_singkat')} title={t('umum.tur_singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('umum.tur_singkat')}</span></Tombol>}
+        {kasusWizard && <Tombol varian="ghost" kecil className="tombol-kepala" aria-label={t('umum.reset_skenario_2')} title={t('umum.reset_skenario_2')} onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">{t('umum.reset_skenario_2')}</span></Tombol>}
       </header>
       <nav aria-label={t('umum.menu_utama')} className="nav-bawah">{tautanMenu('nav-bawah-item', true)}</nav>
       {sedangKonfirmasi && kasusWizard && (

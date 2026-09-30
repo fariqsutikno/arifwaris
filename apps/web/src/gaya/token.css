@@ -1,21 +1,35 @@
-/* Token Arif Waris v4 (sumber: design system artifact TAMrFT8QhPmBgB7Ho1gA43, tokens.json). */
+/* Token Arif Waris: dunia "Peta Jalur". Ground putih dingin, tinta biru-malam, dua jalur (teal = Hitung, biru = Belajar),
+   ambar hanya untuk titik transfer dan perhatian. Kedalaman dari garis tipis dan bayangan lembut, tanpa bayangan keras. */
 :root{
-  --surface:#f5f8ff;--surface-raised:#ffffff;--surface-sunken:#e8eeff;--outline:#111322;--divider:#d5dcf2;--motif:#c9d6f7;
-  --ink:#111322;--ink-muted:#5d6487;--on-fill:#111322;--primary:#2f5bff;--on-primary:#ffffff;--primary-soft:#dfe6ff;
-  --sun:#ffe14d;--pink:#ff8fcf;--lime:#b8f35a;--pasangan:#8fb4ff;--keturunan:#6ee7c8;--leluhur:#c6a8ff;--saudara:#ffab5e;
-  --danger:#d62f33;--on-danger:#ffffff;--danger-soft:#ffdcdc;--focus:#2f5bff;
-  --font-display:"Readex Pro",system-ui,sans-serif;--font-sans:"Plus Jakarta Sans",system-ui,sans-serif;--font-arab:"Noto Kufi Arabic",serif;
-  --radius-sm:8px;--radius-md:14px;--radius-lg:20px;--radius-pill:999px;
-  --shadow-pop:4px 4px 0 #111322;--shadow-pop-sm:2px 2px 0 #111322;--border-w:2px;
+  color-scheme:light;
+  --surface:#f3f7fa;--surface-raised:#ffffff;--surface-sunken:#e6eef4;--outline:#b4c5d3;--kontrol:#6b8397;--divider:#d9e4ec;--motif:#cfdce6;
+  --ink:#102a43;--ink-muted:#4f6478;--on-fill:#102a43;
+  --primary:#0a7c88;--on-primary:#ffffff;--primary-soft:#dcf1f3;
+  --jalur-hitung:#0a7c88;--jalur-belajar:#1f66d1;--jalur-belajar-soft:#dbeafb;
+  --ambar:#f0b429;--sun:#fff0c7;--pink:#ffe3de;--lime:#d3f0e2;
+  --pasangan:#d3e2fb;--keturunan:#cdeee6;--leluhur:#e1dcf7;--saudara:#ffe6cc;
+  --danger:#c62a2f;--on-danger:#ffffff;--danger-soft:#fde5e3;--focus:#1a56db;
+  --font-display:"Barlow Semi Condensed","Barlow",system-ui,sans-serif;--font-sans:"Barlow",system-ui,sans-serif;--font-arab:"Noto Kufi Arabic",serif;
+  --radius-sm:8px;--radius-md:12px;--radius-lg:18px;--radius-pill:999px;
+  --shadow-pop:0 1px 2px rgba(16,42,67,.06),0 8px 22px -10px rgba(16,42,67,.22);
+  --shadow-pop-sm:0 1px 2px rgba(16,42,67,.08),0 3px 10px -4px rgba(16,42,67,.18);
+  --border-w:1px;
   --lebar-konten:1200px;
   /* Warna sinar sorotan langkah perhitungan, satu per peran; sama di pohon, tabel, dan legenda. */
-  --sorot-pewaris:#5d6487;--sorot-ahli-waris:#2f5bff;--sorot-penyebab:#f07800;--sorot-mahjub:#d62f33;
-  --sorot-bukan:#8a8fa8;--sorot-fardh:#138a4b;--sorot-ashabah:#8b3dff;
+  --sorot-pewaris:#4f6478;--sorot-ahli-waris:#1f66d1;--sorot-penyebab:#d96b00;--sorot-mahjub:#c62a2f;
+  --sorot-bukan:#7d8fa0;--sorot-fardh:#12805a;--sorot-ashabah:#7a3fd1;
 }
 @media (prefers-color-scheme:dark){:root{
-  --surface:#16182a;--surface-raised:#1f2238;--surface-sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--motif:#2d3358;
-  --ink:#f3f4ff;--ink-muted:#949bc2;--primary:#7c9bff;--on-primary:#111322;--primary-soft:#2a3570;
-  --danger:#ff8a80;--on-danger:#111322;--danger-soft:#5a2327;--focus:#ffe14d;--shadow-pop:4px 4px 0 #000000;--shadow-pop-sm:2px 2px 0 #000000;
-  --sorot-pewaris:#b7bddc;--sorot-ahli-waris:#7c9bff;--sorot-penyebab:#ffa94d;--sorot-mahjub:#ff8a80;
-  --sorot-bukan:#8f95b8;--sorot-fardh:#4ade80;--sorot-ashabah:#c4a1ff;
+  color-scheme:dark;
+  --surface:#0e1b28;--surface-raised:#152636;--surface-sunken:#0a141e;--outline:#3b5266;--kontrol:#7f97ab;--divider:#243a4c;--motif:#1c3042;
+  --ink:#e6eef5;--ink-muted:#a2b5c5;--on-fill:#e6eef5;
+  --primary:#4fd1c5;--on-primary:#06222a;--primary-soft:#12363f;
+  --jalur-hitung:#4fd1c5;--jalur-belajar:#7aa2ff;--jalur-belajar-soft:#1a2c52;
+  --sun:#4a3a12;--pink:#4a2226;--lime:#164236;
+  --pasangan:#223752;--keturunan:#1d3d3a;--leluhur:#2c2850;--saudara:#40331f;
+  --danger:#ff8a80;--on-danger:#0e1b28;--danger-soft:#4a2226;--focus:#8db2ff;
+  --shadow-pop:0 1px 2px rgba(0,0,0,.4),0 8px 22px -10px rgba(0,0,0,.6);
+  --shadow-pop-sm:0 1px 2px rgba(0,0,0,.4),0 3px 10px -4px rgba(0,0,0,.5);
+  --sorot-pewaris:#a2b5c5;--sorot-ahli-waris:#7aa2ff;--sorot-penyebab:#ffa94d;--sorot-mahjub:#ff8a80;
+  --sorot-bukan:#8ea1b3;--sorot-fardh:#4ade80;--sorot-ashabah:#c4a1ff;
 }}

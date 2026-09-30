@@ -123,7 +123,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
       {daftarBab.map((bab, nomor) => (
         <button key={nomor} type="button" aria-current={nomor === indeks ? 'step' : undefined}
           className={dibaca.has(nomor) && nomor !== indeks ? 'kelar' : undefined} onClick={() => keLangkah(nomor)}>
-          <b aria-hidden="true">{dibaca.has(nomor) && nomor !== indeks ? '✓' : nomor + 1}</b><span>{bab.bab.judul.replace(/^(Langkah|الخطوة) \S+ — /, '')}</span>
+          <b aria-hidden="true">{dibaca.has(nomor) && nomor !== indeks ? <Ikon nama="benar" ukuran={12} /> : nomor + 1}</b><span>{bab.bab.judul.replace(/^(Langkah|الخطوة) \S+ — /, '')}</span>
         </button>
       ))}
     </nav>
