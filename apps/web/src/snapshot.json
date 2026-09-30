@@ -17451,6 +17451,13 @@
    "id": "anak perempuan dari {sebutan}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.harta_mauquf_semua",
+   "halaman": "narasi",
+   "id": "Seluruh harta ini ditahan sampai janin lahir, sesuai madzhab {madzhab}.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

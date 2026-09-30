@@ -1,4 +1,4 @@
-import { hitungGharqa, hitungTaqdir, type InputEngine, type InputGharqa } from '@waris/engine';
+import { hitungGharqa, hitungTaqdir, type GrafKeluarga, type InputEngine, type InputGharqa } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
 import { grafG1 } from '../../../engine/src/__tests__/fixtures/gharqa.js';
 import { TAQDIR_FIXTURES } from '../../../engine/src/__tests__/fixtures/taqdir.js';
@@ -70,5 +70,30 @@ describe('Penjelasan gharqa', () => {
     expect(judul(gharqa('syafii', 'terlupakan', ['ZAID', 'AMR']))).toEqual([
       'Wafat bersamaan', 'Jika urutannya almarhum → saudara laki-laki sebapak', 'Jika urutannya saudara laki-laki sebapak → almarhum',
     ]);
+  });
+});
+
+describe('Penjelasan gharqa × taqdir (13.0b)', () => {
+  const grafHaml: GrafKeluarga = { ...grafG1, orang: { ...grafG1.orang,
+    JANIN: { id: 'JANIN', jenisKelamin: 'L' as const, statusHidup: 'dalamKandungan' as const, agama: 'islam' as const, idAyah: 'AMR', idIbu: 'AW' } } };
+  const jelaskan = (ruleset: InputEngine['ruleset'], graf = grafHaml) => {
+    const dasar: InputEngine = { graf, tirkah: SEJUTA, pembulatan: { satuan: 1n },
+      konfigurasi: { kebijakanSisa: 'radd', talakBainSaatMaradh: 'qaulJadid' }, ruleset, versiKb: 'uji' };
+    const hasil = hitungGharqa({ dasar, anggota: ['ZAID', 'AMR', 'BAKR'], keadaan: 'tidakDiketahui', tirkah: { AMR: SEJUTA } });
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    return jelaskanGharqa(hasil, graf, 'tidakDiketahui', { kamus: kamusSnapshot });
+  };
+
+  test('[SYF] harta yang memuat haml menyebut bagian yang ditahan', () => {
+    const teks = teksBagian(jelaskan('syafii'), 1);
+    expect(teks).toContain('Bagian janin yang dikandung istri ditahan seluruhnya.');
+    expect(teks).toContain('Ditahan (mauquf): 1260/1440 = Rp6.300.000.');
+    expect(teks.some(baris => baris.includes('Kerabat'))).toBe(false);
+  });
+
+  test('[MLK] harta yang ditahan seluruhnya dijelaskan, bukan dikosongkan', () => {
+    const { AD1: _a, AD2: _b, ZD: _c, ...orang } = grafHaml.orang;
+    expect(teksBagian(jelaskan('maliki', { ...grafHaml, orang }), 1)).toContain(
+      'Seluruh harta ini ditahan sampai janin lahir, sesuai madzhab Maliki.');
   });
 });

@@ -4,7 +4,7 @@
 //   jelaskanGharqa : keadaan wafat bersamaan & hukumnya → pembagian harta tiap anggota (atau tiap skenario urutan).
 // Semua kalimat = templat diksi `narasi.taqdir.*` / `narasi.gharqa.*`; jejak engine sudah memuat keputusan fikihnya.
 
-import type { GrafKeluarga, HartaGharqa, HasilGharqa, HasilTaqdir, IdOrang, KeadaanGharqa, NilaiTaqdir, Ruleset, StatusOrang } from '@waris/engine';
+import type { DuniaTaqdir, GrafKeluarga, HartaGharqa, HasilGharqa, HasilTaqdir, IdOrang, KeadaanGharqa, NilaiTaqdir, Ruleset, StatusOrang } from '@waris/engine';
 import { rupiah } from './format.js';
 import type { BagianMunasakhat } from './munasakhat.js';
 import { labelPeran, urutanKe } from './people.js';
@@ -28,7 +28,7 @@ const gharqa = (penyusun: Penyusun, kunci: string, sisipan: Record<string, Sisip
 
 export function jelaskanTaqdir(hasil: TaqdirOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): PenjelasanKasusKhusus {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
-  const sebut = buatSebut(graf, hasil.daftarDunia.map(dunia => ({ mayit: graf.idPewaris, statusOrang: dunia.statusOrang })), penyusun, id => sebutanSumber(hasil, graf, id, penyusun));
+  const sebut = buatSebut(graf, hasil.daftarDunia.map(dunia => ({ mayit: graf.idPewaris, statusOrang: dunia.statusOrang })), penyusun, id => sebutanSumber(hasil.daftarDunia, graf, id, penyusun));
   return { daftarBagian: [
     pembukaanTaqdir(hasil, graf, sebut, penyusun),
     ...(adaKemungkinanLuar(hasil) ? [kemungkinan(hasil, graf, sebut, penyusun)] : []),
@@ -80,15 +80,7 @@ function kemungkinan(hasil: TaqdirOk, graf: GrafKeluarga, sebut: Sebut, penyusun
 function pembagianSekarang(hasil: TaqdirOk, sebut: Sebut, penyusun: Penyusun): BagianMunasakhat {
   const tampilkanNominal = hasil.jejak.some(langkah => langkah.jenis === 'TIRKAH' && langkah.kotor > 0n);
   const teksNominal = (uang: bigint | undefined): string => (tampilkanNominal && uang !== undefined ? ` = ${rupiah(uang)}` : '');
-  const daftarBaris: BarisPenjelasan[] = [];
-  for (const langkah of hasil.jejak) {
-    if (langkah.jenis !== 'TAQDIR_PEMBERIAN') continue;
-    const siapa = sebutPenerima(penyusun, langkah.idOrang, sebut);
-    const kunci = langkah.alasan === 'kelasD' ? 'kelas_d' : langkah.alasan !== 'aqall' ? langkah.alasan
-      : langkah.saham === 0n ? (adaKemungkinanLuar(hasil) ? 'gugur' : 'tidak_mendapat') : adaKemungkinanLuar(hasil) ? 'aqall' : 'bagian';
-    daftarBaris.push(buatBaris(taqdir(penyusun, `pemberian.${kunci}`, { siapa })
-      .concat(langkah.saham > 0n ? kalimat` ${langkah.saham}/${hasil.jamiah}${teksNominal(hasil.nominal[langkah.idOrang])}.` : []), langkah.refs, [langkah.idOrang]));
-  }
+  const daftarBaris = barisPemberian({ ...hasil, adaKemungkinanLuar: adaKemungkinanLuar(hasil), teksNominal }, sebut, penyusun);
   daftarBaris.push(tekankan(buatBaris(hasil.mauquf > 0n
     ? taqdir(penyusun, 'pemberian.mauquf', { mauquf: istilahNarasi(penyusun, 'mauquf') }).concat(kalimat` ${hasil.mauquf}/${hasil.jamiah}${teksNominal(hasil.nominalMauquf)}.`)
     : taqdir(penyusun, 'pemberian.tanpa_mauquf'), refsPemberian(hasil)), 'perhatian'));
@@ -96,6 +88,20 @@ function pembagianSekarang(hasil: TaqdirOk, sebut: Sebut, penyusun: Penyusun): B
     daftarBaris.push(buatBaris(susun(penyusun, 'narasi.umum.selisih_pembulatan', { selisih: rupiah(hasil.pembulatan.sisaPembulatan), satuan: rupiah(hasil.pembulatan.satuan) })));
   }
   return { judul: teksKamus(penyusun, 'narasi.taqdir.judul.dibagi_sekarang'), daftarBab: [{ judul: teksKamus(penyusun, 'narasi.taqdir.judul.bagian_sekarang'), daftarBaris }] };
+}
+
+interface DataPemberian { jejak: TaqdirOk['jejak']; jamiah: bigint; nominal: Record<IdOrang, bigint>; adaKemungkinanLuar: boolean; teksNominal: (uang: bigint | undefined) => string }
+
+/** Satu baris per penerima: aqall, ditahan, kelas D, atau gugur — dari jejak TAQDIR_PEMBERIAN (juga dipakai harta gharqa). */
+function barisPemberian(data: DataPemberian, sebut: Sebut, penyusun: Penyusun): BarisPenjelasan[] {
+  return data.jejak.flatMap(langkah => {
+    if (langkah.jenis !== 'TAQDIR_PEMBERIAN') return [];
+    const siapa = sebutPenerima(penyusun, langkah.idOrang, sebut);
+    const kunci = langkah.alasan === 'kelasD' ? 'kelas_d' : langkah.alasan !== 'aqall' ? langkah.alasan
+      : langkah.saham === 0n ? (data.adaKemungkinanLuar ? 'gugur' : 'tidak_mendapat') : data.adaKemungkinanLuar ? 'aqall' : 'bagian';
+    return [buatBaris(taqdir(penyusun, `pemberian.${kunci}`, { siapa })
+      .concat(langkah.saham > 0n ? kalimat` ${langkah.saham}/${data.jamiah}${data.teksNominal(data.nominal[langkah.idOrang])}.` : []), langkah.refs, [langkah.idOrang])];
+  });
 }
 
 /** "janin lahir dua laki-laki dan orang hilang masih hidup" untuk satu kombinasi taqdir. */
@@ -111,15 +117,15 @@ function daftarSumber(graf: GrafKeluarga): IdOrang[] {
 }
 
 /** Janin disebut lewat ibunya; khuntsa lewat dua kemungkinan perannya. */
-function sebutanSumber(hasil: TaqdirOk, graf: GrafKeluarga, id: IdOrang, penyusun: Penyusun): string | undefined {
+function sebutanSumber(daftarDunia: DuniaTaqdir[], graf: GrafKeluarga, id: IdOrang, penyusun: Penyusun): string | undefined {
   const orangIni = graf.orang[id]!;
   if (orangIni.nama) return undefined;
   if (orangIni.statusHidup === 'dalamKandungan') {
-    return teksKamus(penyusun, 'narasi.taqdir.sebut.janin', { ibu: labelDari(graf, hasil.daftarDunia.map(dunia => ({ mayit: graf.idPewaris, statusOrang: dunia.statusOrang })), orangIni.idIbu!, penyusun) });
+    return teksKamus(penyusun, 'narasi.taqdir.sebut.janin', { ibu: labelDari(graf, daftarDunia.map(dunia => ({ mayit: graf.idPewaris, statusOrang: dunia.statusOrang })), orangIni.idIbu!, penyusun) });
   }
   if (!orangIni.khuntsa) return undefined;
   // Peran di dunia mana pun (lk atau pr), lalu padanan jenis kelamin lainnya; tanpa padanan (mis. paman) → kerabat.
-  const peran = hasil.daftarDunia.map(dunia => dunia.statusOrang[id]).find(status => status && 'peran' in status && status.peran.kunci in PADANAN_KELAMIN);
+  const peran = daftarDunia.map(dunia => dunia.statusOrang[id]).find(status => status && 'peran' in status && status.peran.kunci in PADANAN_KELAMIN);
   if (!peran || !('peran' in peran)) return teksKamus(penyusun, 'narasi.taqdir.sebut.khuntsa', { lk: teksKamus(penyusun, 'narasi.umum.kerabat'), pr: teksKamus(penyusun, 'narasi.umum.kerabat') });
   const padanan = { ...peran.peran, kunci: PADANAN_KELAMIN[peran.peran.kunci as keyof typeof PADANAN_KELAMIN] };
   const [lk, pr] = /_PR$|^SAUDARI_/.test(peran.peran.kunci) ? [padanan, peran.peran] : [peran.peran, padanan];
@@ -144,7 +150,8 @@ const namaMadzhab = (penyusun: Penyusun, ruleset: Ruleset): string => teksKamus(
 export function jelaskanGharqa(hasil: GharqaSelesai, graf: GrafKeluarga, keadaan: KeadaanGharqa, opsi: { kamus: Kamus }): PenjelasanKasusKhusus {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
   const semuaHarta = hasil.status === 'OK' ? hasil.harta : hasil.skenario.flatMap(skenario => skenario.harta);
-  const sebut = buatSebut(graf, semuaHarta.flatMap(harta => harta.daftarStatus), penyusun);
+  const semuaDunia = semuaHarta.flatMap(harta => harta.daftarDunia ?? []);
+  const sebut = buatSebut(graf, semuaHarta.flatMap(harta => harta.daftarStatus), penyusun, id => sebutanSumber(semuaDunia, graf, id, penyusun));
   const anggota = (hasil.status === 'OK' ? hasil.harta : hasil.skenario[0]!.harta).map(harta => harta.mayit);
   const metode = hasil.status === 'OK' ? hasil.metode : 'mauquf';
 
@@ -161,12 +168,24 @@ export function jelaskanGharqa(hasil: GharqaSelesai, graf: GrafKeluarga, keadaan
     daftarBaris: [
       ...harta.jejak.flatMap(langkah => (langkah.jenis === 'MUNASAKHAT' && langkah.refs.includes('R13-19')
         ? [buatBaris(gharqa(penyusun, 'tharif', { siapa: sebut(langkah.mayit), saham: langkah.saham, masalah: langkah.masalah, jamiah: langkah.jamiah }), langkah.refs, [langkah.mayit])] : [])),
-      ...Object.entries(harta.saham).map(([id, saham]) => {
-        const nominal = harta.nominal[id] ? ` = ${rupiah(harta.nominal[id]!)}` : '';
-        return buatBaris(kalimat`${sebutPenerima(penyusun, id, sebut)}: ${saham}/${harta.jamiah}${nominal}.`, [], [id]);
-      }),
+      ...(harta.daftarDunia
+        ? barisPemberian({ ...harta, adaKemungkinanLuar: harta.daftarDunia.some(dunia => Object.keys(dunia.taqdir).length > 0),
+          teksNominal: uang => (uang ? ` = ${rupiah(uang)}` : '') }, sebut, penyusun)
+        : Object.entries(harta.saham).map(([id, saham]) => {
+          const nominal = harta.nominal[id] ? ` = ${rupiah(harta.nominal[id]!)}` : '';
+          return buatBaris(kalimat`${sebutPenerima(penyusun, id, sebut)}: ${saham}/${harta.jamiah}${nominal}.`, [], [id]);
+        })),
+      ...barisMauquf(harta),
     ],
   });
+  // 13.0b: ahli waris anggota memuat haml/mafqud → sebagian (atau [MLK] seluruh) harta ditahan.
+  const barisMauquf = (harta: HartaGharqa): BarisPenjelasan[] => {
+    if (harta.mauqufSemua) return [tekankan(buatBaris(gharqa(penyusun, 'harta_mauquf_semua', { madzhab: namaMadzhab(penyusun, harta.mauqufSemua.ruleset) }), harta.mauqufSemua.refs), 'perhatian')];
+    if (harta.mauquf === 0n) return [];
+    const nominal = harta.nominalMauquf ? ` = ${rupiah(harta.nominalMauquf)}` : '';
+    return [tekankan(buatBaris(taqdir(penyusun, 'pemberian.mauquf', { mauquf: istilahNarasi(penyusun, 'mauquf') })
+      .concat(kalimat` ${harta.mauquf}/${harta.jamiah}${nominal}.`), ['R13-4']), 'perhatian')];
+  };
   const daftarBagian = hasil.status === 'OK'
     ? [pembukaan, { judul: teksKamus(penyusun, 'narasi.gharqa.judul.pembagian'), daftarBab: hasil.harta.map(babHarta) }]
     : [pembukaan, ...hasil.skenario.map(skenario => ({
