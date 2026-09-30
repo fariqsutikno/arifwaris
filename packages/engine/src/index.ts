@@ -11,3 +11,4 @@ export { turunkanPeran } from './stages/derivasi.js';
 export { hitungTirkah } from './stages/tirkah.js';
 export { hitungDzawilArham } from './dzawilArham.js';
 export { hitungTaqdir, BATAS_DUNIA, type OpsiTaqdir } from './taqdir.js';
+export { hitungGharqa } from './gharqa.js';

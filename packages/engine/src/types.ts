@@ -322,3 +322,32 @@ export type HasilTaqdir =
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       jejak: LangkahJejak[];
       ruleset: Ruleset };
+
+// ─── Gharqa (bab 13d) ─────────────────────────────────────────────────────────
+
+/** 13d.2 keadaan 1, 3, 4, 5. Keadaan 2 (yang terakhir diketahui pasti) = munasakhat biasa. */
+export type KeadaanGharqa = 'serentak' | 'terlupakan' | 'berurutanTakDiketahui' | 'tidakDiketahui';
+
+export interface InputGharqa {
+  /** Graf memuat semua anggota (berstatus wafat); `graf.idPewaris` diabaikan, tiap anggota bergiliran jadi pewaris. */
+  dasar: InputEngine;
+  anggota: IdOrang[];
+  keadaan: KeadaanGharqa;
+  /** Tirkah masing-masing anggota; tanpa entri → 0. */
+  tirkah?: Record<IdOrang, InputTirkah>;
+}
+
+export interface HartaGharqa {
+  mayit: IdOrang;
+  jamiah: bigint;
+  saham: Record<string, bigint>;
+  nominal: Record<string, Uang>;
+  jejak: LangkahJejak[];
+}
+
+export type HasilGharqa =
+  | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit?: IdOrang })
+  // terpisah: tidak saling mewarisi [R13-10]; tilad: [HNB] tilad–tharif [R13-19].
+  | { status: 'OK'; metode: 'terpisah' | 'tilad'; harta: HartaGharqa[] }
+  // [R13-10] [SYF] keadaan 3: ditahan sampai ingat atau ishtilah; tiap urutan yang mungkin sebagai skenario.
+  | { status: 'MAUQUF'; skenario: Array<{ urutan: IdOrang[]; harta: HartaGharqa[] }> };
