@@ -18368,6 +18368,125 @@
    "id": "perempuan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.judul",
+   "halaman": "hitung",
+   "id": "Coba baca ceritanya. Sudah benar?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.label_babak",
+   "halaman": "hitung",
+   "id": "Babak {nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.babak_pertama",
+   "halaman": "hitung",
+   "id": "{nama} wafat. Ia meninggalkan {daftar}. Hartanya belum dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.babak_lanjut",
+   "halaman": "hitung",
+   "id": "Lalu {nama} wafat. Ia meninggalkan {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.dan",
+   "halaman": "hitung",
+   "id": "dan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.ubah",
+   "halaman": "hitung",
+   "id": "ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.sesudah_dibagi",
+   "halaman": "hitung",
+   "id": "{nama} wafat sesudah harta dibagi, jadi dihitung seperti masih hidup.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.bersamaan",
+   "halaman": "hitung",
+   "id": "{daftar} wafat dalam kejadian yang sama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.hilang",
+   "halaman": "hitung",
+   "id": "{nama} hilang dan belum ada kabar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.harta_dibagi",
+   "halaman": "hitung",
+   "id": "Harta yang dibagi: harta {pewaris}, {jumlah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.harta_sendiri_tidak",
+   "halaman": "hitung",
+   "id": "Harta milik {daftar} sendiri tidak ikut dihitung di sini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.menunggu_tanya",
+   "halaman": "hitung",
+   "id": "Bayi belum lahir. Mau menunggu dulu?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.menunggu_ket",
+   "halaman": "hitung",
+   "id": "Menunggu kelahiran lebih baik: pembagian cukup sekali dan tidak ada bagian yang ditahan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.tunggu",
+   "halaman": "hitung",
+   "id": "Tunggu lahir dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.tunggu_ket",
+   "halaman": "hitung",
+   "id": "Kasus disimpan. Hitung lagi setelah bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.hitung_sekarang",
+   "halaman": "hitung",
+   "id": "Hitung sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.hitung_sekarang_ket",
+   "halaman": "hitung",
+   "id": "Bagian yang belum pasti disimpan dulu sampai bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

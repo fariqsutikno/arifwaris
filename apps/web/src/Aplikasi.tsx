@@ -18,6 +18,7 @@ import { AwalHitung } from './layar/AwalHitung';
 import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
+import { PeriksaCerita } from './layar/PeriksaCerita';
 import { Wizard } from './layar/Wizard';
 import { Belajar } from './layar/belajar/Belajar';
 import { Faq } from './layar/belajar/Faq';
@@ -154,7 +155,7 @@ export function Aplikasi() {
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} />
-        // diganti PeriksaCerita di Task 11
+        : layar === 'cerita' ? <PeriksaCerita kasus={kasus} kirim={kirim} />
         : <Hasil kasus={kasus} idSesi={idSesi} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
       <Dok />
