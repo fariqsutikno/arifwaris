@@ -77,8 +77,14 @@ export function periksaAulDzawilArham(totalKolom: TabelMasalah['totalKolom']): v
 /** Penerima yang mendapat bagian semuanya satu kelompok → satu saham per kepala; selain itu undefined.
  *  [K14-3] [HNB] sama rata; [R14-8] [SYF] hanya cabang perantara seibu. */
 export function samakanDalamSatuKelompok(hasil: HasilOk): { saham: Saham; masalah: bigint } | undefined {
+  const penerima = penerimaSatuKelompok(hasil);
+  if (!penerima) return undefined;
+  return { saham: Object.fromEntries(penerima.map(id => [id, 1n])), masalah: BigInt(penerima.length) };
+}
+
+/** Id penerima bersaham bila semuanya satu baris (kelompok) tabel; selain itu undefined. */
+export function penerimaSatuKelompok(hasil: HasilOk): IdOrang[] | undefined {
   const barisBerisi = hasil.tabel.baris.filter(baris => Object.values(baris.perOrang).some(sel => sel.saham > 0n));
   if (barisBerisi.length !== 1) return undefined;
-  const penerima = Object.entries(barisBerisi[0]!.perOrang).filter(([, sel]) => sel.saham > 0n).map(([id]) => id);
-  return { saham: Object.fromEntries(penerima.map(id => [id, 1n])), masalah: BigInt(penerima.length) };
+  return Object.entries(barisBerisi[0]!.perOrang).filter(([, sel]) => sel.saham > 0n).map(([id]) => id);
 }

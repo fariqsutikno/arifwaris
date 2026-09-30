@@ -189,6 +189,32 @@ export const grafDA12: GrafKeluarga = {
   pernikahan: [],
 };
 
+// K14-3 [HNB]: khal kandung + khalah seibu (lintas kelompok di bawah ibu) → belum didukung.
+export const grafDA12KandungSeibu: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    M1: p('M1', 'P', { ...penghubung, idAyah: 'MGF', idIbu: 'MGM' }),
+    MGF: p('MGF', 'L', penghubung), MGM: p('MGM', 'P', penghubung), MGX: p('MGX', 'L', penghubung),
+    KH: p('KH', 'L', { idAyah: 'MGF', idIbu: 'MGM' }),
+    KL: p('KL', 'P', { idAyah: 'MGX', idIbu: 'MGM' }),
+  },
+  pernikahan: [],
+};
+
+// K14-3 [HNB]: khal seibu + khalah seibu (satu kelompok, tetapi seibu) → belum didukung.
+export const grafDA12Seibu: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    M1: p('M1', 'P', { ...penghubung, idAyah: 'MGF', idIbu: 'MGM' }),
+    MGF: p('MGF', 'L', penghubung), MGM: p('MGM', 'P', penghubung), MGX: p('MGX', 'L', penghubung),
+    KH: p('KH', 'L', { idAyah: 'MGX', idIbu: 'MGM' }),
+    KL: p('KL', 'P', { idAyah: 'MGX', idIbu: 'MGM' }),
+  },
+  pernikahan: [],
+};
+
 // Mawani': anak lk saudari non-muslim tidak menempati kursi perantara; anak pr saudara lk mengambil semua.
 export const grafDA14: GrafKeluarga = {
   idPewaris: 'D',
@@ -267,6 +293,12 @@ export const KASUS_DZAWIL_ARHAM_MADZHAB: Array<{ id: string; graf: GrafKeluarga;
   } },
   { id: 'K14-3 khal & khalah', graf: grafDA12, harapan: {
     hanbali: { status: 'OK', saham: { KH: 2n, KL: 1n }, penyebut: 3n },
+  } },
+  { id: 'K14-3 khal kandung & khalah seibu', graf: grafDA12KandungSeibu, harapan: {
+    hanbali: { status: 'TIDAK_DIDUKUNG', refs: ['K14-3'] },
+  } },
+  { id: 'K14-3 khal & khalah seibu', graf: grafDA12Seibu, harapan: {
+    hanbali: { status: 'TIDAK_DIDUKUNG', refs: ['K14-3'] },
   } },
   { id: 'K14-1 maliki baitul mal', graf: grafDA11, konfigurasi: BAITUL_MAL, harapan: {
     maliki: { status: 'TIDAK_DIDUKUNG', refs: ['K14-1'] },

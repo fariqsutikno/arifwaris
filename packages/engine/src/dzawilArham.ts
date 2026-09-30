@@ -13,11 +13,11 @@ import { ATURAN } from './rulesets/madzhab.js';
 import { turunkanPeran } from './stages/derivasi.js';
 import { maniDari, terapkanMawani } from './stages/mawani.js';
 import { bagikanNominal } from './stages/pembagian.js';
-import { RADD_TERCAKUP_TANZIL, bagiAntarPerantara, hitungPosisi, samakanDalamSatuKelompok } from './stages/perantara.js';
+import { RADD_TERCAKUP_TANZIL, bagiAntarPerantara, hitungPosisi, penerimaSatuKelompok, samakanDalamSatuKelompok } from './stages/perantara.js';
 import { cariRuteTanzil, saringJihah, type RuteTanzil } from './stages/tanzil.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import type {
-  HasilEngine, IdOrang, InputEngine, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Pertanyaan, StatusOrang, TabelMasalah,
+  HasilEngine, IdOrang, InputEngine, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Pertanyaan, Ruleset, StatusOrang, TabelMasalah,
 } from './types.js';
 import type { Uang } from '@waris/math';
 
@@ -33,6 +33,9 @@ interface HasilArham {
 
 // [R14-8] cabang perantara yang aslinya sama rata (anak ibu) dibagi sama rata.
 const PERANTARA_SAMA_RATA_SYF = new Set<KunciAhliWaris>(['SAUDARA_SEIBU', 'SAUDARI_SEIBU']);
+// [K14-3] khal/khalah = saudara/saudari ibu (perantara ibu memandang mereka sebagai saudaranya).
+const SAUDARA_KANDUNG_SEBAPAK = new Set<PeranAhliWaris['kunci']>(['SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK']);
+const SAUDARA_IBU = new Set<PeranAhliWaris['kunci']>([...SAUDARA_KANDUNG_SEBAPAK, 'SAUDARA_SEIBU', 'SAUDARI_SEIBU']);
 
 export function hitungDzawilArham(input: InputEngine): HasilEngine {
   return hitungDzawilArhamDenganTercakup(input, new Set());
@@ -147,7 +150,10 @@ function turunkanKePenerima(input: InputEngine, idPerantara: IdOrang, rute: Rute
   let saham = sahamDari(idPerantara, hasil);
   let masalah = totalSaham(saham);
   const mahjub = penerima.filter(id => !saham[id]);
-  const samaRata = input.ruleset === 'hanbali' ? !khalDanKhalah(kunciPerantara, hasil) : PERANTARA_SAMA_RATA_SYF.has(kunciPerantara);
+  const rasio = rasioTurun(input.ruleset, kunciPerantara, hasil);
+  // [K14-3] [HNB] khal/khalah di luar satu kelompok saudara kandung/sebapak ibu: rinciannya belum ada di KB.
+  if (rasio === 'belumDidukung') return { status: 'TIDAK_DIDUKUNG', alasan: 'Pembagian khal/khalah dzawil arham ini belum didukung.', refs: ['K14-3'] };
+  const samaRata = rasio === 'samaRata';
   const jejak: LangkahJejak[] = [];
   if (samaRata) {
     const rata = samakanDalamSatuKelompok(hasil);
@@ -164,11 +170,18 @@ function turunkanKePenerima(input: InputEngine, idPerantara: IdOrang, rute: Rute
   return { saham, masalah, jejak };
 }
 
-/** [K14-3] [HNB] khal 2/3, khalah 1/3 (Mughni 6/324): penerima di bawah ibu yang semuanya saudara/saudarinya. */
-function khalDanKhalah(kunciPerantara: KunciAhliWaris, hasil: HasilOk): boolean {
-  if (kunciPerantara !== 'IBU') return false;
-  return Object.values(hasil.statusOrang).every(status => status.jenis !== 'ahliWaris'
-    || ['SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU'].includes(status.peran.kunci));
+/**
+ * [R14-8] [SYF] 2:1 (ikut mas'alah) kecuali cabang perantara seibu (sama rata).
+ * [K14-3] [HNB] sama rata, kecuali khal 2/3 & khalah 1/3 di bawah ibu (Mughni 6/324). KB tidak merinci jenis saudara,
+ * jadi 2:1 hanya bila penerima bersaham satu kelompok saudara/saudari kandung atau sebapak ibu; selain itu belum didukung.
+ */
+function rasioTurun(ruleset: Ruleset, kunciPerantara: KunciAhliWaris, hasil: HasilOk): 'ikutMasalah' | 'samaRata' | 'belumDidukung' {
+  if (ruleset !== 'hanbali') return PERANTARA_SAMA_RATA_SYF.has(kunciPerantara) ? 'samaRata' : 'ikutMasalah';
+  const kunciPenerima = Object.values(hasil.statusOrang)
+    .flatMap(status => (status.jenis === 'ahliWaris' && SAUDARA_IBU.has(status.peran.kunci) ? [status.peran.kunci] : []));
+  if (kunciPerantara !== 'IBU' || kunciPenerima.length === 0) return 'samaRata';
+  const satuKelompok = penerimaSatuKelompok(hasil) !== undefined;
+  return satuKelompok && kunciPenerima.every(kunci => SAUDARA_KANDUNG_SEBAPAK.has(kunci)) ? 'ikutMasalah' : 'belumDidukung';
 }
 
 /** [R14-11] satu orang lewat dua jalur yang lolos: bagiannya dari tiap jalur dijumlahkan (gabungkan sudah menjumlah). */
