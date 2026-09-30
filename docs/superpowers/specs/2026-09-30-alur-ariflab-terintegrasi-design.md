@@ -183,7 +183,37 @@ Perbaikan dari audit:
 - **Kasus biasa** mendapat versi pendek: satu paragraf cerita + harta. Tidak ada layar tambahan selain Periksa itu sendiri.
 - **Menunggu kelahiran** (keputusan 12.2.3) tetap menjadi layar pilihan sesudah Periksa, sebelum Hasil, hanya bila ada janin belum lahir.
 
-### 2.6 Perbaikan wizard lain
+### 2.6 Kerabat yang lebih jauh (dzawil arham)
+
+Daftar Keluarga mendapat satu kelompok terlipat baru di bawah "Kerabat lain": **"Kerabat lain yang lebih jauh"**. Ini jalan input dzawil arham yang utama, dan tidak bergantung pada pohon bebas.
+
+- **Pembuka lipatan.** Kotak `INFO_TIDAK_ADA` ("Kok kakek dari ibu, cucu dari anak perempuan… tidak ada?") menjadi pembuka lipatan ini, dengan satu kalimat keterangan: "Mereka biasanya baru mendapat bagian bila tidak ada ahli waris di atas." Engine yang memutuskan, bukan UI.
+- **Isi, menurut KB 14.2.** Dikelompokkan menjadi empat, masing-masing ≤ 4 pilihan, dengan label sehari-hari dari sisi almarhum babak itu:
+
+  | Kelompok | Pilihan | Dibangun lewat |
+  |---|---|---|
+  | Dari anak perempuan | Cucu laki-laki / perempuan dari anak perempuan; anak dari cucu perempuan | induk: anak perempuan / cucu perempuan |
+  | Dari kakak-adik | Anak (lk/pr) dari saudari; anak perempuan dari saudara laki-laki; anak (lk/pr) dari saudara seibu | induk: saudari / saudara (kandung, satu ayah, satu ibu) |
+  | Dari pihak ayah | Bibi (saudari ayah, 'ammah); paman satu ibu dengan ayah; anak perempuan paman | induk: ayah / paman |
+  | Dari pihak ibu | Kakek dari ibu (ayahnya ibu); paman dari ibu (khal); bibi dari ibu (khalah) | induk: ibu |
+
+- **Cara menambah.** Sama dengan cucu/keponakan sekarang (`kunciInduk` + `pilihInduk`):
+  - bila induknya sudah ada di daftar, pengguna memilih yang mana;
+  - bila belum ada, pilih "yang lain, sudah wafat" (`INDUK_BARU_WAFAT`), dan sistem membuat penghubung;
+  - untuk saudara/saudari dan paman, jenisnya (kandung / satu ayah / satu ibu) ikut ditanyakan di pilihan induk.
+- **Model data.** Orang-orang ini tidak punya `KunciAhliWaris`. Checklist mendapat tipe web baru, `JenisKerabatJauh` (id, label, kelompok, induk, jenis kelamin), dan pembangun graf yang memakai fungsi yang sudah ada:
+  - `tambahOrang`;
+  - `pastikanOrangTua`;
+  - `tambahSaudara`.
+
+  Isian dibaca lewat `kerabatJauh(graf, idMayit)`, yaitu orang hidup non-penghubung yang tidak masuk `hitungIsian`. Label di ringkasan samping, Periksa, dan hasil memakai sebutan bertingkat dari explain (hasil branch pohon bebas yang sudah di-merge).
+- **Bisa bersambung.** Pilihan "anak dari …" menerima induk dari orang yang sudah ada di daftar, termasuk orang di kelompok ini. Contoh: "anak perempuan dari anak perempuan dari anak perempuan" diisi dengan menambah cucu perempuan dari anak perempuan dulu, lalu "anak dari cucu perempuan" dengan memilih cucu itu.
+- **Cakupan.** Dengan cara ini daftar menjangkau contoh KB 14.6 no. 1, 2, 4, orang pertama di no. 3, dan kasus 16 #24.
+- **Yang di luar jangkauan daftar tetap lewat pohon bebas (bagian 5):**
+  - orang kedua di contoh 14.6 no. 3 (anak perempuan dari cicit perempuan lewat anak laki-laki, karena cucu lewat laki-laki di checklist hanya satu tingkat);
+  - kerabat hawasyi yang lebih jauh, misalnya anak dari anak khal.
+
+### 2.7 Perbaikan wizard lain
 
 - Semua kontrol ≥ 44px: tombol −/+, "Nama", pilih bahasa.
 - Tombol "Kerabat lain" memakai `aria-disabled`, bukan `disabled`, supaya keterangan "tetap terbuka karena…" terjangkau keyboard.
@@ -305,7 +335,7 @@ Ketiganya menulis `Kasus` yang sama, sehingga pindah tampilan tidak menghapus is
 
 | Fitur | Letak | Kontrak |
 |---|---|---|
-| **Pohon bebas** | Pilihan tampilan "Daftar \| Pohon" di layar Keluarga · daftar | Menulis `Kasus.graf`; label bertingkat memakai explain yang sudah ada. **Satu-satunya jalan input dzawil arham.** Daftar kunci (`KERABAT_LAIN`) tidak memuat khal, 'ammah, atau cucu dari anak perempuan, dan tidak diperluas. |
+| **Pohon bebas** | Pilihan tampilan "Daftar \| Pohon" di layar Keluarga · daftar | Menulis `Kasus.graf`; label bertingkat memakai explain yang sudah ada. Untuk kerabat di luar jangkauan daftar: lebih dari satu tingkat dari perantara, dan hawasyi jauh. Dzawil arham yang umum sudah bisa diinput lewat daftar (2.6). |
 | **Linimasa** ("Atur linimasa lengkap") | Tautan di layar Keadaan keluarga (bila ada yang wafat sesudah) dan di Periksa | Peristiwa diterjemahkan menurut jenisnya (riset 7.9, memori 2026-09-30); lihat daftar di bawah tabel |
 | **Mode cerita** | Tautan "Ceritakan saja" di Beranda (1.2); wajib login, berkuota | AI menyusun draf `Kasus`, yang mendarat di **langkah 4 Periksa** beserta pohon. Data kurang → `PERLU_INPUT` engine → pertanyaan. AI tidak memutuskan fikih. |
 
@@ -319,7 +349,6 @@ Penerjemahan peristiwa linimasa:
 Catatan lain:
 
 - AMIN belum dirancang dan tidak diberi slot.
-- Sampai spec pohon bebas diimplementasikan, dzawil arham hanya bisa terjadi dari kerabat yang sudah ada di daftar. Ini keterbatasan yang diakui, bukan dikarang.
 
 ---
 
@@ -349,7 +378,8 @@ Tiap fase bisa dirilis sendiri dan seluruh tes hijau di akhir fase.
    - Periksa sebagai langkah 4.
    - `posisiWizard`; stepper `dikunjungi`; gulir ke atas.
    - Ringkasan samping dan pohon mini sadar babak.
-   - Register tenang; kontrol ≥ 44px dan perbaikan aksesibilitas 2.6.
+   - Kelompok "Kerabat lain yang lebih jauh" (2.6).
+   - Register tenang; kontrol ≥ 44px dan perbaikan aksesibilitas 2.7.
 3. **Hasil 3 lapis.**
    - Lapis 1 dengan pengelompokan munasakhat per orang dan baris total.
    - Lapis 2 per bab/babak.
@@ -381,6 +411,11 @@ Tiap fase bisa dirilis sendiri dan seluruh tes hijau di akhir fase.
   - tidak ada tautan bila keempat madzhab sepakat;
   - `TIDAK_DIDUKUNG` tampil "Belum dikaji";
   - fixture `packages/engine/src/__tests__/fixtures/madzhab.ts` dipakai ulang lewat jalur web.
+- **Kerabat jauh (dzawil arham):**
+  - contoh KB 14.6 no. 1, 2, 4 dan kasus 16 #24 disusun lewat pilihan daftar 2.6, menghasilkan hasil engine yang sama dengan fixture bab 14;
+  - rantai "anak dari cucu perempuan dari anak perempuan" (orang pertama di no. 3) tersusun lewat induk yang bersambung;
+  - induk "yang lain, sudah wafat" membuat penghubung, bukan ahli waris hidup;
+  - kasus berisi dzawil arham saja di babak 2 (munasakhat) memakai label dari sisi almarhum babak itu.
 - **Integrasi UI:**
   - skenario riset S1–S32 yang didukung engine, disusun lewat jawaban UI dan dibandingkan dengan input engine yang diharapkan;
   - tes bab 13 yang ada (`316daee`) diperbarui karena mawani' pindah ke Keadaan keluarga.
