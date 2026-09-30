@@ -2,6 +2,9 @@
 
 Tanggal: 2026-09-30 · Status: disetujui per bagian di chat, menunggu review tertulis
 
+> Sebagian diubah oleh `2026-10-01-perjalanan-keresahan-design.md` (tumpukan harta, "Bagaimana kalau",
+> kenapa dapat/tidak, sunting di tempat, kata "babak"/"dunia"). Lihat tabel di awal spec itu.
+
 Spec ini menggabungkan dua sumber:
 
 - **Audit UX Lab Hitung 2026-09-30.** Skornya 24/40. Arsipnya ada di `apps/web/.impeccable/critique/2026-09-30T14-20-28Z__src-layar-wizard-tsx.md`, tapi foldernya belum dilacak git.

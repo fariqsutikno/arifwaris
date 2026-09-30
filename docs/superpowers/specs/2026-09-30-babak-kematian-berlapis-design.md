@@ -5,6 +5,9 @@ Tanggal: 2026-09-30 · Status: bagian 1–7 sudah dibangun; revisi 1.0, 1.1, bag
 Dasar: `docs/design/riset-ux-input-kematian-berlapis.md` (riset + keputusan 12.2), sketsa
 https://claude.ai/artifact/72YVQXeaogX2Abr54gnBeq. KB: bab 12, 13, 13a–13d.
 
+> Sebagian diubah oleh `2026-10-01-perjalanan-keresahan-design.md` (tumpukan harta, "Bagaimana kalau",
+> kenapa dapat/tidak, sunting di tempat, kata "babak"/"dunia"). Lihat tabel di awal spec itu.
+
 ## Tujuan
 
 Pengguna awam (target: siswa SMP) bisa menyusun kasus munasakhat, janin (haml), orang hilang (mafqud),
