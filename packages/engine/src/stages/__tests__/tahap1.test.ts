@@ -236,3 +236,50 @@ describe('validasi input → PERLU_INPUT / TIDAK_DIDUKUNG', () => {
     expect(jalankanTahapAhliWaris(graf)).toMatchObject({ status: 'AHLI_WARIS' });
   });
 });
+
+describe('pohon bebas: hawasyi jauh [R03-2] [R05-3]', () => {
+  const wafat = { statusHidup: 'wafat', penghubung: true } as const;
+  // Paman kandung AM (wafat) → anaknya IM (wafat) → cucunya IIM; paman sebapak AMS (wafat) → anaknya ISB.
+  const garisPaman = {
+    AM:  { jenisKelamin: 'L', ...ANAK_KAKEK, ...wafat },
+    IM:  { jenisKelamin: 'L', idAyah: 'AM', ...wafat },
+    IIM: { jenisKelamin: 'L', idAyah: 'IM' },
+  } as const;
+
+  test('[R05-3] jihah dulu: cucu paman mayit mendahului paman ayah', () => {
+    const input = keluarga({ ...garisPaman, PA: { jenisKelamin: 'L', idAyah: 'PPGF', idIbu: 'PPGM' } });
+    expect(keysOf(input)).toMatchObject({ IIM: 'SEPUPU_KANDUNG', PA: 'PAMAN_KANDUNG' });
+    expect(mahjubBy(input, 'PA')).toEqual(['IIM']);
+  });
+
+  test('[R05-3] darajah sebelum quwwah: anak paman sebapak mendahului cucu paman kandung', () => {
+    const input = keluarga({
+      ...garisPaman,
+      AMS: { jenisKelamin: 'L', idAyah: 'PGF', idIbu: 'X', ...wafat },
+      ISB: { jenisKelamin: 'L', idAyah: 'AMS' },
+      X:   { jenisKelamin: 'P', ...wafat },
+    });
+    expect(keysOf(input)).toMatchObject({ ISB: 'SEPUPU_SEBAPAK' });
+    expect(mahjubBy(input, 'IIM')).toEqual(['ISB']);
+  });
+
+  test('[R05-2] bani al-ikhwah sedalam apa pun mendahului paman', () => {
+    const input = keluarga({
+      AK1: { jenisKelamin: 'L', ...KANDUNG, ...wafat },
+      IA1: { jenisKelamin: 'L', idAyah: 'AK1', ...wafat },
+      IIA: { jenisKelamin: 'L', idAyah: 'IA1' },
+      AM2: { jenisKelamin: 'L', ...ANAK_KAKEK },
+    });
+    expect(keysOf(input)).toMatchObject({ IIA: 'KEPONAKAN_KANDUNG' });
+    expect(mahjubBy(input, 'AM2')).toEqual(['IIA']);
+  });
+
+  test('[R03-7] [R14-4] di tengah garis ada perempuan → dzawil arham', () => {
+    const input = keluarga({
+      AM:  garisPaman.AM,
+      BM:  { jenisKelamin: 'P', idAyah: 'AM', ...wafat },
+      IBM: { jenisKelamin: 'L', idIbu: 'BM' },
+    });
+    expect(keysOf(input)).toMatchObject({ IBM: 'DZAWIL_ARHAM' });
+  });
+});
