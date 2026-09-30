@@ -5,3 +5,4 @@ export { keTeksBiasa, susun, teksKamus, type Bahasa, type Kamus, type Penyusun, 
 export { ID_ISTILAH, type IdIstilah } from './terms.js';
 export { jelaskanMunasakhat, type PenjelasanMunasakhat, type BagianMunasakhat } from './munasakhat.js';
 export { labelArab, angkaArab } from './arab.js';
+export { jelaskanTaqdir, jelaskanGharqa, type PenjelasanKasusKhusus } from './kasusKhusus.js';

@@ -17031,6 +17031,412 @@
    "id": "menurut tanzil",
    "ar": "بالتنزيل",
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.haml",
+   "halaman": "narasi",
+   "id": "haml",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.mafqud",
+   "halaman": "narasi",
+   "id": "mafqud",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.khuntsa_musykil",
+   "halaman": "narasi",
+   "id": "khuntsa musykil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.mauquf",
+   "halaman": "narasi",
+   "id": "mauquf",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.istilah.tilad",
+   "halaman": "narasi",
+   "id": "tilad",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.judul.belum_pasti",
+   "halaman": "narasi",
+   "id": "Ahli waris yang belum pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.judul.apa_yang_terjadi",
+   "halaman": "narasi",
+   "id": "Apa yang terjadi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.judul.semua_kemungkinan",
+   "halaman": "narasi",
+   "id": "Semua kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.judul.kemungkinan",
+   "halaman": "narasi",
+   "id": "Kemungkinan {nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.judul.dibagi_sekarang",
+   "halaman": "narasi",
+   "id": "Yang dibagi sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.judul.bagian_sekarang",
+   "halaman": "narasi",
+   "id": "Bagian yang diterima sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.belum_pasti",
+   "halaman": "narasi",
+   "id": "Keadaan {siapa} belum pasti. Karena itu dibuat satu mas'alah untuk setiap kemungkinan ({jumlah} kemungkinan), lalu semuanya disamakan dalam satu {jamiah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.haml",
+   "halaman": "narasi",
+   "id": "{siapa} masih dalam kandungan ({istilah}). Ia baru mewarisi bila lahir hidup, jadi seluruh bagiannya ditahan sampai ia lahir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.mafqud",
+   "halaman": "narasi",
+   "id": "{siapa} hilang tanpa kabar ({istilah}). Hukum asalnya ia masih hidup, tetapi bagiannya ditahan sampai ia diketahui hidup atau diputus wafat oleh hakim.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.khuntsa",
+   "halaman": "narasi",
+   "id": "Jenis kelamin {siapa} belum dapat dipastikan ({istilah}), jadi ia dihitung sebagai laki-laki dan sebagai perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.setengah",
+   "halaman": "narasi",
+   "id": "Menurut madzhab {madzhab}, untuk {siapa} bagian tiap orang adalah rata-rata dari semua kemungkinan jenis kelaminnya, sehingga tidak ada yang ditahan karenanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.terburuk",
+   "halaman": "narasi",
+   "id": "Menurut madzhab Hanafi, {siapa} diberi kemungkinan yang paling kecil baginya, yaitu jika {kemungkinan}; ahli waris lain mengikuti kemungkinan itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.aqall",
+   "halaman": "narasi",
+   "id": "Setiap ahli waris sekarang diberi bagian terkecilnya di antara semua kemungkinan; yang gugur pada salah satu kemungkinan belum diberi apa pun. Sisanya ditahan ({mauquf}) sampai keadaannya jelas atau para ahli waris berdamai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.dunia.jika",
+   "halaman": "narasi",
+   "id": "Jika {kemungkinan}:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.dunia.masalah",
+   "halaman": "narasi",
+   "id": "Mas'alahnya {masalah}. Supaya sama dengan jami'ah {jamiah}, tiap saham dikali {nilai} ({juz_sahm}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.haml.mati",
+   "halaman": "narasi",
+   "id": "{siapa} lahir tidak hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.haml.lk",
+   "halaman": "narasi",
+   "id": "{siapa} lahir satu anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.haml.pr",
+   "halaman": "narasi",
+   "id": "{siapa} lahir satu anak perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.haml.dua_lk",
+   "halaman": "narasi",
+   "id": "{siapa} lahir dua anak laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.haml.dua_pr",
+   "halaman": "narasi",
+   "id": "{siapa} lahir dua anak perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.haml.lk_pr",
+   "halaman": "narasi",
+   "id": "{siapa} lahir kembar laki-laki dan perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.mafqud.hidup",
+   "halaman": "narasi",
+   "id": "{siapa} ternyata masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.mafqud.mati",
+   "halaman": "narasi",
+   "id": "{siapa} ternyata sudah wafat sebelum pewaris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.khuntsa.lk",
+   "halaman": "narasi",
+   "id": "{siapa} laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.nilai.khuntsa.pr",
+   "halaman": "narasi",
+   "id": "{siapa} perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.sebut.janin",
+   "halaman": "narasi",
+   "id": "janin yang dikandung {ibu}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.sebut.khuntsa",
+   "halaman": "narasi",
+   "id": "khuntsa ({lk} atau {pr})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.madzhab.syafii",
+   "halaman": "narasi",
+   "id": "Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.madzhab.hanbali",
+   "halaman": "narasi",
+   "id": "Hanbali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.madzhab.hanafi",
+   "halaman": "narasi",
+   "id": "Hanafi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.madzhab.maliki",
+   "halaman": "narasi",
+   "id": "Maliki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.aqall",
+   "halaman": "narasi",
+   "id": "{siapa} menerima bagian terkecilnya:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.gugur",
+   "halaman": "narasi",
+   "id": "{siapa} belum menerima apa pun karena gugur pada salah satu kemungkinan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.ditahan",
+   "halaman": "narasi",
+   "id": "Bagian {siapa} ditahan seluruhnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.kelas_d",
+   "halaman": "narasi",
+   "id": "{siapa} belum menerima apa pun: ia berbagi ashabah dengan janin yang jumlahnya tidak dibatasi, jadi bagiannya belum dapat dipastikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.mauquf",
+   "halaman": "narasi",
+   "id": "Ditahan ({mauquf}):",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.tanpa_mauquf",
+   "halaman": "narasi",
+   "id": "Tidak ada bagian yang ditahan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.judul.wafat_bersamaan",
+   "halaman": "narasi",
+   "id": "Wafat bersamaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.judul.apa_yang_terjadi",
+   "halaman": "narasi",
+   "id": "Apa yang terjadi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.judul.pembagian",
+   "halaman": "narasi",
+   "id": "Pembagian harta masing-masing",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.judul.harta",
+   "halaman": "narasi",
+   "id": "Harta {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.judul.skenario",
+   "halaman": "narasi",
+   "id": "Jika urutannya {urutan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.keadaan.serentak",
+   "halaman": "narasi",
+   "id": "{siapa} wafat pada saat yang sama. Orang yang wafat bersamaan tidak saling mewarisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.keadaan.terlupakan",
+   "halaman": "narasi",
+   "id": "{siapa} wafat berurutan dan yang terakhir wafat pernah diketahui, tetapi kini terlupakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.keadaan.berurutan_tak_diketahui",
+   "halaman": "narasi",
+   "id": "{siapa} wafat berurutan, tetapi tidak diketahui siapa yang lebih dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.keadaan.tidak_diketahui",
+   "halaman": "narasi",
+   "id": "Tidak diketahui apakah {siapa} wafat bersamaan atau berurutan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.metode.terpisah",
+   "halaman": "narasi",
+   "id": "Karena itu mereka tidak saling mewarisi: harta tiap orang dibagi kepada ahli warisnya yang masih hidup saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.metode.tilad",
+   "halaman": "narasi",
+   "id": "Menurut madzhab Hanbali mereka saling mewarisi dari harta asli ({tilad}) saja: tiap orang bergiliran dianggap wafat lebih dulu, lalu yang diwarisi rekannya diteruskan hanya kepada ahli waris rekan itu yang masih hidup.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.metode.mauquf",
+   "halaman": "narasi",
+   "id": "Hartanya ditahan ({mauquf}) sampai urutannya teringat kembali atau para ahli waris berdamai. Berikut pembagian untuk setiap urutan yang mungkin.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.gharqa.tharif",
+   "halaman": "narasi",
+   "id": "Bagian {siapa} ({saham} saham) diteruskan kepada ahli warisnya yang masih hidup, dengan mas'alah {masalah}; jami'ah menjadi {jamiah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pembukaan.belum_pasti_dilebur",
+   "halaman": "narasi",
+   "id": "Keadaan {siapa} belum pasti.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.bagian",
+   "halaman": "narasi",
+   "id": "{siapa} menerima:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.pemberian.tidak_mendapat",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

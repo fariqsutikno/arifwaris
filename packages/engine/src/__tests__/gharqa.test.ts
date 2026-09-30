@@ -1,23 +1,9 @@
 import { describe, expect, test } from 'vitest';
 import { hitungGharqa } from '../gharqa.js';
-import type { GrafKeluarga, HasilGharqa, InputGharqa, Ruleset } from '../types.js';
-import { input, p } from './fixtures/bab16.js';
+import type { HasilGharqa, InputGharqa, Ruleset } from '../types.js';
+import { input } from './fixtures/bab16.js';
+import { grafG1 } from './fixtures/gharqa.js';
 
-// G1 (13d.4, Lahim hlm. 111–118): tiga saudara lk sebapak Zaid, 'Amr, Bakr wafat dalam tabrakan; paman hidup.
-// Zaid: ibu + anak pr. 'Amr: istri + 2 anak pr. Bakr: ibu + saudara seibu.
-const wafat = (id: string, jenisKelamin: 'L' | 'P', extra = {}) => p(id, jenisKelamin, { statusHidup: 'wafat', ...extra });
-const grafG1: GrafKeluarga = {
-  idPewaris: 'ZAID',
-  orang: {
-    KAKEK: wafat('KAKEK', 'L'), F: wafat('F', 'L', { idAyah: 'KAKEK' }), PAMAN: p('PAMAN', 'L', { idAyah: 'KAKEK' }),
-    MZ: p('MZ', 'P'), MA: wafat('MA', 'P'), MB: p('MB', 'P'), Y: wafat('Y', 'L'),
-    ZAID: wafat('ZAID', 'L', { idAyah: 'F', idIbu: 'MZ' }), ZD: p('ZD', 'P', { idAyah: 'ZAID' }),
-    AMR: wafat('AMR', 'L', { idAyah: 'F', idIbu: 'MA' }), AW: p('AW', 'P'),
-    AD1: p('AD1', 'P', { idAyah: 'AMR', idIbu: 'AW' }), AD2: p('AD2', 'P', { idAyah: 'AMR', idIbu: 'AW' }),
-    BAKR: wafat('BAKR', 'L', { idAyah: 'F', idIbu: 'MB' }), SB: p('SB', 'L', { idAyah: 'Y', idIbu: 'MB' }),
-  },
-  pernikahan: [{ idSuami: 'AMR', idIstri: 'AW', status: 'utuh' }],
-};
 const gharqa = (ruleset: Ruleset, keadaan: InputGharqa['keadaan'] = 'tidakDiketahui', anggota = ['ZAID', 'AMR', 'BAKR']): HasilGharqa =>
   hitungGharqa({ dasar: { ...input(grafG1), ruleset }, anggota, keadaan });
 
