@@ -1,9 +1,9 @@
 // Menerima Kasus, memanggil engine, menyerahkan HasilTampil ke layar.
-// Bukan munasakhat → hitung(); ada yang wafat sebelum pembagian → hitungMunasakhat() (bab 12).
+// Bukan munasakhat → hitungDzawilArham() (pipeline + bab 14); ada yang wafat sebelum pembagian → hitungMunasakhat() (bab 12).
 // Exception dari engine = pelanggaran invarian; ditampilkan sebagai galat, bukan hasil setengah jadi.
 
 import {
-  hitung, hitungMunasakhat, KONFIGURASI_BAWAAN,
+  hitungDzawilArham, hitungMunasakhat, KONFIGURASI_BAWAAN,
   type HasilEngine, type HasilMunasakhat, type InputEngine,
 } from '@waris/engine';
 import type { Kasus } from './kasus';
@@ -32,7 +32,7 @@ export function jalankan(kasus: Kasus): HasilTampil {
   try {
     const dasar = keInputEngine(kasus);
     return kasus.urutanWafat.length === 0
-      ? { jenis: 'biasa', hasil: hitung(dasar) }
+      ? { jenis: 'biasa', hasil: hitungDzawilArham(dasar) }
       : { jenis: 'munasakhat', hasil: hitungMunasakhat({ dasar, urutanWafat: kasus.urutanWafat }) };
   } catch (galat) {
     return { jenis: 'galat', pesan: galat instanceof Error ? galat.message : String(galat) };
