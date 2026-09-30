@@ -17458,6 +17458,13 @@
    "id": "Seluruh harta ini ditahan sampai janin lahir, sesuai madzhab {madzhab}.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.data_keadaan_rusak",
+   "halaman": "hitung",
+   "id": "Data keadaan orang di file ini rusak.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

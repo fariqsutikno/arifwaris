@@ -3,7 +3,7 @@
 // bentuknya divalidasi penuh sebelum dipakai, bigint disimpan sebagai string digit.
 
 import { t } from './terjemah';
-import type { GrafKeluarga, IdOrang, InputTirkah, Orang, Pernikahan } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, InputTirkah, KeadaanGharqa, Orang, Pernikahan } from '@waris/engine';
 
 export const SATUAN_PEMBULATAN = [1n, 100n, 1000n] as const;
 // Rincian harta hanya alat bantu mengisi total; engine tetap menerima `tirkah.kotor`.
@@ -11,21 +11,33 @@ export const KATEGORI_HARTA = ['tabungan', 'properti', 'kendaraan', 'emas', 'piu
 export type KategoriHarta = typeof KATEGORI_HARTA[number];
 const KUNCI_PENYIMPANAN = 'arif-waris:kasus';
 const ID_PEWARIS = 'PEWARIS';
+const KEADAAN_GHARQA: KeadaanGharqa[] = ['serentak', 'terlupakan', 'berurutanTakDiketahui', 'tidakDiketahui'];
+const STATUS_HIDUP: Orang['statusHidup'][] = ['hidup', 'wafat', 'tidakDiketahui', 'dalamKandungan', 'mafqud'];
+const KHUNTSA: NonNullable<Orang['khuntsa']>[] = ['diharapkanJelas', 'tidakDiharapkanJelas'];
+
+export interface GharqaKasus { anggota: IdOrang[]; keadaan: KeadaanGharqa; tirkah: Record<IdOrang, InputTirkah> }
 
 export interface Kasus {
-  versi: 2;
+  versi: 3;
   graf: GrafKeluarga;
   tirkah: InputTirkah;
   satuanPembulatan: bigint;
-  /** Kosong = bukan munasakhat. Urut waktu wafat, setelah pewaris. */
+  /** Wafat sesudah almarhum sebelumnya dan sebelum harta dibagi, urut waktu wafat (bab 12.7). */
   urutanWafat: IdOrang[];
   /** Diisi bila pengguna memilih "Rinci per jenis" di langkah Harta. */
   rincianHarta?: Partial<Record<KategoriHarta, bigint>>;
+  /** Anak → almarhum yang wafat sebelum anak itu dikandung [R13-1]. */
+  dikandungSetelahWafat?: Record<IdOrang, IdOrang>;
+  /** Wafat bersamaan dengan pewaris (13d); pewaris selalu anggota, hartanya = `tirkah`. */
+  gharqa?: GharqaKasus;
+  /** Khusus UI (spec 2.2): wafat sesudah harta dibagi, engine melihat mereka hidup. */
+  wafatSesudahDibagi?: IdOrang[];
+  pilihanJanin?: 'tunggu' | 'hitungSekarang';
 }
 
 export function kasusBaru(jenisKelaminPewaris: 'L' | 'P'): Kasus {
   return {
-    versi: 2,
+    versi: 3,
     graf: {
       idPewaris: ID_PEWARIS,
       orang: { [ID_PEWARIS]: { id: ID_PEWARIS, jenisKelamin: jenisKelaminPewaris, statusHidup: 'wafat', agama: 'islam' } },
@@ -48,13 +60,34 @@ export function dariJson(teks: string): { berhasil: true; kasus: Kasus } | { ber
   }
 }
 
-/** Buang orang yang tidak lagi ada/hidup dari urutan wafat (mis. setelah dikurangi di checklist). */
-export function rapikanUrutanWafat(kasus: Kasus): Kasus {
-  const urutanWafat = kasus.urutanWafat.filter(id => {
-    const orang = kasus.graf.orang[id];
-    return orang && !orang.penghubung && orang.statusHidup !== 'wafat';
-  });
-  return urutanWafat.length === kasus.urutanWafat.length ? kasus : { ...kasus, urutanWafat };
+/** Satu tempat merapikan keadaan setelah graf berubah (dipanggil di UBAH_KASUS dan saat memuat file). */
+export function rapikanKeadaan(kasus: Kasus): Kasus {
+  const { graf } = kasus;
+  const pewaris = graf.idPewaris;
+  const orangNyata = (id: IdOrang) => { const orang = graf.orang[id]; return orang && !orang.penghubung ? orang : undefined; };
+  const urutanWafat = kasus.urutanWafat.filter(id => orangNyata(id)?.statusHidup === 'hidup');
+  const diUrutan = new Set(urutanWafat);
+
+  const anggota = (kasus.gharqa?.anggota ?? []).filter(id => id === pewaris || (orangNyata(id)?.statusHidup === 'wafat' && !diUrutan.has(id)));
+  const gharqa: GharqaKasus | undefined = kasus.gharqa && anggota.length >= 2 && anggota.includes(pewaris)
+    ? { anggota, keadaan: kasus.gharqa.keadaan,
+        tirkah: Object.fromEntries(Object.entries(kasus.gharqa.tirkah).filter(([id]) => anggota.includes(id) && id !== pewaris)) }
+    : undefined;
+
+  const wafatSesudahDibagi = (kasus.wafatSesudahDibagi ?? []).filter(id => orangNyata(id)?.statusHidup === 'hidup' && !diUrutan.has(id));
+  const almarhum = new Set([pewaris, ...urutanWafat]);
+  const dikandung = Object.entries(kasus.dikandungSetelahWafat ?? {}).filter(([anak, mayit]) => orangNyata(anak) && almarhum.has(mayit));
+  const adaJanin = Object.values(graf.orang).some(orang => orang.statusHidup === 'dalamKandungan');
+
+  const { gharqa: _g, wafatSesudahDibagi: _w, dikandungSetelahWafat: _d, pilihanJanin: _p, ...inti } = kasus;
+  return {
+    ...inti,
+    urutanWafat,
+    ...(gharqa ? { gharqa } : {}),
+    ...(wafatSesudahDibagi.length ? { wafatSesudahDibagi } : {}),
+    ...(dikandung.length ? { dikandungSetelahWafat: Object.fromEntries(dikandung) } : {}),
+    ...(adaJanin && kasus.pilihanJanin ? { pilihanJanin: kasus.pilihanJanin } : {}),
+  };
 }
 
 export function simpanLokal(kasus: Kasus | null): void {
@@ -81,8 +114,8 @@ export function muatLokal(): Kasus | null {
 
 function bacaKasus(data: unknown): Kasus {
   const objek = wajibObjek(data, 'kasus');
-  // Versi 1 = versi 2 tanpa rincian harta, jadi cukup dibaca dengan aturan yang sama.
-  if (objek.versi !== 1 && objek.versi !== 2) throw new Error(t('hitung.versi_file_tidak_dikenal'));
+  // Versi 1/2 = versi 3 tanpa field keadaan, jadi dibaca dengan aturan yang sama.
+  if (![1, 2, 3].includes(objek.versi as number)) throw new Error(t('hitung.versi_file_tidak_dikenal'));
   const graf = bacaGraf(objek.graf);
   const tirkahMentah = wajibObjek(objek.tirkah, 'tirkah');
   const tirkah: InputTirkah = {
@@ -95,8 +128,51 @@ function bacaKasus(data: unknown): Kasus {
   if (!SATUAN_PEMBULATAN.includes(satuanPembulatan as 1n)) throw new Error(t('hitung.satuan_pembulatan_harus_1_100_1000'));
   const urutanWafat = bacaUrutanWafat(objek.urutanWafat, graf);
   const rincianHarta = objek.rincianHarta === undefined ? undefined : bacaRincianHarta(objek.rincianHarta);
-  const kasus: Kasus = { versi: 2, graf, tirkah, satuanPembulatan, urutanWafat, ...(rincianHarta ? { rincianHarta } : {}) };
-  return rapikanUrutanWafat(kasus);
+  const gharqa = objek.gharqa === undefined ? undefined : bacaGharqa(objek.gharqa, graf);
+  const wafatSesudahDibagi = objek.wafatSesudahDibagi === undefined ? undefined : bacaDaftarOrang(objek.wafatSesudahDibagi, graf);
+  const dikandungSetelahWafat = objek.dikandungSetelahWafat === undefined ? undefined
+    : bacaDikandung(objek.dikandungSetelahWafat, graf, [graf.idPewaris, ...urutanWafat]);
+  const pilihanJanin = objek.pilihanJanin;
+  if (pilihanJanin !== undefined && pilihanJanin !== 'tunggu' && pilihanJanin !== 'hitungSekarang') throw new Error(t('hitung.data_keadaan_rusak'));
+  const semuaDaftar = [...urutanWafat, ...(gharqa?.anggota.filter(id => id !== graf.idPewaris) ?? []), ...(wafatSesudahDibagi ?? [])];
+  if (new Set(semuaDaftar).size !== semuaDaftar.length) throw new Error(t('hitung.orang_tercatat_wafat_dua_kali'));
+  const kasus: Kasus = {
+    versi: 3, graf, tirkah, satuanPembulatan, urutanWafat,
+    ...(rincianHarta ? { rincianHarta } : {}), ...(gharqa ? { gharqa } : {}),
+    ...(wafatSesudahDibagi ? { wafatSesudahDibagi } : {}), ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
+    ...(pilihanJanin ? { pilihanJanin } : {}),
+  };
+  return rapikanKeadaan(kasus);
+}
+
+function bacaGharqa(nilai: unknown, graf: GrafKeluarga): GharqaKasus {
+  const objek = wajibObjek(nilai, 'wafat bersamaan');
+  const salah = new Error(t('hitung.data_keadaan_rusak'));
+  const anggota = bacaDaftarOrang(objek.anggota, graf);
+  if (!anggota.includes(graf.idPewaris) || anggota.length < 2) throw salah;
+  if (anggota.some(id => id !== graf.idPewaris && graf.orang[id]!.statusHidup !== 'wafat')) throw salah;
+  if (!KEADAAN_GHARQA.includes(objek.keadaan as KeadaanGharqa)) throw salah;
+  const tirkahMentah = wajibObjek(objek.tirkah, 'harta wafat bersamaan');
+  const tirkah: Record<IdOrang, InputTirkah> = {};
+  for (const [id, isi] of Object.entries(tirkahMentah)) {
+    if (!anggota.includes(id)) throw salah;
+    const harta = wajibObjek(isi, 'harta');
+    tirkah[id] = { kotor: bacaUang(harta.kotor, 'harta'), tajhiz: bacaUang(harta.tajhiz, 'biaya jenazah'), hutang: bacaUang(harta.hutang, 'hutang'), wasiat: bacaUang(harta.wasiat, 'wasiat') };
+  }
+  return { anggota, keadaan: objek.keadaan as KeadaanGharqa, tirkah };
+}
+
+function bacaDaftarOrang(nilai: unknown, graf: GrafKeluarga): IdOrang[] {
+  if (!Array.isArray(nilai) || !nilai.every(id => typeof id === 'string' && graf.orang[id])) throw new Error(t('hitung.daftar_wafat_berisi_orang_tidak_ada'));
+  return nilai as IdOrang[];
+}
+
+function bacaDikandung(nilai: unknown, graf: GrafKeluarga, almarhum: IdOrang[]): Record<IdOrang, IdOrang> {
+  const objek = wajibObjek(nilai, 'anak yang lahir belakangan');
+  for (const [anak, mayit] of Object.entries(objek)) {
+    if (!graf.orang[anak] || typeof mayit !== 'string' || !almarhum.includes(mayit)) throw new Error(t('hitung.data_keadaan_rusak'));
+  }
+  return objek as Record<IdOrang, IdOrang>;
 }
 
 function bacaUrutanWafat(nilai: unknown, graf: GrafKeluarga): IdOrang[] {
@@ -138,11 +214,12 @@ function bacaOrang(id: string, data: unknown): Orang {
   const salah = () => new Error(t('hitung.data_orang_rusak', { id }));
   if (objek.id !== id) throw salah();
   if (objek.jenisKelamin !== 'L' && objek.jenisKelamin !== 'P') throw salah();
-  if (!['hidup', 'wafat', 'tidakDiketahui'].includes(objek.statusHidup as string)) throw salah();
+  if (!STATUS_HIDUP.includes(objek.statusHidup as Orang['statusHidup'])) throw salah();
   if (!['islam', 'nonIslam', 'tidakDiketahui'].includes(objek.agama as string)) throw salah();
   for (const kunci of ['idAyah', 'idIbu', 'nama'] as const) {
     if (objek[kunci] !== undefined && typeof objek[kunci] !== 'string') throw salah();
   }
+  if (objek.khuntsa !== undefined && !KHUNTSA.includes(objek.khuntsa as never)) throw salah();
   for (const kunci of ['membunuhPewaris', 'penghubung'] as const) {
     if (objek[kunci] !== undefined && typeof objek[kunci] !== 'boolean') throw salah();
   }

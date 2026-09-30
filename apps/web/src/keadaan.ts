@@ -3,7 +3,7 @@
 // perpindahan langkah dibatasi validasi supaya stepper tidak bisa melompati isian yang belum lengkap.
 
 import { bolehUbahJenisKelamin } from '@waris/engine';
-import { kasusBaru, rapikanUrutanWafat, type Kasus } from './kasus';
+import { kasusBaru, rapikanKeadaan, type Kasus } from './kasus';
 import type { Tujuan } from './preferensi';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
@@ -35,7 +35,7 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
       const batas = Math.min(TOTAL_LANGKAH, langkahTerjauh(keadaan.kasus));
       return { ...keadaan, layar: 'wizard', langkah: Math.min(batas, Math.max(1, aksi.langkah)) };
     }
-    case 'UBAH_KASUS': return keadaan.kasus ? { ...keadaan, kasus: rapikanUrutanWafat(aksi.ubah(keadaan.kasus)) } : keadaan;
+    case 'UBAH_KASUS': return keadaan.kasus ? { ...keadaan, kasus: rapikanKeadaan(aksi.ubah(keadaan.kasus)) } : keadaan;
     case 'KE_LAYAR': {
       const bolehHasil = langkahTerjauh(keadaan.kasus) === LANGKAH_HASIL;
       if ((aksi.layar === 'hasil' || aksi.layar === 'belajar') && !bolehHasil) return keadaan;
