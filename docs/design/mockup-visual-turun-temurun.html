@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contoh Visual Kasus Turun-temurun</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Readex+Pro:wght@400;600;700&display=swap">
+<style>
+/* Token Arif Waris v4. Contoh kasus 3 mas'alah (KB bab 12, metode jami'ah), angka diverifikasi terpisah. */
+:root{--surface:#f5f8ff;--raised:#fff;--sunken:#e8eeff;--outline:#111322;--divider:#d5dcf2;--ink:#111322;--muted:#5d6487;
+--primary:#2f5bff;--on-primary:#fff;--soft:#dfe6ff;--sun:#ffe14d;--ok:#138a4b;--ok-soft:#d9f5e5;--danger:#d62f33;
+--pop:4px 4px 0 #111322;--pop-sm:2px 2px 0 #111322;
+--display:"Readex Pro",system-ui,sans-serif;--sans:"Plus Jakarta Sans",system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--surface:#16182a;--raised:#1f2238;--sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--ink:#f3f4ff;--muted:#949bc2;
+--primary:#7c9bff;--on-primary:#111322;--soft:#2a3570;--ok:#4ade80;--ok-soft:#14392a;--danger:#ff8a80;--pop:4px 4px 0 #000;--pop-sm:2px 2px 0 #000}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sunken);color:var(--ink);font:400 15px/1.55 var(--sans)}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.25}
+p{margin:0}
+a{color:var(--primary);font-weight:600}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px}
+main{max-width:1100px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:22px}
+.kecil{font-size:13px;color:var(--muted)}
+.kartu{background:var(--raised);border:2px solid var(--outline);border-radius:14px;padding:16px;box-shadow:var(--pop-sm)}
+.bagian>h2{font-size:19px;display:flex;gap:10px;align-items:center;margin-bottom:4px}
+.no{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--outline);color:var(--surface);font:700 14px var(--display);flex:none}
+.ket{color:var(--muted);font-size:14px;margin-bottom:12px;max-width:75ch}
+.chip{display:inline-block;font:600 12px var(--sans);padding:3px 10px;border:2px solid var(--outline);border-radius:999px;background:var(--soft)}
+.chip.sun{background:var(--sun);color:#111322}
+.uang{font:700 18px var(--display);font-variant-numeric:tabular-nums}
+.lipat{border:2px solid var(--outline);border-radius:14px;background:var(--raised)}
+.lipat>summary{list-style:none;padding:12px 14px;font:700 16px var(--display);display:flex;justify-content:space-between;align-items:center;min-height:44px;cursor:pointer}
+.lipat>summary::-webkit-details-marker{display:none}
+.lipat[open]>summary{border-bottom:2px solid var(--outline)}
+.lipat .dlm{padding:14px;display:flex;flex-direction:column;gap:14px}
+.lipat[open] .ph{transform:rotate(180deg)}
+
+/* lapis 1 */
+.orang{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:10px 0;border-bottom:1px dashed var(--divider);cursor:default}
+.orang:last-child{border:0}
+.orang b{font-size:16px}.orang .asal{grid-column:1/-1;font-size:13px;color:var(--muted)}
+.orang.sorot{background:var(--soft);border-radius:8px}
+.cabang{display:flex;flex-direction:column;gap:8px}
+.cb{display:grid;grid-template-columns:150px 1fr auto;gap:10px;align-items:center;font-size:14px}
+.bar{height:16px;border:2px solid var(--outline);border-radius:8px;background:var(--sunken);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--primary)}
+.dua{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:18px;align-items:start}
+@media(max-width:860px){.dua{grid-template-columns:1fr}.cb{grid-template-columns:110px 1fr auto}}
+
+/* linimasa */
+.lini{display:flex;gap:0;margin:6px 0 2px;overflow-x:auto}
+.lini div{flex:1;min-width:150px;padding:0 10px 0 0;position:relative;border-top:3px solid var(--outline);padding-top:12px}
+.lini div::before{content:"";position:absolute;top:-8px;left:0;width:13px;height:13px;border-radius:50%;background:var(--sun);border:2px solid var(--outline)}
+.lini b{font:700 15px var(--display);display:block}
+
+/* pohon */
+.pohon{overflow-x:auto}
+.pohon svg{display:block;min-width:720px;width:100%;height:auto}
+.pohon text{font-family:var(--sans);fill:var(--ink)}
+.nd rect{fill:var(--raised);stroke:var(--outline);stroke-width:2;transition:.12s}
+.nd.wafat rect{fill:var(--sunken);stroke-dasharray:5 3}
+.nd.terima rect{fill:var(--ok-soft)}
+.nd .n{font-weight:800;font-size:14px}.nd .s{font-size:11.5px;fill:var(--muted)}.nd .r{font-size:12px;font-weight:700;fill:var(--ok)}
+.nd .lb circle{fill:var(--outline)}.nd .lb text{fill:var(--surface);font:700 12px var(--display);text-anchor:middle}
+.nd{cursor:pointer}
+.nd.sorot rect,.nd:hover rect{stroke:var(--primary);stroke-width:4}
+.gar{stroke:var(--outline);stroke-width:2;fill:none}.gar.nikah{stroke-width:3}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted);margin-top:8px}
+.legenda i{display:inline-block;width:14px;height:14px;border:2px solid var(--outline);border-radius:4px;vertical-align:-3px;margin-right:5px;background:var(--raised)}
+
+/* langkah mas'alah */
+.ms{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media(max-width:860px){.ms{grid-template-columns:1fr}}
+.ms .kartu{box-shadow:none}
+.ms h3{font-size:16px}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th,table.t td{padding:7px 6px;border-bottom:1px solid var(--divider);text-align:left;vertical-align:top}
+table.t th{font:700 12px var(--display);color:var(--muted);text-transform:uppercase}
+table.t td.n,table.t th.n{text-align:right;font-variant-numeric:tabular-nums}
+table.t tr.sorot td{background:var(--soft)}
+table.t tr.ttl td{font-weight:800;border-top:2px solid var(--outline)}
+.x{color:var(--danger);font-weight:700}
+.hub{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:860px){.hub{grid-template-columns:1fr}}
+.hub .kartu{box-shadow:none;background:var(--sunken)}
+.hub code{font:600 13px ui-monospace,monospace;background:var(--raised);border:1px solid var(--divider);border-radius:6px;padding:1px 6px}
+.tw{overflow-x:auto}
+.tw table.t{min-width:640px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1 style="font-size:26px">Contoh: warisan turun-temurun, 3 kali wafat sebelum dibagi</h1>
+  <p class="kecil" style="margin-top:6px;max-width:78ch">Satu kasus nyata-bentuk (tokoh rekaan) yang dipakai untuk menunjukkan bagaimana layar Hasil menyederhanakan hitungan rumit. Urutannya mengikuti spec: jawaban dulu, lalu alasan, lalu hitungan lengkap. Klik orang di pohon atau baris di tabel untuk menyorot keduanya. Mode: madzhab Syafi'i, metode jami'ah (KB bab 12).</p>
+</header>
+
+<section class="kartu bagian">
+  <h2>Kasusnya</h2>
+  <p>Mbah Karto meninggalkan rumah dan tanah senilai <b>Rp 10.368.000.000</b> yang tidak pernah dibagi. Sejak itu dua keturunannya juga wafat.</p>
+  <div class="lini">
+    <div><b>1975 · Mbah Karto wafat</b><span class="kecil">Meninggalkan istri (Mbah Sumi), anak laki-laki Budi, anak perempuan Rina.</span></div>
+    <div><b>1998 · Budi wafat</b><span class="kecil">Meninggalkan istri (Dewi), ibu (Mbah Sumi), anak laki-laki Andi, anak perempuan Sari.</span></div>
+    <div><b>2010 · Andi wafat</b><span class="kecil">Meninggalkan istri (Lina), ibu (Dewi), anak laki-laki Dimas (lahir sesudah 1975).</span></div>
+  </div>
+</section>
+
+<!-- LAPIS 1 -->
+<section class="bagian">
+  <h2><span class="no">1</span> Siapa dapat berapa</h2>
+  <p class="ket">Yang pertama terbaca adalah jawabannya: nama dan Rupiah. Orang yang wafat sebelum harta dibagi (Budi, Andi) tidak tampil sebagai penerima; bagian mereka sudah mengalir ke keluarga masing-masing.</p>
+  <div class="dua">
+    <div class="kartu">
+      <div class="orang" data-o="Rina"><b>Rina</b><span class="uang">Rp 3.024.000.000</span><span class="asal">anak perempuan Mbah Karto</span></div>
+      <div class="orang" data-o="Sumi"><b>Mbah Sumi</b><span class="uang">Rp 2.304.000.000</span><span class="asal">sebagai istri Mbah Karto Rp 1.296.000.000 · dari bagian Budi, sebagai ibunya Rp 1.008.000.000</span></div>
+      <div class="orang" data-o="Dimas"><b>Dimas</b><span class="uang">Rp 2.023.000.000</span><span class="asal">dari bagian Andi, sebagai anaknya</span></div>
+      <div class="orang" data-o="Dewi"><b>Dewi</b><span class="uang">Rp 1.232.000.000</span><span class="asal">sebagai istri Budi Rp 756.000.000 · dari bagian Andi, sebagai ibunya Rp 476.000.000</span></div>
+      <div class="orang" data-o="Sari"><b>Sari</b><span class="uang">Rp 1.428.000.000</span><span class="asal">dari bagian Budi, sebagai anak perempuannya</span></div>
+      <div class="orang" data-o="Lina"><b>Lina</b><span class="uang">Rp 357.000.000</span><span class="asal">dari bagian Andi, sebagai istrinya</span></div>
+      <p class="kecil" style="margin-top:8px">Total dibagikan Rp 10.368.000.000 · sisa pembulatan Rp 0 · <a href="#">atur</a></p>
+    </div>
+    <div class="kartu" style="background:var(--sunken)">
+      <h3 style="font-size:16px;margin-bottom:10px">Per cabang keluarga</h3>
+      <div class="cabang">
+        <div class="cb"><span>Keluarga Budi</span><div class="bar"><i style="width:48.6%"></i></div><b class="uang" style="font-size:15px">48,6%</b></div>
+        <div class="cb"><span>Rina</span><div class="bar"><i style="width:29.2%"></i></div><b class="uang" style="font-size:15px">29,2%</b></div>
+        <div class="cb"><span>Mbah Sumi</span><div class="bar"><i style="width:22.2%"></i></div><b class="uang" style="font-size:15px">22,2%</b></div>
+      </div>
+      <p class="kecil" style="margin-top:10px">Keluarga Budi = Dewi, Sari, Lina, Dimas = Rp 5.040.000.000. Cabang hanya pengelompokan tampilan; angkanya dijumlah dari hasil engine.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LAPIS 2: POHON -->
+<section class="bagian">
+  <h2><span class="no">2</span> Kenapa begitu? Pohon keluarga</h2>
+  <p class="ket">Garis putus-putus = sudah wafat (angka bulat = urutan wafat). Hijau = menerima bagian akhir. Garis tebal = pasangan. Harta dibagi mulai dari Mbah Karto, lalu bagian Budi, lalu bagian Andi, dari yang wafat paling dulu.</p>
+  <div class="kartu pohon">
+    <svg viewBox="0 0 780 440" role="img" aria-label="Pohon keluarga Mbah Karto, tiga generasi">
+      <!-- garis -->
+      <path class="gar nikah" d="M260 62H440"/>
+      <path class="gar" d="M350 62V104H230V123M350 104H660V123"/>
+      <path class="gar nikah" d="M290 150H410"/>
+      <path class="gar" d="M350 150V214H230V233M350 214H500V233"/>
+      <path class="gar nikah" d="M170 260H120"/>
+      <path class="gar" d="M145 260V343"/>
+      <!-- Mbah Karto -->
+      <g class="nd wafat" data-o="Karto" transform="translate(200,35)"><rect width="120" height="54" rx="8" x="0" y="0"/><text class="n" x="10" y="22">Mbah Karto</text><text class="s" x="10" y="40">wafat 1975</text><g class="lb"><circle cx="112" cy="0" r="11"/><text x="112" y="4">1</text></g></g>
+      <g class="nd terima" data-o="Sumi" transform="translate(380,35)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Mbah Sumi</text><text class="s" x="10" y="35">hidup</text><text class="r" x="10" y="48">Rp 2,30 M</text></g>
+      <!-- generasi 2 -->
+      <g class="nd wafat" data-o="Budi" transform="translate(170,123)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="22">Budi</text><text class="s" x="10" y="40">wafat 1998</text><g class="lb"><circle cx="112" cy="0" r="11"/><text x="112" y="4">2</text></g></g>
+      <g class="nd terima" data-o="Dewi" transform="translate(410,123)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Dewi</text><text class="s" x="10" y="35">hidup</text><text class="r" x="10" y="48">Rp 1,23 M</text></g>
+      <g class="nd terima" data-o="Rina" transform="translate(600,123)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Rina</text><text class="s" x="10" y="35">hidup</text><text class="r" x="10" y="48">Rp 3,02 M</text></g>
+      <!-- generasi 3 -->
+      <g class="nd wafat" data-o="Andi" transform="translate(170,233)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="22">Andi</text><text class="s" x="10" y="40">wafat 2010</text><g class="lb"><circle cx="112" cy="0" r="11"/><text x="112" y="4">3</text></g></g>
+      <g class="nd terima" data-o="Sari" transform="translate(440,233)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Sari</text><text class="s" x="10" y="35">hidup</text><text class="r" x="10" y="48">Rp 1,43 M</text></g>
+      <g class="nd terima" data-o="Lina" transform="translate(0,233)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Lina</text><text class="s" x="10" y="35">hidup</text><text class="r" x="10" y="48">Rp 0,36 M</text></g>
+      <!-- generasi 4 -->
+      <g class="nd terima" data-o="Dimas" transform="translate(85,343)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Dimas</text><text class="s" x="10" y="35">hidup · lahir sesudah 1975</text><text class="r" x="10" y="48">Rp 2,02 M</text></g>
+    </svg>
+    <div class="legenda"><span><i style="border-style:dashed;background:var(--sunken)"></i>sudah wafat</span><span><i style="background:var(--ok-soft)"></i>menerima bagian</span><span>Di HP: pohon terlipat ("Lihat pohon keluarga") sesudah lapis 1.</span></div>
+  </div>
+</section>
+
+<!-- LAPIS 2: LANGKAH -->
+<section class="bagian">
+  <h2><span class="no">2</span> Kenapa begitu? Tiga pembagian berantai</h2>
+  <p class="ket">Setiap orang yang wafat punya satu "mas'alah" sendiri: harta atau bagiannya dibagi ke keluarganya saat itu. Bagian orang yang wafat di satu mas'alah menjadi harta yang dibagi di mas'alah berikutnya.</p>
+  <div class="ms">
+    <div class="kartu"><h3>Pembagian 1 · harta Mbah Karto</h3><p class="kecil" style="margin:3px 0 8px">Istri 1/8; sisa untuk anak, laki-laki dapat dua kali perempuan. Pokok 8, disesuaikan jadi <b>24</b>.</p>
+      <table class="t"><tr><th>Ahli waris</th><th>Dasar</th><th class="n">Saham</th></tr>
+        <tr data-o="Sumi"><td>Mbah Sumi</td><td>1/8</td><td class="n">3</td></tr>
+        <tr data-o="Budi"><td>Budi</td><td>sisa 2:1</td><td class="n">14</td></tr>
+        <tr data-o="Rina"><td>Rina</td><td>sisa 2:1</td><td class="n">7</td></tr>
+        <tr class="ttl"><td colspan="2">Jumlah</td><td class="n">24</td></tr></table></div>
+    <div class="kartu"><h3>Pembagian 2 · bagian Budi</h3><p class="kecil" style="margin:3px 0 8px">Istri 1/8, ibu 1/6, sisa untuk anak 2:1. Pokok 24, disesuaikan jadi <b>72</b>.</p>
+      <table class="t"><tr><th>Ahli waris</th><th>Dasar</th><th class="n">Saham</th></tr>
+        <tr data-o="Dewi"><td>Dewi</td><td>1/8</td><td class="n">9</td></tr>
+        <tr data-o="Sumi"><td>Mbah Sumi</td><td>1/6</td><td class="n">12</td></tr>
+        <tr data-o="Andi"><td>Andi</td><td>sisa 2:1</td><td class="n">34</td></tr>
+        <tr data-o="Sari"><td>Sari</td><td>sisa 2:1</td><td class="n">17</td></tr>
+        <tr class="ttl"><td colspan="2">Jumlah</td><td class="n">72</td></tr></table></div>
+    <div class="kartu"><h3>Pembagian 3 · bagian Andi</h3><p class="kecil" style="margin:3px 0 8px">Istri 1/8, ibu 1/6, sisa untuk anak. Pokok 24.</p>
+      <table class="t"><tr><th>Ahli waris</th><th>Dasar</th><th class="n">Saham</th></tr>
+        <tr data-o="Lina"><td>Lina</td><td>1/8</td><td class="n">3</td></tr>
+        <tr data-o="Dewi"><td>Dewi</td><td>1/6</td><td class="n">4</td></tr>
+        <tr data-o="Dimas"><td>Dimas</td><td>sisa</td><td class="n">17</td></tr>
+        <tr class="ttl"><td colspan="2">Jumlah</td><td class="n">24</td></tr></table></div>
+  </div>
+  <h3 style="font-size:16px;margin:16px 0 8px">Menyambung satu pembagian ke pembagian berikutnya</h3>
+  <div class="hub">
+    <div class="kartu"><b>Dari 1 ke 2</b><p style="margin-top:4px">Saham Budi di pembagian 1 = <code>14</code>, sedangkan pembagian 2 berjumlah <code>72</code>.</p>
+      <p style="margin-top:6px">Keduanya punya faktor sekutu 2, jadi disesuaikan (tawafuq): <code>24 × 36 = 864</code>. Pembagian 1 dikali 36, pembagian 2 dikali 7 (14 ÷ 2).</p></div>
+    <div class="kartu"><b>Dari 2 ke 3</b><p style="margin-top:4px">Saham Andi di pembagian 2 = <code>238</code> (34 × 7), sedangkan pembagian 3 berjumlah <code>24</code>.</p>
+      <p style="margin-top:6px">Faktor sekutu 2 lagi: <code>864 × 12 = 10.368</code>. Semua angka sebelumnya dikali 12, pembagian 3 dikali 119 (238 ÷ 2).</p></div>
+  </div>
+  <p class="kecil" style="margin-top:8px">Di layar, tiap perbandingan ini jadi satu langkah bernomor di daftar "Kenapa begitu?", dikelompokkan per pembagian. Lencana "Di sini madzhab berbeda" muncul bila titiknya khilaf.</p>
+</section>
+
+<!-- LAPIS 3 -->
+<section class="bagian">
+  <h2><span class="no">3</span> Hitungan lengkap: tabel munasakhat ala kitab</h2>
+  <p class="ket">Satu tabel menggabungkan ketiga pembagian. Tanda <span class="x">×</span> = orang itu wafat di pembagian tersebut, bagiannya tidak diterima tetapi diteruskan. Setiap kolom dikali pengali akhirnya, lalu dijumlah di kolom jami'ah.</p>
+  <div class="kartu tw">
+    <table class="t">
+      <tr><th>Ahli waris</th><th class="n">Pembagian 1<br>(24) × 432</th><th class="n">Pembagian 2<br>(72) × 84</th><th class="n">Pembagian 3<br>(24) × 119</th><th class="n">Jami'ah<br>(10.368)</th><th class="n">Rupiah</th></tr>
+      <tr data-o="Sumi"><td>Mbah Sumi</td><td class="n">3</td><td class="n">12</td><td class="n">—</td><td class="n">2.304</td><td class="n">2.304.000.000</td></tr>
+      <tr data-o="Rina"><td>Rina</td><td class="n">7</td><td class="n">—</td><td class="n">—</td><td class="n">3.024</td><td class="n">3.024.000.000</td></tr>
+      <tr data-o="Budi"><td>Budi</td><td class="n">14 <span class="x">×</span></td><td class="n">—</td><td class="n">—</td><td class="n">diteruskan</td><td class="n">—</td></tr>
+      <tr data-o="Dewi"><td>Dewi</td><td class="n">—</td><td class="n">9</td><td class="n">4</td><td class="n">1.232</td><td class="n">1.232.000.000</td></tr>
+      <tr data-o="Andi"><td>Andi</td><td class="n">—</td><td class="n">34 <span class="x">×</span></td><td class="n">—</td><td class="n">diteruskan</td><td class="n">—</td></tr>
+      <tr data-o="Sari"><td>Sari</td><td class="n">—</td><td class="n">17</td><td class="n">—</td><td class="n">1.428</td><td class="n">1.428.000.000</td></tr>
+      <tr data-o="Lina"><td>Lina</td><td class="n">—</td><td class="n">—</td><td class="n">3</td><td class="n">357</td><td class="n">357.000.000</td></tr>
+      <tr data-o="Dimas"><td>Dimas</td><td class="n">—</td><td class="n">—</td><td class="n">17</td><td class="n">2.023</td><td class="n">2.023.000.000</td></tr>
+      <tr class="ttl"><td>Jumlah</td><td class="n">24</td><td class="n">72</td><td class="n">24</td><td class="n">10.368</td><td class="n">10.368.000.000</td></tr>
+    </table>
+    <p class="kecil" style="margin-top:8px">Contoh baca: Dewi = 9 × 84 + 4 × 119 = 756 + 476 = 1.232. Satu saham = Rp 1.000.000. Kontrol: Budi 14 × 432 = 6.048 = 72 × 84, dan Andi 34 × 84 = 2.856 = 24 × 119, jadi tidak ada bagian yang hilang.</p>
+  </div>
+</section>
+
+<section class="kartu">
+  <h3 style="font-size:17px">Jalan keluar dari kerumitan</h3>
+  <ul style="margin:8px 0 0;padding-left:20px">
+    <li><b>Jawaban dulu:</b> awam berhenti di bagian 1 (nama dan Rupiah, asal bagian per orang).</li>
+    <li><b>Pohon untuk "kenapa":</b> menunjukkan siapa wafat urutan ke berapa dan ke mana bagiannya mengalir.</li>
+    <li><b>Satu kalimat per pembagian:</b> tiap mas'alah dibaca sendiri, lalu disambung dengan satu perbandingan angka.</li>
+    <li><b>Tabel hanya untuk yang butuh:</b> terlipat di lapis 3; praktisi bisa mencocokkan dengan kitab.</li>
+    <li><b>Cek bawaan:</b> jumlah tiap kolom dan jami'ah selalu cocok; engine melempar galat bila tidak.</li>
+  </ul>
+</section>
+</main>
+<script>
+// Sorot orang yang sama di pohon, daftar, dan tabel.
+const semua=()=>document.querySelectorAll('[data-o]');
+function sorot(o){semua().forEach(e=>{const on=e.dataset.o===o;e.classList.toggle('sorot',on)})}
+document.addEventListener('mouseover',e=>{const t=e.target.closest('[data-o]');sorot(t?t.dataset.o:null)});
+document.addEventListener('click',e=>{const t=e.target.closest('[data-o]');if(t)sorot(t.dataset.o)});
+</script>
+</body>
+</html>
