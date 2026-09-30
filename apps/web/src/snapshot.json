@@ -17437,6 +17437,20 @@
    "id": "{siapa} tidak mendapat bagian.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.anak_dari.lk",
+   "halaman": "narasi",
+   "id": "anak laki-laki dari {sebutan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.umum.anak_dari.pr",
+   "halaman": "narasi",
+   "id": "anak perempuan dari {sebutan}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
