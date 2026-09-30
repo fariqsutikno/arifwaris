@@ -189,4 +189,4 @@ export const TAQDIR_FIXTURES: TaqdirFixture[] = [
     expected: { jamiah: 2n, diberikan: { H: 1n, T: 1n }, mauquf: 0n } },
 ];
 
-export const GRAF = { grafH1, grafH3, grafF1, grafX2, grafX5, grafX7 };
+export const GRAF = { grafH1, grafH3, grafF1, grafX2, grafX5, grafX5b, grafX7 };
