@@ -21,7 +21,7 @@ type Taqdir = Record<IdOrang, NilaiTaqdir>;
 type Pemberian = 'aqall' | 'setengah' | 'terburuk';
 
 interface Sumber { id: IdOrang; jenis: 'haml' | 'mafqud' | 'khuntsa'; taqdir: NilaiTaqdir[]; pemberian: Pemberian }
-interface HasilDunia { saham: Saham; masalah: bigint; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
+interface HasilDunia { saham: Saham; masalah: bigint; statusOrang: HasilOk['statusOrang']; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
 
 export interface OpsiTaqdir { urutanWafat?: IdOrang[]; dikandungSetelahWafat?: InputMunasakhat['dikandungSetelahWafat'] }
 
@@ -72,7 +72,7 @@ export function hitungTaqdir(input: InputEngine, opsi: OpsiTaqdir = {}): HasilTa
   const daftarDunia: DuniaTaqdir[] = mentah.map(dunia => {
     const juzSahm = jamiah / dunia.masalah;
     jejak.push({ tahap: 'taqdir', refs: ['R13-16'], jenis: 'TAQDIR_DUNIA', taqdir: dunia.taqdir, masalah: dunia.masalah, juzSahm, jamiah });
-    return { taqdir: dunia.taqdir, masalah: dunia.masalah, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])) };
+    return { taqdir: dunia.taqdir, masalah: dunia.masalah, statusOrang: dunia.statusOrang, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])) };
   });
 
   const ditahan = new Set(sumber.filter(sumberIni => sumberIni.jenis !== 'khuntsa').map(sumberIni => sumberIni.id));
@@ -175,7 +175,7 @@ function leburDalam(input: InputEngine, opsi: OpsiTaqdir, taqdirLuar: Taqdir, da
   }
   jejak.push({ tahap: 'taqdir', refs: ['K13c-1'], jenis: 'TAQDIR_LEBUR', aturan: 'setengah', sumber: idDalam });
   return {
-    saham, masalah: jamiahDalam * BigInt(daftarHasil.length),
+    saham, masalah: jamiahDalam * BigInt(daftarHasil.length), statusOrang: daftarHasil[0]!.statusOrang,
     mitraAshabahHaml: new Set(daftarHasil.flatMap(dunia => [...dunia.mitraAshabahHaml])),
     mitraFardhHaml: new Set(daftarHasil.flatMap(dunia => [...dunia.mitraFardhHaml])),
   };
@@ -201,7 +201,7 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
     daftarHasil = [hasil];
     saham = tanpaTashihJanin(gabungKembar(sahamDari(graf.idPewaris, hasil)), hasil, haml);
   }
-  return { saham: gabungKembar(saham), masalah: totalSaham(saham), ...mitraHaml(daftarHasil, haml) };
+  return { saham: gabungKembar(saham), masalah: totalSaham(saham), statusOrang: daftarHasil[0]!.statusOrang, ...mitraHaml(daftarHasil, haml) };
 }
 
 /**

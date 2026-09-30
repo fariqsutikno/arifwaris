@@ -49,7 +49,7 @@ function terpisah(input: InputGharqa, rujukan: string): HasilGharqa {
     if (hasil.status !== 'OK') return { ...hasil, mayit };
     const istibham: LangkahJejak[] = input.anggota.filter(id => id !== mayit)
       .map(id => ({ tahap: 'mawani', refs: [rujukan], jenis: 'MANI', idOrang: id, mani: 'istibham' }));
-    harta.push(susunHarta(input, mayit, sahamDari(mayit, hasil), [...istibham, ...hasil.jejak]));
+    harta.push(susunHarta(input, mayit, sahamDari(mayit, hasil), [...istibham, ...hasil.jejak], [{ mayit, statusOrang: hasil.statusOrang }]));
   }
   return { status: 'OK', metode: 'terpisah', harta };
 }
@@ -71,10 +71,12 @@ function tilad(input: InputGharqa): HasilGharqa {
     let saham = sahamDari(mayit, hasilTilad);
     let jamiah = totalSaham(saham);
     const jejak: LangkahJejak[] = [...hasilTilad.jejak];
+    const daftarStatus: HartaGharqa['daftarStatus'] = [{ mayit, statusOrang: hasilTilad.statusOrang }];
     for (const idRekan of rekan.filter(id => saham[id])) {
       const hasilTharif = hitungDzawilArham({ ...input.dasar, graf: grafSebagaiPewaris(input.dasar.graf, idRekan), tirkah: TANPA_TIRKAH });
       if (hasilTharif.status !== 'OK') return { ...hasilTharif, mayit: idRekan };
       const sahamTharif = sahamDari(idRekan, hasilTharif);
+      daftarStatus.push({ mayit: idRekan, statusOrang: hasilTharif.statusOrang });
       const gabungan = gabungkan(saham, jamiah, idRekan, sahamTharif, totalSaham(sahamTharif));
       jejak.push({ tahap: 'munasakhat', refs: ['R13-19'], jenis: 'MUNASAKHAT', mayit: idRekan, saham: gabungan.sahamMayit, masalah: gabungan.masalah,
         hubungan: gabungan.hubungan, fpb: gabungan.fpb, wafqMasalah: gabungan.wafqMasalah, wafqSaham: gabungan.wafqSaham, jamiah: gabungan.jamiah, rincian: gabungan.rincian });
@@ -82,7 +84,7 @@ function tilad(input: InputGharqa): HasilGharqa {
       jamiah = gabungan.jamiah;
       periksaInvarian(saham, jamiah, 'gharqa tilad');
     }
-    harta.push(susunHarta(input, mayit, saham, jejak));
+    harta.push(susunHarta(input, mayit, saham, jejak, daftarStatus));
   }
   return { status: 'OK', metode: 'tilad', harta };
 }
@@ -104,7 +106,8 @@ function skenarioUrutan(input: InputGharqa): HasilGharqa {
         urutanWafat: urutan.slice(posisi + 1),
       });
       if (hasil.status !== 'OK') return { ...hasil, mayit };
-      harta.push(susunHarta(input, mayit, hasil.saham, [{ tahap: 'mawani', refs: ['R13-10'], jenis: 'MANI', idOrang: mayit, mani: 'istibham' }, ...hasil.jejak]));
+      harta.push(susunHarta(input, mayit, hasil.saham, [{ tahap: 'mawani', refs: ['R13-10'], jenis: 'MANI', idOrang: mayit, mani: 'istibham' }, ...hasil.jejak],
+        hasil.daftarLangkah.map(langkah => ({ mayit: langkah.mayit, statusOrang: langkah.hasil.statusOrang }))));
     }
     skenario.push({ urutan, harta });
   }
@@ -113,11 +116,11 @@ function skenarioUrutan(input: InputGharqa): HasilGharqa {
 
 // ─── Pembantu ─────────────────────────────────────────────────────────────────
 
-function susunHarta(input: InputGharqa, mayit: IdOrang, saham: Saham, jejak: LangkahJejak[]): HartaGharqa {
+function susunHarta(input: InputGharqa, mayit: IdOrang, saham: Saham, jejak: LangkahJejak[], daftarStatus: HartaGharqa['daftarStatus']): HartaGharqa {
   const jamiah = totalSaham(saham);
   const bersih = hitungTirkah(tirkahDari(input, mayit)).bersih;
   const nominal = bagikanNominal(saham, jamiah, bersih, input.dasar.pembulatan.satuan);
-  return { mayit, jamiah, saham, nominal: nominal.nominal, jejak };
+  return { mayit, jamiah, saham, nominal: nominal.nominal, jejak, daftarStatus };
 }
 
 const tirkahDari = (input: InputGharqa, mayit: IdOrang): InputTirkah => input.tirkah?.[mayit] ?? TANPA_TIRKAH;

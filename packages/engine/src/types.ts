@@ -305,6 +305,8 @@ export interface DuniaTaqdir {
   masalah: bigint;
   /** Saham tiap penerima pada jami'ah (tabel "jika terbukti X"); baris sisa memakai `IdSisaKeluar`. */
   saham: Record<string, bigint>;
+  /** Status tiap orang di dunia ini (mayit pertama), untuk sebutan peran di penjelasan. */
+  statusOrang: Record<IdOrang, StatusOrang>;
 }
 
 export type HasilTaqdir =
@@ -343,6 +345,8 @@ export interface HartaGharqa {
   saham: Record<string, bigint>;
   nominal: Record<string, Uang>;
   jejak: LangkahJejak[];
+  /** Status orang di tiap mas'alah yang dipakai (harta sendiri, lalu tharif/mayit berikutnya), untuk sebutan peran. */
+  daftarStatus: Array<{ mayit: IdOrang; statusOrang: Record<IdOrang, StatusOrang> }>;
 }
 
 export type HasilGharqa =
