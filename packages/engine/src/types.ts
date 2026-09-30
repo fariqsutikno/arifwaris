@@ -14,10 +14,16 @@ export interface Orang {
   jenisKelamin: 'L' | 'P';
   idAyah?: IdOrang;
   idIbu?: IdOrang;
-  statusHidup: 'hidup' | 'wafat' | 'tidakDiketahui';
+  /**
+   * dalamKandungan: satu node mewakili seluruh janin dari `idIbu` saat pewaris wafat (13a); mafqud: hilang (13b).
+   * Keduanya diselesaikan orkestrator taqdir, bukan pipeline.
+   */
+  statusHidup: 'hidup' | 'wafat' | 'tidakDiketahui' | 'dalamKandungan' | 'mafqud';
   agama: 'islam' | 'nonIslam' | 'tidakDiketahui';
   membunuhPewaris?: boolean;   // [SYF] semua bentuk pembunuhan (bab 02)
   penghubung?: boolean;    // node penghubung buatan sistem
+  /** Khuntsa musykil (13c); `jenisKelamin` diabaikan. Keadaan menentukan perlakuan [HNB] (K13c-1). */
+  khuntsa?: 'diharapkanJelas' | 'tidakDiharapkanJelas';
 }
 
 export interface Pernikahan {
@@ -112,7 +118,7 @@ export interface TabelMasalah {
 // ─── Jejak: tiap keputusan sebagai data (dinarasikan di packages/explain) ─────
 
 export type { Nisab };
-export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat' | 'dzawilArham';
+export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat' | 'dzawilArham' | 'taqdir';
 /** Saham vs ru'us (inkisar) dan sisa zawjiyyah vs ashl radd hanya memakai FPB: habis / tawafuq / tabayun (bab 9.4, 10.3). */
 export type HubunganInkisar = 'habis' | 'tawafuq' | 'tabayun';
 
@@ -189,6 +195,13 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'DZAWIL_ARHAM_TURUN'; perantara: IdOrang; rasio: 'ikutMasalah' | 'samaRata'; saham: Record<IdOrang, bigint>; masalah: bigint; mahjub: IdOrang[] }
   | { jenis: 'DZAWIL_ARHAM_DUA_JALUR'; idOrang: IdOrang; perantara: IdOrang[] }
   // [R14-12] sisa pasangan (saham) vs mas'alah dzawil arham (masalah), seperti munasakhat keadaan 3.
+  // Bab 13 taqdir: satu dunia luar (mas'alah → juz'us sahm terhadap jami'ah) [R13-16].
+  | { jenis: 'TAQDIR_DUNIA'; taqdir: Record<IdOrang, NilaiTaqdir>; masalah: bigint; juzSahm: bigint; jamiah: bigint }
+  // Sumber yang dilebur di dalam tiap dunia luar (13.0b butir 5): setengah-setengah atau paling merugikan khuntsa.
+  | { jenis: 'TAQDIR_LEBUR'; aturan: 'setengah' | 'terburuk'; sumber: IdOrang[]; terpilih?: Record<IdOrang, NilaiTaqdir> }
+  // Pemberian sekarang: aqall dari semua dunia; ditahan = haml/mafqud; kelasD = mitra ashabah haml [SYF] [R13-15].
+  | { jenis: 'TAQDIR_PEMBERIAN'; idOrang: IdOrang; alasan: 'aqall' | 'ditahan' | 'kelasD'; saham: bigint }
+  | { jenis: 'MAUQUF'; saham: bigint; jamiah: bigint }
   | { jenis: 'DZAWIL_ARHAM_GABUNG_PASANGAN'; saham: bigint; masalah: bigint; hubungan: HubunganInkisar; jamiah: bigint }
 );
 
@@ -202,7 +215,7 @@ export interface Pertanyaan {
 
 export type HasilEngine =
   | { status: 'PERLU_INPUT'; pertanyaan: Pertanyaan[] }
-  | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[]; kode?: 'FASE_DZAWIL_ARHAM' }
+  | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[]; kode?: 'FASE_DZAWIL_ARHAM' | 'PERLU_TAQDIR' }
   | { status: 'OK';
       statusOrang: Record<IdOrang, StatusOrang>;
       tabel: TabelMasalah;
@@ -279,3 +292,66 @@ export type HasilMunasakhat =
       nominal: Record<IdOrang, Uang>;
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       jejak: LangkahJejak[] };
+
+// ─── Taqdir (bab 13): haml, mafqud, khuntsa ──────────────────────────────────
+
+/** Kemungkinan status satu sumber ketidakpastian (13a.5, 13b.5, 13c.3). */
+export type NilaiTaqdir = 'mati' | 'hidup' | 'lk' | 'pr' | 'duaLk' | 'duaPr' | 'lkPr';
+
+/** Satu dunia luar (sumber yang diberi aqall); sumber setengah/terburuk sudah dilebur di dalamnya. */
+export interface DuniaTaqdir {
+  taqdir: Record<IdOrang, NilaiTaqdir>;
+  /** Mas'alah dunia ini sebelum disamakan ke jami'ah. */
+  masalah: bigint;
+  /** Saham tiap penerima pada jami'ah (tabel "jika terbukti X"); baris sisa memakai `IdSisaKeluar`. */
+  saham: Record<string, bigint>;
+  /** Status tiap orang di dunia ini (mayit pertama), untuk sebutan peran di penjelasan. */
+  statusOrang: Record<IdOrang, StatusOrang>;
+}
+
+export type HasilTaqdir =
+  | Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }>
+  // [K13a-2] [MLK]: tirkah tidak dibagi sampai haml lahir.
+  | { status: 'MAUQUF_SEMUA'; alasan: string; refs: string[] }
+  | { status: 'OK';
+      jamiah: bigint;
+      /** Diberikan sekarang; haml dan mafqud selalu 0 (bagiannya ada di mauquf). */
+      diberikan: Record<IdOrang, bigint>;
+      mauquf: bigint;
+      daftarDunia: DuniaTaqdir[];
+      nominal: Record<IdOrang, Uang>;
+      nominalMauquf: Uang;
+      pembulatan: { satuan: bigint; sisaPembulatan: Uang };
+      jejak: LangkahJejak[];
+      ruleset: Ruleset };
+
+// ─── Gharqa (bab 13d) ─────────────────────────────────────────────────────────
+
+/** 13d.2 keadaan 1, 3, 4, 5. Keadaan 2 (yang terakhir diketahui pasti) = munasakhat biasa. */
+export type KeadaanGharqa = 'serentak' | 'terlupakan' | 'berurutanTakDiketahui' | 'tidakDiketahui';
+
+export interface InputGharqa {
+  /** Graf memuat semua anggota (berstatus wafat); `graf.idPewaris` diabaikan, tiap anggota bergiliran jadi pewaris. */
+  dasar: InputEngine;
+  anggota: IdOrang[];
+  keadaan: KeadaanGharqa;
+  /** Tirkah masing-masing anggota; tanpa entri → 0. */
+  tirkah?: Record<IdOrang, InputTirkah>;
+}
+
+export interface HartaGharqa {
+  mayit: IdOrang;
+  jamiah: bigint;
+  saham: Record<string, bigint>;
+  nominal: Record<string, Uang>;
+  jejak: LangkahJejak[];
+  /** Status orang di tiap mas'alah yang dipakai (harta sendiri, lalu tharif/mayit berikutnya), untuk sebutan peran. */
+  daftarStatus: Array<{ mayit: IdOrang; statusOrang: Record<IdOrang, StatusOrang> }>;
+}
+
+export type HasilGharqa =
+  | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit?: IdOrang })
+  // terpisah: tidak saling mewarisi [R13-10]; tilad: [HNB] tilad–tharif [R13-19].
+  | { status: 'OK'; metode: 'terpisah' | 'tilad'; harta: HartaGharqa[] }
+  // [R13-10] [SYF] keadaan 3: ditahan sampai ingat atau ishtilah; tiap urutan yang mungkin sebagai skenario.
+  | { status: 'MAUQUF'; skenario: Array<{ urutan: IdOrang[]; harta: HartaGharqa[] }> };

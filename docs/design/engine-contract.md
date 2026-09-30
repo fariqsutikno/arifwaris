@@ -309,4 +309,5 @@ Output ke pengguna = 3 lapis dari trace yang sama:
 5. `packages/content` (parser tabel rujukan KB) + `packages/explain`.
 
 ## 6. Blocked
-R13-5, R13-14, R01-7; haml & mafqud [SYF] (bab 13) — tunggu KB dilengkapi.
+R13-14 (laqith), R01-7. Bab 13 haml/mafqud/khuntsa/gharqa sudah jalan (`taqdir.ts`, `gharqa.ts`); titik yang
+belum diatur KB: `docs/keilmuan-kasus-khusus-2026-09-30.md`.

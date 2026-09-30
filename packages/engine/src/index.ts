@@ -10,3 +10,5 @@ export { turunkanPeran } from './stages/derivasi.js';
 // Dipakai UI untuk hitungan berjalan "yang akan dibagi" di langkah Kewajiban (batas wasiat 1/3 tetap diputuskan engine).
 export { hitungTirkah } from './stages/tirkah.js';
 export { hitungDzawilArham } from './dzawilArham.js';
+export { hitungTaqdir, BATAS_DUNIA, type OpsiTaqdir } from './taqdir.js';
+export { hitungGharqa } from './gharqa.js';

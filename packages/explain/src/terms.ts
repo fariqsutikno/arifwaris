@@ -8,6 +8,7 @@ export const ID_ISTILAH = [
   'takmilah-tsulutsain', 'kalalah', 'ashabah', 'bi-nafsihi', 'bil-ghair', 'maal-ghair', 'umariyyatain', 'musyarrakah',
   'akdariyyah', 'muaddah', 'muqasamah', 'ashlul-masalah', 'tamatsul', 'tadakhul', 'tawafuq', 'tabayun', 'wafq',
   'adilah', 'aul', 'radd', 'saham', 'ruus', 'inkisar', 'juz-as-sahm', 'tashih', 'munasakhat', 'jamiah',
+  'haml', 'mafqud', 'khuntsa-musykil', 'mauquf', 'tilad',
 ] as const;
 export type IdIstilah = typeof ID_ISTILAH[number];
 

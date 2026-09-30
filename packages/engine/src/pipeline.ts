@@ -41,6 +41,13 @@ export function hitungDenganTercakup(input: InputEngine, tercakup: ReadonlySet<s
   if (konfigurasiTidakSah) return konfigurasiTidakSah;
   const tirkah = hitungTirkah(input.tirkah);
 
+  // Janin, mafqud, dan khuntsa belum pasti: pipeline hanya menghitung dunia yang pasti (13.0b butir 2).
+  const belumPasti = Object.values(input.graf.orang)
+    .filter(orangIni => orangIni.statusHidup === 'dalamKandungan' || orangIni.statusHidup === 'mafqud' || orangIni.khuntsa);
+  if (belumPasti.length > 0) {
+    return { status: 'TIDAK_DIDUKUNG', alasan: `Status belum pasti (${belumPasti.map(orangIni => orangIni.id).join(', ')}); hitung lewat taqdir.`, refs: ['R13-4'], kode: 'PERLU_TAQDIR' };
+  }
+
   // 1–2. Siapa ahli warisnya dan apa bagiannya (fardh/ashabah).
   const ahliWaris = jalankanTahapAhliWaris(input);
   if (ahliWaris.status !== 'AHLI_WARIS') return ahliWaris;
