@@ -1,6 +1,7 @@
 # Spec: Babak Kematian Berlapis (langkah 4–5, jalankan, hasil minimal)
 
-Tanggal: 2026-09-30 · Status: disetujui per bagian, menunggu review tertulis
+Tanggal: 2026-09-30 · Status: bagian 1–7 sudah dibangun; revisi 1.0, 1.1, bagian 8 (jalur silsilah) disetujui
+2026-09-30, belum dibangun
 Dasar: `docs/design/riset-ux-input-kematian-berlapis.md` (riset + keputusan 12.2), sketsa
 https://claude.ai/artifact/72YVQXeaogX2Abr54gnBeq. KB: bab 12, 13, 13a–13d.
 
@@ -17,10 +18,27 @@ Madzhab tetap `'syafii'` (pilihan madzhab = spec lain). Pewaris yang hilang (maf
 
 ## 1. Alur layar
 
+### 1.0 Pertanyaan pintu (revisi 2026-09-30, lihat bagian 8)
+
+Di atas daftar keluarga langkah 4, satu layar yang sama (bukan layar tambahan), **wajib dijawab, tanpa bawaan**:
+
+> **Sejak [pewaris] wafat sampai sekarang, apakah ada keluarganya yang juga sudah wafat, sementara hartanya belum
+> dibagi?**
+> - Tidak ada → alur 1.1 seperti biasa.
+> - Ada, satu-dua orang dari keluarga dekatnya → alur 1.1, pertanyaan penutup langsung terbuka di "Ada".
+> - Sudah turun-temurun: anak-anaknya pun banyak yang sudah wafat → **jalur silsilah** (bagian 8).
+> - Tidak tahu → jalur silsilah (menanyakan keadaan semua orang, jadi paling aman).
+
+Tanpa bawaan karena bawaan "Tidak ada" mengulang kegagalan yang dikritik: pengguna hanya mengetik yang hidup
+sekarang, munasakhat terlewat diam-diam. Tautan "Tampilkan sebagai silsilah" / "Tampilkan sebagai babak" ada di
+kedua jalur; datanya sama (2.1), jadi pindah tidak menghapus isian.
+
 ### 1.1 Langkah 4 · Keluarga — Babak 1 (pewaris)
 
 - Baris "− jumlah +" (`LangkahAhliWaris`) tetap.
-- Keterangan di atas daftar: "Masukkan juga anggota keluarga yang sudah wafat sesudah [almarhum], nanti kita tanyakan."
+- **Judul berjangkar waktu** (revisi 2026-09-30): "Siapa saja keluarga [pewaris] yang masih hidup **waktu beliau
+  wafat**?" + keterangan "Termasuk yang sekarang sudah meninggal. Nanti kita tanyakan." Menggantikan
+  "Siapa saja keluarga yang ditinggalkan?", yang dibaca pengguna sebagai "yang masih ada sekarang".
 - **Pertanyaan penutup** di bawah daftar: "Semua orang di atas masih hidup?"
   - **Ya, masih hidup semua** (bawaan).
   - **Ada yang sudah wafat atau hilang** → daftar orang babak ini + keadaannya ("masih hidup", "wafat sesudah
@@ -31,7 +49,11 @@ Madzhab tetap `'syafii'` (pilihan madzhab = spec lain). Pewaris yang hilang (maf
      (Masih dalam kandungan; Kelaminnya belum bisa ditentukan — hanya untuk hubungan yang mungkin, 13c.1).
   2. Sudah wafat → "X wafat sebelum atau sesudah [almarhum babak]?" Sebelum / Sesudah / Bersamaan, atau tidak tahu.
      Tautan "Kenapa ditanya?".
-  3. Sesudah → "Waktu X wafat, apakah harta [pewaris] sudah dibagi?" + definisi "dibagi". **Per orang.**
+  3. Sesudah → **sekali per harta** (revisi 2026-09-30, menggantikan "per orang"): pertama kali ada jawaban
+     "sesudah", tanya "Sejak [pewaris] wafat, apakah hartanya pernah dibagi?" + definisi "dibagi".
+     Belum pernah (disimpan di `hartaPernahDibagi`) → pertanyaan ini tidak muncul lagi untuk orang berikutnya.
+     Sudah / sebagian → pertanyaan lama "Waktu X wafat, apakah harta [pewaris] sudah dibagi?" per orang.
+     Tautan "Untuk X berbeda" di ringkasan tetap bisa menandai satu orang `wafatSesudahDibagi`.
   4. Hilang → "Sudah ada putusan pengadilan bahwa X dianggap wafat?" Belum ada / Sudah ada (→ langkah 2) /
      Ternyata sudah pasti wafat, tapi tidak tahu kapan (→ jalur bersamaan).
   5. Bersamaan → G1 "Pasti wafat di saat yang sama persis?" (Ya → serentak); G2 "Dulu pernah ada yang tahu siapa
@@ -256,7 +278,194 @@ Aturan kalimat riset 9.2. Ikon SVG. Aksi sekunder berupa tautan; tombol hanya ak
 6. Periksa cerita + layar menunggu.
 7. Khuntsa.
 
+## 8. Jalur silsilah: warisan turun-temurun (revisi 2026-09-30)
+
+### 8.0 Masalah yang dijawab
+
+Kasus munasakhat yang paling umum di Indonesia adalah harta (biasanya rumah atau tanah) peninggalan kakek buyut
+atau kakek dari ayah yang tidak pernah dibagi, sementara anak dan cucunya sudah banyak yang wafat. Alur Babak
+(1.1–1.2) mengikuti cara kitab: mulai dari mayit pertama lalu maju. Untuk kasus ini ada tiga kendala:
+
+- Pengguna datang dari dua ujung: tahu hartanya dan tahu siapa yang hidup **sekarang**, bagian tengahnya kabur.
+  Pertanyaan "siapa yang ditinggalkan" membuat orang yang sudah wafat tidak pernah diketik.
+- Babak per almarhum tidak cocok untuk jumlah besar: 10 almarhum berarti 10 babak "lihat dari sisi X", dan
+  perbandingan berpasangan untuk urutan wafat jumlahnya membengkak.
+- Hampir semua cicit lahir sesudah buyut wafat, jadi `dikandungSetelahWafat` berlaku untuk banyak orang,
+  bukan kasus pinggir.
+
+Engine tidak berubah: `InputMunasakhat` sudah berupa satu graf, satu urutan wafat global, dan
+`dikandungSetelahWafat`, dan `grafPada` menurunkan siapa yang hidup pada tiap kematian. Babak hanya konsep tampilan.
+
+### 8.1 Prinsip
+
+1. **Pohon dulu, urutan belakangan.** Pengguna mengisi silsilah ke bawah dari pemilik harta. Urutan wafat dan
+   kelahiran diturunkan dari tahun.
+2. **Tanya hanya bila jawabannya mengubah hasil.** Pertanyaan tambahan (urutan, kelahiran, kerabat di luar pohon,
+   anak dari orang yang masih hidup) hanya muncul bila **uji hipotetis** (8.4) menunjukkan jawabannya berpengaruh.
+   UI tidak memuat aturan hajb sendiri; engine yang menentukan (CLAUDE.md: fikih hanya di engine).
+3. **Data kurang → tanya, jangan menebak.** "Tidak tahu" pada pertanyaan yang berpengaruh tidak diisi asumsi;
+   orangnya masuk daftar "belum dipastikan" di Periksa cerita, dan hitung ditahan sampai dipastikan.
+
+### 8.2 Alur layar
+
+**S1. Pemilik harta.** Pewaris dari langkah sebelumnya. Satu isian: "Kira-kira tahun berapa [pewaris] wafat?"
+(tahun + pilihan "pasti" / "kira-kira" / tautan "tidak ingat").
+
+**S2. Harta pernah dibagi?** "Sejak [pewaris] wafat, apakah hartanya pernah dibagi?" + definisi "dibagi" (1.1).
+- Belum pernah → lanjut.
+- Sudah, sekitar tahun T → orang yang wafat sesudah T otomatis `wafatSesudahDibagi`; bila tahunnya kira-kira dan
+  dekat T (selisih ≤ 2 tahun), ditanya satu per satu dengan pertanyaan lama 1.1 butir 3.
+- Sebagian saja → pesan jujur "Pembagian sebagian belum bisa dihitung otomatis. Tanyakan ke ahli faraidh." (di luar cakupan).
+
+**S3. Silsilah per generasi.** Daftar bertingkat (bukan pohon lebar, supaya nyaman di HP dan terbaca pembaca layar):
+
+```
+Mbah Karto · wafat ±1975
+  Pasangan: Mbah Sumi · wafat ±1990
+  Anak:
+    Budi · wafat 1998        › Keluarga Budi (3 orang)
+    Rina · masih hidup
+    Slamet · wafat ±1970     (sebelum Mbah Karto)  › Keluarga Slamet
+```
+
+- Tiap orang: nama, hubungan, keadaan (Masih hidup / Sudah wafat + tahun, pasti atau kira-kira / Hilang /
+  Keadaan lain › dari Dialog keadaan 1.1), tahun lahir opsional.
+- **Cabang dibuka hanya untuk orang yang sudah wafat**: "Keluarga Budi: pasangan dan anak-anaknya". Anak dari orang
+  yang masih hidup tidak ditanyakan, kecuali uji hipotetis menyatakan anak itu bisa mendapat bagian (8.4). Tautan
+  "Tambah anak" tetap ada untuk siapa saja.
+- Wafat sebelum pemilik harta (tahun lebih awal, atau jawaban "sebelum") tetap dibuka cabangnya, karena anaknya
+  bisa mewarisi sebagai cucu.
+
+**S4. Pertanyaan susulan** (satu per layar, hanya yang lolos uji hipotetis, urut dari generasi atas):
+
+| Jenis | Kapan muncul | Kalimat |
+|---|---|---|
+| Urutan | Dua almarhum tahunnya sama, atau salah satunya "tidak ingat", atau keduanya kira-kira dengan selisih ≤ 2 tahun, **dan** urutan keduanya mengubah hasil | "Siapa yang wafat lebih dulu: A atau B?" + "Bersamaan, atau tidak tahu" (sama dengan 1.1) |
+| Sebelum/sesudah pemilik | Tahun wafat tidak diketahui | Dialog keadaan 1.1 butir 2 |
+| Kelahiran | Tahun lahir tidak diisi, dan anak itu mendapat bagian dari almarhum Y bila dianggap sudah ada | "Waktu Y wafat, [anak] sudah lahir atau dalam kandungan?" |
+| Kerabat di luar pohon | Almarhum M menerima bagian, dan posisi kerabat yang belum ada di graf (mis. nenek dari pihak ibu, orang tua dan saudara menantu) akan mendapat bagian dari M | "Waktu M wafat, apakah [sebutan] masih hidup?" Ya (tambah orang) / Sudah wafat lebih dulu / Tidak ada / Tidak tahu |
+
+Menantu yang wafat sesudah menerima bagian memicu baris terakhir untuk keluarga asalnya; di hasil, bagian yang
+keluar ke keluarga besan ditampilkan terang (8.5), karena ini titik yang sering mengagetkan.
+
+**S5. Periksa cerita** (1.5) dalam bentuk **kronologis**, disusun dari tahun: "±1975 Mbah Karto wafat. Ia
+meninggalkan … · 1998 Budi wafat. Bagiannya diteruskan kepada …". Orang yang "belum dipastikan" (8.1 butir 3)
+tampil di atas dengan tautan **Pastikan**. Pohon kecil tanpa angka di bawahnya.
+
+Langkah 5 (kondisi) dan layar menunggu (1.6) tetap sama.
+
+### 8.3 Model data: `Kasus` versi 4
+
+```ts
+/** Presisi bebas: tahun saja sampai tanggal lengkap. Dipakai juga oleh mode linimasa (C) nanti. */
+interface TanggalKira { tahun: number; bulan?: number; hari?: number; kiraKira: boolean }
+
+interface Kasus {
+  versi: 4;
+  // ... semua field v3
+  /** Tampilan langkah 4. Hanya tampilan; kedua jalur mengisi field yang sama. */
+  jalur: 'babak' | 'silsilah';
+  /** Jawaban pertanyaan pintu 1.0; kosong = belum dijawab (validasi wizard menahan). */
+  pintu?: 'tidakAda' | 'sedikit' | 'turunTemurun' | 'tidakTahu';
+  /** Jawaban "harta pernah dibagi?" sekali per harta (1.1 butir 3, S2). */
+  hartaPernahDibagi?: { status: 'belum' } | { status: 'sudah'; tahun?: TanggalKira } | { status: 'sebagian' };
+  /** Khusus UI; tidak dikirim ke engine. */
+  waktu?: Record<IdOrang, { wafat?: TanggalKira; lahir?: TanggalKira }>;
+}
+```
+
+- `waktu` hanya bahan penurunan. Yang dikirim ke engine tetap `urutanWafat`, `dikandungSetelahWafat`,
+  `statusHidup`, `wafatSesudahDibagi`. Tahun tidak masuk jalur hitung (`number` hanya di UI).
+- **Penurunan** (fungsi murni `turunkanDariWaktu(kasus) => Kasus`, dipanggil di `UBAH_KASUS` sebelum
+  `rapikanKeadaan`): wafat sebelum tahun pemilik → `statusHidup: 'wafat'`; sesudah → masuk `urutanWafat` terurut
+  tahun; lahir sesudah tahun wafat Y → `dikandungSetelahWafat[anak] = Y` (bila lebih dari satu Y, yang paling akhir
+  di `urutanWafat`). Pasangan yang tak terurutkan dari tahun diurutkan oleh jawaban S4; jawaban itu disimpan di
+  `urutanWafat` seperti sekarang dan tidak ditimpa penurunan.
+- Migrasi v3 → v4: `jalur: 'babak'`, `pintu` diisi `'sedikit'` bila `urutanWafat` tidak kosong, selain itu
+  `'tidakAda'`; field lain kosong. `bacaKasus` memeriksa `TanggalKira` (bilangan bulat, rentang wajar, bulan 1–12,
+  hari 1–31).
+
+### 8.4 Uji hipotetis
+
+Fungsi murni di UI yang **memanggil engine** untuk memutuskan apakah sebuah pertanyaan perlu ditanyakan:
+
+- **Kerabat/anak hipotetis**: tambahkan satu node hipotetis (hidup) di posisi yang ditanyakan, jalankan
+  `hitungMunasakhat`; bila node itu tidak menerima saham di langkah mana pun, pertanyaan dilewati. Cukup satu node
+  per uji: orang yang tidak menerima apa pun saat hidup juga tidak meneruskan apa pun bila wafat.
+- **Urutan**: jalankan kedua urutan; bila saham akhir sama, pertanyaan dilewati.
+- **Kelahiran**: anggap anak sudah ada saat Y wafat; bila ia tidak menerima saham dari langkah Y, pertanyaan dilewati.
+- Kandidat posisi kerabat = jenis ahli waris ruleset aktif yang belum punya orang di graf relatif M.
+- Hasil engine `PERLU_INPUT` / `TIDAK_DIDUKUNG` saat uji → pertanyaan tetap ditanyakan (aman).
+- Batas biaya: uji dijalankan per perubahan jawaban, hanya untuk pertanyaan yang belum terjawab. Bila jumlah uji
+  melewati batas (angka ditetapkan saat plan, diukur dengan kasus 4 generasi ± 40 orang), tanyakan saja tanpa
+  uji. `ponytail:` tanpa memo; tambah memo per graf bila terasa lambat.
+
+### 8.5 Hasil: dikelompokkan per cabang
+
+Hasil `munasakhat` (dari jalur mana pun) dengan ≥ 2 anak pemilik yang punya penerima mendapat tampilan kelompok di
+atas daftar per orang:
+
+```
+Keluarga Budi        37,5 %   Rp …   › Andi, Sari, Bu Dewi
+Rina                 25 %     Rp …
+Keluarga Slamet      …        (cucu dari anak yang wafat lebih dulu)
+Di luar keturunan    …        › keluarga Bu Dewi (besan), …
+```
+
+Cabang seseorang = anak pemilik yang menjadi leluhurnya; pasangan ikut cabang pasangannya; selain itu (orang tua
+atau saudara pemilik, keluarga besan) masuk "Di luar keturunan" dengan keterangan jalurnya ("dari bagian Bu Dewi").
+Hanya penyajian: angka tetap dari `saham`/`nominal` engine, dijumlah per kelompok.
+
+### 8.6 Unit
+
+| Unit | Tanggung jawab |
+|---|---|
+| `src/kasus.ts` | `Kasus` v4, migrasi v3 → v4, `bacaKasus` untuk `TanggalKira` |
+| `src/silsilah.ts` | `turunkanDariWaktu`, daftar generasi, pertanyaan susulan berikutnya; fungsi murni |
+| `src/ujiHipotetis.ts` | 8.4; fungsi murni, memanggil engine |
+| `src/layar/LangkahSilsilah.tsx` | S1–S3 (daftar bertingkat, cabang) |
+| `src/layar/keadaan/PertanyaanSusulan.tsx` | S4, satu per layar |
+| `src/layar/PeriksaCerita.tsx` | mode kronologis + daftar "belum dipastikan" |
+| `src/hasil/KelompokCabang.tsx` | 8.5 |
+| `src/layar/wizard/*` | pertanyaan pintu 1.0, validasi: pintu terjawab, tidak ada "belum dipastikan" |
+
+### 8.7 Tes
+
+- Fixture engine **munasakhat 3–4 lapis bergaya turun-temurun** (buyut → anak → cucu, satu menantu wafat sesudah
+  menerima), dibuat dan dicocokkan ke bab 12 **sebelum** logika UI.
+- `turunkanDariWaktu`: sebelum/sesudah pemilik, urutan dari tahun, tahun sama tidak diurutkan sendiri, lahir
+  sesudah wafat → `dikandungSetelahWafat`, jawaban S4 tidak ditimpa.
+- `ujiHipotetis`: anak dari orang hidup yang terhalang dilewati; nenek dari pihak ibu ditanyakan hanya bila
+  mendapat bagian; urutan yang tidak berpengaruh dilewati; `PERLU_INPUT` saat uji → tetap ditanyakan.
+- Batas jumlah pertanyaan: kasus fixture dengan semua tahun terisi menghasilkan 0 pertanyaan urutan.
+- Komponen: pintu tanpa bawaan menahan Lanjut; "Tidak ada" tidak menambah layar; pindah babak ↔ silsilah tidak
+  mengubah `Kasus` selain `jalur`; "Sebagian saja" → pesan jujur.
+- Integrasi: fixture di atas disusun lewat jalur silsilah **dan** jalur babak menghasilkan input engine yang sama.
+- Hasil: jumlah per cabang = jumlah nominal anggotanya; keluarga besan masuk "Di luar keturunan".
+
+### 8.8 Urutan pengerjaan
+
+1. Kalimat 1.1 (jangkar waktu) dan pertanyaan pintu 1.0: perbaikan cepat, berdiri sendiri.
+2. `hartaPernahDibagi` sekali per harta (1.1 butir 3).
+3. Fixture engine turun-temurun (8.7).
+4. `Kasus` v4 + `turunkanDariWaktu`.
+5. `ujiHipotetis`.
+6. `LangkahSilsilah` + pertanyaan susulan.
+7. Periksa cerita kronologis.
+8. Hasil per cabang.
+
+### 8.9 Risiko
+
+- Tahun yang sama lebih sering muncul di kasus turun-temurun. "Bersamaan" antara dua almarhum yang bukan pewaris
+  tetap ditolak (1.7, celah E1) sampai engine mendukung.
+- Tahun "kira-kira" bisa salah urut. Ditangani dengan konfirmasi berpasangan bila selisih ≤ 2 tahun dan urutan
+  berpengaruh; ambang 2 tahun diuji ulang di uji pengguna (riset bagian 11).
+- Uji hipotetis mengandalkan engine; kalau ada celah engine (kandidat posisi yang tidak dikenal ruleset), posisi
+  itu tidak pernah ditanyakan. Daftar kandidat dicek ke glosarium bab 15 saat plan.
+
 ## Di luar cakupan
+
+- Harta yang sudah dibagi **sebagian** (S2 "sebagian saja"): pesan jujur, tidak dihitung.
 
 - Pilihan madzhab di UI (tetap [SYF]); pewaris mafqud; mode linimasa (C) — spec terpisah.
 - Hasil taqdir/gharqa lengkap: tabel faraidh per dunia, nominal per dunia, sorot silang, modal orang, mode tebak.

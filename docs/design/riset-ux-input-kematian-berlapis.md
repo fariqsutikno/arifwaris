@@ -774,9 +774,15 @@ Kesalahan dicatat per titik bingung K1–K12 supaya perbaikan bisa diarahkan ke 
 
 1. **Letak babak 2 dst.:** sub-langkah langkah 4 "Keluarga" ("4 · Keluarga, Babak 2 dari 2"). Langkah 5
    tinggal kondisi (beda agama, terlibat kematian) untuk semua babak.
-2. **"Harta sudah dibagi?" (L3):** ditanyakan **per almarhum**.
+2. **"Harta sudah dibagi?" (L3):** ~~ditanyakan per almarhum~~ → **direvisi 2026-09-30: sekali per harta**;
+   pertanyaan per almarhum hanya bila jawabannya "sudah" atau "sebagian" (spec babak 1.1 butir 3).
 3. **Menunggu kelahiran (7.4):** **layar pilihan** sebelum hitung **dan** catatan di hasil.
 4. **Khuntsa:** hanya di balik tautan "Keadaan lain ›".
+6. **Kritik pengguna 2026-09-30, warisan turun-temurun:** "Siapa saja keluarga yang ditinggalkan?" membuat
+   pengguna hanya mengetik yang hidup sekarang; kasus Indonesia yang umum (rumah dari kakek buyut, 3–4 generasi)
+   tidak cocok dengan babak per almarhum. Diputuskan: pertanyaan pintu tanpa bawaan, judul berjangkar waktu, dan
+   **jalur silsilah** (pohon dulu, urutan dari tahun, tanya hanya bila berpengaruh lewat uji hipotetis, hasil per
+   cabang) di samping alur Babak. Rincian: spec `2026-09-30-babak-kematian-berlapis-design.md` bagian 1.0 dan 8.
 5. Masih terbuka: urutan pengerjaan UI. Usulan riset: B (status + urutan) → D (babak) → L8 (periksa cerita)
    → haml → mafqud → gharqa → C (linimasa).
 

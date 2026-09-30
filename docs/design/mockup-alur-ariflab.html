@@ -108,7 +108,7 @@ table.t tr.beda td{background:var(--sun);color:#111322}
 </header>
 <nav class="daftar">
   <a href="#s1">1 Beranda</a><a href="#s2">2 Almarhum &amp; Harta</a><a href="#s3">3 Keluarga</a><a href="#s4">4 Keadaan keluarga</a>
-  <a href="#s5">5 Babak 2</a><a href="#s6">6 Periksa</a><a href="#s7">7 Hasil</a><a href="#s8">8 Madzhab</a><a href="#s9">9 Dialog &amp; menu</a>
+  <a href="#s5">5 Babak 2</a><a href="#s5b">5b Silsilah</a><a href="#s6">6 Periksa</a><a href="#s7">7 Hasil</a><a href="#s8">8 Madzhab</a><a href="#s9">9 Dialog &amp; menu</a>
 </nav>
 
 <!-- ============ 1 BERANDA ============ -->
@@ -202,7 +202,10 @@ table.t tr.beda td{background:var(--sun);color:#111322}
       <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
         <div class="isi">
           <div class="stepper"><span class="ok">1 Almarhum</span><span class="ok">2 Harta</span><span class="now">3 Keluarga</span><span>4 Periksa</span></div>
-          <div><span class="sub">Keluarga</span><h2 class="tanya">Siapa saja keluarga yang ditinggalkan Pak Ahmad?</h2></div>
+          <div><span class="sub">Keluarga</span><h2 class="tanya">Siapa saja keluarga Pak Ahmad yang masih hidup waktu beliau wafat?</h2><p class="kecil" style="margin-top:4px">Termasuk yang sekarang sudah meninggal. Nanti kita tanyakan.</p></div>
+          <div class="kartu datar"><p class="sub">Sejak Pak Ahmad wafat sampai sekarang, apakah ada keluarganya yang juga sudah wafat, sementara hartanya belum dibagi? <span class="chip dg">wajib dijawab</span></p>
+            <div class="pilih" style="margin-top:8px"><div class="op"><i></i>Tidak ada</div><div class="op"><i></i>Ada, satu-dua orang dari keluarga dekat</div><div class="op"><i></i>Sudah turun-temurun, anak-anaknya pun banyak yang wafat</div><div class="op"><i></i>Tidak tahu</div></div>
+            <p class="kecil" style="margin-top:6px">Tanpa jawaban bawaan; Lanjut tertahan sampai dipilih. Dua pilihan terakhir membuka jalur silsilah (5b). <a>Tampilkan sebagai silsilah</a></p></div>
           <div style="display:flex;gap:6px"><span class="chip" style="background:var(--primary);color:var(--on-primary)">Daftar</span><span class="chip" style="background:var(--raised)">Pohon</span></div>
           <div class="kartu datar">
             <div class="baris2"><span>Istri</span><span class="qty"><b>−</b><span>1</span><b>+</b></span></div>
@@ -264,6 +267,12 @@ table.t tr.beda td{background:var(--sun);color:#111322}
       <div class="dlg"><h3>Apa yang terjadi pada anak laki-laki 1?</h3>
         <div class="pilih"><div class="op pil"><i></i>Wafat sesudah Pak Ahmad</div><div class="op"><i></i>Wafat sebelum Pak Ahmad</div><div class="op"><i></i>Hilang, tidak diketahui kabarnya</div><div class="op"><i></i>Wafat bersamaan (bencana)</div></div>
         <div class="aksi"><a>Batal</a><span class="tbl utama">Simpan</span></div></div></div>
+    <div class="unit"><p class="cap">Harta pernah dibagi? (sekali per harta)</p>
+      <div class="dlg"><h3>Sejak Pak Ahmad wafat, apakah hartanya pernah dibagi?</h3>
+        <p class="kecil">"Dibagi" berarti sudah dipindahkan atas nama masing-masing ahli waris.</p>
+        <div class="pilih"><div class="op pil"><i></i>Belum pernah</div><div class="op"><i></i>Sudah, sekitar tahun ...</div><div class="op"><i></i>Sebagian saja</div></div>
+        <p class="kecil">"Belum pernah": tidak ditanya lagi untuk orang berikutnya. "Sebagian saja": pesan "Belum bisa dihitung otomatis. Tanyakan ke ahli faraidh."</p>
+        <div class="aksi"><a>Batal</a><span class="tbl utama">Simpan</span></div></div></div>
     <div class="unit"><p class="cap">Jawaban 2 dan 3 = Ada</p>
       <div class="hp"><div class="isi">
         <div class="pilih"><div class="op pil"><i></i>Ada yang hamil</div></div>
@@ -296,7 +305,7 @@ table.t tr.beda td{background:var(--sun);color:#111322}
       <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
         <div class="isi">
           <span class="sub">Keluarga · Babak 2 dari 2 · Budi</span>
-          <h2 class="tanya">Siapa saja keluarga yang ditinggalkan Budi?</h2>
+          <h2 class="tanya">Siapa saja keluarga Budi yang masih hidup waktu ia wafat?</h2>
           <div class="kartu datar"><p class="grp" style="margin-top:0">Dari orang yang sudah ada</p>
             <div class="baris2"><span>Siti, ibu Budi</span><span class="chip" style="background:var(--primary);color:var(--on-primary)">dicentang otomatis</span></div>
             <p class="grp">Tambahan</p>
@@ -315,6 +324,55 @@ table.t tr.beda td{background:var(--sun);color:#111322}
         <div class="baris2"><span>Istri</span><span>1</span></div>
         <div class="baris2"><span>Anak laki-laki</span><span>1</span></div></div>
       <p class="kecil" style="margin-top:10px;max-width:330px">Label tombol bawah: daftar → "Lanjut: keadaan keluarga"; keadaan babak 1 → "Lanjut: keluarga Budi"; keadaan babak terakhir → "Lanjut: periksa".</p></div>
+  </div>
+</section>
+
+<!-- ============ 5b SILSILAH ============ -->
+<section class="bagian" id="s5b">
+  <h2>5b · Jalur silsilah: warisan turun-temurun (spec babak §8)</h2>
+  <p class="ket">Untuk harta kakek buyut yang tak pernah dibagi. Pohon dulu, urutan diturunkan dari tahun, pertanyaan susulan hanya bila mengubah hasil. Datanya sama dengan jalur Babak; pindah tampilan tidak menghapus isian.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">S1–S2 · Pemilik harta</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="ok">2 Harta</span><span class="now">3 Keluarga</span><span>4 Periksa</span></div>
+          <h2 class="tanya">Kira-kira tahun berapa Mbah Karto wafat?</h2>
+          <div class="f"><div class="in">1975</div></div>
+          <div class="pilih"><div class="op"><i></i>Pasti</div><div class="op pil"><i></i>Kira-kira</div></div><p><a>Tidak ingat</a></p>
+          <h3 class="tanya" style="font-size:18px;margin-top:6px">Sejak Mbah Karto wafat, apakah hartanya pernah dibagi?</h3>
+          <div class="pilih"><div class="op pil"><i></i>Belum pernah</div><div class="op"><i></i>Sudah ...</div><div class="op"><i></i>Sebagian saja</div></div>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut: silsilah <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">S3 · Silsilah per generasi</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <span class="sub">Keluarga · Silsilah</span>
+          <div class="kartu datar">
+            <b>Mbah Karto</b> <span class="kecil">· wafat ±1975</span>
+            <div class="baris2"><span class="kecil">Pasangan: Mbah Sumi · wafat ±1990</span></div>
+            <p class="grp">Anak</p>
+            <div class="baris2"><span>Budi <span class="kecil">· wafat 1998</span></span><a>Keluarga Budi (3)</a></div>
+            <div class="baris2"><span>Rina <span class="kecil">· masih hidup</span></span><a>Tambah anak</a></div>
+            <div class="baris2"><span>Slamet <span class="kecil">· wafat ±1970, sebelum Mbah Karto</span></span><a>Keluarga Slamet</a></div>
+            <p style="margin-top:6px"><a>Tambah anak</a></p></div>
+          <p class="kecil">Cabang hanya dibuka untuk yang sudah wafat. Anak dari yang masih hidup tidak ditanya, kecuali bisa mendapat bagian.</p>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">S4 · Pertanyaan susulan (satu per layar)</p>
+      <div class="hp"><div class="isi">
+        <h2 class="tanya">Siapa yang wafat lebih dulu: Budi atau Bu Dewi?</h2>
+        <div class="pilih"><div class="op"><i></i>Budi</div><div class="op"><i></i>Bu Dewi</div><div class="op"><i></i>Bersamaan, atau tidak tahu</div></div>
+        <p class="kecil">Muncul hanya bila urutannya mengubah hasil (uji hipotetis lewat engine).</p></div></div>
+      <div class="dlg" style="margin-top:14px"><h3>Waktu Budi wafat, apakah ibu dari Bu Dewi masih hidup?</h3>
+        <div class="pilih"><div class="op"><i></i>Ya</div><div class="op"><i></i>Sudah wafat lebih dulu</div><div class="op"><i></i>Tidak ada</div><div class="op"><i></i>Tidak tahu</div></div>
+        <p class="kecil">Kerabat di luar pohon; juga ada pertanyaan kelahiran ("sudah lahir atau dalam kandungan?").</p></div></div>
+    <div class="unit"><p class="cap">S5 · Periksa cerita, kronologis</p>
+      <div class="hp"><div class="isi">
+        <div class="kartu datar" style="background:var(--sun);color:#111322"><b>Belum dipastikan (1)</b><p class="kecil" style="color:#111322">Urutan wafat Budi dan Bu Dewi. <a style="color:#111322">Pastikan</a></p></div>
+        <div class="kartu datar"><p class="grp" style="margin-top:0">±1975</p><p>Mbah Karto wafat, meninggalkan Mbah Sumi, Budi, Rina.</p>
+          <p class="grp">1998</p><p>Budi wafat. Bagiannya diteruskan kepada istri dan anak-anaknya.</p></div>
+        <div class="pohon" style="min-height:70px">Pohon kecil tanpa angka</div>
+        <p class="kecil">Hitung ditahan sampai "belum dipastikan" kosong.</p></div></div></div>
   </div>
 </section>
 
@@ -377,6 +435,10 @@ table.t tr.beda td{background:var(--sun);color:#111322}
           <p class="asal">sebagai istri Pak Ahmad Rp 71.875.000 · dari bagian Budi, sebagai ibunya Rp 19.125.000</p>
           <div class="orang" style="margin-top:8px"><b>Budi</b><span class="kecil">wafat sesudah Pak Ahmad</span></div>
           <p class="asal">bagiannya Rp 287.500.000 diteruskan ke keluarganya</p></div>
+        <div class="kartu datar"><p class="cap" style="margin-bottom:6px">Turun-temurun: per cabang (≥ 2 anak pemilik)</p>
+          <div class="orang"><b>Keluarga Budi</b><span class="uang" style="font-size:17px">37,5% · Rp 215.625.000</span></div><p class="asal">Andi, Sari, Bu Dewi</p>
+          <div class="orang" style="margin-top:6px"><b>Rina</b><span class="uang" style="font-size:17px">25% · Rp 143.750.000</span></div>
+          <div class="orang" style="margin-top:6px"><b>Di luar keturunan</b><span class="uang" style="font-size:17px">Rp 40.000.000</span></div><p class="asal">keluarga Bu Dewi (besan), dari bagian Bu Dewi</p></div>
         <div class="kartu datar"><p class="cap" style="margin-bottom:6px">Kasus khusus (bab 13): format sama</p>
           <div class="orang"><b>Diterima sekarang</b><span class="uang" style="font-size:17px">Rp 400.000.000</span></div>
           <div class="orang"><b>Disimpan dulu (amplop titipan)</b><span class="uang" style="font-size:17px">Rp 175.000.000</span></div>
