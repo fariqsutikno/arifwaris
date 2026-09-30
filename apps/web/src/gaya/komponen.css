@@ -1058,7 +1058,7 @@ summary.kepala-bulat::after{position:absolute;top:12px;inset-inline-end:14px}
 /* ─── Sorotan langkah perhitungan ─────────────────────────────────────────────
    Satu warna per peran (--c), dipakai sama di node pohon, baris/sel tabel, dan legenda. */
 .sorot-pewaris{--c:var(--sorot-pewaris)}.sorot-ahliWaris{--c:var(--sorot-ahli-waris)}.sorot-penyebab{--c:var(--sorot-penyebab)}
-.sorot-mahjub{--c:var(--sorot-mahjub)}.sorot-bukan{--c:var(--sorot-bukan)}.sorot-fardh{--c:var(--sorot-fardh)}.sorot-ashabah{--c:var(--sorot-ashabah)}
+.sorot-mahjub{--c:var(--sorot-mahjub)}.sorot-bukan{--c:var(--sorot-bukan)}.sorot-fardh{--c:var(--sorot-fardh)}.sorot-ashabah{--c:var(--sorot-ashabah)}.sorot-dzawilArham{--c:var(--sorot-ahli-waris)}
 @keyframes nyala{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--c) 70%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
 .node-orang.sorot-langkah{outline:4px solid var(--c);outline-offset:3px;animation:nyala 1.1s ease-out 2;z-index:1}
 /* Silang: terhalang (merah) dan bukan ahli waris (abu), digambar menyilang dari kiri ke kanan. */

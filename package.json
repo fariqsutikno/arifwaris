@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "pnpm -r test",
+    "typecheck": "pnpm -r exec tsc --noEmit",
     "admin": "pnpm --filter @waris/admin dev",
     "db:mulai": "supabase start",
     "db:reset": "supabase db reset",

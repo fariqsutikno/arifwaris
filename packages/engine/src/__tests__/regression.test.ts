@@ -78,3 +78,10 @@ describe('Uji nominal bab 16', () => {
     });
   }
 });
+
+describe('Pipeline — penanda fase dzawil arham', () => {
+  test('hanya dzawil arham → TIDAK_DIDUKUNG berkode FASE_DZAWIL_ARHAM', () => {
+    const hasil = hitung(BAB16_FIXTURES.find(f => f.id === 'C16-24')!.input);
+    expect(hasil).toMatchObject({ status: 'TIDAK_DIDUKUNG', kode: 'FASE_DZAWIL_ARHAM', refs: ['R14-4'] });
+  });
+});

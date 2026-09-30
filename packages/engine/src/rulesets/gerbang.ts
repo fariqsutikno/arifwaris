@@ -22,14 +22,15 @@ export function periksaKonfigurasi(input: InputEngine): TidakDidukung | undefine
   return undefined;
 }
 
-export function periksaKeberlakuan(ruleset: Ruleset, hasil: HasilOk): TidakDidukung | undefined {
+/** `tercakup`: token yang dalam konteks pemanggil sudah dicakup aturan lain yang berlaku (lihat RADD_TERCAKUP_TANZIL). */
+export function periksaKeberlakuan(ruleset: Ruleset, hasil: HasilOk, tercakup: ReadonlySet<string> = new Set()): TidakDidukung | undefined {
   if (ruleset === 'syafii') return undefined;
   const berlaku = BERLAKU_LINTAS_MADZHAB[ruleset];
   const dipakai = new Set([
     ...hasil.jejak.flatMap(langkah => langkah.refs),
     ...Object.values(hasil.statusOrang).flatMap(status => ('rujukanAturan' in status && status.rujukanAturan ? [status.rujukanAturan] : [])),
   ]);
-  const belumDikaji = [...dipakai].filter(kode => !KODE_KHILAF.test(kode) && !berlaku.has(kode)).sort();
+  const belumDikaji = [...dipakai].filter(kode => !KODE_KHILAF.test(kode) && !berlaku.has(kode) && !tercakup.has(kode)).sort();
   if (belumDikaji.length === 0) return undefined;
   return {
     status: 'TIDAK_DIDUKUNG',

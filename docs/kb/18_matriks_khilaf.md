@@ -155,5 +155,13 @@ Status: **disetujui pengguna 2026-09-29** (setelah verifikasi kitab; R01-1 dipec
 | R13-1 | ya | ya | tidak | 13a, nukilan: Mughni 6/384; Mabsuth 30/50. [MLK] belum ditemukan |
 | R13-2 | tidak | tidak | tidak | tanda hidup berbeda: K13a-4 |
 | R14-3 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
-| R14-4 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
+| R14-4 | ya | tidak | tidak | Definisi sama (Mughni 6/318); K14-1 hanya soal apakah mewarisi |
 | R14-5 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
+| R14-6 | tidak | tidak | tidak | Kutipan Raudhah khusus [SYF]; [HNB] tanzil lewat K14-2 |
+| R14-7 | ya | tidak | tidak | Lahim hlm. 192–193 (nukilan Hanbali); [HNF] qarabah |
+| R14-8 | tidak | tidak | tidak | K14-3 berbeda |
+| R14-9 | ya | tidak | tidak | Mughni 6/319 tanzil |
+| R14-10 | ya | tidak | tidak | Lahim hlm. 192–194 |
+| R14-11 | ya | tidak | tidak | Lahim hlm. 194–195 |
+| R14-12 | ya | tidak | tidak | Lahim hlm. 207–208 |
+| R14-13 | ya | tidak | tidak | Lahim hlm. 217 |

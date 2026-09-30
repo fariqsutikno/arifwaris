@@ -32,7 +32,7 @@ export function babArab(konteks: Konteks, graf: GrafKeluarga): Bab[] {
 
 // ─── Bantuan ──────────────────────────────────────────────────────────────────
 
-type SebutArab = (ids: IdOrang[]) => Potongan;
+export type SebutArab = (ids: IdOrang[]) => Potongan;
 
 const ANGKA_ARAB = '٠١٢٣٤٥٦٧٨٩';
 export const angkaArab = (teks: string): string => teks.replace(/\d/g, digit => ANGKA_ARAB[Number(digit)]!);
@@ -60,12 +60,12 @@ function baris(daftarPotongan: Potongan[], refs: string[] = [], subjek?: IdOrang
 }
 
 /** "و" sebagai penghubung, seperti kebiasaan kitab: «الأب والأم والبنت». */
-const gabungWa = (penyusun: Penyusun, daftar: Potongan[][]): Potongan[] => {
+export const gabungWa = (penyusun: Penyusun, daftar: Potongan[][]): Potongan[] => {
   const wa = teksArab(penyusun, 'penghubung.wa');
   return daftar.flatMap((unsur, i) => (i === 0 ? unsur : [{ jenis: 'teks' as const, teks: wa }, ...unsur]));
 };
 
-function buatSebutArab(konteks: Konteks, graf: GrafKeluarga): SebutArab {
+export function buatSebutArab(konteks: Konteks, graf: GrafKeluarga): SebutArab {
   const { penyusun } = konteks;
   const wa = teksArab(penyusun, 'penghubung.wa');
   const labelDari = (id: IdOrang) => {
@@ -259,9 +259,11 @@ function barisRadd(konteks: Konteks, sebut: SebutArab, kelas: Langkah<'KELAS_MAS
 
 const KUNCI_TUJUAN_SISA: Record<TujuanSisa, string> = { dzawilArham: 'dzawil_arham', baitulMal: 'baitul_mal', baitulMalTeratur: 'baitul_mal_teratur' };
 
-function barisSisaKeluar(konteks: Konteks, sebut: SebutArab, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
+export function barisSisaKeluar(
+  konteks: Konteks, sebut: SebutArab, langkah: Langkah<'SISA_KELUAR'>,
+  pasangan: IdOrang[] = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota),
+): BarisPenjelasan {
   const { penyusun } = konteks;
-  const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
   const tujuan = teksArab(penyusun, `tujuan_sisa.${KUNCI_TUJUAN_SISA[langkah.tujuan]}`);
   if (langkah.tujuan === 'baitulMalTeratur') {
     return baris(arab(penyusun, 'sisa_keluar.teratur', { ashl: langkah.ashl, didapat: langkah.ashl - langkah.saham, sisa: langkah.saham, tujuan }), langkah.refs);
@@ -361,3 +363,5 @@ function nisabRadd(penyusun: Penyusun, { a: sisa, b: ashlRadd, hubungan, fpb, ha
     default: throw new Error(`relasi ${hubungan} tidak berlaku untuk radd`);
   }
 }
+
+export { babTirkah as babTirkahArab, babHasil as babHasilArab };

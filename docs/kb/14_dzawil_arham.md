@@ -81,7 +81,9 @@ Ahl al-Qarabah ([HNF]): **empat jihah berurutan** — bunuwwah → ubuwwah (kake
 ## 14.8 Satu Orang Lewat Dua Jalur [R14-11]
 - Kedua jalur tidak saling menghijab → ia **mewarisi dengan keduanya** seperti dua orang.
 - Salah satu menghijab yang lain → ia mewarisi dengan jalur **yang menghijab** saja.
-Contoh (Lahim hlm. 194): satu orang yang sekaligus anak lk dari anak pr saudara seibu **dan** anak lk dari saudari kandung, bersama cucu lk dari saudari sebapak → mas'alah 5: jalur saudara seibu 1 + jalur saudari kandung 3 = **4** untuknya, cucu saudari sebapak 1.
+Contoh (Lahim hlm. 194): satu orang yang sekaligus anak lk dari **anak lk** saudari kandung (dari pihak ayahnya) **dan** anak lk dari anak pr saudara seibu (dari pihak ibunya), bersama cucu lk dari saudari sebapak → mas'alah 5: jalur saudara seibu 1 + jalur saudari kandung 3 = **4** untuknya, cucu saudari sebapak 1.
+
+*Koreksi 2026-09-30:* rumusan sebelumnya ("anak lk dari saudari kandung" langsung) mustahil secara nasab karena menuntut dua ibu; orang itu harus lewat dua garis berbeda, ayah dan ibunya.
 
 ## 14.9 Bersama Salah Satu Pasangan [R14-12]
 Pasangan mengambil fardh-nya **penuh dari makhraj-nya sendiri, tanpa hijab dan tanpa 'aul**: suami 1/2, istri 1/4 — tidak turun ke 1/4 atau 1/8 karena ada anak dari anak pr, sebab dzawil arham bukan far'u warits. Sisanya untuk dzawil arham.

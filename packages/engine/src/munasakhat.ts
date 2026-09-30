@@ -12,15 +12,15 @@
 // lalu dipisah dari saham ahli waris di hasil akhir.
 
 import { fpb } from '@waris/math';
+import { AWALAN_SISA, gabungkan as gabungkanSaham, idSisaKeluar, periksaInvarian, sahamDari, totalSaham as total, type Saham } from './gabung.js';
 import { hitung } from './pipeline.js';
 import { bagikanNominal } from './stages/pembagian.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import type {
-  HasilEngine, GrafKeluarga, HubunganInkisar, InputMunasakhat, HasilMunasakhat, IdOrang, IdSisaKeluar, LangkahJejak, TujuanSisa,
+  HasilEngine, GrafKeluarga, InputMunasakhat, HasilMunasakhat, IdOrang, IdSisaKeluar, LangkahJejak, TujuanSisa,
 } from './types.js';
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
-type Saham = Record<IdOrang | IdSisaKeluar, bigint>;
 
 const TANPA_TIRKAH = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
 
@@ -55,7 +55,7 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
       jamiah = gabungan.jejak.jamiah;
       jejak.push(gabungan.jejak);
     }
-    periksaInvarian(saham, jamiah);
+    periksaInvarian(saham, jamiah, 'munasakhat');
   }
 
   const tirkah = hitungTirkah(input.dasar.tirkah);
@@ -98,6 +98,16 @@ function tentukanKeadaan(input: InputMunasakhat, urutan: IdOrang[], daftarLangka
   return langkahBerikutnya.length > 1 && ahliWarisTerpisah ? 2 : 3;
 }
 
+function gabungkan(saham: Saham, jamiah: bigint, mayit: IdOrang, sahamMasalah: Saham, masalah: bigint):
+  { saham: Saham; jejak: Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }> } {
+  const hasil = gabungkanSaham(saham, jamiah, mayit, sahamMasalah, masalah);
+  return {
+    saham: hasil.saham,
+    jejak: { tahap: 'munasakhat', refs: ['R12-2'], jenis: 'MUNASAKHAT', mayit, saham: hasil.sahamMayit, masalah, hubungan: hasil.hubungan,
+      fpb: hasil.fpb, wafqMasalah: hasil.wafqMasalah, wafqSaham: hasil.wafqSaham, jamiah: hasil.jamiah, rincian: hasil.rincian },
+  };
+}
+
 function perbandinganSama(langsung: Saham, saham: Saham, jamiah: bigint): boolean {
   const totalLangsung = total(langsung);
   const daftarId = Object.keys(saham);
@@ -129,56 +139,6 @@ function grafPada(input: InputMunasakhat, urutan: IdOrang[], urutanKe: number): 
   }
   const pernikahan = graf.pernikahan.filter(nikah => !belumDikandung.has(nikah.idSuami) && !belumDikandung.has(nikah.idIstri));
   return { idPewaris: urutan[urutanKe]!, orang, pernikahan };
-}
-
-const AWALAN_SISA = 'sisaKeluar:';
-const idSisaKeluar = (mayit: IdOrang): IdSisaKeluar => `${AWALAN_SISA}${mayit}`;
-
-/** Saham mas'alah seorang mayit, termasuk sisa yang keluar [R09-9] supaya jumlahnya = tashih. */
-function sahamDari(mayit: IdOrang, hasil: HasilOk): Saham {
-  const saham: Saham = {};
-  for (const barisTabel of hasil.tabel.baris) {
-    for (const [idOrang, selOrang] of Object.entries(barisTabel.perOrang)) {
-      if (selOrang.saham > 0n) saham[idOrang] = selOrang.saham;
-    }
-  }
-  if (hasil.sisaKeluar) saham[idSisaKeluar(mayit)] = hasil.sisaKeluar.saham;
-  return saham;
-}
-
-const total = (saham: Saham): bigint => Object.values(saham).reduce((a, b) => a + b, 0n);
-
-/**
- * [R12-2] Saham mayit di jami'ah sejauh ini vs mas'alah-nya: habis / tawafuq / tabayun, tanpa tadakhul.
- * Jami'ah baru = jami'ah × wafq mas'alah; saham mas'alah mayit × wafq saham.
- */
-function gabungkan(saham: Saham, jamiah: bigint, mayit: IdOrang, sahamMasalah: Saham, masalah: bigint):
-  { saham: Saham; jejak: Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }> } {
-  const sahamMayit = saham[mayit]!;
-  const faktor = fpb(sahamMayit, masalah);
-  const wafqMasalah = masalah / faktor;
-  const wafqSaham = sahamMayit / faktor;
-  const hubungan: HubunganInkisar = sahamMayit % masalah === 0n ? 'habis' : faktor === 1n ? 'tabayun' : 'tawafuq';
-
-  const rincian: Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>['rincian'] = {};
-  for (const [idOrang, nilai] of Object.entries(saham)) {
-    if (idOrang !== mayit) rincian[idOrang] = { sebelum: nilai, dariMayit: 0n, sesudah: nilai * wafqMasalah };
-  }
-  for (const [idOrang, nilai] of Object.entries(sahamMasalah)) {
-    const rincianOrang = rincian[idOrang] ?? { sebelum: 0n, dariMayit: 0n, sesudah: 0n };
-    rincian[idOrang] = { ...rincianOrang, dariMayit: nilai, sesudah: rincianOrang.sesudah + nilai * wafqSaham };
-  }
-  const sahamBaru: Saham = Object.fromEntries(Object.entries(rincian).map(([idOrang, rincianOrang]) => [idOrang, rincianOrang.sesudah]));
-  return {
-    saham: sahamBaru,
-    jejak: { tahap: 'munasakhat', refs: ['R12-2'], jenis: 'MUNASAKHAT', mayit, saham: sahamMayit, masalah, hubungan,
-      fpb: faktor, wafqMasalah, wafqSaham, jamiah: jamiah * wafqMasalah, rincian },
-  };
-}
-
-function periksaInvarian(saham: Saham, jamiah: bigint): void {
-  if (total(saham) !== jamiah) throw new Error(`munasakhat: Σ saham ${total(saham)} ≠ jami'ah ${jamiah}`);
-  if (Object.values(saham).some(nilai => nilai <= 0n)) throw new Error('munasakhat: ada saham ≤ 0');
 }
 
 /** Bab 12.4 jenis 3: bila semua saham bersekutu, dibagi FPB-nya. Hanya penyajian. */

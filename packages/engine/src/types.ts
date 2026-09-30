@@ -112,7 +112,7 @@ export interface TabelMasalah {
 // ─── Jejak: tiap keputusan sebagai data (dinarasikan di packages/explain) ─────
 
 export type { Nisab };
-export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat';
+export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat' | 'dzawilArham';
 /** Saham vs ru'us (inkisar) dan sisa zawjiyyah vs ashl radd hanya memakai FPB: habis / tawafuq / tabayun (bab 9.4, 10.3). */
 export type HubunganInkisar = 'habis' | 'tawafuq' | 'tabayun';
 
@@ -139,7 +139,10 @@ export type AlasanFardh =
   | { kode: 'JADD_SISA_SEDIKIT'; sisa: Pecahan }            // sisa ≤ 1/6 → kakek 1/6, saudara gugur
   | { kode: 'JADD_WAL_IKHWAH'; sisa: Pecahan; opsi: Array<{ nama: PilihanJadd; nilai: Pecahan }>; terpilih: PilihanJadd };
 
-export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1';
+export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1' | 'K14-3';
+
+/** [R14-10] Jihah ahl at-tanzil, ditentukan oleh ahli waris perantara (Lahim hlm. 192–193). */
+export type Jihah = 'bunuwwah' | 'ubuwwah' | 'umumah';
 
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }
@@ -177,6 +180,16 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
       rincian: Record<IdOrang | IdSisaKeluar, { sebelum: bigint; dariMayit: bigint; sesudah: bigint }> }
   // Yang wafat tidak mendapat bagian dari mayit sebelumnya → tidak ada yang diteruskan; diabaikan [R12-1].
   | { jenis: 'MUNASAKHAT_DILEWATI'; mayit: IdOrang }
+  // Bab 14 dzawil arham (tanzil). `perantara` = orang di graf (biasanya wafat) yang posisinya ahli waris.
+  | { jenis: 'DZAWIL_ARHAM_TANZIL'; idOrang: IdOrang; perantara: IdOrang; kunciPerantara: KunciAhliWaris; jihah: Jihah; langkah: number }
+  | { jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH'; idOrang: IdOrang; perantara: IdOrang; oleh: IdOrang[] }
+  // Mas'alah para perantara (hasil pipeline pada graf posisi): saham per perantara terhadap `masalah`.
+  | { jenis: 'DZAWIL_ARHAM_MASALAH_PERANTARA'; ashl: bigint; aul?: bigint; saham: Record<IdOrang, bigint>; masalah: bigint; mahjub: IdOrang[] }
+  // Bagian seorang perantara diberikan kepada penerimanya seolah ia wafat meninggalkan mereka.
+  | { jenis: 'DZAWIL_ARHAM_TURUN'; perantara: IdOrang; rasio: 'ikutMasalah' | 'samaRata'; saham: Record<IdOrang, bigint>; masalah: bigint; mahjub: IdOrang[] }
+  | { jenis: 'DZAWIL_ARHAM_DUA_JALUR'; idOrang: IdOrang; perantara: IdOrang[] }
+  // [R14-12] sisa pasangan (saham) vs mas'alah dzawil arham (masalah), seperti munasakhat keadaan 3.
+  | { jenis: 'DZAWIL_ARHAM_GABUNG_PASANGAN'; saham: bigint; masalah: bigint; hubungan: HubunganInkisar; jamiah: bigint }
 );
 
 // ─── Kontrak output utama ─────────────────────────────────────────────────────
@@ -189,7 +202,7 @@ export interface Pertanyaan {
 
 export type HasilEngine =
   | { status: 'PERLU_INPUT'; pertanyaan: Pertanyaan[] }
-  | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[] }
+  | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[]; kode?: 'FASE_DZAWIL_ARHAM' }
   | { status: 'OK';
       statusOrang: Record<IdOrang, StatusOrang>;
       tabel: TabelMasalah;

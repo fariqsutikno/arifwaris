@@ -16926,6 +16926,111 @@
    "id": "diringkas {saham}/{jamiah}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.judul",
+   "halaman": "narasi",
+   "id": "Dzawil arham",
+   "ar": "ذوو الأرحام",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.pembuka",
+   "halaman": "narasi",
+   "id": "Tidak ada ashabul furudh atau ashabah yang menerima sisa, dan baitul mal dianggap tidak tegak, maka harta diwarisi dzawil arham dengan cara tanzil: tiap orang didudukkan pada posisi ahli waris yang menjadi perantaranya.",
+   "ar": "لم يوجد صاحب فرض يُرَدّ عليه ولا عاصب، وبيت المال غير منتظم، فيرث ذوو الأرحام على مذهب أهل التنزيل: يُنزَّل كلٌّ منهم منزلة من أدلى به.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.tanzil",
+   "halaman": "narasi",
+   "id": "{siapa} didudukkan sebagai {perantara} ({langkah} derajat).",
+   "ar": "{siapa} يُنزَّل منزلة {perantara} ({langkah} درجة).",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.terhijab_jihah",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mendapat bagian karena {oleh} lebih dulu sampai ke ahli waris dari arah yang sama.",
+   "ar": "{siapa} محجوب؛ لأن {oleh} أسبق إلى الوارث من جهته.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.masalah",
+   "halaman": "narasi",
+   "id": "Harta dibagi di antara para perantara seolah mereka ahli warisnya: {rincian}, dari {masalah} bagian.",
+   "ar": "تُقسم التركة بين المُدلى بهم كأنهم الورثة: {rincian}، من {masalah}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.masalah_butir",
+   "halaman": "narasi",
+   "id": "{perantara} {saham}",
+   "ar": "{perantara} {saham}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.aul",
+   "halaman": "narasi",
+   "id": "Jumlah bagiannya melebihi {ashl}, sehingga dinaikkan ('aul) menjadi {aul}.",
+   "ar": "وعالت المسألة من {ashl} إلى {aul}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.perantara_terhijab",
+   "halaman": "narasi",
+   "id": "{perantara} terhalang, sehingga yang bernasab melaluinya tidak mendapat apa-apa.",
+   "ar": "{perantara} محجوب، فلا شيء لمن أدلى به.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.turun",
+   "halaman": "narasi",
+   "id": "Bagian {perantara} diberikan kepada {penerima} seolah ia wafat meninggalkan mereka.",
+   "ar": "ونصيب {perantara} لمن أدلى به كأنه مات عنهم: {penerima}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.turun_sama_rata",
+   "halaman": "narasi",
+   "id": "Bagian {perantara} dibagi sama rata di antara {penerima}.",
+   "ar": "ونصيب {perantara} بين {penerima} بالسوية.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.dua_jalur",
+   "halaman": "narasi",
+   "id": "{siapa} mewarisi lewat dua jalur ({perantara}), dan bagian dari keduanya dijumlahkan.",
+   "ar": "{siapa} يرث بجهتين ({perantara})، فيُجمع له نصيبهما.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.gabung_pasangan",
+   "halaman": "narasi",
+   "id": "Sisa sebanyak {saham} bagian dibandingkan dengan {masalah} bagian dzawil arham, sehingga pembaginya menjadi {jamiah}.",
+   "ar": "ويُقابَل الباقي ({saham}) بمسألة ذوي الأرحام ({masalah})، فتصح من {jamiah}.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.dzawil_arham.khilaf_k14_3",
+   "halaman": "narasi",
+   "id": "Menurut madzhab {madzhab}, laki-laki dan perempuan dalam satu cabang dibagi sama rata bila ayah dan ibunya sama; pengecualiannya khal (2/3) dan khalah (1/3).",
+   "ar": "على المذهب {madzhab}: يُسوّى بين الذكر والأنثى إن اتحد أبواهما، إلا الخال (الثلثان) والخالة (الثلث).",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dzawil_arham",
+   "halaman": "hitung",
+   "id": "Dzawil arham",
+   "ar": "ذوو الأرحام",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.menurut_tanzil",
+   "halaman": "hitung",
+   "id": "menurut tanzil",
+   "ar": "بالتنزيل",
+   "versiTerbit": 873
   }
  ]
 }

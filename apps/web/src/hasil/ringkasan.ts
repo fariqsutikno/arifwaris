@@ -111,7 +111,7 @@ function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
     const kunci = kunciDari(hasil.statusOrang[id]);
     return {
       id, nama: namaOrang(graf, hasil.statusOrang, id), kunci, kelompok: kelompokDari(kunci), saham, nominal,
-      keterangan: (baris.fardh ? t('hitung.bagian_tertentu_fardh', { fardh: angka(`${baris.fardh.n}/${baris.fardh.d}`) }) : t('hitung.sisa_ashabah')) + asalInduk(graf, hasil.statusOrang, id, kunci),
+      keterangan: (baris.fardh ? t('hitung.bagian_tertentu_fardh', { fardh: angka(`${baris.fardh.n}/${baris.fardh.d}`) }) : adalahDzawilArham(hasil.statusOrang[id]) ? t('hitung.dzawil_arham') : t('hitung.sisa_ashabah')) + asalInduk(graf, hasil.statusOrang, id, kunci),
       ...(baris.fardh ? { fardh: { n: baris.fardh.n, d: baris.fardh.d } } : {}),
       ashabah: !!baris.ashabah,
       ...(alasanPerKelompok.has(baris.kelompok) ? { kodeAlasan: alasanPerKelompok.get(baris.kelompok)! } : {}),
@@ -215,6 +215,10 @@ const ALASAN_MANI: Record<Extract<StatusOrang, { jenis: 'mamnu' }>['mani'], stri
   qatl: t('hitung.terlibat_dalam_penyebab_kematian_almarhum'), ikhtilafDin: t('hitung.berbeda_agama_dengan_almarhum'), riqq: t('hitung.berstatus_budak'),
   istibham: t('hitung.urutan_wafatnya_tidak_diketahui'), daur: t('hitung.akan_menimbulkan_hitungan_berputar_daur'),
 };
+
+/** Bab 14 vs bab 5: baris tabel tanpa fardh bisa ashabah (bab 5) atau dzawil arham (bab 14); yang membedakan hanya peran di statusOrang. */
+export const adalahDzawilArham = (status: StatusOrang | undefined): boolean =>
+  status?.jenis === 'ahliWaris' && status.peran.kunci === 'DZAWIL_ARHAM';
 
 function kunciDari(status: StatusOrang | undefined): KunciAhliWaris | undefined {
   if (!status || !('peran' in status)) return undefined;

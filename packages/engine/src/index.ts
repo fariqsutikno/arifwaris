@@ -9,3 +9,4 @@ export { DAFTAR_RULESET, ATURAN, type AturanMadzhab } from './rulesets/madzhab.j
 export { turunkanPeran } from './stages/derivasi.js';
 // Dipakai UI untuk hitungan berjalan "yang akan dibagi" di langkah Kewajiban (batas wasiat 1/3 tetap diputuskan engine).
 export { hitungTirkah } from './stages/tirkah.js';
+export { hitungDzawilArham } from './dzawilArham.js';

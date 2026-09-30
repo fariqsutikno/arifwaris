@@ -7,14 +7,14 @@
 import type { GrafKeluarga, IdOrang, LangkahJejak, TabelMasalah } from '@waris/engine';
 import type { BabPenjelasan, BarisPenjelasan, KolomBab } from '@waris/explain';
 import { orangDisebut } from '../layar/Penjelasan';
-import type { RingkasanHasil } from './ringkasan';
+import { adalahDzawilArham, type RingkasanHasil } from './ringkasan';
 import type { PeranSorot, SorotLangkah, UbahBagian } from './sorot';
 import { angka, t } from '../terjemah';
 
 export interface DataPeran {
   idPewaris: IdOrang;
-  /** Peran pembagian tiap penerima menurut tabel engine (baris punya fardh → fardh, selain itu ashabah). */
-  pembagian: Map<IdOrang, 'fardh' | 'ashabah'>;
+  /** Peran pembagian tiap penerima menurut tabel engine (baris punya fardh → fardh; tanpa fardh → dzawil arham bila perannya begitu, selain itu ashabah). */
+  pembagian: Map<IdOrang, 'fardh' | 'ashabah' | 'dzawilArham'>;
   terhalang: Set<IdOrang>;
   /** Orang di pohon yang tidak mewarisi dan tidak terhalang (bukan ahli waris sama sekali, atau terkena mani'). */
   bukanAhliWaris: IdOrang[];
@@ -23,9 +23,9 @@ export interface DataPeran {
 }
 
 export function dataPeranDari(graf: GrafKeluarga, ringkasan: RingkasanHasil, tabel: TabelMasalah | null, urutanWafat: IdOrang[], jejak: LangkahJejak[] = []): DataPeran {
-  const pembagian = new Map<IdOrang, 'fardh' | 'ashabah'>();
+  const pembagian = new Map<IdOrang, 'fardh' | 'ashabah' | 'dzawilArham'>();
   for (const baris of tabel?.baris ?? []) {
-    for (const id of Object.keys(baris.perOrang)) pembagian.set(id, baris.fardh ? 'fardh' : 'ashabah');
+    for (const id of Object.keys(baris.perOrang)) pembagian.set(id, baris.fardh ? 'fardh' : adalahDzawilArham(ringkasan.statusOrang[id]) ? 'dzawilArham' : 'ashabah');
   }
   const menerima = new Set(ringkasan.penerima.map(orang => orang.id));
   const terhalang = new Set(ringkasan.terhalang.filter(orang => ringkasan.statusOrang[orang.id]?.jenis === 'mahjub').map(orang => orang.id));

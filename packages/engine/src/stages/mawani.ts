@@ -4,7 +4,7 @@
 //                                                            tidak menghijab siapa pun [R06-6])
 //   sisanya                                               → ahliWaris, lanjut ke tahap hajb.
 
-import type { GrafKeluarga, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak, Ruleset } from '../types.js';
+import type { GrafKeluarga, PeranAhliWaris, IdOrang, StatusOrang, LangkahJejak, Orang, Ruleset } from '../types.js';
 
 export function terapkanMawani(
   graf: GrafKeluarga,
@@ -16,6 +16,7 @@ export function terapkanMawani(
 
   for (const [idOrang, peran] of Object.entries(daftarPeran)) {
     const orangIni = graf.orang[idOrang]!;
+    const penghalang = maniDari(orangIni);
     if (peran.kunci === 'BUKAN_AHLI_WARIS') {
       statusOrang[idOrang] = terkenaTalakBain(graf, idOrang)
         ? { jenis: 'bukanAhliWaris', alasan: "talak ba'in memutus sebab nikah", rujukanAturan: 'R02-3' }
@@ -27,18 +28,23 @@ export function terapkanMawani(
     } else if (orangIni.statusHidup !== 'hidup') {
       // Syarat 2 (bab 2.2): warits harus hidup saat muwarrits wafat.
       statusOrang[idOrang] = { jenis: 'bukanAhliWaris', alasan: 'tidak hidup saat pewaris wafat' };
-    } else if (orangIni.agama === 'nonIslam') {
-      statusOrang[idOrang] = { jenis: 'mamnu', peran, mani: 'ikhtilafDin', rujukanAturan: 'R02-4' };
-      jejak.push({ tahap: 'mawani', refs: ['R02-4'], jenis: 'MANI', idOrang, mani: 'ikhtilafDin' });
-    } else if (orangIni.membunuhPewaris === true) {
-      // [R02-9] [SYF] semua bentuk pembunuhan menghalangi.
-      statusOrang[idOrang] = { jenis: 'mamnu', peran, mani: 'qatl', rujukanAturan: 'R02-9' };
-      jejak.push({ tahap: 'mawani', refs: ['R02-9'], jenis: 'MANI', idOrang, mani: 'qatl' });
+    } else if (penghalang) {
+      const { mani, rujukanAturan } = penghalang;
+      statusOrang[idOrang] = { jenis: 'mamnu', peran, mani, rujukanAturan };
+      jejak.push({ tahap: 'mawani', refs: [rujukanAturan], jenis: 'MANI', idOrang, mani });
     } else {
       statusOrang[idOrang] = { jenis: 'ahliWaris', peran };
     }
   }
   return { statusOrang, jejak };
+}
+
+/** Penghalang yang melekat pada orangnya (bab 02); dipakai juga orkestrator dzawil arham sebelum tanzil. */
+export function maniDari(orang: Orang): { mani: 'ikhtilafDin' | 'qatl'; rujukanAturan: 'R02-4' | 'R02-9' } | undefined {
+  if (orang.agama === 'nonIslam') return { mani: 'ikhtilafDin', rujukanAturan: 'R02-4' };
+  // [R02-9] [SYF] semua bentuk pembunuhan menghalangi.
+  if (orang.membunuhPewaris === true) return { mani: 'qatl', rujukanAturan: 'R02-9' };
+  return undefined;
 }
 
 function terkenaTalakBain(graf: GrafKeluarga, idOrang: IdOrang): boolean {

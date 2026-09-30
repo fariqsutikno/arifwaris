@@ -10,7 +10,7 @@ import { tetapkanBagian } from './stages/bagian.js';
 import { turunkanPeran } from './stages/derivasi.js';
 import { terapkanHajb } from './stages/hajb.js';
 import { klasifikasikanMasalah } from './stages/klasifikasi.js';
-import { terapkanMawani } from './stages/mawani.js';
+import { maniDari, terapkanMawani } from './stages/mawani.js';
 import type { AhliWaris, KelompokBagian } from './stages/model.js';
 import { bagikanNominal, susunTabel } from './stages/pembagian.js';
 import { terapkanTashih } from './stages/tashih.js';
@@ -31,6 +31,11 @@ export interface HasilTahapAhliWaris {
 
 /** Pipeline lengkap (bab 00.2). */
 export function hitung(input: InputEngine): HasilEngine {
+  return hitungDenganTercakup(input, new Set());
+}
+
+/** Seperti `hitung`, tetapi gerbang 18.4 menganggap token `tercakup` sah (dipakai orkestrator dzawil arham). */
+export function hitungDenganTercakup(input: InputEngine, tercakup: ReadonlySet<string>): HasilEngine {
   // 0. Harta bersih: tirkah dikurangi tajhiz, hutang, dan wasiat (maks. 1/3).
   const konfigurasiTidakSah = periksaKonfigurasi(input);
   if (konfigurasiTidakSah) return konfigurasiTidakSah;
@@ -68,7 +73,7 @@ export function hitung(input: InputEngine): HasilEngine {
     versiKb: input.versiKb,
   };
   // Gerbang 18.4: mode non-[SYF] menolak hasil yang menyentuh aturan yang belum dikaji.
-  return periksaKeberlakuan(input.ruleset, hasil) ?? hasil;
+  return periksaKeberlakuan(input.ruleset, hasil, tercakup) ?? hasil;
 }
 
 /** Tahap 1–2: peran → validasi → mawani' → hajb → furudh/ashabah (+ bab 07/08). */
@@ -99,11 +104,12 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   const mawani = terapkanMawani(graf, daftarPeran, input.ruleset);
   const kandidat = Object.values(mawani.statusOrang)
     .flatMap(status => (status.jenis === 'ahliWaris' && punyaKunciAhliWaris(status.peran) ? [status.peran] : []));
+  // Dzawil arham yang terhalang mawani' dianggap tidak ada (bab 02): sisa pasangan tidak ditahan untuknya.
   const adaDzawilArham = Object.values(daftarPeran)
-    .some(peran => peran.kunci === 'DZAWIL_ARHAM' && graf.orang[peran.idOrang]!.statusHidup === 'hidup');
+    .some(peran => peran.kunci === 'DZAWIL_ARHAM' && graf.orang[peran.idOrang]!.statusHidup === 'hidup' && !maniDari(graf.orang[peran.idOrang]!));
   if (kandidat.length === 0) {
     return adaDzawilArham
-      ? { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham (fase 3).', refs: ['R14-4'] }
+      ? { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham.', refs: ['R14-4'], kode: 'FASE_DZAWIL_ARHAM' }
       : { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ahli waris; harta ke baitul mal.', refs: ['R02-1'] };
   }
 

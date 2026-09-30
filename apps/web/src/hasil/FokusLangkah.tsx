@@ -54,7 +54,7 @@ export function FokusLangkah({ judul, nomor, kolom, kanvas, saatTutup, kontrol, 
   useEffect(() => {
     if (langkah?.kolom !== 'bagian' || !wadah.current || ketukanTerbang.current === langkah.ketukan) return;
     ketukanTerbang.current = langkah.ketukan;
-    terbangkanBagian(wadah.current, [...langkah.peran].filter(([, peran]) => peran === 'fardh' || peran === 'ashabah'));
+    terbangkanBagian(wadah.current, [...langkah.peran].filter(([, peran]) => peran === 'fardh' || peran === 'ashabah' || peran === 'dzawilArham'));
   }, [langkah]);
 
   const layarPenuh = () => {

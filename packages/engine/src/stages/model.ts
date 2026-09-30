@@ -26,7 +26,7 @@ export interface KelompokBagian {
   bagian: Bagian;
 }
 
-export type TidakDidukung = { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[] };
+export type TidakDidukung = { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[]; kode?: 'FASE_DZAWIL_ARHAM' };
 
 /** Buat grup; bobot dinormalisasi (dibagi FPB bobot bukan nol) supaya 2:2 tampil sebagai rata. */
 export function buatKelompok(id: IdKelompok, bobot: Record<IdOrang, bigint>, bagian: Bagian): KelompokBagian {
