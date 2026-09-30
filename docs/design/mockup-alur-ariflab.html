@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup Alur ArifLab</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Readex+Pro:wght@400;600;700&display=swap">
+<style>
+/* Token Arif Waris v4 (apps/web/src/gaya/token.css). Mockup kasar: semua layar dalam satu halaman. */
+:root{--surface:#f5f8ff;--raised:#fff;--sunken:#e8eeff;--outline:#111322;--divider:#d5dcf2;--ink:#111322;--muted:#5d6487;
+--primary:#2f5bff;--on-primary:#fff;--soft:#dfe6ff;--sun:#ffe14d;--lime:#b8f35a;--danger:#d62f33;--dsoft:#ffdcdc;--ok:#138a4b;
+--display:"Readex Pro",system-ui,sans-serif;--sans:"Plus Jakarta Sans",system-ui,sans-serif;--pop:4px 4px 0 #111322;--pop-sm:2px 2px 0 #111322}
+@media(prefers-color-scheme:dark){:root{--surface:#16182a;--raised:#1f2238;--sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--ink:#f3f4ff;--muted:#949bc2;
+--primary:#7c9bff;--on-primary:#111322;--soft:#2a3570;--dsoft:#5a2327;--danger:#ff8a80;--ok:#4ade80;--pop:4px 4px 0 #000;--pop-sm:2px 2px 0 #000}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sunken);color:var(--ink);font:400 15px/1.5 var(--sans)}
+h1,h2,h3,h4{font-family:var(--display);margin:0;line-height:1.25}
+p{margin:0}
+a{color:var(--primary);font-weight:600;text-decoration:underline;text-underline-offset:3px}
+.ik{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+
+/* halaman mockup */
+.judul{max-width:1240px;margin:0 auto;padding:28px 20px 8px}
+.judul h1{font-size:28px}.judul p{color:var(--muted);max-width:70ch;margin-top:6px}
+nav.daftar{max-width:1240px;margin:12px auto 0;padding:0 20px;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
+.bagian{max-width:1240px;margin:0 auto;padding:36px 20px 0}
+.bagian>h2{font-size:20px;padding-bottom:6px;border-bottom:2px solid var(--outline);margin-bottom:6px}
+.bagian>.ket{color:var(--muted);font-size:14px;margin-bottom:18px;max-width:80ch}
+.baris{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.cap{font:600 12px/1 var(--display);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}
+.unit{flex:0 0 auto}
+
+/* bingkai layar */
+.hp{width:380px;background:var(--surface);border:2px solid var(--outline);border-radius:20px;box-shadow:var(--pop);overflow:hidden;display:flex;flex-direction:column}
+.dsk{width:100%;max-width:1200px;background:var(--surface);border:2px solid var(--outline);border-radius:20px;box-shadow:var(--pop);overflow:hidden}
+.kepala{display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--raised);border-bottom:2px solid var(--outline)}
+.kepala b{font:700 17px var(--display)}
+.kepala .menu{margin-left:auto;display:flex;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+.kepala .menu .on{color:var(--ink);font-weight:700;border-bottom:3px solid var(--primary)}
+.isi{padding:16px;display:flex;flex-direction:column;gap:14px;flex:1}
+.bawah{padding:10px 16px;background:var(--raised);border-top:2px solid var(--outline);display:flex;gap:14px;align-items:center;justify-content:space-between}
+
+/* komponen */
+.tbl{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;font:700 15px var(--sans);border:2px solid var(--outline);border-radius:14px;background:var(--raised);color:var(--ink);box-shadow:var(--pop-sm);cursor:default}
+.tbl.utama{background:var(--primary);color:var(--on-primary)}
+.kartu{background:var(--raised);border:2px solid var(--outline);border-radius:14px;padding:14px;box-shadow:var(--pop-sm)}
+.kartu.datar{box-shadow:none}
+.kartu h3{font-size:17px}.kartu .k{color:var(--muted);font-size:13px;margin-top:2px}
+.chip{display:inline-block;font:600 12px var(--sans);padding:3px 10px;border:2px solid var(--outline);border-radius:999px;background:var(--soft)}
+.chip.sun{background:var(--sun);color:#111322}.chip.dg{background:var(--dsoft)}
+.kecil{font-size:13px;color:var(--muted)}
+.tanya{font:700 20px/1.3 var(--display)}
+.stepper{display:flex;gap:4px;font-size:12px;font-weight:600}
+.stepper span{flex:1;text-align:center;padding:5px 2px;border-bottom:3px solid var(--divider);color:var(--muted)}
+.stepper .ok{border-color:var(--ok);color:var(--ink)}.stepper .now{border-color:var(--primary);color:var(--ink);font-weight:800}
+.sub{font-size:13px;color:var(--muted);font-weight:600}
+.f{display:flex;flex-direction:column;gap:4px}.f label{font-weight:700;font-size:13px}
+.in{min-height:44px;padding:9px 12px;border:2px solid var(--outline);border-radius:8px;background:var(--raised);color:var(--muted)}
+.pilih{display:flex;flex-direction:column;gap:8px}
+.op{display:flex;gap:10px;align-items:center;min-height:44px;padding:8px 12px;border:2px solid var(--outline);border-radius:14px;background:var(--raised)}
+.op.pil{background:var(--soft);font-weight:700}
+.op i{width:16px;height:16px;border:2px solid var(--outline);border-radius:50%;flex:none;background:var(--raised)}
+.op.pil i{background:var(--primary);box-shadow:inset 0 0 0 3px var(--soft)}
+.baris2{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--divider)}
+.baris2:last-child{border:0}
+.qty{display:inline-flex;align-items:center;gap:0;border:2px solid var(--outline);border-radius:8px;overflow:hidden;background:var(--raised)}
+.qty b{width:44px;height:44px;display:grid;place-items:center;font-size:18px}.qty span{min-width:30px;text-align:center;font-weight:700}
+.lipat{border:2px solid var(--outline);border-radius:14px;background:var(--raised)}
+.lipat>summary{list-style:none;padding:12px 14px;font-weight:700;display:flex;justify-content:space-between;align-items:center;min-height:44px}
+.lipat>summary::-webkit-details-marker{display:none}
+.lipat[open]>summary{border-bottom:2px solid var(--outline)}
+.lipat .dlm{padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.lipat .ph{transition:transform .15s}.lipat[open] .ph{transform:rotate(180deg)}
+.uang{font:700 20px var(--display);font-variant-numeric:tabular-nums}
+.orang{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.orang b{font-size:16px}.asal{font-size:13px;color:var(--muted);margin-top:2px}
+.pohon{border:2px dashed var(--divider);border-radius:14px;padding:18px;display:grid;place-items:center;color:var(--muted);font-size:13px;text-align:center;min-height:120px}
+.dlg{position:relative;background:var(--raised);border:2px solid var(--outline);border-radius:20px;padding:18px;box-shadow:var(--pop);display:flex;flex-direction:column;gap:12px;width:380px}
+.dlg h3{font-size:19px}
+.aksi{display:flex;gap:10px;justify-content:flex-end;align-items:center}
+table.t{width:100%;border-collapse:collapse;font-size:14px}
+table.t th,table.t td{padding:8px 6px;border-bottom:1px solid var(--divider);text-align:left;vertical-align:top}
+table.t th{font:700 12px var(--display);color:var(--muted);text-transform:uppercase}
+table.t td.n{text-align:right;font-variant-numeric:tabular-nums}
+table.t tr.beda td{background:var(--sun);color:#111322}
+.dua{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;padding:18px}
+@media(max-width:820px){.dua{grid-template-columns:1fr}.dsk .kepala .menu{display:none}}
+.lap{display:flex;flex-direction:column;gap:12px}
+.no{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--outline);color:var(--surface);font:700 13px var(--display);flex:none}
+.grp{font:700 12px var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-top:6px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+ <symbol id="pl" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+ <symbol id="cv" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+ <symbol id="pn" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+ <symbol id="pk" viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+ <symbol id="ck" viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></symbol>
+ <symbol id="ib" viewBox="0 0 24 24"><path d="M3 5h5a4 4 0 0 1 4 4v10a3 3 0 0 0-3-3H3zM21 5h-5a4 4 0 0 0-4 4v10a3 3 0 0 1 3-3h6z"/></symbol>
+ <symbol id="ic" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/></symbol>
+ <symbol id="ie" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></symbol>
+</svg>
+
+<header class="judul">
+  <h1>Mockup Alur ArifLab</h1>
+  <p>Sketsa kasar semua layar dari spec <code>2026-09-30-alur-ariflab-terintegrasi-design.md</code> dalam satu halaman. Visual mengikuti Arif Waris v4; yang dinilai di sini hanya susunan, urutan, dan teks, bukan detail piksel.</p>
+</header>
+<nav class="daftar">
+  <a href="#s1">1 Beranda</a><a href="#s2">2 Almarhum &amp; Harta</a><a href="#s3">3 Keluarga</a><a href="#s4">4 Keadaan keluarga</a>
+  <a href="#s5">5 Babak 2</a><a href="#s6">6 Periksa</a><a href="#s7">7 Hasil</a><a href="#s8">8 Madzhab</a><a href="#s9">9 Dialog &amp; menu</a>
+</nav>
+
+<!-- ============ 1 BERANDA ============ -->
+<section class="bagian" id="s1">
+  <h2>1 · Beranda (§1)</h2>
+  <p class="ket">Kartu hitung berubah menurut keadaan kasus. Tidak ada lagi layar AwalHitung; "ArifLab" langsung ke kasus.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Belum ada kasus</p>
+      <div class="hp"><div class="kepala"><b>Arif Waris</b><span class="menu"><span class="on">Beranda</span><span>ArifLab</span><span>Belajar</span></span></div>
+        <div class="isi">
+          <div><h1 style="font-size:24px">Hitung waris, paham alasannya</h1><p class="kecil" style="margin-top:6px">Bawaannya madzhab Syafi'i. Hasil bisa dibandingkan dengan tiga madzhab lain.</p></div>
+          <div class="kartu"><h3>Mulai hitung</h3><p class="k">Isi keluarga, lihat siapa dapat berapa.</p><div style="margin-top:10px"><span class="tbl utama">Mulai hitung</span></div><p style="margin-top:8px"><a>Ceritakan saja</a> <span class="kecil">· setelah mode cerita tersedia</span></p></div>
+          <div class="kartu"><h3>Mulai belajar</h3><p class="k">Materi bertahap dari nol.</p></div>
+          <div class="kartu datar"><p class="kecil">Belum ada kasus. Mulai dari kartu di atas.</p></div>
+        </div></div></div>
+    <div class="unit"><p class="cap">Kasus belum lengkap</p>
+      <div class="hp"><div class="kepala"><b>Arif Waris</b><span class="menu"><span class="on">Beranda</span><span>ArifLab</span><span>Belajar</span></span></div>
+        <div class="isi">
+          <h1 style="font-size:24px">Hitung waris, paham alasannya</h1>
+          <div class="kartu"><h3>Lanjutkan kasus Pak Ahmad</h3><p class="k">Langkah 3 dari 4</p><div style="margin-top:10px"><span class="tbl utama">Lanjutkan kasus Pak Ahmad</span></div><p style="margin-top:8px"><a>Mulai kasus baru</a></p></div>
+          <div class="kartu"><h3>Lanjut belajar</h3><p class="k">Bab 4 · Ashabah</p></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+            <div class="kartu datar"><b>Kasus terakhir</b><p class="kecil">Pak Ahmad</p></div>
+            <div class="kartu datar"><b>Belajar</b><p class="kecil">38%</p></div>
+            <div class="kartu datar"><b>Latihan</b><p class="kecil">4 soal</p></div></div>
+          <div><h3 style="font-size:16px">Kasus terakhir</h3>
+            <div class="baris2"><span><b>Pak Ahmad</b><br><span class="kecil">Istri, 2 anak laki-laki</span></span><span class="kecil">hari ini</span></div>
+            <div class="baris2"><span><b>Bu Siti</b><br><span class="kecil">Suami, ibu, 1 anak</span></span><span class="kecil">kemarin</span></div>
+            <p style="margin-top:6px"><a>Semua riwayat</a></p></div>
+        </div></div></div>
+    <div class="unit"><p class="cap">Kasus lengkap</p>
+      <div class="hp"><div class="kepala"><b>Arif Waris</b><span class="menu"><span class="on">Beranda</span><span>ArifLab</span><span>Belajar</span></span></div>
+        <div class="isi">
+          <h1 style="font-size:24px">Hitung waris, paham alasannya</h1>
+          <div class="kartu"><h3>Lihat hasil Pak Ahmad</h3><p class="k">Dihitung menurut madzhab Syafi'i</p><div style="margin-top:10px"><span class="tbl utama">Lihat hasil Pak Ahmad</span></div><p style="margin-top:8px"><a>Mulai kasus baru</a></p></div>
+          <div class="kartu"><h3>Lanjut belajar</h3><p class="k">Bab 4 · Ashabah</p></div>
+          <p class="kecil">Kotak status, kasus terakhir, FAQ, tentang tim: seperti sekarang.</p>
+        </div></div></div>
+  </div>
+</section>
+
+<!-- ============ 2 ALMARHUM & HARTA ============ -->
+<section class="bagian" id="s2">
+  <h2>2 · Langkah 1 Almarhum dan langkah 2 Harta (§2.1–2.2, 4.2)</h2>
+  <p class="ket">Stepper bernomor biasa, centang hanya untuk langkah yang sudah dikunjungi dan valid. Kewajiban (utang, pemakaman, wasiat) digabung ke Harta.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Langkah 1 · Almarhum</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="now">1 Almarhum</span><span>2 Harta</span><span>3 Keluarga</span><span>4 Periksa</span></div>
+          <h2 class="tanya">Siapa yang meninggal?</h2>
+          <div class="pilih"><div class="op pil"><i></i>Laki-laki</div><div class="op"><i></i>Perempuan</div></div>
+          <div class="f"><label>Nama (boleh dikosongkan)</label><div class="in">Pak Ahmad</div></div>
+          <p class="kecil">Dihitung menurut madzhab Syafi'i (bawaan) · <a>ganti</a></p>
+        </div>
+        <div class="bawah"><span class="kecil">Langkah 1 dari 4</span><span class="tbl utama">Lanjut: harta <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Langkah 2 · Harta (kewajiban: Tidak ada)</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="now">2 Harta</span><span>3 Keluarga</span><span>4 Periksa</span></div>
+          <h2 class="tanya">Berapa harta yang ditinggalkan?</h2>
+          <div class="f"><label>Harta bersih</label><div class="in">Rp 600.000.000</div></div>
+          <p class="sub">Ada utang, biaya pemakaman, atau wasiat?</p>
+          <div class="pilih"><div class="op pil"><i></i>Tidak ada</div><div class="op"><i></i>Ada</div></div>
+          <div class="kartu datar"><span class="kecil">Yang akan dibagi</span><div class="uang">Rp 600.000.000</div></div>
+          <p class="kecil">Gono-gini mengikuti KHI: hukum positif, bukan fikih.</p>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut: keluarga <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Langkah 2 · Harta (kewajiban: Ada)</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="now">2 Harta</span><span>3 Keluarga</span><span>4 Periksa</span></div>
+          <div class="f"><label>Harta bersih</label><div class="in">Rp 600.000.000</div></div>
+          <p class="sub">Ada utang, biaya pemakaman, atau wasiat?</p>
+          <div class="pilih"><div class="op"><i></i>Tidak ada</div><div class="op pil"><i></i>Ada</div></div>
+          <div class="f"><label>Utang</label><div class="in">Rp 20.000.000</div></div>
+          <div class="f"><label>Biaya pemakaman</label><div class="in">Rp 5.000.000</div></div>
+          <div class="f"><label>Wasiat</label><div class="in">Rp 0</div></div>
+          <div class="kartu datar"><span class="kecil">Yang akan dibagi</span><div class="uang">Rp 575.000.000</div></div>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut: keluarga <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+  </div>
+</section>
+
+<!-- ============ 3 KELUARGA ============ -->
+<section class="bagian" id="s3">
+  <h2>3 · Langkah 3 Keluarga · daftar (§2.6, 5)</h2>
+  <p class="ket">Daftar ahli waris dengan tombol −/+. Kelompok baru "Kerabat lain yang lebih jauh" adalah jalan input dzawil arham. Pilihan "Daftar | Pohon" adalah slot pohon bebas (spec menyusul).</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Daftar</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="ok">2 Harta</span><span class="now">3 Keluarga</span><span>4 Periksa</span></div>
+          <div><span class="sub">Keluarga</span><h2 class="tanya">Siapa saja keluarga yang ditinggalkan Pak Ahmad?</h2></div>
+          <div style="display:flex;gap:6px"><span class="chip" style="background:var(--primary);color:var(--on-primary)">Daftar</span><span class="chip" style="background:var(--raised)">Pohon</span></div>
+          <div class="kartu datar">
+            <div class="baris2"><span>Istri</span><span class="qty"><b>−</b><span>1</span><b>+</b></span></div>
+            <div class="baris2"><span>Anak laki-laki</span><span class="qty"><b>−</b><span>2</span><b>+</b></span></div>
+            <div class="baris2"><span>Anak perempuan</span><span class="qty"><b>−</b><span>0</span><b>+</b></span></div>
+            <div class="baris2"><span>Ibu</span><span class="qty"><b>−</b><span>1</span><b>+</b></span></div>
+          </div>
+          <details class="lipat"><summary>Kerabat lain <svg class="ik ph"><use href="#cv"/></svg></summary></details>
+          <details class="lipat" open><summary>Kerabat lain yang lebih jauh <svg class="ik ph"><use href="#cv"/></svg></summary>
+            <div class="dlm">
+              <p class="kecil">Mereka biasanya baru mendapat bagian bila tidak ada ahli waris di atas.</p>
+              <p class="grp">Dari anak perempuan</p>
+              <div class="baris2"><span>Cucu laki-laki dari anak perempuan</span><span class="qty"><b>−</b><span>0</span><b>+</b></span></div>
+              <p class="grp">Dari pihak ibu</p>
+              <div class="baris2"><span>Kakek dari ibu</span><span class="qty"><b>−</b><span>0</span><b>+</b></span></div>
+              <p class="kecil">Pilihan lain: kakak-adik, pihak ayah.</p>
+            </div></details>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut: keadaan keluarga <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Memilih induk (cucu / kerabat jauh)</p>
+      <div class="dlg"><h3>Cucu perempuan dari anak perempuan: anak siapa?</h3>
+        <div class="pilih"><div class="op pil"><i></i>Anak perempuan (Aisyah)</div><div class="op"><i></i>Yang lain, sudah wafat</div></div>
+        <p class="kecil">"Yang lain, sudah wafat" membuat penghubung, bukan ahli waris hidup.</p>
+        <div class="aksi"><a>Batal</a><span class="tbl utama">Simpan</span></div></div></div>
+    <div class="unit"><p class="cap">Mode Pohon (slot, spec menyusul)</p>
+      <div class="hp"><div class="isi"><div style="display:flex;gap:6px"><span class="chip" style="background:var(--raised)">Daftar</span><span class="chip" style="background:var(--primary);color:var(--on-primary)">Pohon</span></div>
+        <div class="pohon">Pohon keluarga bebas.<br>Menulis ke kasus yang sama; pindah tampilan tidak menghapus isian.</div></div></div></div>
+  </div>
+</section>
+
+<!-- ============ 4 KEADAAN ============ -->
+<section class="bagian" id="s4">
+  <h2>4 · Langkah 3 Keluarga · keadaan keluarga (§2.3)</h2>
+  <p class="ket">Tiga pertanyaan besar di satu layar, masing-masing punya jawaban bawaan. Ketuk "Ada" membuka rincian.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Semua bawaan</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="ok">2 Harta</span><span class="now">3 Keluarga</span><span>4 Periksa</span></div>
+          <span class="sub">Keluarga · Keadaan keluarga</span>
+          <div class="lap">
+            <div><h3 class="tanya" style="font-size:18px">Semua orang di atas masih hidup?</h3><div class="pilih" style="margin-top:8px"><div class="op pil"><i></i>Ya, masih hidup semua</div><div class="op"><i></i>Ada yang sudah wafat atau hilang</div></div></div>
+            <div><h3 class="tanya" style="font-size:18px">Waktu Pak Ahmad wafat, ada yang sedang hamil?</h3><div class="pilih" style="margin-top:8px"><div class="op pil"><i></i>Tidak ada</div><div class="op"><i></i>Ada</div></div></div>
+            <div><h3 class="tanya" style="font-size:18px">Ada yang beda agama dengan Pak Ahmad, atau terlibat dalam wafatnya?</h3><div class="pilih" style="margin-top:8px"><div class="op pil"><i></i>Tidak ada</div><div class="op"><i></i>Ada</div></div></div>
+          </div>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut: periksa <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Jawaban 1 = Ada wafat/hilang</p>
+      <div class="hp"><div class="isi">
+        <span class="sub">Keluarga · Keadaan keluarga</span>
+        <div class="pilih"><div class="op"><i></i>Ya, masih hidup semua</div><div class="op pil"><i></i>Ada yang sudah wafat atau hilang</div></div>
+        <p class="sub">Ketuk orangnya:</p>
+        <div class="kartu datar"><div class="baris2"><span>Istri</span><span class="kecil">hidup</span></div>
+          <div class="baris2"><span><b>Anak laki-laki 1</b></span><span class="chip sun">wafat sebelum · Babak 2</span></div>
+          <div class="baris2"><span>Anak laki-laki 2</span><span class="kecil">hidup</span></div>
+          <div class="baris2"><span>Ibu</span><span class="kecil">hidup</span></div></div>
+      </div></div>
+      <p class="cap" style="margin-top:14px">Dialog keadaan (satu pertanyaan per lapis)</p>
+      <div class="dlg"><h3>Apa yang terjadi pada anak laki-laki 1?</h3>
+        <div class="pilih"><div class="op pil"><i></i>Wafat sesudah Pak Ahmad</div><div class="op"><i></i>Wafat sebelum Pak Ahmad</div><div class="op"><i></i>Hilang, tidak diketahui kabarnya</div><div class="op"><i></i>Wafat bersamaan (bencana)</div></div>
+        <div class="aksi"><a>Batal</a><span class="tbl utama">Simpan</span></div></div></div>
+    <div class="unit"><p class="cap">Jawaban 2 dan 3 = Ada</p>
+      <div class="hp"><div class="isi">
+        <div class="pilih"><div class="op pil"><i></i>Ada yang hamil</div></div>
+        <div class="kartu datar"><p class="sub">Siapa yang hamil?</p><div class="pilih" style="margin-top:6px"><div class="op pil"><i></i>Istri Pak Ahmad</div><div class="op"><i></i>Istri anak laki-laki 1</div></div><p style="margin-top:8px"><a>Atur kehamilan</a> <span class="kecil">(dialog janin)</span></p></div>
+        <div class="pilih"><div class="op pil"><i></i>Ada yang beda agama atau terlibat wafatnya</div></div>
+        <div class="kartu datar"><p class="sub">Beda agama dengan Pak Ahmad</p>
+          <div class="baris2"><span>Anak laki-laki 2</span><span class="ik" style="width:22px;height:22px;border:2px solid var(--outline);border-radius:6px;background:var(--raised)"></span></div>
+          <p class="sub" style="margin-top:6px">Terlibat dalam wafatnya</p>
+          <div class="baris2"><span>Anak laki-laki 1</span><span style="width:22px;height:22px;border:2px solid var(--outline);border-radius:6px;background:var(--primary);color:var(--on-primary);display:grid;place-items:center"><svg class="ik" style="width:16px;height:16px"><use href="#ck"/></svg></span></div></div>
+        <p class="kecil">Kembali ke "Tidak ada" saat sudah ada isian → konfirmasi (lihat bagian 9).</p>
+      </div></div></div>
+  </div>
+</section>
+
+<!-- ============ 5 BABAK 2 ============ -->
+<section class="bagian" id="s5">
+  <h2>5 · Babak 2..n, munasakhat (§2.4)</h2>
+  <p class="ket">Babak diulang di dalam langkah Keluarga: pembuka → daftar → keadaan. Judul menyebut nama almarhum; tombol bawah diturunkan dari posisi; ringkasan samping sadar babak.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Pembuka babak</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="ok">2 Harta</span><span class="now">3 Keluarga</span><span>4 Periksa</span></div>
+          <span class="sub">Keluarga · Babak 2 dari 2 · Budi</span>
+          <h2 class="tanya">Budi wafat sesudah Pak Ahmad.</h2>
+          <p>Bagian Budi dari harta Pak Ahmad ikut dibagi ke keluarganya. Kita isi keluarga Budi sekarang.</p>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Isi keluarga Budi <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Daftar babak 2</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <span class="sub">Keluarga · Babak 2 dari 2 · Budi</span>
+          <h2 class="tanya">Siapa saja keluarga yang ditinggalkan Budi?</h2>
+          <div class="kartu datar"><p class="grp" style="margin-top:0">Dari orang yang sudah ada</p>
+            <div class="baris2"><span>Siti, ibu Budi</span><span class="chip" style="background:var(--primary);color:var(--on-primary)">dicentang otomatis</span></div>
+            <p class="grp">Tambahan</p>
+            <div class="baris2"><span>Istri</span><span class="qty"><b>−</b><span>1</span><b>+</b></span></div>
+            <div class="baris2"><span>Anak laki-laki</span><span class="qty"><b>−</b><span>1</span><b>+</b></span></div></div>
+          <div class="pohon" style="min-height:90px">Pohon mini: Budi di tengah;<br>Siti = "Ibu", bukan "(Kerabat)".</div>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lanjut: keadaan keluarga <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Ringkasan samping (sadar babak)</p>
+      <div class="kartu" style="width:330px"><h3>Ringkasan</h3>
+        <p class="grp">Babak 1 · Pak Ahmad</p>
+        <div class="baris2"><span>Istri</span><span>1</span></div>
+        <div class="baris2"><span>Budi <span class="kecil">· wafat sesudah Pak Ahmad</span></span><span class="kecil">tidak dihitung hidup</span></div>
+        <div class="baris2"><span>Ibu</span><span>1</span></div>
+        <p class="grp">Babak 2 · Budi</p>
+        <div class="baris2"><span>Istri</span><span>1</span></div>
+        <div class="baris2"><span>Anak laki-laki</span><span>1</span></div></div>
+      <p class="kecil" style="margin-top:10px;max-width:330px">Label tombol bawah: daftar → "Lanjut: keadaan keluarga"; keadaan babak 1 → "Lanjut: keluarga Budi"; keadaan babak terakhir → "Lanjut: periksa".</p></div>
+  </div>
+</section>
+
+<!-- ============ 6 PERIKSA ============ -->
+<section class="bagian" id="s6">
+  <h2>6 · Langkah 4 Periksa (§2.5)</h2>
+  <p class="ket">Cerita ringkas untuk dicek sebelum hasil. Kasus biasa mendapat versi pendek. Tautan "ubah" melompat ke bagian terkait.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Kasus biasa</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <div class="stepper"><span class="ok">1 Almarhum</span><span class="ok">2 Harta</span><span class="ok">3 Keluarga</span><span class="now">4 Periksa</span></div>
+          <h2 class="tanya">Coba baca ceritanya</h2>
+          <div class="kartu datar"><p>Pak Ahmad wafat meninggalkan seorang istri, dua anak laki-laki, dan ibu. Hartanya Rp 575.000.000 setelah utang dan biaya pemakaman. <a>ubah</a></p></div>
+          <p class="kecil">Dihitung menurut madzhab Syafi'i (bawaan) · <a>ganti</a></p>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lihat hasil <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Kasus munasakhat</p>
+      <div class="hp"><div class="kepala"><b>ArifLab</b><span class="menu">Lainnya</span></div>
+        <div class="isi">
+          <h2 class="tanya">Coba baca ceritanya</h2>
+          <div class="kartu datar"><p class="grp" style="margin-top:0">Babak 1</p><p>Pak Ahmad wafat meninggalkan istri, Budi, dan ibu. <a>ubah</a></p>
+            <p class="grp">Babak 2</p><p>Budi wafat sesudah Pak Ahmad, meninggalkan istri, anak laki-laki, dan Siti (ibunya). <a>ubah</a></p>
+            <p class="grp">Harta</p><p>Rp 575.000.000. Harta Budi sendiri: belum diisi. <a>ubah</a></p></div>
+          <p class="kecil">Atur urutan wafat lebih rinci? <a>Atur linimasa lengkap</a></p>
+        </div>
+        <div class="bawah"><a>Kembali</a><span class="tbl utama">Lihat hasil <svg class="ik"><use href="#pn"/></svg></span></div></div></div>
+    <div class="unit"><p class="cap">Menunggu kelahiran (bila ada janin)</p>
+      <div class="hp"><div class="isi"><h2 class="tanya">Ada bayi yang belum lahir. Bagaimana?</h2>
+        <div class="pilih"><div class="op pil"><i></i>Tunggu sampai lahir</div><div class="op"><i></i>Hitung sekarang, simpan bagian bayi (amplop titipan)</div></div>
+        <p class="kecil">Untuk madzhab Maliki, pilihan "Hitung sekarang" tidak ditawarkan.</p></div></div></div>
+  </div>
+</section>
+
+<!-- ============ 7 HASIL ============ -->
+<section class="bagian" id="s7">
+  <h2>7 · Hasil 3 lapis (§3)</h2>
+  <p class="ket">Lapis 1 selalu terbuka: nama, Rp. Lapis 2 "Kenapa begitu?" dan lapis 3 "Hitungan lengkap" terlipat; keadaan buka/tutup diingat per perangkat. Pohon di HP terlipat setelah lapis 1.</p>
+  <div class="dsk">
+    <div class="kepala"><b>Arif Waris</b><span class="menu"><span>Beranda</span><span class="on">ArifLab</span><span>Belajar</span><span>Lainnya</span></span></div>
+    <div class="dua">
+      <div class="lap">
+        <div class="pohon" style="min-height:300px">Kanvas: pohon keluarga / tabel faraidh<br>(sorot mengikuti langkah yang dipilih di lapis 2)</div>
+        <div class="kartu datar"><span class="kecil">Keterangan warna</span> <svg class="ik"><use href="#cv"/></svg></div>
+      </div>
+      <div class="lap">
+        <div><h2 style="font-size:22px">Pembagian harta Pak Ahmad</h2>
+          <p style="margin-top:6px"><span class="chip">Menurut madzhab Syafi'i</span> &nbsp;<a>Bandingkan pendapat lain</a></p></div>
+        <div class="kartu">
+          <p class="cap" style="margin-bottom:2px">Lapis 1 · Siapa dapat berapa</p>
+          <div class="baris2" style="flex-direction:column;align-items:stretch;gap:2px"><div class="orang"><b>Siti (istri)</b><span class="uang">Rp 71.875.000</span></div><span class="asal">1/8 · 12,5%</span></div>
+          <div class="baris2" style="flex-direction:column;align-items:stretch;gap:2px"><div class="orang"><b>Budi (anak laki-laki)</b><span class="uang">Rp 287.500.000</span></div><span class="asal">sisa (ashabah) · dibagi 2:1 dengan saudarinya</span></div>
+          <div class="baris2" style="flex-direction:column;align-items:stretch;gap:2px"><div class="orang"><b>Aisyah (ibu)</b><span class="uang">Rp 95.833.333</span></div><span class="asal">1/6 · 16,7%</span></div>
+          <details class="lipat" style="margin-top:10px"><summary>Tidak mendapat bagian (1) <svg class="ik ph"><use href="#cv"/></svg></summary>
+            <div class="dlm"><p>Rahmat (cucu laki-laki): terhalang oleh Budi (anak laki-laki Pak Ahmad).</p></div></details>
+          <p class="kecil" style="margin-top:10px">Total dibagikan Rp 574.999.998 · sisa pembulatan Rp 2 · <a>atur</a></p>
+        </div>
+        <div class="kartu datar"><p class="cap" style="margin-bottom:6px">Munasakhat: bagian dikelompokkan per orang</p>
+          <div class="orang"><b>Siti</b><span class="uang" style="font-size:17px">Rp 91.000.000</span></div>
+          <p class="asal">sebagai istri Pak Ahmad Rp 71.875.000 · dari bagian Budi, sebagai ibunya Rp 19.125.000</p>
+          <div class="orang" style="margin-top:8px"><b>Budi</b><span class="kecil">wafat sesudah Pak Ahmad</span></div>
+          <p class="asal">bagiannya Rp 287.500.000 diteruskan ke keluarganya</p></div>
+        <div class="kartu datar"><p class="cap" style="margin-bottom:6px">Kasus khusus (bab 13): format sama</p>
+          <div class="orang"><b>Diterima sekarang</b><span class="uang" style="font-size:17px">Rp 400.000.000</span></div>
+          <div class="orang"><b>Disimpan dulu (amplop titipan)</b><span class="uang" style="font-size:17px">Rp 175.000.000</span></div>
+          <p class="asal">Kalau bayinya 1 laki-laki: ... · Kalau perempuan: ...</p></div>
+        <p class="kecil">Hasil untuk belajar. Pembagian sungguhan dimusyawarahkan dengan ahli faraidh atau lembaga berwenang. <a>laporkan</a></p>
+        <details class="lipat"><summary><span><span class="no">2</span>&nbsp; Kenapa begitu?</span><svg class="ik ph"><use href="#cv"/></svg></summary>
+          <div class="dlm"><p class="grp" style="margin-top:0">Babak 1 · harta Pak Ahmad</p>
+            <div class="baris2"><span><span class="no">1</span> Cek halangan waris</span><span class="kecil">Bab 3</span></div>
+            <div class="baris2"><span><span class="no">2</span> Bagian tetap (fardh) istri dan ibu</span><span class="kecil">Bab 5</span></div>
+            <div class="baris2"><span><span class="no">3</span> Sisa untuk anak laki-laki</span><span class="chip sun">Di sini madzhab berbeda</span></div>
+            <p class="grp">Babak 2 · bagian Budi</p>
+            <div class="baris2"><span><span class="no">4</span> Bagian Budi diteruskan</span><span class="kecil">Bab 12</span></div>
+            <div class="aksi" style="justify-content:space-between"><a>Sebelumnya</a><a>Berikutnya</a></div></div></details>
+        <details class="lipat"><summary><span><span class="no">3</span>&nbsp; Hitungan lengkap</span><svg class="ik ph"><use href="#cv"/></svg></summary>
+          <div class="dlm"><table class="t"><tr><th>Ahli waris</th><th>Mas'alah 1 (24)</th><th>Mas'alah 2</th><th>Jami'ah</th></tr>
+            <tr><td>Siti</td><td class="n">3</td><td class="n">+ 4</td><td class="n">7</td></tr>
+            <tr><td>Budi</td><td class="n">14 ×</td><td class="n">—</td><td class="n">—</td></tr>
+            <tr><td>Aisyah</td><td class="n">4</td><td class="n">—</td><td class="n">4</td></tr></table>
+            <p class="kecil">Tabel munasakhat ala kitab; jenis masalah per babak; status sumber tiap dalil.</p></div></details>
+        <div class="bawah" style="border:2px solid var(--outline);border-radius:14px"><span><a>Ubah data</a> &nbsp; <a>Mulai kasus baru</a></span><span style="display:flex;gap:10px;align-items:center"><a>Simpan</a><span class="tbl utama">Ekspor</span></span></div>
+      </div>
+    </div>
+  </div>
+  <p class="cap" style="margin-top:22px">Di HP</p>
+  <div class="baris">
+    <div class="unit"><div class="hp"><div class="isi">
+      <h2 style="font-size:20px">Pembagian harta Pak Ahmad</h2>
+      <p><span class="chip">Madzhab Syafi'i</span> <a>Bandingkan</a></p>
+      <div class="kartu"><div class="orang"><b>Siti</b><span class="uang">Rp 71,9 jt</span></div><p class="asal">1/8</p>
+        <div class="orang" style="margin-top:8px"><b>Budi</b><span class="uang">Rp 287,5 jt</span></div><p class="asal">sisa (ashabah)</p></div>
+      <details class="lipat"><summary>Lihat pohon keluarga <svg class="ik ph"><use href="#cv"/></svg></summary></details>
+      <details class="lipat"><summary>Kenapa begitu? <svg class="ik ph"><use href="#cv"/></svg></summary></details>
+      <details class="lipat"><summary>Hitungan lengkap <svg class="ik ph"><use href="#cv"/></svg></summary></details>
+    </div>
+    <div class="bawah"><a>Ubah data</a><span class="tbl utama">Ekspor</span></div></div>
+    <p class="kecil" style="margin-top:8px;max-width:380px">Navigasi bawah dan dok FAQ disembunyikan; hanya satu bar aksi berlabel teks.</p></div>
+  </div>
+</section>
+
+<!-- ============ 8 MADZHAB ============ -->
+<section class="bagian" id="s8">
+  <h2>8 · Madzhab (§4)</h2>
+  <p class="ket">Ganti madzhab lewat tautan kecil. Perbandingan hanya muncul bila ada yang berbeda; kolom yang belum bisa dihitung ditulis jelas, tanpa angka.</p>
+  <div class="baris">
+    <div class="unit"><p class="cap">Dialog "ganti" madzhab</p>
+      <div class="dlg"><h3>Hitung menurut madzhab apa?</h3>
+        <div class="pilih">
+          <div class="op pil" style="align-items:flex-start"><i style="margin-top:4px"></i><span>Syafi'i (bawaan)<br><span class="kecil">Diperiksa sampai kitab rujukan utama.</span></span></div>
+          <div class="op" style="align-items:flex-start"><i style="margin-top:4px"></i><span>Hanbali<br><span class="kecil">Perbedaan per titik; sebagian dari sumber sekunder (al-Lahim, Ithraa).</span></span></div>
+          <div class="op" style="align-items:flex-start"><i style="margin-top:4px"></i><span>Hanafi<br><span class="kecil">Sama seperti Hanbali.</span></span></div>
+          <div class="op" style="align-items:flex-start"><i style="margin-top:4px"></i><span>Maliki<br><span class="kecil">Sama seperti Hanbali.</span></span></div></div>
+        <div class="aksi"><a>Batal</a><span class="tbl utama">Pakai</span></div></div></div>
+    <div class="unit" style="flex:1;min-width:340px"><p class="cap">Panel perbandingan (laci di Hasil)</p>
+      <div class="kartu" style="max-width:640px"><h3>Bandingkan pendapat madzhab</h3>
+        <table class="t" style="margin-top:8px"><tr><th>Ahli waris</th><th>Syafi'i (sekarang)</th><th>Hanbali</th><th>Hanafi</th><th>Maliki</th></tr>
+          <tr class="beda"><td>Kakek</td><td class="n">Rp 60 jt</td><td class="n">Rp 60 jt (s)</td><td class="n">Rp 0</td><td class="n">Rp 60 jt</td></tr>
+          <tr><td>Saudara kandung</td><td class="n">Rp 40 jt</td><td class="n">Rp 40 jt</td><td class="n">Rp 100 jt</td><td class="n">Rp 40 jt</td></tr>
+          <tr><td>Ibu</td><td class="n">Rp 20 jt</td><td class="n">Rp 20 jt</td><td class="n">Rp 20 jt</td><td class="kecil">Belum dikaji untuk kasus ini</td></tr></table>
+        <p class="kecil" style="margin-top:6px">(s) sumber sekunder · ? belum pasti · baris kuning berbeda. Di HP: pilih satu madzhab untuk dibandingkan.</p>
+        <div class="kartu datar" style="margin-top:10px"><b>Dalilnya</b><p class="kecil" style="margin-top:4px">Posisi keempat madzhab tentang kakek bersama saudara, dari matriks khilaf. Tanpa kode internal.</p></div>
+        <div class="aksi" style="margin-top:12px"><a>Tutup</a><span class="tbl utama">Pakai madzhab Hanafi</span></div></div></div>
+  </div>
+</section>
+
+<!-- ============ 9 DIALOG & MENU ============ -->
+<section class="bagian" id="s9" style="padding-bottom:60px">
+  <h2>9 · Dialog konfirmasi dan menu (§1.1, 2.3, 3.5)</h2>
+  <div class="baris">
+    <div class="unit"><p class="cap">Mulai kasus baru</p>
+      <div class="dlg"><h3>Mulai kasus baru?</h3><p>Kasus Pak Ahmad akan dikosongkan. Kasus ini sudah tersimpan di Riwayat.</p><div class="aksi"><a>Batal</a><span class="tbl utama">Mulai kasus baru</span></div></div></div>
+    <div class="unit"><p class="cap">Kembali ke jawaban bawaan</p>
+      <div class="dlg"><h3>Hapus isian ini?</h3><p>Kalau memilih "Tidak ada", data berikut ikut dihapus: keadaan Budi (wafat sesudah), 1 orang terlibat wafat.</p><div class="aksi"><a>Batal</a><span class="tbl utama">Hapus</span></div></div></div>
+    <div class="unit"><p class="cap">Menu "Lainnya" di header</p>
+      <div class="kartu" style="width:220px"><div class="baris2"><span>Tur singkat</span></div><div class="baris2"><span>Riwayat</span></div><div class="baris2"><span>Rujukan</span></div><div class="baris2"><span>Mulai kasus baru</span></div></div></div>
+    <div class="unit"><p class="cap">Riwayat</p>
+      <div class="hp" style="width:330px"><div class="isi"><h2 style="font-size:20px">Riwayat</h2>
+        <div class="baris2"><span><b>Pak Ahmad</b><br><span class="kecil">Istri, 2 anak laki-laki, ibu</span></span><span class="kecil">hari ini</span></div>
+        <div class="baris2"><span><b>Almarhumah</b><br><span class="kecil">Suami, 2 anak</span></span><span class="kecil">kemarin</span></div>
+        <p class="kecil">Draf baru masuk riwayat setelah Harta terisi.</p><p><a>Buka berkas</a></p></div></div></div>
+  </div>
+</section>
+</body>
+</html>
