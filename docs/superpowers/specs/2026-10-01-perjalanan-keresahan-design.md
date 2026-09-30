@@ -18,6 +18,8 @@ Spec ini **mengubah**:
 | | 2.2 Harta | daftar barang + milik siapa (2) |
 | | 2.3–2.4 | kata "babak" diganti (1); pertanyaan harta almarhum lain (2.3) |
 | | 2.5 Periksa, 3.1 Lapis 1 | sunting di tempat (5); hasil per orang / per barang (2.5); kemungkinan (3) |
+| | 2.6 Kerabat jauh | diperluas dengan hubungan bukan ahli waris (5.2) |
+| | 3.5 Pohon di HP | pohon ↔ daftar bertingkat, syarat pohon (5.5) |
 | | 3.2 Lapis 2 | kelompok per almarhum (1); blok kenapa dapat/tidak (4) |
 | `2026-09-30-babak-kematian-berlapis-design.md` | 1.1 butir 3, 8.2 S2, 8.3 | `hartaPernahDibagi` diganti "masih utuh?" per barang (2.2) |
 | | 1.7, 8.1 butir 3 | "ditolak / hitung ditahan" diganti kemungkinan bila bisa dihitung (3) |
@@ -45,9 +47,10 @@ yang ia cemaskan adalah **apa yang terjadi sesudah angka keluar**.
 | 6 | "Saya dapat total berapa? Rumah ini punya siapa saja sekarang?" | Hasil per orang dan per barang | 2.5 |
 | 7 | "Kalau ternyata Budi wafat sebelum Mbah?" / "Bayinya belum lahir." | Bagaimana kalau… | 3 |
 | 8 | "Kok besan dapat, cucu Pak Slamet tidak?" | Kenapa dapat, kenapa tidak | 4 |
-| 9 | "Ada yang salah, anak Budi kurang satu." | Sunting langsung dari pohon | 5 |
-| 10 | "Harus menjelaskan ke Paman 70 th di rapat keluarga." | Lembar musyawarah | 6.3 |
-| 11 | "Bisa dipakai untuk notaris?" | Catatan bukan dokumen resmi | 6.5 |
+| 9 | "Ada yang salah, anak Budi kurang satu." / "Mertua dan besan juga perlu dicatat?" | Tambah siapa saja dari orang terkait atau dari nama hubungan | 5.1–5.3 |
+| 10 | "Ini bukan keluarga saya, posisinya aneh." | Pohon dengan syarat yang dites | 5.5 |
+| 11 | "Harus menjelaskan ke Paman 70 th di rapat keluarga." | Lembar musyawarah | 6.3 |
+| 12 | "Bisa dipakai untuk notaris?" | Catatan bukan dokumen resmi | 6.5 |
 
 ## 1. Kata: tanpa "babak", tanpa "dunia"
 
@@ -257,26 +260,168 @@ yang wafat lebih dulu). Tanpa jejak, UI terpaksa menebak alasannya, dan itu bera
   satu alasan (menerima, `MANI`, `HAJB_HIRMAN`, atau `BUKAN_AHLI_WARIS`).
 - Anotasi rujukan sesuai tabel 4.1.
 
-## 5. Sunting di tempat
+## 5. Keluarga: tambah siapa saja, pohon yang benar
 
-Menambah atau mengubah orang dilakukan **dari orang yang terkait**, bukan dari dialog yang bertanya "anak dari
-siapa".
+Pengguna harus bisa memasukkan **siapa pun** yang ada di ceritanya, termasuk yang bukan ahli waris (mertua,
+besan, anak tiri, anak angkat). Ada dua alasan:
+- dalam munasakhat, orang itu bisa mewarisi almarhum berikutnya (orang tua Dewi mewarisi Dewi);
+- kalau pun tidak mewarisi, pengguna melihat alasannya (4.1 T3) dan tidak merasa ada yang terlupa.
 
-- **Di Periksa dan Hasil**, keluarga tampil sebagai daftar bertingkat (komponen yang sama dengan silsilah, spec
-  babak 8.2 S3). Tiap orang punya menu tautan:
-  **+ Anak · + Pasangan · + Orang tua** (bila belum ada) **· + Saudara · Ubah keadaan · Hapus**.
-- **Hubungan diturunkan dari orang yang diklik.**
-  - "+ Anak" pada Budi → `idAyah = Budi`. Ibunya = pasangan Budi bila hanya satu. Bila lebih dari satu, satu
-    pertanyaan: "Dari istri yang mana?" (pilihan + "istri lain, tidak dicatat").
-  - "+ Saudara" pada Budi → saudara kandung bawaan; tautan kecil "satu ayah saja / satu ibu saja".
-  - "+ Orang tua" membuat node lewat `pastikanOrangTua`.
-- **Dialog tambah = satu layar**: nama (opsional), jenis kelamin, keadaan (Masih hidup bawaan; pilihan lain
-  membuka `DialogKeadaan`). Tidak ada pertanyaan hubungan.
-- Pembangun graf yang dipakai sudah ada: `tambahOrang`, `pastikanOrangTua`, `tambahSaudara`, `hapusAhliWaris`
-  (dengan konfirmasi yang menyebut siapa saja yang ikut terhapus, spec babak 2.3).
+UI hanya menyusun graf dan memberi nama hubungan. Siapa yang mewarisi tetap diputuskan engine.
+
+### 5.1 Tambah dari orang yang terkait
+
+Menambah atau mengubah orang dilakukan **dari orang yang terkait**, bukan dari dialog "anak dari siapa".
+
+- Di langkah Keluarga, Periksa, dan Hasil, keluarga tampil sebagai **pohon** (5.5) atau **daftar bertingkat**
+  (komponen yang sama dengan silsilah, spec babak 8.2 S3), dan keduanya bisa dipindah dengan satu tautan.
+- Tiap orang punya menu tautan: **+ Orang tua · + Pasangan · + Anak · + Saudara · Ubah · Hapus**.
+- Hubungan diturunkan dari orang yang diklik:
+
+  | Aksi pada X | Hasil di graf | Pertanyaan tambahan |
+  |---|---|---|
+  | + Orang tua | ayah/ibu X (`tambahKerabat` 'ayah'/'ibu') | tidak ada; pilihan yang sudah terisi tidak tampil |
+  | + Pasangan | istri/suami X; jenis kelamin dari X | "Masih suami-istri waktu X wafat?" hanya bila X sudah wafat (spec babak S14) |
+  | + Anak | anak X; orang tua lain = pasangan X bila hanya satu | bila pasangan > 1: "Dari istri yang mana?" (+ "istri lain, tidak dicatat") |
+  | + Saudara | anak dari orang tua X (orang tua dibuat sebagai penghubung bila belum ada) | "Satu ayah dan satu ibu" (bawaan) / "Satu ayah saja" / "Satu ibu saja" |
+  | Ubah | nama, jenis kelamin (bila `bolehUbahJenisKelamin`), keadaan (`DialogKeadaan`) | — |
+  | Hapus | `hapusAhliWaris` | konfirmasi yang menyebut siapa saja yang ikut terhapus (spec babak 2.3) |
+
+- Dialog tambah hanya **satu layar**: nama (opsional), jenis kelamin (bila tidak diturunkan dari hubungan), dan
+  keadaan (Masih hidup bawaan).
+- Penyusun graf yang dipakai sudah ada: `tambahKerabat` / `opsiRelasi` di engine (`graf.ts`, termasuk batas 4
+  istri [R04-3]), serta `pastikanOrangTua`, `tambahSaudara`, dan `tambahOrang` di `checklist.ts` yang diekspor.
 - **Di Hasil**, tiap perubahan langsung dihitung ulang dan disimpan, dengan tautan **Batalkan perubahan
   terakhir**. Mode coba-coba (3) memakai menu yang sama tanpa menyimpan.
-- Daftar ± (`LangkahAhliWaris`) tetap untuk isian cepat di langkah 3. Keduanya mengubah graf yang sama.
+- Daftar ± (`LangkahAhliWaris`) tetap untuk isian cepat. Keduanya mengubah graf yang sama.
+
+### 5.2 Tambah dengan nama hubungan
+
+Tidak semua orang mau mencari "orang tua dari istri Budi". Di bawah pohon/daftar ada tautan **Tambah kerabat
+lain**: daftar nama hubungan yang bisa dicari. Daftar ini memperluas ArifLab 2.6 (kerabat jauh) dengan hubungan
+yang bukan ahli waris.
+
+Tiap nama hubungan adalah **jalur** dari orang yang sedang dilihat (pusat, bawaannya almarhum bagian itu) lewat
+aksi 5.1. Bila jalurnya lewat orang yang belum pasti, aplikasi menanyakan **jangkar**, yaitu orang yang
+menghubungkan. Pilihannya diambil dari graf, ditambah "orang lain, belum dicatat" yang dibuat sebagai
+penghubung.
+
+| Nama hubungan (dari sisi pusat P) | Jalur | Jangkar yang ditanyakan |
+|---|---|---|
+| Ayah, ibu | orang tua | — |
+| Kakek, nenek (dari ayah / dari ibu) | orang tua → orang tua | — (sisi dipilih di nama) |
+| Buyut | orang tua ×3 | sisi |
+| Anak, cucu, cicit | anak ×1/2/3 | anak/cucu yang mana |
+| Suami, istri | pasangan | — |
+| Saudara (kandung / seayah / seibu) | saudara | — |
+| Paman, bibi (dari ayah / dari ibu) | orang tua → saudara | — |
+| Sepupu | orang tua → saudara → anak | paman/bibi yang mana |
+| Keponakan | saudara → anak | saudara yang mana |
+| **Mertua** | pasangan → orang tua | pasangan yang mana (bila > 1) |
+| **Menantu** | anak → pasangan | anak yang mana |
+| **Besan** | anak → pasangan → orang tua | menantu yang mana |
+| **Ipar** | pasangan → saudara, atau saudara → pasangan | "saudara dari pasangan" / "pasangan dari saudara", lalu orangnya |
+| Cucu menantu | cucu → pasangan | cucu yang mana |
+| **Anak tiri** | pasangan → anak (orang tua lain ≠ P) | pasangan yang mana |
+| Ayah / ibu tiri | orang tua → pasangan (≠ orang tua P yang lain) | orang tua yang mana |
+| **Saudara tiri** | tidak ada orang tua yang sama | ditanya dulu: "Ada ayah atau ibu yang sama?" Ya → Saudara seayah/seibu; Tidak → orang tua tiri → anak |
+| Mantan istri / suami | pasangan, status `talakBain` | — |
+| **Anak angkat, anak asuh** | tanpa nasab (5.3) | orang tua angkatnya |
+
+Catatan kata: di Indonesia "saudara tiri" sering dipakai untuk saudara seayah atau seibu, dan mereka **ahli
+waris**. Karena itu pertanyaan "Ada ayah atau ibu yang sama?" wajib ditanyakan.
+
+### 5.3 Anak angkat: hubungan tanpa nasab
+
+Graf engine hanya mengenal nasab (`idAyah`, `idIbu`) dan pernikahan. Anak angkat tidak punya keduanya, jadi:
+- orangnya masuk graf **tanpa** `idAyah`/`idIbu` ke orang tua angkat. Engine melihatnya tak berhubungan dan
+  memancarkan `BUKAN_AHLI_WARIS` alasan `tanpaSebab` (4.3);
+- hubungan tampilnya disimpan di web: `Kasus.hubunganLain` (7), digambar sebagai garis putus-putus di pohon
+  berlabel "anak angkat";
+- penjelasan T3 berlaku ("Anak angkat tidak mewarisi karena tidak ada hubungan nasab"). Ditambah catatan
+  berlabel **Hukum positif, bukan fikih**: KHI mengatur wasiat wajibah untuk anak angkat; hitungannya fase 4.
+  Jalan yang ada di KB: wasiat untuk bukan ahli waris ≤ 1/3 (bab 01).
+- Tes engine: orang tanpa hubungan di graf tidak mengubah hasil dan mendapat tepat satu alasan.
+
+### 5.4 Nama hubungan di semua tempat
+
+Setiap orang disebut dengan nama hubungan **dari sisi pusat yang sedang dilihat** ("Siti · ibu Budi",
+"Pak Harjo · besan Mbah Karto"). Sebutan ini penyajian, bukan fikih:
+- fungsi murni `sebutanHubungan(graf, idPusat, idOrang)` di `packages/explain`, di sebelah sebutan bertingkat
+  yang sudah ada (branch pohon bebas);
+- mencari jalur terpendek lewat orang tua / anak / pasangan, lalu mencocokkannya dengan tabel 5.2;
+- bila tak ada nama baku, sebutan bersusun: "anak dari sepupu Budi";
+- orang dengan dua jalur (Mbah Sumi: istri Mbah dan ibu Budi) disebut menurut pusat yang sedang dilihat, dan di
+  Hasil kedua perannya tampil (4.1 D2);
+- peran ahli waris dari engine (`labelPeran`) tetap dipakai untuk penerima di hasil. `sebutanHubungan` dipakai
+  untuk orang lain dan di pohon;
+- kata disimpan di diksi (`narasi.hubungan.*`), bukan hardcode.
+
+### 5.5 Pohon keluarga yang benar
+
+Pohon adalah tempat pengguna mengecek "ini keluarga saya". Satu kotak yang salah tempat membuat seluruh hasil
+tidak dipercaya. Karena itu syarat pohon ditulis sebagai **invarian yang dites**, bukan kesan visual.
+
+**Invarian tata letak** (dites otomatis pada galeri fixture di bawah):
+
+| # | Syarat |
+|---|---|
+| P1 | Tiap orang tepat **satu kotak**, walau terhubung lewat dua jalur. |
+| P2 | Satu baris = satu generasi terhadap pusat. Pasangan ditaruh di baris pasangannya yang sedarah; bila keduanya sedarah dan beda generasi, garis nikah boleh miring. |
+| P3 | Pasangan bersebelahan. Suami dengan beberapa istri: istri berderet di satu sisi, urut pernikahan, tiap garis nikah terpisah. |
+| P4 | Anak tergantung dari **titik nikah** orang tuanya, bukan dari satu orang. Anak dari pernikahan berbeda terpisah per pernikahan. Anak tanpa orang tua lain tercatat tergantung dari satu orang tuanya. |
+| P5 | Graf berbentuk pohon (tanpa pernikahan antar-kerabat): **nol** garis bersilangan dan nol kotak bertumpuk. Graf dengan pernikahan antar-kerabat: nol kotak bertumpuk, silang sesedikit mungkin, P1 tetap. |
+| P6 | Keluarga asal pasangan (mertua, besan, ipar) mengelompok di atas pasangan itu dan tidak menyela garis keturunan utama. |
+| P7 | Urutan stabil: menambah satu orang tidak memindahkan orang lain ke sisi berbeda. Saudara urut lahir bila tahun diisi, selain itu urut ditambahkan. |
+| P8 | Penghubung (orang buatan sistem) tampil sebagai kotak kecil "belum dinamai", bisa diketuk untuk diberi nama. |
+| P9 | Hubungan tanpa nasab (5.3) digambar putus-putus dan tidak memengaruhi generasi. |
+
+**Tanda keadaan di kotak** (ikon SVG + teks, tidak hanya warna):
+- wafat (+ tahun, "sebelum/sesudah {almarhum}");
+- hilang;
+- dalam kandungan (kotak putus-putus);
+- kelamin belum jelas;
+- beda agama;
+- bercerai (garis nikah putus-putus).
+
+Di Hasil ada tambahan: penerima ditonjolkan beserta nominal (bisa disembunyikan), yang tidak menerima diredupkan,
+dan mengetuk kotak menampilkan alasannya (4.1).
+
+**Interaksi**
+- **Lihat dari sisi orang ini**: pusat bisa dipindah ke siapa saja. Nama hubungan (5.4) dan generasi ikut
+  berubah. Bawaannya almarhum bagian yang sedang diisi; di Hasil, pemilik harta pertama.
+- Mengetuk kotak membuka menu 5.1. Tombol "+" kecil di tepi kotak menjadi jalan pintas + Anak / + Pasangan /
+  + Orang tua.
+- **Pohon besar** (> 25 orang): cabang yang seluruhnya hidup dan tidak menerima bisa dilipat ("+3 orang"). Di
+  desktop bisa diperbesar dan digeser; di HP daftar bertingkat menjadi tampilan bawaan dan pohon dibuka layar
+  penuh.
+- **Aksesibilitas**: daftar bertingkat adalah padanan pohon untuk pembaca layar. Kotak di pohon bisa difokus
+  dengan keyboard, dan menunya dibuka dengan Enter.
+
+**Algoritma.** Pengurutan satu kali per generasi di `tataLetak.ts` diganti **tata letak berlapis dengan simpul
+nikah**:
+1. lapis = generasi (P2);
+2. tiap pernikahan yang punya anak menjadi simpul di antara lapis orang tua dan lapis anak;
+3. pengurangan silang: urut barycenter bolak-balik atas-bawah sampai tidak membaik (paling banyak 24 putaran),
+   ditambah tukar tetangga, dengan blok pasangan tidak dipisah;
+4. posisi: anak berpusat di bawah simpul nikahnya, orang tua di atas anak-anaknya, tumpukan diselesaikan dengan
+   menggeser subpohon.
+
+Semua langkah deterministik. `ponytail:` implementasi sendiri dulu (± 200 baris, tanpa dependency). Bila galeri
+fixture masih melanggar P5, baru pertimbangkan `d3-dag` (sugiyama) sebagai dependency.
+
+**Galeri fixture pohon** (tiap fixture dicek P1–P9 dan disimpan sebagai gambar pembanding):
+1. kasus biasa (istri, 2 anak);
+2. turun-temurun 4 generasi ± 40 orang (spec babak 8.7);
+3. poligami 2 istri, anak masing-masing;
+4. janda menikah lagi, anak dari dua suami (S12);
+5. suami pewaris menikahi saudari pewaris (S11);
+6. sepupu menikah (pernikahan antar-kerabat);
+7. besan dua sisi: dua anak menikah, satu besan wafat;
+8. anak tanpa ibu tercatat, dan penghubung tak bernama;
+9. anak angkat dan anak tiri;
+10. janin, orang hilang, kelamin belum jelas, cerai;
+11. pusat dipindah dari Mbah ke cucu (label dan generasi berubah, P1 tetap).
 
 ## 6. Beranda, simpan, lembar, berkas, catatan resmi
 
@@ -345,6 +490,8 @@ interface Kasus {
   urutanWafat: IdOrang[];
   dikandungSetelahWafat?: Record<IdOrang, IdOrang>;
   gharqa?: { anggota: IdOrang[]; keadaan: KeadaanGharqa };  // harta anggota = barang dengan pemilik itu
+  /** Hubungan tanpa nasab, hanya tampilan (5.3). Engine tidak menerimanya. */
+  hubunganLain?: Array<{ jenis: 'anakAngkat' | 'anakAsuh'; idAnak: IdOrang; idOrangTua: IdOrang }>;
   wafatSesudahDibagi?: IdOrang[];                         // hanya dari migrasi v3; UI baru tidak membuatnya
   /** Jawaban "tidak tahu" / "bersamaan" yang disimpan apa adanya; sumber kemungkinan jenis B/C (3). */
   belumPasti?: HalBelumPasti[];
@@ -359,7 +506,8 @@ interface Kasus {
   `gharqa.tirkah[id]` → barang milik `id` + `kewajiban[id]`; `rincianHarta` → nama barang (satu barang per
   kategori yang terisi); `wafatSesudahDibagi` tetap.
 - **`bacaKasus`**: `pemilik` ada di graf dan berstatus wafat (atau pewaris); `calon` 2–3 orang; `nilai ≥ 0`;
-  `kewajiban` hanya untuk pemilik yang ada; minimal satu barang.
+  `kewajiban` hanya untuk pemilik yang ada; minimal satu barang;
+  `hubunganLain` hanya berisi orang yang ada, dan anaknya tidak punya `idAyah`/`idIbu` ke orang tua angkat itu.
 - **`rapikanKeadaan`**: entri `belumPasti` yang orangnya hilang dari graf dibuang; hal yang terjawab pasti
   dipindah ke `urutanWafat` / `statusHidup` / `dikandungSetelahWafat`. Barang dengan pemilik yang dihapus dari graf ikut dihapus **setelah konfirmasi** yang
   menyebut nama barangnya.
@@ -377,7 +525,10 @@ interface Kasus {
 | `src/kemungkinan.ts` | daftar hal belum pasti (jenis B/C), `(kasus, perubahan) => Kasus`, batas tampil |
 | `src/layar/wizard/LangkahHarta.tsx` | daftar barang (2.1), kewajiban per pemilik (2.2) |
 | `src/layar/keadaan/HartaAlmarhumLain.tsx` | 2.3 |
-| `src/layar/SuntingPohon.tsx` | daftar bertingkat + menu per orang (5) |
+| `packages/explain` (`sebutanHubungan`) | nama hubungan dari sisi pusat (5.4) |
+| `src/checklist.ts` | ekspor `pastikanOrangTua`, `tambahSaudara`, `tambahOrang`; jalur nama hubungan 5.2 (`tambahMenurutHubungan`) |
+| `src/hasil/tataLetak.ts` | tata letak berlapis dengan simpul nikah (5.5) |
+| `src/layar/SuntingPohon.tsx` | pohon/daftar bertingkat + menu per orang (5.1), tambah kerabat lain (5.2) |
 | `src/hasil/HasilGabungan.tsx`, `BagaimanaKalau.tsx`, `YangSeringDitanyakan.tsx` | 2.5, 3, 4.2 |
 | `src/gaya/cetak.css` | lembar musyawarah (6.3) |
 
@@ -393,6 +544,11 @@ interface Kasus {
   calon; > 4 → daftar Pastikan; E1 → dua kemungkinan berlabel perbandingan.
 - `turunkanDariWaktu` dengan pemilik bukan pewaris pertama.
 - Migrasi v3 → v4 (termasuk gharqa dan `rincianHarta`), `bacaKasus` menolak pemilik yang tidak ada.
+- `tambahMenurutHubungan`: tiap baris tabel 5.2 menghasilkan graf yang benar; "saudara tiri" dengan orang tua
+  sama → saudara seayah/seibu; anak angkat tanpa `idAyah`/`idIbu` + entri `hubunganLain`.
+- `sebutanHubungan`: tiap baris tabel 5.2 dari dua pusat berbeda; orang dengan dua jalur; sebutan bersusun.
+- `tataLetak`: galeri fixture 5.5, P1–P9 dicek otomatis (tumpukan kotak, jumlah silang, pasangan bersebelahan,
+  anak di bawah simpul nikah, stabil setelah tambah satu orang).
 - Komponen: kasus biasa tanpa layar tambahan; "Milik berdua" → pesan jujur; "+ Anak" pada orang dengan satu
   istri tidak bertanya ibu; Hasil satu barang tanpa tab; blok "Yang sering ditanyakan" hanya muncul bila polanya ada.
 
@@ -400,12 +556,13 @@ interface Kasus {
 
 1. Kata tampil: "babak" dan "dunia" diganti (1). Perbaikan cepat, berdiri sendiri.
 2. Jejak `BUKAN_AHLI_WARIS` + kalimat alasan lapis 1 (4.3, 4.2 butir 1).
-3. Sunting di tempat (5).
-4. Fixture tumpukan harta, lalu `Kasus` v4 + migrasi.
-5. Daftar barang + kewajiban per pemilik + hitung per pemilik + hasil dua tampilan (2).
-6. Bagaimana kalau: jenis A (relabel taqdir), lalu B, lalu C; coba-coba (3).
-7. Blok "Yang sering ditanyakan" (kalimat menunggu tim keilmuan) (4.2).
-8. Beranda, simpan lanjut nanti, lembar musyawarah, label kirim berkas, catatan resmi (6).
+3. Tata letak pohon + galeri fixture (5.5), `sebutanHubungan` (5.4).
+4. Tambah dari orang terkait dan dari nama hubungan, anak angkat (5.1–5.3).
+5. Fixture tumpukan harta, lalu `Kasus` v4 + migrasi.
+6. Daftar barang + kewajiban per pemilik + hitung per pemilik + hasil dua tampilan (2).
+7. Bagaimana kalau: jenis A (relabel taqdir), lalu B, lalu C; coba-coba (3).
+8. Blok "Yang sering ditanyakan" (kalimat menunggu tim keilmuan) (4.2).
+9. Beranda, simpan lanjut nanti, lembar musyawarah, label kirim berkas, catatan resmi (6).
 
 ## Di luar cakupan
 
