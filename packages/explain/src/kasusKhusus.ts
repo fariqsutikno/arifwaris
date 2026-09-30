@@ -28,7 +28,7 @@ const gharqa = (penyusun: Penyusun, kunci: string, sisipan: Record<string, Sisip
 
 export function jelaskanTaqdir(hasil: TaqdirOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): PenjelasanKasusKhusus {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
-  const sebut = buatSebut(graf, hasil.daftarDunia.map(dunia => ({ mayit: graf.idPewaris, statusOrang: dunia.statusOrang })), penyusun, id => sebutanSumber(hasil.daftarDunia, graf, id, penyusun));
+  const sebut = buatSebut(graf, hasil.daftarDunia.flatMap(dunia => dunia.daftarStatus), penyusun, id => sebutanSumber(hasil.daftarDunia, graf, id, penyusun));
   return { daftarBagian: [
     pembukaanTaqdir(hasil, graf, sebut, penyusun),
     ...(adaKemungkinanLuar(hasil) ? [kemungkinan(hasil, graf, sebut, penyusun)] : []),
@@ -121,7 +121,7 @@ function sebutanSumber(daftarDunia: DuniaTaqdir[], graf: GrafKeluarga, id: IdOra
   const orangIni = graf.orang[id]!;
   if (orangIni.nama) return undefined;
   if (orangIni.statusHidup === 'dalamKandungan') {
-    return teksKamus(penyusun, 'narasi.taqdir.sebut.janin', { ibu: labelDari(graf, daftarDunia.map(dunia => ({ mayit: graf.idPewaris, statusOrang: dunia.statusOrang })), orangIni.idIbu!, penyusun) });
+    return teksKamus(penyusun, 'narasi.taqdir.sebut.janin', { ibu: labelDari(graf, daftarDunia.flatMap(dunia => dunia.daftarStatus), orangIni.idIbu!, penyusun) });
   }
   if (!orangIni.khuntsa) return undefined;
   // Peran di dunia mana pun (lk atau pr), lalu padanan jenis kelamin lainnya; tanpa padanan (mis. paman) → kerabat.

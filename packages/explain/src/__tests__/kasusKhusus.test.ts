@@ -86,7 +86,7 @@ describe('Penjelasan gharqa × taqdir (13.0b)', () => {
 
   test('[SYF] harta yang memuat haml menyebut bagian yang ditahan', () => {
     const teks = teksBagian(jelaskan('syafii'), 1);
-    expect(teks).toContain('Bagian janin yang dikandung istri ditahan seluruhnya.');
+    expect(teks).toContain('Bagian janin yang dikandung istri dari almarhum ditahan seluruhnya.');
     expect(teks).toContain('Ditahan (mauquf): 1260/1440 = Rp6.300.000.');
     expect(teks.some(baris => baris.includes('Kerabat'))).toBe(false);
   });
