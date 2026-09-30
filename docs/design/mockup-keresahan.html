@@ -36,7 +36,7 @@ main{max-width:1100px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-dir
 .layar{display:flex;flex-direction:column;gap:14px}
 
 .mini{background:var(--surface);border:2px solid var(--outline);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--pop-sm)}
-.mini h3{font-size:16px}
+.mini h2{font-size:16px}
 .label{font:700 12px var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 .op{display:flex;gap:10px;align-items:center;min-height:40px;padding:6px 12px;border:2px solid var(--outline);border-radius:12px;background:var(--raised);font-size:14px;cursor:pointer;text-align:left;width:100%;color:var(--ink);font-family:var(--sans)}
 .op.pil{background:var(--soft);font-weight:700}
@@ -85,7 +85,7 @@ details[open] summary .ik{transform:rotate(90deg)}
 .menu{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:14px}
 
 .kertas{background:#fff;color:#111;border:1px solid #999;border-radius:4px;padding:14px;font-size:12.5px;box-shadow:3px 3px 0 rgba(0,0,0,.25)}
-.kertas h3{font-size:14px;color:#111}.kertas table{width:100%;border-collapse:collapse;margin-top:6px}
+.kertas h2{font-size:14px;color:#111}.kertas table{width:100%;border-collapse:collapse;margin-top:6px}
 .kertas td{padding:3px 4px;border-bottom:1px solid #ccc;vertical-align:top}.kertas td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .pilih{display:flex;flex-direction:column;gap:6px}
 </style>
@@ -109,7 +109,7 @@ details[open] summary .ik{transform:rotate(90deg)}
   <div class="resah"><span class="no">1</span><p class="suara">"Rumah Mbah mau dijual. Dulu tidak pernah dibagi. Mulai dari mana?"</p>
     <div class="jawab"><div class="brp"><span class="chip">Spec 6.1</span></div>
       <p>Pintu masuk menyebut situasi, bukan istilah. Pilihan pertama langsung membuka jalur silsilah.</p></div></div>
-  <div class="layar"><div class="mini"><span class="label">Beranda</span><h3>Apa yang ingin kamu ketahui?</h3>
+  <div class="layar"><div class="mini"><span class="label">Beranda</span><h2>Apa yang ingin kamu ketahui?</h2>
     <button class="op pil"><span class="dot"></span>Harta keluarga belum dibagi sejak lama</button>
     <button class="op"><span class="dot"></span>Seseorang baru saja wafat</button>
     <button class="op"><span class="dot"></span>Saya sedang belajar faraidh</button>
@@ -124,7 +124,7 @@ details[open] summary .ik{transform:rotate(90deg)}
       <ul><li>Nilai boleh kosong; hasil tampil dalam persen.</li>
       <li>Harta bersama suami-istri tidak dibagi aplikasi. Pesannya jujur, dan jalan keluarnya jelas.</li></ul></div></div>
   <div class="layar">
-    <div class="mini"><span class="label">Langkah 2 · Harta</span><h3>Harta yang belum dibagi</h3>
+    <div class="mini"><span class="label">Langkah 2 · Harta</span><h2>Harta yang belum dibagi</h2>
       <div class="barang"><b>Rumah Jl. Melati</b>
         <div class="baris"><div><span class="kecil">Nilai sekarang</span><div class="in">Rp 1.100.000.000</div></div>
           <div><span class="kecil">Masih utuh, belum dibagi?</span><div class="in">Ya</div></div></div>
@@ -149,7 +149,7 @@ details[open] summary .ik{transform:rotate(90deg)}
     <div class="jawab"><div class="brp"><span class="chip">Spec 2.3</span></div>
       <p>Muncul di akhir langkah Keluarga, hanya bila ada almarhum yang belum tercatat punya harta. Jawaban bawaan: tidak ada.</p></div></div>
   <div class="layar"><div class="mini"><span class="label">Langkah 3 · Keluarga, akhir</span>
-    <h3>Bu Siti juga sudah wafat. Apakah beliau meninggalkan harta sendiri yang juga belum dibagi?</h3>
+    <h2>Bu Siti juga sudah wafat. Apakah beliau meninggalkan harta sendiri yang juga belum dibagi?</h2>
     <button class="op pil"><span class="dot"></span>Tidak ada</button>
     <button class="op"><span class="dot"></span>Ada, tambah barangnya</button>
     <p class="kecil">Kalau ada, barang baru terbuka dengan pemilik sudah terisi "Bu Siti".</p></div></div>
@@ -163,7 +163,7 @@ details[open] summary .ik{transform:rotate(90deg)}
       <ul><li>Bagian per orang dirinci menurut pemilik asalnya.</li>
       <li>Sisa pembulatan dilaporkan, tidak dibagi diam-diam.</li>
       <li>Hanya satu barang: tab disembunyikan.</li></ul></div></div>
-  <div class="layar"><div class="mini" id="hasil"><span class="label">Hasil · lapis 1</span><h3>Pembagian harta Pak Ahmad dan Bu Siti</h3>
+  <div class="layar"><div class="mini" id="hasil"><span class="label">Hasil · lapis 1</span><h2>Pembagian harta Pak Ahmad dan Bu Siti</h2>
     <div class="tab" role="tablist"><button role="tab" aria-selected="true" data-t="orang">Per orang</button><button role="tab" aria-selected="false" data-t="barang">Per barang</button></div>
     <div data-p="orang">
       <div class="row"><div class="apa"><span><b>Budi</b> · anak laki-laki</span><span class="asal">dari harta Bu Siti Rp 100 jt · dari harta Pak Ahmad Rp 400 jt</span><span class="alasan">Anak laki-laki mendapat dua kali bagian anak perempuan.</span></div><span class="uang">Rp 500.000.000</span></div>
@@ -192,7 +192,7 @@ details[open] summary .ik{transform:rotate(90deg)}
       <li>Lebih dari 4 kemungkinan: diganti daftar hal yang perlu dipastikan.</li></ul></div></div>
   <div class="layar">
     <div class="mini" id="kem"><span class="label">Hasil · jenis B dan C</span>
-      <h3>Hasil ini bergantung pada 1 hal yang belum pasti</h3>
+      <h2>Hasil ini bergantung pada 1 hal yang belum pasti</h2>
       <p class="kecil">Urutan wafat Budi dan Mbah Karto belum dipastikan. <a>Pastikan</a></p>
       <div class="pilih">
         <button class="op pil" data-k="0"><span class="dot"></span>Budi wafat sesudah Mbah Karto</button>
@@ -203,7 +203,7 @@ details[open] summary .ik{transform:rotate(90deg)}
       <div class="tenang"><b>Aplikasi belum bisa menentukan mana yang berlaku.</b><p class="kecil" style="margin-top:4px">Budi dan Rina wafat bersamaan. Orang yang wafat bersamaan tidak saling mewarisi, dan hitungan untuk keadaan ini belum tersedia. Yang tampil di bawah adalah perbandingan untuk bahan bertanya ke ahli faraidh, bukan jawaban.</p></div>
       <div class="op pil"><span class="tag">Perbandingan</span> Kalau Budi lebih dulu</div><div class="op"><span class="tag">Perbandingan</span> Kalau Rina lebih dulu</div></div>
     <div class="mini"><span class="label">Hasil · jenis A</span>
-      <h3>Pembagian sekarang</h3>
+      <h2>Pembagian sekarang</h2>
       <div class="row"><span>Dewi</span><span class="uang">Rp 1.020.000.000</span></div>
       <div class="row"><span>Disimpan dulu untuk bayi Dewi</span><span class="uang">Rp 340.000.000</span></div>
       <details><summary><svg class="ik"><use href="#i-chev"/></svg>Bagaimana kalau… (3)</summary>
@@ -229,7 +229,7 @@ details[open] summary .ik{transform:rotate(90deg)}
           <div class="row"><div class="apa"><span><b>Pak Harjo</b> · besan</span><span class="alasan">Besan tidak mewarisi dari Mbah Karto. Tidak ada sebab waris antara keduanya.</span></div></div>
           <div class="row"><div class="apa"><span><b>Tono</b> · anak angkat Budi</span><span class="alasan">Anak angkat tidak mewarisi karena tidak ada hubungan nasab.</span></div></div>
           <div class="row"><div class="apa"><span><b>Anak Pak Slamet</b> · cucu</span><span class="alasan">Pak Slamet wafat sebelum Mbah, jadi tidak mewarisi. Anak-anaknya terhalang oleh Budi, anak laki-laki Mbah yang masih hidup.</span></div></div></div></details></div>
-    <div class="mini"><span class="label">Hasil · lapis 2</span><h3>Yang sering ditanyakan keluarga</h3>
+    <div class="mini"><span class="label">Hasil · lapis 2</span><h2>Yang sering ditanyakan keluarga</h2>
       <div class="tenang"><b>Kok keluarga Bu Dewi dapat?</b><p class="kecil" style="margin-top:4px">Dewi menerima sebagai istri Budi, bukan sebagai kerabat Mbah. Bagian itu sudah menjadi miliknya. <a>Bagaimana kalau Budi wafat sebelum Mbah?</a></p></div>
       <div class="tenang"><b>Kok cucu Pak Slamet tidak dapat?</b><p class="kecil" style="margin-top:4px">Menurut fikih, Pak Slamet wafat lebih dulu sehingga tidak mewarisi, dan anak-anaknya terhalang oleh paman mereka. <span class="chip" style="font-size:12px">Hukum positif, bukan fikih</span> KHI pasal 185 mengatur ahli waris pengganti secara berbeda; hitungan KHI ada di fase terpisah. <a>Bagaimana kalau Pak Slamet masih hidup?</a></p></div>
       <p class="kecil">Cara yang ada di fikih untuk menyikapinya: <a>kerelaan ahli waris (takharuj)</a> · <a>wasiat sampai 1/3</a></p></div>
@@ -267,7 +267,7 @@ details[open] summary .ik{transform:rotate(90deg)}
       </svg>
       <div class="legenda"><span><i style="border-style:dashed;background:var(--sunken)"></i>wafat</span><span><i style="background:var(--ok-soft)"></i>menerima</span><span><i style="background:var(--sunken);opacity:.75"></i>bukan ahli waris (diredupkan)</span><span><i style="border-style:dotted"></i>dalam kandungan</span><span>Garis putus-putus: tanpa nasab (anak angkat)</span><span>Garis tebal: pernikahan</span></div>
     </div>
-    <div class="mini"><span class="label">Mengetuk kotak Dewi</span><h3>Dewi · menantu Mbah Karto · istri Budi</h3>
+    <div class="mini"><span class="label">Mengetuk kotak Dewi</span><h2>Dewi · menantu Mbah Karto · istri Budi</h2>
       <p class="kecil">Keluarga asal Dewi (besan) mengelompok di atas Dewi, tidak menyela garis keturunan Mbah.</p>
       <div class="menu"><a>+ Orang tua</a><a>+ Pasangan</a><a>+ Anak</a><a>+ Saudara</a><a>Ubah</a><a>Hapus</a><a>Lihat dari sisi Dewi</a></div>
       <div class="tenang"><b>+ Anak, pada orang dengan dua istri</b><p class="kecil" style="margin-top:4px">Dari istri yang mana? <a>Dewi</a> · <a>Istri lain, tidak dicatat</a></p></div></div>
@@ -286,12 +286,12 @@ details[open] summary .ik{transform:rotate(90deg)}
       <div class="in kosong">Cari hubungan, misalnya besan</div>
       <div class="pilih">
         <div class="op">Mertua</div><div class="op">Menantu</div><div class="op pil">Besan</div><div class="op">Ipar</div><div class="op">Anak tiri</div><div class="op">Saudara tiri</div><div class="op">Anak angkat</div></div></div>
-    <div class="mini"><span class="label">Besan · pertanyaan penghubung</span><h3>Besan dari menantu yang mana?</h3>
+    <div class="mini"><span class="label">Besan · pertanyaan penghubung</span><h2>Besan dari menantu yang mana?</h2>
       <div class="op pil"><span class="dot"></span>Dewi (istri Budi)</div>
       <div class="op"><span class="dot"></span>Orang lain, belum dicatat</div>
       <div class="tenang"><b>Nama (boleh kosong)</b><div class="in kosong" style="margin-top:6px">Pak Harjo</div></div>
       <div style="display:flex;justify-content:space-between;align-items:center"><a>Batal</a><span class="tbl">Simpan</span></div></div>
-    <div class="mini"><span class="label">Bila dipilih "Saudara tiri"</span><h3>Ada ayah atau ibu yang sama?</h3>
+    <div class="mini"><span class="label">Bila dipilih "Saudara tiri"</span><h2>Ada ayah atau ibu yang sama?</h2>
       <div class="op pil"><span class="dot"></span>Ya, satu ayah saja atau satu ibu saja</div>
       <div class="op"><span class="dot"></span>Tidak, hanya lewat orang tua tiri</div>
       <p class="kecil">Di sehari-hari "saudara tiri" sering berarti saudara seayah atau seibu, dan mereka ahli waris.</p></div>
@@ -304,7 +304,7 @@ details[open] summary .ik{transform:rotate(90deg)}
     <div class="jawab"><div class="brp"><span class="chip">Spec 6.2–6.5</span></div>
       <p>Lembar musyawarah: satu halaman A4 dari data hasil yang sudah ada. Tanpa tabel munasakhat dan istilah Arab. Simpan-lanjut-nanti dan kirim berkas untuk keluarga yang mengisi.</p></div></div>
   <div class="layar">
-    <div class="kertas"><h3>Pembagian harta Pak Ahmad dan Bu Siti (menurut madzhab Syafi'i)</h3>
+    <div class="kertas"><h2>Pembagian harta Pak Ahmad dan Bu Siti (menurut madzhab Syafi'i)</h2>
       <p style="font-size:12px;color:#555">Rumah Jl. Melati dan emas Ibu · dihitung 1 Oktober 2026</p>
       <p style="margin:8px 0 2px;font-size:12px;color:#555">[pohon keluarga kecil, tanpa angka]</p>
       <table><tr><td><b>Budi</b><br><span style="color:#555">Anak laki-laki mendapat dua kali bagian anak perempuan.</span></td><td>Rp 500.000.000</td></tr>
