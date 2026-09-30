@@ -43,12 +43,17 @@ export function saringJihah(daftarRute: RuteTanzil[]): { lolos: RuteTanzil[]; te
   for (const rute of daftarRute) terdekat.set(rute.jihah, Math.min(terdekat.get(rute.jihah) ?? Infinity, rute.langkah));
   const lolos = daftarRute.filter(rute => rute.langkah === terdekat.get(rute.jihah));
   const tersisih = daftarRute.filter(rute => rute.langkah !== terdekat.get(rute.jihah));
+  const penghijab = (rute: RuteTanzil) => [...new Set(lolos
+    .filter(pemenang => pemenang.jihah === rute.jihah && pemenang.idOrang !== rute.idOrang).map(pemenang => pemenang.idOrang))];
   const jejak: LangkahJejak[] = [
     ...lolos.map((rute): LangkahJejak => ({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TANZIL',
       idOrang: rute.idOrang, perantara: rute.perantara, kunciPerantara: rute.kunciPerantara, jihah: rute.jihah, langkah: rute.langkah })),
-    ...tersisih.map((rute): LangkahJejak => ({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH',
-      idOrang: rute.idOrang, perantara: rute.perantara,
-      oleh: [...new Set(lolos.filter(pemenang => pemenang.jihah === rute.jihah).map(pemenang => pemenang.idOrang))] })),
+    // [R14-11] jalur yang kalah hanya oleh jalur lain orang itu sendiri bukan terhijab: ia mewarisi dengan jalur terdekat.
+    ...tersisih.flatMap((rute): LangkahJejak[] => {
+      const oleh = penghijab(rute);
+      return oleh.length === 0 ? [] : [{ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH',
+        idOrang: rute.idOrang, perantara: rute.perantara, oleh }];
+    }),
   ];
   return { lolos, tersisih, jejak };
 }

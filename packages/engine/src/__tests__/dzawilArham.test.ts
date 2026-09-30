@@ -3,7 +3,9 @@ import { hitungDzawilArham } from '../dzawilArham.js';
 import { hitung } from '../pipeline.js';
 import type { HasilEngine, Ruleset } from '../types.js';
 import { case24 } from './fixtures/bab16.js';
-import { DZAWIL_ARHAM_FIXTURES, KASUS_DZAWIL_ARHAM_MADZHAB, dengan, type FixtureDzawilArham } from './fixtures/dzawilArham.js';
+import {
+  DZAWIL_ARHAM_FIXTURES, KASUS_DZAWIL_ARHAM_MADZHAB, dengan, grafDA14, grafDA17, grafDA19, grafDA20, type FixtureDzawilArham,
+} from './fixtures/dzawilArham.js';
 
 type Ok = Extract<HasilEngine, { status: 'OK' }>;
 const fpb = (a: bigint, b: bigint): bigint => (b === 0n ? a : fpb(b, a % b));
@@ -63,6 +65,36 @@ describe('Dzawil arham — nominal', () => {
       A: { id: 'A', jenisKelamin: 'P' as const, statusHidup: 'hidup' as const, agama: 'islam' as const, idAyah: 'D' } }, pernikahan: [] };
     const masukan = { ...case24.input, graf };
     expect(hitungDzawilArham(masukan)).toEqual(hitung(masukan));
+  });
+});
+
+describe('Dzawil arham — temuan review akhir', () => {
+  test("istri + dzawil arham yang semuanya terhalang mawani' → istri 1/4, sisa ke baitul mal [R02-1]", () => {
+    const hasil = hitungDzawilArham(dengan(grafDA17));
+    if (hasil.status !== 'OK') throw new Error(`${hasil.status}`);
+    expect(sahamPerOrang(hasil).W).toBe(1n);
+    expect(hasil.tabel.totalKolom.ashl).toBe(4n);
+    expect(hasil.sisaKeluar?.tujuan).toBe('baitulMal');
+  });
+
+  test('penerima terhijab di dalam cabang perantara punya penghijab', () => {
+    const hasil = hitungDzawilArham(dengan(grafDA19));
+    if (hasil.status !== 'OK') throw new Error(`${hasil.status}`);
+    expect(hasil.statusOrang.DS).toMatchObject({ jenis: 'mahjub', oleh: ['SD'] });
+  });
+
+  test('dua jalur satu jihah: tidak ada jejak "terhijab oleh dirinya sendiri"', () => {
+    const hasil = hitungDzawilArham(dengan(grafDA20));
+    if (hasil.status !== 'OK') throw new Error(`${hasil.status}`);
+    const terhijabDiriSendiri = hasil.jejak.filter(langkah => langkah.jenis === 'DZAWIL_ARHAM_TERHIJAB_JIHAH' && langkah.oleh.includes(langkah.idOrang));
+    expect(terhijabDiriSendiri).toEqual([]);
+  });
+
+  test('satu penerima: tidak ada jejak sama rata / khilaf', () => {
+    const hasil = hitungDzawilArham(dengan(grafDA14, 'hanbali'));
+    if (hasil.status !== 'OK') throw new Error(`${hasil.status}`);
+    expect(hasil.jejak.some(langkah => langkah.jenis === 'KHILAF_MADZHAB')).toBe(false);
+    expect(hasil.jejak.some(langkah => langkah.jenis === 'DZAWIL_ARHAM_TURUN' && langkah.rasio === 'samaRata')).toBe(false);
   });
 });
 

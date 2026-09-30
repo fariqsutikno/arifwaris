@@ -247,6 +247,73 @@ export const grafDA16: GrafKeluarga = {
   pernikahan: [],
 };
 
+// Mawani': istri + anak lk saudari kandung non-muslim → tidak ada dzawil arham yang sah; sisa ke baitul mal [R02-1].
+export const grafDA17: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    W: p('W', 'P'),
+    SiK: p('SiK', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }),
+    X: p('X', 'L', { idIbu: 'SiK', agama: 'nonIslam' }),
+  },
+  pernikahan: [{ idSuami: 'D', idIstri: 'W', status: 'utuh' }],
+};
+
+// [R14-8] anak lk & anak pr dari anak pr saudari seibu: di bawah perantara seibu sama rata, walau turunnya rekursif.
+export const grafDA18: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    FX: p('FX', 'L', penghubung), QH: p('QH', 'L', penghubung),
+    SI: p('SI', 'P', { ...penghubung, idAyah: 'FX', idIbu: 'M1' }),
+    Q: p('Q', 'P', { ...penghubung, idIbu: 'SI' }),
+    XL: p('XL', 'L', { idAyah: 'QH', idIbu: 'Q' }),
+    XP: p('XP', 'P', { idAyah: 'QH', idIbu: 'Q' }),
+  },
+  pernikahan: [],
+};
+
+// K14-3 [HNB] "sama rata bila ayah dan ibunya sama": anak dari anak pr, satu ibu beda ayah → belum didukung.
+export const grafDA11BedaAyah: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...grafDA11.orang,
+    H1: p('H1', 'L', penghubung), H2: p('H2', 'L', penghubung),
+    XL: p('XL', 'L', { idAyah: 'H1', idIbu: 'AP' }),
+    XP: p('XP', 'P', { idAyah: 'H2', idIbu: 'AP' }),
+  },
+  pernikahan: [],
+};
+
+// Terhijab di dalam cabang perantara: di bawah anak pr AP, cucu pr-nya (SD, ahli waris AP) mendahului anak lk anak pr-nya (DS).
+export const grafDA19: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    D: p('D', 'L', { statusHidup: 'wafat' }),
+    AP: p('AP', 'P', { ...penghubung, idAyah: 'D' }),
+    AS: p('AS', 'L', { ...penghubung, idIbu: 'AP' }),
+    AD: p('AD', 'P', { ...penghubung, idIbu: 'AP' }),
+    SD: p('SD', 'P', { idAyah: 'AS' }),
+    DS: p('DS', 'L', { idIbu: 'AD' }),
+  },
+  pernikahan: [],
+};
+
+// Satu orang dua jalur dalam jihah ubuwwah: lewat saudari kandung (2 langkah) dan saudara kandung (3 langkah).
+export const grafDA20: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    SiK: p('SiK', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }),
+    AZ: p('AZ', 'L', { ...penghubung, idIbu: 'SiK' }),
+    SK: p('SK', 'L', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }),
+    Q: p('Q', 'P', { ...penghubung, idAyah: 'SK' }),
+    IZ: p('IZ', 'P', { ...penghubung, idIbu: 'Q' }),
+    Z: p('Z', 'L', { idAyah: 'AZ', idIbu: 'IZ' }),
+  },
+  pernikahan: [],
+};
+
 export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
   { id: 'DA-01', sumber: '16 #24, 14.6', menguji: "khalah (→ ibu) & 'ammah (→ ayah)", input: case24.input,
     harapan: { status: 'OK', saham: { KL1: 1n, AM1: 2n }, penyebut: 3n, jenisJejak: ['DZAWIL_ARHAM_TANZIL', 'DZAWIL_ARHAM_MASALAH_PERANTARA'] } },
@@ -281,6 +348,12 @@ export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
     harapan: { status: 'PERLU_INPUT', isian: ['agama'] } },
   { id: 'DA-16', sumber: '14.10 (R14-13)', menguji: "'aul 6 → 7", input: dengan(grafDA16),
     harapan: { status: 'OK', saham: { N1: 2n, N2: 2n, N3: 1n, N4: 1n, KL: 1n }, penyebut: 7n } },
+  { id: 'DA-18', sumber: '14.5 (R14-8)', menguji: 'sama rata cabang seibu pada turun rekursif', input: dengan(grafDA18),
+    harapan: { status: 'OK', saham: { XL: 1n, XP: 1n }, penyebut: 2n } },
+  { id: 'DA-19', sumber: '14.5 (R14-7)', menguji: 'terhijab di dalam cabang perantara', input: dengan(grafDA19),
+    harapan: { status: 'OK', saham: { SD: 1n }, penyebut: 1n, dikecualikan: ['DS'] } },
+  { id: 'DA-20', sumber: '14.8 (R14-11)', menguji: 'dua jalur satu jihah: jalur terjauh gugur, bukan terhijab', input: dengan(grafDA20),
+    harapan: { status: 'OK', saham: { Z: 1n }, penyebut: 1n } },
 ];
 
 /** Kasus yang sama lintas madzhab (K14-1..3). */
@@ -299,6 +372,13 @@ export const KASUS_DZAWIL_ARHAM_MADZHAB: Array<{ id: string; graf: GrafKeluarga;
   } },
   { id: 'K14-3 khal & khalah seibu', graf: grafDA12Seibu, harapan: {
     hanbali: { status: 'TIDAK_DIDUKUNG', refs: ['K14-3'] },
+  } },
+  { id: 'K14-3 satu ibu beda ayah', graf: grafDA11BedaAyah, harapan: {
+    syafii: { status: 'OK', saham: { XL: 2n, XP: 1n }, penyebut: 3n },
+    hanbali: { status: 'TIDAK_DIDUKUNG', refs: ['K14-3'] },
+  } },
+  { id: 'K14-3 cabang seibu rekursif', graf: grafDA18, harapan: {
+    hanbali: { status: 'OK', saham: { XL: 1n, XP: 1n }, penyebut: 2n, jenisJejak: ['KHILAF_MADZHAB'] },
   } },
   { id: 'K14-1 maliki baitul mal', graf: grafDA11, konfigurasi: BAITUL_MAL, harapan: {
     maliki: { status: 'TIDAK_DIDUKUNG', refs: ['K14-1'] },

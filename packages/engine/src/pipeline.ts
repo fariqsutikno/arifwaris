@@ -10,7 +10,7 @@ import { tetapkanBagian } from './stages/bagian.js';
 import { turunkanPeran } from './stages/derivasi.js';
 import { terapkanHajb } from './stages/hajb.js';
 import { klasifikasikanMasalah } from './stages/klasifikasi.js';
-import { terapkanMawani } from './stages/mawani.js';
+import { maniDari, terapkanMawani } from './stages/mawani.js';
 import type { AhliWaris, KelompokBagian } from './stages/model.js';
 import { bagikanNominal, susunTabel } from './stages/pembagian.js';
 import { terapkanTashih } from './stages/tashih.js';
@@ -104,8 +104,9 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   const mawani = terapkanMawani(graf, daftarPeran, input.ruleset);
   const kandidat = Object.values(mawani.statusOrang)
     .flatMap(status => (status.jenis === 'ahliWaris' && punyaKunciAhliWaris(status.peran) ? [status.peran] : []));
+  // Dzawil arham yang terhalang mawani' dianggap tidak ada (bab 02): sisa pasangan tidak ditahan untuknya.
   const adaDzawilArham = Object.values(daftarPeran)
-    .some(peran => peran.kunci === 'DZAWIL_ARHAM' && graf.orang[peran.idOrang]!.statusHidup === 'hidup');
+    .some(peran => peran.kunci === 'DZAWIL_ARHAM' && graf.orang[peran.idOrang]!.statusHidup === 'hidup' && !maniDari(graf.orang[peran.idOrang]!));
   if (kandidat.length === 0) {
     return adaDzawilArham
       ? { status: 'TIDAK_DIDUKUNG', alasan: 'Tidak ada ashabul furudh/ashabah; pewarisan dzawil arham.', refs: ['R14-4'], kode: 'FASE_DZAWIL_ARHAM' }

@@ -111,7 +111,7 @@ const grafK04_3SatuPihak: GrafKeluarga = {
 
 // ─── Jalur terpendek fasidah, jalur lain shahihah: G tetap nenek shahihah lewat jalur ibu ───
 // PW→A→B→C→G (L P L: fasidah, 4 generasi) dan PW→I→J→K→G (P P P: shahihah, 4 generasi). [SYF]: G 1, anak lk 5.
-// Madzhab lain tertahan gerbang R14-4 karena C (jadd fasid) ada di graf.
+// [HNF]/[MLK] tertahan gerbang R14-4 karena C (jadd fasid) ada di graf; [HNB] R14-4 'ya' (18.4).
 const grafNenekJalurKedua: GrafKeluarga = {
   idPewaris: 'PW',
   orang: {

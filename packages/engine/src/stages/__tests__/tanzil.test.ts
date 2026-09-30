@@ -5,7 +5,7 @@ import { hitung } from '../../pipeline.js';
 import { KONFIGURASI_BAWAAN, type GrafKeluarga } from '../../types.js';
 import { turunkanPeran } from '../derivasi.js';
 import { maniDari } from '../mawani.js';
-import { bagiAntarPerantara, grafPosisi, periksaAulDzawilArham, samakanDalamSatuKelompok } from '../perantara.js';
+import { bagiAntarPerantara, grafPosisi, periksaAulDzawilArham, samakanPenerima } from '../perantara.js';
 import { cariRuteTanzil as cariRuteMentah, saringJihah, semuaLintasan } from '../tanzil.js';
 
 // Untuk graf normal hasilnya selalu daftar rute; TIDAK_DIDUKUNG diuji terpisah.
@@ -98,7 +98,7 @@ describe('perantara', () => {
     const graf = grafPosisi(grafDA11, 'AP', ['XL', 'XP']);
     const hasil = hitung(dengan(graf));
     if (hasil.status !== 'OK') throw new Error(hasil.status);
-    expect(samakanDalamSatuKelompok(hasil)).toEqual({ saham: { XL: 1n, XP: 1n }, masalah: 2n });
+    expect(samakanPenerima(hasil, grafDA11, 'syafii')).toEqual({ saham: { XL: 1n, XP: 1n }, masalah: 2n });
   });
 });
 

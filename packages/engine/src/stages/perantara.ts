@@ -5,7 +5,7 @@
 
 import { hitungDenganTercakup } from '../pipeline.js';
 import { sahamDari, totalSaham, type Saham } from '../gabung.js';
-import type { GrafKeluarga, HasilEngine, IdOrang, InputEngine, LangkahJejak, TabelMasalah } from '../types.js';
+import type { GrafKeluarga, HasilEngine, IdOrang, InputEngine, LangkahJejak, Ruleset, TabelMasalah } from '../types.js';
 import type { RuteTanzil } from './tanzil.js';
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
@@ -13,9 +13,10 @@ type BukanOk = Exclude<HasilEngine, { status: 'OK' }>;
 
 export const TANPA_TIRKAH = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
 
-// [R14-9] di dalam tanzil, radd pada mas'alah perantara/penerima ditetapkan R14-9 ("fardh + radd", berlaku [HNB]);
-// K09-1 hanya berbeda soal kapan radd terjadi (syarat baitul mal), bukan cara menghitungnya. Di luar tanzil tetap digerbang.
-export const RADD_TERCAKUP_TANZIL: ReadonlySet<string> = new Set(['R09-7', 'R09-8', 'R09-9']);
+// [R14-9] di dalam tanzil, radd pada mas'alah perantara/penerima ditetapkan R14-9 ("fardh + radd", berlaku [HNB]).
+// [K09-1] khilaf radd antar-madzhab hanya soal kapan radd terjadi (syarat baitul mal), bukan cara menghitungnya.
+// R09-9 (pasangan) tidak ikut: graf posisi tanpa pasangan [R14-12]. Di luar tanzil tetap digerbang.
+export const RADD_TERCAKUP_TANZIL: ReadonlySet<string> = new Set(['R09-7', 'R09-8']);
 const hitungTanzil = (masukan: InputEngine): HasilEngine => hitungDenganTercakup(masukan, RADD_TERCAKUP_TANZIL);
 
 export interface MasalahPerantara {
@@ -74,11 +75,18 @@ export function periksaAulDzawilArham(totalKolom: TabelMasalah['totalKolom']): v
   }
 }
 
-/** Penerima yang mendapat bagian semuanya satu kelompok → satu saham per kepala; selain itu undefined.
- *  [K14-3] [HNB] sama rata; [R14-8] [SYF] hanya cabang perantara seibu. */
-export function samakanDalamSatuKelompok(hasil: HasilOk): { saham: Saham; masalah: bigint } | undefined {
-  const penerima = penerimaSatuKelompok(hasil);
-  if (!penerima) return undefined;
+/**
+ * Satu saham per kepala bila sama rata sah menurut KB; selain itu undefined (rinciannya belum ada di KB).
+ * [K14-3] [HNB] "sama rata bila ayah dan ibunya sama" (bab 18).
+ * [R14-8] [SYF] anak-anak cabang seibu: satu kelompok di mas'alah perantara, atau satu ayah-ibu — turun rekursif
+ * (penerima dzawil arham bagi perantara) menyusun satu baris per orang, jadi kelompoknya dibaca dari orang tuanya.
+ */
+export function samakanPenerima(hasil: HasilOk, graf: GrafKeluarga, ruleset: Ruleset): { saham: Saham; masalah: bigint } | undefined {
+  const penerima = hasil.tabel.baris.flatMap(baris => Object.entries(baris.perOrang).filter(([, sel]) => sel.saham > 0n).map(([id]) => id));
+  const pertama = graf.orang[penerima[0]!]!;
+  const satuAyahIbu = penerima.every(id => graf.orang[id]!.idAyah === pertama.idAyah && graf.orang[id]!.idIbu === pertama.idIbu);
+  const sah = ruleset === 'hanbali' ? satuAyahIbu : satuAyahIbu || penerimaSatuKelompok(hasil) !== undefined;
+  if (!sah) return undefined;
   return { saham: Object.fromEntries(penerima.map(id => [id, 1n])), masalah: BigInt(penerima.length) };
 }
 
