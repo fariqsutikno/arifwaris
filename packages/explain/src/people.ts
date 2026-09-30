@@ -22,11 +22,31 @@ const PERAN_BERLABEL: Record<KunciAhliWaris, true> = {
 // [R03-2] paman & anak paman mencakup paman ayah/kakek (generasiLeluhur 3, 4, …); «عم أب» = paman ayah.
 const GENERASI_LELUHUR_BERNAMA = [3, 4];
 
-/** Sebutan peran; paman/anak paman di atas generasi ayah diberi keterangan leluhurnya ("paman kandung ayah"). */
+// [R03-1] cucu, anak saudara, dan anak paman "dan seterusnya ke bawah melalui laki-laki": di bawah kedalaman
+// dasarnya disebut bertingkat seperti istilah fikih (ibn ibn al-'amm → "anak laki-laki dari anak laki-laki paman").
+const KEDALAMAN_DASAR: Partial<Record<KunciAhliWaris, { kedalaman: number; kunciLakiLaki: KunciAhliWaris }>> = {
+  CUCU_LK: { kedalaman: 2, kunciLakiLaki: 'CUCU_LK' }, CUCU_PR: { kedalaman: 2, kunciLakiLaki: 'CUCU_LK' },
+  KEPONAKAN_KANDUNG: { kedalaman: 2, kunciLakiLaki: 'KEPONAKAN_KANDUNG' }, KEPONAKAN_SEBAPAK: { kedalaman: 2, kunciLakiLaki: 'KEPONAKAN_SEBAPAK' },
+  SEPUPU_KANDUNG: { kedalaman: 2, kunciLakiLaki: 'SEPUPU_KANDUNG' }, SEPUPU_SEBAPAK: { kedalaman: 2, kunciLakiLaki: 'SEPUPU_SEBAPAK' },
+};
+
+/** Sebutan peran: bertingkat ke bawah ("anak laki-laki dari cucu laki-laki …") dan ke atas ("paman kandung ayah"). */
 export function labelPeran(penyusun: Penyusun, peran: PeranAhliWaris): string {
-  const dasar = labelDasar(penyusun, peran.kunci);
-  const generasi = peran.kekerabatan.generasiLeluhur;
-  if (!/^(PAMAN|SEPUPU)_/.test(peran.kunci) || generasi < 3) return dasar;
+  const dasar = KEDALAMAN_DASAR[peran.kunci as KunciAhliWaris];
+  const tingkatTambahan = dasar ? peran.kekerabatan.kedalamanKeturunan - dasar.kedalaman : 0;
+  if (!dasar || tingkatTambahan <= 0) return labelDenganLeluhur(penyusun, peran.kunci, peran.kekerabatan.generasiLeluhur);
+
+  // Garis di antaranya selalu laki-laki (syarat kunci ini); hanya tingkat terluar mengikuti jenis kelamin orangnya.
+  let sebutan = labelDenganLeluhur(penyusun, dasar.kunciLakiLaki, peran.kekerabatan.generasiLeluhur);
+  for (let tingkat = 1; tingkat < tingkatTambahan; tingkat++) sebutan = teksKamus(penyusun, 'narasi.umum.anak_dari.lk', { sebutan });
+  const terluar = peran.kunci === dasar.kunciLakiLaki ? 'lk' : 'pr';
+  return teksKamus(penyusun, `narasi.umum.anak_dari.${terluar}`, { sebutan });
+}
+
+/** Paman/anak paman di atas generasi ayah diberi keterangan leluhurnya ("paman kandung ayah"). */
+function labelDenganLeluhur(penyusun: Penyusun, kunci: string, generasi: number): string {
+  const dasar = labelDasar(penyusun, kunci);
+  if (!/^(PAMAN|SEPUPU)_/.test(kunci) || generasi < 3) return dasar;
   const leluhur = GENERASI_LELUHUR_BERNAMA.includes(generasi)
     ? teksKamus(penyusun, `narasi.umum.leluhur.${generasi}`)
     : teksKamus(penyusun, 'narasi.umum.leluhur.lain', { nomor: String(generasi - 1) });
