@@ -273,12 +273,12 @@ Babak 2 · Budi wafat (sesudah Pak Ahmad, harta belum dibagi)
 ### Variasi E — Pohon keluarga interaktif
 
 ```
-        [Pak Ahmad ✝1]──○──[Siti]
+        [Pak Ahmad · wafat 1]──○──[Siti]
                   │
-        ┌─────────┴─────────┐
-   [Budi ✝2]──○──[Dewi ◐]   [Rina]
+        ┌─────────┴───────────┐
+   [Budi · wafat 2]──○──[Dewi · hamil]   [Rina]
 ```
-Ketuk orang → "Tandai wafat" → pertanyaan B. Angka ✝1, ✝2 = urutan wafat; ◐ = sedang hamil.
+Ketuk orang → "Tandai wafat" → pertanyaan B. "wafat 1", "wafat 2" = urutan wafat (lencana ikon di UI, bukan simbol agama).
 
 - **Kelebihan:** paling visual; bagus untuk mengecek hubungan; sudah ada komponen pohon (spec desain ulang).
 - **Kekurangan:** pohon lebar sulit di HP; menambah orang di posisi yang benar butuh keterampilan spasial;
