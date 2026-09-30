@@ -1269,3 +1269,9 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .baris-keadaan:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .lencana-keadaan{flex:none;border-radius:999px;padding:2px 10px;font:700 12px/1.5 var(--font-sans);background:var(--surface-sunken)}
 .lencana-keadaan:not(.hidup){background:var(--sun);color:var(--on-fill)}
+
+/* ─── Babak 2..n ─── */
+.pohon-kecil{overflow-x:auto;max-height:320px}
+.baris-kerabat{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border:var(--border-w) solid var(--divider);border-radius:var(--radius-md)}
+.baris-kerabat.nonaktif{opacity:.55;border-style:dashed}
+.subjudul-babak{margin:0;font:800 13px var(--font-sans);display:inline-flex;align-self:flex-start;padding:3px 10px;border:var(--border-w) solid var(--outline);border-radius:999px;background:var(--sun);color:var(--on-fill)}

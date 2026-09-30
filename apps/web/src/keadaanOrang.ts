@@ -109,3 +109,25 @@ export function perluPeriksaCerita(kasus: Kasus): boolean {
 /** Nama untuk kalimat: nama isian, atau label hubungan dari babak asalnya ("Anak laki-laki"). */
 export const namaSingkat = (kasus: Kasus, idOrang: IdOrang): string =>
   kasus.graf.orang[idOrang]!.nama ?? labelOrangChecklist(kasus.graf, babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris, idOrang);
+/** [R13-1] Anak yang baru dikandung sesudah `idMayit` wafat bukan ahli warisnya; null = sudah ada sebelum semua almarhum. */
+export function aturDikandung(kasus: Kasus, idAnak: IdOrang, idMayit: IdOrang | null): Kasus {
+  const { [idAnak]: _lama, ...sisa } = kasus.dikandungSetelahWafat ?? {};
+  const baru = idMayit ? { ...sisa, [idAnak]: idMayit } : sisa;
+  return rapikanKeadaan({ ...kasus, dikandungSetelahWafat: baru });
+}
+
+/** Lawan jenis yang hidup saat `idMayit` wafat dan belum menjadi pasangannya (S11). Pewaris & almarhum sebelumnya dikecualikan. */
+export function calonPasangan(kasus: Kasus, idMayit: IdOrang): IdOrang[] {
+  const mayit = kasus.graf.orang[idMayit]!;
+  const almarhum = new Set(daftarAlmarhum(kasus));
+  const sudah = new Set(kasus.graf.pernikahan.flatMap(n => (n.idSuami === idMayit ? [n.idIstri] : n.idIstri === idMayit ? [n.idSuami] : [])));
+  return Object.values(kasus.graf.orang)
+    .filter(o => o.jenisKelamin !== mayit.jenisKelamin && !o.penghubung && o.statusHidup === 'hidup' && !almarhum.has(o.id) && !sudah.has(o.id))
+    .map(o => o.id);
+}
+
+/** Pernikahan utuh yang terjadi sebelum `idMayit` wafat; status dinilai saat salah satunya wafat (memori mode lanjutan). */
+export function nikahkan(kasus: Kasus, idMayit: IdOrang, idPasangan: IdOrang): Kasus {
+  const [idSuami, idIstri] = kasus.graf.orang[idMayit]!.jenisKelamin === 'L' ? [idMayit, idPasangan] : [idPasangan, idMayit];
+  return rapikanKeadaan({ ...kasus, graf: { ...kasus.graf, pernikahan: [...kasus.graf.pernikahan, { idSuami, idIstri, status: 'utuh' }] } });
+}

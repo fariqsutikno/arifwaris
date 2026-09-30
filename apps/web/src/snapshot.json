@@ -17878,6 +17878,104 @@
    "id": "Ada kondisi khusus",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.pembuka",
+   "halaman": "hitung",
+   "id": "{nama} wafat sesudah {sebelum}, sebelum hartanya dibagi. Jadi bagian {nama} diteruskan kepada keluarga {nama}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.sudut_pandang",
+   "halaman": "hitung",
+   "id": "Sekarang kita lihat dari sisi {nama}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.harta_sendiri",
+   "halaman": "hitung",
+   "id": "Yang dibagi hanya harta {pewaris}. Harta milik {nama} sendiri diurus terpisah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.babak_ini",
+   "halaman": "hitung",
+   "id": "babak ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.dari_yang_sudah_ada",
+   "halaman": "hitung",
+   "id": "Dari orang yang sudah ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.bagi_nama",
+   "halaman": "hitung",
+   "id": "bagi {nama}: {sebutan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.sudah_wafat_lebih_dulu",
+   "halaman": "hitung",
+   "id": "sudah wafat lebih dulu dari {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.dari_babak_sebelumnya",
+   "halaman": "hitung",
+   "id": "Hubungan keluarga ini dari babak sebelumnya. Ubah di babak itu bila keliru.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.anak_lahir_belakangan",
+   "halaman": "hitung",
+   "id": "Kapan anak ini dikandung?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.anak_sudah_ada_kapan",
+   "halaman": "hitung",
+   "id": "{anak} sudah ada (lahir atau dalam kandungan)…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.sudah_ada_sebelum",
+   "halaman": "hitung",
+   "id": "sebelum {mayit} wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.dikandung_sesudah",
+   "halaman": "hitung",
+   "id": "baru dikandung sesudah {mayit} wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.pasangan_dari_yang_ada",
+   "halaman": "hitung",
+   "id": "Pasangan {nama} orang yang sudah ada di daftar?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.pasangan_tidak",
+   "halaman": "hitung",
+   "id": "Tidak",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
