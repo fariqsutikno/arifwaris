@@ -3,7 +3,7 @@
 // furudh, 'aul, dan radd tidak ditulis ulang.
 //   Keluar: saham per perantara → turun ke penerima (dzawilArham.ts).
 
-import { hitung } from '../pipeline.js';
+import { hitungDenganTercakup } from '../pipeline.js';
 import { sahamDari, totalSaham, type Saham } from '../gabung.js';
 import type { GrafKeluarga, HasilEngine, IdOrang, InputEngine, LangkahJejak, TabelMasalah } from '../types.js';
 import type { RuteTanzil } from './tanzil.js';
@@ -12,6 +12,11 @@ type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 type BukanOk = Exclude<HasilEngine, { status: 'OK' }>;
 
 export const TANPA_TIRKAH = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
+
+// [R14-9] di dalam tanzil, radd pada mas'alah perantara/penerima ditetapkan R14-9 ("fardh + radd", berlaku [HNB]);
+// K09-1 hanya berbeda soal kapan radd terjadi (syarat baitul mal), bukan cara menghitungnya. Di luar tanzil tetap digerbang.
+export const RADD_TERCAKUP_TANZIL: ReadonlySet<string> = new Set(['R09-7', 'R09-8', 'R09-9']);
+const hitungTanzil = (masukan: InputEngine): HasilEngine => hitungDenganTercakup(masukan, RADD_TERCAKUP_TANZIL);
 
 export interface MasalahPerantara {
   saham: Saham;
@@ -42,7 +47,7 @@ export function bagiAntarPerantara(input: InputEngine, lolos: RuteTanzil[]): Mas
 }
 
 /** Pipeline pada graf posisi: `hidup` = ahli waris, pewaris = `idPewaris`; tanpa harta (hanya mas'alah), radd. */
-export function hitungPosisi(input: InputEngine, idPewaris: IdOrang, hidup: IdOrang[], hitungFn: (masukan: InputEngine) => HasilEngine = hitung): HasilEngine {
+export function hitungPosisi(input: InputEngine, idPewaris: IdOrang, hidup: IdOrang[], hitungFn: (masukan: InputEngine) => HasilEngine = hitungTanzil): HasilEngine {
   return hitungFn({ ...input, graf: grafPosisi(input.graf, idPewaris, hidup), tirkah: TANPA_TIRKAH,
     konfigurasi: { ...input.konfigurasi, kebijakanSisa: 'radd' } });
 }
@@ -69,7 +74,8 @@ export function periksaAulDzawilArham(totalKolom: TabelMasalah['totalKolom']): v
   }
 }
 
-/** Penerima yang mendapat bagian semuanya satu kelompok → satu saham per kepala; selain itu undefined. */
+/** Penerima yang mendapat bagian semuanya satu kelompok → satu saham per kepala; selain itu undefined.
+ *  [K14-3] [HNB] sama rata; [R14-8] [SYF] hanya cabang perantara seibu. */
 export function samakanDalamSatuKelompok(hasil: HasilOk): { saham: Saham; masalah: bigint } | undefined {
   const barisBerisi = hasil.tabel.baris.filter(baris => Object.values(baris.perOrang).some(sel => sel.saham > 0n));
   if (barisBerisi.length !== 1) return undefined;

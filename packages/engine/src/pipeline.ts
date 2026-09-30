@@ -31,6 +31,11 @@ export interface HasilTahapAhliWaris {
 
 /** Pipeline lengkap (bab 00.2). */
 export function hitung(input: InputEngine): HasilEngine {
+  return hitungDenganTercakup(input, new Set());
+}
+
+/** Seperti `hitung`, tetapi gerbang 18.4 menganggap token `tercakup` sah (dipakai orkestrator dzawil arham). */
+export function hitungDenganTercakup(input: InputEngine, tercakup: ReadonlySet<string>): HasilEngine {
   // 0. Harta bersih: tirkah dikurangi tajhiz, hutang, dan wasiat (maks. 1/3).
   const konfigurasiTidakSah = periksaKonfigurasi(input);
   if (konfigurasiTidakSah) return konfigurasiTidakSah;
@@ -68,7 +73,7 @@ export function hitung(input: InputEngine): HasilEngine {
     versiKb: input.versiKb,
   };
   // Gerbang 18.4: mode non-[SYF] menolak hasil yang menyentuh aturan yang belum dikaji.
-  return periksaKeberlakuan(input.ruleset, hasil) ?? hasil;
+  return periksaKeberlakuan(input.ruleset, hasil, tercakup) ?? hasil;
 }
 
 /** Tahap 1–2: peran → validasi → mawani' → hajb → furudh/ashabah (+ bab 07/08). */
