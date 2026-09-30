@@ -64,6 +64,8 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
       </main>
     );
   }
+  // diganti HasilKasusKhusus di Task 10
+  if (tampil.jenis === 'taqdir' || tampil.jenis === 'gharqa' || tampil.jenis === 'menunggu') return null;
   if (tampil.hasil.status !== 'OK') {
     const hasil = tampil.hasil;
     return (

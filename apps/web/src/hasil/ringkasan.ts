@@ -75,7 +75,7 @@ export function persenTeks(saham: bigint, penyebut: bigint): string {
 /** Kartu pembulatan hanya muncul bila pembagian dengan pembulatan Rp 1 masih menyisakan sisa (tidak habis dibagi). */
 export function adaTidakPas(kasus: Kasus): boolean {
   const tampil = jalankan({ ...kasus, satuanPembulatan: 1n });
-  if (tampil.jenis === 'galat' || tampil.hasil.status !== 'OK') return false;
+  if ((tampil.jenis !== 'biasa' && tampil.jenis !== 'munasakhat') || tampil.hasil.status !== 'OK') return false;
   return tampil.hasil.pembulatan.sisaPembulatan > 0n;
 }
 

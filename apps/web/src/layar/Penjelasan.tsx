@@ -5,7 +5,7 @@ import { t } from '../terjemah';
 import { Fragment } from 'react';
 import type { IdOrang } from '@waris/engine';
 import { dalilUntuk } from '@waris/content';
-import { jelaskan, jelaskanMunasakhat, type BabPenjelasan, type BarisPenjelasan } from '@waris/explain';
+import { jelaskan, jelaskanGharqa, jelaskanMunasakhat, jelaskanTaqdir, type BabPenjelasan, type BarisPenjelasan } from '@waris/explain';
 import type { HasilTampil } from '../jalankan';
 import type { Kasus } from '../kasus';
 import { tautanRujukan } from '../rute';
@@ -24,6 +24,14 @@ export function daftarBabDari(kasus: Kasus, tampil: HasilTampil, bahasa: Bahasa 
   }
   if (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK') {
     return jelaskanMunasakhat(tampil.hasil, kasus.graf, { kamus: kamusNarasi }).daftarBagian
+      .flatMap(bagian => bagian.daftarBab.map(bab => ({ judulBagian: bagian.judul, bab })));
+  }
+  if (tampil.jenis === 'taqdir' && tampil.hasil.status === 'OK') {
+    return jelaskanTaqdir(tampil.hasil, kasus.graf, { kamus: kamusNarasi }).daftarBagian
+      .flatMap(bagian => bagian.daftarBab.map(bab => ({ judulBagian: bagian.judul, bab })));
+  }
+  if (tampil.jenis === 'gharqa' && (tampil.hasil.status === 'OK' || tampil.hasil.status === 'MAUQUF') && kasus.gharqa) {
+    return jelaskanGharqa(tampil.hasil, kasus.graf, kasus.gharqa.keadaan, { kamus: kamusNarasi }).daftarBagian
       .flatMap(bagian => bagian.daftarBab.map(bab => ({ judulBagian: bagian.judul, bab })));
   }
   return [];
