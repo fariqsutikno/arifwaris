@@ -3,16 +3,19 @@
 //   Putus : serentak → tidak saling mewarisi (ijma'); keadaan 3–5 menurut madzhab (K13d-1):
 //           jumhur tidak saling mewarisi, [SYF] keadaan 3 ditahan, [HNB] tilad–tharif.
 //   Keluar: pembagian harta tiap anggota; atau MAUQUF dengan skenario tiap urutan wafat.
+// 13.0b: bila ahli waris memuat haml/mafqud/khuntsa, tiap harta dihitung lewat hitungTaqdir (aqall + mauquf).
 // Keadaan 2 (yang terakhir diketahui pasti) bukan urusan file ini: itu munasakhat biasa (bab 12).
 
 import { gabungkan, periksaInvarian, sahamDari, totalSaham, type Saham } from './gabung.js';
 import { hitungDzawilArham } from './dzawilArham.js';
 import { hitungMunasakhat } from './munasakhat.js';
+import { hitungTaqdir, type HitungDuniaPasti } from './taqdir.js';
 import { bagikanNominal } from './stages/pembagian.js';
 import { hitungTirkah } from './stages/tirkah.js';
-import type { GrafKeluarga, HartaGharqa, HasilGharqa, IdOrang, InputGharqa, InputTirkah, LangkahJejak } from './types.js';
+import type { GrafKeluarga, HartaGharqa, HasilEngine, HasilGharqa, IdOrang, InputEngine, InputGharqa, InputTirkah, LangkahJejak } from './types.js';
 
 type Gagal = Extract<HasilGharqa, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }>;
+type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 
 // Urutan wafat anggota = n!; lebih dari ini → PERLU_INPUT (batas kombinatorik, CLAUDE.md).
 const MAKS_ANGGOTA_SKENARIO = 4;
@@ -45,10 +48,17 @@ function periksaAnggota(input: InputGharqa): Gagal | undefined {
 function terpisah(input: InputGharqa, rujukan: string): HasilGharqa {
   const harta: HartaGharqa[] = [];
   for (const mayit of input.anggota) {
-    const hasil = hitungDzawilArham({ ...input.dasar, graf: grafSebagaiPewaris(input.dasar.graf, mayit), tirkah: tirkahDari(input, mayit) });
-    if (hasil.status !== 'OK') return { ...hasil, mayit };
     const istibham: LangkahJejak[] = input.anggota.filter(id => id !== mayit)
       .map(id => ({ tahap: 'mawani', refs: [rujukan], jenis: 'MANI', idOrang: id, mani: 'istibham' }));
+    const inputMayit = inputSebagaiPewaris(input, mayit);
+    if (adaTaqdir(input)) {
+      const hasil = hartaTaqdir(input, mayit, inputMayit, {}, istibham);
+      if ('status' in hasil) return hasil;
+      harta.push(hasil);
+      continue;
+    }
+    const hasil = hitungDzawilArham(inputMayit);
+    if (hasil.status !== 'OK') return { ...hasil, mayit };
     harta.push(susunHarta(input, mayit, sahamDari(mayit, hasil), [...istibham, ...hasil.jejak], [{ mayit, statusOrang: hasil.statusOrang }]));
   }
   return { status: 'OK', metode: 'terpisah', harta };
@@ -64,29 +74,50 @@ function tilad(input: InputGharqa): HasilGharqa {
   const harta: HartaGharqa[] = [];
   for (const mayit of input.anggota) {
     const rekan = input.anggota.filter(id => id !== mayit);
-    const grafTilad = hidupkan(grafSebagaiPewaris(input.dasar.graf, mayit), rekan);
-    const hasilTilad = hitungDzawilArham({ ...input.dasar, graf: grafTilad, tirkah: tirkahDari(input, mayit) });
-    if (hasilTilad.status !== 'OK') return { ...hasilTilad, mayit };
-
-    let saham = sahamDari(mayit, hasilTilad);
-    let jamiah = totalSaham(saham);
-    const jejak: LangkahJejak[] = [...hasilTilad.jejak];
-    const daftarStatus: HartaGharqa['daftarStatus'] = [{ mayit, statusOrang: hasilTilad.statusOrang }];
-    for (const idRekan of rekan.filter(id => saham[id])) {
-      const hasilTharif = hitungDzawilArham({ ...input.dasar, graf: grafSebagaiPewaris(input.dasar.graf, idRekan), tirkah: TANPA_TIRKAH });
-      if (hasilTharif.status !== 'OK') return { ...hasilTharif, mayit: idRekan };
-      const sahamTharif = sahamDari(idRekan, hasilTharif);
-      daftarStatus.push({ mayit: idRekan, statusOrang: hasilTharif.statusOrang });
-      const gabungan = gabungkan(saham, jamiah, idRekan, sahamTharif, totalSaham(sahamTharif));
-      jejak.push({ tahap: 'munasakhat', refs: ['R13-19'], jenis: 'MUNASAKHAT', mayit: idRekan, saham: gabungan.sahamMayit, masalah: gabungan.masalah,
-        hubungan: gabungan.hubungan, fpb: gabungan.fpb, wafqMasalah: gabungan.wafqMasalah, wafqSaham: gabungan.wafqSaham, jamiah: gabungan.jamiah, rincian: gabungan.rincian });
-      saham = gabungan.saham;
-      jamiah = gabungan.jamiah;
-      periksaInvarian(saham, jamiah, 'gharqa tilad');
+    const inputMayit = inputSebagaiPewaris(input, mayit);
+    if (adaTaqdir(input)) {
+      // 13.0b butir 2: di tiap dunia pasti, tilad–tharif dihitung penuh; aqall atas dunia oleh hitungTaqdir.
+      const hitungDuniaPasti: HitungDuniaPasti = inputDunia => {
+        const hasil = tiladSatuMayit(inputDunia, mayit, rekan);
+        return 'status' in hasil ? hasil : { saham: hasil.saham, daftarHasil: hasil.daftarHasil };
+      };
+      const hasil = hartaTaqdir(input, mayit, inputMayit, { hitungDuniaPasti });
+      if ('status' in hasil) return hasil;
+      harta.push(hasil);
+      continue;
     }
-    harta.push(susunHarta(input, mayit, saham, jejak, daftarStatus));
+    const hasil = tiladSatuMayit(inputMayit, mayit, rekan);
+    if ('status' in hasil) return hasil;
+    harta.push(susunHarta(input, mayit, hasil.saham, hasil.jejak,
+      hasil.daftarHasil.map((hasilIni, indeks) => ({ mayit: indeks === 0 ? mayit : hasil.urutanTharif[indeks - 1]!, statusOrang: hasilIni.statusOrang }))));
   }
   return { status: 'OK', metode: 'tilad', harta };
+}
+
+/** Mas'alah tilad satu mayit (rekan dihidupkan) lalu tharif tiap rekan yang mendapat bagian, digabung seperti munasakhat. */
+function tiladSatuMayit(inputMayit: InputEngine, mayit: IdOrang, rekan: IdOrang[]):
+  { saham: Saham; jejak: LangkahJejak[]; daftarHasil: HasilOk[]; urutanTharif: IdOrang[] } | Gagal {
+  const hasilTilad = hitungDzawilArham({ ...inputMayit, graf: hidupkan(inputMayit.graf, rekan) });
+  if (hasilTilad.status !== 'OK') return { ...hasilTilad, mayit };
+
+  let saham = sahamDari(mayit, hasilTilad);
+  let jamiah = totalSaham(saham);
+  const jejak: LangkahJejak[] = [...hasilTilad.jejak];
+  const daftarHasil: HasilOk[] = [hasilTilad];
+  const urutanTharif = rekan.filter(id => saham[id]);
+  for (const idRekan of urutanTharif) {
+    const hasilTharif = hitungDzawilArham({ ...inputMayit, graf: grafSebagaiPewaris(inputMayit.graf, idRekan), tirkah: TANPA_TIRKAH });
+    if (hasilTharif.status !== 'OK') return { ...hasilTharif, mayit: idRekan };
+    const sahamTharif = sahamDari(idRekan, hasilTharif);
+    daftarHasil.push(hasilTharif);
+    const gabungan = gabungkan(saham, jamiah, idRekan, sahamTharif, totalSaham(sahamTharif));
+    jejak.push({ tahap: 'munasakhat', refs: ['R13-19'], jenis: 'MUNASAKHAT', mayit: idRekan, saham: gabungan.sahamMayit, masalah: gabungan.masalah,
+      hubungan: gabungan.hubungan, fpb: gabungan.fpb, wafqMasalah: gabungan.wafqMasalah, wafqSaham: gabungan.wafqSaham, jamiah: gabungan.jamiah, rincian: gabungan.rincian });
+    saham = gabungan.saham;
+    jamiah = gabungan.jamiah;
+    periksaInvarian(saham, jamiah, 'gharqa tilad');
+  }
+  return { saham, jejak, daftarHasil, urutanTharif };
 }
 
 // ─── [SYF] keadaan 3: skenario urutan ─────────────────────────────────────────
@@ -101,12 +132,17 @@ function skenarioUrutan(input: InputGharqa): HasilGharqa {
   for (const urutan of permutasi(input.anggota)) {
     const harta: HartaGharqa[] = [];
     for (const [posisi, mayit] of urutan.entries()) {
-      const hasil = hitungMunasakhat({
-        dasar: { ...input.dasar, graf: grafSebagaiPewaris(input.dasar.graf, mayit), tirkah: tirkahDari(input, mayit) },
-        urutanWafat: urutan.slice(posisi + 1),
-      });
+      const istibham: LangkahJejak[] = [{ tahap: 'mawani', refs: ['R13-10'], jenis: 'MANI', idOrang: mayit, mani: 'istibham' }];
+      const urutanWafat = urutan.slice(posisi + 1);
+      if (adaTaqdir(input)) {
+        const hartaIni = hartaTaqdir(input, mayit, inputSebagaiPewaris(input, mayit), { urutanWafat }, istibham);
+        if ('status' in hartaIni) return hartaIni;
+        harta.push(hartaIni);
+        continue;
+      }
+      const hasil = hitungMunasakhat({ dasar: inputSebagaiPewaris(input, mayit), urutanWafat });
       if (hasil.status !== 'OK') return { ...hasil, mayit };
-      harta.push(susunHarta(input, mayit, hasil.saham, [{ tahap: 'mawani', refs: ['R13-10'], jenis: 'MANI', idOrang: mayit, mani: 'istibham' }, ...hasil.jejak],
+      harta.push(susunHarta(input, mayit, hasil.saham, [...istibham, ...hasil.jejak],
         hasil.daftarLangkah.map(langkah => ({ mayit: langkah.mayit, statusOrang: langkah.hasil.statusOrang }))));
     }
     skenario.push({ urutan, harta });
@@ -120,8 +156,29 @@ function susunHarta(input: InputGharqa, mayit: IdOrang, saham: Saham, jejak: Lan
   const jamiah = totalSaham(saham);
   const bersih = hitungTirkah(tirkahDari(input, mayit)).bersih;
   const nominal = bagikanNominal(saham, jamiah, bersih, input.dasar.pembulatan.satuan);
-  return { mayit, jamiah, saham, nominal: nominal.nominal, jejak, daftarStatus };
+  return { mayit, jamiah, saham, nominal: nominal.nominal, jejak, daftarStatus, mauquf: 0n, nominalMauquf: 0n };
 }
+
+/** 13.0b: harta satu anggota yang ahli warisnya memuat taqdir → yang diberikan sekarang + mauquf. */
+function hartaTaqdir(input: InputGharqa, mayit: IdOrang, inputMayit: InputEngine, opsi: Parameters<typeof hitungTaqdir>[1], jejakAwal: LangkahJejak[] = []): HartaGharqa | Gagal {
+  const hasil = hitungTaqdir(inputMayit, opsi);
+  if (hasil.status === 'MAUQUF_SEMUA') {
+    // [K13a-2] [MLK] hanya harta ini yang ditahan; harta anggota lain tetap dibagi.
+    return { mayit, jamiah: 0n, saham: {}, nominal: {}, jejak: jejakAwal, daftarStatus: [], mauquf: 0n,
+      nominalMauquf: hitungTirkah(tirkahDari(input, mayit)).bersih, mauqufSemua: { alasan: hasil.alasan, refs: hasil.refs, ruleset: inputMayit.ruleset } };
+  }
+  if (hasil.status !== 'OK') return { ...hasil, mayit };
+  return {
+    mayit, jamiah: hasil.jamiah, saham: hasil.diberikan, nominal: hasil.nominal, jejak: [...jejakAwal, ...hasil.jejak],
+    daftarStatus: [{ mayit, statusOrang: hasil.daftarDunia[0]!.statusOrang }],
+    mauquf: hasil.mauquf, nominalMauquf: hasil.nominalMauquf, daftarDunia: hasil.daftarDunia,
+  };
+}
+
+const adaTaqdir = (input: InputGharqa): boolean => Object.values(input.dasar.graf.orang)
+  .some(orang => orang.statusHidup === 'dalamKandungan' || orang.statusHidup === 'mafqud' || orang.khuntsa !== undefined);
+const inputSebagaiPewaris = (input: InputGharqa, mayit: IdOrang): InputEngine =>
+  ({ ...input.dasar, graf: grafSebagaiPewaris(input.dasar.graf, mayit), tirkah: tirkahDari(input, mayit) });
 
 const tirkahDari = (input: InputGharqa, mayit: IdOrang): InputTirkah => input.tirkah?.[mayit] ?? TANPA_TIRKAH;
 const grafSebagaiPewaris = (graf: GrafKeluarga, idPewaris: IdOrang): GrafKeluarga => ({ ...graf, idPewaris });

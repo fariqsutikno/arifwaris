@@ -23,7 +23,13 @@ type Pemberian = 'aqall' | 'setengah' | 'terburuk';
 interface Sumber { id: IdOrang; jenis: 'haml' | 'mafqud' | 'khuntsa'; taqdir: NilaiTaqdir[]; pemberian: Pemberian }
 interface HasilDunia { saham: Saham; masalah: bigint; statusOrang: HasilOk['statusOrang']; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
 
-export interface OpsiTaqdir { urutanWafat?: IdOrang[]; dikandungSetelahWafat?: InputMunasakhat['dikandungSetelahWafat'] }
+export interface OpsiTaqdir {
+  urutanWafat?: IdOrang[];
+  dikandungSetelahWafat?: InputMunasakhat['dikandungSetelahWafat'];
+  /** Penghitung satu dunia pasti selain pipeline/munasakhat, mis. tilad–tharif gharqa [HNB] (13.0b butir 2). */
+  hitungDuniaPasti?: HitungDuniaPasti;
+}
+export type HitungDuniaPasti = (input: InputEngine) => { saham: Saham; daftarHasil: HasilOk[] } | Gagal;
 
 // Batas keras kombinatorik (CLAUDE.md): lewat batas → PERLU_INPUT, bukan macet.
 export const BATAS_DUNIA = 256;
@@ -190,7 +196,11 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
 
   let daftarHasil: HasilOk[];
   let saham: Saham;
-  if (opsi.urutanWafat) {
+  if (opsi.hitungDuniaPasti) {
+    const hasil = opsi.hitungDuniaPasti(inputDunia);
+    if ('status' in hasil) return hasil;
+    ({ saham, daftarHasil } = hasil);
+  } else if (opsi.urutanWafat) {
     const hasil = hitungMunasakhat({ dasar: inputDunia, urutanWafat: opsi.urutanWafat, ...(opsi.dikandungSetelahWafat ? { dikandungSetelahWafat: opsi.dikandungSetelahWafat } : {}) });
     if (hasil.status !== 'OK') return hasil;
     daftarHasil = hasil.daftarLangkah.map(langkah => langkah.hasil);

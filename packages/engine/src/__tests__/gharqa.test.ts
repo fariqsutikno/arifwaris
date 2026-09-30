@@ -1,7 +1,8 @@
 import { describe, expect, test } from 'vitest';
 import { hitungGharqa } from '../gharqa.js';
-import type { HasilGharqa, InputGharqa, Ruleset } from '../types.js';
-import { input } from './fixtures/bab16.js';
+import { hitungTaqdir } from '../taqdir.js';
+import type { GrafKeluarga, HartaGharqa, HasilGharqa, InputGharqa, Ruleset } from '../types.js';
+import { input, p } from './fixtures/bab16.js';
 import { grafG1 } from './fixtures/gharqa.js';
 
 const gharqa = (ruleset: Ruleset, keadaan: InputGharqa['keadaan'] = 'tidakDiketahui', anggota = ['ZAID', 'AMR', 'BAKR']): HasilGharqa =>
@@ -64,6 +65,62 @@ describe('Gharqa bab 13d', () => {
       for (const harta of ok(gharqa(ruleset)).harta) {
         expect(Object.values(harta.saham).reduce((a, b) => a + b, 0n)).toBe(harta.jamiah);
       }
+    }
+  });
+});
+
+// 13.0b: kelompok gharqa + haml/mafqud/khuntsa dalam satu kasus → taqdir gabungan.
+describe('Gharqa × taqdir (13.0b)', () => {
+  // Istri 'Amr sedang mengandung anak 'Amr; paman mafqud.
+  const grafHaml: GrafKeluarga = { ...grafG1, orang: { ...grafG1.orang, JANIN: p('JANIN', 'L', { idAyah: 'AMR', idIbu: 'AW', statusHidup: 'dalamKandungan' }) } };
+  const grafMafqud: GrafKeluarga = { ...grafG1, orang: { ...grafG1.orang, PAMAN: { ...grafG1.orang.PAMAN!, statusHidup: 'mafqud' } } };
+  const jumlah = (saham: Record<string, bigint>) => Object.values(saham).reduce((a, b) => a + b, 0n);
+  const periksaHarta = (harta: HartaGharqa) => expect(jumlah(harta.saham) + harta.mauquf, "Σ saham + mauquf = jami'ah").toBe(harta.jamiah);
+
+  test('[SYF] terpisah + haml: harta tiap anggota = hitungTaqdir dengan anggota itu sebagai pewaris', () => {
+    const dasar = { ...input(grafHaml), ruleset: 'syafii' as const };
+    const hasil = ok(hitungGharqa({ dasar, anggota: ['ZAID', 'AMR', 'BAKR'], keadaan: 'tidakDiketahui' }));
+    for (const harta of hasil.harta) {
+      const tunggal = hitungTaqdir({ ...dasar, graf: { ...grafHaml, idPewaris: harta.mayit } });
+      if (tunggal.status !== 'OK') throw new Error(tunggal.status);
+      expect(harta.saham).toEqual(tunggal.diberikan);
+      expect(harta.mauquf).toBe(tunggal.mauquf);
+      expect(harta.daftarDunia).toHaveLength(6);
+      periksaHarta(harta);
+    }
+    expect(hasil.harta[1]!.mauquf > 0n).toBe(true);
+  });
+
+  test('[SYF] keadaan 3 + mafqud: tiap skenario urutan memuat harta dengan bagian paman ditahan', () => {
+    const hasil = hitungGharqa({ dasar: { ...input(grafMafqud), ruleset: 'syafii' }, anggota: ['ZAID', 'AMR'], keadaan: 'terlupakan' });
+    if (hasil.status !== 'MAUQUF') throw new Error(hasil.status);
+    for (const harta of hasil.skenario.flatMap(skenario => skenario.harta)) {
+      expect(harta.saham.PAMAN ?? 0n).toBe(0n);
+      expect(harta.mauquf > 0n).toBe(true);
+      periksaHarta(harta);
+    }
+  });
+
+  test('[HNB] tilad + haml: 6 taqdir haml di tiap harta, tharif tetap digabung', () => {
+    const hasil = ok(hitungGharqa({ dasar: { ...input(grafHaml), ruleset: 'hanbali' }, anggota: ['ZAID', 'AMR', 'BAKR'], keadaan: 'tidakDiketahui' }));
+    expect(hasil.metode).toBe('tilad');
+    for (const harta of hasil.harta) {
+      expect(harta.daftarDunia).toHaveLength(6);
+      periksaHarta(harta);
+    }
+    expect(hasil.harta[1]!.mauquf > 0n).toBe(true);
+  });
+
+  test('[MLK] + haml: harta ditandai mauquf semua, bukan menggagalkan seluruh gharqa [K13a-2]', () => {
+    const { AD1: _a, AD2: _b, ZD: _c, ...orang } = grafHaml.orang;
+    const hasil = ok(hitungGharqa({ dasar: { ...input({ ...grafHaml, orang }), ruleset: 'maliki' }, anggota: ['ZAID', 'AMR', 'BAKR'], keadaan: 'tidakDiketahui' }));
+    for (const harta of hasil.harta) expect(harta.mauqufSemua?.refs).toEqual(['K13a-2']);
+  });
+
+  test('tanpa ketidakpastian: mauquf 0 dan tanpa daftar dunia', () => {
+    for (const harta of ok(gharqa('syafii')).harta) {
+      expect(harta.mauquf).toBe(0n);
+      expect(harta.daftarDunia).toBeUndefined();
     }
   });
 });

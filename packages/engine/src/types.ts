@@ -347,6 +347,13 @@ export interface HartaGharqa {
   jejak: LangkahJejak[];
   /** Status orang di tiap mas'alah yang dipakai (harta sendiri, lalu tharif/mayit berikutnya), untuk sebutan peran. */
   daftarStatus: Array<{ mayit: IdOrang; statusOrang: Record<IdOrang, StatusOrang> }>;
+  /** 13.0b: bagian yang ditahan karena haml/mafqud di antara ahli waris; `saham` = yang diberikan sekarang. 0 bila pasti. */
+  mauquf: bigint;
+  nominalMauquf: Uang;
+  /** Tabel "jika terbukti X" bila harta ini memuat taqdir. */
+  daftarDunia?: DuniaTaqdir[];
+  /** [K13a-2] [MLK]: harta ini tidak dibagi sampai janin lahir; saham kosong, seluruh harta bersih ditahan. */
+  mauqufSemua?: { alasan: string; refs: string[]; ruleset: Ruleset };
 }
 
 export type HasilGharqa =
