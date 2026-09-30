@@ -19,7 +19,7 @@ Dokumen ini disusun berurutan:
 9. [Bahasa: kamus kata dan aturan kalimat](#9-bahasa)
 10. [Anti-pola](#10-anti-pola)
 11. [Rencana uji dengan pengguna](#11-rencana-uji)
-12. [Celah engine dan keputusan yang perlu diambil](#12-celah-dan-keputusan)
+12. [Celah engine dan keputusan pengguna](#12-celah-dan-keputusan)
 
 ---
 
@@ -390,10 +390,9 @@ Periksa cerita (sebelum hasil)
   Ringkasan kalimat per babak + pohon kecil, tiap baris punya tautan "ubah".
 ```
 
-Catatan penempatan: babak 2 dst. bisa tetap di langkah 5 (sesuai spec sekarang), atau langkah 4 dipecah
-jadi sub-langkah per babak. Rekomendasi: **sub-langkah di langkah 4**, karena mengisi keluarga almarhum kedua
+Penempatan (diputuskan 2026-09-30): **sub-langkah di langkah 4**, karena mengisi keluarga almarhum kedua
 adalah pekerjaan yang sama dengan langkah 4, dan stepper bisa menampilkan "4 · Keluarga (Babak 2 dari 2)".
-Langkah 5 tinggal kondisi (beda agama, terlibat kematian) untuk semua babak. Ini keputusan terbuka (bagian 12).
+Langkah 5 tinggal kondisi (beda agama, terlibat kematian) untuk semua babak.
 
 ### 7.3 Layar per layar (mode biasa, HP)
 
@@ -771,17 +770,15 @@ Kesalahan dicatat per titik bingung K1–K12 supaya perbaikan bisa diarahkan ke 
 | E4 | Syarat masa kandungan (R13-1, R13-5) | Diperiksa di UI setelah lahir (catatan keilmuan) | Rumuskan pertanyaan lanjutan 7.4 bersama tim keilmuan |
 | E5 | [SYF] berbagi fardh dengan janin (S21) | Ditolak (titik keilmuan no. 1) | Pesan UI khusus + saran menunggu |
 
-### 12.2 Keputusan yang perlu pengguna ambil
+### 12.2 Keputusan pengguna (2026-09-30)
 
-1. **Letak babak 2 dst.:** sub-langkah langkah 4 "Keluarga" (rekomendasi) atau tetap di langkah 5 "Kondisi"
-   seperti spec sekarang?
-2. **Pertanyaan L3 "harta sudah dibagi?"** ditanyakan per almarhum (rekomendasi, paling aman) atau sekali saja
-   ("Sampai hari ini harta Pak Ahmad belum dibagi?") dengan asumsi semua kematian terjadi sebelum pembagian?
-3. **Penawaran menunggu kelahiran** (7.4): ditampilkan sebagai layar pilihan (rekomendasi) atau cukup catatan
-   di hasil?
-4. **Khuntsa di jalur utama** atau hanya di "Keadaan lain ›"? Rekomendasi: hanya di "Keadaan lain ›".
-5. **Urutan pengerjaan:** memori "urutan kerja" menaruh semua UI di langkah 5 besar. Riset ini menyarankan
-   urutan dalam UI: B (status + urutan) → D (babak) → L8 (periksa cerita) → haml → mafqud → gharqa → C (linimasa).
+1. **Letak babak 2 dst.:** sub-langkah langkah 4 "Keluarga" ("4 · Keluarga, Babak 2 dari 2"). Langkah 5
+   tinggal kondisi (beda agama, terlibat kematian) untuk semua babak.
+2. **"Harta sudah dibagi?" (L3):** ditanyakan **per almarhum**.
+3. **Menunggu kelahiran (7.4):** **layar pilihan** sebelum hitung **dan** catatan di hasil.
+4. **Khuntsa:** hanya di balik tautan "Keadaan lain ›".
+5. Masih terbuka: urutan pengerjaan UI. Usulan riset: B (status + urutan) → D (babak) → L8 (periksa cerita)
+   → haml → mafqud → gharqa → C (linimasa).
 
 ---
 
