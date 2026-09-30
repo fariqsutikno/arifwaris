@@ -10,6 +10,7 @@ import { ceritaSisaKeluar, type Bab } from './cerita.js';
 import type { HasilOk, Konteks } from './context.js';
 import { urutanKe } from './people.js';
 import { buatBaris, gabungDan, susun, teksKamus, type BarisPenjelasan, type Potongan, type Sisipan } from './segments.js';
+import { istilah, istilahNarasi } from './terms.js';
 
 const teks = (konteks: Konteks, kunci: string, sisipan: Record<string, Sisipan> = {}): Potongan[] =>
   susun(konteks.penyusun, `narasi.dzawil_arham.${kunci}`, sisipan);
@@ -28,9 +29,15 @@ export function babDzawilArham(konteks: Konteks, sebut: SebutArab): Bab {
   const daftarBaris: BarisPenjelasan[] = [];
 
   const [sisaKeluar] = konteks.daftarLangkah('SISA_KELUAR');
-  if (sisaKeluar) daftarBaris.push(arab ? barisSisaKeluar(konteks, sebut, sisaKeluar) : ceritaSisaKeluar(konteks, sisaKeluar));
+  if (sisaKeluar) {
+    // Pada hasil gabungan, tabel memuat juga baris dzawil arham; sisa hanya keluar dari pasangan [R09-9] [R14-3].
+    const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota)
+      .filter(id => konteks.hasil.statusOrang[id]?.jenis === 'ahliWaris' && konteks.sebutan.peranDari(id)?.kunci !== 'DZAWIL_ARHAM');
+    daftarBaris.push(arab ? barisSisaKeluar(konteks, sebut, sisaKeluar, pasangan) : ceritaSisaKeluar(konteks, sisaKeluar, pasangan));
+  }
   daftarBaris.push(baris(teks(konteks, 'pembuka'), ['R14-5', 'R14-6']));
   daftarBaris.push(...barisKhilaf(konteks, baris));
+  daftarBaris.push(...barisMani(konteks, sebut, baris));
 
   for (const langkah of konteks.daftarLangkah('DZAWIL_ARHAM_TANZIL')) {
     daftarBaris.push(baris(teks(konteks, 'tanzil', {
@@ -62,6 +69,26 @@ export function babDzawilArham(konteks: Konteks, sebut: SebutArab): Bab {
   const [gabung] = konteks.daftarLangkah('DZAWIL_ARHAM_GABUNG_PASANGAN');
   if (gabung) daftarBaris.push(baris(teks(konteks, 'gabung_pasangan', { saham: gabung.saham, masalah: gabung.masalah, jamiah: gabung.jamiah }), gabung.refs));
   return { judul: teksKamus(konteks.penyusun, 'narasi.dzawil_arham.judul'), daftarBaris, kolom: 'bagian' };
+}
+
+// ─── Mawani' [R02-4] ──────────────────────────────────────────────────────────
+
+/** Dzawil arham yang terhalang mani' disaring sebelum tanzil; memakai diksi mani' bab ahli waris (cerita) / waratsah (Arab). */
+function barisMani(konteks: Konteks, sebut: SebutArab, baris: (potongan: Potongan[], refs: string[], subjek?: IdOrang[]) => BarisPenjelasan): BarisPenjelasan[] {
+  const { penyusun } = konteks;
+  const arab = penyusun.bahasa === 'ar';
+  return konteks.daftarLangkah('MANI').map(langkah => {
+    const sebab = langkah.mani === 'qatl' ? 'qatl' : 'beda_agama';
+    const potongan = arab
+      ? susun(penyusun, 'narasi.arab.waratsah.mani', {
+        siapa: sebut([langkah.idOrang]), mani: istilah('mani', teksKamus(penyusun, 'narasi.arab.istilah.mani')),
+        sebab: teksKamus(penyusun, `narasi.arab.waratsah.sebab_mani.${sebab}`),
+      })
+      : susun(penyusun, `narasi.cerita.ahli_waris.mani_${sebab}`, {
+        siapa: sebut([langkah.idOrang]), pewaris: konteks.sebutan.pewaris(), mani: istilahNarasi(penyusun, 'mani'),
+      });
+    return baris(potongan, langkah.refs, [langkah.idOrang]);
+  });
 }
 
 // ─── Khilaf madzhab ───────────────────────────────────────────────────────────

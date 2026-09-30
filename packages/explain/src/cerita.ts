@@ -348,7 +348,9 @@ export const teksTujuanSisa = (penyusun: Penyusun, tujuan: TujuanSisa): string =
   teksKamus(penyusun, `narasi.umum.tujuan_sisa.${KUNCI_TUJUAN_SISA[tujuan]}`);
 
 /** Hanya pasangan yang mewarisi [R09-9]: fardh penuh, sisanya keluar dari ahli waris [R14-3] [R02-1]. */
-export function ceritaSisaKeluar(konteks: Konteks, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
+export function ceritaSisaKeluar(
+  konteks: Konteks, langkah: Langkah<'SISA_KELUAR'>, pasangan: IdOrang[] = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota),
+): BarisPenjelasan {
   const radd = istilahUmum(konteks, 'radd');
   // [R09-8] kebijakan baitul mal: sisa tidak di-radd ke siapa pun, bukan karena hanya pasangan yang mewarisi.
   if (langkah.tujuan === 'baitulMalTeratur') {
@@ -356,7 +358,6 @@ export function ceritaSisaKeluar(konteks: Konteks, langkah: Langkah<'SISA_KELUAR
       ashl: langkah.ashl, didapat: langkah.ashl - langkah.saham, sisa: langkah.saham, radd,
     }), langkah.refs);
   }
-  const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
   const tujuan = cerita(konteks, langkah.tujuan === 'dzawilArham' ? 'sisa_keluar.tujuan_dzawil_arham' : 'sisa_keluar.tujuan_baitul_mal');
   return buatBaris(cerita(konteks, 'sisa_keluar.pasangan', {
     ashl: langkah.ashl, pasangan: sebutSemua(konteks, pasangan), didapat: langkah.ashl - langkah.saham, sisa: langkah.saham, radd, tujuan,

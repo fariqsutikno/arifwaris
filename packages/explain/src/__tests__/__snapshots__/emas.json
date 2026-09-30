@@ -82930,17 +82930,6 @@
        },
        {
         "jenis": "teks",
-        "teks": " dan "
-       },
-       {
-        "jenis": "orang",
-        "daftarIdOrang": [
-         "X"
-        ],
-        "teks": "kerabat"
-       },
-       {
-        "jenis": "teks",
         "teks": " mendapat 1. Masih tersisa 1 bagian, tetapi suami/istri tidak menerima tambahan dari sisa ("
        },
        {
@@ -82958,8 +82947,7 @@
        "R14-3"
       ],
       "subjek": [
-       "H",
-       "X"
+       "H"
       ]
      },
      {
@@ -83161,17 +83149,6 @@
        },
        {
         "jenis": "teks",
-        "teks": " dan "
-       },
-       {
-        "jenis": "orang",
-        "daftarIdOrang": [
-         "X"
-        ],
-        "teks": "kerabat"
-       },
-       {
-        "jenis": "teks",
         "teks": " mendapat 1. Masih tersisa 1 bagian, tetapi suami/istri tidak menerima tambahan dari sisa ("
        },
        {
@@ -83189,8 +83166,7 @@
        "R14-3"
       ],
       "subjek": [
-       "H",
-       "X"
+       "H"
       ]
      },
      {
@@ -83386,10 +83362,9 @@
        {
         "jenis": "orang",
         "daftarIdOrang": [
-         "H",
-         "X"
+         "H"
         ],
-        "teks": "الزوج وقريب"
+        "teks": "الزوج"
        },
        {
         "jenis": "teks",
@@ -83401,8 +83376,7 @@
        "R14-3"
       ],
       "subjek": [
-       "H",
-       "X"
+       "H"
       ]
      },
      {
@@ -83594,17 +83568,6 @@
        },
        {
         "jenis": "teks",
-        "teks": " dan "
-       },
-       {
-        "jenis": "orang",
-        "daftarIdOrang": [
-         "X"
-        ],
-        "teks": "kerabat"
-       },
-       {
-        "jenis": "teks",
         "teks": " mendapat 1. Masih tersisa 3 bagian, tetapi suami/istri tidak menerima tambahan dari sisa ("
        },
        {
@@ -83622,8 +83585,7 @@
        "R14-3"
       ],
       "subjek": [
-       "W",
-       "X"
+       "W"
       ]
      },
      {
@@ -83825,17 +83787,6 @@
        },
        {
         "jenis": "teks",
-        "teks": " dan "
-       },
-       {
-        "jenis": "orang",
-        "daftarIdOrang": [
-         "X"
-        ],
-        "teks": "kerabat"
-       },
-       {
-        "jenis": "teks",
         "teks": " mendapat 1. Masih tersisa 3 bagian, tetapi suami/istri tidak menerima tambahan dari sisa ("
        },
        {
@@ -83853,8 +83804,7 @@
        "R14-3"
       ],
       "subjek": [
-       "W",
-       "X"
+       "W"
       ]
      },
      {
@@ -84050,10 +84000,9 @@
        {
         "jenis": "orang",
         "daftarIdOrang": [
-         "W",
-         "X"
+         "W"
         ],
-        "teks": "الزوجة وقريب"
+        "teks": "الزوجة"
        },
        {
         "jenis": "teks",
@@ -84065,8 +84014,7 @@
        "R14-3"
       ],
       "subjek": [
-       "W",
-       "X"
+       "W"
       ]
      },
      {
@@ -84261,17 +84209,6 @@
        },
        {
         "jenis": "teks",
-        "teks": " dan "
-       },
-       {
-        "jenis": "orang",
-        "daftarIdOrang": [
-         "X"
-        ],
-        "teks": "kerabat"
-       },
-       {
-        "jenis": "teks",
         "teks": " mendapat 1. Masih tersisa 3 bagian, tetapi suami/istri tidak menerima tambahan dari sisa ("
        },
        {
@@ -84292,8 +84229,7 @@
        "W1",
        "W2",
        "W3",
-       "W4",
-       "X"
+       "W4"
       ]
      },
      {
@@ -84561,17 +84497,6 @@
        },
        {
         "jenis": "teks",
-        "teks": " dan "
-       },
-       {
-        "jenis": "orang",
-        "daftarIdOrang": [
-         "X"
-        ],
-        "teks": "kerabat"
-       },
-       {
-        "jenis": "teks",
         "teks": " mendapat 1. Masih tersisa 3 bagian, tetapi suami/istri tidak menerima tambahan dari sisa ("
        },
        {
@@ -84592,8 +84517,7 @@
        "W1",
        "W2",
        "W3",
-       "W4",
-       "X"
+       "W4"
       ]
      },
      {
@@ -84855,10 +84779,9 @@
          "W1",
          "W2",
          "W3",
-         "W4",
-         "X"
+         "W4"
         ],
-        "teks": "الزوجة ١ والزوجة ٢ والزوجة ٣ والزوجة ٤ وقريب"
+        "teks": "الزوجة ١ والزوجة ٢ والزوجة ٣ والزوجة ٤"
        },
        {
         "jenis": "teks",
@@ -84873,8 +84796,7 @@
        "W1",
        "W2",
        "W3",
-       "W4",
-       "X"
+       "W4"
       ]
      },
      {
@@ -86353,6 +86275,47 @@
        {
         "jenis": "orang",
         "daftarIdOrang": [
+         "NS"
+        ],
+        "teks": "Kerabat pertama"
+       },
+       {
+        "jenis": "teks",
+        "teks": " tidak mendapat warisan karena berbeda agama dengan "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "D"
+        ],
+        "teks": "almarhum"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "mani",
+        "teks": "mani'"
+       },
+       {
+        "jenis": "teks",
+        "teks": ")."
+       }
+      ],
+      "refs": [
+       "R02-4"
+      ],
+      "subjek": [
+       "NS"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
          "X"
         ],
         "teks": "Kerabat kedua"
@@ -86504,6 +86467,47 @@
        {
         "jenis": "orang",
         "daftarIdOrang": [
+         "NS"
+        ],
+        "teks": "Kerabat pertama"
+       },
+       {
+        "jenis": "teks",
+        "teks": " tidak mendapat warisan karena berbeda agama dengan "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "D"
+        ],
+        "teks": "almarhum"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ("
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "mani",
+        "teks": "mani'"
+       },
+       {
+        "jenis": "teks",
+        "teks": ")."
+       }
+      ],
+      "refs": [
+       "R02-4"
+      ],
+      "subjek": [
+       "NS"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
          "X"
         ],
         "teks": "Kerabat kedua"
@@ -86648,6 +86652,36 @@
       "refs": [
        "R14-5",
        "R14-6"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "NS"
+        ],
+        "teks": "قريب ١"
+       },
+       {
+        "jenis": "teks",
+        "teks": " لا يرث، "
+       },
+       {
+        "jenis": "istilah",
+        "istilah": "mani",
+        "teks": "لمانع"
+       },
+       {
+        "jenis": "teks",
+        "teks": " اختلاف الدين."
+       }
+      ],
+      "refs": [
+       "R02-4"
+      ],
+      "subjek": [
+       "NS"
       ]
      },
      {

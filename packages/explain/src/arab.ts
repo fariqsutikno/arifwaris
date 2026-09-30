@@ -259,9 +259,11 @@ function barisRadd(konteks: Konteks, sebut: SebutArab, kelas: Langkah<'KELAS_MAS
 
 const KUNCI_TUJUAN_SISA: Record<TujuanSisa, string> = { dzawilArham: 'dzawil_arham', baitulMal: 'baitul_mal', baitulMalTeratur: 'baitul_mal_teratur' };
 
-export function barisSisaKeluar(konteks: Konteks, sebut: SebutArab, langkah: Langkah<'SISA_KELUAR'>): BarisPenjelasan {
+export function barisSisaKeluar(
+  konteks: Konteks, sebut: SebutArab, langkah: Langkah<'SISA_KELUAR'>,
+  pasangan: IdOrang[] = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota),
+): BarisPenjelasan {
   const { penyusun } = konteks;
-  const pasangan = konteks.hasil.tabel.baris.flatMap(barisTabel => barisTabel.anggota);
   const tujuan = teksArab(penyusun, `tujuan_sisa.${KUNCI_TUJUAN_SISA[langkah.tujuan]}`);
   if (langkah.tujuan === 'baitulMalTeratur') {
     return baris(arab(penyusun, 'sisa_keluar.teratur', { ashl: langkah.ashl, didapat: langkah.ashl - langkah.saham, sisa: langkah.saham, tujuan }), langkah.refs);
