@@ -18158,6 +18158,216 @@
    "id": "Tidak ada anggota keluarga yang janinnya bisa mewarisi.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.judul",
+   "halaman": "hasil",
+   "id": "Amplop titipan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.istilah",
+   "halaman": "hasil",
+   "id": "mauquf",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.alasan",
+   "halaman": "hasil",
+   "id": "Bagian ini disimpan dulu sampai keadaannya jelas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.setelah_jelas",
+   "halaman": "hasil",
+   "id": "Setelah bayi lahir atau ada kabar, buka kasus ini lagi dan ubah jawabannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.pembagian_sekarang",
+   "halaman": "hasil",
+   "id": "Pembagian sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.menunggu_bayi",
+   "halaman": "hasil",
+   "id": "menunggu bayi lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.menunggu_kabar",
+   "halaman": "hasil",
+   "id": "menunggu kabar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.menunggu_kepastian",
+   "halaman": "hasil",
+   "id": "menunggu kepastian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.kalau_terbukti",
+   "halaman": "hasil",
+   "id": "Kalau terbukti…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_mati",
+   "halaman": "hasil",
+   "id": "sudah wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_hidup",
+   "halaman": "hasil",
+   "id": "masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_lk",
+   "halaman": "hasil",
+   "id": "1 laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_pr",
+   "halaman": "hasil",
+   "id": "1 perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_dua_lk",
+   "halaman": "hasil",
+   "id": "2 laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_dua_pr",
+   "halaman": "hasil",
+   "id": "2 perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_lk_pr",
+   "halaman": "hasil",
+   "id": "1 laki-laki dan 1 perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.langkah_perhitungan",
+   "halaman": "hasil",
+   "id": "Pelajari langkah perhitungan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.gharqa_pembuka",
+   "halaman": "hasil",
+   "id": "Mereka tidak saling mewarisi. Harta masing-masing dibagi kepada keluarganya yang masih hidup.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.harta_nama",
+   "halaman": "hasil",
+   "id": "Harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.gharqa_ditahan",
+   "halaman": "hasil",
+   "id": "Harta ditahan sampai ada yang ingat, atau keluarga bersepakat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.skenario",
+   "halaman": "hasil",
+   "id": "Lihat tiap kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.kalau_duluan",
+   "halaman": "hasil",
+   "id": "Kalau {nama} wafat lebih dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.menunggu_judul",
+   "halaman": "hasil",
+   "id": "Kasus disimpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.menunggu_isi",
+   "halaman": "hasil",
+   "id": "Hitung lagi setelah bayi lahir. Pembagian cukup sekali dan tidak ada yang ditahan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.hitung_sekarang_saja",
+   "halaman": "hasil",
+   "id": "Hitung sekarang saja",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.terlalu_banyak",
+   "halaman": "hasil",
+   "id": "Terlalu banyak yang belum pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.terlalu_banyak_ket",
+   "halaman": "hasil",
+   "id": "Kemungkinannya terlalu banyak untuk dihitung. Coba pastikan keadaan sebagian orang dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.pastikan",
+   "halaman": "hasil",
+   "id": "Pastikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_khuntsa_lk",
+   "halaman": "hasil",
+   "id": "laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_khuntsa_pr",
+   "halaman": "hasil",
+   "id": "perempuan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

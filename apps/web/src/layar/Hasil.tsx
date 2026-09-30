@@ -10,6 +10,7 @@ import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
 import { useBahasa, type Tujuan } from '../preferensi';
+import { HasilKasusKhusus } from '../hasil/HasilKasusKhusus';
 import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
@@ -64,8 +65,9 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
       </main>
     );
   }
-  // diganti HasilKasusKhusus di Task 10
-  if (tampil.jenis === 'taqdir' || tampil.jenis === 'gharqa' || tampil.jenis === 'menunggu') return null;
+  if (tampil.jenis === 'taqdir' || tampil.jenis === 'gharqa' || tampil.jenis === 'menunggu') {
+    return <HasilKasusKhusus kasus={kasus} tampil={tampil} kirim={kirim} idSesi={idSesi} />;
+  }
   if (tampil.hasil.status !== 'OK') {
     const hasil = tampil.hasil;
     return (

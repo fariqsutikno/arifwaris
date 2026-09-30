@@ -1275,3 +1275,8 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .baris-kerabat{display:flex;justify-content:space-between;gap:8px;padding:8px 12px;border:var(--border-w) solid var(--divider);border-radius:var(--radius-md)}
 .baris-kerabat.nonaktif{opacity:.55;border-style:dashed}
 .subjudul-babak{margin:0;font:800 13px var(--font-sans);display:inline-flex;align-self:flex-start;padding:3px 10px;border:var(--border-w) solid var(--outline);border-radius:999px;background:var(--sun);color:var(--on-fill)}
+
+.kartu-titipan{border-style:dashed}
+.kartu-titipan h2{display:flex;align-items:center;gap:8px;font:700 20px var(--font-display);margin:0}
+.kartu-titipan small{font:500 12px var(--font-sans);color:var(--ink-muted)}
+.hasil-khusus{max-width:760px}
