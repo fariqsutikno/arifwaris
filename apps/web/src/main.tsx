@@ -5,7 +5,6 @@
 // <PembaruanKonten/> menawarkan tautan muat ulang.
 import './gaya/token.css';
 import './gaya/komponen.css';
-import './gaya/jalur.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pilihAwal } from '@waris/data/snapshot';

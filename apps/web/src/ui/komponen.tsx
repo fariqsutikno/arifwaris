@@ -1,4 +1,4 @@
-// Komponen dasar Arif Waris (dunia Peta Jalur), sisa port bundle.js v4.
+// Port komponen design system Arif Waris (bundle.js v4) ke TSX.
 // Nama asli → nama di sini: Button→Tombol, Chip→Pilihan, Sticker→Stiker, Highlight→Stabilo,
 // FractionBadge→LencanaPecahan, HeirCard→KartuAhliWaris, ShareBar→BarBagian, CalcStep→LangkahHitung,
 // ResultCard→KartuHasil, NavBar→BilahNavigasi, Logo, Motif. Kelas CSS tetap `aw-*` (komponen.css).
@@ -6,7 +6,6 @@
 import { useId, type ButtonHTMLAttributes, type ReactNode } from 'react';
 import type { Kelompok } from '../checklist';
 import { merekDisamarkan, t } from '../terjemah';
-import { Ikon } from './Ikon';
 
 const gabungKelas = (...daftar: Array<string | false | undefined>) => daftar.filter(Boolean).join(' ');
 const LABEL_KELOMPOK: Record<Kelompok, string> = { pasangan: 'Pasangan', keturunan: 'Keturunan', leluhur: 'Leluhur', saudara: 'Saudara' };
@@ -72,7 +71,7 @@ export function LangkahHitung({ nomor, judul, pengantar, kenapa, sudahDibaca, ch
 }) {
   return (
     <div className={gabungKelas('aw-step', sudahDibaca && 'aw-step-done')}>
-      <div className="aw-step-n">{sudahDibaca ? <Ikon nama="benar" ukuran={18} /> : nomor}</div>
+      <div className="aw-step-n">{sudahDibaca ? '✓' : nomor}</div>
       <div>
         {pengantar ? <div className="aw-step-k">{pengantar}{sudahDibaca ? <Stiker warna="lime" miringKanan>{t('umum.kelar')}</Stiker> : null}</div> : null}
         <h4>{judul}</h4>
@@ -112,13 +111,11 @@ export function KartuHasil({ label = t('hitung.harta_yang_dibagi'), total, stike
 
 function Tanda({ ukuran = 40 }: { ukuran?: number }) {
   return (
-    <svg viewBox="0 0 48 48" width={ukuran} height={ukuran} aria-hidden>
-      <rect width={48} height={48} rx={13} fill="var(--primary)" />
-      <path d="M13 36V25c0-5 4-8 11-8h1m-1 0h1c7 0 11 3 11 8v11" fill="none" stroke="var(--on-primary)" strokeWidth={3.2} strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M24 17V11" fill="none" stroke="var(--on-primary)" strokeWidth={3.2} strokeLinecap="round" />
-      <circle cx={24} cy={9} r={3.6} fill="var(--primary)" stroke="var(--on-primary)" strokeWidth={2.6} />
-      <circle cx={13} cy={37} r={3.6} fill="var(--primary)" stroke="var(--on-primary)" strokeWidth={2.6} />
-      <circle cx={35} cy={37} r={3.6} fill="var(--ambar)" stroke="var(--on-primary)" strokeWidth={2.6} />
+    <svg viewBox="0 0 64 64" width={ukuran} height={ukuran} aria-hidden>
+      <rect x={2} y={2} width={56} height={56} rx={14} fill="#111322" />
+      <rect x={0} y={0} width={56} height={56} rx={14} fill="var(--primary)" stroke="#111322" strokeWidth={3} />
+      <path fill="var(--sun)" stroke="#111322" strokeWidth={3} d="M16 34V25c0-8 6-13 12-16 6 3 12 8 12 16v9z" />
+      <rect x={10} y={39} width={36} height={6} rx={3} fill="#ffffff" stroke="#111322" strokeWidth={2} />
     </svg>
   );
 }
@@ -147,8 +144,8 @@ export function Motif({ children }: { children: ReactNode }) {
     <div className="aw-motif">
       <svg className="aw-motif-bg" aria-hidden>
         <defs>
-          <pattern id={idPola} width={28} height={28} patternUnits="userSpaceOnUse">
-            <circle cx={2} cy={2} r={1.2} fill="var(--motif)" />
+          <pattern id={idPola} width={56} height={80} patternUnits="userSpaceOnUse">
+            <path fill="none" stroke="var(--motif)" strokeWidth={1.5} d="M8 80V38c0-12 9-20 20-26 11 6 20 14 20 26v42" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill={`url(#${idPola})`} />

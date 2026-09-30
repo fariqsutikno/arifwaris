@@ -5,7 +5,7 @@ import { Ikon, type NamaIkon } from './Ikon';
 
 export function HeroMini({ judul, keterangan, ikon }: { judul: string; keterangan: string; ikon: NamaIkon }) {
   return (
-    <section className={ikon === 'hitung' ? 'hero-belajar hero-mini jalur-hitung' : 'hero-belajar hero-mini'}>
+    <section className="hero-belajar hero-mini">
       <div className="tumpuk-rapat">
         <h1>{judul}</h1>
         <p className="lead">{keterangan}</p>

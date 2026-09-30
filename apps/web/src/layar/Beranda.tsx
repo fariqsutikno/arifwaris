@@ -1,5 +1,5 @@
-// Beranda: hero dengan satu aksi utama, papan peta jalur (kasus terakhir, progres belajar, latihan di perangkat ini),
-// pintu ke referensi, dan identitas tim penyusun.
+// Beranda (dashboard): dua aksi utama (hitung skenario, lanjut belajar), status pengguna di perangkat ini
+// (kasus terakhir, progres belajar, latihan), pintu ke referensi, dan identitas tim penyusun.
 // Semua angka dari penyimpanan lokal; bila kosong, tampil ajakan memulai, bukan angka nol yang menggantung.
 
 import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
@@ -9,9 +9,7 @@ import { bacaPelajaranSelesai, bacaProgresLatihan } from '../progres';
 import { bacaRiwayat, ringkasKasus, type EntriRiwayat } from '../riwayat';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanGlosarium, tautanLatihan, tautanRujukan } from '../rute';
 import { Ikon } from '../ui/Ikon';
-import { PetaJalur, type LintasPeta } from './PetaJalur';
-import { LANGKAH_WIZARD } from '../konten/wizard';
-import { langkahTerjauh } from './wizard/validasi';
+import { Pintu } from './belajar/Belajar';
 import { Motif } from '../ui/komponen';
 import { merekDisamarkan, panah, t } from '../terjemah';
 
@@ -39,43 +37,48 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
   // supaya Beranda tidak bilang "belum ada" sementara Riwayat berisi.
   const terakhir = kasusTerakhir ? ringkasKasus(kasusTerakhir) : entriTerbaru();
 
-  const langkahKasus = kasusTerakhir ? langkahTerjauh(kasusTerakhir) : terakhir ? 1 : 0;
-  const namaLangkah = [...LANGKAH_WIZARD.map(teks => teks.nama), t('hitung.hasil')];
-  const lintas: LintasPeta[] = [
-    {
-      id: 'hitung', ikon: 'hitung', judul: t('beranda.kasus_terakhir'), stasiun: namaLangkah, jumlah: namaLangkah.length,
-      dilewati: Math.max(0, langkahKasus - 1),
-      keterangan: terakhir ? <><b>{terakhir.judul}</b> {terakhir.keterangan}</> : t('beranda.belum_ada_kasus_yang_dihitung'),
-      tautan: TAUTAN_KALKULATOR, saatKlik: saatKeHitung, aksi: `${terakhir ? t('beranda.lanjutkan_kasus') : t('beranda.mulai_hitung')} ${panah()}`,
-    },
-    {
-      id: 'belajar', ikon: 'pelajaran', judul: t('umum.belajar'), stasiun: [], jumlah: daftarPelajaran().length, dilewati: jumlahSelesai,
-      keterangan: <><b>{t('hitung.selesai_total_pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })}</b> {berikutnya ? t('hitung.berikutnya_judul', { judul: berikutnya.judul }) : t('beranda.semua_pelajaran_sudah_selesai')}</>,
-      tautan: berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar(),
-      aksi: `${jumlahSelesai > 0 && berikutnya ? t('beranda.lanjutkan_belajar') : t('beranda.lihat_materi')} ${panah()}`,
-    },
-    {
-      id: 'latihan', ikon: 'kuis', judul: t('umum.latihan'), stasiun: [], jumlah: Math.min(daftarSoalHitung().length, 24), dilewati: Math.round(soalSelesai / Math.max(1, daftarSoalHitung().length) * Math.min(daftarSoalHitung().length, 24)),
-      keterangan: <><b>{t('hitung.selesai_total_soal_hitung', { selesai: soalSelesai, total: daftarSoalHitung().length })}</b> {kuisTerakhir ? t('hitung.kuis_terakhir_judul_skor_skor', { judul: kuisTerakhir.judul, skor: kuisTerakhir.hasil ?? '' }) : t('beranda.belum_ada_kuis_yang_dikerjakan')}</>,
-      tautan: tautanLatihan(), aksi: `${soalSelesai === 0 && !kuisTerakhir ? t('beranda.mulai_latihan') : t('beranda.lanjutkan_latihan')} ${panah()}`,
-    },
-  ];
-
   return (
     <Motif>
       <main className="halaman tumpuk dasbor">
-        <div className="hero-beranda">
-          <header className="tumpuk hero-teks">
-            <h1 className="judul-beranda">{t('beranda.waris_itu_gampang_asal_tahu_urutannya')}</h1>
-            <p className="lead">{t('beranda.hitung_pembagian_warisan_menurut_madzhab_syafi')}</p>
-            <div className="aksi-hero">
-              <a className="aw-btn aw-btn-primary" href={TAUTAN_KALKULATOR} onClick={saatKeHitung}><Ikon nama="hitung" ukuran={20} />{t('beranda.coba_di_ariflab')}</a>
-              <a href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')} {panah()}</a>
-            </div>
-            <p className="keterangan">{t('beranda.isi_data_almarhum_ahli_waris_dan')}</p>
-          </header>
-          <PetaJalur judul={t('beranda.punyamu_di_perangkat_ini')} lintas={lintas} />
+        <header className="tumpuk-rapat">
+          <h1 className="judul-beranda">{t('beranda.waris_itu_gampang_asal_tahu_urutannya')}</h1>
+          <p className="lead">{t('beranda.hitung_pembagian_warisan_menurut_madzhab_syafi')}</p>
+        </header>
+
+        <div className="aksi-dasbor">
+          <a className="kartu-pilihan pilihan-utama" href={TAUTAN_KALKULATOR} onClick={saatKeHitung}>
+            <span className="judul-pilihan"><Ikon nama="hitung" ukuran={24} />{t('beranda.coba_di_ariflab')}</span>
+            <small>{t('beranda.isi_data_almarhum_ahli_waris_dan')}</small>
+          </a>
+          <a className="kartu-pilihan" href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>
+            <span className="judul-pilihan"><Ikon nama="pelajaran" ukuran={24} />{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')}</span>
+            <small>{berikutnya ? t('hitung.berikutnya_judul', { judul: berikutnya.judul }) : t('beranda.semua_pelajaran_sudah_selesai')}</small>
+          </a>
         </div>
+
+        <section className="tumpuk-rapat" aria-labelledby="judul-status">
+          <h2 id="judul-status" className="tanya-tujuan">{t('beranda.punyamu_di_perangkat_ini')}</h2>
+          <div className="status-dasbor">
+            <a className="kotak-status" href={TAUTAN_KALKULATOR} onClick={saatKeHitung}>
+              <span className="label-langkah">{t('beranda.kasus_terakhir')}</span>
+              {terakhir ? <><b>{terakhir.judul}</b><span className="keterangan">{terakhir.keterangan}</span></>
+                : <span className="keterangan">{t('beranda.belum_ada_kasus_yang_dihitung')}</span>}
+              <span className="aksi-status">{terakhir ? t('beranda.lanjutkan_kasus') : t('beranda.mulai_hitung')} {panah()}</span>
+            </a>
+            <a className="kotak-status" href={tautanBelajar()}>
+              <span className="label-langkah">{t('umum.belajar')}</span>
+              <b>{t('hitung.selesai_total_pelajaran', { selesai: jumlahSelesai, total: daftarPelajaran().length })}</b>
+              <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / daftarPelajaran().length) * 100}%` }} /></span>
+              <span className="aksi-status">{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : berikutnya ? t('beranda.lanjutkan_belajar') : t('beranda.lihat_materi')} {panah()}</span>
+            </a>
+            <a className="kotak-status" href={tautanLatihan()}>
+              <span className="label-langkah">{t('umum.latihan')}</span>
+              <b>{t('hitung.selesai_total_soal_hitung', { selesai: soalSelesai, total: daftarSoalHitung().length })}</b>
+              <span className="keterangan">{kuisTerakhir ? t('hitung.kuis_terakhir_judul_skor_skor', { judul: kuisTerakhir.judul, skor: kuisTerakhir.hasil ?? '' }) : t('beranda.belum_ada_kuis_yang_dikerjakan')}</span>
+              <span className="aksi-status">{soalSelesai === 0 && !kuisTerakhir ? t('beranda.mulai_latihan') : t('beranda.lanjutkan_latihan')} {panah()}</span>
+            </a>
+          </div>
+        </section>
 
         <div className="dua-kolom-dasbor">
           <section className="tumpuk-rapat" aria-labelledby="judul-tanya">
@@ -89,11 +92,12 @@ export function Beranda({ kasusTerakhir, saatKeHitung }: { kasusTerakhir: Kasus 
           </section>
           <section className="tumpuk-rapat" aria-labelledby="judul-cari">
             <h2 id="judul-cari" className="tanya-tujuan">{t('beranda.cari_tahu')}</h2>
-            <ul className="daftar-tautan daftar-polos">
-              {([['glosarium', t('umum.glosarium'), tautanGlosarium()], ['rujukan', t('umum.rujukan'), tautanRujukan()], ['tanya', t('umum.tanya_jawab'), tautanTanyaJawab()]] as const).map(([ikon, judul, tautan]) => (
-                <li key={ikon}><a className="tautan-daftar" href={tautan}><Ikon nama={ikon} ukuran={20} />{judul}</a></li>
-              ))}
-            </ul>
+            <div className="grid-pintu">
+              <Pintu tautan={tautanGlosarium()} ikon="glosarium" judul={t('umum.glosarium')} />
+              <Pintu tautan={tautanRujukan()} ikon="rujukan" judul={t('umum.rujukan')} />
+              <Pintu tautan={tautanFaq()} ikon="tanya" judul={t('umum.faq')} />
+              <Pintu tautan={tautanTanyaJawab()} ikon="tanya" judul={t('umum.tanya_jawab')} />
+            </div>
           </section>
         </div>
 

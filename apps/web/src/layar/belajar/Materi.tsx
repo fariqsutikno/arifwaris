@@ -106,7 +106,7 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
                   <li key={pelajaran.slug}>
                     <a href={tautanBelajar(pelajaran.slug)} aria-current={pelajaran === aktif ? 'page' : undefined}
                       className={selesai.has(pelajaran.slug) ? 'pelajaran-sidebar selesai' : 'pelajaran-sidebar'}>
-                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? t('belajar.selesai') : undefined}>{selesai.has(pelajaran.slug) ? <Ikon nama="benar" ukuran={14} /> : ''}</span>
+                      <span className="tanda-pelajaran" aria-label={selesai.has(pelajaran.slug) ? t('belajar.selesai') : undefined}>{selesai.has(pelajaran.slug) ? '✓' : ''}</span>
                       {pelajaran.judul}
                     </a>
                   </li>

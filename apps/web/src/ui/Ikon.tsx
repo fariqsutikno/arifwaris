@@ -13,7 +13,6 @@ const JALUR = {
   rumah: <><path d="M3 11l9-7 9 7" /><path d="M5 10v10h14V10" /><path d="M10 20v-5h4v5" /></>,
   segarkan: <><path d="M21 12a9 9 0 1 1-2.6-6.4L21 8" /><path d="M21 3v5h-5" /></>,
   riwayat: <><path d="M3 12a9 9 0 1 0 3-6.7L3 8" /><path d="M3 3v5h5M12 7v5l3 2" /></>,
-  masuk: <><path d="M10 4H5v16h5" /><path d="M14 8l4 4-4 4M18 12H8" /></>,
   keluar: <><path d="M14 4h5v16h-5" /><path d="M10 8l-4 4 4 4M6 12h10" /></>,
   unduh: <><path d="M12 4v11M7 10l5 5 5-5" /><path d="M4 19h16" /></>,
   berkas: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v4h4M9 13h6M9 17h6" /></>,
@@ -32,7 +31,6 @@ const JALUR = {
   fokus: <><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3" /><circle cx="12" cy="12" r="3.5" /><path d="M12 12h.01" /></>,
   putar: <path d="M7 4.5v15l12-7.5z" />,
   jeda: <path d="M8 5v14M16 5v14" />,
-  tujuan: <><path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></>,
   jam: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
 } as const;
 
