@@ -160,7 +160,7 @@ function satuSatunyaPasanganHidup(graf: GrafKeluarga, idMayit: IdOrang): IdOrang
 }
 
 /** Pasangan diisi setelah anak: anak mayit yang belum punya orang tua lain dihubungkan ke pasangan itu. */
-function hubungkanAnakTanpaOrangTuaLain(graf: GrafKeluarga, idMayit: IdOrang): GrafKeluarga {
+export function hubungkanAnakTanpaOrangTuaLain(graf: GrafKeluarga, idMayit: IdOrang): GrafKeluarga {
   const idPasangan = satuSatunyaPasanganHidup(graf, idMayit);
   if (!idPasangan) return graf;
   const [kunciMayit, kunciPasangan] = graf.orang[idMayit]!.jenisKelamin === 'L' ? ['idAyah', 'idIbu'] as const : ['idIbu', 'idAyah'] as const;
@@ -178,7 +178,7 @@ function tambahAnakDariMayit(graf: GrafKeluarga, idMayit: IdOrang, jenisKelamin:
 }
 
 /** Ayah/ibu seseorang: penghubung yang ada diubah jadi hidup; yang sudah hidup = sudah penuh. */
-function isiOrangTua(graf: GrafKeluarga, idAnak: IdOrang, jenisKelamin: 'L' | 'P', status: Partial<Orang>): Hasil {
+export function isiOrangTua(graf: GrafKeluarga, idAnak: IdOrang, jenisKelamin: 'L' | 'P', status: Partial<Orang>): Hasil {
   const idAda = jenisKelamin === 'L' ? graf.orang[idAnak]!.idAyah : graf.orang[idAnak]!.idIbu;
   if (idAda) {
     // Dibutuhkan sebagai penghubung: orang tua yang sudah ada (hidup atau penghubung) dipakai.
@@ -190,11 +190,11 @@ function isiOrangTua(graf: GrafKeluarga, idAnak: IdOrang, jenisKelamin: 'L' | 'P
   return { graf: ubahOrang(baru.graf, idAnak, jenisKelamin === 'L' ? { idAyah: baru.idOrang } : { idIbu: baru.idOrang }), idOrang: baru.idOrang };
 }
 
-const pastikanOrangTua = (graf: GrafKeluarga, idAnak: IdOrang, jenisKelamin: 'L' | 'P'): Hasil =>
+export const pastikanOrangTua = (graf: GrafKeluarga, idAnak: IdOrang, jenisKelamin: 'L' | 'P'): Hasil =>
   isiOrangTua(graf, idAnak, jenisKelamin, { penghubung: true, statusHidup: 'wafat' });
 
 /** Saudara `idOrang`: kandung = ayah & ibu sama; sebapak = ayah sama, ibu lain; seibu = sebaliknya. */
-function tambahSaudara(
+export function tambahSaudara(
   graf: GrafKeluarga, idOrang: IdOrang, jalur: 'kandung' | 'sebapak' | 'seibu', jenisKelamin: 'L' | 'P', status: Partial<Orang>,
 ): Hasil {
   const ayah = pastikanOrangTua(graf, idOrang, 'L');
@@ -239,11 +239,11 @@ function tambahOrang(graf: GrafKeluarga, data: Omit<Orang, 'id' | 'statusHidup' 
 /** Dipakai keadaanOrang.ts untuk janin dan bayi (orang tanpa jenis checklist). */
 export const tambahOrangBaru = tambahOrang;
 
-const ubahOrang = (graf: GrafKeluarga, idOrang: IdOrang, perubahan: Partial<Orang>): GrafKeluarga =>
+export const ubahOrang = (graf: GrafKeluarga, idOrang: IdOrang, perubahan: Partial<Orang>): GrafKeluarga =>
   ({ ...graf, orang: { ...graf.orang, [idOrang]: { ...graf.orang[idOrang]!, ...perubahan } } });
 
 /** Id berurutan O1, O2, ... supaya deterministik dan mudah dibaca di file JSON. */
-function idBaru(graf: GrafKeluarga): IdOrang {
+export function idBaru(graf: GrafKeluarga): IdOrang {
   const nomorTerbesar = Object.keys(graf.orang).reduce((maks, id) => Math.max(maks, Number(/^O(\d+)$/.exec(id)?.[1] ?? 0)), 0);
   return `O${nomorTerbesar + 1}`;
 }

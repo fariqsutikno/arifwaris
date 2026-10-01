@@ -20195,6 +20195,13 @@
    "id": "Tinggalkan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.pilih_pasangan_anak",
+   "halaman": "hitung",
+   "id": "Pilih dulu anak ini dari pasangan yang mana.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
