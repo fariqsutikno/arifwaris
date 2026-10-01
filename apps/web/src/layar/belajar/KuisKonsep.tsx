@@ -122,7 +122,7 @@ export function SesiKuis({ paket }: { paket: string }) {
     </span>
   );
   const kepala = (
-    <div className={tahap === 'awal' ? 'bar-ujian polos' : 'bar-ujian'}>
+    <div className="bar-ujian">
       <a className="keluar-ujian" href={tautanLatihan('kuis')}><Ikon nama="keluar" ukuran={18} />{t('latihan.keluar')}</a>
       {tahap !== 'awal' && <span className="judul-sesi">{judulTampil}</span>}
       {penandaWaktu || <span />}
