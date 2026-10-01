@@ -57,15 +57,17 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
         <ContohHidup saatCoba={saatCoba} />
       </header>
 
-      <div className="tata-beranda">
+      <div className="tata-beranda" onPointerMove={sorotUbin}>
         <h2 className="judul-bagian">{t('beranda.mulai_dari_mana')}</h2>
         <a className="ubin ubin-kasus" style={{ '--i': 0 } as CSSProperties} href={TAUTAN_KALKULATOR} onClick={saatKeHitung}>
+          <Ikon nama="hitung" ukuran={150} /><span className="panah-bulat" aria-hidden="true">{panah()}</span>
           <span className="label-langkah">{terakhir ? t('beranda.kasus_terakhir') : t('beranda.punya_kasus_sendiri')}</span>
           {terakhir ? <><b className="judul-ubin">{terakhir.judul}</b><span className="keterangan">{terakhir.keterangan}</span></>
             : <><b className="judul-ubin">{t('beranda.mulai_hitung')}</b><span className="keterangan">{t('beranda.isi_data_almarhum_ahli_waris_dan')}</span></>}
           <span className="aksi-status">{terakhir ? t('beranda.lanjutkan_kasus') : t('beranda.mulai_hitung')} {panah()}</span>
         </a>
         <a className="ubin ubin-belajar" style={{ '--i': 1 } as CSSProperties} href={tautanBelajar(berikutnya?.slug)}>
+          <span className="panah-bulat" aria-hidden="true">{panah()}</span>
           <Cincin selesai={jumlahSelesai} total={totalPelajaran} />
           <span className="isi-ubin">
             <span className="label-langkah">{t('umum.belajar')}</span>
@@ -75,6 +77,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
           </span>
         </a>
         <a className="ubin ubin-latihan" style={{ '--i': 2 } as CSSProperties} href={tautanLatihan()}>
+          <Ikon nama="kuis" ukuran={130} /><span className="panah-bulat" aria-hidden="true">{panah()}</span>
           <span className="label-langkah">{t('umum.latihan')}</span>
           <b className="judul-ubin">{t('hitung.selesai_total_soal_hitung', { selesai: soalSelesai, total: daftarSoalHitung().length })}</b>
           <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(soalSelesai / Math.max(1, daftarSoalHitung().length)) * 100}%` }} /></span>
@@ -122,6 +125,15 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
   );
 }
 
+/** Titik sorot di ubin yang sedang disentuh kursor (CSS: .ubin::before). */
+function sorotUbin(kejadian: React.PointerEvent<HTMLElement>) {
+  const ubin = (kejadian.target as HTMLElement).closest<HTMLElement>('.ubin');
+  if (!ubin) return;
+  const kotak = ubin.getBoundingClientRect();
+  ubin.style.setProperty('--px', `${kejadian.clientX - kotak.left}px`);
+  ubin.style.setProperty('--py', `${kejadian.clientY - kotak.top}px`);
+}
+
 /** Cahaya hangat hero mengikuti kursor dengan gerak melambat (easing); tanpa gerak bila pengguna mengurangi animasi. */
 function useCahayaIkutKursor(hero: React.RefObject<HTMLElement>) {
   useEffect(() => {
@@ -161,6 +173,7 @@ function Cincin({ selesai, total }: { selesai: number; total: number }) {
       <circle cx="50" cy="50" r={jari} className="cincin-latar" />
       <circle cx="50" cy="50" r={jari} className="cincin-isi" transform="rotate(-90 50 50)"
         strokeDasharray={keliling} style={{ '--panjang': keliling, '--sisa': keliling * (1 - selesai / Math.max(1, total)) } as CSSProperties} />
+      <text x="50" y="50" className="persen-cincin" textAnchor="middle" dominantBaseline="central">{angka(String(Math.round((selesai / Math.max(1, total)) * 100)))}%</text>
     </svg>
   );
 }

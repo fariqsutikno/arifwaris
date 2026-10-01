@@ -9,7 +9,6 @@ import { PenyediaSorot } from '../../hasil/sorot';
 import { ringkas } from '../../hasil/ringkasan';
 import { formatRupiahRingkas } from '../../format';
 import { jalankan } from '../../jalankan';
-import { TAUTAN_KALKULATOR } from '../../rute';
 import type { Kasus } from '../../kasus';
 import { kasusDariContoh } from '../belajar/contoh';
 import { Ikon } from '../../ui/Ikon';
@@ -43,21 +42,21 @@ export function ContohHidup({ saatCoba }: { saatCoba: (kasus: Kasus) => void }) 
         ))}
       </div>
       <div className="panggung-contoh" key={keadaan.kunci}>
-        <PratinjauPohon saatBuka={() => saatCoba(kasus)} label={t('beranda.coba_kasus_ini')} skalaMaks={SKALA_MAKS}>
+        <PratinjauPohon skalaMaks={SKALA_MAKS}>
           <PenyediaSorot>
             <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={[]} bentuk="sederhana" sedangMenebak={false} sembunyiNominal={false} saatPilih={() => {}} />
           </PenyediaSorot>
         </PratinjauPohon>
       </div>
-      <div className="kaki-pohon kaki-contoh">
+      <div className="kaki-contoh">
         <dl className="statistik-hero">
           <div><dt>{t('beranda.stat_harta')}</dt><dd>{formatRupiahRingkas(HARTA_CONTOH)}</dd></div>
           <div><dt>{t('beranda.stat_dapat')}</dt><dd>{angka(String(ringkasan.penerima.length))}</dd></div>
           {ringkasan.terhalang.length > 0 && <div><dt>{t('beranda.stat_tidak_dapat')}</dt><dd>{angka(String(ringkasan.terhalang.length))}</dd></div>}
         </dl>
-        <a className="tautan-hero" href={TAUTAN_KALKULATOR} onClick={event => { event.preventDefault(); saatCoba(kasus); }}>
-          {t('beranda.coba_kasus_ini')} {panah()}
-        </a>
+        <button type="button" className="pil-hero pil-terang" onClick={() => saatCoba(kasus)}>
+          <Ikon nama="hitung" ukuran={18} />{t('beranda.coba_kasus_ini')} {panah()}
+        </button>
       </div>
       <p className="petunjuk-contoh"><Ikon nama="tanya" ukuran={16} />{t('beranda.contoh_petunjuk')}</p>
     </div>

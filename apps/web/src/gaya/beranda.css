@@ -2,7 +2,8 @@
    Hero dan bingkai sama dengan Hasil (komponen.css, "Hasil v5"); nav menyatu dengan hero lewat body.layar-beranda.
    Gerak hanya transform/opacity dan hormati prefers-reduced-motion (blok paling bawah). */
 /* Full-bleed: hero dan ubin selebar layar, isi dibatasi --sisi (lebar isi maks 1320px). */
-body.layar-beranda{background:var(--surface)}
+body.layar-beranda{background:var(--krem)}
+:root{--krem:#f6f2e9}
 .halaman-beranda{--sisi:12px;margin:0;padding:0 0 24px}
 
 /* hero */
@@ -31,41 +32,61 @@ body.layar-beranda{background:var(--surface)}
 .pilih-contoh button[aria-pressed=true]{background:rgba(255,255,255,.94);color:#14181a}
 .pilih-contoh button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .panggung-contoh{animation:ganti-contoh .5s cubic-bezier(.2,.7,.2,1) both}
-.contoh-hidup .pratinjau-pohon{cursor:pointer}
-.kaki-contoh{align-items:flex-end;padding-top:4px}
-.kaki-contoh .statistik-hero{gap:26px}
-.kaki-contoh .tautan-hero{white-space:nowrap}
-.petunjuk-contoh{display:flex;align-items:center;gap:8px;margin:0 4px;font-size:12.5px;line-height:1.45;color:rgba(255,255,255,.85)}
+.contoh-hidup .pratinjau-pohon{cursor:default}
+.kaki-contoh{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;margin-top:6px;padding:16px 4px 4px;border-top:1px solid rgba(255,255,255,.2)}
+.kaki-contoh .statistik-hero{gap:28px}
+.kaki-contoh .pil-terang{white-space:nowrap}
+.petunjuk-contoh{display:flex;align-items:center;gap:8px;margin:2px 4px 0;font-size:12.5px;line-height:1.45;color:rgba(255,255,255,.85)}
 .petunjuk-contoh svg{flex:none}
 
-/* ubin */
-.tata-beranda{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;padding:22px var(--sisi) 0}
-.judul-bagian{grid-column:1/-1;margin:6px 4px 0;font:600 21px/1.2 var(--font-display);letter-spacing:-.01em}
-.ubin{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:22px;border:1px solid var(--kartu-tepi);border-radius:var(--radius-lg);background:var(--kartu);color:inherit;text-decoration:none;
-  animation:naik .6s calc(.1s*var(--i,0) + .3s) cubic-bezier(.2,.7,.2,1) both;transition:transform .25s,box-shadow .25s}
-a.ubin:hover{transform:translateY(-3px);box-shadow:var(--shadow-pop)}
-a.ubin:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.judul-ubin{font:600 22px/1.25 var(--font-display);letter-spacing:-.01em;text-wrap:balance}
-.ubin .aksi-status{margin-top:auto;padding-top:10px;font:700 14px var(--font-sans);color:var(--ink);transition:letter-spacing .25s}
+/* ubin: tiap ubin punya warna dan watak sendiri; titik sorot mengikuti kursor (--px/--py) */
+.tata-beranda{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:14px;padding:26px var(--sisi) 0}
+.judul-bagian{grid-column:1/-1;margin:6px 4px 0;font:600 26px/1.2 var(--font-display);letter-spacing:-.02em}
+.ubin{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:8px;min-width:0;min-height:230px;padding:26px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:var(--surface-raised);color:var(--ink);text-decoration:none;
+  animation:naik .6s calc(.1s*var(--i,0) + .3s) cubic-bezier(.2,.7,.2,1) both;transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s}
+.ubin>*{position:relative}
+.ubin::before{content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;background:radial-gradient(280px circle at var(--px,50%) var(--py,0%),rgba(255,255,255,.7),transparent 70%);opacity:0;transition:opacity .35s;pointer-events:none}
+a.ubin:hover::before{opacity:1}
+a.ubin:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,40,30,.16)}
+a.ubin:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.judul-ubin{font:600 clamp(22px,2.2vw,30px)/1.2 var(--font-display);letter-spacing:-.02em;text-wrap:balance}
+.ubin .keterangan{font-size:15px;line-height:1.55}
+.ubin .aksi-status{margin-top:auto;padding-top:14px;font:700 14px var(--font-sans);color:inherit}
 a.ubin:hover .aksi-status{text-decoration:underline;text-underline-offset:3px}
-.ubin-kasus{grid-column:span 7;background:var(--surface-raised)}
-.ubin-belajar{grid-column:span 5;flex-direction:row;align-items:center;gap:20px;background:var(--lime);border-color:transparent}
-.ubin-belajar .label-langkah,.ubin-belajar .keterangan,.ubin-latihan .label-langkah,.ubin-latihan .keterangan{color:color-mix(in srgb,var(--ink) 72%,transparent)}
-.isi-ubin{display:flex;flex-direction:column;gap:8px;flex:1;align-self:stretch;min-width:0}
-.ubin-latihan{grid-column:span 4;background:var(--sun);border-color:transparent}
-.ubin-latihan .bar-progres{background:rgba(255,255,255,.7)}
+/* lingkaran panah di sudut: ikut bergeser saat ubin disentuh */
+.panah-bulat{position:absolute!important;top:20px;inset-inline-end:20px;z-index:1;width:44px;height:44px;display:grid;place-items:center;border-radius:50%;background:rgba(20,24,26,.9);color:#fff;font:600 18px var(--font-sans);transition:transform .3s cubic-bezier(.2,.7,.2,1),background .3s}
+a.ubin:hover .panah-bulat{transform:rotate(-45deg) scale(1.08);background:var(--aksen)}
+/* gambar besar samar di sudut bawah */
+.ubin>svg.ikon{position:absolute;inset-inline-end:-18px;bottom:-22px;opacity:.1;stroke-width:1.4;pointer-events:none;transform:rotate(-8deg);transition:transform .5s cubic-bezier(.2,.7,.2,1),opacity .3s}
+a.ubin:hover>svg.ikon{transform:rotate(0) scale(1.08);opacity:.16}
+
+.ubin-kasus{grid-column:span 7;color:#fff;border-color:transparent;
+  background:radial-gradient(420px 260px at 85% 110%,rgba(255,150,40,.5),transparent 70%),radial-gradient(360px 220px at 0% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)}
+.ubin-kasus::before{background:radial-gradient(300px circle at var(--px,50%) var(--py,0%),rgba(255,170,80,.4),transparent 70%)}
+.ubin-kasus .label-langkah,.ubin-kasus .keterangan{color:rgba(255,255,255,.8)}
+.ubin-kasus .judul-ubin{max-width:80%;font-size:clamp(26px,2.8vw,38px)}
+.ubin-kasus .panah-bulat{background:#fff;color:#0e0f10}
+.ubin-kasus>svg.ikon{opacity:.08}
+.ubin-belajar{grid-column:span 5;flex-direction:row;align-items:center;gap:22px;border-color:transparent;background:radial-gradient(260px 200px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,#d3ebaa,#b7de80)}
+.isi-ubin{display:flex;flex-direction:column;gap:8px;flex:1;align-self:stretch;min-width:0;padding-top:34px}
+.ubin-latihan{grid-column:span 4;border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,#fde6d8,#f8c7a6)}
+.ubin-belajar .label-langkah,.ubin-belajar .keterangan,.ubin-latihan .label-langkah,.ubin-latihan .keterangan{color:color-mix(in srgb,var(--ink) 74%,transparent)}
+.ubin-latihan .judul-ubin{max-width:80%}
+.ubin-latihan .bar-progres{height:10px;background:rgba(255,255,255,.75)}
 .ubin-latihan .bar-progres>span{background:var(--aksen);transform-origin:left;animation:isi-bar 1s .9s cubic-bezier(.3,.8,.2,1) both}
-.ubin-tanya{grid-column:span 8}
-.cincin-beranda{flex:none;width:104px;height:104px}
-.cincin-beranda .cincin-latar{stroke:rgba(255,255,255,.7);stroke-width:11}
-.cincin-beranda .cincin-isi{stroke:var(--ink);stroke-width:11;stroke-dasharray:var(--panjang);stroke-dashoffset:var(--sisa);animation:isi-cincin 1.2s .8s cubic-bezier(.3,.8,.2,1) both}
+.ubin-tanya{grid-column:span 8;background:var(--surface-raised)}
+.ubin-tanya::before{display:none}
+.cincin-beranda{flex:none;width:132px;height:132px;overflow:visible}
+.cincin-beranda .cincin-latar{stroke:rgba(255,255,255,.7);stroke-width:10}
+.cincin-beranda .cincin-isi{stroke:var(--ink);stroke-width:10;stroke-dasharray:var(--panjang);stroke-dashoffset:var(--sisa);animation:isi-cincin 1.2s .8s cubic-bezier(.3,.8,.2,1) both}
+.persen-cincin{font:700 22px var(--font-display);fill:var(--ink)}
 .daftar-tanya{display:flex;flex-direction:column}
 .daftar-tanya li+li{border-top:1px solid var(--divider)}
-.baris-tanya{display:flex;align-items:baseline;gap:14px;padding:12px 4px;color:var(--ink);text-decoration:none;transition:padding-inline-start .25s}
+.baris-tanya{display:flex;align-items:center;gap:14px;padding:14px 4px;color:var(--ink);text-decoration:none;transition:padding-inline-start .25s}
 .baris-tanya:hover{padding-inline-start:12px}
 .baris-tanya:focus-visible{outline:3px solid var(--focus);outline-offset:-3px;border-radius:8px}
-.daftar-tanya b{font:600 16px/1.4 var(--font-sans)}
-.nomor-tanya{flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:var(--surface-sunken);font:700 12.5px var(--font-display)}
+.baris-tanya b{font:600 17px/1.4 var(--font-sans)}
+.nomor-tanya{flex:none;width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:var(--aksen-soft);color:#a8410f;font:700 13px var(--font-display)}
 .ubin-tanya>a.aksi-status{align-self:flex-start;text-decoration:underline;text-decoration-color:var(--outline);text-underline-offset:3px}
 
 /* cari tahu: tautan polos, bukan kotak */
@@ -86,14 +107,17 @@ a.ubin:hover .aksi-status{text-decoration:underline;text-underline-offset:3px}
 @media (min-width:981px){
   .halaman-beranda{--sisi:max(24px,calc((100% - 1320px)/2))}
   body.layar-beranda .halaman-beranda>.hero-beranda{padding-top:104px;padding-bottom:44px}
-  body.layar-beranda .kepala{max-width:1320px}
+  body.layar-beranda .kepala{max-width:1320px;margin-top:0;padding-top:28px}
 }
 @media (max-width:980px){
   .hero-beranda{grid-template-columns:1fr;gap:22px;padding-block:24px}
   .ubin-kasus,.ubin-belajar,.ubin-latihan,.ubin-tanya{grid-column:1/-1}
+  .ubin{min-height:0}
 }
 @media (max-width:560px){
-  .ubin{padding:18px}
+  .ubin{padding:20px}
+  .isi-ubin{padding-top:0}
+  .ubin-kasus .judul-ubin,.ubin-latihan .judul-ubin{max-width:calc(100% - 56px)}
   .ubin-belajar{flex-direction:column;align-items:flex-start}
   .pilih-contoh{border-radius:22px}
   .kaki-contoh{flex-direction:column;align-items:flex-start}
@@ -103,4 +127,5 @@ a.ubin:hover .aksi-status{text-decoration:underline;text-underline-offset:3px}
   .hero-beranda h1,.hero-beranda .lead,.hero-beranda .aksi-hero,.contoh-hidup,.panggung-contoh,.ubin,.cincin-beranda .cincin-isi,.ubin-latihan .bar-progres>span{animation:none}
   .tekanan::after{animation:none;transform:none}
   a.ubin:hover,.pil-terang:hover{transform:none}
+  a.ubin:hover .panah-bulat,a.ubin:hover>svg.ikon{transform:none}
 }
