@@ -71,3 +71,23 @@ describe('hapus', () => {
     expect(rapikanKeadaan({ ...kasus, graf: { ...kasus.graf, orang: sisa } }).urutanWafat).toEqual([]);
   });
 });
+
+describe('temuan review: orang tua sebagai penghubung dan konfirmasi hapus', () => {
+  it('sesudah + Saudara (orang tua jadi penghubung), + Orang tua tetap tersedia dan menghidupkan penghubung itu', () => {
+    const graf = tambahDariOrang(bangun([]), 'PEWARIS', { aksi: 'saudara', jenisKelamin: 'L', jalur: 'kandung' }).graf;
+    expect(aksiTersedia(graf, 'PEWARIS')).toContain('orangTua');
+    const idAyahLama = graf.orang.PEWARIS!.idAyah!;
+    const hasil = tambahDariOrang(graf, 'PEWARIS', { aksi: 'orangTua', sebagai: 'ayah', nama: 'Ahmad' });
+    expect(hasil.idBaru).toBe(idAyahLama);
+    expect(hasil.graf.orang[idAyahLama]).toMatchObject({ nama: 'Ahmad', statusHidup: 'hidup' });
+    expect(hasil.graf.orang[idAyahLama]!.penghubung).toBeFalsy();
+    expect(() => tambahDariOrang(hasil.graf, 'PEWARIS', { aksi: 'orangTua', sebagai: 'ayah' })).toThrow();
+  });
+  it('hapus orang yang masih punya keturunan: pernikahannya tidak dilepas, jadi tidak disebut sebagai dampak', () => {
+    let graf = tambahDariOrang(bangun(['ANAK_LK']), 'PEWARIS', { aksi: 'pasangan' }).graf;
+    const anak = Object.values(graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
+    graf = tambahDariOrang(graf, anak, { aksi: 'pasangan' }).graf;
+    graf = tambahDariOrang(graf, anak, { aksi: 'anak', jenisKelamin: 'L' }).graf;
+    expect(dampakHapus(graf, anak)).toEqual({ menjadiPenghubung: true, pasangan: [] });
+  });
+});

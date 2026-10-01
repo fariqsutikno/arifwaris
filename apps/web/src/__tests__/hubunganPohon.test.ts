@@ -4,7 +4,7 @@ import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { jalankan } from '../jalankan';
 import { kasusBaru } from '../kasus';
 import { HUBUNGAN, selesaikanJalur, type KunciHubungan } from '../hubunganPohon';
-import { pasanganAktif } from '../kerabatPohon';
+import { pasanganAktif, tambahDariOrang } from '../kerabatPohon';
 
 const bangun = (kunci: KunciAhliWaris[]): GrafKeluarga =>
   kunci.reduce((graf, k) => tambahAhliWaris(graf, 'PEWARIS', k), kasusBaru('L').graf);
@@ -121,3 +121,34 @@ describe('pertanyaan, galat, dan penghubung', () => {
     expect('galat' in lagi).toBe(true);
   });
 });
+
+describe('temuan review: pasangan lewat nama hubungan tidak menyerap anak tanpa ibu', () => {
+  it('ibu tiri pada kasus tanpa ibu tercatat: pewaris tidak menjadi anak ibu tiri', () => {
+    const graf = bangun([]);
+    const hasil = selesaikanJalur(graf, 'PEWARIS', 'ibuTiri', { nama: 'Siti' });
+    if (!('graf' in hasil)) throw new Error(JSON.stringify(hasil));
+    expect(hasil.graf.orang.PEWARIS!.idIbu).toBeUndefined();
+    expect(hitungIsian(hasil.graf, 'PEWARIS').IBU).toBeUndefined();
+  });
+  it('mantan: anak pusat yang belum punya ibu tidak diambil mantan', () => {
+    const graf = bangun(['ANAK_LK']);
+    const hasil = selesaikanJalur(graf, 'PEWARIS', 'mantan', { nama: 'Mantan' });
+    if (!('graf' in hasil)) throw new Error(JSON.stringify(hasil));
+    const anak = Object.values(hasil.graf.orang).find(o => o.idAyah === 'PEWARIS')!;
+    expect(anak.idIbu).toBeUndefined();
+  });
+  it('cucu dari anak yang punya dua istri hidup: bertanya pasangan yang mana, lalu lolos', () => {
+    let graf = bangun(['ANAK_LK']);
+    const anak = Object.values(graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
+    graf = ambilGraf(tambahDariOrang(graf, anak, { aksi: 'pasangan', nama: 'Istri 1' }));
+    graf = ambilGraf(tambahDariOrang(graf, anak, { aksi: 'pasangan', nama: 'Istri 2' }));
+    const tanya = selesaikanJalur(graf, 'PEWARIS', 'cucu', { jenisKelamin: 'L', nama: 'Cucu' });
+    expect('pertanyaan' in tanya).toBe(true);
+    const istri1 = pasanganAktif(graf, anak)[0]!;
+    // Perantara 'anak' dipilih otomatis (satu anak); pertanyaan pasangan memakai indeks sesudah perantara.
+    const jawab = selesaikanJalur(graf, 'PEWARIS', 'cucu', { jenisKelamin: 'L', nama: 'Cucu', pilihan: ['', istri1] });
+    if (!('graf' in jawab)) throw new Error(JSON.stringify(jawab));
+    expect(jawab.graf.orang[jawab.idBaru]!.idIbu).toBe(istri1);
+  });
+});
+const ambilGraf = (h: { graf: GrafKeluarga }) => h.graf;

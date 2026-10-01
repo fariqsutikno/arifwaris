@@ -20913,7 +20913,7 @@
   {
    "kunci": "hitung.pohon.hapus_penghubung",
    "halaman": "hitung",
-   "id": "{nama} masih punya keturunan di pohon, jadi tetap ada sebagai orang yang sudah wafat tanpa nama supaya garis keturunannya tidak putus.",
+   "id": "{nama} masih punya keturunan di pohon, jadi tetap ada sebagai orang yang sudah wafat supaya garis keturunannya tidak putus.",
    "ar": null,
    "versiTerbit": 873
   },

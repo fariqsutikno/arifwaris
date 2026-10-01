@@ -4,7 +4,7 @@
 
 import { useState } from 'react';
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
-import { pasanganAktif, PASANGAN_LAIN, tambahDariOrang, type Aksi, type JalurSaudara, type Masukan } from '../../kerabatPohon';
+import { pasanganAktif, PASANGAN_LAIN, slotOrangTuaTerbuka, tambahDariOrang, type Aksi, type JalurSaudara, type Masukan } from '../../kerabatPohon';
 import type { Kasus } from '../../kasus';
 import { namaSingkat } from '../../keadaanOrang';
 import { DialogKonfirmasi } from '../../ui/Dialog';
@@ -17,7 +17,8 @@ export function DialogTambahOrang({ kasus, idOrang, aksi, saatSelesai, saatBatal
   const orang = graf.orang[idOrang]!;
   const [nama, setNama] = useState('');
   const [jenisKelamin, setJenisKelamin] = useState<'L' | 'P' | null>(null);
-  const [sebagai, setSebagai] = useState<'ayah' | 'ibu' | null>(orang.idAyah ? 'ibu' : orang.idIbu ? 'ayah' : null);
+  const slotTerbuka = slotOrangTuaTerbuka(graf, idOrang);
+  const [sebagai, setSebagai] = useState<'ayah' | 'ibu' | null>(slotTerbuka.length === 1 ? slotTerbuka[0]! : null);
   const [jalur, setJalur] = useState<JalurSaudara>('kandung');
   const hidup = pasanganAktif(graf, idOrang).filter(id => graf.orang[id]!.statusHidup !== 'wafat');
   const [pasangan, setPasangan] = useState<string | null>(hidup.length > 1 ? null : hidup[0] ?? null);
@@ -40,7 +41,7 @@ export function DialogTambahOrang({ kasus, idOrang, aksi, saatSelesai, saatBatal
       </label>
       {aksi === 'orangTua' && (
         <Pilihan label={t('hitung.pohon.sebagai')} nilai={sebagai} saatPilih={v => setSebagai(v as 'ayah' | 'ibu')}
-          daftar={[...(orang.idAyah ? [] : [{ nilai: 'ayah', label: t('hitung.pohon.ayah') }]), ...(orang.idIbu ? [] : [{ nilai: 'ibu', label: t('hitung.pohon.ibu') }])]} />
+          daftar={slotTerbuka.map(slot => (slot === 'ayah' ? { nilai: 'ayah', label: t('hitung.pohon.ayah') } : { nilai: 'ibu', label: t('hitung.pohon.ibu') }))} />
       )}
       {perluKelamin && (
         <Pilihan label={t('hitung.pohon.kelamin')} nilai={jenisKelamin} saatPilih={v => setJenisKelamin(v as 'L' | 'P')}

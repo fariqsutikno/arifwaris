@@ -10,7 +10,7 @@ import { t } from './terjemah';
 type Langkah = 'ayah' | 'ibu' | 'orangTua' | 'pasangan' | 'anak' | 'saudara';
 type Akhir =
   | { aksi: 'orangTua'; sebagai?: 'ayah' | 'ibu' }
-  | { aksi: 'pasangan'; mantan?: true }
+  | { aksi: 'pasangan'; mantan?: true; /** Pasangan baru bukan orang tua dari anak pusat yang belum punya orang tua lain (ibu tiri, mantan). */ tanpaHubungkanAnak?: true }
   | { aksi: 'anak'; tiri?: true }
   | { aksi: 'saudara'; jalur: JalurSaudara; jenisKelamin?: 'L' | 'P' };
 interface Jalur {
@@ -44,9 +44,9 @@ export const HUBUNGAN = {
   iparPasanganSaudara: { label: t('hitung.pohon.hub_ipar_pasangan_saudara'), perantara: ['saudara'], akhir: { aksi: 'pasangan' }, tanyaKelamin: false, wajibNama: true },
   cucuMenantu: { label: t('hitung.pohon.hub_cucu_menantu'), perantara: ['anak', 'anak'], akhir: { aksi: 'pasangan' }, tanyaKelamin: false, wajibNama: true },
   anakTiri: { label: t('hitung.pohon.hub_anak_tiri'), perantara: ['pasangan'], akhir: { aksi: 'anak', tiri: true }, tanyaKelamin: true, wajibNama: true },
-  ibuTiri: { label: t('hitung.pohon.hub_ibu_tiri'), perantara: ['ayah'], akhir: { aksi: 'pasangan' }, tanyaKelamin: false, wajibNama: true },
+  ibuTiri: { label: t('hitung.pohon.hub_ibu_tiri'), perantara: ['ayah'], akhir: { aksi: 'pasangan', tanpaHubungkanAnak: true }, tanyaKelamin: false, wajibNama: true },
   saudaraTiri: { label: t('hitung.pohon.hub_saudara_tiri'), perantara: ['ayah', 'pasangan'], akhir: { aksi: 'anak', tiri: true }, tanyaKelamin: true, wajibNama: true, kecualiOrangTuaPusat: true },
-  mantan: { label: t('hitung.pohon.hub_mantan'), perantara: [], akhir: { aksi: 'pasangan', mantan: true }, tanyaKelamin: false, wajibNama: true },
+  mantan: { label: t('hitung.pohon.hub_mantan'), perantara: [], akhir: { aksi: 'pasangan', mantan: true, tanpaHubungkanAnak: true }, tanyaKelamin: false, wajibNama: true },
 } satisfies Record<string, Jalur>;
 export type KunciHubungan = keyof typeof HUBUNGAN;
 
@@ -108,11 +108,24 @@ function akhiri(graf: GrafKeluarga, dari: IdOrang, jalur: Jalur, jawaban: Jawaba
         return { graf: beriNama(hasil.graf, hasil.idOrang, jawaban.nama), idBaru: hasil.idOrang };
       }
       case 'pasangan': {
-        const hasil = tambahDariOrang(graf, dari, { aksi: 'pasangan', nama: jawaban.nama });
+        const hasil = tambahDariOrang(graf, dari, { aksi: 'pasangan', nama: jawaban.nama, hubungkanAnak: !akhir.tanpaHubungkanAnak });
         return akhir.mantan ? { graf: talakBain(hasil.graf, hasil.idBaru), idBaru: hasil.idBaru } : hasil;
       }
-      case 'anak':
-        return tambahDariOrang(graf, dari, { aksi: 'anak', jenisKelamin: jenisKelamin!, nama: jawaban.nama, ...(akhir.tiri ? { idPasangan: PASANGAN_LAIN } : {}) });
+      case 'anak': {
+        // Lebih dari satu pasangan hidup: tanyakan anak ini dari pasangan yang mana (indeks setelah semua perantara).
+        const hidup = pasanganAktif(graf, dari).filter(id => graf.orang[id]!.statusHidup !== 'wafat');
+        const indeks = jalur.perantara.length;
+        const dipilih = jawaban.pilihan?.[indeks];
+        const calon: Pilihan[] = [
+          ...hidup.map((id, urutan) => ({ nilai: id, label: graf.orang[id]!.nama ?? t('hitung.pohon.tanpa_nama', { nomor: urutan + 1 }) })),
+          { nilai: PASANGAN_LAIN, label: t('hitung.pohon.pasangan_lain_tidak_dicatat') },
+        ];
+        const perluTanya = !akhir.tiri && hidup.length > 1;
+        if (perluTanya && !calon.some(pilihan => pilihan.nilai === dipilih)) {
+          return { pertanyaan: { indeks, judul: t('hitung.pohon.dari_pasangan_mana'), pilihan: calon } };
+        }
+        return tambahDariOrang(graf, dari, { aksi: 'anak', jenisKelamin: jenisKelamin!, nama: jawaban.nama, ...(akhir.tiri ? { idPasangan: PASANGAN_LAIN } : perluTanya ? { idPasangan: dipilih } : {}) });
+      }
       case 'saudara':
         return tambahDariOrang(graf, dari, { aksi: 'saudara', jenisKelamin: jenisKelamin!, jalur: akhir.jalur, nama: jawaban.nama });
     }
