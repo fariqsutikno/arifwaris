@@ -29,10 +29,24 @@ it('rujukan: tiap dalil KB bisa dicapai dari salah satu kategori; detail menampi
   expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(RUJUKAN.find(r => r.kode === 'R09-4')!.klaim);
 });
 
-it('rujukan tanpa kategori membuka Al-Qur\'an dengan teks ayat', () => {
-  const { container } = render(<Rujukan />);
-  expect(screen.getByRole('heading', { level: 2, name: "Al-Qur'an" })).toBeTruthy();
-  expect(container.querySelectorAll('.kartu-ayat').length).toBeGreaterThan(0);
+it('rujukan tanpa kategori membuka Awal: ubin tiap kategori dan kolom cari', () => {
+  render(<Rujukan />);
+  expect(screen.getByRole('searchbox', { name: 'Cari dalil, surah, atau kitab' })).toBeTruthy();
+  for (const kategori of KATEGORI_RUJUKAN) expect(document.querySelector(`a[href="#/rujukan/${kategori}"]`), kategori).toBeTruthy();
+});
+
+it('rujukan: kata cari menampilkan hasil bertaut; tanpa hasil → pesan', () => {
+  render(<Rujukan />);
+  const kolom = screen.getByRole('searchbox');
+  fireEvent.change(kolom, { target: { value: 'zzqqxx' } });
+  expect(screen.getByText('Tidak ada yang cocok. Coba kata lain.')).toBeTruthy();
+  fireEvent.change(kolom, { target: { value: RUJUKAN[0]!.klaim.slice(0, 12) } });
+  expect(document.querySelector(`a[href="#/rujukan/${RUJUKAN[0]!.kode}"]`)).toBeTruthy();
+});
+
+it('rujukan: kategori tak dikenal jatuh ke Awal', () => {
+  render(<Rujukan kategori="entah" />);
+  expect(screen.getByRole('searchbox')).toBeTruthy();
 });
 
 it('kode rujukan tak dikenal tidak membuat halaman rusak', () => {

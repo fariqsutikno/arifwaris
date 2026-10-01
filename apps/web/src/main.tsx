@@ -11,6 +11,8 @@ import './gaya/aplikasi.css';
 import './gaya/belajar.css';
 import './gaya/materi.css';
 import './gaya/lab.css';
+import './gaya/rujukan.css';
+import './gaya/latihan.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pilihAwal, type Snapshot } from '@waris/data/snapshot';

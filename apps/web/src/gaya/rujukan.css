@@ -1,0 +1,19 @@
+/* Awal Rujukan: memakai kerangka Beranda/Belajar. Di sini hanya kolom cari di hero dan ubin kategori berwarna. */
+.halaman-rujukan .deret-ubin-rujukan{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin:0;padding:0}
+.halaman-rujukan .deret-ubin-rujukan>li{display:flex}
+.ubin-rujukan{flex:1;min-height:170px;border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b))}
+li:nth-child(5n+1)>.ubin-rujukan{--a:#d3ebaa;--b:#b7de80}
+li:nth-child(5n+2)>.ubin-rujukan{--a:#fde6d8;--b:#f8c7a6}
+li:nth-child(5n+3)>.ubin-rujukan{--a:#d6e2fb;--b:#b4c8f1}
+li:nth-child(5n+4)>.ubin-rujukan{--a:#fbdbe4;--b:#f1b4c6}
+li:nth-child(5n+5)>.ubin-rujukan{--a:#fde7c9;--b:#f6c68a}
+.ubin-rujukan .judul-ubin{margin-top:auto}
+.ubin-rujukan .keterangan{color:color-mix(in srgb,var(--ink) 74%,transparent)}
+.panel-cari-rujukan{display:flex;flex-direction:column;gap:10px;min-width:0;padding:18px;border-radius:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px)}
+.kolom-cari-rujukan{width:100%;padding:14px 18px;border:0;border-radius:999px;font:inherit;background:#fff;color:#0e0f10}
+.kolom-cari-rujukan:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.hasil-cari-rujukan{color:#fff;max-height:280px;overflow:auto}
+.hasil-cari-rujukan p{margin:0 0 6px}
+.hasil-cari-rujukan li a{display:flex;flex-direction:column;padding:8px 4px;color:#fff;text-decoration:none;border-top:1px solid rgba(255,255,255,.14)}
+.hasil-cari-rujukan li a span{font-size:14px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.ubin-rujukan{transition:none}}

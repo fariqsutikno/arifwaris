@@ -6,6 +6,7 @@ import { tautanRujukan } from '../../rute';
 import { angka, t } from '../../terjemah';
 import { Laci } from '../../ui/Laci';
 import { DAFTAR_KATEGORI, IsiKategori, jumlahDi } from './Kategori';
+import { Awal } from './Awal';
 import { DetailDalil } from './DetailDalil';
 import { PenampilKitab } from './PenampilKitab';
 
@@ -14,7 +15,8 @@ export const KATEGORI_RUJUKAN = DAFTAR_KATEGORI.map(isi => isi.id);
 interface Props { kode?: string | undefined; kategori?: string | undefined; kitab?: string | undefined }
 
 export function Rujukan({ kode, kategori, kitab }: Props) {
-  const aktif = kode ? undefined : DAFTAR_KATEGORI.find(isi => isi.id === kategori) ?? DAFTAR_KATEGORI[0]!;
+  const aktif = kode ? undefined : DAFTAR_KATEGORI.find(isi => isi.id === kategori);
+  if (!kode && !aktif) return <Awal />;
   return (
     <div className="tata-materi">
       {!kode && kitab === undefined && (
