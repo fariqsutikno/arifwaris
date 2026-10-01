@@ -76,7 +76,12 @@ export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal }: {
         return pembanding(sisipan) ? ke({ jenis: 'urutan', sisipan }) : selesai({ jenis: 'wafatSesudah', hartaSudahDibagi: false, posisi: posisiAkhir(sisipan) });
       }
       case 'urutan': {
-        if (pilihan === 'tidakTahu') return ke({ jenis: 'ditolak' });   // bersamaan antar-almarhum lanjutan: E1
+        if (pilihan === 'bersamaan') return ke({ jenis: 'ditolak' });   // bersamaan antar-almarhum lanjutan: E1
+        if (pilihan === 'tidakTahu') {
+          // Tidak tahu bukan alasan menolak: urutan sementara disusun, dicatat sebagai belum pasti, dan Hasil menghitung kedua urutan berdampingan.
+          const berikut = jawabSisip(layar.sisipan, false);
+          return selesai({ jenis: 'wafatSesudah', hartaSudahDibagi: false, posisi: posisiAkhir(berikut), takTahuUrutanDengan: pembanding(layar.sisipan)! });
+        }
         const berikut = jawabSisip(layar.sisipan, pilihan === 'diri');
         return pembanding(berikut) ? ke({ jenis: 'urutan', sisipan: berikut })
           : selesai({ jenis: 'wafatSesudah', hartaSudahDibagi: false, posisi: posisiAkhir(berikut) });
@@ -138,7 +143,7 @@ export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal }: {
       break;
     case 'urutan': {
       const lain = namaSingkat(kasus, pembanding(layar.sisipan)!);
-      isi = { tanya: t('hitung.keadaan.siapa_lebih_dulu'), badan: opsi([['diri', nama], ['lain', lain], ['tidakTahu', t('hitung.keadaan.bersamaan_atau_tidak_tahu')]]) };
+      isi = { tanya: t('hitung.keadaan.siapa_lebih_dulu'), badan: opsi([['diri', nama], ['lain', lain], ['tidakTahu', t('hitung.keadaan.tidak_tahu_urutan')], ['bersamaan', t('hitung.keadaan.bersamaan_saja')]]) };
       break;
     }
     case 'putusan':

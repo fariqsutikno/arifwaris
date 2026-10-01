@@ -74,7 +74,7 @@ describe('layar hasil', () => {
 
   it('kasus yang sudah bulat tidak menampilkan kartu pembulatan maupun selisih', () => {
     render(<Uji awal={c1601()} />);
-    expect(screen.queryByText(/nggak bulat/)).toBeNull();
+    expect(screen.queryByText(/tidak bulat/)).toBeNull();
     expect(screen.queryByText(/Selisih/)).toBeNull();
   });
 

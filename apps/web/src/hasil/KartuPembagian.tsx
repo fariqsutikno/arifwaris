@@ -37,6 +37,9 @@ interface Props {
   saatUbahAhliWaris?: (() => void) | undefined;
   /** Diisi hanya bila kartu Harta tidak tampil (tidak ada potongan). */
   saatUbahHarta?: (() => void) | undefined;
+  /** Kemungkinan selain pilihan pertama: selisih per orang terhadap pilihan pertama, dan yang tidak lagi menerima. */
+  selisih?: Record<string, bigint> | undefined;
+  tidakLagi?: Array<{ id: string; nama: string; nominal: bigint }> | undefined;
 }
 
 export function KartuPembagian(props: Props) {
@@ -97,6 +100,7 @@ export function KartuPembagian(props: Props) {
                     <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small></span>
                     <span className="jumlah-bagian">
                       <span className="angka">{uang(orang.nominal)}</span>
+                      {props.selisih && <Selisih nilai={props.selisih[orang.id] ?? 0n} sembunyi={sembunyiNominal} />}
                       <span className="sub-bagian">
                         {pengaturan.pecahan && <span className="frac">{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
                         {pengaturan.persen && <span className="pil-persen">{persenTeks(orang.saham, ringkasan.penyebut)}</span>}
@@ -106,6 +110,15 @@ export function KartuPembagian(props: Props) {
                 </li>
               );
             })}
+            {props.tidakLagi?.map(orang => (
+              <li key={orang.id}>
+                <div className="baris-bagian sisa">
+                  <span className="titik putus" aria-hidden="true" />
+                  <span className="nama-bagian">{orang.nama}<small>{t('hitung.kemungkinan.tidak_lagi')}</small></span>
+                  <span className="jumlah-bagian"><Selisih nilai={-orang.nominal} sembunyi={sembunyiNominal} /></span>
+                </div>
+              </li>
+            ))}
             {ringkasan.daftarSisaKeluar.map(sisa => (
               <li key={sisa.id}>
                 <div className="baris-bagian sisa">
@@ -129,6 +142,11 @@ export function KartuPembagian(props: Props) {
       )}
     </section>
   );
+}
+
+function Selisih({ nilai, sembunyi }: { nilai: bigint; sembunyi: boolean }) {
+  if (nilai === 0n) return null;
+  return <span className={nilai > 0n ? 'selisih naik' : 'selisih turun'}>{nilai > 0n ? '+' : '−'}{sembunyi ? t('hitung.rp') : formatRupiah(nilai > 0n ? nilai : -nilai)}</span>;
 }
 
 function PanelAtur({ pengaturan, saatUbah }: { pengaturan: PengaturanTampil; saatUbah: (pengaturan: PengaturanTampil) => void }) {

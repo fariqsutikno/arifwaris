@@ -49,6 +49,30 @@ describe('DialogKeadaan', () => {
     expect(selesai.mock.calls[0]![0].urutanWafat).toEqual([anak[1], anak[0]]);
   });
 
+  it('dua almarhum, urutan tidak diketahui: tidak ditolak; urutan sementara disusun dan dicatat sebagai belum pasti', () => {
+    const { kasus, anak } = keluarga(2);
+    const selesai = vi.fn();
+    render(<DialogKeadaan kasus={{ ...kasus, urutanWafat: [anak[0]!] }} idOrang={anak[1]!} saatSelesai={selesai} saatBatal={() => {}} />);
+    pilih(/Sudah wafat/); lanjut(); pilih(/Sesudah/); lanjut(); pilih(/Belum dibagi/); lanjut();
+    expect(screen.getByRole('radio', { name: 'Tidak tahu siapa yang duluan' })).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Wafat bersamaan' })).toBeTruthy();
+    pilih(/Tidak tahu siapa yang duluan/); lanjut();
+    expect(screen.queryByText(/belum bisa dihitung otomatis/)).toBeNull();
+    const hasil = selesai.mock.calls[0]![0] as Kasus;
+    expect(hasil.urutanWafat).toEqual([anak[0], anak[1]]);
+    expect(hasil.belumPasti).toEqual([{ jenis: 'urutan', a: anak[1], b: anak[0] }]);
+  });
+
+  it('dua almarhum, bersamaan: tetap belum didukung (celah E1), tanpa menyimpan apa pun', () => {
+    const { kasus, anak } = keluarga(2);
+    const selesai = vi.fn();
+    render(<DialogKeadaan kasus={{ ...kasus, urutanWafat: [anak[0]!] }} idOrang={anak[1]!} saatSelesai={selesai} saatBatal={() => {}} />);
+    pilih(/Sudah wafat/); lanjut(); pilih(/Sesudah/); lanjut(); pilih(/Belum dibagi/); lanjut();
+    pilih(/Wafat bersamaan/); lanjut();
+    expect(screen.getByText(/belum bisa dihitung otomatis/)).toBeTruthy();
+    expect(selesai).not.toHaveBeenCalled();
+  });
+
   it('bersamaan: dua pertanyaan lalu harta', () => {
     const { kasus, anak } = keluarga();
     const selesai = vi.fn();

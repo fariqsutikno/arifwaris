@@ -85,6 +85,7 @@ export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi
       {orang.filter(o => o.statusHidup === 'mafqud').map(o => <p key={o.id}>{t('hitung.cerita.hilang', { nama: nama(o.id) })}</p>)}
       {orang.filter(o => o.statusHidup === 'dalamKandungan').map(o => <p key={o.id}>{o.idIbu ? t('hitung.janin.baris', { ibu: nama(o.idIbu) }) : t('hitung.penutup.status_dalam_kandungan')}</p>)}
       {bedaAgama.length > 0 && <p>{t('hitung.cerita.beda_agama', { pewaris, daftar: bedaAgama.map(nama).join(', ') })}</p>}
+      {(kasus.belumPasti ?? []).map(({ a, b }) => <p key={`${a}-${b}`}>{t('hitung.cerita.urutan_belum_pasti', { a: nama(a), b: nama(b) })}</p>)}
       {terlibat.length > 0 && <p>{t('hitung.cerita.terlibat_wafat', { pewaris, daftar: terlibat.map(nama).join(', ') })}</p>}
       <section className="tumpuk-rapat">
         <h2 className="judul-bagian-kecil">{t('hitung.cerita.label_harta')}</h2>

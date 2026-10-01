@@ -262,3 +262,14 @@ body.layar-hasil .dok{display:none}
   .tabel-banding th,.tabel-banding td{padding:8px 4px;font-size:13px}
   .modal-banding .isi-modal{padding-inline:12px}
 }
+
+/* Kemungkinan (hal belum pasti): pemilih di atas jawaban; selisih per orang terhadap pilihan pertama */
+.kartu-belum-pasti{border-color:var(--ink);background:var(--surface-raised)}
+.pilihan-kemungkinan{display:flex;flex-direction:column;gap:8px}
+.pilihan-kemungkinan button{display:flex;align-items:center;min-height:46px;padding:8px 16px;border:1.5px solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);font:inherit;text-align:start;cursor:pointer}
+.pilihan-kemungkinan button[aria-checked=true]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.pilihan-kemungkinan button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.catatan-belum-pasti{margin:0 0 4px}
+.selisih{display:block;font:700 13px var(--font-sans);font-variant-numeric:tabular-nums}
+.selisih.naik{color:var(--ok,#138a4b)}
+.selisih.turun{color:var(--danger,#d62f33)}

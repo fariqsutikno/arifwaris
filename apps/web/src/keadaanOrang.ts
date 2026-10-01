@@ -11,7 +11,8 @@ export type KeadaanTampil = 'hidup' | 'wafatSebelum' | 'wafatSesudah' | 'wafatSe
 export type JawabanKeadaan =
   | { jenis: 'hidup' }
   | { jenis: 'wafatSebelum' }
-  | { jenis: 'wafatSesudah'; hartaSudahDibagi: boolean; posisi?: number }
+  /** `takTahuUrutanDengan`: urutan wafat dengan orang ini tidak diketahui; disimpan sebagai hal belum pasti, bukan ditebak. */
+  | { jenis: 'wafatSesudah'; hartaSudahDibagi: boolean; posisi?: number; takTahuUrutanDengan?: IdOrang }
   | { jenis: 'bersamaan'; keadaan: KeadaanGharqa; tirkah: InputTirkah }
   | { jenis: 'hilang' }
   | { jenis: 'khuntsa'; keadaan: 'diharapkanJelas' | 'tidakDiharapkanJelas' };
@@ -56,6 +57,7 @@ export function terapkanKeadaan(kasus: Kasus, idOrang: IdOrang, jawaban: Jawaban
         const urutan = [...bersih.urutanWafat];
         urutan.splice(jawaban.posisi ?? urutan.length, 0, idOrang);
         hasil = { ...bersih, urutanWafat: urutan };
+        if (jawaban.takTahuUrutanDengan) hasil = { ...hasil, belumPasti: [...(bersih.belumPasti ?? []), { jenis: 'urutan', a: idOrang, b: jawaban.takTahuUrutanDengan }] };
       }
       break;
     case 'bersamaan': {
@@ -79,6 +81,7 @@ function bersihkanKeadaan(kasus: Kasus, idOrang: IdOrang): Kasus {
     ...kasus,
     graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [idOrang]: { ...orang, statusHidup } } },
     urutanWafat: kasus.urutanWafat.filter(id => id !== idOrang),
+    ...(kasus.belumPasti ? { belumPasti: kasus.belumPasti.filter(hal => hal.a !== idOrang && hal.b !== idOrang) } : {}),
     ...(kasus.wafatSesudahDibagi ? { wafatSesudahDibagi: kasus.wafatSesudahDibagi.filter(id => id !== idOrang) } : {}),
     ...(kasus.gharqa ? { gharqa: { ...kasus.gharqa, anggota: kasus.gharqa.anggota.filter(id => id !== idOrang) } } : {}),
   });

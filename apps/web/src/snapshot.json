@@ -9482,7 +9482,7 @@
   {
    "kunci": "hitung.ada_angka_yang_nggak_bulat_dibulatkan",
    "halaman": "hitung",
-   "id": "Ada angka yang nggak bulat · dibulatkan ke {satuan}",
+   "id": "Ada angka yang tidak bulat · dibulatkan ke {satuan}",
    "ar": "أرقام غير صحيحة · تقرب إلى {satuan}",
    "versiTerbit": 323
   },
@@ -11232,7 +11232,7 @@
   {
    "kunci": "hitung.perlu_keputusanmu",
    "halaman": "hitung",
-   "id": "Perlu keputusanmu",
+   "id": "Pembulatan",
    "ar": "يحتاج قرارك",
    "versiTerbit": 564
   },
@@ -11393,7 +11393,7 @@
   {
    "kunci": "hitung.saham_dari_jamiah_saham_jami_ah",
    "halaman": "hitung",
-   "id": "{saham} dari {jamiah} saham jami'ah",
+   "id": "{saham} dari {jamiah} bagian seluruhnya",
    "ar": "{saham} من {jamiah} سهام الجامعة",
    "versiTerbit": 585
   },
@@ -21852,6 +21852,90 @@
    "kunci": "hitung.madzhab.sama_syafii",
    "halaman": "hitung",
    "id": "Sama dengan Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.tidak_tahu_urutan",
+   "halaman": "hitung",
+   "id": "Tidak tahu siapa yang duluan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan.bersamaan_saja",
+   "halaman": "hitung",
+   "id": "Wafat bersamaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.urutan",
+   "halaman": "hitung",
+   "id": "{dulu} wafat lebih dulu dari {lalu}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.judul",
+   "halaman": "hitung",
+   "id": "Hasil ini bergantung pada {jumlah} hal yang belum pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.ket",
+   "halaman": "hitung",
+   "id": "Urutan wafat belum diketahui. Aplikasi tidak memilih mana yang benar; pilih satu untuk melihat pembagiannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.pastikan",
+   "halaman": "hitung",
+   "id": "Pastikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.membandingkan",
+   "halaman": "hitung",
+   "id": "Memilih hanya membandingkan; kasus yang tersimpan tidak berubah. Selisih dihitung terhadap pilihan pertama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.tidak_berpengaruh",
+   "halaman": "hitung",
+   "id": "Urutan wafat {dulu} dan {lalu} belum pasti, tetapi tidak memengaruhi pembagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.tidak_lagi",
+   "halaman": "hitung",
+   "id": "Tidak menerima bagian dalam kemungkinan ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.terlalu_banyak",
+   "halaman": "hitung",
+   "id": "Terlalu banyak yang belum pasti untuk dibandingkan. Coba pastikan sebagian dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kemungkinan.sedang_dilihat",
+   "halaman": "hitung",
+   "id": "Kemungkinan yang sedang dilihat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.urutan_belum_pasti",
+   "halaman": "hitung",
+   "id": "Urutan wafat {a} dan {b} belum pasti.",
    "ar": null,
    "versiTerbit": 873
   }

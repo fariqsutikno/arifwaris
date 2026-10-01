@@ -36,6 +36,8 @@ import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
 import { aturMadzhab, bandingkanMadzhab, madzhabKasus, namaMadzhab } from '../madzhab';
 import { ModalBandingMadzhab } from '../hasil/ModalBandingMadzhab';
+import { HalamanTerlaluBanyak, KartuBelumPasti, type InfoKemungkinan } from '../hasil/KartuBelumPasti';
+import { selisihTerhadap, turunkanKemungkinan } from '../kemungkinan';
 import { formatRupiahRingkas } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
@@ -65,7 +67,18 @@ interface Props {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
+/** Hasil kasus yang punya hal belum pasti ("tidak tahu urutan wafat") dihitung per kemungkinan; pengguna memilih mana yang dilihat. */
+export function Hasil(props: Props) {
+  const { kasus } = props;
+  const hasilKemungkinan = useMemo(() => turunkanKemungkinan(kasus), [kasus]);
+  const [indeks, setIndeks] = useState(0);
+  if (hasilKemungkinan?.jenis === 'terlaluBanyak') return <HalamanTerlaluBanyak kasus={kasus} hal={hasilKemungkinan.hal} kirim={props.kirim} />;
+  const info: InfoKemungkinan | undefined = hasilKemungkinan ? { hasil: hasilKemungkinan, indeks, saatPilih: setIndeks } : undefined;
+  const dilihat = hasilKemungkinan?.jenis === 'daftar' && hasilKemungkinan.berpengaruh ? hasilKemungkinan.daftar[Math.min(indeks, hasilKemungkinan.daftar.length - 1)]!.kasus : kasus;
+  return <HasilDasar {...props} kasus={dilihat} kasusAsli={kasus} kemungkinan={info} />;
+}
+
+function HasilDasar({ kasus, kasusAsli, kemungkinan, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props & { kasusAsli: Kasus; kemungkinan?: InfoKemungkinan | undefined }) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = (
     <div className="chip-deret">
@@ -107,10 +120,10 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} kasusAsli={kasusAsli} kemungkinan={kemungkinan} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
+function HasilOkLayar({ kasus, kasusAsli, kemungkinan, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props & { kasusAsli: Kasus; kemungkinan?: InfoKemungkinan | undefined }) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -154,6 +167,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   // Perbandingan madzhab hanya untuk kasus yang bisa diubah pemiliknya (bukan soal latihan/penerima tautan); tautannya muncul hanya bila ada yang berbeda.
   const perbandingan = useMemo(() => (bolehUbah ? bandingkanMadzhab(kasus) : null), [kasus, bolehUbah]);
   const namaMadzhabKasus = namaMadzhab(madzhabKasus(kasus));
+  // Kemungkinan selain yang pertama: tampilkan selisih terhadap yang pertama (bukan "jawaban"; yang pertama hanya acuan hitung).
+  const banding = kemungkinan?.hasil.jenis === 'daftar' && kemungkinan.hasil.berpengaruh && kemungkinan.indeks > 0
+    ? selisihTerhadap(kemungkinan.hasil.daftar[0]!, kemungkinan.hasil.daftar[Math.min(kemungkinan.indeks, kemungkinan.hasil.daftar.length - 1)]!) : null;
   // Aliran harta hanya di pratinjau hero (sekali per hasil, bisa diputar ulang); pohon besar tidak berputar tiap dibuka.
   const [putaranAliran, setPutaranAliran] = useState(1);
   const bolehAliran = !sedangMenebak && jumlahOrang <= BATAS_ALIRAN;
@@ -213,6 +229,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       {/* Urutan = pertanyaan yang muncul di kepala pengguna: siapa dapat berapa → kenapa ada yang tidak dapat → dari harta yang mana
           → habis ini ngapain → (bagi yang mau) cara menghitungnya. Kartu yang tidak ada isinya untuk kasus ini tidak dirender. */}
       <div className="tata-hasil">
+        {kemungkinan && <KartuBelumPasti kasus={kasusAsli} info={kemungkinan} saatPastikan={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3 })} />}
         <div className="pita-jawaban">
           <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
@@ -220,11 +237,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
-            saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
+            saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined}
+            selisih={banding?.selisih} tidakLagi={banding?.tidakLagi} />
           <div className="rel-samping">
             {!sedangMenebak && ringkasan.terhalang.length > 0 && <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />}
             {adaPotonganHarta && <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />}
-            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasus)} saatSimpan={() => setNamaTerbuka(true)} saatEkspor={() => setEksporTerbuka(true)} />
+            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasusAsli)} saatSimpan={() => setNamaTerbuka(true)} saatEkspor={() => setEksporTerbuka(true)} />
           </div>
         </div>
         <div className="pita-hitung">
@@ -247,7 +265,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         )}
       </footer>
       {konfirmasiUlangi && (
-        <KonfirmasiKasusBaru kasus={kasus} saatBatal={() => setKonfirmasiUlangi(false)}
+        <KonfirmasiKasusBaru kasus={kasusAsli} saatBatal={() => setKonfirmasiUlangi(false)}
           saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
 
@@ -287,10 +305,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         <PohonLayarPenuh pohon={pohon} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
           saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setEksporTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
       )}
-      {namaTerbuka && <DialogNama judulAwal={kasus.nama ?? ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
-        saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
-      {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasus} repo={bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
-      {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
+      {namaTerbuka && <DialogNama judulAwal={kasusAsli.nama ?? ringkasKasus(kasusAsli).judul} saatBatal={() => setNamaTerbuka(false)}
+        saatSimpan={nama => { simpanKasus(idSesi, kasusAsli, nama); setNamaTerbuka(false); segarkan(); }} />}
+      {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasusAsli} repo={bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
+      {eksporTerbuka && <ModalEkspor kasus={kasusAsli} saatTutup={() => setEksporTerbuka(false)} />}
       {bandingTerbuka && perbandingan && (
         <ModalBandingMadzhab perbandingan={perbandingan} saatTutup={() => setBandingTerbuka(false)}
           saatPakai={ruleset => { setBandingTerbuka(false); kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) }); }} />

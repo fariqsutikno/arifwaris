@@ -37,7 +37,12 @@ export interface Kasus {
   nama?: string;
   /** Madzhab penghitung; kosong = Syafi'i (bawaan, satu-satunya yang diperiksa sampai teks primer). */
   ruleset?: Ruleset;
+  /** Jawaban "tidak tahu" yang disimpan apa adanya (spec 10-01 bag. 3); sumber kemungkinan yang dihitung berdampingan di Hasil. */
+  belumPasti?: HalBelumPasti[];
 }
+
+/** Dua orang yang sama-sama wafat sesudah pewaris, tetapi urutan wafatnya tidak diketahui; `urutanWafat` memuat salah satu urutan. */
+export type HalBelumPasti = { jenis: 'urutan'; a: IdOrang; b: IdOrang };
 
 export function kasusBaru(jenisKelaminPewaris: 'L' | 'P'): Kasus {
   return {
@@ -83,10 +88,14 @@ export function rapikanKeadaan(kasus: Kasus): Kasus {
   const dikandung = Object.entries(kasus.dikandungSetelahWafat ?? {}).filter(([anak, mayit]) => orangNyata(anak) && almarhum.has(mayit));
   const adaJanin = Object.values(graf.orang).some(orang => orang.statusHidup === 'dalamKandungan');
 
-  const { gharqa: _g, wafatSesudahDibagi: _w, dikandungSetelahWafat: _d, pilihanJanin: _p, ...inti } = kasus;
+  // Hal belum pasti hanya bermakna selama kedua orangnya masih ada di urutan wafat.
+  const belumPasti = (kasus.belumPasti ?? []).filter(hal => diUrutan.has(hal.a) && diUrutan.has(hal.b) && hal.a !== hal.b);
+
+  const { gharqa: _g, wafatSesudahDibagi: _w, dikandungSetelahWafat: _d, pilihanJanin: _p, belumPasti: _b, ...inti } = kasus;
   return {
     ...inti,
     urutanWafat,
+    ...(belumPasti.length ? { belumPasti } : {}),
     ...(gharqa ? { gharqa } : {}),
     ...(wafatSesudahDibagi.length ? { wafatSesudahDibagi } : {}),
     ...(dikandung.length ? { dikandungSetelahWafat: Object.fromEntries(dikandung) } : {}),
@@ -143,14 +152,26 @@ function bacaKasus(data: unknown): Kasus {
   if (objek.nama !== undefined && typeof objek.nama !== 'string') throw new Error(t('hitung.data_keadaan_rusak'));
   if (objek.ruleset !== undefined && !DAFTAR_RULESET.includes(objek.ruleset as Ruleset)) throw new Error(t('hitung.madzhab_file_tidak_dikenal'));
   const ruleset = objek.ruleset as Ruleset | undefined;
+  const belumPasti = objek.belumPasti === undefined ? undefined : bacaBelumPasti(objek.belumPasti, urutanWafat);
   const kasus: Kasus = {
     versi: 3, graf, tirkah, satuanPembulatan, urutanWafat,
     ...(rincianHarta ? { rincianHarta } : {}), ...(gharqa ? { gharqa } : {}),
     ...(wafatSesudahDibagi ? { wafatSesudahDibagi } : {}), ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
     ...(pilihanJanin ? { pilihanJanin } : {}), ...(objek.nama ? { nama: objek.nama } : {}),
     ...(ruleset && ruleset !== 'syafii' ? { ruleset } : {}),
+    ...(belumPasti?.length ? { belumPasti } : {}),
   };
   return rapikanKeadaan(kasus);
+}
+
+function bacaBelumPasti(nilai: unknown, urutanWafat: IdOrang[]): HalBelumPasti[] {
+  const salah = new Error(t('hitung.data_keadaan_rusak'));
+  if (!Array.isArray(nilai)) throw salah;
+  return nilai.map((isi): HalBelumPasti => {
+    const hal = wajibObjek(isi, 'hal belum pasti');
+    if (hal.jenis !== 'urutan' || typeof hal.a !== 'string' || typeof hal.b !== 'string' || !urutanWafat.includes(hal.a) || !urutanWafat.includes(hal.b) || hal.a === hal.b) throw salah;
+    return { jenis: 'urutan', a: hal.a, b: hal.b };
+  });
 }
 
 function bacaGharqa(nilai: unknown, graf: GrafKeluarga): GharqaKasus {
