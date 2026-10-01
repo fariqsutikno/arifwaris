@@ -58,7 +58,7 @@ export const keRingkasanKunciDiksi = (baris: Baris): RingkasanKunciDiksi => ({
   revisiTerakhir: terakhirDari((baris.semua_revisi as Baris[]).map(keRevisiDiksi)),
 });
 
-export const keRiwayat = (baris: Baris): RiwayatTersimpan => ({ id: baris.id, kasus: baris.kasus, judul: baris.judul, disimpanPada: baris.disimpan_pada });
+export const keRiwayat = (baris: Baris): RiwayatTersimpan => ({ id: baris.id, kasus: baris.kasus, judul: baris.judul, disimpanPada: baris.disimpan_pada, disematkan: baris.disematkan ?? false });
 export const keProgresBelajar = (baris: Baris): ProgresBelajar => ({ pelajaranSlug: baris.pelajaran_slug, selesai: baris.selesai, diubahPada: baris.diubah_pada });
 export const keProgresLatihan = (baris: Baris): ProgresLatihan => ({
   soalSlug: baris.soal_slug, jenis: baris.jenis, jawabanTerakhir: baris.jawaban_terakhir, benar: baris.benar, jumlahCoba: baris.jumlah_coba, diubahPada: baris.diubah_pada,

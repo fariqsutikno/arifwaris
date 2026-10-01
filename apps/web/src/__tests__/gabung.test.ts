@@ -50,3 +50,10 @@ test('sama persis di kedua sisi → tidak ada yang dikirim', () => {
   const data = { ...kosong, belajar: [{ pelajaranSlug: 'x', selesai: true, diubahPada: '1' }] };
   expect(gabung(data, data).kirim).toEqual([]);
 });
+
+test('tersimpan: sematan ikut baris yang lebih baru', () => {
+  const { hasil } = gabung(
+    { ...kosong, tersimpan: [{ ...simpanan('a', '2'), disematkan: true }] },
+    { ...kosong, tersimpan: [{ ...simpanan('a', '1'), disematkan: false }] });
+  expect(hasil.tersimpan[0]!.disematkan).toBe(true);
+});

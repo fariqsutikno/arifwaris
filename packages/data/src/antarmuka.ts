@@ -107,7 +107,7 @@ export interface RepositoriDiksi {
 // ponytail: batas jumlah, bukan rentang waktu; cukup untuk kabar terbaru. Tambah paging bila ada yang mencari ajuan lama.
 export const BATAS_AJUAN_SAYA = 100;
 
-export interface RiwayatTersimpan { id: string; kasus: unknown; judul: string; disimpanPada: string }
+export interface RiwayatTersimpan { id: string; kasus: unknown; judul: string; disimpanPada: string; disematkan?: boolean }
 export interface ProgresBelajar { pelajaranSlug: string; selesai: boolean; diubahPada: string }
 export interface ProgresLatihan {
   soalSlug: string; jenis: 'kuis' | 'hitung'; jawabanTerakhir: unknown; benar: boolean; jumlahCoba: number; diubahPada: string;
