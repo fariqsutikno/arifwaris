@@ -18543,6 +18543,27 @@
    "id": "Geser untuk menggerakkan, roda tetikus atau tombol + dan − untuk zoom, ketuk orang untuk penjelasannya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.harta_nama",
+   "halaman": "hitung",
+   "id": "Harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.menerima_bagian",
+   "halaman": "hitung",
+   "id": "Menerima bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.orang_di_pohon",
+   "halaman": "hitung",
+   "id": "Orang di pohon",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

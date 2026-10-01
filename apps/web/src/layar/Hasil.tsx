@@ -27,6 +27,7 @@ import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
+import { formatRupiah } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Ikon } from '../ui/Ikon';
@@ -96,6 +97,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa), [kasus, tampil, bahasa]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
   const adalahBelajar = tujuan === 'belajar';
+  // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
+  useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !(terkunci && adalahBelajar);
 
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
@@ -119,6 +122,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const [eksporTerbuka, setEksporTerbuka] = useState(false);
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
+  const namaPewaris = kasus.graf.orang[kasus.graf.idPewaris]?.nama?.trim() || '';
+  const jumlahOrang = Object.values(kasus.graf.orang).filter(orang => !orang.penghubung).length;
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
   const pohon = <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
     sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />;
@@ -141,9 +146,16 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
           ) : (
             <div className="judul-soal">
               <span className="lencana-soal lencana-hitung">{t('hitung.hitung_kasus')}</span>
-              <h1>{t('hitung.nah_ini_pembagiannya')}</h1>
+              <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya')}</h1>
               <p>{t('hitung.angka_di_sini_hasil_hitung_kasusmu')}</p>
             </div>
+          )}
+          {!sedangMenebak && (
+            <dl className="statistik-hero">
+              <div><dd>{sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih)}</dd><dt>{t('hitung.total_harta')}</dt></div>
+              <div><dd>{ringkasan.penerima.length}</dd><dt>{t('hitung.menerima_bagian')}</dt></div>
+              <div><dd>{jumlahOrang}</dd><dt>{t('hitung.orang_di_pohon')}</dt></div>
+            </dl>
           )}
           <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
             <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>

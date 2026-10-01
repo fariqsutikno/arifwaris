@@ -10,6 +10,7 @@
   --radius-sm:10px;--radius-md:16px;--radius-lg:24px;--radius-pill:999px;
   --shadow-pop:0 8px 24px rgba(20,40,30,.12);--shadow-pop-sm:0 2px 8px rgba(20,40,30,.10);--border-w:1px;
   --lebar-konten:1200px;
+  --halaman:#b9d4c0;--kartu:rgba(255,255,255,.72);--kartu-tepi:rgba(255,255,255,.95);
   /* Warna sinar sorotan langkah perhitungan, satu per peran; sama di pohon, tabel, dan legenda. */
   --sorot-pewaris:#5d6487;--sorot-ahli-waris:#2f5bff;--sorot-penyebab:#f07800;--sorot-mahjub:#d62f33;
   --sorot-bukan:#8a8fa8;--sorot-fardh:#138a4b;--sorot-ashabah:#8b3dff;
@@ -19,6 +20,7 @@
   --ink:#eef3e8;--ink-muted:#9fb2ad;--primary:#eef3e8;--on-primary:#0e0f10;--primary-soft:#1f3533;
   --sun:#4a2e1c;--pink:#4a2634;--lime:#34421d;--pasangan:#1f3052;--keturunan:#17402f;--leluhur:#33274f;--saudara:#4a321c;
   --danger:#ff8a80;--on-danger:#0e0f10;--danger-soft:#4a2320;--focus:#ff8a4d;--aksen:#ff8a4d;--aksen-soft:#4a2e1c;
+  --halaman:#091313;--kartu:rgba(22,38,38,.82);--kartu-tepi:rgba(255,255,255,.08);
   --shadow-pop:0 8px 24px rgba(0,0,0,.45);--shadow-pop-sm:0 2px 8px rgba(0,0,0,.4);
   --sorot-pewaris:#b7bddc;--sorot-ahli-waris:#7c9bff;--sorot-penyebab:#ffa94d;--sorot-mahjub:#ff8a80;
   --sorot-bukan:#8f95b8;--sorot-fardh:#4ade80;--sorot-ashabah:#c4a1ff;

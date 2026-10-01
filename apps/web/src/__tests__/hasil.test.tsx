@@ -144,6 +144,18 @@ describe('layar hasil', () => {
     expect(baris.textContent).toMatch(/kasus ini/);
   });
 
+  it('hero mode hitung memuat statistik; mode belajar yang masih menebak menyembunyikannya; body diberi penanda halaman', () => {
+    const { unmount } = render(<Uji awal={prototipe()} />);
+    const hero = document.querySelector('.hero-hasil')!;
+    expect(hero.textContent).toMatch(/Total harta/);
+    expect(hero.textContent).toMatch(/Menerima bagian/);
+    expect(document.body.classList.contains('layar-hasil')).toBe(true);
+    unmount();
+    expect(document.body.classList.contains('layar-hasil')).toBe(false);
+    render(<Uji awal={prototipe()} tujuan="belajar" />);
+    expect(document.querySelector('.hero-hasil')!.textContent).not.toMatch(/Total harta/);
+  });
+
   it('pohon di hero hanya pratinjau (tidak bisa diketuk per orang); layar penuh menutup dengan Escape', () => {
     render(<Uji awal={prototipe()} />);
     expect(document.querySelector('.pratinjau-isi')?.hasAttribute('inert')).toBe(true);

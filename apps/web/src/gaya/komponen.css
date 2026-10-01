@@ -1332,3 +1332,25 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
   .hero-hasil{grid-template-columns:1fr;padding:16px;gap:16px}
   .pohon-penuh-atas{padding:10px 12px}
 }
+
+/* ─── Hasil v5, bagian 2: latar sage + bingkai krem, nav menyatu dengan hero, statistik, kartu kaca, avatar ─── */
+.statistik-hero{display:flex;flex-wrap:wrap;gap:12px 28px;margin:0}
+.statistik-hero div{display:flex;flex-direction:column-reverse}
+.statistik-hero dd{margin:0;font:600 clamp(20px,2.4vw,26px)/1.1 var(--font-display);font-variant-numeric:tabular-nums}
+.statistik-hero dt{font-size:12.5px;color:rgba(255,255,255,.88)}
+.avatar-orang{display:grid;place-items:center;flex:none;border-radius:50%;font-family:var(--font-display);font-weight:700;color:var(--on-fill)}
+.kartu-sisi{background:var(--kartu);border:1px solid var(--kartu-tepi);border-radius:var(--radius-lg)}
+.kartu-sisi.kartu-utama{box-shadow:none}
+.kartu-sisi .panah-lipat::before{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-sunken)}
+.baris-bagian{grid-template-columns:40px 1fr auto}
+body.layar-hasil{background:var(--halaman)}
+@media (min-width:981px){
+  body.layar-hasil .kepala{box-sizing:border-box;position:relative;max-width:1160px;margin:24px auto -92px;padding:18px 28px;background:transparent;border:0;color:#fff;z-index:6}
+  body.layar-hasil .kepala-nav{overflow:visible}
+  body.layar-hasil .kepala-menu{color:rgba(255,255,255,.92);border-radius:var(--radius-pill);padding:0 16px}
+  body.layar-hasil .kepala-menu[aria-current=page]{background:rgba(255,255,255,.92);color:#14181a}
+  body.layar-hasil .kepala .aw-logo,body.layar-hasil .kepala .aw-logo small,body.layar-hasil .kepala .aw-logo b{color:#fff}
+  body.layar-hasil .halaman-hasil{max-width:1160px;margin:0 auto 28px;padding:0 0 120px;background:var(--surface);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+  body.layar-hasil .halaman-hasil>.hero-hasil{margin:0;border-radius:0;padding:112px 32px 32px}
+  body.layar-hasil .halaman-hasil>.tata-hasil{padding:18px 20px 0}
+}

@@ -2,6 +2,7 @@
 // pensil (ubah ahli waris), ikon mata (sembunyikan nominal), panel atur tampilan, dan kartu pembulatan yang muncul hanya bila ada angka tidak bulat.
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
+import { AvatarOrang } from './AvatarOrang';
 import { useState } from 'react';
 import { formatRupiah } from '../format';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
@@ -92,7 +93,7 @@ export function KartuPembagian(props: Props) {
               return (
                 <li key={orang.id}>
                   <button type="button" {...pemicu} className={['baris-bagian', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
-                    <span className={`titik g-${orang.kelompok}`} aria-hidden="true" />
+                    <AvatarOrang nama={orang.nama} kelompok={orang.kelompok} />
                     <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small></span>
                     <span className="jumlah-bagian">
                       <span className="angka">{uang(orang.nominal)}</span>
