@@ -19103,6 +19103,181 @@
    "id": "Pekan baru sudah dimulai. Kumpulkan XP untuk naik peringkat.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_lanjutkan",
+   "halaman": "hitung",
+   "id": "Lanjutkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_mulai_baru",
+   "halaman": "hitung",
+   "id": "Mulai skenario baru",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_hero_kosong",
+   "halaman": "hitung",
+   "id": "Susun keluarga, isi harta, lihat bagiannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_mulai_cepat",
+   "halaman": "hitung",
+   "id": "Mulai cepat dari susunan keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_cepat_istri_anak",
+   "halaman": "hitung",
+   "id": "Istri dan anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_cepat_suami_anak",
+   "halaman": "hitung",
+   "id": "Suami dan anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_cepat_orang_tua_anak",
+   "halaman": "hitung",
+   "id": "Ayah, ibu, dan anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_cepat_ibu_saudara",
+   "halaman": "hitung",
+   "id": "Ibu dan saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_rak",
+   "halaman": "hitung",
+   "id": "Eksperimenmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_sematkan",
+   "halaman": "hitung",
+   "id": "Sematkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_lepas_sematan",
+   "halaman": "hitung",
+   "id": "Lepas sematan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_ganti_nama",
+   "halaman": "hitung",
+   "id": "Ganti nama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_beri_nama",
+   "halaman": "hitung",
+   "id": "Beri nama kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_nama_kasus",
+   "halaman": "hitung",
+   "id": "Nama kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_nama_contoh",
+   "halaman": "hitung",
+   "id": "Misalnya: Keluarga Pak Budi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_simpan_jadi_eksperimen",
+   "halaman": "hitung",
+   "id": "Simpan jadi eksperimen",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_terakhir_dibuka",
+   "halaman": "hitung",
+   "id": "Terakhir dibuka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_hari_ini",
+   "halaman": "hitung",
+   "id": "Hari ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_kemarin",
+   "halaman": "hitung",
+   "id": "Kemarin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_pekan_ini",
+   "halaman": "hitung",
+   "id": "Pekan ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_lebih_lama",
+   "halaman": "hitung",
+   "id": "Lebih lama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_cari",
+   "halaman": "hitung",
+   "id": "Cari kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_tidak_ketemu",
+   "halaman": "hitung",
+   "id": "Tidak ada kasus yang cocok.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_jejak",
+   "halaman": "hitung",
+   "id": "{jumlah} eksperimen tersimpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_pohon_kasus",
+   "halaman": "hitung",
+   "id": "Pohon keluarga {nama}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
