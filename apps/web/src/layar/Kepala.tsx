@@ -1,29 +1,23 @@
-// Header global: logo, menu utama (Beranda · Belajar · ArifLab · Latihan · Rujukan), tur, dan "Reset skenario"
-// (hanya di wizard; layar hasil punya tombolnya sendiri di bar aksi). Di HP menu utama pindah ke nav bawah.
+// Header global: logo, menu utama (Beranda · Belajar · ArifLab · Latihan · Rujukan) dan tur. "Reset skenario" ada di
+// hero wizard dan kaki Hasil. Di HP menu utama pindah ke nav bawah.
 // Tidak memuat tombol simpan (spec: Navigasi global).
 
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Logo, Tombol } from '../ui/komponen';
-import type { Kasus } from '../kasus';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
-import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { DAFTAR_BAHASA, simpanBahasa, useBahasa, type Bahasa } from '../preferensi';
 import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 import { NAMA_LAB, t } from '../terjemah';
 
 interface Props {
   halaman: Rute['halaman'];
-  /** Kasus di wizard yang bisa diulang dari awal; null = tombol Ulangi tidak tampil. */
-  kasusWizard: Kasus | null;
   adaTur: boolean;
   saatKeHitung: () => void;
   saatTur: () => void;
-  saatUlangi: () => void;
   akun: ReactNode;
 }
 
-export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, saatUlangi, akun }: Props) {
-  const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
+export function Kepala({ halaman, adaTur, saatKeHitung, saatTur, akun }: Props) {
   const bahasa = useBahasa();
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
     { label: t('umum.beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
@@ -51,13 +45,8 @@ export function Kepala({ halaman, kasusWizard, adaTur, saatKeHitung, saatTur, sa
         </select>
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
         {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.tur_singkat')} title={t('umum.tur_singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('umum.tur_singkat')}</span></Tombol>}
-        {kasusWizard && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.reset_skenario_2')} title={t('umum.reset_skenario_2')} onClick={() => setSedangKonfirmasi(true)}><Ikon nama="riwayat" ukuran={18} /><span className="label-lebar">{t('umum.reset_skenario_2')}</span></Tombol>}
       </header>
       <nav aria-label={t('umum.menu_utama')} className="nav-bawah">{tautanMenu('nav-bawah-item', true)}</nav>
-      {sedangKonfirmasi && kasusWizard && (
-        <KonfirmasiKasusBaru kasus={kasusWizard} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setSedangKonfirmasi(false)}
-          saatLanjut={() => { setSedangKonfirmasi(false); saatUlangi(); }} />
-      )}
     </>
   );
 }

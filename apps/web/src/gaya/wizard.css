@@ -1,0 +1,56 @@
+/* Wizard ArifLab: kerangka hero gelap (dari beranda.css) + lembar krem yang menimpa hero, seperti sesi kuis Latihan.
+   Stepper bulat berhubung garis di dalam hero; panggung pohon gelap di samping isian. Gerak hanya transform/opacity. */
+.halaman-wizard{--sisi:16px;padding:0 0 120px}
+@media (min-width:981px){.halaman-wizard{--sisi:max(24px,calc((100% - 1320px)/2))}}
+
+.halaman-wizard>.hero-wizard{display:block;padding:92px var(--sisi) 64px}
+@media (min-width:981px){body.layar-beranda .halaman-wizard>.hero-wizard{padding-top:112px}}
+.isi-hero-wizard{display:flex;flex-direction:column;align-items:flex-start;gap:14px;max-width:760px}
+.hero-wizard .label-langkah{color:rgba(255,255,255,.78)}
+.hero-wizard .pertanyaan-utama{font:500 clamp(30px,4.4vw,48px)/1.06 var(--font-display);letter-spacing:-.03em;animation:naik .6s cubic-bezier(.2,.7,.2,1) both}
+.hero-wizard .caption-langkah{margin:0;color:rgba(255,255,255,.86);font-size:16px;max-width:56ch}
+
+/* stepper: bulatan bernomor disambung garis; langkah terbuka putih, langkah aktif bercincin */
+.hero-wizard .stepper{display:flex;align-items:center;gap:0;overflow-x:auto;scrollbar-width:none;padding:6px 6px 6px 0;max-width:100%}
+.hero-wizard .stepper::-webkit-scrollbar{display:none}
+.hero-wizard .stepper-item{position:relative;flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0;border:0;border-radius:var(--radius-pill);background:none;color:rgba(255,255,255,.85);font:600 14px var(--font-sans)}
+.hero-wizard .stepper-item+.stepper-item{margin-inline-start:34px}
+.hero-wizard .stepper-item+.stepper-item::before{content:"";position:absolute;inset-inline-start:-28px;top:50%;width:22px;height:2px;border-radius:2px;background:rgba(255,255,255,.3)}
+.hero-wizard .stepper-item.kelar+.stepper-item::before,.hero-wizard .stepper-item[aria-current=step]::before{background:rgba(255,255,255,.8)}
+.hero-wizard .stepper-item b{width:36px;height:36px;border:1.5px solid rgba(255,255,255,.4);border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font:700 15px var(--font-sans);transition:background .2s,transform .2s}
+.hero-wizard .stepper-item:not(:disabled):hover b{background:rgba(255,255,255,.28)}
+.hero-wizard .stepper-item.kelar b{border-color:#fff;background:#fff;color:var(--ink)}
+.hero-wizard .stepper-item[aria-current=step]{background:none;color:#fff}
+.hero-wizard .stepper-item[aria-current=step] b{border-color:#fff;background:#fff;color:var(--ink);box-shadow:0 0 0 3px rgba(6,42,38,.9),0 0 0 5px #fff}
+.hero-wizard .stepper-item:disabled{opacity:.55;border:0;background:none;color:rgba(255,255,255,.7)}
+.hero-wizard .stepper-item:disabled b{border-style:dashed;background:none;color:#fff}
+.hero-wizard .stepper-item:focus-visible{outline:3px solid #fff;outline-offset:3px}
+
+/* lembar: sudut atas besar, menimpa hero, memanjang sampai dasar layar */
+.lembar-wizard{position:relative;margin-top:-30px;padding:32px var(--sisi) 48px;border-radius:36px 36px 0 0;background:var(--krem);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+.lembar-wizard .kerangka-langkah{margin-top:0;gap:32px}
+
+/* panggung pohon */
+.lembar-wizard .kerangka-samping{top:24px;padding:18px;border:0;border-radius:28px;color:#fff;background:linear-gradient(135deg,#0a2326,#0f3a38 55%,#0b2a2b);box-shadow:0 18px 40px rgba(10,35,38,.22)}
+.panggung-pohon{margin:0 0 14px;padding:12px 8px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18)}
+.panggung-pohon .pratinjau-pohon{cursor:default}
+.kerangka-samping .ringkasan-samping h2{color:#fff}
+.kerangka-samping .baris-ringkas dt{color:rgba(255,255,255,.7)}
+.kerangka-samping .baris-ringkas dd{color:rgba(255,255,255,.72)}
+.kerangka-samping .baris-ringkas.terisi dd{color:#fff}
+
+@media (max-width:900px){
+  /* HP: panggung jadi pohon kecil di atas isian; ringkasan teks dan panggung kosong disembunyikan */
+  .lembar-wizard .kerangka-samping{display:block;order:-1;position:static;padding:10px}
+  .lembar-wizard .kerangka-samping .ringkasan-samping{display:none}
+  .lembar-wizard .kerangka-samping:not(:has(.panggung-pohon)){display:none}
+  .lembar-wizard .panggung-pohon{margin:0}
+}
+@media (prefers-reduced-motion:reduce){.hero-wizard .pertanyaan-utama{animation:none}.hero-wizard .stepper-item b{transition:none}}
+
+/* aksi sekunder di hero: tautan teks */
+.hero-wizard .tautan-hero{margin-top:2px;padding:0;min-height:44px}
+@media (max-width:720px){
+  /* HP: header sempit, tur disembunyikan (hanya ada di desktop) */
+  body.layar-beranda .kepala .tombol-kepala{display:none}
+}

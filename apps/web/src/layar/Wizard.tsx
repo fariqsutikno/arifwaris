@@ -1,11 +1,13 @@
 // Wizard 5 langkah, satu pertanyaan per layar. Menerima keadaan + kirim(aksi);
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil'.
 
+import { useEffect, useState } from 'react';
 import { kasusBaru, type Kasus } from '../kasus';
 import { daftarAlmarhum, namaSingkat, perluPeriksaCerita } from '../keadaanOrang';
 import { t } from '../terjemah';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
+import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
 import { LangkahBabak } from './LangkahBabak';
 import { PertanyaanHamil } from './keadaan/PertanyaanHamil';
@@ -16,13 +18,14 @@ import { LangkahKewajiban } from './wizard/LangkahKewajiban';
 import { BarBawah } from './wizard/BarBawah';
 import { KerangkaLangkah } from './wizard/KerangkaLangkah';
 import { LangkahPewaris } from './wizard/LangkahPewaris';
-import { RingkasanSamping } from './wizard/RingkasanSamping';
+import { PanggungPohon } from './wizard/PanggungPohon';
 import { Stepper } from './wizard/Stepper';
 import { adaAhliWaris, alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from './wizard/validasi';
 
 
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
   const { kasus, langkah, babak } = keadaan;
+  const [sedangReset, setSedangReset] = useState(false);
   const almarhum = kasus ? daftarAlmarhum(kasus) : [];
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
   const alasan = langkah === 4 && kasus
@@ -40,11 +43,15 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
     if (langkah === 4 && babak > 0) return kirim({ jenis: 'KE_BABAK', babak: babak - 1 });
     kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'awal' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 });
   };
+  // Penanda halaman: latar krem dan navbar menyatu dengan hero gelap (CSS body.layar-beranda), sama dengan Awal Lab.
+  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
+  const stepper = (
+    <Stepper langkahAktif={langkah} terjauh={langkahTerjauh(kasus)}
+      saatPilih={tujuan => kirim(tujuan === LANGKAH_HASIL ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: tujuan })} />
+  );
   return (
-    <main className="halaman halaman-wizard">
-      <Stepper langkahAktif={langkah} terjauh={langkahTerjauh(kasus)}
-        saatPilih={tujuan => kirim(tujuan === LANGKAH_HASIL ? { jenis: 'KE_LAYAR', layar: 'hasil' } : { jenis: 'KE_LANGKAH', langkah: tujuan })} />
-      <KerangkaLangkah langkah={langkah} subjudul={subjudul} ringkasan={<RingkasanSamping kasus={kasus} />}>
+    <main className="halaman-beranda halaman-wizard">
+      <KerangkaLangkah langkah={langkah} subjudul={subjudul} stepper={stepper} saatReset={() => setSedangReset(true)} ringkasan={<PanggungPohon kasus={kasus} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
           saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiPewarisDanKosongkan(k, jenisKelamin))}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
@@ -59,6 +66,10 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         {kasus && langkah === 4 && babak > 0 && <LangkahBabak kasus={kasus} babak={babak} ubah={ubah} />}
         {kasus && langkah === 5 && <LangkahKondisi kasus={kasus} ubah={ubah} />}
       </KerangkaLangkah>
+      {sedangReset && kasus && (
+        <KonfirmasiKasusBaru kasus={kasus} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setSedangReset(false)}
+          saatLanjut={() => { setSedangReset(false); kirim({ jenis: 'ULANGI' }); }} />
+      )}
       <BarBawah langkah={langkah} alasan={alasan}
         saatKembali={saatKembali} saatLanjut={saatLanjut} />
     </main>
