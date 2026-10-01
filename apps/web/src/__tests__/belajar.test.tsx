@@ -54,20 +54,26 @@ it('kode rujukan tak dikenal tidak membuat halaman rusak', () => {
   expect(screen.getByRole('alert').textContent).toMatch(/R99-9/);
 });
 
-it("rujukan Al-Qur'an: memilih hukum menyorot syahidnya di teks ayat; arti & tafsir berupa placeholder jujur", async () => {
+it("rujukan Al-Qur'an: memilih hukum menyorot syahidnya; tab Arti/Tafsir yang kosong tidak dirender", async () => {
   const { daftarSyahid } = await import('../konten/sumber');
   const { container } = render(<Rujukan kategori="quran" />);
   const pertama = daftarSyahid()[0]!;
   expect(container.querySelector('mark.syahid')).toBeNull();
   fireEvent.click(screen.getByRole('button', { name: pertama.hukum }));
   expect(container.querySelector('mark.syahid')?.textContent).toBe(pertama.syahid);
-  fireEvent.click(screen.getAllByRole('tab', { name: 'Arti' })[0]!);
-  expect(screen.getByText(/Arti ayat ini belum diisi/)).toBeTruthy();
+  expect(screen.queryByRole('tab', { name: 'Arti' })).toBeNull();
+  expect(screen.queryByText(/belum diisi/)).toBeNull();
 });
 
-it('kitab tanpa sumber: tombol baca nonaktif dengan label, bukan tombol mati', () => {
+it('kitab tanpa berkas: aksi baca nonaktif berlabel; situs sumber hanya tautan teks, bukan tombol', () => {
   render(<Rujukan kategori="kitab" />);
-  for (const tombol of screen.getAllByRole('button', { name: /belum tersedia/ })) expect((tombol as HTMLButtonElement).disabled).toBe(true);
+  for (const tombol of screen.getAllByRole('button', { name: /Baca di sini/ })) expect((tombol as HTMLButtonElement).disabled).toBe(true);
+  expect(screen.queryByRole('button', { name: /Situs sumber/ })).toBeNull();
+});
+
+it('rujukan sunnah: status hadits tampil sebagai label', () => {
+  const { container } = render(<Rujukan kategori="sunnah" />);
+  expect(container.querySelectorAll('.label-status').length).toBeGreaterThan(0);
 });
 
 it('rujukan: kategori memakai baris tab (tanpa sidebar); filter bab menyempitkan dalil', () => {

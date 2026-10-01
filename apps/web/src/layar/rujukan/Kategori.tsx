@@ -7,7 +7,7 @@ import { tautanRujukan } from '../../rute';
 import { angka, t } from '../../terjemah';
 import { judulBab } from '../../konten/judulBab';
 import { daftarBabDi, saringBab } from './cari';
-import { KartuAyat, KartuKitab } from './KartuDalil';
+import { KartuAyat, KartuHadits, KartuKitab } from './KartuDalil';
 
 export interface Kategori { id: string; judul: string; jenis?: JenisDalil }
 
@@ -37,12 +37,7 @@ export function IsiKategori({ kategori }: { kategori: Kategori }) {
       {kategori.id === 'sunnah' && (
         <section className="blok-rujukan">
           <ul className="daftar-polos blok-rujukan">
-            {DAFTAR_HADITS.map(hadits => (
-              <li key={hadits.hadits} className="kartu kartu-rujukan">
-                <p lang={/[؀-ۿ]/.test(hadits.hadits) ? 'ar' : undefined} dir="auto" className="teks-hadits">{hadits.hadits.replace(/[«»]/g, '')}</p>
-                <p className="sumber-rujukan">{hadits.takhrij} · <b>{hadits.status.replace(/`/g, '')}</b></p>
-              </li>
-            ))}
+            {DAFTAR_HADITS.map(hadits => <KartuHadits key={hadits.hadits} hadits={hadits} />)}
           </ul>
           <p className="keterangan">{t('rujukan.nomor_hadits_bisa_berbeda_antar_cetakan')}</p>
         </section>
