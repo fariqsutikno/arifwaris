@@ -132,7 +132,8 @@ a.ubin:hover>svg.ikon{transform:rotate(0) scale(1.08);opacity:.16}
   body.layar-beranda .kepala{max-width:1320px;margin-top:0;padding-top:28px}
 }
 @media (max-width:980px){
-  .hero-beranda{grid-template-columns:1fr;gap:22px;padding-block:24px}
+  .halaman-beranda{--sisi:16px}
+  .hero-beranda{grid-template-columns:1fr;gap:26px;padding-block:32px 28px}
   .ubin-kasus,.ubin-belajar,.ubin-latihan,.ubin-tanya{grid-column:1/-1}
   .ubin{min-height:0}
 }
@@ -140,9 +141,9 @@ a.ubin:hover>svg.ikon{transform:rotate(0) scale(1.08);opacity:.16}
   .halaman-beranda{overflow-x:clip}
   .hero-beranda h1{font-size:clamp(32px,9.5vw,40px)}
   .sapa-beranda .lead{font-size:16px}
-  .hero-beranda .aksi-hero{width:100%;justify-content:space-between}
+  .hero-beranda .aksi-hero{gap:6px 20px}
   .contoh-hidup{padding:12px}
-  .ringkasan-contoh{padding:14px}
+  .ringkasan-contoh{padding:6px 2px 2px;background:none;border:0}
   .aksi-contoh .pil-terang{width:100%;justify-content:center}
   .ubin{padding:20px}
   .isi-ubin{padding-top:0}
@@ -150,6 +151,7 @@ a.ubin:hover>svg.ikon{transform:rotate(0) scale(1.08);opacity:.16}
   .ubin-belajar{flex-direction:column;align-items:flex-start}
   .pilih-contoh{flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}
   .pilih-contoh button{flex:none}
+  .pilih-contoh{-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
 }
 @media (prefers-reduced-motion:reduce){
   .hero-beranda::after{animation:none}
