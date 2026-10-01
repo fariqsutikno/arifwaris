@@ -10,7 +10,11 @@ export interface BarisSnapshot { jenis: string; slug: string; urutan: number; is
 export interface DiksiSnapshot { kunci: string; halaman: string; id: string; ar: string | null }
 interface Repo { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi: RepositoriDiksi }
 
-export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: BarisSnapshot[]; diksi: DiksiSnapshot[] }) {
+const LAPOR_TIAP = 100;
+
+export async function pulihkanDariSnapshot(
+  repo: Repo, snapshot: { konten: BarisSnapshot[]; diksi: DiksiSnapshot[] }, lapor: (pesan: string) => void = () => undefined,
+) {
   const sudahKonten = new Set((await repo.konten.bacaTerbit()).map(b => `${b.jenis}/${b.slug}`));
   const semuaKunci = await repo.diksi.daftarKunci();
   const sudahDiksi = new Set(semuaKunci.filter(k => k.terbit).map(k => k.kunci));
@@ -27,6 +31,7 @@ export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: Baris
     await repo.editorial.ajukan(revisi);
     await repo.editorial.setujui(revisi);
     dibuat++;
+    if (dibuat % LAPOR_TIAP === 0) lapor(`konten: ${dibuat} ditulis`);
   }
   for (const d of snapshot.diksi) {
     if (sudahDiksi.has(d.kunci)) continue;
@@ -35,6 +40,7 @@ export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: Baris
     await repo.diksi.ajukan(revisi);
     await repo.diksi.setujui(revisi);
     dibuat++;
+    if (dibuat % LAPOR_TIAP === 0) lapor(`diksi: total ${dibuat} ditulis`);
   }
   return { dibuat, dilewati: snapshot.konten.length + snapshot.diksi.length - dibuat };
 }

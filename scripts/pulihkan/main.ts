@@ -29,4 +29,4 @@ await admin.from('peran_pengguna').upsert({ user_id: userId, peran: 'admin' });
 const klien = createClient(url, anon, { auth: { persistSession: false } });
 const { error } = await klien.auth.signInWithPassword({ email: EMAIL_IMPOR, password: sandi });
 if (error) throw error;
-console.log(`${url}:`, await pulihkanDariSnapshot(buatRepositoriSupabase(klien), snapshot));
+console.log(`${url}:`, await pulihkanDariSnapshot(buatRepositoriSupabase(klien), snapshot, console.log));
