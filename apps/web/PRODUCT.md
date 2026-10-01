@@ -33,7 +33,7 @@ Klaim yang tidak bisa ditiru begitu saja oleh kalkulator waris lain:
 
 ## Operating Context
 
-- Pengguna mengisi sendiri di ponsel atau laptop, kadang saat keluarga berkumpul, kadang di kelas atau saat belajar sendiri. Alur utama sekitar 5 langkah (Pewaris, Harta, Kewajiban, Ahli waris, Kondisi khusus) lalu Hasil, sekitar 3 menit untuk kasus sederhana.
+- Pengguna mengisi sendiri di ponsel atau laptop, kadang saat keluarga berkumpul, kadang di kelas atau saat belajar sendiri. Alur utama 4 langkah (Almarhum, Harta, Keluarga, Periksa) lalu Hasil, sekitar 3 menit untuk kasus sederhana; rincian layar di `docs/design/acuan-ux-wizard-hasil.md`.
 - Perhitungan berjalan di perangkat; kasus bisa disimpan ke berkas dan dibuka kembali. Akun (login Google) opsional: memberi riwayat tersimpan, progres belajar, streak, dan papan peringkat lintas perangkat.
 - Konten (materi, narasi, teks UI) dikelola tim keilmuan lewat portal admin terpisah dan tiba di web sebagai snapshot yang disinkronkan di latar. Aplikasi harus tetap jalan penuh tanpa internet dan saat server konten mati.
 - Pembelajar membaca kitab berbahasa Arab, sehingga ada mode tampilan Indonesia, Indonesia + Arab (istilah dan peran diberi padanan Arab), dan Arab penuh (belum).
