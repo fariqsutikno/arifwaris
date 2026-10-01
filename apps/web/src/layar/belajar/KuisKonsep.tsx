@@ -115,31 +115,43 @@ export function SesiKuis({ paket }: { paket: string }) {
     setTahap('mengerjakan');
   };
 
+  const judulTampil = ulangiSalah ? t('latihan.judul_ulangi_yang_salah', { judul }) : judul;
+  const penandaWaktu = tahap === 'mengerjakan' && sisaDetik !== null && (
+    <span className={sisaDetik <= DETIK_PERINGATAN ? 'sisa-waktu hampir' : 'sisa-waktu'} role="timer" aria-label={t('latihan.sisa_waktu_durasi', { durasi: formatDurasi(sisaDetik) || t('latihan.jumlah_detik', { jumlah: 0 }) })}>
+      <Ikon nama="jam" ukuran={16} /> {jamDigital(sisaDetik)}
+    </span>
+  );
   const kepala = (
-    <div className="kepala-sesi">
-      <a className="aw-btn aw-btn-secondary aw-btn-sm" href={tautanLatihan('kuis')}><Ikon nama="keluar" ukuran={18} /> {t('latihan.keluar')}</a>
-      <span className="judul-sesi">{ulangiSalah ? t('latihan.judul_ulangi_yang_salah', { judul }) : judul}</span>
+    <div className="bar-ujian">
+      <a className="keluar-ujian" href={tautanLatihan('kuis')}><Ikon nama="keluar" ukuran={18} />{t('latihan.keluar')}</a>
+      {tahap !== 'awal' && <span className="judul-sesi">{judulTampil}</span>}
+      {penandaWaktu || <span />}
     </div>
   );
 
   if (tahap === 'awal') {
     return (
-      <section className="sesi-kuis tumpuk">
+      <section className="sesi-kuis ruang-ujian tumpuk">
         {kepala}
-        <div className="kartu tumpuk-rapat">
-          <h1 className="judul-awal-kuis">{t('latihan.jumlah_soal', { jumlah: daftarSoal.length })}</h1>
+        <div className="awal-ujian">
+          <div className="tumpuk-rapat">
+            <h1 className="judul-awal-kuis">{judul}</h1>
+            <p className="keterangan">{t('latihan.jumlah_soal', { jumlah: daftarSoal.length })}</p>
+          </div>
           <fieldset className="pilihan-mode">
             <legend>{t('latihan.pilih_mode')}</legend>
             <label className={mode === 'langsung' ? 'opsi-mode dipilih' : 'opsi-mode'}>
               <input type="radio" name="mode" checked={mode === 'langsung'} onChange={() => setMode('langsung')} />
-              <span><b>{t('latihan.mode_latihan')}</b><small>{t('latihan.jawaban_yang_tepat_dan_pembahasannya_muncul')}</small></span>
+              <span className="ikon-mode" aria-hidden="true"><Ikon nama="pensil" ukuran={22} /></span>
+              <span className="teks-mode"><b>{t('latihan.mode_latihan')}</b><small>{t('latihan.jawaban_yang_tepat_dan_pembahasannya_muncul')}</small></span>
             </label>
             <label className={mode === 'akhir' ? 'opsi-mode dipilih' : 'opsi-mode'}>
               <input type="radio" name="mode" checked={mode === 'akhir'} onChange={() => setMode('akhir')} />
-              <span><b>{t('latihan.mode_ujian')}</b><small>{t('latihan.waktunya_durasi_jawaban_yang_tepat_baru', { durasi: formatDurasi(durasiUjian(daftarSoal.length)) })}</small></span>
+              <span className="ikon-mode" aria-hidden="true"><Ikon nama="jam" ukuran={22} /></span>
+              <span className="teks-mode"><b>{t('latihan.mode_ujian')}</b><small>{t('latihan.waktunya_durasi_jawaban_yang_tepat_baru', { durasi: formatDurasi(durasiUjian(daftarSoal.length)) })}</small></span>
             </label>
           </fieldset>
-          <button type="button" className="aw-btn aw-btn-primary" onClick={() => mulai(mode)}>{t('latihan.mulai_kuis')}</button>
+          <button type="button" className="aw-btn aw-btn-primary tombol-mulai" onClick={() => mulai(mode)}>{t('latihan.mulai_kuis')}</button>
         </div>
       </section>
     );
@@ -173,47 +185,41 @@ export function SesiKuis({ paket }: { paket: string }) {
   const terakhir = posisi + 1 === daftarSoal.length;
   // Mode latihan maju satu arah (jawaban langsung dibuka), jadi kotak nomor hanya bisa dipakai loncat di mode ujian.
   const bolehLoncat = (urutan: number) => mode === 'akhir' && (urutan <= posisi || pilihan[urutan - 1] !== undefined);
+  const jenisNomor = (urutan: number) => {
+    const dipilih = pilihan[urutan];
+    if (dipilih === undefined) return undefined;
+    if (mode === 'akhir') return 'terjawab';
+    return dipilih === daftarSoal[urutan]!.indeksBenar ? 'terjawab benar' : 'terjawab salah';
+  };
   return (
-    <section className="sesi-kuis tumpuk-rapat">
+    <section className="sesi-kuis ruang-ujian tumpuk">
       {kepala}
-      <div className="tata-sesi">
-      <div className="tumpuk-rapat">
-      <div className="progres-sesi">
-        <span className="angka-progres">{t('umum.soal_nomor_dari_total', { nomor: posisi + 1, total: daftarSoal.length })}</span>
-        {mode === 'langsung' && <span className="angka-progres">{t('latihan.benar_jumlah', { jumlah: benarSejauhIni })}</span>}
-        {sisaDetik !== null && (
-          <span className={sisaDetik <= DETIK_PERINGATAN ? 'sisa-waktu hampir' : 'sisa-waktu'} role="timer" aria-label={t('latihan.sisa_waktu_durasi', { durasi: formatDurasi(sisaDetik) || t('latihan.jumlah_detik', { jumlah: 0 }) })}>
-            <Ikon nama="jam" ukuran={16} /> {jamDigital(sisaDetik)}
-          </span>
-        )}
-      </div>
-      <span className="bar-progres" aria-hidden="true"><span style={{ width: `${((posisi + (sudahDijawab ? 1 : 0)) / daftarSoal.length) * 100}%` }} /></span>
-      <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={t('latihan.soal_nomor', { nomor: posisi + 1 })} mode={mode} saatDijawab={jawab} dipilihAwal={pilihan[posisi]} />
-      <div className="nav-langkah">
-        {mode === 'akhir' && posisi > 0
-          ? <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setPosisi(posisi - 1)}>{t('latihan.soal_sebelumnya')}</button>
-          : <span />}
-        <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled={!sudahDijawab} onClick={() => (terakhir ? selesaikan() : setPosisi(posisi + 1))}>
-          {terakhir ? (mode === 'akhir' ? t('latihan.selesaikan') : t('hitung.lihat_hasil')) : t('latihan.soal_berikutnya')}
-        </button>
-      </div>
-      </div>
-      <nav className="nav-soal" aria-labelledby="judul-nav-soal">
-        <h2 id="judul-nav-soal">{t('latihan.navigasi_soal')}</h2>
+      <nav className="nomor-ujian" aria-label={t('latihan.navigasi_soal')}>
         <ol className="kotak-nomor">
           {daftarSoal.map((soalIni, urutan) => {
             const terjawab = pilihan[urutan] !== undefined;
             return (
               <li key={`${soalIni.kode}-${urutan}`}>
-                <button type="button" className={terjawab ? 'terjawab' : undefined} aria-current={urutan === posisi}
+                <button type="button" className={jenisNomor(urutan)} aria-current={urutan === posisi}
                   aria-label={t('latihan.soal_nomor_status', { nomor: urutan + 1, status: terjawab ? t('latihan.terjawab') : t('latihan.belum_dijawab') })}
                   disabled={!bolehLoncat(urutan)} onClick={() => setPosisi(urutan)}>{angka(String(urutan + 1))}</button>
               </li>
             );
           })}
         </ol>
-        <p className="legenda-nav"><span><i className="terjawab" />{t('latihan.terjawab_2')}</span><span><i />{t('latihan.belum')}</span></p>
       </nav>
+      <div className="progres-sesi">
+        <span className="angka-progres">{t('umum.soal_nomor_dari_total', { nomor: posisi + 1, total: daftarSoal.length })}</span>
+        {mode === 'langsung' && <span className="angka-progres">{t('latihan.benar_jumlah', { jumlah: benarSejauhIni })}</span>}
+      </div>
+      <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={t('latihan.soal_nomor', { nomor: posisi + 1 })} sembunyikanLabel mode={mode} saatDijawab={jawab} dipilihAwal={pilihan[posisi]} />
+      <div className="nav-langkah">
+        {mode === 'akhir' && posisi > 0
+          ? <button type="button" className="aw-btn aw-btn-secondary" onClick={() => setPosisi(posisi - 1)}>{t('latihan.soal_sebelumnya')}</button>
+          : <span />}
+        <button type="button" className="aw-btn aw-btn-primary" disabled={!sudahDijawab} onClick={() => (terakhir ? selesaikan() : setPosisi(posisi + 1))}>
+          {terakhir ? (mode === 'akhir' ? t('latihan.selesaikan') : t('hitung.lihat_hasil')) : t('latihan.soal_berikutnya')}
+        </button>
       </div>
     </section>
   );
@@ -226,7 +232,7 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, ulangiSalah, saatUlan
   const benar = daftarSoal.filter((soal, urutan) => pilihan[urutan] === soal.indeksBenar).length;
   const persen = persenBulat({ benar, total: daftarSoal.length });
   return (
-    <section className="sesi-kuis tumpuk">
+    <section className="sesi-kuis ruang-ujian tumpuk">
       {kepala}
       <div className="kartu ringkasan-kuis" aria-live="polite">
         <div>

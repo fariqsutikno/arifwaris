@@ -155,7 +155,10 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .butir-pembahasan>summary{display:flex;align-items:flex-start;gap:12px;padding:16px;list-style:none;cursor:pointer;transition:background .2s}
 .butir-pembahasan>summary::-webkit-details-marker{display:none}
 .butir-pembahasan>summary:hover{background:var(--surface)}
-.butir-pembahasan>summary:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.butir-pembahasan>summary{border-radius:20px}
+.butir-pembahasan[open]>summary{border-radius:20px 20px 0 0}
+.butir-pembahasan>summary:focus{outline:none}
+.butir-pembahasan>summary:focus-visible{outline:2px solid var(--focus);outline-offset:-2px}
 .butir-pembahasan>summary>svg{flex:none;margin-top:2px;color:var(--ink-muted);transform:rotate(180deg);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
 .butir-pembahasan[open]>summary>svg{transform:rotate(-90deg)}
 .status-butir{flex:none;display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 8px;border-radius:var(--radius-pill);font:700 13px/1.4 var(--font-sans)}
@@ -207,7 +210,78 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
   .isi-latihan .tab-latihan{align-self:stretch}
   .isi-latihan .tab-latihan .tab-tautan{flex:1;justify-content:center;padding:0 10px}
 }
+
+/* ruang ujian: satu kolom di tengah; bar atas, strip nomor soal, kartu soal besar, tombol maju/mundur */
+.sesi-kuis.ruang-ujian{width:100%;max-width:800px;margin-inline:auto;gap:18px}
+.bar-ujian{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px}
+.bar-ujian>:last-child{justify-self:end}
+.keluar-ujian{display:inline-flex;align-items:center;gap:8px;justify-self:start;min-height:44px;padding:0 16px 0 12px;border-radius:var(--radius-pill);background:rgba(255,255,255,.75);color:var(--ink);font:600 14.5px var(--font-sans);text-decoration:none;transition:background .2s}
+.keluar-ujian:hover{background:#fff}
+.keluar-ujian:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.ruang-ujian .judul-sesi{font:600 16px/1.3 var(--font-display);text-align:center;text-wrap:balance}
+.ruang-ujian .sisa-waktu{min-height:40px;padding:0 14px;border:0;background:#fff;box-shadow:0 2px 8px rgba(20,40,30,.1)}
+
+.nomor-ujian{display:flex;justify-content:center}
+.ruang-ujian .kotak-nomor{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.ruang-ujian .kotak-nomor button{position:relative;width:44px;height:44px;border:1.5px solid rgba(20,40,30,.18);border-radius:50%;background:rgba(255,255,255,.7);color:var(--ink-muted);font:700 15px var(--font-sans);font-variant-numeric:tabular-nums;transition:background .2s,color .2s,border-color .2s,transform .2s}
+.ruang-ujian .kotak-nomor button:not(:disabled):hover{background:#fff;color:var(--ink);transform:translateY(-1px)}
+.ruang-ujian .kotak-nomor button.terjawab{border-color:var(--ink);background:var(--ink);color:#fff}
+.ruang-ujian .kotak-nomor button.benar{border-color:var(--sorot-fardh);background:var(--sorot-fardh)}
+.ruang-ujian .kotak-nomor button.salah{border-color:var(--danger);background:var(--danger)}
+.ruang-ujian .kotak-nomor button[aria-current=true]{box-shadow:0 0 0 3px #eaf3e8,0 0 0 5px var(--aksen);border-color:var(--aksen)}
+.ruang-ujian .kotak-nomor button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.ruang-ujian .progres-sesi{justify-content:center;gap:6px 18px;color:var(--ink-muted)}
+.ruang-ujian .angka-progres{font:600 14px var(--font-sans)}
+
+.ruang-ujian .kartu-kuis{max-width:none;gap:18px;padding:28px;border:0;border-radius:28px;background:var(--surface-raised);box-shadow:0 10px 30px rgba(20,40,30,.1)}
+.ruang-ujian .pertanyaan-kuis{font:600 clamp(19px,2.4vw,23px)/1.45 var(--font-sans);letter-spacing:-.005em;text-wrap:pretty}
+.ruang-ujian .pilihan-kuis{gap:10px}
+.ruang-ujian .pilihan-kuis-item{min-height:60px;padding:12px 16px;border:1.5px solid var(--outline);border-radius:18px;font:500 16.5px/1.45 var(--font-sans);transition:background .2s,border-color .2s,transform .2s}
+.ruang-ujian .pilihan-kuis-item:not(:disabled):hover{border-color:var(--ink);background:var(--surface);transform:translateY(-1px)}
+.ruang-ujian .pilihan-kuis-item.dipilih{border-color:var(--ink);background:var(--surface)}
+.ruang-ujian .pilihan-kuis-item.benar{border-color:var(--sorot-fardh);background:#e8f5ec;color:var(--ink)}
+.ruang-ujian .pilihan-kuis-item.salah{border-color:var(--danger);background:#fdeceb;color:var(--ink)}
+.ruang-ujian .huruf-pilihan{width:34px;height:34px;border:1.5px solid var(--outline);background:var(--surface);color:var(--ink);font:700 14px var(--font-sans);transition:background .2s,color .2s,border-color .2s}
+.ruang-ujian .pilihan-kuis-item.dipilih .huruf-pilihan{border-color:var(--ink);background:var(--ink);color:#fff}
+.ruang-ujian .pilihan-kuis-item.benar .huruf-pilihan{border-color:var(--sorot-fardh);background:var(--sorot-fardh);color:#fff}
+.ruang-ujian .pilihan-kuis-item.salah .huruf-pilihan{border-color:var(--danger);background:var(--danger);color:#fff}
+.ruang-ujian .hasil-tebak{gap:6px;padding:16px 18px;border:0;border-radius:18px;box-shadow:none;margin:0}
+.ruang-ujian .hasil-tebak.benar{background:#e8f5ec;color:var(--ink)}
+.ruang-ujian .hasil-tebak.benar b{color:#0b6b3a}
+.ruang-ujian .hasil-tebak.salah{background:#fdeceb;color:var(--ink)}
+.ruang-ujian .hasil-tebak.salah b{color:#9a2616}
+.ruang-ujian .nav-langkah{align-items:center;gap:12px}
+.ruang-ujian .nav-langkah .aw-btn,.ruang-ujian .tombol-mulai{justify-content:center;min-width:160px;border-radius:var(--radius-pill);box-shadow:none}
+.ruang-ujian .aw-btn:hover:not(:disabled){transform:none;box-shadow:none}
+.ruang-ujian .aw-btn-primary:hover:not(:disabled){background:#2b3a31}
+.ruang-ujian .aw-btn-secondary:hover:not(:disabled){background:var(--surface)}
+
+/* layar awal kuis */
+.awal-ujian{display:flex;flex-direction:column;gap:22px;padding:30px;border-radius:28px;background:var(--surface-raised);box-shadow:0 10px 30px rgba(20,40,30,.1)}
+.ruang-ujian .judul-awal-kuis{font:600 clamp(26px,3.4vw,34px)/1.15 var(--font-display);letter-spacing:-.02em;text-wrap:balance}
+.awal-ujian .pilihan-mode{gap:12px}
+.awal-ujian .pilihan-mode legend{margin-bottom:12px;font:600 15px var(--font-sans);color:var(--ink-muted)}
+.ruang-ujian .opsi-mode{position:relative;align-items:center;gap:16px;padding:16px 18px;border:1.5px solid var(--outline);border-radius:20px;background:var(--surface-raised);transition:border-color .2s,background .2s,transform .2s}
+.ruang-ujian .opsi-mode:hover{border-color:var(--ink);transform:translateY(-1px)}
+.ruang-ujian .opsi-mode.dipilih{border-color:var(--ink);background:var(--surface);box-shadow:inset 0 0 0 1px var(--ink)}
+.ruang-ujian .opsi-mode input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.ikon-mode{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--surface);color:var(--ink);transition:background .2s,color .2s}
+.opsi-mode.dipilih .ikon-mode{background:var(--ink);color:#fff}
+.teks-mode{display:flex;flex-direction:column;gap:2px;min-width:0}
+.ruang-ujian .opsi-mode b{font:600 17px var(--font-display)}
+.ruang-ujian .tombol-mulai{align-self:stretch;min-height:52px}
+
+@media (max-width:560px){
+  .bar-ujian{grid-template-columns:auto minmax(0,1fr) auto}
+  .ruang-ujian .judul-sesi{font-size:14.5px}
+  .ruang-ujian .kartu-kuis{padding:20px 18px;border-radius:24px}
+  .ruang-ujian .kotak-nomor button{width:40px;height:40px}
+  .awal-ujian{padding:22px 18px}
+  .ruang-ujian .nav-langkah .aw-btn{min-width:0;flex:1}
+  .ruang-ujian .nav-langkah>span{display:none}
+}
 @media (prefers-reduced-motion:reduce){
+  .ruang-ujian .kotak-nomor button,.ruang-ujian .pilihan-kuis-item,.ruang-ujian .opsi-mode{transition:none;transform:none!important}
   .panel-acak,.pratinjau-acak,.panel-dropdown,.progres-bab .bar-progres>span,.bar-nilai>span{animation:none}
   .pemicu-dropdown>svg,.kepala-bab>svg,.jalur-sakelar::after,.aw-btn.tombol-terang{transition:none}
 }

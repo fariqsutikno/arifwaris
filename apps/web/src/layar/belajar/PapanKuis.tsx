@@ -52,11 +52,9 @@ export function RekomendasiKuis() {
 
 export function PapanKuis() {
   const rekor = bacaRekorPaket();
-  const keteranganPredikat = t('latihan.keterangan_predikat', Object.fromEntries(TANGGA_PREDIKAT.map(({ predikat, dari }) => [predikat, angka(String(dari))])));
   return (
     <section className="papan-kuis" aria-labelledby="judul-papan">
       <h2 id="judul-papan" className="judul-bagian">{t('latihan.nilai_terbaik_per_paket')}</h2>
-      <p className="keterangan">{keteranganPredikat}</p>
       <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>
       <div className="kepala-papan" aria-hidden="true"><span>{t('latihan.paket')}</span><span>{t('latihan.nilai_terbaik')}</span></div>
       <ul className="daftar-polos">

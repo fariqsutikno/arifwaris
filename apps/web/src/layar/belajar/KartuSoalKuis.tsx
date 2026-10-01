@@ -17,6 +17,8 @@ export type ModePembahasan = 'langsung' | 'akhir';
 interface Props {
   soal: SoalKuis;
   label?: string;
+  /** Label tetap ada untuk pembaca layar, tapi tidak digambar (sesi kuis sudah menampilkan nomor soal di atasnya). */
+  sembunyikanLabel?: boolean;
   mode?: ModePembahasan;
   /** Tanpa ini (kuis di materi) muncul tombol "Coba lagi" setelah menjawab; navigasi sesi diurus pemanggil. */
   saatDijawab?: (indeks: number) => void;
@@ -24,7 +26,7 @@ interface Props {
   dipilihAwal?: number | undefined;
 }
 
-export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saatDijawab, dipilihAwal }: Props) {
+export function KartuSoalKuis({ soal, label = soal.kode, sembunyikanLabel, mode = 'langsung', saatDijawab, dipilihAwal }: Props) {
   const [dipilih, setDipilih] = useState<number | null>(dipilihAwal ?? null);
   const sudahMenjawab = dipilih !== null;
   const tampilkanNilai = sudahMenjawab && mode === 'langsung';
@@ -36,7 +38,7 @@ export function KartuSoalKuis({ soal, label = soal.kode, mode = 'langsung', saat
     !tampilkanNilai && indeks === dipilih && 'dipilih'].filter(Boolean).join(' ');
   return (
     <fieldset className="kartu kartu-kuis">
-      <legend className="label-langkah">{label}</legend>
+      <legend className={sembunyikanLabel ? 'sembunyi-visual' : 'label-langkah'}>{label}</legend>
       <p className="pertanyaan-kuis"><Sebaris isi={soal.pertanyaan} /></p>
       <div className="pilihan-kuis">
         {soal.pilihan.map((pilihan, indeks) => (
