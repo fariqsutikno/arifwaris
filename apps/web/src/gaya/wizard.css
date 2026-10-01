@@ -292,3 +292,29 @@ body.layar-hasil .dok{display:none}
   body.layar-hasil .rel-samping{display:block;margin-top:10px}
   body.layar-hasil .halaman-hasil>.kaki-hasil{padding:10px 0 0;font-size:11px;color:#333}
 }
+
+/* Target sentuh ≥ 44px di wizard (audit P2: siswa SMP dan lansia memakai − dan + terus-menerus). Tombol info diperluas area ketuknya
+   tanpa mengubah tata letak; stepper HP tetap muat (5 × 44px). */
+.kontrol-jumlah button{width:44px;height:44px}
+.kontrol-jumlah .tombol-nama{height:44px;padding:0 12px}
+.baris-kontrol{gap:6px}
+.chip-kecil{min-height:44px;padding:0 14px}
+.tab-kecil button{min-height:44px}
+.tautan-aksi,.tautan-kembali{min-height:44px}
+.tombol-info{position:relative}
+.tombol-info::after{content:"";position:absolute;inset:-12px}
+.hero-wizard .stepper-item{min-width:44px;min-height:44px;justify-content:center}
+.hero-wizard .stepper-item[aria-current=step]{justify-content:flex-start}
+.kepala .tombol-lonceng{width:44px;height:44px}
+.kepala .tombol-kepala,.kepala .pilih-bahasa{height:44px;min-height:44px}
+.kepala .aw-logo{min-height:44px}
+/* RTL: lekuk isi kartu mengikuti sisi awal */
+.kartu-keadaan-isi{padding:2px 18px 18px 18px;padding-inline-start:58px}
+@media (max-width:600px){.kartu-keadaan-isi{padding-inline-start:18px}}
+
+/* Tautan teks di tengah kalimat ("ubah", "ganti"): area ketuk diperluas tanpa mengubah baris; Hasil: kontrol kecil ≥ 44px */
+button.tautan{position:relative}
+button.tautan::after{content:"";position:absolute;inset:-14px -8px}
+.hero-hasil .tab-kecil button{min-height:44px}
+.kartu-sisi .tombol-ikon{width:44px;height:44px}
+.lipat-urutan>summary{min-height:44px;display:flex;align-items:center}
