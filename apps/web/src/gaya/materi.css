@@ -21,7 +21,7 @@
 .tata-materi>.konten-materi{padding:36px 40px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:var(--surface-raised)}
 .isi-materi h2{margin:36px 0 10px;font:600 24px/1.25 var(--font-display);letter-spacing:-.02em}
 .isi-materi>:first-child{margin-top:0}
-.catatan-materi{padding:14px 18px;border-radius:16px;border-inline-start:4px solid var(--aksen);background:var(--aksen-soft)}
+.catatan-materi{padding:14px 18px;border-radius:16px;background:var(--aksen-soft)}
 .wadah-tabel-materi{border:1px solid var(--divider);border-radius:16px}
 .tabel-materi{width:100%}
 .tabel-materi th,.tabel-materi td{border:0;border-bottom:1px solid var(--divider)}
