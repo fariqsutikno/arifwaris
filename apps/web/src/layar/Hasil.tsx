@@ -28,6 +28,8 @@ import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
+import { DialogNama } from './lab/DialogNama';
+import { ringkasKasus } from '../riwayat';
 import { formatRupiahRingkas } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
@@ -117,6 +119,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const [konfirmasiBelajar, setKonfirmasiBelajar] = useState(false);
   const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
   const [sembunyiNominal, setSembunyiNominal] = useState(false);
+  const [namaTerbuka, setNamaTerbuka] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
   const [layarPenuh, setLayarPenuh] = useState<{ zoom: number } | null>(null);
   const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
@@ -185,7 +188,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
           <div className="rel-samping">
             {!sedangMenebak && ringkasan.terhalang.length > 0 && <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />}
             {adaPotonganHarta && <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />}
-            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasus)} saatSimpan={() => { simpanKasus(idSesi, kasus); segarkan(); }} saatEkspor={() => setEksporTerbuka(true)} />
+            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasus)} saatSimpan={() => setNamaTerbuka(true)} saatEkspor={() => setEksporTerbuka(true)} />
           </div>
         </div>
         <div className="pita-hitung">
@@ -248,6 +251,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
         <PohonLayarPenuh pohon={pohon} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
           saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setEksporTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
       )}
+      {namaTerbuka && <DialogNama judulAwal={ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
+        saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (

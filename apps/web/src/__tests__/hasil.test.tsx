@@ -344,7 +344,12 @@ describe('layar hasil', () => {
     localStorage.clear();
     render(<Uji awal={prototipe()} idSesi="sesi-simpan" />);
     fireEvent.click(screen.getByRole('button', { name: /Simpan/ }));
+    expect(semuaTersimpan()).toHaveLength(0);
+    const dialog = screen.getByRole('dialog');
+    fireEvent.change(within(dialog).getByLabelText('Nama kasus'), { target: { value: 'Keluarga X' } });
+    fireEvent.click(within(dialog).getByRole('button', { name: 'Simpan' }));
     expect(semuaTersimpan()).toHaveLength(1);
+    expect(semuaTersimpan()[0]!.judul).toBe('Keluarga X');
     expect(screen.getByText('Tersimpan')).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Simpan/ })).toBeNull();
   });
