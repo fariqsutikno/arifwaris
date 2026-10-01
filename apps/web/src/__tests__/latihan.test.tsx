@@ -60,7 +60,7 @@ describe('halaman latihan', () => {
     expect(document.querySelector('.skor-besar')?.textContent).toBe(`1/${daftar.length}`);
     expect(screen.getByRole('heading', { name: 'Pembahasan' })).toBeTruthy();
     expect(screen.getByRole('link', { name: 'Pilih kuis lain' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: 'Kerjakan lagi' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Ulangi yang salah' })).toBeTruthy();
     expect(bacaSkorPaket()['bab-1']).toBe(`1/${daftar.length}`);
   });
 

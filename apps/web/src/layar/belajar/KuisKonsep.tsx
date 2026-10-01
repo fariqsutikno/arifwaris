@@ -246,10 +246,11 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, ulangiSalah, saatUlan
         </dl>
         {capaian && <CapaianKuis capaian={capaian} />}
         {ulangiSalah && <p className="capaian-kuis keterangan">{t('latihan.nilai_terbaik_paket_tidak_berubah')}</p>}
-        <div className="aksi-konfirmasi">
-          {benar < daftarSoal.length && <button type="button" className="aw-btn aw-btn-primary" onClick={saatUlangiSalah}>{t('latihan.ulangi_yang_salah')}</button>}
-          <button type="button" className={benar < daftarSoal.length ? 'aw-btn aw-btn-secondary' : 'aw-btn aw-btn-primary'} onClick={saatUlang}>{t('latihan.kerjakan_lagi')}</button>
-          <a className="aw-btn aw-btn-secondary" href={tautanLatihan('kuis')}>{t('latihan.pilih_kuis_lain')}</a>
+        <div className="aksi-hasil">
+          {benar < daftarSoal.length
+            ? <button type="button" className="aw-btn aw-btn-primary" onClick={saatUlangiSalah}>{t('latihan.ulangi_yang_salah')}</button>
+            : <button type="button" className="aw-btn aw-btn-primary" onClick={saatUlang}>{t('latihan.kerjakan_lagi')}</button>}
+          <a className="tautan-aksi" href={tautanLatihan('kuis')}>{t('latihan.pilih_kuis_lain')}</a>
         </div>
       </div>
 
