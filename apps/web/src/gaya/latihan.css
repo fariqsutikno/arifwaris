@@ -216,7 +216,9 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .latar-sesi{position:absolute;inset:0 0 auto 0;z-index:-1;display:block;height:420px;padding:0!important}
 .halaman-sesi>.bar-ujian,.halaman-sesi>.hero-sesi{width:min(800px,100% - 2*var(--sisi));margin-inline:auto}
 /* lembar terang: sudut atas besar, menimpa hero, memanjang sampai dasar layar */
-.lembar-sesi{flex:1;margin-top:-18px;padding:36px var(--sisi) 64px;border-radius:36px 36px 0 0;background:var(--surface);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+.lembar-sesi>.sesi-kuis{margin-block:auto}
+.bar-ujian.polos{background:none;box-shadow:none;backdrop-filter:none}
+.lembar-sesi{flex:1;display:flex;flex-direction:column;margin-top:-18px;padding:36px var(--sisi) 64px;border-radius:36px 36px 0 0;background:var(--surface);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
 .hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;color:#fff}
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
