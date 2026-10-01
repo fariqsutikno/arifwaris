@@ -10,7 +10,7 @@ Keluarga berubah dari hanya-baca menjadi jalur input. Daftar ± tetap ada; kedua
 
 **Masuk cakupan**
 - Menu per orang: + Orang tua, + Pasangan, + Anak, + Saudara, Ubah, Hapus (spec 5.1).
-- Tautan "Tambah kerabat lain": nama hubungan yang dicari, jalurnya disusun dari aksi dasar (spec 5.2).
+- Tautan untuk menambah mertua, menantu, ipar, dst.: nama hubungan yang dicari, jalurnya disusun dari aksi dasar (spec 5.2).
 - Tempat: langkah **Keluarga** wizard, untuk almarhum pertama maupun keluarga lanjutan.
 
 **Di luar cakupan** (dan alasannya)
@@ -100,13 +100,35 @@ Saat Tahap 3 datang, wajib-nama ini bisa dilonggarkan.
 - **Ubah**: nama dan jenis kelamin (bila `bolehUbahJenisKelamin`), dan keadaan lewat `DialogKeadaan` yang sudah ada.
 - **Hapus**: konfirmasi yang menyebut `dampakHapus`: siapa yang ikut terhapus, siapa yang tetap sebagai
   penghubung karena masih punya keturunan.
-- **Tambah kerabat lain**: tautan di bawah pohon, membuka daftar nama hubungan yang bisa dicari; pusatnya orang
-  yang terakhir diketuk, bawaannya almarhum bagian yang sedang diisi.
+- **Tautan "Tambah mertua, menantu, ipar, dll."**: di bawah pohon, membuka daftar nama hubungan yang bisa
+  dicari; pusatnya orang yang terakhir diketuk, bawaannya almarhum bagian yang sedang diisi.
 - **Orang baru** muncul memudar masuk (CSS, mati bila gerak dikurangi); garis mengikuti. Tanpa suara (Tahap 0
   belum memutuskan sakelar suara).
 - **Aksesibilitas**: kotak pohon fokus-keyboard, Enter membuka menu; menu bisa dinavigasi panah. Daftar ±
   menjadi padanan untuk pembaca layar (sudah ada).
+- **Kata**: teks baru tidak memakai kata "kerabat" (membingungkan bila berulang). Pakai "orang", "keluarga",
+  atau nama hubungan yang konkret (mertua, ipar, anak tiri). Judul menu dan dialog menyebut orangnya
+  ("Tambah anak untuk Budi"). Teks lama yang memuat "kerabat" di luar fitur ini (mis. tombol "Kerabat lain" di
+  daftar ±, label cadangan "Kerabat") tidak diubah di sini; dicatat untuk keputusan terpisah.
 - **Teks**: semua kalimat baru lewat `pnpm diksi:tambah`, bukan hardcode; kunci diawali `hitung.pohon.`.
+
+## 4a. Keseimbangan pohon (lebar ke samping dibatasi)
+
+Menambah mertua, besan, dan ipar melebarkan baris generasi. Pohon harus **tumbuh ke bawah dan terbagi dua sisi,
+bukan memanjang ke samping**. Syarat ini tertulis sebagai invarian pada `tataLetak()` (fungsi murni) dan dites
+pada fixture; bukan hanya dinilai dari tampilan.
+
+| # | Syarat | Cara |
+|---|---|---|
+| B1 | Tidak ada baris tampilan lebih lebar dari `BATAS_PER_BARIS` (6) node. | Pembungkus rata yang kini hanya untuk anak berlaku untuk **semua** baris; 7 → 4+3, 12 → 6+6. |
+| B2 | Dua sisi seimbang. Keluarga asal pasangan (mertua, besan, ipar) ditaruh di **sisi pasangannya**, keluarga sedarah di sisi lain; selisih jumlah node kiri dan kanan pusat ≤ 2 bila memungkinkan. | Urutan dalam baris: sedarah, pusat, pasangan, lalu keluarga asal pasangan; bukan sekadar rata-rata indeks. |
+| B3 | Anak berpusat di bawah orang tuanya; satu keluarga tidak terpecah oleh keluarga lain di barisnya. | Kelompok keluarga diurutkan sebagai satu blok. |
+| B4 | Lebar total pohon tidak melebihi lebar panggung: bila lebih, diperkecil sampai batas keterbacaan (skala ≥ 0.6), lalu bagian terluar dilipat ("+3 orang", ketuk untuk membuka). | Memakai `PratinjauPohon`; lipatan hanya untuk cabang yang seluruhnya tidak dapat diketuk untuk ditambah. |
+| B5 | Menambah satu orang tidak mengubah urutan relatif orang lain di baris yang sama. | Tes: urutan sebelum ⊆ urutan sesudah. |
+
+Yang **tidak** dijanjikan di sini: nol garis bersilangan dan tata letak simpul nikah (Tahap 3, P5/P6). Tes B1–B5
+memakai galeri fixture kecil: keluarga biasa, poligami 2 istri, mertua dua sisi, besan, 7 saudara, dan 4
+generasi. Hasilnya juga dilihat di lebar HP (375) dan desktop lewat tangkapan layar sebelum dinyatakan selesai.
 
 ## 5. Tes
 
@@ -118,13 +140,15 @@ Saat Tahap 3 datang, wajib-nama ini bisa dilonggarkan.
 3. Ekuivalensi: menambah anak lewat menu = menambah anak lewat daftar ± (`tambahAhliWaris`) pada graf yang sama.
 4. Komponen: ketuk kotak membuka menu; Esc menutup dan mengembalikan fokus; Hapus meminta konfirmasi yang
    menyebut penghubung; nama wajib menahan Simpan untuk non-ahli-waris.
-5. Regresi: fixture bab 16 dan tes wizard yang ada tidak berubah.
+5. `tataLetak` B1–B5 pada galeri fixture di atas.
+6. Regresi: fixture bab 16 dan tes wizard yang ada tidak berubah.
 
 ## 6. Urutan kerja
 
 1. `kerabatPohon.ts` + tes 1–3 (tabel jalur dulu, fixture sebelum UI).
+1a. Keseimbangan `tataLetak` (4a) + tes 5, sebelum pohon dibuat interaktif.
 2. `MenuOrang`, `DialogTambahOrang`, pohon interaktif di `PanggungPohon` + tes 4.
-3. Daftar nama hubungan "Tambah kerabat lain".
+3. Tautan dan daftar nama hubungan.
 4. Kunci diksi, lalu `pnpm konten:pulihkan`.
 
 ## 7. Risiko dan yang belum pasti
