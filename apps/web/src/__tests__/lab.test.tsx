@@ -161,3 +161,12 @@ test('jejak lab muncul hanya bila ada eksperimen tersimpan', () => {
   render(<AwalHitung {...propsAwal} />);
   expect(screen.getByText('1 eksperimen tersimpan')).toBeTruthy();
 });
+
+test('kasus yang sudah ada di rak tidak diulang di terakhir dibuka', () => {
+  hapusRiwayat();
+  const kasus = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
+  catatRiwayat('k', kasus, Date.now(), sendiri);
+  simpanKasus('k', kasus, 'Keluarga Z');
+  const { container } = render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+  expect(container.innerHTML).toBe('');
+});

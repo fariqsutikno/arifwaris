@@ -24,8 +24,8 @@ export function DialogNama({ judulAwal, saatSimpan, saatBatal }: Props) {
             onChange={event => setNama(event.target.value)} />
         </label>
         <div className="aksi-konfirmasi">
-          <Tombol type="button" onClick={saatBatal}>{t('umum.batal')}</Tombol>
-          <Tombol type="submit" varian="secondary">{t('umum.simpan')}</Tombol>
+          <Tombol type="button" varian="secondary" onClick={saatBatal}>{t('umum.batal')}</Tombol>
+          <Tombol type="submit">{t('umum.simpan')}</Tombol>
         </div>
       </form>
     </div>

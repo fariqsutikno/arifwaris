@@ -52,3 +52,5 @@
   .lab-berkas:nth-child(n),.lab-berkas:hover,.lab-chip:hover,.lab-hero .pil-terang:hover{transform:none}
 }
 .lab-catatan-aksi{margin-inline-start:8px;font:500 13px var(--font-sans);color:var(--ink-muted)}
+/* pohon di kartu berkas memakai panggung gelap yang sama dengan hero (teks node putih) */
+.lab-berkas .pratinjau-pohon{padding:8px;background:linear-gradient(135deg,#0a2326,#0f3a38 55%,#0b2a2b);cursor:default}

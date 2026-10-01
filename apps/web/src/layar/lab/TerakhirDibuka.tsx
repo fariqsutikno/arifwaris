@@ -6,7 +6,7 @@ import { BATAS_TAMPIL_CARI, cariEntri, kelompokkanRiwayat, type KelompokHari } f
 import { keJson, type Kasus } from '../../kasus';
 import { MASA_BERANDA, bacaRiwayat, labelSumber, waktuRelatif, type EntriRiwayat } from '../../riwayat';
 import { tautanRiwayat } from '../../rute';
-import { simpanKasus } from '../../tersimpan';
+import { bacaTersimpan, simpanKasus } from '../../tersimpan';
 import { TombolBukaKasus } from '../belajar/TombolBukaKasus';
 import { DialogNama } from './DialogNama';
 import { t } from '../../terjemah';
@@ -20,7 +20,11 @@ const LABEL_KELOMPOK: Record<KelompokHari, () => string> = {
 
 export function TerakhirDibuka({ kasusSekarang, saatBuka }: { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void }) {
   const sekarang = Date.now();
-  const [daftar] = useState(() => bacaRiwayat().filter(entri => sekarang - entri.waktu <= MASA_BERANDA));
+  // Kasus yang sudah tersimpan di rak (id dan isi sama) tidak diulang di sini.
+  const [daftar] = useState(() => {
+    const dirak = new Map(bacaTersimpan().map(baris => [baris.id, keJson(baris.kasus)]));
+    return bacaRiwayat().filter(entri => sekarang - entri.waktu <= MASA_BERANDA && dirak.get(entri.id) !== keJson(entri.kasus));
+  });
   const [kata, setKata] = useState('');
   const [diberiNama, setDiberiNama] = useState<EntriRiwayat | null>(null);
   if (daftar.length === 0) return null;
