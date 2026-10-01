@@ -23,6 +23,13 @@ it('autosave: kasus muncul lagi setelah render ulang', () => {
   fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   unmount();
+  // Muat ulang di URL kasus: kembali ke langkah wizard yang sama.
+  expect(window.location.hash).toMatch(/^#\/hitung\/[^/]+\/langkah\/1$/);
+  const ulang = render(<Aplikasi />);
+  expect(screen.getByRole('radio', { name: /Laki-laki/ })).toBeTruthy();
+  ulang.unmount();
+  // Dibuka dari awal Hitung: kasus tersimpan ditawarkan untuk dilanjutkan.
+  window.location.hash = '#/hitung';
   render(<Aplikasi />);
   expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
   // Belum lengkap pun tetap masuk riwayat, dengan tombol Lanjut.

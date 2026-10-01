@@ -1,12 +1,13 @@
 // Rute halaman berbasis `location.hash` supaya halaman belajar bisa dibagikan lewat URL (`#/belajar/1-1-apa-itu-faraidh`,
 // `#/glosarium/ashabah`, `#/rujukan/R09-4`).
-// `#/` (atau hash tak dikenal) = Beranda; `#/hitung` = kalkulator, yang tetap memakai state reducer.
+// `#/` (atau hash tak dikenal) = Beranda; `#/hitung` = awal kalkulator. Kasus yang sedang dikerjakan punya id sendiri di URL
+// (`#/hitung/<id>` = hasil, `/langkah/3/1` = wizard langkah 3 babak 1, `/cerita`), jadi muat ulang kembali ke halaman itu.
 
 import { useEffect, useState } from 'react';
 
 export type Rute =
   | { halaman: 'beranda' }
-  | { halaman: 'kalkulator' }
+  | { halaman: 'kalkulator'; kasus?: PosisiKasus }
   | { halaman: 'belajar' }
   | { halaman: 'materi'; slug: string }
   | { halaman: 'latihan'; tab: 'hitung' | 'kuis'; paket?: string }
@@ -17,9 +18,20 @@ export type Rute =
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
 
+/** Posisi kasus di Hitung: id entri riwayat + layar (wizard membawa langkah dan babak). */
+export interface PosisiKasus { id: string; layar: 'hasil' | 'cerita' | 'wizard'; langkah?: number; babak?: number }
+
 export function bacaRute(hash: string): Rute {
   const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
-  if (halaman === 'hitung') return { halaman: 'kalkulator' };
+  if (halaman === 'hitung') {
+    if (!parameter) return { halaman: 'kalkulator' };
+    const [, , bagian, langkah, babak] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+    if (bagian === 'cerita') return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'cerita' } };
+    if (bagian === 'langkah' && Number.isInteger(Number(langkah))) {
+      return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'wizard', langkah: Number(langkah), babak: Number(babak) || 0 } };
+    }
+    return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'hasil' } };
+  }
   if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'latihan') {
     const paket = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
@@ -49,6 +61,14 @@ export const tautanGlosarium = (id?: string) => `#/glosarium${id ? `/${encodeURI
 export const tautanRujukan = (kode?: string) => `#/rujukan${kode ? `/${encodeURIComponent(kode)}` : ''}`;
 export const TAUTAN_BERANDA = '#/';
 export const TAUTAN_KALKULATOR = '#/hitung';
+
+/** Tautan posisi kasus; tanpa kasus atau di layar awal = `#/hitung`. */
+export function tautanKasus(id: string, keadaan: { layar: string; langkah: number; babak: number; ada: boolean }): string {
+  if (!keadaan.ada || keadaan.layar === 'awal') return TAUTAN_KALKULATOR;
+  const dasar = `${TAUTAN_KALKULATOR}/${encodeURIComponent(id)}`;
+  if (keadaan.layar === 'wizard') return `${dasar}/langkah/${keadaan.langkah}${keadaan.babak > 0 ? `/${keadaan.babak}` : ''}`;
+  return keadaan.layar === 'cerita' ? `${dasar}/cerita` : dasar;
+}
 
 /** Halaman induk untuk tombol Kembali: selalu naik satu tingkat, bukan ke halaman yang terakhir dibuka. */
 export function tautanInduk(rute: Rute): string {

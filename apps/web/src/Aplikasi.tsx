@@ -10,9 +10,9 @@ import { TombolAkun } from './akun/TombolAkun';
 import { LonceNotifikasi } from './notifikasi/LonceNotifikasi';
 import { SumberNotifikasi } from './notifikasi/SumberNotifikasi';
 import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
-import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
+import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from './keadaan';
 import { TUR } from './konten/tur';
-import { bacaTujuan, catatAktivitas, simpanTujuan, sudahLihatTur, bacaBahasa } from './preferensi';
+import { bacaTujuan, catatAktivitas, simpanTujuan, sudahLihatTur, bacaBahasa, type Tujuan } from './preferensi';
 import { catatLatihan } from './progres';
 import { t } from './terjemah';
 import { Tur } from './tur/Tur';
@@ -34,21 +34,23 @@ import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type S
 import { HalamanRiwayat } from './layar/Riwayat';
 import { Peringkat } from './layar/Peringkat';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
-import { TAUTAN_KALKULATOR, bacaRute, useRute } from './rute';
+import { TAUTAN_KALKULATOR, bacaRute, tautanKasus, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
 import { usePenjaga } from './ui/Penjaga';
 import { PembaruanKonten } from './ui/PembaruanKonten';
 
 export function Aplikasi() {
-  const [keadaan, kirimAsli] = useReducer(pengurangKeadaan, null, () => keadaanAwal(muatLokal(), bacaTujuan()));
+  // Muat ulang / tautan `#/hitung/<id>/...`: kembali ke kasus dan halaman yang sama, bukan awal Hitung.
+  const [pulih] = useState(() => pulihDariUrl(window.location.hash, bacaTujuan()));
+  const [keadaan, kirimAsli] = useReducer(pengurangKeadaan, null, () => pulih?.keadaan ?? keadaanAwal(muatLokal(), bacaTujuan()));
   // Kasus tersimpan hanya dihapus lewat ULANGI, dan langsung (sebelum render berikutnya) supaya beranda
   // tidak menawarkan kasus yang baru saja dihapus. MULAI (kasus null sementara) tidak menimpa simpanan lama.
   // Soal latihan yang sedang dikerjakan di kalkulator; ditandai selesai saat jawabannya dibuka.
   const [soalAktif, setSoalAktif] = useState<SoalHitung | null>(null);
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
-  const [idSesi, setIdSesi] = useState(buatIdSesi);
-  const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>({ jenis: 'sendiri' });
+  const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
+  const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
@@ -91,6 +93,12 @@ export function Aplikasi() {
   const { kasus, layar } = keadaan;
   const rute = useRute();
   const diKalkulator = rute.halaman === 'kalkulator';
+  // URL mengikuti posisi kasus; replaceState tidak memicu hashchange dan tidak menambah riwayat browser.
+  useEffect(() => {
+    if (!diKalkulator) return;
+    const tautan = tautanKasus(idSesi, { layar, langkah: keadaan.langkah, babak: keadaan.babak, ada: !!kasus });
+    if (window.location.hash !== tautan) history.replaceState(null, '', tautan);
+  }, [diKalkulator, idSesi, layar, keadaan.langkah, keadaan.babak, !!kasus]);
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
   const belumSelesai = !!kasus && layar !== 'awal' && layar !== 'hasil' && !kasusLengkap(kasus);
@@ -174,6 +182,23 @@ export function Aplikasi() {
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
   );
+}
+
+/** Keadaan dari URL `#/hitung/<id>/...` + entri riwayat berid itu; null bila bukan URL kasus atau entrinya sudah tidak ada. */
+export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string; sumber: SumberRiwayat; keadaan: KeadaanAplikasi } | null {
+  const rute = bacaRute(hash);
+  if (rute.halaman !== 'kalkulator' || !rute.kasus) return null;
+  const { id, layar, langkah, babak } = rute.kasus;
+  const entri = bacaRiwayat().find(isi => isi.id === id);
+  if (!entri) return null;
+  // Lewat reducer yang sama dengan penggunaan biasa, jadi langkah/layar yang belum boleh dibuka otomatis dibatasi.
+  const aksi: Aksi[] = [{ jenis: 'MUAT', kasus: entri.kasus }];
+  if (layar === 'wizard') aksi.push({ jenis: 'KE_LANGKAH', langkah: langkah ?? 1 }, { jenis: 'KE_BABAK', babak: babak ?? 0 });
+  else if (layar === 'cerita') aksi.push({ jenis: 'KE_LAYAR', layar });
+  let keadaan = aksi.reduce(pengurangKeadaan, keadaanAwal(null, tujuan));
+  // Kasus yang belum lengkap tidak punya hasil: jatuh ke langkah wizard pertama yang belum terisi.
+  if (keadaan.layar !== 'wizard' && !kasusLengkap(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
+  return { id, sumber: entri.sumber, keadaan };
 }
 
 /** Di beranda, tawarkan kasus yang sedang dikerjakan; bila belum ada, yang tersimpan di perangkat. */

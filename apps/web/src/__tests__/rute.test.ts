@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, bacaRute, tautanPeringkat, tautanInduk, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanLatihan, tautanGlosarium, tautanRujukan } from '../rute';
+import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, bacaRute, tautanKasus, tautanPeringkat, tautanInduk, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanLatihan, tautanGlosarium, tautanRujukan } from '../rute';
 
 it('hash dibaca jadi rute; yang tak dikenal jatuh ke beranda', () => {
   expect(bacaRute('')).toEqual({ halaman: 'beranda' });
@@ -28,4 +28,17 @@ it('induk untuk tombol Kembali saat halaman dibuka langsung', () => {
   expect(tautanInduk(bacaRute(tautanLatihan('kuis', 'bab-4')))).toBe(tautanLatihan('kuis'));
   expect(tautanInduk(bacaRute('#/riwayat'))).toBe(TAUTAN_KALKULATOR);
   expect(tautanInduk(bacaRute(tautanPeringkat()))).toBe(TAUTAN_BERANDA);
+});
+
+it('posisi kasus di URL: hasil, wizard (langkah+babak), cerita', () => {
+  const awal = { layar: 'awal', langkah: 1, babak: 0, ada: true };
+  expect(tautanKasus('abc', awal)).toBe('#/hitung');
+  expect(tautanKasus('abc', { ...awal, layar: 'hasil' })).toBe('#/hitung/abc');
+  expect(tautanKasus('abc', { ...awal, layar: 'wizard', langkah: 3, babak: 2 })).toBe('#/hitung/abc/langkah/3/2');
+  expect(tautanKasus('abc', { ...awal, layar: 'cerita' })).toBe('#/hitung/abc/cerita');
+  expect(tautanKasus('abc', { ...awal, layar: 'hasil', ada: false })).toBe('#/hitung');
+  for (const posisi of [{ layar: 'hasil' }, { layar: 'cerita' }, { layar: 'wizard', langkah: 3, babak: 2 }, { layar: 'wizard', langkah: 2, babak: 0 }] as const) {
+    const tautan = tautanKasus('abc', { langkah: 1, babak: 0, ada: true, ...posisi });
+    expect(bacaRute(tautan)).toEqual({ halaman: 'kalkulator', kasus: { id: 'abc', ...posisi } });
+  }
 });
