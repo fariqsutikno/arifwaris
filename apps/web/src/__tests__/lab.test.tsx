@@ -5,6 +5,7 @@ import { HeroLab } from '../layar/lab/HeroLab';
 import { kasusBaru } from '../kasus';
 import { TerakhirDibuka } from '../layar/lab/TerakhirDibuka';
 import { catatRiwayat, hapusRiwayat } from '../riwayat';
+import { AwalHitung } from '../layar/AwalHitung';
 import { MulaiCepat } from '../layar/lab/MulaiCepat';
 import { RakEksperimen } from '../layar/lab/RakEksperimen';
 import { SUSUNAN_CEPAT, kasusDariSusunan } from '../lab';
@@ -82,9 +83,9 @@ test('hero kasus belum lengkap (tanpa harta): tidak memanggil engine, Lanjutkan 
   expect(saatLanjut).toHaveBeenCalled();
 });
 
-test('hero kasus kosong tanpa ahli waris diperlakukan seperti tanpa kasus terakhir', () => {
+test('hero kasus yang baru memilih jenis kelamin tetap bisa dilanjutkan', () => {
   render(<HeroLab kasusTerakhir={kasusBaru('L')} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
-  expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
+  expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
 });
 
 test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
@@ -133,4 +134,30 @@ test('simpan jadi eksperimen memberi nama dan masuk tersimpan', () => {
   fireEvent.change(screen.getByLabelText('Nama kasus'), { target: { value: 'Keluarga Q' } });
   fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
   expect(bacaTersimpan()[0]!.judul).toBe('Keluarga Q');
+});
+
+const propsAwal = { kasusTersimpan: null, kirim: vi.fn(), saatLanjut: vi.fn(), saatBukaRiwayat: vi.fn(), saatImpor: vi.fn(), saatKerjakanSoal: vi.fn(), saatMulaiDari: vi.fn() };
+
+test('awal lab bersih: tanpa rak, tanpa terakhir dibuka, tanpa jejak; ada mulai cepat dan impor', () => {
+  hapusRiwayat();
+  render(<AwalHitung {...propsAwal} />);
+  expect(screen.queryByText('Eksperimenmu')).toBeNull();
+  expect(screen.queryByText('Terakhir dibuka')).toBeNull();
+  expect(screen.queryByText(/eksperimen tersimpan/)).toBeNull();
+  expect(screen.getByText('Mulai cepat dari susunan keluarga')).toBeTruthy();
+  expect(screen.getByRole('button', { name: /Impor file/ })).toBeTruthy();
+});
+
+test('chip mulai cepat di awal lab memanggil saatMulaiDari', () => {
+  const saatMulaiDari = vi.fn();
+  render(<AwalHitung {...propsAwal} saatMulaiDari={saatMulaiDari} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Suami dan anak' }));
+  expect(saatMulaiDari).toHaveBeenCalledTimes(1);
+});
+
+test('jejak lab muncul hanya bila ada eksperimen tersimpan', () => {
+  hapusRiwayat();
+  simpanKasus('a', kasusDariSusunan(SUSUNAN_CEPAT[0]!), 'Keluarga A');
+  render(<AwalHitung {...propsAwal} />);
+  expect(screen.getByText('1 eksperimen tersimpan')).toBeTruthy();
 });

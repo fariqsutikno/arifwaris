@@ -10,7 +10,7 @@ const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tamba
 
 const mulai = () => {
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /Skenario baru/ }));
+  fireEvent.click(screen.getByRole('button', { name: /skenario baru/i }));
 };
 
 it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => {
@@ -47,7 +47,7 @@ it('ulangi dari awal meminta konfirmasi di halaman', () => {
   expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
-  expect(screen.getByRole('button', { name: /Skenario baru/ })).toBeTruthy();
+  expect(screen.getByRole('button', { name: /skenario baru/i })).toBeTruthy();
 });
 
 it('ringkasan kasus di samping langkah ikut terisi', () => {
@@ -73,13 +73,13 @@ describe('temuan review akhir', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
     fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
-    expect(screen.queryByRole('button', { name: /Lanjut kasus terakhir/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
   });
 
   it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu langsung ke wizard', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
-    const tombol = screen.getByRole('button', { name: /Skenario baru/ });
+    const tombol = screen.getByRole('button', { name: /skenario baru/i });
     expect(tombol.textContent).toMatch(/tetap tersimpan di riwayat/);
     fireEvent.click(tombol);
     expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
@@ -88,8 +88,8 @@ describe('temuan review akhir', () => {
   it('menu Hitung selalu membuka awal Hitung, bukan langsung ke skenario', () => {
     isiKasus();
     fireEvent.click(screen.getAllByRole('link', { name: 'ArifLab' })[0]!);
-    expect(screen.getByRole('button', { name: /Skenario baru/ })).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Lanjut kasus terakhir/ })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /skenario baru/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
   });
 
   it('dialog konfirmasi memfokuskan Batal dan tertutup dengan Esc', () => {
@@ -104,7 +104,7 @@ describe('temuan review akhir', () => {
 it('ganti jenis kelamin setelah ada ahli waris: minta konfirmasi, lalu ahli waris dikosongkan, harta tetap', () => {
   localStorage.setItem('arif-waris:kasus', keJson({ ...denganIstri(), tirkah: { kotor: 5n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /Lanjut kasus terakhir/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjutkan/ }));
   // Kasus lengkap dilanjutkan di layar hasil; dari sana kembali ke langkah 1.
   fireEvent.click(screen.getAllByRole('button', { name: /Ubah data/ })[0]!);
   fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));

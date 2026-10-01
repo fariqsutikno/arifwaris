@@ -11,7 +11,7 @@ export function MulaiCepat({ saatPilih }: { saatPilih: (kasus: Kasus) => void })
       <div className="lab-cepat-chip">
         {SUSUNAN_CEPAT.map(susunan => (
           <button key={susunan.kunci} type="button" className="lab-chip" onClick={() => saatPilih(kasusDariSusunan(susunan))}>
-            {t(susunan.kunciDiksi)}
+            {susunan.label()}
           </button>
         ))}
       </div>

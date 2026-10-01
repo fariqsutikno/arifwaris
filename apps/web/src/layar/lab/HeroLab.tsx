@@ -1,9 +1,8 @@
 // Hero Awal Lab: panggung pohon keluarga kasus terakhir. Kasus lengkap → pohon + pita bagian dari engine (jalankan +
 // ringkas, sama dengan layar Hasil); kasus belum lengkap → pohon susunan saja, engine tidak dipanggil.
-// Tanpa kasus berisi ahli waris → ajakan mulai skenario baru.
+// Kasus apa pun yang sedang berjalan (bahkan baru memilih jenis kelamin) bisa dilanjutkan; tanpa kasus → ajakan mulai.
 
 import { useMemo } from 'react';
-import { hitungIsian } from '../../checklist';
 import { Pohon } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import { PenyediaSorot } from '../../hasil/sorot';
@@ -22,11 +21,10 @@ const WARNA_RUAS = ['#6ee9b0', '#f6c86a', '#8ec5ff', '#f7a8c4', '#c9a8f7'];
 interface Props { kasusTerakhir: Kasus | null; saatLanjut: () => void; saatMulaiBaru: () => void }
 
 export function HeroLab({ kasusTerakhir, saatLanjut, saatMulaiBaru }: Props) {
-  const berisi = !!kasusTerakhir && Object.keys(hitungIsian(kasusTerakhir.graf, kasusTerakhir.graf.idPewaris)).length > 0;
   const ringkasan = useMemo(
-    () => (berisi && kasusTerakhir && ringkasKasus(kasusTerakhir).lengkap ? ringkas(kasusTerakhir, jalankan(kasusTerakhir)) : null),
-    [berisi, kasusTerakhir]);
-  if (!berisi || !kasusTerakhir) {
+    () => (kasusTerakhir && ringkasKasus(kasusTerakhir).lengkap ? ringkas(kasusTerakhir, jalankan(kasusTerakhir)) : null),
+    [kasusTerakhir]);
+  if (!kasusTerakhir) {
     return (
       <section className="lab-hero lab-hero-kosong">
         <p className="lead">{t('hitung.lab_hero_kosong')}</p>

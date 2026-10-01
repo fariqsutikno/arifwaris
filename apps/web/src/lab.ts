@@ -5,6 +5,7 @@
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from './checklist';
 import { kasusBaru, type Kasus } from './kasus';
+import { t } from './terjemah';
 
 const HARI = 24 * 60 * 60 * 1000;
 const HARI_DALAM_PEKAN = 7;
@@ -35,13 +36,13 @@ export function cariEntri<T extends { judul: string; keterangan: string }>(dafta
   return cari ? daftar.filter(entri => `${entri.judul} ${entri.keterangan}`.toLocaleLowerCase().includes(cari)) : daftar;
 }
 
-export interface SusunanCepat { kunci: string; kunciDiksi: string; pewaris: 'L' | 'P'; ahliWaris: KunciAhliWaris[] }
+export interface SusunanCepat { kunci: string; label: () => string; pewaris: 'L' | 'P'; ahliWaris: KunciAhliWaris[] }
 
 export const SUSUNAN_CEPAT: SusunanCepat[] = [
-  { kunci: 'istri-anak', kunciDiksi: 'hitung.lab_cepat_istri_anak', pewaris: 'L', ahliWaris: ['ISTRI', 'ANAK_LK', 'ANAK_PR'] },
-  { kunci: 'suami-anak', kunciDiksi: 'hitung.lab_cepat_suami_anak', pewaris: 'P', ahliWaris: ['SUAMI', 'ANAK_LK', 'ANAK_PR'] },
-  { kunci: 'orang-tua-anak', kunciDiksi: 'hitung.lab_cepat_orang_tua_anak', pewaris: 'L', ahliWaris: ['AYAH', 'IBU', 'ANAK_LK'] },
-  { kunci: 'ibu-saudara', kunciDiksi: 'hitung.lab_cepat_ibu_saudara', pewaris: 'L', ahliWaris: ['IBU', 'SAUDARA_KANDUNG', 'SAUDARI_KANDUNG'] },
+  { kunci: 'istri-anak', label: () => t('hitung.lab_cepat_istri_anak'), pewaris: 'L', ahliWaris: ['ISTRI', 'ANAK_LK', 'ANAK_PR'] },
+  { kunci: 'suami-anak', label: () => t('hitung.lab_cepat_suami_anak'), pewaris: 'P', ahliWaris: ['SUAMI', 'ANAK_LK', 'ANAK_PR'] },
+  { kunci: 'orang-tua-anak', label: () => t('hitung.lab_cepat_orang_tua_anak'), pewaris: 'L', ahliWaris: ['AYAH', 'IBU', 'ANAK_LK'] },
+  { kunci: 'ibu-saudara', label: () => t('hitung.lab_cepat_ibu_saudara'), pewaris: 'L', ahliWaris: ['IBU', 'SAUDARA_KANDUNG', 'SAUDARI_KANDUNG'] },
 ];
 
 export const kasusDariSusunan = (susunan: SusunanCepat): Kasus =>

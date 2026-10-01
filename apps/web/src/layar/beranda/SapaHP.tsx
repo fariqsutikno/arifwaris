@@ -37,6 +37,7 @@ export function SapaHP({ sesi }: { sesi: Sesi | null }) {
         {namaTampil && <button type="button" className="nama-hp" aria-label={t('beranda.siapa_namamu')} onClick={() => setMengubah(true)}>
           <h1>{namaTampil}</h1><Ikon nama="pensil" ukuran={16} />
         </button>}
+        <p className="ajakan-hp">{t('beranda.sapa_ajakan')}</p>
         {!namaTampil && <h1 className="sembunyi-visual">{t('beranda.waris_itu_gampang_asal_tahu_urutannya')}</h1>}
       </div>
       {sedangMengisi && (

@@ -6,7 +6,7 @@ beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wi
 
 it('alur penuh: beranda → wizard → hasil', () => {
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /Skenario baru/ }));
+  fireEvent.click(screen.getByRole('button', { name: /skenario baru/i }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
   fireEvent.change(screen.getByLabelText('Total harta peninggalan'), { target: { value: '24.000.000' } });
@@ -21,11 +21,11 @@ it('alur penuh: beranda → wizard → hasil', () => {
 
 it('autosave: kasus muncul lagi setelah render ulang', () => {
   const { unmount } = render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /Skenario baru/ }));
+  fireEvent.click(screen.getByRole('button', { name: /skenario baru/i }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   unmount();
   render(<Aplikasi />);
-  expect(screen.getByRole('button', { name: /Lanjut kasus terakhir/ })).toBeTruthy();
+  expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
   // Belum lengkap pun tetap masuk riwayat, dengan tombol Lanjut.
   expect(screen.getByText(/Data belum lengkap · dibuka/)).toBeTruthy();
   expect(screen.getByRole('button', { name: 'Lanjut' })).toBeTruthy();
