@@ -20202,6 +20202,237 @@
    "id": "Pilih dulu anak ini dari pasangan yang mana.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_kakek_dari_ayah",
+   "halaman": "hitung",
+   "id": "Kakek dari ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_nenek_dari_ayah",
+   "halaman": "hitung",
+   "id": "Nenek dari ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_kakek_dari_ibu",
+   "halaman": "hitung",
+   "id": "Kakek dari ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_nenek_dari_ibu",
+   "halaman": "hitung",
+   "id": "Nenek dari ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_buyut",
+   "halaman": "hitung",
+   "id": "Buyut",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_cucu",
+   "halaman": "hitung",
+   "id": "Cucu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_cicit",
+   "halaman": "hitung",
+   "id": "Cicit",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_paman",
+   "halaman": "hitung",
+   "id": "Paman",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_bibi",
+   "halaman": "hitung",
+   "id": "Bibi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_keponakan",
+   "halaman": "hitung",
+   "id": "Keponakan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_sepupu",
+   "halaman": "hitung",
+   "id": "Sepupu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_mertua",
+   "halaman": "hitung",
+   "id": "Mertua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_menantu",
+   "halaman": "hitung",
+   "id": "Menantu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_besan",
+   "halaman": "hitung",
+   "id": "Besan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_ipar_saudara_pasangan",
+   "halaman": "hitung",
+   "id": "Ipar: saudara dari pasangan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_ipar_pasangan_saudara",
+   "halaman": "hitung",
+   "id": "Ipar: pasangan dari saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_cucu_menantu",
+   "halaman": "hitung",
+   "id": "Cucu menantu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_anak_tiri",
+   "halaman": "hitung",
+   "id": "Anak tiri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_ibu_tiri",
+   "halaman": "hitung",
+   "id": "Ibu tiri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_saudara_tiri",
+   "halaman": "hitung",
+   "id": "Saudara tiri (tidak seayah dan tidak seibu)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hub_mantan",
+   "halaman": "hitung",
+   "id": "Mantan istri atau suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tanya_orang_tua",
+   "halaman": "hitung",
+   "id": "Dari pihak ayah atau ibu?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tanya_pasangan",
+   "halaman": "hitung",
+   "id": "Pasangan yang mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tanya_anak",
+   "halaman": "hitung",
+   "id": "Anak yang mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tanya_saudara",
+   "halaman": "hitung",
+   "id": "Saudara yang mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.ayah",
+   "halaman": "hitung",
+   "id": "Ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.ibu",
+   "halaman": "hitung",
+   "id": "Ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.belum_ada_pasangan",
+   "halaman": "hitung",
+   "id": "Tambahkan pasangannya dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.belum_ada_anak",
+   "halaman": "hitung",
+   "id": "Tambahkan anaknya dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.belum_ada_saudara",
+   "halaman": "hitung",
+   "id": "Tambahkan saudaranya dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.sudah_terisi",
+   "halaman": "hitung",
+   "id": "Orang ini sudah tercatat. Ketuk namanya di pohon untuk mengubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tanpa_nama",
+   "halaman": "hitung",
+   "id": "Orang {nomor} (belum bernama)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.kelamin_wajib",
+   "halaman": "hitung",
+   "id": "Pilih laki-laki atau perempuan.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
