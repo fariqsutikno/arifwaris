@@ -37,3 +37,4 @@ li:nth-child(5n+5)>.ubin-rujukan{--a:#fde7c9;--b:#f6c68a}
 .kartu-kitab:nth-child(5n+3){--b:#b4c8f1}
 .kartu-kitab:nth-child(5n+4){--b:#f1b4c6}
 .kartu-kitab:nth-child(5n+5){--b:#f6c68a}
+.baris-label{display:flex;gap:8px;margin:0}

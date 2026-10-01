@@ -90,3 +90,17 @@ it('rujukan: kategori memakai baris tab (tanpa sidebar); filter bab menyempitkan
   fireEvent.click(screen.getByRole('button', { name: 'Semua bab' }));
   expect(tautan()).toBe(dalil.length);
 });
+
+it('detail dalil: "Dipakai di" memuat bab dalil, label status, dan hukum syahid yang bersandar', async () => {
+  const { daftarSyahid } = await import('../konten/sumber');
+  const syahid = daftarSyahid().find(isi => RUJUKAN.some(dalil => dalil.kode === isi.rujukan))!;
+  const dalil = RUJUKAN.find(isi => isi.kode === syahid.rujukan)!;
+  render(<Rujukan kode={dalil.kode} />);
+  expect(screen.getByText('Dipakai di')).toBeTruthy();
+  expect(screen.getByText(syahid.hukum)).toBeTruthy();
+  const perluVerifikasi = RUJUKAN.find(isi => isi.status === 'perluVerifikasi');
+  if (perluVerifikasi) {
+    render(<Rujukan kode={perluVerifikasi.kode} />);
+    expect(screen.getAllByText('perlu verifikasi').length).toBeGreaterThan(0);
+  }
+});
