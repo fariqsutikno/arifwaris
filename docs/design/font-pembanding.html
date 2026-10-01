@@ -4,7 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pembanding Font</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600;700&family=Funnel+Sans:wght@400;500;600;700&family=Host+Grotesk:wght@400;500;600;700&family=Parkinsans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Schibsted+Grotesk:wght@400;500;600;700&family=Gabarito:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mona+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600&display=swap">
 <style>
 /* Pembanding font untuk gaya Logivo. Semua dari Google Fonts, teks sama, supaya adil. */
 :root{--ink:#14181a;--muted:#525c57;--page:#b9d4c0;--frame:#eef3e8;--orange:#f2682a;--orange-soft:#fde6d8}
@@ -41,17 +51,17 @@ p{margin:0;font-size:15px;line-height:1.6}.k2{font-size:13px;color:var(--muted)}
 </main>
 <script>
 // [judul, isi]: tiap kartu = satu pasangan; isi dipakai untuk nama, paragraf, label, dan tombol.
-const F=[['"Funnel Display"','"Funnel Sans"'],
- ['"Bricolage Grotesque"','"Host Grotesk"'],
- ['"Parkinsans"','"Funnel Sans"'],
- ['"Gabarito"','"Schibsted Grotesk"'],
- ['"Funnel Display"','"Host Grotesk"'],
- ['"Bricolage Grotesque"','"Schibsted Grotesk"']];
+const F=[['"Unbounded"','"Hanken Grotesk"','font-weight:600;font-size:27px;letter-spacing:-.01em'],
+ ['"Instrument Serif"','"Funnel Sans"','font-weight:400;font-size:46px;letter-spacing:-.01em'],
+ ['"Syne"','"Figtree"','font-weight:700;font-size:32px;letter-spacing:-.01em'],
+ ['"Mona Sans"','"Mona Sans"','font-weight:700;font-size:36px;letter-spacing:-.025em'],
+ ['"Young Serif"','"Host Grotesk"','font-weight:400;font-size:33px'],
+ ['"Familjen Grotesk"','"Hanken Grotesk"','font-weight:600;font-size:36px;letter-spacing:-.02em']];
 const bersih=x=>x.replace(/"/g,'');
-document.getElementById('g').innerHTML=F.map(([d,s])=>`
+document.getElementById('g').innerHTML=F.map(([d,s,h])=>`
 <section class="kartu" style="font-family:${s},system-ui">
   <div class="nama"><b>Judul: ${bersih(d)}</b><span>Isi: ${bersih(s)}</span></div>
-  <div class="hero"><small style="font-family:${s}">Menurut madzhab Syafi'i · dihitung 1 Oktober 2026</small><h2 style="font-family:${d}">Harta Mbah Karto dan keluarganya</h2></div>
+  <div class="hero"><small style="font-family:${s}">Menurut madzhab Syafi'i · dihitung 1 Oktober 2026</small><h2 style="font-family:${d};${h}">Harta Mbah Karto dan keluarganya</h2></div>
   <div class="isi">
     <div class="baris"><div><b>Rina</b><span class="k">anak perempuan Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 3.024.000.000</span> <span class="pil">29,2%</span></div></div>
     <div class="baris"><div><b>Mbah Sumi</b><span class="k">istri Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 2.304.000.000</span> <span class="pil">22,2%</span></div></div>
