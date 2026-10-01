@@ -146,7 +146,7 @@ export function Aplikasi() {
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
       <PembaruanKonten />
       <SumberNotifikasi sesi={sesi} repo={repoAkun} />
-      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
+      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} sesi={sesi}
           saatMasuk={repoAkun ? () => void repoAkun.akun.masukGoogle(window.location.href).catch(() => undefined) : undefined} />
         : rute.halaman === 'belajar' ? <Belajar />

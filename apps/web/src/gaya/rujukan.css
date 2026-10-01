@@ -1,45 +1,122 @@
-/* Awal Rujukan: memakai kerangka Beranda/Belajar. Di sini hanya kolom cari di hero dan ubin kategori berwarna. */
-.halaman-rujukan .deret-ubin-rujukan{grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin:0;padding:0}
-.halaman-rujukan .deret-ubin-rujukan>li{display:flex}
-.ubin-rujukan{flex:1;min-height:170px;border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b))}
+/* Rujukan: kerangka banner gelap dari materi.css (hero-materi), lalu isi di atas latar krem. Di sini: ubin kategori,
+   baris tab, kartu dalil (ayat, hadits, kitab), kartu bab, dan penampil kitab. Gerak hanya transform/opacity. */
+.halaman-rujukan .isi-rujukan{display:flex;flex-direction:column;gap:22px;padding:28px var(--sisi) 80px;min-width:0}
+.halaman-rujukan .hero-materi .label-status{background:rgba(255,255,255,.16);color:#fff}
+.baris-label{display:flex;flex-wrap:wrap;gap:8px;margin:0}
+.judul-bagian-rujukan{margin:0 4px;font:600 26px/1.2 var(--font-display);letter-spacing:-.02em}
+.label-status{display:inline-block;padding:3px 12px;border-radius:999px;background:var(--primary-soft);color:var(--ink);font-size:13px;font-weight:700;white-space:nowrap}
+
+/* cari di banner */
+.panel-cari-rujukan{display:flex;flex-direction:column;gap:10px;width:min(100%,620px);margin-top:10px;padding:14px;border-radius:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px)}
+.kolom-cari-rujukan{width:100%;box-sizing:border-box;padding:14px 20px;border:0;border-radius:999px;font:inherit;background:#fff;color:#0e0f10}
+.kolom-cari-rujukan:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.hasil-cari-rujukan{color:#fff;max-height:300px;overflow:auto;padding:0 6px}
+.hasil-cari-rujukan p{margin:0 0 6px}
+.hasil-cari-rujukan li a{display:flex;flex-direction:column;gap:2px;padding:10px 4px;color:#fff;text-decoration:none;border-top:1px solid rgba(255,255,255,.14)}
+.hasil-cari-rujukan li a:hover b{text-decoration:underline}
+.hasil-cari-rujukan li a span{font-size:14px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ubin kategori di Awal */
+.deret-ubin-rujukan{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0;padding:0}
+.deret-ubin-rujukan>li{display:flex}
+.ubin-rujukan{flex:1;min-height:250px;justify-content:flex-end;border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b))}
 li:nth-child(5n+1)>.ubin-rujukan{--a:#d3ebaa;--b:#b7de80}
 li:nth-child(5n+2)>.ubin-rujukan{--a:#fde6d8;--b:#f8c7a6}
 li:nth-child(5n+3)>.ubin-rujukan{--a:#d6e2fb;--b:#b4c8f1}
 li:nth-child(5n+4)>.ubin-rujukan{--a:#fbdbe4;--b:#f1b4c6}
 li:nth-child(5n+5)>.ubin-rujukan{--a:#fde7c9;--b:#f6c68a}
-.ubin-rujukan .judul-ubin{margin-top:auto}
-.ubin-rujukan .keterangan{color:color-mix(in srgb,var(--ink) 74%,transparent)}
-.panel-cari-rujukan{display:flex;flex-direction:column;gap:10px;min-width:0;padding:18px;border-radius:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px)}
-.kolom-cari-rujukan{width:100%;padding:14px 18px;border:0;border-radius:999px;font:inherit;background:#fff;color:#0e0f10}
-.kolom-cari-rujukan:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.hasil-cari-rujukan{color:#fff;max-height:280px;overflow:auto}
-.hasil-cari-rujukan p{margin:0 0 6px}
-.hasil-cari-rujukan li a{display:flex;flex-direction:column;padding:8px 4px;color:#fff;text-decoration:none;border-top:1px solid rgba(255,255,255,.14)}
-.hasil-cari-rujukan li a span{font-size:14px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@media (prefers-reduced-motion:reduce){.ubin-rujukan{transition:none}}
+.ubin-rujukan>svg.ikon{position:absolute;inset-block-start:22px;inset-inline-start:22px;opacity:.12}
+.ubin-rujukan .angka-ubin{font:600 clamp(36px,3.4vw,48px)/1 var(--font-display);letter-spacing:-.03em}
+.ubin-rujukan .angka-ubin small{font:600 14px var(--font-sans);letter-spacing:0;opacity:.65}
+.ubin-rujukan .keterangan{color:color-mix(in srgb,var(--ink) 74%,transparent);font-size:14px;line-height:1.45}
 
-/* Isi kategori / satu dalil / penampil: satu kartu lebar penuh di bawah baris tab kategori */
-.tata-rujukan{max-width:var(--lebar-konten);margin:0 auto;padding:24px 16px 96px;box-sizing:border-box}
-.tata-rujukan>.konten-rujukan{min-width:0;padding:28px 32px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:var(--surface-raised)}
-.baris-kategori{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;padding:2px;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+/* baris tab kategori */
+.baris-kategori{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;padding:2px;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
 .baris-kategori::-webkit-scrollbar{display:none}
-.baris-kategori a{flex:none;padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--ink);background:var(--primary-soft)}
-.baris-kategori a[aria-current=page]{background:var(--ink);color:#fff}
-.saring-bab{display:flex;flex-wrap:wrap;gap:6px 14px}
-.saring-bab .tautan-teks[aria-pressed=false]{font-weight:500}
-@media (max-width:860px){.tata-rujukan>.konten-rujukan{padding:20px 16px}}
+.baris-kategori a{flex:none;padding:10px 18px;border-radius:999px;text-decoration:none;font-weight:600;color:var(--ink);background:#fff;border:1px solid rgba(20,40,30,.1);transition:background .2s,transform .2s}
+.baris-kategori a:hover{transform:translateY(-2px)}
+.baris-kategori a small{margin-inline-start:4px;opacity:.6;font-weight:700}
+.baris-kategori a[aria-current=page]{background:var(--ink);color:#fff;border-color:var(--ink)}
 
-/* Kartu dalil */
-.label-status{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--primary-soft);font-size:13px;font-weight:700}
-.kartu-kitab{border-inline-start:6px solid var(--b)}
+/* kartu dalil: putih di atas krem, satu gaya untuk ayat, hadits, kitab, dan halaman dalil */
+.susunan-kartu{display:flex;flex-direction:column;gap:16px;margin:0;padding:0;list-style:none}
+.kartu-dalil{display:flex;flex-direction:column;gap:14px;margin:0;padding:24px 26px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:#fff}
+.kartu-dalil p{margin:0;line-height:1.65}
+.kartu-dalil h2{margin:0;font:600 20px/1.3 var(--font-display);letter-spacing:-.01em}
+.kepala-kartu{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.kartu-dalil .kutipan-arab{margin:0;padding:22px 24px;border-radius:20px;background:#eef6e2;font:400 clamp(21px,2.2vw,26px)/2.2 var(--font-arab);transition:color .2s}
+.kartu-dalil .kutipan-arab.ada-sorot{color:#6b7570}
+/* bagian ayat yang ditandai: latar jingga tebal dan garis bawah, jelas terbaca di antara teks yang diredupkan */
+mark.syahid{padding:2px 8px;border-radius:10px;background:#ffc98a;color:#14181a;font-weight:700;box-shadow:inset 0 -4px 0 var(--aksen);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.bagian-hukum{display:flex;flex-direction:column;gap:10px}
+.petunjuk-hukum{color:var(--ink-muted);font-size:15px}
+.daftar-hukum{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0}
+.pil-hukum{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:1px solid rgba(20,40,30,.14);border-radius:999px;background:#fff;color:var(--ink);font:600 15px/1.35 var(--font-sans);text-align:start}
+button.pil-hukum{cursor:pointer;transition:transform .2s,background .2s}
+button.pil-hukum:hover{transform:translateY(-2px);background:var(--aksen-soft)}
+button.pil-hukum[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+button.pil-hukum:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.catatan-sorot{padding:10px 14px;border-radius:14px;background:var(--aksen-soft);font-size:15px}
+.kartu-bersandar .pil-hukum{background:var(--aksen-soft);border-color:transparent}
+
+/* hadits */
+.teks-hadits{font-size:17px;line-height:1.8}
+.teks-hadits:lang(ar){font:400 clamp(21px,2.2vw,26px)/2.2 var(--font-arab)}
+.sumber-hadits{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;color:var(--ink-muted);font-size:14px}
+
+/* kitab */
+.deret-kitab{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.kartu-kitab{border-inline-start:8px solid var(--b)}
 .kartu-kitab:nth-child(5n+1){--b:#b7de80}
 .kartu-kitab:nth-child(5n+2){--b:#f8c7a6}
 .kartu-kitab:nth-child(5n+3){--b:#b4c8f1}
 .kartu-kitab:nth-child(5n+4){--b:#f1b4c6}
 .kartu-kitab:nth-child(5n+5){--b:#f6c68a}
-.baris-label{display:flex;gap:8px;margin:0}
+.penulis-kitab{color:var(--ink-muted);font-size:14px}
+.aksi-kitab{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-top:auto}
 
-/* Penampil kitab: PDF mengisi layar, bilah atas tipis */
-.penampil-penuh{display:flex;flex-direction:column;gap:8px;height:calc(100dvh - 160px);min-height:420px}
-.bilah-penampil{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.penampil-penuh .penampil-kitab{flex:1;width:100%;border:0;border-radius:var(--radius-lg)}
+/* dalil per bab */
+.bagian-bab{display:flex;flex-direction:column;gap:14px}
+.kepala-bagian-bab h2{margin:0 0 4px;font:600 26px/1.2 var(--font-display);letter-spacing:-.02em}
+.kepala-bagian-bab p{margin:0}
+.saring-bab{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.label-saring{margin-inline-end:4px;color:var(--ink-muted);font-size:14px;font-weight:600}
+.pil-saring{padding:8px 16px;border:1px solid rgba(20,40,30,.12);border-radius:999px;background:#fff;color:var(--ink);font:600 14px var(--font-sans);cursor:pointer;transition:background .2s}
+.pil-saring:hover{background:var(--aksen-soft)}
+.pil-saring[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pil-saring:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.deret-bab{align-items:start;display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+.kartu-bab{display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:28px;background:linear-gradient(135deg,var(--a,#d3ebaa),var(--b,#b7de80));border:1px solid transparent}
+.kartu-bab:nth-child(5n+2){--a:#fde6d8;--b:#f8c7a6}
+.kartu-bab:nth-child(5n+3){--a:#d6e2fb;--b:#b4c8f1}
+.kartu-bab:nth-child(5n+4){--a:#fbdbe4;--b:#f1b4c6}
+.kartu-bab:nth-child(5n+5){--a:#fde7c9;--b:#f6c68a}
+.kartu-bab header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.kartu-bab h3{margin:0;font:600 18px/1.3 var(--font-display)}
+.kartu-bab .label-status{background:rgba(255,255,255,.75)}
+.kartu-bab ul{display:flex;flex-direction:column;gap:6px;margin:0;padding:0}
+.kartu-bab li a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-radius:16px;background:rgba(255,255,255,.72);color:var(--ink);text-decoration:none;line-height:1.4;transition:background .2s,transform .2s}
+.kartu-bab li a:hover{background:#fff;transform:translateX(2px)}
+.kartu-bab li a svg{flex:none;opacity:.55}
+.kartu-bab .tautan-teks{align-self:flex-start;color:var(--ink)}
+
+/* titik masih dikaji */
+.daftar-dikaji{display:flex;flex-direction:column;gap:10px;margin:0;padding:0}
+.baris-dikaji{display:flex;flex-direction:column;gap:4px;padding:18px 22px;border-radius:22px;background:#fff;border:1px solid rgba(20,40,30,.08);color:var(--ink);text-decoration:none}
+.baris-dikaji span{color:var(--ink-muted);font-size:15px}
+.baris-dikaji:hover{background:var(--aksen-soft)}
+
+/* penampil kitab */
+.penampil-penuh{display:flex;flex-direction:column;gap:12px;height:calc(100dvh - 120px);min-height:460px}
+.penampil-penuh .tautan-teks{align-self:flex-start}
+.penampil-penuh .penampil-kitab{flex:1;width:100%;border:0;border-radius:24px;background:#fff}
+
+@media (max-width:1100px){.deret-ubin-rujukan{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){
+  .deret-ubin-rujukan{grid-template-columns:1fr}
+  .ubin-rujukan{min-height:190px}
+  .kartu-dalil{padding:18px}
+  .deret-kitab,.deret-bab{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){.ubin-rujukan,.baris-kategori a,button.pil-hukum,.kartu-bab li a{transition:none}}
+.kartu-bab li[hidden]{display:none}
