@@ -19005,6 +19005,13 @@
    "id": "Contoh hitungan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.streak_belum_mulai",
+   "halaman": "beranda",
+   "id": "Selesaikan satu pelajaran hari ini untuk memulainya.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

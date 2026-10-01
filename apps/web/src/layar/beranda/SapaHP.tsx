@@ -1,4 +1,5 @@
-// Sapaan Beranda di HP (tampilan "aplikasi"): "Ahlan, {nama}", kartu streak, lalu contoh hitungan di bawahnya.
+// Sapaan Beranda di HP (tampilan "aplikasi"): "Ahlan, {nama}" dan isian nama, lalu contoh hitungan di bawahnya.
+// KartuStreak punya bagian sendiri di Beranda (satu bagian satu fungsi); file ini hanya menyimpan komponennya.
 // Nama panggilan disimpan di perangkat (tanpa login); bila belum ada dan pengguna masuk dengan Google, nama depan Google dipakai.
 // Streak dari server (ringkasan.ts); tamu diajak masuk bila akun tersedia, selain itu kartu tidak tampil.
 
@@ -14,7 +15,7 @@ const PANJANG_NAMA_MAKS = 24;
 const HARI_DI_KARTU = 7;
 const MS_HARI = 86_400_000;
 
-export function SapaHP({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?: (() => void) | undefined }) {
+export function SapaHP({ sesi }: { sesi: Sesi | null }) {
   const [nama, setNama] = useState(() => bacaMentah(KUNCI_NAMA)?.trim() ?? '');
   const [mengubah, setMengubah] = useState(false);
   const namaTampil = nama || sesi?.nama?.trim().split(/\s+/)[0] || '';
@@ -48,11 +49,11 @@ export function SapaHP({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?: (()
           <small>{t('beranda.nama_catatan')}</small>
         </form>
       )}
-      <KartuStreak sesi={sesi} saatMasuk={saatMasuk} />
     </div>
   );
 }
 
+/** Tracker streak: hanya untuk yang sudah masuk; tamu di HP melihat ajakan masuk (bila akun tersedia), di desktop tidak ada. */
 export function KartuStreak({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?: (() => void) | undefined }) {
   const ringkasan = useRingkasanSaya();
   if (ringkasan) {
@@ -66,10 +67,10 @@ export function KartuStreak({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?
     return (
       <section className="kartu-streak" aria-label={t('beranda.streak_hari', { jumlah: ringkasan.streakSekarang })}>
         <div className="atas-streak">
-          <span className={ringkasan.aktifHariIni ? 'api-streak' : 'api-streak redup'}><IkonApi ukuran={34} /></span>
+          <span className={ringkasan.aktifHariIni ? 'api-streak' : 'api-streak redup'}>{ringkasan.streakSekarang > 0 ? <IkonApi ukuran={34} /> : <Ikon nama="api" ukuran={30} />}</span>
           <div>
-            <b className="angka-streak">{t('beranda.streak_hari', { jumlah: angka(String(ringkasan.streakSekarang)) })}</b>
-            <span>{ringkasan.aktifHariIni ? t('beranda.streak_aman') : t('beranda.streak_belum_aman')}</span>
+            <b className="angka-streak">{ringkasan.streakSekarang > 0 ? t('beranda.streak_hari', { jumlah: angka(String(ringkasan.streakSekarang)) }) : t('beranda.streak_mulai')}</b>
+            <span>{ringkasan.streakSekarang === 0 ? t('beranda.streak_belum_mulai') : ringkasan.aktifHariIni ? t('beranda.streak_aman') : t('beranda.streak_belum_aman')}</span>
           </div>
           <span className="xp-streak">{t('beranda.xp_pekan', { xp: angka(String(ringkasan.xpMingguIni)) })}</span>
         </div>
@@ -86,7 +87,7 @@ export function KartuStreak({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?
   if (sesi || !saatMasuk) return null;
   return (
     <section className="kartu-streak tamu-streak">
-      <span className="api-streak redup"><IkonApi ukuran={34} /></span>
+      <span className="api-streak redup"><Ikon nama="api" ukuran={30} /></span>
       <div><b className="angka-streak">{t('beranda.streak_mulai')}</b><span>{t('beranda.streak_masuk')}</span></div>
       <button type="button" className="tautan-lanjut" onClick={saatMasuk}>{t('umum.masuk_dengan_google')}</button>
     </section>

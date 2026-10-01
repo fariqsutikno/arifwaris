@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { Sesi } from '@waris/data';
 import { tautanPeringkat } from '../rute';
 import { t } from '../terjemah';
-import { IkonApi, tanpaEmojiApi } from '../ui/Ikon';
+import { Ikon, IkonApi, tanpaEmojiApi } from '../ui/Ikon';
 import { useMuatRingkasan, useRingkasanSaya } from './ringkasan';
 import type { RepoAkun } from './sinkron';
 
@@ -35,7 +35,7 @@ export function StreakKepala({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun
     <span className="streak-kepala">
       <a href={tautanPeringkat()} className={ringkasan.aktifHariIni ? 'tautan-streak' : 'tautan-streak redup'}
         aria-label={keterangan} title={keterangan}>
-        <IkonApi />{tanpaEmojiApi(ringkasan.streakSekarang > 0 ? t('akun.streak_singkat', { jumlah: ringkasan.streakSekarang }) : t('akun.mulai_streak'))}
+        {ringkasan.streakSekarang > 0 ? <IkonApi /> : <Ikon nama="api" ukuran={18} />}{tanpaEmojiApi(ringkasan.streakSekarang > 0 ? t('akun.streak_singkat', { jumlah: ringkasan.streakSekarang }) : t('akun.mulai_streak'))}
       </a>
       <span className="tambahan-xp" role="status">{tambahanXp > 0 ? t('akun.tambahan_xp', { jumlah: tambahanXp }) : ''}</span>
     </span>

@@ -65,14 +65,14 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, sesi = null, sa
             <a className="pil-hero pil-terang" href={TAUTAN_KALKULATOR} onClick={saatKeHitung}><Ikon nama="hitung" ukuran={18} />{t('beranda.coba_di_ariflab')}</a>
             <a className="tautan-lanjut" href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')}<span className="panah-kecil" aria-hidden="true">{panah()}</span></a>
           </div>
-          <KartuStreak sesi={sesi} />
         </div>
-        <SapaHP sesi={sesi} saatMasuk={saatMasuk} />
+        <SapaHP sesi={sesi} />
         <h2 className="judul-contoh-hp">{t('beranda.contoh_judul')}</h2>
         <ContohHidup saatCoba={saatCoba} />
       </header>
 
       <div className="tata-beranda" onPointerMove={sorotUbin}>
+        <KartuStreak sesi={sesi} saatMasuk={saatMasuk} />
         <h2 className="judul-bagian">{t('beranda.mulai_dari_mana')}</h2>
         <a className="ubin ubin-kasus" style={{ '--i': 0 } as CSSProperties} href={TAUTAN_KALKULATOR} onClick={saatKeHitung}>
           <Ikon nama="hitung" ukuran={150} /><span className="panah-bulat" aria-hidden="true">{panah()}</span>

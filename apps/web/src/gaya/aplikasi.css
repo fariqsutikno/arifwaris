@@ -103,21 +103,28 @@ a.butir-notif:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
   .isi-nama small{padding-inline:6px;color:rgba(255,255,255,.75)}
 }
 /* kartu streak: dipakai di sapaan HP dan di hero desktop (hanya untuk yang sudah login) */
-.kartu-streak{padding:16px;border:1px solid rgba(255,255,255,.2);border-radius:24px;background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
-.atas-streak{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px}
+.kartu-streak{grid-column:1/-1;display:flex;flex-direction:column;gap:16px;padding:20px;border-radius:28px;color:#fff;animation:naik .6s .25s cubic-bezier(.2,.7,.2,1) both;
+  background:radial-gradient(360px 200px at 100% 0%,rgba(255,150,40,.4),transparent 70%),radial-gradient(300px 200px at 0% 100%,rgba(60,210,170,.25),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)}
+.atas-streak{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:14px}
 .atas-streak>div,.tamu-streak>div{display:flex;flex-direction:column;gap:2px;min-width:0;font-size:13px;color:rgba(255,255,255,.85)}
 .angka-streak{font:600 20px/1.2 var(--font-display);color:#fff}
 .api-streak{display:grid;place-items:center;flex:none;width:56px;height:56px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,150,40,.4),rgba(255,150,40,.08));animation:api-hidup 2.4s ease-in-out infinite alternate}
-.api-streak.redup{filter:grayscale(.85);opacity:.65;animation:none}
+.api-streak.redup{opacity:.9;animation:none;background:rgba(255,255,255,.1)}
+.api-streak.redup svg:not(.ikon-api){color:rgba(255,255,255,.85)}
 .xp-streak{padding:6px 12px;border-radius:var(--radius-pill);background:rgba(255,255,255,.14);font:600 12.5px var(--font-sans);white-space:nowrap}
-.hari-streak{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:16px 0 0}
+.hari-streak{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:0}
 .hari-streak li{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11.5px;color:rgba(255,255,255,.75)}
 .hari-streak i{display:grid;place-items:center;width:30px;height:30px;border:1.5px solid rgba(255,255,255,.3);border-radius:50%;color:#fff;font-style:normal}
 .hari-streak .aktif i{border-color:transparent;background:var(--aksen);box-shadow:0 0 14px rgba(242,104,42,.55)}
 .hari-streak .hari-ini i{outline:2px solid #fff;outline-offset:2px}
 .tamu-streak{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px}
 .tamu-streak .tautan-lanjut{grid-column:1/-1;justify-content:flex-start;min-height:40px;margin-top:2px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(255,255,255,.5)}
-.sapa-beranda .kartu-streak{width:min(100%,460px);animation:naik .6s .35s cubic-bezier(.2,.7,.2,1) both}
+/* desktop: satu baris (status di kiri, tujuh hari di kanan); tamu tidak melihat ajakan di desktop */
+@media (min-width:721px){
+  .kartu-streak:not(.tamu-streak){flex-direction:row;align-items:center;justify-content:space-between;gap:32px;padding:20px 28px}
+  .kartu-streak .hari-streak{width:min(420px,45%);gap:10px}
+  .tamu-streak{display:none}
+}
 @keyframes api-hidup{from{transform:scale(1)}to{transform:scale(1.07)}}
 @media (prefers-reduced-motion:reduce){
   .titik-lonceng,.api-streak,.tombol-lonceng[aria-expanded=true] svg,.panel-lonceng,.tirai-lonceng,.sapa-hp,.isi-nama{animation:none}
