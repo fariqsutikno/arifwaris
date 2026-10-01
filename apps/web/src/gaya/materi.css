@@ -37,15 +37,65 @@
 .navigasi-materi>a:last-child{background:var(--primary);color:var(--on-primary)}
 .navigasi-materi>a:last-child:hover{background:var(--aksen);color:#fff}
 
-/* sidebar */
+/* sidebar: daftar modul; hanya modul yang dibaca terbuka, tanda selesai berupa bulatan kecil bukan centang hitam besar */
 .sidebar-materi{border:1px solid rgba(20,40,30,.08);border-radius:24px}
-.pelajaran-sidebar{border-radius:12px}
+.sidebar-materi .angka-progres{font-weight:600}
+.tata-materi .bar-progres>span{background:var(--sorot-fardh)}
+.modul-sidebar{padding:4px 8px}
+.modul-sidebar+.modul-sidebar{border-top:1px solid var(--divider)}
+summary.judul-modul-sidebar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0;padding:10px 8px;border-radius:12px;cursor:pointer;list-style:none;text-transform:none;letter-spacing:0;font:700 14px/1.35 var(--font-sans);color:var(--ink)}
+summary.judul-modul-sidebar::-webkit-details-marker{display:none}
+summary.judul-modul-sidebar:hover{background:var(--surface-sunken)}
+summary.judul-modul-sidebar small{flex:none;padding:2px 8px;border-radius:99px;background:var(--surface-sunken);font:600 12px var(--font-sans);color:var(--ink-muted);font-variant-numeric:tabular-nums}
+summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.modul-sidebar.modul-menyusul{margin:0;padding:10px 16px;font:500 13px var(--font-sans);color:var(--ink-muted);text-transform:none;letter-spacing:0}
+.modul-sidebar ol{padding-bottom:6px}
+.pelajaran-sidebar{align-items:flex-start;border-radius:12px;font-weight:500}
+.pelajaran-sidebar.selesai{color:var(--ink-muted)}
+.tanda-pelajaran{display:grid;place-items:center;flex:none;width:18px;height:18px;margin-top:1px;border:1.5px solid var(--outline);border-radius:50%;font:700 10px/1 var(--font-sans);color:#fff}
+.pelajaran-sidebar.selesai .tanda-pelajaran{border-color:var(--sorot-fardh);background:var(--sorot-fardh)}
 /* pelajaran aktif ditandai lembut (hijau muda + garis), supaya hanya banner yang jadi jangkar gelap di halaman */
-.pelajaran-sidebar[aria-current=page]{background:#e9f3d6;box-shadow:inset 3px 0 0 var(--aksen);font-weight:800}
-.tata-materi .bar-progres>span{background:var(--aksen)}
+.pelajaran-sidebar[aria-current=page]{background:#e9f3d6;box-shadow:inset 3px 0 0 var(--aksen);color:var(--ink);font-weight:700}
 
-@media (max-width:980px){.halaman-materi>.tata-materi{grid-template-columns:1fr;gap:16px;padding-top:20px}}
+/* nomor bagian di atas tiap judul h2: pembaca tahu sedang di bagian ke berapa */
+.isi-materi{counter-reset:bagian}
+.isi-materi h2{counter-increment:bagian;scroll-margin-top:88px}
+.isi-materi h2::before{content:counter(bagian,decimal-leading-zero);display:block;margin-bottom:4px;font:700 12px/1 var(--font-sans);letter-spacing:.12em;color:var(--aksen)}
+
+/* bilah baca: menempel di atas setelah banner lewat */
+.bilah-baca{position:fixed;inset-inline:0;top:0;z-index:30;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--divider);box-shadow:0 6px 24px rgba(20,40,30,.08);transform:translateY(-110%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}
+.bilah-baca.tampil{transform:none;visibility:visible;transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+.isi-bilah-baca{display:flex;align-items:center;justify-content:space-between;gap:16px;max-width:1320px;margin:0 auto;padding:10px 24px}
+.teks-bilah-baca{display:flex;flex-direction:column;gap:2px;min-width:0}
+.teks-bilah-baca b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 15px/1.3 var(--font-display)}
+.teks-bilah-baca span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 13px/1.3 var(--font-sans);color:var(--ink-muted)}
+.tombol-isi-bilah{display:inline-flex;align-items:center;gap:8px;flex:none;min-height:44px;padding:0 14px;border:0;border-radius:var(--radius-pill);background:var(--surface-sunken);color:var(--ink);font:600 13.5px var(--font-sans);cursor:pointer}
+.tombol-isi-bilah:hover{background:var(--outline)}
+.tombol-isi-bilah:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.menu-isi-bilah{max-width:1320px;margin:0 auto;padding:4px 24px 14px;max-height:60vh;overflow-y:auto}
+.bar-baca{display:block;height:3px;background:var(--divider)}
+.bar-baca>span{display:block;height:100%;background:var(--aksen);transition:width .15s linear}
+
+/* daftar bagian (di kanan dan di menu bilah) */
+.daftar-bagian{display:flex;flex-direction:column;gap:2px}
+.daftar-bagian a{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:12px;color:var(--ink-muted);text-decoration:none;font:500 14px/1.4 var(--font-sans)}
+.daftar-bagian a:hover{background:var(--surface-sunken);color:var(--ink)}
+.daftar-bagian a[aria-current=location]{background:var(--aksen-soft);color:var(--ink);font-weight:700}
+.daftar-bagian a:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.nomor-bagian{flex:none;font:700 11px var(--font-sans);letter-spacing:.08em;color:var(--aksen);font-variant-numeric:tabular-nums}
+.rail-isi{display:none}
+
+@media (min-width:1280px){
+  .halaman-materi>.tata-materi{grid-template-columns:300px minmax(0,1fr) 240px}
+  .rail-isi{display:flex;flex-direction:column;gap:8px;position:sticky;top:88px;align-self:start;max-height:calc(100vh - 112px);overflow-y:auto}
+  .rail-isi .label-langkah{padding-inline:10px}
+  .tombol-isi-bilah{display:none}
+}
+@media (max-width:980px){.isi-bilah-baca,.menu-isi-bilah{padding-inline:16px}.halaman-materi>.tata-materi{grid-template-columns:1fr;gap:16px;padding-top:20px}}
 @media (max-width:860px){.tata-materi>.konten-materi{padding:24px 20px;border-radius:24px}}
 
 /* HP: header transparan melayang di atas hero (aplikasi.css), jadi isi hero turun di bawahnya */
 @media (max-width:720px){.hero-materi{padding-top:88px}}
+
+@media (prefers-reduced-motion:reduce){.bilah-baca,.bilah-baca.tampil{transition:none}.bar-baca>span{transition:none}}
+@media (min-width:861px){.sidebar-materi{top:88px;max-height:calc(100vh - 108px)}}

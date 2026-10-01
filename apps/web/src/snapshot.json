@@ -19012,6 +19012,13 @@
    "id": "Selesaikan satu pelajaran hari ini untuk memulainya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.di_halaman_ini",
+   "halaman": "belajar",
+   "id": "Di halaman ini",
+   "ar": "في هذه الصفحة",
+   "versiTerbit": 873
   }
  ]
 }

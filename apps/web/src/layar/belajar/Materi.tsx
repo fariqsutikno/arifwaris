@@ -22,6 +22,7 @@ import { TombolBukaKasus } from './TombolBukaKasus';
 import { Bagikan } from '../../ui/Bagikan';
 import { Ikon } from '../../ui/Ikon';
 import { Laci } from '../../ui/Laci';
+import { ambilBagian, BilahBaca, idBagian, RailIsi, useBacaan } from './DaftarIsi';
 
 interface Props {
   slug: string;
@@ -33,6 +34,10 @@ interface Props {
 export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const pelajaran = cariPelajaran(slug);
   const ujung = useRef<HTMLElement>(null);
+  const banner = useRef<HTMLElement>(null);
+  const artikel = useRef<HTMLElement>(null);
+  const bagian = useMemo(() => pelajaran ? ambilBagian(pelajaran.blok) : [], [pelajaran]);
+  const posisi = useBacaan(bagian, artikel, banner);
   // Dinaikkan saat pelajaran ditandai selesai supaya progres di sidebar langsung ikut berubah.
   const [, setVersiProgres] = useState(0);
 
@@ -60,10 +65,12 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const sebelumnya = daftarPelajaran()[indeks - 1];
   const berikutnya = daftarPelajaran()[indeks + 1];
   const modul = daftarModul().find(modulIni => modulIni.nomor === pelajaran.modul);
+  // Judul bagian (h2) diberi id berurutan supaya daftar isi bisa menunjuk dan melacaknya.
+  const idJudul = pelajaran.blok.reduce<(string | undefined)[]>((hasil, blok) => [...hasil, blok.jenis === 'judul' && blok.tingkat === 2 ? idBagian(hasil.filter(Boolean).length) : undefined], []);
 
   return (
     <div className="halaman-beranda halaman-materi">
-      <header className="hero-materi">
+      <header className="hero-materi" ref={banner}>
         <div className="baris-hero-materi">
           <a className="tombol-kembali" href={tautanBelajar()}><Ikon nama="kembali" ukuran={18} />{t('umum.kembali_2')}</a>
           <Bagikan judul={pelajaran.judul} tautan={window.location.hash} />
@@ -74,10 +81,11 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
         <p className="lead">{pelajaran.tujuan}</p>
       </header>
       <div className="tata-materi">
+      <BilahBaca judul={pelajaran.judul} bagian={bagian} posisi={posisi} />
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
-        <article className="isi-materi">
-          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
+        <article className="isi-materi" ref={artikel}>
+          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} idJudul={idJudul[urutan]} />)}
         </article>
         <nav ref={ujung} className="navigasi-materi" aria-label={t('belajar.navigasi_pelajaran')}>
           <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('belajar.sebelumnya')}`} />
@@ -85,6 +93,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
           <TautanNavigasi tujuan={berikutnya} label={`${t('belajar.berikutnya')} ${panah()}`} saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
         </nav>
       </main>
+      <RailIsi bagian={bagian} aktif={posisi.aktif} />
       </div>
     </div>
   );
@@ -110,9 +119,12 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
     </>}>
         {daftarModul().map(modul => {
           const daftar = daftarPelajaran().filter(pelajaran => pelajaran.modul === modul.nomor);
+          if (daftar.length === 0) return <p key={modul.nomor} className="modul-sidebar modul-menyusul judul-modul-sidebar">{angka(String(modul.nomor))}. {modul.judul} · {t('belajar.menyusul')}</p>;
+          const beres = daftar.filter(pelajaran => selesai.has(pelajaran.slug)).length;
+          // Hanya modul yang sedang dibaca yang terbuka; sisanya ringkas supaya daftar tidak panjang.
           return (
-            <div key={modul.nomor} className={daftar.length ? 'modul-sidebar' : 'modul-sidebar modul-menyusul'}>
-              <p className="judul-modul-sidebar">{angka(String(modul.nomor))}. {modul.judul}{daftar.length ? '' : ` · ${t('belajar.menyusul')}`}</p>
+            <details key={modul.nomor} className="modul-sidebar" open={modul.nomor === aktif.modul}>
+              <summary className="judul-modul-sidebar"><span>{angka(String(modul.nomor))}. {modul.judul}</span><small>{angka(`${beres}/${daftar.length}`)}</small></summary>
               <ol className="daftar-polos">
                 {daftar.map(pelajaran => (
                   <li key={pelajaran.slug}>
@@ -124,16 +136,16 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
                   </li>
                 ))}
               </ol>
-            </div>
+            </details>
           );
         })}
     </Laci>
   );
 }
 
-export function BlokMateri({ blok, kasusSekarang, saatCoba }: { blok: Blok } & Omit<Props, 'slug'>) {
+export function BlokMateri({ blok, kasusSekarang, saatCoba, idJudul }: { blok: Blok; idJudul?: string | undefined } & Omit<Props, 'slug'>) {
   switch (blok.jenis) {
-    case 'judul': return blok.tingkat === 2 ? <h2><Sebaris isi={blok.isi} /></h2> : <h3><Sebaris isi={blok.isi} /></h3>;
+    case 'judul': return blok.tingkat === 2 ? <h2 id={idJudul}><Sebaris isi={blok.isi} /></h2> : <h3><Sebaris isi={blok.isi} /></h3>;
     case 'paragraf': return <p><Sebaris isi={blok.isi} /></p>;
     case 'catatan': return <aside className="catatan-materi"><Sebaris isi={blok.isi} /></aside>;
     case 'daftar': {
