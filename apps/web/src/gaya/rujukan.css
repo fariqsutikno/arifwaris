@@ -65,8 +65,8 @@ button.pil-hukum:focus-visible{outline:3px solid var(--focus);outline-offset:2px
 .sumber-hadits{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;color:var(--ink-muted);font-size:14px}
 
 /* kitab */
-.deret-kitab{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-.kartu-kitab{border-inline-start:8px solid var(--b)}
+.deret-kitab{columns:2 340px;column-gap:16px}
+.kartu-kitab{break-inside:avoid;margin-bottom:16px;border-inline-start:8px solid var(--b)}
 .kartu-kitab:nth-child(5n+1){--b:#b7de80}
 .kartu-kitab:nth-child(5n+2){--b:#f8c7a6}
 .kartu-kitab:nth-child(5n+3){--b:#b4c8f1}
@@ -85,8 +85,8 @@ button.pil-hukum:focus-visible{outline:3px solid var(--focus);outline-offset:2px
 .pil-saring:hover{background:var(--aksen-soft)}
 .pil-saring[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
 .pil-saring:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.deret-bab{align-items:start;display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
-.kartu-bab{display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:28px;background:linear-gradient(135deg,var(--a,#d3ebaa),var(--b,#b7de80));border:1px solid transparent}
+.deret-bab{columns:3 340px;column-gap:14px}
+.kartu-bab{break-inside:avoid;margin-bottom:14px;display:flex;flex-direction:column;gap:12px;padding:22px;border-radius:28px;background:linear-gradient(135deg,var(--a,#d3ebaa),var(--b,#b7de80));border:1px solid transparent}
 .kartu-bab:nth-child(5n+2){--a:#fde6d8;--b:#f8c7a6}
 .kartu-bab:nth-child(5n+3){--a:#d6e2fb;--b:#b4c8f1}
 .kartu-bab:nth-child(5n+4){--a:#fbdbe4;--b:#f1b4c6}
@@ -116,7 +116,7 @@ button.pil-hukum:focus-visible{outline:3px solid var(--focus);outline-offset:2px
   .deret-ubin-rujukan{grid-template-columns:1fr}
   .ubin-rujukan{min-height:190px}
   .kartu-dalil{padding:18px}
-  .deret-kitab,.deret-bab{grid-template-columns:1fr}
+  .deret-kitab,.deret-bab{columns:1}
 }
 @media (prefers-reduced-motion:reduce){.ubin-rujukan,.baris-kategori a,button.pil-hukum,.kartu-bab li a{transition:none}}
 .kartu-bab li[hidden]{display:none}
