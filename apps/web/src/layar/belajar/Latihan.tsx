@@ -22,8 +22,19 @@ interface Props {
 
 export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
   // Saat mengerjakan satu paket kuis, halaman fokus ke soal: tanpa hero Latihan dan tab.
-  if (tab === 'kuis' && paket) return <main className="halaman tumpuk"><SesiKuis key={paket} paket={paket} /></main>;
+  if (tab === 'kuis' && paket) return <HalamanSesi paket={paket} />;
   return <HalamanLatihan tab={tab} kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} />;
+}
+
+function HalamanSesi({ paket }: { paket: string }) {
+  // Header transparan seperti halaman Latihan; pita gelap hero di belakang kartu sesi.
+  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
+  return (
+    <main className="halaman-beranda halaman-sesi">
+      <div className="hero-beranda hero-sesi" aria-hidden="true" />
+      <div className="isi-sesi"><SesiKuis key={paket} paket={paket} /></div>
+    </main>
+  );
 }
 
 function HalamanLatihan({ tab, kasusSekarang, saatKerjakan }: Omit<Props, 'paket'>) {
