@@ -35,8 +35,8 @@ export function LangkahBabak({ kasus, babak, ubah }: Props) {
       <div className="pohon-kecil">
         <PohonDasar graf={{ ...kasus.graf, idPewaris: idMayit }} isiNode={id => ({
           kelas: id === idMayit ? 'pewaris' : sebelumnya.includes(id) ? 'penghubung' : 'ahli-waris',
-          peran: id === idMayit ? t('hitung.babak.babak_ini') : sebutan(id),
-          nama: kasus.graf.orang[id]!.nama ?? '',
+          peran: id === idMayit ? t('hitung.almarhum') : sebutan(id),
+          nama: id === idMayit ? nama : kasus.graf.orang[id]!.nama ?? '',
         })} />
       </div>
       {dariBabakLalu.length > 0 && (

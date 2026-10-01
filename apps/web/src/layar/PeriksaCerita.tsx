@@ -70,7 +70,7 @@ export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi
     <div className="kartu tumpuk">
       {almarhum.map((id, indeks) => (
         <section key={id} className="tumpuk-rapat">
-          <h2 className="judul-bagian-kecil">{t('hitung.cerita.label_babak', { nama: nama(id) })}</h2>
+          <h2 className="judul-bagian-kecil">{t('hitung.cerita.label_babak', { nomor: indeks + 1, nama: nama(id) })}</h2>
           <p>{kalimatBabak(kasus, id)} <button type="button" className="tautan" onClick={() => ubahBabak(indeks)}>{t('hitung.cerita.ubah')}</button></p>
         </section>
       ))}
