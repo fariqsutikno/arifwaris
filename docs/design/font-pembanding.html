@@ -56,10 +56,10 @@ const F=[
  ['"Mona Sans"','"Mona Sans"','font-weight:700;font-size:36px;letter-spacing:-.025em'],
  ['"Young Serif"','"Host Grotesk"','font-weight:400;font-size:33px'],
  ['"Familjen Grotesk"','"Hanken Grotesk"','font-weight:600;font-size:36px;letter-spacing:-.02em']];
-const bersih=x=>x.replace(/"/g,'');
-document.getElementById('g').innerHTML=F.map(([d,s,h])=>`
+const bersih=x=>x.replace(/"/g,'');const kutip=x=>x.replace(/"/g,"'"); // kutip tunggal agar aman di dalam atribut style
+document.getElementById('g').innerHTML=F.map(([d0,s0,h])=>{const d=kutip(d0),s=kutip(s0);return `
 <section class="kartu" style="font-family:${s},system-ui">
-  <div class="nama"><b>Judul: ${bersih(d)}</b><span>Isi: ${bersih(s)}</span></div>
+  <div class="nama"><b>Judul: ${bersih(d0)}</b><span>Isi: ${bersih(s0)}</span></div>
   <div class="hero"><small style="font-family:${s}">Menurut madzhab Syafi'i · dihitung 1 Oktober 2026</small><h2 style="font-family:${d};${h}">Harta Mbah Karto dan keluarganya</h2></div>
   <div class="isi">
     <div class="baris"><div><b>Rina</b><span class="k">anak perempuan Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 3.024.000.000</span> <span class="pil">29,2%</span></div></div>
@@ -71,7 +71,7 @@ document.getElementById('g').innerHTML=F.map(([d,s,h])=>`
     <span class="chip">Hukum positif, bukan fikih</span>
     <span class="btn">Lembar musyawarah</span>
   </div>
-</section>`).join('');
+</section>`}).join('');
 </script>
 </body>
 </html>
