@@ -12,8 +12,8 @@ Editor rujukan di `apps/admin` dan aturan KB tidak berubah. Rute (`rute.ts`) dip
 1. **Awal Rujukan** (`#/rujukan`): hero gelap kecil dengan kolom cari (klaim, surah, judul kitab; client-side
    atas `RUJUKAN`/`DAFTAR_AYAT`/`DAFTAR_KITAB`). Di bawahnya ubin pastel per kategori (ikon, nama, jumlah) menggantikan
    sidebar + `Laci`. Hasil cari tampil sebagai daftar tautan ke `#/rujukan/<kode>`.
-2. **Di dalam kategori** (`#/rujukan/<kategori>`): baris tab kategori di atas (bisa digulir, tanpa scrollbar). Filter bab KB
-   dan madzhab ([SYF]/[HNB]/[HNF]/[MLK]) berupa teks/tautan. Label kecil `sekunder` dan `perlu verifikasi`.
+2. **Di dalam kategori** (`#/rujukan/<kategori>`): baris tab kategori di atas (bisa digulir, tanpa scrollbar). Filter bab KB berupa teks/tautan.
+   Label kecil `perlu verifikasi` dan `dha'if`. (Filter madzhab dan label `sekunder` dicabut: `EntriRujukan` tidak punya datanya.)
 3. **Kartu dalil**
    - Ayat: teks Arab besar, hukum yang bisa disorot (perilaku syahid sekarang dipertahankan). Tab Arti/Tafsir
      hanya dirender bila isinya ada; sekarang kosong, jadi tersembunyi.
