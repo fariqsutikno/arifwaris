@@ -59,17 +59,21 @@ export function KartuKitab({ nomor }: { nomor: number }) {
   const kitab = DAFTAR_KITAB[nomor]!;
   const sumber = sumberKitab().find(isi => isi.judul === kitab.judul);
   return (
-    <article className="kartu-dalil kartu-kitab">
-      <h2><cite>{kitab.judul}</cite></h2>
-      <p className="penulis-kitab">{kitab.penulis}</p>
-      <p>{kitab.keterangan.replace(/\*\*/g, '')}</p>
-      <div className="aksi-kitab">
-        {sumber?.pdf
-          ? <a className="aw-btn aw-btn-primary aw-btn-sm" href={`#/rujukan/kitab/${nomor}`}><Ikon nama="pelajaran" ukuran={18} /> {t('rujukan.baca_di_sini')}</a>
-          : <button type="button" className="aw-btn aw-btn-primary aw-btn-sm" disabled>{t('rujukan.baca_di_sini_belum_tersedia')}</button>}
-        {sumber?.tautan
-          ? <a className="tautan-teks" href={sumber.tautan} target="_blank" rel="noopener noreferrer"><Ikon nama="buka" ukuran={18} /> {t('rujukan.situs_sumber')}</a>
-          : <span className="keterangan">{t('rujukan.situs_sumber_belum_tersedia')}</span>}
+    <article className="kartu-kitab">
+      <div className="punggung-kitab" aria-hidden="true"><Ikon nama="pelajaran" ukuran={22} /></div>
+      <div className="sampul-kitab">
+        <h2><cite>{kitab.judul}</cite></h2>
+        <p className="penulis-kitab">{kitab.penulis}</p>
+        <hr className="hiasan-kitab" />
+        <p className="keterangan-kitab">{kitab.keterangan.replace(/\*\*/g, '')}</p>
+        <div className="aksi-kitab">
+          {sumber?.pdf
+            ? <a className="aw-btn aw-btn-primary aw-btn-sm" href={`#/rujukan/kitab/${nomor}`}><Ikon nama="pelajaran" ukuran={18} /> {t('rujukan.baca_di_sini')}</a>
+            : <span className="keterangan">{t('rujukan.baca_di_sini_belum_tersedia')}</span>}
+          {sumber?.tautan
+            ? <a className="tautan-teks" href={sumber.tautan} target="_blank" rel="noopener noreferrer"><Ikon nama="buka" ukuran={18} /> {t('rujukan.situs_sumber')}</a>
+            : <span className="keterangan">{t('rujukan.situs_sumber_belum_tersedia')}</span>}
+        </div>
       </div>
     </article>
   );
