@@ -20,11 +20,22 @@ import {
 const RELASI_TERBIT = 'revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(id, isi, refs, hapus)';
 const RELASI_TERBIT_DIKSI = 'revisi_terbit:revisi_diksi!diksi_revisi_terbit_id_fkey(id_teks, ar_teks)';
 
+const UKURAN_HALAMAN = 1000;
+
 export function buatRepositoriSupabase(klien: SupabaseClient) {
   const hasil = async <T>(janji: PromiseLike<{ data: T; error: { message: string } | null }>): Promise<T> => {
     const { data, error } = await janji;
     if (error) throw new Error(error.message);
     return data;
+  };
+  // PostgREST memotong tiap kueri di 1000 baris; kueri yang bisa lebih besar dibaca per halaman. `kueri` harus berurutan tetap.
+  const semuaBaris = async (kueri: { range(dari: number, sampai: number): PromiseLike<{ data: any; error: { message: string } | null }> }): Promise<any[]> => {
+    const baris: any[] = [];
+    for (let dari = 0; ; dari += UKURAN_HALAMAN) {
+      const halaman = await hasil(kueri.range(dari, dari + UKURAN_HALAMAN - 1)) as any[];
+      baris.push(...halaman);
+      if (halaman.length < UKURAN_HALAMAN) return baris;
+    }
   };
   const rpc = (nama: string, argumen: Record<string, unknown>) => hasil(klien.rpc(nama, argumen)).then(() => undefined);
   const userId = async () => {
@@ -46,10 +57,10 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     },
     async bacaTerbit(saring = {}) {
       let kueri = klien.from('entri_konten').select(`id, jenis, slug, urutan, versi_terbit, diarsipkan_pada, ${RELASI_TERBIT}`)
-        .not('revisi_terbit_id', 'is', null).order('urutan');
+        .not('revisi_terbit_id', 'is', null).order('urutan').order('id');
       if (saring.jenis) kueri = kueri.eq('jenis', saring.jenis);
       if (saring.sejakVersi !== undefined) kueri = kueri.gt('versi_terbit', saring.sejakVersi);
-      return saringValid((await hasil(kueri) as any[]).filter(baris => !baris.revisi_terbit.hapus && !baris.diarsipkan_pada).map(keTerbitMentah));
+      return saringValid((await semuaBaris(kueri)).filter(baris => !baris.revisi_terbit.hapus && !baris.diarsipkan_pada).map(keTerbitMentah));
     },
     async bacaDihapus(sejakVersi) {
       // Penanda hapus sedikit; saring di klien supaya tidak bergantung pada filter relasi PostgREST.
@@ -112,9 +123,9 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
 
   const diksi: RepositoriDiksi = {
     async bacaTerbit(sejakVersi) {
-      let kueri = klien.from('diksi').select(`kunci, halaman, versi_terbit, ${RELASI_TERBIT_DIKSI}`).not('revisi_terbit_id', 'is', null);
+      let kueri = klien.from('diksi').select(`kunci, halaman, versi_terbit, ${RELASI_TERBIT_DIKSI}`).not('revisi_terbit_id', 'is', null).order('kunci');
       if (sejakVersi !== undefined) kueri = kueri.gt('versi_terbit', sejakVersi);
-      return (await hasil(kueri) as any[]).map(keDiksiTerbit);
+      return (await semuaBaris(kueri)).map(keDiksiTerbit);
     },
     async buatKunci(kunci, halaman) { await hasil(klien.from('diksi').insert({ kunci, halaman })); },
     async buatDraf(kunci, idTeks, arTeks, catatan) {
@@ -135,7 +146,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       const kueri = klien.from('diksi')
         .select(`kunci, halaman, versi_terbit, ${RELASI_TERBIT_DIKSI}, semua_revisi:revisi_diksi!revisi_diksi_kunci_fkey(*)`)
         .order('halaman').order('kunci');
-      return (await hasil(kueri) as any[]).map(keRingkasanKunciDiksi);
+      return (await semuaBaris(kueri)).map(keRingkasanKunciDiksi);
     },
     async revisiSaya(userId) {
       const kueri = klien.from('revisi_diksi').select('*')
