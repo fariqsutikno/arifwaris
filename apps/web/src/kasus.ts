@@ -33,6 +33,8 @@ export interface Kasus {
   /** Khusus UI (spec 2.2): wafat sesudah harta dibagi, engine melihat mereka hidup. */
   wafatSesudahDibagi?: IdOrang[];
   pilihanJanin?: 'tunggu' | 'hitungSekarang';
+  /** Nama kasus dari pengguna (langkah Periksa); kosong = dinamai otomatis dari ringkasan. */
+  nama?: string;
 }
 
 export function kasusBaru(jenisKelaminPewaris: 'L' | 'P'): Kasus {
@@ -136,11 +138,12 @@ function bacaKasus(data: unknown): Kasus {
   if (pilihanJanin !== undefined && pilihanJanin !== 'tunggu' && pilihanJanin !== 'hitungSekarang') throw new Error(t('hitung.data_keadaan_rusak'));
   const semuaDaftar = [...urutanWafat, ...(gharqa?.anggota.filter(id => id !== graf.idPewaris) ?? []), ...(wafatSesudahDibagi ?? [])];
   if (new Set(semuaDaftar).size !== semuaDaftar.length) throw new Error(t('hitung.orang_tercatat_wafat_dua_kali'));
+  if (objek.nama !== undefined && typeof objek.nama !== 'string') throw new Error(t('hitung.data_keadaan_rusak'));
   const kasus: Kasus = {
     versi: 3, graf, tirkah, satuanPembulatan, urutanWafat,
     ...(rincianHarta ? { rincianHarta } : {}), ...(gharqa ? { gharqa } : {}),
     ...(wafatSesudahDibagi ? { wafatSesudahDibagi } : {}), ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
-    ...(pilihanJanin ? { pilihanJanin } : {}),
+    ...(pilihanJanin ? { pilihanJanin } : {}), ...(objek.nama ? { nama: objek.nama } : {}),
   };
   return rapikanKeadaan(kasus);
 }

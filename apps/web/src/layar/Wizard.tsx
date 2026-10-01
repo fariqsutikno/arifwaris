@@ -18,6 +18,7 @@ import { LangkahHarta } from './wizard/LangkahHarta';
 import { KewajibanOpsional } from './wizard/KewajibanOpsional';
 import { BarBawah } from './wizard/BarBawah';
 import { KerangkaLangkah } from './wizard/KerangkaLangkah';
+import { NamaKasus } from './wizard/NamaKasus';
 import { LangkahPewaris } from './wizard/LangkahPewaris';
 import { PanggungPohon } from './wizard/PanggungPohon';
 import { Stepper } from './wizard/Stepper';
@@ -60,6 +61,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
         {kasus && langkah === 3 && babak === 0 && <>
           <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
+          <p className="caption-isian">{t('hitung.keluarga_beri_nama')}</p>
           <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
           <PertanyaanPenutup kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
           <PertanyaanHamil kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
@@ -69,6 +71,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           <CeritaKasus kasus={kasus} kirim={kirim} />
           <h2 id="tanya-kondisi" className="judul-bagian-kecil">{t('hitung.kondisi_tanya')}</h2>
           <LangkahKondisi kasus={kasus} ubah={ubah} labelId="tanya-kondisi" />
+          <NamaKasus kasus={kasus} ubah={ubah} />
         </>}
       </KerangkaLangkah>
       {sedangReset && kasus && (

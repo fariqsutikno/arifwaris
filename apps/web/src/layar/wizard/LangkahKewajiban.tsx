@@ -46,6 +46,7 @@ export function LangkahKewajiban({ kasus, ubah }: Props) {
           ))}
           <div className="garis-total"><b>{t('hitung.untuk_ahli_waris')}</b><b className="hitungan-total">{formatRupiah(jejak.bersih)}</b></div>
         </div>
+        <p className="caption-isian">{t('hitung.kewajiban_dibagi_ket')}</p>
       </section>
     </div>
   );

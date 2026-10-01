@@ -16,7 +16,7 @@ interface Props {
 
 export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUbahNama }: Props) {
   const pewaris = kasus?.graf.orang[kasus.graf.idPewaris];
-  const pilihan: Array<['L' | 'P', string]> = [['L', t('hitung.laki_laki')], ['P', t('hitung.perempuan')]];
+  const pilihan: Array<['L' | 'P', string, string]> = [['L', t('hitung.laki_laki'), t('hitung.pewaris_laki_ket')], ['P', t('hitung.perempuan'), t('hitung.pewaris_perempuan_ket')]];
   const perluKonfirmasi = !!kasus && !bolehUbahJenisKelamin(kasus.graf, kasus.graf.idPewaris);
   const [tertunda, setTertunda] = useState<'L' | 'P' | null>(null);
   const saatKlik = (jenisKelamin: 'L' | 'P') => {
@@ -27,11 +27,12 @@ export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUb
   return (
     <>
       <div className="kartu-pilihan-deret" role="radiogroup" aria-labelledby="pertanyaan-utama">
-        {pilihan.map(([jenisKelamin, label]) => (
+        {pilihan.map(([jenisKelamin, label, keterangan]) => (
           <button key={jenisKelamin} type="button" role="radio" aria-checked={pewaris?.jenisKelamin === jenisKelamin}
             className={`kartu-pilihan pilih-gender-${jenisKelamin}`} onClick={() => saatKlik(jenisKelamin)}>
             <IkonGender jenisKelamin={jenisKelamin} />
             <span>{label}</span>
+            <small>{keterangan}</small>
           </button>
         ))}
       </div>

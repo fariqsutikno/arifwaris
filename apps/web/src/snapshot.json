@@ -20041,6 +20041,62 @@
    "id": "Misal {contoh}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.nama_kasus_tanya",
+   "halaman": "hitung",
+   "id": "Mau dinamai apa kasus ini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.nama_kasus_ket",
+   "halaman": "hitung",
+   "id": "Supaya gampang dicari lagi di Kasusmu. Boleh dikosongkan, nanti dinamai otomatis.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.nama_kasus_contoh",
+   "halaman": "hitung",
+   "id": "Contoh: Waris Bapak Ahmad",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kewajiban_pengantar",
+   "halaman": "hitung",
+   "id": "Sebelum dibagi ke ahli waris, harta almarhum dipakai dulu untuk menyelesaikan urusannya: biaya pengurusan jenazah, lalu hutang, lalu wasiat. Yang dibagikan hanya sisanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kewajiban_dibagi_ket",
+   "halaman": "hitung",
+   "id": "Potongan di atas tidak hilang. Itu dipakai melunasi kewajiban almarhum lebih dulu, jadi yang dibagi ke ahli waris adalah sisanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keluarga_beri_nama",
+   "halaman": "hitung",
+   "id": "Tips: beri nama tiap anggota keluarga lewat tombol Nama di barisnya, supaya gampang dikenali di hasil dan penjelasan. Boleh dikosongkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pewaris_laki_ket",
+   "halaman": "hitung",
+   "id": "Pasangan yang ditanya nanti: istri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pewaris_perempuan_ket",
+   "halaman": "hitung",
+   "id": "Pasangan yang ditanya nanti: suami",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

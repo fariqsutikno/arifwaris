@@ -259,7 +259,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
         <PohonLayarPenuh pohon={pohon} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
           saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setEksporTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
       )}
-      {namaTerbuka && <DialogNama judulAwal={ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
+      {namaTerbuka && <DialogNama judulAwal={kasus.nama ?? ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
         saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}

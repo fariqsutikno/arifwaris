@@ -24,7 +24,7 @@ export function simpanKasus(id: string, kasus: Kasus, judul?: string): void {
   const lama = semuaTersimpan().find(baris => baris.id === id);
   tulis({
     id, kasus: JSON.parse(keJson(kasus)), disimpanPada: waktuMaju(lama?.disimpanPada),
-    judul: judul !== undefined ? bersihkanJudul(judul, kasus) : lama?.judul ?? ringkasKasus(kasus).judul,
+    judul: bersihkanJudul(judul ?? lama?.judul ?? kasus.nama ?? '', kasus),
   });
 }
 

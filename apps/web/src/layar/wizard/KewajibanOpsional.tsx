@@ -27,6 +27,7 @@ export function KewajibanOpsional({ kasus, ubah }: Props) {
         <button type="button" role="radio" aria-checked={!ada} className="kartu-pilihan kecil" onClick={pilihTidakAda}><span>{t('umum.tidak_ada')}</span></button>
         <button type="button" role="radio" aria-checked={ada} className="kartu-pilihan kecil" onClick={() => setAda(true)}><span>{t('umum.ada')}</span></button>
       </div>
+      {ada && <p className="pengantar-kewajiban">{t('hitung.kewajiban_pengantar')}</p>}
       {ada && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
       {tanyaHapus && (
         <DialogKonfirmasi judul={t('hitung.hapus_kewajiban_judul')} labelLanjut={t('hitung.kosongkan')} saatBatal={() => setTanyaHapus(false)} saatLanjut={hapus}>

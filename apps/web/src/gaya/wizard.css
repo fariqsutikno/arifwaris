@@ -98,3 +98,20 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
   .pohon.aliran .node-orang{animation:bagian-tiba .5s calc(.9s + var(--urut,0) * .22s) cubic-bezier(.2,.7,.2,1) both}
 }
 .kaki-pohon .tautan-hero{min-height:32px;font-size:13px;margin-inline-start:auto}
+
+/* stepper: langkah terkunci tetap terbaca (kontras), langkah aktif lebih tegas */
+.hero-wizard .stepper-item:disabled{opacity:.72}
+.hero-wizard .stepper-item[aria-current=step]{font-weight:800}
+
+/* ringkasan: penanda terisi (centang) / belum (cincin putus-putus) di tiap baris, garis tipis antar baris */
+.kerangka-samping .ringkasan-samping dl{gap:0}
+.kerangka-samping .baris-ringkas{position:relative;padding:10px 0 10px 26px;border-top:1px solid rgba(255,255,255,.12)}
+.kerangka-samping .baris-ringkas:first-child{border-top:0}
+.kerangka-samping .baris-ringkas::before{content:"";position:absolute;inset-inline-start:0;top:12px;width:16px;height:16px;border-radius:50%;border:1.5px dashed rgba(255,255,255,.45)}
+.kerangka-samping .baris-ringkas.terisi::before{border:0;background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='%230a2326' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/16px no-repeat}
+.kerangka-samping .baris-ringkas:not(.terisi) dd{font-style:italic;color:rgba(255,255,255,.6)}
+
+/* langkah Harta: pengantar kewajiban */
+.pengantar-kewajiban{margin:0;max-width:60ch;padding:10px 14px;border-radius:var(--radius-md);background:color-mix(in srgb,var(--primary) 8%,transparent);font-size:14px;line-height:1.5}
+.nama-kasus{margin-top:24px;max-width:420px}
+.kartu-pilihan-deret .kartu-pilihan small{margin-top:auto}
