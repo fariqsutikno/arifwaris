@@ -53,7 +53,7 @@ export function SapaHP({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?: (()
   );
 }
 
-function KartuStreak({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?: (() => void) | undefined }) {
+export function KartuStreak({ sesi, saatMasuk }: { sesi: Sesi | null; saatMasuk?: (() => void) | undefined }) {
   const ringkasan = useRingkasanSaya();
   if (ringkasan) {
     // Hari-hari beruntun berakhir hari ini bila sudah aktif, selain itu kemarin (hari ini masih bisa menyelamatkannya).

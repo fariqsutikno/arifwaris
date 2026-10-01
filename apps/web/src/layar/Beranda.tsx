@@ -13,7 +13,7 @@ import { Ikon } from '../ui/Ikon';
 import { pisahKataAkhir, sorotUbin, useCahayaIkutKursor } from '../ui/sorotan';
 import type { Sesi } from '@waris/data';
 import { ContohHidup } from './beranda/ContohHidup';
-import { SapaHP } from './beranda/SapaHP';
+import { KartuStreak, SapaHP } from './beranda/SapaHP';
 import { angka, merekDisamarkan, panah, t } from '../terjemah';
 
 const JUMLAH_TANYA = 3;
@@ -65,6 +65,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, sesi = null, sa
             <a className="pil-hero pil-terang" href={TAUTAN_KALKULATOR} onClick={saatKeHitung}><Ikon nama="hitung" ukuran={18} />{t('beranda.coba_di_ariflab')}</a>
             <a className="tautan-lanjut" href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')}<span className="panah-kecil" aria-hidden="true">{panah()}</span></a>
           </div>
+          <KartuStreak sesi={sesi} />
         </div>
         <SapaHP sesi={sesi} saatMasuk={saatMasuk} />
         <h2 className="judul-contoh-hp">{t('beranda.contoh_judul')}</h2>
