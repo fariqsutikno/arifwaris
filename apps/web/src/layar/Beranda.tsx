@@ -10,6 +10,7 @@ import { bacaPelajaranSelesai, bacaProgresLatihan } from '../progres';
 import { bacaRiwayat, ringkasKasus, type EntriRiwayat } from '../riwayat';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanGlosarium, tautanLatihan, tautanRujukan } from '../rute';
 import { Ikon } from '../ui/Ikon';
+import { pisahKataAkhir, sorotUbin, useCahayaIkutKursor } from '../ui/sorotan';
 import { ContohHidup } from './beranda/ContohHidup';
 import { angka, merekDisamarkan, panah, t } from '../terjemah';
 
@@ -125,45 +126,6 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
   );
 }
 
-/** Titik sorot di ubin yang sedang disentuh kursor (CSS: .ubin::before). */
-function sorotUbin(kejadian: React.PointerEvent<HTMLElement>) {
-  const ubin = (kejadian.target as HTMLElement).closest<HTMLElement>('.ubin');
-  if (!ubin) return;
-  const kotak = ubin.getBoundingClientRect();
-  ubin.style.setProperty('--px', `${kejadian.clientX - kotak.left}px`);
-  ubin.style.setProperty('--py', `${kejadian.clientY - kotak.top}px`);
-}
-
-/** Cahaya hangat hero mengikuti kursor dengan gerak melambat (easing); tanpa gerak bila pengguna mengurangi animasi. */
-function useCahayaIkutKursor(hero: React.RefObject<HTMLElement>) {
-  useEffect(() => {
-    const elemen = hero.current;
-    if (!elemen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const target = { x: 0, y: 0 };
-    const kini = { x: 0, y: 0 };
-    let bingkai = 0;
-    const gerak = () => {
-      kini.x += (target.x - kini.x) * 0.08;
-      kini.y += (target.y - kini.y) * 0.08;
-      elemen.style.setProperty('--mx', `${kini.x}px`);
-      elemen.style.setProperty('--my', `${kini.y}px`);
-      bingkai = Math.abs(target.x - kini.x) + Math.abs(target.y - kini.y) > 0.5 ? requestAnimationFrame(gerak) : 0;
-    };
-    const saatGerak = (kejadian: PointerEvent) => {
-      const kotak = elemen.getBoundingClientRect();
-      target.x = kejadian.clientX - kotak.left;
-      target.y = kejadian.clientY - kotak.top;
-      if (!bingkai) bingkai = requestAnimationFrame(gerak);
-    };
-    // Posisi awal = titik bawaan CSS (kanan tengah) supaya tidak melompat saat kursor pertama datang.
-    const awal = elemen.getBoundingClientRect();
-    target.x = kini.x = awal.width * 0.72;
-    target.y = kini.y = awal.height * 0.58;
-    elemen.addEventListener('pointermove', saatGerak);
-    return () => { elemen.removeEventListener('pointermove', saatGerak); cancelAnimationFrame(bingkai); };
-  }, [hero]);
-}
-
 /** Cincin progres belajar; angkanya juga tertulis di judul ubin, jadi cincin ini hiasan data (aria-hidden). */
 function Cincin({ selesai, total }: { selesai: number; total: number }) {
   const jari = 40;
@@ -176,12 +138,6 @@ function Cincin({ selesai, total }: { selesai: number; total: number }) {
       <text x="50" y="50" className="persen-cincin" textAnchor="middle" dominantBaseline="central">{angka(String(Math.round((selesai / Math.max(1, total)) * 100)))}%</text>
     </svg>
   );
-}
-
-/** Kata terakhir judul diberi tekanan (garis tergambar); kalimat satu kata tidak dipisah. */
-function pisahKataAkhir(teks: string): [string, string] {
-  const titik = teks.lastIndexOf(' ');
-  return titik < 0 ? ['', teks] : [teks.slice(0, titik), teks.slice(titik + 1)];
 }
 
 function Nama({ nama, situs }: { nama: string; situs?: string }) {

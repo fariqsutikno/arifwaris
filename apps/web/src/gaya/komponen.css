@@ -525,7 +525,6 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 
 /* Pusat belajar & materi */
 .tombol-lanjut{align-self:flex-start;text-decoration:none}
-.modul-menyusul{opacity:.6}
 .kartu-modul h2{margin:4px 0}
 .daftar-pelajaran{margin:12px 0 0;padding-inline-start:22px;display:grid;gap:6px;font-weight:600}
 .tanda-selesai{color:var(--primary);font-weight:800}
@@ -616,10 +615,6 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .pusat-belajar{gap:28px}
 .hero-belajar{display:flex;justify-content:space-between;align-items:center;gap:24px;padding:24px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-lg);background:var(--primary-soft);box-shadow:var(--shadow-pop)}
 .hero-belajar h1{margin:0}
-.kartu-lanjut{position:relative;display:flex;flex-direction:column;gap:4px;max-width:460px;margin:8px 0 0;padding:14px 48px 14px 16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;box-shadow:var(--shadow-pop-sm)}
-.kartu-lanjut b{font:700 18px/1.3 var(--font-display)}
-.kartu-lanjut .panah{position:absolute;inset-inline-end:16px;top:50%;transform:translateY(-50%);font:800 22px var(--font-display)}
-.kartu-lanjut:hover{transform:translate(-2px,-2px);box-shadow:var(--shadow-pop)}
 .cincin-progres{position:relative;margin:0;flex:none;display:grid;place-items:center}
 .cincin-progres svg{display:block}
 .cincin-latar{fill:none;stroke:var(--surface-raised);stroke-width:12}
@@ -627,25 +622,17 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .cincin-progres figcaption{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .cincin-progres figcaption b{font:800 28px/1 var(--font-display)}
 .cincin-progres figcaption span{font-size:11px;font-weight:700;color:var(--ink-muted);max-width:80px}
-.deret-angka{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .kotak-angka{display:flex;flex-direction:column;gap:6px;padding:16px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none}
 .kotak-angka:hover{box-shadow:var(--shadow-pop-sm)}
 .angka-besar{font:800 32px/1 var(--font-display)}
 .angka-besar small{font-size:16px;color:var(--ink-muted)}
-.nomor-modul{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--sun);color:var(--on-fill);border:var(--border-w) solid var(--outline);font:800 14px var(--font-display)}
-.modul-menyusul .nomor-modul{background:var(--surface-sunken);color:var(--ink-muted)}
 .ikon-aktivitas{flex:none;color:var(--primary)}
 a.isi-soal{color:var(--ink);text-decoration:none}
 a.isi-soal:hover b{text-decoration:underline}
-.grid-pintu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.pintu-belajar{display:flex;align-items:center;gap:10px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none;font-weight:800;min-width:0;flex-wrap:wrap;overflow-wrap:break-word}
 .ikon{flex:none;display:block}
-.pintu-belajar:hover{background:var(--sun);color:var(--on-fill)}
-.pintu-menyusul{opacity:.6;cursor:not-allowed}.pintu-menyusul:hover{background:var(--surface-raised);color:var(--ink)}.pintu-menyusul small{margin-inline-start:auto;font-weight:400}
 @media (max-width:760px){
   .hero-belajar{flex-direction:column-reverse;align-items:stretch;padding:18px}
   .cincin-progres{align-self:center}
-  .deret-angka{gap:8px}.kotak-angka{padding:12px 10px}.angka-besar{font-size:24px}.kotak-angka .keterangan{font-size:12px;line-height:1.3}
 }
 .kepala-sidebar{margin:0;padding:14px 16px;border-bottom:1.5px solid var(--divider)}
 .isi-sidebar-rujukan{display:flex;justify-content:space-between;gap:8px;flex:1}
@@ -956,13 +943,6 @@ a.aw-btn{text-decoration:none;color:inherit}
 /* Belajar: kepala tiap kelompok dan jalur modul sebagai daftar baris. */
 .kepala-bagian h2{margin:0}
 .kepala-bagian p{margin:2px 0 0}
-.daftar-modul{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
-.baris-modul{display:grid;grid-template-columns:32px minmax(0,1fr) 72px;align-items:center;gap:12px;padding:10px 14px;border:var(--border-w) solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);color:var(--ink);text-decoration:none}
-a.baris-modul:hover{box-shadow:var(--shadow-pop-sm)}
-a.baris-modul:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
-.isi-modul{display:flex;flex-direction:column;min-width:0}
-.isi-modul b{font:700 15.5px/1.3 var(--font-display)}
-.kotak-acak b{font:700 17px/1.3 var(--font-display)}
 
 /* Glosarium: contoh dan pelajaran yang memakai istilah. */
 .contoh-istilah{padding:8px 12px;border-radius:var(--radius-sm);background:var(--surface-sunken)}

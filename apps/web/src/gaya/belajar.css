@@ -1,0 +1,75 @@
+/* Beranda Belajar gaya Logivo: memakai kerangka Beranda (hero gelap, kisi ubin, tautan cari tahu) dari beranda.css.
+   Di sini hanya yang khas Belajar: panel lanjutkan di hero, ubin modul berwarna, ubin latihan. */
+
+.hero-pusat{grid-template-columns:minmax(0,1fr) minmax(0,.85fr)}
+.panel-lanjut{display:flex;align-items:center;gap:22px;padding:22px;border-radius:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);animation:naik .8s .18s cubic-bezier(.2,.7,.2,1) both}
+.hero-pusat .cincin-progres svg{width:132px;height:132px}
+.hero-pusat .cincin-latar{stroke:rgba(255,255,255,.2)}
+.hero-pusat .cincin-isi{stroke:#fff;stroke-dasharray:var(--panjang);stroke-dashoffset:var(--sisa);animation:isi-cincin 1.2s .5s cubic-bezier(.3,.8,.2,1) both}
+.hero-pusat .cincin-progres figcaption b{color:#fff;font-size:26px}
+.hero-pusat .cincin-progres figcaption span{color:rgba(255,255,255,.8)}
+.kartu-lanjut-hero{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;gap:6px;margin:0;padding:18px 72px 18px 20px;border-radius:22px;text-decoration:none;color:#0e0f10}
+.kartu-lanjut-hero b{font:600 20px/1.25 var(--font-display);letter-spacing:-.01em}
+.kartu-lanjut-hero .label-langkah{color:#525c57}
+.kartu-lanjut-hero .panah-bulat{top:50%;margin-top:-22px;inset-inline-end:16px}
+a.kartu-lanjut-hero:hover .panah-bulat{transform:rotate(-45deg) scale(1.08);background:var(--aksen)}
+a.kartu-lanjut-hero:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+
+.bagian-belajar{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;min-width:0}
+.bagian-belajar>.judul-bagian{margin-bottom:0}
+.bagian-belajar>.keterangan{margin:-6px 4px 0}
+.catatan-menyusul{margin:2px 4px 0}
+
+/* jalur modul: kisi 6 kolom, tiga ubin per baris; warna berganti per ubin */
+.jalur-modul{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px;margin:0;padding:0}
+.jalur-modul>li{display:flex}
+.ubin-modul{flex:1;min-height:190px;border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b))}
+.jalur-modul>li:nth-child(5n+1) .ubin-modul{--a:#d3ebaa;--b:#b7de80}
+.jalur-modul>li:nth-child(5n+2) .ubin-modul{--a:#fde6d8;--b:#f8c7a6}
+.jalur-modul>li:nth-child(5n+3) .ubin-modul{--a:#d6e2fb;--b:#b4c8f1}
+.jalur-modul>li:nth-child(5n+4) .ubin-modul{--a:#fbdbe4;--b:#f1b4c6}
+.jalur-modul>li:nth-child(5n+5) .ubin-modul{--a:#fde7c9;--b:#f6c68a}
+.nomor-ubin{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.75);font:700 18px var(--font-display)}
+.ubin-modul .judul-ubin{max-width:calc(100% - 56px);margin-top:auto}
+.ubin-modul .keterangan,.ubin-soal .keterangan,.ubin-kuis .keterangan{color:color-mix(in srgb,var(--ink) 74%,transparent)}
+.ubin .bar-progres{height:10px;background:rgba(255,255,255,.75)}
+.ubin .bar-progres>span{background:var(--aksen);transform-origin:left;animation:isi-bar 1s .8s cubic-bezier(.3,.8,.2,1) both}
+
+/* latihan */
+.deret-ubin{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.deret-ubin .ubin{min-height:210px;justify-content:flex-end}
+.ubin-soal{border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,#fde6d8,#f8c7a6)}
+.ubin-kuis{border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,#d6e2fb,#b4c8f1)}
+.ubin-acak{color:#fff;border-color:transparent;background:radial-gradient(420px 260px at 85% 110%,rgba(255,150,40,.5),transparent 70%),radial-gradient(360px 220px at 0% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)}
+.ubin-acak::before{background:radial-gradient(300px circle at var(--px,50%) var(--py,0%),rgba(255,170,80,.4),transparent 70%)}
+.ubin-acak .keterangan{color:rgba(255,255,255,.8)}
+.ubin-acak .panah-bulat{background:#fff;color:#0e0f10}
+.ubin-acak>svg.ikon{opacity:.08}
+.ubin .angka-besar{font:600 clamp(40px,4vw,54px)/1 var(--font-display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.ubin .angka-besar small{font-size:.45em;color:inherit;opacity:.6;letter-spacing:0}
+
+.tautan-cari.menyusul{opacity:.55;text-decoration:none;cursor:not-allowed}
+.halaman-belajar .zona-reset,.halaman-belajar .tombol-hapus-semua{margin-top:4px}
+.halaman-belajar .zona-reset{grid-column:1/-1}
+
+@media (max-width:980px){
+  .hero-pusat{grid-template-columns:1fr}
+  .jalur-modul>li{grid-column:span 3!important}
+  .jalur-modul>li:last-child:nth-child(odd){grid-column:1/-1!important}
+  .deret-ubin{grid-template-columns:1fr 1fr}
+  .deret-ubin .ubin-acak{grid-column:1/-1}
+}
+@media (max-width:560px){
+  .panel-lanjut{flex-direction:column;align-items:stretch;padding:18px}
+  .hero-pusat .cincin-progres{align-self:center}
+  .hero-pusat .cincin-progres svg{width:112px;height:112px}
+  .jalur-modul{grid-template-columns:1fr}
+  .jalur-modul>li,.jalur-modul>li:last-child:nth-child(odd){grid-column:1/-1!important}
+  .ubin-modul{min-height:150px}
+  .deret-ubin{grid-template-columns:1fr}
+  .deret-ubin .ubin{min-height:170px}
+}
+@media (prefers-reduced-motion:reduce){
+  .panel-lanjut,.hero-pusat .cincin-isi,.ubin .bar-progres>span{animation:none}
+  a.kartu-lanjut-hero:hover .panah-bulat{transform:none}
+}
