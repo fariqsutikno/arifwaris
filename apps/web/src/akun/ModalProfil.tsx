@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from 'react';
 import type { Profil, Sesi } from '@waris/data';
+import { pushDidukung } from '../notifikasi/perangkat';
 import { t } from '../terjemah';
 import type { RepoAkun } from './sinkron';
 
@@ -65,14 +66,14 @@ export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
                   onChange={event => ubah({ tampilkanAvatar: event.target.checked })} />
                 <span>{t('akun.tampilkan_foto_google')}</span>
               </label>
-              <label className="isian-centang">
+              {pushDidukung() && <label className="isian-centang">
                 <input type="checkbox" checked={profil.pushStreak ?? true} onChange={event => ubah({ pushStreak: event.target.checked })} />
                 <span>{t('akun.push_streak')}</span>
-              </label>
-              <label className="isian-centang">
+              </label>}
+              {pushDidukung() && <label className="isian-centang">
                 <input type="checkbox" checked={profil.pushPeringkat ?? true} onChange={event => ubah({ pushPeringkat: event.target.checked })} />
                 <span>{t('akun.push_peringkat')}</span>
-              </label>
+              </label>}
               <label className="isian isian-kecil">
                 <span>{t('akun.zona_waktu')}</span>
                 <select value={profil.zonaWaktu} onChange={event => ubah({ zonaWaktu: event.target.value })}>

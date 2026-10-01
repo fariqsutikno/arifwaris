@@ -20,7 +20,7 @@ import { bacaBahasa } from '../preferensi';
 import { t } from '../terjemah';
 import { catatNotifikasi, PERISTIWA_NOTIFIKASI_BARU, type Notifikasi } from './gudang';
 import { kabarKeNotifikasi } from './dariPush';
-import { sinkronkanLangganan, tampilkanDiPerangkat } from './perangkat';
+import { pushDidukung, sinkronkanLangganan, tampilkanDiPerangkat } from './perangkat';
 
 const KUNCI_STREAK_TERAKHIR = 'arif-waris:streak-terakhir';
 const KUNCI_PERINGKAT_PEKAN = 'arif-waris:peringkat-pekan';
@@ -151,7 +151,8 @@ export function SumberNotifikasi({ sesi, repo }: { sesi: Sesi | null; repo: Repo
 
   // Push server: daftarkan perangkat ini, lalu masukkan kabar yang terkirim saat aplikasi tertutup ke kotak masuk (id sama dengan kabar lokal).
   useEffect(() => {
-    if (!sesi || !repo) return;
+    // Tanpa VITE_VAPID_PUBLIK push server tidak dipakai: tabel kirim_push mungkin belum ada di server, jadi tidak ditanyakan.
+    if (!sesi || !repo || !pushDidukung()) return;
     let masihDipakai = true;
     void sinkronkanLangganan(repo, bacaBahasa() === 'ar' ? 'ar' : 'id');
     const sejak = bacaMentah(KUNCI_PUSH_TERAKHIR) ?? new Date(Date.now() - HARI_KABAR_PUSH_AWAL * MS_HARI).toISOString();
