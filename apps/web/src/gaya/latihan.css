@@ -212,12 +212,15 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 }
 
 /* halaman sesi kuis: pita hero gelap (gaya Latihan) di belakang bar atas, judul/nomor soal, dan bagian atas kartu */
-.halaman-sesi{position:relative;isolation:isolate;padding:104px var(--sisi) 56px}
-.latar-sesi{position:absolute;inset:0 0 auto 0;z-index:-1;display:block;height:380px;padding:0!important}
+.halaman-sesi{position:relative;isolation:isolate;min-height:100vh;padding:104px var(--sisi) 64px}
+.latar-sesi{position:fixed;inset:0;z-index:-1;display:block;padding:0!important}
+.halaman-sesi .nav-langkah,.halaman-sesi #judul-pembahasan{color:#fff}
+.halaman-sesi .keterangan{color:rgba(255,255,255,.8)}
+.halaman-sesi .ringkasan-kuis .keterangan,.halaman-sesi .awal-ujian .keterangan{color:var(--ink-muted)}
 .bar-ujian .judul-sesi{color:#fff}
 .bar-ujian .keluar-ujian{background:rgba(255,255,255,.14);color:#fff}
 .bar-ujian .keluar-ujian:hover{background:rgba(255,255,255,.26)}
-.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0 26px;color:#fff}
+.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0 10px;color:#fff}
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
 .judul-hero-sesi p{margin:0;color:rgba(255,255,255,.85);font:500 16px var(--font-sans)}
