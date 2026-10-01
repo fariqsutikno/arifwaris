@@ -26,3 +26,11 @@ test('entri tanpa revisi dari jalan yang gagal dipakai ulang', async () => {
   expect(await repo.konten.daftarEntri()).toHaveLength(1);
   expect(await repo.konten.bacaTerbit()).toHaveLength(1);
 });
+
+test('kunci diksi tanpa teks terbit dari jalan yang terputus dipakai ulang', async () => {
+  const repo = buatMemori({ refs: RUJUKAN.map(r => r.kode), sesi: ADMIN, peran: { admin: 'admin' } });
+  const [pertama] = data.diksi;
+  await repo.diksi.buatKunci(pertama!.kunci, pertama!.halaman);
+  await pulihkanDariSnapshot(repo, { konten: [], diksi: [pertama!] });
+  expect(await repo.diksi.bacaTerbit()).toHaveLength(1);
+});

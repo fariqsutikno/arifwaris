@@ -12,7 +12,10 @@ interface Repo { konten: RepositoriKonten; editorial: RepositoriEditorial; diksi
 
 export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: BarisSnapshot[]; diksi: DiksiSnapshot[] }) {
   const sudahKonten = new Set((await repo.konten.bacaTerbit()).map(b => `${b.jenis}/${b.slug}`));
-  const sudahDiksi = new Set((await repo.diksi.bacaTerbit()).map(d => d.kunci));
+  const semuaKunci = await repo.diksi.daftarKunci();
+  const sudahDiksi = new Set(semuaKunci.filter(k => k.terbit).map(k => k.kunci));
+  // Kunci yang sudah dibuat tapi belum terbit (jalan sebelumnya terputus sesudah buatKunci) dipakai ulang, bukan dibuat lagi.
+  const kunciAda = new Set(semuaKunci.map(k => k.kunci));
   // Entri yang sudah dibuat tapi belum terbit (jalan sebelumnya gagal di buatDraf) dipakai ulang, bukan dibuat lagi.
   const entriAda = new Map((await repo.konten.daftarEntri()).map(e => [`${e.jenis}/${e.slug}`, e.entriId]));
   let dibuat = 0;
@@ -27,7 +30,7 @@ export async function pulihkanDariSnapshot(repo: Repo, snapshot: { konten: Baris
   }
   for (const d of snapshot.diksi) {
     if (sudahDiksi.has(d.kunci)) continue;
-    await repo.diksi.buatKunci(d.kunci, d.halaman);
+    if (!kunciAda.has(d.kunci)) await repo.diksi.buatKunci(d.kunci, d.halaman);
     const revisi = await repo.diksi.buatDraf(d.kunci, d.id, d.ar, null);
     await repo.diksi.ajukan(revisi);
     await repo.diksi.setujui(revisi);
