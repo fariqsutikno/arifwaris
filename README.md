@@ -30,7 +30,11 @@ pnpm test
 - **Kasus rumit**: kematian berlapis (munasakhat), janin (haml), mafqud, khuntsa, wafat bersamaan (gharqa), dzawil arham, takharuj, jadd wal ikhwah.
 - **Multi-madzhab**: [SYF] default; [HNB], [HNF], [MLK] sebagai overlay, tiap titik khilaf tercatat di `docs/kb/18_matriks_khilaf.md`.
 - **Pembahasan per kasus**: tiap keputusan (hajb, fardh, ashabah, 'aul/radd, tashih) dijelaskan beserta dalil/rujukannya; tampilan Indonesia atau Indonesia + Arab.
-- **Belajar**: materi bertahap, glosarium, latihan, dan kuis (kunci jawaban dihitung engine). Akun Google opsional untuk riwayat, progres, dan streak.
+- **Lab Hitung**: susun pohon keluarga bebas, simpan kasus sebagai berkas/riwayat, dan buka lagi kapan saja.
+- **Belajar**: materi bertahap, glosarium, latihan, rujukan kitab/ayat/hadits, dan kuis (kunci jawaban dihitung engine). Akun Google opsional untuk riwayat, progres, streak, dan peringkat.
+- **Bagikan kasus**: tautan yang bisa dibuka orang lain (hanya lihat), dengan nama tautan sendiri dan pilihan siapa yang boleh membuka.
+- **Pengingat (PWA)**: bisa dipasang di perangkat, notifikasi push opsional (isi push tidak memuat data kasus, nama keluarga, atau nominal).
+- **Gerak dan suara**: satu sakelar di header untuk seluruh aplikasi.
 - **Eksak**: semua hitungan pakai pecahan `bigint`, tanpa floating point. Selisih pembulatan uang dilaporkan terpisah.
 
 ## Struktur repo
@@ -46,7 +50,8 @@ apps/admin         Portal admin: sunting, review, dan terbitkan konten (Vite + R
 docs/kb            Knowledge base fikih bab 00–18 (sumber kebenaran)
 docs/design        Dokumen desain (engine-contract.md, mockup)
 docs/superpowers   Spec dan rencana implementasi per fitur
-supabase           Migrasi, seed, dan edge function (ai-bantu)
+supabase           Migrasi, seed, dan edge function (ai-bantu, kirim-push)
+scripts            Ekspor/pulihkan konten database <-> snapshot web
 docs/lampiran-konten  Ekspor Markdown konten terbit (isi aslinya di database)
 ```
 
@@ -60,7 +65,36 @@ Tiap tahap adalah fungsi murni yang diuji sendiri. Detail: [docs/design/engine-c
 
 ## Menjalankan lebih lengkap
 
-Perintah dasar ada di "Mencoba cepat" di atas. Env web (opsional, untuk akun dan sinkron konten) ada di `apps/web/.env.example`.
+Perintah dasar ada di "Mencoba cepat" di atas. Env web (opsional, untuk akun dan sinkron konten) ada di
+`apps/web/.env.example`; salin ke `apps/web/.env.local` (diabaikan git). Isi hanya kunci **publik** (`VITE_*` ikut
+masuk ke bundel browser): jangan pernah menaruh service-role key di sana.
+
+```bash
+pnpm typecheck
+```
+
+```bash
+pnpm --filter @waris/web build
+```
+
+### Database Supabase (lokal)
+
+Butuh Docker. Migrasi ada di `supabase/migrations`, data awal di `supabase/seed.sql`.
+
+```bash
+pnpm db:mulai
+```
+
+```bash
+pnpm db:reset
+```
+
+```bash
+pnpm db:tes
+```
+
+Edge function `ai-bantu` (bantuan AI untuk portal admin) dan `kirim-push` (notifikasi, dijadwalkan lewat
+`supabase/jadwal-push.sql`) memakai secret Supabase; daftar secret ada di komentar kepala masing-masing `index.ts`.
 
 ### Portal admin
 
