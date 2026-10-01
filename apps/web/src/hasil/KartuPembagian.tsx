@@ -10,6 +10,7 @@ import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
 import { Confetti } from '../ui/Confetti';
 import { KartuTebak, UmpanBalikBenar } from './KartuTebak';
+import { PitaBagian } from './PitaBagian';
 import { useAtributOrang } from './sorot';
 import { Ikon } from '../ui/Ikon';
 import { t } from '../terjemah';
@@ -84,6 +85,7 @@ export function KartuPembagian(props: Props) {
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
           {aturTerbuka && <PanelAtur pengaturan={pengaturan} saatUbah={props.saatUbahPengaturan} />}
+          <PitaBagian ringkasan={ringkasan} saatPilihOrang={props.saatPilihOrang} />
           <p className="petunjuk-daftar">{t('hitung.ketuk_nama_untuk_alasan')}</p>
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => {

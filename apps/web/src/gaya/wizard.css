@@ -79,3 +79,11 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 
 /* pertanyaan pendamping di dalam langkah (kewajiban, kondisi khusus): setingkat judul bagian, bukan label kecil */
 .lembar-wizard h2.judul-bagian-kecil{margin:10px 0 0;color:var(--ink);font:600 20px/1.25 var(--font-display);letter-spacing:-.01em;text-transform:none}
+
+/* pita bagian di kartu Pembagian: seluruh harta sesuai skala, menunjuk ruas menyorot orangnya */
+.pita-hasil{display:flex;gap:3px;height:16px;margin:4px 0 14px}
+.pita-hasil .ruas{display:block;min-width:6px;height:100%;border-radius:var(--radius-pill);cursor:pointer;transform-origin:left;animation:isi-bar .9s .1s cubic-bezier(.3,.8,.2,1) both;transition:opacity .2s,transform .2s}
+.pita-hasil .ruas.sisa{cursor:default;background:repeating-linear-gradient(135deg,var(--outline) 0 4px,transparent 4px 8px);border:1px dashed var(--outline)}
+.pita-hasil:has(.terkait) .ruas:not(.terkait){opacity:.3}
+.pita-hasil .ruas.terkait{transform:scaleY(1.35)}
+@media (prefers-reduced-motion:reduce){.pita-hasil .ruas{animation:none;transition:none}}
