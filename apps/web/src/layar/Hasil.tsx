@@ -1,7 +1,7 @@
-// Layar hasil (gaya Logivo). Atas: hero gelap berisi judul + pratinjau seluruh pohon keluarga; mengetuknya membuka layar penuh
-// (zoom, geser, penjelasan per orang, bagikan). Bawah: kartu-kartu hasil dalam grid, tabel faraidh sebagai kartu.
-// HP: kartu selebar layar, urutan diatur CSS.
-// Bar aksi bawah: Ubah data · Reset skenario · Ekspor. Semua angka dari engine lewat ringkas().
+// Layar hasil (gaya Logivo, acuan docs/design/mockup-hasil-gaya-logivo.html). Atas: hero gelap berisi judul, aksi utama (Ekspor),
+// statistik, dan pratinjau seluruh pohon keluarga; mengetuk pohon membuka layar penuh (zoom, geser, penjelasan per orang, bagikan).
+// Bawah: grid kartu (Pembagian lebar, lalu kartu pendamping), tabel faraidh sebagai kartu. HP: kartu selebar layar, urutan = urutan DOM.
+// Kaki bingkai: catatan + tautan Ubah data · Reset skenario. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
 import { useEffect, useMemo, useReducer, useState } from 'react';
@@ -12,7 +12,7 @@ import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
 import { useBahasa, type Tujuan } from '../preferensi';
 import { HasilKasusKhusus } from '../hasil/HasilKasusKhusus';
-import { KartuHarta, KartuSelanjutnya, KartuTentang } from '../hasil/KartuLain';
+import { KartuHarta, KartuKerangka, KartuSelanjutnya, KartuTentang, KartuTidakDapat } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
@@ -27,7 +27,7 @@ import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
-import { formatRupiah } from '../format';
+import { formatRupiahRingkas } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Ikon } from '../ui/Ikon';
@@ -100,6 +100,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !(terkunci && adalahBelajar);
+  const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
 
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
@@ -135,24 +136,20 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
     <main className={adalahBelajar ? 'halaman-hasil mode-belajar' : 'halaman-hasil'}>
       <header className="hero-hasil">
         <div className="judul-hasil">
-          {adalahBelajar ? (
-            <div className="judul-soal">
-              <span className="lencana-soal">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</span>
-              <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
-              <p>{sedangMenebak
-                ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')
-                : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya')}</p>
-            </div>
-          ) : (
-            <div className="judul-soal">
-              <span className="lencana-soal lencana-hitung">{t('hitung.hitung_kasus')}</span>
-              <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya')}</h1>
-              <p>{t('hitung.angka_di_sini_hasil_hitung_kasusmu')}</p>
-            </div>
-          )}
+          <div className="judul-soal">
+            <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab_syafii')}</p>
+            {adalahBelajar
+              ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
+              : <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya')}</h1>}
+            {adalahBelajar && <p>{sedangMenebak ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan') : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya')}</p>}
+          </div>
+          <div className="aksi-hero">
+            {!sedangMenebak && <button type="button" className="pil-hero" onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>}
+            {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
+          </div>
           {!sedangMenebak && (
             <dl className="statistik-hero">
-              <div><dd>{sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih)}</dd><dt>{t('hitung.total_harta')}</dt></div>
+              <div><dd>{sembunyiNominal ? t('hitung.rp') : formatRupiahRingkas(ringkasan.tirkah.bersih)}</dd><dt>{t('hitung.total_harta')}</dt></div>
               <div><dd>{ringkasan.penerima.length}</dd><dt>{t('hitung.menerima_bagian')}</dt></div>
               <div><dd>{jumlahOrang}</dd><dt>{t('hitung.orang_di_pohon')}</dt></div>
             </dl>
@@ -168,50 +165,46 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
             <button type="button" className="alat-bulat" aria-label={t('hitung.layar_penuh')} onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /></button>
           </div>
           <PratinjauPohon saatBuka={() => setLayarPenuh({ zoom: 1 })}>{pohon}</PratinjauPohon>
-          <Legenda />
+          <div className="kaki-pohon"><Legenda /><span>{t('hitung.pratinjau_ketuk_untuk_memperbesar')}</span></div>
         </div>
       </header>
 
+      {/* Urutan kartu mengikuti mockup: pembagian → yang belum pasti → siapa yang tidak dapat → harta → cara menghitung → tindak lanjut → tabel. */}
       <div className="tata-hasil">
-        <section className="kanvas-hasil" aria-label={t('hitung.tabel_faraidh')}>
-          <section className="panel-kanvas panel-tabel" aria-label={t('hitung.tabel_faraidh')}>
-            <h2 className="judul-kartu-hasil">{t('hitung.tabel_faraidh')}</h2>
-            <div className="wadah-tabel">{tabel}</div>
-          </section>
-        </section>
-
-        <aside className="sidebar-hasil" aria-label={t('hitung.hasil_perhitungan')}>
-          <div className="catatan-hasil">
-            <b>{t('umum.catatan')}</b> {t('hitung.hasil_ini_menurut_madzhab_syafi_i')}
-            {' '}{t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.
-          </div>
-          <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
-          <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
-            sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
-            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
-            tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
-            saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
-            saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 4 }) : undefined} />
-          {/* Urutan mengikuti alur berpikir: harta → pembagian → jenis kasus → cara menghitung → tindak lanjut. */}
+        <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
+          sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
+          sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
+          tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
+          saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
+          saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 4 }) : undefined} />
+        {/* Siapa yang tidak dapat adalah bagian dari jawaban; kartu kerangka ikut disembunyikan supaya soal tidak ramai. */}
+        {!sedangMenebak && <>
+          <KartuKerangka judul={t('hitung.yang_belum_pasti')} keterangan={t('hitung.belum_pasti_keterangan')} />
+          <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />
+          <KartuKerangka judul={t('hitung.yang_sering_ditanyakan')} keterangan={t('hitung.sering_ditanyakan_keterangan')} />
+        </>}
+        <KartuHarta ringkasan={ringkasan} jumlahOrang={jumlahOrang} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
+        <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
+        {/* Kolom kanan menemani Langkah dan Tabel (dua baris), supaya tidak ada ruang kosong di bawah kartu yang terlipat. */}
+        <div className="kolom-sisi">
+          <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasus)} saatSimpan={() => { simpanKasus(idSesi, kasus); segarkan(); }} saatEkspor={() => setEksporTerbuka(true)} />
           {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
-          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
-          <KartuSelanjutnya />
-        </aside>
+        </div>
+        <section className="kartu-sisi kartu-tabel" aria-labelledby="judul-tabel-faraidh">
+          <h2 id="judul-tabel-faraidh">{t('hitung.tabel_faraidh')}</h2>
+          <div className="wadah-tabel">{tabel}</div>
+        </section>
       </div>
 
-      <div className="bar-bawah">
-        <div className="bar-bawah-isi bar-aksi-hasil">
-          {bolehUbah && <>
-            <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}><Ikon nama="pensil" /> {t('hitung.ubah_data_2')}</Tombol>
-            <Tombol varian="secondary" onClick={() => setKonfirmasiUlangi(true)}><Ikon nama="riwayat" /> <span>{t('umum.reset')}<span className="label-lebar">{t('hitung.skenario')}</span></span></Tombol>
-          </>}
-          <span className="pengisi" />
-          {sudahTersimpan(idSesi, kasus)
-            ? <span className="status-simpan"><Ikon nama="benar" ukuran={16} /> {t('hitung.tersimpan')}</span>
-            : <Tombol varian="secondary" onClick={() => { simpanKasus(idSesi, kasus); segarkan(); }}><Ikon nama="berkas" /> {t('umum.simpan')}</Tombol>}
-          <Tombol onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</Tombol>
-        </div>
-      </div>
+      <footer className="kaki-hasil">
+        <p>{t('hitung.hasil_ini_menurut_madzhab_syafi_i')} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
+        {bolehUbah && (
+          <div className="aksi-kaki">
+            <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>
+            <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('umum.reset')}{t('hitung.skenario')}</button>
+          </div>
+        )}
+      </footer>
       {konfirmasiUlangi && (
         <KonfirmasiKasusBaru kasus={kasus} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setKonfirmasiUlangi(false)}
           saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
@@ -267,17 +260,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   );
 }
 
+/** Tiga keadaan kotak di pohon kaca: wafat (garis putus), menerima (hijau), tidak menerima (redup). */
 function Legenda() {
   return (
     <div className="legenda" aria-label={t('hitung.keterangan_pohon')}>
-      <span><i className="kotak g-pasangan" />{t('hitung.pasangan_2')}</span>
-      <span><i className="kotak g-keturunan" />{t('hitung.keturunan_2')}</span>
-      <span><i className="kotak g-leluhur" />{t('hitung.orang_tua_leluhur')}</span>
-      <span><i className="kotak g-saudara" />{t('hitung.saudara_kerabat')}</span>
-      <span><i className="kotak almarhum" />{t('hitung.almarhum')}</span>
-      <span><i className="kotak terhalang" />{t('hitung.terhalang')}</span>
-      <span><i className="kotak putus" />{t('hitung.garis_putus_tidak_mewarisi')}</span>
-      <span><i className="garis-l" />{t('hitung.mendatar_menikah_turun_anak')}</span>
+      <span><i className="kotak almarhum" />{t('hitung.legenda_wafat')}</span>
+      <span><i className="kotak menerima" />{t('hitung.legenda_menerima')}</span>
+      <span><i className="kotak putus" />{t('hitung.legenda_tidak_menerima')}</span>
     </div>
   );
 }

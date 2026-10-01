@@ -41,7 +41,18 @@ describe('layar hasil', () => {
     render(<Uji awal={prototipe()} />);
     expect(screen.getByRole('heading', { name: 'Nah, ini pembagiannya' })).toBeTruthy();
     expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);   // ibu dan ayah
-    expect(within(pembagian()).getByText(/Terhalang oleh Anak laki-laki dan Ayah/)).toBeTruthy();
+    expect(within(screen.getByRole('region', { name: 'Tidak mendapat bagian' })).getByText(/Terhalang oleh Anak laki-laki dan Ayah/)).toBeTruthy();
+  });
+
+  it('susunan mengikuti mockup: kartu yang datanya belum ada tampil sebagai kerangka, aksi sekunder berupa tautan di kaki (tanpa bar menempel)', () => {
+    render(<Uji awal={prototipe()} />);
+    for (const judul of ['Yang belum pasti', 'Yang sering ditanyakan']) {
+      expect(within(screen.getByRole('region', { name: judul })).getByText('Segera hadir')).toBeTruthy();
+    }
+    expect(screen.getByRole('button', { name: /Per barang/ }).hasAttribute('disabled')).toBe(true);
+    expect(document.querySelector('.bar-bawah')).toBeNull();
+    expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Reset skenario' })).toBeTruthy();
+    expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // statistik hero diringkas; angka utuh di kartu
   });
 
   it('pembulatan: kartu muncul bila tidak pas, pilihan Rp 1.000 menghitung ulang lewat engine', () => {

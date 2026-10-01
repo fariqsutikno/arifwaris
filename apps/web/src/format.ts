@@ -4,12 +4,30 @@ import { fpb } from '@waris/math';
 import type { GrafKeluarga, IdOrang, StatusOrang, TabelMasalah } from '@waris/engine';
 import { jenisDari } from './checklist';
 import { LABEL_SEHARI } from './konten/ahliWaris';
-import { angka, angkaLatin } from './terjemah';
+import { angka, angkaLatin, t } from './terjemah';
 
 const ANGKA_INDONESIA = new Intl.NumberFormat('id-ID');
 const URUTAN_PENYEBUT = ['ashl', 'aul', 'radd', 'tashih'] as const;
 
 export const formatRupiah = (nilai: bigint): string => angka(`Rp ${ANGKA_INDONESIA.format(nilai)}`);
+
+// Kunci diksi ditulis literal (tes diksi menolak kunci dinamis), jadi tiap satuan membawa pembuat teksnya sendiri.
+const SATUAN_RINGKAS: Array<[bigint, (nilai: string) => string]> = [
+  [1_000_000_000_000n, nilai => t('hitung.rp_ringkas_triliun', { nilai })],
+  [1_000_000_000n, nilai => t('hitung.rp_ringkas_miliar', { nilai })],
+  [1_000_000n, nilai => t('hitung.rp_ringkas_juta', { nilai })],
+];
+
+/** Rupiah diringkas untuk tempat sempit ("Rp 10,37 M", dua desimal dipotong). Tampilan saja; angka utuhnya selalu ada di kartu Pembagian. */
+export function formatRupiahRingkas(nilai: bigint): string {
+  for (const [batas, teks] of SATUAN_RINGKAS) {
+    if (nilai < batas) continue;
+    const perSeratus = nilai * 100n / batas;
+    const desimal = String(perSeratus % 100n).padStart(2, '0').replace(/0+$/, '');
+    return angka(teks(`${ANGKA_INDONESIA.format(perSeratus / 100n)}${desimal ? `,${desimal}` : ''}`));
+  }
+  return formatRupiah(nilai);
+}
 
 /** Isian uang dari pengguna: digit dan titik ribuan saja. Kosong = 0. */
 export function bacaInputUang(teks: string): bigint | null {

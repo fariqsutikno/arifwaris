@@ -1,9 +1,9 @@
-// Kartu Pembagian (selalu terbuka): bar pecahan, daftar per orang, yang tidak dapat beserta alasannya,
+// Kartu Pembagian (selalu terbuka): daftar per orang (avatar, asal bagian, nominal, pecahan, persen),
 // pensil (ubah ahli waris), ikon mata (sembunyikan nominal), panel atur tampilan, dan kartu pembulatan yang muncul hanya bila ada angka tidak bulat.
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
-import { AvatarOrang } from './AvatarOrang';
 import { useState } from 'react';
+import { AvatarOrang } from './AvatarOrang';
 import { formatRupiah } from '../format';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
@@ -45,7 +45,17 @@ export function KartuPembagian(props: Props) {
   return (
     <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
-        <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
+        <div className="judul-kartu">
+          <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
+          {!sedangMenebak && <p className="sub-kartu">{t('hitung.harta_dan_sisa_pembulatan', { harta: uang(ringkasan.tirkah.bersih), sisa: uang(ringkasan.sisaPembulatan) })}</p>}
+        </div>
+        {/* Per barang belum ada datanya (harta masih satu angka); tabnya tampil sebagai kerangka. */}
+        {!sedangMenebak && (
+          <div className="tab-pil" role="group" aria-label={t('hitung.cara_tampil')}>
+            <button type="button" aria-pressed="true">{t('hitung.per_orang')}</button>
+            <button type="button" aria-pressed="false" disabled>{t('hitung.per_barang')} <small>{t('umum.segera_hadir')}</small></button>
+          </div>
+        )}
         <div className="alat-pembagian">
           {props.saatUbahAhliWaris && (
             <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('hitung.ubah_ahli_waris')} title={t('hitung.ubah_ahli_waris')}>
@@ -75,34 +85,21 @@ export function KartuPembagian(props: Props) {
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
           {aturTerbuka && <PanelAtur pengaturan={pengaturan} saatUbah={props.saatUbahPengaturan} />}
-          <div className="bar-bagian" role="img" aria-label={ringkasan.penerima.map(orang => `${orang.nama} ${pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)}`).join(', ')}>
-            {ringkasan.penerima.map(orang => {
-              const { className, ...pemicu } = atribut(orang.id);
-              return (
-                <span key={orang.id} {...pemicu} className={[`g-${orang.kelompok}`, className].filter(Boolean).join(' ')}
-                  style={{ flex: Number(orang.saham) }} onClick={() => props.saatPilihOrang(orang.id)}>
-                  {pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)}
-                </span>
-              );
-            })}
-            {ringkasan.daftarSisaKeluar.map(sisa => <span key={sisa.id} className="sisa-keluar" style={{ flex: Number(sisa.saham) }}>{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>)}
-          </div>
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => {
               const { className, ...pemicu } = atribut(orang.id);
               return (
                 <li key={orang.id}>
                   <button type="button" {...pemicu} className={['baris-bagian', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
-                    <AvatarOrang nama={orang.nama} kelompok={orang.kelompok} />
+                    <AvatarOrang nama={orang.nama} ukuran={42} />
                     <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small></span>
                     <span className="jumlah-bagian">
                       <span className="angka">{uang(orang.nominal)}</span>
                       <span className="sub-bagian">
                         {pengaturan.pecahan && <span className="frac">{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
-                        {pengaturan.persen && <span>{persenTeks(orang.saham, ringkasan.penyebut)}</span>}
+                        {pengaturan.persen && <span className="pil-persen">{persenTeks(orang.saham, ringkasan.penyebut)}</span>}
                       </span>
                     </span>
-                    {pengaturan.persen && <span className="bar-persen" aria-hidden="true"><i className={`g-${orang.kelompok}`} style={{ width: `${Number(orang.saham * 10000n / ringkasan.penyebut) / 100}%` }} /></span>}
                   </button>
                 </li>
               );
@@ -116,22 +113,13 @@ export function KartuPembagian(props: Props) {
                     <span className="angka">{uang(sisa.nominal)}</span>
                     <span className="sub-bagian">
                       {pengaturan.pecahan && <span className="frac">{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
-                      {pengaturan.persen && <span>{persenTeks(sisa.saham, ringkasan.penyebut)}</span>}
+                      {pengaturan.persen && <span className="pil-persen">{persenTeks(sisa.saham, ringkasan.penyebut)}</span>}
                     </span>
                   </span>
                 </div>
               </li>
             ))}
           </ul>
-          {ringkasan.terhalang.map(orang => {
-            const { className, ...pemicu } = atribut(orang.id);
-            return (
-              <button key={orang.id} type="button" {...pemicu} className={['tidak-dapat', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
-                <span className="titik putus" aria-hidden="true" />
-                <span><b>{orang.nama}</b> {t('hitung.tidak_dapat_bagian')} {orang.alasan}</span>
-              </button>
-            );
-          })}
           {props.tampilPembulatan && (
             <KartuPembulatan ringkasan={ringkasan} satuan={props.satuanPembulatan} saatUbah={props.saatUbahPembulatan} sembunyiNominal={sembunyiNominal} />
           )}

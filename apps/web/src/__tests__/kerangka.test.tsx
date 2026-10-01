@@ -106,7 +106,7 @@ it('ganti jenis kelamin setelah ada ahli waris: minta konfirmasi, lalu ahli wari
   render(<Aplikasi />);
   fireEvent.click(screen.getByRole('button', { name: /Lanjut kasus terakhir/ }));
   // Kasus lengkap dilanjutkan di layar hasil; dari sana kembali ke langkah 1.
-  fireEvent.click(screen.getByRole('button', { name: /Ubah data/ }));
+  fireEvent.click(screen.getAllByRole('button', { name: /Ubah data/ })[0]!);
   fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
   const dialog = screen.getByRole('alertdialog');
   expect(dialog.textContent).toMatch(/ahli waris/);

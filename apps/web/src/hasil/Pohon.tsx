@@ -8,11 +8,15 @@
 import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { formatRupiah, namaOrang } from '../format';
+import { AvatarOrang } from './AvatarOrang';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
 import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
 import { tataLetak, type TataLetak } from './tataLetak';
 import { angka, panah, t } from '../terjemah';
+
+/** Avatar di kotak pohon; hanya tampil di pohon bergaya kaca (hero dan layar penuh), disembunyikan CSS di tempat lain. */
+const UKURAN_AVATAR_NODE = 30;
 
 interface Props {
   graf: GrafKeluarga;
@@ -35,7 +39,7 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     const halang = terhalang.get(id);
     const nama = id === graf.idPewaris ? orang.nama ?? t('hitung.almarhum') : namaOrang(graf, ringkasan.statusOrang, id);
     if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: t('hitung.nama_tidak_diisi', { nama }) };
-    if (almarhum) return { kelas: 'almarhum', peran: id === graf.idPewaris ? t('hitung.almarhum') : t('hitung.wafat_sebelum_dibagi'), nama };
+    if (almarhum) return { kelas: 'almarhum', peran: id !== graf.idPewaris ? t('hitung.wafat_sebelum_dibagi') : orang.nama ? t('hitung.almarhum') : '', nama };
     if (sedangMenebak) return { kelas: dapat || halang ? `g-${(dapat ?? halang)!.kelompok}` : 'putus', peran: '', nama };
     const ubah = langkah?.ubah?.get(id);
     if (ubah) return { kelas: dapat ? `g-${dapat.kelompok}` : 'terhalang', peran: '', nama, isi: <UbahNode key={langkah!.ketukan} ubah={ubah} /> };
@@ -100,6 +104,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
               if (!saatPilih) {
                 return (
                   <div key={id} {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} role="group" aria-label={node.nama}>
+                    {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                     {node.peran && <span className="peran-node">{node.peran}</span>}
                     <b>{node.nama}</b>
                     {node.isi}
@@ -111,6 +116,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')}
                   aria-label={bisaDipilih ? t('hitung.nama_lihat_penjelasan', { nama: node.nama }) : node.nama} disabled={!bisaDipilih}
                   onClick={() => saatPilih?.(id)}>
+                  {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                   {node.peran && <span className="peran-node">{node.peran}</span>}
                   <b>{node.nama}</b>
                   {node.isi}
