@@ -2,7 +2,7 @@ import { beforeEach, expect, test } from 'vitest';
 import { bacaNotifikasi, catatNotifikasi, type NotifikasiBaru } from '../notifikasi/gudang';
 import { modulBerubah } from '../konten/sinkron';
 
-const kabar = (id: string, prioritas: number): NotifikasiBaru => ({ id, jenis: 'streak', judul: id, isi: '', prioritas });
+const kabar = (id: string, prioritas: number, mendesak = false): NotifikasiBaru => ({ id, jenis: 'streak', judul: id, isi: '', prioritas, mendesak });
 const PAGI = new Date(2026, 9, 2, 8).getTime();
 const SORE = new Date(2026, 9, 2, 18).getTime();
 const BESOK = new Date(2026, 9, 3, 8).getTime();
@@ -19,6 +19,14 @@ test('kandidat yang lebih penting menggantikan yang sudah ada di hari yang sama'
   catatNotifikasi(kabar('a', 40), PAGI);
   expect(catatNotifikasi(kabar('b', 90), SORE)).toBe(true);
   expect(bacaNotifikasi().map(ini => ini.id)).toEqual(['b']);
+});
+
+test('kabar mendesak tidak terkena batas harian dan tidak menggeser kabar biasa', () => {
+  catatNotifikasi(kabar('biasa', 40), PAGI);
+  expect(catatNotifikasi(kabar('terancam', 70, true), SORE)).toBe(true);
+  expect(catatNotifikasi(kabar('terancam-lagi', 70, true), SORE)).toBe(true);
+  expect(bacaNotifikasi().map(ini => ini.id).sort()).toEqual(['biasa', 'terancam', 'terancam-lagi']);
+  expect(catatNotifikasi(kabar('biasa-kedua', 30), SORE)).toBe(false);
 });
 
 test('hari berikutnya boleh lagi, dan id yang sama tidak dicatat dua kali', () => {

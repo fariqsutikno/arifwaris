@@ -1,5 +1,5 @@
 // Pemasok notifikasi. Prinsip (keputusan 2026-10-02): hanya yang mendesak, bisa ditindaklanjuti, dan belum terlihat di layar,
-// dan gudang membatasi satu per hari. Yang dikabarkan: modul tamat, tonggak streak, streak terancam putus, ringkasan peringkat
+// dan gudang membatasi kabar biasa satu per hari (yang mendesak, yaitu streak terancam putus, boleh lebih). Yang dikabarkan: modul tamat, tonggak streak, streak terancam putus, ringkasan peringkat
 // mingguan, materi baru di modul yang sedang dipelajari, dan kasus yang menggantung (sekali per kasus).
 // Pelajaran satu per satu, kenaikan streak harian, dan perubahan peringkat harian sengaja TIDAK dikabarkan.
 // Tidak merender apa pun. Streak dan peringkat hanya bisa dicek saat aplikasi dibuka (tidak ada pekerjaan terjadwal di server).
@@ -109,7 +109,7 @@ export function SumberNotifikasi({ sesi, repo }: { sesi: Sesi | null; repo: Repo
     }
     simpanMentah(KUNCI_STREAK_TERAKHIR, String(ringkasan.streakSekarang));
     if (!ringkasan.aktifHariIni && ringkasan.streakSekarang >= STREAK_MINIMAL_DIINGATKAN && new Date().getHours() >= JAM_PENGINGAT_STREAK) {
-      catatNotifikasi({ id: `streak-ingat-${hariIni()}`, jenis: 'streak', prioritas: PRIORITAS.streakTerancam,
+      catatNotifikasi({ id: `streak-ingat-${hariIni()}`, jenis: 'streak', prioritas: PRIORITAS.streakTerancam, mendesak: true,
         judul: t('notifikasi.streak_ingat_judul', { jumlah: ringkasan.streakSekarang }), isi: t('notifikasi.streak_ingat_isi'), tautan: tautanBelajar() });
     }
   }, [ringkasan]);
