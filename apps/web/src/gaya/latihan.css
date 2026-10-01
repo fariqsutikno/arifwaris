@@ -212,11 +212,11 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 }
 
 /* halaman sesi kuis: pita hero gelap (gaya Latihan) di belakang bar atas, judul/nomor soal, dan bagian atas kartu */
-.halaman-sesi{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:100vh;padding-top:84px}
-.latar-sesi{position:absolute;inset:0 0 auto 0;z-index:-1;display:block;height:360px;padding:0!important}
+.halaman-sesi{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:100vh;padding-top:96px}
+.latar-sesi{position:absolute;inset:0 0 auto 0;z-index:-1;display:block;height:390px;padding:0!important}
 .halaman-sesi>.bar-ujian,.halaman-sesi>.hero-sesi{width:min(800px,100% - 2*var(--sisi));margin-inline:auto}
 /* lembar terang: sudut atas besar, menimpa hero, memanjang sampai dasar layar */
-.lembar-sesi{flex:1;margin-top:-18px;padding:28px var(--sisi) 64px;border-radius:36px 36px 0 0;background:var(--surface);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+.lembar-sesi{flex:1;margin-top:-18px;padding:32px var(--sisi) 64px;border-radius:36px 36px 0 0;background:var(--surface);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
 .hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;color:#fff}
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
@@ -233,7 +233,7 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .bar-ujian .judul-sesi{color:#fff}
 .bar-ujian .keluar-ujian{background:rgba(255,255,255,.14);color:#fff}
 .bar-ujian .keluar-ujian:hover{background:rgba(255,255,255,.26)}
-.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:8px;padding:2px 0 22px}
+.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 0 30px}
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
 .judul-hero-sesi p{margin:0;color:rgba(255,255,255,.85);font:500 16px var(--font-sans)}
