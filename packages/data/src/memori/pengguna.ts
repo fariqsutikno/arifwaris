@@ -3,7 +3,7 @@
 // sama dengan primary key tabel di supabase/migrations/20260926000003_pengguna.sql.
 // Streak/XP/papan dihitung SQL (diuji pgTAP 06_peringkat); di memori hanya nilai yang diset tes lewat aturPeringkat.
 import type {
-  BarisPeringkat, Kegiatan, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
+  BarisPeringkat, KabarPush, Kegiatan, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
   RepositoriPengguna, RepositoriPeringkat, RingkasanPeringkat, RiwayatTersimpan,
 } from '../antarmuka.js';
 import type { MemoriBersama } from './konten.js';
@@ -13,6 +13,8 @@ export interface NilaiPeringkat { ringkasan: RingkasanPeringkat; papan: Record<P
 export function buatMemoriPengguna(bersama: MemoriBersama): {
   pengguna: RepositoriPengguna; akun: RepositoriAkun; peringkat: RepositoriPeringkat;
   aturPeringkat(nilai: NilaiPeringkat | null): void;
+  /** Hanya untuk tes: menaruh kabar push milik pengguna tertentu (di produksi ditulis Edge Function). */
+  aturKabarPush(userId: string, kabar: KabarPush[]): void;
 } {
   const riwayat = new Map<string, RiwayatTersimpan>();
   const belajar = new Map<string, ProgresBelajar>();
@@ -20,6 +22,8 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
   const preferensi = new Map<string, Preferensi>();
   const kegiatan = new Map<string, Kegiatan>();
   const profil = new Map<string, Profil>();
+  const langgananPush = new Map<string, LanggananPush>();
+  const kabarPush = new Map<string, KabarPush[]>();
   let nilaiPeringkat: NilaiPeringkat | null = null;
 
   const pemilik = () => {
@@ -47,6 +51,9 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
     async catatKegiatan(baris) { if (!kegiatan.has(kunci(baris.id))) kegiatan.set(kunci(baris.id), baris); },
     async bacaProfil() { return profil.get(kunci()) ?? null; },
     async simpanProfil(baris) { profil.set(kunci(), { ...baris, namaTampilan: baris.namaTampilan.trim() }); },
+    async simpanLangganan(baris) { langgananPush.set(kunci(baris.endpoint), baris); },
+    async hapusLangganan(endpoint) { langgananPush.delete(kunci(endpoint)); },
+    async bacaKabarPush(sejak) { return (kabarPush.get(pemilik()) ?? []).filter(isi => isi.dikirimPada > sejak); },
   };
 
   // null = layanan tak terjangkau, supaya tes bisa memeriksa tampilan saat gagal.
@@ -65,5 +72,5 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
   // akun kini satu sumber di buatMemori (bersama), supaya aturPeran berbasis email tidak diduplikasi di sini.
   const akun: RepositoriAkun = bersama.akun;
 
-  return { pengguna, akun, peringkat, aturPeringkat: nilai => { nilaiPeringkat = nilai; } };
+  return { pengguna, akun, peringkat, aturPeringkat: nilai => { nilaiPeringkat = nilai; }, aturKabarPush: (userId, kabar) => { kabarPush.set(userId, kabar); } };
 }

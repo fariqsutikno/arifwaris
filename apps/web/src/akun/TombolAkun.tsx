@@ -11,6 +11,7 @@ import { Ikon } from '../ui/Ikon';
 import { useTutupDiLuar } from '../ui/tutupDiLuar';
 import { tautanPeringkat } from '../rute';
 import { ModalProfil } from './ModalProfil';
+import { cabutLangganan } from '../notifikasi/perangkat';
 import { keluarDanBersihkan, kirimSebelumKeluar, type RepoAkun } from './sinkron';
 
 export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun | null }) {
@@ -25,6 +26,7 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
   const keluar = async () => {
     setBelumTerkirim(0);
     try {
+      await cabutLangganan(repo);
       await keluarDanBersihkan(repo);
       window.location.reload();
     } catch {

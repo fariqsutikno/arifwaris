@@ -181,12 +181,31 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return baris && {
         namaTampilan: baris.nama_tampilan, ikutPapanPeringkat: baris.ikut_papan_peringkat,
         tampilkanAvatar: baris.tampilkan_avatar, zonaWaktu: baris.zona_waktu,
+        pushStreak: baris.push_streak, pushPeringkat: baris.push_peringkat,
       };
     },
     async simpanProfil(profil) {
       await hasil(klien.from('profil').upsert({
         user_id: await userId(), nama_tampilan: profil.namaTampilan.trim(), ikut_papan_peringkat: profil.ikutPapanPeringkat,
         tampilkan_avatar: profil.tampilkanAvatar, zona_waktu: profil.zonaWaktu,
+        ...(profil.pushStreak === undefined ? {} : { push_streak: profil.pushStreak }),
+        ...(profil.pushPeringkat === undefined ? {} : { push_peringkat: profil.pushPeringkat }),
+      }));
+    },
+    async simpanLangganan(langganan) {
+      await hasil(klien.from('langganan_push').upsert({
+        user_id: await userId(), endpoint: langganan.endpoint, p256dh: langganan.p256dh, auth: langganan.auth,
+        bahasa: langganan.bahasa, gagal_berturut: 0,
+      }, { onConflict: 'endpoint' }));
+    },
+    async hapusLangganan(endpoint) {
+      await hasil(klien.from('langganan_push').delete().eq('user_id', await userId()).eq('endpoint', endpoint));
+    },
+    async bacaKabarPush(sejak) {
+      const baris = await hasil(klien.from('kirim_push').select('kunci, jenis, judul, isi, tautan, mendesak, dikirim_pada')
+        .eq('user_id', await userId()).gt('dikirim_pada', sejak).order('dikirim_pada', { ascending: false }).limit(20)) as any[];
+      return baris.map(isi => ({
+        kunci: isi.kunci, jenis: isi.jenis, judul: isi.judul, isi: isi.isi, tautan: isi.tautan, mendesak: isi.mendesak, dikirimPada: isi.dikirim_pada,
       }));
     },
   };

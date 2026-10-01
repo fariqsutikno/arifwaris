@@ -117,7 +117,15 @@ export interface Preferensi { isi: Record<string, unknown>; diubahPada: string }
 export interface Kegiatan { id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null }
 
 /** Profil untuk papan peringkat (spec tahap 5). Tanpa baris = tidak ikut papan, zona Asia/Jakarta. */
-export interface Profil { namaTampilan: string; ikutPapanPeringkat: boolean; tampilkanAvatar: boolean; zonaWaktu: string }
+export interface Profil {
+  namaTampilan: string; ikutPapanPeringkat: boolean; tampilkanAvatar: boolean; zonaWaktu: string;
+  /** Sakelar push per jenis (bawaan menyala di server); tidak ada = tidak diubah. */
+  pushStreak?: boolean; pushPeringkat?: boolean;
+}
+/** Langganan Web Push satu perangkat; endpoint rahasia, hanya pemiliknya yang boleh membaca. */
+export interface LanggananPush { endpoint: string; p256dh: string; auth: string; bahasa: 'id' | 'ar' }
+/** Kabar yang sudah dikirim server lewat push (log kirim_push), untuk dimasukkan ke kotak masuk saat aplikasi dibuka. */
+export interface KabarPush { kunci: string; jenis: 'streak_terancam' | 'peringkat_pekan'; judul: string; isi: string; tautan: string | null; mendesak: boolean; dikirimPada: string }
 export interface RingkasanPeringkat {
   xpTotal: number; xpMingguIni: number; streakSekarang: number; streakTerpanjang: number; aktifHariIni: boolean;
 }
@@ -143,6 +151,11 @@ export interface RepositoriPengguna {
   bacaProfil(): Promise<Profil | null>;
   /** Langsung ke server, tidak lewat antrean: profil hanya dipakai di halaman yang butuh jaringan. */
   simpanProfil(profil: Profil): Promise<void>;
+  /** Idempoten per endpoint: memperbarui kunci bila perangkat berlangganan ulang. */
+  simpanLangganan(langganan: LanggananPush): Promise<void>;
+  hapusLangganan(endpoint: string): Promise<void>;
+  /** Kabar push milik pengguna yang dikirim setelah `sejak` (ISO), terbaru dulu. */
+  bacaKabarPush(sejak: string): Promise<KabarPush[]>;
 }
 /** Streak, XP & papan dihitung server dari log_kegiatan (supabase/migrations/20260927000006_peringkat.sql). */
 export interface RepositoriPeringkat {

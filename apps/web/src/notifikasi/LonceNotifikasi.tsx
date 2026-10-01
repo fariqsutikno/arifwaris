@@ -4,16 +4,19 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTutupDiLuar } from '../ui/tutupDiLuar';
 import { Ikon, IkonApi, type NamaIkon } from '../ui/Ikon';
+import type { Sesi } from '@waris/data';
+import type { RepoAkun } from '../akun/sinkron';
+import { bacaBahasa } from '../preferensi';
 import { bahasaArab, t } from '../terjemah';
 import {
   bacaNotifikasi, hapusSemuaNotifikasi, PERISTIWA_NOTIFIKASI, tandaiSemuaDibaca, type JenisNotifikasi, type Notifikasi,
 } from './gudang';
-import { bisaDipasang, izinNotifikasi, mintaIzinNotifikasi, pasangAplikasi, PERISTIWA_PASANG } from './perangkat';
+import { bisaDipasang, izinNotifikasi, mintaIzinNotifikasi, pasangAplikasi, PERISTIWA_PASANG, sinkronkanLangganan } from './perangkat';
 
 const IKON_JENIS: Record<Exclude<JenisNotifikasi, 'streak'>, NamaIkon> = { peringkat: 'peringkat', konten: 'segarkan', belajar: 'pelajaran', kasus: 'hitung' };
 const SATUAN_WAKTU: Array<[Intl.RelativeTimeFormatUnit, number]> = [['day', 86_400_000], ['hour', 3_600_000], ['minute', 60_000]];
 
-export function LonceNotifikasi() {
+export function LonceNotifikasi({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun | null }) {
   const [daftar, setDaftar] = useState<Notifikasi[]>(bacaNotifikasi);
   const [terbuka, setTerbuka] = useState(false);
   const [izin, setIzin] = useState(izinNotifikasi);
@@ -29,6 +32,11 @@ export function LonceNotifikasi() {
     return () => { window.removeEventListener(PERISTIWA_NOTIFIKASI, segarkan); window.removeEventListener(PERISTIWA_PASANG, segarkanPasang); };
   }, []);
 
+  const aktifkanPerangkat = async () => {
+    const hasil = await mintaIzinNotifikasi();
+    setIzin(hasil);
+    if (hasil === 'granted' && sesi && repo) await sinkronkanLangganan(repo, bacaBahasa() === 'ar' ? 'ar' : 'id');
+  };
   const tutup = () => { setTerbuka(false); if (belumDibaca > 0) tandaiSemuaDibaca(); };
   useTutupDiLuar(akar, terbuka, tutup);
 
@@ -58,7 +66,7 @@ export function LonceNotifikasi() {
             )}
             {(izin === 'default' || izin === 'denied' || izin === 'granted' || dapatDipasang) && (
               <footer className="kaki-panel">
-                {izin === 'default' && <button type="button" className="tautan-teks" onClick={() => void mintaIzinNotifikasi().then(setIzin)}>{t('notifikasi.aktifkan_perangkat')}</button>}
+                {izin === 'default' && <button type="button" className="tautan-teks" onClick={() => void aktifkanPerangkat()}>{t('notifikasi.aktifkan_perangkat')}</button>}
                 {izin === 'granted' && <span><Ikon nama="benar" ukuran={14} /> {t('notifikasi.perangkat_aktif')}</span>}
                 {izin === 'denied' && <span>{t('notifikasi.perangkat_diblokir')}</span>}
                 {dapatDipasang && <button type="button" className="tautan-teks" onClick={() => void pasangAplikasi()}>{t('notifikasi.pasang_aplikasi')}</button>}

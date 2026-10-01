@@ -62,7 +62,7 @@ const namaKelompok = (sumber: SumberTeks) => NAMA_KELOMPOK[sumber.kunci.split('.
 
 interface Bagian { id: string; judul: string; layar: () => ReactNode }
 const BAGIAN: readonly Bagian[] = [
-  { id: 'beranda', judul: 'Beranda', layar: () => <BerandaWeb kasusTerakhir={null} saatKeHitung={tanpaAksi} /> },
+  { id: 'beranda', judul: 'Beranda', layar: () => <BerandaWeb kasusTerakhir={null} saatKeHitung={tanpaAksi} saatCoba={tanpaAksi} /> },
   { id: 'pewaris', judul: 'Kalkulator · Pewaris', layar: () => <LayarKasus>{() => <LangkahPewaris kasus={KASUS_CONTOH} saatPilih={tanpaAksi} saatGantiDanKosongkan={tanpaAksi} saatUbahNama={tanpaAksi} />}</LayarKasus> },
   { id: 'ahli-waris', judul: 'Kalkulator · Ahli waris', layar: () => (
     <LayarKasus>{(kasus, ubah) => <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={f => ubah(k => ({ ...k, graf: f(k.graf) }))} />}</LayarKasus>

@@ -384,6 +384,10 @@ deno_version = 2
 # [edge_runtime.secrets]
 # secret_key = "env(SECRET_VALUE)"
 
+[functions.kirim-push]
+# Dipanggil pg_cron tanpa JWT pengguna; dijaga header X-Cron (CRON_RAHASIA) di dalam fungsi.
+verify_jwt = false
+
 [analytics]
 enabled = true
 port = 54327

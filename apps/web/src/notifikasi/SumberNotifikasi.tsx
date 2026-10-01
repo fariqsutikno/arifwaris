@@ -16,13 +16,17 @@ import { bacaPelajaranSelesai, PERISTIWA_PELAJARAN_SELESAI } from '../progres';
 import { ringkasKasus } from '../riwayat';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanPeringkat } from '../rute';
 import { bacaMentah, simpanMentah } from '../penyimpanan';
+import { bacaBahasa } from '../preferensi';
 import { t } from '../terjemah';
 import { catatNotifikasi, PERISTIWA_NOTIFIKASI_BARU, type Notifikasi } from './gudang';
-import { tampilkanDiPerangkat } from './perangkat';
+import { kabarKeNotifikasi } from './dariPush';
+import { sinkronkanLangganan, tampilkanDiPerangkat } from './perangkat';
 
 const KUNCI_STREAK_TERAKHIR = 'arif-waris:streak-terakhir';
 const KUNCI_PERINGKAT_PEKAN = 'arif-waris:peringkat-pekan';
 const KUNCI_KASUS_TERAKHIR = 'arif-waris:kasus-terakhir-diubah';
+const KUNCI_PUSH_TERAKHIR = 'arif-waris:push-terakhir';
+const HARI_KABAR_PUSH_AWAL = 7;
 const JAM_PENGINGAT_STREAK = 17;
 const STREAK_MINIMAL_DIINGATKAN = 3;
 // Streak hanya dikabarkan di tonggak ini; kenaikan harian cukup terlihat di kartu streak.
@@ -141,6 +145,20 @@ export function SumberNotifikasi({ sesi, repo }: { sesi: Sesi | null; repo: Repo
       } else {
         simpanMentah(KUNCI_PERINGKAT_PEKAN, JSON.stringify({ ...(simpanan ?? {}), pekan, peringkat: saya.peringkat }));
       }
+    }).catch(() => undefined);
+    return () => { masihDipakai = false; };
+  }, [sesi?.userId, repo]);
+
+  // Push server: daftarkan perangkat ini, lalu masukkan kabar yang terkirim saat aplikasi tertutup ke kotak masuk (id sama dengan kabar lokal).
+  useEffect(() => {
+    if (!sesi || !repo) return;
+    let masihDipakai = true;
+    void sinkronkanLangganan(repo, bacaBahasa() === 'ar' ? 'ar' : 'id');
+    const sejak = bacaMentah(KUNCI_PUSH_TERAKHIR) ?? new Date(Date.now() - HARI_KABAR_PUSH_AWAL * MS_HARI).toISOString();
+    void repo.pengguna.bacaKabarPush(sejak).then(daftar => {
+      if (!masihDipakai || daftar.length === 0) return;
+      for (const kabar of [...daftar].reverse()) catatNotifikasi(kabarKeNotifikasi(kabar));
+      simpanMentah(KUNCI_PUSH_TERAKHIR, daftar[0]!.dikirimPada);
     }).catch(() => undefined);
     return () => { masihDipakai = false; };
   }, [sesi?.userId, repo]);

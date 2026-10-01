@@ -1,6 +1,6 @@
 # Push notifikasi dari server
 
-Tanggal: 2026-10-02 · Status: **rancangan, belum disetujui pemilik** · Belum ada kode atau migrasi dari dokumen ini.
+Tanggal: 2026-10-02 · Status: **disetujui pemilik 2026-10-02; P1–P3 sudah dikodekan, belum dipasang ke server mana pun** (lihat "Keputusan" dan "Pemasangan" di bawah).
 
 Menyambung kebijakan notifikasi 2026-10-02 (`apps/web/src/notifikasi/SumberNotifikasi.tsx`). Kotak masuk lokal
 dan notifikasi perangkat saat aplikasi terbuka di latar sudah jalan. Yang kurang: kabar yang harus sampai
@@ -18,8 +18,7 @@ Prinsip yang sama dengan klien: mendesak, bisa ditindaklanjuti, belum terlihat d
 | Modul tamat, tonggak streak | Tidak | Terjadi saat aplikasi terbuka; notifikasi lokal cukup. |
 | Kasus waris menggantung | Tidak | Kasus hanya ada di perangkat; mengirimnya ke server melanggar prinsip "berjalan di perangkat". |
 
-Batas harian di server: kabar biasa maksimal 1 per pengguna per hari, kabar mendesak maksimal 2 (angka perlu
-dikonfirmasi, bagian 8). Isi push tidak memuat data kasus, nama keluarga, atau nominal.
+Batas harian di server: kabar biasa maksimal 1 per pengguna per hari; kabar mendesak **tanpa batas** (keputusan pemilik). Isi push tidak memuat data kasus, nama keluarga, atau nominal.
 
 ## 2. Data (migrasi baru, satu berkas)
 
@@ -121,17 +120,35 @@ Logika murni (jendela jam, batas harian, penyisipan teks) ditaruh di `logika.ts`
 - Klien: tes gudang untuk id yang sama dari push dan lokal; tes langganan dengan `PushManager` tiruan.
 - Manual: satu perangkat Android dan satu iPhone (PWA terpasang), kirim lewat function dengan waktu dipaksa.
 
-## 8. Tahapan dan keputusan terbuka
+## 8. Tahapan
 
 Tahap (masing-masing dapat dirilis sendiri): **P1** migrasi + `kandidat_push` + tes SQL · **P2** function +
 cron, dengan daftar penerima dibatasi ke akun pemilik lebih dulu · **P3** langganan di klien + `kabar_push_saya` ·
 **P4** uji perangkat nyata, lalu buka untuk semua.
 
-Perlu diputuskan pemilik:
-1. Batas kabar mendesak per hari: 2 (usulan), atau 1?
-2. Jendela jam streak terancam 17:00–19:59 lokal (usulan), dan ringkasan peringkat Senin 08:00–09:59?
-3. Email untuk `VAPID_SUBJEK`.
-4. Apakah push "materi baru" ikut di rilis pertama, atau menyusul (butuh pelacakan revisi terbit sejak push terakhir)?
+## Keputusan (pemilik, 2026-10-02)
+
+1. Kabar mendesak tanpa batas harian; kabar biasa satu per hari.
+2. Jendela jam disetujui: streak terancam 17:00–19:59, peringkat mingguan Senin 08:00–09:59 (waktu lokal profil).
+3. `VAPID_SUBJEK`: pemilik mengisi sendiri alamat `mailto:` sebagai secret (belum diberikan; email akun tidak dipakai).
+4. Push "materi baru" **menyusul**: tidak ada `push_materi`, jenis `materi_baru`, atau pelacakan revisi di rilis ini.
+
+## Yang sudah dikodekan (menyimpang dari rancangan awal)
+
+- Migrasi `20261002000001_push.sql`: `langganan_push`, `kirim_push`, `profil.push_streak/push_peringkat`, `peringkat_minggu`, `kandidat_push`.
+  Batas harian dan dedup sudah di SQL (diuji `14_push.test.sql`, 21 tes), bukan di function.
+- Edge Function `kirim-push` (+ `logika.ts` murni, diuji vitest). Log kiriman hanya ditulis bila minimal satu perangkat menerima.
+- Klien memakai tabel langsung lewat RLS (`simpanLangganan`, `hapusLangganan`, `bacaKabarPush`), **bukan** RPC `kabar_push_saya`.
+- Perangkat yang sudah berlangganan tidak menampilkan notifikasi lokal streak/peringkat (id kotak masuk sama dengan kabar push, jadi tidak dobel).
+- `zona_waktu`: profil yang belum pernah disimpan memakai bawaan `Asia/Jakarta`; Profil menawarkan zona perangkat saat pertama disimpan.
+
+## Pemasangan (belum dilakukan, langkah pemilik)
+
+1. `npx web-push generate-vapid-keys`; `supabase secrets set VAPID_PUBLIK=… VAPID_PRIVAT=… VAPID_SUBJEK=mailto:… CRON_RAHASIA=…`.
+2. Terapkan migrasi ke proyek, lalu `supabase functions deploy kirim-push`.
+3. Isi `VITE_VAPID_PUBLIK` di build web.
+4. Jalankan `supabase/jadwal-push.sql` (ganti `<PROYEK>` dan `<CRON_RAHASIA>`) setelah mengaktifkan `pg_cron` dan `pg_net`.
+5. Uji dulu pada akun sendiri (P2), baru lewat perangkat nyata (P4: Android dan iPhone dengan PWA terpasang).
 
 ## 9. Risiko
 

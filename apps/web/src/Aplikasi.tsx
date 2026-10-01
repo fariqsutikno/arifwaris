@@ -142,7 +142,7 @@ export function Aplikasi() {
     <>
       <Kepala halaman={rute.halaman} kasusWizard={diKalkulator && layar === 'wizard' ? kasus : null}
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)}
-        saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
+        saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
       <PembaruanKonten />
       <SumberNotifikasi sesi={sesi} repo={repoAkun} />
       {!['beranda', 'kalkulator', 'belajar', 'materi'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}

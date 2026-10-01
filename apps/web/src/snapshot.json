@@ -19105,6 +19105,20 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "akun.push_streak",
+   "halaman": "akun",
+   "id": "Ingatkan saat streakku terancam putus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.push_peringkat",
+   "halaman": "akun",
+   "id": "Kabari peringkat mingguanku",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
    "kunci": "hitung.lab_lanjutkan",
    "halaman": "hitung",
    "id": "Lanjutkan",

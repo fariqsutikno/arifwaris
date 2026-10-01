@@ -6,6 +6,19 @@ const A = { userId: 'a', email: 'a@tes.local' };
 const B = { userId: 'b', email: 'b@tes.local' };
 
 describe('memori: pengguna & akun', () => {
+  test('push: langganan idempoten per endpoint, bisa dihapus, kabar hanya milik sendiri dan setelah waktu yang diminta', async () => {
+    const bersama = buatMemori({ sesi: A });
+    const { pengguna, aturKabarPush } = buatMemoriPengguna(bersama);
+    const kabar = (kunci: string, dikirimPada: string) => ({ kunci, jenis: 'streak_terancam' as const, judul: 'j', isi: 'i', tautan: null, mendesak: true, dikirimPada });
+    aturKabarPush('a', [kabar('baru', '2026-10-02T11:00:00Z'), kabar('lama', '2026-09-30T11:00:00Z')]);
+    aturKabarPush('b', [kabar('milik-b', '2026-10-02T11:00:00Z')]);
+    expect((await pengguna.bacaKabarPush('2026-10-01T00:00:00Z')).map(isi => isi.kunci)).toEqual(['baru']);
+    await pengguna.simpanLangganan({ endpoint: 'https://p/1', p256dh: 'k', auth: 'a', bahasa: 'id' });
+    await pengguna.simpanLangganan({ endpoint: 'https://p/1', p256dh: 'k2', auth: 'a', bahasa: 'ar' });
+    await pengguna.hapusLangganan('https://p/1');
+    await expect(pengguna.hapusLangganan('https://p/tidak-ada')).resolves.toBeUndefined();
+  });
+
   test('data tiap pengguna terpisah', async () => {
     const bersama = buatMemori({ sesi: A });
     const { pengguna } = buatMemoriPengguna(bersama);

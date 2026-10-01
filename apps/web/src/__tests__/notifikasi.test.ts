@@ -42,3 +42,14 @@ test('modulBerubah: hanya modul dari materi yang baru atau berganti revisi', () 
   const baru = { versi: 2, diksi: [], konten: [baris('a', 'r1', 1), baris('b', 'r2', 2), baris('c', 'r1', 3)] };
   expect(modulBerubah(lama as never, baru as never).sort()).toEqual([2, 3]);
 });
+
+test('kabar push memakai id yang sama dengan pemasok lokal, jadi tidak tercatat dua kali', async () => {
+  const { kabarKeNotifikasi } = await import('../notifikasi/dariPush');
+  const streak = { kunci: 'streak_terancam:2026-10-01', jenis: 'streak_terancam' as const, judul: 'j', isi: 'i', tautan: '#/belajar', mendesak: true, dikirimPada: '2026-10-01T11:00:00Z' };
+  const pekan = { kunci: 'peringkat_pekan:2026-10-05', jenis: 'peringkat_pekan' as const, judul: 'j', isi: 'i', tautan: null, mendesak: false, dikirimPada: '2026-10-05T01:30:00Z' };
+  expect(kabarKeNotifikasi(streak)).toMatchObject({ id: 'streak-ingat-2026-10-01', jenis: 'streak', mendesak: true, tautan: '#/belajar' });
+  expect(kabarKeNotifikasi(pekan)).toMatchObject({ id: 'peringkat-pekan-2026-10-05', jenis: 'peringkat', mendesak: false });
+  expect(kabarKeNotifikasi(pekan)).not.toHaveProperty('tautan');
+  expect(catatNotifikasi(kabarKeNotifikasi(streak), PAGI)).toBe(true);
+  expect(catatNotifikasi({ id: 'streak-ingat-2026-10-01', jenis: 'streak', judul: 'lokal', isi: '', prioritas: 70, mendesak: true }, SORE)).toBe(false);
+});
