@@ -19002,7 +19002,7 @@
   {
    "kunci": "beranda.contoh_judul",
    "halaman": "beranda",
-   "id": "Contoh hitungan",
+   "id": "Jelajahi kasus",
    "ar": null,
    "versiTerbit": 873
   },
@@ -19224,6 +19224,13 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "beranda.sapa_ajakan",
+   "halaman": "beranda",
+   "id": "Siap eksplorasi faraidh?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
    "kunci": "hitung.lab_jumlah_ahli_waris",
    "halaman": "hitung",
    "id": "{jumlah} ahli waris",
@@ -19383,9 +19390,6 @@
    "id": "Kembali ke Lab Hitung",
    "ar": null,
    "versiTerbit": 873
-  }
- ]
-}
   },
   {
    "kunci": "latihan.kosongkan_pilihan",
@@ -19832,6 +19836,125 @@
    "kunci": "latihan.nilai_terbaik_paket_tidak_berubah",
    "halaman": "latihan",
    "id": "Sesi ini hanya untuk melatih soal yang salah. Nilai terbaik paket tidak berubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_quran",
+   "halaman": "rujukan",
+   "id": "Ayat yang menjadi dasar hukum waris. Pilih satu hukum untuk melihat bagian ayat yang jadi dasarnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_sunnah",
+   "halaman": "rujukan",
+   "id": "Hadits yang dipakai, lengkap dengan takhrij dan statusnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_atsar",
+   "halaman": "rujukan",
+   "id": "Ucapan dan ijtihad sahabat yang dipakai sebagai dasar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_ijma",
+   "halaman": "rujukan",
+   "id": "Kesepakatan ulama yang dipakai sebagai dasar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_kitab",
+   "halaman": "rujukan",
+   "id": "Kitab madzhab yang menjadi sumber. Baca langsung di sini atau buka di situs sumbernya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_hisab",
+   "halaman": "rujukan",
+   "id": "Kaidah hisab (hitungan), bukan hukum fikih. Dipakai untuk mengolah angka.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_keterangan",
+   "halaman": "rujukan",
+   "id": "Catatan dan keterangan di tabel rujukan yang bukan dalil.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lead_dikaji",
+   "halaman": "rujukan",
+   "id": "Titik yang masih diverifikasi. Belum dipakai sebagai hukum di aplikasi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.petunjuk_hukum",
+   "halaman": "rujukan",
+   "id": "Hukum yang bersandar pada ayat ini. Ketuk satu untuk menandai bagian ayatnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.bagian_ditandai",
+   "halaman": "rujukan",
+   "id": "Bagian ayat yang menjadi dasar hukum ini ditandai di atas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.syahid_belum_ada",
+   "halaman": "rujukan",
+   "id": "Bagian ayat untuk hukum ini belum ditandai di data.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.jumlah_hukum",
+   "halaman": "rujukan",
+   "id": "{jumlah} hukum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.dipakai_untuk_ket",
+   "halaman": "rujukan",
+   "id": "Klaim fikih di aplikasi yang bersandar pada dalil jenis ini, dikelompokkan per bab KB.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.saring_menurut_bab",
+   "halaman": "rujukan",
+   "id": "Saring menurut bab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lihat_semua",
+   "halaman": "rujukan",
+   "id": "Lihat semua {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.lihat_ringkas",
+   "halaman": "rujukan",
+   "id": "Ringkas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.jelajah_ket",
+   "halaman": "rujukan",
+   "id": "Pilih jenis dalil untuk menelusurinya.",
    "ar": null,
    "versiTerbit": 873
   }

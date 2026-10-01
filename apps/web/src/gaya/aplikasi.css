@@ -79,8 +79,8 @@ a.butir-notif:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
 @media (max-width:720px){
   .sapa-beranda{display:none}
   .sapa-hp{display:flex;flex-direction:column;gap:18px;min-width:0;animation:naik .6s cubic-bezier(.2,.7,.2,1) both}
-  .judul-contoh-hp{display:block;margin:6px 4px -8px;font:600 19px var(--font-display);letter-spacing:-.01em}
-  .hero-beranda{padding-top:88px;gap:20px}
+  .judul-contoh-hp{display:block;margin:10px 0 -8px;font:600 18px var(--font-display);letter-spacing:-.01em}
+  .hero-beranda{padding-top:76px;gap:16px}
   /* header transparan di atas hero, kontrolnya kaca; streak pindah ke kartu */
   body.layar-beranda .kepala{position:absolute;inset-inline:0;top:0;padding:14px 16px;background:transparent;border:0;color:#fff}
   body.layar-beranda .kepala :is(.tombol-kepala,.pilih-bahasa,.tombol-lonceng){border:0;background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
@@ -88,10 +88,11 @@ a.butir-notif:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
   body.layar-beranda .kepala .pilih-bahasa option{color:#14181a}
   body.layar-beranda .kepala .titik-lonceng{box-shadow:0 0 0 2px #0f3a38}
   body.layar-beranda .kepala .streak-kepala{display:none}
-  .salam-hp{display:flex;flex-direction:column;gap:2px}
-  .ahlan{margin:0;font:600 16px var(--font-sans);letter-spacing:.02em;color:rgba(255,255,255,.78)}
-  .nama-hp{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;padding:0;border:0;background:none;color:#fff;cursor:pointer}
-  .nama-hp h1{margin:0;font:500 clamp(38px,12vw,52px)/1.05 var(--font-display);letter-spacing:-.03em;text-wrap:balance;animation:none}
+  .salam-hp{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .ahlan{margin:0;font:500 28px/1.2 var(--font-display);letter-spacing:-.01em;color:rgba(255,255,255,.78)}
+  .nama-hp{display:inline-flex;align-items:center;gap:10px;padding:0;border:0;background:none;color:#fff;cursor:pointer}
+  .nama-hp h1{margin:0;font:500 28px/1.2 var(--font-display);letter-spacing:-.01em;text-wrap:balance;animation:none}
+  .ajakan-hp{flex-basis:100%;margin:2px 0 0;font:400 20px/1.3 var(--font-display);letter-spacing:-.01em;color:rgba(255,255,255,.8);text-wrap:balance}
   .nama-hp svg{opacity:.55;transition:opacity .2s}
   .nama-hp:hover svg{opacity:1}
   .nama-hp:focus-visible,.isi-nama input:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:12px}
