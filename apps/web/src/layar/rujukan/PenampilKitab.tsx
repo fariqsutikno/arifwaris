@@ -7,16 +7,16 @@ import { t } from '../../terjemah';
 
 export function PenampilKitab({ nomor }: { nomor: number }) {
   const kitab = DAFTAR_KITAB[nomor];
-  const pdf = kitab && sumberKitab().find(isi => isi.judul === kitab.judul)?.pdf;
+  const sumber = kitab && sumberKitab().find(isi => isi.judul === kitab.judul);
+  if (!kitab || !sumber?.pdf) return <><a href={tautanRujukan('kitab')}>{t('rujukan.kembali_ke_daftar_kitab')}</a><p role="alert">{t('rujukan.berkas_kitab_ini_belum_tersedia')}</p></>;
   return (
-    <>
-      <a href={tautanRujukan('kitab')}>{t('rujukan.kembali_ke_daftar_kitab')}</a>
-      {kitab && pdf ? (
-        <>
-          <h1><cite>{kitab.judul}</cite></h1>
-          <iframe className="penampil-kitab" src={`/kitab/${encodeURIComponent(pdf)}`} title={kitab.judul} />
-        </>
-      ) : <p role="alert">{t('rujukan.berkas_kitab_ini_belum_tersedia')}</p>}
-    </>
+    <div className="penampil-penuh">
+      <header className="bilah-penampil">
+        <a href={tautanRujukan('kitab')}>{t('rujukan.kembali_ke_daftar_kitab')}</a>
+        <cite>{kitab.judul}</cite>
+        {sumber.tautan && <a href={sumber.tautan} target="_blank" rel="noopener noreferrer">{t('rujukan.situs_sumber')}</a>}
+      </header>
+      <iframe className="penampil-kitab" src={`/kitab/${encodeURIComponent(sumber.pdf)}`} title={kitab.judul} />
+    </div>
   );
 }

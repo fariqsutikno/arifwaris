@@ -104,3 +104,16 @@ it('detail dalil: "Dipakai di" memuat bab dalil, label status, dan hukum syahid 
     expect(screen.getAllByText('perlu verifikasi').length).toBeGreaterThan(0);
   }
 });
+
+it('penampil kitab: nomor tak ada → pesan; kitab berberkas → bilah atas dan iframe', async () => {
+  const { DAFTAR_KITAB } = await import('@waris/content');
+  const { sumberKitab } = await import('../konten/sumber');
+  const { unmount } = render(<Rujukan kategori="kitab" kitab="999" />);
+  expect(screen.getByRole('alert')).toBeTruthy();
+  unmount();
+  const nomor = DAFTAR_KITAB.findIndex(kitab => sumberKitab().some(isi => isi.judul === kitab.judul && isi.pdf));
+  if (nomor < 0) return;
+  const { container } = render(<Rujukan kategori="kitab" kitab={String(nomor)} />);
+  expect(container.querySelector('.bilah-penampil')).toBeTruthy();
+  expect(container.querySelector('iframe.penampil-kitab')).toBeTruthy();
+});
