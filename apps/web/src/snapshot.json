@@ -20486,7 +20486,7 @@
   {
    "kunci": "bagikan.akses_tautan_bantu",
    "halaman": "bagikan",
-   "id": "Tanpa perlu masuk. Hanya bisa melihat, tidak bisa mengubah kasusmu.",
+   "id": "Tanpa perlu masuk. Cocok dikirim lewat WhatsApp atau grup.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -20500,7 +20500,7 @@
   {
    "kunci": "bagikan.akses_email_bantu",
    "halaman": "bagikan",
-   "id": "Hanya email yang kamu daftarkan, dan mereka harus masuk dengan email itu.",
+   "id": "Hanya email yang kamu daftarkan, dan mereka perlu masuk dengan email itu.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -20514,14 +20514,14 @@
   {
    "kunci": "bagikan.akses_privat_bantu",
    "halaman": "bagikan",
-   "id": "Tautan disimpan tapi tidak bisa dibuka orang lain.",
+   "id": "Tidak dibagikan. Hanya kamu yang bisa membukanya.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "bagikan.daftar_email",
    "halaman": "bagikan",
-   "id": "Email yang boleh membuka (pisahkan dengan koma atau baris baru)",
+   "id": "Email yang boleh membuka",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21025,7 +21025,7 @@
   {
    "kunci": "bagikan.subjudul",
    "halaman": "bagikan",
-   "id": "Penerima hanya bisa melihat. Kalau kamu mengubah kasus ini, yang mereka lihat ikut diperbarui.",
+   "id": "Pilih siapa yang bisa melihat kasus ini. Penerima hanya bisa melihat, tidak bisa mengubah.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21208,6 +21208,111 @@
    "kunci": "tampilan.suara_mati",
    "halaman": "tampilan",
    "id": "Mati",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.pratinjau",
+   "halaman": "bagikan",
+   "id": "Pratinjau sebagai penerima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.privat_info",
+   "halaman": "bagikan",
+   "id": "Kasus ini tidak dibagikan. Pilih “Email tertentu” atau “Siapa saja yang punya tautan” untuk membuat tautan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.konfirmasi_judul",
+   "halaman": "bagikan",
+   "id": "Yakin mau menyimpan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.konf_tautan",
+   "halaman": "bagikan",
+   "id": "Siapa saja yang punya tautan ini akan bisa melihat kasus ini, tanpa perlu masuk.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.konf_email",
+   "halaman": "bagikan",
+   "id": "Hanya email berikut yang bisa membukanya: {email}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.konf_privat",
+   "halaman": "bagikan",
+   "id": "Pembagian dihentikan. Orang yang sudah punya tautannya tidak bisa membukanya lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.konf_tautan_diganti",
+   "halaman": "bagikan",
+   "id": "Tautan lama ({lama}) berhenti berfungsi. Kirim ulang tautan yang baru.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.konf_ya",
+   "halaman": "bagikan",
+   "id": "Ya, simpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.kembali",
+   "halaman": "bagikan",
+   "id": "Kembali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.dihentikan",
+   "halaman": "bagikan",
+   "id": "Pembagian dihentikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.subjudul_pilih",
+   "halaman": "bagikan",
+   "id": "Pilih siapa yang bisa melihat kasus ini. Penerima hanya bisa melihat, tidak bisa mengubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.privat_bantu",
+   "halaman": "bagikan",
+   "id": "Tidak dibagikan. Hanya kamu yang bisa membukanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tautan_bantu",
+   "halaman": "bagikan",
+   "id": "Tanpa perlu masuk. Cocok dikirim lewat WhatsApp atau grup.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_akses_bantu",
+   "halaman": "bagikan",
+   "id": "Hanya email yang kamu daftarkan, dan mereka perlu masuk dengan email itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_label",
+   "halaman": "bagikan",
+   "id": "Email yang boleh membuka",
    "ar": null,
    "versiTerbit": 873
   }
