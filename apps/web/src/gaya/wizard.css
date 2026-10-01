@@ -174,7 +174,8 @@ body.layar-wizard .nav-bawah{display:none}
 .bar-bawah .alasan{font-size:14px;color:var(--ink-muted);text-align:end}
 
 /* kaki lembar: Mulai kasus baru, pelan dan jauh dari tombol utama */
-.kaki-reset{margin-top:28px;align-self:flex-start;color:var(--ink-muted);font-size:14px}
+.catatan-simpan{margin:24px 0 0;color:var(--ink-muted);font-size:13.5px}
+.kaki-reset{margin-top:6px;align-self:flex-start;color:var(--ink-muted);font-size:14px}
 
 /* tautan tambah (utang/wasiat, nama kasus): "+ teks", tanpa bingkai */
 .tautan-tambah{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0;border:0;background:none;color:var(--ink);font:600 16px var(--font-sans);cursor:pointer;list-style:none;text-align:start}
@@ -273,3 +274,21 @@ body.layar-hasil .dok{display:none}
 .selisih{display:block;font:700 13px var(--font-sans);font-variant-numeric:tabular-nums}
 .selisih.naik{color:var(--ok,#138a4b)}
 .selisih.turun{color:var(--danger,#d62f33)}
+
+/* Lembar musyawarah: "Cetak" di Hasil menghasilkan satu halaman bersih berisi judul, angka ringkas, siapa dapat berapa, dan
+   yang tidak mendapat bagian. Tanpa pohon, tabel, langkah, istilah teknis, atau tombol. */
+@media print{
+  @page{margin:16mm}
+  body.layar-hasil{background:#fff!important;color:#000;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body.layar-hasil :is(.kepala,.nav-bawah,.dok,.aksi-hero,.hero-pohon,.tab-kecil,.pita-hitung,.kartu-bulat,.alat-pembagian,.petunjuk-daftar,
+    .pita-hasil,.rel-samping>:not(.kartu-sisi[aria-labelledby=judul-tidak-dapat]),.aksi-kaki,.bar-bawah,.tur,.catatan-belum-pasti,.pilihan-kemungkinan){display:none!important}
+  body.layar-hasil :is(.tautan-sebaris,.kaki-hasil a){display:none!important}
+  body.layar-hasil .halaman-hasil{padding:0}
+  body.layar-hasil .halaman-hasil>.hero-hasil{background:#fff!important;color:#000;padding:0 0 10px;border-radius:0;border-bottom:2px solid #000}
+  body.layar-hasil .hero-hasil *{color:#000!important}
+  body.layar-hasil .halaman-hasil>.tata-hasil{margin:0;padding:12px 0 0;background:none;box-shadow:none;border-radius:0}
+  body.layar-hasil .pita-jawaban{display:block}
+  body.layar-hasil .kartu-sisi{box-shadow:none;border:1px solid #999;break-inside:avoid;margin-bottom:10px}
+  body.layar-hasil .rel-samping{display:block;margin-top:10px}
+  body.layar-hasil .halaman-hasil>.kaki-hasil{padding:10px 0 0;font-size:11px;color:#333}
+}

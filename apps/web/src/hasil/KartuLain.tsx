@@ -110,7 +110,7 @@ export function KartuTidakDapat({ ringkasan, saatPilihOrang }: { ringkasan: Ring
   );
 }
 
-export function KartuSelanjutnya({ tersimpan, saatSimpan, saatEkspor }: { tersimpan: boolean; saatSimpan: () => void; saatEkspor: () => void }) {
+export function KartuSelanjutnya({ tersimpan, saatSimpan, saatEkspor, saatCetak }: { tersimpan: boolean; saatSimpan: () => void; saatEkspor: () => void; saatCetak?: (() => void) | undefined }) {
   return (
     <section className="kartu-sisi kartu-isi" aria-labelledby="judul-selanjutnya" data-tur="selanjutnya">
       <h2 id="judul-selanjutnya">{t('hitung.habis_ini_ngapain')}</h2>
@@ -118,6 +118,7 @@ export function KartuSelanjutnya({ tersimpan, saatSimpan, saatEkspor }: { tersim
         {tersimpan
           ? <span className="status-simpan"><Ikon nama="benar" /> {t('hitung.tersimpan')}</span>
           : <button type="button" className="tautan-aksi" onClick={saatSimpan}><Ikon nama="berkas" />{t('hitung.simpan_lanjut_nanti')}</button>}
+        {saatCetak && <button type="button" className="tautan-aksi" onClick={saatCetak} title={t('hitung.cetak_lembar_ket')}><Ikon nama="berkas" />{t('hitung.cetak_lembar')}</button>}
         <button type="button" className="tautan-aksi" onClick={saatEkspor}><Ikon nama="unduh" />{t('hitung.ekspor_tabel_lengkap')}</button>
       </div>
       <details className="lipat-urutan">

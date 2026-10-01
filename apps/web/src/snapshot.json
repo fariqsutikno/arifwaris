@@ -21938,6 +21938,27 @@
    "id": "Urutan wafat {a} dan {b} belum pasti.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cetak_lembar",
+   "halaman": "hitung",
+   "id": "Cetak lembar untuk rapat keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cetak_lembar_ket",
+   "halaman": "hitung",
+   "id": "Satu halaman: siapa dapat berapa, tanpa tabel dan istilah teknis.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tersimpan_otomatis",
+   "halaman": "hitung",
+   "id": "Tersimpan otomatis di perangkat ini. Kamu bisa lanjut kapan saja dari ArifLab.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

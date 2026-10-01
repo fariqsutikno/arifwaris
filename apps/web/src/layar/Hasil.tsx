@@ -242,7 +242,7 @@ function HasilOkLayar({ kasus, kasusAsli, kemungkinan, idSesi, tujuan, kirim, sa
           <div className="rel-samping">
             {!sedangMenebak && ringkasan.terhalang.length > 0 && <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />}
             {adaPotonganHarta && <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />}
-            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasusAsli)} saatSimpan={() => setNamaTerbuka(true)} saatEkspor={() => setEksporTerbuka(true)} />
+            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasusAsli)} saatSimpan={() => setNamaTerbuka(true)} saatEkspor={() => setEksporTerbuka(true)} saatCetak={sedangMenebak ? undefined : () => window.print()} />
           </div>
         </div>
         <div className="pita-hitung">

@@ -36,6 +36,7 @@ export function KerangkaLangkah({ langkah, children, ringkasan, subjudul, steppe
           <section className="kerangka-utama" aria-labelledby="pertanyaan-utama">
             {keterangan && <p className="caption-langkah caption-isi">{keterangan}</p>}
             <div className="tumpuk">{children}</div>
+            <p className="catatan-simpan">{t('hitung.tersimpan_otomatis')}</p>
             <button type="button" className="tautan-aksi kaki-reset" onClick={saatReset}>{t('hitung.mulai_dari_awal')}</button>
           </section>
           {ringkasan && <aside className="kerangka-samping" aria-label={t('hitung.ringkasan_kasus')}>{ringkasan}</aside>}
