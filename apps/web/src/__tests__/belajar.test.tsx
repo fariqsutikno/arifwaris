@@ -3,7 +3,7 @@ import { expect, it } from 'vitest';
 import { RUJUKAN } from '@waris/content';
 import { glosarium } from '../konten/sumber';
 import { Glosarium } from '../layar/belajar/Glosarium';
-import { KATEGORI_RUJUKAN, Rujukan } from '../layar/belajar/Rujukan';
+import { KATEGORI_RUJUKAN, Rujukan } from '../layar/rujukan/Rujukan';
 
 it('glosarium menampilkan semua istilah dan bisa dicari lewat arti awam', () => {
   render(<Glosarium />);

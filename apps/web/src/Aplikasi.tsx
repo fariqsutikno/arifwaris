@@ -29,7 +29,7 @@ import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
 import { kasusDariContoh } from './layar/belajar/contoh';
-import { Rujukan } from './layar/belajar/Rujukan';
+import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
 import { Peringkat } from './layar/Peringkat';

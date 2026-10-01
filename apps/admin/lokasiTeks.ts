@@ -17,7 +17,7 @@ const LAYAR_BERKAS: readonly [string, string][] = [
   ['layar/Riwayat', 'Riwayat hitung'], ['riwayat', 'Riwayat hitung'], ['layar/Peringkat', 'Peringkat'],
   ['layar/belajar/Belajar', 'Belajar'], ['layar/belajar/Materi', 'Materi'], ['layar/belajar/Latihan', 'Latihan'],
   ['layar/belajar/KuisKonsep', 'Latihan'], ['layar/belajar/KartuSoalKuis', 'Latihan'], ['layar/belajar/Faq', 'FAQ'],
-  ['layar/belajar/TanyaJawab', 'Tanya jawab'], ['layar/belajar/Glosarium', 'Glosarium'], ['layar/belajar/Rujukan', 'Rujukan'],
+  ['layar/belajar/TanyaJawab', 'Tanya jawab'], ['layar/belajar/Glosarium', 'Glosarium'], ['layar/rujukan/', 'Rujukan'],
   ['layar/belajar/ChipDalil', 'Materi'], ['konten/tur', 'Tur pengenalan'], ['tur/', 'Tur pengenalan'],
   ['akun/', 'Akun'], ['layar/Kepala', 'Kepala halaman'], ['ui/', 'Umum'], ['Aplikasi', 'Umum'],
   ['konten/ahliWaris', 'Kalkulator · Ahli waris'], ['konten/ahwal', 'Hasil hitung'], ['konten/harta', 'Kalkulator · Harta'],

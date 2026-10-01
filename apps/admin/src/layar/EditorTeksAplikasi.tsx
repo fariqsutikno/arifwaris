@@ -27,7 +27,7 @@ import { Materi } from '@waris/web/belajar/Materi';
 import { Faq } from '@waris/web/belajar/Faq';
 import { TanyaJawab } from '@waris/web/belajar/TanyaJawab';
 import { Glosarium } from '@waris/web/belajar/Glosarium';
-import { Rujukan } from '@waris/web/belajar/Rujukan';
+import { Rujukan } from '@waris/web/rujukan/Rujukan';
 import { Peringkat } from '@waris/web/layar/Peringkat';
 import { TUR } from '@waris/web/tur';
 import lokasiTeks from 'virtual:lokasi-teks';

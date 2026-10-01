@@ -16,7 +16,7 @@ import { KartuSoalKuis } from '@waris/web/belajar/KartuSoalKuis';
 import { Faq } from '@waris/web/belajar/Faq';
 import { TanyaJawab } from '@waris/web/belajar/TanyaJawab';
 import { Belajar } from '@waris/web/belajar/Belajar';
-import { Rujukan } from '@waris/web/belajar/Rujukan';
+import { Rujukan } from '@waris/web/rujukan/Rujukan';
 import { Glosarium } from '@waris/web/belajar/Glosarium';
 import { Hasil } from '@waris/web/layar/Hasil';
 import { kasusDariContoh } from '@waris/web/contoh';
