@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Percobaan Gaya Hasil</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap">
+<style>
+/* PERCOBAAN gaya: hero gelap berisi pohon keluarga, panel kaca di bawahnya berisi penjelasan.
+   Isi sama dengan mockup-halaman-hasil.html (spec 2026-10-01-perjalanan-keresahan-design.md). Angka contoh; alasan = draf. */
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:rgba(255,255,255,.72);--card-edge:rgba(255,255,255,.95);
+--orange:#f2682a;--orange-soft:#fde6d8;--black:#0e0f10;--line:#dfe6dc;--ok:#1f9d63;--bad:#d4432f;
+--font:"Instrument Sans",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:28px 16px}
+h1,h2,h3,p{margin:0}
+a{color:inherit;font-weight:600;text-underline-offset:3px;cursor:pointer}
+a:focus-visible,button:focus-visible,summary:focus-visible,.nd:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.ik{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.kecil{font-size:13px;color:var(--muted)}
+.frame{max-width:1120px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18)}
+
+/* hero */
+.hero{position:relative;min-height:470px;color:#fff;padding:20px 24px 26px;
+  background:radial-gradient(520px 300px at 74% 55%,rgba(255,150,40,.42),transparent 70%),
+             radial-gradient(420px 260px at 8% 0%,rgba(60,210,170,.35),transparent 70%),
+             linear-gradient(135deg,#0a2326 0%,#0f3a38 55%,#0b2a2b 100%)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:20px}
+.logo i{width:26px;height:26px;border-radius:50%;background:var(--orange);display:block;box-shadow:inset -6px -4px 0 rgba(0,0,0,.15)}
+.menu{display:flex;gap:4px;font-size:14px;flex-wrap:wrap}
+.menu a{font-weight:500;padding:8px 16px;border-radius:999px;color:rgba(255,255,255,.92);text-decoration:none}
+.menu a[aria-current]{background:rgba(255,255,255,.88);color:var(--ink);font-weight:600}
+.profil{display:flex;gap:8px;align-items:center}
+.bulat{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center}
+.heroBody{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.5fr);gap:12px;align-items:end;margin-top:26px}
+@media(max-width:900px){.heroBody{grid-template-columns:1fr}}
+.judul .lok{font-size:14px;color:rgba(255,255,255,.85)}
+.judul h1{font-size:44px;line-height:1.05;font-weight:500;letter-spacing:-.02em;margin-top:8px}
+@media(max-width:600px){.judul h1{font-size:34px}}
+.judul .aksiHero{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:20px;font-size:14px}
+.pil{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;font:600 14px var(--font);background:var(--black);color:#fff;border:0;cursor:pointer}
+.kaca{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.3);backdrop-filter:blur(8px);border-radius:16px}
+.alasanOrang{margin-top:18px;padding:12px 14px;font-size:14px;min-height:78px;max-width:380px}
+.pohon{overflow-x:auto}
+.pohon svg{display:block;min-width:560px;width:100%;height:auto}
+.pohon text{font-family:var(--font);fill:#fff}
+.pohon .gar{fill:none;stroke:rgba(255,255,255,.7);stroke-width:1.6}.pohon .nikah{stroke-width:3.5}
+.pohon .nd{cursor:pointer}
+.pohon .nd rect{fill:rgba(255,255,255,.13);stroke:rgba(255,255,255,.4);stroke-width:1.2}
+.pohon .nd.wafat rect{stroke-dasharray:5 4;fill:rgba(255,255,255,.06)}
+.pohon .nd.terima rect{fill:rgba(110,235,170,.24);stroke:rgba(150,255,200,.7)}
+.pohon .nd.lain{opacity:.55}
+.pohon .nd.dipilih rect{stroke:var(--orange);stroke-width:3}
+.pohon .n{font-weight:600;font-size:13px}.pohon .s{font-size:12px;fill:rgba(255,255,255,.9)}.pohon .r{font-weight:700;font-size:12px;fill:#9bf0c3}
+.pohon.sembunyi .r{display:none}
+.legenda{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;color:rgba(255,255,255,.9);margin-top:6px}
+.legenda i{display:inline-block;width:12px;height:12px;border:1.5px solid rgba(255,255,255,.7);border-radius:3px;vertical-align:-2px;margin-right:5px}
+
+/* panel */
+.panel{padding:0 12px 12px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:-14px;position:relative}
+@media(max-width:900px){.panel{grid-template-columns:1fr;margin-top:0;padding-top:12px}}
+.kartu{background:var(--card);border:1px solid var(--card-edge);border-radius:24px;padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.kartu.lebar{grid-column:span 2}
+@media(max-width:900px){.kartu.lebar{grid-column:auto}}
+.kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.kepala h2{font-size:21px;font-weight:600;letter-spacing:-.01em}
+.panah{width:40px;height:40px;border-radius:50%;background:#e4ece1;display:grid;place-items:center;flex:none;color:var(--ink)}
+.baris{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.baris:last-child{border:0}
+.baris .apa{display:flex;flex-direction:column;gap:1px;min-width:0}
+.baris b{font-weight:600}
+.persen{background:var(--black);color:#fff;border-radius:999px;font:600 13px var(--font);padding:4px 12px;min-width:62px;text-align:center;flex:none;font-variant-numeric:tabular-nums}
+.persen.terang{background:transparent;color:var(--ink);border:1px solid #c9d2c6}
+.uang{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.naik{color:var(--ok);font-weight:600;font-size:13px}.turun{color:var(--bad);font-weight:600;font-size:13px}
+.statistik{display:grid;grid-template-columns:1fr 1fr;gap:16px 12px}
+.stat{display:flex;gap:12px;align-items:center}
+.ikon{width:44px;height:44px;border-radius:50%;background:var(--orange-soft);color:var(--orange);display:grid;place-items:center;flex:none}
+.stat b{display:block;font-size:17px;font-weight:600;line-height:1.2}
+.chipPilih{display:flex;gap:6px;flex-wrap:wrap}
+.chipPilih button{all:unset;cursor:pointer;padding:7px 14px;border-radius:999px;border:1px solid #c9d2c6;font:500 13px var(--font);background:#fff}
+.chipPilih button[aria-pressed=true]{background:var(--black);color:#fff;border-color:var(--black)}
+.chipPilih button:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.grafik{display:flex;flex-direction:column;gap:9px}
+.gr{display:grid;grid-template-columns:70px 1fr 74px;gap:8px;align-items:center;font-size:13px}
+.gr .trek{height:16px;background:#e4ece1;border-radius:999px;overflow:hidden}
+.gr .isi{height:100%;border-radius:999px;background:var(--black)}
+.gr .isi.alt{background:repeating-linear-gradient(135deg,var(--orange) 0 3px,#f7a77c 3px 7px)}
+.gr .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.kutipan{background:#fff;border-radius:16px;padding:14px;font-size:14px}
+.kutipan b{font-weight:600}
+.chip{display:inline-block;font:600 12px var(--font);padding:2px 10px;border-radius:999px;background:var(--orange-soft);color:#a8440f}
+.ava{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;flex:none}
+.langkah{margin:0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.tautan{display:flex;flex-direction:column;gap:10px;font-size:14px}
+.kaki{padding:14px 24px 20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.kaki .aksi{display:flex;gap:18px;font-size:14px;color:var(--ink)}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 17V11a6 6 0 1112 0v6l1.5 2h-15zM10 21h4"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+  <symbol id="i-koin" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1 1-1.5 2.5-1.5s2.5.6 2.5 1.6-1 1.4-2.5 1.9-2.5.9-2.5 1.9 1 1.6 2.5 1.6 2.5-.6 2.5-1.6"/></symbol>
+  <symbol id="i-orang" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/></symbol>
+  <symbol id="i-rumah" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4zM10 20v-6h4v6"/></symbol>
+  <symbol id="i-jam" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></symbol>
+  <symbol id="i-cek" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="i-pohon" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/></symbol>
+</svg>
+
+<div class="frame">
+  <!-- HERO: pohon keluarga -->
+  <header class="hero">
+    <div class="nav">
+      <div class="logo"><i></i>Arif Waris</div>
+      <nav class="menu" aria-label="Utama"><a>Beranda</a><a>Belajar</a><a aria-current="page">Lab Hitung</a><a>Latihan</a><a>Rujukan</a></nav>
+      <div class="profil"><span class="bulat"><svg class="ik"><use href="#i-bell"/></svg></span><span class="bulat" style="background:var(--orange);font-weight:700">F</span></div>
+    </div>
+    <div class="heroBody">
+      <div class="judul">
+        <p class="lok">Menurut madzhab Syafi'i · dihitung 1 Oktober 2026</p>
+        <h1>Harta Mbah Karto dan keluarganya</h1>
+        <div class="aksiHero"><button class="pil"><svg class="ik"><use href="#i-pohon"/></svg>Lembar musyawarah</button><a id="tgl">Sembunyikan nominal</a><a>Tambah kerabat lain</a></div>
+        <div class="kaca alasanOrang" id="alasanOrang" aria-live="polite"><span style="color:rgba(255,255,255,.92)">Ketuk orang di pohon untuk melihat penjelasannya.</span></div>
+      </div>
+      <div>
+        <div class="pohon" id="pohon">
+          <svg viewBox="0 0 700 330" role="img" aria-label="Pohon keluarga Mbah Karto. Ketuk orang untuk melihat penjelasannya.">
+            <g class="gar nikah"><path d="M230 47H250"/><path d="M520 47H540"/><path d="M290 157H470"/></g>
+            <g class="gar"><path d="M240 47V130"/><path d="M530 47V130"/><path d="M380 157V205H300V250M380 205H440V250"/></g>
+            <g class="nd wafat" tabindex="0" data-o="Mbah Karto" data-a="Pemilik harta. Wafat 1975, dibagi lebih dulu dari Budi dan Andi." transform="translate(110,20)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="22">Mbah Karto</text><text class="s" x="12" y="40">wafat 1975</text></g>
+            <g class="nd terima" tabindex="0" data-o="Mbah Sumi" data-a="Istri mendapat 1/8 karena ada anak." transform="translate(250,20)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="20">Mbah Sumi</text><text class="s" x="12" y="35">istri · hidup</text><text class="r" x="12" y="48">Rp 2,30 M</text></g>
+            <g class="nd lain" tabindex="0" data-o="Pak Harjo" data-a="Besan tidak mewarisi dari Mbah Karto. Tidak ada sebab waris antara keduanya." transform="translate(400,20)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="22">Pak Harjo</text><text class="s" x="12" y="40">besan</text></g>
+            <g class="nd lain" tabindex="0" data-o="Bu Harjo" data-a="Besan tidak mewarisi dari Mbah Karto. Tidak ada sebab waris antara keduanya." transform="translate(540,20)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="22">Bu Harjo</text><text class="s" x="12" y="40">besan</text></g>
+            <g class="nd wafat" tabindex="0" data-o="Budi" data-a="Budi wafat sesudah Mbah, jadi Budi mewarisi. Bagiannya diteruskan ke istri dan anak-anaknya." transform="translate(180,130)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="22">Budi</text><text class="s" x="12" y="40">anak · wafat 1998</text></g>
+            <g class="nd terima" tabindex="0" data-o="Dewi" data-a="Dewi menerima dari Budi sebagai istrinya. Bagian itu miliknya, lalu diteruskan ke keluarga Dewi waktu ia wafat." transform="translate(470,130)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="20">Dewi</text><text class="s" x="12" y="35">menantu · hidup</text><text class="r" x="12" y="48">Rp 1,23 M</text></g>
+            <g class="nd terima" tabindex="0" data-o="Sari" data-a="Sari menerima dari Andi sebagai anak; Andi menerima dari Budi." transform="translate(240,250)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="20">Sari</text><text class="s" x="12" y="35">cucu · hidup</text><text class="r" x="12" y="48">Rp 1,43 M</text></g>
+            <g class="nd terima" tabindex="0" data-o="Dimas" data-a="Dimas menerima dari Andi sebagai anak; Andi menerima dari Budi." transform="translate(380,250)"><rect width="120" height="54" rx="12"/><text class="n" x="12" y="20">Dimas</text><text class="s" x="12" y="35">cucu · hidup</text><text class="r" x="12" y="48">Rp 2,02 M</text></g>
+          </svg>
+        </div>
+        <div class="legenda"><span><i style="border-style:dashed"></i>Wafat</span><span><i style="background:rgba(110,235,170,.4)"></i>Menerima</span><span><i style="opacity:.5"></i>Bukan ahli waris</span><span>Mendatar = menikah, turun = anak</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PANEL: penjelasan -->
+  <main class="panel">
+    <section class="kartu" aria-labelledby="h-bagi">
+      <div class="kepala"><div><h2 id="h-bagi">Pembagian per orang</h2><p class="kecil">Harta Rp 10.368.000.000</p></div><a class="panah" aria-label="Buka rincian"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <div id="daftar"></div>
+    </section>
+
+    <section class="kartu" aria-labelledby="h-ringkas">
+      <div class="kepala"><div><h2 id="h-ringkas">Ringkasan harta</h2><p class="kecil">Rumah dan kebun, belum pernah dibagi</p></div><a class="panah" aria-label="Buka rincian"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <div class="statistik">
+        <div class="stat"><span class="ikon"><svg class="ik"><use href="#i-koin"/></svg></span><div><b>Rp 10,37 M</b><span class="kecil">Total harta</span></div></div>
+        <div class="stat"><span class="ikon"><svg class="ik"><use href="#i-orang"/></svg></span><div><b>5 orang</b><span class="kecil">Menerima bagian</span></div></div>
+        <div class="stat"><span class="ikon"><svg class="ik"><use href="#i-rumah"/></svg></span><div><b>2 barang</b><span class="kecil">Rumah dan kebun</span></div></div>
+        <div class="stat"><span class="ikon"><svg class="ik"><use href="#i-jam"/></svg></span><div><b>1975</b><span class="kecil">Mbah Karto wafat</span></div></div>
+        <div class="stat"><span class="ikon"><svg class="ik"><use href="#i-pohon"/></svg></span><div><b>3 jalur</b><span class="kecil">Dibagi bertahap</span></div></div>
+        <div class="stat"><span class="ikon"><svg class="ik"><use href="#i-koin"/></svg></span><div><b>Rp 0</b><span class="kecil">Sisa pembulatan</span></div></div>
+      </div>
+    </section>
+
+    <section class="kartu" aria-labelledby="h-kalau">
+      <div class="kepala"><div><h2 id="h-kalau">Bagaimana kalau…</h2><p class="kecil">1 hal belum pasti: urutan wafat Budi</p></div><a class="panah" aria-label="Pastikan"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <div class="chipPilih" id="kem"><button aria-pressed="true" data-k="0">Budi sesudah Mbah</button><button aria-pressed="false" data-k="1">Budi sebelum Mbah</button></div>
+      <div class="grafik" id="grafik" aria-label="Perbandingan bagian per orang"></div>
+      <p class="kecil">Garis hitam: jawaban sekarang. Garis jingga: kemungkinan lain (angka contoh). Memilih hanya membandingkan.</p>
+    </section>
+
+    <section class="kartu" aria-labelledby="h-tidak">
+      <div class="kepala"><div><h2 id="h-tidak">Tidak mendapat bagian</h2><p class="kecil">3 orang di pohon</p></div><a class="panah" aria-label="Buka rincian"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <div>
+        <div class="baris"><div class="apa"><b>Pak Harjo · besan</b><span class="kecil">Besan tidak mewarisi dari Mbah Karto. Tidak ada sebab waris antara keduanya.</span></div></div>
+        <div class="baris"><div class="apa"><b>Tono · anak angkat</b><span class="kecil">Anak angkat tidak mewarisi karena tidak ada hubungan nasab.</span></div></div>
+        <div class="baris"><div class="apa"><b>Anak Pak Slamet · cucu</b><span class="kecil">Pak Slamet wafat sebelum Mbah, jadi tidak mewarisi. Anak-anaknya terhalang oleh Budi.</span></div></div>
+      </div>
+    </section>
+
+    <section class="kartu" aria-labelledby="h-tanya">
+      <div class="kepala"><div><h2 id="h-tanya">Yang sering ditanyakan</h2><p class="kecil">Dari keluarga yang biasa ribut</p></div><a class="panah" aria-label="Buka rincian"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <div class="kutipan"><b>Kok keluarga Bu Dewi dapat?</b><p class="kecil" style="margin-top:4px">Dewi menerima sebagai istri Budi, bukan sebagai kerabat Mbah. Bagian itu sudah menjadi miliknya.</p></div>
+      <div class="kutipan"><b>Kok cucu Pak Slamet tidak dapat?</b><p class="kecil" style="margin-top:4px">Menurut fikih, ia terhalang oleh paman mereka. <span class="chip">Hukum positif, bukan fikih</span> KHI mengatur ahli waris pengganti secara berbeda.</p></div>
+      <p class="kecil">Jalan yang ada di fikih: <a>kerelaan ahli waris</a> · <a>wasiat sampai 1/3</a></p>
+    </section>
+
+    <section class="kartu" aria-labelledby="h-brg">
+      <div class="kepala"><div><h2 id="h-brg">Per barang</h2><p class="kecil">Siapa yang dilibatkan bila dijual</p></div><a class="panah" aria-label="Buka rincian"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <div class="chipPilih" id="brgPilih"><button aria-pressed="true" data-b="8000">Rumah</button><button aria-pressed="false" data-b="2368">Kebun</button></div>
+      <div id="brg"></div>
+      <p class="kecil">Selisih pembulatan dilaporkan terpisah (satuan Rp 1.000). Semua penerima perlu dilibatkan bila barang dijual atau dibalik nama.</p>
+    </section>
+
+    <section class="kartu lebar" aria-labelledby="h-langkah">
+      <div class="kepala"><h2 id="h-langkah">Langkah perhitungan</h2><a class="panah" aria-label="Buka tabel faraidh"><svg class="ik"><use href="#i-out"/></svg></a></div>
+      <ol class="langkah">
+        <li>Harta dibagi mulai dari yang wafat paling dulu: Mbah Karto, lalu bagian Budi, lalu bagian Andi.</li>
+        <li>Mbah Sumi dan anak-anak Mbah Karto menerima bagiannya; bagian Budi diteruskan ke Dewi dan anak-anaknya.</li>
+        <li>Sari dan Dimas menerima lewat dua jalur (dari Budi dan dari Andi).</li>
+        <li>Tiap orang dibulatkan ke bawah ke Rp 1.000; sisanya dilaporkan terpisah.</li>
+      </ol>
+    </section>
+
+    <section class="kartu" aria-labelledby="h-habis">
+      <div class="kepala"><h2 id="h-habis">Habis ini ngapain?</h2></div>
+      <div class="tautan">
+        <a>Coba ubah sesuatu <span class="kecil" style="font-weight:400">· tanpa menyimpan</span></a>
+        <a>Kirim ke keluarga untuk dilengkapi</a>
+        <a>Ekspor tabel lengkap</a>
+        <a>Simpan, lanjut nanti</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="kaki">
+    <p style="max-width:70ch">Hasil ini membantu keluarga memahami pembagian menurut fikih. Surat keterangan waris dan balik nama mengikuti ketentuan lembaga berwenang. Tanyakan ke ahli faraidh atau pengadilan agama setempat.</p>
+    <div class="aksi"><a>Ubah data</a><a>Reset skenario</a></div>
+  </footer>
+</div>
+
+<script>
+// Data contoh (juta rupiah); ALT = urutan wafat lain, jumlah tetap 10.368. Bukan hasil engine.
+const ORANG=[['Rina','anak perempuan',3024,'Anak perempuan mendapat bagian tetap, sisanya untuk anak laki-laki.','#e9892f'],
+ ['Mbah Sumi','istri Mbah Karto',2304,'Istri mendapat 1/8 karena ada anak.','#3f8f7a'],
+ ['Dimas','cucu, lewat Budi dan Andi',2023,'Menerima dari Andi sebagai anak.','#4d6fd6'],
+ ['Sari','cucu, lewat Budi dan Andi',1428,'Menerima dari Andi sebagai anak.','#9b5fc9'],
+ ['Dewi','menantu, istri Budi',1232,'Menerima dari Budi sebagai istrinya.','#d1496b'],
+ ['Lina','cucu, lewat Budi',357,'Menerima dari Budi sebagai anak.','#7a8a3c']];
+const ALT=[3456,1728,2592,2592,0,0],TOT=10368;
+const fmt=n=>'Rp '+(n*1e6).toLocaleString('id-ID');
+const sel=n=>n===0?'':(n>0?'<span class=naik>+':'<span class=turun>−')+'Rp '+Math.abs(n/1000).toLocaleString('id-ID',{minimumFractionDigits:3})+' M</span>';
+const nilai=(i,k)=>k?ALT[i]:ORANG[i][2];
+let kIni=0,hBrg=8000;
+function daftar(){
+  document.getElementById('daftar').innerHTML=ORANG.map((o,i)=>{const v=nilai(i,kIni);
+    return `<div class="baris"><span class="ava" style="background:${o[4]}">${o[0][0]}</span><div class="apa" style="flex:1"><b>${o[0]}</b><span class="kecil">${o[1]}</span></div>`+
+      `<div style="text-align:right"><span class="uang">${fmt(v)}</span><br><span class="kecil">${(v/TOT*100).toFixed(1).replace('.',',')}%</span></div></div>`}).join('')}
+function grafik(){
+  document.getElementById('grafik').innerHTML=ORANG.map((o,i)=>{const a=ORANG[i][2],b=ALT[i],tampilAlt=kIni===1;
+    return `<div class="gr"><span>${o[0]}</span><div><div class="trek"><div class="isi" style="width:${a/3456*100}%"></div></div>`+
+      (tampilAlt?`<div class="trek" style="margin-top:3px"><div class="isi alt" style="width:${b/3456*100}%"></div></div>`:'')+
+      `</div><span class="v">${tampilAlt?sel(b-a)||'<span class=kecil>sama</span>':(a/1000).toFixed(2).replace('.',',')+' M'}</span></div>`}).join('')}
+function barang(){
+  document.getElementById('brg').innerHTML=ORANG.map((o,i)=>{const v=nilai(i,kIni),rp=Math.floor(hBrg*1e6*v/TOT/1000)*1000;
+    return `<div class="baris"><span>${o[0]}</span><span><span class="persen terang">${(v/TOT*100).toFixed(1).replace('.',',')}%</span> <span class="uang">Rp ${rp.toLocaleString('id-ID')}</span></span></div>`}).join('')}
+function semua(){daftar();grafik();barang()}
+semua();
+function pilihTombol(sel,attr,fn){const bs=document.querySelectorAll(sel+' button');
+  bs.forEach(b=>b.addEventListener('click',()=>{bs.forEach(x=>x.setAttribute('aria-pressed',x===b));fn(b.dataset[attr])}))}
+pilihTombol('#kem','k',v=>{kIni=+v;semua()});
+pilihTombol('#brgPilih','b',v=>{hBrg=+v;barang()});
+const info=document.getElementById('alasanOrang');
+function pilih(g){document.querySelectorAll('.nd').forEach(x=>x.classList.toggle('dipilih',x===g));
+  info.innerHTML=`<b>${g.dataset.o}</b><p style="margin-top:3px">${g.dataset.a}</p>`}
+document.querySelectorAll('.nd').forEach(g=>{g.addEventListener('click',()=>pilih(g));
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pilih(g)}})});
+const tgl=document.getElementById('tgl');
+tgl.addEventListener('click',()=>{const s=document.getElementById('pohon').classList.toggle('sembunyi');tgl.textContent=s?'Tampilkan nominal':'Sembunyikan nominal'});
+</script>
+</body>
+</html>
