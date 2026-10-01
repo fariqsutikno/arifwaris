@@ -13,12 +13,12 @@ function dengan(ubah: (k: Kasus, anak: string) => Kasus): Kasus {
 }
 
 describe('hasil kasus khusus', () => {
-  it('taqdir (hilang): pembagian sekarang + amplop titipan + kalau terbukti', () => {
+  it('taqdir (hilang): pembagian sekarang + disimpan dulu + bagaimana kalau', () => {
     const kasus = dengan((k, anak) => terapkanKeadaan(k, anak, { jenis: 'hilang' }));
     render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={() => {}} />);
-    expect(screen.getByText(/Amplop titipan/)).toBeTruthy();
+    expect(screen.getByText(/Disimpan dulu/)).toBeTruthy();
     expect(screen.getByText(/menunggu kabar/)).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Kalau terbukti/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Bagaimana kalau/ }));
     expect(screen.getAllByText(/masih hidup|sudah wafat/).length).toBeGreaterThan(0);
   });
   it('gharqa: dua kartu harta dan kalimat tidak saling mewarisi', () => {

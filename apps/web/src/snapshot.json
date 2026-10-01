@@ -17469,14 +17469,14 @@
   {
    "kunci": "hitung.babak.subjudul",
    "halaman": "hitung",
-   "id": "Babak {nomor} dari {total} · {nama}",
+   "id": "Keluarga {nama} · {nomor} dari {total}",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.babak.tambahkan_keluarga_almarhum",
    "halaman": "hitung",
-   "id": "Tambahkan dulu keluarga yang ditinggalkan almarhum di babak ini.",
+   "id": "Tambahkan dulu keluarga yang ditinggalkan almarhum ini.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17903,7 +17903,7 @@
   {
    "kunci": "hitung.babak.babak_ini",
    "halaman": "hitung",
-   "id": "babak ini",
+   "id": "almarhum ini",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17931,7 +17931,7 @@
   {
    "kunci": "hitung.babak.dari_babak_sebelumnya",
    "halaman": "hitung",
-   "id": "Hubungan keluarga ini dari babak sebelumnya. Ubah di babak itu bila keliru.",
+   "id": "Hubungan keluarga ini dari keluarga sebelumnya. Ubah di sana bila keliru.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18127,7 +18127,7 @@
   {
    "kunci": "hitung.janin.hapus_isi",
    "halaman": "hitung",
-   "id": "Data janin di babak ini akan dihapus.",
+   "id": "Data janin di keluarga ini akan dihapus.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18162,7 +18162,7 @@
   {
    "kunci": "hasil.titipan.judul",
    "halaman": "hasil",
-   "id": "Amplop titipan",
+   "id": "Disimpan dulu",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18218,7 +18218,7 @@
   {
    "kunci": "hasil.titipan.kalau_terbukti",
    "halaman": "hasil",
-   "id": "Kalau terbukti…",
+   "id": "Bagaimana kalau…",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18379,7 +18379,7 @@
   {
    "kunci": "hitung.cerita.label_babak",
    "halaman": "hitung",
-   "id": "Babak {nomor}",
+   "id": "Keluarga {nama}",
    "ar": null,
    "versiTerbit": 873
   },
