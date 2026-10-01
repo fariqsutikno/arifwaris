@@ -30,8 +30,9 @@ export function TerakhirDibuka({ kasusSekarang, saatBuka }: { kasusSekarang: Kas
   if (daftar.length === 0) return null;
   const tampil = cariEntri(daftar, kata);
   return (
-    <section className="lab-terakhir tumpuk-rapat" aria-labelledby="judul-lab-terakhir">
-      <h2 id="judul-lab-terakhir" className="tanya-tujuan">{t('hitung.lab_terakhir_dibuka')}</h2>
+    <section className="bagian-lab lab-terakhir" aria-labelledby="judul-lab-terakhir">
+      <h2 id="judul-lab-terakhir" className="judul-bagian">{t('hitung.lab_terakhir_dibuka')}</h2>
+      <p className="keterangan">{t('hitung.lab_terakhir_ket')}</p>
       {daftar.length > BATAS_TAMPIL_CARI && (
         <label className="isian isian-kecil">
           <span className="sembunyi-visual">{t('hitung.lab_cari')}</span>
@@ -41,7 +42,7 @@ export function TerakhirDibuka({ kasusSekarang, saatBuka }: { kasusSekarang: Kas
       {tampil.length === 0 && <p className="keterangan">{t('hitung.lab_tidak_ketemu')}</p>}
       {kelompokkanRiwayat(tampil, sekarang).map(({ kelompok, isi }) => (
         <div key={kelompok} className="lab-kelompok">
-          <h3 className="judul-bagian-kecil">{LABEL_KELOMPOK[kelompok]()}</h3>
+          <h3 className="label-langkah">{LABEL_KELOMPOK[kelompok]()}</h3>
           <ul className="daftar-polos daftar-soal daftar-riwayat">
             {isi.map(entri => (
               <li key={entri.id} className="baris-soal">

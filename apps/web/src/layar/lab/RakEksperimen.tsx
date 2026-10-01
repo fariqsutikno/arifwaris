@@ -1,5 +1,6 @@
 // Rak Eksperimen: kasus bernama yang disimpan pengguna (tersimpan.ts, ikut sinkron ke akun), yang disematkan di depan.
-// Tiap kartu: pohon mini, nama, ringkasan, dan aksi teks (sematkan, ganti nama, hapus). Tanpa kasus tersimpan tidak dirender.
+// Berkas berwarna yang saling menumpuk sedikit dan agak miring seperti tumpukan di meja; disentuh, ia terangkat dan lurus.
+// Tiap berkas: pohon mini, nama, ringkasan, tombol Buka, dan aksi teks (sematkan, ganti nama, hapus). Tanpa kasus tersimpan tidak dirender.
 
 import { useState } from 'react';
 import { urutRak } from '../../lab';
@@ -24,13 +25,15 @@ export function RakEksperimen({ kasusSekarang, saatBuka }: { kasusSekarang: Kasu
   const segarkan = () => setDaftar(bacaTersimpan());
   if (daftar.length === 0) return null;
   return (
-    <section className="lab-rak tumpuk-rapat" aria-labelledby="judul-lab-rak">
-      <h2 id="judul-lab-rak" className="tanya-tujuan">{t('hitung.lab_rak')}</h2>
+    <section className="bagian-lab" aria-labelledby="judul-lab-rak">
+      <h2 id="judul-lab-rak" className="judul-bagian">{t('hitung.lab_rak')}</h2>
+      <p className="keterangan">{t('hitung.lab_rak_ket')}</p>
       <ul className="daftar-polos lab-rak-daftar">
         {urutRak(daftar).map((baris, urutan) => {
           const ringkasan = ringkasKasus(baris.kasus);
           return (
             <li key={baris.id} className={baris.disematkan ? 'lab-berkas tersemat' : 'lab-berkas'} style={{ ['--urut' as string]: urutan }}>
+              {baris.disematkan && <span className="lab-semat">{t('hitung.lab_disematkan')}</span>}
               <PohonSusunan kasus={baris.kasus} skalaMaks={SKALA_KARTU} />
               <h3>{baris.judul}</h3>
               <p className="keterangan">{ringkasan.judul} · {ringkasan.keterangan}</p>

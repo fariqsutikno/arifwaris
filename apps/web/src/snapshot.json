@@ -19292,6 +19292,48 @@
    "id": "Pohon keluarga {nama}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_jumlah_ahli_waris",
+   "halaman": "hitung",
+   "id": "{jumlah} ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_mulai_cepat_ket",
+   "halaman": "hitung",
+   "id": "Pilih susunan keluarga, ahli warisnya langsung terisi. Tinggal isi harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_rak_ket",
+   "halaman": "hitung",
+   "id": "Kasus yang sudah kamu beri nama. Sematkan yang sering dibuka.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_disematkan",
+   "halaman": "hitung",
+   "id": "Disematkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_terakhir_ket",
+   "halaman": "hitung",
+   "id": "Yang kamu buka dua pekan terakhir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_aksi_lain",
+   "halaman": "hitung",
+   "id": "Aksi lain",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

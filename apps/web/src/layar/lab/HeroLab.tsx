@@ -1,6 +1,7 @@
-// Hero Awal Lab: panggung pohon keluarga kasus terakhir. Kasus lengkap → pohon + pita bagian dari engine (jalankan +
-// ringkas, sama dengan layar Hasil); kasus belum lengkap → pohon susunan saja, engine tidak dipanggil.
-// Kasus apa pun yang sedang berjalan (bahkan baru memilih jenis kelamin) bisa dilanjutkan; tanpa kasus → ajakan mulai.
+// Panel kaca di hero Awal Lab (pola sama dengan panel "Lanjutkan" di Belajar): satu aksi utama. Ada kasus berjalan →
+// pohon keluarganya dan tombol Lanjutkan. Kasus lengkap memakai pohon + pita bagian dari engine (jalankan + ringkas,
+// sama dengan layar Hasil); kasus belum lengkap memakai pohon susunan saja, engine tidak dipanggil.
+// Tanpa kasus → satu tombol "Mulai skenario baru". Kasus apa pun yang berjalan (bahkan baru memilih jenis kelamin) bisa dilanjutkan.
 
 import { useMemo } from 'react';
 import { Pohon } from '../../hasil/Pohon';
@@ -10,11 +11,10 @@ import { ringkas } from '../../hasil/ringkasan';
 import { jalankan } from '../../jalankan';
 import type { Kasus } from '../../kasus';
 import { ringkasKasus } from '../../riwayat';
-import { Ikon } from '../../ui/Ikon';
 import { PohonSusunan } from './PohonSusunan';
-import { t } from '../../terjemah';
+import { panah, t } from '../../terjemah';
 
-const SKALA_MAKS = 1.4;
+const SKALA_MAKS = 1.3;
 // Warna ruas pita bagian, satu per penerima (sama dengan hero Beranda).
 const WARNA_RUAS = ['#6ee9b0', '#f6c86a', '#8ec5ff', '#f7a8c4', '#c9a8f7'];
 
@@ -26,15 +26,18 @@ export function HeroLab({ kasusTerakhir, saatLanjut, saatMulaiBaru }: Props) {
     [kasusTerakhir]);
   if (!kasusTerakhir) {
     return (
-      <section className="lab-hero lab-hero-kosong">
-        <p className="lead">{t('hitung.lab_hero_kosong')}</p>
-        <button type="button" className="pil-hero pil-terang" onClick={saatMulaiBaru}><Ikon nama="tambah" ukuran={18} />{t('hitung.lab_mulai_baru')}</button>
-      </section>
+      <div className="panel-lab panel-lab-kosong">
+        <button type="button" className="pil-terang kartu-lanjut-hero" onClick={saatMulaiBaru}>
+          <span className="label-langkah">{t('hitung.lab_hero_kosong')}</span>
+          <b>{t('hitung.lab_mulai_baru')}</b>
+          <span className="panah-bulat" aria-hidden="true">{panah()}</span>
+        </button>
+      </div>
     );
   }
   const { judul, keterangan } = ringkasKasus(kasusTerakhir);
   return (
-    <section className="lab-hero" aria-label={t('hitung.lab_pohon_kasus', { nama: judul })}>
+    <section className="panel-lab" aria-label={t('hitung.lab_pohon_kasus', { nama: judul })}>
       <div className="lab-panggung">
         {ringkasan
           ? <PratinjauPohon skalaMaks={SKALA_MAKS}><PenyediaSorot><Pohon graf={kasusTerakhir.graf} ringkasan={ringkasan} urutanWafat={[]} bentuk="sederhana" sedangMenebak={false} sembunyiNominal={false} saatPilih={() => {}} /></PenyediaSorot></PratinjauPohon>
@@ -47,11 +50,12 @@ export function HeroLab({ kasusTerakhir, saatLanjut, saatMulaiBaru }: Props) {
           </div>
         )}
       </div>
-      <div className="lab-hero-isi">
-        <h2>{judul}</h2>
-        <p className="keterangan">{keterangan}</p>
-        <button type="button" className="pil-hero pil-terang" onClick={saatLanjut}>{t('hitung.lab_lanjutkan')}</button>
-      </div>
+      <button type="button" className="pil-terang kartu-lanjut-hero" onClick={saatLanjut}>
+        <span className="label-langkah">{t('hitung.lab_lanjutkan')}</span>
+        <b>{judul}</b>
+        <span className="keterangan">{keterangan}</span>
+        <span className="panah-bulat" aria-hidden="true">{panah()}</span>
+      </button>
     </section>
   );
 }

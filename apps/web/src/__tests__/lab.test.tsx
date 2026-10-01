@@ -65,7 +65,7 @@ test('ganti nama dari rak lewat dialog', () => {
 test('mulai cepat: satu ketukan mengirim kasus dengan ahli waris susunannya', () => {
   const saatPilih = vi.fn();
   render(<MulaiCepat saatPilih={saatPilih} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Istri dan anak' }));
+  fireEvent.click(screen.getByRole('button', { name: /^Istri dan anak/ }));
   expect(saatPilih).toHaveBeenCalledTimes(1);
   expect(saatPilih.mock.calls[0]![0].tirkah.kotor).toBe(0n);
 });
@@ -151,7 +151,7 @@ test('awal lab bersih: tanpa rak, tanpa terakhir dibuka, tanpa jejak; ada mulai 
 test('chip mulai cepat di awal lab memanggil saatMulaiDari', () => {
   const saatMulaiDari = vi.fn();
   render(<AwalHitung {...propsAwal} saatMulaiDari={saatMulaiDari} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Suami dan anak' }));
+  fireEvent.click(screen.getByRole('button', { name: /^Suami dan anak/ }));
   expect(saatMulaiDari).toHaveBeenCalledTimes(1);
 });
 

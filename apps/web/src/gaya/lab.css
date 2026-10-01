@@ -1,56 +1,88 @@
-/* Awal Lab (spek 2026-10-01): hero pohon gelap, chip mulai cepat, rak berkas bernama, linimasa, strip latihan.
-   Token Logivo dari token.css. Gerak hanya transform/opacity dan mati pada prefers-reduced-motion (blok paling bawah). */
-@keyframes lab-naik{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+/* Awal Lab: memakai kerangka Beranda/Belajar (hero gelap penuh lebar dengan panel kaca, ubin pastel berwarna di latar krem).
+   Di sini hanya yang khas Lab: panel pohon di hero, ubin mulai cepat dan soal (tombol), rak berkas yang saling menumpuk
+   dan agak miring. Gerak hanya transform/opacity dan mati pada prefers-reduced-motion (blok paling bawah). */
+@keyframes lab-naik{from{opacity:0;transform:translateY(14px)}}
 
-.lab-hero{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;align-items:center;padding:24px;border-radius:var(--radius-lg);color:#fff;
-  background:linear-gradient(135deg,#0a2326,#0f3a38 55%,#0b2a2b);box-shadow:var(--shadow-pop);animation:lab-naik .6s cubic-bezier(.2,.7,.2,1) both}
-.lab-hero .keterangan{color:rgba(255,255,255,.78)}
-.lab-hero h2{margin:0;color:#fff;font:600 clamp(22px,2.4vw,30px)/1.15 var(--font-display)}
-.lab-panggung{display:flex;flex-direction:column;gap:12px;min-width:0}
-.lab-hero-isi{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
-.lab-hero-kosong{grid-template-columns:1fr auto}
-.lab-hero-kosong .lead{margin:0;color:#fff}
-.lab-hero .pil-terang{white-space:nowrap}
-.lab-hero .pil-terang:hover{transform:translateY(-2px)}
-.lab-hero .pratinjau-pohon{cursor:default}
+.bagian-lab{grid-column:1/-1;display:flex;flex-direction:column;gap:12px;min-width:0}
+.bagian-lab>.judul-bagian{margin-bottom:0}
+.bagian-lab>.keterangan{margin:-6px 4px 0}
 
-.lab-cepat-chip{display:flex;flex-wrap:wrap;gap:8px}
-.lab-chip{min-height:44px;padding:0 18px;border:1px solid var(--outline);border-radius:var(--radius-pill);background:var(--surface-raised);color:var(--ink);font:600 14px var(--font-sans);cursor:pointer;
-  transition:transform .2s,box-shadow .2s,background .2s}
-.lab-chip:hover{transform:translateY(-2px);box-shadow:var(--shadow-pop-sm);background:var(--aksen-soft)}
-.lab-chip:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+/* hero: panel kaca berisi pohon kasus terakhir dan satu aksi utama */
+.panel-lab{display:flex;flex-direction:column;gap:14px;min-width:0;padding:18px;border-radius:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+  backdrop-filter:blur(10px);animation:naik .8s .18s cubic-bezier(.2,.7,.2,1) both}
+.panel-lab-kosong{padding:22px}
+.lab-panggung{display:flex;flex-direction:column;gap:12px;min-width:0;padding:6px 6px 0}
+.lab-panggung .pratinjau-pohon{cursor:default}
+.panel-lab button.kartu-lanjut-hero{width:100%;border:0;font:inherit;text-align:start;cursor:pointer}
+.panel-lab .kartu-lanjut-hero .keterangan{margin:0;font-size:14px;color:var(--ink-muted)}
+.panel-lab button.kartu-lanjut-hero:hover .panah-bulat{transform:rotate(-45deg) scale(1.08);background:var(--aksen)}
+.panel-lab button.kartu-lanjut-hero:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
 
-/* rak: kartu berkas tidak seragam, sedikit miring seperti berkas di meja */
-.lab-rak-daftar{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px 16px;align-items:start}
-.lab-berkas{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--outline);border-radius:var(--radius-md);background:var(--surface-raised);box-shadow:var(--shadow-pop-sm);
-  transition:transform .25s,box-shadow .25s;animation:lab-naik .5s calc(var(--urut,0)*60ms) cubic-bezier(.2,.7,.2,1) both}
-.lab-berkas:nth-child(3n+1){transform:rotate(-.6deg)}
-.lab-berkas:nth-child(3n+2){transform:translateY(8px)}
-.lab-berkas:nth-child(3n){transform:rotate(.5deg)}
-.lab-berkas:hover{transform:translateY(-4px);box-shadow:var(--shadow-pop)}
-.lab-berkas.tersemat{border-color:var(--aksen);background:linear-gradient(180deg,var(--aksen-soft),var(--surface-raised) 60%)}
-.lab-berkas h3{margin:0;font:600 17px/1.25 var(--font-display);overflow-wrap:anywhere}
-.lab-berkas .keterangan{margin:0}
-.lab-berkas-aksi{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+/* ubin yang bisa diketuk (tombol): mulai cepat dan soal */
+.lab-ubin-cepat,.lab-ubin-soal{display:grid;gap:14px;margin:0;padding:0}
+.lab-ubin-cepat{grid-template-columns:repeat(4,minmax(0,1fr))}
+.lab-ubin-soal{grid-template-columns:repeat(3,minmax(0,1fr))}
+.lab-ubin-cepat>li,.lab-ubin-soal>li{display:flex}
+button.ubin{width:100%;font:inherit;text-align:start;cursor:pointer}
+button.ubin:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,40,30,.16)}
+button.ubin:hover::before{opacity:1}
+button.ubin:hover .panah-bulat{transform:rotate(-45deg) scale(1.08);background:var(--aksen)}
+button.ubin:focus-visible{outline:3px solid var(--focus);outline-offset:3px}
+.ubin-lab{flex:1;min-height:200px;border-color:transparent;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b))}
+li:nth-child(5n+1)>.ubin-lab,.lab-berkas:nth-child(5n+1){--a:#d3ebaa;--b:#b7de80}
+li:nth-child(5n+2)>.ubin-lab,.lab-berkas:nth-child(5n+2){--a:#fde6d8;--b:#f8c7a6}
+li:nth-child(5n+3)>.ubin-lab,.lab-berkas:nth-child(5n+3){--a:#d6e2fb;--b:#b4c8f1}
+li:nth-child(5n+4)>.ubin-lab,.lab-berkas:nth-child(5n+4){--a:#fbdbe4;--b:#f1b4c6}
+li:nth-child(5n+5)>.ubin-lab,.lab-berkas:nth-child(5n+5){--a:#fde7c9;--b:#f6c68a}
+.ubin-lab .judul-ubin{margin-top:auto}
+.ubin-lab .keterangan{color:color-mix(in srgb,var(--ink) 74%,transparent)}
+.lab-avatar-deret{display:flex;padding-top:2px}
+.lab-avatar-deret .avatar-orang{box-shadow:0 0 0 3px rgba(255,255,255,.85)}
+.lab-avatar-deret .avatar-orang+.avatar-orang{margin-inline-start:-10px}
+.ubin-lab-soal .tingkat{font-size:13px;letter-spacing:.02em}
 
+/* rak: berkas berwarna menumpuk sedikit dan agak miring; disentuh, ia terangkat dan lurus */
+.lab-rak-daftar{display:flex;margin:0;padding:34px 12px 44px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:thin}
+.lab-berkas{position:relative;flex:0 0 min(292px,82vw);display:flex;flex-direction:column;gap:8px;padding:12px 30px 16px 12px;border:1px solid rgba(20,40,30,.08);border-radius:24px;
+  background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 26px rgba(20,40,30,.14);scroll-snap-align:center;
+  transform:rotate(var(--miring,0deg)) translateY(var(--turun,0px));transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;
+  animation:lab-naik .5s calc(var(--urut,0)*70ms) cubic-bezier(.2,.7,.2,1) both}
+.lab-berkas+.lab-berkas{margin-inline-start:-26px}
+.lab-berkas:nth-child(4n+1){--miring:-3deg}
+.lab-berkas:nth-child(4n+2){--miring:2deg;--turun:10px}
+.lab-berkas:nth-child(4n+3){--miring:-1.5deg;--turun:2px}
+.lab-berkas:nth-child(4n+4){--miring:3deg;--turun:12px}
+.lab-berkas:hover,.lab-berkas:focus-within{z-index:5;transform:rotate(0) translateY(-14px);box-shadow:0 24px 46px rgba(20,40,30,.24)}
+.lab-berkas .pratinjau-pohon{padding:8px;border-radius:16px;background:linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b);cursor:default}
+.lab-berkas h3{margin:6px 4px 0;font:600 19px/1.25 var(--font-display);letter-spacing:-.01em;overflow-wrap:anywhere}
+.lab-berkas .keterangan{margin:0 4px;font-size:14px;color:color-mix(in srgb,var(--ink) 74%,transparent)}
+.lab-berkas-aksi{display:flex;flex-wrap:wrap;align-items:center;gap:2px 12px;margin:4px 4px 0}
+.lab-berkas-aksi .tautan-aksi{font-size:13.5px}
+.lab-berkas.tersemat{padding-top:44px}
+.lab-semat{position:absolute;top:12px;inset-inline-start:16px;z-index:2;padding:4px 10px;border-radius:var(--radius-pill);background:#fff;color:var(--ink);font:700 11.5px var(--font-sans)}
+
+/* riwayat dan aksi teks */
 .lab-kelompok{display:flex;flex-direction:column;gap:6px}
-.lab-aksi-teks{display:flex;flex-wrap:wrap;gap:8px 20px}
-.lab-jejak{margin:0}
+.lab-kelompok .label-langkah{margin:8px 4px 0}
+button.tautan-cari{padding:0;border:0;background:none;cursor:pointer}
+.lab-catatan-aksi{margin-inline-start:6px;font:500 13px var(--font-sans);color:var(--ink-muted);text-decoration:none}
+.lab-jejak{grid-column:1/-1;margin:0 8px}
 
-/* strip latihan: baris yang digulir di layar kecil */
-.awal-lab .grid-pintasan-soal{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x proximity}
-.awal-lab .grid-pintasan-soal>li{flex:0 0 min(240px,78%);scroll-snap-align:start}
-
-@media (max-width:760px){
-  .lab-hero{grid-template-columns:1fr;padding:18px}
-  .lab-hero-kosong{grid-template-columns:1fr}
-  .lab-rak-daftar{grid-template-columns:1fr}
-  .lab-berkas:nth-child(n){transform:none}
+@media (max-width:980px){
+  .lab-ubin-cepat{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lab-ubin-soal{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){
+  .lab-ubin-soal{grid-template-columns:1fr}
+  .ubin-lab{min-height:150px;padding:18px}
+  .ubin-lab .panah-bulat{top:14px;inset-inline-end:14px;width:38px;height:38px}
+  .lab-avatar-deret .avatar-orang{width:30px!important;height:30px!important;font-size:13px!important}
+  .lab-avatar-deret .avatar-orang+.avatar-orang{margin-inline-start:-8px}
+  .panel-lab{padding:14px}
 }
 @media (prefers-reduced-motion:reduce){
-  .lab-hero,.lab-berkas,.lab-chip{animation:none;transition:none}
-  .lab-berkas:nth-child(n),.lab-berkas:hover,.lab-chip:hover,.lab-hero .pil-terang:hover{transform:none}
+  .panel-lab,.lab-berkas{animation:none;transition:none}
+  .lab-berkas:nth-child(n){transform:none}
+  .lab-berkas:hover,.lab-berkas:focus-within,button.ubin:hover{transform:none}
+  .panel-lab button.kartu-lanjut-hero:hover .panah-bulat,button.ubin:hover .panah-bulat{transform:none}
 }
-.lab-catatan-aksi{margin-inline-start:8px;font:500 13px var(--font-sans);color:var(--ink-muted)}
-/* pohon di kartu berkas memakai panggung gelap yang sama dengan hero (teks node putih) */
-.lab-berkas .pratinjau-pohon{padding:8px;background:linear-gradient(135deg,#0a2326,#0f3a38 55%,#0b2a2b);cursor:default}
