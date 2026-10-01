@@ -7,7 +7,7 @@ import { t } from '../terjemah';
 
 const TINGGI_MAKS = 360;
 
-export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1 }: { children: ReactNode; saatBuka?: () => void; label?: string; skalaMaks?: number }) {
+export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1, interaktif = false }: { children: ReactNode; saatBuka?: () => void; label?: string; skalaMaks?: number; interaktif?: boolean }) {
   const wadah = useRef<HTMLDivElement>(null);
   const isi = useRef<HTMLDivElement>(null);
   const [ukuran, setUkuran] = useState({ skala: 1, lebar: 0, tinggi: 0 });
@@ -31,7 +31,7 @@ export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1 }: { c
   }, [skalaMaks]);
 
   // Isi pratinjau tidak interaktif; React 18 belum mengenal atribut inert, jadi dipasang langsung.
-  useEffect(() => { isi.current?.setAttribute('inert', ''); }, []);
+  useEffect(() => { if (!interaktif) isi.current?.setAttribute('inert', ''); }, [interaktif]);
 
   return (
     <div className="pratinjau-pohon" ref={wadah} style={{ height: ukuran.tinggi * ukuran.skala || undefined }}

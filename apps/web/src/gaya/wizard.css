@@ -127,3 +127,11 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .lembar-wizard .kartu-pilihan:focus-visible{outline:2px solid var(--ink);outline-offset:-6px}
 .lembar-wizard .kartu-pilihan[aria-checked=true]:focus-visible{outline-color:#fff}
 .kartu-pilihan-deret .kartu-pilihan small{margin-top:auto}
+
+.panggung-pohon{position:relative}
+.menu-orang{position:absolute;z-index:5;min-width:170px;display:flex;flex-direction:column;padding:6px;border:var(--border-w) solid var(--outline);border-radius:14px;background:var(--surface-raised);box-shadow:var(--shadow-pop);animation:menu-naik .14s ease-out both}
+.menu-orang-butir{appearance:none;border:0;background:none;font:inherit;text-align:start;padding:9px 10px;border-radius:10px;color:var(--on-fill);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.menu-orang-butir:hover,.menu-orang-butir:focus-visible{background:rgba(0,0,0,.06)}
+.menu-orang-butir.bahaya{color:var(--danger,#b3261e)}
+@keyframes menu-naik{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.menu-orang{animation:none}}

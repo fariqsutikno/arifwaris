@@ -20433,6 +20433,69 @@
    "id": "Pilih laki-laki atau perempuan.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.menu_untuk",
+   "halaman": "hitung",
+   "id": "Menu untuk {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.buka_menu",
+   "halaman": "hitung",
+   "id": "Buka menu {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tambah_orang_tua",
+   "halaman": "hitung",
+   "id": "+ Orang tua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tambah_pasangan",
+   "halaman": "hitung",
+   "id": "+ Pasangan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tambah_anak",
+   "halaman": "hitung",
+   "id": "+ Anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tambah_saudara",
+   "halaman": "hitung",
+   "id": "+ Saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.ubah",
+   "halaman": "hitung",
+   "id": "Ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hapus",
+   "halaman": "hitung",
+   "id": "Hapus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tautan_hubungan",
+   "halaman": "hitung",
+   "id": "Tambah mertua, menantu, ipar, dll.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
