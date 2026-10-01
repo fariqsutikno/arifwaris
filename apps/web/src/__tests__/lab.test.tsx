@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, expect, test, vi } from 'vitest';
 import { DialogNama } from '../layar/lab/DialogNama';
+import { HeroLab } from '../layar/lab/HeroLab';
+import { kasusBaru } from '../kasus';
 import { MulaiCepat } from '../layar/lab/MulaiCepat';
 import { RakEksperimen } from '../layar/lab/RakEksperimen';
 import { SUSUNAN_CEPAT, kasusDariSusunan } from '../lab';
@@ -63,4 +65,29 @@ test('mulai cepat: satu ketukan mengirim kasus dengan ahli waris susunannya', ()
   fireEvent.click(screen.getByRole('button', { name: 'Istri dan anak' }));
   expect(saatPilih).toHaveBeenCalledTimes(1);
   expect(saatPilih.mock.calls[0]![0].tirkah.kotor).toBe(0n);
+});
+
+test('hero tanpa kasus terakhir: ajakan mulai skenario baru, tanpa Lanjutkan', () => {
+  render(<HeroLab kasusTerakhir={null} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
+  expect(screen.getByRole('button', { name: /Mulai skenario baru/ })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
+});
+
+test('hero kasus belum lengkap (tanpa harta): tidak memanggil engine, Lanjutkan jalan', () => {
+  const saatLanjut = vi.fn();
+  render(<HeroLab kasusTerakhir={kasusDariSusunan(SUSUNAN_CEPAT[0]!)} saatLanjut={saatLanjut} saatMulaiBaru={() => {}} />);
+  fireEvent.click(screen.getByRole('button', { name: /Lanjutkan/ }));
+  expect(saatLanjut).toHaveBeenCalled();
+});
+
+test('hero kasus kosong tanpa ahli waris diperlakukan seperti tanpa kasus terakhir', () => {
+  render(<HeroLab kasusTerakhir={kasusBaru('L')} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
+  expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
+});
+
+test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
+  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
+  const lengkap = { ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } };
+  const { container } = render(<HeroLab kasusTerakhir={lengkap} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
+  expect(container.querySelector('.pita-bagian')).toBeTruthy();
 });
