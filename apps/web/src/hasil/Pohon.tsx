@@ -100,7 +100,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
         {panah.filter((isi, urutan) => panah.findIndex(lain => lain.ke === isi.ke && lain.label === isi.label) === urutan)
           .map(({ jalur, x, y, label }) => <span key={`${langkah?.ketukan}${jalur}`} className="label-panah" style={{ left: x, top: y }}>{label}</span>)}
         {letak.baris.map((baris, indeksBaris) => (
-          <div className="pohon-baris" key={indeksBaris}>
+          <div className="pohon-baris" key={indeksBaris} style={lebarMaksBaris(baris.length)}>
             {baris.map(id => {
               const node = isiNode(id);
               const { className, ...pemicu } = atribut(id);
@@ -132,6 +132,16 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
       </div>
     </div>
   );
+}
+
+/** Satu baris generasi dibatasi {BATAS_PER_BARIS} node lalu terbungkus, dibagi rata (7 → 4+3, 12 → 6+6), supaya pohon tetap terbaca saat anak banyak. */
+const BATAS_PER_BARIS = 6;
+const LEBAR_NODE = 170;
+const JARAK_NODE = 30;
+function lebarMaksBaris(jumlah: number): CSSProperties | undefined {
+  if (jumlah <= BATAS_PER_BARIS) return undefined;
+  const perBaris = Math.ceil(jumlah / Math.ceil(jumlah / BATAS_PER_BARIS));
+  return { maxWidth: perBaris * LEBAR_NODE + (perBaris - 1) * JARAK_NODE };
 }
 
 const styleUrut = (node: IsiNode): CSSProperties | undefined => (node.urut === undefined ? undefined : ({ '--urut': Math.min(node.urut, 8) } as CSSProperties));
@@ -211,13 +221,23 @@ function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak)
           : (() => { const k = kotak(orangTua[0]!); return k ? [k.tengahX, k.bawah] as [number, number] : null; })();
         const daftarAnak = anak.map(kotak).filter((k): k is NonNullable<typeof k> => !!k);
         if (!titikAwal || daftarAnak.length === 0) continue;
-        const atasAnak = Math.round(Math.min(...daftarAnak.map(k => k.atas)));
-        const keBerapa = jumlahDiBaris.get(atasAnak) ?? 0;
-        jumlahDiBaris.set(atasAnak, keBerapa + 1);
-        const yBatang = atasAnak - 18 - (keBerapa % 4) * 9;
-        const semuaX = [titikAwal[0], ...daftarAnak.map(k => k.tengahX)];
-        jalur += `M${titikAwal[0]},${titikAwal[1]}V${yBatang}M${Math.min(...semuaX)},${yBatang}H${Math.max(...semuaX)}`;
-        for (const k of daftarAnak) jalur += `M${k.tengahX},${yBatang}V${k.atas}`;
+        // Anak yang terbungkus ke beberapa baris tampilan: tiap baris punya batang sendiri, disambung lewat batang samping di kiri.
+        const barisTampil = [...new Set(daftarAnak.map(k => Math.round(k.atas)))].sort((a, b) => a - b);
+        const xSamping = barisTampil.length > 1 ? Math.min(...daftarAnak.map(k => k.kiri)) - 14 : null;
+        const yPertama = new Map<number, number>();
+        for (const atasAnak of barisTampil) {
+          const keBerapa = jumlahDiBaris.get(atasAnak) ?? 0;
+          jumlahDiBaris.set(atasAnak, keBerapa + 1);
+          const yBatang = atasAnak - 18 - (keBerapa % 4) * 9;
+          yPertama.set(atasAnak, yBatang);
+          const anakBaris = daftarAnak.filter(k => Math.round(k.atas) === atasAnak);
+          const awal = atasAnak === barisTampil[0] ? [titikAwal[0]] : [];
+          const semuaX = [...awal, ...anakBaris.map(k => k.tengahX), ...(xSamping === null ? [] : [xSamping])];
+          if (awal.length) jalur += `M${titikAwal[0]},${titikAwal[1]}V${yBatang}`;
+          else jalur += `M${xSamping},${yPertama.get(barisTampil[0]!)}V${yBatang}`;
+          jalur += `M${Math.min(...semuaX)},${yBatang}H${Math.max(...semuaX)}`;
+          for (const k of anakBaris) jalur += `M${k.tengahX},${yBatang}V${k.atas}`;
+        }
       }
       for (const [a, b] of letak.pasanganSaja) garisNikah(a, b);
       setGaris({ jalur, cincin });

@@ -20097,6 +20097,69 @@
    "id": "Pasangan yang ditanya nanti: suami",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_tanya_baru",
+   "halaman": "hitung",
+   "id": "Ada ahli waris yang beda agama, atau ikut menyebabkan kematian almarhum?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_ada_ket",
+   "halaman": "hitung",
+   "id": "Ada ahli waris yang beda agama dengan almarhum, atau ikut menyebabkan kematiannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_agama_judul",
+   "halaman": "hitung",
+   "id": "Beda agama dengan almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_agama_ket",
+   "halaman": "hitung",
+   "id": "Centang ahli waris yang agamanya berbeda dengan almarhum.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_sebab_judul",
+   "halaman": "hitung",
+   "id": "Ikut menyebabkan kematian almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_sebab_ket",
+   "halaman": "hitung",
+   "id": "Centang ahli waris yang terlibat, apa pun bentuknya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_akibat",
+   "halaman": "hitung",
+   "id": "yang dicentang tidak mendapat warisan, dan bagian ahli waris lain dihitung ulang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.nama_almarhum_tanya",
+   "halaman": "hitung",
+   "id": "Siapa nama almarhum?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kerabat_lain_ket",
+   "halaman": "hitung",
+   "id": "Kakek-nenek, cucu, kakak/adik, paman, keponakan, dan lainnya",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

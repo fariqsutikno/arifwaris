@@ -37,15 +37,20 @@ export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUb
         ))}
       </div>
       {perluKonfirmasi && <p className="caption-isian">{t('hitung.mengganti_jenis_kelamin_akan_mengosongkan_isian')}</p>}
-      {kasus && (
-        <label className="isian isian-kecil">{t('hitung.nama_almarhum')} <span className="opsional">{t('hitung.boleh_dikosongkan')}</span>
-          <input value={pewaris?.nama ?? ''} onChange={event => saatUbahNama(event.target.value)} />
-        </label>
-      )}
+      {kasus && <IsianNamaAlmarhum nama={pewaris?.nama ?? ''} saatUbah={saatUbahNama} />}
       {tertunda && (
         <KonfirmasiGanti saatBatal={() => setTertunda(null)} saatLanjut={() => { saatGantiDanKosongkan(tertunda); setTertunda(null); }} />
       )}
     </>
+  );
+}
+
+/** Nama almarhum: ditanya di langkah 1 dan diingatkan lagi di awal langkah Keluarga, supaya semua kalimat dan pohon memakai namanya. */
+export function IsianNamaAlmarhum({ nama, saatUbah }: { nama: string; saatUbah: (nama: string) => void }) {
+  return (
+    <label className="isian isian-nama-almarhum"><span>{t('hitung.nama_almarhum_tanya')} <span className="opsional">{t('hitung.boleh_dikosongkan')}</span></span>
+      <input value={nama} autoComplete="off" onChange={event => saatUbah(event.target.value)} />
+    </label>
   );
 }
 

@@ -47,19 +47,19 @@ export function LangkahKondisi({ kasus, ubah, labelId = 'pertanyaan-utama' }: Pr
           <span>{t('umum.tidak_ada')}</span><small>{t('hitung.langsung_lihat_hasil')}</small>
         </button>
         <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
-          <span>{t('umum.ada')}</span><small>{t('hitung.beda_agama_atau_terlibat_dalam_penyebab')}</small>
+          <span>{t('umum.ada')}</span><small>{t('hitung.kondisi_ada_ket')}</small>
         </button>
       </div>
       {adaKondisi && <>
-      <Kondisi judul={t('hitung.ada_yang_beda_agama_dengan_almarhum')} keterangan={t('hitung.beda_agama_menggugurkan_hak_waris')}
-        akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
+      <Kondisi judul={t('hitung.kondisi_agama_judul')} keterangan={t('hitung.kondisi_agama_ket')}
+        akibat={t('hitung.kondisi_akibat')}>
         {semuaAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={kasus.graf.orang[id]!.agama === 'nonIslam'}
             saatUbah={tercentang => ubahOrang(id, { agama: tercentang ? 'nonIslam' : 'islam' })} />
         ))}
       </Kondisi>
-      <Kondisi judul={t('hitung.ada_yang_terlibat_dalam_penyebab_kematian')} keterangan={t('hitung.apa_pun_bentuknya')}
-        akibat="orang itu tidak mendapat bagian, dan pembagian yang lain ikut berubah.">
+      <Kondisi judul={t('hitung.kondisi_sebab_judul')} keterangan={t('hitung.kondisi_sebab_ket')}
+        akibat={t('hitung.kondisi_akibat')}>
         {daftarAhliWaris.map(id => (
           <Centang key={id} label={label(id)} tercentang={!!kasus.graf.orang[id]!.membunuhPewaris}
             saatUbah={tercentang => ubahOrang(id, { membunuhPewaris: tercentang })} />

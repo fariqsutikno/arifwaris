@@ -52,8 +52,8 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
 
       <button type="button" className="buka-kerabat" aria-expanded={kerabatLainTerbuka} disabled={adaKerabatLain}
         onClick={() => setKerabatLainDibuka(!kerabatLainDibuka)}>
-        {t('hitung.kerabat_lain')} {kerabatLainTerbuka ? '▴' : '▾'}
-        <small>{adaKerabatLain ? t('hitung.tetap_terbuka_karena_sudah_ada_yang') : t('hitung.kakek_nenek_cucu_kakak_adik_paman')}</small>
+        <span className="buka-kerabat-judul">{t('hitung.kerabat_lain')}<span aria-hidden="true" className="panah-buka">{kerabatLainTerbuka ? '▴' : '▾'}</span></span>
+        <small>{adaKerabatLain ? t('hitung.tetap_terbuka_karena_sudah_ada_yang') : t('hitung.kerabat_lain_ket')}</small>
       </button>
 
       {kerabatLainTerbuka && KERABAT_LAIN.map(kelompok => (

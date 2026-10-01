@@ -19,7 +19,7 @@ import { KewajibanOpsional } from './wizard/KewajibanOpsional';
 import { BarBawah } from './wizard/BarBawah';
 import { KerangkaLangkah } from './wizard/KerangkaLangkah';
 import { NamaKasus } from './wizard/NamaKasus';
-import { LangkahPewaris } from './wizard/LangkahPewaris';
+import { IsianNamaAlmarhum, LangkahPewaris } from './wizard/LangkahPewaris';
 import { PanggungPohon } from './wizard/PanggungPohon';
 import { Stepper } from './wizard/Stepper';
 import { adaAhliWaris, alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from './wizard/validasi';
@@ -60,8 +60,9 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
         {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
         {kasus && langkah === 3 && babak === 0 && <>
+          <IsianNamaAlmarhum nama={kasus.graf.orang[kasus.graf.idPewaris]?.nama ?? ''} saatUbah={nama => ubah(k => ubahNamaPewaris(k, nama))} />
           <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
-          <p className="caption-isian">{t('hitung.keluarga_beri_nama')}</p>
+          <p className="catatan">{t('hitung.keluarga_beri_nama')}</p>
           <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
           <PertanyaanPenutup kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
           <PertanyaanHamil kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
@@ -69,7 +70,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         {kasus && langkah === 3 && babak > 0 && <LangkahBabak kasus={kasus} babak={babak} ubah={ubah} />}
         {kasus && langkah === 4 && <>
           <CeritaKasus kasus={kasus} kirim={kirim} />
-          <h2 id="tanya-kondisi" className="judul-bagian-kecil">{t('hitung.kondisi_tanya')}</h2>
+          <h2 id="tanya-kondisi" className="judul-bagian-kecil">{t('hitung.kondisi_tanya_baru')}</h2>
           <LangkahKondisi kasus={kasus} ubah={ubah} labelId="tanya-kondisi" />
           <NamaKasus kasus={kasus} ubah={ubah} />
         </>}
