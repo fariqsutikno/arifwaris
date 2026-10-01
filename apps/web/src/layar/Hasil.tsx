@@ -8,6 +8,7 @@
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
+import type { RepositoriBagikan, Sesi } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
@@ -29,6 +30,7 @@ import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
 import { DialogNama } from './lab/DialogNama';
+import { DialogBagikan } from './DialogBagikan';
 import { ringkasKasus } from '../riwayat';
 import { formatRupiahRingkas } from '../format';
 import { Tombol } from '../ui/komponen';
@@ -50,12 +52,16 @@ interface Props {
   saatDikerjakan?: ((benar: boolean) => void) | undefined;
   /** Kasus dari latihan/materi di mode belajar: data kasus tidak bisa diubah atau di-reset supaya fokus. */
   terkunci?: boolean | undefined;
+  /** Tampilan penerima tautan: tanpa ubah data, reset, bagikan, dan pindah tujuan. */
+  hanyaBaca?: boolean | undefined;
+  /** Ada = tautan Bagikan tampil di hero (butuh repositori akun). */
+  bagikan?: { repo: RepositoriBagikan; sesi: Sesi | null; saatMasuk?: (() => void) | undefined } | undefined;
 }
 
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -92,10 +98,10 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -105,7 +111,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const adalahBelajar = tujuan === 'belajar';
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
-  const bolehUbah = !(terkunci && adalahBelajar);
+  const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
   const adaPotonganHarta = ringkasan.tirkah.kotor !== ringkasan.tirkah.bersih;
   const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
 
@@ -129,6 +135,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const [kunciDiubah, setKunciDiubah] = useState<KunciAhliWaris | null>(null);
   const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
   const [eksporTerbuka, setEksporTerbuka] = useState(false);
+  const [bagikanTerbuka, setBagikanTerbuka] = useState(false);
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const namaPewaris = kasus.graf.orang[kasus.graf.idPewaris]?.nama?.trim() || '';
@@ -158,6 +165,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
           <div className="aksi-hero">
             {!sedangMenebak && <button type="button" className="pil-hero" onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>}
             {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
+            {bagikan && bolehUbah && !sedangMenebak && <button type="button" className="tautan-hero" onClick={() => setBagikanTerbuka(true)}>{t('bagikan.bagikan')}</button>}
           </div>
           {!sedangMenebak && (
             <dl className="statistik-hero">
@@ -166,10 +174,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
               <div><dd>{jumlahOrang}</dd><dt>{t('hitung.orang_di_pohon')}</dt></div>
             </dl>
           )}
-          <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
+          {!hanyaBaca && <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
             <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
             <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('umum.belajar')}</button>
-          </div>
+          </div>}
         </div>
         <div className="hero-pohon" data-tur="pohon" aria-label={t('hitung.pohon_keluarga')}>
           <div className="hero-alat">
@@ -261,6 +269,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
       )}
       {namaTerbuka && <DialogNama judulAwal={kasus.nama ?? ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
         saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
+      {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasus} {...bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (

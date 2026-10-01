@@ -20435,6 +20435,272 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "bagikan.bagikan",
+   "halaman": "bagikan",
+   "id": "Bagikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.judul",
+   "halaman": "bagikan",
+   "id": "Bagikan kasus ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.memuat",
+   "halaman": "bagikan",
+   "id": "Memuat…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.perlu_masuk",
+   "halaman": "bagikan",
+   "id": "Masuk dulu untuk membagikan kasus. Tautan dan pengaturannya disimpan di akunmu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.masuk_google",
+   "halaman": "bagikan",
+   "id": "Masuk dengan Google",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.siapa_bisa_buka",
+   "halaman": "bagikan",
+   "id": "Siapa yang bisa membuka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.akses_tautan",
+   "halaman": "bagikan",
+   "id": "Siapa saja yang punya tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.akses_tautan_bantu",
+   "halaman": "bagikan",
+   "id": "Tanpa perlu masuk. Hanya bisa melihat, tidak bisa mengubah kasusmu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.akses_email",
+   "halaman": "bagikan",
+   "id": "Email tertentu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.akses_email_bantu",
+   "halaman": "bagikan",
+   "id": "Hanya email yang kamu daftarkan, dan mereka harus masuk dengan email itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.akses_privat",
+   "halaman": "bagikan",
+   "id": "Hanya saya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.akses_privat_bantu",
+   "halaman": "bagikan",
+   "id": "Tautan disimpan tapi tidak bisa dibuka orang lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.daftar_email",
+   "halaman": "bagikan",
+   "id": "Email yang boleh membuka (pisahkan dengan koma atau baris baru)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tautan",
+   "halaman": "bagikan",
+   "id": "Tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.aturan_tautan",
+   "halaman": "bagikan",
+   "id": "3–40 karakter: huruf kecil, angka, dan strip. Harus unik.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.slug_tidak_sah",
+   "halaman": "bagikan",
+   "id": "Tautan harus 3–40 karakter: huruf kecil, angka, dan strip (tidak di awal atau akhir).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_kosong",
+   "halaman": "bagikan",
+   "id": "Isi minimal satu email.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_tidak_sah",
+   "halaman": "bagikan",
+   "id": "Ada email yang penulisannya belum benar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_terlalu_banyak",
+   "halaman": "bagikan",
+   "id": "Maksimal {batas} email.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.gagal_memuat",
+   "halaman": "bagikan",
+   "id": "Pengaturan belum bisa dimuat. Coba lagi sebentar lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.gagal_menyimpan",
+   "halaman": "bagikan",
+   "id": "Belum tersimpan. Periksa koneksimu lalu coba lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.salin_tautan",
+   "halaman": "bagikan",
+   "id": "Salin tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tersalin",
+   "halaman": "bagikan",
+   "id": "Tautan tersalin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.berhenti",
+   "halaman": "bagikan",
+   "id": "Berhenti membagikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tidak_terhubung",
+   "halaman": "bagikan",
+   "id": "Kasus belum bisa dibuka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tidak_terhubung_isi",
+   "halaman": "bagikan",
+   "id": "Layanan akun tidak terjangkau. Periksa koneksimu lalu muat ulang halaman ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.perlu_masuk_judul",
+   "halaman": "bagikan",
+   "id": "Masuk dulu untuk membuka kasus ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.perlu_masuk_isi",
+   "halaman": "bagikan",
+   "id": "Kasus ini hanya dibagikan ke email tertentu. Masuk dengan email yang diundang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tidak_boleh_judul",
+   "halaman": "bagikan",
+   "id": "Akunmu belum diundang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tidak_boleh_isi",
+   "halaman": "bagikan",
+   "id": "Kasus ini dibagikan ke email tertentu, dan email akunmu tidak termasuk. Minta pemiliknya menambahkan emailmu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tidak_ada_judul",
+   "halaman": "bagikan",
+   "id": "Kasus tidak ditemukan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tidak_ada_isi",
+   "halaman": "bagikan",
+   "id": "Tautannya mungkin salah ketik, sudah diganti, atau tidak dibagikan lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.belum_lengkap_judul",
+   "halaman": "bagikan",
+   "id": "Kasus ini belum lengkap",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.belum_lengkap_isi",
+   "halaman": "bagikan",
+   "id": "Pemiliknya masih mengisi datanya. Coba buka lagi nanti.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tampilan_pemilik",
+   "halaman": "bagikan",
+   "id": "Ini tampilan yang dilihat penerima tautan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.hanya_lihat",
+   "halaman": "bagikan",
+   "id": "Kasus ini hanya bisa dilihat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.salin_ke_riwayat",
+   "halaman": "bagikan",
+   "id": "Salin ke riwayatku untuk mengubahnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ke_beranda",
+   "halaman": "bagikan",
+   "id": "Ke beranda",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
    "kunci": "hitung.pohon.menu_untuk",
    "halaman": "hitung",
    "id": "Menu untuk {nama}",

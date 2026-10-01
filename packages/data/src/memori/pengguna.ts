@@ -3,15 +3,16 @@
 // sama dengan primary key tabel di supabase/migrations/20260926000003_pengguna.sql.
 // Streak/XP/papan dihitung SQL (diuji pgTAP 06_peringkat); di memori hanya nilai yang diset tes lewat aturPeringkat.
 import type {
-  BarisPeringkat, KabarPush, Kegiatan, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
-  RepositoriPengguna, RepositoriPeringkat, RingkasanPeringkat, RiwayatTersimpan,
+  BacaBagikan, BarisPeringkat, KabarPush, Kegiatan, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
+  RepositoriBagikan, RepositoriPengguna, RepositoriPeringkat, RingkasanPeringkat, RiwayatTersimpan,
 } from '../antarmuka.js';
+import { GALAT_TAUTAN_DIPAKAI } from '../antarmuka.js';
 import type { MemoriBersama } from './konten.js';
 
 export interface NilaiPeringkat { ringkasan: RingkasanPeringkat; papan: Record<PeriodePeringkat, BarisPeringkat[]> }
 
 export function buatMemoriPengguna(bersama: MemoriBersama): {
-  pengguna: RepositoriPengguna; akun: RepositoriAkun; peringkat: RepositoriPeringkat;
+  pengguna: RepositoriPengguna; akun: RepositoriAkun; peringkat: RepositoriPeringkat; bagikan: RepositoriBagikan;
   aturPeringkat(nilai: NilaiPeringkat | null): void;
   /** Hanya untuk tes: menaruh kabar push milik pengguna tertentu (di produksi ditulis Edge Function). */
   aturKabarPush(userId: string, kabar: KabarPush[]): void;
@@ -69,8 +70,36 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
     },
   };
 
+  // Meniru kasus_dibagikan + baca_kasus_dibagikan (diuji pgTAP 15_bagikan).
+  const dibagikan = new Map<string, { pemilik: string; idRiwayat: string; slug: string; akses: 'privat' | 'tautan' | 'email'; email: string[]; kasus: unknown }>();
+  const barisSaya = (idRiwayat: string) => dibagikan.get(kunci(idRiwayat));
+  const bagikan: RepositoriBagikan = {
+    async bacaPengaturan(idRiwayat) {
+      const baris = barisSaya(idRiwayat);
+      return baris ? { slug: baris.slug, akses: baris.akses, email: baris.email } : null;
+    },
+    async simpan(idRiwayat, pengaturan, kasus) {
+      if ([...dibagikan.values()].some(baris => baris.slug === pengaturan.slug && !(baris.pemilik === pemilik() && baris.idRiwayat === idRiwayat))) {
+        throw new Error(GALAT_TAUTAN_DIPAKAI);
+      }
+      dibagikan.set(kunci(idRiwayat), { pemilik: pemilik(), idRiwayat, ...pengaturan, kasus });
+    },
+    async perbaruiKasus(idRiwayat, kasus) { const baris = barisSaya(idRiwayat); if (baris) baris.kasus = kasus; },
+    async berhenti(idRiwayat) { dibagikan.delete(kunci(idRiwayat)); },
+    async baca(slug): Promise<BacaBagikan> {
+      const sesi = bersama.sesiSekarang();
+      const baris = [...dibagikan.values()].find(isi => isi.slug === slug);
+      const milikSendiri = !!sesi && baris?.pemilik === sesi.userId;
+      if (!baris || (baris.akses === 'privat' && !milikSendiri)) return { status: 'tidak_ada' };
+      const diizinkan = milikSendiri || baris.akses === 'tautan'
+        || (baris.akses === 'email' && !!sesi && baris.email.some(surel => surel.toLowerCase() === sesi.email.toLowerCase()));
+      if (!diizinkan) return { status: sesi ? 'tidak_boleh' : 'perlu_masuk' };
+      return { status: 'ok', kasus: baris.kasus, akses: baris.akses, milikSendiri };
+    },
+  };
+
   // akun kini satu sumber di buatMemori (bersama), supaya aturPeran berbasis email tidak diduplikasi di sini.
   const akun: RepositoriAkun = bersama.akun;
 
-  return { pengguna, akun, peringkat, aturPeringkat: nilai => { nilaiPeringkat = nilai; }, aturKabarPush: (userId, kabar) => { kabarPush.set(userId, kabar); } };
+  return { pengguna, akun, peringkat, bagikan, aturPeringkat: nilai => { nilaiPeringkat = nilai; }, aturKabarPush: (userId, kabar) => { kabarPush.set(userId, kabar); } };
 }

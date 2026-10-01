@@ -1382,3 +1382,16 @@ body.layar-hasil{background:var(--halaman)}
   .pita-jawaban,.pita-hitung{grid-template-columns:1fr}
   .pohon-penuh-atas{padding:10px 12px}
 }
+
+/* Dialog bagikan kasus */
+.form-bagikan{max-width:520px}
+.pilihan-akses{display:flex;gap:10px;align-items:flex-start;min-height:44px;cursor:pointer;font-weight:400}
+.pilihan-akses input{width:20px;height:20px;margin-top:3px;accent-color:var(--primary)}
+.pilihan-akses span{display:flex;flex-direction:column;gap:2px}
+.pilihan-akses small{color:var(--ink-muted);font-size:13px}
+.form-bagikan fieldset{border:0;padding:0;margin:0}
+.form-bagikan textarea{padding:10px 14px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:600 15px var(--font-sans);resize:vertical}
+.form-bagikan .kotak-uang{height:44px}
+.form-bagikan .kotak-uang input{font-size:15px}
+.form-bagikan .prefix-uang{font-size:12px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catatan-bagikan{margin:0;padding:10px 16px;text-align:center;color:var(--ink-muted);font-size:14px}

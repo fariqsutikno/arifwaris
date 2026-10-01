@@ -157,6 +157,26 @@ export interface RepositoriPengguna {
   /** Kabar push milik pengguna yang dikirim setelah `sejak` (ISO), terbaru dulu. */
   bacaKabarPush(sejak: string): Promise<KabarPush[]>;
 }
+/** Bagikan kasus lewat tautan pendek (supabase/migrations/20261003000001_bagikan_kasus.sql). Penerima hanya membaca. */
+export type AksesBagikan = 'privat' | 'tautan' | 'email';
+export interface PengaturanBagikan { slug: string; akses: AksesBagikan; email: string[] }
+export type BacaBagikan =
+  | { status: 'ok'; kasus: unknown; akses: AksesBagikan; milikSendiri: boolean }
+  | { status: 'perlu_masuk' | 'tidak_boleh' | 'tidak_ada' };
+export const GALAT_TAUTAN_DIPAKAI = 'Tautan itu sudah dipakai kasus lain.';
+export interface RepositoriBagikan {
+  /** Pengaturan kasus milik pengguna dengan id riwayat itu; null = belum pernah dibagikan. */
+  bacaPengaturan(idRiwayat: string): Promise<PengaturanBagikan | null>;
+  /** Buat atau ubah (termasuk ganti slug). Melempar GALAT_TAUTAN_DIPAKAI bila slug dipakai kasus lain. */
+  simpan(idRiwayat: string, pengaturan: PengaturanBagikan, kasus: unknown): Promise<void>;
+  /** Isi yang dibagikan mengikuti kasus pemilik; tidak berbuat apa-apa bila kasus belum dibagikan. */
+  perbaruiKasus(idRiwayat: string, kasus: unknown): Promise<void>;
+  /** Hapus tautan; slug bebas dipakai lagi. */
+  berhenti(idRiwayat: string): Promise<void>;
+  /** Tanpa login pun bisa; hasilnya bergantung akses dan email pengguna. */
+  baca(slug: string): Promise<BacaBagikan>;
+}
+
 /** Streak, XP & papan dihitung server dari log_kegiatan (supabase/migrations/20260927000006_peringkat.sql). */
 export interface RepositoriPeringkat {
   /** Melempar 'belum masuk' bila tanpa sesi. */

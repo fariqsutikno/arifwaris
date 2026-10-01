@@ -33,12 +33,16 @@ import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
 import { Peringkat } from './layar/Peringkat';
+import { KasusDibagikan } from './layar/KasusDibagikan';
+import { sudahDibagikan } from './bagikanLokal';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
 import { TAUTAN_KALKULATOR, bacaRute, tautanKasus, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
 import { usePenjaga } from './ui/Penjaga';
 import { PembaruanKonten } from './ui/PembaruanKonten';
+
+const JEDA_PERBARUI_BAGIKAN_MS = 1500;
 
 export function Aplikasi() {
   // Muat ulang / tautan `#/hitung/<id>/...`: kembali ke kasus dan halaman yang sama, bukan awal Hitung.
@@ -54,12 +58,14 @@ export function Aplikasi() {
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
+  const [akunSiap, setAkunSiap] = useState(false);
   // ponytail: layar yang menyimpan data di useState awal (mis. DaftarRiwayat) baru segar setelah pindah halaman.
   const [, segarkanData] = useReducer((n: number) => n + 1, 0);
   useEffect(() => {
     void muatRepoAkun().then(async repo => {
+      if (repo) setRepoAkun(repo);
+      setAkunSiap(true);
       if (!repo) return;
-      setRepoAkun(repo);
       setSesi(await mulaiSinkron(repo, segarkanData));
       if (location.search.includes('code=')) history.replaceState(null, '', location.pathname + location.hash);
     });
@@ -77,6 +83,13 @@ export function Aplikasi() {
   };
 
   useEffect(() => { if (keadaan.kasus) simpanLokal(keadaan.kasus); }, [keadaan.kasus]);
+  // Kasus yang sedang dibagikan: isi di server mengikuti perubahan pemilik (ditunda supaya tidak tiap ketikan).
+  useEffect(() => {
+    if (!keadaan.kasus || !sesi || !repoAkun || !sudahDibagikan(idSesi)) return;
+    const kasusTerbaru = keadaan.kasus;
+    const tunda = setTimeout(() => void repoAkun.bagikan.perbaruiKasus(idSesi, JSON.parse(keJson(kasusTerbaru))).catch(() => undefined), JEDA_PERBARUI_BAGIKAN_MS);
+    return () => clearTimeout(tunda);
+  }, [keadaan.kasus, idSesi, sesi, repoAkun]);
   useEffect(() => { if (keadaan.tujuan && keadaan.tujuan !== bacaTujuan()) simpanTujuan(keadaan.tujuan); }, [keadaan.tujuan]);
   // Setiap kasus yang sedang diisi atau dilihat hasilnya masuk riwayat, lengkap atau belum.
   useEffect(() => {
@@ -117,6 +130,8 @@ export function Aplikasi() {
     window.addEventListener('beforeunload', cegah);
     return () => window.removeEventListener('beforeunload', cegah);
   }, [diKalkulator, belumSelesai]);
+  // Setelah masuk, kembali ke alamat yang sama (termasuk #/k/<slug> atau #/hitung/<id>).
+  const masukGoogle = repoAkun ? () => void repoAkun.akun.masukGoogle(window.location.href).catch(() => undefined) : undefined;
   const [turBerjalan, setTurBerjalan] = useState(false);
   // Kasus lengkap dibuka di layar hasil, yang belum lengkap di langkah wizard pertama yang belum terisi.
   // Konfirmasi menimpa kasus lama sudah ditanyakan di halaman asalnya.
@@ -161,13 +176,14 @@ export function Aplikasi() {
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
       <PembaruanKonten />
       <SumberNotifikasi sesi={sesi} repo={repoAkun} />
-      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
+      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan', 'dibagikan'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} sesi={sesi}
-          saatMasuk={repoAkun ? () => void repoAkun.akun.masukGoogle(window.location.href).catch(() => undefined) : undefined} />
+          saatMasuk={masukGoogle} />
         : rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
         : rute.halaman === 'peringkat' ? <Peringkat sesi={sesi} repo={repoAkun} />
+        : rute.halaman === 'dibagikan' ? <KasusDibagikan slug={rute.slug} repo={repoAkun} menunggu={!akunSiap} saatMasuk={masukGoogle} saatSalin={mulaiDari} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
@@ -176,7 +192,7 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
-        : <Hasil kasus={kasus} idSesi={idSesi} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
+        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={repoAkun ? { repo: repoAkun.bagikan, sesi, saatMasuk: masukGoogle } : undefined} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />

@@ -15,6 +15,7 @@ export type Rute =
   | { halaman: 'tanya-jawab'; slug?: string }
   | { halaman: 'riwayat' }
   | { halaman: 'peringkat' }
+  | { halaman: 'dibagikan'; slug: string }
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
 
@@ -37,6 +38,7 @@ export function bacaRute(hash: string): Rute {
     const paket = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
     return parameter === 'kuis' ? (paket ? { halaman, tab: 'kuis', paket } : { halaman, tab: 'kuis' }) : { halaman, tab: 'hitung' };
   }
+  if (halaman === 'k' && parameter) return { halaman: 'dibagikan', slug: parameter };
   if (halaman === 'riwayat' || halaman === 'peringkat') return { halaman };
   if (halaman === 'faq') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'tanya-jawab') return parameter ? { halaman, slug: parameter } : { halaman };
@@ -53,6 +55,10 @@ export function bacaRute(hash: string): Rute {
 export const tautanBelajar = (slug?: string) => `#/belajar${slug ? `/${encodeURIComponent(slug)}` : ''}`;
 export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung', paket?: string) =>
   (tab === 'kuis' ? `#/latihan/kuis${paket ? `/${encodeURIComponent(paket)}` : ''}` : '#/latihan');
+/** Kasus yang dibagikan: `#/k/<slug>`; slug = huruf kecil, angka, strip (sama dengan check di tabel kasus_dibagikan). */
+export const SLUG_BAGIKAN = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;
+export const tautanBagikan = (slug: string) => `#/k/${encodeURIComponent(slug)}`;
+export const alamatBagikan = (slug: string) => `${window.location.origin}${window.location.pathname}${tautanBagikan(slug)}`;
 export const tautanRiwayat = () => '#/riwayat';
 export const tautanPeringkat = () => '#/peringkat';
 export const tautanFaq = (id?: string) => `#/faq${id ? `/${encodeURIComponent(id)}` : ''}`;

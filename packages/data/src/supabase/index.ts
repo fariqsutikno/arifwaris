@@ -5,10 +5,10 @@
 // galat ramah, dan saringValid saat baca.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
-import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
+import { BATAS_AJUAN_SAYA, GALAT_TAUTAN_DIPAKAI } from '../antarmuka.js';
 import type {
   HasilAi, RepositoriAi,
-  BarisPeringkat, PeranPengguna, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
+  BacaBagikan, BarisPeringkat, PeranPengguna, RepositoriBagikan, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
   RepositoriPeringkat,
 } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
@@ -267,6 +267,28 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     },
   };
 
+  const bagikan: RepositoriBagikan = {
+    async bacaPengaturan(idRiwayat) {
+      const baris = await hasil(klien.from('kasus_dibagikan').select('slug, akses, email').eq('id_riwayat', idRiwayat).maybeSingle()) as any;
+      return baris && { slug: baris.slug, akses: baris.akses, email: baris.email };
+    },
+    async simpan(idRiwayat, pengaturan, kasus) {
+      const { error } = await klien.from('kasus_dibagikan').upsert({
+        pemilik: await userId(), id_riwayat: idRiwayat, slug: pengaturan.slug, akses: pengaturan.akses, email: pengaturan.email,
+        kasus, diubah_pada: new Date().toISOString(),
+      }, { onConflict: 'pemilik,id_riwayat' });
+      if (error) throw new Error(error.code === '23505' ? GALAT_TAUTAN_DIPAKAI : error.message);
+    },
+    async perbaruiKasus(idRiwayat, kasus) {
+      await hasil(klien.from('kasus_dibagikan').update({ kasus, diubah_pada: new Date().toISOString() }).eq('id_riwayat', idRiwayat));
+    },
+    async berhenti(idRiwayat) { await hasil(klien.from('kasus_dibagikan').delete().eq('id_riwayat', idRiwayat)); },
+    async baca(slug) {
+      const baris = await hasil(klien.rpc('baca_kasus_dibagikan', { p_slug: slug })) as any;
+      return baris.status === 'ok' ? { status: 'ok', kasus: baris.kasus, akses: baris.akses, milikSendiri: baris.pemilik } : { status: baris.status };
+    },
+  };
+
   const ai: RepositoriAi = {
     async bantu(permintaan) {
       const { data, error } = await klien.functions.invoke('ai-bantu', { body: permintaan });
@@ -278,5 +300,5 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return data as { hasil: HasilAi; sisaKuota: number };
     },
   };
-  return { konten, editorial, diksi, pengguna, akun, peringkat, ai };
+  return { konten, editorial, diksi, pengguna, akun, peringkat, bagikan, ai };
 }

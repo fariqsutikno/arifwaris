@@ -4,7 +4,7 @@
 // lewat antrean, jadi tidak ada yang hilang, dan hapus di perangkat lain tidak hidup lagi).
 // Semua kegagalan jaringan hanya dicatat: web tetap jalan dari data lokal.
 
-import type { RepositoriAkun, RepositoriPengguna, RepositoriPeringkat, Sesi } from '@waris/data';
+import type { RepositoriAkun, RepositoriBagikan, RepositoriPengguna, RepositoriPeringkat, Sesi } from '@waris/data';
 import { gantiSemuaProgres, semuaProgres } from '../progres';
 import { kumpulPreferensi, terapkanPreferensi } from '../preferensi';
 import { gantiSemuaTersimpan, semuaTersimpan } from '../tersimpan';
@@ -12,7 +12,7 @@ import { hapusSemuaMentah } from '../penyimpanan';
 import { akunLokal, antre, aturAkunLokal, aturPengirim, bacaAntrean, kirimAntrean, versiAntrean } from './antrean';
 import { gabung, type DataPengguna } from './gabung';
 
-export interface RepoAkun { akun: RepositoriAkun; pengguna: RepositoriPengguna; peringkat: RepositoriPeringkat }
+export interface RepoAkun { akun: RepositoriAkun; pengguna: RepositoriPengguna; peringkat: RepositoriPeringkat; bagikan: RepositoriBagikan }
 const AWALAN_DATA = 'arif-waris:';
 const BATAS_KIRIM_KELUAR_MS = 3000;
 
