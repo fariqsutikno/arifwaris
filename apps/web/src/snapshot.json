@@ -20027,6 +20027,20 @@
    "id": "Putar ulang",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.nama_almarhum",
+   "halaman": "hitung",
+   "id": "Nama {peran} yang wafat ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.babak.nama_almarhum_contoh",
+   "halaman": "hitung",
+   "id": "Misal {contoh}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

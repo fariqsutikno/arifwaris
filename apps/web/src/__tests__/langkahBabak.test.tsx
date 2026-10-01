@@ -30,6 +30,15 @@ describe('LangkahBabak', () => {
     // Siti juga tampil sebagai node pohon; yang diperiksa baris daftar "dari orang yang sudah ada".
     expect(screen.getAllByText(/Siti/).map(e => e.closest('li')).find(Boolean)!.textContent).toMatch(/[Ii]bu/);
   });
+  it('nama almarhum diisi di atas, kalimat pembuka ikut berubah dari sebutan hubungan menjadi nama', () => {
+    const { kasus, budi } = kasusBudi();
+    const { nama: _nama, ...orangTanpaNama } = kasus.graf.orang[budi]!;
+    const tanpaNama = { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [budi]: orangTanpaNama } } };
+    render(<Uji awal={tanpaNama} />);
+    expect(screen.getByText(/^Anak laki-laki wafat sesudah/)).toBeTruthy();
+    fireEvent.change(screen.getByLabelText(/Nama anak laki-laki yang wafat/), { target: { value: 'Budi' } });
+    expect(screen.getByText(/^Budi wafat sesudah/)).toBeTruthy();
+  });
   it('menambah istri Budi lewat daftar yang sama', () => {
     render(<Uji awal={kasusBudi().kasus} />);
     fireEvent.click(screen.getByRole('button', { name: /Tambah Istri/ }));

@@ -4,6 +4,7 @@
 import type { IdOrang } from '@waris/engine';
 import { PohonDasar } from '../hasil/Pohon';
 import type { Kasus } from '../kasus';
+import { ubahNama } from '../checklist';
 import { aturDikandung, babakAsal, calonPasangan, daftarAlmarhum, kerabatDari, namaSingkat, nikahkan } from '../keadaanOrang';
 import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
 import { PertanyaanHamil } from './keadaan/PertanyaanHamil';
@@ -23,10 +24,18 @@ export function LangkahBabak({ kasus, babak, ubah }: Props) {
   const dariBabakLalu = kerabat.filter(id => babakAsal(kasus, id) !== idMayit);
   // Anak X yang juga kerabat almarhum sebelumnya: tanyakan kapan dikandung [R13-1].
   const anakMayit = Object.values(kasus.graf.orang).filter(o => (o.idAyah === idMayit || o.idIbu === idMayit) && !o.penghubung).map(o => o.id);
+  const peran = labelOrangChecklist(kasus.graf, babakAsal(kasus, idMayit) ?? kasus.graf.idPewaris, idMayit);
+  const contohNama = kasus.graf.orang[idMayit]!.jenisKelamin === 'L' ? 'Budi' : 'Siti';
   const sebutan = (id: IdOrang) => labelOrangChecklist(kasus.graf, idMayit, id);
 
   return (
     <div className="tumpuk">
+      {/* Nama dulu, supaya kalimat di bawah berbunyi "Budi wafat…", bukan "Anak laki-laki wafat…". */}
+      <label className="isian isian-kecil">
+        <span>{t('hitung.babak.nama_almarhum', { peran: peran.toLowerCase() })}</span>
+        <input type="text" defaultValue={kasus.graf.orang[idMayit]!.nama ?? ''} placeholder={t('hitung.babak.nama_almarhum_contoh', { contoh: contohNama })}
+          onChange={e => ubah(k => ({ ...k, graf: ubahNama(k.graf, idMayit, e.target.value) }))} />
+      </label>
       <div className="kartu tumpuk-rapat">
         <p>{t('hitung.babak.pembuka', { nama, sebelum: namaSebelum })}</p>
         <p><b>{t('hitung.babak.sudut_pandang', { nama })}</b></p>
