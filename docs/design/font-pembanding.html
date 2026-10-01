@@ -28,7 +28,7 @@ header p{color:var(--muted);font-size:14px;max-width:80ch;margin:6px 0 0}
 .btn{align-self:flex-start;background:#0e0f10;color:#fff;border-radius:999px;font-weight:600;font-size:14px;padding:10px 20px}
 .chip{align-self:flex-start;background:var(--orange-soft);color:#9c3d0c;border-radius:999px;font-weight:600;font-size:12px;padding:2px 10px}
 .arab{font-family:"Noto Kufi Arabic",serif;font-size:18px}
-p{margin:0;font-size:14px}
+p{margin:0;font-size:15px;line-height:1.6}.k2{font-size:13px;color:var(--muted)}h3{margin:4px 0 0;font-size:19px;font-weight:600;letter-spacing:-.01em}
 </style>
 </head>
 <body>
@@ -40,21 +40,24 @@ p{margin:0;font-size:14px}
 <div class="grid" id="g"></div>
 </main>
 <script>
-// [nama tampil, keluarga display, keluarga isi]
-const F=[['Funnel Display + Funnel Sans','"Funnel Display"','"Funnel Sans"'],
- ['Host Grotesk','"Host Grotesk"','"Host Grotesk"'],
- ['Parkinsans','"Parkinsans"','"Parkinsans"'],
- ['Bricolage Grotesque','"Bricolage Grotesque"','"Bricolage Grotesque"'],
- ['Schibsted Grotesk','"Schibsted Grotesk"','"Schibsted Grotesk"'],
- ['Gabarito','"Gabarito"','"Gabarito"']];
-document.getElementById('g').innerHTML=F.map(([n,d,s])=>`
+// [judul, isi]: tiap kartu = satu pasangan; isi dipakai untuk nama, paragraf, label, dan tombol.
+const F=[['"Funnel Display"','"Funnel Sans"'],
+ ['"Bricolage Grotesque"','"Host Grotesk"'],
+ ['"Parkinsans"','"Funnel Sans"'],
+ ['"Gabarito"','"Schibsted Grotesk"'],
+ ['"Funnel Display"','"Host Grotesk"'],
+ ['"Bricolage Grotesque"','"Schibsted Grotesk"']];
+const bersih=x=>x.replace(/"/g,'');
+document.getElementById('g').innerHTML=F.map(([d,s])=>`
 <section class="kartu" style="font-family:${s},system-ui">
-  <div class="nama"><b>${n}</b><span>display: ${d.replace(/"/g,'')}</span></div>
+  <div class="nama"><b>Judul: ${bersih(d)}</b><span>Isi: ${bersih(s)}</span></div>
   <div class="hero"><small style="font-family:${s}">Menurut madzhab Syafi'i · dihitung 1 Oktober 2026</small><h2 style="font-family:${d}">Harta Mbah Karto dan keluarganya</h2></div>
   <div class="isi">
     <div class="baris"><div><b>Rina</b><span class="k">anak perempuan Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 3.024.000.000</span> <span class="pil">29,2%</span></div></div>
     <div class="baris"><div><b>Mbah Sumi</b><span class="k">istri Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 2.304.000.000</span> <span class="pil">22,2%</span></div></div>
-    <p>Dewi menerima dari Budi sebagai istrinya. Bagian itu sudah menjadi miliknya, lalu diteruskan ke keluarga Dewi waktu ia wafat.</p>
+    <h3 style="font-family:${d}">Kok keluarga Bu Dewi dapat?</h3>
+    <p>Dewi menerima dari Budi sebagai istrinya, bukan sebagai kerabat Mbah. Bagian itu sudah menjadi miliknya, lalu diteruskan ke keluarga Dewi waktu ia wafat.</p>
+    <p class="k2">Menurut fikih, cucu terhalang bila anaknya masih ada. Pak Slamet wafat lebih dulu sehingga tidak mewarisi, dan anak-anaknya terhalang oleh paman mereka.</p>
     <p class="arab" dir="rtl">الفرائض · الأصل · العول</p>
     <span class="chip">Hukum positif, bukan fikih</span>
     <span class="btn">Lembar musyawarah</span>
