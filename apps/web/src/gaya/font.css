@@ -1,0 +1,4 @@
+/* Font di-host lokal (variabel, OFL) supaya aplikasi tetap tampil benar tanpa internet.
+   Parkinsans = judul, Host Grotesk = isi. Noto Kufi Arabic masih dari Google Fonts (index.html). */
+@font-face{font-family:"Parkinsans";src:url("./fonts/Parkinsans.ttf") format("truetype");font-weight:300 800;font-style:normal;font-display:swap}
+@font-face{font-family:"Host Grotesk";src:url("./fonts/HostGrotesk.ttf") format("truetype");font-weight:300 800;font-style:normal;font-display:swap}

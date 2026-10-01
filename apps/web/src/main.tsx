@@ -3,6 +3,7 @@
 // konstanta tingkat-modul yang memakai t()/konten melihat data itu. Sinkron dengan server berjalan di latar dan hanya
 // mengisi cache; perubahan tampil di muat berikutnya (tidak mengganti teks di tengah pemakaian). Bila ada versi baru,
 // <PembaruanKonten/> menawarkan tautan muat ulang.
+import './gaya/font.css';
 import './gaya/token.css';
 import './gaya/komponen.css';
 import { StrictMode } from 'react';
