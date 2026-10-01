@@ -6,13 +6,19 @@ import type { Kasus } from '../../kasus';
 import { Tombol } from '../../ui/komponen';
 import { KonfirmasiKasusBaru } from '../KonfirmasiKasusBaru';
 
-interface Props { kasusSekarang: Kasus | null; saatBuka: () => void; varian?: 'primary' | 'secondary'; children: ReactNode }
+interface Props {
+  kasusSekarang: Kasus | null;
+  saatBuka: () => void;
+  varian?: 'primary' | 'secondary' | 'ghost';
+  kelas?: string;
+  children: ReactNode;
+}
 
-export function TombolBukaKasus({ kasusSekarang, saatBuka, varian = 'secondary', children }: Props) {
+export function TombolBukaKasus({ kasusSekarang, saatBuka, varian = 'secondary', kelas, children }: Props) {
   const [sedangKonfirmasi, setSedangKonfirmasi] = useState(false);
   return (
     <>
-      <Tombol varian={varian} kecil onClick={() => (kasusSekarang ? setSedangKonfirmasi(true) : saatBuka())}>{children}</Tombol>
+      <Tombol varian={varian} kecil className={kelas} onClick={() => (kasusSekarang ? setSedangKonfirmasi(true) : saatBuka())}>{children}</Tombol>
       {sedangKonfirmasi && kasusSekarang && (
         <KonfirmasiKasusBaru kasus={kasusSekarang} judul="Buka kasus ini?" labelLanjut="Buka" saatBatal={() => setSedangKonfirmasi(false)}
           saatLanjut={() => { setSedangKonfirmasi(false); saatBuka(); }} />

@@ -1,4 +1,4 @@
-// Kuis konsep: daftar paket (per bab + acak) dan satu sesi paket.
+// Kuis konsep: satu sesi paket (daftar paketnya ada di PapanKuis.tsx).
 // Sesi: layar awal (mode latihan = jawaban tepat langsung muncul, mode ujian = muncul di akhir; di mode ujian jawaban
 // masih bisa diganti dan soal sebelumnya dibuka lagi sampai diselesaikan) → soal satu per satu →
 // hasil: skor lalu pembahasan tiap soal. Keluar di tengah sesi ditanya dulu (usePenjaga).
@@ -8,8 +8,10 @@ import { useEffect, useRef, useState } from 'react';
 import { JUDUL_BAB, type SoalKuis } from '@waris/content';
 import { daftarSoalKuis } from '../../konten/sumber';
 import { bacaPilihan, catatAktivitas, simpanPilihan } from '../../preferensi';
-import { bacaSkorPaket, catatLatihan, simpanSkorPaket } from '../../progres';
+import { bacaRekorPaket, catatLatihan, simpanSkorPaket } from '../../progres';
 import { tautanLatihan } from '../../rute';
+import { capaianKuis, persenBulat, predikatDari, type Capaian } from '../../skorKuis';
+import { teksPredikat, teksTarget } from './teksSkor';
 import { Ikon } from '../../ui/Ikon';
 import { usePenjaga } from '../../ui/Penjaga';
 import { hurufPilihan, KartuSoalKuis, PembahasanTambahan, type ModePembahasan } from './KartuSoalKuis';
@@ -22,9 +24,9 @@ export function perBab<T extends { bab: number }>(daftar: T[]): Array<[number, T
     .map(bab => [bab, daftar.filter(soal => soal.bab === bab)]);
 }
 
-const JUMLAH_SOAL_ACAK = 10;
+export const JUMLAH_SOAL_ACAK = 10;
 export const PAKET_ACAK = 'acak';
-const kodePaketBab = (bab: number) => `bab-${bab}`;
+export const kodePaketBab = (bab: number) => `bab-${bab}`;
 const KUNCI_MODE = 'mode-pembahasan';
 
 /** Patokan 5 soal = 3 menit (36 detik per soal), dibulatkan ke kelipatan 30 detik supaya angkanya enak dibaca. */
@@ -65,30 +67,6 @@ const judulPaket = (paket: string) => {
  */
 export const judulTopik = (bab: number) => (JUDUL_BAB[bab] ?? '').replace(/\s*\(.*\)\s*$/, '');
 
-export function DaftarPaketKuis() {
-  const catatan = bacaSkorPaket();
-  return (
-    <>
-      <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>
-      <div className="grid-paket">
-        <a className="kartu-paket paket-acak" href={tautanLatihan('kuis', PAKET_ACAK)}>
-          <Ikon nama="acak" ukuran={24} />
-          <b>{t('umum.kuis_acak')}</b>
-          <span className="keterangan">{t('latihan.jumlah_soal_dari_semua_bab', { jumlah: Math.min(JUMLAH_SOAL_ACAK, daftarSoalKuis().length) })}</span>
-          {catatan[PAKET_ACAK] && <span className="skor-paket">{t('latihan.skor_terakhir')} {angka(catatan[PAKET_ACAK])}</span>}
-        </a>
-        {perBab(daftarSoalKuis()).map(([bab, daftar]) => (
-          <a key={bab} className="kartu-paket" href={tautanLatihan('kuis', kodePaketBab(bab))}>
-            <b>{judulTopik(bab)}</b>
-            <span className="keterangan">{t('latihan.jumlah_soal', { jumlah: daftar.length })}</span>
-            {catatan[kodePaketBab(bab)] && <span className="skor-paket">{t('latihan.skor_terakhir')} {angka(catatan[kodePaketBab(bab)]!)}</span>}
-          </a>
-        ))}
-      </div>
-    </>
-  );
-}
-
 type Tahap = 'awal' | 'mengerjakan' | 'hasil';
 
 export function SesiKuis({ paket }: { paket: string }) {
@@ -96,6 +74,7 @@ export function SesiKuis({ paket }: { paket: string }) {
   const [tahap, setTahap] = useState<Tahap>('awal');
   const [mode, setMode] = useState<ModePembahasan>(() => (bacaPilihan(KUNCI_MODE) === 'akhir' ? 'akhir' : 'langsung'));
   const [posisi, setPosisi] = useState(0);
+  const [capaian, setCapaian] = useState<Capaian | null>(null);
   // Indeks = nomor soal; kosong = belum dijawab.
   const [pilihan, setPilihan] = useState<Array<number | undefined>>([]);
   const judul = judulPaket(paket);
@@ -153,7 +132,7 @@ export function SesiKuis({ paket }: { paket: string }) {
     );
   }
 
-  if (tahap === 'hasil') return <HasilKuis kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} saatUlang={() => mulai(mode)} />;
+  if (tahap === 'hasil') return <HasilKuis kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} capaian={capaian} saatUlang={() => mulai(mode)} />;
 
   const soal = daftarSoal[posisi]!;
   const sudahDijawab = pilihan[posisi] !== undefined;
@@ -167,6 +146,8 @@ export function SesiKuis({ paket }: { paket: string }) {
   const selesaikan = () => {
     daftarSoal.forEach((soalIni, urutan) => catatLatihan('kuis', soalIni.kode, pilihan[urutan] === soalIni.indeksBenar, pilihan[urutan] ?? null));
     const skor = `${benarSejauhIni}/${daftarSoal.length}`;
+    // Capaian dihitung sebelum rekor diperbarui, karena yang dibandingkan adalah nilai terbaik sebelum sesi ini.
+    setCapaian(paket === PAKET_ACAK ? null : capaianKuis(bacaRekorPaket()[paket]?.terbaik, skor));
     simpanSkorPaket(paket, skor);
     catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
     setTahap('hasil');
@@ -221,11 +202,11 @@ export function SesiKuis({ paket }: { paket: string }) {
   );
 }
 
-function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
-  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: Array<number | undefined>; saatUlang: () => void;
+function HasilKuis({ kepala, daftarSoal, pilihan, capaian, saatUlang }: {
+  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: Array<number | undefined>; capaian: Capaian | null; saatUlang: () => void;
 }) {
   const benar = daftarSoal.filter((soal, urutan) => pilihan[urutan] === soal.indeksBenar).length;
-  const persen = Math.round((benar / daftarSoal.length) * 100);
+  const persen = persenBulat({ benar, total: daftarSoal.length });
   return (
     <section className="sesi-kuis tumpuk">
       {kepala}
@@ -239,6 +220,7 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
           <div className="skor-salah"><dt>{t('latihan.salah')}</dt><dd>{angka(String(daftarSoal.length - benar))}</dd></div>
           <div><dt>{t('latihan.nilai')}</dt><dd>{angka(String(persen))}</dd></div>
         </dl>
+        {capaian && <CapaianKuis capaian={capaian} />}
         <div className="aksi-konfirmasi">
           <a className="aw-btn aw-btn-secondary" href={tautanLatihan('kuis')}>{t('latihan.pilih_kuis_lain')}</a>
           <button type="button" className="aw-btn aw-btn-primary" onClick={saatUlang}>{t('latihan.kerjakan_lagi')}</button>
@@ -284,6 +266,24 @@ function HasilKuis({ kepala, daftarSoal, pilihan, saatUlang }: {
         </ol>
       </section>
     </section>
+  );
+}
+
+/** Nilai terbaik di paket ini setelah sesi barusan: apakah naik, dan seberapa jauh lagi ke predikat berikutnya. */
+function CapaianKuis({ capaian }: { capaian: Capaian }) {
+  const { persenTerbaik, persenSebelumnya, terbaikBaru, predikatNaik } = capaian;
+  const target = teksTarget(persenTerbaik);
+  return (
+    <div className="capaian-kuis">
+      <p><b>{t('latihan.nilai_terbaikmu_persen_predikat', { persen: angka(String(persenTerbaik)), predikat: teksPredikat(predikatDari(persenTerbaik)) })}</b></p>
+      <p className="keterangan">
+        {terbaikBaru
+          ? (persenSebelumnya === null ? t('latihan.percobaan_pertama_di_paket_ini') : t('latihan.nilai_terbaik_baru_naik_dari', { persen: angka(String(persenSebelumnya)) }))
+          : t('latihan.belum_melampaui_nilai_terbaikmu')}
+        {predikatNaik && persenSebelumnya !== null && <> {t('latihan.predikat_naik_ke', { predikat: teksPredikat(predikatNaik) })}</>}
+        {target && <> {target}.</>}
+      </p>
+    </div>
   );
 }
 

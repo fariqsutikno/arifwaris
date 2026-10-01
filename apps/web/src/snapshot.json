@@ -19386,3 +19386,430 @@
   }
  ]
 }
+  },
+  {
+   "kunci": "latihan.kosongkan_pilihan",
+   "halaman": "latihan",
+   "id": "Kosongkan pilihan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.pilih_semua",
+   "halaman": "latihan",
+   "id": "Pilih semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.soal_acak",
+   "halaman": "latihan",
+   "id": "Soal acak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bab",
+   "halaman": "latihan",
+   "id": "Bab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.tingkat",
+   "halaman": "latihan",
+   "id": "Tingkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.utamakan_yang_belum_dikerjakan",
+   "halaman": "latihan",
+   "id": "Utamakan yang belum dikerjakan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.pilih_minimal_satu_bab_dan_tingkat",
+   "halaman": "latihan",
+   "id": "Pilih minimal satu bab dan satu tingkat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.tidak_ada_soal_yang_cocok",
+   "halaman": "latihan",
+   "id": "Tidak ada soal yang cocok.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.semua_soal_di_pilihan_ini_sudah_selesai_jumlah",
+   "halaman": "latihan",
+   "id": "Semua soal di pilihan ini sudah kamu kerjakan, jadi soal diambil dari {jumlah} soal yang sudah selesai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.jumlah_soal_tersedia",
+   "halaman": "latihan",
+   "id": "{jumlah} soal tersedia",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.acak_lagi",
+   "halaman": "latihan",
+   "id": "Acak lagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.acak_soal",
+   "halaman": "latihan",
+   "id": "Acak soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.belum_ada_yang_dipilih",
+   "halaman": "latihan",
+   "id": "Belum ada yang dipilih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.semua_bab",
+   "halaman": "latihan",
+   "id": "Semua bab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.jumlah_bab_dipilih",
+   "halaman": "latihan",
+   "id": "{jumlah} bab dipilih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.semua_tingkat",
+   "halaman": "latihan",
+   "id": "Semua tingkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.cari_judul_soal",
+   "halaman": "latihan",
+   "id": "Cari judul soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.semua",
+   "halaman": "latihan",
+   "id": "Semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.sembunyikan_yang_selesai",
+   "halaman": "latihan",
+   "id": "Sembunyikan yang selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.jumlah_soal_cocok",
+   "halaman": "latihan",
+   "id": "{jumlah} soal cocok",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.selesai_dari_total",
+   "halaman": "latihan",
+   "id": "{selesai} dari {total} selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.tampilkan_lagi",
+   "halaman": "latihan",
+   "id": "Tampilkan {jumlah} lagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.sisa_jumlah",
+   "halaman": "latihan",
+   "id": "sisa {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.hapus_pencarian_dan_saringan",
+   "halaman": "latihan",
+   "id": "Hapus pencarian dan saringan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.soal_berikutnya_untukmu",
+   "halaman": "latihan",
+   "id": "Soal berikutnya untukmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_acak_jumlah_soal",
+   "halaman": "latihan",
+   "id": "Kuis acak ({jumlah} soal)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.semua_paket_sudah_sangat_baik",
+   "halaman": "latihan",
+   "id": "Semua paket sudah Sangat baik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.coba_kuis_acak_untuk_menguji_semua_bab",
+   "halaman": "latihan",
+   "id": "Coba kuis acak untuk menguji semua bab sekaligus.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.mulai_kuis_acak",
+   "halaman": "latihan",
+   "id": "Mulai kuis acak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.nilai_terbaikmu_di_paket_ini_persen_predikat",
+   "halaman": "latihan",
+   "id": "Nilai terbaikmu di paket ini {persen}% ({predikat}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.paket_ini_belum_pernah_kamu_coba_jumlah_soal",
+   "halaman": "latihan",
+   "id": "Paket ini belum pernah kamu coba. Isinya {jumlah} soal.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.keterangan_predikat",
+   "halaman": "latihan",
+   "id": "Predikat dihitung dari nilai terbaikmu di tiap paket: Cukup mulai {cukup}%, Baik mulai {baik}%, Sangat baik mulai {sangat_baik}%.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.nilai_terbaik_per_paket",
+   "halaman": "latihan",
+   "id": "Nilai terbaik per paket",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.paket",
+   "halaman": "latihan",
+   "id": "Paket",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.nilai_terbaik",
+   "halaman": "latihan",
+   "id": "Nilai terbaik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.dicoba",
+   "halaman": "latihan",
+   "id": "Dicoba",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.capai_persen_untuk_predikat",
+   "halaman": "latihan",
+   "id": "Capai {persen}% untuk {predikat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.belum_dicoba",
+   "halaman": "latihan",
+   "id": "Belum dicoba",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.jumlah_kali",
+   "halaman": "latihan",
+   "id": "{jumlah} kali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.nilai_terbaikmu_persen_predikat",
+   "halaman": "latihan",
+   "id": "Nilai terbaikmu: {persen}% ({predikat})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.percobaan_pertama_di_paket_ini",
+   "halaman": "latihan",
+   "id": "Ini percobaan pertamamu di paket ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.nilai_terbaik_baru_naik_dari",
+   "halaman": "latihan",
+   "id": "Nilai terbaik baru, naik dari {persen}%.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.belum_melampaui_nilai_terbaikmu",
+   "halaman": "latihan",
+   "id": "Belum melampaui nilai terbaikmu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.predikat_naik_ke",
+   "halaman": "latihan",
+   "id": "Predikat naik ke {predikat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.predikat_perlu_diulang",
+   "halaman": "latihan",
+   "id": "Perlu diulang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.predikat_cukup",
+   "halaman": "latihan",
+   "id": "Cukup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.predikat_baik",
+   "halaman": "latihan",
+   "id": "Baik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.predikat_sangat_baik",
+   "halaman": "latihan",
+   "id": "Sangat baik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.butuh_persen_untuk_predikat",
+   "halaman": "latihan",
+   "id": "Butuh {persen}% untuk {predikat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.cari_label",
+   "halaman": "rujukan",
+   "id": "Cari dalil, surah, atau kitab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.hasil_cari",
+   "halaman": "rujukan",
+   "id": "{jumlah} hasil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.tidak_ada_hasil",
+   "halaman": "rujukan",
+   "id": "Tidak ada yang cocok. Coba kata lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.semua_bab",
+   "halaman": "rujukan",
+   "id": "Semua bab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.saring_bab",
+   "halaman": "rujukan",
+   "id": "Bab KB",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.bab_kosong",
+   "halaman": "rujukan",
+   "id": "Tidak ada dalil di bab ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.dipakai_di",
+   "halaman": "rujukan",
+   "id": "Dipakai di",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.hukum_bergantung",
+   "halaman": "rujukan",
+   "id": "Hukum yang bersandar pada dalil ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.label_dhaif",
+   "halaman": "rujukan",
+   "id": "dha'if",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.label_perlu_verifikasi",
+   "halaman": "rujukan",
+   "id": "perlu verifikasi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.jelajah_kategori",
+   "halaman": "rujukan",
+   "id": "Jelajahi menurut jenis dalil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "rujukan.jumlah_dalil",
+   "halaman": "rujukan",
+   "id": "{jumlah} dalil",
+   "ar": null,
+   "versiTerbit": 873

@@ -1,18 +1,17 @@
-// Latihan: dua tab.
-//   Soal hitung — daftar kasus per bab (ala LeetCode): tanda sudah dikerjakan, tingkat, dan tombol Kerjakan yang
-//   membuka kasusnya di kalkulator mode Belajar. Soal ditandai selesai saat jawabannya dibuka di sana.
-//   Kuis konsep — daftar paket; sesi kuisnya ada di KuisKonsep.tsx.
+// Latihan: hero gelap berisi akses cepat (Soal acak di tab Soal hitung, rekomendasi paket di tab Kuis), dua tab.
+//   Soal hitung — daftar kasus per bab (DaftarSoalHitung); Kerjakan membuka kasusnya di kalkulator mode Belajar.
+//   Kuis konsep — papan kuis (PapanKuis.tsx); sesi kuisnya ada di KuisKonsep.tsx.
 
-import { HeroMini } from '../../ui/Hero';
-import { type SoalHitung, type Tingkat } from '@waris/content';
-import { daftarSoalHitung } from '../../konten/sumber';
+import { useEffect, useRef } from 'react';
+import { type SoalHitung } from '@waris/content';
 import type { Kasus } from '../../kasus';
-import { bacaProgresLatihan } from '../../progres';
 import { tautanLatihan, tautanPeringkat } from '../../rute';
-import { TEKS_TINGKAT } from '../AwalHitung';
-import { DaftarPaketKuis, SesiKuis, judulTopik, perBab } from './KuisKonsep';
-import { TombolBukaKasus } from './TombolBukaKasus';
-import { angka, panah, t } from '../../terjemah';
+import { useCahayaIkutKursor } from '../../ui/sorotan';
+import { panah, t } from '../../terjemah';
+import { DaftarSoalHitung } from './DaftarSoalHitung';
+import { SesiKuis } from './KuisKonsep';
+import { PapanKuis, RekomendasiKuis } from './PapanKuis';
+import { SoalAcak } from './SoalAcak';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -22,73 +21,34 @@ interface Props {
 }
 
 export function Latihan({ tab, paket, kasusSekarang, saatKerjakan }: Props) {
-  // Saat mengerjakan satu paket kuis, halaman fokus ke soal: tanpa judul Latihan dan tab.
+  // Saat mengerjakan satu paket kuis, halaman fokus ke soal: tanpa hero Latihan dan tab.
   if (tab === 'kuis' && paket) return <main className="halaman tumpuk"><SesiKuis key={paket} paket={paket} /></main>;
+  return <HalamanLatihan tab={tab} kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} />;
+}
+
+function HalamanLatihan({ tab, kasusSekarang, saatKerjakan }: Omit<Props, 'paket'>) {
+  const hero = useRef<HTMLElement>(null);
+  useCahayaIkutKursor(hero);
+  // Header transparan melayang di atas hero gelap (sama seperti Belajar).
+  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   return (
-    <main className="halaman tumpuk">
-      <HeroMini judul={t('umum.latihan')} keterangan={t('latihan.kerjakan_soal_hitung_dari_kasus_nyata')} ikon="kuis" />
-      {/* Pintu papan peringkat untuk semua orang, termasuk yang belum login (tahap 5). */}
-      <a className="tautan-lembut" href={tautanPeringkat()}>{t('akun.kumpulkan_xp_lihat_papan_peringkat')} {panah()}</a>
-      <nav className="tab-kecil tab-latihan" aria-label={t('latihan.jenis_latihan')}>
-        <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('umum.soal_hitung')}</a>
-        <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('latihan.kuis_konsep')}</a>
-      </nav>
-      {tab === 'hitung' ? <DaftarSoalHitung kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <DaftarPaketKuis />}
+    <main className="halaman-beranda halaman-latihan">
+      <header className="hero-beranda hero-latihan" ref={hero}>
+        <div className="sapa-pusat">
+          <h1>{t('umum.latihan')}</h1>
+          <p className="lead">{t('latihan.kerjakan_soal_hitung_dari_kasus_nyata')}</p>
+          {/* Pintu papan peringkat untuk semua orang, termasuk yang belum login (tahap 5). */}
+          <a className="tautan-lanjut" href={tautanPeringkat()}>{t('akun.kumpulkan_xp_lihat_papan_peringkat')}<span className="panah-kecil" aria-hidden="true">{panah()}</span></a>
+        </div>
+        {tab === 'hitung' ? <SoalAcak kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <RekomendasiKuis />}
+      </header>
+      <div className="isi-latihan">
+        <nav className="tab-latihan" aria-label={t('latihan.jenis_latihan')}>
+          <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('umum.soal_hitung')}</a>
+          <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('latihan.kuis_konsep')}</a>
+        </nav>
+        {tab === 'hitung' ? <DaftarSoalHitung kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <PapanKuis />}
+      </div>
     </main>
   );
 }
-
-const TINGKAT: Tingkat[] = ['dasar', 'menengah', 'sulit'];
-
-function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Omit<Props, 'tab' | 'paket'>) {
-  const catatan = bacaProgresLatihan('hitung');
-  const jumlahSelesai = daftarSoalHitung().filter(soal => catatan[soal.kode]).length;
-  return (
-    <>
-      <section className="kartu statistik-latihan" aria-label={t('latihan.progres_soal_hitung')}>
-        <div className="stat-utama">
-          <span className="angka-besar">{angka(String(jumlahSelesai))}<small>/{angka(String(daftarSoalHitung().length))}</small></span>
-          <span className="keterangan">{t('latihan.soal_dikerjakan')}</span>
-          <span className="bar-progres" aria-hidden="true"><span style={{ width: `${(jumlahSelesai / daftarSoalHitung().length) * 100}%` }} /></span>
-        </div>
-        <dl className="stat-tingkat">
-          {TINGKAT.map(tingkat => {
-            const daftar = daftarSoalHitung().filter(soal => soal.tingkat === tingkat);
-            return (
-              <div key={tingkat}>
-                <dt className={`tingkat tingkat-${tingkat}`}>{TEKS_TINGKAT()[tingkat]}</dt>
-                <dd>{angka(String(daftar.filter(soal => catatan[soal.kode]).length))}<small>/{angka(String(daftar.length))}</small></dd>
-              </div>
-            );
-          })}
-        </dl>
-      </section>
-      {perBab(daftarSoalHitung()).map(([bab, daftar]) => (
-        <section key={bab} className="tumpuk-rapat">
-          <h2 className="judul-bab-latihan">{judulTopik(bab)} <span className="keterangan">{angka(`${daftar.filter(soal => catatan[soal.kode]).length}/${daftar.length}`)}</span></h2>
-          <ul className="daftar-polos daftar-soal">
-            {daftar.map(soal => {
-              const selesai = !!catatan[soal.kode];
-              return (
-                <li key={soal.kode} className={selesai ? 'baris-soal selesai' : 'baris-soal'}>
-                  <span className="status-soal" aria-label={selesai ? t('latihan.sudah_dikerjakan') : t('latihan.belum_dikerjakan')}>{selesai ? '✓' : '○'}</span>
-                  <div className="isi-soal">
-                    <b>{soal.judul}</b>
-                    <span className="keterangan">
-                      <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
-                      {selesai && <> · {soal.topik}</>}
-                    </span>
-                  </div>
-                  <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={selesai ? 'secondary' : 'primary'}>
-                    {selesai ? t('latihan.ulangi') : t('hitung.kerjakan')}
-                  </TombolBukaKasus>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      ))}
-    </>
-  );
-}
-
