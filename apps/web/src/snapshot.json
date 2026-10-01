@@ -19047,6 +19047,13 @@
    "id": "Konsistensi yang bagus. Satu pelajaran atau soal tiap hari menjaganya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "umum.halaman_gagal_ditampilkan",
+   "halaman": "umum",
+   "id": "Halaman gagal ditampilkan.",
+   "ar": "تعذر عرض الصفحة.",
+   "versiTerbit": 873
   }
  ]
 }

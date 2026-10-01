@@ -57,7 +57,7 @@ function DaftarBagian({ bagian, aktif, saatPilih }: { bagian: Bagian[]; aktif: s
     <ol className="daftar-polos daftar-bagian">
       {bagian.map((isi, urutan) => (
         <li key={isi.id}>
-          <a href={`#${isi.id}`} aria-current={isi.id === aktif ? 'location' : undefined}
+          <a className="tautan-bagian" href={`#${isi.id}`} aria-current={isi.id === aktif ? 'location' : undefined}
             onClick={kejadian => { kejadian.preventDefault(); keBagian(isi.id); saatPilih?.(); }}>
             <span className="nomor-bagian" aria-hidden="true">{angka(String(urutan + 1).padStart(2, '0'))}</span>{isi.judul}
           </a>

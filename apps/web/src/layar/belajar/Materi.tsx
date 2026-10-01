@@ -42,7 +42,13 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const [, setVersiProgres] = useState(0);
 
   // Latar krem dan nav menyatu dengan hero, sama dengan Beranda dan Belajar (CSS body.layar-beranda).
-  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
+  // Hanya bila pelajarannya ada: halaman "tidak ditemukan" tidak punya banner gelap, nav putihnya akan tak terbaca di latar krem.
+  const ada = pelajaran !== undefined;
+  useEffect(() => {
+    if (!ada) return;
+    document.body.classList.add('layar-beranda');
+    return () => document.body.classList.remove('layar-beranda');
+  }, [ada]);
 
   useEffect(() => {
     if (!pelajaran) return;
@@ -90,7 +96,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
         <nav ref={ujung} className="navigasi-materi" aria-label={t('belajar.navigasi_pelajaran')}>
           <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('belajar.sebelumnya')}`} />
           <a className="aw-btn aw-btn-secondary" href={tautanBelajar()}><Ikon nama="rumah" /> {t('belajar.beranda_belajar')}</a>
-          <TautanNavigasi tujuan={berikutnya} label={`${t('belajar.berikutnya')} ${panah()}`} saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
+          <TautanNavigasi tujuan={berikutnya} label={`${t('belajar.berikutnya')} ${panah()}`} utama saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
         </nav>
       </main>
       <RailIsi bagian={bagian} aktif={posisi.aktif} />
@@ -99,9 +105,9 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   );
 }
 
-function TautanNavigasi({ tujuan, label, saatKlik }: { tujuan: Pelajaran | undefined; label: string; saatKlik?: () => void }) {
-  if (!tujuan) return <span className="aw-btn aw-btn-secondary nonaktif" aria-disabled="true">{label}</span>;
-  return <a className="aw-btn aw-btn-secondary" href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={tujuan.judul}>{label}</a>;
+function TautanNavigasi({ tujuan, label, saatKlik, utama }: { tujuan: Pelajaran | undefined; label: string; saatKlik?: () => void; utama?: boolean }) {
+  if (!tujuan) return null;
+  return <a className={utama ? 'aw-btn aw-btn-secondary berikutnya' : 'aw-btn aw-btn-secondary'} href={tautanBelajar(tujuan.slug)} onClick={saatKlik} title={tujuan.judul}>{label}</a>;
 }
 
 /** Sidebar: progres keseluruhan dan daftar modul; di HP jadi laci (dipasang ulang tiap pindah pelajaran, jadi tertutup lagi). */

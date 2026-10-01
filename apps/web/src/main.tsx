@@ -18,12 +18,13 @@ import { muatRepoSupabase, PERISTIWA_KONTEN_BARU, sinkronLatar } from './konten/
 import { pasangSnapshot, snapshotTerpasang } from './konten/sumber';
 import { NAMA_APLIKASI } from './terjemah';
 import { daftarkanServiceWorker } from './notifikasi/perangkat';
+import { BatasGalat } from './ui/BatasGalat';
 
 document.title = NAMA_APLIKASI;
 daftarkanServiceWorker();
 pasangSnapshot(pilihAwal(snapshotTerpasang(), await bacaCache()));
 const [{ Aplikasi }, { PenyediaPenjaga }] = await Promise.all([import('./Aplikasi'), import('./ui/Penjaga')]);
-createRoot(document.getElementById('akar')!).render(<StrictMode><PenyediaPenjaga><Aplikasi /></PenyediaPenjaga></StrictMode>);
+createRoot(document.getElementById('akar')!).render(<StrictMode><BatasGalat><PenyediaPenjaga><Aplikasi /></PenyediaPenjaga></BatasGalat></StrictMode>);
 void sinkronLatar(snapshotTerpasang(), {
   url: import.meta.env.VITE_SUPABASE_URL as string | undefined,
   kunci: import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined,

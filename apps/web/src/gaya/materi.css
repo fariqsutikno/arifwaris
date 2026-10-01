@@ -34,8 +34,8 @@
 .navigasi-materi{border-top-color:var(--divider);padding-top:20px}
 .navigasi-materi .aw-btn{border:0;border-radius:var(--radius-pill);background:var(--surface-sunken);box-shadow:none}
 .navigasi-materi .aw-btn:hover{background:var(--outline);transform:none}
-.navigasi-materi>a:last-child{background:var(--primary);color:var(--on-primary)}
-.navigasi-materi>a:last-child:hover{background:var(--aksen);color:#fff}
+.navigasi-materi .berikutnya{background:var(--primary);color:var(--on-primary);margin-inline-start:auto}
+.navigasi-materi .berikutnya:hover{background:var(--ink-muted)}
 
 /* sidebar: daftar modul; hanya modul yang dibaca terbuka, tanda selesai berupa bulatan kecil bukan centang hitam besar */
 .sidebar-materi{border:1px solid rgba(20,40,30,.08);border-radius:24px}
@@ -54,8 +54,8 @@ summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline
 .pelajaran-sidebar.selesai{color:var(--ink-muted)}
 .tanda-pelajaran{display:grid;place-items:center;flex:none;width:18px;height:18px;margin-top:1px;border:1.5px solid var(--outline);border-radius:50%;font:700 10px/1 var(--font-sans);color:#fff}
 .pelajaran-sidebar.selesai .tanda-pelajaran{border-color:var(--sorot-fardh);background:var(--sorot-fardh)}
-/* pelajaran aktif ditandai lembut (hijau muda + garis), supaya hanya banner yang jadi jangkar gelap di halaman */
-.pelajaran-sidebar[aria-current=page]{background:#e9f3d6;box-shadow:inset 3px 0 0 var(--aksen);color:var(--ink);font-weight:700}
+/* pelajaran aktif ditandai lembut (hijau muda), supaya hanya banner yang jadi jangkar gelap di halaman */
+.pelajaran-sidebar[aria-current=page]{background:#e9f3d6;color:var(--ink);font-weight:700}
 
 /* nomor bagian di atas tiap judul h2: pembaca tahu sedang di bagian ke berapa */
 .isi-materi{counter-reset:bagian}
@@ -78,10 +78,10 @@ summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline
 
 /* daftar bagian (di kanan dan di menu bilah) */
 .daftar-bagian{display:flex;flex-direction:column;gap:2px}
-.daftar-bagian a{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:12px;color:var(--ink-muted);text-decoration:none;font:500 14px/1.4 var(--font-sans)}
-.daftar-bagian a:hover{background:var(--surface-sunken);color:var(--ink)}
-.daftar-bagian a[aria-current=location]{background:var(--aksen-soft);color:var(--ink);font-weight:700}
-.daftar-bagian a:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.tautan-bagian{display:flex;background:none;gap:10px;align-items:baseline;padding:7px 10px;border-radius:12px;color:var(--ink-muted);text-decoration:none;font:500 14px/1.4 var(--font-sans)}
+.tautan-bagian:hover{background:var(--surface-sunken);color:var(--ink)}
+.tautan-bagian[aria-current=location]{background:var(--surface-sunken);color:var(--ink);font-weight:700}
+.tautan-bagian:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
 .nomor-bagian{flex:none;font:700 11px var(--font-sans);letter-spacing:.08em;color:var(--aksen);font-variant-numeric:tabular-nums}
 .rail-isi{display:none}
 
@@ -99,3 +99,7 @@ summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline
 
 @media (prefers-reduced-motion:reduce){.bilah-baca,.bilah-baca.tampil{transition:none}.bar-baca>span{transition:none}}
 @media (min-width:861px){.sidebar-materi{top:88px;max-height:calc(100vh - 108px)}}
+
+/* navigasi bawah: tombol yang tidak ada (pelajaran pertama/terakhir) tidak dirender; Berikutnya selalu di ujung */
+.navigasi-materi{display:flex;flex-wrap:wrap;gap:10px}
+@media (max-width:560px){.navigasi-materi>*{flex:1 1 40%}.navigasi-materi>:nth-child(2):not(:last-child){flex-basis:100%;order:3}}
