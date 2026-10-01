@@ -221,8 +221,12 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
 .judul-hero-sesi p{margin:0;color:rgba(255,255,255,.85);font:500 16px var(--font-sans)}
-.hero-sesi .kotak-nomor{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
-.hero-sesi .kotak-nomor button{width:44px;height:44px;border:1.5px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font:700 15px var(--font-sans);transition:background .2s,transform .2s}
+.judul-hero-sesi.ringkas h1{font-size:clamp(22px,3vw,30px)}
+.hero-sesi .nomor-ujian{width:100%;overflow-x:auto;scrollbar-width:none;mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);padding:6px 0}
+.hero-sesi .nomor-ujian::-webkit-scrollbar{display:none}
+.hero-sesi .kotak-nomor{display:flex;flex-wrap:nowrap;justify-content:safe center;gap:8px;width:max-content;min-width:100%;margin:0;padding:4px 24px;list-style:none}
+.hero-sesi .kotak-nomor li{flex:none}
+.hero-sesi .kotak-nomor button{width:40px;height:40px;border:1.5px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font:700 15px var(--font-sans);transition:background .2s,transform .2s}
 .hero-sesi .kotak-nomor button:not(:disabled):hover{background:rgba(255,255,255,.28)}
 .hero-sesi .kotak-nomor button.terjawab{border-color:#fff;background:#fff;color:var(--ink)}
 .hero-sesi .kotak-nomor button.benar{border-color:var(--sorot-fardh);background:var(--sorot-fardh);color:#fff}
@@ -230,9 +234,8 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .hero-sesi .kotak-nomor button[aria-current=true]{box-shadow:0 0 0 3px rgba(6,42,38,.9),0 0 0 5px #fff}
 .hero-sesi .progres-sesi{display:flex;justify-content:center;gap:6px 18px}
 .hero-sesi .angka-progres{color:rgba(255,255,255,.9);font:600 14px var(--font-sans)}
-.bar-ujian .judul-sesi{color:#fff}
-.bar-ujian .keluar-ujian{background:rgba(255,255,255,.14);color:#fff}
-.bar-ujian .keluar-ujian:hover{background:rgba(255,255,255,.26)}
+.bar-ujian .keluar-ujian{background:rgba(6,42,38,.88);color:#fff;backdrop-filter:blur(10px)}
+.bar-ujian .keluar-ujian:hover{background:rgba(6,42,38,1)}
 .hero-sesi{display:flex;flex-direction:column;align-items:center;gap:12px;padding:4px 0 30px}
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
@@ -247,8 +250,7 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 
 /* ruang ujian: satu kolom di tengah; bar atas, strip nomor soal, kartu soal besar, tombol maju/mundur */
 .sesi-kuis.ruang-ujian{width:100%;max-width:800px;margin-inline:auto;gap:18px}
-.bar-ujian{position:sticky;top:12px;z-index:20;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:12px;padding:8px 12px;border-radius:var(--radius-pill);background:rgba(6,42,38,.88);color:#fff;backdrop-filter:blur(10px);box-shadow:0 6px 20px rgba(6,42,38,.25)}
-.bar-ujian>:last-child{justify-self:end}
+.bar-ujian{position:sticky;top:12px;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0;min-height:44px}
 .keluar-ujian{display:inline-flex;align-items:center;gap:8px;justify-self:start;min-height:44px;padding:0 16px 0 12px;border-radius:var(--radius-pill);background:rgba(255,255,255,.75);color:var(--ink);font:600 14.5px var(--font-sans);text-decoration:none;transition:background .2s}
 .keluar-ujian:hover{background:#fff}
 .keluar-ujian:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
@@ -315,8 +317,6 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .ruang-ujian .tombol-mulai{align-self:stretch;min-height:52px}
 
 @media (max-width:560px){
-  .bar-ujian{grid-template-columns:auto minmax(0,1fr) auto}
-  .ruang-ujian .judul-sesi{font-size:14.5px}
   .ruang-ujian .kartu-kuis{padding:20px 18px;border-radius:24px}
   .ruang-ujian .kotak-nomor button{width:40px;height:40px}
   .awal-ujian{padding:22px 18px}

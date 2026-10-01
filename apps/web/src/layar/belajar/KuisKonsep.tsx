@@ -124,8 +124,7 @@ export function SesiKuis({ paket }: { paket: string }) {
   const kepala = (
     <div className="bar-ujian">
       <a className="keluar-ujian" href={tautanLatihan('kuis')}><Ikon nama="keluar" ukuran={18} />{t('latihan.keluar')}</a>
-      {tahap !== 'awal' && <span className="judul-sesi">{judulTampil}</span>}
-      {penandaWaktu || <span />}
+      {penandaWaktu}
     </div>
   );
 
@@ -188,13 +187,20 @@ export function SesiKuis({ paket }: { paket: string }) {
   };
   return (
     <Rangka kepala={kepala} hero={<>
+      <div className="judul-hero-sesi ringkas">
+        <h1>{judulTampil}</h1>
+        <div className="progres-sesi">
+          <span className="angka-progres">{t('umum.soal_nomor_dari_total', { nomor: posisi + 1, total: daftarSoal.length })}</span>
+          {mode === 'langsung' && <span className="angka-progres">{t('latihan.benar_jumlah', { jumlah: benarSejauhIni })}</span>}
+        </div>
+      </div>
       <nav className="nomor-ujian" aria-label={t('latihan.navigasi_soal')}>
           <ol className="kotak-nomor">
             {daftarSoal.map((soalIni, urutan) => {
               const terjawab = pilihan[urutan] !== undefined;
               return (
                 <li key={`${soalIni.kode}-${urutan}`}>
-                  <button type="button" className={jenisNomor(urutan)} aria-current={urutan === posisi}
+                  <button type="button" ref={el => { if (urutan === posisi) el?.scrollIntoView?.({ inline: 'center', block: 'nearest' }); }} className={jenisNomor(urutan)} aria-current={urutan === posisi}
                     aria-label={t('latihan.soal_nomor_status', { nomor: urutan + 1, status: terjawab ? t('latihan.terjawab') : t('latihan.belum_dijawab') })}
                     disabled={!bolehLoncat(urutan)} onClick={() => setPosisi(urutan)}>{angka(String(urutan + 1))}</button>
                 </li>
@@ -202,10 +208,6 @@ export function SesiKuis({ paket }: { paket: string }) {
             })}
           </ol>
         </nav>
-        <div className="progres-sesi">
-          <span className="angka-progres">{t('umum.soal_nomor_dari_total', { nomor: posisi + 1, total: daftarSoal.length })}</span>
-          {mode === 'langsung' && <span className="angka-progres">{t('latihan.benar_jumlah', { jumlah: benarSejauhIni })}</span>}
-        </div>
     </>}>
       <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={t('latihan.soal_nomor', { nomor: posisi + 1 })} sembunyikanLabel mode={mode} saatDijawab={jawab} dipilihAwal={pilihan[posisi]} />
       <div className="nav-langkah">
