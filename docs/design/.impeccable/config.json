@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "plus jakarta sans",
+        "createdAt": "2026-09-30T23:44:27.740Z",
+        "reason": "token Arif Waris v4 dipakai semua mockup repo ini (mockup-perjalanan-pengguna, turun-temurun); bukan pilihan baru di file ini"
+      }
+    ]
+  }
+}

@@ -7,7 +7,8 @@ UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/1
 FAMILI = ["Unbounded:wght@400;600;700", "Instrument+Serif", "Syne:wght@500;700;800", "Mona+Sans:wght@400;500;600;700",
           "Young+Serif", "Familjen+Grotesk:wght@400;500;600;700", "Hanken+Grotesk:wght@400;500;600;700",
           "Figtree:wght@400;500;600;700", "Funnel+Sans:wght@400;500;600;700", "Funnel+Display:wght@400;500;600;700",
-          "Host+Grotesk:wght@400;500;600;700", "Onest:wght@400;500;600;700", "Noto+Kufi+Arabic:wght@400;600"]
+          "Host+Grotesk:wght@400;500;600;700", "Parkinsans:wght@400;500;600;700",
+          "Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700", "Schibsted+Grotesk:wght@400;500;600;700", "Gabarito:wght@400;500;600;700", "Onest:wght@400;500;600;700", "Noto+Kufi+Arabic:wght@400;600"]
 def ambil(url): return urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=30).read()
 css_keluar, gagal = [], []
 for f in FAMILI:
