@@ -69,3 +69,18 @@ it('kitab tanpa sumber: tombol baca nonaktif dengan label, bukan tombol mati', (
   render(<Rujukan kategori="kitab" />);
   for (const tombol of screen.getAllByRole('button', { name: /belum tersedia/ })) expect((tombol as HTMLButtonElement).disabled).toBe(true);
 });
+
+it('rujukan: kategori memakai baris tab (tanpa sidebar); filter bab menyempitkan dalil', () => {
+  const { container } = render(<Rujukan kategori="sunnah" />);
+  const baris = screen.getByRole('navigation', { name: 'Kategori dalil' });
+  expect(baris.querySelector('[aria-current="page"]')?.textContent).toMatch(/Sunnah/);
+  expect(container.querySelector('.modul-sidebar')).toBeNull();
+  const dalil = RUJUKAN.filter(isi => isi.daftarJenis.includes('H'));
+  const bab = [...new Set(dalil.map(isi => isi.bab))].sort((a, b) => a - b);
+  const tautan = () => container.querySelectorAll('a[href^="#/rujukan/R"]').length;
+  expect(tautan()).toBe(dalil.length);
+  fireEvent.click(screen.getByRole('button', { name: `Bab ${bab[0]}` }));
+  expect(tautan()).toBe(dalil.filter(isi => isi.bab === bab[0]).length);
+  fireEvent.click(screen.getByRole('button', { name: 'Semua bab' }));
+  expect(tautan()).toBe(dalil.length);
+});

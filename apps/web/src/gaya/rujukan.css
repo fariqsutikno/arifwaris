@@ -17,3 +17,14 @@ li:nth-child(5n+5)>.ubin-rujukan{--a:#fde7c9;--b:#f6c68a}
 .hasil-cari-rujukan li a{display:flex;flex-direction:column;padding:8px 4px;color:#fff;text-decoration:none;border-top:1px solid rgba(255,255,255,.14)}
 .hasil-cari-rujukan li a span{font-size:14px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.ubin-rujukan{transition:none}}
+
+/* Isi kategori / satu dalil / penampil: satu kartu lebar penuh di bawah baris tab kategori */
+.tata-rujukan{max-width:var(--lebar-konten);margin:0 auto;padding:24px 16px 96px;box-sizing:border-box}
+.tata-rujukan>.konten-rujukan{min-width:0;padding:28px 32px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:var(--surface-raised)}
+.baris-kategori{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;scroll-behavior:smooth;padding:2px;mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 14px),transparent)}
+.baris-kategori::-webkit-scrollbar{display:none}
+.baris-kategori a{flex:none;padding:8px 14px;border-radius:999px;text-decoration:none;color:var(--ink);background:var(--primary-soft)}
+.baris-kategori a[aria-current=page]{background:var(--ink);color:#fff}
+.saring-bab{display:flex;flex-wrap:wrap;gap:6px 14px}
+.saring-bab .tautan-teks[aria-pressed=false]{font-weight:500}
+@media (max-width:860px){.tata-rujukan>.konten-rujukan{padding:20px 16px}}

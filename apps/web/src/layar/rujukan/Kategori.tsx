@@ -1,10 +1,12 @@
 // Kategori dalil Rujukan: daftar kategori (hierarki dalil KB bab 17.1), isi satu kategori, dan dalil per bab.
 // Menerima satu Kategori; memutuskan dalil mana yang masuk (menurut jenis); menyerahkan kartu ke KartuDalil.
 
+import { useState } from 'react';
 import { DAFTAR_AYAT, DAFTAR_HADITS, DAFTAR_KITAB, RUJUKAN, TITIK_DIKAJI, type EntriRujukan, type JenisDalil } from '@waris/content';
 import { tautanRujukan } from '../../rute';
 import { angka, t } from '../../terjemah';
 import { judulBab } from '../../konten/judulBab';
+import { daftarBabDi, saringBab } from './cari';
 import { KartuAyat, KartuKitab } from './KartuDalil';
 
 export interface Kategori { id: string; judul: string; jenis?: JenisDalil }
@@ -59,18 +61,25 @@ export function IsiKategori({ kategori }: { kategori: Kategori }) {
   );
 }
 
-/** Dalil yang memakai jenis ini, dikelompokkan per bab KB. */
+/** Dalil yang memakai jenis ini, dikelompokkan per bab KB; bab bisa disaring. */
 function DalilPerBab({ daftar }: { daftar: EntriRujukan[] }) {
-  const daftarBab = [...new Set(daftar.map(rujukan => rujukan.bab))];
+  const [bab, setBab] = useState<number | undefined>();
   if (daftar.length === 0) return null;
+  const tampil = saringBab(daftar, bab);
   return (
     <section className="blok-rujukan">
       <h2>{t('rujukan.dipakai_untuk')}</h2>
-      {daftarBab.map(bab => (
-        <details key={bab} className="kartu-lipat">
-          <summary><b>{judulBab(bab)}</b><span className="keterangan">{angka(String(daftar.filter(rujukan => rujukan.bab === bab).length))}</span></summary>
+      <div className="saring-bab" role="group" aria-label={t('rujukan.saring_bab')}>
+        <button type="button" className="tautan-teks" aria-pressed={bab === undefined} onClick={() => setBab(undefined)}>{t('rujukan.semua_bab')}</button>
+        {daftarBabDi(daftar).map(isi => (
+          <button key={isi} type="button" className="tautan-teks" aria-pressed={bab === isi} onClick={() => setBab(isi)}>{`Bab ${angka(String(isi))}`}</button>
+        ))}
+      </div>
+      {daftarBabDi(tampil).map(isi => (
+        <details key={isi} className="kartu-lipat">
+          <summary><b>{judulBab(isi)}</b><span className="keterangan">{angka(String(saringBab(tampil, isi).length))}</span></summary>
           <ul className="isi-lipat">
-            {daftar.filter(rujukan => rujukan.bab === bab).map(rujukan => (
+            {saringBab(tampil, isi).map(rujukan => (
               <li key={rujukan.kode}><a href={tautanRujukan(rujukan.kode)}>{rujukan.klaim}</a>{rujukan.status === 'perluVerifikasi' ? ` ${t('rujukan.masih_dikaji_2')}` : ''}</li>
             ))}
           </ul>
