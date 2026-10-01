@@ -1,16 +1,37 @@
-# Platform Waris (Faraidh Engine)
+# Arif Waris (Platform Waris / Faraidh Engine)
 
-Kalkulator waris (faraidh) + edukasi berbasis madzhab **Syafi'i [SYF]**, ditulis dalam TypeScript.
+**ARIF** = *Aplikasi Representasi Ilmu Faraidh*: kalkulator waris (faraidh) + edukasi, ditulis dalam TypeScript.
 Setiap hasil hitung bisa ditelusuri langkah demi langkah sampai ke rujukan kitabnya.
+Default madzhab **Syafi'i [SYF]**; Hanbali, Hanafi, dan Maliki tersedia sebagai selisih pendapat per titik khilaf.
 
-> Status: tugas akhir, masih dikembangkan. Fase 1 (bab 01–11 KB) jadi fokus utama.
+> Status: tugas akhir, masih dikembangkan. Engine fase 1–3 selesai; antarmuka kasus berlapis sedang dikerjakan.
+
+## Mencoba cepat
+
+Butuh Node.js dan pnpm. Web berjalan penuh tanpa internet dan tanpa Supabase (konten memakai snapshot bawaan).
+
+```bash
+pnpm install
+```
+
+```bash
+pnpm --filter @waris/web dev
+```
+
+Lalu buka alamat yang dicetak Vite (biasanya http://localhost:5173). Untuk mengecek mesin hitungnya saja:
+
+```bash
+pnpm test
+```
 
 ## Fitur
 
-- **Kalkulator**: masukkan harta dan ahli waris, dapat bagian tiap orang (pecahan + nominal).
-- **Pembahasan per kasus**: tiap keputusan (hajb, fardh, ashabah, 'aul/radd, tashih) dijelaskan beserta dalil/rujukannya.
-- **Belajar**: modul materi bertahap, glosarium, dan kuis (kunci jawaban dihitung oleh engine).
-- **Eksak**: semua hitungan pakai pecahan `bigint`, tanpa pembulatan floating point. Selisih pembulatan uang dilaporkan terpisah.
+- **Kalkulator**: isi pewaris, harta, kewajiban, ahli waris, dan kondisi khusus lewat pertanyaan satu per satu; hasilnya bagian tiap orang (pecahan + nominal).
+- **Kasus rumit**: kematian berlapis (munasakhat), janin (haml), mafqud, khuntsa, wafat bersamaan (gharqa), dzawil arham, takharuj, jadd wal ikhwah.
+- **Multi-madzhab**: [SYF] default; [HNB], [HNF], [MLK] sebagai overlay, tiap titik khilaf tercatat di `docs/kb/18_matriks_khilaf.md`.
+- **Pembahasan per kasus**: tiap keputusan (hajb, fardh, ashabah, 'aul/radd, tashih) dijelaskan beserta dalil/rujukannya; tampilan Indonesia atau Indonesia + Arab.
+- **Belajar**: materi bertahap, glosarium, latihan, dan kuis (kunci jawaban dihitung engine). Akun Google opsional untuk riwayat, progres, dan streak.
+- **Eksak**: semua hitungan pakai pecahan `bigint`, tanpa floating point. Selisih pembulatan uang dilaporkan terpisah.
 
 ## Struktur repo
 
@@ -18,11 +39,14 @@ Setiap hasil hitung bisa ditelusuri langkah demi langkah sampai ke rujukan kitab
 packages/math      Pecahan, FPB/KPK, nisab arba' (kaidah hisab)
 packages/engine    Tipe, ruleset syafii, tahap pipeline, orkestrator
 packages/content   Rujukan, glosarium, materi, bank soal
+packages/data      Akses konten dan akun (Supabase)
 packages/explain   Jejak langkah → narasi bahasa Indonesia
-apps/web           Antarmuka web (Vite + React)
+apps/web           Antarmuka web Arif Waris (Vite + React)
 apps/admin         Portal admin: sunting, review, dan terbitkan konten (Vite + React)
-docs/kb            Knowledge base fikih bab 00–17 (sumber kebenaran)
-docs/design        Dokumen desain (engine-contract.md)
+docs/kb            Knowledge base fikih bab 00–18 (sumber kebenaran)
+docs/design        Dokumen desain (engine-contract.md, mockup)
+docs/superpowers   Spec dan rencana implementasi per fitur
+supabase           Migrasi, seed, dan edge function (ai-bantu)
 docs/lampiran-konten  Ekspor Markdown konten terbit (isi aslinya di database)
 ```
 
@@ -34,21 +58,9 @@ tirkah → validasi & mawani' → hajb → furudh/ashabah → ashl → 'aul/radd
 
 Tiap tahap adalah fungsi murni yang diuji sendiri. Detail: [docs/design/engine-contract.md](docs/design/engine-contract.md).
 
-## Menjalankan
+## Menjalankan lebih lengkap
 
-Butuh Node.js dan pnpm.
-
-```bash
-pnpm install
-```
-
-```bash
-pnpm test
-```
-
-```bash
-pnpm --filter @waris/web dev
-```
+Perintah dasar ada di "Mencoba cepat" di atas. Env web (opsional, untuk akun dan sinkron konten) ada di `apps/web/.env.example`.
 
 ### Portal admin
 
@@ -87,10 +99,12 @@ baru) membaca `SUPABASE_URL`, `SUPABASE_ANON_KEY`, dan untuk pulihkan `SUPABASE_
 
 | Fase | Cakupan | Status |
 |---|---|---|
-| 1 | Tirkah s.d. tashih, jadd wal ikhwah, takharuj (bab 01–11) | berjalan |
-| 2 | Munasakhat, kasus khusus (bab 12–13) | belum |
-| 3 | Dzawil arham (bab 14) | belum |
+| 1 | Tirkah s.d. tashih, jadd wal ikhwah, takharuj (bab 01–11) | selesai |
+| 2 | Munasakhat, kasus khusus: haml, mafqud, khuntsa, gharqa (bab 12–13) | engine selesai; UI babak berlapis berjalan |
+| 3 | Dzawil arham (bab 14) | selesai |
 | 4 | Ruleset KHI (hukum positif, terpisah) | belum |
+
+Titik yang belum terverifikasi (mis. laqith R13-14) sengaja dikembalikan sebagai `TIDAK_DIDUKUNG`, bukan ditebak.
 
 ## Rujukan
 

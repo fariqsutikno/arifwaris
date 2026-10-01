@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup Nuansa Minang</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --gading:#f6eedd; --lembar:#fffaf0; --cekung:#ecdfc6; --garis:#dccbab; --kontrol:#8a7556;
+  --marun:#7a1420; --marun-tua:#3d0a10; --marun-soft:#f3dcd8;
+  --lumut:#2c5a3a; --lumut-soft:#dce9dd;
+  --emas:#c8902e; --emas-terang:#e8c06a; --emas-teks:#8a5a0c;
+  --arang:#1c1512; --tinta:#2a1d18; --tinta-redup:#66544a;
+  --pasir:#fbe9b7; --focus:#1a56db;
+  --pop:0 1px 2px rgba(61,10,16,.10), 0 10px 26px -12px rgba(61,10,16,.35);
+  --pop-kecil:0 1px 2px rgba(61,10,16,.12), 0 3px 10px -4px rgba(61,10,16,.30);
+  --judul:"Young Serif",Georgia,serif;
+  --isi:"Barlow",system-ui,sans-serif;
+  --tumpal:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='16' viewBox='0 0 28 16'%3E%3Cpath d='M0 16 14 1 28 16Z' fill='%23c8902e'/%3E%3Cpath d='M8.5 16 14 8 19.5 16Z' fill='%237a1420'/%3E%3C/svg%3E");
+  --tumpal-marun:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='16' viewBox='0 0 28 16'%3E%3Cpath d='M0 16 14 1 28 16Z' fill='%237a1420'/%3E%3Cpath d='M8.5 16 14 8 19.5 16Z' fill='%23e8c06a'/%3E%3C/svg%3E");
+  --kisi:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M18 2 34 18 18 34 2 18Z' fill='none' stroke='%23e8c06a' stroke-opacity='.2' stroke-width='1.2'/%3E%3Ccircle cx='18' cy='18' r='2' fill='%23e8c06a' fill-opacity='.28'/%3E%3C/svg%3E");
+}
+* { box-sizing:border-box; }
+body { font-synthesis:none; margin:0; background:#d9c9a8; color:var(--tinta); font:400 17px/1.6 var(--isi); -webkit-font-smoothing:antialiased; }
+::selection { background:var(--marun); color:var(--gading); }
+input { caret-color:var(--marun); }
+a, button { font:inherit; color:inherit; }
+:focus-visible { outline:3px solid var(--focus); outline-offset:2px; border-radius:6px; }
+* { scrollbar-color:var(--kontrol) transparent; }
+.angka { font-family:var(--judul); font-variant-numeric:lining-nums tabular-nums; }
+.ikon { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+
+/* kontrol mockup */
+.kontrol { position:sticky; top:0; z-index:10; display:flex; flex-wrap:wrap; gap:8px 28px; justify-content:center; padding:10px 16px; background:var(--arang); color:var(--gading); font-size:15px; }
+.kontrol div { display:flex; gap:16px; align-items:center; }
+.kontrol span { opacity:.6; }
+.kontrol button { background:none; border:0; padding:4px 2px; cursor:pointer; opacity:.7; border-bottom:2px solid transparent; }
+.kontrol button[aria-pressed="true"] { opacity:1; border-color:var(--emas-terang); }
+.catatan { max-width:1200px; margin:16px auto 0; padding:0 16px; font-size:14px; color:var(--tinta); text-align:center; }
+.bingkai { container:layar / inline-size; margin:16px auto 48px; width:min(1200px, 100% - 32px); background:var(--gading); border-radius:10px; overflow:hidden; box-shadow:var(--pop); }
+.bingkai.ponsel { width:390px; max-width:100%; }
+.layar[hidden] { display:none; }
+
+/* pita songket (tumpal) */
+.pita { height:18px; background:var(--tumpal) repeat-x left bottom / 28px 16px, linear-gradient(var(--emas), var(--emas)) left top / 100% 2px no-repeat; background-color:var(--marun); }
+.pita.marun { background:var(--tumpal-marun) repeat-x left bottom / 28px 16px, linear-gradient(var(--marun), var(--marun)) left top / 100% 2px no-repeat; background-color:transparent; }
+.pita.balik { transform:scaleY(-1); }
+
+/* bilah atas */
+.atas { display:flex; align-items:center; gap:28px; padding:0 32px; height:68px; background:var(--marun); color:var(--gading); }
+.logo { display:flex; align-items:center; gap:12px; font:700 23px/1 var(--judul); letter-spacing:-.01em; text-decoration:none; color:var(--gading); }
+.logo svg { width:38px; height:30px; }
+.nav { display:flex; gap:2px; height:100%; margin-left:auto; }
+.nav a { position:relative; display:flex; align-items:center; padding:0 14px; color:#e9cfc9; text-decoration:none; font-weight:500; }
+.nav a[aria-current] { color:var(--emas-terang); font-weight:600; }
+.nav a[aria-current]::after { content:""; position:absolute; left:50%; bottom:7px; width:9px; height:9px; margin-left:-4.5px; transform:rotate(45deg); background:var(--emas-terang); }
+
+/* tombol dan tautan */
+.aksi { display:flex; flex-wrap:wrap; align-items:center; gap:14px 28px; margin-top:30px; }
+.tombol { display:inline-flex; align-items:center; gap:10px; height:50px; padding:0 24px; border:0; border-radius:6px; background:var(--marun); color:var(--gading); font-weight:600; cursor:pointer; text-decoration:none; box-shadow:var(--pop-kecil), inset 0 0 0 2px var(--marun), inset 0 0 0 3px rgba(232,192,106,.55); }
+.tombol:hover { background:#63101a; }
+.tautan { color:var(--marun); text-decoration:underline; text-underline-offset:4px; text-decoration-thickness:1px; font-weight:600; background:none; border:0; padding:0; cursor:pointer; }
+.tautan:hover { text-decoration-thickness:2px; }
+.tautan.belajar { color:var(--lumut); }
+.tautan.redup { color:var(--tinta-redup); }
+
+/* beranda */
+.hero { display:grid; grid-template-columns:1fr 1.05fr; gap:44px; align-items:center; padding:52px 40px 48px; }
+h1 { margin:0; font:700 clamp(36px, 5.2vw, 60px)/1.04 var(--judul); letter-spacing:-.02em; text-wrap:balance; color:var(--marun-tua); }
+.lead { margin:18px 0 0; font-size:19px; max-width:46ch; color:var(--tinta-redup); }
+.panel-rumah { position:relative; background:var(--marun-tua) var(--kisi); border:2px solid var(--emas); border-radius:8px; box-shadow:var(--pop); padding:26px 22px 0; outline:1px solid var(--emas); outline-offset:-9px; overflow:hidden; }
+.panel-rumah svg.rumah { display:block; width:100%; height:auto; }
+.panel-rumah .pita { margin:0 -22px; }
+
+.jalur { padding:8px 40px 40px; }
+.jalur .baris { display:grid; grid-template-columns:auto 1fr auto; gap:4px 20px; align-items:center; padding:20px 0; border-top:1px solid var(--garis); --warna:var(--marun); }
+.jalur .baris.belajar { --warna:var(--lumut); }
+.jalur .ketupat { position:relative; width:46px; height:46px; display:grid; place-items:center; }
+.jalur .ketupat::before { content:""; position:absolute; inset:5px; transform:rotate(45deg); background:var(--warna); box-shadow:0 0 0 3px var(--gading), 0 0 0 4px var(--emas); }
+.jalur .ketupat span { position:relative; font:700 19px/1 var(--judul); color:var(--gading); }
+.jalur strong { display:block; font:600 22px/1.2 var(--judul); color:var(--marun-tua); }
+.jalur p { margin:3px 0 0; font-size:16px; line-height:1.45; color:var(--tinta-redup); }
+.jalur .status { text-align:right; font-size:14.5px; font-weight:600; color:var(--warna); }
+.jalur .status a { display:block; margin-top:2px; color:var(--warna); text-underline-offset:4px; text-decoration-thickness:1px; }
+
+.langkah-gelap { position:relative; background:var(--marun-tua) var(--kisi); color:var(--gading); padding-bottom:30px; }
+.langkah-gelap h2 { margin:0; padding:34px 40px 6px; font:700 clamp(26px,3.6vw,34px)/1.12 var(--judul); letter-spacing:-.01em; color:var(--emas-terang); }
+.langkah-gelap > p { margin:0; padding:0 40px; color:#e5cfc6; max-width:60ch; }
+.penutup { display:flex; flex-wrap:wrap; gap:12px 32px; padding:22px 40px; font-size:15px; color:var(--tinta-redup); }
+
+/* rel langkah: garis emas dengan simpul ketupat */
+.rel-langkah { --n:6; position:relative; margin-top:30px; padding:0 16px; }
+.rel-langkah ol { position:relative; display:grid; grid-template-columns:repeat(var(--n), 1fr); margin:0; padding:0; list-style:none; }
+.rel-langkah ol::before { content:""; position:absolute; top:13px; left:calc(100% / (var(--n) * 2)); right:calc(100% / (var(--n) * 2)); height:3px; background:var(--garis); }
+.rel-langkah ol::after { content:""; position:absolute; top:13px; left:calc(100% / (var(--n) * 2)); width:calc((var(--sampai) - 1) / (var(--n) - 1) * (100% - 100% / var(--n))); height:3px; background:var(--marun); animation:rel 1.6s cubic-bezier(.16,1,.3,1) both; }
+.gelap .rel-langkah ol::before { background:rgba(232,192,106,.3); }
+.gelap .rel-langkah ol::after { background:var(--emas-terang); }
+.rel-langkah li { position:relative; z-index:1; text-align:center; padding:0 6px; }
+.rel-langkah .simpul { position:relative; display:grid; place-items:center; width:28px; height:28px; margin:0 auto 12px; }
+.rel-langkah .simpul::before { content:""; position:absolute; inset:3px; transform:rotate(45deg); background:var(--lembar); border:2px solid var(--kontrol); }
+.rel-langkah .simpul i { position:relative; font:700 13px/1 var(--judul); font-style:normal; color:var(--tinta-redup); }
+.rel-langkah .sudah .simpul::before { background:var(--marun); border-color:var(--marun); }
+.rel-langkah .sudah .simpul i { color:var(--gading); }
+.rel-langkah .kini .simpul::before { background:var(--lembar); border-color:var(--marun); box-shadow:0 0 0 4px var(--marun-soft); }
+.rel-langkah .kini .simpul i { color:var(--marun); }
+.gelap .rel-langkah .simpul::before { background:var(--marun-tua); border-color:var(--emas-terang); }
+.gelap .rel-langkah .simpul i { color:var(--emas-terang); }
+.gelap .rel-langkah .sudah .simpul::before { background:var(--emas-terang); border-color:var(--emas-terang); }
+.gelap .rel-langkah .sudah .simpul i { color:var(--marun-tua); }
+.rel-langkah b { display:block; font:600 17px/1.2 var(--judul); text-wrap:balance; }
+.rel-langkah small { display:block; margin-top:4px; font-size:14px; line-height:1.4; opacity:.85; text-wrap:balance; }
+@keyframes rel { from { width:0; } }
+
+/* wizard */
+.wizard-rel { padding:22px 28px 20px; background:var(--lembar); border-bottom:1px solid var(--garis); }
+.wizard-rel .rel-langkah { margin:0; padding:0; }
+.wizard-badan { display:grid; grid-template-columns:1fr 300px; gap:28px; padding:32px 28px 36px; align-items:start; }
+.lembar { background:var(--lembar); border:1px solid var(--garis); border-radius:8px; box-shadow:var(--pop-kecil); overflow:hidden; }
+.lembar .isi { padding:32px 36px 4px; }
+.lembar h2 { margin:0; font:700 clamp(26px,3.6vw,34px)/1.12 var(--judul); letter-spacing:-.01em; text-wrap:balance; color:var(--marun-tua); }
+.lembar .isi > p { margin:10px 0 0; color:var(--tinta-redup); max-width:52ch; }
+.isian { margin-top:26px; display:grid; gap:22px; }
+.isian label { display:block; font:600 15px/1.3 var(--isi); }
+.isian .bantu { display:block; margin-top:2px; font-weight:400; font-size:14px; color:var(--tinta-redup); }
+.uang { display:flex; align-items:center; margin-top:8px; height:54px; max-width:380px; border:1px solid var(--kontrol); border-radius:6px; background:#fff; overflow:hidden; }
+.uang:focus-within { outline:3px solid var(--focus); outline-offset:2px; }
+.uang span { padding:0 15px; height:100%; display:grid; place-items:center; background:var(--marun); color:var(--emas-terang); font:700 16px/1 var(--judul); }
+.uang input { flex:1; min-width:0; height:100%; border:0; background:none; padding:0 14px; font:600 21px/1 var(--judul); font-variant-numeric:lining-nums tabular-nums; color:var(--tinta); text-align:right; outline:none; }
+.barbawah { display:flex; align-items:center; justify-content:space-between; gap:16px; margin:32px -36px 0; padding:18px 36px; border-top:1px solid var(--garis); background:var(--gading); }
+.samping { background:var(--lembar); border:1px solid var(--garis); border-radius:8px; overflow:hidden; }
+.samping .isi { padding:18px 22px 14px; }
+.samping h3 { margin:0 0 6px; font:600 19px/1.2 var(--judul); color:var(--marun-tua); }
+.samping .r { display:flex; justify-content:space-between; gap:12px; padding:11px 0; border-top:1px solid var(--garis); font-size:15px; }
+.samping dl { margin:0; }
+.samping dt { color:var(--tinta-redup); }
+.samping dd { margin:0; font-weight:600; text-align:right; }
+.samping .tautan { margin:8px 0 6px; font-size:15px; }
+
+/* hasil */
+.tiba { display:grid; grid-template-columns:1fr 1.1fr; gap:36px; padding:40px 28px 44px; align-items:start; }
+.tiba-judul { grid-column:1 / -1; max-width:62ch; }
+.tiba-judul h1 { font-size:clamp(32px,4.4vw,50px); }
+.songket { background:var(--lembar); border:2px solid var(--emas); outline:1px solid var(--emas); outline-offset:-8px; border-radius:8px; box-shadow:var(--pop); overflow:hidden; }
+.songket header { display:flex; align-items:baseline; justify-content:space-between; padding:22px 26px 16px; }
+.songket header h2 { margin:0; font:600 22px/1.2 var(--judul); color:var(--marun-tua); }
+.songket header span { font-size:14px; color:var(--tinta-redup); }
+.ahli { display:grid; grid-template-columns:1fr auto; gap:0 16px; align-items:baseline; padding:16px 26px; }
+.ahli + .ahli { border-top:1px solid var(--garis); }
+.ahli b { font:600 19px/1.2 var(--judul); }
+.ahli small { display:block; font-size:14px; color:var(--tinta-redup); }
+.ahli .pecahan { font:700 28px/1 var(--judul); color:var(--marun); text-align:right; font-variant-numeric:lining-nums tabular-nums; }
+.ahli .rupiah { grid-column:2; text-align:right; font:500 16px/1.3 var(--judul); font-variant-numeric:lining-nums tabular-nums; color:var(--tinta-redup); }
+.songket footer { padding:16px 26px 22px; background:var(--pasir); font-size:14.5px; line-height:1.45; }
+.songket footer b { font-weight:600; }
+.tiket-aksi { display:flex; gap:10px 24px; flex-wrap:wrap; margin-top:16px; font-size:15px; }
+.telusur { margin:0; padding:0; list-style:none; }
+.telusur h2 { font:700 clamp(24px,3.2vw,30px)/1.15 var(--judul); letter-spacing:-.01em; margin:0 0 20px; color:var(--marun-tua); }
+.telusur li { position:relative; padding:0 0 26px 54px; }
+.telusur li:not(:last-child)::before { content:""; position:absolute; left:15px; top:30px; bottom:2px; width:3px; background:var(--marun); }
+.telusur .simpul { position:absolute; left:0; top:-1px; display:grid; place-items:center; width:32px; height:32px; }
+.telusur .simpul::before { content:""; position:absolute; inset:4px; transform:rotate(45deg); background:var(--marun); }
+.telusur .simpul i { position:relative; font:700 13px/1 var(--judul); font-style:normal; color:var(--gading); }
+.telusur li:last-child .simpul::before { background:var(--lembar); border:2px solid var(--marun); box-shadow:0 0 0 4px var(--marun-soft); }
+.telusur li:last-child .simpul i { color:var(--marun); }
+.telusur b { display:block; font:600 20px/1.25 var(--judul); }
+.telusur p { margin:4px 0 6px; max-width:54ch; }
+.telusur .tautan { font-size:15px; display:inline-flex; gap:6px; align-items:center; }
+.telusur .tautan .ikon { width:18px; height:18px; }
+
+/* ponsel */
+@container layar (max-width: 760px) {
+  .atas { gap:12px; padding:0 14px; height:58px; }
+  .logo span { display:none; }
+  .nav a { padding:0 9px; font-size:15px; }
+  .hero { grid-template-columns:1fr; gap:28px; padding:30px 16px 28px; }
+  .panel-rumah { padding:18px 14px 0; }
+  .panel-rumah .pita { margin:0 -14px; }
+  .jalur { padding:4px 16px 28px; }
+  .jalur .baris { grid-template-columns:auto 1fr; }
+  .jalur .status { grid-column:2; text-align:left; }
+  .langkah-gelap h2 { padding:28px 16px 6px; }
+  .langkah-gelap > p { padding:0 16px; }
+  .rel-langkah { padding:0 6px; margin-top:24px; }
+  .rel-langkah small { display:none; }
+  .rel-langkah b { font-size:13px; }
+  .rel-langkah li { padding:0 2px; }
+  .penutup { padding:18px 16px; }
+  .wizard-rel { padding:14px 10px 14px; }
+  .wizard-badan { grid-template-columns:1fr; padding:16px 12px 28px; gap:16px; }
+  .lembar .isi { padding:24px 18px 4px; }
+  .barbawah { margin-inline:-18px; padding:14px 18px; }
+  .tiba { grid-template-columns:1fr; padding:28px 16px 36px; gap:28px; }
+  .songket header, .ahli, .songket footer { padding-inline:20px; }
+}
+@media (prefers-reduced-motion: reduce) { .rel-langkah ol::after { animation:none; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-panah" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-buku" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5zM4 5.5v16M8 7h8"/></symbol>
+  <symbol id="i-riwayat" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2"/></symbol>
+
+  <!-- tanda: tiga gonjong -->
+  <symbol id="logo" viewBox="0 0 38 30">
+    <g fill="#e8c06a"><path d="M2 26C5 18 6 10 1 1 9 7 12 16 13 26Z"/><path d="M13 26C15 17 17 8 19 0 21 8 23 17 25 26Z"/><path d="M25 26C26 16 29 7 37 1 32 10 33 18 36 26Z"/><rect x="2" y="26" width="34" height="3" rx="1"/></g>
+  </symbol>
+
+  <!-- gonjong: satu tanduk, pangkal di tengah bawah -->
+  <symbol id="gonjong" viewBox="0 0 40 130" preserveAspectRatio="none">
+    <path d="M0 130C14 104 14 58 20 0 26 58 26 104 40 130Z"/>
+  </symbol>
+  <symbol id="gonjong-kiri" viewBox="0 0 40 130" preserveAspectRatio="none">
+    <path d="M0 130C14 104 8 54 -6 12 18 34 34 86 40 130Z"/>
+  </symbol>
+  <symbol id="gonjong-kanan" viewBox="0 0 40 130" preserveAspectRatio="none">
+    <path d="M40 130C26 104 32 54 46 12 22 34 6 86 0 130Z"/>
+  </symbol>
+
+  <pattern id="kisi-rumah" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M18 2 34 18 18 34 2 18Z" fill="none" stroke="#e8c06a" stroke-opacity=".3" stroke-width="1.2"/><circle cx="18" cy="18" r="2" fill="#e8c06a" fill-opacity=".4"/></pattern>
+
+  <!-- rumah gadang, tampak depan -->
+  <symbol id="rumah-gadang" viewBox="-40 -24 700 404">
+    <!-- tiang -->
+    <g fill="#1c1512"><rect x="110" y="318" width="14" height="46"/><rect x="200" y="318" width="14" height="46"/><rect x="406" y="318" width="14" height="46"/><rect x="496" y="318" width="14" height="46"/></g>
+    <!-- tangga -->
+    <g fill="#e8c06a"><path d="M262 318H358L366 330H254Z"/><path d="M254 330H366L374 342H246Z" opacity=".85"/><path d="M246 342H374L382 354H238Z" opacity=".7"/></g>
+    <!-- dinding miring -->
+    <path d="M62 185H558L530 318H90Z" fill="#7a1420" stroke="#e8c06a" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M62 185H558L530 318H90Z" fill="url(#kisi-rumah)"/>
+    <!-- panel ukiran -->
+    <g fill="none" stroke="#e8c06a" stroke-width="2">
+      <path d="M96 222H188L184 300H94Z"/><path d="M432 222H524L526 300H436Z"/>
+      <path d="M204 222H290L288 300H202Z"/><path d="M330 222H416L418 300H332Z"/>
+    </g>
+    <g fill="#e8c06a">
+      <path d="M142 236 160 261 142 286 124 261Z"/><path d="M478 236 496 261 478 286 460 261Z"/>
+      <path d="M247 236 263 261 247 286 231 261Z"/><path d="M373 236 389 261 373 286 357 261Z"/>
+    </g>
+    <g fill="#7a1420"><path d="M142 247 152 261 142 275 132 261Z"/><path d="M478 247 488 261 478 275 468 261Z"/><path d="M247 247 256 261 247 275 238 261Z"/><path d="M373 247 382 261 373 275 364 261Z"/></g>
+    <!-- pintu -->
+    <path d="M292 318V236Q310 214 328 236V318Z" fill="#1c1512" stroke="#e8c06a" stroke-width="2.5"/>
+    <!-- lis bawah dinding -->
+    <path d="M90 318H530" stroke="#e8c06a" stroke-width="4"/>
+    <!-- badan atap -->
+    <path d="M10 140Q310 224 610 140L580 192Q310 268 40 192Z" fill="#1c1512" stroke="#e8c06a" stroke-width="2.5" stroke-linejoin="round"/>
+    <path d="M40 192Q310 268 580 192" fill="none" stroke="#e8c06a" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round" transform="translate(0 -9)"/>
+    <!-- gonjong -->
+    <g fill="#1c1512" stroke="#e8c06a" stroke-width="2" stroke-linejoin="round">
+      <use href="#gonjong-kiri" x="-34" y="-14" width="112" height="162"/>
+      <use href="#gonjong" x="108" y="62" width="104" height="116"/>
+      <use href="#gonjong" x="258" y="80" width="104" height="106"/>
+      <use href="#gonjong" x="408" y="62" width="104" height="116"/>
+      <use href="#gonjong-kanan" x="542" y="-14" width="112" height="162"/>
+      </g>
+  </symbol>
+</svg>
+
+<div class="kontrol" role="toolbar" aria-label="Kontrol mockup">
+  <div><span>Layar</span>
+    <button data-layar="beranda" aria-pressed="true">Beranda</button>
+    <button data-layar="wizard" aria-pressed="false">Mengisi kasus</button>
+    <button data-layar="hasil" aria-pressed="false">Hasil</button>
+  </div>
+  <div><span>Tampilan</span>
+    <button data-lebar="laptop" aria-pressed="true">Laptop</button>
+    <button data-lebar="ponsel" aria-pressed="false">Ponsel</button>
+  </div>
+</div>
+<p class="catatan">Mockup konsep nuansa Minang, data contoh. Hanya tampilan: palet marun, emas, arang; rumah gadang bergonjong; pita songket; simpul ketupat.</p>
+
+<div class="bingkai" id="bingkai">
+
+<!-- ================= BERANDA ================= -->
+<section class="layar" id="layar-beranda" aria-label="Beranda">
+  <header class="atas">
+    <a class="logo" href="#"><svg><use href="#logo"/></svg><span>Arif Waris</span></a>
+    <nav class="nav" aria-label="Utama"><a href="#" aria-current="page">Beranda</a><a href="#">Hitung</a><a href="#">Belajar</a><a href="#">Riwayat</a></nav>
+  </header>
+  <div class="pita" aria-hidden="true"></div>
+
+  <div class="hero">
+    <div>
+      <h1>Hitung waris dengan jelas dan tenang.</h1>
+      <p class="lead">Masukkan keluarga dan harta, lalu ikuti langkahnya satu per satu. Di setiap langkah Anda tahu mengapa bagian tiap orang sebesar itu, lengkap dengan dalilnya.</p>
+      <div class="aksi">
+        <a class="tombol" href="#">Mulai hitung <svg class="ikon"><use href="#i-panah"/></svg></a>
+        <button class="tautan">Lanjutkan kasus terakhir</button>
+      </div>
+    </div>
+    <div class="panel-rumah" aria-hidden="true">
+      <svg class="rumah" viewBox="-40 -24 700 404"><use href="#rumah-gadang"/></svg>
+      <div class="pita"></div>
+    </div>
+  </div>
+
+  <div class="jalur">
+    <div class="baris">
+      <span class="ketupat"><span>1</span></span>
+      <div><strong>Hitung kasus waris</strong><p>Dari pewaris sampai pembagian. Enam langkah, sekitar 3 menit.</p></div>
+      <div class="status">Siap dimulai<a class="tautan" href="#">Mulai</a></div>
+    </div>
+    <div class="baris belajar">
+      <span class="ketupat"><span>2</span></span>
+      <div><strong>Belajar faraidh</strong><p>Materi bertahap, glosarium, latihan hitung, dan kuis.</p></div>
+      <div class="status">Berhenti di materi 4<a class="tautan belajar" href="#">Lanjutkan</a></div>
+    </div>
+    <div class="baris">
+      <span class="ketupat" style="--warna:var(--kontrol)"><svg class="ikon" style="position:relative;color:var(--gading)"><use href="#i-riwayat"/></svg></span>
+      <div><strong>Kasus terakhir</strong><p>Suami wafat, satu istri, dua anak.</p></div>
+      <div class="status"><a class="tautan" href="#">Buka</a></div>
+    </div>
+  </div>
+
+  <section class="langkah-gelap gelap" aria-labelledby="judul-langkah">
+    <div class="pita balik" aria-hidden="true"></div>
+    <h2 id="judul-langkah">Enam langkah dari awal sampai pembagian</h2>
+    <p>Anda selalu tahu sedang di langkah mana dan apa yang berikutnya.</p>
+    <div class="rel-langkah" style="--n:6;--sampai:6">
+      <ol>
+        <li class="sudah"><span class="simpul"><i>1</i></span><b>Pewaris</b><small>Siapa yang wafat</small></li>
+        <li class="sudah"><span class="simpul"><i>2</i></span><b>Harta</b><small>Yang ditinggalkan</small></li>
+        <li class="sudah"><span class="simpul"><i>3</i></span><b>Kewajiban</b><small>Utang dan wasiat</small></li>
+        <li class="sudah"><span class="simpul"><i>4</i></span><b>Ahli waris</b><small>Pohon keluarga</small></li>
+        <li class="sudah"><span class="simpul"><i>5</i></span><b>Kondisi khusus</b><small>Jika ada</small></li>
+        <li class="sudah"><span class="simpul"><i>6</i></span><b>Hasil</b><small>Bagian tiap orang</small></li>
+      </ol>
+    </div>
+  </section>
+  <div class="pita balik" aria-hidden="true" style="transform:none"></div>
+  <footer class="penutup"><a class="tautan" href="#">Pertanyaan umum</a><a class="tautan" href="#">Rujukan kitab</a><span>Hasil bersifat edukasi. Untuk pembagian sungguhan, temui ahli faraidh.</span></footer>
+</section>
+
+<!-- ================= MENGISI KASUS ================= -->
+<section class="layar" id="layar-wizard" aria-label="Mengisi kasus" hidden>
+  <header class="atas">
+    <a class="logo" href="#"><svg><use href="#logo"/></svg><span>Arif Waris</span></a>
+    <nav class="nav" aria-label="Utama"><a href="#">Beranda</a><a href="#" aria-current="page">Hitung</a><a href="#">Belajar</a><a href="#">Riwayat</a></nav>
+  </header>
+  <div class="pita" aria-hidden="true"></div>
+
+  <div class="wizard-rel">
+    <div class="rel-langkah" style="--n:6;--sampai:3">
+      <ol>
+        <li class="sudah"><span class="simpul"><i>1</i></span><b>Pewaris</b></li>
+        <li class="sudah"><span class="simpul"><i>2</i></span><b>Harta</b></li>
+        <li class="kini"><span class="simpul"><i>3</i></span><b>Kewajiban</b></li>
+        <li><span class="simpul"><i>4</i></span><b>Ahli waris</b></li>
+        <li><span class="simpul"><i>5</i></span><b>Kondisi khusus</b></li>
+        <li><span class="simpul"><i>6</i></span><b>Hasil</b></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="wizard-badan">
+    <div class="lembar">
+      <div class="pita marun" aria-hidden="true"></div>
+      <div class="isi">
+        <h2>Apa saja yang harus dilunasi dari harta almarhum?</h2>
+        <p>Bagian ini dikeluarkan dulu sebelum harta dibagikan. Kosongkan yang tidak ada.</p>
+        <div class="isian">
+          <div><label for="f1">Biaya pengurusan jenazah<span class="bantu">Kafan, pemakaman, dan sejenisnya</span></label>
+            <div class="uang"><span>Rp</span><input id="f1" inputmode="numeric" value="5.000.000"></div></div>
+          <div><label for="f2">Utang<span class="bantu">Utang kepada orang lain atau lembaga</span></label>
+            <div class="uang"><span>Rp</span><input id="f2" inputmode="numeric" placeholder="0"></div></div>
+          <div><label for="f3">Wasiat<span class="bantu">Pemberian yang dipesan almarhum sebelum wafat</span></label>
+            <div class="uang"><span>Rp</span><input id="f3" inputmode="numeric" placeholder="0"></div></div>
+        </div>
+        <div class="barbawah">
+          <button class="tautan redup">Kembali ke Harta</button>
+          <a class="tombol" href="#">Lanjut ke Ahli waris <svg class="ikon"><use href="#i-panah"/></svg></a>
+        </div>
+      </div>
+    </div>
+
+    <aside class="samping" aria-label="Ringkasan kasus">
+      <div class="pita marun" aria-hidden="true"></div>
+      <div class="isi">
+        <h3>Ringkasan kasus</h3>
+        <dl>
+          <div class="r"><dt>Pewaris</dt><dd>Suami</dd></div>
+          <div class="r"><dt>Harta</dt><dd class="angka">Rp 800.000.000</dd></div>
+          <div class="r"><dt>Madzhab</dt><dd>Syafi'i</dd></div>
+          <div class="r"><dt>Pembulatan</dt><dd class="angka">Rp 1.000</dd></div>
+        </dl>
+        <button class="tautan">Simpan kasus ke berkas</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= HASIL ================= -->
+<section class="layar" id="layar-hasil" aria-label="Hasil" hidden>
+  <header class="atas">
+    <a class="logo" href="#"><svg><use href="#logo"/></svg><span>Arif Waris</span></a>
+    <nav class="nav" aria-label="Utama"><a href="#">Beranda</a><a href="#" aria-current="page">Hitung</a><a href="#">Belajar</a><a href="#">Riwayat</a></nav>
+  </header>
+  <div class="pita" aria-hidden="true"></div>
+
+  <div class="wizard-rel">
+    <div class="rel-langkah" style="--n:6;--sampai:6">
+      <ol>
+        <li class="sudah"><span class="simpul"><i>1</i></span><b>Pewaris</b></li>
+        <li class="sudah"><span class="simpul"><i>2</i></span><b>Harta</b></li>
+        <li class="sudah"><span class="simpul"><i>3</i></span><b>Kewajiban</b></li>
+        <li class="sudah"><span class="simpul"><i>4</i></span><b>Ahli waris</b></li>
+        <li class="sudah"><span class="simpul"><i>5</i></span><b>Kondisi khusus</b></li>
+        <li class="kini"><span class="simpul"><i>6</i></span><b>Hasil</b></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="tiba">
+    <div class="tiba-judul">
+      <h1>Pembagiannya sudah jelas.</h1>
+      <p class="lead">Harta bersih Rp 795.000.000 dibagi kepada tiga ahli waris. Baca penelusuran langkahnya untuk tahu alasan tiap angka.</p>
+    </div>
+
+    <div>
+      <article class="songket" aria-label="Pembagian">
+        <div class="pita" aria-hidden="true"></div>
+        <header><h2>Bagian tiap ahli waris</h2><span>Madzhab Syafi'i</span></header>
+        <div class="ahli"><div><b>Istri</b><small>Bagian tetap</small></div><div class="pecahan">1/8</div><div class="rupiah">Rp 99.375.000</div></div>
+        <div class="ahli"><div><b>Anak laki-laki</b><small>Sisa harta, dua bagian</small></div><div class="pecahan">7/12</div><div class="rupiah">Rp 463.750.000</div></div>
+        <div class="ahli"><div><b>Anak perempuan</b><small>Sisa harta, satu bagian</small></div><div class="pecahan">7/24</div><div class="rupiah">Rp 231.875.000</div></div>
+        <footer><b>Selisih pembulatan Rp 0.</b> Setiap bagian dibulatkan ke bawah per Rp 1.000; sisa pembulatan, bila ada, dilaporkan terpisah dan tidak dibagikan diam-diam.</footer>
+      </article>
+      <div class="tiket-aksi"><button class="tautan">Simpan ke berkas</button><button class="tautan">Cetak</button><button class="tautan belajar">Pelajari istilahnya</button></div>
+    </div>
+
+    <ol class="telusur" aria-label="Penelusuran langkah">
+      <h2>Penelusuran langkah</h2>
+      <li><span class="simpul"><i>1</i></span><b>Halangan waris</b><p>Tidak ada yang terhalang. Ketiganya berhak menerima bagian.</p><a class="tautan" href="#"><svg class="ikon"><use href="#i-buku"/></svg>Dalilnya</a></li>
+      <li><span class="simpul"><i>2</i></span><b>Bagian tetap (fardh)</b><p>Istri mendapat 1/8 karena almarhum meninggalkan anak.</p><a class="tautan" href="#"><svg class="ikon"><use href="#i-buku"/></svg>Dalilnya</a></li>
+      <li><span class="simpul"><i>3</i></span><b>Sisa harta (ashabah)</b><p>Sisanya, 7/8, dibagi antara anak laki-laki dan anak perempuan dengan perbandingan 2 berbanding 1.</p><a class="tautan" href="#"><svg class="ikon"><use href="#i-buku"/></svg>Dalilnya</a></li>
+      <li><span class="simpul"><i>4</i></span><b>Penyamaan penyebut (tashih)</b><p>Agar semua bagian berupa bilangan bulat, penyebut disamakan menjadi 24: istri 3, anak laki-laki 14, anak perempuan 7.</p><a class="tautan" href="#"><svg class="ikon"><use href="#i-buku"/></svg>Dalilnya</a></li>
+      <li><span class="simpul"><i>5</i></span><b>Nominal</b><p>Tiap bagian dikalikan harta bersih, lalu dibulatkan ke bawah.</p></li>
+    </ol>
+  </div>
+  <div class="pita" aria-hidden="true"></div>
+</section>
+
+</div>
+
+<script>
+const bingkai = document.getElementById('bingkai');
+const tampil = (nama) => {
+  document.querySelectorAll('.layar').forEach(l => { l.hidden = l.id !== 'layar-' + nama; });
+  document.querySelectorAll('[data-layar]').forEach(b => b.setAttribute('aria-pressed', b.dataset.layar === nama));
+  document.querySelectorAll('#layar-' + nama + ' .rel-langkah ol').forEach(el => { el.style.animation = 'none'; el.offsetWidth; el.style.animation = ''; });
+};
+document.querySelectorAll('[data-layar]').forEach(b => b.addEventListener('click', () => tampil(b.dataset.layar)));
+document.querySelectorAll('[data-lebar]').forEach(b => b.addEventListener('click', () => {
+  bingkai.classList.toggle('ponsel', b.dataset.lebar === 'ponsel');
+  document.querySelectorAll('[data-lebar]').forEach(x => x.setAttribute('aria-pressed', x === b));
+}));
+</script>
+</body>
+</html>
