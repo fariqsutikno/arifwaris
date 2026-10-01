@@ -124,6 +124,9 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
   );
 }
 
+/** Skala tampil elemen (pratinjau dan layar penuh memakai transform: scale): garis digambar di ruang lokal, jadi ukuran layar dibagi skala. */
+const skalaTampil = (elemen: HTMLElement) => (elemen.offsetWidth ? elemen.getBoundingClientRect().width / elemen.offsetWidth : 1) || 1;
+
 /** Jalur panah melengkung dari tepi node asal ke tepi node tujuan (+ titik tengah untuk labelnya), diukur ulang tiap daftar panah berubah. */
 function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Array<[IdOrang, IdOrang, string]>) {
   const [jalur, setJalur] = useState<Array<{ jalur: string; ke: IdOrang; x: number; y: number; label: string }>>([]);
@@ -132,11 +135,12 @@ function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Arra
     const elemen = wadah.current;
     if (!elemen || daftarPanah.length === 0) { setJalur([]); return; }
     const dasar = elemen.getBoundingClientRect();
+    const skala = skalaTampil(elemen);
     const pusat = (id: IdOrang) => {
       const node = [...elemen.querySelectorAll<HTMLElement>('[data-orang]')].find(isi => isi.dataset.orang === id);
       if (!node) return null;
       const r = node.getBoundingClientRect();
-      return { x: (r.left + r.right) / 2 - dasar.left, y: (r.top + r.bottom) / 2 - dasar.top, rx: r.width / 2, ry: r.height / 2 };
+      return { x: ((r.left + r.right) / 2 - dasar.left) / skala, y: ((r.top + r.bottom) / 2 - dasar.top) / skala, rx: r.width / 2 / skala, ry: r.height / 2 / skala };
     };
     setJalur(daftarPanah.flatMap(([dari, ke, label]) => {
       const a = pusat(dari);
@@ -169,12 +173,13 @@ function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak)
     if (!elemen) return;
     const gambar = () => {
       const dasar = elemen.getBoundingClientRect();
+      const skala = skalaTampil(elemen);
       const kotak = (id: IdOrang) => {
         const node = elemen.querySelector<HTMLElement>(`[data-orang="${id}"]`);
         if (!node) return null;
         const r = node.getBoundingClientRect();
-        return { kiri: r.left - dasar.left, kanan: r.right - dasar.left, atas: r.top - dasar.top, bawah: r.bottom - dasar.top,
-          tengahX: (r.left + r.right) / 2 - dasar.left, tengahY: (r.top + r.bottom) / 2 - dasar.top };
+        return { kiri: (r.left - dasar.left) / skala, kanan: (r.right - dasar.left) / skala, atas: (r.top - dasar.top) / skala, bawah: (r.bottom - dasar.top) / skala,
+          tengahX: ((r.left + r.right) / 2 - dasar.left) / skala, tengahY: ((r.top + r.bottom) / 2 - dasar.top) / skala };
       };
       let jalur = '';
       const cincin: Array<[number, number]> = [];

@@ -136,16 +136,25 @@ describe('layar hasil', () => {
 
   it('klik orang di pohon membuka penjelasan dengan ahwal, baris kasus ini disorot', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(within(screen.getByRole('region', { name: 'Pohon keluarga' })).getByRole('button', { name: /^Ibu/ }));
-    const dialog = screen.getByRole('dialog');
+    fireEvent.click(screen.getByRole('button', { name: 'Layar penuh' })); // pohon hanya bisa diketuk per orang di layar penuh; hero hanya pratinjau
+    fireEvent.click(within(screen.getByRole('dialog', { name: 'Pohon keluarga' })).getByRole('button', { name: /^Ibu/ }));
+    const dialog = screen.getAllByRole('dialog').find(isi => !isi.classList.contains('pohon-penuh'))!; // modal orang, bukan layar penuh
     fireEvent.click(within(dialog).getByRole('button', { name: /Kapan dapat berapa/ }));
     const baris = within(dialog).getByText('Ada anak/cucu, atau ada dua saudara atau lebih.').closest('tr')!;
     expect(baris.textContent).toMatch(/kasus ini/);
   });
 
+  it('pohon di hero hanya pratinjau (tidak bisa diketuk per orang); layar penuh menutup dengan Escape', () => {
+    render(<Uji awal={prototipe()} />);
+    expect(document.querySelector('.pratinjau-isi')?.hasAttribute('inert')).toBe(true);
+    fireEvent.click(screen.getByRole('button', { name: 'Buka pohon keluarga layar penuh' }));
+    expect(screen.getByRole('dialog', { name: 'Pohon keluarga' })).toBeTruthy();
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByRole('dialog', { name: 'Pohon keluarga' })).toBeNull();
+  });
+
   it('tabel faraidh ala kitab: asal masalah dan tashih', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
     const tabel = screen.getByRole('table');
     expect(within(tabel).getByText(/Asal masalah/)).toBeTruthy();
     expect(within(tabel).getByText('24', { selector: 'th small' })).toBeTruthy();
@@ -154,7 +163,6 @@ describe('layar hasil', () => {
 
   it('klik baris di tabel faraidh juga membuka penjelasan orang itu', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
     fireEvent.click(within(screen.getByRole('table')).getByText('Ibu').closest('tr')!);
     expect(within(screen.getByRole('dialog')).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
   });
@@ -228,7 +236,6 @@ describe('layar hasil', () => {
         KL1: orang('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }), AM1: orang('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),
       } } };
     render(<Uji awal={kasus} />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
     const tabel = screen.getByRole('table');
     expect(within(tabel).getAllByText('Dzawil arham')).toHaveLength(2);
     expect(within(tabel).queryByText('Ashabah')).toBeNull();
@@ -248,7 +255,6 @@ describe('layar hasil', () => {
 
   it('istilah di tabel faraidh punya tooltip', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(screen.getByRole('tab', { name: 'Tabel faraidh' }));
     fireEvent.focus(within(screen.getByRole('table')).getByText('Tashih'));
     expect(screen.getByRole('tooltip').textContent).toMatch(/pembagi/);
   });

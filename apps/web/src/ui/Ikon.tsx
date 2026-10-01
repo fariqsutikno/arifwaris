@@ -27,6 +27,8 @@ const JALUR = {
   bagikan: <><path d="M12 15V3M7 8l5-5 5 5" /><path d="M5 12v8h14v-8" /></>,
   buka: <><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 14v6H4V6h6" /></>,
   kunci: <><rect x="5" y="11" width="14" height="10" rx="2" /><path d="M8 11V7a4 4 0 0 1 8 0v4" /></>,
+  zoomMasuk: <><circle cx="11" cy="11" r="7.5" /><path d="M21 21l-4.6-4.6M11 8v6M8 11h6" /></>,
+  zoomKeluar: <><circle cx="11" cy="11" r="7.5" /><path d="M21 21l-4.6-4.6M8 11h6" /></>,
   perbesar: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
   fokus: <><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3" /><circle cx="12" cy="12" r="3.5" /><path d="M12 12h.01" /></>,
   putar: <path d="M7 4.5v15l12-7.5z" />,

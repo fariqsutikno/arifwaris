@@ -18487,6 +18487,62 @@
    "id": "Bagian yang belum pasti disimpan dulu sampai bayi lahir.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.buka_pohon_layar_penuh",
+   "halaman": "hitung",
+   "id": "Buka pohon keluarga layar penuh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.perkecil",
+   "halaman": "hitung",
+   "id": "Perkecil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.perbesar",
+   "halaman": "hitung",
+   "id": "Perbesar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pas_ke_layar",
+   "halaman": "hitung",
+   "id": "Pas ke layar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tutup_layar_penuh",
+   "halaman": "hitung",
+   "id": "Tutup layar penuh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bagikan",
+   "halaman": "hitung",
+   "id": "Bagikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cetak_pohon",
+   "halaman": "hitung",
+   "id": "Cetak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.petunjuk_pohon_layar_penuh",
+   "halaman": "hitung",
+   "id": "Geser untuk menggerakkan, roda tetikus atau tombol + dan − untuk zoom, ketuk orang untuk penjelasannya.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -1,5 +1,6 @@
-// Layar hasil. Desktop: kanvas (pohon keluarga / tabel faraidh) di kiri, sidebar di kanan.
-// HP: tanpa tab; kanvas disisipkan di antara kartu (urutan diatur CSS), semua kartu selebar layar.
+// Layar hasil (gaya Logivo). Atas: hero gelap berisi judul + pratinjau seluruh pohon keluarga; mengetuknya membuka layar penuh
+// (zoom, geser, penjelasan per orang, bagikan). Bawah: kartu-kartu hasil dalam grid, tabel faraidh sebagai kartu.
+// HP: kartu selebar layar, urutan diatur CSS.
 // Bar aksi bawah: Ubah data · Reset skenario · Ekspor. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
@@ -20,6 +21,8 @@ import { ModalEkspor } from '../hasil/ModalEkspor';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
 import { Pohon } from '../hasil/Pohon';
+import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
+import { PratinjauPohon } from '../hasil/PratinjauPohon';
 import { adaTidakPas, ringkas } from '../hasil/ringkasan';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
@@ -109,7 +112,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
   const [sembunyiNominal, setSembunyiNominal] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ pecahan: true, persen: true, bentuk: 'sederhana' });
-  const [tabKanvas, setTabKanvas] = useState<'pohon' | 'tabel'>('pohon');
+  const [layarPenuh, setLayarPenuh] = useState<{ zoom: number } | null>(null);
   const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
   const [kunciDiubah, setKunciDiubah] = useState<KunciAhliWaris | null>(null);
   const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
@@ -125,42 +128,42 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
 
   return (
     <main className={adalahBelajar ? 'halaman-hasil mode-belajar' : 'halaman-hasil'}>
-      <div className="judul-hasil">
-        {adalahBelajar ? (
-          <div className="judul-soal">
-            <span className="lencana-soal">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</span>
-            <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
-            <p>{sedangMenebak
-              ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')
-              : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya')}</p>
+      <header className="hero-hasil">
+        <div className="judul-hasil">
+          {adalahBelajar ? (
+            <div className="judul-soal">
+              <span className="lencana-soal">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</span>
+              <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
+              <p>{sedangMenebak
+                ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')
+                : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya')}</p>
+            </div>
+          ) : (
+            <div className="judul-soal">
+              <span className="lencana-soal lencana-hitung">{t('hitung.hitung_kasus')}</span>
+              <h1>{t('hitung.nah_ini_pembagiannya')}</h1>
+              <p>{t('hitung.angka_di_sini_hasil_hitung_kasusmu')}</p>
+            </div>
+          )}
+          <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
+            <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
+            <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('umum.belajar')}</button>
           </div>
-        ) : (
-          <div className="judul-soal">
-            <span className="lencana-soal lencana-hitung">{t('hitung.hitung_kasus')}</span>
-            <h1>{t('hitung.nah_ini_pembagiannya')}</h1>
-            <p>{t('hitung.angka_di_sini_hasil_hitung_kasusmu')}</p>
-          </div>
-        )}
-        <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
-          <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
-          <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('umum.belajar')}</button>
         </div>
-      </div>
+        <div className="hero-pohon" data-tur="pohon" aria-label={t('hitung.pohon_keluarga')}>
+          <div className="hero-alat">
+            <button type="button" className="alat-bulat" aria-label={t('hitung.perbesar')} onClick={() => setLayarPenuh({ zoom: 1.5 })}><Ikon nama="zoomMasuk" /></button>
+            <button type="button" className="alat-bulat" aria-label={t('hitung.layar_penuh')} onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /></button>
+          </div>
+          <PratinjauPohon saatBuka={() => setLayarPenuh({ zoom: 1 })}>{pohon}</PratinjauPohon>
+          <Legenda />
+        </div>
+      </header>
 
       <div className="tata-hasil">
-        <section className="kanvas-hasil" aria-label={t('hitung.kanvas_keluarga')}>
-          <div className="kepala-kanvas">
-            <div className="tab-kecil" role="tablist" aria-label={t('hitung.tampilan_kanvas')}>
-              <button type="button" role="tab" aria-selected={tabKanvas === 'pohon'} onClick={() => setTabKanvas('pohon')}>{t('hitung.pohon_keluarga')}</button>
-              <button type="button" role="tab" aria-selected={tabKanvas === 'tabel'} onClick={() => setTabKanvas('tabel')}>{t('hitung.tabel_faraidh')}</button>
-            </div>
-          </div>
-          <section className={tabKanvas === 'pohon' ? 'panel-kanvas panel-pohon' : 'panel-kanvas panel-pohon sembunyi-desktop'} aria-label={t('hitung.pohon_keluarga')} data-tur="pohon">
-            <Legenda />
-            {pohon}
-            <p className="petunjuk-kanvas">{t('hitung.ketuk_orang_untuk_melihat_penjelasannya')}<span className="hanya-hp"> {t('hitung.geser_ke_samping_kalau_terpotong')}</span></p>
-          </section>
-          <section className={tabKanvas === 'tabel' ? 'panel-kanvas panel-tabel' : 'panel-kanvas panel-tabel sembunyi-desktop'} aria-label={t('hitung.tabel_faraidh')}>
+        <section className="kanvas-hasil" aria-label={t('hitung.tabel_faraidh')}>
+          <section className="panel-kanvas panel-tabel" aria-label={t('hitung.tabel_faraidh')}>
+            <h2 className="judul-kartu-hasil">{t('hitung.tabel_faraidh')}</h2>
             <div className="wadah-tabel">{tabel}</div>
           </section>
         </section>
@@ -233,6 +236,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
           saatLanjut={() => { setKonfirmasiBelajar(false); kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' }); }}>
           <p>{t('hitung.jawaban_akan_disembunyikan_dan_kamu_diminta')}</p>
         </DialogKonfirmasi>
+      )}
+      {layarPenuh && (
+        <PohonLayarPenuh pohon={pohon} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
+          saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setEksporTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
       )}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
