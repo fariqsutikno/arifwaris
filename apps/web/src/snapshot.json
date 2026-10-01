@@ -18622,34 +18622,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.per_barang",
-   "halaman": "hitung",
-   "id": "Per barang",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.harta_dan_sisa_pembulatan",
-   "halaman": "hitung",
-   "id": "Harta {harta} · sisa pembulatan {sisa}",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.yang_belum_pasti",
-   "halaman": "hitung",
-   "id": "Yang belum pasti",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.belum_pasti_keterangan",
-   "halaman": "hitung",
-   "id": "Kalau ada hal yang belum dipastikan, misalnya urutan wafat, perbandingan hasilnya akan tampil di sini.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hitung.tidak_mendapat_bagian",
    "halaman": "hitung",
    "id": "Tidak mendapat bagian",
@@ -18660,41 +18632,6 @@
    "kunci": "hitung.jumlah_orang_di_pohon",
    "halaman": "hitung",
    "id": "{jumlah} orang di pohon",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.semua_orang_mendapat_bagian",
-   "halaman": "hitung",
-   "id": "Semua orang di pohon ini mendapat bagian.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.yang_sering_ditanyakan",
-   "halaman": "hitung",
-   "id": "Yang sering ditanyakan",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.sering_ditanyakan_keterangan",
-   "halaman": "hitung",
-   "id": "Pertanyaan yang biasa muncul di rapat keluarga tentang kasus ini akan dijawab di sini.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.ringkasan_harta",
-   "halaman": "hitung",
-   "id": "Ringkasan harta",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.sisa_pembulatan",
-   "halaman": "hitung",
-   "id": "Sisa pembulatan",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18713,23 +18650,23 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lembar_musyawarah",
-   "halaman": "hitung",
-   "id": "Lembar musyawarah",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.kirim_ke_keluarga",
-   "halaman": "hitung",
-   "id": "Kirim ke keluarga untuk dilengkapi",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hitung.urutan_yang_biasa_dilakukan",
    "halaman": "hitung",
    "id": "Urutan yang biasa dilakukan keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dibagi_dari_harta",
+   "halaman": "hitung",
+   "id": "Dibagi dari harta {harta}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.ketuk_nama_untuk_alasan",
+   "halaman": "hitung",
+   "id": "Ketuk nama untuk melihat kenapa bagiannya segitu.",
    "ar": null,
    "versiTerbit": 873
   }

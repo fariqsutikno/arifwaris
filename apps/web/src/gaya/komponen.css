@@ -1302,7 +1302,7 @@ body.layar-hasil{background:var(--halaman)}
 .hero-alat{position:absolute;top:10px;inset-inline-end:10px;z-index:3;display:flex;gap:6px}
 .alat-bulat{width:40px;height:40px;flex:none;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;cursor:pointer}
 .alat-bulat:hover{background:rgba(255,255,255,.34)}
-.alat-bulat:focus-visible,.alat-teks:focus-visible,.pratinjau-pohon:focus-visible,.pil-hero:focus-visible,.tautan-hero:focus-visible,.tautan-aksi:focus-visible,.kepala-rincian:focus-visible,.tab-pil button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.alat-bulat:focus-visible,.alat-teks:focus-visible,.pratinjau-pohon:focus-visible,.pil-hero:focus-visible,.tautan-hero:focus-visible,.tautan-aksi:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .pratinjau-pohon{position:relative;overflow:hidden;border-radius:14px;min-height:80px;cursor:zoom-in}
 .pratinjau-isi{position:absolute;top:0;width:max-content;transform-origin:0 0;pointer-events:none}
 .kaki-pohon{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;padding:10px 4px 0;font-size:12.5px;color:rgba(255,255,255,.9)}
@@ -1350,22 +1350,20 @@ body.layar-hasil{background:var(--halaman)}
 .menu-bagikan-isi button:hover{background:var(--surface-sunken)}
 .menu-bagikan-isi button:focus-visible{outline:3px solid var(--focus)}
 
-/* grid kartu */
-.tata-hasil{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start;padding:12px 0 0}
-.tata-hasil>*{order:0;min-width:0}
+/* susunan kartu: pita jawaban (Pembagian + rel samping), lalu pita cara menghitung */
+.tata-hasil{display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:12px 0 0}
+.pita-jawaban,.pita-hitung{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;align-items:start}
+.pita-jawaban>*,.pita-hitung>*{order:0;min-width:0}
+.rel-samping{display:flex;flex-direction:column;gap:12px}
+.pita-hitung .urut-langkah,.pita-hitung .kartu-tabel:last-child{grid-column:1/-1}
 .kartu-sisi{background:var(--kartu);border:1px solid var(--kartu-tepi);border-radius:var(--radius-lg);overflow:hidden}
 .kartu-sisi h2{margin:0;font:600 21px/1.2 var(--font-display);letter-spacing:-.01em}
 .kartu-isi{display:flex;flex-direction:column;gap:12px;padding:20px}
 .sub-kartu{margin:2px 0 0;font-size:13px;line-height:1.5;color:var(--ink-muted)}
-.kartu-sisi.kartu-utama{grid-column:span 2;padding:20px;box-shadow:none;overflow:visible}
+.kartu-sisi.kartu-utama{padding:20px;box-shadow:none;overflow:visible}
 .mode-belajar .kartu-sisi.kartu-utama{border:1px dashed var(--aksen);box-shadow:none}
-.urut-langkah,.kartu-tabel{grid-column:span 2}
 .kartu-tabel{padding:20px 20px 8px}
-.kolom-sisi{grid-row:span 2;display:flex;flex-direction:column;gap:12px}
 .kartu-tabel .wadah-tabel{padding:12px 0}
-.kartu-kerangka{background:transparent;border:1px dashed var(--outline)}
-.kartu-kerangka .judul-kartu{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:8px 10px}
-.chip-segera{flex:none;padding:2px 10px;border-radius:var(--radius-pill);background:var(--aksen-soft);color:#9c3d0c;font:600 12px/1.5 var(--font-sans);white-space:nowrap}
 .kartu-sisi .panah-lipat::before{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-sunken)}
 .kartu-sisi .tombol-ikon{border:0;border-radius:50%;background:var(--surface-sunken);box-shadow:none}
 .kartu-sisi .tombol-ikon:is([aria-pressed=true],[aria-expanded=true]){background:var(--primary);color:var(--on-primary)}
@@ -1373,11 +1371,8 @@ body.layar-hasil{background:var(--halaman)}
 /* kartu Pembagian */
 .kepala-pembagian{flex-wrap:wrap;align-items:flex-start;gap:10px;margin-bottom:8px}
 .kepala-pembagian .judul-kartu{flex:1;min-width:160px}
-.tab-pil{display:flex;flex-wrap:wrap;gap:6px}
-.tab-pil button{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 15px;border:1px solid var(--outline);border-radius:var(--radius-pill);background:var(--surface-raised);color:var(--ink);font:500 13.5px var(--font-sans);cursor:pointer}
-.tab-pil button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
-.tab-pil button:disabled{border-style:dashed;background:transparent;color:var(--ink-muted);cursor:default}
-.tab-pil small{font-size:11.5px}
+.petunjuk-daftar{margin:0 0 4px;font-size:13px;color:var(--ink-muted)}
+.tautan-sebaris{display:inline;min-height:0;font-size:inherit}
 .daftar-bagian li+li{border-top:1px solid var(--divider)}
 .baris-bagian{grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;padding:10px 6px;font-size:14px}
 .nama-bagian{font-weight:600}
@@ -1387,23 +1382,11 @@ body.layar-hasil{background:var(--halaman)}
 .pil-persen{min-width:56px;padding:3px 11px;border:1px solid var(--primary);border-radius:var(--radius-pill);background:var(--primary);color:var(--on-primary);font:600 12.5px/1.3 var(--font-sans);font-variant-numeric:tabular-nums;text-align:center}
 .baris-bagian.sisa .pil-persen{background:transparent;border-color:var(--outline);color:var(--ink)}
 
-/* kartu Ringkasan harta, Habis ini ngapain, kaki bingkai */
-.statistik-kartu{display:grid;grid-template-columns:1fr 1fr;gap:14px 12px}
-.statistik-kartu>div{display:flex;align-items:center;gap:10px;min-width:0}
-.statistik-kartu p{display:flex;flex-direction:column;min-width:0;margin:0;line-height:1.25}
-.statistik-kartu b{font:600 16px/1.2 var(--font-display);font-variant-numeric:tabular-nums}
-.statistik-kartu p span{font-size:13px;color:var(--ink-muted)}
-.ikon-bulat{display:grid;place-items:center;flex:none;width:42px;height:42px;border-radius:50%;background:var(--aksen-soft);color:var(--aksen)}
-.kepala-rincian{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:10px 0 0;border:0;border-top:1px solid var(--divider);background:none;color:var(--ink);font:500 14px var(--font-sans);text-align:start;cursor:pointer}
-.kepala-rincian b{margin-inline-start:auto;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
-.kartu-sisi .kepala-rincian .panah-lipat::before{width:32px;height:32px;margin-inline-start:0}
-.kepala-rincian[aria-expanded=true] .panah-lipat::before{transform:rotate(45deg);background:var(--sun);color:var(--on-fill)}
-.rincian-harta{display:flex;flex-direction:column;gap:12px}
+/* Habis ini ngapain, kaki bingkai */
 .tautan-aksi{display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:0;border:0;background:none;color:var(--ink);font:600 14px var(--font-sans);text-align:start;text-decoration:underline;text-decoration-color:var(--outline);text-underline-offset:3px;cursor:pointer}
 .tautan-aksi:hover{text-decoration-color:currentColor}
 .daftar-aksi{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 .daftar-aksi .status-simpan{display:inline-flex;gap:10px;min-height:40px;font-size:14px}
-.aksi-segera{display:flex;flex-wrap:wrap;align-items:center;gap:4px 10px;min-height:40px;font-size:14px;color:var(--ink-muted)}
 .lipat-urutan{padding-top:6px;border-top:1px solid var(--divider)}
 .lipat-urutan summary{padding:8px 0;font:600 14px var(--font-sans);cursor:pointer}
 .kaki-hasil{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:8px 24px;padding:14px 12px 0;font-size:13px;line-height:1.55;color:var(--ink-muted)}
@@ -1430,8 +1413,6 @@ body.layar-hasil{background:var(--halaman)}
 @media (max-width:980px){
   .hero-hasil{grid-template-columns:1fr;padding:18px 16px}
   .statistik-hero{flex-wrap:wrap;gap:12px 22px}
-  .tata-hasil{grid-template-columns:1fr}
-  .kartu-sisi.kartu-utama,.urut-langkah,.kartu-tabel{grid-column:auto}
-  .kolom-sisi{grid-row:auto}
+  .pita-jawaban,.pita-hitung{grid-template-columns:1fr}
   .pohon-penuh-atas{padding:10px 12px}
 }

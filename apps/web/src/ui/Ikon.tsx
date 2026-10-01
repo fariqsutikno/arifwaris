@@ -34,11 +34,6 @@ const JALUR = {
   putar: <path d="M7 4.5v15l12-7.5z" />,
   jeda: <path d="M8 5v14M16 5v14" />,
   jam: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
-  koin: <><circle cx="8" cy="8" r="6" /><path d="M18.1 10.4A6 6 0 1 1 10.3 18M7 6h1v4" /></>,
-  orang: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8" /></>,
-  cabang: <><circle cx="12" cy="18" r="3" /><circle cx="6" cy="6" r="3" /><circle cx="18" cy="6" r="3" /><path d="M18 9v2a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9M12 12v3" /></>,
-  cetak: <><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><rect x="6" y="14" width="12" height="7" /></>,
-  kirim: <><path d="M22 2l-7 20-4-9-9-4z" /><path d="M22 2L11 13" /></>,
 } as const;
 
 export type NamaIkon = keyof typeof JALUR;

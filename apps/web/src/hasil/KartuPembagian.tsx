@@ -34,6 +34,8 @@ interface Props {
   saatUbahPembulatan: (satuan: bigint) => void;
   saatPilihOrang: (id: string) => void;
   saatUbahAhliWaris?: (() => void) | undefined;
+  /** Diisi hanya bila kartu Harta tidak tampil (tidak ada potongan). */
+  saatUbahHarta?: (() => void) | undefined;
 }
 
 export function KartuPembagian(props: Props) {
@@ -47,15 +49,12 @@ export function KartuPembagian(props: Props) {
       <header className="kepala-pembagian">
         <div className="judul-kartu">
           <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
-          {!sedangMenebak && <p className="sub-kartu">{t('hitung.harta_dan_sisa_pembulatan', { harta: uang(ringkasan.tirkah.bersih), sisa: uang(ringkasan.sisaPembulatan) })}</p>}
+          {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. Tanpa kartu Harta (tidak ada potongan), harta diubah dari sini. */}
+          <p className="sub-kartu">
+            {t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) })}
+            {props.saatUbahHarta && <> <button type="button" className="tautan-aksi tautan-sebaris" onClick={props.saatUbahHarta}>{t('hitung.ubah_harta')}</button></>}
+          </p>
         </div>
-        {/* Per barang belum ada datanya (harta masih satu angka); tabnya tampil sebagai kerangka. */}
-        {!sedangMenebak && (
-          <div className="tab-pil" role="group" aria-label={t('hitung.cara_tampil')}>
-            <button type="button" aria-pressed="true">{t('hitung.per_orang')}</button>
-            <button type="button" aria-pressed="false" disabled>{t('hitung.per_barang')} <small>{t('umum.segera_hadir')}</small></button>
-          </div>
-        )}
         <div className="alat-pembagian">
           {props.saatUbahAhliWaris && (
             <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('hitung.ubah_ahli_waris')} title={t('hitung.ubah_ahli_waris')}>
@@ -85,6 +84,7 @@ export function KartuPembagian(props: Props) {
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
           {aturTerbuka && <PanelAtur pengaturan={pengaturan} saatUbah={props.saatUbahPengaturan} />}
+          <p className="petunjuk-daftar">{t('hitung.ketuk_nama_untuk_alasan')}</p>
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => {
               const { className, ...pemicu } = atribut(orang.id);

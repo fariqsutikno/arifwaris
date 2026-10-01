@@ -1,6 +1,7 @@
 // Layar hasil (gaya Logivo, acuan docs/design/mockup-hasil-gaya-logivo.html). Atas: hero gelap berisi judul, aksi utama (Ekspor),
 // statistik, dan pratinjau seluruh pohon keluarga; mengetuk pohon membuka layar penuh (zoom, geser, penjelasan per orang, bagikan).
-// Bawah: grid kartu (Pembagian lebar, lalu kartu pendamping), tabel faraidh sebagai kartu. HP: kartu selebar layar, urutan = urutan DOM.
+// Bawah: pita jawaban (Pembagian + rel samping: yang tidak dapat, harta, tindak lanjut) lalu pita cara menghitung (langkah, tabel faraidh,
+// tentang kasus). Kartu hanya ada bila kasusnya memuatnya. HP: satu kolom, urutan = urutan DOM.
 // Kaki bingkai: catatan + tautan Ubah data · Reset skenario. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
@@ -12,7 +13,7 @@ import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
 import { useBahasa, type Tujuan } from '../preferensi';
 import { HasilKasusKhusus } from '../hasil/HasilKasusKhusus';
-import { KartuHarta, KartuKerangka, KartuSelanjutnya, KartuTentang, KartuTidakDapat } from '../hasil/KartuLain';
+import { KartuHarta, KartuSelanjutnya, KartuTentang, KartuTidakDapat } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
@@ -100,6 +101,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !(terkunci && adalahBelajar);
+  const adaPotonganHarta = ringkasan.tirkah.kotor !== ringkasan.tirkah.bersih;
   const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
 
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
@@ -169,31 +171,31 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
         </div>
       </header>
 
-      {/* Urutan kartu mengikuti mockup: pembagian → yang belum pasti → siapa yang tidak dapat → harta → cara menghitung → tindak lanjut → tabel. */}
+      {/* Urutan = pertanyaan yang muncul di kepala pengguna: siapa dapat berapa → kenapa ada yang tidak dapat → dari harta yang mana
+          → habis ini ngapain → (bagi yang mau) cara menghitungnya. Kartu yang tidak ada isinya untuk kasus ini tidak dirender. */}
       <div className="tata-hasil">
-        <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
-          sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
-          sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
-          tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
-          saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
-          saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 4 }) : undefined} />
-        {/* Siapa yang tidak dapat adalah bagian dari jawaban; kartu kerangka ikut disembunyikan supaya soal tidak ramai. */}
-        {!sedangMenebak && <>
-          <KartuKerangka judul={t('hitung.yang_belum_pasti')} keterangan={t('hitung.belum_pasti_keterangan')} />
-          <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />
-          <KartuKerangka judul={t('hitung.yang_sering_ditanyakan')} keterangan={t('hitung.sering_ditanyakan_keterangan')} />
-        </>}
-        <KartuHarta ringkasan={ringkasan} jumlahOrang={jumlahOrang} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />
-        <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
-        {/* Kolom kanan menemani Langkah dan Tabel (dua baris), supaya tidak ada ruang kosong di bawah kartu yang terlipat. */}
-        <div className="kolom-sisi">
-          <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasus)} saatSimpan={() => { simpanKasus(idSesi, kasus); segarkan(); }} saatEkspor={() => setEksporTerbuka(true)} />
+        <div className="pita-jawaban">
+          <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
+            sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
+            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
+            tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
+            saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
+            saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 4 }) : undefined}
+            saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
+          <div className="rel-samping">
+            {!sedangMenebak && ringkasan.terhalang.length > 0 && <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />}
+            {adaPotonganHarta && <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />}
+            <KartuSelanjutnya tersimpan={sudahTersimpan(idSesi, kasus)} saatSimpan={() => { simpanKasus(idSesi, kasus); segarkan(); }} saatEkspor={() => setEksporTerbuka(true)} />
+          </div>
+        </div>
+        <div className="pita-hitung">
+          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
+          <section className="kartu-sisi kartu-tabel" aria-labelledby="judul-tabel-faraidh">
+            <h2 id="judul-tabel-faraidh">{t('hitung.tabel_faraidh')}</h2>
+            <div className="wadah-tabel">{tabel}</div>
+          </section>
           {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
         </div>
-        <section className="kartu-sisi kartu-tabel" aria-labelledby="judul-tabel-faraidh">
-          <h2 id="judul-tabel-faraidh">{t('hitung.tabel_faraidh')}</h2>
-          <div className="wadah-tabel">{tabel}</div>
-        </section>
       </div>
 
       <footer className="kaki-hasil">
