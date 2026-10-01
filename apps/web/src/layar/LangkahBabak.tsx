@@ -34,11 +34,7 @@ export function LangkahBabak({ kasus, babak, ubah }: Props) {
         <input type="text" defaultValue={kasus.graf.orang[idMayit]!.nama ?? ''} placeholder={t('hitung.babak.nama_almarhum_contoh', { contoh: contohNama })}
           onChange={e => ubah(k => ({ ...k, graf: ubahNama(k.graf, idMayit, e.target.value) }))} />
       </label>
-      <div className="kartu tumpuk-rapat">
-        <p>{t('hitung.babak.pembuka', { nama, sebelum: namaSebelum })}</p>
-        <p><b>{t('hitung.babak.sudut_pandang', { nama })}</b></p>
-        <p className="keterangan">{t('hitung.babak.harta_sendiri', { nama, pewaris })}</p>
-      </div>
+      <p className="pembuka-babak">{t('hitung.babak.pembuka', { nama, sebelum: namaSebelum })} <b>{t('hitung.babak.sudut_pandang', { nama })}</b></p>
       <div className="pohon-kecil">
         <PohonDasar graf={{ ...kasus.graf, idPewaris: idMayit }} isiNode={id => ({
           kelas: id === idMayit ? 'pewaris' : sebelumnya.includes(id) ? 'penghubung' : 'ahli-waris',
@@ -86,6 +82,7 @@ export function LangkahBabak({ kasus, babak, ubah }: Props) {
           ))}
         </section>
       )}
+      <p className="keterangan">{t('hitung.babak.harta_sendiri', { nama, pewaris })}</p>
     </div>
   );
 }

@@ -17966,7 +17966,7 @@
   {
    "kunci": "hitung.babak.pasangan_dari_yang_ada",
    "halaman": "hitung",
-   "id": "Pasangan {nama} orang yang sudah ada di daftar?",
+   "id": "Apakah pasangan {nama} salah satu orang yang sudah dicatat di atas?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18022,7 +18022,7 @@
   {
    "kunci": "hitung.janin.dari_siapa",
    "halaman": "hitung",
-   "id": "Janin {ibu} dari siapa?",
+   "id": "Siapa ayah dari bayi yang dikandung {ibu}?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21586,6 +21586,13 @@
    "kunci": "hitung.lihat_pohon_keluarga",
    "halaman": "hitung",
    "id": "Lihat pohon keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kerabat_lain_tambah",
+   "halaman": "hitung",
+   "id": "Tambah kerabat lain",
    "ar": null,
    "versiTerbit": 873
   }

@@ -1,5 +1,6 @@
-// Langkah 4: isian ahli waris relatif ke satu mayit, berupa daftar baris "− jumlah +".
-// Keluarga inti selalu tampil; kerabat lain bisa dilipat, dan selalu terbuka bila sudah ada isinya supaya tidak ada yang tersembunyi.
+// Isian ahli waris relatif ke satu mayit, berupa daftar baris "− jumlah +".
+// Keluarga inti selalu tampil. Kerabat lain punya tiga bentuk: tertutup (belum ada isinya), ringkas (sudah ada isinya: hanya baris
+// yang terisi, supaya tidak ada yang tersembunyi tanpa memajang puluhan baris kosong), dan penuh (pengguna membukanya).
 // Menyerahkan graf baru lewat ubahGraf.
 
 import { useState } from 'react';
@@ -20,7 +21,7 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
   const isian = hitungIsian(graf, idMayit);
   const jenisKelaminMayit = graf.orang[idMayit]!.jenisKelamin;
   const adaKerabatLain = KERABAT_LAIN.some(kelompok => kelompok.pilihan.some(kunci => (isian[kunci]?.length ?? 0) > 0));
-  const kerabatLainTerbuka = kerabatLainDibuka || adaKerabatLain;
+  const bentukKerabatLain = kerabatLainDibuka ? 'penuh' : adaKerabatLain ? 'ringkas' : 'tertutup';
 
   const coba = (ubah: (graf: GrafKeluarga) => GrafKeluarga) => {
     try {
@@ -50,20 +51,26 @@ export function LangkahAhliWaris({ graf, idMayit, ubahGraf }: Props) {
         <ul className="daftar-jumlah">{KELUARGA_INTI.filter(tampilUntukMayit).map(baris)}</ul>
       </section>
 
-      <button type="button" className="buka-kerabat" aria-expanded={kerabatLainTerbuka} disabled={adaKerabatLain}
+      {bentukKerabatLain === 'ringkas' && (
+        <ul className="daftar-jumlah kerabat-ringkas">
+          {KERABAT_LAIN.flatMap(kelompok => kelompok.pilihan).filter(kunci => (isian[kunci]?.length ?? 0) > 0).map(baris)}
+        </ul>
+      )}
+
+      <button type="button" className="buka-kerabat" aria-expanded={bentukKerabatLain === 'penuh'}
         onClick={() => setKerabatLainDibuka(!kerabatLainDibuka)}>
-        <span className="buka-kerabat-judul">{t('hitung.kerabat_lain')}<span aria-hidden="true" className="panah-buka">{kerabatLainTerbuka ? '▴' : '▾'}</span></span>
-        <small>{adaKerabatLain ? t('hitung.tetap_terbuka_karena_sudah_ada_yang') : t('hitung.kerabat_lain_ket')}</small>
+        <span className="buka-kerabat-judul">{bentukKerabatLain === 'ringkas' ? t('hitung.kerabat_lain_tambah') : t('hitung.kerabat_lain')}<span aria-hidden="true" className="panah-buka">{bentukKerabatLain === 'penuh' ? '▴' : '▾'}</span></span>
+        <small>{t('hitung.kerabat_lain_ket')}</small>
       </button>
 
-      {kerabatLainTerbuka && KERABAT_LAIN.map(kelompok => (
+      {bentukKerabatLain === 'penuh' && KERABAT_LAIN.map(kelompok => (
         <section key={kelompok.judul} className="kelompok-kerabat" aria-label={sebutAlmarhum(kelompok.judul, jenisKelaminMayit)}>
           <h3 className="judul-bagian-kecil">{sebutAlmarhum(kelompok.judul, jenisKelaminMayit)}</h3>
           <ul className="daftar-jumlah">{kelompok.pilihan.map(baris)}</ul>
         </section>
       ))}
 
-      {kerabatLainTerbuka && (
+      {bentukKerabatLain === 'penuh' && (
         <details className="info-tidak-ada">
           <summary>{INFO_TIDAK_ADA.judul}</summary>
           <p>{INFO_TIDAK_ADA.isi}</p>

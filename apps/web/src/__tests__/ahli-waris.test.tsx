@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { expect, it } from 'vitest';
 import type { GrafKeluarga } from '@waris/engine';
-import { hitungIsian } from '../checklist';
+import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru } from '../kasus';
 import { LangkahAhliWaris } from '../layar/LangkahAhliWaris';
 
@@ -43,13 +43,25 @@ it('kakak/adik langsung berupa baris − +, bisa dikurangi lagi', () => {
   expect(hitungIsian(grafTerakhir, 'PEWARIS').SAUDARI_SEBAPAK ?? []).toHaveLength(0);
 });
 
-it('kerabat lain selalu terbuka bila sudah ada isinya', () => {
+it('kerabat lain yang sudah terisi tidak pernah tersembunyi; saat dibuka ulang hanya baris yang terisi (ringkas), sisanya lewat tautan tambah', () => {
+  const k = kasusBaru('L');
+  const graf = tambahAhliWaris(k.graf, 'PEWARIS', 'KAKEK');
+  render(<LangkahAhliWaris graf={graf} idMayit="PEWARIS" ubahGraf={() => undefined} />);
+  expect(screen.getByRole('button', { name: 'Tambah Kakek (dari ayah)' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: /Tambah Paman/ })).toBeNull();
+  expect(screen.queryByRole('button', { name: /Tambah Cucu laki-laki/ })).toBeNull();
+  const tombol = screen.getByRole('button', { name: /Tambah kerabat lain/ });
+  expect(tombol.hasAttribute('disabled')).toBe(false);
+  fireEvent.click(tombol);
+  expect(screen.getAllByRole('button', { name: /Tambah Paman/ }).length).toBeGreaterThan(0);
+});
+
+it('kerabat lain tetap terbuka penuh selama pengguna sedang menambahkan', () => {
   render(<Uji />);
   bukaKerabatLain();
   fireEvent.click(screen.getByRole('button', { name: 'Tambah Kakek (dari ayah)' }));
-  const tombol = screen.getByRole('button', { name: /Kerabat lain/ });
-  expect(tombol.hasAttribute('disabled')).toBe(true);
   expect(screen.getByRole('button', { name: 'Tambah Kakek (dari ayah)' })).toBeTruthy();
+  expect(screen.getAllByRole('button', { name: /Tambah Paman/ }).length).toBeGreaterThan(0);
 });
 
 it('keterangan hubungan hanya tampil bila label belum cukup jelas', () => {
