@@ -1,0 +1,42 @@
+/* Halaman materi gaya Logivo: banner gelap berisi judul pelajaran, lalu sidebar + lembar baca krem yang tenang (tanpa efek).
+   Hanya tampilan; struktur dan perilaku ada di layar/belajar/Materi.tsx. */
+body.layar-materi{background:var(--krem)}
+
+.tata-materi>.hero-materi{grid-column:1/-1;position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;gap:10px;padding:32px 36px;border-radius:28px;color:#fff;
+  background:radial-gradient(420px 240px at 92% 120%,rgba(255,150,40,.45),transparent 70%),radial-gradient(360px 220px at 0% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)}
+.hero-materi h1{margin:0;max-width:24ch;font:500 clamp(28px,3.6vw,44px)/1.1 var(--font-display);letter-spacing:-.03em;text-wrap:balance}
+.hero-materi .lead{max-width:60ch;margin:0;font-size:17px;color:rgba(255,255,255,.88)}
+.hero-materi .label-langkah{color:rgba(255,255,255,.75)}
+.hero-materi .lencana-draf{color:#fff;padding:4px 12px;border-radius:99px;background:rgba(255,255,255,.16)}
+
+/* lembar baca */
+.tata-materi>.konten-materi{padding:36px 40px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:var(--surface-raised)}
+.isi-materi h2{margin:36px 0 10px;font:600 24px/1.25 var(--font-display);letter-spacing:-.02em}
+.isi-materi>:first-child{margin-top:0}
+.catatan-materi{padding:14px 18px;border-radius:16px;border-inline-start:4px solid var(--aksen);background:var(--aksen-soft)}
+.wadah-tabel-materi{border:1px solid var(--divider);border-radius:16px}
+.tabel-materi{width:100%}
+.tabel-materi th,.tabel-materi td{border:0;border-bottom:1px solid var(--divider)}
+.tabel-materi tr:last-child td{border-bottom:0}
+.tabel-materi th{background:#e9f3d6;font-weight:700}
+.contoh-kasus{padding:20px;border:0;border-radius:20px;background:var(--krem)}
+.video-materi iframe{border:0;border-radius:20px}
+
+/* navigasi bawah: Berikutnya jadi pil gelap, sisanya pil terang */
+.navigasi-materi{border-top-color:var(--divider);padding-top:20px}
+.navigasi-materi .aw-btn{border:0;border-radius:var(--radius-pill);background:var(--surface-sunken);box-shadow:none}
+.navigasi-materi .aw-btn:hover{background:var(--outline);transform:none}
+.navigasi-materi>a:last-child{background:var(--primary);color:var(--on-primary)}
+.navigasi-materi>a:last-child:hover{background:var(--aksen);color:#fff}
+
+/* sidebar */
+.sidebar-materi{border:1px solid rgba(20,40,30,.08);border-radius:24px}
+.pelajaran-sidebar{border-radius:12px}
+.pelajaran-sidebar[aria-current=page]{background:var(--primary);color:var(--on-primary)}
+.pelajaran-sidebar[aria-current=page] .tanda-pelajaran{color:var(--on-primary)}
+.tata-materi .bar-progres>span{background:var(--aksen)}
+
+@media (max-width:860px){
+  .tata-materi>.hero-materi{padding:24px 22px;border-radius:24px}
+  .tata-materi>.konten-materi{padding:24px 20px;border-radius:24px}
+}

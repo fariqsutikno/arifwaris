@@ -35,6 +35,9 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   // Dinaikkan saat pelajaran ditandai selesai supaya progres di sidebar langsung ikut berubah.
   const [, setVersiProgres] = useState(0);
 
+  // Latar krem seperti Beranda; nav tetap utuh (bukan layar-beranda) karena bilah Kembali ada di atas hero.
+  useEffect(() => { document.body.classList.add('layar-materi'); return () => document.body.classList.remove('layar-materi'); }, []);
+
   useEffect(() => {
     if (!pelajaran) return;
     catatAktivitas({ jenis: 'pelajaran', kode: pelajaran.slug, judul: pelajaran.judul, waktu: Date.now() });
@@ -59,12 +62,14 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
 
   return (
     <div className="tata-materi">
-      <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
-      <main className="konten-materi tumpuk">
+      <header className="hero-materi">
         <p className="label-langkah">{t('belajar.modul_nomor_judul_pelajaran_indeks_dari', { nomor: pelajaran.modul, judul: modul?.judul ?? '', indeks: indeks + 1, total: daftarPelajaran().length })}</p>
         <h1>{pelajaran.judul}</h1>
         {pelajaran.perluCek && <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>}
         <p className="lead">{pelajaran.tujuan}</p>
+      </header>
+      <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
+      <main className="konten-materi tumpuk">
         <article className="isi-materi">
           {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}
         </article>

@@ -9,6 +9,7 @@ import './gaya/komponen.css';
 import './gaya/beranda.css';
 import './gaya/aplikasi.css';
 import './gaya/belajar.css';
+import './gaya/materi.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pilihAwal } from '@waris/data/snapshot';
