@@ -48,7 +48,10 @@ li:nth-child(5n+5)>.ubin-lab,.lab-berkas:nth-child(5n+5){--a:#fde7c9;--b:#f6c68a
 .lab-impor{align-self:flex-start}
 
 /* Kasusmu di Awal Lab: berkas berwarna yang saling menumpuk sedikit dan agak miring; disentuh, ia terangkat dan lurus */
-.lab-rak-daftar{display:flex;margin:0;padding:34px 12px 44px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:thin}
+.lab-rak-daftar{display:flex;margin:0;padding:34px 30px 44px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding-inline:30px;scroll-behavior:smooth;scrollbar-width:none;
+  /* tepi memudar, bukan terpotong keras: berkas yang terpotong di pinggir terlihat masuk dan keluar dengan halus */
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%)}
+.lab-rak-daftar::-webkit-scrollbar{display:none}
 .lab-berkas{position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 30px 16px 12px;border:1px solid rgba(20,40,30,.08);border-radius:24px;
   background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 26px rgba(20,40,30,.14);
   transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;animation:lab-naik .5s calc(var(--urut,0)*70ms) cubic-bezier(.2,.7,.2,1) both}
@@ -92,6 +95,7 @@ button.tautan-cari{padding:0;border:0;background:none;cursor:pointer}
 }
 @media (prefers-reduced-motion:reduce){
   .panel-lab,.lab-berkas{animation:none;transition:none}
+  .lab-rak-daftar{scroll-behavior:auto}
   .lab-rak-daftar .lab-berkas:nth-child(n){transform:none}
   .lab-rak-daftar .lab-berkas:hover,.lab-rak-daftar .lab-berkas:focus-within,button.ubin:hover{transform:none}
   .panel-lab button.kartu-lanjut-hero:hover .panah-bulat,button.ubin:hover .panah-bulat{transform:none}
