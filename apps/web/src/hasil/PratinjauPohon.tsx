@@ -7,7 +7,7 @@ import { t } from '../terjemah';
 
 const TINGGI_MAKS = 360;
 
-export function PratinjauPohon({ children, saatBuka }: { children: ReactNode; saatBuka: () => void }) {
+export function PratinjauPohon({ children, saatBuka, label }: { children: ReactNode; saatBuka: () => void; label?: string }) {
   const wadah = useRef<HTMLDivElement>(null);
   const isi = useRef<HTMLDivElement>(null);
   const [ukuran, setUkuran] = useState({ skala: 1, lebar: 0, tinggi: 0 });
@@ -34,7 +34,7 @@ export function PratinjauPohon({ children, saatBuka }: { children: ReactNode; sa
   useEffect(() => { isi.current?.setAttribute('inert', ''); }, []);
 
   return (
-    <div className="pratinjau-pohon" ref={wadah} role="button" tabIndex={0} aria-label={t('hitung.buka_pohon_layar_penuh')}
+    <div className="pratinjau-pohon" ref={wadah} role="button" tabIndex={0} aria-label={label ?? t('hitung.buka_pohon_layar_penuh')}
       style={{ height: ukuran.tinggi * ukuran.skala || undefined }}
       onClick={saatBuka} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); saatBuka(); } }}>
       <div className="pratinjau-isi" ref={isi}

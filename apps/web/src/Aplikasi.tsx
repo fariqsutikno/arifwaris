@@ -143,7 +143,7 @@ export function Aplikasi() {
         saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
       <PembaruanKonten />
       {!['beranda', 'kalkulator', 'belajar'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}
-      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} />
+      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />

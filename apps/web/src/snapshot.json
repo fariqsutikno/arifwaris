@@ -18669,6 +18669,83 @@
    "id": "Ketuk nama untuk melihat kenapa bagiannya segitu.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.contoh_petunjuk",
+   "halaman": "beranda",
+   "id": "Contoh hitungan sungguhan. Pilih keadaan keluarga lain, bagian tiap orang ikut berubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.contoh_istri_dan_anak",
+   "halaman": "beranda",
+   "id": "Istri dan dua anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.contoh_anak_ibu_saudara",
+   "halaman": "beranda",
+   "id": "Anak, ibu, dan saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.contoh_suami_ibu_saudari",
+   "halaman": "beranda",
+   "id": "Suami, ibu, dan saudari",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.keadaan_keluarga",
+   "halaman": "beranda",
+   "id": "Keadaan keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.coba_kasus_ini",
+   "halaman": "beranda",
+   "id": "Coba kasus ini di ArifLab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.stat_harta",
+   "halaman": "beranda",
+   "id": "Harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.stat_dapat",
+   "halaman": "beranda",
+   "id": "Mendapat bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.stat_tidak_dapat",
+   "halaman": "beranda",
+   "id": "Tidak mendapat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.mulai_dari_mana",
+   "halaman": "beranda",
+   "id": "Mulai dari mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.punya_kasus_sendiri",
+   "halaman": "beranda",
+   "id": "Punya kasus sendiri?",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

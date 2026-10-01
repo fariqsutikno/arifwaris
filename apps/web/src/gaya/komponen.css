@@ -1395,16 +1395,16 @@ body.layar-hasil{background:var(--halaman)}
 
 @media (min-width:981px){
   /* Nav menyatu dengan hero: transparan di atas latar gelap, kontrolnya kaca. */
-  body.layar-hasil .kepala{box-sizing:border-box;position:relative;max-width:1160px;margin:24px auto -84px;padding:16px 24px;background:transparent;border:0;color:#fff;z-index:6}
-  body.layar-hasil .kepala-nav{overflow:visible}
-  body.layar-hasil .kepala-menu{padding:0 16px;border-radius:var(--radius-pill);color:rgba(255,255,255,.92);font-weight:500}
-  body.layar-hasil .kepala-menu[aria-current=page]{background:rgba(255,255,255,.9);color:#14181a;font-weight:600}
-  body.layar-hasil .kepala .aw-logo,body.layar-hasil .kepala .aw-logo b{color:#fff}
-  body.layar-hasil .kepala .aw-logo small{display:none}
-  body.layar-hasil .kepala .aw-btn,body.layar-hasil .kepala .pilih-bahasa{height:40px;border:0;border-radius:var(--radius-pill);background:rgba(255,255,255,.18);color:#fff;box-shadow:none;font-weight:600}
-  body.layar-hasil .kepala .aw-btn:hover{transform:none;background:rgba(255,255,255,.3)}
-  body.layar-hasil .kepala .pilih-bahasa{padding:0 12px}
-  body.layar-hasil .kepala .pilih-bahasa option{color:#14181a}
+  :is(body.layar-hasil,body.layar-beranda) .kepala{box-sizing:border-box;position:relative;max-width:1160px;margin:24px auto -84px;padding:16px 24px;background:transparent;border:0;color:#fff;z-index:6}
+  :is(body.layar-hasil,body.layar-beranda) .kepala-nav{overflow:visible}
+  :is(body.layar-hasil,body.layar-beranda) .kepala-menu{padding:0 16px;border-radius:var(--radius-pill);color:rgba(255,255,255,.92);font-weight:500}
+  :is(body.layar-hasil,body.layar-beranda) .kepala-menu[aria-current=page]{background:rgba(255,255,255,.9);color:#14181a;font-weight:600}
+  :is(body.layar-hasil,body.layar-beranda) .kepala .aw-logo,:is(body.layar-hasil,body.layar-beranda) .kepala .aw-logo b{color:#fff}
+  :is(body.layar-hasil,body.layar-beranda) .kepala .aw-logo small{display:none}
+  :is(body.layar-hasil,body.layar-beranda) .kepala .aw-btn,:is(body.layar-hasil,body.layar-beranda) .kepala .pilih-bahasa{height:40px;border:0;border-radius:var(--radius-pill);background:rgba(255,255,255,.18);color:#fff;box-shadow:none;font-weight:600}
+  :is(body.layar-hasil,body.layar-beranda) .kepala .aw-btn:hover{transform:none;background:rgba(255,255,255,.3)}
+  :is(body.layar-hasil,body.layar-beranda) .kepala .pilih-bahasa{padding:0 12px}
+  :is(body.layar-hasil,body.layar-beranda) .kepala .pilih-bahasa option{color:#14181a}
   body.layar-hasil .halaman-hasil{margin-bottom:28px;padding:0 0 20px;background:var(--surface);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18)}
   body.layar-hasil .halaman-hasil>.hero-hasil{border-radius:0;padding:98px 24px 26px}
   body.layar-hasil .halaman-hasil>.tata-hasil{padding:12px 12px 0}

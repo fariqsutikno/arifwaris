@@ -6,6 +6,7 @@
 import './gaya/font.css';
 import './gaya/token.css';
 import './gaya/komponen.css';
+import './gaya/beranda.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pilihAwal } from '@waris/data/snapshot';
