@@ -1,6 +1,6 @@
 // Penjaga navigasi: halaman yang sedang berisi pekerjaan (kasus di Hitung, sesi kuis) bisa meminta konfirmasi
 // sebelum pengguna pindah lewat tautan hash (menu, tautan di halaman). Klik ditangkap di fase capture sehingga
-// tautan mana pun ikut terjaga tanpa diubah satu per satu. Tombol Kembali browser tidak dijaga.
+// tautan mana pun ikut terjaga tanpa diubah satu per satu. Tombol Kembali/Maju browser ikut dijaga lewat hashchange.
 
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { DialogKonfirmasi } from './Dialog';
@@ -29,8 +29,17 @@ export function PenyediaPenjaga({ children }: { children: ReactNode }) {
       event.stopPropagation();
       setTujuan(href);
     };
+    // Tombol Kembali/Maju browser: hash sudah berubah, jadi kembalikan ke halaman semula dan tanyakan dulu.
+    const tangkapRiwayat = (event: HashChangeEvent) => {
+      const hrefBaru = new URL(event.newURL).hash;
+      if (!hrefBaru || !penjaga.berlaku(hrefBaru)) return;
+      history.replaceState(null, '', event.oldURL);
+      window.dispatchEvent(new HashChangeEvent('hashchange', { oldURL: event.newURL, newURL: event.oldURL }));
+      setTujuan(hrefBaru);
+    };
     document.addEventListener('click', tangkap, true);
-    return () => document.removeEventListener('click', tangkap, true);
+    window.addEventListener('hashchange', tangkapRiwayat);
+    return () => { document.removeEventListener('click', tangkap, true); window.removeEventListener('hashchange', tangkapRiwayat); };
   }, [penjaga]);
   return (
     <KonteksPenjaga.Provider value={setPenjaga}>
