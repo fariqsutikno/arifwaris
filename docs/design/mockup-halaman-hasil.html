@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup Halaman Hasil</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Readex+Pro:wght@400;600;700&display=swap">
+<style>
+/* Satu halaman Hasil utuh menurut spec 2026-10-01-perjalanan-keresahan-design.md (bagian 2.5, 3, 4, 5.5, 6).
+   Angka contoh; kalimat alasan draf menunggu tim keilmuan. Token = Arif Waris v4. */
+:root{--surface:#f5f8ff;--raised:#fff;--sunken:#e8eeff;--outline:#111322;--divider:#d5dcf2;--ink:#111322;--muted:#5d6487;
+--primary:#2f5bff;--on-primary:#fff;--soft:#dfe6ff;--sun:#ffe14d;--ok:#138a4b;--ok-soft:#d9f5e5;--danger:#d62f33;
+--pop-sm:2px 2px 0 #111322;--display:"Readex Pro",system-ui,sans-serif;--sans:"Plus Jakarta Sans",system-ui,sans-serif}
+@media(prefers-color-scheme:dark){:root{--surface:#16182a;--raised:#1f2238;--sunken:#10121f;--outline:#f3f4ff;--divider:#33375a;--ink:#f3f4ff;--muted:#949bc2;
+--primary:#7c9bff;--on-primary:#111322;--soft:#2a3570;--ok:#4ade80;--ok-soft:#14392a;--danger:#ff8a80;--pop-sm:2px 2px 0 #000}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--sunken);color:var(--ink);font:400 15px/1.55 var(--sans)}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.25}p{margin:0}
+a{color:var(--primary);font-weight:600;cursor:pointer;text-underline-offset:3px}
+a:focus-visible,button:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;flex:none}
+.kecil{font-size:13px;color:var(--muted)}
+.chip{display:inline-block;font:700 12px var(--sans);padding:3px 10px;border:2px solid var(--outline);border-radius:999px;background:var(--soft);color:var(--ink)}
+.tag{display:inline-block;font:700 12px var(--sans);padding:1px 8px;border:2px solid var(--outline);border-radius:999px;background:var(--sunken)}
+.uang{font:700 15px var(--display);font-variant-numeric:tabular-nums;white-space:nowrap}
+.naik{color:var(--ok);font-weight:700;font-size:13px}.turun{color:var(--danger);font-weight:700;font-size:13px}
+
+.catatan{max-width:760px;margin:0 auto;padding:20px 16px 0}
+.halaman{max-width:760px;margin:16px auto 60px;background:var(--surface);border:2px solid var(--outline);border-radius:18px;box-shadow:4px 4px 0 var(--outline);overflow:hidden}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 18px;border-bottom:2px solid var(--outline);background:var(--raised);font:700 14px var(--display)}
+.isi{padding:18px;display:flex;flex-direction:column;gap:20px}
+.lapis{font:700 12px var(--display);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;align-items:center;gap:10px}
+.lapis::after{content:"";flex:1;border-top:2px dashed var(--divider)}
+.blok{display:flex;flex-direction:column;gap:10px}
+.blok>h2{font-size:17px}
+.kartu{background:var(--raised);border:2px solid var(--outline);border-radius:14px;padding:14px;box-shadow:var(--pop-sm)}
+.tenang{background:var(--sunken);border:2px solid var(--outline);border-radius:12px;padding:12px}
+.tenang b{font-family:var(--display)}
+.op{display:flex;gap:10px;align-items:center;min-height:44px;padding:6px 12px;border:2px solid var(--outline);border-radius:12px;background:var(--raised);font:400 14px var(--sans);cursor:pointer;text-align:left;width:100%;color:var(--ink)}
+.op.pil{background:var(--soft);font-weight:700}
+.op .dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--outline);background:var(--raised);flex:none}
+.op.pil .dot{background:var(--primary);box-shadow:inset 0 0 0 3px var(--raised)}
+.op .sel{margin-left:auto;font-size:13px;white-space:nowrap}
+.tab{display:flex;gap:18px;border-bottom:2px solid var(--divider)}
+.tab button{all:unset;cursor:pointer;padding:8px 2px;font:700 14px var(--sans);color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-2px}
+.tab button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--primary)}
+.tab button:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;padding:9px 0;border-bottom:1px dashed var(--divider);font-size:14px}
+.row:last-child{border:0}
+.apa{display:flex;flex-direction:column;gap:2px;min-width:0}
+.asal{font-size:12.5px;color:var(--muted)}.alasan{font-size:13px;color:var(--muted)}
+details summary{cursor:pointer;font-weight:700;font-size:14px;list-style:none;display:flex;gap:8px;align-items:center}
+details summary::-webkit-details-marker{display:none}
+details[open]>summary .ik{transform:rotate(90deg)}
+.menu{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px}
+.langkah{margin:0;padding-left:20px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.jujur{background:var(--sun);color:#111322;border:2px solid var(--outline);border-radius:12px;padding:12px;display:flex;gap:10px;font-size:14px}
+
+.pohon{overflow-x:auto}
+.pohon svg{display:block;min-width:620px;width:100%;height:auto}
+.pohon text{font-family:var(--sans);fill:var(--ink)}
+.pohon .gar{fill:none;stroke:var(--outline);stroke-width:2}.pohon .nikah{stroke-width:4}
+.pohon .nd rect{fill:var(--raised);stroke:var(--outline);stroke-width:2}
+.pohon .nd.wafat rect{fill:var(--sunken);stroke-dasharray:6 4}
+.pohon .nd.terima rect{fill:var(--ok-soft)}
+.pohon .nd.lain rect{fill:var(--sunken);opacity:.75}
+.pohon .n{font-weight:700;font-size:13px}.pohon .s{font-size:12px;fill:var(--muted)}.pohon .r{font-weight:700;font-size:12px;fill:var(--ok)}
+.pohon.sembunyi .r{display:none}
+.legenda{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.legenda i{display:inline-block;width:14px;height:14px;border:2px solid var(--outline);border-radius:3px;vertical-align:-3px;margin-right:5px}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18h.01"/></symbol>
+</svg>
+
+<div class="catatan">
+  <h1 style="font-size:24px">Mockup: satu halaman Hasil utuh</h1>
+  <p class="kecil" style="margin-top:6px">Kasus keluarga Mbah Karto, dengan satu hal yang belum pasti (urutan wafat Budi) supaya semua bagian tampil. Urutan: lapis 1 (jawaban), lapis 2 (penjelasan), lapis 3 (praktisi). Pilih kemungkinan, ganti tab, dan lipat-buka bagian di bawah ini bisa dicoba.</p>
+</div>
+
+<div class="halaman">
+  <div class="bar"><span>Hasil · Harta Mbah Karto</span><a style="font-size:13px">Sunting kasus</a></div>
+  <div class="isi">
+
+    <!-- LAPIS 1 -->
+    <div class="lapis">Lapis 1 · jawaban</div>
+
+    <div class="blok">
+      <h1 style="font-size:22px">Pembagian harta Mbah Karto dan keluarganya</h1>
+      <p class="kecil">Menurut madzhab Syafi'i · Rumah Rp 8.000.000.000 + Kebun Rp 2.368.000.000 · dihitung 1 Oktober 2026</p>
+    </div>
+
+    <div class="blok" id="kem">
+      <div class="tenang"><b>Hasil ini bergantung pada 1 hal yang belum pasti.</b>
+        <p class="kecil" style="margin-top:4px">Urutan wafat Budi dan Mbah Karto belum dipastikan. <a>Pastikan</a></p></div>
+      <button class="op pil" data-k="0"><span class="dot"></span>Budi wafat sesudah Mbah Karto <span class="sel kecil">jawaban sekarang</span></button>
+      <button class="op" data-k="1"><span class="dot"></span>Budi wafat sebelum Mbah Karto <span class="sel kecil">angka contoh</span></button>
+      <p class="kecil">Memilih hanya membandingkan; kasus tersimpan tidak berubah. Selisih dihitung terhadap pilihan pertama.</p>
+    </div>
+
+    <div class="blok" id="hasil">
+      <div class="tab" role="tablist"><button role="tab" aria-selected="true" data-t="orang">Per orang</button><button role="tab" aria-selected="false" data-t="barang">Per barang</button></div>
+
+      <div data-p="orang" id="daftar"></div>
+
+      <div data-p="barang" hidden>
+        <div class="row"><div class="apa"><b>Rumah</b><span class="asal">Rp 8.000.000.000 · setelah utang Mbah Karto dilunasi (tidak ada yang dicatat)</span></div></div>
+        <div id="brgRumah"></div>
+        <div class="row" style="margin-top:6px"><div class="apa"><b>Kebun</b><span class="asal">Rp 2.368.000.000</span></div></div>
+        <div id="brgKebun"></div>
+        <p class="kecil" style="margin-top:8px">Selisih pembulatan tiap barang dilaporkan terpisah (satuan Rp 1.000; pada jawaban sekarang rumah Rp 4.000, kebun Rp 2.000). Mereka semua perlu dilibatkan bila barang ini dijual atau dibalik nama.</p>
+      </div>
+
+      <details>
+        <summary><svg class="ik"><use href="#i-chev"/></svg>Tidak mendapat bagian (3)</summary>
+        <div style="margin-top:6px">
+          <div class="row"><div class="apa"><b>Pak Harjo</b> · besan<span class="alasan">Besan tidak mewarisi dari Mbah Karto. Tidak ada sebab waris antara keduanya.</span></div></div>
+          <div class="row"><div class="apa"><b>Tono</b> · anak angkat Budi<span class="alasan">Anak angkat tidak mewarisi karena tidak ada hubungan nasab.</span></div></div>
+          <div class="row"><div class="apa"><b>Anak Pak Slamet</b> · cucu<span class="alasan">Pak Slamet wafat sebelum Mbah, jadi tidak mewarisi. Anak-anaknya terhalang oleh Budi, anak laki-laki Mbah yang masih hidup.</span></div></div>
+        </div>
+      </details>
+    </div>
+
+    <div class="blok">
+      <p class="kecil"><svg class="ik"><use href="#i-info"/></svg> Hasil ini membantu keluarga memahami pembagian menurut fikih. Surat keterangan waris dan balik nama mengikuti ketentuan lembaga berwenang. Tanyakan ke ahli faraidh atau pengadilan agama setempat.</p>
+      <div class="menu"><a>Coba ubah sesuatu</a><a>Lembar musyawarah (cetak)</a><a>Kirim ke keluarga untuk dilengkapi</a></div>
+    </div>
+
+    <!-- LAPIS 2 -->
+    <div class="lapis">Lapis 2 · penjelasan</div>
+
+    <div class="blok">
+      <h2>Yang sering ditanyakan keluarga</h2>
+      <div class="tenang"><b>Kok keluarga Bu Dewi dapat?</b><p class="kecil" style="margin-top:4px">Dewi menerima sebagai istri Budi, bukan sebagai kerabat Mbah. Bagian itu sudah menjadi miliknya, lalu diteruskan ke keluarga Dewi waktu ia wafat. <a>Bagaimana kalau Budi wafat sebelum Mbah?</a></p></div>
+      <div class="tenang"><b>Kok cucu Pak Slamet tidak dapat?</b><p class="kecil" style="margin-top:4px">Menurut fikih, Pak Slamet wafat lebih dulu sehingga tidak mewarisi, dan anak-anaknya terhalang oleh paman mereka. <span class="chip">Hukum positif, bukan fikih</span> KHI pasal 185 mengatur ahli waris pengganti secara berbeda; hitungan KHI ada di fase terpisah. <a>Bagaimana kalau Pak Slamet masih hidup?</a></p></div>
+      <p class="kecil">Cara yang ada di fikih untuk menyikapinya: <a>kerelaan ahli waris (takharuj)</a> · <a>wasiat sampai 1/3</a></p>
+    </div>
+
+    <div class="blok">
+      <h2>Langkah perhitungan</h2>
+      <ol class="langkah">
+        <li>Harta dibagi mulai dari yang wafat paling dulu: Mbah Karto, lalu bagian Budi, lalu bagian Andi.</li>
+        <li>Mbah Sumi dan anak-anak Mbah Karto menerima bagiannya; bagian Budi diteruskan ke Dewi dan anak-anaknya.</li>
+        <li>Sari dan Dimas menerima lewat dua jalur (dari Budi dan dari Andi); jumlahnya ada di daftar atas.</li>
+        <li>Tiap orang dibulatkan ke bawah ke Rp 1.000; sisanya dilaporkan terpisah.</li>
+      </ol>
+    </div>
+
+    <div class="blok">
+      <h2>Pohon keluarga</h2>
+      <div class="kartu pohon" id="pohon">
+        <svg viewBox="0 0 700 400" role="img" aria-label="Pohon keluarga Mbah Karto: penerima ditandai hijau">
+          <g class="gar nikah"><path d="M230 47H250"/><path d="M520 47H540"/><path d="M290 157H470"/></g>
+          <g class="gar"><path d="M240 47V130"/><path d="M530 47V130"/><path d="M380 157V205H300V250M380 205H440V250"/></g>
+          <g class="nd wafat" transform="translate(110,20)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="22">Mbah Karto</text><text class="s" x="10" y="40">wafat 1975</text></g>
+          <g class="nd terima" transform="translate(250,20)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Mbah Sumi</text><text class="s" x="10" y="35">istri · hidup</text><text class="r" x="10" y="48">Rp 2,30 M</text></g>
+          <g class="nd lain" transform="translate(400,20)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="22">Pak Harjo</text><text class="s" x="10" y="40">besan</text></g>
+          <g class="nd lain" transform="translate(540,20)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="22">Bu Harjo</text><text class="s" x="10" y="40">besan</text></g>
+          <g class="nd wafat" transform="translate(180,130)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="22">Budi</text><text class="s" x="10" y="40">anak · wafat 1998</text></g>
+          <g class="nd terima" transform="translate(470,130)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Dewi</text><text class="s" x="10" y="35">menantu · hidup</text><text class="r" x="10" y="48">Rp 1,23 M</text></g>
+          <g class="nd terima" transform="translate(240,250)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Sari</text><text class="s" x="10" y="35">cucu · hidup</text><text class="r" x="10" y="48">Rp 1,43 M</text></g>
+          <g class="nd terima" transform="translate(380,250)"><rect width="120" height="54" rx="8"/><text class="n" x="10" y="20">Dimas</text><text class="s" x="10" y="35">cucu · hidup</text><text class="r" x="10" y="48">Rp 2,02 M</text></g>
+        </svg>
+        <div class="legenda"><span><i style="border-style:dashed;background:var(--sunken)"></i>wafat</span><span><i style="background:var(--ok-soft)"></i>menerima</span><span><i style="background:var(--sunken);opacity:.75"></i>bukan ahli waris</span><span>Ketuk kotak untuk melihat alasannya</span></div>
+      </div>
+      <div class="menu"><a id="tgl">Sembunyikan nominal</a><a>Lihat dari sisi orang lain</a><a>Tambah kerabat lain</a></div>
+      <p class="kecil">Di HP, daftar bertingkat menjadi tampilan bawaan dan pohon dibuka layar penuh.</p>
+    </div>
+
+    <!-- LAPIS 3 -->
+    <div class="lapis">Lapis 3 · untuk praktisi dan mode Belajar</div>
+    <div class="blok">
+      <details><summary><svg class="ik"><use href="#i-chev"/></svg>Tabel munasakhat lengkap</summary><p class="kecil" style="margin-top:6px">Ashlul masalah, tashih, dan saham tiap ahli waris per mas'alah, dengan glosarium istilah.</p></details>
+      <details><summary><svg class="ik"><use href="#i-chev"/></svg>Rujukan fikih</summary><p class="kecil" style="margin-top:6px">Rujukan KB per langkah, dengan sumbernya.</p></details>
+      <div class="menu"><a>Ekspor tabel lengkap</a><a>Belajar bab munasakhat</a></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// Data contoh. Total per orang dalam juta rupiah; "tumpukan" = Budi wafat sebelum Mbah (angka contoh, jumlah tetap 10.368).
+const ORANG=[['Rina','anak perempuan Mbah Karto',3024,'Anak perempuan mendapat bagian tetap, sisanya untuk anak laki-laki.'],
+ ['Mbah Sumi','istri Mbah Karto',2304,'Istri mendapat 1/8 karena ada anak.'],
+ ['Dimas','cucu · lewat Budi dan Andi',2023,'Menerima dari Andi sebagai anak; Andi menerima dari Budi.'],
+ ['Sari','cucu · lewat Budi dan Andi',1428,'Menerima dari Andi sebagai anak; Andi menerima dari Budi.'],
+ ['Dewi','menantu · istri Budi',1232,'Menerima dari Budi sebagai istrinya. Bagian itu miliknya.'],
+ ['Lina','cucu · lewat Budi',357,'Menerima dari Budi sebagai anak.']];
+const ALT=[3456,1728,2592,2592,0,0]; // urut sama dengan ORANG (urutan wafat lain)
+const fmt=n=>'Rp '+(n*1e6).toLocaleString('id-ID');
+const sel=n=>(n>0?'<span class=naik>+':'<span class=turun>−')+'Rp '+Math.abs(n/1000).toLocaleString('id-ID',{minimumFractionDigits:3})+' M</span>';
+function daftar(k){
+  document.getElementById('daftar').innerHTML=ORANG.map((o,i)=>{
+    const v=k?ALT[i]:o[2], d=k?v-o[2]:0;
+    return `<div class="row"><div class="apa"><span><b>${o[0]}</b> · ${o[1]}</span>`+
+      `<span class="alasan">${k&&v===0?'Dalam urutan ini tidak ada bagian yang sampai ke sini.':o[3]}</span></div>`+
+      `<div style="text-align:right"><span class="uang">${fmt(v)}</span>${k?'<br>'+sel(d):''}</div></div>`}).join('')+
+    `<p class="kecil" style="margin-top:6px">Jumlah Rp 10.368.000.000. Sisa pembulatan Rp 0.</p>`;
+}
+// Per barang: bagian tiap orang x nilai barang, dibulatkan ke bawah Rp 1.000.
+function barang(el,h,k){document.getElementById(el).innerHTML=ORANG.map((o,i)=>{
+  const v=k?ALT[i]:o[2],rp=Math.floor(h*1e6*v/10368/1000)*1000;
+  return `<div class="row"><span>${o[0]}</span><span class="uang">${(v/10368*100).toFixed(1).replace('.',',')}% · Rp ${rp.toLocaleString('id-ID')}</span></div>`}).join('')}
+function semua(k){daftar(k);barang('brgRumah',8000,k);barang('brgKebun',2368,k)}
+semua(0);
+document.querySelectorAll('#kem [data-k]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('#kem [data-k]').forEach(x=>x.classList.toggle('pil',x===b));semua(+b.dataset.k)}));
+document.querySelectorAll('#hasil [role=tab]').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('#hasil [role=tab]').forEach(x=>x.setAttribute('aria-selected',x===t));
+  document.querySelectorAll('#hasil [data-p]').forEach(p=>p.hidden=p.dataset.p!==t.dataset.t)}));
+const tgl=document.getElementById('tgl');
+tgl.addEventListener('click',()=>{const s=document.getElementById('pohon').classList.toggle('sembunyi');tgl.textContent=s?'Tampilkan nominal':'Sembunyikan nominal'});
+</script>
+</body>
+</html>
