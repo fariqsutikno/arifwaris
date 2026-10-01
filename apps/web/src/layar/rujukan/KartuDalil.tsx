@@ -60,11 +60,10 @@ export function KartuKitab({ nomor }: { nomor: number }) {
   const sumber = sumberKitab().find(isi => isi.judul === kitab.judul);
   return (
     <article className="kartu-kitab">
-      <div className="punggung-kitab" aria-hidden="true"><Ikon nama="pelajaran" ukuran={22} /></div>
+      <div className="punggung-kitab" aria-hidden="true" />
       <div className="sampul-kitab">
         <h2><cite>{kitab.judul}</cite></h2>
         <p className="penulis-kitab">{kitab.penulis}</p>
-        <hr className="hiasan-kitab" />
         <p className="keterangan-kitab">{kitab.keterangan.replace(/\*\*/g, '')}</p>
         <div className="aksi-kitab">
           {sumber?.pdf
