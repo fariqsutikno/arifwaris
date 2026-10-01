@@ -54,3 +54,25 @@
   /* HP: header sempit, tur disembunyikan (hanya ada di desktop) */
   body.layar-beranda .kepala .tombol-kepala{display:none}
 }
+
+/* ─── Hasil selebar layar ──────────────────────────────────────────────────────────────────────────
+   Sama dengan Awal Lab dan wizard: latar krem, hero gelap penuh lebar dengan navbar menyatu, lembar krem bersudut
+   atas membulat yang menimpa hero. Menggantikan bingkai sage lama ("Hasil v5" di komponen.css). */
+body.layar-hasil{background:var(--krem)}
+body.layar-hasil .halaman-hasil{--sisi:16px;max-width:none;margin:0;padding:0 0 28px;background:none;border-radius:0;overflow:visible;box-shadow:none}
+body.layar-hasil .halaman-hasil>.hero-hasil{border-radius:0;padding:92px var(--sisi) 62px}
+body.layar-hasil .halaman-hasil>.tata-hasil{position:relative;margin-top:-30px;padding:32px var(--sisi) 28px;border-radius:36px 36px 0 0;background:var(--krem);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
+@media (min-width:981px){
+  body.layar-hasil .halaman-hasil{--sisi:max(24px,calc((100% - 1320px)/2))}
+  body.layar-hasil .halaman-hasil>.hero-hasil{padding-top:112px}
+  body.layar-hasil .kepala{max-width:1320px;margin-top:0;padding-top:28px}
+}
+@media (max-width:720px){
+  /* HP: navbar transparan di atas hero, kontrolnya kaca (sama dengan Beranda) */
+  body.layar-hasil .kepala{position:absolute;inset-inline:0;top:0;padding:14px 16px;background:transparent;border:0;color:#fff}
+  body.layar-hasil .kepala :is(.tombol-kepala,.pilih-bahasa,.tombol-lonceng){border:0;background:rgba(255,255,255,.16);color:#fff;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  body.layar-hasil .kepala .pilih-bahasa{width:84px;font-size:12.5px}
+  body.layar-hasil .kepala .pilih-bahasa option{color:#14181a}
+  body.layar-hasil .kepala .streak-kepala{display:none}
+}
