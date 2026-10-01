@@ -132,3 +132,13 @@ a.butir-notif:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
   .nav-bawah-item,.nav-bawah-item .ikon{transition:none}
 }
 button.tautan-lanjut{padding:0;border:0;background:none;cursor:pointer}
+
+/* Gerak dikurangi (pilihan pengguna atau sistem, lewat tampilan.ts): satu aturan global; semua isi tetap terbaca.
+   Animasi berakhir di keadaan akhirnya, jadi aliran harta dan kotak pohon langsung tampil utuh. */
+html[data-gerak="kurang"] *,html[data-gerak="kurang"] *::before,html[data-gerak="kurang"] *::after{animation-duration:.01ms !important;animation-delay:0s !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;transition-delay:0s !important;scroll-behavior:auto !important}
+html[data-gerak="kurang"] .confetti{display:none}
+.kontrol-tampilan{position:relative}
+.panel-tampilan{position:absolute;inset-inline-end:0;top:calc(100% + 8px);z-index:70;display:flex;flex-direction:column;gap:12px;min-width:240px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:14px;background:var(--surface-raised);box-shadow:var(--shadow-pop);color:var(--on-fill)}
+.panel-tampilan small{color:var(--ink-muted)}
+.kontrol-tampilan .tombol-lonceng[aria-expanded=true] svg{animation:none}
+@media (max-width:560px){.panel-tampilan{position:fixed;inset-inline:16px;top:68px;min-width:0}}

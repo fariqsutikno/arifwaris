@@ -20,11 +20,13 @@ import { pilihAwal, type Snapshot } from '@waris/data/snapshot';
 import { bacaCache, simpanCache } from './konten/cache';
 import { modulBerubah, muatRepoSupabase, PERISTIWA_KONTEN_BARU, sinkronLatar } from './konten/sinkron';
 import { pasangSnapshot, snapshotTerpasang } from './konten/sumber';
+import { mulaiTampilan } from './tampilan';
 import { NAMA_APLIKASI } from './terjemah';
 import { daftarkanServiceWorker } from './notifikasi/perangkat';
 import { BatasGalat } from './ui/BatasGalat';
 
 document.title = NAMA_APLIKASI;
+mulaiTampilan();
 daftarkanServiceWorker();
 pasangSnapshot(pilihAwal(snapshotTerpasang(), await bacaCache()));
 const [{ Aplikasi }, { PenyediaPenjaga }] = await Promise.all([import('./Aplikasi'), import('./ui/Penjaga')]);

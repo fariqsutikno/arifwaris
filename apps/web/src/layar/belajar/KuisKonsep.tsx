@@ -4,6 +4,7 @@
 // hasil: skor lalu pembahasan tiap soal. Keluar di tengah sesi ditanya dulu (usePenjaga).
 // Mode ujian diberi batas waktu (lihat durasiUjian); waktu habis = jawaban otomatis dikumpulkan, yang kosong dihitung salah.
 
+import { putar } from '../../suara';
 import { useEffect, useRef, useState } from 'react';
 import { JUDUL_BAB, type SoalKuis } from '@waris/content';
 import { daftarSoalKuis } from '../../konten/sumber';
@@ -163,6 +164,7 @@ export function SesiKuis({ paket }: { paket: string }) {
   };
   // Penilaian dicatat saat sesi diselesaikan, karena di mode ujian jawaban masih bisa diganti sampai saat itu.
   const selesaikan = () => {
+    putar('selesai', 'belajar');
     daftarSoal.forEach((soalIni, urutan) => catatLatihan('kuis', soalIni.kode, pilihan[urutan] === soalIni.indeksBenar, pilihan[urutan] ?? null));
     const skor = `${benarSejauhIni}/${daftarSoal.length}`;
     if (ulangiSalah) {

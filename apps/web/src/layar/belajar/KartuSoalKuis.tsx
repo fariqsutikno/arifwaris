@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import type { SoalKuis } from '@waris/content';
+import { putar } from '../../suara';
 import { Ikon } from '../../ui/Ikon';
 import { Sebaris } from './Sebaris';
 import { bahasaArab, t } from '../../terjemah';
@@ -31,7 +32,12 @@ export function KartuSoalKuis({ soal, label = soal.kode, sembunyikanLabel, mode 
   const sudahMenjawab = dipilih !== null;
   const tampilkanNilai = sudahMenjawab && mode === 'langsung';
   const benar = dipilih === soal.indeksBenar;
-  const pilih = (indeks: number) => { setDipilih(indeks); saatDijawab?.(indeks); };
+  const pilih = (indeks: number) => {
+    setDipilih(indeks);
+    saatDijawab?.(indeks);
+    // Mode ujian tidak membocorkan benar/salah; hanya ketukan.
+    putar(mode === 'langsung' ? (indeks === soal.indeksBenar ? 'benar' : 'salah') : 'ketuk', 'belajar');
+  };
   const kelas = (indeks: number) => ['pilihan-kuis-item',
     tampilkanNilai && indeks === soal.indeksBenar && 'benar',
     tampilkanNilai && indeks === dipilih && !benar && 'salah',

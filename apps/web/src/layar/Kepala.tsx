@@ -5,6 +5,7 @@
 import type { ReactNode } from 'react';
 import { Logo, Tombol } from '../ui/komponen';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
+import { KontrolTampilan } from '../ui/KontrolTampilan';
 import { DAFTAR_BAHASA, simpanBahasa, useBahasa, type Bahasa } from '../preferensi';
 import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, tautanBelajar, tautanLatihan, tautanRujukan, type Rute } from '../rute';
 import { NAMA_LAB, t } from '../terjemah';
@@ -39,6 +40,7 @@ export function Kepala({ halaman, adaTur, saatKeHitung, saatTur, akun }: Props) 
         <nav aria-label={t('umum.menu_utama')} className="kepala-nav">{tautanMenu('kepala-menu', false)}</nav>
         <span className="pengisi" />
         {akun}
+        <KontrolTampilan />
         {/* Mode santri: padanan Arab untuk istilah, atau penjelasan berbahasa Arab. */}
         <select className="pilih-bahasa" aria-label={t('umum.bahasa')} value={bahasa} onChange={e => { simpanBahasa(e.target.value as Bahasa); window.location.reload(); }}>
           {DAFTAR_BAHASA.map(pilihan => <option key={pilihan.nilai} value={pilihan.nilai}>{pilihan.label}</option>)}

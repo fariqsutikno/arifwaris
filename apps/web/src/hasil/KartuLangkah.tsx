@@ -5,6 +5,7 @@
 // pelajar maju atau menjedanya. Dengan animasi mati, tiap langkah langsung tampil utuh. Di mode Belajar, isinya terkunci
 // sampai jawaban terbuka.
 
+import { simpanGerakKurang, sistemMengurangiGerak, useGerakDikurangi } from '../tampilan';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { BarisPenjelasan } from '@waris/explain';
 import type { HasilOk } from '../jalankan';
@@ -30,7 +31,6 @@ interface Props {
   kanvas: { pohon: ReactNode; tabel: ReactNode };
 }
 
-const geraknyaDikurangi = () => typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 /** Deret langkah tanpa scrollbar: tepi yang masih menyimpan pill memudar, tanda bahwa deret bisa digeser. */
 const tandaiTepi = (wadah: HTMLElement) => {
@@ -52,7 +52,8 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   const [poin, setPoin] = useState(0);
   const [selesai, setSelesai] = useState(false);
   const [putaran, setPutaran] = useState(0);
-  const [animasi, setAnimasi] = useState(() => !geraknyaDikurangi());
+  // Satu preferensi untuk seluruh aplikasi (tampilan.ts); sakelar di sini hanya pintu lain ke pengaturan yang sama.
+  const animasi = !useGerakDikurangi();
   const [dijeda, setDijeda] = useState(false);
   const [laciTerbuka, setLaciTerbuka] = useState(false);
   const { setLangkah } = useSorot();
@@ -116,7 +117,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
     else if (animasi && poin > 0) { setPoin(poin - 1); putarLagi(); }
     else if (indeks > 0) keLangkah(indeks - 1, animasi ? daftarBab[indeks - 1]!.bab.daftarBaris.length - 1 : 0);
   };
-  const aturAnimasi = (nyala: boolean) => { setAnimasi(nyala); setDijeda(false); setPoin(0); putarLagi(); };
+  const aturAnimasi = (nyala: boolean) => { simpanGerakKurang(!nyala); setDijeda(false); setPoin(0); putarLagi(); };
 
   const jalurLangkah = (
     <nav className="jalur-langkah" aria-label={t('hitung.langkah')} ref={jalur} onScroll={event => tandaiTepi(event.currentTarget)}>
@@ -146,7 +147,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   );
   const kontrolFokus = (
     <>
-      <button type="button" role="switch" aria-checked={animasi} className="saklar-animasi" onClick={() => aturAnimasi(!animasi)} title={animasi ? t('hitung.matikan_animasi') : t('hitung.nyalakan_animasi')}>
+      <button type="button" role="switch" aria-checked={animasi} disabled={sistemMengurangiGerak()} className="saklar-animasi" onClick={() => aturAnimasi(!animasi)} title={animasi ? t('hitung.matikan_animasi') : t('hitung.nyalakan_animasi')}>
         <span className="rel-saklar" aria-hidden="true" />{t('hitung.animasi')}
       </button>
       {animasi && (
