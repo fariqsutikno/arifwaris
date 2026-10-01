@@ -290,16 +290,16 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, ulangiSalah, saatUlan
   );
 }
 
-/** Rangka halaman sesi: header transparan di atas pita hero gelap; bar atas, judul/nomor soal, dan kartu berada dalam satu kolom. */
+/** Rangka halaman sesi: hero gelap (bar atas, judul/nomor soal) lalu lembar terang berujung membulat yang menimpa hero dan mengisi sisa layar. */
 function Rangka({ kepala, hero, children }: { kepala: React.ReactNode; hero: React.ReactNode; children: React.ReactNode }) {
   useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   return (
     <main className="halaman-beranda halaman-sesi">
       <div className="hero-beranda latar-sesi" aria-hidden="true" />
-      <div className="sesi-kuis ruang-ujian tumpuk">
-        {kepala}
-        <div className="hero-sesi">{hero}</div>
-        {children}
+      {kepala}
+      <div className="hero-sesi">{hero}</div>
+      <div className="lembar-sesi">
+        <div className="sesi-kuis ruang-ujian tumpuk">{children}</div>
       </div>
     </main>
   );

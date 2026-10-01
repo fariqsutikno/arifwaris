@@ -212,15 +212,28 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 }
 
 /* halaman sesi kuis: pita hero gelap (gaya Latihan) di belakang bar atas, judul/nomor soal, dan bagian atas kartu */
-.halaman-sesi{position:relative;isolation:isolate;min-height:100vh;padding:104px var(--sisi) 64px}
-.latar-sesi{position:fixed;inset:0;z-index:-1;display:block;padding:0!important}
-.halaman-sesi .nav-langkah,.halaman-sesi #judul-pembahasan{color:#fff}
-.halaman-sesi .keterangan{color:rgba(255,255,255,.8)}
-.halaman-sesi .ringkasan-kuis .keterangan,.halaman-sesi .awal-ujian .keterangan{color:var(--ink-muted)}
+.halaman-sesi{position:relative;isolation:isolate;display:flex;flex-direction:column;min-height:100vh;padding-top:104px}
+.latar-sesi{position:absolute;inset:0 0 auto 0;z-index:-1;display:block;height:420px;padding:0!important}
+.halaman-sesi>.bar-ujian,.halaman-sesi>.hero-sesi{width:min(800px,100% - 2*var(--sisi));margin-inline:auto}
+/* lembar terang: sudut atas besar, menimpa hero, memanjang sampai dasar layar */
+.lembar-sesi{flex:1;margin-top:-18px;padding:36px var(--sisi) 64px;border-radius:36px 36px 0 0;background:var(--surface);box-shadow:0 -10px 40px rgba(0,0,0,.18)}
+.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;color:#fff}
+.judul-hero-sesi{display:grid;gap:6px;text-align:center}
+.judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
+.judul-hero-sesi p{margin:0;color:rgba(255,255,255,.85);font:500 16px var(--font-sans)}
+.hero-sesi .kotak-nomor{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.hero-sesi .kotak-nomor button{width:44px;height:44px;border:1.5px solid rgba(255,255,255,.35);border-radius:50%;background:rgba(255,255,255,.14);color:#fff;font:700 15px var(--font-sans);transition:background .2s,transform .2s}
+.hero-sesi .kotak-nomor button:not(:disabled):hover{background:rgba(255,255,255,.28)}
+.hero-sesi .kotak-nomor button.terjawab{border-color:#fff;background:#fff;color:var(--ink)}
+.hero-sesi .kotak-nomor button.benar{border-color:var(--sorot-fardh);background:var(--sorot-fardh);color:#fff}
+.hero-sesi .kotak-nomor button.salah{border-color:var(--danger);background:var(--danger);color:#fff}
+.hero-sesi .kotak-nomor button[aria-current=true]{box-shadow:0 0 0 3px rgba(6,42,38,.9),0 0 0 5px #fff}
+.hero-sesi .progres-sesi{display:flex;justify-content:center;gap:6px 18px}
+.hero-sesi .angka-progres{color:rgba(255,255,255,.9);font:600 14px var(--font-sans)}
 .bar-ujian .judul-sesi{color:#fff}
 .bar-ujian .keluar-ujian{background:rgba(255,255,255,.14);color:#fff}
 .bar-ujian .keluar-ujian:hover{background:rgba(255,255,255,.26)}
-.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0 10px;color:#fff}
+.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0 34px}
 .judul-hero-sesi{display:grid;gap:6px;text-align:center}
 .judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
 .judul-hero-sesi p{margin:0;color:rgba(255,255,255,.85);font:500 16px var(--font-sans)}
