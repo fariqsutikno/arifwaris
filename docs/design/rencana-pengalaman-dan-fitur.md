@@ -1,6 +1,6 @@
 # Rencana: fitur berikutnya dan rasa tampilannya
 
-Tanggal: 2026-10-01 · Status: **usulan, menunggu persetujuan pemilik** · Belum ada kode yang ditulis dari dokumen ini.
+Tanggal: 2026-10-01 · Status: **disetujui pemilik 2026-10-01** (keputusan di bagian 5) · Belum ada kode yang ditulis dari dokumen ini.
 
 Dokumen ini menjawab dua hal sekaligus:
 
@@ -15,7 +15,7 @@ syarat selesai. Tiap tahap nanti mendapat rencana kerja rinci sendiri di `docs/s
 
 ---
 
-## 1. Arah: pohon keluarga adalah panggungnya
+## 1. Arah: pohon keluarga yang hidup
 
 **Tesis.** Hal yang hanya dimiliki Arif Waris: harta **turun lewat silsilah**, dan setiap angka bisa ditelusuri ke
 orang dan alasannya. Jadi yang dihidupkan bukan kartu-kartunya, tetapi **pohon keluarga dan aliran harta di
@@ -31,7 +31,7 @@ itu tanda harus dikurangi.
 | Keluhan | Jawaban | Wujud paling jelas |
 |---|---|---|
 | Semuanya diam | Gerak yang menjelaskan, bukan menghias | Harta mengalir dari almarhum ke tiap orang saat Hasil dibuka |
-| Semuanya kotak sejajar | Tiga lapis kedalaman, bukan deretan kartu | Pohon keluar dari kotaknya dan menjadi latar; lembar orang naik dari kotaknya |
+| Semuanya kotak sejajar | Tiga lapis kedalaman, bukan deretan kartu | Pita bagian menyambungkan pohon dengan daftar; lembar orang naik dari kotaknya |
 | Tidak ada rasa | Bahasa garis milik sendiri + suara tipis + gaya bicara yang sudah ada | Garis nasab/nikah/putus-putus dipakai di seluruh aplikasi |
 | Kurang interaktif | Hasil bisa dipegang | Ketuk orang di pohon, ubah keadaannya, lihat angka semua orang berubah |
 
@@ -39,7 +39,8 @@ itu tanda harus dikurangi.
 
 Satu momen utama, sisanya pendukung. Bukan animasi masuk yang sama di tiap bagian.
 
-- **Momen utama: aliran harta di Hasil.** Saat Hasil pertama terbuka, jumlah harta muncul di kotak almarhum, lalu
+- **Momen utama: aliran harta di Hasil.** Berjalan di pohon dalam kotak kaca hero (susunan hero tidak berubah) dan
+  di layar penuh. Saat Hasil pertama terbuka, jumlah harta muncul di kotak almarhum, lalu
   berjalan menyusuri garis pohon ke tiap penerima. Angka di kotak penerima naik saat bagiannya tiba; yang tidak
   menerima tetap redup. Lamanya sekitar 2 detik, sekali per hasil, bisa dilewati dengan satu ketukan, dan ada tautan
   "Putar ulang".
@@ -51,7 +52,7 @@ Satu momen utama, sisanya pendukung. Bukan animasi masuk yang sama di tiap bagia
   - mengganti keadaan seseorang mengubah kotaknya di tempat (hidup → wafat: garis jadi putus-putus);
   - berpindah kemungkinan ("Bagaimana kalau"): angka berubah di tempat dengan tanda naik/turun, baris bertukar
     posisi dengan halus;
-  - pohon yang sama berpindah dari langkah Keluarga → Periksa → Hasil tanpa "lompat" (kotak tetap di tempatnya).
+  - pohon yang sama berpindah dari langkah Keluarga → Periksa → Hasil tanpa "lompat" (susunan kotaknya sama).
 - **Aturan:** hanya `transform` dan `opacity` yang dianimasikan; pohon di atas 40 orang cukup memudar, tanpa
   aliran; `prefers-reduced-motion` dan sakelar "Animasi" yang sudah ada di langkah perhitungan menjadi **satu
   preferensi** untuk seluruh aplikasi. Semua informasi tetap terbaca tanpa gerak.
@@ -64,22 +65,21 @@ Satu momen utama, sisanya pendukung. Bukan animasi masuk yang sama di tiap bagia
   selesai.
 - Getar singkat di HP Android untuk "tiba", bila tersedia.
 - Suara tidak pernah menjadi satu-satunya penanda sesuatu. Satu ikon pengeras suara, pilihan diingat.
-- **Bawaan (perlu keputusan pemilik, lihat bagian 5):** usul saya menyala di mode Belajar, mati di mode Hitung
-  kasus sampai pengguna menyalakannya. Alasannya, mode Hitung sering dibuka saat rapat keluarga atau di kelas.
+- **Bawaan (diputuskan):** menyala di mode Belajar, mati di mode Hitung kasus sampai pengguna menyalakannya.
+  Alasannya, mode Hitung sering dibuka saat rapat keluarga atau di kelas.
 
 ### 1.3 Susunan: tiga lapis, bukan deretan kartu
 
 | Lapis | Isi | Rupa |
 |---|---|---|
-| **Panggung** | Pohon keluarga, kapan pun keluarga menjadi pokok layar: langkah Keluarga, Periksa, Hasil, sampul lembar musyawarah | Gelap, hijau-teal dengan cahaya hangat (yang sekarang ada di hero Hasil) |
+| **Panggung** | Pohon keluarga, kapan pun keluarga menjadi pokok layar: kotak pohon di hero Hasil, layar penuh, langkah Keluarga, Periksa, sampul lembar musyawarah | Gelap, hijau-teal dengan cahaya hangat (yang sekarang ada di hero Hasil) |
 | **Lembar** | Yang dibaca pelan: pembagian, alasan, langkah hitung, tabel | Krem, tenang, tanpa efek |
 | **Melayang** | Yang muncul karena diminta: lembar orang, alat pohon, pemilih kemungkinan | Naik dari benda yang diketuk, bukan dialog di tengah layar |
 
 Akibatnya di layar:
 
-- Di Hasil, pohon **tidak lagi di dalam kotak kaca di dalam hero**. Pohon mengisi panggung; generasi terbawah
-  boleh menjorok melewati tepi panggung ke lembar di bawahnya. Itu yang memberi kedalaman.
-  *Ini mengubah susunan hero dari mockup Logivo, jadi butuh persetujuan (bagian 5).*
+- Hero Hasil **tetap seperti sekarang** (keputusan pemilik): pohon di dalam kotak kaca, mengetuknya membuka layar
+  penuh. Kedalaman datang dari pita bagian, lembar yang melayang, dan gerak, bukan dari mengubah hero.
 - **Pita bagian**: satu garis mendatar selebar lembar, seluruh harta sesuai skala, tiap ruas milik satu orang.
   Pita ini menyambungkan pohon (di atas) dengan daftar nama (di bawah): menunjuk nama menyalakan ruas dan jalur
   orangnya di pohon. Sistem sorot untuk ini sudah ada (`sorot.tsx`), tinggal dipakai lebih jauh. Pita adalah data
@@ -121,10 +121,10 @@ berikutnya tinggal memakainya. Ukuran: K = kecil, S = sedang, B = besar.
 
 | Tahap | Isi fungsi (spec) | Yang membuatnya tidak flat | Selesai bila | Ukuran |
 |---|---|---|---|---|
-| **0. Fondasi rasa** | — | Preferensi tunggal gerak dan suara; modul gerak (durasi, lengkung) dan modul suara (4 bunyi); komponen Panggung yang membungkus pohon; DESIGN.md ditulis dari hasil yang sudah ada | Sakelar gerak/suara berfungsi dan diingat; tanpa gerak semua tetap terbaca; tidak ada dependency baru | S |
+| **0. Fondasi rasa** | — | Preferensi tunggal gerak dan suara; modul gerak (durasi, lengkung) dan modul suara (4 bunyi); DESIGN.md ditulis dari hasil yang sudah ada | Sakelar gerak/suara berfungsi dan diingat; tanpa gerak semua tetap terbaca; tidak ada dependency baru | S |
 | **1. Kata tampil** | "babak" → "Keluarga {nama}", "dunia" → "kemungkinan" (spec 1) | — | Tidak ada kata "babak"/"dunia" di teks tampil; tes diksi lolos | K |
 | **2. Alasan tiap orang** | Jejak `BUKAN_AHLI_WARIS` di engine + satu kalimat alasan per orang (spec 4.2 butir 1, 4.3) | Kalimat alasan tampil di bawah tiap nama di Pembagian dan di lembar orang; kartu "Tidak mendapat bagian" kini memuat **semua** yang tidak menerima, bukan hanya yang terhalang | Tiap orang di graf punya tepat satu alasan; fixture bab 16 tidak berubah | S |
-| **3. Pohon yang benar** | Tata letak berlapis dengan simpul nikah, galeri 11 fixture, `sebutanHubungan` (spec 5.4, 5.5) | Pohon menjadi panggung di Hasil (keluar dari kotak kaca); **aliran harta** sebagai momen utama; pita bagian | Invarian P1–P9 lolos di galeri; aliran berjalan mulus di HP kelas bawah dan mati bila gerak dikurangi | B |
+| **3. Pohon yang benar** | Tata letak berlapis dengan simpul nikah, galeri 11 fixture, `sebutanHubungan` (spec 5.4, 5.5) | **Aliran harta** sebagai momen utama (di pohon hero dan layar penuh); pita bagian | Invarian P1–P9 lolos di galeri; aliran berjalan mulus di HP kelas bawah dan mati bila gerak dikurangi | B |
 | **4. Tambah kerabat dari pohon** | Tambah dari orang terkait, dari nama hubungan, anak angkat (spec 5.1–5.3) | Orang baru muncul dari orang yang diketuk, garis tergambar; pohon tumbuh di samping pertanyaan wizard; lembar orang naik dari kotaknya | Semua baris tabel 5.2 menghasilkan graf yang benar; pohon tidak "lompat" saat ditambah satu orang (P7) | B |
 | **5. Model data** | Fixture tumpukan harta, lalu `Kasus` v4 + migrasi (spec 7) | — (tidak terlihat) | Fixture dicocokkan ke KB bab 12 **sebelum** logika; migrasi v3 → v4 lolos | S |
 | **6. Tumpukan harta** | Daftar barang, kewajiban per pemilik, hitung per pemilik, hasil Per orang / Per barang (spec 2) | Tab "Per barang" baru muncul di sini, saat barangnya memang lebih dari satu; satu pita per barang; aliran harta berjalan per pemilik, berurutan | Invarian jumlah (spec 2.5) lolos; satu barang = tanpa tab | B |
@@ -134,8 +134,8 @@ berikutnya tinggal memakainya. Ukuran: K = kecil, S = sedang, B = besar.
 
 **Catatan urutan:**
 
-- Tahap 3 adalah tempat "wow"-nya. Kalau ingin hasil yang terlihat lebih cepat, tahap 0 dan bagian tampilan tahap
-  3 (panggung, aliran, pita) bisa dikerjakan di atas tata letak pohon yang sekarang, sebelum algoritma barunya.
+- Dikerjakan berurutan dari Tahap 0 (keputusan pemilik). Tahap 3 adalah tempat "wow"-nya: aliran harta dan pita
+  bagian tiba bersama tata letak pohon yang baru.
 - Tahap 8 tertahan: kalimatnya menunggu tim keilmuan (spec 4.1 menyebut semua kalimat masih draf). Tahap 2 juga
   memakai kalimat draf yang sama; kalimat yang belum disahkan tidak masuk snapshot diksi.
 - Kartu yang sebelumnya tampil sebagai kerangka (Yang belum pasti, Yang sering ditanyakan, Per barang, Lembar
@@ -160,26 +160,22 @@ berikutnya tinggal memakainya. Ukuran: K = kecil, S = sedang, B = besar.
 
 ---
 
-## 4. Yang perlu dirapikan dulu
+## 4. Berkas konteks desain
 
-Dua berkas konteks desain sudah tidak cocok dengan keadaan sekarang. Saya belum mengubahnya; tinggal bilang kalau
-mau dirapikan.
+Dirapikan 2026-10-01 bersama dokumen ini:
 
-- `apps/web/PRODUCT.md` masih menyebut "Sistem visual tetap Arif Waris v4". Sejak 2026-10-01 gayanya Logivo.
-- `apps/web/.impeccable/surfaces/src-aplikasi-tsx.md` masih berisi arah "Peta Jalur" yang sudah dibatalkan.
-- `DESIGN.md` belum ada. Usul: ditulis di Tahap 0 dari hasil yang sudah jadi (token, tiga lapis, bahasa garis,
-  gerak, suara), supaya tahap berikutnya punya satu acuan.
+- `apps/web/PRODUCT.md`: sistem visual kini gaya Logivo (bukan v4), tema terang saja.
+- `apps/web/.impeccable/surfaces/src-aplikasi-tsx.md`: arah "Peta Jalur" diganti arah di dokumen ini.
+- `DESIGN.md` belum ada; ditulis di Tahap 0 dari hasil yang sudah jadi (token, tiga lapis, bahasa garis, gerak,
+  suara), supaya tahap berikutnya punya satu acuan.
 
 ---
 
-## 5. Keputusan yang saya butuhkan
+## 5. Keputusan pemilik (2026-10-01)
 
-1. **Susunan hero Hasil boleh berubah dari mockup?** Pohon keluar dari kotak kaca dan menjadi panggung (1.3).
-   Tanpa ini, aliran harta tetap bisa dibuat di dalam kotak, tapi kesan "lepas"-nya berkurang.
-2. **Bawaan suara:** menyala di Belajar dan mati di Hitung kasus (usul saya), menyala di semua, atau mati di semua.
-3. **Pita bagian kembali?** Bentuknya mirip bar pecahan yang baru saja saya hapus saat menyamakan dengan mockup.
-   Bedanya, pita ini menyambung ke pohon dan daftar, dan dipakai lagi di "Per barang".
-4. **Spec `perjalanan-keresahan` masih berstatus draf.** Rencana ini menganggapnya disetujui. Bila ada bagian
-   yang ingin diubah, sebaiknya sekarang.
-5. **Mulai dari mana:** urut 0 → 1 → 2 → 3, atau dahulukan tampilan tahap 3 (panggung, aliran, pita) supaya
-   perubahannya cepat terlihat.
+1. **Hero Hasil tetap seperti sekarang.** Pohon tetap di dalam kotak kaca hero, sesuai mockup Logivo. Aliran harta
+   berjalan di dalam kotak itu dan di layar penuh.
+2. **Suara:** bawaan menyala di mode Belajar, mati di mode Hitung kasus sampai pengguna menyalakannya.
+3. **Pita bagian disetujui**, termasuk pemakaiannya nanti untuk "Per barang".
+4. **Spec `2026-10-01-perjalanan-keresahan-design.md` disetujui** sebagai dasar fungsi.
+5. **Urutan kerja:** berurutan, Tahap 0 → 1 → 2 → 3 dan seterusnya.

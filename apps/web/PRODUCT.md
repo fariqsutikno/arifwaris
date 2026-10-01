@@ -60,7 +60,9 @@ Batas yang mengikat produk:
 ## Brand Commitments
 
 - Nama: **Arif Waris** (*Aplikasi Representasi Ilmu Faraidh*); ruang latihan hitung **ArifLab**; chatbot mendatang **AMIN** (*AI Mawaris Interaktif*). Ada mode pra-peluncuran yang menyamarkan nama menjadi "Kalkulator Waris" / "Lab Hitung"; teks tampil tidak boleh mengeraskan nama itu di luar lapisan terjemah.
-- Sistem visual tetap **Arif Waris v4** (token dan komponen yang ada). Redesain "Peta Jalur" (metafora stasiun/jalur kereta) dibatalkan pemilik pada 2026-09-30: pengguna awam sudah terbebani hitungan faraidh, jangan ditambah metafora. Perbaikan visual dilakukan di atas v4 dengan bahasa biasa ("langkah 3 dari 4").
+- Sistem visual: **gaya Logivo** (keputusan pemilik 2026-10-01, menggantikan Arif Waris v4): latar sage, bingkai krem bersudut besar, hero gelap hijau-teal berisi pohon keluarga dalam kotak kaca, kartu putih tembus, pill hitam hanya untuk aksi utama, font Parkinsans (judul) dan Host Grotesk (isi). Acuan: `docs/design/mockup-hasil-gaya-logivo.html`; arah pengembangan (gerak, suara tipis, pita bagian, tiga lapis) di `docs/design/rencana-pengalaman-dan-fitur.md`. Hanya tema terang.
+- Redesain "Peta Jalur" (metafora stasiun/jalur kereta) dibatalkan pemilik pada 2026-09-30: pengguna awam sudah terbebani hitungan faraidh, jangan ditambah metafora. Pakai bahasa biasa ("langkah 3 dari 4").
+- Bagian layar yang tidak ada isinya untuk kasus yang dibuka tidak ditampilkan (tanpa kartu "segera hadir"); urutan bagian mengikuti alur berpikir pengguna.
 - Keputusan pemilik yang tetap mengikat: ikon SVG, tanpa emoji, di UI maupun mockup; aksi sekunder dan ajakan berupa teks atau tautan, tombol berbingkai hanya untuk aksi utama di form/dialog (Simpan, Batal).
 - Bahasa: Indonesia, dengan istilah fikih bertransliterasi baku sesuai glosarium; istilah Arab tampil bila mode Indonesia + Arab aktif. Portal admin tidak menampilkan kode teknis, kunci teks, atau JSON kepada penulis konten.
 
@@ -80,4 +82,4 @@ Batas yang mengikat produk:
 
 ## Accessibility & Inclusion
 
-Kebutuhan yang sudah ditetapkan: pengguna paling awam (siswa SMP, lansia) harus bisa menyelesaikan kasus rumit sendirian; kalimat penjelasan bersahaja; pengguna Arab-membaca mendapat padanan istilah. Belum ditetapkan standar formal (mis. tingkat WCAG), dukungan pembaca layar, tema gelap, atau mode Arab RTL penuh; putuskan dulu bersama pemilik sebelum diklaim di UI atau dokumentasi.
+Kebutuhan yang sudah ditetapkan: pengguna paling awam (siswa SMP, lansia) harus bisa menyelesaikan kasus rumit sendirian; kalimat penjelasan bersahaja; pengguna Arab-membaca mendapat padanan istilah. Belum ditetapkan standar formal (mis. tingkat WCAG), dukungan pembaca layar, atau mode Arab RTL penuh; putuskan dulu bersama pemilik sebelum diklaim di UI atau dokumentasi. Tema gelap dicabut 2026-10-01 sampai punya desain sendiri.

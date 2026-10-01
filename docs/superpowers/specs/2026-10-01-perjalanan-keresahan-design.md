@@ -1,6 +1,6 @@
 # Spec: Perjalanan dari Keresahan (tumpukan harta, "Bagaimana kalau", kenapa dapat/tidak, sunting di tempat)
 
-Tanggal: 2026-10-01 · Status: draf, menunggu review pemilik
+Tanggal: 2026-10-01 · Status: **disetujui pemilik 2026-10-01**. Arah tampilan dan urutan kerja: `docs/design/rencana-pengalaman-dan-fitur.md`
 
 Sumber:
 - mockup `docs/design/mockup-perjalanan-pengguna.html` (perjalanan Bu Rahma, 7 keresahan);
