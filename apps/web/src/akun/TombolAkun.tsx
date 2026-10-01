@@ -2,12 +2,13 @@
 // email dengan menu Profil, Papan peringkat, dan Keluar. Keluar mengirim perubahan dulu; yang belum terkirim ditanyakan sebelum data perangkat dihapus.
 // Tanpa repo (env Supabase kosong) tidak tampil apa pun.
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import type { Sesi } from '@waris/data';
 import { t } from '../terjemah';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Tombol } from '../ui/komponen';
 import { Ikon } from '../ui/Ikon';
+import { useTutupDiLuar } from '../ui/tutupDiLuar';
 import { tautanPeringkat } from '../rute';
 import { ModalProfil } from './ModalProfil';
 import { keluarDanBersihkan, kirimSebelumKeluar, type RepoAkun } from './sinkron';
@@ -17,6 +18,8 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
   const [menuTerbuka, setMenuTerbuka] = useState(false);
   const [belumTerkirim, setBelumTerkirim] = useState(0);
   const [profilTerbuka, setProfilTerbuka] = useState(false);
+  const akar = useRef<HTMLDivElement>(null);
+  useTutupDiLuar(akar, menuTerbuka, () => setMenuTerbuka(false));
   if (!repo) return null;
 
   const keluar = async () => {
@@ -43,7 +46,7 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
     </>
   );
   return (
-    <div className="menu-akun" onKeyDown={event => { if (event.key === 'Escape') setMenuTerbuka(false); }}>
+    <div className="menu-akun" ref={akar}>
       <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={sesi.email} aria-haspopup="menu" aria-expanded={menuTerbuka}
         onClick={() => setMenuTerbuka(!menuTerbuka)}>{sesi.email.slice(0, 1).toUpperCase()}</Tombol>
       {menuTerbuka && (

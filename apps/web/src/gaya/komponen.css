@@ -1233,7 +1233,7 @@ a.kartu-artikel:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 
 /* Mode samaran pra-peluncuran: nama di logo tetap ada tapi diburamkan dan tidak bisa diseleksi. */
 .merek-samar { filter: blur(10px); opacity: .6; user-select: none; }
-.ikon-api{flex:none;filter:drop-shadow(0 1px 1.5px rgba(232,69,44,.35))}
+.ikon-api{flex:none}
 .tautan-streak.redup .ikon-api{filter:grayscale(1)}
 .streak-hari{display:inline-flex;align-items:center;gap:3px}
 

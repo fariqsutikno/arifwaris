@@ -19019,6 +19019,34 @@
    "id": "Di halaman ini",
    "ar": "في هذه الصفحة",
    "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.modul_judul",
+   "halaman": "notifikasi",
+   "id": "Modul selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.modul_isi",
+   "halaman": "notifikasi",
+   "id": "Kamu menamatkan modul {judul}. Lanjut ke modul berikutnya kapan saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.streak_tonggak_judul",
+   "halaman": "notifikasi",
+   "id": "Streak {jumlah} hari",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.streak_tonggak_isi",
+   "halaman": "notifikasi",
+   "id": "Konsistensi yang bagus. Satu pelajaran atau soal tiap hari menjaganya.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

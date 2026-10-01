@@ -1,4 +1,3 @@
-import { useId } from 'react';
 // Ikon garis milik Arif Waris: satu gaya dengan ikon yang sudah ada di layar hasil (stroke 2.2, ujung bulat,
 // 24×24). Dipakai sebagai penanda jenis (pelajaran, soal, kuis, rujukan), bukan hiasan; selalu disertai label teks.
 
@@ -49,21 +48,12 @@ export function Ikon({ nama, ukuran = 20 }: { nama: NamaIkon; ukuran?: number })
   );
 }
 
-/** Api streak: satu-satunya ikon berwarna (gradasi jingga → kuning), menggantikan emoji 🔥 (keputusan 2026-09-28). */
+/** Api streak: ikon garis dua-nada jingga (kontur + inti), satu bahasa dengan ikon lain; bukan emoji (keputusan 2026-09-28). */
 export function IkonApi({ ukuran = 18 }: { ukuran?: number }) {
-  const id = useId();
   return (
-    <svg width={ukuran} height={ukuran} viewBox="0 0 24 24" aria-hidden="true" className="ikon-api">
-      <defs>
-        <linearGradient id={`${id}-luar`} x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#e8452c" /><stop offset=".6" stopColor="#f7761f" /><stop offset="1" stopColor="#ffa43a" />
-        </linearGradient>
-        <linearGradient id={`${id}-dalam`} x1="0" y1="1" x2="0" y2="0">
-          <stop offset="0" stopColor="#ffb938" /><stop offset="1" stopColor="#ffe27a" />
-        </linearGradient>
-      </defs>
-      <path fill={`url(#${id}-luar)`} d="M12 22c-4.2 0-7.5-3-7.5-7.2 0-2.9 1.6-5.2 3.4-7 .5-.5 1.3-.1 1.3.6 0 1.3.7 2.4 1.7 2.9-.2-3 1.3-6.2 3.9-8.1.5-.4 1.3 0 1.2.7-.2 2 .8 3.6 2.1 5.1 1.4 1.6 2.4 3.4 2.4 5.8 0 4.2-3.3 7.2-8.5 7.2z" />
-      <path fill={`url(#${id}-dalam)`} d="M12.2 20.5c-2 0-3.5-1.4-3.5-3.3 0-1.6 1-2.8 2.1-3.9.4-.4 1-.1 1 .4 0 .8.5 1.4 1.1 1.6.1-1 .6-2 1.4-2.7.4-.3 1 0 .9.5-.1.9.5 1.7 1 2.4.4.6.6 1.2.6 1.9 0 1.8-1.6 3.1-4.6 3.1z" />
+    <svg width={ukuran} height={ukuran} viewBox="0 0 24 24" aria-hidden="true" className="ikon-api" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3c.9 3.4 5 5.4 5 10a5 5 0 0 1-10 0c0-2 1-3.3 2.2-4.4.3 1.3 1 2.1 2 2.4C10.8 8.6 11.4 6 12 3z" fill="#f2682a" fillOpacity=".18" stroke="#f2682a" strokeWidth="2" />
+      <path d="M12 19a2.3 2.3 0 0 1-2.3-2.3c0-1.1.7-1.8 1.4-2.5.3.7.7 1 1.2 1.1.6-.5.9-1.2.9-2 .8.8 1.1 1.9 1.1 3.4A2.3 2.3 0 0 1 12 19z" fill="#f2682a" />
     </svg>
   );
 }

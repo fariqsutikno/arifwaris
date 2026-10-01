@@ -6,11 +6,11 @@ import { useEffect } from 'react';
 import type { Sesi } from '@waris/data';
 import type { RepoAkun } from '../akun/sinkron';
 import { useRingkasanSaya } from '../akun/ringkasan';
-import { daftarPelajaran } from '../konten/sumber';
+import { daftarModul, daftarPelajaran } from '../konten/sumber';
 import { PERISTIWA_KONTEN_BARU } from '../konten/sinkron';
 import { muatLokal } from '../kasus';
 import { kasusLengkap } from '../layar/KonfirmasiKasusBaru';
-import { PERISTIWA_PELAJARAN_SELESAI } from '../progres';
+import { bacaPelajaranSelesai, PERISTIWA_PELAJARAN_SELESAI } from '../progres';
 import { ringkasKasus } from '../riwayat';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanPeringkat } from '../rute';
 import { bacaMentah, simpanMentah } from '../penyimpanan';
@@ -21,6 +21,8 @@ import { tampilkanDiPerangkat } from './perangkat';
 const KUNCI_STREAK_TERAKHIR = 'arif-waris:streak-terakhir';
 const KUNCI_PERINGKAT_TERAKHIR = 'arif-waris:peringkat-terakhir';
 const JAM_PENGINGAT_STREAK = 17;
+// Streak hanya dikabarkan di tonggak ini; kenaikan harian cukup terlihat di kartu streak.
+const TONGGAK_STREAK = [7, 14, 30, 60, 100, 200, 365];
 const BATAS_PAPAN = 100;
 
 const hariIni = (): string => new Date().toISOString().slice(0, 10);
@@ -30,11 +32,16 @@ export function SumberNotifikasi({ sesi, repo }: { sesi: Sesi | null; repo: Repo
 
   useEffect(() => {
     const saatKontenBaru = () => catatNotifikasi({ id: `konten-${hariIni()}`, jenis: 'konten', judul: t('notifikasi.konten_judul'), isi: t('notifikasi.konten_isi') });
+    // Hanya modul yang tamat (semua pelajarannya selesai) yang dikabarkan; pelajaran satu per satu cukup terlihat di progres.
     const saatPelajaranSelesai = (kejadian: Event) => {
       const slug = (kejadian as CustomEvent<{ slug: string }>).detail.slug;
-      const pelajaran = daftarPelajaran().find(isi => isi.slug === slug);
-      catatNotifikasi({ id: `belajar-${slug}`, jenis: 'belajar', judul: t('notifikasi.belajar_judul'),
-        isi: t('notifikasi.belajar_isi', { judul: pelajaran?.judul ?? slug }), tautan: tautanBelajar() });
+      const nomorModul = daftarPelajaran().find(isi => isi.slug === slug)?.modul;
+      if (nomorModul === undefined) return;
+      const selesai = bacaPelajaranSelesai();
+      if (!daftarPelajaran().filter(isi => isi.modul === nomorModul).every(isi => selesai.has(isi.slug))) return;
+      const modul = daftarModul().find(isi => isi.nomor === nomorModul);
+      catatNotifikasi({ id: `modul-${nomorModul}`, jenis: 'belajar', judul: t('notifikasi.modul_judul'),
+        isi: t('notifikasi.modul_isi', { judul: modul?.judul ?? String(nomorModul) }), tautan: tautanBelajar() });
     };
     const saatNotifikasiBaru = (kejadian: Event) => void tampilkanDiPerangkat((kejadian as CustomEvent<Notifikasi>).detail);
     window.addEventListener(PERISTIWA_KONTEN_BARU, saatKontenBaru);
@@ -55,13 +62,14 @@ export function SumberNotifikasi({ sesi, repo }: { sesi: Sesi | null; repo: Repo
       isi: t('notifikasi.kasus_isi', { judul: ringkasKasus(kasus).judul }), tautan: TAUTAN_KALKULATOR });
   }, []);
 
-  // Streak naik (dibanding terakhir dilihat) dan pengingat sore bila hari ini belum aktif.
+  // Tonggak streak dan pengingat sore bila hari ini belum aktif.
   useEffect(() => {
     if (!ringkasan) return;
     const terakhir = Number(bacaMentah(KUNCI_STREAK_TERAKHIR) ?? 0);
-    if (ringkasan.streakSekarang > terakhir && terakhir > 0) {
-      catatNotifikasi({ id: `streak-naik-${ringkasan.streakSekarang}-${hariIni()}`, jenis: 'streak',
-        judul: t('notifikasi.streak_naik_judul', { jumlah: ringkasan.streakSekarang }), isi: t('notifikasi.streak_naik_isi'), tautan: tautanPeringkat() });
+    const tonggak = TONGGAK_STREAK.find(batas => ringkasan.streakSekarang >= batas && terakhir < batas);
+    if (tonggak && terakhir > 0) {
+      catatNotifikasi({ id: `streak-tonggak-${tonggak}`, jenis: 'streak', judul: t('notifikasi.streak_tonggak_judul', { jumlah: tonggak }),
+        isi: t('notifikasi.streak_tonggak_isi'), tautan: tautanPeringkat() });
     }
     simpanMentah(KUNCI_STREAK_TERAKHIR, String(ringkasan.streakSekarang));
     if (!ringkasan.aktifHariIni && ringkasan.streakSekarang > 0 && new Date().getHours() >= JAM_PENGINGAT_STREAK) {

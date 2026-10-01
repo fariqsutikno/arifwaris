@@ -2,6 +2,7 @@
 // dan dua tautan perangkat (aktifkan notifikasi, pasang aplikasi). Membuka panel tidak menandai dibaca; menutupnya yang menandai.
 
 import { useEffect, useRef, useState } from 'react';
+import { useTutupDiLuar } from '../ui/tutupDiLuar';
 import { Ikon, IkonApi, type NamaIkon } from '../ui/Ikon';
 import { bahasaArab, t } from '../terjemah';
 import {
@@ -29,15 +30,10 @@ export function LonceNotifikasi() {
   }, []);
 
   const tutup = () => { setTerbuka(false); if (belumDibaca > 0) tandaiSemuaDibaca(); };
-  useEffect(() => {
-    if (!terbuka) return;
-    const diLuar = (kejadian: PointerEvent) => { if (!akar.current?.contains(kejadian.target as Node)) tutup(); };
-    document.addEventListener('pointerdown', diLuar);
-    return () => document.removeEventListener('pointerdown', diLuar);
-  });
+  useTutupDiLuar(akar, terbuka, tutup);
 
   return (
-    <div className="lonceng" ref={akar} onKeyDown={kejadian => { if (kejadian.key === 'Escape') tutup(); }}>
+    <div className="lonceng" ref={akar}>
       <button type="button" className="tombol-lonceng" aria-haspopup="dialog" aria-expanded={terbuka}
         aria-label={belumDibaca > 0 ? t('notifikasi.buka_belum_dibaca', { jumlah: belumDibaca }) : t('notifikasi.buka')}
         onClick={() => (terbuka ? tutup() : setTerbuka(true))}>
@@ -46,7 +42,7 @@ export function LonceNotifikasi() {
       </button>
       {terbuka && (
         <>
-          <div className="tirai-lonceng" aria-hidden="true" />
+          <div className="tirai-lonceng" data-tirai aria-hidden="true" />
           <section className="panel-lonceng" role="dialog" aria-label={t('notifikasi.judul')}>
             <header className="kepala-panel">
               <h2>{t('notifikasi.judul')}</h2>
