@@ -20965,6 +20965,62 @@
    "id": "Belum bernama",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tautan_siap",
+   "halaman": "bagikan",
+   "id": "Tautan siap dibagikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.simpan_dan_salin",
+   "halaman": "bagikan",
+   "id": "Simpan dan salin tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ubah_pengaturan",
+   "halaman": "bagikan",
+   "id": "Ubah pengaturan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ubah_tautan",
+   "halaman": "bagikan",
+   "id": "Ubah tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.nama_tautan",
+   "halaman": "bagikan",
+   "id": "Nama tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ringkasan_tautan",
+   "halaman": "bagikan",
+   "id": "Siapa saja yang punya tautan ini bisa melihat kasusnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ringkasan_privat",
+   "halaman": "bagikan",
+   "id": "Saat ini hanya kamu yang bisa membukanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ringkasan_email",
+   "halaman": "bagikan",
+   "id": "Hanya bisa dibuka oleh: {email}.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

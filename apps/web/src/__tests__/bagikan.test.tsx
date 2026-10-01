@@ -21,28 +21,36 @@ function siapkan() {
 }
 beforeEach(() => localStorage.clear());
 
-test('pemilik membagikan lewat tautan kustom; slug yang dipakai kasus lain ditolak', async () => {
+test('slug acak tidak langsung bisa diedit; Ubah tautan membukanya; slug yang dipakai kasus lain ditolak', async () => {
   const { bagikan } = siapkan();
   await bagikan.simpan('lain', { slug: 'sama', akses: 'tautan', email: [] }, {});
   render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
-  const isian = await screen.findByDisplayValue(/^[a-z0-9]{8}$/);
+  await screen.findByRole('button', { name: 'Ubah tautan' });
+  expect(screen.queryByRole('textbox', { name: 'Nama tautan' })).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Ubah tautan' }));
+  const isian = screen.getByRole('textbox', { name: 'Nama tautan' });
   fireEvent.change(isian, { target: { value: 'Sama' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Simpan dan salin tautan' }));
   expect(await screen.findByRole('alert')).toHaveProperty('textContent', 'Tautan itu sudah dipakai kasus lain.');
   fireEvent.change(isian, { target: { value: 'kasus-pak-budi' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
-  await waitFor(() => expect(sudahDibagikan('r1')).toBe(true));
+  fireEvent.click(screen.getByRole('button', { name: 'Simpan dan salin tautan' }));
+  // Sesudah tersimpan: tampilan lihat dengan tautan siap salin, bukan formulir.
+  expect(await screen.findByText('Tautan siap dibagikan')).toBeTruthy();
+  expect((screen.getByRole('textbox', { name: 'Tautan' }) as HTMLInputElement).value).toMatch(/#\/k\/kasus-pak-budi$/);
+  expect(sudahDibagikan('r1')).toBe(true);
   expect(await bagikan.bacaPengaturan('r1')).toEqual({ slug: 'kasus-pak-budi', akses: 'tautan', email: [] });
+  fireEvent.click(screen.getByRole('button', { name: 'Ubah pengaturan' }));
+  expect(screen.getByRole('radio', { name: /Siapa saja/ })).toHaveProperty('checked', true);
 });
 
 test('akses email butuh minimal satu email yang sah', async () => {
   const { bagikan } = siapkan();
   render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
   fireEvent.click(await screen.findByRole('radio', { name: /Email tertentu/ }));
-  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Simpan dan salin tautan' }));
   expect((await screen.findByRole('alert')).textContent).toBe('Isi minimal satu email.');
   fireEvent.change(screen.getByRole('textbox', { name: /Email yang boleh/ }), { target: { value: 'bukan-email' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Simpan dan salin tautan' }));
   expect((await screen.findByRole('alert')).textContent).toBe('Ada email yang penulisannya belum benar.');
 });
 

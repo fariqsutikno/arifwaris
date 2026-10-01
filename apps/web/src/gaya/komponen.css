@@ -1396,3 +1396,8 @@ body.layar-hasil{background:var(--halaman)}
 .form-bagikan .kotak-uang input{font-size:15px}
 .form-bagikan .prefix-uang{font-size:12px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .catatan-bagikan{margin:0;padding:10px 16px;text-align:center;color:var(--ink-muted);font-size:14px}
+.kotak-tautan{display:flex;gap:8px;align-items:stretch}
+.kotak-tautan input{flex:1;min-width:0;height:44px;padding:0 12px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-sunken);color:var(--ink);font:600 14px var(--font-sans);text-overflow:ellipsis}
+.ringkasan-bagikan{color:var(--ink-muted);font-size:14px;overflow-wrap:anywhere}
+.tautan-terbaca{font-weight:400;font-size:14px;overflow-wrap:anywhere}
+@media (max-width:560px){.kotak-tautan{flex-direction:column}}
