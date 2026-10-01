@@ -20020,6 +20020,13 @@
    "id": "Empat langkah saja",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.putar_ulang",
+   "halaman": "hasil",
+   "id": "Putar ulang",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

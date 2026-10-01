@@ -87,3 +87,14 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .pita-hasil:has(.terkait) .ruas:not(.terkait){opacity:.3}
 .pita-hasil .ruas.terkait{transform:scaleY(1.35)}
 @media (prefers-reduced-motion:reduce){.pita-hasil .ruas{animation:none;transition:none}}
+
+/* aliran harta di pratinjau pohon Hasil: garis tergambar, lalu bagian tiba di tiap penerima (~2,5 detik, sekali; "Putar ulang" mengulang) */
+@keyframes gambar-garis{to{stroke-dashoffset:0}}
+@keyframes bagian-tiba{from{opacity:.2;transform:translateY(10px) scale(.95)}}
+@keyframes cincin-muncul{from{opacity:0}}
+@media (prefers-reduced-motion:no-preference){
+  .pohon.aliran .garis-pohon path{stroke-dasharray:1;stroke-dashoffset:1;animation:gambar-garis 1s .1s ease-out forwards}
+  .pohon.aliran .garis-pohon circle{animation:cincin-muncul .4s .7s both}
+  .pohon.aliran .node-orang{animation:bagian-tiba .5s calc(.9s + var(--urut,0) * .22s) cubic-bezier(.2,.7,.2,1) both}
+}
+.kaki-pohon .tautan-hero{min-height:32px;font-size:13px;margin-inline-start:auto}

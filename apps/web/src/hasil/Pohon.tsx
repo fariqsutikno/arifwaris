@@ -3,9 +3,10 @@
 // garis menikah (mendatar + lingkaran) dan garis keturunan (turun), diukur dari posisi node sesungguhnya.
 // Saat langkah perhitungan diputar: panah sebab-akibat berlabel (mis. "menghalangi") digambar di atas node,
 // hajb tampil sebagai bagian semula yang dicoret lalu diganti, dan keterangan warna sorotan tampil di pojok.
+// Aliran harta (hanya CSS, urutan = urutan penerima di ringkasan): garis tergambar, bagian tiba satu per satu.
 // Mode fokus membangun tabel bertahap: node menampilkan pecahan fardh dulu, saham/nominal baru di hasil akhir.
 
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { formatRupiah, namaOrang } from '../format';
 import { AvatarOrang } from './AvatarOrang';
@@ -26,10 +27,13 @@ interface Props {
   sedangMenebak: boolean;
   sembunyiNominal: boolean;
   saatPilih: (id: IdOrang) => void;
+  /** Putar aliran harta: garis tergambar, lalu bagian tiba di tiap penerima. Kunci komponen berubah = putar ulang. */
+  aliran?: boolean;
 }
 
-export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih }: Props) {
+export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih, aliran }: Props) {
   const penerima = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
+  const urutan = new Map(ringkasan.penerima.map((orang, indeks) => [orang.id, indeks]));
   const terhalang = new Map(ringkasan.terhalang.map(orang => [orang.id, orang]));
   const { langkah } = useSorot();
   const isiNode = (id: IdOrang): IsiNode => {
@@ -48,14 +52,14 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
       return { kelas: `g-${dapat.kelompok}`, peran: '', nama, isi: <span className="dapat-node"><span className="frac">{bagianTerbuka ? bagianFardh(dapat) : '?'}</span></span> };
     }
     if (dapat) return {
-      kelas: `g-${dapat.kelompok}`, peran: '', nama,
+      kelas: `g-${dapat.kelompok}`, peran: '', nama, urut: urutan.get(id)!,
       isi: <span className="dapat-node"><span className="frac">{pecahanTeks(dapat.saham, ringkasan.penyebut, bentuk)}</span>
         <span className="angka">{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</span></span>,
     };
     if (halang) return { kelas: 'terhalang', peran: t('hitung.terhalang'), nama, isi: <span className="alasan-node">{halang.alasan}</span> };
     return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">{t('hitung.tidak_mewarisi')}</span> };
   };
-  return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} />;
+  return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} aliran={!!aliran && !langkah} />;
 }
 
 /** Bagian sebelum dijadikan saham: "1/8", "1/6 + sisa", atau "sisa". */
@@ -66,11 +70,11 @@ function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
   return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">{panah()}</span><b>{ubah.menjadi}</b></span>;
 }
 
-export interface IsiNode { kelas: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
+export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
-export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
-  graf: GrafKeluarga; isiNode: (id: IdOrang) => IsiNode; saatPilih?: (id: IdOrang) => void; redup?: boolean;
+export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false }: {
+  graf: GrafKeluarga; isiNode: (id: IdOrang) => IsiNode; saatPilih?: (id: IdOrang) => void; redup?: boolean; aliran?: boolean;
 }) {
   const letak = tataLetak(graf);
   const wadah = useRef<HTMLDivElement>(null);
@@ -81,9 +85,9 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
   return (
     <div className="pohon-wadah">
       {redup && <LegendaSorot />}
-      <div className={redup ? 'pohon redup' : 'pohon'} ref={wadah}>
+      <div className={['pohon', redup && 'redup', aliran && 'aliran'].filter(Boolean).join(' ')} ref={wadah}>
         <svg className="garis-pohon" aria-hidden="true">
-          <path d={garis.jalur} />
+          <path d={garis.jalur} pathLength={1} />
           {garis.cincin.map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r={5} />)}
         </svg>
         {panah.length > 0 && (
@@ -103,7 +107,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
               const bisaDipilih = !!saatPilih && node.kelas !== 'penghubung';
               if (!saatPilih) {
                 return (
-                  <div key={id} {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} role="group" aria-label={node.nama}>
+                  <div key={id} {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} style={styleUrut(node)} role="group" aria-label={node.nama}>
                     {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                     {node.peran && <span className="peran-node">{node.peran}</span>}
                     <b>{node.nama}</b>
@@ -113,7 +117,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
                 );
               }
               return (
-                <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')}
+                <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} style={styleUrut(node)}
                   aria-label={bisaDipilih ? t('hitung.nama_lihat_penjelasan', { nama: node.nama }) : node.nama} disabled={!bisaDipilih}
                   onClick={() => saatPilih?.(id)}>
                   {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
@@ -129,6 +133,8 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false }: {
     </div>
   );
 }
+
+const styleUrut = (node: IsiNode): CSSProperties | undefined => (node.urut === undefined ? undefined : ({ '--urut': Math.min(node.urut, 8) } as CSSProperties));
 
 /** Skala tampil elemen (pratinjau dan layar penuh memakai transform: scale): garis digambar di ruang lokal, jadi ukuran layar dibagi skala. */
 const skalaTampil = (elemen: HTMLElement) => (elemen.offsetWidth ? elemen.getBoundingClientRect().width / elemen.offsetWidth : 1) || 1;

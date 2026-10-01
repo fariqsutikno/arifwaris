@@ -52,6 +52,9 @@ interface Props {
   terkunci?: boolean | undefined;
 }
 
+/** Pohon lebih besar dari ini cukup tampil diam. */
+const BATAS_ALIRAN = 40;
+
 export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
@@ -131,8 +134,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
   const namaPewaris = kasus.graf.orang[kasus.graf.idPewaris]?.nama?.trim() || '';
   const jumlahOrang = Object.values(kasus.graf.orang).filter(orang => !orang.penghubung).length;
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
-  const pohon = <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
-    sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} />;
+  // Aliran harta hanya di pratinjau hero (sekali per hasil, bisa diputar ulang); pohon besar tidak berputar tiap dibuka.
+  const [putaranAliran, setPutaranAliran] = useState(1);
+  const bolehAliran = !sedangMenebak && jumlahOrang <= BATAS_ALIRAN;
+  const buatPohon = (aliran: boolean) => <Pohon key={aliran ? putaranAliran : 'diam'} graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
+    sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} aliran={aliran && bolehAliran} />;
+  const pohon = buatPohon(false);
   const tabel = <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   const kanvasFokus = { pohon, tabel };
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
@@ -169,8 +176,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci }
             <button type="button" className="alat-bulat" aria-label={t('hitung.perbesar')} onClick={() => setLayarPenuh({ zoom: 1.5 })}><Ikon nama="zoomMasuk" /></button>
             <button type="button" className="alat-bulat" aria-label={t('hitung.layar_penuh')} onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /></button>
           </div>
-          <PratinjauPohon saatBuka={() => setLayarPenuh({ zoom: 1 })}>{pohon}</PratinjauPohon>
-          <div className="kaki-pohon"><Legenda /><span>{t('hitung.pratinjau_ketuk_untuk_memperbesar')}</span></div>
+          <PratinjauPohon saatBuka={() => setLayarPenuh({ zoom: 1 })}>{buatPohon(true)}</PratinjauPohon>
+          <div className="kaki-pohon"><Legenda /><span>{t('hitung.pratinjau_ketuk_untuk_memperbesar')}</span>
+            {bolehAliran && <button type="button" className="tautan-hero" onClick={() => setPutaranAliran(putaranAliran + 1)}>{t('hasil.putar_ulang')}</button>}</div>
         </div>
       </header>
 
