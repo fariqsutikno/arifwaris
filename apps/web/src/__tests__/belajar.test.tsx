@@ -65,10 +65,9 @@ it("rujukan Al-Qur'an: memilih hukum menyorot syahidnya; tab Arti/Tafsir yang ko
   expect(screen.queryByText(/belum diisi/)).toBeNull();
 });
 
-it('kitab tanpa berkas: aksi baca nonaktif berlabel; situs sumber hanya tautan teks, bukan tombol', () => {
+it('kitab: aksi baca dan situs sumber berupa tautan/teks, bukan tombol', () => {
   render(<Rujukan kategori="kitab" />);
-  for (const tombol of screen.getAllByRole('button', { name: /Baca di sini/ })) expect((tombol as HTMLButtonElement).disabled).toBe(true);
-  expect(screen.queryByRole('button', { name: /Situs sumber/ })).toBeNull();
+  expect(screen.queryAllByRole('button', { name: /Baca di sini|Situs sumber/ })).toHaveLength(0);
 });
 
 it('rujukan sunnah: status hadits tampil sebagai label', () => {

@@ -42,7 +42,7 @@ export function IsiKategori({ kategori }: { kategori: Kategori }) {
           <p className="keterangan">{t('rujukan.nomor_hadits_bisa_berbeda_antar_cetakan')}</p>
         </section>
       )}
-      {kategori.id === 'kitab' && <section className="deret-kitab">{DAFTAR_KITAB.map((kitab, nomor) => <KartuKitab key={kitab.judul} nomor={nomor} />)}</section>}
+      {kategori.id === 'kitab' && <section className="deret-kitab">{DAFTAR_KITAB.map((_kitab, nomor) => <KartuKitab key={nomor} nomor={nomor} />)}</section>}
       {kategori.id === 'dikaji' ? (
         <ul className="daftar-polos daftar-dikaji">
           {TITIK_DIKAJI.map(titik => (
