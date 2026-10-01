@@ -17,10 +17,10 @@ it('harta harus lebih dari 0', () => {
   expect(alasanBelumLengkap(denganHarta(kasus, 1n), 2)).toBeNull();
 });
 
-it('minimal satu ahli waris sebelum lanjut dari langkah 4', () => {
+it('minimal satu ahli waris sebelum lanjut dari langkah 3', () => {
   const kasus = denganHarta(kasusBaru('L'), 1_000_000n);
-  expect(langkahTerjauh(kasus)).toBe(4);
-  expect(alasanBelumLengkap(kasus, 4)).toMatch(/ahli waris/);
+  expect(langkahTerjauh(kasus)).toBe(3);
+  expect(alasanBelumLengkap(kasus, 3)).toMatch(/ahli waris/);
   const lengkap = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
   expect(langkahTerjauh(lengkap)).toBe(LANGKAH_HASIL);
 });
@@ -32,5 +32,5 @@ it('babak almarhum tanpa kerabat belum lengkap', () => {
   kasus = { ...kasus, urutanWafat: [anak] };
   expect(alasanBabak(kasus, 0)).toBeNull();                 // pewaris punya anak
   expect(alasanBabak(kasus, 1)).not.toBeNull();             // anak belum punya kerabat selain yang wafat
-  expect(alasanBelumLengkap(kasus, 4)).not.toBeNull();
+  expect(alasanBelumLengkap(kasus, 3)).not.toBeNull();
 });

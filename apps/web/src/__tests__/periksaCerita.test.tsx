@@ -3,7 +3,7 @@ import { expect, it, vi } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru } from '../kasus';
 import { terapkanKeadaan } from '../keadaanOrang';
-import { kalimatBabak, PeriksaCerita } from '../layar/PeriksaCerita';
+import { CeritaKasus, kalimatBabak, PilihanMenunggu } from '../layar/PeriksaCerita';
 
 function kasusBudiDenganDewi() {
   let kasus = kasusBaru('L');
@@ -26,28 +26,22 @@ it('kalimat babak memakai nama dan sebutan dari sisi almarhum', () => {
   expect(kalimatBabak(kasus, budi)).toMatch(/Lalu Budi wafat\. Ia meninggalkan .*ibu \(Siti\).*istri \(Dewi\)/);
 });
 
-it('tautan ubah membawa ke babak itu; tanpa janin langsung ke hasil', () => {
+it('tautan ubah membawa ke keluarga babak itu', () => {
   const kirim = vi.fn();
   const { kasus } = kasusBudiDenganDewi();
-  render(<PeriksaCerita kasus={kasus} kirim={kirim} />);
+  render(<CeritaKasus kasus={kasus} kirim={kirim} />);
   fireEvent.click(screen.getAllByRole('button', { name: /ubah/ })[1]!);
-  expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_LANGKAH', langkah: 4 });
+  expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_LANGKAH', langkah: 3 });
   expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_BABAK', babak: 1 });
-  fireEvent.click(screen.getByRole('button', { name: /Lihat hasil/ }));
-  expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_LAYAR', layar: 'hasil' });
 });
 
-it('ada janin belum lahir: layar pilihan menunggu sebelum hasil', () => {
+it('pilihan menunggu kelahiran disimpan lalu lanjut ke hasil', () => {
   const kirim = vi.fn();
-  const { kasus } = kasusBudiDenganDewi();
-  const denganJanin = { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang,
-    J: { id: 'J', jenisKelamin: 'L' as const, idAyah: 'PEWARIS', statusHidup: 'dalamKandungan' as const, agama: 'islam' as const } } } };
-  render(<PeriksaCerita kasus={denganJanin} kirim={kirim} />);
-  fireEvent.click(screen.getByRole('button', { name: /Lihat hasil/ }));
+  render(<PilihanMenunggu kirim={kirim} />);
   expect(screen.getByText(/Mau menunggu dulu/)).toBeTruthy();
   fireEvent.click(screen.getByRole('radio', { name: /Tunggu lahir dulu/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lanjut/ }));
   const ubah = kirim.mock.calls.find(([a]) => a.jenis === 'UBAH_KASUS')![0].ubah;
-  expect(ubah(denganJanin).pilihanJanin).toBe('tunggu');
+  expect(ubah({} as never).pilihanJanin).toBe('tunggu');
   expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_LAYAR', layar: 'hasil' });
 });

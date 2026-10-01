@@ -10,7 +10,7 @@ const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tamba
 
 const mulai = () => {
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /skenario baru/i }));
+  fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
 };
 
 it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => {
@@ -32,7 +32,7 @@ it('tombol lanjut nonaktif dengan alasan tertulis', () => {
 it('stepper tidak bisa membuka langkah yang belum boleh', () => {
   mulai();
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
-  const ahliWaris = screen.getByRole('button', { name: /Ahli waris/ });
+  const ahliWaris = screen.getByRole('button', { name: /Keluarga/ });
   expect(ahliWaris.hasAttribute('disabled')).toBe(true);
 });
 
@@ -47,7 +47,7 @@ it('ulangi dari awal meminta konfirmasi di halaman', () => {
   expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
   fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
-  expect(screen.getByRole('button', { name: /skenario baru/i })).toBeTruthy();
+  expect(screen.getByRole('button', { name: /Mulai dari nol/ })).toBeTruthy();
 });
 
 it('ringkasan kasus di samping langkah ikut terisi', () => {

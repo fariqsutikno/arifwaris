@@ -1,4 +1,4 @@
-// Langkah 5: kondisi mawani' [SYF] — beda agama, membunuh pewaris [bab 02]. Menerima Kasus; menyerahkan Kasus
+// Bagian Periksa (langkah 4): kondisi mawani' [SYF] — beda agama, membunuh pewaris [bab 02]. Menerima Kasus; menyerahkan Kasus
 // dengan field mawani' terisi. Munasakhat, janin, hilang, dan wafat bersamaan ditanyakan di langkah 4 (babak).
 
 import { useState, type ReactNode } from 'react';
@@ -8,9 +8,9 @@ import type { Kasus } from '../kasus';
 import { labelOrangChecklist } from '../checklist';
 import { t } from '../terjemah';
 
-interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
+interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void; labelId?: string }
 
-export function LangkahKondisi({ kasus, ubah }: Props) {
+export function LangkahKondisi({ kasus, ubah, labelId = 'pertanyaan-utama' }: Props) {
   // Ahli waris pewaris asal dan tiap mayit munasakhat, masing-masing dinamai relatif ke mayit tempat ia pertama muncul.
   const mayitDari: Record<IdOrang, IdOrang> = {};
   for (const idMayit of [kasus.graf.idPewaris, ...kasus.urutanWafat]) {
@@ -42,7 +42,7 @@ export function LangkahKondisi({ kasus, ubah }: Props) {
 
   return (
     <div className="tumpuk">
-      <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby="pertanyaan-utama">
+      <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby={labelId}>
         <button type="button" role="radio" aria-checked={!adaKondisi} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
           <span>{t('umum.tidak_ada')}</span><small>{t('hitung.langsung_lihat_hasil')}</small>
         </button>

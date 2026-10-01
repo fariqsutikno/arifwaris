@@ -8,7 +8,7 @@ import type { Tujuan } from './preferensi';
 import { daftarAlmarhum } from './keadaanOrang';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
-export const TOTAL_LANGKAH = 5;
+export const TOTAL_LANGKAH = 4;
 export type Layar = 'awal' | 'wizard' | 'cerita' | 'hasil' | 'belajar';
 
 export interface KeadaanAplikasi { layar: Layar; langkah: number; babak: number; kasus: Kasus | null; tujuan: Tujuan | null }
@@ -38,8 +38,8 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
     case 'KE_LANGKAH': {
       const batas = Math.min(TOTAL_LANGKAH, langkahTerjauh(keadaan.kasus));
       const langkah = Math.min(batas, Math.max(1, aksi.langkah));
-      // Mundur dari langkah 5 ke langkah 4 = babak terakhir; selain itu mulai dari babak pewaris.
-      const babak = langkah === 4 && keadaan.langkah === 5 ? babakTerakhir(keadaan.kasus) : 0;
+      // Mundur dari Periksa (4) ke Keluarga (3) = babak terakhir; selain itu mulai dari babak pewaris.
+      const babak = langkah === 3 && keadaan.langkah === 4 ? babakTerakhir(keadaan.kasus) : 0;
       return { ...keadaan, layar: 'wizard', langkah, babak };
     }
     case 'KE_BABAK': return { ...keadaan, babak: Math.min(babakTerakhir(keadaan.kasus), Math.max(0, aksi.babak)) };

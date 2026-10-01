@@ -278,7 +278,7 @@ describe('layar hasil', () => {
   it('pintasan "Ubah ahli waris" membuka langkah ahli waris', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Ubah ahli waris' }));
-    expect(aksiTerakhir).toEqual({ jenis: 'KE_LANGKAH', langkah: 4 });
+    expect(aksiTerakhir).toEqual({ jenis: 'KE_LANGKAH', langkah: 3 });
   });
 
   it('istilah di tabel faraidh punya tooltip', () => {

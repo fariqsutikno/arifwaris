@@ -19957,6 +19957,69 @@
    "id": "Pilih jenis dalil untuk menelusurinya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.langkah_keluarga",
+   "halaman": "hitung",
+   "id": "Keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.langkah_periksa",
+   "halaman": "hitung",
+   "id": "Periksa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa_pertanyaan",
+   "halaman": "hitung",
+   "id": "Sudah benar ceritanya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa_caption",
+   "halaman": "hitung",
+   "id": "Baca ringkasan di bawah. Ubah bagian yang keliru sebelum melihat hasil.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.ada_kewajiban_tanya",
+   "halaman": "hitung",
+   "id": "Ada utang, biaya pemakaman, atau wasiat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kondisi_tanya",
+   "halaman": "hitung",
+   "id": "Ada yang beda agama, atau terlibat dalam wafatnya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hapus_kewajiban_judul",
+   "halaman": "hitung",
+   "id": "Hapus isian kewajiban?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hapus_kewajiban_isi",
+   "halaman": "hitung",
+   "id": "Jumlah biaya pemakaman, utang, dan wasiat yang sudah diisi akan dihapus.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tur_empat_langkah",
+   "halaman": "hitung",
+   "id": "Empat langkah saja",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

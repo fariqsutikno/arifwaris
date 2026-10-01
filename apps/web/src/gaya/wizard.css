@@ -76,3 +76,6 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
   body.layar-hasil .kepala .pilih-bahasa option{color:#14181a}
   body.layar-hasil .kepala .streak-kepala{display:none}
 }
+
+/* pertanyaan pendamping di dalam langkah (kewajiban, kondisi khusus): setingkat judul bagian, bukan label kecil */
+.lembar-wizard h2.judul-bagian-kecil{margin:10px 0 0;color:var(--ink);font:600 20px/1.25 var(--font-display);letter-spacing:-.01em;text-transform:none}

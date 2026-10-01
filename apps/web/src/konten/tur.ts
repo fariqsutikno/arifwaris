@@ -1,13 +1,13 @@
 // Isi tur singkat per layar. `sasaran` = nilai atribut data-tur pada elemen yang disorot.
 
 import type { Layar } from '../keadaan';
-import { teksEdukasi } from '../terjemah';
+import { t, teksEdukasi } from '../terjemah';
 
 export interface LangkahTur { sasaran: string; judul: string; isi: string }
 
 export const TUR: Partial<Record<Layar, LangkahTur[]>> = {
   wizard: [
-    { sasaran: 'stepper', judul: teksEdukasi('tur.lima_langkah_saja'), isi: teksEdukasi('tur.ini_peta_langkahmu_langkah_yang_sudah') },
+    { sasaran: 'stepper', get judul() { return t('hitung.tur_empat_langkah'); }, isi: teksEdukasi('tur.ini_peta_langkahmu_langkah_yang_sudah') },
     { sasaran: 'pertanyaan', judul: teksEdukasi('tur.satu_pertanyaan_sekali'), isi: teksEdukasi('tur.jawab_pertanyaan_besar_ini_tulisan_abu') },
     { sasaran: 'bar-bawah', judul: teksEdukasi('tur.maju_dan_mundur'), isi: teksEdukasi('tur.kembali_ke_langkah_sebelumnya_atau_lanjut') },
   ],

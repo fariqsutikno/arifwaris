@@ -6,22 +6,21 @@ beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wi
 
 it('alur penuh: beranda → wizard → hasil', () => {
   render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /skenario baru/i }));
+  fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
   fireEvent.change(screen.getByLabelText('Total harta peninggalan'), { target: { value: '24.000.000' } });
-  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Kewajiban/ }));
-  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Ahli waris/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Keluarga/ }));
   fireEvent.click(screen.getByLabelText('Tambah Istri'));
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
-  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Kondisi khusus/ }));
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Periksa/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lihat hasil/ }));
   expect(screen.getByText('Nah, ini pembagiannya')).toBeTruthy();
 });
 
 it('autosave: kasus muncul lagi setelah render ulang', () => {
   const { unmount } = render(<Aplikasi />);
-  fireEvent.click(screen.getByRole('button', { name: /skenario baru/i }));
+  fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   unmount();
   render(<Aplikasi />);

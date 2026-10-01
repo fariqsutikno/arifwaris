@@ -22,7 +22,7 @@ type GharqaSelesai = Extract<HasilGharqa, { status: 'OK' | 'MAUQUF' }>;
 interface Props { kasus: Kasus; tampil: TampilKhusus; kirim: (aksi: Aksi) => void; idSesi: string }
 
 export function HasilKasusKhusus({ kasus, tampil, kirim, idSesi }: Props) {
-  const ubahData = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>{t('hitung.ubah_data')}</Tombol>;
+  const ubahData = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3 })}>{t('hitung.ubah_data')}</Tombol>;
   if (tampil.jenis === 'menunggu') return <Menunggu kasus={kasus} kirim={kirim} idSesi={idSesi} ubahData={ubahData} />;
   const hasil = tampil.hasil;
   if (hasil.status === 'PERLU_INPUT') return <PerluInput kasus={kasus} pertanyaan={hasil.pertanyaan} kirim={kirim} ubahData={ubahData} />;
@@ -181,7 +181,7 @@ function PerluInput({ kasus, pertanyaan, kirim, ubahData }: { kasus: Kasus; pert
               {pertanyaan.map(p => (
                 <li key={p.idOrang} className="baris-kerabat">
                   <b>{namaSingkat(kasus, p.idOrang!)}</b>
-                  <button type="button" className="tautan" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 4 })}>{t('hasil.titipan.pastikan')}</button>
+                  <button type="button" className="tautan" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3 })}>{t('hasil.titipan.pastikan')}</button>
                 </li>
               ))}
             </ul>
