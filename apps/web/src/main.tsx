@@ -7,6 +7,7 @@ import './gaya/font.css';
 import './gaya/token.css';
 import './gaya/komponen.css';
 import './gaya/beranda.css';
+import './gaya/aplikasi.css';
 import './gaya/belajar.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
@@ -15,8 +16,10 @@ import { bacaCache, simpanCache } from './konten/cache';
 import { muatRepoSupabase, PERISTIWA_KONTEN_BARU, sinkronLatar } from './konten/sinkron';
 import { pasangSnapshot, snapshotTerpasang } from './konten/sumber';
 import { NAMA_APLIKASI } from './terjemah';
+import { daftarkanServiceWorker } from './notifikasi/perangkat';
 
 document.title = NAMA_APLIKASI;
+daftarkanServiceWorker();
 pasangSnapshot(pilihAwal(snapshotTerpasang(), await bacaCache()));
 const [{ Aplikasi }, { PenyediaPenjaga }] = await Promise.all([import('./Aplikasi'), import('./ui/Penjaga')]);
 createRoot(document.getElementById('akar')!).render(<StrictMode><PenyediaPenjaga><Aplikasi /></PenyediaPenjaga></StrictMode>);

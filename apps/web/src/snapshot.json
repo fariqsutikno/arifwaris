@@ -18746,6 +18746,265 @@
    "id": "Punya kasus sendiri?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.judul",
+   "halaman": "notifikasi",
+   "id": "Notifikasi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.buka",
+   "halaman": "notifikasi",
+   "id": "Buka notifikasi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.buka_belum_dibaca",
+   "halaman": "notifikasi",
+   "id": "Buka notifikasi, {jumlah} belum dibaca",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.kosong",
+   "halaman": "notifikasi",
+   "id": "Belum ada kabar. Streak, peringkat, dan konten baru muncul di sini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.tandai_dibaca",
+   "halaman": "notifikasi",
+   "id": "Tandai semua dibaca",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.hapus_semua",
+   "halaman": "notifikasi",
+   "id": "Hapus semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.aktifkan_perangkat",
+   "halaman": "notifikasi",
+   "id": "Aktifkan notifikasi di perangkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.perangkat_aktif",
+   "halaman": "notifikasi",
+   "id": "Notifikasi perangkat aktif",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.perangkat_diblokir",
+   "halaman": "notifikasi",
+   "id": "Notifikasi diblokir di pengaturan browser.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.pasang_aplikasi",
+   "halaman": "notifikasi",
+   "id": "Pasang aplikasi di layar utama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.streak_naik_judul",
+   "halaman": "notifikasi",
+   "id": "Streak naik jadi {jumlah} hari",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.streak_naik_isi",
+   "halaman": "notifikasi",
+   "id": "Pertahankan, sedikit belajar tiap hari sudah cukup.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.streak_ingat_judul",
+   "halaman": "notifikasi",
+   "id": "Streak {jumlah} harimu belum aman",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.streak_ingat_isi",
+   "halaman": "notifikasi",
+   "id": "Selesaikan satu pelajaran atau soal hari ini untuk menjaganya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.peringkat_naik_judul",
+   "halaman": "notifikasi",
+   "id": "Kamu naik ke peringkat {peringkat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.peringkat_naik_isi",
+   "halaman": "notifikasi",
+   "id": "Sebelumnya peringkat {dulu} di papan pekan ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.peringkat_turun_judul",
+   "halaman": "notifikasi",
+   "id": "Peringkatmu turun ke {peringkat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.peringkat_turun_isi",
+   "halaman": "notifikasi",
+   "id": "Sebelumnya peringkat {dulu} di papan pekan ini. Satu soal lagi bisa mengejarnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.konten_judul",
+   "halaman": "notifikasi",
+   "id": "Ada konten baru",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.konten_isi",
+   "halaman": "notifikasi",
+   "id": "Tim keilmuan memperbarui materi atau teks. Muat ulang untuk melihatnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.belajar_judul",
+   "halaman": "notifikasi",
+   "id": "Pelajaran selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.belajar_isi",
+   "halaman": "notifikasi",
+   "id": "{judul} sudah kamu selesaikan. Lanjut ke berikutnya kapan saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.kasus_judul",
+   "halaman": "notifikasi",
+   "id": "Kasus belum selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.kasus_isi",
+   "halaman": "notifikasi",
+   "id": "{judul} masih menunggu dilengkapi. Lanjutkan kapan saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.ahlan",
+   "halaman": "beranda",
+   "id": "Ahlan,",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.ahlan_tamu",
+   "halaman": "beranda",
+   "id": "Ahlan!",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.siapa_namamu",
+   "halaman": "beranda",
+   "id": "Siapa namamu?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.nama_catatan",
+   "halaman": "beranda",
+   "id": "Disimpan di perangkat ini saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.nama_panggilan",
+   "halaman": "beranda",
+   "id": "Nama panggilanmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.simpan_nama",
+   "halaman": "beranda",
+   "id": "Simpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.streak_hari",
+   "halaman": "beranda",
+   "id": "{jumlah} hari beruntun",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.streak_mulai",
+   "halaman": "beranda",
+   "id": "Mulai streak-mu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.streak_masuk",
+   "halaman": "beranda",
+   "id": "Masuk dengan Google untuk mencatat streak dan XP.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.streak_aman",
+   "halaman": "beranda",
+   "id": "Hari ini sudah aman",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.streak_belum_aman",
+   "halaman": "beranda",
+   "id": "Belajar hari ini untuk menjaganya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.xp_pekan",
+   "halaman": "beranda",
+   "id": "{xp} XP pekan ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.contoh_judul",
+   "halaman": "beranda",
+   "id": "Contoh hitungan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

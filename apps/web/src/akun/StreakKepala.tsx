@@ -3,43 +3,30 @@
 // naik, "+N XP" tampil sebentar sebagai umpan balik. Tanpa login, memuat, atau gagal: tidak tampil apa-apa.
 
 import { useEffect, useRef, useState } from 'react';
-import type { RingkasanPeringkat, Sesi } from '@waris/data';
+import type { Sesi } from '@waris/data';
 import { tautanPeringkat } from '../rute';
 import { t } from '../terjemah';
 import { IkonApi, tanpaEmojiApi } from '../ui/Ikon';
-import { PERISTIWA_KEGIATAN_TERKIRIM } from './antrean';
+import { useMuatRingkasan, useRingkasanSaya } from './ringkasan';
 import type { RepoAkun } from './sinkron';
 
 const LAMA_TAMPIL_TAMBAHAN_MS = 4000;
 
 export function StreakKepala({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun | null }) {
-  const [ringkasan, setRingkasan] = useState<RingkasanPeringkat | null>(null);
+  useMuatRingkasan(sesi, repo);
+  const ringkasan = useRingkasanSaya();
   const [tambahanXp, setTambahanXp] = useState(0);
   const xpSebelumnya = useRef<number | null>(null);
 
   useEffect(() => {
-    setRingkasan(null);
-    xpSebelumnya.current = null;
-    if (!sesi || !repo) return;
-    let masihDipakai = true;
-    let pewaktu: ReturnType<typeof setTimeout> | undefined;
-    const muat = () => repo.peringkat.ringkasanSaya()
-      .then(hasil => {
-        if (!masihDipakai) return;
-        const naik = xpSebelumnya.current === null ? 0 : hasil.xpTotal - xpSebelumnya.current;
-        xpSebelumnya.current = hasil.xpTotal;
-        setRingkasan(hasil);
-        if (naik > 0) {
-          setTambahanXp(naik);
-          clearTimeout(pewaktu);
-          pewaktu = setTimeout(() => setTambahanXp(0), LAMA_TAMPIL_TAMBAHAN_MS);
-        }
-      })
-      .catch(galat => console.warn('streak gagal dimuat:', galat));
-    void muat();
-    window.addEventListener(PERISTIWA_KEGIATAN_TERKIRIM, muat);
-    return () => { masihDipakai = false; clearTimeout(pewaktu); window.removeEventListener(PERISTIWA_KEGIATAN_TERKIRIM, muat); };
-  }, [sesi?.userId, repo]);
+    if (!ringkasan) { xpSebelumnya.current = null; return; }
+    const naik = xpSebelumnya.current === null ? 0 : ringkasan.xpTotal - xpSebelumnya.current;
+    xpSebelumnya.current = ringkasan.xpTotal;
+    if (naik <= 0) return;
+    setTambahanXp(naik);
+    const pewaktu = setTimeout(() => setTambahanXp(0), LAMA_TAMPIL_TAMBAHAN_MS);
+    return () => clearTimeout(pewaktu);
+  }, [ringkasan]);
   if (!ringkasan) return null;
 
   const keterangan = t('akun.streak_keterangan', { jumlah: ringkasan.streakSekarang, xp: ringkasan.xpTotal })

@@ -7,6 +7,8 @@ import { muatRepoAkun, type RepoAkun } from './akun/klien';
 import { mulaiSinkron } from './akun/sinkron';
 import { StreakKepala } from './akun/StreakKepala';
 import { TombolAkun } from './akun/TombolAkun';
+import { LonceNotifikasi } from './notifikasi/LonceNotifikasi';
+import { SumberNotifikasi } from './notifikasi/SumberNotifikasi';
 import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi } from './keadaan';
 import { TUR } from './konten/tur';
@@ -140,10 +142,12 @@ export function Aplikasi() {
     <>
       <Kepala halaman={rute.halaman} kasusWizard={diKalkulator && layar === 'wizard' ? kasus : null}
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)}
-        saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
+        saatUlangi={() => kirim({ jenis: 'ULANGI' })} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
       <PembaruanKonten />
+      <SumberNotifikasi sesi={sesi} repo={repoAkun} />
       {!['beranda', 'kalkulator', 'belajar'].includes(rute.halaman) && !(rute.halaman === 'latihan' && rute.paket) && <KepalaHalaman rute={rute} />}
-      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} />
+      {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} sesi={sesi}
+          saatMasuk={repoAkun ? () => void repoAkun.akun.masukGoogle(window.location.href).catch(() => undefined) : undefined} />
         : rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />

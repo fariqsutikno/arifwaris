@@ -25,6 +25,8 @@ export function bacaProgresBelajar(): Record<string, ProgresBelajar> {
 export const bacaPelajaranSelesai = (): Set<string> =>
   new Set(Object.values(bacaProgresBelajar()).filter(progres => progres.selesai).map(progres => progres.pelajaranSlug));
 
+export const PERISTIWA_PELAJARAN_SELESAI = 'arif-waris:pelajaran-selesai';
+
 export function tandaiPelajaranSelesai(slug: string): void {
   // Materi memanggil ini berulang saat menggulir; kegiatan hanya sekali per penyelesaian.
   if (bacaProgresBelajar()[slug]?.selesai) return;
@@ -32,6 +34,7 @@ export function tandaiPelajaranSelesai(slug: string): void {
   simpanMentah(KUNCI_BELAJAR, JSON.stringify({ ...bacaProgresBelajar(), [slug]: baris }));
   antre({ tabel: 'belajar', baris });
   antre({ tabel: 'kegiatan', baris: { id: crypto.randomUUID(), jenis: 'pelajaran', slug, benar: null } });
+  window.dispatchEvent(new CustomEvent(PERISTIWA_PELAJARAN_SELESAI, { detail: { slug } }));
 }
 
 export function bacaProgresLatihan(jenis: JenisLatihan): Record<string, ProgresLatihan> {

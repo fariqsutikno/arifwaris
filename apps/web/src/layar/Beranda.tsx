@@ -11,7 +11,9 @@ import { bacaRiwayat, ringkasKasus, type EntriRiwayat } from '../riwayat';
 import { TAUTAN_KALKULATOR, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanGlosarium, tautanLatihan, tautanRujukan } from '../rute';
 import { Ikon } from '../ui/Ikon';
 import { pisahKataAkhir, sorotUbin, useCahayaIkutKursor } from '../ui/sorotan';
+import type { Sesi } from '@waris/data';
 import { ContohHidup } from './beranda/ContohHidup';
+import { SapaHP } from './beranda/SapaHP';
 import { angka, merekDisamarkan, panah, t } from '../terjemah';
 
 const JUMLAH_TANYA = 3;
@@ -28,7 +30,16 @@ const PEMBIMBING: { nama: string; situs?: string }[] = [
   { nama: t('beranda.ustaz_arif_husnul_khuluq_m_h'), situs: 'https://www.instagram.com/arifhusnulkhuluq' },
 ];
 
-export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakhir: Kasus | null; saatKeHitung: () => void; saatCoba: (kasus: Kasus) => void }) {
+interface PropsBeranda {
+  kasusTerakhir: Kasus | null;
+  saatKeHitung: () => void;
+  saatCoba: (kasus: Kasus) => void;
+  sesi?: Sesi | null;
+  /** Ada hanya bila akun tersedia (env Supabase terisi). */
+  saatMasuk?: (() => void) | undefined;
+}
+
+export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, sesi = null, saatMasuk }: PropsBeranda) {
   const selesai = bacaPelajaranSelesai();
   const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
@@ -55,6 +66,8 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
             <a className="tautan-lanjut" href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')}<span className="panah-kecil" aria-hidden="true">{panah()}</span></a>
           </div>
         </div>
+        <SapaHP sesi={sesi} saatMasuk={saatMasuk} />
+        <h2 className="judul-contoh-hp">{t('beranda.contoh_judul')}</h2>
         <ContohHidup saatCoba={saatCoba} />
       </header>
 
