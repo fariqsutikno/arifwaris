@@ -3,7 +3,7 @@
 // bentuknya divalidasi penuh sebelum dipakai, bigint disimpan sebagai string digit.
 
 import { t } from './terjemah';
-import type { GrafKeluarga, IdOrang, InputTirkah, KeadaanGharqa, Orang, Pernikahan } from '@waris/engine';
+import { DAFTAR_RULESET, type GrafKeluarga, type IdOrang, type InputTirkah, type KeadaanGharqa, type Orang, type Pernikahan, type Ruleset } from '@waris/engine';
 
 export const SATUAN_PEMBULATAN = [1n, 100n, 1000n] as const;
 // Rincian harta hanya alat bantu mengisi total; engine tetap menerima `tirkah.kotor`.
@@ -35,6 +35,8 @@ export interface Kasus {
   pilihanJanin?: 'tunggu' | 'hitungSekarang';
   /** Nama kasus dari pengguna (langkah Periksa); kosong = dinamai otomatis dari ringkasan. */
   nama?: string;
+  /** Madzhab penghitung; kosong = Syafi'i (bawaan, satu-satunya yang diperiksa sampai teks primer). */
+  ruleset?: Ruleset;
 }
 
 export function kasusBaru(jenisKelaminPewaris: 'L' | 'P'): Kasus {
@@ -139,11 +141,14 @@ function bacaKasus(data: unknown): Kasus {
   const semuaDaftar = [...urutanWafat, ...(gharqa?.anggota.filter(id => id !== graf.idPewaris) ?? []), ...(wafatSesudahDibagi ?? [])];
   if (new Set(semuaDaftar).size !== semuaDaftar.length) throw new Error(t('hitung.orang_tercatat_wafat_dua_kali'));
   if (objek.nama !== undefined && typeof objek.nama !== 'string') throw new Error(t('hitung.data_keadaan_rusak'));
+  if (objek.ruleset !== undefined && !DAFTAR_RULESET.includes(objek.ruleset as Ruleset)) throw new Error(t('hitung.madzhab_file_tidak_dikenal'));
+  const ruleset = objek.ruleset as Ruleset | undefined;
   const kasus: Kasus = {
     versi: 3, graf, tirkah, satuanPembulatan, urutanWafat,
     ...(rincianHarta ? { rincianHarta } : {}), ...(gharqa ? { gharqa } : {}),
     ...(wafatSesudahDibagi ? { wafatSesudahDibagi } : {}), ...(dikandungSetelahWafat ? { dikandungSetelahWafat } : {}),
     ...(pilihanJanin ? { pilihanJanin } : {}), ...(objek.nama ? { nama: objek.nama } : {}),
+    ...(ruleset && ruleset !== 'syafii' ? { ruleset } : {}),
   };
   return rapikanKeadaan(kasus);
 }

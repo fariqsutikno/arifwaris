@@ -26,7 +26,7 @@ export function keInputEngine(kasus: Kasus): InputEngine {
     tirkah: kasus.tirkah,
     pembulatan: { satuan: kasus.satuanPembulatan },
     konfigurasi: KONFIGURASI_BAWAAN,
-    ruleset: 'syafii',
+    ruleset: kasus.ruleset ?? 'syafii',
     versiKb: VERSI_KB,
   };
 }

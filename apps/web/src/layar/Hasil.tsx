@@ -16,6 +16,7 @@ import { useBahasa, type Tujuan } from '../preferensi';
 import { HasilKasusKhusus } from '../hasil/HasilKasusKhusus';
 import { KartuHarta, KartuSelanjutnya, KartuTentang, KartuTidakDapat } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
+import { Lipat } from '../hasil/Lipat';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { ModalOrang } from '../hasil/ModalOrang';
@@ -33,6 +34,8 @@ import { DialogNama } from './lab/DialogNama';
 import { DialogBagikan } from './DialogBagikan';
 import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
+import { aturMadzhab, bandingkanMadzhab, madzhabKasus, namaMadzhab } from '../madzhab';
+import { ModalBandingMadzhab } from '../hasil/ModalBandingMadzhab';
 import { formatRupiahRingkas } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
@@ -64,7 +67,12 @@ const BATAS_ALIRAN = 40;
 
 export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
-  const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
+  const tombolUbah = (
+    <div className="chip-deret">
+      <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>
+      {madzhabKasus(kasus) !== 'syafii' && <button type="button" className="tautan-aksi" onClick={() => kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, 'syafii') })}>{t('hitung.madzhab.kembali_syafii')}</button>}
+    </div>
+  );
 
   if (tampil.jenis === 'galat') {
     return (
@@ -138,10 +146,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const [eksporTerbuka, setEksporTerbuka] = useState(false);
   const [bagikanTerbuka, setBagikanTerbuka] = useState(false);
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
+  const [bandingTerbuka, setBandingTerbuka] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const namaPewaris = kasus.graf.orang[kasus.graf.idPewaris]?.nama?.trim() || '';
   const jumlahOrang = Object.values(kasus.graf.orang).filter(orang => !orang.penghubung).length;
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
+  // Perbandingan madzhab hanya untuk kasus yang bisa diubah pemiliknya (bukan soal latihan/penerima tautan); tautannya muncul hanya bila ada yang berbeda.
+  const perbandingan = useMemo(() => (bolehUbah ? bandingkanMadzhab(kasus) : null), [kasus, bolehUbah]);
+  const namaMadzhabKasus = namaMadzhab(madzhabKasus(kasus));
   // Aliran harta hanya di pratinjau hero (sekali per hasil, bisa diputar ulang); pohon besar tidak berputar tiap dibuka.
   const [putaranAliran, setPutaranAliran] = useState(1);
   const bolehAliran = !sedangMenebak && jumlahOrang <= BATAS_ALIRAN;
@@ -157,7 +169,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       <header className="hero-hasil">
         <div className="judul-hasil">
           <div className="judul-soal">
-            <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab_syafii')}</p>
+            <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab', { madzhab: namaMadzhabKasus })}</p>
             {adalahBelajar
               ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
               : <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.pembagian_harta_almarhum')}</h1>}
@@ -171,6 +183,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               </button>
             )}
             {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
+            {perbandingan?.beda && <button type="button" className="tautan-hero" onClick={() => setBandingTerbuka(true)}>{t('hitung.madzhab.bandingkan')}</button>}
           </div>
           {!sedangMenebak && (
             <dl className="statistik-hero">
@@ -216,16 +229,16 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         </div>
         <div className="pita-hitung">
           <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
-          <section className="kartu-sisi kartu-tabel" aria-labelledby="judul-tabel-faraidh">
-            <h2 id="judul-tabel-faraidh">{t('hitung.tabel_faraidh')}</h2>
+          {/* Lapis 3: tabel ala kitab terlipat bagi pengguna biasa; terbuka di mode Belajar. */}
+          <Lipat judul={t('hitung.tabel_faraidh')} terbukaAwal={adalahBelajar} className="kartu-tabel">
             <div className="wadah-tabel">{tabel}</div>
-          </section>
+          </Lipat>
           {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} terbuka={adalahBelajar} />}
         </div>
       </div>
 
       <footer className="kaki-hasil">
-        <p>{t('hitung.hasil_ini_menurut_madzhab_syafi_i')} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
+        <p>{t('hitung.hasil_menurut_madzhab_ket', { madzhab: namaMadzhabKasus })} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
         {bolehUbah && (
           <div className="aksi-kaki">
             <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>
@@ -278,6 +291,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
       {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasus} repo={bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
+      {bandingTerbuka && perbandingan && (
+        <ModalBandingMadzhab perbandingan={perbandingan} saatTutup={() => setBandingTerbuka(false)}
+          saatPakai={ruleset => { setBandingTerbuka(false); kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) }); }} />
+      )}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (
         <ModalUbahHarta kasus={kasus} saatTutup={() => setUbahHartaTerbuka(false)}

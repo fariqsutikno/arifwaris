@@ -110,6 +110,7 @@ function gantiPewarisDanKosongkan(kasus: Kasus, jenisKelamin: 'L' | 'P'): Kasus 
   const pewaris = { ...baru.graf.orang[baru.graf.idPewaris]!, ...(nama ? { nama } : {}) };
   return {
     ...baru, tirkah: kasus.tirkah, satuanPembulatan: kasus.satuanPembulatan,
+    ...(kasus.ruleset ? { ruleset: kasus.ruleset } : {}),
     ...(kasus.rincianHarta ? { rincianHarta: kasus.rincianHarta } : {}),
     graf: { ...baru.graf, orang: { [baru.graf.idPewaris]: pewaris } },
   };

@@ -28,6 +28,8 @@ function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: {
   return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
 const pembagian = () => screen.getByRole('region', { name: /^(Pembagian|Jawabanmu|Kunci jawaban)$/ });
+/** Tabel faraidh terlipat di mode Hitung (lapis 3); tes yang membaca tabel membukanya dulu. */
+const bukaTabel = () => { if (!screen.queryByRole('table')) fireEvent.click(screen.getByRole('button', { name: /Tabel faraidh/ })); };
 /** Buka jawaban lewat dialog tekan-tahan. */
 const bukaLewatDialog = (namaTombolTahan: RegExp) => {
   vi.useFakeTimers();
@@ -186,6 +188,7 @@ describe('layar hasil', () => {
 
   it('tabel faraidh ala kitab: asal masalah dan tashih', () => {
     render(<Uji awal={prototipe()} />);
+    bukaTabel();
     const tabel = screen.getByRole('table');
     expect(within(tabel).getByText(/Asal masalah/)).toBeTruthy();
     expect(within(tabel).getByText('24', { selector: 'th small' })).toBeTruthy();
@@ -194,6 +197,7 @@ describe('layar hasil', () => {
 
   it('klik baris di tabel faraidh juga membuka penjelasan orang itu', () => {
     render(<Uji awal={prototipe()} />);
+    bukaTabel();
     fireEvent.click(within(screen.getByRole('table')).getByText('Ibu').closest('tr')!);
     expect(within(screen.getByRole('dialog')).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
   });
@@ -264,6 +268,7 @@ describe('layar hasil', () => {
         KL1: orang('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }), AM1: orang('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),
       } } };
     render(<Uji awal={kasus} />);
+    bukaTabel();
     const tabel = screen.getByRole('table');
     expect(within(tabel).getAllByText('Dzawil arham')).toHaveLength(2);
     expect(within(tabel).queryByText('Ashabah')).toBeNull();
@@ -283,6 +288,7 @@ describe('layar hasil', () => {
 
   it('istilah di tabel faraidh punya tooltip', () => {
     render(<Uji awal={prototipe()} />);
+    bukaTabel();
     fireEvent.focus(within(screen.getByRole('table')).getByText('Tashih'));
     expect(screen.getByRole('tooltip').textContent).toMatch(/pembagi/);
   });

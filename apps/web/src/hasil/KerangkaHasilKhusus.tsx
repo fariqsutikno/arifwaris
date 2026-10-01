@@ -10,6 +10,7 @@ import type { Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { KonfirmasiKasusBaru } from '../layar/KonfirmasiKasusBaru';
 import { PohonSusunan } from '../layar/lab/PohonSusunan';
+import { madzhabKasus, namaMadzhab } from '../madzhab';
 import { Ikon } from '../ui/Ikon';
 import { ModalEkspor } from './ModalEkspor';
 import { t } from '../terjemah';
@@ -40,7 +41,7 @@ export function KerangkaHasilKhusus({ kasus, kirim, judul, keterangan, statistik
       <header className="hero-hasil">
         <div className="judul-hasil">
           <div className="judul-soal">
-            <p className="lok-hero">{t('hitung.menurut_madzhab_syafii')}</p>
+            <p className="lok-hero">{t('hitung.menurut_madzhab', { madzhab: namaMadzhab(madzhabKasus(kasus)) })}</p>
             <h1>{judul}</h1>
             {keterangan && <p>{keterangan}</p>}
           </div>
@@ -60,7 +61,7 @@ export function KerangkaHasilKhusus({ kasus, kirim, judul, keterangan, statistik
       <div className="tata-hasil"><div className="kolom-khusus">{children}</div></div>
 
       <footer className="kaki-hasil">
-        <p>{t('hitung.hasil_ini_menurut_madzhab_syafi_i')} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
+        <p>{t('hitung.hasil_menurut_madzhab_ket', { madzhab: namaMadzhab(madzhabKasus(kasus)) })} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
         <div className="aksi-kaki">
           <button type="button" className="tautan-aksi" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3 })}>{t('hitung.ubah_data_2')}</button>
           <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('hitung.mulai_dari_awal')}</button>

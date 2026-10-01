@@ -21637,6 +21637,223 @@
    "id": "Tidak mau menunggu?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_file_tidak_dikenal",
+   "halaman": "hitung",
+   "id": "Madzhab di file ini tidak dikenal.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.syafii",
+   "halaman": "hitung",
+   "id": "Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.hanbali",
+   "halaman": "hitung",
+   "id": "Hanbali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.hanafi",
+   "halaman": "hitung",
+   "id": "Hanafi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.maliki",
+   "halaman": "hitung",
+   "id": "Maliki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.sumber_syafii",
+   "halaman": "hitung",
+   "id": "Diperiksa sampai kitab rujukan utama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.sumber_lain",
+   "halaman": "hitung",
+   "id": "Perbedaan per titik; sebagian dari sumber sekunder (al-Lahim, Ithraa).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.bawaan",
+   "halaman": "hitung",
+   "id": "bawaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.pilih_judul",
+   "halaman": "hitung",
+   "id": "Hitung menurut madzhab apa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.pilih_ket",
+   "halaman": "hitung",
+   "id": "Syafi'i adalah bawaan. Madzhab lain hanya berbeda di titik tertentu; hasilnya bisa dibandingkan di halaman hasil.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.pakai",
+   "halaman": "hitung",
+   "id": "Pakai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.ganti",
+   "halaman": "hitung",
+   "id": "ganti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.baris",
+   "halaman": "hitung",
+   "id": "Dihitung menurut madzhab {madzhab}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.menurut_madzhab",
+   "halaman": "hitung",
+   "id": "Menurut madzhab {madzhab}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hasil_menurut_madzhab_ket",
+   "halaman": "hitung",
+   "id": "Hasil ini menurut madzhab {madzhab}. Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.bandingkan",
+   "halaman": "hitung",
+   "id": "Bandingkan pendapat lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.banding_judul",
+   "halaman": "hitung",
+   "id": "Bandingkan pendapat madzhab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.banding_ket",
+   "halaman": "hitung",
+   "id": "Kasus yang sama dihitung menurut tiap madzhab. Baris yang berbeda ditandai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.kolom_orang",
+   "halaman": "hitung",
+   "id": "Ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.belum_dikaji",
+   "halaman": "hitung",
+   "id": "Belum dikaji untuk kasus ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.butuh_jawaban",
+   "halaman": "hitung",
+   "id": "Butuh jawaban tambahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.tidak_dibandingkan",
+   "halaman": "hitung",
+   "id": "Tidak dibandingkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.tidak_menerima",
+   "halaman": "hitung",
+   "id": "—",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.berbeda",
+   "halaman": "hitung",
+   "id": "berbeda",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.sekarang",
+   "halaman": "hitung",
+   "id": "dipakai sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.pakai_ini",
+   "halaman": "hitung",
+   "id": "Pakai madzhab ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.catatan_sumber",
+   "halaman": "hitung",
+   "id": "Syafi'i diperiksa sampai kitab rujukan utama. Madzhab lain berasal dari al-Lahim dan Ithraa (sumber sekunder).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.titik_judul",
+   "halaman": "hitung",
+   "id": "Di titik mana berbeda",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.kembali_syafii",
+   "halaman": "hitung",
+   "id": "Hitung menurut madzhab Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.tutup",
+   "halaman": "hitung",
+   "id": "Tutup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab.sama_syafii",
+   "halaman": "hitung",
+   "id": "Sama dengan Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

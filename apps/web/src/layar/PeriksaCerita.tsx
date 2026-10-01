@@ -9,6 +9,8 @@ import type { Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { daftarAlmarhum, kerabatDari, namaSingkat } from '../keadaanOrang';
 import { Tombol } from '../ui/komponen';
+import { aturMadzhab, madzhabKasus, namaMadzhab } from '../madzhab';
+import { DialogMadzhab } from './wizard/DialogMadzhab';
 import { t } from '../terjemah';
 
 export function kalimatBabak(kasus: Kasus, idMayit: IdOrang): string {
@@ -60,6 +62,7 @@ export function PilihanMenunggu({ kirim }: { kirim: (aksi: Aksi) => void }) {
 }
 
 export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => void }) {
+  const [pilihMadzhab, setPilihMadzhab] = useState(false);
   const almarhum = daftarAlmarhum(kasus);
   const orang = Object.values(kasus.graf.orang);
   const nama = (id: IdOrang) => namaSingkat(kasus, id);
@@ -89,7 +92,9 @@ export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi
           {almarhum.length > 1 && ` ${t('hitung.cerita.harta_sendiri_tidak', { daftar: lanjutan })}`}
           {' '}<button type="button" className="tautan" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 2 })}>{t('hitung.cerita.ubah_harta')}</button></p>
       </section>
-      <p className="keterangan">{t('hitung.periksa.madzhab')}</p>
+      <p className="keterangan">{t('hitung.madzhab.baris', { madzhab: namaMadzhab(madzhabKasus(kasus)) })} <button type="button" className="tautan" onClick={() => setPilihMadzhab(true)}>{t('hitung.madzhab.ganti')}</button></p>
+      {pilihMadzhab && <DialogMadzhab sekarang={madzhabKasus(kasus)} saatBatal={() => setPilihMadzhab(false)}
+        saatPakai={ruleset => { setPilihMadzhab(false); kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) }); }} />}
     </div>
   );
 }
