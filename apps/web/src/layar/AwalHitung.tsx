@@ -69,11 +69,11 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
           <h1>{judulAwal} <span className="tekanan">{kataTekanan}</span></h1>
           <p className="lead">{TEKS_HITUNG.janji}</p>
         </div>
-        <HeroLab kasusTerakhir={kasusTersimpan} saatLanjut={() => kasusTersimpan && saatLanjut(kasusTersimpan)} saatMulaiBaru={mulaiBaru} />
+        <HeroLab kasusTerakhir={kasusTersimpan} saatLanjut={() => kasusTersimpan && saatLanjut(kasusTersimpan)} />
       </header>
 
       <div className="tata-beranda" onPointerMove={sorotUbin}>
-        <MulaiCepat saatPilih={mulaiDariSusunan} saatDariNol={kasusTersimpan ? mulaiBaru : undefined} saatImpor={() => inputFile.current?.click()} />
+        <MulaiCepat saatPilih={mulaiDariSusunan} saatDariNol={mulaiBaru} adaKasusBerjalan={!!kasusTersimpan} saatImpor={() => inputFile.current?.click()} />
         <DaftarKasus kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} ringkas />
         <PintasanSoal saatKerjakan={saatKerjakanSoal} />
         <input ref={inputFile} type="file" accept="application/json,.json" hidden onChange={event => void saatPilihFile(event.target.files?.[0])} />

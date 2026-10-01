@@ -36,27 +36,27 @@ test('Esc membatalkan dialog nama', () => {
 });
 
 // ── hero ──
-test('hero tanpa kasus terakhir: ajakan mulai skenario baru, tanpa Lanjutkan', () => {
-  render(<HeroLab kasusTerakhir={null} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
-  expect(screen.getByRole('button', { name: /Mulai skenario baru/ })).toBeTruthy();
+test('hero tanpa kasus terakhir: tidak dirender', () => {
+  render(<HeroLab kasusTerakhir={null} saatLanjut={() => {}} />);
+  expect(screen.queryByRole('button', { name: /Mulai skenario baru/ })).toBeNull();
   expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
 });
 
 test('hero kasus belum lengkap (tanpa harta): tidak memanggil engine, Lanjutkan jalan', () => {
   const saatLanjut = vi.fn();
-  render(<HeroLab kasusTerakhir={kasusDariSusunan(SUSUNAN_CEPAT[0]!)} saatLanjut={saatLanjut} saatMulaiBaru={() => {}} />);
+  render(<HeroLab kasusTerakhir={kasusDariSusunan(SUSUNAN_CEPAT[0]!)} saatLanjut={saatLanjut} />);
   fireEvent.click(screen.getByRole('button', { name: /Lanjutkan/ }));
   expect(saatLanjut).toHaveBeenCalled();
 });
 
 test('hero kasus yang baru memilih jenis kelamin tetap bisa dilanjutkan', () => {
-  render(<HeroLab kasusTerakhir={kasusBaru('L')} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
+  render(<HeroLab kasusTerakhir={kasusBaru('L')} saatLanjut={() => {}} />);
   expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
 });
 
 test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
   const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  const { container } = render(<HeroLab kasusTerakhir={{ ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } }} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
+  const { container } = render(<HeroLab kasusTerakhir={{ ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } }} saatLanjut={() => {}} />);
   expect(container.querySelector('.pita-bagian')).toBeTruthy();
 });
 
@@ -145,12 +145,12 @@ test('halaman penuh: cari muncul bila lebih dari 8 kasus dan menyaring', () => {
 // ── Awal Lab ──
 const propsAwal = { kasusTersimpan: null, kirim: vi.fn(), saatLanjut: vi.fn(), saatBukaRiwayat: vi.fn(), saatImpor: vi.fn(), saatKerjakanSoal: vi.fn(), saatMulaiDari: vi.fn() };
 
-test('awal lab bersih: tiga bagian berbeda tujuan, tanpa Kasusmu dan tanpa "Mulai dari nol" (hero sudah menawarkannya)', () => {
+test('awal lab bersih: tiga bagian berbeda tujuan, tanpa Kasusmu, "Mulai dari nol" selalu ada', () => {
   render(<AwalHitung {...propsAwal} />);
   expect(screen.getByRole('heading', { name: 'Mulai kasus baru' })).toBeTruthy();
   expect(screen.getByRole('heading', { name: 'Berlatih dengan soal' })).toBeTruthy();
   expect(screen.queryByRole('heading', { name: 'Kasusmu' })).toBeNull();
-  expect(screen.queryByRole('button', { name: /Mulai dari nol/ })).toBeNull();
+  expect(screen.getByRole('button', { name: /Mulai dari nol/ })).toBeTruthy();
   expect(screen.getByRole('button', { name: /Impor file/ })).toBeTruthy();
 });
 

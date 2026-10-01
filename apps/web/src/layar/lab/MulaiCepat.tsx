@@ -1,5 +1,5 @@
-// Mulai kasus baru: semua cara memulai di satu tempat. "Mulai dari nol" (hanya bila ada kasus berjalan; bila tidak, hero
-// sudah menawarkannya), susunan keluarga umum sebagai ubin berwarna dengan avatar ahli warisnya (satu ketukan membuka
+// Mulai kasus baru: semua cara memulai di satu tempat. "Mulai dari nol" (selalu tampil; hero tidak lagi menawarkannya),
+// susunan keluarga umum sebagai ubin berwarna dengan avatar ahli warisnya (satu ketukan membuka
 // wizard dengan ahli waris terisi), dan tautan impor berkas.
 
 import type { CSSProperties } from 'react';
@@ -10,21 +10,21 @@ import type { Kasus } from '../../kasus';
 import { Ikon } from '../../ui/Ikon';
 import { angka, panah, t } from '../../terjemah';
 
-interface Props { saatPilih: (kasus: Kasus) => void; saatDariNol?: (() => void) | undefined; saatImpor: () => void }
+interface Props { saatPilih: (kasus: Kasus) => void; saatDariNol: () => void; adaKasusBerjalan: boolean; saatImpor: () => void }
 
-export function MulaiCepat({ saatPilih, saatDariNol, saatImpor }: Props) {
+export function MulaiCepat({ saatPilih, saatDariNol, adaKasusBerjalan, saatImpor }: Props) {
   return (
     <section className="bagian-lab" aria-labelledby="judul-lab-cepat">
       <h2 id="judul-lab-cepat" className="judul-bagian">{t('hitung.lab_mulai_cepat')}</h2>
       <p className="keterangan">{t('hitung.lab_mulai_baru_ket')}</p>
       <ul className="daftar-polos lab-ubin-cepat">
-        {saatDariNol && (
+        {(
           <li>
             <button type="button" className="ubin ubin-lab ubin-nol" onClick={saatDariNol}>
               <span className="panah-bulat" aria-hidden="true">{panah()}</span>
               <Ikon nama="tambah" ukuran={40} />
               <b className="judul-ubin">{t('hitung.lab_dari_nol')}</b>
-              <span className="keterangan">{t('hitung.lab_kasus_tetap')}</span>
+              {adaKasusBerjalan && <span className="keterangan">{t('hitung.lab_kasus_tetap')}</span>}
             </button>
           </li>
         )}
