@@ -8,7 +8,7 @@
 import { useEffect, useMemo, useReducer, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
-import type { RepositoriBagikan, Sesi } from '@waris/data';
+import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
@@ -54,8 +54,8 @@ interface Props {
   terkunci?: boolean | undefined;
   /** Tampilan penerima tautan: tanpa ubah data, reset, bagikan, dan pindah tujuan. */
   hanyaBaca?: boolean | undefined;
-  /** Ada = tautan Bagikan tampil di hero (butuh repositori akun). */
-  bagikan?: { repo: RepositoriBagikan; sesi: Sesi | null; saatMasuk?: (() => void) | undefined } | undefined;
+  /** Ada = tautan Bagikan tampil di hero (hanya untuk pengguna yang sudah masuk). */
+  bagikan?: RepositoriBagikan | undefined;
 }
 
 /** Pohon lebih besar dari ini cukup tampil diam. */
@@ -269,7 +269,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       )}
       {namaTerbuka && <DialogNama judulAwal={kasus.nama ?? ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
         saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
-      {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasus} {...bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
+      {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasus} repo={bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
       {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (

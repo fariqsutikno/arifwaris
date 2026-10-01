@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { beforeEach, expect, test, vi } from 'vitest';
+import { beforeEach, expect, test } from 'vitest';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { tambahAhliWaris } from '../checklist';
 import { keJson, kasusBaru } from '../kasus';
@@ -24,7 +24,7 @@ beforeEach(() => localStorage.clear());
 test('pemilik membagikan lewat tautan kustom; slug yang dipakai kasus lain ditolak', async () => {
   const { bagikan } = siapkan();
   await bagikan.simpan('lain', { slug: 'sama', akses: 'tautan', email: [] }, {});
-  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} sesi={pemilik} saatTutup={() => {}} />);
+  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
   const isian = await screen.findByDisplayValue(/^[a-z0-9]{8}$/);
   fireEvent.change(isian, { target: { value: 'Sama' } });
   fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
@@ -37,21 +37,13 @@ test('pemilik membagikan lewat tautan kustom; slug yang dipakai kasus lain ditol
 
 test('akses email butuh minimal satu email yang sah', async () => {
   const { bagikan } = siapkan();
-  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} sesi={pemilik} saatTutup={() => {}} />);
+  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
   fireEvent.click(await screen.findByRole('radio', { name: /Email tertentu/ }));
   fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
   expect((await screen.findByRole('alert')).textContent).toBe('Isi minimal satu email.');
   fireEvent.change(screen.getByRole('textbox', { name: /Email yang boleh/ }), { target: { value: 'bukan-email' } });
   fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
   expect((await screen.findByRole('alert')).textContent).toBe('Ada email yang penulisannya belum benar.');
-});
-
-test('tanpa login dialog mengajak masuk', () => {
-  const { bagikan } = siapkan();
-  const saatMasuk = vi.fn();
-  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} sesi={null} saatMasuk={saatMasuk} saatTutup={() => {}} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Masuk dengan Google' }));
-  expect(saatMasuk).toHaveBeenCalled();
 });
 
 test('penerima: tautan umum tampil, slug asing tidak ditemukan, akses email minta masuk', async () => {

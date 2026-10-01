@@ -2,7 +2,7 @@
 // sendiri (unik). Pengaturan tersimpan di server (kasus_dibagikan); penerima hanya melihat. Tanpa login: ajakan masuk.
 
 import { useEffect, useId, useState } from 'react';
-import type { AksesBagikan, RepositoriBagikan, Sesi } from '@waris/data';
+import type { AksesBagikan, RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import { SLUG_BAGIKAN, alamatBagikan } from '../rute';
 import { tandaiDibagikan } from '../bagikanLokal';
@@ -13,8 +13,6 @@ interface Props {
   idRiwayat: string;
   kasus: Kasus;
   repo: RepositoriBagikan;
-  sesi: Sesi | null;
-  saatMasuk?: (() => void) | undefined;
   saatTutup: () => void;
 }
 
@@ -26,9 +24,9 @@ const pilihanAkses = (): Array<{ nilai: AksesBagikan; label: string; bantu: stri
   { nilai: 'privat', label: t('bagikan.akses_privat'), bantu: t('bagikan.akses_privat_bantu') },
 ];
 
-export function DialogBagikan({ idRiwayat, kasus, repo, sesi, saatMasuk, saatTutup }: Props) {
+export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   const id = useId();
-  const [memuat, setMemuat] = useState(!!sesi);
+  const [memuat, setMemuat] = useState(true);
   const [sudahAda, setSudahAda] = useState(false);
   const [akses, setAkses] = useState<AksesBagikan>('tautan');
   const [slug, setSlug] = useState(slugAcak);
@@ -38,11 +36,10 @@ export function DialogBagikan({ idRiwayat, kasus, repo, sesi, saatMasuk, saatTut
   const [tersalin, setTersalin] = useState(false);
 
   useEffect(() => {
-    if (!sesi) return;
     void repo.bacaPengaturan(idRiwayat).then(ada => {
       if (ada) { setSudahAda(true); setAkses(ada.akses); setSlug(ada.slug); setTeksEmail(ada.email.join('\n')); }
     }).catch(() => setGalat(t('bagikan.gagal_memuat'))).finally(() => setMemuat(false));
-  }, [sesi, repo, idRiwayat]);
+  }, [repo, idRiwayat]);
 
   const simpan = async () => {
     const email = bacaEmail(teksEmail);
@@ -79,15 +76,7 @@ export function DialogBagikan({ idRiwayat, kasus, repo, sesi, saatMasuk, saatTut
     <div className="konfirmasi" role="dialog" aria-modal="true" aria-labelledby={`${id}-judul`} onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
       <form className="konfirmasi-isi form-bagikan" onSubmit={event => { event.preventDefault(); void simpan(); }}>
         <h2 id={`${id}-judul`}>{t('bagikan.judul')}</h2>
-        {!sesi ? (
-          <>
-            <p>{t('bagikan.perlu_masuk')}</p>
-            <div className="aksi-konfirmasi">
-              {saatMasuk && <button type="button" className="tautan-aksi" onClick={saatMasuk}>{t('bagikan.masuk_google')}</button>}
-              <Tombol type="button" varian="secondary" onClick={saatTutup}>{t('umum.tutup')}</Tombol>
-            </div>
-          </>
-        ) : memuat ? <p>{t('bagikan.memuat')}</p> : (
+        {memuat ? <p>{t('bagikan.memuat')}</p> : (
           <>
             <fieldset className="isian">
               <legend>{t('bagikan.siapa_bisa_buka')}</legend>
