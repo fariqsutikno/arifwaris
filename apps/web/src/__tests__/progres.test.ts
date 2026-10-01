@@ -1,6 +1,6 @@
 import { beforeEach, expect, test, vi } from 'vitest';
 import {
-  bacaPelajaranSelesai, bacaProgresBelajar, bacaProgresLatihan, bacaSkorPaket, catatLatihan, resetProgresBelajar,
+  bacaPelajaranSelesai, bacaProgresBelajar, bacaProgresLatihan, bacaRekorPaket, bacaSkorPaket, catatLatihan, resetProgresBelajar, simpanSkorPaket,
   tandaiPelajaranSelesai,
 } from '../progres';
 
@@ -44,4 +44,16 @@ test('reset menghapus progres & skor paket', () => {
   resetProgresBelajar();
   expect(bacaPelajaranSelesai().size).toBe(0);
   expect(bacaProgresLatihan('kuis')).toEqual({});
+});
+
+test('rekor paket: nilai terbaik tidak turun, percobaan bertambah, skor lama dihitung satu percobaan', () => {
+  localStorage.setItem('arif-waris:skor-paket', JSON.stringify({ 'bab-9': '3/5' }));
+  expect(bacaRekorPaket()['bab-9']).toEqual({ terbaik: '3/5', jumlahCoba: 1 });
+  simpanSkorPaket('bab-9', '2/5');
+  expect(bacaRekorPaket()['bab-9']).toEqual({ terbaik: '3/5', jumlahCoba: 2 });
+  expect(bacaSkorPaket()['bab-9']).toBe('2/5');
+  simpanSkorPaket('bab-9', '5/5');
+  expect(bacaRekorPaket()['bab-9']).toEqual({ terbaik: '5/5', jumlahCoba: 3 });
+  resetProgresBelajar();
+  expect(bacaRekorPaket()).toEqual({});
 });
