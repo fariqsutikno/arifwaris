@@ -51,7 +51,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
           <p className="lead">{t('beranda.hitung_pembagian_warisan_menurut_madzhab_syafi')}</p>
           <div className="aksi-hero">
             <a className="pil-hero pil-terang" href={TAUTAN_KALKULATOR} onClick={saatKeHitung}><Ikon nama="hitung" ukuran={18} />{t('beranda.coba_di_ariflab')}</a>
-            <a className="tautan-hero" href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')} {panah()}</a>
+            <a className="tautan-lanjut" href={berikutnya ? tautanBelajar(berikutnya.slug) : tautanBelajar()}>{jumlahSelesai === 0 ? t('beranda.mulai_belajar') : t('beranda.lanjut_belajar')}<span className="panah-kecil" aria-hidden="true">{panah()}</span></a>
           </div>
         </div>
         <ContohHidup saatCoba={saatCoba} />

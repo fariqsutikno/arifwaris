@@ -7,6 +7,7 @@ import type { Sesi } from '@waris/data';
 import { t } from '../terjemah';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Tombol } from '../ui/komponen';
+import { Ikon } from '../ui/Ikon';
 import { tautanPeringkat } from '../rute';
 import { ModalProfil } from './ModalProfil';
 import { keluarDanBersihkan, kirimSebelumKeluar, type RepoAkun } from './sinkron';
@@ -47,10 +48,13 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
         onClick={() => setMenuTerbuka(!menuTerbuka)}>{sesi.email.slice(0, 1).toUpperCase()}</Tombol>
       {menuTerbuka && (
         <div role="menu" className="menu-akun-isi">
-          <span className="keterangan">{sesi.email}</span>
-          <button type="button" role="menuitem" onClick={() => { setMenuTerbuka(false); setProfilTerbuka(true); }}>{t('akun.profil')}</button>
-          <a role="menuitem" href={tautanPeringkat()} onClick={() => setMenuTerbuka(false)}>{t('akun.papan_peringkat')}</a>
-          <button type="button" role="menuitem" onClick={() => void cobaKeluar()}>{t('umum.keluar')}</button>
+          <div className="kepala-menu-akun">
+            <span className="avatar-menu" aria-hidden="true">{sesi.email.slice(0, 1).toUpperCase()}</span>
+            <span className="email-menu">{sesi.email}</span>
+          </div>
+          <button type="button" role="menuitem" onClick={() => { setMenuTerbuka(false); setProfilTerbuka(true); }}><Ikon nama="profil" ukuran={18} />{t('akun.profil')}</button>
+          <a className="butir-menu" role="menuitem" href={tautanPeringkat()} onClick={() => setMenuTerbuka(false)}><Ikon nama="peringkat" ukuran={18} />{t('akun.papan_peringkat')}</a>
+          <button type="button" role="menuitem" className="butir-keluar" onClick={() => void cobaKeluar()}><Ikon nama="keluar" ukuran={18} />{t('umum.keluar')}</button>
         </div>
       )}
       {belumTerkirim > 0 && (

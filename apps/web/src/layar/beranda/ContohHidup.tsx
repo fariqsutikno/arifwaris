@@ -6,7 +6,7 @@ import { useMemo, useState } from 'react';
 import { Pohon } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import { PenyediaSorot } from '../../hasil/sorot';
-import { ringkas } from '../../hasil/ringkasan';
+import { persenTeks, ringkas } from '../../hasil/ringkasan';
 import { formatRupiahRingkas } from '../../format';
 import { jalankan } from '../../jalankan';
 import type { Kasus } from '../../kasus';
@@ -17,6 +17,8 @@ import { angka, panah, t } from '../../terjemah';
 const HARTA_CONTOH = 240_000_000n;
 // Pohon contoh kecil (3-4 orang): boleh diperbesar sampai mengisi kotak hero, bukan mengambang di tengah.
 const SKALA_MAKS = 1.5;
+// Warna ruas pita bagian, satu per penerima (urutan sama dengan legenda).
+const WARNA_RUAS = ['#6ee9b0', '#f6c86a', '#8ec5ff', '#f7a8c4', '#c9a8f7'];
 
 const KEADAAN = [
   { kunci: 'istri-dan-anak', label: () => t('beranda.contoh_istri_dan_anak'), pewaris: 'L', ahliWaris: ['ISTRI', 'ANAK_LK', 'ANAK_PR'] },
@@ -48,17 +50,31 @@ export function ContohHidup({ saatCoba }: { saatCoba: (kasus: Kasus) => void }) 
           </PenyediaSorot>
         </PratinjauPohon>
       </div>
-      <div className="kaki-contoh">
-        <dl className="statistik-hero">
-          <div><dt>{t('beranda.stat_harta')}</dt><dd>{formatRupiahRingkas(HARTA_CONTOH)}</dd></div>
-          <div><dt>{t('beranda.stat_dapat')}</dt><dd>{angka(String(ringkasan.penerima.length))}</dd></div>
-          {ringkasan.terhalang.length > 0 && <div><dt>{t('beranda.stat_tidak_dapat')}</dt><dd>{angka(String(ringkasan.terhalang.length))}</dd></div>}
-        </dl>
+      <section className="ringkasan-contoh" key={`ringkasan-${keadaan.kunci}`}>
+        <div className="baris-harta">
+          <div className="harta-contoh"><span>{t('beranda.stat_harta')}</span><b>{formatRupiahRingkas(HARTA_CONTOH)}</b></div>
+          <ul className="penanda-contoh daftar-polos">
+            <li><b>{angka(String(ringkasan.penerima.length))}</b>{t('beranda.stat_dapat')}</li>
+            {ringkasan.terhalang.length > 0 && <li className="redup"><b>{angka(String(ringkasan.terhalang.length))}</b>{t('beranda.stat_tidak_dapat')}</li>}
+          </ul>
+        </div>
+        <div className="pita-bagian" aria-hidden="true">
+          {ringkasan.penerima.map((orang, urutan) => (
+            <span key={orang.id} style={{ width: `${Number(orang.saham * 10000n / ringkasan.penyebut) / 100}%`, background: WARNA_RUAS[urutan % WARNA_RUAS.length] }} />
+          ))}
+        </div>
+        <ul className="legenda-pita daftar-polos">
+          {ringkasan.penerima.map((orang, urutan) => (
+            <li key={orang.id}><i style={{ background: WARNA_RUAS[urutan % WARNA_RUAS.length] }} />{orang.nama}<b>{persenTeks(orang.saham, ringkasan.penyebut)}</b></li>
+          ))}
+        </ul>
+      </section>
+      <div className="aksi-contoh">
+        <p className="petunjuk-contoh"><Ikon nama="tanya" ukuran={16} />{t('beranda.contoh_petunjuk')}</p>
         <button type="button" className="pil-hero pil-terang" onClick={() => saatCoba(kasus)}>
           <Ikon nama="hitung" ukuran={18} />{t('beranda.coba_kasus_ini')} {panah()}
         </button>
       </div>
-      <p className="petunjuk-contoh"><Ikon nama="tanya" ukuran={16} />{t('beranda.contoh_petunjuk')}</p>
     </div>
   );
 }
