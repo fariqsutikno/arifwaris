@@ -1,7 +1,9 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
+import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
-import { kasusBaru, type Kasus } from '../kasus';
+import { kasusBaru, rapikanKeadaan, type Kasus } from '../kasus';
+import { PASANGAN_LAIN } from '../kerabatPohon';
 import { PohonKeluarga } from '../layar/wizard/PohonKeluarga';
 
 const kasusAnak = (): Kasus => { const k = kasusBaru('L'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }; };
@@ -31,5 +33,72 @@ describe('PohonKeluarga: menu orang', () => {
     const menu = screen.getByRole('menu');
     expect(within(menu).getByRole('menuitem', { name: /Ubah/ })).toBeTruthy();
     expect(within(menu).getByRole('menuitem', { name: /Hapus/ })).toBeTruthy();
+  });
+});
+
+function Uji({ awal }: { awal: Kasus }) {
+  const [kasus, setKasus] = useState(awal);
+  (globalThis as { __kasus?: Kasus }).__kasus = kasus;
+  return <PohonKeluarga kasus={kasus} ubah={f => setKasus(k => rapikanKeadaan(f(k)))} />;
+}
+const kasusTerakhir = () => (globalThis as { __kasus?: Kasus }).__kasus!;
+const bukaMenuPewaris = () => fireEvent.click(screen.getAllByRole('button', { name: /Buka menu/ })[0]!);
+const pilihMenu = (nama: RegExp) => fireEvent.click(within(screen.getByRole('menu')).getByRole('menuitem', { name: nama }));
+
+describe('PohonKeluarga: dialog', () => {
+  it('+ Anak: pilih laki-laki, isi nama, simpan → anak bernama masuk graf', () => {
+    render(<Uji awal={kasusBaru('L')} />);
+    bukaMenuPewaris(); pilihMenu(/\+ Anak/);
+    fireEvent.click(screen.getByRole('radio', { name: 'Laki-laki' }));
+    fireEvent.change(screen.getByLabelText(/Nama/), { target: { value: 'Budi' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+    expect(Object.values(kasusTerakhir().graf.orang).some(o => o.nama === 'Budi' && o.idAyah === 'PEWARIS')).toBe(true);
+  });
+  it('+ Anak tanpa memilih jenis kelamin: Simpan nonaktif', () => {
+    render(<Uji awal={kasusBaru('L')} />);
+    bukaMenuPewaris(); pilihMenu(/\+ Anak/);
+    expect((screen.getByRole('button', { name: 'Simpan' }) as HTMLButtonElement).disabled).toBe(true);
+  });
+  it('+ Pasangan tanpa pertanyaan tambahan: langsung bisa Simpan', () => {
+    render(<Uji awal={kasusBaru('L')} />);
+    bukaMenuPewaris(); pilihMenu(/\+ Pasangan/);
+    fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+    expect(kasusTerakhir().graf.pernikahan).toHaveLength(1);
+  });
+  it('dua istri: + Anak menanyakan pasangan dan Simpan menunggu jawaban', () => {
+    let k = kasusBaru('L');
+    k = { ...k, graf: tambahAhliWaris(tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI'), 'PEWARIS', 'ISTRI') };
+    render(<Uji awal={k} />);
+    bukaMenuPewaris(); pilihMenu(/\+ Anak/);
+    fireEvent.click(screen.getByRole('radio', { name: 'Laki-laki' }));
+    expect((screen.getByRole('button', { name: 'Simpan' }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.click(screen.getByRole('radio', { name: 'Pasangan lain, tidak dicatat' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+    expect(Object.values(kasusTerakhir().graf.orang).filter(o => o.idAyah === 'PEWARIS' && !o.idIbu)).toHaveLength(1);
+    void PASANGAN_LAIN;
+  });
+  it('Hapus anak yang punya cucu menyebut bahwa ia tetap sebagai penghubung', () => {
+    let k = kasusBaru('L');
+    k = { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') };
+    const anak = Object.values(k.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
+    k = { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'CUCU_LK', { idInduk: anak }) };
+    render(<Uji awal={k} />);
+    const tombol = screen.getAllByRole('button', { name: /Buka menu/ });
+    fireEvent.click(tombol.find(t => /Anak|anak/.test(t.getAttribute('aria-label') ?? ''))!);
+    pilihMenu(/Hapus/);
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/tetap ada sebagai orang yang sudah wafat/);
+  });
+  it('Hapus menjalankan rapikanKeadaan: id yang hilang tidak tersisa di urutan wafat', () => {
+    let k = kasusBaru('L');
+    k = { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') };
+    const anak = Object.values(k.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
+    k = { ...k, urutanWafat: [anak], graf: { ...k.graf, orang: { ...k.graf.orang, [anak]: { ...k.graf.orang[anak]!, statusHidup: 'hidup' } } } };
+    render(<Uji awal={k} />);
+    const tombol = screen.getAllByRole('button', { name: /Buka menu/ });
+    fireEvent.click(tombol[tombol.length - 1]!);
+    pilihMenu(/Hapus/);
+    fireEvent.click(screen.getByRole('button', { name: /Hapus/ }));
+    expect(kasusTerakhir().graf.orang[anak]).toBeUndefined();
+    expect(kasusTerakhir().urutanWafat).toEqual([]);
   });
 });

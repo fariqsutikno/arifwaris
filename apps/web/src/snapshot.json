@@ -20496,6 +20496,174 @@
    "id": "Tambah mertua, menantu, ipar, dll.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.judul_tambah_orang_tua",
+   "halaman": "hitung",
+   "id": "Tambah orang tua {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.judul_tambah_pasangan",
+   "halaman": "hitung",
+   "id": "Tambah pasangan {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.judul_tambah_anak",
+   "halaman": "hitung",
+   "id": "Tambah anak {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.judul_tambah_saudara",
+   "halaman": "hitung",
+   "id": "Tambah saudara {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.judul_ubah",
+   "halaman": "hitung",
+   "id": "Ubah {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.nama_orang",
+   "halaman": "hitung",
+   "id": "Nama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.nama_orang_opsional",
+   "halaman": "hitung",
+   "id": "Nama (boleh dikosongkan)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.kelamin",
+   "halaman": "hitung",
+   "id": "Jenis kelamin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.laki_laki",
+   "halaman": "hitung",
+   "id": "Laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.perempuan",
+   "halaman": "hitung",
+   "id": "Perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.sebagai",
+   "halaman": "hitung",
+   "id": "Sebagai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.dari_pasangan_mana",
+   "halaman": "hitung",
+   "id": "Dari pasangan yang mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.pasangan_lain_tidak_dicatat",
+   "halaman": "hitung",
+   "id": "Pasangan lain, tidak dicatat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.jalur_saudara",
+   "halaman": "hitung",
+   "id": "Saudara ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.jalur_kandung",
+   "halaman": "hitung",
+   "id": "Satu ayah dan satu ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.jalur_sebapak",
+   "halaman": "hitung",
+   "id": "Satu ayah saja",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.jalur_seibu",
+   "halaman": "hitung",
+   "id": "Satu ibu saja",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.simpan",
+   "halaman": "hitung",
+   "id": "Simpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.batal",
+   "halaman": "hitung",
+   "id": "Batal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hapus_judul",
+   "halaman": "hitung",
+   "id": "Hapus {nama}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hapus_biasa",
+   "halaman": "hitung",
+   "id": "{nama} dihapus dari keluarga ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hapus_penghubung",
+   "halaman": "hitung",
+   "id": "{nama} masih punya keturunan di pohon, jadi tetap ada sebagai orang yang sudah wafat tanpa nama supaya garis keturunannya tidak putus.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.hapus_pasangan",
+   "halaman": "hitung",
+   "id": "Pernikahannya dengan {pasangan} ikut dilepas; {pasangan} tetap ada.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.ubah_keadaan",
+   "halaman": "hitung",
+   "id": "Ubah keadaan (wafat, hilang, dll.)",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -16,9 +16,11 @@ interface Props {
   tahan?: boolean;
   /** Tantangan ketik: tombol lanjut baru aktif setelah kalimat ini diketik persis. Untuk aksi yang tidak bisa dibatalkan. */
   kataKunci?: string;
+  /** Tombol lanjut nonaktif selama isian belum lengkap. */
+  lanjutNonaktif?: boolean;
 }
 
-export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan, kataKunci }: Props) {
+export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan, kataKunci, lanjutNonaktif }: Props) {
   const id = useId();
   const [ketikan, setKetikan] = useState('');
   const cocok = !kataKunci || ketikan.trim() === kataKunci;
@@ -39,7 +41,7 @@ export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'B
         <div className="aksi-konfirmasi">
           <Tombol data-batal onClick={saatBatal}>{labelBatal}</Tombol>
           {tahan ? <TombolTahan label={labelLanjut} saatSelesai={saatLanjut} />
-            : <Tombol varian="secondary" disabled={!cocok} onClick={saatLanjut}>{labelLanjut}</Tombol>}
+            : <Tombol varian="secondary" disabled={!cocok || lanjutNonaktif} onClick={saatLanjut}>{labelLanjut}</Tombol>}
         </div>
       </div>
     </div>

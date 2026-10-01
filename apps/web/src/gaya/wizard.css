@@ -135,3 +135,10 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .menu-orang-butir.bahaya{color:var(--danger,#b3261e)}
 @keyframes menu-naik{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.menu-orang{animation:none}}
+
+/* Dialog tambah/ubah orang: pilihan segmen kecil dan tautan teks (bukan tombol berbingkai) */
+.tautan-teks{min-height:44px;padding:0 2px;border:0;background:none;color:var(--on-fill);font:600 14px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:start}
+.pilihan-dialog{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.label-pilihan{flex-basis:100%;font:700 13px var(--font-sans)}
+.pilih-dialog{min-height:40px;padding:0 14px;border:var(--border-w) solid var(--outline);border-radius:999px;background:var(--surface-raised);color:var(--on-fill);font:600 14px var(--font-sans);cursor:pointer}
+.pilih-dialog.terpilih{background:var(--on-fill);color:var(--surface-raised)}
