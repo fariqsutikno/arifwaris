@@ -1,7 +1,7 @@
 -- supabase/tests/database/15_bagikan.test.sql
 -- Bagikan kasus: slug unik & berformat, akses privat/tautan/email, penerima hanya membaca, anon tidak bisa menyisir tabel.
 begin;
-select plan(13);
+select plan(16);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000e1', 'pemilik@tes.local'),
@@ -22,6 +22,8 @@ select throws_ok($$insert into kasus_dibagikan (id_riwayat, slug, akses, kasus) 
 select throws_ok($$insert into kasus_dibagikan (id_riwayat, slug, akses, kasus) values ('r6', '-ab', 'tautan', '{}')$$,
   '23514', null, 'slug tidak boleh diawali strip');
 select is(baca_kasus_dibagikan('kasus-pribadi') ->> 'status', 'ok', 'pemilik membaca kasus privatnya');
+select is(tautan_bagikan_tersedia('kasus-umum', 'r1'), true, 'slug milik kasus sendiri tidak dianggap bentrok');
+select is(tautan_bagikan_tersedia('kasus-umum', 'lain'), false, 'slug milik kasus lain tidak tersedia');
 
 set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-0000000000e2", "role": "authenticated", "email": "teman@tes.local"}';
 select is(baca_kasus_dibagikan('kasus-teman') ->> 'status', 'ok', 'email terdaftar boleh (tanpa beda huruf besar)');
@@ -32,6 +34,8 @@ select is_empty($$update kasus_dibagikan set akses = 'tautan' returning 1$$, 'pe
 set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-0000000000e3", "role": "authenticated", "email": "asing@tes.local"}';
 select is(baca_kasus_dibagikan('kasus-teman') ->> 'status', 'tidak_boleh', 'email lain ditolak');
 select is(baca_kasus_dibagikan('kasus-umum') ->> 'status', 'ok', 'akses tautan terbuka untuk yang sudah masuk');
+
+select is(tautan_bagikan_tersedia('kasus-umum', 'r1'), false, 'pengguna lain: slug yang sudah dipakai tidak tersedia');
 
 set local role anon;
 set local request.jwt.claims = '{"role": "anon"}';

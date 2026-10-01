@@ -21021,6 +21021,195 @@
    "id": "Hanya bisa dibuka oleh: {email}.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.subjudul",
+   "halaman": "bagikan",
+   "id": "Penerima hanya bisa melihat. Kalau kamu mengubah kasus ini, yang mereka lihat ikut diperbarui.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.buat_tautan",
+   "halaman": "bagikan",
+   "id": "Buat tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.simpan_perubahan",
+   "halaman": "bagikan",
+   "id": "Simpan perubahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.salin",
+   "halaman": "bagikan",
+   "id": "Salin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tersalin_pendek",
+   "halaman": "bagikan",
+   "id": "Tersalin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.status_periksa",
+   "halaman": "bagikan",
+   "id": "Memeriksa…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.status_tersedia",
+   "halaman": "bagikan",
+   "id": "Nama tautan ini tersedia.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.status_dipakai",
+   "halaman": "bagikan",
+   "id": "Sudah dipakai kasus lain. Coba nama lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.status_aktif",
+   "halaman": "bagikan",
+   "id": "Tautan aktif.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.belum_aktif",
+   "halaman": "bagikan",
+   "id": "Tautan baru aktif setelah kamu menekan Buat tautan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tautan_aktif",
+   "halaman": "bagikan",
+   "id": "Tautan aktif. Tinggal kirim.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tautan_aktif_tersalin",
+   "halaman": "bagikan",
+   "id": "Tautan aktif dan sudah disalin. Tinggal kirim.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.lihat_sebagai_penerima",
+   "halaman": "bagikan",
+   "id": "Lihat sebagai penerima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.matikan",
+   "halaman": "bagikan",
+   "id": "Matikan tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.matikan_tanya",
+   "halaman": "bagikan",
+   "id": "Matikan tautan ini? Orang yang punya tautannya tidak bisa membukanya lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ya_matikan",
+   "halaman": "bagikan",
+   "id": "Ya, matikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.jangan",
+   "halaman": "bagikan",
+   "id": "Jangan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_bantu",
+   "halaman": "bagikan",
+   "id": "Pisahkan dengan koma atau baris baru. {jumlah} email.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.email_tidak_sah_nama",
+   "halaman": "bagikan",
+   "id": "Penulisan email “{email}” belum benar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.kelola",
+   "halaman": "bagikan",
+   "id": "Kelola tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.buka",
+   "halaman": "tampilan",
+   "id": "Gerak dan suara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.animasi",
+   "halaman": "tampilan",
+   "id": "Animasi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.animasi_sistem",
+   "halaman": "tampilan",
+   "id": "Dimatikan oleh pengaturan perangkatmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.suara",
+   "halaman": "tampilan",
+   "id": "Suara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.suara_ikut",
+   "halaman": "tampilan",
+   "id": "Otomatis (nyala di Belajar dan Latihan)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.suara_nyala",
+   "halaman": "tampilan",
+   "id": "Nyala",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "tampilan.suara_mati",
+   "halaman": "tampilan",
+   "id": "Mati",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

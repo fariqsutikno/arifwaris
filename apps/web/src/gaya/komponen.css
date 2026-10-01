@@ -1384,20 +1384,39 @@ body.layar-hasil{background:var(--halaman)}
   .pohon-penuh-atas{padding:10px 12px}
 }
 
-/* Dialog bagikan kasus */
-.form-bagikan{max-width:520px}
-.pilihan-akses{display:flex;gap:10px;align-items:flex-start;min-height:44px;cursor:pointer;font-weight:400}
-.pilihan-akses input{width:20px;height:20px;margin-top:3px;accent-color:var(--primary)}
-.pilihan-akses span{display:flex;flex-direction:column;gap:2px}
-.pilihan-akses small{color:var(--ink-muted);font-size:13px}
-.form-bagikan fieldset{border:0;padding:0;margin:0}
+/* Dialog bagikan kasus: satu layar; tautan di atas, kartu pilihan akses, status tersimpan */
+.form-bagikan{max-width:540px;gap:18px}
+.form-bagikan header{display:flex;flex-direction:column;gap:6px}
+.bantu-bagikan{color:var(--ink-muted);font-size:14px;line-height:1.5}
+.bagian-bagikan{display:flex;flex-direction:column;gap:8px;border:0;padding:0;margin:0;min-width:0}
+.bagian-bagikan h3,.bagian-bagikan legend{margin:0;padding:0;font:700 14px var(--font-sans)}
+.kotak-tautan{display:flex;align-items:center;gap:6px;min-height:52px;padding:4px 4px 4px 14px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-sunken)}
+.kotak-tautan:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.kotak-tautan.salah{border-color:var(--danger)}
+.awalan-tautan{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-muted);font:500 14px var(--font-sans)}
+.kotak-tautan input{flex:1 1 90px;min-width:60px;height:40px;padding:0;border:0;background:transparent;color:var(--ink);font:700 15px var(--font-sans)}
+.kotak-tautan input:focus{outline:none}
+.kotak-tautan .aw-btn{flex:none;min-height:40px}
+.status-nama{min-height:20px;margin:0;font-size:13px;color:var(--ink-muted)}
+.status-nama.tersedia,.status-nama.sendiri{color:#1f6b3a}
+.status-nama.dipakai,.status-nama.tidak_sah{color:var(--danger);font-weight:700}
+.opsi-akses{position:relative;display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-md);border:var(--border-w) solid var(--divider);background:var(--surface-raised);cursor:pointer}
+.opsi-akses:hover{border-color:var(--outline)}
+.opsi-akses[data-pilih=true]{border-color:var(--primary);box-shadow:inset 0 0 0 1px var(--primary);background:var(--primary-soft)}
+.opsi-akses input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opsi-akses:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.ikon-opsi{flex:none;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--surface-sunken)}
+.opsi-akses[data-pilih=true] .ikon-opsi{background:var(--primary);color:var(--on-primary)}
+.teks-opsi{display:flex;flex-direction:column;gap:2px;font-weight:400}
+.teks-opsi b{font-size:15px}
+.teks-opsi small{color:var(--ink-muted);font-size:13px;line-height:1.45}
 .form-bagikan textarea{padding:10px 14px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:600 15px var(--font-sans);resize:vertical}
-.form-bagikan .kotak-uang{height:44px}
-.form-bagikan .kotak-uang input{font-size:15px}
-.form-bagikan .prefix-uang{font-size:12px;max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.catatan-bagikan{margin:0;padding:10px 16px;text-align:center;color:var(--ink-muted);font-size:14px}
-.kotak-tautan{display:flex;gap:8px;align-items:stretch}
-.kotak-tautan input{flex:1;min-width:0;height:44px;padding:0 12px;border-radius:var(--radius-md);border:var(--border-w) solid var(--outline);background:var(--surface-sunken);color:var(--ink);font:600 14px var(--font-sans);text-overflow:ellipsis}
-.ringkasan-bagikan{color:var(--ink-muted);font-size:14px;overflow-wrap:anywhere}
-.tautan-terbaca{font-weight:400;font-size:14px;overflow-wrap:anywhere}
-@media (max-width:560px){.kotak-tautan{flex-direction:column}}
+.sukses-bagikan{display:flex;gap:8px;align-items:center;margin:0;padding:10px 12px;border-radius:var(--radius-md);background:var(--primary-soft);font-size:14px;font-weight:600}
+.aksi-bagikan{display:flex;flex-wrap:wrap;gap:8px 12px}
+.aksi-bagikan .aw-btn{flex:1 1 140px}
+.aksi-kiri{order:3;flex:1 1 100%;display:flex;flex-wrap:wrap;justify-content:center;gap:0 22px}
+.tanya-matikan{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:var(--radius-md);background:var(--danger-soft)}
+.catatan-bagikan{margin:12px auto;max-width:1100px;padding:10px 16px;text-align:center;border-radius:var(--radius-md);background:var(--primary-soft);color:var(--ink);font-size:14px}
+@media (max-width:560px){.kotak-tautan{flex-wrap:wrap;padding:8px 10px}.kotak-tautan .aw-btn{width:100%}.aksi-kiri{width:100%}}
+.pil-hero.sekunder{background:rgba(255,255,255,.14);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
+.pil-hero.sekunder:hover{background:rgba(255,255,255,.24)}

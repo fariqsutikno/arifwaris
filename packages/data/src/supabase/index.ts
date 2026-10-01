@@ -283,6 +283,9 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       await hasil(klien.from('kasus_dibagikan').update({ kasus, diubah_pada: new Date().toISOString() }).eq('id_riwayat', idRiwayat));
     },
     async berhenti(idRiwayat) { await hasil(klien.from('kasus_dibagikan').delete().eq('id_riwayat', idRiwayat)); },
+    async tautanTersedia(slug, idRiwayat) {
+      return await hasil(klien.rpc('tautan_bagikan_tersedia', { p_slug: slug, p_id_riwayat: idRiwayat })) as boolean;
+    },
     async baca(slug) {
       const baris = await hasil(klien.rpc('baca_kasus_dibagikan', { p_slug: slug })) as any;
       return baris.status === 'ok' ? { status: 'ok', kasus: baris.kasus, akses: baris.akses, milikSendiri: baris.pemilik } : { status: baris.status };

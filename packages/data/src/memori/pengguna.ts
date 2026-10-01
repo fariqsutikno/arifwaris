@@ -86,6 +86,9 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
     },
     async perbaruiKasus(idRiwayat, kasus) { const baris = barisSaya(idRiwayat); if (baris) baris.kasus = kasus; },
     async berhenti(idRiwayat) { dibagikan.delete(kunci(idRiwayat)); },
+    async tautanTersedia(slug, idRiwayat) {
+      return ![...dibagikan.values()].some(baris => baris.slug === slug && !(baris.pemilik === pemilik() && baris.idRiwayat === idRiwayat));
+    },
     async baca(slug): Promise<BacaBagikan> {
       const sesi = bersama.sesiSekarang();
       const baris = [...dibagikan.values()].find(isi => isi.slug === slug);

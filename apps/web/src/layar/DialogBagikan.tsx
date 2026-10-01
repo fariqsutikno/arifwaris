@@ -1,60 +1,72 @@
-// Dialog "Bagikan kasus". Dua tampilan: LIHAT (tautan siap salin + ringkasan siapa yang bisa membuka) dan ATUR (siapa yang boleh
-// membuka, daftar email, nama tautan). Kasus yang belum pernah dibagikan langsung di ATUR dengan tautan acak yang tinggal disimpan;
-// nama tautan baru bisa diedit setelah menekan "Ubah tautan", jadi tidak ada kolom yang terbuka sebelum diminta.
-// Menyimpan menyalin tautan otomatis. Penerima hanya melihat; pengaturan tersimpan di server (kasus_dibagikan).
+// Dialog "Bagikan kasus", satu layar tanpa mode. Dari atas: tautan (selalu terlihat, nama tautannya bisa diketik langsung
+// dengan umpan balik "tersedia / sudah dipakai" saat mengetik, tombol Salin di sampingnya), siapa yang boleh membuka (kartu
+// pilihan), daftar email bila perlu. Kasus yang belum dibagikan memakai tombol "Buat tautan"; yang sudah, "Simpan perubahan"
+// (aktif hanya bila ada yang berubah). Menyimpan menyalin tautan otomatis. Mematikan tautan minta konfirmasi.
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import type { AksesBagikan, PengaturanBagikan, RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
-import { SLUG_BAGIKAN, alamatBagikan } from '../rute';
+import { SLUG_BAGIKAN, alamatBagikan, tautanBagikan } from '../rute';
 import { tandaiDibagikan } from '../bagikanLokal';
+import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { Tombol } from '../ui/komponen';
 import { t } from '../terjemah';
 
 interface Props { idRiwayat: string; kasus: Kasus; repo: RepositoriBagikan; saatTutup: () => void }
+type StatusNama = 'sendiri' | 'memeriksa' | 'tersedia' | 'dipakai' | 'tidak_sah' | 'tak_diketahui';
 
 const BATAS_EMAIL = 50;
 const PANJANG_SLUG_ACAK = 8;
+const JEDA_CEK_NAMA_MS = 400;
 
 export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   const id = useId();
   const [memuat, setMemuat] = useState(true);
   const [tersimpan, setTersimpan] = useState<PengaturanBagikan | null>(null);
-  const [mode, setMode] = useState<'lihat' | 'atur'>('atur');
   const [akses, setAkses] = useState<AksesBagikan>('tautan');
   const [slug, setSlug] = useState(slugAcak);
-  const [ubahTautan, setUbahTautan] = useState(false);
   const [teksEmail, setTeksEmail] = useState('');
   const [galat, setGalat] = useState('');
   const [sibuk, setSibuk] = useState(false);
   const [tersalin, setTersalin] = useState(false);
-  const kolomTautan = useRef<HTMLInputElement>(null);
+  const [baruDisimpan, setBaruDisimpan] = useState(false);
+  const [tanyaMatikan, setTanyaMatikan] = useState(false);
+  const [statusNama, setStatusNama] = useState<StatusNama>('tersedia');
 
   useEffect(() => {
     void repo.bacaPengaturan(idRiwayat).then(ada => {
       if (!ada) return;
-      setTersimpan(ada);
-      isiForm(ada);
-      setMode('lihat');
+      setTersimpan(ada); setAkses(ada.akses); setSlug(ada.slug); setTeksEmail(ada.email.join('\n'));
     }).catch(() => setGalat(t('bagikan.gagal_memuat'))).finally(() => setMemuat(false));
   }, [repo, idRiwayat]);
 
-  const isiForm = (pengaturan: PengaturanBagikan) => {
-    setAkses(pengaturan.akses); setSlug(pengaturan.slug); setTeksEmail(pengaturan.email.join('\n')); setUbahTautan(false); setGalat('');
-  };
+  // Nama tautan diperiksa saat mengetik (setelah jeda singkat); kegagalan cek tidak menghalangi, server tetap menolak bentrok.
+  useEffect(() => {
+    if (!SLUG_BAGIKAN.test(slug)) return setStatusNama('tidak_sah');
+    if (tersimpan?.slug === slug) return setStatusNama('sendiri');
+    setStatusNama('memeriksa');
+    let batal = false;
+    const tunda = setTimeout(() => {
+      repo.tautanTersedia(slug, idRiwayat).then(ya => { if (!batal) setStatusNama(ya ? 'tersedia' : 'dipakai'); })
+        .catch(() => { if (!batal) setStatusNama('tak_diketahui'); });
+    }, JEDA_CEK_NAMA_MS);
+    return () => { batal = true; clearTimeout(tunda); };
+  }, [slug, tersimpan, repo, idRiwayat]);
 
-  // Gagal menyalin (mis. izin ditolak) tidak apa-apa: kolom tautan tetap terpilih supaya bisa disalin manual.
+  const email = bacaEmail(teksEmail);
+  const emailSalah = email.filter(surel => !SUREL.test(surel));
+  const berubah = !tersimpan || akses !== tersimpan.akses || slug !== tersimpan.slug
+    || (akses === 'email' && email.join() !== tersimpan.email.join());
+  const siapSalin = !!tersimpan && slug === tersimpan.slug;
+  const bisaSimpan = !sibuk && berubah && statusNama !== 'dipakai' && statusNama !== 'tidak_sah'
+    && (akses !== 'email' || (email.length > 0 && emailSalah.length === 0 && email.length <= BATAS_EMAIL));
+
+  // Gagal menyalin (mis. izin ditolak) tidak apa-apa: tautan tetap tampil dan bisa dipilih manual.
   const salin = async (slugTarget: string) => {
-    kolomTautan.current?.select();
     try { await navigator.clipboard.writeText(alamatBagikan(slugTarget)); setTersalin(true); } catch { setTersalin(false); }
   };
-
   const simpan = async () => {
-    const email = bacaEmail(teksEmail);
-    if (!SLUG_BAGIKAN.test(slug)) return setGalat(t('bagikan.slug_tidak_sah'));
-    if (akses === 'email' && email.length === 0) return setGalat(t('bagikan.email_kosong'));
-    if (email.some(surel => !SUREL.test(surel))) return setGalat(t('bagikan.email_tidak_sah'));
-    if (email.length > BATAS_EMAIL) return setGalat(t('bagikan.email_terlalu_banyak', { batas: BATAS_EMAIL }));
+    if (!bisaSimpan) return;
     const pengaturan = { slug, akses, email: akses === 'email' ? email : [] };
     setSibuk(true);
     setGalat('');
@@ -62,15 +74,15 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
       await repo.simpan(idRiwayat, pengaturan, JSON.parse(keJson(kasus)));
       tandaiDibagikan(idRiwayat, true);
       setTersimpan(pengaturan);
-      setMode('lihat');
-      void salin(slug);
+      setBaruDisimpan(true);
+      await salin(slug);
     } catch (kesalahan) {
       setGalat(kesalahan instanceof Error ? kesalahan.message : t('bagikan.gagal_menyimpan'));
     } finally {
       setSibuk(false);
     }
   };
-  const berhenti = async () => {
+  const matikan = async () => {
     setSibuk(true);
     try {
       await repo.berhenti(idRiwayat);
@@ -81,65 +93,78 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
       setSibuk(false);
     }
   };
-  const batalAtur = () => { if (tersimpan) { isiForm(tersimpan); setMode('lihat'); } else saatTutup(); };
+  // Mengubah apa pun membuat status "baru disimpan/tersalin" tidak berlaku lagi.
+  const ubah = (aksi: () => void) => { aksi(); setBaruDisimpan(false); setTersalin(false); setGalat(''); };
 
   return (
     <div className="konfirmasi" role="dialog" aria-modal="true" aria-labelledby={`${id}-judul`} onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
-      <form className="konfirmasi-isi form-bagikan" onSubmit={event => { event.preventDefault(); if (mode === 'atur') void simpan(); }}>
-        <h2 id={`${id}-judul`}>{mode === 'lihat' ? t('bagikan.tautan_siap') : t('bagikan.judul')}</h2>
-        {memuat ? <p>{t('bagikan.memuat')}</p> : mode === 'lihat' && tersimpan ? (
+      <form className="konfirmasi-isi form-bagikan" onSubmit={event => { event.preventDefault(); void simpan(); }}>
+        <header>
+          <h2 id={`${id}-judul`}>{t('bagikan.judul')}</h2>
+          <p className="bantu-bagikan">{t('bagikan.subjudul')}</p>
+        </header>
+        {memuat ? <p>{t('bagikan.memuat')}</p> : (
           <>
-            <div className="kotak-tautan">
-              <input ref={kolomTautan} readOnly value={alamatBagikan(tersimpan.slug)} aria-label={t('bagikan.tautan')} onFocus={event => event.target.select()} />
-              <Tombol type="button" onClick={() => void salin(tersimpan.slug)}>{tersalin ? t('bagikan.tersalin') : t('bagikan.salin_tautan')}</Tombol>
-            </div>
-            <p className="ringkasan-bagikan">{ringkasanAkses(tersimpan)}</p>
-            {galat && <p role="alert" className="isian-salah">{galat}</p>}
-            <div className="aksi-konfirmasi">
-              <button type="button" className="tautan-aksi" disabled={sibuk} onClick={() => setMode('atur')}>{t('bagikan.ubah_pengaturan')}</button>
-              <button type="button" className="tautan-aksi" disabled={sibuk} onClick={() => void berhenti()}>{t('bagikan.berhenti')}</button>
-              <Tombol type="button" varian="secondary" onClick={saatTutup}>{t('umum.tutup')}</Tombol>
-            </div>
-          </>
-        ) : (
-          <>
-            <fieldset className="isian">
+            <section aria-labelledby={`${id}-tautan`} className="bagian-bagikan">
+              <h3 id={`${id}-tautan`}>{t('bagikan.tautan')}</h3>
+              <div className={`kotak-tautan${statusNama === 'dipakai' || statusNama === 'tidak_sah' ? ' salah' : ''}`}>
+                <span className="awalan-tautan" aria-hidden="true">{awalanTautan()}</span>
+                <input value={slug} maxLength={40} autoComplete="off" spellCheck={false} aria-label={t('bagikan.nama_tautan')} aria-describedby={`${id}-status-nama`}
+                  onFocus={event => event.target.select()} onChange={event => ubah(() => setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')))} />
+                <Tombol type="button" varian={siapSalin ? 'primary' : 'secondary'} disabled={!siapSalin} onClick={() => void salin(slug)}>
+                  {tersalin ? <><Ikon nama="benar" ukuran={16} /> {t('bagikan.tersalin_pendek')}</> : t('bagikan.salin')}
+                </Tombol>
+              </div>
+              <p id={`${id}-status-nama`} className={`status-nama ${statusNama}`} role="status">{teksStatusNama(statusNama)}</p>
+            </section>
+
+            <fieldset className="bagian-bagikan">
               <legend>{t('bagikan.siapa_bisa_buka')}</legend>
               {pilihanAkses().map(pilihan => (
-                <label key={pilihan.nilai} className="pilihan-akses">
-                  <input type="radio" name={`${id}-akses`} checked={akses === pilihan.nilai} onChange={() => setAkses(pilihan.nilai)} />
-                  <span><b>{pilihan.label}</b><small>{pilihan.bantu}</small></span>
+                <label key={pilihan.nilai} className="opsi-akses" data-pilih={akses === pilihan.nilai}>
+                  <input type="radio" name={`${id}-akses`} checked={akses === pilihan.nilai} onChange={() => ubah(() => setAkses(pilihan.nilai))} />
+                  <span className="ikon-opsi"><Ikon nama={pilihan.ikon} ukuran={18} /></span>
+                  <span className="teks-opsi"><b>{pilihan.label}</b><small>{pilihan.bantu}</small></span>
                 </label>
               ))}
             </fieldset>
+
             {akses === 'email' && (
-              <label className="isian">
+              <label className="isian bagian-bagikan">
                 <span>{t('bagikan.daftar_email')}</span>
-                <textarea rows={3} value={teksEmail} placeholder="nama@contoh.com" autoComplete="off" spellCheck={false}
-                  onChange={event => setTeksEmail(event.target.value)} />
+                <textarea rows={3} value={teksEmail} placeholder="nama@contoh.com" autoComplete="off" spellCheck={false} aria-invalid={emailSalah.length > 0}
+                  onChange={event => ubah(() => setTeksEmail(event.target.value))} />
+                <small className={emailSalah.length > 0 || email.length > BATAS_EMAIL ? 'caption-isian isian-salah' : 'caption-isian'}>
+                  {emailSalah.length > 0 ? t('bagikan.email_tidak_sah_nama', { email: emailSalah[0]! })
+                    : email.length > BATAS_EMAIL ? t('bagikan.email_terlalu_banyak', { batas: BATAS_EMAIL })
+                    : t('bagikan.email_bantu', { jumlah: email.length })}
+                </small>
               </label>
             )}
-            <div className="isian">
-              <span>{t('bagikan.tautan')}</span>
-              {ubahTautan ? (
-                <>
-                  <span className="kotak-uang">
-                    <span className="prefix-uang" aria-hidden="true">{awalanTautan()}</span>
-                    <input value={slug} maxLength={40} autoComplete="off" spellCheck={false} autoFocus aria-label={t('bagikan.nama_tautan')} aria-describedby={`${id}-aturan`}
-                      onChange={event => setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))} />
-                  </span>
-                  <small id={`${id}-aturan`} className="caption-isian">{t('bagikan.aturan_tautan')}</small>
-                </>
-              ) : (
-                <span className="tautan-terbaca">{alamatBagikan(slug)}{' '}
-                  <button type="button" className="tautan-aksi" onClick={() => setUbahTautan(true)}>{t('bagikan.ubah_tautan')}</button></span>
-              )}
-            </div>
+
+            {baruDisimpan && <p className="sukses-bagikan" role="status"><Ikon nama="benar" ukuran={16} /> {tersalin ? t('bagikan.tautan_aktif_tersalin') : t('bagikan.tautan_aktif')}</p>}
             {galat && <p role="alert" className="isian-salah">{galat}</p>}
-            <div className="aksi-konfirmasi">
-              <Tombol type="button" varian="secondary" onClick={batalAtur}>{t('umum.batal')}</Tombol>
-              <Tombol type="submit" disabled={sibuk}>{t('bagikan.simpan_dan_salin')}</Tombol>
-            </div>
+
+            {tanyaMatikan ? (
+              <div className="tanya-matikan" role="alert">
+                <p>{t('bagikan.matikan_tanya')}</p>
+                <div className="aksi-konfirmasi">
+                  <Tombol type="button" varian="secondary" onClick={() => setTanyaMatikan(false)}>{t('bagikan.jangan')}</Tombol>
+                  <Tombol type="button" disabled={sibuk} onClick={() => void matikan()}>{t('bagikan.ya_matikan')}</Tombol>
+                </div>
+              </div>
+            ) : (
+              <div className="aksi-konfirmasi aksi-bagikan">
+                {tersimpan && (
+                  <span className="aksi-kiri">
+                    <a className="tautan-aksi" href={tautanBagikan(tersimpan.slug)} target="_blank" rel="noopener">{t('bagikan.lihat_sebagai_penerima')}</a>
+                    <button type="button" className="tautan-aksi" onClick={() => setTanyaMatikan(true)}>{t('bagikan.matikan')}</button>
+                  </span>
+                )}
+                <Tombol type="button" varian="secondary" onClick={saatTutup}>{berubah ? t('umum.batal') : t('umum.tutup')}</Tombol>
+                {berubah && <Tombol type="submit" disabled={!bisaSimpan}>{tersimpan ? t('bagikan.simpan_perubahan') : t('bagikan.buat_tautan')}</Tombol>}
+              </div>
+            )}
           </>
         )}
       </form>
@@ -147,20 +172,25 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   );
 }
 
-const pilihanAkses = (): Array<{ nilai: AksesBagikan; label: string; bantu: string }> => [
-  { nilai: 'tautan', label: t('bagikan.akses_tautan'), bantu: t('bagikan.akses_tautan_bantu') },
-  { nilai: 'email', label: t('bagikan.akses_email'), bantu: t('bagikan.akses_email_bantu') },
-  { nilai: 'privat', label: t('bagikan.akses_privat'), bantu: t('bagikan.akses_privat_bantu') },
-];
-
-function ringkasanAkses(pengaturan: PengaturanBagikan): string {
-  if (pengaturan.akses === 'tautan') return t('bagikan.ringkasan_tautan');
-  if (pengaturan.akses === 'privat') return t('bagikan.ringkasan_privat');
-  return t('bagikan.ringkasan_email', { email: pengaturan.email.join(', ') });
+function teksStatusNama(status: StatusNama): string {
+  switch (status) {
+    case 'memeriksa': return t('bagikan.status_periksa');
+    case 'tersedia': return t('bagikan.status_tersedia');
+    case 'dipakai': return t('bagikan.status_dipakai');
+    case 'tidak_sah': return t('bagikan.slug_tidak_sah');
+    case 'tak_diketahui': return t('bagikan.aturan_tautan');
+    case 'sendiri': return '';
+  }
 }
 
-/** Bagian tetap alamat sebelum slug, untuk ditampilkan di depan kolom. */
-const awalanTautan = (): string => alamatBagikan('x').slice(0, -1);
+const pilihanAkses = (): Array<{ nilai: AksesBagikan; ikon: NamaIkon; label: string; bantu: string }> => [
+  { nilai: 'tautan', ikon: 'buka', label: t('bagikan.akses_tautan'), bantu: t('bagikan.akses_tautan_bantu') },
+  { nilai: 'email', ikon: 'profil', label: t('bagikan.akses_email'), bantu: t('bagikan.akses_email_bantu') },
+  { nilai: 'privat', ikon: 'kunci', label: t('bagikan.akses_privat'), bantu: t('bagikan.akses_privat_bantu') },
+];
+
+/** Bagian tetap alamat sebelum nama tautan. */
+const awalanTautan = (): string => alamatBagikan('x').slice(0, -1).replace(/^https?:\/\//, '');
 
 const SUREL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

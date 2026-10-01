@@ -173,6 +173,8 @@ export interface RepositoriBagikan {
   perbaruiKasus(idRiwayat: string, kasus: unknown): Promise<void>;
   /** Hapus tautan; slug bebas dipakai lagi. */
   berhenti(idRiwayat: string): Promise<void>;
+  /** Untuk umpan balik saat mengetik; kasus `idRiwayat` milik sendiri tidak dihitung bentrok. */
+  tautanTersedia(slug: string, idRiwayat: string): Promise<boolean>;
   /** Tanpa login pun bisa; hasilnya bergantung akses dan email pengguna. */
   baca(slug: string): Promise<BacaBagikan>;
 }

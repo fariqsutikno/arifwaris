@@ -31,6 +31,7 @@ import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
 import { DialogNama } from './lab/DialogNama';
 import { DialogBagikan } from './DialogBagikan';
+import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
 import { formatRupiahRingkas } from '../format';
 import { Tombol } from '../ui/komponen';
@@ -164,8 +165,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           </div>
           <div className="aksi-hero">
             {!sedangMenebak && <button type="button" className="pil-hero" onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>}
+            {bagikan && bolehUbah && !sedangMenebak && (
+              <button type="button" className="pil-hero sekunder" onClick={() => setBagikanTerbuka(true)}>
+                <Ikon nama="bagikan" /> {sudahDibagikan(idSesi) ? t('bagikan.kelola') : t('bagikan.bagikan')}
+              </button>
+            )}
             {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
-            {bagikan && bolehUbah && !sedangMenebak && <button type="button" className="tautan-hero" onClick={() => setBagikanTerbuka(true)}>{t('bagikan.bagikan')}</button>}
           </div>
           {!sedangMenebak && (
             <dl className="statistik-hero">
