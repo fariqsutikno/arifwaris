@@ -137,11 +137,19 @@ a.ubin:hover>svg.ikon{transform:rotate(0) scale(1.08);opacity:.16}
   .ubin{min-height:0}
 }
 @media (max-width:560px){
+  .halaman-beranda{overflow-x:clip}
+  .hero-beranda h1{font-size:clamp(32px,9.5vw,40px)}
+  .sapa-beranda .lead{font-size:16px}
+  .hero-beranda .aksi-hero{width:100%;justify-content:space-between}
+  .contoh-hidup{padding:12px}
+  .ringkasan-contoh{padding:14px}
+  .aksi-contoh .pil-terang{width:100%;justify-content:center}
   .ubin{padding:20px}
   .isi-ubin{padding-top:0}
   .ubin-kasus .judul-ubin,.ubin-latihan .judul-ubin{max-width:calc(100% - 56px)}
   .ubin-belajar{flex-direction:column;align-items:flex-start}
-  .pilih-contoh{border-radius:22px}
+  .pilih-contoh{flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .pilih-contoh button{flex:none}
 }
 @media (prefers-reduced-motion:reduce){
   .hero-beranda::after{animation:none}

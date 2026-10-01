@@ -141,6 +141,8 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .tanya-tujuan{font-family:var(--font-display);font-size:22px;margin:16px 0 0}
 @media (max-width:900px){.kerangka-langkah{grid-template-columns:minmax(0,1fr)}.kerangka-samping{display:none}}
 @media (max-width:560px){.kepala{padding:8px 16px;gap:10px}.kepala .aw-logo small{display:none}.alasan{text-align:start;max-width:none;order:-1;width:100%}}
+/* HP: header satu baris yang muat (logo, masuk/akun, bahasa), tidak melebarkan halaman. */
+@media (max-width:560px){.kepala{min-width:0}.kepala-nav{display:none}.kepala .aw-logo b{display:none}.kepala .pengisi{min-width:0}.kepala .tombol-kepala{padding:0 12px;font-size:13px;white-space:nowrap}.pilih-bahasa{flex:none;width:104px;padding:0 4px;font-size:13px}.menu-akun-isi{min-width:min(250px,calc(100vw - 32px))}}
 
 /* ─── Tur singkat ─── */
 .tur-tirai{position:fixed;inset:0;z-index:70}
