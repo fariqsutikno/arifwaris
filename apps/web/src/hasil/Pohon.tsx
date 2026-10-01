@@ -13,7 +13,7 @@ import { AvatarOrang } from './AvatarOrang';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
 import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
-import { tataLetak, type TataLetak } from './tataLetak';
+import { BATAS_PER_BARIS, jumlahPerBaris, tataLetak, type TataLetak } from './tataLetak';
 import { angka, panah, t } from '../terjemah';
 
 /** Avatar di kotak pohon; hanya tampil di pohon bergaya kaca (hero dan layar penuh), disembunyikan CSS di tempat lain. */
@@ -73,8 +73,10 @@ function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
 export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
-export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false }: {
+export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS }: {
   graf: GrafKeluarga; isiNode: (id: IdOrang) => IsiNode; saatPilih?: (id: IdOrang) => void; redup?: boolean; aliran?: boolean;
+  /** Batas node per baris tampilan; panggung sempit memakai batas lebih kecil. */
+  maksPerBaris?: number;
 }) {
   const letak = tataLetak(graf);
   const wadah = useRef<HTMLDivElement>(null);
@@ -100,7 +102,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
         {panah.filter((isi, urutan) => panah.findIndex(lain => lain.ke === isi.ke && lain.label === isi.label) === urutan)
           .map(({ jalur, x, y, label }) => <span key={`${langkah?.ketukan}${jalur}`} className="label-panah" style={{ left: x, top: y }}>{label}</span>)}
         {letak.baris.map((baris, indeksBaris) => (
-          <div className="pohon-baris" key={indeksBaris} style={lebarMaksBaris(baris.length)}>
+          <div className="pohon-baris" key={indeksBaris} style={lebarMaksBaris(baris.length, maksPerBaris)}>
             {baris.map(id => {
               const node = isiNode(id);
               const { className, ...pemicu } = atribut(id);
@@ -134,13 +136,12 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
   );
 }
 
-/** Satu baris generasi dibatasi {BATAS_PER_BARIS} node lalu terbungkus, dibagi rata (7 → 4+3, 12 → 6+6), supaya pohon tetap terbaca saat anak banyak. */
-const BATAS_PER_BARIS = 6;
+/** Lebar node dan jarak antar node; dipakai membatasi lebar baris yang terbungkus (jumlahPerBaris di tataLetak.ts). */
 const LEBAR_NODE = 170;
 const JARAK_NODE = 30;
-function lebarMaksBaris(jumlah: number): CSSProperties | undefined {
-  if (jumlah <= BATAS_PER_BARIS) return undefined;
-  const perBaris = Math.ceil(jumlah / Math.ceil(jumlah / BATAS_PER_BARIS));
+function lebarMaksBaris(jumlah: number, maks: number): CSSProperties | undefined {
+  if (jumlah <= maks) return undefined;
+  const perBaris = jumlahPerBaris(jumlah, maks);
   return { maxWidth: perBaris * LEBAR_NODE + (perBaris - 1) * JARAK_NODE };
 }
 

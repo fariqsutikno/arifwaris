@@ -12,6 +12,12 @@ export interface TataLetak {
   pasanganSaja: Array<[IdOrang, IdOrang]>;
 }
 
+/** Satu baris generasi dibungkus rata bila melebihi batas (7 → 4+3, 12 → 6+6) supaya pohon tumbuh ke bawah, bukan ke samping. */
+export const BATAS_PER_BARIS = 6;
+export function jumlahPerBaris(jumlah: number, maks: number = BATAS_PER_BARIS): number {
+  return jumlah <= maks ? jumlah : Math.ceil(jumlah / Math.ceil(jumlah / maks));
+}
+
 // ponytail: urutan dalam baris memakai rata-rata posisi kerabat (heuristik), garis bisa bersilangan pada keluarga
 // yang sangat bercabang; ganti dengan algoritma tata letak pohon bila kasus seperti itu sering muncul.
 export function tataLetak(graf: GrafKeluarga): TataLetak {
