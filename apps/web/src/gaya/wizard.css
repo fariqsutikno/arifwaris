@@ -227,3 +227,8 @@ body.layar-hasil .dok{display:none}
   .tombol-pohon-hp{display:inline-flex}
   body.layar-hasil .halaman-hasil>.hero-hasil{padding-bottom:50px}
 }
+
+/* Hasil kasus khusus (janin, hilang, kelamin ganda, wafat bersamaan): kolom jawaban tunggal di lembar yang sama dengan Hasil biasa */
+.kolom-khusus{display:flex;flex-direction:column;gap:12px;max-width:820px;margin-inline:auto;width:100%}
+.kolom-khusus .kartu-sisi.kartu-titipan{border-style:dashed}
+@media (max-width:720px){.halaman-hasil .hero-pohon-khusus{display:none}}

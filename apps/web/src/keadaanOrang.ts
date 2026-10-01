@@ -108,8 +108,17 @@ export function perluPeriksaCerita(kasus: Kasus): boolean {
 }
 
 /** Nama untuk kalimat: nama isian, atau label hubungan dari babak asalnya ("Anak laki-laki"). */
-export const namaSingkat = (kasus: Kasus, idOrang: IdOrang): string =>
-  kasus.graf.orang[idOrang]!.nama || (idOrang === kasus.graf.idPewaris ? t('hitung.almarhum') : labelOrangChecklist(kasus.graf, babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris, idOrang));
+export function namaSingkat(kasus: Kasus, idOrang: IdOrang): string {
+  const orang = kasus.graf.orang[idOrang]!;
+  if (orang.nama) return orang.nama;
+  if (idOrang === kasus.graf.idPewaris) return t('hitung.almarhum');
+  const idMayit = babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris;
+  const label = labelOrangChecklist(kasus.graf, idMayit, idOrang);
+  if (label !== t('hitung.kerabat') || orang.statusHidup !== 'wafat') return label;
+  // Orang yang wafat bersamaan/sebelum tidak dihitung sebagai ahli waris, jadi daftar isian tidak mengenalnya: sebut perannya seolah hidup.
+  const grafHidup = { ...kasus.graf, orang: { ...kasus.graf.orang, [idOrang]: { ...orang, statusHidup: 'hidup' as const } } };
+  return labelOrangChecklist(grafHidup, idMayit, idOrang);
+}
 /** [R13-1] Anak yang baru dikandung sesudah `idMayit` wafat bukan ahli warisnya; null = sudah ada sebelum semua almarhum. */
 export function aturDikandung(kasus: Kasus, idAnak: IdOrang, idMayit: IdOrang | null): Kasus {
   const { [idAnak]: _lama, ...sisa } = kasus.dikandungSetelahWafat ?? {};

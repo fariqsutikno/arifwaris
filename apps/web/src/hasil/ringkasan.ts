@@ -58,6 +58,12 @@ export function ringkas(kasus: Kasus, tampil: HasilTampil): RingkasanHasil {
   throw new Error('ringkas hanya untuk hasil OK');
 }
 
+/** Seperti ringkas(), tetapi null untuk hasil yang tidak punya satu pembagian pasti (janin, hilang, kelamin ganda, wafat bersamaan, galat). */
+export function cobaRingkas(kasus: Kasus, tampil: HasilTampil): RingkasanHasil | null {
+  const biasaAtauLapis = (tampil.jenis === 'biasa' || tampil.jenis === 'munasakhat') && tampil.hasil.status === 'OK';
+  return biasaAtauLapis ? ringkas(kasus, tampil) : null;
+}
+
 export type BentukPecahan = 'sederhana' | 'sama';
 
 export function pecahanTeks(saham: bigint, penyebut: bigint, bentuk: BentukPecahan): string {

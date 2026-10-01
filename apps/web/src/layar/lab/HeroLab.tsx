@@ -1,13 +1,14 @@
 // Panel kaca di hero Awal Lab (pola sama dengan panel "Lanjutkan" di Belajar): satu aksi utama. Ada kasus berjalan →
-// pohon keluarganya dan tombol Lanjutkan. Kasus lengkap memakai pohon + pita bagian dari engine (jalankan + ringkas,
-// sama dengan layar Hasil); kasus belum lengkap memakai pohon susunan saja, engine tidak dipanggil.
+// pohon keluarganya dan tombol Lanjutkan. Kasus lengkap yang punya satu pembagian pasti memakai pohon + pita bagian dari engine
+// (jalankan + cobaRingkas, sama dengan layar Hasil); kasus belum lengkap, atau yang hasilnya berupa kemungkinan (janin, hilang,
+// kelamin ganda, wafat bersamaan), memakai pohon susunan saja. Tidak boleh melempar galat: halaman ini pintu masuk ArifLab.
 // Tanpa kasus → tidak dirender (memulai ada di bagian Mulai kasus baru). Kasus apa pun yang berjalan (bahkan baru memilih jenis kelamin) bisa dilanjutkan.
 
 import { useMemo } from 'react';
 import { Pohon } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import { PenyediaSorot } from '../../hasil/sorot';
-import { ringkas } from '../../hasil/ringkasan';
+import { cobaRingkas } from '../../hasil/ringkasan';
 import { jalankan } from '../../jalankan';
 import type { Kasus } from '../../kasus';
 import { ringkasKasus } from '../../riwayat';
@@ -22,7 +23,7 @@ interface Props { kasusTerakhir: Kasus | null; saatLanjut: () => void }
 
 export function HeroLab({ kasusTerakhir, saatLanjut }: Props) {
   const ringkasan = useMemo(
-    () => (kasusTerakhir && ringkasKasus(kasusTerakhir).lengkap ? ringkas(kasusTerakhir, jalankan(kasusTerakhir)) : null),
+    () => (kasusTerakhir && ringkasKasus(kasusTerakhir).lengkap ? cobaRingkas(kasusTerakhir, jalankan(kasusTerakhir)) : null),
     [kasusTerakhir]);
   if (!kasusTerakhir) return null;
   const { judul, keterangan } = ringkasKasus(kasusTerakhir);

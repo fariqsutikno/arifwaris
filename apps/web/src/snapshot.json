@@ -21595,6 +21595,48 @@
    "id": "Tambah kerabat lain",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.judul_sementara",
+   "halaman": "hasil",
+   "id": "Pembagian sementara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.keterangan_sementara",
+   "halaman": "hasil",
+   "id": "Sebagian bagian disimpan dulu sampai keadaannya jelas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.judul_pembagian",
+   "halaman": "hasil",
+   "id": "Pembagian harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.judul_gharqa",
+   "halaman": "hasil",
+   "id": "Pembagian harta masing-masing",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.stat_ditahan",
+   "halaman": "hasil",
+   "id": "Ditahan sementara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.tidak_mau_menunggu",
+   "halaman": "hasil",
+   "id": "Tidak mau menunggu?",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
