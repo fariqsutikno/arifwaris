@@ -16,6 +16,8 @@ import { Ikon } from '../../ui/Ikon';
 import { angka, panah, t } from '../../terjemah';
 
 const HARTA_CONTOH = 240_000_000n;
+// Pohon contoh kecil (3-4 orang): boleh diperbesar sampai mengisi kotak hero, bukan mengambang di tengah.
+const SKALA_MAKS = 1.5;
 
 const KEADAAN = [
   { kunci: 'istri-dan-anak', label: () => t('beranda.contoh_istri_dan_anak'), pewaris: 'L', ahliWaris: ['ISTRI', 'ANAK_LK', 'ANAK_PR'] },
@@ -41,7 +43,7 @@ export function ContohHidup({ saatCoba }: { saatCoba: (kasus: Kasus) => void }) 
         ))}
       </div>
       <div className="panggung-contoh" key={keadaan.kunci}>
-        <PratinjauPohon saatBuka={() => saatCoba(kasus)} label={t('beranda.coba_kasus_ini')}>
+        <PratinjauPohon saatBuka={() => saatCoba(kasus)} label={t('beranda.coba_kasus_ini')} skalaMaks={SKALA_MAKS}>
           <PenyediaSorot>
             <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={[]} bentuk="sederhana" sedangMenebak={false} sembunyiNominal={false} saatPilih={() => {}} />
           </PenyediaSorot>

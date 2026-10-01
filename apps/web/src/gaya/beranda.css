@@ -1,15 +1,16 @@
 /* Beranda gaya Logivo: latar sage, bingkai krem, hero gelap berisi contoh hitungan hidup, ubin status berukuran beda-beda.
    Hero dan bingkai sama dengan Hasil (komponen.css, "Hasil v5"); nav menyatu dengan hero lewat body.layar-beranda.
    Gerak hanya transform/opacity dan hormati prefers-reduced-motion (blok paling bawah). */
-body.layar-beranda{background:var(--halaman)}
-.halaman-beranda{max-width:1160px;margin:0 auto;padding:12px 12px 24px}
+/* Full-bleed: hero dan ubin selebar layar, isi dibatasi --sisi (lebar isi maks 1320px). */
+body.layar-beranda{background:var(--surface)}
+.halaman-beranda{--sisi:12px;margin:0;padding:0 0 24px}
 
 /* hero */
-.hero-beranda{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:28px;align-items:center;padding:30px 24px 30px;border-radius:var(--radius-lg);color:#fff;
+.hero-beranda{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.25fr);gap:28px;align-items:center;padding:30px var(--sisi);color:#fff;
   background:linear-gradient(135deg,#0a2326,#0f3a38 55%,#0b2a2b)}
 /* cahaya hangat dan teal yang melayang pelan di belakang isi */
 .hero-beranda::before,.hero-beranda::after{content:"";position:absolute;z-index:-1;border-radius:50%;filter:blur(8px);pointer-events:none}
-.hero-beranda::before{width:520px;height:340px;right:-80px;top:20%;background:radial-gradient(closest-side,rgba(255,150,40,.42),transparent);animation:melayang 16s ease-in-out infinite alternate}
+.hero-beranda::before{inset:0;border-radius:0;filter:none;background:radial-gradient(520px circle at var(--mx,72%) var(--my,58%),rgba(255,150,40,.5),transparent 70%)}
 .hero-beranda::after{width:460px;height:300px;left:-90px;top:-80px;background:radial-gradient(closest-side,rgba(60,210,170,.38),transparent);animation:melayang 20s ease-in-out infinite alternate-reverse}
 .sapa-beranda{display:flex;flex-direction:column;align-items:flex-start;gap:20px;min-width:0}
 .hero-beranda h1{margin:0;font:500 clamp(34px,4.4vw,56px)/1.04 var(--font-display);letter-spacing:-.03em;text-wrap:balance;animation:naik .7s cubic-bezier(.2,.7,.2,1) both}
@@ -38,7 +39,7 @@ body.layar-beranda{background:var(--halaman)}
 .petunjuk-contoh svg{flex:none}
 
 /* ubin */
-.tata-beranda{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;padding:18px 12px 0}
+.tata-beranda{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;padding:22px var(--sisi) 0}
 .judul-bagian{grid-column:1/-1;margin:6px 4px 0;font:600 21px/1.2 var(--font-display);letter-spacing:-.01em}
 .ubin{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;padding:22px;border:1px solid var(--kartu-tepi);border-radius:var(--radius-lg);background:var(--kartu);color:inherit;text-decoration:none;
   animation:naik .6s calc(.1s*var(--i,0) + .3s) cubic-bezier(.2,.7,.2,1) both;transition:transform .25s,box-shadow .25s}
@@ -73,7 +74,7 @@ a.ubin:hover .aksi-status{text-decoration:underline;text-underline-offset:3px}
 .tautan-cari{display:inline-flex;align-items:center;gap:8px;min-height:44px;color:var(--ink);font:600 15px var(--font-sans);text-decoration:underline;text-decoration-color:var(--outline);text-underline-offset:4px}
 .tautan-cari:hover{text-decoration-color:currentColor}
 .tautan-cari:focus-visible{outline:3px solid var(--focus);outline-offset:2px;border-radius:6px}
-.halaman-beranda .tentang-tim{margin:22px 12px 0}
+.halaman-beranda .tentang-tim{margin:22px var(--sisi) 0}
 
 @keyframes naik{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes ganti-contoh{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:none}}
@@ -83,11 +84,12 @@ a.ubin:hover .aksi-status{text-decoration:underline;text-underline-offset:3px}
 @keyframes isi-bar{from{transform:scaleX(0)}}
 
 @media (min-width:981px){
-  body.layar-beranda .halaman-beranda{margin-bottom:28px;padding:0 0 20px;background:var(--surface);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18)}
-  body.layar-beranda .halaman-beranda>.hero-beranda{border-radius:0;padding:104px 32px 34px}
+  .halaman-beranda{--sisi:max(24px,calc((100% - 1320px)/2))}
+  body.layar-beranda .halaman-beranda>.hero-beranda{padding-top:104px;padding-bottom:44px}
+  body.layar-beranda .kepala{max-width:1320px}
 }
 @media (max-width:980px){
-  .hero-beranda{grid-template-columns:1fr;gap:22px;padding:24px 16px}
+  .hero-beranda{grid-template-columns:1fr;gap:22px;padding-block:24px}
   .ubin-kasus,.ubin-belajar,.ubin-latihan,.ubin-tanya{grid-column:1/-1}
 }
 @media (max-width:560px){
@@ -97,7 +99,7 @@ a.ubin:hover .aksi-status{text-decoration:underline;text-underline-offset:3px}
   .kaki-contoh{flex-direction:column;align-items:flex-start}
 }
 @media (prefers-reduced-motion:reduce){
-  .hero-beranda::before,.hero-beranda::after{animation:none}
+  .hero-beranda::after{animation:none}
   .hero-beranda h1,.hero-beranda .lead,.hero-beranda .aksi-hero,.contoh-hidup,.panggung-contoh,.ubin,.cincin-beranda .cincin-isi,.ubin-latihan .bar-progres>span{animation:none}
   .tekanan::after{animation:none;transform:none}
   a.ubin:hover,.pil-terang:hover{transform:none}

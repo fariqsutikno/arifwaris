@@ -2,7 +2,7 @@
 // perangkat ini (kasus terakhir, progres belajar, latihan), FAQ, pintu ke referensi, dan identitas tim penyusun.
 // Semua angka dari penyimpanan lokal; bila kosong, tampil ajakan memulai, bukan angka nol yang menggantung.
 
-import { useEffect, type CSSProperties } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
 import type { Kasus } from '../kasus';
 import { bacaAktivitas } from '../preferensi';
@@ -40,10 +40,12 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
   useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   const [judulAwal, kataTekanan] = pisahKataAkhir(t('beranda.waris_itu_gampang_asal_tahu_urutannya'));
   const totalPelajaran = daftarPelajaran().length;
+  const hero = useRef<HTMLElement>(null);
+  useCahayaIkutKursor(hero);
 
   return (
     <main className="halaman-beranda">
-      <header className="hero-beranda">
+      <header className="hero-beranda" ref={hero}>
         <div className="sapa-beranda">
           <h1>{judulAwal} <span className="tekanan">{kataTekanan}</span></h1>
           <p className="lead">{t('beranda.hitung_pembagian_warisan_menurut_madzhab_syafi')}</p>
@@ -118,6 +120,36 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba }: { kasusTerakh
       </footer>
     </main>
   );
+}
+
+/** Cahaya hangat hero mengikuti kursor dengan gerak melambat (easing); tanpa gerak bila pengguna mengurangi animasi. */
+function useCahayaIkutKursor(hero: React.RefObject<HTMLElement>) {
+  useEffect(() => {
+    const elemen = hero.current;
+    if (!elemen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const target = { x: 0, y: 0 };
+    const kini = { x: 0, y: 0 };
+    let bingkai = 0;
+    const gerak = () => {
+      kini.x += (target.x - kini.x) * 0.08;
+      kini.y += (target.y - kini.y) * 0.08;
+      elemen.style.setProperty('--mx', `${kini.x}px`);
+      elemen.style.setProperty('--my', `${kini.y}px`);
+      bingkai = Math.abs(target.x - kini.x) + Math.abs(target.y - kini.y) > 0.5 ? requestAnimationFrame(gerak) : 0;
+    };
+    const saatGerak = (kejadian: PointerEvent) => {
+      const kotak = elemen.getBoundingClientRect();
+      target.x = kejadian.clientX - kotak.left;
+      target.y = kejadian.clientY - kotak.top;
+      if (!bingkai) bingkai = requestAnimationFrame(gerak);
+    };
+    // Posisi awal = titik bawaan CSS (kanan tengah) supaya tidak melompat saat kursor pertama datang.
+    const awal = elemen.getBoundingClientRect();
+    target.x = kini.x = awal.width * 0.72;
+    target.y = kini.y = awal.height * 0.58;
+    elemen.addEventListener('pointermove', saatGerak);
+    return () => { elemen.removeEventListener('pointermove', saatGerak); cancelAnimationFrame(bingkai); };
+  }, [hero]);
 }
 
 /** Cincin progres belajar; angkanya juga tertulis di judul ubin, jadi cincin ini hiasan data (aria-hidden). */
