@@ -3,10 +3,12 @@ import { beforeEach, expect, test, vi } from 'vitest';
 import { DialogNama } from '../layar/lab/DialogNama';
 import { HeroLab } from '../layar/lab/HeroLab';
 import { kasusBaru } from '../kasus';
+import { TerakhirDibuka } from '../layar/lab/TerakhirDibuka';
+import { catatRiwayat, hapusRiwayat } from '../riwayat';
 import { MulaiCepat } from '../layar/lab/MulaiCepat';
 import { RakEksperimen } from '../layar/lab/RakEksperimen';
 import { SUSUNAN_CEPAT, kasusDariSusunan } from '../lab';
-import { sematkan, simpanKasus } from '../tersimpan';
+import { bacaTersimpan, sematkan, simpanKasus } from '../tersimpan';
 
 beforeEach(() => localStorage.clear());
 
@@ -90,4 +92,45 @@ test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
   const lengkap = { ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } };
   const { container } = render(<HeroLab kasusTerakhir={lengkap} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
   expect(container.querySelector('.pita-bagian')).toBeTruthy();
+});
+
+const sendiri = { jenis: 'sendiri' } as const;
+
+test('tanpa riwayat dua pekan: terakhir dibuka tidak dirender', () => {
+  hapusRiwayat();
+  const { container } = render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+  expect(container.innerHTML).toBe('');
+});
+
+test('riwayat dikelompokkan per hari; kolom cari hanya bila entri lebih dari 8', () => {
+  hapusRiwayat();
+  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
+  const kasusKe = (i: number) => ({ ...dasar, tirkah: { ...dasar.tirkah, kotor: BigInt(1_000_000 * (i + 1)) } });
+  for (let i = 0; i < 8; i += 1) catatRiwayat(`k${i}`, kasusKe(i), Date.now() - i * 60_000, sendiri);
+  const { unmount } = render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+  expect(screen.getByText('Hari ini')).toBeTruthy();
+  expect(screen.queryByLabelText('Cari kasus')).toBeNull();
+  unmount();
+  catatRiwayat('k8', kasusKe(8), Date.now() - 9 * 60_000, sendiri);
+  render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+  expect(screen.getByLabelText('Cari kasus')).toBeTruthy();
+});
+
+test('cari menyaring dan menampilkan pesan bila tidak ada yang cocok', () => {
+  hapusRiwayat();
+  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
+  for (let i = 0; i < 9; i += 1) catatRiwayat(`k${i}`, { ...dasar, tirkah: { ...dasar.tirkah, kotor: BigInt(1_000_000 * (i + 1)) } }, Date.now() - i * 60_000, sendiri);
+  render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+  fireEvent.change(screen.getByLabelText('Cari kasus'), { target: { value: 'zzzz' } });
+  expect(screen.getByText('Tidak ada kasus yang cocok.')).toBeTruthy();
+});
+
+test('simpan jadi eksperimen memberi nama dan masuk tersimpan', () => {
+  hapusRiwayat();
+  catatRiwayat('k', kasusDariSusunan(SUSUNAN_CEPAT[0]!), Date.now(), sendiri);
+  render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+  fireEvent.click(screen.getByRole('button', { name: /Simpan jadi eksperimen/ }));
+  fireEvent.change(screen.getByLabelText('Nama kasus'), { target: { value: 'Keluarga Q' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+  expect(bacaTersimpan()[0]!.judul).toBe('Keluarga Q');
 });
