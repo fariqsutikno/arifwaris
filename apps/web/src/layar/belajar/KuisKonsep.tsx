@@ -75,6 +75,8 @@ export function SesiKuis({ paket }: { paket: string }) {
   const [mode, setMode] = useState<ModePembahasan>(() => (bacaPilihan(KUNCI_MODE) === 'akhir' ? 'akhir' : 'langsung'));
   const [posisi, setPosisi] = useState(0);
   const [capaian, setCapaian] = useState<Capaian | null>(null);
+  // Sesi "ulangi yang salah" hanya melatih; nilai terbaik paket tidak disentuh.
+  const [ulangiSalah, setUlangiSalah] = useState(false);
   // Indeks = nomor soal; kosong = belum dijawab.
   const [pilihan, setPilihan] = useState<Array<number | undefined>>([]);
   const judul = judulPaket(paket);
@@ -99,13 +101,24 @@ export function SesiKuis({ paket }: { paket: string }) {
     setPosisi(0);
     setPilihan([]);
     setBatasWaktu(modeBaru === 'akhir' ? Date.now() + durasiUjian(daftarSoal.length) * 1000 : null);
+    setUlangiSalah(false);
+    setTahap('mengerjakan');
+  };
+
+  const mulaiUlangiSalah = () => {
+    const salah = daftarSoal.filter((soal, urutan) => pilihan[urutan] !== soal.indeksBenar);
+    setDaftarSoal(salah);
+    setPosisi(0);
+    setPilihan([]);
+    setBatasWaktu(mode === 'akhir' ? Date.now() + durasiUjian(salah.length) * 1000 : null);
+    setUlangiSalah(true);
     setTahap('mengerjakan');
   };
 
   const kepala = (
     <div className="kepala-sesi">
       <a className="aw-btn aw-btn-secondary aw-btn-sm" href={tautanLatihan('kuis')}><Ikon nama="keluar" ukuran={18} /> {t('latihan.keluar')}</a>
-      <span className="judul-sesi">{judul}</span>
+      <span className="judul-sesi">{ulangiSalah ? t('latihan.judul_ulangi_yang_salah', { judul }) : judul}</span>
     </div>
   );
 
@@ -132,7 +145,7 @@ export function SesiKuis({ paket }: { paket: string }) {
     );
   }
 
-  if (tahap === 'hasil') return <HasilKuis kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} capaian={capaian} saatUlang={() => mulai(mode)} />;
+  if (tahap === 'hasil') return <HasilKuis kepala={kepala} daftarSoal={daftarSoal} pilihan={pilihan} capaian={capaian} ulangiSalah={ulangiSalah} saatUlang={() => mulai(mode)} saatUlangiSalah={mulaiUlangiSalah} />;
 
   const soal = daftarSoal[posisi]!;
   const sudahDijawab = pilihan[posisi] !== undefined;
@@ -146,10 +159,14 @@ export function SesiKuis({ paket }: { paket: string }) {
   const selesaikan = () => {
     daftarSoal.forEach((soalIni, urutan) => catatLatihan('kuis', soalIni.kode, pilihan[urutan] === soalIni.indeksBenar, pilihan[urutan] ?? null));
     const skor = `${benarSejauhIni}/${daftarSoal.length}`;
-    // Capaian dihitung sebelum rekor diperbarui, karena yang dibandingkan adalah nilai terbaik sebelum sesi ini.
-    setCapaian(paket === PAKET_ACAK ? null : capaianKuis(bacaRekorPaket()[paket]?.terbaik, skor));
-    simpanSkorPaket(paket, skor);
-    catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
+    if (ulangiSalah) {
+      setCapaian(null);
+    } else {
+      // Capaian dihitung sebelum rekor diperbarui, karena yang dibandingkan adalah nilai terbaik sebelum sesi ini.
+      setCapaian(paket === PAKET_ACAK ? null : capaianKuis(bacaRekorPaket()[paket]?.terbaik, skor));
+      simpanSkorPaket(paket, skor);
+      catatAktivitas({ jenis: 'kuis', kode: paket, judul, waktu: Date.now(), hasil: skor });
+    }
     setTahap('hasil');
   };
   saatWaktuHabis.current = selesaikan;
@@ -202,8 +219,9 @@ export function SesiKuis({ paket }: { paket: string }) {
   );
 }
 
-function HasilKuis({ kepala, daftarSoal, pilihan, capaian, saatUlang }: {
-  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: Array<number | undefined>; capaian: Capaian | null; saatUlang: () => void;
+function HasilKuis({ kepala, daftarSoal, pilihan, capaian, ulangiSalah, saatUlang, saatUlangiSalah }: {
+  kepala: React.ReactNode; daftarSoal: SoalKuis[]; pilihan: Array<number | undefined>; capaian: Capaian | null; ulangiSalah: boolean;
+  saatUlang: () => void; saatUlangiSalah: () => void;
 }) {
   const benar = daftarSoal.filter((soal, urutan) => pilihan[urutan] === soal.indeksBenar).length;
   const persen = persenBulat({ benar, total: daftarSoal.length });
@@ -221,9 +239,11 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, saatUlang }: {
           <div><dt>{t('latihan.nilai')}</dt><dd>{angka(String(persen))}</dd></div>
         </dl>
         {capaian && <CapaianKuis capaian={capaian} />}
+        {ulangiSalah && <p className="capaian-kuis keterangan">{t('latihan.nilai_terbaik_paket_tidak_berubah')}</p>}
         <div className="aksi-konfirmasi">
+          {benar < daftarSoal.length && <button type="button" className="aw-btn aw-btn-primary" onClick={saatUlangiSalah}>{t('latihan.ulangi_yang_salah')}</button>}
+          <button type="button" className={benar < daftarSoal.length ? 'aw-btn aw-btn-secondary' : 'aw-btn aw-btn-primary'} onClick={saatUlang}>{t('latihan.kerjakan_lagi')}</button>
           <a className="aw-btn aw-btn-secondary" href={tautanLatihan('kuis')}>{t('latihan.pilih_kuis_lain')}</a>
-          <button type="button" className="aw-btn aw-btn-primary" onClick={saatUlang}>{t('latihan.kerjakan_lagi')}</button>
         </div>
       </div>
 
@@ -235,26 +255,26 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, saatUlang }: {
             const tepat = dipilih === soal.indeksBenar;
             return (
               <li key={soal.kode}>
-                <details className={tepat ? 'kartu-lipat pembahasan-item' : 'kartu-lipat pembahasan-item salah'} open={!tepat}>
+                <details className={tepat ? 'butir-pembahasan benar' : 'butir-pembahasan salah'} open={!tepat}>
                   <summary>
-                    <span className={tepat ? 'status-jawaban benar' : 'status-jawaban salah'}><Ikon nama={tepat ? 'benar' : 'salah'} ukuran={16} /></span>
-                    <span className="pertanyaan-pembahasan"><b>{t('latihan.soal_nomor_2', { nomor: urutan + 1 })}</b> <Sebaris isi={soal.pertanyaan} /></span>
-                    <span className="panah-lipat" aria-hidden="true" />
+                    <span className="status-butir"><Ikon nama={tepat ? 'benar' : 'salah'} ukuran={16} />{tepat ? t('latihan.benar') : t('latihan.salah')}</span>
+                    <span className="soal-butir"><b>{t('latihan.soal_nomor_2', { nomor: urutan + 1 })}</b> <Sebaris isi={soal.pertanyaan} /></span>
+                    <Ikon nama="kembali" ukuran={18} />
                   </summary>
-                  <div className="isi-pembahasan">
-                    <div className={tepat ? 'baris-jawaban benar' : 'baris-jawaban salah'}>
-                      <span className="label-jawaban">{t('hitung.jawabanmu')}</span>
+                  <div className="isi-butir">
+                    <div className={tepat ? 'jawab-butir tepat' : 'jawab-butir salah'}>
+                      <span className="label-butir">{t('hitung.jawabanmu')}</span>
                       {dipilih === undefined ? <span>{t('latihan.tidak_dijawab_waktu_habis')}</span>
                         : <span><b>{hurufPilihan(dipilih)}.</b> <Sebaris isi={soal.pilihan[dipilih]!} /></span>}
                     </div>
                     {!tepat && (
-                      <div className="baris-jawaban benar">
-                        <span className="label-jawaban">{t('latihan.jawaban_tepat')}</span>
+                      <div className="jawab-butir tepat">
+                        <span className="label-butir">{t('latihan.jawaban_tepat')}</span>
                         <span><b>{hurufPilihan(soal.indeksBenar)}.</b> <Sebaris isi={soal.pilihan[soal.indeksBenar]!} /></span>
                       </div>
                     )}
-                    <div className="teks-pembahasan">
-                      <span className="label-jawaban">{t('hitung.pembahasan')}</span>
+                    <div className="teks-butir">
+                      <span className="label-butir">{t('hitung.pembahasan')}</span>
                       <p><Sebaris isi={soal.pembahasan} /></p>
                       <PembahasanTambahan soal={soal} dipilih={dipilih} />
                     </div>

@@ -19813,3 +19813,27 @@
    "id": "{jumlah} dalil",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.ulangi_yang_salah",
+   "halaman": "latihan",
+   "id": "Ulangi yang salah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.judul_ulangi_yang_salah",
+   "halaman": "latihan",
+   "id": "{judul}: ulangi yang salah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.nilai_terbaik_paket_tidak_berubah",
+   "halaman": "latihan",
+   "id": "Sesi ini hanya untuk melatih soal yang salah. Nilai terbaik paket tidak berubah.",
+   "ar": null,
+   "versiTerbit": 873
+  }
+ ]
+}

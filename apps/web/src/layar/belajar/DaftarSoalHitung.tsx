@@ -119,7 +119,7 @@ function BarisSoal({ soal, selesai, disarankan, kasusSekarang, saatKerjakan }: B
           {disarankan && <> · <span className="penanda-berikutnya">{t('latihan.soal_berikutnya_untukmu')}</span></>}
         </span>
       </div>
-      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={disarankan ? 'primary' : 'ghost'}>
+      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={disarankan ? 'primary' : 'secondary'} kelas="tombol-baris">
         {selesai ? t('latihan.ulangi') : t('hitung.kerjakan')}
       </TombolBukaKasus>
     </li>

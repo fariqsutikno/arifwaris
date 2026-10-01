@@ -76,3 +76,26 @@ describe('papan kuis', () => {
     expect(screen.getByText(/Belum melampaui nilai terbaikmu/)).toBeTruthy();
   });
 });
+
+describe('ulangi yang salah', () => {
+  it('memuat hanya soal yang salah, dan tidak mengubah rekor paket', () => {
+    const daftar = soalPaket('bab-1');
+    render(<Latihan tab="kuis" paket="bab-1" kasusSekarang={null} saatKerjakan={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kuis' }));
+    daftar.forEach(soal => {
+      const salah = 'ABCD'[(soal.indeksBenar + 1) % soal.pilihan.length]!;
+      fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${salah}\\. `) }));
+      fireEvent.click(screen.getByRole('button', { name: /Soal berikutnya|Lihat hasil/ }));
+    });
+    const rekorSebelum = localStorage.getItem('arif-waris:rekor-paket');
+    fireEvent.click(screen.getByRole('button', { name: 'Ulangi yang salah' }));
+    expect(screen.getByText(`Soal 1 dari ${daftar.length}`)).toBeTruthy();
+    daftar.forEach(soal => {
+      fireEvent.click(screen.getByRole('button', { name: new RegExp(`^${'ABCD'[soal.indeksBenar]}\\. `) }));
+      fireEvent.click(screen.getByRole('button', { name: /Soal berikutnya|Lihat hasil/ }));
+    });
+    expect(screen.getByText(/Nilai terbaik paket tidak berubah/)).toBeTruthy();
+    expect(localStorage.getItem('arif-waris:rekor-paket')).toBe(rekorSebelum);
+    expect(screen.queryByRole('button', { name: 'Ulangi yang salah' })).toBeNull();
+  });
+});

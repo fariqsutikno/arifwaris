@@ -113,7 +113,7 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .papan-kuis{display:flex;flex-direction:column;gap:12px}
 .papan-kuis .judul-bagian{margin:0 4px}
 .papan-kuis>.keterangan,.papan-kuis>.lencana-draf{margin:-4px 4px 0}
-.kepala-papan,.baris-paket{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1.7fr) 96px 130px;gap:18px;align-items:center}
+.kepala-papan,.baris-paket{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) auto;gap:20px;align-items:center}
 .kepala-papan{padding:4px 24px 0;color:#2a3d32;font:700 13px var(--font-sans)}
 .papan-kuis>ul{margin:0;padding:0;overflow:hidden;border-radius:24px;background:var(--surface-raised);box-shadow:0 8px 24px rgba(20,40,30,.08)}
 .baris-paket{position:relative;padding:18px 24px;transition:background .2s;--warna-nilai:#8a968f}
@@ -139,9 +139,37 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .bar-nilai>span{display:block;height:100%;border-radius:inherit;background:var(--warna-nilai);transform-origin:left;animation:isi-bar .8s cubic-bezier(.3,.8,.2,1) both}
 .bar-nilai>i{position:absolute;top:-3px;bottom:-3px;width:2px;margin-inline-start:-1px;border-radius:2px;background:rgba(20,24,26,.55)}
 .nilai-paket .keterangan{font-size:13px}
-.percobaan{color:var(--ink-muted);font-size:14.5px;font-variant-numeric:tabular-nums}
-.aksi-paket{display:inline-flex;align-items:center;gap:8px;justify-self:end;white-space:nowrap;color:var(--ink);font:700 14px var(--font-sans);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:4px;transition:text-decoration-color .2s}
-.baris-paket:hover .aksi-paket{text-decoration-color:currentColor}
+.belum-dicoba{margin:0;color:var(--ink-muted);font-size:15px}
+/* tombol palsu di baris papan: seluruh baris adalah satu tautan (judul paket), ini hanya penanda aksinya */
+.aksi-paket{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;border:1.5px solid var(--ink);border-radius:var(--radius-pill);color:var(--ink);font:700 14.5px var(--font-sans);white-space:nowrap;transition:background .2s,color .2s}
+.baris-paket:hover .aksi-paket{background:var(--ink);color:#fff}
+
+/* tombol aksi di baris soal: bingkai tipis berbentuk pil supaya jelas bisa ditekan */
+.aw-btn.tombol-baris{flex:none;justify-content:center;min-width:104px;border:1.5px solid var(--ink);border-radius:var(--radius-pill);background:transparent;color:var(--ink);box-shadow:none;transition:background .2s,color .2s}
+.aw-btn.tombol-baris:hover{transform:none;box-shadow:none;background:var(--ink);color:#fff}
+.aw-btn-primary.tombol-baris{background:var(--ink);color:#fff}
+.aw-btn-primary.tombol-baris:hover{background:#2b3a31}
+
+/* pembahasan hasil kuis: tenang, tanpa blok warna besar; hijau/merah hanya pada penanda dan jawabannya */
+.butir-pembahasan{border:1px solid var(--divider);border-radius:20px;background:var(--surface-raised);overflow:hidden}
+.butir-pembahasan>summary{display:flex;align-items:flex-start;gap:12px;padding:16px;list-style:none;cursor:pointer;transition:background .2s}
+.butir-pembahasan>summary::-webkit-details-marker{display:none}
+.butir-pembahasan>summary:hover{background:var(--surface)}
+.butir-pembahasan>summary:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.butir-pembahasan>summary>svg{flex:none;margin-top:2px;color:var(--ink-muted);transform:rotate(180deg);transition:transform .25s cubic-bezier(.2,.7,.2,1)}
+.butir-pembahasan[open]>summary>svg{transform:rotate(-90deg)}
+.status-butir{flex:none;display:inline-flex;align-items:center;gap:6px;padding:4px 12px 4px 8px;border-radius:var(--radius-pill);font:700 13px/1.4 var(--font-sans)}
+.butir-pembahasan.benar .status-butir{background:#d9f3e4;color:#0b6b3a}
+.butir-pembahasan.salah .status-butir{background:#fbd9d3;color:#9a2616}
+.soal-butir{flex:1;min-width:0;line-height:1.55}
+.isi-butir{display:flex;flex-direction:column;gap:10px;padding:0 16px 16px}
+.jawab-butir{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:14px;line-height:1.55}
+.jawab-butir.salah{background:#fdeceb}
+.jawab-butir.tepat{background:#e8f5ec}
+.label-butir{font:700 13px var(--font-sans);color:var(--ink-muted)}
+.teks-butir{display:flex;flex-direction:column;gap:4px;padding-top:6px;line-height:1.65}
+.teks-butir p{margin:0}
+
 
 /* hasil kuis */
 .capaian-kuis{grid-column:1/-1;display:flex;flex-direction:column;gap:4px;padding-top:14px;border-top:1px solid var(--divider)}
@@ -154,25 +182,28 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 @media (max-width:720px){
   .hero-latihan{padding-top:88px}
   .kepala-papan{display:none}
-  .baris-paket{grid-template-columns:minmax(0,1fr) auto;gap:10px 14px;padding:16px 18px}
-  .nilai-paket{grid-column:1/-1;grid-row:2}
-  .percobaan{grid-row:1;grid-column:2;justify-self:end;font-size:13.5px}
-  .aksi-paket{grid-column:1/-1;grid-row:3;justify-self:start}
+  .baris-paket{grid-template-columns:minmax(0,1fr);gap:10px;padding:16px 18px}
+  .aksi-paket{justify-self:start}
 }
 @media (max-width:560px){
+  .aksi-paket{justify-self:stretch}
+  .butir-pembahasan>summary{flex-wrap:wrap;align-items:center}
+  .status-butir{margin-inline-end:auto}
+  .soal-butir{order:3;flex-basis:100%}
+  .ringkasan-kuis .aksi-konfirmasi{display:grid;grid-template-columns:1fr}
   .pilihan-acak{grid-template-columns:1fr}
   .panel-acak{padding:18px}
   .alat-soal{gap:10px}
   .kolom-cari{max-width:none;flex-basis:100%}
   .sakelar{margin-inline-start:0}
-  .kepala-bab{flex-wrap:wrap;gap:8px 12px;padding:16px}
-  .judul-bab-soal{flex-basis:calc(100% - 40px)}
-  .progres-bab{flex-direction:row;align-items:center;width:100%;margin-inline-start:30px;gap:12px}
+  .kepala-bab{display:grid;grid-template-columns:18px minmax(0,1fr);align-items:start;gap:6px 12px;padding:16px}
+  .judul-bab-soal{grid-column:2}
+  .progres-bab{grid-column:2;flex-direction:row;align-items:center;width:auto;gap:12px}
   .progres-bab .keterangan{flex:none}
-  .progres-bab .bar-progres{flex:1}
-  .baris-soal-baru{flex-wrap:wrap;gap:8px 12px;padding:12px 8px}
-  .baris-soal-baru .isi-soal{flex-basis:calc(100% - 44px)}
-  .baris-soal-baru .aw-btn{margin-inline-start:42px}
+  .progres-bab .bar-progres{flex:1;min-width:0}
+  .baris-soal-baru{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:start;gap:6px 12px;padding:12px 8px}
+  .baris-soal-baru .isi-soal{grid-column:2}
+  .baris-soal-baru .aw-btn{grid-column:2;justify-self:start;margin-top:4px}
   .isi-latihan .tab-latihan{align-self:stretch}
   .isi-latihan .tab-latihan .tab-tautan{flex:1;justify-content:center;padding:0 10px}
 }

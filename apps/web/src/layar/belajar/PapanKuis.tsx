@@ -5,7 +5,7 @@
 import { daftarSoalKuis } from '../../konten/sumber';
 import { bacaRekorPaket, type RekorPaket } from '../../progres';
 import { tautanLatihan } from '../../rute';
-import { angka, panah, t } from '../../terjemah';
+import { angka, t } from '../../terjemah';
 import { bacaSkor, persenBulat, predikatDari, TANGGA_PREDIKAT } from '../../skorKuis';
 import { teksPredikat, teksTarget } from './teksSkor';
 import { judulTopik, JUMLAH_SOAL_ACAK, kodePaketBab, PAKET_ACAK, perBab } from './KuisKonsep';
@@ -58,7 +58,7 @@ export function PapanKuis() {
       <h2 id="judul-papan" className="judul-bagian">{t('latihan.nilai_terbaik_per_paket')}</h2>
       <p className="keterangan">{keteranganPredikat}</p>
       <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>
-      <div className="kepala-papan" aria-hidden="true"><span>{t('latihan.paket')}</span><span>{t('latihan.nilai_terbaik')}</span><span>{t('latihan.dicoba')}</span></div>
+      <div className="kepala-papan" aria-hidden="true"><span>{t('latihan.paket')}</span><span>{t('latihan.nilai_terbaik')}</span></div>
       <ul className="daftar-polos">
         {daftarPaket().map(paket => <BarisPaket key={paket.kode} paket={paket} rekor={rekor[paket.kode]} />)}
       </ul>
@@ -69,24 +69,25 @@ export function PapanKuis() {
 function BarisPaket({ paket, rekor }: { paket: PaketKuis; rekor: RekorPaket | undefined }) {
   const persen = rekor ? persenRekor(rekor) : null;
   const predikat = persen === null ? null : predikatDari(persen);
-  const target = persen === null ? t('latihan.capai_persen_untuk_predikat', { persen: angka(String(TANGGA_PREDIKAT[1]!.dari)), predikat: teksPredikat('cukup') }) : teksTarget(persen);
+  const target = persen === null ? null : teksTarget(persen);
   return (
     <li className={`baris-paket predikat-${predikat ?? 'belum'}`}>
       <div className="nama-paket">
         <a className="tautan-paket" href={tautanLatihan('kuis', paket.kode)}>{judulTopik(paket.bab)}</a>
         <span className="keterangan">{t('latihan.jumlah_soal', { jumlah: paket.jumlahSoal })}</span>
       </div>
-      <div className="nilai-paket">
-        <span className="sembunyi-visual">{t('latihan.nilai_terbaik')}: </span>
-        <span className="baris-nilai">
-          <b className="persen-terbaik">{persen === null ? '–' : <>{angka(String(persen))}<small>%</small></>}</b>
-          <span className="pil-predikat">{predikat ? teksPredikat(predikat) : t('latihan.belum_dicoba')}</span>
-        </span>
-        {persen !== null && <span className="bar-nilai" aria-hidden="true"><span style={{ width: `${persen}%` }} /><i style={{ insetInlineStart: `${TANGGA_PREDIKAT[TANGGA_PREDIKAT.length - 1]!.dari}%` }} /></span>}
-        {target && <span className="keterangan">{target}</span>}
-      </div>
-      <span className="percobaan">{rekor && <><span className="sembunyi-visual">{t('latihan.dicoba')}: </span>{t('latihan.jumlah_kali', { jumlah: angka(String(rekor.jumlahCoba)) })}</>}</span>
-      <span className="aksi-paket" aria-hidden="true">{rekor ? t('latihan.kerjakan_lagi') : t('latihan.mulai_kuis')}<span>{panah()}</span></span>
+      {persen === null || !rekor ? <p className="nilai-paket belum-dicoba">{t('latihan.belum_dicoba')}</p> : (
+        <div className="nilai-paket">
+          <span className="sembunyi-visual">{t('latihan.nilai_terbaik')}: </span>
+          <span className="baris-nilai">
+            <b className="persen-terbaik">{angka(String(persen))}<small>%</small></b>
+            <span className="pil-predikat">{teksPredikat(predikat!)}</span>
+          </span>
+          <span className="bar-nilai" aria-hidden="true"><span style={{ width: `${persen}%` }} /><i style={{ insetInlineStart: `${TANGGA_PREDIKAT[TANGGA_PREDIKAT.length - 1]!.dari}%` }} /></span>
+          <span className="keterangan">{[target, t('latihan.jumlah_kali', { jumlah: angka(String(rekor.jumlahCoba)) })].filter(Boolean).join(' · ')}</span>
+        </div>
+      )}
+      <span className="aksi-paket" aria-hidden="true">{rekor ? t('latihan.kerjakan_lagi') : t('latihan.mulai_kuis')}</span>
     </li>
   );
 }
