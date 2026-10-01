@@ -37,6 +37,9 @@ const JALUR = {
   lonceng: <><path d="M6 17V11a6 6 0 1 1 12 0v6l1.5 2h-15z" /><path d="M10 21a2 2 0 0 0 4 0" /></>,
   api: <path d="M12 3c.9 3.4 5 5.4 5 10a5 5 0 0 1-10 0c0-2 1-3.3 2.2-4.4.3 1.3 1 2.1 2 2.4C10.8 8.6 11.4 6 12 3z" />,
   suara: <><path d="M4 9v6h4l5 4V5L8 9z" /><path d="M16.5 9a4 4 0 0 1 0 6M19 6.5a8 8 0 0 1 0 11" /></>,
+  salin: <><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V6a2 2 0 0 1 2-2h8" /></>,
+  info: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
+  mata: <><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="3" /></>,
   jam: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
 } as const;
 

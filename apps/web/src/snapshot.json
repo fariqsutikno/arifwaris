@@ -21315,6 +21315,76 @@
    "id": "Email yang boleh membuka",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.langkah1",
+   "halaman": "bagikan",
+   "id": "Pilih siapa yang bisa membuka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.langkah1_bantu",
+   "halaman": "bagikan",
+   "id": "Tentukan siapa yang bisa mengakses tautan ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.langkah2",
+   "halaman": "bagikan",
+   "id": "Salin tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.langkah2_bantu",
+   "halaman": "bagikan",
+   "id": "Tautan ini bisa langsung dibagikan ke siapa saja sesuai pengaturan di atas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.baru_aktif",
+   "halaman": "bagikan",
+   "id": "Tautan akan aktif setelah kamu menekan Selesai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.selesai",
+   "halaman": "bagikan",
+   "id": "Selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.chip_hanya_lihat",
+   "halaman": "bagikan",
+   "id": "Hanya lihat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ceklis_lihat",
+   "halaman": "bagikan",
+   "id": "Penerima bisa melihat seluruh isi kasus dan pembagiannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ceklis_tidak_ubah",
+   "halaman": "bagikan",
+   "id": "Penerima tidak bisa mengubah, menghapus, atau menambahkan apa pun.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.ceklis_ikut",
+   "halaman": "bagikan",
+   "id": "Kalau kamu mengubah kasus ini, tampilan mereka ikut diperbarui.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

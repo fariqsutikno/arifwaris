@@ -95,65 +95,82 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   // Mengubah apa pun membuat status "baru disimpan/tersalin" tidak berlaku lagi.
   const ubah = (aksi: () => void) => { aksi(); setBaruDisimpan(false); setTersalin(false); setGalat(''); setKonfirmasi(false); };
   const tautanLamaBerubah = dibagikanSekarang && membagikan && slug !== tersimpan.slug;
-  const labelSimpan = !membagikan ? t('bagikan.berhenti') : dibagikanSekarang ? t('bagikan.simpan_perubahan') : t('bagikan.buat_tautan');
 
   return (
     <div className="konfirmasi" role="dialog" aria-modal="true" aria-labelledby={`${id}-judul`}
       onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }} onMouseDown={event => { if (event.target === event.currentTarget) saatTutup(); }}>
-      <form className="konfirmasi-isi form-bagikan" onSubmit={event => { event.preventDefault(); if (bisaSimpan) setKonfirmasi(true); }}>
-        <header>
-          <h2 id={`${id}-judul`}>{t('bagikan.judul')}</h2>
-          <p className="bantu-bagikan">{t('bagikan.subjudul_pilih')}</p>
+      <form className="konfirmasi-isi form-bagikan" onSubmit={event => { event.preventDefault(); if (!berubah) saatTutup(); else if (bisaSimpan) setKonfirmasi(true); }}>
+        <header className="kepala-bagikan">
+          <span className="lencana-bagikan" aria-hidden="true"><Ikon nama="bagikan" ukuran={22} /></span>
+          <div>
+            <h2 id={`${id}-judul`}>{t('bagikan.judul')}</h2>
+            <p className="bantu-bagikan">{t('bagikan.subjudul_pilih')}</p>
+          </div>
+          <button type="button" className="tutup-bagikan" aria-label={t('umum.tutup')} onClick={saatTutup}><Ikon nama="salah" ukuran={18} /></button>
         </header>
         {memuat ? <p>{t('bagikan.memuat')}</p> : (
           <>
-            <fieldset className="bagian-bagikan">
-              <legend>{t('bagikan.siapa_bisa_buka')}</legend>
+            <fieldset className="langkah-bagikan">
+              <legend><span className="nomor-langkah" aria-hidden="true">1</span><span><b>{t('bagikan.langkah1')}</b><small>{t('bagikan.langkah1_bantu')}</small></span></legend>
               {pilihanAkses().map(pilihan => (
                 <label key={pilihan.nilai} className="opsi-akses" data-pilih={akses === pilihan.nilai}>
                   <input type="radio" name={`${id}-akses`} checked={akses === pilihan.nilai} onChange={() => ubah(() => setAkses(pilihan.nilai))} />
-                  <span className="ikon-opsi"><Ikon nama={pilihan.ikon} ukuran={18} /></span>
+                  <span className="ikon-opsi"><Ikon nama={pilihan.ikon} ukuran={20} /></span>
                   <span className="teks-opsi"><b>{pilihan.label}</b><small>{pilihan.bantu}</small></span>
+                  <span className="radio-visual" aria-hidden="true" />
                 </label>
               ))}
+              {akses === 'email' && (
+                <div className="bagian-bagikan">
+                  <label htmlFor={`${id}-email`} className="judul-bagian">{t('bagikan.email_label')}</label>
+                  <textarea id={`${id}-email`} rows={3} value={teksEmail} placeholder="nama@contoh.com" autoComplete="off" spellCheck={false}
+                    aria-invalid={emailSalah.length > 0} aria-describedby={`${id}-bantu-email`} onChange={event => ubah(() => setTeksEmail(event.target.value))} />
+                  <p id={`${id}-bantu-email`} className={emailSalah.length > 0 || email.length > BATAS_EMAIL ? 'catatan-kolom salah' : 'catatan-kolom'}>
+                    {emailSalah.length > 0 ? t('bagikan.email_tidak_sah_nama', { email: emailSalah[0]! })
+                      : email.length > BATAS_EMAIL ? t('bagikan.email_terlalu_banyak', { batas: BATAS_EMAIL })
+                      : t('bagikan.email_bantu', { jumlah: email.length })}
+                  </p>
+                </div>
+              )}
             </fieldset>
 
-            {akses === 'email' && (
-              <div className="bagian-bagikan">
-                <label htmlFor={`${id}-email`} className="judul-bagian">{t('bagikan.email_label')}</label>
-                <textarea id={`${id}-email`} rows={3} value={teksEmail} placeholder="nama@contoh.com" autoComplete="off" spellCheck={false}
-                  aria-invalid={emailSalah.length > 0} aria-describedby={`${id}-bantu-email`} onChange={event => ubah(() => setTeksEmail(event.target.value))} />
-                <p id={`${id}-bantu-email`} className={emailSalah.length > 0 || email.length > BATAS_EMAIL ? 'catatan-kolom salah' : 'catatan-kolom'}>
-                  {emailSalah.length > 0 ? t('bagikan.email_tidak_sah_nama', { email: emailSalah[0]! })
-                    : email.length > BATAS_EMAIL ? t('bagikan.email_terlalu_banyak', { batas: BATAS_EMAIL })
-                    : t('bagikan.email_bantu', { jumlah: email.length })}
-                </p>
-              </div>
-            )}
-
             {membagikan ? (
-              <div className="bagian-bagikan">
-                <label htmlFor={`${id}-slug`} className="judul-bagian">{t('bagikan.tautan')}</label>
+              <section className="langkah-bagikan garis-atas" aria-labelledby={`${id}-langkah2`}>
+                <div className="judul-langkah-bagikan">
+                  <span className="nomor-langkah" aria-hidden="true">2</span>
+                  <span><b id={`${id}-langkah2`}>{t('bagikan.langkah2')}</b><small>{t('bagikan.langkah2_bantu')}</small></span>
+                </div>
                 <div className={`kotak-tautan${statusNama === 'dipakai' || statusNama === 'tidak_sah' ? ' salah' : ''}`}>
                   <span className="awalan-tautan" aria-hidden="true">{awalanTautan()}</span>
-                  <input id={`${id}-slug`} value={slug} maxLength={40} autoComplete="off" spellCheck={false} aria-describedby={`${id}-status-nama`}
+                  <input aria-label={t('bagikan.tautan')} value={slug} maxLength={40} autoComplete="off" spellCheck={false} aria-describedby={`${id}-status-nama`}
                     onFocus={event => event.target.select()} onChange={event => ubah(() => setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')))} />
                   <Tombol type="button" disabled={!siapSalin} onClick={() => void salin(slug)}>
-                    {tersalin ? <><Ikon nama="benar" ukuran={16} /> {t('bagikan.tersalin_pendek')}</> : t('bagikan.salin')}
+                    <Ikon nama={tersalin ? 'benar' : 'salin'} ukuran={16} /> {tersalin ? t('bagikan.tersalin_pendek') : t('bagikan.salin')}
                   </Tombol>
                 </div>
-                <div className="baris-status">
-                  <p id={`${id}-status-nama`} className={`catatan-kolom ${statusNama === 'dipakai' || statusNama === 'tidak_sah' ? 'salah' : statusNama === 'tersedia' ? 'bagus' : ''}`} role="status">
-                    {teksStatusNama(statusNama)}
+                <p id={`${id}-status-nama`} className={`catatan-kolom ${statusNama === 'dipakai' || statusNama === 'tidak_sah' ? 'salah' : statusNama === 'tersedia' ? 'bagus' : ''}`} role="status">
+                  {teksStatusNama(statusNama)}
+                </p>
+                <div className="baris-pratinjau">
+                  {siapSalin
+                    ? <a className="tombol-kecil" href={tautanBagikan(tersimpan.slug)} target="_blank" rel="noopener"><Ikon nama="buka" ukuran={16} /> {t('bagikan.pratinjau')}</a>
+                    : <span className="tombol-kecil mati" aria-disabled="true"><Ikon nama="buka" ukuran={16} /> {t('bagikan.pratinjau')}</span>}
+                  <p className={baruDisimpan ? 'catatan-info sukses' : 'catatan-info'} role="status">
+                    <Ikon nama={baruDisimpan ? 'benar' : 'info'} ukuran={16} />
+                    {baruDisimpan ? (tersalin ? t('bagikan.tautan_aktif_tersalin') : t('bagikan.tautan_aktif')) : siapSalin && !berubah ? t('bagikan.tautan_aktif') : t('bagikan.baru_aktif')}
                   </p>
-                  {siapSalin && (
-                    <a className="tombol-kecil" href={tautanBagikan(tersimpan.slug)} target="_blank" rel="noopener"><Ikon nama="buka" ukuran={15} /> {t('bagikan.pratinjau')}</a>
-                  )}
                 </div>
-              </div>
+                <details className="pratinjau-penerima">
+                  <summary><Ikon nama="mata" ukuran={18} /> <b>{t('bagikan.pratinjau')}</b> <span className="chip-kecil-info">{t('bagikan.chip_hanya_lihat')}</span></summary>
+                  <ul>
+                    <li><Ikon nama="benar" ukuran={14} /> {t('bagikan.ceklis_lihat')}</li>
+                    <li><Ikon nama="benar" ukuran={14} /> {t('bagikan.ceklis_tidak_ubah')}</li>
+                    <li><Ikon nama="benar" ukuran={14} /> {t('bagikan.ceklis_ikut')}</li>
+                  </ul>
+                </details>
+              </section>
             ) : <p className="info-privat"><Ikon nama="kunci" ukuran={16} /> {t('bagikan.privat_info')}</p>}
 
-            {baruDisimpan && <p className="sukses-bagikan" role="status"><Ikon nama="benar" ukuran={16} /> {tersalin ? t('bagikan.tautan_aktif_tersalin') : t('bagikan.tautan_aktif')}</p>}
             {galat && <p role="alert" className="catatan-kolom salah">{galat}</p>}
 
             {konfirmasi ? (
@@ -168,8 +185,8 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
               </div>
             ) : (
               <div className="aksi-konfirmasi">
-                <Tombol type="button" varian="secondary" onClick={saatTutup}>{berubah ? t('umum.batal') : t('umum.tutup')}</Tombol>
-                {berubah && <Tombol type="submit" disabled={!bisaSimpan}>{labelSimpan}</Tombol>}
+                <Tombol type="button" varian="secondary" onClick={saatTutup}>{t('umum.tutup')}</Tombol>
+                <Tombol type="submit" disabled={berubah && !bisaSimpan}>{berubah && !membagikan ? t('bagikan.berhenti') : t('bagikan.selesai')}</Tombol>
               </div>
             )}
           </>

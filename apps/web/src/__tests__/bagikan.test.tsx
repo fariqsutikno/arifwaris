@@ -32,7 +32,7 @@ test('bawaan Hanya saya: tanpa tautan dan tanpa tombol simpan; memilih membagika
   render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
   expect(await screen.findByRole('radio', { name: /Hanya saya/ })).toHaveProperty('checked', true);
   expect(screen.queryByRole('textbox', { name: 'Tautan' })).toBeNull();
-  expect(screen.queryByRole('button', { name: /Buat tautan/ })).toBeNull();
+  expect(screen.getByText(/Kasus ini tidak dibagikan/)).toBeTruthy();
   await pilihAkses(/Siapa saja/);
   expect(screen.getByRole('textbox', { name: 'Tautan' })).toBeTruthy();
 });
@@ -46,19 +46,20 @@ test('nama tautan bisa diketik; status tersedia/dipakai; membuat tautan lewat ko
   expect(screen.getByRole('button', { name: 'Salin' })).toHaveProperty('disabled', true);
   fireEvent.change(isian, { target: { value: 'Sama' } });
   expect(await screen.findByText('Sudah dipakai kasus lain. Coba nama lain.')).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Buat tautan' })).toHaveProperty('disabled', true);
+  expect(screen.getByRole('button', { name: 'Selesai' })).toHaveProperty('disabled', true);
   fireEvent.change(isian, { target: { value: 'kasus-pak-budi' } });
   expect(await screen.findByText('Nama tautan ini tersedia.')).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Buat tautan' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Selesai' }));
   // Belum tersimpan sebelum dikonfirmasi.
   expect(await bagikan.bacaPengaturan('r1')).toBeNull();
   expect(screen.getByText(/Siapa saja yang punya tautan ini akan bisa melihat/)).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Ya, simpan' }));
-  expect(await screen.findByText(/Tautan aktif/, { selector: 'p.sukses-bagikan' })).toBeTruthy();
+  expect(await screen.findByText(/Tautan aktif/, { selector: 'p.catatan-info.sukses' })).toBeTruthy();
   expect(sudahDibagikan('r1')).toBe(true);
   expect(await bagikan.bacaPengaturan('r1')).toEqual({ slug: 'kasus-pak-budi', akses: 'tautan', email: [] });
   expect(screen.getByRole('button', { name: /Salin|Tersalin/ })).toHaveProperty('disabled', false);
   expect(screen.getByRole('link', { name: /Pratinjau sebagai penerima/ })).toBeTruthy();
+  expect(screen.getByText('Hanya lihat')).toBeTruthy();
 });
 
 test('memilih Hanya saya lalu menyimpan menghentikan pembagian (dengan konfirmasi)', async () => {
@@ -82,12 +83,12 @@ test('akses email: tombol aktif hanya bila email sah, kesalahan ditunjuk saat me
   render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
   await pilihAkses(/Email tertentu/);
   await screen.findByText('Nama tautan ini tersedia.');
-  expect(screen.getByRole('button', { name: 'Buat tautan' })).toHaveProperty('disabled', true);
+  expect(screen.getByRole('button', { name: 'Selesai' })).toHaveProperty('disabled', true);
   fireEvent.change(screen.getByRole('textbox', { name: 'Email yang boleh membuka' }), { target: { value: 'bukan-email' } });
   expect(screen.getByText('Penulisan email “bukan-email” belum benar.')).toBeTruthy();
   fireEvent.change(screen.getByRole('textbox', { name: 'Email yang boleh membuka' }), { target: { value: 'a@b.co, c@d.co' } });
   expect(screen.getByText(/2 email/)).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Buat tautan' })).toHaveProperty('disabled', false);
+  expect(screen.getByRole('button', { name: 'Selesai' })).toHaveProperty('disabled', false);
 });
 
 test('klik di luar dialog menutupnya; klik di dalam tidak', async () => {
@@ -95,6 +96,7 @@ test('klik di luar dialog menutupnya; klik di dalam tidak', async () => {
   const saatTutup = vi.fn();
   render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={saatTutup} />);
   const dialog = await screen.findByRole('dialog');
+  expect(screen.getAllByRole('button', { name: 'Tutup' })).toHaveLength(2); // tombol X di kepala dan Tutup di kaki
   fireEvent.mouseDown(screen.getByRole('radio', { name: /Hanya saya/ }));
   expect(saatTutup).not.toHaveBeenCalled();
   fireEvent.mouseDown(dialog);
