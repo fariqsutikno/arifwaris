@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pembanding Font</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@400;500;600;700&family=Funnel+Sans:wght@400;500;600;700&family=Host+Grotesk:wght@400;500;600;700&family=Parkinsans:wght@400;500;600;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700&family=Schibsted+Grotesk:wght@400;500;600;700&family=Gabarito:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap">
+<style>
+/* Pembanding font untuk gaya Logivo. Semua dari Google Fonts, teks sama, supaya adil. */
+:root{--ink:#14181a;--muted:#525c57;--page:#b9d4c0;--frame:#eef3e8;--orange:#f2682a;--orange-soft:#fde6d8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);padding:24px 16px;font:400 15px/1.5 system-ui,sans-serif}
+main{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+header p{color:var(--muted);font-size:14px;max-width:80ch;margin:6px 0 0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+.kartu{background:var(--frame);border-radius:24px;padding:0;overflow:hidden}
+.nama{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:12px 20px;background:#fff;font:600 13px system-ui;color:var(--muted)}
+.nama b{color:var(--ink);font-size:14px}
+.hero{background:linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b);color:#fff;padding:22px 20px}
+.hero small{display:block;font-size:13px;opacity:.9}
+.hero h2{margin:6px 0 0;font-size:34px;line-height:1.05;font-weight:500;letter-spacing:-.02em}
+.isi{padding:16px 20px;display:flex;flex-direction:column;gap:10px}
+.baris{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:1px solid #dfe6dc;padding-bottom:8px}
+.baris b{font-weight:600}.baris span.k{display:block;font-size:13px;color:var(--muted)}
+.uang{font-weight:600;font-variant-numeric:tabular-nums}
+.pil{background:#0e0f10;color:#fff;border-radius:999px;font-weight:600;font-size:13px;padding:3px 12px}
+.btn{align-self:flex-start;background:#0e0f10;color:#fff;border-radius:999px;font-weight:600;font-size:14px;padding:10px 20px}
+.chip{align-self:flex-start;background:var(--orange-soft);color:#9c3d0c;border-radius:999px;font-weight:600;font-size:12px;padding:2px 10px}
+.arab{font-family:"Noto Kufi Arabic",serif;font-size:18px}
+p{margin:0;font-size:14px}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1 style="margin:0;font-size:24px;font-family:system-ui">Pembanding font untuk gaya Logivo</h1>
+  <p>Teks sama di semua kartu: judul hero, nama dan angka rupiah, paragraf penjelasan, tombol, dan label. Semua dari Google Fonts, jadi bisa dipasang tanpa lisensi tambahan. Teks Arab tetap memakai Noto Kufi Arabic.</p>
+</header>
+<div class="grid" id="g"></div>
+</main>
+<script>
+// [nama tampil, keluarga display, keluarga isi]
+const F=[['Funnel Display + Funnel Sans','"Funnel Display"','"Funnel Sans"'],
+ ['Host Grotesk','"Host Grotesk"','"Host Grotesk"'],
+ ['Parkinsans','"Parkinsans"','"Parkinsans"'],
+ ['Bricolage Grotesque','"Bricolage Grotesque"','"Bricolage Grotesque"'],
+ ['Schibsted Grotesk','"Schibsted Grotesk"','"Schibsted Grotesk"'],
+ ['Gabarito','"Gabarito"','"Gabarito"']];
+document.getElementById('g').innerHTML=F.map(([n,d,s])=>`
+<section class="kartu" style="font-family:${s},system-ui">
+  <div class="nama"><b>${n}</b><span>display: ${d.replace(/"/g,'')}</span></div>
+  <div class="hero"><small style="font-family:${s}">Menurut madzhab Syafi'i · dihitung 1 Oktober 2026</small><h2 style="font-family:${d}">Harta Mbah Karto dan keluarganya</h2></div>
+  <div class="isi">
+    <div class="baris"><div><b>Rina</b><span class="k">anak perempuan Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 3.024.000.000</span> <span class="pil">29,2%</span></div></div>
+    <div class="baris"><div><b>Mbah Sumi</b><span class="k">istri Mbah Karto</span></div><div style="text-align:right"><span class="uang">Rp 2.304.000.000</span> <span class="pil">22,2%</span></div></div>
+    <p>Dewi menerima dari Budi sebagai istrinya. Bagian itu sudah menjadi miliknya, lalu diteruskan ke keluarga Dewi waktu ia wafat.</p>
+    <p class="arab" dir="rtl">الفرائض · الأصل · العول</p>
+    <span class="chip">Hukum positif, bukan fikih</span>
+    <span class="btn">Lembar musyawarah</span>
+  </div>
+</section>`).join('');
+</script>
+</body>
+</html>
