@@ -1,71 +1,31 @@
-// Daftar riwayat hitung penuh di #/riwayat (beranda Hitung punya linimasa sendiri: lab/TerakhirDibuka); tiap entri bisa dihapus.
-// Tiap entri: daftar ahli waris, sumbernya, harta (atau "Data belum lengkap"), dan kapan terakhir dibuka. Membuka entri
-// memuat kasusnya ke layar hasil, atau ke langkah wizard yang belum lengkap; bila kalkulator sedang memuat kasus lain, tanya dulu.
-// Halaman Riwayat penuh menampilkan Rak Eksperimen (kasus bernama, tersimpan.ts) di atas "Terakhir dibuka".
+// Halaman Kasusmu (#/riwayat): semua kasus pengguna, tersimpan dan sementara, dengan tampilan yang sama dengan Awal Lab
+// (hero gelap, berkas berwarna). Daftarnya komponen yang sama dengan Awal Lab, hanya penuh dan bisa disaring dan dicari.
 
-import { useState } from 'react';
-import { keJson, type Kasus } from '../kasus';
-import { bacaRiwayat, hapusRiwayat, labelSumber, ringkasKasus, waktuRelatif, type EntriRiwayat } from '../riwayat';
-import { DialogKonfirmasi } from '../ui/Dialog';
+import { useEffect } from 'react';
+import type { Kasus } from '../kasus';
+import type { EntriRiwayat } from '../riwayat';
+import { tautanInduk } from '../rute';
 import { Ikon } from '../ui/Ikon';
-import { TombolBukaKasus } from './belajar/TombolBukaKasus';
-import { RakEksperimen } from './lab/RakEksperimen';
+import { DaftarKasus } from './lab/DaftarKasus';
 import { t } from '../terjemah';
 
 interface Props { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void }
 
-export function DaftarRiwayat({ kasusSekarang, saatBuka }: Props) {
-  const [daftar, setDaftar] = useState(bacaRiwayat);
-  const sekarang = Date.now();
-  // Hapus satu entri atau semua selalu ditanya dulu; riwayat tidak bisa dikembalikan.
-  const [akanDihapus, setAkanDihapus] = useState<EntriRiwayat | 'semua' | null>(null);
-  const hapus = (id?: string) => { hapusRiwayat(id); setDaftar(bacaRiwayat()); };
-  if (daftar.length === 0) {
-    return (
-      <div className="kartu-kosong">
-        <Ikon nama="riwayat" ukuran={32} />
-        <b>{t('hitung.riwayat_hitung_masih_kosong')}</b>
-        <p className="keterangan">{t('hitung.tiap_kasus_yang_kamu_mulai_dari')}</p>
+export function HalamanRiwayat({ kasusSekarang, saatBuka }: Props) {
+  // Penanda halaman: latar krem dan nav menyatu dengan hero gelap, sama dengan Beranda, Belajar, dan Awal Lab.
+  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
+  return (
+    <main className="halaman-beranda halaman-lab">
+      <header className="hero-beranda hero-kasusmu">
+        <div className="sapa-pusat">
+          <h1>{t('hitung.lab_kasusmu')}</h1>
+          <p className="lead">{t('hitung.lab_halaman_ket')}</p>
+          <a className="tautan-lanjut" href={tautanInduk({ halaman: 'riwayat' })}><span className="panah-kecil" aria-hidden="true"><Ikon nama="kembali" ukuran={16} /></span>{t('hitung.lab_kembali')}</a>
+        </div>
+      </header>
+      <div className="tata-beranda">
+        <DaftarKasus kasusSekarang={kasusSekarang} saatBuka={saatBuka} />
       </div>
-    );
-  }
-  return (
-    <>
-      <ul className="daftar-polos daftar-soal daftar-riwayat">
-        {daftar.map(entri => (
-          <li key={entri.id} className="baris-soal">
-            <div className="isi-soal">
-              <b>{entri.judul}</b>
-              <span className="keterangan">
-                <span className="sumber-riwayat">{labelSumber(entri.sumber)}</span> · {entri.keterangan} · {t('hitung.dibuka_waktu', { waktu: waktuRelatif(entri.waktu, sekarang) })}
-              </span>
-            </div>
-            <TombolBukaKasus kasusSekarang={kasusSekarang && keJson(kasusSekarang) !== keJson(entri.kasus) ? kasusSekarang : null}
-              saatBuka={() => saatBuka(entri)}>{entri.lengkap ? t('hitung.buka') : t('hitung.lanjut')}</TombolBukaKasus>
-            <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm" onClick={() => setAkanDihapus(entri)} aria-label={t('hitung.hapus_judul', { judul: entri.judul })} title={t('umum.hapus')}><Ikon nama="sampah" ukuran={18} /></button>
-          </li>
-        ))}
-      </ul>
-      <button type="button" className="aw-btn aw-btn-secondary aw-btn-sm tombol-hapus-semua" onClick={() => setAkanDihapus('semua')}><Ikon nama="sampah" ukuran={18} />{t('hitung.hapus_semua_riwayat')}</button>
-      {akanDihapus && (
-        <DialogKonfirmasi judul={akanDihapus === 'semua' ? t('hitung.hapus_semua_riwayat_2') : t('hitung.hapus_kasus_ini')}
-          labelLanjut={akanDihapus === 'semua' ? t('umum.hapus_semua') : t('umum.hapus')} saatBatal={() => setAkanDihapus(null)}
-          saatLanjut={() => { setAkanDihapus(null); hapus(akanDihapus === 'semua' ? undefined : akanDihapus.id); }}>
-          <p>{akanDihapus === 'semua' ? t('hitung.jumlah_kasus', { jumlah: daftar.length }) : `"${akanDihapus.judul}"`} {t('hitung.akan_dihapus_dari_perangkat_ini_dan')}</p>
-        </DialogKonfirmasi>
-      )}
-    </>
-  );
-}
-
-export function HalamanRiwayat(props: Omit<Props, 'ringkas'>) {
-  return (
-    <main className="halaman tumpuk">
-      <h1>{t('hitung.riwayat_hitung')}</h1>
-      <p className="keterangan">{t('hitung.tersimpan_di_perangkat_ini_selama_30')}</p>
-      <RakEksperimen kasusSekarang={props.kasusSekarang} saatBuka={props.saatBuka} />
-      <h2>{t('hitung.terakhir_dibuka')}</h2>
-      <DaftarRiwayat {...props} />
     </main>
   );
 }

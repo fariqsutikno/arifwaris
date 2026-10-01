@@ -79,8 +79,8 @@ describe('temuan review akhir', () => {
   it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu langsung ke wizard', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
-    const tombol = screen.getByRole('button', { name: /skenario baru/i });
-    expect(tombol.textContent).toMatch(/tetap tersimpan di riwayat/);
+    const tombol = screen.getByRole('button', { name: /mulai dari nol/i });
+    expect(tombol.textContent).toMatch(/tetap ada di Kasusmu/);
     fireEvent.click(tombol);
     expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   });
@@ -88,7 +88,7 @@ describe('temuan review akhir', () => {
   it('menu Hitung selalu membuka awal Hitung, bukan langsung ke skenario', () => {
     isiKasus();
     fireEvent.click(screen.getAllByRole('link', { name: 'ArifLab' })[0]!);
-    expect(screen.getByRole('button', { name: /skenario baru/i })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /mulai dari nol/i })).toBeTruthy();
     expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
   });
 

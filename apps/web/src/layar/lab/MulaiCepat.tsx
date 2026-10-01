@@ -1,20 +1,33 @@
-// Mulai cepat: susunan keluarga umum sebagai ubin berwarna (pola ubin modul Belajar). Tiap ubin menampilkan ahli
-// warisnya sebagai deretan avatar yang sama dengan di pohon, jadi pengguna langsung melihat isi susunannya.
-// Satu ketukan membuka wizard dengan ahli waris terisi (harta masih kosong).
+// Mulai kasus baru: semua cara memulai di satu tempat. "Mulai dari nol" (hanya bila ada kasus berjalan; bila tidak, hero
+// sudah menawarkannya), susunan keluarga umum sebagai ubin berwarna dengan avatar ahli warisnya (satu ketukan membuka
+// wizard dengan ahli waris terisi), dan tautan impor berkas.
 
 import type { CSSProperties } from 'react';
 import { AvatarOrang } from '../../hasil/AvatarOrang';
+import { jenisDari } from '../../checklist';
 import { kasusDariSusunan, SUSUNAN_CEPAT } from '../../lab';
 import type { Kasus } from '../../kasus';
-import { jenisDari } from '../../checklist';
+import { Ikon } from '../../ui/Ikon';
 import { angka, panah, t } from '../../terjemah';
 
-export function MulaiCepat({ saatPilih }: { saatPilih: (kasus: Kasus) => void }) {
+interface Props { saatPilih: (kasus: Kasus) => void; saatDariNol?: (() => void) | undefined; saatImpor: () => void }
+
+export function MulaiCepat({ saatPilih, saatDariNol, saatImpor }: Props) {
   return (
     <section className="bagian-lab" aria-labelledby="judul-lab-cepat">
       <h2 id="judul-lab-cepat" className="judul-bagian">{t('hitung.lab_mulai_cepat')}</h2>
-      <p className="keterangan">{t('hitung.lab_mulai_cepat_ket')}</p>
+      <p className="keterangan">{t('hitung.lab_mulai_baru_ket')}</p>
       <ul className="daftar-polos lab-ubin-cepat">
+        {saatDariNol && (
+          <li>
+            <button type="button" className="ubin ubin-lab ubin-nol" onClick={saatDariNol}>
+              <span className="panah-bulat" aria-hidden="true">{panah()}</span>
+              <Ikon nama="tambah" ukuran={40} />
+              <b className="judul-ubin">{t('hitung.lab_dari_nol')}</b>
+              <span className="keterangan">{t('hitung.lab_kasus_tetap')}</span>
+            </button>
+          </li>
+        )}
         {SUSUNAN_CEPAT.map((susunan, urutan) => (
           <li key={susunan.kunci}>
             <button type="button" className="ubin ubin-lab" style={{ '--i': urutan } as CSSProperties} onClick={() => saatPilih(kasusDariSusunan(susunan))}>
@@ -28,6 +41,7 @@ export function MulaiCepat({ saatPilih }: { saatPilih: (kasus: Kasus) => void })
           </li>
         ))}
       </ul>
+      <button type="button" className="tautan-cari lab-impor" onClick={saatImpor}><Ikon nama="berkas" ukuran={20} />{t('hitung.lab_impor')}</button>
     </section>
   );
 }

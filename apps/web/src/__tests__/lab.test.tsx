@@ -1,18 +1,23 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, expect, test, vi } from 'vitest';
+import { kasusBaru } from '../kasus';
+import { SUSUNAN_CEPAT, kasusDariSusunan } from '../lab';
+import { AwalHitung } from '../layar/AwalHitung';
+import { DaftarKasus } from '../layar/lab/DaftarKasus';
 import { DialogNama } from '../layar/lab/DialogNama';
 import { HeroLab } from '../layar/lab/HeroLab';
-import { kasusBaru } from '../kasus';
-import { TerakhirDibuka } from '../layar/lab/TerakhirDibuka';
+import { HalamanRiwayat } from '../layar/Riwayat';
 import { catatRiwayat, hapusRiwayat } from '../riwayat';
-import { AwalHitung } from '../layar/AwalHitung';
-import { MulaiCepat } from '../layar/lab/MulaiCepat';
-import { RakEksperimen } from '../layar/lab/RakEksperimen';
-import { SUSUNAN_CEPAT, kasusDariSusunan } from '../lab';
-import { bacaTersimpan, sematkan, simpanKasus } from '../tersimpan';
+import { bacaTersimpan, simpanKasus } from '../tersimpan';
 
-beforeEach(() => localStorage.clear());
+const sendiri = { jenis: 'sendiri' } as const;
+const kasusKe = (i: number) => {
+  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
+  return { ...dasar, tirkah: { ...dasar.tirkah, kotor: BigInt(1_000_000 * (i + 1)) } };
+};
+beforeEach(() => { localStorage.clear(); hapusRiwayat(); });
 
+// ── dialog nama ──
 test('dialog nama terisi judul awal, Simpan mengirim nama yang dipangkas', () => {
   const saatSimpan = vi.fn();
   render(<DialogNama judulAwal="Istri, Ayah" saatSimpan={saatSimpan} saatBatal={() => {}} />);
@@ -23,53 +28,14 @@ test('dialog nama terisi judul awal, Simpan mengirim nama yang dipangkas', () =>
   expect(saatSimpan).toHaveBeenCalledWith('Keluarga Pak Budi');
 });
 
-test('Esc membatalkan', () => {
+test('Esc membatalkan dialog nama', () => {
   const saatBatal = vi.fn();
   render(<DialogNama judulAwal="x" saatSimpan={() => {}} saatBatal={saatBatal} />);
   fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
   expect(saatBatal).toHaveBeenCalled();
 });
 
-test('rak kosong tidak dirender apa pun', () => {
-  const { container } = render(<RakEksperimen kasusSekarang={null} saatBuka={() => {}} />);
-  expect(container.innerHTML).toBe("");
-});
-
-test('rak menampilkan nama dan menaruh yang disematkan di depan', () => {
-  const kasus = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  simpanKasus('b', kasus, 'Keluarga B');
-  simpanKasus('a', kasus, 'Keluarga A');
-  sematkan('b', true);
-  render(<RakEksperimen kasusSekarang={null} saatBuka={() => {}} />);
-  expect(screen.getAllByRole('heading', { level: 3 }).map(el => el.textContent)).toEqual(['Keluarga B', 'Keluarga A']);
-});
-
-test('menyematkan dari rak mengubah urutan dan tersimpan', () => {
-  const kasus = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  simpanKasus('a', kasus, 'Keluarga A');
-  simpanKasus('b', kasus, 'Keluarga B');
-  render(<RakEksperimen kasusSekarang={null} saatBuka={() => {}} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Sematkan Keluarga A' }));
-  expect(screen.getAllByRole('heading', { level: 3 })[0]!.textContent).toBe('Keluarga A');
-});
-
-test('ganti nama dari rak lewat dialog', () => {
-  simpanKasus('a', kasusDariSusunan(SUSUNAN_CEPAT[0]!), 'Lama');
-  render(<RakEksperimen kasusSekarang={null} saatBuka={() => {}} />);
-  fireEvent.click(screen.getByRole('button', { name: 'Ganti nama Lama' }));
-  fireEvent.change(screen.getByLabelText('Nama kasus'), { target: { value: 'Baru' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
-  expect(screen.getByRole('heading', { level: 3 }).textContent).toBe('Baru');
-});
-
-test('mulai cepat: satu ketukan mengirim kasus dengan ahli waris susunannya', () => {
-  const saatPilih = vi.fn();
-  render(<MulaiCepat saatPilih={saatPilih} />);
-  fireEvent.click(screen.getByRole('button', { name: /^Istri dan anak/ }));
-  expect(saatPilih).toHaveBeenCalledTimes(1);
-  expect(saatPilih.mock.calls[0]![0].tirkah.kotor).toBe(0n);
-});
-
+// ── hero ──
 test('hero tanpa kasus terakhir: ajakan mulai skenario baru, tanpa Lanjutkan', () => {
   render(<HeroLab kasusTerakhir={null} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
   expect(screen.getByRole('button', { name: /Mulai skenario baru/ })).toBeTruthy();
@@ -90,83 +56,122 @@ test('hero kasus yang baru memilih jenis kelamin tetap bisa dilanjutkan', () => 
 
 test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
   const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  const lengkap = { ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } };
-  const { container } = render(<HeroLab kasusTerakhir={lengkap} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
+  const { container } = render(<HeroLab kasusTerakhir={{ ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } }} saatLanjut={() => {}} saatMulaiBaru={() => {}} />);
   expect(container.querySelector('.pita-bagian')).toBeTruthy();
 });
 
-const sendiri = { jenis: 'sendiri' } as const;
-
-test('tanpa riwayat dua pekan: terakhir dibuka tidak dirender', () => {
-  hapusRiwayat();
-  const { container } = render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+// ── Kasusmu ──
+test('Kasusmu tanpa kasus: ringkas tidak dirender, halaman penuh memberi petunjuk', () => {
+  const { container, unmount } = render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} ringkas />);
   expect(container.innerHTML).toBe('');
-});
-
-test('riwayat dikelompokkan per hari; kolom cari hanya bila entri lebih dari 8', () => {
-  hapusRiwayat();
-  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  const kasusKe = (i: number) => ({ ...dasar, tirkah: { ...dasar.tirkah, kotor: BigInt(1_000_000 * (i + 1)) } });
-  for (let i = 0; i < 8; i += 1) catatRiwayat(`k${i}`, kasusKe(i), Date.now() - i * 60_000, sendiri);
-  const { unmount } = render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
-  expect(screen.getByText('Hari ini')).toBeTruthy();
-  expect(screen.queryByLabelText('Cari kasus')).toBeNull();
   unmount();
-  catatRiwayat('k8', kasusKe(8), Date.now() - 9 * 60_000, sendiri);
-  render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
-  expect(screen.getByLabelText('Cari kasus')).toBeTruthy();
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} />);
+  expect(screen.getByText(/Belum ada kasus/)).toBeTruthy();
 });
 
-test('cari menyaring dan menampilkan pesan bila tidak ada yang cocok', () => {
-  hapusRiwayat();
-  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  for (let i = 0; i < 9; i += 1) catatRiwayat(`k${i}`, { ...dasar, tirkah: { ...dasar.tirkah, kotor: BigInt(1_000_000 * (i + 1)) } }, Date.now() - i * 60_000, sendiri);
-  render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
+test('satu daftar: tersimpan (bernama) di depan, sementara sesudahnya, dengan status masing-masing', () => {
+  catatRiwayat('s', kasusKe(0), Date.now(), sendiri);
+  simpanKasus('t', kasusKe(1), 'Keluarga T');
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} ringkas />);
+  expect(screen.getAllByRole('heading', { level: 3 }).map(el => el.textContent)).toEqual(['Keluarga T', 'Istri, Anak laki-laki, Anak perempuan']);
+  expect(screen.getByText('Tersimpan')).toBeTruthy();
+  expect(screen.getByText(/Sementara · 30 hari lagi/)).toBeTruthy();
+});
+
+test('Simpan kasus sementara: beri nama lewat dialog, jadi tersimpan', () => {
+  catatRiwayat('s', kasusKe(0), Date.now(), sendiri);
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} ringkas />);
+  fireEvent.click(screen.getByRole('button', { name: /^Simpan Istri/ }));
+  fireEvent.change(screen.getByLabelText('Nama kasus'), { target: { value: 'Keluarga Q' } });
+  fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Simpan' }));
+  expect(bacaTersimpan()[0]!.judul).toBe('Keluarga Q');
+  expect(screen.getByRole('heading', { level: 3 }).textContent).toBe('Keluarga Q');
+  expect(screen.getByText('Tersimpan')).toBeTruthy();
+});
+
+test('Ganti nama kasus tersimpan', () => {
+  simpanKasus('t', kasusKe(0), 'Lama');
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} ringkas />);
+  fireEvent.click(screen.getByRole('button', { name: 'Ganti nama Lama' }));
+  fireEvent.change(screen.getByLabelText('Nama kasus'), { target: { value: 'Baru' } });
+  fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Simpan' }));
+  expect(screen.getByRole('heading', { level: 3 }).textContent).toBe('Baru');
+});
+
+test('Hapus kasus sementara dan tersimpan: ditanya dulu, lalu hilang dari semua penyimpanan', () => {
+  catatRiwayat('s', kasusKe(0), Date.now(), sendiri);
+  simpanKasus('t', kasusKe(1), 'Keluarga T');
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} ringkas />);
+  fireEvent.click(screen.getByRole('button', { name: /^Hapus Keluarga T/ }));
+  expect(screen.getByRole('alertdialog').textContent).toMatch(/akunmu/);
+  fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Hapus' }));
+  expect(bacaTersimpan()).toEqual([]);
+  expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(1);
+  fireEvent.click(screen.getByRole('button', { name: /^Hapus Istri/ }));
+  fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Hapus' }));
+  expect(screen.queryByRole('heading', { level: 3 })).toBeNull();
+});
+
+test('ringkas menampilkan 6 terbaru dan tautan ke semua bila lebih banyak', () => {
+  for (let i = 0; i < 8; i += 1) catatRiwayat(`k${i}`, kasusKe(i), Date.now() - i * 60_000, sendiri);
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} ringkas />);
+  expect(screen.getAllByRole('heading', { level: 3 })).toHaveLength(6);
+  expect(screen.getByRole('link', { name: /Lihat semua kasus \(8\)/ })).toBeTruthy();
+});
+
+test('halaman penuh: penyaring hanya bila dua jenis ada; cari hanya bila banyak; hapus semua sementara menyisakan tersimpan', () => {
+  catatRiwayat('s', kasusKe(0), Date.now(), sendiri);
+  const { unmount } = render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} />);
+  expect(screen.queryByRole('group', { name: 'Kasusmu' })).toBeNull();
+  unmount();
+  simpanKasus('t', kasusKe(1), 'Keluarga T');
+  render(<DaftarKasus kasusSekarang={null} saatBuka={() => {}} />);
+  expect(screen.queryByLabelText('Cari kasus')).toBeNull();
+  fireEvent.click(screen.getByRole('button', { name: 'Tersimpan' }));
+  expect(screen.getAllByRole('heading', { level: 3 }).map(el => el.textContent)).toEqual(['Keluarga T']);
+  fireEvent.click(screen.getByRole('button', { name: 'Hapus semua yang sementara' }));
+  fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Hapus semua' }));
+  expect(screen.getAllByRole('heading', { level: 3 }).map(el => el.textContent)).toEqual(['Keluarga T']);
+  expect(screen.queryByRole('button', { name: 'Hapus semua yang sementara' })).toBeNull();
+});
+
+test('halaman penuh: cari muncul bila lebih dari 8 kasus dan menyaring', () => {
+  for (let i = 0; i < 9; i += 1) catatRiwayat(`k${i}`, kasusKe(i), Date.now() - i * 60_000, sendiri);
+  render(<HalamanRiwayat kasusSekarang={null} saatBuka={() => {}} />);
   fireEvent.change(screen.getByLabelText('Cari kasus'), { target: { value: 'zzzz' } });
   expect(screen.getByText('Tidak ada kasus yang cocok.')).toBeTruthy();
 });
 
-test('simpan jadi eksperimen memberi nama dan masuk tersimpan', () => {
-  hapusRiwayat();
-  catatRiwayat('k', kasusDariSusunan(SUSUNAN_CEPAT[0]!), Date.now(), sendiri);
-  render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
-  fireEvent.click(screen.getByRole('button', { name: /Simpan jadi eksperimen/ }));
-  fireEvent.change(screen.getByLabelText('Nama kasus'), { target: { value: 'Keluarga Q' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
-  expect(bacaTersimpan()[0]!.judul).toBe('Keluarga Q');
-});
-
+// ── Awal Lab ──
 const propsAwal = { kasusTersimpan: null, kirim: vi.fn(), saatLanjut: vi.fn(), saatBukaRiwayat: vi.fn(), saatImpor: vi.fn(), saatKerjakanSoal: vi.fn(), saatMulaiDari: vi.fn() };
 
-test('awal lab bersih: tanpa rak, tanpa terakhir dibuka, tanpa jejak; ada mulai cepat dan impor', () => {
-  hapusRiwayat();
+test('awal lab bersih: tiga bagian berbeda tujuan, tanpa Kasusmu dan tanpa "Mulai dari nol" (hero sudah menawarkannya)', () => {
   render(<AwalHitung {...propsAwal} />);
-  expect(screen.queryByText('Eksperimenmu')).toBeNull();
-  expect(screen.queryByText('Terakhir dibuka')).toBeNull();
-  expect(screen.queryByText(/eksperimen tersimpan/)).toBeNull();
-  expect(screen.getByText('Mulai cepat dari susunan keluarga')).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Mulai kasus baru' })).toBeTruthy();
+  expect(screen.getByRole('heading', { name: 'Berlatih dengan soal' })).toBeTruthy();
+  expect(screen.queryByRole('heading', { name: 'Kasusmu' })).toBeNull();
+  expect(screen.queryByRole('button', { name: /Mulai dari nol/ })).toBeNull();
   expect(screen.getByRole('button', { name: /Impor file/ })).toBeTruthy();
 });
 
-test('chip mulai cepat di awal lab memanggil saatMulaiDari', () => {
+test('ada kasus berjalan: muncul "Mulai dari nol" yang menegaskan kasusnya tetap ada', () => {
+  const kirim = vi.fn();
+  render(<AwalHitung {...propsAwal} kasusTersimpan={kasusKe(0)} kirim={kirim} />);
+  const tombol = screen.getByRole('button', { name: /Mulai dari nol/ });
+  expect(tombol.textContent).toMatch(/tetap ada di Kasusmu/);
+  fireEvent.click(tombol);
+  expect(kirim).toHaveBeenCalledWith({ jenis: 'ULANGI' });
+});
+
+test('chip susunan di awal lab memanggil saatMulaiDari', () => {
   const saatMulaiDari = vi.fn();
   render(<AwalHitung {...propsAwal} saatMulaiDari={saatMulaiDari} />);
   fireEvent.click(screen.getByRole('button', { name: /^Suami dan anak/ }));
   expect(saatMulaiDari).toHaveBeenCalledTimes(1);
 });
 
-test('jejak lab muncul hanya bila ada eksperimen tersimpan', () => {
-  hapusRiwayat();
-  simpanKasus('a', kasusDariSusunan(SUSUNAN_CEPAT[0]!), 'Keluarga A');
+test('Kasusmu muncul di awal lab hanya bila ada kasus', () => {
+  simpanKasus('a', kasusKe(0), 'Keluarga A');
   render(<AwalHitung {...propsAwal} />);
-  expect(screen.getByText('1 eksperimen tersimpan')).toBeTruthy();
-});
-
-test('kasus yang sudah ada di rak tidak diulang di terakhir dibuka', () => {
-  hapusRiwayat();
-  const kasus = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  catatRiwayat('k', kasus, Date.now(), sendiri);
-  simpanKasus('k', kasus, 'Keluarga Z');
-  const { container } = render(<TerakhirDibuka kasusSekarang={null} saatBuka={() => {}} />);
-  expect(container.innerHTML).toBe('');
+  expect(screen.getByRole('heading', { name: 'Kasusmu' })).toBeTruthy();
 });

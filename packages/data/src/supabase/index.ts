@@ -150,7 +150,7 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
   const pengguna: RepositoriPengguna = {
     async bacaRiwayat() { return (await hasil(klien.from('riwayat_hitung').select('*').order('disimpan_pada', { ascending: false })) as any[]).map(keRiwayat); },
     async simpanRiwayat(baris) {
-      await hasil(klien.from('riwayat_hitung').upsert({ user_id: await userId(), id: baris.id, kasus: baris.kasus, judul: baris.judul, disimpan_pada: baris.disimpanPada, disematkan: baris.disematkan ?? false }));
+      await hasil(klien.from('riwayat_hitung').upsert({ user_id: await userId(), id: baris.id, kasus: baris.kasus, judul: baris.judul, disimpan_pada: baris.disimpanPada }));
     },
     async hapusRiwayat(id) { await hasil(klien.from('riwayat_hitung').delete().eq('id', id)); },
     async bacaProgresBelajar() { return (await hasil(klien.from('progres_belajar').select('*')) as any[]).map(keProgresBelajar); },

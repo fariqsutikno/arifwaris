@@ -19142,7 +19142,7 @@
   {
    "kunci": "hitung.lab_mulai_cepat",
    "halaman": "hitung",
-   "id": "Mulai cepat dari susunan keluarga",
+   "id": "Mulai kasus baru",
    "ar": null,
    "versiTerbit": 873
   },
@@ -19175,27 +19175,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_rak",
-   "halaman": "hitung",
-   "id": "Eksperimenmu",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_sematkan",
-   "halaman": "hitung",
-   "id": "Sematkan",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_lepas_sematan",
-   "halaman": "hitung",
-   "id": "Lepas sematan",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hitung.lab_ganti_nama",
    "halaman": "hitung",
    "id": "Ganti nama",
@@ -19224,48 +19203,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_simpan_jadi_eksperimen",
-   "halaman": "hitung",
-   "id": "Simpan jadi eksperimen",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_terakhir_dibuka",
-   "halaman": "hitung",
-   "id": "Terakhir dibuka",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_hari_ini",
-   "halaman": "hitung",
-   "id": "Hari ini",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_kemarin",
-   "halaman": "hitung",
-   "id": "Kemarin",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_pekan_ini",
-   "halaman": "hitung",
-   "id": "Pekan ini",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_lebih_lama",
-   "halaman": "hitung",
-   "id": "Lebih lama",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hitung.lab_cari",
    "halaman": "hitung",
    "id": "Cari kasus",
@@ -19276,13 +19213,6 @@
    "kunci": "hitung.lab_tidak_ketemu",
    "halaman": "hitung",
    "id": "Tidak ada kasus yang cocok.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.lab_jejak",
-   "halaman": "hitung",
-   "id": "{jumlah} eksperimen tersimpan",
    "ar": null,
    "versiTerbit": 873
   },
@@ -19301,37 +19231,156 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_mulai_cepat_ket",
+   "kunci": "hitung.lab_mulai_baru_ket",
    "halaman": "hitung",
-   "id": "Pilih susunan keluarga, ahli warisnya langsung terisi. Tinggal isi harta.",
+   "id": "Mulai dari nol, atau pilih susunan keluarga yang mirip. Ahli warisnya langsung terisi, tinggal isi harta.",
    "ar": null,
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_rak_ket",
+   "kunci": "hitung.lab_dari_nol",
    "halaman": "hitung",
-   "id": "Kasus yang sudah kamu beri nama. Sematkan yang sering dibuka.",
+   "id": "Mulai dari nol",
    "ar": null,
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_disematkan",
+   "kunci": "hitung.lab_dari_nol_ket",
    "halaman": "hitung",
-   "id": "Disematkan",
+   "id": "Kamu sendiri yang menyusun keluarganya.",
    "ar": null,
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_terakhir_ket",
+   "kunci": "hitung.lab_kasus_tetap",
    "halaman": "hitung",
-   "id": "Yang kamu buka dua pekan terakhir.",
+   "id": "Kasus yang sedang berjalan tetap ada di Kasusmu.",
    "ar": null,
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.lab_aksi_lain",
+   "kunci": "hitung.lab_kasusmu",
    "halaman": "hitung",
-   "id": "Aksi lain",
+   "id": "Kasusmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_kasusmu_ket",
+   "halaman": "hitung",
+   "id": "Kasus yang kamu buka tersimpan otomatis selama 30 hari (Sementara). Simpan dan beri nama supaya tidak hilang dan ikut akunmu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_status_tersimpan",
+   "halaman": "hitung",
+   "id": "Tersimpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_status_sementara",
+   "halaman": "hitung",
+   "id": "Sementara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_sisa_hari",
+   "halaman": "hitung",
+   "id": "{jumlah} hari lagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_simpan",
+   "halaman": "hitung",
+   "id": "Simpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_lihat_semua",
+   "halaman": "hitung",
+   "id": "Lihat semua kasus ({jumlah})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_impor",
+   "halaman": "hitung",
+   "id": "Punya berkas kasus? Impor file",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_filter_semua",
+   "halaman": "hitung",
+   "id": "Semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_hapus_semua_sementara",
+   "halaman": "hitung",
+   "id": "Hapus semua yang sementara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_hapus_semua_sementara_judul",
+   "halaman": "hitung",
+   "id": "Hapus semua kasus sementara?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_hapus_semua_sementara_isi",
+   "halaman": "hitung",
+   "id": "{jumlah} kasus sementara akan dihapus dari perangkat ini. Yang tersimpan tidak ikut terhapus.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_hapus_tersimpan_isi",
+   "halaman": "hitung",
+   "id": "akan dihapus dari perangkat ini dan akunmu, dan tidak bisa dikembalikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_kasusmu_kosong",
+   "halaman": "hitung",
+   "id": "Belum ada kasus. Mulai satu di atas, dan kasusnya muncul di sini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_halaman_ket",
+   "halaman": "hitung",
+   "id": "Semua kasus yang pernah kamu buka. Yang Tersimpan bernama dan tidak hilang; yang Sementara dihapus otomatis setelah 30 hari.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_latihan_judul",
+   "halaman": "hitung",
+   "id": "Berlatih dengan soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_latihan_ket",
+   "halaman": "hitung",
+   "id": "Kasusnya sudah disiapkan. Kamu menebak pembagiannya, lalu belajar langkah hitungnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lab_kembali",
+   "halaman": "hitung",
+   "id": "Kembali ke Lab Hitung",
    "ar": null,
    "versiTerbit": 873
   }

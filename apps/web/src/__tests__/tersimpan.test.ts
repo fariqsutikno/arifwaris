@@ -1,7 +1,7 @@
 import { beforeEach, expect, test } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, keJson } from '../kasus';
-import { bacaTersimpan, hapusTersimpan, semuaTersimpan, simpanKasus, sematkan, sudahTersimpan, ubahJudul } from '../tersimpan';
+import { bacaTersimpan, hapusTersimpan, semuaTersimpan, simpanKasus, sudahTersimpan, ubahJudul } from '../tersimpan';
 
 const kasus = () => {
   const dasar = kasusBaru('L');
@@ -26,14 +26,11 @@ test('isi rusak diabaikan', () => {
   expect(bacaTersimpan()).toEqual([]);
 });
 
-test('nama dan sematan buatan pengguna bertahan saat kasus disimpan ulang', () => {
+test('nama buatan pengguna bertahan saat kasus disimpan ulang', () => {
   simpanKasus('a', kasus());
   ubahJudul('a', 'Keluarga Pak Budi');
-  sematkan('a', true);
   simpanKasus('a', kasus());
-  const [entri] = bacaTersimpan();
-  expect(entri!.judul).toBe('Keluarga Pak Budi');
-  expect(entri!.disematkan).toBe(true);
+  expect(bacaTersimpan()[0]!.judul).toBe('Keluarga Pak Budi');
 });
 
 test('judul diberikan saat simpan menggantikan yang lama', () => {
@@ -49,15 +46,10 @@ test('nama kosong kembali ke ringkasan otomatis; nama panjang dipotong 80 karakt
   expect(bacaTersimpan()[0]!.judul).toHaveLength(80);
 });
 
-test('ganti nama dan sematkan memajukan disimpanPada (trigger server menolak waktu lama)', () => {
+test('ganti nama memajukan disimpanPada (trigger server menolak waktu lama)', () => {
   simpanKasus('a', kasus());
   const sebelum = semuaTersimpan()[0]!.disimpanPada;
   ubahJudul('a', 'Baru');
   const sesudah = semuaTersimpan()[0]!.disimpanPada;
   expect(sesudah > sebelum).toBe(true);
-});
-
-test('data lama tanpa disematkan terbaca sebagai false', () => {
-  localStorage.setItem('arif-waris:tersimpan', JSON.stringify([{ id: 'x', kasus: JSON.parse(keJson(kasus())), judul: 'x', disimpanPada: '2026-01-01T00:00:00.000Z' }]));
-  expect(bacaTersimpan()[0]!.disematkan).toBe(false);
 });

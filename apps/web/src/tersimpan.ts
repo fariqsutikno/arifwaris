@@ -12,20 +12,19 @@ const KUNCI_TERSIMPAN = 'arif-waris:tersimpan';
 
 export const BATAS_JUDUL = 80;
 
-export function bacaTersimpan(): Array<{ id: string; judul: string; disimpanPada: string; disematkan: boolean; kasus: Kasus }> {
+export function bacaTersimpan(): Array<{ id: string; judul: string; disimpanPada: string; kasus: Kasus }> {
   return semuaTersimpan().flatMap(baris => {
     const hasil = dariJson(JSON.stringify(baris.kasus));
-    return hasil.berhasil ? [{ id: baris.id, judul: baris.judul, disimpanPada: baris.disimpanPada, disematkan: baris.disematkan ?? false, kasus: hasil.kasus }] : [];
+    return hasil.berhasil ? [{ id: baris.id, judul: baris.judul, disimpanPada: baris.disimpanPada, kasus: hasil.kasus }] : [];
   }).sort((a, b) => b.disimpanPada.localeCompare(a.disimpanPada));
 }
 
-/** Simpan kasus. Nama dan sematan buatan pengguna dipertahankan saat disimpan ulang (mis. simpan otomatis kasus khusus). */
+/** Simpan kasus. Nama buatan pengguna dipertahankan saat disimpan ulang (mis. simpan otomatis kasus khusus). */
 export function simpanKasus(id: string, kasus: Kasus, judul?: string): void {
   const lama = semuaTersimpan().find(baris => baris.id === id);
   tulis({
     id, kasus: JSON.parse(keJson(kasus)), disimpanPada: waktuMaju(lama?.disimpanPada),
     judul: judul !== undefined ? bersihkanJudul(judul, kasus) : lama?.judul ?? ringkasKasus(kasus).judul,
-    disematkan: lama?.disematkan ?? false,
   });
 }
 
@@ -34,11 +33,6 @@ export function ubahJudul(id: string, judul: string): void {
   if (!lama) return;
   const kasus = dariJson(JSON.stringify(lama.kasus));
   tulis({ ...lama, judul: bersihkanJudul(judul, kasus.berhasil ? kasus.kasus : undefined, lama.judul), disimpanPada: waktuMaju(lama.disimpanPada) });
-}
-
-export function sematkan(id: string, nilai: boolean): void {
-  const lama = semuaTersimpan().find(baris => baris.id === id);
-  if (lama) tulis({ ...lama, disematkan: nilai, disimpanPada: waktuMaju(lama.disimpanPada) });
 }
 
 function tulis(baris: RiwayatTersimpan): void {
