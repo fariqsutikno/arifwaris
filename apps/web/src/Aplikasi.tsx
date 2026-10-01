@@ -93,14 +93,22 @@ export function Aplikasi() {
   const diKalkulator = rute.halaman === 'kalkulator';
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
+  const belumSelesai = !!kasus && layar !== 'awal' && layar !== 'hasil' && !kasusLengkap(kasus);
   usePenjaga(diKalkulator && !!kasus && layar !== 'awal', {
     berlaku: href => !['kalkulator', 'riwayat'].includes(bacaRute(href).halaman),
-    judul: t('umum.tinggalkan_ariflab'),
-    isi: <p>{soalAktif ? t('umum.soal_ini_bisa_kamu_buka_lagi')
+    judul: belumSelesai ? t('umum.tinggalkan_isian') : t('umum.tinggalkan_ariflab'),
+    isi: <p>{belumSelesai ? t('umum.isian_belum_selesai_tersimpan') : soalAktif ? t('umum.soal_ini_bisa_kamu_buka_lagi')
       : t('umum.kasusmu_tersimpan_di_riwayat_hitung_buka')}</p>,
-    labelTetap: t('umum.tetap_di_sini'),
-    labelPergi: t('umum.pindah'),
+    labelTetap: belumSelesai ? t('umum.lanjut_mengisi') : t('umum.tetap_di_sini'),
+    labelPergi: belumSelesai ? t('umum.tinggalkan_saja') : t('umum.pindah'),
   });
+  // Tutup tab / muat ulang / alamat lain saat isian belum selesai: konfirmasi bawaan browser.
+  useEffect(() => {
+    if (!diKalkulator || !belumSelesai) return;
+    const cegah = (event: BeforeUnloadEvent) => event.preventDefault();
+    window.addEventListener('beforeunload', cegah);
+    return () => window.removeEventListener('beforeunload', cegah);
+  }, [diKalkulator, belumSelesai]);
   const [turBerjalan, setTurBerjalan] = useState(false);
   // Kasus lengkap dibuka di layar hasil, yang belum lengkap di langkah wizard pertama yang belum terisi.
   // Konfirmasi menimpa kasus lama sudah ditanyakan di halaman asalnya.

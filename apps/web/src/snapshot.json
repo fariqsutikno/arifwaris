@@ -20160,6 +20160,41 @@
    "id": "Kakek-nenek, cucu, kakak/adik, paman, keponakan, dan lainnya",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keluarga_beri_nama_jelas",
+   "halaman": "hitung",
+   "id": "Tips: tiap anggota keluarga bisa diberi nama lewat tombol Nama di barisnya, misalnya \"Ibu Siti\" atau \"Ahmad\". Nama itu tampil di pohon, hasil, dan penjelasan. Boleh dikosongkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "umum.tinggalkan_isian",
+   "halaman": "umum",
+   "id": "Isianmu belum selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "umum.isian_belum_selesai_tersimpan",
+   "halaman": "umum",
+   "id": "Kamu belum menyelesaikan perhitungan ini. Isian yang sudah ada tersimpan di Riwayat hitung, jadi bisa dilanjutkan lewat menu ArifLab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "umum.lanjut_mengisi",
+   "halaman": "umum",
+   "id": "Lanjut mengisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "umum.tinggalkan_saja",
+   "halaman": "umum",
+   "id": "Tinggalkan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

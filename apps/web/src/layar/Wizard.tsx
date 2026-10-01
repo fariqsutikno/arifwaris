@@ -62,7 +62,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         {kasus && langkah === 3 && babak === 0 && <>
           <IsianNamaAlmarhum nama={kasus.graf.orang[kasus.graf.idPewaris]?.nama ?? ''} saatUbah={nama => ubah(k => ubahNamaPewaris(k, nama))} />
           <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
-          <p className="catatan">{t('hitung.keluarga_beri_nama')}</p>
+          <p className="catatan-info">{t('hitung.keluarga_beri_nama_jelas')}</p>
           <LangkahAhliWaris graf={kasus.graf} idMayit={kasus.graf.idPewaris} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
           <PertanyaanPenutup kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
           <PertanyaanHamil kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
