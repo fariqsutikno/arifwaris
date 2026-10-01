@@ -211,12 +211,23 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
   .isi-latihan .tab-latihan .tab-tautan{flex:1;justify-content:center;padding:0 10px}
 }
 
-/* halaman sesi kuis: pita hero gelap (gaya Latihan) di belakang kartu sesi */
-.hero-sesi{display:block;min-height:230px;padding:0}
-.isi-sesi{position:relative;z-index:1;margin-top:-130px;padding:0 var(--sisi) 48px}
+/* halaman sesi kuis: pita hero gelap (gaya Latihan) di belakang bar atas, judul/nomor soal, dan bagian atas kartu */
+.halaman-sesi{position:relative;isolation:isolate;padding:104px var(--sisi) 56px}
+.latar-sesi{position:absolute;inset:0 0 auto 0;z-index:-1;display:block;height:380px;padding:0!important}
 .bar-ujian .judul-sesi{color:#fff}
 .bar-ujian .keluar-ujian{background:rgba(255,255,255,.14);color:#fff}
 .bar-ujian .keluar-ujian:hover{background:rgba(255,255,255,.26)}
+.hero-sesi{display:flex;flex-direction:column;align-items:center;gap:14px;padding:6px 0 26px;color:#fff}
+.judul-hero-sesi{display:grid;gap:6px;text-align:center}
+.judul-hero-sesi h1{margin:0;font:500 clamp(30px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.025em;text-wrap:balance}
+.judul-hero-sesi p{margin:0;color:rgba(255,255,255,.85);font:500 16px var(--font-sans)}
+.ruang-ujian .hero-sesi .kotak-nomor button{border-color:rgba(255,255,255,.35);background:rgba(255,255,255,.14);color:#fff}
+.ruang-ujian .hero-sesi .kotak-nomor button:not(:disabled):hover{background:rgba(255,255,255,.28);color:#fff}
+.ruang-ujian .hero-sesi .kotak-nomor button.terjawab{border-color:#fff;background:#fff;color:var(--ink)}
+.ruang-ujian .hero-sesi .kotak-nomor button.benar{border-color:var(--sorot-fardh);background:var(--sorot-fardh);color:#fff}
+.ruang-ujian .hero-sesi .kotak-nomor button.salah{border-color:var(--danger);background:var(--danger);color:#fff}
+.ruang-ujian .hero-sesi .kotak-nomor button[aria-current=true]{box-shadow:0 0 0 3px rgba(6,42,38,.9),0 0 0 5px #fff}
+.ruang-ujian .hero-sesi .progres-sesi,.hero-sesi .angka-progres{color:rgba(255,255,255,.9)}
 
 /* ruang ujian: satu kolom di tengah; bar atas, strip nomor soal, kartu soal besar, tombol maju/mundur */
 .sesi-kuis.ruang-ujian{width:100%;max-width:800px;margin-inline:auto;gap:18px}

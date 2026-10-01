@@ -131,13 +131,8 @@ export function SesiKuis({ paket }: { paket: string }) {
 
   if (tahap === 'awal') {
     return (
-      <section className="sesi-kuis ruang-ujian tumpuk">
-        {kepala}
+      <Rangka kepala={kepala} hero={<div className="judul-hero-sesi"><h1>{judul}</h1><p>{t('latihan.jumlah_soal', { jumlah: daftarSoal.length })}</p></div>}>
         <div className="awal-ujian">
-          <div className="tumpuk-rapat">
-            <h1 className="judul-awal-kuis">{judul}</h1>
-            <p className="keterangan">{t('latihan.jumlah_soal', { jumlah: daftarSoal.length })}</p>
-          </div>
           <fieldset className="pilihan-mode">
             <legend>{t('latihan.pilih_mode')}</legend>
             <label className={mode === 'langsung' ? 'opsi-mode dipilih' : 'opsi-mode'}>
@@ -153,7 +148,7 @@ export function SesiKuis({ paket }: { paket: string }) {
           </fieldset>
           <button type="button" className="aw-btn aw-btn-primary tombol-mulai" onClick={() => mulai(mode)}>{t('latihan.mulai_kuis')}</button>
         </div>
-      </section>
+      </Rangka>
     );
   }
 
@@ -192,26 +187,26 @@ export function SesiKuis({ paket }: { paket: string }) {
     return dipilih === daftarSoal[urutan]!.indeksBenar ? 'terjawab benar' : 'terjawab salah';
   };
   return (
-    <section className="sesi-kuis ruang-ujian tumpuk">
-      {kepala}
+    <Rangka kepala={kepala} hero={<>
       <nav className="nomor-ujian" aria-label={t('latihan.navigasi_soal')}>
-        <ol className="kotak-nomor">
-          {daftarSoal.map((soalIni, urutan) => {
-            const terjawab = pilihan[urutan] !== undefined;
-            return (
-              <li key={`${soalIni.kode}-${urutan}`}>
-                <button type="button" className={jenisNomor(urutan)} aria-current={urutan === posisi}
-                  aria-label={t('latihan.soal_nomor_status', { nomor: urutan + 1, status: terjawab ? t('latihan.terjawab') : t('latihan.belum_dijawab') })}
-                  disabled={!bolehLoncat(urutan)} onClick={() => setPosisi(urutan)}>{angka(String(urutan + 1))}</button>
-              </li>
-            );
-          })}
-        </ol>
-      </nav>
-      <div className="progres-sesi">
-        <span className="angka-progres">{t('umum.soal_nomor_dari_total', { nomor: posisi + 1, total: daftarSoal.length })}</span>
-        {mode === 'langsung' && <span className="angka-progres">{t('latihan.benar_jumlah', { jumlah: benarSejauhIni })}</span>}
-      </div>
+          <ol className="kotak-nomor">
+            {daftarSoal.map((soalIni, urutan) => {
+              const terjawab = pilihan[urutan] !== undefined;
+              return (
+                <li key={`${soalIni.kode}-${urutan}`}>
+                  <button type="button" className={jenisNomor(urutan)} aria-current={urutan === posisi}
+                    aria-label={t('latihan.soal_nomor_status', { nomor: urutan + 1, status: terjawab ? t('latihan.terjawab') : t('latihan.belum_dijawab') })}
+                    disabled={!bolehLoncat(urutan)} onClick={() => setPosisi(urutan)}>{angka(String(urutan + 1))}</button>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+        <div className="progres-sesi">
+          <span className="angka-progres">{t('umum.soal_nomor_dari_total', { nomor: posisi + 1, total: daftarSoal.length })}</span>
+          {mode === 'langsung' && <span className="angka-progres">{t('latihan.benar_jumlah', { jumlah: benarSejauhIni })}</span>}
+        </div>
+    </>}>
       <KartuSoalKuis key={`${soal.kode}-${posisi}`} soal={soal} label={t('latihan.soal_nomor', { nomor: posisi + 1 })} sembunyikanLabel mode={mode} saatDijawab={jawab} dipilihAwal={pilihan[posisi]} />
       <div className="nav-langkah">
         {mode === 'akhir' && posisi > 0
@@ -221,7 +216,7 @@ export function SesiKuis({ paket }: { paket: string }) {
           {terakhir ? (mode === 'akhir' ? t('latihan.selesaikan') : t('hitung.lihat_hasil')) : t('latihan.soal_berikutnya')}
         </button>
       </div>
-    </section>
+    </Rangka>
   );
 }
 
@@ -232,8 +227,7 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, ulangiSalah, saatUlan
   const benar = daftarSoal.filter((soal, urutan) => pilihan[urutan] === soal.indeksBenar).length;
   const persen = persenBulat({ benar, total: daftarSoal.length });
   return (
-    <section className="sesi-kuis ruang-ujian tumpuk">
-      {kepala}
+    <Rangka kepala={kepala} hero={<div className="judul-hero-sesi"><h1>{t('latihan.skor')}</h1></div>}>
       <div className="kartu ringkasan-kuis" aria-live="polite">
         <div>
           <p className="label-langkah">{t('latihan.skor')}</p>
@@ -292,7 +286,22 @@ function HasilKuis({ kepala, daftarSoal, pilihan, capaian, ulangiSalah, saatUlan
           })}
         </ol>
       </section>
-    </section>
+    </Rangka>
+  );
+}
+
+/** Rangka halaman sesi: header transparan di atas pita hero gelap; bar atas, judul/nomor soal, dan kartu berada dalam satu kolom. */
+function Rangka({ kepala, hero, children }: { kepala: React.ReactNode; hero: React.ReactNode; children: React.ReactNode }) {
+  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
+  return (
+    <main className="halaman-beranda halaman-sesi">
+      <div className="hero-beranda latar-sesi" aria-hidden="true" />
+      <div className="sesi-kuis ruang-ujian tumpuk">
+        {kepala}
+        <div className="hero-sesi">{hero}</div>
+        {children}
+      </div>
+    </main>
   );
 }
 
