@@ -19054,6 +19054,55 @@
    "id": "Halaman gagal ditampilkan.",
    "ar": "تعذر عرض الصفحة.",
    "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.konten_modul_judul",
+   "halaman": "notifikasi",
+   "id": "Materi diperbarui: {judul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.konten_modul_isi",
+   "halaman": "notifikasi",
+   "id": "Modul yang sedang kamu pelajari mendapat pembaruan. Muat ulang untuk melihatnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.pekan_judul",
+   "halaman": "notifikasi",
+   "id": "Peringkatmu pekan lalu: {peringkat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.pekan_naik",
+   "halaman": "notifikasi",
+   "id": "Naik {selisih} peringkat dari pekan sebelumnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.pekan_turun",
+   "halaman": "notifikasi",
+   "id": "Turun {selisih} peringkat dari pekan sebelumnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.pekan_sama",
+   "halaman": "notifikasi",
+   "id": "Sama dengan pekan sebelumnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "notifikasi.pekan_awal",
+   "halaman": "notifikasi",
+   "id": "Pekan baru sudah dimulai. Kumpulkan XP untuk naik peringkat.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

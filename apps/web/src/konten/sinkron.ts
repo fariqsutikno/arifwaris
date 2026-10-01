@@ -16,6 +16,16 @@ interface Lingkungan {
 
 export const PERISTIWA_KONTEN_BARU = 'arif-waris:konten-baru';
 
+/** Nomor modul yang materinya baru atau berganti revisi di `baru` dibanding `lama` (untuk memberi kabar hanya ke yang mempelajarinya). */
+export function modulBerubah(lama: Snapshot, baru: Snapshot): number[] {
+  const revisiLama = new Map(lama.konten.map(baris => [baris.entriId, baris.revisiId]));
+  const berubah = baru.konten
+    .filter(baris => baris.jenis === 'materi' && revisiLama.get(baris.entriId) !== baris.revisiId)
+    .map(baris => (baris.isi as { modul?: unknown }).modul)
+    .filter((nomor): nomor is number => typeof nomor === 'number');
+  return [...new Set(berubah)];
+}
+
 export async function sinkronLatar(lokal: Snapshot, { url, kunci, daring, muatRepo, simpan }: Lingkungan): Promise<boolean> {
   if (!url || !kunci || !daring) return false;
   try {

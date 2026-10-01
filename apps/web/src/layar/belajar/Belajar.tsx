@@ -64,7 +64,7 @@ export function Belajar() {
               <b>{berikutnya.judul}</b>
               <span className="panah-bulat" aria-hidden="true">{panah()}</span>
             </a>
-          ) : <p className="kartu-lanjut-hero"><b>{t('belajar.semua_pelajaran_sudah_selesai_mantap')}</b></p>}
+          ) : <p className="pil-terang kartu-lanjut-hero kartu-tuntas"><span className="ikon-tuntas" aria-hidden="true"><Ikon nama="benar" ukuran={22} /></span><b>{t('belajar.semua_pelajaran_sudah_selesai_mantap')}</b></p>}
         </div>
       </header>
 

@@ -12,9 +12,9 @@ import './gaya/belajar.css';
 import './gaya/materi.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { pilihAwal } from '@waris/data/snapshot';
+import { pilihAwal, type Snapshot } from '@waris/data/snapshot';
 import { bacaCache, simpanCache } from './konten/cache';
-import { muatRepoSupabase, PERISTIWA_KONTEN_BARU, sinkronLatar } from './konten/sinkron';
+import { modulBerubah, muatRepoSupabase, PERISTIWA_KONTEN_BARU, sinkronLatar } from './konten/sinkron';
 import { pasangSnapshot, snapshotTerpasang } from './konten/sumber';
 import { NAMA_APLIKASI } from './terjemah';
 import { daftarkanServiceWorker } from './notifikasi/perangkat';
@@ -25,10 +25,14 @@ daftarkanServiceWorker();
 pasangSnapshot(pilihAwal(snapshotTerpasang(), await bacaCache()));
 const [{ Aplikasi }, { PenyediaPenjaga }] = await Promise.all([import('./Aplikasi'), import('./ui/Penjaga')]);
 createRoot(document.getElementById('akar')!).render(<StrictMode><BatasGalat><PenyediaPenjaga><Aplikasi /></PenyediaPenjaga></BatasGalat></StrictMode>);
-void sinkronLatar(snapshotTerpasang(), {
+const snapshotLama = snapshotTerpasang();
+let snapshotBaru: Snapshot | null = null;
+void sinkronLatar(snapshotLama, {
   url: import.meta.env.VITE_SUPABASE_URL as string | undefined,
   kunci: import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined,
   daring: navigator.onLine,
   muatRepo: muatRepoSupabase,
-  simpan: simpanCache,
-}).then(adaBaru => { if (adaBaru) window.dispatchEvent(new Event(PERISTIWA_KONTEN_BARU)); });
+  simpan: async snapshot => { snapshotBaru = snapshot; await simpanCache(snapshot); },
+}).then(adaBaru => {
+  if (adaBaru) window.dispatchEvent(new CustomEvent(PERISTIWA_KONTEN_BARU, { detail: { modul: snapshotBaru ? modulBerubah(snapshotLama, snapshotBaru) : [] } }));
+});
