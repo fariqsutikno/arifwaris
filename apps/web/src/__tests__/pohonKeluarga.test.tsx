@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, rapikanKeadaan, type Kasus } from '../kasus';
+import { selesaikanJalur } from '../hubunganPohon';
 import { PASANGAN_LAIN } from '../kerabatPohon';
 import { PohonKeluarga } from '../layar/wizard/PohonKeluarga';
 
@@ -100,5 +101,44 @@ describe('PohonKeluarga: dialog', () => {
     fireEvent.click(screen.getByRole('button', { name: /Hapus/ }));
     expect(kasusTerakhir().graf.orang[anak]).toBeUndefined();
     expect(kasusTerakhir().urutanWafat).toEqual([]);
+  });
+});
+
+describe('PohonKeluarga: nama hubungan', () => {
+  it('Tambah mertua: pilih Mertua, Ayah, beri nama, simpan; nama wajib', () => {
+    let k = kasusBaru('L');
+    k = { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') };
+    render(<Uji awal={k} />);
+    fireEvent.click(screen.getByRole('button', { name: /Tambah mertua, menantu, ipar/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mertua' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Laki-laki' }));
+    expect((screen.getByRole('button', { name: 'Simpan' }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText(/^Nama/), { target: { value: '   ' } });
+    expect((screen.getByRole('button', { name: 'Simpan' }) as HTMLButtonElement).disabled).toBe(true);
+    fireEvent.change(screen.getByLabelText(/^Nama/), { target: { value: 'Pak Harjo' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Simpan' }));
+    expect(Object.values(kasusTerakhir().graf.orang).some(o => o.nama === 'Pak Harjo')).toBe(true);
+  });
+  it('Menantu tanpa anak: pesan "Tambahkan anaknya dulu", tanpa perubahan graf', () => {
+    render(<Uji awal={kasusBaru('L')} />);
+    fireEvent.click(screen.getByRole('button', { name: /Tambah mertua, menantu, ipar/ }));
+    fireEvent.click(screen.getByRole('button', { name: 'Menantu' }));
+    expect(screen.getByText(/Tambahkan anaknya dulu/)).toBeTruthy();
+  });
+  it('kata "kerabat" tidak muncul di menu, tautan, atau dialog', () => {
+    render(<Uji awal={kasusBaru('L')} />);
+    expect(document.body.textContent).not.toMatch(/kerabat/i);
+  });
+});
+
+describe('PohonKeluarga: sebutan di kotak', () => {
+  it('orang tanpa peran di daftar ± (mertua) tampil dengan namanya saja, tanpa "(Kerabat)"', () => {
+    let k = kasusBaru('L');
+    k = { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') };
+    const hasil = selesaikanJalur(k.graf, 'PEWARIS', 'mertua', { jenisKelamin: 'L', nama: 'Pak Harjo' });
+    if (!('graf' in hasil)) throw new Error(JSON.stringify(hasil));
+    render(<Uji awal={{ ...k, graf: hasil.graf }} />);
+    expect(screen.getByRole('button', { name: /Buka menu Pak Harjo$/ })).toBeTruthy();
+    expect(document.body.textContent).not.toMatch(/kerabat/i);
   });
 });

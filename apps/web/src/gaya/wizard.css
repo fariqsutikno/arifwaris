@@ -142,3 +142,17 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .label-pilihan{flex-basis:100%;font:700 13px var(--font-sans)}
 .pilih-dialog{min-height:40px;padding:0 14px;border:var(--border-w) solid var(--outline);border-radius:999px;background:var(--surface-raised);color:var(--on-fill);font:600 14px var(--font-sans);cursor:pointer}
 .pilih-dialog.terpilih{background:var(--on-fill);color:var(--surface-raised)}
+.tautan-hubungan{margin-top:10px}
+.tautan-hubungan .tautan-teks{color:#fff}
+.daftar-hubungan{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 12px}
+.daftar-hubungan .tautan-teks{min-height:36px;font-weight:500}
+.pohon-keluarga .node-orang{animation:node-masuk .25s ease-out both}
+@keyframes node-masuk{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.pohon-keluarga .node-orang{animation:none}}
+
+/* Panggung wizard sempit (≈300px): kotak ringkas supaya pohon tidak dikecilkan sampai tak terbaca */
+.panggung-pohon .pratinjau-isi .pohon{--lebar-node:122px;--jarak-node:14px;padding:18px 10px 22px;gap:56px}
+/* Baris yang terbungkus tetap satu generasi: jaraknya jauh lebih rapat daripada jarak antargenerasi */
+.panggung-pohon .pratinjau-isi .pohon-baris{row-gap:14px}
+.panggung-pohon .pratinjau-isi .node-orang{gap:2px 6px;padding:7px 8px}
+.panggung-pohon .pratinjau-isi .node-orang b{font-size:13px}

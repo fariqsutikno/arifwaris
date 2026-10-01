@@ -20930,6 +20930,41 @@
    "id": "Ubah keadaan (wafat, hilang, dll.)",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.pilih_hubungan",
+   "halaman": "hitung",
+   "id": "Pilih hubungannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.nama_wajib",
+   "halaman": "hitung",
+   "id": "Nama (wajib, supaya bisa disebut di pohon)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.judul_hubungan",
+   "halaman": "hitung",
+   "id": "Tambah {hubungan} untuk {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.tutup",
+   "halaman": "hitung",
+   "id": "Tutup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.belum_bernama",
+   "halaman": "hitung",
+   "id": "Belum bernama",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -7,7 +7,7 @@ import { t } from '../terjemah';
 
 const TINGGI_MAKS = 360;
 
-export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1, interaktif = false }: { children: ReactNode; saatBuka?: () => void; label?: string; skalaMaks?: number; interaktif?: boolean }) {
+export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1, interaktif = false, tinggiMaks = TINGGI_MAKS }: { children: ReactNode; saatBuka?: () => void; label?: string; skalaMaks?: number; interaktif?: boolean; tinggiMaks?: number }) {
   const wadah = useRef<HTMLDivElement>(null);
   const isi = useRef<HTMLDivElement>(null);
   const [ukuran, setUkuran] = useState({ skala: 1, lebar: 0, tinggi: 0 });
@@ -20,7 +20,7 @@ export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1, inter
       const lebar = pohon.offsetWidth;
       const tinggi = pohon.offsetHeight;
       if (!lebar || !tinggi) return;
-      const skala = Math.min(skalaMaks, kotak.clientWidth / lebar, TINGGI_MAKS / tinggi);
+      const skala = Math.min(skalaMaks, kotak.clientWidth / lebar, tinggiMaks / tinggi);
       setUkuran(lama => (lama.skala === skala && lama.lebar === lebar && lama.tinggi === tinggi ? lama : { skala, lebar, tinggi }));
     };
     ukur();
@@ -28,7 +28,7 @@ export function PratinjauPohon({ children, saatBuka, label, skalaMaks = 1, inter
     pengamat?.observe(kotak);
     pengamat?.observe(pohon);
     return () => pengamat?.disconnect();
-  }, [skalaMaks]);
+  }, [skalaMaks, tinggiMaks]);
 
   // Isi pratinjau tidak interaktif; React 18 belum mengenal atribut inert, jadi dipasang langsung.
   useEffect(() => { if (!interaktif) isi.current?.setAttribute('inert', ''); }, [interaktif]);

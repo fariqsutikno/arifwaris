@@ -54,7 +54,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
   );
   return (
     <main className="halaman-beranda halaman-wizard">
-      <KerangkaLangkah langkah={langkah} subjudul={subjudul} stepper={stepper} saatReset={() => setSedangReset(true)} ringkasan={<PanggungPohon kasus={kasus} {...(langkah === 3 ? { ubah } : {})} maksPerBaris={4} />}>
+      <KerangkaLangkah langkah={langkah} subjudul={subjudul} stepper={stepper} saatReset={() => setSedangReset(true)} ringkasan={<PanggungPohon kasus={kasus} {...(langkah === 3 ? { ubah } : {})} maksPerBaris={3} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
           saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiPewarisDanKosongkan(k, jenisKelamin))}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}

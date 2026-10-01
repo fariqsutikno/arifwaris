@@ -140,13 +140,12 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
   );
 }
 
-/** Lebar node dan jarak antar node; dipakai membatasi lebar baris yang terbungkus (jumlahPerBaris di tataLetak.ts). */
-const LEBAR_NODE = 170;
-const JARAK_NODE = 30;
+/** Satu baris yang melebihi batas dibungkus rata (jumlahPerBaris di tataLetak.ts); lebar maksimumnya dihitung dari lebar node di CSS. */
 function lebarMaksBaris(jumlah: number, maks: number): CSSProperties | undefined {
   if (jumlah <= maks) return undefined;
   const perBaris = jumlahPerBaris(jumlah, maks);
-  return { maxWidth: perBaris * LEBAR_NODE + (perBaris - 1) * JARAK_NODE };
+  // Lebar dan jarak node adalah variabel CSS (--lebar-node, --jarak-node) supaya konteks sempit (panggung wizard) bisa memperkecilnya.
+  return { maxWidth: `calc(${perBaris} * var(--lebar-node) + ${perBaris - 1} * var(--jarak-node))` };
 }
 
 const styleUrut = (node: IsiNode): CSSProperties | undefined => (node.urut === undefined ? undefined : ({ '--urut': Math.min(node.urut, 8) } as CSSProperties));

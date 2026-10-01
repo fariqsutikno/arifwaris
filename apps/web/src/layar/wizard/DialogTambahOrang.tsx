@@ -68,7 +68,7 @@ function judul(aksi: Aksi, nama: string): string {
   }
 }
 
-function Pilihan({ label, nilai, daftar, saatPilih }: { label: string; nilai: string | null; daftar: Array<{ nilai: string; label: string }>; saatPilih: (nilai: string) => void }) {
+export function Pilihan({ label, nilai, daftar, saatPilih }: { label: string; nilai: string | null; daftar: Array<{ nilai: string; label: string }>; saatPilih: (nilai: string) => void }) {
   return (
     <div role="radiogroup" aria-label={label} className="pilihan-dialog">
       <span className="label-pilihan">{label}</span>
