@@ -1,5 +1,5 @@
-// Babak 2..n (spec 1.2): satu almarhum lanjutan, dilihat dari sisinya. Menerima Kasus + nomor babak;
-// menyerahkan perubahan graf (keluarga baru), keadaan orang (pertanyaan penutup), dan anak yang lahir belakangan.
+// Layar daftar babak 2..n (spec 1.2): satu almarhum lanjutan, dilihat dari sisinya. Menerima Kasus + nomor babak;
+// menyerahkan perubahan graf (keluarga baru) dan anak yang lahir belakangan. Keadaan orang dan hamil ada di layar keadaan (KeadaanKeluarga).
 
 import type { IdOrang } from '@waris/engine';
 import { PohonDasar } from '../hasil/Pohon';
@@ -7,8 +7,6 @@ import type { Kasus } from '../kasus';
 import { ubahNama } from '../checklist';
 import { aturDikandung, babakAsal, calonPasangan, daftarAlmarhum, kerabatDari, namaSingkat, nikahkan } from '../keadaanOrang';
 import { LangkahAhliWaris, labelOrangChecklist } from './LangkahAhliWaris';
-import { PertanyaanHamil } from './keadaan/PertanyaanHamil';
-import { PertanyaanPenutup } from './keadaan/PertanyaanPenutup';
 import { t } from '../terjemah';
 
 interface Props { kasus: Kasus; babak: number; ubah: (f: (k: Kasus) => Kasus) => void }
@@ -88,8 +86,6 @@ export function LangkahBabak({ kasus, babak, ubah }: Props) {
           ))}
         </section>
       )}
-      <PertanyaanPenutup kasus={kasus} idMayit={idMayit} ubah={ubah} />
-      <PertanyaanHamil kasus={kasus} idMayit={idMayit} ubah={ubah} />
     </div>
   );
 }

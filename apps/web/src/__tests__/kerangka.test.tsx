@@ -39,14 +39,16 @@ it('stepper tidak bisa membuka langkah yang belum boleh', () => {
 it('ulangi dari awal meminta konfirmasi di halaman', () => {
   mulai();
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
-  fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Mulai kasus baru' }));
   expect(screen.getByRole('alertdialog')).toBeTruthy();
   expect(screen.getByRole('alertdialog').textContent).toMatch(/data belum lengkap/);
+  expect(screen.getByRole('alertdialog').textContent).toMatch(/Mulai kasus baru\?/);
   fireEvent.click(screen.getByRole('button', { name: 'Batal' }));
   expect(screen.queryByRole('alertdialog')).toBeNull();
   expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
-  fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Mulai kasus baru' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Mulai kasus baru' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Mulai baru' }));
   expect(screen.getByRole('button', { name: /Mulai dari nol/ })).toBeTruthy();
 });
 
@@ -71,8 +73,8 @@ describe('temuan review akhir', () => {
 
   it('setelah Reset, kasus lama tidak ditawarkan lagi', () => {
     isiKasus();
-    fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Reset' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kasus baru' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai baru' }));
     expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
   });
 
@@ -94,7 +96,7 @@ describe('temuan review akhir', () => {
 
   it('dialog konfirmasi memfokuskan Batal dan tertutup dengan Esc', () => {
     isiKasus();
-    fireEvent.click(screen.getByRole('button', { name: 'Reset skenario' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Mulai kasus baru' }));
     expect(document.activeElement?.textContent).toBe('Batal');
     fireEvent.keyDown(document.activeElement!, { key: 'Escape' });
     expect(screen.queryByRole('alertdialog')).toBeNull();

@@ -22,7 +22,7 @@ export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
           {pewaris ? `${pewaris.jenisKelamin === 'L' ? t('hitung.laki_laki') : t('hitung.perempuan')}${pewaris.nama ? ` · ${pewaris.nama}` : ''}` : t('umum.belum_dipilih')}
         </Baris>
         <Baris label={t('hitung.harta_peninggalan')} terisi={!!tirkah && tirkah.kotor > 0n}>{tirkah && tirkah.kotor > 0n ? formatRupiah(tirkah.kotor) : t('umum.belum_diisi')}</Baris>
-        {tirkah && tirkah.kotor > 0n && (
+        {tirkah && tirkah.kotor > 0n && tirkah.bersih !== tirkah.kotor && (
           <Baris label={t('hitung.yang_akan_dibagi')} terisi>{formatRupiah(tirkah.bersih)}</Baris>
         )}
         <Baris label={t('hitung.ahli_waris')} terisi={ahliWaris.length > 0}>
@@ -30,7 +30,7 @@ export function RingkasanSamping({ kasus }: { kasus: Kasus | null }) {
             <ul>{barisAhliWaris(kasus!).map(teks => <li key={teks}>{teks}</li>)}</ul>
           )}
         </Baris>
-        <Baris label={t('hitung.kondisi_khusus')} terisi={kondisi > 0}>{kondisi > 0 ? `${kondisi} dicatat` : t('umum.tidak_ada')}</Baris>
+        <Baris label={t('hitung.keadaan_khusus_ringkas')} terisi={kondisi > 0}>{kondisi > 0 ? `${kondisi} dicatat` : t('umum.tidak_ada')}</Baris>
       </dl>
     </div>
   );

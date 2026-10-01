@@ -78,3 +78,24 @@ it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari Periksa ke babak tera
 it('layar cerita hanya bila semua langkah lengkap', () => {
   expect(pengurangKeadaan(keadaanAwal(null, null), { jenis: 'KE_LAYAR', layar: 'cerita' }).layar).toBe('awal');
 });
+
+it('KE_POSISI satu lompatan: langkah, babak, dan bagian; babak dibatasi, langkah lain selalu layar daftar', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_POSISI', langkah: 3, babak: 0, bagian: 'keadaan' })).toMatchObject({ langkah: 3, babak: 0, bagian: 'keadaan' });
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_POSISI', langkah: 3, babak: 9, bagian: 'keadaan' }).babak).toBe(0);
+  expect(pengurangKeadaan({ ...keadaan, bagian: 'keadaan' }, { jenis: 'KE_POSISI', langkah: 2, babak: 0, bagian: 'keadaan' })).toMatchObject({ langkah: 2, bagian: 'daftar' });
+  // tetap dibatasi validasi: harta masih 0 → tidak bisa melompat ke Keluarga
+  expect(pengurangKeadaan({ ...awal, layar: 'wizard', kasus: kasusBaru('L') }, { jenis: 'KE_POSISI', langkah: 3, babak: 0, bagian: 'daftar' }).langkah).toBe(2);
+});
+
+it('mundur dari Periksa mendarat di keadaan babak terakhir; KE_BABAK selalu membuka daftar', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
+  keadaan = { ...keadaan, langkah: 4 };
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 })).toMatchObject({ langkah: 3, bagian: 'keadaan' });
+  expect(pengurangKeadaan({ ...keadaan, langkah: 3, bagian: 'keadaan' }, { jenis: 'KE_BABAK', babak: 0 }).bagian).toBe('daftar');
+  expect(pengurangKeadaan({ ...keadaan, langkah: 3, bagian: 'daftar' }, { jenis: 'KE_BAGIAN', bagian: 'keadaan' }).bagian).toBe('keadaan');
+});

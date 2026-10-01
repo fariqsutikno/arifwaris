@@ -60,10 +60,11 @@ const ARTI_NISBAH: Record<string, string> = {
 const Nisbah = ({ hubungan }: { hubungan: string }) =>
   hubungan === 'habis' ? <>{ARTI_NISBAH.habis}</> : <>{ARTI_NISBAH[hubungan] ?? hubungan} (<Istilah id={hubungan}>{hubungan}</Istilah>)</>;
 
-export function KartuTentang({ tentang }: { tentang: TentangKasus }) {
+/** Istilah teknis (jenis kasus, asal masalah, tashih) tertutup bagi pengguna biasa; terbuka di mode Belajar. */
+export function KartuTentang({ tentang, terbuka = false }: { tentang: TentangKasus; terbuka?: boolean }) {
   const jenis = tentang.kelas ? JENIS_KASUS[tentang.kelas] : undefined;
   return (
-    <Lipat judul={t('hitung.tentang_kasus_ini')} ringkas={jenis?.nama} terbukaAwal>
+    <Lipat judul={t('hitung.tentang_kasus_ini')} ringkas={jenis?.nama} terbukaAwal={terbuka}>
       <div className="fakta-kasus">
         {jenis && <div><span className="lbl">{t('hitung.jenis_kasus')}</span><b><Istilah id={jenis.istilah}>{jenis.nama}</Istilah></b><p>{jenis.arti}</p></div>}
         {tentang.ashl && (

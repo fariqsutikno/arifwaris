@@ -1,23 +1,19 @@
-// Bar bawah wizard: Kembali (kiri) dan "Lanjut: {langkah berikut}" (kanan). Bila isian wajib belum lengkap,
-// tombol lanjut nonaktif dan alasannya tertulis di sampingnya.
+// Bar bawah wizard, satu-satunya bar di layar: "Kembali" (tautan teks, aksi sekunder) dan tombol utama di kanan.
+// Bila isian wajib belum lengkap, tombol utama nonaktif dan alasannya tertulis di sampingnya.
 
-import { LANGKAH_WIZARD } from '../../konten/wizard';
 import { Tombol } from '../../ui/komponen';
-import { t } from '../../terjemah';
+import { panahMundur, t } from '../../terjemah';
 
-interface Props { langkah: number; alasan: string | null; saatKembali: () => void; saatLanjut: () => void }
+interface Props { labelLanjut: string; alasan: string | null; saatKembali: () => void; saatLanjut: () => void }
 
-export function BarBawah({ langkah, alasan, saatKembali, saatLanjut }: Props) {
-  const berikut = LANGKAH_WIZARD[langkah];   // indeks = langkah berikutnya
+export function BarBawah({ labelLanjut, alasan, saatKembali, saatLanjut }: Props) {
   return (
     <div className="bar-bawah" data-tur="bar-bawah">
       <div className="bar-bawah-isi">
-        <Tombol varian="secondary" onClick={saatKembali}>{t('umum.kembali_2')}</Tombol>
+        <button type="button" className="tautan-kembali" onClick={saatKembali}><span aria-hidden="true">{panahMundur()}</span> {t('umum.kembali_2')}</button>
         <span className="pengisi" />
         {alasan && <span className="alasan" id="alasan-lanjut">{alasan}</span>}
-        <Tombol onClick={saatLanjut} disabled={!!alasan} {...(alasan ? { 'aria-describedby': 'alasan-lanjut' } : {})}>
-          {berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil')}
-        </Tombol>
+        <Tombol onClick={saatLanjut} disabled={!!alasan} {...(alasan ? { 'aria-describedby': 'alasan-lanjut' } : {})}>{labelLanjut}</Tombol>
       </div>
     </div>
   );

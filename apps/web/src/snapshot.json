@@ -11596,7 +11596,7 @@
   {
    "kunci": "hitung.sisa_ashabah",
    "halaman": "hitung",
-   "id": "Sisa (ashabah)",
+   "id": "Mendapat sisa harta",
    "ar": "العصبة",
    "versiTerbit": 613
   },
@@ -21383,6 +21383,209 @@
    "kunci": "bagikan.ceklis_ikut",
    "halaman": "bagikan",
    "id": "Kalau kamu mengubah kasus ini, tampilan mereka ikut diperbarui.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keluarga.tanya_daftar",
+   "halaman": "hitung",
+   "id": "Siapa saja keluarga {nama} yang masih hidup waktu beliau wafat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keluarga.caption_daftar",
+   "halaman": "hitung",
+   "id": "Hitung semuanya, termasuk yang sekarang sudah wafat. Nanti kita tanyakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.tanya",
+   "halaman": "hitung",
+   "id": "Ada keadaan khusus di keluarga {nama}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.caption",
+   "halaman": "hitung",
+   "id": "Pilih yang sesuai. Kalau tidak ada, langsung lanjut.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.wafat",
+   "halaman": "hitung",
+   "id": "Ada yang sudah wafat atau hilang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.wafat_ket",
+   "halaman": "hitung",
+   "id": "Misalnya anak yang wafat sebelum atau sesudah {nama}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.hamil",
+   "halaman": "hitung",
+   "id": "Ada yang sedang hamil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.hamil_ket",
+   "halaman": "hitung",
+   "id": "Bayi dalam kandungan ikut mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.agama",
+   "halaman": "hitung",
+   "id": "Ada yang beda agama atau terlibat dalam wafatnya {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.agama_ket",
+   "halaman": "hitung",
+   "id": "Keadaan ini bisa menghalangi seseorang menerima warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.dibuka",
+   "halaman": "hitung",
+   "id": "Dipilih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus.tidak_dipilih",
+   "halaman": "hitung",
+   "id": "Belum dipilih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.madzhab",
+   "halaman": "hitung",
+   "id": "Dihitung menurut madzhab Syafi'i.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.beri_nama",
+   "halaman": "hitung",
+   "id": "Beri nama kasus ini (boleh dilewati)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.ubah_harta",
+   "halaman": "hitung",
+   "id": "ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kewajiban.tambah",
+   "halaman": "hitung",
+   "id": "Ada utang, biaya pemakaman, atau wasiat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kewajiban.tutup",
+   "halaman": "hitung",
+   "id": "Tidak ada utang atau wasiat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.mulai_dari_awal",
+   "halaman": "hitung",
+   "id": "Mulai kasus baru",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lanjut_keadaan_keluarga",
+   "halaman": "hitung",
+   "id": "Lanjut: keadaan keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lanjut_keluarga_nama",
+   "halaman": "hitung",
+   "id": "Lanjut: keluarga {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.beda_agama",
+   "halaman": "hitung",
+   "id": "Beda agama dengan {pewaris}: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.terlibat_wafat",
+   "halaman": "hitung",
+   "id": "Terlibat dalam wafatnya {pewaris}: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.ubah_harta",
+   "halaman": "hitung",
+   "id": "ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.keadaan_khusus_ringkas",
+   "halaman": "hitung",
+   "id": "Keadaan khusus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.cerita.label_harta",
+   "halaman": "hitung",
+   "id": "Harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pembagian_harta_almarhum",
+   "halaman": "hitung",
+   "id": "Pembagian harta almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hasil.galat_judul",
+   "halaman": "hitung",
+   "id": "Ada yang tidak berjalan semestinya di mesin hitung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hasil.perlu_input_judul",
+   "halaman": "hitung",
+   "id": "Masih ada yang perlu dilengkapi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.lihat_pohon_keluarga",
+   "halaman": "hitung",
+   "id": "Lihat pohon keluarga",
    "ar": null,
    "versiTerbit": 873
   }

@@ -70,7 +70,7 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     return (
       <main className="halaman tumpuk">
         <div className="kartu kartu-galat tumpuk" role="alert">
-          <h1 className="judul-langkah">{t('hitung.waduh_ada_yang_nggak_beres_di')}</h1>
+          <h1 className="judul-langkah">{t('hitung.hasil.galat_judul')}</h1>
           <p>{t('hitung.ini_bukan_salah_isianmu_tolong_laporkan')}</p>
           <p className="keterangan">{tampil.pesan}</p>
           <div className="chip-deret">
@@ -90,7 +90,7 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     return (
       <main className="halaman tumpuk">
         <div className="kartu kartu-peringatan tumpuk" role="alert">
-          <h1 className="judul-langkah">{hasil.status === 'PERLU_INPUT' ? t('hitung.bentar_masih_ada_yang_perlu_diisi') : t('hitung.kasus_ini_belum_bisa_dihitung_di')}</h1>
+          <h1 className="judul-langkah">{hasil.status === 'PERLU_INPUT' ? t('hitung.hasil.perlu_input_judul') : t('hitung.kasus_ini_belum_bisa_dihitung_di')}</h1>
           {hasil.status === 'PERLU_INPUT'
             ? <ul>{hasil.pertanyaan.map((pertanyaan, indeks) => <li key={indeks}>{pertanyaan.alasan}</li>)}</ul>
             : <p>{hasil.alasan}</p>}
@@ -160,7 +160,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab_syafii')}</p>
             {adalahBelajar
               ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
-              : <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya')}</h1>}
+              : <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.pembagian_harta_almarhum')}</h1>}
             {adalahBelajar && <p>{sedangMenebak ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan') : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya')}</p>}
           </div>
           <div className="aksi-hero">
@@ -190,6 +190,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             <button type="button" className="alat-bulat" aria-label={t('hitung.layar_penuh')} onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /></button>
           </div>
           <PratinjauPohon saatBuka={() => setLayarPenuh({ zoom: 1 })}>{buatPohon(true)}</PratinjauPohon>
+          {/* HP: pratinjau pohon tidak memakan layar pertama; jawaban (Pembagian) dulu, pohon dibuka lewat tombol ini. */}
+          <button type="button" className="pil-hero sekunder tombol-pohon-hp" onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /> {t('hitung.lihat_pohon_keluarga')}</button>
           <div className="kaki-pohon"><Legenda /><span>{t('hitung.pratinjau_ketuk_untuk_memperbesar')}</span>
             {bolehAliran && <button type="button" className="tautan-hero" onClick={() => setPutaranAliran(putaranAliran + 1)}>{t('hasil.putar_ulang')}</button>}</div>
         </div>
@@ -218,7 +220,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             <h2 id="judul-tabel-faraidh">{t('hitung.tabel_faraidh')}</h2>
             <div className="wadah-tabel">{tabel}</div>
           </section>
-          {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} />}
+          {!sedangMenebak && <KartuTentang tentang={ringkasan.tentang} terbuka={adalahBelajar} />}
         </div>
       </div>
 
@@ -227,12 +229,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         {bolehUbah && (
           <div className="aksi-kaki">
             <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>
-            <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('umum.reset')}{t('hitung.skenario')}</button>
+            <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('hitung.mulai_dari_awal')}</button>
           </div>
         )}
       </footer>
       {konfirmasiUlangi && (
-        <KonfirmasiKasusBaru kasus={kasus} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setKonfirmasiUlangi(false)}
+        <KonfirmasiKasusBaru kasus={kasus} saatBatal={() => setKonfirmasiUlangi(false)}
           saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
 

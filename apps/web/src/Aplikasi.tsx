@@ -109,9 +109,9 @@ export function Aplikasi() {
   // URL mengikuti posisi kasus; replaceState tidak memicu hashchange dan tidak menambah riwayat browser.
   useEffect(() => {
     if (!diKalkulator) return;
-    const tautan = tautanKasus(idSesi, { layar, langkah: keadaan.langkah, babak: keadaan.babak, ada: !!kasus });
+    const tautan = tautanKasus(idSesi, { layar, langkah: keadaan.langkah, babak: keadaan.babak, bagian: keadaan.bagian, ada: !!kasus });
     if (window.location.hash !== tautan) history.replaceState(null, '', tautan);
-  }, [diKalkulator, idSesi, layar, keadaan.langkah, keadaan.babak, !!kasus]);
+  }, [diKalkulator, idSesi, layar, keadaan.langkah, keadaan.babak, keadaan.bagian, !!kasus]);
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
   const belumSelesai = !!kasus && layar !== 'awal' && layar !== 'hasil' && !kasusLengkap(kasus);
@@ -204,12 +204,12 @@ export function Aplikasi() {
 export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string; sumber: SumberRiwayat; keadaan: KeadaanAplikasi } | null {
   const rute = bacaRute(hash);
   if (rute.halaman !== 'kalkulator' || !rute.kasus) return null;
-  const { id, layar, langkah, babak } = rute.kasus;
+  const { id, layar, langkah, babak, bagian } = rute.kasus;
   const entri = bacaRiwayat().find(isi => isi.id === id);
   if (!entri) return null;
   // Lewat reducer yang sama dengan penggunaan biasa, jadi langkah/layar yang belum boleh dibuka otomatis dibatasi.
   const aksi: Aksi[] = [{ jenis: 'MUAT', kasus: entri.kasus }];
-  if (layar === 'wizard') aksi.push({ jenis: 'KE_LANGKAH', langkah: langkah ?? 1 }, { jenis: 'KE_BABAK', babak: babak ?? 0 });
+  if (layar === 'wizard') aksi.push({ jenis: 'KE_POSISI', langkah: langkah ?? 1, babak: babak ?? 0, bagian: bagian ?? 'daftar' });
   else if (layar === 'cerita') aksi.push({ jenis: 'KE_LAYAR', layar });
   let keadaan = aksi.reduce(pengurangKeadaan, keadaanAwal(null, tujuan));
   // Kasus yang belum lengkap tidak punya hasil: jatuh ke langkah wizard pertama yang belum terisi.

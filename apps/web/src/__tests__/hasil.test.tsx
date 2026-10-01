@@ -39,7 +39,7 @@ const bukaLewatDialog = (namaTombolTahan: RegExp) => {
 describe('layar hasil', () => {
   it('pembagian per orang dan yang terhalang beserta alasannya', () => {
     render(<Uji awal={prototipe()} />);
-    expect(screen.getByRole('heading', { name: 'Nah, ini pembagiannya' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Pembagian harta almarhum' })).toBeTruthy();
     expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);   // ibu dan ayah
     expect(within(screen.getByRole('region', { name: 'Tidak mendapat bagian' })).getByText(/Terhalang oleh Anak laki-laki dan Ayah/)).toBeTruthy();
   });
@@ -59,7 +59,7 @@ describe('layar hasil', () => {
     const judul = [...document.querySelectorAll('.tata-hasil h2')].map(isi => isi.textContent);
     expect(judul.slice(0, 7)).toEqual(['Pembagian', 'Tidak mendapat bagian', 'Harta yang dibagi', 'Habis ini ngapain?', 'Pelajari langkah perhitungan', 'Tabel faraidh', 'Tentang kasus ini']);
     expect(document.querySelector('.bar-bawah')).toBeNull();
-    expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Reset skenario' })).toBeTruthy();
+    expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Mulai kasus baru' })).toBeTruthy();
     expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // statistik hero diringkas; angka utuh di kartu
   });
 

@@ -1,4 +1,6 @@
 // Stepper: nama semua langkah + Hasil. Langkah yang sudah boleh dibuka bisa diklik; sisanya nonaktif.
+// Centang hanya untuk langkah yang sudah dilewati (di belakang langkah aktif); langkah di depan tidak pernah bercentang.
+// Di HP hanya langkah aktif yang menampilkan namanya, supaya semua langkah muat tanpa terpotong.
 
 import { LANGKAH_WIZARD } from '../../konten/wizard';
 import { LANGKAH_HASIL } from './validasi';
@@ -13,11 +15,11 @@ export function Stepper({ langkahAktif, terjauh, saatPilih }: Props) {
       {daftar.map((nama, indeks) => {
         const langkah = indeks + 1;
         const adalahAktif = langkah === langkahAktif;
-        const sudahLengkap = langkah < terjauh && !adalahAktif && langkah !== LANGKAH_HASIL;
+        const sudahLengkap = langkah < langkahAktif && langkah !== LANGKAH_HASIL;
         return (
           <button key={nama} type="button" className={sudahLengkap ? 'stepper-item kelar' : 'stepper-item'} disabled={langkah > terjauh}
             aria-current={adalahAktif ? 'step' : undefined} onClick={() => saatPilih(langkah)}>
-            <b aria-hidden="true">{sudahLengkap ? '✓' : langkah === LANGKAH_HASIL ? '★' : angka(String(langkah))}</b>{nama}
+            <b aria-hidden="true">{sudahLengkap ? '✓' : langkah === LANGKAH_HASIL ? '★' : angka(String(langkah))}</b><span className="stepper-nama">{nama}</span>
           </button>
         );
       })}

@@ -12,7 +12,17 @@ import { DialogKonfirmasi } from '../../ui/Dialog';
 import { DialogKeadaan } from './DialogKeadaan';
 import { t } from '../../terjemah';
 
-interface Props { kasus: Kasus; idMayit: IdOrang; ubah: (f: (k: Kasus) => Kasus) => void }
+interface Props { kasus: Kasus; idMayit: IdOrang; ubah: (f: (k: Kasus) => Kasus) => void; tanpaTanya?: boolean }
+
+/** Janin yang ibunya kerabat almarhum babak ini. */
+export const janinBabakDari = (kasus: Kasus, idMayit: IdOrang): IdOrang[] => {
+  const calon = calonIbuJanin(kasus, idMayit);
+  return Object.values(kasus.graf.orang).filter(o => o.statusHidup === 'dalamKandungan' && calon.some(c => c.idIbu === o.idIbu)).map(o => o.id);
+};
+
+/** Kasus tanpa janin babak ini (kembar, lahir, dan sebagainya ikut hilang). */
+export const tanpaJaninBabak = (kasus: Kasus, idMayit: IdOrang): Kasus =>
+  ({ ...kasus, graf: janinBabakDari(kasus, idMayit).reduce((graf, idJanin) => hapusAhliWaris(graf, idJanin), kasus.graf) });
 
 type LayarJanin =
   | { jenis: 'siapa' }
@@ -20,13 +30,13 @@ type LayarJanin =
   | { jenis: 'lahir'; idJanin: IdOrang }
   | { jenis: 'jenisKelamin'; idJanin: IdOrang; wafat: boolean; anak: Array<'L' | 'P'> };
 
-export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
+export function PertanyaanHamil({ kasus, idMayit, ubah, tanpaTanya = false }: Props) {
   const id = useId();
   const calon = calonIbuJanin(kasus, idMayit);
-  const janinBabak = Object.values(kasus.graf.orang)
-    .filter(o => o.statusHidup === 'dalamKandungan' && calon.some(c => c.idIbu === o.idIbu)).map(o => o.id);
-  const [ada, setAda] = useState(janinBabak.length > 0);
-  const [layar, setLayar] = useState<LayarJanin | null>(null);
+  const janinBabak = janinBabakDari(kasus, idMayit);
+  const [ada, setAda] = useState(tanpaTanya || janinBabak.length > 0);
+  // Kartu "ada yang hamil" baru dibuka dan belum ada janin: langsung tanya siapa, tanpa menunggu pengguna mencari tautan tambah.
+  const [layar, setLayar] = useState<LayarJanin | null>(tanpaTanya && janinBabak.length === 0 && calon.length > 0 ? { jenis: 'siapa' } : null);
   const [pilihan, setPilihan] = useState<string | null>(null);
   const [bayiWafat, setBayiWafat] = useState<IdOrang | null>(null);
   const [konfirmasiHapus, setKonfirmasiHapus] = useState(false);
@@ -136,17 +146,19 @@ export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
           <p>{t('hitung.janin.hapus_isi')}</p>
         </DialogKonfirmasi>
       )}
-      <section className="penutup-babak" aria-labelledby={`${id}-hamil`}>
-        <h3 id={`${id}-hamil`} className="judul-bagian-kecil">{t('hitung.janin.tanya', { mayit })}</h3>
-        <p className="keterangan">{t('hitung.janin.tanya_ket')}</p>
-        <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby={`${id}-hamil`}>
-          <button type="button" role="radio" aria-checked={!ada} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
-            <span>{t('hitung.janin.tidak_ada')}</span>
-          </button>
-          <button type="button" role="radio" aria-checked={ada} className="kartu-pilihan kecil" onClick={() => setAda(true)}>
-            <span>{t('hitung.janin.ada')}</span>
-          </button>
-        </div>
+      <section className="penutup-babak" {...(tanpaTanya ? {} : { 'aria-labelledby': `${id}-hamil` })}>
+        {!tanpaTanya && <>
+          <h3 id={`${id}-hamil`} className="judul-bagian-kecil">{t('hitung.janin.tanya', { mayit })}</h3>
+          <p className="keterangan">{t('hitung.janin.tanya_ket')}</p>
+          <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby={`${id}-hamil`}>
+            <button type="button" role="radio" aria-checked={!ada} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
+              <span>{t('hitung.janin.tidak_ada')}</span>
+            </button>
+            <button type="button" role="radio" aria-checked={ada} className="kartu-pilihan kecil" onClick={() => setAda(true)}>
+              <span>{t('hitung.janin.ada')}</span>
+            </button>
+          </div>
+        </>}
         {ada && (
           <>
             <ul className="daftar-keadaan">

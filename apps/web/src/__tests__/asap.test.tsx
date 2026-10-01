@@ -13,9 +13,12 @@ it('alur penuh: beranda → wizard → hasil', () => {
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Keluarga/ }));
   fireEvent.click(screen.getByLabelText('Tambah Istri'));
   fireEvent.click(screen.getByLabelText('Tambah Anak laki-laki'));
+  // Keluarga punya dua layar: daftar, lalu keadaan khusus (tak ada yang dicentang = kasus biasa).
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: keadaan keluarga/ }));
+  expect(screen.getByRole('heading', { name: /Ada keadaan khusus/ })).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Periksa/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lihat hasil/ }));
-  expect(screen.getByText('Nah, ini pembagiannya')).toBeTruthy();
+  expect(screen.getByText('Pembagian harta almarhum')).toBeTruthy();
 });
 
 it('autosave: kasus muncul lagi setelah render ulang', () => {

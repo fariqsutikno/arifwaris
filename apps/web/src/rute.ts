@@ -20,16 +20,16 @@ export type Rute =
   | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
 
 /** Posisi kasus di Hitung: id entri riwayat + layar (wizard membawa langkah dan babak). */
-export interface PosisiKasus { id: string; layar: 'hasil' | 'cerita' | 'wizard'; langkah?: number; babak?: number }
+export interface PosisiKasus { id: string; layar: 'hasil' | 'cerita' | 'wizard'; langkah?: number; babak?: number; bagian?: 'daftar' | 'keadaan' }
 
 export function bacaRute(hash: string): Rute {
   const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
   if (halaman === 'hitung') {
     if (!parameter) return { halaman: 'kalkulator' };
-    const [, , bagian, langkah, babak] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
-    if (bagian === 'cerita') return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'cerita' } };
-    if (bagian === 'langkah' && Number.isInteger(Number(langkah))) {
-      return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'wizard', langkah: Number(langkah), babak: Number(babak) || 0 } };
+    const [, , layar, langkah, babak, bagian] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+    if (layar === 'cerita') return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'cerita' } };
+    if (layar === 'langkah' && Number.isInteger(Number(langkah))) {
+      return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'wizard', langkah: Number(langkah), babak: Number(babak) || 0, bagian: bagian === 'keadaan' ? 'keadaan' : 'daftar' } };
     }
     return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'hasil' } };
   }
@@ -69,10 +69,14 @@ export const TAUTAN_BERANDA = '#/';
 export const TAUTAN_KALKULATOR = '#/hitung';
 
 /** Tautan posisi kasus; tanpa kasus atau di layar awal = `#/hitung`. */
-export function tautanKasus(id: string, keadaan: { layar: string; langkah: number; babak: number; ada: boolean }): string {
+export function tautanKasus(id: string, keadaan: { layar: string; langkah: number; babak: number; bagian?: 'daftar' | 'keadaan'; ada: boolean }): string {
   if (!keadaan.ada || keadaan.layar === 'awal') return TAUTAN_KALKULATOR;
   const dasar = `${TAUTAN_KALKULATOR}/${encodeURIComponent(id)}`;
-  if (keadaan.layar === 'wizard') return `${dasar}/langkah/${keadaan.langkah}${keadaan.babak > 0 ? `/${keadaan.babak}` : ''}`;
+  if (keadaan.layar === 'wizard') {
+    // `/langkah/3/<babak>/keadaan` = layar keadaan; layar daftar tidak menulis bagian (tautan lama tetap berlaku).
+    const diKeadaan = keadaan.langkah === 3 && keadaan.bagian === 'keadaan';
+    return `${dasar}/langkah/${keadaan.langkah}${keadaan.babak > 0 || diKeadaan ? `/${keadaan.babak}` : ''}${diKeadaan ? '/keadaan' : ''}`;
+  }
   return keadaan.layar === 'cerita' ? `${dasar}/cerita` : dasar;
 }
 

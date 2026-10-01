@@ -1,5 +1,6 @@
-// Bagian Periksa (langkah 4): kondisi mawani' [SYF] — beda agama, membunuh pewaris [bab 02]. Menerima Kasus; menyerahkan Kasus
-// dengan field mawani' terisi. Munasakhat, janin, hilang, dan wafat bersamaan ditanyakan di langkah 4 (babak).
+// Kondisi mawani' [SYF] — beda agama, membunuh pewaris [bab 02]. Menerima Kasus; menyerahkan Kasus dengan field mawani' terisi.
+// Ditanyakan di layar keadaan khusus langkah Keluarga (KeadaanKeluarga, `tanpaTanya`: pertanyaannya dipegang kartu di sana);
+// komponen ini juga bisa berdiri sendiri dengan pertanyaan Ada/Tidak ada.
 
 import { useState, type ReactNode } from 'react';
 import type { IdOrang, Orang } from '@waris/engine';
@@ -8,9 +9,20 @@ import type { Kasus } from '../kasus';
 import { labelOrangChecklist } from '../checklist';
 import { t } from '../terjemah';
 
-interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void; labelId?: string }
+interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void; labelId?: string; tanpaTanya?: boolean }
 
-export function LangkahKondisi({ kasus, ubah, labelId = 'pertanyaan-utama' }: Props) {
+/** Ada orang bertanda beda agama atau terlibat wafatnya (selain pewaris sendiri). */
+export const adaKondisiTerisi = (kasus: Kasus): boolean =>
+  Object.values(kasus.graf.orang).some(o => o.id !== kasus.graf.idPewaris && (o.agama === 'nonIslam' || !!o.membunuhPewaris));
+
+/** "Tidak ada" berarti benar-benar tidak ada: kondisi yang sempat dicentang dibersihkan supaya hasil tidak berubah diam-diam. */
+export const kosongkanKondisi = (kasus: Kasus): Kasus => ({
+  ...kasus,
+  graf: { ...kasus.graf, orang: Object.fromEntries(Object.entries(kasus.graf.orang).map(([id, orang]) =>
+    [id, id === kasus.graf.idPewaris ? orang : { ...orang, agama: orang.agama === 'nonIslam' ? 'islam' : orang.agama, membunuhPewaris: false }])) },
+});
+
+export function LangkahKondisi({ kasus, ubah, labelId = 'pertanyaan-utama', tanpaTanya = false }: Props) {
   // Ahli waris pewaris asal dan tiap mayit munasakhat, masing-masing dinamai relatif ke mayit tempat ia pertama muncul.
   const mayitDari: Record<IdOrang, IdOrang> = {};
   for (const idMayit of [kasus.graf.idPewaris, ...kasus.urutanWafat]) {
@@ -28,28 +40,21 @@ export function LangkahKondisi({ kasus, ubah, labelId = 'pertanyaan-utama' }: Pr
     return idMayit && idMayit !== kasus.graf.idPewaris ? t('hitung.orang_ahli_waris_mayit', { orang: labelDasar(idOrang), mayit: labelDasar(idMayit) }) : labelDasar(idOrang);
   };
 
-  const adaTerisi = semuaAhliWaris.some(id => kasus.graf.orang[id]!.agama === 'nonIslam' || kasus.graf.orang[id]!.membunuhPewaris);
-  const [adaKondisi, setAdaKondisi] = useState(adaTerisi);
-  // "Tidak ada" berarti benar-benar tidak ada: kondisi yang sempat dicentang dibersihkan supaya hasil tidak berubah diam-diam.
-  const pilihTidakAda = () => {
-    setAdaKondisi(false);
-    ubah(k => ({
-      ...k,
-      graf: { ...k.graf, orang: Object.fromEntries(Object.entries(k.graf.orang).map(([id, orang]) =>
-        [id, id === k.graf.idPewaris ? orang : { ...orang, agama: orang.agama === 'nonIslam' ? 'islam' : orang.agama, membunuhPewaris: false }])) },
-    }));
-  };
+  const [adaKondisi, setAdaKondisi] = useState(tanpaTanya || adaKondisiTerisi(kasus));
+  const pilihTidakAda = () => { setAdaKondisi(false); ubah(kosongkanKondisi); };
 
   return (
     <div className="tumpuk">
-      <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby={labelId}>
-        <button type="button" role="radio" aria-checked={!adaKondisi} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
-          <span>{t('umum.tidak_ada')}</span><small>{t('hitung.langsung_lihat_hasil')}</small>
-        </button>
-        <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
-          <span>{t('umum.ada')}</span><small>{t('hitung.kondisi_ada_ket')}</small>
-        </button>
-      </div>
+      {!tanpaTanya && (
+        <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby={labelId}>
+          <button type="button" role="radio" aria-checked={!adaKondisi} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
+            <span>{t('umum.tidak_ada')}</span><small>{t('hitung.langsung_lihat_hasil')}</small>
+          </button>
+          <button type="button" role="radio" aria-checked={adaKondisi} className="kartu-pilihan kecil" onClick={() => setAdaKondisi(true)}>
+            <span>{t('umum.ada')}</span><small>{t('hitung.kondisi_ada_ket')}</small>
+          </button>
+        </div>
+      )}
       {adaKondisi && <>
       <Kondisi judul={t('hitung.kondisi_agama_judul')} keterangan={t('hitung.kondisi_agama_ket')}
         akibat={t('hitung.kondisi_akibat')}>
