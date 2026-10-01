@@ -52,7 +52,7 @@ export function Belajar() {
     <main className="halaman-beranda halaman-belajar">
       {/* Satu aksi utama di atas: lanjut dari titik terakhir. Sisanya dikelompokkan menurut niat: belajar, berlatih, mencari. */}
       <header className="hero-beranda hero-pusat" ref={hero}>
-        <div className="sapa-beranda">
+        <div className="sapa-pusat">
           <h1>{judulAwal} <span className="tekanan">{kataTekanan}</span></h1>
           <p className="lead">{t('belajar.materi_berurutan_dari_pengantar_sampai_menghitung')}</p>
         </div>

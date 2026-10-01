@@ -2,6 +2,7 @@
    Di sini hanya yang khas Belajar: panel lanjutkan di hero, ubin modul berwarna, ubin latihan. */
 
 .hero-pusat{grid-template-columns:minmax(0,1fr) minmax(0,.85fr)}
+.sapa-pusat{display:flex;flex-direction:column;align-items:flex-start;gap:20px;min-width:0}
 .panel-lanjut{display:flex;align-items:center;gap:22px;padding:22px;border-radius:28px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);animation:naik .8s .18s cubic-bezier(.2,.7,.2,1) both}
 .hero-pusat .cincin-progres svg{width:132px;height:132px}
 .hero-pusat .cincin-latar{stroke:rgba(255,255,255,.2)}
@@ -73,3 +74,6 @@ a.kartu-lanjut-hero:focus-visible{outline:3px solid var(--focus);outline-offset:
   .panel-lanjut,.hero-pusat .cincin-isi,.ubin .bar-progres>span{animation:none}
   a.kartu-lanjut-hero:hover .panah-bulat{transform:none}
 }
+
+/* HP: header transparan melayang di atas hero (aplikasi.css), jadi isi hero turun di bawahnya */
+@media (max-width:720px){.hero-pusat{padding-top:88px}}

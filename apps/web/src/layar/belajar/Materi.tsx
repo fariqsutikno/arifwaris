@@ -19,6 +19,7 @@ import { KartuSoalKuis } from './KartuSoalKuis';
 import { angka, panah, panahMundur, t } from '../../terjemah';
 import { Sebaris } from './Sebaris';
 import { TombolBukaKasus } from './TombolBukaKasus';
+import { Bagikan } from '../../ui/Bagikan';
 import { Ikon } from '../../ui/Ikon';
 import { Laci } from '../../ui/Laci';
 
@@ -35,8 +36,8 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   // Dinaikkan saat pelajaran ditandai selesai supaya progres di sidebar langsung ikut berubah.
   const [, setVersiProgres] = useState(0);
 
-  // Latar krem seperti Beranda; nav tetap utuh (bukan layar-beranda) karena bilah Kembali ada di atas hero.
-  useEffect(() => { document.body.classList.add('layar-materi'); return () => document.body.classList.remove('layar-materi'); }, []);
+  // Latar krem dan nav menyatu dengan hero, sama dengan Beranda dan Belajar (CSS body.layar-beranda).
+  useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
 
   useEffect(() => {
     if (!pelajaran) return;
@@ -61,13 +62,18 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const modul = daftarModul().find(modulIni => modulIni.nomor === pelajaran.modul);
 
   return (
-    <div className="tata-materi">
+    <div className="halaman-beranda halaman-materi">
       <header className="hero-materi">
+        <div className="baris-hero-materi">
+          <a className="tombol-kembali" href={tautanBelajar()}><Ikon nama="kembali" ukuran={18} />{t('umum.kembali_2')}</a>
+          <Bagikan judul={pelajaran.judul} tautan={window.location.hash} />
+        </div>
         <p className="label-langkah">{t('belajar.modul_nomor_judul_pelajaran_indeks_dari', { nomor: pelajaran.modul, judul: modul?.judul ?? '', indeks: indeks + 1, total: daftarPelajaran().length })}</p>
         <h1>{pelajaran.judul}</h1>
         {pelajaran.perluCek && <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>}
         <p className="lead">{pelajaran.tujuan}</p>
       </header>
+      <div className="tata-materi">
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
         <article className="isi-materi">
@@ -79,6 +85,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
           <TautanNavigasi tujuan={berikutnya} label={`${t('belajar.berikutnya')} ${panah()}`} saatKlik={() => tandaiPelajaranSelesai(pelajaran.slug)} />
         </nav>
       </main>
+      </div>
     </div>
   );
 }
