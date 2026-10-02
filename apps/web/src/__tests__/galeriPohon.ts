@@ -26,7 +26,7 @@ const wafat: Ringkas = { statusHidup: 'wafat' };
 
 export interface FixturePohon { nama: string; graf: GrafKeluarga; /** pernikahan antar-kerabat: P5 hanya mensyaratkan tanpa tumpukan */ nikahKerabat?: boolean }
 
-export const GALERI: FixturePohon[] = [
+const GALERI_DASAR: FixturePohon[] = [
   { nama: '1. kasus biasa (istri, 2 anak)', graf: new Perakit()
     .tambah('P', 'L', wafat).tambah('I', 'P').tambah('A1', 'L', { idAyah: 'P', idIbu: 'I' }).tambah('A2', 'P', { idAyah: 'P', idIbu: 'I' })
     .nikah('P', 'I').graf('P') },
@@ -74,6 +74,11 @@ export const GALERI: FixturePohon[] = [
     .tambah('P', 'L', wafat).tambah('I', 'P').tambah('M', 'P', { statusHidup: 'dalamKandungan', idAyah: 'P', idIbu: 'I' })
     .tambah('H', 'L', { statusHidup: 'mafqud', idAyah: 'P', idIbu: 'I' }).tambah('K', 'L', { khuntsa: 'diharapkanJelas', idAyah: 'P', idIbu: 'I' })
     .tambah('I0', 'P').nikah('P', 'I').nikah('P', 'I0', 'talakBain').graf('P') },
+];
+
+export const GALERI: FixturePohon[] = [
+  ...GALERI_DASAR,
+  { nama: '11. pusat dipindah dari Mbah ke cucu', graf: { ...GALERI_DASAR[1]!.graf, idPewaris: 'C1' } },
 ];
 
 // ─── Pemeriksa invarian ───────────────────────────────────────────────────────
