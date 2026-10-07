@@ -4,7 +4,7 @@
 -- sakelar profil dan langganan menentukan siapa yang masuk, dan hanya service role yang boleh memilih kandidat.
 -- Waktu acuan: Kamis 2026-10-01 18:00 WIB (streak) dan Senin 2026-10-05 08:30 WIB (peringkat pekan lalu = minggu 09-28).
 begin;
-select plan(21);
+select plan(22);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000f1', 'p1@tes.local'), ('00000000-0000-0000-0000-0000000000f2', 'p2@tes.local'),
@@ -95,6 +95,10 @@ select is((select count(*) from kandidat_push('2026-10-05 08:30+07') where user_
   'kabar biasa dibatasi satu per hari lokal');
 
 -- ===== hak akses =====
+-- Edge Function memanggil sebagai service_role, yang tidak boleh membaca auth.users secara langsung.
+set local role service_role;
+select lives_ok($$select * from kandidat_push('2026-10-05 08:30+07')$$, 'service role bisa memilih kandidat');
+
 set local role anon;
 select throws_ok($$select * from langganan_push$$, '42501', null, 'anon tidak bisa membaca langganan');
 select throws_ok($$select * from kandidat_push(now())$$, '42501', null, 'anon tidak bisa memilih kandidat');

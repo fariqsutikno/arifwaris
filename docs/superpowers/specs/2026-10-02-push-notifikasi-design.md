@@ -1,6 +1,6 @@
 # Push notifikasi dari server
 
-Tanggal: 2026-10-02 · Status: **disetujui pemilik 2026-10-02; P1–P3 sudah dikodekan, belum dipasang ke server mana pun** (lihat "Keputusan" dan "Pemasangan" di bawah).
+Tanggal: 2026-10-02 · Status: **disetujui pemilik 2026-10-02; P1–P3 sudah dikodekan dan terpasang di proyek Supabase (2026-10-07); P4 uji perangkat nyata belum** (lihat "Keputusan" dan "Pemasangan" di bawah).
 
 Menyambung kebijakan notifikasi 2026-10-02 (`apps/web/src/notifikasi/SumberNotifikasi.tsx`). Kotak masuk lokal
 dan notifikasi perangkat saat aplikasi terbuka di latar sudah jalan. Yang kurang: kabar yang harus sampai
@@ -142,13 +142,17 @@ cron, dengan daftar penerima dibatasi ke akun pemilik lebih dulu · **P3** langg
 - Perangkat yang sudah berlangganan tidak menampilkan notifikasi lokal streak/peringkat (id kotak masuk sama dengan kabar push, jadi tidak dobel).
 - `zona_waktu`: profil yang belum pernah disimpan memakai bawaan `Asia/Jakarta`; Profil menawarkan zona perangkat saat pertama disimpan.
 
-## Pemasangan (belum dilakukan, langkah pemilik)
+## Pemasangan (langkah 1–4 sudah dilakukan per 2026-10-07; tersisa langkah 5)
 
 1. `npx web-push generate-vapid-keys`; `supabase secrets set VAPID_PUBLIK=… VAPID_PRIVAT=… VAPID_SUBJEK=mailto:… CRON_RAHASIA=…`.
 2. Terapkan migrasi ke proyek, lalu `supabase functions deploy kirim-push`.
 3. Isi `VITE_VAPID_PUBLIK` di build web.
 4. Jalankan `supabase/jadwal-push.sql` (ganti `<PROYEK>` dan `<CRON_RAHASIA>`) setelah mengaktifkan `pg_cron` dan `pg_net`.
 5. Uji dulu pada akun sendiri (P2), baru lewat perangkat nyata (P4: Android dan iPhone dengan PWA terpasang).
+
+Catatan 2026-10-07: setelah terpasang, tiap panggilan cron gagal 500 `permission denied for table users` karena
+`peringkat_minggu` membaca `auth.users` sebagai service role. Diperbaiki migrasi `20261007002229_push_service_role.sql`
+(security definer) dan dijaga tes service role di `14_push.test.sql`.
 
 ## 9. Risiko
 
