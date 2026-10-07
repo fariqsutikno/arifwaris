@@ -46,7 +46,7 @@ export function Kepala({ halaman, adaTur, saatKeHitung, saatTur, akun }: Props) 
           {DAFTAR_BAHASA.map(pilihan => <option key={pilihan.nilai} value={pilihan.nilai}>{pilihan.label}</option>)}
         </select>
         {/* Di layar sempit hanya ikon (label tetap dibaca pembaca layar lewat aria-label). */}
-        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala" aria-label={t('umum.tur_singkat')} title={t('umum.tur_singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('umum.tur_singkat')}</span></Tombol>}
+        {adaTur && <Tombol varian="secondary" kecil className="tombol-kepala tombol-tur" aria-label={t('umum.tur_singkat')} title={t('umum.tur_singkat')} onClick={saatTur}><Ikon nama="tanya" ukuran={18} /><span className="label-lebar">{t('umum.tur_singkat')}</span></Tombol>}
       </header>
       <nav aria-label={t('umum.menu_utama')} className="nav-bawah">{tautanMenu('nav-bawah-item', true)}</nav>
     </>

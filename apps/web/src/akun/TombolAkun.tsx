@@ -42,8 +42,11 @@ export function TombolAkun({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun |
 
   if (!sesi) return (
     <>
-      <Tombol varian="secondary" kecil className="tombol-kepala"
-        onClick={() => repo.akun.masukGoogle(window.location.href).catch(() => setGalat(true))}>{t('umum.masuk_dengan_google')}</Tombol>
+      {/* Di HP hanya ikon: header sempit (label tetap dibaca pembaca layar lewat aria-label). */}
+      <Tombol varian="secondary" kecil className="tombol-kepala tombol-masuk" aria-label={t('umum.masuk_dengan_google')}
+        onClick={() => repo.akun.masukGoogle(window.location.href).catch(() => setGalat(true))}>
+        <span className="ikon-masuk"><Ikon nama="profil" ukuran={18} /></span><span className="label-masuk">{t('umum.masuk_dengan_google')}</span>
+      </Tombol>
       {galat && <p role="alert" className="pesan-akun">{t('umum.layanan_akun_tidak_tersedia')}</p>}
     </>
   );

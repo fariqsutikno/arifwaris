@@ -52,7 +52,7 @@
 .hero-wizard .tautan-hero{margin-top:2px;padding:0;min-height:44px}
 @media (max-width:720px){
   /* HP: header sempit, tur disembunyikan (hanya ada di desktop) */
-  body.layar-beranda .kepala .tombol-kepala{display:none}
+  body.layar-beranda .kepala .tombol-tur{display:none}
 }
 
 /* ─── Hasil selebar layar ──────────────────────────────────────────────────────────────────────────

@@ -757,6 +757,8 @@ a.aw-btn{text-decoration:none;color:inherit}
 .sumber-riwayat{font-weight:700;color:var(--ink)}
 .baris-soal .aw-btn-sm{flex:none}
 .tombol-kepala{flex:none}
+.tombol-masuk .ikon-masuk{display:none}
+@media (max-width:560px){.tombol-masuk .ikon-masuk{display:inline-flex}.tombol-masuk .label-masuk{display:none}.kepala .tombol-masuk{padding:0 10px;min-width:40px;justify-content:center}}
 @media (max-width:1180px){.tombol-kepala .label-lebar{display:none}.tombol-kepala{padding:0 10px;min-width:40px;justify-content:center}}
 
 /* ─── Menu akun (header) ─── */
