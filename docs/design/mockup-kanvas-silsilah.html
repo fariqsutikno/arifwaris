@@ -7,85 +7,83 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&family=Parkinsans:wght@500;600&display=swap">
 <style>
-/* MOCKUP konsep "kanvas silsilah" untuk input munasakhat (brainstorm 2026-10-14).
-   Token = apps/web/src/gaya/token.css + beranda.css (gaya Logivo). Angka di Hasil = contoh, dihitung tangan untuk jawaban bawaan. */
+/* MOCKUP v3 kanvas silsilah (2026-10-14). Isian bergaya wawancara: satu kelompok aktif, yang selesai jadi ringkasan.
+   Aturan dari audit: mulai kosong; jenis kelamin ditanya; aksi utama + status di bar bawah, tidak pernah nonaktif;
+   garis bawah hanya untuk pindah; penjelasan = pola Details (▸); aksi per orang lewat menu ⋯; halaman isian hanya fakta.
+   Token = apps/web/src/gaya/token.css (gaya Logivo). Angka di Hasil = contoh hitung tangan. */
 :root{
   --surface:#eef3e8;--surface-sunken:#e4ece1;--outline:#c9d4c6;--divider:#dfe6dc;
-  --ink:#14181a;--ink-muted:#525c57;--primary:#0e0f10;--on-primary:#fff;--primary-soft:#dce8d8;
+  --ink:#14181a;--ink-muted:#525c57;--primary:#0e0f10;
   --pasangan:#c3d4f6;--keturunan:#b5ead0;--leluhur:#d9c9f2;--saudara:#fbd3ac;
-  --aksen:#f2682a;--aksen-soft:#fde6d8;--krem:#f6f2e9;--halaman:#b9d4c0;
+  --aksen:#f2682a;--aksen-soft:#fde6d8;--aksen-tua:#8a3409;--krem:#f6f2e9;--halaman:#b9d4c0;
   --kartu:rgba(255,255,255,.72);--kartu-tepi:rgba(255,255,255,.95);
   --font-display:"Parkinsans",system-ui,sans-serif;--font-sans:"Host Grotesk",system-ui,sans-serif;
-  --shadow-pop:0 8px 24px rgba(20,40,30,.12);
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--halaman);color:var(--ink);font:400 15px/1.5 var(--font-sans)}
 h1,h2,h3,p{margin:0}
 button{font-family:inherit;color:inherit}
-a,.tautan{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;font-size:inherit}
 :focus-visible{outline:3px solid var(--aksen);outline-offset:2px}
 .ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .redup{color:var(--ink-muted)}
 .kecil{font-size:13px}
+.tumpuk{display:flex;flex-direction:column;gap:16px}
+.deret{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 
-/* bilah meta mockup (di luar aplikasi) */
+/* tiga peran, tiga tampilan */
+.tautan{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;font-size:inherit}
+.aksi-teks{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:6px 10px;margin:-6px -10px;border-radius:10px;font:600 14px var(--font-sans);cursor:pointer;color:var(--ink)}
+.aksi-teks:hover{background:var(--surface)}
+details.rinci>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font:500 13.5px var(--font-sans);color:var(--ink-muted);padding:4px 0}
+details.rinci>summary::-webkit-details-marker{display:none}
+details.rinci>summary .ik{width:14px;height:14px;transition:transform .2s}
+details.rinci[open]>summary .ik{transform:rotate(90deg)}
+details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);background:var(--surface);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+
 .meta{max-width:1240px;margin:0 auto;padding:14px 16px;display:flex;gap:10px 18px;align-items:center;flex-wrap:wrap;font-size:13.5px}
-.meta b{font-weight:600}
 .saklar{display:inline-flex;background:rgba(255,255,255,.6);border-radius:999px;padding:3px}
 .saklar button{border:0;background:none;padding:6px 12px;border-radius:999px;font:600 13px var(--font-sans);cursor:pointer}
 .saklar button[aria-pressed=true]{background:var(--primary);color:#fff}
-
-.bingkai{max-width:1240px;margin:0 auto 40px;border-radius:30px;overflow:hidden;background:var(--krem);box-shadow:0 20px 50px rgba(20,40,30,.18);transition:max-width .35s}
+.bingkai{max-width:1240px;margin:0 auto 40px;border-radius:30px;background:var(--krem);box-shadow:0 20px 50px rgba(20,40,30,.18);transition:max-width .35s;position:relative}
 body.hp .bingkai{max-width:390px}
 
-/* hero */
-.hero{color:#fff;padding:18px 28px 62px;background:radial-gradient(520px 300px at 80% 40%,rgba(255,150,40,.35),transparent 70%),radial-gradient(420px 260px at 8% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326 0%,#0f3a38 55%,#0b2a2b 100%)}
+.hero{color:#fff;padding:18px 28px 62px;border-radius:30px 30px 0 0;background:radial-gradient(520px 300px at 80% 40%,rgba(255,150,40,.35),transparent 70%),radial-gradient(420px 260px at 8% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326 0%,#0f3a38 55%,#0b2a2b 100%)}
 body.hp .hero{padding:16px 16px 56px}
 .nav{display:flex;align-items:center;gap:10px;font:700 18px var(--font-sans)}
-.nav i{width:24px;height:24px;border-radius:50%;background:var(--aksen);box-shadow:inset -6px -4px 0 rgba(0,0,0,.15)}
+.nav i{width:24px;height:24px;border-radius:50%;background:var(--aksen)}
 .stepper{display:flex;gap:30px;margin-top:26px;overflow-x:auto;scrollbar-width:none}
-.stepper button{flex:none;display:inline-flex;align-items:center;gap:8px;border:0;background:none;color:rgba(255,255,255,.8);font:600 14px var(--font-sans);cursor:pointer;padding:0;min-height:44px}
+.stepper button{flex:none;display:inline-flex;align-items:center;gap:8px;border:0;background:none;color:rgba(255,255,255,.85);font:600 14px var(--font-sans);cursor:pointer;padding:0;min-height:44px}
 .stepper b{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;border:1.5px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12)}
 .stepper button[aria-current=step] b{background:#fff;color:var(--ink);box-shadow:0 0 0 3px #0b3433,0 0 0 5px #fff}
 .stepper button.kelar b{background:#fff;color:var(--ink)}
 body.hp .stepper span{display:none}
 body.hp .stepper button[aria-current=step] span{display:inline}
-.tanya-hero{font:500 clamp(28px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.03em;margin-top:18px;max-width:22ch}
+.tanya-hero{font:500 clamp(28px,4vw,44px)/1.08 var(--font-display);letter-spacing:-.03em;margin-top:18px;max-width:24ch}
 body.hp .tanya-hero{font-size:27px}
-.sub-hero{margin-top:10px;color:rgba(255,255,255,.86);max-width:58ch}
+.sub-hero{margin-top:10px;color:rgba(255,255,255,.88);max-width:60ch}
+.lembar{position:relative;margin-top:-30px;background:var(--krem);border-radius:36px 36px 30px 30px;padding:30px 28px 0;min-height:520px}
+body.hp .lembar{padding:24px 16px 0}
 
-.lembar{position:relative;margin-top:-30px;background:var(--krem);border-radius:36px 36px 0 0;padding:30px 28px 36px;min-height:520px}
-body.hp .lembar{padding:24px 16px 28px}
-
-/* kartu umum */
-.kartu{background:var(--kartu);border:1px solid var(--kartu-tepi);border-radius:24px;padding:20px;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.kartu{background:var(--kartu);border:1px solid var(--kartu-tepi);border-radius:24px;padding:20px}
 .judul-kecil{font:600 17px var(--font-sans);letter-spacing:-.01em}
-.tumpuk{display:flex;flex-direction:column;gap:16px}
-.pil{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;border:0;background:var(--primary);color:#fff;font:600 15px var(--font-sans);cursor:pointer}
-.pil:disabled{opacity:.35;cursor:not-allowed}
-.bar-bawah{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:26px;flex-wrap:wrap}
-
-/* pilihan kartu (radio) */
+.pil{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 22px;border-radius:999px;border:0;background:var(--primary);color:#fff;font:600 15px var(--font-sans);cursor:pointer;text-align:center}
 .pilihan{display:grid;gap:10px}
 .pilihan.dua{grid-template-columns:repeat(2,minmax(0,1fr))}
 body.hp .pilihan.dua{grid-template-columns:1fr}
-.opsi{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px 16px;border-radius:18px;border:1.5px solid var(--outline);background:#fff;cursor:pointer;font:500 15px var(--font-sans);transition:border-color .15s,background .15s}
-.opsi:hover{border-color:#9fb19b}
+.opsi{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px 16px;border-radius:18px;border:1.5px solid var(--outline);background:#fff;cursor:pointer;font:500 15px var(--font-sans)}
 .opsi small{display:block;color:var(--ink-muted);font-weight:400;font-size:13.5px;margin-top:2px}
-.opsi .titik{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--outline);flex:none;margin-top:1px;display:grid;place-items:center}
-.opsi[aria-checked=true]{border-color:var(--primary);background:#fff}
+.opsi .titik{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--outline);flex:none;margin-top:1px}
+.opsi[aria-checked=true]{border-color:var(--primary)}
 .opsi[aria-checked=true] .titik{border-color:var(--primary);background:var(--primary);box-shadow:inset 0 0 0 4px #fff}
-.cip{display:flex;flex-wrap:wrap;gap:8px}
-.cip button{border:1.5px solid var(--outline);background:#fff;border-radius:999px;padding:8px 14px;font:500 14px var(--font-sans);cursor:pointer;min-height:40px}
-.cip button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:#fff}
-
 .isian{display:flex;flex-direction:column;gap:6px}
 .isian>span{font-weight:600}
 .isian input{font:500 16px var(--font-sans);padding:11px 14px;border-radius:14px;border:1.5px solid var(--outline);background:#fff;min-height:46px;width:100%}
-.deret{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.jangkar{border-left:0;background:var(--surface);border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.seg{display:inline-flex;align-self:flex-start;background:var(--surface);border-radius:999px;padding:2px;flex-wrap:nowrap;white-space:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}
+.seg button{border:0;background:none;border-radius:999px;padding:6px 12px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink-muted);min-height:34px}
+.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14);font-weight:600}
+.seg.besar button{padding:9px 18px;font-size:15px;min-height:42px}
 
-/* layar keluarga: kanvas */
+/* kanvas */
 .kanvas{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:22px;align-items:start}
 body.hp .kanvas{grid-template-columns:1fr}
 @media(max-width:860px){.kanvas{grid-template-columns:1fr}}
@@ -93,133 +91,95 @@ body.hp .kanvas{grid-template-columns:1fr}
 body.hp .kol-pohon{position:static;order:-1}
 @media(max-width:860px){.kol-pohon{position:static;order:-1}}
 
-.penunjuk{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:20px;background:var(--primary);color:#fff}
-.penunjuk .angka{font:600 26px/1 var(--font-display);min-width:28px;text-align:center}
-.penunjuk .teks{flex:1;font-weight:500}
-.penunjuk .teks small{display:block;color:rgba(255,255,255,.75);font-weight:400}
-.penunjuk .tautan{color:#fff;white-space:nowrap}
-.penunjuk.beres{background:#dfeedd;color:var(--ink)}
-.penunjuk.beres .tautan{color:var(--ink)}
-.penenang{font-size:14px;color:var(--ink-muted);padding:0 4px}
-
-.kelompok{display:flex;flex-direction:column;gap:8px}
-.kepala-kel{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
-.kepala-kel h3{font:600 14px var(--font-sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)}
-.hitung{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--outline);border-radius:999px;padding:2px}
-.hitung button{width:34px;height:34px;border-radius:50%;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.ringkas{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:18px;background:#fff;border:1px solid var(--divider)}
+.ringkas .cek{width:26px;height:26px;border-radius:50%;background:var(--keturunan);display:grid;place-items:center;flex:none}
+.ringkas .cek .ik{width:15px;height:15px}
+.ringkas .isi{flex:1;min-width:0}
+.ringkas .isi b{display:block;font-weight:600}
+.ringkas .isi span{font-size:13.5px;color:var(--ink-muted)}
+.grup{background:#fff;border:1.5px solid var(--primary);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px}
+@media(prefers-reduced-motion:no-preference){.grup.masuk{animation:muncul .35s cubic-bezier(.2,.7,.2,1)}@keyframes muncul{from{opacity:0;transform:translateY(8px)}}}
+.grup .label{font:600 12.5px var(--font-sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)}
+.grup h2{font:500 21px/1.25 var(--font-display);letter-spacing:-.015em}
+.pengantar{font-size:14px;background:var(--surface);border-radius:14px;padding:10px 12px}
+.hitung-baris{display:flex;gap:12px 22px;flex-wrap:wrap}
+.hitung-baris label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px}
+.hitung{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--outline);border-radius:999px;padding:2px;align-self:flex-start}
+.hitung button{width:38px;height:38px;border-radius:50%;border:0;background:none;cursor:pointer;display:grid;place-items:center}
 .hitung button:hover{background:var(--surface)}
-.hitung b{min-width:26px;text-align:center;font-weight:700}
-.tanya-hitung{font-size:14px;color:var(--ink)}
+.hitung b{min-width:28px;text-align:center;font-weight:700}
 
-.orang{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;align-items:center;padding:12px 14px;background:#fff;border-radius:18px;border:1px solid var(--divider);transition:box-shadow .2s,border-color .2s}
-.orang.sorot{border-color:var(--aksen);box-shadow:0 0 0 3px var(--aksen-soft)}
-.ava{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font:700 14px var(--font-sans);grid-row:span 2}
+.orang{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 12px;align-items:start;padding:12px;background:var(--krem);border-radius:16px;border:1.5px solid transparent}
+.orang.kurang{border-color:var(--aksen)}
+body.hp .orang{grid-template-columns:minmax(0,1fr) auto;padding:10px}
+body.hp .orang .ava{display:none}
+body.hp .seg button{padding:6px 10px}
+.ava{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 13px var(--font-sans)}
 .ava.wafat{background:transparent!important;border:1.5px solid #9aa79a;color:var(--ink-muted)}
-.ava.tahu{background:transparent!important;border:1.5px dashed #8d9a8a;color:var(--ink-muted)}
-.nama-baris{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.nama-baris b{font-weight:600}
-.nama-baris .rel{font-size:13px;color:var(--ink-muted)}
-.lencana-kamu{font:600 11px var(--font-sans);background:var(--aksen-soft);color:#9a3b0c;border-radius:999px;padding:2px 8px}
-.status{display:flex;gap:6px;align-items:center;flex-wrap:wrap;grid-column:2}
-.seg{display:inline-flex;background:var(--surface);border-radius:999px;padding:2px}
-.seg button{border:0;background:none;border-radius:999px;padding:5px 11px;font:500 13px var(--font-sans);cursor:pointer;color:var(--ink-muted);min-height:32px}
-.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12);font-weight:600}
+.ava.kosong,.ava.tahu{background:transparent!important;border:1.5px dashed #8d9a8a;color:var(--ink-muted)}
+.kol-orang{display:flex;flex-direction:column;gap:8px;min-width:0}
+.nama-isi{font:600 15px var(--font-sans);border:0;border-bottom:1.5px dashed var(--outline);background:none;padding:2px 0;width:100%;max-width:260px}
+.nama-isi::placeholder{color:#5c655f;font-weight:500}
+.peran{font-size:13px;color:var(--ink-muted)}
+.lencana-kamu{font:600 11px var(--font-sans);background:var(--aksen-soft);color:var(--aksen-tua);border-radius:999px;padding:2px 8px;margin-left:6px}
+.salah{font-size:13px;color:var(--aksen-tua);font-weight:500}
 .tahun{display:inline-flex;align-items:center;gap:6px;font-size:13px}
-.tahun input{width:74px;font:500 14px var(--font-sans);padding:5px 8px;border-radius:10px;border:1.5px solid var(--outline);background:#fff}
-.catatan-orang{grid-column:2;font-size:13px;color:var(--ink-muted)}
-.cabang{grid-column:1/-1;margin-top:4px}
-.cabang>.tautan{display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-size:14px;padding:6px 0}
-.cabang>.tautan .ik{transition:transform .2s}
-.cabang>.tautan[aria-expanded=true] .ik{transform:rotate(90deg)}
-.lencana-cabang{font:500 12px var(--font-sans);border:1px dashed #8d9a8a;border-radius:999px;padding:1px 8px;color:var(--ink-muted)}
-.isi-cabang{margin:6px 0 2px 18px;padding-left:16px;border-left:2px solid var(--divider);display:flex;flex-direction:column;gap:14px}
-.dilewati{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink-muted);padding:10px 14px;border-radius:14px;background:var(--surface)}
+.tahun input{width:76px;font:500 14px var(--font-sans);padding:6px 8px;border-radius:10px;border:1.5px solid var(--outline);background:#fff}
+.tombol-menu{width:38px;height:38px;border-radius:50%;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.tombol-menu:hover{background:var(--surface-sunken)}
+.menu{position:absolute;z-index:5;background:#fff;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:6px;display:flex;flex-direction:column;min-width:220px}
+.menu button{border:0;background:none;text-align:left;padding:10px 12px;border-radius:10px;font:500 14px var(--font-sans);cursor:pointer}
+.menu button:hover{background:var(--surface)}
+.menu small{display:block;color:var(--ink-muted);font-size:12.5px}
+
+/* bar bawah: status + aksi utama berdampingan, menempel */
+.bar-bawah{position:sticky;bottom:0;margin:28px -28px 0;padding:14px 28px;background:rgba(246,242,233,.95);backdrop-filter:blur(8px);border-top:1px solid var(--divider);border-radius:0 0 30px 30px;display:flex;align-items:center;gap:14px;z-index:4}
+body.hp .bar-bawah{margin:24px -16px 0;padding:12px 16px;flex-wrap:wrap}
+.bar-bawah .status{flex:1;font-size:14px;color:var(--ink-muted);min-width:0}
+.bar-bawah .status b{color:var(--ink)}
+body.hp .bar-bawah .status{order:-1;flex-basis:100%}
+body.hp .bar-bawah .pil{flex:1}
 
 /* pohon */
 .kartu-pohon{padding:14px}
 .kartu-pohon svg{display:block;width:100%;height:auto}
-.pohon-penuh{display:none}
-/* HP: pita ringkas di atas daftar (generasi yang sedang diisi), pohon lengkap lewat tautan */
-body.hp .kartu-pohon:not(.penuh) .bungkus-pohon{max-height:150px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
-body.hp .kartu-pohon:not(.penuh) svg{width:150%;margin-left:-25%;margin-top:-60px}
-body.hp .pohon-penuh{display:inline;font-size:13px}
-.kaki-pohon{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink-muted);padding:6px 6px 0}
+.kaki-pohon{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink-muted);padding:6px 6px 0;align-items:center}
 .kaki-pohon i{display:inline-block;width:12px;height:12px;border-radius:50%;vertical-align:-2px;margin-right:4px}
-.n rect{transition:fill .3s,stroke .3s}
 .n text{font:600 12px var(--font-sans);fill:var(--ink)}
 .n .sub{font:400 10.5px var(--font-sans);fill:var(--ink-muted)}
-.n.wafat rect{fill:#fff;stroke:#9aa79a;stroke-width:1.2}
-.n.wafat text{fill:var(--ink-muted)}
-.n.tahu rect{fill:#fff;stroke:#7f8c7c;stroke-dasharray:4 3;stroke-width:1.3}
-.n.lipat rect{fill:#fff;stroke:#7f8c7c;stroke-dasharray:4 3}
+.n.wafat rect{fill:#fff;stroke:#9aa79a}
+.n.kosong rect,.n.tahu rect{fill:#fff;stroke:#7f8c7c;stroke-dasharray:4 3}
+.n.pemilik rect{stroke:var(--ink);stroke-width:2;stroke-dasharray:none}
 .n.sorot rect{stroke:var(--aksen);stroke-width:2.5;stroke-dasharray:none}
-.n.pemilik rect{stroke:var(--ink);stroke-width:2}
 .garis{stroke:#9fb19b;stroke-width:1.5;fill:none}
-@media(prefers-reduced-motion:no-preference){
-  .n.baru{animation:muncul .45s cubic-bezier(.2,.7,.2,1) both}
-  @keyframes muncul{from{opacity:0;transform:translateY(-8px)}}
-  .orang.baru{animation:muncul .4s cubic-bezier(.2,.7,.2,1) both}
-  .n.sorot rect{animation:denyut 1.6s ease-in-out infinite}
-  @keyframes denyut{50%{stroke-width:4}}
-}
+.pohon-kosong{font-size:14px;color:var(--ink-muted);text-align:center;padding:24px 10px 8px}
+.pohon-penuh{display:none!important}
+body.hp .kartu-pohon:not(.penuh) .bungkus-pohon{max-height:150px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+body.hp .pohon-penuh{display:inline-flex!important}
 
-/* dialog antrean */
+/* dialog */
 .latar{position:fixed;inset:0;background:rgba(10,30,28,.45);display:grid;place-items:end center;padding:16px;z-index:9}
 @media(min-width:700px){.latar{place-items:center}}
-/* desktop: dialog di kolom kiri supaya simpul yang ditanyakan tetap terlihat menyala di pohon */
-@media(min-width:900px){body:not(.hp) .latar{place-items:center start;padding-left:max(24px,calc((100vw - 1240px)/2 + 28px));background:linear-gradient(90deg,rgba(10,30,28,.5) 55%,rgba(10,30,28,.08))}
-  body:not(.hp) .dialog{width:min(520px,52vw)}}
-.dialog{width:min(560px,100%);background:var(--krem);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-@media(prefers-reduced-motion:no-preference){.dialog{animation:naik .35s cubic-bezier(.2,.7,.2,1)}@keyframes naik{from{transform:translateY(24px);opacity:0}}}
-.dialog .atas{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--ink-muted)}
-.titik-maju{display:flex;gap:5px}
-.titik-maju i{width:22px;height:5px;border-radius:3px;background:var(--outline)}
-.titik-maju i.isi{background:var(--primary)}
+@media(min-width:900px){body:not(.hp) .latar{place-items:center start;padding-left:max(24px,calc((100vw - 1240px)/2 + 28px));background:linear-gradient(90deg,rgba(10,30,28,.5) 55%,rgba(10,30,28,.08))}}
+.dialog{width:min(520px,100%);background:var(--krem);border-radius:28px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
 .dialog h2{font:500 24px/1.18 var(--font-display);letter-spacing:-.02em}
-.alasan{display:flex;gap:8px;align-items:flex-start;font-size:14px;background:var(--aksen-soft);border-radius:14px;padding:10px 12px}
-.tutup{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-sunken);cursor:pointer;display:grid;place-items:center}
+.tutup{width:40px;height:40px;border-radius:50%;border:0;background:var(--surface-sunken);cursor:pointer;display:grid;place-items:center;align-self:flex-end;margin-bottom:-12px}
 
 /* periksa */
-.cerita{display:grid;grid-template-columns:72px minmax(0,1fr);gap:0}
-.cerita .th{font:600 14px var(--font-sans);color:var(--ink-muted);padding:12px 0;border-top:1px solid var(--divider)}
-.cerita .ps{padding:12px 0;border-top:1px solid var(--divider)}
-.cerita .ps .tautan{font-size:13px;margin-left:6px}
-.cerita .th.kini,.cerita .ps.kini{font-weight:600;color:var(--ink)}
+.cerita{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:0}
+.cerita>*{padding:12px 0;border-top:1px solid var(--divider)}
+.cerita .th{font-weight:600;color:var(--ink-muted)}
+.cerita .geser{display:flex;gap:4px}
+.cerita .geser button{width:34px;height:34px;border-radius:50%;border:1px solid var(--outline);background:#fff;cursor:pointer;display:grid;place-items:center}
+.cerita .geser button:disabled{opacity:.3;cursor:default}
 .belum{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--divider);flex-wrap:wrap}
 .wa{white-space:pre-wrap;font-size:14px;background:#fff;border:1px solid var(--divider);border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:440px}
 
 /* hasil */
-.pita{display:flex;height:18px;border-radius:999px;overflow:hidden;gap:2px}
-.pita span{display:block}
 .baris-hasil{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--divider)}
-.baris-hasil .kiri{display:flex;gap:10px;align-items:center;min-width:0}
+.baris-hasil .kiri{display:flex;gap:10px;align-items:center}
 .baris-hasil i{width:12px;height:12px;border-radius:4px;flex:none}
-.baris-hasil b{font-weight:600}
 .baris-hasil .kanan{text-align:right;white-space:nowrap}
-.dua-kol{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
-body.hp .dua-kol{grid-template-columns:1fr}
-@media(max-width:860px){.dua-kol{grid-template-columns:1fr}}
-.aliran .alir{stroke:var(--aksen);stroke-width:2.5;fill:none;stroke-dasharray:6 6}
-@media(prefers-reduced-motion:no-preference){.aliran .alir{animation:alir 1.2s linear infinite}@keyframes alir{to{stroke-dashoffset:-24}}}
-.gelombang{display:flex;gap:6px;flex-wrap:wrap}
-.gelombang button{border:1.5px solid var(--outline);background:#fff;border-radius:999px;padding:6px 12px;font:600 13px var(--font-sans);cursor:pointer}
-.gelombang button[aria-pressed=true]{background:var(--primary);color:#fff;border-color:var(--primary)}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--primary);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;z-index:10}
-
-/* revisi 2: jangkar diri, kenapa, kartu bertahap, mode lanjutan, tahap pembagian */
-.spanduk{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap;padding:12px 16px;border-radius:18px;background:#fff;border:1px solid var(--divider);font-size:14px}
-.spanduk.aktif{border-color:var(--aksen);box-shadow:0 0 0 3px var(--aksen-soft)}
-.ini-saya{grid-column:2;justify-self:start;border:1.5px solid var(--aksen);background:var(--aksen-soft);color:#7a2e08;border-radius:999px;padding:6px 14px;font:600 13px var(--font-sans);cursor:pointer;min-height:36px}
-.kenapa{font-size:13.5px;color:var(--ink-muted);background:var(--surface);border-radius:12px;padding:8px 12px}
-.bertahap{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:18px;background:#fff;border:1.5px solid var(--outline)}
-.bertahap .ikon-bulat{width:34px;height:34px;border-radius:50%;background:var(--keturunan);display:grid;place-items:center;flex:none}
-.urutan-wafat{display:flex;flex-direction:column;gap:6px;counter-reset:u}
-.urutan-wafat li{list-style:none;display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--divider);border-radius:14px;padding:8px 10px}
-.urutan-wafat li::before{counter-increment:u;content:counter(u);width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;display:grid;place-items:center;font:700 12px var(--font-sans);flex:none}
-.urutan-wafat li span{flex:1}
-.urutan-wafat button{width:34px;height:34px;border-radius:50%;border:1px solid var(--outline);background:#fff;cursor:pointer;display:grid;place-items:center}
-.urutan-wafat button:disabled{opacity:.3;cursor:default}
-.tanggal{font:500 13px var(--font-sans);padding:5px 8px;border-radius:10px;border:1.5px solid var(--outline);background:#fff}
 .tab-tahap{display:flex;gap:6px;flex-wrap:wrap}
 .tab-tahap button{border:1.5px solid var(--outline);background:#fff;border-radius:999px;padding:7px 14px;font:600 13.5px var(--font-sans);cursor:pointer;min-height:40px}
 .tab-tahap button[aria-pressed=true]{background:var(--primary);border-color:var(--primary);color:#fff}
@@ -227,9 +187,10 @@ body.hp .dua-kol{grid-template-columns:1fr}
 body.hp .isi-tahap{grid-template-columns:1fr}
 @media(max-width:860px){.isi-tahap{grid-template-columns:1fr}}
 .dibagi{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;background:var(--surface);font-weight:600}
-.lanjut-tahap{font:500 12px var(--font-sans);color:#7a2e08;background:var(--aksen-soft);border-radius:999px;padding:1px 8px;margin-left:6px;white-space:nowrap}
-.istilah{font-size:13px;color:var(--ink-muted)}
-.istilah b{font-weight:600;color:var(--ink)}
+.lanjut-tahap{font:500 12px var(--font-sans);color:var(--aksen-tua);background:var(--aksen-soft);border-radius:999px;padding:1px 8px;margin-left:6px;white-space:nowrap}
+.alir{stroke:var(--aksen);stroke-width:2.5;fill:none;stroke-dasharray:6 6}
+@media(prefers-reduced-motion:no-preference){.alir{animation:alir 1.2s linear infinite}@keyframes alir{to{stroke-dashoffset:-24}}}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--primary);color:#fff;padding:10px 18px;border-radius:999px;font-size:14px;z-index:10;max-width:90vw}
 </style>
 </head>
 <body>
@@ -237,25 +198,21 @@ body.hp .isi-tahap{grid-template-columns:1fr}
   <symbol id="i-min" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
   <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
   <symbol id="i-kanan" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+  <symbol id="i-atas" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
+  <symbol id="i-bawah" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
   <symbol id="i-cek" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-pensil" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4Z"/></symbol>
+  <symbol id="i-titik" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></symbol>
   <symbol id="i-pesan" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></symbol>
-  <symbol id="i-penting" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3Z"/><path d="M12 10v4M12 17h.01"/></symbol>
+  <symbol id="i-pohon" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="5" rx="1"/><rect x="3" y="16" width="6" height="5" rx="1"/><rect x="15" y="16" width="6" height="5" rx="1"/><path d="M12 8v4M6 16v-4h12v4"/></symbol>
 </svg>
 
 <div class="meta">
-  <b>Mockup kanvas silsilah</b>
-  <span>Contoh:</span>
-  <div class="saklar" id="pilihContoh">
-    <button aria-pressed="true" data-sk="A">Kakek · turun-temurun</button>
-    <button aria-pressed="false" data-sk="B">Kakak · baru wafat</button>
-  </div>
-  <div class="saklar" id="pilihLebar">
-    <button aria-pressed="true" data-lebar="desktop">Desktop</button>
-    <button aria-pressed="false" data-lebar="hp">HP</button>
-  </div>
-  <span class="redup">Semua bisa diklik. Angka di Hasil = contoh hitung tangan (ibu Mbah wafat lebih dulu; Mbah Sumi wafat di antara Mbah Karto dan Budi).</span>
+  <b>Mockup v3 · kanvas silsilah</b>
+  <div class="saklar" id="pilihContoh"><button aria-pressed="true" data-sk="A">Kakek · turun-temurun</button><button aria-pressed="false" data-sk="B">Kakak · baru wafat</button></div>
+  <div class="saklar" id="pilihIsi"><button aria-pressed="true" data-isi="kosong">Mulai kosong</button><button aria-pressed="false" data-isi="contoh">Isi contoh</button></div>
+  <div class="saklar" id="pilihLebar"><button aria-pressed="true" data-lebar="desktop">Desktop</button><button aria-pressed="false" data-lebar="hp">HP</button></div>
 </div>
 
 <div class="bingkai">
@@ -268,432 +225,454 @@ body.hp .isi-tahap{grid-template-columns:1fr}
   <main class="lembar" id="lembar"></main>
 </div>
 <div id="lapisan"></div>
-
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-min" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
-  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-  <symbol id="i-kanan" viewBox="0 0 24 24"><path d="m9 6 6 6-6 6"/></symbol>
-  <symbol id="i-atas" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6"/></symbol>
-  <symbol id="i-bawah" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
-  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
-  <symbol id="i-cek" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
-  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
-  <symbol id="i-pesan" viewBox="0 0 24 24"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12Z"/></symbol>
-  <symbol id="i-tangga" viewBox="0 0 24 24"><path d="M4 20h5v-5h5v-5h5V5"/></symbol>
-  <symbol id="i-orang" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
-</svg>
+<div id="wadahMenu"></div>
 
 <script>
-// MOCKUP revisi 2 (2026-10-14). Prinsip: halaman isian hanya memuat fakta yang diisi pengguna dan apa yang perlu diisi;
-// siapa dapat / siapa terhalang baru di Hasil (alasan lewat tautan "Kenapa?"). Mode dasar vs lanjutan = kedalaman isian.
-const WARNA = { pasangan:'var(--pasangan)', keturunan:'var(--keturunan)', leluhur:'var(--leluhur)', saudara:'var(--saudara)' };
+const WARNA={pasangan:'var(--pasangan)',keturunan:'var(--keturunan)',leluhur:'var(--leluhur)',saudara:'var(--saudara)'};
+const NAMA = id => D.orang[id] ? (D.orang[id].nama || D.orang[id].peran || 'Almarhum') : '';
 
-function contohA(){
+// ---------- data ----------
+function awal(sk){
   return {
-    pemilik:'karto', namaPemilik:'Mbah Karto', tahunPemilik:'1975', kira:true, pintu:null,
-    orang:{
-      ayahK:{nama:'Ayah Mbah Karto', kel:'leluhur', status:'wafat', tahun:'', lanjut:true},
-      ibuK:{nama:'Ibu Mbah Karto', kel:'leluhur', status:'tahu'},
-      karto:{nama:'Mbah Karto', kel:'pemilik', status:'wafat', tahun:'±1975'},
-      sumi:{nama:'Mbah Sumi', kel:'pasangan', status:'wafat', tahun:''},
-      slamet:{nama:'Slamet', kel:'keturunan', status:'wafat', tahun:'±1970'},
-      budi:{nama:'Budi', kel:'keturunan', status:'wafat', tahun:'1998', cabang:true},
-      rina:{nama:'Rina', kel:'keturunan', status:'hidup'},
-      dewi:{nama:'Dewi', kel:'pasangan', status:'hidup'},
-      andi:{nama:'Andi', kel:'keturunan', status:'hidup'},
-      sari:{nama:'Sari', kel:'keturunan', status:'hidup'},
-      joko:{nama:'Joko', kel:'keturunan', status:'hidup', lanjut:true},
-    },
-    rel:{ ayahK:'ayah Mbah Karto', ibuK:'ibu Mbah Karto', karto:'', sumi:'istri', slamet:'anak', budi:'anak', rina:'anak', dewi:'istri Budi', andi:'anak Budi', sari:'anak Budi', joko:'anak Slamet' },
-    relSaya:{ andi:{ ayahK:'kakek buyutmu', ibuK:'nenek buyutmu', karto:'kakekmu', sumi:'nenekmu', slamet:'pamanmu', budi:'ayahmu', rina:'bibimu', dewi:'ibumu', andi:'kamu', sari:'saudarimu', joko:'sepupumu' } },
-    anak:['slamet','budi','rina'], tambahan:0, cabangBuka:{}, urutan:['karto','sumi','budi'],
-    antrean:[
-      {id:'ibu', orang:'ibuK', judul:'Waktu Mbah Karto wafat (±1975), apakah ibunya masih hidup?',
-       kenapa:'Ibu almarhum bisa mendapat bagian bila masih hidup saat itu.',
-       opsi:[['hidup','Masih hidup'],['wafat','Sudah wafat lebih dulu']]},
-      {id:'urut1', orang:'sumi', judul:'Mbah Sumi wafat sebelum atau sesudah Mbah Karto (±1975)?',
-       kenapa:'Pasangan hanya mewarisi bila masih hidup saat almarhum wafat.',
-       opsi:[['sebelum','Sebelum Mbah Karto'],['sesudah','Sesudah Mbah Karto'],['sama','Bersamaan, atau tidak tahu']]},
-      {id:'urut2', orang:'sumi', judul:'Mbah Sumi wafat sebelum atau sesudah Budi (1998)?', syarat:'urut1',
-       kenapa:'Menentukan apakah Budi ikut menerima dari Mbah Sumi.',
-       opsi:[['sebelum','Sebelum Budi'],['sesudah','Sesudah Budi'],['sama','Bersamaan, atau tidak tahu']]},
-    ],
-    jawab:{}, tunda:[], saya:null, pilihSaya:false, mode:'dasar', bertahapTutup:false, kenapaBuka:{},
+    sk, pemilik:'p', pintu:null, jkDipilih:false, buka:null, tandai:null, saya:null, tetapIsi:{}, jawab:{}, tunda:[], tampilPeriksa:'cerita', urutanManual:null,
+    orang:{ p:{nama:sk==='A'?'Mbah Karto':'Budi', jk:'L', status:'wafat', tahun:sk==='A'?'±1975':'2023', kel:'pemilik', peran:''} },
+    grupJawab:{}, anggota:{},
   };
 }
-function contohB(){
-  return {
-    pemilik:'budi', namaPemilik:'Budi', tahunPemilik:'2023', kira:false, pintu:null,
-    orang:{
-      ayah:{nama:'Ayah', kel:'leluhur', status:'wafat', tahun:'2010'},
-      ibu:{nama:'Ibu', kel:'leluhur', status:'hidup'},
-      budi:{nama:'Budi', kel:'pemilik', status:'wafat', tahun:'2023'},
-      andi:{nama:'Andi', kel:'saudara', status:'hidup'},
-      rina:{nama:'Rina', kel:'saudara', status:'hidup'},
-    },
-    rel:{ ayah:'ayah Budi', ibu:'ibu Budi', budi:'', andi:'saudara Budi', rina:'saudari Budi' },
-    relSaya:{ andi:{ ayah:'ayahmu', ibu:'ibumu', budi:'kakakmu', andi:'kamu', rina:'saudarimu' } },
-    menikah:false, anak:[], saudara:['andi','rina'], tambahan:0, cabangBuka:{}, urutan:['budi'],
-    antrean:[], jawab:{}, tunda:[], saya:null, pilihSaya:false, mode:'dasar', kenapaBuka:{},
+let D=awal('A'), layar=1, dialog=null, tahap=1, grupTerakhir=null;  // grupTerakhir: animasi masuk hanya saat kelompok berganti
+
+// ---------- kelompok (wawancara) ----------
+// Urutan per orang: pasangan → anak → orang tua → (kakek/nenek bila orang tua wafat) → (saudara bila tak ada anak lk & ayah wafat).
+// Mockup: syarat "perlu ditanya" ditulis tangan; di produk diputuskan engine lewat uji hipotetis.
+function grupList(){
+  const G=[], o=D.orang, P=D.pemilik;
+  const untuk=(m, cabang)=>{
+    if (!cabang || cabang==='anak') G.push({id:'pas:'+m, milik:m, jenis:'pasangan'});
+    G.push(cabang==='pasangan' ? {id:'bersama:'+m, milik:m, jenis:'anakBersama'} : {id:'anak:'+m, milik:m, jenis:'anak'});
+    if (!cabang || cabang==='pasangan') G.push({id:'ot:'+m, milik:m, jenis:'orangTua'});
+    if (!cabang){
+      const ayah=o['ayah:'+m], ibu=o['ibu:'+m];
+      if (ayah?.status==='wafat' || ibu?.status==='wafat') G.push({id:'kn:'+m, milik:m, jenis:'kakekNenek'});
+      const anakLk=(D.anggota['anak:'+m]||[]).some(id=>o[id].jk==='L' && (o[id].status==='hidup' || o[id].waktu==='sesudah'));
+      const anakDijawab=D.grupJawab['anak:'+m]?.punya!=null;
+      if ((anakDijawab && !anakLk && ayah?.status==='wafat') || D.tetapIsi[m]) G.push({id:'sdr:'+m, milik:m, jenis:'saudara'});
+    }
   };
+  untuk(P);
+  // yang wafat sesudah pemilik dan sebelum harta dibagi → keluarganya ditanyakan (cabang)
+  [...(D.anggota['pas:'+P]||[]).map(id=>[id,'pasangan']), ...(D.anggota['anak:'+P]||[]).map(id=>[id,'anak'])]
+    .filter(([id])=>o[id]?.status==='wafat' && o[id].waktu==='sesudah').forEach(([id,c])=>untuk(id,c));
+  return G;
 }
-let sk='A', D=contohA(), layar=1, dialog=null, tahap=1;
+const awalCabang = g => g.milik!==D.pemilik && grupList().find(x=>x.milik===g.milik)?.id===g.id;
+function judulGrup(g){
+  const m=NAMA(g.milik);
+  return {pasangan:`${D.orang[g.milik].jk==='L'?'Istri':'Suami'} ${m}`, anak:`Anak ${m}`, orangTua:`Orang tua ${m}`, kakekNenek:`Kakek dan nenek ${m}`, saudara:`Saudara ${m}`, anakBersama:`Anak ${m}`}[g.jenis];
+}
+function barisTetap(g){
+  // orang tua & kakek/nenek: barisnya tetap (tanpa hitung)
+  const m=g.milik, n=NAMA(m);
+  if (g.jenis==='orangTua') return [['ayah:'+m,'L',`Ayah ${n}`],['ibu:'+m,'P',`Ibu ${n}`]];
+  if (g.jenis==='kakekNenek'){
+    const r=[];
+    if (D.orang['ayah:'+m]?.status==='wafat') r.push(['kakek:'+m,'L','Kakek (ayah dari ayah)']);
+    if (D.orang['ibu:'+m]?.status==='wafat') r.push(['nenekI:'+m,'P','Nenek (ibu dari ibu)'],['nenekA:'+m,'P','Nenek (ibu dari ayah)']);
+    return r;
+  }
+  return null;
+}
+function pastikanAnggota(g){
+  const t=barisTetap(g); if(!t) return;
+  D.anggota[g.id]=t.map(([id,jk,peran])=>{ if(!D.orang[id]) D.orang[id]={nama:'',jk,status:null,peran,kel:'leluhur',relatif:g.milik}; return id; });
+}
+let urutBaru=0;
+function aturJumlah(g, jk, n){
+  // + menambah baris kosong; − hanya membuang baris kosong. Orang yang sudah diisi dihapus lewat menu barisnya.
+  const ids=D.anggota[g.id]||(D.anggota[g.id]=[]); const sama=ids.filter(id=>D.orang[id].jk===jk);
+  if (n>sama.length){ for(let i=sama.length;i<n;i++){ const id=`${g.id}:${jk}${++urutBaru}`;
+      D.orang[id]={nama:'',jk,status:null,peran:labelBaru(g,jk,i+1),kel:g.jenis==='pasangan'?'pasangan':g.jenis==='saudara'?'saudara':'keturunan',relatif:g.milik}; ids.push(id);} return true; }
+  const kosong=[...sama].reverse().find(id=>!D.orang[id].nama && D.orang[id].status==null);
+  if (!kosong){ toast('Orang yang sudah diisi dihapus lewat menu ⋯ di barisnya.'); return false; }
+  D.anggota[g.id]=ids.filter(x=>x!==kosong); delete D.orang[kosong]; return true;
+}
+function labelBaru(g,jk,i){
+  if (g.jenis==='pasangan') return D.orang[g.milik].jk==='L'?`Istri ${i}`:'Suami';
+  return `${{anak:jk==='L'?'Anak laki-laki':'Anak perempuan', saudara:jk==='L'?'Saudara laki-laki':'Saudara perempuan'}[g.jenis]} ${i}`;
+}
+const tahunAngka = s => parseInt(String(s||'').replace(/\D/g,''),10) || null;
+const barisLengkap = id => { const o=D.orang[id]; return !!o.status && (o.status!=='wafat' || !!o.waktu); };
+function grupLengkap(g){
+  const j=D.grupJawab[g.id]||{}, ids=D.anggota[g.id]||[];
+  if (g.jenis==='anakBersama') return j.punya!=null;
+  if (barisTetap(g)) return ids.length>0 && ids.every(barisLengkap);
+  if (j.punya==null) return false;
+  return j.punya===false || (ids.length>0 && ids.every(barisLengkap));
+}
+const kurangDi = g => (D.anggota[g.id]||[]).filter(id=>!barisLengkap(id)).length;
 
-const rel = id => (D.saya && D.relSaya[D.saya]?.[id]) ?? D.rel[id] ?? '';
-const nama = id => D.orang[id].nama;
-const lanjutan = () => D.mode==='lanjutan';
+// antrean urutan: dua almarhum sesudah pemilik yang tidak bisa diurutkan dari tahunnya
+function antrean(){
+  const o=D.orang, P=D.pemilik;
+  const sesudah=Object.keys(o).filter(id=>id!==P && o[id].relatif===P && o[id].status==='wafat' && o[id].waktu==='sesudah');
+  const tanpaTahun=sesudah.filter(id=>!tahunAngka(o[id].tahun));
+  if (sesudah.length<2 || !tanpaTahun.length || 'urut' in D.jawab || D.tunda.includes('urut')) return [];
+  const a=tanpaTahun[0], b=sesudah.find(x=>x!==a);
+  return [{id:'urut', orang:a, judul:`${NAMA(a)} wafat sebelum atau sesudah ${NAMA(b)}${o[b].tahun?' ('+o[b].tahun+')':''}?`,
+    kenapa:`Menentukan apakah ${NAMA(b)} ikut menerima bagian dari ${NAMA(a)}. Kalau tahun wafat ${NAMA(a)} diisi, pertanyaan ini tidak perlu.`,
+    opsi:[['sebelum',`Sebelum ${NAMA(b)}`],['sesudah',`Sesudah ${NAMA(b)}`],['sama','Bersamaan, atau tidak tahu']]}];
+}
 
-// ---------- hero & stepper ----------
-const LANGKAH = ['Almarhum','Harta','Keluarga','Periksa','Hasil'];
+// ---------- hero ----------
+const LANGKAH=['Almarhum','Harta','Keluarga','Periksa','Hasil'];
 function gambarHero(){
   const st=document.getElementById('stepper');
   st.innerHTML=LANGKAH.map((n,i)=>`<button ${i+1===layar?'aria-current="step"':''} class="${i+1<layar?'kelar':''}" data-ke="${i+1}"><b>${i+1}</b><span>${n}</span></button>`).join('');
   st.querySelectorAll('button').forEach(b=>b.onclick=()=>ke(+b.dataset.ke));
-  const sebut = D.saya && rel(D.pemilik) ? `${rel(D.pemilik)}, ${D.namaPemilik}` : D.namaPemilik;
-  const H = {
-    1:['Siapa yang wafat dan meninggalkan harta?','Mulai dari yang kamu ingat. Yang belum pasti boleh dikira-kira.'],
+  const n=NAMA(D.pemilik);
+  const H={1:['Siapa yang wafat dan meninggalkan harta?','Mulai dari yang kamu ingat. Yang belum pasti boleh dikira-kira.'],
     2:['Harta apa yang ditinggalkan?','Langkah ini tidak berubah di konsep ini.'],
-    3:[`Keluarga ${sebut} waktu beliau wafat`, lanjutan()?'Mode lanjutan: semua kelompok terbuka, tanggal dan urutan diatur sendiri.':'Isi yang kamu tahu. Sisanya kita tanyakan seperlunya.'],
-    4:['Benar begini ceritanya?','Baca sekali. Kalau ada yang keliru, ketuk "ubah".'],
-    5:[`Pembagian harta ${D.namaPemilik}`, sk==='A'?'Rumah peninggalan · Rp 1.200.000.000':'Tabungan · Rp 300.000.000'],
-  }[layar];
-  document.getElementById('tanyaHero').textContent=H[0];
-  document.getElementById('subHero').textContent=H[1];
+    3:[`Keluarga ${n}`,'Satu bagian per kali. Yang sudah diisi bisa diubah kapan saja.'],
+    4:['Benar begini ceritanya?','Baca sekali. Kalau ada yang keliru, ubah di sini atau kembali ke Keluarga.'],
+    5:[`Pembagian harta ${n}`, D.sk==='A'?'Rumah peninggalan · Rp 1.200.000.000':'Tabungan · Rp 300.000.000']}[layar];
+  document.getElementById('tanyaHero').textContent=H[0]; document.getElementById('subHero').textContent=H[1];
 }
-function ke(n){ layar=n; gambar(); window.scrollTo({top:0}); }
+function ke(n){ layar=n; D.tandai=null; gambar(); window.scrollTo({top:0}); }
+function barBawah(label, id, status){
+  return `<div class="bar-bawah">${layar>1?'<button class="tautan" id="kembali">Kembali</button>':''}<span class="status" role="status" aria-live="polite">${status||''}</span><button class="pil" id="${id}">${label}</button></div>`;
+}
 
 // ---------- 1. Almarhum ----------
 function layarAlmarhum(){
+  const p=D.orang[D.pemilik], t=D.tandai==='awal';
   const pintu=[['baru','Belum, baru saja wafat','Biasanya beberapa bulan terakhir.'],['lama','Belum, sudah bertahun-tahun','Misalnya rumah yang masih ditempati keluarga.'],['sudah','Sudah pernah dibagi','Bagiannya sudah dihitung dan diserahkan ke masing-masing.'],['tahu','Tidak tahu','Kita tanyakan keadaan tiap orang, supaya aman.']];
+  const kurang=[!D.jkDipilih,!D.pintu].filter(Boolean).length;
   return `<div class="tumpuk" style="max-width:720px">
     <section class="kartu tumpuk">
-      <label class="isian"><span>Nama almarhum</span><input id="namaPemilik" value="${D.namaPemilik}"></label>
-      <div class="isian"><span>Kira-kira tahun berapa ${D.namaPemilik} wafat?</span>
-        <div class="deret"><input style="max-width:120px" inputmode="numeric" value="${D.tahunPemilik}">
-          <div class="seg" id="kira"><button aria-pressed="${!D.kira}">Pasti</button><button aria-pressed="${D.kira}">Kira-kira</button></div></div>
-        <p class="kecil redup">Tidak ingat? Kosongkan saja. Yang penting nanti siapa wafat lebih dulu, bukan tanggalnya.</p></div>
+      <label class="isian"><span>Nama almarhum</span><input id="namaPemilik" value="${p.nama}"></label>
+      <div class="isian" id="isianJk"><span>Laki-laki atau perempuan?</span>
+        <div class="seg besar" id="jkPemilik" role="radiogroup"><button aria-pressed="${D.jkDipilih&&p.jk==='L'}" data-v="L">Laki-laki</button><button aria-pressed="${D.jkDipilih&&p.jk==='P'}" data-v="P">Perempuan</button></div>
+        ${t&&!D.jkDipilih?'<span class="salah">Pilih laki-laki atau perempuan.</span>':''}</div>
+      <label class="isian"><span>Kira-kira tahun berapa ${p.nama} wafat? <span class="redup" style="font-weight:400">Boleh kosong.</span></span>
+        <input style="max-width:140px" value="${p.tahun}" id="tahunPemilik" placeholder="mis. 1975"></label>
     </section>
     <section class="kartu tumpuk">
-      <h2 class="judul-kecil">Sejak ${D.namaPemilik} wafat, apakah hartanya sudah dibagi?</h2>
-      <div class="pilihan dua" role="radiogroup" id="pintu">${pintu.map(([k,t,x])=>`<button class="opsi" role="radio" aria-checked="${D.pintu===k}" data-k="${k}"><span class="titik"></span><span>${t}<small>${x}</small></span></button>`).join('')}</div>
-      ${D.pintu==='sudah'?`<p class="dilewati"><svg class="ik"><use href="#i-info"/></svg>Kalau sudah dibagi seluruhnya, yang perlu dihitung adalah harta orang yang wafat sesudahnya. Kalau baru sebagian, kami belum bisa menghitungnya otomatis; tanyakan ke ahli faraidh.</p>`:''}
+      <h2 class="judul-kecil">Sejak ${p.nama} wafat, apakah hartanya sudah dibagi?</h2>
+      <div class="pilihan dua" role="radiogroup" id="pintu">${pintu.map(([k,tx,x])=>`<button class="opsi" role="radio" aria-checked="${D.pintu===k}" data-k="${k}"><span class="titik"></span><span>${tx}<small>${x}</small></span></button>`).join('')}</div>
+      ${t&&!D.pintu?'<span class="salah">Pilih salah satu. Sengaja tanpa jawaban bawaan supaya tidak terlewat.</span>':''}
+      ${D.pintu==='sudah'?'<p class="pengantar">Kalau sudah dibagi seluruhnya, yang perlu dihitung adalah harta orang yang wafat sesudahnya. Kalau baru sebagian, kami belum bisa menghitungnya otomatis; tanyakan ke ahli faraidh.</p>':''}
     </section>
-    <div class="bar-bawah"><a class="tautan">Kembali</a><button class="pil" id="lanjut1" ${D.pintu?'':'disabled'}>Lanjut</button></div>
-    ${D.pintu?'':'<p class="kecil redup" style="text-align:right;margin-top:-16px">Jawab dulu pertanyaan "sudah dibagi". Tidak ada jawaban bawaan supaya tidak terlewat.</p>'}
+    ${barBawah('Lanjut: Harta','lanjut1', t&&kurang?`<b>${kurang} pertanyaan</b> belum dijawab.`:'')}
   </div>`;
 }
 function pasangAlmarhum(){
-  document.getElementById('namaPemilik').oninput=e=>{D.namaPemilik=e.target.value||'Almarhum';D.orang[D.pemilik].nama=D.namaPemilik;};
-  document.querySelectorAll('#kira button').forEach((b,i)=>b.onclick=()=>{D.kira=i===1;gambar();});
+  document.getElementById('namaPemilik').oninput=e=>{D.orang[D.pemilik].nama=e.target.value||'Almarhum';};
+  document.getElementById('tahunPemilik').oninput=e=>{D.orang[D.pemilik].tahun=e.target.value;};
+  document.querySelectorAll('#jkPemilik button').forEach(b=>b.onclick=()=>{D.orang[D.pemilik].jk=b.dataset.v;D.jkDipilih=true;gambar();});
   document.querySelectorAll('#pintu .opsi').forEach(b=>b.onclick=()=>{D.pintu=b.dataset.k;gambar();});
-  document.getElementById('lanjut1').onclick=()=>ke(3);
+  document.getElementById('lanjut1').onclick=()=>{ if(!D.jkDipilih||!D.pintu){D.tandai='awal';gambar();document.querySelector('.salah')?.scrollIntoView({behavior:'smooth',block:'center'});return;} ke(2); };
 }
 
 // ---------- 3. Keluarga ----------
-const berlaku = q => !q.syarat || D.jawab[q.syarat]==='sesudah' || !(q.syarat in D.jawab);
-const sisaAntrean = () => lanjutan() && sk==='A' ? [] : D.antrean.filter(q=>berlaku(q) && !(q.id in D.jawab) && !D.tunda.includes(q.id));
-const kenapa = (kunci, teks) => `<button class="tautan kecil" data-kenapa="${kunci}">Kenapa?</button>${D.kenapaBuka[kunci]?`<p class="kenapa">${teks}</p>`:''}`;
-
 function barisOrang(id){
-  const o=D.orang[id], st=o.status, inisial=o.nama.split(' ').map(x=>x[0]).join('').slice(0,2);
-  const cabang = o.cabang && st==='wafat';
-  const tglInput = lanjutan()
-    ? `<label class="tahun">wafat <input class="tanggal" placeholder="hh/bb/tttt" value="${o.tahun||''}" data-tahun="${id}"></label>`
-    : `<label class="tahun">tahun <input value="${o.tahun||''}" placeholder="±…" data-tahun="${id}"></label>`;
-  return `<div class="orang" data-id="${id}">
+  const o=D.orang[id], st=o.status||'kosong', rel=NAMA(o.relatif);
+  const kurang=D.tandai && !barisLengkap(id);
+  const inisial=(o.nama||o.peran).split(' ').map(x=>x[0]).join('').slice(0,2);
+  return `<div class="orang ${kurang?'kurang':''}" data-id="${id}">
     <span class="ava ${st}" style="background:${WARNA[o.kel]||'#fff'}">${inisial}</span>
-    <div class="nama-baris"><b>${o.nama}</b><span class="rel">${rel(id)}</span>${D.saya===id?'<span class="lencana-kamu">kamu</span>':''}</div>
-    <div class="status">
-      <div class="seg" data-status="${id}">
-        <button aria-pressed="${st==='hidup'}" data-v="hidup">Hidup</button><button aria-pressed="${st==='wafat'}" data-v="wafat">Wafat</button><button aria-pressed="${st==='tahu'}" data-v="tahu">Belum tahu</button>
-      </div>
-      ${st==='wafat'?tglInput:''}
-      ${lanjutan()&&st==='hidup'?`<label class="tahun">lahir <input class="tanggal" placeholder="tahun" style="width:70px"></label>`:''}
-      <button class="tautan kecil redup">Keadaan lain</button>
+    <div class="kol-orang">
+      <div><div class="peran">${o.peran}${D.saya===id?'<span class="lencana-kamu">kamu</span>':''}</div>
+        <input class="nama-isi" value="${o.nama}" placeholder="Nama, boleh kosong" data-nama="${id}" aria-label="Nama ${o.peran}"></div>
+      <div class="seg" data-status="${id}" role="radiogroup" aria-label="Keadaan ${o.peran}">
+        <button aria-pressed="${o.status==='hidup'}" data-v="hidup">Hidup</button><button aria-pressed="${o.status==='wafat'}" data-v="wafat">Wafat</button><button aria-pressed="${o.status==='tahu'}" data-v="tahu">Belum tahu</button></div>
+      ${o.status==='wafat'?`<div class="deret"><span class="peran" id="waktu-${id}">Sebelum atau sesudah ${rel} wafat?</span><div class="seg" data-waktu="${id}" role="radiogroup" aria-labelledby="waktu-${id}"><button aria-pressed="${o.waktu==='sebelum'}" data-v="sebelum">Sebelum</button><button aria-pressed="${o.waktu==='sesudah'}" data-v="sesudah">Sesudah</button></div>
+        <label class="tahun">tahun <input value="${o.tahun||''}" placeholder="boleh kosong" style="width:110px" data-tahun="${id}"></label></div>`:''}
+      ${kurang?`<span class="salah">${!o.status?'Pilih: hidup, wafat, atau belum tahu.':`Wafat sebelum atau sesudah ${rel}?`}</span>`:''}
     </div>
-    ${D.pilihSaya&&st==='hidup'?`<button class="ini-saya" data-saya="${id}">Ini saya</button>`:''}
-    ${id==='slamet'&&!lanjutan()?`<p class="catatan-orang">Anak-anak Slamet tidak perlu diisi. ${kenapa('slamet','Slamet wafat sebelum Mbah Karto. Anak-anaknya (cucu Mbah) tidak mendapat bagian selama ada anak laki-laki Mbah yang masih hidup saat itu (Budi).')}</p>`:''}
-    ${id==='slamet'&&lanjutan()?`<div class="cabang"><div class="isi-cabang"><div class="kelompok"><div class="kepala-kel"><h3>Anak Slamet</h3></div>${barisOrang('joko')}</div></div></div>`:''}
-    ${cabang?`<div class="cabang">
-      <button class="tautan" aria-expanded="${!!D.cabangBuka[id]}" data-cabang="${id}"><svg class="ik"><use href="#i-kanan"/></svg>Keluarga ${o.nama}: pasangan dan anak-anaknya <span class="lencana-cabang">3 orang</span></button>
-      ${D.cabangBuka[id]?`<div class="isi-cabang">
-        <div class="kelompok"><div class="kepala-kel"><h3>Pasangan</h3></div>${barisOrang('dewi')}</div>
-        <div class="kelompok"><div class="kepala-kel"><h3>Anak</h3><span class="tanya-hitung">Berapa anak ${o.nama}, termasuk yang sudah wafat? ${hitung(2)}</span></div>${barisOrang('andi')}${barisOrang('sari')}</div>
-      </div>`:''}
-    </div>`:''}
+    <button class="tombol-menu" aria-label="Menu untuk ${o.nama||o.peran}" aria-haspopup="menu" data-menu="${id}"><svg class="ik"><use href="#i-titik"/></svg></button>
   </div>`;
 }
-const hitung = (n, idT='', idK='') => `<span class="hitung"><button aria-label="kurangi" ${idK?`id="${idK}"`:''}><svg class="ik"><use href="#i-min"/></svg></button><b>${n}</b><button aria-label="tambah" ${idT?`id="${idT}"`:''}><svg class="ik"><use href="#i-plus"/></svg></button></span>`;
-
-function penunjuk(){
-  if (lanjutan()) return '';
-  const sisa=sisaAntrean().length, tunda=D.tunda.length;
-  if (!sisa) return `<div class="penunjuk beres"><svg class="ik"><use href="#i-cek"/></svg><span class="teks">Semua yang memengaruhi hasil sudah terjawab${tunda?`<small style="color:var(--ink-muted)">${tunda} menunggu jawaban keluarga, lihat di Periksa</small>`:''}</span></div>`;
-  return `<div class="penunjuk"><span class="angka">${sisa}</span><span class="teks">hal lagi yang memengaruhi hasil${tunda?`<small>${tunda} menunggu jawaban keluarga</small>`:'<small>Yang tidak mengubah hasil tidak akan ditanyakan.</small>'}</span><button class="tautan" id="jawabSekarang">Jawab sekarang</button></div>`;
+function ringkasan(g){
+  const ids=D.anggota[g.id]||[], j=D.grupJawab[g.id]||{};
+  const isi = g.jenis==='anakBersama' ? (j.punya?'Sama dengan anak-anak '+NAMA(D.pemilik):'Tidak semua')
+    : (!barisTetap(g) && j.punya===false) ? 'Tidak ada'
+    : ids.map(id=>{const o=D.orang[id], n=o.nama||o.peran; return o.status==='wafat'?`${n} (wafat${o.tahun?' '+o.tahun:''})`:o.status==='tahu'?`${n} (belum tahu)`:n;}).join(', ');
+  return `<div class="ringkas"><span class="cek"><svg class="ik"><use href="#i-cek"/></svg></span>
+    <div class="isi"><b>${judulGrup(g)}</b><span>${isi}</span></div>
+    <button class="aksi-teks" data-ubah="${g.id}" aria-label="Ubah ${judulGrup(g)}"><svg class="ik" style="width:15px;height:15px"><use href="#i-pensil"/></svg>Ubah</button></div>`;
 }
-function spandukSaya(){
-  if (D.saya==='lain') return '';
-  if (D.saya) return `<div class="spanduk"><svg class="ik"><use href="#i-orang"/></svg><span>Kamu: <b>${nama(D.saya)}</b>. Sebutan di bawah memakai sudut pandangmu.</span><button class="tautan kecil" id="ubahSaya">Ubah</button></div>`;
-  if (D.pilihSaya) return `<div class="spanduk aktif"><span>Ketuk <b>Ini saya</b> di barismu.</span><button class="tautan kecil" id="belumAda">Saya belum ada di sini</button><button class="tautan kecil" id="orangLain">Saya mengisi untuk orang lain</button><button class="tautan kecil redup" id="batalSaya">Batal</button></div>`;
-  return `<div class="spanduk"><svg class="ik"><use href="#i-orang"/></svg><span>Kamu yang mana di sini? <span class="redup">Boleh dilewati.</span></span><button class="tautan kecil" id="pilihSaya">Tunjukkan</button></div>`;
+function grupAktif(g){
+  pastikanAnggota(g);
+  const m=NAMA(g.milik), j=D.grupJawab[g.id]||(D.grupJawab[g.id]={}), ids=D.anggota[g.id]||[], mjk=D.orang[g.milik].jk;
+  let tanya='', isi='', pengantar='', rinci='';
+  if (awalCabang(g)) pengantar=`<p class="pengantar">${m} wafat sesudah ${NAMA(D.pemilik)}, sebelum hartanya dibagi. Jadi bagian ${m} nanti dibagi lagi ke keluarganya.</p>`;
+  const yaTidak=(ya,tidak)=>`<div class="seg besar" data-punya="${g.id}" role="radiogroup"><button aria-pressed="${j.punya===true}" data-v="1">${ya}</button><button aria-pressed="${j.punya===false}" data-v="0">${tidak}</button></div>`;
+  const hit=(jk,label)=>{const n=ids.filter(id=>D.orang[id].jk===jk).length; return `<label>${label}<span class="hitung"><button aria-label="kurangi ${label}" data-hitung="${g.id}|${jk}|-1"><svg class="ik"><use href="#i-min"/></svg></button><b aria-live="polite">${n}</b><button aria-label="tambah ${label}" data-hitung="${g.id}|${jk}|1"><svg class="ik"><use href="#i-plus"/></svg></button></span></label>`;};
+  if (g.jenis==='pasangan'){
+    tanya=`Waktu ${m} wafat, apakah beliau masih punya ${mjk==='L'?'istri':'suami'}?`;
+    isi=yaTidak('Ya','Tidak') + (j.punya&&mjk==='L'?`<div class="hitung-baris">${hit('P','Berapa istri?')}</div>`:'');
+    rinci=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Sudah bercerai sebelum ${m} wafat?</summary><div>Tetap pilih "Ya", lalu buka ⋯ di baris pasangannya › Keadaan lain › Bercerai. Masa iddah ditanyakan di sana.</div></details>`;
+  }
+  if (g.jenis==='anak'||g.jenis==='saudara'){
+    tanya=`${m} punya ${g.jenis}? Hitung juga yang sudah wafat.`;
+    isi=yaTidak('Ya','Tidak') + (j.punya?`<div class="hitung-baris">${hit('L','Laki-laki')}${hit('P','Perempuan')}</div>`:'');
+  }
+  if (g.jenis==='orangTua') tanya=`Waktu ${m} wafat, apakah orang tuanya masih hidup?`;
+  if (g.jenis==='kakekNenek') tanya=`Karena ${D.orang['ayah:'+g.milik]?.status==='wafat'?'ayah':'ibu'} ${m} sudah wafat, kakek atau neneknya juga perlu ditanyakan. Waktu ${m} wafat, apakah mereka masih hidup?`;
+  if (g.jenis==='anakBersama'){
+    const anakP=(D.anggota['anak:'+D.pemilik]||[]).map(NAMA);
+    tanya=`Apakah ${anakP.join(', ')} juga anak ${m}?`;
+    isi=yaTidak('Ya, semuanya','Tidak semua')+(j.punya===false?`<p class="pengantar">Di produk: centang siapa saja anak ${m}, lalu tanya apakah ${m} punya anak dari pernikahan lain.</p>`:'');
+  }
+  // kelompok yang disaring engine: alasan di balik Details, dengan jalan pintas tetap mengisi
+  if (g.jenis==='anak' && g.milik===D.pemilik && j.punya && ids.some(id=>D.orang[id].jk==='L') && !D.tetapIsi[g.milik])
+    rinci+=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Kenapa saudara ${m} tidak ditanyakan?</summary><div>Saudara, keponakan, paman, dan sepupu tidak mendapat bagian selama ada anak laki-laki.<button class="aksi-teks" data-tetap="${g.milik}"><svg class="ik"><use href="#i-plus"/></svg>Tetap isi kerabat lain</button></div></details>`;
+  if (g.jenis==='anak') ids.filter(id=>D.orang[id].status==='wafat'&&D.orang[id].waktu==='sebelum').forEach(id=>{
+    rinci+=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Kenapa anak-anak ${NAMA(id)} tidak ditanyakan?</summary><div>${NAMA(id)} wafat sebelum ${m}. Anak-anaknya (cucu ${m}) tidak mendapat bagian selama ada anak laki-laki ${m} yang masih hidup saat itu.<button class="aksi-teks"><svg class="ik"><use href="#i-plus"/></svg>Tetap isi anak-anak ${NAMA(id)}</button></div></details>`; });
+  const masuk=g.id!==grupTerakhir; grupTerakhir=g.id;
+  return `<section class="grup ${masuk?'masuk':''}" id="grup-aktif" aria-labelledby="judul-grup"><span class="label">${judulGrup(g)}</span>${pengantar}<h2 id="judul-grup">${tanya}</h2>${isi}${ids.map(barisOrang).join('')}${rinci}</section>`;
 }
-function kartuBertahap(){
-  if (sk!=='A' || D.bertahapTutup) return '';
-  const lanjutWafat = ['budi'].concat(D.jawab.urut1==='sesudah'?['sumi']:[]).map(nama);
-  return `<div class="bertahap"><span class="ikon-bulat"><svg class="ik"><use href="#i-tangga"/></svg></span><div class="tumpuk" style="gap:6px">
-    <b>Pembagiannya nanti bertahap</b>
-    <span class="kecil">${lanjutWafat.join(' dan ')} wafat sesudah ${D.namaPemilik}, sebelum hartanya dibagi. Jadi harta ${D.namaPemilik} dibagi dulu, lalu bagian ${lanjutWafat.length>1?'mereka':lanjutWafat[0]} dibagi lagi ke keluarganya. Karena itu kita juga perlu tahu keluarga ${lanjutWafat.join(' dan ')}.</span>
-    <button class="tautan kecil" style="align-self:flex-start" id="tutupBertahap">Mengerti</button></div></div>`;
-}
-function panelUrutan(){
-  if (!lanjutan() || sk!=='A') return '';
-  const u=D.urutan;
-  return `<section class="kartu tumpuk"><h2 class="judul-kecil">Urutan wafat</h2>
-    <p class="kecil redup">Dari yang paling dulu. Terisi otomatis dari tanggal; atur sendiri bila tanggalnya tidak ada.</p>
-    <ol class="urutan-wafat" style="margin:0;padding:0">${u.map((id,i)=>`<li><span><b>${nama(id)}</b> <span class="redup kecil">${D.orang[id].tahun||'tanggal kosong'}</span></span>
-      <button aria-label="naikkan" data-naik="${i}" ${i<=1?'disabled':''}><svg class="ik"><use href="#i-atas"/></svg></button>
-      <button aria-label="turunkan" data-turun="${i}" ${i===0||i===u.length-1?'disabled':''}><svg class="ik"><use href="#i-bawah"/></svg></button></li>`).join('')}</ol>
-    <button class="tautan kecil" style="align-self:flex-start">Tandai dua orang wafat bersamaan</button></section>`;
+// kelompok terbuka dipegang D.buka: menjawab tidak memindahkan pengguna; pindah hanya lewat tombol utama atau "Ubah"
+function grupTerbuka(){ const G=grupList(); const g=G.find(x=>x.id===D.buka) || G.find(x=>!grupLengkap(x)); if (g) D.buka=g.id; return g; }
+function langkahBerikut(){
+  const G=grupList(), buka=grupTerbuka();
+  if (buka && !grupLengkap(buka)){
+    const belumJawab=(D.grupJawab[buka.id]?.punya==null) && !barisTetap(buka);
+    return {label:`Lengkapi: ${judulGrup(buka)}`, status: belumJawab?'Jawab pertanyaan di atas dulu.':`<b>${kurangDi(buka)} baris</b> belum lengkap.`,
+      aksi:()=>{D.tandai=buka.id;gambar();(document.querySelector('.orang.kurang')||document.getElementById('grup-aktif'))?.scrollIntoView({behavior:'smooth',block:'center'});}};
+  }
+  const nxt=G.find(g=>!grupLengkap(g));
+  if (nxt) return {label:`Lanjut: ${judulGrup(nxt)}`, status:`${judulGrup(buka)} <b>sudah lengkap</b>.`, aksi:()=>{D.buka=nxt.id;D.tandai=null;gambar();document.getElementById('grup-aktif')?.scrollIntoView({behavior:'smooth',block:'center'});}};
+  const q=antrean();
+  if (q.length) return {label:'Jawab 1 pertanyaan urutan', status:'Semua keluarga sudah diisi. Tinggal urutan wafat.', aksi:()=>{dialog={q:q[0]};gambar();}};
+  return {label:'Lanjut: Periksa', status:'Semua yang memengaruhi hasil <b>sudah terjawab</b>.', aksi:()=>ke(4)};
 }
 function layarKeluarga(){
-  const L=lanjutan();
-  const kiri = sk==='A' ? `
-    <div class="kelompok"><div class="kepala-kel"><h3>Orang tua Mbah Karto</h3></div>${L?barisOrang('ayahK'):''}${barisOrang('ibuK')}
-      ${L?'':`<p class="kecil redup" style="padding-left:4px">Ayah, kakek, dan nenek Mbah Karto sudah wafat lebih dulu. <a>Ubah</a></p>`}</div>
-    <div class="kelompok"><div class="kepala-kel"><h3>Pasangan</h3></div>${barisOrang('sumi')}</div>
-    <div class="kelompok"><div class="kepala-kel"><h3>Anak</h3><span class="tanya-hitung">Berapa anak, termasuk yang sudah wafat? ${hitung(D.anak.length,'tambah','kurang')}</span></div>
-      ${D.anak.map(barisOrang).join('')}</div>
-    ${L?`<div class="kelompok"><div class="kepala-kel"><h3>Saudara Mbah Karto</h3><span class="tanya-hitung">Berapa saudara? ${hitung(0)}</span></div></div>
-         <button class="tautan" style="align-self:flex-start">Tambah kerabat lain</button>`
-       :`<p class="dilewati"><svg class="ik"><use href="#i-info"/></svg><span>Saudara, keponakan, paman, dan sepupu Mbah Karto tidak perlu diisi. ${kenapa('jauh','Mereka tidak mendapat bagian selama ada anak laki-laki Mbah (Budi). Mau tetap mengisi? Pakai mode lanjutan.')}</span></p>`}`
-  : `
-    <div class="kelompok"><div class="kepala-kel"><h3>Pasangan</h3></div>
-      <div class="kartu tumpuk" style="padding:14px 16px;border-radius:18px;background:#fff"><span>Budi pernah menikah?</span>
-      <div class="seg" id="menikah"><button aria-pressed="${D.menikah}">Ya</button><button aria-pressed="${!D.menikah}">Tidak</button></div></div></div>
-    <div class="kelompok"><div class="kepala-kel"><h3>Anak</h3><span class="tanya-hitung">Berapa anak, termasuk yang sudah wafat? ${hitung(0)}</span></div></div>
-    <div class="kelompok"><div class="kepala-kel"><h3>Orang tua</h3></div>${barisOrang('ayah')}${barisOrang('ibu')}
-      <p class="kecil redup" style="padding-left:4px">Kakek Budi (ayah dari ayahnya) sudah wafat lebih dulu. <a>Ubah</a></p></div>
-    <div class="kelompok"><div class="kepala-kel"><h3>Saudara</h3><span class="tanya-hitung">Berapa saudara Budi, termasuk yang sudah wafat? ${hitung(2)}</span></div>
-      ${D.saudara.map(barisOrang).join('')}</div>
-    ${L?`<button class="tautan" style="align-self:flex-start">Tambah kerabat lain</button>`
-       :`<p class="dilewati"><svg class="ik"><use href="#i-info"/></svg><span>Paman, keponakan, dan sepupu Budi tidak perlu diisi. ${kenapa('jauhB','Mereka tidak mendapat bagian selama ada saudara laki-laki Budi (Andi).')}</span></p>`}`;
-  const sisa=sisaAntrean().length;
+  const G=grupList(), buka=grupTerbuka(), L=langkahBerikut();
+  const bagian=G.map(g=> g.id===buka?.id ? grupAktif(g) : grupLengkap(g) ? ringkasan(g) : '').join('');
   return `<div class="kanvas">
     <div class="tumpuk">
-      <div class="deret" style="justify-content:space-between"><span class="kecil redup">${L?'Mode lanjutan':'Mode dasar'}</span><button class="tautan kecil" id="gantiMode">${L?'Kembali ke mode dasar':'Mode lanjutan'}</button></div>
-      ${penunjuk()}
-      ${L?'':'<p class="penenang">Wajar kalau tidak hafal semuanya. Isi yang kamu tahu; pilih "Belum tahu" untuk yang ragu.</p>'}
-      ${spandukSaya()}
-      ${kartuBertahap()}
-      ${kiri}
-      ${panelUrutan()}
-      <div class="bar-bawah"><button class="tautan" onclick="ke(1)">Kembali</button><button class="pil" onclick="ke(4)" ${sisa?'disabled':''}>Lanjut ke Periksa</button></div>
-      ${sisa?`<p class="kecil redup" style="text-align:right;margin-top:-6px">Jawab dulu ${sisa} hal yang memengaruhi hasil. "Belum tahu" juga boleh.</p>`:''}
+      ${!Object.keys(D.grupJawab).length?'<p class="redup">Wajar kalau tidak hafal semuanya. Pilih "Belum tahu" untuk yang ragu; nanti bisa ditanyakan ke keluarga.</p>':''}
+      ${bagian}
     </div>
     <aside class="kol-pohon"><div class="kartu kartu-pohon"><div class="bungkus-pohon">${pohon()}</div>
-      <div class="kaki-pohon"><span><i style="background:var(--keturunan)"></i>hidup</span><span><i style="border:1.5px solid #9aa79a"></i>wafat</span><span><i style="border:1.5px dashed #7f8c7c"></i>belum tahu</span><button class="tautan pohon-penuh" onclick="this.closest('.kartu-pohon').classList.toggle('penuh')">Lihat pohon lengkap</button></div>
-    </div></aside>
-  </div>`;
-}
-function tahunKeUrutan(id, nilai){
-  // tahun Mbah Sumi menjawab dua pertanyaan urutan sekaligus; yang tidak berpengaruh tidak ditanya
-  if (id!=='sumi') return;
-  const t=parseInt(String(nilai).replace(/\D/g,''),10); if(!t) return;
-  if (t<1975) D.jawab.urut1='sebelum'; else { D.jawab.urut1='sesudah'; D.jawab.urut2 = t<1998?'sebelum':'sesudah'; }
-}
-// yang wafat sebelum pemilik tidak masuk urutan wafat (bukan ahli warisnya)
-function sinkronUrutan(){
-  if (sk!=='A') return;
-  const ada=D.urutan.includes('sumi'), keluar=D.jawab.urut1==='sebelum';
-  if (keluar&&ada) D.urutan=D.urutan.filter(x=>x!=='sumi');
-  if (!keluar&&!ada) D.urutan.splice(D.jawab.urut2==='sesudah'?2:1,0,'sumi');
+      <div class="kaki-pohon"><span><i style="background:var(--keturunan)"></i>hidup</span><span><i style="border:1.5px solid #9aa79a"></i>wafat</span><span><i style="border:1.5px dashed #7f8c7c"></i>belum diisi / belum tahu</span>
+      <button class="aksi-teks pohon-penuh" onclick="this.closest('.kartu-pohon').classList.toggle('penuh')"><svg class="ik"><use href="#i-pohon"/></svg>Pohon lengkap</button></div></div>
+      <p class="kecil redup" style="margin:10px 4px 0">Kamu salah satu dari keluarga ini? Buka ⋯ di barismu › Ini saya, supaya sebutan memakai sudut pandangmu.</p></aside>
+  </div>
+  ${barBawah(L.label,'lanjutKeluarga',L.status)}`;
 }
 function pasangKeluarga(){
-  document.querySelectorAll('[data-status]').forEach(seg=>seg.querySelectorAll('button').forEach(b=>b.onclick=()=>{
-    const id=seg.dataset.status; D.orang[id].status=b.dataset.v;
-    if (id==='ibuK'){ if(b.dataset.v==='tahu') delete D.jawab.ibu; else D.jawab.ibu=b.dataset.v; }
+  document.getElementById('lanjutKeluarga').onclick=langkahBerikut().aksi;
+  document.querySelectorAll('[data-punya]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const gid=s.dataset.punya, g=grupList().find(x=>x.id===gid), ya=b.dataset.v==='1';
+    D.grupJawab[gid]={...(D.grupJawab[gid]||{}),punya:ya}; D.tandai=null;  // pesan kurang muncul lagi hanya saat tombol utama ditekan
+    if (!ya){ (D.anggota[gid]||[]).forEach(id=>delete D.orang[id]); D.anggota[gid]=[]; }
+    else if (g.jenis==='pasangan' && !(D.anggota[gid]||[]).length) aturJumlah(g, D.orang[g.milik].jk==='L'?'P':'L', 1);
     gambar();
   }));
-  document.querySelectorAll('[data-tahun]').forEach(i=>i.onchange=()=>{D.orang[i.dataset.tahun].tahun=i.value; tahunKeUrutan(i.dataset.tahun,i.value); sinkronUrutan(); gambar();});
-  document.querySelectorAll('[data-cabang]').forEach(b=>b.onclick=()=>{D.cabangBuka[b.dataset.cabang]=!D.cabangBuka[b.dataset.cabang];gambar();});
-  document.querySelectorAll('[data-kenapa]').forEach(b=>b.onclick=()=>{D.kenapaBuka[b.dataset.kenapa]=!D.kenapaBuka[b.dataset.kenapa];gambar();});
-  document.querySelectorAll('[data-saya]').forEach(b=>b.onclick=()=>{D.saya=b.dataset.saya;D.pilihSaya=false;gambar();});
-  const on=(id,f)=>{const el=document.getElementById(id); if(el) el.onclick=f;};
-  on('pilihSaya',()=>{D.pilihSaya=true;D.cabangBuka.budi=true;gambar();});
-  on('batalSaya',()=>{D.pilihSaya=false;gambar();});
-  on('ubahSaya',()=>{D.saya=null;D.pilihSaya=true;gambar();});
-  on('orangLain',()=>{D.saya='lain';D.pilihSaya=false;gambar();});
-  on('belumAda',()=>toast('Lalu: "Kamu anak siapa?" pilih orang di pohon, dan barismu ditambahkan di bawahnya.'));
-  on('tutupBertahap',()=>{D.bertahapTutup=true;gambar();});
-  on('jawabSekarang',bukaAntrean);
-  on('gantiMode',()=>{D.mode=lanjutan()?'dasar':'lanjutan';gambar();});
-  on('tambah',()=>{const id='baru'+(++D.tambahan); D.orang[id]={nama:`Anak ke-${D.anak.length+1}`,kel:'keturunan',status:'tahu'}; D.rel[id]='anak · ketuk untuk memberi nama'; D.anak.push(id); gambar();});
-  on('kurang',()=>{const t=D.anak[D.anak.length-1]; if(t&&t.startsWith('baru')){D.anak.pop();gambar();} else toast('Orang yang sudah bernama dihapus dari barisnya sendiri.');});
-  const m=document.getElementById('menikah'); if(m) m.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{D.menikah=i===0;gambar();});
-  document.querySelectorAll('[data-naik]').forEach(b=>b.onclick=()=>{const i=+b.dataset.naik,u=D.urutan;[u[i-1],u[i]]=[u[i],u[i-1]];gambar();});
-  document.querySelectorAll('[data-turun]').forEach(b=>b.onclick=()=>{const i=+b.dataset.turun,u=D.urutan;[u[i+1],u[i]]=[u[i],u[i+1]];gambar();});
-  document.querySelectorAll('.n[data-id]').forEach(n=>n.onclick=()=>{const r=document.querySelector(`.orang[data-id="${n.dataset.id}"]`); if(r){r.scrollIntoView({behavior:'smooth',block:'center'});r.classList.add('sorot');setTimeout(()=>r.classList.remove('sorot'),1400);}});
+  document.querySelectorAll('[data-hitung]').forEach(b=>b.onclick=()=>{
+    const [gid,jk,d]=b.dataset.hitung.split('|'), g=grupList().find(x=>x.id===gid);
+    const n=(D.anggota[gid]||[]).filter(id=>D.orang[id].jk===jk).length + Number(d); if (n<0) return;
+    if (g.jenis==='pasangan' && n>4) return toast('Paling banyak empat istri.');
+    if (aturJumlah(g,jk,n)){ D.tandai=null; gambar(); }
+  });
+  document.querySelectorAll('[data-nama]').forEach(i=>i.onchange=()=>{D.orang[i.dataset.nama].nama=i.value.trim();gambar();});
+  document.querySelectorAll('[data-status]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{const o=D.orang[s.dataset.status]; o.status=b.dataset.v; if(o.status!=='wafat') o.waktu=null; gambar();}));
+  document.querySelectorAll('[data-waktu]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{D.orang[s.dataset.waktu].waktu=b.dataset.v;gambar();}));
+  document.querySelectorAll('[data-tahun]').forEach(i=>i.onchange=()=>{ const o=D.orang[i.dataset.tahun]; o.tahun=i.value;
+    // tahun mengisi sebelum/sesudah sendiri bila tahun pembanding ada
+    const t=tahunAngka(i.value), r=tahunAngka(D.orang[o.relatif]?.tahun); if(t&&r&&t!==r) o.waktu=t<r?'sebelum':'sesudah'; gambar(); });
+  document.querySelectorAll('[data-ubah]').forEach(b=>b.onclick=()=>{D.buka=b.dataset.ubah;D.tandai=null;gambar();document.getElementById('grup-aktif')?.scrollIntoView({behavior:'smooth',block:'center'});});
+  document.querySelectorAll('[data-tetap]').forEach(b=>b.onclick=()=>{D.tetapIsi[b.dataset.tetap]=true;toast('Bagian "Saudara" ditambahkan sesudah Orang tua.');gambar();});
+  document.querySelectorAll('[data-menu]').forEach(b=>b.onclick=e=>{e.stopPropagation();bukaMenu(b.dataset.menu,b);});
+}
+function bukaMenu(id,tombol){
+  const r=tombol.getBoundingClientRect(), o=D.orang[id], w=document.getElementById('wadahMenu');
+  w.innerHTML=`<div class="menu" role="menu" style="top:${r.bottom+window.scrollY+4}px;left:${Math.max(8,r.right+window.scrollX-230)}px">
+    ${o.status==='hidup'?'<button role="menuitem" data-m="saya">Ini saya<small>Sebutan memakai sudut pandangmu</small></button>':''}
+    <button role="menuitem" data-m="lain">Keadaan lain<small>Hilang, dalam kandungan, bercerai, kelamin belum jelas</small></button>
+    <button role="menuitem" data-m="hapus">Hapus ${o.nama||o.peran}<small>Dengan konfirmasi</small></button></div>`;
+  w.querySelector('[role=menuitem]')?.focus();
+  w.querySelectorAll('[data-m]').forEach(b=>b.onclick=ev=>{ ev.stopPropagation(); w.innerHTML='';
+    if (b.dataset.m==='saya'){ D.saya=id; toast(`Sebutan akan memakai sudut pandang ${o.nama||o.peran}.`); gambar(); }
+    if (b.dataset.m==='lain') toast('Membuka dialog keadaan yang sudah ada (satu pertanyaan per layar).');
+    if (b.dataset.m==='hapus' && confirm(`Hapus ${o.nama||o.peran}? Keluarga yang dicatat lewat orang ini ikut terhapus.`)){
+      Object.keys(D.anggota).forEach(k=>D.anggota[k]=D.anggota[k].filter(x=>x!==id)); delete D.orang[id]; gambar(); }
+  });
+  setTimeout(()=>document.addEventListener('click',()=>{w.innerHTML='';},{once:true}));
 }
 
 // ---------- pohon ----------
-function simpul(id,x,y,ekstra=''){
-  const o=D.orang[id], st=o.status, sorot=dialog && D.antrean[dialog.i]?.orang===id;
-  const sub = st==='wafat' ? (o.tahun||'tahun ?') : st==='tahu' ? 'belum tahu' : (D.saya===id?'kamu':rel(id).split(' ·')[0]);
-  return `<g class="n ${st} ${id===D.pemilik?'pemilik':''} ${sorot?'sorot':''} ${ekstra}" data-id="${id}" style="cursor:pointer" transform="translate(${x-46},${y-20})">
+function simpul(id,x,y){
+  const o=D.orang[id]; if(!o) return ''; const st=o.status||'kosong', sorot=dialog&&dialog.q.orang===id;
+  const nm=(o.nama||o.peran).replace('Anak laki-laki','Anak lk').replace('Anak perempuan','Anak pr').replace('Saudara laki-laki','Sdr lk').replace('Saudara perempuan','Sdr pr');
+  const sub= st==='wafat'?(o.tahun||(o.waktu?`${o.waktu} ${NAMA(o.relatif).split(' ').pop()}`:'wafat')):st==='tahu'?'belum tahu':st==='kosong'?'belum diisi':(D.saya===id?'kamu':'hidup');
+  return `<g class="n ${st} ${id===D.pemilik?'pemilik':''} ${sorot?'sorot':''}" transform="translate(${x-46},${y-20})">
     <rect width="92" height="40" rx="12" fill="${st==='hidup'?(WARNA[o.kel]||'#fff'):'#fff'}" stroke="${st==='hidup'?'rgba(0,0,0,.08)':''}"/>
-    <text x="46" y="17" text-anchor="middle">${o.nama.length>13?o.nama.slice(0,12)+'…':o.nama}</text>
-    <text class="sub" x="46" y="31" text-anchor="middle">${sub.length>15?sub.slice(0,14)+'…':sub}</text></g>`;
+    <text x="46" y="17" text-anchor="middle">${nm.length>13?nm.slice(0,12)+'…':nm}</text><text class="sub" x="46" y="31" text-anchor="middle">${sub.length>15?sub.slice(0,14)+'…':sub}</text></g>`;
 }
 const siku=(x1,y1,x2,y2)=>`<path class="garis" d="M${x1} ${y1} V${(y1+y2)/2} H${x2} V${y2}"/>`;
 function pohon(){
-  if (sk==='B') return `<svg viewBox="0 0 420 200" role="img" aria-label="Pohon keluarga Budi">
-      <line class="garis" x1="152" y1="40" x2="268" y2="40"/>${siku(210,40,90,140)}${siku(210,40,210,140)}${siku(210,40,330,140)}
-      ${simpul('ayah',106,40)}${simpul('ibu',314,40)}${simpul('budi',90,140)}${simpul('andi',210,140)}${simpul('rina',330,140)}</svg>`;
-  // satu slot per anak, Budi dua slot (dirinya + Dewi) supaya pasangan tidak menimpa saudaranya
-  const anak=D.anak, SLOT=108, slot=id=>id==='budi'?2:1, total=anak.reduce((j,id)=>j+slot(id),0);
-  const lebar=Math.max(420,total*SLOT+20); let kursor=(lebar-total*SLOT)/2;
-  const xs=anak.map(id=>{const x=kursor+SLOT/2; kursor+=slot(id)*SLOT; return x;});
-  const xBudi=xs[anak.indexOf('budi')], xD=xBudi+SLOT, xK=lebar/2-60, xS=lebar/2+60, tengah=(xBudi+xD)/2;
-  let s=`<svg viewBox="0 0 ${lebar} 330" role="img" aria-label="Pohon keluarga Mbah Karto">`;
-  s+=`<line class="garis" x1="${xK}" y1="110" x2="${xS}" y2="110"/>${siku(xK,40,xK,90)}`;
-  anak.forEach((id,i)=>s+=siku(lebar/2,110,xs[i],190));
-  s+=`<line class="garis" x1="${xBudi+46}" y1="210" x2="${xD-46}" y2="210"/>`+siku(tengah,210,tengah-56,280)+siku(tengah,210,tengah+56,280);
-  if (lanjutan()) { const xSl=xs[anak.indexOf('slamet')]; s+=siku(xSl,230,xSl,270)+simpul('joko',xSl,290); }
-  s+=simpul('ibuK',xK,30)+simpul('karto',xK,110)+simpul('sumi',xS,110);
-  anak.forEach((id,i)=>s+=simpul(id,xs[i],210,id.startsWith('baru')?'baru':''));
-  return s+simpul('dewi',xD,210)+simpul('andi',tengah-56,290)+simpul('sari',tengah+56,290)+'</svg>';
+  const P=D.pemilik, anak=D.anggota['anak:'+P]||[], pas=D.anggota['pas:'+P]||[], sdr=D.anggota['sdr:'+P]||[], ayah='ayah:'+P, ibu='ibu:'+P;
+  if (!anak.length && !pas.length && !sdr.length && !D.orang[ayah])
+    return `<div class="pohon-kosong">Pohon tumbuh di sini saat kamu mengisi.<svg viewBox="0 0 200 60" style="max-width:200px;margin:12px auto 0">${simpul(P,100,30)}</svg></div>`;
+  const SLOT=108, yOT=30, yP=110, yA=210, yC=300;
+  const lebarAnak=id=>Math.max(1+((D.anggota['pas:'+id]||[]).length?1:0),(D.anggota['anak:'+id]||[]).length);
+  const totalAnak=anak.reduce((j,id)=>j+lebarAnak(id),0), barisP=[...sdr.slice(0,Math.ceil(sdr.length/2)),P,...sdr.slice(Math.ceil(sdr.length/2)),...pas];
+  const lebar=Math.max(420,totalAnak*SLOT+20,barisP.length*SLOT+20);
+  const tinggi=anak.some(id=>(D.anggota['anak:'+id]||[]).length)?340:anak.length?250:150;
+  let s=`<svg viewBox="0 0 ${lebar} ${tinggi}" role="img" aria-label="Pohon keluarga ${NAMA(P)}">`;
+  const x0=(lebar-barisP.length*SLOT)/2+SLOT/2, xP={}; barisP.forEach((id,i)=>xP[id]=x0+i*SLOT);
+  if (D.orang[ayah]){ const sekandung=[P,...sdr], xt=sekandung.reduce((j,id)=>j+xP[id],0)/sekandung.length;
+    s+=`<line class="garis" x1="${xt-56}" y1="${yOT}" x2="${xt+56}" y2="${yOT}"/>`; sekandung.forEach(id=>s+=siku(xt,yOT,xP[id],yP-20)); s+=simpul(ayah,xt-56,yOT)+simpul(ibu,xt+56,yOT); }
+  pas.forEach(id=>s+=`<line class="garis" x1="${xP[P]+46}" y1="${yP}" x2="${xP[id]-46}" y2="${yP}"/>`);
+  barisP.forEach(id=>s+=simpul(id,xP[id],yP));
+  let kursor=(lebar-totalAnak*SLOT)/2; const xA=pas.length?(xP[P]+xP[pas[0]])/2:xP[P];
+  anak.forEach(id=>{ const x=kursor+SLOT/2, ps=D.anggota['pas:'+id]||[], cu=D.anggota['anak:'+id]||[];
+    s+=siku(xA,yP+20,x,yA-20)+simpul(id,x,yA);
+    if (ps.length) s+=`<line class="garis" x1="${x+46}" y1="${yA}" x2="${x+SLOT-46}" y2="${yA}"/>`+simpul(ps[0],x+SLOT,yA);
+    const xc0=ps.length?x+SLOT/2:x; cu.forEach((c,i)=>{const xc=kursor+SLOT/2+i*SLOT; s+=siku(xc0,yA+20,xc,yC-20)+simpul(c,xc,yC);});
+    kursor+=lebarAnak(id)*SLOT; });
+  return s+'</svg>';
 }
 
-// ---------- dialog antrean ----------
-function bukaAntrean(){ const s=sisaAntrean(); if(!s.length) return; dialog={i:D.antrean.indexOf(s[0]),kenapa:false}; gambar(); }
+// ---------- dialog urutan ----------
 function gambarDialog(){
-  const w=document.getElementById('lapisan'); if(!dialog){w.innerHTML='';return;}
-  const q=D.antrean[dialog.i], aktif=D.antrean.filter(berlaku);
+  const w=document.getElementById('lapisan'); if(!dialog){w.innerHTML='';return;} const q=dialog.q;
   w.innerHTML=`<div class="latar" id="latar"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="judulQ">
-    <div class="atas"><div class="titik-maju">${aktif.map(x=>`<i class="${(x.id in D.jawab||D.tunda.includes(x.id)||x===q)?'isi':''}"></i>`).join('')}</div>
-      <button class="tutup" aria-label="Tutup" id="tutupQ"><svg class="ik"><use href="#i-x"/></svg></button></div>
+    <button class="tutup" aria-label="Tutup" id="tutupQ"><svg class="ik"><use href="#i-x"/></svg></button>
     <h2 id="judulQ">${q.judul}</h2>
-    <div class="pilihan" role="radiogroup">${q.opsi.map(([k,t])=>`<button class="opsi" role="radio" aria-checked="false" data-k="${k}"><span class="titik"></span><span>${t}</span></button>`).join('')}</div>
-    <div class="deret" style="justify-content:space-between"><button class="tautan" id="tundaQ">Belum tahu, tanya keluarga dulu</button><button class="tautan kecil redup" id="kenapaQ">Kenapa ditanya?</button></div>
-    ${dialog.kenapa?`<p class="kenapa">${q.kenapa}</p>`:''}
+    <div class="pilihan" role="radiogroup">${q.opsi.map(([k,t])=>`<button class="opsi" role="radio" aria-checked="false" data-k="${k}"><span class="titik"></span><span>${t}</span></button>`).join('')}
+      <button class="opsi" role="radio" aria-checked="false" data-k="tunda"><span class="titik"></span><span>Belum tahu<small>Nanti bisa ditanyakan ke keluarga dari halaman Periksa.</small></span></button></div>
+    <details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Kenapa ditanya?</summary><div>${q.kenapa}</div></details>
   </div></div>`;
-  w.querySelectorAll('.opsi').forEach(b=>b.onclick=()=>{
-    b.setAttribute('aria-checked','true'); const k=b.dataset.k;
-    if (q.id==='ibu') D.orang.ibuK.status = k;
-    if (k==='sama') return toast('Bersamaan: di mockup ini lanjut ke pertanyaan "wafat di saat yang sama persis?" (alur gharqa yang sudah ada).');
-    D.jawab[q.id]=k; sinkronUrutan(); setTimeout(lanjutAntrean,220);
-  });
-  document.getElementById('tundaQ').onclick=()=>{D.tunda.push(q.id); lanjutAntrean();};
-  document.getElementById('kenapaQ').onclick=()=>{dialog.kenapa=!dialog.kenapa; gambarDialog();};
+  w.querySelectorAll('.opsi').forEach(b=>b.onclick=()=>{ const k=b.dataset.k;
+    if (k==='sama') return toast('Lanjut ke "wafat di saat yang sama persis?" (alur gharqa yang sudah ada).');
+    if (k==='tunda') D.tunda.push(q.id); else D.jawab[q.id]=k; dialog=null; gambar(); });
   document.getElementById('tutupQ').onclick=()=>{dialog=null;gambar();};
   document.getElementById('latar').onclick=e=>{if(e.target.id==='latar'){dialog=null;gambar();}};
   w.querySelector('.opsi')?.focus();
 }
-function lanjutAntrean(){ const s=sisaAntrean(); dialog=s.length?{i:D.antrean.indexOf(s[0]),kenapa:false}:null; if(!s.length) toast('Semua yang memengaruhi hasil sudah terjawab.'); gambar(); }
 
-// ---------- 4. Periksa: hanya fakta yang diisi ----------
-function ceritaA(){
-  const ibu=D.orang.ibuK.status, u1=D.jawab.urut1, u2=D.jawab.urut2;
-  const r=[['±1970','Slamet wafat.']];
-  if (u1==='sebelum') r.push(['?','Mbah Sumi wafat, sebelum Mbah Karto.']);
-  r.push(['±1975',`Mbah Karto wafat, meninggalkan ${u1==='sebelum'?'':'istri Mbah Sumi dan '}anak Budi dan Rina${ibu==='hidup'?', juga ibunya':''}.${ibu==='tahu'?' <em>Ibunya masih hidup atau tidak: belum dipastikan.</em>':''}`]);
-  if (u1==='sesudah' && u2!=='sesudah') r.push(['?','Mbah Sumi wafat, sesudah Mbah Karto dan sebelum Budi.']);
-  if (!u1 || u1==='sama') r.push(['?','Mbah Sumi wafat. <em>Urutannya belum dipastikan.</em>']);
-  r.push(['1998','Budi wafat, meninggalkan istri Dewi dan anak Andi dan Sari.']);
-  if (u1==='sesudah' && u2==='sesudah') r.push(['?','Mbah Sumi wafat, sesudah Budi.']);
-  const hidup=Object.keys(D.orang).filter(id=>D.orang[id].status==='hidup' && !D.orang[id].lanjut).map(nama);
-  r.push(['Kini',`Masih hidup sekarang: ${hidup.join(', ')}.`]);
-  return r;
+// ---------- 4. Periksa: cerita atau linimasa, hanya fakta ----------
+function peristiwa(){
+  const o=D.orang, P=D.pemilik;
+  const wafat=Object.keys(o).filter(id=>id!==P && o[id].status==='wafat' && o[id].relatif===P && (D.anggota['pas:'+P]||[]).concat(D.anggota['anak:'+P]||[],D.anggota['sdr:'+P]||[]).includes(id));
+  const sebelum=wafat.filter(id=>o[id].waktu==='sebelum');
+  let sesudah=wafat.filter(id=>o[id].waktu==='sesudah').sort((a,b)=>(tahunAngka(o[a].tahun)||9999)-(tahunAngka(o[b].tahun)||9999));
+  if (D.jawab.urut==='sebelum'){ const a=antreanAwal(); if(a) sesudah=[a,...sesudah.filter(x=>x!==a)]; }
+  if (D.urutanManual) sesudah.sort((a,b)=>D.urutanManual.indexOf(a)-D.urutanManual.indexOf(b));
+  const tinggal=id=>{const ps=(D.anggota['pas:'+id]||[]).map(NAMA), an=(D.anggota['anak:'+id]||[]).filter(x=>o[x].waktu!=='sebelum').map(NAMA);  // yang wafat lebih dulu tidak "ditinggalkan"
+    return [ps.length?`${o[id].jk==='L'?'istri':'suami'} ${ps.join(', ')}`:'', an.length?`anak ${an.join(', ')}`:''].filter(Boolean).join(' dan ');};
+  const ev=sebelum.map(id=>({th:o[id].tahun||'?',teks:`${NAMA(id)} wafat, sebelum ${NAMA(P)}.`,id}));
+  ev.push({th:o[P].tahun||'?',teks:`${NAMA(P)} wafat${tinggal(P)?', meninggalkan '+tinggal(P):''}.`,id:P,tetap:true});
+  sesudah.forEach(id=>ev.push({th:o[id].tahun||'?',teks:`${NAMA(id)} wafat${tinggal(id)?', meninggalkan '+tinggal(id):''}.${D.tunda.includes('urut')&&!o[id].tahun?' <em>Urutannya belum dipastikan.</em>':''}`,id,geser:true}));
+  return ev;
 }
+const antreanAwal=()=>{const o=D.orang; return Object.keys(o).find(id=>o[id].relatif===D.pemilik&&o[id].waktu==='sesudah'&&!tahunAngka(o[id].tahun));};
 function layarPeriksa(){
-  const tunda=D.tunda.map(id=>D.antrean.find(q=>q.id===id));
-  const cerita = sk==='A' ? ceritaA() : [['2010','Ayah wafat.'],['2023','Budi wafat. Ia tidak menikah dan tidak punya anak. Meninggalkan Ibu dan saudara Andi dan Rina.'],['Kini','Masih hidup sekarang: Ibu, Andi, Rina.']];
-  const pesan=`Assalamu'alaikum. Aku lagi menghitung warisan ${D.namaPemilik}. Ada yang belum aku tahu:\n`+tunda.map((q,i)=>`${i+1}. ${q.judul}`).join('\n')+'\nTerima kasih.';
-  return `<div class="tumpuk" style="max-width:760px">
-    ${tunda.length?`<section class="kartu tumpuk"><h2 class="judul-kecil">Belum dipastikan (${tunda.length})</h2>
+  const o=D.orang, ev=peristiwa();
+  const belum=[...Object.keys(o).filter(id=>o[id].status==='tahu').map(id=>`Waktu ${NAMA(o[id].relatif)} wafat, apakah ${o[id].nama||o[id].peran} masih hidup?`),
+    ...(D.tunda.includes('urut')?[`${NAMA(antreanAwal())} wafat sebelum atau sesudah ${NAMA(ev.filter(e=>e.geser).map(e=>e.id).find(x=>x!==antreanAwal()))}?`]:[])];
+  const hidup=Object.keys(o).filter(id=>o[id].status==='hidup').map(NAMA);
+  const pesan=`Assalamu'alaikum. Aku sedang menghitung warisan ${NAMA(D.pemilik)}. Ada yang belum aku tahu:\n`+belum.map((b,i)=>`${i+1}. ${b}`).join('\n')+'\nTerima kasih.';
+  const linimasa=D.tampilPeriksa==='linimasa';
+  const daftar=`<div class="cerita">${ev.map((e,i)=>`<div class="th">${e.th}</div><div>${e.teks}</div><div class="geser">${linimasa&&e.geser?`<button aria-label="${NAMA(e.id)} lebih dulu" data-geser="${e.id}|-1" ${ev[i-1]?.tetap?'disabled':''}><svg class="ik"><use href="#i-atas"/></svg></button><button aria-label="${NAMA(e.id)} lebih akhir" data-geser="${e.id}|1" ${i===ev.length-1?'disabled':''}><svg class="ik"><use href="#i-bawah"/></svg></button>`:''}</div>`).join('')}
+    ${linimasa?'':`<div class="th">Kini</div><div><b>Masih hidup sekarang:</b> ${hidup.join(', ')}.</div><div></div>`}</div>`;
+  return `<div class="tumpuk" style="max-width:780px">
+    ${belum.length?`<section class="kartu tumpuk"><h2 class="judul-kecil">Belum dipastikan (${belum.length})</h2>
       <p class="kecil redup">Hasil ditampilkan sebagai beberapa kemungkinan sampai ini jelas.</p>
-      <div>${tunda.map(q=>`<div class="belum"><span>${q.judul}</span><button class="tautan kecil" data-pastikan="${q.id}">Pastikan</button></div>`).join('')}</div>
-      <div class="tumpuk" style="gap:8px"><button class="tautan" style="align-self:flex-start;display:inline-flex;gap:6px;align-items:center" id="salinWA"><svg class="ik"><use href="#i-pesan"/></svg>Salin pertanyaan untuk keluarga</button><div class="wa" id="pratinjauWA" hidden>${pesan}</div></div>
-    </section>`:''}
-    <section class="kartu"><div class="cerita">${cerita.map(([th,ps])=>`<div class="th ${th==='Kini'?'kini':''}">${th}</div><div class="ps ${th==='Kini'?'kini':''}">${ps}${th!=='Kini'?' <button class="tautan" onclick="ke(3)">ubah</button>':''}</div>`).join('')}</div></section>
-    <p class="kecil redup">Yang dibagi di sini harta ${D.namaPemilik}. Harta milik orang lain di cerita ini (kalau ada) dihitung terpisah.</p>
-    <div class="bar-bawah"><button class="tautan" onclick="ke(3)">Ada yang keliru</button><button class="pil" onclick="ke(5)">${tunda.length?'Hitung dengan kemungkinan':'Ya, ceritanya benar, hitung'}</button></div>
+      <div>${belum.map(b=>`<div class="belum"><span>${b}</span><button class="aksi-teks" onclick="ke(3)"><svg class="ik" style="width:15px;height:15px"><use href="#i-pensil"/></svg>Isi</button></div>`).join('')}</div>
+      <button class="aksi-teks" style="align-self:flex-start" id="salinWA"><svg class="ik"><use href="#i-pesan"/></svg>Salin pertanyaan untuk keluarga</button><div class="wa" id="pratinjauWA" hidden>${pesan}</div></section>`:''}
+    <section class="kartu tumpuk">
+      <div class="deret" style="justify-content:space-between"><h2 class="judul-kecil">Ceritanya</h2>
+        <div class="seg" id="tampilPeriksa" role="radiogroup" aria-label="Tampilan"><button aria-pressed="${!linimasa}" data-v="cerita">Cerita</button><button aria-pressed="${linimasa}" data-v="linimasa">Linimasa</button></div></div>
+      ${linimasa?'<p class="kecil redup">Atur urutan wafat dengan panah, atau tambahkan peristiwa di antara kematian.</p>':''}
+      ${daftar}
+      ${linimasa?'<button class="aksi-teks" style="align-self:flex-start" id="tambahPeristiwa"><svg class="ik"><use href="#i-plus"/></svg>Tambah peristiwa: lahir, menikah, atau bercerai</button>':''}
+    </section>
+    <p class="kecil redup">Yang dibagi di sini harta ${NAMA(D.pemilik)}. Harta milik orang lain di cerita ini (kalau ada) dihitung terpisah.</p>
+    ${barBawah(belum.length?'Hitung dengan kemungkinan':'Ya, benar. Hitung','lanjutPeriksa', belum.length?`<b>${belum.length} hal</b> belum dipastikan.`:'Semua sudah dipastikan.')}
   </div>`;
 }
 function pasangPeriksa(){
-  const s=document.getElementById('salinWA');
-  if (s) s.onclick=()=>{const p=document.getElementById('pratinjauWA'); p.hidden=false; navigator.clipboard?.writeText(p.textContent).catch(()=>{}); toast('Pertanyaan disalin. Tempel di WhatsApp keluarga.');};
-  document.querySelectorAll('[data-pastikan]').forEach(b=>b.onclick=()=>{D.tunda=D.tunda.filter(x=>x!==b.dataset.pastikan); dialog={i:D.antrean.findIndex(q=>q.id===b.dataset.pastikan),kenapa:false}; gambar();});
+  document.getElementById('lanjutPeriksa').onclick=()=>ke(5);
+  document.querySelectorAll('#tampilPeriksa button').forEach(b=>b.onclick=()=>{D.tampilPeriksa=b.dataset.v;gambar();});
+  const s=document.getElementById('salinWA'); if(s) s.onclick=()=>{const p=document.getElementById('pratinjauWA');p.hidden=false;navigator.clipboard?.writeText(p.textContent).catch(()=>{});toast('Pertanyaan disalin. Tempel di WhatsApp keluarga.');};
+  const t=document.getElementById('tambahPeristiwa'); if(t) t.onclick=()=>toast('Pilih lahir · menikah · bercerai, lalu letakkan di antara dua kematian.');
+  document.querySelectorAll('[data-geser]').forEach(b=>b.onclick=()=>{ const [id,d]=b.dataset.geser.split('|');
+    const u=peristiwa().filter(e=>e.geser).map(e=>e.id), k=u.indexOf(id), j=k+Number(d); if(j<0||j>=u.length) return;
+    [u[k],u[j]]=[u[j],u[k]]; D.urutanManual=u; D.tunda=D.tunda.filter(x=>x!=='urut'); D.jawab.urut='manual'; gambar(); });
 }
 
-// ---------- 5. Hasil: jumlah akhir, lalu tahap pembagian dijelaskan gamblang ----------
-const TAHAP = [
-  {lbl:'Tahap 1', kapan:'±1975', judul:'Harta Mbah Karto dibagi', dibagi:['Harta Mbah Karto','Rp 1.200.000.000'],
-   terima:[['Mbah Sumi','istri','Rp 150.000.000','dibagi lagi di tahap 2'],['Budi','anak','Rp 700.000.000','dibagi lagi di tahap 3'],['Rina','anak','Rp 350.000.000','']],
-   tidak:'Slamet dan ibu Mbah Karto sudah wafat lebih dulu.'},
-  {lbl:'Tahap 2', kapan:'?', judul:'Bagian Mbah Sumi dibagi lagi', dibagi:['Bagian Mbah Sumi dari tahap 1','Rp 150.000.000'],
-   terima:[['Budi','anak','Rp 100.000.000','ikut dibagi di tahap 3'],['Rina','anak','Rp 50.000.000','']], tidak:''},
-  {lbl:'Tahap 3', kapan:'1998', judul:'Bagian Budi dibagi lagi', dibagi:['Bagian Budi dari tahap 1 dan 2','Rp 800.000.000'],
-   terima:[['Dewi','istri','Rp 100.000.000',''],['Andi','anak','Rp 466.666.666',''],['Sari','anak','Rp 233.333.333','']], tidak:''},
+// ---------- 5. Hasil ----------
+const TAHAP=[
+  {lbl:'Tahap 1 · ±1975',judul:'Harta Mbah Karto dibagi',dibagi:['Harta Mbah Karto','Rp 1.200.000.000'],terima:[['Mbah Sumi','istri','Rp 150.000.000','dibagi lagi di tahap 2'],['Budi','anak','Rp 700.000.000','dibagi lagi di tahap 3'],['Rina','anak','Rp 350.000.000','']],tidak:'Slamet, ayah, dan kakek Mbah Karto sudah wafat lebih dulu. Ibu Mbah Karto: angka ini memakai kemungkinan "sudah wafat"; kemungkinan lain ada di "Bagaimana kalau".'},
+  {lbl:'Tahap 2 · Mbah Sumi',judul:'Bagian Mbah Sumi dibagi lagi',dibagi:['Bagian Mbah Sumi dari tahap 1','Rp 150.000.000'],terima:[['Budi','anak','Rp 100.000.000','ikut dibagi di tahap 3'],['Rina','anak','Rp 50.000.000','']],tidak:'Orang tua Mbah Sumi sudah wafat lebih dulu.'},
+  {lbl:'Tahap 3 · 1998',judul:'Bagian Budi dibagi lagi',dibagi:['Bagian Budi dari tahap 1 dan 2','Rp 800.000.000'],terima:[['Dewi','istri','Rp 100.000.000',''],['Andi','anak','Rp 466.666.666',''],['Sari','anak','Rp 233.333.333','']],tidak:'Rina (saudari Budi) tidak menerima karena Budi punya anak laki-laki.'},
 ];
 function layarHasil(){
   const baris=([n,r,p,rp,w])=>`<div class="baris-hasil"><span class="kiri"><i style="background:${w}"></i><span><b>${n}</b><br><span class="kecil redup">${r}</span></span></span><span class="kanan"><b>${p}</b><br><span class="kecil">${rp}</span></span></div>`;
-  if (sk==='B') return `<div class="tumpuk" style="max-width:760px"><section class="kartu tumpuk"><h2 class="judul-kecil">Siapa mendapat berapa</h2>
-      <div class="pita"><span style="flex:1;background:var(--leluhur)"></span><span style="flex:3.33;background:var(--saudara)"></span><span style="flex:1.67;background:#f7c9d6"></span></div>
-      <div>${[['Andi','saudara Budi','55,6 %','Rp 166.666.666','var(--saudara)'],['Rina','saudari Budi','27,8 %','Rp 83.333.333','#f7c9d6'],['Ibu','ibu Budi','16,7 %','Rp 50.000.000','var(--leluhur)']].map(baris).join('')}</div>
-      <p class="kecil redup">Satu kematian saja: tidak ada tahap pembagian. Hanya yang relevan yang tampil.</p></section></div>`;
+  if (D.sk==='B') return `<div class="tumpuk" style="max-width:760px"><section class="kartu tumpuk"><h2 class="judul-kecil">Siapa mendapat berapa</h2>
+    <div>${[['Andi','saudara Budi','55,6 %','Rp 166.666.666','var(--saudara)'],['Rina','saudari Budi','27,8 %','Rp 83.333.333','#f7c9d6'],['Ibu','ibu Budi','16,7 %','Rp 50.000.000','var(--leluhur)']].map(baris).join('')}</div>
+    <p class="kecil redup">Satu kematian saja, jadi tidak ada tahap pembagian.</p></section></div>`;
   const t=TAHAP[tahap-1];
   return `<div class="tumpuk">
     <section class="kartu tumpuk"><h2 class="judul-kecil">Siapa mendapat berapa</h2>
-      <div class="pita"><span style="flex:4.67;background:var(--keturunan)"></span><span style="flex:4;background:#f7c9d6"></span><span style="flex:2.33;background:#9fdcbf"></span><span style="flex:1;background:var(--pasangan)"></span></div>
       <div>${[['Andi','cucu, lewat Budi','38,9 %','Rp 466.666.666','var(--keturunan)'],['Rina','anak','33,3 %','Rp 400.000.000','#f7c9d6'],['Sari','cucu, lewat Budi','19,4 %','Rp 233.333.333','#9fdcbf'],['Dewi','istri Budi','8,3 %','Rp 100.000.000','var(--pasangan)']].map(baris).join('')}</div>
-      <p class="kecil redup">Selisih pembulatan Rp 1 dilaporkan terpisah, tidak dibagikan diam-diam.</p>
-    </section>
-    <section class="kartu tumpuk">
-      <div><h2 class="judul-kecil">Angka ini didapat dalam 3 tahap</h2>
+      <p class="kecil redup">Selisih pembulatan Rp 1 dilaporkan terpisah.</p></section>
+    <section class="kartu tumpuk"><div><h2 class="judul-kecil">Angka ini didapat dalam 3 tahap</h2>
       <p class="kecil redup" style="margin-top:4px">Mbah Sumi dan Budi wafat sebelum harta Mbah Karto dibagi. Jadi bagian mereka tidak berhenti di mereka, tapi dibagi lagi ke ahli waris masing-masing.</p></div>
-      <div class="tab-tahap" id="tabTahap">${TAHAP.map((x,i)=>`<button aria-pressed="${tahap===i+1}" data-t="${i+1}">${x.lbl} · ${x.kapan}</button>`).join('')}</div>
-      <div class="isi-tahap">
-        <div class="tumpuk" style="gap:10px">
-          <b>${t.judul}</b>
-          <div class="dibagi"><span>${t.dibagi[0]}</span><span>${t.dibagi[1]}</span></div>
-          <div>${t.terima.map(([n,r,rp,cat])=>`<div class="baris-hasil"><span><b>${n}</b> <span class="kecil redup">${r}</span>${cat?`<span class="lanjut-tahap">${cat}</span>`:''}</span><span class="kanan">${rp}</span></div>`).join('')}</div>
-          ${t.tidak?`<p class="kecil redup">Tidak menerima: ${t.tidak} <a>Kenapa?</a></p>`:''}
-        </div>
-        <div class="aliran">${aliranSvg()}</div>
-      </div>
-      <p class="istilah">Dalam fikih, pembagian bertahap seperti ini disebut <b>munasakhat</b>. <a>Pelajari</a> · <a>Lihat tabel lengkap</a></p>
-    </section>
-  </div>`;
+      <div class="tab-tahap" id="tabTahap">${TAHAP.map((x,i)=>`<button aria-pressed="${tahap===i+1}" data-t="${i+1}">${x.lbl}</button>`).join('')}</div>
+      <div class="isi-tahap"><div class="tumpuk" style="gap:10px"><b>${t.judul}</b><div class="dibagi"><span>${t.dibagi[0]}</span><span>${t.dibagi[1]}</span></div>
+        <div>${t.terima.map(([n,r,rp,c])=>`<div class="baris-hasil"><span><b>${n}</b> <span class="kecil redup">${r}</span>${c?`<span class="lanjut-tahap">${c}</span>`:''}</span><span class="kanan">${rp}</span></div>`).join('')}</div>
+        <details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Siapa yang tidak menerima di tahap ini?</summary><div>${t.tidak}</div></details></div>
+        <div>${aliranSvg()}</div></div>
+      <p class="kecil redup">Dalam fikih, pembagian bertahap seperti ini disebut <b style="color:var(--ink)">munasakhat</b>. <button class="tautan">Pelajari</button> · <button class="tautan">Tabel lengkap</button></p></section></div>`;
 }
 function aliranSvg(){
-  const g=tahap;
-  const node=(x,y,t,aktif)=>`<g transform="translate(${x-38},${y-14})"><rect width="76" height="28" rx="9" fill="${aktif?'#fff':'#f1f4ee'}" stroke="${aktif?'var(--ink)':'#c9d4c6'}"/><text x="38" y="18" text-anchor="middle" style="font:600 11px var(--font-sans);fill:${aktif?'var(--ink)':'#6b756e'}">${t}</text></g>`;
-  const a=(d,on)=>`<path class="${on?'alir':'garis'}" d="${d}"/>`;
-  return `<svg viewBox="0 0 360 196" role="img" aria-label="Aliran bagian ${TAHAP[g-1].lbl}">
-    ${a('M180 34 C180 70 70 70 70 96',g===1)}${a('M180 34 C180 70 180 70 180 96',g===1)}${a('M180 34 C180 70 290 70 290 96',g===1)}
-    ${a('M108 110 L142 110',g===2)}${a('M70 96 C70 60 290 60 290 96',g===2)}
-    ${a('M180 124 C180 150 70 150 70 166',g===3)}${a('M180 124 C180 150 180 150 180 166',g===3)}${a('M180 124 C180 150 290 150 290 166',g===3)}
-    ${node(180,22,'Mbah Karto',g===1)}${node(70,110,'Mbah Sumi',g<=2)}${node(180,110,'Budi',true)}${node(290,110,'Rina',g<=2)}
-    ${node(70,176,'Dewi',g===3)}${node(180,176,'Andi',g===3)}${node(290,176,'Sari',g===3)}</svg>`;
+  const g=tahap, node=(x,y,t,a)=>`<g transform="translate(${x-38},${y-14})"><rect width="76" height="28" rx="9" fill="${a?'#fff':'#f1f4ee'}" stroke="${a?'var(--ink)':'#c9d4c6'}"/><text x="38" y="18" text-anchor="middle" style="font:600 11px var(--font-sans);fill:${a?'var(--ink)':'#5f6963'}">${t}</text></g>`, a=(d,on)=>`<path class="${on?'alir':'garis'}" d="${d}"/>`;
+  return `<svg viewBox="0 0 360 196" role="img" aria-label="Aliran bagian tahap ${g}">${a('M180 34 C180 70 70 70 70 96',g===1)}${a('M180 34 C180 70 180 70 180 96',g===1)}${a('M180 34 C180 70 290 70 290 96',g===1)}${a('M108 110 L142 110',g===2)}${a('M70 96 C70 60 290 60 290 96',g===2)}${a('M180 124 C180 150 70 150 70 166',g===3)}${a('M180 124 C180 150 180 150 180 166',g===3)}${a('M180 124 C180 150 290 150 290 166',g===3)}
+    ${node(180,22,'Mbah Karto',g===1)}${node(70,110,'Mbah Sumi',g<=2)}${node(180,110,'Budi',true)}${node(290,110,'Rina',g<=2)}${node(70,176,'Dewi',g===3)}${node(180,176,'Andi',g===3)}${node(290,176,'Sari',g===3)}</svg>`;
 }
-function pasangHasil(){ document.querySelectorAll('#tabTahap button').forEach(b=>b.onclick=()=>{tahap=+b.dataset.t;gambar();}); }
+
+// ---------- contoh terisi ----------
+function isiContoh(){
+  const A=D.sk==='A'; D=awal(D.sk); D.jkDipilih=true; D.pintu=A?'lama':'baru';
+  const isi=(gid,milik,daftar)=>{D.anggota[gid]=daftar.map(([id,nama,jk,kel,peran,status,waktu,tahun])=>{D.orang[id]={nama,jk,kel,peran,status,waktu:waktu||null,tahun:tahun||'',relatif:milik};return id;});};
+  if (A){
+    D.grupJawab={'pas:p':{punya:true},'anak:p':{punya:true},'bersama:sumi':{punya:true},'pas:budi':{punya:true},'anak:budi':{punya:true}};
+    isi('pas:p','p',[['sumi','Mbah Sumi','P','pasangan','Istri 1','wafat','sesudah','']]);
+    isi('anak:p','p',[['slamet','Slamet','L','keturunan','Anak laki-laki 1','wafat','sebelum','±1970'],['budi','Budi','L','keturunan','Anak laki-laki 2','wafat','sesudah','1998'],['rina','Rina','P','keturunan','Anak perempuan 1','hidup']]);
+    isi('ot:p','p',[['ayah:p','','L','leluhur','Ayah Mbah Karto','wafat','sebelum'],['ibu:p','','P','leluhur','Ibu Mbah Karto','tahu']]);
+    isi('kn:p','p',[['kakek:p','','L','leluhur','Kakek (ayah dari ayah)','wafat','sebelum']]);
+    isi('ot:sumi','sumi',[['ayah:sumi','','L','leluhur','Ayah Mbah Sumi','wafat','sebelum'],['ibu:sumi','','P','leluhur','Ibu Mbah Sumi','wafat','sebelum']]);
+    isi('pas:budi','budi',[['dewi','Dewi','P','pasangan','Istri 1','hidup']]);
+    isi('anak:budi','budi',[['andi','Andi','L','keturunan','Anak laki-laki 1','hidup'],['sari','Sari','P','keturunan','Anak perempuan 1','hidup']]);
+  } else {
+    D.grupJawab={'pas:p':{punya:false},'anak:p':{punya:false},'sdr:p':{punya:true}};
+    isi('ot:p','p',[['ayah:p','','L','leluhur','Ayah Budi','wafat','sebelum','2010'],['ibu:p','','P','leluhur','Ibu Budi','hidup']]);
+    isi('kn:p','p',[['kakek:p','','L','leluhur','Kakek (ayah dari ayah)','wafat','sebelum']]);
+    isi('sdr:p','p',[['andi','Andi','L','saudara','Saudara laki-laki 1','hidup'],['rina','Rina','P','saudara','Saudara perempuan 1','hidup']]);
+  }
+}
 
 // ---------- umum ----------
-function toast(t){ const el=document.createElement('div'); el.className='toast'; el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(),3000); }
+function toast(t){ const el=document.createElement('div'); el.className='toast'; el.setAttribute('role','status'); el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(),3200); }
 function gambar(){
   gambarHero(); const l=document.getElementById('lembar');
   if (layar===1){ l.innerHTML=layarAlmarhum(); pasangAlmarhum(); }
-  if (layar===2){ l.innerHTML=`<div class="kartu" style="max-width:640px"><p>Langkah Harta tidak berubah di konsep ini (tumpukan harta = Tahap 6).</p><div class="bar-bawah"><button class="tautan" onclick="ke(1)">Kembali</button><button class="pil" onclick="ke(3)">Lanjut</button></div></div>`; }
+  if (layar===2){ l.innerHTML=`<div class="kartu" style="max-width:640px"><p>Langkah Harta tidak berubah di konsep ini (tumpukan harta = Tahap 6).</p></div>${barBawah('Lanjut: Keluarga','lanjut2','')}`; document.getElementById('lanjut2').onclick=()=>ke(3); }
   if (layar===3){ l.innerHTML=layarKeluarga(); pasangKeluarga(); }
   if (layar===4){ l.innerHTML=layarPeriksa(); pasangPeriksa(); }
-  if (layar===5){ l.innerHTML=layarHasil(); pasangHasil(); }
+  if (layar===5){ l.innerHTML=layarHasil()+barBawah('Simpan','simpan',''); document.querySelectorAll('#tabTahap button').forEach(b=>b.onclick=()=>{tahap=+b.dataset.t;gambar();}); }
+  const kb=document.getElementById('kembali'); if(kb) kb.onclick=()=>ke(Math.max(1,layar-1));
   gambarDialog();
 }
-document.querySelectorAll('#pilihContoh button').forEach(b=>b.onclick=()=>{ sk=b.dataset.sk; D=sk==='A'?contohA():contohB(); dialog=null; layar=1; tahap=1;
-  document.querySelectorAll('#pilihContoh button').forEach(x=>x.setAttribute('aria-pressed',x===b)); gambar(); });
-document.querySelectorAll('#pilihLebar button').forEach(b=>b.onclick=()=>{ document.body.classList.toggle('hp',b.dataset.lebar==='hp');
-  document.querySelectorAll('#pilihLebar button').forEach(x=>x.setAttribute('aria-pressed',x===b)); });
+const tandaiSaklar=(sel,b)=>document.querySelectorAll(sel+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));
+document.querySelectorAll('#pilihContoh button').forEach(b=>b.onclick=()=>{ D=awal(b.dataset.sk); layar=1; tahap=1; dialog=null; tandaiSaklar('#pilihContoh',b); tandaiSaklar('#pilihIsi',document.querySelector('#pilihIsi button')); gambar(); });
+document.querySelectorAll('#pilihIsi button').forEach(b=>b.onclick=()=>{ if(b.dataset.isi==='contoh'){isiContoh(); layar=3;} else { D=awal(D.sk); layar=1; } tandaiSaklar('#pilihIsi',b); gambar(); });
+document.querySelectorAll('#pilihLebar button').forEach(b=>b.onclick=()=>{ document.body.classList.toggle('hp',b.dataset.lebar==='hp'); tandaiSaklar('#pilihLebar',b); });
 gambar();
 </script>
 </body>
