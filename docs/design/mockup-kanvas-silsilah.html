@@ -133,6 +133,15 @@ body.hp .kol-pohon{position:static;order:-1}
 .cabang>.tautan[aria-expanded=true] .ik{transform:rotate(90deg)}
 .lencana-cabang{font:500 12px var(--font-sans);border:1px dashed #8d9a8a;border-radius:999px;padding:1px 8px;color:var(--ink-muted)}
 .isi-cabang{margin:6px 0 2px 18px;padding-left:16px;border-left:2px solid var(--divider);display:flex;flex-direction:column;gap:14px}
+.garis-waktu{grid-column:1/-1;display:flex;flex-direction:column;gap:10px;background:var(--surface);border-radius:16px;padding:12px 14px;margin-top:6px}
+.jalur-waktu{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:6px}
+.patok{display:inline-flex;flex-direction:column;align-items:center;font:600 12.5px var(--font-sans);min-width:70px;position:relative}
+.patok i{width:10px;height:10px;border-radius:50%;background:var(--ink);margin-bottom:3px}
+.patok small{font-weight:400;color:var(--ink-muted)}
+.celah{min-width:0;min-height:44px;border:1.5px dashed #8d9a8a;background:#fff;border-radius:12px;font:500 13px var(--font-sans);cursor:pointer;padding:6px 8px}
+.celah[aria-pressed=true]{border-style:solid;border-color:var(--primary);background:var(--primary);color:#fff}
+body.hp .jalur-waktu{grid-template-columns:1fr}
+body.hp .patok{flex-direction:row;gap:6px;justify-content:center}
 .dilewati{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink-muted);padding:10px 14px;border-radius:14px;background:var(--surface)}
 
 /* pohon */
@@ -339,14 +348,7 @@ function layarAlmarhum(){
           <input style="max-width:120px" inputmode="numeric" value="${D.tahunPemilik}">
           <div class="seg" id="kira"><button aria-pressed="${!D.kira}">Pasti</button><button aria-pressed="${D.kira}">Kira-kira</button></div>
         </div>
-        <button class="tautan kecil" style="align-self:flex-start" id="bukaJangkar">Tidak ingat tahunnya?</button>
-        <div class="jangkar" id="jangkar" hidden>
-          <p class="kecil"><b>Waktu itu kamu umur berapa, atau kelas berapa?</b> Kami hitung tahunnya dari tahun lahirmu.</p>
-          <div class="deret"><input style="max-width:120px;font:500 14px var(--font-sans);padding:8px 10px;border-radius:10px;border:1.5px solid var(--outline)" placeholder="mis. kelas 3 SD"></div>
-          <p class="kecil"><b>Atau: sebelum atau sesudah…</b></p>
-          <div class="cip"><button>Reformasi 1998</button><button>Tsunami Aceh 2004</button><button>Pandemi 2020</button></div>
-          <p class="kecil redup">Masih belum ingat? Kosongkan saja. Kalau urutannya penting, nanti kita tanyakan "siapa yang lebih dulu".</p>
-        </div>
+        <p class="kecil redup">Tidak ingat? Kosongkan saja. Kita hanya perlu tahu siapa yang wafat lebih dulu, bukan tanggalnya.</p>
       </div>
     </section>
     <section class="kartu tumpuk">
@@ -365,7 +367,6 @@ function pasangAlmarhum(){
   document.getElementById('lewatiSiapa').onclick=()=>{D.siapamu=null;gambar();};
   document.getElementById('namaPemilik').oninput=e=>{D.namaPemilik=e.target.value||'Almarhum';D.orang[D.pemilik].nama=D.namaPemilik;};
   document.querySelectorAll('#kira button').forEach((b,i)=>b.onclick=()=>{D.kira=i===1;gambar();});
-  document.getElementById('bukaJangkar').onclick=()=>{const j=document.getElementById('jangkar');j.hidden=!j.hidden;};
   document.querySelectorAll('#pintu .opsi').forEach(b=>b.onclick=()=>{D.pintu=b.dataset.k;gambar();});
   document.getElementById('lanjut1').onclick=()=>ke(3);
 }
@@ -382,7 +383,7 @@ function barisOrang(id, opsi={}){
   if (o.sebelum) catatan = `Wafat sebelum ${D.namaPemilik}, jadi tidak mewarisinya.`;
   if (id==='slamet') catatan += ' Anak-anak Slamet tidak perlu diisi: cucu tidak mendapat bagian selama ada anak laki-laki Mbah (Budi).';
   if (id==='ayah') catatan = 'Wafat sebelum Budi, jadi tidak mewarisinya.';
-  if (st==='wafat' && o.tahun==='' ) catatan = 'Tahun belum diisi. Kalau urutannya penting, kita tanyakan.';
+  if (st==='wafat' && o.tahun==='' && D.slot?.[id]===undefined) catatan = 'Tahun belum diisi. Kalau urutannya penting, kita tanyakan.';
   return `
   <div class="orang ${opsi.baru?'baru':''}" data-id="${id}">
     <span class="ava ${st}" style="background:${WARNA[o.kel]||'#fff'}">${inisial}</span>
@@ -394,7 +395,9 @@ function barisOrang(id, opsi={}){
         <button aria-pressed="${st==='tahu'}" data-v="tahu">Belum tahu</button>
       </div>
       ${st==='wafat'?`<label class="tahun">tahun <input value="${o.tahun||''}" placeholder="±…" data-tahun="${id}"></label>`:''}
+      ${st==='wafat'&&!o.tahun&&D.slot?.[id]===undefined?`<button class="tautan kecil" data-buka-slot="${id}">Tidak ingat tahunnya?</button>`:''}
     </div>
+    ${st==='wafat'&&!o.tahun&&D.slot?.[id]!==undefined?garisWaktu(id):''}
     ${catatan?`<p class="catatan-orang">${catatan}</p>`:''}
     ${cabang?`<div class="cabang">
       <button class="tautan" aria-expanded="${!!buka}" data-cabang="${id}"><svg class="ik"><use href="#i-kanan"/></svg>Keluarga ${o.nama}: pasangan dan anak-anaknya <span class="lencana-cabang">${o.cabang.length} orang</span></button>
@@ -436,7 +439,8 @@ function layarKeluarga(){
       ${penunjuk()}
       <p class="penenang">Wajar kalau tidak hafal semuanya. Isi yang kamu tahu; pilih "Belum tahu" untuk yang ragu.</p>
       ${kiri}
-      <div class="bar-bawah"><button class="tautan" onclick="ke(1)">Kembali</button><button class="pil" onclick="ke(4)">Lanjut ke Periksa</button></div>
+      <div class="bar-bawah"><button class="tautan" onclick="ke(1)">Kembali</button><button class="pil" onclick="ke(4)" ${sisaAntrean().length?'disabled':''}>Lanjut ke Periksa</button></div>
+      ${sisaAntrean().length?`<p class="kecil redup" style="text-align:right;margin-top:-6px">Jawab dulu ${sisaAntrean().length} hal yang memengaruhi hasil. "Belum tahu" juga boleh.</p>`:''}
     </div>
     <aside class="kol-pohon"><div class="kartu kartu-pohon" id="kartuPohon"><div class="bungkus-pohon">${pohon()}</div>
       <div class="kaki-pohon"><span><i style="background:var(--keturunan)"></i>hidup</span><span><i style="border:1.5px solid #9aa79a"></i>wafat</span><span><i style="border:1.5px dashed #7f8c7c"></i>belum tahu</span><button class="tautan pohon-penuh" onclick="this.closest('.kartu-pohon').classList.toggle('penuh')">Lihat pohon lengkap</button></div>
@@ -451,6 +455,13 @@ function pasangKeluarga(){
     gambar();
   }));
   document.querySelectorAll('[data-tahun]').forEach(i=>i.onchange=()=>{D.orang[i.dataset.tahun].tahun=i.value; if(i.dataset.tahun==='sumi'&&i.value) D.jawab.urut='tahun'; gambar();});
+  document.querySelectorAll('[data-buka-slot]').forEach(b=>b.onclick=()=>{D.slot={...D.slot,[b.dataset.bukaSlot]:null};gambar();});
+  document.querySelectorAll('[data-slot]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.slot, k=b.dataset.k; D.slot[id]=k;
+    // urutan dari garis waktu menjawab pertanyaan urutan di antrean; "tidak tahu" membiarkannya
+    if (id==='sumi') { if(k==='antara') D.jawab.urut='sumi'; else if(k==='sesudah') D.jawab.urut='budi'; else if(k==='sebelum') { D.jawab.urut='sebelum'; D.orang.sumi.sebelum=true; } else delete D.jawab.urut; if(k!=='sebelum') D.orang.sumi.sebelum=false; }
+    gambar();
+  });
   document.querySelectorAll('[data-cabang]').forEach(b=>b.onclick=()=>{const id=b.dataset.cabang;D.cabangBuka[id]=!D.cabangBuka[id];gambar();});
   const t = document.getElementById('tambah'), k = document.getElementById('kurang');
   if (t) t.onclick=()=>{ const id='baru'+(++D.tambahan); D.orang[id]={nama:`Anak ke-${D.anak.length+1}`,rel:'anak · ketuk untuk memberi nama',kel:'keturunan',status:'tahu'}; D.anak.push(id); gambar(); };
@@ -461,6 +472,23 @@ function pasangKeluarga(){
     const baris=document.querySelector(`.orang[data-id="${n.dataset.id}"]`);
     if(baris){baris.scrollIntoView({behavior:'smooth',block:'center'});baris.classList.add('sorot');setTimeout(()=>baris.classList.remove('sorot'),1400);}
   });
+}
+
+// garis waktu keluarga: jangkarnya kematian lain di kasus ini, jawabannya langsung jadi posisi di urutanWafat
+function garisWaktu(id){
+  const o = D.orang[id], pilih = D.slot[id];
+  const celah = [['sebelum','Sebelum Mbah Karto'],['antara','Antara Mbah Karto dan Budi'],['sesudah','Sesudah Budi']];
+  const tombol = ([k,t]) => `<button class="celah" aria-pressed="${pilih===k}" data-slot="${id}" data-k="${k}">${t}</button>`;
+  return `<div class="garis-waktu">
+    <p class="kecil"><b>Kapan ${o.nama} wafat, dibanding yang lain?</b> Cukup urutannya.</p>
+    <div class="jalur-waktu">
+      ${tombol(celah[0])}<span class="patok"><i></i>Mbah Karto<small>±1975</small></span>
+      ${tombol(celah[1])}<span class="patok"><i></i>Budi<small>1998</small></span>
+      ${tombol(celah[2])}
+    </div>
+    <button class="tautan kecil" data-slot="${id}" data-k="tahu">Tidak tahu juga</button>
+    ${pilih==='tahu'?`<p class="kecil redup">Tidak apa-apa. Kalau urutannya mengubah hasil, kita tanyakan sebagai "siapa yang lebih dulu".</p>`:''}
+  </div>`;
 }
 
 // ---------- pohon (SVG, tata letak tangan per contoh) ----------
