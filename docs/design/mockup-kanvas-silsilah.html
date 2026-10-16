@@ -732,7 +732,7 @@ function miniPohon(mayit, idx, U){
   // pohon kecil keadaan keluarga pada saat babak itu: yang sudah wafat dicoret, pusat = yang wafat di babak ini
   const atas=['ayah:'+mayit,'ibu:'+mayit].filter(id=>D.orang[id]);
   const pas=D.anggota['pas:'+mayit]||[]; const anak=D.anggota['anak:'+mayit] || (D.grupJawab['bersama:'+mayit]?.punya ? D.anggota['anak:'+D.pemilik]||[] : []);
-  const kotak=(id,x,y,peran)=>{ const k=id===mayit?'pusat':hidupSaat(id,idx,U); const nm=(D.orang[id].nama||D.orang[id].peran).replace(/ (Mbah \w+|Budi)$/,''); return `<g class="m ${k==='pusat'?'pusat':k==='mati'?'mati':'ahli'}" transform="translate(${x-34},${y-12})"><rect width="68" height="24" rx="8" fill="${k==='hidup'?(WARNA[D.orang[id].kel]||'#fff'):'#fff'}" ${k==='tahu'?'stroke-dasharray="3 3" stroke="#7f8c7c"':''}/><text x="34" y="16" text-anchor="middle">${nm.length>11?nm.slice(0,10)+'…':nm}</text></g>`; };
+  const kotak=(id,x,y,peran)=>{ const k=id===mayit?'pusat':hidupSaat(id,idx,U); const nm=(D.orang[id].nama||D.orang[id].peran).replace(/ (Mbah \w+|Budi)$/,'').replace('Anak laki-laki','Anak lk').replace('Anak perempuan','Anak pr'); return `<g class="m ${k==='pusat'?'pusat':k==='mati'?'mati':'ahli'}" transform="translate(${x-34},${y-12})"><rect width="68" height="24" rx="8" fill="${k==='hidup'?(WARNA[D.orang[id].kel]||'#fff'):'#fff'}" ${k==='tahu'?'stroke-dasharray="3 3" stroke="#7f8c7c"':''}/><text x="34" y="16" text-anchor="middle">${nm.length>12?nm.slice(0,11)+'…':nm}</text></g>`; };
   const W=230; let s=`<svg viewBox="0 0 ${W} 130" role="img" aria-label="Keluarga saat ${NAMA(mayit)} wafat">`;
   atas.forEach((id,i)=>{ s+=kotak(id, W/2+(i?40:-40), 16); }); if(atas.length) s+=`<path class="garis" d="M${W/2} 28 V44"/>`;
   const tengah=[mayit,...pas.slice(0,1)]; tengah.forEach((id,i)=>s+=kotak(id, W/2+(tengah.length>1?(i?40:-40):0), 56));
@@ -754,14 +754,25 @@ function babak(id, idx, U, sebelumnya){
   if (ortuTahu.length) teks += ` <em>${gabung(ortuTahu)}: belum dipastikan masih hidup atau tidak.</em>`;
   if (id!==P) teks += ` Bagian ${nm} dari harta ${NAMA(P)} kini menjadi milik keluarganya.`;
   const bisaGeser = id!==P && U.sesudah.includes(id) && U.sesudah.length>1;
-  const sunting = D.sunting===id ? `<div class="sunting-babak">
-      <label>Tahun wafat <input value="${o.tahun||''}" placeholder="boleh kosong" data-tahun-babak="${id}"></label>
-      ${bisaGeser?`<div class="deret"><span class="kecil">Urutan:</span><button class="aksi-teks" data-geser="${id}|-1" ${U.sesudah[0]===id?'disabled':''}><svg class="ik"><use href="#i-atas"/></svg>Lebih dulu</button><button class="aksi-teks" data-geser="${id}|1" ${U.sesudah.at(-1)===id?'disabled':''}><svg class="ik"><use href="#i-bawah"/></svg>Lebih akhir</button></div>`:''}
-      <button class="tautan kecil" style="align-self:flex-start" data-ke-keluarga="${id===P?'pas:'+P:'pas:'+id}">Ubah siapa yang ditinggalkan, di Keluarga</button>
-      <button class="aksi-teks" style="align-self:flex-end" data-tutup-sunting><svg class="ik"><use href="#i-cek"/></svg>Selesai</button></div>` : '';
+  // Ubah di babak: dipandu "apa yang keliru?", lalu diedit di tempat (sama dengan panel "Ada yang keliru?")
+  const sn=D.sunting?.id===id?D.sunting:null;
+  const orangBabak=[...(D.anggota['pas:'+id]||[]),...anakAll,'ayah:'+id,'ibu:'+id].filter(x=>D.orang[x]);
+  let isiSunting='';
+  if (sn && !sn.apa) isiSunting=`<span class="langkah-ubah">Apa yang keliru di babak ini?</span><div class="pilihan">${[
+      ['tahun',`Tahun wafat ${nm}`, o.tahun?`Sekarang: ${o.tahun}`:'Belum diisi'],
+      ...(bisaGeser?[['urutan',`Urutan: ${nm} wafat lebih dulu atau lebih akhir`,'']]:[]),
+      ['keadaan','Keadaan salah satu orang di babak ini','Misalnya ternyata masih hidup, atau sudah wafat lebih dulu'],
+      ['orang','Ada yang kurang atau berlebih','Tambah, hapus, atau ganti nama orang']].map(([v,t,x])=>`<button class="opsi" data-sunting-apa="${v}"><span class="titik"></span><span>${t}${x?`<small>${x}</small>`:''}</span></button>`).join('')}</div>`;
+  if (sn?.apa==='tahun') isiSunting=`<label>Tahun wafat ${nm} <input value="${o.tahun||''}" placeholder="kalau ingat" data-tahun-babak="${id}"></label>`;
+  if (sn?.apa==='urutan') isiSunting=`<span class="langkah-ubah">${nm} wafat…</span><div class="deret"><button class="aksi-teks" data-geser="${id}|-1" ${U.sesudah[0]===id?'disabled':''}><svg class="ik"><use href="#i-atas"/></svg>Lebih dulu</button><button class="aksi-teks" data-geser="${id}|1" ${U.sesudah.at(-1)===id?'disabled':''}><svg class="ik"><use href="#i-bawah"/></svg>Lebih akhir</button></div>`;
+  if (sn?.apa==='keadaan' && !sn.siapa) isiSunting=`<span class="langkah-ubah">Keadaan siapa?</span><div class="pilihan">${orangBabak.map(x=>`<button class="opsi" data-sunting-siapa="${x}"><span class="titik"></span><span>${NAMA(x)}</span></button>`).join('')}</div>`;
+  if (sn?.apa==='keadaan' && sn.siapa){ const x=D.orang[sn.siapa]; isiSunting=`<span class="langkah-ubah">Keadaan ${NAMA(sn.siapa)} sekarang?</span><div class="seg" data-ubah-keadaan="${sn.siapa}"><button data-v="hidup" aria-pressed="${x.status==='hidup'}">Masih hidup</button><button data-v="sebelum" aria-pressed="${x.status==='wafat'&&x.waktu==='sebelum'}">Wafat sebelum ${NAMA(x.relatif)}</button><button data-v="sesudah" aria-pressed="${x.status==='wafat'&&x.waktu==='sesudah'}">Wafat sesudah ${NAMA(x.relatif)}</button><button data-v="tahu" aria-pressed="${x.status==='tahu'}">Belum tahu</button></div>`; }
+  if (sn?.apa==='orang') isiSunting=`<span class="langkah-ubah">Bagian keluarga yang mana?</span><div class="pilihan">${grupList().filter(g=>g.milik===id&&!['urutan','kamu'].includes(g.jenis)).map(g=>`<button class="opsi" data-ke-keluarga="${g.id}"><span class="titik"></span><span>${judulGrup(g)}</span></button>`).join('')}</div>`;
+  const sunting = sn ? `<div class="sunting-babak">${isiSunting}
+      <div class="deret" style="justify-content:space-between">${sn.apa?`<button class="aksi-teks" data-sunting-mundur="${id}"><svg class="ik" style="width:15px;height:15px;transform:rotate(180deg)"><use href="#i-kanan"/></svg>Pilih yang lain</button>`:'<span></span>'}<button class="aksi-teks" data-tutup-sunting><svg class="ik"><use href="#i-cek"/></svg>Selesai</button></div></div>` : '';
   return `<article class="babak">
     <div class="kepala"><div><div class="tahun-besar">${o.tahun||'Tahun ?'}</div><div class="judul-babak">${nm} wafat${D.tunda.includes('urut')&&!tahunAngka(o.tahun)&&id!==P?' <span class="lanjut-tahap">urutan belum pasti</span>':''}</div></div>
-      ${D.sunting===id?'':`<button class="aksi-teks" data-sunting="${id}"><svg class="ik" style="width:15px;height:15px"><use href="#i-pensil"/></svg>Ubah</button>`}</div>
+      ${sn?'':`<button class="aksi-teks" data-sunting="${id}"><svg class="ik" style="width:15px;height:15px"><use href="#i-pensil"/></svg>Ubah</button>`}</div>
     <div class="tubuh"><p>${teks}</p><div class="mini-pohon">${miniPohon(id,idx,U)}</div></div>${sunting}</article>`;
 }
 function jeda(a,b){
@@ -842,16 +853,21 @@ function pasangPeriksaKasus(){
   document.getElementById('mundurUbah')?.addEventListener('click',()=>buka(()=>{D.ubah={};}));
   document.querySelectorAll('[data-apa]').forEach(b=>b.onclick=()=>buka(()=>{ if(b.dataset.apa==='peristiwa'){D.ubah=null;D.formPeristiwa={};} else D.ubah={apa:b.dataset.apa}; }));
   document.querySelectorAll('[data-siapa]').forEach(b=>b.onclick=()=>buka(()=>{D.ubah.siapa=b.dataset.siapa;}));
-  document.querySelectorAll('[data-ubah-keadaan] button').forEach(b=>b.onclick=()=>buka(()=>{ const x=D.orang[D.ubah.siapa], v=b.dataset.v;
+  document.querySelectorAll('.ubah-panel [data-ubah-keadaan] button').forEach(b=>b.onclick=()=>buka(()=>{ const x=D.orang[D.ubah.siapa], v=b.dataset.v;
     if(v==='hidup'||v==='tahu'){x.status=v;x.waktu=null;} else {x.status='wafat';x.waktu=v;} toast(`Tersimpan: ${NAMA(D.ubah.siapa)}. Kisah ikut berubah.`); D.ubah=null; }));
-  document.querySelectorAll('[data-waktu-siapa]').forEach(b=>b.onclick=()=>{ const id=b.dataset.waktuSiapa; D.ubah=null; D.sunting=id; gambar(); document.querySelector(`[data-tahun-babak="${id}"]`)?.closest('.babak')?.scrollIntoView({behavior:'smooth',block:'center'}); });
+  document.querySelectorAll('.sunting-babak [data-ubah-keadaan] button').forEach(b=>b.onclick=()=>buka(()=>{ const x=D.orang[D.sunting.siapa], v=b.dataset.v;
+    if(v==='hidup'||v==='tahu'){x.status=v;x.waktu=null;} else {x.status='wafat';x.waktu=v;} toast(`Tersimpan: ${NAMA(D.sunting.siapa)}. Kisah ikut berubah.`); D.sunting=null; }));
+  document.querySelectorAll('[data-waktu-siapa]').forEach(b=>b.onclick=()=>{ const id=b.dataset.waktuSiapa; D.ubah=null; D.sunting={id,apa:'tahun'}; gambar(); document.querySelector(`[data-tahun-babak="${id}"]`)?.closest('.babak')?.scrollIntoView({behavior:'smooth',block:'center'}); });
   document.querySelectorAll('[data-bagian]').forEach(b=>b.onclick=()=>{ D.ubah=null; D.buka=b.dataset.bagian; D.dariPeriksa=true; layar=3; gambar(); window.scrollTo({top:0}); });
   if (D.formPeristiwa) document.getElementById('formPeristiwa')?.scrollIntoView({block:'center'});
   document.querySelectorAll('[data-cepat-status]').forEach(sg=>sg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const o=D.orang[sg.dataset.cepatStatus];
     if (b.dataset.v==='hidup') o.status='hidup'; else { o.status='wafat'; o.waktu=b.dataset.v; } toast(`Tersimpan: ${o.nama||o.peran}.`); gambar(); }));
   document.querySelectorAll('[data-cepat-urut] button').forEach(b=>b.onclick=()=>{ D.tunda=D.tunda.filter(x=>x!=='urut'); D.jawab.urut=b.dataset.v; toast('Urutan tersimpan. Kisah di bawah ikut berubah.'); gambar(); });
   document.querySelectorAll('[data-lihat]').forEach(b=>b.onclick=()=>{ const id=b.dataset.lihat; const g=Object.keys(D.anggota).find(k=>D.anggota[k].includes(id)); D.buka=g; D.sorot=id; D.dariPeriksa=true; layar=3; gambar(); });
-  document.querySelectorAll('[data-sunting]').forEach(b=>b.onclick=()=>{D.sunting=b.dataset.sunting;gambar();});
+  document.querySelectorAll('[data-sunting]').forEach(b=>b.onclick=()=>{D.sunting={id:b.dataset.sunting};gambar();});
+  document.querySelectorAll('[data-sunting-apa]').forEach(b=>b.onclick=()=>{D.sunting.apa=b.dataset.suntingApa;gambar();});
+  document.querySelectorAll('[data-sunting-siapa]').forEach(b=>b.onclick=()=>{D.sunting.siapa=b.dataset.suntingSiapa;gambar();});
+  document.querySelectorAll('[data-sunting-mundur]').forEach(b=>b.onclick=()=>{D.sunting={id:b.dataset.suntingMundur};gambar();});
   document.querySelectorAll('[data-tutup-sunting]').forEach(b=>b.onclick=()=>{D.sunting=null;gambar();});
   document.querySelectorAll('[data-tahun-babak]').forEach(i=>i.onchange=()=>{D.orang[i.dataset.tahunBabak].tahun=i.value; D.urutanManual=null; gambar();});
   document.querySelectorAll('[data-geser]').forEach(b=>b.onclick=()=>{ const [id,d]=b.dataset.geser.split('|'); const u=urutanKematian().sesudah, k=u.indexOf(id), j=k+Number(d); if(j<0||j>=u.length) return;
