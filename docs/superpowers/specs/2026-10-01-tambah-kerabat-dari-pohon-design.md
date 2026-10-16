@@ -1,5 +1,7 @@
 # Tambah kerabat dari pohon (Tahap 4)
 
+> **Catatan 2026-10-16:** menu orang di pohon tidak lagi menjadi jalan utama mengisi keluarga (`docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md` 5.11). Tambah dengan nama hubungan tetap dipakai lewat "Tetap isi kerabat lain".
+
 Memotong bagian 5.1 dan 5.2 dari `2026-10-01-perjalanan-keresahan-design.md` menjadi satu pekerjaan yang bisa
 dibangun sekarang. Rencana tahapnya: `docs/design/rencana-pengalaman-dan-fitur.md`, Tahap 4.
 
