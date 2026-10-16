@@ -52,14 +52,15 @@ Selesai bila:
 
 Layar pertama Lab Hitung (sebelum stepper): **"Mau menghitung apa?"**, berisi dua kartu pilihan.
 
-| Pilihan (teks) | `Kasus.tujuan` | Isian keluarga | Periksa | Lainnya |
+| Pilihan (teks) | `Kasus.jenisKasus` | Isian keluarga | Periksa | Lainnya |
 |---|---|---|---|---|
 | Belajar atau latihan soal | `'latihan'` | Isian cepat per ahli waris (bagian 6) | Ringkasan per mayit | Istilah fikih tampil; semua data dianggap pasti; tanpa "Belum tahu" |
-| Kasus keluarga sungguhan | `'kasus'` | Kanvas wawancara (bagian 5) | Kisah (bagian 7) | Boleh "Belum tahu"; salin pertanyaan ke WA |
+| Kasus keluarga sungguhan | `'nyata'` | Kanvas wawancara (bagian 5) | Kisah (bagian 7) | Boleh "Belum tahu"; salin pertanyaan ke WA |
 
 - Ini **pilihan tujuan**, bukan mode yang bisa diganti di tengah jalan. Datanya tetap satu (`Kasus`).
-- Nama `'latihan'` dipilih supaya tidak bentrok dengan **mode Belajar (tebakan) di Hasil** yang sudah ada.
-- Beranda yang membuka Lab dari situasi (spec perjalanan-keresahan 6.1) langsung mengisi `tujuan: 'kasus'`.
+- Nama field `jenisKasus` dan nilai `'latihan'`/`'nyata'` dipilih supaya tidak bentrok dengan state app `tujuan: 'hitung' | 'belajar'`
+  dan **mode Belajar (tebakan) di Hasil** yang sudah ada.
+- Beranda yang membuka Lab dari situasi (spec perjalanan-keresahan 6.1) langsung mengisi `jenisKasus: 'nyata'`.
 
 ## 4. Langkah 1 · Almarhum
 
@@ -74,7 +75,7 @@ Layar pertama Lab Hitung (sebelum stepper): **"Mau menghitung apa?"**, berisi du
 - Ketika tumpukan harta (Tahap 6) dibangun, pertanyaan "masih utuh?" per barang menggantikan jawaban "Sudah pernah dibagi"
   untuk barang tertentu. Pertanyaan pintu tetap ada untuk harta almarhum pertama.
 
-## 5. Langkah 3 · Keluarga (tujuan `kasus`): kanvas wawancara
+## 5. Langkah 3 · Keluarga (`jenisKasus: 'nyata'`): kanvas wawancara
 
 ### 5.1 Susunan layar
 
@@ -204,7 +205,7 @@ Kasus v3 dari alur Babak dibuka di kanvas lewat migrasi (9.2). Semua bagian yang
 - Kerabat bukan ahli waris (mertua, besan, anak tiri) ditambahkan lewat "Tetap isi kerabat lain" → "Tambah dengan nama
   hubungan" (`DialogTambahHubungan`, spec perjalanan-keresahan 5.2).
 
-## 6. Langkah 3 · Ahli waris (tujuan `latihan`)
+## 6. Langkah 3 · Ahli waris (`jenisKasus: 'latihan'`)
 
 - Stepper menamai langkah ini "Ahli waris".
 - Satu **kartu per mayit**:
@@ -219,7 +220,7 @@ Kasus v3 dari alur Babak dibuka di kanvas lewat migrasi (9.2). Semua bagian yang
   ditawarkan otomatis seperti "Dari orang yang sudah ada" di alur lama.
 - Periksa latihan: ringkasan per mayit + "Ubah" per mayit. Tanpa kisah.
 
-## 7. Langkah 4 · Periksa (tujuan `kasus`)
+## 7. Langkah 4 · Periksa (`jenisKasus: 'nyata'`)
 
 Urutan isinya, mengikuti pertanyaan di kepala pengguna:
 
@@ -291,10 +292,15 @@ diuji sebagai invarian pada galeri fixture (spec perjalanan-keresahan 5.5, P1–
 
 ```ts
 type Kelompok = 'pasangan' | 'anak' | 'orangTua' | 'kakekNenek' | 'saudara' | 'jauh' | 'anakBersama' | 'halLain';
-interface Peristiwa { jenis: 'lahir' | 'nikah' | 'cerai'; idOrang: IdOrang; sesudahWafat: IdOrang }
+type Peristiwa =
+  | { jenis: 'lahir'; idOrang: IdOrang; sesudahWafat: IdOrang }
+  | { jenis: 'nikah' | 'cerai'; idOrang: IdOrang; idPasangan: IdOrang; sesudahWafat: IdOrang };
+type HalBelumPasti =
+  | { jenis: 'urutan'; a: IdOrang; b: IdOrang; bersamaan: boolean }
+  | { jenis: 'lahir'; anak: IdOrang; almarhum: IdOrang };
 
 interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresahan 7:
-  tujuan: 'latihan' | 'kasus';
+  jenisKasus: 'latihan' | 'nyata';
   // − jalur                     (dihapus: satu kanvas)
   pintu?: 'baru' | 'lama' | 'sudah' | 'tidakTahu';     // tanpa bawaan; kosong = belum dijawab
   /** Bagian yang sudah dijawab per orang ("Tidak" juga jawaban). Khusus UI. */
@@ -305,7 +311,9 @@ interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresa
   saya?: IdOrang | null;
   waktu?: Record<IdOrang, { wafat?: TanggalKira; lahir?: TanggalKira }>;   // tetap
   peristiwa?: Peristiwa[];
-  belumPasti?: HalBelumPasti[];  // tetap; "Belum tahu" di urutan masuk ke sini
+  /** Orang di urutanWafat yang posisinya sudah dipastikan lewat pertanyaan berpasangan atau diatur di kisah. Khusus UI. */
+  urutanDijawab?: IdOrang[];
+  belumPasti?: HalBelumPasti[];  // "Belum tahu" di urutan masuk ke sini
 }
 ```
 
@@ -318,7 +326,7 @@ interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresa
 
 ### 9.2 Migrasi v3 → v4
 
-- `tujuan: 'kasus'`.
+- `jenisKasus: 'nyata'`.
 - Graf, `urutanWafat`, `dikandungSetelahWafat`, `gharqa`, `wafatSesudahDibagi` dipakai apa adanya.
 - `kelompokDijawab` diisi untuk setiap almarhum dan setiap kelompok yang punya anggota. Kelompok tanpa anggota juga
   dianggap dijawab "Tidak", karena checklist lama memang menanyakan semua peran.
@@ -338,7 +346,7 @@ interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresa
   `ponytail:` tanpa memo; tambah memo per graf bila terasa lambat.
 
 `kelompok.ts`: urutan bagian (5.2) + bagian mana yang tampil (lewat uji) + kalimat alasan bagian yang dilewati
-(templat diksi). `antrean.ts`: pertanyaan urutan dan kelahiran yang tersisa.
+(templat diksi). `antreanUrutan.ts` (nama `antrean.ts` sudah dipakai modul akun): pertanyaan urutan yang tersisa.
 
 ## 10. Unit
 
@@ -346,7 +354,7 @@ interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresa
 |---|---|
 | `src/kasus.ts` | `Kasus` v4, migrasi v3→v4, `bacaKasus` |
 | `src/silsilah.ts` | `turunkanDariWaktu` (tahun, jawaban berpasangan, peristiwa → data engine) |
-| `src/ujiHipotetis.ts`, `src/kelompok.ts`, `src/antrean.ts` | 9.3 |
+| `src/ujiHipotetis.ts`, `src/kelompok.ts`, `src/antreanUrutan.ts` | 9.3 |
 | `src/layar/PintuLab.tsx` | Bagian 3 |
 | `src/layar/keluarga/KanvasKeluarga.tsx` | 5.1, susunan + peta bagian (`PetaBagian.tsx`) |
 | `src/layar/keluarga/KartuBagian.tsx`, `BarisOrang.tsx`, `PenghitungOrang.tsx`, `BagianUrutan.tsx`, `BagianKamu.tsx`, `BagianHalLain.tsx` | 5.2–5.8 |
@@ -370,7 +378,7 @@ interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresa
    - paman tidak ditanya bila ada saudara laki-laki;
    - cucu dari anak yang wafat lebih dulu tidak ditanya bila ada anak laki-laki;
    - `PERLU_INPUT` → tetap ditanya.
-3. **`antrean`:** semua tahun ada → 0 pertanyaan urutan; "Belum tahu" → `belumPasti`, bagian dianggap selesai.
+3. **`antreanUrutan`:** semua tahun ada → 0 pertanyaan urutan; "Belum tahu" → `belumPasti`, bagian dianggap selesai.
 4. **`turunkanDariWaktu`:** tahun → sebelum/sesudah; tahun dan jawaban berpasangan memberi `urutanWafat` yang sama;
    peristiwa lahir → `dikandungSetelahWafat`.
 5. **Migrasi:** kasus Babak v3 (fixture lama) → v4 menghasilkan **input engine identik**.
@@ -393,7 +401,7 @@ interface Kasus {               // v4; perubahan terhadap spec perjalanan-keresa
 3. `tataLetak` dengan syarat 8, dibangun dulu karena dipakai tiga tempat.
 4. `ujiHipotetis` → `kelompok` → `antrean` → `turunkanDariWaktu`.
 5. Pintu + langkah 1.
-6. Kanvas Keluarga (`kasus`) → hapus kode babak.
+6. Kanvas Keluarga (`nyata`) → hapus kode babak.
 7. Latihan (`latihan`).
 8. Periksa: belum pasti → ubah dipandu → kisah → peristiwa.
 
