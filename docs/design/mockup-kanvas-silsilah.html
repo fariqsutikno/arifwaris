@@ -78,9 +78,10 @@ body.hp .pilihan.dua{grid-template-columns:1fr}
 .isian{display:flex;flex-direction:column;gap:6px}
 .isian>span{font-weight:600}
 .isian input{font:500 16px var(--font-sans);padding:11px 14px;border-radius:14px;border:1.5px solid var(--outline);background:#fff;min-height:46px;width:100%}
-.seg{display:inline-flex;align-self:flex-start;background:var(--surface);border-radius:999px;padding:2px;flex-wrap:nowrap;white-space:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:none}
-.seg button{border:0;background:none;border-radius:999px;padding:6px 12px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink-muted);min-height:34px}
-.seg button[aria-pressed=true]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14);font-weight:600}
+.seg{display:flex;align-self:flex-start;flex-wrap:wrap;gap:4px;max-width:100%}
+.seg button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:6px 12px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink);min-height:36px;white-space:nowrap}
+.seg button:hover{border-color:var(--outline)}
+.seg button[aria-pressed=true]{background:var(--primary);color:#fff;font-weight:600}
 .seg.besar button{padding:9px 18px;font-size:15px;min-height:42px}
 
 /* kanvas */
@@ -270,6 +271,25 @@ body.hp .babak .tubuh{grid-template-columns:1fr}
 .m.mati text{fill:#5f6963;text-decoration:line-through}
 .m.pusat rect{fill:#fff;stroke:var(--ink);stroke-width:2}
 .m.ahli rect{stroke:rgba(0,0,0,.1)}
+
+/* ---- v5 ---- */
+.langkah-bagian{display:flex;flex-wrap:wrap;gap:4px 0;margin:0;padding:0;list-style:none;font-size:13px;color:var(--ink-muted)}
+.langkah-bagian li{display:inline-flex;align-items:center;gap:4px}
+.langkah-bagian li+li::before{content:"›";margin:0 8px;color:#9aa49c}
+.langkah-bagian li.selesai{color:var(--ink)}
+.langkah-bagian li.selesai .ik{width:14px;height:14px;color:#1b7a4c}
+.langkah-bagian li.aktif{color:var(--ink);font-weight:700}
+.kapan{display:flex;flex-direction:column;gap:6px;padding-left:10px;border-left:2px solid var(--divider)}
+.kapan .tahun{flex-direction:row;align-items:center;gap:8px}
+.ubah-panel{display:flex;flex-direction:column;gap:12px}
+.ubah-panel .langkah-ubah{font:600 13px var(--font-sans);color:var(--ink-muted)}
+.peristiwa{display:flex;align-items:center;gap:8px;padding:8px 12px;margin:4px 0;border-radius:14px;background:var(--surface);font-size:14px}
+.form-peristiwa{display:flex;flex-direction:column;gap:10px;background:var(--surface);border-radius:16px;padding:14px}
+.form-peristiwa select{font:500 14px var(--font-sans);padding:8px 10px;border-radius:10px;border:1.5px solid var(--outline);background:#fff;max-width:320px}
+.tabel-mayit{width:100%;border-collapse:collapse;font-size:14px}
+.tabel-mayit th,.tabel-mayit td{padding:8px 10px;border-top:1px solid var(--divider);text-align:left}
+.tabel-mayit th{font-weight:600;color:var(--ink-muted);font-size:12.5px}
+.tabel-mayit td.angka,.tabel-mayit th.angka{text-align:right;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
@@ -348,14 +368,15 @@ function grupList(){
   [...(D.anggota['pas:'+P]||[]).map(id=>[id,'pasangan']), ...(D.anggota['anak:'+P]||[]).map(id=>[id,'anak'])]
     .filter(([id])=>o[id]?.status==='wafat' && o[id].waktu==='sesudah').forEach(([id,c])=>untuk(id,c));
   if (antreanUrutan().length || 'urut' in D.jawab || D.tunda.includes('urut')) G.push({id:'urutan', milik:P, jenis:'urutan'});
+  G.push({id:'kamu', milik:P, jenis:'kamu'});
   return G;
 }
-const awalCabang = g => g.milik!==D.pemilik && g.jenis!=='urutan' && grupList().find(x=>x.milik===g.milik)?.id===g.id;
+const awalCabang = g => g.milik!==D.pemilik && g.jenis!=='urutan' && g.jenis!=='kamu' && grupList().find(x=>x.milik===g.milik)?.id===g.id;
 function judulGrup(g){
   const m=NAMA(g.milik);
-  return {pasangan:`${D.orang[g.milik].jk==='L'?'Istri':'Suami'} ${m}`, anak:`Anak ${m}`, orangTua:`Orang tua ${m}`, kakekNenek:`Kakek dan nenek ${m}`, saudara:`Saudara ${m}`, anakBersama:`Anak ${m}`, urutan:'Urutan wafat'}[g.jenis];
+  return {pasangan:`${D.orang[g.milik].jk==='L'?'Istri':'Suami'} ${m}`, anak:`Anak ${m}`, orangTua:`Orang tua ${m}`, kakekNenek:`Kakek dan nenek ${m}`, saudara:`Saudara ${m}`, anakBersama:`Anak ${m}`, urutan:'Urutan wafat', kamu:'Kamu (boleh dilewati)'}[g.jenis];
 }
-const judulPendek = g => ({pasangan:D.orang[g.milik].jk==='L'?'Istri':'Suami', anak:'Anak', orangTua:'Orang tua', kakekNenek:'Kakek-nenek', saudara:'Saudara', anakBersama:'Anak', urutan:'Urutan wafat'}[g.jenis]) + (g.milik!==D.pemilik&&g.jenis!=='urutan'?` ${NAMA(g.milik)}`:'');
+const judulPendek = g => ({pasangan:D.orang[g.milik].jk==='L'?'Istri':'Suami', anak:'Anak', orangTua:'Orang tua', kakekNenek:'Kakek-nenek', saudara:'Saudara', anakBersama:'Anak', urutan:'Urutan wafat', kamu:'Kamu'}[g.jenis]) + (g.milik!==D.pemilik&&g.jenis!=='urutan'&&g.jenis!=='kamu'?` ${NAMA(g.milik)}`:'');
 function barisTetap(g){
   const m=g.milik, n=NAMA(m);
   if (g.jenis==='orangTua') return [['ayah:'+m,'L',`Ayah ${n}`],['ibu:'+m,'P',`Ibu ${n}`]];
@@ -381,9 +402,10 @@ function labelBaru(g,jk,i){
   if (g.jenis==='pasangan') return D.orang[g.milik].jk==='L'?`Istri ${i}`:'Suami';
   return `${{anak:jk==='L'?'Anak laki-laki':'Anak perempuan', saudara:jk==='L'?'Saudara laki-laki':'Saudara perempuan'}[g.jenis]} ${i}`;
 }
-const barisLengkap = id => { const o=D.orang[id]; return !!o.status && (o.status!=='wafat'||!!o.waktu) && (o.status!=='lain'||!!o.khusus); };
+const barisLengkap = id => { const o=D.orang[id]; return !!o.status && (o.status!=='wafat'||!!o.waktu) && (o.status!=='lain'||(!!o.khusus&&!!o.lanjutan)); };
 function grupLengkap(g){
   if (g.jenis==='urutan') return !antreanUrutan().length;
+  if (g.jenis==='kamu') return !!D.sayaDijawab;
   const j=D.grupJawab[g.id]||{}, ids=D.anggota[g.id]||[];
   if (g.jenis==='anakBersama') return j.punya!=null;
   if (barisTetap(g)) return ids.length>0 && ids.every(barisLengkap);
@@ -462,32 +484,59 @@ function pasangAlmarhum(){
 }
 
 // =================== 3a. Keluarga (kasus) ===================
-const KHUSUS = o => [['hilang','Hilang, tidak ada kabar'],['kandungan','Masih dalam kandungan'],['khuntsa','Kelaminnya belum jelas'],...(o.kel==='pasangan'?[['cerai','Sudah bercerai']]:[])];
+// pilihan khusus menyesuaikan orangnya; bila hanya satu, tampil langsung (bukan "Lainnya")
+const KHUSUS = o => o.kel==='leluhur' ? [['hilang','Hilang tanpa kabar']]
+  : o.kel==='pasangan' ? [['hilang','Hilang tanpa kabar'],['cerai','Sudah bercerai']]
+  : [['hilang','Hilang tanpa kabar'],['kandungan','Masih dalam kandungan'],['khuntsa','Kelaminnya belum jelas']];
+// tiap keadaan khusus punya satu pertanyaan lanjutan (di produk: dialog keadaan yang sudah ada)
+const LANJUTAN = {
+  hilang:['Sudah ada putusan pengadilan bahwa ia dianggap wafat?',['Belum ada','Sudah ada']],
+  kandungan:['Bayinya sudah lahir?',['Belum lahir','Sudah lahir']],
+  khuntsa:['Sudah dewasa (baligh)?',['Belum','Sudah']],
+  cerai:o=>[`Waktu ${NAMA(o.relatif)} wafat, masa iddahnya sudah selesai?`,['Belum selesai','Sudah selesai']],
+};
+const ARTI = {hidup:'Masih ada sampai hari ini.', wafat:'Sudah meninggal, kapan pun itu.', tahu:'Kamu tidak yakin. Nanti bisa ditanyakan ke keluarga.',
+  hilang:'Pergi tanpa kabar; tidak diketahui masih hidup atau tidak.', lain:'Keadaan khusus; jenisnya dipilih sesudah ini.'};
+function pilihanKeadaan(o){
+  const k=KHUSUS(o), satu=k.length===1;
+  return [['hidup','Masih hidup'],['wafat','Sudah wafat'],['tahu','Belum tahu'], satu?['lain:'+k[0][0],k[0][1]]:['lain','Lainnya']];
+}
 function barisOrang(id){
   const o=D.orang[id], st=o.status||'kosong', rel=NAMA(o.relatif), kurang=D.tandai&&!barisLengkap(id);
-  const inisial=(o.nama||o.peran).split(' ').map(x=>x[0]).join('').slice(0,2);
+  const inisial=(o.nama||o.peran).split(' ').map(x=>x[0]).join('').slice(0,2), tRel=D.orang[o.relatif]?.tahun;
+  const otomatis=o.status==='wafat'&&tahunAngka(o.tahun)&&tahunAngka(tRel)&&tahunAngka(o.tahun)!==tahunAngka(tRel);
+  const k=KHUSUS(o), lj=o.khusus&&LANJUTAN[o.khusus], [ljTanya,ljOpsi]=lj?(typeof lj==='function'?lj(o):lj):[];
+  const pilih=pilihanKeadaan(o).map(([v,t])=>{const aktif=v===o.status||(v.startsWith('lain:')&&o.status==='lain'); return `<button aria-pressed="${aktif}" data-v="${v}">${t}</button>`;}).join('');
   return `<div class="orang ${kurang?'kurang':''} ${D.sorot===id?'sorot-baris':''}" data-id="${id}">
     <span class="ava ${st==='lain'?'tahu':st}" style="background:${WARNA[o.kel]||'#fff'}">${inisial}</span>
     <div class="kol-orang">
       <div><div class="peran">${o.peran}${D.saya===id?'<span class="lencana-kamu">kamu</span>':''}</div>
         <input class="nama-isi" value="${o.nama}" placeholder="Nama, boleh kosong" data-nama="${id}" aria-label="Nama ${o.peran}"></div>
       <span class="keadaan-label" id="kd-${id}">Keadaannya sekarang?</span>
-      <div class="seg" data-status="${id}" role="radiogroup" aria-labelledby="kd-${id}">
-        <button aria-pressed="${o.status==='hidup'}" data-v="hidup">Masih hidup</button><button aria-pressed="${o.status==='wafat'}" data-v="wafat">Sudah wafat</button><button aria-pressed="${o.status==='tahu'}" data-v="tahu">Belum tahu</button><button aria-pressed="${o.status==='lain'}" data-v="lain">Lainnya</button></div>
-      ${o.status==='wafat'?`<span class="keadaan-label" id="wk-${id}">Wafatnya sebelum atau sesudah ${rel}?</span>
-        <div class="deret"><div class="seg" data-waktu="${id}" role="radiogroup" aria-labelledby="wk-${id}"><button aria-pressed="${o.waktu==='sebelum'}" data-v="sebelum">Sebelum</button><button aria-pressed="${o.waktu==='sesudah'}" data-v="sesudah">Sesudah</button></div>
-        <label class="tahun">tahun <input value="${o.tahun||''}" placeholder="boleh kosong" style="width:110px" data-tahun="${id}"></label></div>`:''}
+      <div class="seg" data-status="${id}" role="radiogroup" aria-labelledby="kd-${id}">${pilih}</div>
+      ${o.status==='wafat'?`<div class="kapan">
+        <label class="tahun"><span class="keadaan-label">Tahun wafatnya</span><input value="${o.tahun||''}" placeholder="kalau ingat" style="width:110px" data-tahun="${id}"></label>
+        ${otomatis?`<span class="kecil redup">Berarti <b>${o.waktu}</b> ${rel} wafat (${tRel}).</span>`
+          :`<span class="keadaan-label" id="wk-${id}">${o.tahun?`Tahun ${rel} wafat belum diisi, jadi pilih:`:'Tidak ingat tahunnya? Pilih saja:'} wafat sebelum atau sesudah ${rel}?</span>
+          <div class="seg" data-waktu="${id}" role="radiogroup" aria-labelledby="wk-${id}"><button aria-pressed="${o.waktu==='sebelum'}" data-v="sebelum">Sebelum</button><button aria-pressed="${o.waktu==='sesudah'}" data-v="sesudah">Sesudah</button></div>`}</div>`:''}
       ${o.status==='tahu'?`<p class="kecil redup">Tidak apa-apa. Pertanyaan ini muncul lagi di Periksa dan bisa dikirim ke keluarga.</p>`:''}
-      ${o.status==='lain'?`<div class="pilihan-lain" data-khusus="${id}">${KHUSUS(o).map(([k,t])=>`<button aria-pressed="${o.khusus===k}" data-v="${k}">${t}</button>`).join('')}</div>`:''}
-      ${kurang?`<span class="salah">${!o.status?'Pilih keadaannya.':o.status==='wafat'?`Sebelum atau sesudah ${rel}?`:'Pilih salah satu keadaan.'}</span>`:''}
+      ${o.status==='lain'&&k.length>1?`<div class="pilihan-lain" data-khusus="${id}">${k.map(([v,t])=>`<button aria-pressed="${o.khusus===v}" data-v="${v}">${t}</button>`).join('')}</div>`:''}
+      ${lj?`<span class="keadaan-label">${ljTanya}</span><div class="seg" data-lanjutan="${id}">${ljOpsi.map(t=>`<button aria-pressed="${o.lanjutan===t}" data-v="${t}">${t}</button>`).join('')}</div>`:''}
+      ${kurang?`<span class="salah">${!o.status?'Pilih keadaannya.':o.status==='wafat'?`Isi tahunnya, atau pilih sebelum/sesudah ${rel}.`:o.status==='lain'&&!o.khusus?'Pilih jenis keadaannya.':'Jawab pertanyaan lanjutannya.'}</span>`:''}
     </div>
     <button class="aksi-teks hapus" data-hapus="${id}" aria-label="Hapus ${o.nama||o.peran}"><svg class="ik" style="width:15px;height:15px"><use href="#i-sampah"/></svg>Hapus</button>
   </div>`;
 }
+function bantuanKeadaan(ids){
+  // hanya pilihan yang benar-benar tampil di bagian ini, satu baris per pilihan
+  if (!ids.length) return '';
+  const v=[...new Set(ids.flatMap(id=>pilihanKeadaan(D.orang[id]).map(([k])=>k.startsWith('lain:')?k.slice(5):k)))];
+  return `<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Bingung memilih?</summary><div>${v.map(k=>`<span><b>${{hidup:'Masih hidup',wafat:'Sudah wafat',tahu:'Belum tahu',lain:'Lainnya',hilang:'Hilang tanpa kabar'}[k]}</b>: ${ARTI[k]}</span>`).join('')}</div></details>`;
+}
 function ringkasan(g){
   const ids=D.anggota[g.id]||[], j=D.grupJawab[g.id]||{};
   const ket=o=>o.status==='wafat'?` (wafat${o.tahun?' '+o.tahun:''})`:o.status==='tahu'?' (belum tahu)':o.status==='lain'?` (${KHUSUS(o).find(k=>k[0]===o.khusus)?.[1].toLowerCase()})`:'';
-  const isi = g.jenis==='urutan' ? (D.tunda.includes('urut')?'Belum tahu, ditanyakan di Periksa':D.jawab.urut==='sebelum'?'Mbah Sumi lebih dulu':'Budi lebih dulu')
+  const isi = g.jenis==='kamu' ? (D.saya?`Saya ${NAMA(D.saya)}`:'Mengisi untuk orang lain') : g.jenis==='urutan' ? (D.tunda.includes('urut')?'Belum tahu, ditanyakan di Periksa':D.jawab.urut==='sebelum'?'Mbah Sumi lebih dulu':'Budi lebih dulu')
     : g.jenis==='anakBersama' ? (j.punya?'Sama dengan anak-anak '+NAMA(D.pemilik):'Tidak semua')
     : (!barisTetap(g) && j.punya===false) ? 'Tidak ada' : ids.map(id=>(D.orang[id].nama||D.orang[id].peran)+ket(D.orang[id])).join(', ');
   return `<div class="ringkas"><span class="cek"><svg class="ik"><use href="#i-cek"/></svg></span>
@@ -504,7 +553,7 @@ function grupAktif(g){
   const hit=(jk,label)=>{const n=ids.filter(id=>D.orang[id].jk===jk).length; return `<label>${label}<span class="hitung"><button aria-label="kurangi ${label}" data-hitung="${g.id}|${jk}|-1"><svg class="ik"><use href="#i-min"/></svg></button><b aria-live="polite">${n}</b><button aria-label="tambah ${label}" data-hitung="${g.id}|${jk}|1"><svg class="ik"><use href="#i-plus"/></svg></button></span></label>`;};
   if (g.jenis==='pasangan'){ tanya=`Waktu ${m} wafat, apakah beliau punya ${mjk==='L'?'istri':'suami'}?`;
     isi=yaTidak('Ya','Tidak') + (j.punya&&mjk==='L'?`<div class="hitung-baris">${hit('P','Berapa istri?')}</div>`:'');
-    rinci=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Sudah bercerai sebelum ${m} wafat?</summary><div>Tetap pilih "Ya", lalu di baris pasangannya pilih Lainnya › Sudah bercerai. Masa iddah ditanyakan sesudahnya.</div></details>`; }
+    rinci=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Sudah bercerai sebelum ${m} wafat?</summary><div>Tetap pilih "Ya", lalu di baris pasangannya pilih Lainnya › Sudah bercerai.</div></details>`; }
   if (g.jenis==='anak'||g.jenis==='saudara'){ tanya=`${m} punya ${g.jenis}? Hitung juga yang sudah wafat.`;
     isi=yaTidak('Ya','Tidak') + (j.punya?`<div class="hitung-baris">${hit('L','Laki-laki')}${hit('P','Perempuan')}</div>`:''); }
   if (g.jenis==='orangTua') tanya=`Orang tua ${m}`;
@@ -515,8 +564,10 @@ function grupAktif(g){
     tanya=`${NAMA(q.a)} wafat sebelum atau sesudah ${NAMA(q.b)}${b?.tahun?' ('+b.tahun+')':''}?`;
     isi=`<div class="pilihan" role="radiogroup">${[['sebelum',`Sebelum ${NAMA(q.b)}`],['sesudah',`Sesudah ${NAMA(q.b)}`],['tunda','Belum tahu','Nanti bisa ditanyakan ke keluarga dari halaman Periksa.']].map(([k,t,x])=>`<button class="opsi" role="radio" aria-checked="${k==='tunda'?D.tunda.includes('urut'):D.jawab.urut===k}" data-urut="${k}"><span class="titik"></span><span>${t}${x?`<small>${x}</small>`:''}</span></button>`).join('')}</div>`;
     rinci=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Kenapa ditanya?</summary><div>Keduanya wafat sesudah ${NAMA(D.pemilik)} dan tahun wafat ${NAMA(q.a)} kosong. Urutannya menentukan apakah ${NAMA(q.b)} ikut menerima dari ${NAMA(q.a)}. Kalau tahunnya diisi, pertanyaan ini hilang.</div></details>`; }
-  if ((g.jenis==='orangTua'||g.jenis==='kakekNenek'||g.jenis==='anak'||g.jenis==='saudara'||g.jenis==='pasangan') && !D.lihatArti)
-    rinci+=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Arti pilihan keadaan</summary><div><span><b>Masih hidup</b>: sampai hari ini.</span><span><b>Sudah wafat</b>: lalu ditanya sebelum atau sesudah ${m}. Ini menentukan apakah ia ikut mewarisi ${m}.</span><span><b>Belum tahu</b>: tidak ada yang tahu pasti. Hasil ditampilkan sebagai beberapa kemungkinan.</span><span><b>Lainnya</b>: hilang tanpa kabar, masih dalam kandungan, kelamin belum jelas, atau sudah bercerai.</span></div></details>`;
+  if (g.jenis==='kamu'){ const hidup=Object.keys(D.orang).filter(id=>D.orang[id].status==='hidup');
+    tanya='Kamu ada di keluarga ini?';
+    isi=`<p class="kecil redup">Supaya sebutan memakai sudut pandangmu, misalnya "kakekmu" atau "ayahmu".</p><div class="pilihan" role="radiogroup">${[...hidup.map(id=>[id,`Saya ${NAMA(id)}`,D.orang[id].peran]),['','Bukan, saya mengisi untuk orang lain','']].map(([v,t,x])=>`<button class="opsi" role="radio" aria-checked="${!!D.sayaDijawab&&D.saya===v}" data-saya="${v}"><span class="titik"></span><span>${t}${x?`<small>${x}</small>`:''}</span></button>`).join('')}</div>`; }
+  rinci = bantuanKeadaan(ids) + rinci;
   if (g.jenis==='anak' && g.milik===D.pemilik && j.punya && ids.some(id=>D.orang[id].jk==='L') && !D.tetapIsi[g.milik])
     rinci+=`<details class="rinci"><summary><svg class="ik"><use href="#i-kanan"/></svg>Kenapa saudara ${m} tidak ditanyakan?</summary><div>Saudara, keponakan, paman, dan sepupu tidak mendapat bagian selama ada anak laki-laki.<button class="aksi-teks" data-tetap="${g.milik}"><svg class="ik"><use href="#i-plus"/></svg>Tetap isi kerabat lain</button></div></details>`;
   if (g.jenis==='anak') ids.filter(id=>D.orang[id].status==='wafat'&&D.orang[id].waktu==='sebelum').forEach(id=>{
@@ -532,8 +583,8 @@ function petaBagian(){
   return `<div class="peta-bagian" aria-label="Kemajuan bagian keluarga">
     <div class="atas"><span><b>${selesai} dari ${G.length} bagian selesai</b></span><span>Bagian bisa bertambah bila ada yang wafat sesudah ${NAMA(D.pemilik)}.</span></div>
     <div class="batang" aria-hidden="true">${G.map(g=>`<i class="${grupLengkap(g)?'selesai':g.id===buka?.id?'aktif':''}"></i>`).join('')}</div>
-    <div class="daftar-bagian">${G.map(g=>{const lk=grupLengkap(g), ini=g.id===buka?.id, bisa=lk||ini||D.dikunjungi[g.id];
-      return `<button ${ini?'aria-current="true"':''} class="${lk?'selesai':''} ${g.milik!==D.pemilik&&g.jenis!=='urutan'?'baru':''}" data-ke-bagian="${g.id}" ${bisa?'':'disabled'} title="${judulGrup(g)}">${lk?'<svg class="ik"><use href="#i-cek"/></svg>':''}${judulPendek(g)}</button>`;}).join('')}</div>
+    <ol class="langkah-bagian">${G.map(g=>{const lk=grupLengkap(g), ini=g.id===buka?.id;
+      return `<li class="${lk?'selesai':''} ${ini?'aktif':''}" ${ini?'aria-current="step"':''}>${lk?'<svg class="ik"><use href="#i-cek"/></svg>':''}${judulPendek(g)}</li>`;}).join('')}</ol>
   </div>`;
 }
 function layarKeluargaKasus(){
@@ -551,8 +602,6 @@ function layarKeluargaKasus(){
     <aside class="kol-pohon"><div class="kartu kartu-pohon"><div class="bungkus-pohon">${pohon()}</div>
       <div class="kaki-pohon"><span><i style="background:var(--keturunan)"></i>masih hidup</span><span><i style="border:1.5px solid #9aa79a"></i>sudah wafat</span><span><i style="border:1.5px dashed #7f8c7c"></i>belum diisi / belum tahu</span>
       <button class="aksi-teks pohon-penuh" onclick="this.closest('.kartu-pohon').classList.toggle('penuh')"><svg class="ik"><use href="#i-pohon"/></svg>Pohon lengkap</button></div></div>
-      ${hidup.length?`<label class="kamu-pilih"><span>Kamu ada di keluarga ini? <span class="redup">Supaya sebutan memakai sudut pandangmu.</span></span>
-        <select id="pilihSaya"><option value="">Bukan, saya mengisi untuk orang lain</option>${hidup.map(id=>`<option value="${id}" ${D.saya===id?'selected':''}>Saya ${D.orang[id].nama||D.orang[id].peran}</option>`).join('')}</select></label>`:''}
     </aside>
   </div>
   ${barBawah(`${tombolKembali()}<span class="status" role="status">${D.dariPeriksa?'Kamu sedang mengubah dari Periksa.':sisa?`Keluarga: <b>${sisa} bagian</b> lagi.`:'Keluarga <b>sudah lengkap</b>.'}</span>${aksiBar}`)}`;
@@ -582,16 +631,18 @@ function pasangKeluargaKasus(){
     if (g.jenis==='pasangan'&&n>4) return toast('Paling banyak empat istri.');
     if (aturJumlah(g,jk,n)){ D.tandai=null; gambar(); } });
   document.querySelectorAll('[data-nama]').forEach(i=>i.onchange=()=>{D.orang[i.dataset.nama].nama=i.value.trim();gambar();});
-  document.querySelectorAll('[data-status]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{const o=D.orang[s.dataset.status]; o.status=b.dataset.v; if(o.status!=='wafat') o.waktu=null; if(o.status!=='lain') o.khusus=null; gambar();}));
+  document.querySelectorAll('[data-status]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{const o=D.orang[s.dataset.status], v=b.dataset.v;
+    o.status=v.startsWith('lain')?'lain':v; if(o.status!=='wafat') o.waktu=null; if(o.status!=='lain'){o.khusus=null;o.lanjutan=null;} if(v.startsWith('lain:')){o.khusus=v.slice(5);o.lanjutan=null;} gambar();}));
+  document.querySelectorAll('[data-lanjutan]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{D.orang[s.dataset.lanjutan].lanjutan=b.dataset.v;gambar();}));
+  document.querySelectorAll('[data-saya]').forEach(b=>b.onclick=()=>{D.saya=b.dataset.saya;D.sayaDijawab=true;gambar();});
   document.querySelectorAll('[data-waktu]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{D.orang[s.dataset.waktu].waktu=b.dataset.v;gambar();}));
-  document.querySelectorAll('[data-khusus]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{D.orang[s.dataset.khusus].khusus=b.dataset.v; toast('Di produk: lanjut ke pertanyaan keadaan ini (dialog keadaan yang sudah ada).'); gambar();}));
+  document.querySelectorAll('[data-khusus]').forEach(s=>s.querySelectorAll('button').forEach(b=>b.onclick=()=>{const o=D.orang[s.dataset.khusus]; o.khusus=b.dataset.v; o.lanjutan=null; gambar();}));
   document.querySelectorAll('[data-tahun]').forEach(i=>i.onchange=()=>{const o=D.orang[i.dataset.tahun]; o.tahun=i.value; const t=tahunAngka(i.value), r=tahunAngka(D.orang[o.relatif]?.tahun); if(t&&r&&t!==r) o.waktu=t<r?'sebelum':'sesudah'; gambar();});
   document.querySelectorAll('[data-ubah]').forEach(b=>b.onclick=()=>keBagian(b.dataset.ubah));
   document.querySelectorAll('[data-tetap]').forEach(b=>b.onclick=()=>{D.tetapIsi[b.dataset.tetap]=true;toast('Bagian "Saudara" ditambahkan.');gambar();});
   document.querySelectorAll('[data-urut]').forEach(b=>b.onclick=()=>{const k=b.dataset.urut; D.tunda=D.tunda.filter(x=>x!=='urut'); delete D.jawab.urut; if(k==='tunda') D.tunda.push('urut'); else D.jawab.urut=k; gambar();});
   document.querySelectorAll('[data-hapus]').forEach(b=>b.onclick=()=>{const id=b.dataset.hapus,o=D.orang[id];
     if (confirm(`Hapus ${o.nama||o.peran}? Keluarga yang dicatat lewat orang ini ikut terhapus.`)){ Object.keys(D.anggota).forEach(k=>D.anggota[k]=D.anggota[k].filter(x=>x!==id)); delete D.orang[id]; gambar(); }});
-  const ps=document.getElementById('pilihSaya'); if(ps) ps.onchange=()=>{D.saya=ps.value;gambar();};
   if (D.sorot) document.querySelector(`.orang[data-id="${D.sorot}"]`)?.scrollIntoView({block:'center'});
 }
 
@@ -724,27 +775,56 @@ function belumPasti(){
   if (D.tunda.includes('urut')){ const U=urutanKematian(); const a=U.sesudah.find(x=>!tahunAngka(o[x].tahun)), b=U.sesudah.find(x=>x!==a); L.push({jenis:'urut', a, b, teks:`${NAMA(a)} wafat sebelum atau sesudah ${NAMA(b)}?`}); }
   return L;
 }
+function panelUbah(){
+  const u=D.ubah, o=D.orang, P=D.pemilik, U=urutanKematian();
+  if (!u) return `<section class="kartu deret" style="justify-content:space-between"><span><b>Ada yang keliru?</b> <span class="redup">Pilih yang mau diubah, kami antar ke tempatnya.</span></span><button class="aksi-teks" id="mulaiUbah"><svg class="ik" style="width:15px;height:15px"><use href="#i-pensil"/></svg>Ubah sesuatu</button></section>`;
+  const opsi=(daftar,attr)=>`<div class="pilihan">${daftar.map(([v,t,x])=>`<button class="opsi" data-${attr}="${v}"><span class="titik"></span><span>${t}${x?`<small>${x}</small>`:''}</span></button>`).join('')}</div>`;
+  let langkah, isi;
+  if (!u.apa){ langkah='Langkah 1 dari 2 · Apa yang mau diubah?';
+    isi=opsi([['keadaan','Keadaan seseorang','Masih hidup, sudah wafat, atau belum tahu'],['waktu','Tahun atau urutan wafat',''],['orang','Anggota keluarga','Tambah, hapus, atau ganti nama'],['peristiwa','Peristiwa','Lahir, menikah, atau bercerai di antara kematian']],'apa'); }
+  else if (u.apa==='keadaan' && !u.siapa){ langkah='Langkah 2 dari 2 · Keadaan siapa?';
+    isi=opsi(Object.keys(o).filter(id=>id!==P&&o[id].status).map(id=>[id,NAMA(id),o[id].peran!==NAMA(id)?o[id].peran:'']),'siapa'); }
+  else if (u.apa==='keadaan'){ const x=o[u.siapa]; langkah=`Keadaan ${NAMA(u.siapa)} sekarang?`;
+    isi=`<div class="seg" data-ubah-keadaan="${u.siapa}"><button data-v="hidup" aria-pressed="${x.status==='hidup'}">Masih hidup</button><button data-v="sebelum" aria-pressed="${x.status==='wafat'&&x.waktu==='sebelum'}">Wafat sebelum ${NAMA(x.relatif)}</button><button data-v="sesudah" aria-pressed="${x.status==='wafat'&&x.waktu==='sesudah'}">Wafat sesudah ${NAMA(x.relatif)}</button><button data-v="tahu" aria-pressed="${x.status==='tahu'}">Belum tahu</button></div>`; }
+  else if (u.apa==='waktu'){ langkah='Langkah 2 dari 2 · Tahun atau urutan wafat siapa?'; isi=opsi(U.semua.map(id=>[id,NAMA(id),o[id].tahun||'tahun belum diisi']),'waktu-siapa'); }
+  else if (u.apa==='orang'){ langkah='Langkah 2 dari 2 · Bagian keluarga yang mana?'; isi=opsi(grupList().filter(g=>!['urutan','kamu'].includes(g.jenis)).map(g=>[g.id,judulGrup(g),''] ),'bagian'); }
+  return `<section class="kartu ubah-panel"><div class="deret" style="justify-content:space-between"><span class="langkah-ubah">${langkah}</span><button class="aksi-teks" id="batalUbah"><svg class="ik" style="width:15px;height:15px"><use href="#i-x"/></svg>Tutup</button></div>${isi}
+    ${u.apa?'<button class="aksi-teks" style="align-self:flex-start" id="mundurUbah"><svg class="ik" style="width:15px;height:15px;transform:rotate(180deg)"><use href="#i-kanan"/></svg>Pilih yang lain</button>':''}</section>`;
+}
+function formPeristiwa(){
+  if (!D.formPeristiwa) return '';
+  const U=urutanKematian(), o=D.orang, orang=Object.keys(o).filter(id=>id!==D.pemilik);
+  return `<div class="form-peristiwa" id="formPeristiwa"><b>Tambah peristiwa</b>
+    <label class="isian"><span>Peristiwa apa?</span><select id="pJenis"><option value="lahir">Kelahiran</option><option value="nikah">Pernikahan</option><option value="cerai">Perceraian</option></select></label>
+    <label class="isian"><span>Siapa?</span><select id="pSiapa">${orang.map(id=>`<option value="${id}">${NAMA(id)}</option>`).join('')}</select></label>
+    <label class="isian"><span>Terjadi sesudah siapa wafat?</span><select id="pSetelah">${[D.pemilik,...U.sesudah].map(id=>`<option value="${id}">Sesudah ${NAMA(id)} wafat</option>`).join('')}</select></label>
+    <p class="kecil redup">Dipakai untuk menentukan siapa yang sudah ada pada tiap kematian.</p>
+    <div class="deret"><button class="pil" id="simpanPeristiwa">Simpan peristiwa</button><button class="tautan" id="batalPeristiwa">Batal</button></div></div>`;
+}
 function layarPeriksaKasus(){
   const U=urutanKematian(), L=belumPasti(), o=D.orang;
   const hidup=Object.keys(o).filter(id=>o[id].status==='hidup').map(NAMA);
   const pesan=`Assalamu'alaikum. Aku sedang menghitung warisan ${NAMA(D.pemilik)}. Ada yang belum aku tahu:\n`+L.map((b,i)=>`${i+1}. ${b.teks}`).join('\n')+'\nTerima kasih.';
   const jawabCepat=b=> b.jenis==='status'
-    ? `<div class="seg" data-cepat-status="${b.id}"><button data-v="hidup">Masih hidup</button><button data-v="sebelum">Wafat sebelum ${NAMA(o[b.id].relatif)}</button><button data-v="sesudah">Wafat sesudah</button></div>`
+    ? `<div class="seg" data-cepat-status="${b.id}"><button data-v="hidup">Masih hidup</button><button data-v="sebelum">Wafat sebelum ${NAMA(o[b.id].relatif)}</button><button data-v="sesudah">Wafat sesudah ${NAMA(o[b.id].relatif)}</button></div>`
     : `<div class="seg" data-cepat-urut><button data-v="sebelum">Sebelum ${NAMA(b.b)}</button><button data-v="sesudah">Sesudah ${NAMA(b.b)}</button></div>`;
   const babakSebelum = U.sebelum.map(id=>`<div class="jeda" style="padding-top:0">${o[id].tahun||'?'} · ${NAMA(id)} wafat, sebelum ${NAMA(D.pemilik)}.</div>`).join('');
-  const babakUtama = [D.pemilik,...U.sesudah].map((id,i,a)=> (i?jeda(a[i-1],id):'') + babak(id, U.semua.indexOf(id), U, i>0)).join('');
+  const KATA={lahir:'lahir',nikah:'menikah',cerai:'bercerai'};
+  const babakUtama = [D.pemilik,...U.sesudah].map((id,i,a)=> (i?jeda(a[i-1],id):'') + babak(id, U.semua.indexOf(id), U, i>0) + (D.peristiwa||[]).filter(e=>e.setelah===id).map(e=>`<div class="peristiwa"><svg class="ik"><use href="#i-plus"/></svg>${NAMA(e.siapa)} ${KATA[e.jenis]}, sesudah ${NAMA(id)} wafat.</div>`).join('')).join('');
   return `<div class="tumpuk" style="max-width:820px">
     ${L.length?`<section class="kartu tumpuk"><h2 class="judul-kecil">Belum dipastikan (${L.length})</h2>
       <p class="kecil redup">Jawab di sini kalau sudah tahu. Kalau belum, hasil ditampilkan sebagai beberapa kemungkinan.</p>
       <div>${L.map(b=>`<div class="belum-baris"><span>${b.teks}</span><div class="deret">${jawabCepat(b)}${b.jenis==='status'?`<button class="tautan kecil" data-lihat="${b.id}">Lihat di Keluarga</button>`:''}</div></div>`).join('')}</div>
       <button class="aksi-teks" style="align-self:flex-start" id="salinWA"><svg class="ik"><use href="#i-pesan"/></svg>Salin pertanyaan untuk keluarga</button><div class="wa" id="pratinjauWA" hidden>${pesan}</div></section>`:''}
+    ${panelUbah()}
     <section class="kartu tumpuk"><h2 class="judul-kecil">Kisah harta ${NAMA(D.pemilik)}</h2>
       <div class="linimasa">${babakSebelum}${babakUtama}
         <div class="jeda">Sampai hari ini <span class="harta"><svg class="ik" style="width:13px;height:13px"><use href="#i-rumah"/></svg>Harta masih belum dibagi</span></div>
         <article class="babak kini"><div class="kepala"><div><div class="tahun-besar">Hari ini</div><div class="judul-babak">Yang masih hidup</div></div></div>
           <p>${hidup.join(', ')}. Harta ${NAMA(D.pemilik)} akan dihitung untuk mereka, mengikuti urutan kisah di atas.</p></article>
       </div>
-      <button class="aksi-teks" style="align-self:flex-start" id="tambahPeristiwa"><svg class="ik"><use href="#i-plus"/></svg>Tambah peristiwa: lahir, menikah, atau bercerai di antara kematian</button>
+      ${formPeristiwa()}
+      <button class="aksi-teks" style="align-self:flex-start" id="tambahPeristiwa" ${D.formPeristiwa?'hidden':''}><svg class="ik"><use href="#i-plus"/></svg>Tambah peristiwa: lahir, menikah, atau bercerai di antara kematian</button>
     </section>
     <p class="kecil redup">Yang dibagi di sini harta ${NAMA(D.pemilik)}. Harta milik orang lain di kisah ini (kalau ada) dihitung terpisah.</p>
     ${barBawah(`${tombolKembali()}<span class="status" role="status">${L.length?`<b>${L.length} hal</b> belum dipastikan.`:'Semua sudah dipastikan.'}</span><button class="pil" id="lanjutPeriksa">${L.length?'Hitung dengan kemungkinan':'Ya, benar. Hitung'}</button>`)}
@@ -753,7 +833,20 @@ function layarPeriksaKasus(){
 function pasangPeriksaKasus(){
   document.getElementById('lanjutPeriksa').onclick=()=>ke(5);
   const s=document.getElementById('salinWA'); if(s) s.onclick=()=>{const p=document.getElementById('pratinjauWA');p.hidden=false;navigator.clipboard?.writeText(p.textContent).catch(()=>{});toast('Pertanyaan disalin. Tempel di WhatsApp keluarga.');};
-  document.getElementById('tambahPeristiwa').onclick=()=>toast('Pilih lahir · menikah · bercerai, lalu letakkan di antara dua babak.');
+  const buka=(fn)=>{fn();gambar();};
+  document.getElementById('tambahPeristiwa').onclick=()=>buka(()=>{D.formPeristiwa={};});
+  document.getElementById('batalPeristiwa')?.addEventListener('click',()=>buka(()=>{D.formPeristiwa=null;}));
+  document.getElementById('simpanPeristiwa')?.addEventListener('click',()=>buka(()=>{ (D.peristiwa||(D.peristiwa=[])).push({jenis:pJenis.value,siapa:pSiapa.value,setelah:pSetelah.value}); D.formPeristiwa=null; toast('Peristiwa ditambahkan ke kisah.'); }));
+  document.getElementById('mulaiUbah')?.addEventListener('click',()=>buka(()=>{D.ubah={};}));
+  document.getElementById('batalUbah')?.addEventListener('click',()=>buka(()=>{D.ubah=null;}));
+  document.getElementById('mundurUbah')?.addEventListener('click',()=>buka(()=>{D.ubah={};}));
+  document.querySelectorAll('[data-apa]').forEach(b=>b.onclick=()=>buka(()=>{ if(b.dataset.apa==='peristiwa'){D.ubah=null;D.formPeristiwa={};} else D.ubah={apa:b.dataset.apa}; }));
+  document.querySelectorAll('[data-siapa]').forEach(b=>b.onclick=()=>buka(()=>{D.ubah.siapa=b.dataset.siapa;}));
+  document.querySelectorAll('[data-ubah-keadaan] button').forEach(b=>b.onclick=()=>buka(()=>{ const x=D.orang[D.ubah.siapa], v=b.dataset.v;
+    if(v==='hidup'||v==='tahu'){x.status=v;x.waktu=null;} else {x.status='wafat';x.waktu=v;} toast(`Tersimpan: ${NAMA(D.ubah.siapa)}. Kisah ikut berubah.`); D.ubah=null; }));
+  document.querySelectorAll('[data-waktu-siapa]').forEach(b=>b.onclick=()=>{ const id=b.dataset.waktuSiapa; D.ubah=null; D.sunting=id; gambar(); document.querySelector(`[data-tahun-babak="${id}"]`)?.closest('.babak')?.scrollIntoView({behavior:'smooth',block:'center'}); });
+  document.querySelectorAll('[data-bagian]').forEach(b=>b.onclick=()=>{ D.ubah=null; D.buka=b.dataset.bagian; D.dariPeriksa=true; layar=3; gambar(); window.scrollTo({top:0}); });
+  if (D.formPeristiwa) document.getElementById('formPeristiwa')?.scrollIntoView({block:'center'});
   document.querySelectorAll('[data-cepat-status]').forEach(sg=>sg.querySelectorAll('button').forEach(b=>b.onclick=()=>{ const o=D.orang[sg.dataset.cepatStatus];
     if (b.dataset.v==='hidup') o.status='hidup'; else { o.status='wafat'; o.waktu=b.dataset.v; } toast(`Tersimpan: ${o.nama||o.peran}.`); gambar(); }));
   document.querySelectorAll('[data-cepat-urut] button').forEach(b=>b.onclick=()=>{ D.tunda=D.tunda.filter(x=>x!=='urut'); D.jawab.urut=b.dataset.v; toast('Urutan tersimpan. Kisah di bawah ikut berubah.'); gambar(); });
@@ -797,6 +890,17 @@ function layarHasil(){
         <div>${aliranSvg()}</div></div>
       <p class="kecil redup">Dalam fikih, pembagian bertahap seperti ini disebut <b style="color:var(--ink)">munasakhat</b>. <button class="tautan">Pelajari</button> · <button class="tautan">Tabel lengkap</button></p></section></div>`;
 }
+function layarHasilBelajar(){
+  // contoh hitung tangan untuk "Isi contoh" Belajar; di produk dari engine (tabel munasakhat lapis 3)
+  const tabel=(judul, keterangan, kolom, baris)=>`<section class="kartu tumpuk"><div><h2 class="judul-kecil">${judul}</h2><p class="kecil redup" style="margin-top:4px">${keterangan}</p></div>
+    <table class="tabel-mayit"><thead><tr>${kolom.map((k,i)=>`<th class="${i>1?'angka':''}">${k}</th>`).join('')}</tr></thead><tbody>${baris.map(r=>`<tr>${r.map((c,i)=>`<td class="${i>1?'angka':''}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></section>`;
+  return `<div class="tumpuk" style="max-width:820px">
+    ${tabel('Mayit 1 · Mbah Karto','Ashl masalah 8, ditashih menjadi 24 karena sisa 7 dibagi anak laki-laki dan perempuan 2:1.',['Ahli waris','Bagian','Ashl 8','Tashih 24'],[['Istri 1','1/8 (fardh)','1','3'],['Anak laki-laki 1','ashabah bil ghair','7','14'],['Anak perempuan 1','ashabah bil ghair','','7']])}
+    ${tabel('Mayit 2 · Istri 1 (wafat sesudah Mayit 1)','Bagiannya 3 saham dari tashih 24. Masalahnya 3; tamatsul (3 dan 3), jadi tidak perlu dikali.',['Ahli waris','Bagian','Ashl 3',''],[['Anak laki-laki 1','ashabah bil ghair','2',''],['Anak perempuan 1','ashabah bil ghair','1','']])}
+    ${tabel('Mayit 3 · Anak laki-laki 1','Bagiannya 14 + 2 = 16 saham. Masalahnya 24. 16 dan 24 tawafuq dengan wafq 8, jadi masalah jami\'ah = 24 × 3 = 72.',['Ahli waris','Bagian','Ashl 8','Tashih 24'],[['Istri 1','1/8 (fardh)','1','3'],['Anak laki-laki 1','ashabah bil ghair','7','14'],['Anak perempuan 1','ashabah bil ghair','','7']])}
+    ${tabel('Jami\'ah 72 · bagian akhir','Saham tiap orang dari semua mayit, disatukan.',['Ahli waris','Lewat','Saham','Persen'],[['Anak perempuan 1 (Mayit 1)','Mayit 1 dan 2','(7 + 1) × 3 = 24','33,3 %'],['Anak laki-laki dari Mayit 3','Mayit 3','14 × 2 = 28','38,9 %'],['Anak perempuan dari Mayit 3','Mayit 3','7 × 2 = 14','19,4 %'],['Istri Mayit 3','Mayit 3','3 × 2 = 6','8,3 %']])}
+  </div>`;
+}
 function aliranSvg(){
   const g=tahap, node=(x,y,t,a)=>`<g transform="translate(${x-38},${y-14})"><rect width="76" height="28" rx="9" fill="${a?'#fff':'#f1f4ee'}" stroke="${a?'var(--ink)':'#c9d4c6'}"/><text x="38" y="18" text-anchor="middle" style="font:600 11px var(--font-sans);fill:${a?'var(--ink)':'#5f6963'}">${t}</text></g>`, a=(d,on)=>`<path class="${on?'alir':'garis'}" d="${d}"/>`;
   return `<svg viewBox="0 0 360 196" role="img" aria-label="Aliran bagian tahap ${g}">${a('M180 34 C180 70 70 70 70 96',g===1)}${a('M180 34 C180 70 180 70 180 96',g===1)}${a('M180 34 C180 70 290 70 290 96',g===1)}${a('M108 110 L142 110',g===2)}${a('M70 96 C70 60 290 60 290 96',g===2)}${a('M180 124 C180 150 70 150 70 166',g===3)}${a('M180 124 C180 150 180 150 180 166',g===3)}${a('M180 124 C180 150 290 150 290 166',g===3)}
@@ -806,7 +910,7 @@ function aliranSvg(){
 // =================== contoh terisi ===================
 function isiContoh(){
   const A=D.sk==='A', tujuan=D.tujuan||'kasus'; D=awal(D.sk, tujuan); D.jkDipilih=true; D.pintu=A?'lama':'baru';
-  if (tujuan==='belajar'){ D.bel.hitung={p:A?{istri:1,anakL:2,anakP:1}:{ibu:1,sdrL:1,sdrP:1}}; if(A){ D.bel.wafat=['p.istri.1','p.anakL.2']; D.bel.hitung['p.istri.1']={anakL:1,anakP:1}; D.bel.hitung['p.anakL.2']={istri:1,anakL:1,anakP:1}; } return; }
+  if (tujuan==='belajar'){ D.bel.hitung={p:A?{istri:1,anakL:1,anakP:1}:{ibu:1,sdrL:1,sdrP:1}}; if(A){ D.bel.wafat=['p.istri.1','p.anakL.1']; D.bel.hitung['p.istri.1']={anakL:1,anakP:1}; D.bel.hitung['p.anakL.1']={istri:1,anakL:1,anakP:1}; } return; }
   const isi=(gid,milik,daftar)=>{D.anggota[gid]=daftar.map(([id,nama,jk,kel,peran,status,waktu,tahun])=>{D.orang[id]={nama,jk,kel,peran,status,waktu:waktu||null,tahun:tahun||'',relatif:milik};return id;}); D.dikunjungi[gid]=true;};
   if (A){
     D.grupJawab={'pas:p':{punya:true},'anak:p':{punya:true},'bersama:sumi':{punya:true},'pas:budi':{punya:true},'anak:budi':{punya:true}}; D.dikunjungi['bersama:sumi']=true;
@@ -833,7 +937,7 @@ function gambar(){
   if (layar===2){ l.innerHTML=`<div class="kartu" style="max-width:640px"><p>Langkah Harta tidak berubah di konsep ini (tumpukan harta = Tahap 6).</p></div>${barBawah(`${tombolKembali()}<span class="status"></span><button class="pil" id="lanjut2">Lanjut: ${bel?'Ahli waris':'Keluarga'}</button>`)}`; document.getElementById('lanjut2').onclick=()=>ke(3); }
   if (layar===3){ if(bel){ l.innerHTML=layarKeluargaBelajar(); pasangKeluargaBelajar(); } else { l.innerHTML=layarKeluargaKasus(); pasangKeluargaKasus(); } }
   if (layar===4){ if(bel){ l.innerHTML=layarPeriksaBelajar(); document.getElementById('lanjutPeriksa').onclick=()=>ke(5); } else { l.innerHTML=layarPeriksaKasus(); pasangPeriksaKasus(); } }
-  if (layar===5){ l.innerHTML=layarHasil()+barBawah(`${tombolKembali()}<span class="status"></span><button class="pil">Simpan</button>`); document.querySelectorAll('#tabTahap button').forEach(b=>b.onclick=()=>{tahap=+b.dataset.t;gambar();}); }
+  if (layar===5){ l.innerHTML=(bel?layarHasilBelajar():layarHasil())+barBawah(`${tombolKembali()}<span class="status"></span><button class="pil">Simpan</button>`); document.querySelectorAll('#tabTahap button').forEach(b=>b.onclick=()=>{tahap=+b.dataset.t;gambar();}); }
   const kb=document.getElementById('kembali'); if(kb) kb.onclick=()=>{ D.dariPeriksa=false; ke(layar-1); };
 }
 const tandaiSaklar=(sel,b)=>document.querySelectorAll(sel+' button').forEach(x=>x.setAttribute('aria-pressed',x===b));
