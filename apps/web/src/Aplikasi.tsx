@@ -9,7 +9,7 @@ import { StreakKepala } from './akun/StreakKepala';
 import { TombolAkun } from './akun/TombolAkun';
 import { LonceNotifikasi } from './notifikasi/LonceNotifikasi';
 import { SumberNotifikasi } from './notifikasi/SumberNotifikasi';
-import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
+import { keJson, keJsonDibagikan, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from './keadaan';
 import { TUR } from './konten/tur';
 import { bacaTujuan, catatAktivitas, simpanTujuan, sudahLihatTur, bacaBahasa, type Tujuan } from './preferensi';
@@ -87,7 +87,7 @@ export function Aplikasi() {
   useEffect(() => {
     if (!keadaan.kasus || !sesi || !repoAkun || !sudahDibagikan(idSesi)) return;
     const kasusTerbaru = keadaan.kasus;
-    const tunda = setTimeout(() => void repoAkun.bagikan.perbaruiKasus(idSesi, JSON.parse(keJson(kasusTerbaru))).catch(() => undefined), JEDA_PERBARUI_BAGIKAN_MS);
+    const tunda = setTimeout(() => void repoAkun.bagikan.perbaruiKasus(idSesi, JSON.parse(keJsonDibagikan(kasusTerbaru))).catch(() => undefined), JEDA_PERBARUI_BAGIKAN_MS);
     return () => clearTimeout(tunda);
   }, [keadaan.kasus, idSesi, sesi, repoAkun]);
   useEffect(() => { if (keadaan.tujuan && keadaan.tujuan !== bacaTujuan()) simpanTujuan(keadaan.tujuan); }, [keadaan.tujuan]);
