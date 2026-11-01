@@ -67,8 +67,8 @@ Baca `docs/kb/12_munasakhat.md` 12.1 [R12-1], `docs/kb/06_hajb.md` [R06-4], dan 
   - Akhir: **Rina 1/3, Dewi 1/12, Andi 7/18, Sari 7/36**. Joko 0 karena terhalang Budi [R06-3].
 - **A2** (sama, tapi Budi wafat sebelum Sumi):
   - Budi → Sumi 1/6, Dewi 1/8, Andi:Sari 2:1;
-  - Sumi → Rina 1/2, Andi:Sari sebagai cucu 2:1.
-  - Akhir: **Rina 29/72, Dewi 7/96, Andi 151/432, Sari 151/864**.
+  - Sumi → Rina 1/2; sisa 1/2 untuk cucu Joko, Andi (lk), Sari (pr) secara 2:2:1. Joko tidak lagi terhalang karena Budi sudah wafat [R06-3].
+  - Akhir: **Rina 29/72, Dewi 7/96, Andi 691/2160, Sari 691/4320, Joko 2/45**.
 - **B** (Budi tak menikah; ayah wafat lebih dulu; ibu; Andi, Rina kandung): **ibu 1/6, Andi 5/9, Rina 5/18**.
 - **B'** (B + kakek hidup): kakek mengambil yang terbaik dari tiga, yaitu muqasamah 2/5 × 5/6 = 1/3 [R08-3]. Rina bukan fardh [R08-5]. Hasil: **ibu 1/6, kakek 1/3, Andi 1/3, Rina 1/6**.
 
@@ -144,7 +144,7 @@ describe('kanvas silsilah — fixture spec 11.1', () => {
   test('A2: urutan dibalik (Budi sebelum Sumi) mengubah hasil', () => {
     const hasil = hitungMunasakhat({ dasar: input(grafKarto), urutanWafat: ['B', 'S'] });
     if (hasil.status !== 'OK') throw new Error(JSON.stringify(hasil));
-    expect(sebagaiPecahan(hasil.saham)).toEqual({ R: '29/72', D: '7/96', A: '151/432', SR: '151/864' });
+    expect(sebagaiPecahan(hasil.saham)).toEqual({ R: '29/72', D: '7/96', A: '691/2160', SR: '691/4320', J: '2/45' });
   });
 
   test('B: kakak tak menikah, ibu + saudara kandung', () => {
