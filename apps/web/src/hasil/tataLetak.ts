@@ -34,7 +34,7 @@ export function tataLetak(graf: GrafKeluarga): TataLetak {
   const barisPewaris = barisMenurutGenerasi.get(0)!;
   const pasanganPewaris = pasanganDari(graf.idPewaris).filter(id => barisPewaris.includes(id));
   const lainnya = barisPewaris.filter(id => id !== graf.idPewaris && !pasanganPewaris.includes(id));
-  barisMenurutGenerasi.set(0, [...lainnya, graf.idPewaris, ...pasanganPewaris]);
+  barisMenurutGenerasi.set(0, [...rapikanPasangan(lainnya, pasanganDari), graf.idPewaris, ...pasanganPewaris]);
 
   // Ke atas: tiap orang diletakkan di atas anak-anaknya.
   for (const g of semuaGenerasi.filter(g => g < 0).reverse()) {
@@ -43,7 +43,10 @@ export function tataLetak(graf: GrafKeluarga): TataLetak {
   }
   // Kerabat di baris pewaris diurutkan ulang di bawah orang tua masing-masing.
   const atas = barisMenurutGenerasi.get(-1);
-  if (atas) barisMenurutGenerasi.set(0, [...urutkanMenurut(lainnya, id => rataRataIndeks(orangTuaDari(id), atas), graf), graf.idPewaris, ...pasanganPewaris]);
+  if (atas) {
+    const kerabatBerurutan = urutkanMenurut(lainnya, id => rataRataIndeks(orangTuaDari(id), atas), graf);
+    barisMenurutGenerasi.set(0, [...rapikanPasangan(kerabatBerurutan, pasanganDari), graf.idPewaris, ...pasanganPewaris]);
+  }
   // Ke bawah: anak di bawah orang tuanya, pasangan tepat di sebelahnya.
   for (const g of semuaGenerasi.filter(g => g > 0)) {
     const atasnya = barisMenurutGenerasi.get(g - 1)!;
