@@ -5,6 +5,7 @@
 import { bolehUbahJenisKelamin } from '@waris/engine';
 import { kasusBaru, rapikanKeadaan, type Kasus } from './kasus';
 import type { Tujuan } from './preferensi';
+import { turunkanDariWaktu } from './silsilah';
 import { daftarAlmarhum } from './keadaanOrang';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
@@ -45,7 +46,7 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
     case 'KE_BABAK': return { ...keadaan, babak: Math.min(babakTerakhir(keadaan.kasus), Math.max(0, aksi.babak)) };
     case 'UBAH_KASUS': {
       if (!keadaan.kasus) return keadaan;
-      const kasus = rapikanKeadaan(aksi.ubah(keadaan.kasus));
+      const kasus = rapikanKeadaan(turunkanDariWaktu(aksi.ubah(keadaan.kasus)));
       return { ...keadaan, kasus, babak: Math.min(keadaan.babak, babakTerakhir(kasus)) };
     }
     case 'KE_LAYAR': {

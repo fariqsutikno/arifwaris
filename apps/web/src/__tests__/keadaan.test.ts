@@ -1,5 +1,5 @@
 import { beforeEach, expect, it, vi } from 'vitest';
-import { tambahAhliWaris } from '../checklist';
+import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru } from '../kasus';
 import { keadaanAwal, pengurangKeadaan } from '../keadaan';
 import { terapkanKeadaan } from '../keadaanOrang';
@@ -77,4 +77,12 @@ it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari Periksa ke babak tera
 });
 it('layar cerita hanya bila semua langkah lengkap', () => {
   expect(pengurangKeadaan(keadaanAwal(null, null), { jenis: 'KE_LAYAR', layar: 'cerita' }).layar).toBe('awal');
+});
+
+it('UBAH_KASUS mengurutkan urutan wafat menurut tahun (spec kanvas 9.1)', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, 'hitung'), { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: tambahAhliWaris(tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK'), 'PEWARIS', 'ANAK_LK') }) });
+  const [a1, a2] = hitungIsian(keadaan.kasus!.graf, 'PEWARIS').ANAK_LK!;
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, urutanWafat: [a1!, a2!], waktu: { [a1!]: { wafat: { tahun: 2000, kiraKira: false } }, [a2!]: { wafat: { tahun: 1990, kiraKira: false } } } }) });
+  expect(keadaan.kasus!.urutanWafat).toEqual([a2, a1]);
 });
