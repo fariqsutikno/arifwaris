@@ -3,6 +3,7 @@
 // Bagian tampil bila sudah berisi, sudah dijawab, atau engine menyatakan posisinya berpengaruh (ujiHipotetis).
 
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
+import { pertanyaanUrutanBerikut } from './antreanUrutan';
 import { hitungIsian } from './checklist';
 import type { Kasus, Kelompok } from './kasus';
 import { posisiPerluDitanya } from './ujiHipotetis';
@@ -55,7 +56,7 @@ export function anggotaBagian(kasus: Kasus, bagian: Bagian): IdOrang[] {
 
 export function bagianLengkap(kasus: Kasus, bagian: Bagian): boolean {
   if (bagian.jenis === 'kamu') return kasus.saya !== undefined;
-  if (bagian.jenis === 'urutan') return kasus.urutanWafat.length < MINIMAL_ALMARHUM_UNTUK_URUTAN;   // diganti di Tugas 6
+  if (bagian.jenis === 'urutan') return pertanyaanUrutanBerikut(kasus) === null;
   if (!sudahDijawab(kasus, bagian.milik, bagian.jenis)) return false;
   const belumDiisi = new Set(kasus.belumDiisi ?? []);
   return anggotaBagian(kasus, bagian).every(id => !belumDiisi.has(id));
