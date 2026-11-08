@@ -24,4 +24,4 @@ export const SUSUNAN_CEPAT: SusunanCepat[] = [
 ];
 
 export const kasusDariSusunan = (susunan: SusunanCepat): Kasus =>
-  susunan.ahliWaris.reduce((kasus, kunci) => ({ ...kasus, graf: tambahAhliWaris(kasus.graf, kasus.graf.idPewaris, kunci) }), kasusBaru(susunan.pewaris));
+  susunan.ahliWaris.reduce((kasus, kunci) => ({ ...kasus, graf: tambahAhliWaris(kasus.graf, kasus.graf.idPewaris, kunci) }), kasusBaru(susunan.pewaris, 'nyata'));

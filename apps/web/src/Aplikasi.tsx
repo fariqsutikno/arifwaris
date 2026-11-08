@@ -17,6 +17,7 @@ import { catatLatihan } from './progres';
 import { t } from './terjemah';
 import { Tur } from './tur/Tur';
 import { AwalHitung } from './layar/AwalHitung';
+import { PintuLab } from './layar/PintuLab';
 import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
@@ -189,6 +190,7 @@ export function Aplikasi() {
         : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
+        : layar === 'pintu' ? <PintuLab saatPilih={jenisKasus => kirim({ jenis: 'PILIH_JENIS_KASUS', jenisKasus })} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />

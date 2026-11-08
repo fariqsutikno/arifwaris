@@ -7,6 +7,7 @@ beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wi
 it('alur penuh: beranda → wizard → hasil', () => {
   render(<Aplikasi />);
   fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Belajar atau latihan soal/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
   fireEvent.change(screen.getByLabelText('Total harta peninggalan'), { target: { value: '24.000.000' } });
@@ -21,6 +22,7 @@ it('alur penuh: beranda → wizard → hasil', () => {
 it('autosave: kasus muncul lagi setelah render ulang', () => {
   const { unmount } = render(<Aplikasi />);
   fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Belajar atau latihan soal/ }));
   fireEvent.click(screen.getByRole('radio', { name: /Laki-laki/ }));
   unmount();
   // Muat ulang di URL kasus: kembali ke langkah wizard yang sama.

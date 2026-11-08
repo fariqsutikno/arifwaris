@@ -21385,6 +21385,90 @@
    "id": "Kalau kamu mengubah kasus ini, tampilan mereka ikut diperbarui.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_judul",
+   "halaman": "hitung",
+   "id": "Mau menghitung apa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_ket",
+   "halaman": "hitung",
+   "id": "Pilih sesuai kebutuhanmu. Keduanya memakai perhitungan yang sama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_latihan",
+   "halaman": "hitung",
+   "id": "Belajar atau latihan soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_latihan_ket",
+   "halaman": "hitung",
+   "id": "Isi jumlah ahli waris dengan cepat, seperti di buku.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_latihan_1",
+   "halaman": "hitung",
+   "id": "Cocok untuk soal kitab dan tugas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_latihan_2",
+   "halaman": "hitung",
+   "id": "Semua data dianggap sudah pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_latihan_3",
+   "halaman": "hitung",
+   "id": "Istilah fikih ditampilkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_nyata",
+   "halaman": "hitung",
+   "id": "Kasus keluarga sungguhan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_nyata_ket",
+   "halaman": "hitung",
+   "id": "Kami tanyakan satu per satu, termasuk yang belum kamu yakin.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_nyata_1",
+   "halaman": "hitung",
+   "id": "Cocok untuk harta keluarga yang akan dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_nyata_2",
+   "halaman": "hitung",
+   "id": "Boleh menjawab \"belum tahu\"",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_nyata_3",
+   "halaman": "hitung",
+   "id": "Pertanyaan bisa dikirim ke keluarga lewat WA",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -3,20 +3,21 @@
 // perpindahan langkah dibatasi validasi supaya stepper tidak bisa melompati isian yang belum lengkap.
 
 import { bolehUbahJenisKelamin } from '@waris/engine';
-import { kasusBaru, rapikanKeadaan, type Kasus } from './kasus';
+import { kasusBaru, rapikanKeadaan, type JenisKasus, type Kasus } from './kasus';
 import type { Tujuan } from './preferensi';
 import { turunkanDariWaktu } from './silsilah';
 import { daftarAlmarhum } from './keadaanOrang';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
 export const TOTAL_LANGKAH = 4;
-export type Layar = 'awal' | 'wizard' | 'cerita' | 'hasil' | 'belajar';
+export type Layar = 'awal' | 'pintu' | 'wizard' | 'cerita' | 'hasil' | 'belajar';
 
-export interface KeadaanAplikasi { layar: Layar; langkah: number; babak: number; kasus: Kasus | null; tujuan: Tujuan | null }
+export interface KeadaanAplikasi { layar: Layar; langkah: number; babak: number; kasus: Kasus | null; tujuan: Tujuan | null; jenisKasus: JenisKasus | null }
 
 export type Aksi =
   | { jenis: 'PILIH_TUJUAN'; tujuan: Tujuan }
   | { jenis: 'MULAI' }
+  | { jenis: 'PILIH_JENIS_KASUS'; jenisKasus: JenisKasus }
   | { jenis: 'PILIH_PEWARIS'; jenisKelamin: 'L' | 'P' }
   | { jenis: 'MUAT'; kasus: Kasus }
   | { jenis: 'KE_LANGKAH'; langkah: number }
@@ -26,16 +27,17 @@ export type Aksi =
   | { jenis: 'ULANGI' };
 
 export const keadaanAwal = (kasusTersimpan: Kasus | null, tujuan: Tujuan | null): KeadaanAplikasi =>
-  ({ layar: 'awal', langkah: 1, babak: 0, kasus: kasusTersimpan, tujuan });
+  ({ layar: 'awal', langkah: 1, babak: 0, kasus: kasusTersimpan, tujuan, jenisKasus: kasusTersimpan?.jenisKasus ?? null });
 
 const babakTerakhir = (kasus: Kasus | null): number => (kasus ? daftarAlmarhum(kasus).length - 1 : 0);
 
 export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanAplikasi {
   switch (aksi.jenis) {
     case 'PILIH_TUJUAN': return { ...keadaan, tujuan: aksi.tujuan };
-    case 'MULAI': return { ...keadaan, layar: 'wizard', langkah: 1, babak: 0, kasus: null };
-    case 'PILIH_PEWARIS': return { ...keadaan, kasus: pilihPewaris(keadaan.kasus, aksi.jenisKelamin) };
-    case 'MUAT': return { ...keadaan, layar: 'hasil', langkah: TOTAL_LANGKAH, babak: 0, kasus: aksi.kasus };
+    case 'MULAI': return { ...keadaan, layar: 'pintu', langkah: 1, babak: 0, kasus: null, jenisKasus: null };
+    case 'PILIH_JENIS_KASUS': return { ...keadaan, layar: 'wizard', langkah: 1, babak: 0, jenisKasus: aksi.jenisKasus };
+    case 'PILIH_PEWARIS': return { ...keadaan, kasus: pilihPewaris(keadaan.kasus, aksi.jenisKelamin, keadaan.jenisKasus) };
+    case 'MUAT': return { ...keadaan, layar: 'hasil', langkah: TOTAL_LANGKAH, babak: 0, kasus: aksi.kasus, jenisKasus: aksi.kasus.jenisKasus };
     case 'KE_LANGKAH': {
       const batas = Math.min(TOTAL_LANGKAH, langkahTerjauh(keadaan.kasus));
       const langkah = Math.min(batas, Math.max(1, aksi.langkah));
@@ -54,13 +56,13 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
       if ((aksi.layar === 'hasil' || aksi.layar === 'belajar' || aksi.layar === 'cerita') && !bolehHasil) return keadaan;
       return { ...keadaan, layar: aksi.layar };
     }
-    case 'ULANGI': return { ...keadaan, layar: 'awal', langkah: 1, babak: 0, kasus: null };
+    case 'ULANGI': return { ...keadaan, layar: 'awal', langkah: 1, babak: 0, kasus: null, jenisKasus: null };
   }
 }
 
 /** Kasus dibuat saat jenis kelamin pertama kali dipilih; sesudahnya hanya boleh diganti selama belum ada pasangan/anak. */
-function pilihPewaris(kasus: Kasus | null, jenisKelamin: 'L' | 'P'): Kasus {
-  if (!kasus) return kasusBaru(jenisKelamin);
+function pilihPewaris(kasus: Kasus | null, jenisKelamin: 'L' | 'P', jenisKasus: JenisKasus | null): Kasus {
+  if (!kasus) return kasusBaru(jenisKelamin, jenisKasus ?? 'nyata');
   const { idPewaris } = kasus.graf;
   if (!bolehUbahJenisKelamin(kasus.graf, idPewaris)) return kasus;
   const pewaris = kasus.graf.orang[idPewaris]!;

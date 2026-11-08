@@ -11,6 +11,7 @@ const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tamba
 const mulai = () => {
   render(<Aplikasi />);
   fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Belajar atau latihan soal/ }));
 };
 
 it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => {
@@ -76,12 +77,14 @@ describe('temuan review akhir', () => {
     expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
   });
 
-  it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu langsung ke wizard', () => {
+  it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu ke pintu dan wizard', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
     const tombol = screen.getByRole('button', { name: /mulai dari nol/i });
     expect(tombol.textContent).toMatch(/tetap ada di Kasusmu/);
     fireEvent.click(tombol);
+    expect(screen.getByRole('heading', { name: 'Mau menghitung apa?' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('radio', { name: /Belajar atau latihan soal/ }));
     expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   });
 

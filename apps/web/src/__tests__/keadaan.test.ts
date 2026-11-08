@@ -9,8 +9,33 @@ beforeEach(() => localStorage.clear());
 
 const awal = keadaanAwal(null, null);
 
-it('MULAI membuka wizard langkah 1 tanpa kasus (jenis kelamin belum dipilih)', () => {
-  expect(pengurangKeadaan(awal, { jenis: 'MULAI' })).toMatchObject({ layar: 'wizard', langkah: 1, kasus: null });
+it('MULAI membuka layar pintu tanpa kasus dan tanpa jenis kasus', () => {
+  expect(pengurangKeadaan(awal, { jenis: 'MULAI' })).toMatchObject({ layar: 'pintu', langkah: 1, kasus: null, jenisKasus: null });
+});
+
+it('PILIH_JENIS_KASUS membuka wizard langkah 1; PILIH_PEWARIS membuat kasus berjenis itu', () => {
+  let keadaan = pengurangKeadaan(awal, { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
+  expect(keadaan).toMatchObject({ layar: 'wizard', langkah: 1, jenisKasus: 'latihan', kasus: null });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'P' });
+  expect(keadaan.kasus?.jenisKasus).toBe('latihan');
+});
+
+it('PILIH_PEWARIS tanpa pintu (jalur lama) membuat kasus nyata', () => {
+  const keadaan = pengurangKeadaan(awal, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  expect(keadaan.kasus?.jenisKasus).toBe('nyata');
+});
+
+it('MUAT membawa jenisKasus kasusnya; keadaanAwal juga', () => {
+  const latihan = kasusBaru('L', 'latihan');
+  expect(pengurangKeadaan(awal, { jenis: 'MUAT', kasus: latihan }).jenisKasus).toBe('latihan');
+  expect(keadaanAwal(latihan, null).jenisKasus).toBe('latihan');
+  expect(keadaanAwal(null, null).jenisKasus).toBeNull();
+});
+
+it('ULANGI mengosongkan jenisKasus', () => {
+  const keadaan = pengurangKeadaan({ ...awal, jenisKasus: 'nyata', kasus: kasusBaru('L') }, { jenis: 'ULANGI' });
+  expect(keadaan.jenisKasus).toBeNull();
 });
 
 it('PILIH_PEWARIS membuat kasus, lalu bisa mengganti jenis kelamin selama belum ada pasangan', () => {
