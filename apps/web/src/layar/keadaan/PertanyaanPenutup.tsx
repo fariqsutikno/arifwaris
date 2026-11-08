@@ -32,6 +32,7 @@ export function PertanyaanPenutup({ kasus, idMayit, ubah }: Props) {
   const status = (id: IdOrang): string => {
     switch (keadaanOrang(kasus, id)) {
       case 'hidup': return t('hitung.penutup.status_hidup');
+      case 'belumTahu': return t('hitung.penutup.status_belum_tahu');
       case 'wafatSebelum': return t('hitung.penutup.status_wafat_sebelum', { mayit });
       case 'wafatSesudah': return t('hitung.penutup.status_wafat_sesudah', { mayit });
       case 'wafatSesudahDibagi': return t('hitung.penutup.status_wafat_sesudah_dibagi');

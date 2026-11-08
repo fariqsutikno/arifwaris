@@ -2,19 +2,25 @@
 // menyerahkan Kasus baru yang sudah dirapikan. "Babak asal" tidak disimpan: diturunkan dari graf,
 // yaitu almarhum pertama (pewaris, lalu urutan wafat) yang menjadikan orang itu kerabat.
 
-import { KONFIGURASI_BAWAAN, turunkanPeran, type IdOrang, type InputTirkah, type KeadaanGharqa } from '@waris/engine';
+import { KONFIGURASI_BAWAAN, turunkanPeran, type IdOrang, type InputTirkah, type KeadaanGharqa, type KunciAhliWaris } from '@waris/engine';
 import { hapusAhliWaris, labelOrangChecklist, tambahOrangBaru } from './checklist';
 import { t } from './terjemah';
 import { rapikanKeadaan, type Kasus } from './kasus';
 
-export type KeadaanTampil = 'hidup' | 'wafatSebelum' | 'wafatSesudah' | 'wafatSesudahDibagi' | 'bersamaan' | 'hilang' | 'dalamKandungan' | 'khuntsa';
+export type KeadaanTampil = 'hidup' | 'belumTahu' | 'wafatSebelum' | 'wafatSesudah' | 'wafatSesudahDibagi' | 'bersamaan' | 'hilang' | 'dalamKandungan' | 'khuntsa';
 export type JawabanKeadaan =
   | { jenis: 'hidup' }
+  | { jenis: 'belumTahu' }
   | { jenis: 'wafatSebelum' }
   | { jenis: 'wafatSesudah'; hartaSudahDibagi: boolean; posisi?: number }
   | { jenis: 'bersamaan'; keadaan: KeadaanGharqa; tirkah: InputTirkah }
   | { jenis: 'hilang' }
   | { jenis: 'khuntsa'; keadaan: 'diharapkanJelas' | 'tidakDiharapkanJelas' };
+
+// [R13-9] khuntsa hanya di jihah bunuwwah, ukhuwwah, 'umumah (13c.1): bukan orang tua atau pasangan.
+export const KHUNTSA_MUNGKIN: KunciAhliWaris[] = ['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR', 'SAUDARA_KANDUNG', 'SAUDARI_KANDUNG',
+  'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU', 'KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK',
+  'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'];
 
 export const daftarAlmarhum = (kasus: Kasus): IdOrang[] => [kasus.graf.idPewaris, ...kasus.urutanWafat];
 
@@ -36,6 +42,7 @@ export function keadaanOrang(kasus: Kasus, idOrang: IdOrang): KeadaanTampil {
   if (kasus.gharqa?.anggota.includes(idOrang)) return 'bersamaan';
   if (orang.statusHidup === 'wafat') return 'wafatSebelum';
   if (orang.statusHidup === 'mafqud') return 'hilang';
+  if (orang.statusHidup === 'tidakDiketahui') return 'belumTahu';
   if (orang.statusHidup === 'dalamKandungan') return 'dalamKandungan';
   if (orang.khuntsa) return 'khuntsa';
   return 'hidup';
@@ -49,6 +56,7 @@ export function terapkanKeadaan(kasus: Kasus, idOrang: IdOrang, jawaban: Jawaban
   let hasil: Kasus;
   switch (jawaban.jenis) {
     case 'hidup': hasil = bersih; break;
+    case 'belumTahu': hasil = ubah({ statusHidup: 'tidakDiketahui' }); break;   // engine menanganinya sebagai taqdir (spec kanvas 5.3)
     case 'wafatSebelum': hasil = ubah({ statusHidup: 'wafat' }); break;   // bukan ahli waris almarhum babaknya (bab 12.7)
     case 'wafatSesudah':
       if (jawaban.hartaSudahDibagi) { hasil = { ...bersih, wafatSesudahDibagi: [...(bersih.wafatSesudahDibagi ?? []), idOrang] }; break; }

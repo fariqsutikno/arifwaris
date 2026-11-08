@@ -21567,6 +21567,34 @@
    "id": "Pilih salah satu. Sengaja tanpa jawaban bawaan supaya tidak terlewat.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_pilih_keadaan",
+   "halaman": "hitung",
+   "id": "Pilih keadaannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_isi_waktu",
+   "halaman": "hitung",
+   "id": "Isi tahunnya, atau pilih sebelum/sesudah {rel}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_jawab_lanjutan",
+   "halaman": "hitung",
+   "id": "Jawab pertanyaan lanjutannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.penutup.status_belum_tahu",
+   "halaman": "hitung",
+   "id": "Belum tahu",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
