@@ -21,13 +21,19 @@ it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => 
   expect(screen.getByRole('radio', { name: /Perempuan/ }).getAttribute('aria-checked')).toBe('false');
 });
 
-it('tombol lanjut nonaktif dengan alasan tertulis', () => {
+it('tombol lanjut tidak pernah nonaktif: diklik saat kurang, alasan diumumkan dan tidak pindah langkah', () => {
   mulai();
   const lanjut = screen.getByRole('button', { name: /Lanjut: Harta/ });
-  expect(lanjut.hasAttribute('disabled')).toBe(true);
-  expect(screen.getByText(/Pilih dulu jenis kelamin/)).toBeTruthy();
+  expect(lanjut.hasAttribute('disabled')).toBe(false);
+  const status = () => document.querySelector('.bar-bawah [role=status]')!.textContent;
+  expect(status()).toBe('');
+  fireEvent.click(lanjut);
+  expect(status()).toMatch(/Pilih dulu jenis kelamin/);
+  expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
-  expect(screen.getByRole('button', { name: /Lanjut: Harta/ }).hasAttribute('disabled')).toBe(false);
+  expect(status()).toBe('');   // tanda hilang begitu isian diubah
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
+  expect(screen.queryByRole('heading', { name: /laki-laki atau perempuan/i })).toBeNull();
 });
 
 it('stepper tidak bisa membuka langkah yang belum boleh', () => {

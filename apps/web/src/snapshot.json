@@ -21595,6 +21595,27 @@
    "id": "Belum tahu",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.status_sisa",
+   "halaman": "hitung",
+   "id": "Keluarga: {n} bagian lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.status_lengkap",
+   "halaman": "hitung",
+   "id": "Keluarga sudah lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ke_periksa",
+   "halaman": "hitung",
+   "id": "Ke Periksa ›",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

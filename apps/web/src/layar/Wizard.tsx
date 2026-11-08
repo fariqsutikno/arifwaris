@@ -2,6 +2,7 @@
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil' (atau pilihan menunggu bila ada janin).
 
 import { useEffect, useState } from 'react';
+import { LANGKAH_WIZARD } from '../konten/wizard';
 import type { Kasus } from '../kasus';
 import { daftarAlmarhum, namaSingkat } from '../keadaanOrang';
 import { gantiJenisKelaminPewaris, ubahNamaPewaris } from '../pewaris';
@@ -30,6 +31,7 @@ import { adaAhliWaris, alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
   const { kasus, langkah, babak } = keadaan;
   const [sedangReset, setSedangReset] = useState(false);
+  const [tertahan, setTertahan] = useState(false);
   const almarhum = kasus ? daftarAlmarhum(kasus) : [];
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
   const alasan = langkah === 3 && kasus
@@ -48,6 +50,15 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
     if (langkah === 3 && babak > 0) return kirim({ jenis: 'KE_BABAK', babak: babak - 1 });
     kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'awal' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 });
   };
+  // Tombol lanjut tidak pernah nonaktif: bila isian kurang, klik hanya menahan dan mengumumkan alasannya; tanda hilang saat isian diubah.
+  const berikut = LANGKAH_WIZARD[langkah];
+  const aksiLanjut = {
+    label: berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil'),
+    sebagai: 'tombol' as const,
+    saatKlik: () => (alasan ? setTertahan(true) : saatLanjut()),
+  };
+  useEffect(() => setTertahan(false), [kasus, langkah, babak]);
+  useEffect(() => { if (tertahan) document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); }, [tertahan]);
   // Penanda halaman: latar krem dan navbar menyatu dengan hero gelap (CSS body.layar-beranda), sama dengan Awal Lab.
   useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   const stepper = (
@@ -83,8 +94,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         <KonfirmasiKasusBaru kasus={kasus} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setSedangReset(false)}
           saatLanjut={() => { setSedangReset(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
-      <BarBawah langkah={langkah} alasan={alasan}
-        saatKembali={saatKembali} saatLanjut={saatLanjut} />
+      <BarBawah saatKembali={saatKembali} status={tertahan ? alasan : null} aksi={aksiLanjut} />
     </main>
   );
 }
