@@ -14,7 +14,7 @@ export interface Bagian { id: string; milik: IdOrang; jenis: JenisBagian }
 /** Urutan hanya bermakna bila ada dua orang atau lebih yang wafat sebelum harta dibagi. */
 const MINIMAL_ALMARHUM_UNTUK_URUTAN = 2;
 
-const KUNCI_PER_KELOMPOK: Partial<Record<Kelompok, KunciAhliWaris[]>> = {
+export const KUNCI_PER_KELOMPOK: Partial<Record<Kelompok, KunciAhliWaris[]>> = {
   kakekNenek: ['KAKEK', 'NENEK_DARI_AYAH', 'NENEK_DARI_IBU'],
   saudara: ['SAUDARA_KANDUNG', 'SAUDARI_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU'],
   jauh: ['KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK', 'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'],

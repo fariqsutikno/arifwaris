@@ -105,7 +105,7 @@ export function alasanBarisKurang(kasus: Kasus, id: IdOrang, milik: IdOrang): st
 
 const daftarBelumDiisi = (kasus: Kasus): IdOrang[] => kasus.belumDiisi ?? [];
 
-function tandaiBelumDiisi(kasus: Kasus, id: IdOrang, belumDiisi: boolean): Kasus {
+export function tandaiBelumDiisi(kasus: Kasus, id: IdOrang, belumDiisi: boolean): Kasus {
   const lain = daftarBelumDiisi(kasus).filter(orang => orang !== id);
   const { belumDiisi: _lama, ...inti } = kasus;
   const daftar = belumDiisi ? [...lain, id] : lain;
