@@ -21469,6 +21469,104 @@
    "id": "Pertanyaan bisa dikirim ke keluarga lewat WA",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tahun_wafat_tanya",
+   "halaman": "hitung",
+   "id": "Kira-kira tahun berapa {nama} wafat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.boleh_kosong",
+   "halaman": "hitung",
+   "id": "Boleh kosong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tahun_contoh",
+   "halaman": "hitung",
+   "id": "mis. 1975",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_tanya",
+   "halaman": "hitung",
+   "id": "Sejak {nama} wafat, apakah hartanya sudah dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_baru",
+   "halaman": "hitung",
+   "id": "Belum, baru saja wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_baru_ket",
+   "halaman": "hitung",
+   "id": "Biasanya beberapa bulan terakhir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_lama",
+   "halaman": "hitung",
+   "id": "Belum, sudah bertahun-tahun",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_lama_ket",
+   "halaman": "hitung",
+   "id": "Misalnya rumah yang masih ditempati keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_sudah",
+   "halaman": "hitung",
+   "id": "Sudah pernah dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_sudah_ket",
+   "halaman": "hitung",
+   "id": "Bagiannya sudah dihitung dan diserahkan ke masing-masing.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_tidak_tahu",
+   "halaman": "hitung",
+   "id": "Tidak tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_tidak_tahu_ket",
+   "halaman": "hitung",
+   "id": "Kita tanyakan keadaan tiap orang, supaya aman.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_sudah_pesan",
+   "halaman": "hitung",
+   "id": "Kalau sudah dibagi seluruhnya, yang perlu dihitung adalah harta orang yang wafat sesudahnya. Kalau baru sebagian, kami belum bisa menghitungnya otomatis; tanyakan ke ahli faraidh.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pintu_belum_dijawab",
+   "halaman": "hitung",
+   "id": "Pilih salah satu. Sengaja tanpa jawaban bawaan supaya tidak terlewat.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

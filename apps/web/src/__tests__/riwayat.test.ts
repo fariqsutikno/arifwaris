@@ -6,7 +6,7 @@ import { MASA_SIMPAN, bacaRiwayat, catatRiwayat, hapusRiwayat, labelSumber, ring
 const sendiri = { jenis: 'sendiri' } as const;
 
 const kasus = (...daftar: Parameters<typeof tambahAhliWaris>[2][]) => {
-  const dasar = kasusBaru('L');
+  const dasar = kasusBaru('L', 'latihan');
   return { ...dasar, tirkah: { ...dasar.tirkah, kotor: 24_000_000n }, graf: daftar.reduce((graf, kunci) => tambahAhliWaris(graf, 'PEWARIS', kunci), dasar.graf) };
 };
 

@@ -6,7 +6,7 @@ import { Aplikasi } from '../Aplikasi';
 
 beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); window.location.hash = '#/hitung'; });
 
-const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }; };
+const denganIstri = () => { const k = kasusBaru('L', 'latihan'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }; };
 
 const mulai = () => {
   render(<Aplikasi />);

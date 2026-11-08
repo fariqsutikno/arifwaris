@@ -10,6 +10,8 @@ export const LANGKAH_HASIL = 5;
 
 export function alasanBelumLengkap(kasus: Kasus | null, langkah: number): string | null {
   if (!kasus) return t('hitung.pilih_dulu_jenis_kelamin_almarhum');
+  // Kasus nyata: jawaban pintu tanpa bawaan, karena menentukan apakah munasakhat perlu ditanyakan (spec kanvas 4).
+  if (langkah === 1 && kasus.jenisKasus === 'nyata' && !kasus.pintu) return t('hitung.kanvas.pintu_belum_dijawab');
   if (langkah === 2 && kasus.tirkah.kotor <= 0n) return t('hitung.isi_total_harta_peninggalan_dulu_harus');
   if (langkah === 3) {
     if (!adaAhliWaris(kasus)) return t('hitung.tambahkan_minimal_satu_ahli_waris');

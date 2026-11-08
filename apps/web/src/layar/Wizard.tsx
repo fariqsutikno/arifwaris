@@ -2,8 +2,10 @@
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil' (atau pilihan menunggu bila ada janin).
 
 import { useEffect, useState } from 'react';
-import { kasusBaru, type Kasus } from '../kasus';
+import type { Kasus } from '../kasus';
 import { daftarAlmarhum, namaSingkat } from '../keadaanOrang';
+import { gantiJenisKelaminPewaris, ubahNamaPewaris } from '../pewaris';
+import { aturTahunWafat } from '../silsilah';
 import { t } from '../terjemah';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
@@ -56,8 +58,10 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
     <main className="halaman-beranda halaman-wizard">
       <KerangkaLangkah langkah={langkah} subjudul={subjudul} stepper={stepper} saatReset={() => setSedangReset(true)} ringkasan={<PanggungPohon kasus={kasus} {...(langkah === 3 ? { ubah } : {})} maksPerBaris={3} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
-          saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiPewarisDanKosongkan(k, jenisKelamin))}
-          saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))} />}
+          saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiJenisKelaminPewaris(k, jenisKelamin))}
+          saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))}
+          saatUbahTahun={tahun => ubah(k => aturTahunWafat(k, k.graf.idPewaris, tahun))}
+          saatPilihPintu={pintu => ubah(k => ({ ...k, pintu }))} />}
         {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
         {kasus && langkah === 3 && babak === 0 && <>
           <IsianNamaAlmarhum nama={kasus.graf.orang[kasus.graf.idPewaris]?.nama ?? ''} saatUbah={nama => ubah(k => ubahNamaPewaris(k, nama))} />
@@ -86,21 +90,3 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
 }
 
 const adaJaninBelumLahir = (kasus: Kasus): boolean => Object.values(kasus.graf.orang).some(orang => orang.statusHidup === 'dalamKandungan');
-
-/** Kasus baru dengan jenis kelamin lain; harta, kewajiban, pembulatan, dan nama pewaris dibawa, keluarga dikosongkan. */
-function gantiPewarisDanKosongkan(kasus: Kasus, jenisKelamin: 'L' | 'P'): Kasus {
-  const baru = kasusBaru(jenisKelamin);
-  const nama = kasus.graf.orang[kasus.graf.idPewaris]?.nama;
-  const pewaris = { ...baru.graf.orang[baru.graf.idPewaris]!, ...(nama ? { nama } : {}) };
-  return {
-    ...baru, tirkah: kasus.tirkah, satuanPembulatan: kasus.satuanPembulatan,
-    ...(kasus.rincianHarta ? { rincianHarta: kasus.rincianHarta } : {}),
-    graf: { ...baru.graf, orang: { [baru.graf.idPewaris]: pewaris } },
-  };
-}
-
-function ubahNamaPewaris(kasus: Kasus, nama: string): Kasus {
-  const { nama: _lama, ...tanpaNama } = kasus.graf.orang[kasus.graf.idPewaris]!;
-  const pewaris = nama ? { ...tanpaNama, nama } : tanpaNama;
-  return { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [kasus.graf.idPewaris]: pewaris } } };
-}

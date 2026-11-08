@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
-import { bandingTanggal, terapkanPeristiwa, turunkanDariWaktu, urutkanMenurutTahun, waktuRelatif } from '../silsilah';
+import { aturTahunWafat, bandingTanggal, terapkanPeristiwa, turunkanDariWaktu, urutkanMenurutTahun, waktuRelatif } from '../silsilah';
 
 const t = (tahun: number, bulan?: number) => ({ tahun, kiraKira: false, ...(bulan ? { bulan } : {}) });
 function keluarga() {
@@ -54,5 +54,21 @@ describe('silsilah', () => {
   it('turunkanDariWaktu = urutkan lalu peristiwa; tanpa waktu/peristiwa mengembalikan objek yang sama', () => {
     const { kasus } = keluarga();
     expect(turunkanDariWaktu(kasus)).toBe(kasus);
+  });
+});
+
+describe('aturTahunWafat', () => {
+  it('menulis tahun wafat dan menghapusnya (waktu kosong ikut dibuang)', () => {
+    const { kasus, a1 } = keluarga();
+    const ditulis = aturTahunWafat(kasus, a1, t(1998));
+    expect(ditulis.waktu).toEqual({ [a1]: { wafat: t(1998) } });
+    const dihapus = aturTahunWafat(ditulis, a1, undefined);
+    expect(dihapus).not.toHaveProperty('waktu');
+  });
+
+  it('tahun lahir orang itu tidak ikut terhapus', () => {
+    const { kasus, a1 } = keluarga();
+    const k: Kasus = { ...kasus, waktu: { [a1]: { wafat: t(1998), lahir: t(1950) } } };
+    expect(aturTahunWafat(k, a1, undefined).waktu).toEqual({ [a1]: { lahir: t(1950) } });
   });
 });

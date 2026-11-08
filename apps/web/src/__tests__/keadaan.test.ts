@@ -49,22 +49,22 @@ it('PILIH_PEWARIS membuat kasus, lalu bisa mengganti jenis kelamin selama belum 
 });
 
 it('KE_LANGKAH tidak bisa melompati langkah yang belum lengkap', () => {
-  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L') };   // harta masih 0
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L', 'latihan') };   // harta masih 0
   expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 4 }).langkah).toBe(2);
 });
 
 it('KE_LAYAR hasil ditolak bila isian belum lengkap', () => {
-  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L') };
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L', 'latihan') };
   expect(pengurangKeadaan(keadaan, { jenis: 'KE_LAYAR', layar: 'hasil' }).layar).toBe('wizard');
 });
 
 it('ULANGI menghapus kasus dan kembali ke beranda, tujuan tetap', () => {
-  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L'), tujuan: 'belajar' as const };
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L', 'latihan'), tujuan: 'belajar' as const };
   expect(pengurangKeadaan(keadaan, { jenis: 'ULANGI' })).toMatchObject({ layar: 'awal', kasus: null, tujuan: 'belajar' });
 });
 
 it('UBAH_KASUS selalu merapikan urutan wafat', () => {
-  const keadaan = { ...awal, kasus: kasusBaru('L') };
+  const keadaan = { ...awal, kasus: kasusBaru('L', 'latihan') };
   const hasil = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: kasus => ({ ...kasus, urutanWafat: ['TIDAK_ADA'] }) });
   expect(hasil.kasus?.urutanWafat).toEqual([]);
 });
@@ -91,6 +91,7 @@ it('bahasa: bawaan id, tersimpan id+ar', async () => {
 
 it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari Periksa ke babak terakhir', () => {
   let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
   const anak = Object.values(keadaan.kasus!.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;

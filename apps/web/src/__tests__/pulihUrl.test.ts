@@ -5,7 +5,7 @@ import { kasusBaru } from '../kasus';
 import { catatRiwayat, hapusRiwayat } from '../riwayat';
 
 const lengkap = () => {
-  const dasar = kasusBaru('L');
+  const dasar = kasusBaru('L', 'latihan');
   return { ...dasar, tirkah: { ...dasar.tirkah, kotor: 24_000_000n }, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'ISTRI') };
 };
 

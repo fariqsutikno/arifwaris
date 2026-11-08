@@ -8,7 +8,7 @@ import { DialogBagikan } from '../layar/DialogBagikan';
 import { KasusDibagikan } from '../layar/KasusDibagikan';
 
 const kasus = () => {
-  const dasar = kasusBaru('L');
+  const dasar = kasusBaru('L', 'latihan');
   return { ...dasar, tirkah: { ...dasar.tirkah, kotor: 24_000_000n }, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'ISTRI') };
 };
 const pemilik = { userId: 'u1', email: 'pemilik@tes.local' };

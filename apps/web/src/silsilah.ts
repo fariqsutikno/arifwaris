@@ -59,3 +59,13 @@ export function terapkanPeristiwa(kasus: Kasus): Kasus {
 }
 
 export const turunkanDariWaktu = (kasus: Kasus): Kasus => terapkanPeristiwa(urutkanMenurutTahun(kasus));
+
+/** Tulis atau hapus tahun wafat satu orang; entri `waktu` yang kosong ikut dibuang supaya Kasus tidak menyimpan sisa. */
+export function aturTahunWafat(kasus: Kasus, id: IdOrang, tahun: TanggalKira | undefined): Kasus {
+  const { [id]: lama, ...lainnya } = kasus.waktu ?? {};
+  const { wafat: _dihapus, ...tanpaWafat } = lama ?? {};
+  const baru = tahun ? { ...tanpaWafat, wafat: tahun } : tanpaWafat;
+  const waktu = Object.keys(baru).length ? { ...lainnya, [id]: baru } : lainnya;
+  const { waktu: _waktuLama, ...inti } = kasus;
+  return Object.keys(waktu).length ? { ...inti, waktu } : inti;
+}
