@@ -341,6 +341,10 @@ export interface InputGharqa {
   tirkah?: Record<IdOrang, InputTirkah>;
 }
 
+/** Kelompok anggota gharqa sebagai satu kejadian dalam rantai wafat. */
+export interface KejadianGharqa { anggota: IdOrang[]; keadaan: KeadaanGharqa }
+export type KejadianWafat = IdOrang | KejadianGharqa;
+
 export interface HartaGharqa {
   mayit: IdOrang;
   jamiah: bigint;
