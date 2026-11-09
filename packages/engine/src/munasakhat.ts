@@ -1,8 +1,9 @@
 // Orkestrator munasakhat (bab 12): ahli waris wafat sebelum harta dibagi.
-// Bukan cabang di dalam pipeline, tapi menjalankan pipeline (`hitung`) sekali per mayit:
+// Bukan cabang di dalam pipeline, tapi menjalankan pipeline (`hitungDzawilArham`) sekali per mayit:
 //   1. Urutkan mayit menurut waktu wafat; mayit pertama = pewaris asal.
 //   2. Tiap mayit: hitung mas'alah-nya dengan graf "saat ia wafat".
 //      Mayit yang tidak mendapat bagian dari mayit sebelumnya dilewati [R12-1].
+//      Mas'alah tiap mayit melewati fase dzawil arham (bab 14) [R12-5].
 //   3. Gabungkan ke jami'ah (mas'alah gabungan) memakai metode Keadaan 3,
 //      yang berlaku untuk semua keadaan [R12-3].
 //   4. Harta mayit pertama dibagi menurut jami'ah; label Keadaan 1/2/3 hanya untuk penjelasan.
@@ -13,7 +14,7 @@
 
 import { fpb } from '@waris/math';
 import { AWALAN_SISA, gabungkan as gabungkanSaham, idSisaKeluar, periksaInvarian, sahamDari, totalSaham as total, type Saham } from './gabung.js';
-import { hitung } from './pipeline.js';
+import { hitungDzawilArham } from './dzawilArham.js';
 import { bagikanNominal } from './stages/pembagian.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import type {
@@ -39,7 +40,7 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
     }
     // Hanya harta mayit pertama yang bernominal; mayit berikutnya cukup mas'alah-nya (bab 12.5).
     const tirkah = urutanKe === 0 ? input.dasar.tirkah : TANPA_TIRKAH;
-    const hasil = hitung({ ...input.dasar, tirkah, graf: grafPada(input, urutan, urutanKe) });
+    const hasil = hitungDzawilArham({ ...input.dasar, tirkah, graf: grafPada(input, urutan, urutanKe) });
     if (hasil.status !== 'OK') return { ...hasil, mayit };
     if (hasil.sisaKeluar) tujuanSisa[idSisaKeluar(mayit)] = hasil.sisaKeluar.tujuan;
     daftarLangkah.push({ mayit, hasil });
@@ -87,7 +88,7 @@ function tentukanKeadaan(input: InputMunasakhat, urutan: IdOrang[], daftarLangka
   saham: Saham, jamiah: bigint): 1 | 2 | 3 {
   const semuaWafat = grafPada(input, urutan, 0);
   for (const idOrang of input.urutanWafat) semuaWafat.orang[idOrang] = { ...semuaWafat.orang[idOrang]!, statusHidup: 'wafat' };
-  const langsung = hitung({ ...input.dasar, tirkah: TANPA_TIRKAH, graf: semuaWafat });
+  const langsung = hitungDzawilArham({ ...input.dasar, tirkah: TANPA_TIRKAH, graf: semuaWafat });
   if (langsung.status === 'OK' && perbandinganSama(sahamDari(urutan[0]!, langsung), saham, jamiah)) return 1;
 
   const [langkahPertama, ...langkahBerikutnya] = daftarLangkah;
