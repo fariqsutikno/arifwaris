@@ -1,9 +1,11 @@
 // Langkah-langkah gharqa (bab 13d) yang dipakai orkestrator gharqa dan munasakhat.
-//   Masuk : ruleset + keadaan 13d.2 (untuk memilih metode), atau satu mayit + rekannya (tilad–tharif).
+//   Masuk : ruleset + keadaan 13d.2 (untuk memilih metode), satu mayit + rekannya (tilad–tharif),
+//           atau satu kelompok gharqa di tengah rantai munasakhat beserta saham rantai sejauh ini.
 //   Putus : metode tiap kelompok (terpisah / tilad / skenario) dan urutan wafat yang mungkin.
-//   Keluar: MetodeGharqa, daftar urutan (ekspansi skenario), atau saham tilad–tharif satu mayit.
+//   Keluar: MetodeGharqa, daftar urutan (ekspansi skenario), saham tilad–tharif satu mayit,
+//           atau saham/jami'ah rantai setelah kelompok itu diteruskan ke ahli waris tiap anggotanya.
 
-import { gabungkan, periksaInvarian, sahamDari, totalSaham, type Saham } from './gabung.js';
+import { gabungkan, periksaInvarian, sahamDari, totalSaham, type HasilGabung, type Saham } from './gabung.js';
 import { hitungDzawilArham } from './dzawilArham.js';
 import type { GrafKeluarga, HasilEngine, HasilGharqa, IdOrang, InputEngine, InputTirkah, KeadaanGharqa, KejadianGharqa, KejadianWafat, LangkahJejak, Ruleset } from './types.js';
 
@@ -63,13 +65,67 @@ export function tiladSatuMayit(inputMayit: InputEngine, mayit: IdOrang, rekan: I
     const sahamTharif = sahamDari(idRekan, hasilTharif);
     daftarHasil.push(hasilTharif);
     const gabungan = gabungkan(saham, jamiah, idRekan, sahamTharif, totalSaham(sahamTharif));
-    jejak.push({ tahap: 'munasakhat', refs: ['R13-19'], jenis: 'MUNASAKHAT', mayit: idRekan, saham: gabungan.sahamMayit, masalah: gabungan.masalah,
-      hubungan: gabungan.hubungan, fpb: gabungan.fpb, wafqMasalah: gabungan.wafqMasalah, wafqSaham: gabungan.wafqSaham, jamiah: gabungan.jamiah, rincian: gabungan.rincian });
+    jejak.push(jejakGabung(idRekan, gabungan, ['R13-19']));
     saham = gabungan.saham;
     jamiah = gabungan.jamiah;
     periksaInvarian(saham, jamiah, 'gharqa tilad');
   }
   return { saham, jejak, daftarHasil, urutanTharif };
+}
+
+export interface HasilLangkahKelompok { saham: Saham; jamiah: bigint; jejak: LangkahJejak[]; daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }> }
+
+/**
+ * Satu kelompok gharqa di rantai: tiap anggota yang punya saham diteruskan ke ahli warisnya [R12-6].
+ * `inputAnggota(mayit)` = input dengan graf "saat kelompok itu wafat" (semua anggota wafat, kejadian sesudahnya hidup),
+ * `idPewaris = mayit`, tirkah nol.
+ */
+export function terapkanKelompok(saham: Saham, jamiah: bigint, kelompok: KejadianGharqa,
+  inputAnggota: (mayit: IdOrang) => InputEngine): HasilLangkahKelompok | Gagal {
+  const metode = metodeGharqa(inputAnggota(kelompok.anggota[0]!).ruleset, kelompok.keadaan);
+  if (metode.metode === 'skenario') throw new Error('terapkanKelompok: kelompok bermetode skenario harus diekspansi lebih dulu');
+
+  let sahamRantai = saham;
+  let jamiahRantai = jamiah;
+  const jejak: LangkahJejak[] = [];
+  const daftarLangkah: HasilLangkahKelompok['daftarLangkah'] = [];
+  for (const mayit of kelompok.anggota) {
+    // Bagian dinilai dari rantai sebelum kelompok: anggota wafat bersamaan tidak saling mewarisi, jadi tak ada bagian dari rekan [R12-1].
+    if (!saham[mayit]) {
+      jejak.push({ tahap: 'munasakhat', refs: ['R12-1'], jenis: 'MUNASAKHAT_DILEWATI', mayit });
+      continue;
+    }
+    const rekan = kelompok.anggota.filter(id => id !== mayit);
+    const masukan = inputAnggota(mayit);
+    let sahamMasalah: Saham;
+    if (metode.metode === 'tilad') {
+      const hasilTilad = tiladSatuMayit(masukan, mayit, rekan);
+      if ('status' in hasilTilad) return hasilTilad;
+      sahamMasalah = hasilTilad.saham;
+      jejak.push(...hasilTilad.jejak);
+      for (const [indeks, idMayitLangkah] of [mayit, ...hasilTilad.urutanTharif].entries()) {
+        daftarLangkah.push({ mayit: idMayitLangkah, hasil: hasilTilad.daftarHasil[indeks]! });
+      }
+    } else {
+      const hasil = hitungDzawilArham(masukan);
+      if (hasil.status !== 'OK') return { ...hasil, mayit };
+      sahamMasalah = sahamDari(mayit, hasil);
+      jejak.push(...rekan.map((idRekan): LangkahJejak => ({ tahap: 'mawani', refs: [metode.rujukan], jenis: 'MANI', idOrang: idRekan, mani: 'istibham' })));
+      daftarLangkah.push({ mayit, hasil });
+    }
+    const gabungan = gabungkan(sahamRantai, jamiahRantai, mayit, sahamMasalah, totalSaham(sahamMasalah));
+    jejak.push(jejakGabung(mayit, gabungan, ['R12-6']));
+    sahamRantai = gabungan.saham;
+    jamiahRantai = gabungan.jamiah;
+    periksaInvarian(sahamRantai, jamiahRantai, 'munasakhat gharqa');
+  }
+  return { saham: sahamRantai, jamiah: jamiahRantai, jejak, daftarLangkah };
+}
+
+/** Jejak satu penggabungan mas'alah mayit ke jami'ah; `refs` menyebut asal aturannya. */
+export function jejakGabung(mayit: IdOrang, gabungan: HasilGabung, refs: string[]): Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }> {
+  return { tahap: 'munasakhat', refs, jenis: 'MUNASAKHAT', mayit, saham: gabungan.sahamMayit, masalah: gabungan.masalah, hubungan: gabungan.hubungan,
+    fpb: gabungan.fpb, wafqMasalah: gabungan.wafqMasalah, wafqSaham: gabungan.wafqSaham, jamiah: gabungan.jamiah, rincian: gabungan.rincian };
 }
 
 // ─── Pembantu ─────────────────────────────────────────────────────────────────

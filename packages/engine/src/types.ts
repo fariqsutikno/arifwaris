@@ -258,8 +258,9 @@ export interface InputMunasakhat {
   /**
    * Ahli waris yang wafat sebelum pembagian, urut waktu wafat (bab 12.7). Yang dibagi hanya harta mayit pertama;
    * harta pribadi, hutang, dan wasiat mereka sendiri bukan bagian munasakhat (bab 12.5).
+   * Satu kejadian = satu orang, atau satu kelompok gharqa yang wafat bersamaan [R12-6].
    */
-  urutanWafat: IdOrang[];
+  urutanWafat: KejadianWafat[];
   /**
    * Orang yang belum dikandung saat mayit tertentu wafat: bukan ahli waris mayit itu dan mayit sebelumnya.
    * Yang sudah di rahim saat mayit wafat lalu lahir hidup tetap ahli warisnya [R13-1] [R13-2], jadi tidak dicantumkan.
@@ -281,6 +282,8 @@ export type HasilMunasakhat =
   | { status: 'OK';
       /** Hasil pipeline tiap mayit, urut wafat. */
       daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>;
+      /** Kejadian yang dihitung, urut wafat (tanpa pewaris asal); dipakai penjelasan. */
+      urutanWafat: KejadianWafat[];
       /** Bab 12.2: label untuk telusur-balik & penjelasan; tidak menentukan jalur hitung [R12-3]. */
       keadaan: 1 | 2 | 3;
       jamiah: bigint;
