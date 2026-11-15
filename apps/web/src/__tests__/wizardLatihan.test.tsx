@@ -65,4 +65,9 @@ describe('Wizard latihan (rencana 3)', () => {
     expect(screen.getByText(/hilang dan belum ada kabar/)).toBeTruthy();
     expect(screen.getAllByText(/: Belum tahu$/).length).toBeGreaterThan(0);   // istri juga muncul sebagai ibu di kartu anak
   });
+
+  it('nama pewaris masih bisa diisi di langkah 1 latihan', () => {
+    render(<Papan kasus={soal().kasus} langkah={1} />);
+    expect(screen.getByRole('textbox', { name: /Siapa nama almarhum/ })).toBeTruthy();
+  });
 });
