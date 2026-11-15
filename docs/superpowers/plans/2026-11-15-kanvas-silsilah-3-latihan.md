@@ -267,7 +267,7 @@ Tulis `hitung-latihan.json` di direktori kerja:
 Run: `pnpm diksi:tambah hitung-latihan.json && rm hitung-latihan.json`
 Expected: "12 kunci ditambahkan".
 
-Dua kunci terakhir (`lepas_tanda_*`, `kartu_tanpa_ahli_waris`) tidak ada di mockup. Kalimatnya disusun mengikuti pola dialog konfirmasi hapus dan pesan validasi yang sudah ada di snapshot. **Tunjukkan dua kalimat ini ke pemilik di laporan akhir.**
+Dua kunci terakhir (`lepas_tanda_*`, `kartu_tanpa_ahli_waris`) tidak ada di mockup. Kalimatnya **sudah disetujui pemilik 2026-11-15**, jadi pakai persis seperti di atas.
 
 - [ ] **Step 2: Tulis tes yang gagal** (`latihanAhliWaris.test.tsx`)
 
@@ -442,5 +442,4 @@ Pastikan:
 Laporkan:
 - commit per tugas;
 - penyimpangan dari rencana;
-- dua kalimat diksi yang perlu disetujui pemilik (Tugas 2 Step 1);
 - tangkapan layar latihan di desktop dan HP.
