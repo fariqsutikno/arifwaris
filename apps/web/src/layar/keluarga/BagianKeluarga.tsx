@@ -69,7 +69,7 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
 function BarisTetap({ kasus, bagian, kunci, ubah, tandaiKurang, disorot }: Omit<Props, 'ya'> & { kunci: KunciAhliWaris }) {
   const [id] = orangDenganKunci(kasus, bagian.milik, kunci);
   const idLabel = useId();
-  if (id) return <BarisOrang kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot} />;
+  if (id) return <BarisOrang kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot} bisaHapus={false} />;
   const peran = namaPeran(kasus, kunci, bagian.milik);
   return (
     <div className={tandaiKurang ? 'orang kurang' : 'orang'} role="group" aria-label={peran} data-baris-tetap={kunci}

@@ -2,7 +2,7 @@
 // Ya/Tidak, penghitung "+/−", baris tetap (orang tua, kakek-nenek), dan bagian Kamu. Aturan fikih tidak ada di sini:
 // keadaan orang lewat keadaanBaris, siapa yang ditanya lewat kelompok/ujiHipotetis.
 
-import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, KunciAhliWaris, Orang } from '@waris/engine';
 import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris, ubahOrang } from './checklist';
 import { rapikanKeadaan, type Kasus, type Kelompok } from './kasus';
 import { keadaanTerpilih, pilihKeadaan, tandaiBelumDiisi, type PilihanKeadaan } from './keadaanBaris';
@@ -68,8 +68,10 @@ export function isiBarisTetap(kasus: Kasus, bagian: Bagian, kunci: KunciAhliWari
   let id = orangDenganKunci(kasus, bagian.milik, kunci)[0];
   let basis = kasus;
   if (!id) {
-    const graf = tambahAhliWaris(kasus.graf, bagian.milik, kunci);
-    id = orangBaruDi(kasus.graf, graf);
+    // Posisi yang pernah dihapus tinggal penghubung (pemilik masih menunjuknya): dipakai ulang, bukan dibuat baru.
+    const penghubung = daftarInduk(kasus.graf, bagian.milik, kunci)[0];
+    const graf = penghubung ? ubahOrang(kasus.graf, penghubung, { penghubung: false, statusHidup: 'hidup' }) : tambahAhliWaris(kasus.graf, bagian.milik, kunci);
+    id = penghubung ?? orangBaruDi(kasus.graf, graf);
     if (!id) return kasus;
     basis = tandaiBelumDiisi({ ...kasus, graf }, id, true);
   }
@@ -177,7 +179,30 @@ function buangOrang(kasus: Kasus, ids: IdOrang[]): Kasus {
   const buang = new Set(ids);
   const orang = Object.fromEntries(Object.entries(kasus.graf.orang).filter(([id]) => !buang.has(id)));
   const pernikahan = kasus.graf.pernikahan.filter(nikah => !buang.has(nikah.idSuami) && !buang.has(nikah.idIstri));
-  return rapikanKeadaan({ ...kasus, graf: { ...kasus.graf, orang, pernikahan } });
+  const rapi = rapikanKeadaan({ ...kasus, graf: { ...kasus.graf, orang, pernikahan } });
+  const tanpaTerputus = orangTerputus(kasus, rapi).reduce((k, id) => ({ ...k, graf: hapusAhliWaris(k.graf, id) }), rapi);
+  return buangPenghubungYatim(tanpaTerputus);
+}
+
+/** Penghubung yang tak lagi menghubungkan siapa pun selain almarhum (mis. ayah yang dibuat demi seorang paman) ikut dibuang. */
+function buangPenghubungYatim(kasus: Kasus): Kasus {
+  const almarhum = new Set([kasus.graf.idPewaris, ...kasus.urutanWafat]);
+  let graf = kasus.graf;
+  for (;;) {
+    const daftar = Object.values(graf.orang);
+    const yatim = daftar.find(orang => orang.penghubung
+      && daftar.every(anak => (anak.idAyah !== orang.id && anak.idIbu !== orang.id) || almarhum.has(anak.id)));
+    if (!yatim) return rapikanKeadaan({ ...kasus, graf });
+    const lepas = (anak: Orang): Orang => {
+      const { idAyah, idIbu, ...sisa } = anak;
+      return { ...sisa, ...(idAyah && idAyah !== yatim.id ? { idAyah } : {}), ...(idIbu && idIbu !== yatim.id ? { idIbu } : {}) };
+    };
+    graf = {
+      ...graf,
+      orang: Object.fromEntries(daftar.filter(orang => orang.id !== yatim.id).map(orang => [orang.id, lepas(orang)])),
+      pernikahan: graf.pernikahan.filter(nikah => nikah.idSuami !== yatim.id && nikah.idIstri !== yatim.id),
+    };
+  }
 }
 
 /** Hapus satu per satu: yang masih punya keturunan menjadi penghubung, yang tak lagi berkerabat ikut dibersihkan. */

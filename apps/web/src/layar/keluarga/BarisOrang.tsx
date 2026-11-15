@@ -24,6 +24,8 @@ interface Props {
   kasus: Kasus; id: IdOrang; kunci: KunciAhliWaris; milik: IdOrang;
   ubah: (f: (k: Kasus) => Kasus) => void;
   tandaiKurang: boolean; disorot: boolean;
+  /** false untuk baris tetap (Ayah, Ibu, kakek, nenek): posisinya selalu ada, hanya keadaannya yang diubah. */
+  bisaHapus?: boolean;
 }
 
 /** Kunci diksi harus literal (dicek tes diksi), jadi label tiap keadaan ditulis eksplisit. */
@@ -39,7 +41,7 @@ const ARTI_KEADAAN: Record<PilihanKeadaan | 'lainnya', () => string> = {
 /** Peran yang hanya satu per orang (Ayah, Suami, …) tidak diberi nomor. */
 const adalahPeranTunggal = (kunci: KunciAhliWaris) => jenisDari(kunci)?.maksimal === 1;
 
-export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disorot }: Props) {
+export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disorot, bisaHapus = true }: Props) {
   const idLabel = useId();
   const [lainnyaTerbuka, setLainnyaTerbuka] = useState(false);
   const [akanHapus, setAkanHapus] = useState(false);
@@ -89,9 +91,11 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
         <LanjutanBaris kasus={kasus} id={id} milik={milik} terpilih={terpilih} ubah={ubah} />
         {alasan && <span className="salah" id={`${idLabel}-salah`}>{alasan}</span>}
       </div>
-      <button type="button" className="aksi-teks hapus" aria-label={t('hitung.hapus_judul', { judul: nama })} onClick={() => setAkanHapus(true)}>
-        <Ikon nama="sampah" ukuran={15} />{t('umum.hapus')}
-      </button>
+      {bisaHapus && (
+        <button type="button" className="aksi-teks hapus" aria-label={t('hitung.hapus_judul', { judul: nama })} onClick={() => setAkanHapus(true)}>
+          <Ikon nama="sampah" ukuran={15} />{t('umum.hapus')}
+        </button>
+      )}
       {akanHapus && (
         <DialogKonfirmasi judul={t('hitung.pohon.hapus_judul', { nama })} labelLanjut={t('hitung.pohon.hapus')} labelBatal={t('umum.batal')}
           saatBatal={() => setAkanHapus(false)} saatLanjut={() => { setAkanHapus(false); ubah(k => hapusBaris(k, id)); }}>

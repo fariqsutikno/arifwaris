@@ -59,6 +59,12 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     expect(terakhir.kelompokDijawab?.PEWARIS).toContain('orangTua');
   });
 
+  it('baris tetap tidak punya Hapus: posisinya selalu ada, keadaannya yang diubah (review P3)', () => {
+    render(<Uji awal={dijawab(kasusBaru('L'), { PEWARIS: ['pasangan', 'anak'] })} />);
+    fireEvent.click(within(screen.getByRole('group', { name: 'Ayah' })).getByRole('radio', { name: 'Masih hidup' }));
+    expect(screen.queryByRole('button', { name: /^Hapus / })).toBeNull();
+  });
+
   it('kakek-nenek hanya baris yang berpengaruh (ayah wafat → kakek dari ayah)', () => {
     const { kasus } = keluargaBudi();
     const awal = dijawab(kasus, { PEWARIS: ['pasangan', 'anak', 'orangTua'] });

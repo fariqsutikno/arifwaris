@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { ubahNama } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
 import { bagianLengkap, daftarBagian, type Bagian } from '../kelompok';
-import { jawabLanjutan } from '../keadaanBaris';
+import { jawabLanjutan, keadaanTerpilih } from '../keadaanBaris';
 import {
   calonKamu, dampakAdaKeTidak, hapusBaris, isiBarisTetap, jawabAdaTidak, jawabAnakBersama, jawabKamu, kunciBagian, kurangiBarisKosong, slotTetap, tambahBaris, tandaiAnakBersama,
 } from '../isianBagian';
@@ -173,5 +173,38 @@ describe('hapusBaris mencabut jawaban bagian yang jadi kosong (review P2)', () =
     let kasus = tambahBaris(tambahBaris(kasusBaru('L'), ANAK, 'ANAK_LK'), ANAK, 'ANAK_PR');
     const [pertama] = Object.keys(kasus.graf.orang).filter(satu => satu !== 'PEWARIS');
     expect(hapusBaris(kasus, pertama!).kelompokDijawab?.PEWARIS).toContain('anak');
+  });
+});
+
+describe('baris tetap dan penghubung (review P3)', () => {
+  const idAyah = (kasus: Kasus) => kasus.graf.orang.PEWARIS!.idAyah!;
+
+  it('Ayah yang dihapus (menjadi penghubung) bisa dipilih lagi: orangnya dipakai ulang, bukan diam-diam gagal', () => {
+    let kasus = isiBarisTetap(kasusBaru('L'), ORANG_TUA, 'AYAH', 'hidup');
+    const ayah = idAyah(kasus);
+    kasus = hapusBaris(kasus, ayah);
+    expect(kasus.graf.orang[ayah]!.penghubung).toBe(true);
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'hidup');
+    expect(idAyah(kasus)).toBe(ayah);
+    expect(kasus.graf.orang[ayah]!.penghubung).toBeFalsy();
+    expect(keadaanTerpilih(kasus, ayah)).toBe('hidup');
+    expect(Object.keys(kasus.graf.orang)).toHaveLength(2);
+  });
+
+  it('memilih wafat pada penghubung yang dipakai ulang tetap menunggu sebelum/sesudah', () => {
+    let kasus = hapusBaris(isiBarisTetap(kasusBaru('L'), ORANG_TUA, 'AYAH', 'hidup'), 'O1');
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'wafat');
+    expect(kasus.belumDiisi).toContain('O1');
+  });
+
+  it('"Tidak" pada kerabat jauh tidak meninggalkan penghubung yatim, dan Ayah bisa diisi sesudahnya', () => {
+    const jauh: Bagian = { id: 'jauh:PEWARIS', milik: 'PEWARIS', jenis: 'jauh' };
+    let kasus = tambahBaris({ ...kasusBaru('L'), kelompokDijawab: { PEWARIS: ['anak', 'saudara'] } }, jauh, 'PAMAN_KANDUNG');
+    expect(Object.values(kasus.graf.orang).some(orang => orang.penghubung)).toBe(true);
+    kasus = jawabAdaTidak(kasus, jauh, false);
+    expect(Object.values(kasus.graf.orang).filter(orang => orang.penghubung)).toEqual([]);
+    expect(kasus.graf.orang.PEWARIS!.idAyah).toBeUndefined();
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'hidup');
+    expect(keadaanTerpilih(kasus, idAyah(kasus))).toBe('hidup');
   });
 });
