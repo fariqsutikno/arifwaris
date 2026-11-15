@@ -84,7 +84,7 @@ export function jawabLanjutan(kasus: Kasus, id: IdOrang, milik: IdOrang, jawaban
       if (relatif === 'sesudah' && keadaanOrang(denganTahun, id) === 'wafatSesudahDibagi') return denganTahun;
       if (relatif === 'sebelum') return tandaiBelumDiisi(terapkanKeadaan(denganTahun, id, { jenis: 'wafatSebelum' }), id, false);
       const sesudah: JawabanKeadaan = { jenis: 'wafatSesudah', hartaSudahDibagi: false };
-      // ponytail: kasus yang belum didukung engine (gharqa lain) dibiarkan tertunda tanpa pesan; ditangani bagian Urutan.
+      // Kasus yang belum didukung engine (gharqa lain) dibiarkan tertunda; barisnya menampilkan alasan lewat alasanWafatSesudahDitolak.
       if (alasanTidakDidukung(denganTahun, id, sesudah)) return denganTahun;
       return tandaiBelumDiisi(terapkanKeadaan(denganTahun, id, sesudah), id, false);
     }
@@ -103,6 +103,12 @@ export function alasanBarisKurang(kasus: Kasus, id: IdOrang, milik: IdOrang): st
   if (terpilih === null) return t('hitung.kanvas.baris_pilih_keadaan');
   if (terpilih === 'wafat') return t('hitung.kanvas.baris_isi_waktu', { rel: namaSingkat(kasus, milik) });
   return t('hitung.kanvas.baris_jawab_lanjutan');
+}
+
+/** Tahun menyatakan "sesudah" tetapi engine belum mendukung kombinasinya (keadaan tetap "sebelum"); null bila tidak ada masalah. */
+export function alasanWafatSesudahDitolak(kasus: Kasus, id: IdOrang, milik: IdOrang): string | null {
+  if (keadaanTerpilih(kasus, id) !== 'wafat' || keadaanOrang(kasus, id) !== 'wafatSebelum' || waktuRelatif(kasus, id, milik) !== 'sesudah') return null;
+  return alasanTidakDidukung(kasus, id, { jenis: 'wafatSesudah', hartaSudahDibagi: false }) ? t('hitung.keadaan.belum_didukung') : null;
 }
 
 const daftarBelumDiisi = (kasus: Kasus): IdOrang[] => kasus.belumDiisi ?? [];

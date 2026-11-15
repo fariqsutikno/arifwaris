@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { jalankan } from '../jalankan';
 import { kasusBaru, type Kasus } from '../kasus';
 import { terapkanKeadaan } from '../keadaanOrang';
-import { alasanBarisKurang, jawabLanjutan, keadaanTerpilih, lanjutanDiperlukan, pilihKeadaan, pilihanKeadaan } from '../keadaanBaris';
+import { alasanBarisKurang, alasanWafatSesudahDitolak, jawabLanjutan, keadaanTerpilih, lanjutanDiperlukan, pilihKeadaan, pilihanKeadaan } from '../keadaanBaris';
 import { tambah } from './fixtures/kanvas';
 
 const tahun = (nilai: number) => ({ tahun: nilai, kiraKira: false });
@@ -127,5 +127,18 @@ describe('keadaan satu baris', () => {
     const hidup = pilihKeadaan(wafat, id, 'hidup', 'PEWARIS');
     expect(hidup.urutanWafat).not.toContain(id);
     expect(hidup.waktu?.[id]?.wafat).toBeUndefined();
+  });
+});
+
+describe('wafat sesudah yang belum didukung engine (review P5)', () => {
+  it('tahun yang berarti sesudah tetapi engine belum mendukungnya menampilkan alasan, bukan diam', () => {
+    const a = tambah(kasusBaru('L'), 'PEWARIS', 'ANAK_LK');
+    const b = tambah(a.kasus, 'PEWARIS', 'ANAK_PR');
+    let kasus = terapkanKeadaan({ ...b.kasus, waktu: { PEWARIS: { wafat: tahun(1990) } } }, a.id, { jenis: 'bersamaan', keadaan: 'serentak', tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n } });
+    kasus = pilihKeadaan({ ...kasus, belumDiisi: [b.id] }, b.id, 'wafat', 'PEWARIS');
+    kasus = jawabLanjutan(kasus, b.id, 'PEWARIS', { jenis: 'wafat', tahun: tahun(2000) });
+    expect(kasus.urutanWafat).not.toContain(b.id);
+    expect(alasanWafatSesudahDitolak(kasus, b.id, 'PEWARIS')).toBe('Keadaan ini belum bisa dihitung otomatis');
+    expect(alasanWafatSesudahDitolak(kasus, a.id, 'PEWARIS')).toBeNull();
   });
 });

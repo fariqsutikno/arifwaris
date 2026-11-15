@@ -10,7 +10,7 @@ import { ARTI_KEADAAN_DRAF } from '../../konten/kanvasDraf';
 import { LABEL_SEHARI, sebutAlmarhum } from '../../konten/ahliWaris';
 import { hapusBaris, orangDenganKunci, orangYangHilang } from '../../isianBagian';
 import {
-  alasanBarisKurang, jawabLanjutan, keadaanTerpilih, lanjutanDiperlukan, pilihanKeadaan, pilihKeadaan, type PilihanKeadaan,
+  alasanBarisKurang, alasanWafatSesudahDitolak, jawabLanjutan, keadaanTerpilih, lanjutanDiperlukan, pilihanKeadaan, pilihKeadaan, type PilihanKeadaan,
 } from '../../keadaanBaris';
 import { keadaanOrang, namaSingkat } from '../../keadaanOrang';
 import { dampakHapus } from '../../kerabatPohon';
@@ -167,13 +167,15 @@ function KapanWafat({ kasus, id, milik, rel, menunggu, ubah, jawab }: {
   const tahunMilik = kasus.waktu?.[milik]?.wafat?.tahun;
   const otomatis = waktuRelatif(kasus, id, milik);
   const sesudah = keadaanOrang(kasus, id) === 'wafatSesudah';
+  const alasanDitolak = alasanWafatSesudahDitolak(kasus, id, milik);
   return (
     <div className="kapan">
       <IsianTahun label={t('hitung.kanvas.tahun_wafatnya')} contoh={t('hitung.kanvas.tahun_kalau_ingat')} nilai={kasus.waktu?.[id]?.wafat}
         saatUbah={tahun => jawab({ jenis: 'wafat', tahun: tahun ?? null })} />
       {otomatis
         ? <span className="kecil redup">{otomatis === 'sebelum'
-          ? t('hitung.kanvas.berarti_sebelum', { rel, tahun: tahunMilik! }) : t('hitung.kanvas.berarti_sesudah', { rel, tahun: tahunMilik! })}</span>
+          ? t('hitung.kanvas.berarti_sebelum', { rel, tahun: tahunMilik! }) : t('hitung.kanvas.berarti_sesudah', { rel, tahun: tahunMilik! })}
+          {alasanDitolak && <> {alasanDitolak}</>}</span>
         : <PilihanSegmen label={tahunMilik ? t('hitung.kanvas.waktu_tanya', { rel }) : t('hitung.kanvas.waktu_tanya_rel_kosong', { rel })}
           terpilih={menunggu ? null : sesudah ? 'sesudah' : 'sebelum'}
           pilihan={[['sebelum', t('hitung.kanvas.sebelum')], ['sesudah', t('hitung.kanvas.sesudah')]]}
