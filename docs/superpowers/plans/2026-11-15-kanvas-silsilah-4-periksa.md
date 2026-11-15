@@ -550,7 +550,7 @@ Expected: FAIL.
   - Tautan "Lihat di Keluarga".
 - **urutan**: dua pilihan → `jawabUrutanTertunda`.
 
-Sesudah menyimpan, umumkan `tersimpan` lewat live region. Aksi ikon pesan + teks `salin_wa`: `navigator.clipboard?.writeText(pesan).then(() => status tersalin).catch(() => {})`. Pratinjau pesan (`.wa` di mockup) selalu tampil sesudah diklik. Gaya di `periksa.css` mengikuti mockup (`.belum-baris`, `.wa`).
+Sesudah menyimpan, umumkan `tersimpan` lewat live region. Aksi ikon pesan + teks `salin_wa`: `navigator.clipboard?.writeText(pesan).then(() => status tersalin).catch(() => status gagal_salin)`. Teks `hitung.periksa.gagal_salin` = "Belum tersalin. Salin pesan di bawah secara manual." (disetujui pemilik 2026-11-15). Pratinjau pesan (`.wa` di mockup) selalu tampil sesudah diklik. Gaya di `periksa.css` mengikuti mockup (`.belum-baris`, `.wa`).
 
 - [ ] **Step 5: Jalankan tes dan tes diksi**
 
@@ -578,7 +578,7 @@ git commit -m "feat(web): Periksa: belum dipastikan dijawab di tempat, salin per
 
 **Interfaces:**
 - Produces: `Aksi` `{ jenis: 'KE_LANGKAH'; langkah: number; fokus?: IdOrang; fokusBagian?: string; dariPeriksa?: boolean }`; `bagianDariOrang`.
-- Teks (diksi, dari spec 5.9 dan mockup): `hitung.periksa.sedang_dari_periksa` = "Kamu sedang mengubah dari Periksa.", `hitung.periksa.kembali_ke_periksa` = "Kembali ke Periksa", `hitung.periksa.hitung_kemungkinan` = "Hitung dengan kemungkinan", `hitung.periksa.hitung` = "Ya, benar. Hitung", `hitung.periksa.n_belum` = "{jumlah} hal belum dipastikan.", `hitung.periksa.pastikan_urutan` = "Pastikan dulu urutan wafat {a} dan {b}.", `hitung.periksa.keluarga_belum_lengkap` = "Keluarga belum lengkap: {bagian}." Tiga kunci terakhir tidak ada di mockup, jadi **catat di laporan untuk disetujui pemilik**.
+- Teks (diksi, dari spec 5.9 dan mockup): `hitung.periksa.sedang_dari_periksa` = "Kamu sedang mengubah dari Periksa.", `hitung.periksa.kembali_ke_periksa` = "Kembali ke Periksa", `hitung.periksa.hitung_kemungkinan` = "Hitung dengan kemungkinan", `hitung.periksa.hitung` = "Ya, benar. Hitung", `hitung.periksa.n_belum` = "{jumlah} hal belum dipastikan.", `hitung.periksa.pastikan_urutan` = "Pastikan dulu urutan wafat {a} dan {b}.", `hitung.periksa.keluarga_belum_lengkap` = "Keluarga belum lengkap: {bagian}." Tiga kunci terakhir tidak ada di mockup; **disetujui pemilik 2026-11-15**.
 
 - [ ] **Step 1: Tulis tes yang gagal**
 
@@ -669,7 +669,7 @@ git commit -m "feat(web): Lihat di Keluarga (bagian + baris disorot) dan Kembali
   - `lebih_akhir` "Lebih akhir"
   - `catatan_harta` "Yang dibagi di sini harta {nama}. Harta milik orang lain di kisah ini (kalau ada) dihitung terpisah."
   - Catatan khusus (bersamaan, hilang, janin, sesudah dibagi): pakai kunci `hitung.cerita.*` yang sudah ada.
-  - Satu kalimat baru tanpa mockup: `urutan_ikut_tahun` "Urutannya mengikuti tahun wafat. Ubah tahunnya bila keliru." **Catat untuk persetujuan pemilik.**
+  - Satu kalimat baru tanpa mockup: `urutan_ikut_tahun` "Urutannya mengikuti tahun wafat. Ubah tahunnya bila keliru." **Disetujui pemilik 2026-11-15.**
 
 - [ ] **Step 1: Tulis tes yang gagal**
 
@@ -732,7 +732,7 @@ git commit -m "feat(web): Periksa: kisah harta per babak (pohon kecil saat itu, 
 **Interfaces:**
 - Consumes: `Peristiwa` (`kasus.ts`), `babakKisah`. Penurunan ke engine sudah otomatis lewat `turunkanDariWaktu` di reducer.
 - Teks (mockup v5): `tambah_peristiwa` "Tambah peristiwa: lahir, menikah, atau bercerai di antara kematian", `peristiwa_judul` "Tambah peristiwa", `peristiwa_apa` "Peristiwa apa?", `peristiwa_lahir` "Kelahiran", `peristiwa_nikah` "Pernikahan", `peristiwa_cerai` "Perceraian", `peristiwa_siapa` "Siapa?", `peristiwa_kapan` "Terjadi sesudah siapa wafat?", `peristiwa_sesudah` "Sesudah {nama} wafat", `peristiwa_keterangan` "Dipakai untuk menentukan siapa yang sudah ada pada tiap kematian.", `simpan_peristiwa` "Simpan peristiwa", `peristiwa_baris_lahir` "{nama} lahir, sesudah {almarhum} wafat.", `peristiwa_baris_nikah` "{nama} menikah dengan {pasangan}, sesudah {almarhum} wafat.", `peristiwa_baris_cerai` "{nama} bercerai dengan {pasangan}, sesudah {almarhum} wafat.", ditambah kunci `pasangan_siapa` "Dengan siapa?".
-  - Dua kalimat baris nikah/cerai dan `pasangan_siapa` diperluas dari mockup, yang hanya punya baris lahir. **Catat untuk persetujuan pemilik.**
+  - Dua kalimat baris nikah/cerai dan `pasangan_siapa` diperluas dari mockup, yang hanya punya baris lahir. **Disetujui pemilik 2026-11-15.**
 
 - [ ] **Step 1: Tulis tes yang gagal**
 
@@ -830,6 +830,6 @@ Lewat `preview_start` (server web di `.claude/launch.json`):
 Laporkan:
 - commit per tugas;
 - penyimpangan dari rencana;
-- **kalimat baru yang perlu disetujui pemilik**: `keluarga_belum_lengkap`, `pastikan_urutan`, `urutan_ikut_tahun`, baris peristiwa nikah/cerai, `pasangan_siapa`, dan kalimat untuk clipboard gagal (Tugas 3);
+- **kalimat baru**: semua (`keluarga_belum_lengkap`, `pastikan_urutan`, `urutan_ikut_tahun`, baris nikah/cerai, `pasangan_siapa`, `gagal_salin`) sudah disetujui pemilik 2026-11-15; laporkan hanya kalimat lain yang muncul di luar rencana;
 - tangkapan layar Periksa di desktop dan HP;
 - hal yang tidak sempat diperiksa.
