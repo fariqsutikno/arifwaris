@@ -122,7 +122,7 @@ const orangBaruDi = (sebelum: GrafKeluarga, sesudah: GrafKeluarga): IdOrang | un
   Object.keys(sesudah.orang).find(id => !sebelum.orang[id] && !sesudah.orang[id]!.penghubung);
 
 /** Semua orang (wafat dan penghubung ikut) yang berperan `kunci` bagi `milik`. */
-const orangDenganKunci = (kasus: Kasus, milik: IdOrang, kunci: KunciAhliWaris): IdOrang[] =>
+export const orangDenganKunci = (kasus: Kasus, milik: IdOrang, kunci: KunciAhliWaris): IdOrang[] =>
   daftarInduk(kasus.graf, milik, kunci).filter(id => !kasus.graf.orang[id]!.penghubung);
 
 const adalahBarisKosong = (kasus: Kasus, id: IdOrang): boolean =>

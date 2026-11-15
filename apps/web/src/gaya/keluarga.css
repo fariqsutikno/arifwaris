@@ -41,3 +41,36 @@
 .ya-tidak button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:9px 18px;min-height:42px;font:500 15px var(--font-sans);cursor:pointer;color:var(--ink)}
 .ya-tidak button:hover{border-color:var(--outline)}
 .ya-tidak button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
+
+.seg{display:flex;align-self:flex-start;flex-wrap:wrap;gap:4px;max-width:100%}
+.seg button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:6px 12px;min-height:36px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink);white-space:nowrap}
+.seg button:hover{border-color:var(--outline)}
+.seg button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
+.pilihan-lain{margin-top:2px}
+
+.orang{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:start;padding:12px;background:#f6f2e9;border-radius:16px;border:1.5px solid transparent}
+.orang.kurang{border-color:var(--aksen)}
+.orang.sorot-baris{border-color:var(--aksen);box-shadow:0 0 0 4px var(--aksen-soft)}
+.orang:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.kol-orang{display:flex;flex-direction:column;gap:8px;min-width:0}
+.peran{font-size:13px;color:var(--ink-muted)}
+.nama-isi{font:600 15px var(--font-sans);border:0;border-bottom:1.5px dashed var(--outline);background:none;padding:2px 0;width:100%;max-width:260px}
+.nama-isi::placeholder{color:#5c655f;font-weight:500}
+.keadaan-label{font:600 13px var(--font-sans)}
+.kapan{display:flex;flex-direction:column;gap:6px;padding-left:10px;border-left:2px solid var(--divider)}
+.salah{font-size:13px;color:#8a3409;font-weight:500}
+.hapus{font-size:13px!important;color:var(--ink-muted)!important}
+
+.penghitung{display:flex;flex-direction:column;gap:6px}
+.hitung-label{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.hitung-label .nama-kontrol{font-weight:600;font-size:14px}
+.hitung{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--outline);border-radius:999px;padding:2px}
+.hitung button{width:38px;height:38px;border-radius:50%;border:0;background:none;cursor:pointer;font:600 18px var(--font-sans);color:var(--ink)}
+.hitung button:hover{background:var(--surface)}
+.hitung b{min-width:28px;text-align:center;font-weight:700}
+
+details.rinci>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font:500 13.5px var(--font-sans);color:var(--ink-muted);padding:4px 0}
+details.rinci>summary::-webkit-details-marker{display:none}
+details.rinci>summary .ikon{transition:transform .2s;transform:rotate(180deg)}
+details.rinci[open]>summary .ikon{transform:rotate(270deg)}
+details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);background:var(--surface);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}

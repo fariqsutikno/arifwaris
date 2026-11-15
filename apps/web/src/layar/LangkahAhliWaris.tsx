@@ -11,6 +11,7 @@ import { useBahasa } from '../preferensi';
 import { labelArab } from '@waris/explain';
 import { kamusNarasi } from '../konten/kamusNarasi';
 import { t } from '../terjemah';
+import { PilihInduk } from './keluarga/PilihInduk';
 
 interface Props { graf: GrafKeluarga; idMayit: IdOrang; ubahGraf: (ubah: (graf: GrafKeluarga) => GrafKeluarga) => void }
 
@@ -93,18 +94,12 @@ export function BarisJumlah({ kunci, graf, idMayit, daftarOrang, saatTambah, saa
   const indukTerpilih = idInduk === INDUK_BARU_WAFAT || (idInduk && calonInduk.includes(idInduk)) ? idInduk : calonInduk[0] ?? INDUK_BARU_WAFAT;
   const jumlah = daftarOrang.length;
   const penuh = jenis?.maksimal !== undefined && jumlah >= jenis.maksimal;
-  const labelInduk = jenis?.kunciInduk && LABEL_SEHARI[jenis.kunciInduk]!.toLowerCase();
   return (
     <li className={jumlah > 0 ? 'kontrol-jumlah ada' : 'kontrol-jumlah'} role="group" aria-label={label}>
       <div className="baris-kontrol">
         <span className="nama-kontrol">{label}{bahasa !== 'id' && <> <Arab>{labelArab({ kamus: kamusNarasi, bahasa: 'ar' }, kunci)}</Arab></>}
           {keterangan && <small>{sebutAlmarhum(keterangan, jenisKelaminMayit)}</small>}
-          {jenis?.kunciInduk && (
-            <select aria-label={t('hitung.label_dari_siapa', { label })} value={indukTerpilih} onChange={e => setIdInduk(e.target.value)}>
-              {calonInduk.map(id => <option key={id} value={id}>{t('hitung.dari_nama_2', { nama: labelOrangChecklist(graf, idMayit, id, jenis.kunciInduk!) })}</option>)}
-              <option value={INDUK_BARU_WAFAT}>dari {labelInduk} lain (sudah wafat)</option>
-            </select>
-          )}
+          <PilihInduk kunci={kunci} graf={graf} idMayit={idMayit} nilai={indukTerpilih} saatUbah={setIdInduk} />
         </span>
         {jumlah > 0 && (
           <TombolIkon className="tombol-nama" label={t('hitung.beri_nama_label_opsional', { label })} aria-expanded={namaTerbuka} onClick={() => setNamaTerbuka(!namaTerbuka)}>

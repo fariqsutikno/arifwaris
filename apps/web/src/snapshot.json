@@ -22050,6 +22050,237 @@
    "id": "Ya, hapus",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.keadaan_tanya",
+   "halaman": "hitung",
+   "id": "Keadaannya sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_hidup",
+   "halaman": "hitung",
+   "id": "Masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_wafat",
+   "halaman": "hitung",
+   "id": "Sudah wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_belum_tahu",
+   "halaman": "hitung",
+   "id": "Belum tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_hilang",
+   "halaman": "hitung",
+   "id": "Hilang tanpa kabar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_bercerai",
+   "halaman": "hitung",
+   "id": "Sudah bercerai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_khuntsa",
+   "halaman": "hitung",
+   "id": "Kelaminnya belum jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kd_lainnya",
+   "halaman": "hitung",
+   "id": "Lainnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tahun_wafatnya",
+   "halaman": "hitung",
+   "id": "Tahun wafatnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tahun_kalau_ingat",
+   "halaman": "hitung",
+   "id": "kalau ingat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.berarti_sebelum",
+   "halaman": "hitung",
+   "id": "Berarti sebelum {rel} wafat ({tahun}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.berarti_sesudah",
+   "halaman": "hitung",
+   "id": "Berarti sesudah {rel} wafat ({tahun}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.waktu_tanya",
+   "halaman": "hitung",
+   "id": "Tidak ingat tahunnya? Pilih saja: wafat sebelum atau sesudah {rel}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.waktu_tanya_rel_kosong",
+   "halaman": "hitung",
+   "id": "Tahun {rel} wafat belum diisi, jadi pilih: wafat sebelum atau sesudah {rel}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebelum",
+   "halaman": "hitung",
+   "id": "Sebelum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sesudah",
+   "halaman": "hitung",
+   "id": "Sesudah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.belum_tahu_catatan",
+   "halaman": "hitung",
+   "id": "Tidak apa-apa. Pertanyaan ini muncul lagi di Periksa dan bisa dikirim ke keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.putusan_tanya",
+   "halaman": "hitung",
+   "id": "Sudah ada putusan pengadilan bahwa ia dianggap wafat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.belum_ada",
+   "halaman": "hitung",
+   "id": "Belum ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sudah_ada",
+   "halaman": "hitung",
+   "id": "Sudah ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.iddah_tanya",
+   "halaman": "hitung",
+   "id": "Waktu {rel} wafat, masa iddahnya sudah selesai?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.belum_selesai",
+   "halaman": "hitung",
+   "id": "Belum selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sudah_selesai",
+   "halaman": "hitung",
+   "id": "Sudah selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baligh_tanya",
+   "halaman": "hitung",
+   "id": "Sudah dewasa (baligh)?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.belum",
+   "halaman": "hitung",
+   "id": "Belum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sudah",
+   "halaman": "hitung",
+   "id": "Sudah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.hapus_lewat_baris",
+   "halaman": "hitung",
+   "id": "Orang yang sudah diisi dihapus lewat \"Hapus\" di barisnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.bingung",
+   "halaman": "hitung",
+   "id": "Bingung memilih?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_hidup",
+   "halaman": "hitung",
+   "id": "Masih ada sampai hari ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_wafat",
+   "halaman": "hitung",
+   "id": "Sudah meninggal, kapan pun itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_belum_tahu",
+   "halaman": "hitung",
+   "id": "Kamu tidak yakin. Nanti bisa ditanyakan ke keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_hilang",
+   "halaman": "hitung",
+   "id": "Pergi tanpa kabar; tidak diketahui masih hidup atau tidak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_lainnya",
+   "halaman": "hitung",
+   "id": "Keadaan khusus; jenisnya dipilih sesudah ini.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
