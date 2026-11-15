@@ -140,3 +140,29 @@ describe('BarisOrang dan PenghitungOrang (spec kanvas 5.3, 5.4)', () => {
     expect(baris.className).toContain('sorot-baris');
   });
 });
+
+describe('tahun wafat yang diketik menentukan keadaan (review K1)', () => {
+  const tahunDiisi = (baris: HTMLElement, nilai: string) =>
+    fireEvent.change(within(baris).getByLabelText('Tahun wafatnya', { exact: false }), { target: { value: nilai } });
+  const barisAnak = () => document.querySelector('[data-baris-orang]') as HTMLElement;
+  const almarhum1990 = aturTahunWafat(kasusBaru('L'), 'PEWARIS', { tahun: 1990, kiraKira: false });
+
+  it('Wafat lalu tahun 2000 (almarhum 1990): wafat sesudah dan masuk urutanWafat', () => {
+    render(<Uji awal={almarhum1990} bagian={ANAK} kunci="ANAK_LK" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sudah wafat' }));
+    tahunDiisi(barisAnak(), '2000');
+    expect(terakhir.urutanWafat).toHaveLength(1);
+    expect(terakhir.belumDiisi).toBeUndefined();
+  });
+
+  it('memilih Sebelum lalu mengetik 2000 memindahkan ke sesudah', () => {
+    render(<Uji awal={almarhum1990} bagian={ANAK} kunci="ANAK_LK" />);
+    fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
+    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sudah wafat' }));
+    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sebelum' }));
+    expect(terakhir.urutanWafat).toHaveLength(0);
+    tahunDiisi(barisAnak(), '2000');
+    expect(terakhir.urutanWafat).toHaveLength(1);
+  });
+});

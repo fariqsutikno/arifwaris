@@ -80,6 +80,8 @@ export function jawabLanjutan(kasus: Kasus, id: IdOrang, milik: IdOrang, jawaban
       // Dua tahun yang bisa dibandingkan menentukan sebelum/sesudah; selain itu pengguna yang memilih, tidak ditebak.
       const relatif = waktuRelatif(denganTahun, id, milik) ?? jawaban.waktu ?? null;
       if (!relatif) return denganTahun;
+      // Dipanggil juga saat baris sudah lengkap (tahun diubah belakangan), jadi keadaan "dibagi" yang sudah dipilih tidak ditimpa.
+      if (relatif === 'sesudah' && keadaanOrang(denganTahun, id) === 'wafatSesudahDibagi') return denganTahun;
       if (relatif === 'sebelum') return tandaiBelumDiisi(terapkanKeadaan(denganTahun, id, { jenis: 'wafatSebelum' }), id, false);
       const sesudah: JawabanKeadaan = { jenis: 'wafatSesudah', hartaSudahDibagi: false };
       // ponytail: kasus yang belum didukung engine (gharqa lain) dibiarkan tertunda tanpa pesan; ditangani bagian Urutan.

@@ -14,7 +14,7 @@ import {
 } from '../../keadaanBaris';
 import { keadaanOrang, namaSingkat } from '../../keadaanOrang';
 import { dampakHapus } from '../../kerabatPohon';
-import { aturTahunWafat, waktuRelatif } from '../../silsilah';
+import { waktuRelatif } from '../../silsilah';
 import { t } from '../../terjemah';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { Ikon } from '../../ui/Ikon';
@@ -166,7 +166,7 @@ function KapanWafat({ kasus, id, milik, rel, menunggu, ubah, jawab }: {
   return (
     <div className="kapan">
       <IsianTahun label={t('hitung.kanvas.tahun_wafatnya')} contoh={t('hitung.kanvas.tahun_kalau_ingat')} nilai={kasus.waktu?.[id]?.wafat}
-        saatUbah={tahun => ubah(k => aturTahunWafat(k, id, tahun))} />
+        saatUbah={tahun => jawab({ jenis: 'wafat', tahun: tahun ?? null })} />
       {otomatis
         ? <span className="kecil redup">{otomatis === 'sebelum'
           ? t('hitung.kanvas.berarti_sebelum', { rel, tahun: tahunMilik! }) : t('hitung.kanvas.berarti_sesudah', { rel, tahun: tahunMilik! })}</span>
