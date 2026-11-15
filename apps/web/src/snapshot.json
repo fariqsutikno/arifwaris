@@ -22330,6 +22330,76 @@
    "id": "Tambah dengan nama hubungan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.urutan_sebelum",
+   "halaman": "hitung",
+   "id": "Sebelum {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.urutan_sesudah",
+   "halaman": "hitung",
+   "id": "Sesudah {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.urutan_serentak",
+   "halaman": "hitung",
+   "id": "Bersamaan, atau tidak tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.urutan_belum_tahu",
+   "halaman": "hitung",
+   "id": "Belum tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.urutan_belum_tahu_ket",
+   "halaman": "hitung",
+   "id": "Nanti bisa ditanyakan ke keluarga dari halaman Periksa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kenapa_urutan_judul",
+   "halaman": "hitung",
+   "id": "Kenapa ditanya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kenapa_urutan_isi",
+   "halaman": "hitung",
+   "id": "Keduanya wafat sesudah {pewaris} dan tahun wafat {a} kosong. Urutannya menentukan apakah {b} ikut menerima dari {a}. Kalau tahunnya diisi, pertanyaan ini hilang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kamu_saya",
+   "halaman": "hitung",
+   "id": "Saya {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kamu_orang_lain",
+   "halaman": "hitung",
+   "id": "Bukan, saya mengisi untuk orang lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.lencana_kamu",
+   "halaman": "hitung",
+   "id": "kamu",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

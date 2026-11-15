@@ -62,7 +62,7 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
     <div className={`orang${alasan ? ' kurang' : ''}${disorot ? ' sorot-baris' : ''}`} id={`baris-${id}`} data-baris-orang={id}
       role="group" aria-label={peran} tabIndex={-1} {...(alasan ? { 'aria-invalid': true, 'aria-describedby': `${idLabel}-salah` } : {})}>
       <div className="kol-orang">
-        <span className="peran">{peran}</span>
+        <span className="peran">{peran}{kasus.saya === id && <span className="lencana-kamu">{t('hitung.kanvas.lencana_kamu')}</span>}</span>
         <input className="nama-isi" value={orang.nama ?? ''} placeholder={peran} aria-label={t('hitung.nama_label', { label: peran })}
           onChange={event => ubah(k => ({ ...k, graf: ubahNama(k.graf, id, event.target.value) }))} />
         <span className="keadaan-label" id={idLabel}>{t('hitung.kanvas.keadaan_tanya')}</span>

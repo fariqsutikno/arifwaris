@@ -26,15 +26,19 @@ type Layar =
   | { jenis: 'baligh' }
   | { jenis: 'ditolak' };
 
-export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal }: {
+export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal, mulaiDi }: {
   kasus: Kasus; idOrang: IdOrang; saatSelesai: (kasusBaru: Kasus) => void; saatBatal: () => void;
+  /** 'serentak' = langsung ke alur wafat bersamaan (dari pertanyaan urutan wafat). */
+  mulaiDi?: 'serentak';
 }) {
   const id = useId();
   const nama = namaSingkat(kasus, idOrang);
   const idMayit = babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris;
   const mayit = namaSingkat(kasus, idMayit);
   const pewaris = namaSingkat(kasus, kasus.graf.idPewaris);
-  const [layar, setLayar] = useState<Layar>({ jenis: 'keadaan', lain: false });
+  const [layar, setLayar] = useState<Layar>(() => (mulaiDi === 'serentak'
+    ? { jenis: alasanTidakDidukung(kasus, idOrang, { jenis: 'bersamaan', keadaan: 'serentak', tirkah: TANPA_HARTA }) ? 'ditolak' : 'serentak' }
+    : { jenis: 'keadaan', lain: false }));
   const [pilihan, setPilihan] = useState<string | null>(null);
   const [hartaSendiri, setHartaSendiri] = useState(0n);
   const [riwayat, setRiwayat] = useState<Layar[]>([]);

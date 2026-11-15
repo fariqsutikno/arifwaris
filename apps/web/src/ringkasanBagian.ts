@@ -2,12 +2,10 @@
 // bagian yang sudah selesai. Menerima Kasus + Bagian; menyerahkan teks dari diksi (`hitung.kanvas.*`), tanpa aturan fikih.
 
 import type { IdOrang } from '@waris/engine';
-import { pertanyaanUrutanBerikut } from './antreanUrutan';
 import type { Kasus } from './kasus';
 import { keadaanTerpilih } from './keadaanBaris';
 import { keadaanOrang, namaSingkat } from './keadaanOrang';
 import { anggotaBagian, bagianDijawab, type Bagian, type JenisBagian } from './kelompok';
-import { pembanding } from './urutan';
 import { t } from './terjemah';
 
 type Jenis = JenisBagian | 'suami';
@@ -58,8 +56,8 @@ export function pertanyaanBagian(kasus: Kasus, bagian: Bagian): string {
   switch (bagian.jenis) {
     case 'kakekNenek': return TANYA_KAKEK_NENEK[orangTuaWafat(kasus, bagian.milik)](nama);
     case 'anakBersama': return t('hitung.kanvas.tanya_anak_bersama', { anak: daftarNama(kasus, anggotaAnakPewaris(kasus)), nama });
-    case 'urutan': return pertanyaanUrutan(kasus) ?? judulBagian(kasus, bagian);
-    case 'kamu': return judulBagian(kasus, bagian);
+    // Pertanyaan berpasangan urutan ditampilkan BagianUrutan sendiri (ia memegang langkah pencarian biner yang sedang berjalan).
+    case 'urutan': case 'kamu': return judulBagian(kasus, bagian);
     default: return TANYA[jenisTampil(kasus, bagian)]!(nama);
   }
 }
@@ -98,12 +96,6 @@ function orangTuaWafat(kasus: Kasus, milik: IdOrang): keyof typeof TANYA_KAKEK_N
   const ayah = wafat(kasus.graf.orang[milik]?.idAyah);
   const ibu = wafat(kasus.graf.orang[milik]?.idIbu);
   return ayah && ibu ? 'keduanya' : ayah ? 'ayah' : ibu ? 'ibu' : '';
-}
-
-function pertanyaanUrutan(kasus: Kasus): string | null {
-  const berikut = pertanyaanUrutanBerikut(kasus);
-  const lawan = berikut && pembanding(berikut.sisipan);
-  return berikut && lawan ? t('hitung.kanvas.tanya_urutan', { a: namaSingkat(kasus, berikut.orang), b: namaSingkat(kasus, lawan) }) : null;
 }
 
 function keterangan(kasus: Kasus, id: IdOrang): string {

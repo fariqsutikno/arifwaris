@@ -1,7 +1,6 @@
 // Isi kartu bagian keluarga (spec kanvas 5.2): penghitung dan baris orang menurut jenis bagian. Menerima Kasus + bagian;
 // menyerahkan Kasus lewat ubah(). Hanya memanggil fungsi murni (isianBagian, keadaanBaris); siapa yang ditanya sudah
 // diputuskan kelompok.ts. `ya` = bagian ber-Ya/Tidak sudah dijawab Ya, jadi isinya boleh tampil.
-// Bagian halLain, urutan, dan kamu diisi komponen khusus (BagianHalLain, BagianUrutan, BagianKamu).
 
 import { useId, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
@@ -12,6 +11,9 @@ import { namaSingkat } from '../../keadaanOrang';
 import { anggotaBagian, bagianDijawab, KUNCI_PER_KELOMPOK, type Bagian } from '../../kelompok';
 import { t } from '../../terjemah';
 import { PertanyaanHamil } from '../keadaan/PertanyaanHamil';
+import { BagianHalLain } from './BagianHalLain';
+import { BagianKamu } from './BagianKamu';
+import { BagianUrutan } from './BagianUrutan';
 import { BarisOrang, BingungMemilih, LABEL_KEADAAN, namaPeran } from './BarisOrang';
 import { PenghitungOrang } from './PenghitungOrang';
 
@@ -57,7 +59,9 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
       return !ya ? null : <>{daftar.map(kunci => kelompokPeran(kunci))}{bingung(daftar)}</>;
     }
     case 'anakBersama': return <AnakBersama kasus={kasus} bagian={bagian} ubah={ubah} />;
-    case 'halLain': case 'urutan': case 'kamu': return null;
+    case 'halLain': return <BagianHalLain kasus={kasus} bagian={bagian} ubah={ubah} />;
+    case 'urutan': return <BagianUrutan kasus={kasus} bagian={bagian} ubah={ubah} />;
+    case 'kamu': return <BagianKamu kasus={kasus} bagian={bagian} ubah={ubah} />;
   }
 }
 
