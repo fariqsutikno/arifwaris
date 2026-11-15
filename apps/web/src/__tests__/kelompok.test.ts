@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { kasusBaru, type Kasus } from '../kasus';
-import { anggotaBagian, bagianLengkap, daftarBagian } from '../kelompok';
+import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
+import { anggotaBagian, awalCabang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
 import { keluargaBudi, keluargaKarto } from './fixtures/kanvas';
 
 const ids = (kasus: Kasus) => daftarBagian(kasus).map(b => b.id);
@@ -62,5 +62,34 @@ describe('kelompok (spec kanvas 5.2)', () => {
     const kamu = { id: 'kamu', milik: 'PEWARIS', jenis: 'kamu' as const };
     expect(bagianLengkap(kasusBaru('L'), kamu)).toBe(false);
     expect(bagianLengkap({ ...kasusBaru('L'), saya: null }, kamu)).toBe(true);
+  });
+});
+
+describe('awalCabang dan bagianDilewati (spec kanvas 5.2, 5.7)', () => {
+  it('awalCabang benar untuk bagian pertama cabang, salah untuk bagian pewaris dan bagian lanjutan cabang', () => {
+    const { kasus, sumi, budi } = keluargaKarto();
+    const bagian = daftarBagian(kasus);
+    const ambil = (id: string) => bagian.find(b => b.id === id)!;
+    expect(awalCabang(kasus, ambil(`anakBersama:${sumi}`))).toBe(true);
+    expect(awalCabang(kasus, ambil(`pasangan:${budi}`))).toBe(true);
+    expect(awalCabang(kasus, ambil(`orangTua:${sumi}`))).toBe(false);
+    expect(awalCabang(kasus, ambil('anak:PEWARIS'))).toBe(false);
+  });
+
+  it('Karto dengan anak dijawab: saudara dan kerabat jauh dilewati, anak Slamet (wafat sebelum) dicatat', () => {
+    const { kasus, slamet } = keluargaKarto();
+    const dijawab = { ...kasus, kelompokDijawab: { PEWARIS: ['pasangan', 'anak'] as Kelompok[] } };
+    const dilewati = bagianDilewati(dijawab);
+    expect(dilewati).toContainEqual({ jenis: 'saudara', milik: 'PEWARIS' });
+    expect(dilewati).toContainEqual({ jenis: 'jauh', milik: 'PEWARIS' });
+    expect(dilewati).toContainEqual({ jenis: 'anakDariWafat', milik: 'PEWARIS', sebab: slamet });
+  });
+
+  it('tanpa jawaban anak tidak ada yang dilewati; bagian yang tampil tidak dicatat sebagai dilewati', () => {
+    const { kasus } = keluargaKarto();
+    expect(bagianDilewati(kasus).filter(d => d.jenis === 'saudara' || d.jenis === 'jauh')).toEqual([]);
+    const { kasus: budi } = keluargaBudi();
+    const k: Kasus = { ...budi, kelompokDijawab: { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek'] } };
+    expect(bagianDilewati(k).find(d => d.jenis === 'saudara')).toBeUndefined();   // saudara tampil di keluarga Budi
   });
 });
