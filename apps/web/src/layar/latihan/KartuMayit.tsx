@@ -1,5 +1,5 @@
 // Satu kartu mayit: isian "− jumlah +" ahli warisnya, chip untuk menandai siapa yang wafat sebelum harta dibagi
-// [R12-1], dan pertanyaan hamil. Melepas tanda yang menghapus keluarga orang itu meminta konfirmasi.
+// [R12-1], pertanyaan hamil, dan "Hal lain" (keadaan khusus orang di kartu). Melepas tanda yang menghapus keluarga orang itu meminta konfirmasi.
 
 import { useState } from 'react';
 import type { IdOrang } from '@waris/engine';
@@ -11,6 +11,7 @@ import { DialogKonfirmasi } from '../../ui/Dialog';
 import { t } from '../../terjemah';
 import { LangkahAhliWaris } from '../LangkahAhliWaris';
 import { PertanyaanHamil } from '../keadaan/PertanyaanHamil';
+import { HalLainKartu } from './HalLainKartu';
 
 interface Props { kasus: Kasus; idMayit: IdOrang; nomor: number; ubah: (f: (k: Kasus) => Kasus) => void }
 
@@ -42,6 +43,7 @@ export function KartuMayit({ kasus, idMayit, nomor, ubah }: Props) {
         })}
       </div>
       <PertanyaanHamil kasus={kasus} idMayit={idMayit} ubah={ubah} />
+      <HalLainKartu kasus={kasus} idMayit={idMayit} ubah={ubah} />
       {lepas && (
         <DialogKonfirmasi judul={t('hitung.latihan.lepas_tanda_judul', { nama: namaSingkat(kasus, lepas.id) })} labelLanjut={t('umum.lanjut')}
           saatBatal={() => setLepas(null)} saatLanjut={() => { ubah(k => tandaiWafatSebelumDibagi(k, lepas.id, false)); setLepas(null); }}>

@@ -8,3 +8,5 @@
 .urutan-wafat{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
 .urutan-wafat li{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--divider)}
 .urutan-wafat li span{flex:1;min-width:0;font-weight:600}
+.hal-lain-kartu summary{cursor:pointer;font:600 14px var(--font-sans);color:var(--aksen-tua);padding:4px 0}
+.hal-lain-kartu[open] summary{margin-bottom:6px}

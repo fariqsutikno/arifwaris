@@ -76,3 +76,29 @@ describe('LatihanAhliWaris (kartu per mayit)', () => {
     expect(chip(/^Anak laki-laki/).tagName).toBe('BUTTON');
   });
 });
+
+describe('Hal lain per kartu (status khusus)', () => {
+  const bukaHalLain = (kartu: HTMLElement) => fireEvent.click(within(kartu).getByText('Hal lain'));
+
+  it('tertutup bawaannya; dibuka menampilkan tiap orang di kartu dengan keadaannya', () => {
+    render(<Papan />);
+    tambah('Anak laki-laki');
+    const kartu = screen.getByRole('heading', { name: /Mayit pertama/ }).closest('section')!;
+    expect(within(kartu).queryByText('masih hidup')).toBeNull();
+    bukaHalLain(kartu);
+    expect(within(kartu).getByText('masih hidup')).toBeTruthy();
+  });
+
+  it('menandai hilang lewat dialog keadaan; status tampil di daftar', () => {
+    render(<Papan />);
+    tambah('Anak laki-laki');
+    const kartu = screen.getByRole('heading', { name: /Mayit pertama/ }).closest('section')!;
+    bukaHalLain(kartu);
+    fireEvent.click(within(kartu).getByRole('button', { name: /masih hidup$/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Hilang/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut/ }));
+    fireEvent.click(screen.getByRole('radio', { name: /Belum ada/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut/ }));
+    expect(within(kartu).getByText('hilang')).toBeTruthy();
+  });
+});
