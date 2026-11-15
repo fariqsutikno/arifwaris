@@ -5,7 +5,7 @@
 
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import type { Kasus, TanggalKira } from './kasus';
-import { alasanTidakDidukung, KHUNTSA_MUNGKIN, keadaanOrang, namaSingkat, terapkanKeadaan, type JawabanKeadaan } from './keadaanOrang';
+import { alasanTidakDidukung, daftarAlmarhum, KHUNTSA_MUNGKIN, keadaanOrang, namaSingkat, terapkanKeadaan, type JawabanKeadaan } from './keadaanOrang';
 import { aturTahunWafat, waktuRelatif } from './silsilah';
 import { t } from './terjemah';
 
@@ -51,7 +51,7 @@ export function keadaanTerpilih(kasus: Kasus, id: IdOrang): PilihanKeadaan | nul
 
 export function pilihKeadaan(kasus: Kasus, id: IdOrang, pilihan: PilihanKeadaan, milik: IdOrang): Kasus {
   if (keadaanTerpilih(kasus, id) === pilihan) return kasus;
-  const dasar = aturTahunWafat(pulihkanNikah(terapkanKeadaan(kasus, id, { jenis: 'hidup' }), id), id, undefined);
+  const dasar = aturTahunWafat(pulihkanNikah(terapkanKeadaan(kasus, id, { jenis: 'hidup' }), id, milik), id, undefined);
   switch (pilihan) {
     case 'hidup': return tandaiBelumDiisi(dasar, id, false);
     case 'belumTahu': return tandaiBelumDiisi(terapkanKeadaan(dasar, id, { jenis: 'belumTahu' }), id, false);
@@ -121,19 +121,24 @@ export function tandaiBelumDiisi(kasus: Kasus, id: IdOrang, belumDiisi: boolean)
 }
 
 const melibatkan = (id: IdOrang) => (nikah: { idSuami: IdOrang; idIstri: IdOrang }) => nikah.idSuami === id || nikah.idIstri === id;
-const nikahBerakhir = (kasus: Kasus, id: IdOrang) => kasus.graf.pernikahan.some(nikah => melibatkan(id)(nikah) && nikah.status !== 'utuh');
+/** Pernikahan `id` dengan `milik`, atau dengan almarhum mana pun bila `milik` tak diketahui; pernikahan dengan orang lain tidak dihitung. */
+const nikahDenganAlmarhum = (kasus: Kasus, id: IdOrang, milik?: IdOrang) => {
+  const almarhum = milik ? [milik] : daftarAlmarhum(kasus);
+  return (nikah: { idSuami: IdOrang; idIstri: IdOrang }) => melibatkan(id)(nikah) && almarhum.some(satu => melibatkan(satu)(nikah));
+};
+const nikahBerakhir = (kasus: Kasus, id: IdOrang, milik?: IdOrang) =>
+  kasus.graf.pernikahan.some(nikah => nikahDenganAlmarhum(kasus, id, milik)(nikah) && nikah.status !== 'utuh');
 
-function pulihkanNikah(kasus: Kasus, id: IdOrang): Kasus {
-  if (!nikahBerakhir(kasus, id)) return kasus;
-  const pernikahan = kasus.graf.pernikahan.map(nikah => (melibatkan(id)(nikah) ? { ...nikah, status: 'utuh' as const } : nikah));
+function pulihkanNikah(kasus: Kasus, id: IdOrang, milik: IdOrang): Kasus {
+  if (!nikahBerakhir(kasus, id, milik)) return kasus;
+  const pernikahan = kasus.graf.pernikahan.map(nikah => (nikahDenganAlmarhum(kasus, id, milik)(nikah) ? { ...nikah, status: 'utuh' as const } : nikah));
   return { ...kasus, graf: { ...kasus.graf, pernikahan } };
 }
 
-/** Status pernikahan `id` dengan `milik`; bila tidak ada pernikahan dengan milik, pernikahan pertama `id`. Tanpa pernikahan: tidak berubah. */
+/** Status pernikahan `id` dengan `milik`. Tanpa pernikahan dengan `milik`: tidak berubah (pernikahan lain bukan urusan baris ini). */
 function ubahStatusNikah(kasus: Kasus, id: IdOrang, milik: IdOrang, status: 'talakRajiIddah' | 'talakBain'): Kasus {
   const { pernikahan } = kasus.graf;
-  const denganMilik = pernikahan.findIndex(nikah => melibatkan(id)(nikah) && melibatkan(milik)(nikah));
-  const sasaran = denganMilik >= 0 ? denganMilik : pernikahan.findIndex(melibatkan(id));
+  const sasaran = pernikahan.findIndex(nikahDenganAlmarhum(kasus, id, milik));
   if (sasaran < 0) return kasus;
   return { ...kasus, graf: { ...kasus.graf, pernikahan: pernikahan.map((nikah, indeks) => (indeks === sasaran ? { ...nikah, status } : nikah)) } };
 }

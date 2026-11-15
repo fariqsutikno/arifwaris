@@ -142,3 +142,37 @@ describe('wafat sesudah yang belum didukung engine (review P5)', () => {
     expect(alasanWafatSesudahDitolak(kasus, a.id, 'PEWARIS')).toBeNull();
   });
 });
+
+describe('status nikah dibaca dan diubah pada pernikahan dengan almarhum (review kecil c)', () => {
+  /** Siti istri pewaris; ia juga pernah menikah dengan Zaid (talak bain) yang tercatat lebih dulu di daftar. */
+  function sitiDuaPernikahan() {
+    const siti = tambah(kasusBaru('L'), 'PEWARIS', 'ISTRI');
+    const zaid = tambah(siti.kasus, 'PEWARIS', 'SAUDARA_KANDUNG');
+    const kasus: Kasus = {
+      ...zaid.kasus,
+      graf: { ...zaid.kasus.graf, pernikahan: [{ idSuami: zaid.id, idIstri: siti.id, status: 'talakBain' }, ...zaid.kasus.graf.pernikahan] },
+    };
+    return { kasus, siti: siti.id };
+  }
+
+  it('pernikahan lain yang berakhir tidak membuat Siti terbaca "bercerai"', () => {
+    const { kasus, siti } = sitiDuaPernikahan();
+    expect(keadaanTerpilih(kasus, siti)).toBe('hidup');
+  });
+
+  it('memilih bercerai mengubah pernikahan dengan pewaris, bukan yang pertama', () => {
+    const { kasus, siti } = sitiDuaPernikahan();
+    const hasil = pilihKeadaan(kasus, siti, 'bercerai', 'PEWARIS');
+    const denganPewaris = hasil.graf.pernikahan.find(nikah => nikah.idSuami === 'PEWARIS')!;
+    expect(denganPewaris.status).toBe('talakRajiIddah');
+    expect(hasil.graf.pernikahan.find(nikah => nikah.idSuami !== 'PEWARIS')!.status).toBe('talakBain');
+    expect(keadaanTerpilih(hasil, siti)).toBe('bercerai');
+  });
+
+  it('pindah dari bercerai ke hidup memulihkan pernikahan dengan pewaris saja', () => {
+    const { kasus, siti } = sitiDuaPernikahan();
+    const hasil = pilihKeadaan(pilihKeadaan(kasus, siti, 'bercerai', 'PEWARIS'), siti, 'hidup', 'PEWARIS');
+    expect(hasil.graf.pernikahan.find(nikah => nikah.idSuami === 'PEWARIS')!.status).toBe('utuh');
+    expect(hasil.graf.pernikahan.find(nikah => nikah.idSuami !== 'PEWARIS')!.status).toBe('talakBain');
+  });
+});
