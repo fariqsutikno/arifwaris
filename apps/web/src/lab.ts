@@ -4,7 +4,7 @@
 
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from './checklist';
-import { kasusBaru, type Kasus } from './kasus';
+import { KELOMPOK, kasusBaru, type Kasus } from './kasus';
 import { t } from './terjemah';
 
 export const BATAS_TAMPIL_CARI = 8;
@@ -23,5 +23,8 @@ export const SUSUNAN_CEPAT: SusunanCepat[] = [
   { kunci: 'ibu-saudara', label: () => t('hitung.lab_cepat_ibu_saudara'), pewaris: 'L', ahliWaris: ['IBU', 'SAUDARA_KANDUNG', 'SAUDARI_KANDUNG'] },
 ];
 
-export const kasusDariSusunan = (susunan: SusunanCepat): Kasus =>
-  susunan.ahliWaris.reduce((kasus, kunci) => ({ ...kasus, graf: tambahAhliWaris(kasus.graf, kasus.graf.idPewaris, kunci) }), kasusBaru(susunan.pewaris, 'nyata'));
+/** Susunan cepat = daftar ahli waris yang sudah pasti (seperti checklist lama): kelompok lain dianggap dijawab "tidak ada" (spec 9.2), dan pengisi tidak ditanya "Kamu". */
+export const kasusDariSusunan = (susunan: SusunanCepat): Kasus => {
+  const kasus = susunan.ahliWaris.reduce((hasil, kunci) => ({ ...hasil, graf: tambahAhliWaris(hasil.graf, hasil.graf.idPewaris, kunci) }), kasusBaru(susunan.pewaris, 'nyata'));
+  return { ...kasus, kelompokDijawab: { [kasus.graf.idPewaris]: [...KELOMPOK] }, saya: null };
+};

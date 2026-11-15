@@ -6,7 +6,7 @@ import { terapkanKeadaan } from '../keadaanOrang';
 import { CeritaKasus, kalimatBabak, PilihanMenunggu } from '../layar/PeriksaCerita';
 
 function kasusBudiDenganDewi() {
-  let kasus = kasusBaru('L');
+  let kasus = kasusBaru('L', 'latihan');
   for (const kunci of ['ISTRI', 'ANAK_LK', 'ANAK_PR'] as const) kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', kunci) };
   const namai = (id: string, nama: string) => { kasus = { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [id]: { ...kasus.graf.orang[id]!, nama } } } }; };
   const siti = Object.values(kasus.graf.orang).find(o => o.jenisKelamin === 'P' && !o.idAyah)!.id;

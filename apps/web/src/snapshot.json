@@ -22400,6 +22400,13 @@
    "id": "kamu",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tertahan",
+   "halaman": "hitung",
+   "id": "Masih {n} bagian, lanjutkan dari {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

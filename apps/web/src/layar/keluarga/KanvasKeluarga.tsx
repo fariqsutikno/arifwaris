@@ -23,6 +23,8 @@ interface Props {
   kasus: Kasus; ubah: (f: (k: Kasus) => Kasus) => void;
   /** true setelah aksi utama diklik saat ada yang kurang. */
   tandaiKurang: boolean;
+  /** Memindahkan kartu aktif ke bagian itu (aksi utama di bar bawah diklik terlalu dini); `kali` bertambah tiap permintaan. */
+  fokusBagian?: { id: string; kali: number };
   saatSelesai: () => void;
 }
 
@@ -32,7 +34,7 @@ const BAGIAN_YA_TIDAK = ['pasangan', 'anak', 'saudara', 'jauh'];
 /** Bagian yang ditambahkan pengguna lewat "Tetap isi kerabat lain"; `setelah` = pemilik yang kelompoknya dilewati. */
 interface Tambahan { bagian: Bagian; setelah: IdOrang }
 
-export function KanvasKeluarga({ kasus, ubah, tandaiKurang, saatSelesai }: Props) {
+export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, saatSelesai }: Props) {
   // ponytail: "Tetap isi" hilang bila halaman dimuat ulang sebelum bagiannya terisi (K3 rencana 2); data yang sudah diisi tetap ada.
   const [tambahan, setTambahan] = useState<Tambahan[]>([]);
   const daftar = gabungTambahan(daftarBagian(kasus), tambahan);
@@ -52,11 +54,19 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, saatSelesai }: Props
     ?? daftar.find(bagian => bagian.id !== aktif.id && !bagianLengkap(kasus, bagian));
 
   useEffect(() => setTandaiLokal(false), [kasus]);
+  // Fokus ke baris yang ditandai kurang bila ada, selain itu ke judul kartu.
+  const fokusKartu = () => {
+    const sasaran = document.querySelector<HTMLElement>('.grup [aria-invalid="true"]') ?? judulRef.current;
+    sasaran?.focus();
+    gulirKe(sasaran);
+  };
   useEffect(() => {
-    if (!sudahBerganti.current) return;
-    judulRef.current?.focus();
-    gulirKe(judulRef.current);
+    if (sudahBerganti.current) fokusKartu();
   }, [aktif.id]);
+  useEffect(() => {
+    if (!fokusBagian) return;
+    if (fokusBagian.id === aktif.id || !daftar.some(bagian => bagian.id === fokusBagian.id)) fokusKartu(); else pindahKe(fokusBagian.id);
+  }, [fokusBagian?.kali]);
 
   const pindahKe = (id: string) => {
     sudahBerganti.current = true;

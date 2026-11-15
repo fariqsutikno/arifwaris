@@ -65,7 +65,11 @@ export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi
   const nama = (id: IdOrang) => namaSingkat(kasus, id);
   const pewaris = nama(kasus.graf.idPewaris);
   const lanjutan = almarhum.slice(1).map(nama).join(', ');
-  const ubahBabak = (babak: number) => { kirim({ jenis: 'KE_LANGKAH', langkah: 3 }); kirim({ jenis: 'KE_BABAK', babak }); };
+  // Kasus nyata tidak punya babak: "Ubah" cukup membuka kanvas keluarga.
+  const ubahBabak = (babak: number) => {
+    kirim({ jenis: 'KE_LANGKAH', langkah: 3 });
+    if (kasus.jenisKasus !== 'nyata') kirim({ jenis: 'KE_BABAK', babak });
+  };
   return (
     <div className="kartu tumpuk">
       {almarhum.map((id, indeks) => (

@@ -7,12 +7,14 @@ import type { Kasus } from '../kasus';
 import { daftarAlmarhum, namaSingkat } from '../keadaanOrang';
 import { gantiJenisKelaminPewaris, ubahNamaPewaris } from '../pewaris';
 import { aturTahunWafat } from '../silsilah';
+import { statusKeluarga } from '../statusKeluarga';
 import { t } from '../terjemah';
 import { TOTAL_LANGKAH, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Pilihan } from '../ui/komponen';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { LangkahAhliWaris } from './LangkahAhliWaris';
 import { LangkahBabak } from './LangkahBabak';
+import { KanvasKeluarga } from './keluarga/KanvasKeluarga';
 import { PertanyaanHamil } from './keadaan/PertanyaanHamil';
 import { PertanyaanPenutup } from './keadaan/PertanyaanPenutup';
 import { CeritaKasus } from './PeriksaCerita';
@@ -29,36 +31,49 @@ import { adaAhliWaris, alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_
 
 
 export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (aksi: Aksi) => void }) {
-  const { kasus, langkah, babak } = keadaan;
+  const { kasus, langkah } = keadaan;
+  // Kasus nyata memakai kanvas per bagian, tanpa babak; alur Babak hanya melayani latihan (K1 rencana 2).
+  const nyata = kasus?.jenisKasus === 'nyata';
+  const babak = nyata ? 0 : keadaan.babak;
   const [sedangReset, setSedangReset] = useState(false);
   const [tertahan, setTertahan] = useState(false);
+  const [fokusBagian, setFokusBagian] = useState<{ id: string; kali: number }>();
   const almarhum = kasus ? daftarAlmarhum(kasus) : [];
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
-  const alasan = langkah === 3 && kasus
+  const alasan = langkah === 3 && kasus && !nyata
     ? (babak === 0 && !adaAhliWaris(kasus) ? t('hitung.tambahkan_minimal_satu_ahli_waris') : alasanBabak(kasus, babak))
     : alasanBelumLengkap(kasus, langkah);
+  const kanvasBelumLengkap = nyata && langkah === 3 && !!alasan;
   const subjudul = langkah === 3 && babak > 0 && kasus
     ? t('hitung.babak.subjudul', { nomor: babak + 1, total: almarhum.length, nama: namaSingkat(kasus, almarhum[babak]!) })
     : undefined;
   const saatLanjut = () => {
-    if (langkah === 3 && babak < almarhum.length - 1) return kirim({ jenis: 'KE_BABAK', babak: babak + 1 });
+    if (langkah === 3 && !nyata && babak < almarhum.length - 1) return kirim({ jenis: 'KE_BABAK', babak: babak + 1 });
     // Janin belum lahir: pilihan menunggu dulu ([R13-17]), kecuali sudah dipilih.
     if (langkah === TOTAL_LANGKAH) return kirim({ jenis: 'KE_LAYAR', layar: kasus && adaJaninBelumLahir(kasus) && !kasus.pilihanJanin ? 'cerita' : 'hasil' });
     kirim({ jenis: 'KE_LANGKAH', langkah: langkah + 1 });
   };
   const saatKembali = () => {
-    if (langkah === 3 && babak > 0) return kirim({ jenis: 'KE_BABAK', babak: babak - 1 });
+    if (langkah === 3 && !nyata && babak > 0) return kirim({ jenis: 'KE_BABAK', babak: babak - 1 });
     kirim(langkah === 1 ? { jenis: 'KE_LAYAR', layar: 'awal' } : { jenis: 'KE_LANGKAH', langkah: langkah - 1 });
   };
   // Tombol lanjut tidak pernah nonaktif: bila isian kurang, klik hanya menahan dan mengumumkan alasannya; tanda hilang saat isian diubah.
   const berikut = LANGKAH_WIZARD[langkah];
-  const aksiLanjut = {
-    label: berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil'),
-    sebagai: 'tombol' as const,
-    saatKlik: () => (alasan ? setTertahan(true) : saatLanjut()),
+  // Kanvas belum lengkap: aksi utama berupa tautan "Ke Periksa ›" (spec 5.9); diklik → tandai kekurangan dan pindah ke bagian pertama yang kurang.
+  const saatKlikTertahan = () => {
+    setTertahan(true);
+    const pertama = kasus && nyata && langkah === 3 ? statusKeluarga(kasus).pertama : null;
+    if (pertama) setFokusBagian(sebelumnya => ({ id: pertama.id, kali: (sebelumnya?.kali ?? 0) + 1 }));
   };
+  const aksiLanjut = {
+    label: kanvasBelumLengkap ? t('hitung.kanvas.ke_periksa') : berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil'),
+    sebagai: kanvasBelumLengkap ? 'tautan' as const : 'tombol' as const,
+    saatKlik: () => (alasan ? saatKlikTertahan() : saatLanjut()),
+  };
+  const statusBar = tertahan ? alasan : kanvasBelumLengkap && kasus ? statusKeluarga(kasus).status : nyata && langkah === 3 ? t('hitung.kanvas.status_lengkap') : null;
   useEffect(() => setTertahan(false), [kasus, langkah, babak]);
-  useEffect(() => { if (tertahan) document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); }, [tertahan]);
+  // Kanvas mengurus fokusnya sendiri (pindah bagian dulu, baru fokus ke baris yang kurang).
+  useEffect(() => { if (tertahan && !kanvasBelumLengkap) document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); }, [tertahan]);
   // Penanda halaman: latar krem dan navbar menyatu dengan hero gelap (CSS body.layar-beranda), sama dengan Awal Lab.
   useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   const stepper = (
@@ -74,7 +89,9 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           saatUbahTahun={tahun => ubah(k => aturTahunWafat(k, k.graf.idPewaris, tahun))}
           saatPilihPintu={pintu => ubah(k => ({ ...k, pintu }))} />}
         {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
-        {kasus && langkah === 3 && babak === 0 && <>
+        {kasus && langkah === 3 && nyata && <KanvasKeluarga kasus={kasus} ubah={ubah} tandaiKurang={tertahan}
+          {...(fokusBagian ? { fokusBagian } : {})} saatSelesai={saatLanjut} />}
+        {kasus && langkah === 3 && !nyata && babak === 0 && <>
           <IsianNamaAlmarhum nama={kasus.graf.orang[kasus.graf.idPewaris]?.nama ?? ''} saatUbah={nama => ubah(k => ubahNamaPewaris(k, nama))} />
           <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
           <p className="catatan-info">{t('hitung.keluarga_beri_nama_jelas')}</p>
@@ -82,11 +99,13 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           <PertanyaanPenutup kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
           <PertanyaanHamil kasus={kasus} idMayit={kasus.graf.idPewaris} ubah={ubah} />
         </>}
-        {kasus && langkah === 3 && babak > 0 && <LangkahBabak kasus={kasus} babak={babak} ubah={ubah} />}
+        {kasus && langkah === 3 && !nyata && babak > 0 && <LangkahBabak kasus={kasus} babak={babak} ubah={ubah} />}
         {kasus && langkah === 4 && <>
           <CeritaKasus kasus={kasus} kirim={kirim} />
-          <h2 id="tanya-kondisi" className="judul-bagian-kecil">{t('hitung.kondisi_tanya_baru')}</h2>
-          <LangkahKondisi kasus={kasus} ubah={ubah} labelId="tanya-kondisi" />
+          {!nyata && <>
+            <h2 id="tanya-kondisi" className="judul-bagian-kecil">{t('hitung.kondisi_tanya_baru')}</h2>
+            <LangkahKondisi kasus={kasus} ubah={ubah} labelId="tanya-kondisi" />
+          </>}
           <NamaKasus kasus={kasus} ubah={ubah} />
         </>}
       </KerangkaLangkah>
@@ -94,7 +113,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         <KonfirmasiKasusBaru kasus={kasus} judul={t('umum.reset_skenario')} labelLanjut={t('umum.reset')} saatBatal={() => setSedangReset(false)}
           saatLanjut={() => { setSedangReset(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
-      <BarBawah saatKembali={saatKembali} status={tertahan ? alasan : null} aksi={aksiLanjut} />
+      <BarBawah saatKembali={saatKembali} status={statusBar} aksi={aksiLanjut} />
     </main>
   );
 }
