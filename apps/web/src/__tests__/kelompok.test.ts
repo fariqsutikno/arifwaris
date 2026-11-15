@@ -160,4 +160,12 @@ describe('kakek-nenek ditanya menurut engine, bukan menurut Ayah wafat (review P
     expect(ids(denganOrangTua('hidup'))).not.toContain('kakekNenek:PEWARIS');
     expect(ids(kasusBaru('L'))).not.toContain('kakekNenek:PEWARIS');
   });
+
+  it('"kenapa kakek-nenek tidak ditanyakan" tidak muncul untuk yang berpengaruh, atau selama orang tua belum dijawab', () => {
+    const k = denganOrangTua('belumTahu');
+    expect(bagianDilewati(k).some(d => d.jenis === 'kakekNenek')).toBe(false);
+    const belumDijawab: Kasus = { ...kasusBaru('L'), kelompokDijawab: { PEWARIS: ['pasangan', 'anak'] } };
+    const denganAyahWafat = tambah(belumDijawab, 'PEWARIS', 'AYAH', { statusHidup: 'wafat' }).kasus;
+    expect(bagianDilewati(denganAyahWafat).some(d => d.jenis === 'kakekNenek')).toBe(false);
+  });
 });

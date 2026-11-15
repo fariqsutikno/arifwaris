@@ -1,12 +1,11 @@
 // Details "Kenapa {kelompok} tidak ditanyakan?" (spec kanvas 5.7): satu kalimat alasan + tautan teks "Tetap isi kerabat lain".
 // Sesudah itu muncul tautan "Tambah dengan nama hubungan" untuk kerabat bukan ahli waris (mertua, besan, anak tiri; spec 5.11).
-// Menerima satu BagianDilewati; kalimat alasannya DRAF (konten/kanvasDraf.ts).
+// Menerima satu BagianDilewati; kalimat alasannya dari diksi hitung.kanvas.kenapa_tidak_ditanya.
 
 import { useState } from 'react';
 import type { GrafKeluarga } from '@waris/engine';
 import { HUBUNGAN, type KunciHubungan } from '../../hubunganPohon';
 import type { Kasus } from '../../kasus';
-import { kenapaTidakDitanya } from '../../konten/kanvasDraf';
 import { namaSingkat } from '../../keadaanOrang';
 import type { Bagian, BagianDilewati } from '../../kelompok';
 import { judulBagian } from '../../ringkasanBagian';
@@ -33,7 +32,7 @@ export function KenapaTidakDitanya({ dilewati, kasus, sudahTetapIsi, saatTetapIs
     <details className="rinci">
       <summary><Ikon nama="kembali" ukuran={14} />{judul}</summary>
       <div>
-        <span>{kenapaTidakDitanya(kelompok)}</span>
+        <span>{t('hitung.kanvas.kenapa_tidak_ditanya', { kelompok })}</span>
         {sudahTetapIsi ? (
           <>
             <button type="button" className="aksi-teks" aria-expanded={daftarHubungan} onClick={() => setDaftarHubungan(buka => !buka)}>

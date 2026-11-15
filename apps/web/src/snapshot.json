@@ -22421,6 +22421,34 @@
    "id": "Pohon lengkap",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pengantar_cabang",
+   "halaman": "hitung",
+   "id": "{almarhum} wafat sesudah {pewaris}, sebelum hartanya dibagi. Jadi bagian {almarhum} nanti dibagi lagi ke keluarganya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_bercerai",
+   "halaman": "hitung",
+   "id": "Pernikahannya sudah berakhir dengan talak; nanti ditanya masa iddahnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.arti_khuntsa",
+   "halaman": "hitung",
+   "id": "Belum jelas laki-laki atau perempuan; nanti ditanya apakah sudah dewasa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kenapa_tidak_ditanya",
+   "halaman": "hitung",
+   "id": "Dari keadaan keluarga yang sudah diisi, {kelompok} tidak ikut menerima bagian, jadi tidak perlu ditanyakan.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -5,7 +5,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { IdOrang } from '@waris/engine';
 import type { Kasus } from '../../kasus';
-import { pengantarCabang } from '../../konten/kanvasDraf';
 import { namaSingkat } from '../../keadaanOrang';
 import { dampakAdaKeTidak, jawabAdaTidak, tambahBaris } from '../../isianBagian';
 import { anggotaBagian, awalCabang, bagianDijawab, bagianDilewati, bagianLengkap, daftarBagian, type Bagian, type BagianDilewati } from '../../kelompok';
@@ -136,7 +135,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
         </ul>
       )}
       <KartuBagian key={aktif.id} label={judulBagian(kasus, aktif)} pertanyaan={pertanyaanBagian(kasus, aktif)} masuk={animasiMasuk}
-        pengantar={awalCabang(kasus, aktif) ? pengantarCabang(namaSingkat(kasus, aktif.milik), namaSingkat(kasus, kasus.graf.idPewaris)) : undefined}
+        pengantar={awalCabang(kasus, aktif) ? t('hitung.kanvas.pengantar_cabang', { almarhum: namaSingkat(kasus, aktif.milik), pewaris: namaSingkat(kasus, kasus.graf.idPewaris) }) : undefined}
         judulRef={judulRef} lengkap={lengkap} tandai={tandaiLokal || (tandaiKurang && !lengkap)}
         labelLanjut={berikutnya ? t('hitung.kanvas.lanjut_ke', { bagian: judulPendek(kasus, berikutnya) }) : t('hitung.kanvas.selesai_ke_periksa')}
         saatLanjut={lanjut}>

@@ -161,7 +161,7 @@ export function bagianDilewati(kasus: Kasus): BagianDilewati[] {
     if (!tampil.has(`jauh:${idPewaris}`) && (!saudaraTampil || kasus.kelompokDijawab?.[idPewaris]?.includes('saudara'))) {
       dilewati.push({ jenis: 'jauh', milik: idPewaris });
     }
-    if (orangTuaTidakHidup && !tampil.has(`kakekNenek:${idPewaris}`)) dilewati.push({ jenis: 'kakekNenek', milik: idPewaris });
+    if (orangTuaTidakHidup && sudahDijawab(kasus, idPewaris, 'orangTua') && !tampil.has(`kakekNenek:${idPewaris}`)) dilewati.push({ jenis: 'kakekNenek', milik: idPewaris });
   }
   for (const bagian of daftarBagian(kasus).filter(satu => satu.jenis === 'anak')) {
     for (const id of anakWafatSebelum(kasus, bagian.milik)) {

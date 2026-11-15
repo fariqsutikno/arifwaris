@@ -6,7 +6,6 @@ import { useId, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { jenisDari, ubahNama } from '../../checklist';
 import type { Kasus } from '../../kasus';
-import { ARTI_KEADAAN_DRAF } from '../../konten/kanvasDraf';
 import { LABEL_SEHARI, sebutAlmarhum } from '../../konten/ahliWaris';
 import { hapusBaris, orangDenganKunci, orangYangHilang } from '../../isianBagian';
 import {
@@ -36,7 +35,7 @@ export const LABEL_KEADAAN: Record<PilihanKeadaan, () => string> = {
 const ARTI_KEADAAN: Record<PilihanKeadaan | 'lainnya', () => string> = {
   hidup: () => t('hitung.kanvas.arti_hidup'), wafat: () => t('hitung.kanvas.arti_wafat'), belumTahu: () => t('hitung.kanvas.arti_belum_tahu'),
   hilang: () => t('hitung.kanvas.arti_hilang'), lainnya: () => t('hitung.kanvas.arti_lainnya'),
-  bercerai: () => ARTI_KEADAAN_DRAF.bercerai, khuntsa: () => ARTI_KEADAAN_DRAF.khuntsa,
+  bercerai: () => t('hitung.kanvas.arti_bercerai'), khuntsa: () => t('hitung.kanvas.arti_khuntsa'),
 };
 /** Peran yang hanya satu per orang (Ayah, Suami, …) tidak diberi nomor. */
 const adalahPeranTunggal = (kunci: KunciAhliWaris) => jenisDari(kunci)?.maksimal === 1;
