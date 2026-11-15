@@ -112,3 +112,13 @@ it('UBAH_KASUS mengurutkan urutan wafat menurut tahun (spec kanvas 9.1)', () => 
   keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, urutanWafat: [a1!, a2!], waktu: { [a1!]: { wafat: { tahun: 2000, kiraKira: false } }, [a2!]: { wafat: { tahun: 1990, kiraKira: false } } } }) });
   expect(keadaan.kasus!.urutanWafat).toEqual([a2, a1]);
 });
+
+it('KE_LANGKAH dengan fokus menyimpan fokus; UBAH_KASUS dan KE_LANGKAH tanpa fokus mengosongkannya', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
+  const fokus = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3, fokus: 'PEWARIS' });
+  expect(fokus.fokus).toBe('PEWARIS');
+  expect(pengurangKeadaan(fokus, { jenis: 'UBAH_KASUS', ubah: k => k }).fokus).toBeUndefined();
+  expect(pengurangKeadaan(fokus, { jenis: 'KE_LANGKAH', langkah: 3 }).fokus).toBeUndefined();
+});

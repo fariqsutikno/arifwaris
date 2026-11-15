@@ -1,10 +1,12 @@
 import { expect, it } from 'vitest';
-import { tambahAhliWaris } from '../checklist';
+import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { jawabHalLain } from '../halLain';
 import { isiBarisTetap, jawabAdaTidak, jawabKamu, slotTetap } from '../isianBagian';
 import { kasusBaru, type Kasus } from '../kasus';
 import { bagianLengkap, daftarBagian } from '../kelompok';
 import { alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from '../layar/wizard/validasi';
+import { labelMayit, tandaiWafatSebelumDibagi } from '../latihan';
+import { t } from '../terjemah';
 
 const denganHarta = (kasus: Kasus, kotor: bigint): Kasus => ({ ...kasus, tirkah: { ...kasus.tirkah, kotor } });
 
@@ -64,4 +66,14 @@ it('langkahTerjauh kasus nyata berhenti di 3 selama ada bagian belum lengkap dan
 it('latihan tidak memakai syarat bagian kanvas', () => {
   const kasus = denganHarta(kasusBaru('L', 'latihan'), 1_000_000n);
   expect(alasanBelumLengkap(kasus, 3)).toMatch(/ahli waris/);
+});
+
+it('latihan: langkah 3 tertahan selama ada kartu tanpa ahli waris, alasannya menyebut kartu itu', () => {
+  let kasus = denganHarta(kasusBaru('L', 'latihan'), 1_000_000n);
+  kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
+  const anak = hitungIsian(kasus.graf, 'PEWARIS').ANAK_LK![0]!;
+  kasus = tandaiWafatSebelumDibagi(kasus, anak, true);
+  expect(alasanBelumLengkap(kasus, 3)).toBe(t('hitung.latihan.kartu_tanpa_ahli_waris', { nama: labelMayit(kasus, anak) }));
+  kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, anak, 'ANAK_LK') };
+  expect(alasanBelumLengkap(kasus, 3)).toBeNull();
 });

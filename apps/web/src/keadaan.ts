@@ -2,7 +2,7 @@
 // Semua perubahan kasus lewat UBAH_KASUS supaya urutan wafat selalu dirapikan di satu tempat;
 // perpindahan langkah dibatasi validasi supaya stepper tidak bisa melompati isian yang belum lengkap.
 
-import { bolehUbahJenisKelamin } from '@waris/engine';
+import { bolehUbahJenisKelamin, type IdOrang } from '@waris/engine';
 import { kasusBaru, rapikanKeadaan, type JenisKasus, type Kasus } from './kasus';
 import type { Tujuan } from './preferensi';
 import { turunkanDariWaktu } from './silsilah';
@@ -12,7 +12,9 @@ import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 export const TOTAL_LANGKAH = 4;
 export type Layar = 'awal' | 'pintu' | 'wizard' | 'cerita' | 'hasil' | 'belajar';
 
-export interface KeadaanAplikasi { layar: Layar; langkah: number; babak: number; kasus: Kasus | null; tujuan: Tujuan | null; jenisKasus: JenisKasus | null }
+export interface KeadaanAplikasi { layar: Layar; langkah: number; babak: number; kasus: Kasus | null; tujuan: Tujuan | null; jenisKasus: JenisKasus | null;
+  /** Kartu mayit latihan yang digulir dan difokus saat langkah 3 dibuka dari "ubah" di Periksa; hilang saat kasus diubah. */
+  fokus?: IdOrang }
 
 export type Aksi =
   | { jenis: 'PILIH_TUJUAN'; tujuan: Tujuan }
@@ -20,7 +22,7 @@ export type Aksi =
   | { jenis: 'PILIH_JENIS_KASUS'; jenisKasus: JenisKasus }
   | { jenis: 'PILIH_PEWARIS'; jenisKelamin: 'L' | 'P' }
   | { jenis: 'MUAT'; kasus: Kasus }
-  | { jenis: 'KE_LANGKAH'; langkah: number }
+  | { jenis: 'KE_LANGKAH'; langkah: number; fokus?: IdOrang }
   | { jenis: 'KE_BABAK'; babak: number }
   | { jenis: 'UBAH_KASUS'; ubah: (kasus: Kasus) => Kasus }
   | { jenis: 'KE_LAYAR'; layar: Layar }
@@ -43,13 +45,15 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
       const langkah = Math.min(batas, Math.max(1, aksi.langkah));
       // Mundur dari Periksa (4) ke Keluarga (3) = babak terakhir; selain itu mulai dari babak pewaris.
       const babak = langkah === 3 && keadaan.langkah === 4 ? babakTerakhir(keadaan.kasus) : 0;
-      return { ...keadaan, layar: 'wizard', langkah, babak };
+      const { fokus: _lama, ...tanpaFokus } = keadaan;
+      return { ...tanpaFokus, layar: 'wizard', langkah, babak, ...(aksi.fokus ? { fokus: aksi.fokus } : {}) };
     }
     case 'KE_BABAK': return { ...keadaan, babak: Math.min(babakTerakhir(keadaan.kasus), Math.max(0, aksi.babak)) };
     case 'UBAH_KASUS': {
       if (!keadaan.kasus) return keadaan;
       const kasus = rapikanKeadaan(turunkanDariWaktu(aksi.ubah(keadaan.kasus)));
-      return { ...keadaan, kasus, babak: Math.min(keadaan.babak, babakTerakhir(kasus)) };
+      const { fokus: _lama, ...tanpaFokus } = keadaan;
+      return { ...tanpaFokus, kasus, babak: Math.min(keadaan.babak, babakTerakhir(kasus)) };
     }
     case 'KE_LAYAR': {
       const bolehHasil = langkahTerjauh(keadaan.kasus) === LANGKAH_HASIL;

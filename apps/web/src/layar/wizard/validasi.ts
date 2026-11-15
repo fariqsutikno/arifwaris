@@ -3,6 +3,7 @@
 
 import { hitungIsian } from '../../checklist';
 import { daftarAlmarhum, kerabatDari } from '../../keadaanOrang';
+import { labelMayit, mayitTanpaAhliWaris } from '../../latihan';
 import type { Kasus } from '../../kasus';
 import { judulPendek } from '../../ringkasanBagian';
 import { statusKeluarga } from '../../statusKeluarga';
@@ -18,10 +19,8 @@ export function alasanBelumLengkap(kasus: Kasus | null, langkah: number): string
   if (langkah === 3 && kasus.jenisKasus === 'nyata') return alasanKanvasBelumLengkap(kasus);
   if (langkah === 3) {
     if (!adaAhliWaris(kasus)) return t('hitung.tambahkan_minimal_satu_ahli_waris');
-    for (let babak = 1; babak < daftarAlmarhum(kasus).length; babak++) {
-      const alasan = alasanBabak(kasus, babak);
-      if (alasan) return alasan;
-    }
+    const kartuKurang = mayitTanpaAhliWaris(kasus);
+    if (kartuKurang) return t('hitung.latihan.kartu_tanpa_ahli_waris', { nama: labelMayit(kasus, kartuKurang) });
   }
   return null;
 }
