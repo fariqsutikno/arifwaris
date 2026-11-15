@@ -18,16 +18,18 @@ interface Props {
   labelPilih?: (nama: string) => string;
   /** Penghubung (orang buatan sistem) ikut bisa dipilih; bawaan ya. */
   pilihPenghubung?: boolean;
+  /** Pewaris tidak punya baris untuk dituju, jadi bisa dimatikan sebagai tombol. */
+  pewarisBisaDipilih?: boolean;
 }
 
-export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true }: Props) {
+export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true }: Props) {
   const { graf } = kasus;
   // Orang tanpa peran di daftar ± (mertua, ipar, dst.) cukup disebut namanya; label cadangan "Kerabat" tidak membantu.
   const adaPeran = new Set(Object.values(hitungIsian(graf, graf.idPewaris)).flatMap(ids => ids ?? []));
   const sebut = (id: IdOrang) => adaPeran.has(id) ? labelOrangChecklist(graf, graf.idPewaris, id) : graf.orang[id]?.nama ?? t('hitung.pohon.belum_bernama');
   return (
     <PratinjauPohon skalaMaks={skalaMaks} interaktif={!!saatPilih} {...(saatPilih ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
-      <PohonDasar graf={graf} {...(saatPilih ? { saatPilih, pilihPenghubung, labelPilih: labelPilih ?? ((nama: string) => t('hitung.pohon.buka_menu', { nama })) } : {})}
+      <PohonDasar graf={graf} bisaPilih={id => pewarisBisaDipilih || id !== graf.idPewaris} {...(saatPilih ? { saatPilih, pilihPenghubung, labelPilih: labelPilih ?? ((nama: string) => t('hitung.pohon.buka_menu', { nama })) } : {})}
         {...(maksPerBaris ? { maksPerBaris } : {})} isiNode={id => ({
         kelas: id === graf.idPewaris ? 'pewaris' : graf.orang[id]?.penghubung ? 'penghubung' : 'ahli-waris',
         tambahan: kelasKeadaan(kasus, id),

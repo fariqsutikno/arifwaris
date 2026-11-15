@@ -73,7 +73,7 @@ function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
 export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; /** Kelas tambahan yang tidak dipakai logika pohon (mis. gaya menurut keadaan). */ tambahan?: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
-export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS, pilihPenghubung = false, labelPilih }: {
+export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS, pilihPenghubung = false, labelPilih, bisaPilih }: {
   graf: GrafKeluarga; isiNode: (id: IdOrang) => IsiNode; saatPilih?: (id: IdOrang) => void; redup?: boolean; aliran?: boolean;
   /** Batas node per baris tampilan; panggung sempit memakai batas lebih kecil. */
   maksPerBaris?: number;
@@ -81,6 +81,8 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
   pilihPenghubung?: boolean;
   /** Label tombol node bila bisa dipilih; bawaan: "lihat penjelasan". */
   labelPilih?: (nama: string) => string;
+  /** Menyaring simpul yang bisa dipilih (bawaan semua); yang tidak lolos tampil sebagai kotak biasa, bukan tombol. */
+  bisaPilih?: (id: IdOrang) => boolean;
 }) {
   const letak = tataLetak(graf);
   const wadah = useRef<HTMLDivElement>(null);
@@ -110,8 +112,8 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
             {baris.map(id => {
               const node = isiNode(id);
               const { className, ...pemicu } = atribut(id);
-              const bisaDipilih = !!saatPilih && (node.kelas !== 'penghubung' || pilihPenghubung);
-              if (!saatPilih) {
+              const bisaDipilih = !!saatPilih && (node.kelas !== 'penghubung' || pilihPenghubung) && (bisaPilih?.(id) ?? true);
+              if (!bisaDipilih) {
                 return (
                   <div key={id} {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)} role="group" aria-label={node.nama}>
                     {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
@@ -124,7 +126,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
               }
               return (
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)}
-                  aria-label={bisaDipilih ? (labelPilih ? labelPilih(node.nama) : t('hitung.nama_lihat_penjelasan', { nama: node.nama })) : node.nama} disabled={!bisaDipilih}
+                  aria-label={labelPilih ? labelPilih(node.nama) : t('hitung.nama_lihat_penjelasan', { nama: node.nama })}
                   onClick={() => saatPilih?.(id)}>
                   {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                   {node.peran && <span className="peran-node">{node.peran}</span>}

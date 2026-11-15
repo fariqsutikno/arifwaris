@@ -5,6 +5,8 @@ import type { IdOrang } from '@waris/engine';
 import { rapikanKeadaan, type Kasus } from '../kasus';
 import { KanvasKeluarga } from '../layar/keluarga/KanvasKeluarga';
 import { PanggungPohon } from '../layar/wizard/PanggungPohon';
+import { tambahAhliWaris } from '../checklist';
+import { kasusBaru } from '../kasus';
 import { keluargaKarto } from './fixtures/kanvas';
 
 describe('pohon samping langkah Keluarga (spec kanvas 5.11, 8)', () => {
@@ -56,5 +58,16 @@ describe('pohon samping langkah Keluarga (spec kanvas 5.11, 8)', () => {
     expect(container.querySelector(`[data-orang="${rina}"]`)!.className).toContain('simpul-belum-pasti');
     expect(container.querySelector(`[data-orang="${slamet}"]`)!.className).toContain('simpul-wafat');
     expect(container.querySelector('[data-orang="PEWARIS"]')!.className).toContain('simpul-pemilik');
+  });
+
+  it('penghubung dan pewaris bukan tombol (tidak ada tombol nonaktif, tidak ada "Ke baris Almarhum")', () => {
+    const dasar = kasusBaru('L');
+    const kasus = { ...dasar, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'PAMAN_KANDUNG') };
+    const { container } = render(<PanggungPohon kasus={kasus} saatPilihOrang={() => undefined} />);
+    expect(container.querySelector('.node-orang.penghubung')).toBeTruthy();
+    expect(container.querySelector('.node-orang.penghubung')!.tagName).toBe('DIV');
+    expect(screen.getAllByRole('button').filter(tombol => (tombol as HTMLButtonElement).disabled)).toEqual([]);
+    expect(screen.queryByRole('button', { name: /Ke baris Almarhum/ })).toBeNull();
+    expect(container.querySelector('[data-orang="PEWARIS"]')!.tagName).toBe('DIV');
   });
 });
