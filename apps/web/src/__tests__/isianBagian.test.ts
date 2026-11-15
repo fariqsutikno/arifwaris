@@ -156,3 +156,22 @@ describe('bagian tetap baru lengkap bila semua slot terisi (review P1)', () => {
     expect(bagianLengkap(isiBarisTetap(dijawab, ORANG_TUA, 'AYAH', 'hidup'), ORANG_TUA)).toBe(true);
   });
 });
+
+describe('hapusBaris mencabut jawaban bagian yang jadi kosong (review P2)', () => {
+  const ANAK: Bagian = { id: 'anak:PEWARIS', milik: 'PEWARIS', jenis: 'anak' };
+
+  it('menghapus anak terakhir membuka lagi bagian Anak (tidak diam-diam dianggap Tidak)', () => {
+    let kasus = tambahBaris(kasusBaru('L'), ANAK, 'ANAK_LK');
+    const id = Object.keys(kasus.graf.orang).find(satu => satu !== 'PEWARIS')!;
+    kasus = { ...kasus, graf: ubahNama(kasus.graf, id, 'Andi') };
+    const hasil = hapusBaris(kasus, id);
+    expect(hasil.kelompokDijawab?.PEWARIS ?? []).not.toContain('anak');
+    expect(bagianLengkap(hasil, ANAK)).toBe(false);
+  });
+
+  it('masih ada anak lain: jawaban tetap', () => {
+    let kasus = tambahBaris(tambahBaris(kasusBaru('L'), ANAK, 'ANAK_LK'), ANAK, 'ANAK_PR');
+    const [pertama] = Object.keys(kasus.graf.orang).filter(satu => satu !== 'PEWARIS');
+    expect(hapusBaris(kasus, pertama!).kelompokDijawab?.PEWARIS).toContain('anak');
+  });
+});

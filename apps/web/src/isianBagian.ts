@@ -7,13 +7,14 @@ import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris, ubahOrang } 
 import { rapikanKeadaan, type Kasus, type Kelompok } from './kasus';
 import { keadaanTerpilih, pilihKeadaan, tandaiBelumDiisi, type PilihanKeadaan } from './keadaanBaris';
 import { orangTerputus } from './keadaanOrang';
-import { anggotaBagian, kunciBagian, orangDenganKunci, slotTetap, type Bagian } from './kelompok';
+import { anggotaBagian, daftarBagian, kunciBagian, orangDenganKunci, slotTetap, type Bagian } from './kelompok';
 
 export { kunciBagian, orangDenganKunci, slotTetap };
 
 /** Menghapus anggota bagian ini ikut menghapus keturunannya dan menantunya (cabang); pasangan tidak: anak tetap ada. */
 const BAGIAN_BERCABANG: Kelompok[] = ['anak', 'saudara', 'jauh'];
 const BAGIAN_TETAP: Kelompok[] = ['orangTua', 'kakekNenek'];
+const BAGIAN_YA_TIDAK: Kelompok[] = ['pasangan', 'anak', 'saudara', 'jauh'];
 
 export const adalahBagianTetap = (bagian: Bagian): boolean => BAGIAN_TETAP.some(jenis => jenis === bagian.jenis);
 
@@ -55,7 +56,10 @@ export function kurangiBarisKosong(kasus: Kasus, bagian: Bagian, kunci: KunciAhl
 }
 
 export function hapusBaris(kasus: Kasus, id: IdOrang): Kasus {
-  return hapusBiasa(kasus, [id]);
+  const sesudah = hapusBiasa(kasus, [id]);
+  // Bagian yang jadi kosong kembali belum dijawab, sama dengan kurangiBarisKosong; "Tidak" harus pilihan sadar.
+  return daftarBagian(kasus).filter(bagian => BAGIAN_YA_TIDAK.some(jenis => jenis === bagian.jenis) && anggotaBagian(kasus, bagian).includes(id))
+    .reduce((hasil, bagian) => (anggotaBagian(hasil, bagian).length ? hasil : tandaiDijawab(hasil, bagian.milik, bagian.jenis as Kelompok, false)), sesudah);
 }
 
 /** Pilih keadaan satu baris tetap (Ayah, Ibu, kakek, nenek); orangnya dibuat bila belum ada. Bagian dijawab bila semua baris terpilih. */
