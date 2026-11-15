@@ -61,10 +61,7 @@ export function PilihanMenunggu({ kirim }: { kirim: (aksi: Aksi) => void }) {
 
 export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => void }) {
   const almarhum = daftarAlmarhum(kasus);
-  const orang = Object.values(kasus.graf.orang);
   const nama = (id: IdOrang) => namaSingkat(kasus, id);
-  const pewaris = nama(kasus.graf.idPewaris);
-  const lanjutan = almarhum.slice(1).map(nama).join(', ');
   const ubahKeluarga = () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 });
   return (
     <div className="kartu tumpuk">
@@ -74,12 +71,25 @@ export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi
           <p>{kalimatBabak(kasus, id)} <button type="button" className="tautan" onClick={ubahKeluarga}>{t('hitung.cerita.ubah')}</button></p>
         </section>
       ))}
+      <BarisKhususCerita kasus={kasus} />
+    </div>
+  );
+}
+
+/** Baris keadaan khusus dan harta yang dibagi; dipakai CeritaKasus (nyata) dan RingkasanLatihan. */
+export function BarisKhususCerita({ kasus }: { kasus: Kasus }) {
+  const orang = Object.values(kasus.graf.orang);
+  const nama = (id: IdOrang) => namaSingkat(kasus, id);
+  const pewaris = nama(kasus.graf.idPewaris);
+  const lanjutan = daftarAlmarhum(kasus).slice(1).map(nama);
+  return (
+    <>
       {kasus.wafatSesudahDibagi?.map(id => <p key={id}>{t('hitung.cerita.sesudah_dibagi', { nama: nama(id) })}</p>)}
       {kasus.gharqa && <p>{t('hitung.cerita.bersamaan', { daftar: kasus.gharqa.anggota.map(nama).join(', ') })}</p>}
       {orang.filter(o => o.statusHidup === 'mafqud').map(o => <p key={o.id}>{t('hitung.cerita.hilang', { nama: nama(o.id) })}</p>)}
       {orang.filter(o => o.statusHidup === 'dalamKandungan').map(o => <p key={o.id}>{o.idIbu ? t('hitung.janin.baris', { ibu: nama(o.idIbu) }) : t('hitung.penutup.status_dalam_kandungan')}</p>)}
       <p>{t('hitung.cerita.harta_dibagi', { pewaris, jumlah: formatRupiah(kasus.tirkah.kotor) })}
-        {almarhum.length > 1 && ` ${t('hitung.cerita.harta_sendiri_tidak', { daftar: lanjutan })}`}</p>
-    </div>
+        {lanjutan.length > 0 && ` ${t('hitung.cerita.harta_sendiri_tidak', { daftar: lanjutan.join(', ') })}`}</p>
+    </>
   );
 }

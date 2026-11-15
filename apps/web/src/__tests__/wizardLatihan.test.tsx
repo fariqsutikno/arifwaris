@@ -5,6 +5,7 @@ import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
 import { keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { Wizard } from '../layar/Wizard';
+import { terapkanKeadaan } from '../keadaanOrang';
 import { tandaiWafatSebelumDibagi } from '../latihan';
 
 beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); Element.prototype.scrollIntoView = vi.fn(); });
@@ -51,5 +52,17 @@ describe('Wizard latihan (rencana 3)', () => {
     const { kasus: tanpaKeluarga, anak } = soal();
     render(<Papan kasus={tambah(tanpaKeluarga, anak, 'ISTRI')} langkah={4} />);
     expect(screen.getByRole('heading', { level: 2, name: /beda agama/ })).toBeTruthy();
+  });
+
+  it('Periksa latihan memuat lagi baris harta dan keadaan khusus (hilang, belum tahu)', () => {
+    const { kasus: tanpaKeluarga, anak } = soal();
+    let kasus = tambah(tambah(tambah(tanpaKeluarga, anak, 'ISTRI'), 'PEWARIS', 'ANAK_PR'), 'PEWARIS', 'ISTRI');
+    const [anakPr, istri] = [hitungIsian(kasus.graf, 'PEWARIS').ANAK_PR![0]!, hitungIsian(kasus.graf, 'PEWARIS').ISTRI![0]!];
+    kasus = terapkanKeadaan(terapkanKeadaan(kasus, anakPr, { jenis: 'hilang' }), istri, { jenis: 'belumTahu' });
+    render(<Papan kasus={kasus} langkah={4} />);
+    expect(screen.getByText(/Harta yang dibagi: harta .*1\.000\.000/)).toBeTruthy();
+    expect(screen.getByText(/sendiri tidak ikut dihitung/)).toBeTruthy();
+    expect(screen.getByText(/hilang dan belum ada kabar/)).toBeTruthy();
+    expect(screen.getAllByText(/: Belum tahu$/).length).toBeGreaterThan(0);   // istri juga muncul sebagai ibu di kartu anak
   });
 });
