@@ -65,17 +65,13 @@ export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi
   const nama = (id: IdOrang) => namaSingkat(kasus, id);
   const pewaris = nama(kasus.graf.idPewaris);
   const lanjutan = almarhum.slice(1).map(nama).join(', ');
-  // Kasus nyata tidak punya babak: "Ubah" cukup membuka kanvas keluarga.
-  const ubahBabak = (babak: number) => {
-    kirim({ jenis: 'KE_LANGKAH', langkah: 3 });
-    if (kasus.jenisKasus !== 'nyata') kirim({ jenis: 'KE_BABAK', babak });
-  };
+  const ubahKeluarga = () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 });
   return (
     <div className="kartu tumpuk">
       {almarhum.map((id, indeks) => (
         <section key={id} className="tumpuk-rapat">
           <h2 className="judul-bagian-kecil">{t('hitung.cerita.label_babak', { nomor: indeks + 1, nama: nama(id) })}</h2>
-          <p>{kalimatBabak(kasus, id)} <button type="button" className="tautan" onClick={() => ubahBabak(indeks)}>{t('hitung.cerita.ubah')}</button></p>
+          <p>{kalimatBabak(kasus, id)} <button type="button" className="tautan" onClick={ubahKeluarga}>{t('hitung.cerita.ubah')}</button></p>
         </section>
       ))}
       {kasus.wafatSesudahDibagi?.map(id => <p key={id}>{t('hitung.cerita.sesudah_dibagi', { nama: nama(id) })}</p>)}

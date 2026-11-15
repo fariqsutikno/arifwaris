@@ -6,13 +6,12 @@ import { bolehUbahJenisKelamin, type IdOrang } from '@waris/engine';
 import { kasusBaru, rapikanKeadaan, type JenisKasus, type Kasus } from './kasus';
 import type { Tujuan } from './preferensi';
 import { turunkanDariWaktu } from './silsilah';
-import { daftarAlmarhum } from './keadaanOrang';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 
 export const TOTAL_LANGKAH = 4;
 export type Layar = 'awal' | 'pintu' | 'wizard' | 'cerita' | 'hasil' | 'belajar';
 
-export interface KeadaanAplikasi { layar: Layar; langkah: number; babak: number; kasus: Kasus | null; tujuan: Tujuan | null; jenisKasus: JenisKasus | null;
+export interface KeadaanAplikasi { layar: Layar; langkah: number; kasus: Kasus | null; tujuan: Tujuan | null; jenisKasus: JenisKasus | null;
   /** Kartu mayit latihan yang digulir dan difokus saat langkah 3 dibuka dari "ubah" di Periksa; hilang saat kasus diubah. */
   fokus?: IdOrang }
 
@@ -23,44 +22,38 @@ export type Aksi =
   | { jenis: 'PILIH_PEWARIS'; jenisKelamin: 'L' | 'P' }
   | { jenis: 'MUAT'; kasus: Kasus }
   | { jenis: 'KE_LANGKAH'; langkah: number; fokus?: IdOrang }
-  | { jenis: 'KE_BABAK'; babak: number }
   | { jenis: 'UBAH_KASUS'; ubah: (kasus: Kasus) => Kasus }
   | { jenis: 'KE_LAYAR'; layar: Layar }
   | { jenis: 'ULANGI' };
 
 export const keadaanAwal = (kasusTersimpan: Kasus | null, tujuan: Tujuan | null): KeadaanAplikasi =>
-  ({ layar: 'awal', langkah: 1, babak: 0, kasus: kasusTersimpan, tujuan, jenisKasus: kasusTersimpan?.jenisKasus ?? null });
-
-const babakTerakhir = (kasus: Kasus | null): number => (kasus ? daftarAlmarhum(kasus).length - 1 : 0);
+  ({ layar: 'awal', langkah: 1, kasus: kasusTersimpan, tujuan, jenisKasus: kasusTersimpan?.jenisKasus ?? null });
 
 export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanAplikasi {
   switch (aksi.jenis) {
     case 'PILIH_TUJUAN': return { ...keadaan, tujuan: aksi.tujuan };
-    case 'MULAI': return { ...keadaan, layar: 'pintu', langkah: 1, babak: 0, kasus: null, jenisKasus: null };
-    case 'PILIH_JENIS_KASUS': return { ...keadaan, layar: 'wizard', langkah: 1, babak: 0, jenisKasus: aksi.jenisKasus };
+    case 'MULAI': return { ...keadaan, layar: 'pintu', langkah: 1, kasus: null, jenisKasus: null };
+    case 'PILIH_JENIS_KASUS': return { ...keadaan, layar: 'wizard', langkah: 1, jenisKasus: aksi.jenisKasus };
     case 'PILIH_PEWARIS': return { ...keadaan, kasus: pilihPewaris(keadaan.kasus, aksi.jenisKelamin, keadaan.jenisKasus) };
-    case 'MUAT': return { ...keadaan, layar: 'hasil', langkah: TOTAL_LANGKAH, babak: 0, kasus: aksi.kasus, jenisKasus: aksi.kasus.jenisKasus };
+    case 'MUAT': return { ...keadaan, layar: 'hasil', langkah: TOTAL_LANGKAH, kasus: aksi.kasus, jenisKasus: aksi.kasus.jenisKasus };
     case 'KE_LANGKAH': {
       const batas = Math.min(TOTAL_LANGKAH, langkahTerjauh(keadaan.kasus));
       const langkah = Math.min(batas, Math.max(1, aksi.langkah));
-      // Mundur dari Periksa (4) ke Keluarga (3) = babak terakhir; selain itu mulai dari babak pewaris.
-      const babak = langkah === 3 && keadaan.langkah === 4 ? babakTerakhir(keadaan.kasus) : 0;
       const { fokus: _lama, ...tanpaFokus } = keadaan;
-      return { ...tanpaFokus, layar: 'wizard', langkah, babak, ...(aksi.fokus ? { fokus: aksi.fokus } : {}) };
+      return { ...tanpaFokus, layar: 'wizard', langkah, ...(aksi.fokus ? { fokus: aksi.fokus } : {}) };
     }
-    case 'KE_BABAK': return { ...keadaan, babak: Math.min(babakTerakhir(keadaan.kasus), Math.max(0, aksi.babak)) };
     case 'UBAH_KASUS': {
       if (!keadaan.kasus) return keadaan;
       const kasus = rapikanKeadaan(turunkanDariWaktu(aksi.ubah(keadaan.kasus)));
       const { fokus: _lama, ...tanpaFokus } = keadaan;
-      return { ...tanpaFokus, kasus, babak: Math.min(keadaan.babak, babakTerakhir(kasus)) };
+      return { ...tanpaFokus, kasus };
     }
     case 'KE_LAYAR': {
       const bolehHasil = langkahTerjauh(keadaan.kasus) === LANGKAH_HASIL;
       if ((aksi.layar === 'hasil' || aksi.layar === 'belajar' || aksi.layar === 'cerita') && !bolehHasil) return keadaan;
       return { ...keadaan, layar: aksi.layar };
     }
-    case 'ULANGI': return { ...keadaan, layar: 'awal', langkah: 1, babak: 0, kasus: null, jenisKasus: null };
+    case 'ULANGI': return { ...keadaan, layar: 'awal', langkah: 1, kasus: null, jenisKasus: null };
   }
 }
 

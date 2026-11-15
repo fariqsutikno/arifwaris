@@ -4,7 +4,7 @@ import { jawabHalLain } from '../halLain';
 import { isiBarisTetap, jawabAdaTidak, jawabKamu, slotTetap } from '../isianBagian';
 import { kasusBaru, type Kasus } from '../kasus';
 import { bagianLengkap, daftarBagian } from '../kelompok';
-import { alasanBabak, alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from '../layar/wizard/validasi';
+import { alasanBelumLengkap, langkahTerjauh, LANGKAH_HASIL } from '../layar/wizard/validasi';
 import { labelMayit, tandaiWafatSebelumDibagi } from '../latihan';
 import { t } from '../terjemah';
 
@@ -30,14 +30,12 @@ it('minimal satu ahli waris sebelum lanjut dari langkah 3', () => {
   expect(langkahTerjauh(lengkap)).toBe(LANGKAH_HASIL);
 });
 
-it('babak almarhum tanpa kerabat belum lengkap', () => {
+it('mayit lanjutan tanpa ahli waris hidup belum lengkap', () => {
   let kasus = { ...kasusBaru('L', 'latihan'), tirkah: { kotor: 10n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
   kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', 'ANAK_LK') };
   const anak = Object.values(kasus.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
   kasus = { ...kasus, urutanWafat: [anak] };
-  expect(alasanBabak(kasus, 0)).toBeNull();                 // pewaris punya anak
-  expect(alasanBabak(kasus, 1)).not.toBeNull();             // anak belum punya kerabat selain yang wafat
-  expect(alasanBelumLengkap(kasus, 3)).not.toBeNull();
+  expect(alasanBelumLengkap(kasus, 3)).toMatch(/ahli waris/);
 });
 
 it('langkah 1 kasus nyata butuh jawaban pintu; latihan tidak', () => {

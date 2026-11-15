@@ -2,7 +2,6 @@
 // menyerahkan alasan dalam bahasa pengguna, dipakai bar bawah dan untuk membatasi lompatan stepper.
 
 import { hitungIsian } from '../../checklist';
-import { daftarAlmarhum, kerabatDari } from '../../keadaanOrang';
 import { labelMayit, mayitTanpaAhliWaris } from '../../latihan';
 import type { Kasus } from '../../kasus';
 import { judulPendek } from '../../ringkasanBagian';
@@ -30,16 +29,6 @@ function alasanKanvasBelumLengkap(kasus: Kasus): string | null {
   const { sisa, pertama } = statusKeluarga(kasus);
   if (pertama) return t('hitung.kanvas.tertahan', { n: sisa, bagian: judulPendek(kasus, pertama) });
   return adaAhliWaris(kasus) ? null : t('hitung.tambahkan_minimal_satu_ahli_waris');
-}
-
-/** Babak k lengkap bila almarhumnya punya ≥ 1 kerabat yang masih hidup saat ia wafat (bukan almarhum sebelumnya). */
-export function alasanBabak(kasus: Kasus, babak: number): string | null {
-  const almarhum = daftarAlmarhum(kasus);
-  const idMayit = almarhum[babak];
-  if (!idMayit) return null;
-  const sebelumnya = new Set(almarhum.slice(0, babak));
-  const ada = kerabatDari(kasus, idMayit).some(id => !sebelumnya.has(id) && kasus.graf.orang[id]!.statusHidup !== 'wafat');
-  return ada ? null : t('hitung.babak.tambahkan_keluarga_almarhum');
 }
 
 /** Langkah terjauh yang boleh dibuka: langkah pertama yang belum lengkap, atau hasil bila semua lengkap. */

@@ -89,7 +89,7 @@ it('bahasa: bawaan id, tersimpan id+ar', async () => {
   simpanBahasa('id');
 });
 
-it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari Periksa ke babak terakhir', () => {
+it('kembali dari Periksa ke langkah 3 tanpa babak; keadaan tidak lagi menyimpan babak', () => {
   let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'MULAI' });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
@@ -97,9 +97,9 @@ it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari Periksa ke babak tera
   const anak = Object.values(keadaan.kasus!.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
   keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => terapkanKeadaan(k, anak, { jenis: 'wafatSesudah', hartaSudahDibagi: false }) });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 });
-  expect(pengurangKeadaan(keadaan, { jenis: 'KE_BABAK', babak: 5 }).babak).toBe(1);
+  expect(keadaan).not.toHaveProperty('babak');
   keadaan = { ...keadaan, langkah: 4 };
-  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 })).toMatchObject({ langkah: 3, babak: 1 });
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 })).toMatchObject({ layar: 'wizard', langkah: 3 });
 });
 it('layar cerita hanya bila semua langkah lengkap', () => {
   expect(pengurangKeadaan(keadaanAwal(null, null), { jenis: 'KE_LAYAR', layar: 'cerita' }).layar).toBe('awal');

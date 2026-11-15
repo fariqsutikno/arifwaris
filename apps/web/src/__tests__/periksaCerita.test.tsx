@@ -26,13 +26,13 @@ it('kalimat babak memakai nama dan sebutan dari sisi almarhum', () => {
   expect(kalimatBabak(kasus, budi)).toMatch(/Lalu Budi wafat\. Ia meninggalkan .*ibu \(Siti\).*istri \(Dewi\)/);
 });
 
-it('tautan ubah membawa ke keluarga babak itu', () => {
+it('tautan ubah membawa ke langkah keluarga', () => {
   const kirim = vi.fn();
   const { kasus } = kasusBudiDenganDewi();
   render(<CeritaKasus kasus={kasus} kirim={kirim} />);
   fireEvent.click(screen.getAllByRole('button', { name: /ubah/ })[1]!);
   expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_LANGKAH', langkah: 3 });
-  expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_BABAK', babak: 1 });
+  expect(kirim).toHaveBeenCalledTimes(1);
 });
 
 it('pilihan menunggu kelahiran disimpan lalu lanjut ke hasil', () => {
