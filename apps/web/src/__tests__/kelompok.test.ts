@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
 import { anggotaBagian, awalCabang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
-import { tambahBaris } from '../isianBagian';
+import { isiBarisTetap, tambahBaris } from '../isianBagian';
 import { statusKeluarga } from '../statusKeluarga';
+import { posisiPerluDitanya } from '../ujiHipotetis';
 import { keluargaBudi, keluargaKarto, tambah } from './fixtures/kanvas';
 
 const ids = (kasus: Kasus) => daftarBagian(kasus).map(b => b.id);
@@ -133,5 +134,30 @@ describe('cucu dari anak yang wafat sebelum (review K2)', () => {
   it('awalCabang salah untuk bagian cucu (ia bukan cabang urutan wafat)', () => {
     const { kasus, slamet } = anakTunggalWafat();
     expect(awalCabang(kasus, daftarBagian(kasus).find(b => b.id === `anak:${slamet}`)!)).toBe(false);
+  });
+});
+
+describe('kakek-nenek ditanya menurut engine, bukan menurut Ayah wafat (review P4)', () => {
+  const ORANG_TUA = { id: 'orangTua:PEWARIS', milik: 'PEWARIS', jenis: 'orangTua' as const };
+  const denganOrangTua = (ayah: 'hidup' | 'belumTahu' | 'hilang') => {
+    let k: Kasus = { ...kasusBaru('L'), kelompokDijawab: { PEWARIS: ['pasangan', 'anak'] } };
+    k = isiBarisTetap(k, ORANG_TUA, 'AYAH', ayah);
+    k = isiBarisTetap(k, ORANG_TUA, 'IBU', 'hidup');
+    return k;
+  };
+
+  it('Ayah belum tahu: kakek-nenek muncul bila engine menyatakan posisinya berpengaruh', () => {
+    const k = denganOrangTua('belumTahu');
+    expect(posisiPerluDitanya(k, 'PEWARIS', 'KAKEK')).toBe(true);
+    expect(ids(k)).toContain('kakekNenek:PEWARIS');
+  });
+
+  it('Ayah hilang: kakek-nenek muncul', () => {
+    expect(ids(denganOrangTua('hilang'))).toContain('kakekNenek:PEWARIS');
+  });
+
+  it('Ayah hidup: kakek tertutup (engine), kakek-nenek tidak ditanya; kasus kosong juga tidak', () => {
+    expect(ids(denganOrangTua('hidup'))).not.toContain('kakekNenek:PEWARIS');
+    expect(ids(kasusBaru('L'))).not.toContain('kakekNenek:PEWARIS');
   });
 });

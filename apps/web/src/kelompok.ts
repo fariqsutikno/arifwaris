@@ -108,20 +108,16 @@ export function bagianLengkap(kasus: Kasus, bagian: Bagian): boolean {
 }
 
 function bagianPewaris(kasus: Kasus, idPewaris: IdOrang): Bagian[] {
-  const { orang } = kasus.graf;
   const perluDitanya = (kunci: KunciAhliWaris) => posisiPerluDitanya(kasus, idPewaris, kunci);
   // Sudah berisi atau sudah dijawab selalu tampil; selain itu menunggu uji hipotetis.
   const tampil = (jenis: Kelompok, berpengaruh: () => boolean) =>
     anggotaBagian(kasus, buatBagian(jenis, idPewaris)).length > 0 || sudahDijawab(kasus, idPewaris, jenis) || berpengaruh();
-  // hitungIsian hanya memuat orang hidup, jadi orang tua yang wafat dibaca dari graf.
-  const sudahWafat = (id: IdOrang | undefined) => !!id && orang[id]?.statusHidup === 'wafat';
-  const ayahWafat = sudahWafat(orang[idPewaris]?.idAyah);
-  const ibuWafat = sudahWafat(orang[idPewaris]?.idIbu);
   const anakDijawab = sudahDijawab(kasus, idPewaris, 'anak');
 
   const daftar: Bagian[] = [buatBagian('pasangan', idPewaris), buatBagian('anak', idPewaris), buatBagian('orangTua', idPewaris)];
-  if (tampil('kakekNenek', () => (ayahWafat && perluDitanya('KAKEK'))
-    || (ibuWafat && (perluDitanya('NENEK_DARI_IBU') || perluDitanya('NENEK_DARI_AYAH'))))) daftar.push(buatBagian('kakekNenek', idPewaris));
+  // Menunggu keadaan Ayah dan Ibu dijawab; sesudahnya engine yang menentukan (Ayah wafat, belum tahu, atau hilang sama saja bagi uji).
+  const orangTuaSudahDijawab = sudahDijawab(kasus, idPewaris, 'orangTua');
+  if (tampil('kakekNenek', () => orangTuaSudahDijawab && KUNCI_PER_KELOMPOK.kakekNenek!.some(perluDitanya))) daftar.push(buatBagian('kakekNenek', idPewaris));
   const saudaraTampil = tampil('saudara', () => anakDijawab && perluDitanya('SAUDARA_KANDUNG'));
   if (saudaraTampil) daftar.push(buatBagian('saudara', idPewaris));
   const saudaraSudahDilewati = !saudaraTampil || sudahDijawab(kasus, idPewaris, 'saudara');
@@ -154,8 +150,8 @@ export interface BagianDilewati { jenis: 'saudara' | 'jauh' | 'kakekNenek' | 'an
 export function bagianDilewati(kasus: Kasus): BagianDilewati[] {
   const { idPewaris, orang } = kasus.graf;
   const tampil = new Set(daftarBagian(kasus).map(bagian => bagian.id));
-  const sudahWafat = (id: IdOrang | undefined) => !!id && orang[id]?.statusHidup === 'wafat';
-  const orangTuaWafat = sudahWafat(orang[idPewaris]?.idAyah) || sudahWafat(orang[idPewaris]?.idIbu);
+  const tidakHidup = (id: IdOrang | undefined) => !!id && !!orang[id]?.statusHidup && orang[id]!.statusHidup !== 'hidup';
+  const orangTuaTidakHidup = tidakHidup(orang[idPewaris]?.idAyah) || tidakHidup(orang[idPewaris]?.idIbu);
   const anakDijawab = !!kasus.kelompokDijawab?.[idPewaris]?.includes('anak');
   const dilewati: BagianDilewati[] = [];
   if (anakDijawab) {
@@ -165,7 +161,7 @@ export function bagianDilewati(kasus: Kasus): BagianDilewati[] {
     if (!tampil.has(`jauh:${idPewaris}`) && (!saudaraTampil || kasus.kelompokDijawab?.[idPewaris]?.includes('saudara'))) {
       dilewati.push({ jenis: 'jauh', milik: idPewaris });
     }
-    if (orangTuaWafat && !tampil.has(`kakekNenek:${idPewaris}`)) dilewati.push({ jenis: 'kakekNenek', milik: idPewaris });
+    if (orangTuaTidakHidup && !tampil.has(`kakekNenek:${idPewaris}`)) dilewati.push({ jenis: 'kakekNenek', milik: idPewaris });
   }
   for (const bagian of daftarBagian(kasus).filter(satu => satu.jenis === 'anak')) {
     for (const id of anakWafatSebelum(kasus, bagian.milik)) {
