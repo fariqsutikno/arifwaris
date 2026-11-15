@@ -1353,6 +1353,6 @@ Expected: tidak ada aturan hajb yang ditulis tangan. Satu-satunya pemutus adalah
 
 | Rencana | Isi (bagian spec) | Bergantung pada |
 |---|---|---|
-| 2 · Pintu + Almarhum + Kanvas Keluarga | 3, 4, 5 (peta bagian, kartu bagian, baris orang, keadaan sesuai peran + lanjutan, penghitung termasuk kandungan, Hal lain, Kamu, bar bawah, pohon samping), hapus kode Babak, diksi baru | `daftarBagian`, `bagianLengkap`, `pertanyaanUrutanBerikut`, `waktuRelatif`, `tataLetak` |
+| 2 · Pintu + Almarhum + Kanvas Keluarga | 3, 4, 5 (peta bagian, kartu bagian, baris orang, keadaan sesuai peran + lanjutan, penghitung termasuk kandungan, Hal lain, Kamu, bar bawah, pohon samping), diksi baru. Kode Babak (`LangkahBabak`, `PertanyaanPenutup`, `KE_BABAK`, `alasanBabak`, `PeriksaCerita` lama, `LangkahKondisi` sebagai langkah) **tidak dihapus di sini** (K1 rencana 2): dihapus di akhir rencana 4, karena latihan masih memakainya | `daftarBagian`, `bagianLengkap`, `pertanyaanUrutanBerikut`, `waktuRelatif`, `tataLetak` |
 | 3 · Latihan | 6 (kartu per mayit di atas `LangkahAhliWaris`, urutan wafat, Periksa ringkas) + fixture latihan A (tabel per mayit, jami'ah 72, spec 11.1) | `Kasus.jenisKasus` |
-| 4 · Periksa | 7 (belum dipastikan dijawab di tempat, ubah dipandu, kisah per babak dengan pohon kecil, peristiwa) | `turunkanDariWaktu`, `tundaUrutan`, `tataLetak` |
+| 4 · Periksa | 7 (belum dipastikan dijawab di tempat, ubah dipandu, kisah per babak dengan pohon kecil, peristiwa), **penghapusan kode Babak** (K1 rencana 2) | `turunkanDariWaktu`, `tundaUrutan`, `tataLetak` |

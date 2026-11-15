@@ -93,8 +93,8 @@ details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);backgro
 .node-orang.simpul-belum-pasti{border-style:dashed;border-color:#7f8c7c}
 .node-orang.simpul-wafat{border-width:1px;border-color:#9aa79a;background:var(--surface-sunken)}
 .node-orang.simpul-pemilik{border-width:2px;border-color:var(--ink)}
-.pohon-penuh{display:none;margin-top:6px;color:#fff}
+.tautan-pohon-lengkap{display:none;margin-top:6px;color:#fff}
 @media (max-width:900px){
   .pohon-samping:not(.penuh) .pratinjau-isi{max-height:150px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
-  .pohon-samping .pohon-penuh{display:inline-flex}
+  .pohon-samping .tautan-pohon-lengkap{display:inline-flex}
 }

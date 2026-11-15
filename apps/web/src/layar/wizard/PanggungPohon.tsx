@@ -25,7 +25,7 @@ export function PanggungPohon({ kasus, ubah, maksPerBaris, saatPilihOrang }: Pro
         <div className={penuh ? 'panggung-pohon pohon-samping penuh' : 'panggung-pohon pohon-samping'}>
           <PohonSusunan kasus={kasus} skalaMaks={1} saatPilih={saatPilihOrang} pilihPenghubung={false}
             labelPilih={nama => t('hitung.kanvas.ke_baris', { nama })} {...(maksPerBaris ? { maksPerBaris } : {})} />
-          <button type="button" className="tautan-teks pohon-penuh" aria-expanded={penuh} onClick={() => setPenuh(sekarang => !sekarang)}>{t('hitung.kanvas.pohon_lengkap')}</button>
+          <button type="button" className="tautan-teks tautan-pohon-lengkap" aria-expanded={penuh} onClick={() => setPenuh(sekarang => !sekarang)}>{t('hitung.kanvas.pohon_lengkap')}</button>
         </div>
       )}
       {kasus && ubah && !saatPilihOrang && <PohonKeluarga kasus={kasus} ubah={ubah} {...(maksPerBaris ? { maksPerBaris } : {})} />}
