@@ -22407,6 +22407,20 @@
    "id": "Masih {n} bagian, lanjutkan dari {bagian}.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ke_baris",
+   "halaman": "hitung",
+   "id": "Ke baris {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pohon_lengkap",
+   "halaman": "hitung",
+   "id": "Pohon lengkap",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

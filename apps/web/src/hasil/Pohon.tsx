@@ -70,7 +70,7 @@ function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
   return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">{panah()}</span><b>{ubah.menjadi}</b></span>;
 }
 
-export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
+export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; /** Kelas tambahan yang tidak dipakai logika pohon (mis. gaya menurut keadaan). */ tambahan?: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
 export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS, pilihPenghubung = false, labelPilih }: {
@@ -113,7 +113,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
               const bisaDipilih = !!saatPilih && (node.kelas !== 'penghubung' || pilihPenghubung);
               if (!saatPilih) {
                 return (
-                  <div key={id} {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} style={styleUrut(node)} role="group" aria-label={node.nama}>
+                  <div key={id} {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)} role="group" aria-label={node.nama}>
                     {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                     {node.peran && <span className="peran-node">{node.peran}</span>}
                     <b>{node.nama}</b>
@@ -123,7 +123,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
                 );
               }
               return (
-                <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, className].filter(Boolean).join(' ')} style={styleUrut(node)}
+                <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)}
                   aria-label={bisaDipilih ? (labelPilih ? labelPilih(node.nama) : t('hitung.nama_lihat_penjelasan', { nama: node.nama })) : node.nama} disabled={!bisaDipilih}
                   onClick={() => saatPilih?.(id)}>
                   {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}

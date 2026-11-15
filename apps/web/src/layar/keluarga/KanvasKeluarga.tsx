@@ -25,6 +25,8 @@ interface Props {
   tandaiKurang: boolean;
   /** Memindahkan kartu aktif ke bagian itu (aksi utama di bar bawah diklik terlalu dini); `kali` bertambah tiap permintaan. */
   fokusBagian?: { id: string; kali: number };
+  /** Simpul pohon diketuk: buka bagian yang memuat orang itu, lalu gulir dan sorot barisnya. */
+  fokusOrang?: { id: IdOrang; kali: number };
   saatSelesai: () => void;
 }
 
@@ -34,7 +36,7 @@ const BAGIAN_YA_TIDAK = ['pasangan', 'anak', 'saudara', 'jauh'];
 /** Bagian yang ditambahkan pengguna lewat "Tetap isi kerabat lain"; `setelah` = pemilik yang kelompoknya dilewati. */
 interface Tambahan { bagian: Bagian; setelah: IdOrang }
 
-export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, saatSelesai }: Props) {
+export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOrang, saatSelesai }: Props) {
   // ponytail: "Tetap isi" hilang bila halaman dimuat ulang sebelum bagiannya terisi (K3 rencana 2); data yang sudah diisi tetap ada.
   const [tambahan, setTambahan] = useState<Tambahan[]>([]);
   const daftar = gabungTambahan(daftarBagian(kasus), tambahan);
@@ -45,6 +47,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, saatSel
   const [tandaiLokal, setTandaiLokal] = useState(false);
   const [konfirmasiTidak, setKonfirmasiTidak] = useState<Bagian | null>(null);
   const [animasiMasuk, setAnimasiMasuk] = useState(false);
+  const [disorot, setDisorot] = useState<IdOrang | null>(null);
   const judulRef = useRef<HTMLHeadingElement>(null);
   const sudahBerganti = useRef(false);
 
@@ -67,6 +70,20 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, saatSel
     if (!fokusBagian) return;
     if (fokusBagian.id === aktif.id || !daftar.some(bagian => bagian.id === fokusBagian.id)) fokusKartu(); else pindahKe(fokusBagian.id);
   }, [fokusBagian?.kali]);
+  useEffect(() => {
+    if (!fokusOrang) return;
+    const bagian = daftar.find(satu => satu.jenis !== 'anakBersama' && anggotaBagian(kasus, satu).includes(fokusOrang.id));
+    if (!bagian) return;
+    setDisorot(fokusOrang.id);
+    if (bagian.id !== aktif.id) pindahKe(bagian.id);
+  }, [fokusOrang?.kali]);
+  // Dijalankan sesudah efek fokus kartu, jadi barisnya yang akhirnya memegang fokus.
+  useEffect(() => {
+    if (!disorot) return;
+    const baris = document.getElementById(`baris-${disorot}`);
+    baris?.focus();
+    gulirKe(baris);
+  }, [disorot, aktif.id, fokusOrang?.kali]);
 
   const pindahKe = (id: string) => {
     sudahBerganti.current = true;
@@ -125,7 +142,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, saatSel
           <YaTidak ya={ya} tidak={anggotaBagian(kasus, aktif).length === 0 && bagianDijawab(kasus, aktif)}
             saatYa={() => jawabYa(aktif)} saatTidak={() => saatPilihTidak(aktif)} />
         )}
-        <BagianKeluarga kasus={kasus} bagian={aktif} ubah={ubah} ya={ya} disorot={null} tandaiKurang={tandaiLokal || (tandaiKurang && !lengkap)} />
+        <BagianKeluarga kasus={kasus} bagian={aktif} ubah={ubah} ya={ya} disorot={disorot} tandaiKurang={tandaiLokal || (tandaiKurang && !lengkap)} />
         {aktif.jenis === 'anak' && bagianDilewati(kasus).filter(satu => satu.milik === aktif.milik).map(satu => (
           <KenapaTidakDitanya key={`${satu.jenis}:${satu.sebab ?? ''}`} dilewati={satu} kasus={kasus}
             sudahTetapIsi={tambahan.some(lain => lain.bagian.id === bagianTambahan(satu).id)} saatTetapIsi={() => tetapIsi(satu)}

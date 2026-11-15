@@ -2,6 +2,7 @@
 // menyerahkan Kasus yang sudah lengkap ke layar hasil lewat KE_LAYAR 'hasil' (atau pilihan menunggu bila ada janin).
 
 import { useEffect, useState } from 'react';
+import type { IdOrang } from '@waris/engine';
 import { LANGKAH_WIZARD } from '../konten/wizard';
 import type { Kasus } from '../kasus';
 import { daftarAlmarhum, namaSingkat } from '../keadaanOrang';
@@ -38,6 +39,8 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
   const [sedangReset, setSedangReset] = useState(false);
   const [tertahan, setTertahan] = useState(false);
   const [fokusBagian, setFokusBagian] = useState<{ id: string; kali: number }>();
+  // `kali` bertambah tiap ketukan supaya ketukan berulang pada simpul yang sama tetap memicu gulir.
+  const [fokusOrang, setFokusOrang] = useState<{ id: IdOrang; kali: number }>();
   const almarhum = kasus ? daftarAlmarhum(kasus) : [];
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
   const alasan = langkah === 3 && kasus && !nyata
@@ -82,7 +85,8 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
   );
   return (
     <main className="halaman-beranda halaman-wizard">
-      <KerangkaLangkah langkah={langkah} subjudul={subjudul} stepper={stepper} saatReset={() => setSedangReset(true)} ringkasan={<PanggungPohon kasus={kasus} {...(langkah === 3 ? { ubah } : {})} maksPerBaris={3} />}>
+      <KerangkaLangkah langkah={langkah} subjudul={subjudul} stepper={stepper} saatReset={() => setSedangReset(true)} ringkasan={<PanggungPohon kasus={kasus} maksPerBaris={3}
+        {...(langkah === 3 ? (nyata ? { saatPilihOrang: (id: IdOrang) => setFokusOrang(sebelumnya => ({ id, kali: (sebelumnya?.kali ?? 0) + 1 })) } : { ubah }) : {})} />}>
         {langkah === 1 && <LangkahPewaris kasus={kasus} saatPilih={jenisKelamin => kirim({ jenis: 'PILIH_PEWARIS', jenisKelamin })}
           saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiJenisKelaminPewaris(k, jenisKelamin))}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))}
@@ -90,7 +94,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           saatPilihPintu={pintu => ubah(k => ({ ...k, pintu }))} />}
         {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
         {kasus && langkah === 3 && nyata && <KanvasKeluarga kasus={kasus} ubah={ubah} tandaiKurang={tertahan}
-          {...(fokusBagian ? { fokusBagian } : {})} saatSelesai={saatLanjut} />}
+          {...(fokusBagian ? { fokusBagian } : {})} {...(fokusOrang ? { fokusOrang } : {})} saatSelesai={saatLanjut} />}
         {kasus && langkah === 3 && !nyata && babak === 0 && <>
           <IsianNamaAlmarhum nama={kasus.graf.orang[kasus.graf.idPewaris]?.nama ?? ''} saatUbah={nama => ubah(k => ubahNamaPewaris(k, nama))} />
           <p className="keterangan">{t('hitung.penutup.masukkan_yang_wafat', { mayit: namaSingkat(kasus, kasus.graf.idPewaris) })}</p>
