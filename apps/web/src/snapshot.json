@@ -21616,6 +21616,440 @@
    "id": "Ke Periksa ›",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_istri",
+   "halaman": "hitung",
+   "id": "Istri {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_suami",
+   "halaman": "hitung",
+   "id": "Suami {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_anak",
+   "halaman": "hitung",
+   "id": "Anak {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_orang_tua",
+   "halaman": "hitung",
+   "id": "Orang tua {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_kakek_nenek",
+   "halaman": "hitung",
+   "id": "Kakek dan nenek {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_saudara",
+   "halaman": "hitung",
+   "id": "Kakak atau adik {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_jauh",
+   "halaman": "hitung",
+   "id": "Kerabat jauh {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_hal_lain",
+   "halaman": "hitung",
+   "id": "Hal lain {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_urutan",
+   "halaman": "hitung",
+   "id": "Urutan wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_kamu",
+   "halaman": "hitung",
+   "id": "Kamu (boleh dilewati)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_istri",
+   "halaman": "hitung",
+   "id": "Istri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_suami",
+   "halaman": "hitung",
+   "id": "Suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_anak",
+   "halaman": "hitung",
+   "id": "Anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_orang_tua",
+   "halaman": "hitung",
+   "id": "Orang tua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_kakek_nenek",
+   "halaman": "hitung",
+   "id": "Kakek-nenek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_saudara",
+   "halaman": "hitung",
+   "id": "Kakak atau adik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_jauh",
+   "halaman": "hitung",
+   "id": "Kerabat jauh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_hal_lain",
+   "halaman": "hitung",
+   "id": "Hal lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_urutan",
+   "halaman": "hitung",
+   "id": "Urutan wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_kamu",
+   "halaman": "hitung",
+   "id": "Kamu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_istri",
+   "halaman": "hitung",
+   "id": "Waktu {nama} wafat, apakah beliau punya istri?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_suami",
+   "halaman": "hitung",
+   "id": "Waktu {nama} wafat, apakah beliau punya suami?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_anak",
+   "halaman": "hitung",
+   "id": "{nama} punya anak? Hitung juga yang sudah wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_orang_tua",
+   "halaman": "hitung",
+   "id": "Orang tua {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_kakek_nenek",
+   "halaman": "hitung",
+   "id": "Kakek dan nenek {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_kakek_nenek_ayah",
+   "halaman": "hitung",
+   "id": "Karena ayah {nama} sudah wafat, kakek atau neneknya juga perlu ditanyakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_kakek_nenek_ibu",
+   "halaman": "hitung",
+   "id": "Karena ibu {nama} sudah wafat, kakek atau neneknya juga perlu ditanyakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_kakek_nenek_keduanya",
+   "halaman": "hitung",
+   "id": "Karena ayah dan ibu {nama} sudah wafat, kakek atau neneknya juga perlu ditanyakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_saudara",
+   "halaman": "hitung",
+   "id": "{nama} punya kakak atau adik? Hitung juga yang sudah wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_jauh",
+   "halaman": "hitung",
+   "id": "{nama} punya keponakan, paman, atau sepupu? Hitung juga yang sudah wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_anak_bersama",
+   "halaman": "hitung",
+   "id": "Apakah {anak} juga anak {nama}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_hal_lain",
+   "halaman": "hitung",
+   "id": "Ada yang beda agama dengan {nama}, atau terlibat dalam wafatnya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_urutan",
+   "halaman": "hitung",
+   "id": "{a} wafat sebelum atau sesudah {b}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_tidak_ada",
+   "halaman": "hitung",
+   "id": "Tidak ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_ada",
+   "halaman": "hitung",
+   "id": "Ada: {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_kamu",
+   "halaman": "hitung",
+   "id": "Saya {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_orang_lain",
+   "halaman": "hitung",
+   "id": "Mengisi untuk orang lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_urutan_dulu",
+   "halaman": "hitung",
+   "id": "{nama} lebih dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_urutan_belum_pasti",
+   "halaman": "hitung",
+   "id": "Belum tahu, ditanyakan di Periksa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_sama_anak",
+   "halaman": "hitung",
+   "id": "Sama dengan anak-anak {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkas_tidak_semua",
+   "halaman": "hitung",
+   "id": "Tidak semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ket_wafat",
+   "halaman": "hitung",
+   "id": "wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ket_wafat_tahun",
+   "halaman": "hitung",
+   "id": "wafat {tahun}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ket_belum_tahu",
+   "halaman": "hitung",
+   "id": "belum tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ket_hilang",
+   "halaman": "hitung",
+   "id": "hilang tanpa kabar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ket_bercerai",
+   "halaman": "hitung",
+   "id": "sudah bercerai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ket_khuntsa",
+   "halaman": "hitung",
+   "id": "kelaminnya belum jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.peta_label",
+   "halaman": "hitung",
+   "id": "Kemajuan bagian keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.peta_selesai",
+   "halaman": "hitung",
+   "id": "{n} dari {m} bagian selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.peta_bertambah",
+   "halaman": "hitung",
+   "id": "Bagian bisa bertambah bila ada yang wafat sesudah {nama}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ringkasan_label",
+   "halaman": "hitung",
+   "id": "Bagian yang sudah selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ubah",
+   "halaman": "hitung",
+   "id": "Ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ubah_label",
+   "halaman": "hitung",
+   "id": "Ubah {judul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ya",
+   "halaman": "hitung",
+   "id": "Ya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tidak",
+   "halaman": "hitung",
+   "id": "Tidak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kaki_lengkap",
+   "halaman": "hitung",
+   "id": "Bagian ini sudah lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kaki_kurang",
+   "halaman": "hitung",
+   "id": "Masih ada yang belum diisi di bagian ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.lanjut_ke",
+   "halaman": "hitung",
+   "id": "Lanjut: {bagian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.selesai_ke_periksa",
+   "halaman": "hitung",
+   "id": "Selesai, lanjut ke Periksa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.konfirmasi_tidak_judul",
+   "halaman": "hitung",
+   "id": "Ganti jawaban menjadi Tidak?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.konfirmasi_tidak_isi",
+   "halaman": "hitung",
+   "id": "Yang akan ikut terhapus: {nama}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.konfirmasi_tidak_lanjut",
+   "halaman": "hitung",
+   "id": "Ya, hapus",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -89,7 +89,46 @@ function bagianPewaris(kasus: Kasus, idPewaris: IdOrang): Bagian[] {
 const buatBagian = (jenis: JenisBagian, milik: IdOrang): Bagian =>
   ({ id: jenis === 'urutan' || jenis === 'kamu' ? jenis : `${jenis}:${milik}`, milik, jenis });
 const sudahDijawab = (kasus: Kasus, milik: IdOrang, jenis: Kelompok) => !!kasus.kelompokDijawab?.[milik]?.includes(jenis);
+/** Bagian lintas-cabang (urutan, kamu) punya aturan jawab sendiri, jadi dianggap belum dijawab di sini. */
+export const bagianDijawab = (kasus: Kasus, bagian: Bagian): boolean =>
+  bagian.jenis !== 'urutan' && bagian.jenis !== 'kamu' && sudahDijawab(kasus, bagian.milik, bagian.jenis);
 const adalahOrangNyata = (kasus: Kasus, id: IdOrang | undefined): id is IdOrang =>
   !!id && !!kasus.graf.orang[id] && !kasus.graf.orang[id]!.penghubung;
 const pasanganDari = (kasus: Kasus, id: IdOrang) =>
   kasus.graf.pernikahan.flatMap(nikah => (nikah.idSuami === id ? [nikah.idIstri] : nikah.idIstri === id ? [nikah.idSuami] : []));
+
+/** Bagian pertama sebuah cabang (milik ≠ pewaris): di sinilah pengantar "wafat sesudah, sebelum dibagi" tampil (spec 5.2). */
+export function awalCabang(kasus: Kasus, bagian: Bagian): boolean {
+  if (bagian.milik === kasus.graf.idPewaris || bagian.jenis === 'urutan' || bagian.jenis === 'kamu') return false;
+  return daftarBagian(kasus).find(lain => lain.milik === bagian.milik)?.id === bagian.id;
+}
+
+export interface BagianDilewati { jenis: 'saudara' | 'jauh' | 'kakekNenek' | 'anakDariWafat'; milik: IdOrang; sebab?: IdOrang }
+
+/** Bagian yang tidak ditanyakan karena engine menyatakan tidak berpengaruh (spec 5.7); untuk Details "Kenapa … tidak ditanyakan?". */
+export function bagianDilewati(kasus: Kasus): BagianDilewati[] {
+  const { idPewaris, orang } = kasus.graf;
+  const tampil = new Set(daftarBagian(kasus).map(bagian => bagian.id));
+  const sudahWafat = (id: IdOrang | undefined) => !!id && orang[id]?.statusHidup === 'wafat';
+  const orangTuaWafat = sudahWafat(orang[idPewaris]?.idAyah) || sudahWafat(orang[idPewaris]?.idIbu);
+  const anakDijawab = !!kasus.kelompokDijawab?.[idPewaris]?.includes('anak');
+  const dilewati: BagianDilewati[] = [];
+  if (anakDijawab) {
+    const saudaraTampil = tampil.has(`saudara:${idPewaris}`);
+    if (!saudaraTampil) dilewati.push({ jenis: 'saudara', milik: idPewaris });
+    // Kerabat jauh baru ditanya sesudah saudara; selama saudara masih menunggu jawaban, ia belum "dilewati".
+    if (!tampil.has(`jauh:${idPewaris}`) && (!saudaraTampil || kasus.kelompokDijawab?.[idPewaris]?.includes('saudara'))) {
+      dilewati.push({ jenis: 'jauh', milik: idPewaris });
+    }
+    if (orangTuaWafat && !tampil.has(`kakekNenek:${idPewaris}`)) dilewati.push({ jenis: 'kakekNenek', milik: idPewaris });
+  }
+  const diUrutan = new Set(kasus.urutanWafat);
+  const bersamaPewaris = new Set(kasus.gharqa?.anggota ?? []);
+  for (const milik of [idPewaris, ...kasus.urutanWafat]) {
+    for (const id of anggotaBagian(kasus, buatBagian('anak', milik))) {
+      // Wafat sebelum harta dibagi dan bukan bagian dari urutan: anaknya (cucu) hanya ditanya bila pengguna meminta.
+      if (orang[id]?.statusHidup === 'wafat' && !diUrutan.has(id) && !bersamaPewaris.has(id)) dilewati.push({ jenis: 'anakDariWafat', milik, sebab: id });
+    }
+  }
+  return dilewati;
+}
