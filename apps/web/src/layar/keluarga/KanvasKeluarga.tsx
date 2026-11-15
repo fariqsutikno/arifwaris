@@ -33,7 +33,7 @@ interface Props {
 /** Bagian yang dijawab Ya/Tidak di kartunya; bagian lain punya pertanyaan sendiri (Tugas 8 dan 9). */
 const BAGIAN_YA_TIDAK = ['pasangan', 'anak', 'saudara', 'jauh'];
 
-/** Bagian yang ditambahkan pengguna lewat "Tetap isi kerabat lain"; `setelah` = pemilik yang kelompoknya dilewati. */
+/** Bagian saudara/jauh/kakek-nenek yang ditambahkan pengguna lewat "Tetap isi kerabat lain"; `setelah` = pemilik yang kelompoknya dilewati. */
 interface Tambahan { bagian: Bagian; setelah: IdOrang }
 
 export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOrang, saatSelesai }: Props) {
@@ -106,6 +106,8 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
     ubah(k => (satuSuami ? tambahBaris(k, bagian, 'SUAMI') : jawabAdaTidak(k, bagian, true)));
   };
   const tetapIsi = (dilewati: BagianDilewati) => {
+    // Bagian anak dari almarhum diturunkan dari Kasus (anggota atau jawaban), jadi cukup satu baris kosong yang membukanya.
+    if (dilewati.jenis === 'anakDariWafat') return ubah(k => tambahBaris(k, { id: `anak:${dilewati.sebab}`, milik: dilewati.sebab!, jenis: 'anak' }, 'ANAK_LK'));
     const bagian = bagianTambahan(dilewati);
     setTambahan(sebelumnya => (sebelumnya.some(satu => satu.bagian.id === bagian.id) ? sebelumnya : [...sebelumnya, { bagian, setelah: dilewati.milik }]));
   };
@@ -145,7 +147,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
         <BagianKeluarga kasus={kasus} bagian={aktif} ubah={ubah} ya={ya} disorot={disorot} tandaiKurang={tandaiLokal || (tandaiKurang && !lengkap)} />
         {aktif.jenis === 'anak' && bagianDilewati(kasus).filter(satu => satu.milik === aktif.milik).map(satu => (
           <KenapaTidakDitanya key={`${satu.jenis}:${satu.sebab ?? ''}`} dilewati={satu} kasus={kasus}
-            sudahTetapIsi={tambahan.some(lain => lain.bagian.id === bagianTambahan(satu).id)} saatTetapIsi={() => tetapIsi(satu)}
+            sudahTetapIsi={satu.jenis !== 'anakDariWafat' && tambahan.some(lain => lain.bagian.id === bagianTambahan(satu).id)} saatTetapIsi={() => tetapIsi(satu)}
             ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
         ))}
       </KartuBagian>
@@ -170,9 +172,8 @@ function YaTidak({ ya, tidak, saatYa, saatTidak }: { ya: boolean; tidak: boolean
   );
 }
 
-const bagianTambahan = (dilewati: BagianDilewati): Bagian => (dilewati.jenis === 'anakDariWafat'
-  ? { id: `anak:${dilewati.sebab}`, milik: dilewati.sebab!, jenis: 'anak' }
-  : { id: `${dilewati.jenis}:${dilewati.milik}`, milik: dilewati.milik, jenis: dilewati.jenis });
+const bagianTambahan = (dilewati: BagianDilewati): Bagian =>
+  ({ id: `${dilewati.jenis}:${dilewati.milik}`, milik: dilewati.milik, jenis: dilewati.jenis as Exclude<BagianDilewati['jenis'], 'anakDariWafat'> });
 
 /** Bagian tambahan disisipkan sesudah bagian terakhir milik orang yang kelompoknya dilewati. */
 function gabungTambahan(daftar: Bagian[], tambahan: Tambahan[]): Bagian[] {

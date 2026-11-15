@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
 import { anggotaBagian, awalCabang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
-import { keluargaBudi, keluargaKarto } from './fixtures/kanvas';
+import { tambahBaris } from '../isianBagian';
+import { statusKeluarga } from '../statusKeluarga';
+import { keluargaBudi, keluargaKarto, tambah } from './fixtures/kanvas';
 
 const ids = (kasus: Kasus) => daftarBagian(kasus).map(b => b.id);
 
@@ -91,5 +93,45 @@ describe('awalCabang dan bagianDilewati (spec kanvas 5.2, 5.7)', () => {
     const { kasus: budi } = keluargaBudi();
     const k: Kasus = { ...budi, kelompokDijawab: { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek'] } };
     expect(bagianDilewati(k).find(d => d.jenis === 'saudara')).toBeUndefined();   // saudara tampil di keluarga Budi
+  });
+});
+
+describe('cucu dari anak yang wafat sebelum (review K2)', () => {
+  /** Pewaris laki-laki, satu-satunya anak (Slamet) wafat sebelum pewaris. */
+  function anakTunggalWafat() {
+    const { kasus, id } = tambah(kasusBaru('L'), 'PEWARIS', 'ANAK_LK', { nama: 'Slamet', statusHidup: 'wafat' });
+    return { kasus: { ...kasus, kelompokDijawab: { PEWARIS: ['pasangan', 'anak'] as Kelompok[] } }, slamet: id };
+  }
+
+  it('bagian cucu muncul bila posisinya berpengaruh menurut engine, dan tidak dicatat sebagai dilewati', () => {
+    const { kasus, slamet } = anakTunggalWafat();
+    expect(ids(kasus)).toContain(`anak:${slamet}`);
+    expect(ids(kasus).indexOf(`anak:${slamet}`)).toBe(ids(kasus).indexOf('anak:PEWARIS') + 1);
+    expect(bagianDilewati(kasus).filter(d => d.jenis === 'anakDariWafat')).toEqual([]);
+    expect(statusKeluarga(kasus).sisa).toBeGreaterThan(0);
+  });
+
+  it('bagian cucu belum dijawab menahan status; menjawab (Tidak) melengkapinya', () => {
+    const { kasus, slamet } = anakTunggalWafat();
+    const bagian = daftarBagian(kasus).find(b => b.id === `anak:${slamet}`)!;
+    expect(bagianLengkap(kasus, bagian)).toBe(false);
+    expect(bagianLengkap({ ...kasus, kelompokDijawab: { ...kasus.kelompokDijawab, [slamet]: ['anak'] } }, bagian)).toBe(true);
+  });
+
+  it('tidak berpengaruh (ada anak laki-laki hidup): tidak tampil, dilewati; tampil bila sudah dijawab atau punya anggota', () => {
+    const { kasus, slamet } = keluargaKarto();
+    const dijawab: Kasus = { ...kasus, kelompokDijawab: { PEWARIS: ['pasangan', 'anak'] } };
+    expect(ids(dijawab)).not.toContain(`anak:${slamet}`);
+    expect(bagianDilewati(dijawab)).toContainEqual({ jenis: 'anakDariWafat', milik: 'PEWARIS', sebab: slamet });
+    const dibuka = { ...dijawab, kelompokDijawab: { ...dijawab.kelompokDijawab, [slamet]: ['anak' as Kelompok] } };
+    expect(ids(dibuka)).toContain(`anak:${slamet}`);
+    expect(bagianDilewati(dibuka).filter(d => d.jenis === 'anakDariWafat')).toEqual([]);
+    const denganCucu = tambahBaris(dijawab, { id: `anak:${slamet}`, milik: slamet, jenis: 'anak' }, 'ANAK_LK');
+    expect(ids(denganCucu)).toContain(`anak:${slamet}`);
+  });
+
+  it('awalCabang salah untuk bagian cucu (ia bukan cabang urutan wafat)', () => {
+    const { kasus, slamet } = anakTunggalWafat();
+    expect(awalCabang(kasus, daftarBagian(kasus).find(b => b.id === `anak:${slamet}`)!)).toBe(false);
   });
 });
