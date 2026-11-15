@@ -2,7 +2,9 @@
 // Angkanya cocok dengan packages/engine/src/__tests__/kanvasSilsilah.test.ts.
 import type { IdOrang, KunciAhliWaris, Orang } from '@waris/engine';
 import { tambahAhliWaris, ubahOrang } from '../../checklist';
+import { isiBarisTetap, orangDenganKunci, slotTetap } from '../../isianBagian';
 import { kasusBaru, type Kasus } from '../../kasus';
+import { daftarBagian } from '../../kelompok';
 
 export function tambah(kasus: Kasus, idMayit: IdOrang, kunci: KunciAhliWaris, ubah: Partial<Orang> = {}): { kasus: Kasus; id: IdOrang } {
   const graf = tambahAhliWaris(kasus.graf, idMayit, kunci);
@@ -34,4 +36,18 @@ export function keluargaBudi(kakekHidup = false) {
   let kakek: IdOrang | undefined;
   if (kakekHidup) { r = tambah(k, 'PEWARIS', 'KAKEK'); k = r.kasus; kakek = r.id; }
   return { kasus: k, ayah, ibu, andi, rina, ...(kakek ? { kakek } : {}) };
+}
+
+/** Mengisi baris tetap (Ayah, Ibu, kakek-nenek yang perlu) yang belum ada dengan "hidup", supaya bagiannya bisa lengkap bila dijawab. */
+export function denganBagianTetapTerisi(kasus: Kasus): Kasus {
+  const PUTARAN_MAKS = 3;   // mengisi satu bagian bisa memunculkan bagian lain
+  let hasil = kasus;
+  for (let putaran = 0; putaran < PUTARAN_MAKS; putaran++) {
+    for (const bagian of daftarBagian(hasil).filter(satu => satu.jenis === 'orangTua' || satu.jenis === 'kakekNenek')) {
+      for (const kunci of slotTetap(hasil, bagian)) {
+        if (orangDenganKunci(hasil, bagian.milik, kunci).length === 0) hasil = isiBarisTetap(hasil, bagian, kunci, 'hidup');
+      }
+    }
+  }
+  return hasil;
 }

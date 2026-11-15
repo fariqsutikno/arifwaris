@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { kasusBaru, rapikanKeadaan, type Kasus, type Kelompok } from '../kasus';
 import { KanvasKeluarga } from '../layar/keluarga/KanvasKeluarga';
-import { keluargaKarto } from './fixtures/kanvas';
+import { denganBagianTetapTerisi, keluargaKarto } from './fixtures/kanvas';
 
 let terakhir: Kasus;
 function Uji({ awal, saatSelesai = () => undefined }: { awal: Kasus; saatSelesai?: () => void }) {
@@ -77,7 +77,7 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
 
   it('pengantar cabang tampil di kartu pertama cabang dan tidak di bagian pewaris', () => {
     const { kasus, sumi } = keluargaKarto();
-    const pewaris = dijawab(kasus, { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'halLain'] });
+    const pewaris = denganBagianTetapTerisi(dijawab(kasus, { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'halLain'] }));
     render(<Uji awal={pewaris} />);
     expect(screen.getByText(/Mbah Sumi wafat sesudah Almarhum, sebelum hartanya dibagi/)).toBeTruthy();
     expect(sumi).toBeTruthy();
@@ -85,7 +85,7 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
 
   it('bagian terakhir menawarkan "Selesai, lanjut ke Periksa" tetapi tidak selesai selama bagiannya belum lengkap', () => {
     const saatSelesai = vi.fn();
-    const awal = dijawab(kasusBaru('L'), { PEWARIS: ['pasangan', 'anak', 'orangTua', 'saudara', 'jauh', 'halLain'] });
+    const awal = denganBagianTetapTerisi(dijawab(kasusBaru('L'), { PEWARIS: ['pasangan', 'anak', 'orangTua', 'saudara', 'jauh', 'halLain'] }));
     render(<Uji awal={awal} saatSelesai={saatSelesai} />);
     expect(judulAktif()).toBe('Kamu (boleh dilewati)');
     fireEvent.click(screen.getByRole('button', { name: 'Selesai, lanjut ke Periksa' }));

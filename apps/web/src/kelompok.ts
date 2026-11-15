@@ -4,7 +4,7 @@
 
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { pertanyaanUrutanBerikut } from './antreanUrutan';
-import { hitungIsian } from './checklist';
+import { daftarInduk, hitungIsian } from './checklist';
 import type { Kasus, Kelompok } from './kasus';
 import { posisiPerluDitanya } from './ujiHipotetis';
 
@@ -72,10 +72,37 @@ export function anggotaBagian(kasus: Kasus, bagian: Bagian): IdOrang[] {
   }
 }
 
+/** Peran yang dihitung di bagian itu, menurut jenis kelamin pemiliknya. */
+export function kunciBagian(kasus: Kasus, bagian: Bagian): KunciAhliWaris[] {
+  switch (bagian.jenis) {
+    case 'pasangan': return [kasus.graf.orang[bagian.milik]?.jenisKelamin === 'L' ? 'ISTRI' : 'SUAMI'];
+    case 'anak': case 'anakBersama': return ['ANAK_LK', 'ANAK_PR'];
+    case 'orangTua': return ['AYAH', 'IBU'];
+    case 'kakekNenek': case 'saudara': case 'jauh': return KUNCI_PER_KELOMPOK[bagian.jenis] ?? [];
+    case 'halLain': case 'urutan': case 'kamu': return [];
+  }
+}
+
+/** Baris tetap yang tampil: orang tua selalu; kakek-nenek hanya posisi yang sudah terisi atau yang berpengaruh (engine). */
+export function slotTetap(kasus: Kasus, bagian: Bagian): KunciAhliWaris[] {
+  const kunci = kunciBagian(kasus, bagian);
+  if (bagian.jenis !== 'kakekNenek') return kunci;
+  return kunci.filter(satu => orangDenganKunci(kasus, bagian.milik, satu).length > 0 || posisiPerluDitanya(kasus, bagian.milik, satu));
+}
+
+/** Semua orang (wafat dan penghubung ikut) yang berperan `kunci` bagi `milik`. */
+export const orangDenganKunci = (kasus: Kasus, milik: IdOrang, kunci: KunciAhliWaris): IdOrang[] =>
+  daftarInduk(kasus.graf, milik, kunci).filter(id => !kasus.graf.orang[id]!.penghubung);
+
+/** Baris tetap (orang tua, kakek-nenek) yang harus ditanya tetapi belum punya orang: bagiannya belum bisa dianggap dijawab. */
+export const adaSlotKosong = (kasus: Kasus, bagian: Bagian): boolean =>
+  (bagian.jenis === 'orangTua' || bagian.jenis === 'kakekNenek')
+  && slotTetap(kasus, bagian).some(kunci => orangDenganKunci(kasus, bagian.milik, kunci).length === 0);
+
 export function bagianLengkap(kasus: Kasus, bagian: Bagian): boolean {
   if (bagian.jenis === 'kamu') return kasus.saya !== undefined;
   if (bagian.jenis === 'urutan') return pertanyaanUrutanBerikut(kasus) === null;
-  if (!sudahDijawab(kasus, bagian.milik, bagian.jenis)) return false;
+  if (!sudahDijawab(kasus, bagian.milik, bagian.jenis) || adaSlotKosong(kasus, bagian)) return false;
   const belumDiisi = new Set(kasus.belumDiisi ?? []);
   return anggotaBagian(kasus, bagian).every(id => !belumDiisi.has(id));
 }

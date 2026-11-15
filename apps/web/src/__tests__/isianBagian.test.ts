@@ -6,7 +6,7 @@ import { jawabLanjutan } from '../keadaanBaris';
 import {
   calonKamu, dampakAdaKeTidak, hapusBaris, isiBarisTetap, jawabAdaTidak, jawabAnakBersama, jawabKamu, kunciBagian, kurangiBarisKosong, slotTetap, tambahBaris, tandaiAnakBersama,
 } from '../isianBagian';
-import { keluargaKarto } from './fixtures/kanvas';
+import { keluargaKarto, tambah } from './fixtures/kanvas';
 
 const bagianDari = (kasus: Kasus, id: string): Bagian => daftarBagian(kasus).find(b => b.id === id)!;
 const PASANGAN: Bagian = { id: 'pasangan:PEWARIS', milik: 'PEWARIS', jenis: 'pasangan' };
@@ -145,5 +145,14 @@ describe('anak bersama (spec kanvas 5.2, cabang pasangan)', () => {
     const cabut = tandaiAnakBersama(tidak, bagian(sumi), budi, false);
     expect(cabut.graf.orang[budi]!.idIbu).toBeUndefined();
     expect(tandaiAnakBersama(cabut, bagian(sumi), budi, true).graf.orang[budi]!.idIbu).toBe(sumi);
+  });
+});
+
+describe('bagian tetap baru lengkap bila semua slot terisi (review P1)', () => {
+  it('orangTua dijawab tetapi Ayah belum punya baris: belum lengkap', () => {
+    const { kasus } = tambah(kasusBaru('L'), 'PEWARIS', 'IBU');
+    const dijawab: Kasus = { ...kasus, kelompokDijawab: { PEWARIS: ['orangTua'] } };
+    expect(bagianLengkap(dijawab, ORANG_TUA)).toBe(false);
+    expect(bagianLengkap(isiBarisTetap(dijawab, ORANG_TUA, 'AYAH', 'hidup'), ORANG_TUA)).toBe(true);
   });
 });

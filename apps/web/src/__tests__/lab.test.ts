@@ -1,6 +1,7 @@
 import { expect, test } from 'vitest';
 import { BATAS_TAMPIL_CARI, SUSUNAN_CEPAT, cariEntri, kasusDariSusunan } from '../lab';
 import { hitungIsian } from '../checklist';
+import { daftarBagian } from '../kelompok';
 
 test('cariEntri tidak peka huruf besar dan mencari judul serta keterangan', () => {
   const daftar = [{ judul: 'Keluarga Budi', keterangan: 'Rp 1' }, { judul: 'Istri, Ayah', keterangan: 'Data belum lengkap' }];
@@ -17,4 +18,12 @@ test('tiap susunan cepat menghasilkan kasus sah dengan ahli waris sesuai', () =>
     expect(Object.keys(isian).sort()).toEqual([...new Set(susunan.ahliWaris)].sort());
     expect(kasus.tirkah.kotor).toBe(0n);
   }
+});
+
+test('susunan cepat tidak menandai dijawab bagian tetap yang slotnya kosong (Ayah tidak disebut)', () => {
+  const ibuSaudara = kasusDariSusunan(SUSUNAN_CEPAT.find(satu => satu.kunci === 'ibu-saudara')!);
+  expect(ibuSaudara.kelompokDijawab?.PEWARIS).not.toContain('orangTua');
+  const orangTuaAnak = kasusDariSusunan(SUSUNAN_CEPAT.find(satu => satu.kunci === 'orang-tua-anak')!);
+  expect(orangTuaAnak.kelompokDijawab?.PEWARIS).toContain('orangTua');
+  expect(daftarBagian(orangTuaAnak).length).toBeGreaterThan(0);
 });

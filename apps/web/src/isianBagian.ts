@@ -7,32 +7,15 @@ import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris, ubahOrang } 
 import { rapikanKeadaan, type Kasus, type Kelompok } from './kasus';
 import { keadaanTerpilih, pilihKeadaan, tandaiBelumDiisi, type PilihanKeadaan } from './keadaanBaris';
 import { orangTerputus } from './keadaanOrang';
-import { anggotaBagian, KUNCI_PER_KELOMPOK, type Bagian } from './kelompok';
-import { posisiPerluDitanya } from './ujiHipotetis';
+import { anggotaBagian, kunciBagian, orangDenganKunci, slotTetap, type Bagian } from './kelompok';
+
+export { kunciBagian, orangDenganKunci, slotTetap };
 
 /** Menghapus anggota bagian ini ikut menghapus keturunannya dan menantunya (cabang); pasangan tidak: anak tetap ada. */
 const BAGIAN_BERCABANG: Kelompok[] = ['anak', 'saudara', 'jauh'];
 const BAGIAN_TETAP: Kelompok[] = ['orangTua', 'kakekNenek'];
 
 export const adalahBagianTetap = (bagian: Bagian): boolean => BAGIAN_TETAP.some(jenis => jenis === bagian.jenis);
-
-/** Peran yang dihitung di bagian itu, menurut jenis kelamin pemiliknya. */
-export function kunciBagian(kasus: Kasus, bagian: Bagian): KunciAhliWaris[] {
-  switch (bagian.jenis) {
-    case 'pasangan': return [kasus.graf.orang[bagian.milik]?.jenisKelamin === 'L' ? 'ISTRI' : 'SUAMI'];
-    case 'anak': case 'anakBersama': return ['ANAK_LK', 'ANAK_PR'];
-    case 'orangTua': return ['AYAH', 'IBU'];
-    case 'kakekNenek': case 'saudara': case 'jauh': return KUNCI_PER_KELOMPOK[bagian.jenis] ?? [];
-    case 'halLain': case 'urutan': case 'kamu': return [];
-  }
-}
-
-/** Baris tetap yang tampil: orang tua selalu; kakek-nenek hanya posisi yang sudah terisi atau yang berpengaruh (engine). */
-export function slotTetap(kasus: Kasus, bagian: Bagian): KunciAhliWaris[] {
-  const kunci = kunciBagian(kasus, bagian);
-  if (bagian.jenis !== 'kakekNenek') return kunci;
-  return kunci.filter(satu => orangDenganKunci(kasus, bagian.milik, satu).length > 0 || posisiPerluDitanya(kasus, bagian.milik, satu));
-}
 
 export function jawabAdaTidak(kasus: Kasus, bagian: Bagian, ada: boolean): Kasus {
   const jenis = jenisKelompok(bagian);
@@ -145,10 +128,6 @@ function jenisKelompok(bagian: Bagian): Kelompok | null {
 
 const orangBaruDi = (sebelum: GrafKeluarga, sesudah: GrafKeluarga): IdOrang | undefined =>
   Object.keys(sesudah.orang).find(id => !sebelum.orang[id] && !sesudah.orang[id]!.penghubung);
-
-/** Semua orang (wafat dan penghubung ikut) yang berperan `kunci` bagi `milik`. */
-export const orangDenganKunci = (kasus: Kasus, milik: IdOrang, kunci: KunciAhliWaris): IdOrang[] =>
-  daftarInduk(kasus.graf, milik, kunci).filter(id => !kasus.graf.orang[id]!.penghubung);
 
 const adalahBarisKosong = (kasus: Kasus, id: IdOrang): boolean =>
   (kasus.belumDiisi ?? []).includes(id) && !kasus.graf.orang[id]?.nama && keadaanTerpilih(kasus, id) === null;

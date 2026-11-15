@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { kasusBaru, rapikanKeadaan, type Kasus, type Kelompok } from '../kasus';
 import { KanvasKeluarga } from '../layar/keluarga/KanvasKeluarga';
-import { keluargaBudi, keluargaKarto } from './fixtures/kanvas';
+import { denganBagianTetapTerisi, keluargaBudi, keluargaKarto } from './fixtures/kanvas';
 
 let terakhir: Kasus;
 function Uji({ awal }: { awal: Kasus }) {
@@ -99,7 +99,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
 
   it('anak bersama: Ya semuanya mencatat dijawab; Tidak semua menampilkan centang anak', () => {
     const { kasus, sumi, rina } = keluargaKarto();
-    render(<Uji awal={dijawab(kasus, { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'halLain'] })} />);
+    render(<Uji awal={denganBagianTetapTerisi(dijawab(kasus, { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'halLain'] }))} />);
     expect(judulAktif()).toBe('Apakah Slamet, Budi, Rina juga anak Mbah Sumi?');
     expect(screen.queryAllByRole('checkbox')).toHaveLength(0);
     radio('Ya, semuanya');

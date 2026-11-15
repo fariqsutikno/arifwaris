@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
 import { daftarBagian } from '../kelompok';
 import { statusKeluarga } from '../statusKeluarga';
-import { keluargaKarto } from './fixtures/kanvas';
+import { denganBagianTetapTerisi, keluargaKarto } from './fixtures/kanvas';
 
 /** Menjawab semua bagian yang tampil (dua putaran karena menjawab bisa memunculkan bagian lain). */
 function semuaDijawab(awal: Kasus): Kasus {
@@ -29,7 +29,7 @@ describe('statusKeluarga (spec kanvas 5.9)', () => {
   it('semua bagian lengkap: sisa 0, tidak ada bagian pertama, status "sudah lengkap"', () => {
     const { kasus, sumi, budi } = keluargaKarto();
     const bertahun: Kasus = { ...kasus, waktu: { [sumi]: { wafat: { tahun: 1990, kiraKira: false } }, [budi]: { wafat: { tahun: 1998, kiraKira: false } } } };
-    const status = statusKeluarga(semuaDijawab(bertahun));
+    const status = statusKeluarga(denganBagianTetapTerisi(semuaDijawab(bertahun)));
     expect(status).toMatchObject({ sisa: 0, pertama: null, status: 'Keluarga sudah lengkap.' });
   });
 });

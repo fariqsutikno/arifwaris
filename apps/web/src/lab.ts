@@ -5,6 +5,7 @@
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from './checklist';
 import { KELOMPOK, kasusBaru, type Kasus } from './kasus';
+import { adaSlotKosong } from './kelompok';
 import { t } from './terjemah';
 
 export const BATAS_TAMPIL_CARI = 8;
@@ -26,5 +27,8 @@ export const SUSUNAN_CEPAT: SusunanCepat[] = [
 /** Susunan cepat = daftar ahli waris yang sudah pasti (seperti checklist lama): kelompok lain dianggap dijawab "tidak ada" (spec 9.2), dan pengisi tidak ditanya "Kamu". */
 export const kasusDariSusunan = (susunan: SusunanCepat): Kasus => {
   const kasus = susunan.ahliWaris.reduce((hasil, kunci) => ({ ...hasil, graf: tambahAhliWaris(hasil.graf, hasil.graf.idPewaris, kunci) }), kasusBaru(susunan.pewaris, 'nyata'));
-  return { ...kasus, kelompokDijawab: { [kasus.graf.idPewaris]: [...KELOMPOK] }, saya: null };
+  const idPewaris = kasus.graf.idPewaris;
+  // Bagian tetap yang slotnya kosong (mis. Ayah tidak disebut) tetap ditanya: keadaan Ayah tidak boleh ditebak.
+  const dijawab = KELOMPOK.filter(jenis => !adaSlotKosong(kasus, { id: `${jenis}:${idPewaris}`, milik: idPewaris, jenis }));
+  return { ...kasus, kelompokDijawab: { [idPewaris]: dijawab }, saya: null };
 };

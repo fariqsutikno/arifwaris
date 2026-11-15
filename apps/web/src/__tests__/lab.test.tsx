@@ -55,7 +55,8 @@ test('hero kasus yang baru memilih jenis kelamin tetap bisa dilanjutkan', () => 
 });
 
 test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
-  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
+  // Susunan dengan Ayah dan Ibu: bagian Orang tua baru lengkap bila kedua posisinya terisi.
+  const dasar = kasusDariSusunan(SUSUNAN_CEPAT.find(satu => satu.kunci === 'orang-tua-anak')!);
   const { container } = render(<HeroLab kasusTerakhir={{ ...dasar, pintu: 'baru', tirkah: { ...dasar.tirkah, kotor: 240_000_000n } }} saatLanjut={() => {}} />);
   expect(container.querySelector('.pita-bagian')).toBeTruthy();
 });
