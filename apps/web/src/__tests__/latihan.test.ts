@@ -4,7 +4,7 @@ import { hitungIsian, kurangiAhliWaris, tambahAhliWaris } from '../checklist';
 import { keInputEngine } from '../jalankan';
 import { kasusBaru, rapikanKeadaan, type Kasus } from '../kasus';
 import { namaSingkat } from '../keadaanOrang';
-import { geserUrutan, labelMayit, mayitLatihan, mayitTanpaAhliWaris, orangDiKartu, tandaiWafatSebelumDibagi } from '../latihan';
+import { geserUrutan, labelMayit, labelOrangDiKartu, mayitLatihan, nomorKembar, mayitTanpaAhliWaris, orangDiKartu, tandaiWafatSebelumDibagi } from '../latihan';
 
 const tambah = (kasus: Kasus, idMayit: string, ...kunci: Parameters<typeof tambahAhliWaris>[2][]) =>
   kunci.reduce((k, satu) => ({ ...k, graf: tambahAhliWaris(k.graf, idMayit, satu) }), kasus);
@@ -76,5 +76,26 @@ describe('latihan (spec kanvas 6)', () => {
     k = tandaiWafatSebelumDibagi(k, a1!, true);
     expect(mayitTanpaAhliWaris(k)).toBeNull();   // a1 punya saudara a2 yang hidup
     expect(mayitTanpaAhliWaris(tambah(kasusBaru('L', 'latihan'), 'PEWARIS'))).toBe('PEWARIS');
+  });
+});
+
+describe('penomoran kembar', () => {
+  it('nomorKembar hanya menomori label yang sama', () => {
+    expect(nomorKembar(['A', 'B', 'A'])).toEqual(['A 1', 'B', 'A 2']);
+  });
+
+  it('dua orang bernama sama dalam satu kartu diberi nomor di chip', () => {
+    let k = tambah(kasusBaru('L', 'latihan'), 'PEWARIS', 'ANAK_LK', 'ANAK_LK');
+    const [satu, dua] = hitungIsian(k.graf, 'PEWARIS').ANAK_LK!;
+    const beri = (id: string) => { k = { ...k, graf: { ...k.graf, orang: { ...k.graf.orang, [id]: { ...k.graf.orang[id]!, nama: 'Budi' } } } }; };
+    beri(satu!); beri(dua!);
+    expect(labelOrangDiKartu(k, 'PEWARIS').map(o => o.label)).toEqual(['Budi (Anak laki-laki) 1', 'Budi (Anak laki-laki) 2']);
+  });
+
+  it('judul mayit kembar bernomor dan unik', () => {
+    let k = tambah(kasusBaru('L', 'latihan'), 'PEWARIS', 'ANAK_LK', 'ANAK_LK');
+    for (const id of hitungIsian(k.graf, 'PEWARIS').ANAK_LK!) k = tandaiWafatSebelumDibagi(k, id, true);
+    const judul = mayitLatihan(k).map(id => labelMayit(k, id));
+    expect(new Set(judul).size).toBe(judul.length);
   });
 });

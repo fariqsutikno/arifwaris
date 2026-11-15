@@ -3,10 +3,9 @@
 
 import { useState } from 'react';
 import type { IdOrang } from '@waris/engine';
-import { labelOrangChecklist } from '../../checklist';
 import type { Kasus } from '../../kasus';
 import { namaSingkat, orangTerputus } from '../../keadaanOrang';
-import { labelMayit, orangDiKartu, tandaiWafatSebelumDibagi } from '../../latihan';
+import { labelMayit, labelOrangDiKartu, tandaiWafatSebelumDibagi } from '../../latihan';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { t } from '../../terjemah';
 import { LangkahAhliWaris } from '../LangkahAhliWaris';
@@ -32,9 +31,8 @@ export function KartuMayit({ kasus, idMayit, nomor, ubah }: Props) {
       {nomor > 1 && <p className="keterangan">{t('hitung.latihan.wafat_sesudah_sebelumnya')}</p>}
       <LangkahAhliWaris graf={kasus.graf} idMayit={idMayit} ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
       <div className="chip-orang">
-        {orangDiKartu(kasus, idMayit).map(id => {
+        {labelOrangDiKartu(kasus, idMayit).map(({ id, label }) => {
           const bertanda = kasus.urutanWafat.includes(id);
-          const label = labelOrangChecklist(kasus.graf, idMayit, id);
           return (
             <button key={id} type="button" aria-pressed={bertanda} onClick={() => ketuk(id)}>
               {label}{bertanda && <small>{t('hitung.latihan.wafat_sebelum_dibagi')}</small>}

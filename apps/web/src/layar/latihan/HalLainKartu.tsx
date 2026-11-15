@@ -6,8 +6,7 @@ import { useState } from 'react';
 import type { IdOrang } from '@waris/engine';
 import type { Kasus } from '../../kasus';
 import { keadaanOrang, namaSingkat } from '../../keadaanOrang';
-import { labelOrangChecklist } from '../../checklist';
-import { orangDiKartu } from '../../latihan';
+import { labelOrangDiKartu } from '../../latihan';
 import { t } from '../../terjemah';
 import { DialogKeadaan } from '../keadaan/DialogKeadaan';
 
@@ -16,8 +15,7 @@ interface Props { kasus: Kasus; idMayit: IdOrang; ubah: (f: (k: Kasus) => Kasus)
 export function HalLainKartu({ kasus, idMayit, ubah }: Props) {
   const [buka, setBuka] = useState(false);
   const [dialog, setDialog] = useState<IdOrang | null>(null);
-  const orang = orangDiKartu(kasus, idMayit).filter(id => kasus.graf.orang[id]!.statusHidup !== 'dalamKandungan')
-    .map(id => ({ id, label: labelOrangChecklist(kasus.graf, idMayit, id) }));
+  const orang = labelOrangDiKartu(kasus, idMayit).filter(({ id }) => kasus.graf.orang[id]!.statusHidup !== 'dalamKandungan');
   return (
     <details open={buka} className="hal-lain-kartu">
       <summary onClick={event => { event.preventDefault(); setBuka(!buka); }}>{t('hitung.kanvas.pendek_hal_lain')}</summary>

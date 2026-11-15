@@ -3,8 +3,7 @@
 
 import type { Kasus } from '../../kasus';
 import type { Aksi } from '../../keadaan';
-import { labelOrangChecklist } from '../../checklist';
-import { labelMayit, mayitLatihan, orangDiKartu } from '../../latihan';
+import { labelMayit, labelOrangDiKartu, mayitLatihan } from '../../latihan';
 import { keadaanOrang } from '../../keadaanOrang';
 import { t } from '../../terjemah';
 import { BarisKhususCerita } from '../PeriksaCerita';
@@ -20,14 +19,13 @@ export function RingkasanLatihan({ kasus, kirim }: { kasus: Kasus; kirim: (aksi:
         <section key={idMayit} className="tumpuk-rapat">
           <h2 className="judul-bagian-kecil">{t('hitung.cerita.label_babak', { nama: labelMayit(kasus, idMayit) })}</h2>
           <p>
-            {orangDiKartu(kasus, idMayit).map(id => {
-              const label = labelOrangChecklist(kasus.graf, idMayit, id);
+            {labelOrangDiKartu(kasus, idMayit).map(({ id, label }) => {
               return kasus.urutanWafat.includes(id) ? `${label} (${t('hitung.latihan.wafat_sebelum_dibagi')})` : label;
             }).join(', ')}{' '}
             <button type="button" className="tautan" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 3, fokus: idMayit })}>{t('hitung.cerita.ubah')}</button>
           </p>
-          {orangDiKartu(kasus, idMayit).filter(id => KEADAAN_DITULIS_DI_SINI.includes(keadaanOrang(kasus, id))).map(id => (
-            <p key={id}>{labelOrangChecklist(kasus.graf, idMayit, id)}: {statusKeadaan(kasus, id, idMayit)}</p>
+          {labelOrangDiKartu(kasus, idMayit).filter(({ id }) => KEADAAN_DITULIS_DI_SINI.includes(keadaanOrang(kasus, id))).map(({ id, label }) => (
+            <p key={id}>{label}: {statusKeadaan(kasus, id, idMayit)}</p>
           ))}
         </section>
       ))}

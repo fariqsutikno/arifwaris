@@ -29,7 +29,30 @@ export function geserUrutan(kasus: Kasus, idOrang: IdOrang, arah: -1 | 1): Kasus
   return { ...kasus, urutanWafat, urutanDijawab: [...new Set([...(kasus.urutanDijawab ?? []), idOrang])] };
 }
 
+/** Satu sumber penomoran: label yang kembar dalam satu daftar diberi nomor urut ("Anak laki-laki 1", "Anak laki-laki 2"). */
+export function nomorKembar(label: string[]): string[] {
+  const urutan = new Map<string, number>();
+  return label.map(satu => {
+    if (label.filter(lain => lain === satu).length < 2) return satu;
+    const nomor = (urutan.get(satu) ?? 0) + 1;
+    urutan.set(satu, nomor);
+    return `${satu} ${nomor}`;
+  });
+}
+
+/** Orang di satu kartu beserta labelnya, kembar diberi nomor. */
+export function labelOrangDiKartu(kasus: Kasus, idMayit: IdOrang): Array<{ id: IdOrang; label: string }> {
+  const daftar = orangDiKartu(kasus, idMayit);
+  const label = nomorKembar(daftar.map(id => labelOrangChecklist(kasus.graf, idMayit, id)));
+  return daftar.map((id, i) => ({ id, label: label[i]! }));
+}
+
 export function labelMayit(kasus: Kasus, idMayit: IdOrang): string {
+  const semua = mayitLatihan(kasus);
+  return nomorKembar(semua.map(id => labelMayitMentah(kasus, id)))[semua.indexOf(idMayit)]!;
+}
+
+function labelMayitMentah(kasus: Kasus, idMayit: IdOrang): string {
   if (idMayit === kasus.graf.idPewaris || kasus.graf.orang[idMayit]!.nama) return namaSingkat(kasus, idMayit);
   const asal = babakAsal(kasus, idMayit) ?? kasus.graf.idPewaris;
   return `${labelOrangChecklist(kasus.graf, asal, idMayit)} ${namaSingkat(kasus, asal)}`;
