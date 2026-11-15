@@ -22449,6 +22449,90 @@
    "id": "Dari keadaan keluarga yang sudah diisi, {kelompok} tidak ikut menerima bagian, jadi tidak perlu ditanyakan.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.ketuk_tandai",
+   "halaman": "hitung",
+   "id": "Ketuk nama orang untuk menandainya wafat sebelum harta dibagi. Kartu ahli warisnya muncul di bawah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.mayit_pertama",
+   "halaman": "hitung",
+   "id": "Mayit pertama: {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.mayit_ke",
+   "halaman": "hitung",
+   "id": "Mayit ke-{nomor}: {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.wafat_sesudah_sebelumnya",
+   "halaman": "hitung",
+   "id": "Wafat sesudah mayit sebelumnya, sebelum harta dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.wafat_sebelum_dibagi",
+   "halaman": "hitung",
+   "id": "wafat sebelum dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.urutan_judul",
+   "halaman": "hitung",
+   "id": "Urutan wafat (munasakhat)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.urutan_keterangan",
+   "halaman": "hitung",
+   "id": "Dari yang paling dulu, sesudah mayit pertama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.naikkan",
+   "halaman": "hitung",
+   "id": "Naikkan {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.turunkan",
+   "halaman": "hitung",
+   "id": "Turunkan {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.lepas_tanda_judul",
+   "halaman": "hitung",
+   "id": "Batalkan tanda wafat {nama}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.lepas_tanda_isi",
+   "halaman": "hitung",
+   "id": "Ahli waris yang hanya tercatat lewat {nama} ikut terhapus: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.latihan.kartu_tanpa_ahli_waris",
+   "halaman": "hitung",
+   "id": "Isi ahli waris {nama} dulu.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
