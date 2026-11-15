@@ -27,7 +27,7 @@ interface Props {
 }
 
 /** Kunci diksi harus literal (dicek tes diksi), jadi label tiap keadaan ditulis eksplisit. */
-const LABEL_KEADAAN: Record<PilihanKeadaan, () => string> = {
+export const LABEL_KEADAAN: Record<PilihanKeadaan, () => string> = {
   hidup: () => t('hitung.kanvas.kd_hidup'), wafat: () => t('hitung.kanvas.kd_wafat'), belumTahu: () => t('hitung.kanvas.kd_belum_tahu'),
   hilang: () => t('hitung.kanvas.kd_hilang'), bercerai: () => t('hitung.kanvas.kd_bercerai'), khuntsa: () => t('hitung.kanvas.kd_khuntsa'),
 };
@@ -104,9 +104,13 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
   );
 }
 
+/** "Ayah", "Anak laki-laki"; dari sisi `milik` (almarhumah bila perempuan). */
+export const namaPeran = (kasus: Kasus, kunci: KunciAhliWaris, milik: IdOrang): string =>
+  sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenisDari(kunci)?.label ?? kunci, kasus.graf.orang[milik]?.jenisKelamin ?? 'L');
+
 /** "Anak laki-laki 2" bila perannya bisa lebih dari satu; urutannya menurut posisi di bagian. */
 function labelPeran(kasus: Kasus, id: IdOrang, kunci: KunciAhliWaris, milik: IdOrang): string {
-  const dasar = sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenisDari(kunci)?.label ?? kunci, kasus.graf.orang[milik]?.jenisKelamin ?? 'L');
+  const dasar = namaPeran(kasus, kunci, milik);
   return adalahPeranTunggal(kunci) ? dasar : `${dasar} ${orangDenganKunci(kasus, milik, kunci).indexOf(id) + 1}`;
 }
 

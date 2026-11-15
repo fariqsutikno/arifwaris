@@ -3,7 +3,7 @@
 // keadaan orang lewat keadaanBaris, siapa yang ditanya lewat kelompok/ujiHipotetis.
 
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
-import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris } from './checklist';
+import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris, ubahOrang } from './checklist';
 import { rapikanKeadaan, type Kasus, type Kelompok } from './kasus';
 import { keadaanTerpilih, pilihKeadaan, tandaiBelumDiisi, type PilihanKeadaan } from './keadaanBaris';
 import { orangTerputus } from './keadaanOrang';
@@ -89,6 +89,31 @@ export function isiBarisTetap(kasus: Kasus, bagian: Bagian, kunci: KunciAhliWari
   const hasil = pilihKeadaan(basis, id, pilihan, bagian.milik);
   return jenis ? tandaiDijawab(hasil, bagian.milik, jenis, semuaSlotTerpilih(hasil, bagian)) : hasil;
 }
+
+/** Anak pewaris yang bukan penghubung; yang dipilih sebagai "juga anak pemilik cabang" ditandai lewat orang tua yang sama. */
+const anakPewaris = (kasus: Kasus): IdOrang[] =>
+  Object.values(kasus.graf.orang).filter(orang => !orang.penghubung && (orang.idAyah === kasus.graf.idPewaris || orang.idIbu === kasus.graf.idPewaris)).map(orang => orang.id);
+/** Slot orang tua anak yang dipegang pemilik cabang: ayah bila pemilik laki-laki, selain itu ibu. */
+const slotOrangTua = (kasus: Kasus, milik: IdOrang): 'idAyah' | 'idIbu' => (kasus.graf.orang[milik]?.jenisKelamin === 'L' ? 'idAyah' : 'idIbu');
+
+/** "Ya, semuanya": semua anak pewaris menjadi anak pemilik cabang, kecuali yang slotnya sudah diisi orang tua lain. */
+export function jawabAnakBersama(kasus: Kasus, bagian: Bagian, semua: boolean): Kasus {
+  const slot = slotOrangTua(kasus, bagian.milik);
+  const graf = semua
+    ? anakPewaris(kasus).reduce((g, id) => (g.orang[id]![slot] ? g : ubahOrang(g, id, { [slot]: bagian.milik })), kasus.graf)
+    : kasus.graf;
+  return tandaiDijawab({ ...kasus, graf }, bagian.milik, 'anakBersama', true);
+}
+
+/** "Tidak semua": satu anak dicentang (anak pemilik cabang) atau dicabut. */
+export function tandaiAnakBersama(kasus: Kasus, bagian: Bagian, idAnak: IdOrang, bersama: boolean): Kasus {
+  const slot = slotOrangTua(kasus, bagian.milik);
+  const { [slot]: _lama, ...tanpaSlot } = kasus.graf.orang[idAnak]!;
+  const orang = bersama ? { ...tanpaSlot, [slot]: bagian.milik } : tanpaSlot;
+  return { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [idAnak]: orang } } };
+}
+
+export const daftarAnakPewaris = anakPewaris;
 
 /** Orang yang masih hidup sekarang (bukan almarhum, bukan yang wafat sesudahnya, bukan baris kosong). */
 export function calonKamu(kasus: Kasus): IdOrang[] {

@@ -18,7 +18,9 @@ export function PenghitungOrang({ kasus, bagian, kunci, label, ubah }: Props) {
   const [pesan, setPesan] = useState<string | null>(null);
   const [idIndukPilihan, setIdIndukPilihan] = useState<string | undefined>(undefined);
   const jenis = jenisDari(kunci);
-  const nama = label ?? sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenis?.label ?? kunci, kasus.graf.orang[bagian.milik]?.jenisKelamin ?? 'L');
+  // Label tampil boleh berupa pertanyaan (Berapa istri?); tombolnya tetap menyebut perannya.
+  const peran = sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenis?.label ?? kunci, kasus.graf.orang[bagian.milik]?.jenisKelamin ?? 'L');
+  const nama = label ?? peran;
   const jumlah = orangDenganKunci(kasus, bagian.milik, kunci).length;
   const calonInduk = jenis?.kunciInduk ? daftarInduk(kasus.graf, bagian.milik, jenis.kunciInduk) : [];
   const indukTerpilih = idIndukPilihan === INDUK_BARU_WAFAT || (idIndukPilihan && calonInduk.includes(idIndukPilihan))
@@ -47,9 +49,9 @@ export function PenghitungOrang({ kasus, bagian, kunci, label, ubah }: Props) {
         <span className="nama-kontrol">{nama}</span>
         {jenis?.kunciInduk && <PilihInduk kunci={kunci} graf={kasus.graf} idMayit={bagian.milik} nilai={indukTerpilih} saatUbah={setIdIndukPilihan} />}
         <span className="hitung" role="group" aria-label={nama}>
-          <button type="button" aria-label={t('hitung.kurangi_label', { label: nama })} onClick={kurangi}>−</button>
+          <button type="button" aria-label={t('hitung.kurangi_label', { label: peran })} onClick={kurangi}>−</button>
           <b aria-live="polite">{jumlah}</b>
-          <button type="button" aria-label={t('hitung.tambah_label', { label: nama })} onClick={tambah}>+</button>
+          <button type="button" aria-label={t('hitung.tambah_label', { label: peran })} onClick={tambah}>+</button>
         </span>
       </div>
       {pesan && <p className="kecil redup" role="status">{pesan}</p>}

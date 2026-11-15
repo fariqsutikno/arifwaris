@@ -4,7 +4,7 @@ import { kasusBaru, type Kasus } from '../kasus';
 import { bagianLengkap, daftarBagian, type Bagian } from '../kelompok';
 import { jawabLanjutan } from '../keadaanBaris';
 import {
-  calonKamu, dampakAdaKeTidak, hapusBaris, isiBarisTetap, jawabAdaTidak, jawabKamu, kunciBagian, kurangiBarisKosong, slotTetap, tambahBaris,
+  calonKamu, dampakAdaKeTidak, hapusBaris, isiBarisTetap, jawabAdaTidak, jawabAnakBersama, jawabKamu, kunciBagian, kurangiBarisKosong, slotTetap, tambahBaris, tandaiAnakBersama,
 } from '../isianBagian';
 import { keluargaKarto } from './fixtures/kanvas';
 
@@ -122,5 +122,28 @@ describe('Kamu (spec kanvas 5.8)', () => {
     const { kasus, rina } = keluargaKarto();
     expect(jawabKamu(kasus, rina).saya).toBe(rina);
     expect(jawabKamu(kasus, null).saya).toBeNull();
+  });
+});
+
+describe('anak bersama (spec kanvas 5.2, cabang pasangan)', () => {
+  const bagian = (sumi: string): Bagian => ({ id: `anakBersama:${sumi}`, milik: sumi, jenis: 'anakBersama' });
+
+  it('Ya semuanya menghubungkan anak pewaris tanpa ibu terisi, tidak menimpa ibu lain, dan mencatat dijawab', () => {
+    const { kasus, sumi, budi, rina } = keluargaKarto();
+    const lepas = (k: Kasus, id: string): Kasus => tandaiAnakBersama(k, bagian(sumi), id, false);
+    const tanpaIbu = lepas(lepas(kasus, budi), rina);
+    const hasil = jawabAnakBersama(tanpaIbu, bagian(sumi), true);
+    expect(hasil.graf.orang[budi]!.idIbu).toBe(sumi);
+    expect(hasil.graf.orang[rina]!.idIbu).toBe(sumi);
+    expect(hasil.kelompokDijawab?.[sumi]).toContain('anakBersama');
+  });
+
+  it('Tidak semua tidak mengubah graf; centang mencabut atau memasang satu anak', () => {
+    const { kasus, sumi, budi } = keluargaKarto();
+    const tidak = jawabAnakBersama(kasus, bagian(sumi), false);
+    expect(tidak.graf).toEqual(kasus.graf);
+    const cabut = tandaiAnakBersama(tidak, bagian(sumi), budi, false);
+    expect(cabut.graf.orang[budi]!.idIbu).toBeUndefined();
+    expect(tandaiAnakBersama(cabut, bagian(sumi), budi, true).graf.orang[budi]!.idIbu).toBe(sumi);
   });
 });

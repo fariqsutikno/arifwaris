@@ -22281,6 +22281,55 @@
    "id": "Keadaan khusus; jenisnya dipilih sesudah ini.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.berapa_istri",
+   "halaman": "hitung",
+   "id": "Berapa istri?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ya_semuanya",
+   "halaman": "hitung",
+   "id": "Ya, semuanya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tidak_semua",
+   "halaman": "hitung",
+   "id": "Tidak semua",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kenapa_judul",
+   "halaman": "hitung",
+   "id": "Kenapa {kelompok} tidak ditanyakan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kenapa_judul_anak",
+   "halaman": "hitung",
+   "id": "Kenapa anak-anak {nama} tidak ditanyakan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tetap_isi",
+   "halaman": "hitung",
+   "id": "Tetap isi kerabat lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tambah_hubungan",
+   "halaman": "hitung",
+   "id": "Tambah dengan nama hubungan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

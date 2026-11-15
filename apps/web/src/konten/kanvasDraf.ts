@@ -12,3 +12,7 @@ export const ARTI_KEADAAN_DRAF = {
   bercerai: 'Pernikahannya sudah berakhir dengan talak; nanti ditanya masa iddahnya.',
   khuntsa: 'Belum jelas laki-laki atau perempuan; nanti ditanya apakah sudah dewasa.',
 } as const;
+
+const KENAPA_TIDAK_DITANYA = 'Dari keadaan keluarga yang sudah diisi, {kelompok} tidak ikut menerima bagian, jadi tidak perlu ditanyakan.';
+
+export const kenapaTidakDitanya = (kelompok: string): string => sisipkan(KENAPA_TIDAK_DITANYA, { kelompok });

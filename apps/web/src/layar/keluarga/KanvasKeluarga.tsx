@@ -3,16 +3,19 @@
 // Bagian tidak pindah sendiri: hanya lewat "Lanjut: …" di kaki kartu atau "Ubah" pada ringkasan.
 
 import { useEffect, useRef, useState } from 'react';
+import type { IdOrang } from '@waris/engine';
 import type { Kasus } from '../../kasus';
 import { pengantarCabang } from '../../konten/kanvasDraf';
 import { namaSingkat } from '../../keadaanOrang';
-import { dampakAdaKeTidak, jawabAdaTidak } from '../../isianBagian';
-import { anggotaBagian, awalCabang, bagianDijawab, bagianLengkap, daftarBagian, type Bagian } from '../../kelompok';
+import { dampakAdaKeTidak, jawabAdaTidak, tambahBaris } from '../../isianBagian';
+import { anggotaBagian, awalCabang, bagianDijawab, bagianDilewati, bagianLengkap, daftarBagian, type Bagian, type BagianDilewati } from '../../kelompok';
 import { judulBagian, judulPendek, pertanyaanBagian, ringkasanBagian } from '../../ringkasanBagian';
 import { t } from '../../terjemah';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { Ikon } from '../../ui/Ikon';
+import { BagianKeluarga } from './BagianKeluarga';
 import { gulirKe } from './gulir';
+import { KenapaTidakDitanya } from './KenapaTidakDitanya';
 import { KartuBagian } from './KartuBagian';
 import { PetaBagian } from './PetaBagian';
 
@@ -26,8 +29,13 @@ interface Props {
 /** Bagian yang dijawab Ya/Tidak di kartunya; bagian lain punya pertanyaan sendiri (Tugas 8 dan 9). */
 const BAGIAN_YA_TIDAK = ['pasangan', 'anak', 'saudara', 'jauh'];
 
+/** Bagian yang ditambahkan pengguna lewat "Tetap isi kerabat lain"; `setelah` = pemilik yang kelompoknya dilewati. */
+interface Tambahan { bagian: Bagian; setelah: IdOrang }
+
 export function KanvasKeluarga({ kasus, ubah, tandaiKurang, saatSelesai }: Props) {
-  const daftar = daftarBagian(kasus);
+  // ponytail: "Tetap isi" hilang bila halaman dimuat ulang sebelum bagiannya terisi (K3 rencana 2); data yang sudah diisi tetap ada.
+  const [tambahan, setTambahan] = useState<Tambahan[]>([]);
+  const daftar = gabungTambahan(daftarBagian(kasus), tambahan);
   const pertamaBelumLengkap = () => daftar.find(bagian => !bagianLengkap(kasus, bagian)) ?? daftar[daftar.length - 1]!;
   const [aktifId, setAktifId] = useState(() => pertamaBelumLengkap().id);
   const [dikunjungi, setDikunjungi] = useState(() => new Set(daftar.slice(0, daftar.findIndex(bagian => bagian.id === aktifId)).map(bagian => bagian.id)));
@@ -66,7 +74,13 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, saatSelesai }: Props
   };
   const jawabYa = (bagian: Bagian) => {
     setYaSementara(sebelumnya => new Set([...sebelumnya, bagian.id]));
-    ubah(k => jawabAdaTidak(k, bagian, true));
+    // Perempuan hanya punya satu suami: barisnya langsung dibuat, tanpa penghitung.
+    const satuSuami = bagian.jenis === 'pasangan' && kasus.graf.orang[bagian.milik]?.jenisKelamin === 'P' && anggotaBagian(kasus, bagian).length === 0;
+    ubah(k => (satuSuami ? tambahBaris(k, bagian, 'SUAMI') : jawabAdaTidak(k, bagian, true)));
+  };
+  const tetapIsi = (dilewati: BagianDilewati) => {
+    const bagian = bagianTambahan(dilewati);
+    setTambahan(sebelumnya => (sebelumnya.some(satu => satu.bagian.id === bagian.id) ? sebelumnya : [...sebelumnya, { bagian, setelah: dilewati.milik }]));
   };
   const jawabTidak = (bagian: Bagian) => {
     setYaSementara(sebelumnya => new Set([...sebelumnya].filter(id => id !== bagian.id)));
@@ -74,6 +88,8 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, saatSelesai }: Props
   };
   const saatPilihTidak = (bagian: Bagian) => (dampakAdaKeTidak(kasus, bagian).length > 0 ? setKonfirmasiTidak(bagian) : jawabTidak(bagian));
 
+  const adalahYaTidak = BAGIAN_YA_TIDAK.includes(aktif.jenis);
+  const ya = !adalahYaTidak || anggotaBagian(kasus, aktif).length > 0 || yaSementara.has(aktif.id);
   const selesai = daftar.filter(bagian => bagian.id !== aktif.id && dikunjungi.has(bagian.id) && bagianLengkap(kasus, bagian));
   return (
     <div className="kanvas-keluarga">
@@ -95,11 +111,16 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, saatSelesai }: Props
         judulRef={judulRef} lengkap={lengkap} tandai={tandaiLokal || (tandaiKurang && !lengkap)}
         labelLanjut={berikutnya ? t('hitung.kanvas.lanjut_ke', { bagian: judulPendek(kasus, berikutnya) }) : t('hitung.kanvas.selesai_ke_periksa')}
         saatLanjut={lanjut}>
-        {BAGIAN_YA_TIDAK.includes(aktif.jenis) && (
-          <YaTidak ya={anggotaBagian(kasus, aktif).length > 0 || yaSementara.has(aktif.id)}
-            tidak={anggotaBagian(kasus, aktif).length === 0 && bagianDijawab(kasus, aktif)}
+        {adalahYaTidak && (
+          <YaTidak ya={ya} tidak={anggotaBagian(kasus, aktif).length === 0 && bagianDijawab(kasus, aktif)}
             saatYa={() => jawabYa(aktif)} saatTidak={() => saatPilihTidak(aktif)} />
         )}
+        <BagianKeluarga kasus={kasus} bagian={aktif} ubah={ubah} ya={ya} disorot={null} tandaiKurang={tandaiLokal || (tandaiKurang && !lengkap)} />
+        {aktif.jenis === 'anak' && bagianDilewati(kasus).filter(satu => satu.milik === aktif.milik).map(satu => (
+          <KenapaTidakDitanya key={`${satu.jenis}:${satu.sebab ?? ''}`} dilewati={satu} kasus={kasus}
+            sudahTetapIsi={tambahan.some(lain => lain.bagian.id === bagianTambahan(satu).id)} saatTetapIsi={() => tetapIsi(satu)}
+            ubahGraf={ubahGraf => ubah(k => ({ ...k, graf: ubahGraf(k.graf) }))} />
+        ))}
       </KartuBagian>
       {konfirmasiTidak && (
         <DialogKonfirmasi judul={t('hitung.kanvas.konfirmasi_tidak_judul')} labelLanjut={t('hitung.kanvas.konfirmasi_tidak_lanjut')}
@@ -120,4 +141,17 @@ function YaTidak({ ya, tidak, saatYa, saatTidak }: { ya: boolean; tidak: boolean
       <button type="button" role="radio" aria-checked={tidak} onClick={saatTidak}>{t('hitung.kanvas.tidak')}</button>
     </div>
   );
+}
+
+const bagianTambahan = (dilewati: BagianDilewati): Bagian => (dilewati.jenis === 'anakDariWafat'
+  ? { id: `anak:${dilewati.sebab}`, milik: dilewati.sebab!, jenis: 'anak' }
+  : { id: `${dilewati.jenis}:${dilewati.milik}`, milik: dilewati.milik, jenis: dilewati.jenis });
+
+/** Bagian tambahan disisipkan sesudah bagian terakhir milik orang yang kelompoknya dilewati. */
+function gabungTambahan(daftar: Bagian[], tambahan: Tambahan[]): Bagian[] {
+  return tambahan.reduce((hasil, { bagian, setelah }) => {
+    if (hasil.some(satu => satu.id === bagian.id)) return hasil;
+    const akhir = hasil.reduce((indeks, satu, urutan) => (satu.milik === setelah && satu.jenis !== 'urutan' && satu.jenis !== 'kamu' ? urutan : indeks), -1);
+    return [...hasil.slice(0, akhir + 1), bagian, ...hasil.slice(akhir + 1)];
+  }, daftar);
 }
