@@ -165,7 +165,7 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 
 /* Pertanyaan pintu: ubin Logivo (sudut besar, bayangan lembut), terpilih = bergaris ink. */
 .daftar-pintu{display:grid;gap:12px}
-.pilihan-pintu{display:flex;align-items:center;gap:14px;padding:16px 18px;border:var(--border-w) solid transparent;border-radius:var(--radius-lg);background:var(--surface-raised);box-shadow:var(--shadow-pop-sm);color:var(--ink);font:600 17px/1.3 var(--font-sans);text-align:start;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.pilihan-pintu{display:flex;align-items:center;gap:14px;padding:16px 18px;border:var(--border-w) solid transparent;border-radius:var(--radius-sm);background:var(--surface-raised);box-shadow:var(--shadow-pop-sm);color:var(--ink);font:600 17px/1.3 var(--font-sans);text-align:start;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
 .pilihan-pintu:hover{transform:translateY(-2px);box-shadow:var(--shadow-pop)}
 .pilihan-pintu i{flex:none;width:22px;height:22px;border:2px solid var(--ink-muted);border-radius:50%;transition:border-color .15s,background .15s}
 .pilihan-pintu[aria-checked=true]{border-color:var(--ink)}

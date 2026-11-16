@@ -78,7 +78,7 @@ details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);backgro
 .centang-anak label{display:inline-flex;align-items:center;gap:8px;min-height:36px;font-weight:500}
 
 .pilihan-urutan{display:flex;flex-direction:column;gap:8px}
-.opsi-urutan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:start;padding:12px 16px;border-radius:18px;border:1.5px solid var(--outline);background:#fff;cursor:pointer;font:500 15px var(--font-sans);color:var(--ink)}
+.opsi-urutan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:start;padding:12px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--outline);background:#fff;cursor:pointer;font:500 15px var(--font-sans);color:var(--ink)}
 .opsi-urutan small{color:var(--ink-muted);font-weight:400;font-size:13.5px}
 .opsi-urutan[aria-checked=true]{border-color:var(--primary);background:var(--surface)}
 .lencana-kamu{font:600 11px var(--font-sans);background:var(--aksen-soft);color:#8a3409;border-radius:999px;padding:2px 8px;margin-inline-start:6px}
