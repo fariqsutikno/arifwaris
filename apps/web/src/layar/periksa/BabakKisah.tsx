@@ -50,6 +50,8 @@ export function BabakKisah({ kasus, babak, ubah, kirim, terbuka, saatBuka, saatT
 function narasi(kasus: Kasus, babak: DataBabak, nama: string, pemilik: string): ReactNode {
   const orang = (id: IdOrang) => { const sebutan = sebutanDariSaya(kasus, id); const diri = namaSingkat(kasus, id); return sebutan ? `${sebutan} (${diri})` : diri; };
   const gabung = (ids: IdOrang[]) => { const nama = ids.map(orang); return nama.length <= 1 ? nama.join('') : `${nama.slice(0, -1).join(', ')} ${t('hitung.cerita.dan')} ${nama.at(-1)}`; };
+  // Daftar yang membuka kalimat diawali huruf besar walau diawali sebutan "-mu" (pamanmu, nenekmu).
+  const awalKapital = (teks: string) => teks.charAt(0).toUpperCase() + teks.slice(1);
   const tiada = babak.sudahTiada.filter(id => id !== kasus.graf.idPewaris);   // pemilik sudah jelas wafat lebih dulu
   const pasti = (ids: IdOrang[]) => ids.filter(id => !babak.belumPasti.includes(id));
   const ditinggalkan = [...pasti(babak.pasangan), ...pasti(babak.anak), ...pasti(babak.orangTua)];
@@ -57,8 +59,8 @@ function narasi(kasus: Kasus, babak: DataBabak, nama: string, pemilik: string): 
     <>
       {babak.nomor === 0 ? t('hitung.periksa.babak_pembuka_pertama', { nama }) : t('hitung.periksa.babak_pembuka_lanjut', { nama, pemilik })}
       {ditinggalkan.length > 0 && ` ${t('hitung.periksa.meninggalkan', { daftar: gabung(ditinggalkan) })}`}
-      {tiada.length > 0 && ` ${t('hitung.periksa.sudah_tiada', { daftar: gabung(tiada) })}`}
-      {babak.belumPasti.length > 0 && <> <em>{t('hitung.periksa.belum_dipastikan_hidup', { daftar: gabung(babak.belumPasti) })}</em></>}
+      {tiada.length > 0 && ` ${t('hitung.periksa.sudah_tiada', { daftar: awalKapital(gabung(tiada)) })}`}
+      {babak.belumPasti.length > 0 && <> <em>{t('hitung.periksa.belum_dipastikan_hidup', { daftar: awalKapital(gabung(babak.belumPasti)) })}</em></>}
       {babak.nomor > 0 && ` ${t('hitung.periksa.bagian_jadi_milik', { nama, pemilik })}`}
     </>
   );

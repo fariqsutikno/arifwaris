@@ -61,6 +61,14 @@ describe('KisahHarta', () => {
     expect(within(babak(/Karto|Almarhum/)).getByTestId('narasi').textContent).toContain('ayahmu');
   });
 
+  it('saya = Andi: kalimat yang diawali sebutan "-mu" tetap berhuruf besar', () => {
+    const { kasus, andi } = kartoBertahun();
+    render(<Papan awal={{ ...kasus, saya: andi }} />);
+    const teks = within(babak(/Budi wafat/)).getByTestId('narasi').textContent!;
+    expect(teks).toContain('Nenekmu (Mbah Sumi) sudah lebih dulu tiada.');
+    expect(teks).not.toMatch(/\. [a-z]/);
+  });
+
   it('Ubah di babak → pilihan; Tahun → IsianTahun mengubah tahun; Selesai menutup', () => {
     render(<Papan awal={kartoBertahun().kasus} />);
     const budi = babak(/Budi wafat/);
