@@ -43,18 +43,19 @@ function pasanganBelumPasti(kasus: Kasus, orangA: IdOrang, orangB: IdOrang): boo
 export const urutanDariTahun = (kasus: Kasus, a: IdOrang, b: IdOrang): boolean =>
   bandingTanggal(kasus.waktu?.[a]?.wafat, kasus.waktu?.[b]?.wafat) !== null;
 
-/** Jawaban atas urutan yang ditunda: `a` ditempatkan tepat sebelum atau sesudah `b`; entri tunda a–b dibuang. */
+/**
+ * Jawaban atas urutan yang ditunda: `a` ditempatkan tepat sebelum atau sesudah `b`; entri tunda a–b dibuang.
+ * Bila `b` tak ada di urutan wafat atau tahun sudah menentukan urutannya, urutan dibiarkan (entri tunda tetap dibuang).
+ */
 export function jawabUrutanTertunda(kasus: Kasus, a: IdOrang, b: IdOrang, jawaban: 'sebelum' | 'sesudah'): Kasus {
+  const sisa = (kasus.belumPasti ?? []).filter(hal => !(hal.jenis === 'urutan'
+    && ((hal.a === a && hal.b === b) || (hal.a === b && hal.b === a))));
+  const { belumPasti: _lama, ...dasar } = kasus;
+  const tanpaTunda: Kasus = { ...dasar, ...(sisa.length ? { belumPasti: sisa } : {}) };
+  if (!kasus.urutanWafat.includes(b) || urutanDariTahun(kasus, a, b)) return tanpaTunda;
   const urutanWafat = kasus.urutanWafat.filter(id => id !== a);
   urutanWafat.splice(urutanWafat.indexOf(b) + (jawaban === 'sesudah' ? 1 : 0), 0, a);
-  const belumPasti = (kasus.belumPasti ?? []).filter(hal => !(hal.jenis === 'urutan'
-    && ((hal.a === a && hal.b === b) || (hal.a === b && hal.b === a))));
-  const { belumPasti: _lama, ...tanpaBelumPasti } = kasus;
-  return {
-    ...tanpaBelumPasti, urutanWafat,
-    urutanDijawab: [...new Set([...(kasus.urutanDijawab ?? []), a])],
-    ...(belumPasti.length ? { belumPasti } : {}),
-  };
+  return { ...tanpaTunda, urutanWafat, urutanDijawab: [...new Set([...(kasus.urutanDijawab ?? []), a])] };
 }
 
 /** Tukar dengan tetangga di urutan wafat. Ditolak bila keduanya bertahun: tahun menentukan urutan. */

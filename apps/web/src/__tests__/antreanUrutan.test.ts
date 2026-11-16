@@ -64,6 +64,18 @@ describe('antreanUrutan (spec kanvas 5.6)', () => {
     expect(jawabUrutanTertunda(tunda, sumi, budi, 'sesudah').urutanWafat).toEqual([budi, sumi]);
   });
 
+  it('jawabUrutanTertunda: b tidak di urutan wafat atau urutan sudah ditentukan tahun → urutan tidak berubah, entri tunda dibuang', () => {
+    const { kasus, sumi, budi, andi } = keluargaKarto();
+    const tunda = tundaUrutan(kasus, sumi, andi);
+    const tanpaB = jawabUrutanTertunda(tunda, sumi, andi, 'sebelum');
+    expect(tanpaB.urutanWafat).toEqual([sumi, budi]);
+    expect(tanpaB.belumPasti).toBeUndefined();
+    const bertahun: Kasus = { ...tundaUrutan(kasus, sumi, budi), waktu: { [sumi]: tahun(1990), [budi]: tahun(1998) } };
+    const hasil = jawabUrutanTertunda(bertahun, sumi, budi, 'sesudah');
+    expect(hasil.urutanWafat).toEqual([sumi, budi]);
+    expect(hasil.belumPasti).toBeUndefined();
+  });
+
   it('urutan bertahun tidak bisa digeser: urutanDariTahun true, geserUrutan tidak mengubah', () => {
     const { kasus, sumi, budi } = keluargaKarto();
     const bertahun: Kasus = { ...kasus, waktu: { [sumi]: tahun(1990), [budi]: tahun(1998) } };
