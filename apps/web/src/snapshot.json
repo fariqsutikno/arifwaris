@@ -22911,6 +22911,118 @@
    "id": "Bagian keluarga yang mana?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tambah_peristiwa",
+   "halaman": "hitung",
+   "id": "Tambah peristiwa: lahir, menikah, atau bercerai di antara kematian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_judul",
+   "halaman": "hitung",
+   "id": "Tambah peristiwa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_apa",
+   "halaman": "hitung",
+   "id": "Peristiwa apa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_lahir",
+   "halaman": "hitung",
+   "id": "Kelahiran",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_nikah",
+   "halaman": "hitung",
+   "id": "Pernikahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_cerai",
+   "halaman": "hitung",
+   "id": "Perceraian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_siapa",
+   "halaman": "hitung",
+   "id": "Siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_kapan",
+   "halaman": "hitung",
+   "id": "Terjadi sesudah siapa wafat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_sesudah",
+   "halaman": "hitung",
+   "id": "Sesudah {nama} wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_keterangan",
+   "halaman": "hitung",
+   "id": "Dipakai untuk menentukan siapa yang sudah ada pada tiap kematian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.simpan_peristiwa",
+   "halaman": "hitung",
+   "id": "Simpan peristiwa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_baris_lahir",
+   "halaman": "hitung",
+   "id": "{nama} lahir, sesudah {almarhum} wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_baris_nikah",
+   "halaman": "hitung",
+   "id": "{nama} menikah dengan {pasangan}, sesudah {almarhum} wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_baris_cerai",
+   "halaman": "hitung",
+   "id": "{nama} bercerai dengan {pasangan}, sesudah {almarhum} wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.pasangan_siapa",
+   "halaman": "hitung",
+   "id": "Dengan siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.batal",
+   "halaman": "hitung",
+   "id": "Batal",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

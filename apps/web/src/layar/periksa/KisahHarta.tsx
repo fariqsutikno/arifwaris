@@ -4,24 +4,29 @@
 
 import { useEffect, useState } from 'react';
 import type { IdOrang } from '@waris/engine';
-import type { Kasus, TanggalKira } from '../../kasus';
+import type { Kasus, Peristiwa, TanggalKira } from '../../kasus';
 import type { Aksi } from '../../keadaan';
 import { namaSingkat } from '../../keadaanOrang';
 import { babakKisah, catatanKhusus, hidupSekarang, jedaTahun, kematianSebelum } from '../../kisah';
 import { t } from '../../terjemah';
 import { Ikon } from '../../ui/Ikon';
 import { gulirKe } from '../keluarga/gulir';
+import { FormPeristiwa } from './FormPeristiwa';
 import { BabakKisah } from './BabakKisah';
 
 interface Props {
   kasus: Kasus; ubah: (f: (k: Kasus) => Kasus) => void; kirim: (aksi: Aksi) => void;
   babakDisunting?: IdOrang | null; saatSunting?: (id: IdOrang | null) => void;
+  peristiwaTerbuka?: boolean; saatPeristiwa?: (buka: boolean) => void;
 }
 
-export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting }: Props) {
+export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting, peristiwaTerbuka, saatPeristiwa }: Props) {
   const [dalam, setDalam] = useState<IdOrang | null>(null);
   const disunting = babakDisunting !== undefined ? babakDisunting : dalam;
   const sunting = (id: IdOrang | null) => (saatSunting ? saatSunting(id) : setDalam(id));
+  const [formDalam, setFormDalam] = useState(false);
+  const formBuka = peristiwaTerbuka ?? formDalam;
+  const bukaForm = (buka: boolean) => (saatPeristiwa ? saatPeristiwa(buka) : setFormDalam(buka));
   useEffect(() => { if (disunting) gulirKe(document.getElementById(`babak-${disunting}`)); }, [disunting]);
   const nama = (id: IdOrang) => namaSingkat(kasus, id);
   const pemilik = nama(kasus.graf.idPewaris);
@@ -41,6 +46,9 @@ export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting }: 
             {indeks > 0 && <Jeda kata={kataJeda(jedaTahun(babak[indeks - 1]!.tahun, satu.tahun))} harta={harta} />}
             <BabakKisah kasus={kasus} babak={satu} ubah={ubah} kirim={kirim} terbuka={disunting === satu.idMayit}
               saatBuka={() => sunting(satu.idMayit)} saatTutup={() => sunting(null)} />
+            {satu.peristiwaSesudah.map((peristiwa, urutan) => (
+              <div key={urutan} className="peristiwa"><Ikon nama="tambah" ukuran={15} />{kalimatPeristiwa(kasus, peristiwa, satu.idMayit)}</div>
+            ))}
           </div>
         ))}
         <Jeda kata={t('hitung.periksa.sampai_hari_ini')} harta={harta} />
@@ -52,6 +60,9 @@ export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting }: 
           <p>{t('hitung.periksa.hari_ini_isi', { daftar: hidup, pemilik })}</p>
         </article>
       </div>
+      {formBuka ? <FormPeristiwa kasus={kasus} ubah={ubah} saatTutup={() => bukaForm(false)} /> : (
+        <button type="button" className="aksi-teks" onClick={() => bukaForm(true)}><Ikon nama="tambah" ukuran={15} />{t('hitung.periksa.tambah_peristiwa')}</button>
+      )}
       {catatanKhusus(kasus).map(({ jenis, orang }) => <p key={jenis} className="kecil redup">{kalimatCatatan(kasus, jenis, orang)}</p>)}
       <p className="kecil redup">{t('hitung.periksa.catatan_harta', { nama: pemilik })}</p>
     </section>
@@ -73,4 +84,12 @@ function kalimatCatatan(kasus: Kasus, jenis: string, orang: IdOrang[]): string {
     case 'janin': return t('hitung.penutup.status_dalam_kandungan');
     default: return t('hitung.cerita.sesudah_dibagi', { nama });
   }
+}
+
+function kalimatPeristiwa(kasus: Kasus, peristiwa: Peristiwa, idAlmarhum: IdOrang): string {
+  const [nama, almarhum] = [namaSingkat(kasus, peristiwa.idOrang), namaSingkat(kasus, idAlmarhum)];
+  if (peristiwa.jenis === 'lahir') return t('hitung.periksa.peristiwa_baris_lahir', { nama, almarhum });
+  const pasangan = namaSingkat(kasus, peristiwa.idPasangan);
+  return peristiwa.jenis === 'nikah' ? t('hitung.periksa.peristiwa_baris_nikah', { nama, pasangan, almarhum })
+    : t('hitung.periksa.peristiwa_baris_cerai', { nama, pasangan, almarhum });
 }

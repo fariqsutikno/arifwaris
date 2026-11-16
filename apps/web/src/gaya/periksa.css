@@ -36,3 +36,6 @@
 .node-orang.m.pusat{border-width:2px;border-color:var(--ink)}
 .node-orang.m{width:auto;min-width:0;cursor:default}
 @media(prefers-reduced-motion:reduce){.node-orang.m{animation:none;transition:none}}
+.peristiwa{display:flex;align-items:center;gap:8px;padding:8px 12px;margin:4px 0;border-radius:14px;background:var(--surface);font-size:14px}
+.form-peristiwa{display:flex;flex-direction:column;gap:10px;background:var(--surface);border-radius:16px;padding:14px}
+.form-peristiwa select{font:500 14px var(--font-sans);padding:8px 10px;border-radius:10px;border:1.5px solid var(--outline);background:#fff;max-width:320px}
