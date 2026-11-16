@@ -178,3 +178,12 @@ Rekomendasi: A + B + C.
 - Asumsi: aturan "status di bar bawah, Lanjut tidak dinonaktifkan" tetap; penandaan merah menambah, bukan mengganti.
 - Pertanyaan (C4-1): "hilang tanpa kabar" dan "cerai" boleh dipindah jadi pertanyaan lanjutan, atau tetap di kartu orang tapi lebih tersembunyi?
 - Pertanyaan (C1-1): tambah cepat tetap menambah (+10 jt), atau diganti pilihan nilai yang menimpa?
+
+## 6. Keputusan pemilik dan mockup (2026-11-16)
+
+- C4-1: "hilang tanpa kabar" dan "cerai" → **pertanyaan lanjutan** di akhir langkah Keluarga.
+- C1-1: tambah cepat **tetap menambah**, tiap ketukan harus terlihat menambah.
+- Mockup semua cluster: [mockup-wizard-cluster.html](mockup-wizard-cluster.html) (tab C1–C6 + Cara mencoba).
+  Dicek di browser: lebar HP dan laptop tanpa gulir mendatar; interaksi C1 (tambah, kosongkan, Lanjut menandai merah),
+  C4 (Sudah meninggal membuka pertanyaan lebih dulu/sesudah), C6 (dialog maju per langkah). Tidak dicek: pembaca layar.
+- Menunggu acc per cluster sebelum diterapkan ke aplikasi.
