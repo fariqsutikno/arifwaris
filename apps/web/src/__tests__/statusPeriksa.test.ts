@@ -12,7 +12,7 @@ describe('statusPeriksa (rencana 4, P1)', () => {
   it('urutan tertunda: aksi menunjuk urutannya, status menyebut pasangan, tidak ada "hitung dengan kemungkinan"', () => {
     const { kasus, sumi, budi } = keluargaKarto();
     expect(statusPeriksa(tundaUrutan(kasus, sumi, budi))).toEqual({
-      aksi: { jenis: 'urutan', a: sumi, b: budi }, status: 'Pastikan dulu urutan wafat Mbah Sumi dan Budi.' });
+      aksi: { jenis: 'urutan', a: sumi, b: budi }, status: 'Pastikan dulu urutan meninggal Mbah Sumi dan Budi.' });
   });
 
   it('tidak ada yang belum pasti: hitung; hilang (mafqud): hitung dengan kemungkinan', () => {

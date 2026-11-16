@@ -68,7 +68,7 @@ describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)
   it('jawaban yang menambah cabang mengarahkan ke Keluarga; Periksa menyebut keluarga belum lengkap dengan aksi ke bagian itu', () => {
     render(<Papan kasus={kasusIbuBelumTahu()} />);
     expect(status()).toBe('Ibu: belum dipastikan masih hidup atau tidak.');
-    fireEvent.click(screen.getByRole('radio', { name: 'Wafat sesudah almarhum' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Meninggal sesudah almarhum' }));
     expect(status()).toMatch(/^Keluarga belum lengkap: .+\.$/);
     expect(aksiUtama().textContent).toBe('Lihat di Keluarga');
     fireEvent.click(aksiUtama());
@@ -109,11 +109,11 @@ describe('Periksa nyata dirangkai (rencana 4, tugas 7)', () => {
     expect(sesudah(belum, keliru) && sesudah(keliru, kisah)).toBe(true);
   });
 
-  it('Ada yang keliru? → Tahun atau urutan wafat → Budi: babak Budi terbuka dalam mode ubah', () => {
+  it('Ada yang keliru? → Tahun atau urutan meninggal → Budi: babak Budi terbuka dalam mode ubah', () => {
     const { kasus } = keluargaKarto();
     render(<Papan kasus={lengkapi(denganHarta(kasus))} />);
     fireEvent.click(screen.getByRole('button', { name: /Ubah sesuatu/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Tahun atau urutan wafat/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Tahun atau urutan meninggal/ }));
     fireEvent.click(screen.getByRole('button', { name: /^Budi/ }));
     const idBudi = Object.values(kasus.graf.orang).find(o => o.nama === 'Budi')!.id;
     expect(document.querySelector(`#babak-${idBudi} .sunting-babak`)).toBeTruthy();

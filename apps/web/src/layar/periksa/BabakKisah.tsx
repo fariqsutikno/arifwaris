@@ -30,7 +30,7 @@ export function BabakKisah({ kasus, babak, ubah, kirim, terbuka, saatBuka, saatT
   const idJudul = `judul-babak-${babak.idMayit}`;
   return (
     <article className="babak" id={`babak-${babak.idMayit}`} aria-labelledby={idJudul}>
-      <div className="kepala">
+      <div className="babak-kepala">
         <div>
           {babak.tahun ? <div className="tahun-besar">{babak.tahun.tahun}</div>
             : (babak.nomor > 0 || kematianSebelum(kasus).length > 0) && <div className="label-urutan">{t('hitung.periksa.label_lalu')}</div>}

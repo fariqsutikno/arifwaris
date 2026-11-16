@@ -129,7 +129,7 @@ describe('aksesibilitas kanvas (spec kanvas 11.8)', () => {
     expect(screen.getByRole('radiogroup', { name: t('hitung.kanvas.pintu_judul') })).toBeTruthy();
     unmount();
     render(<Papan awal={kasusBaru('L')} />);
-    expect(screen.getByRole('radiogroup', { name: 'Waktu almarhum wafat, apakah beliau punya istri?' })).toBeTruthy();
+    expect(screen.getByRole('radiogroup', { name: 'Waktu almarhum meninggal, apakah beliau punya istri?' })).toBeTruthy();
     fireEvent.click(screen.getByRole('radio', { name: 'Ya' }));
     fireEvent.click(screen.getByRole('button', { name: 'Tambah Istri' }));
     expect(screen.getByRole('radiogroup', { name: 'Keadaannya sekarang?' })).toBeTruthy();

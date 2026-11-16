@@ -143,7 +143,7 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .tautan-teks{min-height:44px;padding:0 2px;border:0;background:none;color:var(--on-fill);font:600 14px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:start}
 .pilihan-dialog{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .label-pilihan{flex-basis:100%;font:700 13px var(--font-sans)}
-.pilih-dialog{min-height:40px;padding:0 14px;border:var(--border-w) solid var(--outline);border-radius:999px;background:var(--surface-raised);color:var(--on-fill);font:600 14px var(--font-sans);cursor:pointer}
+.pilih-dialog{min-height:40px;padding:0 14px;border:1.5px solid var(--outline-kuat);border-radius:999px;background:var(--surface-raised);color:var(--on-fill);font:600 14px var(--font-sans);cursor:pointer}
 .pilih-dialog.terpilih{background:var(--on-fill);color:var(--surface-raised)}
 .tautan-hubungan{margin-top:10px}
 .tautan-hubungan .tautan-teks{color:#fff}
@@ -171,4 +171,6 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .pilihan-pintu i{flex:none;width:22px;height:22px;border:2px solid var(--ink-muted);border-radius:50%;transition:border-color .15s,background .15s}
 .pilihan-pintu[aria-checked=true]{border-color:var(--ink)}
 .pilihan-pintu[aria-checked=true] i{border-color:var(--ink);background:radial-gradient(var(--ink) 45%,transparent 50%)}
+.pilihan-pintu .teks-pintu{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pilihan-pintu small{color:var(--ink-muted);font:500 13px/1.4 var(--font-sans)}
 .pilihan-pintu:focus-visible{outline:3px solid var(--focus);outline-offset:2px}

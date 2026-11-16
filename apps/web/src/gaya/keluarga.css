@@ -38,14 +38,14 @@
 .kaki-grup .salah{color:#8a3409;font-weight:500}
 
 .ya-tidak{display:flex;gap:6px;flex-wrap:wrap}
-.ya-tidak button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:9px 18px;min-height:42px;font:500 15px var(--font-sans);cursor:pointer;color:var(--ink)}
-.ya-tidak button:hover{border-color:var(--outline)}
-.ya-tidak button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
+.ya-tidak button{border:1.5px solid var(--outline-kuat);background:var(--surface-raised);border-radius:999px;padding:9px 18px;min-height:42px;font:500 15px var(--font-sans);cursor:pointer;color:var(--ink)}
+.ya-tidak button:hover{border-color:var(--ink)}
+.ya-tidak button[aria-checked=true]{border-color:var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600}
 
 .seg{display:flex;align-self:flex-start;flex-wrap:wrap;gap:4px;max-width:100%}
-.seg button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:6px 12px;min-height:36px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink);white-space:nowrap}
-.seg button:hover{border-color:var(--outline)}
-.seg button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
+.seg button{border:1.5px solid var(--outline-kuat);background:var(--surface-raised);border-radius:999px;padding:6px 12px;min-height:36px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink);white-space:nowrap}
+.seg button:hover{border-color:var(--ink)}
+.seg button[aria-checked=true]{border-color:var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600}
 .pilihan-lain{margin-top:2px}
 
 .orang{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:start;padding:12px;background:#f6f2e9;border-radius:16px;border:1.5px solid transparent}
@@ -56,7 +56,10 @@
 .peran{font-size:13px;color:var(--ink-muted)}
 .nama-isi{font:600 15px var(--font-sans);border:0;border-bottom:1.5px dashed var(--outline);background:none;padding:2px 0;width:100%;max-width:260px}
 .nama-isi::placeholder{color:#5c655f;font-weight:500}
-.keadaan-label{font:600 13px var(--font-sans)}
+.keadaan-label{margin:0;color:var(--ink);font:600 15.5px/1.35 var(--font-sans)}   /* tingkat 2: pertanyaan di dalam kartu orang */
+.keterangan-kartu{margin:0;color:var(--ink-muted);font-size:13px;line-height:1.5}
+.kapan .isian-tahun>span{color:var(--ink);font:600 15.5px/1.35 var(--font-sans)}
+.kapan .isian-tahun>span .opsional{font-weight:500;color:var(--ink-muted)}
 .kapan{display:flex;flex-direction:column;gap:6px;padding-left:10px;border-left:2px solid var(--divider)}
 .salah{font-size:13px;color:#8a3409;font-weight:500}
 .hapus{font-size:13px!important;color:var(--ink-muted)!important}

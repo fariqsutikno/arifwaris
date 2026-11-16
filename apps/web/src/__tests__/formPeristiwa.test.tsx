@@ -35,7 +35,7 @@ describe('Tambah kejadian (dialog bertahap)', () => {
     pilih('Sesudah Mbah Sumi meninggal');
     simpan();
     expect(terbaru.peristiwa).toEqual([{ jenis: 'lahir', idOrang: andi, sesudahWafat: sumi }]);
-    const babakSumi = screen.getByRole('article', { name: /Mbah Sumi wafat/ });
+    const babakSumi = screen.getByRole('article', { name: /Mbah Sumi meninggal/ });
     expect(within(babakSumi).queryByText(/Andi lahir/)).toBeNull();
     expect(screen.getByText('Andi lahir.')).toBeTruthy();
     expect(screen.getByText('Sesudah Mbah Sumi meninggal', { selector: 'small' })).toBeTruthy();

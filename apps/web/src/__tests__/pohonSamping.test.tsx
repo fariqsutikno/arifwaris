@@ -45,7 +45,7 @@ describe('pohon samping langkah Keluarga (spec kanvas 5.11, 8)', () => {
     render(<Papan />);
     expect(document.querySelector('.grup h2')!.textContent).toBe('Orang tua almarhum');   // bagian pertama yang belum lengkap
     fireEvent.click(screen.getByRole('button', { name: 'ketuk' }));
-    expect(document.querySelector('.grup h2')!.textContent).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(document.querySelector('.grup h2')!.textContent).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
     const baris = document.getElementById(`baris-${rina}`)!;
     expect(baris.className).toContain('sorot-baris');
     expect(document.activeElement).toBe(baris);
@@ -80,7 +80,7 @@ describe('penanda meninggal dan sebutan simpul penghubung (C5-2, C5-3)', () => {
     const simpul = container.querySelector('.node-orang.penghubung')!;
     expect(simpul.className).toContain('meninggal');
     expect(simpul.textContent).toContain('Kakek dari ayah');
-    expect(simpul.textContent).toContain('meninggal lebih dulu');
+    expect(simpul.textContent).toContain('meninggal sebelum almarhum');
     expect(simpul.textContent).not.toMatch(/Belum bernama|sudah wafat/);
   });
 });

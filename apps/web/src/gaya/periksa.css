@@ -1,7 +1,7 @@
 /* Periksa nyata (rencana 4): belum dipastikan, salin WA. Mengikuti mockup v5. */
 .belum-baris{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--divider)}
 .belum-baris .deret{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.pilih-belum{border:1.5px solid var(--outline);background:var(--surface);border-radius:999px;padding:8px 16px;min-height:40px;font:500 14px var(--font-sans);cursor:pointer;color:var(--ink)}
+.pilih-belum{border:1.5px solid var(--outline-kuat);background:var(--surface-raised);border-radius:999px;padding:8px 16px;min-height:40px;font:500 14px var(--font-sans);cursor:pointer;color:var(--ink)}
 .pilih-belum:hover{border-color:var(--ink)}
 .terjawab{color:#1b7a4c;font-weight:600;font-size:13.5px;margin:0}
 .terjawab:empty{display:none}
@@ -13,7 +13,7 @@
 .babak{position:relative;display:flex;flex-direction:column;gap:10px;padding:16px 18px;border-radius:22px;background:#fff;border:1px solid var(--divider)}
 .babak::before{content:"";position:absolute;left:-29px;top:20px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--ink)}
 .babak.kini::before{background:var(--keturunan);border-color:#1b7a4c}
-.babak .kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.babak-kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .babak .tahun-besar{font:500 30px/1 var(--font-display);letter-spacing:-.02em}
 .babak .penanda-kini{font:600 12px var(--font-sans);letter-spacing:.04em;text-transform:uppercase;color:var(--ink-muted)}
 .babak .judul-babak{font:600 16px var(--font-sans);margin-top:4px}

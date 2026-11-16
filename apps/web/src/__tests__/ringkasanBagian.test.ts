@@ -14,7 +14,7 @@ describe('teks bagian (mockup v5)', () => {
     expect(judulBagian(dengan, ambil(dengan, 'orangTua:PEWARIS'))).toBe('Orang tua Mbah Karto');
     expect(judulPendek(dengan, ambil(dengan, 'anak:PEWARIS'))).toBe('Anak');
     expect(judulPendek(dengan, ambil(dengan, `anak:${budi}`))).toBe('Anak Budi');
-    expect(judulBagian(dengan, ambil(dengan, 'urutan'))).toBe('Urutan wafat');
+    expect(judulBagian(dengan, ambil(dengan, 'urutan'))).toBe('Urutan meninggal');
     expect(judulBagian(dengan, ambil(dengan, 'kamu'))).toBe('Kamu');
   });
 
@@ -23,7 +23,7 @@ describe('teks bagian (mockup v5)', () => {
     const perempuan = kasusBaru('P');
     expect(pertanyaanBagian(laki, ambil(laki, 'pasangan:PEWARIS'))).toMatch(/punya istri\?$/);
     expect(pertanyaanBagian(perempuan, ambil(perempuan, 'pasangan:PEWARIS'))).toMatch(/punya suami\?$/);
-    expect(pertanyaanBagian(laki, ambil(laki, 'anak:PEWARIS'))).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(pertanyaanBagian(laki, ambil(laki, 'anak:PEWARIS'))).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
   });
 });
 
@@ -35,17 +35,17 @@ describe('ringkasanBagian', () => {
 
   it('anggota disebut dengan keadaannya: wafat (dengan tahun bila ada), belum tahu', () => {
     const { kasus, slamet, rina } = keluargaKarto();
-    expect(ringkasanBagian(kasus, ambil(kasus, 'anak:PEWARIS'))).toBe('Slamet (wafat), Budi, Rina');
+    expect(ringkasanBagian(kasus, ambil(kasus, 'anak:PEWARIS'))).toBe('Slamet (meninggal), Budi, Rina');
     const bertahun: Kasus = { ...kasus, waktu: { [slamet]: { wafat: { tahun: 1998, kiraKira: false } } },
       graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [rina]: { ...kasus.graf.orang[rina]!, statusHidup: 'tidakDiketahui' } } } };
-    expect(ringkasanBagian(bertahun, ambil(bertahun, 'anak:PEWARIS'))).toBe('Slamet (wafat 1998), Budi, Rina (belum tahu)');
+    expect(ringkasanBagian(bertahun, ambil(bertahun, 'anak:PEWARIS'))).toBe('Slamet (meninggal 1998), Budi, Rina (belum tahu)');
   });
 
   it('kamu dan urutan', () => {
     const { kasus, sumi, budi, rina } = keluargaKarto();
     expect(ringkasanBagian({ ...kasus, saya: rina }, ambil(kasus, 'kamu'))).toBe('Saya Rina');
     expect(ringkasanBagian({ ...kasus, saya: null }, ambil(kasus, 'kamu'))).toBe('Mengisi untuk orang lain');
-    expect(ringkasanBagian(kasus, ambil(kasus, 'urutan'))).toBe('Mbah Sumi lebih dulu');
+    expect(ringkasanBagian(kasus, ambil(kasus, 'urutan'))).toBe('Mbah Sumi meninggal sebelum');
     expect(ringkasanBagian({ ...kasus, belumPasti: [{ jenis: 'urutan', a: sumi, b: budi, bersamaan: false }] }, ambil(kasus, 'urutan')))
       .toBe('Belum tahu, ditanyakan di Periksa');
   });

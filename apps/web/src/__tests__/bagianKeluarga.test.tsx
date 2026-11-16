@@ -36,7 +36,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
 
   it('anak: penghitung Laki-laki dan Perempuan; tanpa calon ibu janin tidak ada pertanyaan hamil', () => {
     render(<Uji awal={dijawab(kasusBaru('L'), { PEWARIS: ['pasangan'] })} />);
-    expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(judulAktif()).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
     radio('Ya');
     expect(screen.getByText('Laki-laki')).toBeTruthy();
     expect(screen.getByText('Perempuan')).toBeTruthy();
@@ -91,7 +91,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
 
   it('saudara tidak dirender bila ada anak laki-laki; Details "Kenapa kakak atau adik … tidak ditanyakan?" ada', () => {
     keAnakPewarisKarto();
-    expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(judulAktif()).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
     expect(document.querySelector('.langkah-bagian')!.textContent).not.toContain('Kakak atau adik');
     expect(screen.getByText('Kenapa kakak atau adik almarhum tidak ditanyakan?')).toBeTruthy();
   });

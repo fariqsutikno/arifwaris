@@ -87,7 +87,7 @@ describe('PohonKeluarga: dialog', () => {
     const tombol = screen.getAllByRole('button', { name: /Buka menu/ });
     fireEvent.click(tombol.find(t => /Anak|anak/.test(t.getAttribute('aria-label') ?? ''))!);
     pilihMenu(/Hapus/);
-    expect(screen.getByRole('alertdialog').textContent).toMatch(/tetap ada di pohon sebagai orang yang sudah wafat/);
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/tetap ada di pohon sebagai orang yang sudah meninggal/);
   });
   it('Hapus menjalankan rapikanKeadaan: id yang hilang tidak tersisa di urutan wafat', () => {
     let k = kasusBaru('L');

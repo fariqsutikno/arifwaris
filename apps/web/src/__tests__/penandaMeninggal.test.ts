@@ -5,7 +5,7 @@ import { keteranganMeninggal, tahunWafat, waktuMeninggal } from '../penandaMenin
 
 describe('penandaMeninggal', () => {
   it('keterangan: tahun bila diketahui, selain itu urutan terhadap almarhum', () => {
-    expect(keteranganMeninggal('lebihDulu')).toBe('meninggal lebih dulu');
+    expect(keteranganMeninggal('lebihDulu')).toBe('meninggal sebelum almarhum');
     expect(keteranganMeninggal('sesudah')).toBe('meninggal sesudah almarhum');
     expect(keteranganMeninggal('bersamaan')).toBe('meninggal bersamaan');
     expect(keteranganMeninggal('lebihDulu', 1990)).toBe('meninggal 1990');

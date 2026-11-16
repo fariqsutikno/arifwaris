@@ -18,7 +18,7 @@ describe('DialogKeadaan', () => {
     const { kasus, anak } = keluarga();
     const selesai = vi.fn();
     render(<DialogKeadaan kasus={kasus} idOrang={anak[0]!} saatSelesai={selesai} saatBatal={() => {}} />);
-    pilih(/Sudah wafat/); lanjut();
+    pilih(/Sudah meninggal/); lanjut();
     pilih(/Sesudah/); lanjut();
     expect(screen.getByText(/sudah dihitung bagian masing-masing/)).toBeTruthy();
     pilih(/Belum dibagi/); lanjut();
@@ -29,11 +29,11 @@ describe('DialogKeadaan', () => {
     const { kasus, anak } = keluarga();
     const selesai = vi.fn();
     const { unmount } = render(<DialogKeadaan kasus={kasus} idOrang={anak[0]!} saatSelesai={selesai} saatBatal={() => {}} />);
-    pilih(/Sudah wafat/); lanjut(); pilih(/Sebelum/); lanjut();
+    pilih(/Sudah meninggal/); lanjut(); pilih(/Sebelum/); lanjut();
     expect(selesai.mock.calls[0]![0].graf.orang[anak[0]!].statusHidup).toBe('wafat');
     unmount();
     render(<DialogKeadaan kasus={kasus} idOrang={anak[0]!} saatSelesai={selesai} saatBatal={() => {}} />);
-    pilih(/Sudah wafat/); lanjut(); pilih(/Sesudah/); lanjut(); pilih(/Sudah dibagi/); lanjut();
+    pilih(/Sudah meninggal/); lanjut(); pilih(/Sesudah/); lanjut(); pilih(/Sudah dibagi/); lanjut();
     expect(selesai.mock.calls[1]![0].wafatSesudahDibagi).toEqual([anak[0]]);
   });
 
@@ -42,8 +42,8 @@ describe('DialogKeadaan', () => {
     const selesai = vi.fn();
     const pertama = { ...kasus, urutanWafat: [anak[0]!] };
     render(<DialogKeadaan kasus={pertama} idOrang={anak[1]!} saatSelesai={selesai} saatBatal={() => {}} />);
-    pilih(/Sudah wafat/); lanjut(); pilih(/Sesudah/); lanjut(); pilih(/Belum dibagi/); lanjut();
-    expect(screen.getByText(/Siapa yang wafat lebih dulu/)).toBeTruthy();
+    pilih(/Sudah meninggal/); lanjut(); pilih(/Sesudah/); lanjut(); pilih(/Belum dibagi/); lanjut();
+    expect(screen.getByText(/Siapa yang meninggal lebih dulu/)).toBeTruthy();
     fireEvent.click(screen.getAllByRole('radio')[0]!);   // pilihan pertama = orang baru ini
     lanjut();
     expect(selesai.mock.calls[0]![0].urutanWafat).toEqual([anak[1], anak[0]]);
@@ -53,7 +53,7 @@ describe('DialogKeadaan', () => {
     const { kasus, anak } = keluarga();
     const selesai = vi.fn();
     render(<DialogKeadaan kasus={kasus} idOrang={anak[0]!} saatSelesai={selesai} saatBatal={() => {}} />);
-    pilih(/Sudah wafat/); lanjut(); pilih(/Bersamaan/); lanjut();
+    pilih(/Sudah meninggal/); lanjut(); pilih(/Bersamaan/); lanjut();
     pilih(/Tidak pasti/); lanjut();
     pilih(/Tidak pernah ada yang tahu/); lanjut();
     lanjut();   // harta boleh kosong
@@ -64,7 +64,7 @@ describe('DialogKeadaan', () => {
     const { kasus, anak } = keluarga(2);
     const selesai = vi.fn();
     render(<DialogKeadaan kasus={{ ...kasus, urutanWafat: [anak[0]!] }} idOrang={anak[1]!} saatSelesai={selesai} saatBatal={() => {}} />);
-    pilih(/Sudah wafat/); lanjut(); pilih(/Bersamaan/); lanjut();
+    pilih(/Sudah meninggal/); lanjut(); pilih(/Bersamaan/); lanjut();
     expect(screen.getByText(/belum bisa dihitung otomatis/)).toBeTruthy();
     expect(selesai).not.toHaveBeenCalled();
   });
@@ -80,7 +80,7 @@ describe('DialogKeadaan', () => {
     const { kasus, anak } = keluarga();
     const batal = vi.fn(); const selesai = vi.fn();
     render(<DialogKeadaan kasus={kasus} idOrang={anak[0]!} saatSelesai={selesai} saatBatal={batal} />);
-    pilih(/Sudah wafat/); lanjut();
+    pilih(/Sudah meninggal/); lanjut();
     fireEvent.keyDown(screen.getByRole('dialog'), { key: 'Escape' });
     expect(batal).toHaveBeenCalled(); expect(selesai).not.toHaveBeenCalled();
   });

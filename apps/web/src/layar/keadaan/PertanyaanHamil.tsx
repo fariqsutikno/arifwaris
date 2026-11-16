@@ -85,10 +85,10 @@ export function PertanyaanHamil({ kasus, idMayit, ubah, kartu, kecuali }: Props)
   const pilihTidakAda = () => (janinBabak.length > 0 ? setKonfirmasiHapus(true) : setAda(false));
 
   const opsi = (daftar: Array<[string, string, string?]>) => (
-    <div className="pilihan-dialog" role="radiogroup" aria-labelledby={`${id}-tanya`}>
+    <div className="daftar-pintu" role="radiogroup" aria-labelledby={`${id}-tanya`}>
       {daftar.map(([nilai, label, keterangan]) => (
-        <button key={nilai} type="button" role="radio" aria-checked={pilihan === nilai} className="opsi-dialog" onClick={() => setPilihan(nilai)}>
-          <span>{label}</span>{keterangan && <small>{keterangan}</small>}
+        <button key={nilai} type="button" role="radio" aria-checked={pilihan === nilai} className="pilihan-pintu" onClick={() => setPilihan(nilai)}>
+          <i aria-hidden="true" /><span className="teks-pintu"><span>{label}</span>{keterangan && <small>{keterangan}</small>}</span>
         </button>
       ))}
     </div>
@@ -147,10 +147,10 @@ export function PertanyaanHamil({ kasus, idMayit, ubah, kartu, kecuali }: Props)
         </DialogKonfirmasi>
       )}
       <section className="penutup-babak" aria-labelledby={`${id}-hamil`}>
-        <h3 id={`${id}-hamil`} className="pertanyaan-bagian">
+        <h3 id={`${id}-hamil`} className={kartu ? 'keadaan-label' : 'pertanyaan-bagian'}>
           {kartu ? t('hitung.janin.tanya_kartu', { mayit, nama: namaSingkat(kasus, kartu) }) : t('hitung.janin.tanya', { mayit })}
         </h3>
-        <p className="keterangan">{kartu ? t('hitung.janin.tanya_kartu_ket') : t('hitung.janin.tanya_ket')}</p>
+        <p className={kartu ? 'keterangan-kartu' : 'keterangan'}>{kartu ? t('hitung.janin.tanya_kartu_ket') : t('hitung.janin.tanya_ket')}</p>
         <div className="ya-tidak" role="radiogroup" aria-labelledby={`${id}-hamil`}>
           <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{kartu ? t('hitung.kanvas.tidak') : t('hitung.janin.tidak_ada')}</button>
           <button type="button" role="radio" aria-checked={ada} onClick={pilihAda}>{kartu ? t('hitung.kanvas.ya') : t('hitung.janin.ada')}</button>

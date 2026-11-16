@@ -93,7 +93,7 @@ describe('keadaan satu baris', () => {
     const tertunda = jawabLanjutan(pilihKeadaan(kasus, id, 'wafat', 'PEWARIS'), id, 'PEWARIS', { jenis: 'wafat', tahun: tahun(1990) });
     expect(lanjutanDiperlukan(tertunda, id)).toBe('wafat');
     expect(tertunda.belumDiisi).toEqual([id]);
-    expect(alasanBarisKurang(tertunda, id, 'PEWARIS')).toMatch(/lebih dulu atau sesudah/);
+    expect(alasanBarisKurang(tertunda, id, 'PEWARIS')).toMatch(/sebelum atau sesudah/);
     const selesai = jawabLanjutan(tertunda, id, 'PEWARIS', { jenis: 'wafat', waktu: 'sesudah' });
     expect(selesai.urutanWafat).toContain(id);
     expect(selesai.belumDiisi ?? []).toEqual([]);

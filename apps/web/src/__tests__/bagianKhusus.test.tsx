@@ -31,7 +31,7 @@ describe('BagianUrutan (spec kanvas 5.6)', () => {
   it('pertanyaan berpasangan menyebut A dan B; Sebelum menyelesaikan dan bagian lengkap', () => {
     const { kasus } = kartoBertahun();
     render(<Uji awal={kasus} bagian={ambil(kasus, 'urutan')} Isi={BagianUrutan} />);
-    expect(screen.getByText('Mbah Sumi wafat sebelum atau sesudah Budi?')).toBeTruthy();
+    expect(screen.getByText('Mbah Sumi meninggal sebelum atau sesudah Budi?')).toBeTruthy();
     expect(bagianLengkap(kasus, ambil(kasus, 'urutan'))).toBe(false);
     radio('Sebelum Budi');
     expect(bagianLengkap(terakhir, ambil(terakhir, 'urutan'))).toBe(true);
