@@ -22,14 +22,21 @@ interface Props {
   tandaiKurang: boolean; disorot: IdOrang | null; ya?: boolean;
 }
 
+/** Dilihat dari kakek, saudara laki-lakinya adalah paman pewaris [R03-2]; baris ini memakai sebutan paman, bukan saudara. */
+const SEBUTAN_SAUDARA_KAKEK: Partial<Record<KunciAhliWaris, () => string>> = {
+  SAUDARA_KANDUNG: () => t('hitung.kanvas.baris_paman_kandung_ayah'),
+  SAUDARA_SEBAPAK: () => t('hitung.kanvas.baris_paman_sebapak_ayah'),
+};
+
 export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya = true }: Props) {
-  const barisDi = (kunci: KunciAhliWaris) => orangDiBaris(kasus, bagian, kunci).map(id => (
-    <BarisOrang key={id} kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot} />
+  const barisDi = (kunci: KunciAhliWaris, sebutan?: string) => orangDiBaris(kasus, bagian, kunci).map(id => (
+    <BarisOrang key={id} kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot}
+      {...(sebutan ? { sebutan } : {})} />
   ));
-  const kelompokPeran = (kunci: KunciAhliWaris, label?: string) => (
+  const kelompokPeran = (kunci: KunciAhliWaris, label?: string, sebutan?: string) => (
     <div className="kelompok-peran" key={kunci}>
       <PenghitungOrang kasus={kasus} bagian={bagian} kunci={kunci} ubah={ubah} {...(label ? { label } : {})} />
-      {barisDi(kunci)}
+      {barisDi(kunci, sebutan)}
     </div>
   );
   const bingung = (daftar: KunciAhliWaris[]) => <BingungMemilih daftarKunci={daftar.filter(kunci => orangDenganKunci(kasus, bagian.milik, kunci).length > 0)} />;
@@ -54,9 +61,13 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
     case 'orangTua': case 'kakekNenek':
       return <>{slotTetap(kasus, bagian).map(kunci => <BarisTetap key={kunci} kasus={kasus} bagian={bagian} kunci={kunci} ubah={ubah}
         tandaiKurang={tandaiKurang} disorot={disorot} />)}{bingung(slotTetap(kasus, bagian))}</>;
-    case 'saudara': case 'jauh': case 'saudaraKakek': {
+    case 'saudara': case 'jauh': {
       const daftar = KUNCI_PER_KELOMPOK[bagian.jenis] ?? [];
       return !ya ? null : <>{daftar.map(kunci => kelompokPeran(kunci))}{bingung(daftar)}</>;
+    }
+    case 'saudaraKakek': {
+      const daftar = KUNCI_PER_KELOMPOK.saudaraKakek ?? [];
+      return !ya ? null : <>{daftar.map(kunci => kelompokPeran(kunci, undefined, SEBUTAN_SAUDARA_KAKEK[kunci]?.()))}{bingung(daftar)}</>;
     }
     case 'anakBersama': return <AnakBersama kasus={kasus} bagian={bagian} ubah={ubah} />;
     case 'halLain': return <BagianHalLain kasus={kasus} bagian={bagian} ubah={ubah} />;

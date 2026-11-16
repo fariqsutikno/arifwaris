@@ -23142,6 +23142,20 @@
    "id": "{nama} punya saudara laki-laki, sekandung atau sebapak? Hitung juga yang sudah wafat.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_paman_kandung_ayah",
+   "halaman": "hitung",
+   "id": "Paman kandung ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_paman_sebapak_ayah",
+   "halaman": "hitung",
+   "id": "Paman sebapak ayah",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

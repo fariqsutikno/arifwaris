@@ -26,6 +26,8 @@ interface Props {
   tandaiKurang: boolean; disorot: boolean;
   /** false untuk baris tetap (Ayah, Ibu, kakek, nenek): posisinya selalu ada, hanya keadaannya yang diubah. */
   bisaHapus?: boolean;
+  /** Sebutan pengganti label dari kunci peran, misalnya "Paman kandung ayah" di bagian saudara kakek. */
+  sebutan?: string;
 }
 
 /** Kunci diksi harus literal (dicek tes diksi), jadi label tiap keadaan ditulis eksplisit. */
@@ -41,14 +43,14 @@ const ARTI_KEADAAN: Record<PilihanKeadaan | 'lainnya', () => string> = {
 /** Peran yang hanya satu per orang (Ayah, Suami, …) tidak diberi nomor. */
 const adalahPeranTunggal = (kunci: KunciAhliWaris) => jenisDari(kunci)?.maksimal === 1;
 
-export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disorot, bisaHapus = true }: Props) {
+export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disorot, bisaHapus = true, sebutan }: Props) {
   const idLabel = useId();
   const [lainnyaTerbuka, setLainnyaTerbuka] = useState(false);
   const [akanHapus, setAkanHapus] = useState(false);
   const orang = kasus.graf.orang[id];
   if (!orang) return null;
 
-  const peran = labelPeran(kasus, id, kunci, milik);
+  const peran = labelPeran(kasus, id, kunci, milik, sebutan);
   const sebutanMu = sebutanDariSaya(kasus, id);
   const terpilih = keadaanTerpilih(kasus, id);
   const opsi = pilihanKeadaan(kunci);
@@ -114,8 +116,8 @@ export const namaPeran = (kasus: Kasus, kunci: KunciAhliWaris, milik: IdOrang): 
   sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenisDari(kunci)?.label ?? kunci, kasus.graf.orang[milik]?.jenisKelamin ?? 'L');
 
 /** "Anak laki-laki 2" bila perannya bisa lebih dari satu; urutannya menurut posisi di bagian. */
-function labelPeran(kasus: Kasus, id: IdOrang, kunci: KunciAhliWaris, milik: IdOrang): string {
-  const dasar = namaPeran(kasus, kunci, milik);
+function labelPeran(kasus: Kasus, id: IdOrang, kunci: KunciAhliWaris, milik: IdOrang, sebutan?: string): string {
+  const dasar = sebutan ?? namaPeran(kasus, kunci, milik);
   return adalahPeranTunggal(kunci) ? dasar : `${dasar} ${orangDenganKunci(kasus, milik, kunci).indexOf(id) + 1}`;
 }
 
