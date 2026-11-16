@@ -15,19 +15,21 @@ const JUDUL: Record<Jenis, (nama: string) => string> = {
   anak: nama => t('hitung.kanvas.judul_anak', { nama }), anakBersama: nama => t('hitung.kanvas.judul_anak', { nama }),
   orangTua: nama => t('hitung.kanvas.judul_orang_tua', { nama }), kakekNenek: nama => t('hitung.kanvas.judul_kakek_nenek', { nama }),
   saudara: nama => t('hitung.kanvas.judul_saudara', { nama }), jauh: nama => t('hitung.kanvas.judul_jauh', { nama }),
+  saudaraKakek: nama => t('hitung.kanvas.judul_saudara_kakek', { nama }),
   halLain: nama => t('hitung.kanvas.judul_hal_lain', { nama }), urutan: () => t('hitung.kanvas.judul_urutan'), kamu: () => t('hitung.kanvas.judul_kamu'),
 };
 const PENDEK: Record<Jenis, () => string> = {
   pasangan: () => t('hitung.kanvas.pendek_istri'), suami: () => t('hitung.kanvas.pendek_suami'),
   anak: () => t('hitung.kanvas.pendek_anak'), anakBersama: () => t('hitung.kanvas.pendek_anak'),
   orangTua: () => t('hitung.kanvas.pendek_orang_tua'), kakekNenek: () => t('hitung.kanvas.pendek_kakek_nenek'),
-  saudara: () => t('hitung.kanvas.pendek_saudara'), jauh: () => t('hitung.kanvas.pendek_jauh'),
+  saudara: () => t('hitung.kanvas.pendek_saudara'), jauh: () => t('hitung.kanvas.pendek_jauh'), saudaraKakek: () => t('hitung.kanvas.pendek_saudara_kakek'),
   halLain: () => t('hitung.kanvas.pendek_hal_lain'), urutan: () => t('hitung.kanvas.pendek_urutan'), kamu: () => t('hitung.kanvas.pendek_kamu'),
 };
 const TANYA: Partial<Record<Jenis, (nama: string) => string>> = {
   pasangan: nama => t('hitung.kanvas.tanya_istri', { nama }), suami: nama => t('hitung.kanvas.tanya_suami', { nama }),
   anak: nama => t('hitung.kanvas.tanya_anak', { nama }), orangTua: nama => t('hitung.kanvas.tanya_orang_tua', { nama }),
   saudara: nama => t('hitung.kanvas.tanya_saudara', { nama }), jauh: nama => t('hitung.kanvas.tanya_jauh', { nama }),
+  saudaraKakek: nama => t('hitung.kanvas.tanya_saudara_kakek', { nama }),
   halLain: nama => t('hitung.kanvas.tanya_hal_lain', { nama }),
 };
 const TANYA_KAKEK_NENEK = {

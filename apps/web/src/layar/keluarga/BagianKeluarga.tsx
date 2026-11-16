@@ -54,7 +54,7 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
     case 'orangTua': case 'kakekNenek':
       return <>{slotTetap(kasus, bagian).map(kunci => <BarisTetap key={kunci} kasus={kasus} bagian={bagian} kunci={kunci} ubah={ubah}
         tandaiKurang={tandaiKurang} disorot={disorot} />)}{bingung(slotTetap(kasus, bagian))}</>;
-    case 'saudara': case 'jauh': {
+    case 'saudara': case 'jauh': case 'saudaraKakek': {
       const daftar = KUNCI_PER_KELOMPOK[bagian.jenis] ?? [];
       return !ya ? null : <>{daftar.map(kunci => kelompokPeran(kunci))}{bingung(daftar)}</>;
     }

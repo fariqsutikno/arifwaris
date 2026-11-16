@@ -3,6 +3,7 @@ import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
 import { anggotaBagian, awalCabang, bagianDariOrang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
 import { isiBarisTetap, tambahBaris } from '../isianBagian';
 import { statusKeluarga } from '../statusKeluarga';
+import { jalankan } from '../jalankan';
 import { posisiPerluDitanya } from '../ujiHipotetis';
 import { keluargaBudi, keluargaKarto, tambah } from './fixtures/kanvas';
 
@@ -163,6 +164,38 @@ describe('anak dari kerabat jauh yang wafat sebelum (pohon bebas)', () => {
     const jauh = daftarBagian(wafat).find(b => b.id === 'jauh:PEWARIS')!;
     expect(anggotaBagian(wafat, jauh)).not.toContain(doni);
     expect(bagianDariOrang(wafat, doni)?.id).toBe(`anak:${joko}`);
+  });
+});
+
+describe('saudara kakek (paman ayah) masuk lewat kakek yang wafat', () => {
+  /** Pewaris laki-laki tanpa keturunan; ayah wafat; kakek dari ayah dengan keadaan `keadaanKakek`. */
+  function denganKakek(keadaanKakek: 'wafat' | 'hidup') {
+    let r = tambah(kasusBaru('L'), 'PEWARIS', 'AYAH', { statusHidup: 'wafat' });
+    r = tambah(r.kasus, 'PEWARIS', 'KAKEK', { nama: 'Kakek', statusHidup: keadaanKakek });
+    const kasus: Kasus = { ...r.kasus, kelompokDijawab: { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek'] as Kelompok[] } };
+    return { kasus, kakek: r.id };
+  }
+
+  it('kakek wafat: bagian "Saudara laki-laki kakek" tampil tepat sesudah kakek-nenek', () => {
+    const { kasus, kakek } = denganKakek('wafat');
+    expect(ids(kasus).indexOf(`saudaraKakek:${kakek}`)).toBe(ids(kasus).indexOf('kakekNenek:PEWARIS') + 1);
+  });
+
+  it('kakek hidup: bagian tidak tampil', () => {
+    const { kasus, kakek } = denganKakek('hidup');
+    expect(ids(kasus)).not.toContain(`saudaraKakek:${kakek}`);
+  });
+
+  it('paman ayah kandung hanya di bagian saudara kakek, tidak ganda di kerabat jauh, dan menerima saham', () => {
+    const { kasus, kakek } = denganKakek('wafat');
+    const dengan = tambahBaris(kasus, { id: `saudaraKakek:${kakek}`, milik: kakek, jenis: 'saudaraKakek' }, 'SAUDARA_KANDUNG');
+    const paman = Object.keys(dengan.graf.orang).find(id => !kasus.graf.orang[id] && !dengan.graf.orang[id]!.penghubung)!;
+    const semua = daftarBagian(dengan);
+    expect(semua.filter(b => anggotaBagian(dengan, b).includes(paman)).map(b => b.id)).toEqual([`saudaraKakek:${kakek}`]);
+    expect(bagianDariOrang(dengan, paman)?.id).toBe(`saudaraKakek:${kakek}`);
+    const tampil = jalankan(dengan);
+    if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(JSON.stringify(tampil));
+    expect(tampil.hasil.tabel.baris.some(baris => (baris.perOrang[paman]?.saham ?? 0n) > 0n)).toBe(true);
   });
 });
 

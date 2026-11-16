@@ -73,7 +73,7 @@ function kasusAViaKanvas(): Kasus {
       case 'halLain': kasus = jawabHalLain(kasus, bagian.milik, false); break;
       case 'anakBersama': kasus = jawabAnakBersama(kasus, bagian, true); break;
       case 'kamu': kasus = jawabKamu(kasus, null); break;
-      case 'pasangan': case 'anak': case 'saudara': case 'jauh':
+      case 'pasangan': case 'anak': case 'saudara': case 'jauh': case 'saudaraKakek':
         if (milik === 'Budi' && bagian.jenis === 'pasangan') kasus = tambahOrang(kasus, bagian, 'ISTRI', 'Dewi');
         else if (milik === 'Budi' && bagian.jenis === 'anak') {
           kasus = tambahOrang(tambahOrang(kasus, bagian, 'ANAK_LK', 'Andi'), bagian, 'ANAK_PR', 'Sari');

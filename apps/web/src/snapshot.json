@@ -23121,6 +23121,27 @@
    "id": "Hanbali, Hanafi, Maliki menurut nukilan Lahim dan Ithraa (sumber sekunder).",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_saudara_kakek",
+   "halaman": "hitung",
+   "id": "Saudara laki-laki {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_saudara_kakek",
+   "halaman": "hitung",
+   "id": "Saudara kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_saudara_kakek",
+   "halaman": "hitung",
+   "id": "{nama} punya saudara laki-laki, sekandung atau sebapak? Hitung juga yang sudah wafat.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

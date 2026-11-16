@@ -12,9 +12,9 @@ import { anggotaBagian, buatBagian, daftarBagian, kunciBagian, orangDenganKunci,
 export { kunciBagian, orangDenganKunci, slotTetap };
 
 /** Menghapus anggota bagian ini ikut menghapus keturunannya dan menantunya (cabang); pasangan tidak: anak tetap ada. */
-const BAGIAN_BERCABANG: Kelompok[] = ['anak', 'saudara', 'jauh'];
+const BAGIAN_BERCABANG: Kelompok[] = ['anak', 'saudara', 'jauh', 'saudaraKakek'];
 const BAGIAN_TETAP: Kelompok[] = ['orangTua', 'kakekNenek'];
-const BAGIAN_YA_TIDAK: Kelompok[] = ['pasangan', 'anak', 'saudara', 'jauh'];
+const BAGIAN_YA_TIDAK: Kelompok[] = ['pasangan', 'anak', 'saudara', 'jauh', 'saudaraKakek'];
 
 export const adalahBagianTetap = (bagian: Bagian): boolean => BAGIAN_TETAP.some(jenis => jenis === bagian.jenis);
 

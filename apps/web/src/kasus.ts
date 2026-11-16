@@ -21,7 +21,7 @@ export type JenisKasus = typeof JENIS_KASUS[number];
 /** Jawaban pertanyaan pintu "hartanya sudah dibagi?" (spec kanvas 4); kosong = belum dijawab, tanpa bawaan. */
 export const PINTU = ['baru', 'lama', 'sudah', 'tidakTahu'] as const;
 export type Pintu = typeof PINTU[number];
-export const KELOMPOK = ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'saudara', 'jauh', 'anakBersama', 'halLain'] as const;
+export const KELOMPOK = ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'saudara', 'jauh', 'saudaraKakek', 'anakBersama', 'halLain'] as const;
 export type Kelompok = typeof KELOMPOK[number];
 /** Presisi bebas: tahun saja sampai tanggal lengkap. Khusus UI; tidak pernah dikirim ke engine. */
 export interface TanggalKira { tahun: number; bulan?: number; hari?: number; kiraKira: boolean }
