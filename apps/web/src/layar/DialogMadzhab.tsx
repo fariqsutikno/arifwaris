@@ -8,7 +8,9 @@ import { t } from '../terjemah';
 
 const DAFTAR_MADZHAB: Ruleset[] = ['syafii', 'hanbali', 'hanafi', 'maliki'];
 
-export const namaMadzhab = (ruleset: Ruleset): string => t(`hitung.madzhab_${ruleset}`);
+// Kunci diksi harus literal (dicek tes diksi), jadi tiap madzhab dipetakan eksplisit.
+export const namaMadzhab = (ruleset: Ruleset): string =>
+  ({ syafii: t('hitung.madzhab_syafii'), hanbali: t('hitung.madzhab_hanbali'), hanafi: t('hitung.madzhab_hanafi'), maliki: t('hitung.madzhab_maliki') })[ruleset];
 
 interface Props { awal: Ruleset; saatPakai: (ruleset: Ruleset) => void; saatBatal: () => void }
 
