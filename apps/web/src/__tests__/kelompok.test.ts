@@ -137,6 +137,35 @@ describe('cucu dari anak yang wafat sebelum (review K2)', () => {
   });
 });
 
+describe('anak dari kerabat jauh yang wafat sebelum (pohon bebas)', () => {
+  /** Pewaris laki-laki yatim piatu tanpa keturunan; satu keponakan (Joko) wafat. */
+  function keponakanWafat() {
+    const { kasus, id } = tambah(kasusBaru('L'), 'PEWARIS', 'KEPONAKAN_KANDUNG', { nama: 'Joko', statusHidup: 'wafat' });
+    return { kasus: { ...kasus, kelompokDijawab: { PEWARIS: ['pasangan', 'anak', 'orangTua', 'saudara', 'jauh'] as Kelompok[] } }, joko: id };
+  }
+
+  it('keponakan wafat memunculkan bagian "Anak Joko" tepat sesudah kerabat jauh', () => {
+    const { kasus, joko } = keponakanWafat();
+    expect(ids(kasus).indexOf(`anak:${joko}`)).toBe(ids(kasus).indexOf('jauh:PEWARIS') + 1);
+  });
+
+  it('keponakan hidup tidak punya bagian anak', () => {
+    const { kasus, id } = tambah(kasusBaru('L'), 'PEWARIS', 'KEPONAKAN_KANDUNG', { nama: 'Joko' });
+    expect(ids({ ...kasus, kelompokDijawab: { PEWARIS: ['anak', 'jauh'] } })).not.toContain(`anak:${id}`);
+  });
+
+  it('berulang ke bawah: anak Joko yang wafat membuka "Anak Doni", dan tiap orang hanya di satu bagian', () => {
+    const { kasus, joko } = keponakanWafat();
+    const dengan = tambahBaris(kasus, { id: `anak:${joko}`, milik: joko, jenis: 'anak' }, 'ANAK_LK');
+    const doni = Object.keys(dengan.graf.orang).find(id => dengan.graf.orang[dengan.graf.orang[id]!.idAyah ?? '']?.nama === 'Joko')!;
+    const wafat: Kasus = { ...dengan, graf: { ...dengan.graf, orang: { ...dengan.graf.orang, [doni]: { ...dengan.graf.orang[doni]!, statusHidup: 'wafat' } } } };
+    expect(ids(wafat)).toContain(`anak:${doni}`);
+    const jauh = daftarBagian(wafat).find(b => b.id === 'jauh:PEWARIS')!;
+    expect(anggotaBagian(wafat, jauh)).not.toContain(doni);
+    expect(bagianDariOrang(wafat, doni)?.id).toBe(`anak:${joko}`);
+  });
+});
+
 describe('kakek-nenek ditanya menurut engine, bukan menurut Ayah wafat (review P4)', () => {
   const ORANG_TUA = { id: 'orangTua:PEWARIS', milik: 'PEWARIS', jenis: 'orangTua' as const };
   const denganOrangTua = (ayah: 'hidup' | 'belumTahu' | 'hilang') => {

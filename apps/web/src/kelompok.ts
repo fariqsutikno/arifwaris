@@ -31,30 +31,55 @@ export function daftarBagian(kasus: Kasus): Bagian[] {
   }
   if (kasus.urutanWafat.length >= MINIMAL_ALMARHUM_UNTUK_URUTAN) daftar.push(buatBagian('urutan', idPewaris));
   daftar.push(buatBagian('kamu', idPewaris));
-  return daftar.flatMap(bagian => (bagian.jenis === 'anak' ? [bagian, ...bagianCucu(kasus, bagian.milik)] : [bagian]));
+  return daftar.flatMap(bagian => [bagian, ...bagianAnakDariWafat(kasus, wafatDi(kasus, bagian))]);
 }
 
 /** Bagian yang memuat orang itu (tujuan "Lihat di Keluarga"); `anakBersama` tidak dihitung karena orang yang sama ada di bagian anak. */
 export const bagianDariOrang = (kasus: Kasus, id: IdOrang): Bagian | null =>
   daftarBagian(kasus).find(bagian => bagian.jenis !== 'anakBersama' && anggotaBagian(kasus, bagian).includes(id)) ?? null;
 
-/** Anak `milik` yang wafat sebelum harta dibagi dan bukan bagian dari urutan; anaknya (cucu) hanya ditanya bila berpengaruh. */
-export function anakWafatSebelum(kasus: Kasus, milik: IdOrang): IdOrang[] {
+/** Wafat sebelum harta dibagi dan bukan bagian dari urutan wafat; anaknya hanya ditanya bila berpengaruh. */
+function wafatSebelum(kasus: Kasus, ids: IdOrang[]): IdOrang[] {
   const diUrutan = new Set(kasus.urutanWafat);
   const bersamaPewaris = new Set(kasus.gharqa?.anggota ?? []);
-  return anggotaBagian(kasus, buatBagian('anak', milik))
-    .filter(id => kasus.graf.orang[id]?.statusHidup === 'wafat' && !diUrutan.has(id) && !bersamaPewaris.has(id));
+  return ids.filter(id => kasus.graf.orang[id]?.statusHidup === 'wafat' && !diUrutan.has(id) && !bersamaPewaris.has(id));
 }
 
-/** Bagian anak dari tiap anak yang wafat sebelum: tampil bila sudah berisi, sudah dijawab, atau engine menyatakan cucu berpengaruh. */
-function bagianCucu(kasus: Kasus, milik: IdOrang): Bagian[] {
-  return anakWafatSebelum(kasus, milik).flatMap(id => {
+/** Anak `milik` yang wafat sebelum harta dibagi. */
+export const anakWafatSebelum = (kasus: Kasus, milik: IdOrang): IdOrang[] =>
+  wafatSebelum(kasus, anggotaBagian(kasus, buatBagian('anak', milik)));
+
+/** Orang wafat yang anaknya ditanya di bawah `bagian`: anak (cucu) atau kerabat jauh (keponakan, paman, sepupu). */
+function wafatDi(kasus: Kasus, bagian: Bagian): IdOrang[] {
+  if (bagian.jenis === 'anak') return anakWafatSebelum(kasus, bagian.milik);
+  if (bagian.jenis === 'jauh') return wafatSebelum(kasus, jauhLangsung(kasus, bagian.milik));
+  return [];
+}
+
+/** Bagian anak dari tiap orang wafat itu: tampil bila sudah berisi, sudah dijawab, atau engine menyatakan anaknya berpengaruh; berulang ke bawah. */
+function bagianAnakDariWafat(kasus: Kasus, wafat: IdOrang[]): Bagian[] {
+  return wafat.flatMap(id => {
     const bagian = buatBagian('anak', id);
     const tampil = anggotaBagian(kasus, bagian).length > 0 || sudahDijawab(kasus, id, 'anak')
       || posisiPerluDitanya(kasus, id, 'ANAK_LK') || posisiPerluDitanya(kasus, id, 'ANAK_PR');
-    return tampil ? [bagian, ...bagianCucu(kasus, id)] : [];
+    return tampil ? [bagian, ...bagianAnakDariWafat(kasus, anakWafatSebelum(kasus, id))] : [];
   });
 }
+
+/** Kerabat jauh `milik` (hidup atau wafat) yang bukan anak dari kerabat jauh lain: anak mereka tampil di bagian "Anak X", bukan di baris kerabat jauh. */
+export function jauhLangsung(kasus: Kasus, milik: IdOrang): IdOrang[] {
+  const semua = KUNCI_PER_KELOMPOK.jauh!.flatMap(kunci => orangDenganKunci(kasus, milik, kunci));
+  const orang = kasus.graf.orang;
+  return semua.filter(id => ![orang[id]?.idAyah, orang[id]?.idIbu].some(induk => induk !== undefined && semua.includes(induk)));
+}
+
+/** Orang di baris `kunci` bagian itu; di kerabat jauh hanya yang langsung. */
+export const orangDiBaris = (kasus: Kasus, bagian: Bagian, kunci: KunciAhliWaris): IdOrang[] => {
+  const semua = orangDenganKunci(kasus, bagian.milik, kunci);
+  if (bagian.jenis !== 'jauh') return semua;
+  const langsung = jauhLangsung(kasus, bagian.milik);
+  return semua.filter(id => langsung.includes(id));
+};
 
 export function anggotaBagian(kasus: Kasus, bagian: Bagian): IdOrang[] {
   const { graf } = kasus;
@@ -68,7 +93,8 @@ export function anggotaBagian(kasus: Kasus, bagian: Bagian): IdOrang[] {
       .filter(orang => orang.idAyah === bagian.milik || orang.idIbu === bagian.milik).map(orang => orang.id);
     case 'orangTua': return [graf.orang[bagian.milik]?.idAyah, graf.orang[bagian.milik]?.idIbu]
       .filter((id): id is IdOrang => adalahOrangNyata(kasus, id));
-    case 'kakekNenek': case 'saudara': case 'jauh': {
+    case 'jauh': return jauhLangsung(kasus, bagian.milik).filter(id => graf.orang[id]!.statusHidup !== 'wafat');
+    case 'kakekNenek': case 'saudara': {
       const isian = hitungIsian(graf, bagian.milik);
       return (KUNCI_PER_KELOMPOK[bagian.jenis] ?? []).flatMap(kunci => isian[kunci] ?? []).filter(id => adalahOrangNyata(kasus, id));
     }
@@ -167,8 +193,8 @@ export function bagianDilewati(kasus: Kasus): BagianDilewati[] {
     }
     if (orangTuaTidakHidup && sudahDijawab(kasus, idPewaris, 'orangTua') && !tampil.has(`kakekNenek:${idPewaris}`)) dilewati.push({ jenis: 'kakekNenek', milik: idPewaris });
   }
-  for (const bagian of daftarBagian(kasus).filter(satu => satu.jenis === 'anak')) {
-    for (const id of anakWafatSebelum(kasus, bagian.milik)) {
+  for (const bagian of daftarBagian(kasus)) {
+    for (const id of wafatDi(kasus, bagian)) {
       if (!tampil.has(`anak:${id}`)) dilewati.push({ jenis: 'anakDariWafat', milik: bagian.milik, sebab: id });
     }
   }

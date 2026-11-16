@@ -8,7 +8,7 @@ import type { Kasus } from '../../kasus';
 import { daftarAnakPewaris, isiBarisTetap, jawabAnakBersama, kunciBagian, orangDenganKunci, slotTetap, tandaiAnakBersama } from '../../isianBagian';
 import { pilihanKeadaan, type PilihanKeadaan } from '../../keadaanBaris';
 import { namaSingkat } from '../../keadaanOrang';
-import { anggotaBagian, bagianDijawab, KUNCI_PER_KELOMPOK, type Bagian } from '../../kelompok';
+import { anggotaBagian, bagianDijawab, KUNCI_PER_KELOMPOK, orangDiBaris, type Bagian } from '../../kelompok';
 import { t } from '../../terjemah';
 import { PertanyaanHamil } from '../keadaan/PertanyaanHamil';
 import { BagianHalLain } from './BagianHalLain';
@@ -23,7 +23,7 @@ interface Props {
 }
 
 export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya = true }: Props) {
-  const barisDi = (kunci: KunciAhliWaris) => orangDenganKunci(kasus, bagian.milik, kunci).map(id => (
+  const barisDi = (kunci: KunciAhliWaris) => orangDiBaris(kasus, bagian, kunci).map(id => (
     <BarisOrang key={id} kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot} />
   ));
   const kelompokPeran = (kunci: KunciAhliWaris, label?: string) => (
