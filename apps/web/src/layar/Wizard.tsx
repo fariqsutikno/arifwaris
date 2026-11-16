@@ -20,8 +20,9 @@ import { KanvasKeluarga } from './keluarga/KanvasKeluarga';
 import { LatihanAhliWaris } from './latihan/LatihanAhliWaris';
 import { RingkasanLatihan } from './latihan/RingkasanLatihan';
 import { BelumPasti } from './periksa/BelumPasti';
+import { KisahHarta } from './periksa/KisahHarta';
+import { UbahDipandu } from './periksa/UbahDipandu';
 import { gulirKe } from './keluarga/gulir';
-import { CeritaKasus } from './PeriksaCerita';
 import { LangkahKondisi } from './LangkahKondisi';
 import { LangkahHarta } from './wizard/LangkahHarta';
 import { KewajibanOpsional } from './wizard/KewajibanOpsional';
@@ -43,6 +44,8 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
   const [fokusBagian, setFokusBagian] = useState<{ id: string; kali: number }>();
   // `kali` bertambah tiap ketukan supaya ketukan berulang pada simpul yang sama tetap memicu gulir.
   const [fokusOrang, setFokusOrang] = useState<{ id: IdOrang; kali: number }>();
+  const [babakDisunting, setBabakDisunting] = useState<IdOrang | null>(null);
+  const [peristiwaTerbuka, setPeristiwaTerbuka] = useState(false);
   const ubah = (fungsiUbah: (kasus: Kasus) => Kasus) => kirim({ jenis: 'UBAH_KASUS', ubah: fungsiUbah });
   const alasan = alasanBelumLengkap(kasus, langkah);
   const kanvasBelumLengkap = nyata && langkah === 3 && !!alasan;
@@ -114,7 +117,9 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
         {kasus && langkah === 3 && !nyata && <LatihanAhliWaris kasus={kasus} ubah={ubah} {...(keadaan.fokus ? { fokus: keadaan.fokus } : {})} />}
         {kasus && langkah === 4 && <>
           {nyata && <BelumPasti kasus={kasus} ubah={ubah} saatLihatDiKeluarga={id => lihatDiKeluarga(bagianDariOrang(kasus, id)?.id, id)} />}
-          {nyata ? <CeritaKasus kasus={kasus} kirim={kirim} /> : <RingkasanLatihan kasus={kasus} kirim={kirim} />}
+          {nyata && <UbahDipandu kasus={kasus} ubah={ubah} kirim={kirim} saatBukaBabak={setBabakDisunting} saatBukaPeristiwa={() => setPeristiwaTerbuka(true)} />}
+          {nyata ? <KisahHarta kasus={kasus} ubah={ubah} kirim={kirim} babakDisunting={babakDisunting} saatSunting={setBabakDisunting}
+            peristiwaTerbuka={peristiwaTerbuka} saatPeristiwa={setPeristiwaTerbuka} /> : <RingkasanLatihan kasus={kasus} kirim={kirim} />}
           {!nyata && <>
             <h2 id="tanya-kondisi" className="judul-bagian-kecil">{t('hitung.kondisi_tanya_baru')}</h2>
             <LangkahKondisi kasus={kasus} ubah={ubah} labelId="tanya-kondisi" />

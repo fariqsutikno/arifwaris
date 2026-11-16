@@ -13,6 +13,7 @@ import {
 } from '../../keadaanBaris';
 import { keadaanOrang, namaSingkat } from '../../keadaanOrang';
 import { dampakHapus } from '../../kerabatPohon';
+import { sebutanDariSaya } from '../../sebutan';
 import { waktuRelatif } from '../../silsilah';
 import { t } from '../../terjemah';
 import { DialogKonfirmasi } from '../../ui/Dialog';
@@ -48,6 +49,7 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
   if (!orang) return null;
 
   const peran = labelPeran(kasus, id, kunci, milik);
+  const sebutanMu = sebutanDariSaya(kasus, id);
   const terpilih = keadaanTerpilih(kasus, id);
   const opsi = pilihanKeadaan(kunci);
   const utama = opsi.filter(satu => satu.kelompok === 'utama');
@@ -63,7 +65,7 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
     <div className={`orang${alasan ? ' kurang' : ''}${disorot ? ' sorot-baris' : ''}`} id={`baris-${id}`} data-baris-orang={id}
       role="group" aria-label={peran} tabIndex={-1} {...(alasan ? { 'aria-invalid': true, 'aria-describedby': `${idLabel}-salah` } : {})}>
       <div className="kol-orang">
-        <span className="peran">{peran}{kasus.saya === id && <span className="lencana-kamu">{t('hitung.kanvas.lencana_kamu')}</span>}</span>
+        <span className="peran">{peran}{sebutanMu && ` · ${sebutanMu}`}{kasus.saya === id && <span className="lencana-kamu">{t('hitung.kanvas.lencana_kamu')}</span>}</span>
         <input className="nama-isi" value={orang.nama ?? ''} placeholder={peran} aria-label={t('hitung.nama_label', { label: peran })}
           onChange={event => ubah(k => ({ ...k, graf: ubahNama(k.graf, id, event.target.value) }))} />
         <span className="keadaan-label" id={idLabel}>{t('hitung.kanvas.keadaan_tanya')}</span>

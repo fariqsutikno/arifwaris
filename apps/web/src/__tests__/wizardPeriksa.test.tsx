@@ -9,6 +9,7 @@ import { keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from '
 import { pilihKeadaan } from '../keadaanBaris';
 import { Wizard } from '../layar/Wizard';
 import { kasusBaru } from '../kasus';
+import { keluargaKarto } from './fixtures/kanvas';
 
 beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); });
 
@@ -35,8 +36,12 @@ function kasusIbuBelumTahu(): Kasus {
   return lengkapi(pilihKeadaan(lengkap, ibu, 'belumTahu', 'PEWARIS'));
 }
 
-function Papan({ kasus, langkah = 4 }: { kasus: Kasus; langkah?: number }) {
-  const [keadaan, setKeadaan] = useState<KeadaanAplikasi>(() => pengurangKeadaan(keadaanAwal(kasus, null), { jenis: 'KE_LANGKAH', langkah }));
+function Papan({ kasus, langkah = 4, paksa = false }: { kasus: Kasus; langkah?: number; paksa?: boolean }) {
+  const [keadaan, setKeadaan] = useState<KeadaanAplikasi>(() => {
+    // paksa: kasus belum lengkap tetap dibuka di Periksa, lewat jalur "Kembali ke Periksa" (dariPeriksa melepas batas langkah).
+    const awal = paksa ? pengurangKeadaan(keadaanAwal(kasus, null), { jenis: 'KE_LANGKAH', langkah: 3, dariPeriksa: true }) : keadaanAwal(kasus, null);
+    return pengurangKeadaan(awal, { jenis: 'KE_LANGKAH', langkah });
+  });
   return <Wizard keadaan={keadaan} kirim={(aksi: Aksi) => setKeadaan(k => pengurangKeadaan(k, aksi))} />;
 }
 const status = () => document.querySelector('.bar-bawah [role=status]')!.textContent;
@@ -74,5 +79,27 @@ describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)
   it('hanya belum tahu: tombol "Hitung dengan kemungkinan" tersedia dan membuka hasil', () => {
     render(<Papan kasus={kasusIbuBelumTahu()} />);
     expect(aksiUtama().textContent).toBe('Hitung dengan kemungkinan');
+  });
+});
+
+describe('Periksa nyata dirangkai (rencana 4, tugas 7)', () => {
+  it('urutan bagian: Belum dipastikan, Ada yang keliru?, Kisah, nama kasus', () => {
+    render(<Papan kasus={kasusIbuBelumTahu()} />);
+    const keliru = screen.getByText(/Ada yang keliru/);
+    const kisah = screen.getByRole('heading', { level: 2, name: /Kisah harta/ });
+    const belum = screen.getByRole('heading', { level: 2, name: /Belum dipastikan/ });
+    const sesudah = (a: Element, b: Element) => !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    expect(sesudah(belum, keliru) && sesudah(keliru, kisah)).toBe(true);
+  });
+
+  it('Ada yang keliru? → Tahun atau urutan wafat → Budi: babak Budi terbuka dalam mode ubah', () => {
+    const { kasus } = keluargaKarto();
+    render(<Papan kasus={denganHarta(kasus)} paksa />);
+    fireEvent.click(screen.getByRole('button', { name: /Ubah sesuatu/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Tahun atau urutan wafat/ }));
+    fireEvent.click(screen.getByRole('button', { name: /^Budi/ }));
+    const idBudi = Object.values(kasus.graf.orang).find(o => o.nama === 'Budi')!.id;
+    expect(document.querySelector(`#babak-${idBudi} .sunting-babak`)).toBeTruthy();
+    expect(document.querySelectorAll('.sunting-babak')).toHaveLength(1);
   });
 });

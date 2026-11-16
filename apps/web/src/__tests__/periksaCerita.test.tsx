@@ -1,39 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import { tambahAhliWaris } from '../checklist';
-import { kasusBaru } from '../kasus';
-import { terapkanKeadaan } from '../keadaanOrang';
-import { CeritaKasus, kalimatBabak, PilihanMenunggu } from '../layar/PeriksaCerita';
-
-function kasusBudiDenganDewi() {
-  let kasus = kasusBaru('L', 'latihan');
-  for (const kunci of ['ISTRI', 'ANAK_LK', 'ANAK_PR'] as const) kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', kunci) };
-  const namai = (id: string, nama: string) => { kasus = { ...kasus, graf: { ...kasus.graf, orang: { ...kasus.graf.orang, [id]: { ...kasus.graf.orang[id]!, nama } } } }; };
-  const siti = Object.values(kasus.graf.orang).find(o => o.jenisKelamin === 'P' && !o.idAyah)!.id;
-  const budi = Object.values(kasus.graf.orang).find(o => o.jenisKelamin === 'L' && o.idAyah)!.id;
-  const rina = Object.values(kasus.graf.orang).find(o => o.jenisKelamin === 'P' && o.idAyah)!.id;
-  namai('PEWARIS', 'Pak Ahmad'); namai(siti, 'Siti'); namai(budi, 'Budi'); namai(rina, 'Rina');
-  kasus = terapkanKeadaan(kasus, budi, { jenis: 'wafatSesudah', hartaSudahDibagi: false });
-  kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, budi, 'ISTRI') };
-  const dewi = Object.keys(kasus.graf.orang).find(id => !kasus.graf.orang[id]!.nama && kasus.graf.orang[id]!.jenisKelamin === 'P' && !kasus.graf.orang[id]!.idAyah && id !== siti)!;
-  namai(dewi, 'Dewi');
-  return { kasus, budi };
-}
-
-it('kalimat babak memakai nama dan sebutan dari sisi almarhum', () => {
-  const { kasus, budi } = kasusBudiDenganDewi();
-  expect(kalimatBabak(kasus, 'PEWARIS')).toMatch(/Pak Ahmad wafat\. Ia meninggalkan .*Siti.*Budi.*Rina/);
-  expect(kalimatBabak(kasus, budi)).toMatch(/Lalu Budi wafat\. Ia meninggalkan .*ibu \(Siti\).*istri \(Dewi\)/);
-});
-
-it('tautan ubah membawa ke langkah keluarga', () => {
-  const kirim = vi.fn();
-  const { kasus } = kasusBudiDenganDewi();
-  render(<CeritaKasus kasus={kasus} kirim={kirim} />);
-  fireEvent.click(screen.getAllByRole('button', { name: /ubah/ })[1]!);
-  expect(kirim).toHaveBeenCalledWith({ jenis: 'KE_LANGKAH', langkah: 3 });
-  expect(kirim).toHaveBeenCalledTimes(1);
-});
+import { PilihanMenunggu } from '../layar/PeriksaCerita';
 
 it('pilihan menunggu kelahiran disimpan lalu lanjut ke hasil', () => {
   const kirim = vi.fn();

@@ -18230,20 +18230,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hitung.cerita.babak_pertama",
-   "halaman": "hitung",
-   "id": "{nama} wafat. Ia meninggalkan {daftar}. Hartanya belum dibagi.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.cerita.babak_lanjut",
-   "halaman": "hitung",
-   "id": "Lalu {nama} wafat. Ia meninggalkan {daftar}.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hitung.cerita.dan",
    "halaman": "hitung",
    "id": "dan",

@@ -166,3 +166,11 @@ describe('tahun wafat yang diketik menentukan keadaan (review K1)', () => {
     expect(terakhir.urutanWafat).toHaveLength(1);
   });
 });
+
+describe('sebutan -mu di baris (rencana 4, tugas 7)', () => {
+  it('saya = Andi: baris Budi menampilkan "ayahmu"', () => {
+    const { kasus, andi, budi } = keluargaKarto();
+    render(<BarisOrang kasus={{ ...kasus, saya: andi }} id={budi} kunci="ANAK_LK" milik="PEWARIS" ubah={() => {}} tandaiKurang={false} disorot={false} />);
+    expect(document.querySelector('.peran')!.textContent).toMatch(/· ayahmu/);
+  });
+});
