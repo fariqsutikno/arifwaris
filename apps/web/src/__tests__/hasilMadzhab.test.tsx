@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
@@ -85,5 +85,40 @@ describe('pilihan madzhab di hasil', () => {
     fireEvent.click(screen.getByRole('button', { name: "hitung menurut Syafi'i" }));
     expect(screen.queryByRole('button', { name: "hitung menurut Syafi'i" })).toBeNull();
     tidakDidukung.aktif = false;
+  });
+});
+
+describe('panel Kata madzhab lain (mode Belajar)', () => {
+  const istriAnak = (): Kasus => {
+    let kasus: Kasus = { ...kasusBaru('P'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
+    for (const kunci of ['SUAMI', 'ANAK_LK'] as const) kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', kunci) };
+    return kasus;
+  };
+
+  it('tampil di Belajar setelah jawaban dibuka: baris orang yang berbeda, judul kolom mengganti madzhab aktif', () => {
+    tidakDidukung.aktif = false;
+    render(<Uji awal={musyarrakah()} tujuan="belajar" />);
+    fireEvent.click(screen.getByRole('button', { name: /lihat jawaban/i }));
+    vi.useFakeTimers();
+    fireEvent.pointerDown(within(screen.getByRole('alertdialog')).getByRole('button', { name: /Tahan untuk buka/ }));
+    act(() => { vi.advanceTimersByTime(1300); });
+    vi.useRealTimers();
+    const panel = screen.getByRole('region', { name: 'Kata madzhab lain' });
+    expect(within(panel).getAllByText(/satu ibu/).length).toBeGreaterThan(0);
+    expect(within(panel).getByText(/sumber sekunder/)).toBeTruthy();
+    fireEvent.click(within(panel).getByRole('button', { name: 'Hanbali' }));
+    expect(within(screen.getByRole('region', { name: 'Kata madzhab lain' })).getByRole('columnheader', { name: 'Hanbali' }).className).toContain('aktif');
+  });
+
+  it('tidak tampil bila tidak ada yang berbeda, saat menebak, atau di mode Hitung', () => {
+    tidakDidukung.aktif = false;
+    const { unmount } = render(<Uji awal={istriAnak()} tujuan="belajar" />);
+    expect(screen.queryByRole('region', { name: 'Kata madzhab lain' })).toBeNull();
+    unmount();
+    const { unmount: lagi } = render(<Uji awal={musyarrakah()} tujuan="belajar" />);
+    expect(screen.queryByRole('region', { name: 'Kata madzhab lain' })).toBeNull();
+    lagi();
+    render(<Uji awal={musyarrakah()} tujuan="hitung" />);
+    expect(screen.queryByRole('region', { name: 'Kata madzhab lain' })).toBeNull();
   });
 });

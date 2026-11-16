@@ -1457,3 +1457,11 @@ body.layar-hasil{background:var(--halaman)}
 .pilihan-madzhab small{display:block;color:var(--ink-muted,inherit);opacity:.75}
 .catatan-madzhab{margin:0;font-size:13px;opacity:.8}
 .label-beda-madzhab{font-style:italic}
+.banding-madzhab{padding:18px;display:grid;gap:10px}
+.banding-madzhab h2{margin:0}
+.gulir-banding{overflow-x:auto}
+.banding-madzhab table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.banding-madzhab th,.banding-madzhab td{padding:8px 6px;text-align:right;border-top:1px solid var(--divider);white-space:nowrap}
+.banding-madzhab th:first-child,.banding-madzhab td:first-child{text-align:left}
+.banding-madzhab thead th{border-top:0;font-weight:500}
+.banding-madzhab th.aktif,.banding-madzhab td.aktif{background:var(--primary-soft)}

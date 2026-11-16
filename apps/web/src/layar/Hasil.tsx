@@ -31,6 +31,7 @@ import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
 import { DialogNama } from './lab/DialogNama';
 import { DialogBagikan } from './DialogBagikan';
+import { BandingMadzhab } from './BandingMadzhab';
 import { DialogMadzhab, namaMadzhab } from './DialogMadzhab';
 import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
@@ -221,6 +222,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
             saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
           {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab(madzhab) })}</p>}
+          {adalahBelajar && !sedangMenebak && (
+            <BandingMadzhab kasus={kasus} aktif={madzhab} sembunyiNominal={sembunyiNominal}
+              saatPilih={ruleset => kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) })} />
+          )}
           <div className="rel-samping">
             {!sedangMenebak && ringkasan.terhalang.length > 0 && <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />}
             {adaPotonganHarta && <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />}

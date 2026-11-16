@@ -23100,6 +23100,27 @@
    "id": "hitung menurut Syafi'i",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_judul",
+   "halaman": "hitung",
+   "id": "Kata madzhab lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_orang",
+   "halaman": "hitung",
+   "id": "Ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_sumber",
+   "halaman": "hitung",
+   "id": "Hanbali, Hanafi, Maliki menurut nukilan Lahim dan Ithraa (sumber sekunder).",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
