@@ -1,0 +1,710 @@
+<!doctype html>
+<html lang="id">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup layar Hasil per kasus</title>
+<!-- Acuan: docs/design/riset-ux-hasil-2026-11-17.md (HMW-1..9, prinsip bagian 10). Data contoh satu sumber: objek KASUS di bawah. -->
+<style>
+:root{--bg:#f6f3e7;--ink:#14181a;--mute:#5b655f;--card:#fff;--line:#d5dcd3;--hero:#0f3a38;--focus:#1f6f5c;--hijau-bg:#e6f2e3;--kuning-bg:#fbf1d6;--kuning:#7a5a00;--abu-bg:#eef0ec;--r:16px;--rl:24px;--sh:0 2px 8px rgba(20,40,30,.10);--shp:0 8px 24px rgba(20,40,30,.14)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header.top{background:var(--hero);color:#fff;padding:18px 16px 0}
+header.top h1{margin:0 auto 2px;max-width:760px;font-size:19px}
+header.top p{margin:0 auto 12px;max-width:760px;color:#cfe2dc;font-size:13.5px}
+nav.tab{display:flex;gap:4px;max-width:760px;margin:auto;overflow-x:auto;scrollbar-width:none}
+nav.tab button{flex:none;border:0;background:transparent;color:#cfe2dc;font:600 14px system-ui;padding:10px 12px;border-radius:12px 12px 0 0;cursor:pointer}
+nav.tab button[aria-selected=true]{background:var(--bg);color:var(--ink)}
+main{max-width:760px;margin:auto;padding:16px 16px 96px}
+.layar{display:none}.layar.aktif{display:block}
+.ikon{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;flex:none}
+a,.tautan{color:var(--ink);text-decoration:underline;text-underline-offset:3px;background:none;border:0;font:inherit;padding:0;cursor:pointer}
+.tugas{display:none;background:var(--kuning-bg);color:#4a3a00;border-radius:14px;padding:10px 14px;margin:0 0 14px;font-size:13.5px}
+.tugas.aktif{display:block}
+/* bilah atas layar hasil */
+.bilah{display:flex;justify-content:space-between;align-items:center;margin:0 0 12px;font-size:14px}
+.bilah .kembali{display:inline-flex;gap:6px;align-items:center;font-weight:600}
+.bilah .langkah{color:var(--mute)}
+/* kepala */
+.kepala small{display:block;color:var(--mute);font-weight:600;font-size:13px}
+.kepala h2{font-size:26px;line-height:1.2;margin:2px 0 6px}
+.kepala p{margin:0;color:#2c3530}
+.kepala .meta{color:var(--mute);font-size:13.5px;margin-top:6px}
+/* ubin bagianmu & ringkasan */
+.ubin{border-radius:var(--rl);padding:14px 16px;margin:14px 0 0}
+.ubin.kamu{background:var(--hijau-bg)}
+.ubin.kamu .lbl{font-size:13.5px;color:#2d4a3c;font-weight:600}
+.ubin.kamu .rp{text-align:start;font:700 28px/1.15 system-ui;font-variant-numeric:tabular-nums;margin-top:2px}
+.ubin.kamu .ket{font-size:13.5px;color:#2d4a3c;margin-top:2px}
+.empat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.empat div{background:var(--card);border-radius:18px;box-shadow:var(--sh);padding:12px 14px}
+.empat .lbl{font-size:12.5px;color:var(--mute);font-weight:600}
+.empat b{display:block;font-size:17px;font-variant-numeric:tabular-nums;line-height:1.3;margin-top:2px}
+.empat .tahan{background:var(--kuning-bg)}
+/* bagian */
+h3.judul{font-size:18px;margin:26px 0 10px}
+h3.judul small{font-weight:400;color:var(--mute);font-size:13.5px;margin-left:6px}
+.daftar{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);overflow:hidden}
+.baris{display:block;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid #edf0ea;padding:14px 16px;font:inherit;color:inherit;cursor:pointer}
+.baris:last-child{border-bottom:0}
+.baris .atas{display:flex;gap:12px;align-items:center}
+.ava{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 14px system-ui;color:#fff}
+.nama{flex:1;min-width:0}
+.nama b{display:block;font-size:15.5px}
+.nama span{display:block;color:var(--mute);font-size:13px}
+.rp{font:700 17px/1.2 system-ui;font-variant-numeric:tabular-nums;text-align:end;white-space:nowrap}
+.rp small{display:block;font:400 12.5px system-ui;color:var(--mute)}
+.alasan{margin:6px 0 0 48px;font-size:13.5px;color:#2c3530}
+.baris .lebih{display:none;margin:10px 0 2px 48px;padding:10px 12px;background:#f7f8f4;border-radius:12px;font-size:13.5px}
+.baris[aria-expanded=true] .lebih{display:block}
+.baris .lebih p{margin:0 0 6px}.baris .lebih p:last-child{margin:0}
+.baris.redup .nama b,.baris.redup .rp{color:var(--mute)}
+.baris.redup .ava{background:#dfe3dd!important;color:#3f4944}
+.baris.tahan{background:#fffbf0}
+.baris.sisa{cursor:default;background:#fafaf6}
+.baris.jumlah{cursor:default;background:var(--abu-bg)}
+.baris.jumlah .nama b{font-size:14.5px}
+.rinci{display:grid;grid-template-columns:1fr auto;gap:2px 12px;font-variant-numeric:tabular-nums}
+.rinci .t{color:var(--mute)}
+.label,.nama .label{display:inline-block;font:600 11.5px system-ui;border-radius:6px;padding:3px 7px;margin-left:6px;vertical-align:1px}
+.label.kamu{background:var(--hijau-bg);color:#24533f}
+.label.tahan{background:var(--kuning-bg);color:var(--kuning)}
+.label.meninggal{background:var(--abu-bg);color:#4b554f}
+/* aksi */
+.aksi{display:flex;flex-wrap:wrap;gap:18px;margin:16px 2px 0}
+.aksi .tautan{display:inline-flex;gap:7px;align-items:center;font-weight:600}
+/* pohon */
+.pohon-wadah{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);padding:12px;overflow-x:auto}
+svg.pohon{display:block;min-width:520px;width:100%;height:auto}
+svg.pohon .kotak rect{fill:#fff;stroke:#c9d2c8;stroke-width:1.5}
+svg.pohon .kotak.terima rect{fill:#eef7ea;stroke:#6aa587}
+svg.pohon .kotak.redup rect{fill:#f3f4f1;stroke:#d5dcd3;stroke-dasharray:4 3}
+svg.pohon .kotak.meninggal rect{fill:#eceee9;stroke:#8f9a93}
+svg.pohon .kotak.almarhum rect{fill:#0f3a38;stroke:#0f3a38}
+svg.pohon .kotak.almarhum text{fill:#fff}
+svg.pohon .kotak.sorot rect{stroke:#14181a;stroke-width:3}
+svg.pohon .kotak.tahan rect{fill:#fff7e0;stroke:#d9b44a;stroke-dasharray:5 3}
+svg.pohon text{font:600 12.5px system-ui;fill:#14181a}
+svg.pohon text.k{font:400 11.5px system-ui;fill:#5b655f}
+svg.pohon text.rp{font:700 12.5px system-ui;fill:#1f6f5c}
+svg.pohon .garis{stroke:#9aa79f;stroke-width:1.6;fill:none}
+svg.pohon .garis.nikah{stroke-dasharray:2 3}
+svg.pohon .alir{stroke:#1f6f5c;stroke-width:3.5;fill:none;opacity:0;transition:opacity .3s}
+svg.pohon .alir.on{opacity:1}
+.legenda{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--mute);margin:8px 4px 0}
+.legenda i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1.5px solid}
+/* aliran berlapis */
+.alir-langkah{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);padding:14px 16px;margin-bottom:12px;border:2px solid transparent;cursor:pointer}
+.alir-langkah.aktif{border-color:var(--focus)}
+.alir-langkah h4{margin:0 0 4px;font-size:15.5px;display:flex;gap:8px;align-items:center}
+.alir-langkah h4 .no{flex:none;width:24px;height:24px;border-radius:50%;background:var(--hero);color:#fff;display:grid;place-items:center;font-size:12.5px}
+.alir-langkah p{margin:0 0 8px;color:#2c3530;font-size:14px}
+.alir-langkah .rinci{font-size:14px}
+.alir-langkah .rinci b{font-weight:600}
+/* pemilih kemungkinan */
+.pil-deret{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
+.pil{border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:8px 14px;font:600 14px system-ui;cursor:pointer;color:var(--ink)}
+.pil[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+/* lapis pemeriksa */
+details.periksa{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);margin-top:26px}
+details.periksa summary{list-style:none;cursor:pointer;padding:16px;font-weight:700;font-size:16px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+details.periksa summary::-webkit-details-marker{display:none}
+details.periksa summary span{font-weight:400;font-size:13px;color:var(--mute);display:block}
+details.periksa[open] summary .ikon{transform:rotate(180deg)}
+details.periksa .isi{padding:0 16px 16px;font-size:14px}
+details.periksa ol{padding-left:20px;margin:0 0 14px}
+details.periksa li{margin:0 0 8px}
+.istilah{border-bottom:1.5px dotted var(--mute);cursor:help}
+.tabel-wadah{overflow-x:auto}
+table.tabel{border-collapse:collapse;width:100%;min-width:460px;font-size:13.5px;font-variant-numeric:tabular-nums}
+table.tabel th,table.tabel td{padding:8px 10px;border-bottom:1px solid #edf0ea;text-align:end}
+table.tabel th:first-child,table.tabel td:first-child{text-align:start}
+table.tabel th{background:var(--abu-bg);font-size:12.5px}
+/* langkah selanjutnya */
+ol.lanjut{margin:0;padding:14px 16px 14px 36px;background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);font-size:14px}
+ol.lanjut li{margin:0 0 8px}ol.lanjut li:last-child{margin:0}
+ol.lanjut li span{display:block;color:var(--mute);font-size:13px}
+.catatan{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);padding:14px 16px;font-size:14px}
+.catatan p{margin:0 0 8px}.catatan p:last-child{margin:0}
+footer.kaki{margin-top:26px;color:var(--mute);font-size:13px}
+footer.kaki p{margin:0 0 8px}
+/* toast */
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(200%);visibility:hidden;background:var(--ink);color:#fff;border-radius:14px;padding:12px 16px;display:flex;gap:14px;align-items:center;box-shadow:var(--shp);transition:transform .25s;max-width:calc(100% - 32px);font-size:14px;z-index:9}
+.toast.on{transform:translateX(-50%) translateY(0);visibility:visible}
+.toast .tautan{color:#fff}
+/* panel kirim */
+.lembar{position:fixed;inset:0;background:rgba(20,24,26,.38);display:none;align-items:flex-end;justify-content:center;z-index:8}
+.lembar.on{display:flex}
+.lembar .isi{background:#fff;border-radius:22px 22px 0 0;width:100%;max-width:560px;padding:18px 16px 22px;box-shadow:var(--shp)}
+.lembar h4{margin:0 0 8px;font-size:18px}
+.lembar pre{white-space:pre-wrap;font:14px/1.5 system-ui;background:#f4f6f1;border-radius:14px;padding:12px;margin:0 0 14px;max-height:50vh;overflow:auto}
+.lembar .tombol-deret{display:flex;justify-content:flex-end;gap:16px;align-items:center}
+.btn-utama{border:0;background:var(--ink);color:#fff;font:600 14px/1 system-ui;border-radius:12px;padding:12px 16px;cursor:pointer}
+/* cara mencoba */
+.coba h2{font-size:22px;margin:0 0 6px}
+.coba .kartu{background:var(--card);border-radius:var(--rl);box-shadow:var(--sh);padding:16px;margin:0 0 14px}
+.coba h3{margin:0 0 8px;font-size:17px}
+.coba ol{padding-left:20px;margin:0 0 8px}
+.coba textarea{width:100%;min-height:64px;border:1.5px solid var(--line);border-radius:12px;padding:10px;font:inherit;margin-top:6px}
+.coba .cek{color:var(--mute);font-size:13.5px}
+.coba .asumsi{display:flex;flex-direction:column;gap:6px;margin:8px 0 0}
+.coba .asumsi .pil-deret{margin:0}
+.warna-deret{display:grid;gap:8px}
+.warna-deret div{display:flex;gap:10px;align-items:center;font-size:14px}
+.warna-deret i{flex:none;width:28px;height:18px;border-radius:6px;border:1.5px solid}
+@media (max-width:640px){svg.pohon{width:600px;max-width:none}}
+@media (min-width:720px){.kepala h2{font-size:30px}.empat{grid-template-columns:repeat(4,1fr)}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-kembali" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-kirim" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/></symbol>
+  <symbol id="i-ubah" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-bawah" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-jam" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-salin" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></symbol>
+</svg>
+
+<header class="top">
+  <h1>Mockup layar Hasil</h1>
+  <p>Contoh, tidak ada yang disimpan. Keluarga Pak Ahmad dipakai di semua tab supaya mudah dibandingkan.</p>
+  <nav class="tab" role="tablist">
+    <button role="tab" data-ke="biasa" aria-selected="true">Biasa</button>
+    <button role="tab" data-ke="berlapis">Meninggal berurutan</button>
+    <button role="tab" data-ke="dibagi">Berurutan, sudah dibagi</button>
+    <button role="tab" data-ke="hamil">Ada yang hamil</button>
+    <button role="tab" data-ke="hilang">Ada yang hilang</button>
+    <button role="tab" data-ke="tunggu">Menunggu lahir</button>
+    <button role="tab" data-ke="bersamaan">Meninggal bersamaan</button>
+    <button role="tab" data-ke="coba">Cara mencoba</button>
+  </nav>
+</header>
+
+<main>
+
+<!-- ═══════════════ BIASA ═══════════════ -->
+<section class="layar aktif" id="biasa">
+  <p class="tugas" data-tugas="1">Tugas 1: Cari bagianmu dan bagian anak perempuan. Lalu cari kenapa Hasan tidak dapat.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Selesai</span></div>
+  <div class="kepala">
+    <small>Pembagian harta</small>
+    <h2>Harta Pak Ahmad</h2>
+    <p>Rp 300.000.000 dibagi ke 4 orang.</p>
+    <p class="meta">Tanpa biaya jenazah, hutang, atau wasiat · Menurut madzhab Syafi'i · <button class="tautan" data-toast="Membuka pilihan madzhab">Ganti madzhab</button></p>
+  </div>
+  <div class="ubin kamu">
+    <div class="lbl">Bagianmu, sebagai istri almarhum</div>
+    <div class="rp">Rp 37.500.000</div>
+    <div class="ket">1/8 karena almarhum punya anak.</div>
+  </div>
+
+  <h3 class="judul">Siapa dapat berapa</h3>
+  <div class="daftar" data-pohon="pohon-biasa">
+    <button class="baris" aria-expanded="false" data-orang="aminah"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Istri almarhum</span></span><span class="rp">Rp 37.500.000</span></div>
+      <p class="alasan">1/8 karena almarhum punya anak.</p>
+      <div class="lebih"><p>Tanpa anak, istri mendapat 1/4. Karena ada Budi dan Siti, bagiannya menjadi 1/8.</p><p>Dalil: QS An-Nisa ayat 12. <a href="#" data-toast="Membuka dalil">Baca</a></p></div></button>
+    <button class="baris" aria-expanded="false" data-orang="fatimah"><div class="atas"><span class="ava" style="background:#7d3c98">F</span><span class="nama"><b>Fatimah</b><span>Ibu almarhum</span></span><span class="rp">Rp 50.000.000</span></div>
+      <p class="alasan">1/6 karena almarhum punya anak.</p>
+      <div class="lebih"><p>Tanpa anak, ibu mendapat 1/3. Karena ada anak, bagiannya menjadi 1/6.</p><p>Dalil: QS An-Nisa ayat 11. <a href="#" data-toast="Membuka dalil">Baca</a></p></div></button>
+    <button class="baris" aria-expanded="false" data-orang="budi"><div class="atas"><span class="ava" style="background:#3f6b2a">B</span><span class="nama"><b>Budi</b><span>Anak laki-laki</span></span><span class="rp">Rp 141.666.666</span></div>
+      <p class="alasan">Sisa harta, dibagi dengan Siti: laki-laki dua kali perempuan.</p>
+      <div class="lebih"><p>Setelah Aminah dan Fatimah, sisa Rp 212.500.000 untuk anak-anak. Budi 2 bagian, Siti 1 bagian.</p><p>Dalil: QS An-Nisa ayat 11. <a href="#" data-toast="Membuka dalil">Baca</a></p></div></button>
+    <button class="baris" aria-expanded="false" data-orang="siti"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Anak perempuan</span></span><span class="rp">Rp 70.833.333</span></div>
+      <p class="alasan">Sisa harta, dibagi dengan Budi: separuh bagian Budi.</p>
+      <div class="lebih"><p>Siti 1 bagian dari 3 bagian sisa harta.</p><p>Dalil: QS An-Nisa ayat 11. <a href="#" data-toast="Membuka dalil">Baca</a></p></div></button>
+    <button class="baris redup" aria-expanded="false" data-orang="hasan"><div class="atas"><span class="ava">H</span><span class="nama"><b>Hasan</b><span>Kakak laki-laki almarhum</span></span><span class="rp">Rp 0</span></div>
+      <p class="alasan">Tidak mendapat bagian karena almarhum punya anak laki-laki.</p>
+      <div class="lebih"><p>Anak laki-laki lebih dekat ke almarhum daripada saudara, jadi saudara tidak mendapat bagian selama ada anak laki-laki.</p></div></button>
+    <div class="baris sisa"><div class="atas"><span class="ava" style="background:#c9cfc8"> </span><span class="nama"><b>Sisa pembulatan</b><span>Belum dibagi, sepakati bersama · <button class="tautan" data-toast="Membuka pilihan pembulatan: Rp 1 / Rp 100 / Rp 1.000">ubah pembulatan</button></span></span><span class="rp">Rp 1</span></div></div>
+    <div class="baris jumlah"><div class="atas"><span class="ava" style="background:transparent"></span><span class="nama"><b>Jumlah</b></span><span class="rp">Rp 300.000.000</span></div></div>
+  </div>
+  <div class="aksi">
+    <button class="tautan" data-kirim="biasa"><svg class="ikon"><use href="#i-kirim"/></svg>Kirim ringkasan</button>
+    <button class="tautan" data-toast="Mengunduh PDF: pembagian, alasan tiap orang, dan cara menghitung"><svg class="ikon"><use href="#i-pdf"/></svg>Unduh PDF lengkap</button>
+    <button class="tautan" data-toast="Kembali ke Periksa untuk mengubah data"><svg class="ikon"><use href="#i-ubah"/></svg>Ubah data</button>
+  </div>
+
+  <h3 class="judul">Pohon keluarga <small>ketuk nama di daftar untuk menyorot</small></h3>
+  <div class="pohon-wadah">
+    <svg class="pohon" id="pohon-biasa" viewBox="0 0 640 300">
+      <path class="garis" d="M200 60 H320"/><path class="garis" d="M260 60 V100 H160 V130"/><path class="garis" d="M260 100 H320 V130"/>
+      <path class="garis nikah" d="M380 160 H420"/><path class="garis" d="M400 160 V210 H320 V230"/><path class="garis" d="M400 210 H480 V230"/>
+      <g class="kotak meninggal"><rect x="80" y="36" width="120" height="48" rx="12"/><text x="92" y="56">Ayah almarhum</text><text class="k" x="92" y="73">meninggal lebih dulu</text></g>
+      <g class="kotak terima" data-id="fatimah"><rect x="320" y="36" width="140" height="48" rx="12"/><text x="332" y="56">Fatimah · ibu</text><text class="rp" x="332" y="73">Rp 50.000.000</text></g>
+      <g class="kotak redup" data-id="hasan"><rect x="90" y="130" width="140" height="48" rx="12"/><text x="102" y="150">Hasan · kakak</text><text class="k" x="102" y="167">tidak mendapat</text></g>
+      <g class="kotak almarhum"><rect x="260" y="130" width="120" height="48" rx="12"/><text x="272" y="150">Pak Ahmad</text><text class="k" x="272" y="167" style="fill:#cfe2dc">Rp 300.000.000</text></g>
+      <g class="kotak terima" data-id="aminah"><rect x="420" y="130" width="150" height="48" rx="12"/><text x="432" y="150">Aminah · istri</text><text class="rp" x="432" y="167">Rp 37.500.000</text></g>
+      <g class="kotak terima" data-id="budi"><rect x="250" y="230" width="140" height="48" rx="12"/><text x="262" y="250">Budi · anak</text><text class="rp" x="262" y="267">Rp 141.666.666</text></g>
+      <g class="kotak terima" data-id="siti"><rect x="410" y="230" width="140" height="48" rx="12"/><text x="422" y="250">Siti · anak</text><text class="rp" x="422" y="267">Rp 70.833.333</text></g>
+    </svg>
+    <div class="legenda"><span><i style="background:#eef7ea;border-color:#6aa587"></i>mendapat bagian</span><span><i style="background:#f3f4f1;border-color:#d5dcd3;border-style:dashed"></i>tidak mendapat</span><span><i style="background:#eceee9;border-color:#8f9a93"></i>sudah meninggal</span></div>
+  </div>
+
+  <h3 class="judul">Langkah selanjutnya</h3>
+  <ol class="lanjut">
+    <li>Musyawarahkan hasil ini dengan semua ahli waris.<span>Kirim ringkasan ke grup keluarga, atau unduh PDF untuk dibaca bersama.</span></li>
+    <li>Sepakati cara membagi.<span>Transfer, tunai, atau barang yang dinilai dengan harga saat dibagi, termasuk sisa pembulatan Rp 1.</span></li>
+    <li>Urus dokumen.<span>Misalnya surat keterangan ahli waris untuk balik nama atau pencairan rekening.</span></li>
+    <li>Kalau ragu atau ada perselisihan, tanya ahlinya.<span>Bawa PDF lengkap ke ustadz yang paham faraidh.</span></li>
+  </ol>
+
+  <details class="periksa">
+    <summary><div>Cara menghitung<span>Untuk dicocokkan dengan ustadz atau kitab</span></div><svg class="ikon"><use href="#i-bawah"/></svg></summary>
+    <div class="isi">
+      <ol>
+        <li>Harta yang dibagi: Rp 300.000.000.</li>
+        <li>Ahli waris: istri, ibu, anak laki-laki, anak perempuan. Kakak laki-laki terhalang oleh anak laki-laki (<span class="istilah" title="terhalang penuh">hajb hirman</span>).</li>
+        <li>Istri 1/8 dan ibu 1/6 karena ada keturunan (<span class="istilah" title="keturunan yang ikut mewarisi">far'u warits</span>). Anak laki-laki dan perempuan mengambil sisa (<span class="istilah" title="ashabah bersama saudaranya">ashabah bil ghair</span>), 2 : 1.</li>
+        <li>Penyebut 8 dan 6 disamakan menjadi 24 (<span class="istilah" title="asal masalah">ashlul mas'alah</span>): istri 3, ibu 4, sisa 17.</li>
+        <li>17 tidak habis dibagi 3 kepala, jadi semua dikali 3 (<span class="istilah" title="pembetulan">tashih</span>): 72 bagian.</li>
+      </ol>
+      <div class="tabel-wadah"><table class="tabel">
+        <tr><th>Ahli waris</th><th>Bagian</th><th>Asal 24</th><th>Tashih 72</th><th>Rupiah</th></tr>
+        <tr><td>Aminah (istri)</td><td>1/8</td><td>3</td><td>9</td><td>37.500.000</td></tr>
+        <tr><td>Fatimah (ibu)</td><td>1/6</td><td>4</td><td>12</td><td>50.000.000</td></tr>
+        <tr><td>Budi (anak laki-laki)</td><td rowspan="2">sisa</td><td rowspan="2">17</td><td>34</td><td>141.666.666</td></tr>
+        <tr><td>Siti (anak perempuan)</td><td>17</td><td>70.833.333</td></tr>
+        <tr><td>Hasan (kakak)</td><td colspan="4">terhalang</td></tr>
+        <tr><td>Sisa pembulatan</td><td></td><td></td><td></td><td>1</td></tr>
+        <tr><th>Jumlah</th><th></th><th>24</th><th>72</th><th>300.000.000</th></tr>
+      </table></div>
+    </div>
+  </details>
+
+  <footer class="kaki"><p>Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat. Ada yang janggal? <a href="#" data-toast="Membuka formulir laporan">Laporkan</a>.</p></footer>
+</section>
+
+<!-- ═══════════════ BERLAPIS ═══════════════ -->
+<section class="layar" id="berlapis">
+  <p class="tugas" data-tugas="2">Tugas 2: Cari berapa bagian Budi dari ayahnya, dan ke siapa saja bagian itu pergi. Lalu cari kenapa Zahra dapat.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Selesai</span></div>
+  <div class="kepala">
+    <small>Pembagian harta</small>
+    <h2>Harta Pak Ahmad</h2>
+    <p>Rp 300.000.000. Budi meninggal sesudah ayahnya, sebelum harta dibagi, jadi bagian Budi ikut dibagi ke ahli warisnya.</p>
+    <p class="meta">Diterima oleh 3 orang · Menurut madzhab Syafi'i · <button class="tautan" data-toast="Membuka pilihan madzhab">Ganti madzhab</button></p>
+  </div>
+  <div class="ubin kamu">
+    <div class="lbl">Bagianmu, sebagai istri almarhum</div>
+    <div class="rp">Rp 66.666.666</div>
+    <div class="ket">Dari suamimu Rp 37.500.000 dan dari Budi Rp 29.166.666.</div>
+  </div>
+
+  <h3 class="judul">Siapa menerima berapa <small>total, sudah termasuk bagian dari Budi</small></h3>
+  <div class="daftar">
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Istri almarhum, ibu Budi</span></span><span class="rp">Rp 66.666.666</span></div>
+      <p class="alasan">Dari Pak Ahmad dan dari Budi. Ketuk untuk rincian.</p>
+      <div class="lebih"><div class="rinci"><span class="t">Dari Pak Ahmad, 1/8 sebagai istri</span><span>Rp 37.500.000</span><span class="t">Dari Budi, 1/6 sebagai ibunya</span><span>Rp 29.166.666</span></div></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Anak perempuan, adik Budi</span></span><span class="rp">Rp 145.833.333</span></div>
+      <p class="alasan">Dari Pak Ahmad dan dari Budi. Ketuk untuk rincian.</p>
+      <div class="lebih"><div class="rinci"><span class="t">Dari Pak Ahmad, sisa bersama Budi (separuh bagian Budi)</span><span>Rp 87.500.000</span><span class="t">Dari Budi, sisa harta sebagai saudarinya</span><span>Rp 58.333.333</span></div></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#b0563f">Z</span><span class="nama"><b>Zahra</b><span>Cucu, anak Budi</span></span><span class="rp">Rp 87.500.000</span></div>
+      <p class="alasan">1/2 dari harta ayahnya, Budi. Ketuk untuk rincian.</p>
+      <div class="lebih"><div class="rinci"><span class="t">Dari Pak Ahmad: tidak mendapat, karena ayahnya (Budi) masih hidup saat itu</span><span>Rp 0</span><span class="t">Dari Budi, 1/2 sebagai putri satu-satunya</span><span>Rp 87.500.000</span></div></div></button>
+    <button class="baris redup" aria-expanded="false"><div class="atas"><span class="ava">B</span><span class="nama"><b>Budi <span class="label meninggal">meninggal</span></b><span>Anak laki-laki, meninggal sesudah ayahnya</span></span><span class="rp">Rp 175.000.000<small>diteruskan</small></span></div>
+      <p class="alasan">Menerima dari ayahnya, lalu dibagi ke ahli warisnya. Lihat aliran di bawah.</p>
+      <div class="lebih"><p>Budi menerima Rp 175.000.000 dari Pak Ahmad (sisa harta, dua kali bagian Siti). Karena Budi sudah meninggal, uang itu dibagi ke ibunya, putrinya, dan adiknya.</p></div></button>
+    <div class="baris sisa"><div class="atas"><span class="ava" style="background:#c9cfc8"> </span><span class="nama"><b>Sisa pembulatan</b><span>Belum dibagi, sepakati bersama · <button class="tautan" data-toast="Membuka pilihan pembulatan">ubah pembulatan</button></span></span><span class="rp">Rp 1</span></div></div>
+    <div class="baris jumlah"><div class="atas"><span class="ava" style="background:transparent"></span><span class="nama"><b>Jumlah</b></span><span class="rp">Rp 300.000.000</span></div></div>
+  </div>
+  <div class="aksi">
+    <button class="tautan" data-kirim="berlapis"><svg class="ikon"><use href="#i-kirim"/></svg>Kirim ringkasan</button>
+    <button class="tautan" data-toast="Mengunduh PDF: total, aliran per almarhum, alasan, dan cara menghitung"><svg class="ikon"><use href="#i-pdf"/></svg>Unduh PDF lengkap</button>
+    <button class="tautan" data-toast="Kembali ke Periksa untuk mengubah data"><svg class="ikon"><use href="#i-ubah"/></svg>Ubah data</button>
+  </div>
+
+  <h3 class="judul">Bagaimana hartanya mengalir <small>ketuk tiap tahap</small></h3>
+  <div class="alir-langkah aktif" data-alir="1">
+    <h4><span class="no">1</span>Pak Ahmad meninggal: Rp 300.000.000</h4>
+    <p>Dibagi ke keluarga yang hidup saat itu.</p>
+    <div class="rinci"><span>Aminah, istri · 1/8</span><b>Rp 37.500.000</b><span>Budi, anak laki-laki · sisa</span><b>Rp 175.000.000</b><span>Siti, anak perempuan · sisa</span><b>Rp 87.500.000</b><span class="t">Zahra, cucu · terhalang ayahnya</span><span class="t">Rp 0</span></div>
+  </div>
+  <div class="alir-langkah" data-alir="2">
+    <h4><span class="no">2</span>Budi meninggal: Rp 175.000.000</h4>
+    <p>Bagian Budi dari ayahnya dibagi ke ahli waris Budi.</p>
+    <div class="rinci"><span>Zahra, putrinya · 1/2</span><b>Rp 87.500.000</b><span>Aminah, ibunya · 1/6</span><b>Rp 29.166.666</b><span>Siti, saudarinya · sisa</span><b>Rp 58.333.333</b></div>
+  </div>
+  <div class="pohon-wadah">
+    <svg class="pohon" id="pohon-berlapis" viewBox="0 0 640 300">
+      <path class="garis nikah" d="M220 60 H260"/><path class="garis" d="M240 60 V110 H180 V130"/><path class="garis" d="M240 110 H360 V130"/><path class="garis" d="M180 178 V230"/>
+      <path class="alir" data-tahap="1" d="M240 84 V110 H180 V128"/><path class="alir" data-tahap="1" d="M240 110 H360 V128"/><path class="alir" data-tahap="1" d="M220 60 H262"/>
+      <path class="alir" data-tahap="2" d="M180 178 V228"/><path class="alir" data-tahap="2" d="M165 130 V100 H335 V86"/><path class="alir" data-tahap="2" d="M230 154 H288"/>
+      <g class="kotak almarhum"><rect x="100" y="36" width="120" height="48" rx="12"/><text x="112" y="56">Pak Ahmad</text><text class="k" x="112" y="73" style="fill:#cfe2dc">Rp 300.000.000</text></g>
+      <g class="kotak terima"><rect x="260" y="36" width="150" height="48" rx="12"/><text x="272" y="56">Aminah · istri</text><text class="rp" x="272" y="73">Rp 66.666.666</text></g>
+      <g class="kotak meninggal"><rect x="100" y="130" width="130" height="48" rx="12"/><text x="112" y="150">Budi · anak</text><text class="k" x="112" y="167">menerima Rp 175 jt</text></g>
+      <g class="kotak terima"><rect x="290" y="130" width="150" height="48" rx="12"/><text x="302" y="150">Siti · anak</text><text class="rp" x="302" y="167">Rp 145.833.333</text></g>
+      <g class="kotak terima"><rect x="110" y="230" width="140" height="48" rx="12"/><text x="122" y="250">Zahra · cucu</text><text class="rp" x="122" y="267">Rp 87.500.000</text></g>
+    </svg>
+    <div class="legenda"><span><i style="background:#1f6f5c;border-color:#1f6f5c"></i>jalur harta di tahap yang dipilih</span><span><i style="background:#eceee9;border-color:#8f9a93"></i>sudah meninggal</span></div>
+  </div>
+
+  <details class="periksa">
+    <summary><div>Cara menghitung<span>Tabel per almarhum dan tabel gabungan (munasakhat)</span></div><svg class="ikon"><use href="#i-bawah"/></svg></summary>
+    <div class="isi">
+      <p><b>Masalah pertama (Pak Ahmad)</b>: asal 8, tashih 24. Istri 3, anak laki-laki 14, anak perempuan 7.</p>
+      <p><b>Masalah kedua (Budi)</b>: asal 6. Ibu 1, putri 3, saudari 2. Bagian Budi 14 dibandingkan dengan 6 (<span class="istilah">tawafuq</span> dengan 2), jadi gabungan (<span class="istilah">jami'ah</span>) 72.</p>
+      <div class="tabel-wadah"><table class="tabel">
+        <tr><th>Ahli waris</th><th>Pak Ahmad (24)</th><th>Budi (6)</th><th>Jami'ah 72</th><th>Rupiah</th></tr>
+        <tr><td>Aminah</td><td>3</td><td>1</td><td>16</td><td>66.666.666</td></tr>
+        <tr><td>Budi</td><td>14</td><td>meninggal</td><td>–</td><td>–</td></tr>
+        <tr><td>Siti</td><td>7</td><td>2</td><td>35</td><td>145.833.333</td></tr>
+        <tr><td>Zahra</td><td>terhalang</td><td>3</td><td>21</td><td>87.500.000</td></tr>
+        <tr><th>Jumlah</th><th>24</th><th>6</th><th>72</th><th>299.999.999 + 1</th></tr>
+      </table></div>
+    </div>
+  </details>
+  <footer class="kaki"><p>Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat.</p></footer>
+</section>
+
+<!-- ═══════════════ BERLAPIS, SUDAH DIBAGI ═══════════════ -->
+<section class="layar" id="dibagi">
+  <p class="tugas" data-tugas="3">Tugas 3: Harta Pak Ahmad sudah dibagi dulu. Cari berapa yang perlu dibagi sekarang dan ke siapa.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Selesai</span></div>
+  <div class="kepala">
+    <small>Yang dibagi sekarang</small>
+    <h2>Harta Budi</h2>
+    <p>Rp 175.000.000, yaitu bagian Budi dari ayahnya yang sudah dibagi dulu. Dibagi ke 3 orang.</p>
+    <p class="meta">Menurut madzhab Syafi'i · <button class="tautan" data-toast="Membuka pilihan madzhab">Ganti madzhab</button></p>
+  </div>
+  <div class="ubin kamu">
+    <div class="lbl">Bagianmu, sebagai ibu Budi</div>
+    <div class="rp">Rp 29.166.666</div>
+    <div class="ket">1/6 karena Budi punya anak.</div>
+  </div>
+  <h3 class="judul">Siapa dapat berapa dari harta Budi</h3>
+  <div class="daftar">
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#b0563f">Z</span><span class="nama"><b>Zahra</b><span>Putri Budi</span></span><span class="rp">Rp 87.500.000</span></div><p class="alasan">1/2 sebagai putri satu-satunya.</p><div class="lebih"><p>Dalil: QS An-Nisa ayat 11.</p></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Ibu Budi</span></span><span class="rp">Rp 29.166.666</span></div><p class="alasan">1/6 karena Budi punya anak.</p><div class="lebih"><p>Dalil: QS An-Nisa ayat 11.</p></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Saudari kandung Budi</span></span><span class="rp">Rp 58.333.333</span></div><p class="alasan">Sisa harta, karena Budi meninggalkan putri dan tidak punya anak laki-laki.</p><div class="lebih"><p>Saudari bersama putri almarhum mengambil sisa harta.</p></div></button>
+    <div class="baris sisa"><div class="atas"><span class="ava" style="background:#c9cfc8"> </span><span class="nama"><b>Sisa pembulatan</b><span>Belum dibagi, sepakati bersama</span></span><span class="rp">Rp 1</span></div></div>
+    <div class="baris jumlah"><div class="atas"><span class="ava" style="background:transparent"></span><span class="nama"><b>Jumlah</b></span><span class="rp">Rp 175.000.000</span></div></div>
+  </div>
+  <div class="aksi">
+    <button class="tautan" data-kirim="dibagi"><svg class="ikon"><use href="#i-kirim"/></svg>Kirim ringkasan</button>
+    <button class="tautan" data-toast="Mengunduh PDF lengkap"><svg class="ikon"><use href="#i-pdf"/></svg>Unduh PDF lengkap</button>
+    <button class="tautan" data-toast="Kembali ke Periksa untuk mengubah data"><svg class="ikon"><use href="#i-ubah"/></svg>Ubah data</button>
+  </div>
+  <h3 class="judul">Asal harta Budi</h3>
+  <div class="catatan"><p>Harta Pak Ahmad Rp 300.000.000 sudah dibagi sebelum Budi meninggal. Budi menerima Rp 175.000.000 dari situ.</p><p><button class="tautan" data-toast="Membuka rincian pembagian harta Pak Ahmad">Lihat pembagian harta Pak Ahmad</button></p></div>
+</section>
+
+<!-- ═══════════════ HAMIL ═══════════════ -->
+<section class="layar" id="hamil">
+  <p class="tugas" data-tugas="4">Tugas 4: Cari berapa yang boleh dibagi sekarang, berapa ditahan, dan untuk siapa. Lalu cari kenapa Siti belum dapat.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Selesai</span></div>
+  <div class="kepala">
+    <small>Pembagian harta</small>
+    <h2>Harta Pak Ahmad</h2>
+    <p>Rp 300.000.000. Aminah sedang hamil, jadi sebagian harta ditahan sampai bayinya lahir.</p>
+    <p class="meta">Menurut madzhab Syafi'i · <button class="tautan" data-toast="Membuka pilihan madzhab">Ganti madzhab</button></p>
+  </div>
+  <div class="empat">
+    <div><span class="lbl">Dibagi sekarang</span><b>Rp 87.500.000</b></div>
+    <div class="tahan"><span class="lbl">Ditahan</span><b>Rp 212.500.000</b></div>
+    <div><span class="lbl">Ditahan untuk</span><b>Bayi dan Siti</b></div>
+    <div><span class="lbl">Dihitung lagi</span><b>Setelah bayi lahir</b></div>
+  </div>
+  <div class="ubin kamu">
+    <div class="lbl">Bagianmu, sebagai istri almarhum</div>
+    <div class="rp">Rp 37.500.000</div>
+    <div class="ket">Sudah pasti. Tidak berubah, apa pun keadaan bayinya.</div>
+  </div>
+  <h3 class="judul">Siapa dapat berapa sekarang</h3>
+  <div class="daftar">
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Istri almarhum</span></span><span class="rp">Rp 37.500.000</span></div><p class="alasan">1/8 karena almarhum punya anak. Sudah pasti.</p><div class="lebih"><p>Siti dan bayi sama-sama anak almarhum, jadi istri tetap 1/8.</p></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#7d3c98">F</span><span class="nama"><b>Fatimah</b><span>Ibu almarhum</span></span><span class="rp">Rp 50.000.000<small>bisa bertambah</small></span></div><p class="alasan">Diberi bagian terkecilnya dulu. Bisa bertambah sampai Rp 65.625.000.</p><div class="lebih"><p>Kalau bayinya lahir tidak hidup, bagian ibu bertambah. Lihat "Kalau bayinya…" di bawah.</p></div></button>
+    <button class="baris tahan" aria-expanded="false"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti <span class="label tahan">ditahan</span></b><span>Anak perempuan</span></span><span class="rp">Rp 0<small>sekarang</small></span></div><p class="alasan">Belum menerima, karena bagiannya bergantung pada berapa bayi yang lahir.</p><div class="lebih"><p>Siti mengambil sisa harta bersama saudaranya yang belum lahir. Menurut madzhab Syafi'i jumlah bayi dalam kandungan tidak dibatasi, jadi bagian Siti belum bisa dipastikan. Bagiannya diambil dari harta yang ditahan setelah bayi lahir.</p></div></button>
+    <button class="baris tahan" aria-expanded="false"><div class="atas"><span class="ava" style="background:#f3dc94;color:#3d2e00">?</span><span class="nama"><b>Bayi dalam kandungan Aminah <span class="label tahan">ditahan</span></b><span>Anak almarhum</span></span><span class="rp">Ditahan</span></div><p class="alasan">Mewarisi bila lahir hidup. Jenis kelamin dan jumlahnya belum diketahui.</p><div class="lebih"><p>Seluruh bagian bayi ditahan sampai ia lahir.</p></div></button>
+    <div class="baris jumlah"><div class="atas"><span class="ava" style="background:transparent"></span><span class="nama"><b>Dibagi sekarang + ditahan</b></span><span class="rp">Rp 300.000.000</span></div></div>
+  </div>
+  <div class="aksi">
+    <button class="tautan" data-kirim="hamil"><svg class="ikon"><use href="#i-kirim"/></svg>Kirim ringkasan</button>
+    <button class="tautan" data-toast="Mengunduh PDF lengkap, termasuk semua kemungkinan"><svg class="ikon"><use href="#i-pdf"/></svg>Unduh PDF lengkap</button>
+    <button class="tautan" data-toast="Kembali ke Periksa. Setelah bayi lahir, ubah keadaannya di sana"><svg class="ikon"><use href="#i-ubah"/></svg>Ubah data</button>
+  </div>
+  <h3 class="judul">Kalau bayinya…</h3>
+  <div class="pil-deret" role="radiogroup" id="pilih-bayi">
+    <button class="pil" role="radio" aria-checked="true" data-k="mati">lahir tidak hidup</button>
+    <button class="pil" role="radio" aria-checked="false" data-k="lk">1 laki-laki</button>
+    <button class="pil" role="radio" aria-checked="false" data-k="pr">1 perempuan</button>
+    <button class="pil" role="radio" aria-checked="false" data-k="lk2">kembar 2 laki-laki</button>
+    <button class="pil" role="radio" aria-checked="false" data-k="pr2">kembar 2 perempuan</button>
+    <button class="pil" role="radio" aria-checked="false" data-k="lkpr">kembar laki-laki dan perempuan</button>
+  </div>
+  <div class="daftar" id="hasil-bayi"></div>
+  <p class="ket" style="color:var(--mute);font-size:13px;margin:8px 2px 0">Angka ini untuk perkiraan. Pembagian akhir dihitung ulang setelah bayi lahir.</p>
+  <h3 class="judul">Pohon keluarga</h3>
+  <div class="pohon-wadah">
+    <svg class="pohon" viewBox="0 0 640 300">
+      <path class="garis" d="M200 60 H320"/><path class="garis" d="M260 60 V130"/><path class="garis nikah" d="M380 160 H420"/><path class="garis" d="M400 160 V210 H320 V230"/><path class="garis" d="M400 210 H480 V230"/>
+      <g class="kotak meninggal"><rect x="80" y="36" width="120" height="48" rx="12"/><text x="92" y="56">Ayah almarhum</text><text class="k" x="92" y="73">meninggal lebih dulu</text></g>
+      <g class="kotak terima"><rect x="320" y="36" width="140" height="48" rx="12"/><text x="332" y="56">Fatimah · ibu</text><text class="rp" x="332" y="73">Rp 50.000.000</text></g>
+      <g class="kotak almarhum"><rect x="260" y="130" width="120" height="48" rx="12"/><text x="272" y="150">Pak Ahmad</text><text class="k" x="272" y="167" style="fill:#cfe2dc">Rp 300.000.000</text></g>
+      <g class="kotak terima"><rect x="420" y="130" width="160" height="48" rx="12"/><text x="432" y="150">Aminah · istri, hamil</text><text class="rp" x="432" y="167">Rp 37.500.000</text></g>
+      <g class="kotak tahan"><rect x="250" y="230" width="140" height="48" rx="12"/><text x="262" y="250">Siti · anak</text><text class="k" x="262" y="267">ditahan</text></g>
+      <g class="kotak tahan"><rect x="410" y="230" width="150" height="48" rx="12"/><text x="422" y="250">Bayi dalam kandungan</text><text class="k" x="422" y="267">ditahan</text></g>
+    </svg>
+    <div class="legenda"><span><i style="background:#eef7ea;border-color:#6aa587"></i>mendapat bagian</span><span><i style="background:#fff7e0;border-color:#d9b44a;border-style:dashed"></i>ditahan</span><span><i style="background:#eceee9;border-color:#8f9a93"></i>sudah meninggal</span></div>
+  </div>
+  <h3 class="judul">Langkah selanjutnya</h3>
+  <ol class="lanjut">
+    <li>Bagikan yang sudah boleh dibagi: Aminah dan Fatimah.<span>Simpan Rp 212.500.000 terpisah, jangan dipakai.</span></li>
+    <li>Setelah bayi lahir, buka kasus ini lagi dari Kasusmu.<span>Ubah keadaan bayi di Periksa. Uang yang ditahan dibagi menurut keadaan sebenarnya.</span></li>
+    <li>Kalau keluarga ingin berdamai atas uang yang ditahan, tanya ustadz.</li>
+  </ol>
+  <details class="periksa">
+    <summary><div>Cara menghitung<span>Semua kemungkinan dan masalah gabungan</span></div><svg class="ikon"><use href="#i-bawah"/></svg></summary>
+    <div class="isi"><p>Tiap kemungkinan dihitung sebagai masalah sendiri, lalu disamakan dalam satu <span class="istilah">jami'ah</span> 1440. Tiap ahli waris yang pasti diberi bagian terkecilnya; sisanya ditahan (<span class="istilah">mauquf</span>).</p><p>(Rincian enam masalah dan tabel, seperti di aplikasi sekarang.)</p></div>
+  </details>
+</section>
+
+<!-- ═══════════════ HILANG ═══════════════ -->
+<section class="layar" id="hilang">
+  <p class="tugas" data-tugas="5">Tugas 5: Siti hilang tanpa kabar. Cari berapa yang ditahan untuknya dan apa yang terjadi kalau ia kembali atau tidak.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Selesai</span></div>
+  <div class="kepala">
+    <small>Pembagian harta</small>
+    <h2>Harta Pak Ahmad</h2>
+    <p>Rp 300.000.000. Siti hilang tanpa kabar, jadi bagiannya ditahan sampai ada kepastian.</p>
+    <p class="meta">Menurut madzhab Syafi'i · <button class="tautan" data-toast="Membuka pilihan madzhab">Ganti madzhab</button></p>
+  </div>
+  <div class="empat">
+    <div><span class="lbl">Dibagi sekarang</span><b>Rp 103.125.000</b></div>
+    <div class="tahan"><span class="lbl">Ditahan</span><b>Rp 196.875.000</b></div>
+    <div><span class="lbl">Ditahan untuk</span><b>Siti</b></div>
+    <div><span class="lbl">Dihitung lagi</span><b>Ada kabar Siti</b></div>
+  </div>
+  <h3 class="judul">Siapa dapat berapa sekarang</h3>
+  <div class="daftar">
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#7d3c98">F</span><span class="nama"><b>Fatimah</b><span>Ibu almarhum</span></span><span class="rp">Rp 65.625.000</span></div><p class="alasan">Bagian terkecilnya dari dua kemungkinan.</p><div class="lebih"><p>Rinciannya di "Kalau Siti…".</p></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Istri almarhum</span></span><span class="rp">Rp 37.500.000</span></div><p class="alasan">Bagian terkecilnya dari dua kemungkinan.</p><div class="lebih"><p>Rinciannya di "Kalau Siti…".</p></div></button>
+    <button class="baris tahan" aria-expanded="false"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti <span class="label tahan">hilang</span></b><span>Anak perempuan</span></span><span class="rp">Ditahan</span></div><p class="alasan">Rp 196.875.000 disimpan sampai ada kepastian.</p><div class="lebih"><p>Kalau Siti kembali, ia menerima bagiannya dari uang ini; sisanya dibagi ke yang lain. Kalau Siti dipastikan meninggal, uang ini dibagi ulang ke Aminah dan Fatimah.</p></div></button>
+    <div class="baris jumlah"><div class="atas"><span class="ava" style="background:transparent"></span><span class="nama"><b>Dibagi sekarang + ditahan</b></span><span class="rp">Rp 300.000.000</span></div></div>
+  </div>
+  <div class="aksi">
+    <button class="tautan" data-kirim="hilang"><svg class="ikon"><use href="#i-kirim"/></svg>Kirim ringkasan</button>
+    <button class="tautan" data-toast="Mengunduh PDF lengkap"><svg class="ikon"><use href="#i-pdf"/></svg>Unduh PDF lengkap</button>
+    <button class="tautan" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-ubah"/></svg>Ubah data</button>
+  </div>
+  <h3 class="judul">Kalau Siti…</h3>
+  <div class="daftar">
+    <div class="baris" style="cursor:default"><div class="atas"><span class="nama"><b>…kembali</b><span>Siti menerima bagiannya, yang lain menerima sisanya</span></span><span class="rp" style="font-size:14px;color:var(--mute)">angka dari engine</span></div></div>
+    <div class="baris" style="cursor:default"><div class="atas"><span class="nama"><b>…dipastikan meninggal</b><span>Uang yang ditahan dibagi ulang ke Aminah dan Fatimah</span></span><span class="rp" style="font-size:14px;color:var(--mute)">angka dari engine</span></div></div>
+  </div>
+  <h3 class="judul">Langkah selanjutnya</h3>
+  <ol class="lanjut">
+    <li>Bagikan yang sudah boleh dibagi.<span>Simpan Rp 196.875.000 terpisah.</span></li>
+    <li>Kalau ada kabar tentang Siti, buka kasus ini lagi dari Kasusmu dan ubah keadaannya di Periksa.</li>
+    <li>Tentang batas waktu menunggu orang yang hilang, tanya ustadz atau pengadilan agama.</li>
+  </ol>
+</section>
+
+<!-- ═══════════════ MENUNGGU LAHIR ═══════════════ -->
+<section class="layar" id="tunggu">
+  <p class="tugas" data-tugas="6">Tugas 6: Keluarga memilih menunggu bayi lahir. Cari apa yang sudah pasti, dan apa akibatnya kalau tetap dibagi sekarang.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Ditunda</span></div>
+  <div class="kepala">
+    <small>Pembagian harta</small>
+    <h2>Menunggu bayi lahir</h2>
+    <p>Harta Pak Ahmad Rp 300.000.000 dibagi sekali saja setelah bayi Aminah lahir. Ini cara yang lebih utama, karena tidak ada yang perlu ditahan.</p>
+  </div>
+  <div class="ubin" style="background:var(--card);box-shadow:var(--sh)">
+    <div style="display:flex;gap:10px;align-items:flex-start"><svg class="ikon" style="margin-top:3px"><use href="#i-jam"/></svg><div><b>Kasus tersimpan di Kasusmu.</b><div style="color:var(--mute);font-size:14px">Setelah bayi lahir, buka dari Kasusmu dan ubah keadaan bayi di Periksa.</div></div></div>
+  </div>
+  <h3 class="judul">Yang sudah pasti</h3>
+  <div class="daftar">
+    <div class="baris" style="cursor:default"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Istri almarhum · 1/8, apa pun keadaan bayinya</span></span><span class="rp">Rp 37.500.000</span></div></div>
+    <div class="baris" style="cursor:default"><div class="atas"><span class="ava" style="background:#7d3c98">F</span><span class="nama"><b>Fatimah</b><span>Ibu almarhum · paling sedikit</span></span><span class="rp">Rp 50.000.000</span></div></div>
+    <div class="baris" style="cursor:default"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Anak perempuan · bergantung pada bayi</span></span><span class="rp">belum pasti</span></div></div>
+  </div>
+  <h3 class="judul">Perlu dibagi sekarang?</h3>
+  <div class="catatan"><p>Kalau ada kebutuhan mendesak, harta bisa dibagi sekarang. Akibatnya Rp 212.500.000 harus ditahan sampai bayi lahir, dan Siti belum menerima apa pun.</p><p><button class="tautan" data-toast="Pindah ke pembagian sekarang (seperti tab Ada yang hamil)">Bagi sekarang, sebagian ditahan</button></p></div>
+</section>
+
+<!-- ═══════════════ BERSAMAAN ═══════════════ -->
+<section class="layar" id="bersamaan">
+  <p class="tugas" data-tugas="7">Tugas 7: Pak Ahmad dan Budi meninggal dalam kecelakaan yang sama. Cari berapa yang kamu terima dari masing-masing.</p>
+  <div class="bilah"><button class="tautan kembali" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-kembali"/></svg>Periksa</button><span class="langkah">Selesai</span></div>
+  <div class="kepala">
+    <small>Pembagian harta</small>
+    <h2>Harta Pak Ahmad dan Budi</h2>
+    <p>Pak Ahmad dan anaknya, Budi, meninggal bersamaan dan tidak diketahui siapa yang lebih dulu. Karena itu keduanya tidak saling mewarisi; harta masing-masing dibagi ke keluarganya yang masih hidup.</p>
+    <p class="meta">Menurut madzhab Syafi'i · <button class="tautan" data-toast="Membuka pilihan madzhab">Ganti madzhab</button></p>
+  </div>
+  <div class="ubin kamu">
+    <div class="lbl">Bagianmu dari dua harta</div>
+    <div class="rp">Rp 57.500.000</div>
+    <div class="ket">Dari suamimu Rp 37.500.000 dan dari Budi Rp 20.000.000.</div>
+  </div>
+  <h3 class="judul">Harta Pak Ahmad <small>Rp 300.000.000</small></h3>
+  <div class="daftar">
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Istrinya</span></span><span class="rp">Rp 37.500.000</span></div><p class="alasan">1/8 karena ia punya anak.</p><div class="lebih"><p>Budi tidak dihitung sebagai ahli waris Pak Ahmad.</p></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Putrinya</span></span><span class="rp">Rp 262.500.000</span></div><p class="alasan">1/2, lalu sisanya juga kembali kepadanya.</p><div class="lebih"><p>Rincian di Cara menghitung.</p></div></button>
+  </div>
+  <h3 class="judul">Harta Budi <small>Rp 50.000.000</small></h3>
+  <div class="daftar">
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah <span class="label kamu">kamu</span></b><span>Ibunya</span></span><span class="rp">Rp 20.000.000</span></div><p class="alasan">Bagian ibu dari harta anaknya.</p><div class="lebih"><p>Rincian di Cara menghitung.</p></div></button>
+    <button class="baris" aria-expanded="false"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Saudarinya</span></span><span class="rp">Rp 30.000.000</span></div><p class="alasan">Bagian saudari kandung.</p><div class="lebih"><p>Rincian di Cara menghitung.</p></div></button>
+  </div>
+  <h3 class="judul">Total per orang</h3>
+  <div class="daftar">
+    <div class="baris" style="cursor:default"><div class="atas"><span class="ava" style="background:#9b5b34">A</span><span class="nama"><b>Aminah</b><span>Rp 37.500.000 + Rp 20.000.000</span></span><span class="rp">Rp 57.500.000</span></div></div>
+    <div class="baris" style="cursor:default"><div class="atas"><span class="ava" style="background:#2b6f8a">S</span><span class="nama"><b>Siti</b><span>Rp 262.500.000 + Rp 30.000.000</span></span><span class="rp">Rp 292.500.000</span></div></div>
+    <div class="baris jumlah"><div class="atas"><span class="ava" style="background:transparent"></span><span class="nama"><b>Jumlah dua harta</b></span><span class="rp">Rp 350.000.000</span></div></div>
+  </div>
+  <div class="aksi">
+    <button class="tautan" data-kirim="bersamaan"><svg class="ikon"><use href="#i-kirim"/></svg>Kirim ringkasan</button>
+    <button class="tautan" data-toast="Mengunduh PDF lengkap"><svg class="ikon"><use href="#i-pdf"/></svg>Unduh PDF lengkap</button>
+    <button class="tautan" data-toast="Kembali ke Periksa"><svg class="ikon"><use href="#i-ubah"/></svg>Ubah data</button>
+  </div>
+</section>
+
+<!-- ═══════════════ CARA MENCOBA ═══════════════ -->
+<section class="layar coba" id="coba">
+  <h2>Cara mencoba</h2>
+  <div class="kartu">
+    <p>Ini contoh tampilan, bukan aplikasi sungguhan. Tidak ada yang disimpan. Tombol hanya menampilkan pesan.</p>
+    <p>Semua tab memakai keluarga yang sama: <b>Pak Ahmad</b> (almarhum), <b>Aminah</b> (istri, dianggap sebagai "kamu"), <b>Fatimah</b> (ibu), <b>Budi</b> dan <b>Siti</b> (anak), <b>Zahra</b> (anak Budi), <b>Hasan</b> (kakak almarhum).</p>
+  </div>
+  <div class="kartu">
+    <h3>Arti warna</h3>
+    <div class="warna-deret">
+      <div><i style="background:#e6f2e3;border-color:#e6f2e3"></i>Hijau muda: bagianmu, atau orang yang mendapat bagian</div>
+      <div><i style="background:#fbf1d6;border-color:#d9b44a"></i>Kuning: uang yang ditahan</div>
+      <div><i style="background:#eceee9;border-color:#8f9a93"></i>Abu: sudah meninggal atau tidak mendapat bagian</div>
+      <div><i style="background:#0f3a38;border-color:#0f3a38"></i>Hijau tua: almarhum (asal harta)</div>
+    </div>
+  </div>
+  <div class="kartu">
+    <h3>Kata yang dipakai</h3>
+    <p><b>Ditahan</b>: uang yang belum boleh dibagi sampai keadaannya jelas. <b>Sisa pembulatan</b>: rupiah yang tersisa karena bagian dibulatkan ke bawah. <b>Cara menghitung</b>: rincian untuk dicocokkan dengan ustadz.</p>
+  </div>
+  <div id="daftar-tugas"></div>
+  <div class="kartu">
+    <h3>Apakah ini sesuai?</h3>
+    <div class="asumsi" data-asumsi="Pertama dilihat rupiah per orang, bukan pohon"><span>Yang pertama ingin dilihat adalah rupiah per orang, bukan pohon keluarga.</span></div>
+    <div class="asumsi" data-asumsi="Kirim ringkasan WA + PDF lengkap cukup"><span>"Kirim ringkasan" (WhatsApp) dan "Unduh PDF lengkap" sudah cukup untuk berbagi.</span></div>
+    <div class="asumsi" data-asumsi="Berurutan: total dulu, aliran di bawah"><span>Untuk yang meninggal berurutan: total dulu, alirannya di bawah.</span></div>
+    <div class="asumsi" data-asumsi="Pohon di bawah daftar"><span>Pohon keluarga cukup di bawah daftar.</span></div>
+  </div>
+  <div class="kartu">
+    <h3>Kirim catatan</h3>
+    <p class="cek">Salin semua catatanmu, lalu tempel di chat ke tim.</p>
+    <button class="btn-utama" id="salin-catatan"><svg class="ikon" style="margin-right:6px"><use href="#i-salin"/></svg>Salin catatan</button>
+  </div>
+</section>
+
+</main>
+
+<div class="lembar" id="lembar-kirim" role="dialog" aria-modal="true" aria-labelledby="judul-kirim">
+  <div class="isi">
+    <h4 id="judul-kirim">Kirim ringkasan</h4>
+    <pre id="teks-kirim"></pre>
+    <div class="tombol-deret"><button class="tautan" id="tutup-kirim">Batal</button><button class="btn-utama" id="salin-kirim">Salin dan buka WhatsApp</button></div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"><span id="toast-teks"></span><button class="tautan" id="toast-urung">Urungkan</button></div>
+
+<script>
+// Data contoh: satu sumber untuk pemilih kemungkinan dan teks ringkasan. Angka diambil dari hitungan engine untuk kasus yang sama.
+const KEMUNGKINAN_BAYI = {
+  mati: [['Aminah', 37500000], ['Fatimah', 65625000], ['Siti', 196875000]],
+  lk:   [['Aminah', 37500000], ['Fatimah', 50000000], ['Bayi laki-laki', 141666666], ['Siti', 70833333]],
+  pr:   [['Aminah', 37500000], ['Fatimah', 52500000], ['Bayi perempuan', 105000000], ['Siti', 105000000]],
+  lk2:  [['Aminah', 37500000], ['Fatimah', 50000000], ['Dua bayi laki-laki', 170000000], ['Siti', 42500000]],
+  pr2:  [['Aminah', 37500000], ['Fatimah', 52500000], ['Dua bayi perempuan', 140000000], ['Siti', 70000000]],
+  lkpr: [['Aminah', 37500000], ['Fatimah', 50000000], ['Bayi laki-laki dan perempuan', 159375000], ['Siti', 53125000]],
+};
+const RINGKASAN = {
+  biasa: 'Pembagian harta Pak Ahmad (Rp 300.000.000), menurut madzhab Syafi\'i:\n• Aminah (istri): Rp 37.500.000\n• Fatimah (ibu): Rp 50.000.000\n• Budi (anak laki-laki): Rp 141.666.666\n• Siti (anak perempuan): Rp 70.833.333\n• Hasan (kakak): tidak mendapat, karena ada anak laki-laki\nSisa pembulatan Rp 1 disepakati bersama.\nRincian dan alasan: [tautan PDF]',
+  berlapis: 'Pembagian harta Pak Ahmad (Rp 300.000.000). Budi meninggal sesudah ayahnya, bagiannya ikut dibagi.\n• Aminah: Rp 66.666.666 (dari Pak Ahmad 37.500.000 + dari Budi 29.166.666)\n• Siti: Rp 145.833.333 (87.500.000 + 58.333.333)\n• Zahra: Rp 87.500.000 (dari ayahnya, Budi)\nSisa pembulatan Rp 1.\nRincian: [tautan PDF]',
+  dibagi: 'Pembagian harta Budi (Rp 175.000.000):\n• Zahra (putri): Rp 87.500.000\n• Aminah (ibu): Rp 29.166.666\n• Siti (saudari): Rp 58.333.333\nSisa pembulatan Rp 1.',
+  hamil: 'Pembagian harta Pak Ahmad (Rp 300.000.000). Aminah sedang hamil.\nDibagi sekarang:\n• Aminah: Rp 37.500.000 (pasti)\n• Fatimah: Rp 50.000.000 (bisa bertambah)\nDitahan Rp 212.500.000 untuk bayi dan Siti, dibagi setelah bayi lahir.',
+  hilang: 'Pembagian harta Pak Ahmad (Rp 300.000.000). Siti hilang tanpa kabar.\nDibagi sekarang:\n• Fatimah: Rp 65.625.000\n• Aminah: Rp 37.500.000\nDitahan Rp 196.875.000 untuk Siti sampai ada kepastian.',
+  bersamaan: 'Pak Ahmad dan Budi meninggal bersamaan, tidak saling mewarisi.\nHarta Pak Ahmad Rp 300.000.000: Aminah 37.500.000, Siti 262.500.000\nHarta Budi Rp 50.000.000: Aminah 20.000.000, Siti 30.000.000',
+};
+const TUGAS = [
+  ['biasa', 'Bagianmu dan alasan', ['Buka tab Biasa.', 'Cari berapa bagianmu.', 'Cari bagian Siti.', 'Cari kenapa Hasan tidak dapat.'], 'Apakah angka bagianmu langsung terlihat? Apakah alasannya mudah dipahami?'],
+  ['berlapis', 'Meninggal berurutan', ['Buka tab Meninggal berurutan.', 'Cari berapa yang Budi terima dari ayahnya.', 'Cari ke siapa bagian Budi pergi.', 'Cari kenapa Zahra dapat.'], 'Apakah kamu paham bahwa Zahra dapat dari ayahnya, bukan dari kakeknya?'],
+  ['dibagi', 'Harta pertama sudah dibagi', ['Buka tab Berurutan, sudah dibagi.', 'Cari berapa yang perlu dibagi sekarang.'], 'Apakah jelas bahwa hanya harta Budi yang dibagi sekarang?'],
+  ['hamil', 'Ada yang hamil', ['Buka tab Ada yang hamil.', 'Cari berapa yang boleh dibagi sekarang dan berapa yang ditahan.', 'Cari kenapa Siti belum dapat.', 'Pilih "1 perempuan" di Kalau bayinya…'], 'Apakah keluarga akan menerima alasan Siti belum dapat?'],
+  ['hilang', 'Ada yang hilang', ['Buka tab Ada yang hilang.', 'Cari berapa yang ditahan untuk Siti.', 'Cari apa yang terjadi kalau Siti kembali.'], 'Apakah langkah selanjutnya jelas?'],
+  ['tunggu', 'Menunggu lahir', ['Buka tab Menunggu lahir.', 'Cari bagian yang sudah pasti.', 'Cari akibatnya kalau tetap dibagi sekarang.'], 'Apakah kamu tahu harus membuka kasus ini dari mana nanti?'],
+  ['bersamaan', 'Meninggal bersamaan', ['Buka tab Meninggal bersamaan.', 'Cari bagianmu dari harta Budi.'], 'Apakah jelas bahwa "ibunya" di harta Budi adalah kamu?'],
+];
+const rupiah = n => 'Rp ' + n.toLocaleString('id-ID');
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+
+// Tab dan banner tugas
+let tugasAktif = null;
+function bukaTab(id) {
+  $$('nav.tab button').forEach(b => b.setAttribute('aria-selected', b.dataset.ke === id));
+  $$('.layar').forEach(s => s.classList.toggle('aktif', s.id === id));
+  $$('.tugas').forEach(t => t.classList.toggle('aktif', t.dataset.tugas === tugasAktif));
+  scrollTo(0, 0);
+}
+$$('nav.tab button').forEach(b => b.onclick = () => bukaTab(b.dataset.ke));
+
+// Baris: buka-tutup rincian + sorot di pohon
+$$('.baris[aria-expanded]').forEach(b => b.addEventListener('click', e => {
+  if (e.target.closest('a,.tautan')) return;
+  const buka = b.getAttribute('aria-expanded') !== 'true';
+  b.setAttribute('aria-expanded', buka);
+  const pohon = b.closest('.daftar')?.dataset.pohon;
+  if (pohon) $$('#' + pohon + ' .kotak').forEach(k => k.classList.toggle('sorot', buka && k.dataset.id === b.dataset.orang));
+}));
+
+// Aliran berlapis
+function pilihAlir(tahap) {
+  $$('.alir-langkah').forEach(a => a.classList.toggle('aktif', a.dataset.alir === tahap));
+  $$('#pohon-berlapis .alir').forEach(p => p.classList.toggle('on', p.dataset.tahap === tahap));
+}
+$$('.alir-langkah').forEach(a => a.onclick = () => pilihAlir(a.dataset.alir));
+pilihAlir('1');
+
+// Pemilih kemungkinan bayi
+function tampilBayi(kunci) {
+  $$('#pilih-bayi .pil').forEach(p => p.setAttribute('aria-checked', p.dataset.k === kunci));
+  $('#hasil-bayi').innerHTML = KEMUNGKINAN_BAYI[kunci].map(([nama, n]) =>
+    `<div class="baris" style="cursor:default"><div class="atas"><span class="nama"><b>${nama}</b></span><span class="rp">${rupiah(n)}</span></div></div>`).join('');
+}
+$$('#pilih-bayi .pil').forEach(p => p.onclick = () => tampilBayi(p.dataset.k));
+tampilBayi('mati');
+
+// Toast dengan Urungkan
+let jedaToast;
+function toast(teks) {
+  $('#toast-teks').textContent = 'Mockup: ' + teks;
+  $('#toast').classList.add('on');
+  clearTimeout(jedaToast); jedaToast = setTimeout(() => $('#toast').classList.remove('on'), 3200);
+}
+$('#toast-urung').onclick = () => { $('#toast').classList.remove('on'); };
+document.addEventListener('click', e => {
+  const el = e.target.closest('[data-toast]');
+  if (el) { e.preventDefault(); e.stopPropagation(); toast(el.dataset.toast); }
+}, true);
+
+// Kirim ringkasan
+$$('[data-kirim]').forEach(b => b.onclick = () => { $('#teks-kirim').textContent = RINGKASAN[b.dataset.kirim]; $('#lembar-kirim').classList.add('on'); });
+$('#tutup-kirim').onclick = () => $('#lembar-kirim').classList.remove('on');
+$('#salin-kirim').onclick = () => { navigator.clipboard?.writeText($('#teks-kirim').textContent).catch(() => {}); $('#lembar-kirim').classList.remove('on'); toast('teks disalin, WhatsApp dibuka'); };
+
+// Cara mencoba: tugas, asumsi, salin catatan
+$('#daftar-tugas').innerHTML = TUGAS.map(([tab, judul, langkah, cek], i) => `
+  <div class="kartu"><h3>Tugas ${i + 1}: ${judul}</h3><ol>${langkah.map(l => `<li>${l}</li>`).join('')}</ol>
+  <p class="cek">Yang dicek: ${cek}</p>
+  <p><button class="tautan" data-mulai="${i + 1}" data-tab="${tab}">Mulai tugas ini</button></p>
+  <textarea data-catatan="Tugas ${i + 1}: ${judul}" placeholder="Catatanmu…"></textarea></div>`).join('');
+$$('[data-mulai]').forEach(b => b.onclick = () => { tugasAktif = b.dataset.mulai; bukaTab(b.dataset.tab); });
+$$('.asumsi').forEach(a => a.insertAdjacentHTML('beforeend',
+  `<div class="pil-deret">${['Sesuai', 'Tidak sesuai', 'Tidak yakin'].map(p => `<button class="pil" aria-checked="false">${p}</button>`).join('')}</div>`));
+$$('.asumsi .pil').forEach(p => p.onclick = () => { $$('.pil', p.parentElement).forEach(x => x.setAttribute('aria-checked', x === p)); });
+$('#salin-catatan').onclick = () => {
+  const catatan = $$('[data-catatan]').filter(t => t.value.trim()).map(t => `${t.dataset.catatan}\n${t.value.trim()}`);
+  const asumsi = $$('.asumsi').map(a => `${a.dataset.asumsi}: ${$('.pil[aria-checked=true]', a)?.textContent ?? '-'}`);
+  navigator.clipboard?.writeText([...catatan, '', 'Apakah sesuai:', ...asumsi].join('\n\n')).catch(() => {});
+  toast('catatan disalin');
+};
+</script>
+</html>

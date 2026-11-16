@@ -354,3 +354,23 @@ hubungan saat menjelaskan alasan ("paman tidak dapat karena ada anak laki-laki";
 munasakhat, menunjukkan jalur harta dari almarhum ke Budi lalu ke anak Budi (H-c).
 Usulan: pohon tidak lagi di atas. Pohon muncul (a) di bagian "Bagaimana hartanya mengalir" untuk kasus berlapis, dan (b) kecil
 di lembar orang, menyorot orang itu dan penghalangnya. Untuk kasus biasa tanpa lapis, tidak ada pohon besar di layar.
+
+**Keputusan pemilik:** pohon **tetap ditampilkan**. Di mockup, pohon diletakkan di bawah daftar, terbaca (kotak terang, rupiah di
+kotak), dan menyorot orang yang barisnya dibuka.
+
+## 13. Mockup
+
+[mockup-hasil-per-kasus.html](mockup-hasil-per-kasus.html), tab: Biasa · Meninggal berurutan · Berurutan, sudah dibagi · Ada yang
+hamil · Ada yang hilang · Menunggu lahir · Meninggal bersamaan · Cara mencoba (7 tugas, validasi asumsi, salin catatan).
+
+Susunan bersama: kepala (nama almarhum, kalimat jawaban, potongan harta, madzhab) → bagianmu → daftar siapa dapat berapa
+(alasan satu kalimat, ketuk untuk rincian; yang tidak dapat di daftar yang sama; sisa pembulatan dan jumlah pas) → Kirim
+ringkasan · Unduh PDF lengkap · Ubah data → pohon → (berlapis: aliran per almarhum) → langkah selanjutnya → Cara menghitung
+(terlipat).
+
+Dicek di browser: lebar HP 375 px tanpa gulir mendatar halaman (pohon bergulir di dalam kotaknya), laptop. Interaksi: buka
+baris + sorot pohon, tahap aliran, pemilih kemungkinan bayi, lembar Kirim ringkasan, banner tugas. Konsol tanpa galat.
+Tidak dicek: pembaca layar, isi PDF (hanya pesan mockup).
+
+Catatan data: angka mafqud "kalau Siti kembali/meninggal" sengaja tidak diisi (tidak dikarang; diambil dari engine saat
+dibangun). Tab hamil memakai enam kemungkinan seperti engine sekarang; lihat F1.
