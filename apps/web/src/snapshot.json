@@ -20724,14 +20724,14 @@
   {
    "kunci": "hitung.pohon.hapus_biasa",
    "halaman": "hitung",
-   "id": "{nama} dihapus dari keluarga ini.",
+   "id": "{nama} akan dihilangkan dari daftar keluarga.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.pohon.hapus_penghubung",
    "halaman": "hitung",
-   "id": "{nama} masih punya keturunan di pohon, jadi tetap ada sebagai orang yang sudah wafat supaya garis keturunannya tidak putus.",
+   "id": "{nama} tetap ada di pohon sebagai orang yang sudah wafat, karena keturunannya masih tercatat.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21501,7 +21501,7 @@
   {
    "kunci": "hitung.kanvas.judul_kamu",
    "halaman": "hitung",
-   "id": "Kamu (boleh dilewati)",
+   "id": "Kamu",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21963,7 +21963,7 @@
   {
    "kunci": "hitung.kanvas.waktu_tanya_rel_kosong",
    "halaman": "hitung",
-   "id": "Tahun {rel} wafat belum diisi, jadi pilih: wafat sebelum atau sesudah {rel}?",
+   "id": "Meninggal lebih dulu atau sesudah {rel}?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22201,14 +22201,14 @@
   {
    "kunci": "hitung.kanvas.kamu_saya",
    "halaman": "hitung",
-   "id": "Saya {nama}",
+   "id": "Saya {peran} {almarhum}",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.kamu_orang_lain",
    "halaman": "hitung",
-   "id": "Bukan, saya mengisi untuk orang lain",
+   "id": "Saya bukan ahli waris, hanya membantu mengisi",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22607,7 +22607,7 @@
   {
    "kunci": "hitung.periksa.hari_ini",
    "halaman": "hitung",
-   "id": "Hari ini",
+   "id": "Sekarang",
    "ar": null,
    "versiTerbit": 873
   },
@@ -23189,6 +23189,48 @@
    "kunci": "hitung.kanvas.pilih_ya_tidak",
    "halaman": "hitung",
    "id": "Pilih Ya atau Tidak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.sebutan_kakek",
+   "halaman": "hitung",
+   "id": "Kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.sebutan_nenek",
+   "halaman": "hitung",
+   "id": "Nenek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.sebutan_leluhur",
+   "halaman": "hitung",
+   "id": "{peran} dari {asal}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kamu_saya_nama",
+   "halaman": "hitung",
+   "id": "Saya {peran} {almarhum} ({nama})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_kamu",
+   "halaman": "hitung",
+   "id": "Kamu siapanya {almarhum}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.keterangan_kamu",
+   "halaman": "hitung",
+   "id": "Supaya penjelasan bisa memakai \"ayahmu\", \"ibumu\".",
    "ar": null,
    "versiTerbit": 873
   }

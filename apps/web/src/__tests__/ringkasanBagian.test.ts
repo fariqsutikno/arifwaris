@@ -15,7 +15,7 @@ describe('teks bagian (mockup v5)', () => {
     expect(judulPendek(dengan, ambil(dengan, 'anak:PEWARIS'))).toBe('Anak');
     expect(judulPendek(dengan, ambil(dengan, `anak:${budi}`))).toBe('Anak Budi');
     expect(judulBagian(dengan, ambil(dengan, 'urutan'))).toBe('Urutan wafat');
-    expect(judulBagian(dengan, ambil(dengan, 'kamu'))).toBe('Kamu (boleh dilewati)');
+    expect(judulBagian(dengan, ambil(dengan, 'kamu'))).toBe('Kamu');
   });
 
   it('pertanyaan menyesuaikan jenis kelamin pemilik', () => {

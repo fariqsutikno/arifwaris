@@ -104,7 +104,6 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
           saatBatal={() => setAkanHapus(false)} saatLanjut={() => { setAkanHapus(false); ubah(k => hapusBaris(k, id)); }}>
           <p>{dampak.menjadiPenghubung ? t('hitung.pohon.hapus_penghubung', { nama }) : t('hitung.pohon.hapus_biasa', { nama })}</p>
           {ikutTerhapus.length > 0 && <p>{t('hitung.kanvas.konfirmasi_tidak_isi', { nama: ikutTerhapus.map(lain => namaSingkat(kasus, lain)).join(', ') })}</p>}
-          {dampak.pasangan.map(lain => <p key={lain}>{t('hitung.pohon.hapus_pasangan', { pasangan: namaSingkat(kasus, lain) })}</p>)}
         </DialogKonfirmasi>
       )}
     </div>

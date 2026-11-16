@@ -248,12 +248,44 @@ export function idBaru(graf: GrafKeluarga): IdOrang {
   return `O${nomorTerbesar + 1}`;
 }
 
+/** Hubungan ke `idMayit` tanpa nomor ("Anak laki-laki", "Kakek dari ibu"); undefined bila tidak bisa diturunkan dari graf. */
+export function peranDariMayit(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string | undefined {
+  const kunciOrang = kunci ?? (Object.entries(hitungIsian(graf, idMayit)).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
+  if (kunciOrang) return LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label;
+  const jalur = jalurKeLeluhur(graf, idMayit, idOrang);
+  return jalur ? sebutLeluhur(graf, jalur) : undefined;
+}
+
+/** Orang tua mayit, orang tua orang tua, dst. sampai `idLeluhur`; null bila bukan leluhur mayit. */
+function jalurKeLeluhur(graf: GrafKeluarga, idDari: IdOrang, idLeluhur: IdOrang, sisaTingkat = BATAS_TINGKAT_LELUHUR): IdOrang[] | null {
+  if (sisaTingkat === 0) return null;
+  for (const idOrangTua of [graf.orang[idDari]?.idAyah, graf.orang[idDari]?.idIbu]) {
+    if (!idOrangTua) continue;
+    if (idOrangTua === idLeluhur) return [idOrangTua];
+    const lanjut = jalurKeLeluhur(graf, idOrangTua, idLeluhur, sisaTingkat - 1);
+    if (lanjut) return [idOrangTua, ...lanjut];
+  }
+  return null;
+}
+const BATAS_TINGKAT_LELUHUR = 8;
+
+/** Jalur [orang tua, ..., leluhur]: "Ayah", "Kakek dari ayah", lebih jauh "Ayah dari kakek dari ayah". */
+function sebutLeluhur(graf: GrafKeluarga, jalur: IdOrang[]): string {
+  const laki = graf.orang[jalur.at(-1)!]?.jenisKelamin === 'L';
+  if (jalur.length === 1) return laki ? t('hitung.ayah') : t('hitung.ibu');
+  if (jalur.length === 2) {
+    const dariAyah = graf.orang[jalur[0]!]?.jenisKelamin === 'L';
+    return t('hitung.sebutan_leluhur', { peran: laki ? t('hitung.sebutan_kakek') : t('hitung.sebutan_nenek'), asal: (dariAyah ? t('hitung.ayah') : t('hitung.ibu')).toLowerCase() });
+  }
+  return t('hitung.sebutan_leluhur', { peran: laki ? t('hitung.ayah') : t('hitung.ibu'), asal: sebutLeluhur(graf, jalur.slice(0, -1)).toLowerCase() });
+}
+
 /** "Anak laki-laki 2", "Ahmad (Anak laki-laki)", atau "Anak laki-laki (sudah wafat)" untuk penghubung. Dipakai juga di langkah 5. */
 export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string {
   const orang = graf.orang[idOrang]!;
   const isian = hitungIsian(graf, idMayit);
   const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
-  const label = kunciOrang ? LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label ?? t('hitung.kerabat') : t('hitung.kerabat');
+  const label = peranDariMayit(graf, idMayit, idOrang, kunciOrang) ?? t('hitung.kerabat');
   if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? t('hitung.sudah_wafat_2') : ''})`;
   if (orang.penghubung) return t('hitung.label_sudah_wafat', { label });
   const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];

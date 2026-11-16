@@ -54,7 +54,7 @@ export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting, pe
         <Jeda kata={t('hitung.periksa.sampai_hari_ini')} harta={harta} />
         <article className="babak kini" aria-label={t('hitung.periksa.hari_ini')}>
           <div className="kepala"><div>
-            <div className="tahun-besar">{t('hitung.periksa.hari_ini')}</div>
+            <div className="penanda-kini">{t('hitung.periksa.hari_ini')}</div>
             <div className="judul-babak">{t('hitung.periksa.yang_masih_hidup')}</div>
           </div></div>
           <p>{t('hitung.periksa.hari_ini_isi', { daftar: hidup, pemilik })}</p>

@@ -24,9 +24,9 @@ interface Props {
 
 export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true }: Props) {
   const { graf } = kasus;
-  // Orang tanpa peran di daftar ± (mertua, ipar, dst.) cukup disebut namanya; label cadangan "Kerabat" tidak membantu.
+  // Orang tanpa peran di daftar ± (mertua, ipar, dst.) cukup disebut namanya; tanpa nama, disebut menurut hubungannya.
   const adaPeran = new Set(Object.values(hitungIsian(graf, graf.idPewaris)).flatMap(ids => ids ?? []));
-  const sebut = (id: IdOrang) => adaPeran.has(id) ? labelOrangChecklist(graf, graf.idPewaris, id) : graf.orang[id]?.nama ?? t('hitung.pohon.belum_bernama');
+  const sebut = (id: IdOrang) => adaPeran.has(id) ? labelOrangChecklist(graf, graf.idPewaris, id) : graf.orang[id]?.nama ?? labelOrangChecklist(graf, graf.idPewaris, id);
   return (
     <PratinjauPohon skalaMaks={skalaMaks} interaktif={!!saatPilih} {...(saatPilih ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
       <PohonDasar graf={graf} bisaPilih={id => pewarisBisaDipilih || id !== graf.idPewaris} {...(saatPilih ? { saatPilih, pilihPenghubung, labelPilih: labelPilih ?? ((nama: string) => t('hitung.pohon.buka_menu', { nama })) } : {})}

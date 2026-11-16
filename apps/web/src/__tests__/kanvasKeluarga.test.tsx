@@ -87,7 +87,7 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
     const saatSelesai = vi.fn();
     const awal = denganBagianTetapTerisi(dijawab(kasusBaru('L'), { PEWARIS: ['pasangan', 'anak', 'orangTua', 'saudara', 'jauh', 'halLain'] }));
     render(<Uji awal={awal} saatSelesai={saatSelesai} />);
-    expect(judulAktif()).toBe('Kamu (boleh dilewati)');
+    expect(judulAktif()).toBe('Kamu siapanya almarhum?');
     fireEvent.click(screen.getByRole('button', { name: 'Selesai, lanjut ke Periksa' }));
     expect(saatSelesai).not.toHaveBeenCalled();
     expect(screen.getByText('Masih ada yang belum diisi di bagian ini.')).toBeTruthy();

@@ -59,7 +59,8 @@ export function pertanyaanBagian(kasus: Kasus, bagian: Bagian): string {
     case 'kakekNenek': return TANYA_KAKEK_NENEK[orangTuaWafat(kasus, bagian.milik)](nama);
     case 'anakBersama': return t('hitung.kanvas.tanya_anak_bersama', { anak: daftarNama(kasus, anggotaAnakPewaris(kasus)), nama });
     // Pertanyaan berpasangan urutan ditampilkan BagianUrutan sendiri (ia memegang langkah pencarian biner yang sedang berjalan).
-    case 'urutan': case 'kamu': return judulBagian(kasus, bagian);
+    case 'urutan': return judulBagian(kasus, bagian);
+    case 'kamu': return t('hitung.kanvas.tanya_kamu', { almarhum: nama });
     default: return TANYA[jenisTampil(kasus, bagian)]!(nama);
   }
 }

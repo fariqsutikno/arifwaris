@@ -134,8 +134,8 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
           ))}
         </ul>
       )}
-      <KartuBagian key={aktif.id} label={judulBagian(kasus, aktif)} pertanyaan={pertanyaanBagian(kasus, aktif)} masuk={animasiMasuk}
-        pengantar={awalCabang(kasus, aktif) ? t('hitung.kanvas.pengantar_cabang', { almarhum: namaSingkat(kasus, aktif.milik), pewaris: namaSingkat(kasus, kasus.graf.idPewaris) }) : undefined}
+      <KartuBagian key={aktif.id} label={aktif.jenis === 'kamu' ? t('hitung.kanvas.boleh_kosong') : judulBagian(kasus, aktif)} pertanyaan={pertanyaanBagian(kasus, aktif)} masuk={animasiMasuk}
+        pengantar={aktif.jenis === 'kamu' ? t('hitung.kanvas.keterangan_kamu') : awalCabang(kasus, aktif) ? t('hitung.kanvas.pengantar_cabang', { almarhum: namaSingkat(kasus, aktif.milik), pewaris: namaSingkat(kasus, kasus.graf.idPewaris) }) : undefined}
         judulRef={judulRef} lengkap={lengkap} tandai={tandaiLokal || (tandaiKurang && !lengkap)}
         labelLanjut={berikutnya ? t('hitung.kanvas.lanjut_ke', { bagian: judulPendek(kasus, berikutnya) }) : t('hitung.kanvas.selesai_ke_periksa')}
         saatLanjut={lanjut}>

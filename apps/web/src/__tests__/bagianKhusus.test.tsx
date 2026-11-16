@@ -76,10 +76,10 @@ describe('BagianKamu (spec kanvas 5.8)', () => {
     const pilihanKamu = () => within(container.querySelector<HTMLElement>('.pilihan-urutan')!);
     expect(pilihanKamu().queryAllByRole('radio', { checked: true })).toHaveLength(0);
     expect(bagianLengkap(kasus, kamu)).toBe(false);
-    radio('Saya Rina');
+    radio('Saya anak perempuan almarhum (Rina)');
     expect(terakhir.saya).toBe(rina);
     expect(within(document.getElementById(`baris-${rina}`)!).getByText('kamu')).toBeTruthy();
-    radio('Bukan, saya mengisi untuk orang lain');
+    radio('Saya bukan ahli waris, hanya membantu mengisi');
     expect(terakhir.saya).toBeNull();
     expect(bagianLengkap(terakhir, kamu)).toBe(true);
   });
