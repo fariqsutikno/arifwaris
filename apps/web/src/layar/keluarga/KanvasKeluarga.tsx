@@ -8,7 +8,7 @@ import type { Kasus } from '../../kasus';
 import { namaSingkat } from '../../keadaanOrang';
 import { dampakAdaKeTidak, jawabAdaTidak, tambahBaris } from '../../isianBagian';
 import { anggotaBagian, awalCabang, bagianDijawab, bagianDilewati, bagianLengkap, daftarBagian, type Bagian, type BagianDilewati } from '../../kelompok';
-import { judulBagian, judulPendek, pertanyaanBagian, ringkasanBagian } from '../../ringkasanBagian';
+import { judulBagian, judulPendek, pertanyaanBagian, pesanKekurangan, ringkasanBagian } from '../../ringkasanBagian';
 import { t } from '../../terjemah';
 import { DialogKonfirmasi } from '../../ui/Dialog';
 import { Ikon } from '../../ui/Ikon';
@@ -138,7 +138,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
       {aktif.jenis === 'kamu' && <PertanyaanLanjutan kasus={kasus} ubah={ubah} />}
       <KartuBagian key={aktif.id} label={aktif.jenis === 'kamu' ? t('hitung.kanvas.boleh_kosong') : judulBagian(kasus, aktif)} pertanyaan={pertanyaanBagian(kasus, aktif)} masuk={animasiMasuk}
         pengantar={aktif.jenis === 'kamu' ? t('hitung.kanvas.keterangan_kamu') : awalCabang(kasus, aktif) ? t('hitung.kanvas.pengantar_cabang', { almarhum: namaSingkat(kasus, aktif.milik), pewaris: namaSingkat(kasus, kasus.graf.idPewaris) }) : undefined}
-        judulRef={judulRef} lengkap={lengkap} tandai={tandaiLokal || (tandaiKurang && !lengkap)}
+        judulRef={judulRef} lengkap={lengkap} tandai={tandaiLokal || (tandaiKurang && !lengkap)} pesanKurang={lengkap ? '' : pesanKekurangan(kasus, aktif)}
         labelLanjut={berikutnya ? t('hitung.kanvas.lanjut_ke', { bagian: judulPendek(kasus, berikutnya) }) : t('hitung.kanvas.selesai_ke_periksa')}
         saatLanjut={lanjut}>
         {adalahYaTidak && (

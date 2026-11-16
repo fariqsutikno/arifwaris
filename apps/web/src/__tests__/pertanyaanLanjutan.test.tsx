@@ -112,6 +112,6 @@ describe('hamil per kartu (C4-3)', () => {
     const { container, rerender } = render(<PertanyaanHamil kasus={kasus} idMayit="PEWARIS" ubah={ubah} kecuali={[istri]} />);
     expect(container.textContent).toBe('');
     rerender(<PertanyaanHamil kasus={kasus} idMayit="PEWARIS" ubah={ubah} kecuali={[]} />);
-    expect(container.textContent).toContain('apakah ada yang sedang hamil');
+    expect(container.textContent).toContain('apakah Istri sedang hamil');   // calon disebut, bukan "ada yang"
   });
 });

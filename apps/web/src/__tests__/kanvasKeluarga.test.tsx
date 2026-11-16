@@ -38,7 +38,7 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
     render(<Uji awal={kasusBaru('L')} />);
     fireEvent.click(screen.getByRole('button', { name: /Lanjut: Anak/ }));
     expect(judulAktif()).toBe('Waktu almarhum meninggal, apakah beliau punya istri?');
-    expect(screen.getByText('Masih ada yang belum diisi di bagian ini.')).toBeTruthy();
+    expect(screen.getByText('Pilihan Ya atau Tidak belum dipilih.')).toBeTruthy();
   });
 
   it('pulih ke bagian pertama yang belum lengkap (Review Focus 5)', () => {
@@ -90,6 +90,6 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
     expect(judulAktif()).toBe('Kamu siapanya almarhum?');
     fireEvent.click(screen.getByRole('button', { name: 'Selesai, lanjut ke Periksa' }));
     expect(saatSelesai).not.toHaveBeenCalled();
-    expect(screen.getByText('Masih ada yang belum diisi di bagian ini.')).toBeTruthy();
+    expect(screen.getByText('Pilihan Kamu belum dijawab.')).toBeTruthy();
   });
 });

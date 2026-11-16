@@ -4,7 +4,7 @@
 
 import { useId, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
-import { jenisDari, ubahNama } from '../../checklist';
+import { jenisDari, labelBawaan, peranDariMayit, ubahNama } from '../../checklist';
 import type { Kasus } from '../../kasus';
 import { LABEL_SEHARI, sebutAlmarhum } from '../../konten/ahliWaris';
 import { hapusBaris, orangDenganKunci, orangYangHilang } from '../../isianBagian';
@@ -102,8 +102,13 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
 export const namaPeran = (kasus: Kasus, kunci: KunciAhliWaris, milik: IdOrang): string =>
   sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenisDari(kunci)?.label ?? kunci, kasus.graf.orang[milik]?.jenisKelamin ?? 'L');
 
-/** "Anak laki-laki 2" bila perannya bisa lebih dari satu; urutannya menurut posisi di bagian. */
+/**
+ * "Anak laki-laki 2" bila perannya bisa lebih dari satu; urutannya menurut posisi di bagian. Keturunan orang lain selain pemilik harta
+ * disebut menurut hubungannya ke pemilik ("Cucu laki-laki 1"), sama dengan pohon, supaya tidak bertabrakan dengan anak pemilik.
+ */
 export function labelPeran(kasus: Kasus, id: IdOrang, kunci: KunciAhliWaris, milik: IdOrang, sebutan?: string): string {
+  const { idPewaris } = kasus.graf;
+  if (!sebutan && milik !== idPewaris && peranDariMayit(kasus.graf, idPewaris, id)) return labelBawaan(kasus.graf, idPewaris, id);
   const dasar = sebutan ?? namaPeran(kasus, kunci, milik);
   return adalahPeranTunggal(kunci) ? dasar : `${dasar} ${orangDenganKunci(kasus, milik, kunci).indexOf(id) + 1}`;
 }

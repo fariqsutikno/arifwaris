@@ -1,6 +1,6 @@
 // Pertanyaan hamil (spec 1.1, 1.3): bawaan "Tidak". "Ya" → dialog janin:
 // siapa → dari siapa → sudah lahir? Di kanvas ia ditanya per kartu calon ibu (`kartu`, siapa sudah jelas, jadi langkah "siapa" dilewati);
-// pertanyaan umum (tanpa `kartu`) hanya untuk calon di luar `kecuali`, dan di Latihan untuk semua calon. Janin tersimpan sebagai satu node dalamKandungan per ibu [R13-3].
+// pertanyaan umum (tanpa `kartu`) hanya untuk calon di luar `kecuali` dan menyebut mereka, dan di Latihan untuk semua calon. Janin tersimpan sebagai satu node dalamKandungan per ibu [R13-3].
 // Bayi yang lahir lalu wafat diteruskan ke DialogKeadaan supaya masuk urutan wafat lewat jalur yang sama.
 
 import { useEffect, useId, useRef, useState } from 'react';
@@ -26,6 +26,9 @@ type LayarJanin =
   | { jenis: 'dariSiapa'; idIbu: IdOrang }
   | { jenis: 'lahir'; idJanin: IdOrang }
   | { jenis: 'jenisKelamin'; idJanin: IdOrang; wafat: boolean; anak: Array<'L' | 'P'> };
+
+/** "Istri 1 atau Istri 2", "A, B, atau C". */
+const gabungAtau = (nama: string[]) => (nama.length <= 1 ? nama.join('') : `${nama.slice(0, -1).join(', ')} ${t('hitung.atau')} ${nama.at(-1)}`);
 
 export function PertanyaanHamil({ kasus, idMayit, ubah, kartu, kecuali }: Props) {
   const id = useId();
@@ -148,7 +151,7 @@ export function PertanyaanHamil({ kasus, idMayit, ubah, kartu, kecuali }: Props)
       )}
       <section className="penutup-babak" aria-labelledby={`${id}-hamil`}>
         <h3 id={`${id}-hamil`} className={kartu ? 'keadaan-label' : 'pertanyaan-bagian'}>
-          {kartu ? t('hitung.janin.tanya_kartu', { mayit, nama: namaSingkat(kasus, kartu) }) : t('hitung.janin.tanya', { mayit })}
+          {kartu ? t('hitung.janin.tanya_kartu', { mayit, nama: namaSingkat(kasus, kartu) }) : kecuali ? t('hitung.janin.tanya_calon', { mayit, calon: gabungAtau(calon.map(c => namaSingkat(kasus, c.idIbu))) }) : t('hitung.janin.tanya', { mayit })}
         </h3>
         <p className={kartu ? 'keterangan-kartu' : 'keterangan'}>{kartu ? t('hitung.janin.tanya_kartu_ket') : t('hitung.janin.tanya_ket')}</p>
         <div className="ya-tidak" role="radiogroup" aria-labelledby={`${id}-hamil`}>

@@ -160,13 +160,24 @@ export const adaSlotKosong = (kasus: Kasus, bagian: Bagian): boolean =>
   (bagian.jenis === 'orangTua' || bagian.jenis === 'kakekNenek')
   && slotTetap(kasus, bagian).some(kunci => orangDenganKunci(kasus, bagian.milik, kunci).length === 0);
 
-export function bagianLengkap(kasus: Kasus, bagian: Bagian): boolean {
-  if (bagian.jenis === 'kamu') return kasus.saya !== undefined;
-  if (bagian.jenis === 'urutan') return pertanyaanUrutanBerikut(kasus) === null;
-  if (!sudahDijawab(kasus, bagian.milik, bagian.jenis) || adaSlotKosong(kasus, bagian)) return false;
+/** Yang membuat bagian belum lengkap: pertanyaannya sendiri, baris tetap yang kosong, atau orang yang keadaannya belum rampung. Satu sumber untuk status dan pesan. */
+export type Kekurangan = { jenis: 'jawaban' } | { jenis: 'slot'; kunci: KunciAhliWaris } | { jenis: 'orang'; id: IdOrang };
+
+export function kekuranganBagian(kasus: Kasus, bagian: Bagian): Kekurangan[] {
+  if (bagian.jenis === 'kamu') return kasus.saya === undefined ? [{ jenis: 'jawaban' }] : [];
+  if (bagian.jenis === 'urutan') return pertanyaanUrutanBerikut(kasus) === null ? [] : [{ jenis: 'jawaban' }];
   const belumDiisi = new Set(kasus.belumDiisi ?? []);
-  return anggotaBagian(kasus, bagian).every(id => !belumDiisi.has(id));
+  const slotKosong = bagian.jenis === 'orangTua' || bagian.jenis === 'kakekNenek'
+    ? slotTetap(kasus, bagian).filter(kunci => orangDenganKunci(kasus, bagian.milik, kunci).length === 0) : [];
+  return [
+    // Baris tetap dijawab lewat barisnya sendiri; selama ada yang kosong, itulah yang disebut.
+    ...(sudahDijawab(kasus, bagian.milik, bagian.jenis) || slotKosong.length > 0 ? [] : [{ jenis: 'jawaban' } as const]),
+    ...slotKosong.map(kunci => ({ jenis: 'slot', kunci }) as const),
+    ...anggotaBagian(kasus, bagian).filter(id => belumDiisi.has(id)).map(id => ({ jenis: 'orang', id }) as const),
+  ];
 }
+
+export const bagianLengkap = (kasus: Kasus, bagian: Bagian): boolean => kekuranganBagian(kasus, bagian).length === 0;
 
 function bagianPewaris(kasus: Kasus, idPewaris: IdOrang): Bagian[] {
   const perluDitanya = (kunci: KunciAhliWaris) => posisiPerluDitanya(kasus, idPewaris, kunci);

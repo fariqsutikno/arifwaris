@@ -23394,6 +23394,90 @@
    "id": "Sesudah {nama} meninggal",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_anak_dari",
+   "halaman": "hitung",
+   "id": "Anak dari {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_anak_dari",
+   "halaman": "hitung",
+   "id": "Anak dari",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_keadaan",
+   "halaman": "hitung",
+   "id": "Keadaan {nama} belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_waktu",
+   "halaman": "hitung",
+   "id": "Waktu meninggalnya {nama} belum dipilih: sebelum atau sesudah {rel}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_lanjutan",
+   "halaman": "hitung",
+   "id": "Pertanyaan lanjutan untuk {nama} belum dijawab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_ya_tidak",
+   "halaman": "hitung",
+   "id": "Pilihan Ya atau Tidak belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_baris_tetap",
+   "halaman": "hitung",
+   "id": "Keadaannya belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_anak_bersama",
+   "halaman": "hitung",
+   "id": "Pilihan Ya, semuanya atau Tidak semua belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_hal_lain",
+   "halaman": "hitung",
+   "id": "Pilihan Tidak ada atau Ada belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_urutan",
+   "halaman": "hitung",
+   "id": "Urutan meninggal belum dijawab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_kamu",
+   "halaman": "hitung",
+   "id": "Pilihan Kamu belum dijawab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_calon",
+   "halaman": "hitung",
+   "id": "Waktu {mayit} meninggal, apakah {calon} sedang hamil?",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

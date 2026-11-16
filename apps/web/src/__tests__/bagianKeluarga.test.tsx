@@ -107,7 +107,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     const judul = 'Kenapa anak-anak Slamet tidak ditanyakan?';
     fireEvent.click(within(detailsDengan(judul)).getByRole('button', { name: 'Tetap isi kerabat lain' }));
     expect(slamet).toBeTruthy();
-    expect(document.querySelector('.langkah-bagian')!.textContent).toContain('Anak Slamet');
+    expect(document.querySelector('.langkah-bagian')!.textContent).toContain('Anak dari Slamet');
   });
 
   it('anak bersama: Ya semuanya mencatat dijawab; Tidak semua menampilkan centang anak', () => {

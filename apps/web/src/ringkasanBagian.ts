@@ -3,9 +3,11 @@
 
 import type { IdOrang } from '@waris/engine';
 import type { Kasus } from './kasus';
-import { keadaanTerpilih } from './keadaanBaris';
+import { keadaanTerpilih, pesanBarisKurang } from './keadaanBaris';
 import { keadaanOrang, namaSingkat } from './keadaanOrang';
-import { anggotaBagian, bagianDijawab, type Bagian, type JenisBagian } from './kelompok';
+import { anggotaBagian, bagianDijawab, kekuranganBagian, type Bagian, type JenisBagian } from './kelompok';
+import { jenisDari } from './checklist';
+import { LABEL_SEHARI } from './konten/ahliWaris';
 import { t } from './terjemah';
 
 type Jenis = JenisBagian | 'suami';
@@ -43,13 +45,17 @@ const adalahLintasCabang = (bagian: Bagian) => bagian.jenis === 'urutan' || bagi
 const jenisTampil = (kasus: Kasus, bagian: Bagian): Jenis =>
   bagian.jenis === 'pasangan' && kasus.graf.orang[bagian.milik]?.jenisKelamin !== 'L' ? 'suami' : bagian.jenis;
 
+/** Anak orang lain selain pemilik harta: "Anak dari Anak laki-laki 2", supaya tidak terbaca sebagai nama yang diulang. */
+const adalahAnakCabang = (kasus: Kasus, bagian: Bagian) => bagian.jenis === 'anak' && bagian.milik !== kasus.graf.idPewaris;
+
 export function judulBagian(kasus: Kasus, bagian: Bagian): string {
-  return JUDUL[jenisTampil(kasus, bagian)](namaSingkat(kasus, bagian.milik));
+  const nama = namaSingkat(kasus, bagian.milik);
+  return adalahAnakCabang(kasus, bagian) ? t('hitung.kanvas.judul_anak_dari', { nama }) : JUDUL[jenisTampil(kasus, bagian)](nama);
 }
 
 /** Di peta dan tombol lanjut; pemilik disebut hanya untuk bagian cabang. */
 export function judulPendek(kasus: Kasus, bagian: Bagian): string {
-  const dasar = PENDEK[jenisTampil(kasus, bagian)]();
+  const dasar = adalahAnakCabang(kasus, bagian) ? t('hitung.kanvas.pendek_anak_dari') : PENDEK[jenisTampil(kasus, bagian)]();
   return bagian.milik === kasus.graf.idPewaris || adalahLintasCabang(bagian) ? dasar : `${dasar} ${namaSingkat(kasus, bagian.milik)}`;
 }
 
@@ -64,6 +70,23 @@ export function pertanyaanBagian(kasus: Kasus, bagian: Bagian): string {
     default: return TANYA[jenisTampil(kasus, bagian)]!(nama);
   }
 }
+
+/** Pesan kaki kartu: tiap kekurangan disebut tepat, bukan "masih ada yang belum diisi". */
+export function pesanKekurangan(kasus: Kasus, bagian: Bagian): string {
+  const pesan = kekuranganBagian(kasus, bagian).map(kurang => {
+    if (kurang.jenis === 'orang') return pesanBarisKurang(kasus, kurang.id, bagian.milik);
+    if (kurang.jenis === 'slot') return t('hitung.kanvas.kurang_keadaan', { nama: LABEL_SEHARI[kurang.kunci] ?? jenisDari(kurang.kunci)?.label ?? kurang.kunci });
+    return PESAN_JAWABAN[bagian.jenis]();
+  });
+  return pesan.join(' ');
+}
+const PESAN_JAWABAN: Record<JenisBagian, () => string> = {
+  pasangan: () => t('hitung.kanvas.kurang_ya_tidak'), anak: () => t('hitung.kanvas.kurang_ya_tidak'), saudara: () => t('hitung.kanvas.kurang_ya_tidak'),
+  jauh: () => t('hitung.kanvas.kurang_ya_tidak'), saudaraKakek: () => t('hitung.kanvas.kurang_ya_tidak'),
+  orangTua: () => t('hitung.kanvas.kurang_baris_tetap'), kakekNenek: () => t('hitung.kanvas.kurang_baris_tetap'),
+  anakBersama: () => t('hitung.kanvas.kurang_anak_bersama'), halLain: () => t('hitung.kanvas.kurang_hal_lain'),
+  urutan: () => t('hitung.kanvas.kurang_urutan'), kamu: () => t('hitung.kanvas.kurang_kamu'),
+};
 
 export function ringkasanBagian(kasus: Kasus, bagian: Bagian): string {
   switch (bagian.jenis) {

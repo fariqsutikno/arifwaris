@@ -116,6 +116,15 @@ export function alasanBarisKurang(kasus: Kasus, id: IdOrang, milik: IdOrang): st
   return t('hitung.kanvas.baris_jawab_lanjutan');
 }
 
+/** Pesan spesifik untuk baris yang belum rampung: apa tepatnya yang belum dijawab (dipakai di kaki kartu). */
+export function pesanBarisKurang(kasus: Kasus, id: IdOrang, milik: IdOrang): string {
+  const nama = namaSingkat(kasus, id);
+  const terpilih = keadaanTerpilih(kasus, id);
+  if (terpilih === null) return t('hitung.kanvas.kurang_keadaan', { nama });
+  if (terpilih === 'wafat') return t('hitung.kanvas.kurang_waktu', { nama, rel: namaSingkat(kasus, milik) });
+  return t('hitung.kanvas.kurang_lanjutan', { nama });
+}
+
 /** Tahun menyatakan "sesudah" tetapi engine belum mendukung kombinasinya (keadaan tetap "sebelum"); null bila tidak ada masalah. */
 export function alasanWafatSesudahDitolak(kasus: Kasus, id: IdOrang, milik: IdOrang): string | null {
   if (keadaanTerpilih(kasus, id) !== 'wafat' || keadaanOrang(kasus, id) !== 'wafatSebelum' || waktuRelatif(kasus, id, milik) !== 'sesudah') return null;

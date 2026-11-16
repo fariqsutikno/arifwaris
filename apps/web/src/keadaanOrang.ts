@@ -3,7 +3,7 @@
 // yaitu almarhum pertama (pewaris, lalu urutan wafat) yang menjadikan orang itu kerabat.
 
 import { KONFIGURASI_BAWAAN, turunkanPeran, type IdOrang, type InputTirkah, type KeadaanGharqa, type KunciAhliWaris } from '@waris/engine';
-import { hapusAhliWaris, labelOrangChecklist, tambahOrangBaru } from './checklist';
+import { adaHubungan, hapusAhliWaris, labelOrangChecklist, tambahOrangBaru } from './checklist';
 import { t } from './terjemah';
 import { rapikanKeadaan, type Kasus } from './kasus';
 
@@ -115,9 +115,19 @@ export function perluPeriksaCerita(kasus: Kasus): boolean {
     || Object.values(kasus.graf.orang).some(o => o.statusHidup === 'mafqud' || o.statusHidup === 'dalamKandungan' || !!o.khuntsa);
 }
 
-/** Nama untuk kalimat: nama isian, atau label hubungan dari babak asalnya ("Anak laki-laki"). */
-export const namaSingkat = (kasus: Kasus, idOrang: IdOrang): string =>
-  kasus.graf.orang[idOrang]!.nama || (idOrang === kasus.graf.idPewaris ? (kasus.graf.orang[idOrang]!.jenisKelamin === 'P' ? t('hitung.almarhumah') : t('hitung.almarhum')) : labelOrangChecklist(kasus.graf, babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris, idOrang));
+/**
+ * Nama untuk kalimat: nama isian, atau sebutan hubungan ke almarhum pemilik harta ("Cucu laki-laki 1", "Istri Anak laki-laki 2"),
+ * sama dengan pohon. Yang tak punya hubungan ke pemilik disebut menurut babak asalnya ("Anak laki-laki").
+ */
+export function namaSingkat(kasus: Kasus, idOrang: IdOrang): string {
+  const { graf } = kasus;
+  const orang = graf.orang[idOrang]!;
+  if (orang.nama) return orang.nama;
+  if (idOrang === graf.idPewaris) return orang.jenisKelamin === 'P' ? t('hitung.almarhumah') : t('hitung.almarhum');
+  const mayit = adaHubungan(graf, graf.idPewaris, idOrang) ? graf.idPewaris : babakAsal(kasus, idOrang) ?? graf.idPewaris;
+  return labelOrangChecklist(graf, mayit, idOrang);
+}
+
 /** [R13-1] Anak yang baru dikandung sesudah `idMayit` wafat bukan ahli warisnya; null = sudah ada sebelum semua almarhum. */
 export function aturDikandung(kasus: Kasus, idAnak: IdOrang, idMayit: IdOrang | null): Kasus {
   const { [idAnak]: _lama, ...sisa } = kasus.dikandungSetelahWafat ?? {};

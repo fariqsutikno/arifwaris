@@ -13,7 +13,7 @@ describe('teks bagian (mockup v5)', () => {
     expect(judulBagian(dengan, ambil(dengan, 'pasangan:PEWARIS'))).toBe('Istri Mbah Karto');
     expect(judulBagian(dengan, ambil(dengan, 'orangTua:PEWARIS'))).toBe('Orang tua Mbah Karto');
     expect(judulPendek(dengan, ambil(dengan, 'anak:PEWARIS'))).toBe('Anak');
-    expect(judulPendek(dengan, ambil(dengan, `anak:${budi}`))).toBe('Anak Budi');
+    expect(judulPendek(dengan, ambil(dengan, `anak:${budi}`))).toBe('Anak dari Budi');
     expect(judulBagian(dengan, ambil(dengan, 'urutan'))).toBe('Urutan meninggal');
     expect(judulBagian(dengan, ambil(dengan, 'kamu'))).toBe('Kamu');
   });

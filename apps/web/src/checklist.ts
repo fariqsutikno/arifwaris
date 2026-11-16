@@ -253,8 +253,33 @@ export function peranDariMayit(graf: GrafKeluarga, idMayit: IdOrang, idOrang: Id
   const kunciOrang = kunci ?? (Object.entries(hitungIsian(graf, idMayit)).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
   if (kunciOrang) return LABEL_SEHARI[kunciOrang] ?? jenisDari(kunciOrang)?.label;
   const jalur = jalurKeLeluhur(graf, idMayit, idOrang);
-  return jalur ? sebutLeluhur(graf, jalur) : undefined;
+  if (jalur) return sebutLeluhur(graf, jalur);
+  // Yang sudah wafat tidak masuk hitungIsian, tetapi hubungannya tetap bisa disebut ("Anak laki-laki", bukan "Kerabat").
+  const kunciWafat = Object.entries(kelompokkanPerKunci(graf, idMayit, () => true)).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined;
+  return kunciWafat && (LABEL_SEHARI[kunciWafat] ?? jenisDari(kunciWafat)?.label);
 }
+
+/**
+ * Sebutan orang yang tak punya peran bagi `idMayit` tapi menikah dengan yang punya ("Istri Anak laki-laki 2", "Suami Anak perempuan");
+ * pasangannya cukup yang punya peran langsung, supaya tidak berputar pada dua orang yang saling menikah.
+ */
+function sebutPasangan(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang): string | undefined {
+  for (const nikah of graf.pernikahan) {
+    const idPasangan = nikah.idSuami === idOrang ? nikah.idIstri : nikah.idIstri === idOrang ? nikah.idSuami : undefined;
+    if (!idPasangan || idPasangan === idMayit || !peranDariMayit(graf, idMayit, idPasangan)) continue;
+    const pasangan = graf.orang[idPasangan]!;
+    const jenisPasangan = graf.orang[idOrang]?.jenisKelamin === 'L' ? t('hitung.suami') : t('hitung.istri');
+    return `${jenisPasangan} ${pasangan.nama ?? labelBawaan(graf, idMayit, idPasangan)}`;
+  }
+  return undefined;
+}
+
+/** Hubungan ke `idMayit` tanpa nomor, termasuk menantu dan semacamnya; undefined hanya bila benar-benar tak bisa diturunkan. */
+const hubunganKeMayit = (graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string | undefined =>
+  peranDariMayit(graf, idMayit, idOrang, kunci) ?? sebutPasangan(graf, idMayit, idOrang);
+
+/** Ada sebutan hubungan ke `idMayit` yang bisa diturunkan (selain "Kerabat"). */
+export const adaHubungan = (graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang): boolean => hubunganKeMayit(graf, idMayit, idOrang) !== undefined;
 
 /** Orang tua mayit, orang tua orang tua, dst. sampai `idLeluhur`; null bila bukan leluhur mayit. */
 function jalurKeLeluhur(graf: GrafKeluarga, idDari: IdOrang, idLeluhur: IdOrang, sisaTingkat = BATAS_TINGKAT_LELUHUR): IdOrang[] | null {
@@ -280,16 +305,26 @@ function sebutLeluhur(graf: GrafKeluarga, jalur: IdOrang[]): string {
   return t('hitung.sebutan_leluhur', { peran: laki ? t('hitung.ayah') : t('hitung.ibu'), asal: sebutLeluhur(graf, jalur.slice(0, -1)).toLowerCase() });
 }
 
+/** Hubungan ke `idMayit` + nomor bila perannya bisa lebih dari satu orang yang hidup ("Anak laki-laki 2"); tanpa nama orangnya. */
+export function labelBawaan(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string {
+  return labelDasar(graf, idMayit, idOrang, kunci).bernomor;
+}
+
+function labelDasar(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): { label: string; bernomor: string } {
+  const isian = hitungIsian(graf, idMayit);
+  const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
+  const label = hubunganKeMayit(graf, idMayit, idOrang, kunciOrang) ?? t('hitung.kerabat');
+  const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
+  return { label, bernomor: sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label };
+}
+
 /** "Anak laki-laki 2", "Ahmad (Anak laki-laki)", atau "Anak laki-laki (sudah wafat)" untuk penghubung. Dipakai juga di langkah 5. */
 export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOrang: IdOrang, kunci?: KunciAhliWaris): string {
   const orang = graf.orang[idOrang]!;
-  const isian = hitungIsian(graf, idMayit);
-  const kunciOrang = kunci ?? (Object.entries(isian).find(([, ids]) => ids!.includes(idOrang))?.[0] as KunciAhliWaris | undefined);
-  const label = peranDariMayit(graf, idMayit, idOrang, kunciOrang) ?? t('hitung.kerabat');
+  const { label, bernomor } = labelDasar(graf, idMayit, idOrang, kunci);
   if (orang.nama) return `${orang.nama} (${label}${orang.penghubung ? t('hitung.sudah_wafat_2') : ''})`;
   if (orang.penghubung) return t('hitung.label_sudah_wafat', { label });
-  const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
-  return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
+  return bernomor;
 }
 
 /** Sebutan simpul di semua pohon, dari sudut almarhum pemilik harta. Penghubung tanpa embel-embel "sudah wafat": itu tugas penanda di kotak. */
@@ -298,7 +333,7 @@ export function buatSebutSimpul(graf: GrafKeluarga): (id: IdOrang) => string {
   return id => {
     const orang = graf.orang[id]!;
     if (orang.penghubung) {
-      const label = peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat');
+      const label = hubunganKeMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat');
       return orang.nama ? `${orang.nama} (${label})` : label;
     }
     return adaPeran.has(id) || !orang.nama ? labelOrangChecklist(graf, graf.idPewaris, id) : orang.nama;
