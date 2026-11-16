@@ -52,6 +52,10 @@ export interface RingkasanHasil {
   statusOrang: Record<IdOrang, StatusOrang>;
 }
 
+/** Hanya hasil biasa/munasakhat yang OK punya satu tabel bagian; taqdir, gharqa, menunggu, galat tidak. */
+export const bisaDiringkas = (tampil: HasilTampil): boolean =>
+  (tampil.jenis === 'biasa' || tampil.jenis === 'munasakhat') && tampil.hasil.status === 'OK';
+
 export function ringkas(kasus: Kasus, tampil: HasilTampil): RingkasanHasil {
   if (tampil.jenis === 'biasa' && tampil.hasil.status === 'OK') return ringkasBiasa(kasus.graf, tampil.hasil);
   if (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK') return ringkasMunasakhat(kasus.graf, tampil.hasil);
