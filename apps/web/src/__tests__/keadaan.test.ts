@@ -122,3 +122,14 @@ it('KE_LANGKAH dengan fokus menyimpan fokus; UBAH_KASUS dan KE_LANGKAH tanpa fok
   expect(pengurangKeadaan(fokus, { jenis: 'UBAH_KASUS', ubah: k => k }).fokus).toBeUndefined();
   expect(pengurangKeadaan(fokus, { jenis: 'KE_LANGKAH', langkah: 3 }).fokus).toBeUndefined();
 });
+
+it('KE_LANGKAH 3 dari Periksa menyimpan fokusBagian, fokus, dariPeriksa; KE_LANGKAH 4 mengosongkannya dan lolos meski Keluarga belum lengkap', () => {
+  const dasar = { ...keadaanAwal(kasusBaru('L'), null), layar: 'wizard' as const };
+  const dibuka = pengurangKeadaan(dasar, { jenis: 'KE_LANGKAH', langkah: 3, fokus: 'x', fokusBagian: 'pasangan:PEWARIS', dariPeriksa: true });
+  expect(dibuka).toMatchObject({ fokus: 'x', fokusBagian: 'pasangan:PEWARIS', dariPeriksa: true });
+  const kembali = pengurangKeadaan(dibuka, { jenis: 'KE_LANGKAH', langkah: 4 });
+  expect(kembali.langkah).toBe(4);
+  expect(kembali).not.toHaveProperty('dariPeriksa');
+  expect(kembali).not.toHaveProperty('fokusBagian');
+  expect(pengurangKeadaan(dasar, { jenis: 'KE_LANGKAH', langkah: 4 }).langkah).toBeLessThan(4);
+});

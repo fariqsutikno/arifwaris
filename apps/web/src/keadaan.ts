@@ -13,7 +13,11 @@ export type Layar = 'awal' | 'pintu' | 'wizard' | 'cerita' | 'hasil' | 'belajar'
 
 export interface KeadaanAplikasi { layar: Layar; langkah: number; kasus: Kasus | null; tujuan: Tujuan | null; jenisKasus: JenisKasus | null;
   /** Kartu mayit latihan yang digulir dan difokus saat langkah 3 dibuka dari "ubah" di Periksa; hilang saat kasus diubah. */
-  fokus?: IdOrang }
+  fokus?: IdOrang;
+  /** Id bagian Keluarga yang dibuka saat langkah 3 dibuka dari Periksa ("Lihat di Keluarga"). */
+  fokusBagian?: string;
+  /** true selama pengguna mengubah Keluarga dari Periksa: bar bawah menawarkan "Kembali ke Periksa". */
+  dariPeriksa?: boolean }
 
 export type Aksi =
   | { jenis: 'PILIH_TUJUAN'; tujuan: Tujuan }
@@ -21,7 +25,7 @@ export type Aksi =
   | { jenis: 'PILIH_JENIS_KASUS'; jenisKasus: JenisKasus }
   | { jenis: 'PILIH_PEWARIS'; jenisKelamin: 'L' | 'P' }
   | { jenis: 'MUAT'; kasus: Kasus }
-  | { jenis: 'KE_LANGKAH'; langkah: number; fokus?: IdOrang }
+  | { jenis: 'KE_LANGKAH'; langkah: number; fokus?: IdOrang; fokusBagian?: string; dariPeriksa?: boolean }
   | { jenis: 'UBAH_KASUS'; ubah: (kasus: Kasus) => Kasus }
   | { jenis: 'KE_LAYAR'; layar: Layar }
   | { jenis: 'ULANGI' };
@@ -37,15 +41,17 @@ export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanA
     case 'PILIH_PEWARIS': return { ...keadaan, kasus: pilihPewaris(keadaan.kasus, aksi.jenisKelamin, keadaan.jenisKasus) };
     case 'MUAT': return { ...keadaan, layar: 'hasil', langkah: TOTAL_LANGKAH, kasus: aksi.kasus, jenisKasus: aksi.kasus.jenisKasus };
     case 'KE_LANGKAH': {
-      const batas = Math.min(TOTAL_LANGKAH, langkahTerjauh(keadaan.kasus));
+      // Kembali ke Periksa selalu boleh meski perubahan tadi membuat Keluarga belum lengkap; Periksa sendiri yang menyebutnya.
+      const batas = keadaan.dariPeriksa ? TOTAL_LANGKAH : Math.min(TOTAL_LANGKAH, langkahTerjauh(keadaan.kasus));
       const langkah = Math.min(batas, Math.max(1, aksi.langkah));
-      const { fokus: _lama, ...tanpaFokus } = keadaan;
-      return { ...tanpaFokus, layar: 'wizard', langkah, ...(aksi.fokus ? { fokus: aksi.fokus } : {}) };
+      const { fokus: _lama, fokusBagian: _bagian, dariPeriksa: _dari, ...dasar } = keadaan;
+      return { ...dasar, layar: 'wizard', langkah, ...(aksi.fokus ? { fokus: aksi.fokus } : {}),
+        ...(aksi.fokusBagian ? { fokusBagian: aksi.fokusBagian } : {}), ...(aksi.dariPeriksa ? { dariPeriksa: true } : {}) };
     }
     case 'UBAH_KASUS': {
       if (!keadaan.kasus) return keadaan;
       const kasus = rapikanKeadaan(turunkanDariWaktu(aksi.ubah(keadaan.kasus)));
-      const { fokus: _lama, ...tanpaFokus } = keadaan;
+      const { fokus: _lama, fokusBagian: _bagian, ...tanpaFokus } = keadaan;
       return { ...tanpaFokus, kasus };
     }
     case 'KE_LAYAR': {

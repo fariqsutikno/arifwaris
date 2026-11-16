@@ -34,6 +34,10 @@ export function daftarBagian(kasus: Kasus): Bagian[] {
   return daftar.flatMap(bagian => (bagian.jenis === 'anak' ? [bagian, ...bagianCucu(kasus, bagian.milik)] : [bagian]));
 }
 
+/** Bagian yang memuat orang itu (tujuan "Lihat di Keluarga"); `anakBersama` tidak dihitung karena orang yang sama ada di bagian anak. */
+export const bagianDariOrang = (kasus: Kasus, id: IdOrang): Bagian | null =>
+  daftarBagian(kasus).find(bagian => bagian.jenis !== 'anakBersama' && anggotaBagian(kasus, bagian).includes(id)) ?? null;
+
 /** Anak `milik` yang wafat sebelum harta dibagi dan bukan bagian dari urutan; anaknya (cucu) hanya ditanya bila berpengaruh. */
 export function anakWafatSebelum(kasus: Kasus, milik: IdOrang): IdOrang[] {
   const diUrutan = new Set(kasus.urutanWafat);

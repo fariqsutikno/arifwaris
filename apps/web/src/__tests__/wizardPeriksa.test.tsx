@@ -1,0 +1,78 @@
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useState } from 'react';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { jawabHalLain } from '../halLain';
+import { isiBarisTetap, jawabAdaTidak, jawabKamu, slotTetap } from '../isianBagian';
+import type { Kasus } from '../kasus';
+import { anggotaBagian, bagianLengkap, daftarBagian } from '../kelompok';
+import { keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from '../keadaan';
+import { pilihKeadaan } from '../keadaanBaris';
+import { Wizard } from '../layar/Wizard';
+import { kasusBaru } from '../kasus';
+
+beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); });
+
+const denganHarta = (kasus: Kasus): Kasus => ({ ...kasus, pintu: 'baru', tirkah: { ...kasus.tirkah, kotor: 1_000_000n } });
+
+/** Menjawab semua bagian: yang sudah berisi dipertahankan, yang kosong dijawab tidak ada; orang tua dan kakek-nenek diisi hidup. */
+function lengkapi(awal: Kasus): Kasus {
+  let kasus = awal;
+  for (let putaran = 0; putaran < 30; putaran++) {
+    const bagian = daftarBagian(kasus).find(satu => !bagianLengkap(kasus, satu));
+    if (!bagian) return kasus;
+    if (bagian.jenis === 'orangTua' || bagian.jenis === 'kakekNenek') {
+      for (const kunci of slotTetap(kasus, bagian)) kasus = isiBarisTetap(kasus, bagian, kunci, 'hidup');
+    } else if (bagian.jenis === 'halLain') kasus = jawabHalLain(kasus, bagian.milik, false);
+    else if (bagian.jenis === 'kamu') kasus = jawabKamu(kasus, null);
+    else kasus = jawabAdaTidak(kasus, bagian, anggotaBagian(kasus, bagian).length > 0);
+  }
+  throw new Error('tidak konvergen');
+}
+/** Kasus lengkap dengan Ibu "belum tahu". */
+function kasusIbuBelumTahu(): Kasus {
+  const lengkap = lengkapi(denganHarta(kasusBaru('L')));
+  const ibu = Object.values(lengkap.graf.orang).find(o => o.id !== 'PEWARIS' && !o.penghubung && o.jenisKelamin === 'P')!.id;
+  return lengkapi(pilihKeadaan(lengkap, ibu, 'belumTahu', 'PEWARIS'));
+}
+
+function Papan({ kasus, langkah = 4 }: { kasus: Kasus; langkah?: number }) {
+  const [keadaan, setKeadaan] = useState<KeadaanAplikasi>(() => pengurangKeadaan(keadaanAwal(kasus, null), { jenis: 'KE_LANGKAH', langkah }));
+  return <Wizard keadaan={keadaan} kirim={(aksi: Aksi) => setKeadaan(k => pengurangKeadaan(k, aksi))} />;
+}
+const status = () => document.querySelector('.bar-bawah [role=status]')!.textContent;
+const aksiUtama = () => document.querySelector('.bar-bawah-isi')!.lastElementChild as HTMLElement;
+
+describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)', () => {
+  it('"Lihat di Keluarga" membuka bagian orang itu dengan barisnya disorot; bar bawah "Kembali ke Periksa"', () => {
+    render(<Papan kasus={kasusIbuBelumTahu()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat di Keluarga' }));
+    expect(document.querySelector('.grup h2')!.textContent).toBe('Orang tua Almarhum');
+    expect(document.activeElement?.id).toMatch(/^baris-/);
+    expect(status()).toBe('Kamu sedang mengubah dari Periksa.');
+    expect(aksiUtama().textContent).toBe('Kembali ke Periksa');
+  });
+
+  it('Kembali ke Periksa membuka langkah 4', () => {
+    render(<Papan kasus={kasusIbuBelumTahu()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat di Keluarga' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Kembali ke Periksa' }));
+    expect(screen.getByRole('heading', { level: 2, name: /Belum dipastikan/ })).toBeTruthy();
+  });
+
+  it('jawaban yang menambah cabang mengarahkan ke Keluarga; Periksa menyebut keluarga belum lengkap dengan aksi ke bagian itu', () => {
+    render(<Papan kasus={kasusIbuBelumTahu()} />);
+    expect(status()).toBe('1 hal belum dipastikan.');
+    fireEvent.click(screen.getByRole('radio', { name: 'Wafat sesudah Almarhum' }));
+    expect(status()).toMatch(/^Keluarga belum lengkap: .+\.$/);
+    expect(aksiUtama().textContent).toBe('Lihat di Keluarga');
+    fireEvent.click(aksiUtama());
+    expect(status()).toBe('Kamu sedang mengubah dari Periksa.');
+    fireEvent.click(screen.getByRole('button', { name: 'Kembali ke Periksa' }));
+    expect(status()).toMatch(/^Keluarga belum lengkap/);
+  });
+
+  it('hanya belum tahu: tombol "Hitung dengan kemungkinan" tersedia dan membuka hasil', () => {
+    render(<Papan kasus={kasusIbuBelumTahu()} />);
+    expect(aksiUtama().textContent).toBe('Hitung dengan kemungkinan');
+  });
+});

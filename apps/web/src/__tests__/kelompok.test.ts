@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
-import { anggotaBagian, awalCabang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
+import { anggotaBagian, awalCabang, bagianDariOrang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
 import { isiBarisTetap, tambahBaris } from '../isianBagian';
 import { statusKeluarga } from '../statusKeluarga';
 import { posisiPerluDitanya } from '../ujiHipotetis';
@@ -168,4 +168,10 @@ describe('kakek-nenek ditanya menurut engine, bukan menurut Ayah wafat (review P
     const denganAyahWafat = tambah(belumDijawab, 'PEWARIS', 'AYAH', { statusHidup: 'wafat' }).kasus;
     expect(bagianDilewati(denganAyahWafat).some(d => d.jenis === 'kakekNenek')).toBe(false);
   });
+});
+
+it('bagianDariOrang: Dewi → pasangan:{budi}; orang tak dikenal → null', () => {
+  const { kasus, budi, dewi } = keluargaKarto();
+  expect(bagianDariOrang(kasus, dewi)?.id).toBe(`pasangan:${budi}`);
+  expect(bagianDariOrang(kasus, 'tidak-ada')).toBeNull();
 });
