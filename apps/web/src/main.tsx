@@ -15,6 +15,7 @@ import './gaya/rujukan.css';
 import './gaya/latihan.css';
 import './gaya/wizard.css';
 import './gaya/keluarga.css';
+import './gaya/periksa.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pilihAwal, type Snapshot } from '@waris/data/snapshot';

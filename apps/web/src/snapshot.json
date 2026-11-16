@@ -22365,6 +22365,160 @@
    "id": "Isi ahli waris {nama} dulu.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.belum_judul",
+   "halaman": "hitung",
+   "id": "Belum dipastikan ({jumlah})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.belum_keterangan",
+   "halaman": "hitung",
+   "id": "Jawab di sini kalau sudah tahu. Kalau belum, hasil ditampilkan sebagai beberapa kemungkinan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tanya_keadaan",
+   "halaman": "hitung",
+   "id": "Waktu {almarhum} wafat, apakah {nama} masih hidup?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tanya_urutan",
+   "halaman": "hitung",
+   "id": "{a} wafat sebelum atau sesudah {b}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.masih_hidup",
+   "halaman": "hitung",
+   "id": "Masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.wafat_sebelum",
+   "halaman": "hitung",
+   "id": "Wafat sebelum {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.wafat_sesudah",
+   "halaman": "hitung",
+   "id": "Wafat sesudah {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sebelum_nama",
+   "halaman": "hitung",
+   "id": "Sebelum {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sesudah_nama",
+   "halaman": "hitung",
+   "id": "Sesudah {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.lihat_di_keluarga",
+   "halaman": "hitung",
+   "id": "Lihat di Keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.salin_wa",
+   "halaman": "hitung",
+   "id": "Salin pertanyaan untuk keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tersalin",
+   "halaman": "hitung",
+   "id": "Pertanyaan disalin. Tempel di WhatsApp keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.gagal_salin",
+   "halaman": "hitung",
+   "id": "Belum tersalin. Salin pesan di bawah secara manual.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tersimpan",
+   "halaman": "hitung",
+   "id": "Tersimpan: {nama}. Kisah ikut berubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.pesan_wa",
+   "halaman": "hitung",
+   "id": "Assalamu'alaikum. Aku sedang menghitung warisan {almarhum}. Ada yang belum aku tahu:\n{daftar}\nTerima kasih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sedang_dari_periksa",
+   "halaman": "hitung",
+   "id": "Kamu sedang mengubah dari Periksa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kembali_ke_periksa",
+   "halaman": "hitung",
+   "id": "Kembali ke Periksa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.hitung_kemungkinan",
+   "halaman": "hitung",
+   "id": "Hitung dengan kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.hitung",
+   "halaman": "hitung",
+   "id": "Ya, benar. Hitung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.n_belum",
+   "halaman": "hitung",
+   "id": "{jumlah} hal belum dipastikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.pastikan_urutan",
+   "halaman": "hitung",
+   "id": "Pastikan dulu urutan wafat {a} dan {b}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keluarga_belum_lengkap",
+   "halaman": "hitung",
+   "id": "Keluarga belum lengkap: {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
