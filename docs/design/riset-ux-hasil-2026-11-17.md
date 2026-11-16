@@ -213,3 +213,127 @@ ke saya, adiknya, dan anaknya."
   3. Sebutan orang tidak satu sumber antar-lapis dan antar-almarhum (R2–R5, I10).
   4. Kasus selain biasa dirancang sebagai tambahan, bukan dari job-nya (K1, M1, M6).
   5. Aksi tumbuh tanpa disusun ulang (A1–A4).
+
+## 9. HMW dan ide (tahap 3)
+
+Skor: **Paham** (mudah bagi keluarga awam di HP?), **Dampak** (menjawab job?), **Usaha** (realistis; kecil = murah).
+Ide pertama di tiap tabel adalah yang paling sederhana. Belum ada rupa visual; itu di mockup.
+
+### HMW-1. Bagaimana agar jawaban "siapa dapat berapa" langsung terbaca di layar pertama? (S1, S3, I2, I3, I4, V1)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Buang hero. Layar dibuka dengan daftar orang + rupiah; pohon pindah ke bawah atau tab | tinggi | tinggi | kecil |
+| B. Kalimat jawaban di atas: "Harta Rp 300.000.000 dibagi ke 4 orang", lalu daftar rupiah besar. Pecahan cukup di keterangan ("1/8 karena ada anak"), persen dibuang dari tampilan awal | tinggi | tinggi | kecil |
+| C. Pohon tetap di atas, tapi kotaknya besar dan terbaca (hanya penerima + almarhum), rupiah di kotak | sedang | sedang | sedang |
+| D. Kartu per orang yang bisa digeser (carousel) | rendah | sedang | sedang |
+
+**Pilih A + B.** Daftar rupiah adalah jawaban; pohon menjadi alat menjelaskan (HMW-3), bukan pembuka. Satu sumber angka:
+daftar. Bagian lain merujuk ke daftar, tidak mengulang.
+
+### HMW-2. Bagaimana agar pengguna langsung menemukan bagiannya sendiri? (I1)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Baris "Kamu" ditandai di daftar ("Istri almarhum · kamu") | tinggi | sedang | kecil |
+| B. Kalimat pembuka pribadi: "Bagianmu Rp 37.500.000 (istri almarhum)", lalu daftar semua | tinggi | tinggi | kecil |
+| C. Pilihan "lihat dari sisi…" untuk berganti orang | sedang | sedang | besar |
+
+**Pilih B (dengan A).** Bila jangkar diri kosong ("mengisi untuk orang lain"), kalimat ini tidak muncul.
+
+### HMW-3. Bagaimana agar setiap orang yang bertanya "kenapa" mendapat jawaban satu kalimat di tempat namanya? (S4, I7, B3, H-b)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Satu kalimat alasan di bawah tiap nama dalam daftar, termasuk yang tidak dapat ("1/8 karena almarhum punya anak", "tidak dapat karena ada anak laki-laki") | tinggi | tinggi | kecil |
+| B. Ketuk nama → lembar orang dengan alasan + dalil; istilah hanya dalam kurung yang bisa diketuk | tinggi | tinggi | sedang |
+| C. Satu bagian "Kenapa begini?" berisi semua alasan (dari Langkah 2–3), di bawah daftar | sedang | sedang | kecil |
+
+**Pilih A + B.** Alasan satu sumber (jejak engine). Langkah 2–3, kartu "Tidak mendapat", dan "Tentang kasus" tidak lagi
+mengulangnya. Yang tidak dapat ikut di daftar yang sama (redup, di bawah), bukan kartu terpisah.
+
+### HMW-4. Bagaimana agar keluarga dan pemeriksa sama-sama terlayani tanpa saling mengganggu? (S5, S6, I9, V5, V7, B3, H-f)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Dua lapis: atas untuk keluarga (jawaban, alasan, langkah selanjutnya); bawah satu tautan "Cara menghitung (untuk dicocokkan)" yang membuka langkah + tabel + istilah | tinggi | tinggi | kecil |
+| B. Sakelar "Tampilan sederhana / lengkap" | sedang | sedang | kecil |
+| C. Halaman terpisah "Rincian perhitungan" | tinggi | sedang | sedang |
+
+**Pilih A.** Tabel faraidh, "Tentang kasus", Langkah 4–6, dan Atur tampilan pindah ke lapis bawah. "Tentang kasus"
+digabung ke langkah (tidak dua kali). Sakelar Hitung kasus/Belajar keluar dari layar jawaban (A3).
+
+### HMW-5. Bagaimana agar aksi sesudah hasil sedikit, bernama jelas, dan benar-benar berguna di rapat keluarga? (R7, R8, A1–A7, H-e)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Satu aksi utama yang berfungsi: "Kirim ke keluarga" (teks ringkas siap tempel ke WhatsApp: nama + rupiah + catatan madzhab); JSON jadi "Simpan file kasus" di menu | tinggi | tinggi | kecil |
+| B. Cetak halaman (CSS print) sebagai "Cetak / simpan PDF" | tinggi | tinggi | kecil |
+| C. Gambar PNG ringkasan | tinggi | sedang | sedang |
+| D. Satu pintu "Ubah" yang menuju Periksa (bukan langkah 1), menggantikan lima jalan ubah | tinggi | sedang | kecil |
+
+**Pilih A + B + D.** Kartu "segera hadir" dibuang. "Urutan yang biasa dilakukan keluarga" diperbaiki urutannya
+(hutang/wasiat dipastikan, bukan disuruh sesudahnya) dan label draf tidak tampil (perlu tim keilmuan, F2).
+
+### HMW-6. Bagaimana agar pembulatan tidak menakutkan tapi tetap jujur? (I5, V6)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Satu baris kecil di bawah daftar: "Sisa pembulatan Rp 1 belum dibagi" + tautan "ubah pembulatan" | tinggi | sedang | kecil |
+| B. Baris "Sisa pembulatan" ikut di daftar dan jumlah tepat Rp 300.000.000 | tinggi | tinggi | kecil |
+| C. Tanya satuan pembulatan sekali di langkah Harta | sedang | sedang | sedang |
+
+**Pilih A + B.** Label "Perlu keputusanmu" hanya bila selisihnya berarti (mis. satuan Rp 1.000).
+
+### HMW-7. Bagaimana agar orang yang meninggal berurutan terlihat sebagai aliran, dan tiap orang tetap satu sebutan? (M1–M8, R2, R3, bagian 5)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Daftar total per orang (satu sebutan dari almarhum pertama, + "ibu Budi"), dan tiap baris bisa dibuka: "dari suami Rp 37,5 jt · dari Budi Rp 29,2 jt" | tinggi | tinggi | sedang |
+| B. Per almarhum, berurutan seperti cerita: "1. Harta almarhum Rp 300 jt → …, Budi Rp 175 jt" lalu "2. Budi meninggal: Rp 175 jt → …"; penutup "Totalnya:" | tinggi | tinggi | sedang |
+| C. Pohon beranimasi: harta mengalir ke Budi, berhenti, lalu mengalir lagi | sedang | sedang | besar |
+| D. Tabel matriks (baris orang × kolom almarhum) | rendah | sedang | kecil |
+
+**Pilih B di atas A.** Cerita per almarhum menjawab "bagian Budi ke mana" dan alasan per lapis; total per orang menjadi
+penutup untuk eksekusi. Bila harta pertama **sudah dibagi**, lapis itu dilipat dan judulnya "Yang dibagi sekarang: harta
+Budi". Harus tetap terbaca untuk 3–4 almarhum. D untuk lapis pemeriksa (HMW-4).
+
+### HMW-8. Bagaimana agar keluarga dengan orang yang belum pasti tahu: dibagi sekarang berapa, ditahan berapa, untuk siapa, kapan dihitung lagi? (K1–K10, R5)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Daftar yang sama dengan kasus biasa, tiap orang dua angka: "diterima sekarang" dan "mungkin bertambah sampai …"; janin/orang hilang di daftar sebagai "Bayi dalam kandungan istri almarhum" / "Anak perempuan (hilang)" dengan "ditahan" | tinggi | tinggi | sedang |
+| B. Kartu titipan menyebut isinya: "Rp 212,5 jt ditahan untuk bayi dan anak perempuan; dibagi lagi setelah bayi lahir" + kalimat alasan [SYF] untuk anak perempuan | tinggi | tinggi | kecil |
+| C. Pemilih kemungkinan ("kalau bayinya laki-laki / perempuan / kembar / meninggal") yang mengganti angka di daftar dalam rupiah | sedang | tinggi | sedang |
+| D. Layar "menunggu" berisi yang sudah pasti + di mana membuka lagi + akibat "hitung sekarang" | tinggi | sedang | kecil |
+
+**Pilih A + B + D, C sebagai lapis kedua.** Sebutan janin dan orang hilang diambil dari keadaannya, bukan jenis kelamin
+bawaan. Gharqa memakai pola cerita per almarhum yang sama dengan HMW-7, dengan sebutan dari sudut masing-masing almarhum
+yang jelas ("ibunya", "saudarinya").
+
+### HMW-9. Bagaimana agar nada dan kata cocok untuk keluarga yang berduka? (B1–B6, I10)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Pakai kosakata yang sudah ada (meninggal, tidak mendapat bagian, satu sebutan per orang); istilah fikih hanya dalam kurung yang bisa diketuk, dan di lapis pemeriksa | tinggi | tinggi | kecil |
+| B. Nada tenang di Hitung kasus ("Pembagian harta [nama]"), gaya santai hanya di Belajar | tinggi | sedang | kecil |
+| C. Tanpa petunjuk pemakaian ("ketuk nama…"); rupa yang menjelaskan | tinggi | sedang | kecil |
+
+**Pilih A + B + C.**
+
+## 10. Prinsip desain (dari pilihan di atas)
+
+1. **Satu layar, satu jawaban:** yang pertama terlihat adalah rupiah per orang (dan bagianmu), bukan judul, statistik, atau pohon.
+2. **Satu angka, satu tempat:** daftar adalah sumber; bagian lain merujuk, tidak mengulang.
+3. **Alasan menempel di nama:** setiap orang, termasuk yang tidak dapat, punya satu kalimat "karena…".
+4. **Dua lapis:** keluarga di atas; cara menghitung (langkah, tabel, istilah) di bawah untuk yang ingin mencocokkan.
+5. **Satu orang, satu sebutan:** dari almarhum pertama, di semua bagian dan semua lapis; hubungan lain ditambahkan sebagai keterangan.
+6. **Kasus mengikuti cerita keluarga:** berlapis = cerita per almarhum lalu total; belum pasti = sekarang · ditahan · untuk siapa · kapan.
+7. **Aksi sedikit dan berfungsi:** kirim ke keluarga, cetak, ubah (ke Periksa). Tidak ada "segera hadir".
+8. **Nada tenang:** kosakata pengguna, istilah hanya di kurung atau lapis pemeriksa.
+
+## 11. Pertanyaan sebelum konsep (tahap 5)
+
+1. HMW-5: "Kirim ke keluarga" sebagai teks siap tempel ke WhatsApp, cukup? Atau perlu PDF/gambar sejak awal?
+2. HMW-1: pohon keluarga masih perlu tampil di Hasil kasus biasa (di bawah atau di tab), atau cukup di lembar orang dan layar penuh?
+3. HMW-7: untuk munasakhat, cerita per almarhum (B) sebagai tampilan utama, lalu total di akhir. Setuju urutan ini, atau total dulu baru cerita?
