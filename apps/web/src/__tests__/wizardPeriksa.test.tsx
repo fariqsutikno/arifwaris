@@ -38,10 +38,9 @@ function kasusIbuBelumTahu(): Kasus {
   return lengkapi(pilihKeadaan(lengkap, ibu, 'belumTahu', 'PEWARIS'));
 }
 
-function Papan({ kasus, langkah = 4, paksa = false, saatKirim }: { kasus: Kasus; langkah?: number; paksa?: boolean; saatKirim?: (aksi: Aksi) => void }) {
+function Papan({ kasus, langkah = 4, saatKirim }: { kasus: Kasus; langkah?: number; saatKirim?: (aksi: Aksi) => void }) {
   const [keadaan, setKeadaan] = useState<KeadaanAplikasi>(() => {
-    // paksa: kasus belum lengkap tetap dibuka di Periksa, lewat jalur "Kembali ke Periksa" (dariPeriksa melepas batas langkah).
-    const awal = paksa ? pengurangKeadaan(keadaanAwal(kasus, null), { jenis: 'KE_LANGKAH', langkah: 3, dariPeriksa: true }) : keadaanAwal(kasus, null);
+    const awal = keadaanAwal(kasus, null);
     return pengurangKeadaan(awal, { jenis: 'KE_LANGKAH', langkah });
   });
   return <Wizard keadaan={keadaan} kirim={(aksi: Aksi) => { saatKirim?.(aksi); setKeadaan(k => pengurangKeadaan(k, aksi)); }} />;
@@ -112,7 +111,7 @@ describe('Periksa nyata dirangkai (rencana 4, tugas 7)', () => {
 
   it('Ada yang keliru? → Tahun atau urutan wafat → Budi: babak Budi terbuka dalam mode ubah', () => {
     const { kasus } = keluargaKarto();
-    render(<Papan kasus={denganHarta(kasus)} paksa />);
+    render(<Papan kasus={lengkapi(denganHarta(kasus))} />);
     fireEvent.click(screen.getByRole('button', { name: /Ubah sesuatu/ }));
     fireEvent.click(screen.getByRole('button', { name: /Tahun atau urutan wafat/ }));
     fireEvent.click(screen.getByRole('button', { name: /^Budi/ }));
