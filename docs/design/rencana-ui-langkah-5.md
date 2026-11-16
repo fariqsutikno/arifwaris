@@ -36,6 +36,8 @@ disembunyikan selama pengguna masih menebak supaya tidak membocorkan jawaban.
 kerabat jauh (anak keponakan/sepupu, paman ayah). Dibangun A + C tanpa mode/sakelar: A di wawancara Keluarga
 (keponakan/sepupu ditandai wafat → bagian "Anak X" muncul, berulang; paman ayah baris tetap), C di pohon layar penuh
 (tombol + di bawah orang wafat) sebagai jalan pintas. Satu graf, keduanya saling mencerminkan.
+Paman ayah (keputusan 2026-11-16): lewat kakek: kakek ditandai wafat → bagian "Saudara laki-laki kakek" (tampil hanya bila
+berpengaruh), mengikuti pola bagian "Anak X".
 
 - Periksa dulu di kanvas. Bila menambah kerabat jauh belum bisa: di menu ⋯ tiap orang tambah "tambah anak"
   (laki-laki/perempuan, kelamin wajib ditanya), labelnya otomatis bertingkat gaya fikih ("anak laki-laki dari anak laki-laki paman").
