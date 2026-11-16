@@ -67,7 +67,7 @@ describe('BarisOrang dan PenghitungOrang (spec kanvas 5.3, 5.4)', () => {
     fireEvent.click(within(baris()).getByRole('radio', { name: 'Sudah wafat' }));
     expect(within(baris()).getByRole('radio', { name: 'Sebelum' })).toBeTruthy();
     fireEvent.change(within(baris()).getByLabelText('Tahun wafatnya', { exact: false }), { target: { value: '1970' } });
-    expect(within(baris()).getByText('Berarti sebelum Almarhum wafat (1975).')).toBeTruthy();
+    expect(within(baris()).getByText('Berarti sebelum almarhum wafat (1975).')).toBeTruthy();
     expect(within(baris()).queryByRole('radio', { name: 'Sebelum' })).toBeNull();
     unmount();
     render(<Uji awal={kasusBaru('L')} bagian={ANAK} kunci="ANAK_LK" />);

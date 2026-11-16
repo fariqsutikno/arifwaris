@@ -48,7 +48,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
 
   it('orang tua: baris tetap Ayah dan Ibu tanpa Ya/Tidak; bagian dijawab setelah keduanya punya keadaan', () => {
     render(<Uji awal={dijawab(kasusBaru('L'), { PEWARIS: ['pasangan', 'anak'] })} />);
-    expect(judulAktif()).toBe('Orang tua Almarhum');
+    expect(judulAktif()).toBe('Orang tua almarhum');
     expect(screen.queryByRole('radio', { name: 'Tidak' })).toBeNull();
     expect(screen.getByRole('group', { name: 'Ayah' })).toBeTruthy();
     expect(screen.getByRole('group', { name: 'Ibu' })).toBeTruthy();
@@ -78,7 +78,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
   const keAnakPewarisKarto = () => {
     const { kasus, ...isi } = keluargaKarto();
     render(<Uji awal={dijawab(kasus, { PEWARIS: ['pasangan', 'anak'] })} />);
-    klik('Ubah Anak Almarhum');
+    klik('Ubah Anak almarhum');
     return isi;
   };
 
@@ -86,12 +86,12 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     keAnakPewarisKarto();
     expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
     expect(document.querySelector('.langkah-bagian')!.textContent).not.toContain('Kakak atau adik');
-    expect(screen.getByText('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).toBeTruthy();
+    expect(screen.getByText('Kenapa kakak atau adik almarhum tidak ditanyakan?')).toBeTruthy();
   });
 
   it('Tetap isi kerabat lain menambahkan bagian saudara', () => {
     keAnakPewarisKarto();
-    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
+    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
     expect(document.querySelector('.langkah-bagian')!.textContent).toContain('Kakak atau adik');
   });
 
@@ -118,10 +118,10 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
 
   it('Tambah dengan nama hubungan membuka DialogTambahHubungan dan menambah orang bukan ahli waris tanpa mengubah bagian yang sudah lengkap', () => {
     keAnakPewarisKarto();
-    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
+    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
     const lengkapSebelum = () => [...document.querySelectorAll('.langkah-bagian li.selesai')].map(li => li.textContent);
     const sebelum = lengkapSebelum();
-    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tambah dengan nama hubungan' }));
+    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tambah dengan nama hubungan' }));
     fireEvent.click(screen.getByRole('button', { name: 'Mertua' }));
     const dialog = screen.getByRole('alertdialog');
     fireEvent.change(within(dialog).getByRole('textbox'), { target: { value: 'Pak Haji' } });

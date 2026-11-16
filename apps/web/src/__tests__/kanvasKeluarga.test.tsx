@@ -17,7 +17,7 @@ const judulAktif = () => screen.getByRole('heading', { level: 2 }).textContent;
 describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
   it('kasus kosong: hanya kartu Pasangan dan peta; bagian lain tidak dirender', () => {
     render(<Uji awal={kasusBaru('L')} />);
-    expect(judulAktif()).toBe('Waktu Almarhum wafat, apakah beliau punya istri?');
+    expect(judulAktif()).toBe('Waktu almarhum wafat, apakah beliau punya istri?');
     expect(screen.queryByText(/punya anak/)).toBeNull();
     expect(screen.getByText(/^0 dari \d+ bagian selesai$/)).toBeTruthy();
   });
@@ -25,19 +25,19 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
   it('menjawab Tidak tidak memindahkan bagian sendiri; Lanjut membuka Anak dan meringkas Pasangan', () => {
     render(<Uji awal={kasusBaru('L')} />);
     fireEvent.click(screen.getByRole('radio', { name: 'Tidak' }));
-    expect(judulAktif()).toBe('Waktu Almarhum wafat, apakah beliau punya istri?');
+    expect(judulAktif()).toBe('Waktu almarhum wafat, apakah beliau punya istri?');
     expect(screen.getByText('Bagian ini sudah lengkap.')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Lanjut: Anak/ }));
     expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
     const ringkasan = screen.getByRole('list', { name: 'Bagian yang sudah selesai' });
-    expect(within(ringkasan).getByText('Istri Almarhum')).toBeTruthy();
+    expect(within(ringkasan).getByText('Istri almarhum')).toBeTruthy();
     expect(within(ringkasan).getByText('Tidak ada')).toBeTruthy();
   });
 
   it('Lanjut saat bagian belum lengkap tidak pindah dan menandai kekurangan', () => {
     render(<Uji awal={kasusBaru('L')} />);
     fireEvent.click(screen.getByRole('button', { name: /Lanjut: Anak/ }));
-    expect(judulAktif()).toBe('Waktu Almarhum wafat, apakah beliau punya istri?');
+    expect(judulAktif()).toBe('Waktu almarhum wafat, apakah beliau punya istri?');
     expect(screen.getByText('Masih ada yang belum diisi di bagian ini.')).toBeTruthy();
   });
 
@@ -51,7 +51,7 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
   it('Ya → Tidak pada Anak berisi menampilkan konfirmasi yang menyebut seluruh keluarga cabang', () => {
     const { kasus, budi } = keluargaKarto();
     render(<Uji awal={dijawab(kasus, { PEWARIS: ['pasangan', 'anak'], [budi]: ['anak'] })} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Ubah Anak Almarhum' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah Anak almarhum' }));
     expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
     fireEvent.click(screen.getByRole('radio', { name: 'Tidak' }));
     const dialog = screen.getByRole('alertdialog');
@@ -72,14 +72,14 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
     const peta = container.querySelector('.peta-bagian')!;
     expect(peta.querySelectorAll('button')).toHaveLength(0);
     expect(peta.querySelector('.pil, .aw-chip')).toBeNull();
-    expect(peta.textContent).toContain('Bagian bisa bertambah bila ada yang wafat sesudah Almarhum.');
+    expect(peta.textContent).toContain('Bagian bisa bertambah bila ada yang wafat sesudah almarhum.');
   });
 
   it('pengantar cabang tampil di kartu pertama cabang dan tidak di bagian pewaris', () => {
     const { kasus, sumi } = keluargaKarto();
     const pewaris = denganBagianTetapTerisi(dijawab(kasus, { PEWARIS: ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'halLain'] }));
     render(<Uji awal={pewaris} />);
-    expect(screen.getByText(/Mbah Sumi wafat sesudah Almarhum, sebelum hartanya dibagi/)).toBeTruthy();
+    expect(screen.getByText(/Mbah Sumi wafat sesudah almarhum, sebelum hartanya dibagi/)).toBeTruthy();
     expect(sumi).toBeTruthy();
   });
 

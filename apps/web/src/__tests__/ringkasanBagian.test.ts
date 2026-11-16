@@ -52,6 +52,6 @@ describe('ringkasanBagian', () => {
 
   it('anak bersama: sama dengan anak-anak pewaris bila semuanya anak pemilik cabang', () => {
     const { kasus, sumi } = keluargaKarto();
-    expect(ringkasanBagian(kasus, ambil(kasus, `anakBersama:${sumi}`))).toBe('Sama dengan anak-anak Almarhum');
+    expect(ringkasanBagian(kasus, ambil(kasus, `anakBersama:${sumi}`))).toBe('Sama dengan anak-anak almarhum');
   });
 });

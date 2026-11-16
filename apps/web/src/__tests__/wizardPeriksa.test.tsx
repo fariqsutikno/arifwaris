@@ -52,7 +52,7 @@ describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)
   it('"Lihat di Keluarga" membuka bagian orang itu dengan barisnya disorot; bar bawah "Kembali ke Periksa"', () => {
     render(<Papan kasus={kasusIbuBelumTahu()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Lihat di Keluarga' }));
-    expect(document.querySelector('.grup h2')!.textContent).toBe('Orang tua Almarhum');
+    expect(document.querySelector('.grup h2')!.textContent).toBe('Orang tua almarhum');
     expect(document.activeElement?.id).toMatch(/^baris-/);
     expect(status()).toBe('Kamu sedang mengubah dari Periksa.');
     expect(aksiUtama().textContent).toBe('Kembali ke Periksa');
@@ -68,7 +68,7 @@ describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)
   it('jawaban yang menambah cabang mengarahkan ke Keluarga; Periksa menyebut keluarga belum lengkap dengan aksi ke bagian itu', () => {
     render(<Papan kasus={kasusIbuBelumTahu()} />);
     expect(status()).toBe('Ibu: belum dipastikan masih hidup atau tidak.');
-    fireEvent.click(screen.getByRole('radio', { name: 'Wafat sesudah Almarhum' }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Wafat sesudah almarhum' }));
     expect(status()).toMatch(/^Keluarga belum lengkap: .+\.$/);
     expect(aksiUtama().textContent).toBe('Lihat di Keluarga');
     fireEvent.click(aksiUtama());
