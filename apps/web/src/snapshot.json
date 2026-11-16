@@ -22544,7 +22544,7 @@
   {
    "kunci": "hitung.periksa.babak_pembuka_lanjut",
    "halaman": "hitung",
-   "id": "Lalu {nama} wafat, sebelum harta {pemilik} dibagi.",
+   "id": "{nama} wafat, sebelum harta {pemilik} dibagi.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22628,7 +22628,7 @@
   {
    "kunci": "hitung.periksa.sebelum_pemilik",
    "halaman": "hitung",
-   "id": "{tahun} · {nama} wafat, sebelum {pemilik}.",
+   "id": "{nama} meninggal.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22901,42 +22901,42 @@
   {
    "kunci": "hitung.periksa.tambah_peristiwa",
    "halaman": "hitung",
-   "id": "Tambah peristiwa: lahir, menikah, atau bercerai di antara kematian",
+   "id": "Ada kejadian lain? Tambahkan",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_judul",
    "halaman": "hitung",
-   "id": "Tambah peristiwa",
+   "id": "Tambah kejadian",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_apa",
    "halaman": "hitung",
-   "id": "Peristiwa apa?",
+   "id": "Apa yang terjadi?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_lahir",
    "halaman": "hitung",
-   "id": "Kelahiran",
+   "id": "Ada yang lahir",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_nikah",
    "halaman": "hitung",
-   "id": "Pernikahan",
+   "id": "Ada yang menikah",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_cerai",
    "halaman": "hitung",
-   "id": "Perceraian",
+   "id": "Ada yang bercerai",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22950,14 +22950,14 @@
   {
    "kunci": "hitung.periksa.peristiwa_kapan",
    "halaman": "hitung",
-   "id": "Terjadi sesudah siapa wafat?",
+   "id": "Kapan, dibanding almarhum?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_sesudah",
    "halaman": "hitung",
-   "id": "Sesudah {nama} wafat",
+   "id": "Sesudah {nama} meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22971,28 +22971,28 @@
   {
    "kunci": "hitung.periksa.simpan_peristiwa",
    "halaman": "hitung",
-   "id": "Simpan peristiwa",
+   "id": "Simpan kejadian",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_baris_lahir",
    "halaman": "hitung",
-   "id": "{nama} lahir, sesudah {almarhum} wafat.",
+   "id": "{nama} lahir.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_baris_nikah",
    "halaman": "hitung",
-   "id": "{nama} menikah dengan {pasangan}, sesudah {almarhum} wafat.",
+   "id": "{nama} menikah dengan {pasangan}.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_baris_cerai",
    "halaman": "hitung",
-   "id": "{nama} bercerai dengan {pasangan}, sesudah {almarhum} wafat.",
+   "id": "{nama} bercerai dengan {pasangan}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -23336,6 +23336,62 @@
    "kunci": "hitung.pohon.meninggal_tahun",
    "halaman": "hitung",
    "id": "meninggal {tahun}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_sesudah_pewaris",
+   "halaman": "hitung",
+   "id": "Sesudah {nama} meninggal, sebelum harta dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kejadian_kembali",
+   "halaman": "hitung",
+   "id": "Kembali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kejadian_langkah",
+   "halaman": "hitung",
+   "id": "Langkah {n} dari {total}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kejadian_pilih_dulu",
+   "halaman": "hitung",
+   "id": "Pilih salah satu dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sebelum_label",
+   "halaman": "hitung",
+   "id": "Lebih dulu dari {pemilik}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sebelum_label_tahun",
+   "halaman": "hitung",
+   "id": "{tahun}, lebih dulu dari {pemilik}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.label_lalu",
+   "halaman": "hitung",
+   "id": "Lalu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.label_sesudah",
+   "halaman": "hitung",
+   "id": "Sesudah {nama} meninggal",
    "ar": null,
    "versiTerbit": 873
   }

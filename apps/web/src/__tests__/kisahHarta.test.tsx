@@ -18,11 +18,22 @@ const kartoBertahun = () => {
 const babak = (nama: RegExp) => screen.getByRole('article', { name: nama });
 
 describe('KisahHarta', () => {
-  it('tiga babak dengan tahun besar; babak Mbah Sumi "Tahun ?"', () => {
+  it('tiga babak dengan tahun besar; babak tanpa tahun berlabel "Lalu", bukan "?"', () => {
     render(<Papan awal={kartoBertahun().kasus} />);
     expect(screen.getAllByRole('article').filter(a => a.className.includes('babak') && !a.className.includes('kini'))).toHaveLength(3);
-    expect(within(babak(/Mbah Sumi wafat/)).getByText('Tahun ?')).toBeTruthy();
+    expect(within(babak(/Mbah Sumi wafat/)).getByText('Lalu')).toBeTruthy();
     expect(within(babak(/Budi wafat/)).getByText('2013')).toBeTruthy();
+    expect(screen.queryByText(/^\?|\? ·/)).toBeNull();
+  });
+
+  it('kematian sebelum pemilik: label urutan kecil "Lebih dulu dari" (dengan tahun bila ada) dan satu kalimat', () => {
+    const { kasus, slamet } = kartoBertahun();
+    const { unmount } = render(<Papan awal={kasus} />);
+    expect(screen.getAllByText(/^Lebih dulu dari /).length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Slamet meninggal.')).toHaveLength(1);
+    unmount();
+    render(<Papan awal={aturTahunWafat(kasus, slamet, tahun(1980))} />);
+    expect(screen.getByText(/^1980, lebih dulu dari /)).toBeTruthy();
   });
 
   it('jeda: "N tahun kemudian" bila dua tahun ada, selain itu "Beberapa waktu kemudian"; tiap jeda membawa benang harta', () => {
