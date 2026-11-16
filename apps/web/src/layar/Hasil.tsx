@@ -23,6 +23,7 @@ import { ModalEkspor } from '../hasil/ModalEkspor';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
 import { Pohon } from '../hasil/Pohon';
+import { tahunWafat as tahunWafatKasus } from '../penandaMeninggal';
 import { bisaTambahAnak } from '../kelompok';
 import { tambahAnakBernama } from '../isianBagian';
 import { namaSingkat } from '../keadaanOrang';
@@ -164,14 +165,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const [putaranAliran, setPutaranAliran] = useState(1);
   const bolehAliran = !sedangMenebak && jumlahOrang <= BATAS_ALIRAN;
   const buatPohon = (aliran: boolean) => <Pohon key={aliran ? putaranAliran : 'diam'} graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
-    sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} aliran={aliran && bolehAliran} />;
+    sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} aliran={aliran && bolehAliran} tahunWafat={id => tahunWafatKasus(kasus, id)} />;
   const pohon = buatPohon(false);
   // Jalan pintas di layar penuh: hanya mode hitung yang boleh mengubah data.
   const [anakDitambahDi, setAnakDitambahDi] = useState<IdOrang | null>(null);
   const bolehTambahAnak = !sedangMenebak && !hanyaBaca && !terkunci;
   const pohonLayarPenuh = !bolehTambahAnak ? pohon : (
     <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
-      sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih}
+      sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} tahunWafat={id => tahunWafatKasus(kasus, id)}
       aksiNode={id => bisaTambahAnak(kasus, id) && (
         <button type="button" className="tambah-anak-node" aria-label={t('hitung.pohon.judul_tambah_anak', { nama: namaSingkat(kasus, id) })}
           onClick={() => setAnakDitambahDi(id)}><Ikon nama="tambah" /></button>

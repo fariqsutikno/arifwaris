@@ -3,10 +3,11 @@
 // Dengan saatPilih, pohon interaktif: tiap kotak (termasuk penghubung) menjadi tombol "Buka menu".
 
 import type { IdOrang } from '@waris/engine';
-import { hitungIsian, labelOrangChecklist } from '../../checklist';
+import { buatSebutSimpul } from '../../checklist';
 import { PohonDasar } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import type { Kasus } from '../../kasus';
+import { keteranganMeninggal, tahunWafat, waktuMeninggal } from '../../penandaMeninggal';
 import { t } from '../../terjemah';
 
 /** Pohon yang bisa diketuk dibiarkan lebih tinggi daripada pratinjau murni supaya tulisan tidak mengecil; halaman yang menggulir. */
@@ -24,27 +25,32 @@ interface Props {
 
 export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true }: Props) {
   const { graf } = kasus;
-  // Orang tanpa peran di daftar ± (mertua, ipar, dst.) cukup disebut namanya; tanpa nama, disebut menurut hubungannya.
-  const adaPeran = new Set(Object.values(hitungIsian(graf, graf.idPewaris)).flatMap(ids => ids ?? []));
-  const sebut = (id: IdOrang) => adaPeran.has(id) ? labelOrangChecklist(graf, graf.idPewaris, id) : graf.orang[id]?.nama ?? labelOrangChecklist(graf, graf.idPewaris, id);
+  const sebut = buatSebutSimpul(graf);
   return (
     <PratinjauPohon skalaMaks={skalaMaks} interaktif={!!saatPilih} {...(saatPilih ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
       <PohonDasar graf={graf} bisaPilih={id => pewarisBisaDipilih || id !== graf.idPewaris} {...(saatPilih ? { saatPilih, pilihPenghubung, labelPilih: labelPilih ?? ((nama: string) => t('hitung.pohon.buka_menu', { nama })) } : {})}
         {...(maksPerBaris ? { maksPerBaris } : {})} isiNode={id => ({
         kelas: id === graf.idPewaris ? 'pewaris' : graf.orang[id]?.penghubung ? 'penghubung' : 'ahli-waris',
         tambahan: kelasKeadaan(kasus, id),
-        peran: '',
+        peran: keteranganDari(kasus, id),
         nama: id === graf.idPewaris ? t('hitung.almarhum') : sebut(id),
       })} />
     </PratinjauPohon>
   );
 }
 
-/** Spec kanvas 8: belum diisi atau belum tahu = garis putus-putus, wafat = garis tipis, pemilik harta = garis tebal. */
+const keteranganDari = (kasus: Kasus, id: IdOrang): string => {
+  const waktu = waktuMeninggal(kasus, id);
+  return waktu ? keteranganMeninggal(waktu, tahunWafat(kasus, id)) : '';
+};
+
+/** Spec kanvas 8: belum diisi atau belum tahu = garis putus-putus, meninggal = latar abu (C5-3), pemilik harta = garis tebal. */
 function kelasKeadaan(kasus: Kasus, id: IdOrang): string {
   const orang = kasus.graf.orang[id];
-  if (!orang || orang.penghubung) return '';
+  if (!orang) return '';
   if (id === kasus.graf.idPewaris) return 'simpul-pemilik';
+  const meninggal = waktuMeninggal(kasus, id) ? 'simpul-wafat meninggal' : '';
+  if (orang.penghubung) return meninggal;
   if (orang.statusHidup === 'tidakDiketahui' || (kasus.belumDiisi ?? []).includes(id)) return 'simpul-belum-pasti';
-  return orang.statusHidup === 'wafat' ? 'simpul-wafat' : '';
+  return meninggal;
 }

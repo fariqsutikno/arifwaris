@@ -50,9 +50,18 @@ describe('KisahHarta', () => {
     expect(tanpaTahun).not.toMatch(/\d+\/\d+|Rp|mendapat|\d/);
   });
 
-  it('pohon kecil babak Budi: simpul Mbah Sumi berkelas mati', () => {
+  it('pohon kecil babak Budi: Mbah Sumi berlatar abu dengan keterangan "meninggal lebih dulu", bukan dicoret', () => {
     render(<Papan awal={kartoBertahun().kasus} />);
-    expect(within(babak(/Budi wafat/)).getByRole('group', { name: 'Mbah Sumi' }).className).toContain('mati');
+    const simpul = within(babak(/Budi wafat/)).getByRole('group', { name: /Mbah Sumi/ });
+    expect(simpul.className).toContain('meninggal');
+    expect(simpul.textContent).toContain('meninggal lebih dulu');
+  });
+
+  it('pohon kecil memakai sebutan dari sudut almarhum walau "saya" dipilih, tanpa "-mu"', () => {
+    const { kasus, andi } = kartoBertahun();
+    render(<Papan awal={{ ...kasus, saya: andi }} />);
+    const nama = within(babak(/Budi wafat/)).getAllByRole('group').map(simpul => simpul.getAttribute('aria-label')!);
+    expect(nama.filter(isi => /mu\b/.test(isi))).toEqual([]);
   });
 
   it('saya = Andi: babak menyebut "ayahmu" untuk Budi', () => {

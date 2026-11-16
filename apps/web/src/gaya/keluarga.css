@@ -91,7 +91,6 @@ details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);backgro
 
 /* pohon samping: keadaan simpul (spec kanvas 8) */
 .node-orang.simpul-belum-pasti{border-style:dashed;border-color:#7f8c7c}
-.node-orang.simpul-wafat{border-width:1px;border-color:#9aa79a;background:var(--surface-sunken)}
 .node-orang.simpul-pemilik{border-width:2px;border-color:var(--ink)}
 .tautan-pohon-lengkap{display:none;margin-top:6px;color:#fff}
 @media (max-width:900px){

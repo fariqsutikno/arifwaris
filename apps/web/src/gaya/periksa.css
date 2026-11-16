@@ -31,8 +31,6 @@
 .ikon-bawah{display:inline-flex;transform:rotate(-90deg)}
 .ubah-panel{display:flex;flex-direction:column;gap:12px}
 .mini-pohon .pohon-wadah{transform-origin:top left}
-.node-orang.m.mati{border-style:dashed;box-shadow:none;background:var(--surface-sunken)}
-.node-orang.m.mati b{text-decoration:line-through;color:var(--ink-muted)}
 .node-orang.m.tahu{border-style:dashed;box-shadow:none}
 .node-orang.m.pusat{border-width:2px;border-color:var(--ink)}
 .node-orang.m{width:auto;min-width:0;cursor:default}

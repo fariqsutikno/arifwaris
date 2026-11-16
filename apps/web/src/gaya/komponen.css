@@ -282,8 +282,6 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .node-orang.putus{border-style:dashed;box-shadow:none;color:var(--ink)}
 .node-orang.putus .peran-node{color:var(--danger);opacity:1}
 .node-orang.almarhum{border-style:dashed;box-shadow:none;background:var(--surface-sunken);color:var(--ink)}
-.node-orang.penghubung{width:auto;padding:6px 10px;border-style:dotted;box-shadow:none;background:var(--surface-raised);color:var(--ink-muted);cursor:default;opacity:.8}
-.node-orang.penghubung b{font-size:13px}
 .pohon.redup .node-orang:not(.sorot-langkah){opacity:.35}
 .wadah-tabel{padding:18px;overflow-x:auto}
 table.faraidh{width:100%;min-width:620px;border-collapse:separate;border-spacing:0;border:var(--border-w) solid var(--outline);border-radius:14px;overflow:hidden;font-size:14px;background:var(--surface-raised)}
@@ -517,7 +515,6 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .aksi-kecil:hover{border-color:var(--outline)}
 .aksi-kecil.hapus{color:var(--danger)}
 .faraidh thead .istilah{text-decoration-color:currentColor}
-.node-orang.penghubung b{font-weight:600;color:var(--ink-muted)}
 
 /* Halaman belajar: glosarium & rujukan */
 .kepala-nav{display:flex;gap:4px;min-width:0;overflow-x:auto}
@@ -745,6 +742,10 @@ a.aw-btn{text-decoration:none;color:inherit}
 .node-orang.terhalang b{text-decoration:line-through;text-decoration-thickness:2px;text-decoration-color:var(--danger);color:var(--ink)}
 .node-orang.terhalang .peran-node{background:var(--danger);color:var(--on-danger);opacity:1;padding:2px 8px;border-radius:var(--radius-pill);letter-spacing:.02em}
 .legenda .kotak.almarhum{border-style:solid;background:var(--ink)}
+/* C5-3: meninggal = latar abu-gelap netral + keterangan kecil (kontras putih di atas abu ini 7:1), bukan coretan. */
+.node-orang.meninggal{border-style:solid;border-color:var(--meninggal);background:var(--meninggal);color:var(--on-meninggal);box-shadow:none;cursor:default}
+.node-orang.meninggal b{color:var(--on-meninggal);text-decoration:none}
+.node-orang.meninggal .peran-node{font:500 11.5px/1.2 var(--font-sans);letter-spacing:0;text-transform:none;opacity:1;color:var(--on-meninggal)}
 .legenda .kotak.terhalang{border:2px dashed var(--danger);background:repeating-linear-gradient(135deg,var(--surface-sunken) 0 3px,var(--surface-raised) 3px 6px)}
 /* Redup saat langkah disorot: node tetap buram (tidak tembus), jadi garis di belakangnya tidak terlihat menembus. */
 .pohon.redup .node-orang:not(.sorot-langkah){opacity:1}
@@ -1310,10 +1311,9 @@ body.layar-hasil{background:var(--halaman)}
 :is(.pratinjau-isi,.pohon-penuh-isi) .node-orang b{grid-column:2;grid-row:1;font:600 14px/1.2 var(--font-display);color:#fff;text-decoration:none}
 :is(.pratinjau-isi,.pohon-penuh-isi) .node-orang .peran-node{grid-column:2;grid-row:2;min-height:0;padding:0;background:none;font:500 11px/1.2 var(--font-sans);letter-spacing:0;text-transform:none;opacity:1;color:rgba(255,255,255,.9)}
 :is(.pratinjau-isi,.pohon-penuh-isi) .node-orang[class*="g-"]{background:rgba(110,235,170,.26);border-color:rgba(150,255,200,.85)}
+:is(.pratinjau-isi,.pohon-penuh-isi) .node-orang.meninggal{background:var(--meninggal);border:1.3px solid rgba(255,255,255,.4);color:var(--on-meninggal)}
 :is(.pratinjau-isi,.pohon-penuh-isi) .node-orang.almarhum{background:rgba(255,255,255,.08);border:1.3px dashed rgba(255,255,255,.6);color:#fff}
 :is(.pratinjau-isi,.pohon-penuh-isi) .node-orang:is(.putus,.terhalang){opacity:.72;background:rgba(255,255,255,.12);border:1.3px solid rgba(255,255,255,.4);color:#fff}
-:is(.pratinjau-isi,.pohon-penuh-isi) .node-orang.penghubung{display:flex;width:auto;background:none;border:1.3px dotted rgba(255,255,255,.5)}
-:is(.pratinjau-isi,.pohon-penuh-isi) .node-orang.penghubung b{font-size:12.5px;font-weight:500;color:rgba(255,255,255,.88)}
 :is(.pratinjau-isi,.pohon-penuh-isi) .alasan-node{font-size:11px;line-height:1.3;font-weight:400;color:rgba(255,255,255,.9)}
 :is(.pratinjau-isi,.pohon-penuh-isi) .dapat-node{justify-content:flex-start;gap:6px;font:700 12px/1 var(--font-sans);color:#9bf0c3}
 :is(.pratinjau-isi,.pohon-penuh-isi) .dapat-node .frac{height:20px;padding:0 7px;border:0;border-radius:var(--radius-pill);background:rgba(255,255,255,.18);color:#fff;font:600 11px/1 var(--font-sans)}

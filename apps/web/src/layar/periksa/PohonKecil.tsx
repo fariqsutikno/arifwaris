@@ -5,17 +5,25 @@ import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { PohonDasar } from '../../hasil/Pohon';
 import { keadaanSaat, type BabakKisah } from '../../kisah';
 import type { Kasus } from '../../kasus';
+import { buatSebutSimpul } from '../../checklist';
 import { namaSingkat } from '../../keadaanOrang';
-import { sebutanDariSaya } from '../../sebutan';
+import { keteranganMeninggal, tahunWafat } from '../../penandaMeninggal';
 
 const MAKS_PER_BARIS_KECIL = 3;
 
 export function PohonKecil({ kasus, babak }: { kasus: Kasus; babak: BabakKisah }) {
   const graf = subgraf(kasus, babak);
+  // Sebutan sama dengan pohon lain (dari sudut almarhum pemilik harta); sudut "kamu" hanya di kalimat kisah.
+  const sebut = buatSebutSimpul(kasus.graf);
   return (
     <PohonDasar graf={graf} maksPerBaris={MAKS_PER_BARIS_KECIL}
-      isiNode={id => ({ kelas: 'orang', tambahan: `m ${keadaanSaat(kasus, id, babak.idMayit)}`, peran: '',
-        nama: sebutanDariSaya(kasus, id) ?? namaSingkat(kasus, id) })} />
+      isiNode={id => {
+        const keadaan = keadaanSaat(kasus, id, babak.idMayit);
+        const meninggal = keadaan === 'mati';
+        return { kelas: 'orang', tambahan: `m ${keadaan}${meninggal ? ' meninggal' : ''}`,
+          peran: meninggal ? keteranganMeninggal('lebihDulu', tahunWafat(kasus, id)) : '',
+          nama: id === kasus.graf.idPewaris ? namaSingkat(kasus, id) : sebut(id) };
+      }} />
   );
 }
 

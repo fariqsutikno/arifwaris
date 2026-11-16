@@ -23310,6 +23310,34 @@
    "id": "Ditanya karena anak yang dikandung ikut mendapat warisan.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_lebih_dulu",
+   "halaman": "hitung",
+   "id": "meninggal lebih dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_sesudah",
+   "halaman": "hitung",
+   "id": "meninggal sesudah almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_bersamaan",
+   "halaman": "hitung",
+   "id": "meninggal bersamaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_tahun",
+   "halaman": "hitung",
+   "id": "meninggal {tahun}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

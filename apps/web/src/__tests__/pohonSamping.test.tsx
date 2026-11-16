@@ -71,3 +71,16 @@ describe('pohon samping langkah Keluarga (spec kanvas 5.11, 8)', () => {
     expect(container.querySelector('[data-orang="PEWARIS"]')!.tagName).toBe('DIV');
   });
 });
+
+describe('penanda meninggal dan sebutan simpul penghubung (C5-2, C5-3)', () => {
+  it('penghubung memakai sebutan hubungan dan keterangan "meninggal lebih dulu", bukan pucat atau "Belum bernama"', () => {
+    const dasar = kasusBaru('L');
+    const kasus = { ...dasar, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'PAMAN_KANDUNG') };
+    const { container } = render(<PanggungPohon kasus={kasus} saatPilihOrang={() => undefined} />);
+    const simpul = container.querySelector('.node-orang.penghubung')!;
+    expect(simpul.className).toContain('meninggal');
+    expect(simpul.textContent).toContain('Kakek dari ayah');
+    expect(simpul.textContent).toContain('meninggal lebih dulu');
+    expect(simpul.textContent).not.toMatch(/Belum bernama|sudah wafat/);
+  });
+});

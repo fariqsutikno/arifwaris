@@ -4,12 +4,15 @@
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 
 export interface Keluarga { orangTua: IdOrang[]; anak: IdOrang[] }
+/** Orang beristri/bersuami lebih dari satu: pasangannya digantung berjajar di satu rel di bawahnya (C5-1). */
+export interface Rel { induk: IdOrang; pasangan: IdOrang[] }
 export interface TataLetak {
   /** Baris dari generasi tertua ke termuda; urutan dalam baris = urutan kiri ke kanan. */
   baris: IdOrang[][];
   keluarga: Keluarga[];
   /** Pasangan menikah yang tidak punya anak di graf: cukup garis menikah. */
   pasanganSaja: Array<[IdOrang, IdOrang]>;
+  rel: Rel[];
 }
 
 /** Satu baris generasi dibungkus rata bila melebihi batas (7 → 4+3, 12 → 6+6) supaya pohon tumbuh ke bawah, bukan ke samping. */
@@ -53,15 +56,67 @@ export function tataLetak(graf: GrafKeluarga): TataLetak {
     barisMenurutGenerasi.set(g, rapikanPasangan(urutkanMenurut(barisMenurutGenerasi.get(g)!, id => rataRataIndeks(orangTuaDari(id), atasnya), graf), pasanganDari));
   }
 
-  const keluarga = kelompokkanKeluarga(graf, generasi);
-  const sudahDisambung = new Set(keluarga.map(k => [...k.orangTua].sort().join('|')));
+  const keluargaAwal = kelompokkanKeluarga(graf, generasi);
+  const { baris, rel } = turunkanPasanganGanda(semuaGenerasi.map(g => barisMenurutGenerasi.get(g)!), pasanganDari, orangTuaDari);
+  const keluarga = gabungKeluarga(keluargaAwal.map(k => gantungDiIbu(k, rel)));
+  const kunciNikah = (a: IdOrang, b: IdOrang) => [a, b].sort().join('|');
+  const sudahDisambung = new Set([
+    ...keluargaAwal.map(k => [...k.orangTua].sort().join('|')),
+    ...rel.flatMap(r => r.pasangan.map(p => kunciNikah(r.induk, p))),
+  ]);
   const pasanganSaja = graf.pernikahan
     .filter(nikah => generasi.has(nikah.idSuami) && generasi.has(nikah.idIstri))
     .map((nikah): [IdOrang, IdOrang] => [nikah.idSuami, nikah.idIstri])
-    .filter(pasangan => !sudahDisambung.has([...pasangan].sort().join('|')))
+    .filter(pasangan => !sudahDisambung.has(kunciNikah(...pasangan)))
     .map(([suami, istri]): [IdOrang, IdOrang] => (istri === graf.idPewaris ? [istri, suami] : [suami, istri]));
 
-  return { baris: semuaGenerasi.map(g => barisMenurutGenerasi.get(g)!), keluarga, pasanganSaja };
+  return { baris, keluarga, pasanganSaja, rel };
+}
+
+// ponytail: pasangan yang diturunkan ikut baris sisipan, jadi garis keluarga lain yang melewati baris itu bisa
+// menembus kotaknya bila kebetulan tepat di jalurnya; ganti dengan penempatan koordinat bila kasus itu muncul.
+/** Orang yang punya lebih dari satu pasangan sebaris: pasangannya pindah ke baris sisipan di bawahnya, anak-anaknya diurutkan mengikuti ibu/ayahnya. */
+function turunkanPasanganGanda(baris: IdOrang[][], pasanganDari: (id: IdOrang) => IdOrang[], orangTuaDari: (id: IdOrang) => IdOrang[]) {
+  const rel: Rel[] = [];
+  const hasil: IdOrang[][] = [];
+  const barisPasangan: number[] = [];
+  for (const deret of baris) {
+    const sebaris = (id: IdOrang) => pasanganDari(id).filter(pasangan => deret.includes(pasangan));
+    // Pasangan yang sendiri beristri/bersuami banyak tidak bisa jadi gantungan (bukan pola poligami sederhana).
+    const induk = deret.filter(id => sebaris(id).length > 1 && sebaris(id).every(pasangan => sebaris(pasangan).length === 1));
+    const relDeret = induk.map((id): Rel => ({ induk: id, pasangan: deret.filter(orang => sebaris(id).includes(orang)) }));
+    rel.push(...relDeret);
+    const turun = new Set(relDeret.flatMap(r => r.pasangan));
+    hasil.push(deret.filter(id => !turun.has(id)));
+    if (relDeret.length > 0) { barisPasangan.push(hasil.length); hasil.push(relDeret.flatMap(r => r.pasangan)); }
+  }
+  for (const indeks of barisPasangan) {
+    const bawah = hasil[indeks + 1];
+    if (!bawah) continue;
+    const posisiIbu = (id: IdOrang) => orangTuaDari(id).map(orangTua => hasil[indeks]!.indexOf(orangTua)).find(i => i >= 0);
+    const slot = bawah.flatMap((id, i) => (posisiIbu(id) === undefined ? [] : [i]));
+    const urut = slot.map(i => bawah[i]!).sort((a, b) => posisiIbu(a)! - posisiIbu(b)!);
+    slot.forEach((i, ke) => { bawah[i] = urut[ke]!; });
+  }
+  return { baris: hasil, rel };
+}
+
+/** Anak dari induk berpasangan banyak digantung di bawah ibu/ayah pasangan itu, bukan di titik tengah garis menikah. */
+function gantungDiIbu(keluarga: Keluarga, rel: Rel[]): Keluarga {
+  if (keluarga.orangTua.length !== 2) return keluarga;
+  const gantungan = rel.find(r => keluarga.orangTua.includes(r.induk));
+  const pasangan = gantungan && keluarga.orangTua.find(id => id !== gantungan.induk);
+  return pasangan && gantungan.pasangan.includes(pasangan) ? { orangTua: [pasangan], anak: keluarga.anak } : keluarga;
+}
+
+function gabungKeluarga(daftar: Keluarga[]): Keluarga[] {
+  const menurutKunci = new Map<string, Keluarga>();
+  for (const k of daftar) {
+    const kunci = k.orangTua.join('|');
+    const ada = menurutKunci.get(kunci);
+    if (ada) ada.anak.push(...k.anak); else menurutKunci.set(kunci, { orangTua: k.orangTua, anak: [...k.anak] });
+  }
+  return [...menurutKunci.values()];
 }
 
 /** Generasi relatif ke pewaris lewat penelusuran: orang tua −1, anak +1, pasangan sama. */

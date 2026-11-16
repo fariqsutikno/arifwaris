@@ -291,3 +291,16 @@ export function labelOrangChecklist(graf: GrafKeluarga, idMayit: IdOrang, idOran
   const sePeran = kunciOrang ? isian[kunciOrang] ?? [] : [];
   return sePeran.length > 1 ? `${label} ${sePeran.indexOf(idOrang) + 1}` : label;
 }
+
+/** Sebutan simpul di semua pohon, dari sudut almarhum pemilik harta. Penghubung tanpa embel-embel "sudah wafat": itu tugas penanda di kotak. */
+export function buatSebutSimpul(graf: GrafKeluarga): (id: IdOrang) => string {
+  const adaPeran = new Set(Object.values(hitungIsian(graf, graf.idPewaris)).flatMap(ids => ids ?? []));
+  return id => {
+    const orang = graf.orang[id]!;
+    if (orang.penghubung) {
+      const label = peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat');
+      return orang.nama ? `${orang.nama} (${label})` : label;
+    }
+    return adaPeran.has(id) || !orang.nama ? labelOrangChecklist(graf, graf.idPewaris, id) : orang.nama;
+  };
+}

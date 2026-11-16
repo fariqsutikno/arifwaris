@@ -8,11 +8,14 @@
 
 import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
+import { buatSebutSimpul } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
+import { keteranganMeninggal } from '../penandaMeninggal';
 import { AvatarOrang } from './AvatarOrang';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
 import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
+import { jalurDariRuas, susunGaris } from './garisPohon';
 import { BATAS_PER_BARIS, jumlahPerBaris, tataLetak, type TataLetak } from './tataLetak';
 import { angka, panah, t } from '../terjemah';
 
@@ -31,21 +34,27 @@ interface Props {
   aliran?: boolean;
   /** Tombol kecil di bawah node orang itu (mis. tambah anak); tanpa ini pohon baca saja. */
   aksiNode?: (id: IdOrang) => ReactNode;
+  /** Tahun meninggal bila diketahui; tanpa ini keterangan hanya "lebih dulu"/"sesudah almarhum". */
+  tahunWafat?: (id: IdOrang) => number | undefined;
 }
 
-export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih, aliran, aksiNode }: Props) {
+export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih, aliran, aksiNode, tahunWafat }: Props) {
   const penerima = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const urutan = new Map(ringkasan.penerima.map((orang, indeks) => [orang.id, indeks]));
   const terhalang = new Map(ringkasan.terhalang.map(orang => [orang.id, orang]));
   const { langkah } = useSorot();
+  const sebut = buatSebutSimpul(graf);
   const isiNodeDasar = (id: IdOrang): IsiNode => {
     const orang = graf.orang[id]!;
     const almarhum = id === graf.idPewaris || urutanWafat.includes(id);
     const dapat = penerima.get(id);
     const halang = terhalang.get(id);
     const nama = id === graf.idPewaris ? orang.nama ?? t('hitung.almarhum') : namaOrang(graf, ringkasan.statusOrang, id);
-    if (orang.penghubung) return { kelas: 'penghubung', peran: '', nama: t('hitung.nama_tidak_diisi', { nama }) };
-    if (almarhum) return { kelas: 'almarhum', peran: id !== graf.idPewaris ? t('hitung.wafat_sebelum_dibagi') : orang.nama ? t('hitung.almarhum') : '', nama };
+    // C5-2/C5-3: simpul penghubung disebut menurut hubungannya; yang meninggal bergaris abu dengan keterangan, bukan pucat atau dicoret.
+    if (orang.penghubung) return { kelas: 'penghubung', tambahan: 'meninggal', peran: keteranganMeninggal('lebihDulu', tahunWafat?.(id)), nama: sebut(id) };
+    if (id === graf.idPewaris) return { kelas: 'almarhum', peran: orang.nama ? t('hitung.almarhum') : '', nama };
+    if (almarhum) return { kelas: 'meninggal', peran: keteranganMeninggal('sesudah', tahunWafat?.(id)), nama };
+    if (orang.statusHidup === 'wafat') return { kelas: 'meninggal', peran: keteranganMeninggal('lebihDulu', tahunWafat?.(id)), nama };
     if (sedangMenebak) return { kelas: dapat || halang ? `g-${(dapat ?? halang)!.kelompok}` : 'putus', peran: '', nama };
     const ubah = langkah?.ubah?.get(id);
     if (ubah) return { kelas: dapat ? `g-${dapat.kelompok}` : 'terhalang', peran: '', nama, isi: <UbahNode key={langkah!.ketukan} ubah={ubah} /> };
@@ -217,44 +226,8 @@ function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak)
         return { kiri: (r.left - dasar.left) / skala, kanan: (r.right - dasar.left) / skala, atas: (r.top - dasar.top) / skala, bawah: (r.bottom - dasar.top) / skala,
           tengahX: ((r.left + r.right) / 2 - dasar.left) / skala, tengahY: ((r.top + r.bottom) / 2 - dasar.top) / skala };
       };
-      let jalur = '';
-      const cincin: Array<[number, number]> = [];
-      const garisNikah = (a: IdOrang, b: IdOrang): [number, number] | null => {
-        const [kiri, kanan] = [kotak(a), kotak(b)].sort((p, q) => (p?.tengahX ?? 0) - (q?.tengahX ?? 0));
-        if (!kiri || !kanan) return null;
-        const y = Math.max(kiri.tengahY, kanan.tengahY);
-        jalur += `M${kiri.kanan},${y}H${kanan.kiri}`;
-        const titik: [number, number] = [(kiri.kanan + kanan.kiri) / 2, y];
-        cincin.push(titik);
-        return titik;
-      };
-      // Keluarga yang anaknya di baris sama mendapat ketinggian batang berbeda, supaya garis mendatarnya tidak menumpuk.
-      const jumlahDiBaris = new Map<number, number>();
-      for (const { orangTua, anak } of letak.keluarga) {
-        const titikAwal = orangTua.length === 2 ? garisNikah(orangTua[0]!, orangTua[1]!)
-          : (() => { const k = kotak(orangTua[0]!); return k ? [k.tengahX, k.bawah] as [number, number] : null; })();
-        const daftarAnak = anak.map(kotak).filter((k): k is NonNullable<typeof k> => !!k);
-        if (!titikAwal || daftarAnak.length === 0) continue;
-        // Anak yang terbungkus ke beberapa baris tampilan: tiap baris punya batang sendiri, disambung lewat batang samping di kiri.
-        const barisTampil = [...new Set(daftarAnak.map(k => Math.round(k.atas)))].sort((a, b) => a - b);
-        const xSamping = barisTampil.length > 1 ? Math.min(...daftarAnak.map(k => k.kiri)) - 14 : null;
-        const yPertama = new Map<number, number>();
-        for (const atasAnak of barisTampil) {
-          const keBerapa = jumlahDiBaris.get(atasAnak) ?? 0;
-          jumlahDiBaris.set(atasAnak, keBerapa + 1);
-          const yBatang = atasAnak - 18 - (keBerapa % 4) * 9;
-          yPertama.set(atasAnak, yBatang);
-          const anakBaris = daftarAnak.filter(k => Math.round(k.atas) === atasAnak);
-          const awal = atasAnak === barisTampil[0] ? [titikAwal[0]] : [];
-          const semuaX = [...awal, ...anakBaris.map(k => k.tengahX), ...(xSamping === null ? [] : [xSamping])];
-          if (awal.length) jalur += `M${titikAwal[0]},${titikAwal[1]}V${yBatang}`;
-          else jalur += `M${xSamping},${yPertama.get(barisTampil[0]!)}V${yBatang}`;
-          jalur += `M${Math.min(...semuaX)},${yBatang}H${Math.max(...semuaX)}`;
-          for (const k of anakBaris) jalur += `M${k.tengahX},${yBatang}V${k.atas}`;
-        }
-      }
-      for (const [a, b] of letak.pasanganSaja) garisNikah(a, b);
-      setGaris({ jalur, cincin });
+      const { ruas, cincin } = susunGaris(kotak, letak);
+      setGaris({ jalur: jalurDariRuas(ruas), cincin });
     };
     gambar();
     const pengamat = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(gambar);
