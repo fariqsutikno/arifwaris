@@ -33,9 +33,8 @@ function judulTahap(kunci: string): string {
   return cocok ? cocok[1] : JUDUL_LAINNYA;
 }
 
-// Sisipan yang isinya istilah fikih bertautan (tooltip di aplikasi): bagi admin cukup "rujukan".
-const NAMA_RUJUKAN = 'rujukan';
-const SISIPAN_RUJUKAN = new Set([
+// Sisipan yang isinya istilah fikih bertautan (tooltip di aplikasi): admin melihat istilahnya, bukan nama variabel.
+const SISIPAN_ISTILAH = new Set([
   'tirkah', 'warits', 'hajb_hirman', 'hajb_nuqshan', 'mani', 'mahjub_hirman', 'muqasamah', 'muaddah', 'musyarrakah', 'akdariyyah',
   'umariyyatain', 'kalalah', 'aul', 'radd', 'tamatsul', 'tadakhul', 'tawafuq', 'tabayun', 'inkisar', 'wafq', 'tilad',
   'jam_min_al_ikhwah', 'takmilah_tsulutsain', 'bil_ghair', 'maal_ghair', 'muashshib', 'mahjub', 'hajib', 'ashabah',
@@ -51,8 +50,8 @@ const CONTOH_SISIPAN: Readonly<Record<string, string>> = {
 const POLA_SISIPAN = /\{(\w+)\}/g;
 
 export function namaSisipan(kunci: string): string {
-  if (SISIPAN_RUJUKAN.has(kunci)) return NAMA_RUJUKAN;
-  return NAMA_SISIPAN[kunci] ?? kunci.replace(/_/g, ' ');
+  if (SISIPAN_ISTILAH.has(kunci)) return `istilah ${kataBiasa(kunci)}`;
+  return NAMA_SISIPAN[kunci] ?? kataBiasa(kunci);
 }
 
 export const sisipanDari = (teks: string): string[] => [...new Set([...teks.matchAll(POLA_SISIPAN)].map(cocok => cocok[1]!))];
@@ -66,7 +65,11 @@ export function sisipanBerubah(asal: string, suntingan: string): { hilang: strin
 }
 
 export const contohSisipan = (kunci: string): string | undefined =>
-  SISIPAN_RUJUKAN.has(kunci) ? NAMA_RUJUKAN : CONTOH_SISIPAN[kunci];
+  SISIPAN_ISTILAH.has(kunci) ? kataBiasa(kunci) : CONTOH_SISIPAN[kunci];
+
+function kataBiasa(kunci: string): string {
+  return kunci.replace(/_/g, ' ');
+}
 
 /** Kalimat dengan nilai contoh; sisipan tanpa contoh tampil sebagai namanya. */
 export const contohKalimat = (teks: string): string =>

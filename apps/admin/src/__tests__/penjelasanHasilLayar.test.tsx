@@ -27,7 +27,7 @@ test('daftar per tahap berjudul manusiawi, Arab terpisah, tanpa kunci; sisipan j
   const butir = screen.getByRole('article', { name: TEMPLAT });
   expect(within(butir).getByText('nama almarhum')).toBeTruthy();
   expect(within(butir).getByText('nama orang')).toBeTruthy();
-  expect(within(butir).getAllByText('rujukan')).toHaveLength(1);
+  expect(within(butir).getByText('istilah tirkah')).toBeTruthy();
   expect(butir.textContent).not.toMatch(/[{}]/);
 });
 

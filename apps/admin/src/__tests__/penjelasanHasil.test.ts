@@ -1,11 +1,11 @@
 import { expect, test } from 'vitest';
 import { contohKalimat, kelompokkanNarasi, namaSisipan, sisipanDari, sisipanBerubah } from '../editor/penjelasanHasil';
 
-test('sisipan punya nama manusiawi; rujukan seragam; tak dikenal jadi kata biasa', () => {
+test('sisipan punya nama manusiawi; istilah fikih disebut istilahnya; tak dikenal jadi kata biasa', () => {
   expect(namaSisipan('pewaris')).toBe('nama almarhum');
   expect(namaSisipan('siapa')).toBe('nama orang');
-  expect(namaSisipan('tirkah')).toBe('rujukan');
-  expect(namaSisipan('hajb_hirman')).toBe('rujukan');
+  expect(namaSisipan('tirkah')).toBe('istilah tirkah');
+  expect(namaSisipan('hajb_hirman')).toBe('istilah hajb hirman');
   expect(namaSisipan('daftar_ahli_waris')).toBe('daftar ahli waris');
 });
 
@@ -16,8 +16,8 @@ test('sisipanDari mengurutkan unik; sisipanBerubah memberi nama manusiawi', () =
   expect(sisipanBerubah('{siapa}', 'Siapa saja')).toEqual({ hilang: ['nama orang'], baru: [] });
 });
 
-test('contohKalimat memakai nilai contoh; rujukan tampil "rujukan"', () => {
-  expect(contohKalimat('{siapa} mewarisi dari {pewaris} menurut {tirkah}')).toBe('Ahmad mewarisi dari Budi menurut rujukan');
+test('contohKalimat memakai nilai contoh; istilah tampil apa adanya', () => {
+  expect(contohKalimat('{siapa} mewarisi dari {pewaris} menurut {tirkah}')).toBe('Ahmad mewarisi dari Budi menurut tirkah');
   expect(contohKalimat('ada {sesuatu_aneh}')).toBe('ada sesuatu aneh');
 });
 
