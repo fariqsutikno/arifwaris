@@ -23009,6 +23009,97 @@
    "id": "Batal",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.menurut_madzhab",
+   "halaman": "hitung",
+   "id": "Menurut madzhab {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.ganti_madzhab",
+   "halaman": "hitung",
+   "id": "ganti madzhab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pilih_madzhab",
+   "halaman": "hitung",
+   "id": "Pilih madzhab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_syafii",
+   "halaman": "hitung",
+   "id": "Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_hanbali",
+   "halaman": "hitung",
+   "id": "Hanbali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_hanafi",
+   "halaman": "hitung",
+   "id": "Hanafi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_maliki",
+   "halaman": "hitung",
+   "id": "Maliki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_bawaan",
+   "halaman": "hitung",
+   "id": "bawaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_nukilan_lahim",
+   "halaman": "hitung",
+   "id": "menurut nukilan Lahim dan Ithraa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_pakai",
+   "halaman": "hitung",
+   "id": "Pakai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_sumber_sekunder",
+   "halaman": "hitung",
+   "id": "Madzhab {nama} di sini mengikuti nukilan Lahim dan Ithraa (sumber sekunder, belum dicocokkan ke kitab induk madzhab itu).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.berbeda_dari_syafii",
+   "halaman": "hitung",
+   "id": "berbeda dari Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hitung_menurut_syafii",
+   "halaman": "hitung",
+   "id": "hitung menurut Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

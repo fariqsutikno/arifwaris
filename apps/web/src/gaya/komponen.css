@@ -1453,3 +1453,7 @@ body.layar-hasil{background:var(--halaman)}
 @media (max-width:560px){.form-bagikan{padding:18px}.kotak-tautan{flex-wrap:wrap;padding:8px 10px}.kotak-tautan .aw-btn{width:100%}.baris-pratinjau{grid-template-columns:1fr}}
 .pil-hero.sekunder{background:rgba(255,255,255,.14);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55)}
 .pil-hero.sekunder:hover{background:rgba(255,255,255,.24)}
+.pilihan-madzhab{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer}
+.pilihan-madzhab small{display:block;color:var(--ink-muted,inherit);opacity:.75}
+.catatan-madzhab{margin:0;font-size:13px;opacity:.8}
+.label-beda-madzhab{font-style:italic}

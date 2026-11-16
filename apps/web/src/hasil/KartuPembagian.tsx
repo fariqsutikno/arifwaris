@@ -34,6 +34,8 @@ interface Props {
   satuanPembulatan: bigint;
   saatUbahPembulatan: (satuan: bigint) => void;
   saatPilihOrang: (id: string) => void;
+  /** Orang yang bagiannya berbeda dari Syafi'i menurut madzhab terpilih. */
+  idBerbeda?: ReadonlySet<string>;
   saatUbahAhliWaris?: (() => void) | undefined;
   /** Diisi hanya bila kartu Harta tidak tampil (tidak ada potongan). */
   saatUbahHarta?: (() => void) | undefined;
@@ -94,7 +96,7 @@ export function KartuPembagian(props: Props) {
                 <li key={orang.id}>
                   <button type="button" {...pemicu} className={['baris-bagian', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
                     <AvatarOrang nama={orang.nama} ukuran={42} />
-                    <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small></span>
+                    <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small>{props.idBerbeda?.has(orang.id) && <small className="label-beda-madzhab">{t('hitung.berbeda_dari_syafii')}</small>}</span>
                     <span className="jumlah-bagian">
                       <span className="angka">{uang(orang.nominal)}</span>
                       <span className="sub-bagian">

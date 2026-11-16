@@ -6,7 +6,7 @@
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
 import { useEffect, useMemo, useReducer, useState } from 'react';
-import type { IdOrang, KunciAhliWaris } from '@waris/engine';
+import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
@@ -31,6 +31,7 @@ import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
 import { DialogNama } from './lab/DialogNama';
 import { DialogBagikan } from './DialogBagikan';
+import { DialogMadzhab, namaMadzhab } from './DialogMadzhab';
 import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
 import { formatRupiahRingkas } from '../format';
@@ -58,6 +59,12 @@ interface Props {
   /** Ada = tautan Bagikan tampil di hero (hanya untuk pengguna yang sudah masuk). */
   bagikan?: RepositoriBagikan | undefined;
 }
+
+/** Syafi'i = bawaan, jadi disimpan sebagai tanpa field `madzhab`. */
+const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
+  const { madzhab: _lama, ...tanpa } = kasus;
+  return ruleset === 'syafii' ? tanpa : { ...tanpa, madzhab: ruleset };
+};
 
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
@@ -94,6 +101,9 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           {hasil.status === 'PERLU_INPUT'
             ? <ul>{hasil.pertanyaan.map((pertanyaan, indeks) => <li key={indeks}>{pertanyaan.alasan}</li>)}</ul>
             : <p>{hasil.alasan}</p>}
+          {hasil.status === 'TIDAK_DIDUKUNG' && kasus.madzhab && !hanyaBaca && (
+            <button type="button" className="tautan-aksi" onClick={() => kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, 'syafii') })}>{t('hitung.hitung_menurut_syafii')}</button>
+          )}
         </div>
         {tombolUbah}
       </main>
@@ -138,10 +148,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const [eksporTerbuka, setEksporTerbuka] = useState(false);
   const [bagikanTerbuka, setBagikanTerbuka] = useState(false);
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
+  const [madzhabTerbuka, setMadzhabTerbuka] = useState(false);
+  const madzhab = kasus.madzhab ?? 'syafii';
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const namaPewaris = kasus.graf.orang[kasus.graf.idPewaris]?.nama?.trim() || '';
   const jumlahOrang = Object.values(kasus.graf.orang).filter(orang => !orang.penghubung).length;
   const hasilBiasa = tampil.jenis === 'biasa' ? tampil.hasil as HasilOk : null;
+  const idBerbeda = useMemo(() => new Set((hasilBiasa?.jejak ?? []).flatMap(langkah => (langkah.jenis === 'KHILAF_MADZHAB' ? langkah.idOrang : []))), [hasilBiasa]);
   // Aliran harta hanya di pratinjau hero (sekali per hasil, bisa diputar ulang); pohon besar tidak berputar tiap dibuka.
   const [putaranAliran, setPutaranAliran] = useState(1);
   const bolehAliran = !sedangMenebak && jumlahOrang <= BATAS_ALIRAN;
@@ -157,7 +170,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       <header className="hero-hasil">
         <div className="judul-hasil">
           <div className="judul-soal">
-            <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab_syafii')}</p>
+            <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab', { nama: namaMadzhab(madzhab) })}</p>
             {adalahBelajar
               ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
               : <h1>{namaPewaris ? t('hitung.harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya')}</h1>}
@@ -171,6 +184,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               </button>
             )}
             {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
+            {bolehUbah && !adalahBelajar && <button type="button" className="tautan-hero" onClick={() => setMadzhabTerbuka(true)}>{t('hitung.ganti_madzhab')}</button>}
           </div>
           {!sedangMenebak && (
             <dl className="statistik-hero">
@@ -204,8 +218,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
-            saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
+            idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
             saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
+          {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab(madzhab) })}</p>}
           <div className="rel-samping">
             {!sedangMenebak && ringkasan.terhalang.length > 0 && <KartuTidakDapat ringkasan={ringkasan} saatPilihOrang={setOrangDipilih} />}
             {adaPotonganHarta && <KartuHarta ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} saatUbahHarta={bolehUbah ? () => setUbahHartaTerbuka(true) : undefined} />}
@@ -236,6 +251,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
 
+      {madzhabTerbuka && <DialogMadzhab awal={madzhab} saatBatal={() => setMadzhabTerbuka(false)}
+        saatPakai={ruleset => { setMadzhabTerbuka(false); kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) }); }} />}
       {orangDipilih && (
         <ModalOrang id={orangDipilih} graf={kasus.graf} ringkasan={ringkasan} daftarBab={daftarBab} bentuk={pengaturan.bentuk}
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
