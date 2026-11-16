@@ -16,6 +16,10 @@ Kesimpulan: pekerjaan nyata ada di (a), lalu (c) bila celahnya terbukti, lalu pe
 ## Usulan desain
 
 ### (a) Pilihan madzhab
+**Keputusan pemilik 2026-11-16** (prototipe `prototipe-pilihan-madzhab.html`): Hasil biasa = alternatif A
+(tautan "ganti madzhab" + dialog); mode Belajar = alternatif C (tabel "Kata madzhab lain", hanya orang yang berbeda),
+disembunyikan selama pengguna masih menebak supaya tidak membocorkan jawaban.
+
 - `Kasus` mendapat `madzhab?: Ruleset` (tidak ada = `syafii`). Ikut tersimpan & dibagikan bersama kasus.
 - **Tempat memilih: di Hasil**, bukan di isian (isian hanya fakta; madzhab bukan fakta keluarga).
   Hero Hasil: "Menurut madzhab Syafi'i" + tautan "ganti madzhab" → dialog 4 pilihan (Syafi'i bawaan di atas).
