@@ -29,14 +29,16 @@ interface Props {
   saatPilih: (id: IdOrang) => void;
   /** Putar aliran harta: garis tergambar, lalu bagian tiba di tiap penerima. Kunci komponen berubah = putar ulang. */
   aliran?: boolean;
+  /** Tombol kecil di bawah node orang itu (mis. tambah anak); tanpa ini pohon baca saja. */
+  aksiNode?: (id: IdOrang) => ReactNode;
 }
 
-export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih, aliran }: Props) {
+export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sembunyiNominal, saatPilih, aliran, aksiNode }: Props) {
   const penerima = new Map(ringkasan.penerima.map(orang => [orang.id, orang]));
   const urutan = new Map(ringkasan.penerima.map((orang, indeks) => [orang.id, indeks]));
   const terhalang = new Map(ringkasan.terhalang.map(orang => [orang.id, orang]));
   const { langkah } = useSorot();
-  const isiNode = (id: IdOrang): IsiNode => {
+  const isiNodeDasar = (id: IdOrang): IsiNode => {
     const orang = graf.orang[id]!;
     const almarhum = id === graf.idPewaris || urutanWafat.includes(id);
     const dapat = penerima.get(id);
@@ -58,6 +60,10 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     };
     if (halang) return { kelas: 'terhalang', peran: t('hitung.terhalang'), nama, isi: <span className="alasan-node">{halang.alasan}</span> };
     return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">{t('hitung.tidak_mewarisi')}</span> };
+  };
+  const isiNode = (id: IdOrang): IsiNode => {
+    const aksi = aksiNode?.(id);
+    return aksi ? { ...isiNodeDasar(id), aksi } : isiNodeDasar(id);
   };
   return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} aliran={!!aliran && !langkah} />;
 }
@@ -124,7 +130,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
                   </div>
                 );
               }
-              return (
+              const tombolNode = (
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)}
                   aria-label={labelPilih ? labelPilih(node.nama) : t('hitung.nama_lihat_penjelasan', { nama: node.nama })}
                   onClick={() => saatPilih?.(id)}>
@@ -134,6 +140,8 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
                   {node.isi}
                 </button>
               );
+              // Tombol tidak boleh bersarang: aksi diletakkan di samping tombol node.
+              return node.aksi ? <div key={id} className="node-dengan-aksi">{tombolNode}{node.aksi}</div> : tombolNode;
             })}
           </div>
         ))}

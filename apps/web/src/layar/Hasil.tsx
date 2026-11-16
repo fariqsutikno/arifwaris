@@ -23,6 +23,10 @@ import { ModalEkspor } from '../hasil/ModalEkspor';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
 import { Pohon } from '../hasil/Pohon';
+import { bisaTambahAnak } from '../kelompok';
+import { tambahAnakBernama } from '../isianBagian';
+import { namaSingkat } from '../keadaanOrang';
+import { DialogTambahAnak } from './DialogTambahAnak';
 import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
 import { PratinjauPohon } from '../hasil/PratinjauPohon';
 import { adaTidakPas, ringkas } from '../hasil/ringkasan';
@@ -162,6 +166,17 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const buatPohon = (aliran: boolean) => <Pohon key={aliran ? putaranAliran : 'diam'} graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
     sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} aliran={aliran && bolehAliran} />;
   const pohon = buatPohon(false);
+  // Jalan pintas di layar penuh: hanya mode hitung yang boleh mengubah data.
+  const [anakDitambahDi, setAnakDitambahDi] = useState<IdOrang | null>(null);
+  const bolehTambahAnak = !sedangMenebak && !hanyaBaca && !terkunci;
+  const pohonLayarPenuh = !bolehTambahAnak ? pohon : (
+    <Pohon graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
+      sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih}
+      aksiNode={id => bisaTambahAnak(kasus, id) && (
+        <button type="button" className="tambah-anak-node" aria-label={t('hitung.pohon.judul_tambah_anak', { nama: namaSingkat(kasus, id) })}
+          onClick={() => setAnakDitambahDi(id)}><Ikon nama="tambah" /></button>
+      )} />
+  );
   const tabel = <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   const kanvasFokus = { pohon, tabel };
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
@@ -291,8 +306,15 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         </DialogKonfirmasi>
       )}
       {layarPenuh && (
-        <PohonLayarPenuh pohon={pohon} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
+        <PohonLayarPenuh pohon={pohonLayarPenuh} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
           saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setEksporTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
+      )}
+      {anakDitambahDi && (
+        <DialogTambahAnak namaOrangTua={namaSingkat(kasus, anakDitambahDi)} saatBatal={() => setAnakDitambahDi(null)}
+          saatSimpan={(jenisKelamin, nama) => {
+            kirim({ jenis: 'UBAH_KASUS', ubah: k => tambahAnakBernama(k, anakDitambahDi, jenisKelamin, nama) });
+            setAnakDitambahDi(null);
+          }} />
       )}
       {namaTerbuka && <DialogNama judulAwal={kasus.nama ?? ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
         saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}

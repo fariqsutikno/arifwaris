@@ -34,6 +34,11 @@ export function daftarBagian(kasus: Kasus): Bagian[] {
   return daftar.flatMap(bagian => [bagian, ...bagianAnakDariWafat(kasus, wafatDi(kasus, bagian))]);
 }
 
+/** Orang wafat (bukan pewaris) yang bagian "Anak X"-nya tampil: di situ anaknya bisa ditambah langsung dari pohon. */
+export const bisaTambahAnak = (kasus: Kasus, id: IdOrang): boolean =>
+  id !== kasus.graf.idPewaris && kasus.graf.orang[id]?.statusHidup === 'wafat'
+  && daftarBagian(kasus).some(bagian => bagian.jenis === 'anak' && bagian.milik === id);
+
 /** Bagian yang memuat orang itu (tujuan "Lihat di Keluarga"); `anakBersama` tidak dihitung karena orang yang sama ada di bagian anak. */
 export const bagianDariOrang = (kasus: Kasus, id: IdOrang): Bagian | null =>
   daftarBagian(kasus).find(bagian => bagian.jenis !== 'anakBersama' && anggotaBagian(kasus, bagian).includes(id)) ?? null;
@@ -157,7 +162,7 @@ function bagianPewaris(kasus: Kasus, idPewaris: IdOrang): Bagian[] {
 }
 
 /** Bagian lintas-cabang (`urutan`, `kamu`) hanya satu per kasus, jadi id-nya tanpa pemilik. */
-const buatBagian = (jenis: JenisBagian, milik: IdOrang): Bagian =>
+export const buatBagian = (jenis: JenisBagian, milik: IdOrang): Bagian =>
   ({ id: jenis === 'urutan' || jenis === 'kamu' ? jenis : `${jenis}:${milik}`, milik, jenis });
 const sudahDijawab = (kasus: Kasus, milik: IdOrang, jenis: Kelompok) => !!kasus.kelompokDijawab?.[milik]?.includes(jenis);
 /** Bagian lintas-cabang (urutan, kamu) punya aturan jawab sendiri, jadi dianggap belum dijawab di sini. */

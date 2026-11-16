@@ -1465,3 +1465,7 @@ body.layar-hasil{background:var(--halaman)}
 .banding-madzhab th:first-child,.banding-madzhab td:first-child{text-align:left}
 .banding-madzhab thead th{border-top:0;font-weight:500}
 .banding-madzhab th.aktif,.banding-madzhab td.aktif{background:var(--primary-soft)}
+.node-dengan-aksi{position:relative;display:flex}
+.tambah-anak-node{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--ink-muted);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;z-index:2}
+.tambah-anak-node:hover{background:var(--surface-sunken)}
+.tambah-anak-node:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
