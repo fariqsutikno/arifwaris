@@ -42,6 +42,10 @@ kerabat jauh (anak keponakan/sepupu, paman ayah). Dibangun A + C tanpa mode/sake
 - Tidak ada pohon bebas untuk jalur atas (orang tua kakek dst.) di luar yang engine dukung.
 
 ### (d) Editor templat narasi
+**Keputusan pemilik 2026-11-16: DIBATALKAN.** Prototipe (`prototipe-editor-narasi.html`) dinilai membingungkan; editor
+khusus narasi tidak dibangun. Templat `narasi.*` tetap bisa diubah lewat "Teks aplikasi" yang sudah ada. Usulan di bawah
+disimpan sebagai arsip saja.
+
 - Templat `narasi.*` dikelompokkan di daftar "Teks aplikasi" sebagai layar "Penjelasan hasil", diurutkan mengikuti
   tahap (ahli waris → hajb → bagian → 'aul/radd → nominal).
 - Sisipan diberi nama manusiawi ("nama ahli waris", "pecahan bagian") lewat satu kamus kecil; nama variabel tidak tampil.
