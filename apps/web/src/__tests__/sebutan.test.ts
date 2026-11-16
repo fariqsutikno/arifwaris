@@ -12,6 +12,13 @@ describe('sebutanDariSaya (spec kanvas 5.8)', () => {
     expect(sebutanDariSaya(dariAndi, andi)).toBeNull();
   });
 
+  it('mayit tetap disebut menurut hubungannya: pewaris Karto dari Andi = kakekmu; Slamet (wafat) = pamanmu', () => {
+    const { kasus, andi, slamet } = keluargaKarto();
+    const dariAndi = { ...kasus, saya: andi };
+    expect(sebutanDariSaya(dariAndi, 'PEWARIS')).toBe('kakekmu');
+    expect(sebutanDariSaya(dariAndi, slamet)).toBe('pamanmu');
+  });
+
   it('tanpa saya, atau saya null → null', () => {
     const { kasus, budi } = keluargaKarto();
     expect(sebutanDariSaya(kasus, budi)).toBeNull();
