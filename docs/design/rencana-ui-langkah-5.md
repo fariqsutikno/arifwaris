@@ -32,6 +32,11 @@ disembunyikan selama pengguna masih menebak supaya tidak membocorkan jawaban.
 - Teks Beranda "menurut madzhab Syafi'i" diganti "menurut madzhab Syafi'i (bisa dibandingkan dengan Hanbali, Hanafi, Maliki)".
 
 ### (c) Pohon bebas
+**Keputusan pemilik 2026-11-16** (prototipe `prototipe-pohon-bebas.html`): keturunan sudah bertingkat bebas; celahnya
+kerabat jauh (anak keponakan/sepupu, paman ayah). Dibangun A + C tanpa mode/sakelar: A di wawancara Keluarga
+(keponakan/sepupu ditandai wafat → bagian "Anak X" muncul, berulang; paman ayah baris tetap), C di pohon layar penuh
+(tombol + di bawah orang wafat) sebagai jalan pintas. Satu graf, keduanya saling mencerminkan.
+
 - Periksa dulu di kanvas. Bila menambah kerabat jauh belum bisa: di menu ⋯ tiap orang tambah "tambah anak"
   (laki-laki/perempuan, kelamin wajib ditanya), labelnya otomatis bertingkat gaya fikih ("anak laki-laki dari anak laki-laki paman").
 - Tidak ada pohon bebas untuk jalur atas (orang tua kakek dst.) di luar yang engine dukung.
