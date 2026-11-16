@@ -46,7 +46,7 @@ berpengaruh), mengikuti pola bagian "Anak X".
 ### (d) Editor templat narasi
 **Keputusan pemilik 2026-11-16** (prototipe `prototipe-editor-narasi.html`; sempat dibatalkan lalu dipulihkan setelah
 jelas ini hanya untuk portal admin): A + B. A = sunting di penjelasan kasus contoh (klik kalimat → kotak ubah, sisipan
-jadi label manusiawi, rujukan tampil "rujukan", pratinjau nilai contoh); B = daftar lengkap per tahap untuk kalimat yang
+jadi label manusiawi, istilah fikih disebut istilahnya, pratinjau nilai contoh); B = daftar lengkap per tahap untuk kalimat yang
 tidak muncul di kasus contoh. Simpan = draf lewat alur ajuan/review yang ada.
 
 - Templat `narasi.*` dikelompokkan di daftar "Teks aplikasi" sebagai layar "Penjelasan hasil", diurutkan mengikuti
