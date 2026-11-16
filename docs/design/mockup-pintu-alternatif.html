@@ -1,0 +1,64 @@
+<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alternatif pintu: kurangi pilihan</title>
+<style>
+:root{--ink:#17201c;--mute:#5b655f;--bg:#f6f3e7;--card:#fff;--line:#cfd8cf;--pri:#0d4a3f;--onpri:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif;padding:24px 16px 80px}
+main{max-width:860px;margin:auto}h1{font-size:26px;margin:0 0 4px}h2{font-size:20px;margin:40px 0 4px}
+.lead{color:var(--mute);margin:0 0 16px}.alt{margin:18px 0;padding:16px;border:1px dashed var(--line);border-radius:16px;background:#fbfaf3}
+.alt>b{display:block;margin-bottom:2px}.alt>p{margin:0 0 12px;color:var(--mute);font-size:14px}
+.layar{background:var(--bg);border-radius:14px;padding:18px;border:1px solid var(--line)}
+.layar h3{margin:0 0 4px;font-size:22px}.layar .s{margin:0 0 14px;color:var(--mute);font-size:15px}
+.deret{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.k{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:16px;text-align:start;font:inherit;color:inherit;cursor:pointer}
+.k b{display:block;font-size:19px;line-height:1.25}.k span{display:block;margin-top:4px;color:var(--mute);font-size:14px}
+.k:hover,.k:focus-visible{border-color:var(--pri);outline:2px solid var(--pri);outline-offset:1px}
+.utama{display:block;width:100%;background:var(--pri);color:var(--onpri);border:0;border-radius:14px;padding:18px;font:700 19px/1.2 inherit;text-align:start;cursor:pointer}
+.utama span{display:block;font:400 14px/1.4 system-ui;opacity:.9;margin-top:4px}
+a{color:var(--ink);text-underline-offset:3px}.t{margin-top:12px;font-size:15px}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:999px;overflow:hidden;background:var(--card)}
+.seg button{border:0;background:none;font:inherit;padding:10px 18px;cursor:pointer;border-inline-start:1.5px solid var(--line)}
+.seg button:first-child{border:0}.seg button[aria-pressed=true]{background:var(--pri);color:var(--onpri)}
+.cat{margin-top:10px;font-size:14px;color:var(--mute);padding:10px 12px;border-left:3px solid var(--pri);background:#eef3ec;border-radius:0 8px 8px 0}
+.audit li{margin:4px 0}.rek{background:#e6efe7;border-radius:12px;padding:12px 14px;margin-top:10px;font-size:14px}
+</style><main>
+<h1>Pintu: kurangi pilihan, kurangi pusing</h1>
+<p class="lead">Dua layar yang dirasa membingungkan, masing-masing dengan tiga alternatif. Hanya mockup, belum menyentuh kode.</p>
+
+<h2>Temuan audit</h2>
+<ul class="audit">
+<li><b>Layar "Mau menghitung apa?"</b>: 2 kartu x (judul + kalimat + 3 butir) = 10 potongan teks yang harus dibanding. Butirnya mengulang kalimat di atasnya dan tidak menolong memilih. Pilihan ini juga sudah ada di tempat lain: Latihan ada di navbar dan di bagian "Berlatih dengan soal" Awal Lab.</li>
+<li><b>Layar "sudah dibagi?"</b>: 4 kartu. "Belum, baru wafat" dan "Belum, bertahun-tahun" <b>diperlakukan sama</b> oleh sistem (nilainya hanya disimpan, tidak ada cabang yang membedakan). Jadi pembedaan itu beban murni bagi pengguna. Keputusan sebenarnya hanya tiga: belum dibagi, sudah dibagi, tidak tahu.</li>
+<li>Teori: tiap opsi tambahan menambah waktu memilih (hukum Hick); pilihan yang tidak mengubah hasil sebaiknya dibuang, bukan dijelaskan.</li>
+</ul>
+
+<h2>Layar 1: "Mau menghitung apa?"</h2>
+<div class="alt"><b>1A. Dua kartu, isi dipangkas</b><p>Judul + satu kalimat saja. Butir dibuang. Perubahan terkecil.</p>
+<div class="layar"><h3>Mau menghitung apa?</h3><div class="deret">
+<button class="k"><b>Soal latihan</b><span>Isi jumlah ahli waris cepat, seperti di buku.</span></button>
+<button class="k"><b>Kasus keluargaku</b><span>Kami tanyakan satu per satu, boleh "belum tahu".</span></button></div></div></div>
+
+<div class="alt"><b>1B. Satu aksi utama + tautan</b><p>Sebagian besar pengguna datang untuk kasus nyata, jadi itu jalan utamanya. Latihan jadi tautan teks (sesuai keputusan: aksi sekunder = tautan).</p>
+<div class="layar"><h3>Hitung waris keluargamu</h3><p class="s">Kami tanyakan satu per satu. Boleh menjawab "belum tahu".</p>
+<button class="utama">Mulai<span>Sekitar 5 menit</span></button>
+<p class="t">Cuma mau latihan soal? <a href="#">Isi cepat seperti di buku</a></p></div></div>
+
+<div class="alt"><b>1C. Hapus layar ini</b><p>"Mulai dari nol" langsung masuk wizard kasus keluarga. Latihan tetap lewat navbar Latihan dan bagian "Berlatih dengan soal" di Awal Lab, yang sudah ada. Nol keputusan di sini.</p>
+<div class="layar"><p class="s" style="margin:0">Awal Lab, Mulai dari nol, lalu langsung <b>Langkah 1: Almarhum</b></p></div></div>
+<div class="rek">Saran: <b>1B</b> jika layar tetap dipertahankan; <b>1C</b> paling sederhana tapi butuh memastikan jalur Latihan mudah ditemukan.</div>
+
+<h2>Layar 2: "Sejak Almarhum wafat, apakah hartanya sudah dibagi?"</h2>
+<div class="alt"><b>2A. Dua kartu + tautan "tidak tahu"</b><p>Dua jawaban utama. "Belum" menggabungkan baru dan lama. "Tidak tahu" jadi tautan teks karena aksi sekunder.</p>
+<div class="layar"><h3>Sejak Almarhum wafat, apakah hartanya sudah dibagi?</h3><div class="deret">
+<button class="k"><b>Belum dibagi</b><span>Masih utuh, termasuk rumah yang masih ditempati.</span></button>
+<button class="k"><b>Sudah dibagi</b><span>Bagiannya sudah diserahkan ke masing-masing.</span></button></div>
+<p class="t"><a href="#">Saya tidak tahu</a></p></div></div>
+
+<div class="alt"><b>2B. Satu baris, tiga segmen</b><p>Paling ringkas: satu kontrol kecil, tanpa kalimat penjelas. Penjelasan muncul hanya setelah memilih.</p>
+<div class="layar"><h3>Hartanya sudah dibagi?</h3><div class="seg" role="group"><button aria-pressed="false">Belum</button><button aria-pressed="false">Sudah</button><button aria-pressed="false">Tidak tahu</button></div>
+<div class="cat">Contoh pesan setelah memilih "Sudah": yang dihitung adalah harta orang yang wafat sesudahnya.</div></div></div>
+
+<div class="alt"><b>2C. Ya/Tidak yang mudah dijawab</b><p>Kalimat dibalik jadi pertanyaan yang bisa dijawab dengan satu kata, bahasa orang awam, tanpa "sejak".</p>
+<div class="layar"><h3>Apakah harta Almarhum sudah dibagikan ke ahli warisnya?</h3><div class="deret" style="grid-template-columns:repeat(3,1fr)">
+<button class="k"><b>Belum</b></button><button class="k"><b>Sudah</b></button><button class="k"><b>Entah</b></button></div></div></div>
+<div class="rek">Saran: <b>2A</b> jika ingin kartu besar seperti gaya sekarang; <b>2B</b> jika ingin paling ringan. Keduanya hanya membuang pembedaan baru/lama, jadi data lama tetap terbaca (nilai 'lama' diperlakukan sebagai 'belum').</div>
+</main></html>
