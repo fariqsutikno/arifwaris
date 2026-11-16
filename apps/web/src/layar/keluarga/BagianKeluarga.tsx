@@ -67,7 +67,7 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
     }
     case 'saudaraKakek': {
       const daftar = KUNCI_PER_KELOMPOK.saudaraKakek ?? [];
-      return !ya ? null : <>{daftar.map(kunci => kelompokPeran(kunci, undefined, SEBUTAN_SAUDARA_KAKEK[kunci]?.()))}{bingung(daftar)}</>;
+      return !ya ? null : <>{daftar.map(kunci => { const sebutan = SEBUTAN_SAUDARA_KAKEK[kunci]?.(); return kelompokPeran(kunci, sebutan, sebutan); })}{bingung(daftar)}</>;
     }
     case 'anakBersama': return <AnakBersama kasus={kasus} bagian={bagian} ubah={ubah} />;
     case 'halLain': return <BagianHalLain kasus={kasus} bagian={bagian} ubah={ubah} />;
