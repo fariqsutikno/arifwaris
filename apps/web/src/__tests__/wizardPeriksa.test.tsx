@@ -1,12 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { jawabHalLain } from '../halLain';
-import { isiBarisTetap, jawabAdaTidak, jawabKamu, slotTetap } from '../isianBagian';
+import { isiBarisTetap, jawabKamu, slotTetap, tandaiDijawab } from '../isianBagian';
 import type { Kasus } from '../kasus';
-import { anggotaBagian, bagianLengkap, daftarBagian } from '../kelompok';
+import { bagianLengkap, daftarBagian } from '../kelompok';
 import { keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { pilihKeadaan } from '../keadaanBaris';
+import { terapkanKeadaan } from '../keadaanOrang';
 import { Wizard } from '../layar/Wizard';
 import { kasusBaru } from '../kasus';
 import { keluargaKarto } from './fixtures/kanvas';
@@ -25,7 +26,8 @@ function lengkapi(awal: Kasus): Kasus {
       for (const kunci of slotTetap(kasus, bagian)) kasus = isiBarisTetap(kasus, bagian, kunci, 'hidup');
     } else if (bagian.jenis === 'halLain') kasus = jawabHalLain(kasus, bagian.milik, false);
     else if (bagian.jenis === 'kamu') kasus = jawabKamu(kasus, null);
-    else kasus = jawabAdaTidak(kasus, bagian, anggotaBagian(kasus, bagian).length > 0);
+    else if (bagian.jenis === 'urutan') kasus = { ...kasus, urutanDijawab: [...new Set([...(kasus.urutanDijawab ?? []), ...kasus.urutanWafat])] };
+    else kasus = tandaiDijawab(kasus, bagian.milik, bagian.jenis, true);
   }
   throw new Error('tidak konvergen');
 }
@@ -36,13 +38,13 @@ function kasusIbuBelumTahu(): Kasus {
   return lengkapi(pilihKeadaan(lengkap, ibu, 'belumTahu', 'PEWARIS'));
 }
 
-function Papan({ kasus, langkah = 4, paksa = false }: { kasus: Kasus; langkah?: number; paksa?: boolean }) {
+function Papan({ kasus, langkah = 4, paksa = false, saatKirim }: { kasus: Kasus; langkah?: number; paksa?: boolean; saatKirim?: (aksi: Aksi) => void }) {
   const [keadaan, setKeadaan] = useState<KeadaanAplikasi>(() => {
     // paksa: kasus belum lengkap tetap dibuka di Periksa, lewat jalur "Kembali ke Periksa" (dariPeriksa melepas batas langkah).
     const awal = paksa ? pengurangKeadaan(keadaanAwal(kasus, null), { jenis: 'KE_LANGKAH', langkah: 3, dariPeriksa: true }) : keadaanAwal(kasus, null);
     return pengurangKeadaan(awal, { jenis: 'KE_LANGKAH', langkah });
   });
-  return <Wizard keadaan={keadaan} kirim={(aksi: Aksi) => setKeadaan(k => pengurangKeadaan(k, aksi))} />;
+  return <Wizard keadaan={keadaan} kirim={(aksi: Aksi) => { saatKirim?.(aksi); setKeadaan(k => pengurangKeadaan(k, aksi)); }} />;
 }
 const status = () => document.querySelector('.bar-bawah [role=status]')!.textContent;
 const aksiUtama = () => document.querySelector('.bar-bawah-isi')!.lastElementChild as HTMLElement;
@@ -66,7 +68,7 @@ describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)
 
   it('jawaban yang menambah cabang mengarahkan ke Keluarga; Periksa menyebut keluarga belum lengkap dengan aksi ke bagian itu', () => {
     render(<Papan kasus={kasusIbuBelumTahu()} />);
-    expect(status()).toBe('1 hal belum dipastikan.');
+    expect(status()).toBe('Ibu: belum dipastikan masih hidup atau tidak.');
     fireEvent.click(screen.getByRole('radio', { name: 'Wafat sesudah Almarhum' }));
     expect(status()).toMatch(/^Keluarga belum lengkap: .+\.$/);
     expect(aksiUtama().textContent).toBe('Lihat di Keluarga');
@@ -76,9 +78,25 @@ describe('Periksa nyata: status dan perpindahan ke Keluarga (rencana 4, tugas 4)
     expect(status()).toMatch(/^Keluarga belum lengkap/);
   });
 
-  it('hanya belum tahu: tombol "Hitung dengan kemungkinan" tersedia dan membuka hasil', () => {
+  it('belum tahu: tidak ada "Hitung dengan kemungkinan"; status menyebut orangnya, aksi "Pastikan" menggulir ke kartunya', () => {
     render(<Papan kasus={kasusIbuBelumTahu()} />);
+    expect(screen.queryByText('Hitung dengan kemungkinan')).toBeNull();
+    expect(status()).toMatch(/: belum dipastikan masih hidup atau tidak\.$/);
+    expect(aksiUtama().textContent).toBe('Pastikan');
+    const kartu = document.querySelector<HTMLElement>('[id^=belum-keadaan-]')!;
+    kartu.scrollIntoView = vi.fn();
+    fireEvent.click(aksiUtama());
+    expect(kartu.scrollIntoView).toHaveBeenCalled();
+  });
+
+  it('hilang (mafqud): tombol "Hitung dengan kemungkinan" tersedia dan membuka hasil', () => {
+    const lengkap = lengkapi(denganHarta(kasusBaru('L')));
+    const ibu = Object.values(lengkap.graf.orang).find(o => o.id !== 'PEWARIS' && !o.penghubung && o.jenisKelamin === 'P')!.id;
+    const terkirim: Aksi[] = [];
+    render(<Papan kasus={lengkapi(terapkanKeadaan(lengkap, ibu, { jenis: 'hilang' }))} saatKirim={aksi => terkirim.push(aksi)} />);
     expect(aksiUtama().textContent).toBe('Hitung dengan kemungkinan');
+    fireEvent.click(aksiUtama());
+    expect(terkirim).toContainEqual({ jenis: 'KE_LAYAR', layar: 'hasil' });
   });
 });
 

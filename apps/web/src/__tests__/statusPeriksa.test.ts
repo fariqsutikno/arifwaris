@@ -15,11 +15,17 @@ describe('statusPeriksa (rencana 4, P1)', () => {
       aksi: { jenis: 'urutan', a: sumi, b: budi }, status: 'Pastikan dulu urutan wafat Mbah Sumi dan Budi.' });
   });
 
-  it('hanya belum tahu: hitung dengan kemungkinan; tidak ada: hitung', () => {
+  it('tidak ada yang belum pasti: hitung; hilang (mafqud): hitung dengan kemungkinan', () => {
     const { kasus } = keluargaKarto();
     expect(statusPeriksa(kasus)).toEqual({ aksi: { jenis: 'hitung' }, status: null });
-    const { kasus: denganIbu } = tambah(kasus, 'PEWARIS', 'IBU', { statusHidup: 'tidakDiketahui' });
-    expect(statusPeriksa(denganIbu)).toEqual({ aksi: { jenis: 'kemungkinan' }, status: '1 hal belum dipastikan.' });
+    const { kasus: denganHilang } = tambah(kasus, 'PEWARIS', 'IBU', { statusHidup: 'mafqud' });
+    expect(statusPeriksa(denganHilang)).toEqual({ aksi: { jenis: 'kemungkinan' }, status: '1 hal belum dipastikan.' });
+  });
+
+  it('belum tahu masih hidup: engine minta input, jadi aksinya menunjuk orang itu, bukan hitung dengan kemungkinan', () => {
+    const { kasus } = keluargaKarto();
+    const { kasus: denganIbu, id: ibu } = tambah(kasus, 'PEWARIS', 'IBU', { statusHidup: 'tidakDiketahui', nama: 'Ibu Tini' });
+    expect(statusPeriksa(denganIbu)).toEqual({ aksi: { jenis: 'pastikan', orang: ibu }, status: 'Ibu Tini: belum dipastikan masih hidup atau tidak.' });
   });
 
   it('Keluarga belum lengkap menang atas yang lain', () => {

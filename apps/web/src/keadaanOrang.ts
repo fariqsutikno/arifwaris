@@ -56,7 +56,7 @@ export function terapkanKeadaan(kasus: Kasus, idOrang: IdOrang, jawaban: Jawaban
   let hasil: Kasus;
   switch (jawaban.jenis) {
     case 'hidup': hasil = bersih; break;
-    case 'belumTahu': hasil = ubah({ statusHidup: 'tidakDiketahui' }); break;   // engine menanganinya sebagai taqdir (spec kanvas 5.3)
+    case 'belumTahu': hasil = ubah({ statusHidup: 'tidakDiketahui' }); break;   // engine mengembalikan PERLU_INPUT; Periksa meminta pengguna memastikannya dulu (spec kanvas 5.3, 7.1)
     case 'wafatSebelum': hasil = ubah({ statusHidup: 'wafat' }); break;   // bukan ahli waris almarhum babaknya (bab 12.7)
     case 'wafatSesudah':
       if (jawaban.hartaSudahDibagi) { hasil = { ...bersih, wafatSesudahDibagi: [...(bersih.wafatSesudahDibagi ?? []), idOrang] }; break; }

@@ -31,8 +31,10 @@ export function keInputEngine(kasus: Kasus): InputEngine {
   };
 }
 
-export const adaBelumPasti = (kasus: Kasus): boolean =>
-  Object.values(kasus.graf.orang).some(o => o.statusHidup === 'dalamKandungan' || o.statusHidup === 'mafqud' || !!o.khuntsa);
+/** Orang yang bisa dihitung sebagai taqdir; `tidakDiketahui` tidak termasuk: engine mengembalikan PERLU_INPUT. */
+export const orangBelumPasti = (kasus: Kasus) =>
+  Object.values(kasus.graf.orang).filter(o => o.statusHidup === 'dalamKandungan' || o.statusHidup === 'mafqud' || !!o.khuntsa);
+export const adaBelumPasti = (kasus: Kasus): boolean => orangBelumPasti(kasus).length > 0;
 const adaJanin = (kasus: Kasus): boolean => Object.values(kasus.graf.orang).some(o => o.statusHidup === 'dalamKandungan');
 
 export function jalankan(kasus: Kasus): HasilTampil {

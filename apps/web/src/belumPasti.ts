@@ -20,6 +20,7 @@ export function daftarBelumPasti(kasus: Kasus): HalBelumPastiTampil[] {
   return [...keadaan, ...urutan];
 }
 
-// Urutan wafat yang ditunda belum bisa dihitung sebagai kemungkinan; "Bagaimana kalau" urutan baru ada di Tahap 7 (keputusan P1).
+// Urutan wafat yang ditunda dan orang "belum tahu" belum bisa dihitung sebagai kemungkinan: engine mengembalikan
+// PERLU_INPUT untuk `tidakDiketahui`; "Bagaimana kalau" urutan baru ada di Tahap 7 (keputusan P1).
 export const bisaDihitungDenganKemungkinan = (kasus: Kasus): boolean =>
-  !(kasus.belumPasti ?? []).some(hal => hal.jenis === 'urutan');
+  daftarBelumPasti(kasus).length === 0;

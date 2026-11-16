@@ -37,7 +37,7 @@ export function BelumPasti({ kasus, ubah, saatLihatDiKeluarga }: Props) {
       <p role="status" className="terjawab">{tersimpan}</p>
       {daftar.map(hal => (
         <div key={hal.jenis === 'keadaan' ? hal.orang : `${hal.a}-${hal.b}`} className="belum-baris"
-          id={hal.jenis === 'urutan' ? `belum-urutan-${hal.a}-${hal.b}` : undefined}>
+          id={hal.jenis === 'urutan' ? `belum-urutan-${hal.a}-${hal.b}` : `belum-keadaan-${hal.orang}`}>
           <span id={`tanya-${hal.jenis === 'keadaan' ? hal.orang : `${hal.a}-${hal.b}`}`}>{pertanyaan(hal)}</span>
           <div className="deret" role="radiogroup" aria-labelledby={`tanya-${hal.jenis === 'keadaan' ? hal.orang : `${hal.a}-${hal.b}`}`}>
             {hal.jenis === 'keadaan' ? (

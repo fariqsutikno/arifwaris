@@ -77,11 +77,13 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
     const aksi = periksa?.aksi;
     if (aksi?.jenis === 'keluarga') return lihatDiKeluarga(aksi.idBagian);
     if (aksi?.jenis === 'urutan') return gulirKe(document.getElementById(`belum-urutan-${aksi.a}-${aksi.b}`));
+    if (aksi?.jenis === 'pastikan') return gulirKe(document.getElementById(`belum-keadaan-${aksi.orang}`));
     saatLanjut();
   };
   const aksiPeriksa = !periksa ? null : {
     keluarga: { label: t('hitung.periksa.lihat_di_keluarga'), sebagai: 'tautan' as const },
-    urutan: { label: t('hitung.periksa.hitung'), sebagai: 'tombol' as const },
+    urutan: { label: t('hasil.titipan.pastikan'), sebagai: 'tombol' as const },
+    pastikan: { label: t('hasil.titipan.pastikan'), sebagai: 'tombol' as const },
     kemungkinan: { label: t('hitung.periksa.hitung_kemungkinan'), sebagai: 'tombol' as const },
     hitung: { label: t('hitung.periksa.hitung'), sebagai: 'tombol' as const },
   }[periksa.aksi.jenis];
