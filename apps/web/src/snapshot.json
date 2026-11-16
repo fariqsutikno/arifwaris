@@ -21396,7 +21396,7 @@
   {
    "kunci": "hitung.kanvas.baris_isi_waktu",
    "halaman": "hitung",
-   "id": "Isi tahunnya, atau pilih sebelum/sesudah {rel}.",
+   "id": "Pilih meninggal lebih dulu atau sesudah {rel}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21886,7 +21886,7 @@
   {
    "kunci": "hitung.kanvas.kd_wafat",
    "halaman": "hitung",
-   "id": "Sudah wafat",
+   "id": "Sudah meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21970,7 +21970,7 @@
   {
    "kunci": "hitung.kanvas.sebelum",
    "halaman": "hitung",
-   "id": "Sebelum",
+   "id": "Lebih dulu",
    "ar": null,
    "versiTerbit": 873
   },
@@ -23231,6 +23231,83 @@
    "kunci": "hitung.kanvas.keterangan_kamu",
    "halaman": "hitung",
    "id": "Supaya penjelasan bisa memakai \"ayahmu\", \"ibumu\".",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.lanjutan_judul",
+   "halaman": "hitung",
+   "id": "Pertanyaan lanjutan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.hilang_tanya",
+   "halaman": "hitung",
+   "id": "Ada yang hilang tanpa kabar, belum jelas hidup atau meninggal?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.cerai_tanya",
+   "halaman": "hitung",
+   "id": "Ada {pasangan} yang sudah dicerai almarhum sebelum wafat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebut_istri",
+   "halaman": "hitung",
+   "id": "istri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebut_suami",
+   "halaman": "hitung",
+   "id": "suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebut_istri_suami",
+   "halaman": "hitung",
+   "id": "istri atau suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.catatan_hilang",
+   "halaman": "hitung",
+   "id": "Ditandai hilang tanpa kabar. Ubah di pertanyaan lanjutan, di akhir langkah Keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.catatan_cerai",
+   "halaman": "hitung",
+   "id": "Ditandai sudah dicerai almarhum. Ubah di pertanyaan lanjutan, di akhir langkah Keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ingat_tahun",
+   "halaman": "hitung",
+   "id": "Ingat tahunnya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_kartu",
+   "halaman": "hitung",
+   "id": "Waktu {mayit} meninggal, apakah {nama} sedang hamil?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_kartu_ket",
+   "halaman": "hitung",
+   "id": "Ditanya karena anak yang dikandung ikut mendapat warisan.",
    "ar": null,
    "versiTerbit": 873
   }

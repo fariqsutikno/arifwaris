@@ -5,10 +5,11 @@ import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import { kasusBaru, rapikanKeadaan, type Kasus } from '../kasus';
 import { orangDenganKunci } from '../isianBagian';
 import { bagianLengkap, type Bagian } from '../kelompok';
+import { jawabLanjutan, pilihKeadaan } from '../keadaanBaris';
 import { aturTahunWafat } from '../silsilah';
 import { BarisOrang, BingungMemilih } from '../layar/keluarga/BarisOrang';
 import { PenghitungOrang } from '../layar/keluarga/PenghitungOrang';
-import { keluargaKarto } from './fixtures/kanvas';
+import { keluargaKarto, tambah } from './fixtures/kanvas';
 
 const PASANGAN: Bagian = { id: 'pasangan:PEWARIS', milik: 'PEWARIS', jenis: 'pasangan' };
 const ANAK: Bagian = { id: 'anak:PEWARIS', milik: 'PEWARIS', jenis: 'anak' };
@@ -44,35 +45,46 @@ describe('BarisOrang dan PenghitungOrang (spec kanvas 5.3, 5.4)', () => {
     expect(within(ditandai).getByText('Pilih keadaannya.')).toBeTruthy();
   });
 
-  it('pilihan keadaan sesuai peran: Ayah tanpa "Lainnya"; Istri dengan Lainnya yang membuka dua pilihan', () => {
+  it('pilihan keadaan (C4-1): tiga pil untuk Ayah dan Istri; tanpa Lainnya, Hilang tanpa kabar, atau Sudah bercerai', () => {
     const { kasus, ayah } = keluargaKarto();
     const { unmount } = render(<Uji awal={kasus} bagian={ORANG_TUA} kunci="AYAH" />);
     expect(radios(document.getElementById(`baris-${ayah}`)!.querySelector('[role=radiogroup]') as HTMLElement))
-      .toEqual(['Masih hidup', 'Sudah wafat', 'Belum tahu', 'Hilang tanpa kabar']);
+      .toEqual(['Masih hidup', 'Sudah meninggal', 'Belum tahu']);
     unmount();
     render(<Uji awal={kasus} bagian={PASANGAN} kunci="ISTRI" />);
     const baris = document.querySelector('[data-baris-orang]') as HTMLElement;
-    expect(within(baris).queryByRole('radio', { name: 'Sudah bercerai' })).toBeNull();
-    fireEvent.click(within(baris).getByRole('radio', { name: 'Lainnya' }));
-    expect(within(baris).getByRole('radio', { name: 'Hilang tanpa kabar' })).toBeTruthy();
-    expect(within(baris).getByRole('radio', { name: 'Sudah bercerai' })).toBeTruthy();
+    expect(radios(baris.querySelector('[role=radiogroup]') as HTMLElement)).toEqual(['Masih hidup', 'Sudah meninggal', 'Belum tahu']);
+    for (const nama of ['Lainnya', 'Hilang tanpa kabar', 'Sudah bercerai']) expect(within(baris).queryByRole('radio', { name: nama })).toBeNull();
   });
 
-  it('Sudah wafat: dua tahun menampilkan "Berarti sebelum"; tanpa tahun menampilkan pilihan Sebelum/Sesudah', () => {
+  it('orang yang ditandai hilang atau cerai dari pertanyaan lanjutan: kartunya menyebut tempat mengubahnya', () => {
+    let { kasus, id } = tambah(kasusBaru('L'), 'PEWARIS', 'ISTRI');
+    kasus = pilihKeadaan(kasus, id, 'bercerai', 'PEWARIS');
+    kasus = jawabLanjutan(kasus, id, 'PEWARIS', { jenis: 'iddah', selesai: false });
+    render(<Uji awal={kasus} bagian={PASANGAN} kunci="ISTRI" />);
+    const baris = document.querySelector('[data-baris-orang]') as HTMLElement;
+    expect(within(baris).queryAllByRole('radio', { checked: true })).toHaveLength(0);
+    expect(within(baris).getByText(/Ditandai sudah dicerai almarhum/)).toBeTruthy();
+  });
+
+  it('Sudah wafat: dua tahun menampilkan "Berarti sebelum"; tanpa tahun menampilkan pilihan Lebih dulu/Sesudah; tahun hanya lewat tautan "Ingat tahunnya?"', () => {
     let kasus = kasusBaru('L');
     kasus = aturTahunWafat(kasus, 'PEWARIS', { tahun: 1975, kiraKira: false });
     const { unmount } = render(<Uji awal={kasus} bagian={ANAK} kunci="ANAK_LK" />);
     fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
     const baris = () => document.querySelector('[data-baris-orang]') as HTMLElement;
-    fireEvent.click(within(baris()).getByRole('radio', { name: 'Sudah wafat' }));
-    expect(within(baris()).getByRole('radio', { name: 'Sebelum' })).toBeTruthy();
+    fireEvent.click(within(baris()).getByRole('radio', { name: 'Sudah meninggal' }));
+    expect(within(baris()).getByRole('radio', { name: 'Lebih dulu' })).toBeTruthy();
+    expect(within(baris()).queryByLabelText('Tahun wafatnya', { exact: false })).toBeNull();
+    fireEvent.click(within(baris()).getByRole('button', { name: 'Ingat tahunnya?' }));
     fireEvent.change(within(baris()).getByLabelText('Tahun wafatnya', { exact: false }), { target: { value: '1970' } });
+    expect(within(baris()).queryByRole('button', { name: 'Ingat tahunnya?' })).toBeNull();
     expect(within(baris()).getByText('Berarti sebelum almarhum wafat (1975).')).toBeTruthy();
-    expect(within(baris()).queryByRole('radio', { name: 'Sebelum' })).toBeNull();
+    expect(within(baris()).queryByRole('radio', { name: 'Lebih dulu' })).toBeNull();
     unmount();
     render(<Uji awal={kasusBaru('L')} bagian={ANAK} kunci="ANAK_LK" />);
     fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
-    fireEvent.click(within(baris()).getByRole('radio', { name: 'Sudah wafat' }));
+    fireEvent.click(within(baris()).getByRole('radio', { name: 'Sudah meninggal' }));
     fireEvent.click(within(baris()).getByRole('radio', { name: 'Sesudah' }));
     expect(bagianLengkap(terakhir, ANAK)).toBe(true);
     expect(terakhir.belumDiisi).toBeUndefined();
@@ -119,17 +131,14 @@ describe('BarisOrang dan PenghitungOrang (spec kanvas 5.3, 5.4)', () => {
     expect(container.querySelector('[aria-haspopup]')).toBeNull();
   });
 
-  it('Bingung memilih? hanya memuat pilihan yang tampil di bagian itu', () => {
+  it('Bingung memilih? memuat arti tiga pil; khuntsa hanya untuk peran yang bisa', () => {
     const { unmount } = render(<BingungMemilih daftarKunci={['AYAH', 'IBU']} />);
     const ringkas = document.querySelector('details')!.textContent!;
-    expect(ringkas).toContain('Hilang tanpa kabar');
-    expect(ringkas).not.toContain('Sudah bercerai');
-    expect(ringkas).not.toContain('Lainnya');
+    for (const kata of ['Masih hidup', 'Sudah meninggal', 'Belum tahu']) expect(ringkas).toContain(kata);
+    for (const kata of ['Hilang tanpa kabar', 'Sudah bercerai', 'Lainnya', 'Kelaminnya belum jelas']) expect(ringkas).not.toContain(kata);
     unmount();
-    render(<BingungMemilih daftarKunci={['ISTRI']} />);
-    const istri = document.querySelector('details')!.textContent!;
-    expect(istri).toContain('Lainnya');
-    expect(istri).toContain('Sudah bercerai');
+    render(<BingungMemilih daftarKunci={['ANAK_LK']} />);
+    expect(document.querySelector('details')!.textContent).toContain('Kelaminnya belum jelas');
   });
 
   it('baris disorot dapat digulir ke dalam pandangan: punya data-baris-orang dan kelas sorot', () => {
@@ -142,15 +151,17 @@ describe('BarisOrang dan PenghitungOrang (spec kanvas 5.3, 5.4)', () => {
 });
 
 describe('tahun wafat yang diketik menentukan keadaan (review K1)', () => {
-  const tahunDiisi = (baris: HTMLElement, nilai: string) =>
+  const tahunDiisi = (baris: HTMLElement, nilai: string) => {
+    fireEvent.click(within(baris).getByRole('button', { name: 'Ingat tahunnya?' }));
     fireEvent.change(within(baris).getByLabelText('Tahun wafatnya', { exact: false }), { target: { value: nilai } });
+  };
   const barisAnak = () => document.querySelector('[data-baris-orang]') as HTMLElement;
   const almarhum1990 = aturTahunWafat(kasusBaru('L'), 'PEWARIS', { tahun: 1990, kiraKira: false });
 
   it('Wafat lalu tahun 2000 (almarhum 1990): wafat sesudah dan masuk urutanWafat', () => {
     render(<Uji awal={almarhum1990} bagian={ANAK} kunci="ANAK_LK" />);
     fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
-    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sudah wafat' }));
+    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sudah meninggal' }));
     tahunDiisi(barisAnak(), '2000');
     expect(terakhir.urutanWafat).toHaveLength(1);
     expect(terakhir.belumDiisi).toBeUndefined();
@@ -159,8 +170,8 @@ describe('tahun wafat yang diketik menentukan keadaan (review K1)', () => {
   it('memilih Sebelum lalu mengetik 2000 memindahkan ke sesudah', () => {
     render(<Uji awal={almarhum1990} bagian={ANAK} kunci="ANAK_LK" />);
     fireEvent.click(screen.getByRole('button', { name: 'Tambah Anak laki-laki' }));
-    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sudah wafat' }));
-    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sebelum' }));
+    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Sudah meninggal' }));
+    fireEvent.click(within(barisAnak()).getByRole('radio', { name: 'Lebih dulu' }));
     expect(terakhir.urutanWafat).toHaveLength(0);
     tahunDiisi(barisAnak(), '2000');
     expect(terakhir.urutanWafat).toHaveLength(1);

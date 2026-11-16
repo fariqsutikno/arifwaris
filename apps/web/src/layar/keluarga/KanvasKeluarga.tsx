@@ -16,6 +16,7 @@ import { BagianKeluarga } from './BagianKeluarga';
 import { gulirKe } from './gulir';
 import { KenapaTidakDitanya } from './KenapaTidakDitanya';
 import { KartuBagian } from './KartuBagian';
+import { PertanyaanLanjutan } from './PertanyaanLanjutan';
 import { PetaBagian } from './PetaBagian';
 
 interface Props {
@@ -134,6 +135,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
           ))}
         </ul>
       )}
+      {aktif.jenis === 'kamu' && <PertanyaanLanjutan kasus={kasus} ubah={ubah} />}
       <KartuBagian key={aktif.id} label={aktif.jenis === 'kamu' ? t('hitung.kanvas.boleh_kosong') : judulBagian(kasus, aktif)} pertanyaan={pertanyaanBagian(kasus, aktif)} masuk={animasiMasuk}
         pengantar={aktif.jenis === 'kamu' ? t('hitung.kanvas.keterangan_kamu') : awalCabang(kasus, aktif) ? t('hitung.kanvas.pengantar_cabang', { almarhum: namaSingkat(kasus, aktif.milik), pewaris: namaSingkat(kasus, kasus.graf.idPewaris) }) : undefined}
         judulRef={judulRef} lengkap={lengkap} tandai={tandaiLokal || (tandaiKurang && !lengkap)}

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { kasusBaru, rapikanKeadaan, type Kasus, type Kelompok } from '../kasus';
 import { KanvasKeluarga } from '../layar/keluarga/KanvasKeluarga';
-import { denganBagianTetapTerisi, keluargaBudi, keluargaKarto } from './fixtures/kanvas';
+import { denganBagianTetapTerisi, keluargaBudi, keluargaKarto, tambah } from './fixtures/kanvas';
 
 let terakhir: Kasus;
 function Uji({ awal }: { awal: Kasus }) {
@@ -34,7 +34,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     expect(screen.getByRole('group', { name: 'Suami' })).toBeTruthy();
   });
 
-  it('anak: penghitung Laki-laki dan Perempuan; PertanyaanHamil muncul', () => {
+  it('anak: penghitung Laki-laki dan Perempuan; tanpa calon ibu janin tidak ada pertanyaan hamil', () => {
     render(<Uji awal={dijawab(kasusBaru('L'), { PEWARIS: ['pasangan'] })} />);
     expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
     radio('Ya');
@@ -43,7 +43,14 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     klik('Tambah Anak laki-laki');
     expect(screen.getByRole('group', { name: 'Anak laki-laki 1' })).toBeTruthy();
     expect(document.querySelector('[aria-labelledby]')).toBeTruthy();
-    expect(screen.getByText(/hamil|kandungan/i)).toBeTruthy();
+    expect(screen.queryByText(/hamil|kandungan/i)).toBeNull();
+  });
+
+  it('anak: istri sudah punya kartu sendiri, jadi pertanyaan hamil umum tidak muncul di bagian anak (C4-3)', () => {
+    const { kasus } = tambah(kasusBaru('L'), 'PEWARIS', 'ISTRI');
+    render(<Uji awal={dijawab(kasus, { PEWARIS: ['pasangan'] })} />);
+    radio('Ya');
+    expect(screen.queryByText(/hamil/i)).toBeNull();
   });
 
   it('orang tua: baris tetap Ayah dan Ibu tanpa Ya/Tidak; bagian dijawab setelah keduanya punya keadaan', () => {

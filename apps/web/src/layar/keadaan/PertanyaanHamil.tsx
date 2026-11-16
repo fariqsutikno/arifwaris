@@ -1,5 +1,6 @@
-// Pertanyaan hamil di akhir tiap babak (spec 1.1, 1.3): bawaan "Tidak ada". "Ada" → dialog janin:
-// siapa → dari siapa → sudah lahir? Janin tersimpan sebagai satu node dalamKandungan per ibu [R13-3].
+// Pertanyaan hamil (spec 1.1, 1.3): bawaan "Tidak". "Ya" → dialog janin:
+// siapa → dari siapa → sudah lahir? Di kanvas ia ditanya per kartu calon ibu (`kartu`, siapa sudah jelas, jadi langkah "siapa" dilewati);
+// pertanyaan umum (tanpa `kartu`) hanya untuk calon di luar `kecuali`, dan di Latihan untuk semua calon. Janin tersimpan sebagai satu node dalamKandungan per ibu [R13-3].
 // Bayi yang lahir lalu wafat diteruskan ke DialogKeadaan supaya masuk urutan wafat lewat jalur yang sama.
 
 import { useEffect, useId, useRef, useState } from 'react';
@@ -12,7 +13,13 @@ import { DialogKonfirmasi } from '../../ui/Dialog';
 import { DialogKeadaan } from './DialogKeadaan';
 import { t } from '../../terjemah';
 
-interface Props { kasus: Kasus; idMayit: IdOrang; ubah: (f: (k: Kasus) => Kasus) => void }
+interface Props {
+  kasus: Kasus; idMayit: IdOrang; ubah: (f: (k: Kasus) => Kasus) => void;
+  /** Tanya hamil hanya untuk orang ini, di kartunya. */
+  kartu?: IdOrang;
+  /** Calon yang sudah punya kartu sendiri; tidak ikut pertanyaan umum. Bila tak ada calon tersisa, tidak ada yang dirender. */
+  kecuali?: IdOrang[];
+}
 
 type LayarJanin =
   | { jenis: 'siapa' }
@@ -20,9 +27,9 @@ type LayarJanin =
   | { jenis: 'lahir'; idJanin: IdOrang }
   | { jenis: 'jenisKelamin'; idJanin: IdOrang; wafat: boolean; anak: Array<'L' | 'P'> };
 
-export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
+export function PertanyaanHamil({ kasus, idMayit, ubah, kartu, kecuali }: Props) {
   const id = useId();
-  const calon = calonIbuJanin(kasus, idMayit);
+  const calon = calonIbuJanin(kasus, idMayit).filter(c => (kartu ? c.idIbu === kartu : !kecuali?.includes(c.idIbu)));
   const janinBabak = Object.values(kasus.graf.orang)
     .filter(o => o.statusHidup === 'dalamKandungan' && calon.some(c => c.idIbu === o.idIbu)).map(o => o.id);
   const [ada, setAda] = useState(janinBabak.length > 0);
@@ -73,6 +80,8 @@ export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
     setLayar({ ...layar, anak: [...layar.anak, pilihan as 'L' | 'P'] });
     setPilihan(null);
   };
+  const mulaiDariKartu = () => (janinBabak.length === 0 && kartu ? ke({ jenis: 'dariSiapa', idIbu: kartu }) : undefined);
+  const pilihAda = () => { setAda(true); mulaiDariKartu(); };
   const pilihTidakAda = () => (janinBabak.length > 0 ? setKonfirmasiHapus(true) : setAda(false));
 
   const opsi = (daftar: Array<[string, string, string?]>) => (
@@ -125,6 +134,7 @@ export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
     );
   })();
 
+  if ((kartu || kecuali) && calon.length === 0) return null;
   return (
     <>
       {dialog}
@@ -137,11 +147,13 @@ export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
         </DialogKonfirmasi>
       )}
       <section className="penutup-babak" aria-labelledby={`${id}-hamil`}>
-        <h3 id={`${id}-hamil`} className="pertanyaan-bagian">{t('hitung.janin.tanya', { mayit })}</h3>
-        <p className="keterangan">{t('hitung.janin.tanya_ket')}</p>
+        <h3 id={`${id}-hamil`} className="pertanyaan-bagian">
+          {kartu ? t('hitung.janin.tanya_kartu', { mayit, nama: namaSingkat(kasus, kartu) }) : t('hitung.janin.tanya', { mayit })}
+        </h3>
+        <p className="keterangan">{kartu ? t('hitung.janin.tanya_kartu_ket') : t('hitung.janin.tanya_ket')}</p>
         <div className="ya-tidak" role="radiogroup" aria-labelledby={`${id}-hamil`}>
-          <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{t('hitung.janin.tidak_ada')}</button>
-          <button type="button" role="radio" aria-checked={ada} onClick={() => setAda(true)}>{t('hitung.janin.ada')}</button>
+          <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{kartu ? t('hitung.kanvas.tidak') : t('hitung.janin.tidak_ada')}</button>
+          <button type="button" role="radio" aria-checked={ada} onClick={pilihAda}>{kartu ? t('hitung.kanvas.ya') : t('hitung.janin.ada')}</button>
         </div>
         {ada && (
           <>
@@ -156,9 +168,11 @@ export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
                 </li>
               ))}
             </ul>
-            {calon.length > 0
-              ? <button type="button" className="tautan" onClick={() => ke({ jenis: 'siapa' })}>{t('hitung.janin.tambah')}</button>
-              : <p className="keterangan">{t('hitung.janin.tidak_ada_calon')}</p>}
+            {kartu
+              ? null   // "Ya" sendiri membuka dialog; tak ada yang perlu ditambah
+              : calon.length > 0
+                ? <button type="button" className="tautan" onClick={() => ke({ jenis: 'siapa' })}>{t('hitung.janin.tambah')}</button>
+                : <p className="keterangan">{t('hitung.janin.tidak_ada_calon')}</p>}
           </>
         )}
       </section>
