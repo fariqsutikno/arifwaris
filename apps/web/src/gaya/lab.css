@@ -101,8 +101,8 @@ button.tautan-cari{padding:0;border:0;background:none;cursor:pointer}
   .panel-lab button.kartu-lanjut-hero:hover .panah-bulat,button.ubin:hover .panah-bulat{transform:none}
 }
 
-/* Pintu Lab: deretan kartu selebar grid; butir daftar bertipe isi, bukan judul. */
-.tata-beranda>.kartu-pilihan-deret{grid-column:1/-1}
-.kartu-pilihan-deret .kartu-pilihan ul{font:500 14px/1.5 var(--font-sans);color:var(--ink);display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.kartu-pilihan-deret .kartu-pilihan ul li{padding-inline-start:18px;position:relative}
-.kartu-pilihan-deret .kartu-pilihan ul li::before{content:"";position:absolute;inset-inline-start:2px;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--ink-muted)}
+/* Pintu Lab: dua ubin Awal Lab dengan ikon. */
+.tata-beranda>.lab-ubin-pintu{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0;padding:0}
+.lab-ubin-pintu>li{display:flex}
+@media (max-width:640px){.tata-beranda>.lab-ubin-pintu{grid-template-columns:1fr}}
+.lab-ubin-pintu .ubin>svg.ikon{position:static;opacity:1;stroke-width:1.6;transform:none;margin-top:2px}
