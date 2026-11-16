@@ -294,9 +294,13 @@ digabung ke langkah (tidak dua kali). Sakelar Hitung kasus/Belajar keluar dari l
 | C. Pohon beranimasi: harta mengalir ke Budi, berhenti, lalu mengalir lagi | sedang | sedang | besar |
 | D. Tabel matriks (baris orang × kolom almarhum) | rendah | sedang | kecil |
 
-**Pilih B di atas A.** Cerita per almarhum menjawab "bagian Budi ke mana" dan alasan per lapis; total per orang menjadi
-penutup untuk eksekusi. Bila harta pertama **sudah dibagi**, lapis itu dilipat dan judulnya "Yang dibagi sekarang: harta
-Budi". Harus tetap terbaca untuk 3–4 almarhum. D untuk lapis pemeriksa (HMW-4).
+**Pilih A, lalu B di bawahnya (diputuskan dari JTBD, 2026-11-17).** Urutan pertanyaan pengguna di bagian 5 dimulai dengan
+"akhirnya saya/masing-masing terima berapa" (eksekusi, H-a). "Bagian Budi ke mana" dan "dari suami berapa, dari Budi berapa"
+datang sesudahnya (H-c). Jadi layar dibuka dengan total per orang, dan tiap baris bisa dibuka menjadi rincian per almarhum.
+Di bawahnya, cerita per almarhum ("Bagaimana hartanya mengalir") menjawab aliran dan alasan per lapis.
+Pengecualian dari job yang berbeda: bila harta pertama **sudah dibagi**, job-nya hanya membagi harta Budi. Layar dibuka dengan
+"Yang dibagi sekarang: harta Budi", dan lapis pertama hanya disebut sebagai asal harta Budi. Harus tetap terbaca untuk 3–4
+almarhum. D untuk lapis pemeriksa (HMW-4).
 
 ### HMW-8. Bagaimana agar keluarga dengan orang yang belum pasti tahu: dibagi sekarang berapa, ditahan berapa, untuk siapa, kapan dihitung lagi? (K1–K10, R5)
 
@@ -332,8 +336,21 @@ yang jelas ("ibunya", "saudarinya").
 7. **Aksi sedikit dan berfungsi:** kirim ke keluarga, cetak, ubah (ke Periksa). Tidak ada "segera hadir".
 8. **Nada tenang:** kosakata pengguna, istilah hanya di kurung atau lapis pemeriksa.
 
-## 11. Pertanyaan sebelum konsep (tahap 5)
+## 11. Jawaban pemilik dan keputusan (2026-11-17)
 
-1. HMW-5: "Kirim ke keluarga" sebagai teks siap tempel ke WhatsApp, cukup? Atau perlu PDF/gambar sejak awal?
-2. HMW-1: pohon keluarga masih perlu tampil di Hasil kasus biasa (di bawah atau di tab), atau cukup di lembar orang dan layar penuh?
-3. HMW-7: untuk munasakhat, cerita per almarhum (B) sebagai tampilan utama, lalu total di akhir. Setuju urutan ini, atau total dulu baru cerita?
+1. **Bagikan menurut kebutuhan:** WhatsApp cukup untuk kabar singkat (nama + rupiah). PDF untuk kondisi yang butuh banyak
+   penjelasan (rapat keluarga, dibawa ke ustadz, urusan dokumen). Jadi dua aksi: "Kirim ringkasan" (teks WA) dan
+   "Unduh PDF lengkap" (jawaban + alasan per orang + cara menghitung).
+2. Pertanyaan pohon dijelaskan ulang ke pemilik (bagian 12).
+3. Urutan munasakhat diputuskan dari JTBD, bukan preferensi: total per orang dulu, lalu aliran (HMW-7).
+
+## 12. Pertanyaan terbuka: peran pohon keluarga di Hasil
+
+Sekarang pohon adalah kotak besar di bagian atas layar Hasil. Menurut HMW-1, bagian atas diganti daftar rupiah. Yang perlu
+diputuskan: setelah itu, apakah pohon masih tampil di layar Hasil?
+
+Dari JTBD: pohon tidak menjawab "dapat berapa" (H-a); daftar lebih cepat. Pohon membantu dua hal: (1) menunjukkan
+hubungan saat menjelaskan alasan ("paman tidak dapat karena ada anak laki-laki"; terlihat siapa lebih dekat), dan (2) di
+munasakhat, menunjukkan jalur harta dari almarhum ke Budi lalu ke anak Budi (H-c).
+Usulan: pohon tidak lagi di atas. Pohon muncul (a) di bagian "Bagaimana hartanya mengalir" untuk kasus berlapis, dan (b) kecil
+di lembar orang, menyorot orang itu dan penghalangnya. Untuk kasus biasa tanpa lapis, tidak ada pohon besar di layar.
