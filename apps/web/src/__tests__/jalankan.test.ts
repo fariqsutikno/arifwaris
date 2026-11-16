@@ -37,3 +37,21 @@ describe('jalankan memilih orkestrator', () => {
     expect(jalankan({ ...k, pilihanJanin: 'hitungSekarang' }).jenis).toBe('taqdir');
   });
 });
+
+describe('jalankan memakai madzhab kasus', () => {
+  // [K07-1] musyarrakah: Syafi'i tasyrik, Hanbali tanpa tasyrik.
+  function musyarrakah(): Kasus {
+    let kasus: Kasus = { ...kasusBaru('P'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
+    for (const kunci of ['SUAMI', 'IBU', 'SAUDARA_SEIBU', 'SAUDARA_SEIBU', 'SAUDARA_KANDUNG'] as const)
+      kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, 'PEWARIS', kunci) };
+    return kasus;
+  }
+  const bagianSaudaraKandung = (kasus: Kasus) => {
+    const hasil = jalankan(kasus);
+    if (hasil.jenis !== 'biasa' || hasil.hasil.status !== 'OK') throw new Error(JSON.stringify(hasil.jenis));
+    const id = Object.values(kasus.graf.orang).find(o => o.id !== 'PEWARIS' && o.idAyah === kasus.graf.orang.PEWARIS!.idAyah)?.id;
+    return hasil.hasil.tabel.baris.find(b => b.perOrang[id!])?.perOrang[id!]?.nominal ?? 0n;
+  };
+  it('tanpa madzhab = Syafi\'i (tasyrik)', () => expect(bagianSaudaraKandung(musyarrakah())).toBeGreaterThan(0n));
+  it('Hanbali: saudara kandung tidak mendapat', () => expect(bagianSaudaraKandung({ ...musyarrakah(), madzhab: 'hanbali' })).toBe(0n));
+});

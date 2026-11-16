@@ -243,3 +243,13 @@ describe('kasus v4 (spec kanvas silsilah 9.1–9.2)', () => {
     expect(dariJson(keJson({ ...kasus, saya: null }))).toMatchObject({ berhasil: true, kasus: { saya: null } });
   });
 });
+
+describe('madzhab kasus', () => {
+  it('ikut tersimpan', () => {
+    const hasil = dariJson(keJson({ ...kasusBaru('L'), madzhab: 'hanafi' }));
+    expect(hasil.berhasil && hasil.kasus.madzhab).toBe('hanafi');
+  });
+  it('madzhab tak dikenal ditolak', () => {
+    expect(dariJson(keJson({ ...kasusBaru('L'), madzhab: 'zahiri' as never })).berhasil).toBe(false);
+  });
+});
