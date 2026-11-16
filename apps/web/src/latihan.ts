@@ -21,13 +21,7 @@ export function tandaiWafatSebelumDibagi(kasus: Kasus, idOrang: IdOrang, wafat: 
   return terapkanKeadaan(kasus, idOrang, wafat ? { jenis: 'wafatSesudah', hartaSudahDibagi: false } : { jenis: 'hidup' });
 }
 
-export function geserUrutan(kasus: Kasus, idOrang: IdOrang, arah: -1 | 1): Kasus {
-  const i = kasus.urutanWafat.indexOf(idOrang), j = i + arah;
-  if (i < 0 || j < 0 || j >= kasus.urutanWafat.length) return kasus;
-  const urutanWafat = [...kasus.urutanWafat];
-  [urutanWafat[i], urutanWafat[j]] = [urutanWafat[j]!, urutanWafat[i]!];
-  return { ...kasus, urutanWafat, urutanDijawab: [...new Set([...(kasus.urutanDijawab ?? []), idOrang])] };
-}
+export { geserUrutan } from './antreanUrutan';
 
 /** Satu sumber penomoran: label yang kembar dalam satu daftar diberi nomor urut ("Anak laki-laki 1", "Anak laki-laki 2"). */
 export function nomorKembar(label: string[]): string[] {

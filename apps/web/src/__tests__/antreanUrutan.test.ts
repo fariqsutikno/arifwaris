@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { orangUrutanBelumPasti, pertanyaanUrutanBerikut, selesaikanUrutan, tundaUrutan } from '../antreanUrutan';
+import { geserUrutan, jawabUrutanTertunda, orangUrutanBelumPasti, pertanyaanUrutanBerikut, selesaikanUrutan, tundaUrutan, urutanDariTahun } from '../antreanUrutan';
 import { bagianLengkap } from '../kelompok';
 import { kasusBaru, type Kasus } from '../kasus';
 import { jawabSisip, pembanding } from '../urutan';
@@ -52,5 +52,23 @@ describe('antreanUrutan (spec kanvas 5.6)', () => {
     r = tambah(k, anak1, 'ANAK_LK'); k = r.kasus;
     r = tambah(k, anak2, 'ANAK_LK'); k = r.kasus;
     expect(orangUrutanBelumPasti({ ...k, urutanWafat: [anak1, anak2] })).toEqual([]);
+  });
+
+  it('jawabUrutanTertunda: menghapus entri tunda, menempatkan a terhadap b, menandai dijawab', () => {
+    const { kasus, sumi, budi } = keluargaKarto();
+    const tunda = tundaUrutan({ ...kasus, urutanWafat: [budi, sumi] }, sumi, budi);
+    const jawab = jawabUrutanTertunda(tunda, sumi, budi, 'sebelum');
+    expect(jawab.urutanWafat).toEqual([sumi, budi]);
+    expect(jawab.belumPasti).toBeUndefined();
+    expect(jawab.urutanDijawab).toContain(sumi);
+    expect(jawabUrutanTertunda(tunda, sumi, budi, 'sesudah').urutanWafat).toEqual([budi, sumi]);
+  });
+
+  it('urutan bertahun tidak bisa digeser: urutanDariTahun true, geserUrutan tidak mengubah', () => {
+    const { kasus, sumi, budi } = keluargaKarto();
+    const bertahun: Kasus = { ...kasus, waktu: { [sumi]: tahun(1990), [budi]: tahun(1998) } };
+    expect(urutanDariTahun(bertahun, sumi, budi)).toBe(true);
+    expect(geserUrutan(bertahun, budi, -1)).toBe(bertahun);
+    expect(geserUrutan(kasus, budi, -1).urutanWafat).toEqual([budi, sumi]);
   });
 });
