@@ -22519,6 +22519,398 @@
    "id": "Keluarga belum lengkap: {bagian}.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kisah_judul",
+   "halaman": "hitung",
+   "id": "Kisah harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.babak_wafat",
+   "halaman": "hitung",
+   "id": "{nama} wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tahun_kosong",
+   "halaman": "hitung",
+   "id": "Tahun ?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.urutan_belum_pasti",
+   "halaman": "hitung",
+   "id": "urutan belum pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.babak_pembuka_pertama",
+   "halaman": "hitung",
+   "id": "{nama} wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.babak_pembuka_lanjut",
+   "halaman": "hitung",
+   "id": "Lalu {nama} wafat, sebelum harta {pemilik} dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.meninggalkan",
+   "halaman": "hitung",
+   "id": "Ia meninggalkan {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sudah_tiada",
+   "halaman": "hitung",
+   "id": "{daftar} sudah lebih dulu tiada.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.belum_dipastikan_hidup",
+   "halaman": "hitung",
+   "id": "{daftar}: belum dipastikan masih hidup atau tidak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.bagian_jadi_milik",
+   "halaman": "hitung",
+   "id": "Bagian {nama} dari harta {pemilik} kini menjadi milik keluarganya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.jeda_tahun",
+   "halaman": "hitung",
+   "id": "{n} tahun kemudian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.jeda_tanpa_tahun",
+   "halaman": "hitung",
+   "id": "Beberapa waktu kemudian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.harta_belum_dibagi",
+   "halaman": "hitung",
+   "id": "Harta {nama} masih belum dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sampai_hari_ini",
+   "halaman": "hitung",
+   "id": "Sampai hari ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.hari_ini",
+   "halaman": "hitung",
+   "id": "Hari ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.yang_masih_hidup",
+   "halaman": "hitung",
+   "id": "Yang masih hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.hari_ini_isi",
+   "halaman": "hitung",
+   "id": "{daftar}. Harta {pemilik} akan dihitung untuk mereka, mengikuti urutan kisah di atas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sebelum_pemilik",
+   "halaman": "hitung",
+   "id": "{tahun} · {nama} wafat, sebelum {pemilik}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keliru_judul",
+   "halaman": "hitung",
+   "id": "Ada yang keliru?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keliru_keterangan",
+   "halaman": "hitung",
+   "id": "Pilih yang mau diubah, kami antar ke tempatnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.ubah_sesuatu",
+   "halaman": "hitung",
+   "id": "Ubah sesuatu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.langkah_apa",
+   "halaman": "hitung",
+   "id": "Langkah 1 dari 2 · Apa yang mau diubah?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_keadaan",
+   "halaman": "hitung",
+   "id": "Keadaan seseorang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_waktu",
+   "halaman": "hitung",
+   "id": "Tahun atau urutan wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_orang",
+   "halaman": "hitung",
+   "id": "Anggota keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_peristiwa",
+   "halaman": "hitung",
+   "id": "Peristiwa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.babak_keliru",
+   "halaman": "hitung",
+   "id": "Apa yang keliru di babak ini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.pilih_lain",
+   "halaman": "hitung",
+   "id": "Pilih yang lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.selesai",
+   "halaman": "hitung",
+   "id": "Selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.lebih_dulu",
+   "halaman": "hitung",
+   "id": "Lebih dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.lebih_akhir",
+   "halaman": "hitung",
+   "id": "Lebih akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.catatan_harta",
+   "halaman": "hitung",
+   "id": "Yang dibagi di sini harta {nama}. Harta milik orang lain di kisah ini (kalau ada) dihitung terpisah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.urutan_ikut_tahun",
+   "halaman": "hitung",
+   "id": "Urutannya mengikuti tahun wafat. Ubah tahunnya bila keliru.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.ubah",
+   "halaman": "hitung",
+   "id": "Ubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tutup",
+   "halaman": "hitung",
+   "id": "Tutup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.belum_tahu",
+   "halaman": "hitung",
+   "id": "Belum tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_keadaan_ket",
+   "halaman": "hitung",
+   "id": "Masih hidup, sudah wafat, atau belum tahu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_orang_ket",
+   "halaman": "hitung",
+   "id": "Tambah, hapus, atau ganti nama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.apa_peristiwa_ket",
+   "halaman": "hitung",
+   "id": "Lahir, menikah, atau bercerai di antara kematian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.langkah_siapa_keadaan",
+   "halaman": "hitung",
+   "id": "Langkah 2 dari 2 · Keadaan siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.langkah_siapa_waktu",
+   "halaman": "hitung",
+   "id": "Langkah 2 dari 2 · Tahun atau urutan wafat siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.langkah_bagian",
+   "halaman": "hitung",
+   "id": "Langkah 2 dari 2 · Bagian keluarga yang mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keadaan_sekarang",
+   "halaman": "hitung",
+   "id": "Keadaan {nama} sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tahun_belum_diisi",
+   "halaman": "hitung",
+   "id": "tahun belum diisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tahun_wafat",
+   "halaman": "hitung",
+   "id": "Tahun wafat {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tahun_ingat",
+   "halaman": "hitung",
+   "id": "kalau ingat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.tahun_sekarang",
+   "halaman": "hitung",
+   "id": "Sekarang: {tahun}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.belum_diisi",
+   "halaman": "hitung",
+   "id": "Belum diisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.urutan_opsi",
+   "halaman": "hitung",
+   "id": "Urutan: {nama} wafat lebih dulu atau lebih akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keadaan_babak",
+   "halaman": "hitung",
+   "id": "Keadaan salah satu orang di babak ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keadaan_babak_ket",
+   "halaman": "hitung",
+   "id": "Misalnya ternyata masih hidup, atau sudah wafat lebih dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.orang_babak",
+   "halaman": "hitung",
+   "id": "Ada yang kurang atau berlebih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.orang_babak_ket",
+   "halaman": "hitung",
+   "id": "Tambah, hapus, atau ganti nama orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.keadaan_siapa",
+   "halaman": "hitung",
+   "id": "Keadaan siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.wafat_apa",
+   "halaman": "hitung",
+   "id": "{nama} wafat…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.bagian_mana",
+   "halaman": "hitung",
+   "id": "Bagian keluarga yang mana?",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
