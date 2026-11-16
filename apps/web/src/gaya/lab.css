@@ -100,3 +100,9 @@ button.tautan-cari{padding:0;border:0;background:none;cursor:pointer}
   .lab-rak-daftar .lab-berkas:hover,.lab-rak-daftar .lab-berkas:focus-within,button.ubin:hover{transform:none}
   .panel-lab button.kartu-lanjut-hero:hover .panah-bulat,button.ubin:hover .panah-bulat{transform:none}
 }
+
+/* Pintu Lab: deretan kartu selebar grid; butir daftar bertipe isi, bukan judul. */
+.tata-beranda>.kartu-pilihan-deret{grid-column:1/-1}
+.kartu-pilihan-deret .kartu-pilihan ul{font:500 14px/1.5 var(--font-sans);color:var(--ink);display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.kartu-pilihan-deret .kartu-pilihan ul li{padding-inline-start:18px;position:relative}
+.kartu-pilihan-deret .kartu-pilihan ul li::before{content:"";position:absolute;inset-inline-start:2px;top:.6em;width:6px;height:6px;border-radius:50%;background:var(--ink-muted)}
