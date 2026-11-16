@@ -140,7 +140,7 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
         labelLanjut={berikutnya ? t('hitung.kanvas.lanjut_ke', { bagian: judulPendek(kasus, berikutnya) }) : t('hitung.kanvas.selesai_ke_periksa')}
         saatLanjut={lanjut}>
         {adalahYaTidak && (
-          <YaTidak ya={ya} tidak={anggotaBagian(kasus, aktif).length === 0 && bagianDijawab(kasus, aktif)}
+          <YaTidak ya={ya} tidak={anggotaBagian(kasus, aktif).length === 0 && bagianDijawab(kasus, aktif)} tandai={tandaiLokal || tandaiKurang}
             saatYa={() => jawabYa(aktif)} saatTidak={() => saatPilihTidak(aktif)} />
         )}
         <BagianKeluarga kasus={kasus} bagian={aktif} ubah={ubah} ya={ya} disorot={disorot} tandaiKurang={tandaiLokal || (tandaiKurang && !lengkap)} />
@@ -162,12 +162,17 @@ export function KanvasKeluarga({ kasus, ubah, tandaiKurang, fokusBagian, fokusOr
 }
 
 /** Tanpa jawaban bawaan: keduanya tidak terpilih sampai pengguna memilih. */
-function YaTidak({ ya, tidak, saatYa, saatTidak }: { ya: boolean; tidak: boolean; saatYa: () => void; saatTidak: () => void }) {
+function YaTidak({ ya, tidak, tandai, saatYa, saatTidak }: { ya: boolean; tidak: boolean; tandai: boolean; saatYa: () => void; saatTidak: () => void }) {
+  const salah = tandai && !ya && !tidak;
   return (
-    <div className="ya-tidak" role="radiogroup" aria-labelledby="judul-bagian-aktif">
-      <button type="button" role="radio" aria-checked={ya} onClick={saatYa}>{t('hitung.kanvas.ya')}</button>
-      <button type="button" role="radio" aria-checked={tidak} onClick={saatTidak}>{t('hitung.kanvas.tidak')}</button>
-    </div>
+    <>
+      <div className={salah ? 'ya-tidak galat' : 'ya-tidak'} role="radiogroup" aria-labelledby="judul-bagian-aktif"
+        {...(salah ? { 'aria-invalid': true, 'aria-describedby': 'ya-tidak-galat', tabIndex: -1 } : {})}>
+        <button type="button" role="radio" aria-checked={ya} onClick={saatYa}>{t('hitung.kanvas.ya')}</button>
+        <button type="button" role="radio" aria-checked={tidak} onClick={saatTidak}>{t('hitung.kanvas.tidak')}</button>
+      </div>
+      {salah && <p className="pesan-galat" id="ya-tidak-galat">{t('hitung.kanvas.pilih_ya_tidak')}</p>}
+    </>
   );
 }
 

@@ -137,15 +137,11 @@ export function PertanyaanHamil({ kasus, idMayit, ubah }: Props) {
         </DialogKonfirmasi>
       )}
       <section className="penutup-babak" aria-labelledby={`${id}-hamil`}>
-        <h3 id={`${id}-hamil`} className="judul-bagian-kecil">{t('hitung.janin.tanya', { mayit })}</h3>
+        <h3 id={`${id}-hamil`} className="pertanyaan-bagian">{t('hitung.janin.tanya', { mayit })}</h3>
         <p className="keterangan">{t('hitung.janin.tanya_ket')}</p>
-        <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby={`${id}-hamil`}>
-          <button type="button" role="radio" aria-checked={!ada} className="kartu-pilihan kecil" onClick={pilihTidakAda}>
-            <span>{t('hitung.janin.tidak_ada')}</span>
-          </button>
-          <button type="button" role="radio" aria-checked={ada} className="kartu-pilihan kecil" onClick={() => setAda(true)}>
-            <span>{t('hitung.janin.ada')}</span>
-          </button>
+        <div className="ya-tidak" role="radiogroup" aria-labelledby={`${id}-hamil`}>
+          <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{t('hitung.janin.tidak_ada')}</button>
+          <button type="button" role="radio" aria-checked={ada} onClick={() => setAda(true)}>{t('hitung.janin.ada')}</button>
         </div>
         {ada && (
           <>

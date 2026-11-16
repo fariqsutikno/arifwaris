@@ -17,9 +17,10 @@ interface Props {
   saatUbahNama: (nama: string) => void;
   saatUbahTahun: (tahun: TanggalKira | undefined) => void;
   saatPilihPintu: (pintu: Pintu) => void;
+  tandaiKurang?: boolean;
 }
 
-export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUbahNama, saatUbahTahun, saatPilihPintu }: Props) {
+export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUbahNama, saatUbahTahun, saatPilihPintu, tandaiKurang = false }: Props) {
   const pewaris = kasus?.graf.orang[kasus.graf.idPewaris];
   const pilihan: Array<['L' | 'P', string, string]> = [['L', t('hitung.laki_laki'), t('hitung.pewaris_laki_ket')], ['P', t('hitung.perempuan'), t('hitung.pewaris_perempuan_ket')]];
   const perluKonfirmasi = !!kasus && !bolehUbahJenisKelamin(kasus.graf, kasus.graf.idPewaris);
@@ -46,7 +47,7 @@ export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUb
       {kasus?.jenisKasus === 'nyata' && <>
         <IsianTahun label={t('hitung.kanvas.tahun_wafat_tanya', { nama: namaSingkat(kasus, kasus.graf.idPewaris) })} petunjuk={t('hitung.kanvas.boleh_kosong')}
           contoh={t('hitung.kanvas.tahun_contoh')} nilai={kasus.waktu?.[kasus.graf.idPewaris]?.wafat} saatUbah={saatUbahTahun} />
-        <PertanyaanPintu nama={namaSingkat(kasus, kasus.graf.idPewaris)} nilai={kasus.pintu} saatPilih={saatPilihPintu} />
+        <PertanyaanPintu nama={namaSingkat(kasus, kasus.graf.idPewaris)} nilai={kasus.pintu} saatPilih={saatPilihPintu} tandai={tandaiKurang && !kasus.pintu} />
       </>}
       {tertunda && (
         <KonfirmasiGanti saatBatal={() => setTertunda(null)} saatLanjut={() => { saatGantiDanKosongkan(tertunda); setTertunda(null); }} />

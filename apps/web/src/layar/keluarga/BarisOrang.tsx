@@ -100,7 +100,7 @@ export function BarisOrang({ kasus, id, kunci, milik, ubah, tandaiKurang, disoro
         </button>
       )}
       {akanHapus && (
-        <DialogKonfirmasi judul={t('hitung.pohon.hapus_judul', { nama })} labelLanjut={t('hitung.pohon.hapus')} labelBatal={t('umum.batal')}
+        <DialogKonfirmasi bahaya judul={t('hitung.pohon.hapus_judul', { nama })} labelLanjut={t('hitung.pohon.hapus')} labelBatal={t('umum.batal')}
           saatBatal={() => setAkanHapus(false)} saatLanjut={() => { setAkanHapus(false); ubah(k => hapusBaris(k, id)); }}>
           <p>{dampak.menjadiPenghubung ? t('hitung.pohon.hapus_penghubung', { nama }) : t('hitung.pohon.hapus_biasa', { nama })}</p>
           {ikutTerhapus.length > 0 && <p>{t('hitung.kanvas.konfirmasi_tidak_isi', { nama: ikutTerhapus.map(lain => namaSingkat(kasus, lain)).join(', ') })}</p>}

@@ -81,7 +81,7 @@ function KonfirmasiHapus({ kasus, idOrang, saatBatal, saatLanjut }: { kasus: Kas
   const nama = namaSingkat(kasus, idOrang);
   const { menjadiPenghubung, pasangan } = dampakHapus(kasus.graf, idOrang);
   return (
-    <DialogKonfirmasi judul={t('hitung.pohon.hapus_judul', { nama })} labelLanjut={t('hitung.pohon.hapus')} labelBatal={t('hitung.pohon.batal')} saatLanjut={saatLanjut} saatBatal={saatBatal}>
+    <DialogKonfirmasi bahaya judul={t('hitung.pohon.hapus_judul', { nama })} labelLanjut={t('hitung.pohon.hapus')} labelBatal={t('hitung.pohon.batal')} saatLanjut={saatLanjut} saatBatal={saatBatal}>
       <p>{menjadiPenghubung ? t('hitung.pohon.hapus_penghubung', { nama }) : t('hitung.pohon.hapus_biasa', { nama })}</p>
       {pasangan.map(id => <p key={id}>{t('hitung.pohon.hapus_pasangan', { pasangan: namaSingkat(kasus, id) })}</p>)}
     </DialogKonfirmasi>

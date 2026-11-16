@@ -12,6 +12,7 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .aw-btn:focus-visible,.aw-chip:focus-visible,.aw-nav a:focus-visible,.aw-cnt button:focus-visible,.aw-nav-menu:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .aw-btn-primary{background:var(--primary);color:var(--on-primary)}
 .aw-btn-secondary{background:var(--surface-raised);color:var(--ink)}
+.aw-btn-danger{background:var(--danger);color:var(--on-danger)}
 .aw-btn-sun{background:var(--sun);color:var(--on-fill)}
 .aw-btn-ghost{background:transparent;color:var(--primary);border-color:transparent;box-shadow:none;padding:0 8px;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
 .aw-btn-ghost:hover,.aw-btn-ghost:active{transform:none;box-shadow:none}
@@ -170,6 +171,20 @@ body{margin:0;font-family:var(--font-sans);background:var(--surface);color:var(-
 .prefix-uang{display:grid;place-items:center;align-self:stretch;padding:0 12px;background:var(--surface-sunken);border-inline-end:var(--border-w) solid var(--outline);font:700 14px var(--font-display);color:var(--ink-muted)}
 .kotak-uang input{flex:1;min-width:0;height:100%;border:0;background:transparent;padding:0 12px;font:600 17px var(--font-display);color:var(--ink);font-variant-numeric:tabular-nums}
 .kotak-uang input:focus{outline:none}
+.isian-uang{position:relative}
+.kotak-uang.galat{border-color:var(--danger)}
+.pesan-galat{margin:0;color:var(--danger);font:600 13px/1.4 var(--font-sans)}
+.ya-tidak.galat,.daftar-pintu.galat{outline:2px solid var(--danger);outline-offset:4px;border-radius:14px}
+.baris-ketukan{flex-basis:100%}
+.label-melayang{position:absolute;inset-inline-end:14px;top:22px;pointer-events:none;font:700 13px var(--font-sans);color:var(--ink);background:var(--surface-raised);border-radius:999px;padding:2px 8px;box-shadow:var(--shadow-pop-sm);opacity:0}
+@keyframes kedip-uang{from{background:var(--aksen-soft)}}
+@keyframes label-naik{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-22px)}}
+@media (prefers-reduced-motion:no-preference){
+  .kotak-uang.kedip-0{animation:kedip-uang .5s ease-out}
+  .kotak-uang.kedip-1{animation:kedip-uang-b .5s ease-out}
+  .label-melayang{animation:label-naik .9s ease-out forwards}
+}
+@keyframes kedip-uang-b{from{background:var(--aksen-soft)}}
 .isian-uang.besar{max-width:520px}
 .isian-uang.besar .kotak-uang{height:52px}
 .isian-uang.besar input{font-size:21px}
@@ -638,6 +653,9 @@ a.isi-soal:hover b{text-decoration:underline}
 .status-simpan{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--ink-muted)}
 .aksi-konfirmasi{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
 .aksi-konfirmasi .aw-btn{justify-content:center}
+.aksi-konfirmasi.bahaya{display:flex;justify-content:space-between;align-items:center}
+.tautan-batal{min-height:44px;padding:0 4px;border:0;background:none;color:var(--ink);font:600 15px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.tautan-batal:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .aw-btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none;transform:none}
 .isi-konfirmasi p{margin:0;line-height:1.55}
 .isian-kata-kunci{font-weight:600;font-size:14px}

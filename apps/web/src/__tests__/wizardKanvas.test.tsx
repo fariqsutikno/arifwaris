@@ -53,7 +53,7 @@ describe('Wizard memakai kanvas untuk kasus nyata (spec kanvas 5, K1)', () => {
   it('Lanjut saat ada bagian kurang: tidak pindah, status menyebut sisa bagian, baris yang kurang ditandai dan difokuskan', () => {
     const pasangan = daftarBagian(kasusBaru('L'))[0]!;
     render(<Papan kasus={denganHarta(tambahBaris(kasusBaru('L'), pasangan, 'ISTRI'))} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Ke Periksa ›' }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut: Periksa/ }));
     expect(status()).toMatch(/^Masih \d+ bagian, lanjutkan dari Istri\.$/);
     expect(document.querySelector('.grup h2')!.textContent).toBe('Waktu almarhum wafat, apakah beliau punya istri?');
     const baris = document.querySelector('[data-baris-orang]') as HTMLElement;

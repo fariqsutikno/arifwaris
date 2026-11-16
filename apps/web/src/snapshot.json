@@ -9916,7 +9916,7 @@
   {
    "kunci": "hitung.boleh_dikosongkan",
    "halaman": "hitung",
-   "id": "(boleh dikosongkan)",
+   "id": "tidak wajib",
    "ar": "(يجوز تركه فارغا)",
    "versiTerbit": 383
   },
@@ -21298,7 +21298,7 @@
   {
    "kunci": "hitung.kanvas.boleh_kosong",
    "halaman": "hitung",
-   "id": "Boleh kosong.",
+   "id": "tidak wajib",
    "ar": null,
    "versiTerbit": 873
   },
@@ -23161,6 +23161,34 @@
    "kunci": "hitung.almarhumah",
    "halaman": "hitung",
    "id": "Almarhumah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.harta_wajib_isi",
+   "halaman": "hitung",
+   "id": "Isi total harta, harus lebih dari Rp 0.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tambah_cepat_info",
+   "halaman": "hitung",
+   "id": "Ditambah {tambahan}, sekarang {total}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tambahan_jt",
+   "halaman": "hitung",
+   "id": "{jumlah} jt",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pilih_ya_tidak",
+   "halaman": "hitung",
+   "id": "Pilih Ya atau Tidak.",
    "ar": null,
    "versiTerbit": 873
   }

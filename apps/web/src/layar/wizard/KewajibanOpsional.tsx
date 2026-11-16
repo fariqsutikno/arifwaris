@@ -22,10 +22,10 @@ export function KewajibanOpsional({ kasus, ubah }: Props) {
   };
   return (
     <section className="tumpuk" aria-labelledby="tanya-kewajiban">
-      <h2 id="tanya-kewajiban" className="judul-bagian-kecil">{t('hitung.ada_kewajiban_tanya')}</h2>
-      <div className="kartu-pilihan-deret ringkas" role="radiogroup" aria-labelledby="tanya-kewajiban">
-        <button type="button" role="radio" aria-checked={!ada} className="kartu-pilihan kecil" onClick={pilihTidakAda}><span>{t('umum.tidak_ada')}</span></button>
-        <button type="button" role="radio" aria-checked={ada} className="kartu-pilihan kecil" onClick={() => setAda(true)}><span>{t('umum.ada')}</span></button>
+      <h2 id="tanya-kewajiban" className="pertanyaan-bagian">{t('hitung.ada_kewajiban_tanya')}</h2>
+      <div className="ya-tidak" role="radiogroup" aria-labelledby="tanya-kewajiban">
+        <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{t('umum.tidak_ada')}</button>
+        <button type="button" role="radio" aria-checked={ada} onClick={() => setAda(true)}>{t('umum.ada')}</button>
       </div>
       {ada && <p className="catatan">{t('hitung.kewajiban_pengantar')}</p>}
       {ada && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
