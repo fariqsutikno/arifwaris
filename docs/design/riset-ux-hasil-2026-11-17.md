@@ -368,7 +368,7 @@ Susunan bersama: kepala (nama almarhum, kalimat jawaban, potongan harta, madzhab
 ringkasan · Unduh PDF lengkap · Ubah data → pohon → (berlapis: aliran per almarhum) → langkah selanjutnya → Cara menghitung
 (terlipat).
 
-Dicek di browser: lebar HP 375 px tanpa gulir mendatar halaman (pohon bergulir di dalam kotaknya), laptop. Interaksi: buka
+Versi 2 (2026-11-17): disusun ulang sebagai bento grid gaya Logivo (hero gelap berisi ubin bagianmu + ringkasan, ubin pastel: daftar, porsi harta, pohon, aliran, bagikan, langkah selanjutnya, cara menghitung). Dicek di browser: HP 375 px tanpa gulir mendatar halaman (pohon bergulir di dalam kotaknya), laptop 1200 px. Interaksi: buka
 baris + sorot pohon, tahap aliran, pemilih kemungkinan bayi, lembar Kirim ringkasan, banner tugas. Konsol tanpa galat.
 Tidak dicek: pembaca layar, isi PDF (hanya pesan mockup).
 
