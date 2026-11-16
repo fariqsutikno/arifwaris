@@ -4,7 +4,7 @@
    Hanya tema terang (keputusan 2026-10-01): tema gelap dicabut sampai punya desain sendiri. */
 :root{
   color-scheme:light;
-  --surface:#eef3e8;--surface-raised:#ffffff;--surface-sunken:#e4ece1;--outline:#c9d4c6;--outline-kuat:#7d8a82;--divider:#dfe6dc;--motif:#d6e2d2;
+  --surface:#eef3e8;--surface-raised:#ffffff;--surface-sunken:#e4ece1;--outline:#c9d4c6;--divider:#dfe6dc;--motif:#d6e2d2;
   --ink:#14181a;--ink-muted:#525c57;--on-fill:#14181a;--primary:#0e0f10;--on-primary:#ffffff;--primary-soft:#dce8d8;
   --sun:#fde6d8;--pink:#f7c9d6;--lime:#d3ebaa;--pasangan:#c3d4f6;--keturunan:#b5ead0;--leluhur:#d9c9f2;--saudara:#fbd3ac;
   --meninggal:#4a5853;--on-meninggal:#ffffff;

@@ -38,14 +38,9 @@
 .kaki-grup .salah{color:#8a3409;font-weight:500}
 
 .ya-tidak{display:flex;gap:6px;flex-wrap:wrap}
-.ya-tidak button{border:1.5px solid var(--outline-kuat);background:var(--surface-raised);border-radius:999px;padding:9px 18px;min-height:42px;font:500 15px var(--font-sans);cursor:pointer;color:var(--ink)}
-.ya-tidak button:hover{border-color:var(--ink)}
-.ya-tidak button[aria-checked=true]{border-color:var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600}
-
+.ya-tidak button,.seg button,.pilih-belum,.pilih-dialog{border:0;background:var(--surface-raised);box-shadow:var(--shadow-pop-sm);border-radius:999px;padding:8px 16px;min-height:40px;font:500 14px var(--font-sans);cursor:pointer;color:var(--ink);white-space:nowrap}   /* satu ukuran pil; belum terpilih tanpa garis (garis = terpilih) */
+.ya-tidak button[aria-checked=true],.seg button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
 .seg{display:flex;align-self:flex-start;flex-wrap:wrap;gap:4px;max-width:100%}
-.seg button{border:1.5px solid var(--outline-kuat);background:var(--surface-raised);border-radius:999px;padding:6px 12px;min-height:36px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink);white-space:nowrap}
-.seg button:hover{border-color:var(--ink)}
-.seg button[aria-checked=true]{border-color:var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600}
 .pilihan-lain{margin-top:2px}
 
 .orang{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:start;padding:12px;background:#f6f2e9;border-radius:16px;border:1.5px solid transparent}

@@ -21,19 +21,21 @@ export function KewajibanOpsional({ kasus, ubah }: Props) {
     ubah(k => ({ ...k, tirkah: { ...k.tirkah, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
   };
   return (
-    <section className="tumpuk" aria-labelledby="tanya-kewajiban">
-      <h2 id="tanya-kewajiban" className="pertanyaan-bagian">{t('hitung.ada_kewajiban_tanya')}</h2>
-      <div className="ya-tidak" role="radiogroup" aria-labelledby="tanya-kewajiban">
-        <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{t('umum.tidak_ada')}</button>
-        <button type="button" role="radio" aria-checked={ada} onClick={() => setAda(true)}>{t('umum.ada')}</button>
-      </div>
-      {ada && <p className="catatan">{t('hitung.kewajiban_pengantar')}</p>}
+    <>
+      <section className="grup-isian" aria-labelledby="tanya-kewajiban">
+        <div className="kepala-grup"><h2 id="tanya-kewajiban">{t('hitung.ada_kewajiban_tanya')}</h2></div>
+        <div className="ya-tidak" role="radiogroup" aria-labelledby="tanya-kewajiban">
+          <button type="button" role="radio" aria-checked={!ada} onClick={pilihTidakAda}>{t('umum.tidak_ada')}</button>
+          <button type="button" role="radio" aria-checked={ada} onClick={() => setAda(true)}>{t('umum.ada')}</button>
+        </div>
+        {ada && <p className="catatan">{t('hitung.kewajiban_pengantar')}</p>}
+      </section>
       {ada && <LangkahKewajiban kasus={kasus} ubah={ubah} />}
       {tanyaHapus && (
         <DialogKonfirmasi judul={t('hitung.hapus_kewajiban_judul')} labelLanjut={t('hitung.kosongkan')} saatBatal={() => setTanyaHapus(false)} saatLanjut={hapus}>
           <p>{t('hitung.hapus_kewajiban_isi')}</p>
         </DialogKonfirmasi>
       )}
-    </section>
+    </>
   );
 }

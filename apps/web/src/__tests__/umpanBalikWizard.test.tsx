@@ -55,10 +55,10 @@ describe('C1-2/C1-3 Lanjut tertahan menandai isian', () => {
 });
 
 describe('C2 komponen seragam', () => {
-  it('kewajiban memakai pil Ya/Tidak yang sama dan pertanyaan 17px', () => {
+  it('kewajiban memakai pil Ya/Tidak yang sama dan kartu seperti Total harta', () => {
     render(<Papan kasus={{ ...kasusBaru('L'), pintu: 'baru' }} langkah={2} />);
     expect(document.querySelector('[aria-labelledby="tanya-kewajiban"].ya-tidak')).toBeTruthy();
-    expect(document.getElementById('tanya-kewajiban')!.className).toBe('pertanyaan-bagian');
+    expect(document.getElementById('tanya-kewajiban')!.closest('.grup-isian')).toBeTruthy();
   });
 
   it('dialog bahaya: Hapus merah di kanan, Batal tautan di kiri dan berfokus awal', () => {

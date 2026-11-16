@@ -34,6 +34,18 @@ describe('KanvasKeluarga (spec kanvas 5.1, 5.5)', () => {
     expect(within(ringkasan).getByText('Tidak ada')).toBeTruthy();
   });
 
+  it('Ubah pada bagian pertama: kartu aktif tetap di tempatnya, ringkasan bagian sesudahnya di bawah', () => {
+    render(<Uji awal={kasusBaru('L')} />);
+    fireEvent.click(screen.getByRole('radio', { name: 'Tidak' }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut: Anak/ }));
+    fireEvent.click(screen.getByRole('radio', { name: 'Tidak' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah Istri almarhum' }));
+    const kartu = document.querySelector('section.grup')!;
+    const ringkasan = screen.getByRole('list', { name: 'Bagian yang sudah selesai' });
+    expect(kartu.compareDocumentPosition(ringkasan) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(within(ringkasan).getByText('Anak almarhum')).toBeTruthy();
+  });
+
   it('Lanjut saat bagian belum lengkap tidak pindah dan menandai kekurangan', () => {
     render(<Uji awal={kasusBaru('L')} />);
     fireEvent.click(screen.getByRole('button', { name: /Lanjut: Anak/ }));
