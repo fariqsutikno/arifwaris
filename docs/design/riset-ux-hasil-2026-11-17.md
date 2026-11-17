@@ -1378,3 +1378,12 @@ Setelah dijawab: mockup storyboard mode sinema untuk kasus Biasa dan 'Aul dengan
 - **Bentuknya kotak, bukan kue**, seperti batang di mockup putaran 2. Templat di 29c tetap dipakai sebagai daftar adegan, dengan "kue" dibaca sebagai "kotak harta".
 - **Bilangan besar tidak digambar sebagai ratusan kotak kecil.** Kotak menjadi wakil: 72 = 24 kotak yang masing-masing dibelah 3; 288 = 24 kotak dengan label "tiap kotak = 12 potong". Yang ditekankan adalah apa yang sedang dilakukan (memotong ulang, menyamakan potongan), bukan jumlah persisnya.
 - Ekspor video: mulai dari rekam di perangkat.
+
+### 29f. Keputusan pemilik: dua tampilan dan rekaman (2026-11-18)
+
+- **Video tidak disimpan.** Video selalu bisa dibuat ulang dari data linimasa + angka engine. Rekam di perangkat langsung menjadi unduhan; server tidak menyimpan apa pun. Berbagi = tautan kasus yang memutar sinema di browser penerima. Bila kelak perlu MP4 dari server: simpan sementara (mis. R2, hapus otomatis 7 hari), belum sekarang.
+- **Satu pintu, dua tampilan.** Kartu "Langkah demi langkah" di panel "Pelajari cara menghitungnya" membuka mode fokus yang baru dan menggantikan modal lama "Pelajari langkah perhitungan". Di kepala ada pilihan **Teks | Sinema**; default Teks (untuk dicocokkan dengan ustadz, aman tanpa suara). Pindah tampilan tetap di tahap dan langkah yang sama; pilihan terakhir diingat.
+- Mode teks memuat ajakan sekali "Coba versi bersuara" dan tautan **"Tampilkan semua langkah"** (pengganti "Tampilkan semua" di modal lama; semua tahap dalam satu halaman). Sinema tidak memakainya.
+- Subjudul kartu: "Dari 1 sampai selesai · teks atau sinema bersuara".
+- **Satu sumber data**: tiap tahap berisi langkah `{ bagian, narasi, papan, visual }`. Teks mengelompokkan langkah per bagian (pertanyaan, dasar, di keluarga ini, logikanya, hitungan, penghubung); sinema menampilkan satu langkah per adegan. Narasi ditulis dengan angka; pembaca suara mengucapkannya.
+- **Rekaman hanya bingkai video** (panggung + takarir), tanpa tombol dan menu, memakai Region Capture (`CropTarget`, Chrome/Edge). Rekaman berjalan otomatis dari tahap 1 sampai selesai mengikuti panjang suara tiap langkah, lalu berhenti dan mengunduh sendiri. Browser tanpa Region Capture merekam seluruh tab. Suara narasi ikut terekam hanya bila suara tab dibagikan saat izin diminta; suara bawaan browser tidak selalu lewat jalur itu, jadi takarir tetap tertanam di gambar.
