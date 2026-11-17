@@ -762,3 +762,23 @@ terlupakan) · Cara mencoba.
   pembaca layar, kontras otomatis.
 - Kalimat alasan di mockup disusun dari kode alasan jejak engine (mis. `kelasD` [R13-15], `aqall` [R13-8], `MANI istibham` [R13-10]);
   di aplikasi, kalimatnya wajib dari templat diksi.
+
+## 22. Mockup v4 (2026-11-17), dari 12 catatan pemilik atas v3
+
+| Catatan | Di v4 |
+|---|---|
+| Tentang kasus belum memuat tawafuq, tadakhul, asal masalah, jami'ah | Ubin "Tentang kasus ini" dua bagian: KASUS (madzhab + sumber, harta kotor − potongan "dari isianmu", keadaan, jumlah ahli waris per status, pembulatan, tanggal) dan HITUNGAN (asal masalah + alasannya, tashih, 'aul/radd; munasakhat: masalah tiap mayit, perbandingan saham, jami'ah) |
+| Penjelasan lengkap pakai modal; HP pakai laci | Modal di laptop, laci bawah di HP |
+| Pembulatan berupa penjumlahan; pilihan jelas dengan keterangan | Di bawah daftar: Dibagikan + Ditahan + Sisa pembulatan = Harta. Di bawahnya "Pilih jenis pembulatan bagian tiap orang": tiga pilihan berketerangan (transfer bank / angka rapi / tunai) |
+| Pengelompokan daftar | Menerima · Ditahan (atau Menunggu bayi lahir) · Meneruskan bagiannya · Tidak mendapat bagian |
+| Penjelasan lengkap kurang menjawab, tidak seperti versi lama | Isi mengikuti `ModalOrang` sebelum Logivo: Bagiannya (pecahan, persen, nominal), Kenapa segitu, Cara menghitungnya (saham dari tashih × harta), Ahli waris lain yang terdampak, Kapan dapat berapa (teks ahwal dari konten aplikasi, baris "kasus ini" ditandai), Dalilnya (syahid ayat dari konten), Ubah jumlah, Oke paham |
+| Jenis masalah: kategori dulu, lalu jenis, lalu penjelasan | "Ada yang belum pasti" → "Haml dan mafqud" → chip istilah → butir: siapa, berapa kemungkinan, jami'ah, aturan pemberian. Munasakhat: keadaan ke berapa, berapa lapis, siapa yang meninggal kemudian. Gharqa: keadaan ke berapa dari 5 |
+| Munasakhat: jelaskan apa yang harus dibagi | Kotak hijau di daftar: "Yang dibagi sekarang: harta Pak Ahmad, langsung ke 3 orang, sekali saja. Lapis-lapisnya hanya menjelaskan." Judul hero: "Bagikan harta Pak Ahmad langsung ke 3 orang" |
+| Tabel faraidh seperti di kitab | Tabel munasakhat ala kitab (KB 12.3): kolom masalah tiap mayit dengan pengali oranye di kepala kolom, perbandingan "14 : 24 → tawafuq", kolom jami'ah sesudahnya, sel mayit ditandai ✕. Dihitung dari saham engine dan dicek sama dengan jami'ah 288 engine. Kasus biasa: Asal masalah 24 → × 3 → 72. Kasus belum pasti: kolom per kemungkinan + pengali ke jami'ah 10.080 + "Diberi sekarang" |
+| Aliran munasakhat harus dibaca satu-satu | Rute ringkas di atas ("1. Pak Ahmad · Rp 300 jt → 2. Budi · Rp 175 jt → 3. Aminah · Rp 66,7 jt", bisa diketuk). Tiap lapis berupa tabel: Penerima · Rupiah · Selanjutnya ("diterima" atau "→ lapis 3"). Judul menyebut asal: "Bagiannya dari Pak Ahmad (lapis 1) dan Budi (lapis 2)" |
+| Istilah dijelaskan dengan popover | Istilah bergaris titik (munasakhat, jami'ah, tawafuq, tabayun, inqisam, radd, haml, mafqud, gharqa, mauquf, dll.) membuka penjelasan dari glosarium KB bab 15 saat diarahkan atau diketuk |
+| Penjelasan lengkap terlalu banyak klik | Ketuk baris (atau ubin bagianmu, atau kotak di pohon) langsung membuka modal |
+| Kode QS 4:12, R06 membingungkan | Dihapus dari baris. Dalil tampil di dalam modal sebagai ayat Arab + artinya + nama surah |
+
+Dicek di browser: semua tab tanpa galat konsol; laptop 1200 px dan HP 375 px tanpa gulir mendatar halaman (tabel bergulir di dalam kotaknya dengan kolom nama tetap); modal di laptop dan laci di HP; tabel munasakhat cocok dengan saham engine (cek otomatis di konsol).
+Belum: dzawil arham (belum ada contoh kasus engine di mockup), pembaca layar.
