@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pratinjau kontrol bawah</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- Pratinjau riset bagian 30 (HMW-47): kontrol bawah langkah demi langkah. Bingkai HP 360 px, isi sama, hanya kontrol yang berbeda. -->
+<style>
+:root{--ink:#14181a;--muted:#5a645f;--orange:#f2682a;--gelap:#0b1412;--gelap2:#13211e;--frame:#f4f7f0;--font:"Onest",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:#e6efe3;color:var(--ink);font:400 14px/1.45 var(--font);padding:20px 16px 40px}
+h1{font-size:20px;margin:0 0 4px}p{margin:0}
+.atas{max-width:1560px;margin:0 auto 16px}.atas p{color:#2c4136}
+.deret{max-width:1560px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;align-items:start}
+.opsi h2{font-size:15px;margin:0 0 2px;display:flex;gap:8px;align-items:center}
+.opsi h2 b{width:24px;height:24px;border-radius:50%;background:#0e0f10;color:#fff;display:grid;place-items:center;font-size:12px}
+.opsi > p{font-size:13px;color:var(--muted);margin-bottom:10px;min-height:3.9em}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* bingkai HP */
+.hp{width:100%;max-width:340px;height:640px;border-radius:32px;border:8px solid #111;overflow:hidden;display:flex;flex-direction:column;background:var(--frame);position:relative}
+.hp.gelap{background:var(--gelap);color:#e8efe9}
+.kpl{display:flex;align-items:center;gap:8px;padding:12px 12px 8px}
+.kpl .j{flex:1;min-width:0}.kpl .j small{font-size:11px;color:var(--muted);display:block}.gelap .kpl .j small{color:#9fb3aa}
+.kpl .j b{font-size:15px}
+.pill{display:flex;background:#e3e9e0;border-radius:999px;padding:2px;font-size:11.5px;font-weight:600}
+.gelap .pill{background:var(--gelap2)}
+.pill span{padding:4px 8px;border-radius:999px}.pill span.on{background:#0e0f10;color:#fff}.gelap .pill span.on{background:#fff;color:#0e0f10}
+.ib{width:32px;height:32px;border-radius:50%;background:#e3e9e0;display:grid;place-items:center;border:0;color:inherit;cursor:pointer;flex:none}
+.gelap .ib{background:var(--gelap2)}
+.langkah-ke{font-size:11px;color:var(--muted);padding:0 12px 6px}.gelap .langkah-ke{color:#9fb3aa}
+
+.isi{flex:1;margin:0 10px;border-radius:18px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:10px;overflow:hidden;position:relative}
+.gelap .isi{background:var(--frame);color:var(--ink);justify-content:center;align-items:center;text-align:center}
+.isi .lbl{font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.isi li{margin-bottom:4px}
+.kotak{display:grid;grid-template-columns:repeat(12,1fr);gap:2px;width:100%}
+.kotak i{aspect-ratio:1;border-radius:3px;background:#e3e9e0}.kotak i.a{background:#f6a77f}.kotak i.f{background:#f2c46d}.kotak i.s{background:#7fbfa6}
+.papan{font-weight:600;font-size:17px}.papan b{color:var(--orange)}
+.takarir{font-size:12.5px;text-align:center;padding:8px 14px 0;color:#f1f6f2}
+
+/* bar bawah */
+.bawah{padding:8px 12px 12px;border-top:1px solid #dfe6dc;background:#f6f9f2;transition:opacity .4s,transform .4s}
+.gelap .bawah{background:var(--gelap);border-top:0}
+.ruas{display:flex;gap:4px;margin-bottom:6px}.ruas span{flex:var(--n);display:flex;gap:1px}.ruas i{flex:1;height:3px;border-radius:2px;background:#d4ddd1}.gelap .ruas i{background:#2b3c37}.ruas i.l{background:var(--orange)}.ruas i.k{background:#ffb08a}
+.tombol{display:flex;justify-content:center;align-items:center;gap:6px}
+.tb{width:36px;height:36px;border-radius:50%;background:#e3e9e0;display:grid;place-items:center;border:0;color:inherit}
+.gelap .tb{background:var(--gelap2)}
+.tb.putar{width:42px;height:42px;background:var(--orange);color:#fff}
+.utama{height:40px;padding:0 16px;border-radius:999px;background:#0e0f10;color:#fff;font:600 13px var(--font);display:inline-flex;gap:4px;align-items:center;border:0}
+.gelap .utama{background:#fff;color:#0e0f10}
+.posisi{font-size:11px;color:var(--muted);text-align:center;margin-top:4px}
+.menu{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:11.5px}
+.menu u{color:var(--muted)}.gelap .menu u{color:#b9c9c1}
+.ringkas{display:flex;align-items:center;gap:10px}
+.ringkas .kembali{font:600 13px var(--font);text-decoration:underline;text-underline-offset:3px;background:none;border:0;color:inherit;padding:0}
+.ringkas .sela{flex:1}
+.hilang .bawah{opacity:0;transform:translateY(12px);pointer-events:none}
+.ketuk-info{position:absolute;left:0;right:0;bottom:16px;text-align:center;font-size:11px;color:#9fb3aa;opacity:0;transition:opacity .4s}
+.hilang .ketuk-info{opacity:1}
+
+/* menu Lainnya (lembar) */
+.lembar{position:absolute;left:0;right:0;bottom:0;background:#fff;color:var(--ink);border-radius:20px 20px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.25);padding:12px 14px 16px;display:none;z-index:5}
+.lembar.buka{display:block}
+.lembar .judul{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
+.lembar .judul button{background:none;border:0;font:600 13px var(--font);text-decoration:underline;cursor:pointer}
+.lembar .baris{display:flex;gap:10px;align-items:center;padding:9px 2px;border-bottom:1px solid #eef2ec;font-size:13.5px}
+.lembar .baris small{margin-left:auto;color:var(--muted)}
+.lembar .tahapan{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0}
+.lembar .tahapan span{font-size:12px;border:1px solid #dfe6dc;border-radius:999px;padding:3px 9px}.lembar .tahapan span.on{background:#0e0f10;color:#fff;border-color:#0e0f10}
+.catatan{margin-top:10px;font-size:12.5px;color:var(--muted)}
+.catatan b{color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="atas"><h1>Pratinjau kontrol bawah</h1><p>Isi layar sama (tahap Asal masalah, kasus Biasa); yang berbeda hanya kontrolnya. Di A dan B, ketuk ikon titik tiga untuk melihat menu "Lainnya". Di B (sinema), bar bawah hilang sendiri setelah 3 detik; ketuk panggung untuk memunculkannya.</p></div>
+<div class="deret" id="deret"></div>
+
+<script>
+const IK = {
+  kiri: '<svg class="ik" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>', kanan: '<svg class="ik" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>',
+  tKiri: '<svg class="ik" viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6z"/></svg>', tKanan: '<svg class="ik" viewBox="0 0 24 24"><path d="M18 5v14M6 6l8 6-8 6z"/></svg>',
+  putar: '<svg class="ik" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg>', titik: '<svg class="ik" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>',
+  tutup: '<svg class="ik" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+};
+const RUAS = [3, 4, 5, 9, 5, 5], KINI = [3, 5];
+const ruas = () => `<div class="ruas">${RUAS.map((n, t) => `<span style="--n:${n}">${Array.from({ length: n }, (_, l) => `<i class="${t < KINI[0] || (t === KINI[0] && l < KINI[1]) ? 'l' : t === KINI[0] && l === KINI[1] ? 'k' : ''}"></i>`).join('')}</span>`).join('')}</div>`;
+const kotak = `<div class="kotak">${'<i class="a"></i>'.repeat(3)}${'<i class="f"></i>'.repeat(4)}${'<i class="s"></i>'.repeat(17)}</div>`;
+const isiTeks = `<div class="isi"><p class="lbl">Hitungan</p><ul style="margin:0;padding-left:16px"><li>Asal masalah = <b>24</b></li><li>24 ÷ 8 = <b>3</b> kotak untuk Aminah</li><li>24 ÷ 6 = <b>4</b> kotak untuk Fatimah</li><li style="background:#fff1e7;border-radius:6px">24 − 3 − 4 = <b>17</b> kotak untuk Budi dan Siti</li></ul>${kotak}<p class="lbl" style="margin-top:6px">Tabel faraidh</p><div style="height:110px;border-radius:10px;background:linear-gradient(#14181a 0 26px,#fff 26px);border:1px solid #dfe6dc"></div></div>`;
+const isiSinema = `<div class="isi">${kotak}<p class="papan">24 − 3 − 4 = <b>17</b> kotak<br>untuk Budi dan Siti</p></div><p class="takarir">Sisanya, 24 dikurangi 3 dikurangi 4, yaitu 17 kotak, untuk Budi dan Siti.</p>`;
+const kepala = (gelap, titik, langkahDiKepala = true) => `<div class="kpl"><div class="j"><small>Tahap 4 dari 6${langkahDiKepala ? ' · Langkah 8 dari 9' : ''}</small><b>Asal masalah</b></div><span class="pill"><span class="${gelap ? '' : 'on'}">Teks</span><span class="${gelap ? 'on' : ''}">Sinema</span></span>${titik ? `<button class="ib" data-lainnya aria-label="Lainnya">${IK.titik}</button>` : ''}<button class="ib" aria-label="Tutup">${IK.tutup}</button></div>`;
+const lembar = gelap => `<div class="lembar"><div class="judul">Lainnya<button data-tutup>Tutup</button></div>
+  <div class="baris">Lompat ke tahap</div><div class="tahapan">${['Harta', 'Siapa mewarisi', 'Bagian awal', 'Asal masalah', 'Tashih', 'Rupiah'].map((t, i) => `<span class="${i === 3 ? 'on' : ''}">${i + 1}. ${t}</span>`).join('')}</div>
+  ${gelap ? '<div class="baris">Kecepatan<small>1×</small></div><div class="baris">Suara<small>nyala</small></div><div class="baris">Pohon keluarga</div><div class="baris">Tabel faraidh</div>' : '<div class="baris">Tampilkan semua langkah</div>'}
+  <div class="baris">Rekam video<small>hanya panggung</small></div></div>`;
+
+const OPSI = [
+  { kode: 'Kini', judul: 'Sekarang', ket: '11 sasaran di bawah; "Langkah 8 dari 9" tampil dua kali; menu selalu terlihat.',
+    hp: [{ gelap: false, html: kepala(false, false, false) + `<p class="langkah-ke"></p>` + isiTeks + `<div class="bawah">${ruas()}<div class="tombol"><span class="tb">${IK.tKiri}</span><span class="tb">${IK.kiri}</span><span class="utama">Langkah berikutnya ${IK.kanan}</span><span class="tb">${IK.tKanan}</span></div><p class="posisi">Langkah 8 dari 9</p><div class="menu"><u>Tampilkan semua langkah</u><u>Rekam video</u></div></div>` },
+         { gelap: true, html: kepala(true, false, false) + isiSinema + `<div class="bawah">${ruas()}<div class="tombol"><span class="tb">${IK.tKiri}</span><span class="tb">${IK.kiri}</span><span class="tb putar">${IK.putar}</span><span class="utama">Langkah berikutnya ${IK.kanan}</span><span class="tb">${IK.tKanan}</span></div><p class="posisi">Langkah 8 dari 9</p><div class="menu"><u>Pohon</u><u>Tabel</u><u>Kecepatan 1×</u><u>Suara: nyala</u><u>Rekam video</u></div></div>` }],
+    catatan: '<b>Masalah:</b> bar bawah memakan ±160 px di HP; pengguna harus mencari "lanjut" di antara banyak tombol.' },
+  { kode: 'A', judul: 'Satu aksi utama + menu "Lainnya"', ket: 'Bawah: garis kemajuan, "Kembali", "Lanjut" (sinema + putar). Sisanya di titik tiga.',
+    hp: [{ gelap: false, html: kepala(false, true) + isiTeks + `<div class="bawah">${ruas()}<div class="ringkas"><button class="kembali">Kembali</button><span class="sela"></span><span class="utama">Lanjut ${IK.kanan}</span></div></div>` + lembar(false) },
+         { gelap: true, html: kepala(true, true) + isiSinema + `<div class="bawah">${ruas()}<div class="ringkas"><button class="kembali">Kembali</button><span class="sela"></span><span class="tb putar">${IK.putar}</span><span class="utama">Lanjut ${IK.kanan}</span></div></div>` + lembar(true) }],
+    catatan: '<b>Hemat</b> ±70 px. Lompat tahap: ketuk ruas garis kemajuan, atau lewat menu.' },
+  { kode: 'B', judul: 'A + kontrol sinema menghilang sendiri', ket: 'Sama dengan A. Di sinema, bar bawah memudar setelah 3 detik; ketuk panggung untuk memunculkannya. Teks tidak memudar.',
+    hp: [{ gelap: true, hilang: true, html: kepala(true, true) + isiSinema + `<div class="bawah">${ruas()}<div class="ringkas"><button class="kembali">Kembali</button><span class="sela"></span><span class="tb putar">${IK.putar}</span><span class="utama">Lanjut ${IK.kanan}</span></div></div><p class="ketuk-info">Ketuk panggung untuk kontrol</p>` + lembar(true) }],
+    catatan: '<b>Paling lega</b> saat menonton; terasa seperti pemutar video.' },
+  { kode: 'C', judul: 'Ketuk sisi panggung (tidak disarankan)', ket: 'Tanpa tombol: ketuk kanan maju, kiri mundur, seperti Instagram Stories. Hanya garis ruas di atas.',
+    hp: [{ gelap: true, html: `<div style="padding:10px 12px 0">${ruas()}</div>` + kepala(true, true) + isiSinema + `<div style="display:flex;justify-content:space-between;padding:10px 16px 14px;font-size:11px;color:#9fb3aa"><span>← ketuk kiri: mundur</span><span>ketuk kanan: maju →</span></div>` + lembar(true) }],
+    catatan: '<b>Masalah:</b> tidak terlihat oleh pengguna baru; bentrok dengan ketuk istilah.' },
+];
+
+document.getElementById('deret').innerHTML = OPSI.map(o => `<section class="opsi"><h2><b>${o.kode}</b>${o.judul}</h2><p>${o.ket}</p>
+  <div style="display:flex;flex-direction:column;gap:14px">${o.hp.map(h => `<div class="hp ${h.gelap ? 'gelap' : ''}" ${h.hilang ? 'data-hilang' : ''}>${h.html}</div>`).join('')}</div>
+  <p class="catatan">${o.catatan}</p></section>`).join('');
+
+document.addEventListener('click', e => {
+  const hp = e.target.closest('.hp'); if (!hp) return;
+  if (e.target.closest('[data-lainnya]')) return hp.querySelector('.lembar')?.classList.add('buka');
+  if (e.target.closest('[data-tutup]')) return hp.querySelector('.lembar')?.classList.remove('buka');
+  if (hp.hasAttribute('data-hilang')) sembunyikanNanti(hp);
+});
+// B: kontrol muncul saat disentuh, hilang lagi setelah 3 detik diam.
+const DIAM_MS = 3000;
+function sembunyikanNanti(hp) { hp.classList.remove('hilang'); clearTimeout(hp._t); hp._t = setTimeout(() => hp.classList.add('hilang'), DIAM_MS); }
+document.querySelectorAll('[data-hilang]').forEach(sembunyikanNanti);
+</script>
+</body>
+</html>
