@@ -554,7 +554,166 @@ Hitungan kasar untuk rantai **50 generasi** (52 penerima, 50 mayit berurutan):
   lapis**, kamera ikut bergerak, dan bisa dilompati. (Ini kendala, bukan rancangan.)
 - Gerak harus bisa dimatikan (`prefers-reduced-motion`, pengaturan gerak yang sudah ada di aplikasi).
 
-## 16. Pertanyaan sebelum HMW
+## 16. Cara memenuhi syarat dosen: munasakhat 20–50 generasi + kasus gabungan
+
+Syarat: satu kasus bisa memuat rantai munasakhat 20–50 generasi, ditambah janin, orang hilang, khuntsa, dan meninggal
+bersamaan. Dari ukur 15a, **engine sudah benar dan sanggup**; yang perlu dikerjakan adalah kecepatan, batas kemungkinan, dan
+tampilan. Tidak ada aturan fikih yang diubah.
+
+### 16a. Kecepatan (tanpa mengubah hasil)
+
+| Cara | Isi | Usaha | Catatan |
+|---|---|---|---|
+| K1. Hitung di latar (Web Worker) | `jalankan()` pindah ke worker; layar menampilkan "Menghitung 50 generasi…" dengan kemajuan per mayit dan tombol Batal; layar tidak membeku | sedang | Paling penting. Engine sudah fungsi murni tanpa I/O, jadi cocok dipindah |
+| K2. Hitung sekali | Sekarang `jalankan()` dipanggil dua kali (`Hasil` dan `HasilOkLayar`). Cukup sekali | kecil | Langsung memotong waktu separuh |
+| K3. Pakai ulang lapis yang sama antar kemungkinan | Di kasus belum pasti, lapis sebelum orang yang belum pasti identik di semua kemungkinan. Lapis itu cukup dihitung sekali | sedang | Optimasi hisab [KH]. Wajib dijaga dengan tes: hasil harus identik bit demi bit dengan cara sekarang |
+| K4. Ukur di browser HP | Target: < 2 detik untuk 50 generasi + 12 kemungkinan di HP kelas menengah | kecil | Dasar keputusan K3 dan B2 |
+
+### 16b. Batas 256 kemungkinan
+
+| Cara | Isi | Usaha | Catatan |
+|---|---|---|---|
+| B1. Pertahankan batas, tapi tanya dengan pintar | Bila lewat batas, tampilkan orang yang paling banyak menambah kemungkinan lebih dulu ("Memastikan keadaan bayi mengurangi 288 menjadi 48 kemungkinan") | kecil | Sesuai prinsip "data kurang → tanya" |
+| B2. Naikkan batas setelah K1 + K4 | Mis. 1.024 bila worker dan ukur membuktikan masih cepat | kecil | `BATAS_DUNIA` adalah batas keras di CLAUDE.md: **keputusan pemilik** |
+| B3. Pisah sumber yang saling lepas | Ketidakpastian di cabang keluarga yang tidak saling menyentuh tidak perlu dikalikan; tiap orang hanya bergantung pada sumber di cabangnya | besar | Perlu bukti matematis bahwa hasil aqall dan mauquf identik dengan perkalian penuh, lalu tes. Tanpa bukti, jangan dipakai. **Perlu verifikasi** |
+
+### 16c. Angka sangat besar
+
+- Rupiah tetap biasa (harta tetap ukuran wajar).
+- Jami'ah dan saham 30–80 digit: tampil ringkas ("angka 80 digit") dengan tautan "salin angka lengkap"; tabel per mayit
+  dibuka satu per satu, bukan semua kolom sekaligus.
+
+### 16d. Tampilan rantai panjang
+
+Dibahas di HMW-11 di bawah.
+
+**Rekomendasi:** K1 + K2 + K4 dulu (wajib), B1 (wajib), K3 bila ukur HP belum mencapai target, B2 bila pemilik setuju, B3 hanya
+setelah ada bukti. Dengan ini syarat dosen terpenuhi tanpa mengakali hukum: rantai berapa pun panjangnya tetap dihitung
+penuh, dan kasus gabungan di atas batas tetap dijawab lewat pertanyaan, bukan galat.
+
+## 17. HMW lanjutan (dari audit 14–15)
+
+Skor: Paham · Dampak · Usaha (kecil = murah). Ide pertama = paling sederhana.
+
+### HMW-10. Bagaimana agar perpindahan "harta dibagi, lalu bagian seseorang dibagi lagi" terlihat sebagai satu rantai? (M1, M9–M13)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Linimasa vertikal "estafet": tiap lapis satu blok (siapa meninggal, menerima berapa dari siapa, dibagi ke siapa), disambung garis; uang yang diteruskan tampil sebagai pita yang turun ke blok berikutnya | tinggi | tinggi | sedang |
+| B. Diagram aliran (Sankey): lebar pita = rupiah | sedang | tinggi | besar |
+| C. Pohon beranimasi saja | sedang | sedang | sedang |
+| D. Tabel matriks orang × lapis | rendah | sedang | kecil |
+
+**Pilih A, disinkronkan dengan pohon (C).** Mengetuk satu blok menyalakan lapis itu di pohon dan menjalankan alirannya.
+Judul blok "Bagian Budi dari harta Pak Ahmad: Rp 175.000.000", bukan "Harta Budi" (M9). Mayit yang dilewati dan keadaan 1
+tampil sebagai blok tipis berketerangan (M11). Sisa yang keluar tampil sebagai cabang ke luar (M12). Rupiah per lapis diberi
+catatan bila selisih dengan total (M13).
+
+### HMW-11. Bagaimana agar rantai 20–50 generasi tetap terbaca? (15c)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Lipat lapis: tampilkan lapis pertama, lapis yang menyangkut "kamu", dan lapis terakhir; sisanya "12 lapis di antaranya" yang bisa dibuka | tinggi | tinggi | kecil |
+| B. "Jalur hartaku": dari almarhum pertama ke kamu (atau orang yang dipilih), hanya lapis yang dilalui | tinggi | tinggi | sedang |
+| C. Cari orang + lompat ke generasi | tinggi | sedang | kecil |
+| D. Peta mini di samping pohon | sedang | sedang | sedang |
+
+**Pilih A + B + C.** Daftar penerima diberi pencarian dan dikelompokkan per generasi. Ringkasan WhatsApp hanya memuat
+total per orang. PDF memuat semuanya.
+
+### HMW-12. Bagaimana agar pohon cukup besar, bisa diperbesar dan dibuka layar penuh, dan alirannya hidup? (P1, P5, 15e)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Ubin pohon selebar halaman dengan alat: perbesar, perkecil, pas layar, layar penuh (memakai `PohonLayarPenuh` yang sudah ada) | tinggi | tinggi | kecil |
+| B. Aliran per lapis: pandangan pohon bergerak mengikuti uang, berhenti di orang yang meninggal, lalu lanjut; bisa dijeda dan dilompati; mati bila gerak dikurangi | tinggi | tinggi | sedang |
+| C. Lipat cabang yang tidak menerima apa pun | sedang | sedang | sedang |
+
+**Pilih A + B + C.** Animasi diputar saat ubin pohon atau blok aliran **aktif** (diketuk atau terlihat), bukan otomatis
+seluruh rantai.
+
+### HMW-13. Bagaimana agar pohon dan tabel faraidh bisa dibaca bersama tanpa ramai dan tanpa serba-terlipat? (P2, P3, P4, Q2)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Satu ubin dua panel: di laptop pohon (kiri, lebar) dan tabel (kanan) berdampingan dengan sorot silang; di HP satu panel dengan sakelar "Pohon / Tabel" | tinggi | tinggi | sedang |
+| B. Tabel dua tingkat: baris awal ringkas (nama, bagian, rupiah); kolom hisab (asal masalah, tashih, saham) dibuka dengan "Tampilkan hitungan" | tinggi | tinggi | kecil |
+| C. Tabel di bawah pohon, selalu terbuka | tinggi | sedang | kecil |
+| D. Keduanya hanya di mode fokus | sedang | rendah | kecil |
+
+**Pilih A + B.** Mengetuk baris tabel menyorot orangnya di pohon, dan sebaliknya. Jenis masalah tampil sebagai ubin kecil
+selalu terlihat dengan satu kalimat awam ("Bagian pas dengan harta ('adilah)"), detailnya di dalam. Langkah perhitungan
+menjadi pintu ke mode fokus (dibahas di tahap berikutnya), bukan daftar panjang di halaman.
+
+### HMW-14. Bagaimana agar setiap keterangan jelas asalnya? (T1–T5)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Semua kalimat dari jejak engine + templat diksi; tiap kalimat fikih punya tautan rujukan kecil (dalil, KB) | tinggi | tinggi | sedang |
+| B. Penanda "dari isianmu" untuk data masukan (harta, keadaan, urutan), yang membuka langsung ke isian itu di Periksa | tinggi | tinggi | sedang |
+| C. Ubin "Data yang dipakai" (ringkasan isian) | tinggi | sedang | kecil |
+
+**Pilih A + B + C.** Mockup berikutnya hanya memakai kalimat yang ada di jejak engine untuk kasus yang sama.
+
+### HMW-15. Bagaimana agar meninggal bersamaan mudah dipahami? (G1–G6)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Kalimat pembuka dari jawaban keadaan ("Kamu menjawab: meninggal serentak") + alasan satu kalimat dengan rujukan [R13-10] | tinggi | tinggi | kecil |
+| B. Pohon: garis waris antara anggota yang meninggal bersamaan digambar terputus, dengan penanda kejadian | tinggi | tinggi | kecil |
+| C. Satu daftar total per orang, rincian "dari harta Pak Ahmad · dari harta Budi" di dalam baris (pola yang sama dengan munasakhat) | tinggi | tinggi | kecil |
+| D. Keadaan terlupakan [SYF] memakai pola ditahan (HMW-17) dengan dua skenario urutan | tinggi | sedang | sedang |
+
+**Pilih A + B + C + D.**
+
+### HMW-16. Bagaimana agar informasi kasus lengkap dan terkumpul di satu tempat? (I11–I13, L12, L13, 14i)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Ubin "Tentang kasus ini": nama kasus (bisa diubah), madzhab + catatan sumber, harta kotor → potongan → bersih, keadaan khusus yang dipilih, satuan pembulatan, tanggal dihitung | tinggi | tinggi | kecil |
+| B. Nama kasus bisa diubah langsung di judul (ikon pensil) | tinggi | sedang | kecil |
+| C. Madzhab tetap di judul sebagai label kecil | tinggi | sedang | kecil |
+
+**Pilih A + B; madzhab pindah ke ubin informasi** (ide pemilik). Label madzhab kecil tetap di bawah judul hanya bila bukan
+Syafi'i, karena angkanya berbeda dari bawaan.
+
+### HMW-17. Bagaimana agar uang yang ditahan karena banyak sebab tetap jelas? (X1–X12)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Ubin "Uang ditahan" berisi satu baris per sebab: "Rp X untuk bayi Aminah · dibuka setelah lahir", "Rp Y untuk Siti · dibuka setelah ada kabar" | tinggi | tinggi | kecil |
+| B. Pemilih kemungkinan per sumber (bayi: …, Siti: …), angka di daftar ikut berubah | tinggi | tinggi | sedang |
+| C. Pohon menandai sumber ketidakpastian dan cabang yang terdampak | tinggi | sedang | sedang |
+| D. Tiap orang: "pasti Rp X · bisa bertambah sampai Rp Y" | tinggi | tinggi | kecil |
+
+**Pilih A + B + C + D.** Bila lewat batas kemungkinan: B1.
+
+### HMW-18. Bagaimana agar semua materi lama tetap ada tanpa menambah beban? (L1–L13, C1'–C4')
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Tiga lapis tetap: **keluarga** (bagianmu, daftar, uang ditahan, bagikan) → **pemeriksa** (pohon + tabel, jenis masalah, aliran, informasi kasus) → **belajar** (pintu mode fokus, mode tebak, banding madzhab) | tinggi | tinggi | sedang |
+| B. Lembar orang lengkap lagi: kenapa segitu, cara menghitung, kapan dapat berapa, terdampak, dalil, ubah jumlah | tinggi | tinggi | kecil |
+| C. Pecahan dan persen kecil di baris daftar; Atur tampilan dan Sembunyikan nominal di menu titik-tiga ubin daftar | tinggi | sedang | kecil |
+| D. Warna bermakna tetap: hijau = menerima, kuning = ditahan, abu = meninggal/tidak mendapat, oranye = aliran; ubin lain netral | tinggi | sedang | kecil |
+
+**Pilih A + B + C + D.** Satu aksi satu tempat (Kirim ringkasan hanya di hero). Simpan, Bagikan tautan, dan Simpan file kasus
+di menu aksi.
+
+## 18. Prinsip tambahan
+
+9. **Rantai, bukan kepingan:** perpindahan harta antar-lapis selalu terlihat tersambung, di daftar, aliran, dan pohon.
+10. **Skala dulu:** setiap bagian dirancang untuk 50 lapis dan 50 penerima, lalu dicek dengan kasus kecil.
+11. **Setiap kalimat punya asal:** jejak engine, rujukan, atau isian pengguna. Tidak ada kalimat karangan.
+12. **Lambat itu tampilan, bukan alasan:** hitungan panjang berjalan di latar dengan kemajuan dan Batal.
+
+## 19. Pertanyaan sebelum konsep
+
+1. B2: boleh menaikkan `BATAS_DUNIA` (batas keras di CLAUDE.md) setelah ada worker dan ukur HP? Bila ya, sampai berapa?
+2. B3 (memisah sumber yang saling lepas) mau dijajaki sebagai riset engine terpisah, atau cukup B1 dulu?
+3. Apakah dosen punya contoh kasus gabungan atau rantai panjang yang akan dipakai menguji? Bila ada, dijadikan kasus uji.
+
+## 20. Pertanyaan lama (sudah dijawab)
 
 1. Ada bagian lain yang perlu diaudit? (Belum: mode Belajar secara rinci, Banding madzhab, isi PDF lengkap, dan teks Kirim ringkasan.)
 2. Untuk kasus gabungan (14h), apakah ada contoh kasus nyata yang ingin dijadikan acuan, atau saya susun dari kasus uji bab 16?
