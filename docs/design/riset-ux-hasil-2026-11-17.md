@@ -1300,3 +1300,73 @@ Pemilik memilih semua rekomendasi: 37A, 38A+C, linimasa sebagai data (video dire
 - Babak dasar (titik bergaris putus): munasakhat ("Kenapa dibagi berlapis?"), rantai, gharqa, dan hamil + hilang (memperkirakan keadaan → contoh satu kemungkinan sampai tashih 120 → 12 kolom kemungkinan dari engine, tiap kolom menyebut masalah dan pengalinya → bagian terkecil → ditahan → rupiah).
 - Teks [SYF] hamil diluruskan ke KB 13a.4: enam keadaan bayi dipakai untuk pemilik bagian pasti; ahli waris yang berbagi sisa dengan janin diberi 0 karena jumlah janin tidak dibatasi.
 - Sel "↑" diganti sel gabungan (rowspan); istilah diberi popover otomatis pada kemunculan pertama per kartu; pohon memakai lebar tetap 420 px.
+
+## 29. Konsep mode sinema, adegan kue, dan video (catatan pemilik, 2026-11-18)
+
+Catatan pemilik atas mockup putaran 2: label batang terpotong; ingin maju satu langkah kecil secara manual (bukan hanya "lewati ke akhir"); kata "langkah" ambigu; ingin mode fokus seperti bioskop dengan kontrol menumpuk di bawah; video ditampilkan bertahap per langkah kecil, bersuara, dari templat yang tinggal diisi angka; analogi potong kue sangat membantu dan ingin diperbanyak. Bagian ini konsep, belum mockup.
+
+### 29a. Temuan
+
+| # | Temuan | Dampak |
+|---|---|---|
+| F24' | Label "harta = 24 kotak" menutupi judul "Gambarnya". | Sudah diperbaiki (jarak atas batang). |
+| F25' | Ketukan hanya bisa diputar otomatis atau dilewati semua. Pelajar yang membaca lambat tidak bisa maju satu per satu. | Kehilangan kendali; terpaksa jeda-putar berulang. |
+| F26' | "Langkah 4 dari 6" dan nomor 1-2-3 di dalam kartu sama-sama terbaca sebagai langkah. | Pengguna tidak tahu sedang di tingkat mana. |
+| F27' | Mode fokus masih berupa dua kolom (pohon/tabel + kartu) yang semuanya terlihat. Mata harus mencari yang sedang dibahas. | Tidak terasa "fokus"; tidak cocok jadi bingkai video. |
+| F28' | Batang kotak menjelaskan 'aul dengan baik, tetapi hanya ada di 3 langkah. Asal, tashih, munasakhat, dan taqdir belum punya gambar. | Bagian tersulit justru tanpa visual. |
+| F29' | Belum ada suara. | Video tanpa narasi tidak terasa seperti guru. |
+
+### 29b. JTBD
+
+- Saat belajar, aku ingin maju sekecil yang kubutuhkan, supaya tidak tertinggal dan tidak bosan menunggu.
+- Saat menonton penjelasan, aku ingin hanya satu hal yang disorot di layar, supaya tahu harus melihat ke mana.
+- Saat membagikan penjelasan ke keluarga, aku ingin video pendek bersuara yang menunjukkan angka keluarga kami, supaya mereka paham tanpa membuka aplikasi.
+
+### 29c. HMW dan ide berskor (Paham · Dampak · Usaha, 1–3; Usaha 3 = kecil)
+
+**HMW-42 Bagaimana pengguna bisa maju selangkah kecil sendiri?**
+- **A. Dua tombol maju: "langkah berikutnya" (kecil) dan "tahap berikutnya" (besar)**, plus putar otomatis sebagai pilihan. Ketuk layar/spasi = langkah kecil. 3·3·3 **(rekomendasi)**
+- B. Hanya otomatis dengan pengatur kecepatan. 2·1·3
+
+**HMW-43 Bagaimana menghilangkan ambiguitas "langkah"?**
+- **A. Dua tingkat bernama tetap: "Tahap" (besar, sama dengan tahap pipeline: harta, siapa mewarisi, bagian awal, asal masalah, ...) dan "Langkah" (kecil, di dalam tahap).** Kepala menulis "Tahap 4 dari 6 · Asal masalah", bar bawah "Langkah 3 dari 9". Nomor 1-2-3 di kartu (Dasar/Di keluarga ini/Hitungan) diganti ikon, bukan angka. 3·3·3 **(rekomendasi)**
+- B. "Bab" dan "langkah". 2·2·3 ("bab" terasa seperti buku materi).
+
+**HMW-44 Bagaimana mode fokus terasa seperti bioskop?**
+- **A. Panggung tunggal.** Layar gelap, satu panggung di tengah yang menampilkan satu adegan per langkah (kue, pohon yang di-zoom ke orang yang dibahas, atau baris tabel yang sedang diisi). Takarir di bawah panggung. Kontrol menumpuk di bawah seperti pemutar video: baris 1 garis kemajuan (ruas per tahap, titik per langkah); baris 2 tombol tahap sebelumnya · langkah sebelumnya · putar/jeda · langkah berikutnya · tahap berikutnya; baris 3 menu (pohon, tabel, kecepatan, suara, keluar). Pohon dan tabel lengkap dibuka dari menu sebagai lapisan, tidak selalu tampil. 3·3·2 **(rekomendasi)**
+- B. Tetap dua kolom, tetapi panel lain diredupkan. 2·2·3
+
+**HMW-45 Bagaimana analogi kue dipakai di semua bagian yang sulit?**
+Satu perumpamaan dipakai konsisten: **harta = satu kue loyang persegi** (bolu loyang). Loyang persegi dipilih karena bisa dipotong rapi menjadi 24 atau 72 potong, dan potongannya bisa dihitung. Kue bulat cocok untuk 1/2 dan 1/8 tetapi sulit untuk 72. Templat adegan, masing-masing diisi angka dari engine:
+
+| Templat | Dipakai di | Gerakan |
+|---|---|---|
+| Kue utuh | Harta yang dibagi | Kue muncul; biaya jenazah, hutang, wasiat diiris dan disisihkan dulu. |
+| Penghalang | Siapa mewarisi | Tiap orang berdiri di depan meja; yang terhalang tertutup orang yang lebih dekat. |
+| Bagian pasti | Bagian awal | Tiap pemilik fardh menunjuk porsinya (1/8, 1/6) dengan garis putus; ashabah menunggu sisa. |
+| Potong kue | Asal masalah | Pisau memotong kue menjadi 8, lalu 6 tidak pas; potongan disamakan sampai 24 yang pas untuk keduanya. Potongan berpindah ke piring tiap orang. |
+| Potong lagi | Tashih | Potongan Budi dan Siti tidak bisa dibagi 2 : 1; setiap potongan seluruh kue dipotong 3. Piring Aminah tetap terlihat sama besar walau jumlah potongnya bertambah. |
+| Kue kurang | 'Aul | Piring meminta 8 potong, kue hanya 6; kue dipotong ulang menjadi 8 potong lebih kecil. |
+| Kue sisa | Radd | Ada potongan tanpa pemilik; potongan itu dibagi lagi ke piring pemilik fardh (istri/suami dilewati). |
+| Kue dalam kue | Munasakhat | Piring Budi berubah menjadi kue baru yang dipotong 24 untuk keluarganya; potongan Budi (14) dan 24 disamakan, lalu semua kue digabung jadi satu loyang 288. |
+| Banyak meja | Taqdir | 12 meja kecil berdampingan, tiap meja satu kemungkinan; tiap orang mengambil piring terkecilnya; sisanya masuk kotak simpanan (ditahan). |
+| Dua dapur | Meninggal bersamaan | Dua kue dari dua dapur dibagi terpisah, lalu piring tiap orang dijumlahkan. |
+| Uang | Rupiah | Satu potong diberi label rupiah; piring dihitung jadi uang; sisa pembulatan tampil sebagai remah. |
+
+Skor: 3·3·1 **(rekomendasi, dibangun bertahap)**. Urutan pembuatan: Potong kue → Kue kurang → Kue sisa → Potong lagi → Kue dalam kue → Banyak meja → sisanya. Bagian yang tidak cocok dengan kue (dalil, siapa terhalang) tetap memakai pohon dan kartu teks.
+
+**HMW-46 Bagaimana video dibuat dari templat dan bersuara?**
+- Tiap langkah kecil = satu adegan dalam linimasa: `{ templat, angka, narasi, durasi, sorot }`. Layar dan video memutar data yang sama (sudah dimulai di mockup putaran 2 lewat `susunLangkah`).
+- **Suara**: narasi dibacakan (text-to-speech bahasa Indonesia), ditambah efek tipis (bunyi pisau saat memotong, bunyi "tik" saat angka masuk ke tabel). Suara bisa dimatikan; takarir tetap ada.
+- **Dua jalur ekspor**:
+  - **A. Rekam di perangkat**: browser memutar adegan dan merekamnya (MediaRecorder), suara dari pembaca teks browser. Gratis, tanpa server; mutu dan suara bergantung perangkat. 3·2·2
+  - **B. Render di server**: adegan yang sama dirender jadi MP4 dengan suara TTS yang seragam. Hasil rapi dan bisa dibagikan, tetapi butuh server dan biaya per menit. 3·3·1
+  - Rekomendasi: bangun adegan sekali sebagai komponen yang bisa diputar ulang; mulai dari A untuk uji, B bila video jadi fitur publik.
+
+### 29d. Pertanyaan untuk pemilik
+
+1. Nama tingkat: "Tahap" (besar) dan "Langkah" (kecil)?
+2. Perumpamaan harta: kue loyang persegi (bisa dipotong 24/72 dan dihitung), atau kue bulat?
+3. Ekspor video: mulai dari rekam di perangkat (gratis), server belakangan?
+
+Setelah dijawab: mockup storyboard mode sinema untuk kasus Biasa dan 'Aul dengan templat Potong kue, Potong lagi, dan Kue kurang, lengkap dengan narasi bersuara dari browser.
