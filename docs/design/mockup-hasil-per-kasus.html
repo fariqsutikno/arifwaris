@@ -187,6 +187,24 @@ details.lipatM .isiL{padding:0 14px 12px}
 .langkahH div span:first-child{color:var(--muted)}
 .langkahH div:last-child{border:0;font-weight:600}
 .dalil{border-left:3px solid var(--hijau);padding:6px 12px;background:#f6faf5;border-radius:0 12px 12px 0;margin-bottom:8px}
+.pilTahap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pilTahap .pk{display:inline-flex;gap:6px;align-items:center;border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font);cursor:pointer;color:var(--ink)}
+.pilTahap .pk[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.pilTahap .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(20,24,26,.1);font-size:11px}
+.pilTahap .pk[aria-pressed=true] .n{background:rgba(255,255,255,.25)}
+table.faraidh th[data-kolom]{cursor:pointer}
+table.faraidh th[data-kolom] .angka,table.faraidh th[data-kolom] .ket{display:block}
+table.faraidh th.dipilih{background:var(--orange-soft)!important;box-shadow:inset 0 -3px 0 var(--orange)}
+table.faraidh td.dipilih{background:#fff8f2}
+.kotakHitung{margin:12px 0 4px;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.kotakHitung .bag{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.kotakHitung .bag:first-child{border:0}
+.kotakHitung .bag>span:first-child{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+.kotakHitung .bag.d{background:#f6faf5}.kotakHitung .bag.k{background:#fff8f2}
+.kotakHitung .rumus{display:grid;gap:3px;font-variant-numeric:tabular-nums}
+.alurM .subT{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.03em;margin:12px 0 6px}
+.alurM .subT:first-of-type{margin-top:4px}
+@media(max-width:600px){.kotakHitung .bag{grid-template-columns:1fr}}
 .info h3{font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 0;letter-spacing:.02em}
 .jenis .kat{font-size:13px;color:var(--muted)}
 .jenis b.besar{display:block;font-size:18px;font-weight:600;margin-top:2px}
@@ -399,7 +417,11 @@ const bulat = (harta, f) => (harta * f[0] / f[1]) / SATUAN * SATUAN;
 const rupiah = n => 'Rp ' + BigInt(n).toLocaleString('id-ID');
 const rpRingkas = n => { const x = Number(n); return x >= 1e6 ? `Rp ${(x / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt` : rupiah(n); };
 const persen = f => (f[0] * 10000n < f[1] ? '< 0,01%' : (Number(f[0] * 10000n / f[1]) / 100).toLocaleString('id-ID') + '%');
-const teksPec = f => (String(f[1]).length > 6 ? `<span class="ist" tabindex="0">pecahan panjang<span class="pop" role="tooltip"><b>Pecahan lengkap</b>${f[0]}/${f[1]}</span></span>` : `${f[0]}/${f[1]}`);
+let BENTUK = 'sederhana'; // 'sederhana' (1/8) atau 'sama' (9/72) — pilihan pengguna, seperti layar lama
+const pendek = x => (String(x).length > 8 ? `${String(x).slice(0, 4)}…` : String(x));
+const teksPec = f => (String(f[1]).length > 8 ? `<span class="ist" tabindex="0">${pendek(f[0])}/${pendek(f[1])}<span class="pop" role="tooltip"><b>Pecahan lengkap (${String(f[1]).length} digit)</b>${f[0]}/${f[1]}</span></span>` : `${f[0]}/${f[1]}`);
+const pecO = o => (o.pecTeks ? o.pecTeks[BENTUK] : !o.f?.[0] ? '' : BENTUK === 'sama' && o.asli ? teksPec(o.asli) : teksPec(o.f));
+const segBentuk = () => `<div class="segmen" role="group" aria-label="Bentuk pecahan"><button aria-pressed="${BENTUK === 'sederhana'}" data-bentuk="sederhana" title="Disederhanakan">1/8</button><button aria-pressed="${BENTUK === 'sama'}" data-bentuk="sama" title="Penyebut sama, mudah dijumlahkan">9/72</button></div>`;
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const ik = id => `<svg class="ik"><use href="#i-${id}"/></svg>`;
@@ -437,8 +459,15 @@ const AHWAL = {
   ANAK_LK: [['Sisa', 'Selalu mewarisi dan tidak pernah terhalang. Bersama anak perempuan: dapat dua kali bagiannya.']],
   ANAK_PR: [['1/2', 'Sendirian, tanpa anak laki-laki.'], ['2/3', 'Dua orang atau lebih, tanpa anak laki-laki.'], ['Sisa, 1 : 2', 'Bersama anak laki-laki.']],
   SAUDARA_KANDUNG: [['Sisa', 'Tidak ada anak laki-laki, cucu laki-laki, maupun ayah.'], ['Terhalang', 'Ada anak laki-laki, cucu laki-laki, atau ayah.']],
+  // Ringkasan KB bab 4.11–4.12 (belum ada di konten ahwal aplikasi; perlu ditambahkan ke konten sebelum dipakai).
+  CUCU_PR: [['1/2', 'Sendirian, tanpa anak di atasnya.'], ['2/3', 'Dua orang atau lebih, tanpa anak di atasnya.'], ['1/6', 'Bersama satu anak perempuan (penyempurna 2/3).'], ['Terhalang', 'Ada anak laki-laki, atau dua anak perempuan atau lebih.']],
+  SAUDARI_KANDUNG: [['1/2', 'Sendirian, tanpa keturunan, tanpa ayah, tanpa saudara laki-laki kandung.'], ['2/3', 'Dua orang atau lebih, dengan syarat yang sama.'], ['Sisa', 'Bersama anak atau cucu perempuan almarhum (ashabah ma\'al ghair).'], ['Terhalang', 'Ada anak/cucu laki-laki atau ayah.']],
+  HAML: [['Ditahan', 'Janin mewarisi bila lahir hidup; bagiannya ditahan sampai lahir.']],
+  MAFQUD: [['Ditahan', 'Orang hilang diperlakukan dengan dua kemungkinan (hidup dan meninggal); bagiannya ditahan sampai jelas.']],
+  BUKAN: [['—', 'Menantu bukan ahli waris mertuanya.']],
 };
 const DALIL = {
+  ibnuMasud: ['لِلابْنَةِ النِّصْفُ، وَلِابْنَةِ ابْنٍ السُّدُسُ تَكْمِلَةَ الثُّلُثَيْنِ، وَمَا بَقِيَ فَلِلأُخْتِ', 'Anak perempuan 1/2, cucu perempuan 1/6 penyempurna 2/3, sisanya untuk saudari', 'HR al-Bukhari (Ibnu Mas\'ud)'],
   istri18: ['فَإِن كَانَ لَكُمْ وَلَدٌ فَلَهُنَّ الثُّمُنُ', 'Istri mendapat 1/8 bila suami punya anak', 'An-Nisa ayat 12'],
   ibu16: ['وَلِأَبَوَيْهِ لِكُلِّ وَاحِدٍ مِّنْهُمَا السُّدُسُ مِمَّا تَرَكَ إِن كَانَ لَهُ وَلَدٌ', 'Ayah dan ibu masing-masing 1/6 bila ada anak', 'An-Nisa ayat 11'],
   duaKali: ['لِلذَّكَرِ مِثْلُ حَظِّ الْأُنثَيَيْنِ', 'Anak laki-laki mendapat dua kali bagian anak perempuan', 'An-Nisa ayat 11'],
@@ -641,7 +670,7 @@ const daftarNama = ids => { const n = ids.map(i => nama(i).replace(' dalam kandu
 function barisOrang(o, k) {
   const [n, peran, warna] = ORANG[o.id];
   const rp = o.tampil ?? (o.tahan ? 'Ditahan' : rupiah(bulat(HARTA, o.f)));
-  const ket = o.tampilKet ?? (o.tahan && o.maks ? `bisa sampai ${rpRingkas(bulat(HARTA, o.maks))}` : o.f?.[0] ? `${teksPec(o.f)} · ${persen(o.f)}` : '');
+  const ket = o.tampilKet ?? (o.tahan && o.maks ? `bisa sampai ${rpRingkas(bulat(HARTA, o.maks))}` : o.pecTeks ? pecO(o) : o.f?.[0] ? `${pecO(o)} · ${persen(o.f)}` : '');
   if (!saring) NOMINAL[o.id] = o;
   return `<button class="orang ${o.redup ? 'redup' : ''}" data-id="${o.id}" aria-haspopup="dialog">
     <span class="ava" style="background:${warna};${o.id === 'Bayi' ? 'color:#3d2e00' : ''}">${o.id === 'Bayi' ? '?' : n[0]}</span>
@@ -664,7 +693,8 @@ function dataDaftar(k, pakaiSaring = true) {
       });
       return { grup: [[aktif.label, baris]], dibagi: 0n, tahan: 0n, terima: [], meninggal: [], tidak: [], ditahan: [] };
     }
-    const terima = Object.keys(r.total).sort((a, b) => (bulat(HARTA, r.total[b]) > bulat(HARTA, r.total[a]) ? 1 : -1)).map(id => ({ id, f: r.total[id], dari: r.dari[id], alasan: '' }));
+    const tm = tabelMunasakhat(k.rantai);
+    const terima = Object.keys(r.total).sort((a, b) => (bulat(HARTA, r.total[b]) > bulat(HARTA, r.total[a]) ? 1 : -1)).map(id => ({ id, f: r.total[id], asli: [tm.sahamJam[id], tm.jam], dari: r.dari[id], alasan: '' }));
     const meninggal = k.rantai.slice(1).map(([m]) => ({ id: m, f: NOL, redup: true, meninggal: true, dari: r.dari[m], tampil: rupiah(bulat(HARTA, r.masuk[m])), tampilKet: `dibagi lagi di langkah ${r.lapisKe(m)}`, alasan: '' }));
     return { grup: [['Penerima', terima], ['Meninggal sebelum dibagi', meninggal]], dibagi: terima.reduce((a, o) => a + bulat(HARTA, o.f), 0n), tahan: 0n, terima, meninggal, tidak: [], ditahan: [], r };
   }
@@ -720,7 +750,7 @@ function ubinDaftar(k) {
     jumlahan = `<div class="jumlahan">${baris.join('')}${perMayit}</div>`;
   }
   return `<section class="t s7">
-    <div class="kepala-t"><div><h2>${k.taqdir ? 'Siapa dapat berapa sekarang' : k.id === 'tunggu' ? 'Yang sudah pasti' : 'Siapa menerima berapa'}</h2><p class="sub">Ketuk nama untuk penjelasan lengkap.</p></div></div>
+    <div class="kepala-t"><div><h2>${k.taqdir ? 'Siapa dapat berapa sekarang' : k.id === 'tunggu' ? 'Yang sudah pasti' : 'Siapa menerima berapa'}</h2><p class="sub">Ketuk nama untuk penjelasan lengkap.</p></div>${segBentuk()}</div>
     ${k.rantai && !saring ? `<p class="ringkasAkhir"><b>Yang dibagi sekarang:</b> harta Pak Ahmad, langsung ke ${dPenuh.terima.length} penerima di bawah, sekali saja.</p>` : ''}
     ${tandaSaring()}${isi}${jumlahan}</section>`;
 }
@@ -825,13 +855,70 @@ function tabelGharqaHtml() {
     <tfoot><tr><td>Jumlah</td><td>${Object.values(per)[0][1]}</td><td>${rupiah(h)}</td></tr></tfoot></table>`).join('');
 }
 
+const TIPE_TAHAP = [['awal', 'Bagian awal'], ['masalah', 'Asal masalah'], ['aul', "'Aul / radd"], ['tashih', 'Tashih'], ['orang', 'Per orang'], ['kemungkinan', 'Kemungkinan'], ['banding', 'Perbandingan'], ['jamiah', "Jami'ah"], ['rupiah', 'Rupiah']];
+// Kolom proses per kasus: { tipe, kepala, besar, kecil, nilai{id}, mati[], dasar, kasus, rumus[] }
+function kolomProses(k, id) {
+  if (id === 'biasa') return { baris: ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Hasan'], kolom: [
+    { tipe: 'awal', kepala: 'Bagian awal', nilai: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: 'sisa', Hasan: 'terhalang' }, dasar: 'Tiap ahli waris mendapat bagian tertentu (fardh) atau sisa (ashabah) menurut syaratnya.', kasus: 'Istri 1/8 dan ibu 1/6 karena ada anak; anak laki-laki dan perempuan mengambil sisa 2 : 1; kakak terhalang anak laki-laki.', rumus: ['Istri 1/8 · Ibu 1/6 · Anak: sisa · Kakak: 0'] },
+    { tipe: 'masalah', kepala: 'Asal masalah', besar: '24', kecil: '8 dan 6, tawafuq', nilai: { Aminah: 3, Fatimah: 4, Budi: '17', Siti: '↑ bersama' }, dasar: 'Asal masalah = angka terkecil yang bisa dibagi semua penyebut. Bila penyebut sama-sama bisa dibagi angka lain (tawafuq), kalikan yang satu dengan hasil bagi yang lain.', kasus: 'Penyebut 8 dan 6 sama-sama bisa dibagi 2.', rumus: ['8 × (6 ÷ 2) = 24', 'Istri 24 × 1/8 = 3', 'Ibu 24 × 1/6 = 4', 'Sisa 24 − 3 − 4 = 17 untuk anak-anak'] },
+    { tipe: 'tashih', kepala: 'Tashih', besar: '72', kecil: '× 3', nilai: { Aminah: 9, Fatimah: 12, Budi: '51', Siti: '↑ bersama' }, dasar: 'Bila bagian sekelompok tidak habis dibagi jumlah kepalanya, semua bagian dikalikan supaya bulat.', kasus: 'Sisa 17 untuk 3 kepala (anak laki-laki dihitung 2); 17 dan 3 tabayun.', rumus: ['24 × 3 = 72', 'Istri 3 × 3 = 9 · Ibu 4 × 3 = 12 · Anak 17 × 3 = 51'] },
+    { tipe: 'orang', kepala: 'Per orang', nilai: { Aminah: 9, Fatimah: 12, Budi: 34, Siti: 17 }, dasar: 'Bagian kelompok dibagi ke anggotanya; laki-laki dua kali perempuan.', kasus: '51 untuk 3 kepala.', rumus: ['51 ÷ 3 = 17 per kepala', 'Budi 17 × 2 = 34 · Siti 17 × 1 = 17'] },
+    { tipe: 'rupiah', kepala: 'Rupiah', nilai: { Aminah: '37.500.000', Fatimah: '50.000.000', Budi: '141.666.666', Siti: '70.833.333', Hasan: '0' }, dasar: 'Rupiah = saham ÷ jumlah saham × harta, dibulatkan ke bawah.', kasus: 'Harta Rp 300.000.000 dibagi 72.', rumus: ['Istri 9/72 × 300.000.000 = 37.500.000', 'Ibu 12/72 × 300.000.000 = 50.000.000', 'Budi 34/72 × 300.000.000 = 141.666.666', 'Siti 17/72 × 300.000.000 = 70.833.333', 'Jumlah 299.999.999 + sisa pembulatan 1'] }] };
+  if (id === 'bersamaan') return { baris: ['Aminah', 'Siti', 'Zahra', 'Rina'], kolom: [
+    { tipe: 'awal', kepala: 'Bagian · harta Pak Ahmad', nilai: { Aminah: '1/8', Siti: '1/2', Zahra: '1/6', Rina: 'bukan ahli waris' }, dasar: 'Orang yang meninggal bersamaan tidak saling mewarisi; harta tiap orang dihitung sendiri.', kasus: 'Budi tidak dihitung sebagai ahli waris Pak Ahmad.', rumus: ['Istri 1/8 · Putri 1/2 · Cucu perempuan 1/6 (penyempurna 2/3)'] },
+    { tipe: 'masalah', kepala: 'Asal masalah', besar: '24', kecil: 'harta Pak Ahmad', nilai: { Aminah: 3, Siti: 12, Zahra: 4 }, dasar: 'Asal masalah dari penyebut 8, 2, 6.', kasus: '8 dan 6 tawafuq → 24; 2 masuk ke 24.', rumus: ['Istri 3 · Siti 12 · Zahra 4', 'Jumlah 19 < 24, ada sisa 5'] },
+    { tipe: 'aul', kepala: 'Radd', besar: '32', kecil: 'istri tidak ikut radd', nilai: { Aminah: 4, Siti: 21, Zahra: 7 }, dasar: 'Bila ada sisa dan tidak ada ashabah, sisa dikembalikan ke pemilik bagian tertentu selain suami/istri, sebanding bagiannya (radd).', kasus: 'Istri tetap 1/8; sisanya 7/8 dibagi Siti : Zahra = 12 : 4 = 3 : 1.', rumus: ['Istri 1/8 = 4/32', 'Sisa 28: Siti 28 × 3/4 = 21 · Zahra 28 × 1/4 = 7'] },
+    { tipe: 'awal', kepala: 'Bagian · harta Budi', nilai: { Rina: '1/8', Aminah: '1/6', Zahra: '1/2', Siti: 'sisa' }, dasar: 'Harta Budi dihitung sendiri untuk ahli warisnya yang hidup.', kasus: 'Istri 1/8, ibu 1/6, putri 1/2, saudari sisa (bersama putri).', rumus: ['Rina 1/8 · Aminah 1/6 · Zahra 1/2 · Siti sisa'] },
+    { tipe: 'masalah', kepala: 'Asal masalah', besar: '24', kecil: "harta Budi, 'adilah", nilai: { Rina: 3, Aminah: 4, Zahra: 12, Siti: 5 }, dasar: 'Asal masalah dari penyebut 8, 6, 2.', kasus: '8 dan 6 tawafuq → 24.', rumus: ['Rina 3 + Aminah 4 + Zahra 12 = 19', 'Sisa untuk Siti 24 − 19 = 5'] },
+    { tipe: 'rupiah', kepala: 'Rupiah total', nilai: { Aminah: '45.833.333', Siti: '207.291.666', Zahra: '90.625.000', Rina: '6.250.000' }, dasar: 'Rupiah tiap harta dihitung sendiri lalu dijumlahkan per orang.', kasus: 'Harta Pak Ahmad Rp 300.000.000 (÷ 32) dan harta Budi Rp 50.000.000 (÷ 24).', rumus: ['Aminah 37.500.000 + 8.333.333 = 45.833.333', 'Siti 196.875.000 + 10.416.666 = 207.291.666', 'Zahra 65.625.000 + 25.000.000 = 90.625.000', 'Rina 0 + 6.250.000 = 6.250.000'] }] };
+  if (k.taqdir) {
+    const kol = DUNIA.map(([t, sh]) => { const g = Object.values(sh).reduce((a, v) => fpb(a, BigInt(v)), 0n); return { t, sh, g, m: JAMIAH_GAB / g }; });
+    return { baris: ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Bayi', 'Hasan'], kolom: [
+      { tipe: 'awal', kepala: 'Bagian awal', nilai: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: 'sisa (hilang)', Bayi: 'sisa (janin)', Hasan: 'terhalang' }, dasar: 'Bagian tiap orang menurut syaratnya; yang belum pasti dihitung dalam beberapa kemungkinan.', kasus: 'Siti hilang (2 kemungkinan), janin Aminah (6 kemungkinan).', rumus: ['2 × 6 = 12 kemungkinan'] },
+      ...kol.map(c => ({ tipe: 'kemungkinan', kepala: `Siti ${c.t.Siti === 'hidup' ? 'hidup' : 'meninggal'} · bayi ${TEKS_BAYI[c.t.Bayi]}`, besar: String(c.m), kecil: `× ${c.g}`, nilai: Object.fromEntries(Object.entries(c.sh).map(([i, v]) => [i, String(BigInt(v) / c.g)])), dasar: 'Tiap kemungkinan dihitung sebagai masalah sendiri.', kasus: `Kemungkinan: Siti ${c.t.Siti === 'hidup' ? 'masih hidup' : 'sudah meninggal'}, bayi ${TEKS_BAYI[c.t.Bayi]}.`, rumus: [`Masalah ${c.m}; dikali ${c.g} supaya sama dengan jami'ah 10.080`] })),
+      { tipe: 'jamiah', kepala: 'Diberi sekarang', besar: '10080', kecil: 'bagian terkecil', nilai: { Aminah: 1260, Fatimah: 1680, Budi: 0, Siti: 0, Bayi: 0 }, dasar: "Semua kemungkinan disamakan dalam satu jami'ah; tiap orang diberi bagian terkecilnya; sisanya ditahan.", kasus: 'Aminah dan Fatimah sama di semua kemungkinan; Budi, Siti, dan bayi belum pasti.', rumus: ['Aminah 1260 · Fatimah 1680', 'Ditahan 10080 − 1260 − 1680 = 7140'] },
+      { tipe: 'rupiah', kepala: 'Rupiah', nilai: { Aminah: '37.500.000', Fatimah: '50.000.000', Budi: 'ditahan', Siti: 'ditahan', Bayi: 'ditahan', Hasan: '0' }, dasar: 'Rupiah = saham ÷ jami\'ah × harta.', kasus: 'Harta Rp 300.000.000 dibagi 10.080.', rumus: ['Aminah 1260/10080 × 300.000.000 = 37.500.000', 'Fatimah 1680/10080 × 300.000.000 = 50.000.000', 'Ditahan 7140/10080 × 300.000.000 = 212.500.000'] }] };
+  }
+  if (k.rantai) {
+    const { kolom: km } = tabelMunasakhat(k.rantai, k.ketLapis), r = hitungRantai(k.rantai);
+    const baris = []; for (const [, per] of k.rantai) for (const i of Object.keys(per)) if (!baris.includes(i)) baris.push(i);
+    const mayit = new Set(k.rantai.map(l => l[0])), kolom = [];
+    km.forEach(c => {
+      if (c.jenis === 'masalah') {
+        const awal = Object.fromEntries(Object.keys(c.per).map(i => [i, ALASAN_LAPIS[c.mayit]?.[i]?.match(/\d+\/\d+|sisa/)?.[0] ?? (i.startsWith('Istri') ? (+i.match(/\d+/)[0] === (c.mayit === 'PEWARIS' ? 1 : +c.mayit.match(/\d+/)[0] + 1) ? '1/8' : '1/6') : 'sisa')]));
+        kolom.push({ tipe: 'awal', kepala: `Bagian · ${nama(c.mayit)}`, nilai: awal, dasar: 'Mayit ini dihitung dengan ahli warisnya sendiri saat ia meninggal.', kasus: `Ahli waris ${nama(c.mayit)}: ${daftarNama(Object.keys(c.per))}.`, rumus: Object.entries(awal).map(([i, v]) => `${nama(i)} ${v}`) });
+        kolom.push({ tipe: 'masalah', kepala: `Masalah ${nama(c.mayit)}`, besar: String(c.total), kecil: c.ket ?? '', nilai: Object.fromEntries(Object.entries(c.per).map(([i, v]) => [i, mayit.has(i) && i !== c.mayit && k.rantai.findIndex(l => l[0] === i) > k.rantai.findIndex(l => l[0] === c.mayit) ? v : v])), mati: Object.keys(c.per).filter(i => mayit.has(i) && k.rantai.findIndex(l => l[0] === i) > k.rantai.findIndex(l => l[0] === c.mayit)), dasar: 'Asal masalah, lalu tashih bila perlu, seperti kasus biasa.', kasus: c.ket ? `Masalah ${nama(c.mayit)}: ${c.ket}.` : `Masalah ${c.total}.`, rumus: [Object.entries(c.per).map(([i, v]) => `${nama(i)} ${v}`).join(' + ') + ` = ${c.total}`] });
+        if (c.saham) kolom.push({ tipe: 'banding', kepala: `Banding ${nama(c.mayit)}`, besar: `${c.saham} : ${c.total}`, kecil: `${c.hub}`, nilai: {}, dasar: 'Bagian mayit di masalah sebelumnya dibandingkan dengan masalahnya sendiri: habis dibagi (inqisam), ada faktor bersama (tawafuq), atau tidak (tabayun).', kasus: `Bagian ${nama(c.mayit)} ${c.saham}, masalahnya ${c.total}: ${c.hub}.`, rumus: c.hub === 'tawafuq' ? [`${c.saham} ÷ ${c.fpb} = ${c.pengaliBaru} · ${c.total} ÷ ${c.fpb} = ${c.pengaliLama}`, `Masalah sebelumnya × ${c.pengaliLama}, masalah ${nama(c.mayit)} × ${c.pengaliBaru}`] : c.hub === 'tabayun' ? [`Tidak ada faktor bersama: masalah sebelumnya × ${c.total}, masalah ${nama(c.mayit)} × ${c.saham}`] : [`${c.saham} ÷ ${c.total} = ${c.pengaliBaru}: masalah ${nama(c.mayit)} × ${c.pengaliBaru}, jami'ah tetap`] });
+      } else {
+        const v = Object.fromEntries(Object.entries(c.saham).map(([i, x]) => [i, String(x).length > 8 ? `${String(x).slice(0, 4)}…` : String(x)]));
+        kolom.push({ tipe: 'jamiah', kepala: c.akhir ? "Jami'ah akhir" : "Jami'ah", besar: String(c.total).length > 8 ? `${String(c.total).length} digit` : String(c.total), kecil: '', nilai: v, dasar: "Jami'ah = masalah sebelumnya × pengalinya. Tiap orang: saham lama × pengali lama + saham baru × pengali baru.", kasus: 'Saham orang yang meninggal dipindahkan ke ahli warisnya.', rumus: Object.entries(c.saham).slice(0, 6).map(([i, x]) => `${nama(i)} ${String(x).length > 12 ? 'angka panjang' : x}`) });
+      }
+    });
+    kolom.push({ tipe: 'rupiah', kepala: 'Rupiah', nilai: Object.fromEntries(Object.keys(r.total).map(i => [i, rupiah(bulat(HARTA, r.total[i])).slice(3)])), dasar: "Rupiah = saham ÷ jami'ah × harta mayit pertama.", kasus: 'Harta Pak Ahmad Rp 300.000.000.', rumus: Object.keys(r.total).slice(0, 6).map(i => `${nama(i)} ${rupiah(bulat(HARTA, r.total[i]))}`) });
+    return { baris, kolom };
+  }
+  return null;
+}
+let TAHAP_AKTIF = null, KOLOM_PILIH = 0;
+function tabelProsesHtml(k, id) {
+  const d = kolomProses(k, id); if (!d) return '';
+  const ada = TIPE_TAHAP.filter(([t]) => d.kolom.some(c => c.tipe === t));
+  TAHAP_AKTIF ??= k.cari ? ['masalah', 'rupiah'] : ada.map(([t]) => t);
+  const kol = d.kolom.map((c, i) => ({ ...c, i })).filter(c => TAHAP_AKTIF.includes(c.tipe));
+  if (!kol.some(c => c.i === KOLOM_PILIH)) KOLOM_PILIH = kol[0]?.i ?? 0;
+  const pilih = d.kolom[KOLOM_PILIH];
+  return `<div class="pilTahap">${ada.map(([t, l], n) => `<button class="pk" data-tahap="${t}" aria-pressed="${TAHAP_AKTIF.includes(t)}"><span class="n">${n + 1}</span>${l}</button>`).join('')}</div>
+    <div class="tabelWadah"><table class="faraidh"><thead><tr><th>Ahli waris</th>${kol.map(c => `<th class="${c.i === KOLOM_PILIH ? 'dipilih' : ''}" data-kolom="${c.i}" role="button" tabindex="0">${c.kepala}${c.besar ? `<span class="angka">${c.besar}</span>` : ''}${c.kecil ? `<span class="ket">${c.kecil}</span>` : ''}</th>`).join('')}</tr></thead>
+    <tbody>${d.baris.map(r => `<tr data-id="${r}"><td>${nama(r)}<span class="ket">${ORANG[r][1]}</span></td>${kol.map(c => `<td class="${c.i === KOLOM_PILIH ? 'dipilih' : ''} ${c.mati?.includes(r) ? 'mati' : ''}">${c.nilai[r] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    ${pilih ? `<div class="kotakHitung"><div class="bag"><span>KOLOM</span><b>${pilih.kepala}${pilih.besar ? ` · ${pilih.besar}` : ''}</b></div><div class="bag d"><span>DASAR</span><span>${pilih.dasar}</span></div><div class="bag k"><span>DI KASUS INI</span><span>${pilih.kasus}</span></div><div class="bag"><span>HITUNGAN</span><span class="rumus">${pilih.rumus.map(x => `<span>${x}</span>`).join('')}</span></div></div>` : ''}`;
+}
+
 function ubinPohonTabel(k, id) {
   const p = id === 'bersamaan' ? pohonGharqa() : k.pohon?.();
   if (!p) return '';
-  const tabel = id === 'bersamaan' ? tabelGharqaHtml() : k.rantai ? tabelMunasakhatHtml(k) : k.taqdir ? tabelTaqdirHtml() : id === 'biasa' ? tabelBiasa() : '';
   const judulTabel = k.rantai ? 'Tabel munasakhat' : k.taqdir ? 'Tabel kemungkinan' : 'Tabel faraidh';
   return `<section class="t s12" id="ubinPT">
-    <h2>Pohon keluarga dan ${judulTabel.toLowerCase()}</h2><p class="sub">Ketuk orang di pohon atau baris di tabel; keduanya menyorot orang yang sama.</p>
+    <h2>Pohon keluarga dan ${judulTabel.toLowerCase()}</h2><p class="sub">Pilih tahap yang ingin dilihat. Ketuk judul kolom untuk penjelasan hitungannya; ketuk orang untuk menyorot di pohon dan tabel.</p>
     <div class="segmen segPanel" role="group"><button aria-pressed="true" data-lihat="pohon">Pohon</button><button aria-pressed="false" data-lihat="tabel">Tabel</button></div>
     <div class="panelDua" data-lihat="pohon">
       <div class="panel pohonP" id="panelPohon">
@@ -841,10 +928,9 @@ function ubinPohonTabel(k, id) {
         <div class="legPohon"><span class="petunjukGeser">Geser atau perkecil untuk melihat semua ·</span><span><i style="background:#eef7ea;border-color:#6aa587"></i>menerima</span><span><i style="background:#fff7e0;border-color:#d9b44a;border-style:dashed"></i>ditahan</span><span><i style="background:#eceee9;border-color:#8f9a93"></i>sudah meninggal</span><span><i style="background:#f3f4f1;border-color:#cfd6cd;border-style:dashed"></i>tidak mendapat</span>${id === 'bersamaan' ? '<span><i style="background:#fff;border-color:#c0503a;border-style:dashed"></i>tidak saling mewarisi</span>' : ''}<span><i style="background:#f2682a;border-color:#f2682a"></i>aliran harta</span></div>
       </div>
       <div class="panel tabelP" id="panelTabel">
-        <div class="alat"><b style="font-size:14px;padding:0 6px">${judulTabel}</b><button class="pk" id="tampilProses" aria-checked="false" style="margin-left:auto">Tampilkan proses</button></div>
-        ${k.taqdir ? `<div style="padding:8px 10px;border-bottom:1px solid var(--line)" id="pilihKemungkinan"></div>` : ''}
-        <div class="tabelWadah">${tabel}</div>
-        <div class="tabelKaki"><span class="petunjukGeser">Geser ke kanan untuk kolom lain →</span><span>${k.rantai ? 'Nyalakan "Tampilkan proses" untuk melihat perbandingan dan pengali. ✕ = meninggal, bagiannya pindah ke kolom berikutnya.' : k.taqdir ? 'Tiap kolom satu kemungkinan; angka oranye = pengali ke jami\'ah.' : 'Nyalakan "Tampilkan proses" untuk melihat asal masalah dan pengali.'}</span></div>
+        <div class="alat"><b style="font-size:14px;padding:0 6px">${judulTabel}</b></div>
+        <div style="padding:10px 10px 0">${tabelProsesHtml(k, id)}</div>
+        <div class="tabelKaki"><span class="petunjukGeser">Geser ke kanan untuk kolom lain →</span><span>${k.rantai ? '✕ = meninggal, bagiannya pindah ke kolom berikutnya.' : 'Kolom yang disorot dijelaskan di kotak bawah tabel.'}</span></div>
       </div>
     </div></section>`;
 }
@@ -906,11 +992,12 @@ function daftarGharqa(k) {
   const orang = ['Aminah', 'Siti', 'Zahra', 'Rina'].map(id => {
     const bagian = GHARQA_HARTA.filter(([m, , per]) => per[id] && (!hartaSaring || m === hartaSaring)).map(([m, h, per, al]) => [m, h * BigInt(per[id][0]) / BigInt(per[id][1]) / SATUAN * SATUAN, al[id]]);
     const tot = bagian.reduce((a, b) => a + b[1], 0n);
-    return bagian.length ? { id, f: pec(tot, 350000000n), tampil: rupiah(tot), tampilKet: hartaSaring ? bagian[0][2] : bagian.length > 1 ? 'dari dua harta' : `dari harta ${nama(bagian[0][0])}`, dariHarta: bagian, alasan: '', kenapa: bagian.map(([m, n, al]) => `Dari harta ${nama(m)}: ${al} (${rupiah(n)}).`) } : null;
+    const perH = GHARQA_HARTA.filter(([m, , per]) => per[id] && (!hartaSaring || m === hartaSaring)).map(([, , per]) => per[id]);
+    return bagian.length ? { id, f: pec(tot, 350000000n), pecTeks: { sederhana: perH.map(([a, b]) => teksPec(pec(BigInt(a), BigInt(b)))).join(' + '), sama: perH.map(([a, b]) => `${a}/${b}`).join(' + ') }, tampil: rupiah(tot), tampilKet: hartaSaring ? bagian[0][2] : undefined, dariHarta: bagian, alasan: '', kenapa: bagian.map(([m, n, al]) => `Dari harta ${nama(m)}: ${al} (${rupiah(n)}).`) } : null;
   }).filter(Boolean);
   const perHarta = GHARQA_HARTA.map(([m, h, per]) => [m, Object.values(per).reduce((a, [x, y]) => a + h * BigInt(x) / BigInt(y) / SATUAN * SATUAN, 0n)]);
   const jml = perHarta.reduce((a, [, v]) => a + v, 0n);
-  return `<section class="t s7"><h2>Siapa menerima berapa</h2><p class="sub">${hartaSaring ? '' : 'Total dari dua harta. '}Ketuk nama untuk penjelasan lengkap.</p>
+  return `<section class="t s7"><div class="kepala-t"><div><h2>Siapa menerima berapa</h2><p class="sub">${hartaSaring ? '' : 'Total dari dua harta. '}Ketuk nama untuk penjelasan lengkap.</p></div>${segBentuk()}</div>
     ${tandaSaring()}<p class="grupJudul"><span>Penerima</span><span>${orang.length} orang</span></p>${orang.map(o => barisOrang(o, k)).join('')}
     <div class="jumlahan">${perHarta.map(([m, v]) => barisJumlah(`Dibagikan dari harta ${nama(m)}`, rupiah(v), `harta:${m}`)).join('')}
     <div class="b"><span>Sisa pembulatan ${pilBulat()}</span><b>${rupiah(350000000n - jml)}</b></div><div class="b hasil"><span>Dua harta</span><b>Rp 350.000.000</b></div></div></section>`;
@@ -949,64 +1036,114 @@ function sumbanganJamiah(k, idOrang) {
   }).filter(Boolean);
 }
 
+// PERAN: tiap orang, per harta/langkah, dengan dasar (ahwal + dalil), keadaan di keluarga ini, dan hitungan bertambah.
+// [mayit, sebagai, kunciAhwal, baris "kasus ini", dalil, syarat, hitungan[], rupiah]
+const PERAN = {
+  biasa: {
+    Aminah: [['PEWARIS', 'istri', 'ISTRI', 1, 'istri18', 'Almarhum punya anak: Budi dan Siti.', [['Bagian dasar', '1/8 dari harta (bukan 1/4)'], ['Asal masalah 24', '24 × 1/8 = 3'], ['Tashih × 3', '3 × 3 = 9 dari 72'], ['Rupiah', '9/72 × Rp 300.000.000 = Rp 37.500.000']], 37500000n]],
+    Fatimah: [['PEWARIS', 'ibu', 'IBU', 0, 'ibu16', 'Almarhum punya anak: Budi dan Siti.', [['Bagian dasar', '1/6 dari harta (bukan 1/3)'], ['Asal masalah 24', '24 × 1/6 = 4'], ['Tashih × 3', '4 × 3 = 12 dari 72'], ['Rupiah', '12/72 × Rp 300.000.000 = Rp 50.000.000']], 50000000n]],
+    Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bersama anak perempuan (Siti): laki-laki dua kali perempuan.', [['Bagian dasar', 'sisa, bersama Siti (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51; 51 ÷ 3 kepala = 17'], ['Bagian Budi', '17 × 2 = 34 dari 72'], ['Rupiah', '34/72 × Rp 300.000.000 = Rp 141.666.666']], 141666666n]],
+    Siti: [['PEWARIS', 'anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bersama anak laki-laki (Budi): separuh bagian Budi.', [['Bagian dasar', 'sisa, bersama Budi (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51; 51 ÷ 3 kepala = 17'], ['Bagian Siti', '17 × 1 = 17 dari 72'], ['Rupiah', '17/72 × Rp 300.000.000 = Rp 70.833.333']], 70833333n]],
+    Hasan: [['PEWARIS', 'kakak laki-laki', 'SAUDARA_KANDUNG', 1, null, 'Almarhum punya anak laki-laki (Budi), yang lebih dekat. Saudara terhalang (hajb hirman).', [['Bagian', '0, terhalang']], 0n]],
+  },
+  berlapis: {
+    Siti: [['PEWARIS', 'anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bersama anak laki-laki (Budi), yang masih hidup saat Pak Ahmad meninggal.', [['Masalah Pak Ahmad', 'asal 8 → tashih 24; Siti 7 dari 24'], ['Rupiah', '7/24 × Rp 300.000.000 = Rp 87.500.000']], 87500000n],
+      ['Budi', 'saudari Budi', 'SAUDARI_KANDUNG', 2, 'ibnuMasud', 'Budi meninggalkan putri (Zahra), tanpa anak laki-laki dan tanpa ayah: saudari mengambil sisa.', [['Masalah Budi 24', 'Rina 3 + Aminah 4 + Zahra 12 = 19'], ['Sisa', '24 − 19 = 5 untuk Siti'], ['Rupiah', '5/24 × Rp 175.000.000 = Rp 36.458.333']], 36458333n],
+      ['Aminah', 'putri Aminah', 'ANAK_PR', 0, 'ibnuMasud', 'Aminah meninggalkan putri (Siti) dan cucu (Zahra); tidak ada ashabah, jadi sisa dikembalikan (radd).', [['Asal 6', 'Siti 6 × 1/2 = 3 · Zahra 6 × 1/6 = 1'], ['Radd', '3 + 1 = 4 < 6, masalah menjadi 4 → Siti 3/4'], ['Rupiah', '3/4 × Rp 66.666.666 = Rp 50.000.000']], 50000000n]],
+    Zahra: [['PEWARIS', 'cucu perempuan', 'CUCU_PR', 3, null, 'Ayahnya (Budi) masih hidup saat Pak Ahmad meninggal: cucu terhalang anak laki-laki.', [['Bagian', '0, terhalang']], 0n],
+      ['Budi', 'putri Budi', 'ANAK_PR', 0, 'setengah', 'Putri satu-satunya Budi, tanpa anak laki-laki.', [['Masalah Budi 24', '24 × 1/2 = 12'], ['Rupiah', '12/24 × Rp 175.000.000 = Rp 87.500.000']], 87500000n],
+      ['Aminah', 'cucu Aminah', 'CUCU_PR', 2, 'ibnuMasud', 'Bersama satu anak perempuan (Siti): cucu perempuan mendapat 1/6, lalu tambahan sisa (radd).', [['Asal 6', '6 × 1/6 = 1'], ['Radd', 'masalah menjadi 4 → Zahra 1/4'], ['Rupiah', '1/4 × Rp 66.666.666 = Rp 16.666.666']], 16666666n]],
+    Rina: [['Budi', 'istri Budi', 'ISTRI', 1, 'istri18', 'Budi punya anak (Zahra).', [['Masalah Budi 24', '24 × 1/8 = 3'], ['Rupiah', '3/24 × Rp 175.000.000 = Rp 21.875.000']], 21875000n]],
+    Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bersama anak perempuan (Siti): laki-laki dua kali perempuan.', [['Masalah Pak Ahmad', 'asal 8 → tashih 24; Budi 14 dari 24'], ['Rupiah', '14/24 × Rp 300.000.000 = Rp 175.000.000']], 175000000n]],
+    Aminah: [['PEWARIS', 'istri', 'ISTRI', 1, 'istri18', 'Pak Ahmad punya anak.', [['Masalah Pak Ahmad', '24 × 1/8 = 3'], ['Rupiah', '3/24 × Rp 300.000.000 = Rp 37.500.000']], 37500000n],
+      ['Budi', 'ibu Budi', 'IBU', 0, 'ibu16', 'Budi punya anak (Zahra).', [['Masalah Budi 24', '24 × 1/6 = 4'], ['Rupiah', '4/24 × Rp 175.000.000 = Rp 29.166.666']], 29166666n]],
+  },
+  belumPasti: {
+    Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Budi berbagi sisa harta dengan bayi yang jumlahnya belum diketahui. Menurut madzhab Syafi\'i jumlah janin tidak dibatasi, jadi bagiannya belum bisa dipastikan.', [['Diberi sekarang', '0'], ['Bisa sampai', 'Rp 212.500.000 (bila bayi lahir tidak hidup dan Siti meninggal)']], 0n]],
+    Siti: [['PEWARIS', 'anak perempuan', 'MAFQUD', 0, null, 'Siti hilang tanpa kabar. Bagiannya ditahan sampai ada kepastian.', [['Diberi sekarang', '0'], ['Bisa sampai', 'Rp 70.833.333']], 0n]],
+    Bayi: [['PEWARIS', 'anak almarhum (janin)', 'HAML', 0, null, 'Janin yang dikandung Aminah mewarisi bila lahir hidup.', [['Diberi sekarang', '0, ditahan'], ['Bisa sampai', 'Rp 141.666.666']], 0n]],
+  },
+  bersamaan: {
+    Aminah: [['PEWARIS', 'istri Pak Ahmad', 'ISTRI', 1, 'istri18', 'Pak Ahmad punya anak (Siti). Istri tidak ikut radd.', [['Asal 24', '24 × 1/8 = 3'], ['Radd → 32', 'istri tetap 1/8 = 4/32'], ['Rupiah', '4/32 × Rp 300.000.000 = Rp 37.500.000']], 37500000n],
+      ['Budi', 'ibu Budi', 'IBU', 0, 'ibu16', 'Budi punya anak (Zahra).', [['Asal 24', '24 × 1/6 = 4'], ['Rupiah', '4/24 × Rp 50.000.000 = Rp 8.333.333']], 8333333n]],
+    Siti: [['PEWARIS', 'putri Pak Ahmad', 'ANAK_PR', 0, 'setengah', 'Budi tidak dihitung (meninggal bersamaan), jadi Siti anak perempuan satu-satunya; tidak ada ashabah, sisa dikembalikan (radd).', [['Asal 24', '24 × 1/2 = 12'], ['Radd → 32', 'sisa setelah istri: 28, dibagi Siti : Zahra = 12 : 4 → 21'], ['Rupiah', '21/32 × Rp 300.000.000 = Rp 196.875.000']], 196875000n],
+      ['Budi', 'saudari Budi', 'SAUDARI_KANDUNG', 2, 'ibnuMasud', 'Budi meninggalkan putri (Zahra): saudari mengambil sisa.', [['Asal 24', 'Rina 3 + Aminah 4 + Zahra 12 = 19'], ['Sisa', '24 − 19 = 5'], ['Rupiah', '5/24 × Rp 50.000.000 = Rp 10.416.666']], 10416666n]],
+    Zahra: [['PEWARIS', 'cucu Pak Ahmad', 'CUCU_PR', 2, 'ibnuMasud', 'Ayahnya (Budi) tidak dihitung; bersama satu anak perempuan (Siti): 1/6, lalu tambahan sisa (radd).', [['Asal 24', '24 × 1/6 = 4'], ['Radd → 32', '28 dibagi 12 : 4 → 7'], ['Rupiah', '7/32 × Rp 300.000.000 = Rp 65.625.000']], 65625000n],
+      ['Budi', 'putri Budi', 'ANAK_PR', 0, 'setengah', 'Putri satu-satunya Budi.', [['Asal 24', '24 × 1/2 = 12'], ['Rupiah', '12/24 × Rp 50.000.000 = Rp 25.000.000']], 25000000n]],
+    Rina: [['PEWARIS', 'menantu Pak Ahmad', 'BUKAN', 0, null, 'Menantu bukan ahli waris.', [['Bagian', '0']], 0n],
+      ['Budi', 'istri Budi', 'ISTRI', 1, 'istri18', 'Budi punya anak (Zahra).', [['Asal 24', '24 × 1/8 = 3'], ['Rupiah', '3/24 × Rp 50.000.000 = Rp 6.250.000']], 6250000n]],
+  },
+};
+PERAN.tunggu = { Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bagiannya bergantung pada berapa bayi yang lahir.', [['Sekarang', 'menunggu bayi lahir']], 0n]], Siti: [['PEWARIS', 'anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bagiannya bergantung pada berapa bayi yang lahir.', [['Sekarang', 'menunggu bayi lahir']], 0n]] };
+for (const kasus of ['belumPasti', 'tunggu']) {
+  PERAN[kasus].Aminah = [['PEWARIS', 'istri', 'ISTRI', 1, 'istri18', 'Almarhum punya anak (Budi, Siti, dan bayi), apa pun keadaan bayi dan Siti.', [['Bagian dasar', '1/8 dari harta'], ['Rupiah', '1/8 × Rp 300.000.000 = Rp 37.500.000']], 37500000n]];
+  PERAN[kasus].Fatimah = [['PEWARIS', 'ibu', 'IBU', 0, 'ibu16', 'Almarhum punya anak, apa pun keadaan bayi dan Siti.', [['Bagian dasar', '1/6 dari harta'], ['Rupiah', '1/6 × Rp 300.000.000 = Rp 50.000.000']], 50000000n]];
+}
+PERAN.belumPasti.Hasan = PERAN.biasa.Hasan;
+// Rantai panjang: peran dihitung dari pola keluarga (istri 1/8, ibu 1/6, anak sisa 2 : 1).
+function peranRantai(k, id) {
+  const r = hitungRantai(k.rantai);
+  return k.rantai.filter(([, per]) => per[id]).map(([m, per, tot]) => {
+    const g = +(id.match(/\d+/)?.[0] ?? 0), gm = m === 'PEWARIS' ? 0 : +m.match(/\d+/)[0];
+    const [sebagai, kunci, kini, dalil, syarat] = id.startsWith('Istri') ? (g === gm + 1 ? ['istri', 'ISTRI', 1, 'istri18', `${nama(m)} punya anak.`] : ['ibu', 'IBU', 0, 'ibu16', `${nama(m)} punya anak.`])
+      : id.startsWith('Putra') ? ['anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bersama saudarinya: laki-laki dua kali perempuan.'] : ['anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bersama saudaranya: separuh bagian saudara.'];
+    const f = kali(r.masuk[m], pec(BigInt(per[id]), BigInt(tot)));
+    return [m, `${sebagai} ${m === 'PEWARIS' ? 'Pak Ahmad' : nama(m)}`, kunci, kini, dalil, syarat, [[`Masalah ${nama(m)} ${tot}`, `${per[id]} dari ${tot}`], ['Rupiah', `${per[id]}/${tot} × ${rupiah(bulat(HARTA, r.masuk[m]))} = ${rupiah(bulat(HARTA, f))}`]], bulat(HARTA, f)];
+  });
+}
+
+function sumbanganJamiah(k, idOrang) {
+  const { kolom } = tabelMunasakhat(k.rantai), masalah = kolom.filter(c => c.jenis === 'masalah');
+  return masalah.map((c, j) => {
+    if (!c.per[idOrang]) return null;
+    let pengali = c.pengaliBaru ?? 1n; const daftar = c.pengaliBaru ? [c.pengaliBaru] : [];
+    for (const lanjut of masalah.slice(j + 1)) if (lanjut.pengaliLama && lanjut.pengaliLama !== 1n) { pengali *= lanjut.pengaliLama; daftar.push(lanjut.pengaliLama); }
+    return [c.mayit, BigInt(c.per[idOrang]), daftar, BigInt(c.per[idOrang]) * pengali];
+  }).filter(Boolean);
+}
+
+function blokPeran([m, sebagai, kunci, kini, dalilK, syarat, hitung], k, ganda) {
+  const dalil = dalilK ? DALIL[dalilK] : null, ahwal = AHWAL[kunci];
+  const tempat = kasusAktif === 'bersamaan' ? `harta ${nama(m)}` : m === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(m)}`;
+  const isi = `
+    <p class="subT">Dasar · berlaku untuk semua kasus</p>
+    ${dalil ? `<div class="dalil"><p class="arab">${dalil[0]}</p><p style="font-size:14px">${dalil[1]}.</p><small>${dalil[2].startsWith('HR') ? dalil[2] : 'QS ' + dalil[2]}</small></div>` : ''}
+    ${ahwal ? `<table class="ahwalT">${ahwal.map(([b, t], i) => `<tr class="${i === kini ? 'kini' : ''}"><th>${b}</th><td>${t}${i === kini ? '<span class="stiker">kasus ini</span>' : ''}</td></tr>`).join('')}</table>` : ''}
+    <p class="subT">Di keluarga ini</p><div class="syarat"><div><span class="cek">✓</span><span>${syarat}</span></div></div>
+    <p class="subT">Hitungan</p><div class="langkahH">${hitung.map(([x, y]) => `<div><span>${x}</span><span>${y}</span></div>`).join('')}</div>`;
+  return { judul: ganda ? `Di ${tempat}, sebagai ${sebagai}` : `Sebagai ${sebagai}`, isi };
+}
+
 function bukaPenjelasan(idOrang, k) {
   const o = NOMINAL[idOrang]; if (!o || !ORANG[idOrang]) return;
-  const [n, peran, , kunci, kelompok] = ORANG[idOrang];
-  const tahan = !!o.tahan, tidak = o.redup && !o.meninggal, rantai = !!(o.dari && k.rantai);
+  const [n, peran, , , kelompok] = ORANG[idOrang];
+  const tahan = !!o.tahan, tidak = o.redup && !o.meninggal;
   const rp = o.tampil ?? (tahan ? 'Ditahan' : rupiah(bulat(HARTA, o.f)));
-  const ahwal = kunci && AHWAL[kunci] && kasusAktif !== 'bersamaan' ? AHWAL[kunci] : null;
-  const dalil = o.dalil ? DALIL[o.dalil] : null;
-  const ubah = !k.rantai && kasusAktif !== 'bersamaan' ? UBAH_BAGIAN[idOrang] : null;
-
-  // 1. Dasar
-  const dasar = `${dalil ? `<div class="dalil"><p class="arab">${dalil[0]}</p><p style="font-size:14px">${dalil[1]}.</p><small>QS ${dalil[2]}</small></div>` : ''}
-    ${ahwal ? `<table class="ahwalT">${ahwal.map(([b, t], i) => { const kini = !rantai && o.ahwal?.includes(i); return `<tr class="${kini ? 'kini' : ''}"><th>${b}</th><td>${t}${kini ? '<span class="stiker">kasus ini</span>' : ''}</td></tr>`; }).join('')}</table>` : ''}
-    ${k.rantai ? `<p class="dasarTeks">${ist('munasakhat')}: ${DASAR_MUNASAKHAT.split(': ')[1]}</p>` : ''}`;
-  // 2. Di keluarga ini
-  const syarat = (o.kenapa ?? [o.alasan]).filter(Boolean);
-  const r = k.rantai ? hitungRantai(k.rantai) : null;
-  if (rantai && !o.kenapa) {
-    syarat.length = 0;
-    if (o.meninggal) { const l = k.rantai.find(x => x[0] === idOrang); syarat.push(`${n} meninggal sebelum harta dibagi. Bagiannya dibagi lagi di langkah ${r.lapisKe(idOrang)} kepada ${daftarNama(Object.keys(l[1]))}.`); }
-    else syarat.push(`${n} menerima dari ${daftarNama(Object.keys(o.dari))}, karena ${Object.keys(o.dari).length > 1 ? 'mereka meninggal berurutan sebelum harta dibagi' : 'ia ahli warisnya'}.`);
-  }
-  const diKeluarga = `<div class="syarat">${syarat.map(t => `<div><span class="cek">✓</span><span>${t}</span></div>`).join('')}</div>
-    ${ubah ? `<div class="ubahB"><s>${ubah[0]}</s> → <b>${ubah[1]}</b> <span>${ubah[2]}</span></div>` : ''}
-    ${tahan && o.maks ? `<p class="sub" style="margin-top:6px">Bisa sampai ${rupiah(bulat(HARTA, o.maks))}, tergantung keadaan yang terjadi.</p>` : ''}`;
-  // 3. Diterima dari tiap orang (munasakhat / dua harta), dijumlahkan
-  let dariTiap = '';
-  if (rantai && Object.keys(o.dari).length) {
-    const baris = Object.entries(o.dari).map(([m, f]) => `<div><span>Dari ${m === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(m)}`} (langkah ${r.lapisKe(m)})<br><small>${ALASAN_LAPIS[m]?.[idOrang] ?? ''}</small></span><b>${rupiah(bulat(HARTA, f))}</b></div>`).join('');
-    dariTiap = `<div class="jumlahP">${baris}${!o.meninggal && Object.keys(o.dari).length > 1 ? `<div class="tot"><span>Jumlah</span><b>${rupiah(bulat(HARTA, o.f))}</b></div>` : ''}</div>`;
-  }
-  if (o.dariHarta) dariTiap = `<div class="jumlahP">${o.dariHarta.map(([m, v, al]) => `<div><span>Dari harta ${nama(m)}<br><small>${al}</small></span><b>${rupiah(v)}</b></div>`).join('')}${o.dariHarta.length > 1 ? `<div class="tot"><span>Jumlah</span><b>${o.tampil}</b></div>` : ''}</div>`;
-  // 4. Hitungan bertambah
-  let langkah = [];
-  const asli = o.asli ?? o.f;
-  if (HITUNG_BIASA[idOrang] && kasusAktif === 'biasa') langkah = [...HITUNG_BIASA[idOrang]];
-  else if (rantai && !o.meninggal) {
-    const s = sumbanganJamiah(k, idOrang), jam = tabelMunasakhat(k.rantai).jam;
-    langkah = s.map(([m, sh, pg, hasil]) => [`Dari ${nama(m)}`, `${sh}${pg.map(x => ` × ${x}`).join('')} = ${hasil}`]);
-    if (s.length > 1) langkah.push(['Jumlah', `${s.map(x => x[3]).join(' + ')} = ${s.reduce((a, x) => a + x[3], 0n)} dari ${jam}`]);
-    else langkah.push(["Dari jami'ah", `${s[0]?.[3] ?? 0} dari ${jam}`]);
-    const total = s.reduce((a, x) => a + x[3], 0n);
-    if (String(jam).length <= 10) langkah.push(['Rupiah', `${total}/${jam} × ${rupiah(HARTA)} = ${rupiah(bulat(HARTA, o.f))}`]);
-  } else if (asli?.[0] && !tahan && !o.dariHarta && !o.meninggal) langkah = [['Saham', `${asli[0]} dari ${asli[1]}`]];
-  if (langkah.length && !rantai && asli?.[0] && !tahan && !o.dariHarta && !o.meninggal) langkah.push(['Rupiah', `${asli[0]}/${asli[1]} × ${rupiah(HARTA)} = ${rupiah(bulat(HARTA, o.f))}`]);
-  const hitungan = langkah.length ? `<div class="langkahH">${langkah.map(([x, y]) => `<div><span>${x}</span><span>${y}</span></div>`).join('')}</div>` : '';
-
+  const daftarPeran = (k.cari ? peranRantai(k, idOrang) : PERAN[kasusAktif]?.[idOrang]) ?? [];
+  const ganda = daftarPeran.length > 1 || k.rantai || kasusAktif === 'bersamaan';
   let no = 0;
-  const titik = (jenis, ket, judul, isi) => (isi.trim() ? `<div class="titik ${jenis}"><span class="noT">${++no}</span><p class="ketT">${ket}</p><h5>${judul}</h5>${isi}</div>` : '');
+  const titik = (jenis, ket, judul, isi) => `<div class="titik ${jenis}"><span class="noT">${++no}</span><p class="ketT">${ket}</p><h5>${judul}</h5>${isi}</div>`;
+  const blok = daftarPeran.map(pr => { const b = blokPeran(pr, k, ganda); return titik(no === 0 ? 'dasar' : 'kasus', ganda ? (k.rantai ? `LANGKAH ${hitungRantai(k.rantai).lapisKe(pr[0])}` : 'HARTA') : 'BAGIAN INI', b.judul, b.isi); }).join('');
+  let penutup = '';
+  const nyata = daftarPeran.filter(pr => pr[7] > 0n);
+  if (o.meninggal) {
+    const l = k.rantai.find(x => x[0] === idOrang);
+    penutup = titik('kasus', 'SESUDAHNYA', `${n} meninggal sebelum harta dibagi`, `<div class="jumlahP">${nyata.map(pr => `<div><span>Dari ${pr[0] === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(pr[0])}`}</span><b>${rupiah(pr[7])}</b></div>`).join('')}<div class="tot"><span>Diterima, lalu dibagi lagi</span><b>${rp}</b></div></div><p style="font-size:14px;margin-top:8px">Dibagi lagi di langkah ${hitungRantai(k.rantai).lapisKe(idOrang)} kepada ${daftarNama(Object.keys(l[1]))}.</p>`);
+  } else if (nyata.length > 1 || (k.rantai && nyata.length)) {
+    let jamiah = '';
+    if (k.rantai) {
+      const sj = sumbanganJamiah(k, idOrang), jam = tabelMunasakhat(k.rantai).jam, tot = sj.reduce((a, x) => a + x[3], 0n);
+      if (String(jam).length <= 10) jamiah = `<p class="subT">Disatukan dalam jami'ah ${jam}</p><div class="langkahH">${sj.map(([m, sh, pg, h]) => `<div><span>Dari ${nama(m)}</span><span>${sh}${pg.map(x => ` × ${x}`).join('')} = ${h}</span></div>`).join('')}<div><span>Jumlah</span><span>${sj.map(x => x[3]).join(' + ')} = ${tot} dari ${jam}</span></div></div>`;
+    }
+    penutup = titik('kasus', 'JUMLAH', 'Bagiannya digabung', `<div class="jumlahP">${nyata.map(pr => `<div><span>Dari ${kasusAktif === 'bersamaan' ? 'harta ' + nama(pr[0]) : pr[0] === 'PEWARIS' ? 'harta Pak Ahmad' : 'bagian ' + nama(pr[0])}</span><b>${rupiah(pr[7])}</b></div>`).join('')}<div class="tot"><span>Jumlah</span><b>${nyata.map(pr => rpRingkas(pr[7])).join(' + ')} = ${rp}</b></div></div>${jamiah}`);
+  }
+  if (!daftarPeran.length) penutup = titik('kasus', 'DI KELUARGA INI', 'Keterangan', `<p style="font-size:14px">${o.alasan || (o.kenapa ?? []).join(' ')}</p>`);
   $('#modalOrang').innerHTML = `
     <div class="modalKepala ${tahan ? 'tahan' : tidak || o.meninggal ? 'netral' : ''}"><div><p class="peranM">${tidak ? 'TIDAK MENDAPAT BAGIAN' : tahan ? 'DITAHAN' : o.meninggal ? 'MENINGGAL SEBELUM DIBAGI' : kelompok ?? ''}</p><h3 id="judulModal">${n}</h3><p class="sub">${peran}</p></div><button class="tutup" id="tutupModal" aria-label="Tutup">${ik('x')}</button></div>
     <div class="modalIsi">
-      ${!tidak ? `<h4>BAGIANNYA DI KASUS INI</h4><div class="angkaM"><div><small>Pecahan</small><b>${o.f?.[0] ? teksPec(o.f) : '—'}</b></div><div><small>Persen</small><b>${o.f?.[0] ? persen(o.f) : '—'}</b></div><div><small>${o.meninggal ? 'Diterima lalu dibagi lagi' : 'Nominal'}</small><b>${rp}</b></div></div>` : ''}
-      <div class="alurM">
-        ${titik('dasar', 'DASAR · BERLAKU UNTUK SEMUA KASUS', 'Aturannya', dasar)}
-        ${titik('kasus', 'DI KELUARGA INI', tidak ? 'Kenapa tidak mendapat' : 'Syarat yang terpenuhi', diKeluarga)}
-        ${titik('kasus', k.rantai ? 'KARENA ADA YANG MENINGGAL SEBELUM DIBAGI' : 'DARI DUA HARTA', 'Diterima dari tiap orang', dariTiap)}
-        ${titik('kasus', 'HITUNGAN', 'Dari bagian ke rupiah', hitungan)}
-      </div>
+      <h4>BAGIANNYA DI KASUS INI</h4><div class="angkaM"><div><small>Pecahan</small><b>${pecO(o) || '—'}</b></div><div><small>Persen</small><b>${o.f?.[0] && !o.pecTeks ? persen(o.f) : '—'}</b></div><div><small>${o.meninggal ? 'Diterima lalu dibagi lagi' : 'Nominal'}</small><b>${rp}</b></div></div>
+      ${tahan && o.maks ? `<p class="sub" style="margin-top:6px">Bisa sampai ${rupiah(bulat(HARTA, o.maks))}, tergantung keadaan yang terjadi.</p>` : ''}
+      <div class="alurM">${blok}${penutup}</div>
       ${o.terdampak ? `<details class="lipatM"><summary>Ahli waris lain yang terdampak <small>${o.terdampak.length} orang</small></summary><div class="isiL"><ul class="biasa">${o.terdampak.map(x => `<li>${x}</li>`).join('')}</ul></div></details>` : ''}
     </div>
     <div class="modalKaki">${ORANG[idOrang][3] ? `<button class="tautan" data-toast="Membuka ubah jumlah ${n.toLowerCase()}">Ubah jumlah</button>` : '<span></span>'}<button class="btn" id="okeModal">Oke, paham</button></div>`;
@@ -1059,7 +1196,9 @@ function pasang(k, id) {
   $$('[data-bulat]').forEach(b => b.onclick = e => { e.stopPropagation(); bukaBulat(id); });
   $$('[data-saring]').forEach(b => b.onclick = () => { saring = saring?.kunci === b.dataset.saring ? null : { kunci: b.dataset.saring, label: b.dataset.label }; renderKasus(id); $('.t.s7').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   $$('[data-saring-hapus]').forEach(b => b.onclick = () => { saring = null; renderKasus(id); });
-  $('#tampilProses')?.addEventListener('click', e => { const p = $('#panelTabel'), on = !p.classList.contains('proses-on'); p.classList.toggle('proses-on', on); e.currentTarget.setAttribute('aria-checked', on); e.currentTarget.textContent = on ? 'Sembunyikan proses' : 'Tampilkan proses'; });
+  $$('[data-bentuk]').forEach(b => b.onclick = () => { BENTUK = b.dataset.bentuk; renderKasus(id); });
+  $$('[data-tahap]').forEach(b => b.onclick = () => { const t = b.dataset.tahap; TAHAP_AKTIF = TAHAP_AKTIF.includes(t) ? TAHAP_AKTIF.filter(x => x !== t) : [...TAHAP_AKTIF, t]; if (!TAHAP_AKTIF.length) TAHAP_AKTIF = [t]; const y = scrollY; renderKasus(id); scrollTo(0, y); });
+  $$('[data-kolom]').forEach(th => th.onclick = () => { KOLOM_PILIH = +th.dataset.kolom; const y = scrollY; renderKasus(id); scrollTo(0, y); });
   $$('.tabelWadah, .kanvas').forEach(w => { const p = w.closest('.panel'); if (p && w.scrollWidth > w.clientWidth + 4) p.classList.add('adaGeser'); });
   $$('[data-satuan]').forEach(b => b.onclick = () => { SATUAN = BigInt(b.dataset.satuan); renderKasus(id); });
   $$('[data-gharqa]').forEach(b => b.onclick = () => { keadaanGharqa = b.dataset.gharqa; renderKasus(id); });
@@ -1075,7 +1214,7 @@ function pasang(k, id) {
   $$('.ist').forEach(s => s.addEventListener('click', e => { e.stopPropagation(); $$('.ist.on').forEach(x => x !== s && x.classList.remove('on')); s.classList.toggle('on'); }));
   $('#ubahNama')?.addEventListener('click', () => { const w = $('#namaKasus'), lama = $('#teksNama').textContent; w.innerHTML = `<input id="isianNama" value="${lama}" aria-label="Nama kasus"><button class="tautan" id="simpanNama" style="color:#fff">Simpan</button>`; $('#isianNama').focus(); $('#simpanNama').onclick = () => { namaUbah[id] = $('#isianNama').value.trim() || lama; renderKasus(id); toast('nama kasus disimpan'); }; });
   $$('[data-kirim]').forEach(b => b.onclick = () => { $('#teksKirim').textContent = teksRingkasan(k, id); $('#lembarKirim').classList.add('on'); });
-  if (k.taqdir) siapkanKemungkinan();
+  if (k.taqdir && $('#pilihKemungkinan')) siapkanKemungkinan();
   setTimeout(pasSkala, 30);
 }
 document.addEventListener('click', e => { if (!e.target.closest('.ist')) $$('.ist.on').forEach(x => x.classList.remove('on')); });
@@ -1122,7 +1261,7 @@ function renderCoba() {
 // ═══ Tab, toast ═══
 const TAB = [...Object.keys(KASUS), 'coba'];
 $('#tab').innerHTML = TAB.map(id => `<button role="tab" data-ke="${id}">${id === 'coba' ? 'Cara mencoba' : KASUS[id].tab}</button>`).join('');
-function buka(id) { saring = null; $$('#tab button').forEach(b => b.setAttribute('aria-selected', b.dataset.ke === id)); tutupModal(); id === 'coba' ? renderCoba() : renderKasus(id); scrollTo(0, 0); }
+function buka(id) { saring = null; TAHAP_AKTIF = null; KOLOM_PILIH = 0; $$('#tab button').forEach(b => b.setAttribute('aria-selected', b.dataset.ke === id)); tutupModal(); id === 'coba' ? renderCoba() : renderKasus(id); scrollTo(0, 0); }
 $$('#tab button').forEach(b => b.onclick = () => buka(b.dataset.ke));
 let jeda;
 function toast(t) { $('#toastTeks').textContent = 'Mockup: ' + t; $('#toast').classList.add('on'); clearTimeout(jeda); jeda = setTimeout(() => $('#toast').classList.remove('on'), 3200); }

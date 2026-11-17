@@ -1055,3 +1055,19 @@ saudari 2 dan 2; rupiah 112.500.000 · 37.500.000 · 75.000.000 · 75.000.000.
 - **Proses tabel bertahap (HMW-29) ditunda ke mode fokus.** Alternatif tabel A/B/C tetap di berkas alternatif sebagai bahan; di layar Hasil tetap sakelar "Tampilkan proses" yang sekarang.
 - **Penjelasan orang: gabungan A + C.** Alur visual bernomor ala C (1 Dasar · berlaku untuk semua kasus → 2 Di keluarga ini → 3 Diterima dari tiap orang, bila munasakhat/dua harta → 4 Hitungan), dengan hitungan bertambah ala A ("24 × 1/8 = 3", "3 × 3 = 9 dari 72", "7 × 12 = 84 · 5 × 7 = 35 · 3 × 16 = 48 · 84 + 35 + 48 = 167 dari 288", "167/288 × Rp 300.000.000 = …"). Dalil dan "kapan dapat berapa" terbuka di bagian Dasar dengan baris "kasus ini". Perubahan bagian ditampilkan "~~1/4~~ → 1/8". Titik yang tidak punya isi untuk orang itu tidak dirender.
 - Diintegrasikan ke [mockup-hasil-per-kasus.html](mockup-hasil-per-kasus.html). Hitungan jami'ah per orang dihitung dari pengali tabel munasakhat (bukan teks tetap). Dicek: semua tab, laptop dan HP, tanpa galat.
+
+### 25f. Revisi: bentuk pecahan, modal seragam, proses tabel di layar Hasil
+
+- **Bentuk pecahan (dipulihkan dari layar sebelum Logivo):** sakelar "1/8 · 9/72" di kepala daftar. Berlaku untuk daftar dan modal.
+  Munasakhat: 9/72 → saham jami'ah (mis. 167/288). Meninggal bersamaan: pecahan per harta "1/8 + 1/6" atau "4/32 + 4/24"
+  (tidak ada lagi "pecahan panjang"). Pecahan sangat panjang disingkat dan bisa disorot untuk angka lengkapnya.
+- **Modal seragam untuk semua orang, termasuk yang mendapat 0:** per harta/langkah: Dasar (dalil + tabel kapan dapat berapa,
+  baris kasus ini) → Di keluarga ini (syarat) → Hitungan bertambah; ditutup "Bagiannya digabung" (rupiah per sumber dijumlahkan +
+  jami'ah per orang) atau "meninggal sebelum dibagi" (diterima lalu dibagi kepada siapa). Data per orang ditulis per kasus;
+  rantai panjang dihitung dari pola keluarga. Ahwal cucu perempuan dan saudari kandung diringkas dari KB 4.11–4.12 dan **perlu
+  ditambahkan ke konten ahwal aplikasi** sebelum dipakai; dalilnya hadits Ibnu Mas'ud (KB 4.11).
+- **Proses tabel lengkap di layar Hasil (pemilik menegaskan; sebelumnya keliru ditunda):** pil tahap (Bagian awal · Asal masalah ·
+  'Aul/radd · Tashih · Per orang · Kemungkinan · Perbandingan · Jami'ah · Rupiah, sesuai yang ada di kasus) menyalakan/mematikan
+  kolom per jenis tahap; kolom mayit dan jami'ah tetap tersedia. Mengetuk judul kolom menampilkan kotak Dasar · Di kasus ini ·
+  Hitungan untuk kolom itu. Berlaku di semua kasus bertabel (biasa, berurutan, rantai 12 generasi, hamil + hilang, bersamaan).
+  Mode fokus nanti memakai tahap yang sama, maju satu per satu.
