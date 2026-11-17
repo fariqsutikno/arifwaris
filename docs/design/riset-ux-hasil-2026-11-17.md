@@ -483,7 +483,78 @@ khuntsa. KB 13.0b: taqdir gabungan = hasil kali (mis. 6 × 4 × 2 = 48 kemungkin
 - Jenis masalah dalam bahasa awam ("bagian pas", "bagian melebihi harta, semua dikurangi sebanding", "ada sisa, dikembalikan").
 - Status hasil: pasti, sebagian ditahan, ditunda, atau perlu data.
 
-## 15. Pertanyaan sebelum HMW
+## 15. Analisis munasakhat panjang dan kasus gabungan (2026-11-17)
+
+Koreksi istilah bagian 14h: yang "tidak sanggup" adalah **pola tampilan mockup v2**, bukan engine. Engine memang dirancang
+untuk rantai panjang dan gabungan (KB 13.0b). Di bawah ini hasil ukur nyata dan dampaknya ke tampilan.
+
+### 15a. Ukur engine (rantai keturunan: tiap generasi = istri + anak laki-laki + anak perempuan; anak laki-laki meninggal sesudah ayahnya)
+
+Diukur lewat `jalankan()` aplikasi web (vitest, Node, satu kali jalan, mesin pengembang). Harta Rp 1 miliar.
+
+| Kasus | Generasi | Hasil | Waktu | Digit jami'ah | Penerima | Kemungkinan |
+|---|---|---|---|---|---|---|
+| Munasakhat saja | 5 / 20 / 50 | OK | 22 / 81 / 669 ms | 10 / 33 / 80 | 13 / 43 / 52 | – |
+| + 1 orang hilang (generasi 1) | 5 / 20 / 50 | OK | 7 / 74 / 1.439 ms | 10 / 33 / 80 | 12 / 42 / 51 | 2 |
+| + 1 janin (generasi terakhir) | 5 / 20 / 50 | OK | 10 / 173 / 4.359 ms | 11 / 34 / 81 | 11 / 41 / 52 | 6 |
+| + hilang + janin | 5 / 20 / 50 | OK | 12 / 305 / 7.612 ms | 11 / 35 / 81 | 10 / 40 / 51 | 12 |
+
+Kesimpulan ukur:
+- **Kebenaran dan kapasitas: sanggup.** Rantai 50 generasi dengan dua ketidakpastian selesai OK. Tidak ada batas jumlah lapis di
+  engine (`munasakhat.ts` mengulang per mayit). Batas yang ada hanya `BATAS_DUNIA = 256` kemungkinan gabungan (`taqdir.ts`):
+  mis. 2 janin [SYF] (6 × 6 = 36) × 3 orang hilang (2³ = 8) = 288 > 256 → `PERLU_INPUT` dengan daftar orang yang perlu dipastikan.
+- **Waktu: masalah tampilan.** 0,7–7,6 detik di Node untuk 50 generasi. Di browser HP bisa beberapa kali lebih lambat, dan
+  sekarang `jalankan()` dipanggil di utas utama (`Hasil.tsx` memanggilnya di `useMemo`, dua kali: di `Hasil` dan `HasilOkLayar`).
+  Layar akan membeku selama itu. (Belum diukur di browser; perlu diukur sebelum memutuskan.)
+- **Angka: tidak terbaca.** Jami'ah 80 digit. Tabel saham per orang berisi angka 70–80 digit.
+
+### 15b. Munasakhat: apa yang harus terlihat agar "harta X dibagi, lalu dibagi lagi" jelas
+
+Temuan baru (melengkapi M1–M8):
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| M9 | Kritis | Mockup v2 tab "sudah dibagi" menyebut "**Harta Budi Rp 175.000.000**". Menurut bab 12.5 (dan komentar `munasakhat.ts`), yang dibagi lewat munasakhat hanya **bagian Budi dari harta mayit pertama**. Harta pribadi Budi, hutang, dan wasiatnya diselesaikan terpisah oleh ahli warisnya. Menyebutnya "harta Budi" menyesatkan |
+| M10 | Tinggi | Aliran harus memperlihatkan perpindahan **per lapis** sebagai satu rantai: harta asal → dibagi → bagian si mayit berikutnya → dibagi lagi → … Di v2 hanya dua ubin terpisah tanpa garis sambung, dan pohonnya tidak beranimasi |
+| M11 | Tinggi | Mayit yang **tidak mendapat bagian** dari mayit sebelumnya dilewati [R12-1] (`MUNASAKHAT_DILEWATI`). Keadaan 1 (*ikhtishar*) dihitung seolah mayit kedua tidak ada. Dua hal ini mengubah bentuk rantai, tapi belum ada cara menampilkannya ("Budi dilewati karena tidak mendapat dari ayahnya") |
+| M12 | Tinggi | Sisa harta mayit yang tidak di-radd ke pasangan keluar sebagai baris `sisaKeluar:<mayit>` per lapis. Belum dirancang |
+| M13 | Tinggi | **Satu sumber angka rupiah.** Engine hanya menghitung rupiah dari jami'ah akhir (pembulatan per orang). Rupiah per lapis di aliran (mis. "dari Budi Rp 29.166.666") adalah turunan. Jumlah rupiah per lapis bisa berbeda beberapa rupiah dari total per orang. Harus diputuskan mana sumbernya dan bagaimana selisihnya dilaporkan |
+| M14 | Sedang | Orang yang sama menerima dari banyak lapis (Aminah dari suami, lalu dari anak, mungkin dari cucu). Rincian per orang bisa sampai puluhan baris di rantai panjang |
+
+### 15c. Dampak skala ke setiap bagian layar
+
+Hitungan kasar untuk rantai **50 generasi** (52 penerima, 50 mayit berurutan):
+
+| Bagian | Bentuk v2 | Akibat di 50 generasi |
+|---|---|---|
+| Daftar penerima | satu baris per orang | 52 baris ≈ 52 × 90 px ≈ 4.700 px di HP; bagianmu tetap di atas, tapi "siapa dapat berapa" tidak bisa dipindai |
+| Aliran per mayit | satu ubin per mayit | 50 ubin ≈ 50 × 160 px ≈ 8.000 px; tidak terlihat sebagai rantai |
+| Pohon | satu gambar | 51 tingkat × ±100 px ≈ 5.100 px tinggi; layar penuh pun hanya memuat ±8 tingkat sekaligus |
+| Animasi aliran | jalan sekali saat dibuka | 50 lompatan × ±1 detik ≈ 50 detik; aplikasi lama sudah mematikan aliran untuk pohon > 40 orang (`BATAS_ALIRAN`) |
+| Tabel faraidh | satu tabel | munasakhat: kolom per mayit → 50 kolom angka 1–80 digit. Gabungan: × jumlah kemungkinan |
+| Porsi harta | pita | 52 ruas; ruas kecil < 1 px, tidak terlihat |
+| Langkah perhitungan | langkah 1–7 | per mayit 7 langkah → ±350 langkah |
+| Kirim ringkasan | daftar nama + rupiah | 52 baris di WhatsApp |
+
+### 15d. Kasus gabungan (rantai panjang + belum pasti + bersamaan)
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| X9 | Kritis | Ketidakpastian di lapis ke-k **menjalar** ke semua lapis sesudahnya. Bila Siti (generasi 1) hilang, setiap mayit sesudahnya yang mewarisi dari Siti, atau yang bagiannya bergantung pada ada-tidaknya Siti, ikut punya bagian ditahan. Tampilan harus bisa menunjuk "ditahan karena Siti" di lapis mana pun |
+| X10 | Tinggi | Gharqa di tengah rantai memutus garis waris antara anggota kelompok, tetapi rantai tetap berlanjut lewat ahli waris masing-masing. Rantai bercabang, bukan garis lurus |
+| X11 | Tinggi | "Kapan dihitung lagi" bisa banyak peristiwa yang tidak berurutan (bayi lahir, kabar Siti, khuntsa jelas, keadaan gharqa diingat). Setiap peristiwa membuka sebagian uang yang ditahan |
+| X12 | Sedang | Lewat 256 kemungkinan, engine meminta data. Layar harus mengarahkan ke orang yang paling banyak menambah kemungkinan, bukan sekadar daftar |
+
+### 15e. Animasi aliran di pohon (permintaan pemilik)
+
+- Aplikasi lama sudah punya aliran (±2 detik, sekali per hasil, bisa diputar ulang) tapi hanya di pratinjau hero, dan hanya untuk
+  satu lapis. Untuk munasakhat, rencana 1.1 menyebut "bagian tiba di orang yang sudah meninggal, berhenti sebentar, lalu
+  mengalir lagi". Ini belum dibangun.
+- Kendala dari ukur: 50 lapis × 1 detik terlalu lama, dan pohon tinggi tidak muat satu layar. Animasi harus bisa **mengikuti satu
+  lapis**, kamera ikut bergerak, dan bisa dilompati. (Ini kendala, bukan rancangan.)
+- Gerak harus bisa dimatikan (`prefers-reduced-motion`, pengaturan gerak yang sudah ada di aplikasi).
+
+## 16. Pertanyaan sebelum HMW
 
 1. Ada bagian lain yang perlu diaudit? (Belum: mode Belajar secara rinci, Banding madzhab, isi PDF lengkap, dan teks Kirim ringkasan.)
 2. Untuk kasus gabungan (14h), apakah ada contoh kasus nyata yang ingin dijadikan acuan, atau saya susun dari kasus uji bab 16?
