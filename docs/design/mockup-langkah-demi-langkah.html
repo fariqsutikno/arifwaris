@@ -112,6 +112,7 @@ nav.tab button[aria-selected=true]{background:#0e0f10;color:#fff}
 .ket-kotak i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
 .ket-kotak b{color:var(--ink)}
 .kotak-teks{padding:6px 10px 2px}
+.mini .kt{max-height:30px}.mini .harta{margin-top:20px}.mini .ket-kotak{margin-top:10px}
 
 /* pohon & tabel */
 svg.pohon{max-width:100%;height:auto;display:block;margin:0 auto}
@@ -122,11 +123,20 @@ svg .g{stroke:#b8c4b6;stroke-width:1.6;fill:none}svg .g.nikah{stroke-dasharray:4
 .sim.terhalang{opacity:.4}.sim.terhalang rect{stroke-dasharray:3 3}
 .sim.mayit rect{fill:#0f3a38;stroke:#0f3a38}.sim.mayit text{fill:#fff}
 .wadah-tabel{overflow-x:auto}
-table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;background:#fff;width:100%}
-th,td{border:1px solid #cfd8cc;padding:7px 10px;text-align:center;white-space:nowrap}
-th{background:#f1f5ed;font-size:12.5px;font-weight:600}
-td:first-child,th:first-child{text-align:start}
-td.kini{background:#fff1e7;font-weight:600}
+/* tabel gaya layar Hasil: kepala gelap berangka besar, warna orang = warna kotak, baris terhalang diarsir dan digabung */
+table{border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;font-size:14px;background:#fff;width:100%;border:1px solid #dfe6dc;border-radius:14px;overflow:hidden}
+th,td{border-bottom:1px solid #e3e9e0;border-left:1px solid #e3e9e0;padding:9px 12px;text-align:center;white-space:nowrap}
+th:first-child,td:first-child{border-left:0;text-align:start}
+th{background:#14181a;color:#fff;font-size:11.5px;font-weight:600;vertical-align:bottom;border-left-color:#2c3532}
+th big{display:block;font-size:17px;font-weight:700;line-height:1.2}
+th.aktif{box-shadow:inset 0 -3px 0 var(--orange)}th.aktif big{color:#ffb08a}
+td{font-weight:600;font-size:15px}
+td.rp{text-align:right}
+td:first-child{font-weight:500;font-size:14px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;margin-right:8px;vertical-align:-2px;border:1px solid rgba(0,0,0,.08)}
+tr.halang td{background:repeating-linear-gradient(135deg,#f6faf4 0 8px,#e9f2e6 8px 10px);color:#6a746f;font-weight:500;font-size:13.5px}
+tr.halang .sw{background:none;border:1.5px dashed #b8c4b6}
+td.kini{background:#fff1e7}
 td.kini span{display:inline-block;animation:isi .55s both}
 td.tertutup span{visibility:hidden}
 
@@ -291,7 +301,7 @@ function gambarPohon(p, sorot = {}, skala = 1) {
 const KASUS = {
   biasa: {
     tab: 'Biasa', pohon: POHON.biasa,
-    tabel: { baris: [['Aminah', 'Aminah'], ['Fatimah', 'Fatimah'], ['Budi', 'Budi'], ['Siti', 'Siti'], ['Hasan', 'Hasan']],
+    tabel: { baris: [['Aminah', 'Aminah', 'aminah'], ['Fatimah', 'Fatimah', 'fatimah'], ['Budi', 'Budi', 'budi'], ['Siti', 'Siti', 'siti'], ['Hasan', 'Hasan']], halang: { Hasan: 'Terhalang oleh Budi (anak laki-laki).' },
       kolom: [['fardh', 'Fardh'], ['asal', 'Asal 24'], ['tashih', 'Tashih 72'], ['rp', 'Rupiah']],
       sel: { fardh: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: '↑', Hasan: 'terhalang' }, asal: { Aminah: 3, Fatimah: 4, Budi: 17, Siti: '↑', Hasan: '–' }, tashih: { Aminah: 9, Fatimah: 12, Budi: 34, Siti: 17, Hasan: '–' },
         rp: { Aminah: rupiah(bagi(JT300, 9, 72)), Fatimah: rupiah(bagi(JT300, 12, 72)), Budi: rupiah(bagi(JT300, 34, 72)), Siti: rupiah(bagi(JT300, 17, 72)), Hasan: '–' } } },
@@ -344,7 +354,7 @@ const KASUS = {
 
   aul: {
     tab: "'Aul", pohon: POHON.aul,
-    tabel: { baris: [['Suami', 'Yusuf'], ['Ibu', 'Khadijah'], ['Saudari1', 'Maryam'], ['Saudari2', 'Hafsah']],
+    tabel: { baris: [['Suami', 'Yusuf', 'suami'], ['Ibu', 'Khadijah', 'ibu'], ['Saudari1', 'Maryam', 'saudari'], ['Saudari2', 'Hafsah', 'saudari']], halang: {},
       kolom: [['fardh', 'Fardh'], ['asal', 'Asal 6'], ['aul', "'Aul 8"], ['rp', 'Rupiah']],
       sel: { fardh: { Suami: '1/2', Ibu: '1/6', Saudari1: '2/3', Saudari2: '↑' }, asal: { Suami: 3, Ibu: 1, Saudari1: 4, Saudari2: '↑' }, aul: { Suami: 3, Ibu: 1, Saudari1: 2, Saudari2: 2 },
         rp: { Suami: rupiah(bagi(JT300, 3, 8)), Ibu: rupiah(bagi(JT300, 1, 8)), Saudari1: rupiah(bagi(JT300, 2, 8)), Saudari2: rupiah(bagi(JT300, 2, 8)) } } },
@@ -424,14 +434,16 @@ function gambarKotak(v, sebelumnya) {
 function gambarTabel(sampai, kini = []) {
   const k = kasus(), terbuka = new Set(), kolomTerbuka = new Set();
   for (let j = 0; j <= sampai; j++) (langkahDi(j).v?.jenis === 'tabel' ? langkahDi(j).v.isi : []).forEach(s => { terbuka.add(s); kolomTerbuka.add(s.split(':')[0]); });
-  const { baris, kolom, sel } = k.tabel, cols = kolom.filter(([c]) => kolomTerbuka.has(c));
+  const { baris, kolom, sel, halang } = k.tabel, cols = kolom.filter(([c]) => kolomTerbuka.has(c));
+  const kolomAktif = new Set(kini.map(s => s.split(':')[0]));
   if (!cols.length) return '<p style="color:var(--muted);font-size:13.5px">Kolom tabel bertambah mulai dari bagian awal tiap orang.</p>';
   // Sel '↑' digabung ke sel di atasnya (rowspan), seperti tabel di kitab.
   const rentang = c => { const r = {}; let induk; baris.forEach(([id]) => { if (sel[c][id] === '↑' && induk) r[induk]++; else { induk = id; r[id] = 1; } }); return r; };
   const r = Object.fromEntries(cols.map(([c]) => [c, rentang(c)]));
-  return `<table><thead><tr><th>Ahli waris</th>${cols.map(([, j]) => `<th>${j}</th>`).join('')}</tr></thead><tbody>${baris.map(([id, nama]) => `<tr><td>${nama}</td>${cols.map(([c]) => {
+  const kepala = ([c, j]) => { const [, label, angka] = j.match(/^(.*?)\s*(\d+)?$/); return `<th class="${kolomAktif.has(c) ? 'aktif' : ''}">${label}${angka ? `<big>${angka}</big>` : ''}</th>`; };
+  return `<table><thead><tr><th>Ahli waris</th>${cols.map(kepala).join('')}</tr></thead><tbody>${baris.map(([id, nama, w]) => halang[id] ? `<tr class="halang"><td><span class="sw"></span>${nama}</td><td colspan="${cols.length}">${halang[id]}</td></tr>` : `<tr><td><span class="sw" style="background:${WARNA[w]}"></span>${nama}</td>${cols.map(([c]) => {
     if (!r[c][id]) return ''; const kode = `${c}:${id}`, kosong = ['–', 'terhalang'].includes(sel[c][id]);
-    return `<td class="${kini.includes(kode) ? 'kini tertutup' : ''} ${!terbuka.has(kode) && !kosong ? 'tertutup' : ''}" ${r[c][id] > 1 ? `rowspan="${r[c][id]}"` : ''}><span>${sel[c][id]}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
+    return `<td data-orang="${nama}" class="${c === 'rp' ? 'rp' : ''} ${kini.includes(kode) ? 'kini tertutup' : ''} ${!terbuka.has(kode) && !kosong ? 'tertutup' : ''}" ${r[c][id] > 1 ? `rowspan="${r[c][id]}"` : ''}><span>${sel[c][id]}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
 // ═══ Tampilan teks: langkah dikelompokkan per bagian, muncul sampai langkah aktif ═══
@@ -464,7 +476,7 @@ function gambarTeks(i) {
   const kini = $('kartuTeks').querySelector('.kini');
   if (kini && !semua) kini.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   const sumber = $('kartuTeks').querySelector('li.kini .rumus b, li.kini .rumus, li.kini') ?? [...$('kartuTeks').querySelectorAll('.jembatan')].pop();
-  requestAnimationFrame(() => terbangkan(sumber, $('tabelTeks')));
+  requestAnimationFrame(() => terbangkan(sumber, $('tabelTeks'), $('kartuTeks')));
 }
 
 // ═══ Tampilan sinema: satu langkah = satu adegan ═══
@@ -474,7 +486,10 @@ function gambarAdegan(i) {
   if (v.jenis === 'dasar') return `<div class="dasar"><p class="lbl">Dasar · berlaku untuk semua kasus</p><p>${beriIstilah(v.teks)}</p>${v.dalil ? `<p class="dalil-ar" lang="ar">${v.dalil[0]}</p><small>${v.dalil[1]}</small>` : ''}</div>`;
   if (v.jenis === 'harta') return `<div class="harta-ubin">${v.baris.map(([a, b, c]) => `<div class="${c ?? ''}"><span>${a}</span><b>${b}</b></div>`).join('')}</div>`;
   if (v.jenis === 'pohon') return gambarPohon(kasus().pohon, v.sorot, 1.25);
-  if (v.jenis === 'tabel') { return `<div class="wadah-tabel" style="width:100%">${gambarTabel(i, dari === i ? v.isi : [])}</div>`; }
+  if (v.jenis === 'tabel') {
+    const kt = visualAktif(i, 'kotak').v;
+    return `<div style="width:100%;display:flex;flex-direction:column;gap:14px">${kt ? `<div class="mini">${gambarKotak(kt, kt)}</div>` : ''}<div class="wadah-tabel">${gambarTabel(i, dari === i ? v.isi : [])}</div></div>`;
+  }
   if (v.jenis === 'kotak') { const lalu = dari === i && i > 0 && urutan[i - 1].t === urutan[i].t ? visualAktif(i - 1).v : null; return gambarKotak(v, dari === i ? lalu : v); }
 }
 function gambarSinema(i) {
@@ -483,16 +498,19 @@ function gambarSinema(i) {
   const papan = $('papan'); papan.innerHTML = beriIstilah(langkahDi(i).p);
   papan.style.animation = 'none'; void papan.offsetWidth; papan.style.animation = '';
   $('takarir').textContent = langkahDi(i).n;
-  requestAnimationFrame(() => terbangkan(papan.querySelector('b') ?? papan, $('visual')));
+  requestAnimationFrame(() => terbangkan(papan.querySelector('b') ?? papan, $('visual'), $('visual')));
 }
 
 // Angka berpindah dari rumus (papan atau baris hitungan) ke sel tabelnya, lalu sel menyala. Sel menunggu tertutup sampai angkanya mendarat.
-function terbangkan(sumber, wadah) {
+// Bila ada kotak harta, angka berangkat dari keterangan kotak milik orang itu: terlihat bahwa isi tabel berasal dari potongan kotak.
+function terbangkan(sumber, wadah, wadahKotak) {
   const sasaran = [...wadah.querySelectorAll('td.kini.tertutup')];
+  const keterangan = wadahKotak ? [...wadahKotak.querySelectorAll('.ket-kotak span')] : [];
   sasaran.forEach((td, n) => {
     const buka = () => { td.classList.remove('tertutup'); bunyi('tik'); };
-    if (!sumber || !geraHalus) return buka();
-    const a = sumber.getBoundingClientRect(), b = td.getBoundingClientRect();
+    const asal = keterangan.find(k => k.textContent.includes(td.dataset.orang)) ?? sumber;
+    if (!asal || !geraHalus) return buka();
+    const a = asal.getBoundingClientRect(), b = td.getBoundingClientRect();
     const chip = document.createElement('span'); chip.className = 'terbang'; chip.textContent = td.textContent.trim(); document.body.append(chip);
     const x0 = a.left + a.width / 2 - chip.offsetWidth / 2, y0 = a.top + a.height / 2 - chip.offsetHeight / 2;
     const x1 = b.left + b.width / 2 - chip.offsetWidth / 2, y1 = b.top + b.height / 2 - chip.offsetHeight / 2;

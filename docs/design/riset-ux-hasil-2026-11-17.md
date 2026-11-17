@@ -1387,3 +1387,28 @@ Setelah dijawab: mockup storyboard mode sinema untuk kasus Biasa dan 'Aul dengan
 - Subjudul kartu: "Dari 1 sampai selesai · teks atau sinema bersuara".
 - **Satu sumber data**: tiap tahap berisi langkah `{ bagian, narasi, papan, visual }`. Teks mengelompokkan langkah per bagian (pertanyaan, dasar, di keluarga ini, logikanya, hitungan, penghubung); sinema menampilkan satu langkah per adegan. Narasi ditulis dengan angka; pembaca suara mengucapkannya.
 - **Rekaman hanya bingkai video** (panggung + takarir), tanpa tombol dan menu, memakai Region Capture (`CropTarget`, Chrome/Edge). Rekaman berjalan otomatis dari tahap 1 sampai selesai mengikuti panjang suara tiap langkah, lalu berhenti dan mengunduh sendiri. Browser tanpa Region Capture merekam seluruh tab. Suara narasi ikut terekam hanya bila suara tab dibagikan saat izin diminta; suara bawaan browser tidak selalu lewat jalur itu, jadi takarir tetap tertanam di gambar.
+
+## 30. Kontrol bawah langkah demi langkah terlalu ramai (catatan pemilik, 2026-11-18)
+
+### 30a. Audit
+
+Bar bawah sekarang memuat tiga baris: garis kemajuan, lima tombol (tahap sebelumnya, langkah sebelumnya, putar, langkah berikutnya, tahap berikutnya), teks posisi, dan baris menu sampai enam tautan. Di HP itu sekitar 160 px tetap terpakai, dan mata harus memilih di antara 11 sasaran padahal 9 dari 10 ketukan hanya "lanjut".
+
+| # | Temuan |
+|---|---|
+| F30' | Tombol tahap ±1 jarang dipakai; garis kemajuan yang bisa diketuk sudah melakukan hal yang sama. |
+| F31' | "Langkah 3 dari 9" muncul dua kali (kepala dan bawah). |
+| F32' | Menu (kecepatan, suara, rekam, pohon, tabel, tampilkan semua) selalu terlihat walau jarang dipakai. |
+| F33' | Di sinema kontrol menutupi panggung terus; pemutar video biasa menyembunyikannya saat menonton. |
+
+### 30b. Pola pembanding
+
+- **Pemutar video** (YouTube, Netflix): kontrol muncul saat layar disentuh/mouse bergerak, hilang setelah ±3 detik; garis kemajuan tipis tetap ada.
+- **Aplikasi belajar bertahap** (Duolingo, Brilliant, Khan Academy): satu tombol besar "Lanjut" di bawah, "kembali" berupa tautan/ikon kecil, pengaturan di menu titik tiga.
+- **Cerita** (Instagram Stories): ketuk sisi kanan maju, sisi kiri mundur, garis ruas di atas.
+
+### 30c. HMW-47 Bagaimana kontrol tetap lengkap tapi tidak ramai?
+
+- **A. Satu aksi utama + menu "Lainnya".** Bawah hanya: garis kemajuan tipis (bisa diketuk per tahap), tautan "Kembali" di kiri, tombol "Lanjut" di kanan; di sinema ditambah satu tombol putar/jeda bulat. Sisanya (kecepatan, suara, rekam video, pohon, tabel, tampilkan semua, lompat ke tahap) masuk menu "Lainnya" (ikon titik tiga di kepala). "Langkah x dari y" cukup di kepala. 3·3·3 **(rekomendasi)**
+- **B. A + kontrol sinema menghilang sendiri.** Di sinema, bar bawah memudar setelah 3 detik tanpa sentuhan dan muncul lagi saat panggung disentuh; garis kemajuan tipis tetap. Teks tidak menghilang (orang sedang membaca dan mengetik). 3·3·2 **(rekomendasi, dipasang bersama A)**
+- C. Ketuk sisi panggung (kanan maju, kiri mundur) tanpa tombol sama sekali. 2·2·3: cepat untuk yang sudah tahu, tapi tidak terlihat bagi pengguna baru dan bentrok dengan ketuk istilah.
