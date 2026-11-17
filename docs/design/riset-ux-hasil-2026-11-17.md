@@ -374,3 +374,116 @@ Tidak dicek: pembaca layar, isi PDF (hanya pesan mockup).
 
 Catatan data: angka mafqud "kalau Siti kembali/meninggal" sengaja tidak diisi (tidak dikarang; diambil dari engine saat
 dibangun). Tab hamil memakai enam kemungkinan seperti engine sekarang; lihat F1.
+
+## 14. Audit ulang mockup v2 (bento) — 2026-11-17
+
+Masukan pemilik: materi lama harus tetap ada **dan** materi baru tetap ada, semuanya rapi. Tambahan: pohon besar yang bisa
+diperbesar, diperkecil, dan dibuka layar penuh; mode fokus dengan langkah 1 sampai selesai; tabel faraidh dan pohon
+berdampingan tanpa menjadi ramai, tetapi juga tidak serba-terlipat; ubah nama kasus; keterangan harus jelas asalnya;
+kasus meninggal bersamaan masih membingungkan; madzhab mungkin cukup di bagian informasi (ide, divalidasi di HMW);
+pertimbangkan kasus yang memuat semua keunikan sekaligus. Bagian ini hanya audit, belum ide.
+
+### 14a. Materi lama yang hilang di v2
+
+| Kode | Materi lama | Keadaan di v2 |
+|---|---|---|
+| L1 | Pecahan dan persen per orang, bentuk pecahan (disederhanakan/penyebut sama) | Hilang dari daftar; persen hanya di ubin Porsi. Pecahan hanya di kalimat alasan, tidak konsisten |
+| L2 | Langkah perhitungan 1–7, "langkah demi langkah / tampilkan semua", "Kenapa begitu?" per langkah | Diringkas jadi 5 butir statis di ubin Cara menghitung yang terlipat |
+| L3 | **Mode fokus**: layar penuh, pohon + tabel berdampingan, sub-langkah (4a, 4b, …), peragaan angka terbang dari pohon ke tabel, laci daftar langkah, kontrol animasi | Tidak ada sama sekali |
+| L4 | Tabel faraidh seperti di Belajar (asal masalah, tashih, saham, nominal) | Hanya di dalam lipatan; tidak bisa dilihat bersama pohon |
+| L5 | Jenis masalah ('adilah/'aul/radd), asal masalah + alasannya, tashih, jami'ah | Hilang (hanya sebaris di lipatan) |
+| L6 | Lembar orang lengkap: Kenapa segitu, Cara menghitungnya, Ahli waris lain yang terdampak, **Kapan dapat berapa** (ahwal), Dalil, Ubah jumlah | Diganti rincian sebaris di bawah nama; ahwal, terdampak, dan ubah jumlah hilang |
+| L7 | Pohon layar penuh: perbesar, perkecil, geser, tambah anak, sembunyikan nominal, putar ulang aliran harta | Pohon ubin kecil tanpa alat apa pun |
+| L8 | Pilihan pembulatan Rp 1/100/1.000 dengan keterangan kapan cocok | Hanya tautan "ubah" berupa pesan mockup |
+| L9 | Sembunyikan nominal, Atur tampilan | Hilang |
+| L10 | Mode Belajar (tebak dulu), Banding madzhab | Tidak dirancang |
+| L11 | Simpan (beri nama), Bagikan tautan (akun), simpan file kasus (JSON) untuk impor | Hilang; hanya Kirim ringkasan dan PDF |
+| L12 | Catatan sumber sekunder untuk madzhab selain Syafi'i | Hilang |
+| L13 | **Ubah nama kasus** | Tidak ada di lama (hanya lewat dialog Simpan) maupun di v2. Judul "Harta Pak Ahmad" diambil dari nama almarhum, bukan nama kasus |
+
+### 14b. Pohon keluarga dan tabel faraidh
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| P1 | Tinggi | Di v2, pohon menjadi ubin 5/12 kolom (±430 px di laptop) dengan huruf ±10 px. Di HP lebar pohon 600 px dan digeser di dalam kotak tanpa petunjuk. Tidak bisa diperbesar atau dibuka layar penuh |
+| P2 | Tinggi | Pohon dan tabel menjawab pertanyaan yang **sama dari dua arah**: pohon "siapa, hubungannya apa" dan tabel "berapa saham, dari mana angkanya". Di aplikasi lama keduanya hanya bersanding di mode fokus. Di v2 keduanya terpisah jauh (pohon di tengah, tabel terlipat di bawah), jadi menghubungkan baris tabel dengan kotak pohon membebani ingatan |
+| P3 | Tinggi | **Dilema ruang:** di laptop, pohon (butuh lebar) dan tabel (butuh lebar, 5–6 kolom) tidak muat berdampingan tanpa salah satunya terlalu kecil. Di HP keduanya pasti bertumpuk. Menampilkan keduanya selalu terbuka memperpanjang halaman (kembali ke masalah S2). Melipat keduanya membuat pemeriksa harus mencari (S5) |
+| P4 | Sedang | Sorot pohon hanya dari daftar. Tabel tidak menyorot pohon, dan langkah tidak menyorot keduanya |
+| P5 | Sedang | Pohon besar (15+ orang, munasakhat 3 lapis) belum diuji; di aplikasi lama pohon >40 orang tidak beranimasi |
+
+### 14c. Langkah perhitungan dan mode fokus
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| F1' | Tinggi | Tidak ada alur "dari 1 sampai selesai": tidak ada penanda posisi, tidak ada langkah penutup ("Selesai: harta dibagi ke 4 orang"), tidak ada jalan kembali ke jawaban setelah selesai |
+| F2' | Tinggi | Di aplikasi lama, mode fokus hanya bisa dibuka dari kartu langkah yang terlipat di bawah. Pintunya tersembunyi, padahal ini fitur paling mengajar |
+| F3' | Sedang | Kasus khusus (haml, mafqud, gharqa) dan munasakhat tidak punya mode fokus di aplikasi lama. Langkahnya hanya teks panjang ("Mas'alahnya 72… juz' as-sahm") |
+| F4' | Sedang | Langkah dan lembar orang menjelaskan hal yang sama dengan teks yang sama (jejak engine). Tidak ada aturan mana yang ringkas dan mana yang lengkap |
+
+### 14d. Asal setiap keterangan (ketertelusuran)
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| T1 | Kritis | Kalimat mockup "Pak Ahmad dan Budi meninggal bersamaan **dan tidak diketahui siapa yang lebih dulu**" mencampur dua keadaan gharqa yang berbeda (KB 13d.2): keadaan 1 **serentak** (ijma': tidak saling mewarisi) dan keadaan 5 **tidak diketahui** (jumhur [SYF]: tidak saling mewarisi; [HNB]: saling mewarisi dari tilad). Keadaan 3 **terlupakan** di [SYF] justru **ditahan** sampai ingat atau berdamai. Jadi kalimat dan hasilnya harus berasal dari **jawaban pengguna** (keadaan mana) dan rujukan [R13-10], bukan kalimat umum |
+| T2 | Tinggi | Mockup memuat kalimat alasan yang saya tulis sendiri, bukan dari jejak engine. Contoh: "1/2, lalu sisanya juga kembali kepadanya" (radd, tanpa nama dan alasan), "Bagian ibu dari harta anaknya" (angkanya 2/5, tidak dijelaskan), "Tanya ustadz atau pengadilan agama" (pengadilan agama tidak ada di KB fikih; itu ranah KHI). Di aplikasi, setiap kalimat harus dari jejak engine + templat diksi dengan rujukan |
+| T3 | Tinggi | "Harta Budi Rp 50.000.000" muncul tanpa asal. Pengguna tidak melihat bahwa angka itu isiannya sendiri (tirkah anggota gharqa di wizard) |
+| T4 | Sedang | Setiap angka hasil tidak menunjukkan data masukan yang membentuknya (harta kotor, potongan, tahun meninggal, keadaan). Pengguna harus kembali ke Periksa untuk mencocokkan |
+| T5 | Sedang | Tab hamil menyebut enam kemungkinan; lihat F1 bagian 7 (perlu cek engine untuk [SYF]) |
+
+### 14e. Meninggal bersamaan (gharqa)
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| G1 | Tinggi | Tidak dijelaskan **mengapa** tidak saling mewarisi (syarat mewarisi: ahli waris pasti hidup saat pewaris meninggal; R13-10, mani' istibham waqt al-maut) |
+| G2 | Tinggi | Orang yang sama tampil di dua daftar dengan sebutan berbeda (Aminah "istrinya" dan "ibunya"), ditambah daftar total. Tiga daftar, dua almarhum, satu keluarga: pengguna tidak tahu daftar mana yang dipakai untuk membagi |
+| G3 | Tinggi | Pohon menggambar Budi sebagai kotak almarhum kedua, tanpa penanda "meninggal bersamaan dengan Pak Ahmad". Tidak terlihat bahwa garis waris antara keduanya **putus** |
+| G4 | Sedang | Hasil berbeda per keadaan (serentak / terlupakan / berurutan tak diketahui / tidak diketahui) dan per madzhab ([HNB] tilad–tharif), tetapi layar tidak menyebut keadaan yang dipilih atau akibat memilih keadaan lain |
+| G5 | Sedang | Keadaan 3 [SYF] (ditahan, dua skenario urutan) tidak dirancang sama sekali |
+| G6 | Sedang | Radd di harta Pak Ahmad dan harta Budi tidak dijelaskan (kenapa Siti mendapat lebih dari 1/2) |
+
+### 14f. Madzhab dan informasi kasus
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| I11 | Sedang | Madzhab tampil kecil di bilah atas ("Menurut madzhab Syafi'i · ganti"), sejajar dengan tautan kembali. Madzhab adalah **konteks hasil** (mempengaruhi angka), bukan aksi navigasi. Catatan sumber sekunder untuk madzhab selain Syafi'i hilang |
+| I12 | Sedang | Tidak ada satu tempat "informasi kasus" (nama kasus, madzhab, tanggal dihitung, harta kotor dan potongannya, keadaan khusus yang dipilih, satuan pembulatan). Informasi itu tersebar di hero, meta, dan lipatan |
+| I13 | Sedang | Hero v2 mengulang angka: kalimat "Rp 300.000.000 dibagi ke 4 orang" dan ubin "Total harta Rp 300 jt" serta "Menerima 4 orang" |
+
+### 14g. Beban pikiran v2
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| C1' | Sedang | Kirim ringkasan muncul dua kali (tombol hero dan ubin Bagikan) |
+| C2' | Sedang | Sekitar 9 ubin per kasus dengan 4 warna latar (putih, mint, oranye, hitam) tanpa arti warna yang konsisten: oranye = bagikan, mint = langkah, hitam = cara menghitung. Warna dipakai sebagai hiasan, bukan makna |
+| C3' | Sedang | Persen hanya di ubin Porsi, rupiah hanya di daftar. Untuk membandingkan satu orang, mata harus melompat antar-ubin |
+| C4' | Sedang | Ubin "Cara menghitung" hitam tampak seperti tombol, tetapi membuka konten di **bawah** semua ubin. Hubungan sebab-akibatnya tidak terlihat |
+
+### 14h. Satu kasus yang memuat semua keunikan
+
+Skenario: Pak Ahmad meninggal → Budi meninggal sesudahnya (munasakhat) → istri Budi sedang hamil (haml di lapis 2) → Siti hilang
+(mafqud di lapis 1 dan 2) → paman dan sepupu meninggal bersamaan dalam kecelakaan lain yang ikut dalam rantai (gharqa) → ada
+khuntsa. KB 13.0b: taqdir gabungan = hasil kali (mis. 6 × 4 × 2 = 48 kemungkinan), lalu satu jami'ah, aqall, dan sisanya ditahan.
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| X1 | Kritis | Pola "empat ubin" (dibagi sekarang / ditahan / untuk siapa / kapan) tidak memuat **beberapa alasan menahan sekaligus**: ditahan untuk bayi (sampai lahir) **dan** untuk Siti (sampai ada kabar), dengan waktu berbeda. "Kapan dihitung lagi" bisa lebih dari satu peristiwa |
+| X2 | Kritis | Pemilih "Kalau bayinya…" berupa pil tidak bisa menampung 48 kemungkinan gabungan. Pengguna perlu memilih **per sumber** (bayi: …, Siti: …), bukan per dunia |
+| X3 | Tinggi | Aliran per almarhum harus bisa memuat "ditahan" di tengah rantai: bagian Budi dari ayahnya sebagian ditahan karena Siti hilang, lalu harta Budi sendiri sebagian ditahan karena bayi |
+| X4 | Tinggi | Satu orang bisa punya beberapa keadaan di lapis berbeda (Siti: hilang di harta ayah, hilang juga di harta Budi). Daftar total per orang harus menunjukkan bagian pasti dan bagian ditahan per lapis |
+| X5 | Tinggi | Tabel faraidh untuk kasus ini = tabel per mayit × per kemungkinan. Tidak mungkin ditampilkan sekaligus. Perlu jalan masuk (pilih mayit, pilih kemungkinan) |
+| X6 | Tinggi | Pohon harus menandai beberapa jenis keadaan pada satu gambar: meninggal lebih dulu, meninggal sesudah (berlapis), meninggal bersamaan, hilang, dalam kandungan, khuntsa, terhalang, ditahan. Legenda v2 hanya 4 jenis |
+| X7 | Sedang | Batas kemungkinan engine (`BATAS_DUNIA` → PERLU_INPUT) harus tampil sebagai daftar orang yang perlu dipastikan, bukan layar galat. Di aplikasi lama sudah ada, di mockup belum |
+| X8 | Sedang | Bagianmu bisa berupa rentang ("sekarang Rp X, bisa sampai Rp Y"), dari beberapa almarhum, dengan beberapa sebab ditahan. Ubin tunggal v2 tidak memuat itu |
+
+### 14i. "Lebih informatif" (yang belum dijawab layar)
+
+- Harta kotor → potongan (biaya jenazah, hutang, wasiat) → harta bersih, dalam satu baris yang bisa dibuka.
+- Data masukan yang membentuk hasil (siapa saja, keadaannya, urutan meninggal) untuk dicocokkan tanpa kembali ke Periksa.
+- Untuk tiap orang: bagian, pecahan, persen, alasan, dalil, dan "kalau keadaannya lain" (ahwal), tanpa membuka banyak tempat.
+- Jenis masalah dalam bahasa awam ("bagian pas", "bagian melebihi harta, semua dikurangi sebanding", "ada sisa, dikembalikan").
+- Status hasil: pasti, sebagian ditahan, ditunda, atau perlu data.
+
+## 15. Pertanyaan sebelum HMW
+
+1. Ada bagian lain yang perlu diaudit? (Belum: mode Belajar secara rinci, Banding madzhab, isi PDF lengkap, dan teks Kirim ringkasan.)
+2. Untuk kasus gabungan (14h), apakah ada contoh kasus nyata yang ingin dijadikan acuan, atau saya susun dari kasus uji bab 16?
