@@ -1213,3 +1213,77 @@ rantai dan ringkasan babak. Dicek di 375 px dan laptop: tanpa galat konsol, tanp
 
 Salinan beku mockup yang disetujui: [acuan-hasil-final.html](acuan-hasil-final.html) (sama dengan `mockup-hasil-per-kasus.html` pada commit ini).
 Dipakai sebagai acuan saat integrasi ke aplikasi dan untuk mode fokus; perubahan berikutnya dibuat di `mockup-hasil-per-kasus.html`, acuan ini tidak disunting.
+
+## 28. Audit putaran 2 mockup mode fokus (catatan pemilik, 2026-11-18)
+
+Pemilik: kerangka berpikir (Dasar → Di keluarga ini → Hitungan) **lebih enak dari sebelumnya**. Yang kurang: alur kurang
+mengalir dan terlalu ringkas ("kenapa tiba-tiba bisa gini?"), animasi kurang hidup, matematika perlu sedikit lebih jelas, istilah
+belum ber-popover, sel "↑" sebaiknya digabung, pohon terlalu besar saat layar penuh, kasus khusus tidak dijelaskan dari dasar.
+Arah baru: **bisa diekspor menjadi video**, jadi mode fokus harus terasa seperti guru (visual dan gerak), bukan kartu bacaan.
+
+### 28a. Temuan
+
+| Kode | Tingkat | Temuan |
+|---|---|---|
+| F14' | Tinggi | **Lompatan logika.** Langkah langsung menyebut hasil ("tadakhul", "asal 6", "radd → 4") tanpa jembatan "kenapa perlu langkah ini" dan "apa yang akan kita cari". Tidak ada kalimat penghubung antarlangkah ("Bagian sudah ada, tapi penyebutnya beda-beda. Supaya bisa dijumlah, kita cari satu penyebut.") |
+| F15' | Tinggi | **Animasi hanya muncul-memudar.** Tidak ada sebab-akibat yang terlihat: angka tidak bergerak dari pecahan ke sel, pecahan tidak "disamakan" di depan mata, 'aul tidak terlihat sebagai harta yang "kurang" lalu dibagi ulang. Pohon tidak ikut bercerita (hanya ganti warna) |
+| F16' | Tinggi | **Logika dasar hilang.** Munasakhat: tidak dijelaskan *kenapa* dikali (bagian Budi 14 harus dibagi ke masalah 24 → cari kelipatan bersama → semua masalah Pak Ahmad × 12, masalah Budi × 7). Sama untuk tashih (kenapa kepala laki-laki dihitung 2), radd, 'aul |
+| F17' | Tinggi | **Kasus khusus tanpa dasar.** Hamil + hilang langsung ke "12 kemungkinan"; tidak menjelaskan apa itu taqdir, kenapa janin 6 kemungkinan [SYF], kenapa diambil yang terkecil, apa contoh satu kemungkinan. Rantai panjang tidak punya babak dasar munasakhat sama sekali |
+| F18' | Sedang | Matematika kurang langkah: "8 dan 6 → tawafuq" tanpa memperlihatkan FPB-nya; "24 × 1/8 = 3" tanpa "24 ÷ 8 = 3, × 1"; pecahan tidak diperlihatkan sebagai potongan dari satu utuh |
+| F19' | Sedang | Istilah (fardh, ashabah, tadakhul, tawafuq, tabayun, 'aul, radd, tashih, jami'ah, taqdir, mafqud, haml, hajb) tanpa popover; mockup Hasil sudah punya pola `ist()` |
+| F20' | Sedang | Sel "↑" (Siti di bawah Budi, Hafsah di bawah Maryam) membingungkan; kelompok satu saham seharusnya **sel tergabung** (rowspan) seperti di kitab |
+| F21' | Sedang | Layar penuh: pohon SVG `width:100%` ikut melebar sehingga hurufnya membesar dan menekan tabel serta penjelasan. Penyebab: ukuran pohon mengikuti lebar panel, bukan skala tetap |
+| F22' | Sedang | Granularitas: satu langkah = satu tahap terasa padat; pecah per orang (4a/4b/…) membuat 30+ langkah. Belum ada tingkat di tengahnya |
+| F23' | Rendah | Untuk video: belum ada narasi berwaktu (teks yang dibacakan per ketukan) dan urutan kamera; semuanya statis per langkah |
+
+### 28b. JTBD tambahan
+
+- **H-g (pelajar):** "Saat sebuah angka muncul, saya ingin tahu **kenapa langkah ini perlu** dan **dari mana angkanya**, supaya saya tidak hanya menghafal hasil."
+- **Pengajar / pemilik (video):** "Saat menyiapkan materi, saya ingin **merekam penjelasan satu kasus sebagai video**, yang berjalan sendiri seperti guru menulis di papan, supaya bisa dibagikan."
+
+### 28c. HMW dan ide berskor (Paham · Dampak · Usaha, 1–3; Usaha 3 = kecil)
+
+**HMW-37. Bagaimana langkah terasa mengalir, tidak ada "tiba-tiba"? (F14', F22')**
+
+| Ide | P | D | U | Jml |
+|---|---|---|---|---|
+| A. **Langkah = tahap, di dalamnya ketukan** yang berjalan sendiri seperti guru: (1) pertanyaan pembuka "apa yang kita cari dan kenapa", (2) dasar, (3) di keluarga ini, (4) hitungan per orang, (5) kalimat penutup yang menjembatani ke langkah berikut. Lanjut = ke tahap berikut; titik kecil menunjukkan ketukan; "Lewati ke akhir langkah" | 3 | 3 | 2 | **8** |
+| B. Setiap orang satu langkah (4a/4b) | 2 | 2 | 3 | 7 |
+| C. Tetap satu kartu per tahap, ditambah kalimat penghubung saja | 2 | 2 | 3 | 7 |
+
+Rekomendasi A: jumlah langkah tetap ±6 (tidak membuat pelajar kewalahan), tapi detailnya terurai pelan di dalam langkah.
+
+**HMW-38. Bagaimana animasi memperlihatkan sebab-akibat, seperti guru menulis di papan? (F15', F23')**
+
+| Ide | P | D | U | Jml |
+|---|---|---|---|---|
+| A. **Papan tulis bergerak**: angka benar-benar berpindah (dari pohon ke kolom Fardh, dari pecahan ke hitungan, dari hitungan ke sel), pecahan disamakan di depan mata (1/2 → 3/6 ditulis berurutan), 'aul diperagakan sebagai batang harta 6 kotak yang tidak cukup untuk 8 lalu dibagi ulang jadi 8 kotak lebih kecil; tiap ketukan punya kalimat narasi (teks bawah, bisa jadi takarir video) | 3 | 3 | 1 | 7 |
+| B. Sorot + muncul bertahap seperti sekarang, ditambah narasi | 2 | 2 | 3 | 7 |
+| C. Diagram batang harta di setiap langkah (pecahan = potongan batang) tanpa gerak antarpanel | 3 | 2 | 2 | 7 |
+
+Rekomendasi **A dengan C sebagai bagiannya** (batang harta dipakai di bagian awal, asal, 'aul, radd). Usaha besar, tapi ini inti permintaan "seperti guru". Linimasa ketukan dibuat sebagai data (durasi + narasi + sorot), sehingga ekspor video nanti cukup memutar linimasa yang sama.
+
+**HMW-39. Bagaimana logika dasar dijelaskan, bukan hanya rumusnya? (F16', F18')**
+
+| Ide | P | D | U | Jml |
+|---|---|---|---|---|
+| A. **Kotak "Logikanya"** di ketukan yang punya alasan matematis: munasakhat ("Budi punya 14 bagian, tapi masalahnya butuh 24 bagian. 14 tidak bisa dibagi rata ke 24, jadi kita perbesar: cari angka yang bisa dibagi keduanya → 14 : 24 = 7 : 12 → seluruh masalah Pak Ahmad × 12, masalah Budi × 7. Cek: 14 × 12 = 168 = 24 × 7"), tashih, 'aul, radd, nisab arba' (FPB diperlihatkan) | 3 | 3 | 2 | **8** |
+| B. Logika di popover saja | 2 | 2 | 3 | 7 |
+| C. Halaman materi terpisah, ditaut | 2 | 1 | 3 | 6 |
+
+**HMW-40. Bagaimana kasus khusus dimulai dari dasar? (F17')**
+
+| Ide | P | D | U | Jml |
+|---|---|---|---|---|
+| A. **Babak dasar sebelum kasus khusus**: hamil + hilang dimulai "Masalah jika semuanya jelas" → "Apa yang belum jelas" (haml, mafqud: dasar + dalil) → "Taqdir: kita hitung semua kemungkinan" (contoh satu kemungkinan dihitung penuh, sisanya diringkas di tabel) → "Ambil yang terkecil, kenapa" (logika: tidak merugikan siapa pun) → ditahan. Rantai panjang dimulai dengan dasar munasakhat pada dua mayit pertama secara lengkap, lalu babak berpola sama diringkas | 3 | 3 | 2 | **8** |
+| B. Pengantar satu kartu, lalu langsung tabel kemungkinan | 2 | 2 | 3 | 7 |
+
+**HMW-41. Perbaikan kecil (F19'–F21')** — langsung diterapkan, tanpa pilihan:
+istilah ber-popover (pola `ist()` dari mockup Hasil); sel kelompok digabung (rowspan) dengan keterangan "Budi dan Siti 17";
+pohon berskala tetap (tinggi maksimum, huruf tidak membesar) sehingga di layar penuh ruang ekstra jatuh ke tabel dan penjelasan.
+
+### 28d. Pertanyaan untuk pemilik
+
+1. Langkah = tahap dengan ketukan di dalamnya yang berjalan sendiri (37A)?
+2. Animasi papan tulis bergerak + batang harta + narasi (38A+C), walau usahanya paling besar?
+3. Ekspor video: cukup disiapkan strukturnya sekarang (linimasa sebagai data), perekamannya nanti?
