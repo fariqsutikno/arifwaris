@@ -225,3 +225,4 @@ Tambahan wajib di semua ide: P2 → sebutan "Istri lain ayah" untuk penghubung i
 (tempat silsilah lengkap memang dibaca). Plus P2 dan P5.
 
 Mockup: [mockup-pohon-keluarga-besar.html](mockup-pohon-keluarga-besar.html) — B (samping ringkas) + A (layar penuh berjajar). Menunggu acc.
+Mockup gabungan dalam konteks layar Keluarga: [mockup-pohon-b-plus-a.html](mockup-pohon-b-plus-a.html).
