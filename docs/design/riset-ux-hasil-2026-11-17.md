@@ -989,3 +989,63 @@ HMW-24, 25, 28 langsung diterapkan karena bersifat perbaikan.
 - HMW-27: baris penjumlahan bisa diketuk untuk menyaring daftar (Penerima, Ditahan, Tidak mendapat bagian; munasakhat: "Harta Pak Ahmad dibagi", "Bagian Budi dibagi lagi", …, dengan rupiah dari orang itu saja; bersamaan: per harta). Penanda "Disaring: … · Tampilkan semua". Pembulatan = pil "Rp 1 ▾".
 - HMW-28: ubin atas dan "Ahli waris" di Tentang kasus dihitung dari data daftar (jumlah, nama ≤ 3 lalu "dan n lainnya").
 Dicek: semua tab tanpa galat; laptop 1200 px dan HP 375 px tanpa gulir mendatar; saring per mayit, baris bayangan, sakelar proses.
+
+## 25. Audit + HMW: proses hitung bertahap dan penjelasan "dasar → penerapan" (2026-11-17)
+
+Masukan pemilik: (1) "Tampilkan proses" belum menjawab: harus terlihat dari bagian awal tiap orang → asal masalah → 'aul/radd →
+tashih → per orang, dan untuk munasakhat berlanjut ke masalah tiap mayit → perbandingan → jami'ah; bukan hanya hasil akhir,
+karena web ini web edukasi; tiap tahap bisa ditampilkan/disembunyikan sendiri. (2) Penjelasan di modal dimulai dari **dasar**
+(aturan umum + dalil, seperti bagian "Dalilnya" dan "Kapan dapat berapa"), lalu **penerapan** di kasus ini (kondisi apa yang
+terpenuhi, apa yang bertambah/berkurang), divisualkan dengan baik. Berlaku di layar Hasil dan nanti di mode fokus.
+Modal dibuat beberapa alternatif untuk dipilih; setelah dipilih, diintegrasikan ke mockup, lalu ke aplikasi.
+
+### 25a. JTBD
+
+- **H-g/H-f (belajar, mencocokkan):** "Saat mempelajari kasus ini, saya ingin melihat **setiap tahap** hitungan faraidh seperti di
+  kitab, dan bisa memilih tahap mana yang ingin saya lihat, supaya saya paham dari mana tiap angka datang." Ukuran: dari bagian
+  awal sampai rupiah bisa diikuti tanpa membuka sumber lain.
+- **H-b (keluarga bertanya "kenapa"):** "Saat ditanya kenapa bagian seseorang segitu, saya ingin bisa menunjukkan **aturannya dulu**
+  (dalil dan syarat), **lalu** bahwa syarat itu terpenuhi di keluarga kami, **lalu** hitungannya." Ukuran: penjelasan bisa
+  dibacakan berurutan tanpa melompat.
+
+### 25b. Temuan
+
+| Kode | Temuan |
+|---|---|
+| P6 | "Tampilkan proses" hanya memunculkan keterangan di kepala kolom (pengali, "14 : 24 → tawafuq"); tidak ada tahap **bagian awal** (1/8, 1/6, sisa), tidak ada langkah penjumlahan (3 + 4 + 17 = 24), tidak ada tahap 'aul/radd dalam bentuk kolom tersendiri |
+| P7 | Satu tombol untuk semua tahap: tidak bisa memilih hanya "asal masalah" atau hanya "jami'ah" |
+| P8 | Munasakhat: tahap per mayit (masalah Budi dari bagian awalnya, perbandingan 14 : 24, pengali) hanya tersirat di angka kepala kolom |
+| E1 | Modal sekarang: Bagiannya → Kenapa segitu → Cara menghitungnya → (terlipat) Kapan dapat berapa → (terlipat) Dalilnya. **Dasar ada di bawah dan terlipat**, padahal secara cara berpikir ia datang pertama |
+| E2 | "Kenapa segitu" sudah menyebut penerapan ("karena ada Budi dan Siti") tetapi tidak menunjuk baris aturan mana yang terpenuhi, dan tidak menunjukkan apa yang **berubah** dari bagian dasar (1/4 → 1/8) |
+| E3 | "Cara menghitungnya" melompat langsung ke 9/72 tanpa jembatan 1/8 → 3/24 → 9/72 |
+| E4 | Untuk munasakhat, penjelasan per lapis berupa kalimat; penjumlahan (Rp a + Rp b + Rp c = total) tidak divisualkan |
+
+### 25c. HMW
+
+**HMW-29. Bagaimana menampilkan setiap tahap hitung faraidh, dari bagian awal sampai rupiah (dan sampai jami'ah), dengan tahap yang bisa dipilih?**
+
+Tahap baku (diambil dari kolom tabel engine `fardh · ashl · aul/radd · tashih · perOrang · nominal`, ditambah tahap munasakhat):
+1. Bagian awal (fardh / sisa) · 2. Asal masalah (+ perbandingan penyebut) · 3. 'Aul atau radd (bila ada) · 4. Tashih (bila ada) ·
+5. Per orang · 6. Rupiah · (munasakhat) 7. Masalah tiap mayit · 8. Perbandingan bagian : masalah · 9. Jami'ah.
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Tabel kitab + pil tahap di atasnya (tiap pil menyalakan kolomnya); di bawah tabel kotak "hitungan tahap ini" berisi penjumlahan (3 + 4 + 17 = 24) untuk tahap yang terakhir dinyalakan | tinggi | tinggi | sedang |
+| B. Tabel bertahap dengan langkah (Tahap 1/6 · Sebelumnya · Berikutnya): tiap tahap menambah satu kolom dan menampilkan kotak dasar → penerapan → hitungan; ada pil "Semua tahap" | tinggi | tinggi | sedang |
+| C. Kartu proses vertikal (satu kartu per tahap, berisi rumus dan hasil), tabel ringkas di bawahnya | tinggi | sedang | sedang |
+
+**HMW-30. Bagaimana menyusun penjelasan orang dari dasar ke penerapan, dan memvisualkan perubahannya?**
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. **Urut dasar dulu**: Bagiannya → 1. Dasarnya (dalil + tabel "kapan dapat berapa", terbuka) → 2. Di kasus ini (baris aturan yang terpenuhi disorot + syaratnya dicentang: "Almarhum punya anak ✓ Budi, Siti") → 3. Hitungannya (1/8 → 3/24 → 9/72 → × harta) | tinggi | tinggi | kecil |
+| B. **Tab di dalam modal**: Ringkas · Dasar · Hitungan | sedang | sedang | kecil |
+| C. **Alur visual bertingkat**: garis vertikal bernomor dari aturan umum → syarat terpenuhi → bagian yang berlaku (dengan coretan 1/4 → 1/8) → hitungan → rupiah; munasakhat menambah cabang per lapis yang dijumlahkan | tinggi | tinggi | sedang |
+
+### 25d. Rencana
+
+Dibuat mockup alternatif terpisah: [mockup-hasil-penjelasan-alternatif.html](mockup-hasil-penjelasan-alternatif.html)
+dengan modal A, B, C (untuk Aminah di kasus biasa, Siti di kasus berurutan, dan suami di kasus 'aul) dan tabel proses A, B, C
+(kasus biasa, 'aul, dan berurutan). Pemilik memilih; pilihan diintegrasikan ke mockup utama, lalu ke aplikasi.
+Kasus 'aul (suami, ibu, 2 saudari kandung; harta Rp 300.000.000) diambil dari engine: asal 6 → 'aul 8; suami 3, ibu 1,
+saudari 2 dan 2; rupiah 112.500.000 · 37.500.000 · 75.000.000 · 75.000.000.
