@@ -794,3 +794,89 @@ Belum: dzawil arham (belum ada contoh kasus engine di mockup), pembaca layar.
 - Baris tabel faraidh, baris tabel aliran, dan kotak pohon membuka modal yang sama.
 - Sakelar Pohon/Tabel hanya muncul di layar sempit (keduanya tidak muat berdampingan); di laptop keduanya tampil bersamaan tanpa sakelar (sebelumnya sakelar ikut tampil karena urutan CSS).
 - Petunjuk bila ada bagian tersembunyi: "Geser ke kanan untuk kolom lain →" di kaki tabel dan "Geser atau perkecil untuk melihat semua" di pohon, muncul hanya bila memang terpotong; lipatan generasi/lapis tetap berlabel jumlahnya.
+
+## 23. Audit + HMW: Tentang kasus, Jenis masalah, kalimat pembuka (2026-11-17)
+
+Pemilik mengingatkan: perubahan tampilan **tidak langsung diedit**. Harus lewat JTBD → HMW → ide → dipilih. Bagian ini mengikuti
+urutan itu. Mockup belum diubah.
+
+### 23a. JTBD yang dilayani
+
+- **H-f (pemeriksa):** "Saat mencocokkan dengan ustadz atau kitab, saya ingin tahu **jenis kasusnya** dan **bagaimana angkanya
+  disusun**, supaya bisa menelusuri langkah yang sama." Ukuran: jenis kasus dan angka kunci (asal masalah, tashih, jami'ah)
+  ketemu dalam satu kali pandang, dengan nama yang sama seperti di kitab.
+- **H-a/H-c (keluarga):** "Saat membuka hasil, saya ingin langsung paham **apa yang terjadi** pada keluarga ini (siapa yang
+  meninggal, urutannya, siapa yang belum pasti), supaya percaya angkanya." Ukuran: bisa diceritakan ulang tanpa istilah.
+- **Semua jenis kasus memakai pola yang sama**, supaya orang yang sudah membaca satu kasus tidak perlu belajar lagi di kasus lain.
+
+### 23b. Temuan (audit)
+
+| Kode | Bagian | Temuan |
+|---|---|---|
+| J1 | Tentang kasus | KASUS memakai daftar polos, HITUNGAN memakai kotak berlatar dengan angka tebal. Bobotnya sama, tapi rupanya berbeda, sehingga terlihat seolah HITUNGAN lebih penting |
+| J2 | Tentang kasus | Label kiri tidak sejajar ukuran dan jenisnya: "Madzhab" lalu keterangan panjang dua baris, sementara "Dihitung" hanya tanggal. Nilai yang bisa diubah (ganti, ubah, dari isianmu) berupa tautan kecil di tengah kalimat |
+| J3 | Jenis masalah | Tidak seragam antar-kasus: biasa = "Kasus biasa / Bagian pas dengan harta"; munasakhat = "Meninggal berurutan / Munasakhat" + chip "Munasakhat" (**ditulis dua kali**); belum pasti = "Ada yang belum pasti / Haml dan mafqud" + chip |
+| J4 | Jenis masalah | "Keadaan **3 dari 3**": "dari 3" tidak bermakna bagi siapa pun. "Keadaan 3" sendiri butuh penjelasan (KB 12.2: keadaan 1 = ahli waris mayit berikutnya sama persis dengan sisa ahli waris sebelumnya; 2 = terpisah total, lebih dari satu; 3 = selain itu), tapi tidak bisa disorot |
+| J5 | Jenis masalah | "Meninggal kemudian: Budi, lalu Aminah" membingungkan: siapa yang pertama (Pak Ahmad) tidak disebut, dan istilah kitab yang lazim adalah **mayit pertama, mayit kedua, …** (KB 12.3). "Jumlah lapis" memakai istilah kita sendiri, bukan istilah kitab |
+| J6 | Jenis masalah | "Ahli waris" dan "'Aul / radd" muncul di ubin Jenis **dan** di Tentang kasus (dua tempat, satu fakta) |
+| J7 | Kalimat pembuka (hero) | Judul dan kalimat ditulis tangan per kasus ("Bagikan harta Pak Ahmad langsung ke 27 orang", "Setiap putra meninggal sesudah ayahnya… Contoh ketahanan rantai panjang"). Di aplikasi nyata kalimat seperti ini harus disusun otomatis dari data; untuk kasus gabungan (berurutan + hamil + bersamaan) kalimat bebas akan panjang, tidak seragam, dan sulit diuji |
+| J8 | Kalimat pembuka | Kalimat menjelaskan sebab (siapa meninggal kapan) dan sekaligus perintah ("Bagikan … langsung ke 27 orang"). Dua tugas dalam satu kalimat |
+
+### 23c. HMW dan ide
+
+#### HMW-19. Bagaimana agar "Tentang kasus ini" terbaca seragam, dengan bobot yang sama untuk data kasus dan hitungan? (J1, J2, J6)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Satu pola baris untuk semua: label kecil di atas, **nilai tebal**, keterangan kecil di bawah; KASUS dan HITUNGAN sama-sama memakai pola ini, dipisah judul kecil saja | tinggi | tinggi | kecil |
+| B. Dua kolom berdampingan (Kasus kiri, Hitungan kanan) dalam pola tabel | sedang | sedang | kecil |
+| C. Satu daftar tanpa pemisah | sedang | rendah | kecil |
+
+**Usul: A.** Aksi ubah (ganti madzhab, ubah keadaan, ubah harta) dipindah ke ujung kanan baris sebagai ikon pensil, tidak di tengah kalimat.
+Fakta yang sama hanya di satu tempat: "Ahli waris" dan "'Aul/radd" tinggal di Tentang kasus.
+
+#### HMW-20. Bagaimana agar ubin Jenis masalah seragam di semua kasus, tanpa pengulangan, dan istilahnya bisa dipelajari? (J3, J4, J5)
+
+Kerangka seragam yang diusulkan (semua kasus mengisi baris yang sama; baris yang tidak relevan tidak dirender):
+
+| Baris | Biasa | Berurutan | Belum pasti | Bersamaan |
+|---|---|---|---|---|
+| **Jenis kasus** | Biasa | Munasakhat (meninggal berurutan) | Haml · Mafqud | Gharqa (meninggal bersamaan) |
+| **Kondisi** | 'Adilah | Keadaan 3 | 12 kemungkinan | Keadaan 1: serentak |
+| **Mayit** | 1: Pak Ahmad | 1: Pak Ahmad · 2: Budi · 3: Aminah | 1: Pak Ahmad | Pak Ahmad dan Budi (bersamaan) |
+| **Yang belum pasti** | – | – | Janin Aminah · Siti (hilang) | – |
+| **Yang dibagi** | Harta Pak Ahmad | Harta Pak Ahmad saja | Harta Pak Ahmad, sebagian ditahan | Dua harta, terpisah |
+
+Ide penyajian:
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Daftar berlabel seperti tabel di atas; tiap istilah (munasakhat, keadaan 3, 'adilah, gharqa) bisa disorot untuk penjelasan; tanpa chip | tinggi | tinggi | kecil |
+| B. Kartu kecil per baris (ubin mini) | sedang | sedang | sedang |
+| C. Satu kalimat ringkas ("Munasakhat keadaan 3, tiga mayit") | sedang | rendah | kecil |
+
+**Usul: A.** Chip dihapus (penyebab dobel). "Dari 3" dihapus. "Keadaan 3" disorot → "Ahli waris mayit berikutnya tidak sama persis
+dengan sisa ahli waris mayit sebelumnya (KB 12.2)". Baris **Mayit** memakai istilah kitab (mayit 1, 2, 3) dan sekaligus
+menyebut urutannya, menggantikan "meninggal kemudian" dan "jumlah lapis". Untuk rantai panjang: "1: Pak Ahmad · 2–13: Putra
+gen. 1–12".
+
+#### HMW-21. Bagaimana agar judul dan kalimat pembuka seragam, bisa disusun otomatis dari data, dan tidak membingungkan di kasus apa pun? (J7, J8)
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Judul tetap "Pembagian harta {almarhum}" + satu baris status dari templat ("Dibagi ke 3 orang" / "Sebagian ditahan" / "Ditunda sampai bayi lahir") + deret fakta pendek berupa label (mis. "3 mayit berurutan", "1 janin", "1 hilang") | tinggi | tinggi | kecil |
+| B. Kalimat templat bersambung ("Harta {almarhum} dibagi ke {n} orang. {mayit lain} meninggal sesudahnya…") | sedang | sedang | sedang |
+| C. Tanpa kalimat; hanya judul dan ubin angka | tinggi | rendah | kecil |
+
+**Usul: A.** Judul tidak lagi berupa perintah ("Bagikan … langsung ke …"); perintah pindah ke kotak "Yang dibagi sekarang" di
+daftar. Cerita lengkap tetap ada di ubin Jenis masalah (baris Mayit) dan aliran. Semua teks lewat templat diksi.
+
+### 23d. Pertanyaan untuk pemilik
+
+1. HMW-19: setuju pola A (satu pola baris, pensil di kanan)?
+2. HMW-20: setuju kerangka lima baris (Jenis kasus, Kondisi, Mayit, Yang belum pasti, Yang dibagi) dengan istilah kitab "mayit 1, 2, 3"?
+3. HMW-21: setuju judul tetap "Pembagian harta {almarhum}" + status + label fakta, tanpa kalimat bebas?
+
+### 23e. Urutan kerja berikutnya (pemilik, 2026-11-17)
+
+Layar Hasil (ini) → **mode fokus** (langkah demi langkah pembagian) → penyempurnaan informasi → mode AI (cerita) dan seterusnya.
