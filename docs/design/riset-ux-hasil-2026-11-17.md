@@ -713,6 +713,26 @@ di menu aksi.
 2. B3 (memisah sumber yang saling lepas) mau dijajaki sebagai riset engine terpisah, atau cukup B1 dulu?
 3. Apakah dosen punya contoh kasus gabungan atau rantai panjang yang akan dipakai menguji? Bila ada, dijadikan kasus uji.
 
+## 19a. Keputusan: model "cepat untuk yang biasa, tetap jalan untuk yang ekstrem" (2026-11-17)
+
+Pemilik: jangan merusak sistem atau performa; dosen realistisnya menguji ±5 generasi; tidak ada contoh kasus dari dosen.
+
+Dasar: ukur 15a. Kasus 5 generasi dengan hilang + janin = **12 ms**. Kasus realistis tidak butuh perubahan besar.
+
+1. **Engine tidak diubah.** Tidak ada perubahan aturan, struktur, atau `BATAS_DUNIA` (tetap 256).
+2. **Jalur cepat tetap seperti sekarang:** hitung langsung di layar, cukup sekali (K2, memperbaiki panggilan ganda).
+3. **Jalur berat hanya bila perlu:** web memperkirakan beban sebelum menghitung (jumlah mayit berurutan × jumlah kemungkinan).
+   Di atas ambang, perhitungan dipindah ke latar (worker) dengan layar "Menghitung…", kemajuan, dan Batal. Di bawah ambang,
+   tidak ada worker. Ambang ditentukan dari ukur di browser HP (K4), bukan ditebak.
+4. **Tampilan bertahap untuk rantai panjang:** lapis dilipat, daftar dikelompokkan per generasi, pohon dan aliran digambar
+   untuk bagian yang terlihat; animasi mati otomatis di atas ambang (pola `BATAS_ALIRAN` yang sudah ada).
+5. **Lewat 256 kemungkinan:** pertanyaan pintar (B1), bukan galat.
+6. **Ditunda (YAGNI):** K3 (pakai ulang lapis) dan B3 (memisah sumber) hanya diriset bila ukur HP membuktikan jalur berat
+   masih terlalu lambat untuk kasus yang wajar.
+7. **Kasus uji buatan sendiri** (tidak ada contoh dari dosen): rantai 5 generasi + janin + orang hilang + meninggal bersamaan
+   sebagai kasus peraga, plus 20 dan 50 generasi sebagai tes ketahanan dengan batas waktu, supaya perubahan berikutnya tidak
+   diam-diam membuatnya lambat. Hasilnya dicocokkan ke KB sebelum dipakai.
+
 ## 20. Pertanyaan lama (sudah dijawab)
 
 1. Ada bagian lain yang perlu diaudit? (Belum: mode Belajar secara rinci, Banding madzhab, isi PDF lengkap, dan teks Kirim ringkasan.)
