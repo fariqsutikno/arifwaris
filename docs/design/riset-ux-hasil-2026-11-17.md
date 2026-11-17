@@ -978,3 +978,14 @@ Di mockup berikutnya ubin dihitung dengan fungsi yang sama dari data contoh, buk
 3. HMW-26: mulai dari satu sakelar "Tampilkan proses" (B), atau langsung pil per tahap (A)?
 4. HMW-27 A (baris penjumlahan bisa diketuk untuk menyaring; pembulatan pil "Rp 1 ▾")?
 HMW-24, 25, 28 langsung diterapkan karena bersifat perbaikan.
+
+### 24d. Diterapkan ke mockup (pemilik setuju keempat usulan)
+
+- HMW-22: "27 penerima · 12 meninggal sebelum dibagi"; judul kelompok daftar "Penerima" dan "Meninggal sebelum dibagi".
+- HMW-23: "Urutan pembagian" · "Siapa meninggal, dapat berapa, dan diberikan ke siapa." · langkah "Budi meninggal" · kolom "Diberikan ke / Rupiah / Keterangan" · penanda "dibagi lagi di langkah 2". Kata "lapis" tidak tampil. (Penanda "lanjut ke Budi" diganti "dibagi lagi di langkah n" karena muncul di baris Budi sendiri.)
+- HMW-24: baris bayangan putus-putus di tempat yang dilipat ("Generasi 3–12 · 20 orang disembunyikan · Tampilkan", "Langkah 3–12 · 10 langkah disembunyikan", "Meninggal sebelum dibagi · 12 orang disembunyikan"); "pecahan panjang" bisa disorot; "< 0,01%".
+- HMW-25: judul ubin 700; nilai di Jenis masalah dan Tentang kasus 500; judul generasi 600 berwarna tinta.
+- HMW-26: tombol "Tampilkan proses" di tabel: membuka asal masalah, pengali, perbandingan saham (tawafuq/inqisam) dan keterangan masalah; kolom mayit dan jami'ah selalu tampil.
+- HMW-27: baris penjumlahan bisa diketuk untuk menyaring daftar (Penerima, Ditahan, Tidak mendapat bagian; munasakhat: "Harta Pak Ahmad dibagi", "Bagian Budi dibagi lagi", …, dengan rupiah dari orang itu saja; bersamaan: per harta). Penanda "Disaring: … · Tampilkan semua". Pembulatan = pil "Rp 1 ▾".
+- HMW-28: ubin atas dan "Ahli waris" di Tentang kasus dihitung dari data daftar (jumlah, nama ≤ 3 lalu "dan n lainnya").
+Dicek: semua tab tanpa galat; laptop 1200 px dan HP 375 px tanpa gulir mendatar; saring per mayit, baris bayangan, sakelar proses.
