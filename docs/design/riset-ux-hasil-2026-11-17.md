@@ -782,3 +782,15 @@ terlupakan) · Cara mencoba.
 
 Dicek di browser: semua tab tanpa galat konsol; laptop 1200 px dan HP 375 px tanpa gulir mendatar halaman (tabel bergulir di dalam kotaknya dengan kolom nama tetap); modal di laptop dan laci di HP; tabel munasakhat cocok dengan saham engine (cek otomatis di konsol).
 Belum: dzawil arham (belum ada contoh kasus engine di mockup), pembaca layar.
+
+### 22a. Revisi v4 (catatan putaran berikutnya)
+
+- Hitungan di "Tentang kasus ini": tiap baris = label · **angka tebal** · keterangan kecil (mis. "Bagian Budi : masalahnya · **14 : 24** · tawafuq, dibagi 2 → 7 : 12").
+- Jenis masalah: kategori → nama → chip istilah → ringkasan berlabel (Keadaan, Jumlah lapis, Meninggal kemudian, Yang dibagi). Jami'ah pindah ke Hitungan.
+- Pembulatan: pilihan besar dihapus. Baris "Sisa pembulatan … · ubah pembulatan" membuka modal dengan tiga pilihan baris penuh (gaya kuis) beserta sisanya masing-masing.
+- Modal: kepala berwarna tegas (hijau tua = menerima, kuning tua = ditahan, abu tua = tidak mendapat/meneruskan). Yang terbuka: Bagiannya, Kenapa segitu, Cara menghitungnya. Yang terlipat (dengan judul dan keterangan jumlah): Ahli waris lain yang terdampak, Kapan dapat berapa, Dalilnya.
+- Munasakhat di modal: "Kenapa segitu" per lapis dengan rupiahnya, ditutup alasan totalnya; orang yang meninggal kemudian: kepada siapa bagiannya dibagi.
+- Baris daftar tidak lagi memuat alasan; alasan hanya di modal.
+- Baris tabel faraidh, baris tabel aliran, dan kotak pohon membuka modal yang sama.
+- Sakelar Pohon/Tabel hanya muncul di layar sempit (keduanya tidak muat berdampingan); di laptop keduanya tampil bersamaan tanpa sakelar (sebelumnya sakelar ikut tampil karena urutan CSS).
+- Petunjuk bila ada bagian tersembunyi: "Geser ke kanan untuk kolom lain →" di kaki tabel dan "Geser atau perkecil untuk melihat semua" di pohon, muncul hanya bila memang terpotong; lipatan generasi/lapis tetap berlabel jumlahnya.
