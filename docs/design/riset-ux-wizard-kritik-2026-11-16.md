@@ -223,3 +223,5 @@ Tambahan wajib di semua ide: P2 → sebutan "Istri lain ayah" untuk penghubung i
 
 **Usulan:** B untuk pohon samping (panel sempit, fungsinya "cek sekilas") + A di pohon layar penuh/hasil
 (tempat silsilah lengkap memang dibaca). Plus P2 dan P5.
+
+Mockup: [mockup-pohon-keluarga-besar.html](mockup-pohon-keluarga-besar.html) — B (samping ringkas) + A (layar penuh berjajar). Menunggu acc.
