@@ -887,3 +887,94 @@ Layar Hasil (ini) → **mode fokus** (langkah demi langkah pembagian) → penyem
 - HMW-20 A: ubin "Jenis masalah" lima baris seragam (Jenis kasus · Kondisi · Mayit · Yang belum pasti · Yang dibagi); chip dihapus; "Keadaan 3", "Keadaan 1: serentak", "'Adilah", "Munasakhat", "Haml", "Mafqud", "Gharqa" bisa disorot.
 - HMW-21 A: judul "Pembagian harta {almarhum}" + status templat + label fakta ("3 mayit berurutan", "1 janin · 1 hilang"); tanpa kalimat bebas.
 Dicek: semua tab tanpa galat; laptop 1200 px dan HP 375 px tanpa gulir mendatar; pensil pembulatan membuka modal.
+
+## 24. Audit + HMW: bahasa ringkasan, aliran, bagian tersembunyi, ketebalan, tabel bertahap, penjumlahan, ubin atas (2026-11-17)
+
+Pemahaman dikonfirmasi pemilik (7 poin). Filter penjumlahan berlaku untuk **semua** jenis kasus. Mockup belum diubah.
+
+### 24a. Temuan
+
+| Kode | Temuan |
+|---|---|
+| B7 | "27 menerima · 12 meneruskan" memakai kata kerja tanpa objek; "meneruskan" tidak dimengerti tanpa konteks |
+| B8 | "Bagaimana hartanya mengalir", "lapis", tanda →, dan keterangan "Penjelasan rinci. Tiap lapis: …" memakai istilah buatan kita; panjang dan teknis |
+| B9 | Generasi yang dilipat hanya diberi tombol di bawah daftar; di antara "Generasi 2" dan "Generasi 13" tidak ada tanda bahwa ada yang hilang |
+| B10 | Generasi 13 menampilkan pecahan "—" dan persen "0%" karena penyebutnya terlalu panjang dan persennya < 0,01%. Terkesan data kosong |
+| V11 | Nilai di Jenis masalah dan Tentang kasus (700) lebih tebal dari judul ubin (600) dan judul generasi. Hierarki terbalik |
+| T6 | Tabel hanya menampilkan hasil per tahap, tidak menampilkan **proses**: pecahan awal → disamakan penyebutnya → tashih → jami'ah → rupiah |
+| R14 | "Sisa pembulatan, dibulatkan ke Rp 1 · ubah pembulatan" panjang dan tautannya tenggelam di kalimat |
+| R15 | Baris penjumlahan (Dibagikan, Ditahan, dari harta X) hanya angka; tidak bisa dipakai untuk melihat siapa saja di balik angka itu |
+| D1 | Ubin atas berisi teks tulisan tangan ("Rp 87,5 jt", "Aminah dan Fatimah", "untuk Budi, Siti, dan bayi"); tidak dihitung dari data, jadi tidak bisa dipakai untuk kasus lain |
+
+### 24b. HMW dan ide
+
+**HMW-22. Bagaimana menyebut jumlah penerima dan yang meneruskan dengan singkat dan awam? (B7)**
+
+| Ide | Paham | Panjang |
+|---|---|---|
+| A. "27 penerima · 12 meninggal sebelum dibagi" | tinggi | pendek |
+| B. "27 orang mendapat bagian · 12 orang bagiannya diteruskan" | tinggi | sedang |
+| C. "27 ahli waris hidup · 12 ahli waris wafat" | sedang | pendek |
+
+**Usul: A.** Kata yang sama dipakai sebagai judul kelompok di daftar ("Penerima", "Meninggal sebelum dibagi").
+
+**HMW-23. Bagaimana menamai dan menjelaskan bagian aliran dengan kata awam? (B8)**
+
+| Ide | Judul | Keterangan | Penanda |
+|---|---|---|---|
+| A | "Jalan harta dari orang ke orang" | "Urut dari yang meninggal pertama. Bila penerimanya juga sudah meninggal, bagiannya dibagi lagi di bawahnya." | "dibagi lagi di langkah 2" |
+| B | "Urutan pembagian" | "Siapa meninggal, dapat berapa, dan diberikan ke siapa." | "lanjut ke Budi" |
+| C | "Dari Pak Ahmad sampai penerima terakhir" | (tanpa keterangan) | panah |
+
+**Usul: B**, dengan penanda "lanjut ke {nama}" (bukan "→ lapis 3") dan judul tiap langkah "1. Pak Ahmad meninggal", "2. Budi meninggal", karena urutan meninggal adalah cara keluarga bercerita. Kata "lapis" tidak dipakai di layar; istilah kitab "mayit ke-2" ada di ubin Jenis masalah.
+
+**HMW-24. Bagaimana menandai bagian yang tersembunyi di tempatnya, dan angka yang terlalu kecil? (B9, B10)**
+
+| Ide | Paham | Usaha |
+|---|---|---|
+| A. Baris bayangan di posisi yang hilang: garis putus-putus + "Generasi 3–12 · 20 orang disembunyikan · Tampilkan" | tinggi | kecil |
+| B. Tumpukan kartu tipis (efek kartu bertumpuk) | sedang | sedang |
+| C. Tombol di bawah (seperti sekarang) | rendah | kecil |
+
+**Usul: A**, pola yang sama untuk semua lipatan (generasi, langkah aliran tengah). Angka kecil: pecahan yang terlalu panjang ditulis "pecahan panjang" yang bisa disorot untuk angka lengkapnya; persen di bawah 0,01% ditulis "< 0,01%", bukan "0%".
+
+**HMW-25. Bagaimana agar judul tetap paling menonjol? (V11)**
+
+Satu skala ketebalan untuk seluruh layar: judul ubin 600 · ukuran lebih besar; nilai di baris info 500–600 · ukuran sama dengan teks; label 400 abu. Rupiah di daftar tetap 600 karena itu jawaban utama. **Usul langsung** (tidak perlu pilihan: ini perbaikan hierarki).
+
+**HMW-26. Bagaimana menampilkan proses hitung di tabel tanpa membuatnya penuh? (T6)**
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Sakelar tahap di atas tabel: "Bagian · Asal masalah · Tashih · Jami'ah · Rupiah" (pil yang bisa dinyalakan/dimatikan); kolom mayit dan jami'ah selalu ada, yang ditampilkan/disembunyikan hanya kolom tahap rinci di dalamnya (pecahan awal, angka sebelum dikali, pengali) | tinggi | tinggi | sedang |
+| B. Satu sakelar "Tampilkan proses" (semua tahap sekaligus) | tinggi | sedang | kecil |
+| C. Tahap sebagai tab (satu tabel per tahap) | sedang | sedang | sedang |
+
+**Usul: B dulu, dengan isi seperti A.** Bawaan: tabel ringkas (ahli waris, bagian, saham akhir, rupiah). "Tampilkan proses" membuka kolom berurutan: pecahan awal → asal masalah (dengan keterangan tawafuq/tadakhul/…) → tashih (pengali) → jami'ah (pengali per mayit) → rupiah. Pemilihan per tahap (A) bisa menyusul bila B terasa terlalu penuh. Ini juga akan dipakai ulang di mode fokus.
+
+**HMW-27. Bagaimana agar pembulatan dan penjumlahan sederhana, dan tiap baris penjumlahan bisa menyaring daftar? (R14, R15)**
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Penjumlahan sebagai baris yang bisa diketuk ("Penerima Rp …", "Ditahan Rp …", "Dari harta Budi Rp …", "Sisa pembulatan Rp 1"). Mengetuk satu baris menyaring daftar di atasnya ke orang-orang di baris itu (penanda "Disaring: dari harta Budi · Tampilkan semua"); mengetuk lagi mengembalikan. Baris pembulatan berisi pil kecil "Rp 1 ▾" yang membuka modal pilihan | tinggi | tinggi | sedang |
+| B. Pil saring terpisah di atas daftar ("Semua · Pak Ahmad · Budi · Aminah · Ditahan") + pembulatan sebagai pil di ujung baris sisa | tinggi | tinggi | sedang |
+| C. Hanya pembulatan disederhanakan; tanpa saring | tinggi | rendah | kecil |
+
+**Usul: A**, karena saringnya lahir dari angka yang sedang dibaca (orang bertanya "Rp 175 jt dari Budi itu ke siapa saja?"). Berlaku untuk semua kasus: biasa (penerima / tidak mendapat), munasakhat (per mayit: dari Pak Ahmad, dari Budi, dari Aminah), belum pasti (pasti / ditahan per sebab), bersamaan (per harta). Saat menyaring per mayit, rupiah yang tampil adalah bagian dari mayit itu, bukan total.
+
+**HMW-28. Bagaimana memastikan ubin atas selalu dihitung dari data? (D1)**
+
+Bukan pilihan desain; ini aturan pembuatan: setiap ubin = fungsi dari hasil (penerima, ditahan, mayit, harta), dengan templat diksi untuk teksnya:
+- Bagianmu: rupiah orang "kamu" + kalimat alasan dari jejak; bila "kamu" kosong, ubin ini tidak dirender.
+- Dibagi sekarang: jumlah rupiah penerima pasti + nama penerima (≤ 3 nama, lalu "dan n lainnya").
+- Ditahan: jumlah ditahan + nama yang ditahan (aturan nama yang sama).
+- Harta / Menerima / Mayit: dari ringkasan hasil.
+Di mockup berikutnya ubin dihitung dengan fungsi yang sama dari data contoh, bukan teks tetap.
+
+### 24c. Pertanyaan untuk pemilik
+
+1. HMW-22 A ("27 penerima · 12 meninggal sebelum dibagi")?
+2. HMW-23 B (judul "Urutan pembagian", langkah "1. Pak Ahmad meninggal", penanda "lanjut ke Budi")?
+3. HMW-26: mulai dari satu sakelar "Tampilkan proses" (B), atau langsung pil per tahap (A)?
+4. HMW-27 A (baris penjumlahan bisa diketuk untuk menyaring; pembulatan pil "Rp 1 ▾")?
+HMW-24, 25, 28 langsung diterapkan karena bersifat perbaikan.
