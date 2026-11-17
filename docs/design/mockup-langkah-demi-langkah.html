@@ -72,7 +72,7 @@ nav.tab button[aria-selected=true]{background:#0e0f10;color:#fff}
 .rumus b{color:var(--orange)}.rumus small{display:none}.rumus s{color:#9aa59e;font-weight:400}
 .bag.h .rumus{background:none;padding:0}
 .jembatan{background:var(--mint);color:var(--hijau);font-weight:500;border-radius:10px;padding:6px 10px;animation:muncul .4s both}
-.ajak{font-size:13.5px;color:var(--muted);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.terbang{position:fixed;left:0;top:0;z-index:50;pointer-events:none;background:var(--orange);color:#fff;font:600 14px var(--font);padding:4px 10px;border-radius:999px;box-shadow:0 4px 12px rgba(20,30,25,.25);font-variant-numeric:tabular-nums;white-space:nowrap}
 .dalil-ar{font-family:"Amiri","Noto Naskh Arabic",serif;font-size:19px;direction:rtl;text-align:right;line-height:1.8}
 
 /* ── sinema ── */
@@ -227,7 +227,6 @@ td.tertutup span{visibility:hidden}
     <p class="posisi" id="posisi"></p>
     <nav class="menu">
       <button id="mSemua" class="teks-saja">Tampilkan semua langkah</button>
-      <button id="cobaSinema" class="teks-saja">Coba versi bersuara</button>
       <button id="mPohon" class="sinema-saja">Pohon</button><button id="mTabel" class="sinema-saja">Tabel</button>
       <button id="mKecepatan" class="sinema-saja">Kecepatan 1×</button><button id="mSuara" class="sinema-saja" aria-pressed="true">Suara: nyala</button>
       <button id="mRekam" class="rekam">Rekam video</button>
@@ -248,7 +247,8 @@ const IKON_PUTAR = '<svg class="ik" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z
 const IKON_JEDA = '<svg class="ik" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg>';
 const KECEPATAN = [0.75, 1, 1.25];
 const MS_PER_KATA = 330, ADEGAN_MIN_MS = 1800, JEDA_ANTAR_ADEGAN_MS = 500, ISI_BERTAHAP_MS = 45, EKOR_REKAMAN_MS = 1200;
-const KUNCI_TAMPILAN = 'waris.tampilanLangkah', KUNCI_AJAK = 'waris.ajakSinemaDitutup';
+const KUNCI_TAMPILAN = 'waris.tampilanLangkah', TERBANG_MS = 700, JEDA_TERBANG_MS = 160;
+const geraHalus = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 const simpan = (k, v) => { try { localStorage.setItem(k, v); } catch {} };
 const baca = k => { try { return localStorage.getItem(k); } catch { return null; } };
 
@@ -431,7 +431,7 @@ function gambarTabel(sampai, kini = []) {
   const r = Object.fromEntries(cols.map(([c]) => [c, rentang(c)]));
   return `<table><thead><tr><th>Ahli waris</th>${cols.map(([, j]) => `<th>${j}</th>`).join('')}</tr></thead><tbody>${baris.map(([id, nama]) => `<tr><td>${nama}</td>${cols.map(([c]) => {
     if (!r[c][id]) return ''; const kode = `${c}:${id}`, kosong = ['–', 'terhalang'].includes(sel[c][id]);
-    return `<td class="${kini.includes(kode) ? 'kini' : ''} ${!terbuka.has(kode) && !kosong ? 'tertutup' : ''}" ${r[c][id] > 1 ? `rowspan="${r[c][id]}"` : ''}><span>${sel[c][id]}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
+    return `<td class="${kini.includes(kode) ? 'kini tertutup' : ''} ${!terbuka.has(kode) && !kosong ? 'tertutup' : ''}" ${r[c][id] > 1 ? `rowspan="${r[c][id]}"` : ''}><span>${sel[c][id]}</span></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
 // ═══ Tampilan teks: langkah dikelompokkan per bagian, muncul sampai langkah aktif ═══
@@ -463,6 +463,8 @@ function gambarTeks(i) {
   $('tabelTeks').innerHTML = gambarTabel(semua ? urutan.length - 1 : i, !semua && v?.jenis === 'tabel' ? v.isi : []);
   const kini = $('kartuTeks').querySelector('.kini');
   if (kini && !semua) kini.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  const sumber = $('kartuTeks').querySelector('li.kini .rumus b, li.kini .rumus, li.kini') ?? [...$('kartuTeks').querySelectorAll('.jembatan')].pop();
+  requestAnimationFrame(() => terbangkan(sumber, $('tabelTeks')));
 }
 
 // ═══ Tampilan sinema: satu langkah = satu adegan ═══
@@ -472,7 +474,7 @@ function gambarAdegan(i) {
   if (v.jenis === 'dasar') return `<div class="dasar"><p class="lbl">Dasar · berlaku untuk semua kasus</p><p>${beriIstilah(v.teks)}</p>${v.dalil ? `<p class="dalil-ar" lang="ar">${v.dalil[0]}</p><small>${v.dalil[1]}</small>` : ''}</div>`;
   if (v.jenis === 'harta') return `<div class="harta-ubin">${v.baris.map(([a, b, c]) => `<div class="${c ?? ''}"><span>${a}</span><b>${b}</b></div>`).join('')}</div>`;
   if (v.jenis === 'pohon') return gambarPohon(kasus().pohon, v.sorot, 1.25);
-  if (v.jenis === 'tabel') { bunyi('tik'); return `<div class="wadah-tabel" style="width:100%">${gambarTabel(i, dari === i ? v.isi : [])}</div>`; }
+  if (v.jenis === 'tabel') { return `<div class="wadah-tabel" style="width:100%">${gambarTabel(i, dari === i ? v.isi : [])}</div>`; }
   if (v.jenis === 'kotak') { const lalu = dari === i && i > 0 && urutan[i - 1].t === urutan[i].t ? visualAktif(i - 1).v : null; return gambarKotak(v, dari === i ? lalu : v); }
 }
 function gambarSinema(i) {
@@ -481,6 +483,23 @@ function gambarSinema(i) {
   const papan = $('papan'); papan.innerHTML = beriIstilah(langkahDi(i).p);
   papan.style.animation = 'none'; void papan.offsetWidth; papan.style.animation = '';
   $('takarir').textContent = langkahDi(i).n;
+  requestAnimationFrame(() => terbangkan(papan.querySelector('b') ?? papan, $('visual')));
+}
+
+// Angka berpindah dari rumus (papan atau baris hitungan) ke sel tabelnya, lalu sel menyala. Sel menunggu tertutup sampai angkanya mendarat.
+function terbangkan(sumber, wadah) {
+  const sasaran = [...wadah.querySelectorAll('td.kini.tertutup')];
+  sasaran.forEach((td, n) => {
+    const buka = () => { td.classList.remove('tertutup'); bunyi('tik'); };
+    if (!sumber || !geraHalus) return buka();
+    const a = sumber.getBoundingClientRect(), b = td.getBoundingClientRect();
+    const chip = document.createElement('span'); chip.className = 'terbang'; chip.textContent = td.textContent.trim(); document.body.append(chip);
+    const x0 = a.left + a.width / 2 - chip.offsetWidth / 2, y0 = a.top + a.height / 2 - chip.offsetHeight / 2;
+    const x1 = b.left + b.width / 2 - chip.offsetWidth / 2, y1 = b.top + b.height / 2 - chip.offsetHeight / 2;
+    chip.style.transform = `translate(${x0}px,${y0}px)`;
+    chip.animate([{ transform: `translate(${x0}px,${y0}px) scale(1)` }, { transform: `translate(${(x0 + x1) / 2}px,${Math.min(y0, y1) - 50}px) scale(1.15)`, offset: .5 }, { transform: `translate(${x1}px,${y1}px) scale(.9)` }],
+      { duration: TERBANG_MS, delay: n * JEDA_TERBANG_MS, easing: 'cubic-bezier(.5,0,.3,1)', fill: 'backwards' }).onfinish = () => { chip.remove(); buka(); };
+  });
 }
 
 // ═══ Tampil (bersama) ═══
@@ -498,7 +517,6 @@ function tampilkan(i) {
   const kunciNav = semua && tampilan === 'teks';
   $('mundur').disabled = kunciNav || i === 0; $('tahapMundur').disabled = kunciNav || t === 0;
   $('maju').disabled = kunciNav || i === urutan.length - 1; $('tahapMaju').disabled = kunciNav || t === k.tahap.length - 1;
-  $('cobaSinema').hidden = !!baca(KUNCI_AJAK);
   $('mSemua').textContent = semua ? 'Kembali ke langkah demi langkah' : 'Tampilkan semua langkah';
   if (tampilan === 'teks') gambarTeks(i); else { gambarSinema(i); bacakan(langkahDi(i).n); }
 }
@@ -521,7 +539,7 @@ function selesaiPutar() { otomatis = false; aturPutar(); if (perekam) jadwal = s
 
 let audio;
 function bunyi(jenis) {
-  if (!suaraNyala || tampilan !== 'sinema') return;
+  if (!suaraNyala || tampilan !== 'sinema' || !$('fokus').classList.contains('sinema')) return;
   try {
     audio ??= new AudioContext();
     const o = audio.createOscillator(), g = audio.createGain(), t0 = audio.currentTime;
@@ -570,7 +588,7 @@ document.addEventListener('click', e => {
     case 'bukaFokus': $('fokus').classList.add('buka'); return tampilkan(posisi);
     case 'tutupFokus': berhenti(); if (perekam) perekam.stop(); return $('fokus').classList.remove('buka');
     case 'pTeks': return gantiTampilan('teks');
-    case 'pSinema': case 'cobaSinema': simpan(KUNCI_AJAK, '1'); return gantiTampilan('sinema');
+    case 'pSinema': return gantiTampilan('sinema');
     case 'maju': return pindah(posisi + 1);
     case 'mundur': return pindah(posisi - 1);
     case 'tahapMaju': return pindah(indeksDi(th + 1, 0));
