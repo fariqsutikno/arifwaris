@@ -1077,3 +1077,126 @@ saudari 2 dan 2; rupiah 112.500.000 · 37.500.000 · 75.000.000 · 75.000.000.
 - Sakelar bentuk pecahan memakai istilah **Fardh** (bagian asal, mis. 1/8) dan **Saham** (setelah disamakan, mis. 9 dari 72), dengan keterangan saat disorot.
 - Tombol mata di kepala daftar menyembunyikan semua nominal seperti kata sandi ("Rp •••••••"): daftar, ubin atas, penjumlahan, tabel, dan modal.
 - Tabel faraidh: semua tahap tampil dalam satu tabel memanjang tanpa nomor; "Atur kolom" (kotak centang per jenis tahap) untuk menyembunyikan yang tidak ingin dilihat.
+
+## 26. Audit + JTBD + HMW: mode fokus (2026-11-17)
+
+Lingkup: mode fokus layar Hasil = penjelasan langkah demi langkah dari langkah 1 sampai **Selesai**, layar penuh, bersama
+pohon keluarga dan tabel faraidh. Dasar: kode sekarang (`hasil/FokusLangkah.tsx`, `KartuLangkah.tsx`, `peraga.ts`), temuan
+F1'–F4' (14c), skala 15, model performa 19a, tahap baku dan pola "Dasar → Di keluarga ini → Hitungan" (25, 25e–25g).
+
+### 26a. Audit mode fokus yang ada
+
+Yang sudah baik: pohon + tabel berdampingan; sub-langkah 4a/4b; peraga penyebut → nisab arba' → ashl × fardh, lalu
+saham/penyebut × harta; angka "terbang" dari pohon ke sel tabel; laci daftar langkah; gerak bisa dimatikan; Esc menutup.
+
+| Kode | Tingkat | Temuan (kode sekarang) |
+|---|---|---|
+| F5' | Kritis | **Tidak bisa dipakai di HP.** Di bawah 900 px layar ditutup "Mode fokus tidak tersedia di mobile". Pengguna utama (keluarga, pelajar) memakai HP |
+| F6' | Tinggi | Langkah = bab narasi `packages/explain` (harta · ahli waris · bagian · ashl · penyesuaian · tashih · hasil), bukan tahap baku 25. **Dasar (aturan + dalil) tidak ada di mode fokus**: dalil hanya di kartu, terlipat di "Kenapa begitu?" (E1 terulang) |
+| F7' | Tinggi | Peraga hitungan hanya untuk asal masalah dan rupiah. 'Aul (3 + 1 + 2 + 2 = 8), radd, tashih (kepala × saham), dan "siapa terhalang oleh siapa" tanpa hitungan bertambah |
+| F8' | Tinggi | `Hasil.tsx` mengirim `hasilBiasa`: munasakhat, haml, mafqud, gharqa tidak mendapat peraga dan tabel bertahap (F3' tetap terbuka) |
+| F9' | Sedang | Animasi sub-langkah **diulang terus** sampai Lanjut ditekan (1,2 dtk per bagian + tahan 3,5 dtk). Tidak ada titik diam untuk membaca; pengguna harus menjeda sendiri |
+| F10' | Sedang | Panel "Selesai" hanya "kamu sudah mengikuti seluruh pembagian". Tidak merangkum siapa dapat berapa, tidak ada jalan ke modal orang atau kembali ke Hasil (F1' belum tuntas) |
+| F11' | Sedang | Posisi hanya teks "Langkah 4b"; tidak ada peta kemajuan. Daftar langkah di laci tersembunyi |
+| F12' | Sedang | Tabel di mode fokus tabel biasa yang kolomnya terbuka sampai langkah ini (`kolomTerbukaSampai`); belum memakai tabel kitab memanjang + kotak "hitungan tahap ini" yang disetujui di 25f–25g |
+| F13' | Sedang | Rantai panjang: ±7 langkah × jumlah mayit (15c: 50 generasi ≈ 350 langkah); tidak ada pengelompokan atau lompatan per mayit |
+
+### 26b. JTBD
+
+- **H-g (pelajar):** "Saat belajar dari kasus ini, saya ingin diajak **dari langkah 1 sampai selesai**, tiap langkah dimulai dari
+  aturannya, lalu dilihat di keluarga ini, lalu dihitung, supaya saya bisa mengulang sendiri di kertas." Ukuran: tabel faraidh di
+  akhir sama dengan yang ia tulis sendiri.
+- **H-b (keluarga menjelaskan):** "Saat menjelaskan ke saudara di HP, saya ingin **menunjukkan satu langkah sekali waktu** dengan
+  pohon kami yang disorot, supaya mereka percaya pembagiannya." Ukuran: bisa dipakai di HP tanpa memiringkan layar.
+- **H-f (mencocokkan dengan ustadz/kitab):** "Saat mencocokkan, saya ingin **melompat ke tahap tertentu** (mis. tashih atau
+  jami'ah) tanpa memutar dari awal." Ukuran: dua ketukan ke tahap mana pun.
+
+### 26c. Bentuk langkah (berlaku untuk semua ide)
+
+Setiap langkah tiga bagian, sama dengan modal orang (25e) supaya pengguna belajar satu pola saja:
+1. **Dasar** · berlaku untuk semua kasus: aturan + dalil (dari `packages/content`, rujukan `[Rxx-y]` tidak ditampilkan, lihat memori admin).
+2. **Di keluarga ini**: syarat yang terpenuhi dicentang, orang yang terkait disorot di pohon.
+3. **Hitungan** bertambah satu baris per ketukan, angka masuk ke sel tabel saat barisnya muncul.
+
+Urutan langkah = tahap baku 25, hanya yang ada di kasus (UI hanya yang relevan):
+
+| Kasus | Langkah |
+|---|---|
+| Biasa | 1 Harta bersih → 2 Siapa mewarisi & terhalang → 3 Bagian awal (fardh/sisa) → 4 Asal masalah → 5 Per orang → 6 Rupiah → **Selesai** |
+| 'Aul | … 4 Asal masalah (6) → 5 **'Aul**: 3 + 1 + 2 + 2 = 8 > 6, asal naik ke 8 → … |
+| Radd | … 4 Asal masalah → 5 **Radd**: sisa dikembalikan, pasangan tidak ikut → … |
+| Tashih | … → **Tashih**: saham tidak habis dibagi kepala → pengali → … |
+| Munasakhat | Babak per mayit (masalah mayit 1 → masalah mayit 2 …) → **Perbandingan** bagian : masalah → **Jami'ah** → Per orang → Rupiah → Selesai. Mayit yang dilewati [R12-1] tampil satu baris "dilewati karena …" |
+| Haml / mafqud | … → **Kemungkinan** (tiap kemungkinan satu kolom, mis. 6 untuk janin) → **Bagian yang dibayar sekarang** (terkecil) dan **ditahan** → Selesai menyebut kapan dihitung lagi |
+| Gharqa | Satu babak per harta (mereka tidak saling mewarisi), lalu **Bagian digabung** per orang |
+| Gabungan | Susunan di atas bertingkat: babak per mayit, di dalamnya kemungkinan; "ditahan karena Siti" ikut menjalar (X9) |
+
+Langkah terakhir **Selesai**: ringkasan siapa dapat berapa (nominal ikut sakelar sembunyi), tabel kitab lengkap, tautan
+"Kembali ke Hasil" dan "Ulangi dari langkah 1"; ketuk nama → modal orang.
+
+### 26d. HMW dan ide berskor
+
+Skor 1–3: **Paham** (mudah diikuti) · **Dampak** (menjawab JTBD) · **Usaha** (3 = kecil).
+
+**HMW-31. Bagaimana mode fokus bisa dipakai di HP 375 px tanpa kehilangan pohon dan tabel? (F5')**
+
+| Ide | Paham | Dampak | Usaha | Jml |
+|---|---|---|---|---|
+| A. **Tumpuk + pita orang**: di HP pohon diringkas jadi pita nama berwarna (sorot sama dengan pohon) yang menempel di atas; di bawahnya kartu langkah (Dasar · Di keluarga ini · Hitungan), lalu tabel kitab. Ketuk pita → pohon penuh di lembar bawah | 3 | 3 | 2 | **8** |
+| B. **Tiga tab** Langkah · Pohon · Tabel di HP | 2 | 2 | 3 | 7 |
+| C. **Geser horizontal** antar panel (pohon ← langkah → tabel) | 2 | 2 | 2 | 6 |
+
+**HMW-32. Bagaimana tiap langkah dimulai dari dasar lalu penerapan, dengan hitungan bertambah? (F6', F7')**
+
+| Ide | Paham | Dampak | Usaha | Jml |
+|---|---|---|---|---|
+| A. **Kartu langkah = pola modal 25e** (Dasar terbuka singkat, "Lihat dalil lengkap" tautan; Di keluarga ini dengan centang; Hitungan bertambah). Satu komponen untuk modal dan fokus | 3 | 3 | 2 | **8** |
+| B. Dasar sebagai langkah tersendiri sebelum tiap tahap ("3a Aturannya", "3b Di keluarga ini") | 2 | 3 | 2 | 7 |
+| C. Dasar di laci samping, langkah hanya penerapan + hitungan | 2 | 2 | 3 | 7 |
+
+**HMW-33. Bagaimana tabel faraidh terasa seperti di kitab dan tumbuh bersama langkah? (F12')**
+
+| Ide | Paham | Dampak | Usaha | Jml |
+|---|---|---|---|---|
+| A. **Tabel B "bertahap"** (alternatif yang belum dipakai): tiap langkah menambah satu kolom tabel kitab memanjang; kolom baru disorot, angka masuk sel saat baris hitungan muncul | 3 | 3 | 2 | **8** |
+| B. Tabel lengkap sejak awal, kolom yang belum dibahas diredupkan | 3 | 2 | 3 | 8 |
+| C. Tabel hanya muncul di Selesai | 2 | 1 | 3 | 6 |
+
+**HMW-34. Bagaimana munasakhat dan rantai panjang tetap terbaca langkah demi langkah? (F8', F13', 15c)**
+
+| Ide | Paham | Dampak | Usaha | Jml |
+|---|---|---|---|---|
+| A. **Babak per mayit + peta rantai**: peta kecil di atas (Ahmad → Budi → Citra …) menunjuk babak aktif; tiap babak 3–5 langkah; ketuk mayit → lompat. Pohon kamera ikut mayit aktif | 3 | 3 | 2 | **8** |
+| B. A + **ringkas babak berpola sama**: babak yang susunannya sama dengan sebelumnya tampil satu kartu ("sama seperti masalah Budi: istri 1/8, anak sisa 2:1") yang bisa dibuka; menjaga 50 generasi tetap ±60 langkah | 3 | 3 | 1 | 7 |
+| C. Satu babak saja (jami'ah), masalah per mayit dilipat | 2 | 1 | 3 | 6 |
+
+**HMW-35. Bagaimana haml, mafqud, gharqa dijelaskan tanpa membingungkan? (F3', F8')**
+
+| Ide | Paham | Dampak | Usaha | Jml |
+|---|---|---|---|---|
+| A. **Kemungkinan sebagai kolom tabel** + langkah "Yang dibayar sekarang = terkecil di tiap kolom", sisa "ditahan karena …" | 3 | 3 | 2 | **8** |
+| B. Babak per kemungkinan (ulang langkah 3–5 untuk tiap kemungkinan) | 2 | 2 | 2 | 6 |
+| C. Hanya kemungkinan terburuk & terbaik | 2 | 1 | 3 | 6 |
+
+Gharqa memakai babak per harta (pola HMW-34 A), lalu "Bagian digabung".
+
+**HMW-36. Bagaimana tempo animasi membantu membaca, bukan mengganggu? (F9', F11')**
+
+| Ide | Paham | Dampak | Usaha | Jml |
+|---|---|---|---|---|
+| A. **Putar sekali lalu diam**; tautan "Putar ulang"; Lanjut/Kembali + panah kiri/kanan; peta kemajuan titik per langkah (ketuk = lompat) | 3 | 3 | 3 | **9** |
+| B. Putar otomatis seluruh langkah seperti video, dengan jeda | 2 | 2 | 2 | 6 |
+| C. Tanpa animasi, semua baris langsung tampil | 3 | 1 | 3 | 7 |
+
+### 26e. Usulan
+
+Gabungan skor tertinggi: **31A + 32A + 33A + 34A + 35A + 36A**; 34B (ringkas babak berpola sama) sebagai tambahan bila rantai
+> ±8 mayit. Kasus mockup: biasa (Aminah dkk.), 'aul (suami, ibu, 2 saudari kandung; Rp 300 jt), munasakhat 3 mayit,
+rantai 5 generasi + janin + hilang (19a.7), gharqa. Angka dari engine lewat tes vitest sementara.
+
+### 26f. Pertanyaan untuk pemilik
+
+1. HP: pita orang + lembar pohon (31A), atau tiga tab (31B)?
+2. Dasar di dalam kartu langkah (32A), atau langkah tersendiri (32B)?
+3. Tabel tumbuh per kolom (33A), atau lengkap tapi redup (33B)?
+4. Rantai panjang: babak per mayit saja (34A), atau ditambah ringkasan babak berpola sama (34B)?
