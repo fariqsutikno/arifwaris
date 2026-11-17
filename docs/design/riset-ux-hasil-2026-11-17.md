@@ -737,3 +737,28 @@ Dasar: ukur 15a. Kasus 5 generasi dengan hilang + janin = **12 ms**. Kasus reali
 
 1. Ada bagian lain yang perlu diaudit? (Belum: mode Belajar secara rinci, Banding madzhab, isi PDF lengkap, dan teks Kirim ringkasan.)
 2. Untuk kasus gabungan (14h), apakah ada contoh kasus nyata yang ingin dijadikan acuan, atau saya susun dari kasus uji bab 16?
+
+## 21. Mockup v3 (2026-11-17)
+
+Berkas yang sama: [mockup-hasil-per-kasus.html](mockup-hasil-per-kasus.html). Tab: Biasa · Berurutan (3 lapis: Pak Ahmad → Budi →
+Aminah) · Rantai 12 generasi · Hamil + hilang (gabungan, 12 kemungkinan) · Menunggu lahir · Meninggal bersamaan (serentak /
+terlupakan) · Cara mencoba.
+
+- **Angka dari engine.** Saham per lapis, per kemungkinan, dan per harta diambil dari `jalankan()` untuk keluarga contoh yang sama
+  (dibuat dengan tes sementara, lalu dihapus). Rupiah dihitung di mockup dari pecahan itu dengan BigInt. Total rantai 3 lapis dicek
+  sama dengan nominal engine (Siti 173.958.333, Zahra 104.166.666, Rina 21.875.000).
+- **Susunan bento:** hero (nama kasus bisa diubah, status, judul, kalimat dengan rujukan, bagianmu, 2 ubin) → daftar (pecahan
+  · persen kecil, alasan + rujukan, rincian per lapis/harta, Penjelasan lengkap, pilihan pembulatan Rp 1/100/1.000) + kolom kanan
+  (uang ditahan per sebab, jenis masalah dalam bahasa awam, tentang kasus ini: madzhab + sumber, harta kotor → bersih "dari
+  isianmu", keadaan, pembulatan, tanggal) → aliran estafet per lapis (lapis tengah dilipat bila > 5) → pohon + tabel berdampingan
+  (perbesar, perkecil, pas, layar penuh, putar aliran; sorot silang; HP: sakelar Pohon/Tabel; tabel "Tampilkan hitungan"; tabel
+  per lapis untuk rantai; pemilih kemungkinan per sumber untuk gabungan) → bagikan dan simpan · langkah selanjutnya · pelajari
+  (pintu mode fokus, tebak, banding madzhab).
+- **Lembar orang:** rupiah, pecahan, persen, kenapa segitu, dari mana saja (per lapis), kapan dapat berapa, dalil, ubah jumlah.
+- **Meninggal bersamaan:** kalimat dari jawaban keadaan + rujukan [R13-10]; garis waris putus (merah putus-putus) di pohon; satu daftar
+  total dengan rincian per harta; keadaan terlupakan = ditahan dengan dua kemungkinan urutan.
+- Dicek di browser: semua tab tanpa galat konsol; laptop 1200 px dan HP 375 px tanpa gulir mendatar halaman; aliran per lapis,
+  sorot silang, pemilih kemungkinan, cari orang, lipat lapis, ubah nama. Tidak dicek: layar penuh native di semua browser,
+  pembaca layar, kontras otomatis.
+- Kalimat alasan di mockup disusun dari kode alasan jejak engine (mis. `kelasD` [R13-15], `aqall` [R13-8], `MANI istibham` [R13-10]);
+  di aplikasi, kalimatnya wajib dari templat diksi.
