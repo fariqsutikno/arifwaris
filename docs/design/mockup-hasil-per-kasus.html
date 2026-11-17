@@ -187,6 +187,17 @@ details.lipatM .isiL{padding:0 14px 12px}
 .langkahH div span:first-child{color:var(--muted)}
 .langkahH div:last-child{border:0;font-weight:600}
 .dalil{border-left:3px solid var(--hijau);padding:6px 12px;background:#f6faf5;border-radius:0 12px 12px 0;margin-bottom:8px}
+.alatDaftar{display:flex;gap:8px;align-items:center;flex:none}
+.mata{width:34px;height:34px;border-radius:50%;border:1.5px solid #7d8a82;background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.mata[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.mata .ik{width:18px;height:18px}
+.aturKolom{margin-bottom:10px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.aturKolom summary{cursor:pointer;padding:8px 12px;font:600 13.5px var(--font);list-style:none;display:flex;justify-content:space-between;gap:8px}
+.aturKolom summary::-webkit-details-marker{display:none}
+.aturKolom summary small{font-weight:400;color:var(--muted)}
+.aturKolom summary::after{content:"▾";color:var(--muted)}
+.aturKolom .isiAtur{display:flex;flex-wrap:wrap;gap:6px 14px;padding:4px 12px 10px}
+.aturKolom label{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;cursor:pointer}
 .pilTahap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
 .pilTahap .pk{display:inline-flex;gap:6px;align-items:center;border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font);cursor:pointer;color:var(--ink)}
 .pilTahap .pk[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
@@ -391,6 +402,8 @@ table.ahwalT tr.kini td,table.ahwalT tr.kini th{background:var(--mint)}
   <symbol id="i-tebak" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/></symbol>
   <symbol id="i-banding" viewBox="0 0 24 24"><path d="M3 6h7v12H3zM14 10h7v8h-7z"/></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-mata" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-mataTutup" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.5 10.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
 </svg>
 
 <div class="atas-mockup">
@@ -421,7 +434,17 @@ let BENTUK = 'sederhana'; // 'sederhana' (1/8) atau 'sama' (9/72) — pilihan pe
 const pendek = x => (String(x).length > 8 ? `${String(x).slice(0, 4)}…` : String(x));
 const teksPec = f => (String(f[1]).length > 8 ? `<span class="ist" tabindex="0">${pendek(f[0])}/${pendek(f[1])}<span class="pop" role="tooltip"><b>Pecahan lengkap (${String(f[1]).length} digit)</b>${f[0]}/${f[1]}</span></span>` : `${f[0]}/${f[1]}`);
 const pecO = o => (o.pecTeks ? o.pecTeks[BENTUK] : !o.f?.[0] ? '' : BENTUK === 'sama' && o.asli ? teksPec(o.asli) : teksPec(o.f));
-const segBentuk = () => `<div class="segmen" role="group" aria-label="Bentuk pecahan"><button aria-pressed="${BENTUK === 'sederhana'}" data-bentuk="sederhana" title="Disederhanakan">1/8</button><button aria-pressed="${BENTUK === 'sama'}" data-bentuk="sama" title="Penyebut sama, mudah dijumlahkan">9/72</button></div>`;
+let SEMBUNYI = false; // nominal disembunyikan seperti kata sandi
+const segBentuk = () => `<div class="alatDaftar"><div class="segmen" role="group" aria-label="Bentuk pecahan"><button aria-pressed="${BENTUK === 'sederhana'}" data-bentuk="sederhana" title="Fardh: bagian asal menurut dalil, mis. 1/8">Fardh</button><button aria-pressed="${BENTUK === 'sama'}" data-bentuk="sama" title="Saham: bagian setelah disamakan penyebutnya, mis. 9 dari 72; mudah dijumlahkan">Saham</button></div><button class="mata" data-sembunyi aria-pressed="${SEMBUNYI}" aria-label="${SEMBUNYI ? 'Tampilkan nominal' : 'Sembunyikan nominal'}" title="${SEMBUNYI ? 'Tampilkan nominal' : 'Sembunyikan nominal'}">${ik(SEMBUNYI ? 'mataTutup' : 'mata')}</button></div>`;
+// Nominal disamarkan di semua teks yang tampil (daftar, ubin, tabel, modal) saat SEMBUNYI.
+const POLA_RP = /Rp\s?[\d.]+(\s?(jt|M))?/g;
+function samarkan(akar) {
+  if (!SEMBUNYI || !akar) return;
+  const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT);
+  const node = []; while (jalan.nextNode()) node.push(jalan.currentNode);
+  for (const t of node) if ((POLA_RP.lastIndex = 0, POLA_RP.test(t.nodeValue))) t.nodeValue = t.nodeValue.replace(POLA_RP, 'Rp •••••••');
+  akar.querySelectorAll('td[data-rupiah]').forEach(td => { td.textContent = '•••••••'; });
+}
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const ik = id => `<svg class="ik"><use href="#i-${id}"/></svg>`;
@@ -903,13 +926,13 @@ let TAHAP_AKTIF = null, KOLOM_PILIH = 0;
 function tabelProsesHtml(k, id) {
   const d = kolomProses(k, id); if (!d) return '';
   const ada = TIPE_TAHAP.filter(([t]) => d.kolom.some(c => c.tipe === t));
-  TAHAP_AKTIF ??= k.cari ? ['masalah', 'rupiah'] : ada.map(([t]) => t);
+  TAHAP_AKTIF ??= ada.map(([t]) => t);
   const kol = d.kolom.map((c, i) => ({ ...c, i })).filter(c => TAHAP_AKTIF.includes(c.tipe));
   if (!kol.some(c => c.i === KOLOM_PILIH)) KOLOM_PILIH = kol[0]?.i ?? 0;
   const pilih = d.kolom[KOLOM_PILIH];
-  return `<div class="pilTahap">${ada.map(([t, l], n) => `<button class="pk" data-tahap="${t}" aria-pressed="${TAHAP_AKTIF.includes(t)}"><span class="n">${n + 1}</span>${l}</button>`).join('')}</div>
+  return `<details class="aturKolom"><summary>Atur kolom <small>${ada.filter(([t]) => TAHAP_AKTIF.includes(t)).length} dari ${ada.length} jenis tampil</small></summary><div class="isiAtur">${ada.map(([t, l]) => `<label><input type="checkbox" data-tahap="${t}" ${TAHAP_AKTIF.includes(t) ? 'checked' : ''}> ${l}</label>`).join('')}</div></details>
     <div class="tabelWadah"><table class="faraidh"><thead><tr><th>Ahli waris</th>${kol.map(c => `<th class="${c.i === KOLOM_PILIH ? 'dipilih' : ''}" data-kolom="${c.i}" role="button" tabindex="0">${c.kepala}${c.besar ? `<span class="angka">${c.besar}</span>` : ''}${c.kecil ? `<span class="ket">${c.kecil}</span>` : ''}</th>`).join('')}</tr></thead>
-    <tbody>${d.baris.map(r => `<tr data-id="${r}"><td>${nama(r)}<span class="ket">${ORANG[r][1]}</span></td>${kol.map(c => `<td class="${c.i === KOLOM_PILIH ? 'dipilih' : ''} ${c.mati?.includes(r) ? 'mati' : ''}">${c.nilai[r] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <tbody>${d.baris.map(r => `<tr data-id="${r}"><td>${nama(r)}<span class="ket">${ORANG[r][1]}</span></td>${kol.map(c => `<td class="${c.i === KOLOM_PILIH ? 'dipilih' : ''} ${c.mati?.includes(r) ? 'mati' : ''}" ${c.tipe === 'rupiah' ? 'data-rupiah' : ''}>${c.nilai[r] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
     ${pilih ? `<div class="kotakHitung"><div class="bag"><span>KOLOM</span><b>${pilih.kepala}${pilih.besar ? ` · ${pilih.besar}` : ''}</b></div><div class="bag d"><span>DASAR</span><span>${pilih.dasar}</span></div><div class="bag k"><span>DI KASUS INI</span><span>${pilih.kasus}</span></div><div class="bag"><span>HITUNGAN</span><span class="rumus">${pilih.rumus.map(x => `<span>${x}</span>`).join('')}</span></div></div>` : ''}`;
 }
 
@@ -1148,6 +1171,7 @@ function bukaPenjelasan(idOrang, k) {
     </div>
     <div class="modalKaki">${ORANG[idOrang][3] ? `<button class="tautan" data-toast="Membuka ubah jumlah ${n.toLowerCase()}">Ubah jumlah</button>` : '<span></span>'}<button class="btn" id="okeModal">Oke, paham</button></div>`;
   $('#latar').classList.add('on');
+  samarkan($('#modalOrang'));
   $('#tutupModal').focus();
   $('#tutupModal').onclick = $('#okeModal').onclick = tutupModal;
   $$('#modalOrang .ist').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); x.classList.toggle('on'); }));
@@ -1197,7 +1221,9 @@ function pasang(k, id) {
   $$('[data-saring]').forEach(b => b.onclick = () => { saring = saring?.kunci === b.dataset.saring ? null : { kunci: b.dataset.saring, label: b.dataset.label }; renderKasus(id); $('.t.s7').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
   $$('[data-saring-hapus]').forEach(b => b.onclick = () => { saring = null; renderKasus(id); });
   $$('[data-bentuk]').forEach(b => b.onclick = () => { BENTUK = b.dataset.bentuk; renderKasus(id); });
-  $$('[data-tahap]').forEach(b => b.onclick = () => { const t = b.dataset.tahap; TAHAP_AKTIF = TAHAP_AKTIF.includes(t) ? TAHAP_AKTIF.filter(x => x !== t) : [...TAHAP_AKTIF, t]; if (!TAHAP_AKTIF.length) TAHAP_AKTIF = [t]; const y = scrollY; renderKasus(id); scrollTo(0, y); });
+  $$('[data-tahap]').forEach(b => b.onchange = () => { const t = b.dataset.tahap; TAHAP_AKTIF = TAHAP_AKTIF.includes(t) ? TAHAP_AKTIF.filter(x => x !== t) : [...TAHAP_AKTIF, t]; if (!TAHAP_AKTIF.length) TAHAP_AKTIF = [t]; const y = scrollY; renderKasus(id); scrollTo(0, y); $('.aturKolom').open = true; });
+  $$('[data-sembunyi]').forEach(b => b.onclick = () => { SEMBUNYI = !SEMBUNYI; const y = scrollY; renderKasus(id); scrollTo(0, y); });
+  samarkan($('#layar'));
   $$('[data-kolom]').forEach(th => th.onclick = () => { KOLOM_PILIH = +th.dataset.kolom; const y = scrollY; renderKasus(id); scrollTo(0, y); });
   $$('.tabelWadah, .kanvas').forEach(w => { const p = w.closest('.panel'); if (p && w.scrollWidth > w.clientWidth + 4) p.classList.add('adaGeser'); });
   $$('[data-satuan]').forEach(b => b.onclick = () => { SATUAN = BigInt(b.dataset.satuan); renderKasus(id); });

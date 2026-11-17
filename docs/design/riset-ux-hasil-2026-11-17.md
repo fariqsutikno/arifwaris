@@ -1071,3 +1071,9 @@ saudari 2 dan 2; rupiah 112.500.000 · 37.500.000 · 75.000.000 · 75.000.000.
   kolom per jenis tahap; kolom mayit dan jami'ah tetap tersedia. Mengetuk judul kolom menampilkan kotak Dasar · Di kasus ini ·
   Hitungan untuk kolom itu. Berlaku di semua kasus bertabel (biasa, berurutan, rantai 12 generasi, hamil + hilang, bersamaan).
   Mode fokus nanti memakai tahap yang sama, maju satu per satu.
+
+### 25g. Revisi kecil
+
+- Sakelar bentuk pecahan memakai istilah **Fardh** (bagian asal, mis. 1/8) dan **Saham** (setelah disamakan, mis. 9 dari 72), dengan keterangan saat disorot.
+- Tombol mata di kepala daftar menyembunyikan semua nominal seperti kata sandi ("Rp •••••••"): daftar, ubin atas, penjumlahan, tabel, dan modal.
+- Tabel faraidh: semua tahap tampil dalam satu tabel memanjang tanpa nomor; "Atur kolom" (kotak centang per jenis tahap) untuk menyembunyikan yang tidak ingin dilihat.
