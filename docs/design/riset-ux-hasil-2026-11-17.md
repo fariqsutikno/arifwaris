@@ -1049,3 +1049,9 @@ dengan modal A, B, C (untuk Aminah di kasus biasa, Siti di kasus berurutan, dan 
 (kasus biasa, 'aul, dan berurutan). Pemilik memilih; pilihan diintegrasikan ke mockup utama, lalu ke aplikasi.
 Kasus 'aul (suami, ibu, 2 saudari kandung; harta Rp 300.000.000) diambil dari engine: asal 6 → 'aul 8; suami 3, ibu 1,
 saudari 2 dan 2; rupiah 112.500.000 · 37.500.000 · 75.000.000 · 75.000.000.
+
+### 25e. Keputusan pemilik dan integrasi
+
+- **Proses tabel bertahap (HMW-29) ditunda ke mode fokus.** Alternatif tabel A/B/C tetap di berkas alternatif sebagai bahan; di layar Hasil tetap sakelar "Tampilkan proses" yang sekarang.
+- **Penjelasan orang: gabungan A + C.** Alur visual bernomor ala C (1 Dasar · berlaku untuk semua kasus → 2 Di keluarga ini → 3 Diterima dari tiap orang, bila munasakhat/dua harta → 4 Hitungan), dengan hitungan bertambah ala A ("24 × 1/8 = 3", "3 × 3 = 9 dari 72", "7 × 12 = 84 · 5 × 7 = 35 · 3 × 16 = 48 · 84 + 35 + 48 = 167 dari 288", "167/288 × Rp 300.000.000 = …"). Dalil dan "kapan dapat berapa" terbuka di bagian Dasar dengan baris "kasus ini". Perubahan bagian ditampilkan "~~1/4~~ → 1/8". Titik yang tidak punya isi untuk orang itu tidak dirender.
+- Diintegrasikan ke [mockup-hasil-per-kasus.html](mockup-hasil-per-kasus.html). Hitungan jami'ah per orang dihitung dari pengali tabel munasakhat (bukan teks tetap). Dicek: semua tab, laptop dan HP, tanpa galat.

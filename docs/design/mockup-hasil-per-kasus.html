@@ -164,6 +164,29 @@ details.lipatM[open] summary::after{content:"−"}
 details.lipatM .isiL{padding:0 14px 12px}
 .petunjukGeser{display:none;color:var(--orange);font-weight:600}
 .adaGeser .petunjukGeser{display:inline}
+.alurM{position:relative;margin-top:14px}
+.alurM .titik{position:relative;padding:0 0 18px 40px}
+.alurM .titik::before{content:"";position:absolute;left:13px;top:30px;bottom:0;width:2px;background:var(--line)}
+.alurM .titik:last-child::before{display:none}
+.alurM .noT{position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 13px var(--font);background:var(--orange)}
+.alurM .titik.dasar .noT{background:var(--hijau)}
+.alurM .ketT{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.03em}
+.alurM h5{font-size:15px;font-weight:600;margin:2px 0 8px}
+.alurM .syarat{display:grid;gap:6px}
+.alurM .syarat div{display:flex;gap:10px;align-items:flex-start;background:var(--frame);border-radius:12px;padding:9px 12px;font-size:14px}
+.alurM .cek{flex:none;width:20px;height:20px;border-radius:50%;background:var(--hijau);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.alurM .dasarTeks{font-size:13.5px;background:var(--frame);border-radius:12px;padding:8px 12px;margin-top:8px}
+.ubahB{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px;margin-top:8px}
+.ubahB s{color:var(--muted)}.ubahB b{background:var(--mint);border-radius:8px;padding:2px 8px}.ubahB span{font-size:13px;color:var(--muted)}
+.jumlahP{background:var(--frame);border-radius:14px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.jumlahP div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px}
+.jumlahP div small{color:var(--muted);font-size:12.5px}
+.jumlahP div.tot{border-top:1.5px solid var(--ink);margin-top:5px;padding-top:7px;font-weight:600}
+.langkahH{display:grid;background:#fff;border:1px solid var(--line);border-radius:14px;padding:2px 12px}
+.langkahH div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;font-variant-numeric:tabular-nums}
+.langkahH div span:first-child{color:var(--muted)}
+.langkahH div:last-child{border:0;font-weight:600}
+.dalil{border-left:3px solid var(--hijau);padding:6px 12px;background:#f6faf5;border-radius:0 12px 12px 0;margin-bottom:8px}
 .info h3{font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 0;letter-spacing:.02em}
 .jenis .kat{font-size:13px;color:var(--muted)}
 .jenis b.besar{display:block;font-size:18px;font-weight:600;margin-top:2px}
@@ -883,7 +906,7 @@ function daftarGharqa(k) {
   const orang = ['Aminah', 'Siti', 'Zahra', 'Rina'].map(id => {
     const bagian = GHARQA_HARTA.filter(([m, , per]) => per[id] && (!hartaSaring || m === hartaSaring)).map(([m, h, per, al]) => [m, h * BigInt(per[id][0]) / BigInt(per[id][1]) / SATUAN * SATUAN, al[id]]);
     const tot = bagian.reduce((a, b) => a + b[1], 0n);
-    return bagian.length ? { id, f: [tot, HARTA], tampil: rupiah(tot), tampilKet: hartaSaring ? bagian[0][2] : bagian.length > 1 ? 'dari dua harta' : `dari harta ${nama(bagian[0][0])}`, dariHarta: bagian, alasan: '', kenapa: bagian.map(([m, n, al]) => `Dari harta ${nama(m)}: ${al} (${rupiah(n)}).`) } : null;
+    return bagian.length ? { id, f: pec(tot, 350000000n), tampil: rupiah(tot), tampilKet: hartaSaring ? bagian[0][2] : bagian.length > 1 ? 'dari dua harta' : `dari harta ${nama(bagian[0][0])}`, dariHarta: bagian, alasan: '', kenapa: bagian.map(([m, n, al]) => `Dari harta ${nama(m)}: ${al} (${rupiah(n)}).`) } : null;
   }).filter(Boolean);
   const perHarta = GHARQA_HARTA.map(([m, h, per]) => [m, Object.values(per).reduce((a, [x, y]) => a + h * BigInt(x) / BigInt(y) / SATUAN * SATUAN, 0n)]);
   const jml = perHarta.reduce((a, [, v]) => a + v, 0n);
@@ -905,40 +928,92 @@ function renderKasus(id) {
 }
 
 // ═══ Modal / laci penjelasan orang (isi seperti versi sebelum Logivo) ═══
+// Penjelasan orang = modal C (alur dasar → di keluarga ini → hitungan) dengan hitungan bertambah ala modal A (pilihan pemilik 2026-11-17).
+const HITUNG_BIASA = {
+  Aminah: [['Bagian dasar', '1/8 dari harta'], ['Asal masalah 24', '24 × 1/8 = 3'], ['Tashih × 3', '3 × 3 = 9 dari 72']],
+  Fatimah: [['Bagian dasar', '1/6 dari harta'], ['Asal masalah 24', '24 × 1/6 = 4'], ['Tashih × 3', '4 × 3 = 12 dari 72']],
+  Budi: [['Bagian dasar', 'sisa, bersama Siti (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51, dibagi 3 kepala = 17 per kepala'], ['Bagian Budi', '17 × 2 = 34 dari 72']],
+  Siti: [['Bagian dasar', 'sisa, bersama Budi (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51, dibagi 3 kepala = 17 per kepala'], ['Bagian Siti', '17 × 1 = 17 dari 72']],
+};
+const UBAH_BAGIAN = { Aminah: ['1/4', '1/8', 'berkurang karena almarhum punya anak'], Fatimah: ['1/3', '1/6', 'berkurang karena almarhum punya anak'] };
+const DASAR_MUNASAKHAT = 'Munasakhat: ahli waris yang meninggal sebelum harta dibagi; bagiannya dibagi lagi ke ahli warisnya sendiri. Yang dibagi hanya harta mayit pertama.';
+
+function sumbanganJamiah(k, idOrang) {
+  const { kolom } = tabelMunasakhat(k.rantai), masalah = kolom.filter(c => c.jenis === 'masalah');
+  return masalah.map((c, j) => {
+    if (!c.per[idOrang]) return null;
+    let pengali = c.pengaliBaru ?? 1n; const bagianPengali = [];
+    if (c.pengaliBaru) bagianPengali.push(c.pengaliBaru);
+    for (const lanjut of masalah.slice(j + 1)) if (lanjut.pengaliLama && lanjut.pengaliLama !== 1n) { pengali *= lanjut.pengaliLama; bagianPengali.push(lanjut.pengaliLama); }
+    return [c.mayit, BigInt(c.per[idOrang]), bagianPengali, BigInt(c.per[idOrang]) * pengali];
+  }).filter(Boolean);
+}
+
 function bukaPenjelasan(idOrang, k) {
   const o = NOMINAL[idOrang]; if (!o || !ORANG[idOrang]) return;
   const [n, peran, , kunci, kelompok] = ORANG[idOrang];
-  const tahan = !!o.tahan, tidak = o.redup && !o.meninggal;
+  const tahan = !!o.tahan, tidak = o.redup && !o.meninggal, rantai = !!(o.dari && k.rantai);
   const rp = o.tampil ?? (tahan ? 'Ditahan' : rupiah(bulat(HARTA, o.f)));
-  const harta = HARTA;
-  let cara = '';
-  const asli = o.asli ?? o.f; if (o.f?.[0] && !tahan && !o.meninggal && !o.dariHarta) cara = `Harta dibagi menjadi ${asli[1]} bagian yang sama; ${n} mendapat ${asli[0]} bagian.<br>${asli[0]}/${asli[1]} × ${rupiah(harta)} = <b>${rupiah(bulat(harta, o.f))}</b>${SATUAN > 1n || (harta * o.f[0]) % o.f[1] ? ' <small>(dibulatkan ke bawah)</small>' : ''}`;
-  if (o.dari) cara = Object.entries(o.dari).map(([m, f]) => `Dari ${nama(m)}${ALASAN_LAPIS[m]?.[idOrang] ? ` (${ALASAN_LAPIS[m][idOrang]})` : ''}: <b>${rupiah(bulat(harta, f))}</b>`).join('<br>') + (Object.keys(o.dari).length > 1 && !o.meninggal ? `<br>Jumlah: <b>${rupiah(bulat(harta, o.f))}</b>` : '');
-  if (o.dariHarta) cara = o.dariHarta.map(([m, v, al]) => `Dari harta ${nama(m)} (${al}): <b>${rupiah(v)}</b>`).join('<br>') + `<br>Jumlah: <b>${o.tampil}</b>`;
-  let kenapa = o.kenapa ?? [o.alasan];
-  if (o.dari && k.rantai) {
-    const r = hitungRantai(k.rantai);
-    kenapa = Object.entries(o.dari).map(([m, f]) => `Di lapis ${r.lapisKe(m)} (${m === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(m)} yang diteruskan`}): ${ALASAN_LAPIS[m]?.[idOrang] ?? 'bagian dari lapis ini'}, yaitu ${rupiah(bulat(HARTA, f))}.`);
-    if (o.meninggal) { const l = k.rantai.find(x => x[0] === idOrang); kenapa.push(`${nama(idOrang)} meninggal sebelum harta dibagi, jadi bagiannya dibagi lagi di lapis ${r.lapisKe(idOrang)} kepada: ${Object.keys(l[1]).map(nama).join(', ')}.`); }
-    else if (Object.keys(o.dari).length > 1) kenapa.push(`Totalnya ${rupiah(bulat(HARTA, o.f))}, karena ${nama(idOrang)} menerima dari ${Object.keys(o.dari).length} lapis.`);
-  }
-  const ahwal = kunci && AHWAL[kunci] && !k.rantai && kasusAktif !== 'bersamaan' ? AHWAL[kunci] : null;
+  const ahwal = kunci && AHWAL[kunci] && kasusAktif !== 'bersamaan' ? AHWAL[kunci] : null;
   const dalil = o.dalil ? DALIL[o.dalil] : null;
+  const ubah = !k.rantai && kasusAktif !== 'bersamaan' ? UBAH_BAGIAN[idOrang] : null;
+
+  // 1. Dasar
+  const dasar = `${dalil ? `<div class="dalil"><p class="arab">${dalil[0]}</p><p style="font-size:14px">${dalil[1]}.</p><small>QS ${dalil[2]}</small></div>` : ''}
+    ${ahwal ? `<table class="ahwalT">${ahwal.map(([b, t], i) => { const kini = !rantai && o.ahwal?.includes(i); return `<tr class="${kini ? 'kini' : ''}"><th>${b}</th><td>${t}${kini ? '<span class="stiker">kasus ini</span>' : ''}</td></tr>`; }).join('')}</table>` : ''}
+    ${k.rantai ? `<p class="dasarTeks">${ist('munasakhat')}: ${DASAR_MUNASAKHAT.split(': ')[1]}</p>` : ''}`;
+  // 2. Di keluarga ini
+  const syarat = (o.kenapa ?? [o.alasan]).filter(Boolean);
+  const r = k.rantai ? hitungRantai(k.rantai) : null;
+  if (rantai && !o.kenapa) {
+    syarat.length = 0;
+    if (o.meninggal) { const l = k.rantai.find(x => x[0] === idOrang); syarat.push(`${n} meninggal sebelum harta dibagi. Bagiannya dibagi lagi di langkah ${r.lapisKe(idOrang)} kepada ${daftarNama(Object.keys(l[1]))}.`); }
+    else syarat.push(`${n} menerima dari ${daftarNama(Object.keys(o.dari))}, karena ${Object.keys(o.dari).length > 1 ? 'mereka meninggal berurutan sebelum harta dibagi' : 'ia ahli warisnya'}.`);
+  }
+  const diKeluarga = `<div class="syarat">${syarat.map(t => `<div><span class="cek">✓</span><span>${t}</span></div>`).join('')}</div>
+    ${ubah ? `<div class="ubahB"><s>${ubah[0]}</s> → <b>${ubah[1]}</b> <span>${ubah[2]}</span></div>` : ''}
+    ${tahan && o.maks ? `<p class="sub" style="margin-top:6px">Bisa sampai ${rupiah(bulat(HARTA, o.maks))}, tergantung keadaan yang terjadi.</p>` : ''}`;
+  // 3. Diterima dari tiap orang (munasakhat / dua harta), dijumlahkan
+  let dariTiap = '';
+  if (rantai && Object.keys(o.dari).length) {
+    const baris = Object.entries(o.dari).map(([m, f]) => `<div><span>Dari ${m === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(m)}`} (langkah ${r.lapisKe(m)})<br><small>${ALASAN_LAPIS[m]?.[idOrang] ?? ''}</small></span><b>${rupiah(bulat(HARTA, f))}</b></div>`).join('');
+    dariTiap = `<div class="jumlahP">${baris}${!o.meninggal && Object.keys(o.dari).length > 1 ? `<div class="tot"><span>Jumlah</span><b>${rupiah(bulat(HARTA, o.f))}</b></div>` : ''}</div>`;
+  }
+  if (o.dariHarta) dariTiap = `<div class="jumlahP">${o.dariHarta.map(([m, v, al]) => `<div><span>Dari harta ${nama(m)}<br><small>${al}</small></span><b>${rupiah(v)}</b></div>`).join('')}${o.dariHarta.length > 1 ? `<div class="tot"><span>Jumlah</span><b>${o.tampil}</b></div>` : ''}</div>`;
+  // 4. Hitungan bertambah
+  let langkah = [];
+  const asli = o.asli ?? o.f;
+  if (HITUNG_BIASA[idOrang] && kasusAktif === 'biasa') langkah = [...HITUNG_BIASA[idOrang]];
+  else if (rantai && !o.meninggal) {
+    const s = sumbanganJamiah(k, idOrang), jam = tabelMunasakhat(k.rantai).jam;
+    langkah = s.map(([m, sh, pg, hasil]) => [`Dari ${nama(m)}`, `${sh}${pg.map(x => ` × ${x}`).join('')} = ${hasil}`]);
+    if (s.length > 1) langkah.push(['Jumlah', `${s.map(x => x[3]).join(' + ')} = ${s.reduce((a, x) => a + x[3], 0n)} dari ${jam}`]);
+    else langkah.push(["Dari jami'ah", `${s[0]?.[3] ?? 0} dari ${jam}`]);
+    const total = s.reduce((a, x) => a + x[3], 0n);
+    if (String(jam).length <= 10) langkah.push(['Rupiah', `${total}/${jam} × ${rupiah(HARTA)} = ${rupiah(bulat(HARTA, o.f))}`]);
+  } else if (asli?.[0] && !tahan && !o.dariHarta && !o.meninggal) langkah = [['Saham', `${asli[0]} dari ${asli[1]}`]];
+  if (langkah.length && !rantai && asli?.[0] && !tahan && !o.dariHarta && !o.meninggal) langkah.push(['Rupiah', `${asli[0]}/${asli[1]} × ${rupiah(HARTA)} = ${rupiah(bulat(HARTA, o.f))}`]);
+  const hitungan = langkah.length ? `<div class="langkahH">${langkah.map(([x, y]) => `<div><span>${x}</span><span>${y}</span></div>`).join('')}</div>` : '';
+
+  let no = 0;
+  const titik = (jenis, ket, judul, isi) => (isi.trim() ? `<div class="titik ${jenis}"><span class="noT">${++no}</span><p class="ketT">${ket}</p><h5>${judul}</h5>${isi}</div>` : '');
   $('#modalOrang').innerHTML = `
-    <div class="modalKepala ${tahan ? 'tahan' : tidak || o.meninggal ? 'netral' : ''}"><div><p class="peranM">${tidak ? 'TIDAK MENDAPAT BAGIAN' : tahan ? 'DITAHAN' : o.meninggal ? 'SUDAH MENINGGAL, MENERUSKAN BAGIAN' : kelompok ?? ''}</p><h3 id="judulModal">${n}</h3><p class="sub">${peran}</p></div><button class="tutup" id="tutupModal" aria-label="Tutup">${ik('x')}</button></div>
+    <div class="modalKepala ${tahan ? 'tahan' : tidak || o.meninggal ? 'netral' : ''}"><div><p class="peranM">${tidak ? 'TIDAK MENDAPAT BAGIAN' : tahan ? 'DITAHAN' : o.meninggal ? 'MENINGGAL SEBELUM DIBAGI' : kelompok ?? ''}</p><h3 id="judulModal">${n}</h3><p class="sub">${peran}</p></div><button class="tutup" id="tutupModal" aria-label="Tutup">${ik('x')}</button></div>
     <div class="modalIsi">
-      ${!tidak ? `<h4>BAGIANNYA DI KASUS INI</h4><div class="angkaM"><div><small>Pecahan</small><b>${o.f?.[0] ? teksPec(o.f) : '—'}</b></div><div><small>Persen</small><b>${o.f?.[0] ? persen(o.f) : '—'}</b></div><div><small>${o.meninggal ? 'Diterima lalu diteruskan' : 'Nominal'}</small><b>${rp}</b></div></div>` : ''}
-      ${tahan && o.maks ? `<p class="sub" style="margin-top:6px">Bisa sampai ${rupiah(bulat(harta, o.maks))}, tergantung keadaan yang terjadi.</p>` : ''}
-      <h4>${tidak ? 'KENAPA TIDAK DAPAT?' : 'KENAPA SEGITU?'}</h4><div class="kenapa"><ul>${kenapa.map(x => `<li>${x}</li>`).join('')}</ul></div>
-      ${cara ? `<h4>CARA MENGHITUNGNYA</h4><p class="cara">${cara}</p>` : ''}
+      ${!tidak ? `<h4>BAGIANNYA DI KASUS INI</h4><div class="angkaM"><div><small>Pecahan</small><b>${o.f?.[0] ? teksPec(o.f) : '—'}</b></div><div><small>Persen</small><b>${o.f?.[0] ? persen(o.f) : '—'}</b></div><div><small>${o.meninggal ? 'Diterima lalu dibagi lagi' : 'Nominal'}</small><b>${rp}</b></div></div>` : ''}
+      <div class="alurM">
+        ${titik('dasar', 'DASAR · BERLAKU UNTUK SEMUA KASUS', 'Aturannya', dasar)}
+        ${titik('kasus', 'DI KELUARGA INI', tidak ? 'Kenapa tidak mendapat' : 'Syarat yang terpenuhi', diKeluarga)}
+        ${titik('kasus', k.rantai ? 'KARENA ADA YANG MENINGGAL SEBELUM DIBAGI' : 'DARI DUA HARTA', 'Diterima dari tiap orang', dariTiap)}
+        ${titik('kasus', 'HITUNGAN', 'Dari bagian ke rupiah', hitungan)}
+      </div>
       ${o.terdampak ? `<details class="lipatM"><summary>Ahli waris lain yang terdampak <small>${o.terdampak.length} orang</small></summary><div class="isiL"><ul class="biasa">${o.terdampak.map(x => `<li>${x}</li>`).join('')}</ul></div></details>` : ''}
-      ${ahwal ? `<details class="lipatM"><summary>Kapan dapat berapa? <small>semua kemungkinan bagian ${n.toLowerCase()}</small></summary><div class="isiL"><table class="ahwalT">${ahwal.map(([b, s], i) => `<tr class="${o.ahwal?.includes(i) ? 'kini' : ''}"><th>${b}</th><td>${s}${o.ahwal?.includes(i) ? '<span class="stiker">kasus ini</span>' : ''}</td></tr>`).join('')}</table></div></details>` : ''}
-      ${dalil ? `<details class="lipatM"><summary>Dalilnya <small>QS ${dalil[2]}</small></summary><div class="isiL"><div class="dalil"><p class="arab">${dalil[0]}</p><p style="font-size:14px">${dalil[1]}.</p></div></div></details>` : ''}
     </div>
     <div class="modalKaki">${ORANG[idOrang][3] ? `<button class="tautan" data-toast="Membuka ubah jumlah ${n.toLowerCase()}">Ubah jumlah</button>` : '<span></span>'}<button class="btn" id="okeModal">Oke, paham</button></div>`;
   $('#latar').classList.add('on');
   $('#tutupModal').focus();
   $('#tutupModal').onclick = $('#okeModal').onclick = tutupModal;
+  $$('#modalOrang .ist').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); x.classList.toggle('on'); }));
 }
 function bukaBulat(id) {
   const k = KASUS[id], simpan = SATUAN;
