@@ -16,7 +16,7 @@ export function PohonKecil({ kasus, babak }: { kasus: Kasus; babak: BabakKisah }
   // Sebutan sama dengan pohon lain (dari sudut almarhum pemilik harta); sudut "kamu" hanya di kalimat kisah.
   const sebut = buatSebutSimpul(kasus.graf);
   return (
-    <PohonDasar graf={graf} maksPerBaris={MAKS_PER_BARIS_KECIL}
+    <PohonDasar graf={graf} maksPerBaris={MAKS_PER_BARIS_KECIL} bingkaiSaudara={false}
       isiNode={id => {
         const keadaan = keadaanSaat(kasus, id, babak.idMayit);
         const meninggal = keadaan === 'mati';

@@ -15,7 +15,8 @@ import { AvatarOrang } from './AvatarOrang';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
 import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
-import { jalurDariRuas, susunGaris } from './garisPohon';
+import { jalurDariRuas, susunBingkai, susunGaris, type Bingkai } from './garisPohon';
+import { kelompokSaudara } from './saudara';
 import { BATAS_PER_BARIS, jumlahPerBaris, tataLetak, type TataLetak } from './tataLetak';
 import { angka, panah, t } from '../terjemah';
 
@@ -85,10 +86,10 @@ function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
   return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">{panah()}</span><b>{ubah.menjadi}</b></span>;
 }
 
-export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; /** Kelas tambahan yang tidak dipakai logika pohon (mis. gaya menurut keadaan). */ tambahan?: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
+export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; /** Kelas tambahan yang tidak dipakai logika pohon (mis. gaya menurut keadaan). */ tambahan?: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode; /** Simpul bukan orang (mis. ringkasan saudara): tanpa avatar. */ tanpaAvatar?: boolean }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
-export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS, pilihPenghubung = false, labelPilih, bisaPilih }: {
+export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS, pilihPenghubung = false, labelPilih, bisaPilih, bingkaiSaudara = true }: {
   graf: GrafKeluarga; isiNode: (id: IdOrang) => IsiNode; saatPilih?: (id: IdOrang) => void; redup?: boolean; aliran?: boolean;
   /** Batas node per baris tampilan; panggung sempit memakai batas lebih kecil. */
   maksPerBaris?: number;
@@ -98,10 +99,12 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
   labelPilih?: (nama: string) => string;
   /** Menyaring simpul yang bisa dipilih (bawaan semua); yang tidak lolos tampil sebagai kotak biasa, bukan tombol. */
   bisaPilih?: (id: IdOrang) => boolean;
+  /** Bingkai putus-putus berlabel (kandung, seayah, seibu) di sekitar saudara pewaris; mati untuk pohon mungil. */
+  bingkaiSaudara?: boolean;
 }) {
   const letak = tataLetak(graf);
   const wadah = useRef<HTMLDivElement>(null);
-  const garis = useGarisPohon(wadah, letak);
+  const garis = useGarisPohon(wadah, letak, bingkaiSaudara ? kelompokSaudara(graf).map(k => ({ label: labelBingkai(k.jenis), anak: k.anak })) : []);
   const atribut = useAtributOrang();
   const { langkah } = useSorot();
   const panah = usePanahSorot(wadah, langkah?.panah ?? []);
@@ -109,6 +112,9 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
     <div className="pohon-wadah">
       {redup && <LegendaSorot />}
       <div className={['pohon', redup && 'redup', aliran && 'aliran'].filter(Boolean).join(' ')} ref={wadah}>
+        {garis.bingkai.map(({ kiri, atas, lebar, tinggi, label }) => (
+          <div key={`${kiri}-${atas}`} className="bingkai-saudara" aria-hidden="true" style={{ left: kiri, top: atas, width: lebar, height: tinggi }}>{label && <span>{label}</span>}</div>
+        ))}
         <svg className="garis-pohon" aria-hidden="true">
           <path d={garis.jalur} pathLength={1} />
           {garis.cincin.map(([x, y]) => <circle key={`${x}-${y}`} cx={x} cy={y} r={5} />)}
@@ -131,7 +137,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
               if (!bisaDipilih) {
                 return (
                   <div key={id} {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)} role="group" aria-label={node.nama}>
-                    {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
+                    {node.kelas !== 'penghubung' && !node.tanpaAvatar && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                     {node.peran && <span className="peran-node">{node.peran}</span>}
                     <b>{node.nama}</b>
                     {node.isi}
@@ -143,7 +149,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)}
                   aria-label={labelPilih ? labelPilih(node.nama) : t('hitung.nama_lihat_penjelasan', { nama: node.nama })}
                   onClick={() => saatPilih?.(id)}>
-                  {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
+                  {node.kelas !== 'penghubung' && !node.tanpaAvatar && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
                   {node.peran && <span className="peran-node">{node.peran}</span>}
                   <b>{node.nama}</b>
                   {node.isi}
@@ -209,10 +215,13 @@ function usePanahSorot(wadah: React.RefObject<HTMLDivElement>, daftarPanah: Arra
   return jalur;
 }
 
+const labelBingkai = (jenis: 'kandung' | 'sebapak' | 'seibu') =>
+  jenis === 'kandung' ? t('hitung.pohon.bingkai_kandung') : jenis === 'sebapak' ? t('hitung.pohon.bingkai_seayah') : t('hitung.pohon.bingkai_seibu');
+
 /** Ukur posisi node lalu susun jalur SVG: garis menikah antar orang tua, batang turun, dan cabang ke tiap anak. */
-function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak) {
-  const [garis, setGaris] = useState<{ jalur: string; cincin: Array<[number, number]> }>({ jalur: '', cincin: [] });
-  const kunciLetak = JSON.stringify(letak);
+function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak, kelompok: Array<{ label: string; anak: IdOrang[] }>) {
+  const [garis, setGaris] = useState<{ jalur: string; cincin: Array<[number, number]>; bingkai: Bingkai[] }>({ jalur: '', cincin: [], bingkai: [] });
+  const kunciLetak = JSON.stringify([letak, kelompok]);
   useLayoutEffect(() => {
     const elemen = wadah.current;
     if (!elemen) return;
@@ -227,7 +236,7 @@ function useGarisPohon(wadah: React.RefObject<HTMLDivElement>, letak: TataLetak)
           tengahX: ((r.left + r.right) / 2 - dasar.left) / skala, tengahY: ((r.top + r.bottom) / 2 - dasar.top) / skala };
       };
       const { ruas, cincin } = susunGaris(kotak, letak);
-      setGaris({ jalur: jalurDariRuas(ruas), cincin });
+      setGaris({ jalur: jalurDariRuas(ruas), cincin, bingkai: susunBingkai(kotak, kelompok) });
     };
     gambar();
     const pengamat = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(gambar);

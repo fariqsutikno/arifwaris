@@ -90,8 +90,7 @@ details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);backgro
 /* pohon samping: keadaan simpul (spec kanvas 8) */
 .node-orang.simpul-belum-pasti{border-style:dashed;border-color:#7f8c7c}
 .node-orang.simpul-pemilik{border-width:2px;border-color:var(--ink)}
-.tautan-pohon-lengkap{display:none;margin-top:6px;color:#fff}
-@media (max-width:900px){
-  .pohon-samping:not(.penuh) .pratinjau-isi{max-height:150px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
-  .pohon-samping .tautan-pohon-lengkap{display:inline-flex}
-}
+.tautan-pohon-lengkap{display:inline-flex;margin-top:6px;color:#fff}
+/* pohon samping: saudara diringkas jadi satu simpul putus-putus yang membuka pohon lengkap */
+.node-orang.ringkas-saudara{border-style:dashed;cursor:pointer}
+.node-orang.ringkas-saudara .rincian-ringkas{font-size:11px;font-weight:400;line-height:1.3}

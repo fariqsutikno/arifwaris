@@ -22236,7 +22236,7 @@
   {
    "kunci": "hitung.kanvas.pohon_lengkap",
    "halaman": "hitung",
-   "id": "Pohon lengkap",
+   "id": "Lihat pohon lengkap",
    "ar": null,
    "versiTerbit": 873
   },
@@ -23476,6 +23476,118 @@
    "kunci": "hitung.janin.tanya_calon",
    "halaman": "hitung",
    "id": "Waktu {mayit} meninggal, apakah {calon} sedang hamil?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.istri_lain_ayah",
+   "halaman": "hitung",
+   "id": "Istri lain ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.suami_ibu",
+   "halaman": "hitung",
+   "id": "Suami ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_lk_kandung",
+   "halaman": "hitung",
+   "id": "Saudara lk kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudari_kandung",
+   "halaman": "hitung",
+   "id": "Saudari kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_lk_seayah",
+   "halaman": "hitung",
+   "id": "Saudara lk seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudari_seayah",
+   "halaman": "hitung",
+   "id": "Saudari seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_lk_seibu",
+   "halaman": "hitung",
+   "id": "Saudara lk seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudari_seibu",
+   "halaman": "hitung",
+   "id": "Saudari seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.bingkai_kandung",
+   "halaman": "hitung",
+   "id": "kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.bingkai_seayah",
+   "halaman": "hitung",
+   "id": "seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.bingkai_seibu",
+   "halaman": "hitung",
+   "id": "seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_n",
+   "halaman": "hitung",
+   "id": "Saudara: {n}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.n_kandung",
+   "halaman": "hitung",
+   "id": "{n} kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.n_seayah",
+   "halaman": "hitung",
+   "id": "{n} seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.n_seibu",
+   "halaman": "hitung",
+   "id": "{n} seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.buka_lengkap",
+   "halaman": "hitung",
+   "id": "Buka pohon lengkap",
    "ar": null,
    "versiTerbit": 873
   }

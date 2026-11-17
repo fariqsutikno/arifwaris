@@ -6,6 +6,7 @@ import type { IdOrang } from '@waris/engine';
 import { buatSebutSimpul } from '../../checklist';
 import { PohonDasar } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
+import { ID_RINGKAS_SAUDARA, ringkaskanSaudara, type RingkasanSaudara } from '../../hasil/saudara';
 import type { Kasus } from '../../kasus';
 import { keteranganMeninggal, tahunWafat, waktuMeninggal } from '../../penandaMeninggal';
 import { t } from '../../terjemah';
@@ -21,15 +22,23 @@ interface Props {
   pilihPenghubung?: boolean;
   /** Pewaris tidak punya baris untuk dituju, jadi bisa dimatikan sebagai tombol. */
   pewarisBisaDipilih?: boolean;
+  /** Pohon samping: saudara diganti satu simpul "Saudara: N" yang membuka pohon lengkap lewat aksi ini. */
+  ringkasSaudara?: { saatBuka: () => void };
 }
 
-export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true }: Props) {
-  const { graf } = kasus;
-  const sebut = buatSebutSimpul(graf);
+export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true, ringkasSaudara }: Props) {
+  const { graf: grafLengkap } = kasus;
+  const { graf, ringkasan } = ringkasSaudara ? ringkaskanSaudara(grafLengkap) : { graf: grafLengkap, ringkasan: undefined };
+  // Sebutan dihitung dari graf lengkap supaya nomor ("Anak laki-laki 2") sama dengan pohon lengkap.
+  const sebut = buatSebutSimpul(grafLengkap);
+  const adaRingkas = !!ringkasan && !!ringkasSaudara;
+  const pilihNode = (id: IdOrang) => (id === ID_RINGKAS_SAUDARA ? ringkasSaudara?.saatBuka() : saatPilih?.(id));
   return (
-    <PratinjauPohon skalaMaks={skalaMaks} interaktif={!!saatPilih} {...(saatPilih ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
-      <PohonDasar graf={graf} bisaPilih={id => pewarisBisaDipilih || id !== graf.idPewaris} {...(saatPilih ? { saatPilih, pilihPenghubung, labelPilih: labelPilih ?? ((nama: string) => t('hitung.pohon.buka_menu', { nama })) } : {})}
-        {...(maksPerBaris ? { maksPerBaris } : {})} isiNode={id => ({
+    <PratinjauPohon skalaMaks={skalaMaks} interaktif={!!saatPilih || adaRingkas} {...(saatPilih || adaRingkas ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
+      <PohonDasar graf={graf} bingkaiSaudara={!adaRingkas}
+        bisaPilih={id => id === ID_RINGKAS_SAUDARA || !!saatPilih && (pewarisBisaDipilih || id !== graf.idPewaris)}
+        {...(saatPilih || adaRingkas ? { saatPilih: pilihNode, pilihPenghubung, labelPilih: (nama: string) => (ringkasan && nama === teksRingkas(ringkasan).judul ? t('hitung.pohon.buka_lengkap') : (labelPilih ?? ((n: string) => t('hitung.pohon.buka_menu', { nama: n })))(nama)) } : {})}
+        {...(maksPerBaris ? { maksPerBaris } : {})} isiNode={id => id === ID_RINGKAS_SAUDARA && ringkasan ? simpulRingkas(ringkasan) : ({
         kelas: id === graf.idPewaris ? 'pewaris' : graf.orang[id]?.penghubung ? 'penghubung' : 'ahli-waris',
         tambahan: kelasKeadaan(kasus, id),
         peran: keteranganDari(kasus, id),
@@ -38,6 +47,18 @@ export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelP
     </PratinjauPohon>
   );
 }
+
+const teksRingkas = ({ jumlah, menurutJenis: { kandung, sebapak, seibu } }: RingkasanSaudara) => ({
+  judul: t('hitung.pohon.saudara_n', { n: jumlah }),
+  // Hanya jenis yang ada, mis. "3 kandung, 1 seayah, 1 seibu".
+  rincian: [kandung && t('hitung.pohon.n_kandung', { n: kandung }), sebapak && t('hitung.pohon.n_seayah', { n: sebapak }), seibu && t('hitung.pohon.n_seibu', { n: seibu })]
+    .filter(Boolean).join(', '),
+});
+
+const simpulRingkas = (ringkasan: RingkasanSaudara) => {
+  const { judul, rincian } = teksRingkas(ringkasan);
+  return { kelas: 'ringkas-saudara', peran: '', nama: judul, tanpaAvatar: true, isi: <span className="rincian-ringkas">{rincian}</span> };
+};
 
 const keteranganDari = (kasus: Kasus, id: IdOrang): string => {
   const waktu = waktuMeninggal(kasus, id);

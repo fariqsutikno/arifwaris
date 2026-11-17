@@ -53,6 +53,7 @@ export function susunGaris(kotak: (id: IdOrang) => Kotak | null, letak: TataLeta
     return ujung?.titik;
   };
 
+  const semuaKotak = letak.baris.flat().map(kotak).filter((k): k is Kotak => !!k);
   // Keluarga yang anaknya di baris sama mendapat ketinggian batang berbeda, supaya garis mendatarnya tidak menumpuk.
   const jumlahDiBaris = new Map<number, number>();
   for (const { orangTua, anak } of letak.keluarga) {
@@ -62,7 +63,9 @@ export function susunGaris(kotak: (id: IdOrang) => Kotak | null, letak: TataLeta
     if (!titikAwal || daftarAnak.length === 0) continue;
     // Anak yang terbungkus ke beberapa baris tampilan: tiap baris punya batang sendiri, disambung lewat batang samping di kiri.
     const barisTampil = [...new Set(daftarAnak.map(k => Math.round(k.atas)))].sort((a, b) => a - b);
-    const xSamping = barisTampil.length > 1 ? Math.min(...daftarAnak.map(k => k.kiri)) - JARAK_SAMPING : null;
+    // Batang samping di kiri semua kotak pada baris tampil yang dilewatinya, supaya tidak menembus kotak kerabat lain di baris itu.
+    const xSamping = barisTampil.length > 1
+      ? Math.min(...semuaKotak.filter(k => k.atas >= barisTampil[0]! - 1 && k.atas <= barisTampil.at(-1)! + 1).map(k => k.kiri)) - JARAK_SAMPING : null;
     const yPertama = new Map<number, number>();
     for (const atasAnak of barisTampil) {
       const keBerapa = jumlahDiBaris.get(atasAnak) ?? 0;
@@ -80,4 +83,24 @@ export function susunGaris(kotak: (id: IdOrang) => Kotak | null, letak: TataLeta
   }
   for (const [a, b] of letak.pasanganSaja) garisNikah(a, b);
   return { ruas, cincin };
+}
+
+/** Ruang bingkai kelompok di luar kotak anggotanya; atas lebih longgar untuk label kecil. */
+const RUANG_BINGKAI = 6;
+const RUANG_BINGKAI_ATAS = 18;
+export interface Bingkai { kiri: number; atas: number; lebar: number; tinggi: number; label: string }
+
+/** Bingkai putus-putus per kelompok saudara; kelompok yang terbungkus ke dua baris tampil mendapat satu bingkai per baris, label hanya di yang pertama. */
+export function susunBingkai(kotak: (id: IdOrang) => Kotak | null, kelompok: Array<{ label: string; anak: IdOrang[] }>): Bingkai[] {
+  return kelompok.flatMap(({ label, anak }) => {
+    const daftar = anak.map(kotak).filter((k): k is Kotak => !!k);
+    const barisTampil = [...new Set(daftar.map(k => Math.round(k.atas)))].sort((a, b) => a - b);
+    return barisTampil.map((atas, urutan): Bingkai => {
+      const dibaris = daftar.filter(k => Math.round(k.atas) === atas);
+      const kiri = Math.min(...dibaris.map(k => k.kiri)) - RUANG_BINGKAI;
+      const kanan = Math.max(...dibaris.map(k => k.kanan)) + RUANG_BINGKAI;
+      const bawah = Math.max(...dibaris.map(k => k.bawah)) + RUANG_BINGKAI;
+      return { kiri, atas: atas - RUANG_BINGKAI_ATAS, lebar: kanan - kiri, tinggi: bawah - atas + RUANG_BINGKAI_ATAS, label: urutan === 0 ? label : '' };
+    });
+  });
 }
