@@ -1200,3 +1200,8 @@ rantai 5 generasi + janin + hilang (19a.7), gharqa. Angka dari engine lewat tes 
 2. Dasar di dalam kartu langkah (32A), atau langkah tersendiri (32B)?
 3. Tabel tumbuh per kolom (33A), atau lengkap tapi redup (33B)?
 4. Rantai panjang: babak per mayit saja (34A), atau ditambah ringkasan babak berpola sama (34B)?
+
+## 27. Acuan final layar Hasil (disetujui pemilik, 2026-11-17)
+
+Salinan beku mockup yang disetujui: [acuan-hasil-final.html](acuan-hasil-final.html) (sama dengan `mockup-hasil-per-kasus.html` pada commit ini).
+Dipakai sebagai acuan saat integrasi ke aplikasi dan untuk mode fokus; perubahan berikutnya dibuat di `mockup-hasil-per-kasus.html`, acuan ini tidak disunting.
