@@ -187,3 +187,39 @@ Rekomendasi: A + B + C.
   Dicek di browser: lebar HP dan laptop tanpa gulir mendatar; interaksi C1 (tambah, kosongkan, Lanjut menandai merah),
   C4 (Sudah meninggal membuka pertanyaan lebih dulu/sesudah), C6 (dialog maju per langkah). Tidak dicek: pembaca layar.
 - Menunggu acc per cluster sebelum diterapkan ke aplikasi.
+
+## 7. Pohon samping berantakan pada keluarga besar (2026-11-17)
+
+Kasus pemilik: ibu menikah lagi (Suami Ibu), ada saudara kandung, saudara seayah, saudara seibu, nenek dari ibu,
+almarhum dengan istri dan tiga anak. Pohon samping (panel Ringkasan kasus, lebar ±330px).
+
+### Audit
+
+| Kode | Temuan | Akar (kode) |
+|---|---|---|
+| P1 | "Suami Ibu" turun ke baris sendiri di bawah Ayah–Ibu; garis dari Ibu menembus kotak lain | Aturan C5 "orang dengan >1 pasangan → pasangan ke baris sisipan" (`hasil/tataLetak.ts`, ponytail baris 76) dibuat untuk almarhum beristri banyak, ikut menimpa Ibu yang menikah dua kali |
+| P2 | Simpul "Kerabat, meninggal sebelum almarhum" di tengah pohon | Penghubung otomatis = ibu dari saudara seayah (istri lain ayah); `labelOrangChecklist` belum punya sebutan untuk istri lain dari leluhur |
+| P3 | Garis baris saudara keluar dari panel di kiri; kotak saudara terpotong ("perempuan" terpenggal) | Lebar baris saudara (5 kotak) melebihi panel; tidak ada skala/geser untuk baris yang lebar |
+| P4 | Saudara kandung, seayah, seibu bercampur di dua baris tanpa pengelompokan; garis bersilangan | Urutan dalam baris pakai rata-rata posisi (ponytail baris 24); saudara tidak dikelompokkan per pasangan orang tua |
+| P5 | Label panjang ("Kakak/adik laki-laki kandung") memenuhi kotak kecil | Label checklist dipakai apa adanya di pohon mini |
+
+### JTBD
+
+Saat mengisi keluarga, saya ingin melihat sekilas silsilah yang sudah saya masukkan, supaya yakin tidak ada yang
+salah tempat. Ukuran: pengguna bisa menunjuk "ini saudara seibu almarhum" tanpa membaca kalimat.
+
+### HMW
+
+**HMW-P: Bagaimana agar pohon kecil tetap terbaca saat keluarga besar dan ada pernikahan kedua?**
+
+| Ide | Paham | Dampak | Usaha |
+|---|---|---|---|
+| A. Pasangan kedua leluhur (Ibu–Suami Ibu, Ayah–istri lain) berdiri di baris yang sama dengan pasangan pertama, berjajar: Ayah — Ibu — Suami Ibu; anak menggantung dari pasangan orang tuanya. Baris sisipan hanya untuk almarhum. | tinggi | tinggi | sedang |
+| B. Pohon samping hanya garis inti (leluhur langsung, almarhum, pasangan, anak); saudara diringkas jadi satu kotak "Saudara: 3 kandung, 1 seayah, 1 seibu", klik membuka pohon layar penuh | tinggi | tinggi | kecil |
+| C. Saudara dikelompokkan per pasangan orang tua dengan bingkai tipis berlabel kecil ("kandung", "seayah", "seibu"), label kotak dipendekkan ("Kakak/adik lk") | sedang | sedang | sedang |
+| D. Pohon samping bisa digeser/zoom (sudah ada di layar penuh) | rendah | sedang | kecil |
+
+Tambahan wajib di semua ide: P2 → sebutan "Istri lain ayah" untuk penghubung ibu tiri; P5 → label pendek khusus pohon mini.
+
+**Usulan:** B untuk pohon samping (panel sempit, fungsinya "cek sekilas") + A di pohon layar penuh/hasil
+(tempat silsilah lengkap memang dibaca). Plus P2 dan P5.
