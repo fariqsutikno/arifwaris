@@ -1201,6 +1201,14 @@ rantai 5 generasi + janin + hilang (19a.7), gharqa. Angka dari engine lewat tes 
 3. Tabel tumbuh per kolom (33A), atau lengkap tapi redup (33B)?
 4. Rantai panjang: babak per mayit saja (34A), atau ditambah ringkasan babak berpola sama (34B)?
 
+### 26g. Keputusan pemilik dan mockup
+
+Pemilik memilih usulan 26e (31A, 32A, 33A, 34A + 34B, 35A, 36A). Mockup: [mockup-mode-fokus.html](mockup-mode-fokus.html), enam
+tab (biasa, 'aul, berurutan 3 mayit, rantai 12 generasi, hamil + hilang, meninggal bersamaan). Saham dari engine, sama dengan
+mockup Hasil dan 25d (tidak dihitung ulang; rupiah BigInt dibulatkan ke bawah). Batas mockup: hamil + hilang hanya menampilkan
+kolom terkecil/terbesar (12 kolom kemungkinan diambil dari engine saat integrasi); rantai 12 generasi hanya memperagakan peta
+rantai dan ringkasan babak. Dicek di 375 px dan laptop: tanpa galat konsol, tanpa gulir mendatar.
+
 ## 27. Acuan final layar Hasil (disetujui pemilik, 2026-11-17)
 
 Salinan beku mockup yang disetujui: [acuan-hasil-final.html](acuan-hasil-final.html) (sama dengan `mockup-hasil-per-kasus.html` pada commit ini).
