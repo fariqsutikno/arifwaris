@@ -24,6 +24,9 @@ describe('pohon samping: saudara diringkas (B)', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Buka pohon lengkap' }));
     expect(screen.getByRole('dialog')).toBeTruthy();
     expect(screen.getByText('Saudara lk seayah')).toBeTruthy();
+    // Tanpa pratinjau (skalanya 0 di wadah tanpa lebar) dan di body (di luar konteks tumpukan bar bawah wizard).
+    expect(screen.getByRole('dialog').querySelector('.pratinjau-isi')).toBeNull();
+    expect(screen.getByRole('dialog').parentElement).toBe(document.body);
     fireEvent.click(screen.getByRole('button', { name: 'Tutup layar penuh' }));
     expect(screen.queryByRole('dialog')).toBeNull();
     fireEvent.click(screen.getByText('Lihat pohon lengkap'));

@@ -2,6 +2,7 @@
 // lengkap, kartu berkas di rak, dan panggung langkah Keluarga. Isi node hanya sebutan hubungan; angka bagian tidak ada di sini.
 // Dengan saatPilih, pohon interaktif: tiap kotak (termasuk penghubung) menjadi tombol "Buka menu".
 
+import type { ReactNode } from 'react';
 import type { IdOrang } from '@waris/engine';
 import { buatSebutSimpul } from '../../checklist';
 import { PohonDasar } from '../../hasil/Pohon';
@@ -24,9 +25,11 @@ interface Props {
   pewarisBisaDipilih?: boolean;
   /** Pohon samping: saudara diganti satu simpul "Saudara: N" yang membuka pohon lengkap lewat aksi ini. */
   ringkasSaudara?: { saatBuka: () => void };
+  /** Di dalam layar penuh: tanpa pratinjau, karena layar penuh sendiri yang mengatur zoom (pratinjau menghitung skala 0 di wadah tanpa lebar). */
+  tanpaPratinjau?: boolean;
 }
 
-export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true, ringkasSaudara }: Props) {
+export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelPilih, pilihPenghubung = true, pewarisBisaDipilih = true, ringkasSaudara, tanpaPratinjau = false }: Props) {
   const { graf: grafLengkap } = kasus;
   const { graf, ringkasan } = ringkasSaudara ? ringkaskanSaudara(grafLengkap) : { graf: grafLengkap, ringkasan: undefined };
   // Sebutan dihitung dari graf lengkap supaya nomor ("Anak laki-laki 2") sama dengan pohon lengkap.
@@ -34,7 +37,7 @@ export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelP
   const adaRingkas = !!ringkasan && !!ringkasSaudara;
   const pilihNode = (id: IdOrang) => (id === ID_RINGKAS_SAUDARA ? ringkasSaudara?.saatBuka() : saatPilih?.(id));
   return (
-    <PratinjauPohon skalaMaks={skalaMaks} interaktif={!!saatPilih || adaRingkas} {...(saatPilih || adaRingkas ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
+    <KemasPratinjau aktif={!tanpaPratinjau} skalaMaks={skalaMaks} interaktif={!!saatPilih || adaRingkas} {...(saatPilih || adaRingkas ? { tinggiMaks: TINGGI_MAKS_INTERAKTIF } : {})}>
       <PohonDasar graf={graf} bingkaiSaudara={!adaRingkas}
         bisaPilih={id => id === ID_RINGKAS_SAUDARA || !!saatPilih && (pewarisBisaDipilih || id !== graf.idPewaris)}
         {...(saatPilih || adaRingkas ? { saatPilih: pilihNode, pilihPenghubung, labelPilih: (nama: string) => (ringkasan && nama === teksRingkas(ringkasan).judul ? t('hitung.pohon.buka_lengkap') : (labelPilih ?? ((n: string) => t('hitung.pohon.buka_menu', { nama: n })))(nama)) } : {})}
@@ -44,9 +47,12 @@ export function PohonSusunan({ kasus, skalaMaks, saatPilih, maksPerBaris, labelP
         peran: keteranganDari(kasus, id),
         nama: id === graf.idPewaris ? t('hitung.almarhum') : sebut(id),
       })} />
-    </PratinjauPohon>
+    </KemasPratinjau>
   );
 }
+
+const KemasPratinjau = ({ aktif, children, ...props }: { aktif: boolean; children: ReactNode; skalaMaks: number; interaktif: boolean; tinggiMaks?: number }) =>
+  aktif ? <PratinjauPohon {...props}>{children}</PratinjauPohon> : <>{children}</>;
 
 const teksRingkas = ({ jumlah, menurutJenis: { kandung, sebapak, seibu } }: RingkasanSaudara) => ({
   judul: t('hitung.pohon.saudara_n', { n: jumlah }),

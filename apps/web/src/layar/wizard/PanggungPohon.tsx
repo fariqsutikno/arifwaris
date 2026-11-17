@@ -3,6 +3,7 @@
 // di langkah lain hanya-baca dan baru muncul setelah ada kerabat.
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { IdOrang } from '@waris/engine';
 import type { Kasus } from '../../kasus';
 import { PohonLayarPenuh } from '../../hasil/PohonLayarPenuh';
@@ -41,7 +42,8 @@ export function PanggungPohon({ kasus, ubah, maksPerBaris, saatPilihOrang }: Pro
         </div>
       )}
       <RingkasanSamping kasus={kasus} />
-      {kasus && lengkap && <PohonLayarPenuh pohon={<PohonSusunan kasus={kasus} skalaMaks={1} maksPerBaris={MAKS_PER_BARIS_LENGKAP} />} saatTutup={() => setLengkap(false)} />}
+      {/* Portal ke body: bar bawah dan dok wizard punya konteks tumpukan sendiri dan akan menutupi dialog bila ikut di dalamnya. */}
+      {kasus && lengkap && createPortal(<PohonLayarPenuh pohon={<PohonSusunan kasus={kasus} skalaMaks={1} maksPerBaris={MAKS_PER_BARIS_LENGKAP} tanpaPratinjau />} saatTutup={() => setLengkap(false)} />, document.body)}
     </>
   );
 }
