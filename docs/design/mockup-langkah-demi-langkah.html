@@ -227,6 +227,7 @@ td.tertutup span{visibility:hidden}
     <p class="posisi" id="posisi"></p>
     <nav class="menu">
       <button id="mSemua" class="teks-saja">Tampilkan semua langkah</button>
+      <button id="cobaSinema" class="teks-saja">Coba versi bersuara</button>
       <button id="mPohon" class="sinema-saja">Pohon</button><button id="mTabel" class="sinema-saja">Tabel</button>
       <button id="mKecepatan" class="sinema-saja">Kecepatan 1×</button><button id="mSuara" class="sinema-saja" aria-pressed="true">Suara: nyala</button>
       <button id="mRekam" class="rekam">Rekam video</button>
@@ -452,11 +453,11 @@ function kartuTahap(t, sampaiL) {
   if (kt.v) bagian.splice(4, 0, `<div class="kotak-teks">${gambarKotak(kt.v, kt.v)}</div>`);
   return `<div class="kartu">${semua ? `<p class="ke">Tahap ${t + 1} dari ${kasus().tahap.length}</p><h3>${th.judul}</h3>` : ''}${bagian.join('')}</div>`;
 }
-const ajakSinema = () => baca(KUNCI_AJAK) ? '' : `<p class="ajak"><button class="tautan" id="cobaSinema">Coba versi bersuara</button><button class="tautan" id="tutupAjak" style="font-weight:500;color:var(--muted)">Nanti saja</button></p>`;
+
 
 function gambarTeks(i) {
   const { t, l } = urutan[i];
-  $('kartuTeks').innerHTML = semua ? kasus().tahap.map((th, t2) => kartuTahap(t2, th.langkah.length - 1)).join('') : kartuTahap(t, l) + ajakSinema();
+  $('kartuTeks').innerHTML = semua ? kasus().tahap.map((th, t2) => kartuTahap(t2, th.langkah.length - 1)).join('') : kartuTahap(t, l);
   $('pohonTeks').innerHTML = gambarPohon(kasus().pohon, semua ? sorotPohon(urutan.length - 1) : sorotPohon(i));
   const v = langkahDi(i).v;
   $('tabelTeks').innerHTML = gambarTabel(semua ? urutan.length - 1 : i, !semua && v?.jenis === 'tabel' ? v.isi : []);
@@ -497,6 +498,7 @@ function tampilkan(i) {
   const kunciNav = semua && tampilan === 'teks';
   $('mundur').disabled = kunciNav || i === 0; $('tahapMundur').disabled = kunciNav || t === 0;
   $('maju').disabled = kunciNav || i === urutan.length - 1; $('tahapMaju').disabled = kunciNav || t === k.tahap.length - 1;
+  $('cobaSinema').hidden = !!baca(KUNCI_AJAK);
   $('mSemua').textContent = semua ? 'Kembali ke langkah demi langkah' : 'Tampilkan semua langkah';
   if (tampilan === 'teks') gambarTeks(i); else { gambarSinema(i); bacakan(langkahDi(i).n); }
 }
@@ -569,7 +571,6 @@ document.addEventListener('click', e => {
     case 'tutupFokus': berhenti(); if (perekam) perekam.stop(); return $('fokus').classList.remove('buka');
     case 'pTeks': return gantiTampilan('teks');
     case 'pSinema': case 'cobaSinema': simpan(KUNCI_AJAK, '1'); return gantiTampilan('sinema');
-    case 'tutupAjak': simpan(KUNCI_AJAK, '1'); return tampilkan(posisi);
     case 'maju': return pindah(posisi + 1);
     case 'mundur': return pindah(posisi - 1);
     case 'tahapMaju': return pindah(indeksDi(th + 1, 0));
