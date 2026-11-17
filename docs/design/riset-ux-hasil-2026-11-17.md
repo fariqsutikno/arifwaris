@@ -1287,3 +1287,16 @@ pohon berskala tetap (tinggi maksimum, huruf tidak membesar) sehingga di layar p
 1. Langkah = tahap dengan ketukan di dalamnya yang berjalan sendiri (37A)?
 2. Animasi papan tulis bergerak + batang harta + narasi (38A+C), walau usahanya paling besar?
 3. Ekspor video: cukup disiapkan strukturnya sekarang (linimasa sebagai data), perekamannya nanti?
+
+### 28e. Pilihan pemilik dan catatan mockup putaran 2
+
+Pemilik memilih semua rekomendasi: 37A, 38A+C, linimasa sebagai data (video direkam belakangan), ditambah 39A, 40A, 41.
+
+- Tiap langkah = deretan ketukan: pertanyaan pembuka → dasar → di keluarga ini (per butir) → Logikanya (per kalimat) → gambar batang → hitungan (per baris) → kalimat penghubung. Durasi ketukan mengikuti panjang narasi.
+- Bar bawah: tombol jeda/putar/ulang, takarir (narasi ketukan aktif), garis kemajuan ketukan, "Lewati ke akhir langkah", "Putar terus" (lanjut ke langkah berikut tanpa ditekan, mode video), dan tautan "Linimasa" yang menampilkan data JSON ketukan.
+- Linimasa dan kartu dibangun dari satu fungsi (`susunLangkah`), jadi yang diputar di layar sama dengan yang nanti direkam.
+- Angka terbang dari baris hitungan ke sel tabel, lalu sel menyala. Mundur atau lompat ke belakang menampilkan langkah langsung lengkap.
+- Batang harta: 'aul (bingkai 6 → 8, kotak yang tidak muat diarsir), radd (bingkai 6 → 4, kotak kosong hilang), asal masalah biasa (24 kotak).
+- Babak dasar (titik bergaris putus): munasakhat ("Kenapa dibagi berlapis?"), rantai, gharqa, dan hamil + hilang (memperkirakan keadaan → contoh satu kemungkinan sampai tashih 120 → 12 kolom kemungkinan dari engine, tiap kolom menyebut masalah dan pengalinya → bagian terkecil → ditahan → rupiah).
+- Teks [SYF] hamil diluruskan ke KB 13a.4: enam keadaan bayi dipakai untuk pemilik bagian pasti; ahli waris yang berbagi sisa dengan janin diberi 0 karena jumlah janin tidak dibatasi.
+- Sel "↑" diganti sel gabungan (rowspan); istilah diberi popover otomatis pada kemunculan pertama per kartu; pohon memakai lebar tetap 420 px.

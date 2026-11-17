@@ -5,11 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Mockup mode fokus</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
-<!-- Acuan: docs/design/riset-ux-hasil-2026-11-17.md bagian 26 (pilihan pemilik: 31A, 32A, 33A, 34A+B, 35A, 36A).
-     Angka saham dari engine (sama dengan mockup-hasil-per-kasus.html dan bagian 25d); rupiah dihitung di sini dengan BigInt, dibulatkan ke bawah. -->
+<!-- Acuan: docs/design/riset-ux-hasil-2026-11-17.md bagian 26 (putaran 1) dan 28 (putaran 2: 37A, 38A+C, 39A, 40A, 41).
+     Angka saham dari engine (sama dengan mockup-hasil-per-kasus.html: KASUS, DUNIA, LAPIS_BERLAPIS); rupiah dihitung di sini dengan BigInt, dibulatkan ke bawah.
+     Tiap langkah = deretan ketukan (linimasa). Linimasa adalah data: urutan, narasi, durasi, sel tabel yang diisi. Ekspor video nanti memutar data yang sama. -->
 <style>
 :root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:rgba(255,255,255,.86);--line:#dfe6dc;
---orange:#f2682a;--orange-soft:#fde6d8;--mint:#dcefe2;--hijau:#1f6f5c;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;
+--orange:#f2682a;--orange-soft:#fde6d8;--mint:#dcefe2;--hijau:#1f6f5c;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--merah:#c2410c;
 --font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:16px 12px 40px}
@@ -25,6 +26,7 @@ nav.tab button{flex:none;border:0;background:rgba(255,255,255,.5);font:500 14px 
 nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
 
 .fokus{max-width:1180px;margin:0 auto;background:var(--frame);border-radius:28px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18);display:flex;flex-direction:column;min-height:min(860px,calc(100vh - 110px))}
+.fokus:fullscreen{max-width:none;border-radius:0;overflow:auto}
 .kepala{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#0f3a38;color:#fff}
 .kepala h1{font-size:15px;font-weight:600;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kepala h1 small{font-weight:400;opacity:.8;margin-left:6px}
@@ -43,14 +45,15 @@ nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
 .titik button[aria-current=step]{background:var(--orange);color:#fff}
 .titik button.akhir{width:auto;padding:0 10px;border-radius:999px}
 .titik .pisah{width:10px;height:2px;background:#cfd8cc;margin:0 2px}
+.titik .dasar-babak{background:#fff;border:1.5px dashed #8fb3a3}
 
-.isi{flex:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;padding:14px 16px}
+.isi{flex:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;padding:14px 16px;align-items:start}
 .kiri{display:flex;flex-direction:column;gap:14px;min-width:0}
 .panel{background:var(--card);border-radius:20px;box-shadow:var(--sh);padding:14px;min-width:0}
-.panel h2{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.panel h2{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
 
-/* pohon */
-.pohon svg,.lembar svg{width:100%;height:auto;display:block}
+/* pohon: ukuran tetap (lebar = viewBox), tidak ikut membesar di layar penuh */
+.pohon svg,.lembar svg{max-width:100%;height:auto;display:block;margin:0 auto}
 svg .g{stroke:#b8c4b6;stroke-width:1.6;fill:none}svg .g.nikah{stroke-dasharray:4 3}
 .sim rect{fill:#fff;stroke:#cfd8cc;stroke-width:1.4;transition:.3s}
 .sim text{font:500 12px var(--font);fill:var(--ink)}
@@ -61,7 +64,6 @@ svg .g{stroke:#b8c4b6;stroke-width:1.6;fill:none}svg .g.nikah{stroke-dasharray:4
 .sim.tahan rect{fill:var(--kuning);stroke:#c79a12}
 .sim.mayit rect{fill:#0f3a38;stroke:#0f3a38}.sim.mayit text{fill:#fff}
 .sim.meninggal rect{stroke:#0f3a38;stroke-width:2}
-.sim.aktif rect{stroke-width:3}
 .legenda{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:6px}
 .legenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
 
@@ -77,23 +79,30 @@ svg .g{stroke:#b8c4b6;stroke-width:1.6;fill:none}svg .g.nikah{stroke-dasharray:4
 /* tabel kitab */
 .wadah-tabel{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums;font-size:13.5px}
-th,td{border:1px solid #cfd8cc;padding:6px 8px;text-align:center;white-space:nowrap}
+th,td{border:1px solid #cfd8cc;padding:6px 8px;text-align:center;white-space:nowrap;vertical-align:middle}
 th{background:#f1f5ed;font-weight:600;font-size:12.5px}
 th small{display:block;font-weight:400;color:var(--muted)}
-td:first-child,th:first-child{text-align:start;position:sticky;left:0;background:#fff}
+td:first-child,th:first-child{text-align:start;position:sticky;left:0;background:#fff;z-index:1}
 th:first-child{background:#f1f5ed}
 th.baru,td.baru{background:#fff6ef}
 th.baru{box-shadow:inset 0 -3px 0 var(--orange)}
-td.baru span{display:inline-block;animation:masuk .5s both}
+td.tunggu span{visibility:hidden}
+td.isi-baru span{display:inline-block;animation:letup .5s both}
+td.gabung{background:#f9fbf7}
 tr.redup td{color:#9aa59e}
 tfoot td{font-weight:600;background:#f6f9f2}
-@keyframes masuk{from{opacity:0;transform:translateY(-6px) scale(.9)}to{opacity:1;transform:none}}
+@keyframes masuk{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes letup{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.25);opacity:1;color:var(--orange)}100%{transform:none}}
+.terbang{position:fixed;left:0;top:0;z-index:50;pointer-events:none;background:var(--orange);color:#fff;font:600 13px var(--font);padding:3px 9px;border-radius:999px;box-shadow:0 4px 10px rgba(20,30,25,.18);font-variant-numeric:tabular-nums}
 
 /* kartu langkah */
 .kartu{display:flex;flex-direction:column;gap:12px}
 .ke{font-size:12.5px;color:var(--muted)}
 .kartu h3{font-size:22px;font-weight:600;letter-spacing:-.01em;line-height:1.2}
-.bag{border-left:3px solid var(--line);padding:2px 0 2px 12px}
+.k:not(.tampak){display:none}
+.k.tampak{animation:masuk .45s both}
+.tanya{font-size:16px;color:#24312b}
+.bag{border-left:3px solid var(--line);padding:2px 0 2px 12px;transition:background .3s}
 .bag .lbl{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;gap:6px;align-items:center}
 .bag .lbl b{width:20px;height:20px;border-radius:50%;background:var(--black);color:#fff;display:grid;place-items:center;font-size:11px}
 .bag p{margin-top:4px}
@@ -103,20 +112,41 @@ tfoot td{font-weight:600;background:#f6f9f2}
 .dalil small{color:var(--muted)}
 .bag.keluarga{border-color:var(--orange)}
 .cek{list-style:none;padding:0;margin:6px 0 0;display:flex;flex-direction:column;gap:4px}
-.cek li{display:flex;gap:8px;align-items:flex-start}
+.cek li{display:flex;gap:8px;align-items:flex-start;border-radius:8px;padding:1px 4px;margin-left:-4px}
 .cek .ik{width:18px;height:18px;color:var(--hijau);margin-top:2px}
 .cek li.tidak .ik{color:#9aa59e}
 s{color:var(--muted)}
+.logika{background:#f3f0fb;border-radius:14px;padding:10px 12px;border:1px solid #ddd5f2}
+.logika .lbl{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:#5b4a8a;display:flex;gap:6px;align-items:center}
+.logika .lbl .ik{width:16px;height:16px}
+.logika ol{margin:6px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:4px}
 .bag.hitung{border-color:var(--black)}
 .hitungan{margin:6px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;font-variant-numeric:tabular-nums}
-.hitungan li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px;animation:masuk .45s both}
+.hitungan li{background:#fff;border:1px solid var(--line);border-radius:10px;padding:6px 10px;transition:box-shadow .3s,border-color .3s}
 .hitungan li em{font-style:normal;color:var(--muted);font-size:13px;margin-right:6px}
 .hitungan li.jumlah{background:var(--black);color:#fff;border-color:var(--black)}
 .hitungan li.jumlah em{color:rgba(255,255,255,.75)}
 .hitungan li.tahan{background:var(--kuning);color:var(--kuning-ink);border-color:#e7cf85}
+.kini{border-color:var(--orange)!important;border-width:2px!important}
+.cek li.kini,.bag.kini,.tanya.kini,.jembatan.kini{box-shadow:none!important;background:#fff3ea}
+.jembatan{font-size:14px;color:var(--hijau);font-weight:500;border-radius:10px;padding:6px 8px;background:var(--mint)}
 .putar{font-size:13px;color:var(--muted)}
 .ringkas-babak{background:#f6f9f2;border:1px dashed #b8c4b6;border-radius:14px;padding:10px 12px;font-size:14px}
 .ringkas-babak ol{margin:6px 0 0;padding-left:20px;font-size:13.5px;color:var(--muted)}
+
+/* batang harta */
+.batang{display:flex;flex-direction:column;gap:6px}
+.batang .judul-b{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.rel{position:relative;padding:6px 0;margin-top:16px}
+.kotak{display:grid;gap:2px;height:30px}
+.kotak i{border-radius:4px;background:#e7ece4;transition:background .4s}
+.kotak i.fardh{background:#f6a77f}.kotak i.ashabah{background:#7fbfa6}.kotak i.lebih{background:repeating-linear-gradient(45deg,#f6a77f 0 5px,#fbd2bd 5px 10px)}
+.kotak i.kosong{background:#fff;outline:1.5px dashed #b8c4b6;outline-offset:-1.5px}
+.bingkai{position:absolute;left:-3px;top:0;bottom:0;border:2.5px solid var(--black);border-radius:8px;transition:width .9s cubic-bezier(.5,0,.2,1)}
+.bingkai span{position:absolute;top:-20px;left:0;font-size:11.5px;font-weight:600;white-space:nowrap;background:var(--frame);padding:0 4px}
+.batang .ket-b{display:flex;gap:10px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.batang .ket-b i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.batang .ubah{font-size:13.5px;min-height:1.5em}
 
 .selesai-daftar{list-style:none;padding:0;margin:4px 0 0;display:flex;flex-direction:column;gap:6px}
 .selesai-daftar li{display:flex;justify-content:space-between;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px 12px}
@@ -124,33 +154,58 @@ s{color:var(--muted)}
 .selesai-daftar li.tahan{background:var(--kuning);color:var(--kuning-ink)}
 .aksi-selesai{display:flex;gap:18px;flex-wrap:wrap}
 
-.kaki{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 16px;border-top:1px solid var(--line);background:#f6f9f2}
-.utama{min-height:44px;padding:0 22px;border-radius:999px;border:0;background:var(--black);color:#fff;font:600 14px var(--font);display:inline-flex;gap:8px;align-items:center;cursor:pointer}
-.kaki .posisi{font-size:13px;color:var(--muted)}
+/* istilah + popover */
+.istilah{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline dotted 1.5px;text-underline-offset:3px;cursor:help}
+.hitungan li.jumlah .istilah{color:#fff}
+#pop{position:fixed;z-index:60;max-width:280px;background:var(--black);color:#fff;border-radius:12px;padding:10px 12px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:none}
+#pop.buka{display:block}
+#pop b{display:block;margin-bottom:2px}
+#pop .ar{font-family:"Amiri","Noto Naskh Arabic",serif;opacity:.8;margin-left:6px}
 
-/* lembar pohon (HP) */
+/* takarir + kaki */
+.bawah{border-top:1px solid var(--line);background:#f6f9f2}
+.takarir{display:flex;align-items:center;gap:10px;padding:10px 16px 0}
+.takarir .jeda{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--black);background:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.takarir .jeda .ik{width:16px;height:16px}
+.takarir .teks{flex:1;min-width:0;font-size:14px;line-height:1.4;color:#24312b;min-height:2.8em;display:flex;align-items:center}
+.takarir .kanan{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
+.takarir .tautan{font-size:13px}
+.ketukan{display:flex;gap:3px;padding:8px 16px 0}
+.ketukan i{flex:1;height:3px;border-radius:2px;background:#d7dfd4;transition:background .3s}
+.ketukan i.lewat{background:var(--orange)}
+.kaki{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 16px 12px}
+.utama{min-height:44px;padding:0 22px;border-radius:999px;border:0;background:var(--black);color:#fff;font:600 14px var(--font);display:inline-flex;gap:8px;align-items:center;cursor:pointer}
+.kaki .posisi{font-size:13px;color:var(--muted);display:flex;gap:12px;align-items:center}
+.kaki label{font-size:13px;display:flex;gap:6px;align-items:center;cursor:pointer}
+
+/* lembar pohon (HP) dan dialog linimasa */
 .lembar{position:fixed;inset:auto 0 0 0;background:#fff;border-radius:22px 22px 0 0;box-shadow:0 -10px 40px rgba(0,0,0,.2);padding:14px 14px 20px;z-index:30;max-height:80vh;overflow:auto;display:none}
 .lembar.buka{display:block}
 .lembar .atas{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+dialog{border:0;border-radius:18px;padding:16px;max-width:min(720px,92vw);width:100%;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+dialog pre{background:#f6f9f2;border-radius:12px;padding:10px;font-size:12px;max-height:60vh;overflow:auto;white-space:pre-wrap}
+dialog .atas{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
 
 @media (max-width:820px){
   body{padding:0}
   .atas-mockup{padding:10px 12px 0}
-  .fokus{border-radius:0;min-height:100vh}
+  .fokus{border-radius:0;min-height:100vh;overflow:visible}
   .isi{grid-template-columns:1fr;padding:12px;gap:12px}
   .kiri{display:contents}
   .pohon{display:none}
   .pita{display:block;position:sticky;top:0;z-index:5;order:-2}
   .kartu-wadah{order:-1}
   .kartu h3{font-size:19px}
-  .kaki{position:sticky;bottom:0;z-index:6}
+  .bawah{position:sticky;bottom:0;z-index:6}
+  .takarir .teks{font-size:13px}
+  .kaki label span{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="atas-mockup">
-  <p>Mockup mode fokus (riset bagian 26). Pilih kasus. Di HP pohon diringkas jadi pita orang; ketuk "Lihat pohon" untuk pohon penuh. Panah kiri/kanan di papan ketik juga berpindah langkah.</p>
+  <p>Mockup mode fokus, putaran 2 (riset bagian 28). Tiap langkah berjalan sendiri seperti guru menerangkan; takarir di bawah adalah narasinya. Spasi = jeda/putar, panah kiri/kanan = pindah langkah. Ketuk istilah bergaris titik untuk artinya.</p>
   <nav class="tab" role="tablist" id="tab"></nav>
 </div>
 
@@ -170,29 +225,50 @@ s{color:var(--muted)}
       <section class="panel pohon" aria-label="Pohon keluarga"><h2>Pohon keluarga</h2><div id="pohon"></div><div class="legenda" id="legenda"></div></section>
       <section class="panel" aria-label="Tabel faraidh"><h2><span>Tabel faraidh</span><span id="ketTabel" style="font-weight:400"></span></h2><div class="wadah-tabel" id="tabel"></div></section>
     </div>
-    <section class="panel kartu-wadah" aria-live="polite"><div class="kartu" id="kartu"></div></section>
+    <section class="panel kartu-wadah"><div class="kartu" id="kartu"></div></section>
   </main>
-  <footer class="kaki">
-    <button class="tautan" id="mundur">Kembali</button>
-    <span class="posisi" id="posisi"></span>
-    <button class="utama" id="maju">Lanjut <svg class="ik" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-  </footer>
+  <div class="bawah">
+    <div class="ketukan" id="ketukan" aria-hidden="true"></div>
+    <div class="takarir">
+      <button class="jeda" id="jeda" aria-label="Jeda"></button>
+      <p class="teks" id="takarir" aria-live="polite"></p>
+      <div class="kanan"><button class="tautan" id="lewati">Lewati ke akhir langkah</button></div>
+    </div>
+    <footer class="kaki">
+      <button class="tautan" id="mundur">Kembali</button>
+      <span class="posisi"><span id="posisi"></span><label><input type="checkbox" id="terus"><span>Putar terus</span></label><button class="tautan" id="lihatLinimasa" style="font-weight:500">Linimasa</button></span>
+      <button class="utama" id="maju">Lanjut <svg class="ik" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+    </footer>
+  </div>
 </div>
 
 <div class="lembar" id="lembar" role="dialog" aria-label="Pohon keluarga">
   <div class="atas"><b>Pohon keluarga</b><button class="tautan" id="tutupPohon">Tutup</button></div>
   <div id="pohonLembar"></div>
 </div>
+<div id="pop" role="tooltip"></div>
+<dialog id="dlgLinimasa"><div class="atas"><b>Linimasa kasus ini (data untuk ekspor video)</b><button class="tautan" id="tutupLinimasa">Tutup</button></div>
+  <p class="putar" style="margin-bottom:8px">Setiap ketukan: jenis, narasi (takarir/suara), durasi, dan sel tabel yang diisi. Perekam video memutar urutan yang sama.</p><pre id="isiLinimasa"></pre></dialog>
 
 <script>
 // ═══ Angka dan alat ═══
 const rupiah = n => 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const ribuan = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 const bagi = (harta, s, d) => harta * BigInt(s) / BigInt(d);
+const fpb = (a, b) => (b ? fpb(b, a % b) : a);
 const JT300 = 300000000n, JT50 = 50000000n;
 const CEK = '<svg class="ik" viewBox="0 0 24 24"><path d="M5 12l4 4 10-10"/></svg>';
 const SILANG = '<svg class="ik" viewBox="0 0 24 24"><path d="M7 7l10 10M17 7L7 17"/></svg>';
 const PANAH = '<svg class="ik" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>';
-const JEDA_BARIS_MS = 700;
+const LAMPU = '<svg class="ik" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-4 10.5c.8.8 1 1.5 1 2.5h6c0-1 .2-1.7 1-2.5A6 6 0 0 0 12 3z"/></svg>';
+const IKON_JEDA = '<svg class="ik" viewBox="0 0 24 24"><path d="M9 6v12M15 6v12"/></svg>';
+const IKON_PUTAR = '<svg class="ik" viewBox="0 0 24 24"><path d="M8 5l11 7-11 7z"/></svg>';
+const IKON_ULANG = '<svg class="ik" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/></svg>';
+
+// Durasi ketukan mengikuti panjang narasi, supaya pelajar sempat membaca.
+const MS_PER_KATA = 300, KETUK_MIN_MS = 1500, KETUK_MAKS_MS = 9000, TERBANG_MS = 650;
+const durasi = narasi => Math.min(KETUK_MAKS_MS, Math.max(KETUK_MIN_MS, narasi.split(/\s+/).length * MS_PER_KATA));
+const polos = html => html.replace(/<s>.*?<\/s>/g, '').replace(/<[^>]+>/g, '').replace(/\s+/g, ' ').trim();
 
 const DALIL = {
   istri18: ['فَإِن كَانَ لَكُمْ وَلَدٌ فَلَهُنَّ الثُّمُنُ', 'Istri mendapat 1/8 bila suami punya anak', 'An-Nisa ayat 12'],
@@ -207,6 +283,39 @@ const DALIL = {
 };
 const dalil = kunci => kunci.map(k => { const [ar, arti, sumber] = DALIL[k]; return `<div class="dalil"><div class="ar" lang="ar">${ar}</div>${arti}. <small>${sumber}</small></div>`; }).join('');
 
+// Istilah: kemunculan pertama di kartu diberi popover. Kunci = bentuk yang dicari di teks (huruf kecil).
+const ISTILAH = {
+  'fardh': ['Fardh', 'فرض', 'Bagian pasti yang ditetapkan Al-Qur\'an: 1/2, 1/4, 1/8, 2/3, 1/3, atau 1/6.'],
+  'bagian pasti': ['Fardh', 'فرض', 'Bagian yang besarnya sudah ditetapkan Al-Qur\'an atau hadits.'],
+  'ashabah': ['Ashabah', 'عصبة', 'Ahli waris yang mengambil sisa harta setelah pemilik bagian pasti.'],
+  'hajb hirman': ['Hajb hirman', 'حجب حرمان', 'Terhalang sama sekali karena ada kerabat yang lebih dekat.'],
+  'asal masalah': ['Asal masalah', 'أصل المسألة', 'Bilangan terkecil yang habis dibagi semua penyebut bagian; harta dianggap terdiri dari sekian bagian.'],
+  'tashih': ['Tashih', 'تصحيح', 'Memperbesar asal masalah supaya bagian tiap orang menjadi bilangan bulat.'],
+  'tawafuq': ['Tawafuq', 'توافق', 'Dua bilangan punya faktor sama selain 1, misalnya 8 dan 6 sama-sama habis dibagi 2.'],
+  'tabayun': ['Tabayun', 'تباين', 'Dua bilangan tidak punya faktor sama selain 1, misalnya 17 dan 3.'],
+  'tadakhul': ['Tadakhul', 'تداخل', 'Bilangan kecil habis membagi bilangan besar, misalnya 6 habis dibagi 2 dan 3.'],
+  "'aul": ["'Aul", 'عول', 'Asal masalah dinaikkan karena jumlah bagian pasti melebihi harta; semua bagian berkurang seimbang.'],
+  'radd': ['Radd', 'رد', 'Sisa harta dikembalikan kepada pemilik bagian pasti (selain suami/istri) bila tidak ada ashabah.'],
+  "jami'ah": ["Jami'ah", 'الجامعة', 'Angka pembagi gabungan untuk beberapa masalah sekaligus.'],
+  'inqisam': ['Inqisam', 'انقسام', 'Bagian habis dibagi tanpa sisa, jadi tidak perlu pengali tambahan.'],
+  'munasakhat': ['Munasakhat', 'مناسخات', 'Ahli waris meninggal sebelum harta dibagi, sehingga bagiannya diwariskan lagi.'],
+  'taqdir': ['Taqdir', 'تقدير', 'Perkiraan keadaan yang belum pasti; tiap perkiraan dihitung sebagai masalah sendiri.'],
+  'kemungkinan': ['Taqdir', 'تقدير', 'Satu perkiraan keadaan (misalnya bayi lahir laki-laki); dihitung sebagai masalah sendiri.'],
+  'mafqud': ['Mafqud', 'مفقود', 'Orang hilang yang belum diketahui masih hidup atau sudah wafat.'],
+  'haml': ['Haml', 'حمل', 'Janin dalam kandungan; mewarisi bila lahir hidup.'],
+  'janin': ['Haml', 'حمل', 'Janin dalam kandungan; mewarisi bila lahir hidup.'],
+  'ditahan': ['Mauquf', 'موقوف', 'Bagian yang disimpan sampai keadaan yang belum pasti menjadi jelas.'],
+};
+const POLA_ISTILAH = new RegExp(`(^|[^\\w'])(${Object.keys(ISTILAH).sort((a, b) => b.length - a.length).map(s => s.replace(/'/g, "'")).join('|')})(?![\\w])(?![^<]*>)`, 'gi');
+function beriIstilah(html, sudah) {
+  return html.replace(POLA_ISTILAH, (cocok, awal, kata) => {
+    const kunci = kata.toLowerCase(), nama = ISTILAH[kunci][0];
+    if (sudah.has(nama)) return cocok;
+    sudah.add(nama);
+    return `${awal}<button class="istilah" data-istilah="${kunci}">${kata}</button>`;
+  });
+}
+
 // Pohon: [id, nama, x, y]; garis: [dari, ke, 'nikah'|'anak'].
 const POHON_KELUARGA = { lebar: 420, tinggi: 250, simpul: [['Fatimah', 'Fatimah · ibu', 30, 20], ['PEWARIS', 'Pak Ahmad', 30, 105], ['Aminah', 'Aminah · istri', 160, 105], ['Hasan', 'Hasan · kakak', 290, 105], ['Budi', 'Budi · anak', 30, 190], ['Siti', 'Siti · anak', 160, 190]],
   garis: [['Fatimah', 'PEWARIS', 'anak'], ['PEWARIS', 'Aminah', 'nikah'], ['Fatimah', 'Hasan', 'anak'], ['PEWARIS', 'Budi', 'anak'], ['PEWARIS', 'Siti', 'anak']] };
@@ -216,33 +325,65 @@ const POHON_AUL = { lebar: 420, tinggi: 170, simpul: [['Ibu', 'Khadijah · ibu',
 const POHON_LAPIS = { lebar: 420, tinggi: 250, simpul: [['PEWARIS', 'Pak Ahmad', 30, 20], ['Aminah', 'Aminah · istri', 160, 20], ['Budi', 'Budi · anak', 30, 105], ['Rina', 'Rina · istri Budi', 160, 105], ['Siti', 'Siti · anak', 290, 105], ['Zahra', 'Zahra · cucu', 30, 190]],
   garis: [['PEWARIS', 'Aminah', 'nikah'], ['PEWARIS', 'Budi', 'anak'], ['PEWARIS', 'Siti', 'anak'], ['Budi', 'Rina', 'nikah'], ['Budi', 'Zahra', 'anak']] };
 
-// Langkah: { babak?, judul, dasar, dalil?, keluarga: [[ya, teks]], sorot: {id: peran}, hitung: [[label, isi, kelas?, kolom?, idSel?]], kolom?: kunci kolom baru }
-// Tabel: kolom: [[kunci, judul, ket]], sel: {kunci: {id: nilai}}, jumlah: {kunci: nilai}
+// 12 kemungkinan (taqdir) dari engine, sudah dalam satuan jami'ah 10.080 (sama dengan DUNIA di mockup-hasil-per-kasus.html).
+const JAMIAH_TAQDIR = 10080n;
+const TEKS_BAYI = { mati: 'lahir tidak hidup', lk: '1 laki-laki', pr: '1 perempuan', duaLk: '2 laki-laki', duaPr: '2 perempuan', lkPr: 'laki-laki & perempuan' };
+const DUNIA = [
+  [{ Siti: 'hidup', Bayi: 'mati' }, { Aminah: 1260, Fatimah: 1680, Budi: 4760, Siti: 2380 }], [{ Siti: 'hidup', Bayi: 'lk' }, { Aminah: 1260, Fatimah: 1680, Budi: 2856, Bayi: 2856, Siti: 1428 }],
+  [{ Siti: 'hidup', Bayi: 'pr' }, { Aminah: 1260, Fatimah: 1680, Budi: 3570, Siti: 1785, Bayi: 1785 }], [{ Siti: 'hidup', Bayi: 'duaLk' }, { Aminah: 1260, Fatimah: 1680, Budi: 2040, Bayi: 4080, Siti: 1020 }],
+  [{ Siti: 'hidup', Bayi: 'duaPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 2856, Siti: 1428, Bayi: 2856 }], [{ Siti: 'hidup', Bayi: 'lkPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 2380, Bayi: 3570, Siti: 1190 }],
+  [{ Siti: 'mati', Bayi: 'mati' }, { Aminah: 1260, Fatimah: 1680, Budi: 7140 }], [{ Siti: 'mati', Bayi: 'lk' }, { Aminah: 1260, Fatimah: 1680, Budi: 3570, Bayi: 3570 }],
+  [{ Siti: 'mati', Bayi: 'pr' }, { Aminah: 1260, Fatimah: 1680, Budi: 4760, Bayi: 2380 }], [{ Siti: 'mati', Bayi: 'duaLk' }, { Aminah: 1260, Fatimah: 1680, Budi: 2380, Bayi: 4760 }],
+  [{ Siti: 'mati', Bayi: 'duaPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 3570, Bayi: 3570 }], [{ Siti: 'mati', Bayi: 'lkPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 2856, Bayi: 4284 }],
+];
+const TAQDIR = DUNIA.map(([t, saham], i) => {
+  const pengali = Object.values(saham).reduce((a, v) => fpb(a, BigInt(v)), 0n);
+  return { kunci: `t${i}`, judul: `Siti ${t.Siti === 'hidup' ? 'hidup' : 'wafat'}`, bayi: TEKS_BAYI[t.Bayi], saham, pengali, masalah: JAMIAH_TAQDIR / pengali };
+});
+const ORANG_TAQDIR = ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Bayi', 'Hasan'];
+
+/* Langkah: { babak?, judul, tanya, dasar, dalil?, keluarga: [[ya, teks]], logika?: [kalimat], batang?, hitung: [[label, isi, kelas?, kolom?, idSel?]], jembatan?, sorot, kolom? }
+   batang: { asal, bagian: [[nama, jumlah, peran]], jadi?, ubah? }: harta digambar sebagai kotak; bingkai bergerak dari asal ke jadi ('aul/radd).
+   Tabel: kolom: [[kunci, judul, ket]], sel: {kunci: {id: nilai}} ('↑' = digabung dengan sel di atasnya), jumlah: {kunci: nilai} */
 const KASUS = {
   biasa: {
     tab: 'Biasa', judul: 'Warisan Pak Ahmad', pohon: POHON_KELUARGA, baris: ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Hasan'],
     kolom: [['fardh', 'Fardh', ''], ['asal', 'Asal', '24'], ['tashih', 'Tashih', '72'], ['rp', 'Rupiah', '']],
-    sel: { fardh: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: 'sisa', Hasan: 'terhalang' }, asal: { Aminah: 3, Fatimah: 4, Budi: '17', Siti: '↑', Hasan: '–' }, tashih: { Aminah: 9, Fatimah: 12, Budi: 34, Siti: 17, Hasan: '–' },
+    sel: { fardh: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: '↑', Hasan: 'terhalang' }, asal: { Aminah: 3, Fatimah: 4, Budi: 17, Siti: '↑', Hasan: '–' }, tashih: { Aminah: 9, Fatimah: 12, Budi: 34, Siti: 17, Hasan: '–' },
       rp: { Aminah: rupiah(bagi(JT300, 9, 72)), Fatimah: rupiah(bagi(JT300, 12, 72)), Budi: rupiah(bagi(JT300, 34, 72)), Siti: rupiah(bagi(JT300, 17, 72)), Hasan: '–' } },
     jumlah: { asal: 24, tashih: 72, rp: rupiah(bagi(JT300, 9, 72) + bagi(JT300, 12, 72) + bagi(JT300, 34, 72) + bagi(JT300, 17, 72)) },
     langkah: [
-      { judul: 'Harta yang dibagi', dasar: 'Sebelum dibagi, harta dikurangi biaya pengurusan jenazah, lalu hutang, lalu wasiat (paling banyak 1/3 sisanya).', keluarga: [[0, 'Tidak ada biaya jenazah, hutang, atau wasiat.']], sorot: { PEWARIS: 'mayit' },
-        hitung: [['Harta', 'Rp 300.000.000'], ['Dikurangi', 'Rp 0 + Rp 0 + Rp 0'], ['Harta dibagi', 'Rp 300.000.000', 'jumlah']] },
-      { judul: 'Siapa mewarisi', dasar: 'Kerabat yang lebih dekat menghalangi kerabat yang lebih jauh dari jalur yang sama (hajb hirman).', dalil: ['awla'],
+      { judul: 'Harta yang dibagi', tanya: 'Sebelum bicara siapa dapat berapa, kita pastikan dulu: berapa harta yang benar-benar dibagi?',
+        dasar: 'Sebelum dibagi, harta dikurangi biaya pengurusan jenazah, lalu hutang, lalu wasiat (paling banyak 1/3 sisanya).', keluarga: [[0, 'Tidak ada biaya jenazah, hutang, atau wasiat.']], sorot: { PEWARIS: 'mayit' },
+        hitung: [['Harta', 'Rp 300.000.000'], ['Dikurangi', 'Rp 0 + Rp 0 + Rp 0'], ['Harta dibagi', 'Rp 300.000.000', 'jumlah']],
+        jembatan: 'Hartanya sudah jelas. Sekarang: siapa saja yang berhak?' },
+      { judul: 'Siapa mewarisi', tanya: 'Pak Ahmad meninggalkan lima kerabat. Apakah semuanya mendapat bagian?',
+        dasar: 'Kerabat yang lebih dekat menghalangi kerabat yang lebih jauh dari jalur yang sama (hajb hirman).', dalil: ['awla'],
         keluarga: [[1, 'Almarhum punya anak laki-laki: Budi.'], [1, 'Hasan (kakak) lebih jauh daripada Budi, jadi terhalang.']], sorot: { PEWARIS: 'mayit', Aminah: 'fardh', Fatimah: 'fardh', Budi: 'ashabah', Siti: 'ashabah', Hasan: 'terhalang' },
-        hitung: [['Mewarisi', 'Aminah, Fatimah, Budi, Siti'], ['Terhalang', 'Hasan, oleh Budi']] },
-      { judul: 'Bagian awal tiap orang', dasar: 'Al-Qur\'an menetapkan bagian pasti (fardh). Anak laki-laki dan perempuan mengambil sisa, laki-laki dua kali perempuan.', dalil: ['istri18', 'ibu16', 'duaKali'], kolom: 'fardh',
+        hitung: [['Mewarisi', 'Aminah, Fatimah, Budi, Siti'], ['Terhalang', 'Hasan, oleh Budi']],
+        jembatan: 'Tinggal empat orang. Berapa bagian awal masing-masing?' },
+      { judul: 'Bagian awal tiap orang', tanya: 'Ada dua jenis ahli waris: yang bagiannya sudah ditetapkan, dan yang mengambil sisa. Aminah dan Fatimah yang mana?',
+        dasar: 'Al-Qur\'an menetapkan bagian pasti (fardh). Anak laki-laki dan perempuan mengambil sisa (ashabah), laki-laki dua kali perempuan.', dalil: ['istri18', 'ibu16', 'duaKali'], kolom: 'fardh',
         keluarga: [[1, 'Almarhum punya anak, jadi istri mendapat <s>1/4</s> 1/8.'], [1, 'Karena ada anak, ibu mendapat <s>1/3</s> 1/6.'], [1, 'Budi dan Siti mengambil sisa, 2 : 1.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'ashabah', Siti: 'ashabah', Hasan: 'terhalang' },
-        hitung: [['Aminah', '1/8', '', 'fardh', 'Aminah'], ['Fatimah', '1/6', '', 'fardh', 'Fatimah'], ['Budi dan Siti', 'sisa', '', 'fardh', 'Budi Siti']] },
-      { judul: 'Asal masalah', dasar: 'Asal masalah adalah bilangan terkecil yang habis dibagi semua penyebut. Dua penyebut dibandingkan: sama, satu habis membagi yang lain, punya faktor sama, atau tidak.', kolom: 'asal',
+        hitung: [['Aminah', '1/8', '', 'fardh', 'Aminah'], ['Fatimah', '1/6', '', 'fardh', 'Fatimah'], ['Budi dan Siti', 'sisa', '', 'fardh', 'Budi Siti']],
+        jembatan: '1/8 dan 1/6 belum bisa dijumlahkan karena penyebutnya beda. Itu tugas langkah berikutnya.' },
+      { judul: 'Asal masalah', tanya: 'Bagaimana menghitung 1/8 + 1/6, lalu tahu berapa sisanya untuk Budi dan Siti?',
+        dasar: 'Asal masalah adalah bilangan terkecil yang habis dibagi semua penyebut. Dua penyebut dibandingkan: sama, satu habis membagi yang lain (tadakhul), punya faktor sama (tawafuq), atau tidak (tabayun).', kolom: 'asal',
         keluarga: [[1, 'Penyebutnya 8 dan 6.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'ashabah', Siti: 'ashabah' },
-        hitung: [['8 dan 6', 'sama-sama habis dibagi 2 (tawafuq)'], ['Asal', '8 × (6 ÷ 2) = 24', 'jumlah'], ['Aminah', '24 × 1/8 = 3', '', 'asal', 'Aminah'], ['Fatimah', '24 × 1/6 = 4', '', 'asal', 'Fatimah'], ['Budi dan Siti', 'sisa 24 − 3 − 4 = 17', '', 'asal', 'Budi Siti']] },
-      { judul: 'Tashih', dasar: 'Bila saham satu kelompok tidak habis dibagi jumlah kepalanya, asal masalah dikalikan supaya semua saham bulat.', kolom: 'tashih',
+        logika: ['Pecahan hanya bisa dijumlahkan kalau penyebutnya sama, seperti memotong kue dengan pisau yang sama.', 'Kelipatan 8: 8, 16, <b>24</b>. Kelipatan 6: 6, 12, 18, <b>24</b>. Yang pertama sama: 24.', 'Cara cepatnya: 8 dan 6 sama-sama habis dibagi 2, jadi 8 × (6 ÷ 2) = 24.', 'Harta dianggap 24 kotak. "1/8 dari 24" artinya 24 ÷ 8 = 3 kotak.'],
+        batang: { asal: 24, bagian: [['Aminah', 3, 'fardh'], ['Fatimah', 4, 'fardh'], ['Budi dan Siti', 17, 'ashabah']] },
+        hitung: [['FPB 8 dan 6', '2 (tawafuq)'], ['Asal', '8 × (6 ÷ 2) = 8 × 3 = 24', 'jumlah'], ['Aminah', '24 × 1/8 = 24 ÷ 8 = 3', '', 'asal', 'Aminah'], ['Fatimah', '24 × 1/6 = 24 ÷ 6 = 4', '', 'asal', 'Fatimah'], ['Budi dan Siti', 'sisa 24 − 3 − 4 = 17', '', 'asal', 'Budi Siti']],
+        jembatan: '17 kotak harus dibagi Budi dan Siti dengan perbandingan 2 : 1. Bisakah dibagi rata?' },
+      { judul: 'Tashih', tanya: 'Budi dan Siti mendapat 17 kotak bersama. Budi dua kali Siti. Bisakah 17 dibagi seperti itu tanpa pecahan?',
+        dasar: 'Bila saham satu kelompok tidak habis dibagi jumlah kepalanya, asal masalah dikalikan supaya semua saham bulat (tashih).', kolom: 'tashih',
         keluarga: [[1, 'Budi dan Siti: 3 kepala (laki-laki dihitung 2).'], [1, '17 tidak habis dibagi 3, dan keduanya tidak punya faktor sama (tabayun).']], sorot: { Budi: 'ashabah', Siti: 'ashabah', Aminah: 'fardh', Fatimah: 'fardh' },
-        hitung: [['Pengali', '3, jadi 24 × 3 = 72', 'jumlah'], ['Aminah', '3 × 3 = 9', '', 'tashih', 'Aminah'], ['Fatimah', '4 × 3 = 12', '', 'tashih', 'Fatimah'], ['Budi dan Siti', '17 × 3 = 51, per kepala 17'], ['Budi', '17 × 2 = 34', '', 'tashih', 'Budi'], ['Siti', '17 × 1 = 17', '', 'tashih', 'Siti'], ['Cek', '9 + 12 + 34 + 17 = 72', 'jumlah']] },
-      { judul: 'Bagian dalam rupiah', dasar: 'Saham tiap orang dibagi tashih, dikali harta. Rupiah dibulatkan ke bawah; selisihnya dilaporkan, tidak dibagi diam-diam.', kolom: 'rp',
+        logika: ['17 ÷ 3 = 5 sisa 2. Ada kotak yang harus dipotong.', 'Supaya adil, <b>setiap</b> kotak dipotong 3. Kalau hanya kotak Budi dan Siti yang dipotong, ukurannya jadi tidak sama.', '24 kotak × 3 potong = 72 potong. Bagian Budi dan Siti: 17 × 3 = 51 potong, 51 ÷ 3 = 17 per kepala.', 'Bagian Aminah dan Fatimah ikut dikali 3, tetapi besarnya tidak berubah: 3/24 sama dengan 9/72.'],
+        hitung: [['17 dan 3', 'tidak punya faktor sama (tabayun), pengali = 3'], ['Tashih', '24 × 3 = 72', 'jumlah'], ['Aminah', '3 × 3 = 9', '', 'tashih', 'Aminah'], ['Fatimah', '4 × 3 = 12', '', 'tashih', 'Fatimah'], ['Budi dan Siti', '17 × 3 = 51, per kepala 51 ÷ 3 = 17'], ['Budi', '17 × 2 = 34', '', 'tashih', 'Budi'], ['Siti', '17 × 1 = 17', '', 'tashih', 'Siti'], ['Cek', '9 + 12 + 34 + 17 = 72', 'jumlah']],
+        jembatan: 'Semua bagian sudah bulat. Terakhir: berapa rupiahnya?' },
+      { judul: 'Bagian dalam rupiah', tanya: 'Kita tahu setiap orang dapat berapa potong dari 72. Berapa rupiah satu potong?',
+        dasar: 'Saham tiap orang dibagi tashih, dikali harta. Rupiah dibulatkan ke bawah; selisihnya dilaporkan, tidak dibagi diam-diam.', kolom: 'rp',
         keluarga: [[1, 'Harta dibagi Rp 300.000.000.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'ashabah', Siti: 'ashabah' },
-        hitung: [['Aminah', `9/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 9, 72))}`, '', 'rp', 'Aminah'], ['Fatimah', `12/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 12, 72))}`, '', 'rp', 'Fatimah'], ['Budi', `34/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 34, 72))}`, '', 'rp', 'Budi'], ['Siti', `17/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 17, 72))}`, '', 'rp', 'Siti'], ['Selisih pembulatan', 'Rp 1', 'jumlah']] },
+        hitung: [['Satu potong', `Rp 300.000.000 ÷ 72 = ${rupiah(bagi(JT300, 1, 72))},...`], ['Aminah', `9/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 9, 72))}`, '', 'rp', 'Aminah'], ['Fatimah', `12/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 12, 72))}`, '', 'rp', 'Fatimah'], ['Budi', `34/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 34, 72))}`, '', 'rp', 'Budi'], ['Siti', `17/72 × Rp 300.000.000 = ${rupiah(bagi(JT300, 17, 72))}`, '', 'rp', 'Siti'], ['Selisih pembulatan', 'Rp 1', 'jumlah']] },
     ],
     selesai: [['Aminah', bagi(JT300, 9, 72)], ['Fatimah', bagi(JT300, 12, 72)], ['Budi', bagi(JT300, 34, 72)], ['Siti', bagi(JT300, 17, 72)]], kalimatSelesai: 'Harta Pak Ahmad dibagi ke 4 orang. Hasan tidak mendapat karena ada Budi.',
   },
@@ -250,52 +391,73 @@ const KASUS = {
   aul: {
     tab: "'Aul", judul: 'Warisan Bu Salma', pohon: POHON_AUL, baris: ['Suami', 'Ibu', 'Saudari1', 'Saudari2'], nama: { Suami: 'Yusuf (suami)', Ibu: 'Khadijah (ibu)', Saudari1: 'Maryam (saudari)', Saudari2: 'Hafsah (saudari)' },
     kolom: [['fardh', 'Fardh', ''], ['asal', 'Asal', '6'], ['aul', "'Aul", '8'], ['rp', 'Rupiah', '']],
-    sel: { fardh: { Suami: '1/2', Ibu: '1/6', Saudari1: '2/3', Saudari2: '↑' }, asal: { Suami: 3, Ibu: 1, Saudari1: '4', Saudari2: '↑' }, aul: { Suami: 3, Ibu: 1, Saudari1: 2, Saudari2: 2 },
+    sel: { fardh: { Suami: '1/2', Ibu: '1/6', Saudari1: '2/3', Saudari2: '↑' }, asal: { Suami: 3, Ibu: 1, Saudari1: 4, Saudari2: '↑' }, aul: { Suami: 3, Ibu: 1, Saudari1: 2, Saudari2: 2 },
       rp: { Suami: rupiah(bagi(JT300, 3, 8)), Ibu: rupiah(bagi(JT300, 1, 8)), Saudari1: rupiah(bagi(JT300, 2, 8)), Saudari2: rupiah(bagi(JT300, 2, 8)) } },
     jumlah: { asal: '6 (terpakai 8)', aul: 8, rp: rupiah(JT300) },
     langkah: [
-      { judul: 'Harta yang dibagi', dasar: 'Harta dikurangi biaya jenazah, hutang, dan wasiat sebelum dibagi.', keluarga: [[0, 'Tidak ada potongan.']], sorot: { PEWARIS: 'mayit' }, hitung: [['Harta dibagi', 'Rp 300.000.000', 'jumlah']] },
-      { judul: 'Siapa mewarisi', dasar: 'Suami, ibu, dan saudari kandung mewarisi selama tidak ada anak, cucu laki-laki, atau ayah yang menghalangi saudari.', keluarga: [[1, 'Bu Salma tidak punya anak dan ayahnya sudah wafat.'], [1, 'Tidak ada yang terhalang.']], sorot: { PEWARIS: 'mayit', Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
-        hitung: [['Mewarisi', 'Yusuf, Khadijah, Maryam, Hafsah']] },
-      { judul: 'Bagian awal tiap orang', dasar: 'Semua yang mewarisi di sini mendapat bagian pasti dari Al-Qur\'an.', dalil: ['suami12', 'ibuSaudara', 'duaSaudari'], kolom: 'fardh',
+      { judul: 'Harta yang dibagi', tanya: 'Berapa harta Bu Salma yang dibagi?', dasar: 'Harta dikurangi biaya jenazah, hutang, dan wasiat sebelum dibagi.', keluarga: [[0, 'Tidak ada potongan.']], sorot: { PEWARIS: 'mayit' }, hitung: [['Harta dibagi', 'Rp 300.000.000', 'jumlah']],
+        jembatan: 'Siapa yang berhak?' },
+      { judul: 'Siapa mewarisi', tanya: 'Bu Salma meninggalkan suami, ibu, dan dua saudari. Adakah yang terhalang?', dasar: 'Suami, ibu, dan saudari kandung mewarisi selama tidak ada anak, cucu laki-laki, atau ayah yang menghalangi saudari.', keluarga: [[1, 'Bu Salma tidak punya anak dan ayahnya sudah wafat.'], [1, 'Tidak ada yang terhalang.']], sorot: { PEWARIS: 'mayit', Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
+        hitung: [['Mewarisi', 'Yusuf, Khadijah, Maryam, Hafsah']], jembatan: 'Keempatnya mewarisi. Berapa bagian awalnya?' },
+      { judul: 'Bagian awal tiap orang', tanya: 'Di keluarga ini tidak ada yang mengambil sisa. Semua bagian pasti. Berapa masing-masing?', dasar: 'Semua yang mewarisi di sini mendapat bagian pasti dari Al-Qur\'an.', dalil: ['suami12', 'ibuSaudara', 'duaSaudari'], kolom: 'fardh',
         keluarga: [[1, 'Tidak ada anak, jadi suami mendapat 1/2.'], [1, 'Ada dua saudari, jadi ibu mendapat <s>1/3</s> 1/6.'], [1, 'Dua saudari kandung bersama-sama 2/3.']], sorot: { Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
-        hitung: [['Yusuf', '1/2', '', 'fardh', 'Suami'], ['Khadijah', '1/6', '', 'fardh', 'Ibu'], ['Maryam dan Hafsah', '2/3', '', 'fardh', 'Saudari1 Saudari2']] },
-      { judul: 'Asal masalah', dasar: 'Asal masalah adalah bilangan terkecil yang habis dibagi semua penyebut.', kolom: 'asal', keluarga: [[1, 'Penyebutnya 2, 6, dan 3. Angka 6 habis dibagi 2 dan 3 (tadakhul).']], sorot: { Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
-        hitung: [['Asal', '6', 'jumlah'], ['Yusuf', '6 × 1/2 = 3', '', 'asal', 'Suami'], ['Khadijah', '6 × 1/6 = 1', '', 'asal', 'Ibu'], ['Maryam dan Hafsah', '6 × 2/3 = 4', '', 'asal', 'Saudari1 Saudari2']] },
-      { judul: "'Aul: bagian melebihi harta", dasar: "Bila jumlah saham melebihi asal masalah, asal dinaikkan menjadi jumlah saham itu, sehingga setiap orang berkurang seimbang. Asal 6 hanya boleh naik ke 7, 8, 9, atau 10.", kolom: 'aul',
+        hitung: [['Yusuf', '1/2', '', 'fardh', 'Suami'], ['Khadijah', '1/6', '', 'fardh', 'Ibu'], ['Maryam dan Hafsah', '2/3', '', 'fardh', 'Saudari1 Saudari2']],
+        jembatan: 'Coba jumlahkan dalam hati: 1/2 + 1/6 + 2/3. Apakah pas satu harta?' },
+      { judul: 'Asal masalah', tanya: 'Kita samakan penyebutnya dulu, lalu lihat apakah bagian-bagian ini muat di dalam harta.', dasar: 'Asal masalah adalah bilangan terkecil yang habis dibagi semua penyebut.', kolom: 'asal', keluarga: [[1, 'Penyebutnya 2, 6, dan 3. Angka 6 habis dibagi 2 dan 3 (tadakhul).']], sorot: { Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
+        logika: ['6 sudah habis dibagi 2 dan 3, jadi tidak perlu dicari lagi: asal masalah 6.', 'Artinya harta dianggap 6 kotak.'],
+        hitung: [['Asal', '6', 'jumlah'], ['Yusuf', '6 × 1/2 = 6 ÷ 2 = 3', '', 'asal', 'Suami'], ['Khadijah', '6 × 1/6 = 6 ÷ 6 = 1', '', 'asal', 'Ibu'], ['Maryam dan Hafsah', '6 × 2/3 = (6 ÷ 3) × 2 = 4', '', 'asal', 'Saudari1 Saudari2'], ['Jumlah', '3 + 1 + 4 = 8, padahal harta hanya 6', 'tahan']],
+        jembatan: 'Bagian yang harus diberikan 8 kotak, hartanya cuma 6. Lalu bagaimana?' },
+      { judul: "'Aul: bagian melebihi harta", tanya: 'Harta 6 kotak, yang harus diberikan 8 kotak. Siapa yang dikurangi?', dasar: "Bila jumlah saham melebihi asal masalah, asal dinaikkan menjadi jumlah saham itu ('aul), sehingga setiap orang berkurang seimbang. Asal 6 hanya boleh naik ke 7, 8, 9, atau 10.", kolom: 'aul',
         keluarga: [[1, 'Saham 3 + 1 + 4 = 8, lebih dari 6.'], [1, 'Saham saudari 4 habis dibagi 2 orang, tidak perlu tashih.']], sorot: { Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
-        hitung: [['Jumlah saham', '3 + 1 + 4 = 8'], ['Asal naik', '6 → 8', 'jumlah'], ['Yusuf', '3 dari 8 (tadinya 3 dari 6)', '', 'aul', 'Suami'], ['Khadijah', '1 dari 8', '', 'aul', 'Ibu'], ['Maryam', '4 ÷ 2 = 2 dari 8', '', 'aul', 'Saudari1'], ['Hafsah', '4 ÷ 2 = 2 dari 8', '', 'aul', 'Saudari2']] },
-      { judul: 'Bagian dalam rupiah', dasar: "Saham dibagi asal setelah 'aul, dikali harta.", kolom: 'rp', keluarga: [[1, 'Harta dibagi Rp 300.000.000.']], sorot: { Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
-        hitung: [['Yusuf', `3/8 × Rp 300.000.000 = ${rupiah(bagi(JT300, 3, 8))}`, '', 'rp', 'Suami'], ['Khadijah', `1/8 × Rp 300.000.000 = ${rupiah(bagi(JT300, 1, 8))}`, '', 'rp', 'Ibu'], ['Maryam', `2/8 × Rp 300.000.000 = ${rupiah(bagi(JT300, 2, 8))}`, '', 'rp', 'Saudari1'], ['Hafsah', `2/8 × Rp 300.000.000 = ${rupiah(bagi(JT300, 2, 8))}`, '', 'rp', 'Saudari2'], ['Jumlah', 'Rp 300.000.000, tanpa selisih', 'jumlah']] },
+        logika: ['Semuanya bagian pasti dari Al-Qur\'an, jadi tidak ada yang boleh didahulukan atau dicoret.', 'Jalan keluarnya: harta dipotong menjadi 8 kotak yang lebih kecil. Setiap orang tetap mendapat jumlah kotaknya, tetapi kotaknya mengecil.', 'Yusuf tetap 3 kotak, tetapi 3 dari 8 (bukan 3 dari 6). Kekurangannya ditanggung semua orang sebanding bagiannya.'],
+        batang: { asal: 6, bagian: [['Yusuf', 3, 'fardh'], ['Khadijah', 1, 'fardh'], ['Maryam dan Hafsah', 4, 'fardh']], jadi: 8, ubah: 'Bingkai harta diperbesar dari 6 menjadi 8 kotak; tiap kotak sekarang lebih kecil.' },
+        hitung: [['Jumlah saham', '3 + 1 + 4 = 8'], ['Asal naik', '6 → 8', 'jumlah'], ['Yusuf', '3 dari 8 (tadinya 3 dari 6)', '', 'aul', 'Suami'], ['Khadijah', '1 dari 8', '', 'aul', 'Ibu'], ['Maryam', '4 ÷ 2 = 2 dari 8', '', 'aul', 'Saudari1'], ['Hafsah', '4 ÷ 2 = 2 dari 8', '', 'aul', 'Saudari2']],
+        jembatan: 'Sekarang semua bagian muat dalam 8 kotak. Tinggal diubah ke rupiah.' },
+      { judul: 'Bagian dalam rupiah', tanya: 'Satu kotak sekarang 1/8 harta. Berapa rupiah?', dasar: "Saham dibagi asal setelah 'aul, dikali harta.", kolom: 'rp', keluarga: [[1, 'Harta dibagi Rp 300.000.000.']], sorot: { Suami: 'fardh', Ibu: 'fardh', Saudari1: 'fardh', Saudari2: 'fardh' },
+        hitung: [['Satu kotak', `Rp 300.000.000 ÷ 8 = ${rupiah(bagi(JT300, 1, 8))}`], ['Yusuf', `3 × ${rupiah(bagi(JT300, 1, 8))} = ${rupiah(bagi(JT300, 3, 8))}`, '', 'rp', 'Suami'], ['Khadijah', `1 × ${rupiah(bagi(JT300, 1, 8))} = ${rupiah(bagi(JT300, 1, 8))}`, '', 'rp', 'Ibu'], ['Maryam', `2 × ${rupiah(bagi(JT300, 1, 8))} = ${rupiah(bagi(JT300, 2, 8))}`, '', 'rp', 'Saudari1'], ['Hafsah', `2 × ${rupiah(bagi(JT300, 1, 8))} = ${rupiah(bagi(JT300, 2, 8))}`, '', 'rp', 'Saudari2'], ['Jumlah', 'Rp 300.000.000, tanpa selisih', 'jumlah']] },
     ],
     selesai: [['Yusuf', bagi(JT300, 3, 8)], ['Khadijah', bagi(JT300, 1, 8)], ['Maryam', bagi(JT300, 2, 8)], ['Hafsah', bagi(JT300, 2, 8)]], kalimatSelesai: "Harta Bu Salma dibagi ke 4 orang. Karena 'aul, setiap bagian sedikit berkurang dari bagian dasarnya.",
   },
 
   berlapis: {
     tab: 'Berurutan (3 mayit)', judul: 'Warisan Pak Ahmad, Budi, dan Aminah', pohon: POHON_LAPIS, baris: ['Aminah', 'Budi', 'Siti', 'Rina', 'Zahra'],
-    babak: ['Pak Ahmad', 'Budi', 'Aminah', 'Jami\'ah'],
+    babak: ['Dasar', 'Pak Ahmad', 'Budi', 'Aminah', 'Jami\'ah'], babakDasar: 0,
     kolom: [['m1', 'Masalah Pak Ahmad', '24 · ×12'], ['m2', 'Masalah Budi', '24 · ×7'], ['j1', "Jami'ah", '288'], ['m3', 'Masalah Aminah', '4 · ×16'], ['j2', "Jami'ah akhir", '288'], ['rp', 'Rupiah', '']],
     sel: { m1: { Aminah: 3, Budi: 14, Siti: 7, Rina: '–', Zahra: '–' }, m2: { Aminah: 4, Budi: '–', Siti: 5, Rina: 3, Zahra: 12 }, j1: { Aminah: 64, Budi: '→', Siti: 119, Rina: 21, Zahra: 84 },
       m3: { Aminah: '–', Budi: '–', Siti: 3, Rina: '–', Zahra: 1 }, j2: { Aminah: '→', Budi: '→', Siti: 167, Rina: 21, Zahra: 100 },
       rp: { Aminah: '–', Budi: '–', Siti: rupiah(bagi(JT300, 167, 288)), Rina: rupiah(bagi(JT300, 21, 288)), Zahra: rupiah(bagi(JT300, 100, 288)) } },
     jumlah: { m1: 24, m2: 24, j1: 288, m3: 4, j2: 288, rp: rupiah(bagi(JT300, 167, 288) + bagi(JT300, 21, 288) + bagi(JT300, 100, 288)) },
     langkah: [
-      { babak: 0, judul: 'Masalah Pak Ahmad', dasar: 'Mayit pertama dibagi seperti biasa. Ahli waris yang meninggal sesudahnya tetap dihitung, karena ia masih hidup saat Pak Ahmad wafat.', dalil: ['istri18', 'duaKali'], kolom: 'm1',
+      { babak: 0, judul: 'Kenapa dibagi berlapis?', tanya: 'Pak Ahmad wafat. Sebelum hartanya dibagi, Budi wafat, lalu Aminah. Bagian Budi dan Aminah harus ke mana?',
+        dasar: 'Ahli waris yang masih hidup saat pewaris wafat sudah memiliki bagiannya, walau belum diterima. Bila ia wafat sebelum harta dibagi, bagiannya menjadi harta warisannya sendiri dan dibagi lagi kepada ahli warisnya (munasakhat).',
+        keluarga: [[1, 'Urutan wafat: Pak Ahmad, lalu Budi, lalu Aminah.'], [1, 'Harta Pak Ahmad belum dibagi sama sekali.']], sorot: { PEWARIS: 'mayit', Budi: 'meninggal', Aminah: 'meninggal' },
+        logika: ['Cara panjang: bagi harta Pak Ahmad dalam rupiah, lalu bagi rupiah Budi, lalu rupiah Aminah. Bisa, tetapi pembulatan terjadi berkali-kali.', 'Cara kitab: semua masalah disatukan dalam satu bilangan pembagi (jami\'ah), lalu harta dibagi <b>sekali</b>. Hasilnya sama, tanpa pembulatan berlapis.', 'Kuncinya: bagian Budi dari masalah Pak Ahmad harus bisa dibagi habis oleh masalah Budi. Itu yang kita cari di babak Budi.'],
+        hitung: [['Babak', 'Pak Ahmad → Budi → Aminah → digabung']], jembatan: 'Mulai dari mayit pertama, dibagi seperti kasus biasa.' },
+      { babak: 1, judul: 'Masalah Pak Ahmad', tanya: 'Saat Pak Ahmad wafat, siapa yang masih hidup?', dasar: 'Mayit pertama dibagi seperti biasa. Ahli waris yang meninggal sesudahnya tetap dihitung, karena ia masih hidup saat Pak Ahmad wafat.', dalil: ['istri18', 'duaKali'], kolom: 'm1',
         keluarga: [[1, 'Budi masih hidup saat ayahnya wafat, jadi ia mewarisi.'], [1, 'Ada anak laki-laki, jadi Zahra (cucu) terhalang.']], sorot: { PEWARIS: 'mayit', Aminah: 'fardh', Budi: 'ashabah', Siti: 'ashabah', Zahra: 'terhalang' },
-        hitung: [['Asal', '8: Aminah 1/8 = 1, sisa 7 untuk Budi dan Siti'], ['Tashih', '7 tidak habis dibagi 3 kepala, jadi 8 × 3 = 24', 'jumlah'], ['Aminah', '1 × 3 = 3', '', 'm1', 'Aminah'], ['Budi', '7 × 3 = 21, per kepala 7, Budi 14', '', 'm1', 'Budi'], ['Siti', '7', '', 'm1', 'Siti']] },
-      { babak: 1, judul: 'Masalah Budi', dasar: 'Ahli waris yang meninggal sebelum harta dibagi: bagiannya dibagi lagi kepada ahli warisnya sendiri. Yang dibagi hanya bagiannya dari harta Pak Ahmad.', dalil: ['istri18', 'ibu16', 'setengah', 'ibnuMasud'], kolom: 'm2',
+        hitung: [['Asal', '8: Aminah 1/8 = 8 ÷ 8 = 1, sisa 8 − 1 = 7 untuk Budi dan Siti'], ['Tashih', '7 tidak habis dibagi 3 kepala (tabayun), jadi 8 × 3 = 24', 'jumlah'], ['Aminah', '1 × 3 = 3', '', 'm1', 'Aminah'], ['Budi dan Siti', '7 × 3 = 21, per kepala 21 ÷ 3 = 7'], ['Budi', '7 × 2 = 14', '', 'm1', 'Budi'], ['Siti', '7 × 1 = 7', '', 'm1', 'Siti']],
+        jembatan: 'Budi memegang 14 dari 24. Sekarang Budi wafat: 14 itu harus dibagi ke keluarganya.' },
+      { babak: 2, judul: 'Masalah Budi', tanya: 'Budi wafat. Siapa ahli waris Budi, dan berapa bagian mereka?', dasar: 'Bagian mayit kedua dibagi seperti harta biasa kepada ahli warisnya sendiri. Yang dibagi hanya bagiannya dari harta Pak Ahmad.', dalil: ['istri18', 'ibu16', 'setengah', 'ibnuMasud'], kolom: 'm2',
         keluarga: [[1, 'Budi meninggalkan istri (Rina), ibu (Aminah), putri (Zahra), dan saudari (Siti).'], [1, 'Tidak ada anak laki-laki, jadi saudari mengambil sisa bersama putri.']], sorot: { Budi: 'mayit', Rina: 'fardh', Aminah: 'fardh', Zahra: 'fardh', Siti: 'ashabah', PEWARIS: 'meninggal' },
-        hitung: [['Asal', '24 (penyebut 8, 6, 2)', 'jumlah'], ['Rina', '24 × 1/8 = 3', '', 'm2', 'Rina'], ['Aminah', '24 × 1/6 = 4', '', 'm2', 'Aminah'], ['Zahra', '24 × 1/2 = 12', '', 'm2', 'Zahra'], ['Siti', 'sisa 24 − 3 − 4 − 12 = 5', '', 'm2', 'Siti']] },
-      { babak: 1, judul: 'Bagian Budi dibandingkan masalahnya', dasar: "Bagian mayit kedua dibandingkan dengan masalahnya. Hasilnya menentukan pengali untuk tiap masalah, supaya keduanya bisa digabung dalam satu jami'ah.", kolom: 'j1',
+        hitung: [['Asal', 'penyebut 8, 6, 2 → 24', 'jumlah'], ['Rina', '24 ÷ 8 = 3', '', 'm2', 'Rina'], ['Aminah', '24 ÷ 6 = 4', '', 'm2', 'Aminah'], ['Zahra', '24 ÷ 2 = 12', '', 'm2', 'Zahra'], ['Siti', 'sisa 24 − 3 − 4 − 12 = 5', '', 'm2', 'Siti']],
+        jembatan: 'Masalah Budi butuh 24 bagian, padahal Budi hanya memegang 14. Bagaimana menyambungkannya?' },
+      { babak: 2, judul: 'Menyambung bagian Budi', tanya: 'Budi memegang 14 bagian, tetapi masalahnya butuh 24 bagian. 14 tidak habis dibagi 24. Apa yang dikalikan?', dasar: "Bagian mayit kedua dibandingkan dengan masalahnya. Hasilnya menentukan pengali untuk tiap masalah, supaya keduanya bisa digabung dalam satu jami'ah.", kolom: 'j1',
         keluarga: [[1, 'Budi menerima 14 dari masalah Pak Ahmad; masalah Budi 24.']], sorot: { Budi: 'mayit' },
-        hitung: [['14 : 24', 'sama-sama habis dibagi 2 (tawafuq), jadi 7 : 12'], ["Jami'ah", '24 × 12 = 288', 'jumlah'], ['Pengali', 'masalah Pak Ahmad × 12, masalah Budi × 7'], ['Aminah', '3 × 12 + 4 × 7 = 36 + 28 = 64', '', 'j1', 'Aminah'], ['Siti', '7 × 12 + 5 × 7 = 84 + 35 = 119', '', 'j1', 'Siti'], ['Rina', '3 × 7 = 21', '', 'j1', 'Rina'], ['Zahra', '12 × 7 = 84', '', 'j1', 'Zahra'], ['Cek', '64 + 119 + 21 + 84 = 288', 'jumlah']] },
-      { babak: 2, judul: 'Masalah Aminah', dasar: 'Bila tidak ada ashabah dan bagian pasti tidak menghabiskan harta, sisanya dikembalikan kepada pemilik bagian pasti (radd), kecuali suami atau istri.', dalil: ['ibnuMasud'], kolom: 'm3',
+        logika: ['Kita ingin bagian Budi bisa dibagi tepat menjadi 24 bagian kecil.', 'Sederhanakan 14 : 24. Keduanya habis dibagi 2 (tawafuq): 7 : 12.', 'Pecah setiap bagian Pak Ahmad menjadi 12: masalah Pak Ahmad 24 × 12 = 288. Bagian Budi menjadi 14 × 12 = 168.', '168 ÷ 24 = 7. Jadi setiap 1 bagian di masalah Budi bernilai 7 bagian di jami\'ah: saham masalah Budi dikali 7.', 'Ringkasnya: masalah Pak Ahmad × 12 (angka dari masalah Budi), masalah Budi × 7 (angka dari bagian Budi).'],
+        hitung: [['14 : 24', 'sama-sama ÷ 2 (tawafuq) → 7 : 12'], ["Jami'ah", '24 × 12 = 288', 'jumlah'], ['Pengali', 'masalah Pak Ahmad × 12, masalah Budi × 7'], ['Aminah', '3 × 12 + 4 × 7 = 36 + 28 = 64', '', 'j1', 'Aminah'], ['Siti', '7 × 12 + 5 × 7 = 84 + 35 = 119', '', 'j1', 'Siti'], ['Rina', '3 × 7 = 21', '', 'j1', 'Rina'], ['Zahra', '12 × 7 = 84', '', 'j1', 'Zahra'], ['Cek', '64 + 119 + 21 + 84 = 288', 'jumlah']],
+        jembatan: 'Aminah sekarang memegang 64 dari 288. Lalu Aminah wafat.' },
+      { babak: 3, judul: 'Masalah Aminah', tanya: 'Aminah meninggalkan dua orang perempuan saja. Apakah bagian pasti mereka menghabiskan harta?', dasar: 'Bila tidak ada ashabah dan bagian pasti tidak menghabiskan harta, sisanya dikembalikan kepada pemilik bagian pasti (radd), kecuali suami atau istri.', dalil: ['ibnuMasud'], kolom: 'm3',
         keluarga: [[1, 'Aminah meninggalkan putri (Siti) dan cucu perempuan (Zahra).'], [1, 'Tidak ada ashabah dan tidak ada suami.']], sorot: { Aminah: 'mayit', Siti: 'fardh', Zahra: 'fardh', PEWARIS: 'meninggal', Budi: 'meninggal' },
-        hitung: [['Asal', '6: Siti 1/2 = 3, Zahra 1/6 = 1'], ['Radd', '3 + 1 = 4 kurang dari 6, jadi masalah menjadi 4', 'jumlah'], ['Siti', '3 dari 4', '', 'm3', 'Siti'], ['Zahra', '1 dari 4', '', 'm3', 'Zahra']] },
-      { babak: 3, judul: "Jami'ah akhir", dasar: "Bagian mayit ketiga dibandingkan dengan masalahnya, lalu semua saham dijumlahkan per orang.", kolom: 'j2',
+        logika: ['Siti 1/2 dan Zahra 1/6 dari 6 kotak: 3 + 1 = 4. Ada 2 kotak tanpa pemilik.', 'Tidak ada ashabah, jadi 2 kotak itu dikembalikan kepada Siti dan Zahra sebanding 3 : 1.', 'Cara cepatnya: buang kotak kosong. Harta dianggap 4 kotak: Siti 3, Zahra 1.'],
+        batang: { asal: 6, bagian: [['Siti', 3, 'fardh'], ['Zahra', 1, 'fardh']], jadi: 4, ubah: 'Bingkai harta mengecil dari 6 menjadi 4 kotak; kotak kosong hilang, tiap kotak lebih besar.' },
+        hitung: [['Asal', '6: Siti 6 ÷ 2 = 3, Zahra 6 ÷ 6 = 1'], ['Radd', '3 + 1 = 4 kurang dari 6, jadi masalah menjadi 4', 'jumlah'], ['Siti', '3 dari 4', '', 'm3', 'Siti'], ['Zahra', '1 dari 4', '', 'm3', 'Zahra']],
+        jembatan: 'Sama seperti Budi: bagian Aminah (64) disambungkan dengan masalahnya (4).' },
+      { babak: 4, judul: "Jami'ah akhir", tanya: '64 dibagi masalah 4: perlukah jami\'ah diperbesar lagi?', dasar: "Bagian mayit ketiga dibandingkan dengan masalahnya, lalu semua saham dijumlahkan per orang.", kolom: 'j2',
         keluarga: [[1, "Aminah menerima 64 dari jami'ah; masalahnya 4."]], sorot: { Siti: 'ashabah', Zahra: 'fardh', Rina: 'fardh' },
-        hitung: [['64 : 4', '64 habis dibagi 4 (inqisam), pengali 16; jami\'ah tetap 288', 'jumlah'], ['Siti', '119 + 3 × 16 = 119 + 48 = 167', '', 'j2', 'Siti'], ['Zahra', '84 + 1 × 16 = 100', '', 'j2', 'Zahra'], ['Rina', '21', '', 'j2', 'Rina'], ['Cek', '167 + 100 + 21 = 288', 'jumlah']] },
-      { babak: 3, judul: 'Bagian dalam rupiah', dasar: "Saham tiap orang dibagi jami'ah, dikali harta Pak Ahmad. Dibagikan sekali, tidak per lapis.", kolom: 'rp', keluarga: [[1, 'Harta Pak Ahmad Rp 300.000.000. Harta pribadi Budi dan Aminah dibagi terpisah.']], sorot: { Siti: 'ashabah', Zahra: 'fardh', Rina: 'fardh' },
+        logika: ['64 ÷ 4 = 16, bulat (inqisam). Tidak perlu memecah bagian lagi, jadi jami\'ah tetap 288.', 'Setiap 1 bagian di masalah Aminah bernilai 16: saham masalah Aminah dikali 16.'],
+        hitung: [['64 : 4', '64 ÷ 4 = 16 (inqisam); jami\'ah tetap 288', 'jumlah'], ['Siti', '119 + 3 × 16 = 119 + 48 = 167', '', 'j2', 'Siti'], ['Zahra', '84 + 1 × 16 = 100', '', 'j2', 'Zahra'], ['Rina', '21', '', 'j2', 'Rina'], ['Cek', '167 + 100 + 21 = 288', 'jumlah']],
+        jembatan: 'Tiga masalah sudah menjadi satu angka: 288. Harta dibagi sekali.' },
+      { babak: 4, judul: 'Bagian dalam rupiah', tanya: 'Satu bagian = 1/288 harta Pak Ahmad. Berapa rupiah masing-masing?', dasar: "Saham tiap orang dibagi jami'ah, dikali harta Pak Ahmad. Dibagikan sekali, tidak per lapis.", kolom: 'rp', keluarga: [[1, 'Harta Pak Ahmad Rp 300.000.000. Harta pribadi Budi dan Aminah dibagi terpisah.']], sorot: { Siti: 'ashabah', Zahra: 'fardh', Rina: 'fardh' },
         hitung: [['Siti', `167/288 × Rp 300.000.000 = ${rupiah(bagi(JT300, 167, 288))}`, '', 'rp', 'Siti'], ['Zahra', `100/288 × Rp 300.000.000 = ${rupiah(bagi(JT300, 100, 288))}`, '', 'rp', 'Zahra'], ['Rina', `21/288 × Rp 300.000.000 = ${rupiah(bagi(JT300, 21, 288))}`, '', 'rp', 'Rina'], ['Selisih pembulatan', 'Rp 1', 'jumlah']] },
     ],
     selesai: [['Siti', bagi(JT300, 167, 288)], ['Zahra', bagi(JT300, 100, 288)], ['Rina', bagi(JT300, 21, 288)]], kalimatSelesai: 'Harta Pak Ahmad langsung dibagikan ke 3 orang. Bagian Budi dan Aminah sudah diteruskan ke ahli waris mereka.',
@@ -303,37 +465,60 @@ const KASUS = {
 
   rantai: {
     tab: 'Rantai 12 generasi', judul: 'Uji rantai 12 generasi', pohon: null, baris: [], kolom: [], sel: {}, jumlah: {},
-    babak: ['Pak Ahmad', 'Putra 1', 'Putra 2–12', "Jami'ah"], babakRingkas: 2,
+    babak: ['Dasar', 'Pak Ahmad', 'Putra 1', 'Putra 2–12', "Jami'ah"], babakDasar: 0, babakRingkas: 3,
     langkah: [
-      { babak: 0, judul: 'Masalah Pak Ahmad', dasar: 'Mayit pertama dibagi seperti biasa.', keluarga: [[1, 'Istri 1/8, ibu tidak ada, anak laki-laki dan perempuan mengambil sisa 2 : 1.']], sorot: {}, hitung: [['Asal', '8 → tashih 24', 'jumlah']] },
-      { babak: 1, judul: 'Masalah Putra 1', dasar: 'Bagian Putra 1 dibagi ke ahli warisnya.', keluarga: [[1, 'Istri 1/8, ibu 1/6, anak sisa 2 : 1.']], sorot: {}, hitung: [['Asal', '24 → tashih 72', 'jumlah'], ['Perbandingan', "bagian Putra 1 : 72, pengali dari engine"]] },
-      { babak: 2, ringkas: Array.from({ length: 11 }, (_, i) => `Masalah Putra ${i + 2}: asal 24 → tashih 72`), judul: 'Putra 2 sampai 12: polanya sama', dasar: 'Setiap putra meninggalkan istri, ibu, satu putra, dan satu putri. Susunannya sama dengan masalah Putra 1, jadi diringkas di sini.', keluarga: [[1, '11 masalah dengan susunan yang sama.']], sorot: {}, hitung: [] },
-      { babak: 3, judul: "Jami'ah akhir", dasar: "Saham semua lapis dijumlahkan per orang.", keluarga: [[1, '27 orang menerima.']], sorot: {}, hitung: [["Jami'ah", '21 digit, angka lengkap di tabel', 'jumlah']] },
+      { babak: 0, judul: 'Rantai yang panjang', tanya: 'Dua belas putra wafat berurutan sebelum harta dibagi. Apakah caranya berbeda dari tiga mayit?', dasar: 'Caranya sama dengan munasakhat tiga mayit: tiap mayit punya masalah, bagiannya disambungkan ke masalahnya, lalu semua digabung dalam satu jami\'ah.', keluarga: [[1, '13 mayit berurutan; tiap putra meninggalkan istri, ibu, satu putra, dan satu putri.']], sorot: {},
+        logika: ['Kalau susunan keluarga tiap mayit sama, langkahnya juga sama. Yang berubah hanya angkanya.', 'Karena itu babak yang polanya sama diringkas, supaya kamu tidak membaca hal yang sama 11 kali.'], hitung: [], jembatan: 'Mulai dari Pak Ahmad.' },
+      { babak: 1, judul: 'Masalah Pak Ahmad', tanya: 'Mayit pertama dibagi seperti biasa.', dasar: 'Mayit pertama dibagi seperti biasa.', keluarga: [[1, 'Istri 1/8, anak laki-laki dan perempuan mengambil sisa 2 : 1.']], sorot: {}, hitung: [['Asal', '8 → tashih 24', 'jumlah']] },
+      { babak: 2, judul: 'Masalah Putra 1', tanya: 'Bagian Putra 1 diteruskan ke keluarganya.', dasar: 'Bagian Putra 1 dibagi ke ahli warisnya.', keluarga: [[1, 'Istri 1/8, ibu 1/6, anak sisa 2 : 1.']], sorot: {}, hitung: [['Asal', '24 → tashih 72', 'jumlah'], ['Perbandingan', "bagian Putra 1 : 72, pengali dari engine"]] },
+      { babak: 3, ringkas: Array.from({ length: 11 }, (_, i) => `Masalah Putra ${i + 2}: asal 24 → tashih 72`), judul: 'Putra 2 sampai 12: polanya sama', tanya: 'Sebelas babak berikutnya polanya sama.', dasar: 'Setiap putra meninggalkan istri, ibu, satu putra, dan satu putri. Susunannya sama dengan masalah Putra 1, jadi diringkas di sini.', keluarga: [[1, '11 masalah dengan susunan yang sama.']], sorot: {}, hitung: [] },
+      { babak: 4, judul: "Jami'ah akhir", tanya: 'Semua lapis digabung.', dasar: "Saham semua lapis dijumlahkan per orang.", keluarga: [[1, '27 orang menerima.']], sorot: {}, hitung: [["Jami'ah", '21 digit, angka lengkap di tabel', 'jumlah']] },
     ],
     selesai: [], kalimatSelesai: 'Contoh untuk peta rantai dan ringkasan babak. Angka per orang ada di mockup layar Hasil (tab Rantai 12 generasi).',
   },
 
   hamil: {
-    tab: 'Hamil + hilang', judul: 'Warisan Pak Ahmad (sebagian ditahan)', pohon: POHON_HAMIL, baris: ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Bayi', 'Hasan'], nama: { Bayi: 'Bayi (kandungan)' },
-    kolom: [['kecil', 'Terkecil', 'dibayar sekarang'], ['besar', 'Terbesar', 'bisa sampai'], ['rp', 'Rupiah sekarang', '']],
-    sel: { kecil: { Aminah: 1260, Fatimah: 1680, Budi: 0, Siti: 0, Bayi: 0, Hasan: '–' }, besar: { Aminah: 1260, Fatimah: 1680, Budi: 7140, Siti: 2380, Bayi: 4760, Hasan: '–' },
-      rp: { Aminah: rupiah(bagi(JT300, 1260, 10080)), Fatimah: rupiah(bagi(JT300, 1680, 10080)), Budi: 'ditahan', Siti: 'ditahan', Bayi: 'ditahan', Hasan: '–' } },
-    jumlah: { kecil: '2.940 dari 10.080', besar: '', rp: 'Rp 87.500.000' }, ketTabel: "jami'ah 10.080",
+    tab: 'Hamil + hilang', judul: 'Warisan Pak Ahmad (sebagian ditahan)', pohon: POHON_HAMIL, baris: ORANG_TAQDIR, nama: { Bayi: 'Bayi (kandungan)' },
+    babak: ['Dasar', 'Kemungkinan', 'Pembagian'], babakDasar: 0,
+    kolom: [['contoh', 'Contoh', 'masalah 120'], ...TAQDIR.map(t => [t.kunci, t.judul, `bayi ${t.bayi} · ×${t.pengali}`]), ['kecil', 'Dibayar sekarang', "jami'ah 10.080"], ['besar', 'Paling besar', 'bisa sampai'], ['rp', 'Rupiah sekarang', '']],
+    sel: { contoh: { Aminah: 15, Fatimah: 20, Budi: 34, Siti: 17, Bayi: 34, Hasan: '–' },
+      ...Object.fromEntries(TAQDIR.map(t => [t.kunci, Object.fromEntries(ORANG_TAQDIR.map(id => [id, t.saham[id] ? ribuan(t.saham[id]) : '–']))])),
+      kecil: { Aminah: '1.260', Fatimah: '1.680', Budi: 0, Siti: 0, Bayi: 0, Hasan: '–' }, besar: { Aminah: '1.260', Fatimah: '1.680', Budi: '7.140', Siti: '2.380', Bayi: '4.760', Hasan: '–' },
+      rp: { Aminah: rupiah(bagi(JT300, 1260, 10080)), Fatimah: rupiah(bagi(JT300, 1680, 10080)), Budi: 'ditahan', Siti: '↑', Bayi: '↑', Hasan: '–' } },
+    jumlah: { contoh: 120, ...Object.fromEntries(TAQDIR.map(t => [t.kunci, '10.080'])), kecil: '2.940', besar: '', rp: rupiah(bagi(JT300, 2940, 10080)) },
     langkah: [
-      { judul: 'Harta yang dibagi', dasar: 'Harta dikurangi biaya jenazah, hutang, dan wasiat sebelum dibagi.', keluarga: [[0, 'Tidak ada potongan.']], sorot: { PEWARIS: 'mayit' }, hitung: [['Harta dibagi', 'Rp 300.000.000', 'jumlah']] },
-      { judul: 'Siapa mewarisi, siapa belum pasti', dasar: 'Janin mewarisi bila lahir hidup. Orang hilang (mafqud) belum bisa dipastikan hidup atau wafat. Bagian yang bergantung pada mereka ditahan.', dalil: ['awla'],
+      { babak: 0, judul: 'Harta yang dibagi', tanya: 'Berapa harta Pak Ahmad yang dibagi?', dasar: 'Harta dikurangi biaya jenazah, hutang, dan wasiat sebelum dibagi.', keluarga: [[0, 'Tidak ada potongan.']], sorot: { PEWARIS: 'mayit' }, hitung: [['Harta dibagi', 'Rp 300.000.000', 'jumlah']],
+        jembatan: 'Di keluarga ini ada dua orang yang keadaannya belum pasti.' },
+      { babak: 0, judul: 'Siapa mewarisi, siapa belum pasti', tanya: 'Aminah sedang hamil, dan Siti hilang tanpa kabar. Bisakah harta dibagi sekarang?', dasar: 'Janin (haml) mewarisi bila lahir hidup. Orang hilang (mafqud) belum bisa dipastikan hidup atau wafat. Harta boleh dibagi sekarang, tetapi bagian yang bergantung pada mereka ditahan.', dalil: ['awla'],
         keluarga: [[1, 'Aminah sedang hamil.'], [1, 'Siti hilang tanpa kabar.'], [1, 'Hasan terhalang oleh Budi.']], sorot: { PEWARIS: 'mayit', Aminah: 'fardh', Fatimah: 'fardh', Budi: 'tahan', Siti: 'tahan', Bayi: 'tahan', Hasan: 'terhalang' },
-        hitung: [['Pasti', 'Aminah, Fatimah'], ['Belum pasti', 'Budi, Siti, bayi', 'tahan'], ['Terhalang', 'Hasan']] },
-      { judul: 'Semua kemungkinan', dasar: "Menurut madzhab Syafi'i jumlah janin tidak dibatasi, jadi keadaan bayi dihitung dalam 6 kemungkinan. Orang hilang punya 2 kemungkinan: hidup atau wafat. Setiap kemungkinan dihitung sebagai masalah tersendiri.",
-        keluarga: [[1, 'Bayi: 6 kemungkinan.'], [1, 'Siti: 2 kemungkinan.']], sorot: { Bayi: 'tahan', Siti: 'tahan' },
-        hitung: [['Kemungkinan', '6 × 2 = 12 masalah'], ["Jami'ah", 'semua masalah disamakan menjadi 10.080', 'jumlah'], ['Tabel lengkap', '12 kolom kemungkinan; di aplikasi diambil dari engine']] },
-      { judul: 'Yang dibayar sekarang', dasar: 'Setiap orang diberi bagian terkecilnya dari semua kemungkinan. Selisihnya ditahan sampai keadaan jelas.', kolom: 'kecil',
-        keluarga: [[1, 'Aminah dan Fatimah: bagiannya sama di semua kemungkinan.'], [1, 'Budi berbagi sisa dengan bayi yang jumlahnya tak terbatas, jadi terkecilnya 0.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'tahan', Siti: 'tahan', Bayi: 'tahan' },
-        hitung: [['Aminah', '1.260 di semua kemungkinan', '', 'kecil', 'Aminah'], ['Fatimah', '1.680 di semua kemungkinan', '', 'kecil', 'Fatimah'], ['Budi, Siti, bayi', 'terkecilnya 0', 'tahan', 'kecil', 'Budi Siti Bayi'], ['Dibayar', '1.260 + 1.680 = 2.940 dari 10.080', 'jumlah']] },
-      { judul: 'Yang ditahan', dasar: 'Bagian yang ditahan disimpan terpisah dan dibuka saat bayi lahir atau ada kabar tentang Siti.', kolom: 'besar',
+        hitung: [['Pasti', 'Aminah, Fatimah'], ['Belum pasti', 'Budi, Siti, bayi', 'tahan'], ['Terhalang', 'Hasan']],
+        jembatan: 'Kalau keadaannya belum pasti, bagaimana menghitungnya? Kita perkirakan.' },
+      { babak: 0, judul: 'Memperkirakan keadaan', tanya: 'Kita belum tahu bayi lahir laki-laki atau perempuan, dan belum tahu Siti hidup atau tidak. Lalu apa yang dihitung?',
+        dasar: 'Setiap keadaan yang mungkin dihitung sebagai masalah tersendiri (taqdir), seolah-olah keadaan itu sudah pasti. Setelah semua dihitung, setiap orang diberi bagian terkecilnya; sisanya ditahan.',
+        keluarga: [[1, 'Bayi: lahir tidak hidup, 1 laki-laki, 1 perempuan, 2 laki-laki, 2 perempuan, atau laki-laki & perempuan.'], [1, 'Siti: masih hidup, atau sudah wafat.']], sorot: { Bayi: 'tahan', Siti: 'tahan' },
+        logika: ['Bayangkan kita menulis beberapa skenario: "kalau bayinya laki-laki dan Siti hidup...", "kalau bayinya perempuan dan Siti wafat..."', 'Tiap skenario dihitung lengkap seperti kasus biasa.', 'Untuk bagian pasti (istri, ibu), enam keadaan bayi ini sudah cukup: janin lebih banyak lagi tidak mengubah bagian pasti siapa pun.', 'Bayi 6 keadaan × Siti 2 keadaan = 12 skenario.'],
+        hitung: [['Bayi', '6 keadaan'], ['Siti', '2 keadaan'], ['Skenario', '6 × 2 = 12', 'jumlah']],
+        jembatan: 'Sebelum menghitung kedua belasnya, kita kerjakan satu skenario dulu sampai selesai.' },
+      { babak: 1, judul: 'Contoh satu kemungkinan', tanya: 'Misalkan bayi lahir 1 laki-laki dan Siti masih hidup. Bagaimana pembagiannya?', dasar: 'Dalam satu kemungkinan, keadaan dianggap pasti, jadi pembagiannya sama seperti kasus biasa.', dalil: ['istri18', 'ibu16', 'duaKali'], kolom: 'contoh',
+        keluarga: [[1, 'Anak: Budi, bayi laki-laki, dan Siti.'], [1, 'Istri 1/8, ibu 1/6, anak-anak mengambil sisa 2 : 1.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'ashabah', Siti: 'ashabah', Bayi: 'ashabah', Hasan: 'terhalang' },
+        logika: ['Kepala ashabah: Budi 2 + bayi laki-laki 2 + Siti 1 = 5.', 'Asal 24, sisa 24 − 3 − 4 = 17. 17 tidak habis dibagi 5 (tabayun), jadi 24 × 5 = 120.'],
+        hitung: [['Asal', '24: Aminah 24 ÷ 8 = 3, Fatimah 24 ÷ 6 = 4, sisa 17'], ['Tashih', '17 dan 5 tabayun → 24 × 5 = 120', 'jumlah'], ['Aminah', '3 × 5 = 15', '', 'contoh', 'Aminah'], ['Fatimah', '4 × 5 = 20', '', 'contoh', 'Fatimah'], ['Per kepala', '17 × 5 ÷ 5 = 17'], ['Budi', '17 × 2 = 34', '', 'contoh', 'Budi'], ['Bayi', '17 × 2 = 34', '', 'contoh', 'Bayi'], ['Siti', '17 × 1 = 17', '', 'contoh', 'Siti']],
+        jembatan: 'Itu satu skenario. Sebelas lainnya dihitung dengan cara yang sama.' },
+      { babak: 1, judul: 'Semua kemungkinan', tanya: 'Setiap skenario punya masalahnya sendiri: 120, 24, 48, dan seterusnya. Bagaimana membandingkannya?', dasar: "Masalah semua kemungkinan disamakan dalam satu jami'ah, seperti menyamakan penyebut. Tiap kemungkinan mendapat pengali sendiri.",
+        keluarga: [[1, '12 skenario, masing-masing dihitung seperti contoh tadi.']], sorot: { Bayi: 'tahan', Siti: 'tahan' },
+        logika: ["Jami'ah adalah bilangan terkecil yang habis dibagi semua masalah: 10.080.", 'Contoh tadi masalahnya 120. 10.080 ÷ 120 = 84, jadi saham contoh dikali 84: Aminah 15 × 84 = 1.260.', 'Lihat kolom "Siti hidup, bayi 1 laki-laki" di tabel: angkanya sama dengan contoh × 84.'],
+        hitung: [["Jami'ah", 'semua masalah disamakan → 10.080', 'jumlah'], ...TAQDIR.map(t => [`${t.judul}, bayi ${t.bayi}`, `masalah ${ribuan(t.masalah)} × ${t.pengali}`, '', t.kunci, ''])],
+        jembatan: 'Dua belas kolom sudah lengkap. Sekarang: siapa dapat berapa hari ini?' },
+      { babak: 2, judul: 'Yang dibayar sekarang', tanya: 'Siapa yang bagiannya sama di semua skenario, dan siapa yang berubah-ubah?', dasar: 'Setiap orang diberi bagian terkecilnya dari semua kemungkinan. Menurut madzhab Syafi\'i jumlah janin tidak dibatasi, jadi ahli waris yang berbagi sisa dengan janin belum diberi apa pun.', kolom: 'kecil',
+        keluarga: [[1, 'Aminah dan Fatimah: 1.260 dan 1.680 di semua kolom.'], [1, 'Budi berbagi sisa dengan bayi. Di tabel bagiannya tidak pernah 0, tetapi janin bisa lebih dari dua, sehingga bagian Budi bisa terus mengecil. Karena itu ia diberi 0 dulu.'], [1, 'Siti juga berbagi sisa dengan bayi, dan ia hilang.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'tahan', Siti: 'tahan', Bayi: 'tahan' },
+        logika: ['Kalau kita memberi lebih dari bagian terkecil, lalu keadaan ternyata berbeda, uang yang sudah dibagikan harus ditarik kembali.', 'Dengan bagian terkecil, tidak ada yang perlu dikembalikan apa pun yang terjadi.'],
+        hitung: [['Aminah', 'terkecil dari 12 kolom = 1.260', '', 'kecil', 'Aminah'], ['Fatimah', 'terkecil = 1.680', '', 'kecil', 'Fatimah'], ['Budi, Siti, bayi', '0 untuk sekarang', 'tahan', 'kecil', 'Budi Siti Bayi'], ['Dibayar', '1.260 + 1.680 = 2.940 dari 10.080', 'jumlah']],
+        jembatan: 'Sisanya tidak hilang. Ia disimpan.' },
+      { babak: 2, judul: 'Yang ditahan', tanya: 'Berapa yang disimpan, dan paling banyak untuk siapa?', dasar: 'Bagian yang ditahan disimpan terpisah dan dibuka saat bayi lahir atau ada kabar tentang Siti.', kolom: 'besar',
         keluarga: [[1, 'Budi, Siti, dan bayi bisa menerima bila keadaannya jelas.']], sorot: { Budi: 'tahan', Siti: 'tahan', Bayi: 'tahan' },
-        hitung: [['Budi', 'bisa sampai 7.140', 'tahan', 'besar', 'Budi'], ['Siti', 'bisa sampai 2.380', 'tahan', 'besar', 'Siti'], ['Bayi', 'bisa sampai 4.760', 'tahan', 'besar', 'Bayi'], ['Ditahan', '10.080 − 2.940 = 7.140', 'jumlah']] },
-      { judul: 'Rupiah sekarang', dasar: 'Yang dibayar dihitung dari jami\'ah; yang ditahan disebut jumlahnya.', kolom: 'rp', keluarga: [[1, 'Harta Rp 300.000.000.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'tahan', Siti: 'tahan', Bayi: 'tahan' },
+        hitung: [['Budi', 'terbesar 7.140 (Siti wafat, bayi lahir tidak hidup)', 'tahan', 'besar', 'Budi'], ['Siti', 'terbesar 2.380', 'tahan', 'besar', 'Siti'], ['Bayi', 'terbesar 4.760', 'tahan', 'besar', 'Bayi'], ['Ditahan', '10.080 − 2.940 = 7.140', 'jumlah']],
+        jembatan: 'Terakhir, ubah ke rupiah.' },
+      { babak: 2, judul: 'Rupiah sekarang', tanya: 'Satu bagian = 1/10.080 harta. Berapa yang dibayar hari ini?', dasar: 'Yang dibayar dihitung dari jami\'ah; yang ditahan disebut jumlahnya.', kolom: 'rp', keluarga: [[1, 'Harta Rp 300.000.000.']], sorot: { Aminah: 'fardh', Fatimah: 'fardh', Budi: 'tahan', Siti: 'tahan', Bayi: 'tahan' },
         hitung: [['Aminah', `1.260/10.080 × Rp 300.000.000 = ${rupiah(bagi(JT300, 1260, 10080))}`, '', 'rp', 'Aminah'], ['Fatimah', `1.680/10.080 × Rp 300.000.000 = ${rupiah(bagi(JT300, 1680, 10080))}`, '', 'rp', 'Fatimah'], ['Ditahan', `7.140/10.080 × Rp 300.000.000 = ${rupiah(bagi(JT300, 7140, 10080))}`, 'tahan', 'rp', 'Budi Siti Bayi']] },
     ],
     selesai: [['Aminah', bagi(JT300, 1260, 10080)], ['Fatimah', bagi(JT300, 1680, 10080)], ['Ditahan untuk Budi, Siti, dan bayi', bagi(JT300, 7140, 10080), 'tahan']], kalimatSelesai: 'Yang pasti dibagi sekarang. Hitung lagi setelah bayi lahir atau ada kabar tentang Siti.',
@@ -341,34 +526,84 @@ const KASUS = {
 
   bersamaan: {
     tab: 'Meninggal bersamaan', judul: 'Warisan Pak Ahmad dan Budi', pohon: POHON_LAPIS, baris: ['Aminah', 'Siti', 'Zahra', 'Rina'],
-    babak: ['Harta Pak Ahmad', 'Harta Budi', 'Digabung'],
+    babak: ['Dasar', 'Harta Pak Ahmad', 'Harta Budi', 'Digabung'], babakDasar: 0,
     kolom: [['a1', 'Pak Ahmad', 'asal 24'], ['a2', 'Pak Ahmad', 'radd 32'], ['b1', 'Budi', 'asal 24'], ['rp', 'Total rupiah', '']],
     sel: { a1: { Aminah: 3, Siti: 12, Zahra: 4, Rina: '–' }, a2: { Aminah: 4, Siti: 21, Zahra: 7, Rina: '–' }, b1: { Aminah: 4, Siti: 5, Zahra: 12, Rina: 3 },
       rp: { Aminah: rupiah(bagi(JT300, 4, 32) + bagi(JT50, 4, 24)), Siti: rupiah(bagi(JT300, 21, 32) + bagi(JT50, 5, 24)), Zahra: rupiah(bagi(JT300, 7, 32) + bagi(JT50, 12, 24)), Rina: rupiah(bagi(JT50, 3, 24)) } },
     jumlah: { a1: '19 dari 24', a2: 32, b1: 24, rp: '' },
     langkah: [
-      { judul: 'Meninggal bersamaan', dasar: 'Ahli waris harus masih hidup saat pewaris wafat. Bila dua orang wafat serentak, keduanya tidak saling mewarisi; harta masing-masing dibagi ke keluarganya yang hidup.', keluarga: [[1, 'Pak Ahmad dan Budi wafat serentak.'], [0, 'Budi tidak mewarisi dari ayahnya, dan sebaliknya.']], sorot: { PEWARIS: 'mayit', Budi: 'mayit' },
-        hitung: [['Dibagi', 'dua harta, terpisah']] },
-      { babak: 0, judul: 'Harta Pak Ahmad', dasar: 'Budi tidak dihitung. Bila bagian pasti tidak menghabiskan harta dan tidak ada ashabah, sisanya dikembalikan (radd), kecuali kepada istri.', dalil: ['istri18', 'setengah', 'ibnuMasud'], kolom: 'a1',
+      { babak: 0, judul: 'Meninggal bersamaan', tanya: 'Pak Ahmad dan Budi wafat dalam satu kecelakaan. Siapa mewarisi siapa?', dasar: 'Ahli waris harus masih hidup saat pewaris wafat. Bila dua orang wafat serentak atau tidak diketahui siapa lebih dulu, keduanya tidak saling mewarisi; harta masing-masing dibagi ke keluarganya yang hidup.', keluarga: [[1, 'Pak Ahmad dan Budi wafat serentak.'], [0, 'Budi tidak mewarisi dari ayahnya, dan sebaliknya.']], sorot: { PEWARIS: 'mayit', Budi: 'mayit' },
+        logika: ['Berbeda dengan kasus berurutan: di sana Budi sempat hidup setelah ayahnya, jadi ia mewarisi.', 'Di sini tidak ada yang terbukti hidup lebih lama, jadi tidak ada yang mewarisi dari yang lain.'],
+        hitung: [['Dibagi', 'dua harta, terpisah']], jembatan: 'Mulai dari harta Pak Ahmad, seolah Budi tidak ada.' },
+      { babak: 1, judul: 'Harta Pak Ahmad', tanya: 'Tanpa Budi, siapa ahli waris Pak Ahmad?', dasar: 'Budi tidak dihitung. Bila bagian pasti tidak menghabiskan harta dan tidak ada ashabah, sisanya dikembalikan (radd), kecuali kepada istri.', dalil: ['istri18', 'setengah', 'ibnuMasud'], kolom: 'a1',
         keluarga: [[1, 'Siti menjadi anak satu-satunya: 1/2.'], [1, 'Zahra (cucu) bersama satu anak perempuan: 1/6.'], [1, 'Istri tetap 1/8.']], sorot: { PEWARIS: 'mayit', Aminah: 'fardh', Siti: 'fardh', Zahra: 'fardh', Budi: 'meninggal' },
-        hitung: [['Asal', '24', 'jumlah'], ['Aminah', '24 × 1/8 = 3', '', 'a1', 'Aminah'], ['Siti', '24 × 1/2 = 12', '', 'a1', 'Siti'], ['Zahra', '24 × 1/6 = 4', '', 'a1', 'Zahra'], ['Jumlah', '3 + 12 + 4 = 19, sisa 5']] },
-      { babak: 0, judul: 'Radd di harta Pak Ahmad', dasar: 'Sisa dibagi kepada pemilik bagian pasti selain istri, sebanding dengan bagian mereka.', kolom: 'a2',
+        hitung: [['Asal', 'penyebut 8, 2, 6 → 24', 'jumlah'], ['Aminah', '24 ÷ 8 = 3', '', 'a1', 'Aminah'], ['Siti', '24 ÷ 2 = 12', '', 'a1', 'Siti'], ['Zahra', '24 ÷ 6 = 4', '', 'a1', 'Zahra'], ['Jumlah', '3 + 12 + 4 = 19, sisa 5 tanpa pemilik', 'tahan']],
+        jembatan: 'Ada 5 bagian tanpa pemilik. Ke mana?' },
+      { babak: 1, judul: 'Radd di harta Pak Ahmad', tanya: 'Sisa 5 bagian dikembalikan. Apakah istri ikut menerima?', dasar: 'Sisa dibagi kepada pemilik bagian pasti selain istri, sebanding dengan bagian mereka.', kolom: 'a2',
         keluarga: [[1, 'Istri tidak ikut radd.']], sorot: { Siti: 'fardh', Zahra: 'fardh', Aminah: 'fardh' },
-        hitung: [['Istri', '1/8 = 4 dari 32', '', 'a2', 'Aminah'], ['Sisa', '28 dari 32 untuk Siti dan Zahra, 12 : 4 = 3 : 1'], ['Siti', '28 × 3/4 = 21', '', 'a2', 'Siti'], ['Zahra', '28 × 1/4 = 7', '', 'a2', 'Zahra'], ['Cek', '4 + 21 + 7 = 32', 'jumlah']] },
-      { babak: 1, judul: 'Harta Budi', dasar: 'Harta Budi (Rp 50.000.000 dari isianmu) dibagi ke keluarganya yang hidup.', dalil: ['istri18', 'ibu16', 'ibnuMasud'], kolom: 'b1',
+        logika: ['Istri tidak ikut radd, jadi bagiannya dikunci: 1/8 dari seluruh harta.', '7/8 sisanya untuk Siti dan Zahra dengan perbandingan bagian mereka 12 : 4 = 3 : 1.', '7/8 harus bisa dibagi 4 bagian (3 + 1), jadi penyebut 8 × 4 = 32.', 'Istri 32 ÷ 8 = 4. Sisa 28: Siti 28 × 3/4 = 21, Zahra 28 × 1/4 = 7.'],
+        hitung: [['Istri', '32 ÷ 8 = 4', '', 'a2', 'Aminah'], ['Sisa', '32 − 4 = 28 untuk Siti dan Zahra, 3 : 1'], ['Siti', '28 ÷ 4 × 3 = 21', '', 'a2', 'Siti'], ['Zahra', '28 ÷ 4 × 1 = 7', '', 'a2', 'Zahra'], ['Cek', '4 + 21 + 7 = 32', 'jumlah']],
+        jembatan: 'Harta Pak Ahmad selesai. Sekarang harta Budi.' },
+      { babak: 2, judul: 'Harta Budi', tanya: 'Budi punya harta sendiri. Siapa ahli warisnya?', dasar: 'Harta Budi (Rp 50.000.000 dari isianmu) dibagi ke keluarganya yang hidup.', dalil: ['istri18', 'ibu16', 'ibnuMasud'], kolom: 'b1',
         keluarga: [[1, 'Budi meninggalkan istri, ibu, putri, dan saudari.']], sorot: { Budi: 'mayit', Rina: 'fardh', Aminah: 'fardh', Zahra: 'fardh', Siti: 'ashabah', PEWARIS: 'meninggal' },
-        hitung: [['Asal', '24', 'jumlah'], ['Rina', '24 × 1/8 = 3', '', 'b1', 'Rina'], ['Aminah', '24 × 1/6 = 4', '', 'b1', 'Aminah'], ['Zahra', '24 × 1/2 = 12', '', 'b1', 'Zahra'], ['Siti', 'sisa 24 − 19 = 5', '', 'b1', 'Siti']] },
-      { babak: 2, judul: 'Bagian digabung', dasar: 'Rupiah dari tiap harta dijumlahkan per orang.', kolom: 'rp', keluarga: [[1, 'Aminah, Siti, dan Zahra menerima dari dua harta.']], sorot: { Aminah: 'fardh', Siti: 'fardh', Zahra: 'fardh', Rina: 'fardh' },
+        hitung: [['Asal', '24', 'jumlah'], ['Rina', '24 ÷ 8 = 3', '', 'b1', 'Rina'], ['Aminah', '24 ÷ 6 = 4', '', 'b1', 'Aminah'], ['Zahra', '24 ÷ 2 = 12', '', 'b1', 'Zahra'], ['Siti', 'sisa 24 − 19 = 5', '', 'b1', 'Siti']],
+        jembatan: 'Dua harta sudah dibagi. Tinggal dijumlahkan per orang.' },
+      { babak: 3, judul: 'Bagian digabung', tanya: 'Aminah, Siti, dan Zahra menerima dari dua harta. Berapa totalnya?', dasar: 'Rupiah dari tiap harta dijumlahkan per orang.', kolom: 'rp', keluarga: [[1, 'Aminah, Siti, dan Zahra menerima dari dua harta.']], sorot: { Aminah: 'fardh', Siti: 'fardh', Zahra: 'fardh', Rina: 'fardh' },
         hitung: [['Aminah', `${rupiah(bagi(JT300, 4, 32))} + ${rupiah(bagi(JT50, 4, 24))} = ${rupiah(bagi(JT300, 4, 32) + bagi(JT50, 4, 24))}`, '', 'rp', 'Aminah'], ['Siti', `${rupiah(bagi(JT300, 21, 32))} + ${rupiah(bagi(JT50, 5, 24))} = ${rupiah(bagi(JT300, 21, 32) + bagi(JT50, 5, 24))}`, '', 'rp', 'Siti'], ['Zahra', `${rupiah(bagi(JT300, 7, 32))} + ${rupiah(bagi(JT50, 12, 24))} = ${rupiah(bagi(JT300, 7, 32) + bagi(JT50, 12, 24))}`, '', 'rp', 'Zahra'], ['Rina', rupiah(bagi(JT50, 3, 24)), '', 'rp', 'Rina']] },
     ],
     selesai: [['Aminah', bagi(JT300, 4, 32) + bagi(JT50, 4, 24)], ['Siti', bagi(JT300, 21, 32) + bagi(JT50, 5, 24)], ['Zahra', bagi(JT300, 7, 32) + bagi(JT50, 12, 24)], ['Rina', bagi(JT50, 3, 24)]], kalimatSelesai: 'Dua harta dibagi terpisah, lalu digabung per orang.',
   },
 };
 
+// ═══ Linimasa: satu langkah → html kartu + deretan ketukan (satu sumber untuk layar dan ekspor video) ═══
+function susunLangkah(k, l, i) {
+  const ketukan = [], sudah = new Set();
+  const ketuk = (jenis, narasi, tambahan = {}) => { ketukan.push({ jenis, narasi, ms: durasi(narasi), ...tambahan }); return ketukan.length - 1; };
+  const ist = html => beriIstilah(html, sudah);
+  const babak = l.babak !== undefined && k.babak ? ` · ${k.babak[l.babak]}` : '';
+  let html = `<p class="ke">Langkah ${i + 1} dari ${k.langkah.length}${babak}</p><h3>${l.judul}</h3>`;
+  if (l.tanya) html += `<p class="k tanya" data-k="${ketuk('tanya', l.tanya)}">${ist(l.tanya)}</p>`;
+  html += `<div class="k bag dasar" data-k="${ketuk('dasar', polos(l.dasar))}"><p class="lbl"><b>1</b>Dasar · berlaku untuk semua kasus</p><p>${ist(l.dasar)}</p>${l.dalil ? dalil(l.dalil) : ''}</div>`;
+  const kel = l.keluarga.map(([ya, t]) => `<li class="k ${ya ? '' : 'tidak'}" data-k="${ketuk('keluarga', polos(t))}">${ya ? CEK : SILANG}<span>${ist(t)}</span></li>`);
+  html += `<div class="k bag keluarga" data-k="${ketukan.length - l.keluarga.length}"><p class="lbl"><b>2</b>Di keluarga ini</p><ul class="cek">${kel.join('')}</ul></div>`;
+  if (l.logika) {
+    const awal = ketukan.length;
+    const baris = l.logika.map(t => `<li class="k" data-k="${ketuk('logika', polos(t))}">${ist(t)}</li>`);
+    html += `<div class="k logika" data-k="${awal}"><p class="lbl">${LAMPU}Logikanya</p><ol>${baris.join('')}</ol></div>`;
+  }
+  if (l.batang) html += gambarBatang(l.batang, ketuk);
+  if (l.ringkas) html += `<div class="ringkas-babak"><b>${l.ringkas.length} babak diringkas</b><ol>${l.ringkas.map(r => `<li>${r}</li>`).join('')}</ol></div>`;
+  if (l.hitung.length) {
+    const awal = ketukan.length;
+    const baris = l.hitung.map(([lbl, isi, kelas, kolom, ids]) =>
+      `<li class="k ${kelas ?? ''}" data-k="${ketuk('hitung', polos(`${lbl}: ${isi}`), kolom ? { sel: { kolom, orang: ids ? ids.split(' ') : [] } } : {})}"><em>${lbl}</em>${ist(isi)}</li>`);
+    html += `<div class="k bag hitung" data-k="${awal}"><p class="lbl"><b>3</b>Hitungan</p><ol class="hitungan">${baris.join('')}</ol></div>`;
+  }
+  if (l.jembatan) html += `<p class="k jembatan" data-k="${ketuk('jembatan', l.jembatan)}">${l.jembatan}</p>`;
+  return { html, ketukan };
+}
+
+// Batang harta: kotak sebanyak max(asal, jadi, terpakai); bingkai = harta. 'aul: bingkai melebar; radd: bingkai menyempit.
+function gambarBatang(b, ketuk) {
+  const terpakai = b.bagian.reduce((a, [, n]) => a + n, 0), kotak = Math.max(b.asal, b.jadi ?? 0, terpakai);
+  const isian = b.bagian.flatMap(([, n, peran]) => Array(n).fill(peran));
+  const sel = Array.from({ length: kotak }, (_, j) => `<i class="${j < isian.length ? (j >= b.asal ? 'lebih' : isian[j]) : 'kosong'}"></i>`).join('');
+  const lebarAwal = b.asal / kotak * 100;
+  const narasi = `Harta digambar sebagai ${b.asal} kotak. ${b.bagian.map(([n, j]) => `${n} ${j}`).join(', ')}.${terpakai > b.asal ? ` Ada ${terpakai - b.asal} kotak yang tidak muat.` : terpakai < b.asal ? ` ${b.asal - terpakai} kotak tanpa pemilik.` : ''}`;
+  const kAwal = ketuk('batang', narasi);
+  const kJadi = b.jadi ? ketuk('batangJadi', b.ubah, { jadi: true }) : null;
+  return `<div class="k batang" data-k="${kAwal}" data-batang="${b.jadi ?? ''}" data-kotak="${kotak}"${kJadi !== null ? ` data-k-jadi="${kJadi}"` : ''}>
+    <p class="judul-b">Gambarnya</p>
+    <div class="rel"><div class="kotak" style="grid-template-columns:repeat(${kotak},1fr)">${sel}</div><div class="bingkai" style="width:calc(${lebarAwal}% + 6px)"><span>harta = ${b.asal} kotak</span></div></div>
+    <div class="ket-b">${b.bagian.map(([n, j, p]) => `<span><i style="background:${p === 'ashabah' ? '#7fbfa6' : '#f6a77f'}"></i>${n} ${j}</span>`).join('')}${terpakai > b.asal ? '<span><i style="background:repeating-linear-gradient(45deg,#f6a77f 0 3px,#fbd2bd 3px 6px)"></i>tidak muat</span>' : ''}${terpakai < b.asal ? '<span><i style="background:#fff;outline:1.5px dashed #b8c4b6"></i>tanpa pemilik</span>' : ''}</div>
+    <p class="ubah"></p></div>`;
+}
+
 // ═══ Render ═══
-let kunci = 'biasa', nomor = 0;
+let kunci = 'biasa', nomor = 0, ketukKini = -1, berjalan = false, jadwal = null, susunan = null;
 const $ = id => document.getElementById(id);
 const namaOrang = (k, id) => k.nama?.[id] ?? id;
+const geraHalus = !matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function gambarPohon(k, sorot) {
   if (!k.pohon) return '<p class="putar">Pohon 13 generasi: kamera mengikuti mayit di babak aktif (lihat mockup layar Hasil).</p>';
@@ -378,83 +613,188 @@ function gambarPohon(k, sorot) {
     return jenis === 'nikah' ? `<path class="g nikah" d="M${x1 + L} ${y1 + T / 2} H${x2}"/>` : `<path class="g" d="M${x1 + L / 2} ${y1 + T} V${(y1 + T + y2) / 2} H${x2 + L / 2} V${y2}"/>`; }).join('');
   const s = simpul.map(([id, label, x, y]) => { const peran = sorot[id] ?? '';
     return `<g class="sim ${peran}"><rect x="${x}" y="${y}" width="${L}" height="${T}" rx="12"/><text x="${x + 10}" y="${y + 17}">${label.split(' · ')[0]}</text><text class="sub" x="${x + 10}" y="${y + 31}">${label.split(' · ')[1] ?? 'almarhum'}${peran === 'terhalang' ? ', terhalang' : peran === 'tahan' ? ', ditahan' : ''}</text></g>`; }).join('');
-  return `<svg viewBox="0 0 ${lebar} ${tinggi}" role="img" aria-label="Pohon keluarga">${g}${s}</svg>`;
+  return `<svg viewBox="0 0 ${lebar} ${tinggi}" width="${lebar}" role="img" aria-label="Pohon keluarga">${g}${s}</svg>`;
 }
 
-function gambarTabel(k, sampai, kolomBaru, langkahIni) {
-  const terbuka = new Set(k.langkah.slice(0, sampai + 1).map(l => l.kolom).filter(Boolean));
-  const kolom = k.kolom.filter(([c]) => terbuka.has(c));
+const kolomLangkah = l => new Set([l.kolom, ...l.hitung.map(h => h[3])].filter(Boolean));
+
+function gambarTabel(k, sampai, langkahIni) {
   if (!k.baris.length) return '<p class="putar">Tabel munasakhat 13 kolom mayit; di aplikasi digambar per babak.</p>';
-  // Angka sel baru muncul tepat setelah baris hitungannya tampil di kartu.
-  const tunda = {};
-  (langkahIni?.hitung ?? []).forEach(([, , , c, ids], i) => { if (c) ids.split(' ').forEach(id => (tunda[id] = (i + 1) * JEDA_BARIS_MS)); });
-  const kepala = `<tr><th>Ahli waris</th>${kolom.map(([c, j, ket]) => `<th class="${c === kolomBaru ? 'baru' : ''}">${j}${ket ? `<small>${ket}</small>` : ''}</th>`).join('')}</tr>`;
-  const badan = k.baris.map(id => `<tr class="${k.sel.fardh?.[id] === 'terhalang' || id === 'Hasan' ? 'redup' : ''}"><td>${namaOrang(k, id)}</td>${kolom.map(([c]) =>
-    `<td class="${c === kolomBaru ? 'baru' : ''}">${c === kolomBaru ? `<span style="animation-delay:${tunda[id] ?? 0}ms">${k.sel[c][id] ?? ''}</span>` : k.sel[c][id] ?? ''}</td>`).join('')}</tr>`).join('');
-  const kaki = kolom.length ? `<tfoot><tr><td>Jumlah</td>${kolom.map(([c]) => `<td>${k.jumlah[c] ?? ''}</td>`).join('')}</tr></tfoot>` : '';
-  return kolom.length ? `<table>${`<thead>${kepala}</thead>`}<tbody>${badan}</tbody>${kaki}</table>` : '<p class="putar">Kolom tabel bertambah satu per langkah, mulai dari bagian awal.</p>';
+  const terbuka = new Set(k.langkah.slice(0, sampai + 1).flatMap(l => [...kolomLangkah(l)]));
+  const baru = langkahIni ? kolomLangkah(langkahIni) : new Set();
+  const kolom = k.kolom.filter(([c]) => terbuka.has(c));
+  if (!kolom.length) return '<p class="putar">Kolom tabel bertambah mulai dari bagian awal tiap orang.</p>';
+  // Sel '↑' digabung ke sel di atasnya (rowspan), seperti tabel di kitab.
+  const rentang = c => { const r = {}; let induk = null; k.baris.forEach(id => { if (k.sel[c][id] === '↑' && induk) r[induk]++; else { induk = id; r[id] = 1; } }); return r; };
+  const rentangKolom = Object.fromEntries(kolom.map(([c]) => [c, rentang(c)]));
+  const kepala = `<tr><th>Ahli waris</th>${kolom.map(([c, j, ket]) => `<th class="${baru.has(c) ? 'baru' : ''}">${j}${ket ? `<small>${ket}</small>` : ''}</th>`).join('')}</tr>`;
+  const badan = k.baris.map(id => `<tr class="${id === 'Hasan' ? 'redup' : ''}"><td>${namaOrang(k, id)}</td>${kolom.map(([c]) => {
+    const r = rentangKolom[c][id]; if (!r) return '';
+    const kosong = ['–', '', undefined].includes(k.sel[c][id]);
+    return `<td class="${baru.has(c) ? `baru ${kosong ? '' : 'tunggu'}` : ''} ${r > 1 ? 'gabung' : ''}" ${r > 1 ? `rowspan="${r}"` : ''} data-sel="${c}:${id}"><span>${k.sel[c][id] ?? ''}</span></td>`; }).join('')}</tr>`).join('');
+  const kaki = `<tfoot><tr><td>Jumlah</td>${kolom.map(([c]) => `<td class="${baru.has(c) ? 'baru tunggu' : ''}" data-sel="${c}:jumlah"><span>${k.jumlah[c] ?? ''}</span></td>`).join('')}</tr></tfoot>`;
+  return `<table><thead>${kepala}</thead><tbody>${badan}</tbody>${kaki}</table>`;
 }
 
-function gambarKartu(k, l, i) {
-  if (!l) {
-    const total = k.selesai.filter(s => !s[2]).reduce((a, s) => a + s[1], 0n);
-    return `<p class="ke">Selesai</p><h3>${k.kalimatSelesai}</h3>
-      ${k.selesai.length ? `<ul class="selesai-daftar">${k.selesai.map(([n, rp, tahan]) => `<li class="${tahan ?? ''}"><button class="tautan" style="text-decoration:none;font-weight:500">${n}</button><b>${rupiah(rp)}</b></li>`).join('')}</ul>
-      <p class="putar">Dibagikan sekarang: ${rupiah(total)}. Ketuk nama untuk penjelasan orang itu.</p>` : ''}
-      <div class="aksi-selesai"><button class="tautan">Kembali ke Hasil</button><button class="tautan" data-ke="0">Ulangi dari langkah 1</button></div>`;
-  }
-  const babak = l.babak !== undefined && k.babak ? ` · ${k.babak[l.babak]}` : '';
-  return `<p class="ke">Langkah ${i + 1} dari ${k.langkah.length}${babak}</p><h3>${l.judul}</h3>
-    <div class="bag dasar"><p class="lbl"><b>1</b>Dasar · berlaku untuk semua kasus</p><p>${l.dasar}</p>${l.dalil ? dalil(l.dalil) : ''}</div>
-    <div class="bag keluarga"><p class="lbl"><b>2</b>Di keluarga ini</p><ul class="cek">${l.keluarga.map(([ya, t]) => `<li class="${ya ? '' : 'tidak'}">${ya ? CEK : SILANG}<span>${t}</span></li>`).join('')}</ul></div>
-    ${l.ringkas ? `<div class="ringkas-babak"><b>${l.ringkas.length} babak diringkas</b><ol>${l.ringkas.map(r => `<li>${r}</li>`).join('')}</ol></div>` : ''}
-    ${l.hitung.length ? `<div class="bag hitung"><p class="lbl"><b>3</b>Hitungan</p><ol class="hitungan">${l.hitung.map(([lbl, isi, kelas], j) => `<li class="${kelas ?? ''}" style="animation-delay:${j * JEDA_BARIS_MS}ms"><em>${lbl}</em>${isi}</li>`).join('')}</ol>
-    <p class="putar" style="margin-top:6px"><button class="tautan" id="putarUlang">Putar ulang</button></p></div>` : ''}`;
+function gambarSelesai(k) {
+  const total = k.selesai.filter(s => !s[2]).reduce((a, s) => a + s[1], 0n);
+  return `<p class="ke">Selesai</p><h3>${k.kalimatSelesai}</h3>
+    ${k.selesai.length ? `<ul class="selesai-daftar">${k.selesai.map(([n, rp, tahan]) => `<li class="${tahan ?? ''}"><button class="tautan" style="text-decoration:none;font-weight:500">${n}</button><b>${rupiah(rp)}</b></li>`).join('')}</ul>
+    <p class="putar">Dibagikan sekarang: ${rupiah(total)}. Ketuk nama untuk penjelasan orang itu.</p>` : ''}
+    <div class="aksi-selesai"><button class="tautan">Kembali ke Hasil</button><button class="tautan" data-ke="0">Ulangi dari langkah 1</button></div>`;
 }
 
-function render() {
+// mainkan = true: ketukan berjalan dari awal. false: langkah langsung tampil lengkap (saat mundur atau lompat ke belakang).
+function render(mainkan = true) {
+  clearTimeout(jadwal);
   const k = KASUS[kunci], akhir = k.langkah.length, l = k.langkah[nomor];
   $('judulFokus').innerHTML = `Mode fokus<small>${k.judul}</small>`;
-  // Peta rantai: hanya untuk kasus berbabak (munasakhat, gharqa).
   $('rantai').style.display = k.babak ? '' : 'none';
   if (k.babak) $('rantai').innerHTML = k.babak.map((b, i) => `${i ? PANAH : ''}<button class="${i === k.babakRingkas ? 'ringkas' : ''}" aria-current="${l?.babak === i}" data-babak="${i}">${b}</button>`).join('');
-  $('titik').innerHTML = k.langkah.map((x, i) => `${i && x.babak !== k.langkah[i - 1].babak ? '<span class="pisah"></span>' : ''}<button class="${i < nomor ? 'lewat' : ''}" ${i === nomor ? 'aria-current="step"' : ''} data-ke="${i}" aria-label="Langkah ${i + 1}: ${x.judul}">${i + 1}</button>`).join('')
-    + `<span class="pisah"></span><button class="akhir ${nomor === akhir ? '' : ''}" ${nomor === akhir ? 'aria-current="step"' : ''} data-ke="${akhir}">Selesai</button>`;
+  $('titik').innerHTML = k.langkah.map((x, i) => `${i && x.babak !== k.langkah[i - 1].babak ? '<span class="pisah"></span>' : ''}<button class="${i < nomor ? 'lewat' : ''} ${x.babak !== undefined && x.babak === k.babakDasar ? 'dasar-babak' : ''}" ${i === nomor ? 'aria-current="step"' : ''} data-ke="${i}" aria-label="Langkah ${i + 1}: ${x.judul}">${i + 1}</button>`).join('')
+    + `<span class="pisah"></span><button class="akhir" ${nomor === akhir ? 'aria-current="step"' : ''} data-ke="${akhir}">Selesai</button>`;
   const sorot = l?.sorot ?? Object.fromEntries((k.selesai ?? []).map(([n]) => [n, 'ashabah']));
   $('pohon').innerHTML = gambarPohon(k, sorot);
   $('pohonLembar').innerHTML = gambarPohon(k, sorot);
   $('legenda').innerHTML = [['var(--orange-soft)', 'bagian pasti'], ['var(--mint)', 'sisa'], ['var(--kuning)', 'ditahan'], ['#0f3a38', 'mayit dibahas']].map(([w, t]) => `<span><i style="background:${w}"></i>${t}</span>`).join('');
   $('pita').innerHTML = Object.entries(sorot).map(([id, p]) => `<span class="${p}">${namaOrang(k, id === 'PEWARIS' ? 'Almarhum' : id)}</span>`).join('') || '<span>Semua orang</span>';
-  $('tabel').innerHTML = gambarTabel(k, Math.min(nomor, akhir - 1), l?.kolom, l);
-  $('ketTabel').textContent = k.ketTabel ?? '';
-  $('kartu').innerHTML = gambarKartu(k, l, nomor);
+  $('tabel').innerHTML = gambarTabel(k, Math.min(nomor, akhir - 1), l);
+  $('ketTabel').textContent = '';
   $('posisi').textContent = nomor === akhir ? 'Selesai' : `${nomor + 1} / ${akhir}`;
   $('mundur').style.visibility = nomor ? '' : 'hidden';
   $('maju').style.visibility = nomor === akhir ? 'hidden' : '';
   $('maju').firstChild.textContent = nomor === akhir - 1 ? 'Selesai ' : 'Lanjut ';
+  tutupPop();
+  if (!l) { susunan = null; $('kartu').innerHTML = gambarSelesai(k); $('ketukan').innerHTML = ''; $('takarir').textContent = k.kalimatSelesai; aturJeda(false, true); return; }
+  susunan = susunLangkah(k, l, nomor);
+  $('kartu').innerHTML = susunan.html;
+  $('ketukan').innerHTML = susunan.ketukan.map(() => '<i></i>').join('');
+  ketukKini = -1;
+  if (mainkan) { berjalan = true; majuKetuk(); } else lewatiKeAkhir();
+}
+
+function tampilkanKetuk(n, animasi) {
+  const b = susunan.ketukan[n], kartu = $('kartu');
+  kartu.querySelectorAll('.kini').forEach(e => e.classList.remove('kini'));
+  kartu.querySelectorAll(`[data-k="${n}"]`).forEach(e => { e.classList.add('tampak'); if (!e.querySelector('.k')) e.classList.add('kini'); });
+  if (b.jadi) jadikanBatang(kartu.querySelector(`[data-k-jadi="${n}"]`), b.narasi);
+  if (b.sel) isiSel(b.sel, kartu.querySelector(`[data-k="${n}"]`), animasi);
+  $('takarir').textContent = b.narasi;
+  [...$('ketukan').children].forEach((e, j) => e.classList.toggle('lewat', j <= n));
+  const kini = kartu.querySelector('.kini');
+  if (animasi && kini) kini.scrollIntoView({ block: 'nearest', behavior: geraHalus ? 'smooth' : 'auto' });
+}
+
+function majuKetuk() {
+  if (!susunan || ketukKini >= susunan.ketukan.length - 1) return selesaiLangkah();
+  ketukKini++;
+  tampilkanKetuk(ketukKini, true);
+  aturJeda(true);
+  jadwal = setTimeout(() => berjalan && majuKetuk(), susunan.ketukan[ketukKini].ms);
+}
+
+const bukaSemuaSel = () => $('tabel').querySelectorAll('td.tunggu').forEach(td => td.classList.remove('tunggu'));
+
+function selesaiLangkah() {
+  bukaSemuaSel(); berjalan = false; aturJeda(false, true);
+  if ($('terus').checked && nomor < KASUS[kunci].langkah.length) jadwal = setTimeout(() => { nomor++; render(true); }, KETUK_MIN_MS);
+}
+
+function lewatiKeAkhir() {
+  clearTimeout(jadwal);
+  while (susunan && ketukKini < susunan.ketukan.length - 1) { ketukKini++; tampilkanKetuk(ketukKini, false); }
+  $('kartu').querySelectorAll('.kini').forEach(e => e.classList.remove('kini'));
+  bukaSemuaSel(); berjalan = false; aturJeda(false, true);
+}
+
+function aturJeda(sedangJalan, habis = false) {
+  $('jeda').innerHTML = sedangJalan ? IKON_JEDA : habis ? IKON_ULANG : IKON_PUTAR;
+  $('jeda').setAttribute('aria-label', sedangJalan ? 'Jeda' : habis ? 'Putar ulang langkah ini' : 'Lanjutkan');
+  $('lewati').style.visibility = habis ? 'hidden' : '';
+}
+
+function tekanJeda() {
+  if (!susunan) return;
+  if (berjalan) { berjalan = false; clearTimeout(jadwal); aturJeda(false); }
+  else if (ketukKini >= susunan.ketukan.length - 1) render(true);
+  else { berjalan = true; majuKetuk(); }
+}
+
+// Angka berpindah dari baris hitungan ke sel tabel, lalu sel menyala.
+function isiSel({ kolom, orang }, dari, animasi) {
+  const tabel = $('tabel');
+  const sasaran = orang.length ? orang.map(id => tabel.querySelector(`[data-sel="${kolom}:${id}"]`)).filter(Boolean) : [...tabel.querySelectorAll(`[data-sel^="${kolom}:"]`)];
+  const jumlahSel = tabel.querySelector(`[data-sel="${kolom}:jumlah"]`);
+  const nyalakan = td => { td.classList.remove('tunggu'); if (animasi) { td.classList.remove('isi-baru'); void td.offsetWidth; td.classList.add('isi-baru'); } };
+  const sisaTunggu = () => [...tabel.querySelectorAll(`[data-sel^="${kolom}:"]`)].filter(td => td !== jumlahSel && td.classList.contains('tunggu')).length;
+  sasaran.forEach(td => {
+    if (!animasi || !geraHalus || !dari) return nyalakan(td);
+    const a = dari.getBoundingClientRect(), b = td.getBoundingClientRect();
+    const chip = document.createElement('span'); chip.className = 'terbang'; chip.textContent = td.textContent.trim(); document.body.append(chip);
+    const awalX = a.right - 60, awalY = a.top + a.height / 2 - 12, akhirX = b.left + b.width / 2 - chip.offsetWidth / 2, akhirY = b.top + b.height / 2 - 12;
+    chip.animate([{ transform: `translate(${awalX}px,${awalY}px) scale(1)` }, { transform: `translate(${(awalX + akhirX) / 2}px,${Math.min(awalY, akhirY) - 40}px) scale(1.1)`, offset: .5 }, { transform: `translate(${akhirX}px,${akhirY}px) scale(.9)`, opacity: .3 }],
+      { duration: TERBANG_MS, easing: 'cubic-bezier(.5,0,.3,1)' }).onfinish = () => { chip.remove(); nyalakan(td); if (!sisaTunggu() && jumlahSel) nyalakan(jumlahSel); };
+  });
+  if (!sisaTunggu() && jumlahSel && (!animasi || !geraHalus)) nyalakan(jumlahSel);
+  if (!sisaTunggu() && jumlahSel && !sasaran.length) nyalakan(jumlahSel);
+}
+
+function jadikanBatang(el, teks) {
+  if (!el) return;
+  const jadi = +el.dataset.batang, kotak = +el.dataset.kotak, bingkai = el.querySelector('.bingkai');
+  bingkai.style.width = `calc(${jadi / kotak * 100}% + 6px)`;
+  bingkai.querySelector('span').textContent = `harta = ${jadi} kotak`;
+  el.querySelectorAll('.kotak i').forEach((i, j) => { if (i.classList.contains('lebih')) i.className = 'fardh'; if (j >= jadi && i.classList.contains('kosong')) i.style.visibility = 'hidden'; });
+  if (jadi < kotak) el.querySelector('.kotak').style.gridTemplateColumns = `repeat(${jadi},1fr) ${'0fr '.repeat(kotak - jadi)}`;
+  el.querySelector('.ubah').textContent = teks;
+}
+
+// ═══ Popover istilah ═══
+function bukaPop(tombol) {
+  const [nama, ar, arti] = ISTILAH[tombol.dataset.istilah], pop = $('pop');
+  pop.innerHTML = `<b>${nama}<span class="ar" lang="ar">${ar}</span></b>${arti}`;
+  pop.classList.add('buka');
+  const r = tombol.getBoundingClientRect(), lebar = pop.offsetWidth;
+  pop.style.left = `${Math.max(8, Math.min(innerWidth - lebar - 8, r.left))}px`;
+  pop.style.top = `${r.bottom + 6 + pop.offsetHeight > innerHeight ? r.top - pop.offsetHeight - 6 : r.bottom + 6}px`;
+}
+const tutupPop = () => $('pop').classList.remove('buka');
+
+function linimasaKasus(k) {
+  return { kasus: k.judul, langkah: k.langkah.map((l, i) => ({ nomor: i + 1, judul: l.judul, ketukan: susunLangkah(k, l, i).ketukan })) };
 }
 
 $('tab').innerHTML = Object.entries(KASUS).map(([c, k]) => `<button role="tab" data-kasus="${c}" aria-selected="${c === kunci}">${k.tab}</button>`).join('');
 document.addEventListener('click', e => {
-  const t = e.target.closest('button'); if (!t) return;
+  const t = e.target.closest('button');
+  if (!t || !t.classList.contains('istilah')) tutupPop();
+  if (!t) return;
+  const sebelum = nomor;
+  if (t.classList.contains('istilah')) return bukaPop(t);
   if (t.dataset.kasus) { kunci = t.dataset.kasus; nomor = 0; document.querySelectorAll('[data-kasus]').forEach(b => b.setAttribute('aria-selected', b === t)); }
   else if (t.dataset.ke) nomor = +t.dataset.ke;
   else if (t.dataset.babak) nomor = KASUS[kunci].langkah.findIndex(l => l.babak === +t.dataset.babak);
   else if (t.id === 'maju') nomor++;
   else if (t.id === 'mundur') nomor--;
+  else if (t.id === 'jeda') return tekanJeda();
+  else if (t.id === 'lewati') return lewatiKeAkhir();
   else if (t.id === 'bukaPohon') return $('lembar').classList.add('buka');
   else if (t.id === 'tutupPohon') return $('lembar').classList.remove('buka');
+  else if (t.id === 'lihatLinimasa') { $('isiLinimasa').textContent = JSON.stringify(linimasaKasus(KASUS[kunci]), null, 1); return $('dlgLinimasa').showModal(); }
+  else if (t.id === 'tutupLinimasa') return $('dlgLinimasa').close();
   else if (t.id === 'layarPenuh') return document.fullscreenElement ? document.exitFullscreen() : document.querySelector('.fokus').requestFullscreen?.();
-  else if (t.id !== 'putarUlang') return;
-  render();
+  else return;
+  render(t.dataset.kasus !== undefined || nomor > sebelum || nomor === 0);
 });
 document.addEventListener('keydown', e => {
+  if (e.target.closest('input,dialog')) return;
   const akhir = KASUS[kunci].langkah.length;
-  if (e.key === 'ArrowRight' && nomor < akhir) { nomor++; render(); }
-  if (e.key === 'ArrowLeft' && nomor > 0) { nomor--; render(); }
-  if (e.key === 'Escape') $('lembar').classList.remove('buka');
+  if (e.key === 'ArrowRight' && nomor < akhir) { nomor++; render(true); }
+  if (e.key === 'ArrowLeft' && nomor > 0) { nomor--; render(false); }
+  if (e.key === ' ') { e.preventDefault(); tekanJeda(); }
+  if (e.key === 'Escape') { $('lembar').classList.remove('buka'); tutupPop(); }
 });
-render();
+render(true);
 </script>
 </body>
 </html>
