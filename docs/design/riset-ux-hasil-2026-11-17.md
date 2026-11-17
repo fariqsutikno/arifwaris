@@ -880,3 +880,10 @@ daftar. Cerita lengkap tetap ada di ubin Jenis masalah (baris Mayit) dan aliran.
 ### 23e. Urutan kerja berikutnya (pemilik, 2026-11-17)
 
 Layar Hasil (ini) → **mode fokus** (langkah demi langkah pembagian) → penyempurnaan informasi → mode AI (cerita) dan seterusnya.
+
+### 23f. Diterapkan ke mockup (pemilik: "coba buat mockup nya")
+
+- HMW-19 A: "Tentang kasus ini" KASUS dan HITUNGAN memakai satu pola baris (label · nilai tebal · keterangan), pensil di kanan untuk madzhab, harta, ahli waris, pembulatan. Baris Keadaan pindah ke Jenis masalah.
+- HMW-20 A: ubin "Jenis masalah" lima baris seragam (Jenis kasus · Kondisi · Mayit · Yang belum pasti · Yang dibagi); chip dihapus; "Keadaan 3", "Keadaan 1: serentak", "'Adilah", "Munasakhat", "Haml", "Mafqud", "Gharqa" bisa disorot.
+- HMW-21 A: judul "Pembagian harta {almarhum}" + status templat + label fakta ("3 mayit berurutan", "1 janin · 1 hilang"); tanpa kalimat bebas.
+Dicek: semua tab tanpa galat; laptop 1200 px dan HP 375 px tanpa gulir mendatar; pensil pembulatan membuka modal.
