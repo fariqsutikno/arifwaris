@@ -1370,3 +1370,11 @@ Skor: 3·3·1 **(rekomendasi, dibangun bertahap)**. Urutan pembuatan: Potong kue
 3. Ekspor video: mulai dari rekam di perangkat (gratis), server belakangan?
 
 Setelah dijawab: mockup storyboard mode sinema untuk kasus Biasa dan 'Aul dengan templat Potong kue, Potong lagi, dan Kue kurang, lengkap dengan narasi bersuara dari browser.
+
+### 29e. Keputusan pemilik (2026-11-18)
+
+- Nama tingkat Tahap (besar) dan Langkah (kecil): dipakai.
+- **Tidak semua dianalogikan.** Gambar pembagian hanya di bagian yang memang butuh: asal masalah, tashih, 'aul, radd, dasar munasakhat (bagian mayit dibagi lagi), taqdir, dan rupiah. Bagian lain (dalil, siapa terhalang) memakai pohon, tabel, atau papan teks.
+- **Bentuknya kotak, bukan kue**, seperti batang di mockup putaran 2. Templat di 29c tetap dipakai sebagai daftar adegan, dengan "kue" dibaca sebagai "kotak harta".
+- **Bilangan besar tidak digambar sebagai ratusan kotak kecil.** Kotak menjadi wakil: 72 = 24 kotak yang masing-masing dibelah 3; 288 = 24 kotak dengan label "tiap kotak = 12 potong". Yang ditekankan adalah apa yang sedang dilakukan (memotong ulang, menyamakan potongan), bukan jumlah persisnya.
+- Ekspor video: mulai dari rekam di perangkat.
