@@ -20,7 +20,7 @@ function Uji({ awal, tujuan = 'hitung' }: { awal: Kasus; tujuan?: 'hitung' | 'be
   const kirim = (aksi: Aksi) => { if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
   return <Hasil kasus={kasus} idSesi="s" tujuan={tujuan} kirim={kirim} />;
 }
-const bukaLayarPenuh = () => fireEvent.click(screen.getByRole('button', { name: 'Buka pohon keluarga layar penuh' }));
+const bukaLayarPenuh = () => fireEvent.click(screen.getByRole('button', { name: 'Layar penuh' }));
 
 describe('jalan pintas tambah anak di pohon layar penuh', () => {
   it('tombol + muncul untuk keponakan wafat di mode hitung', () => {

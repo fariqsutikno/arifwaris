@@ -41,12 +41,12 @@ describe('layar hasil', () => {
     render(<Uji awal={prototipe()} />);
     expect(screen.getByRole('heading', { name: 'Nah, ini pembagiannya' })).toBeTruthy();
     expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);   // ibu dan ayah
-    expect(within(screen.getByRole('region', { name: 'Tidak mendapat bagian' })).getByText(/Terhalang oleh Anak laki-laki dan Ayah/)).toBeTruthy();
+    expect(within(screen.getByRole('region', { name: /^Tidak mendapat bagian/ })).getByText(/Terhalang oleh Anak laki-laki dan Ayah/)).toBeTruthy();
   });
 
   it('kartu hanya ada bila kasusnya memuatnya: tanpa yang terhalang dan tanpa potongan, tidak ada kartu Tidak mendapat bagian maupun Harta', () => {
     render(<Uji awal={c1601()} />);
-    expect(screen.queryByRole('region', { name: 'Tidak mendapat bagian' })).toBeNull();
+    expect(screen.queryByRole('region', { name: /^Tidak mendapat bagian/ })).toBeNull();
     expect(screen.queryByRole('region', { name: 'Harta yang dibagi' })).toBeNull();
     expect(screen.queryByText('Segera hadir')).toBeNull();
     // Harta tetap bisa diubah dari kartu Pembagian.
@@ -54,20 +54,20 @@ describe('layar hasil', () => {
     expect(screen.getByRole('dialog', { name: 'Ubah harta peninggalan' })).toBeTruthy();
   });
 
-  it('urutan mengikuti alur berpikir: pembagian, yang tidak dapat, harta, tindak lanjut, lalu cara menghitung; aksi sekunder berupa tautan (tanpa bar menempel)', () => {
+  it('urutan bento mengikuti acuan: pembagian, jenis masalah, tentang, pohon & tabel, bagikan, selanjutnya, pelajari; aksi sekunder berupa tautan (tanpa bar menempel)', () => {
     render(<Uji awal={prototipe()} />);
     const judul = [...document.querySelectorAll('.tata-hasil h2')].map(isi => isi.textContent);
-    expect(judul.slice(0, 7)).toEqual(['Pembagian', 'Tidak mendapat bagian', 'Harta yang dibagi', 'Habis ini ngapain?', 'Pelajari langkah perhitungan', 'Tabel faraidh', 'Tentang kasus ini']);
+    expect(judul).toEqual(['Pembagian', 'Jenis masalah', 'Tentang kasus ini', 'Pohon keluarga dan tabel faraidh', 'Bagikan dan simpan', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
     expect(document.querySelector('.bar-bawah')).toBeNull();
     expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Reset skenario' })).toBeTruthy();
-    expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // statistik hero diringkas; angka utuh di kartu
+    expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // ubin hero diringkas; angka utuh di daftar
   });
 
   it('pembulatan: kartu muncul bila tidak pas, pilihan Rp 1.000 menghitung ulang lewat engine', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(within(pembagian()).getByRole('radio', { name: /Rp 1.000/ }));
     expect(within(pembagian()).getAllByText('Rp 16.666.000').length).toBe(2);
-    expect(within(pembagian()).getByText('Rp 2.000')).toBeTruthy();
+    expect(within(pembagian()).getAllByText('Rp 2.000').length).toBeGreaterThan(0);
   });
 
   it('kasus yang sudah bulat tidak menampilkan kartu pembulatan maupun selisih', () => {
@@ -80,15 +80,14 @@ describe('layar hasil', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Sembunyikan nominal' }));
     expect(within(pembagian()).queryByText('Rp 16.666.666')).toBeNull();
-    expect(within(pembagian()).getAllByText('1/6').length).toBeGreaterThan(0);
+    expect(within(pembagian()).getAllByText(/^1\/6 ·/).length).toBeGreaterThan(0);
   });
 
   it('bentuk pecahan bisa diganti ke penyebut sama', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Atur tampilan' }));
-    fireEvent.click(screen.getByRole('radio', { name: /Penyebut sama/ }));
-    expect(within(pembagian()).getAllByText('12/72').length).toBeGreaterThanOrEqual(2);
-    expect(within(pembagian()).queryAllByText('1/6')).toHaveLength(0);
+    fireEvent.click(screen.getByRole('radio', { name: 'Saham' }));
+    expect(within(pembagian()).getAllByText(/^12\/72 ·/).length).toBeGreaterThanOrEqual(2);
+    expect(within(pembagian()).queryAllByText(/^1\/6 ·/)).toHaveLength(0);
   });
 
   it('mode belajar menyembunyikan semua jawaban sampai diminta', () => {
@@ -166,19 +165,19 @@ describe('layar hasil', () => {
   it('hero mode hitung memuat statistik; mode belajar yang masih menebak menyembunyikannya; body diberi penanda halaman', () => {
     const { unmount } = render(<Uji awal={prototipe()} />);
     const hero = document.querySelector('.hero-hasil')!;
-    expect(hero.textContent).toMatch(/Total harta/);
-    expect(hero.textContent).toMatch(/Menerima bagian/);
+    expect(hero.textContent).toMatch(/Harta dibagi/);
+    expect(hero.textContent).toMatch(/Penerima/);
     expect(document.body.classList.contains('layar-hasil')).toBe(true);
     unmount();
     expect(document.body.classList.contains('layar-hasil')).toBe(false);
     render(<Uji awal={prototipe()} tujuan="belajar" />);
-    expect(document.querySelector('.hero-hasil')!.textContent).not.toMatch(/Total harta/);
+    expect(document.querySelector('.hero-hasil')!.textContent).not.toMatch(/Harta dibagi/);
   });
 
-  it('pohon di hero hanya pratinjau (tidak bisa diketuk per orang); layar penuh menutup dengan Escape', () => {
+  it('pohon di ubin pohon & tabel; layar penuh menutup dengan Escape', () => {
     render(<Uji awal={prototipe()} />);
-    expect(document.querySelector('.pratinjau-isi')?.hasAttribute('inert')).toBe(true);
-    fireEvent.click(screen.getByRole('button', { name: 'Buka pohon keluarga layar penuh' }));
+    expect(document.querySelector('.hero-hasil .pohon')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Layar penuh' }));
     expect(screen.getByRole('dialog', { name: 'Pohon keluarga' })).toBeTruthy();
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(screen.queryByRole('dialog', { name: 'Pohon keluarga' })).toBeNull();
@@ -198,12 +197,11 @@ describe('layar hasil', () => {
     expect(within(screen.getByRole('dialog')).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
   });
 
-  it('harta yang dibagi disusun seperti hitungan, potongan bertanda minus, tanpa bar komposisi', () => {
+  it('Tentang kasus ini merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {
     render(<Uji awal={prototipe()} />);
-    const harta = screen.getByRole('region', { name: 'Harta yang dibagi' });
-    expect(within(harta).getByText('−Rp 2.000.000')).toBeTruthy();
-    expect(within(harta).getAllByText('Rp 100.000.000').length).toBeGreaterThan(0);
-    expect(harta.querySelector('.alir')).toBeNull();
+    const tentang = screen.getByRole('region', { name: 'Tentang kasus ini' });
+    expect(tentang.textContent).toMatch(/Kotor Rp 110\.000\.000 − jenazah Rp 2\.000\.000 − hutang Rp 3\.000\.000/);
+    expect(within(tentang).getAllByText('Rp 100.000.000').length).toBeGreaterThan(0);
   });
 
   it('ubah harta cepat dari layar hasil: pratinjau, lalu simpan; hutang dan wasiat tidak berubah', () => {
@@ -249,8 +247,8 @@ describe('layar hasil', () => {
 
   it('hanya istri: hasil tetap tampil, sisa ke dzawil arham / baitul mal', () => {
     render(<Uji awal={buat(['ISTRI'], { kotor: 4_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n })} />);
-    expect(within(pembagian()).getByText(/Sisa: dzawil arham \/ baitul mal/)).toBeTruthy();
-    expect(within(pembagian()).getByText('Rp 3.000.000')).toBeTruthy();
+    expect(within(pembagian()).getAllByText(/Sisa: dzawil arham \/ baitul mal/).length).toBeGreaterThan(0);
+    expect(within(pembagian()).getAllByText('Rp 3.000.000').length).toBeGreaterThan(0);
   });
 
   it('dzawil arham (khalah + \'ammah, kasus 16.24) berlabel dzawil arham, bukan ashabah', () => {
@@ -295,7 +293,7 @@ describe('layar hasil', () => {
 
   it('langkah perhitungan: satu per satu dengan kotak "Kenapa begitu?"', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(screen.getByRole('button', { name: /Pelajari langkah perhitungan/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
     expect(screen.getByText(/Langkah 1 dari/)).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /Berikutnya/ }));
     expect(screen.getByText(/Langkah 2 dari/)).toBeTruthy();
@@ -316,7 +314,7 @@ describe('layar hasil', () => {
 
   it('mode fokus: maju per sub-langkah lewat Lanjut, hasil akhir menampilkan hitungan, animasi bisa dimatikan', () => {
     render(<Uji awal={c1601()} />);
-    fireEvent.click(screen.getByRole('button', { name: /Pelajari langkah perhitungan/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
     fireEvent.click(screen.getByRole('button', { name: /Mode fokus/ }));
     const panel = () => document.querySelector('.panel-hitung')!;
     const awal = panel().textContent;
@@ -340,17 +338,16 @@ describe('layar hasil', () => {
     expect(screen.getByRole('alert').textContent).toMatch(/belum bisa dihitung/);
   });
 
-  it('tombol Simpan menyimpan kasus dan berganti jadi status Tersimpan', () => {
+  it('Simpan, lanjut nanti menyimpan kasus lalu hilang dari Bagikan dan simpan', () => {
     localStorage.clear();
     render(<Uji awal={prototipe()} idSesi="sesi-simpan" />);
-    fireEvent.click(screen.getByRole('button', { name: /Simpan/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Simpan, lanjut nanti/ }));
     expect(semuaTersimpan()).toHaveLength(0);
     const dialog = screen.getByRole('dialog');
     fireEvent.change(within(dialog).getByLabelText('Nama kasus'), { target: { value: 'Keluarga X' } });
     fireEvent.click(within(dialog).getByRole('button', { name: 'Simpan' }));
     expect(semuaTersimpan()).toHaveLength(1);
     expect(semuaTersimpan()[0]!.judul).toBe('Keluarga X');
-    expect(screen.getByText('Tersimpan')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: /Simpan/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Simpan, lanjut nanti/ })).toBeNull();
   });
 });

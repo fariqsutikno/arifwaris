@@ -48,7 +48,7 @@ describe('pilihan madzhab di hasil', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Pakai' }));
     expect(screen.queryByRole('dialog', { name: 'Pilih madzhab' })).toBeNull();
     expect(screen.getByText('Menurut madzhab Hanbali')).toBeTruthy();
-    expect(screen.getByText(/Madzhab Hanbali di sini mengikuti nukilan Lahim dan Ithraa/)).toBeTruthy();
+    expect(screen.getAllByText(/Madzhab Hanbali di sini mengikuti nukilan Lahim dan Ithraa/).length).toBeGreaterThan(0);
     expect(screen.getAllByText("berbeda dari Syafi'i").length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole('button', { name: 'ganti madzhab' }));

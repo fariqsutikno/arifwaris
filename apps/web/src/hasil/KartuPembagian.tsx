@@ -1,21 +1,22 @@
-// Kartu Pembagian (selalu terbuka): daftar per orang (avatar, asal bagian, nominal, pecahan, persen),
-// pensil (ubah ahli waris), ikon mata (sembunyikan nominal), panel atur tampilan, dan kartu pembulatan yang muncul hanya bila ada angka tidak bulat.
+// Daftar "Siapa menerima berapa" (acuan-hasil-final.html): kelompok Penerima dan Tidak mendapat bagian, baris tanpa alasan
+// (alasan ada di modal orang), sakelar Fardh/Saham untuk bentuk pecahan, lalu penjumlahan sampai harta yang dibagi.
+// Ikon pensil (ubah ahli waris) dan mata (sembunyikan nominal) tetap. Pembulatan dilipat, hanya bila ada angka tidak bulat.
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
-import { useState } from 'react';
 import { AvatarOrang } from './AvatarOrang';
+import { warnaOrang } from './warnaOrang';
+import { jenisDari } from '../checklist';
 import { formatRupiah } from '../format';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
-import type { BentukPecahan, RingkasanHasil } from './ringkasan';
+import type { BentukPecahan, Penerima, RingkasanHasil, Terhalang } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
 import { Confetti } from '../ui/Confetti';
 import { KartuTebak, UmpanBalikBenar } from './KartuTebak';
-import { PitaBagian } from './PitaBagian';
 import { useAtributOrang } from './sorot';
 import { Ikon } from '../ui/Ikon';
-import { t } from '../terjemah';
+import { angka, t } from '../terjemah';
 
-export interface PengaturanTampil { pecahan: boolean; persen: boolean; bentuk: BentukPecahan }
+export interface PengaturanTampil { bentuk: BentukPecahan }
 
 interface Props {
   ringkasan: RingkasanHasil;
@@ -37,34 +38,46 @@ interface Props {
   /** Orang yang bagiannya berbeda dari Syafi'i menurut madzhab terpilih. */
   idBerbeda?: ReadonlySet<string>;
   saatUbahAhliWaris?: (() => void) | undefined;
-  /** Diisi hanya bila kartu Harta tidak tampil (tidak ada potongan). */
+  /** Diisi hanya bila tidak ada potongan harta (selain itu harta diubah dari Tentang kasus ini). */
   saatUbahHarta?: (() => void) | undefined;
 }
 
+/** Peran di bawah nama ("Istri"), kecuali namanya memang sudah peran itu. */
+const peranDari = (orang: { nama: string; kunci: Penerima['kunci'] }) => {
+  const label = orang.kunci && jenisDari(orang.kunci)?.label;
+  return label && !orang.nama.startsWith(label) ? label : undefined;
+};
+
 export function KartuPembagian(props: Props) {
   const { ringkasan, pengaturan, sembunyiNominal, sedangMenebak } = props;
-  const [aturTerbuka, setAturTerbuka] = useState(false);
-  const atribut = useAtributOrang();
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
+  const totalDiterima = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, 0n);
+  const totalSisaKeluar = ringkasan.daftarSisaKeluar.reduce((jumlah, sisa) => jumlah + sisa.nominal, 0n);
 
   return (
-    <section className="kartu-sisi kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
+    <section className="ubin-h kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <div className="judul-kartu">
           <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
-          {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. Tanpa kartu Harta (tidak ada potongan), harta diubah dari sini. */}
+          {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. */}
           <p className="sub-kartu">
-            {t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) })}
+            {sedangMenebak ? t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) }) : t('hasil.ketuk_nama_penjelasan')}
             {props.saatUbahHarta && <> <button type="button" className="tautan-aksi tautan-sebaris" onClick={props.saatUbahHarta}>{t('hitung.ubah_harta')}</button></>}
           </p>
         </div>
         <div className="alat-pembagian">
+          {!sedangMenebak && (
+            <div className="segmen" role="radiogroup" aria-label={t('hitung.bentuk_pecahan')}>
+              <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sederhana'} onClick={() => props.saatUbahPengaturan({ bentuk: 'sederhana' })}>{t('hasil.fardh')}</button>
+              <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sama'} onClick={() => props.saatUbahPengaturan({ bentuk: 'sama' })}>{t('hasil.saham')}</button>
+            </div>
+          )}
           {props.saatUbahAhliWaris && (
             <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('hitung.ubah_ahli_waris')} title={t('hitung.ubah_ahli_waris')}>
               <Ikon nama="pensil" />
             </button>
           )}
-          {!sedangMenebak && <>
+          {!sedangMenebak && (
             <button type="button" className="tombol-ikon" aria-pressed={sembunyiNominal} onClick={props.saatSembunyi}
               aria-label={sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')} title={sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
@@ -72,12 +85,7 @@ export function KartuPembagian(props: Props) {
                 {sembunyiNominal && <path d="M4 4l16 16" />}
               </svg>
             </button>
-            <button type="button" className="tombol-ikon" aria-expanded={aturTerbuka} onClick={() => setAturTerbuka(!aturTerbuka)} aria-label={t('hitung.atur_tampilan')} title={t('hitung.atur_tampilan')}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
-                <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" /><circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" />
-              </svg>
-            </button>
-          </>}
+          )}
         </div>
       </header>
 
@@ -86,44 +94,38 @@ export function KartuPembagian(props: Props) {
       ) : (
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
-          {aturTerbuka && <PanelAtur pengaturan={pengaturan} saatUbah={props.saatUbahPengaturan} />}
-          <PitaBagian ringkasan={ringkasan} saatPilihOrang={props.saatPilihOrang} />
-          <p className="petunjuk-daftar">{t('hitung.ketuk_nama_untuk_alasan')}</p>
+          <JudulKelompok judul={t('hasil.penerima')} jumlah={ringkasan.penerima.length} />
           <ul className="daftar-bagian">
-            {ringkasan.penerima.map(orang => {
-              const { className, ...pemicu } = atribut(orang.id);
-              return (
-                <li key={orang.id}>
-                  <button type="button" {...pemicu} className={['baris-bagian', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
-                    <AvatarOrang nama={orang.nama} ukuran={42} />
-                    <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small>{props.idBerbeda?.has(orang.id) && <small className="label-beda-madzhab">{t('hitung.berbeda_dari_syafii')}</small>}</span>
-                    <span className="jumlah-bagian">
-                      <span className="angka">{uang(orang.nominal)}</span>
-                      <span className="sub-bagian">
-                        {pengaturan.pecahan && <span className="frac">{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
-                        {pengaturan.persen && <span className="pil-persen">{persenTeks(orang.saham, ringkasan.penyebut)}</span>}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
+            {ringkasan.penerima.map(orang => (
+              <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} berbeda={!!props.idBerbeda?.has(orang.id)} saatPilih={props.saatPilihOrang}
+                uang={uang(orang.nominal)} pecahan={<>{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(orang.saham, ringkasan.penyebut)}</>} />
+            ))}
             {ringkasan.daftarSisaKeluar.map(sisa => (
               <li key={sisa.id}>
                 <div className="baris-bagian sisa">
                   <span className="titik putus" aria-hidden="true" />
                   <span className="nama-bagian">{sisa.judul}<small>{sisa.keterangan}</small></span>
-                  <span className="jumlah-bagian">
-                    <span className="angka">{uang(sisa.nominal)}</span>
-                    <span className="sub-bagian">
-                      {pengaturan.pecahan && <span className="frac">{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)}</span>}
-                      {pengaturan.persen && <span className="pil-persen">{persenTeks(sisa.saham, ringkasan.penyebut)}</span>}
-                    </span>
-                  </span>
+                  <span className="jumlah-bagian"><span className="angka">{uang(sisa.nominal)}</span>
+                    <small>{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(sisa.saham, ringkasan.penyebut)}</small></span>
                 </div>
               </li>
             ))}
           </ul>
+          {ringkasan.terhalang.length > 0 && (
+            <section aria-labelledby="judul-tidak-dapat">
+              <JudulKelompok id="judul-tidak-dapat" judul={t('hitung.tidak_mendapat_bagian')} jumlah={ringkasan.terhalang.length} />
+              <ul className="daftar-bagian">
+                {ringkasan.terhalang.map(orang => <BarisOrang key={orang.id} orang={orang} redup saatPilih={props.saatPilihOrang} uang={uang(0n)} pecahan={orang.alasan} />)}
+              </ul>
+            </section>
+          )}
+          <dl className="penjumlahan">
+            <div><dt>{t('hasil.diterima_jumlah_penerima', { jumlah: angka(String(ringkasan.penerima.length)) })}</dt><dd>{uang(totalDiterima)}</dd></div>
+            {ringkasan.daftarSisaKeluar.map(sisa => <div key={sisa.id}><dt>{sisa.judul}</dt><dd>{uang(sisa.nominal)}</dd></div>)}
+            {ringkasan.terhalang.length > 0 && <div><dt>{t('hasil.tidak_mendapat_jumlah', { jumlah: angka(String(ringkasan.terhalang.length)) })}</dt><dd>{uang(0n)}</dd></div>}
+            {ringkasan.sisaPembulatan > 0n && <div><dt>{t('hasil.sisa_pembulatan')}</dt><dd>{uang(ringkasan.sisaPembulatan)}</dd></div>}
+            <div className="hasil-jumlah"><dt>{t('hitung.harta_yang_dibagi')}</dt><dd>{uang(totalDiterima + totalSisaKeluar + ringkasan.sisaPembulatan)}</dd></div>
+          </dl>
           {props.tampilPembulatan && (
             <KartuPembulatan ringkasan={ringkasan} satuan={props.satuanPembulatan} saatUbah={props.saatUbahPembulatan} sembunyiNominal={sembunyiNominal} />
           )}
@@ -133,32 +135,24 @@ export function KartuPembagian(props: Props) {
   );
 }
 
-function PanelAtur({ pengaturan, saatUbah }: { pengaturan: PengaturanTampil; saatUbah: (pengaturan: PengaturanTampil) => void }) {
+function JudulKelompok({ id, judul, jumlah }: { id?: string; judul: string; jumlah: number }) {
+  return <h3 className="judul-kelompok" id={id}><span>{judul}</span><span>{t('hasil.jumlah_orang', { jumlah: angka(String(jumlah)) })}</span></h3>;
+}
+
+function BarisOrang({ orang, warna, redup = false, berbeda = false, saatPilih, uang, pecahan }: {
+  orang: Penerima | Terhalang; warna?: string; redup?: boolean; /** Bagiannya berbeda dari Syafi'i menurut madzhab terpilih. */ berbeda?: boolean; saatPilih: (id: string) => void; uang: string; pecahan: React.ReactNode;
+}) {
+  const atribut = useAtributOrang();
+  const { className, ...pemicu } = atribut(orang.id);
+  const peran = peranDari(orang);
   return (
-    <div className="panel-atur">
-      <div>
-        <h3>{t('hitung.tampilkan_di_samping_nominal')}</h3>
-        <label className="cek">
-          <input type="checkbox" checked={pengaturan.pecahan} onChange={event => saatUbah({ ...pengaturan, pecahan: event.target.checked })} />
-          <span><b>{t('hitung.pecahan')}</b><small>{t('hitung.bagian_dari_harta_yang_dibagi_misal_1_6')}</small></span>
-        </label>
-        <label className="cek">
-          <input type="checkbox" checked={pengaturan.persen} onChange={event => saatUbah({ ...pengaturan, persen: event.target.checked })} />
-          <span><b>{t('hitung.persen')}</b><small>{t('hitung.bagian_yang_sama_dalam_persen_misal')}</small></span>
-        </label>
-      </div>
-      <div>
-        <h3 id="judul-bentuk">{t('hitung.bentuk_pecahan')}</h3>
-        <div className="pilihan-bulat" role="radiogroup" aria-labelledby="judul-bentuk">
-          <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sederhana'} onClick={() => saatUbah({ ...pengaturan, bentuk: 'sederhana' })}>
-            <b>{t('hitung.disederhanakan')}</b><small>{t('hitung.1_6_13_36_paling_ringkas')}</small>
-          </button>
-          <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sama'} onClick={() => saatUbah({ ...pengaturan, bentuk: 'sama' })}>
-            <b>{t('hitung.penyebut_sama')}</b><small>{t('hitung.12_72_26_72_gampang_dibandingkan')}</small>
-          </button>
-        </div>
-      </div>
-    </div>
+    <li>
+      <button type="button" {...pemicu} className={['baris-bagian', redup && 'redup', className].filter(Boolean).join(' ')} onClick={() => saatPilih(orang.id)}>
+        <AvatarOrang nama={orang.nama} warna={warna} ukuran={40} />
+        <span className="nama-bagian">{orang.nama}{peran && <small>{peran}</small>}{berbeda && <small className="label-beda-madzhab">{t('hitung.berbeda_dari_syafii')}</small>}</span>
+        <span className="jumlah-bagian"><span className="angka">{uang}</span><small>{pecahan}</small></span>
+      </button>
+    </li>
   );
 }
 
