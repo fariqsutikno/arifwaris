@@ -50,7 +50,7 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
   return (
     <div className="teks-isi" ref={wadah}>
       <div className="teks-kiri">
-        <section className="panel-langkah"><h2>{t('langkah.pohon_keluarga')}</h2><div className="isi-pohon">{pohon}</div></section>
+        <section className="panel-langkah"><h2>{t('langkah.pohon_keluarga')}</h2><div className="isi-pohon wadah-pohon">{pohon}</div></section>
         {babak.length > 0 && (semua || linimasa.tahap[urutan[indeks]!.tahap]!.babak !== undefined) && <section className="panel-langkah"><h2>{t('langkah.tabel_faraidh')}</h2>
           {babakTampil.map((nomor, urut) => (
             <div className="wadah-tabel" key={nomor}>

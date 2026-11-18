@@ -5,6 +5,7 @@
 // dan di kolom yang sedang dibahas, sel orang yang belum dibahas juga masih "?".
 // Mode Belajar sebelum jawaban terbuka: struktur tabel tetap tampil, semua angka "?" (TabelSoal).
 
+import { useState } from 'react';
 import type { IdOrang, TabelMasalah } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
@@ -15,6 +16,8 @@ import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
 import { warnaOrang } from './warnaOrang';
 import { angka as angkaTampil, panah, t } from '../terjemah';
+
+type KolomHitungan = 'bagian' | 'ashl' | 'penyesuaian' | 'tashih';
 
 interface Props { hasil: HasilOk | null; ringkasan: RingkasanHasil; sembunyiNominal: boolean; sedangMenebak: boolean; saatPilih: (id: IdOrang) => void }
 
@@ -74,22 +77,38 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
     tertutup('nominal', daftarId) ? RAHASIA : sembunyi ? uangAtau(nilai, true)
       : <AngkaMasuk teks={formatRupiah(nilai)} pemicu={pemicu('nominal', daftarId)} tunda={tunda(daftarId)} />;
   const dasarTashih = penyesuaian?.nilai ?? ashl;
+  const [kolomDipilih, setKolomDipilih] = useState<KolomHitungan | null>(null);
+  const ketukKolom = (kolom: KolomHitungan) => ({
+    onClick: () => setKolomDipilih(kolomDipilih === kolom ? null : kolom), 'aria-pressed': kolomDipilih === kolom, tabIndex: 0, role: 'button' as const,
+    onKeyDown: (event: React.KeyboardEvent) => { if (event.key === 'Enter') setKolomDipilih(kolomDipilih === kolom ? null : kolom); },
+  });
+  const hitungan = (kolom: KolomHitungan) => {
+    const bagian = urutkanBaris(tabel.baris, ringkasan.statusOrang).map(baris => {
+      const daftar = Object.keys(baris.perOrang).map(id => nama.get(id)?.nama ?? id).join(' + ');
+      return `${daftar}: ${baris.fardh ? angkaTampil(`${baris.fardh.n}/${baris.fardh.d}`) : t('hitung.sisa_2')}`;
+    });
+    if (kolom === 'bagian') return bagian.join(' · ');
+    if (kolom === 'ashl') return `${t('hitung.asal_masalah')} = ${angkaTampil(String(ashl))}`;
+    if (kolom === 'penyesuaian') return `${angkaTampil(String(ashl))} ${panah()} ${angkaTampil(String(penyesuaian!.nilai))}`;
+    return dasarTashih && tashih! % dasarTashih === 0n ? `${angkaTampil(String(dasarTashih))} × ${angkaTampil(String(tashih! / dasarTashih))} = ${angkaTampil(String(tashih))}` : angkaTampil(String(tashih));
+  };
 
   return (
+    <>
     <table className="faraidh">
       <thead>
         <tr>
           <th className={kelas('kiri', kepala('ahliWaris'))}>{t('hitung.ahli_waris')}</th>
-          <th className={kepala('bagian')}>{t('hitung.bagian')}</th>
-          <th className={kepala('ashl')}><Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah><small>{angka('ashl', ashl)}</small></th>
+          <th className={kelas('kolom-ketuk', kolomDipilih === 'bagian' && 'dipilih', kepala('bagian'))} {...ketukKolom('bagian')}>{t('hitung.bagian')}</th>
+          <th className={kelas('kolom-ketuk', kolomDipilih === 'ashl' && 'dipilih', kepala('ashl'))} {...ketukKolom('ashl')}><Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah><small>{angka('ashl', ashl)}</small></th>
           {penyesuaian && (
-            <th className={kepala('penyesuaian')}><Istilah id={penyesuaian.kunci}>{penyesuaian.judul}</Istilah>
+            <th className={kelas('kolom-ketuk', kolomDipilih === 'penyesuaian' && 'dipilih', kepala('penyesuaian'))} {...ketukKolom('penyesuaian')}><Istilah id={penyesuaian.kunci}>{penyesuaian.judul}</Istilah>
               <small>{langkah?.kolom === 'penyesuaian' && ashl !== undefined
                 ? <span className="ubah-angka"><s>{angkaTampil(String(ashl))}</s> {panah()} <AngkaMasuk teks={angkaTampil(String(penyesuaian.nilai))} pemicu={langkah.ketukan} /></span>
                 : angka('penyesuaian', penyesuaian.nilai)}</small></th>
           )}
           {tashih !== undefined && (
-            <th className={kepala('tashih')}><Istilah id="tashih">{t('hitung.tashih')}</Istilah><small>{angka('tashih', tashih)}</small>
+            <th className={kelas('kolom-ketuk', kolomDipilih === 'tashih' && 'dipilih', kepala('tashih'))} {...ketukKolom('tashih')}><Istilah id="tashih">{t('hitung.tashih')}</Istilah><small>{angka('tashih', tashih)}</small>
               {langkah?.kolom === 'tashih' && dasarTashih !== undefined && dasarTashih > 0n && tashih % dasarTashih === 0n && <span className="pengali-tashih">{angkaTampil(String(dasarTashih))} × {angkaTampil(String(tashih / dasarTashih))}</span>}</th>
           )}
           <th>{t('hitung.per_orang')}<small><Istilah arti={t('hitung.bagian_tiap_orang_dihitung_dalam_satuan')}>{t('hitung.saham')}</Istilah></small></th>
@@ -152,6 +171,11 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
         </tr>
       </tfoot>
     </table>
+    <div className="kotak-kolom" aria-live="polite">
+      {kolomDipilih ? <><b>{t('hitung.kolom_label')}</b> {{ bagian: t('hitung.bagian'), ashl: t('hitung.asal_masalah'), penyesuaian: penyesuaian?.judul, tashih: t('hitung.tashih') }[kolomDipilih]}
+        <p><b>{t('hitung.kolom_hitungan')}</b> {hitungan(kolomDipilih)}</p></> : <p>{t('hitung.kolom_petunjuk')}</p>}
+    </div>
+    </>
   );
 }
 

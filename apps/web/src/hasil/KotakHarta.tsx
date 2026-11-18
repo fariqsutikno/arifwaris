@@ -41,6 +41,7 @@ export function KotakHarta({ visual, ringkasan, sebutan }: { visual: VisualKotak
   const hilang = visual.bingkai !== undefined && visual.jumlah < visual.bingkai ? Number(visual.bingkai - visual.jumlah) : 0;
   return (
     <div className="kotak-harta">
+      <p className="label-harta">{t('langkah.harta_kotak', { jumlah: angka(String(visual.bingkai ?? visual.jumlah)) })}</p>
       <div className="grid-kotak" style={{ gridTemplateColumns: `repeat(${Math.min(jumlah, 12)}, minmax(0, 1fr))` }}>
         {kotak.map((isi, urut) => (
           <div key={urut} className={['kt', bergaris && 'potong', urut >= jumlah - luar && luar > 0 && 'luar', isi[0] === 'ditahan' && 'ditahan'].filter(Boolean).join(' ')}

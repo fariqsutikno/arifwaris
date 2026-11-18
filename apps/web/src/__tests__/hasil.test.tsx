@@ -27,7 +27,7 @@ function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: {
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
   return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
-const pembagian = () => screen.getByRole('region', { name: /^(Pembagian|Jawabanmu|Kunci jawaban)$/ });
+const pembagian = () => screen.getByRole('region', { name: /^(Siapa menerima berapa|Jawabanmu|Kunci jawaban)$/ });
 /** Buka jawaban lewat dialog tekan-tahan. */
 const bukaLewatDialog = (namaTombolTahan: RegExp) => {
   vi.useFakeTimers();
@@ -57,7 +57,7 @@ describe('layar hasil', () => {
   it('urutan bento mengikuti acuan: pembagian, jenis masalah, tentang, pohon & tabel, bagikan, selanjutnya, pelajari; aksi sekunder berupa tautan (tanpa bar menempel)', () => {
     render(<Uji awal={prototipe()} />);
     const judul = [...document.querySelectorAll('.tata-hasil h2')].map(isi => isi.textContent);
-    expect(judul).toEqual(['Pembagian', 'Jenis masalah', 'Tentang kasus ini', 'Pohon keluarga dan tabel faraidh', 'Bagikan dan simpan', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
+    expect(judul).toEqual(['Siapa menerima berapa', 'Jenis masalah', 'Tentang kasus ini', 'Pohon keluarga dan tabel faraidh', 'Bagikan dan simpan', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
     expect(document.querySelector('.bar-bawah')).toBeNull();
     expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Reset skenario' })).toBeTruthy();
     expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // ubin hero diringkas; angka utuh di daftar

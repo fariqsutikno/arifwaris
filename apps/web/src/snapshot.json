@@ -24815,6 +24815,34 @@
    "id": "Rekaman tidak bisa dimulai. Pilih tab ini saat peramban menanyakan layar mana yang direkam.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_kotak",
+   "halaman": "langkah",
+   "id": "harta = {jumlah} kotak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_label",
+   "halaman": "hitung",
+   "id": "Kolom",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_hitungan",
+   "halaman": "hitung",
+   "id": "Hitungan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_petunjuk",
+   "halaman": "hitung",
+   "id": "Ketuk kepala kolom untuk melihat hitungannya.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

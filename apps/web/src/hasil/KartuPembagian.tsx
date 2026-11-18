@@ -78,7 +78,7 @@ export function KartuPembagian(props: Props) {
     <section className="ubin-h kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <div className="judul-kartu">
-          <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
+          <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hasil.siapa_menerima_berapa')}</h2>
           {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. */}
           <p className="sub-kartu">
             {sedangMenebak ? t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) }) : t('hasil.ketuk_nama_penjelasan')}
@@ -93,8 +93,8 @@ export function KartuPembagian(props: Props) {
             </div>
           )}
           {props.saatUbahAhliWaris && (
-            <button type="button" className="tombol-ikon" onClick={props.saatUbahAhliWaris} aria-label={t('hitung.ubah_ahli_waris')} title={t('hitung.ubah_ahli_waris')}>
-              <Ikon nama="pensil" />
+            <button type="button" className="tautan-aksi" onClick={props.saatUbahAhliWaris}>
+              <Ikon nama="pensil" ukuran={16} />{t('hitung.ubah_ahli_waris')}
             </button>
           )}
           {!sedangMenebak && (
@@ -183,6 +183,7 @@ export function BarisOrang({ orang, warna, redup = false, berbeda = false, saatP
         <AvatarOrang nama={orang.nama} warna={warna} ukuran={40} />
         <span className="nama-bagian">{orang.nama}{peran && <small>{peran}</small>}{berbeda && <small className="label-beda-madzhab">{t('hitung.berbeda_dari_syafii')}</small>}</span>
         <span className="jumlah-bagian"><span className="angka">{uang}</span><small>{pecahan}</small></span>
+        <Ikon nama="kanan" ukuran={18} />
       </button>
     </li>
   );
