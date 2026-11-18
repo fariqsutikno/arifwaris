@@ -1768,3 +1768,7 @@ table.faraidh.ringkas{min-width:0}
 .batang-dunia{display:flex;gap:1px;height:14px;border-radius:4px;overflow:hidden;background:var(--surface)}
 .batang-dunia i{display:block}
 .batang-dunia i.ditahan,.kt .ditahan,.kt.ditahan,.ket-kotak i.ditahan{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 5px,transparent 5px 10px)}
+
+/* Saat merekam: kursor disembunyikan supaya tidak masuk rekaman */
+.langkah-demi-langkah.merekam,.langkah-demi-langkah.merekam *{cursor:none!important}
+.baris-lainnya small{margin-inline-start:auto;color:var(--ink-muted);font-size:12.5px}
