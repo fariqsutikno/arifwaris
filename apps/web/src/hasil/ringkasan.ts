@@ -47,7 +47,7 @@ export interface RingkasanHasil {
   tirkah: LangkahTirkah;
   sisaPembulatan: bigint;
   /** Hanya pasangan yang mewarisi: sisa harta keluar dari ahli waris (engine `sisaKeluar`). Munasakhat: satu per mayit. */
-  daftarSisaKeluar: Array<{ id: string; saham: bigint; nominal: bigint; judul: string; keterangan: string }>;
+  daftarSisaKeluar: Array<{ id: string; saham: bigint; nominal: bigint; judul: string; keterangan: string; ditahan?: true }>;
   tentang: TentangKasus;
   statusOrang: Record<IdOrang, StatusOrang>;
 }
@@ -220,7 +220,7 @@ const ALASAN_MANI: Record<Extract<StatusOrang, { jenis: 'mamnu' }>['mani'], stri
 export const adalahDzawilArham = (status: StatusOrang | undefined): boolean =>
   status?.jenis === 'ahliWaris' && status.peran.kunci === 'DZAWIL_ARHAM';
 
-function kunciDari(status: StatusOrang | undefined): KunciAhliWaris | undefined {
+export function kunciDari(status: StatusOrang | undefined): KunciAhliWaris | undefined {
   if (!status || !('peran' in status)) return undefined;
   const kunci = status.peran.kunci;
   return kunci === 'DZAWIL_ARHAM' || kunci === 'BUKAN_AHLI_WARIS' ? undefined : kunci;

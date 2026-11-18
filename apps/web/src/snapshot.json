@@ -23387,6 +23387,125 @@
    "id": "Bagianmu",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.yang_dibagi_sekarang",
+   "halaman": "hasil",
+   "id": "Yang dibagi sekarang:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.yang_dibagi_isi",
+   "halaman": "hasil",
+   "id": "harta {nama}, langsung ke {jumlah} penerima di bawah, sekali saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.meninggal_sebelum_dibagi",
+   "halaman": "hasil",
+   "id": "Meninggal sebelum dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.dibagi_lagi_di_langkah",
+   "halaman": "hasil",
+   "id": "dibagi lagi di langkah {langkah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.diterima",
+   "halaman": "hasil",
+   "id": "diterima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.urutan_pembagian",
+   "halaman": "hasil",
+   "id": "Urutan pembagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.urutan_sub",
+   "halaman": "hasil",
+   "id": "Siapa meninggal, dapat berapa, dan diberikan ke siapa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.langkah_lain",
+   "halaman": "hasil",
+   "id": "… {jumlah} langkah lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.nama_meninggal",
+   "halaman": "hasil",
+   "id": "{nama} meninggal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.harta_peninggalan",
+   "halaman": "hasil",
+   "id": "Harta peninggalan:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.bagian_dari",
+   "halaman": "hasil",
+   "id": "Bagiannya dari {nama}:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.diberikan_ke",
+   "halaman": "hasil",
+   "id": "Diberikan ke",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.keterangan",
+   "halaman": "hasil",
+   "id": "Keterangan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.tabel_munasakhat",
+   "halaman": "hasil",
+   "id": "Tabel munasakhat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.masalah_nama",
+   "halaman": "hasil",
+   "id": "Mas'alah {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.jamiah_akhir",
+   "halaman": "hasil",
+   "id": "Jami'ah akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.munasakhat.lama_kali",
+   "halaman": "hasil",
+   "id": "lama × {kali}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

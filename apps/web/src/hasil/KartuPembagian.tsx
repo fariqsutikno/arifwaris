@@ -3,6 +3,7 @@
 // Ikon pensil (ubah ahli waris) dan mata (sembunyikan nominal) tetap. Pembulatan dilipat, hanya bila ada angka tidak bulat.
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
+import type { ReactNode } from 'react';
 import { AvatarOrang } from './AvatarOrang';
 import { warnaOrang } from './warnaOrang';
 import { jenisDari } from '../checklist';
@@ -38,10 +39,14 @@ interface Props {
   saatUbahAhliWaris?: (() => void) | undefined;
   /** Diisi hanya bila tidak ada potongan harta (selain itu harta diubah dari Tentang kasus ini). */
   saatUbahHarta?: (() => void) | undefined;
+  /** Kotak di atas daftar (munasakhat: "Yang dibagi sekarang"). */
+  pembuka?: ReactNode;
+  /** Kelompok sesudah Penerima (munasakhat: meninggal sebelum dibagi; taqdir: ditahan). */
+  kelompokTambahan?: ReactNode;
 }
 
 /** Peran di bawah nama ("Istri"), kecuali namanya memang sudah peran itu. */
-const peranDari = (orang: { nama: string; kunci: Penerima['kunci'] }) => {
+const peranDari = (orang: Pick<Penerima, 'nama' | 'kunci'>) => {
   const label = orang.kunci && jenisDari(orang.kunci)?.label;
   return label && !orang.nama.startsWith(label) ? label : undefined;
 };
@@ -92,13 +97,14 @@ export function KartuPembagian(props: Props) {
       ) : (
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
+          {props.pembuka}
           <JudulKelompok judul={t('hasil.penerima')} jumlah={ringkasan.penerima.length} />
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => (
               <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} saatPilih={props.saatPilihOrang}
                 uang={uang(orang.nominal)} pecahan={<>{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(orang.saham, ringkasan.penyebut)}</>} />
             ))}
-            {ringkasan.daftarSisaKeluar.map(sisa => (
+            {ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan).map(sisa => (
               <li key={sisa.id}>
                 <div className="baris-bagian sisa">
                   <span className="titik putus" aria-hidden="true" />
@@ -109,6 +115,7 @@ export function KartuPembagian(props: Props) {
               </li>
             ))}
           </ul>
+          {props.kelompokTambahan}
           {ringkasan.terhalang.length > 0 && (
             <section aria-labelledby="judul-tidak-dapat">
               <JudulKelompok id="judul-tidak-dapat" judul={t('hitung.tidak_mendapat_bagian')} jumlah={ringkasan.terhalang.length} />
@@ -133,12 +140,12 @@ export function KartuPembagian(props: Props) {
   );
 }
 
-function JudulKelompok({ id, judul, jumlah }: { id?: string; judul: string; jumlah: number }) {
+export function JudulKelompok({ id, judul, jumlah }: { id?: string; judul: string; jumlah: number }) {
   return <h3 className="judul-kelompok" id={id}><span>{judul}</span><span>{t('hasil.jumlah_orang', { jumlah: angka(String(jumlah)) })}</span></h3>;
 }
 
-function BarisOrang({ orang, warna, redup = false, saatPilih, uang, pecahan }: {
-  orang: Penerima | Terhalang; warna?: string; redup?: boolean; saatPilih: (id: string) => void; uang: string; pecahan: React.ReactNode;
+export function BarisOrang({ orang, warna, redup = false, saatPilih, uang, pecahan }: {
+  orang: Pick<Penerima | Terhalang, 'id' | 'nama' | 'kunci'>; warna?: string; redup?: boolean; saatPilih: (id: string) => void; uang: string; pecahan: ReactNode;
 }) {
   const atribut = useAtributOrang();
   const { className, ...pemicu } = atribut(orang.id);

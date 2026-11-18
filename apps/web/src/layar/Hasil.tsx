@@ -22,6 +22,8 @@ import { ModalOrang } from '../hasil/ModalOrang';
 import { ModalEkspor } from '../hasil/ModalEkspor';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
+import { KelompokMeninggal, KotakYangDibagi, TabelMunasakhatKitab, UbinUrutanPembagian } from '../hasil/Munasakhat';
+import { rantaiMunasakhat } from '../hasil/munasakhat';
 import { Pohon } from '../hasil/Pohon';
 import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
 import { adaTidakPas, pecahanTeks, persenTeks, ringkas } from '../hasil/ringkasan';
@@ -151,7 +153,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const buatPohon = (aliran: boolean) => <Pohon key={aliran ? putaranAliran : 'diam'} graf={kasus.graf} ringkasan={ringkasan} urutanWafat={kasus.urutanWafat} bentuk={pengaturan.bentuk}
     sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatPilih={setOrangDipilih} aliran={aliran && bolehAliran} />;
   const pohon = buatPohon(false);
-  const tabel = <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
+  const rantai = useMemo(() => (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK'
+    ? { hasil: tampil.hasil, langkah: rantaiMunasakhat(tampil.hasil, ringkasan.tirkah.bersih, kasus.satuanPembulatan) } : null), [tampil, ringkasan, kasus.satuanPembulatan]);
+  const umumRantai = rantai && { graf: kasus.graf, ringkasan, rantai: rantai.langkah, sembunyiNominal, saatPilih: setOrangDipilih };
+  const tabel = umumRantai && !sedangMenebak ? <TabelMunasakhatKitab {...umumRantai} nominal={rantai!.hasil.nominal} /> : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   const kanvasFokus = { pohon, tabel };
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 
@@ -219,7 +224,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
-            saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
+            saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined}
+            pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
+            kelompokTambahan={umumRantai && <KelompokMeninggal {...umumRantai} />} />
         </div>
         {!sedangMenebak && (
           <div className="bento-s5">
@@ -228,6 +235,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               saatUbahHarta={bolehUbah && adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
           </div>
         )}
+        {umumRantai && !sedangMenebak && <UbinUrutanPembagian {...umumRantai} />}
         <section className="ubin bento-s12 ubin-pohon-tabel" data-tur="pohon" aria-labelledby="judul-pohon-tabel" data-tampil={panelHp}>
           <div className="kepala-ubin">
             <div>
@@ -250,7 +258,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               <Legenda />
             </div>
             <div className="panel-tabel-hasil">
-              <h3 id="judul-tabel-faraidh" className="judul-panel">{t('hitung.tabel_faraidh')}</h3>
+              <h3 id="judul-tabel-faraidh" className="judul-panel">{umumRantai ? t('hasil.munasakhat.tabel_munasakhat') : t('hitung.tabel_faraidh')}</h3>
               <div className="wadah-tabel">{tabel}</div>
             </div>
           </div>
