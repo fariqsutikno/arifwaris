@@ -13,7 +13,8 @@ function kasusBerlapis(): Kasus {
   const awal = kasusBaru('L');
   let graf = ['ISTRI', 'ANAK_LK', 'ANAK_PR'].reduce((g, kunci) => tambahAhliWaris(g, 'PEWARIS', kunci as 'ISTRI'), awal.graf);
   const idBudi = hitungIsian(graf, 'PEWARIS').ANAK_LK![0]!;
-  graf = { ...graf, orang: { ...graf.orang, [idBudi]: { ...graf.orang[idBudi]!, nama: 'Budi', statusHidup: 'wafat' } } };
+  // Seperti di aplikasi: mayit munasakhat tetap 'hidup' di graf dan dicatat di urutanWafat (rapikanKeadaan).
+  graf = { ...graf, orang: { ...graf.orang, [idBudi]: { ...graf.orang[idBudi]!, nama: 'Budi' } } };
   graf = tambahAhliWaris(tambahAhliWaris(graf, idBudi, 'ISTRI'), idBudi, 'ANAK_PR');
   return { ...awal, graf, urutanWafat: [idBudi], tirkah: { kotor: HARTA, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
 }

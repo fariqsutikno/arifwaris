@@ -102,7 +102,7 @@ export function KartuPembagian(props: Props) {
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => (
               <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} saatPilih={props.saatPilihOrang}
-                uang={uang(orang.nominal)} pecahan={<>{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(orang.saham, ringkasan.penyebut)}</>} />
+                uang={uang(orang.nominal)} pecahan={orang.rincian ?? <>{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(orang.saham, ringkasan.penyebut)}</>} />
             ))}
             {ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan).map(sisa => (
               <li key={sisa.id}>

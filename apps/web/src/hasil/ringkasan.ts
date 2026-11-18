@@ -171,8 +171,10 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): Ringka
       nominal: hasil.nominal[id] ?? 0n, keterangan: t('hitung.saham_dari_jamiah_saham_jami_ah', { saham, jamiah: hasil.jamiah }), ashabah: false,
     };
   }));
+  // Terhalang di satu mas'alah tapi menerima dari mayit lain (mis. cucu dari harta kakek, anak dari harta ayahnya) bukan "tidak mendapat".
+  const mayit = new Set(hasil.daftarLangkah.map(langkah => langkah.mayit));
   const terhalang = menurutKelompok(hasil.daftarLangkah.flatMap(({ hasil: hasilMayit }) => daftarTerhalang(graf, hasilMayit.statusOrang))
-    .filter((orang, indeks, semua) => semua.findIndex(lain => lain.id === orang.id) === indeks));
+    .filter((orang, indeks, semua) => !((hasil.saham[orang.id] ?? 0n) > 0n) && !mayit.has(orang.id) && semua.findIndex(lain => lain.id === orang.id) === indeks));
   const pertama = hasil.daftarLangkah[0]!.hasil;
   return {
     jenis: 'munasakhat', penerima, terhalang, penyebut: hasil.jamiah,
@@ -209,7 +211,8 @@ function ringkasTaqdir(kasus: Kasus, hasil: TaqdirOk, jenis: 'taqdir' | 'menungg
     tirkah: langkahTirkah(hasil.jejak),
     sisaPembulatan: hasil.pembulatan.sisaPembulatan,
     daftarSisaKeluar: hasil.mauquf > 0n ? [{ id: 'mauquf', saham: hasil.mauquf, nominal: hasil.nominalMauquf, judul: t('hasil.ditahan.ditahan'), keterangan: '', ditahan: true }] : [],
-    tentang: { kemungkinan: { jumlah: hasil.daftarDunia.length, jamiah: hasil.jamiah, diberikan: diberikanTotal, mauquf: hasil.mauquf } },
+    // Menunggu: belum ada yang diberikan atau ditahan, jadi tanpa hitungan (acuan: kasus Menunggu lahir).
+    tentang: jenis === 'menunggu' ? {} : { kemungkinan: { jumlah: hasil.daftarDunia.length, jamiah: hasil.jamiah, diberikan: diberikanTotal, mauquf: hasil.mauquf } },
     statusOrang,
     ditahan: { nominal: hasil.nominalMauquf, orang: ditahan },
     taqdir: {

@@ -33,14 +33,14 @@ const DIBUKA_SETELAH: Record<SebabDitahan, () => string> = {
 };
 
 /** Kelompok di daftar pembagian: orang yang bagiannya ditahan atau menunggu. */
-export function KelompokDitahan({ ringkasan, judul, saatPilih }: Pick<Umum, 'ringkasan' | 'saatPilih'> & { judul: string }) {
+export function KelompokDitahan({ ringkasan, judul, label = t('hasil.ditahan.ditahan'), saatPilih }: Pick<Umum, 'ringkasan' | 'saatPilih'> & { judul: string; label?: string }) {
   const daftar = ringkasan.ditahan?.orang ?? [];
   if (!daftar.length) return null;
   return (
     <section aria-labelledby="judul-ditahan">
       <JudulKelompok id="judul-ditahan" judul={judul} jumlah={daftar.length} />
       <ul className="daftar-bagian kelompok-ditahan">
-        {daftar.map(orang => <BarisOrang key={orang.id} orang={orang} redup saatPilih={saatPilih} uang={t('hasil.ditahan.ditahan')} pecahan={TEKS_SEBAB[orang.sebab]()} />)}
+        {daftar.map(orang => <BarisOrang key={orang.id} orang={orang} redup saatPilih={saatPilih} uang={label} pecahan={TEKS_SEBAB[orang.sebab]()} />)}
       </ul>
     </section>
   );
@@ -79,7 +79,7 @@ export function UbinMenunggu({ ringkasan, saatPilih, saatBagiSekarang }: Pick<Um
           </ul>
         </>
       )}
-      <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.menunggu_bayi_lahir')} saatPilih={saatPilih} />
+      <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.menunggu_bayi_lahir')} label={t('hasil.ditahan.belum_dibagi_kecil')} saatPilih={saatPilih} />
       {saatBagiSekarang && (
         <div className="catatan-menunggu">
           <b>{t('hasil.ditahan.perlu_dibagi_sekarang')}</b>
@@ -117,7 +117,7 @@ export function TabelKemungkinan({ graf, ringkasan, sembunyiNominal, saatPilih }
           <th rowSpan={2} className="kiri">{t('hitung.ahli_waris')}</th>
           {taqdir.daftarDunia.map((dunia, indeks) => (
             <th key={indeks}>{Object.entries(dunia.taqdir).map(([id, nilai]) => (
-              <span key={id} className="ket">{namaOrang(graf, ringkasan.statusOrang, id)}: {teksTaqdir(nilai, !!graf.orang[id]?.khuntsa)}</span>
+              <span key={id} className="ket">{graf.orang[id]?.nama?.trim() || namaOrang(graf, ringkasan.statusOrang, id)}: {teksTaqdir(nilai, !!graf.orang[id]?.khuntsa)}</span>
             ))}<span className="pengali">× {angka(String(jamiah / dunia.masalah))}</span></th>
           ))}
           <th className="jami">{t('hasil.ditahan.diberi_sekarang')}</th>
@@ -196,7 +196,7 @@ export function UbinKemungkinanUrutan({ graf, ringkasan, sembunyiNominal, saatPi
       <h2 id="judul-kemungkinan-urutan">{t('hasil.gharqa.kemungkinan_urutan', { jumlah: angka(String(skenario.length)) })}</h2>
       <p className="sub-kartu">{t('hasil.gharqa.kemungkinan_urutan_sub')}</p>
       <div className="wadah-tabel">
-        <table className="faraidh">
+        <table className="faraidh ringkas">
           <thead><tr><th className="kiri">{t('hitung.ahli_waris')}</th>
             {skenario.map((sk, indeks) => <th key={indeks}>{t('hasil.titipan.kalau_duluan', { nama: namaMayit(sk.urutan[0]!) })}</th>)}</tr></thead>
           <tbody>

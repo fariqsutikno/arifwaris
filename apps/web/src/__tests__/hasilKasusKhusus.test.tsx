@@ -30,7 +30,7 @@ describe('hasil kasus khusus (kerangka Hasil v6)', () => {
   it('haml [SYF]: anak lk yang berbagi ashabah dengan janin belum menerima apa pun (KB 13a.4)', () => {
     const kasus = dengan(k => janin(k));
     render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={() => {}} />);
-    expect(screen.getAllByText(/berbagi sisa harta dengan bayi/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/berbagi sisa dengan bayi/).length).toBeGreaterThan(0);
     expect(screen.getByText(/menunggu bayi lahir/)).toBeTruthy();
   });
   it('gharqa serentak: tidak saling mewarisi, total dengan rincian per harta, tabel per harta', () => {

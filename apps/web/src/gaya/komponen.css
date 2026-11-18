@@ -1486,6 +1486,7 @@ body.layar-hasil{background:var(--halaman)}
 .catatan-menunggu{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--surface-sunken);font-size:14px}
 .catatan-menunggu p{margin:4px 0 6px}
 .tumpuk-tabel{display:grid;gap:12px}
+table.faraidh.ringkas{min-width:0}
 .judul-skenario{margin:0 0 6px;font:600 14px var(--font-sans)}
 .faraidh .baris-ditahan-tabel td{background:#fff7e0;color:#6b4f00;font-weight:600}
 /* Munasakhat: kotak yang dibagi, urutan pembagian, tabel ala kitab. */
@@ -1508,6 +1509,7 @@ body.layar-hasil{background:var(--halaman)}
 .tabel-langkah tbody tr{cursor:pointer}
 .tabel-langkah tbody tr:hover{background:rgba(127,127,127,.08)}
 .tabel-langkah tbody tr:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.tabel-langkah .terus,.tabel-langkah .selesai{display:block;margin-top:2px;white-space:normal}
 .tabel-langkah .terus{color:var(--ink-muted);font-size:13px}
 .tabel-langkah .selesai{color:var(--primary);font-weight:600;font-size:13px}
 .faraidh .pengali{display:block;font-weight:600;opacity:.8}

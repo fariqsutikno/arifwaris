@@ -105,8 +105,10 @@ export function UbinTentang({ ringkasan, satuanPembulatan, sembunyiNominal, saat
         <BarisInfo label={t('hasil.pembulatan')} nilai={t('hasil.ke_satuan', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuanPembulatan)?.judul ?? formatRupiah(satuanPembulatan) })}
           keterangan={t('hasil.dibulatkan_ke_bawah')} />
       </div>
-      <h3 className="kepala-info">{t('hasil.hitungan')}</h3>
-      <div className="daftar-info"><BarisHitungan tentang={tentang} /></div>
+      {Object.keys(tentang).length > 0 && <>
+        <h3 className="kepala-info">{t('hasil.hitungan')}</h3>
+        <div className="daftar-info"><BarisHitungan tentang={tentang} /></div>
+      </>}
     </section>
   );
 }

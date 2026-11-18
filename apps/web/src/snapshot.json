@@ -23473,13 +23473,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hasil.munasakhat.keterangan",
-   "halaman": "hasil",
-   "id": "Keterangan",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hasil.munasakhat.tabel_munasakhat",
    "halaman": "hasil",
    "id": "Tabel munasakhat",
@@ -23524,7 +23517,7 @@
   {
    "kunci": "hasil.ditahan.berbagi_dengan_bayi",
    "halaman": "hasil",
-   "id": "belum menerima: berbagi sisa harta dengan bayi yang jumlahnya belum diketahui",
+   "id": "berbagi sisa dengan bayi",
    "ar": null,
    "versiTerbit": 873
   },

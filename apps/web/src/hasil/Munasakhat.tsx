@@ -82,13 +82,13 @@ export function UbinUrutanPembagian({ graf, ringkasan, rantai, sembunyiNominal, 
         </p>
         <div className="wadah-tabel">
           <table className="tabel-langkah">
-            <thead><tr><th>{t('hasil.munasakhat.diberikan_ke')}</th><th className="uang">{t('hitung.nominal')}</th><th>{t('hasil.munasakhat.keterangan')}</th></tr></thead>
+            <thead><tr><th>{t('hasil.munasakhat.diberikan_ke')}</th><th className="uang">{t('hitung.nominal')}</th></tr></thead>
             <tbody>
               {langkah.daftarBagian.map(bagian => (
                 <tr key={bagian.id} tabIndex={0} onClick={() => saatPilih(bagian.id)} onKeyDown={event => { if (event.key === 'Enter') saatPilih(bagian.id); }}>
                   <td><b>{nama(bagian.id)}</b><small>{bagian.fardh ? t('hitung.bagian_tertentu_fardh', { fardh: angka(`${bagian.fardh.n}/${bagian.fardh.d}`) }) : t('hitung.sisa_ashabah')}</small></td>
-                  <td className="uang">{uangAtau(bagian.nominal, sembunyiNominal)}</td>
-                  <td>{bagian.diteruskanDiLangkah
+                  <td className="uang">{uangAtau(bagian.nominal, sembunyiNominal)}
+                    {bagian.diteruskanDiLangkah
                     ? <span className="terus">{t('hasil.munasakhat.dibagi_lagi_di_langkah', { langkah: angka(String(bagian.diteruskanDiLangkah)) })}</span>
                     : <span className="selesai">{t('hasil.munasakhat.diterima')}</span>}</td>
                 </tr>
