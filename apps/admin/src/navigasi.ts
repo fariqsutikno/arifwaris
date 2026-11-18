@@ -6,7 +6,7 @@ import { AppWindow, BookOpen, Calculator, CircleHelp, GraduationCap, Library, Li
 
 /** 'layar' (layar web + daftar & cari semua teks) bukan jenis konten, tapi tab menu Teks aplikasi. Teks edukasi & diksi
  * tampil bersama di sana; admin tidak perlu tahu bedanya. Tautan lama #/menu/aplikasi/teks jatuh ke tab ini. */
-export type IsiMenu = JenisKonten | 'layar';
+export type IsiMenu = JenisKonten | 'layar' | 'penjelasan';
 export type KunciMenu = 'materi' | 'soal_kuis' | 'soal_hitung' | 'tanya_jawab' | 'faq' | 'pustaka' | 'kamus' | 'aplikasi';
 export type GrupMenu = 'Belajar' | 'Bank soal' | 'Tanya jawab' | 'Pustaka' | 'Aplikasi';
 export interface Menu { kunci: KunciMenu; label: string; grup: GrupMenu; ikon: LucideIcon; isi: readonly IsiMenu[] }
@@ -19,13 +19,13 @@ export const MENU_PORTAL: readonly Menu[] = [
   { kunci: 'faq', label: 'FAQ', grup: 'Tanya jawab', ikon: CircleHelp, isi: ['faq'] },
   { kunci: 'pustaka', label: 'Kitab & syahid', grup: 'Pustaka', ikon: Library, isi: ['kitab', 'syahid'] },
   { kunci: 'kamus', label: 'Glosarium & ahwal', grup: 'Pustaka', ikon: BookOpen, isi: ['glosarium_ar', 'ahwal'] },
-  { kunci: 'aplikasi', label: 'Teks aplikasi', grup: 'Aplikasi', ikon: AppWindow, isi: ['layar', 'cheatsheet'] },
+  { kunci: 'aplikasi', label: 'Teks aplikasi', grup: 'Aplikasi', ikon: AppWindow, isi: ['layar', 'penjelasan', 'cheatsheet'] },
 ];
 
 export const LABEL_ISI: Record<IsiMenu, string> = {
   modul: 'Modul', materi: 'Materi', soal_kuis: 'Soal kuis', soal_hitung: 'Soal hitung', tanya_jawab: 'Kasus tanya jawab',
   faq: 'FAQ', kitab: 'Kitab', syahid: 'Syahid', glosarium_ar: 'Glosarium', ahwal: 'Ahwal', teks_edukasi: 'Teks aplikasi',
-  cheatsheet: 'Cheatsheet', layar: 'Teks aplikasi',
+  cheatsheet: 'Cheatsheet', layar: 'Teks aplikasi', penjelasan: 'Penjelasan hasil',
 };
 
 export const menuDari = (kunci: string): Menu | undefined => MENU_PORTAL.find(menu => menu.kunci === kunci);

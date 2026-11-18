@@ -5,7 +5,7 @@
 import type { IdOrang } from '@waris/engine';
 import { hitungIsian, labelOrangChecklist } from './checklist';
 import type { Kasus } from './kasus';
-import { babakAsal, daftarAlmarhum, kerabatDari, namaSingkat, terapkanKeadaan } from './keadaanOrang';
+import { daftarAlmarhum, kerabatDari, namaJelas, terapkanKeadaan } from './keadaanOrang';
 
 export const mayitLatihan = (kasus: Kasus): IdOrang[] => daftarAlmarhum(kasus);
 
@@ -43,13 +43,7 @@ export function labelOrangDiKartu(kasus: Kasus, idMayit: IdOrang): Array<{ id: I
 
 export function labelMayit(kasus: Kasus, idMayit: IdOrang): string {
   const semua = mayitLatihan(kasus);
-  return nomorKembar(semua.map(id => labelMayitMentah(kasus, id)))[semua.indexOf(idMayit)]!;
-}
-
-function labelMayitMentah(kasus: Kasus, idMayit: IdOrang): string {
-  if (idMayit === kasus.graf.idPewaris || kasus.graf.orang[idMayit]!.nama) return namaSingkat(kasus, idMayit);
-  const asal = babakAsal(kasus, idMayit) ?? kasus.graf.idPewaris;
-  return `${labelOrangChecklist(kasus.graf, asal, idMayit)} ${namaSingkat(kasus, asal)}`;
+  return nomorKembar(semua.map(id => namaJelas(kasus, id)))[semua.indexOf(idMayit)]!;
 }
 
 /** Kartu pertama yang tidak punya ahli waris hidup saat mayitnya wafat (tidak termasuk mayit sebelumnya). */

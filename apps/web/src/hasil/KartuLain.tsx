@@ -44,8 +44,8 @@ export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: Ringka
   );
 }
 
-export function UbinTentang({ ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta }: {
-  ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
+export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta }: {
+  /** Selain Syafi'i (bawaan, terverifikasi); sumbernya sekunder. */ namaMadzhab?: string | undefined; ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
 }) {
   const { tirkah, tentang } = ringkasan;
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
@@ -54,7 +54,7 @@ export function UbinTentang({ ringkasan, satuanPembulatan, sembunyiNominal, saat
       <h2 id="judul-tentang">{t('hitung.tentang_kasus_ini')}</h2>
       <h3 className="kepala-info">{t('hasil.kasus')}</h3>
       <div className="daftar-info">
-        <BarisInfo label={t('hasil.madzhab')} nilai={t('hasil.syafii')} keterangan={t('hasil.syafii_ket')} />
+        <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')} />
         <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)}
           keterangan={<>{t('hasil.rincian_harta', { kotor: uang(tirkah.kotor), jenazah: uang(tirkah.tajhiz), hutang: uang(tirkah.hutang), wasiat: uang(tirkah.wasiatDipakai) })}
             {tirkah.wasiatButuhIjazah > 0n && <> · {t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</>}

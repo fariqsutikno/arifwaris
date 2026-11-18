@@ -18,9 +18,10 @@ interface Props {
   pohon: ReactNode;
   zoomAwal?: number;
   legenda?: ReactNode;
-  sembunyiNominal: boolean;
-  saatSembunyi: () => void;
-  saatEkspor: () => void;
+  /** Tanpa saatSembunyi dan saatEkspor (mis. pohon di wizard, belum ada nominal) tombol itu tidak tampil. */
+  sembunyiNominal?: boolean;
+  saatSembunyi?: () => void;
+  saatEkspor?: () => void;
   saatTutup: () => void;
 }
 
@@ -110,20 +111,20 @@ export function PohonLayarPenuh({ pohon, zoomAwal = 1, legenda, sembunyiNominal,
           <button type="button" className="alat-bulat" aria-label={t('hitung.perkecil')} onClick={() => zoomDi(1 / LANGKAH_ZOOM)}><Ikon nama="zoomKeluar" /></button>
           <button type="button" className="alat-bulat" aria-label={t('hitung.perbesar')} onClick={() => zoomDi(LANGKAH_ZOOM)}><Ikon nama="zoomMasuk" /></button>
           <button type="button" className="alat-bulat" aria-label={t('hitung.pas_ke_layar')} title={t('hitung.pas_ke_layar')} onClick={pas}><Ikon nama="fokus" /></button>
-          <button type="button" className="alat-teks" onClick={saatSembunyi}>{sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')}</button>
+          {saatSembunyi && <button type="button" className="alat-teks" onClick={saatSembunyi}>{sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')}</button>}
         </div>
         <div className="pohon-penuh-alat">
-          <div className="menu-bagikan">
+          {saatEkspor && <div className="menu-bagikan">
             <button type="button" className="aw-btn aw-btn-primary" aria-haspopup="true" aria-expanded={menuBagikan} onClick={() => setMenuBagikan(!menuBagikan)}>
               <Ikon nama="bagikan" /> {t('hitung.bagikan')}
             </button>
             {menuBagikan && (
               <div className="menu-bagikan-isi" role="menu">
-                <button type="button" role="menuitem" onClick={() => { setMenuBagikan(false); saatEkspor(); }}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>
+                <button type="button" role="menuitem" onClick={() => { setMenuBagikan(false); saatEkspor?.(); }}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>
                 <button type="button" role="menuitem" onClick={() => { setMenuBagikan(false); window.print(); }}><Ikon nama="berkas" /> {t('hitung.cetak_pohon')}</button>
               </div>
             )}
-          </div>
+          </div>}
           <button type="button" className="alat-bulat" ref={tombolTutup} aria-label={t('hitung.tutup_layar_penuh')} onClick={saatTutup}><Ikon nama="salah" /></button>
         </div>
       </div>

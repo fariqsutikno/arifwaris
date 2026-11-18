@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipe pohon bebas</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --surface:#eef3e8;--ink:#14181a;--ink-muted:#525c57;--primary:#0e0f10;--on-primary:#fff;--primary-soft:#dce8d8;
+  --outline:#c9d4c6;--divider:#dfe6dc;--aksen:#f2682a;--aksen-soft:#fde6d8;--halaman:#b9d4c0;--saudara:#fbd3ac;
+  --kartu:rgba(255,255,255,.72);--kartu-tepi:rgba(255,255,255,.95);
+  --font-display:"Parkinsans",system-ui,sans-serif;--font-sans:"Host Grotesk",system-ui,sans-serif;--r-md:16px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--halaman);color:var(--ink);font:16px/1.5 var(--font-sans)}
+.pilih-alt{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;padding:10px 16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:14px}
+.pilih-alt button{background:none;border:0;color:#cfd8d2;font:inherit;cursor:pointer;padding:4px 0;border-bottom:2px solid transparent}
+.pilih-alt button[aria-pressed=true]{color:#fff;border-color:var(--aksen)}
+.catatan{max-width:720px;margin:16px auto 0;padding:0 16px;font-size:14px;color:var(--ink-muted)}
+.bingkai{max-width:720px;margin:12px auto 40px;background:var(--surface);border-radius:28px;padding:16px;box-shadow:0 8px 24px rgba(20,40,30,.12)}
+.panel{background:var(--kartu);border:1px solid var(--kartu-tepi);border-radius:var(--r-md);padding:16px 18px;margin-top:12px}
+.panel:first-child{margin-top:0}
+.panel h2{font:600 18px var(--font-display);margin:0 0 2px}
+.sub{color:var(--ink-muted);font-size:14px;margin:0}
+.orang{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--divider)}
+.orang:first-of-type{border-top:0}
+.bulat{width:32px;height:32px;border-radius:50%;background:var(--saudara);display:grid;place-items:center;font:600 13px var(--font-display);flex:none}
+.orang .isi{flex:1;min-width:0}
+.orang b{display:block}
+.label{font-size:13px;color:var(--ink-muted)}
+.status{font-size:12px;border-radius:999px;padding:1px 8px;background:var(--surface);border:1px solid var(--outline)}
+.menu{position:relative}
+.menu>button{background:none;border:0;padding:6px;border-radius:8px;cursor:pointer;color:var(--ink)}
+.menu>button:hover{background:var(--primary-soft)}
+.menu ul{position:absolute;right:0;top:100%;margin:4px 0 0;padding:6px;list-style:none;background:#fff;border-radius:12px;box-shadow:0 8px 24px rgba(20,40,30,.18);min-width:200px;z-index:3}
+.menu li button{width:100%;text-align:left;background:none;border:0;padding:8px 10px;border-radius:8px;font:inherit;cursor:pointer;display:flex;gap:8px;align-items:center}
+.menu li button:hover{background:var(--surface)}
+.anak{margin-left:20px;padding-left:14px;border-left:2px solid var(--divider)}
+.anak h3{font:600 15px var(--font-display);margin:12px 0 0}
+.penghitung{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-top:1px solid var(--divider)}
+.penghitung:first-of-type{border-top:0}
+.angka{display:flex;align-items:center;gap:10px;font-variant-numeric:tabular-nums}
+.angka button{width:32px;height:32px;border-radius:50%;border:1px solid var(--outline);background:#fff;font:600 16px var(--font-sans);cursor:pointer}
+.aksi-teks{background:none;border:0;padding:0;font:inherit;color:var(--ink);cursor:pointer;display:inline-flex;gap:6px;align-items:center;margin-top:10px}
+.ikon{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* B: susun jalur */
+.jalur{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+.jalur select{font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--outline);background:#fff}
+.jalur span{color:var(--ink-muted)}
+.pratinjau{background:var(--primary-soft);border-radius:12px;padding:10px 14px;font-weight:600}
+.pill{background:var(--primary);color:var(--on-primary);border:0;border-radius:999px;padding:10px 20px;font:600 15px var(--font-sans);cursor:pointer}
+.segmen{display:inline-flex;gap:4px;background:#fff;border:1px solid var(--outline);border-radius:999px;padding:3px}
+.segmen button{border:0;background:none;border-radius:999px;padding:6px 14px;font:inherit;cursor:pointer}
+.segmen button[aria-pressed=true]{background:var(--primary);color:#fff}
+/* C: pohon */
+.pohon{overflow-x:auto;padding:8px 0}
+.pohon svg{display:block;min-width:620px}
+.simpul rect{fill:#fff;stroke:var(--outline);rx:10}
+.simpul.wafat rect{fill:var(--surface);stroke-dasharray:4 3}
+.simpul.pewaris rect{fill:#5d6487;stroke:none}
+.simpul.pewaris text{fill:#fff}
+.simpul text{font:600 12px var(--font-sans);fill:var(--ink)}
+.simpul text.kecil{font:400 11px var(--font-sans);fill:var(--ink-muted)}
+.tambah circle{fill:#fff;stroke:var(--primary);cursor:pointer}
+.tambah:hover circle{fill:var(--primary-soft)}
+.tambah text{font:600 14px var(--font-sans);pointer-events:none}
+.garis{stroke:var(--outline);stroke-width:1.5;fill:none}
+.sembul{position:fixed;background:#fff;border-radius:14px;box-shadow:0 8px 24px rgba(20,40,30,.2);padding:14px;width:260px;z-index:6}
+.sembul p{margin:0 0 8px;font-weight:600}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<nav class="pilih-alt" aria-label="Alternatif">
+  <strong>Pohon bebas:</strong>
+  <button data-alt="a" aria-pressed="true">A · Bertingkat seperti cucu</button>
+  <button data-alt="b" aria-pressed="false">B · Susun jalur</button>
+  <button data-alt="c" aria-pressed="false">C · Tambah di pohon</button>
+</nav>
+<p class="catatan" id="catatan"></p>
+
+<main class="bingkai">
+  <!-- A -->
+  <div data-hanya="a">
+    <section class="panel">
+      <h2>Keponakan dan sepupu Pak Hasan</h2>
+      <p class="sub">Anak laki-laki dari saudara laki-laki dan dari paman.</p>
+      <div id="daftarA"></div>
+    </section>
+  </div>
+
+  <!-- B -->
+  <div data-hanya="b">
+    <section class="panel">
+      <h2>Keponakan dan sepupu Pak Hasan</h2>
+      <div class="orang"><span class="bulat">R</span><span class="isi"><b>Rudi</b><span class="label">anak laki-laki dari paman kandung</span></span><span class="status">wafat</span></div>
+      <div id="tambahanB"></div>
+      <button class="aksi-teks" id="bukaB"><svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>Tambah kerabat yang lebih jauh</button>
+    </section>
+    <section class="panel" id="formB" hidden>
+      <h2>Kerabat yang lebih jauh</h2>
+      <p class="sub">Susun hubungannya dari Pak Hasan ke luar.</p>
+      <div class="jalur" id="jalurB"></div>
+      <div class="pratinjau" id="pratinjauB"></div>
+      <p class="sub" style="margin-top:10px">Nama</p>
+      <input id="namaB" style="font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--outline);width:100%;max-width:320px" placeholder="mis. Fajar">
+      <div style="display:flex;gap:16px;align-items:center;margin-top:14px;justify-content:flex-end">
+        <button class="aksi-teks" style="margin:0" id="batalB">Batal</button><button class="pill" id="simpanB">Simpan</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- C -->
+  <div data-hanya="c">
+    <section class="panel">
+      <h2>Pohon keluarga Pak Hasan</h2>
+      <p class="sub">Tekan + di bawah orang yang sudah wafat untuk menambah anaknya.</p>
+      <div class="pohon"><svg id="pohonC" viewBox="0 0 640 330"></svg></div>
+    </section>
+  </div>
+</main>
+<div class="sembul" id="sembulC" hidden></div>
+
+<script>
+const ikonMenu = '<svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>';
+const ikonTambah = '<svg class="ikon" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"/></svg>';
+const ikonWafat = '<svg class="ikon" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+// Label bertingkat gaya fikih: tiap tingkat menambah "anak laki-laki dari ...".
+const labelDari = (induk, kelamin) => `anak ${kelamin==='L'?'laki-laki':'perempuan'} dari ${induk}`;
+
+/* ---------- A: bertingkat ---------- */
+const orangA = [
+  {id:1,nama:'Rudi',label:'anak laki-laki dari paman kandung',wafat:true,anak:{L:1,P:0},anakNama:['Fajar']},
+  {id:2,nama:'Dimas',label:'anak laki-laki dari saudara kandung',wafat:false},
+];
+function renderA(){
+  document.getElementById('daftarA').innerHTML = orangA.map(o=>`
+    <div class="orang"><span class="bulat">${o.nama[0]}</span>
+      <span class="isi"><b>${o.nama}</b><span class="label">${o.label}</span></span>
+      ${o.wafat?'<span class="status">wafat</span>':''}
+      <span class="menu"><button aria-label="Aksi untuk ${o.nama}" data-menu="${o.id}">${ikonMenu}</button>
+        <ul hidden id="menu${o.id}"><li><button data-wafat="${o.id}">${ikonWafat}${o.wafat?'Tandai masih hidup':'Tandai sudah wafat'}</button></li></ul></span>
+    </div>
+    ${o.wafat?`<div class="anak"><h3>Anak ${o.nama}</h3>
+      <p class="sub">Muncul karena ${o.nama} wafat lebih dulu. Label: <i>${labelDari(o.label,'L')}</i>.</p>
+      ${['L','P'].map(k=>`<div class="penghitung"><span>Anak ${k==='L'?'laki-laki':'perempuan'}</span>
+        <span class="angka"><button data-kurang="${o.id}${k}" aria-label="Kurangi">−</button><span>${o.anak?.[k]??0}</span><button data-tambah="${o.id}${k}" aria-label="Tambah">+</button></span></div>`).join('')}
+    </div>`:''}`).join('');
+}
+document.getElementById('daftarA').onclick = e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.menu){ const m=document.getElementById('menu'+b.dataset.menu); m.hidden=!m.hidden; return; }
+  if(b.dataset.wafat){ const o=orangA.find(x=>x.id==b.dataset.wafat); o.wafat=!o.wafat; o.anak??={L:0,P:0}; }
+  const kode=b.dataset.tambah||b.dataset.kurang;
+  if(kode){ const o=orangA.find(x=>x.id==kode[0]); const k=kode[1]; o.anak[k]=Math.max(0,o.anak[k]+(b.dataset.tambah?1:-1)); }
+  renderA();
+};
+
+/* ---------- B: susun jalur ---------- */
+const PANGKAL = ['saudara laki-laki kandung','saudara laki-laki sebapak','paman kandung','paman sebapak','paman kandung ayah','paman sebapak ayah'];
+let jalurB = {pangkal:2,tingkat:2,kelamin:'L'};
+function labelJalur(){
+  let s = PANGKAL[jalurB.pangkal];
+  for(let i=0;i<jalurB.tingkat;i++) s = labelDari(s, i===jalurB.tingkat-1?jalurB.kelamin:'L');
+  return s;
+}
+function renderB(){
+  document.getElementById('jalurB').innerHTML = `
+    <select id="pangkalB" aria-label="Pangkal">${PANGKAL.map((p,i)=>`<option value="${i}" ${i==jalurB.pangkal?'selected':''}>${p}</option>`).join('')}</select>
+    <span>lalu turun</span>
+    <select id="tingkatB" aria-label="Turun berapa tingkat">${[0,1,2,3,4].map(n=>`<option value="${n}" ${n==jalurB.tingkat?'selected':''}>${n} tingkat</option>`).join('')}</select>
+    <span class="segmen" role="group" aria-label="Jenis kelamin"><button data-k="L" aria-pressed="${jalurB.kelamin==='L'}">Laki-laki</button><button data-k="P" aria-pressed="${jalurB.kelamin==='P'}">Perempuan</button></span>`;
+  document.getElementById('pratinjauB').textContent = labelJalur().replace(/^./,c=>c.toUpperCase());
+}
+document.getElementById('jalurB').onchange = e=>{ jalurB[e.target.id==='pangkalB'?'pangkal':'tingkat']=+e.target.value; renderB(); };
+document.getElementById('jalurB').onclick = e=>{ if(e.target.dataset.k){ jalurB.kelamin=e.target.dataset.k; renderB(); } };
+document.getElementById('bukaB').onclick = ()=>{ document.getElementById('formB').hidden=false; renderB(); };
+document.getElementById('batalB').onclick = ()=>{ document.getElementById('formB').hidden=true; };
+document.getElementById('simpanB').onclick = ()=>{
+  const nama = document.getElementById('namaB').value.trim() || 'Tanpa nama';
+  document.getElementById('tambahanB').insertAdjacentHTML('beforeend',
+    `<div class="orang"><span class="bulat">${nama[0]}</span><span class="isi"><b>${nama}</b><span class="label">${labelJalur()}</span></span></div>`);
+  document.getElementById('formB').hidden=true; document.getElementById('namaB').value='';
+};
+
+/* ---------- C: pohon ---------- */
+const simpulC = [
+  {id:'kakek',nama:'Kakek',ket:'wafat',x:300,y:20,wafat:true},
+  {id:'ayah',nama:'Ayah',ket:'wafat',x:180,y:100,wafat:true,induk:'kakek'},
+  {id:'paman',nama:'Paman Umar',ket:'paman kandung · wafat',x:420,y:100,wafat:true,induk:'kakek'},
+  {id:'hasan',nama:'Pak Hasan',ket:'almarhum',x:180,y:180,pewaris:true,induk:'ayah'},
+  {id:'rudi',nama:'Rudi',ket:'sepupu · wafat',x:420,y:180,wafat:true,induk:'paman'},
+];
+function renderC(){
+  const svg = document.getElementById('pohonC');
+  const garis = simpulC.filter(s=>s.induk).map(s=>{const p=simpulC.find(x=>x.id===s.induk);return `<path class="garis" d="M${p.x} ${p.y+40} V${(p.y+40+s.y)/2} H${s.x} V${s.y}"/>`}).join('');
+  const kotak = simpulC.map(s=>`<g class="simpul ${s.wafat?'wafat':''} ${s.pewaris?'pewaris':''}">
+      <rect x="${s.x-70}" y="${s.y}" width="140" height="40" rx="10"/>
+      <text x="${s.x}" y="${s.y+17}" text-anchor="middle">${s.nama}</text>
+      <text class="kecil" x="${s.x}" y="${s.y+32}" text-anchor="middle">${s.ket}</text></g>
+      ${s.wafat && !s.pewaris && !simpulC.some(c=>c.induk===s.id && c.baru) && s.id!=='kakek' && s.id!=='ayah' && s.id!=='paman'
+        ? `<g class="tambah" data-tambah="${s.id}" tabindex="0" role="button" aria-label="Tambah anak ${s.nama}"><circle cx="${s.x}" cy="${s.y+58}" r="12"/><text x="${s.x}" y="${s.y+63}" text-anchor="middle">+</text></g>`:''}`).join('');
+  svg.innerHTML = garis + kotak;
+}
+document.getElementById('pohonC').onclick = e=>{
+  const g = e.target.closest('[data-tambah]'); if(!g) return;
+  const induk = simpulC.find(s=>s.id===g.dataset.tambah);
+  const sembul = document.getElementById('sembulC');
+  const r = g.getBoundingClientRect();
+  sembul.style.left = Math.min(r.left, innerWidth-280)+'px'; sembul.style.top = (r.bottom+8)+'px';
+  sembul.innerHTML = `<p>Anak ${induk.nama}</p>
+    <input id="namaC" placeholder="Nama" style="font:inherit;padding:8px 10px;border-radius:10px;border:1px solid var(--outline);width:100%">
+    <div class="segmen" style="margin-top:10px" role="group" aria-label="Jenis kelamin"><button data-k="L" aria-pressed="true">Laki-laki</button><button data-k="P" aria-pressed="false">Perempuan</button></div>
+    <p class="label" style="font-weight:400;margin:10px 0 0" id="labelC">${labelDari('anak laki-laki dari paman kandung','L')}</p>
+    <div style="display:flex;gap:14px;justify-content:flex-end;align-items:center;margin-top:12px"><button class="aksi-teks" style="margin:0" id="batalC">Batal</button><button class="pill" id="simpanC">Simpan</button></div>`;
+  let kelamin='L';
+  sembul.hidden=false;
+  sembul.onclick = ev=>{
+    if(ev.target.dataset.k){ kelamin=ev.target.dataset.k; sembul.querySelectorAll('[data-k]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===kelamin)); document.getElementById('labelC').textContent=labelDari('anak laki-laki dari paman kandung',kelamin); }
+    if(ev.target.id==='batalC') sembul.hidden=true;
+    if(ev.target.id==='simpanC'){ simpulC.push({id:'baru'+simpulC.length,nama:document.getElementById('namaC').value||'Tanpa nama',ket:kelamin==='L'?'anak lk dari sepupu':'anak pr dari sepupu',x:420,y:260,induk:induk.id,baru:true}); sembul.hidden=true; renderC(); }
+  };
+};
+
+/* ---------- pengalih ---------- */
+const CATATAN = {
+  a:'A: Sama dengan cara cucu sekarang. Saat seorang keponakan atau sepupu ditandai wafat (menu ⋯), muncul bagian "Anak Rudi" di bawahnya, dan begitu terus ke bawah. Paling konsisten dengan alur yang ada, tanpa layar baru. Paman ayah masuk sebagai baris tetap di kelompok ini.',
+  b:'B: Satu tautan "Tambah kerabat yang lebih jauh" membuka penyusun jalur: pangkal (saudara/paman/paman ayah) lalu turun N tingkat, dan labelnya terbentuk langsung. Bebas dan cepat, tapi pengguna harus paham silsilahnya sendiri dan perantaranya tidak tercatat sebagai orang.',
+  c:'C: Langsung di pohon: tombol + di bawah orang yang wafat untuk menambah anaknya. Paling visual, tapi menambah satu cara isi baru di samping wawancara per bagian, dan di layar HP pohon perlu digeser.'
+};
+let alt='a';
+function render(){
+  document.querySelectorAll('[data-hanya]').forEach(el=>el.hidden=el.dataset.hanya!==alt);
+  document.querySelectorAll('.pilih-alt button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.alt===alt));
+  document.getElementById('catatan').textContent = CATATAN[alt];
+  document.getElementById('sembulC').hidden = true;
+  renderA(); renderB(); renderC();
+}
+document.querySelector('.pilih-alt').onclick = e=>{ if(e.target.dataset.alt){ alt=e.target.dataset.alt; render(); } };
+render();
+</script>
+</body>
+</html>

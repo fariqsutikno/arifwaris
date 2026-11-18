@@ -3,18 +3,18 @@
 // keadaan orang lewat keadaanBaris, siapa yang ditanya lewat kelompok/ujiHipotetis.
 
 import type { GrafKeluarga, IdOrang, KunciAhliWaris, Orang } from '@waris/engine';
-import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris, ubahOrang } from './checklist';
+import { daftarInduk, hapusAhliWaris, hitungIsian, tambahAhliWaris, ubahNama, ubahOrang } from './checklist';
 import { rapikanKeadaan, type Kasus, type Kelompok } from './kasus';
 import { keadaanTerpilih, pilihKeadaan, tandaiBelumDiisi, type PilihanKeadaan } from './keadaanBaris';
 import { orangTerputus } from './keadaanOrang';
-import { anggotaBagian, daftarBagian, kunciBagian, orangDenganKunci, slotTetap, type Bagian } from './kelompok';
+import { anggotaBagian, buatBagian, daftarBagian, kunciBagian, orangDenganKunci, slotTetap, type Bagian } from './kelompok';
 
 export { kunciBagian, orangDenganKunci, slotTetap };
 
 /** Menghapus anggota bagian ini ikut menghapus keturunannya dan menantunya (cabang); pasangan tidak: anak tetap ada. */
-const BAGIAN_BERCABANG: Kelompok[] = ['anak', 'saudara', 'jauh'];
+const BAGIAN_BERCABANG: Kelompok[] = ['anak', 'saudara', 'jauh', 'saudaraKakek'];
 const BAGIAN_TETAP: Kelompok[] = ['orangTua', 'kakekNenek'];
-const BAGIAN_YA_TIDAK: Kelompok[] = ['pasangan', 'anak', 'saudara', 'jauh'];
+const BAGIAN_YA_TIDAK: Kelompok[] = ['pasangan', 'anak', 'saudara', 'jauh', 'saudaraKakek'];
 
 export const adalahBagianTetap = (bagian: Bagian): boolean => BAGIAN_TETAP.some(jenis => jenis === bagian.jenis);
 
@@ -44,6 +44,13 @@ export function tambahBaris(kasus: Kasus, bagian: Bagian, kunci: KunciAhliWaris,
   if (!id || !jenis) return denganOrang;
   // Baris pertama berarti jawabannya "Ya"; keadaannya belum dipilih, jadi baris menahan lanjut.
   return tandaiDijawab(tandaiBelumDiisi(denganOrang, id, true), bagian.milik, jenis, true);
+}
+
+/** Anak baru `idOrangTua` dengan nama (boleh kosong); keadaannya masih ditanya seperti baris baru lain. */
+export function tambahAnakBernama(kasus: Kasus, idOrangTua: IdOrang, jenisKelamin: 'L' | 'P', nama: string): Kasus {
+  const hasil = tambahBaris(kasus, buatBagian('anak', idOrangTua), jenisKelamin === 'L' ? 'ANAK_LK' : 'ANAK_PR');
+  const id = orangBaruDi(kasus.graf, hasil.graf);
+  return id ? { ...hasil, graf: ubahNama(hasil.graf, id, nama) } : hasil;
 }
 
 /** Membuang baris kosong terakhir (tanpa nama dan tanpa keadaan); null bila tidak ada yang kosong. */

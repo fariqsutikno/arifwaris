@@ -1,0 +1,1307 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup layar Hasil v4</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- v4. Acuan: docs/design/riset-ux-hasil-2026-11-17.md (bagian 22). Angka: saham per lapis/kemungkinan/harta dari engine untuk keluarga contoh,
+     rupiah dihitung di sini dengan BigInt. Teks "kapan dapat berapa" dan dalil diambil dari konten aplikasi (snapshot.json). -->
+<style>
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:rgba(255,255,255,.82);--edge:rgba(255,255,255,.95);
+--orange:#f2682a;--orange-soft:#fde6d8;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#dfe6dc;--hijau:#1f6f5c;
+--font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:18px 12px 90px}
+h1,h2,h3,h4,p{margin:0}
+button,input,select{font-family:inherit}
+.ik{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.tautan{background:none;border:0;padding:0;font:600 14px var(--font);color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.atas-mockup{max-width:1160px;margin:0 auto 12px}
+.atas-mockup p{font-size:13px;color:#2c4136;margin:0 4px 8px}
+nav.tab{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+nav.tab button{flex:none;border:0;background:rgba(255,255,255,.5);color:var(--ink);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer}
+nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
+.frame{max-width:1160px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18)}
+.tugas{display:none;background:var(--kuning);color:#4a3a00;padding:10px 20px;font-size:13.5px}.tugas.aktif{display:block}
+
+/* istilah + popover */
+.ist{border-bottom:1.5px dotted currentColor;cursor:help;position:relative;outline:none}
+.ist .pop{position:absolute;left:0;top:calc(100% + 8px);width:min(280px,80vw);background:var(--black);color:#fff;font:400 13px/1.45 var(--font);border-radius:14px;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.25);z-index:15;opacity:0;visibility:hidden;transform:translateY(-4px);transition:.15s;text-align:start;white-space:normal}
+.ist .pop b{display:block;font-weight:600;margin-bottom:2px}
+.ist .pop .ar{font-size:15px;opacity:.85;margin-left:6px}
+.ist:hover .pop,.ist:focus .pop,.ist.on .pop{opacity:1;visibility:visible;transform:none}
+
+/* hero */
+.hero{color:#fff;padding:16px 20px 20px;background:radial-gradient(520px 300px at 82% 60%,rgba(255,150,40,.33),transparent 70%),radial-gradient(420px 260px at 6% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326 0%,#0f3a38 55%,#0b2a2b 100%)}
+.bilah{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,.85)}
+.bilah .tautan{color:#fff;display:inline-flex;gap:4px;align-items:center}
+.status{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;font-size:13px}
+.status i{width:8px;height:8px;border-radius:50%;background:#7fe0b0}.status.tahan i{background:#f3cf5a}
+.heroIsi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:end;margin-top:16px}
+.namaKasus{display:flex;gap:8px;align-items:center;font-size:14px;color:rgba(255,255,255,.85)}
+.namaKasus button{background:rgba(255,255,255,.14);border:0;color:#fff;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.namaKasus input{font:500 14px var(--font);border:0;border-radius:10px;padding:6px 10px;width:min(320px,70vw)}
+.hero h1{font-size:34px;line-height:1.1;font-weight:500;letter-spacing:-.02em;margin-top:8px;max-width:22ch}
+.hero .kalimat{font-size:15.5px;margin-top:10px;color:rgba(255,255,255,.93);max-width:54ch}
+.aksiHero{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.pil{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;font:600 14px var(--font);background:#fff;color:var(--ink);border:0;cursor:pointer}
+.aksiHero .tautan{color:#fff;display:inline-flex;gap:6px;align-items:center}
+.ubinHero{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.uh{border-radius:22px;padding:13px 15px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);min-width:0}
+.uh .lbl{font-size:12.5px;color:rgba(255,255,255,.82)}
+.uh b{display:block;font-size:21px;font-weight:600;line-height:1.15;margin-top:3px;font-variant-numeric:tabular-nums}
+.uh small{display:block;font-size:12.5px;color:rgba(255,255,255,.8);margin-top:3px}
+.uh.kamu{grid-column:1/-1;background:rgba(255,255,255,.95);color:var(--ink);border-color:#fff;cursor:pointer;text-align:start;font:inherit}
+.uh.kamu .lbl,.uh.kamu small{color:var(--muted)}
+.uh.kamu b{font-size:32px}
+.uh.tahan{background:rgba(251,239,201,.95);color:var(--kuning-ink);border-color:#fbefc9}
+.uh.tahan .lbl,.uh.tahan small{color:var(--kuning-ink)}
+
+/* bento */
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;padding:12px}
+.t{background:var(--card);border:1px solid var(--edge);border-radius:24px;padding:18px;min-width:0;box-shadow:var(--sh)}
+.t h2{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.t .sub{font-size:13px;color:var(--muted);margin-top:2px}
+.t.mint{background:var(--mint);border-color:var(--mint)}.t.oranye{background:var(--orange-soft);border-color:var(--orange-soft)}
+.t.gelap{background:var(--black);color:#fff;border-color:var(--black)}.t.gelap .sub{color:rgba(255,255,255,.72)}
+.t.kuning{background:var(--kuning);border-color:var(--kuning)}
+.s12{grid-column:span 12}.s7{grid-column:span 7}.s5{grid-column:span 5}.s4{grid-column:span 4}
+.kolom{display:grid;gap:12px;align-content:start;min-width:0}
+.kepala-t{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+
+/* daftar */
+.ringkasAkhir{background:var(--mint);border-radius:16px;padding:10px 12px;font-size:13.5px;margin:6px 0 4px}
+.cari{display:flex;gap:8px;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:8px 12px;margin:8px 0}
+.cari input{border:0;flex:1;font-size:14px;outline:none;background:none}
+.grupJudul{display:flex;justify-content:space-between;font:600 12.5px var(--font);color:var(--muted);margin:14px 0 0;padding-bottom:4px;border-bottom:1px solid var(--line)}
+.orang{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:start;background:none;border:0;border-bottom:1px solid var(--line);padding:11px 0;font:inherit;color:inherit;cursor:pointer}
+.orang:hover,.orang.sorot{background:linear-gradient(90deg,rgba(242,104,42,.06),transparent)}
+.ava{flex:none;width:38px;height:38px;border-radius:14px;display:grid;place-items:center;font:600 15px var(--font);color:#fff;margin-top:2px}
+.nama{flex:1;min-width:0}
+.nama b{font-weight:600;font-size:15.5px}
+.nama .peran{display:block;color:var(--muted);font-size:13px}
+.nama .alasan{display:block;font-size:13.5px;color:#2c3530;margin-top:4px}
+.rp{font:600 17px/1.2 var(--font);font-variant-numeric:tabular-nums;text-align:end;white-space:nowrap}
+.rp small{display:block;font:400 12.5px var(--font);color:var(--muted);margin-top:2px}
+.panahKanan{color:var(--muted);align-self:center}
+.orang.redup .nama b,.orang.redup .rp{color:var(--muted)}
+.orang.redup .ava{background:#dfe3dd!important;color:#3f4944}
+.lab{display:inline-block;font:600 11.5px var(--font);border-radius:999px;padding:2px 8px;margin-left:6px;vertical-align:2px}
+.lab.kamu{background:var(--mint);color:#1f5a40}.lab.tahan{background:var(--kuning);color:var(--kuning-ink)}.lab.meninggal{background:#e7eae5;color:#4b554f}
+.genJudul{font:600 13px var(--font);color:var(--ink);margin:12px 0 0}
+.bayangan{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;margin:8px 0;padding:12px 14px;border:1.5px dashed #b9c4bb;border-radius:14px;background:repeating-linear-gradient(-45deg,rgba(20,24,26,.025) 0 8px,transparent 8px 16px);font:500 13.5px var(--font);color:var(--muted);cursor:pointer;text-align:start;list-style:none}
+.bayangan u{color:var(--ink);font-weight:600;text-underline-offset:3px;white-space:nowrap}
+.lipatDaftar summary::-webkit-details-marker{display:none}
+.lipatDaftar[open] summary{display:none}
+.bayanganKecil{font-size:12.5px;color:var(--muted);border:1.5px dashed #c9d2c8;border-radius:10px;padding:6px 10px;margin:4px 0}
+.jumlahan .b.saring{width:100%;border:0;background:none;font:inherit;color:inherit;cursor:pointer;border-radius:10px;padding:5px 8px;margin:0 -8px;width:calc(100% + 16px);text-align:start}
+.jumlahan .b.saring:hover{background:rgba(20,24,26,.05)}
+.jumlahan .b.saring span{color:var(--ink);text-decoration:underline dotted;text-underline-offset:3px}
+.jumlahan .b.saring.aktif{background:var(--ink);color:#fff}
+.jumlahan .b.saring.aktif span{color:#fff}
+.jumlahanJudul{font-size:12.5px;color:var(--muted);margin:12px 0 4px;padding-top:10px;border-top:1px dashed #c9d2c8}
+.pilBulat{display:inline-flex;align-items:center;gap:2px;border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:2px 6px 2px 10px;font:600 12.5px var(--font);cursor:pointer;color:var(--ink);margin-left:6px;vertical-align:1px}
+.pilBulat .ik{width:15px;height:15px}
+.disaring{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--ink);color:#fff;border-radius:12px;padding:8px 12px;font-size:13.5px;margin:8px 0}
+.disaring .tautan{color:#fff;font-size:13.5px}
+.ps{display:none!important}
+.proses-on th.ps,.proses-on td.ps{display:table-cell!important}
+.proses-on span.ps{display:block!important}
+.lipatGen{display:block;width:100%;background:rgba(20,24,26,.04);border:0;border-radius:12px;padding:10px;margin:8px 0;font:600 13.5px var(--font);cursor:pointer;color:var(--ink)}
+/* penjumlahan */
+.jumlahan{margin-top:12px;background:rgba(20,24,26,.035);border-radius:16px;padding:12px 14px;font-variant-numeric:tabular-nums}
+.jumlahan .b{display:flex;justify-content:space-between;gap:12px;font-size:14px;padding:3px 0}
+.jumlahan .b span{color:var(--muted)}
+.jumlahan .b.hasil{border-top:1.5px solid var(--ink);margin-top:6px;padding-top:8px;font-weight:600}
+.jumlahan .b.hasil span{color:var(--ink)}
+.bulatPilih{margin-top:12px}
+.bulatPilih p{font-size:13.5px;font-weight:600;margin-bottom:6px}
+.opsiBulat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.opsiBulat button{border:1.5px solid #7d8a82;background:#fff;border-radius:14px;padding:9px 10px;text-align:start;cursor:pointer;font:inherit;color:var(--ink)}
+.opsiBulat button b{display:block;font-size:14px;font-weight:600}
+.opsiBulat button small{display:block;font-size:12px;color:var(--muted);line-height:1.35;margin-top:2px}
+.opsiBulat button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.opsiBulat button[aria-pressed=true] small{color:rgba(255,255,255,.75)}
+
+/* info & jenis */
+.info dl{display:grid;grid-template-columns:auto 1fr;gap:9px 14px;margin:6px 0 0;font-size:14px}
+.info dt{color:var(--muted)}
+.info dd{margin:0;font-weight:500}
+.info dd small{display:block;font-weight:400;color:var(--muted);font-size:12.5px}
+.barisInfo{display:grid;gap:6px;margin-top:8px}
+.barisInfo>div{position:relative;display:grid;grid-template-columns:minmax(110px,38%) 1fr;gap:1px 12px;align-items:baseline;padding:9px 44px 9px 12px;background:rgba(20,24,26,.035);border-radius:12px}
+.barisInfo .lbl{font-size:13px;color:var(--muted);grid-row:span 2}
+.barisInfo b{font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums}
+.barisInfo small{font-size:12.5px;color:#2c3530;grid-column:2}
+.barisInfo .pensil{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:0;background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.barisInfo .pensil .ik{width:16px;height:16px}
+.fakta{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.fakta span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:4px 11px;font-size:13px}
+.statusTeks{font-size:17px;margin-top:8px;color:rgba(255,255,255,.95);font-weight:500}
+.hitungan{display:grid;gap:8px;margin-top:6px}
+.hitungan div{display:grid;grid-template-columns:minmax(120px,40%) 1fr;gap:0 12px;align-items:baseline;padding:8px 10px;background:rgba(20,24,26,.035);border-radius:12px}
+.hitungan .lbl{font-size:13px;color:var(--muted);grid-row:span 2}
+.hitungan b{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+.hitungan small{font-size:12.5px;color:#2c3530}
+dl.ringkas{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;margin:6px 0 0;font-size:14px}
+dl.ringkas dt{color:var(--muted)}dl.ringkas dd{margin:0;font-weight:600}
+.opsiKuis{display:grid;gap:10px}
+.opsiKuis button{display:flex;gap:14px;align-items:center;width:100%;text-align:start;border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 16px;cursor:pointer;font:inherit;color:var(--ink)}
+.opsiKuis button i{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid #7d8a82}
+.opsiKuis button b{display:block;font-size:15.5px;font-weight:600}
+.opsiKuis button small{display:block;color:var(--muted);font-size:13px}
+.opsiKuis button span.sisaO{margin-left:auto;font-size:13px;color:var(--muted);white-space:nowrap;text-align:end}
+.opsiKuis button[aria-pressed=true]{border-color:var(--ink);background:var(--frame)}
+.opsiKuis button[aria-pressed=true] i{border-color:var(--ink);background:radial-gradient(var(--ink) 45%,transparent 50%)}
+details.lipatM{border:1px solid var(--line);border-radius:14px;margin-top:10px}
+details.lipatM summary{cursor:pointer;list-style:none;padding:11px 14px;font-weight:600;font-size:14px;display:flex;justify-content:space-between;gap:10px}
+details.lipatM summary::-webkit-details-marker{display:none}
+details.lipatM summary small{font-weight:400;color:var(--muted);font-size:12.5px}
+details.lipatM summary::after{content:"+";font-weight:700}
+details.lipatM[open] summary::after{content:"−"}
+details.lipatM .isiL{padding:0 14px 12px}
+.petunjukGeser{display:none;color:var(--orange);font-weight:600}
+.adaGeser .petunjukGeser{display:inline}
+.alurM{position:relative;margin-top:14px}
+.alurM .titik{position:relative;padding:0 0 18px 40px}
+.alurM .titik::before{content:"";position:absolute;left:13px;top:30px;bottom:0;width:2px;background:var(--line)}
+.alurM .titik:last-child::before{display:none}
+.alurM .noT{position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 13px var(--font);background:var(--orange)}
+.alurM .titik.dasar .noT{background:var(--hijau)}
+.alurM .ketT{font-size:12px;color:var(--muted);font-weight:700;letter-spacing:.03em}
+.alurM h5{font-size:15px;font-weight:600;margin:2px 0 8px}
+.alurM .syarat{display:grid;gap:6px}
+.alurM .syarat div{display:flex;gap:10px;align-items:flex-start;background:var(--frame);border-radius:12px;padding:9px 12px;font-size:14px}
+.alurM .cek{flex:none;width:20px;height:20px;border-radius:50%;background:var(--hijau);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.alurM .dasarTeks{font-size:13.5px;background:var(--frame);border-radius:12px;padding:8px 12px;margin-top:8px}
+.ubahB{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px;margin-top:8px}
+.ubahB s{color:var(--muted)}.ubahB b{background:var(--mint);border-radius:8px;padding:2px 8px}.ubahB span{font-size:13px;color:var(--muted)}
+.jumlahP{background:var(--frame);border-radius:14px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.jumlahP div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;font-size:14px}
+.jumlahP div small{color:var(--muted);font-size:12.5px}
+.jumlahP div.tot{border-top:1.5px solid var(--ink);margin-top:5px;padding-top:7px;font-weight:600}
+.langkahH{display:grid;background:#fff;border:1px solid var(--line);border-radius:14px;padding:2px 12px}
+.langkahH div{display:grid;grid-template-columns:120px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;font-variant-numeric:tabular-nums}
+.langkahH div span:first-child{color:var(--muted)}
+.langkahH div:last-child{border:0;font-weight:600}
+.dalil{border-left:3px solid var(--hijau);padding:6px 12px;background:#f6faf5;border-radius:0 12px 12px 0;margin-bottom:8px}
+.alatDaftar{display:flex;gap:8px;align-items:center;flex:none}
+.mata{width:34px;height:34px;border-radius:50%;border:1.5px solid #7d8a82;background:#fff;display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.mata[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.mata .ik{width:18px;height:18px}
+.aturKolom{margin-bottom:10px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.aturKolom summary{cursor:pointer;padding:8px 12px;font:600 13.5px var(--font);list-style:none;display:flex;justify-content:space-between;gap:8px}
+.aturKolom summary::-webkit-details-marker{display:none}
+.aturKolom summary small{font-weight:400;color:var(--muted)}
+.aturKolom summary::after{content:"▾";color:var(--muted)}
+.aturKolom .isiAtur{display:flex;flex-wrap:wrap;gap:6px 14px;padding:4px 12px 10px}
+.aturKolom label{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;cursor:pointer}
+.pilTahap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.pilTahap .pk{display:inline-flex;gap:6px;align-items:center;border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font);cursor:pointer;color:var(--ink)}
+.pilTahap .pk[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.pilTahap .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(20,24,26,.1);font-size:11px}
+.pilTahap .pk[aria-pressed=true] .n{background:rgba(255,255,255,.25)}
+table.faraidh th[data-kolom]{cursor:pointer}
+table.faraidh th[data-kolom] .angka,table.faraidh th[data-kolom] .ket{display:block}
+table.faraidh th.dipilih{background:var(--orange-soft)!important;box-shadow:inset 0 -3px 0 var(--orange)}
+table.faraidh td.dipilih{background:#fff8f2}
+.kotakHitung{margin:12px 0 4px;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.kotakHitung .bag{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.kotakHitung .bag:first-child{border:0}
+.kotakHitung .bag>span:first-child{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+.kotakHitung .bag.d{background:#f6faf5}.kotakHitung .bag.k{background:#fff8f2}
+.kotakHitung .rumus{display:grid;gap:3px;font-variant-numeric:tabular-nums}
+.alurM .subT{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.03em;margin:12px 0 6px}
+.alurM .subT:first-of-type{margin-top:4px}
+@media(max-width:600px){.kotakHitung .bag{grid-template-columns:1fr}}
+.info h3{font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 0;letter-spacing:.02em}
+.jenis .kat{font-size:13px;color:var(--muted)}
+.jenis b.besar{display:block;font-size:18px;font-weight:600;margin-top:2px}
+.chipDeret{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.chip{display:inline-flex;align-items:center;gap:4px;background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600}
+.jenis ul{margin:6px 0 0;padding-left:18px;font-size:13.5px}
+.jenis li{margin:3px 0}
+.ditahanBaris{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 0;border-top:1px solid rgba(107,79,0,.15);font-size:14px}
+.ditahanBaris:first-of-type{border-top:0}
+.ditahanBaris span{color:var(--kuning-ink);font-size:13px;grid-column:1/-1}
+
+/* aliran */
+.rute{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 12px}
+.rute button{border:0;background:#fff;border-radius:999px;padding:6px 12px;font:600 13px var(--font);cursor:pointer;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.rute button.aktif{background:var(--orange);color:#fff}
+.rute .ke{color:var(--muted)}
+.blok{position:relative;margin:0 0 0 18px;padding:12px 0 18px 22px;border-left:3px solid var(--line)}
+.blok::before{content:attr(data-lapis);position:absolute;left:-15px;top:10px;width:27px;height:27px;border-radius:50%;background:#fff;border:3px solid #9aa79f;display:grid;place-items:center;font:600 12px var(--font)}
+.blok.aktif{border-left-color:var(--orange)}
+.blok.aktif::before{border-color:var(--orange);background:var(--orange);color:#fff}
+.blok h3{font-size:15.5px;font-weight:600}
+.blok .masuk{font-size:14px;color:var(--muted);margin:2px 0 8px}
+.blok .masuk b{color:var(--ink);font-size:18px}
+.blok table{width:100%;border-collapse:collapse;font-size:13.5px;font-variant-numeric:tabular-nums;background:#fff;border-radius:14px;overflow:hidden}
+.blok td,.blok th{padding:7px 10px;border-bottom:1px solid var(--line);text-align:start}
+.blok th{font-size:12px;color:var(--muted);font-weight:600;background:rgba(20,24,26,.03)}
+.blok td.rpk{text-align:end;white-space:nowrap;font-weight:600}
+.blok .terus{color:var(--orange);font-weight:600;white-space:nowrap}
+.blok .selesai{color:var(--hijau);white-space:nowrap}
+.blok .putarIni{margin-top:8px;font-size:13px}
+
+/* pohon + tabel */
+.panelDua{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:12px;margin-top:8px}
+.panel{background:#fff;border-radius:18px;border:1px solid var(--line);min-width:0;display:flex;flex-direction:column}
+.alat{display:flex;gap:6px;align-items:center;padding:8px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.alat .bulat{width:34px;height:34px;border-radius:50%;border:0;background:rgba(20,24,26,.06);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.alat .putar{display:inline-flex;gap:6px;align-items:center;border:0;background:var(--black);color:#fff;border-radius:999px;padding:7px 12px;font:600 13px var(--font);cursor:pointer;margin-left:auto}
+.kanvas{overflow:auto;height:430px;position:relative;background:linear-gradient(#f6f8f3,#fff)}
+.kanvas svg{display:block}
+.penuh{position:fixed!important;inset:0;z-index:20;border-radius:0!important}.penuh .kanvas{height:calc(100vh - 52px)}
+svg.pohon .kotak rect{fill:#fff;stroke:#c9d2c8;stroke-width:1.5}
+svg.pohon .terima rect{fill:#eef7ea;stroke:#6aa587}
+svg.pohon .redup rect{fill:#f3f4f1;stroke:#cfd6cd;stroke-dasharray:4 3}
+svg.pohon .meninggal rect{fill:#eceee9;stroke:#8f9a93}
+svg.pohon .almarhum rect{fill:#0f3a38;stroke:#0f3a38}
+svg.pohon .almarhum text{fill:#fff}svg.pohon .almarhum text.k{fill:#cfe2dc}
+svg.pohon .tahan rect{fill:#fff7e0;stroke:#d9b44a;stroke-dasharray:5 3}
+svg.pohon .kotak{cursor:pointer}
+svg.pohon .sorot rect{stroke:var(--orange);stroke-width:3}
+svg.pohon text{font:600 12.5px var(--font);fill:var(--ink)}
+svg.pohon text.k{font:400 11.5px var(--font);fill:var(--muted)}
+svg.pohon text.r{font:600 12.5px var(--font);fill:var(--hijau)}
+svg.pohon .g{stroke:#9aa79f;stroke-width:1.6;fill:none}
+svg.pohon .g.nikah{stroke-dasharray:2 3}
+svg.pohon .g.putus{stroke:#c0503a;stroke-dasharray:6 5;stroke-width:2}
+svg.pohon .alir{stroke:var(--orange);stroke-width:4;fill:none;stroke-dasharray:1;stroke-dashoffset:1;stroke-linecap:round}
+svg.pohon .alir.jalan{animation:jalan .9s ease forwards}
+svg.pohon .alir.diam{stroke-dashoffset:0;opacity:.45}
+@keyframes jalan{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion:reduce){svg.pohon .alir.jalan{animation:none;stroke-dashoffset:0}}
+.legPohon{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);padding:8px 10px;border-top:1px solid var(--line)}
+.legPohon i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;border:1.5px solid}
+.tabelWadah{overflow:auto;flex:1}
+table.faraidh{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+table.faraidh th,table.faraidh td{padding:7px 9px;border:1px solid #cfd8cc;text-align:center;white-space:nowrap}
+table.faraidh th:first-child,table.faraidh td:first-child{text-align:start;position:sticky;left:0;background:#fff;z-index:1;white-space:normal;min-width:110px}
+table.faraidh thead th{background:#f3f6ef;font-weight:600;font-size:12.5px}
+table.faraidh thead .angka{font-size:16px;font-weight:700}
+table.faraidh thead .pengali{color:var(--orange);font-weight:700;font-size:12.5px}
+table.faraidh .mati{background:#eceee9;color:var(--muted)}
+table.faraidh .mati::after{content:" ✕";font-size:11px}
+table.faraidh tfoot td{font-weight:700;background:#f3f6ef}
+table.faraidh .jami{background:#fff4ec}
+table.faraidh tr[data-id]{cursor:pointer}
+table.faraidh tr.sorot td{background:rgba(242,104,42,.12)}
+table.faraidh .ket{font-size:11.5px;color:var(--muted);font-weight:400;display:block}
+.tabelKaki{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.segmen{display:inline-flex;background:rgba(20,24,26,.06);border-radius:999px;padding:3px;gap:2px}
+.segmen.segPanel{display:none}
+.segmen button{border:0;background:none;border-radius:999px;padding:5px 12px;font:500 13px var(--font);cursor:pointer;color:var(--ink)}
+.segmen button[aria-pressed=true]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.pilih{margin:4px 0 8px}
+.pilih p{font-size:13px;font-weight:600;margin-bottom:6px}
+.pilDeret{display:flex;flex-wrap:wrap;gap:6px}
+.pk{border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font);cursor:pointer;color:var(--ink)}
+.pk[aria-checked=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+
+/* aksi bawah */
+ol.lanjut{margin:8px 0 0;padding:0;list-style:none;counter-reset:n;display:grid;gap:10px}
+ol.lanjut li{counter-increment:n;display:grid;grid-template-columns:28px 1fr;gap:10px;font-size:14px}
+ol.lanjut li::before{content:counter(n);width:28px;height:28px;border-radius:50%;background:rgba(20,24,26,.08);display:grid;place-items:center;font-weight:600;font-size:13px}
+ol.lanjut li span{display:block;color:var(--muted);font-size:13px}
+.aksiDaftar{display:grid;gap:8px;margin-top:10px}
+.aksiDaftar button{display:flex;gap:12px;align-items:center;text-align:start;background:rgba(255,255,255,.7);border:0;border-radius:16px;padding:10px 12px;font:inherit;color:inherit;cursor:pointer}
+.t.gelap .aksiDaftar button{background:rgba(255,255,255,.08)}
+.aksiDaftar b{display:block;font-weight:600;font-size:14.5px}
+.aksiDaftar small{display:block;color:var(--muted);font-size:12.5px}
+.t.gelap .aksiDaftar small{color:rgba(255,255,255,.7)}
+.ikBulat{flex:none;width:36px;height:36px;border-radius:12px;background:#fff;display:grid;place-items:center;color:var(--ink)}
+.kaki{padding:4px 22px 22px;font-size:13px;color:var(--muted)}
+
+/* penjelasan orang: modal di laptop, laci bawah di HP */
+.latar{position:fixed;inset:0;background:rgba(20,24,26,.4);display:none;z-index:30;align-items:center;justify-content:center;padding:20px}
+.latar.on{display:flex}
+.modalOrang{background:#fff;border-radius:26px;width:min(600px,100%);max-height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.3)}
+.modalKepala{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 20px 16px;background:var(--hijau);color:#fff}
+.modalKepala .sub{color:rgba(255,255,255,.8)}
+.modalKepala .tutup{background:rgba(255,255,255,.18);color:#fff}
+.modalKepala.tahan{background:#e0b23c;color:var(--ink)}.modalKepala.tahan .sub{color:#4a3a00}.modalKepala.tahan .tutup{background:rgba(0,0,0,.1);color:var(--ink)}
+.modalKepala.netral{background:#4b554f}
+.modalKepala .peranM{font-size:12.5px;font-weight:600;opacity:.85;letter-spacing:.03em}
+.modalKepala h3{font-size:24px;font-weight:600}
+.modalIsi{padding:4px 20px 18px;overflow:auto}
+.modalIsi h4{font-size:12.5px;font-weight:700;color:var(--muted);margin:18px 0 8px;letter-spacing:.03em}
+.angkaM{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.angkaM div{background:var(--frame);border-radius:14px;padding:10px 12px}
+.angkaM small{display:block;font-size:12px;color:var(--muted)}
+.angkaM b{font-size:17px;font-variant-numeric:tabular-nums}
+.kenapa{background:var(--orange-soft);border-radius:16px;padding:12px 14px}
+.kenapa ul{margin:0;padding-left:18px;font-size:14px}
+.kenapa li{margin:4px 0}
+.cara{font-size:14px;background:var(--frame);border-radius:14px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.modalIsi ul.biasa{margin:0;padding-left:18px;font-size:14px}
+table.ahwalT{width:100%;border-collapse:collapse;font-size:13.5px}
+table.ahwalT th,table.ahwalT td{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:top;text-align:start}
+table.ahwalT th{width:90px;font-weight:700}
+table.ahwalT tr.kini td,table.ahwalT tr.kini th{background:var(--mint)}
+.stiker{display:inline-block;background:var(--ink);color:#fff;font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px}
+.dalil{border-left:3px solid var(--hijau);padding:6px 12px;margin:6px 0}
+.dalil .arab{font-size:20px;line-height:1.8;direction:rtl;text-align:right}
+.dalil small{display:block;color:var(--muted);font-size:12.5px}
+.modalKaki{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 20px;border-top:1px solid var(--line)}
+.btn{border:0;background:var(--black);color:#fff;font:600 14px var(--font);border-radius:999px;padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.tutup{border:0;background:rgba(20,24,26,.08);width:36px;height:36px;border-radius:50%;cursor:pointer;display:grid;place-items:center}
+.lembarKirim{position:fixed;inset:0;background:rgba(20,24,26,.38);display:none;align-items:flex-end;justify-content:center;z-index:32}
+.lembarKirim.on{display:flex}
+.lembarKirim .isi{background:#fff;border-radius:24px 24px 0 0;width:100%;max-width:560px;padding:18px 16px 22px}
+.lembarKirim pre{white-space:pre-wrap;font:14px/1.5 var(--font);background:var(--frame);border-radius:16px;padding:12px;margin:10px 0 14px;max-height:50vh;overflow:auto}
+.deret{display:flex;justify-content:flex-end;gap:16px;align-items:center}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(200%);visibility:hidden;background:var(--black);color:#fff;border-radius:999px;padding:11px 18px;display:flex;gap:14px;align-items:center;transition:transform .25s;max-width:calc(100% - 32px);font-size:14px;z-index:40}
+.toast.on{transform:translateX(-50%) translateY(0);visibility:visible}.toast .tautan{color:#fff}
+.coba{padding:20px}.coba h1{font-size:28px;font-weight:500;margin-bottom:12px}
+.coba textarea{width:100%;min-height:60px;border:1.5px solid var(--line);border-radius:14px;padding:10px;font:inherit;margin-top:8px;background:#fff}
+.coba ol{padding-left:20px;margin:8px 0 0;font-size:14px}.coba .cek{color:var(--muted);font-size:13.5px;margin-top:6px}
+.s6{grid-column:span 6}
+
+@media(max-width:960px){
+  .heroIsi{grid-template-columns:1fr}
+  .s7,.s5,.s4,.s6{grid-column:span 12}
+  .panelDua{grid-template-columns:1fr}
+  .segmen.segPanel{display:inline-flex;margin-top:8px}
+  .panelDua[data-lihat=pohon] .panel.tabelP{display:none}
+  .panelDua[data-lihat=tabel] .panel.pohonP{display:none}
+}
+@media(max-width:600px){
+  body{padding:12px 8px 90px}
+  .hero{padding:14px 16px 18px}.hero h1{font-size:27px}
+  .uh.kamu b{font-size:28px}.uh b{font-size:18px}
+  .bento{padding:8px;gap:8px}.t{padding:15px;border-radius:22px}
+  .kanvas{height:360px}
+  .opsiBulat{grid-template-columns:1fr}
+  .latar{align-items:flex-end;padding:0}
+  .modalOrang{border-radius:24px 24px 0 0;max-height:90vh;width:100%}
+  .angkaM{grid-template-columns:1fr 1fr}.angkaM div:last-child{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-kembali" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></symbol>
+  <symbol id="i-kanan" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></symbol>
+  <symbol id="i-kirim" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></symbol>
+  <symbol id="i-pdf" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="M9 15l3 3 3-3"/></symbol>
+  <symbol id="i-ubah" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-pas" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></symbol>
+  <symbol id="i-penuh" viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></symbol>
+  <symbol id="i-putar" viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z"/></symbol>
+  <symbol id="i-cari" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></symbol>
+  <symbol id="i-simpan" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></symbol>
+  <symbol id="i-tautan" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+  <symbol id="i-langkah" viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h6"/></symbol>
+  <symbol id="i-tebak" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/></symbol>
+  <symbol id="i-banding" viewBox="0 0 24 24"><path d="M3 6h7v12H3zM14 10h7v8h-7z"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-mata" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-mataTutup" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.5 10.5 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.2M6.6 6.6A17 17 0 0 0 2 12s3.5 7 10 7a10 10 0 0 0 5.4-1.6"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+</svg>
+
+<div class="atas-mockup">
+  <p>Mockup v4, tidak ada yang disimpan. Angka dari hasil engine untuk keluarga contoh yang sama.</p>
+  <nav class="tab" role="tablist" id="tab"></nav>
+</div>
+<div class="frame" id="layar"></div>
+<div class="latar" id="latar"><div class="modalOrang" id="modalOrang" role="dialog" aria-modal="true" aria-labelledby="judulModal"></div></div>
+<div class="lembarKirim" id="lembarKirim" role="dialog" aria-modal="true" aria-labelledby="judulKirim">
+  <div class="isi"><h3 id="judulKirim" style="font-size:18px;font-weight:600">Kirim ringkasan</h3><pre id="teksKirim"></pre>
+    <div class="deret"><button class="tautan" id="batalKirim">Batal</button><button class="btn" id="salinKirim">Salin dan buka WhatsApp</button></div></div>
+</div>
+<div class="toast" id="toast" role="status"><span id="toastTeks"></span><button class="tautan" id="toastUrung">Urungkan</button></div>
+
+<script>
+// ═══ Pecahan & uang ═══
+const fpb = (a, b) => { a = a < 0n ? -a : a; b = b < 0n ? -b : b; while (b) [a, b] = [b, a % b]; return a; };
+const pec = (n, d) => { const g = fpb(n, d) || 1n; return [n / g, d / g]; };
+const tambah = (x, y) => pec(x[0] * y[1] + y[0] * x[1], x[1] * y[1]);
+const kali = (x, y) => pec(x[0] * y[0], x[1] * y[1]);
+const NOL = [0n, 1n];
+let SATUAN = 1n;
+const bulat = (harta, f) => (harta * f[0] / f[1]) / SATUAN * SATUAN;
+const rupiah = n => 'Rp ' + BigInt(n).toLocaleString('id-ID');
+const rpRingkas = n => { const x = Number(n); return x >= 1e6 ? `Rp ${(x / 1e6).toLocaleString('id-ID', { maximumFractionDigits: 1 })} jt` : rupiah(n); };
+const persen = f => (f[0] * 10000n < f[1] ? '< 0,01%' : (Number(f[0] * 10000n / f[1]) / 100).toLocaleString('id-ID') + '%');
+let BENTUK = 'sederhana'; // 'sederhana' (1/8) atau 'sama' (9/72) — pilihan pengguna, seperti layar lama
+const pendek = x => (String(x).length > 8 ? `${String(x).slice(0, 4)}…` : String(x));
+const teksPec = f => (String(f[1]).length > 8 ? `<span class="ist" tabindex="0">${pendek(f[0])}/${pendek(f[1])}<span class="pop" role="tooltip"><b>Pecahan lengkap (${String(f[1]).length} digit)</b>${f[0]}/${f[1]}</span></span>` : `${f[0]}/${f[1]}`);
+const pecO = o => (o.pecTeks ? o.pecTeks[BENTUK] : !o.f?.[0] ? '' : BENTUK === 'sama' && o.asli ? teksPec(o.asli) : teksPec(o.f));
+let SEMBUNYI = false; // nominal disembunyikan seperti kata sandi
+const segBentuk = () => `<div class="alatDaftar"><div class="segmen" role="group" aria-label="Bentuk pecahan"><button aria-pressed="${BENTUK === 'sederhana'}" data-bentuk="sederhana" title="Fardh: bagian asal menurut dalil, mis. 1/8">Fardh</button><button aria-pressed="${BENTUK === 'sama'}" data-bentuk="sama" title="Saham: bagian setelah disamakan penyebutnya, mis. 9 dari 72; mudah dijumlahkan">Saham</button></div><button class="mata" data-sembunyi aria-pressed="${SEMBUNYI}" aria-label="${SEMBUNYI ? 'Tampilkan nominal' : 'Sembunyikan nominal'}" title="${SEMBUNYI ? 'Tampilkan nominal' : 'Sembunyikan nominal'}">${ik(SEMBUNYI ? 'mataTutup' : 'mata')}</button></div>`;
+// Nominal disamarkan di semua teks yang tampil (daftar, ubin, tabel, modal) saat SEMBUNYI.
+const POLA_RP = /Rp\s?[\d.]+(\s?(jt|M))?/g;
+function samarkan(akar) {
+  if (!SEMBUNYI || !akar) return;
+  const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT);
+  const node = []; while (jalan.nextNode()) node.push(jalan.currentNode);
+  for (const t of node) if ((POLA_RP.lastIndex = 0, POLA_RP.test(t.nodeValue))) t.nodeValue = t.nodeValue.replace(POLA_RP, 'Rp •••••••');
+  akar.querySelectorAll('td[data-rupiah]').forEach(td => { td.textContent = '•••••••'; });
+}
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => [...el.querySelectorAll(s)];
+const ik = id => `<svg class="ik"><use href="#i-${id}"/></svg>`;
+
+// ═══ Istilah (glosarium KB bab 15) ═══
+const ISTILAH = {
+  munasakhat: ['Munasakhat', 'المناسخات', 'Ada ahli waris yang ikut meninggal sebelum harta sempat dibagi, sehingga bagiannya berpindah ke ahli warisnya sendiri.'],
+  jamiah: ["Jami'ah", 'الجامعة', 'Angka pembagi gabungan untuk beberapa kematian berantai atau beberapa kemungkinan.'],
+  ashl: ["Asal masalah", 'أصل المسألة', 'Angka terkecil yang bisa dibagi oleh semua penyebut bagian ahli waris.'],
+  tashih: ['Tashih', 'التصحيح', 'Memperbesar angka pembagi agar bagian setiap orang menjadi bilangan bulat.'],
+  tawafuq: ['Tawafuq', 'التوافق', 'Dua angka yang tidak saling membagi habis tetapi sama-sama bisa dibagi angka lain selain 1, misalnya 4 dan 6.'],
+  tadakhul: ['Tadakhul', 'التداخل', 'Angka yang besar sudah habis dibagi angka yang kecil, misalnya 3 dan 6; cukup pakai yang besar.'],
+  tamatsul: ['Tamatsul', 'التماثل', 'Dua angka yang sama, misalnya 3 dan 3; cukup pakai salah satunya.'],
+  tabayun: ['Tabayun', 'التباين', 'Dua angka yang tidak punya faktor bersama selain 1, misalnya 3 dan 4; keduanya dikalikan.'],
+  inqisam: ['Inqisam', 'الانقسام', 'Bagian mayit berikutnya habis dibagi masalahnya, jadi jami\'ah tidak berubah.'],
+  adilah: ["'Adilah", 'العادلة', 'Jumlah semua bagian pas sama dengan harta; tidak ada kelebihan atau sisa.'],
+  radd: ['Radd', 'الرد', 'Sisa harta dikembalikan kepada ahli waris yang bagiannya pasti, sebanding dengan bagian mereka.'],
+  haml: ['Haml', 'الحمل', 'Janin dalam kandungan. Ia mewarisi bila lahir hidup.'],
+  mafqud: ['Mafqud', 'المفقود', 'Orang hilang yang tidak diketahui hidup atau sudah meninggal.'],
+  gharqa: ['Gharqa', 'الغرقى', 'Orang-orang yang saling mewarisi tetapi waktu meninggalnya samar, misalnya dalam kecelakaan yang sama.'],
+  mauquf: ['Mauquf', 'الموقوف', 'Bagian yang ditahan dulu sampai keadaannya jelas.'],
+  aqall: ['Bagian terkecil', 'الأقل', 'Selama belum pasti, tiap ahli waris diberi bagian terkecilnya di antara semua kemungkinan.'],
+  munK1: ['Keadaan 1 munasakhat', '', 'Ahli waris mayit berikutnya sama persis dengan sisa ahli waris mayit sebelumnya, dengan bagian yang sama. Cukup dibagi sekali.'],
+  munK3: ['Keadaan 3 munasakhat', '', 'Ahli waris mayit berikutnya tidak sama persis dengan sisa ahli waris mayit sebelumnya, jadi tiap masalah disatukan lewat jami\'ah. (Keadaan 1: sama persis; keadaan 2: terpisah total, lebih dari satu mayit.)'],
+  gharqa1: ['Keadaan 1 gharqa', '', 'Diketahui meninggal serentak. Tidak saling mewarisi; ini disepakati para ulama.'],
+  gharqa3: ['Keadaan 3 gharqa', '', 'Urutannya pernah diketahui lalu terlupakan. Madzhab Syafi\'i: ditahan sampai ingat atau para ahli waris berdamai.'],
+  juz: ["Pengali (juz' as-sahm)", 'جزء السهم', 'Angka pengali yang dipakai saat menyamakan masalah.'],
+};
+const ist = (kunci, teks) => { const [j, ar, def] = ISTILAH[kunci]; return `<span class="ist" tabindex="0">${teks ?? j}<span class="pop" role="tooltip"><b>${j}<span class="ar">${ar}</span></b>${def}</span></span>`; };
+
+// ═══ Konten aplikasi: kapan dapat berapa (ahwal) + dalil (syahid) ═══
+const AHWAL = {
+  ISTRI: [['1/4', 'Almarhum tidak punya anak atau cucu dari anak laki-laki.'], ['1/8', 'Almarhum punya anak atau cucu dari anak laki-laki.']],
+  IBU: [['1/6', 'Ada anak/cucu, atau ada dua saudara atau lebih.'], ['1/3', 'Tidak ada anak/cucu dan saudaranya kurang dari dua.'], ['1/3 sisa', 'Hanya bersama ayah dan suami/istri (umariyyatain).']],
+  ANAK_LK: [['Sisa', 'Selalu mewarisi dan tidak pernah terhalang. Bersama anak perempuan: dapat dua kali bagiannya.']],
+  ANAK_PR: [['1/2', 'Sendirian, tanpa anak laki-laki.'], ['2/3', 'Dua orang atau lebih, tanpa anak laki-laki.'], ['Sisa, 1 : 2', 'Bersama anak laki-laki.']],
+  SAUDARA_KANDUNG: [['Sisa', 'Tidak ada anak laki-laki, cucu laki-laki, maupun ayah.'], ['Terhalang', 'Ada anak laki-laki, cucu laki-laki, atau ayah.']],
+  // Ringkasan KB bab 4.11–4.12 (belum ada di konten ahwal aplikasi; perlu ditambahkan ke konten sebelum dipakai).
+  CUCU_PR: [['1/2', 'Sendirian, tanpa anak di atasnya.'], ['2/3', 'Dua orang atau lebih, tanpa anak di atasnya.'], ['1/6', 'Bersama satu anak perempuan (penyempurna 2/3).'], ['Terhalang', 'Ada anak laki-laki, atau dua anak perempuan atau lebih.']],
+  SAUDARI_KANDUNG: [['1/2', 'Sendirian, tanpa keturunan, tanpa ayah, tanpa saudara laki-laki kandung.'], ['2/3', 'Dua orang atau lebih, dengan syarat yang sama.'], ['Sisa', 'Bersama anak atau cucu perempuan almarhum (ashabah ma\'al ghair).'], ['Terhalang', 'Ada anak/cucu laki-laki atau ayah.']],
+  HAML: [['Ditahan', 'Janin mewarisi bila lahir hidup; bagiannya ditahan sampai lahir.']],
+  MAFQUD: [['Ditahan', 'Orang hilang diperlakukan dengan dua kemungkinan (hidup dan meninggal); bagiannya ditahan sampai jelas.']],
+  BUKAN: [['—', 'Menantu bukan ahli waris mertuanya.']],
+};
+const DALIL = {
+  ibnuMasud: ['لِلابْنَةِ النِّصْفُ، وَلِابْنَةِ ابْنٍ السُّدُسُ تَكْمِلَةَ الثُّلُثَيْنِ، وَمَا بَقِيَ فَلِلأُخْتِ', 'Anak perempuan 1/2, cucu perempuan 1/6 penyempurna 2/3, sisanya untuk saudari', 'HR al-Bukhari (Ibnu Mas\'ud)'],
+  istri18: ['فَإِن كَانَ لَكُمْ وَلَدٌ فَلَهُنَّ الثُّمُنُ', 'Istri mendapat 1/8 bila suami punya anak', 'An-Nisa ayat 12'],
+  ibu16: ['وَلِأَبَوَيْهِ لِكُلِّ وَاحِدٍ مِّنْهُمَا السُّدُسُ مِمَّا تَرَكَ إِن كَانَ لَهُ وَلَدٌ', 'Ayah dan ibu masing-masing 1/6 bila ada anak', 'An-Nisa ayat 11'],
+  duaKali: ['لِلذَّكَرِ مِثْلُ حَظِّ الْأُنثَيَيْنِ', 'Anak laki-laki mendapat dua kali bagian anak perempuan', 'An-Nisa ayat 11'],
+  setengah: ['وَإِن كَانَتْ وَاحِدَةً فَلَهَا النِّصْفُ', 'Satu anak perempuan mendapat 1/2', 'An-Nisa ayat 11'],
+};
+
+// ═══ Orang (sebutan tetap dari almarhum pertama) ═══
+const ORANG = {
+  PEWARIS: ['Pak Ahmad', 'Almarhum', '#0f3a38'], Aminah: ['Aminah', 'Istri almarhum', '#b5653a', 'ISTRI', 'PASANGAN'], Fatimah: ['Fatimah', 'Ibu almarhum', '#7d3c98', 'IBU', 'LELUHUR'],
+  Budi: ['Budi', 'Anak laki-laki', '#3f6b2a', 'ANAK_LK', 'KETURUNAN'], Siti: ['Siti', 'Anak perempuan', '#2b6f8a', 'ANAK_PR', 'KETURUNAN'], Hasan: ['Hasan', 'Kakak laki-laki almarhum', '#9aa59e', 'SAUDARA_KANDUNG', 'SAUDARA'],
+  Rina: ['Rina', 'Istri Budi (menantu)', '#a0567a', null, 'KERABAT LAPIS 2'], Zahra: ['Zahra', 'Cucu perempuan, anak Budi', '#c0503a', null, 'KETURUNAN'], Bayi: ['Bayi dalam kandungan Aminah', 'Anak almarhum', '#f3dc94', null, 'KETURUNAN'],
+};
+for (let i = 1; i <= 13; i++) {
+  ORANG['Istri' + i] = [`Istri gen. ${i}`, i === 1 ? 'Istri almarhum' : `Istri Putra gen. ${i - 1}`, '#b5653a'];
+  ORANG['Putra' + i] = [`Putra gen. ${i}`, i === 1 ? 'Anak laki-laki' : `Anak Putra gen. ${i - 1}`, '#3f6b2a'];
+  ORANG['Putri' + i] = [`Putri gen. ${i}`, i === 1 ? 'Anak perempuan' : `Anak Putra gen. ${i - 1}`, '#2b6f8a'];
+}
+const nama = id => ORANG[id]?.[0] ?? id;
+
+// ═══ Rantai munasakhat (saham per lapis dari engine) ═══
+function hitungRantai(lapis) {
+  const masuk = { PEWARIS: [1n, 1n] }, dari = {}, total = {}, mayit = new Set(lapis.map(l => l[0]));
+  for (const [m, per, tot] of lapis) for (const [id, s] of Object.entries(per)) {
+    const f = kali(masuk[m] ?? NOL, pec(BigInt(s), BigInt(tot)));
+    (dari[id] ??= {})[m] = f;
+    if (mayit.has(id)) masuk[id] = tambah(masuk[id] ?? NOL, f); else total[id] = tambah(total[id] ?? NOL, f);
+  }
+  return { masuk, dari, total, lapisKe: id => lapis.findIndex(l => l[0] === id) + 1 };
+}
+// Tabel munasakhat ala kitab (KB 12.3): kolom masalah tiap mayit, pengali di atas kolom, kolom jami'ah sesudahnya.
+function tabelMunasakhat(lapis, ket) {
+  const kolom = []; let jam = null, sahamJam = {};
+  for (const [i, [m, per, tot]] of lapis.entries()) {
+    const T = BigInt(tot);
+    if (i === 0) { jam = T; sahamJam = Object.fromEntries(Object.entries(per).map(([k, v]) => [k, BigInt(v)])); kolom.push({ jenis: 'masalah', mayit: m, total: T, per, ket: ket?.[i] }); continue; }
+    const s = sahamJam[m]; const g = fpb(s, T);
+    let pengaliLama, pengaliBaru, hub;
+    if (s % T === 0n) { pengaliLama = 1n; pengaliBaru = s / T; hub = s === T ? 'tamatsul' : 'inqisam'; }
+    else if (g > 1n) { pengaliLama = T / g; pengaliBaru = s / g; hub = 'tawafuq'; }
+    else { pengaliLama = T; pengaliBaru = s; hub = 'tabayun'; }
+    kolom.push({ jenis: 'masalah', mayit: m, total: T, per, saham: s, hub, fpb: g, pengaliLama, pengaliBaru, ket: ket?.[i] });
+    const baru = {};
+    for (const [k, v] of Object.entries(sahamJam)) if (k !== m) baru[k] = (baru[k] ?? 0n) + v * pengaliLama;
+    for (const [k, v] of Object.entries(per)) baru[k] = (baru[k] ?? 0n) + BigInt(v) * pengaliBaru;
+    jam = jam * pengaliLama; sahamJam = baru;
+    kolom.push({ jenis: 'jamiah', total: jam, saham: { ...sahamJam }, akhir: i === lapis.length - 1 });
+  }
+  return { kolom, jam, sahamJam };
+}
+
+// ═══ Data kasus (saham dari engine) ═══
+const HARTA = 300000000n;
+const LAPIS_BERLAPIS = [['PEWARIS', { Aminah: 3, Budi: 14, Siti: 7 }, 24], ['Budi', { Rina: 3, Aminah: 4, Zahra: 12, Siti: 5 }, 24], ['Aminah', { Siti: 3, Zahra: 1 }, 4]];
+const LAPIS_RANTAI = [['PEWARIS', { Istri1: 3, Putra1: 14, Putri1: 7 }, 24], ...Array.from({ length: 12 }, (_, i) => [`Putra${i + 1}`, { [`Istri${i + 2}`]: 9, [`Istri${i + 1}`]: 12, [`Putra${i + 2}`]: 34, [`Putri${i + 2}`]: 17 }, 72])];
+const ALASAN_LAPIS = {
+  PEWARIS: { Aminah: '1/8 sebagai istri, karena ada anak', Budi: 'sisa, dua kali bagian Siti', Siti: 'sisa, separuh bagian Budi', Istri1: '1/8 sebagai istri', Putra1: 'sisa, dua kali bagian saudarinya', Putri1: 'sisa, separuh bagian saudaranya' },
+  Budi: { Rina: '1/8 sebagai istrinya, karena Budi punya anak', Aminah: '1/6 sebagai ibunya, karena Budi punya anak', Zahra: '1/2 sebagai putri satu-satunya', Siti: 'sisa, sebagai saudarinya bersama putri Budi' },
+  Aminah: { Siti: '1/2 sebagai putrinya, lalu tambahan sisa (radd)', Zahra: '1/6 sebagai cucunya, lalu tambahan sisa (radd)' },
+};
+const KET_LAPIS_BERLAPIS = ['asal 8 → tashih 24', 'asal 24, \'adilah', 'asal 6 → radd 4'];
+const DUNIA = [
+  [{ Siti: 'hidup', Bayi: 'mati' }, { Aminah: 1260, Fatimah: 1680, Budi: 4760, Siti: 2380 }], [{ Siti: 'hidup', Bayi: 'lk' }, { Aminah: 1260, Fatimah: 1680, Budi: 2856, Bayi: 2856, Siti: 1428 }],
+  [{ Siti: 'hidup', Bayi: 'pr' }, { Aminah: 1260, Fatimah: 1680, Budi: 3570, Siti: 1785, Bayi: 1785 }], [{ Siti: 'hidup', Bayi: 'duaLk' }, { Aminah: 1260, Fatimah: 1680, Budi: 2040, Bayi: 4080, Siti: 1020 }],
+  [{ Siti: 'hidup', Bayi: 'duaPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 2856, Siti: 1428, Bayi: 2856 }], [{ Siti: 'hidup', Bayi: 'lkPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 2380, Bayi: 3570, Siti: 1190 }],
+  [{ Siti: 'mati', Bayi: 'mati' }, { Aminah: 1260, Fatimah: 1680, Budi: 7140 }], [{ Siti: 'mati', Bayi: 'lk' }, { Aminah: 1260, Fatimah: 1680, Budi: 3570, Bayi: 3570 }],
+  [{ Siti: 'mati', Bayi: 'pr' }, { Aminah: 1260, Fatimah: 1680, Budi: 4760, Bayi: 2380 }], [{ Siti: 'mati', Bayi: 'duaLk' }, { Aminah: 1260, Fatimah: 1680, Budi: 2380, Bayi: 4760 }],
+  [{ Siti: 'mati', Bayi: 'duaPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 3570, Bayi: 3570 }], [{ Siti: 'mati', Bayi: 'lkPr' }, { Aminah: 1260, Fatimah: 1680, Budi: 2856, Bayi: 4284 }],
+];
+const JAMIAH_GAB = 10080n;
+const TEKS_BAYI = { mati: 'lahir tidak hidup', lk: '1 laki-laki', pr: '1 perempuan', duaLk: '2 laki-laki', duaPr: '2 perempuan', lkPr: 'laki-laki & perempuan' };
+const GHARQA_HARTA = [['PEWARIS', 300000000n, { Aminah: [4, 32], Siti: [21, 32], Zahra: [7, 32] }, { Aminah: '1/8 sebagai istrinya', Siti: '1/2 sebagai putrinya, lalu tambahan sisa (radd)', Zahra: '1/6 sebagai cucunya (Budi tidak dihitung), lalu tambahan sisa (radd)' }, 'asal 24 → radd 32'],
+  ['Budi', 50000000n, { Rina: [3, 24], Aminah: [4, 24], Zahra: [12, 24], Siti: [5, 24] }, { Rina: '1/8 sebagai istrinya', Aminah: '1/6 sebagai ibunya', Zahra: '1/2 sebagai putrinya', Siti: 'sisa, sebagai saudarinya' }, "asal 24, 'adilah"]];
+const SKENARIO = [['Kalau Pak Ahmad lebih dulu', { Aminah: 74999999n, Siti: 134374999n, Rina: 28125000n, Zahra: 112500000n }], ['Kalau Budi lebih dulu', { Aminah: 47135416n, Siti: 203710937n, Rina: 6250000n, Zahra: 92903645n }]];
+
+// Pohon
+const SIMPUL_KELUARGA = (st, sub) => [
+  ['AyahPA', 60, 30, 130, 'meninggal', 'Ayah almarhum', 'meninggal lebih dulu'], ['Fatimah', 320, 30, 150, st.Fatimah, 'Fatimah · ibu', sub.Fatimah],
+  ['Hasan', 60, 140, 150, st.Hasan, 'Hasan · kakak', sub.Hasan], ['PEWARIS', 250, 140, 130, 'almarhum', 'Pak Ahmad', 'Rp 300.000.000'], ['Aminah', 420, 140, 170, st.Aminah, 'Aminah · istri', sub.Aminah],
+  ['Budi', 250, 260, 150, st.Budi, 'Budi · anak', sub.Budi], ['Siti', 420, 260, 150, st.Siti, 'Siti · anak', sub.Siti]];
+const GARIS_KELUARGA = [['M190 54 H320', 'g nikah'], ['M255 54 V110 H135 V140', 'g'], ['M255 110 H315 V140', 'g'], ['M380 164 H420', 'g nikah'], ['M400 164 V230 H325 V260', 'g'], ['M400 230 H495 V260', 'g'],
+  ['M315 188 V230 H325 V258', 'alir', 1], ['M315 188 V230 H495 V258', 'alir', 1], ['M380 158 H418', 'alir', 1], ['M300 140 V110 H395 V82', 'alir', 1]];
+const POHON_BERLAPIS = () => {
+  const r = hitungRantai(LAPIS_BERLAPIS), t = id => rupiah(bulat(HARTA, r.total[id]));
+  return { lebar: 620, tinggi: 380, simpul: [['PEWARIS', 40, 30, 140, 'almarhum', 'Pak Ahmad', 'Rp 300.000.000'], ['Aminah', 300, 30, 210, 'meninggal', 'Aminah · istri (lapis 3)', 'menerima Rp 66,7 jt, diteruskan'],
+    ['Budi', 40, 160, 200, 'meninggal', 'Budi · anak (lapis 2)', 'menerima Rp 175 jt, diteruskan'], ['Siti', 300, 160, 170, 'terima', 'Siti · anak', t('Siti')], ['Rina', 40, 290, 150, 'terima', 'Rina · menantu', t('Rina')], ['Zahra', 250, 290, 170, 'terima', 'Zahra · cucu', t('Zahra')]],
+    garis: [['M180 54 H300', 'g nikah'], ['M240 54 V120 H140 V160', 'g'], ['M240 120 H385 V160', 'g'], ['M140 208 V250 H115 V290', 'g nikah'], ['M140 250 H335 V290', 'g'],
+      ['M240 60 V120 H140 V158', 'alir', 1], ['M240 120 H385 V158', 'alir', 1], ['M180 48 H298', 'alir', 1],
+      ['M140 208 V250 H335 V288', 'alir', 2], ['M140 208 V250 H115 V288', 'alir', 2], ['M240 184 H298', 'alir', 2], ['M100 160 V110 H405 V80', 'alir', 2],
+      ['M405 78 V120 H385 V158', 'alir', 3], ['M510 54 H560 V340 H420', 'alir', 3]] };
+};
+
+const KASUS = {
+  biasa: {
+    kerangka: () => [['Jenis kasus', 'Biasa'], ['Kondisi', ist('adilah')], ['Mayit', '1: Pak Ahmad'], ['Yang dibagi', 'Harta Pak Ahmad']], statusTeks: 'Dibagi ke 4 orang', fakta: ['1 mayit', 'Tanpa potongan harta'],
+    tab: 'Biasa', status: ['Pasti', ''], namaKasus: 'Warisan Pak Ahmad', judul: 'Harta Pak Ahmad dibagi ke 4 orang',
+    kalimat: 'Rp 300.000.000, tanpa biaya jenazah, hutang, atau wasiat.', kamu: 'Aminah',
+    ubin: [['Harta dibagi', 'Rp 300 jt', 'sudah bersih'], ['Menerima', '4 orang', '1 tidak mendapat']],
+    daftar: () => [
+      { id: 'Aminah', f: pec(9n, 72n), asli: [9n, 72n], alasan: '1/8, karena almarhum punya anak.', kenapa: ['Istri mendapat 1/8, bukan 1/4, karena almarhum meninggalkan anak (Budi dan Siti). Pengurangan ini disebut hajb nuqshan.'], dalil: 'istri18', ahwal: [1] },
+      { id: 'Fatimah', f: pec(12n, 72n), asli: [12n, 72n], alasan: '1/6, karena almarhum punya anak.', kenapa: ['Ibu mendapat 1/6, bukan 1/3, karena almarhum meninggalkan anak (Budi dan Siti).'], dalil: 'ibu16', ahwal: [0] },
+      { id: 'Budi', f: pec(34n, 72n), asli: [34n, 72n], alasan: 'Sisa harta bersama Siti, dua kali bagian Siti.', kenapa: ['Anak laki-laki dan anak perempuan mengambil sisa harta bersama-sama; laki-laki mendapat dua kali bagian perempuan.', 'Sisa setelah istri dan ibu: 17 dari 24 bagian.'], dalil: 'duaKali', ahwal: [0], terdampak: ['Hasan (kakak almarhum) tidak mendapat bagian karena ada Budi.', 'Aminah mendapat 1/8, bukan 1/4, karena ada Budi.', 'Fatimah mendapat 1/6, bukan 1/3, karena ada Budi.'] },
+      { id: 'Siti', f: pec(17n, 72n), asli: [17n, 72n], alasan: 'Sisa harta bersama Budi, separuh bagian Budi.', kenapa: ['Anak perempuan bersama anak laki-laki mengambil sisa harta; ia mendapat separuh bagian saudaranya.'], dalil: 'duaKali', ahwal: [2] },
+      { id: 'Hasan', f: NOL, redup: true, alasan: 'Tidak mendapat bagian, karena ada anak laki-laki.', kenapa: ['Anak laki-laki lebih dekat ke almarhum daripada saudara, jadi saudara tidak mendapat bagian (hajb hirman).'], ahwal: [1] },
+    ],
+    jenis: { kat: 'Kasus biasa', judul: 'Bagian pas dengan harta', chip: [['adilah']], ringkas: () => [['Ahli waris', '4 menerima, 1 terhalang'], ["'Aul / radd", 'Tidak ada']] },
+    hitungan: () => [['Asal masalah', '24', `penyebut 8 dan 6, ${ist('tawafuq')}: 8 × 3`], ['Tashih', '24 → 72', `sisa 17 untuk 3 kepala, ${ist('tabayun')}: semua × 3`], ["'Aul / radd", 'Tidak ada', '']],
+    info: 'Tidak ada keadaan khusus',
+    pohon: () => ({ lebar: 620, tinggi: 330, simpul: SIMPUL_KELUARGA({ Fatimah: 'terima', Hasan: 'redup', Aminah: 'terima', Budi: 'terima', Siti: 'terima' }, { Fatimah: 'Rp 50.000.000', Hasan: 'tidak mendapat', Aminah: 'Rp 37.500.000', Budi: 'Rp 141.666.666', Siti: 'Rp 70.833.333' }), garis: GARIS_KELUARGA }),
+    lanjut: [['Musyawarahkan dengan semua ahli waris.', 'Kirim ringkasan ke grup, atau unduh PDF untuk dibaca bersama.'], ['Sepakati cara membagi.', 'Transfer, tunai, atau barang; termasuk sisa pembulatan.'], ['Urus dokumen.', 'Misalnya surat keterangan ahli waris.'], ['Kalau ragu, tanya ahlinya.', 'Bawa PDF lengkap ke ustadz yang paham faraidh.']],
+  },
+  berlapis: {
+    kerangka: () => [['Jenis kasus', `${ist('munasakhat')} (meninggal berurutan)`], ['Kondisi', ist('munK3', 'Keadaan 3')], ['Mayit', '1: Pak Ahmad · 2: Budi · 3: Aminah'], ['Yang dibagi', 'Harta Pak Ahmad saja']], statusTeks: 'Dibagi ke 3 orang', fakta: ['3 mayit berurutan'],
+    tab: 'Berurutan (3 lapis)', status: ['Pasti', ''], namaKasus: 'Warisan Pak Ahmad, Budi, dan Aminah', judul: 'Bagikan harta Pak Ahmad langsung ke 3 orang',
+    kalimat: 'Budi meninggal sesudah ayahnya, lalu Aminah meninggal sesudah Budi, sebelum harta dibagi. Bagian keduanya sudah dihitung ke ahli waris masing-masing.', kamu: 'Siti',
+    ubin: [['Harta dibagi', 'Rp 300 jt', 'harta Pak Ahmad saja'], ['Menerima', '3 orang', 'lewat 3 lapis']],
+    rantai: LAPIS_BERLAPIS, ketLapis: KET_LAPIS_BERLAPIS,
+    jenis: { kat: 'Meninggal berurutan', judul: 'Munasakhat', chip: [['munasakhat']], ringkas: () => [['Keadaan', '3 dari 3'], ['Jumlah lapis', '3'], ['Meninggal kemudian', 'Budi, lalu Aminah'], ['Yang dibagi', 'Harta Pak Ahmad saja']] },
+    hitungan: () => [['Masalah Pak Ahmad', '8 → 24', 'tashih'], ['Masalah Budi', '24', ist('adilah')], ['Bagian Budi : masalahnya', '14 : 24', `${ist('tawafuq')}, dibagi 2 → 7 : 12`], ["Jami'ah ke-1", '24 × 12 = 288', ''], ['Masalah Aminah', '6 → 4', ist('radd')], ['Bagian Aminah : masalahnya', '64 : 4', `${ist('inqisam')}, 64 ÷ 4 = 16`], ["Jami'ah akhir", '288', 'tidak berubah']],
+    info: 'Budi dan Aminah meninggal sebelum harta dibagi',
+    pohon: POHON_BERLAPIS,
+    lanjut: [['Bagikan sekali, sesuai daftar di atas.', 'Tidak perlu membagi per lapis.'], ['Harta pribadi Budi dan Aminah dibagi terpisah.', 'Termasuk hutang dan wasiat mereka.'], ['Kalau ragu, tanya ahlinya.', 'Bawa PDF lengkap berisi tabel munasakhat.']],
+  },
+  rantai: {
+    kerangka: () => [['Jenis kasus', `${ist('munasakhat')} (meninggal berurutan)`], ['Kondisi', ist('munK3', 'Keadaan 3')], ['Mayit', '1: Pak Ahmad · 2–13: Putra gen. 1–12'], ['Yang dibagi', 'Harta Pak Ahmad saja']], statusTeks: 'Dibagi ke 27 orang', fakta: ['13 mayit berurutan'],
+    tab: 'Rantai 12 generasi', status: ['Pasti', ''], namaKasus: 'Uji rantai 12 generasi', judul: 'Bagikan harta Pak Ahmad langsung ke 27 orang',
+    kalimat: 'Setiap putra meninggal sesudah ayahnya, sebelum harta dibagi. Contoh ketahanan rantai panjang.', kamu: 'Istri1', cari: true,
+    ubin: [['Harta dibagi', 'Rp 300 jt', ''], ['Menerima', '27 orang', 'lewat 13 lapis']],
+    rantai: LAPIS_RANTAI,
+    jenis: { kat: 'Meninggal berurutan', judul: 'Munasakhat', chip: [['munasakhat']], ringkas: () => [['Keadaan', '3 dari 3'], ['Jumlah lapis', '13'], ['Meninggal kemudian', '12 putra, berurutan'], ['Yang dibagi', 'Harta Pak Ahmad saja']] },
+    hitungan: () => [['Masalah Pak Ahmad', '8 → 24', 'tashih'], ['Masalah tiap putra', '72', 'lihat tabel munasakhat'], ["Jami'ah akhir", '21 digit', 'angka lengkap di tabel']],
+    info: '12 orang meninggal berurutan sebelum harta dibagi',
+    pohon: () => {
+      const r = hitungRantai(LAPIS_RANTAI), simpul = [['PEWARIS', 40, 20, 140, 'almarhum', 'Pak Ahmad', 'Rp 300.000.000']], garis = [];
+      for (let g = 1; g <= 13; g++) {
+        const y = 20 + g * 110, ya = y - 110, xa = 110, st = id => (r.total[id] ? 'terima' : g < 13 && id.startsWith('Putra') ? 'meninggal' : 'redup');
+        const sub = id => (r.total[id] ? rupiah(bulat(HARTA, r.total[id])) : id.startsWith('Putra') && g < 13 ? `lapis ${g + 1}, diteruskan` : '');
+        simpul.push(['Istri' + g, 230, ya, 150, st('Istri' + g), nama('Istri' + g), sub('Istri' + g)], ['Putra' + g, 40, y, 150, st('Putra' + g), nama('Putra' + g), sub('Putra' + g)], ['Putri' + g, 230, y, 150, st('Putri' + g), nama('Putri' + g), sub('Putri' + g)]);
+        garis.push([`M180 ${ya + 24} H230`, 'g nikah'], [`M${xa} ${ya + 48} V${y}`, 'g'], [`M${xa} ${ya + 70} H305 V${y}`, 'g'], [`M${xa} ${ya + 48} V${y - 2}`, 'alir', g], [`M${xa} ${ya + 70} H305 V${y - 2}`, 'alir', g]);
+      }
+      return { lebar: 420, tinggi: 20 + 14 * 110, simpul, garis };
+    },
+    lanjut: [['Bagikan sekali, sesuai total per orang.', 'Rantai panjang tidak dibagi berulang-ulang.'], ['Cari namamu di daftar.', 'Ketuk untuk melihat dari lapis mana saja bagianmu berasal.']],
+  },
+  belumPasti: {
+    kerangka: () => [['Jenis kasus', `${ist('haml')} · ${ist('mafqud')}`], ['Kondisi', '12 kemungkinan (6 × 2)'], ['Mayit', '1: Pak Ahmad'], ['Yang belum pasti', 'Janin yang dikandung Aminah · Siti (hilang)'], ['Yang dibagi', 'Harta Pak Ahmad, sebagian ditahan']], statusTeks: 'Dibagi ke 2 orang, sebagian ditahan', fakta: ['1 janin', '1 hilang'],
+    tab: 'Hamil + hilang', status: ['Sebagian ditahan', 'tahan'], namaKasus: 'Warisan Pak Ahmad', judul: 'Sebagian harta Pak Ahmad ditahan dulu',
+    kalimat: 'Aminah sedang hamil dan Siti hilang tanpa kabar. Yang sudah pasti dibagi sekarang; sisanya ditahan sampai keadaannya jelas.', kamu: 'Aminah', taqdir: true,
+    ubin: [['Dibagi sekarang', 'Rp 87,5 jt', 'Aminah dan Fatimah'], ['Ditahan', 'Rp 212,5 jt', 'untuk Budi, Siti, dan bayi', 'tahan']],
+    daftar: () => [
+      { id: 'Aminah', f: pec(1260n, JAMIAH_GAB), asli: [1260n, JAMIAH_GAB], alasan: '1/8. Sama di semua kemungkinan, jadi sudah pasti.', kenapa: ['Istri mendapat 1/8 karena almarhum punya anak, apa pun keadaan bayi dan Siti.'], dalil: 'istri18', ahwal: [1] },
+      { id: 'Fatimah', f: pec(1680n, JAMIAH_GAB), asli: [1680n, JAMIAH_GAB], alasan: '1/6. Sama di semua kemungkinan, jadi sudah pasti.', kenapa: ['Ibu mendapat 1/6 karena almarhum punya anak, apa pun keadaan bayi dan Siti.'], dalil: 'ibu16', ahwal: [0] },
+      { id: 'Budi', f: NOL, tahan: 'menunggu', maks: pec(7140n, JAMIAH_GAB), alasan: 'Belum menerima: ia berbagi sisa harta dengan bayi yang jumlahnya belum diketahui.', kenapa: ['Menurut madzhab Syafi\'i, jumlah bayi dalam kandungan tidak dibatasi. Karena Budi berbagi sisa harta dengan bayi itu, bagiannya belum bisa dipastikan, jadi ia belum diberi apa pun.'] },
+      { id: 'Siti', f: NOL, tahan: 'hilang', maks: pec(2380n, JAMIAH_GAB), alasan: 'Hilang tanpa kabar. Bagiannya ditahan sampai ada kepastian.', kenapa: ['Siti belum diketahui masih hidup atau sudah meninggal, jadi bagiannya ditahan.'] },
+      { id: 'Bayi', f: NOL, tahan: 'dalam kandungan', maks: pec(4760n, JAMIAH_GAB), alasan: 'Mewarisi bila lahir hidup. Bagiannya ditahan sampai lahir.', kenapa: ['Janin baru mewarisi bila lahir hidup, jadi seluruh bagiannya ditahan sampai ia lahir.'] },
+      { id: 'Hasan', f: NOL, redup: true, alasan: 'Tidak mendapat bagian, karena ada anak laki-laki.', kenapa: ['Ada anak laki-laki (Budi), jadi saudara tidak mendapat bagian.'], ahwal: [1] },
+    ],
+    tahan: 212500000n,
+    ditahan: [['Untuk bayi dalam kandungan Aminah', 'Dibuka setelah bayi lahir'], ['Untuk Siti (hilang)', 'Dibuka setelah ada kabar atau kepastian'], ['Bagian Budi', 'Dipastikan setelah keduanya jelas']],
+    jenis: { kat: 'Ada yang belum pasti', judul: 'Haml dan mafqud', chip: [['haml'], ['mafqud']], ringkas: () => [[ist('haml'), 'Janin yang dikandung Aminah · 6 kemungkinan'], [ist('mafqud'), 'Siti (anak perempuan) · 2 kemungkinan'], ['Kemungkinan', '12 (2 × 6)'], ['Pemberian', `${ist('aqall', 'bagian terkecil')}; sisanya ${ist('mauquf', 'ditahan')}`]] },
+    hitungan: () => [['Masalah tiap kemungkinan', 'berbeda-beda', 'lihat tabel kemungkinan'], ["Jami'ah", '10.080', `${ist('tawafuq')} semua masalah`], ['Diberi sekarang', '2.940', 'dari 10.080'], ['Ditahan', '7.140', 'dari 10.080']],
+    info: 'Aminah hamil · Siti hilang tanpa kabar',
+    pohon: () => ({ lebar: 640, tinggi: 360, simpul: [...SIMPUL_KELUARGA({ Fatimah: 'terima', Hasan: 'redup', Aminah: 'terima', Budi: 'tahan', Siti: 'tahan' }, { Fatimah: 'Rp 50.000.000', Hasan: 'tidak mendapat', Aminah: 'Rp 37.500.000 · hamil', Budi: 'ditahan', Siti: 'hilang · ditahan' }), ['Bayi', 470, 300, 160, 'tahan', 'Bayi dalam kandungan', 'ditahan']],
+      garis: [...GARIS_KELUARGA, ['M590 164 H610 V300 H590', 'g']] }),
+    lanjut: [['Bagikan yang sudah pasti: Aminah dan Fatimah.', 'Simpan Rp 212.500.000 terpisah, jangan dipakai.'], ['Setelah bayi lahir atau ada kabar Siti, buka kasus ini dari Kasusmu.', 'Ubah keadaannya di Periksa.'], ['Ingin berdamai atas uang yang ditahan?', 'Tanya ustadz.']],
+  },
+  tunggu: {
+    kerangka: () => [['Jenis kasus', ist('haml')], ['Kondisi', 'Menunggu lahir (lebih utama)'], ['Mayit', '1: Pak Ahmad'], ['Yang belum pasti', 'Janin yang dikandung Aminah'], ['Yang dibagi', 'Belum dibagi']], statusTeks: 'Ditunda sampai bayi lahir', fakta: ['1 janin', 'Menunggu lahir'],
+    tab: 'Menunggu lahir', status: ['Ditunda', 'tahan'], namaKasus: 'Warisan Pak Ahmad', judul: 'Pembagian menunggu bayi Aminah lahir',
+    kalimat: 'Kamu memilih menunggu. Harta dibagi sekali setelah bayi lahir, jadi tidak ada yang perlu ditahan. Ini cara yang lebih utama.', kamu: 'Aminah',
+    ubin: [['Harta', 'Rp 300 jt', 'belum dibagi'], ['Dibuka lagi', 'Setelah lahir', 'dari Kasusmu']],
+    daftar: () => [
+      { id: 'Aminah', f: pec(1n, 8n), alasan: '1/8, apa pun keadaan bayinya.', kenapa: ['Bayi adalah anak almarhum, jadi istri tetap 1/8.'], dalil: 'istri18', ahwal: [1] },
+      { id: 'Fatimah', f: pec(1n, 6n), tampilKet: 'paling sedikit', alasan: 'Paling sedikit 1/6; bisa lebih bila bayi lahir tidak hidup.', kenapa: ['Ibu paling sedikit 1/6 karena ada anak.'], dalil: 'ibu16', ahwal: [0] },
+      { id: 'Budi', f: NOL, tahan: 'menunggu', alasan: 'Dihitung setelah bayi lahir.', kenapa: ['Bagian Budi bergantung pada berapa bayi yang lahir.'] },
+      { id: 'Siti', f: NOL, tahan: 'menunggu', alasan: 'Dihitung setelah bayi lahir.', kenapa: ['Bagian Siti bergantung pada berapa bayi yang lahir.'] },
+    ],
+    jenis: { kat: 'Ada yang belum pasti', judul: 'Haml', chip: [['haml']], ringkas: () => [[ist('haml'), 'Janin yang dikandung Aminah'], ['Pilihan', 'Menunggu lahir (lebih utama)']] },
+    info: 'Aminah hamil · kamu memilih menunggu',
+    catatan: ['Perlu dibagi sekarang?', 'Bisa, bila ada kebutuhan mendesak. Akibatnya sebagian harta ditahan sampai bayi lahir, dan Budi serta Siti belum menerima apa pun.', 'Bagi sekarang, sebagian ditahan'],
+    lanjut: [['Tunggu bayi lahir.', ''], ['Buka kasus ini dari Kasusmu.', 'Ubah keadaan bayi di Periksa, lalu lihat pembagiannya.']],
+  },
+  bersamaan: {
+    tab: 'Meninggal bersamaan', status: ['Pasti', ''], namaKasus: 'Warisan Pak Ahmad dan Budi', kamu: 'Aminah', gharqa: true,
+    ubin: [['Harta Pak Ahmad', 'Rp 300 jt', ''], ['Harta Budi', 'Rp 50 jt', 'dari isianmu']],
+    lanjut: [['Bagikan tiap harta, atau sekaligus menurut total per orang.', ''], ['Kalau kemudian ingat siapa yang lebih dulu, ubah jawabannya di Periksa.', 'Hasilnya berubah menjadi meninggal berurutan.']],
+  },
+};
+const GHARQA = {
+  serentak: { judul: 'Pak Ahmad dan Budi tidak saling mewarisi', jawaban: 'Kamu menjawab: Pak Ahmad dan Budi meninggal <b>serentak</b>.', alasan: 'Ahli waris harus masih hidup saat pewaris meninggal. Karena keduanya meninggal pada saat yang sama, tidak ada yang mewarisi yang lain. Harta masing-masing dibagi ke keluarganya yang masih hidup (disepakati para ulama).' },
+  terlupakan: { judul: 'Semua harta ditahan dulu', jawaban: 'Kamu menjawab: urutannya pernah diketahui, lalu <b>terlupakan</b>.', alasan: 'Menurut madzhab Syafi\'i, warisan ditahan sampai urutannya diingat atau para ahli waris berdamai. Di bawah ini dua kemungkinan urutan sebagai bahan musyawarah.' },
+};
+
+// ═══ Render ═══
+let tugasAktif = null, keadaanGharqa = 'serentak', namaUbah = {};
+const NOMINAL = {}; // id → {f, tampil, ...} untuk modal
+
+let saring = null; // { kunci, label } — dari baris penjumlahan yang diketuk
+const daftarNama = ids => { const n = ids.map(i => nama(i).replace(' dalam kandungan Aminah', '')); return n.length <= 1 ? n.join('') : n.length <= 3 ? `${n.slice(0, -1).join(', ')} dan ${n[n.length - 1]}` : `${n.slice(0, 3).join(', ')}, dan ${n.length - 3} lainnya`; };
+
+function barisOrang(o, k) {
+  const [n, peran, warna] = ORANG[o.id];
+  const rp = o.tampil ?? (o.tahan ? 'Ditahan' : rupiah(bulat(HARTA, o.f)));
+  const ket = o.tampilKet ?? (o.tahan && o.maks ? `bisa sampai ${rpRingkas(bulat(HARTA, o.maks))}` : o.pecTeks ? pecO(o) : o.f?.[0] ? `${pecO(o)} · ${persen(o.f)}` : '');
+  if (!saring) NOMINAL[o.id] = o;
+  return `<button class="orang ${o.redup ? 'redup' : ''}" data-id="${o.id}" aria-haspopup="dialog">
+    <span class="ava" style="background:${warna};${o.id === 'Bayi' ? 'color:#3d2e00' : ''}">${o.id === 'Bayi' ? '?' : n[0]}</span>
+    <span class="nama"><b>${n}</b>${o.id === k.kamu ? '<span class="lab kamu">kamu</span>' : ''}${o.tahan ? `<span class="lab tahan">${o.tahan}</span>` : ''}${o.meninggal ? '<span class="lab meninggal">meninggal</span>' : ''}<span class="peran">${peran}</span></span>
+    <span class="rp">${rp}${ket ? `<small>${ket}</small>` : ''}</span><span class="panahKanan">${ik('kanan')}</span>
+  </button>`;
+}
+
+// Data daftar. `pakaiSaring` false = ringkasan tanpa saring (untuk ubin atas dan Tentang kasus).
+function dataDaftar(k, pakaiSaring = true) {
+  const aktif = pakaiSaring ? saring : null;
+  if (k.rantai) {
+    const r = hitungRantai(k.rantai), mayitSet = new Set(k.rantai.map(l => l[0]));
+    if (aktif?.kunci.startsWith('dari:')) {
+      const m = aktif.kunci.slice(5), [, per, tot] = k.rantai.find(l => l[0] === m);
+      const baris = Object.entries(per).map(([id, sh]) => {
+        const f = kali(r.masuk[m], pec(BigInt(sh), BigInt(tot)));
+        return mayitSet.has(id) ? { id, f: NOL, redup: true, meninggal: true, dari: r.dari[id], tampil: rupiah(bulat(HARTA, f)), tampilKet: `dibagi lagi di langkah ${r.lapisKe(id)}`, alasan: '' }
+          : { id, f, dari: { [m]: f }, tampilKet: ALASAN_LAPIS[m]?.[id] ?? `${sh}/${tot}`, alasan: '' };
+      });
+      return { grup: [[aktif.label, baris]], dibagi: 0n, tahan: 0n, terima: [], meninggal: [], tidak: [], ditahan: [] };
+    }
+    const tm = tabelMunasakhat(k.rantai);
+    const terima = Object.keys(r.total).sort((a, b) => (bulat(HARTA, r.total[b]) > bulat(HARTA, r.total[a]) ? 1 : -1)).map(id => ({ id, f: r.total[id], asli: [tm.sahamJam[id], tm.jam], dari: r.dari[id], alasan: '' }));
+    const meninggal = k.rantai.slice(1).map(([m]) => ({ id: m, f: NOL, redup: true, meninggal: true, dari: r.dari[m], tampil: rupiah(bulat(HARTA, r.masuk[m])), tampilKet: `dibagi lagi di langkah ${r.lapisKe(m)}`, alasan: '' }));
+    return { grup: [['Penerima', terima], ['Meninggal sebelum dibagi', meninggal]], dibagi: terima.reduce((a, o) => a + bulat(HARTA, o.f), 0n), tahan: 0n, terima, meninggal, tidak: [], ditahan: [], r };
+  }
+  const semua = k.daftar();
+  const terima = semua.filter(o => o.f[0] && !o.tahan), ditahan = semua.filter(o => o.tahan), tidak = semua.filter(o => o.redup);
+  const judulTerima = k.id === 'tunggu' ? 'Sudah pasti' : 'Penerima', judulTahan = k.id === 'tunggu' ? 'Menunggu bayi lahir' : 'Ditahan';
+  let grup = [[judulTerima, terima], [judulTahan, ditahan], ['Tidak mendapat bagian', tidak]];
+  if (aktif) grup = grup.filter(([j]) => `grup:${j}` === aktif.kunci);
+  return { grup, dibagi: terima.reduce((a, o) => a + bulat(HARTA, o.f), 0n), tahan: k.tahan ?? 0n, terima, meninggal: [], tidak, ditahan };
+}
+
+const OPSI_BULAT = [['1', 'Rp 1', 'Pas sampai rupiah terakhir. Cocok untuk transfer bank.'], ['100', 'Rp 100', 'Hampir pas, angka lebih rapi.'], ['1000', 'Rp 1.000', 'Paling praktis kalau dibagi tunai.']];
+const pilBulat = () => `<button class="pilBulat" data-bulat aria-label="Ubah pembulatan">Rp ${Number(SATUAN).toLocaleString('id-ID')} ${ik('bawah')}</button>`;
+const barisJumlah = (label, nilai, kunci) => kunci
+  ? `<button class="b saring ${saring?.kunci === kunci ? 'aktif' : ''}" data-saring="${kunci}" data-label="${label}"><span>${label}</span><b>${nilai}</b></button>`
+  : `<div class="b"><span>${label}</span><b>${nilai}</b></div>`;
+const tandaSaring = () => (saring ? `<p class="disaring">Disaring: <b>${saring.label}</b> · <button class="tautan" data-saring-hapus>Tampilkan semua</button></p>` : '');
+
+function ubinDaftar(k) {
+  const d = dataDaftar(k), dPenuh = dataDaftar(k, false), rantaiPanjang = k.cari && !saring;
+  if (saring) for (const [, daftar] of dPenuh.grup) for (const o of daftar) NOMINAL[o.id] = o;
+  let isi = '';
+  for (const [judul, daftar] of d.grup) {
+    if (!daftar.length) continue;
+    if (rantaiPanjang && judul === 'Penerima') {
+      const gen = id => +(id.match(/\d+/)?.[0] ?? 0), per = {};
+      for (const o of daftar) (per[gen(o.id)] ??= []).push(o);
+      const urut = Object.keys(per).sort((a, b) => a - b), tengah = urut.slice(2, -1);
+      const grupHtml = (g, sembunyi) => `<div class="genGrup" ${sembunyi ? 'hidden' : ''}><p class="genJudul">Generasi ${g}</p>${per[g].map(o => barisOrang(o, k)).join('')}</div>`;
+      isi += `<p class="grupJudul"><span>Penerima</span><span>${daftar.length} orang</span></p><label class="cari">${ik('cari')}<input id="cariOrang" placeholder="Cari nama, mis. Istri gen. 1"></label>`;
+      isi += urut.slice(0, 2).map(g => grupHtml(g, false)).join('');
+      isi += `<button class="bayangan" id="bukaGen"><span>Generasi ${tengah[0]}–${tengah[tengah.length - 1]} · ${tengah.reduce((a, g) => a + per[g].length, 0)} orang disembunyikan</span><u>Tampilkan</u></button>`;
+      isi += tengah.map(g => grupHtml(g, true)).join('') + grupHtml(urut[urut.length - 1], false);
+    } else if (rantaiPanjang) {
+      isi += `<details class="lipatDaftar"><summary class="bayangan"><span>${judul} · ${daftar.length} orang disembunyikan</span><u>Tampilkan</u></summary>${daftar.map(o => barisOrang(o, k)).join('')}</details>`;
+    } else isi += `<p class="grupJudul"><span>${judul}</span><span>${daftar.length} orang</span></p>${daftar.map(o => barisOrang(o, k)).join('')}`;
+  }
+  let jumlahan = '';
+  if (k.id !== 'tunggu') {
+    const sisa = HARTA - dPenuh.dibagi - dPenuh.tahan;
+    const baris = [barisJumlah(`Diterima ${dPenuh.terima.length} penerima`, rupiah(dPenuh.dibagi), k.rantai ? null : 'grup:Penerima')];
+    if (dPenuh.tahan) baris.push(barisJumlah('Ditahan', rupiah(dPenuh.tahan), 'grup:Ditahan'));
+    if (dPenuh.tidak.length && !k.rantai) baris.push(barisJumlah(`Tidak mendapat bagian (${dPenuh.tidak.length})`, 'Rp 0', 'grup:Tidak mendapat bagian'));
+    baris.push(`<div class="b"><span>Sisa pembulatan ${pilBulat()}</span><b>${rupiah(sisa)}</b></div>`);
+    baris.push(`<div class="b hasil"><span>Harta yang dibagi</span><b>${rupiah(HARTA)}</b></div>`);
+    let perMayit = '';
+    if (k.rantai) {
+      const r = dPenuh.r, n = k.rantai.length;
+      const item = ([m], i) => barisJumlah(i === 0 ? `Harta ${nama(m)} dibagi` : `Bagian ${nama(m)} dibagi lagi`, rupiah(bulat(HARTA, r.masuk[m])), `dari:${m}`);
+      const daftarM = n > 5 ? [...k.rantai.slice(0, 2).map(item), `<p class="bayanganKecil">${n - 3} langkah lain · lihat di Urutan pembagian</p>`, item(k.rantai[n - 1], n - 1)] : k.rantai.map(item);
+      perMayit = `<p class="jumlahanJudul">Ketuk untuk melihat siapa saja yang menerima dari tiap orang</p>${daftarM.join('')}`;
+    }
+    jumlahan = `<div class="jumlahan">${baris.join('')}${perMayit}</div>`;
+  }
+  return `<section class="t s7">
+    <div class="kepala-t"><div><h2>${k.taqdir ? 'Siapa dapat berapa sekarang' : k.id === 'tunggu' ? 'Yang sudah pasti' : 'Siapa menerima berapa'}</h2><p class="sub">Ketuk nama untuk penjelasan lengkap.</p></div>${segBentuk()}</div>
+    ${k.rantai && !saring ? `<p class="ringkasAkhir"><b>Yang dibagi sekarang:</b> harta Pak Ahmad, langsung ke ${dPenuh.terima.length} penerima di bawah, sekali saja.</p>` : ''}
+    ${tandaSaring()}${isi}${jumlahan}</section>`;
+}
+
+function kerangkaGharqa() {
+  const serentak = keadaanGharqa === 'serentak';
+  return [['Jenis kasus', `${ist('gharqa')} (meninggal bersamaan)`], ['Kondisi', serentak ? ist('gharqa1', 'Keadaan 1: serentak') : ist('gharqa3', 'Keadaan 3: terlupakan')],
+    ['Mayit', 'Pak Ahmad dan Budi, bersamaan'], ['Yang dibagi', serentak ? 'Dua harta, terpisah' : 'Ditahan dulu']];
+}
+function ubinJenis(k, id) {
+  const baris = id === 'bersamaan' ? kerangkaGharqa() : k.kerangka();
+  return `<section class="t"><h2>Jenis masalah</h2><div class="barisInfo">${baris.map(([a, b]) => `<div><span class="lbl">${a}</span><b>${b}</b></div>`).join('')}</div></section>`;
+}
+
+function ubinInfo(k, id) {
+  const hitungan = id === 'bersamaan' ? [['Masalah Pak Ahmad', '24 → 32', ist('radd')], ['Masalah Budi', '24', ist('adilah')]] : k.hitungan?.() ?? [];
+  const pensil = (aksi, label) => `<button class="pensil" ${aksi} aria-label="${label}">${ik('ubah')}</button>`;
+  const d = id === 'bersamaan' ? null : dataDaftar(k, false);
+  const ahli = id === 'bersamaan' ? '4 penerima dari dua harta' : [`${d.terima.length} penerima`, d.meninggal.length && `${d.meninggal.length} meninggal sebelum dibagi`, d.ditahan.length && `${d.ditahan.length} ditahan`, d.tidak.length && `${d.tidak.length} tidak mendapat`].filter(Boolean).join(' · ');
+  const kasus = [
+    ['Madzhab', "Syafi'i", 'Bawaan; terverifikasi ke kitab Raudhah', pensil('data-toast="Membuka pilihan madzhab"', 'Ganti madzhab')],
+    ['Harta', id === 'bersamaan' ? 'Rp 300.000.000 + Rp 50.000.000' : 'Rp 300.000.000', 'Kotor Rp 300.000.000 − jenazah 0 − hutang 0 − wasiat 0', pensil('data-toast="Membuka isian harta di Periksa"', 'Ubah harta')],
+    ['Ahli waris', ahli, '', pensil('data-toast="Membuka keluarga di Periksa"', 'Ubah ahli waris')],
+    ['Pembulatan', `Ke Rp ${Number(SATUAN).toLocaleString('id-ID')}`, 'Dibulatkan ke bawah tiap orang', id === 'tunggu' ? '' : pensil('data-bulat', 'Ubah pembulatan')],
+    ['Dihitung', '17 November 2026', '', ''],
+  ];
+  const baris = rows => `<div class="barisInfo">${rows.map(([a, b, c, d]) => `<div><span class="lbl">${a}</span><b>${b}</b>${c ? `<small>${c}</small>` : ''}${d ?? ''}</div>`).join('')}</div>`;
+  return `<section class="t info"><h2>Tentang kasus ini</h2><h3>KASUS</h3>${baris(kasus)}${hitungan.length ? `<h3>HITUNGAN</h3>${baris(hitungan)}` : ''}</section>`;
+}
+
+const ubinDitahan = k => k.ditahan ? `<section class="t kuning"><h2>Uang ditahan</h2><p class="sub" style="color:var(--kuning-ink)">Rp 212.500.000, dibuka per peristiwa</p>
+  ${k.ditahan.map(([a, b]) => `<div class="ditahanBaris"><b>${a}</b><span>${b}</span></div>`).join('')}</section>` : '';
+const ubinCatatan = k => k.catatan ? `<section class="t"><h2>${k.catatan[0]}</h2><p style="font-size:14px;margin-top:6px">${k.catatan[1]}</p><p style="margin-top:10px"><button class="tautan" data-toast="${k.catatan[2]}">${k.catatan[2]}</button></p></section>` : '';
+
+function ubinAliran(k) {
+  if (!k.rantai) return '';
+  const r = hitungRantai(k.rantai), n = k.rantai.length, panjang = n > 5, mayitSet = new Set(k.rantai.map(l => l[0]));
+  const rute = k.rantai.map(([m], i) => `<button data-ke-lapis="${i + 1}" class="${i === 0 ? 'aktif' : ''}">${i + 1}. ${nama(m)} · ${rpRingkas(bulat(HARTA, r.masuk[m]))}</button>`);
+  const ruteTampil = panjang ? [...rute.slice(0, 2), `<span class="ke">… ${n - 3} langkah …</span>`, rute[n - 1]] : rute;
+  const blok = k.rantai.map(([m, per, tot], i) => {
+    const asal = bulat(HARTA, r.masuk[m]);
+    const dari = i === 0 ? 'Harta peninggalan' : `Bagiannya dari ${Object.keys(r.dari[m]).map(nama).join(' dan ')}`;
+    const baris = Object.entries(per).map(([id, sh]) => {
+      const f = kali(r.masuk[m], pec(BigInt(sh), BigInt(tot))), lanjut = mayitSet.has(id);
+      return `<tr data-id="${id}"><td><b>${nama(id)}</b><br><span style="color:var(--muted);font-size:12.5px">${ALASAN_LAPIS[m]?.[id] ?? `${sh}/${tot}`}</span></td><td class="rpk">${rupiah(bulat(HARTA, f))}</td><td>${lanjut ? `<span class="terus">dibagi lagi di langkah ${r.lapisKe(id)}</span>` : '<span class="selesai">diterima</span>'}</td></tr>`;
+    }).join('');
+    return `<div class="blok ${i === 0 ? 'aktif' : ''}" data-lapis="${i + 1}" ${panjang && i > 1 && i < n - 1 ? 'hidden' : ''}>
+      <h3>${nama(m)} meninggal</h3>
+      <p class="masuk">${dari}: <b>${rupiah(asal)}</b></p>
+      <table><tr><th>Diberikan ke</th><th style="text-align:end">Rupiah</th><th>Keterangan</th></tr>${baris}</table>
+      <p class="putarIni"><button class="tautan" data-putar="${i + 1}">Lihat di pohon</button></p></div>`;
+  });
+  if (panjang) blok.splice(2, 0, `<button class="bayangan" id="bukaLapis" style="margin-left:18px;width:calc(100% - 18px)"><span>Langkah 3–${n - 1} · ${n - 3} langkah disembunyikan</span><u>Tampilkan</u></button>`);
+  return `<section class="t s12"><h2>Urutan pembagian</h2><p class="sub">Siapa meninggal, dapat berapa, dan diberikan ke siapa.</p>
+    <div class="rute">${ruteTampil.join('<span class="ke">→</span>')}</div><div class="estafet">${blok.join('')}</div></section>`;
+}
+
+function svgPohon(p) {
+  const s = p.simpul.map(([id, x, y, w, st, label, sub]) => `<g class="kotak ${st}" data-id="${id}" transform="translate(${x} ${y})"><rect width="${w}" height="48" rx="12"/><text x="12" y="20">${label}</text><text class="${st === 'terima' ? 'r' : 'k'}" x="12" y="37">${sub ?? ''}</text></g>`).join('');
+  const g = p.garis.map(([d, kls, lapis]) => `<path class="${kls}" d="${d}" ${lapis ? `data-lapis="${lapis}" pathLength="1"` : ''}/>`).join('');
+  return `<svg class="pohon" viewBox="0 0 ${p.lebar} ${p.tinggi}" width="${p.lebar}" height="${p.tinggi}" data-lebar="${p.lebar}" data-tinggi="${p.tinggi}">${g}${s}</svg>`;
+}
+
+// Tabel faraidh ala kitab
+function tabelBiasa() {
+  const baris = [['Aminah', '1/8', 3, 9], ['Fatimah', '1/6', 4, 12], ['Budi', 'sisa', 17, 34], ['Siti', '', '', 17]];
+  return `<table class="faraidh"><thead><tr><th rowspan="2">Ahli waris</th><th rowspan="2">Bagian</th><th class="ps">Asal masalah</th><th>Saham</th><th rowspan="2">Rupiah</th></tr>
+    <tr><th class="angka ps">24<span class="ket">8 dan 6, tawafuq</span></th><th class="angka">72<span class="ket ps"><span class="pengali">× 3</span> tashih</span></th></tr></thead><tbody>
+    ${baris.map(([id, b, a, t]) => `<tr data-id="${id}"><td>${nama(id)}<span class="ket">${ORANG[id][1]}</span></td><td>${b}</td>${id === 'Budi' ? `<td rowspan="2" class="ps">${a}</td>` : id === 'Siti' ? '' : `<td class="ps">${a}</td>`}<td>${t}</td><td>${rupiah(bulat(HARTA, pec(BigInt(t), 72n)))}</td></tr>`).join('')}
+    <tr data-id="Hasan"><td>Hasan<span class="ket">Kakak almarhum</span></td><td colspan="4" style="color:var(--muted)">terhalang oleh anak laki-laki</td></tr></tbody>
+    <tfoot><tr><td>Jumlah</td><td></td><td class="ps">24</td><td>72</td><td>${rupiah(HARTA)}</td></tr></tfoot></table>`;
+}
+function tabelMunasakhatHtml(k) {
+  const { kolom, sahamJam } = tabelMunasakhat(k.rantai, k.ketLapis);
+  const orang = []; for (const [, per] of k.rantai) for (const id of Object.keys(per)) if (!orang.includes(id)) orang.push(id);
+  const mayit = new Set(k.rantai.map(l => l[0]));
+  const kepala1 = kolom.map(c => c.jenis === 'masalah' ? `<th>${c.mayit === 'PEWARIS' ? 'Masalah 1' : `Masalah ${nama(c.mayit)}`}${c.pengaliBaru ? `<span class="pengali ps"> × ${c.pengaliBaru}</span>` : ''}<span class="ket ps">${c.ket ?? ''}</span></th>` : `<th class="jami">${c.akhir ? "Jami'ah akhir" : "Jami'ah"}</th>`).join('');
+  const kepala2 = kolom.map(c => c.jenis === 'masalah' ? `<th class="angka">${c.total}${c.saham ? `<span class="ket ps">${c.saham} : ${c.total} → ${c.hub}</span>` : ''}</th>` : `<th class="angka jami">${String(c.total).length > 10 ? `${String(c.total).length} digit` : c.total}</th>`).join('');
+  const baris = orang.map(id => {
+    let selDihapus = false;
+    const sel = kolom.map((c, i) => {
+      if (c.jenis === 'masalah') { const v = c.per[id]; const lanjut = mayit.has(id) && c.mayit !== id; return `<td class="${v && mayit.has(id) && k.rantai.findIndex(l => l[0] === id) > kolom.slice(0, i + 1).filter(x => x.jenis === 'masalah').length - 1 ? 'mati' : ''}">${v ?? ''}</td>`; }
+      const v = c.saham[id]; return `<td class="jami">${v === undefined ? (mayit.has(id) ? '—' : '') : String(v).length > 10 ? '…' : v}</td>`;
+    }).join('');
+    return `<tr data-id="${id}"><td>${nama(id)}<span class="ket">${ORANG[id][1]}</span></td>${sel}<td>${sahamJam[id] !== undefined ? rupiah(bulat(HARTA, pec(sahamJam[id], kolom[kolom.length - 1].total ?? 1n))) : '—'}</td></tr>`;
+  }).join('');
+  return `<table class="faraidh"><thead><tr><th rowspan="2">Ahli waris</th>${kepala1}<th rowspan="2">Rupiah</th></tr><tr>${kepala2}</tr></thead><tbody>${baris}</tbody></table>`;
+}
+function tabelTaqdirHtml() {
+  const kol = DUNIA.map(([t, s]) => { const g = Object.values(s).reduce((a, v) => fpb(a, BigInt(v)), 0n); return { t, s, g, masalah: JAMIAH_GAB / g }; });
+  const orang = ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Bayi'];
+  const kepala1 = kol.map(c => `<th>Siti ${c.t.Siti === 'hidup' ? 'hidup' : 'meninggal'}<span class="ket">bayi: ${TEKS_BAYI[c.t.Bayi]}</span><span class="pengali ps">× ${c.g}</span></th>`).join('');
+  const kepala2 = kol.map(c => `<th class="angka">${c.masalah}</th>`).join('');
+  const sekarang = { Aminah: 1260n, Fatimah: 1680n };
+  const baris = orang.map(id => `<tr data-id="${id}"><td>${nama(id)}</td>${kol.map(c => `<td>${c.s[id] ? BigInt(c.s[id]) / c.g : '—'}</td>`).join('')}<td class="jami">${sekarang[id] ?? 0n}</td><td>${rupiah(bulat(HARTA, pec(sekarang[id] ?? 0n, JAMIAH_GAB)))}</td></tr>`).join('');
+  return `<table class="faraidh"><thead><tr><th rowspan="2">Ahli waris</th>${kepala1}<th class="jami">Diberi sekarang</th><th rowspan="2">Rupiah</th></tr><tr>${kepala2}<th class="angka jami">10080</th></tr></thead><tbody>${baris}
+    <tr><td>Ditahan</td>${kol.map(() => '<td></td>').join('')}<td class="jami">7140</td><td>${rupiah(212500000n)}</td></tr></tbody></table>`;
+}
+function tabelGharqaHtml() {
+  return GHARQA_HARTA.map(([m, h, per, , ket]) => `<table class="faraidh" style="margin-bottom:10px"><thead><tr><th>Harta ${nama(m)}</th><th>Bagian<span class="ket">${ket}</span></th><th>Rupiah</th></tr></thead><tbody>
+    ${Object.entries(per).map(([id, [a, b]]) => `<tr data-id="${id}"><td>${nama(id)}</td><td>${a}/${b}</td><td>${rupiah(h * BigInt(a) / BigInt(b) / SATUAN * SATUAN)}</td></tr>`).join('')}</tbody>
+    <tfoot><tr><td>Jumlah</td><td>${Object.values(per)[0][1]}</td><td>${rupiah(h)}</td></tr></tfoot></table>`).join('');
+}
+
+const TIPE_TAHAP = [['awal', 'Bagian awal'], ['masalah', 'Asal masalah'], ['aul', "'Aul / radd"], ['tashih', 'Tashih'], ['orang', 'Per orang'], ['kemungkinan', 'Kemungkinan'], ['banding', 'Perbandingan'], ['jamiah', "Jami'ah"], ['rupiah', 'Rupiah']];
+// Kolom proses per kasus: { tipe, kepala, besar, kecil, nilai{id}, mati[], dasar, kasus, rumus[] }
+function kolomProses(k, id) {
+  if (id === 'biasa') return { baris: ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Hasan'], kolom: [
+    { tipe: 'awal', kepala: 'Bagian awal', nilai: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: 'sisa', Hasan: 'terhalang' }, dasar: 'Tiap ahli waris mendapat bagian tertentu (fardh) atau sisa (ashabah) menurut syaratnya.', kasus: 'Istri 1/8 dan ibu 1/6 karena ada anak; anak laki-laki dan perempuan mengambil sisa 2 : 1; kakak terhalang anak laki-laki.', rumus: ['Istri 1/8 · Ibu 1/6 · Anak: sisa · Kakak: 0'] },
+    { tipe: 'masalah', kepala: 'Asal masalah', besar: '24', kecil: '8 dan 6, tawafuq', nilai: { Aminah: 3, Fatimah: 4, Budi: '17', Siti: '↑ bersama' }, dasar: 'Asal masalah = angka terkecil yang bisa dibagi semua penyebut. Bila penyebut sama-sama bisa dibagi angka lain (tawafuq), kalikan yang satu dengan hasil bagi yang lain.', kasus: 'Penyebut 8 dan 6 sama-sama bisa dibagi 2.', rumus: ['8 × (6 ÷ 2) = 24', 'Istri 24 × 1/8 = 3', 'Ibu 24 × 1/6 = 4', 'Sisa 24 − 3 − 4 = 17 untuk anak-anak'] },
+    { tipe: 'tashih', kepala: 'Tashih', besar: '72', kecil: '× 3', nilai: { Aminah: 9, Fatimah: 12, Budi: '51', Siti: '↑ bersama' }, dasar: 'Bila bagian sekelompok tidak habis dibagi jumlah kepalanya, semua bagian dikalikan supaya bulat.', kasus: 'Sisa 17 untuk 3 kepala (anak laki-laki dihitung 2); 17 dan 3 tabayun.', rumus: ['24 × 3 = 72', 'Istri 3 × 3 = 9 · Ibu 4 × 3 = 12 · Anak 17 × 3 = 51'] },
+    { tipe: 'orang', kepala: 'Per orang', nilai: { Aminah: 9, Fatimah: 12, Budi: 34, Siti: 17 }, dasar: 'Bagian kelompok dibagi ke anggotanya; laki-laki dua kali perempuan.', kasus: '51 untuk 3 kepala.', rumus: ['51 ÷ 3 = 17 per kepala', 'Budi 17 × 2 = 34 · Siti 17 × 1 = 17'] },
+    { tipe: 'rupiah', kepala: 'Rupiah', nilai: { Aminah: '37.500.000', Fatimah: '50.000.000', Budi: '141.666.666', Siti: '70.833.333', Hasan: '0' }, dasar: 'Rupiah = saham ÷ jumlah saham × harta, dibulatkan ke bawah.', kasus: 'Harta Rp 300.000.000 dibagi 72.', rumus: ['Istri 9/72 × 300.000.000 = 37.500.000', 'Ibu 12/72 × 300.000.000 = 50.000.000', 'Budi 34/72 × 300.000.000 = 141.666.666', 'Siti 17/72 × 300.000.000 = 70.833.333', 'Jumlah 299.999.999 + sisa pembulatan 1'] }] };
+  if (id === 'bersamaan') return { baris: ['Aminah', 'Siti', 'Zahra', 'Rina'], kolom: [
+    { tipe: 'awal', kepala: 'Bagian · harta Pak Ahmad', nilai: { Aminah: '1/8', Siti: '1/2', Zahra: '1/6', Rina: 'bukan ahli waris' }, dasar: 'Orang yang meninggal bersamaan tidak saling mewarisi; harta tiap orang dihitung sendiri.', kasus: 'Budi tidak dihitung sebagai ahli waris Pak Ahmad.', rumus: ['Istri 1/8 · Putri 1/2 · Cucu perempuan 1/6 (penyempurna 2/3)'] },
+    { tipe: 'masalah', kepala: 'Asal masalah', besar: '24', kecil: 'harta Pak Ahmad', nilai: { Aminah: 3, Siti: 12, Zahra: 4 }, dasar: 'Asal masalah dari penyebut 8, 2, 6.', kasus: '8 dan 6 tawafuq → 24; 2 masuk ke 24.', rumus: ['Istri 3 · Siti 12 · Zahra 4', 'Jumlah 19 < 24, ada sisa 5'] },
+    { tipe: 'aul', kepala: 'Radd', besar: '32', kecil: 'istri tidak ikut radd', nilai: { Aminah: 4, Siti: 21, Zahra: 7 }, dasar: 'Bila ada sisa dan tidak ada ashabah, sisa dikembalikan ke pemilik bagian tertentu selain suami/istri, sebanding bagiannya (radd).', kasus: 'Istri tetap 1/8; sisanya 7/8 dibagi Siti : Zahra = 12 : 4 = 3 : 1.', rumus: ['Istri 1/8 = 4/32', 'Sisa 28: Siti 28 × 3/4 = 21 · Zahra 28 × 1/4 = 7'] },
+    { tipe: 'awal', kepala: 'Bagian · harta Budi', nilai: { Rina: '1/8', Aminah: '1/6', Zahra: '1/2', Siti: 'sisa' }, dasar: 'Harta Budi dihitung sendiri untuk ahli warisnya yang hidup.', kasus: 'Istri 1/8, ibu 1/6, putri 1/2, saudari sisa (bersama putri).', rumus: ['Rina 1/8 · Aminah 1/6 · Zahra 1/2 · Siti sisa'] },
+    { tipe: 'masalah', kepala: 'Asal masalah', besar: '24', kecil: "harta Budi, 'adilah", nilai: { Rina: 3, Aminah: 4, Zahra: 12, Siti: 5 }, dasar: 'Asal masalah dari penyebut 8, 6, 2.', kasus: '8 dan 6 tawafuq → 24.', rumus: ['Rina 3 + Aminah 4 + Zahra 12 = 19', 'Sisa untuk Siti 24 − 19 = 5'] },
+    { tipe: 'rupiah', kepala: 'Rupiah total', nilai: { Aminah: '45.833.333', Siti: '207.291.666', Zahra: '90.625.000', Rina: '6.250.000' }, dasar: 'Rupiah tiap harta dihitung sendiri lalu dijumlahkan per orang.', kasus: 'Harta Pak Ahmad Rp 300.000.000 (÷ 32) dan harta Budi Rp 50.000.000 (÷ 24).', rumus: ['Aminah 37.500.000 + 8.333.333 = 45.833.333', 'Siti 196.875.000 + 10.416.666 = 207.291.666', 'Zahra 65.625.000 + 25.000.000 = 90.625.000', 'Rina 0 + 6.250.000 = 6.250.000'] }] };
+  if (k.taqdir) {
+    const kol = DUNIA.map(([t, sh]) => { const g = Object.values(sh).reduce((a, v) => fpb(a, BigInt(v)), 0n); return { t, sh, g, m: JAMIAH_GAB / g }; });
+    return { baris: ['Aminah', 'Fatimah', 'Budi', 'Siti', 'Bayi', 'Hasan'], kolom: [
+      { tipe: 'awal', kepala: 'Bagian awal', nilai: { Aminah: '1/8', Fatimah: '1/6', Budi: 'sisa', Siti: 'sisa (hilang)', Bayi: 'sisa (janin)', Hasan: 'terhalang' }, dasar: 'Bagian tiap orang menurut syaratnya; yang belum pasti dihitung dalam beberapa kemungkinan.', kasus: 'Siti hilang (2 kemungkinan), janin Aminah (6 kemungkinan).', rumus: ['2 × 6 = 12 kemungkinan'] },
+      ...kol.map(c => ({ tipe: 'kemungkinan', kepala: `Siti ${c.t.Siti === 'hidup' ? 'hidup' : 'meninggal'} · bayi ${TEKS_BAYI[c.t.Bayi]}`, besar: String(c.m), kecil: `× ${c.g}`, nilai: Object.fromEntries(Object.entries(c.sh).map(([i, v]) => [i, String(BigInt(v) / c.g)])), dasar: 'Tiap kemungkinan dihitung sebagai masalah sendiri.', kasus: `Kemungkinan: Siti ${c.t.Siti === 'hidup' ? 'masih hidup' : 'sudah meninggal'}, bayi ${TEKS_BAYI[c.t.Bayi]}.`, rumus: [`Masalah ${c.m}; dikali ${c.g} supaya sama dengan jami'ah 10.080`] })),
+      { tipe: 'jamiah', kepala: 'Diberi sekarang', besar: '10080', kecil: 'bagian terkecil', nilai: { Aminah: 1260, Fatimah: 1680, Budi: 0, Siti: 0, Bayi: 0 }, dasar: "Semua kemungkinan disamakan dalam satu jami'ah; tiap orang diberi bagian terkecilnya; sisanya ditahan.", kasus: 'Aminah dan Fatimah sama di semua kemungkinan; Budi, Siti, dan bayi belum pasti.', rumus: ['Aminah 1260 · Fatimah 1680', 'Ditahan 10080 − 1260 − 1680 = 7140'] },
+      { tipe: 'rupiah', kepala: 'Rupiah', nilai: { Aminah: '37.500.000', Fatimah: '50.000.000', Budi: 'ditahan', Siti: 'ditahan', Bayi: 'ditahan', Hasan: '0' }, dasar: 'Rupiah = saham ÷ jami\'ah × harta.', kasus: 'Harta Rp 300.000.000 dibagi 10.080.', rumus: ['Aminah 1260/10080 × 300.000.000 = 37.500.000', 'Fatimah 1680/10080 × 300.000.000 = 50.000.000', 'Ditahan 7140/10080 × 300.000.000 = 212.500.000'] }] };
+  }
+  if (k.rantai) {
+    const { kolom: km } = tabelMunasakhat(k.rantai, k.ketLapis), r = hitungRantai(k.rantai);
+    const baris = []; for (const [, per] of k.rantai) for (const i of Object.keys(per)) if (!baris.includes(i)) baris.push(i);
+    const mayit = new Set(k.rantai.map(l => l[0])), kolom = [];
+    km.forEach(c => {
+      if (c.jenis === 'masalah') {
+        const awal = Object.fromEntries(Object.keys(c.per).map(i => [i, ALASAN_LAPIS[c.mayit]?.[i]?.match(/\d+\/\d+|sisa/)?.[0] ?? (i.startsWith('Istri') ? (+i.match(/\d+/)[0] === (c.mayit === 'PEWARIS' ? 1 : +c.mayit.match(/\d+/)[0] + 1) ? '1/8' : '1/6') : 'sisa')]));
+        kolom.push({ tipe: 'awal', kepala: `Bagian · ${nama(c.mayit)}`, nilai: awal, dasar: 'Mayit ini dihitung dengan ahli warisnya sendiri saat ia meninggal.', kasus: `Ahli waris ${nama(c.mayit)}: ${daftarNama(Object.keys(c.per))}.`, rumus: Object.entries(awal).map(([i, v]) => `${nama(i)} ${v}`) });
+        kolom.push({ tipe: 'masalah', kepala: `Masalah ${nama(c.mayit)}`, besar: String(c.total), kecil: c.ket ?? '', nilai: Object.fromEntries(Object.entries(c.per).map(([i, v]) => [i, mayit.has(i) && i !== c.mayit && k.rantai.findIndex(l => l[0] === i) > k.rantai.findIndex(l => l[0] === c.mayit) ? v : v])), mati: Object.keys(c.per).filter(i => mayit.has(i) && k.rantai.findIndex(l => l[0] === i) > k.rantai.findIndex(l => l[0] === c.mayit)), dasar: 'Asal masalah, lalu tashih bila perlu, seperti kasus biasa.', kasus: c.ket ? `Masalah ${nama(c.mayit)}: ${c.ket}.` : `Masalah ${c.total}.`, rumus: [Object.entries(c.per).map(([i, v]) => `${nama(i)} ${v}`).join(' + ') + ` = ${c.total}`] });
+        if (c.saham) kolom.push({ tipe: 'banding', kepala: `Banding ${nama(c.mayit)}`, besar: `${c.saham} : ${c.total}`, kecil: `${c.hub}`, nilai: {}, dasar: 'Bagian mayit di masalah sebelumnya dibandingkan dengan masalahnya sendiri: habis dibagi (inqisam), ada faktor bersama (tawafuq), atau tidak (tabayun).', kasus: `Bagian ${nama(c.mayit)} ${c.saham}, masalahnya ${c.total}: ${c.hub}.`, rumus: c.hub === 'tawafuq' ? [`${c.saham} ÷ ${c.fpb} = ${c.pengaliBaru} · ${c.total} ÷ ${c.fpb} = ${c.pengaliLama}`, `Masalah sebelumnya × ${c.pengaliLama}, masalah ${nama(c.mayit)} × ${c.pengaliBaru}`] : c.hub === 'tabayun' ? [`Tidak ada faktor bersama: masalah sebelumnya × ${c.total}, masalah ${nama(c.mayit)} × ${c.saham}`] : [`${c.saham} ÷ ${c.total} = ${c.pengaliBaru}: masalah ${nama(c.mayit)} × ${c.pengaliBaru}, jami'ah tetap`] });
+      } else {
+        const v = Object.fromEntries(Object.entries(c.saham).map(([i, x]) => [i, String(x).length > 8 ? `${String(x).slice(0, 4)}…` : String(x)]));
+        kolom.push({ tipe: 'jamiah', kepala: c.akhir ? "Jami'ah akhir" : "Jami'ah", besar: String(c.total).length > 8 ? `${String(c.total).length} digit` : String(c.total), kecil: '', nilai: v, dasar: "Jami'ah = masalah sebelumnya × pengalinya. Tiap orang: saham lama × pengali lama + saham baru × pengali baru.", kasus: 'Saham orang yang meninggal dipindahkan ke ahli warisnya.', rumus: Object.entries(c.saham).slice(0, 6).map(([i, x]) => `${nama(i)} ${String(x).length > 12 ? 'angka panjang' : x}`) });
+      }
+    });
+    kolom.push({ tipe: 'rupiah', kepala: 'Rupiah', nilai: Object.fromEntries(Object.keys(r.total).map(i => [i, rupiah(bulat(HARTA, r.total[i])).slice(3)])), dasar: "Rupiah = saham ÷ jami'ah × harta mayit pertama.", kasus: 'Harta Pak Ahmad Rp 300.000.000.', rumus: Object.keys(r.total).slice(0, 6).map(i => `${nama(i)} ${rupiah(bulat(HARTA, r.total[i]))}`) });
+    return { baris, kolom };
+  }
+  return null;
+}
+let TAHAP_AKTIF = null, KOLOM_PILIH = 0;
+function tabelProsesHtml(k, id) {
+  const d = kolomProses(k, id); if (!d) return '';
+  const ada = TIPE_TAHAP.filter(([t]) => d.kolom.some(c => c.tipe === t));
+  TAHAP_AKTIF ??= ada.map(([t]) => t);
+  const kol = d.kolom.map((c, i) => ({ ...c, i })).filter(c => TAHAP_AKTIF.includes(c.tipe));
+  if (!kol.some(c => c.i === KOLOM_PILIH)) KOLOM_PILIH = kol[0]?.i ?? 0;
+  const pilih = d.kolom[KOLOM_PILIH];
+  return `<details class="aturKolom"><summary>Atur kolom <small>${ada.filter(([t]) => TAHAP_AKTIF.includes(t)).length} dari ${ada.length} jenis tampil</small></summary><div class="isiAtur">${ada.map(([t, l]) => `<label><input type="checkbox" data-tahap="${t}" ${TAHAP_AKTIF.includes(t) ? 'checked' : ''}> ${l}</label>`).join('')}</div></details>
+    <div class="tabelWadah"><table class="faraidh"><thead><tr><th>Ahli waris</th>${kol.map(c => `<th class="${c.i === KOLOM_PILIH ? 'dipilih' : ''}" data-kolom="${c.i}" role="button" tabindex="0">${c.kepala}${c.besar ? `<span class="angka">${c.besar}</span>` : ''}${c.kecil ? `<span class="ket">${c.kecil}</span>` : ''}</th>`).join('')}</tr></thead>
+    <tbody>${d.baris.map(r => `<tr data-id="${r}"><td>${nama(r)}<span class="ket">${ORANG[r][1]}</span></td>${kol.map(c => `<td class="${c.i === KOLOM_PILIH ? 'dipilih' : ''} ${c.mati?.includes(r) ? 'mati' : ''}" ${c.tipe === 'rupiah' ? 'data-rupiah' : ''}>${c.nilai[r] ?? ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    ${pilih ? `<div class="kotakHitung"><div class="bag"><span>KOLOM</span><b>${pilih.kepala}${pilih.besar ? ` · ${pilih.besar}` : ''}</b></div><div class="bag d"><span>DASAR</span><span>${pilih.dasar}</span></div><div class="bag k"><span>DI KASUS INI</span><span>${pilih.kasus}</span></div><div class="bag"><span>HITUNGAN</span><span class="rumus">${pilih.rumus.map(x => `<span>${x}</span>`).join('')}</span></div></div>` : ''}`;
+}
+
+function ubinPohonTabel(k, id) {
+  const p = id === 'bersamaan' ? pohonGharqa() : k.pohon?.();
+  if (!p) return '';
+  const judulTabel = k.rantai ? 'Tabel munasakhat' : k.taqdir ? 'Tabel kemungkinan' : 'Tabel faraidh';
+  return `<section class="t s12" id="ubinPT">
+    <h2>Pohon keluarga dan ${judulTabel.toLowerCase()}</h2><p class="sub">Pilih tahap yang ingin dilihat. Ketuk judul kolom untuk penjelasan hitungannya; ketuk orang untuk menyorot di pohon dan tabel.</p>
+    <div class="segmen segPanel" role="group"><button aria-pressed="true" data-lihat="pohon">Pohon</button><button aria-pressed="false" data-lihat="tabel">Tabel</button></div>
+    <div class="panelDua" data-lihat="pohon">
+      <div class="panel pohonP" id="panelPohon">
+        <div class="alat"><button class="bulat" data-zoom="-1" aria-label="Perkecil">${ik('minus')}</button><button class="bulat" data-zoom="1" aria-label="Perbesar">${ik('plus')}</button><button class="bulat" data-zoom="0" aria-label="Pas layar">${ik('pas')}</button><button class="bulat" id="layarPenuh" aria-label="Layar penuh">${ik('penuh')}</button>
+          ${p.garis.some(g => g[2]) ? `<button class="putar" id="putarAliran">${ik('putar')}Putar aliran</button>` : ''}</div>
+        <div class="kanvas" id="kanvas">${svgPohon(p)}</div>
+        <div class="legPohon"><span class="petunjukGeser">Geser atau perkecil untuk melihat semua ·</span><span><i style="background:#eef7ea;border-color:#6aa587"></i>menerima</span><span><i style="background:#fff7e0;border-color:#d9b44a;border-style:dashed"></i>ditahan</span><span><i style="background:#eceee9;border-color:#8f9a93"></i>sudah meninggal</span><span><i style="background:#f3f4f1;border-color:#cfd6cd;border-style:dashed"></i>tidak mendapat</span>${id === 'bersamaan' ? '<span><i style="background:#fff;border-color:#c0503a;border-style:dashed"></i>tidak saling mewarisi</span>' : ''}<span><i style="background:#f2682a;border-color:#f2682a"></i>aliran harta</span></div>
+      </div>
+      <div class="panel tabelP" id="panelTabel">
+        <div class="alat"><b style="font-size:14px;padding:0 6px">${judulTabel}</b></div>
+        <div style="padding:10px 10px 0">${tabelProsesHtml(k, id)}</div>
+        <div class="tabelKaki"><span class="petunjukGeser">Geser ke kanan untuk kolom lain →</span><span>${k.rantai ? '✕ = meninggal, bagiannya pindah ke kolom berikutnya.' : 'Kolom yang disorot dijelaskan di kotak bawah tabel.'}</span></div>
+      </div>
+    </div></section>`;
+}
+
+function pohonGharqa() {
+  const t = id => { let s = 0n; for (const [, h, per] of GHARQA_HARTA) if (per[id]) s += h * BigInt(per[id][0]) / BigInt(per[id][1]); return keadaanGharqa === 'serentak' ? rupiah(s) : 'ditahan'; };
+  const st = keadaanGharqa === 'serentak' ? 'terima' : 'tahan';
+  return { lebar: 620, tinggi: 360, simpul: [['PEWARIS', 40, 30, 140, 'almarhum', 'Pak Ahmad', 'Rp 300.000.000'], ['Aminah', 300, 30, 170, st, 'Aminah · istri', t('Aminah')],
+    ['Budi', 40, 160, 170, 'almarhum', 'Budi · anak', 'Rp 50.000.000'], ['Siti', 300, 160, 170, st, 'Siti · anak', t('Siti')], ['Rina', 40, 290, 150, st, 'Rina · menantu', t('Rina')], ['Zahra', 250, 290, 170, st, 'Zahra · cucu', t('Zahra')]],
+    garis: [['M180 54 H300', 'g nikah'], ['M240 54 V120 H385 V160', 'g'], ['M110 78 V160', 'g putus'], ['M125 208 V250 H115 V290', 'g nikah'], ['M125 250 H335 V290', 'g'],
+      ['M240 60 V120 H385 V158', 'alir', 1], ['M180 48 H298', 'alir', 1], ['M240 120 V140 H335 V288', 'alir', 1], ['M125 208 V250 H335 V288', 'alir', 2], ['M125 208 V250 H115 V288', 'alir', 2], ['M210 184 H298', 'alir', 2], ['M90 160 V110 H385 V80', 'alir', 2]] };
+}
+
+const ubinBagikan = () => `<section class="t s4 oranye"><h2>Bagikan dan simpan</h2><div class="aksiDaftar">
+  <button data-kirim><span class="ikBulat">${ik('kirim')}</span><span><b>Kirim ringkasan</b><small>Teks singkat untuk grup WhatsApp</small></span></button>
+  <button data-toast="Mengunduh PDF: pembagian, alasan, aliran, tabel, cara menghitung"><span class="ikBulat">${ik('pdf')}</span><span><b>Unduh PDF lengkap</b><small>Untuk rapat keluarga atau ustadz</small></span></button>
+  <button data-toast="Menyimpan file kasus (bisa dibuka lagi lewat Impor)"><span class="ikBulat">${ik('simpan')}</span><span><b>Simpan file kasus</b><small>Bisa dibuka lagi di aplikasi ini</small></span></button>
+  <button data-toast="Membuat tautan (perlu masuk akun)"><span class="ikBulat">${ik('tautan')}</span><span><b>Bagikan tautan</b><small>Keluarga membuka hasil yang sama</small></span></button></div></section>`;
+const ubinLanjut = k => `<section class="t s4 mint"><h2>Langkah selanjutnya</h2><ol class="lanjut">${k.lanjut.map(([a, b]) => `<li><div>${a}${b ? `<span>${b}</span>` : ''}</div></li>`).join('')}</ol></section>`;
+const ubinPelajari = () => `<section class="t s4 gelap"><h2>Pelajari cara menghitungnya</h2><p class="sub">Untuk dicocokkan dengan ustadz, atau belajar</p><div class="aksiDaftar">
+  <button data-toast="Mode fokus: langkah 1 sampai selesai bersama pohon dan tabel (dirancang di tahap berikutnya)"><span class="ikBulat">${ik('langkah')}</span><span><b>Langkah demi langkah</b><small>Dari 1 sampai selesai, layar penuh</small></span></button>
+  <button data-toast="Mode Belajar: jawaban disembunyikan, kamu menebak dulu"><span class="ikBulat">${ik('tebak')}</span><span><b>Coba tebak dulu</b><small>Mode Belajar</small></span></button>
+  <button data-toast="Membandingkan hasil empat madzhab"><span class="ikBulat">${ik('banding')}</span><span><b>Bandingkan madzhab</b><small>Syafi'i, Hanbali, Hanafi, Maliki</small></span></button></div></section>`;
+
+function ubinAtas(k, id) {
+  if (id === 'bersamaan') return GHARQA_HARTA.map(([m, h]) => [`Harta ${nama(m)}`, rpRingkas(h), m === 'PEWARIS' ? '' : 'dari isianmu']);
+  const d = dataDaftar(k, false), ids = arr => arr.map(o => o.id);
+  if (k.taqdir) return [['Dibagi sekarang', rpRingkas(d.dibagi), daftarNama(ids(d.terima))], ['Ditahan', rpRingkas(d.tahan), `untuk ${daftarNama(ids(d.ditahan))}`, 'tahan']];
+  if (k.id === 'tunggu') return [['Harta', rpRingkas(HARTA), 'belum dibagi'], ['Sudah pasti', `${d.terima.length} orang`, daftarNama(ids(d.terima))]];
+  const lain = d.meninggal.length ? `${d.meninggal.length} meninggal sebelum dibagi` : d.tidak.length ? `${d.tidak.length} tidak mendapat` : '';
+  return [['Harta dibagi', rpRingkas(HARTA), k.rantai ? `harta ${nama('PEWARIS')} saja` : 'sudah bersih'], ['Penerima', `${d.terima.length} orang`, lain]];
+}
+
+function heroHtml(k, id) {
+  const g = id === 'bersamaan' ? GHARQA[keadaanGharqa] : null;
+  let kamu;
+  if (id === 'bersamaan') kamu = keadaanGharqa === 'serentak' ? ['Bagianmu dari dua harta, sebagai istri Pak Ahmad dan ibu Budi', rupiah(37500000n + 8333333n), 'Rp 37.500.000 dari Pak Ahmad + Rp 8.333.333 dari Budi'] : ['Bagianmu', 'Ditahan', 'Rp 47.135.416 atau Rp 74.999.999, tergantung urutan'];
+  else if (k.rantai) { const r = hitungRantai(k.rantai); kamu = [`Bagianmu, ${ORANG[k.kamu][1].toLowerCase()}`, rupiah(bulat(HARTA, r.total[k.kamu])), Object.entries(r.dari[k.kamu]).map(([m, f]) => `${rpRingkas(bulat(HARTA, f))} dari ${nama(m)}`).join(' + ')]; }
+  else { const o = k.daftar().find(x => x.id === k.kamu); kamu = [`Bagianmu, sebagai ${ORANG[k.kamu][1].toLowerCase()}`, rupiah(bulat(HARTA, o.f)), o.alasan]; }
+  const ditahan = id === 'bersamaan' && keadaanGharqa === 'terlupakan';
+  return `<header class="hero">
+    <div class="bilah"><button class="tautan" data-toast="Kembali ke Periksa">${ik('kembali')}Periksa</button><span class="status ${ditahan ? 'tahan' : k.status[1]}"><i></i>${ditahan ? 'Ditahan' : k.status[0]}</span></div>
+    <div class="heroIsi"><div>
+      <div class="namaKasus" id="namaKasus"><span id="teksNama">${namaUbah[id] ?? k.namaKasus}</span><button aria-label="Ubah nama kasus" id="ubahNama">${ik('ubah')}</button></div>
+      <h1>${id === 'bersamaan' ? 'Pembagian harta Pak Ahmad dan Budi' : 'Pembagian harta Pak Ahmad'}</h1>
+      <p class="statusTeks">${id === 'bersamaan' ? (keadaanGharqa === 'serentak' ? 'Dibagi ke 4 orang dari dua harta' : 'Semua harta ditahan dulu') : k.statusTeks}</p>
+      <div class="fakta">${(id === 'bersamaan' ? ['2 mayit bersamaan', keadaanGharqa === 'serentak' ? 'Serentak' : 'Urutan terlupakan'] : k.fakta).map(f => `<span>${f}</span>`).join('')}</div>
+      ${id === 'bersamaan' ? `<div class="segmen" style="margin-top:12px;background:rgba(255,255,255,.14)">${['serentak', 'terlupakan'].map(v => `<button aria-pressed="${keadaanGharqa === v}" data-gharqa="${v}" style="color:${keadaanGharqa === v ? 'var(--ink)' : '#fff'}">${v === 'serentak' ? 'Serentak' : 'Terlupakan'}</button>`).join('')}</div><p style="font-size:12px;opacity:.7;margin-top:4px">Sakelar keadaan ini hanya untuk mockup; di aplikasi, keadaan diambil dari jawabanmu di Periksa.</p>` : ''}
+      <div class="aksiHero"><button class="pil" data-kirim>${ik('kirim')}Kirim ringkasan</button><button class="tautan" data-toast="Kembali ke Periksa untuk mengubah data">${ik('ubah')}Ubah data</button></div>
+    </div><div class="ubinHero"><button class="uh kamu" data-buka="${k.kamu}"><span class="lbl">${kamu[0]}</span><b>${kamu[1]}</b><small>${kamu[2]}</small></button>
+      ${(ditahan ? [['Ditahan', 'Rp 350 jt', 'sampai ingat atau berdamai', 'tahan'], ['Kemungkinan', '2 urutan', 'bahan musyawarah']] : ubinAtas(k, id)).map(([l, v, s, c]) => `<div class="uh ${c ?? ''}"><span class="lbl">${l}</span><b>${v}</b>${s ? `<small>${s}</small>` : ''}</div>`).join('')}</div></div></header>`;
+}
+
+function daftarGharqa(k) {
+  if (keadaanGharqa === 'terlupakan') return `<section class="t s7"><h2>Dua kemungkinan urutan</h2><p class="sub">Semua harta ditahan. Angka ini bahan musyawarah, belum dibagi.</p>
+    <div class="tabelWadah" style="margin-top:10px"><table class="faraidh"><thead><tr><th>Ahli waris</th>${SKENARIO.map(sk => `<th>${sk[0]}</th>`).join('')}</tr></thead><tbody>
+    ${['Aminah', 'Siti', 'Zahra', 'Rina'].map(id => `<tr data-id="${id}"><td>${nama(id)}${id === k.kamu ? ' <span class="lab kamu">kamu</span>' : ''}</td>${SKENARIO.map(sk => `<td>${rupiah(sk[1][id])}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>`;
+  const hartaSaring = saring?.kunci.startsWith('harta:') ? saring.kunci.slice(6) : null;
+  const orang = ['Aminah', 'Siti', 'Zahra', 'Rina'].map(id => {
+    const bagian = GHARQA_HARTA.filter(([m, , per]) => per[id] && (!hartaSaring || m === hartaSaring)).map(([m, h, per, al]) => [m, h * BigInt(per[id][0]) / BigInt(per[id][1]) / SATUAN * SATUAN, al[id]]);
+    const tot = bagian.reduce((a, b) => a + b[1], 0n);
+    const perH = GHARQA_HARTA.filter(([m, , per]) => per[id] && (!hartaSaring || m === hartaSaring)).map(([, , per]) => per[id]);
+    return bagian.length ? { id, f: pec(tot, 350000000n), pecTeks: { sederhana: perH.map(([a, b]) => teksPec(pec(BigInt(a), BigInt(b)))).join(' + '), sama: perH.map(([a, b]) => `${a}/${b}`).join(' + ') }, tampil: rupiah(tot), tampilKet: hartaSaring ? bagian[0][2] : undefined, dariHarta: bagian, alasan: '', kenapa: bagian.map(([m, n, al]) => `Dari harta ${nama(m)}: ${al} (${rupiah(n)}).`) } : null;
+  }).filter(Boolean);
+  const perHarta = GHARQA_HARTA.map(([m, h, per]) => [m, Object.values(per).reduce((a, [x, y]) => a + h * BigInt(x) / BigInt(y) / SATUAN * SATUAN, 0n)]);
+  const jml = perHarta.reduce((a, [, v]) => a + v, 0n);
+  return `<section class="t s7"><div class="kepala-t"><div><h2>Siapa menerima berapa</h2><p class="sub">${hartaSaring ? '' : 'Total dari dua harta. '}Ketuk nama untuk penjelasan lengkap.</p></div>${segBentuk()}</div>
+    ${tandaSaring()}<p class="grupJudul"><span>Penerima</span><span>${orang.length} orang</span></p>${orang.map(o => barisOrang(o, k)).join('')}
+    <div class="jumlahan">${perHarta.map(([m, v]) => barisJumlah(`Dibagikan dari harta ${nama(m)}`, rupiah(v), `harta:${m}`)).join('')}
+    <div class="b"><span>Sisa pembulatan ${pilBulat()}</span><b>${rupiah(350000000n - jml)}</b></div><div class="b hasil"><span>Dua harta</span><b>Rp 350.000.000</b></div></div></section>`;
+}
+
+let kasusAktif;
+function renderKasus(id) {
+  kasusAktif = id; const k = KASUS[id]; k.id = id;
+  const kiri = id === 'bersamaan' ? daftarGharqa(k) : ubinDaftar(k);
+  const kanan = `<div class="kolom s5">${ubinJenis(k, id)}${ubinDitahan(k)}${ubinCatatan(k)}${ubinInfo(k, id)}</div>`;
+  $('#layar').innerHTML = `<p class="tugas ${tugasAktif === id ? 'aktif' : ''}">${TUGAS[id]?.[0] ?? ''}</p>${heroHtml(k, id)}
+    <div class="bento">${kiri}${kanan}${ubinAliran(k)}${ubinPohonTabel(k, id)}${ubinBagikan()}${ubinLanjut(k)}${ubinPelajari()}</div>
+    <p class="kaki">Untuk pembagian nyata, musyawarahkan dengan ahli faraidh atau ustadz setempat. Ada yang janggal? <button class="tautan" style="font-size:13px" data-toast="Membuka formulir laporan">Laporkan</button>.</p>`;
+  pasang(k, id);
+}
+
+// ═══ Modal / laci penjelasan orang (isi seperti versi sebelum Logivo) ═══
+// Penjelasan orang = modal C (alur dasar → di keluarga ini → hitungan) dengan hitungan bertambah ala modal A (pilihan pemilik 2026-11-17).
+const HITUNG_BIASA = {
+  Aminah: [['Bagian dasar', '1/8 dari harta'], ['Asal masalah 24', '24 × 1/8 = 3'], ['Tashih × 3', '3 × 3 = 9 dari 72']],
+  Fatimah: [['Bagian dasar', '1/6 dari harta'], ['Asal masalah 24', '24 × 1/6 = 4'], ['Tashih × 3', '4 × 3 = 12 dari 72']],
+  Budi: [['Bagian dasar', 'sisa, bersama Siti (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51, dibagi 3 kepala = 17 per kepala'], ['Bagian Budi', '17 × 2 = 34 dari 72']],
+  Siti: [['Bagian dasar', 'sisa, bersama Budi (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51, dibagi 3 kepala = 17 per kepala'], ['Bagian Siti', '17 × 1 = 17 dari 72']],
+};
+const UBAH_BAGIAN = { Aminah: ['1/4', '1/8', 'berkurang karena almarhum punya anak'], Fatimah: ['1/3', '1/6', 'berkurang karena almarhum punya anak'] };
+const DASAR_MUNASAKHAT = 'Munasakhat: ahli waris yang meninggal sebelum harta dibagi; bagiannya dibagi lagi ke ahli warisnya sendiri. Yang dibagi hanya harta mayit pertama.';
+
+function sumbanganJamiah(k, idOrang) {
+  const { kolom } = tabelMunasakhat(k.rantai), masalah = kolom.filter(c => c.jenis === 'masalah');
+  return masalah.map((c, j) => {
+    if (!c.per[idOrang]) return null;
+    let pengali = c.pengaliBaru ?? 1n; const bagianPengali = [];
+    if (c.pengaliBaru) bagianPengali.push(c.pengaliBaru);
+    for (const lanjut of masalah.slice(j + 1)) if (lanjut.pengaliLama && lanjut.pengaliLama !== 1n) { pengali *= lanjut.pengaliLama; bagianPengali.push(lanjut.pengaliLama); }
+    return [c.mayit, BigInt(c.per[idOrang]), bagianPengali, BigInt(c.per[idOrang]) * pengali];
+  }).filter(Boolean);
+}
+
+// PERAN: tiap orang, per harta/langkah, dengan dasar (ahwal + dalil), keadaan di keluarga ini, dan hitungan bertambah.
+// [mayit, sebagai, kunciAhwal, baris "kasus ini", dalil, syarat, hitungan[], rupiah]
+const PERAN = {
+  biasa: {
+    Aminah: [['PEWARIS', 'istri', 'ISTRI', 1, 'istri18', 'Almarhum punya anak: Budi dan Siti.', [['Bagian dasar', '1/8 dari harta (bukan 1/4)'], ['Asal masalah 24', '24 × 1/8 = 3'], ['Tashih × 3', '3 × 3 = 9 dari 72'], ['Rupiah', '9/72 × Rp 300.000.000 = Rp 37.500.000']], 37500000n]],
+    Fatimah: [['PEWARIS', 'ibu', 'IBU', 0, 'ibu16', 'Almarhum punya anak: Budi dan Siti.', [['Bagian dasar', '1/6 dari harta (bukan 1/3)'], ['Asal masalah 24', '24 × 1/6 = 4'], ['Tashih × 3', '4 × 3 = 12 dari 72'], ['Rupiah', '12/72 × Rp 300.000.000 = Rp 50.000.000']], 50000000n]],
+    Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bersama anak perempuan (Siti): laki-laki dua kali perempuan.', [['Bagian dasar', 'sisa, bersama Siti (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51; 51 ÷ 3 kepala = 17'], ['Bagian Budi', '17 × 2 = 34 dari 72'], ['Rupiah', '34/72 × Rp 300.000.000 = Rp 141.666.666']], 141666666n]],
+    Siti: [['PEWARIS', 'anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bersama anak laki-laki (Budi): separuh bagian Budi.', [['Bagian dasar', 'sisa, bersama Budi (2 : 1)'], ['Asal masalah 24', 'sisa 24 − 3 − 4 = 17'], ['Tashih × 3', '17 × 3 = 51; 51 ÷ 3 kepala = 17'], ['Bagian Siti', '17 × 1 = 17 dari 72'], ['Rupiah', '17/72 × Rp 300.000.000 = Rp 70.833.333']], 70833333n]],
+    Hasan: [['PEWARIS', 'kakak laki-laki', 'SAUDARA_KANDUNG', 1, null, 'Almarhum punya anak laki-laki (Budi), yang lebih dekat. Saudara terhalang (hajb hirman).', [['Bagian', '0, terhalang']], 0n]],
+  },
+  berlapis: {
+    Siti: [['PEWARIS', 'anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bersama anak laki-laki (Budi), yang masih hidup saat Pak Ahmad meninggal.', [['Masalah Pak Ahmad', 'asal 8 → tashih 24; Siti 7 dari 24'], ['Rupiah', '7/24 × Rp 300.000.000 = Rp 87.500.000']], 87500000n],
+      ['Budi', 'saudari Budi', 'SAUDARI_KANDUNG', 2, 'ibnuMasud', 'Budi meninggalkan putri (Zahra), tanpa anak laki-laki dan tanpa ayah: saudari mengambil sisa.', [['Masalah Budi 24', 'Rina 3 + Aminah 4 + Zahra 12 = 19'], ['Sisa', '24 − 19 = 5 untuk Siti'], ['Rupiah', '5/24 × Rp 175.000.000 = Rp 36.458.333']], 36458333n],
+      ['Aminah', 'putri Aminah', 'ANAK_PR', 0, 'ibnuMasud', 'Aminah meninggalkan putri (Siti) dan cucu (Zahra); tidak ada ashabah, jadi sisa dikembalikan (radd).', [['Asal 6', 'Siti 6 × 1/2 = 3 · Zahra 6 × 1/6 = 1'], ['Radd', '3 + 1 = 4 < 6, masalah menjadi 4 → Siti 3/4'], ['Rupiah', '3/4 × Rp 66.666.666 = Rp 50.000.000']], 50000000n]],
+    Zahra: [['PEWARIS', 'cucu perempuan', 'CUCU_PR', 3, null, 'Ayahnya (Budi) masih hidup saat Pak Ahmad meninggal: cucu terhalang anak laki-laki.', [['Bagian', '0, terhalang']], 0n],
+      ['Budi', 'putri Budi', 'ANAK_PR', 0, 'setengah', 'Putri satu-satunya Budi, tanpa anak laki-laki.', [['Masalah Budi 24', '24 × 1/2 = 12'], ['Rupiah', '12/24 × Rp 175.000.000 = Rp 87.500.000']], 87500000n],
+      ['Aminah', 'cucu Aminah', 'CUCU_PR', 2, 'ibnuMasud', 'Bersama satu anak perempuan (Siti): cucu perempuan mendapat 1/6, lalu tambahan sisa (radd).', [['Asal 6', '6 × 1/6 = 1'], ['Radd', 'masalah menjadi 4 → Zahra 1/4'], ['Rupiah', '1/4 × Rp 66.666.666 = Rp 16.666.666']], 16666666n]],
+    Rina: [['Budi', 'istri Budi', 'ISTRI', 1, 'istri18', 'Budi punya anak (Zahra).', [['Masalah Budi 24', '24 × 1/8 = 3'], ['Rupiah', '3/24 × Rp 175.000.000 = Rp 21.875.000']], 21875000n]],
+    Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bersama anak perempuan (Siti): laki-laki dua kali perempuan.', [['Masalah Pak Ahmad', 'asal 8 → tashih 24; Budi 14 dari 24'], ['Rupiah', '14/24 × Rp 300.000.000 = Rp 175.000.000']], 175000000n]],
+    Aminah: [['PEWARIS', 'istri', 'ISTRI', 1, 'istri18', 'Pak Ahmad punya anak.', [['Masalah Pak Ahmad', '24 × 1/8 = 3'], ['Rupiah', '3/24 × Rp 300.000.000 = Rp 37.500.000']], 37500000n],
+      ['Budi', 'ibu Budi', 'IBU', 0, 'ibu16', 'Budi punya anak (Zahra).', [['Masalah Budi 24', '24 × 1/6 = 4'], ['Rupiah', '4/24 × Rp 175.000.000 = Rp 29.166.666']], 29166666n]],
+  },
+  belumPasti: {
+    Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Budi berbagi sisa harta dengan bayi yang jumlahnya belum diketahui. Menurut madzhab Syafi\'i jumlah janin tidak dibatasi, jadi bagiannya belum bisa dipastikan.', [['Diberi sekarang', '0'], ['Bisa sampai', 'Rp 212.500.000 (bila bayi lahir tidak hidup dan Siti meninggal)']], 0n]],
+    Siti: [['PEWARIS', 'anak perempuan', 'MAFQUD', 0, null, 'Siti hilang tanpa kabar. Bagiannya ditahan sampai ada kepastian.', [['Diberi sekarang', '0'], ['Bisa sampai', 'Rp 70.833.333']], 0n]],
+    Bayi: [['PEWARIS', 'anak almarhum (janin)', 'HAML', 0, null, 'Janin yang dikandung Aminah mewarisi bila lahir hidup.', [['Diberi sekarang', '0, ditahan'], ['Bisa sampai', 'Rp 141.666.666']], 0n]],
+  },
+  bersamaan: {
+    Aminah: [['PEWARIS', 'istri Pak Ahmad', 'ISTRI', 1, 'istri18', 'Pak Ahmad punya anak (Siti). Istri tidak ikut radd.', [['Asal 24', '24 × 1/8 = 3'], ['Radd → 32', 'istri tetap 1/8 = 4/32'], ['Rupiah', '4/32 × Rp 300.000.000 = Rp 37.500.000']], 37500000n],
+      ['Budi', 'ibu Budi', 'IBU', 0, 'ibu16', 'Budi punya anak (Zahra).', [['Asal 24', '24 × 1/6 = 4'], ['Rupiah', '4/24 × Rp 50.000.000 = Rp 8.333.333']], 8333333n]],
+    Siti: [['PEWARIS', 'putri Pak Ahmad', 'ANAK_PR', 0, 'setengah', 'Budi tidak dihitung (meninggal bersamaan), jadi Siti anak perempuan satu-satunya; tidak ada ashabah, sisa dikembalikan (radd).', [['Asal 24', '24 × 1/2 = 12'], ['Radd → 32', 'sisa setelah istri: 28, dibagi Siti : Zahra = 12 : 4 → 21'], ['Rupiah', '21/32 × Rp 300.000.000 = Rp 196.875.000']], 196875000n],
+      ['Budi', 'saudari Budi', 'SAUDARI_KANDUNG', 2, 'ibnuMasud', 'Budi meninggalkan putri (Zahra): saudari mengambil sisa.', [['Asal 24', 'Rina 3 + Aminah 4 + Zahra 12 = 19'], ['Sisa', '24 − 19 = 5'], ['Rupiah', '5/24 × Rp 50.000.000 = Rp 10.416.666']], 10416666n]],
+    Zahra: [['PEWARIS', 'cucu Pak Ahmad', 'CUCU_PR', 2, 'ibnuMasud', 'Ayahnya (Budi) tidak dihitung; bersama satu anak perempuan (Siti): 1/6, lalu tambahan sisa (radd).', [['Asal 24', '24 × 1/6 = 4'], ['Radd → 32', '28 dibagi 12 : 4 → 7'], ['Rupiah', '7/32 × Rp 300.000.000 = Rp 65.625.000']], 65625000n],
+      ['Budi', 'putri Budi', 'ANAK_PR', 0, 'setengah', 'Putri satu-satunya Budi.', [['Asal 24', '24 × 1/2 = 12'], ['Rupiah', '12/24 × Rp 50.000.000 = Rp 25.000.000']], 25000000n]],
+    Rina: [['PEWARIS', 'menantu Pak Ahmad', 'BUKAN', 0, null, 'Menantu bukan ahli waris.', [['Bagian', '0']], 0n],
+      ['Budi', 'istri Budi', 'ISTRI', 1, 'istri18', 'Budi punya anak (Zahra).', [['Asal 24', '24 × 1/8 = 3'], ['Rupiah', '3/24 × Rp 50.000.000 = Rp 6.250.000']], 6250000n]],
+  },
+};
+PERAN.tunggu = { Budi: [['PEWARIS', 'anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bagiannya bergantung pada berapa bayi yang lahir.', [['Sekarang', 'menunggu bayi lahir']], 0n]], Siti: [['PEWARIS', 'anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bagiannya bergantung pada berapa bayi yang lahir.', [['Sekarang', 'menunggu bayi lahir']], 0n]] };
+for (const kasus of ['belumPasti', 'tunggu']) {
+  PERAN[kasus].Aminah = [['PEWARIS', 'istri', 'ISTRI', 1, 'istri18', 'Almarhum punya anak (Budi, Siti, dan bayi), apa pun keadaan bayi dan Siti.', [['Bagian dasar', '1/8 dari harta'], ['Rupiah', '1/8 × Rp 300.000.000 = Rp 37.500.000']], 37500000n]];
+  PERAN[kasus].Fatimah = [['PEWARIS', 'ibu', 'IBU', 0, 'ibu16', 'Almarhum punya anak, apa pun keadaan bayi dan Siti.', [['Bagian dasar', '1/6 dari harta'], ['Rupiah', '1/6 × Rp 300.000.000 = Rp 50.000.000']], 50000000n]];
+}
+PERAN.belumPasti.Hasan = PERAN.biasa.Hasan;
+// Rantai panjang: peran dihitung dari pola keluarga (istri 1/8, ibu 1/6, anak sisa 2 : 1).
+function peranRantai(k, id) {
+  const r = hitungRantai(k.rantai);
+  return k.rantai.filter(([, per]) => per[id]).map(([m, per, tot]) => {
+    const g = +(id.match(/\d+/)?.[0] ?? 0), gm = m === 'PEWARIS' ? 0 : +m.match(/\d+/)[0];
+    const [sebagai, kunci, kini, dalil, syarat] = id.startsWith('Istri') ? (g === gm + 1 ? ['istri', 'ISTRI', 1, 'istri18', `${nama(m)} punya anak.`] : ['ibu', 'IBU', 0, 'ibu16', `${nama(m)} punya anak.`])
+      : id.startsWith('Putra') ? ['anak laki-laki', 'ANAK_LK', 0, 'duaKali', 'Bersama saudarinya: laki-laki dua kali perempuan.'] : ['anak perempuan', 'ANAK_PR', 2, 'duaKali', 'Bersama saudaranya: separuh bagian saudara.'];
+    const f = kali(r.masuk[m], pec(BigInt(per[id]), BigInt(tot)));
+    return [m, `${sebagai} ${m === 'PEWARIS' ? 'Pak Ahmad' : nama(m)}`, kunci, kini, dalil, syarat, [[`Masalah ${nama(m)} ${tot}`, `${per[id]} dari ${tot}`], ['Rupiah', `${per[id]}/${tot} × ${rupiah(bulat(HARTA, r.masuk[m]))} = ${rupiah(bulat(HARTA, f))}`]], bulat(HARTA, f)];
+  });
+}
+
+function sumbanganJamiah(k, idOrang) {
+  const { kolom } = tabelMunasakhat(k.rantai), masalah = kolom.filter(c => c.jenis === 'masalah');
+  return masalah.map((c, j) => {
+    if (!c.per[idOrang]) return null;
+    let pengali = c.pengaliBaru ?? 1n; const daftar = c.pengaliBaru ? [c.pengaliBaru] : [];
+    for (const lanjut of masalah.slice(j + 1)) if (lanjut.pengaliLama && lanjut.pengaliLama !== 1n) { pengali *= lanjut.pengaliLama; daftar.push(lanjut.pengaliLama); }
+    return [c.mayit, BigInt(c.per[idOrang]), daftar, BigInt(c.per[idOrang]) * pengali];
+  }).filter(Boolean);
+}
+
+function blokPeran([m, sebagai, kunci, kini, dalilK, syarat, hitung], k, ganda) {
+  const dalil = dalilK ? DALIL[dalilK] : null, ahwal = AHWAL[kunci];
+  const tempat = kasusAktif === 'bersamaan' ? `harta ${nama(m)}` : m === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(m)}`;
+  const isi = `
+    <p class="subT">Dasar · berlaku untuk semua kasus</p>
+    ${dalil ? `<div class="dalil"><p class="arab">${dalil[0]}</p><p style="font-size:14px">${dalil[1]}.</p><small>${dalil[2].startsWith('HR') ? dalil[2] : 'QS ' + dalil[2]}</small></div>` : ''}
+    ${ahwal ? `<table class="ahwalT">${ahwal.map(([b, t], i) => `<tr class="${i === kini ? 'kini' : ''}"><th>${b}</th><td>${t}${i === kini ? '<span class="stiker">kasus ini</span>' : ''}</td></tr>`).join('')}</table>` : ''}
+    <p class="subT">Di keluarga ini</p><div class="syarat"><div><span class="cek">✓</span><span>${syarat}</span></div></div>
+    <p class="subT">Hitungan</p><div class="langkahH">${hitung.map(([x, y]) => `<div><span>${x}</span><span>${y}</span></div>`).join('')}</div>`;
+  return { judul: ganda ? `Di ${tempat}, sebagai ${sebagai}` : `Sebagai ${sebagai}`, isi };
+}
+
+function bukaPenjelasan(idOrang, k) {
+  const o = NOMINAL[idOrang]; if (!o || !ORANG[idOrang]) return;
+  const [n, peran, , , kelompok] = ORANG[idOrang];
+  const tahan = !!o.tahan, tidak = o.redup && !o.meninggal;
+  const rp = o.tampil ?? (tahan ? 'Ditahan' : rupiah(bulat(HARTA, o.f)));
+  const daftarPeran = (k.cari ? peranRantai(k, idOrang) : PERAN[kasusAktif]?.[idOrang]) ?? [];
+  const ganda = daftarPeran.length > 1 || k.rantai || kasusAktif === 'bersamaan';
+  let no = 0;
+  const titik = (jenis, ket, judul, isi) => `<div class="titik ${jenis}"><span class="noT">${++no}</span><p class="ketT">${ket}</p><h5>${judul}</h5>${isi}</div>`;
+  const blok = daftarPeran.map(pr => { const b = blokPeran(pr, k, ganda); return titik(no === 0 ? 'dasar' : 'kasus', ganda ? (k.rantai ? `LANGKAH ${hitungRantai(k.rantai).lapisKe(pr[0])}` : 'HARTA') : 'BAGIAN INI', b.judul, b.isi); }).join('');
+  let penutup = '';
+  const nyata = daftarPeran.filter(pr => pr[7] > 0n);
+  if (o.meninggal) {
+    const l = k.rantai.find(x => x[0] === idOrang);
+    penutup = titik('kasus', 'SESUDAHNYA', `${n} meninggal sebelum harta dibagi`, `<div class="jumlahP">${nyata.map(pr => `<div><span>Dari ${pr[0] === 'PEWARIS' ? 'harta Pak Ahmad' : `bagian ${nama(pr[0])}`}</span><b>${rupiah(pr[7])}</b></div>`).join('')}<div class="tot"><span>Diterima, lalu dibagi lagi</span><b>${rp}</b></div></div><p style="font-size:14px;margin-top:8px">Dibagi lagi di langkah ${hitungRantai(k.rantai).lapisKe(idOrang)} kepada ${daftarNama(Object.keys(l[1]))}.</p>`);
+  } else if (nyata.length > 1 || (k.rantai && nyata.length)) {
+    let jamiah = '';
+    if (k.rantai) {
+      const sj = sumbanganJamiah(k, idOrang), jam = tabelMunasakhat(k.rantai).jam, tot = sj.reduce((a, x) => a + x[3], 0n);
+      if (String(jam).length <= 10) jamiah = `<p class="subT">Disatukan dalam jami'ah ${jam}</p><div class="langkahH">${sj.map(([m, sh, pg, h]) => `<div><span>Dari ${nama(m)}</span><span>${sh}${pg.map(x => ` × ${x}`).join('')} = ${h}</span></div>`).join('')}<div><span>Jumlah</span><span>${sj.map(x => x[3]).join(' + ')} = ${tot} dari ${jam}</span></div></div>`;
+    }
+    penutup = titik('kasus', 'JUMLAH', 'Bagiannya digabung', `<div class="jumlahP">${nyata.map(pr => `<div><span>Dari ${kasusAktif === 'bersamaan' ? 'harta ' + nama(pr[0]) : pr[0] === 'PEWARIS' ? 'harta Pak Ahmad' : 'bagian ' + nama(pr[0])}</span><b>${rupiah(pr[7])}</b></div>`).join('')}<div class="tot"><span>Jumlah</span><b>${nyata.map(pr => rpRingkas(pr[7])).join(' + ')} = ${rp}</b></div></div>${jamiah}`);
+  }
+  if (!daftarPeran.length) penutup = titik('kasus', 'DI KELUARGA INI', 'Keterangan', `<p style="font-size:14px">${o.alasan || (o.kenapa ?? []).join(' ')}</p>`);
+  $('#modalOrang').innerHTML = `
+    <div class="modalKepala ${tahan ? 'tahan' : tidak || o.meninggal ? 'netral' : ''}"><div><p class="peranM">${tidak ? 'TIDAK MENDAPAT BAGIAN' : tahan ? 'DITAHAN' : o.meninggal ? 'MENINGGAL SEBELUM DIBAGI' : kelompok ?? ''}</p><h3 id="judulModal">${n}</h3><p class="sub">${peran}</p></div><button class="tutup" id="tutupModal" aria-label="Tutup">${ik('x')}</button></div>
+    <div class="modalIsi">
+      <h4>BAGIANNYA DI KASUS INI</h4><div class="angkaM"><div><small>Pecahan</small><b>${pecO(o) || '—'}</b></div><div><small>Persen</small><b>${o.f?.[0] && !o.pecTeks ? persen(o.f) : '—'}</b></div><div><small>${o.meninggal ? 'Diterima lalu dibagi lagi' : 'Nominal'}</small><b>${rp}</b></div></div>
+      ${tahan && o.maks ? `<p class="sub" style="margin-top:6px">Bisa sampai ${rupiah(bulat(HARTA, o.maks))}, tergantung keadaan yang terjadi.</p>` : ''}
+      <div class="alurM">${blok}${penutup}</div>
+      ${o.terdampak ? `<details class="lipatM"><summary>Ahli waris lain yang terdampak <small>${o.terdampak.length} orang</small></summary><div class="isiL"><ul class="biasa">${o.terdampak.map(x => `<li>${x}</li>`).join('')}</ul></div></details>` : ''}
+    </div>
+    <div class="modalKaki">${ORANG[idOrang][3] ? `<button class="tautan" data-toast="Membuka ubah jumlah ${n.toLowerCase()}">Ubah jumlah</button>` : '<span></span>'}<button class="btn" id="okeModal">Oke, paham</button></div>`;
+  $('#latar').classList.add('on');
+  samarkan($('#modalOrang'));
+  $('#tutupModal').focus();
+  $('#tutupModal').onclick = $('#okeModal').onclick = tutupModal;
+  $$('#modalOrang .ist').forEach(x => x.addEventListener('click', e => { e.stopPropagation(); x.classList.toggle('on'); }));
+}
+function bukaBulat(id) {
+  const k = KASUS[id], simpan = SATUAN;
+  const sisaUntuk = v => { SATUAN = BigInt(v); let hasil; if (id === 'bersamaan') { hasil = 350000000n - ['Aminah', 'Siti', 'Zahra', 'Rina'].reduce((a, x) => a + GHARQA_HARTA.reduce((b, [, h, per]) => b + (per[x] ? h * BigInt(per[x][0]) / BigInt(per[x][1]) / SATUAN * SATUAN : 0n), 0n), 0n); } else { const d = dataDaftar(k); hasil = HARTA - d.dibagi - d.tahan; } SATUAN = simpan; return hasil; };
+  $('#modalOrang').innerHTML = `<div class="modalKepala netral"><div><p class="peranM">PEMBULATAN</p><h3 id="judulModal">Bagian tiap orang dibulatkan ke…</h3><p class="sub">Dibulatkan ke bawah; sisanya tidak dibagi diam-diam.</p></div><button class="tutup" id="tutupModal" aria-label="Tutup">${ik('x')}</button></div>
+    <div class="modalIsi" style="padding-top:16px"><div class="opsiKuis">${OPSI_BULAT.map(([v, l, ket]) => `<button aria-pressed="${String(SATUAN) === v}" data-pilih-bulat="${v}"><i></i><span><b>${l}</b><small>${ket}</small></span><span class="sisaO">sisa<br><b style="font-size:14px;color:var(--ink)">${rupiah(sisaUntuk(v))}</b></span></button>`).join('')}</div></div>`;
+  $('#latar').classList.add('on'); $('#tutupModal').onclick = tutupModal;
+  $$('[data-pilih-bulat]').forEach(b => b.onclick = () => { SATUAN = BigInt(b.dataset.pilihBulat); tutupModal(); renderKasus(id); toast(`dibulatkan ke Rp ${Number(SATUAN).toLocaleString('id-ID')}`); });
+}
+const tutupModal = () => $('#latar').classList.remove('on');
+$('#latar').addEventListener('click', e => { if (e.target.id === 'latar') tutupModal(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') tutupModal(); });
+
+// ═══ Interaksi ═══
+let skala = 1;
+function aturSkala(s) { const svg = $('#kanvas svg'); if (!svg) return; skala = Math.min(2.5, Math.max(0.3, s)); svg.setAttribute('width', svg.dataset.lebar * skala); svg.setAttribute('height', svg.dataset.tinggi * skala); }
+const pasSkala = () => { const kv = $('#kanvas'), svg = $('#kanvas svg'); if (kv && svg && kv.clientWidth) aturSkala(Math.min(kv.clientWidth / svg.dataset.lebar, kv.clientHeight / svg.dataset.tinggi, 1.3)); };
+function sorot(idOrang) {
+  $$('.orang').forEach(b => b.classList.toggle('sorot', b.dataset.id === idOrang));
+  $$('svg.pohon .kotak').forEach(g => g.classList.toggle('sorot', g.dataset.id === idOrang));
+  $$('table.faraidh tr[data-id]').forEach(r => r.classList.toggle('sorot', r.dataset.id === idOrang));
+}
+let putaran = 0;
+async function putarLapis(dari, sampai) {
+  const nomor = ++putaran, kv = $('#kanvas');
+  $$('svg.pohon .alir').forEach(p => p.classList.remove('jalan', 'diam'));
+  for (let l = dari; l <= sampai; l++) {
+    if (nomor !== putaran) return;
+    $$('.blok').forEach(b => b.classList.toggle('aktif', b.dataset.lapis === String(l)));
+    $$('.rute button').forEach(b => b.classList.toggle('aktif', b.dataset.keLapis === String(l)));
+    const jalur = $$(`svg.pohon .alir[data-lapis="${l}"]`);
+    if (jalur[0] && kv) { const bb = jalur[0].getBBox(); kv.scrollTo({ top: bb.y * skala - 60, left: bb.x * skala - 40, behavior: 'smooth' }); }
+    jalur.forEach(p => p.classList.add('jalan'));
+    await new Promise(r => setTimeout(r, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 950));
+    jalur.forEach(p => { p.classList.remove('jalan'); p.classList.add('diam'); });
+  }
+}
+function pasang(k, id) {
+  $$('.orang').forEach(b => b.addEventListener('click', () => { sorot(b.dataset.id); bukaPenjelasan(b.dataset.id, k); }));
+  $$('[data-buka]').forEach(b => b.addEventListener('click', () => bukaPenjelasan(b.dataset.buka, k)));
+  $$('svg.pohon .kotak[data-id]').forEach(g => g.addEventListener('click', () => { sorot(g.dataset.id); if (NOMINAL[g.dataset.id]) bukaPenjelasan(g.dataset.id, k); }));
+  $$('table.faraidh tr[data-id], .blok tr[data-id]').forEach(r => r.addEventListener('click', () => { sorot(r.dataset.id); if (NOMINAL[r.dataset.id]) bukaPenjelasan(r.dataset.id, k); }));
+  $$('[data-bulat]').forEach(b => b.onclick = e => { e.stopPropagation(); bukaBulat(id); });
+  $$('[data-saring]').forEach(b => b.onclick = () => { saring = saring?.kunci === b.dataset.saring ? null : { kunci: b.dataset.saring, label: b.dataset.label }; renderKasus(id); $('.t.s7').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  $$('[data-saring-hapus]').forEach(b => b.onclick = () => { saring = null; renderKasus(id); });
+  $$('[data-bentuk]').forEach(b => b.onclick = () => { BENTUK = b.dataset.bentuk; renderKasus(id); });
+  $$('[data-tahap]').forEach(b => b.onchange = () => { const t = b.dataset.tahap; TAHAP_AKTIF = TAHAP_AKTIF.includes(t) ? TAHAP_AKTIF.filter(x => x !== t) : [...TAHAP_AKTIF, t]; if (!TAHAP_AKTIF.length) TAHAP_AKTIF = [t]; const y = scrollY; renderKasus(id); scrollTo(0, y); $('.aturKolom').open = true; });
+  $$('[data-sembunyi]').forEach(b => b.onclick = () => { SEMBUNYI = !SEMBUNYI; const y = scrollY; renderKasus(id); scrollTo(0, y); });
+  samarkan($('#layar'));
+  $$('[data-kolom]').forEach(th => th.onclick = () => { KOLOM_PILIH = +th.dataset.kolom; const y = scrollY; renderKasus(id); scrollTo(0, y); });
+  $$('.tabelWadah, .kanvas').forEach(w => { const p = w.closest('.panel'); if (p && w.scrollWidth > w.clientWidth + 4) p.classList.add('adaGeser'); });
+  $$('[data-satuan]').forEach(b => b.onclick = () => { SATUAN = BigInt(b.dataset.satuan); renderKasus(id); });
+  $$('[data-gharqa]').forEach(b => b.onclick = () => { keadaanGharqa = b.dataset.gharqa; renderKasus(id); });
+  $$('[data-zoom]').forEach(b => b.onclick = () => (b.dataset.zoom === '0' ? pasSkala() : aturSkala(skala * (b.dataset.zoom === '1' ? 1.25 : 0.8))));
+  $('#layarPenuh')?.addEventListener('click', () => { const p = $('#panelPohon'); if (document.fullscreenElement) document.exitFullscreen(); else if (p.requestFullscreen) p.requestFullscreen().then(() => setTimeout(pasSkala, 120)).catch(() => p.classList.toggle('penuh')); else p.classList.toggle('penuh'); });
+  $('#putarAliran')?.addEventListener('click', () => putarLapis(1, Math.max(...$$('svg.pohon .alir').map(p => +p.dataset.lapis))));
+  $$('[data-putar]').forEach(b => b.onclick = () => { $('#ubinPT').scrollIntoView({ behavior: 'smooth' }); putarLapis(+b.dataset.putar, +b.dataset.putar); });
+  $$('[data-ke-lapis]').forEach(b => b.onclick = () => { const blk = $(`.blok[data-lapis="${b.dataset.keLapis}"]`); if (blk.hidden) { $$('.blok[hidden]').forEach(x => (x.hidden = false)); $('#bukaLapis')?.remove(); } blk.scrollIntoView({ behavior: 'smooth', block: 'center' }); putarLapis(+b.dataset.keLapis, +b.dataset.keLapis); });
+  $('#bukaLapis')?.addEventListener('click', e => { $$('.blok[hidden]').forEach(b => (b.hidden = false)); e.currentTarget.remove(); });
+  $('#bukaGen')?.addEventListener('click', e => { $$('.genGrup[hidden]').forEach(b => (b.hidden = false)); e.currentTarget.remove(); });
+  $('#cariOrang')?.addEventListener('input', e => { const q = e.target.value.toLowerCase(); $$('.genGrup').forEach(g => (g.hidden = false)); $('#bukaGen')?.remove(); $$('.genGrup .orang').forEach(o => (o.hidden = !!q && !nama(o.dataset.id).toLowerCase().includes(q))); });
+  $$('.segPanel button').forEach(b => b.onclick = () => { $$('.segPanel button').forEach(x => x.setAttribute('aria-pressed', x === b)); $('.panelDua').dataset.lihat = b.dataset.lihat; if (b.dataset.lihat === 'pohon') pasSkala(); });
+  $$('.ist').forEach(s => s.addEventListener('click', e => { e.stopPropagation(); $$('.ist.on').forEach(x => x !== s && x.classList.remove('on')); s.classList.toggle('on'); }));
+  $('#ubahNama')?.addEventListener('click', () => { const w = $('#namaKasus'), lama = $('#teksNama').textContent; w.innerHTML = `<input id="isianNama" value="${lama}" aria-label="Nama kasus"><button class="tautan" id="simpanNama" style="color:#fff">Simpan</button>`; $('#isianNama').focus(); $('#simpanNama').onclick = () => { namaUbah[id] = $('#isianNama').value.trim() || lama; renderKasus(id); toast('nama kasus disimpan'); }; });
+  $$('[data-kirim]').forEach(b => b.onclick = () => { $('#teksKirim').textContent = teksRingkasan(k, id); $('#lembarKirim').classList.add('on'); });
+  if (k.taqdir && $('#pilihKemungkinan')) siapkanKemungkinan();
+  setTimeout(pasSkala, 30);
+}
+document.addEventListener('click', e => { if (!e.target.closest('.ist')) $$('.ist.on').forEach(x => x.classList.remove('on')); });
+
+const PILIHAN = { Siti: 'hidup', Bayi: 'mati' };
+function siapkanKemungkinan() {
+  const wadah = $('#pilihKemungkinan');
+  const isi = () => {
+    const d = DUNIA.find(([t]) => t.Siti === PILIHAN.Siti && t.Bayi === PILIHAN.Bayi)[1];
+    wadah.innerHTML = `<div class="pilih"><p>Kalau Siti…</p><div class="pilDeret">${[['hidup', 'masih hidup'], ['mati', 'sudah meninggal']].map(([v, l]) => `<button class="pk" data-sumber="Siti" data-v="${v}" aria-checked="${PILIHAN.Siti === v}">${l}</button>`).join('')}</div></div>
+      <div class="pilih"><p>Kalau bayi Aminah…</p><div class="pilDeret">${Object.entries(TEKS_BAYI).map(([v, l]) => `<button class="pk" data-sumber="Bayi" data-v="${v}" aria-checked="${PILIHAN.Bayi === v}">${l}</button>`).join('')}</div></div>
+      <p style="font-size:13px"><b>Bila terjadi:</b> ${['Aminah', 'Fatimah', 'Budi', 'Siti', 'Bayi'].filter(i => d[i]).map(i => `${nama(i).replace(' dalam kandungan Aminah', '')} ${rpRingkas(bulat(HARTA, pec(BigInt(d[i]), JAMIAH_GAB)))}`).join(' · ')}</p>`;
+    $$('.pk', wadah).forEach(p => p.onclick = () => { PILIHAN[p.dataset.sumber] = p.dataset.v; isi(); });
+  };
+  isi();
+}
+
+function teksRingkasan(k, id) {
+  const judul = `${namaUbah[id] ?? k.namaKasus} (madzhab Syafi'i)`;
+  if (id === 'bersamaan') return `${judul}\nPak Ahmad dan Budi meninggal ${keadaanGharqa === 'serentak' ? 'serentak, tidak saling mewarisi.\n• Aminah: Rp 45.833.333\n• Siti: Rp 207.291.666\n• Zahra: Rp 90.625.000\n• Rina: Rp 6.250.000' : 'bersamaan; urutan terlupakan, harta ditahan.'}\nRincian: [tautan PDF]`;
+  if (k.rantai) { const r = hitungRantai(k.rantai); return `${judul}\nHarta Pak Ahmad Rp 300.000.000, dibagikan sekali:\n` + Object.keys(r.total).map(i => `• ${nama(i)}: ${rupiah(bulat(HARTA, r.total[i]))}`).join('\n') + '\nAliran dan tabel: [tautan PDF]'; }
+  return `${judul}\n` + k.daftar().map(o => `• ${nama(o.id)}: ${o.tahan ? 'ditahan' : o.f[0] ? rupiah(bulat(HARTA, o.f)) : 'tidak mendapat'}`).join('\n') + '\nRincian dan alasan: [tautan PDF]';
+}
+
+// ═══ Cara mencoba ═══
+const TUGAS = {
+  biasa: ['Tugas 1: Ketuk Aminah. Apakah penjelasan lengkapnya menjawab "kenapa 1/8"?', ['Ketuk Aminah.', 'Baca Kenapa segitu, Cara menghitungnya, Kapan dapat berapa, Dalilnya.', 'Pilih pembulatan Rp 1.000; lihat penjumlahannya berubah.'], 'Apakah penjelasan lengkap mudah dibuka dan menjawab pertanyaan?'],
+  berlapis: ['Tugas 2: Cari apa yang harus dibagi sekarang. Lalu ikuti harta lewat Budi dan Aminah.', ['Baca kotak hijau "Yang dibagi sekarang".', 'Di "Bagaimana hartanya mengalir", ikuti tanda → ke lapis berikutnya.', 'Buka tabel munasakhat.'], 'Apakah tabelnya terasa seperti tabel munasakhat di kitab?'],
+  rantai: ['Tugas 3: Cari "Istri gen. 1". Dari lapis mana saja bagiannya?', ['Ketik di kotak cari.', 'Ketuk namanya.', 'Ketuk rute di atas aliran untuk melompat ke lapis.'], 'Apakah rantai panjang tetap bisa dibaca?'],
+  belumPasti: ['Tugas 4: Cari uang yang ditahan dan untuk siapa. Arahkan ke kata "haml" dan "mafqud".', ['Baca ubin Jenis masalah.', 'Pilih kemungkinan di atas tabel.', 'Ketuk Budi: kenapa belum dapat?'], 'Apakah jelas mana yang pasti dan mana yang ditahan?'],
+  tunggu: ['Tugas 5: Cari apa yang sudah pasti, dan akibatnya kalau tetap dibagi sekarang.', ['Baca daftar.', 'Baca "Perlu dibagi sekarang?".'], 'Apakah kamu tahu harus membuka kasus ini dari mana nanti?'],
+  bersamaan: ['Tugas 6: Cari bagianmu dari dua harta. Lalu ganti ke "Terlupakan".', ['Baca kalimat di atas.', 'Lihat garis merah putus-putus di pohon.', 'Ganti ke Terlupakan.'], 'Apakah jelas kenapa keduanya tidak saling mewarisi?'],
+};
+function renderCoba() {
+  $('#layar').innerHTML = `<div class="coba"><h1>Cara mencoba</h1><div class="bento" style="padding:0">
+    <section class="t s6"><h2>Ini contoh</h2><p style="font-size:14px;margin-top:6px">Tidak ada yang disimpan. Keluarga contoh: <b>Pak Ahmad</b> (almarhum), <b>Aminah</b> (istri), <b>Fatimah</b> (ibu), <b>Budi</b> dan <b>Siti</b> (anak), <b>Rina</b> (istri Budi), <b>Zahra</b> (anak Budi), <b>Hasan</b> (kakak almarhum). Kata bergaris titik bisa diarahkan atau diketuk untuk penjelasan.</p></section>
+    <section class="t s6 mint"><h2>Arti warna</h2><p style="font-size:14px;margin-top:6px">Hijau: menerima. Kuning: ditahan. Abu: sudah meninggal atau tidak mendapat. Oranye: aliran harta dan pengali di tabel. Merah putus-putus: tidak saling mewarisi.</p></section>
+    ${Object.entries(TUGAS).map(([id, [, langkah, cek]], i) => `<section class="t s6"><h2>Tugas ${i + 1}: ${KASUS[id].tab}</h2><ol>${langkah.map(l => `<li>${l}</li>`).join('')}</ol><p class="cek">Yang dicek: ${cek}</p><p style="margin-top:8px"><button class="tautan" data-mulai="${id}">Mulai tugas ini</button></p><textarea data-catatan="Tugas ${i + 1}: ${KASUS[id].tab}" placeholder="Catatanmu…"></textarea></section>`).join('')}
+    <section class="t s12 oranye"><h2>Kirim catatan</h2><p style="font-size:14px;margin:6px 0 10px">Salin semua catatanmu lalu tempel di chat ke tim.</p><button class="btn" id="salinCatatan">Salin catatan</button></section></div></div>`;
+  $$('[data-mulai]').forEach(b => b.onclick = () => { tugasAktif = b.dataset.mulai; buka(b.dataset.mulai); });
+  $('#salinCatatan').onclick = () => { navigator.clipboard?.writeText($$('[data-catatan]').filter(t => t.value.trim()).map(t => `${t.dataset.catatan}\n${t.value.trim()}`).join('\n\n')).catch(() => {}); toast('catatan disalin'); };
+}
+
+// ═══ Tab, toast ═══
+const TAB = [...Object.keys(KASUS), 'coba'];
+$('#tab').innerHTML = TAB.map(id => `<button role="tab" data-ke="${id}">${id === 'coba' ? 'Cara mencoba' : KASUS[id].tab}</button>`).join('');
+function buka(id) { saring = null; TAHAP_AKTIF = null; KOLOM_PILIH = 0; $$('#tab button').forEach(b => b.setAttribute('aria-selected', b.dataset.ke === id)); tutupModal(); id === 'coba' ? renderCoba() : renderKasus(id); scrollTo(0, 0); }
+$$('#tab button').forEach(b => b.onclick = () => buka(b.dataset.ke));
+let jeda;
+function toast(t) { $('#toastTeks').textContent = 'Mockup: ' + t; $('#toast').classList.add('on'); clearTimeout(jeda); jeda = setTimeout(() => $('#toast').classList.remove('on'), 3200); }
+$('#toastUrung').onclick = () => $('#toast').classList.remove('on');
+document.addEventListener('click', e => { const el = e.target.closest('[data-toast]'); if (el) { e.preventDefault(); e.stopPropagation(); toast(el.dataset.toast); } }, true);
+$('#batalKirim').onclick = () => $('#lembarKirim').classList.remove('on');
+$('#salinKirim').onclick = () => { navigator.clipboard?.writeText($('#teksKirim').textContent).catch(() => {}); $('#lembarKirim').classList.remove('on'); toast('teks disalin, WhatsApp dibuka'); };
+
+// Cek konsistensi: total rantai 3 lapis = nominal engine; tabel munasakhat = saham engine (jami'ah 288).
+const cekR = hitungRantai(LAPIS_BERLAPIS), cekT = tabelMunasakhat(LAPIS_BERLAPIS);
+for (const [id, n] of Object.entries({ Siti: 173958333n, Rina: 21875000n, Zahra: 104166666n })) if (HARTA * cekR.total[id][0] / cekR.total[id][1] !== n) console.error('Tidak cocok dengan engine:', id);
+if (cekT.jam !== 288n || cekT.sahamJam.Siti !== 167n || cekT.sahamJam.Zahra !== 100n || cekT.sahamJam.Rina !== 21n) console.error('Tabel munasakhat tidak cocok dengan engine', cekT);
+
+buka('biasa');
+</script>
+</body>
+</html>

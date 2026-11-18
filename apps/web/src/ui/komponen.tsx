@@ -11,7 +11,7 @@ const gabungKelas = (...daftar: Array<string | false | undefined>) => daftar.fil
 const LABEL_KELOMPOK: Record<Kelompok, string> = { pasangan: 'Pasangan', keturunan: 'Keturunan', leluhur: 'Leluhur', saudara: 'Saudara' };
 
 export function Tombol({ varian = 'primary', kecil, className, ...sisa }:
-  ButtonHTMLAttributes<HTMLButtonElement> & { varian?: 'primary' | 'secondary' | 'sun' | 'ghost'; kecil?: boolean }) {
+  ButtonHTMLAttributes<HTMLButtonElement> & { varian?: 'primary' | 'secondary' | 'sun' | 'ghost' | 'danger'; kecil?: boolean }) {
   return <button type="button" {...sisa} className={gabungKelas('aw-btn', `aw-btn-${varian}`, kecil && 'aw-btn-sm', className)} />;
 }
 
