@@ -20,13 +20,13 @@ describe('susunLinimasa', () => {
     const kotak = (id: string) => linimasa.tahap.find(tahap => tahap.id === id)!.langkah[0]!.visual;
     expect(kotak('ashl')).toMatchObject({ jenis: 'kotak', jumlah: 8n, potong: 1n });
     expect(kotak('tashih')).toMatchObject({ jenis: 'kotak', jumlah: 8n, potong: 3n });
-    expect(linimasa.tabel.map(kolom => kolom.kolom)).toEqual(['bagian', 'ashl', 'tashih', 'nominal']);
+    expect(linimasa.tabel[0]!.map(kolom => kolom.kolom)).toEqual(['bagian', 'ashl', 'tashih', 'nominal']);
   });
 
   it('C16-02: tanpa tashih, tidak ada tahap tashih dan kolomnya', () => {
     const { linimasa } = linimasaDari(case02.input);
     expect(linimasa.tahap.some(tahap => tahap.id === 'tashih')).toBe(false);
-    expect(linimasa.tabel.some(kolom => kolom.kolom === 'tashih')).toBe(false);
+    expect(linimasa.tabel[0]!.some(kolom => kolom.kolom === 'tashih')).toBe(false);
   });
 
   it('harta dengan potongan: visual hitungan kotor − potongan = bersih', () => {
@@ -55,7 +55,7 @@ describe('susunLinimasa', () => {
       }
       const terisi = new Set(linimasa.tahap.flatMap(tahap => tahap.langkah.flatMap(langkah => langkah.sel ?? [])));
       const penerima = hasil.tabel.baris.flatMap(baris => baris.anggota);
-      for (const { kolom } of linimasa.tabel) {
+      for (const { kolom } of linimasa.tabel[0]!) {
         for (const id of penerima) expect(terisi.has(`${kolom}:${id}`), `${fixture.id} ${kolom}:${id}`).toBe(true);
       }
     }

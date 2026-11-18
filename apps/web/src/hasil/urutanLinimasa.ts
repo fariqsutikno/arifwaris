@@ -2,15 +2,30 @@
 // supaya pindah tampilan tidak menggeser posisi.
 
 import type { KodeSel, Linimasa, Visual } from '@waris/explain';
+import type { HasilOk } from '../jalankan';
+import type { RingkasanHasil } from './ringkasan';
+
+/** Data satu babak tabel: hasil engine satu mayit dan ringkasannya (kasus biasa satu babak, munasakhat satu per mayit). */
+export interface PeragaBabak { hasil: HasilOk; ringkasan: RingkasanHasil }
 
 export interface Posisi { tahap: number; langkah: number }
 
 export const urutanLinimasa = (linimasa: Linimasa): Posisi[] =>
   linimasa.tahap.flatMap((tahap, nomorTahap) => tahap.langkah.map((_, nomorLangkah) => ({ tahap: nomorTahap, langkah: nomorLangkah })));
 
-/** Sel tabel yang sudah terisi sampai indeks `sampai`, dan yang baru terisi tepat di indeks itu. */
-export function selSampai(linimasa: Linimasa, urutan: Posisi[], sampai: number): { terbuka: Set<KodeSel>; kini: Set<KodeSel> } {
-  const sel = (posisi: Posisi) => linimasa.tahap[posisi.tahap]!.langkah[posisi.langkah]!.sel ?? [];
+/** Babak (tabel) yang ditampilkan di indeks `sampai`: babak tahap itu, atau babak terakhir sebelumnya bila tahapnya tanpa tabel. */
+export function babakDi(linimasa: Linimasa, urutan: Posisi[], sampai: number): number {
+  for (let indeks = sampai; indeks >= 0; indeks--) {
+    const babak = linimasa.tahap[urutan[indeks]!.tahap]!.babak;
+    if (babak !== undefined) return babak;
+  }
+  return 0;
+}
+
+/** Sel tabel `babak` yang sudah terisi sampai indeks `sampai`, dan yang baru terisi tepat di indeks itu (hanya bila langkah itu milik babak tersebut). */
+export function selSampai(linimasa: Linimasa, urutan: Posisi[], sampai: number, babak: number): { terbuka: Set<KodeSel>; kini: Set<KodeSel> } {
+  const milikBabak = (posisi: Posisi) => linimasa.tahap[posisi.tahap]!.babak === babak;
+  const sel = (posisi: Posisi) => (milikBabak(posisi) ? linimasa.tahap[posisi.tahap]!.langkah[posisi.langkah]!.sel ?? [] : []);
   return {
     terbuka: new Set(urutan.slice(0, sampai + 1).flatMap(sel)),
     kini: new Set(urutan[sampai] ? sel(urutan[sampai]) : []),

@@ -6,33 +6,35 @@ import { useLayoutEffect, useMemo, useRef, type ReactNode } from 'react';
 import { keTeksBiasa, type Linimasa } from '@waris/explain';
 import { Baris } from '../layar/Penjelasan';
 import { useGerakDikurangi } from '../tampilan';
-import type { HasilOk } from '../jalankan';
 import { HartaTabel, KotakHarta } from './KotakHarta';
 import { TabelLangkah } from './TabelLangkah';
 import { terbangkanAngka } from './terbangAngka';
-import { selSampai, visualTerakhir, type Posisi } from './urutanLinimasa';
+import { babakDi, selSampai, visualTerakhir, type PeragaBabak, type Posisi } from './urutanLinimasa';
 import type { RingkasanHasil } from './ringkasan';
 
 interface Props {
   linimasa: Linimasa;
   urutan: Posisi[];
   indeks: number;
-  hasil: HasilOk;
-  ringkasan: RingkasanHasil;
+  babak: PeragaBabak[];
+  ringkasanAkhir: RingkasanHasil;
   sembunyiNominal: boolean;
   pohon: ReactNode;
 }
 
-export function TampilanSinema({ linimasa, urutan, indeks, hasil, ringkasan, sembunyiNominal, pohon }: Props) {
+export function TampilanSinema({ linimasa, urutan, indeks, babak, ringkasanAkhir, sembunyiNominal, pohon }: Props) {
   const panggung = useRef<HTMLElement>(null);
   const gerakKurang = useGerakDikurangi();
   const posisi = urutan[indeks]!;
   const langkah = linimasa.tahap[posisi.tahap]!.langkah[posisi.langkah]!;
-  const { terbuka, kini } = useMemo(() => selSampai(linimasa, urutan, indeks), [linimasa, urutan, indeks]);
+  const tahap = linimasa.tahap[posisi.tahap]!;
+  const nomorBabak = babakDi(linimasa, urutan, indeks);
+  const { terbuka, kini } = useMemo(() => selSampai(linimasa, urutan, indeks, nomorBabak), [linimasa, urutan, indeks, nomorBabak]);
+  const ringkasanTahap = tahap.babak === undefined ? ringkasanAkhir : babak[tahap.babak]!.ringkasan;
   const harta = visualTerakhir(linimasa, urutan, indeks, 'harta', true);
   const kotak = visualTerakhir(linimasa, urutan, indeks, 'kotak', true);
   const pohonAktif = !harta && !kotak && !langkah.sel && visualTerakhir(linimasa, urutan, indeks, 'pohon', true);
-  const adaTabel = !!langkah.sel;
+  const adaTabel = !!langkah.sel && tahap.babak !== undefined;
   const papan = keTeksBiasa(langkah.papan), takarir = keTeksBiasa(langkah.narasi);
 
   useLayoutEffect(() => {
@@ -52,11 +54,11 @@ export function TampilanSinema({ linimasa, urutan, indeks, hasil, ringkasan, sem
       <main className="panggung" ref={panggung}>
         <div className="visual-sinema" key={`${posisi.tahap}`}>
           {harta && <HartaTabel baris={harta.baris} sembunyiNominal={sembunyiNominal} />}
-          {kotak && <div className={adaTabel ? 'kotak-mini' : undefined}><KotakHarta visual={kotak} ringkasan={ringkasan} /></div>}
+          {kotak && <div className={adaTabel ? 'kotak-mini' : undefined}><KotakHarta visual={kotak} ringkasan={ringkasanTahap} sebutan={tahap.babak === undefined ? linimasa.nama : undefined} /></div>}
           {pohonAktif && <div className="pohon-sinema">{pohon}</div>}
           {adaTabel && (
             <div className="wadah-tabel">
-              <TabelLangkah kolom={linimasa.tabel} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terbuka={terbuka} kini={kini} />
+              <TabelLangkah kolom={linimasa.tabel[nomorBabak]!} hasil={babak[nomorBabak]!.hasil} ringkasan={babak[nomorBabak]!.ringkasan} sembunyiNominal={sembunyiNominal} terbuka={terbuka} kini={kini} />
             </div>
           )}
         </div>

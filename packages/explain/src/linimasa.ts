@@ -10,7 +10,7 @@ import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut
 import { buatKonteks, type HasilOk, type Konteks } from './context.js';
 import type { BarisPenjelasan, Kamus } from './segments.js';
 
-export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil';
+export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir';
 export type BagianLangkah = 'keluarga' | 'hitung';
 export type KolomLinimasa = 'bagian' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'nominal';
 /** `kolom:idOrang`, sel tabel yang terisi pada langkah itu. */
@@ -34,23 +34,27 @@ export type Visual =
 type VisualKotak = Extract<Visual, { jenis: 'kotak' }>;
 
 export interface Langkah { bagian: BagianLangkah; narasi: BarisPenjelasan; papan: BarisPenjelasan; visual?: Visual; sel?: KodeSel[]; refs: string[] }
-export interface Tahap { id: IdTahap; judul: string; langkah: Langkah[] }
+/** `babak`: indeks tabel (satu mayit = satu babak) yang dibangun tahap ini; kosong = tahap tanpa tabel (pembukaan, penyambungan, hasil akhir). */
+export interface Tahap { id: IdTahap; judul: string; langkah: Langkah[]; babak?: number }
 export interface KolomTabel { kolom: KolomLinimasa; total?: bigint }
-export interface Linimasa { tahap: Tahap[]; tabel: KolomTabel[] }
+/** `tabel[babak]`: kolom tabel tiap babak (kasus biasa satu babak, munasakhat satu per mayit). `nama`: sebutan orang yang menimpa nama dari ringkasan (lintas mayit). */
+export interface Linimasa { tahap: Tahap[]; tabel: KolomTabel[][]; nama?: Record<string, string> }
 
 /** Riset 29e: kotak digambar paling banyak sebanyak ini; bilangan lebih besar diwakili kotak yang dibelah. */
 export const BATAS_KOTAK = 24n;
 
 export function susunLinimasa(hasil: HasilOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): Linimasa {
   const konteks = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa: 'id' });
+  return { tahap: tahapBiasa(konteks, 0), tabel: [kolomTabel(hasil)] };
+}
+
+/** Tahap pembagian satu mayit (satu pipeline); `babak` = indeks tabelnya. Munasakhat memanggilnya per mayit. */
+export function tahapBiasa(konteks: Konteks, babak: number): Tahap[] {
   const daftarTahap: Array<[IdTahap, Bab | undefined]> = [
     ['harta', babHarta(konteks)], ['ahliWaris', babAhliWaris(konteks)], ['bagian', babBagian(konteks)], ['ashl', babPenyebut(konteks)],
     ['penyesuaian', babPenyesuaian(konteks)], ['tashih', babPembulatan(konteks)], ['hasil', babHasil(konteks)],
   ];
-  return {
-    tahap: daftarTahap.flatMap(([id, bab]) => (bab ? [susunTahap(konteks, id, bab)] : [])),
-    tabel: kolomTabel(hasil),
-  };
+  return daftarTahap.flatMap(([id, bab]) => (bab ? [{ ...susunTahap(konteks, id, bab), babak }] : []));
 }
 
 /** Kotak wakil untuk sebuah penyebut: ≤ BATAS_KOTAK digambar apa adanya; lebih besar = kotak lebih sedikit yang dibelah. */
@@ -145,7 +149,7 @@ function visualPenyesuaian(hasil: HasilOk): Visual | undefined {
 
 // ─── Tabel ────────────────────────────────────────────────────────────────────
 
-function kolomTabel(hasil: HasilOk): KolomTabel[] {
+export function kolomTabel(hasil: HasilOk): KolomTabel[] {
   const { totalKolom } = hasil.tabel;
   const daftar: KolomTabel[] = [{ kolom: 'bagian' }, { kolom: 'ashl', total: totalKolom.ashl! }];
   if (totalKolom.aul !== undefined) daftar.push({ kolom: 'aul', total: totalKolom.aul });

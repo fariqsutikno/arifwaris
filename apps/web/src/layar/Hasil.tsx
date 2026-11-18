@@ -32,9 +32,10 @@ import { tambahAnakBernama } from '../isianBagian';
 import { namaSingkat } from '../keadaanOrang';
 import { DialogTambahAnak } from './DialogTambahAnak';
 import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
-import { adaTidakPas, adalahDzawilArham, pecahanTeks, persenTeks, ringkas, type RingkasanHasil } from '../hasil/ringkasan';
+import { adaTidakPas, adalahDzawilArham, pecahanTeks, persenTeks, ringkas, ringkasBiasa, type RingkasanHasil } from '../hasil/ringkasan';
 import { jenisDari } from '../checklist';
-import { susunLinimasa } from '@waris/explain';
+import { susunLinimasa, susunLinimasaMunasakhat, type Linimasa } from '@waris/explain';
+import type { PeragaBabak } from '../hasil/urutanLinimasa';
 import { kamusNarasi } from '../konten/kamusNarasi';
 import { unduhKasus } from '../berkas';
 import { PenyediaSorot } from '../hasil/sorot';
@@ -205,7 +206,18 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const kanvasFokus = { pohon, tabel };
   // Dzawil arham belum punya linimasa (rencana 5.8): tetap memakai bab penjelasan lama.
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
-  const linimasa = useMemo(() => (hasilBiasa && !sedangMenebak && !adaDzawilArham ? susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }) : null), [hasilBiasa, sedangMenebak, adaDzawilArham, kasus.graf]);
+  const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
+  const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
+    if (sedangMenebak || adaDzawilArham) return { linimasa: null, babakLinimasa: null };
+    if (hasilBiasa) return { linimasa: susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: [{ hasil: hasilBiasa, ringkasan }] };
+    if (hasilMunasakhat) {
+      return {
+        linimasa: susunLinimasaMunasakhat(hasilMunasakhat, kasus.graf, { kamus: kamusNarasi }),
+        babakLinimasa: hasilMunasakhat.daftarLangkah.map(langkah => ({ hasil: langkah.hasil, ringkasan: ringkasBiasa({ ...kasus.graf, idPewaris: langkah.mayit }, langkah.hasil) })),
+      };
+    }
+    return { linimasa: null, babakLinimasa: null };
+  }, [hasilBiasa, hasilMunasakhat, sedangMenebak, adaDzawilArham, kasus.graf, ringkasan]);
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 
   const kamu = kasus.saya ? ringkasan.penerima.find(orang => orang.id === kasus.saya) : undefined;
@@ -329,7 +341,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         <section className="ubin-h gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
           <p className="sub-kartu">{t('hasil.pelajari_sub')}</p>
-          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} linimasa={linimasa} />
+          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} linimasa={linimasa} babak={babakLinimasa} />
           {!adalahBelajar && !hanyaBaca && <DaftarAksi daftar={[
             { ikon: 'kuis', judul: t('hasil.coba_tebak_dulu'), keterangan: t('hasil.mode_belajar'), saatPilih: () => setKonfirmasiBelajar(true) },
             ...(bolehUbah ? [{ ikon: 'rujukan' as const, judul: t('hasil.bandingkan_madzhab'), keterangan: t('hasil.bandingkan_madzhab_ket'), saatPilih: () => setMadzhabTerbuka(true) }] : []),

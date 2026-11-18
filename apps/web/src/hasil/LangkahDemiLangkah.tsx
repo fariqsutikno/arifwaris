@@ -6,7 +6,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { keTeksBiasa, type Linimasa } from '@waris/explain';
-import type { HasilOk } from '../jalankan';
 import { Ikon } from '../ui/Ikon';
 import { lamaBacaMs, ucapkan, useAdaSuaraIndonesia } from './narasiSuara';
 import { TabelLangkah } from './TabelLangkah';
@@ -14,14 +13,14 @@ import { TampilanSinema } from './TampilanSinema';
 import { TampilanTeks } from './TampilanTeks';
 import type { RingkasanHasil } from './ringkasan';
 import { useSorot } from './sorot';
-import { urutanLinimasa, selSampai, visualTerakhir } from './urutanLinimasa';
+import { babakDi, selSampai, urutanLinimasa, visualTerakhir, type PeragaBabak } from './urutanLinimasa';
 import { bacaMentah, simpanMentah } from '../penyimpanan';
 import { angka, t } from '../terjemah';
 
 interface Props {
   linimasa: Linimasa;
-  hasil: HasilOk;
-  ringkasan: RingkasanHasil;
+  babak: PeragaBabak[];
+  ringkasanAkhir: RingkasanHasil;
   sembunyiNominal: boolean;
   pohon: ReactNode;
   saatTutup: () => void;
@@ -35,7 +34,7 @@ const KECEPATAN = [1, 1.25, 1.5, 0.75] as const;
 const JEDA_ANTAR_LANGKAH_MS = 700;
 const DIAM_SEBELUM_MEMUDAR_MS = 3000;
 
-export function LangkahDemiLangkah({ linimasa, hasil, ringkasan, sembunyiNominal, pohon, saatTutup }: Props) {
+export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNominal, pohon, saatTutup }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
   const urutan = useMemo(() => urutanLinimasa(linimasa), [linimasa]);
   const [indeks, setIndeks] = useState(0);
@@ -53,6 +52,7 @@ export function LangkahDemiLangkah({ linimasa, hasil, ringkasan, sembunyiNominal
   const posisi = urutan[indeks]!;
   const tahap = linimasa.tahap[posisi.tahap]!;
   const terakhir = indeks === urutan.length - 1;
+  const nomorBabak = babakDi(linimasa, urutan, indeks);
 
   useEffect(() => {
     const semula = document.body.style.overflow;
@@ -132,13 +132,13 @@ export function LangkahDemiLangkah({ linimasa, hasil, ringkasan, sembunyiNominal
       </header>
       <div className="badan-ldl">
         {sinema
-          ? <TampilanSinema linimasa={linimasa} urutan={urutan} indeks={indeks} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} pohon={pohon} />
-          : <TampilanTeks linimasa={linimasa} urutan={urutan} indeks={indeks} semua={semua} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} pohon={pohon} />}
+          ? <TampilanSinema linimasa={linimasa} urutan={urutan} indeks={indeks} babak={babak} ringkasanAkhir={ringkasanAkhir} sembunyiNominal={sembunyiNominal} pohon={pohon} />
+          : <TampilanTeks linimasa={linimasa} urutan={urutan} indeks={indeks} semua={semua} babak={babak} ringkasanAkhir={ringkasanAkhir} sembunyiNominal={sembunyiNominal} pohon={pohon} />}
       </div>
       <footer className="bawah-ldl">
         <div className="kemajuan-ldl">
           {linimasa.tahap.map((satu, nomor) => (
-            <button key={satu.id} type="button" className="ruas" style={{ flex: satu.langkah.length }} onClick={() => keTahap(nomor)}
+            <button key={nomor} type="button" className="ruas" style={{ flex: satu.langkah.length }} onClick={() => keTahap(nomor)}
               aria-label={`${t('langkah.tahap_dari', { nomor: angka(String(nomor + 1)), total: angka(String(linimasa.tahap.length)) })}: ${satu.judul}`}>
               {satu.langkah.map((_, langkah) => {
                 const nomorDatar = urutan.findIndex(p => p.tahap === nomor && p.langkah === langkah);
@@ -164,7 +164,7 @@ export function LangkahDemiLangkah({ linimasa, hasil, ringkasan, sembunyiNominal
         <div className="lapisan-ldl" role="dialog" aria-label={lapisan === 'pohon' ? t('langkah.pohon_keluarga') : t('langkah.tabel_faraidh')}>
           <div className="atas-lainnya"><b>{lapisan === 'pohon' ? t('langkah.pohon_keluarga') : t('langkah.tabel_faraidh')}</b><button type="button" className="tautan-ldl" onClick={() => setLapisan(null)}>{t('umum.tutup')}</button></div>
           {lapisan === 'pohon' ? pohon : (
-            <div className="wadah-tabel"><TabelLangkah kolom={linimasa.tabel} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} {...selSampai(linimasa, urutan, indeks)} kini={new Set()} /></div>
+            <div className="wadah-tabel"><TabelLangkah kolom={linimasa.tabel[nomorBabak]!} hasil={babak[nomorBabak]!.hasil} ringkasan={babak[nomorBabak]!.ringkasan} sembunyiNominal={sembunyiNominal} {...selSampai(linimasa, urutan, indeks, nomorBabak)} kini={new Set()} /></div>
           )}
         </div>
       )}
@@ -174,7 +174,7 @@ export function LangkahDemiLangkah({ linimasa, hasil, ringkasan, sembunyiNominal
           <p className="sub-lainnya">{t('langkah.lompat_ke_tahap')}</p>
           <div className="tahapan-lainnya">
             {linimasa.tahap.map((satu, nomor) => (
-              <button key={satu.id} type="button" aria-current={!semua && nomor === posisi.tahap} onClick={() => keTahap(nomor)}>{angka(String(nomor + 1))}. {satu.judul}</button>
+              <button key={nomor} type="button" aria-current={!semua && nomor === posisi.tahap} onClick={() => keTahap(nomor)}>{angka(String(nomor + 1))}. {satu.judul}</button>
             ))}
           </div>
           {!sinema && <button type="button" className="baris-lainnya" onClick={() => { setSemua(true); setLainnyaTerbuka(false); }}>{t('langkah.tampilkan_semua')}</button>}

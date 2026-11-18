@@ -130,7 +130,7 @@ export function urutkanBaris<T extends HasilOk['tabel']['baris'][number]>(daftar
 const menurutKelompok = <T extends { kelompok: Kelompok }>(daftar: T[]): T[] =>
   [...daftar].sort((a, b) => URUTAN_KELOMPOK[a.kelompok] - URUTAN_KELOMPOK[b.kelompok]);
 
-function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
+export function ringkasBiasa(graf: GrafKeluarga, hasil: HasilOk): RingkasanHasil {
   const penyebut = penyebutAkhir(hasil.tabel);
   const alasanPerKelompok = new Map(hasil.jejak.flatMap(langkah => (langkah.jenis === 'FARDH' ? [[langkah.kelompok, langkah.alasan.kode] as const] : [])));
   const penerima = urutkanBaris(hasil.tabel.baris, hasil.statusOrang).flatMap(baris => Object.entries(baris.perOrang).map(([id, { saham, nominal }]): Penerima => {
