@@ -333,6 +333,29 @@ describe('layar hasil', () => {
     expect(screen.queryByRole('dialog', { name: 'Langkah demi langkah' })).toBeNull();
   });
 
+  it('sinema: pindah tampilan menjaga posisi; putar otomatis maju sendiri dan bar memudar', () => {
+    localStorage.clear();
+    render(<Uji awal={c1601()} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    const posisi = () => mode().querySelector('.judul-ldl p')!.textContent;
+    fireEvent.click(within(mode()).getByRole('button', { name: /Lanjut/ }));
+    const awal = posisi();
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Sinema' }));
+    expect(mode().querySelector('.papan-sinema')).toBeTruthy();
+    expect(posisi()).toBe(awal);
+    vi.useFakeTimers();
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Putar otomatis' }));
+    act(() => { vi.advanceTimersByTime(3100); });
+    expect(mode().classList.contains('diam')).toBe(true);
+    act(() => { vi.advanceTimersByTime(8000); });
+    vi.useRealTimers();
+    expect(posisi()).not.toBe(awal);
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Teks' }));
+    expect(mode().querySelector('.teks-isi')).toBeTruthy();
+    localStorage.clear();
+  });
+
   it('hitung kasus: pindah ke Belajar selalu dikonfirmasi; batal tidak mengirim aksi', () => {
     render(<Uji awal={c1601()} />);
     aksiTerakhir = null;
