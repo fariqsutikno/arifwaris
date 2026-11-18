@@ -1598,8 +1598,8 @@ table.faraidh.ringkas{min-width:0}
 .teks-isi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:14px;padding:4px 18px 14px;align-items:start;max-width:1240px;margin:0 auto}
 .teks-kiri{display:flex;flex-direction:column;gap:14px;min-width:0;position:sticky;top:0}
 .panel-langkah{background:var(--surface-raised);border-radius:20px;padding:14px;min-width:0}
-.panel-langkah h2{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--ink-muted)}
-.isi-pohon{max-height:34vh;overflow:auto}
+.panel-langkah h2{margin:0 0 10px;font-size:15px;font-weight:700;color:var(--ink)}
+.isi-pohon{max-height:none;overflow-x:auto;overflow-y:visible}
 .kartu-tahap{display:flex;flex-direction:column;gap:12px}
 .kartu-tahap+.kartu-tahap{margin-top:22px;padding-top:22px;border-top:1px dashed var(--outline)}
 .kartu-tahap h3{margin:0;font:600 22px/1.2 var(--font-display)}
@@ -1674,7 +1674,7 @@ table.faraidh.ringkas{min-width:0}
 .panggung{flex:1;background:var(--surface);color:var(--ink);border-radius:20px;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:22px;min-height:300px;overflow:auto}
 .visual-sinema{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;min-height:150px}
 .visual-sinema>*{width:100%;max-width:760px;animation:muncul-ldl .45s both}
-.pohon-sinema{max-height:42vh;overflow:auto}
+.pohon-sinema{overflow-x:auto}
 .kotak-mini .kt{max-height:30px}
 .papan-sinema{margin:0 auto;text-align:center;font:600 24px/1.3 var(--font-display);max-width:760px;font-variant-numeric:tabular-nums;animation:muncul-ldl .45s both}
 .takarir{margin:0;text-align:center;font-size:16px;line-height:1.45;color:#f1f6f2}
@@ -1722,3 +1722,13 @@ table.faraidh.ringkas{min-width:0}
 .wadah-pohon .node-orang.almarhum,.wadah-pohon .node-orang.meninggal{color:var(--on-meninggal,#fff)}
 .wadah-pohon .node-orang.almarhum b,.wadah-pohon .node-orang.meninggal b,.wadah-pohon .node-orang.almarhum .peran-node,.wadah-pohon .node-orang.meninggal .peran-node{color:inherit}
 .wadah-pohon .node-orang.almarhum{background:var(--ink)}
+
+/* Kotak harta (acuan mockup-langkah-demi-langkah): satu bingkai tebal berlabel "harta = N kotak", kotak kosong abu, legenda tengah. */
+.kotak-harta{position:relative;width:100%;max-width:760px;margin-inline:auto;padding-top:30px}
+.label-harta{position:absolute;top:0;left:0;margin:0;font:700 14px var(--font-sans);color:var(--ink)}
+.kotak-harta .grid-kotak{padding:8px;border:3px solid var(--ink);border-radius:14px;justify-items:stretch}
+.kotak-harta .kt{background:#e3e9e0;max-height:84px}
+.kotak-harta .ket-kotak{justify-content:center;margin-top:16px;font-size:15px}
+.kotak-harta .ket-kotak i{width:14px;height:14px}
+.kotak-harta .ket-kotak span{color:var(--ink)}
+.kotak-mini .kotak-harta{padding-top:24px}

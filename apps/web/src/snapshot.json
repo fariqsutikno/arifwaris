@@ -24815,6 +24815,13 @@
    "id": "Rekaman tidak bisa dimulai. Pilih tab ini saat peramban menanyakan layar mana yang direkam.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_kotak",
+   "halaman": "langkah",
+   "id": "harta = {jumlah} kotak",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
