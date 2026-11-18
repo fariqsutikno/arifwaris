@@ -183,7 +183,7 @@ export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNo
             <button type="button" className="baris-lainnya" aria-pressed={suaraNyala} onClick={gantiSuara}>{suaraNyala ? t('langkah.suara_nyala') : t('langkah.suara_mati')}</button>
             {!adaSuara && <p className="catatan-lainnya">{t('langkah.suara_tak_ada')}</p>}
             <button type="button" className="baris-lainnya" onClick={() => { setLapisan('pohon'); setLainnyaTerbuka(false); }}>{t('langkah.lihat_pohon')}</button>
-            <button type="button" className="baris-lainnya" onClick={() => { setLapisan('tabel'); setLainnyaTerbuka(false); }}>{t('langkah.lihat_tabel')}</button>
+            {babak.length > 0 && <button type="button" className="baris-lainnya" onClick={() => { setLapisan('tabel'); setLainnyaTerbuka(false); }}>{t('langkah.lihat_tabel')}</button>}
           </>}
         </div>
       )}

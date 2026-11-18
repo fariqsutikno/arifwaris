@@ -7,6 +7,7 @@ import type { BagianLangkah, Langkah, Linimasa } from '@waris/explain';
 import { Baris, Dalil } from '../layar/Penjelasan';
 import { useGerakDikurangi } from '../tampilan';
 import { HartaTabel, KotakHarta } from './KotakHarta';
+import { MejaTaqdir } from './MejaTaqdir';
 import { TabelLangkah } from './TabelLangkah';
 import { terbangkanAngka } from './terbangAngka';
 import { babakDi, selSampai, visualTerakhir, type PeragaBabak, type Posisi } from './urutanLinimasa';
@@ -50,7 +51,7 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
     <div className="teks-isi" ref={wadah}>
       <div className="teks-kiri">
         <section className="panel-langkah"><h2>{t('langkah.pohon_keluarga')}</h2><div className="isi-pohon">{pohon}</div></section>
-        {(semua || linimasa.tahap[urutan[indeks]!.tahap]!.babak !== undefined) && <section className="panel-langkah"><h2>{t('langkah.tabel_faraidh')}</h2>
+        {babak.length > 0 && (semua || linimasa.tahap[urutan[indeks]!.tahap]!.babak !== undefined) && <section className="panel-langkah"><h2>{t('langkah.tabel_faraidh')}</h2>
           {babakTampil.map((nomor, urut) => (
             <div className="wadah-tabel" key={nomor}>
               <TabelLangkah kolom={linimasa.tabel[nomor]!} hasil={babak[nomor]!.hasil} ringkasan={babak[nomor]!.ringkasan} sembunyiNominal={sembunyiNominal}
@@ -66,11 +67,13 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
           const posisiAkhir = urutan.findIndex(posisi => posisi.tahap === nomorTahap && posisi.langkah === sampaiLangkah);
           const harta = visualTerakhir(linimasa, urutan, posisiAkhir, 'harta', true);
           const kotak = visualTerakhir(linimasa, urutan, posisiAkhir, 'kotak', true);
+          const meja = visualTerakhir(linimasa, urutan, posisiAkhir, 'meja', true);
           const refs = [...new Set(tahap.langkah.slice(0, sampaiLangkah + 1).flatMap(langkah => langkah.refs))];
           return (
             <article key={tahap.id} className="kartu-tahap">
               {semua && <p className="ke-tahap">{t('langkah.tahap_dari', { nomor: angka(String(nomorTahap + 1)), total: angka(String(linimasa.tahap.length)) })}</p>}
               {semua && <h3>{tahap.judul}</h3>}
+              {meja && <MejaTaqdir visual={meja} ringkasan={ringkasanAkhir} sebutan={linimasa.nama} />}
               {harta && <HartaTabel baris={harta.baris} sembunyiNominal={sembunyiNominal} />}
               {kotak && <KotakHarta visual={kotak} ringkasan={tahap.babak === undefined ? ringkasanAkhir : babak[tahap.babak]!.ringkasan} sebutan={tahap.babak === undefined ? linimasa.nama : undefined} />}
               {kelompokkan(tahap.langkah.map((langkah, nomor) => ({ langkah, nomor })).filter(({ nomor }) => nomor <= sampaiLangkah))
