@@ -1,0 +1,210 @@
+import { describe, expect, it } from 'vitest';
+import { ubahNama } from '../checklist';
+import { kasusBaru, type Kasus } from '../kasus';
+import { bagianLengkap, daftarBagian, type Bagian } from '../kelompok';
+import { jawabLanjutan, keadaanTerpilih } from '../keadaanBaris';
+import {
+  calonKamu, dampakAdaKeTidak, hapusBaris, isiBarisTetap, jawabAdaTidak, jawabAnakBersama, jawabKamu, kunciBagian, kurangiBarisKosong, slotTetap, tambahBaris, tandaiAnakBersama,
+} from '../isianBagian';
+import { keluargaKarto, tambah } from './fixtures/kanvas';
+
+const bagianDari = (kasus: Kasus, id: string): Bagian => daftarBagian(kasus).find(b => b.id === id)!;
+const PASANGAN: Bagian = { id: 'pasangan:PEWARIS', milik: 'PEWARIS', jenis: 'pasangan' };
+const ORANG_TUA: Bagian = { id: 'orangTua:PEWARIS', milik: 'PEWARIS', jenis: 'orangTua' };
+
+describe('penghitung (spec kanvas 5.4)', () => {
+  it('tambahBaris menandai belumDiisi dan bagian dijawab; kurangiBarisKosong hanya membuang baris kosong terakhir', () => {
+    let kasus = tambahBaris(tambahBaris(kasusBaru('L'), PASANGAN, 'ISTRI'), PASANGAN, 'ISTRI');
+    expect(kasus.belumDiisi).toHaveLength(2);
+    expect(kasus.kelompokDijawab?.PEWARIS).toContain('pasangan');
+    const [pertama, kedua] = kasus.belumDiisi!;
+    kasus = { ...kasus, graf: ubahNama(kasus.graf, pertama!, 'Siti') };
+    const sisa = kurangiBarisKosong(kasus, PASANGAN, 'ISTRI')!;
+    expect(sisa.graf.orang[kedua!]).toBeUndefined();
+    expect(sisa.belumDiisi).toEqual([pertama]);
+    expect(kurangiBarisKosong(sisa, PASANGAN, 'ISTRI')).toBeNull();   // yang tersisa sudah bernama
+  });
+
+  it('membuang baris kosong terakhir membuka lagi bagian bila tak ada yang tersisa', () => {
+    const satu = tambahBaris(kasusBaru('L'), PASANGAN, 'ISTRI');
+    const kosong = kurangiBarisKosong(satu, PASANGAN, 'ISTRI')!;
+    expect(kosong.kelompokDijawab?.PEWARIS ?? []).not.toContain('pasangan');
+    expect(kosong.belumDiisi).toBeUndefined();
+  });
+
+  it('istri maksimal 4: baris kelima melempar galat yang sama dengan checklist', () => {
+    let kasus = kasusBaru('L');
+    for (let i = 0; i < 4; i++) kasus = tambahBaris(kasus, PASANGAN, 'ISTRI');
+    expect(() => tambahBaris(kasus, PASANGAN, 'ISTRI')).toThrow(/maksimal/);
+  });
+
+  it('pasangan laki-laki menghitung istri, perempuan suami', () => {
+    expect(kunciBagian(kasusBaru('L'), PASANGAN)).toEqual(['ISTRI']);
+    expect(kunciBagian(kasusBaru('P'), PASANGAN)).toEqual(['SUAMI']);
+  });
+});
+
+describe('Ya / Tidak', () => {
+  it('Ya → Tidak menghapus seluruh cabang (Review Focus 2)', () => {
+    const { kasus, budi, slamet, rina, dewi, andi, sari, sumi } = keluargaKarto();
+    const isi: Kasus = { ...kasus, kelompokDijawab: { PEWARIS: ['anak'], [budi]: ['anak'] } };
+    const anak = bagianDari(isi, 'anak:PEWARIS');
+    expect(new Set(dampakAdaKeTidak(isi, anak))).toEqual(new Set([slamet, budi, rina, dewi, andi, sari]));
+    const hasil = jawabAdaTidak(isi, anak, false);
+    for (const id of [slamet, budi, rina, dewi, andi, sari]) expect(hasil.graf.orang[id]).toBeUndefined();
+    expect(hasil.graf.orang[sumi]).toBeDefined();
+    expect(hasil.urutanWafat).toEqual([sumi]);
+    expect(hasil.kelompokDijawab?.[budi]).toBeUndefined();
+    expect(hasil.kelompokDijawab?.PEWARIS).toContain('anak');
+  });
+
+  it('Tidak pada pasangan hanya menghapus pasangan: anak tetap, ibu yang masih punya anak menjadi penghubung', () => {
+    const { kasus, sumi, budi, rina } = keluargaKarto();
+    const hasil = jawabAdaTidak(kasus, bagianDari(kasus, 'pasangan:PEWARIS'), false);
+    expect(hasil.graf.orang[budi]).toBeDefined();
+    expect(hasil.graf.orang[rina]).toBeDefined();
+    expect(hasil.graf.orang[sumi]?.penghubung).toBe(true);
+    expect(hasil.urutanWafat).toEqual([budi]);
+    expect(hasil.kelompokDijawab?.PEWARIS).toContain('pasangan');
+  });
+
+  it('Tidak pada bagian kosong tidak menghapus apa pun; Ya sesudah Tidak membuka lagi bagian', () => {
+    const anak: Bagian = { id: 'anak:PEWARIS', milik: 'PEWARIS', jenis: 'anak' };
+    const dasar = kasusBaru('L');
+    const tidak = jawabAdaTidak(dasar, anak, false);
+    expect(tidak.graf).toEqual(dasar.graf);
+    expect(tidak.kelompokDijawab?.PEWARIS).toContain('anak');
+    expect(jawabAdaTidak(tidak, anak, true).kelompokDijawab).toBeUndefined();
+  });
+});
+
+describe('baris tetap', () => {
+  it('isiBarisTetap membuat Ayah bila belum ada, memakai keadaan, dan bagian dijawab setelah semua baris terisi', () => {
+    let kasus = isiBarisTetap(kasusBaru('L'), ORANG_TUA, 'AYAH', 'wafat');
+    const ayah = Object.values(kasus.graf.orang).find(o => o.id !== 'PEWARIS')!;
+    expect(ayah.statusHidup).toBe('wafat');
+    expect(kasus.belumDiisi).toContain(ayah.id);
+    expect(kasus.kelompokDijawab?.PEWARIS ?? []).not.toContain('orangTua');   // Ibu belum diisi
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'IBU', 'hidup');
+    expect(kasus.kelompokDijawab?.PEWARIS).toContain('orangTua');
+    expect(slotTetap(kasus, ORANG_TUA)).toEqual(['AYAH', 'IBU']);
+    expect(bagianLengkap(kasus, ORANG_TUA)).toBe(false);   // lanjutan wafat Ayah belum dijawab
+    kasus = jawabLanjutan(kasus, ayah.id, 'PEWARIS', { jenis: 'wafat', waktu: 'sebelum' });
+    expect(bagianLengkap(kasus, ORANG_TUA)).toBe(true);
+  });
+
+  it('memilih ulang keadaan baris tetap tidak membuat orang ganda', () => {
+    let kasus = isiBarisTetap(kasusBaru('L'), ORANG_TUA, 'AYAH', 'hidup');
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'belumTahu');
+    expect(Object.keys(kasus.graf.orang)).toHaveLength(2);
+  });
+});
+
+describe('hapusBaris', () => {
+  it('menghapus satu orang dan merapikan rujukannya', () => {
+    const { kasus, rina } = keluargaKarto();
+    const hasil = hapusBaris({ ...kasus, belumDiisi: [rina], kelompokDijawab: { [rina]: ['anak'] } }, rina);
+    expect(hasil.graf.orang[rina]).toBeUndefined();
+    expect(hasil.belumDiisi).toBeUndefined();
+    expect(hasil.kelompokDijawab ?? {}).toEqual({});
+  });
+});
+
+describe('Kamu (spec kanvas 5.8)', () => {
+  it('calonKamu hanya orang yang masih hidup sekarang, bukan almarhum, urutan wafat, atau penghubung', () => {
+    const { kasus, rina, dewi, andi, sari, sumi, budi, slamet, ayah } = keluargaKarto();
+    const calon = calonKamu(kasus);
+    expect(new Set(calon)).toEqual(new Set([rina, dewi, andi, sari]));
+    for (const bukan of [sumi, budi, slamet, ayah, 'PEWARIS']) expect(calon).not.toContain(bukan);
+  });
+
+  it('jawabKamu: id menyimpan saya, null berarti mengisi untuk orang lain', () => {
+    const { kasus, rina } = keluargaKarto();
+    expect(jawabKamu(kasus, rina).saya).toBe(rina);
+    expect(jawabKamu(kasus, null).saya).toBeNull();
+  });
+});
+
+describe('anak bersama (spec kanvas 5.2, cabang pasangan)', () => {
+  const bagian = (sumi: string): Bagian => ({ id: `anakBersama:${sumi}`, milik: sumi, jenis: 'anakBersama' });
+
+  it('Ya semuanya menghubungkan anak pewaris tanpa ibu terisi, tidak menimpa ibu lain, dan mencatat dijawab', () => {
+    const { kasus, sumi, budi, rina } = keluargaKarto();
+    const lepas = (k: Kasus, id: string): Kasus => tandaiAnakBersama(k, bagian(sumi), id, false);
+    const tanpaIbu = lepas(lepas(kasus, budi), rina);
+    const hasil = jawabAnakBersama(tanpaIbu, bagian(sumi), true);
+    expect(hasil.graf.orang[budi]!.idIbu).toBe(sumi);
+    expect(hasil.graf.orang[rina]!.idIbu).toBe(sumi);
+    expect(hasil.kelompokDijawab?.[sumi]).toContain('anakBersama');
+  });
+
+  it('Tidak semua tidak mengubah graf; centang mencabut atau memasang satu anak', () => {
+    const { kasus, sumi, budi } = keluargaKarto();
+    const tidak = jawabAnakBersama(kasus, bagian(sumi), false);
+    expect(tidak.graf).toEqual(kasus.graf);
+    const cabut = tandaiAnakBersama(tidak, bagian(sumi), budi, false);
+    expect(cabut.graf.orang[budi]!.idIbu).toBeUndefined();
+    expect(tandaiAnakBersama(cabut, bagian(sumi), budi, true).graf.orang[budi]!.idIbu).toBe(sumi);
+  });
+});
+
+describe('bagian tetap baru lengkap bila semua slot terisi (review P1)', () => {
+  it('orangTua dijawab tetapi Ayah belum punya baris: belum lengkap', () => {
+    const { kasus } = tambah(kasusBaru('L'), 'PEWARIS', 'IBU');
+    const dijawab: Kasus = { ...kasus, kelompokDijawab: { PEWARIS: ['orangTua'] } };
+    expect(bagianLengkap(dijawab, ORANG_TUA)).toBe(false);
+    expect(bagianLengkap(isiBarisTetap(dijawab, ORANG_TUA, 'AYAH', 'hidup'), ORANG_TUA)).toBe(true);
+  });
+});
+
+describe('hapusBaris mencabut jawaban bagian yang jadi kosong (review P2)', () => {
+  const ANAK: Bagian = { id: 'anak:PEWARIS', milik: 'PEWARIS', jenis: 'anak' };
+
+  it('menghapus anak terakhir membuka lagi bagian Anak (tidak diam-diam dianggap Tidak)', () => {
+    let kasus = tambahBaris(kasusBaru('L'), ANAK, 'ANAK_LK');
+    const id = Object.keys(kasus.graf.orang).find(satu => satu !== 'PEWARIS')!;
+    kasus = { ...kasus, graf: ubahNama(kasus.graf, id, 'Andi') };
+    const hasil = hapusBaris(kasus, id);
+    expect(hasil.kelompokDijawab?.PEWARIS ?? []).not.toContain('anak');
+    expect(bagianLengkap(hasil, ANAK)).toBe(false);
+  });
+
+  it('masih ada anak lain: jawaban tetap', () => {
+    let kasus = tambahBaris(tambahBaris(kasusBaru('L'), ANAK, 'ANAK_LK'), ANAK, 'ANAK_PR');
+    const [pertama] = Object.keys(kasus.graf.orang).filter(satu => satu !== 'PEWARIS');
+    expect(hapusBaris(kasus, pertama!).kelompokDijawab?.PEWARIS).toContain('anak');
+  });
+});
+
+describe('baris tetap dan penghubung (review P3)', () => {
+  const idAyah = (kasus: Kasus) => kasus.graf.orang.PEWARIS!.idAyah!;
+
+  it('Ayah yang dihapus (menjadi penghubung) bisa dipilih lagi: orangnya dipakai ulang, bukan diam-diam gagal', () => {
+    let kasus = isiBarisTetap(kasusBaru('L'), ORANG_TUA, 'AYAH', 'hidup');
+    const ayah = idAyah(kasus);
+    kasus = hapusBaris(kasus, ayah);
+    expect(kasus.graf.orang[ayah]!.penghubung).toBe(true);
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'hidup');
+    expect(idAyah(kasus)).toBe(ayah);
+    expect(kasus.graf.orang[ayah]!.penghubung).toBeFalsy();
+    expect(keadaanTerpilih(kasus, ayah)).toBe('hidup');
+    expect(Object.keys(kasus.graf.orang)).toHaveLength(2);
+  });
+
+  it('memilih wafat pada penghubung yang dipakai ulang tetap menunggu sebelum/sesudah', () => {
+    let kasus = hapusBaris(isiBarisTetap(kasusBaru('L'), ORANG_TUA, 'AYAH', 'hidup'), 'O1');
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'wafat');
+    expect(kasus.belumDiisi).toContain('O1');
+  });
+
+  it('"Tidak" pada kerabat jauh tidak meninggalkan penghubung yatim, dan Ayah bisa diisi sesudahnya', () => {
+    const jauh: Bagian = { id: 'jauh:PEWARIS', milik: 'PEWARIS', jenis: 'jauh' };
+    let kasus = tambahBaris({ ...kasusBaru('L'), kelompokDijawab: { PEWARIS: ['anak', 'saudara'] } }, jauh, 'PAMAN_KANDUNG');
+    expect(Object.values(kasus.graf.orang).some(orang => orang.penghubung)).toBe(true);
+    kasus = jawabAdaTidak(kasus, jauh, false);
+    expect(Object.values(kasus.graf.orang).filter(orang => orang.penghubung)).toEqual([]);
+    expect(kasus.graf.orang.PEWARIS!.idAyah).toBeUndefined();
+    kasus = isiBarisTetap(kasus, ORANG_TUA, 'AYAH', 'hidup');
+    expect(keadaanTerpilih(kasus, idAyah(kasus))).toBe('hidup');
+  });
+});

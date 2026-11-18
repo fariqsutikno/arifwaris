@@ -1,0 +1,100 @@
+/* Kanvas keluarga (spec kanvas 5, mockup v5 docs/design/mockup-kanvas-silsilah.html). Token dari token.css. */
+.kanvas-keluarga{display:flex;flex-direction:column;gap:16px}
+.kanvas-keluarga .kecil{font-size:13px}
+.kanvas-keluarga .redup{color:var(--ink-muted)}
+
+.aksi-teks{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:6px 10px;margin:-6px -10px;border-radius:10px;font:600 14px var(--font-sans);cursor:pointer;color:var(--ink)}
+.aksi-teks:hover{background:var(--surface)}
+
+.peta-bagian{display:flex;flex-direction:column;gap:8px}
+.peta-bagian .atas{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:13.5px;color:var(--ink-muted)}
+.peta-bagian .atas b{color:var(--ink)}
+.batang{display:flex;gap:4px}
+.batang i{flex:1;height:6px;border-radius:3px;background:var(--outline)}
+.batang i.selesai{background:var(--primary)}
+.batang i.aktif{background:var(--aksen)}
+.langkah-bagian{display:flex;flex-wrap:wrap;gap:4px 0;margin:0;padding:0;list-style:none;font-size:13px;color:var(--ink-muted)}
+.langkah-bagian li{display:inline-flex;align-items:center;gap:4px}
+.langkah-bagian li+li::before{content:"›";margin:0 8px;color:#9aa49c}
+.langkah-bagian li.selesai{color:var(--ink)}
+.langkah-bagian li.selesai .ikon{color:#1b7a4c}
+.langkah-bagian li.aktif{color:var(--ink);font-weight:700}
+
+.ringkasan-bagian{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.ringkas{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-radius:18px;background:var(--surface-raised);border:1px solid var(--divider)}
+.ringkas .cek{width:26px;height:26px;border-radius:50%;background:var(--keturunan);display:grid;place-items:center;flex:none}
+.ringkas .isi{flex:1;min-width:0}
+.ringkas .isi b{display:block;font-weight:600}
+.ringkas .isi span{font-size:13.5px;color:var(--ink-muted)}
+
+.grup{background:var(--surface-raised);border:1.5px solid var(--primary);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px}
+@media(prefers-reduced-motion:no-preference){.grup.masuk{animation:grup-muncul .35s cubic-bezier(.2,.7,.2,1)}}
+@keyframes grup-muncul{from{opacity:0;transform:translateY(8px)}}
+.grup .label{font:600 12.5px var(--font-sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-muted)}
+.grup h2{margin:0;font:500 21px/1.25 var(--font-display);letter-spacing:-.015em}
+.grup h2:focus-visible{outline:2px solid var(--focus);outline-offset:4px;border-radius:6px}
+.pengantar{margin:0;font-size:14px;background:var(--surface);border-radius:14px;padding:10px 12px}
+.kaki-grup{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;border-top:1px solid var(--divider);padding-top:14px}
+.kaki-grup .salah{color:#8a3409;font-weight:500}
+
+.ya-tidak{display:flex;gap:6px;flex-wrap:wrap}
+.ya-tidak button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:9px 18px;min-height:42px;font:500 15px var(--font-sans);cursor:pointer;color:var(--ink)}
+.ya-tidak button:hover{border-color:var(--outline)}
+.ya-tidak button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
+
+.seg{display:flex;align-self:flex-start;flex-wrap:wrap;gap:4px;max-width:100%}
+.seg button{border:1.5px solid transparent;background:var(--surface);border-radius:999px;padding:6px 12px;min-height:36px;font:500 13.5px var(--font-sans);cursor:pointer;color:var(--ink);white-space:nowrap}
+.seg button:hover{border-color:var(--outline)}
+.seg button[aria-checked=true]{background:var(--primary);color:var(--on-primary);font-weight:600}
+.pilihan-lain{margin-top:2px}
+
+.orang{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;align-items:start;padding:12px;background:#f6f2e9;border-radius:16px;border:1.5px solid transparent}
+.orang.kurang{border-color:var(--aksen)}
+.orang.sorot-baris{border-color:var(--aksen);box-shadow:0 0 0 4px var(--aksen-soft)}
+.orang:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.kol-orang{display:flex;flex-direction:column;gap:8px;min-width:0}
+.peran{font-size:13px;color:var(--ink-muted)}
+.nama-isi{font:600 15px var(--font-sans);border:0;border-bottom:1.5px dashed var(--outline);background:none;padding:2px 0;width:100%;max-width:260px}
+.nama-isi::placeholder{color:#5c655f;font-weight:500}
+.keadaan-label{font:600 13px var(--font-sans)}
+.kapan{display:flex;flex-direction:column;gap:6px;padding-left:10px;border-left:2px solid var(--divider)}
+.salah{font-size:13px;color:#8a3409;font-weight:500}
+.hapus{font-size:13px!important;color:var(--ink-muted)!important}
+
+.penghitung{display:flex;flex-direction:column;gap:6px}
+.hitung-label{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.hitung-label .nama-kontrol{font-weight:600;font-size:14px}
+.hitung{display:inline-flex;align-items:center;gap:2px;background:#fff;border:1.5px solid var(--outline);border-radius:999px;padding:2px}
+.hitung button{width:38px;height:38px;border-radius:50%;border:0;background:none;cursor:pointer;font:600 18px var(--font-sans);color:var(--ink)}
+.hitung button:hover{background:var(--surface)}
+.hitung b{min-width:28px;text-align:center;font-weight:700}
+
+details.rinci>summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font:500 13.5px var(--font-sans);color:var(--ink-muted);padding:4px 0}
+details.rinci>summary::-webkit-details-marker{display:none}
+details.rinci>summary .ikon{transition:transform .2s;transform:rotate(180deg)}
+details.rinci[open]>summary .ikon{transform:rotate(270deg)}
+details.rinci>div{margin-top:6px;font-size:13.5px;color:var(--ink-muted);background:var(--surface);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+
+.kelompok-peran{display:flex;flex-direction:column;gap:10px}
+.centang-anak{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.centang-anak label{display:inline-flex;align-items:center;gap:8px;min-height:36px;font-weight:500}
+
+.pilihan-urutan{display:flex;flex-direction:column;gap:8px}
+.opsi-urutan{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:start;padding:12px 16px;border-radius:18px;border:1.5px solid var(--outline);background:#fff;cursor:pointer;font:500 15px var(--font-sans);color:var(--ink)}
+.opsi-urutan small{color:var(--ink-muted);font-weight:400;font-size:13.5px}
+.opsi-urutan[aria-checked=true]{border-color:var(--primary);background:var(--surface)}
+.lencana-kamu{font:600 11px var(--font-sans);background:var(--aksen-soft);color:#8a3409;border-radius:999px;padding:2px 8px;margin-inline-start:6px}
+.kelompok-centang{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;border:0}
+.kelompok-centang legend{padding:0;display:flex;flex-direction:column;gap:2px;margin-bottom:6px}
+.kelompok-centang small{color:var(--ink-muted);font-size:13px}
+.kelompok-centang .centang{display:inline-flex;align-items:center;gap:8px;min-height:36px}
+
+/* pohon samping: keadaan simpul (spec kanvas 8) */
+.node-orang.simpul-belum-pasti{border-style:dashed;border-color:#7f8c7c}
+.node-orang.simpul-wafat{border-width:1px;border-color:#9aa79a;background:var(--surface-sunken)}
+.node-orang.simpul-pemilik{border-width:2px;border-color:var(--ink)}
+.tautan-pohon-lengkap{display:none;margin-top:6px;color:#fff}
+@media (max-width:900px){
+  .pohon-samping:not(.penuh) .pratinjau-isi{max-height:150px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 70%,transparent);mask-image:linear-gradient(#000 70%,transparent)}
+  .pohon-samping .tautan-pohon-lengkap{display:inline-flex}
+}

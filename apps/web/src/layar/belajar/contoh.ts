@@ -10,7 +10,7 @@ import { DAFTAR_JENIS, tambahAhliWaris } from '../../checklist';
 import { kasusBaru, type Kasus } from '../../kasus';
 
 export function kasusDariContoh(contoh: ContohKasus): Kasus {
-  const dasar = kasusBaru(contoh.pewaris);
+  const dasar = kasusBaru(contoh.pewaris, 'latihan');
   // Kunci yang bukan ahli waris di checklist membuat tambahAhliWaris melempar galat; test materi menangkapnya.
   const graf = contoh.ahliWaris.reduce((grafIni, kunci) => tambahAhliWaris(grafIni, dasar.graf.idPewaris, kunci as KunciAhliWaris), dasar.graf);
   return { ...dasar, graf, tirkah: { ...dasar.tirkah, kotor: contoh.harta } };

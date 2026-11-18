@@ -5,7 +5,7 @@
 
 import { useEffect, useId, useState } from 'react';
 import type { AksesBagikan, PengaturanBagikan, RepositoriBagikan } from '@waris/data';
-import { keJson, type Kasus } from '../kasus';
+import { keJsonDibagikan, type Kasus } from '../kasus';
 import { SLUG_BAGIKAN, alamatBagikan, tautanBagikan } from '../rute';
 import { tandaiDibagikan } from '../bagikanLokal';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
@@ -81,7 +81,7 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
         return;
       }
       const pengaturan = { slug, akses, email: akses === 'email' ? email : [] };
-      await repo.simpan(idRiwayat, pengaturan, JSON.parse(keJson(kasus)));
+      await repo.simpan(idRiwayat, pengaturan, JSON.parse(keJsonDibagikan(kasus)));
       tandaiDibagikan(idRiwayat, true);
       setTersimpan(pengaturan);
       setBaruDisimpan(true);

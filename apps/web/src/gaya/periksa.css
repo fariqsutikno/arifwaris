@@ -1,0 +1,41 @@
+/* Periksa nyata (rencana 4): belum dipastikan, salin WA. Mengikuti mockup v5. */
+.belum-baris{display:flex;flex-direction:column;gap:8px;padding:12px 0;border-top:1px solid var(--divider)}
+.belum-baris .deret{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.pilih-belum{border:1.5px solid var(--outline);background:var(--surface);border-radius:999px;padding:8px 16px;min-height:40px;font:500 14px var(--font-sans);cursor:pointer;color:var(--ink)}
+.pilih-belum:hover{border-color:var(--ink)}
+.terjawab{color:#1b7a4c;font-weight:600;font-size:13.5px;margin:0}
+.terjawab:empty{display:none}
+.wa{white-space:pre-wrap;font-size:14px;background:#fff;border:1px solid var(--divider);border-radius:16px 16px 16px 4px;padding:12px 14px;max-width:440px}
+
+/* Kisah harta per babak (rencana 4, tugas 5). Mengikuti mockup v5. */
+.linimasa{position:relative;display:flex;flex-direction:column;padding-left:34px}
+.linimasa::before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:var(--outline)}
+.babak{position:relative;display:flex;flex-direction:column;gap:10px;padding:16px 18px;border-radius:22px;background:#fff;border:1px solid var(--divider)}
+.babak::before{content:"";position:absolute;left:-29px;top:20px;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--ink)}
+.babak.kini::before{background:var(--keturunan);border-color:#1b7a4c}
+.babak .kepala{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.babak .tahun-besar{font:500 30px/1 var(--font-display);letter-spacing:-.02em}
+.babak .judul-babak{font:600 16px var(--font-sans);margin-top:4px}
+.babak .tubuh{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:14px;align-items:center}
+@media(max-width:700px){.babak .tubuh{grid-template-columns:1fr}}
+.babak p{font-size:15px}
+.lencana-urutan{font:600 12px var(--font-sans);background:var(--surface);border-radius:999px;padding:2px 8px;color:var(--ink-muted)}
+.jeda{position:relative;padding:14px 0 14px 2px;font-size:13.5px;color:var(--ink-muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.jeda.sebelum{padding-top:0}
+.jeda .harta{display:inline-flex;align-items:center;gap:6px;background:var(--aksen-soft);color:var(--aksen-tua);border-radius:999px;padding:3px 10px;font-weight:600;font-size:12.5px}
+.sunting-babak{display:flex;flex-direction:column;gap:10px;background:var(--surface);border-radius:16px;padding:12px 14px}
+.langkah-ubah{font:600 13px var(--font-sans);color:var(--ink-muted)}
+.deret.antar{justify-content:space-between}
+.ikon-atas{display:inline-flex;transform:rotate(90deg)}
+.ikon-bawah{display:inline-flex;transform:rotate(-90deg)}
+.ubah-panel{display:flex;flex-direction:column;gap:12px}
+.mini-pohon .pohon-wadah{transform-origin:top left}
+.node-orang.m.mati{border-style:dashed;box-shadow:none;background:var(--surface-sunken)}
+.node-orang.m.mati b{text-decoration:line-through;color:var(--ink-muted)}
+.node-orang.m.tahu{border-style:dashed;box-shadow:none}
+.node-orang.m.pusat{border-width:2px;border-color:var(--ink)}
+.node-orang.m{width:auto;min-width:0;cursor:default}
+@media(prefers-reduced-motion:reduce){.node-orang.m{animation:none;transition:none}}
+.peristiwa{display:flex;align-items:center;gap:8px;padding:8px 12px;margin:4px 0;border-radius:14px;background:var(--surface);font-size:14px}
+.form-peristiwa{display:flex;flex-direction:column;gap:10px;background:var(--surface);border-radius:16px;padding:14px}
+.form-peristiwa select{font:500 14px var(--font-sans);padding:8px 10px;border-radius:10px;border:1.5px solid var(--outline);background:#fff;max-width:320px}

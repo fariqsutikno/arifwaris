@@ -4,7 +4,10 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { bolehUbahJenisKelamin } from '@waris/engine';
-import type { Kasus } from '../../kasus';
+import type { Kasus, Pintu, TanggalKira } from '../../kasus';
+import { namaSingkat } from '../../keadaanOrang';
+import { IsianTahun } from '../keluarga/IsianTahun';
+import { PertanyaanPintu } from './PertanyaanPintu';
 import { t } from '../../terjemah';
 
 interface Props {
@@ -12,9 +15,11 @@ interface Props {
   saatPilih: (jenisKelamin: 'L' | 'P') => void;
   saatGantiDanKosongkan: (jenisKelamin: 'L' | 'P') => void;
   saatUbahNama: (nama: string) => void;
+  saatUbahTahun: (tahun: TanggalKira | undefined) => void;
+  saatPilihPintu: (pintu: Pintu) => void;
 }
 
-export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUbahNama }: Props) {
+export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUbahNama, saatUbahTahun, saatPilihPintu }: Props) {
   const pewaris = kasus?.graf.orang[kasus.graf.idPewaris];
   const pilihan: Array<['L' | 'P', string, string]> = [['L', t('hitung.laki_laki'), t('hitung.pewaris_laki_ket')], ['P', t('hitung.perempuan'), t('hitung.pewaris_perempuan_ket')]];
   const perluKonfirmasi = !!kasus && !bolehUbahJenisKelamin(kasus.graf, kasus.graf.idPewaris);
@@ -38,6 +43,11 @@ export function LangkahPewaris({ kasus, saatPilih, saatGantiDanKosongkan, saatUb
       </div>
       {perluKonfirmasi && <p className="caption-isian">{t('hitung.mengganti_jenis_kelamin_akan_mengosongkan_isian')}</p>}
       {kasus && <IsianNamaAlmarhum nama={pewaris?.nama ?? ''} saatUbah={saatUbahNama} />}
+      {kasus?.jenisKasus === 'nyata' && <>
+        <IsianTahun label={t('hitung.kanvas.tahun_wafat_tanya', { nama: namaSingkat(kasus, kasus.graf.idPewaris) })} petunjuk={t('hitung.kanvas.boleh_kosong')}
+          contoh={t('hitung.kanvas.tahun_contoh')} nilai={kasus.waktu?.[kasus.graf.idPewaris]?.wafat} saatUbah={saatUbahTahun} />
+        <PertanyaanPintu nama={namaSingkat(kasus, kasus.graf.idPewaris)} nilai={kasus.pintu} saatPilih={saatPilihPintu} />
+      </>}
       {tertunda && (
         <KonfirmasiGanti saatBatal={() => setTertunda(null)} saatLanjut={() => { saatGantiDanKosongkan(tertunda); setTertunda(null); }} />
       )}

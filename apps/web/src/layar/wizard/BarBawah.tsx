@@ -1,23 +1,23 @@
-// Bar bawah wizard: Kembali (kiri) dan "Lanjut: {langkah berikut}" (kanan). Bila isian wajib belum lengkap,
-// tombol lanjut nonaktif dan alasannya tertulis di sampingnya.
+// Bar bawah wizard (spec kanvas 5.9): Kembali (tautan) · status · aksi langkah besar. Menerima teks status dan satu aksi;
+// tombol utama tidak pernah nonaktif. Bila isian belum lengkap, pemanggil menahan klik dan mengisi `status`, yang
+// diumumkan lewat live region (selalu ada di DOM supaya perubahannya terbaca).
 
-import { LANGKAH_WIZARD } from '../../konten/wizard';
 import { Tombol } from '../../ui/komponen';
 import { t } from '../../terjemah';
 
-interface Props { langkah: number; alasan: string | null; saatKembali: () => void; saatLanjut: () => void }
+export interface AksiBar { label: string; saatKlik: () => void; sebagai: 'tombol' | 'tautan' }
+interface Props { saatKembali: () => void; status: string | null; aksi: AksiBar }
 
-export function BarBawah({ langkah, alasan, saatKembali, saatLanjut }: Props) {
-  const berikut = LANGKAH_WIZARD[langkah];   // indeks = langkah berikutnya
+export function BarBawah({ saatKembali, status, aksi }: Props) {
   return (
     <div className="bar-bawah" data-tur="bar-bawah">
       <div className="bar-bawah-isi">
-        <Tombol varian="secondary" onClick={saatKembali}>{t('umum.kembali_2')}</Tombol>
+        <button type="button" className="tautan-teks" onClick={saatKembali}>{t('umum.kembali_2')}</button>
         <span className="pengisi" />
-        {alasan && <span className="alasan" id="alasan-lanjut">{alasan}</span>}
-        <Tombol onClick={saatLanjut} disabled={!!alasan} {...(alasan ? { 'aria-describedby': 'alasan-lanjut' } : {})}>
-          {berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil')}
-        </Tombol>
+        <span className="alasan" role="status">{status}</span>
+        {aksi.sebagai === 'tombol'
+          ? <Tombol onClick={aksi.saatKlik}>{aksi.label}</Tombol>
+          : <button type="button" className="tautan-teks" onClick={aksi.saatKlik}>{aksi.label}</button>}
       </div>
     </div>
   );

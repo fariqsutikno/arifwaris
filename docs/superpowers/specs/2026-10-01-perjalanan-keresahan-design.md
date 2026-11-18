@@ -21,7 +21,7 @@ Spec ini **mengubah**:
 | | 2.6 Kerabat jauh | diperluas dengan hubungan bukan ahli waris (5.2) |
 | | 3.5 Pohon di HP | pohon ↔ daftar bertingkat, syarat pohon (5.5) |
 | | 3.2 Lapis 2 | kelompok per almarhum (1); blok kenapa dapat/tidak (4) |
-| `2026-09-30-babak-kematian-berlapis-design.md` | 1.1 butir 3, 8.2 S2, 8.3 | `hartaPernahDibagi` diganti "masih utuh?" per barang (2.2) |
+| `2026-09-30-babak-kematian-berlapis-design.md` (dihapus 2026-10-16; alur input kini `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md`) | 1.1 butir 3, 8.2 S2, 8.3 | `hartaPernahDibagi` diganti "masih utuh?" per barang (2.2) |
 | | 1.7, 8.1 butir 3 | "ditolak / hitung ditahan" diganti kemungkinan bila bisa dihitung (3) |
 | | 3 (hasil taqdir) | "Kalau terbukti…" → "Bagaimana kalau…" (3) |
 | | 2.1 `gharqa.tirkah` | harta anggota gharqa masuk daftar barang (7) |
@@ -271,29 +271,7 @@ UI hanya menyusun graf dan memberi nama hubungan. Siapa yang mewarisi tetap dipu
 
 ### 5.1 Tambah dari orang yang terkait
 
-Menambah atau mengubah orang dilakukan **dari orang yang terkait**, bukan dari dialog "anak dari siapa".
-
-- Di langkah Keluarga, Periksa, dan Hasil, keluarga tampil sebagai **pohon** (5.5) atau **daftar bertingkat**
-  (komponen yang sama dengan silsilah, spec babak 8.2 S3), dan keduanya bisa dipindah dengan satu tautan.
-- Tiap orang punya menu tautan: **+ Orang tua · + Pasangan · + Anak · + Saudara · Ubah · Hapus**.
-- Hubungan diturunkan dari orang yang diklik:
-
-  | Aksi pada X | Hasil di graf | Pertanyaan tambahan |
-  |---|---|---|
-  | + Orang tua | ayah/ibu X (`tambahKerabat` 'ayah'/'ibu') | tidak ada; pilihan yang sudah terisi tidak tampil |
-  | + Pasangan | istri/suami X; jenis kelamin dari X | "Masih suami-istri waktu X wafat?" hanya bila X sudah wafat (spec babak S14) |
-  | + Anak | anak X; orang tua lain = pasangan X bila hanya satu | bila pasangan > 1: "Dari istri yang mana?" (+ "istri lain, tidak dicatat") |
-  | + Saudara | anak dari orang tua X (orang tua dibuat sebagai penghubung bila belum ada) | "Satu ayah dan satu ibu" (bawaan) / "Satu ayah saja" / "Satu ibu saja" |
-  | Ubah | nama, jenis kelamin (bila `bolehUbahJenisKelamin`), keadaan (`DialogKeadaan`) | — |
-  | Hapus | `hapusAhliWaris` | konfirmasi yang menyebut siapa saja yang ikut terhapus (spec babak 2.3) |
-
-- Dialog tambah hanya **satu layar**: nama (opsional), jenis kelamin (bila tidak diturunkan dari hubungan), dan
-  keadaan (Masih hidup bawaan).
-- Penyusun graf yang dipakai sudah ada: `tambahKerabat` / `opsiRelasi` di engine (`graf.ts`, termasuk batas 4
-  istri [R04-3]), serta `pastikanOrangTua`, `tambahSaudara`, dan `tambahOrang` di `checklist.ts` yang diekspor.
-- **Di Hasil**, tiap perubahan langsung dihitung ulang dan disimpan, dengan tautan **Batalkan perubahan
-  terakhir**. Mode coba-coba (3) memakai menu yang sama tanpa menyimpan.
-- Daftar ± (`LangkahAhliWaris`) tetap untuk isian cepat. Keduanya mengubah graf yang sama.
+> **Digantikan 2026-10-16** oleh `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md` bagian 5 (isian lewat bagian/kelompok; pohon di langkah Keluarga hanya tampilan). Logika `kerabatPohon` tetap dipakai.
 
 ### 5.2 Tambah dengan nama hubungan
 
@@ -496,7 +474,7 @@ interface Kasus {
   /** Jawaban "tidak tahu" / "bersamaan" yang disimpan apa adanya; sumber kemungkinan jenis B/C (3). */
   belumPasti?: HalBelumPasti[];
   pilihanJanin?: 'tunggu' | 'hitungSekarang';
-  jalur: 'babak' | 'silsilah';
+  // jalur dihapus dan pintu diganti nilainya: lihat `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md` 9.1
   pintu?: 'tidakAda' | 'sedikit' | 'turunTemurun' | 'tidakTahu';
   waktu?: Record<IdOrang, { wafat?: TanggalKira; lahir?: TanggalKira }>;
 }

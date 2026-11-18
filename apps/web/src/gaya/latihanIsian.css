@@ -1,0 +1,12 @@
+/* Latihan: kartu per mayit, chip "wafat sebelum dibagi", daftar urutan wafat (mockup kanvas silsilah). */
+.latihan-isian{max-width:760px}
+.kartu-mayit:focus{outline:2px solid var(--ink);outline-offset:3px}
+.chip-orang{display:flex;flex-wrap:wrap;gap:6px}
+.chip-orang button{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--outline);background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font-sans);cursor:pointer}
+.chip-orang button[aria-pressed=true]{border-color:var(--ink);background:var(--surface-sunken)}
+.chip-orang small{font-size:11.5px;color:var(--aksen-tua)}
+.urutan-wafat{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.urutan-wafat li{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--divider)}
+.urutan-wafat li span{flex:1;min-width:0;font-weight:600}
+.hal-lain-kartu summary{cursor:pointer;font:600 14px var(--font-sans);color:var(--aksen-tua);padding:4px 0}
+.hal-lain-kartu[open] summary{margin-bottom:6px}

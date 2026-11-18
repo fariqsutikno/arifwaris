@@ -41,3 +41,33 @@ it('anak dari suami (istri lain) tergambar di bawah suami saja', () => {
   expect(baris.at(-1)).toContain(anak);
   expect(keluarga.find(k => k.anak.includes(anak))!.orangTua).toEqual([idSuami]);
 });
+
+/** Di antara dua orang yang menikah dalam satu baris hanya boleh ada pasangan lain dari salah satunya (poligami). */
+function pasanganTidakMenempel(graf: GrafKeluarga, baris: string[][]): string[] {
+  const salah: string[] = [];
+  const pasanganDari = (idOrang: string) => graf.pernikahan.flatMap(nikah =>
+    (nikah.idSuami === idOrang ? [nikah.idIstri] : nikah.idIstri === idOrang ? [nikah.idSuami] : []));
+  for (const nikah of graf.pernikahan) for (const deret of baris) {
+    const posisiSuami = deret.indexOf(nikah.idSuami), posisiIstri = deret.indexOf(nikah.idIstri);
+    if (posisiSuami < 0 || posisiIstri < 0) continue;
+    const boleh = new Set([...pasanganDari(nikah.idSuami), ...pasanganDari(nikah.idIstri)]);
+    const diAntara = deret.slice(Math.min(posisiSuami, posisiIstri) + 1, Math.max(posisiSuami, posisiIstri));
+    if (diAntara.some(orang => !boleh.has(orang))) salah.push(`${nikah.idSuami}–${nikah.idIstri}`);
+  }
+  return salah;
+}
+
+it('invarian spec 8: pasangan menempel, juga saudara yang beristri di baris pewaris', () => {
+  let graf = bangun('L', ['ISTRI', 'AYAH', 'IBU', 'SAUDARA_KANDUNG', 'SAUDARA_KANDUNG', 'ANAK_LK']);
+  const [saudara1, saudara2] = hitungIsian(graf, 'PEWARIS').SAUDARA_KANDUNG!;
+  graf = tambahAhliWaris(graf, saudara1!, 'ISTRI');
+  graf = tambahAhliWaris(graf, saudara2!, 'ISTRI');
+  const anak = id(graf, 'ANAK_LK');
+  graf = tambahAhliWaris(graf, anak, 'ISTRI');
+  expect(pasanganTidakMenempel(graf, tataLetak(graf).baris)).toEqual([]);
+});
+
+it('invarian spec 8: dua istri pewaris tetap menempel pada pewaris', () => {
+  const graf = bangun('L', ['ISTRI', 'ISTRI', 'SAUDARA_KANDUNG', 'AYAH']);
+  expect(pasanganTidakMenempel(graf, tataLetak(graf).baris)).toEqual([]);
+});

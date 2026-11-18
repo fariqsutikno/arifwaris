@@ -9,7 +9,7 @@ import { StreakKepala } from './akun/StreakKepala';
 import { TombolAkun } from './akun/TombolAkun';
 import { LonceNotifikasi } from './notifikasi/LonceNotifikasi';
 import { SumberNotifikasi } from './notifikasi/SumberNotifikasi';
-import { keJson, muatLokal, simpanLokal, type Kasus } from './kasus';
+import { keJson, keJsonDibagikan, muatLokal, simpanLokal, type Kasus } from './kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from './keadaan';
 import { TUR } from './konten/tur';
 import { bacaTujuan, catatAktivitas, simpanTujuan, sudahLihatTur, bacaBahasa, type Tujuan } from './preferensi';
@@ -17,6 +17,7 @@ import { catatLatihan } from './progres';
 import { t } from './terjemah';
 import { Tur } from './tur/Tur';
 import { AwalHitung } from './layar/AwalHitung';
+import { PintuLab } from './layar/PintuLab';
 import { Beranda } from './layar/Beranda';
 import { Hasil } from './layar/Hasil';
 import { Kepala } from './layar/Kepala';
@@ -87,7 +88,7 @@ export function Aplikasi() {
   useEffect(() => {
     if (!keadaan.kasus || !sesi || !repoAkun || !sudahDibagikan(idSesi)) return;
     const kasusTerbaru = keadaan.kasus;
-    const tunda = setTimeout(() => void repoAkun.bagikan.perbaruiKasus(idSesi, JSON.parse(keJson(kasusTerbaru))).catch(() => undefined), JEDA_PERBARUI_BAGIKAN_MS);
+    const tunda = setTimeout(() => void repoAkun.bagikan.perbaruiKasus(idSesi, JSON.parse(keJsonDibagikan(kasusTerbaru))).catch(() => undefined), JEDA_PERBARUI_BAGIKAN_MS);
     return () => clearTimeout(tunda);
   }, [keadaan.kasus, idSesi, sesi, repoAkun]);
   useEffect(() => { if (keadaan.tujuan && keadaan.tujuan !== bacaTujuan()) simpanTujuan(keadaan.tujuan); }, [keadaan.tujuan]);
@@ -109,9 +110,21 @@ export function Aplikasi() {
   // URL mengikuti posisi kasus; replaceState tidak memicu hashchange dan tidak menambah riwayat browser.
   useEffect(() => {
     if (!diKalkulator) return;
-    const tautan = tautanKasus(idSesi, { layar, langkah: keadaan.langkah, babak: keadaan.babak, ada: !!kasus });
+    const tautan = tautanKasus(idSesi, { layar, langkah: keadaan.langkah, ada: !!kasus });
     if (window.location.hash !== tautan) history.replaceState(null, '', tautan);
-  }, [diKalkulator, idSesi, layar, keadaan.langkah, keadaan.babak, !!kasus]);
+  }, [diKalkulator, idSesi, layar, keadaan.langkah, !!kasus]);
+  // Tautan/hash ke kasus lain di tab yang sama: URL jadi sumber, sama seperti muat ulang.
+  const idKasusDiUrl = rute.halaman === 'kalkulator' ? rute.kasus?.id : undefined;
+  useEffect(() => {
+    if (!idKasusDiUrl || idKasusDiUrl === idSesi) return;
+    const dariUrl = pulihDariUrl(window.location.hash, bacaTujuan());
+    if (!dariUrl) return;
+    if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
+    setSoalAktif(null);
+    setIdSesi(dariUrl.id);
+    setSumberSesi(dariUrl.sumber);
+    kirimAsli({ jenis: 'PULIHKAN', keadaan: dariUrl.keadaan });
+  }, [idKasusDiUrl]);
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
   const belumSelesai = !!kasus && layar !== 'awal' && layar !== 'hasil' && !kasusLengkap(kasus);
@@ -189,6 +202,7 @@ export function Aplikasi() {
         : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
+        : layar === 'pintu' ? <PintuLab saatPilih={jenisKasus => kirim({ jenis: 'PILIH_JENIS_KASUS', jenisKasus })} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
@@ -204,12 +218,12 @@ export function Aplikasi() {
 export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string; sumber: SumberRiwayat; keadaan: KeadaanAplikasi } | null {
   const rute = bacaRute(hash);
   if (rute.halaman !== 'kalkulator' || !rute.kasus) return null;
-  const { id, layar, langkah, babak } = rute.kasus;
+  const { id, layar, langkah } = rute.kasus;
   const entri = bacaRiwayat().find(isi => isi.id === id);
   if (!entri) return null;
   // Lewat reducer yang sama dengan penggunaan biasa, jadi langkah/layar yang belum boleh dibuka otomatis dibatasi.
   const aksi: Aksi[] = [{ jenis: 'MUAT', kasus: entri.kasus }];
-  if (layar === 'wizard') aksi.push({ jenis: 'KE_LANGKAH', langkah: langkah ?? 1 }, { jenis: 'KE_BABAK', babak: babak ?? 0 });
+  if (layar === 'wizard') aksi.push({ jenis: 'KE_LANGKAH', langkah: langkah ?? 1 });
   else if (layar === 'cerita') aksi.push({ jenis: 'KE_LAYAR', layar });
   let keadaan = aksi.reduce(pengurangKeadaan, keadaanAwal(null, tujuan));
   // Kasus yang belum lengkap tidak punya hasil: jatuh ke langkah wizard pertama yang belum terisi.

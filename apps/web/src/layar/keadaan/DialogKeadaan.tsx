@@ -5,16 +5,13 @@ import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import type { IdOrang, InputTirkah, KeadaanGharqa, KunciAhliWaris } from '@waris/engine';
 import { KONFIGURASI_BAWAAN, turunkanPeran } from '@waris/engine';
 import type { Kasus } from '../../kasus';
-import { alasanTidakDidukung, babakAsal, namaSingkat, terapkanKeadaan, type JawabanKeadaan } from '../../keadaanOrang';
+import { alasanTidakDidukung, babakAsal, KHUNTSA_MUNGKIN, namaSingkat, terapkanKeadaan, type JawabanKeadaan } from '../../keadaanOrang';
 import { jawabSisip, mulaiSisip, pembanding, posisiAkhir, type Sisipan } from '../../urutan';
 import { Tombol } from '../../ui/komponen';
 import { IsianUang } from '../wizard/IsianUang';
 import { t } from '../../terjemah';
 
-// [R13-9] khuntsa hanya di jihah bunuwwah, ukhuwwah, 'umumah (13c.1): bukan orang tua atau pasangan.
-export const KHUNTSA_MUNGKIN: KunciAhliWaris[] = ['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR', 'SAUDARA_KANDUNG', 'SAUDARI_KANDUNG',
-  'SAUDARA_SEBAPAK', 'SAUDARI_SEBAPAK', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU', 'KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK',
-  'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK'];
+export { KHUNTSA_MUNGKIN };
 const TANPA_HARTA: InputTirkah = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
 
 type Layar =
@@ -29,15 +26,19 @@ type Layar =
   | { jenis: 'baligh' }
   | { jenis: 'ditolak' };
 
-export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal }: {
+export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal, mulaiDi }: {
   kasus: Kasus; idOrang: IdOrang; saatSelesai: (kasusBaru: Kasus) => void; saatBatal: () => void;
+  /** 'serentak' = langsung ke alur wafat bersamaan (dari pertanyaan urutan wafat). */
+  mulaiDi?: 'serentak';
 }) {
   const id = useId();
   const nama = namaSingkat(kasus, idOrang);
   const idMayit = babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris;
   const mayit = namaSingkat(kasus, idMayit);
   const pewaris = namaSingkat(kasus, kasus.graf.idPewaris);
-  const [layar, setLayar] = useState<Layar>({ jenis: 'keadaan', lain: false });
+  const [layar, setLayar] = useState<Layar>(() => (mulaiDi === 'serentak'
+    ? { jenis: alasanTidakDidukung(kasus, idOrang, { jenis: 'bersamaan', keadaan: 'serentak', tirkah: TANPA_HARTA }) ? 'ditolak' : 'serentak' }
+    : { jenis: 'keadaan', lain: false }));
   const [pilihan, setPilihan] = useState<string | null>(null);
   const [hartaSendiri, setHartaSendiri] = useState(0n);
   const [riwayat, setRiwayat] = useState<Layar[]>([]);

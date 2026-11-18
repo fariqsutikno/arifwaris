@@ -50,13 +50,14 @@ test('hero kasus belum lengkap (tanpa harta): tidak memanggil engine, Lanjutkan 
 });
 
 test('hero kasus yang baru memilih jenis kelamin tetap bisa dilanjutkan', () => {
-  render(<HeroLab kasusTerakhir={kasusBaru('L')} saatLanjut={() => {}} />);
+  render(<HeroLab kasusTerakhir={kasusBaru('L', 'latihan')} saatLanjut={() => {}} />);
   expect(screen.getByRole('button', { name: /Lanjutkan/ })).toBeTruthy();
 });
 
 test('hero kasus lengkap: pohon dengan hasil engine dan pita bagian', () => {
-  const dasar = kasusDariSusunan(SUSUNAN_CEPAT[0]!);
-  const { container } = render(<HeroLab kasusTerakhir={{ ...dasar, tirkah: { ...dasar.tirkah, kotor: 240_000_000n } }} saatLanjut={() => {}} />);
+  // Susunan dengan Ayah dan Ibu: bagian Orang tua baru lengkap bila kedua posisinya terisi.
+  const dasar = kasusDariSusunan(SUSUNAN_CEPAT.find(satu => satu.kunci === 'orang-tua-anak')!);
+  const { container } = render(<HeroLab kasusTerakhir={{ ...dasar, pintu: 'baru', tirkah: { ...dasar.tirkah, kotor: 240_000_000n } }} saatLanjut={() => {}} />);
   expect(container.querySelector('.pita-bagian')).toBeTruthy();
 });
 

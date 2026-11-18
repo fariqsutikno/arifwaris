@@ -30,15 +30,19 @@ it('induk untuk tombol Kembali saat halaman dibuka langsung', () => {
   expect(tautanInduk(bacaRute(tautanPeringkat()))).toBe(TAUTAN_BERANDA);
 });
 
-it('posisi kasus di URL: hasil, wizard (langkah+babak), cerita', () => {
-  const awal = { layar: 'awal', langkah: 1, babak: 0, ada: true };
+it('posisi kasus di URL: hasil, wizard (langkah), cerita', () => {
+  const awal = { layar: 'awal', langkah: 1, ada: true };
   expect(tautanKasus('abc', awal)).toBe('#/hitung');
   expect(tautanKasus('abc', { ...awal, layar: 'hasil' })).toBe('#/hitung/abc');
-  expect(tautanKasus('abc', { ...awal, layar: 'wizard', langkah: 3, babak: 2 })).toBe('#/hitung/abc/langkah/3/2');
+  expect(tautanKasus('abc', { ...awal, layar: 'wizard', langkah: 3 })).toBe('#/hitung/abc/langkah/3');
   expect(tautanKasus('abc', { ...awal, layar: 'cerita' })).toBe('#/hitung/abc/cerita');
   expect(tautanKasus('abc', { ...awal, layar: 'hasil', ada: false })).toBe('#/hitung');
-  for (const posisi of [{ layar: 'hasil' }, { layar: 'cerita' }, { layar: 'wizard', langkah: 3, babak: 2 }, { layar: 'wizard', langkah: 2, babak: 0 }] as const) {
-    const tautan = tautanKasus('abc', { langkah: 1, babak: 0, ada: true, ...posisi });
+  for (const posisi of [{ layar: 'hasil' }, { layar: 'cerita' }, { layar: 'wizard', langkah: 3 }, { layar: 'wizard', langkah: 2 }] as const) {
+    const tautan = tautanKasus('abc', { langkah: 1, ada: true, ...posisi });
     expect(bacaRute(tautan)).toEqual({ halaman: 'kalkulator', kasus: { id: 'abc', ...posisi } });
   }
+});
+
+it('tautan lama dengan segmen babak tetap terbaca sebagai langkah itu', () => {
+  expect(bacaRute('#/hitung/abc/langkah/3/2')).toEqual({ halaman: 'kalkulator', kasus: { id: 'abc', layar: 'wizard', langkah: 3 } });
 });

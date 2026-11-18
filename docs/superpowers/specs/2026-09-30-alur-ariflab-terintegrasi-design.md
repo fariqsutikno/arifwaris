@@ -10,7 +10,7 @@ Spec ini menggabungkan dua sumber:
 - **Audit UX Lab Hitung 2026-09-30.** Skornya 24/40. Arsipnya ada di `apps/web/.impeccable/critique/2026-09-30T14-20-28Z__src-layar-wizard-tsx.md`, tapi foldernya belum dilacak git.
 - **Riset "Babak"** di `docs/design/riset-ux-input-kematian-berlapis.md`, dengan keputusan pengguna di bagian 12.2.
 
-Spec ini **menggantikan** sebagian `2026-09-30-babak-kematian-berlapis-design.md`:
+Spec ini **menggantikan** sebagian `2026-09-30-babak-kematian-berlapis-design.md` (dihapus 2026-10-16; alur input kini `2026-10-16-kanvas-silsilah-design.md`):
 
 - bagian 1.4, yaitu langkah 5 Kondisi;
 - penomoran langkah di bagian 1.1–1.2.
@@ -134,57 +134,15 @@ Stepper memakai gaya v4, bernomor biasa: **1 Almarhum · 2 Harta · 3 Keluarga �
 
 ### 2.3 Keadaan keluarga (menggantikan langkah 5)
 
-Satu layar per babak, tampil sesudah daftar babak itu. Pertanyaannya berukuran judul, bukan label 12px. Masing-masing punya jawaban bawaan:
-
-1. "Semua orang di atas masih hidup?" → **Ya, masih hidup semua** / Ada yang sudah wafat atau hilang.
-2. "Waktu {almarhum} wafat, ada yang sedang hamil?" → **Tidak ada** / Ada.
-3. "Ada yang beda agama dengan {almarhum}, atau terlibat dalam wafatnya?" → **Tidak ada** / Ada.
-
-Rincian tiap jawaban:
-
-- **Jawaban 1 = "ada"** membuka daftar orang babak itu beserta keadaannya. Mengetuk orang membuka `DialogKeadaan`, satu pertanyaan per lapis (riset 7.3, spec babak 1.1).
-- **Jawaban 2 = "ada"** membuka dialog janin (spec babak 1.3).
-- **Jawaban 3 = "ada"** membuka daftar centang orang babak itu untuk beda agama dan untuk terlibat wafat.
-  - Label orang ditulis dari sisi almarhum babak itu.
-  - Isinya logika `LangkahKondisi` yang dipindah, dengan cakupan **per babak**, bukan semua ahli waris sekaligus.
-- **Kembali ke jawaban bawaan** padahal sudah ada isian → dialog konfirmasi yang menyebut apa yang akan dihapus. Ini perilaku `PertanyaanPenutup` yang sekarang, dan juga berlaku untuk pertanyaan 3.
-
-Keputusan sadar: tiga pertanyaan ditaruh di satu layar. Ini menyimpang dari riset 7.1 ("satu layar satu pertanyaan di HP"), karena ketiganya satu topik dan punya jawaban bawaan. Rinciannya tetap satu pertanyaan per lapis di dialog. Kalau dipecah, kasus biasa bertambah dua layar.
-
-`LangkahKondisi.tsx` sebagai langkah dihapus.
+> **Digantikan 2026-10-16** oleh `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md` bagian 5 (kanvas wawancara; keadaan per baris tanpa bawaan; "Hal lain" per almarhum).
 
 ### 2.4 Babak 2..n (munasakhat)
 
-Tetap sesuai spec babak 1.2 dan riset L5–L6. Babak diulang **di dalam langkah Keluarga** dengan urutan: layar pembuka → daftar (bagian "Dari orang yang sudah ada" tercentang otomatis) → Keadaan keluarga babak itu.
-
-Perbaikan dari audit:
-
-- **Sub-judul:** "Keluarga · Babak {k} dari {n} · {nama}".
-- **Judul menyebut almarhum:** "Siapa saja keluarga yang ditinggalkan {nama}?"
-- **Label tombol bawah** diturunkan dari posisi, bukan dari `LANGKAH_WIZARD[langkah]`:
-
-  | Posisi | Label |
-  |---|---|
-  | daftar babak k | Lanjut: keadaan keluarga |
-  | keadaan babak k, ada babak k+1 | Lanjut: keluarga {nama babak k+1} |
-  | keadaan babak terakhir | Lanjut: periksa |
-  | Periksa | Lihat hasil |
-
-- **Ringkasan samping sadar babak.**
-  - Orang yang wafat sesudah almarhum ditulis "{nama} · wafat sesudah {almarhum}" dan tidak ikut dihitung sebagai ahli waris hidup (bukan "Anak laki-laki ×2").
-  - Isinya dikelompokkan per babak.
-  - "Kondisi khusus: n dicatat" diganti ringkasan per babak.
-- **Pohon mini babak (`PohonDasar`)**
-  - Menyebut orang dari sisi almarhum babak itu, misalnya Pak Ahmad = "Ayah", bukan "(Kerabat)".
-  - Node pusat berlabel nama almarhum, bukan "babak ini".
+> **Digantikan 2026-10-16** oleh `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md` bagian 5.2 (cabang keluarga, tanpa babak dan tanpa "melihat dari sisi").
 
 ### 2.5 Periksa (langkah 4)
 
-- Layar "Coba baca ceritanya" yang sudah ada (riset L8), sekarang di dalam wizard. Stepper dan bar bawah tetap tampil.
-- Isi: kalimat per babak dengan tautan "ubah" (menuju babak/bagian terkait), harta yang dibagi, dan catatan harta almarhum kedua (riset 7.6).
-- Isi tambahan: baris madzhab "Dihitung menurut madzhab {x}" beserta tautan "ganti" (bagian 4.2).
-- **Kasus biasa** mendapat versi pendek: satu paragraf cerita + harta. Tidak ada layar tambahan selain Periksa itu sendiri.
-- **Menunggu kelahiran** (keputusan 12.2.3) tetap menjadi layar pilihan sesudah Periksa, sebelum Hasil, hanya bila ada janin belum lahir.
+> **Digantikan 2026-10-16** oleh `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md` bagian 7 (belum dipastikan dijawab di tempat, ubah dipandu, kisah per babak). Baris madzhab (4.2) dan layar menunggu kelahiran tetap.
 
 ### 2.6 Kerabat yang lebih jauh (dzawil arham)
 

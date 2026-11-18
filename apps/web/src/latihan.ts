@@ -1,0 +1,56 @@
+// Latihan soal (spec kanvas 6): kartu per mayit seperti di kitab. Menerima Kasus latihan; menyerahkan daftar mayit,
+// orang di tiap kartu, dan perubahan "wafat sebelum harta dibagi" / urutan wafat. Graf keluarga satu, jadi orang yang sama
+// di dua kartu tercatat sekali (hitungIsian menghitungnya dari sisi mayit masing-masing).
+
+import type { IdOrang } from '@waris/engine';
+import { hitungIsian, labelOrangChecklist } from './checklist';
+import type { Kasus } from './kasus';
+import { daftarAlmarhum, kerabatDari, namaJelas, terapkanKeadaan } from './keadaanOrang';
+
+export const mayitLatihan = (kasus: Kasus): IdOrang[] => daftarAlmarhum(kasus);
+
+export function orangDiKartu(kasus: Kasus, idMayit: IdOrang): IdOrang[] {
+  const sebelumnya = new Set(mayitLatihan(kasus).slice(0, mayitLatihan(kasus).indexOf(idMayit)));
+  const dihitung = Object.values(hitungIsian(kasus.graf, idMayit)).flatMap(daftar => daftar ?? []);
+  return dihitung.filter(id => !sebelumnya.has(id) && !kasus.graf.orang[id]!.penghubung);
+}
+
+/** [R12-1] wafat sesudah mayit sebelumnya dan sebelum harta dibagi → masuk urutan wafat (di akhir). */
+export function tandaiWafatSebelumDibagi(kasus: Kasus, idOrang: IdOrang, wafat: boolean): Kasus {
+  if (wafat === kasus.urutanWafat.includes(idOrang)) return kasus;
+  return terapkanKeadaan(kasus, idOrang, wafat ? { jenis: 'wafatSesudah', hartaSudahDibagi: false } : { jenis: 'hidup' });
+}
+
+export { geserUrutan } from './antreanUrutan';
+
+/** Satu sumber penomoran: label yang kembar dalam satu daftar diberi nomor urut ("Anak laki-laki 1", "Anak laki-laki 2"). */
+export function nomorKembar(label: string[]): string[] {
+  const urutan = new Map<string, number>();
+  return label.map(satu => {
+    if (label.filter(lain => lain === satu).length < 2) return satu;
+    const nomor = (urutan.get(satu) ?? 0) + 1;
+    urutan.set(satu, nomor);
+    return `${satu} ${nomor}`;
+  });
+}
+
+/** Orang di satu kartu beserta labelnya, kembar diberi nomor. */
+export function labelOrangDiKartu(kasus: Kasus, idMayit: IdOrang): Array<{ id: IdOrang; label: string }> {
+  const daftar = orangDiKartu(kasus, idMayit);
+  const label = nomorKembar(daftar.map(id => labelOrangChecklist(kasus.graf, idMayit, id)));
+  return daftar.map((id, i) => ({ id, label: label[i]! }));
+}
+
+export function labelMayit(kasus: Kasus, idMayit: IdOrang): string {
+  const semua = mayitLatihan(kasus);
+  return nomorKembar(semua.map(id => namaJelas(kasus, id)))[semua.indexOf(idMayit)]!;
+}
+
+/** Kartu pertama yang tidak punya ahli waris hidup saat mayitnya wafat (tidak termasuk mayit sebelumnya). */
+export function mayitTanpaAhliWaris(kasus: Kasus): IdOrang | null {
+  const almarhum = mayitLatihan(kasus);
+  return almarhum.find((idMayit, i) => {
+    const sebelumnya = new Set(almarhum.slice(0, i));
+    return !kerabatDari(kasus, idMayit).some(id => !sebelumnya.has(id) && kasus.graf.orang[id]!.statusHidup !== 'wafat');
+  }) ?? null;
+}

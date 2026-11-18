@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { tambahAhliWaris } from '../checklist';
+import { tambahAhliWaris, ubahOrang } from '../checklist';
+import { keluargaKarto, tambah } from './fixtures/kanvas';
 import { kasusBaru, type Kasus } from '../kasus';
 import {
-  alasanTidakDidukung, babakAsal, calonIbuJanin, janinLahir, tambahJanin, daftarAlmarhum, keadaanOrang, kerabatDari, orangTerputus, perluPeriksaCerita, terapkanKeadaan,
+  alasanTidakDidukung, babakAsal, calonIbuJanin, janinLahir, tambahJanin, daftarAlmarhum, keadaanOrang, kerabatDari, namaJelas, orangTerputus, perluPeriksaCerita, terapkanKeadaan,
 } from '../keadaanOrang';
 
 const TANPA_HARTA = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
@@ -112,4 +113,15 @@ it('janin: calon ibu hanya yang janinnya bisa mewarisi; lahir hidup/tanpa kehidu
   expect(janinLahir(k, janin.id, { jenis: 'tanpaKehidupan' }).kasus.graf.orang[janin.id]).toBeUndefined();   // [R13-2]
   const { kasus: w, idBayiWafat } = janinLahir(k, janin.id, { jenis: 'lahirLaluWafat', jenisKelamin: 'P' });
   expect(w.graf.orang[idBayiWafat!]).toMatchObject({ statusHidup: 'hidup', jenisKelamin: 'P' });
+});
+
+describe('namaJelas: orang tanpa nama dibedakan dengan babak asalnya', () => {
+  it('Ibu tanpa nama dari almarhum Karto → "Ibu Mbah Karto"; yang bernama tetap namanya', () => {
+    const { kasus, budi } = keluargaKarto();
+    const k0 = { ...kasus, graf: ubahOrang(kasus.graf, 'PEWARIS', { nama: 'Mbah Karto' }) };
+    const { kasus: k, id: ibu } = tambah(k0, 'PEWARIS', 'IBU');
+    expect(namaJelas(k, ibu)).toBe('Ibu Mbah Karto');
+    expect(namaJelas(k, budi)).toBe('Budi');
+    expect(namaJelas(k, 'PEWARIS')).toBe('Mbah Karto');
+  });
 });

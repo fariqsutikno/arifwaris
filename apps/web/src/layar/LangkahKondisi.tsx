@@ -1,5 +1,5 @@
 // Bagian Periksa (langkah 4): kondisi mawani' [SYF] — beda agama, membunuh pewaris [bab 02]. Menerima Kasus; menyerahkan Kasus
-// dengan field mawani' terisi. Munasakhat, janin, hilang, dan wafat bersamaan ditanyakan di langkah 4 (babak).
+// dengan field mawani' terisi. Munasakhat, janin, hilang, dan wafat bersamaan ditanyakan di kartu mayit (latihan) atau kanvas (nyata).
 
 import { useState, type ReactNode } from 'react';
 import type { IdOrang, Orang } from '@waris/engine';

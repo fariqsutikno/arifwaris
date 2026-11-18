@@ -1,5 +1,7 @@
 # Riset UX: Input Kematian Berlapis (munasakhat, haml, mafqud, khuntsa, gharqa)
 
+> **Catatan 2026-10-16:** rekomendasi bagian 7 (alur "Babak") dan 12.2 butir 1 digantikan oleh `docs/superpowers/specs/2026-10-16-kanvas-silsilah-design.md`. Persona, peta kebingungan, dan katalog skenario tetap berlaku.
+
 Tanggal: 2026-09-30 · Status: riset, belum spec · Terkait: spec UI langkah 5
 (`docs/superpowers/specs/2026-09-25-desain-ulang-ui.md`), KB bab 12, 13, 13a–13d.
 

@@ -1,36 +1,9 @@
-// Periksa cerita (spec 1.5): CeritaKasus = ringkasan kalimat per babak dengan tautan "ubah" ke babaknya, dipakai di langkah
-// Periksa wizard. PilihanMenunggu = layar pilihan menunggu kelahiran (spec 1.6, [R13-17]), tampil sesudah Periksa bila ada janin.
+// PilihanMenunggu = layar pilihan menunggu kelahiran (spec 1.6, [R13-17]), tampil sesudah Periksa bila ada janin.
 
 import { useState } from 'react';
-import type { IdOrang } from '@waris/engine';
-import { labelOrangChecklist } from '../checklist';
-import { formatRupiah } from '../format';
-import type { Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
-import { daftarAlmarhum, kerabatDari, namaSingkat } from '../keadaanOrang';
 import { Tombol } from '../ui/komponen';
 import { t } from '../terjemah';
-
-export function kalimatBabak(kasus: Kasus, idMayit: IdOrang): string {
-  const almarhum = daftarAlmarhum(kasus);
-  const indeks = almarhum.indexOf(idMayit);
-  const sebelumnya = new Set(almarhum.slice(0, indeks));
-  const ditinggalkan = kerabatDari(kasus, idMayit)
-    .filter(id => !sebelumnya.has(id) && kasus.graf.orang[id]!.statusHidup !== 'wafat')
-    .map(id => {
-      const { nama, ...tanpaNama } = kasus.graf.orang[id]!;
-      const grafTanpaNama = { ...kasus.graf, orang: { ...kasus.graf.orang, [id]: tanpaNama } };
-      const sebutan = labelOrangChecklist(grafTanpaNama, idMayit, id).toLowerCase();
-      return nama ? `${sebutan} (${nama})` : sebutan;
-    });
-  const nama = namaSingkat(kasus, idMayit);
-  return indeks === 0
-    ? t('hitung.cerita.babak_pertama', { nama, daftar: gabungDaftar(ditinggalkan) })
-    : t('hitung.cerita.babak_lanjut', { nama, daftar: gabungDaftar(ditinggalkan) });
-}
-
-const gabungDaftar = (daftar: string[]): string =>
-  daftar.length <= 1 ? daftar.join('') : `${daftar.slice(0, -1).join(', ')} ${t('hitung.cerita.dan')} ${daftar.at(-1)}`;
 
 export function PilihanMenunggu({ kirim }: { kirim: (aksi: Aksi) => void }) {
   const [pilihan, setPilihan] = useState<'tunggu' | 'hitungSekarang' | null>(null);
@@ -56,30 +29,5 @@ export function PilihanMenunggu({ kirim }: { kirim: (aksi: Aksi) => void }) {
         <Tombol disabled={!pilihan} onClick={lanjut}>{t('umum.lanjut')}</Tombol>
       </div>
     </main>
-  );
-}
-
-export function CeritaKasus({ kasus, kirim }: { kasus: Kasus; kirim: (aksi: Aksi) => void }) {
-  const almarhum = daftarAlmarhum(kasus);
-  const orang = Object.values(kasus.graf.orang);
-  const nama = (id: IdOrang) => namaSingkat(kasus, id);
-  const pewaris = nama(kasus.graf.idPewaris);
-  const lanjutan = almarhum.slice(1).map(nama).join(', ');
-  const ubahBabak = (babak: number) => { kirim({ jenis: 'KE_LANGKAH', langkah: 3 }); kirim({ jenis: 'KE_BABAK', babak }); };
-  return (
-    <div className="kartu tumpuk">
-      {almarhum.map((id, indeks) => (
-        <section key={id} className="tumpuk-rapat">
-          <h2 className="judul-bagian-kecil">{t('hitung.cerita.label_babak', { nomor: indeks + 1, nama: nama(id) })}</h2>
-          <p>{kalimatBabak(kasus, id)} <button type="button" className="tautan" onClick={() => ubahBabak(indeks)}>{t('hitung.cerita.ubah')}</button></p>
-        </section>
-      ))}
-      {kasus.wafatSesudahDibagi?.map(id => <p key={id}>{t('hitung.cerita.sesudah_dibagi', { nama: nama(id) })}</p>)}
-      {kasus.gharqa && <p>{t('hitung.cerita.bersamaan', { daftar: kasus.gharqa.anggota.map(nama).join(', ') })}</p>}
-      {orang.filter(o => o.statusHidup === 'mafqud').map(o => <p key={o.id}>{t('hitung.cerita.hilang', { nama: nama(o.id) })}</p>)}
-      {orang.filter(o => o.statusHidup === 'dalamKandungan').map(o => <p key={o.id}>{o.idIbu ? t('hitung.janin.baris', { ibu: nama(o.idIbu) }) : t('hitung.penutup.status_dalam_kandungan')}</p>)}
-      <p>{t('hitung.cerita.harta_dibagi', { pewaris, jumlah: formatRupiah(kasus.tirkah.kotor) })}
-        {almarhum.length > 1 && ` ${t('hitung.cerita.harta_sendiri_tidak', { daftar: lanjutan })}`}</p>
-    </div>
   );
 }

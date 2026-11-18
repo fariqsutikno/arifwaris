@@ -6,11 +6,12 @@ import { Aplikasi } from '../Aplikasi';
 
 beforeEach(() => { localStorage.clear(); localStorage.setItem('arif-waris:tur:wizard', '1'); window.location.hash = '#/hitung'; });
 
-const denganIstri = () => { const k = kasusBaru('L'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }; };
+const denganIstri = () => { const k = kasusBaru('L', 'latihan'); return { ...k, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ISTRI') }; };
 
 const mulai = () => {
   render(<Aplikasi />);
   fireEvent.click(screen.getByRole('button', { name: /Mulai dari nol/ }));
+  fireEvent.click(screen.getByRole('radio', { name: /Belajar atau latihan soal/ }));
 };
 
 it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => {
@@ -20,13 +21,19 @@ it('skenario baru langsung membuka langkah pewaris tanpa pilihan bawaan', () => 
   expect(screen.getByRole('radio', { name: /Perempuan/ }).getAttribute('aria-checked')).toBe('false');
 });
 
-it('tombol lanjut nonaktif dengan alasan tertulis', () => {
+it('tombol lanjut tidak pernah nonaktif: diklik saat kurang, alasan diumumkan dan tidak pindah langkah', () => {
   mulai();
   const lanjut = screen.getByRole('button', { name: /Lanjut: Harta/ });
-  expect(lanjut.hasAttribute('disabled')).toBe(true);
-  expect(screen.getByText(/Pilih dulu jenis kelamin/)).toBeTruthy();
+  expect(lanjut.hasAttribute('disabled')).toBe(false);
+  const status = () => document.querySelector('.bar-bawah [role=status]')!.textContent;
+  expect(status()).toBe('');
+  fireEvent.click(lanjut);
+  expect(status()).toMatch(/Pilih dulu jenis kelamin/);
+  expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   fireEvent.click(screen.getByRole('radio', { name: /Perempuan/ }));
-  expect(screen.getByRole('button', { name: /Lanjut: Harta/ }).hasAttribute('disabled')).toBe(false);
+  expect(status()).toBe('');   // tanda hilang begitu isian diubah
+  fireEvent.click(screen.getByRole('button', { name: /Lanjut: Harta/ }));
+  expect(screen.queryByRole('heading', { name: /laki-laki atau perempuan/i })).toBeNull();
 });
 
 it('stepper tidak bisa membuka langkah yang belum boleh', () => {
@@ -76,12 +83,14 @@ describe('temuan review akhir', () => {
     expect(screen.queryByRole('button', { name: /Lanjutkan/ })).toBeNull();
   });
 
-  it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu langsung ke wizard', () => {
+  it('skenario baru memberi tahu kasus berjalan tetap di riwayat, lalu ke pintu dan wizard', () => {
     isiKasus();
     fireEvent.click(screen.getByRole('button', { name: 'Kembali' }));
     const tombol = screen.getByRole('button', { name: /mulai dari nol/i });
     expect(tombol.textContent).toMatch(/tetap ada di Kasusmu/);
     fireEvent.click(tombol);
+    expect(screen.getByRole('heading', { name: 'Mau menghitung apa?' })).toBeTruthy();
+    fireEvent.click(screen.getByRole('radio', { name: /Belajar atau latihan soal/ }));
     expect(screen.getByRole('heading', { name: /laki-laki atau perempuan/i })).toBeTruthy();
   });
 
@@ -126,4 +135,20 @@ it('ringkasan kasus tanpa kotak centang (tidak terlihat seperti yang bisa dicent
   const ringkasan = screen.getByRole('complementary', { name: 'Ringkasan kasus' });
   expect(ringkasan.querySelector('.tanda-ringkas')).toBeNull();
   expect(ringkasan.textContent).not.toMatch(/✓/);
+});
+
+it('navigasi hash ke URL kasus lain di tab yang sama memulihkan kasus itu', async () => {
+  const { catatRiwayat } = await import('../riwayat');
+  const { ubahOrang } = await import('../checklist');
+  const bernama = (nama: string) => { const k = { ...denganIstri(), tirkah: { ...denganIstri().tirkah, kotor: 24_000_000n } }; return { ...k, graf: ubahOrang(k.graf, 'PEWARIS', { nama }) }; };
+  catatRiwayat('satu', bernama('Ahmad Satu'), Date.now(), { jenis: 'sendiri' });
+  catatRiwayat('dua', bernama('Zaid Dua'), Date.now(), { jenis: 'sendiri' });
+  window.location.hash = '#/hitung/satu';
+  render(<Aplikasi />);
+  expect(document.body.textContent).toMatch(/Ahmad Satu/);
+  const { act } = await import('@testing-library/react');
+  act(() => { window.location.hash = '#/hitung/dua'; window.dispatchEvent(new HashChangeEvent('hashchange')); });
+  expect(document.body.textContent).toMatch(/Zaid Dua/);
+  expect(document.body.textContent).not.toMatch(/Ahmad Satu/);
+  expect(window.location.hash).toBe('#/hitung/dua');
 });

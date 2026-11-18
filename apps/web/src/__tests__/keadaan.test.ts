@@ -1,5 +1,5 @@
 import { beforeEach, expect, it, vi } from 'vitest';
-import { tambahAhliWaris } from '../checklist';
+import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru } from '../kasus';
 import { keadaanAwal, pengurangKeadaan } from '../keadaan';
 import { terapkanKeadaan } from '../keadaanOrang';
@@ -9,8 +9,33 @@ beforeEach(() => localStorage.clear());
 
 const awal = keadaanAwal(null, null);
 
-it('MULAI membuka wizard langkah 1 tanpa kasus (jenis kelamin belum dipilih)', () => {
-  expect(pengurangKeadaan(awal, { jenis: 'MULAI' })).toMatchObject({ layar: 'wizard', langkah: 1, kasus: null });
+it('MULAI membuka layar pintu tanpa kasus dan tanpa jenis kasus', () => {
+  expect(pengurangKeadaan(awal, { jenis: 'MULAI' })).toMatchObject({ layar: 'pintu', langkah: 1, kasus: null, jenisKasus: null });
+});
+
+it('PILIH_JENIS_KASUS membuka wizard langkah 1; PILIH_PEWARIS membuat kasus berjenis itu', () => {
+  let keadaan = pengurangKeadaan(awal, { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
+  expect(keadaan).toMatchObject({ layar: 'wizard', langkah: 1, jenisKasus: 'latihan', kasus: null });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'P' });
+  expect(keadaan.kasus?.jenisKasus).toBe('latihan');
+});
+
+it('PILIH_PEWARIS tanpa pintu (jalur lama) membuat kasus nyata', () => {
+  const keadaan = pengurangKeadaan(awal, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  expect(keadaan.kasus?.jenisKasus).toBe('nyata');
+});
+
+it('MUAT membawa jenisKasus kasusnya; keadaanAwal juga', () => {
+  const latihan = kasusBaru('L', 'latihan');
+  expect(pengurangKeadaan(awal, { jenis: 'MUAT', kasus: latihan }).jenisKasus).toBe('latihan');
+  expect(keadaanAwal(latihan, null).jenisKasus).toBe('latihan');
+  expect(keadaanAwal(null, null).jenisKasus).toBeNull();
+});
+
+it('ULANGI mengosongkan jenisKasus', () => {
+  const keadaan = pengurangKeadaan({ ...awal, jenisKasus: 'nyata', kasus: kasusBaru('L') }, { jenis: 'ULANGI' });
+  expect(keadaan.jenisKasus).toBeNull();
 });
 
 it('PILIH_PEWARIS membuat kasus, lalu bisa mengganti jenis kelamin selama belum ada pasangan', () => {
@@ -24,22 +49,22 @@ it('PILIH_PEWARIS membuat kasus, lalu bisa mengganti jenis kelamin selama belum 
 });
 
 it('KE_LANGKAH tidak bisa melompati langkah yang belum lengkap', () => {
-  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L') };   // harta masih 0
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L', 'latihan') };   // harta masih 0
   expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 4 }).langkah).toBe(2);
 });
 
 it('KE_LAYAR hasil ditolak bila isian belum lengkap', () => {
-  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L') };
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L', 'latihan') };
   expect(pengurangKeadaan(keadaan, { jenis: 'KE_LAYAR', layar: 'hasil' }).layar).toBe('wizard');
 });
 
 it('ULANGI menghapus kasus dan kembali ke beranda, tujuan tetap', () => {
-  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L'), tujuan: 'belajar' as const };
+  const keadaan = { ...awal, layar: 'wizard' as const, kasus: kasusBaru('L', 'latihan'), tujuan: 'belajar' as const };
   expect(pengurangKeadaan(keadaan, { jenis: 'ULANGI' })).toMatchObject({ layar: 'awal', kasus: null, tujuan: 'belajar' });
 });
 
 it('UBAH_KASUS selalu merapikan urutan wafat', () => {
-  const keadaan = { ...awal, kasus: kasusBaru('L') };
+  const keadaan = { ...awal, kasus: kasusBaru('L', 'latihan') };
   const hasil = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: kasus => ({ ...kasus, urutanWafat: ['TIDAK_ADA'] }) });
   expect(hasil.kasus?.urutanWafat).toEqual([]);
 });
@@ -64,17 +89,47 @@ it('bahasa: bawaan id, tersimpan id+ar', async () => {
   simpanBahasa('id');
 });
 
-it('babak: KE_BABAK dibatasi jumlah almarhum; kembali dari Periksa ke babak terakhir', () => {
+it('kembali dari Periksa ke langkah 3 tanpa babak; keadaan tidak lagi menyimpan babak', () => {
   let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'MULAI' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
   const anak = Object.values(keadaan.kasus!.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id;
   keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => terapkanKeadaan(k, anak, { jenis: 'wafatSesudah', hartaSudahDibagi: false }) });
   keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 });
-  expect(pengurangKeadaan(keadaan, { jenis: 'KE_BABAK', babak: 5 }).babak).toBe(1);
+  expect(keadaan).not.toHaveProperty('babak');
   keadaan = { ...keadaan, langkah: 4 };
-  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 })).toMatchObject({ langkah: 3, babak: 1 });
+  expect(pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3 })).toMatchObject({ layar: 'wizard', langkah: 3 });
 });
 it('layar cerita hanya bila semua langkah lengkap', () => {
   expect(pengurangKeadaan(keadaanAwal(null, null), { jenis: 'KE_LAYAR', layar: 'cerita' }).layar).toBe('awal');
+});
+
+it('UBAH_KASUS mengurutkan urutan wafat menurut tahun (spec kanvas 9.1)', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, 'hitung'), { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: tambahAhliWaris(tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK'), 'PEWARIS', 'ANAK_LK') }) });
+  const [a1, a2] = hitungIsian(keadaan.kasus!.graf, 'PEWARIS').ANAK_LK!;
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, urutanWafat: [a1!, a2!], waktu: { [a1!]: { wafat: { tahun: 2000, kiraKira: false } }, [a2!]: { wafat: { tahun: 1990, kiraKira: false } } } }) });
+  expect(keadaan.kasus!.urutanWafat).toEqual([a2, a1]);
+});
+
+it('KE_LANGKAH dengan fokus menyimpan fokus; UBAH_KASUS dan KE_LANGKAH tanpa fokus mengosongkannya', () => {
+  let keadaan = pengurangKeadaan(keadaanAwal(null, null), { jenis: 'PILIH_JENIS_KASUS', jenisKasus: 'latihan' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'PILIH_PEWARIS', jenisKelamin: 'L' });
+  keadaan = pengurangKeadaan(keadaan, { jenis: 'UBAH_KASUS', ubah: k => ({ ...k, tirkah: { ...k.tirkah, kotor: 10n }, graf: tambahAhliWaris(k.graf, 'PEWARIS', 'ANAK_LK') }) });
+  const fokus = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: 3, fokus: 'PEWARIS' });
+  expect(fokus.fokus).toBe('PEWARIS');
+  expect(pengurangKeadaan(fokus, { jenis: 'UBAH_KASUS', ubah: k => k }).fokus).toBeUndefined();
+  expect(pengurangKeadaan(fokus, { jenis: 'KE_LANGKAH', langkah: 3 }).fokus).toBeUndefined();
+});
+
+it('KE_LANGKAH 3 dari Periksa menyimpan fokusBagian, fokus, dariPeriksa; KE_LANGKAH 4 mengosongkannya dan lolos meski Keluarga belum lengkap', () => {
+  const dasar = { ...keadaanAwal(kasusBaru('L'), null), layar: 'wizard' as const };
+  const dibuka = pengurangKeadaan(dasar, { jenis: 'KE_LANGKAH', langkah: 3, fokus: 'x', fokusBagian: 'pasangan:PEWARIS', dariPeriksa: true });
+  expect(dibuka).toMatchObject({ fokus: 'x', fokusBagian: 'pasangan:PEWARIS', dariPeriksa: true });
+  const kembali = pengurangKeadaan(dibuka, { jenis: 'KE_LANGKAH', langkah: 4 });
+  expect(kembali.langkah).toBe(4);
+  expect(kembali).not.toHaveProperty('dariPeriksa');
+  expect(kembali).not.toHaveProperty('fokusBagian');
+  expect(pengurangKeadaan(dasar, { jenis: 'KE_LANGKAH', langkah: 4 }).langkah).toBeLessThan(4);
 });
