@@ -13,6 +13,7 @@ import { adalahDzawilArham, urutkanBaris, type RingkasanHasil } from './ringkasa
 import { AngkaMasuk } from '../ui/AngkaMasuk';
 import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
+import { warnaOrang } from './warnaOrang';
 import { angka as angkaTampil, panah, t } from '../terjemah';
 
 interface Props { hasil: HasilOk | null; ringkasan: RingkasanHasil; sembunyiNominal: boolean; sedangMenebak: boolean; saatPilih: (id: IdOrang) => void }
@@ -104,7 +105,7 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
             return (
               <tr key={id} {...pemicuHover} className={className || undefined} {...bisaDipilih(id, saatPilih)}>
                 <td className={kelas('kiri', sel('ahliWaris', [id]))}>
-                  <span className="orang-sel"><span className={`titik g-${orang?.kelompok ?? 'saudara'}`} />{orang?.nama ?? id}</span>
+                  <span className="orang-sel"><span className="titik" style={{ background: warnaOrang(ringkasan, id) }} />{orang?.nama ?? id}</span>
                 </td>
                 {indeks === 0 && <>
                   <td rowSpan={anggota.length} className={sel('bagian', anggota)} data-anggota={anggota.join(' ')}>
@@ -196,7 +197,7 @@ function TabelMunasakhat({ ringkasan, sembunyi, saatPilih }: { ringkasan: Ringka
           const { className, ...pemicu } = atribut(orang.id);
           return (
             <tr key={orang.id} {...pemicu} className={className || undefined} {...bisaDipilih(orang.id, saatPilih)}>
-              <td className="kiri"><span className="orang-sel"><span className={`titik g-${orang.kelompok}`} />{orang.nama}</span></td>
+              <td className="kiri"><span className="orang-sel"><span className="titik" style={{ background: warnaOrang(ringkasan, orang.id) }} />{orang.nama}</span></td>
               <td className="angka">{angkaTampil(String(orang.saham))}</td>
               <td className="uang">{uangAtau(orang.nominal, sembunyi)}</td>
             </tr>
@@ -213,7 +214,7 @@ function BarisTerhalang({ id, nama, kelompok, alasan, kolom, saatPilih }: { id: 
   const { className, ...pemicu } = atribut(id);
   return (
     <tr {...pemicu} className={['mahjub', className].filter(Boolean).join(' ')} {...bisaDipilih(id, saatPilih)}>
-      <td className="kiri"><span className="orang-sel"><span className={`titik putus g-${kelompok}`} />{nama}</span></td>
+      <td className="kiri"><span className="orang-sel"><span className="titik putus" />{nama}</span></td>
       <td colSpan={kolom} className="ket-mahjub">{alasan}</td>
     </tr>
   );
