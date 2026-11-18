@@ -128,6 +128,12 @@ export function namaSingkat(kasus: Kasus, idOrang: IdOrang): string {
   return labelOrangChecklist(graf, mayit, idOrang);
 }
 
+/** Nama yang membedakan orang tanpa nama: label hubungan + nama babak asalnya ("Ibu Budi"). */
+export function namaJelas(kasus: Kasus, idOrang: IdOrang): string {
+  if (idOrang === kasus.graf.idPewaris || kasus.graf.orang[idOrang]!.nama) return namaSingkat(kasus, idOrang);
+  const asal = babakAsal(kasus, idOrang) ?? kasus.graf.idPewaris;
+  return `${labelOrangChecklist(kasus.graf, asal, idOrang)} ${namaSingkat(kasus, asal)}`;
+}
 /** [R13-1] Anak yang baru dikandung sesudah `idMayit` wafat bukan ahli warisnya; null = sudah ada sebelum semua almarhum. */
 export function aturDikandung(kasus: Kasus, idAnak: IdOrang, idMayit: IdOrang | null): Kasus {
   const { [idAnak]: _lama, ...sisa } = kasus.dikandungSetelahWafat ?? {};

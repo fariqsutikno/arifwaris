@@ -7,7 +7,7 @@ import { useMemo } from 'react';
 import { Pohon } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import { PenyediaSorot } from '../../hasil/sorot';
-import { ringkas } from '../../hasil/ringkasan';
+import { bisaDiringkas, ringkas } from '../../hasil/ringkasan';
 import { jalankan } from '../../jalankan';
 import type { Kasus } from '../../kasus';
 import { ringkasKasus } from '../../riwayat';
@@ -21,9 +21,11 @@ const WARNA_RUAS = ['#6ee9b0', '#f6c86a', '#8ec5ff', '#f7a8c4', '#c9a8f7'];
 interface Props { kasusTerakhir: Kasus | null; saatLanjut: () => void }
 
 export function HeroLab({ kasusTerakhir, saatLanjut }: Props) {
-  const ringkasan = useMemo(
-    () => (kasusTerakhir && ringkasKasus(kasusTerakhir).lengkap ? ringkas(kasusTerakhir, jalankan(kasusTerakhir)) : null),
-    [kasusTerakhir]);
+  const ringkasan = useMemo(() => {
+    if (!kasusTerakhir || !ringkasKasus(kasusTerakhir).lengkap) return null;
+    const tampil = jalankan(kasusTerakhir);
+    return bisaDiringkas(tampil) ? ringkas(kasusTerakhir, tampil) : null;
+  }, [kasusTerakhir]);
   if (!kasusTerakhir) return null;
   const { judul, keterangan } = ringkasKasus(kasusTerakhir);
   return (

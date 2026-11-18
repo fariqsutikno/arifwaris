@@ -6,7 +6,8 @@
 import { useState } from 'react';
 import type { IdOrang } from '@waris/engine';
 import type { Kasus, Peristiwa } from '../../kasus';
-import { daftarAlmarhum, namaSingkat } from '../../keadaanOrang';
+import { daftarAlmarhum, namaJelas } from '../../keadaanOrang';
+import { nomorKembar } from '../../latihan';
 import { t } from '../../terjemah';
 import { Tombol } from '../../ui/komponen';
 
@@ -26,7 +27,10 @@ export function FormPeristiwa({ kasus, ubah, saatTutup }: Props) {
   const adaPasangan = !!jenis && jenis !== 'lahir';
   const urutan: Langkah[] = ['jenis', 'siapa', ...(adaPasangan ? ['pasangan' as const] : []), 'kapan'];
   const langkah = urutan[posisi]!;
-  const nama = (id: IdOrang) => namaSingkat(kasus, id);
+  // Orang tanpa nama dibedakan dengan babak asalnya; yang tetap kembar diberi nomor (satu sumber: nomorKembar).
+  const semuaId = Object.keys(kasus.graf.orang);
+  const labelUnik = nomorKembar(semuaId.map(id => namaJelas(kasus, id)));
+  const nama = (id: IdOrang) => labelUnik[semuaId.indexOf(id)]!;
   const calonPasangan = orang.filter(id => id !== siapa);
   const calonWaktu = daftarAlmarhum(kasus).filter(id => !adaPasangan || (id !== siapa && id !== pasangan));
   const idPasangan = pasangan && calonPasangan.includes(pasangan) ? pasangan : undefined;
