@@ -7,12 +7,13 @@
 
 import { simpanGerakKurang, sistemMengurangiGerak, useGerakDikurangi } from '../tampilan';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import type { BarisPenjelasan } from '@waris/explain';
+import type { BarisPenjelasan, Linimasa } from '@waris/explain';
 import type { HasilOk } from '../jalankan';
 import { Dalil, Baris, type BabBerjudul } from '../layar/Penjelasan';
 import { Ikon } from '../ui/Ikon';
 import { TombolIkon } from '../ui/Tooltip';
 import { FokusLangkah, PanelHitung } from './FokusLangkah';
+import { LangkahDemiLangkah } from './LangkahDemiLangkah';
 import { kolomTerbukaSampai, sorotKetukan, type DataPeran } from './ketukan';
 import { durasiPutaran, peragaKetukan, tundaSelDari } from './peraga';
 import type { RingkasanHasil } from './ringkasan';
@@ -29,6 +30,8 @@ interface Props {
   terkunci: boolean;
   adalahBelajar: boolean;
   kanvas: { pohon: ReactNode; tabel: ReactNode };
+  /** Ada (kasus biasa, bukan Belajar terkunci) = pintu membuka mode Langkah demi langkah, bukan daftar lama di tempat. */
+  linimasa: Linimasa | null;
 }
 
 
@@ -42,8 +45,10 @@ const tandaiTepi = (wadah: HTMLElement) => {
 export const labelSubLangkah = (nomorBab: number, ketukan: number | null, jumlahBaris: number) =>
   `Langkah ${nomorBab + 1}${ketukan !== null && jumlahBaris > 1 ? String.fromCharCode(97 + ketukan) : ''}`;
 
-export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiNominal, terkunci, adalahBelajar, kanvas }: Props) {
+export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiNominal, terkunci, adalahBelajar, kanvas, linimasa }: Props) {
   const [terbuka, setTerbuka] = useState(false);
+  const [modeBaru, setModeBaru] = useState(false);
+  const pakaiModeBaru = !!linimasa && !!hasil && !terkunci;
   const [mode, setMode] = useState<'satu' | 'semua'>('satu');
   const [indeks, setIndeks] = useState(0);
   const [dibaca, setDibaca] = useState<Set<number>>(new Set([0]));
@@ -166,13 +171,14 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
 
   return (
     <div className="urut-langkah" data-tur="langkah">
-      {/* Pintu di panel "Pelajari cara menghitungnya"; untuk sementara membuka langkah lama di tempat (rencana-integrasi-langkah-demi-langkah). */}
-      <button type="button" className="kepala-lipat" aria-expanded={terbuka} onClick={() => setTerbuka(!terbuka)}>
+      {/* Pintu di panel "Pelajari cara menghitungnya". Kasus khusus (munasakhat, taqdir, gharqa) masih memakai daftar lama sampai linimasanya ada. */}
+      <button type="button" className="kepala-lipat" aria-expanded={pakaiModeBaru ? modeBaru : terbuka} aria-haspopup={pakaiModeBaru ? 'dialog' : undefined} onClick={() => (pakaiModeBaru ? setModeBaru(true) : setTerbuka(!terbuka))}>
         <span className="ikon-bulat"><Ikon nama="daftar" /></span>
         <span className="judul-pintu"><b>{adalahBelajar ? t('hitung.pembahasan_langkah_demi_langkah') : t('hasil.langkah_demi_langkah')}</b><small>{t('hasil.langkah_demi_langkah_sub')}</small></span>
         {terkunci && <span className="lencana-kunci"><Ikon nama="kunci" ukuran={14} /> {t('umum.terkunci')}</span>}
         <span className="panah-lipat" aria-hidden="true" />
       </button>
+      {modeBaru && linimasa && hasil && <LangkahDemiLangkah linimasa={linimasa} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} pohon={kanvas.pohon} saatTutup={() => setModeBaru(false)} />}
       {terbuka && (terkunci ? (
         <div className="isi-kartu-sisi">
           <div className="langkah-terkunci">

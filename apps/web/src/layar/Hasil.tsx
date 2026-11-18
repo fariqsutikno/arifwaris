@@ -32,8 +32,10 @@ import { tambahAnakBernama } from '../isianBagian';
 import { namaSingkat } from '../keadaanOrang';
 import { DialogTambahAnak } from './DialogTambahAnak';
 import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
-import { adaTidakPas, pecahanTeks, persenTeks, ringkas, type RingkasanHasil } from '../hasil/ringkasan';
+import { adaTidakPas, adalahDzawilArham, pecahanTeks, persenTeks, ringkas, type RingkasanHasil } from '../hasil/ringkasan';
 import { jenisDari } from '../checklist';
+import { susunLinimasa } from '@waris/explain';
+import { kamusNarasi } from '../konten/kamusNarasi';
 import { unduhKasus } from '../berkas';
 import { PenyediaSorot } from '../hasil/sorot';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
@@ -201,6 +203,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     : ringkasan.gharqa ? <TabelPerHarta {...umumKhusus} daftarHarta={ringkasan.gharqa.harta} />
     : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   const kanvasFokus = { pohon, tabel };
+  // Dzawil arham belum punya linimasa (rencana 5.8): tetap memakai bab penjelasan lama.
+  const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
+  const linimasa = useMemo(() => (hasilBiasa && !sedangMenebak && !adaDzawilArham ? susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }) : null), [hasilBiasa, sedangMenebak, adaDzawilArham, kasus.graf]);
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 
   const kamu = kasus.saya ? ringkasan.penerima.find(orang => orang.id === kasus.saya) : undefined;
@@ -324,7 +329,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         <section className="ubin-h gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
           <p className="sub-kartu">{t('hasil.pelajari_sub')}</p>
-          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />
+          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} linimasa={linimasa} />
           {!adalahBelajar && !hanyaBaca && <DaftarAksi daftar={[
             { ikon: 'kuis', judul: t('hasil.coba_tebak_dulu'), keterangan: t('hasil.mode_belajar'), saatPilih: () => setKonfirmasiBelajar(true) },
             ...(bolehUbah ? [{ ikon: 'rujukan' as const, judul: t('hasil.bandingkan_madzhab'), keterangan: t('hasil.bandingkan_madzhab_ket'), saatPilih: () => setMadzhabTerbuka(true) }] : []),

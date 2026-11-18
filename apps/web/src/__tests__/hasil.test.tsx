@@ -305,14 +305,32 @@ describe('layar hasil', () => {
     expect(aksiTerakhir).toEqual({ jenis: 'KE_LANGKAH', langkah: 1 });
   });
 
-  it('langkah perhitungan: satu per satu dengan kotak "Kenapa begitu?"', () => {
-    render(<Uji awal={prototipe()} />);
+  it('langkah demi langkah: pintu membuka mode penuh, maju/mundur, Lainnya, tutup', () => {
+    render(<Uji awal={c1601()} />);
     fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
-    expect(screen.getByText(/Langkah 1 dari/)).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Berikutnya/ }));
-    expect(screen.getByText(/Langkah 2 dari/)).toBeTruthy();
-    expect(screen.queryByText(/langkah kelar/)).toBeNull();
-    expect(screen.getAllByText('Kenapa begitu?').length).toBeGreaterThan(0);
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    expect(within(mode()).getByText(/Tahap 1 dari \d+ · Langkah 1 dari/)).toBeTruthy();
+    const awal = mode().textContent;
+    fireEvent.click(within(mode()).getByRole('button', { name: /Lanjut/ }));
+    expect(mode().textContent).not.toBe(awal);
+    fireEvent.click(within(mode()).getByRole('button', { name: /Kembali/ }));
+    expect(within(mode()).getByText(/Langkah 1 dari/)).toBeTruthy();
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Lainnya' }));
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Tampilkan semua langkah' }));
+    expect(within(mode()).getByText('Semua tahap')).toBeTruthy();
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Tutup' }));
+    expect(screen.queryByRole('dialog', { name: 'Langkah demi langkah' })).toBeNull();
+  });
+
+  it('langkah demi langkah: tabel dibangun bertahap, Selesai di langkah terakhir menutup', () => {
+    render(<Uji awal={c1601()} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    expect(within(mode()).getByText(/Kolom tabel bertambah/)).toBeTruthy();
+    for (let klik = 0; klik < 80 && !within(mode()).queryByRole('button', { name: 'Selesai' }); klik++) fireEvent.click(within(mode()).getByRole('button', { name: /Lanjut/ }));
+    expect(mode().querySelector('table.tabel-langkah')!.textContent).toMatch(/Nominal.*Rp 3\.000\.000/);
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Selesai' }));
+    expect(screen.queryByRole('dialog', { name: 'Langkah demi langkah' })).toBeNull();
   });
 
   it('hitung kasus: pindah ke Belajar selalu dikonfirmasi; batal tidak mengirim aksi', () => {
@@ -324,27 +342,6 @@ describe('layar hasil', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
     fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Pindah' }));
     expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
-  });
-
-  it('mode fokus: maju per sub-langkah lewat Lanjut, hasil akhir menampilkan hitungan, animasi bisa dimatikan', () => {
-    render(<Uji awal={c1601()} />);
-    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
-    fireEvent.click(screen.getByRole('button', { name: /Mode fokus/ }));
-    const panel = () => document.querySelector('.panel-hitung')!;
-    const awal = panel().textContent;
-    expect(awal).toMatch(/Langkah 1/);
-    fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
-    expect(panel().textContent).not.toBe(awal);
-    fireEvent.click(screen.getByRole('button', { name: '← Kembali' }));
-    expect(panel().textContent).toBe(awal);
-    for (let klik = 0; klik < 60 && !panel().querySelector('.rumus-hitung'); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
-    expect(panel().querySelector('.rumus-hitung')!.textContent).toMatch(/× Rp 24\.000\.000/);
-    expect(screen.getByRole('button', { name: 'Jeda animasi' })).toBeTruthy();
-    fireEvent.click(screen.getByRole('switch', { name: /Animasi/ }));
-    expect(screen.queryByRole('button', { name: 'Jeda animasi' })).toBeNull();
-    for (let klik = 0; klik < 20 && !/Selesai!/.test(panel().textContent ?? ''); klik++) fireEvent.click(screen.getByRole('button', { name: 'Lanjut →' }));
-    expect(panel().textContent).toMatch(/Selesai!/);
-    expect(screen.getByRole('button', { name: 'Tutup mode fokus' })).toBeTruthy();
   });
 
   it('kasus yang tidak didukung tampil sebagai pesan', () => {
