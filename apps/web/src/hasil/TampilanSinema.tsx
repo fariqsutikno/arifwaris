@@ -54,7 +54,7 @@ export function TampilanSinema({ linimasa, urutan, indeks, babak, ringkasanAkhir
   return (
     <div className="sinema-isi">
       <main className="panggung" ref={panggung}>
-        <div className="visual-sinema" key={`${posisi.tahap}`}>
+        <div className="visual-sinema" key={`tahap-${posisi.tahap}`}>
           {meja && <MejaTaqdir visual={meja} ringkasan={ringkasanAkhir} sebutan={linimasa.nama} />}
           {harta && <HartaTabel baris={harta.baris} sembunyiNominal={sembunyiNominal} />}
           {kotak && <div className={adaTabel ? 'kotak-mini' : undefined}><KotakHarta visual={kotak} ringkasan={ringkasanTahap} sebutan={tahap.babak === undefined ? linimasa.nama : undefined} /></div>}
@@ -65,7 +65,7 @@ export function TampilanSinema({ linimasa, urutan, indeks, babak, ringkasanAkhir
             </div>
           )}
         </div>
-        <p className="papan-sinema" key={indeks} aria-live="polite"><Baris baris={langkah.papan} /></p>
+        <p className="papan-sinema" key={`langkah-${indeks}`} aria-live="polite"><Baris baris={langkah.papan} /></p>
       </main>
       {takarir !== papan && <p className="takarir">{takarir}</p>}
     </div>

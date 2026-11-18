@@ -203,7 +203,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     : gharqaDitahan ? <TabelSkenarioGharqa {...umumKhusus} />
     : ringkasan.gharqa ? <TabelPerHarta {...umumKhusus} daftarHarta={ringkasan.gharqa.harta} />
     : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
-  const kanvasFokus = { pohon, tabel };
   // Dzawil arham belum punya linimasa (rencana 5.8): tetap memakai bab penjelasan lama.
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
@@ -352,7 +351,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         <section className="ubin-h gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
           <p className="sub-kartu">{t('hasil.pelajari_sub')}</p>
-          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} linimasa={linimasa} babak={babakLinimasa} />
+          <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} pohon={pohon} linimasa={linimasa} babak={babakLinimasa} />
           {!adalahBelajar && !hanyaBaca && <DaftarAksi daftar={[
             { ikon: 'kuis', judul: t('hasil.coba_tebak_dulu'), keterangan: t('hasil.mode_belajar'), saatPilih: () => setKonfirmasiBelajar(true) },
             ...(bolehUbah ? [{ ikon: 'rujukan' as const, judul: t('hasil.bandingkan_madzhab'), keterangan: t('hasil.bandingkan_madzhab_ket'), saatPilih: () => setMadzhabTerbuka(true) }] : []),
