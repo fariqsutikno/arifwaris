@@ -7,7 +7,7 @@ import { geserUrutan, urutanDariTahun } from '../../antreanUrutan';
 import type { Kasus } from '../../kasus';
 import type { Aksi } from '../../keadaan';
 import { namaSingkat } from '../../keadaanOrang';
-import type { BabakKisah as DataBabak } from '../../kisah';
+import { kematianSebelum, type BabakKisah as DataBabak } from '../../kisah';
 import { daftarBagian } from '../../kelompok';
 import { judulBagian } from '../../ringkasanBagian';
 import { sebutanDariSaya } from '../../sebutan';
@@ -30,9 +30,10 @@ export function BabakKisah({ kasus, babak, ubah, kirim, terbuka, saatBuka, saatT
   const idJudul = `judul-babak-${babak.idMayit}`;
   return (
     <article className="babak" id={`babak-${babak.idMayit}`} aria-labelledby={idJudul}>
-      <div className="kepala">
+      <div className="babak-kepala">
         <div>
-          <div className="tahun-besar">{babak.tahun ? babak.tahun.tahun : t('hitung.periksa.tahun_kosong')}</div>
+          {babak.tahun ? <div className="tahun-besar">{babak.tahun.tahun}</div>
+            : (babak.nomor > 0 || kematianSebelum(kasus).length > 0) && <div className="label-urutan">{t('hitung.periksa.label_lalu')}</div>}
           <div className="judul-babak" id={idJudul}>{t('hitung.periksa.babak_wafat', { nama })}
             {babak.urutanBelumPasti && !babak.tahun && <> <span className="lencana-urutan">{t('hitung.periksa.urutan_belum_pasti')}</span></>}</div>
         </div>

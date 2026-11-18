@@ -3,7 +3,8 @@
 // bentuknya divalidasi penuh sebelum dipakai, bigint disimpan sebagai string digit.
 
 import { t } from './terjemah';
-import type { GrafKeluarga, IdOrang, InputTirkah, KeadaanGharqa, Orang, Pernikahan } from '@waris/engine';
+import { DAFTAR_RULESET } from '@waris/engine';
+import type { GrafKeluarga, IdOrang, InputTirkah, KeadaanGharqa, Orang, Pernikahan, Ruleset } from '@waris/engine';
 
 export const SATUAN_PEMBULATAN = [1n, 100n, 1000n] as const;
 // Rincian harta hanya alat bantu mengisi total; engine tetap menerima `tirkah.kotor`.
@@ -20,7 +21,7 @@ export type JenisKasus = typeof JENIS_KASUS[number];
 /** Jawaban pertanyaan pintu "hartanya sudah dibagi?" (spec kanvas 4); kosong = belum dijawab, tanpa bawaan. */
 export const PINTU = ['baru', 'lama', 'sudah', 'tidakTahu'] as const;
 export type Pintu = typeof PINTU[number];
-export const KELOMPOK = ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'saudara', 'jauh', 'anakBersama', 'halLain'] as const;
+export const KELOMPOK = ['pasangan', 'anak', 'orangTua', 'kakekNenek', 'saudara', 'jauh', 'saudaraKakek', 'anakBersama', 'halLain'] as const;
 export type Kelompok = typeof KELOMPOK[number];
 /** Presisi bebas: tahun saja sampai tanggal lengkap. Khusus UI; tidak pernah dikirim ke engine. */
 export interface TanggalKira { tahun: number; bulan?: number; hari?: number; kiraKira: boolean }
@@ -48,6 +49,8 @@ export interface Kasus {
   gharqa?: GharqaKasus;
   /** Khusus UI (spec 2.2): wafat sesudah harta dibagi, engine melihat mereka hidup. */
   wafatSesudahDibagi?: IdOrang[];
+  /** Madzhab yang dipakai engine; kosong = Syafi'i (default). */
+  madzhab?: Ruleset;
   pilihanJanin?: 'tunggu' | 'hitungSekarang';
   /** Nama kasus dari pengguna (langkah Periksa); kosong = dinamai otomatis dari ringkasan. */
   nama?: string;
@@ -221,6 +224,10 @@ function bacaTambahanV4(objek: Record<string, unknown>, graf: GrafKeluarga): Par
   const adaDiGraf = (id: unknown): id is IdOrang => typeof id === 'string' && !!graf.orang[id];
   if (!JENIS_KASUS.includes(objek.jenisKasus as JenisKasus)) throw salah();
   const hasil: Partial<Kasus> & { jenisKasus: JenisKasus } = { jenisKasus: objek.jenisKasus as JenisKasus };
+  if (objek.madzhab !== undefined) {
+    if (!DAFTAR_RULESET.includes(objek.madzhab as Ruleset)) throw salah();
+    hasil.madzhab = objek.madzhab as Ruleset;
+  }
   if (objek.pintu !== undefined) {
     if (!PINTU.includes(objek.pintu as Pintu)) throw salah();
     hasil.pintu = objek.pintu as Pintu;

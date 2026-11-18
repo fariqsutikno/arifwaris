@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { jalankan } from '../jalankan';
 import { kasusBaru, type Kasus } from '../kasus';
 import { terapkanKeadaan } from '../keadaanOrang';
-import { alasanBarisKurang, alasanWafatSesudahDitolak, jawabLanjutan, keadaanTerpilih, lanjutanDiperlukan, pilihKeadaan, pilihanKeadaan } from '../keadaanBaris';
+import { alasanBarisKurang, alasanWafatSesudahDitolak, jawabLanjutan, calonCerai, calonHilang, keadaanTerpilih, lanjutanDiperlukan, pilihKeadaan, pilihanKeadaan } from '../keadaanBaris';
 import { tambah } from './fixtures/kanvas';
 
 const tahun = (nilai: number) => ({ tahun: nilai, kiraKira: false });
@@ -13,22 +13,44 @@ function barisBaru(kunci: 'ANAK_LK' | 'ISTRI' | 'AYAH', almarhumWafat?: number) 
   return { kasus: wafatAlmarhum({ ...kasus, belumDiisi: [id] }, almarhumWafat), id };
 }
 
-describe('pilihanKeadaan (spec kanvas 5.3, aturan 8)', () => {
-  it('leluhur: hidup, wafat, belum tahu, hilang; semuanya tampil langsung', () => {
-    expect(pilihanKeadaan('AYAH')).toEqual([
-      { nilai: 'hidup', kelompok: 'utama' }, { nilai: 'wafat', kelompok: 'utama' },
-      { nilai: 'belumTahu', kelompok: 'utama' }, { nilai: 'hilang', kelompok: 'utama' },
-    ]);
+describe('pilihanKeadaan (C4-1): tiga pil; hilang dan cerai pindah ke pertanyaan lanjutan', () => {
+  it('semua peran: hidup, wafat, belum tahu', () => {
+    for (const kunci of ['AYAH', 'ISTRI', 'MUTIQ'] as const) expect(pilihanKeadaan(kunci)).toEqual(['hidup', 'wafat', 'belumTahu']);
   });
 
-  it('pasangan: hilang dan bercerai ada di Lainnya', () => {
-    const lainnya = pilihanKeadaan('ISTRI').filter(o => o.kelompok === 'lainnya').map(o => o.nilai);
-    expect(lainnya).toEqual(['hilang', 'bercerai']);
+  it('kunci yang bisa khuntsa menambah satu pil khuntsa', () => {
+    expect(pilihanKeadaan('ANAK_LK')).toEqual(['hidup', 'wafat', 'belumTahu', 'khuntsa']);
+  });
+});
+
+describe('calonHilang dan calonCerai (C4-1)', () => {
+  const istriDua = () => {
+    let { kasus, id: pertama } = tambah(kasusBaru('L'), 'PEWARIS', 'ISTRI');
+    const kedua = tambah(kasus, 'PEWARIS', 'ISTRI');
+    kasus = kedua.kasus;
+    const anak = tambah(kasus, 'PEWARIS', 'ANAK_LK');
+    return { kasus: anak.kasus, istri1: pertama, istri2: kedua.id, anak: anak.id };
+  };
+
+  it('calonCerai hanya pasangan; calonHilang semua orang di kartu', () => {
+    const { kasus, istri1, istri2, anak } = istriDua();
+    expect(calonCerai(kasus).map(c => c.id)).toEqual([istri1, istri2]);
+    expect(calonHilang(kasus).map(c => c.id)).toEqual(expect.arrayContaining([istri1, istri2, anak]));
   });
 
-  it('keturunan: hilang dan kelamin belum jelas di Lainnya; kunci di luar KHUNTSA_MUNGKIN hanya hilang dan tampil langsung', () => {
-    expect(pilihanKeadaan('ANAK_LK').filter(o => o.kelompok === 'lainnya').map(o => o.nilai)).toEqual(['hilang', 'khuntsa']);
-    expect(pilihanKeadaan('MUTIQ').filter(o => o.nilai === 'hilang')).toEqual([{ nilai: 'hilang', kelompok: 'utama' }]);
+  it('tanpa pasangan calonCerai kosong; yang sudah wafat tidak jadi calon hilang', () => {
+    const { kasus, id } = barisBaru('ANAK_LK');
+    expect(calonCerai(kasus)).toEqual([]);
+    const wafat = pilihKeadaan(kasus, id, 'wafat', 'PEWARIS');
+    expect(calonHilang(wafat).map(c => c.id)).not.toContain(id);
+  });
+
+  it('memilih keadaan lewat pilihKeadaan memindahkan orang ke daftar yang benar (status sama dengan pil lama)', () => {
+    const { kasus, istri1, istri2 } = istriDua();
+    const hasil = pilihKeadaan(pilihKeadaan(kasus, istri1, 'hilang', 'PEWARIS'), istri2, 'bercerai', 'PEWARIS');
+    expect(hasil.graf.orang[istri1]!.statusHidup).toBe('mafqud');
+    expect(hasil.graf.pernikahan.find(n => n.idIstri === istri2)!.status).toBe('talakRajiIddah');
+    expect(calonCerai(hasil).map(c => c.id)).toEqual([istri2]);   // yang hilang tidak ikut daftar cerai
   });
 });
 
@@ -71,7 +93,7 @@ describe('keadaan satu baris', () => {
     const tertunda = jawabLanjutan(pilihKeadaan(kasus, id, 'wafat', 'PEWARIS'), id, 'PEWARIS', { jenis: 'wafat', tahun: tahun(1990) });
     expect(lanjutanDiperlukan(tertunda, id)).toBe('wafat');
     expect(tertunda.belumDiisi).toEqual([id]);
-    expect(alasanBarisKurang(tertunda, id, 'PEWARIS')).toMatch(/sebelum\/sesudah/);
+    expect(alasanBarisKurang(tertunda, id, 'PEWARIS')).toMatch(/sebelum atau sesudah/);
     const selesai = jawabLanjutan(tertunda, id, 'PEWARIS', { jenis: 'wafat', waktu: 'sesudah' });
     expect(selesai.urutanWafat).toContain(id);
     expect(selesai.belumDiisi ?? []).toEqual([]);

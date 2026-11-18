@@ -8520,7 +8520,7 @@
    "urutan": 96,
    "revisiId": "2117dff6-f061-47a8-a17b-2386cc1b0da5",
    "isi": {
-    "id": "Masukkan semua kerabat yang masih hidup saat almarhum wafat. Nanti dihitung siapa yang dapat.",
+    "id": "Masukkan semua keluarga yang masih hidup waktu almarhum meninggal. Nanti dihitung siapa yang dapat.",
     "ar": "أدخل كل الأقارب الأحياء عند موت الميت، ثم يحسب من يرث."
    },
    "refs": [],
@@ -9202,7 +9202,7 @@
   {
    "kunci": "beranda.hitung_pembagian_warisan_menurut_madzhab_syafi",
    "halaman": "beranda",
-   "id": "Hitung pembagian warisan menurut madzhab Syafi'i, lengkap dengan alasan tiap angkanya, dan pelajari ilmunya pelan-pelan.",
+   "id": "Hitung pembagian warisan menurut madzhab Syafi'i, bisa dibandingkan dengan Hanbali, Hanafi, dan Maliki, lengkap dengan alasan tiap angkanya, dan pelajari ilmunya pelan-pelan.",
    "ar": "احسب قسمة التركة على مذهب الشافعي مع تعليل كل رقم، وتعلم العلم خطوة خطوة.",
    "versiTerbit": 283
   },
@@ -9916,7 +9916,7 @@
   {
    "kunci": "hitung.boleh_dikosongkan",
    "halaman": "hitung",
-   "id": "(boleh dikosongkan)",
+   "id": "tidak wajib",
    "ar": "(يجوز تركه فارغا)",
    "versiTerbit": 383
   },
@@ -17483,7 +17483,7 @@
   {
    "kunci": "hitung.keadaan.sudah_wafat",
    "halaman": "hitung",
-   "id": "Sudah wafat",
+   "id": "Sudah meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17518,14 +17518,14 @@
   {
    "kunci": "hitung.keadaan.sebelum_atau_sesudah",
    "halaman": "hitung",
-   "id": "{nama} wafat sebelum atau sesudah {mayit}?",
+   "id": "{nama} meninggal sebelum atau sesudah {mayit}?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.keadaan.kenapa_waktu",
    "halaman": "hitung",
-   "id": "Orang yang wafat lebih dulu dari {mayit} tidak mendapat warisan darinya.",
+   "id": "Orang yang meninggal sebelum {mayit} tidak mendapat warisan darinya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17553,7 +17553,7 @@
   {
    "kunci": "hitung.keadaan.harta_sudah_dibagi",
    "halaman": "hitung",
-   "id": "Waktu {nama} wafat, apakah harta {pewaris} sudah dibagi?",
+   "id": "Waktu {nama} meninggal, apakah harta {pewaris} sudah dibagi?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17581,7 +17581,7 @@
   {
    "kunci": "hitung.keadaan.siapa_lebih_dulu",
    "halaman": "hitung",
-   "id": "Siapa yang wafat lebih dulu?",
+   "id": "Siapa yang meninggal lebih dulu?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17623,7 +17623,7 @@
   {
    "kunci": "hitung.keadaan.sudah_baligh_tetap_ket",
    "halaman": "hitung",
-   "id": "Atau wafat saat masih kecil",
+   "id": "Atau meninggal saat masih kecil",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17644,7 +17644,7 @@
   {
    "kunci": "hitung.hilang.ada_putusan",
    "halaman": "hitung",
-   "id": "Sudah ada putusan pengadilan bahwa {nama} dianggap wafat?",
+   "id": "Sudah ada putusan pengadilan bahwa {nama} dianggap meninggal?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17665,14 +17665,14 @@
   {
    "kunci": "hitung.hilang.pasti_wafat_tak_tahu_kapan",
    "halaman": "hitung",
-   "id": "Ternyata sudah pasti wafat, tapi tidak tahu kapan",
+   "id": "Ternyata sudah pasti meninggal, tapi tidak tahu kapan",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.bersamaan.pasti_bersamaan",
    "halaman": "hitung",
-   "id": "Apakah {nama} dan {mayit} pasti wafat di saat yang sama persis?",
+   "id": "Apakah {nama} dan {mayit} pasti meninggal di saat yang sama persis?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17700,7 +17700,7 @@
   {
    "kunci": "hitung.bersamaan.pernah_tahu",
    "halaman": "hitung",
-   "id": "Dulu, pernah ada yang tahu siapa yang wafat terakhir?",
+   "id": "Dulu, pernah ada yang tahu siapa yang meninggal terakhir?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17735,7 +17735,7 @@
   {
    "kunci": "hitung.bersamaan.harta_sendiri_ket",
    "halaman": "hitung",
-   "id": "Karena wafat bersamaan, harta masing-masing dibagi sendiri-sendiri. Boleh dikosongkan.",
+   "id": "Karena meninggal bersamaan, harta masing-masing dibagi sendiri-sendiri. Boleh dikosongkan.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17826,14 +17826,14 @@
   {
    "kunci": "hitung.janin.tanya",
    "halaman": "hitung",
-   "id": "Waktu {mayit} wafat, apakah ada yang sedang hamil di keluarga ini?",
+   "id": "Waktu {mayit} meninggal, apakah ada yang sedang hamil di keluarga ini?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.janin.tanya_ket",
    "halaman": "hitung",
-   "id": "Janin bisa ikut mendapat warisan.",
+   "id": "Anak yang masih dikandung bisa ikut mewarisi.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -17903,21 +17903,21 @@
   {
    "kunci": "hitung.janin.lahir_lalu_wafat",
    "halaman": "hitung",
-   "id": "Sudah lahir, lalu wafat",
+   "id": "Lahir hidup, lalu meninggal",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.janin.lahir_lalu_wafat_ket",
    "halaman": "hitung",
-   "id": "Bayi ikut mewarisi, lalu bagiannya diteruskan",
+   "id": "Bayi ikut mewarisi, lalu bagiannya diteruskan ke keluarganya",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.janin.tanpa_kehidupan",
    "halaman": "hitung",
-   "id": "Lahir tanpa tanda kehidupan",
+   "id": "Lahir sudah meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -18246,14 +18246,14 @@
   {
    "kunci": "hitung.cerita.sesudah_dibagi",
    "halaman": "hitung",
-   "id": "{nama} wafat sesudah harta dibagi, jadi dihitung seperti masih hidup.",
+   "id": "{nama} meninggal sesudah harta dibagi, jadi dihitung seperti masih hidup.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.cerita.bersamaan",
    "halaman": "hitung",
-   "id": "{daftar} wafat dalam kejadian yang sama.",
+   "id": "{daftar} meninggal dalam kejadian yang sama.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -19870,7 +19870,7 @@
   {
    "kunci": "hitung.nama_kasus_ket",
    "halaman": "hitung",
-   "id": "Supaya gampang dicari lagi di Kasusmu. Boleh dikosongkan, nanti dinamai otomatis.",
+   "id": "Supaya mudah dicari lagi di Kasusmu. Kalau kosong, dinamai otomatis.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -20724,14 +20724,14 @@
   {
    "kunci": "hitung.pohon.hapus_biasa",
    "halaman": "hitung",
-   "id": "{nama} dihapus dari keluarga ini.",
+   "id": "{nama} akan dihilangkan dari daftar keluarga.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.pohon.hapus_penghubung",
    "halaman": "hitung",
-   "id": "{nama} masih punya keturunan di pohon, jadi tetap ada sebagai orang yang sudah wafat supaya garis keturunannya tidak putus.",
+   "id": "{nama} tetap ada di pohon sebagai orang yang sudah meninggal, karena keturunannya masih tercatat.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -20745,7 +20745,7 @@
   {
    "kunci": "hitung.pohon.ubah_keadaan",
    "halaman": "hitung",
-   "id": "Ubah keadaan (wafat, hilang, dll.)",
+   "id": "Ubah keadaan (meninggal, hilang, dll.)",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21291,14 +21291,14 @@
   {
    "kunci": "hitung.kanvas.tahun_wafat_tanya",
    "halaman": "hitung",
-   "id": "Kira-kira tahun berapa {nama} wafat?",
+   "id": "Kira-kira tahun berapa {nama} meninggal?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.boleh_kosong",
    "halaman": "hitung",
-   "id": "Boleh kosong.",
+   "id": "tidak wajib",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21312,14 +21312,14 @@
   {
    "kunci": "hitung.kanvas.pintu_tanya",
    "halaman": "hitung",
-   "id": "Sejak {nama} wafat, apakah hartanya sudah dibagi?",
+   "id": "Sejak {nama} meninggal, apakah hartanya sudah dibagi?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.pintu_baru",
    "halaman": "hitung",
-   "id": "Belum, baru saja wafat",
+   "id": "Belum, baru saja meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21375,7 +21375,7 @@
   {
    "kunci": "hitung.kanvas.pintu_sudah_pesan",
    "halaman": "hitung",
-   "id": "Kalau sudah dibagi seluruhnya, yang perlu dihitung adalah harta orang yang wafat sesudahnya. Kalau baru sebagian, kami belum bisa menghitungnya otomatis; tanyakan ke ahli faraidh.",
+   "id": "Kalau sudah dibagi seluruhnya, yang perlu dihitung adalah harta orang yang meninggal sesudahnya. Kalau baru sebagian, kami belum bisa menghitungnya otomatis; tanyakan ke ahli faraidh.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21396,7 +21396,7 @@
   {
    "kunci": "hitung.kanvas.baris_isi_waktu",
    "halaman": "hitung",
-   "id": "Isi tahunnya, atau pilih sebelum/sesudah {rel}.",
+   "id": "Pilih meninggal sebelum atau sesudah {rel}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21494,14 +21494,14 @@
   {
    "kunci": "hitung.kanvas.judul_urutan",
    "halaman": "hitung",
-   "id": "Urutan wafat",
+   "id": "Urutan meninggal",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.judul_kamu",
    "halaman": "hitung",
-   "id": "Kamu (boleh dilewati)",
+   "id": "Kamu",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21564,7 +21564,7 @@
   {
    "kunci": "hitung.kanvas.pendek_urutan",
    "halaman": "hitung",
-   "id": "Urutan wafat",
+   "id": "Urutan meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21578,21 +21578,21 @@
   {
    "kunci": "hitung.kanvas.tanya_istri",
    "halaman": "hitung",
-   "id": "Waktu {nama} wafat, apakah beliau punya istri?",
+   "id": "Waktu {nama} meninggal, apakah beliau punya istri?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_suami",
    "halaman": "hitung",
-   "id": "Waktu {nama} wafat, apakah beliau punya suami?",
+   "id": "Waktu {nama} meninggal, apakah beliau punya suami?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_anak",
    "halaman": "hitung",
-   "id": "{nama} punya anak? Hitung juga yang sudah wafat.",
+   "id": "{nama} punya anak, termasuk yang sudah meninggal?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21613,35 +21613,35 @@
   {
    "kunci": "hitung.kanvas.tanya_kakek_nenek_ayah",
    "halaman": "hitung",
-   "id": "Karena ayah {nama} sudah wafat, kakek atau neneknya juga perlu ditanyakan.",
+   "id": "Karena ayah {nama} sudah meninggal, kakek atau neneknya juga perlu ditanyakan.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_kakek_nenek_ibu",
    "halaman": "hitung",
-   "id": "Karena ibu {nama} sudah wafat, kakek atau neneknya juga perlu ditanyakan.",
+   "id": "Karena ibu {nama} sudah meninggal, kakek atau neneknya juga perlu ditanyakan.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_kakek_nenek_keduanya",
    "halaman": "hitung",
-   "id": "Karena ayah dan ibu {nama} sudah wafat, kakek atau neneknya juga perlu ditanyakan.",
+   "id": "Karena ayah dan ibu {nama} sudah meninggal, kakek atau neneknya juga perlu ditanyakan.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_saudara",
    "halaman": "hitung",
-   "id": "{nama} punya kakak atau adik? Hitung juga yang sudah wafat.",
+   "id": "{nama} punya kakak atau adik, termasuk yang sudah meninggal?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_jauh",
    "halaman": "hitung",
-   "id": "{nama} punya keponakan, paman, atau sepupu? Hitung juga yang sudah wafat.",
+   "id": "{nama} punya keponakan, paman, atau sepupu, termasuk yang sudah meninggal?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21655,14 +21655,14 @@
   {
    "kunci": "hitung.kanvas.tanya_hal_lain",
    "halaman": "hitung",
-   "id": "Ada yang beda agama dengan {nama}, atau terlibat dalam wafatnya?",
+   "id": "Ada yang beda agama dengan {nama}, atau terlibat dalam kematiannya?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.tanya_urutan",
    "halaman": "hitung",
-   "id": "{a} wafat sebelum atau sesudah {b}?",
+   "id": "{a} meninggal sebelum atau sesudah {b}?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21697,7 +21697,7 @@
   {
    "kunci": "hitung.kanvas.ringkas_urutan_dulu",
    "halaman": "hitung",
-   "id": "{nama} lebih dulu",
+   "id": "{nama} meninggal sebelum",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21725,14 +21725,14 @@
   {
    "kunci": "hitung.kanvas.ket_wafat",
    "halaman": "hitung",
-   "id": "wafat",
+   "id": "meninggal",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.ket_wafat_tahun",
    "halaman": "hitung",
-   "id": "wafat {tahun}",
+   "id": "meninggal {tahun}",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21781,7 +21781,7 @@
   {
    "kunci": "hitung.kanvas.peta_bertambah",
    "halaman": "hitung",
-   "id": "Bagian bisa bertambah bila ada yang wafat sesudah {nama}.",
+   "id": "Bagian ini bisa bertambah kalau ada yang meninggal sesudah {nama}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21886,7 +21886,7 @@
   {
    "kunci": "hitung.kanvas.kd_wafat",
    "halaman": "hitung",
-   "id": "Sudah wafat",
+   "id": "Sudah meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21928,7 +21928,7 @@
   {
    "kunci": "hitung.kanvas.tahun_wafatnya",
    "halaman": "hitung",
-   "id": "Tahun wafatnya",
+   "id": "Tahun meninggalnya",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21942,14 +21942,14 @@
   {
    "kunci": "hitung.kanvas.berarti_sebelum",
    "halaman": "hitung",
-   "id": "Berarti sebelum {rel} wafat ({tahun}).",
+   "id": "Berarti sebelum {rel} meninggal ({tahun}).",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.berarti_sesudah",
    "halaman": "hitung",
-   "id": "Berarti sesudah {rel} wafat ({tahun}).",
+   "id": "Berarti sesudah {rel} meninggal ({tahun}).",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21963,7 +21963,7 @@
   {
    "kunci": "hitung.kanvas.waktu_tanya_rel_kosong",
    "halaman": "hitung",
-   "id": "Tahun {rel} wafat belum diisi, jadi pilih: wafat sebelum atau sesudah {rel}?",
+   "id": "Meninggal sebelum atau sesudah {rel}?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -21991,7 +21991,7 @@
   {
    "kunci": "hitung.kanvas.putusan_tanya",
    "halaman": "hitung",
-   "id": "Sudah ada putusan pengadilan bahwa ia dianggap wafat?",
+   "id": "Sudah ada putusan pengadilan bahwa ia dianggap meninggal?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22012,7 +22012,7 @@
   {
    "kunci": "hitung.kanvas.iddah_tanya",
    "halaman": "hitung",
-   "id": "Waktu {rel} wafat, masa iddahnya sudah selesai?",
+   "id": "Waktu {rel} meninggal, masa iddahnya sudah selesai?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22194,21 +22194,21 @@
   {
    "kunci": "hitung.kanvas.kenapa_urutan_isi",
    "halaman": "hitung",
-   "id": "Keduanya wafat sesudah {pewaris} dan tahun wafat {a} kosong. Urutannya menentukan apakah {b} ikut menerima dari {a}. Kalau tahunnya diisi, pertanyaan ini hilang.",
+   "id": "Keduanya meninggal sesudah {pewaris} dan tahun meninggal {a} kosong. Urutannya menentukan apakah {b} ikut menerima dari {a}. Kalau tahunnya diisi, pertanyaan ini hilang.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.kamu_saya",
    "halaman": "hitung",
-   "id": "Saya {nama}",
+   "id": "Saya {peran} {almarhum}",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.kamu_orang_lain",
    "halaman": "hitung",
-   "id": "Bukan, saya mengisi untuk orang lain",
+   "id": "Saya bukan ahli waris, hanya membantu mengisi",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22236,14 +22236,14 @@
   {
    "kunci": "hitung.kanvas.pohon_lengkap",
    "halaman": "hitung",
-   "id": "Pohon lengkap",
+   "id": "Lihat pohon lengkap",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.kanvas.pengantar_cabang",
    "halaman": "hitung",
-   "id": "{almarhum} wafat sesudah {pewaris}, sebelum hartanya dibagi. Jadi bagian {almarhum} nanti dibagi lagi ke keluarganya.",
+   "id": "{almarhum} meninggal sesudah {pewaris}, sebelum hartanya dibagi. Bagiannya nanti diteruskan ke keluarganya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22369,14 +22369,14 @@
   {
    "kunci": "hitung.periksa.tanya_keadaan",
    "halaman": "hitung",
-   "id": "Waktu {almarhum} wafat, apakah {nama} masih hidup?",
+   "id": "Waktu {almarhum} meninggal, apakah {nama} masih hidup?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.tanya_urutan",
    "halaman": "hitung",
-   "id": "{a} wafat sebelum atau sesudah {b}?",
+   "id": "{a} meninggal sebelum atau sesudah {b}?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22390,14 +22390,14 @@
   {
    "kunci": "hitung.periksa.wafat_sebelum",
    "halaman": "hitung",
-   "id": "Wafat sebelum {nama}",
+   "id": "Meninggal sebelum {nama}",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.wafat_sesudah",
    "halaman": "hitung",
-   "id": "Wafat sesudah {nama}",
+   "id": "Meninggal sesudah {nama}",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22495,7 +22495,7 @@
   {
    "kunci": "hitung.periksa.pastikan_urutan",
    "halaman": "hitung",
-   "id": "Pastikan dulu urutan wafat {a} dan {b}.",
+   "id": "Pastikan dulu urutan meninggal {a} dan {b}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22516,7 +22516,7 @@
   {
    "kunci": "hitung.periksa.babak_wafat",
    "halaman": "hitung",
-   "id": "{nama} wafat",
+   "id": "{nama} meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22537,14 +22537,14 @@
   {
    "kunci": "hitung.periksa.babak_pembuka_pertama",
    "halaman": "hitung",
-   "id": "{nama} wafat.",
+   "id": "{nama} meninggal.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.babak_pembuka_lanjut",
    "halaman": "hitung",
-   "id": "Lalu {nama} wafat, sebelum harta {pemilik} dibagi.",
+   "id": "{nama} meninggal, sebelum harta {pemilik} dibagi.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22558,7 +22558,7 @@
   {
    "kunci": "hitung.periksa.sudah_tiada",
    "halaman": "hitung",
-   "id": "{daftar} sudah lebih dulu tiada.",
+   "id": "{daftar} sudah meninggal sebelumnya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22607,7 +22607,7 @@
   {
    "kunci": "hitung.periksa.hari_ini",
    "halaman": "hitung",
-   "id": "Hari ini",
+   "id": "Sekarang",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22628,7 +22628,7 @@
   {
    "kunci": "hitung.periksa.sebelum_pemilik",
    "halaman": "hitung",
-   "id": "{tahun} · {nama} wafat, sebelum {pemilik}.",
+   "id": "{nama} meninggal.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22670,7 +22670,7 @@
   {
    "kunci": "hitung.periksa.apa_waktu",
    "halaman": "hitung",
-   "id": "Tahun atau urutan wafat",
+   "id": "Tahun atau urutan meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22712,28 +22712,28 @@
   {
    "kunci": "hitung.periksa.lebih_dulu",
    "halaman": "hitung",
-   "id": "Lebih dulu",
+   "id": "Sebelum",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.lebih_akhir",
    "halaman": "hitung",
-   "id": "Lebih akhir",
+   "id": "Sesudah",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.catatan_harta",
    "halaman": "hitung",
-   "id": "Yang dibagi di sini harta {nama}. Harta milik orang lain di kisah ini (kalau ada) dihitung terpisah.",
+   "id": "Yang dibagi di sini hanya harta {nama}. Harta orang lain di kisah ini dihitung terpisah.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.urutan_ikut_tahun",
    "halaman": "hitung",
-   "id": "Urutannya mengikuti tahun wafat. Ubah tahunnya bila keliru.",
+   "id": "Urutannya mengikuti tahun meninggal. Ubah tahunnya bila keliru.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22761,7 +22761,7 @@
   {
    "kunci": "hitung.periksa.apa_keadaan_ket",
    "halaman": "hitung",
-   "id": "Masih hidup, sudah wafat, atau belum tahu",
+   "id": "Masih hidup, sudah meninggal, atau belum tahu",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22789,7 +22789,7 @@
   {
    "kunci": "hitung.periksa.langkah_siapa_waktu",
    "halaman": "hitung",
-   "id": "Langkah 2 dari 2 · Tahun atau urutan wafat siapa?",
+   "id": "Langkah 2 dari 2 · Tahun atau urutan meninggal siapa?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22817,7 +22817,7 @@
   {
    "kunci": "hitung.periksa.tahun_wafat",
    "halaman": "hitung",
-   "id": "Tahun wafat {nama}",
+   "id": "Tahun meninggal {nama}",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22845,7 +22845,7 @@
   {
    "kunci": "hitung.periksa.urutan_opsi",
    "halaman": "hitung",
-   "id": "Urutan: {nama} wafat lebih dulu atau lebih akhir",
+   "id": "Urutan: {nama} meninggal sebelum atau sesudah",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22859,7 +22859,7 @@
   {
    "kunci": "hitung.periksa.keadaan_babak_ket",
    "halaman": "hitung",
-   "id": "Misalnya ternyata masih hidup, atau sudah wafat lebih dulu",
+   "id": "Misalnya ternyata masih hidup, atau sudah meninggal sebelumnya",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22887,7 +22887,7 @@
   {
    "kunci": "hitung.periksa.wafat_apa",
    "halaman": "hitung",
-   "id": "{nama} wafat…",
+   "id": "{nama} meninggal…",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22901,42 +22901,42 @@
   {
    "kunci": "hitung.periksa.tambah_peristiwa",
    "halaman": "hitung",
-   "id": "Tambah peristiwa: lahir, menikah, atau bercerai di antara kematian",
+   "id": "Ada kejadian lain? Tambahkan",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_judul",
    "halaman": "hitung",
-   "id": "Tambah peristiwa",
+   "id": "Tambah kejadian",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_apa",
    "halaman": "hitung",
-   "id": "Peristiwa apa?",
+   "id": "Apa yang terjadi?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_lahir",
    "halaman": "hitung",
-   "id": "Kelahiran",
+   "id": "Ada yang lahir",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_nikah",
    "halaman": "hitung",
-   "id": "Pernikahan",
+   "id": "Ada yang menikah",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_cerai",
    "halaman": "hitung",
-   "id": "Perceraian",
+   "id": "Ada yang bercerai",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22950,14 +22950,14 @@
   {
    "kunci": "hitung.periksa.peristiwa_kapan",
    "halaman": "hitung",
-   "id": "Terjadi sesudah siapa wafat?",
+   "id": "Kapan, dibanding almarhum?",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_sesudah",
    "halaman": "hitung",
-   "id": "Sesudah {nama} wafat",
+   "id": "Sesudah {nama} meninggal",
    "ar": null,
    "versiTerbit": 873
   },
@@ -22971,28 +22971,28 @@
   {
    "kunci": "hitung.periksa.simpan_peristiwa",
    "halaman": "hitung",
-   "id": "Simpan peristiwa",
+   "id": "Simpan kejadian",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_baris_lahir",
    "halaman": "hitung",
-   "id": "{nama} lahir, sesudah {almarhum} wafat.",
+   "id": "{nama} lahir.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_baris_nikah",
    "halaman": "hitung",
-   "id": "{nama} menikah dengan {pasangan}, sesudah {almarhum} wafat.",
+   "id": "{nama} menikah dengan {pasangan}.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "hitung.periksa.peristiwa_baris_cerai",
    "halaman": "hitung",
-   "id": "{nama} bercerai dengan {pasangan}, sesudah {almarhum} wafat.",
+   "id": "{nama} bercerai dengan {pasangan}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -23007,6 +23007,587 @@
    "kunci": "hitung.periksa.batal",
    "halaman": "hitung",
    "id": "Batal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.menurut_madzhab",
+   "halaman": "hitung",
+   "id": "Menurut madzhab {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.ganti_madzhab",
+   "halaman": "hitung",
+   "id": "ganti madzhab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pilih_madzhab",
+   "halaman": "hitung",
+   "id": "Pilih madzhab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_syafii",
+   "halaman": "hitung",
+   "id": "Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_hanbali",
+   "halaman": "hitung",
+   "id": "Hanbali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_hanafi",
+   "halaman": "hitung",
+   "id": "Hanafi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_maliki",
+   "halaman": "hitung",
+   "id": "Maliki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_bawaan",
+   "halaman": "hitung",
+   "id": "bawaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_nukilan_lahim",
+   "halaman": "hitung",
+   "id": "menurut nukilan Lahim dan Ithraa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_pakai",
+   "halaman": "hitung",
+   "id": "Pakai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_sumber_sekunder",
+   "halaman": "hitung",
+   "id": "Madzhab {nama} di sini mengikuti nukilan Lahim dan Ithraa (sumber sekunder, belum dicocokkan ke kitab induk madzhab itu).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.berbeda_dari_syafii",
+   "halaman": "hitung",
+   "id": "berbeda dari Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hitung_menurut_syafii",
+   "halaman": "hitung",
+   "id": "hitung menurut Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_judul",
+   "halaman": "hitung",
+   "id": "Kata madzhab lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_orang",
+   "halaman": "hitung",
+   "id": "Ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_sumber",
+   "halaman": "hitung",
+   "id": "Hanbali, Hanafi, Maliki menurut nukilan Lahim dan Ithraa (sumber sekunder).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_saudara_kakek",
+   "halaman": "hitung",
+   "id": "Saudara laki-laki {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_saudara_kakek",
+   "halaman": "hitung",
+   "id": "Saudara kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_saudara_kakek",
+   "halaman": "hitung",
+   "id": "{nama} punya saudara laki-laki, sekandung atau sebapak, termasuk yang sudah meninggal?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_paman_kandung_ayah",
+   "halaman": "hitung",
+   "id": "Paman kandung ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.baris_paman_sebapak_ayah",
+   "halaman": "hitung",
+   "id": "Paman sebapak ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.almarhumah",
+   "halaman": "hitung",
+   "id": "Almarhumah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.harta_wajib_isi",
+   "halaman": "hitung",
+   "id": "Isi total harta, harus lebih dari Rp 0.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tambah_cepat_info",
+   "halaman": "hitung",
+   "id": "Ditambah {tambahan}, sekarang {total}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tambahan_jt",
+   "halaman": "hitung",
+   "id": "{jumlah} jt",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pilih_ya_tidak",
+   "halaman": "hitung",
+   "id": "Pilih Ya atau Tidak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.sebutan_kakek",
+   "halaman": "hitung",
+   "id": "Kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.sebutan_nenek",
+   "halaman": "hitung",
+   "id": "Nenek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.sebutan_leluhur",
+   "halaman": "hitung",
+   "id": "{peran} dari {asal}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kamu_saya_nama",
+   "halaman": "hitung",
+   "id": "Saya {peran} {almarhum} ({nama})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.tanya_kamu",
+   "halaman": "hitung",
+   "id": "Kamu siapanya {almarhum}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.keterangan_kamu",
+   "halaman": "hitung",
+   "id": "Supaya penjelasan bisa memakai \"ayahmu\", \"ibumu\".",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.lanjutan_judul",
+   "halaman": "hitung",
+   "id": "Pertanyaan lanjutan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.hilang_tanya",
+   "halaman": "hitung",
+   "id": "Ada yang hilang tanpa kabar, belum jelas hidup atau meninggal?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.cerai_tanya",
+   "halaman": "hitung",
+   "id": "Ada {pasangan} yang sudah dicerai almarhum sebelum meninggal?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebut_istri",
+   "halaman": "hitung",
+   "id": "istri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebut_suami",
+   "halaman": "hitung",
+   "id": "suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.sebut_istri_suami",
+   "halaman": "hitung",
+   "id": "istri atau suami",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.catatan_hilang",
+   "halaman": "hitung",
+   "id": "Ditandai hilang tanpa kabar. Ubah di pertanyaan lanjutan, di akhir langkah Keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.catatan_cerai",
+   "halaman": "hitung",
+   "id": "Ditandai sudah dicerai almarhum. Ubah di pertanyaan lanjutan, di akhir langkah Keluarga.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.ingat_tahun",
+   "halaman": "hitung",
+   "id": "Ingat tahunnya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_kartu",
+   "halaman": "hitung",
+   "id": "Waktu {mayit} meninggal, apakah {nama} sedang hamil?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_kartu_ket",
+   "halaman": "hitung",
+   "id": "Ditanya karena anak yang dikandung ikut mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_lebih_dulu",
+   "halaman": "hitung",
+   "id": "meninggal sebelum almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_sesudah",
+   "halaman": "hitung",
+   "id": "meninggal sesudah almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_bersamaan",
+   "halaman": "hitung",
+   "id": "meninggal bersamaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.meninggal_tahun",
+   "halaman": "hitung",
+   "id": "meninggal {tahun}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.peristiwa_sesudah_pewaris",
+   "halaman": "hitung",
+   "id": "Sesudah {nama} meninggal, sebelum harta dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kejadian_kembali",
+   "halaman": "hitung",
+   "id": "Kembali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kejadian_langkah",
+   "halaman": "hitung",
+   "id": "Langkah {n} dari {total}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.kejadian_pilih_dulu",
+   "halaman": "hitung",
+   "id": "Pilih salah satu dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sebelum_label",
+   "halaman": "hitung",
+   "id": "Sebelum {pemilik}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.sebelum_label_tahun",
+   "halaman": "hitung",
+   "id": "{tahun}, sebelum {pemilik}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.label_lalu",
+   "halaman": "hitung",
+   "id": "Lalu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.periksa.label_sesudah",
+   "halaman": "hitung",
+   "id": "Sesudah {nama} meninggal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.judul_anak_dari",
+   "halaman": "hitung",
+   "id": "Anak dari {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.pendek_anak_dari",
+   "halaman": "hitung",
+   "id": "Anak dari",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_keadaan",
+   "halaman": "hitung",
+   "id": "Keadaan {nama} belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_waktu",
+   "halaman": "hitung",
+   "id": "Waktu meninggalnya {nama} belum dipilih: sebelum atau sesudah {rel}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_lanjutan",
+   "halaman": "hitung",
+   "id": "Pertanyaan lanjutan untuk {nama} belum dijawab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_ya_tidak",
+   "halaman": "hitung",
+   "id": "Pilihan Ya atau Tidak belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_baris_tetap",
+   "halaman": "hitung",
+   "id": "Keadaannya belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_anak_bersama",
+   "halaman": "hitung",
+   "id": "Pilihan Ya, semuanya atau Tidak semua belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_hal_lain",
+   "halaman": "hitung",
+   "id": "Pilihan Tidak ada atau Ada belum dipilih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_urutan",
+   "halaman": "hitung",
+   "id": "Urutan meninggal belum dijawab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kanvas.kurang_kamu",
+   "halaman": "hitung",
+   "id": "Pilihan Kamu belum dijawab.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.janin.tanya_calon",
+   "halaman": "hitung",
+   "id": "Waktu {mayit} meninggal, apakah {calon} sedang hamil?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.istri_lain_ayah",
+   "halaman": "hitung",
+   "id": "Istri lain ayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.suami_ibu",
+   "halaman": "hitung",
+   "id": "Suami ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_lk_kandung",
+   "halaman": "hitung",
+   "id": "Saudara lk kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudari_kandung",
+   "halaman": "hitung",
+   "id": "Saudari kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_lk_seayah",
+   "halaman": "hitung",
+   "id": "Saudara lk seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudari_seayah",
+   "halaman": "hitung",
+   "id": "Saudari seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_lk_seibu",
+   "halaman": "hitung",
+   "id": "Saudara lk seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudari_seibu",
+   "halaman": "hitung",
+   "id": "Saudari seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.bingkai_kandung",
+   "halaman": "hitung",
+   "id": "kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.bingkai_seayah",
+   "halaman": "hitung",
+   "id": "seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.bingkai_seibu",
+   "halaman": "hitung",
+   "id": "seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.saudara_n",
+   "halaman": "hitung",
+   "id": "Saudara: {n}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.n_kandung",
+   "halaman": "hitung",
+   "id": "{n} kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.n_seayah",
+   "halaman": "hitung",
+   "id": "{n} seayah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.n_seibu",
+   "halaman": "hitung",
+   "id": "{n} seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.pohon.buka_lengkap",
+   "halaman": "hitung",
+   "id": "Buka pohon lengkap",
    "ar": null,
    "versiTerbit": 873
   }

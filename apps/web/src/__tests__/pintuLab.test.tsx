@@ -21,11 +21,11 @@ describe('PintuLab (spec kanvas 3)', () => {
     expect(saatPilih).toHaveBeenLastCalledWith('nyata');
   });
 
-  it('kartu menyebut bedanya: satu kalimat keterangan dan tiga butir', () => {
+  it('kartu menyebut bedanya: satu kalimat keterangan, tanpa butir', () => {
     render(<PintuLab saatPilih={() => undefined} />);
     expect(screen.getByText('Isi jumlah ahli waris dengan cepat, seperti di buku.')).toBeTruthy();
-    expect(screen.getByText('Semua data dianggap sudah pasti')).toBeTruthy();
+    expect(screen.queryByText('Semua data dianggap sudah pasti')).toBeNull();
     expect(screen.getByText('Kami tanyakan satu per satu, termasuk yang belum kamu yakin.')).toBeTruthy();
-    expect(screen.getByText('Boleh menjawab "belum tahu"')).toBeTruthy();
+    expect(screen.queryByText('Boleh menjawab "belum tahu"')).toBeNull();
   });
 });

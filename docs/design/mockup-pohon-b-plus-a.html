@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="id">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pohon B dan A bersama</title>
+<style>
+:root{--bg:#f6f3e7;--ink:#14181a;--mute:#5b655f;--panel:#0f3a38;--kaca:#1d4b48;--simpul:#2a5a56;--meninggal:#4a5853;--garis:#9fb8ae;--line:#d5dcd3}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding:24px 16px 60px}
+main{max-width:1100px;margin:auto}
+h1{font-size:22px;margin:0 0 4px}.lead{color:var(--mute);margin:0 0 20px;max-width:70ch}
+.deret{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:24px;align-items:start}
+@media (max-width:760px){.deret{grid-template-columns:1fr}}
+.alt>h2{font-size:16px;margin:0 0 2px}.alt>p{color:var(--mute);font-size:13.5px;margin:0 0 12px}
+.panel{background:var(--panel);border-radius:24px;padding:16px;color:#fff}
+.kaca{background:var(--kaca);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
+.panel h3{font-size:15px;margin:14px 0 6px}
+.ringkas-baris{font-size:13px;color:#cfe2dc;margin:4px 0}
+svg{display:block;width:100%;height:auto}
+svg text{font-family:system-ui,sans-serif}
+.layar{background:#fff;border-radius:24px;box-shadow:0 2px 8px rgba(20,40,30,.10);padding:16px}
+.layar svg{background:#fbfaf4;border-radius:16px}
+.legenda{display:flex;flex-wrap:wrap;gap:14px;font-size:12.5px;color:var(--mute);margin-top:10px}
+.legenda span{display:inline-flex;align-items:center;gap:6px}
+.legenda i{width:14px;height:14px;border-radius:4px;display:inline-block}
+.catatan{background:#fff;border-radius:16px;box-shadow:0 2px 8px rgba(20,40,30,.10);padding:14px 16px;margin-top:24px;font-size:14px}
+.catatan li{margin:4px 0}
+
+.layar-wizard{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+@media (max-width:760px){.layar-wizard{grid-template-columns:1fr}}
+.kartu-bagian{background:#fff;border-radius:24px;box-shadow:0 2px 8px rgba(20,40,30,.10);padding:18px}
+.kartu-bagian small{display:block;font:600 12px system-ui;letter-spacing:.06em;color:var(--mute);text-transform:uppercase}
+.kartu-bagian h3{margin:6px 0 12px;font:600 17px/1.35 system-ui}
+.ringkas-bagian{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:18px;padding:12px 16px;margin-bottom:8px;box-shadow:0 1px 4px rgba(20,40,30,.08)}
+.ringkas-bagian span{color:var(--mute);font-size:13.5px}
+.klik{cursor:pointer}.klik:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.lapis{position:fixed;inset:0;background:rgba(20,24,26,.45);display:none;place-items:center;padding:16px;z-index:9}
+.lapis.buka{display:grid}
+.dialog-pohon{background:#fff;border-radius:24px;max-width:860px;width:100%;max-height:90vh;overflow:auto;padding:18px}
+.dialog-pohon header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.dialog-pohon h2{margin:0;font-size:18px}
+.tutup{background:none;border:0;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.dialog-pohon svg{background:#fbfaf4;border-radius:16px}
+.alur{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px;font-size:13.5px;color:var(--mute)}
+.alur b{color:var(--ink)}
+</style>
+<main>
+<h1>B dan A bersama: bayangan di layar Keluarga</h1>
+<p class="lead">Satu mesin pohon, dua tampilan. Di panel samping pohonnya ringkas (B). Ketuk kotak "Saudara" atau "Lihat pohon lengkap" untuk membuka pohon lengkap (A). Hanya mockup.</p>
+<p class="alur"><span><b>1.</b> Isi keluarga di kiri</span><span><b>2.</b> Cek sekilas di panel kanan (B)</span><span><b>3.</b> Perlu detail → ketuk → pohon lengkap (A)</span></p>
+
+<div class="layar-wizard">
+  <div>
+    <div class="ringkas-bagian"><div><b>Orang tua almarhum</b><br><span>Ayah, Ibu (meninggal sesudah), Suami ibu</span></div><span>Ubah</span></div>
+    <div class="ringkas-bagian"><div><b>Saudara almarhum</b><br><span>3 kandung, 1 seayah, 1 seibu</span></div><span>Ubah</span></div>
+    <div class="kartu-bagian">
+      <small>Istri almarhum</small>
+      <h3>Waktu almarhum meninggal, apakah beliau punya istri?</h3>
+      <p style="color:var(--mute);font-size:13.5px;margin:0">(isi kartu bagian seperti biasa)</p>
+    </div>
+  </div>
+  <aside class="panel">
+    <div class="kaca"><svg viewBox="0 0 300 330" role="img" aria-label="Pohon ringkas: nenek dari ibu, ayah, ibu, suami ibu, kotak saudara, almarhum, istri, tiga anak">
+          <g font-size="10.5" fill="#fff">
+            <!-- nenek -->
+            <rect x="160" y="8" width="96" height="36" rx="9" fill="var(--meninggal)"/>
+            <text x="208" y="23" text-anchor="middle" font-weight="700">Nenek dari ibu</text>
+            <text x="208" y="36" text-anchor="middle" font-size="9">meninggal sebelum</text>
+            <path d="M208 44V62" stroke="var(--garis)" stroke-width="1.5"/>
+            <!-- ayah ibu suami ibu -->
+            <rect x="6" y="62" width="88" height="36" rx="9" fill="var(--simpul)"/>
+            <text x="50" y="84" text-anchor="middle" font-weight="700">Ayah</text>
+            <rect x="106" y="62" width="88" height="36" rx="9" fill="var(--meninggal)"/>
+            <text x="150" y="77" text-anchor="middle" font-weight="700">Ibu</text>
+            <text x="150" y="90" text-anchor="middle" font-size="9">meninggal sesudah</text>
+            <rect x="206" y="62" width="88" height="36" rx="9" fill="var(--simpul)"/>
+            <text x="250" y="84" text-anchor="middle" font-weight="700">Suami ibu</text>
+            <path d="M94 80H106M194 80H206M208 44V62" stroke="var(--garis)" stroke-width="1.5" fill="none"/>
+            <circle cx="100" cy="80" r="2.5" fill="var(--garis)"/><circle cx="200" cy="80" r="2.5" fill="var(--garis)"/>
+            <!-- turun dari ayah-ibu ke almarhum, cabang ke kotak saudara -->
+            <path d="M100 80V122M100 122H60M100 122H150M60 122V132M150 122V150" stroke="var(--garis)" stroke-width="1.5" fill="none"/>
+            <g class="klik" data-buka tabindex="0" role="button" aria-label="Buka pohon lengkap: saudara"><rect x="6" y="132" width="108" height="44" rx="9" fill="rgba(255,255,255,.06)" stroke="var(--garis)" stroke-dasharray="4 3"/>
+            <text x="60" y="149" text-anchor="middle" font-weight="700">Saudara: 5</text>
+            <text x="60" y="162" text-anchor="middle" font-size="9">3 kandung, 1 seayah,</text>
+            <text x="60" y="172" text-anchor="middle" font-size="9">1 seibu</text></g>
+            <!-- almarhum + istri -->
+            <rect x="106" y="150" width="88" height="34" rx="9" fill="#fff"/>
+            <text x="150" y="171" text-anchor="middle" font-weight="700" fill="var(--ink)">Almarhum</text>
+            <path d="M194 167H206" stroke="var(--garis)" stroke-width="1.5"/><circle cx="200" cy="167" r="2.5" fill="var(--garis)"/>
+            <rect x="206" y="150" width="88" height="34" rx="9" fill="var(--simpul)"/>
+            <text x="250" y="171" text-anchor="middle" font-weight="700">Istri</text>
+            <!-- anak -->
+            <path d="M200 167V214M50 214H250M50 214V226M150 214V226M250 214V226" stroke="var(--garis)" stroke-width="1.5" fill="none"/>
+            <rect x="6" y="226" width="88" height="36" rx="9" fill="var(--simpul)"/>
+            <text x="50" y="248" text-anchor="middle" font-weight="700">Anak lk 1</text>
+            <rect x="106" y="226" width="88" height="36" rx="9" fill="var(--simpul)"/>
+            <text x="150" y="248" text-anchor="middle" font-weight="700">Anak lk 2</text>
+            <rect x="206" y="226" width="88" height="36" rx="9" fill="var(--simpul)"/>
+            <text x="250" y="248" text-anchor="middle" font-weight="700">Anak pr</text>
+            <text x="150" y="300" text-anchor="middle" font-size="11" fill="#cfe2dc" text-decoration="underline" class="klik" data-buka tabindex="0" role="button">Lihat pohon lengkap</text>
+          </g>
+        </svg></div>
+    <h3>Ringkasan kasus</h3>
+    <p class="ringkas-baris">Almarhum · Laki-laki</p>
+    <p class="ringkas-baris">Ahli waris · Istri, 3 anak, …</p>
+  </aside>
+</div>
+
+<div class="lapis" id="lapis" role="dialog" aria-modal="true" aria-labelledby="judul-pohon">
+  <div class="dialog-pohon">
+    <header><h2 id="judul-pohon">Pohon keluarga lengkap</h2><button class="tutup" id="tutup">Tutup</button></header>
+    <svg viewBox="0 0 720 420" role="img" aria-label="Pohon lengkap dengan pasangan kedua berjajar dan saudara dikelompokkan per orang tua">
+        <g font-size="11" fill="var(--ink)">
+          <!-- baris 1: nenek -->
+          <rect x="400" y="10" width="110" height="38" rx="10" fill="var(--meninggal)"/>
+          <text x="455" y="26" text-anchor="middle" font-weight="700" fill="#fff">Nenek dari ibu</text>
+          <text x="455" y="40" text-anchor="middle" font-size="9.5" fill="#fff">meninggal sebelum</text>
+          <path d="M455 48V74" stroke="var(--garis)" stroke-width="1.5"/>
+          <!-- baris 2: istri lain ayah, ayah, ibu, suami ibu -->
+          <rect x="40" y="74" width="110" height="38" rx="10" fill="var(--meninggal)"/>
+          <text x="95" y="90" text-anchor="middle" font-weight="700" fill="#fff">Istri lain ayah</text>
+          <text x="95" y="104" text-anchor="middle" font-size="9.5" fill="#fff">meninggal sebelum</text>
+          <rect x="220" y="74" width="110" height="38" rx="10" fill="#e8f1ea"/>
+          <text x="275" y="97" text-anchor="middle" font-weight="700">Ayah</text>
+          <rect x="400" y="74" width="110" height="38" rx="10" fill="var(--meninggal)"/>
+          <text x="455" y="90" text-anchor="middle" font-weight="700" fill="#fff">Ibu</text>
+          <text x="455" y="104" text-anchor="middle" font-size="9.5" fill="#fff">meninggal sesudah</text>
+          <rect x="580" y="74" width="110" height="38" rx="10" fill="#e8f1ea"/>
+          <text x="635" y="97" text-anchor="middle" font-weight="700">Suami ibu</text>
+          <!-- garis nikah dengan titik tengah -->
+          <path d="M150 93H220M330 93H400M510 93H580" stroke="var(--garis)" stroke-width="1.5"/>
+          <circle cx="185" cy="93" r="3" fill="var(--garis)"/><circle cx="365" cy="93" r="3" fill="var(--garis)"/><circle cx="545" cy="93" r="3" fill="var(--garis)"/>
+          <!-- kelompok seayah -->
+          <path d="M185 93V160" stroke="var(--garis)" stroke-width="1.5"/>
+          <rect x="110" y="150" width="150" height="70" rx="12" fill="none" stroke="#c9d4c6" stroke-dasharray="4 3"/>
+          <text x="185" y="166" text-anchor="middle" font-size="9.5" fill="var(--mute)">seayah</text>
+          <rect x="125" y="174" width="120" height="36" rx="10" fill="#e8f1ea"/>
+          <text x="185" y="196" text-anchor="middle" font-weight="700">Saudara lk seayah</text>
+          <!-- kelompok kandung + almarhum -->
+          <path d="M365 93V150" stroke="var(--garis)" stroke-width="1.5"/>
+          <rect x="280" y="150" width="200" height="164" rx="12" fill="none" stroke="#c9d4c6" stroke-dasharray="4 3"/>
+          <text x="380" y="166" text-anchor="middle" font-size="9.5" fill="var(--mute)">kandung</text>
+          <rect x="290" y="174" width="88" height="40" rx="10" fill="var(--meninggal)"/>
+          <text x="334" y="190" text-anchor="middle" font-weight="700" fill="#fff">Saudara lk</text>
+          <text x="334" y="204" text-anchor="middle" font-size="9" fill="#fff">meninggal sebelum</text>
+          <rect x="384" y="174" width="88" height="40" rx="10" fill="#e8f1ea"/>
+          <text x="428" y="198" text-anchor="middle" font-weight="700">Saudari 1</text>
+          <rect x="290" y="220" width="88" height="40" rx="10" fill="#e8f1ea"/>
+          <text x="334" y="244" text-anchor="middle" font-weight="700">Saudari 2</text>
+          <rect x="384" y="220" width="88" height="40" rx="10" fill="#fff" stroke="var(--ink)" stroke-width="2"/>
+          <text x="428" y="244" text-anchor="middle" font-weight="700">Almarhum</text>
+          <!-- kelompok seibu -->
+          <path d="M545 93V160" stroke="var(--garis)" stroke-width="1.5"/>
+          <rect x="490" y="150" width="150" height="70" rx="12" fill="none" stroke="#c9d4c6" stroke-dasharray="4 3"/>
+          <text x="565" y="166" text-anchor="middle" font-size="9.5" fill="var(--mute)">seibu</text>
+          <rect x="505" y="174" width="120" height="36" rx="10" fill="#e8f1ea"/>
+          <text x="565" y="196" text-anchor="middle" font-weight="700">Saudara lk seibu</text>
+          <!-- almarhum ke istri dan anak -->
+          <path d="M472 240H540" stroke="var(--garis)" stroke-width="1.5"/><circle cx="506" cy="240" r="3" fill="var(--garis)"/>
+          <rect x="540" y="222" width="100" height="36" rx="10" fill="#e8f1ea"/>
+          <text x="590" y="245" text-anchor="middle" font-weight="700">Istri</text>
+          <path d="M506 240V340M396 340H616M396 340V354M506 340V354M616 340V354" stroke="var(--garis)" stroke-width="1.5" fill="none"/>
+          <rect x="346" y="354" width="100" height="36" rx="10" fill="#e8f1ea"/>
+          <text x="396" y="377" text-anchor="middle" font-weight="700">Anak lk 1</text>
+          <rect x="456" y="354" width="100" height="36" rx="10" fill="#e8f1ea"/>
+          <text x="506" y="377" text-anchor="middle" font-weight="700">Anak lk 2</text>
+          <rect x="566" y="354" width="100" height="36" rx="10" fill="#e8f1ea"/>
+          <text x="616" y="377" text-anchor="middle" font-weight="700">Anak pr</text>
+        </g>
+      </svg>
+    <div class="legenda">
+      <span><i style="background:var(--meninggal)"></i>sudah meninggal</span>
+      <span><i style="border:1.5px dashed #c9d4c6"></i>satu orang tua (kandung / seayah / seibu)</span>
+      <span><i style="background:#fff;border:2px solid var(--ink)"></i>almarhum</span>
+    </div>
+  </div>
+</div>
+</main>
+<script>
+const lapis=document.getElementById('lapis');
+const buka=()=>{lapis.classList.add('buka');document.getElementById('tutup').focus();};
+const tutup=()=>lapis.classList.remove('buka');
+document.querySelectorAll('[data-buka]').forEach(e=>{e.addEventListener('click',buka);e.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();buka();}});});
+document.getElementById('tutup').onclick=tutup;
+lapis.addEventListener('click',e=>{if(e.target===lapis)tutup();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')tutup();});
+</script>
+</html>

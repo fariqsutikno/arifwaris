@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alternatif penjelasan dan proses</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- Pilihan untuk riset-ux-hasil-2026-11-17.md bagian 25 (HMW-29, HMW-30). Angka dari engine untuk kasus yang sama dengan mockup utama;
+     kasus 'aul (suami, ibu, 2 saudari kandung) juga dari engine. Teks "kapan dapat berapa" dan dalil dari konten aplikasi. -->
+<style>
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--line:#dfe6dc;--hijau:#1f6f5c;--mint:#dcefe2;--orange:#f2682a;--orange-soft:#fde6d8;--kuning:#fbefc9;--black:#0e0f10;--font:"Onest",system-ui,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:18px 12px 80px}
+h1,h2,h3,h4,p{margin:0}
+button{font-family:inherit}
+.wadah{max-width:1160px;margin:auto}
+.atas p{font-size:13px;color:#2c4136;margin:0 4px 8px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:2px;margin-bottom:6px}
+nav button{flex:none;border:0;background:rgba(255,255,255,.55);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer;color:var(--ink)}
+nav button[aria-selected=true]{background:var(--black);color:#fff}
+.bingkai{background:var(--frame);border-radius:30px;padding:20px;box-shadow:0 20px 50px rgba(20,40,30,.18)}
+.kepalaAlt{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px}
+.kepalaAlt h1{font-size:24px;font-weight:600}
+.kepalaAlt p{color:var(--muted);font-size:14px;max-width:70ch}
+.pilKasus{display:flex;gap:6px;flex-wrap:wrap}
+.pk{border:1.5px solid #7d8a82;background:#fff;border-radius:999px;padding:6px 12px;font:500 13.5px var(--font);cursor:pointer;color:var(--ink)}
+.pk[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.ist{border-bottom:1.5px dotted currentColor}
+.rp{font-variant-numeric:tabular-nums}
+
+/* modal (ditampilkan sebaris supaya mudah dibandingkan) */
+.modal{background:#fff;border-radius:26px;max-width:620px;margin:auto;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.18)}
+.mKepala{background:var(--hijau);color:#fff;padding:18px 20px 16px}
+.mKepala small{display:block;font-size:12.5px;font-weight:600;opacity:.85;letter-spacing:.03em}
+.mKepala h2{font-size:24px;font-weight:600}
+.mKepala p{opacity:.85;font-size:14px}
+.mIsi{padding:6px 20px 20px}
+.mIsi h4{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.03em;margin:18px 0 8px;display:flex;gap:8px;align-items:center}
+.no{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--ink);color:#fff;font-size:12px}
+.angka3{display:grid;grid-template-columns:1fr 1fr 1.4fr;gap:8px}
+.angka3 div{background:var(--frame);border-radius:14px;padding:10px 12px}
+.angka3 small{display:block;font-size:12px;color:var(--muted)}
+.angka3 b{font-size:17px}
+.dalil{border-left:3px solid var(--hijau);padding:6px 12px;background:#f6faf5;border-radius:0 12px 12px 0}
+.dalil .arab{font-size:21px;line-height:1.8;direction:rtl;text-align:right}
+.dalil small{display:block;color:var(--muted);font-size:12.5px}
+table.ahwal{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+table.ahwal td,table.ahwal th{padding:8px 8px;border-bottom:1px solid var(--line);text-align:start;vertical-align:top}
+table.ahwal th{width:90px;font-weight:700}
+table.ahwal tr.kini td,table.ahwal tr.kini th{background:var(--mint)}
+.stiker{display:inline-block;background:var(--ink);color:#fff;font-size:11px;font-weight:600;border-radius:999px;padding:1px 8px;margin-left:6px}
+.syarat{display:grid;gap:6px}
+.syarat div{display:flex;gap:10px;align-items:flex-start;background:var(--frame);border-radius:12px;padding:9px 12px;font-size:14px}
+.cek{flex:none;width:20px;height:20px;border-radius:50%;background:var(--hijau);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:700}
+.ubah{display:flex;gap:10px;align-items:center;font-size:15px;margin-top:8px}
+.ubah s{color:var(--muted)}
+.ubah b{background:var(--mint);border-radius:8px;padding:2px 8px}
+.langkahH{display:grid;gap:0;margin-top:4px}
+.langkahH div{display:grid;grid-template-columns:130px 1fr;gap:12px;padding:8px 0;border-bottom:1px dashed var(--line);font-size:14px;font-variant-numeric:tabular-nums}
+.langkahH div span:first-child{color:var(--muted)}
+.langkahH div:last-child{border:0;font-weight:600}
+.jumlahP{background:var(--frame);border-radius:14px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.jumlahP div{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:14px}
+.jumlahP div.tot{border-top:1.5px solid var(--ink);margin-top:5px;padding-top:7px;font-weight:600}
+.mKaki{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-top:1px solid var(--line)}
+.btn{border:0;background:var(--black);color:#fff;font:600 14px var(--font);border-radius:999px;padding:11px 18px;cursor:pointer}
+.tautan{background:none;border:0;padding:0;font:600 14px var(--font);text-decoration:underline;text-underline-offset:3px;cursor:pointer;color:inherit}
+/* B: tab */
+.tabM{display:flex;gap:4px;padding:10px 20px 0;border-bottom:1px solid var(--line)}
+.tabM button{border:0;background:none;padding:10px 12px;font:600 14px var(--font);color:var(--muted);border-bottom:3px solid transparent;cursor:pointer}
+.tabM button[aria-selected=true]{color:var(--ink);border-color:var(--ink)}
+/* C: alur */
+.alur{position:relative;margin-top:10px}
+.alur .titik{position:relative;padding:0 0 18px 40px}
+.alur .titik::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line)}
+.alur .titik:last-child::before{display:none}
+.alur .titik>.no{position:absolute;left:0;top:0;width:28px;height:28px;font-size:13px}
+.alur .titik.dasar>.no{background:var(--hijau)}
+.alur .titik.kasus>.no{background:var(--orange)}
+.alur h5{font-size:14.5px;font-weight:600;margin:3px 0 6px}
+.alur .ket{font-size:12.5px;color:var(--muted);font-weight:600;letter-spacing:.03em}
+.pipa{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-variant-numeric:tabular-nums}
+.pipa span{background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:4px 10px;font-size:14px}
+.pipa span.akhir{background:var(--mint);border-color:var(--mint);font-weight:600}
+.pipa i{color:var(--muted);font-style:normal}
+.cabang{display:grid;gap:8px}
+.cabang .c{background:var(--frame);border-radius:14px;padding:10px 12px}
+.cabang .c b{display:block;font-size:13.5px}
+.cabang .c small{display:block;color:var(--muted);font-size:12.5px}
+
+/* tabel proses */
+.tPanel{background:#fff;border-radius:22px;padding:16px;overflow:hidden}
+.pilTahap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;align-items:center}
+.pilTahap .pk{display:inline-flex;gap:6px;align-items:center}
+.pilTahap .pk .n{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgba(20,24,26,.1);font-size:11px}
+.pilTahap .pk[aria-pressed=true] .n{background:rgba(255,255,255,.25)}
+.tabelWadah{overflow-x:auto}
+table.f{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+table.f th,table.f td{border:1px solid #cfd8cc;padding:7px 9px;text-align:center;white-space:nowrap}
+table.f th:first-child,table.f td:first-child{text-align:start;position:sticky;left:0;background:#fff;z-index:1}
+table.f thead th{background:#f3f6ef;font-size:12.5px}
+table.f thead .besar{font-size:16px;font-weight:700;display:block}
+table.f thead .kecil{display:block;font-size:11.5px;color:var(--muted);font-weight:400}
+table.f thead .pengali{color:var(--orange);font-weight:700}
+table.f td.baru{background:#fff8f2}
+table.f th.baru{background:#fde6d8}
+table.f .mati{background:#eceee9;color:var(--muted)}
+table.f tfoot td{font-weight:700;background:#f3f6ef}
+.kotakHitung{margin-top:12px;border-radius:16px;overflow:hidden;border:1px solid var(--line)}
+.kotakHitung .bag{display:grid;grid-template-columns:110px 1fr;gap:10px;padding:10px 14px;border-top:1px solid var(--line);font-size:14px}
+.kotakHitung .bag:first-child{border:0}
+.kotakHitung .bag span:first-child{font-size:12.5px;font-weight:700;color:var(--muted);letter-spacing:.03em}
+.kotakHitung .bag.d{background:#f6faf5}.kotakHitung .bag.k{background:#fff8f2}
+.kotakHitung .rumus{font-variant-numeric:tabular-nums;display:grid;gap:3px}
+.nav2{display:flex;justify-content:space-between;align-items:center;margin:10px 0}
+.nav2 .tahapKe{font-size:13px;color:var(--muted)}
+.kartuTahap{display:grid;grid-template-columns:36px 1fr;gap:12px;background:#fff;border-radius:18px;padding:14px;margin-bottom:10px}
+.kartuTahap .no{width:32px;height:32px;font-size:14px}
+.kartuTahap h3{font-size:16px;font-weight:600}
+.kartuTahap .rumus{font-variant-numeric:tabular-nums;margin-top:6px;display:grid;gap:3px;font-size:14px}
+.kartuTahap .hasilT{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.kartuTahap .hasilT span{background:var(--frame);border-radius:10px;padding:3px 9px;font-size:13px}
+.catatanAlt{margin-top:16px;background:#fff;border-radius:18px;padding:14px 16px;font-size:14px}
+.catatanAlt b{display:block;margin-bottom:4px}
+@media(max-width:640px){.bingkai{padding:12px;border-radius:22px}.angka3{grid-template-columns:1fr 1fr}.angka3 div:last-child{grid-column:1/-1}.langkahH div{grid-template-columns:100px 1fr}.kotakHitung .bag{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wadah">
+  <div class="atas"><p>Alternatif untuk dipilih. Tidak ada yang disimpan. Pilih satu modal dan satu cara menampilkan proses tabel.</p>
+    <nav id="nav"></nav></div>
+  <div class="bingkai" id="isi"></div>
+</div>
+<script>
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const rp = n => 'Rp ' + Number(n).toLocaleString('id-ID');
+
+// ═══ Data orang (angka dari engine) ═══
+const ORANG = {
+  aminah: {
+    nama: 'Aminah', peran: 'Istri almarhum · kasus biasa', kel: 'PASANGAN', pec: '1/8', persen: '12,5%', rupiah: 37500000,
+    dalil: ['فَإِن كَانَ لَكُمْ وَلَدٌ فَلَهُنَّ الثُّمُنُ', 'Istri mendapat 1/8 bila suami punya anak', 'QS An-Nisa ayat 12'],
+    ahwal: [['1/4', 'Almarhum tidak punya anak atau cucu dari anak laki-laki.'], ['1/8', 'Almarhum punya anak atau cucu dari anak laki-laki.']], kini: 1,
+    syarat: [['Almarhum punya anak', 'Budi (anak laki-laki) dan Siti (anak perempuan)']],
+    ubah: ['1/4', '1/8', 'berkurang karena ada anak (hajb nuqshan)'],
+    hitung: [['Bagian dasar', '1/8 dari harta'], ['Asal masalah 24', '24 × 1/8 = 3 bagian'], ['Tashih × 3', '3 × 3 = 9 dari 72 bagian'], ['Rupiah', '9/72 × Rp 300.000.000 = Rp 37.500.000']],
+    terdampak: [],
+  },
+  siti: {
+    nama: 'Siti', peran: 'Anak perempuan · meninggal berurutan', kel: 'KETURUNAN', pec: '167/288', persen: '57,98%', rupiah: 173958333,
+    dalil: ['لِلذَّكَرِ مِثْلُ حَظِّ الْأُنثَيَيْنِ', 'Anak laki-laki mendapat dua kali bagian anak perempuan', 'QS An-Nisa ayat 11'],
+    ahwal: [['1/2', 'Sendirian, tanpa anak laki-laki.'], ['2/3', 'Dua orang atau lebih, tanpa anak laki-laki.'], ['Sisa, 1 : 2', 'Bersama anak laki-laki.']], kini: 2,
+    syarat: [['Di harta Pak Ahmad, Siti bersama anak laki-laki', 'Budi (saudaranya) masih hidup saat Pak Ahmad meninggal'], ['Budi lalu Aminah meninggal sebelum harta dibagi', 'Bagian mereka dibagi lagi; Siti ikut menerima sebagai saudari Budi dan putri Aminah']],
+    ubah: null,
+    munasakhat: 'Munasakhat: ahli waris yang meninggal sebelum harta dibagi; bagiannya dibagi lagi ke ahli warisnya sendiri.',
+    lapis: [['Harta Pak Ahmad', 'sisa, separuh bagian Budi', '7/24 × Rp 300.000.000', 87500000], ['Bagian Budi (Rp 175.000.000)', 'sisa sebagai saudari, bersama putri Budi', '5/24 × Rp 175.000.000', 36458333], ['Bagian Aminah (Rp 66.666.666)', '1/2 sebagai putri, lalu tambahan sisa (radd)', '3/4 × Rp 66.666.666', 50000000]],
+    hitung: [["Jami'ah", '288 bagian'], ['Dari Pak Ahmad', '7 × 12 = 84'], ['Dari Budi', '5 × 7 = 35'], ['Dari Aminah', '3 × 16 = 48'], ['Jumlah', '84 + 35 + 48 = 167 dari 288']],
+    terdampak: [],
+  },
+  suami: {
+    nama: 'Suami', peran: "Suami almarhumah · kasus 'aul", kel: 'PASANGAN', pec: '3/8', persen: '37,5%', rupiah: 112500000,
+    dalil: ['وَلَكُمْ نِصْفُ مَا تَرَكَ أَزْوَاجُكُمْ إِن لَّمْ يَكُن لَّهُنَّ وَلَدٌ', 'Suami mendapat 1/2 bila istri tidak punya anak', 'QS An-Nisa ayat 12'],
+    ahwal: [['1/2', 'Almarhumah tidak punya anak atau cucu dari anak laki-laki.'], ['1/4', 'Almarhumah punya anak atau cucu dari anak laki-laki.']], kini: 0,
+    syarat: [['Almarhumah tidak punya anak', 'Ahli warisnya: suami, ibu, dan 2 saudari kandung']],
+    ubah: ['1/2', '3/8', "berkurang sebanding karena 'aul: jumlah bagian melebihi harta"],
+    hitung: [['Bagian dasar', '1/2 dari harta'], ['Asal masalah 6', '6 × 1/2 = 3 bagian'], ["'Aul jadi 8", 'Suami 3 + ibu 1 + saudari 4 = 8 > 6, jadi asal dinaikkan ke 8 → 3/8'], ['Rupiah', '3/8 × Rp 300.000.000 = Rp 112.500.000']],
+    terdampak: ['Ibu 1/6 → 1/8, dan 2 saudari 2/3 → 1/2, ikut berkurang sebanding.'],
+  },
+};
+
+// ═══ Modal A: dasar dulu, berurutan ═══
+function bagian(o) { return `<div class="angka3"><div><small>Pecahan</small><b>${o.pec}</b></div><div><small>Persen</small><b>${o.persen}</b></div><div><small>Nominal</small><b class="rp">${rp(o.rupiah)}</b></div></div>`; }
+const dalilHtml = o => `<div class="dalil"><p class="arab">${o.dalil[0]}</p><p style="font-size:14px">${o.dalil[1]}.</p><small>${o.dalil[2]}</small></div>`;
+const ahwalHtml = o => `<table class="ahwal">${o.ahwal.map(([b, t], i) => `<tr class="${i === o.kini ? 'kini' : ''}"><th>${b}</th><td>${t}${i === o.kini ? '<span class="stiker">kasus ini</span>' : ''}</td></tr>`).join('')}</table>`;
+const syaratHtml = o => `<div class="syarat">${o.syarat.map(([a, b]) => `<div><span class="cek">✓</span><span><b>${a}</b><br><span style="color:var(--muted);font-size:13px">${b}</span></span></div>`).join('')}</div>`;
+const ubahHtml = o => (o.ubah ? `<div class="ubah"><s>${o.ubah[0]}</s> → <b>${o.ubah[1]}</b> <span style="font-size:13px;color:var(--muted)">${o.ubah[2]}</span></div>` : '');
+const lapisHtml = o => (o.lapis ? `<div class="jumlahP">${o.lapis.map(([a, b, c, n]) => `<div><span>${a}<br><small style="color:var(--muted)">${b} · ${c}</small></span><b>${rp(n)}</b></div>`).join('')}<div class="tot"><span>Jumlah</span><b>${rp(o.rupiah)}</b></div></div>` : '');
+const hitungHtml = o => `<div class="langkahH">${o.hitung.map(([a, b]) => `<div><span>${a}</span><span>${b}</span></div>`).join('')}</div>`;
+const kaki = `<div class="mKaki"><button class="tautan">Ubah jumlah</button><button class="btn">Oke, paham</button></div>`;
+const kepala = o => `<div class="mKepala"><small>${o.kel}</small><h2>${o.nama}</h2><p>${o.peran}</p></div>`;
+
+function modalA(o) {
+  return `<div class="modal">${kepala(o)}<div class="mIsi">
+    <h4>BAGIANNYA DI KASUS INI</h4>${bagian(o)}
+    <h4><span class="no">1</span>DASARNYA</h4>${dalilHtml(o)}${ahwalHtml(o)}${o.munasakhat ? `<p style="font-size:13.5px;margin-top:8px;background:var(--frame);border-radius:12px;padding:8px 12px">${o.munasakhat}</p>` : ''}
+    <h4><span class="no">2</span>DI KASUS INI</h4>${syaratHtml(o)}${ubahHtml(o)}
+    <h4><span class="no">3</span>HITUNGANNYA</h4>${lapisHtml(o)}${hitungHtml(o)}
+    ${o.terdampak.length ? `<h4>AHLI WARIS LAIN YANG TERDAMPAK</h4><ul style="margin:0;padding-left:18px;font-size:14px">${o.terdampak.map(t => `<li>${t}</li>`).join('')}</ul>` : ''}
+  </div>${kaki}</div>`;
+}
+function modalB(o, tab = 'ringkas') {
+  const isiTab = {
+    ringkas: `<h4>BAGIANNYA DI KASUS INI</h4>${bagian(o)}<h4>KENAPA SEGITU</h4>${syaratHtml(o)}${ubahHtml(o)}${lapisHtml(o)}`,
+    dasar: `<h4>DALIL</h4>${dalilHtml(o)}<h4>KAPAN DAPAT BERAPA</h4>${ahwalHtml(o)}${o.munasakhat ? `<h4>MUNASAKHAT</h4><p style="font-size:14px">${o.munasakhat}</p>` : ''}`,
+    hitungan: `<h4>LANGKAH HITUNG</h4>${hitungHtml(o)}${o.terdampak.length ? `<h4>TERDAMPAK</h4><p style="font-size:14px">${o.terdampak.join(' ')}</p>` : ''}`,
+  }[tab];
+  return `<div class="modal">${kepala(o)}<div class="tabM">${[['ringkas', 'Ringkas'], ['dasar', 'Dasar'], ['hitungan', 'Hitungan']].map(([k, l]) => `<button data-tabm="${k}" aria-selected="${k === tab}">${l}</button>`).join('')}</div><div class="mIsi">${isiTab}</div>${kaki}</div>`;
+}
+function modalC(o) {
+  const pipa = o.hitung.map(([a, b], i) => `<span class="${i === o.hitung.length - 1 ? 'akhir' : ''}">${b.split(' = ').pop()}</span>`).join('<i>→</i>');
+  return `<div class="modal">${kepala(o)}<div class="mIsi">
+    <h4>BAGIANNYA DI KASUS INI</h4>${bagian(o)}
+    <div class="alur">
+      <div class="titik dasar"><span class="no">1</span><p class="ket">DASAR · BERLAKU UNTUK SEMUA KASUS</p><h5>Aturannya</h5>${dalilHtml(o)}${ahwalHtml(o)}</div>
+      <div class="titik kasus"><span class="no">2</span><p class="ket">DI KELUARGA INI</p><h5>Syarat yang terpenuhi</h5>${syaratHtml(o)}${ubahHtml(o)}</div>
+      ${o.lapis ? `<div class="titik kasus"><span class="no">3</span><p class="ket">KARENA ADA YANG MENINGGAL KEMUDIAN</p><h5>Diterima dari tiap orang</h5><div class="cabang">${o.lapis.map(([a, b, c, n]) => `<div class="c"><b>${a}: ${rp(n)}</b><small>${b} · ${c}</small></div>`).join('')}</div></div>` : ''}
+      <div class="titik kasus"><span class="no">${o.lapis ? 4 : 3}</span><p class="ket">HITUNGAN</p><h5>Dari bagian ke rupiah</h5><div class="pipa">${pipa}</div><div style="margin-top:8px">${hitungHtml(o)}</div></div>
+    </div>
+    ${o.terdampak.length ? `<h4>AHLI WARIS LAIN YANG TERDAMPAK</h4><p style="font-size:14px">${o.terdampak.join(' ')}</p>` : ''}
+  </div>${kaki}</div>`;
+}
+
+// ═══ Proses tabel (tahap baku) ═══
+const KASUS_T = {
+  biasa: {
+    judul: 'Kasus biasa: istri, ibu, anak laki-laki, anak perempuan, kakak', baris: ['Aminah (istri)', 'Fatimah (ibu)', 'Budi (anak laki-laki)', 'Siti (anak perempuan)', 'Hasan (kakak)'],
+    tahap: [
+      { id: 'awal', label: 'Bagian awal', kepala: 'Bagian', nilai: ['1/8', '1/6', 'sisa', 'sisa', 'terhalang'], dasar: 'Tiap ahli waris punya bagian tertentu (fardh) atau sisa (ashabah), menurut syaratnya.', kasus: 'Istri 1/8 dan ibu 1/6 karena almarhum punya anak. Anak laki-laki dan perempuan mengambil sisa (2 : 1). Kakak terhalang oleh anak laki-laki.', rumus: ['Istri 1/8 · Ibu 1/6 · Anak: sisa · Kakak: —'] },
+      { id: 'ashl', label: 'Asal masalah', kepala: 'Asal masalah', besar: '24', kecil: '8 dan 6, tawafuq', nilai: ['3', '4', '17', '', '—'], gabung: [2, 3], dasar: 'Asal masalah = angka terkecil yang bisa dibagi semua penyebut. Bila penyebut sama-sama bisa dibagi angka lain (tawafuq), kalikan salah satunya dengan hasil bagi yang lain.', kasus: 'Penyebut 8 dan 6 sama-sama bisa dibagi 2.', rumus: ['8 × (6 ÷ 2) = 24', 'Istri 24 × 1/8 = 3', 'Ibu 24 × 1/6 = 4', 'Sisa 24 − 3 − 4 = 17'] },
+      { id: 'tashih', label: 'Tashih', kepala: 'Tashih', besar: '72', kecil: '× 3', nilai: ['9', '12', '51', '', '—'], gabung: [2, 3], dasar: 'Bila bagian sekelompok tidak habis dibagi jumlah orangnya, semua bagian dikalikan supaya bulat (tashih).', kasus: 'Sisa 17 untuk 3 kepala (anak laki-laki dihitung 2). 17 dan 3 tidak punya faktor bersama (tabayun), jadi semua × 3.', rumus: ['24 × 3 = 72', 'Istri 3 × 3 = 9', 'Ibu 4 × 3 = 12', 'Anak 17 × 3 = 51'] },
+      { id: 'orang', label: 'Per orang', kepala: 'Per orang', nilai: ['9', '12', '34', '17', '—'], dasar: 'Bagian kelompok dibagi ke anggotanya; untuk ashabah bil ghair laki-laki dua kali perempuan.', kasus: 'Anak laki-laki 2 kepala, anak perempuan 1 kepala.', rumus: ['51 ÷ 3 = 17 per kepala', 'Budi 17 × 2 = 34', 'Siti 17 × 1 = 17'] },
+      { id: 'rupiah', label: 'Rupiah', kepala: 'Rupiah', nilai: ['37.500.000', '50.000.000', '141.666.666', '70.833.333', '0'], dasar: 'Rupiah = saham ÷ jumlah saham × harta, dibulatkan ke bawah.', kasus: 'Harta Rp 300.000.000 dibagi 72 saham.', rumus: ['Istri 9/72 × 300.000.000 = 37.500.000', 'Ibu 12/72 × 300.000.000 = 50.000.000', 'Budi 34/72 × 300.000.000 = 141.666.666', 'Siti 17/72 × 300.000.000 = 70.833.333', 'Sisa pembulatan Rp 1'] },
+    ],
+  },
+  aul: {
+    judul: "Kasus 'aul: suami, ibu, 2 saudari kandung", baris: ['Suami', 'Ibu', 'Saudari kandung 1', 'Saudari kandung 2'],
+    tahap: [
+      { id: 'awal', label: 'Bagian awal', kepala: 'Bagian', nilai: ['1/2', '1/6', '2/3', ''], gabung: [2, 3], dasar: 'Tiap ahli waris punya bagian tertentu menurut syaratnya.', kasus: 'Suami 1/2 karena almarhumah tidak punya anak. Ibu 1/6 karena ada 2 saudari. Dua saudari kandung berbagi 2/3.', rumus: ['Suami 1/2 · Ibu 1/6 · 2 saudari 2/3'] },
+      { id: 'ashl', label: 'Asal masalah', kepala: 'Asal masalah', besar: '6', kecil: '2 dan 3 masuk ke 6, tadakhul', nilai: ['3', '1', '4', ''], gabung: [2, 3], dasar: 'Bila penyebut yang kecil habis membagi yang besar (tadakhul), cukup pakai yang besar.', kasus: 'Penyebut 2, 6, 3: 2 dan 3 habis membagi 6.', rumus: ['Asal masalah 6', 'Suami 6 × 1/2 = 3', 'Ibu 6 × 1/6 = 1', 'Saudari 6 × 2/3 = 4'] },
+      { id: 'aul', label: "'Aul", kepala: "'Aul", besar: '8', kecil: 'dari 6', nilai: ['3', '1', '4', ''], gabung: [2, 3], dasar: "Bila jumlah bagian melebihi asal masalah, asal masalah dinaikkan sebesar jumlah itu ('aul); semua bagian berkurang sebanding.", kasus: 'Jumlah bagian melebihi 6.', rumus: ['3 + 1 + 4 = 8', '8 > 6, jadi asal masalah menjadi 8', 'Suami 3/8 · Ibu 1/8 · Saudari 4/8'] },
+      { id: 'orang', label: 'Per orang', kepala: 'Per orang', nilai: ['3', '1', '2', '2'], dasar: 'Bagian kelompok dibagi rata ke anggotanya.', kasus: '2 saudari kandung berbagi 4 bagian.', rumus: ['4 ÷ 2 = 2 masing-masing'] },
+      { id: 'rupiah', label: 'Rupiah', kepala: 'Rupiah', nilai: ['112.500.000', '37.500.000', '75.000.000', '75.000.000'], dasar: 'Rupiah = saham ÷ jumlah saham × harta.', kasus: 'Harta Rp 300.000.000 dibagi 8 saham.', rumus: ['300.000.000 ÷ 8 = 37.500.000 per saham', 'Suami 3 × 37.500.000 = 112.500.000', 'Ibu 1 × 37.500.000 = 37.500.000', 'Saudari 2 × 37.500.000 = 75.000.000'] },
+    ],
+  },
+  berlapis: {
+    judul: 'Kasus berurutan: Pak Ahmad → Budi → Aminah', baris: ['Aminah', 'Budi', 'Siti', 'Rina', 'Zahra'],
+    tahap: [
+      { id: 'm1', label: 'Masalah Pak Ahmad', kepala: 'Masalah 1', besar: '24', kecil: 'asal 8 → tashih 24', nilai: ['3', '14 ✕', '7', '', ''], mati: [1], dasar: 'Mayit pertama dihitung seperti kasus biasa.', kasus: 'Istri 1/8; anak laki-laki dan anak perempuan sisa (2 : 1).', rumus: ['Asal 8: istri 1, sisa 7 untuk 3 kepala', '7 dan 3 tabayun → × 3 = 24', 'Istri 3 · Budi 14 · Siti 7'] },
+      { id: 'm2', label: 'Masalah Budi', kepala: 'Masalah Budi', besar: '24', kecil: "asal 24, 'adilah", nilai: ['4', '', '5', '3', '12'], dasar: 'Mayit berikutnya dihitung dengan ahli warisnya sendiri saat ia meninggal.', kasus: 'Budi meninggalkan ibu (Aminah), istri (Rina), putri (Zahra), saudari (Siti).', rumus: ['Rina 1/8 · Aminah 1/6 · Zahra 1/2 · Siti sisa', 'Penyebut 8, 6, 2 → 24', 'Rina 3 · Aminah 4 · Zahra 12 · Siti 24 − 19 = 5'] },
+      { id: 'b2', label: 'Perbandingan Budi', kepala: 'Banding', besar: '14 : 24', kecil: 'tawafuq, ÷ 2', nilai: ['', '', '', '', ''], dasar: "Bagian mayit di masalah sebelumnya dibandingkan dengan masalahnya sendiri: habis dibagi (inqisam), punya faktor bersama (tawafuq), atau tidak (tabayun).", kasus: 'Bagian Budi 14, masalahnya 24: sama-sama bisa dibagi 2.', rumus: ['14 ÷ 2 = 7 · 24 ÷ 2 = 12', 'Masalah 1 dikali 12, masalah Budi dikali 7'] },
+      { id: 'j1', label: "Jami'ah ke-1", kepala: "Jami'ah", besar: '288', kecil: '24 × 12', nilai: ['64', '', '119', '21', '84'], dasar: "Jami'ah = masalah sebelumnya × pengalinya. Tiap orang: saham lama × pengali lama + saham baru × pengali baru.", kasus: 'Pengali masalah 1 = 12, pengali masalah Budi = 7.', rumus: ['Aminah 3 × 12 + 4 × 7 = 64', 'Siti 7 × 12 + 5 × 7 = 119', 'Rina 3 × 7 = 21', 'Zahra 12 × 7 = 84'] },
+      { id: 'm3', label: 'Masalah Aminah', kepala: 'Masalah Aminah', besar: '4', kecil: 'asal 6 → radd 4', nilai: ['', '', '3', '', '1'], dasar: 'Bila tidak ada ashabah, sisa dikembalikan ke pemilik bagian tertentu sebanding bagiannya (radd).', kasus: 'Aminah meninggalkan putri (Siti) dan cucu (Zahra).', rumus: ['Siti 1/2 · Zahra 1/6 → asal 6: 3 dan 1', 'Jumlah 4 < 6, sisa dikembalikan → masalah 4'] },
+      { id: 'j2', label: "Jami'ah akhir", kepala: "Jami'ah akhir", besar: '288', kecil: '64 : 4, inqisam × 16', nilai: ['', '', '167', '21', '100'], dasar: "Bila bagian mayit habis dibagi masalahnya (inqisam), jami'ah tetap; masalah mayit dikali hasil baginya.", kasus: 'Bagian Aminah 64, masalahnya 4: 64 ÷ 4 = 16.', rumus: ['Siti 119 + 3 × 16 = 167', 'Zahra 84 + 1 × 16 = 100', 'Rina 21', 'Jumlah 167 + 100 + 21 = 288'] },
+      { id: 'rupiah', label: 'Rupiah', kepala: 'Rupiah', nilai: ['', '', '173.958.333', '21.875.000', '104.166.666'], dasar: 'Rupiah = saham ÷ jami\'ah × harta mayit pertama.', kasus: 'Harta Pak Ahmad Rp 300.000.000 dibagi 288.', rumus: ['Siti 167/288 × 300.000.000 = 173.958.333', 'Rina 21/288 × 300.000.000 = 21.875.000', 'Zahra 100/288 × 300.000.000 = 104.166.666', 'Sisa pembulatan Rp 1'] },
+    ],
+  },
+};
+
+function tabelDari(kt, tampil, sorot) {
+  const t = kt.tahap.filter(x => tampil.includes(x.id));
+  const kepala = t.map(x => `<th class="${x.id === sorot ? 'baru' : ''}">${x.kepala}${x.besar ? `<span class="besar">${x.besar}</span>` : ''}${x.kecil ? `<span class="kecil">${x.kecil}</span>` : ''}</th>`).join('');
+  const baris = kt.baris.map((n, r) => `<tr><td>${n}</td>${t.map(x => {
+    if (x.gabung && x.gabung.includes(r) && r !== x.gabung[0]) return '';
+    const span = x.gabung && r === x.gabung[0] ? ` rowspan="${x.gabung.length}"` : '';
+    return `<td${span} class="${x.id === sorot ? 'baru' : ''} ${x.mati?.includes(r) ? 'mati' : ''}">${x.nilai[r]}</td>`;
+  }).join('')}</tr>`).join('');
+  return `<div class="tabelWadah"><table class="f"><thead><tr><th>Ahli waris</th>${kepala}</tr></thead><tbody>${baris}</tbody></table></div>`;
+}
+const kotakHitung = x => `<div class="kotakHitung"><div class="bag"><span>TAHAP</span><b>${x.label}</b></div><div class="bag d"><span>DASAR</span><span>${x.dasar}</span></div><div class="bag k"><span>DI KASUS INI</span><span>${x.kasus}</span></div><div class="bag"><span>HITUNGAN</span><span class="rumus">${x.rumus.map(r => `<span>${r}</span>`).join('')}</span></div></div>`;
+
+let st = { alt: 'mA', orang: 'aminah', tabM: 'ringkas', kasus: 'biasa', tampil: null, tahapKe: 0 };
+const ALT = [['mA', 'Modal A · dasar dulu'], ['mB', 'Modal B · tab'], ['mC', 'Modal C · alur'], ['tA', 'Tabel A · pil tahap'], ['tB', 'Tabel B · bertahap'], ['tC', 'Tabel C · kartu proses']];
+const KET = {
+  mA: ['Modal A: dasar dulu, berurutan', 'Satu gulungan: Bagiannya → 1 Dasarnya (dalil + kapan dapat berapa) → 2 Di kasus ini (syarat dicentang, perubahan bagian) → 3 Hitungannya.'],
+  mB: ['Modal B: tab di dalam modal', 'Ringkas (bagian + kenapa) · Dasar (dalil + kapan dapat berapa) · Hitungan (langkah). Isi pendek per tab, perlu berpindah tab.'],
+  mC: ['Modal C: alur visual bertingkat', 'Garis bernomor dari aturan umum (hijau) ke keluarga ini (oranye) sampai rupiah. Munasakhat menambah cabang "diterima dari tiap orang".'],
+  tA: ['Tabel A: pil tahap', 'Nyalakan tahap mana saja. Kolom tahap yang terakhir dinyalakan disorot, dan kotak di bawah menjelaskan dasar → di kasus ini → hitungan.'],
+  tB: ['Tabel B: bertahap', 'Maju satu tahap sekali: tiap tahap menambah satu kolom dan menampilkan penjelasannya. Pil "Semua tahap" menampilkan semuanya sekaligus.'],
+  tC: ['Tabel C: kartu proses', 'Tiap tahap satu kartu berisi dasar, penerapan, dan hitungan; tabel lengkap di bawahnya.'],
+};
+
+function render() {
+  $('#nav').innerHTML = ALT.map(([k, l]) => `<button data-alt="${k}" aria-selected="${st.alt === k}">${l}</button>`).join('');
+  const modal = st.alt.startsWith('m'), [judul, ket] = KET[st.alt];
+  const pil = modal ? Object.entries(ORANG).map(([k, o]) => `<button class="pk" data-orang="${k}" aria-pressed="${st.orang === k}">${o.nama}</button>`).join('')
+    : Object.entries(KASUS_T).map(([k]) => `<button class="pk" data-kasus="${k}" aria-pressed="${st.kasus === k}">${{ biasa: 'Biasa', aul: "'Aul", berlapis: 'Berurutan' }[k]}</button>`).join('');
+  let isi;
+  if (modal) { const o = ORANG[st.orang]; isi = st.alt === 'mA' ? modalA(o) : st.alt === 'mB' ? modalB(o, st.tabM) : modalC(o); }
+  else {
+    const kt = KASUS_T[st.kasus], semua = kt.tahap.map(x => x.id);
+    if (st.alt === 'tA') {
+      st.tampil ??= [semua[0], semua[semua.length - 1]];
+      const sorot = st.tampil[st.tampil.length - 1], x = kt.tahap.find(t => t.id === sorot) ?? kt.tahap[0];
+      isi = `<div class="tPanel"><p style="font-size:14px;font-weight:600;margin-bottom:8px">${kt.judul}</p><div class="pilTahap">${kt.tahap.map((t, i) => `<button class="pk" data-tahap="${t.id}" aria-pressed="${st.tampil.includes(t.id)}"><span class="n">${i + 1}</span>${t.label}</button>`).join('')}<button class="tautan" data-semua style="font-size:13px;margin-left:6px">semua</button></div>
+        ${tabelDari(kt, semua.filter(i => st.tampil.includes(i)), sorot)}${kotakHitung(x)}</div>`;
+    } else if (st.alt === 'tB') {
+      const n = Math.min(st.tahapKe, kt.tahap.length - 1), x = kt.tahap[n];
+      isi = `<div class="tPanel"><p style="font-size:14px;font-weight:600;margin-bottom:8px">${kt.judul}</p>
+        <div class="nav2"><button class="pk" data-mundur ${n === 0 ? 'disabled' : ''}>← Sebelumnya</button><span class="tahapKe">Tahap ${n + 1} dari ${kt.tahap.length}: <b>${x.label}</b></span><button class="pk" data-maju ${n === kt.tahap.length - 1 ? 'disabled' : ''}>Berikutnya →</button></div>
+        ${tabelDari(kt, semua.slice(0, n + 1), x.id)}${kotakHitung(x)}</div>`;
+    } else {
+      isi = kt.tahap.map((x, i) => `<div class="kartuTahap"><span class="no">${i + 1}</span><div><h3>${x.label}${x.besar ? ` · ${x.besar}` : ''}</h3><p style="font-size:13.5px;color:var(--muted);margin-top:4px">${x.dasar}</p><p style="font-size:14px;margin-top:4px"><b>Di kasus ini:</b> ${x.kasus}</p><div class="rumus">${x.rumus.map(r => `<span>${r}</span>`).join('')}</div></div></div>`).join('') + `<div class="tPanel">${tabelDari(kt, semua, null)}</div>`;
+    }
+  }
+  $('#isi').innerHTML = `<div class="kepalaAlt"><div><h1>${judul}</h1><p>${ket}</p></div><div class="pilKasus">${pil}</div></div>${isi}
+    <div class="catatanAlt"><b>Yang perlu dinilai</b>${modal ? 'Apakah urutan dasar → di kasus ini → hitungan terasa wajar dibaca? Apakah informasi terasa terlalu banyak sekaligus?' : 'Apakah tiap tahap bisa diikuti dari bagian awal sampai rupiah (dan jami\'ah)? Apakah cara memilih tahap mudah?'}</div>`;
+  $$('[data-alt]').forEach(b => b.onclick = () => { st.alt = b.dataset.alt; st.tampil = null; st.tahapKe = 0; render(); });
+  $$('[data-orang]').forEach(b => b.onclick = () => { st.orang = b.dataset.orang; render(); });
+  $$('[data-kasus]').forEach(b => b.onclick = () => { st.kasus = b.dataset.kasus; st.tampil = null; st.tahapKe = 0; render(); });
+  $$('[data-tabm]').forEach(b => b.onclick = () => { st.tabM = b.dataset.tabm; render(); });
+  $$('[data-tahap]').forEach(b => b.onclick = () => { const id = b.dataset.tahap; st.tampil = st.tampil.includes(id) ? st.tampil.filter(x => x !== id) : [...st.tampil, id]; if (!st.tampil.length) st.tampil = [id]; render(); });
+  $('[data-semua]')?.addEventListener('click', () => { st.tampil = KASUS_T[st.kasus].tahap.map(x => x.id); render(); });
+  $('[data-maju]')?.addEventListener('click', () => { st.tahapKe++; render(); });
+  $('[data-mundur]')?.addEventListener('click', () => { st.tahapKe--; render(); });
+}
+render();
+</script>
+</body>
+</html>

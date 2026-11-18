@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipe editor narasi</title>
+<style>
+:root{--bg:#fafafa;--card:#fff;--fg:#0a0a0a;--muted:#737373;--border:#e5e5e5;--accent:#f5f5f5;--primary:#171717;--chip:#e8eefc;--chip-fg:#1e3a8a;--ref:#f1f5ef;--ref-fg:#3f5d3a;--warn:#fff4e5;--r:10px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+.pilih-alt{position:sticky;top:0;z-index:5;background:var(--fg);color:#fff;padding:10px 16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+.pilih-alt button{background:none;border:0;color:#bbb;font:inherit;cursor:pointer;padding:4px 0;border-bottom:2px solid transparent}
+.pilih-alt button[aria-pressed=true]{color:#fff;border-color:#f2682a}
+.catatan{max-width:1040px;margin:14px auto 0;padding:0 16px;color:var(--muted)}
+.wadah{max-width:1040px;margin:12px auto 40px;padding:0 16px}
+.kartu{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+h1{font-size:20px;margin:0 0 4px}
+h2{font-size:15px;margin:0 0 8px}
+.redup{color:var(--muted)}
+.chip{display:inline-block;background:var(--chip);color:var(--chip-fg);border-radius:6px;padding:0 6px;font-size:13px;margin:0 1px;white-space:nowrap}
+.chip.ref{background:var(--ref);color:var(--ref-fg)}
+.isi{display:inline-block;background:var(--accent);border-radius:4px;padding:0 3px}
+select,input,textarea{font:inherit;border:1px solid var(--border);border-radius:8px;padding:7px 10px;background:#fff}
+.tombol{background:var(--primary);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+.tautan{background:none;border:0;padding:0;font:inherit;cursor:pointer;color:var(--fg);text-decoration:underline;text-underline-offset:3px}
+.ikon{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px}
+/* editor sisipan bersama */
+.editor{border:1px solid var(--border);border-radius:8px;padding:10px;min-height:70px;background:#fff;line-height:1.9}
+.editor:focus-within{outline:2px solid #93c5fd}
+.editor [contenteditable]{outline:none}
+.sisip-daftar{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.sisip-daftar button{border:1px dashed var(--border);background:#fff;border-radius:6px;padding:2px 8px;font-size:13px;cursor:pointer}
+.status{font-size:12px;border-radius:999px;padding:1px 8px;background:var(--accent)}
+/* A */
+.penjelasan p{margin:0 0 10px;padding:6px 8px;border-radius:8px;cursor:text;position:relative}
+.penjelasan p:hover{background:#f7f9ff;box-shadow:inset 0 0 0 1px #c7d6fb}
+.penjelasan p .pena{position:absolute;right:6px;top:6px;opacity:0;color:var(--muted)}
+.penjelasan p:hover .pena{opacity:1}
+.tray{margin-top:12px;border-top:1px solid var(--border);padding-top:12px}
+/* B */
+.dua{display:grid;grid-template-columns:260px 1fr;gap:12px}
+.tahap{list-style:none;margin:0;padding:0}
+.tahap button{width:100%;text-align:left;background:none;border:0;padding:8px 10px;border-radius:8px;font:inherit;cursor:pointer;display:flex;justify-content:space-between}
+.tahap button[aria-current=true]{background:var(--accent);font-weight:600}
+.butir{border-top:1px solid var(--border);padding:12px 0}
+.butir:first-child{border-top:0}
+.butir .atas{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+/* C */
+.kasus-pilih{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0}
+.kasus-pilih button{border:1px solid var(--border);background:#fff;border-radius:999px;padding:5px 12px;cursor:pointer;font:inherit}
+.kasus-pilih button[aria-pressed=true]{background:var(--primary);color:#fff;border-color:var(--primary)}
+.kalimat{display:block;width:100%;text-align:left;background:none;border:1px solid transparent;border-radius:8px;padding:8px;font:inherit;cursor:pointer;margin-bottom:4px}
+.kalimat[aria-current=true]{border-color:var(--primary);background:#fff}
+@media (max-width:760px){.dua{grid-template-columns:1fr}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<nav class="pilih-alt" aria-label="Alternatif">
+  <strong>Editor narasi:</strong>
+  <button data-alt="a" aria-pressed="true">A · Sunting di penjelasan</button>
+  <button data-alt="b" aria-pressed="false">B · Daftar per tahap</button>
+  <button data-alt="c" aria-pressed="false">C · Mulai dari kasus contoh</button>
+</nav>
+<p class="catatan" id="catatan"></p>
+
+<div class="wadah">
+  <!-- A -->
+  <section data-hanya="a" class="kartu">
+    <h1>Penjelasan hasil</h1>
+    <p class="redup" style="margin:0 0 12px">Tampilan sama dengan di aplikasi. Klik kalimat untuk mengubahnya. Contoh: <select id="kasusA"></select></p>
+    <div class="penjelasan" id="penjelasanA"></div>
+    <div class="tray" id="trayA" hidden></div>
+  </section>
+
+  <!-- B -->
+  <section data-hanya="b" class="dua">
+    <div class="kartu"><h2>Tahap penjelasan</h2><ul class="tahap" id="tahapB"></ul></div>
+    <div class="kartu" id="daftarB"></div>
+  </section>
+
+  <!-- C -->
+  <section data-hanya="c" class="dua">
+    <div class="kartu">
+      <h2>Kasus contoh</h2>
+      <div class="kasus-pilih" id="kasusC"></div>
+      <p class="redup" style="margin:12px 0 6px">Kalimat yang dipakai kasus ini:</p>
+      <div id="kalimatC"></div>
+    </div>
+    <div class="kartu" id="editorC"></div>
+  </section>
+</div>
+
+<script>
+// Sisipan: nama manusiawi + contoh nilai. Rujukan (kode bab) tampil sebagai "rujukan", kodenya tidak pernah terlihat.
+const SISIP = {
+  pewaris:{nama:'nama almarhum',contoh:'Pak Hasan'}, siapa:{nama:'nama orang',contoh:'Rudi'},
+  mahjub:{nama:'yang terhalang',contoh:'saudara seibu'}, hajib:{nama:'yang menghalangi',contoh:'anak laki-laki'},
+  kotor:{nama:'harta awal',contoh:'Rp100.000.000'}, tajhiz:{nama:'biaya jenazah',contoh:'Rp5.000.000'},
+  hutang:{nama:'hutang',contoh:'Rp5.000.000'}, tersisa:{nama:'sisa harta',contoh:'Rp90.000.000'},
+  bersih:{nama:'harta dibagi',contoh:'Rp90.000.000'}, daftar_ahli_waris:{nama:'daftar ahli waris',contoh:'suami, ibu, dan 2 saudara seibu'},
+  madzhab:{nama:'madzhab',contoh:"Syafi'i"},
+  tirkah:{nama:'rujukan',ref:true,contoh:'¹'}, warits:{nama:'rujukan',ref:true,contoh:'²'},
+  hajb_hirman:{nama:'rujukan',ref:true,contoh:'³'}, mani:{nama:'rujukan',ref:true,contoh:'⁴'},
+};
+const TAHAP = ['Pembuka','Harta','Ahli waris','Terhalang','Bagian'];
+const TEMPLAT = [
+  {k:'pembuka',tahap:0,status:'terbit',id:'Perhitungan ini menurut madzhab {madzhab}.'},
+  {k:'biaya',tahap:1,status:'terbit',id:'Sebelum dibagi, harta peninggalan ({tirkah}) {kotor} dipakai dulu untuk biaya pengurusan jenazah {tajhiz} dan melunasi hutang {hutang}, sehingga tersisa {tersisa}.'},
+  {k:'dibagi',tahap:1,status:'terbit',id:'Harta yang dibagi kepada ahli waris: {bersih}.'},
+  {k:'daftar',tahap:2,status:'draf',id:'Ahli waris ({warits}) {pewaris}: {daftar_ahli_waris}.'},
+  {k:'qatl',tahap:3,status:'terbit',id:'{siapa} tidak mendapat warisan karena membunuh {pewaris}; pembunuh terhalang dari warisan ({mani}).'},
+  {k:'terhalang',tahap:3,status:'terbit',id:'{mahjub} tidak mendapat bagian karena terhalang oleh {hajib} ({hajb_hirman}).'},
+];
+const KASUS = {
+  'Ada hutang':['pembuka','biaya','dibagi','daftar'],
+  'Ada yang terhalang':['pembuka','dibagi','daftar','terhalang'],
+  'Pembunuh':['pembuka','dibagi','daftar','qatl'],
+};
+const cari = k => TEMPLAT.find(t=>t.k===k);
+const sel = (templat, mode) => templat.replace(/\{(\w+)\}/g,(_,n)=>{const s=SISIP[n]||{nama:n,contoh:n};
+  return mode==='contoh' ? (s.ref?`<span class="chip ref">rujukan</span>`:`<span class="isi">${s.contoh}</span>`)
+                         : `<span class="chip ${s.ref?'ref':''}" contenteditable="false" data-n="${n}">${s.nama}</span>`;});
+const ikonPena = '<svg class="ikon pena" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+
+// Editor bersama: teks bisa diketik, sisipan jadi chip yang bisa dihapus/dipindah, tidak bisa diketik ulang.
+function editorHTML(t){
+  const dipakai = new Set([...t.id.matchAll(/\{(\w+)\}/g)].map(m=>m[1]));
+  return `<div class="editor"><div contenteditable="true" data-k="${t.k}">${sel(t.id,'chip')}</div></div>
+    <div class="sisip-daftar"><span class="redup">Sisipkan:</span>${[...dipakai].map(n=>`<button data-sisip="${n}">${SISIP[n].nama}</button>`).join('')}</div>
+    <p class="redup" style="margin:10px 0 4px">Pratinjau</p><p style="margin:0">${sel(t.id,'contoh')}</p>
+    <div style="display:flex;gap:14px;align-items:center;justify-content:flex-end;margin-top:12px">
+      <button class="tautan" data-batal>Batal</button><button class="tombol" data-simpan="${t.k}">Simpan draf</button></div>`;
+}
+function bacaEditor(root){
+  const ed = root.querySelector('[contenteditable=true]'); let s='';
+  ed.childNodes.forEach(n=>{ s += n.nodeType===3 ? n.textContent : n.dataset?.n ? `{${n.dataset.n}}` : n.textContent; });
+  return s.replace(/\s+/g,' ').trim();
+}
+function pasangEditor(root, selesai){
+  root.onclick = e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    if(b.dataset.sisip){ const ed=root.querySelector('[contenteditable=true]'); ed.insertAdjacentHTML('beforeend',' '+sel(`{${b.dataset.sisip}}`,'chip')); }
+    if(b.dataset.simpan){ const t=cari(b.dataset.simpan); t.id=bacaEditor(root); t.status='draf'; selesai(); }
+    if('batal' in b.dataset) selesai();
+  };
+}
+
+/* A */
+let kasusA='Ada hutang';
+document.getElementById('kasusA').innerHTML = Object.keys(KASUS).map(k=>`<option>${k}</option>`).join('');
+document.getElementById('kasusA').onchange = e=>{kasusA=e.target.value;renderA();};
+function renderA(){
+  document.getElementById('penjelasanA').innerHTML = KASUS[kasusA].map(k=>`<p data-k="${k}">${sel(cari(k).id,'contoh')}${ikonPena}</p>`).join('');
+  document.getElementById('trayA').hidden=true;
+}
+document.getElementById('penjelasanA').onclick = e=>{
+  const p=e.target.closest('p'); if(!p) return;
+  const tray=document.getElementById('trayA'); tray.hidden=false;
+  tray.innerHTML = `<h2>Ubah kalimat</h2>`+editorHTML(cari(p.dataset.k));
+  pasangEditor(tray, renderA);
+};
+
+/* B */
+let tahapB=0;
+function renderB(){
+  document.getElementById('tahapB').innerHTML = TAHAP.map((t,i)=>{const n=TEMPLAT.filter(x=>x.tahap===i);
+    return `<li><button data-t="${i}" aria-current="${i===tahapB}">${t}<span class="redup">${n.length}</span></button></li>`}).join('');
+  document.getElementById('daftarB').innerHTML = `<h2>${TAHAP[tahapB]}</h2>` + TEMPLAT.filter(x=>x.tahap===tahapB).map(t=>`
+    <div class="butir" data-k="${t.k}"><div class="atas"><p style="margin:0">${sel(t.id,'chip')}</p><span class="status">${t.status}</span></div>
+      <p class="redup" style="margin:6px 0 0">Contoh: ${sel(t.id,'contoh')}</p>
+      <button class="tautan" data-ubah="${t.k}" style="margin-top:6px">Ubah</button><div class="slot"></div></div>`).join('');
+}
+document.getElementById('tahapB').onclick = e=>{const b=e.target.closest('button'); if(b){tahapB=+b.dataset.t;renderB();}};
+document.getElementById('daftarB').onclick = e=>{
+  const b=e.target.closest('[data-ubah]'); if(!b) return;
+  const slot=b.parentElement.querySelector('.slot'); b.hidden=true;
+  slot.innerHTML=editorHTML(cari(b.dataset.ubah)); pasangEditor(slot, renderB);
+};
+
+/* C */
+let kasusC='Ada yang terhalang', kalimatC='terhalang';
+function renderC(){
+  document.getElementById('kasusC').innerHTML = Object.keys(KASUS).map(k=>`<button data-c="${k}" aria-pressed="${k===kasusC}">${k}</button>`).join('');
+  if(!KASUS[kasusC].includes(kalimatC)) kalimatC=KASUS[kasusC].at(-1);
+  document.getElementById('kalimatC').innerHTML = KASUS[kasusC].map(k=>`<button class="kalimat" data-kal="${k}" aria-current="${k===kalimatC}">${sel(cari(k).id,'contoh')}</button>`).join('');
+  const ed=document.getElementById('editorC');
+  ed.innerHTML = `<h2>Ubah kalimat</h2><p class="redup" style="margin:0 0 8px">Dipakai juga di ${Object.values(KASUS).filter(v=>v.includes(kalimatC)).length} kasus contoh lain.</p>`+editorHTML(cari(kalimatC));
+  pasangEditor(ed, renderC);
+}
+document.getElementById('kasusC').onclick = e=>{const b=e.target.closest('button'); if(b){kasusC=b.dataset.c;renderC();}};
+document.getElementById('kalimatC').onclick = e=>{const b=e.target.closest('button'); if(b){kalimatC=b.dataset.kal;renderC();}};
+
+/* pengalih */
+const CATATAN = {
+  a:'A: Penjelasan hasil ditampilkan persis seperti di aplikasi untuk satu kasus contoh; klik kalimat → kotak ubah di bawahnya. Paling sesuai "edit langsung di layar", tapi kalimat yang tidak dipakai kasus contoh itu tidak terlihat.',
+  b:'B: Semua kalimat dikelompokkan per tahap penjelasan (harta, ahli waris, terhalang, ...), masing-masing dengan contoh jadi. Lengkap dan mudah dicek satu per satu, tapi terasa seperti daftar teks, jauh dari tampilan aplikasi.',
+  c:'C: Pilih kasus contoh, lalu kalimat yang dipakai kasus itu muncul berurutan; klik satu untuk diubah di panel kanan. Konteks jelas dan tetap rapi, tapi admin perlu tahu kasus mana yang memakai kalimat yang ingin diubah.'
+};
+let alt='a';
+function render(){
+  document.querySelectorAll('[data-hanya]').forEach(el=>el.hidden=el.dataset.hanya!==alt);
+  document.querySelectorAll('.pilih-alt button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.alt===alt));
+  document.getElementById('catatan').textContent=CATATAN[alt];
+  renderA(); renderB(); renderC();
+}
+document.querySelector('.pilih-alt').onclick = e=>{if(e.target.dataset.alt){alt=e.target.dataset.alt;render();}};
+render();
+</script>
+</body>
+</html>
