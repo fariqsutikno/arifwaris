@@ -163,6 +163,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const sembunyiNominal = sembunyiManual || kasus.tirkah.kotor <= 0n;
   const setSembunyiNominal = setSembunyiManual;
   const [namaTerbuka, setNamaTerbuka] = useState(false);
+  const [waktuHitung] = useState(() => Date.now());
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ bentuk: 'sederhana' });
   // HP: pohon dan tabel tidak muat berdampingan, jadi tampil satu per satu lewat sakelar (CSS menyembunyikan sakelar di laptop).
   const [panelHp, setPanelHp] = useState<'pohon' | 'tabel'>('pohon');
@@ -317,8 +318,11 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           <div className="bento-s5">
             <UbinJenisMasalah ringkasan={ringkasan} daftarMayit={daftarMayit} />
             {!menunggu && !gharqaDitahan && <UbinDitahan ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} />}
-            <UbinTentang namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
-              saatUbahHarta={bolehUbah && adaPotonganHarta && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined} />
+            <UbinTentang waktuHitung={waktuHitung} namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
+              saatUbahHarta={bolehUbah && adaPotonganHarta && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
+              saatUbahMadzhab={bolehUbah && !adalahBelajar ? () => setMadzhabTerbuka(true) : undefined}
+              saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
+              saatUbahPembulatan={bolehUbah && tampilPembulatan ? satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) }) : undefined} />
           </div>
         )}
         {umumRantai && !sedangMenebak && <UbinUrutanPembagian {...umumRantai} />}

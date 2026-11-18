@@ -194,7 +194,7 @@ function BarisPenyaring({ label, nilai, aktif, saatKetuk }: { label: string; nil
   return <div className={aktif ? 'aktif' : undefined}><dt><button type="button" className="saring" aria-pressed={aktif} onClick={saatKetuk}>{label}</button></dt><dd>{nilai}</dd></div>;
 }
 
-function ModalPembulatan({ satuan, saatPilih, saatTutup }: { satuan: bigint; saatPilih: (satuan: bigint) => void; saatTutup: () => void }) {
+export function ModalPembulatan({ satuan, saatPilih, saatTutup }: { satuan: bigint; saatPilih: (satuan: bigint) => void; saatTutup: () => void }) {
   const kotak = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const pemicu = document.activeElement as HTMLElement | null;
