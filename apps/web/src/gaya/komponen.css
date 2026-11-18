@@ -1467,7 +1467,17 @@ body.layar-hasil{background:var(--halaman)}
 .penjumlahan dd{margin:0}
 .penjumlahan .hasil-jumlah{margin-top:6px;padding-top:8px;border-top:1.5px solid var(--ink);font-weight:600}
 .penjumlahan .hasil-jumlah dt{color:var(--ink)}
-.ubin .kartu-bulat{margin-top:12px}
+.penjumlahan>div{position:relative}
+.penjumlahan>div.aktif{background:var(--ink);color:#fff;border-radius:10px;margin:0 -8px;padding-inline:8px}
+.penjumlahan>div.aktif dt{color:#fff}
+.penjumlahan .saring{all:unset;cursor:pointer;color:var(--ink);text-decoration:underline dotted;text-underline-offset:3px}
+.penjumlahan>div.aktif .saring{color:#fff}
+.penjumlahan .saring::after{content:"";position:absolute;inset:0;border-radius:10px}
+.penjumlahan .saring:focus-visible::after{outline:3px solid var(--focus)}
+.penjumlahan .pil-bulat{display:inline-flex;align-items:center;gap:2px;margin-inline-start:6px;padding:2px 6px 2px 10px;border:1.5px solid var(--outline);border-radius:999px;background:#fff;color:var(--ink);font:600 12.5px var(--font-sans);cursor:pointer;position:relative;z-index:1}
+.disaring{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:8px 0;padding:8px 12px;border-radius:12px;background:var(--ink);color:#fff;font-size:13.5px}
+.disaring .tautan-aksi{color:#fff;min-height:0;text-decoration-color:#fff}
+.pilihan-bulat.tegak{grid-template-columns:1fr}
 .kepala-info{margin:14px 0 4px;font:600 12px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
 .daftar-info{display:grid;gap:9px;margin-top:6px}
 .baris-info{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:0 14px;font-size:14px}
@@ -1480,6 +1490,11 @@ body.layar-hasil{background:var(--halaman)}
 .alat-pohon{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .alat-pohon .alat-bulat{background:var(--surface-sunken);color:var(--ink)}
 .wadah-pohon{overflow:auto;max-height:520px;border-radius:16px;background:var(--surface-sunken)}
+/* avatar tampil di pohon terang: kiri, nama di kanannya; penghubung tanpa avatar tetap pita biasa */
+.wadah-pohon .node-orang{display:grid;grid-template-columns:30px minmax(0,1fr);gap:2px 10px;align-items:center;justify-items:start;text-align:start}
+.wadah-pohon .node-orang.penghubung{display:flex}
+.wadah-pohon .node-orang .avatar-orang{display:grid;grid-row:1/span 3}
+.wadah-pohon .node-orang>:not(.avatar-orang){grid-column:2}
 .judul-panel{margin:0 0 8px;font:600 15px var(--font-sans)}
 .panel-tabel-hasil .wadah-tabel{overflow-x:auto}
 .sakelar-hp{display:none}
