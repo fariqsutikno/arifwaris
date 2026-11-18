@@ -3,7 +3,7 @@
 // visual, refs }. Tampilan Teks, Sinema, dan rekaman memutar data yang sama.
 // Kalimat diambil dari bab cerita (cerita.ts, semuanya templat diksi `narasi.cerita.*`): satu bab = satu tahap, satu baris = satu
 // langkah. Visual diturunkan dari jejak dan tabel engine; tidak ada aturan fikih yang dihitung ulang di sini.
-// Belum: templat tanya/logika/jembatan per tahap, bingkai 'aul/radd, munasakhat, taqdir, gharqa (PR berikutnya di rencana).
+// Belum: templat tanya/logika/jembatan per tahap, munasakhat, taqdir, gharqa (PR berikutnya di rencana).
 
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut, babPenyesuaian, type Bab } from './cerita.js';
@@ -24,9 +24,15 @@ export type Visual =
   | { jenis: 'harta'; baris: BarisHarta[] }
   | { jenis: 'pohon'; sorot: Record<IdOrang, PeranPohon> }
   /** Kotak wakil: `jumlah` kotak, tiap kotak dibelah `potong`; `isi` dalam satuan potongan (Σ isi = jumlah × potong). */
-  | { jenis: 'kotak'; jumlah: bigint; potong: bigint; isi: IsiKotak[] };
+  | {
+    jenis: 'kotak'; jumlah: bigint; potong: bigint; isi: IsiKotak[];
+    /** Ukuran kotak sebelum 'aul/radd (satuan sama). jumlah > bingkai = 'aul (kotak di luar bingkai tidak muat); < = radd (kotak kosong hilang). */
+    bingkai?: bigint;
+  };
 
 /** `sel`: sel tabel yang terisi pada langkah ini (tabel dibangun bertahap, terpisah dari visual tengah). */
+type VisualKotak = Extract<Visual, { jenis: 'kotak' }>;
+
 export interface Langkah { bagian: BagianLangkah; narasi: BarisPenjelasan; papan: BarisPenjelasan; visual?: Visual; sel?: KodeSel[]; refs: string[] }
 export interface Tahap { id: IdTahap; judul: string; langkah: Langkah[] }
 export interface KolomTabel { kolom: KolomLinimasa; total?: bigint }
@@ -82,6 +88,7 @@ function visualAwal(konteks: Konteks, id: IdTahap): Visual | undefined {
   if (id === 'harta') return visualHarta(konteks);
   if (id === 'ahliWaris') return visualPohon(hasil);
   if (id === 'ashl') return visualKotak(hasil, 'ashl', kotakWakil(hasil.tabel.totalKolom.ashl!));
+  if (id === 'penyesuaian') return visualPenyesuaian(hasil);
   if (id === 'tashih' && hasil.tabel.totalKolom.tashih !== undefined) {
     // Kotak tetap sama dengan sebelumnya (asal masalah atau hasil 'aul/radd); tashih memotong ulang tiap kotak.
     const dasar = kotakWakil(hasil.tabel.totalKolom.aul ?? hasil.tabel.totalKolom.radd ?? hasil.tabel.totalKolom.ashl!);
@@ -110,7 +117,7 @@ function visualPohon(hasil: HasilOk): Visual {
   return { jenis: 'pohon', sorot };
 }
 
-function visualKotak(hasil: HasilOk, kolomSel: 'ashl' | 'tashih', ukuran: { jumlah: bigint; potong: bigint }): Visual {
+function visualKotak(hasil: HasilOk, kolomSel: 'ashl' | 'aul' | 'radd' | 'tashih', ukuran: { jumlah: bigint; potong: bigint }): VisualKotak {
   // Isi dalam satuan potongan: saham kelompok di kolom itu dikali sisa belahan (ashl ≤ 24 → belahan 1, isi = saham).
   const potongan = ukuran.jumlah * ukuran.potong;
   const penyebut = hasil.tabel.totalKolom[kolomSel]!;
@@ -118,6 +125,22 @@ function visualKotak(hasil: HasilOk, kolomSel: 'ashl' | 'tashih', ukuran: { juml
   const belahanPerSaham = potongan / penyebut;
   const isi = hasil.tabel.baris.map(baris => ({ kelompok: baris.kelompok, anggota: baris.anggota, jumlah: baris.sel[kolomSel]! * belahanPerSaham }));
   return { jenis: 'kotak', ...ukuran, isi };
+}
+
+/**
+ * [R09-4] 'aul / [R09-7] radd: kotak digambar menurut penyebut baru. Bingkai lama hanya digambar bila saham tiap kelompok
+ * tidak berubah satuannya (sel = sel asal masalah): 'aul dan radd tanpa pasangan. Radd dengan pasangan [R09-9] membentuk
+ * masalah baru dengan satuan lain, jadi tampil sebagai kotak baru tanpa bingkai.
+ */
+function visualPenyesuaian(hasil: HasilOk): Visual | undefined {
+  const { totalKolom, baris } = hasil.tabel;
+  const kolom = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : undefined;
+  if (!kolom) return undefined;
+  const ukuran = kotakWakil(totalKolom[kolom]!);
+  const visual = visualKotak(hasil, kolom, ukuran);
+  const sesatuan = baris.every(satu => satu.sel[kolom] === satu.sel.ashl);
+  const ashl = totalKolom.ashl!;
+  return sesatuan && ashl % ukuran.potong === 0n ? { ...visual, bingkai: ashl / ukuran.potong } : visual;
 }
 
 // ─── Tabel ────────────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 // Linimasa Langkah demi langkah: urutan tahap, kotak wakil, dan tabel bertahap harus sama dengan tabel engine (kasus bab 16).
 import { hitung, type InputEngine } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case02, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case02, case05, case06, case07, case09, case10, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { kotakWakil, susunLinimasa, type Linimasa } from '../linimasa.js';
 import { kamusSnapshot } from './kamus.js';
 
@@ -46,7 +46,7 @@ describe('susunLinimasa', () => {
       const linimasa = susunLinimasa(hasil, fixture.input.graf, { kamus: kamusSnapshot });
       const urutan = linimasa.tahap.map(tahap => URUTAN.indexOf(tahap.id));
       expect(urutan, fixture.id).toEqual([...urutan].sort((a, b) => a - b));
-      // 'Aul/radd: isi asal masalah memang melebihi/kurang dari kotaknya; bingkainya digambar di PR berikutnya (rencana 5.2).
+      // 'Aul/radd: isi asal masalah memang melebihi/kurang dari kotaknya; kotak tahap penyesuaian yang memakai bingkai.
       const adaPenyesuaian = hasil.tabel.totalKolom.aul !== undefined || hasil.tabel.totalKolom.radd !== undefined;
       for (const tahap of linimasa.tahap) for (const langkah of tahap.langkah) {
         if (langkah.visual?.jenis !== 'kotak' || (adaPenyesuaian && tahap.id === 'ashl')) continue;
@@ -59,6 +59,27 @@ describe('susunLinimasa', () => {
         for (const id of penerima) expect(terisi.has(`${kolom}:${id}`), `${fixture.id} ${kolom}:${id}`).toBe(true);
       }
     }
+  });
+});
+
+describe("'aul dan radd", () => {
+  const kotakPenyesuaian = (input: InputEngine) => linimasaDari(input).linimasa.tahap.find(tahap => tahap.id === 'penyesuaian')!.langkah[0]!.visual;
+
+  it("'aul: kotak menurut penyebut baru, bingkai = asal masalah (kotak di luar bingkai tidak muat)", () => {
+    expect(kotakPenyesuaian(case05.input)).toMatchObject({ jenis: 'kotak', jumlah: 7n, potong: 1n, bingkai: 6n });
+    expect(kotakPenyesuaian(case07.input)).toMatchObject({ jenis: 'kotak', jumlah: 10n, potong: 1n, bingkai: 6n });
+    // 27 > 24 kotak: 9 kotak dibelah 3; bingkai 24 potongan = 8 kotak.
+    expect(kotakPenyesuaian(case06.input)).toMatchObject({ jenis: 'kotak', jumlah: 9n, potong: 3n, bingkai: 8n });
+  });
+
+  it('radd tanpa pasangan: bingkai menyempit ke penyebut radd', () => {
+    expect(kotakPenyesuaian(case09.input)).toMatchObject({ jenis: 'kotak', jumlah: 4n, potong: 1n, bingkai: 6n });
+  });
+
+  it('radd dengan pasangan: masalah baru dengan satuan lain, tanpa bingkai', () => {
+    const visual = kotakPenyesuaian(case10.input);
+    expect(visual).toMatchObject({ jenis: 'kotak', jumlah: 16n, potong: 1n });
+    expect(visual && 'bingkai' in visual).toBe(false);
   });
 });
 
