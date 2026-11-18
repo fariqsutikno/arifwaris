@@ -286,6 +286,15 @@ describe('layar hasil', () => {
     expect([...dataPeranDari(kasus.graf, ringkasan, tampil.hasil.tabel, []).pembagian.values()]).toEqual(['dzawilArham', 'dzawilArham']);
   });
 
+  it('Atur kolom menyembunyikan kolom tabel; kepala kolom yang disembunyikan tak lagi bisa dipilih', () => {
+    render(<Uji awal={prototipe()} />);
+    const tabel = screen.getByRole('table');
+    expect(within(tabel).getByText(/Asal masalah/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Asal masalah' }));
+    expect(within(screen.getByRole('table')).queryByText(/Asal masalah/)).toBeNull();
+    expect(screen.getByText(/3 dari 5|4 dari 5/)).toBeTruthy();
+  });
+
   it('pintasan "Ubah ahli waris" membuka langkah ahli waris', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Ubah Ahli waris' }));

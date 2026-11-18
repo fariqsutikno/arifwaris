@@ -390,3 +390,7 @@ export function kunciDari(status: StatusOrang | undefined): KunciAhliWaris | und
 }
 
 const kelompokDari = (kunci: KunciAhliWaris | undefined): Kelompok => (kunci && jenisDari(kunci)?.kelompok) || 'saudara';
+
+/** Nama kelompok ahli waris untuk keterangan di bawah nama (tabel, modal orang). */
+export const teksKelompok = (kelompok: Kelompok): string =>
+  ({ pasangan: t('hitung.pasangan'), keturunan: t('hitung.keturunan'), leluhur: t('hitung.leluhur'), saudara: t('hitung.saudara') })[kelompok];

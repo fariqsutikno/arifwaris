@@ -11,14 +11,9 @@ import { barisBerlaku } from '../konten/ahwal';
 import { ahwalUntuk } from '../konten/sumber';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
-import { pecahanTeks, persenTeks } from './ringkasan';
+import { pecahanTeks, persenTeks, teksKelompok } from './ringkasan';
 import { Ikon } from '../ui/Ikon';
 import { angka, bahasaArab, t } from '../terjemah';
-import type { Kelompok } from '../checklist';
-
-const TEKS_KELOMPOK = (): Record<Kelompok, string> => ({
-  pasangan: t('hitung.pasangan'), keturunan: t('hitung.keturunan'), leluhur: t('hitung.leluhur'), saudara: t('hitung.saudara'),
-});
 
 interface Props {
   id: IdOrang;
@@ -57,7 +52,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   const adalahPewaris = id === graf.idPewaris;
   const statusKepala = sedangMenebak || adalahPewaris || !kelompok ? 'netral' : halang ? 'tidak' : 'menerima';
   const labelStatus = adalahPewaris ? t('hitung.almarhum') : sedangMenebak || !kelompok ? peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat') : halang ? t('hitung.tidak_mendapat_bagian') : t('hitung.menerima_bagian');
-  const peran = adalahPewaris ? undefined : kelompok ? TEKS_KELOMPOK()[kelompok] : undefined;
+  const peran = adalahPewaris ? undefined : kelompok ? teksKelompok(kelompok) : undefined;
   const orangTerdampak = [...new Set(orangDisebut(barisTerdampak))].filter(lain => lain !== id);
 
   return (

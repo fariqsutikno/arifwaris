@@ -39,6 +39,7 @@ import type { PeragaBabak } from '../hasil/urutanLinimasa';
 import { kamusNarasi } from '../konten/kamusNarasi';
 import { unduhKasus } from '../berkas';
 import { PenyediaSorot } from '../hasil/sorot';
+import { PanelPohon } from '../hasil/PanelPohon';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
 import { simpanKasus, sudahTersimpan } from '../tersimpan';
 import { DialogNama } from './lab/DialogNama';
@@ -338,15 +339,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             </div>
           </div>
           <div className="isi-pohon-tabel">
-            <div className="panel-pohon-hasil" aria-label={t('hitung.pohon_keluarga')}>
-              <div className="alat-pohon">
-                <button type="button" className="alat-bulat" aria-label={t('hitung.perbesar')} onClick={() => setLayarPenuh({ zoom: 1.5 })}><Ikon nama="zoomMasuk" /></button>
-                <button type="button" className="alat-bulat" aria-label={t('hitung.layar_penuh')} onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /></button>
-                {bolehAliran && <button type="button" className="tautan-aksi" onClick={() => setPutaranAliran(putaranAliran + 1)}>{t('hasil.putar_ulang')}</button>}
-              </div>
-              <div className="wadah-pohon">{buatPohon(true)}</div>
-              <Legenda />
-            </div>
+            <PanelPohon pohon={buatPohon(true)} legenda={<Legenda />} saatLayarPenuh={() => setLayarPenuh({ zoom: 1 })}
+              saatPutar={bolehAliran ? () => setPutaranAliran(putaranAliran + 1) : undefined} />
             <div className="panel-tabel-hasil">
               <h3 id="judul-tabel-faraidh" className="judul-panel">{umumRantai ? t('hasil.munasakhat.tabel_munasakhat') : ringkasan.taqdir ? t('hasil.ditahan.tabel_kemungkinan') : ringkasan.gharqa ? t('hasil.gharqa.tabel_per_harta') : t('hitung.tabel_faraidh')}</h3>
               <div className="wadah-tabel">{tabel}</div>

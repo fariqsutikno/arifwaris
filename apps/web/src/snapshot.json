@@ -24962,6 +24962,27 @@
    "id": "Dihitung",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.atur_kolom",
+   "halaman": "hasil",
+   "id": "Atur kolom",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.kolom_tampil",
+   "halaman": "hasil",
+   "id": "{tampil} dari {total} jenis tampil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.putar_aliran",
+   "halaman": "hasil",
+   "id": "Putar aliran",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

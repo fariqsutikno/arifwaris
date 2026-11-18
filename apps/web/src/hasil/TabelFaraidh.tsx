@@ -10,14 +10,16 @@ import type { IdOrang, TabelMasalah } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
 import type { HasilOk } from '../jalankan';
-import { adalahDzawilArham, urutkanBaris, type RingkasanHasil } from './ringkasan';
+import { adalahDzawilArham, teksKelompok, urutkanBaris, type RingkasanHasil } from './ringkasan';
+import type { Kelompok } from '../checklist';
 import { AngkaMasuk } from '../ui/AngkaMasuk';
 import { Istilah } from '../ui/Tooltip';
 import { useAtributOrang, useSorot } from './sorot';
-import { warnaOrang } from './warnaOrang';
 import { angka as angkaTampil, panah, t } from '../terjemah';
 
 type KolomHitungan = 'bagian' | 'ashl' | 'penyesuaian' | 'tashih';
+/** Semua kolom yang bisa disembunyikan lewat "Atur kolom"; Ahli waris selalu tampil. */
+type KolomTabel = KolomHitungan | 'perOrang' | 'nominal';
 
 interface Props { hasil: HasilOk | null; ringkasan: RingkasanHasil; sembunyiNominal: boolean; sedangMenebak: boolean; saatPilih: (id: IdOrang) => void }
 
@@ -28,6 +30,10 @@ const bisaDipilih = (id: IdOrang, saatPilih: (id: IdOrang) => void) => ({
 });
 
 const uangAtau = (nilai: bigint, sembunyi: boolean) => (sembunyi ? t('hitung.rp') : formatRupiah(nilai));
+/** Nama + keterangan kelompok di bawahnya (acuan mockup: "Aminah / Istri almarhum"); tanpa kotak warna. */
+const Orang = ({ nama, kelompok }: { nama: string; kelompok?: Kelompok | undefined }) => (
+  <span className="orang-sel"><span>{nama}</span>{kelompok && <small>{teksKelompok(kelompok)}</small>}</span>
+);
 const RAHASIA = <span className="rahasia" aria-label={t('hitung.disembunyikan')}>?</span>;
 const kelas = (...daftar: Array<string | false | undefined>) => daftar.filter(Boolean).join(' ') || undefined;
 
@@ -78,6 +84,19 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
       : <AngkaMasuk teks={formatRupiah(nilai)} pemicu={pemicu('nominal', daftarId)} tunda={tunda(daftarId)} />;
   const dasarTashih = penyesuaian?.nilai ?? ashl;
   const [kolomDipilih, setKolomDipilih] = useState<KolomHitungan | null>(null);
+  const [tersembunyi, setTersembunyi] = useState<ReadonlySet<KolomTabel>>(new Set());
+  const ada = (kolom: KolomTabel) => !tersembunyi.has(kolom);
+  const pilih = (kolom: KolomHitungan) => (kolomDipilih === kolom ? 'dipilih-sel' : false);
+  const daftarKolom: Array<{ kunci: KolomTabel; judul: string }> = [
+    { kunci: 'bagian', judul: t('hitung.bagian') }, { kunci: 'ashl', judul: t('hitung.asal_masalah') },
+    ...(penyesuaian ? [{ kunci: 'penyesuaian' as const, judul: penyesuaian.judul }] : []), ...(tashih !== undefined ? [{ kunci: 'tashih' as const, judul: t('hitung.tashih') }] : []),
+    { kunci: 'perOrang', judul: t('hitung.per_orang') }, { kunci: 'nominal', judul: t('hitung.nominal') },
+  ];
+  const jumlahTampil = daftarKolom.filter(kolom => ada(kolom.kunci)).length;
+  const alihKolom = (kolom: KolomTabel) => {
+    setTersembunyi(lama => { const baru = new Set(lama); if (!baru.delete(kolom)) baru.add(kolom); return baru; });
+    if (kolomDipilih === kolom) setKolomDipilih(null);
+  };
   const ketukKolom = (kolom: KolomHitungan) => ({
     onClick: () => setKolomDipilih(kolomDipilih === kolom ? null : kolom), 'aria-pressed': kolomDipilih === kolom, tabIndex: 0, role: 'button' as const,
     onKeyDown: (event: React.KeyboardEvent) => { if (event.key === 'Enter') setKolomDipilih(kolomDipilih === kolom ? null : kolom); },
@@ -113,24 +132,32 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
 
   return (
     <>
+    <details className="atur-kolom">
+      <summary>{t('hasil.atur_kolom')}<small>{t('hasil.kolom_tampil', { tampil: angkaTampil(String(jumlahTampil)), total: angkaTampil(String(daftarKolom.length)) })}</small></summary>
+      <div role="group" aria-label={t('hasil.atur_kolom')}>
+        {daftarKolom.map(kolom => (
+          <label key={kolom.kunci}><input type="checkbox" checked={ada(kolom.kunci)} onChange={() => alihKolom(kolom.kunci)} />{kolom.judul}</label>
+        ))}
+      </div>
+    </details>
     <table className="faraidh">
       <thead>
         <tr>
           <th className={kelas('kiri', kepala('ahliWaris'))}>{t('hitung.ahli_waris')}</th>
-          <th className={kelas('kolom-ketuk', kolomDipilih === 'bagian' && 'dipilih', kepala('bagian'))} {...ketukKolom('bagian')}>{t('hitung.bagian')}</th>
-          <th className={kelas('kolom-ketuk', kolomDipilih === 'ashl' && 'dipilih', kepala('ashl'))} {...ketukKolom('ashl')}><Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah><small>{angka('ashl', ashl)}</small></th>
-          {penyesuaian && (
+          {ada('bagian') && <th className={kelas('kolom-ketuk', kolomDipilih === 'bagian' && 'dipilih', kepala('bagian'))} {...ketukKolom('bagian')}>{t('hitung.bagian')}</th>}
+          {ada('ashl') && <th className={kelas('kolom-ketuk', kolomDipilih === 'ashl' && 'dipilih', kepala('ashl'))} {...ketukKolom('ashl')}><Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah><small>{angka('ashl', ashl)}</small></th>}
+          {penyesuaian && ada('penyesuaian') && (
             <th className={kelas('kolom-ketuk', kolomDipilih === 'penyesuaian' && 'dipilih', kepala('penyesuaian'))} {...ketukKolom('penyesuaian')}><Istilah id={penyesuaian.kunci}>{penyesuaian.judul}</Istilah>
               <small>{langkah?.kolom === 'penyesuaian' && ashl !== undefined
                 ? <span className="ubah-angka"><s>{angkaTampil(String(ashl))}</s> {panah()} <AngkaMasuk teks={angkaTampil(String(penyesuaian.nilai))} pemicu={langkah.ketukan} /></span>
                 : angka('penyesuaian', penyesuaian.nilai)}</small></th>
           )}
-          {tashih !== undefined && (
+          {tashih !== undefined && ada('tashih') && (
             <th className={kelas('kolom-ketuk', kolomDipilih === 'tashih' && 'dipilih', kepala('tashih'))} {...ketukKolom('tashih')}><Istilah id="tashih">{t('hitung.tashih')}</Istilah><small>{angka('tashih', tashih)}</small>
               {langkah?.kolom === 'tashih' && dasarTashih !== undefined && dasarTashih > 0n && tashih % dasarTashih === 0n && <span className="pengali-tashih">{angkaTampil(String(dasarTashih))} × {angkaTampil(String(tashih / dasarTashih))}</span>}</th>
           )}
-          <th>{t('hitung.per_orang')}<small><Istilah arti={t('hitung.bagian_tiap_orang_dihitung_dalam_satuan')}>{t('hitung.saham')}</Istilah></small></th>
-          <th className={kepala('nominal')}>{t('hitung.nominal')}<small>{sembunyi ? uangAtau(ringkasan.tirkah.bersih, true) : <AngkaMasuk teks={formatRupiah(ringkasan.tirkah.bersih)} pemicu={pemicu('nominal', [])} />}</small></th>
+          {ada('perOrang') && <th>{t('hitung.per_orang')}<small><Istilah arti={t('hitung.bagian_tiap_orang_dihitung_dalam_satuan')}>{t('hitung.saham')}</Istilah></small></th>}
+          {ada('nominal') && <th className={kepala('nominal')}>{t('hitung.nominal')}<small>{sembunyi ? uangAtau(ringkasan.tirkah.bersih, true) : <AngkaMasuk teks={formatRupiah(ringkasan.tirkah.bersih)} pemicu={pemicu('nominal', [])} />}</small></th>}
         </tr>
       </thead>
       <tbody>
@@ -141,51 +168,49 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
             const { className, ...pemicuHover } = atribut(id);
             return (
               <tr key={id} {...pemicuHover} className={className || undefined} {...bisaDipilih(id, saatPilih)}>
-                <td className={kelas('kiri', sel('ahliWaris', [id]))}>
-                  <span className="orang-sel"><span className="titik" style={{ background: warnaOrang(ringkasan, id) }} />{orang?.nama ?? id}</span>
-                </td>
+                <td className={kelas('kiri', sel('ahliWaris', [id]))}><Orang nama={orang?.nama ?? id} kelompok={orang?.kelompok} /></td>
                 {indeks === 0 && <>
-                  <td rowSpan={anggota.length} className={sel('bagian', anggota)} data-anggota={anggota.join(' ')}>
+                  {ada('bagian') && <td rowSpan={anggota.length} className={kelas(sel('bagian', anggota), pilih('bagian'))} data-anggota={anggota.join(' ')}>
                     {tertutup('bagian', anggota) ? RAHASIA : adalahDzawilArham(ringkasan.statusOrang[id]) ? (
                       <span className="bagian-sel"><Istilah id="dzawil-arham">{t('hitung.dzawil_arham')}</Istilah><small>{t('hitung.menurut_tanzil')}</small></span>
                     ) : (
                       <span className="bagian-sel">{baris.fardh ? angkaTampil(`${baris.fardh.n}/${baris.fardh.d}`) : <Istilah id="ashabah">{t('hitung.ashabah')}</Istilah>}
                         <small>{baris.fardh ? (baris.ashabah ? t('hitung.bagian_tertentu_sisa') : t('hitung.bagian_tertentu')) : anggota.length > 1 ? t('hitung.sisa_dibagi_bersama') : 'sisa'}</small></span>
                     )}
-                  </td>
-                  <td rowSpan={anggota.length} className={kelas('angka', sel('ashl', anggota))}>{angka('ashl', baris.sel.ashl, anggota)}</td>
-                  {penyesuaian && <td rowSpan={anggota.length} className={kelas('angka', sel('penyesuaian', anggota))}>{angka('penyesuaian', baris.sel[penyesuaian.kunci], anggota)}</td>}
-                  {tashih !== undefined && <td rowSpan={anggota.length} className={kelas('angka', sel('tashih', anggota))}>{angka('tashih', baris.sel.tashih, anggota)}</td>}
+                  </td>}
+                  {ada('ashl') && <td rowSpan={anggota.length} className={kelas('angka', sel('ashl', anggota), pilih('ashl'))}>{angka('ashl', baris.sel.ashl, anggota)}</td>}
+                  {penyesuaian && ada('penyesuaian') && <td rowSpan={anggota.length} className={kelas('angka', sel('penyesuaian', anggota), pilih('penyesuaian'))}>{angka('penyesuaian', baris.sel[penyesuaian.kunci], anggota)}</td>}
+                  {tashih !== undefined && ada('tashih') && <td rowSpan={anggota.length} className={kelas('angka', sel('tashih', anggota), pilih('tashih'))}>{angka('tashih', baris.sel.tashih, anggota)}</td>}
                 </>}
-                <td className="angka">{angka('perOrang', baris.perOrang[id]!.saham)}</td>
-                <td className={kelas('uang', sel('nominal', [id]))}>{uang(baris.perOrang[id]!.nominal, [id])}</td>
+                {ada('perOrang') && <td className="angka">{angka('perOrang', baris.perOrang[id]!.saham)}</td>}
+                {ada('nominal') && <td className={kelas('uang', sel('nominal', [id]))}>{uang(baris.perOrang[id]!.nominal, [id])}</td>}
               </tr>
             );
           });
         })}
         {sisaKeluar && (
           <tr className="baris-sisa">
-            <td className="kiri"><span className="orang-sel"><span className="titik putus" />{sisaKeluar.judul}</span></td>
-            <td><span className="bagian-sel">{t('hitung.sisa_3')}<small>{t('hitung.bukan_untuk_ahli_waris')}</small></span></td>
-            <td className="angka">{angka('ashl', sisaKeluar.saham * ashl! / ringkasan.penyebut)}</td>
-            {penyesuaian && <td className="angka">-</td>}
-            {tashih !== undefined && <td className="angka">{angka('tashih', sisaKeluar.saham)}</td>}
-            <td className="angka">{angka('perOrang', sisaKeluar.saham)}</td>
-            <td className="uang">{tertutup('nominal') ? RAHASIA : uangAtau(sisaKeluar.nominal, sembunyi)}</td>
+            <td className="kiri"><Orang nama={sisaKeluar.judul} /></td>
+            {ada('bagian') && <td><span className="bagian-sel">{t('hitung.sisa_3')}<small>{t('hitung.bukan_untuk_ahli_waris')}</small></span></td>}
+            {ada('ashl') && <td className="angka">{angka('ashl', sisaKeluar.saham * ashl! / ringkasan.penyebut)}</td>}
+            {penyesuaian && ada('penyesuaian') && <td className="angka">-</td>}
+            {tashih !== undefined && ada('tashih') && <td className="angka">{angka('tashih', sisaKeluar.saham)}</td>}
+            {ada('perOrang') && <td className="angka">{angka('perOrang', sisaKeluar.saham)}</td>}
+            {ada('nominal') && <td className="uang">{tertutup('nominal') ? RAHASIA : uangAtau(sisaKeluar.nominal, sembunyi)}</td>}
           </tr>
         )}
-        {ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
-          kolom={4 + (penyesuaian ? 1 : 0) + (tashih !== undefined ? 1 : 0)} />)}
+        {jumlahTampil > 0 && ringkasan.terhalang.map(orang => <BarisTerhalang key={orang.id} saatPilih={saatPilih} id={orang.id} nama={orang.nama} kelompok={orang.kelompok} alasan={orang.alasan}
+          kolom={jumlahTampil} />)}
       </tbody>
       <tfoot>
         <tr>
           <td className="kiri">{t('umum.jumlah')}</td>
-          <td>-</td>
-          <td className="angka">{angka('ashl', ashl)}</td>
-          {penyesuaian && <td className="angka">{angka('penyesuaian', penyesuaian.nilai)}</td>}
-          {tashih !== undefined && <td className="angka">{angka('tashih', tashih)}</td>}
-          <td className="angka">{angka('perOrang', ringkasan.penyebut)}</td>
-          <td className="uang">{tertutup('nominal') ? RAHASIA : uangAtau(totalNominal, sembunyi)}</td>
+          {ada('bagian') && <td>-</td>}
+          {ada('ashl') && <td className="angka">{angka('ashl', ashl)}</td>}
+          {penyesuaian && ada('penyesuaian') && <td className="angka">{angka('penyesuaian', penyesuaian.nilai)}</td>}
+          {tashih !== undefined && ada('tashih') && <td className="angka">{angka('tashih', tashih)}</td>}
+          {ada('perOrang') && <td className="angka">{angka('perOrang', ringkasan.penyebut)}</td>}
+          {ada('nominal') && <td className="uang">{tertutup('nominal') ? RAHASIA : uangAtau(totalNominal, sembunyi)}</td>}
         </tr>
       </tfoot>
     </table>
@@ -219,7 +244,7 @@ function TabelSoal({ ringkasan, saatPilih }: { ringkasan: RingkasanHasil; saatPi
           const { className, ...pemicu } = atribut(orang.id);
           return (
             <tr key={orang.id} {...pemicu} className={className || undefined} {...bisaDipilih(orang.id, saatPilih)}>
-              <td className="kiri"><span className="orang-sel"><span className={`titik g-${orang.kelompok}`} />{orang.nama}</span></td>
+              <td className="kiri"><Orang nama={orang.nama} kelompok={orang.kelompok} /></td>
               <td className="rahasia">{RAHASIA}</td><td className="angka rahasia">{RAHASIA}</td><td className="angka rahasia">{RAHASIA}</td><td className="uang rahasia">{RAHASIA}</td>
             </tr>
           );
@@ -241,7 +266,7 @@ function TabelMunasakhat({ ringkasan, sembunyi, saatPilih }: { ringkasan: Ringka
           const { className, ...pemicu } = atribut(orang.id);
           return (
             <tr key={orang.id} {...pemicu} className={className || undefined} {...bisaDipilih(orang.id, saatPilih)}>
-              <td className="kiri"><span className="orang-sel"><span className="titik" style={{ background: warnaOrang(ringkasan, orang.id) }} />{orang.nama}</span></td>
+              <td className="kiri"><Orang nama={orang.nama} kelompok={orang.kelompok} /></td>
               <td className="angka">{angkaTampil(String(orang.saham))}</td>
               <td className="uang">{uangAtau(orang.nominal, sembunyi)}</td>
             </tr>
@@ -258,7 +283,7 @@ function BarisTerhalang({ id, nama, kelompok, alasan, kolom, saatPilih }: { id: 
   const { className, ...pemicu } = atribut(id);
   return (
     <tr {...pemicu} className={['mahjub', className].filter(Boolean).join(' ')} {...bisaDipilih(id, saatPilih)}>
-      <td className="kiri"><span className="orang-sel"><span className="titik putus" />{nama}</span></td>
+      <td className="kiri"><Orang nama={nama} kelompok={kelompok as Kelompok} /></td>
       <td colSpan={kolom} className="ket-mahjub">{alasan}</td>
     </tr>
   );

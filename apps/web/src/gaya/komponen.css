@@ -1788,3 +1788,31 @@ table.faraidh{font-size:15.5px}
 .faraidh th,.faraidh td{padding:11px 12px;border-color:#cfd8cc}
 .faraidh thead th{background:#f3f6ef;font-size:14px}
 .faraidh td.uang{font-size:16px}
+
+/* Panel pohon & tabel: kotak ringkas tanpa avatar, pecahan hijau, toolbar, Atur kolom (acuan mockup-hasil-per-kasus) */
+.wadah-pohon{overflow:auto}
+.wadah-pohon .node-orang{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:9px 12px}
+.wadah-pohon .node-orang .avatar-orang{display:none}
+.wadah-pohon .node-orang>:not(.avatar-orang){grid-column:auto}
+.wadah-pohon .node-orang .peran-node{order:2}
+.wadah-pohon .node-orang .dapat-node{order:3;gap:6px}
+.wadah-pohon .node-orang .frac{height:auto;padding:0;border:0;border-radius:0;background:none;color:#1f5c3a;font:700 14px/1.2 var(--font-sans)}
+.wadah-pohon .node-orang .angka{font:500 12.5px/1.2 var(--font-sans);color:var(--ink-muted)}
+.wadah-pohon .node-orang.almarhum .peran-node{color:rgba(255,255,255,.75)}
+.tombol-aliran{margin-inline-start:auto;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 18px;border:0;border-radius:999px;background:var(--ink);color:var(--surface-raised);font:600 14px var(--font-sans);cursor:pointer}
+.tombol-aliran:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.faraidh .orang-sel{display:grid;gap:1px;font-weight:700;text-align:start}
+.faraidh .orang-sel small{font:400 12.5px/1.3 var(--font-sans);color:var(--ink-muted)}
+.faraidh td.dipilih-sel{background:#fff8f2}
+.atur-kolom{margin:0 0 10px;border:1px solid var(--divider);border-radius:14px;background:var(--surface-raised)}
+.atur-kolom>summary{display:flex;justify-content:space-between;gap:12px;align-items:center;min-height:44px;padding:0 14px;font:600 14.5px var(--font-sans);cursor:pointer;list-style:none}
+.atur-kolom>summary::-webkit-details-marker{display:none}
+.atur-kolom>summary::after{content:"▾";margin-inline-start:8px}
+.atur-kolom>summary small{margin-inline-start:auto;font-weight:500;color:var(--ink-muted)}
+.atur-kolom[open]>summary{border-bottom:1px solid var(--divider)}
+.atur-kolom>div{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 14px}
+.atur-kolom label{display:inline-flex;align-items:center;gap:8px;min-height:36px;font:500 14.5px var(--font-sans);cursor:pointer}
+.atur-kolom input{width:18px;height:18px;accent-color:var(--ink)}
+.alat-pohon{flex-wrap:wrap}
+.alat-pohon .alat-bulat{width:36px;height:36px}
+.tombol-aliran{flex:none;white-space:nowrap}
