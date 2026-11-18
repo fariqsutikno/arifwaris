@@ -314,6 +314,32 @@ export function babPenyebut(konteks: Konteks): Bab {
   return { judul, daftarBaris, kolom: 'ashl' };
 }
 
+/** Persamaan kotak per kelompok untuk Sinema ("24 ÷ 6 = 4 kotak untuk Fatimah"): fardh dulu, lalu sisa untuk ashabah. Hisab saja [KH]; kosong bila tak bisa dipecah satu per satu. */
+export interface PersamaanKotak { baris: BarisPenjelasan; anggota: IdOrang[]; kelompok: string; jumlah: bigint }
+export function persamaanKotakAshl(konteks: Konteks): PersamaanKotak[] {
+  const { baris, totalKolom } = konteks.hasil.tabel;
+  const ashl = totalKolom.ashl!;
+  const barisAshabah = baris.filter(barisTabel => barisTabel.ashabah);
+  if (barisAshabah.length > 1 || baris.every(barisTabel => !barisTabel.fardh)) return [];
+  const langkah: PersamaanKotak[] = [];
+  let terpakai = 0n;
+  for (const barisTabel of baris.filter(barisIni => barisIni.fardh)) {
+    const { n, d } = barisTabel.fardh!;
+    const jumlah = n * ashl / d;
+    terpakai += jumlah;
+    const kunci = n === 1n ? 'penyebut.persamaan_fardh' : 'penyebut.persamaan_fardh_kali';
+    langkah.push({ baris: buatBaris(cerita(konteks, kunci, { ashl, d, ...(n === 1n ? {} : { n }), kotak: jumlah, siapa: sebutKelompok(konteks, barisTabel.kelompok) }), [], barisTabel.anggota),
+      anggota: barisTabel.anggota, kelompok: barisTabel.kelompok, jumlah });
+  }
+  const [penerimaSisa] = barisAshabah;
+  if (penerimaSisa && ashl > terpakai) {
+    const sisa = ashl - terpakai;
+    langkah.push({ baris: buatBaris(cerita(konteks, 'penyebut.persamaan_sisa', { ashl, terpakai, kotak: sisa, siapa: sebutKelompok(konteks, penerimaSisa.kelompok) }), [], penerimaSisa.anggota),
+      anggota: penerimaSisa.anggota, kelompok: penerimaSisa.kelompok, jumlah: sisa });
+  }
+  return langkah;
+}
+
 // ─── Langkah: 'adilah / 'aul / radd ───────────────────────────────────────────
 
 export function babPenyesuaian(konteks: Konteks): Bab {

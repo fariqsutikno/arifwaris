@@ -1621,7 +1621,7 @@ table.faraidh.ringkas{min-width:0}
 .ubin-harta div{display:flex;justify-content:space-between;gap:16px;background:var(--surface);border-radius:12px;padding:10px 14px;font-variant-numeric:tabular-nums}
 .ubin-harta div.akhir{background:var(--primary);color:var(--on-primary);font-weight:600}
 .grid-kotak{display:grid;gap:5px}
-.kt{aspect-ratio:1;max-height:84px;border-radius:8px;display:flex;gap:2px;overflow:hidden}
+.kt{background:#e3e9e0;aspect-ratio:1;max-height:84px;border-radius:8px;display:flex;gap:2px;overflow:hidden}
 .kt.potong{gap:1px;padding:2px;background:#fff;box-shadow:inset 0 0 0 1.5px #b8c4b6}
 .kt.potong span{flex:1;border-radius:3px}
 .kt.luar{outline:2px dashed var(--aksen);outline-offset:-2px}

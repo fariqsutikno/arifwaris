@@ -93,6 +93,24 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
     return dasarTashih && tashih! % dasarTashih === 0n ? `${angkaTampil(String(dasarTashih))} × ${angkaTampil(String(tashih! / dasarTashih))} = ${angkaTampil(String(tashih))}` : angkaTampil(String(tashih));
   };
 
+  // Dasar = kaidah dari KB (bagian [R04-1][R05-1], ashl [R09-1], 'aul [R09-3], radd [R09-7][R09-9], tashih [R10-2]); tanpa kode rujukan di layar.
+  const dasarKolom = { bagian: t('hitung.dasar_bagian'), ashl: t('hitung.dasar_ashl'), tashih: t('hitung.dasar_tashih'),
+    penyesuaian: penyesuaian?.kunci === 'radd' ? t('hitung.dasar_radd') : t('hitung.dasar_aul') };
+  // Di kasus ini = angka kasus ini saja; kolom tanpa hal khusus tidak menampilkan baris ini.
+  const diKasusIni = (kolom: KolomHitungan): string | null => {
+    if (kolom === 'ashl') {
+      const penyebut = [...new Set(tabel.baris.flatMap(baris => (baris.fardh ? [baris.fardh.d] : [])))].sort((a, b) => Number(a - b));
+      return penyebut.length ? t('hitung.kasus_ashl', { penyebut: penyebut.map(besar => angkaTampil(String(besar))).join(t('umum.dan')), ashl: angkaTampil(String(ashl)) }) : null;
+    }
+    if (kolom === 'penyesuaian' && penyesuaian) {
+      const sisipan = { jumlah: angkaTampil(String(penyesuaian.nilai)), ashl: angkaTampil(String(ashl)) };
+      return penyesuaian.kunci === 'radd' ? t('hitung.kasus_radd', sisipan) : t('hitung.kasus_aul', sisipan);
+    }
+    if (kolom === 'tashih' && dasarTashih && tashih! % dasarTashih === 0n) return t('hitung.kasus_tashih', { pengali: angkaTampil(String(tashih! / dasarTashih)) });
+    if (kolom === 'bagian' && ringkasan.terhalang.length) return t('hitung.kasus_terhalang', { jumlah: angkaTampil(String(ringkasan.terhalang.length)) });
+    return null;
+  };
+
   return (
     <>
     <table className="faraidh">
@@ -173,6 +191,8 @@ function TabelBiasa({ tabel, ringkasan, sembunyi, saatPilih }: {
     </table>
     <div className="kotak-kolom" aria-live="polite">
       {kolomDipilih ? <><b>{t('hitung.kolom_label')}</b> {{ bagian: t('hitung.bagian'), ashl: t('hitung.asal_masalah'), penyesuaian: penyesuaian?.judul, tashih: t('hitung.tashih') }[kolomDipilih]}
+        <p><b>{t('hitung.kolom_dasar')}</b> {dasarKolom[kolomDipilih]}</p>
+        {diKasusIni(kolomDipilih) && <p><b>{t('hitung.kolom_di_kasus')}</b> {diKasusIni(kolomDipilih)}</p>}
         <p><b>{t('hitung.kolom_hitungan')}</b> {hitungan(kolomDipilih)}</p></> : <p>{t('hitung.kolom_petunjuk')}</p>}
     </div>
     </>
