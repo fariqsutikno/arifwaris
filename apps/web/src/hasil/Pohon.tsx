@@ -10,6 +10,7 @@ import { useLayoutEffect, useRef, useState, type CSSProperties, type ReactNode }
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { formatRupiah, namaOrang } from '../format';
 import { AvatarOrang } from './AvatarOrang';
+import { warnaOrang } from './warnaOrang';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks } from './ringkasan';
 import { LegendaSorot, useAtributOrang, useSorot } from './sorot';
@@ -59,7 +60,8 @@ export function Pohon({ graf, ringkasan, urutanWafat, bentuk, sedangMenebak, sem
     if (halang) return { kelas: 'terhalang', peran: t('hitung.terhalang'), nama, isi: <span className="alasan-node">{halang.alasan}</span> };
     return { kelas: 'putus', peran: '', nama, isi: <span className="alasan-node">{t('hitung.tidak_mewarisi')}</span> };
   };
-  return <PohonDasar graf={graf} isiNode={isiNode} saatPilih={saatPilih} redup={!!langkah} aliran={!!aliran && !langkah} />;
+  const isiBerwarna = (id: IdOrang): IsiNode => ({ ...isiNode(id), warna: warnaOrang(ringkasan, id) });
+  return <PohonDasar graf={graf} isiNode={isiBerwarna} saatPilih={saatPilih} redup={!!langkah} aliran={!!aliran && !langkah} />;
 }
 
 /** Bagian sebelum dijadikan saham: "1/8", "1/6 + sisa", atau "sisa". */
@@ -70,7 +72,7 @@ function UbahNode({ ubah }: { ubah: { dari: string; menjadi: string } }) {
   return <span className="ubah-node"><s>{ubah.dari}</s><span aria-hidden="true">{panah()}</span><b>{ubah.menjadi}</b></span>;
 }
 
-export interface IsiNode { /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; /** Kelas tambahan yang tidak dipakai logika pohon (mis. gaya menurut keadaan). */ tambahan?: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
+export interface IsiNode { /** Warna avatar (warnaOrang.ts); tanpa ini warna per nama. */ warna?: string; /** Urutan tiba bagian pada aliran harta (indeks penerima); tanpa ini node hanya memudar masuk. */ urut?: number; kelas: string; /** Kelas tambahan yang tidak dipakai logika pohon (mis. gaya menurut keadaan). */ tambahan?: string; peran: string; nama: string; isi?: ReactNode; /** Tombol kecil di pojok node (mis. hapus); node jadi kotak biasa, bukan tombol. */ aksi?: ReactNode }
 
 /** Tata letak + garis pohon untuk graf apa pun; isi tiap node ditentukan pemanggil. */
 export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = false, maksPerBaris = BATAS_PER_BARIS, pilihPenghubung = false, labelPilih, bisaPilih }: {
@@ -116,7 +118,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
               if (!bisaDipilih) {
                 return (
                   <div key={id} {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)} role="group" aria-label={node.nama}>
-                    {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
+                    {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} warna={node.warna} ukuran={UKURAN_AVATAR_NODE} />}
                     {node.peran && <span className="peran-node">{node.peran}</span>}
                     <b>{node.nama}</b>
                     {node.isi}
@@ -128,7 +130,7 @@ export function PohonDasar({ graf, isiNode, saatPilih, redup = false, aliran = f
                 <button key={id} type="button" {...pemicu} className={['node-orang', node.kelas, node.tambahan, className].filter(Boolean).join(' ')} style={styleUrut(node)}
                   aria-label={labelPilih ? labelPilih(node.nama) : t('hitung.nama_lihat_penjelasan', { nama: node.nama })}
                   onClick={() => saatPilih?.(id)}>
-                  {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} ukuran={UKURAN_AVATAR_NODE} />}
+                  {node.kelas !== 'penghubung' && <AvatarOrang nama={node.nama} warna={node.warna} ukuran={UKURAN_AVATAR_NODE} />}
                   {node.peran && <span className="peran-node">{node.peran}</span>}
                   <b>{node.nama}</b>
                   {node.isi}

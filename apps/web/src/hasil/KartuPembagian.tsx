@@ -4,6 +4,7 @@
 
 import { useState } from 'react';
 import { AvatarOrang } from './AvatarOrang';
+import { warnaOrang } from './warnaOrang';
 import { formatRupiah } from '../format';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
@@ -93,7 +94,7 @@ export function KartuPembagian(props: Props) {
               return (
                 <li key={orang.id}>
                   <button type="button" {...pemicu} className={['baris-bagian', className].filter(Boolean).join(' ')} onClick={() => props.saatPilihOrang(orang.id)}>
-                    <AvatarOrang nama={orang.nama} ukuran={42} />
+                    <AvatarOrang nama={orang.nama} warna={warnaOrang(ringkasan, orang.id)} ukuran={42} />
                     <span className="nama-bagian">{orang.nama}<small>{orang.keterangan}</small></span>
                     <span className="jumlah-bagian">
                       <span className="angka">{uang(orang.nominal)}</span>

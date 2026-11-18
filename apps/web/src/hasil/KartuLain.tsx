@@ -5,6 +5,7 @@
 import { formatRupiah } from '../format';
 import { Ikon } from '../ui/Ikon';
 import { AvatarOrang } from './AvatarOrang';
+import { warnaOrang } from './warnaOrang';
 import { useAtributOrang } from './sorot';
 import { LANGKAH_SELANJUTNYA } from '../konten/ahwal';
 import { Istilah } from '../ui/Tooltip';
@@ -98,7 +99,7 @@ export function KartuTidakDapat({ ringkasan, saatPilihOrang }: { ringkasan: Ring
           return (
             <li key={orang.id}>
               <button type="button" {...pemicu} className={['baris-bagian', className].filter(Boolean).join(' ')} onClick={() => saatPilihOrang(orang.id)}>
-                <AvatarOrang nama={orang.nama} ukuran={36} />
+                <AvatarOrang nama={orang.nama} warna={warnaOrang(ringkasan, orang.id)} ukuran={36} />
                 <span className="nama-bagian">{orang.nama}<small>{orang.alasan}</small></span>
               </button>
             </li>
