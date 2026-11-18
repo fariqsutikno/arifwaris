@@ -93,3 +93,22 @@ Koordinasi: tipe baru dibaca komponen `hasil/` (sesi utama), dan modal perlu ses
 **Opsi B, rapikan yang ada.** Tetap 1 baris cerita = 1 langkah; tambah hanya pertanyaan pembuka dan jembatan per tahap, pecah kalimat panjang, pindahkan istilah ke belakang (kira-kira 25–30 kunci). Lebih cepat, tapi adegan `logika` (kotak dipotong, 'aul "kotak tidak muat") tetap tidak ada, jadi hasilnya masih jauh dari mockup.
 
 Kasus yang di luar jangkauan awal (munasakhat, taqdir, gharqa, dzawil arham) dikerjakan setelah kasus biasa + 'aul + radd lolos, mengikuti urutan di rencana integrasi.
+
+## 5. Pola yang terbaca dari mockup (dipilih Opsi A, 2026-11-19)
+
+Dibaca dari kasus biasa, 'aul, berlapis, dan hamil di `mockup-langkah-demi-langkah.html`.
+
+**Rangka tahap.** `tanya? → dasar? → keluarga+ → logika* → hitung+ → jembatan?`. Tidak semua wajib: tahap rutin (harta) hanya `keluarga`; 'aul = tanya, logika, logika, hitung. Jembatan ada di ujung hampir tiap tahap kecuali tahap penutup (rupiah, jami'ah akhir).
+**Dua teks per langkah.** `narasi` (kalimat utuh, dibacakan) dan `papan` (rumus/angka ringkas, hasil ditebalkan, istilah Arab di keterangan kecil: "(tawafuq)", "(tadakhul)").
+**Panjang.** Satu ide, 1–2 kalimat, 10–30 kata. Hanya `dasar` boleh 2–3 kalimat.
+**Pola kalimat tetap per fungsi.**
+- keluarga: "[Nama] adalah [peran]…" lalu kesimpulan "Maka/Jadi [akibat]." Papan: ~~1/4~~ **1/8** + sebab + sumber.
+- hitung (paralel, diulang per orang): "[Nama] [pecahan]: [asal] dibagi [penyebut], [n] kotak."
+- logika bila ada masalah: coba, gagal, cari jalan ("Kalau dipotong 8, Aminah 1. Pas. Tapi 1/6 dari 8 = 1,33. Tidak bulat." → "Kelipatan 8: 8, 16, 24. Kelipatan 6: 6, 12, 18, 24. Yang pertama sama: 24.").
+- logika "nilai tak berubah": "Lihat Aminah. Kotaknya tetap 3, hanya potongnya jadi 9."
+- cek penutup: "Jumlahnya 72." / "…pas Rp 300.000.000, tanpa selisih."
+**Jembatan tiga rupa.** (a) masalah menggantung ("1/8 + 1/6 = ?"), (b) pertanyaan ("Bisakah tanpa pecahan?", "Ke mana?"), (c) pengumuman ("Mulai dari mayit pertama", "Dua harta sudah dibagi. Tinggal dijumlahkan"). Selalu menyebut apa yang belum beres.
+**Tanya dua rupa.** Dunia nyata ("Apakah semuanya mendapat bagian?") dan teknis ("14 ÷ 24 tidak habis. Apa yang dikalikan?"); sering membawa data kasus (jumlah kerabat).
+**Dasar.** Satu ide + dalil Arab + sumber, berlabel "berlaku untuk semua kasus"; dipisah tegas dari "Di keluarga ini".
+**Analogi konsisten.** Kotak, bingkai, potong, meja (taqdir), dapur (dua harta). Satu analogi dipakai dari awal sampai akhir; pembeda dari kasus lain disebut eksplisit ("Berbeda dengan kasus berurutan").
+**Rupiah.** Satu langkah per orang, bentuk tetap "[Nama] [n] potong: Rp …"; selisih pembulatan disebut di langkah orang terakhir.
