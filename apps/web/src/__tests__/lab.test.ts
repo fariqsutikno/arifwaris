@@ -1,5 +1,6 @@
 import { expect, test } from 'vitest';
 import { BATAS_TAMPIL_CARI, SUSUNAN_CEPAT, cariEntri, kasusDariSusunan } from '../lab';
+import { langkahTerjauh } from '../layar/wizard/validasi';
 import { hitungIsian } from '../checklist';
 import { daftarBagian } from '../kelompok';
 
@@ -17,6 +18,7 @@ test('tiap susunan cepat menghasilkan kasus sah dengan ahli waris sesuai', () =>
     const isian = hitungIsian(kasus.graf, kasus.graf.idPewaris);
     expect(Object.keys(isian).sort()).toEqual([...new Set(susunan.ahliWaris)].sort());
     expect(kasus.tirkah.kotor).toBe(0n);
+    expect(langkahTerjauh(kasus)).toBeGreaterThan(1); // tidak mendarat di langkah Almarhum yang sudah ditentukan template
   }
 });
 
