@@ -65,7 +65,7 @@ export function babHarta(konteks: Konteks): Bab | undefined {
 
 // ─── Langkah: ahli waris ──────────────────────────────────────────────────────
 
-function babAhliWaris(konteks: Konteks): Bab {
+export function babAhliWaris(konteks: Konteks): Bab {
   const daftarAhliWaris = Object.entries(konteks.hasil.statusOrang).filter(([, status]) => status.jenis === 'ahliWaris').map(([id]) => id);
   const daftarBaris = [buatBaris(cerita(konteks, 'ahli_waris.daftar', {
     warits: istilahUmum(konteks, 'warits'), pewaris: konteks.sebutan.pewaris(), daftar_ahli_waris: sebutSemua(konteks, daftarAhliWaris),
@@ -112,7 +112,7 @@ const KUNCI_OPSI_KAKEK: Record<PilihanJadd, string> = { muqasamah: 'muqasamah', 
 const opsiKakek = (konteks: Konteks, pilihan: PilihanJadd): Potongan[] =>
   cerita(konteks, `bagian.opsi_kakek.${KUNCI_OPSI_KAKEK[pilihan]}`, pilihan === 'muqasamah' ? { muqasamah: istilahUmum(konteks, 'muqasamah') } : {});
 
-function babBagian(konteks: Konteks): Bab {
+export function babBagian(konteks: Konteks): Bab {
   const daftarBaris: BarisPenjelasan[] = [];
   const kelompokFardh = new Set(konteks.daftarLangkah('FARDH').map(langkahIni => langkahIni.kelompok));
   let nuqshanDijelaskan = false;
@@ -269,7 +269,7 @@ export function ceritaArba(konteks: Konteks, langkah: Langkah<'PERBANDINGAN_NISA
 const judulContoh = (konteks: Konteks, kunci: string, sisipan: Record<string, string>): string =>
   teksKamus(konteks.penyusun, `narasi.cerita.${kunci}`, sisipan);
 
-function babPenyebut(konteks: Konteks): Bab {
+export function babPenyebut(konteks: Konteks): Bab {
   const { baris, totalKolom } = konteks.hasil.tabel;
   const ashl = totalKolom.ashl!;
   const daftarBaris: BarisPenjelasan[] = [];
@@ -316,7 +316,7 @@ function babPenyebut(konteks: Konteks): Bab {
 
 // ─── Langkah: 'adilah / 'aul / radd ───────────────────────────────────────────
 
-function babPenyesuaian(konteks: Konteks): Bab {
+export function babPenyesuaian(konteks: Konteks): Bab {
   const [kelas] = konteks.daftarLangkah('KELAS_MASALAH');
   const [sisaKeluar] = konteks.daftarLangkah('SISA_KELUAR');
   const judulSisa = judulCerita(konteks, 'penyesuaian.judul_sisa');
@@ -414,7 +414,7 @@ function ceritaRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: 
 
 // ─── Langkah: tashih ──────────────────────────────────────────────────────────
 
-function babPembulatan(konteks: Konteks): Bab | undefined {
+export function babPembulatan(konteks: Konteks): Bab | undefined {
   const inkisar = konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(langkahIni => langkahIni.tujuan === 'inkisar');
   if (inkisar.length === 0) return undefined;
   const daftarBaris: BarisPenjelasan[] = [];
