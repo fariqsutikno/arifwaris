@@ -48,10 +48,15 @@ describe('susunLinimasa', () => {
       expect(urutan, fixture.id).toEqual([...urutan].sort((a, b) => a - b));
       // 'Aul/radd: isi asal masalah memang melebihi/kurang dari kotaknya; kotak tahap penyesuaian yang memakai bingkai.
       const adaPenyesuaian = hasil.tabel.totalKolom.aul !== undefined || hasil.tabel.totalKolom.radd !== undefined;
-      for (const tahap of linimasa.tahap) for (const langkah of tahap.langkah) {
-        if (langkah.visual?.jenis !== 'kotak' || (adaPenyesuaian && tahap.id === 'ashl')) continue;
-        const jumlahIsi = langkah.visual.isi.reduce((total, isi) => total + isi.jumlah, 0n);
-        expect(jumlahIsi, fixture.id).toBe(langkah.visual.jumlah * langkah.visual.potong);
+      for (const tahap of linimasa.tahap) {
+        const visualKotak = tahap.langkah.flatMap(langkah => (langkah.visual?.jenis === 'kotak' ? [langkah.visual] : []));
+        // Asal masalah mengisi kotak bertahap per kelompok: hanya kotak terakhir yang penuh.
+        const diperiksa = tahap.id === 'ashl' ? visualKotak.slice(-1) : visualKotak;
+        for (const visual of diperiksa) {
+          if (adaPenyesuaian && tahap.id === 'ashl') continue;
+          const jumlahIsi = visual.isi.reduce((total, isi) => total + isi.jumlah, 0n);
+          expect(jumlahIsi, fixture.id).toBe(visual.jumlah * visual.potong);
+        }
       }
       const terisi = new Set(linimasa.tahap.flatMap(tahap => tahap.langkah.flatMap(langkah => langkah.sel ?? [])));
       const penerima = hasil.tabel.baris.flatMap(baris => baris.anggota);
