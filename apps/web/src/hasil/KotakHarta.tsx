@@ -45,7 +45,7 @@ export function KotakHarta({ visual, ringkasan, sebutan }: { visual: VisualKotak
       <div className="grid-kotak" style={{ gridTemplateColumns: `repeat(${Math.min(jumlah, 12)}, minmax(0, 1fr))` }}>
         {kotak.map((isi, urut) => (
           <div key={urut} className={['kt', bergaris && 'potong', urut >= jumlah - luar && luar > 0 && 'luar', isi[0] === 'ditahan' && 'ditahan'].filter(Boolean).join(' ')}
-            style={bergaris ? undefined : { background: warnaPeraga(ringkasan, isi[0] ?? '', nama(isi[0] ?? '')) }}>
+            style={bergaris || isi.length === 0 ? undefined : { background: warnaPeraga(ringkasan, isi[0] ?? '', nama(isi[0] ?? '')) }}>
             {bergaris && isi.map((id, bagian) => <span key={bagian} className={id === 'ditahan' ? 'ditahan' : undefined} style={{ background: warnaPeraga(ringkasan, id, nama(id)) }} />)}
           </div>
         ))}

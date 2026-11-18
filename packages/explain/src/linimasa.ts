@@ -6,7 +6,7 @@
 // Belum: templat tanya/logika/jembatan per tahap, munasakhat, taqdir, gharqa (PR berikutnya di rencana).
 
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
-import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut, babPenyesuaian, type Bab } from './cerita.js';
+import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut, babPenyesuaian, persamaanKotakAshl, type Bab } from './cerita.js';
 import { buatKonteks, type HasilOk, type Konteks } from './context.js';
 import type { BarisPenjelasan, Kamus } from './segments.js';
 
@@ -79,7 +79,18 @@ function susunTahap(konteks: Konteks, id: IdTahap, bab: Bab): Tahap {
     return { bagian: subjek.length ? 'keluarga' : 'hitung', narasi: baris, papan: baris, refs: baris.refs, ...(sel ? { sel } : {}) };
   });
   const visualTahap = visualAwal(konteks, id);
-  if (visualTahap && langkah[0]) langkah[0] = { ...langkah[0], visual: visualTahap };
+  const persamaan = id === 'ashl' && visualTahap?.jenis === 'kotak' ? persamaanKotakAshl(konteks) : [];
+  if (persamaan.length && visualTahap?.jenis === 'kotak') {
+    // Kotak kosong dulu, lalu terisi satu kelompok per langkah; langkah penutup (kalimat "dipotong") tetap di akhir.
+    let isi: IsiKotak[] = [];
+    const bertahap = persamaan.map(satu => {
+      isi = [...isi, { kelompok: satu.kelompok, anggota: satu.anggota, jumlah: satu.jumlah }];
+      const sel = kolom ? satu.anggota.map(idOrang => kodeSel(kolom, idOrang)) : undefined;
+      return { bagian: 'keluarga' as const, narasi: satu.baris, papan: satu.baris, refs: satu.baris.refs, visual: { ...visualTahap, isi }, ...(sel ? { sel } : {}) };
+    });
+    langkah.splice(Math.max(langkah.length - 1, 0), 0, ...bertahap);
+    langkah[0] = { ...langkah[0]!, visual: { ...visualTahap, isi: [] } };
+  } else if (visualTahap && langkah[0]) langkah[0] = { ...langkah[0], visual: visualTahap };
   // Kolom yang dibahas tahap ini terisi penuh sebelum tahap selesai, walau narasinya tidak menyebut tiap orang.
   const terakhir = langkah.at(-1);
   if (kolom && terakhir) {
