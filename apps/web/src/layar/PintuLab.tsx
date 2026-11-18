@@ -3,14 +3,13 @@
 
 import { useEffect } from 'react';
 import type { JenisKasus } from '../kasus';
-import { t } from '../terjemah';
+import { panah, t } from '../terjemah';
+import { Ikon, type NamaIkon } from '../ui/Ikon';
 
 /** Kunci t() ditulis literal supaya tes cakupan diksi menangkapnya. */
-const daftarPilihan = (): Array<{ jenis: JenisKasus; judul: string; ket: string; butir: string[] }> => [
-  { jenis: 'latihan', judul: t('hitung.kanvas.pintu_latihan'), ket: t('hitung.kanvas.pintu_latihan_ket'),
-    butir: [t('hitung.kanvas.pintu_latihan_1'), t('hitung.kanvas.pintu_latihan_2'), t('hitung.kanvas.pintu_latihan_3')] },
-  { jenis: 'nyata', judul: t('hitung.kanvas.pintu_nyata'), ket: t('hitung.kanvas.pintu_nyata_ket'),
-    butir: [t('hitung.kanvas.pintu_nyata_1'), t('hitung.kanvas.pintu_nyata_2'), t('hitung.kanvas.pintu_nyata_3')] },
+const daftarPilihan = (): Array<{ jenis: JenisKasus; ikon: NamaIkon; judul: string; ket: string }> => [
+  { jenis: 'latihan', ikon: 'pelajaran', judul: t('hitung.kanvas.pintu_latihan'), ket: t('hitung.kanvas.pintu_latihan_ket') },
+  { jenis: 'nyata', ikon: 'rumah', judul: t('hitung.kanvas.pintu_nyata'), ket: t('hitung.kanvas.pintu_nyata_ket') },
 ];
 
 export function PintuLab({ saatPilih }: { saatPilih: (jenisKasus: JenisKasus) => void }) {
@@ -25,15 +24,18 @@ export function PintuLab({ saatPilih }: { saatPilih: (jenisKasus: JenisKasus) =>
         </div>
       </header>
       <div className="tata-beranda">
-        <div className="kartu-pilihan-deret" role="radiogroup" aria-labelledby="pertanyaan-utama">
-          {daftarPilihan().map(({ jenis, judul, ket, butir }) => (
-            <button key={jenis} type="button" role="radio" aria-checked={false} className="kartu-pilihan" onClick={() => saatPilih(jenis)}>
-              <span>{judul}</span>
-              <small>{ket}</small>
-              <ul className="daftar-polos">{butir.map(teks => <li key={teks}>{teks}</li>)}</ul>
-            </button>
+        <ul className="daftar-polos lab-ubin-pintu" role="radiogroup" aria-labelledby="pertanyaan-utama">
+          {daftarPilihan().map(({ jenis, ikon, judul, ket }) => (
+            <li key={jenis} role="none">
+              <button type="button" role="radio" aria-checked={false} className="ubin ubin-lab" onClick={() => saatPilih(jenis)}>
+                <span className="panah-bulat" aria-hidden="true">{panah()}</span>
+                <Ikon nama={ikon} ukuran={40} />
+                <b className="judul-ubin">{judul}</b>
+                <span className="keterangan">{ket}</span>
+              </button>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </main>
   );

@@ -23,7 +23,7 @@ describe('UbahDipandu', () => {
     render(<Pembungkus />);
     mulai();
     expect(screen.getByText('Langkah 1 dari 2 · Apa yang mau diubah?')).toBeTruthy();
-    expect(['Keadaan seseorang', 'Tahun atau urutan wafat', 'Anggota keluarga', 'Peristiwa'].every(n => screen.getByRole('button', { name: new RegExp(n) }))).toBe(true);
+    expect(['Keadaan seseorang', 'Tahun atau urutan meninggal', 'Anggota keluarga', 'Peristiwa'].every(n => screen.getByRole('button', { name: new RegExp(n) }))).toBe(true);
     fireEvent.click(screen.getByRole('button', { name: /Keadaan seseorang/ }));
     fireEvent.click(screen.getByRole('button', { name: 'Rina' }));
     fireEvent.click(screen.getByRole('radio', { name: 'Belum tahu' }));
@@ -35,7 +35,7 @@ describe('UbahDipandu', () => {
     const buka = vi.fn();
     render(<Papan awal={kasus} bukaBabak={buka} />);
     mulai();
-    fireEvent.click(screen.getByRole('button', { name: /Tahun atau urutan wafat/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Tahun atau urutan meninggal/ }));
     fireEvent.click(screen.getByRole('button', { name: /Budi/ }));
     expect(buka).toHaveBeenCalledWith(budi);
   });

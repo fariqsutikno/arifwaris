@@ -5,7 +5,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
-import { hitungIsian } from '../checklist';
+import { hitungIsian, peranDariMayit } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
 import { barisBerlaku } from '../konten/ahwal';
 import { ahwalUntuk } from '../konten/sumber';
@@ -56,7 +56,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
 
   const adalahPewaris = id === graf.idPewaris;
   const statusKepala = sedangMenebak || adalahPewaris || !kelompok ? 'netral' : halang ? 'tidak' : 'menerima';
-  const labelStatus = adalahPewaris ? t('hitung.almarhum') : sedangMenebak || !kelompok ? t('hitung.kerabat') : halang ? t('hitung.tidak_mendapat_bagian') : t('hitung.menerima_bagian');
+  const labelStatus = adalahPewaris ? t('hitung.almarhum') : sedangMenebak || !kelompok ? peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat') : halang ? t('hitung.tidak_mendapat_bagian') : t('hitung.menerima_bagian');
   const peran = adalahPewaris ? undefined : kelompok ? TEKS_KELOMPOK()[kelompok] : undefined;
   const orangTerdampak = [...new Set(orangDisebut(barisTerdampak))].filter(lain => lain !== id);
 

@@ -35,8 +35,12 @@ export function t(kunci: string, sisipan: Record<string, string | number | bigin
   return arab ? angkaArab(hasil) : hasil;
 }
 
+/** 'Almarhum(ah)' sebagai nama pengganti ditulis kapital di awal kalimat dan label, huruf kecil di tengah kalimat (kaidah baku: kata biasa, bukan nama diri). */
+const ALMARHUM_TENGAH_KALIMAT = /(?<=[\p{L}\p{N},)] )Almarhum(ah)?\b/gu;
+
 export const sisipkan = (teks: string, sisipan: Record<string, string | number | bigint>): string =>
-  teks.replace(/\{(\w+)\}/g, (utuh: string, nama: string) => (nama in sisipan ? String(sisipan[nama]) : utuh));
+  teks.replace(/\{(\w+)\}/g, (utuh: string, nama: string) => (nama in sisipan ? String(sisipan[nama]) : utuh))
+    .replace(ALMARHUM_TENGAH_KALIMAT, (kata: string) => kata.toLowerCase());
 
 /** Teks edukasi (label ahli waris, wizard, tur, harta) dari konten teks_edukasi; aturan bahasanya sama dengan t(). */
 export function teksEdukasi(slug: string): string {

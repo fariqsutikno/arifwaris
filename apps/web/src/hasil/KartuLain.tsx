@@ -32,7 +32,7 @@ function BarisInfo({ label, nilai, keterangan }: { label: ReactNode; nilai: Reac
 export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: RingkasanHasil; daftarMayit: string[] }) {
   const jenis = ringkasan.tentang.kelas ? JENIS_KASUS[ringkasan.tentang.kelas] : undefined;
   return (
-    <section className="ubin" aria-labelledby="judul-jenis-masalah">
+    <section className="ubin-h" aria-labelledby="judul-jenis-masalah">
       <h2 id="judul-jenis-masalah">{t('hasil.jenis_masalah')}</h2>
       <div className="daftar-info">
         <BarisInfo label={t('hitung.jenis_kasus')} nilai={ringkasan.jenis === 'munasakhat' ? <Istilah id="munasakhat">{t('hitung.munasakhat')}</Istilah> : t('hasil.biasa')} />
@@ -44,17 +44,17 @@ export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: Ringka
   );
 }
 
-export function UbinTentang({ ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta }: {
-  ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
+export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta }: {
+  /** Selain Syafi'i (bawaan, terverifikasi); sumbernya sekunder. */ namaMadzhab?: string | undefined; ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
 }) {
   const { tirkah, tentang } = ringkasan;
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
   return (
-    <section className="ubin" aria-labelledby="judul-tentang">
+    <section className="ubin-h" aria-labelledby="judul-tentang">
       <h2 id="judul-tentang">{t('hitung.tentang_kasus_ini')}</h2>
       <h3 className="kepala-info">{t('hasil.kasus')}</h3>
       <div className="daftar-info">
-        <BarisInfo label={t('hasil.madzhab')} nilai={t('hasil.syafii')} keterangan={t('hasil.syafii_ket')} />
+        <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')} />
         <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)}
           keterangan={<>{t('hasil.rincian_harta', { kotor: uang(tirkah.kotor), jenazah: uang(tirkah.tajhiz), hutang: uang(tirkah.hutang), wasiat: uang(tirkah.wasiatDipakai) })}
             {tirkah.wasiatButuhIjazah > 0n && <> · {t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</>}
@@ -75,7 +75,7 @@ function BarisHitungan({ tentang }: { tentang: TentangKasus }) {
       {tentang.ashl && (
         <BarisInfo label={<Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah>} nilai={angka(String(tentang.ashl.nilai))}
           keterangan={tentang.ashl.penyebut.length > 1
-            ? <>{t('hitung.dari_penyebut_daftar_yang', { daftar: angka(tentang.ashl.penyebut.map(String).join(t('umum.dan'))) })} <Nisbah hubungan={tentang.ashl.hubungan ?? ''} /></>
+            ? <>{t('hitung.dari_penyebut_daftar', { daftar: angka(tentang.ashl.penyebut.map(String).join(t('umum.dan'))) })} <Nisbah hubungan={tentang.ashl.hubungan ?? ''} /></>
             : t('hitung.penyebut_bagian_yang_ada')} />
       )}
       {tentang.tashih && (
@@ -108,7 +108,7 @@ export function DaftarAksi({ daftar }: { daftar: AksiUbin[] }) {
 
 export function UbinBagikan({ daftar }: { daftar: AksiUbin[] }) {
   return (
-    <section className="ubin oranye" aria-labelledby="judul-bagikan" data-tur="selanjutnya">
+    <section className="ubin-h oranye" aria-labelledby="judul-bagikan" data-tur="selanjutnya">
       <h2 id="judul-bagikan">{t('hasil.bagikan_dan_simpan')}</h2>
       <DaftarAksi daftar={daftar} />
     </section>
@@ -117,7 +117,7 @@ export function UbinBagikan({ daftar }: { daftar: AksiUbin[] }) {
 
 export function UbinSelanjutnya() {
   return (
-    <section className="ubin mint" aria-labelledby="judul-selanjutnya">
+    <section className="ubin-h mint" aria-labelledby="judul-selanjutnya">
       <h2 id="judul-selanjutnya">{t('hasil.langkah_selanjutnya')}</h2>
       <ol className="urutan-selanjutnya">
         {LANGKAH_SELANJUTNYA.map(langkah => <li key={langkah.judul}><b>{langkah.judul}</b><span>{langkah.isi}</span></li>)}

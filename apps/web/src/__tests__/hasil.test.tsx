@@ -65,9 +65,20 @@ describe('layar hasil', () => {
 
   it('pembulatan: kartu muncul bila tidak pas, pilihan Rp 1.000 menghitung ulang lewat engine', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(within(pembagian()).getByRole('radio', { name: /Rp 1.000/ }));
+    fireEvent.click(within(pembagian()).getByRole('button', { name: 'Ubah pembulatan' }));
+    fireEvent.click(within(screen.getByRole('dialog', { name: /dibulatkan ke/ })).getByRole('radio', { name: /Rp 1.000/ }));
+    expect(screen.queryByRole('dialog', { name: /dibulatkan ke/ })).toBeNull();
     expect(within(pembagian()).getAllByText('Rp 16.666.000').length).toBe(2);
     expect(within(pembagian()).getAllByText('Rp 2.000').length).toBeGreaterThan(0);
+  });
+
+  it('baris penjumlahan menyaring daftar; ketuk lagi atau Tampilkan semua mengembalikan', () => {
+    render(<Uji awal={prototipe()} />);
+    fireEvent.click(within(pembagian()).getByRole('button', { name: /^Tidak mendapat bagian \(1\)/ }));
+    expect(within(pembagian()).getByText(/Terhalang oleh/)).toBeTruthy();
+    expect(within(pembagian()).queryByText('Rp 16.666.666')).toBeNull();
+    fireEvent.click(within(pembagian()).getByRole('button', { name: 'Tampilkan semua' }));
+    expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);
   });
 
   it('kasus yang sudah bulat tidak menampilkan kartu pembulatan maupun selisih', () => {

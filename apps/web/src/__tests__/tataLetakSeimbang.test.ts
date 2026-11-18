@@ -56,7 +56,8 @@ describe('B5: menambah satu orang tidak mengacak urutan orang lain', () => {
     const sebelum = tataLetak(awal).baris;
     const sesudah = tataLetak(tambah(awal)).baris;
     for (const barisLama of sebelum) {
-      const sisa = sesudah.map(r => r.filter(id => barisLama.includes(id))).find(r => r.length === barisLama.length);
+      // Baris lama boleh terbelah ke baris pasangan (poligami, C5-1); urutan relatifnya tetap.
+      const sisa = sesudah.flat().filter(id => barisLama.includes(id));
       expect(sisa).toEqual(barisLama);
     }
   });

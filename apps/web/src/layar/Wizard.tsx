@@ -59,7 +59,7 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
   };
   // Tombol lanjut tidak pernah nonaktif: bila isian kurang, klik hanya menahan dan mengumumkan alasannya; tanda hilang saat isian diubah.
   const berikut = LANGKAH_WIZARD[langkah];
-  // Kanvas belum lengkap: aksi utama berupa tautan "Ke Periksa ›" (spec 5.9); diklik → tandai kekurangan dan pindah ke bagian pertama yang kurang.
+  // Kanvas belum lengkap: tombol "Lanjut: Periksa" tetap seperti langkah lain; diklik → tandai kekurangan dan pindah ke bagian pertama yang kurang.
   const saatKlikTertahan = () => {
     setTertahan(true);
     const pertama = kasus && nyata && langkah === 3 ? statusKeluarga(kasus).pertama : null;
@@ -89,14 +89,19 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
   }[periksa.aksi.jenis];
   const aksiLanjut = dariPeriksa ? { label: t('hitung.periksa.kembali_ke_periksa'), sebagai: 'tombol' as const, saatKlik: () => kirim({ jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH }) }
     : aksiPeriksa ? { ...aksiPeriksa, saatKlik: saatKlikPeriksa } : {
-    label: kanvasBelumLengkap ? t('hitung.kanvas.ke_periksa') : berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil'),
-    sebagai: kanvasBelumLengkap ? 'tautan' as const : 'tombol' as const,
+    label: berikut ? t('hitung.lanjut_nama', { nama: berikut.nama }) : t('hitung.lihat_hasil'),
+    sebagai: 'tombol' as const,
     saatKlik: () => (alasan ? saatKlikTertahan() : saatLanjut()),
   };
   const statusBar = dariPeriksa ? t('hitung.periksa.sedang_dari_periksa') : periksa ? periksa.status : tertahan ? alasan : kanvasBelumLengkap && kasus ? statusKeluarga(kasus).status : nyata && langkah === 3 ? t('hitung.kanvas.status_lengkap') : null;
   useEffect(() => setTertahan(false), [kasus, langkah]);
   // Kanvas mengurus fokusnya sendiri (pindah bagian dulu, baru fokus ke baris yang kurang).
-  useEffect(() => { if (tertahan && !kanvasBelumLengkap) document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); }, [tertahan]);
+  useEffect(() => {
+    if (!tertahan || kanvasBelumLengkap) return;
+    const salah = document.querySelector<HTMLElement>('[aria-invalid="true"]');
+    salah?.focus();
+    gulirKe(salah);
+  }, [tertahan]);
   // Penanda halaman: latar krem dan navbar menyatu dengan hero gelap (CSS body.layar-beranda), sama dengan Awal Lab.
   useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   const stepper = (
@@ -111,8 +116,8 @@ export function Wizard({ keadaan, kirim }: { keadaan: KeadaanAplikasi; kirim: (a
           saatGantiDanKosongkan={jenisKelamin => ubah(k => gantiJenisKelaminPewaris(k, jenisKelamin))}
           saatUbahNama={nama => ubah(k => ubahNamaPewaris(k, nama))}
           saatUbahTahun={tahun => ubah(k => aturTahunWafat(k, k.graf.idPewaris, tahun))}
-          saatPilihPintu={pintu => ubah(k => ({ ...k, pintu }))} />}
-        {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
+          saatPilihPintu={pintu => ubah(k => ({ ...k, pintu }))} tandaiKurang={tertahan} />}
+        {kasus && langkah === 2 && <><LangkahHarta kasus={kasus} ubah={ubah} tandaiKurang={tertahan} /><KewajibanOpsional kasus={kasus} ubah={ubah} /></>}
         {kasus && langkah === 3 && nyata && <KanvasKeluarga kasus={kasus} ubah={ubah} tandaiKurang={tertahan}
           {...(fokusBagian ? { fokusBagian } : keadaan.fokusBagian ? { fokusBagian: { id: keadaan.fokusBagian, kali: 0 } } : {})}
           {...(fokusOrang ? { fokusOrang } : keadaan.fokus ? { fokusOrang: { id: keadaan.fokus, kali: 0 } } : {})} saatSelesai={saatLanjut} />}
