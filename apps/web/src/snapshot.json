@@ -24794,6 +24794,27 @@
    "id": "Bagian yang ditahan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.rekam",
+   "halaman": "langkah",
+   "id": "Rekam video",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.rekam_ket",
+   "halaman": "langkah",
+   "id": "hanya panggung, berhenti sendiri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.rekam_gagal",
+   "halaman": "langkah",
+   "id": "Rekaman tidak bisa dimulai. Pilih tab ini saat peramban menanyakan layar mana yang direkam.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

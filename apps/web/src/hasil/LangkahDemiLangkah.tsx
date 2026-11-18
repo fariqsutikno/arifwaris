@@ -13,6 +13,7 @@ import { TampilanSinema } from './TampilanSinema';
 import { TampilanTeks } from './TampilanTeks';
 import type { RingkasanHasil } from './ringkasan';
 import { useSorot } from './sorot';
+import { bisaMerekam, mulaiRekam, unduhVideo, type Rekaman } from './rekamVideo';
 import { babakDi, selSampai, urutanLinimasa, visualTerakhir, type PeragaBabak } from './urutanLinimasa';
 import { bacaMentah, simpanMentah } from '../penyimpanan';
 import { angka, t } from '../terjemah';
@@ -46,6 +47,10 @@ export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNo
   const [suaraNyala, setSuaraNyala] = useState(() => bacaMentah(KUNCI_SUARA_SINEMA) !== 'mati');
   const [diam, setDiam] = useState(false);
   const [lapisan, setLapisan] = useState<'pohon' | 'tabel' | null>(null);
+  const [merekam, setMerekam] = useState(false);
+  const [menungguRekam, setMenungguRekam] = useState(false);
+  const [galatRekam, setGalatRekam] = useState(false);
+  const rekaman = useRef<Rekaman | null>(null);
   const adaSuara = useAdaSuaraIndonesia();
   const { setLangkah } = useSorot();
   const sinema = tampilan === 'sinema';
@@ -96,6 +101,24 @@ export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNo
     return () => { window.clearTimeout(waktu); akar?.removeEventListener('pointermove', bangun); akar?.removeEventListener('pointerdown', bangun); akar?.removeEventListener('keydown', bangun); };
   }, [sinema, bermain, lainnyaTerbuka]);
 
+  // Rekam: sinema diputar dari awal; rekaman berhenti sendiri di akhir lalu mengunduh .webm. Menutup mode menghentikan tangkapan.
+  const mulaiMerekam = () => { setLainnyaTerbuka(false); setGalatRekam(false); pilihTampilan('sinema'); setMenungguRekam(true); };
+  // Tangkapan dimulai setelah sinema benar-benar tampil (elemen bingkai ada).
+  useEffect(() => {
+    if (!menungguRekam || !sinema) return;
+    setMenungguRekam(false);
+    const bingkai = wadah.current?.querySelector<HTMLElement>('.sinema-isi');
+    if (!bingkai) return;
+    mulaiRekam(bingkai).then(berjalan => { rekaman.current = berjalan; setIndeks(0); setMerekam(true); setBermain(true); }, () => setGalatRekam(true));
+  }, [menungguRekam, sinema]);
+  const akhiriRekaman = async () => {
+    const berjalan = rekaman.current;
+    rekaman.current = null; setMerekam(false);
+    if (berjalan) unduhVideo(await berjalan.berhenti(), 'langkah-demi-langkah.webm');
+  };
+  useEffect(() => { if (merekam && terakhir && !bermain) void akhiriRekaman(); }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => { void rekaman.current?.berhenti(); }, []);
+
   const pilihTampilan = (baru: Tampilan) => {
     setTampilan(baru); setSemua(false); setBermain(false);
     simpanMentah(KUNCI_TAMPILAN, baru);
@@ -116,7 +139,7 @@ export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNo
   };
 
   return createPortal(
-    <div className={['langkah-demi-langkah', sinema && 'sinema', diam && 'diam'].filter(Boolean).join(' ')} role="dialog" aria-modal="true" aria-label={t('hasil.langkah_demi_langkah')} ref={wadah} onKeyDown={saatKunci}>
+    <div className={['langkah-demi-langkah', sinema && 'sinema', diam && 'diam', merekam && 'merekam'].filter(Boolean).join(' ')} role="dialog" aria-modal="true" aria-label={t('hasil.langkah_demi_langkah')} ref={wadah} onKeyDown={saatKunci}>
       <header className="kepala-ldl">
         <div className="judul-ldl">
           <p>{semua ? t('langkah.semua_tahap')
@@ -177,6 +200,8 @@ export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNo
               <button key={nomor} type="button" aria-current={!semua && nomor === posisi.tahap} onClick={() => keTahap(nomor)}>{angka(String(nomor + 1))}. {satu.judul}</button>
             ))}
           </div>
+          {bisaMerekam() && <button type="button" className="baris-lainnya" onClick={mulaiMerekam}>{t('langkah.rekam')}<small>{t('langkah.rekam_ket')}</small></button>}
+          {galatRekam && <p className="catatan-lainnya" role="alert">{t('langkah.rekam_gagal')}</p>}
           {!sinema && <button type="button" className="baris-lainnya" onClick={() => { setSemua(true); setLainnyaTerbuka(false); }}>{t('langkah.tampilkan_semua')}</button>}
           {sinema && <>
             <button type="button" className="baris-lainnya" onClick={gantiKecepatan}>{t('langkah.kecepatan', { kali: angka(String(kecepatan)) })}</button>
