@@ -228,7 +228,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               saatUbahHarta={bolehUbah && adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
           </div>
         )}
-        <section className="ubin bento-s12 ubin-pohon-tabel" data-tur="pohon" aria-labelledby="judul-pohon-tabel" data-tampil={panelHp}>
+        <section className="ubin-h bento-s12 ubin-pohon-tabel" data-tur="pohon" aria-labelledby="judul-pohon-tabel" data-tampil={panelHp}>
           <div className="kepala-ubin">
             <div>
               <h2 id="judul-pohon-tabel">{t('hasil.pohon_dan_tabel')}</h2>
@@ -257,7 +257,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         </section>
         {!sedangMenebak && <div className="bento-s4"><UbinBagikan daftar={aksiBagikan} /></div>}
         {!sedangMenebak && <div className="bento-s4"><UbinSelanjutnya /></div>}
-        <section className="ubin gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
+        <section className="ubin-h gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
           <p className="sub-kartu">{t('hasil.pelajari_sub')}</p>
           <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} kanvas={kanvasFokus} />

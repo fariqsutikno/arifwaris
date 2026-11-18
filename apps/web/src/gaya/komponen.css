@@ -1417,15 +1417,15 @@ body.layar-hasil{background:var(--halaman)}
 .tata-hasil>*{min-width:0}
 .bento-s7{grid-column:span 7}.bento-s5{grid-column:span 5;display:grid;gap:12px}.bento-s12{grid-column:span 12}.bento-s4{grid-column:span 4;display:grid}
 .mode-belajar .tata-hasil .bento-s7{grid-column:span 12}
-.ubin{min-width:0;padding:18px;border-radius:24px;background:var(--kartu);border:1px solid var(--kartu-tepi);box-shadow:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
-.ubin h2{margin:0;font:700 19px/1.2 var(--font-display);letter-spacing:-.01em}
-.ubin.mint{background:var(--mint,#dcefe2);border-color:transparent}
-.ubin.oranye{background:#fde6d8;border-color:transparent}
-.ubin.gelap{background:#0e0f10;border-color:#0e0f10;color:#fff}
-.ubin.gelap .sub-kartu{color:rgba(255,255,255,.72)}
-.mode-belajar .ubin.kartu-utama{border:1px dashed var(--aksen)}
-.ubin .tombol-ikon{border:0;border-radius:50%;background:var(--surface-sunken);box-shadow:none}
-.ubin .tombol-ikon[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
+.ubin-h{min-width:0;padding:18px;border-radius:24px;background:var(--kartu);border:1px solid var(--kartu-tepi);box-shadow:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+.ubin-h h2{margin:0;font:700 19px/1.2 var(--font-display);letter-spacing:-.01em}
+.ubin-h.mint{background:var(--mint,#dcefe2);border-color:transparent}
+.ubin-h.oranye{background:#fde6d8;border-color:transparent}
+.ubin-h.gelap{background:#0e0f10;border-color:#0e0f10;color:#fff}
+.ubin-h.gelap .sub-kartu{color:rgba(255,255,255,.72)}
+.mode-belajar .ubin-h.kartu-utama{border:1px dashed var(--aksen)}
+.ubin-h .tombol-ikon{border:0;border-radius:50%;background:var(--surface-sunken);box-shadow:none}
+.ubin-h .tombol-ikon[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
 .alat-pembagian{display:flex;align-items:center;gap:8px}
 .segmen{display:inline-flex;padding:3px;border-radius:var(--radius-pill);background:var(--surface-sunken)}
 .segmen button{min-height:36px;padding:0 14px;border:0;border-radius:var(--radius-pill);background:none;color:var(--ink);font:600 13.5px var(--font-sans);cursor:pointer}
@@ -1496,7 +1496,7 @@ body.layar-hasil{background:var(--halaman)}
 }
 @media (max-width:480px){
   .uh b{font-size:18px}.uh.kamu b{font-size:26px}
-  .ubin{padding:16px}
+  .ubin-h{padding:16px}
 }
 
 /* Dialog bagikan kasus: langkah bernomor. Skala tunggal: judul langkah 16/700, bantu 14, isi kolom 15, catatan 13. Kolom 48, tombol dalam kolom 40. */

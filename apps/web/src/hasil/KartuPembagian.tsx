@@ -68,7 +68,7 @@ export function KartuPembagian(props: Props) {
   const adaDaftarPenerima = tampilPenerima || ringkasan.daftarSisaKeluar.some(sisa => tampil(sisa.id));
 
   return (
-    <section className="ubin kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
+    <section className="ubin-h kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <div className="judul-kartu">
           <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
