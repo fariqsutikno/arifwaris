@@ -27,3 +27,8 @@ test('susunan cepat tidak menandai dijawab bagian tetap yang slotnya kosong (Aya
   expect(orangTuaAnak.kelompokDijawab?.PEWARIS).toContain('orangTua');
   expect(daftarBagian(orangTuaAnak).length).toBeGreaterThan(0);
 });
+
+test('susunan cepat sudah menjawab pintu, jadi wizard mulai dari langkah Harta', async () => {
+  const { langkahTerjauh } = await import('../layar/wizard/validasi');
+  expect(langkahTerjauh(kasusDariSusunan(SUSUNAN_CEPAT[0]!))).toBe(2);
+});

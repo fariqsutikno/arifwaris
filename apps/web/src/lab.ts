@@ -30,5 +30,6 @@ export const kasusDariSusunan = (susunan: SusunanCepat): Kasus => {
   const idPewaris = kasus.graf.idPewaris;
   // Bagian tetap yang slotnya kosong (mis. Ayah tidak disebut) tetap ditanya: keadaan Ayah tidak boleh ditebak.
   const dijawab = KELOMPOK.filter(jenis => !adaSlotKosong(kasus, { id: `${jenis}:${idPewaris}`, milik: idPewaris, jenis }));
-  return { ...kasus, kelompokDijawab: { [idPewaris]: dijawab }, saya: null };
+  // Susunan cepat tanpa urutan wafat: pintu pasti "baru" (sama dengan migrasiKeV4), jadi langsung ke langkah Harta.
+  return { ...kasus, pintu: 'baru', kelompokDijawab: { [idPewaris]: dijawab }, saya: null };
 };
