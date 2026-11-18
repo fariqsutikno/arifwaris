@@ -1655,3 +1655,72 @@ table.faraidh.ringkas{min-width:0}
 .tambah-anak-node{position:absolute;left:50%;bottom:-14px;transform:translateX(-50%);width:28px;height:28px;border-radius:50%;border:1px solid var(--ink-muted);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;z-index:2}
 .tambah-anak-node:hover{background:var(--surface-sunken)}
 .tambah-anak-node:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+/* ─── Langkah demi langkah (rencana-integrasi-langkah-demi-langkah.md) ─────────── */
+.langkah-demi-langkah{position:fixed;inset:0;z-index:1000;display:flex;flex-direction:column;background:var(--surface);color:var(--ink)}
+.kepala-ldl{display:flex;align-items:center;gap:12px;padding:12px 18px}
+.judul-ldl{flex:1;min-width:0}
+.judul-ldl p{margin:0;font-size:12.5px;color:var(--ink-muted)}
+.judul-ldl h1{margin:0;font:600 18px var(--font-display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.badan-ldl{flex:1;min-height:0;overflow:auto}
+.teks-isi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:14px;padding:4px 18px 14px;align-items:start;max-width:1240px;margin:0 auto}
+.teks-kiri{display:flex;flex-direction:column;gap:14px;min-width:0;position:sticky;top:0}
+.panel-langkah{background:var(--surface-raised);border-radius:20px;padding:14px;min-width:0}
+.panel-langkah h2{margin:0 0 8px;font-size:13px;font-weight:600;color:var(--ink-muted)}
+.isi-pohon{max-height:34vh;overflow:auto}
+.kartu-tahap{display:flex;flex-direction:column;gap:12px}
+.kartu-tahap+.kartu-tahap{margin-top:22px;padding-top:22px;border-top:1px dashed var(--outline)}
+.kartu-tahap h3{margin:0;font:600 22px/1.2 var(--font-display)}
+.ke-tahap{margin:0;font-size:12.5px;color:var(--ink-muted)}
+.bagian-langkah{border-inline-start:3px solid var(--outline);padding:2px 0 2px 12px}
+.bagian-keluarga{border-color:#8fb3a3}.bagian-hitung{border-color:var(--ink)}
+.label-bagian{margin:0 0 4px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-muted)}
+.bagian-langkah ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.bagian-langkah li{border-radius:8px;padding:2px 6px;margin-inline-start:-6px}
+.bagian-langkah li.kini{background:var(--aksen-soft)}
+.kenapa-langkah summary{cursor:pointer;font-weight:600;font-size:14px}
+.ubin-harta{display:flex;flex-direction:column;gap:6px}
+.ubin-harta div{display:flex;justify-content:space-between;gap:16px;background:var(--surface);border-radius:12px;padding:10px 14px;font-variant-numeric:tabular-nums}
+.ubin-harta div.akhir{background:var(--primary);color:var(--on-primary);font-weight:600}
+.grid-kotak{display:grid;gap:5px}
+.kt{aspect-ratio:1;max-height:84px;border-radius:8px;display:flex;gap:2px;overflow:hidden}
+.kt.potong{gap:1px;padding:2px;background:#fff;box-shadow:inset 0 0 0 1.5px #b8c4b6}
+.kt.potong span{flex:1;border-radius:3px}
+.kt.luar{outline:2px dashed var(--aksen);outline-offset:-2px}
+.ket-kotak{display:flex;gap:14px;flex-wrap:wrap;margin:10px 0 0;font-size:14px;color:var(--ink-muted)}
+.ket-kotak i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-inline-end:5px;vertical-align:-1px}
+.wadah-tabel{overflow-x:auto}
+.tabel-langkah{border-collapse:separate;border-spacing:0;font-variant-numeric:tabular-nums;font-size:14px;background:#fff;width:100%;border:1px solid var(--divider);border-radius:14px;overflow:hidden}
+.tabel-langkah th,.tabel-langkah td{border-bottom:1px solid var(--divider);border-inline-start:1px solid var(--divider);padding:9px 12px;text-align:center;white-space:nowrap}
+.tabel-langkah th:first-child,.tabel-langkah td:first-child{border-inline-start:0;text-align:start}
+.tabel-langkah th{background:#14181a;color:#fff;font-size:11.5px;font-weight:600;vertical-align:bottom}
+.tabel-langkah th big{display:block;font-size:17px;font-weight:700}
+.tabel-langkah th.aktif{box-shadow:inset 0 -3px 0 var(--aksen)}.tabel-langkah th.aktif big{color:#ffb08a}
+.tabel-langkah td{font-weight:600}
+.tabel-langkah td.rp{text-align:end}
+.tabel-langkah td.kini{background:var(--aksen-soft)}
+.tabel-langkah tr.halang td{background:repeating-linear-gradient(135deg,#f6faf4 0 8px,#e9f2e6 8px 10px);color:var(--ink-muted);font-weight:500;font-size:13.5px}
+.sw{display:inline-block;width:14px;height:14px;border-radius:4px;margin-inline-end:8px;vertical-align:-2px;border:1px solid rgba(0,0,0,.08)}
+.tabel-kosong{margin:0;color:var(--ink-muted);font-size:13.5px}
+.angka-terbang{position:fixed;left:0;top:0;z-index:1100;pointer-events:none;background:var(--aksen);color:#fff;font:600 14px var(--font-sans);padding:4px 10px;border-radius:999px;box-shadow:0 4px 12px rgba(20,30,25,.25);white-space:nowrap}
+.bawah-ldl{padding:8px 18px 12px;border-top:1px solid var(--divider);background:var(--surface-raised)}
+.kemajuan-ldl{display:flex;gap:6px}
+.kemajuan-ldl .ruas{display:flex;gap:2px;background:none;border:0;padding:6px 0;cursor:pointer}
+.kemajuan-ldl .ruas i{flex:1;height:4px;border-radius:2px;background:var(--outline)}
+.kemajuan-ldl .ruas i.lewat{background:var(--aksen)}.kemajuan-ldl .ruas i.kini{background:#ffb08a}
+.kontrol-ldl{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.tautan-ldl{background:none;border:0;padding:0;font:600 14px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;color:inherit}
+.tautan-ldl:disabled{opacity:.3;cursor:default}
+.lainnya-ldl{position:absolute;inset-inline:0;bottom:0;z-index:2;background:var(--surface-raised);border-radius:22px 22px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:14px 18px 20px;max-height:80%;overflow:auto}
+.atas-lainnya{display:flex;justify-content:space-between;margin-bottom:8px}
+.sub-lainnya{margin:0;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-muted)}
+.tahapan-lainnya{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 10px}
+.tahapan-lainnya button{border:1px solid var(--outline);background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font-sans);cursor:pointer}
+.tahapan-lainnya button[aria-current=true]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.baris-lainnya{display:flex;width:100%;background:none;border:0;border-top:1px solid var(--divider);padding:12px 2px;font:500 14.5px var(--font-sans);text-align:start;cursor:pointer}
+@media (max-width:820px){
+  .kepala-ldl{padding:10px 12px;gap:8px}.judul-ldl h1{font-size:16px}
+  .teks-isi{grid-template-columns:1fr;padding:4px 12px 12px}
+  .teks-kiri{position:static;order:2}
+  .bawah-ldl{padding:6px 12px 10px}
+}

@@ -24542,6 +24542,181 @@
    "id": "bahan musyawarah",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.tahap_dari",
+   "halaman": "langkah",
+   "id": "Tahap {nomor} dari {total}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.langkah_dari",
+   "halaman": "langkah",
+   "id": "Langkah {nomor} dari {total}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.semua_tahap",
+   "halaman": "langkah",
+   "id": "Semua tahap",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.judul_semua",
+   "halaman": "langkah",
+   "id": "Langkah perhitungan lengkap",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.teks",
+   "halaman": "langkah",
+   "id": "Teks",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.tampilan",
+   "halaman": "langkah",
+   "id": "Tampilan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.lainnya",
+   "halaman": "langkah",
+   "id": "Lainnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.lompat_ke_tahap",
+   "halaman": "langkah",
+   "id": "Lompat ke tahap",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.tampilkan_semua",
+   "halaman": "langkah",
+   "id": "Tampilkan semua langkah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.satu_per_satu",
+   "halaman": "langkah",
+   "id": "Kembali satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.pohon_keluarga",
+   "halaman": "langkah",
+   "id": "Pohon keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.tabel_faraidh",
+   "halaman": "langkah",
+   "id": "Tabel faraidh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.tabel_bertambah",
+   "halaman": "langkah",
+   "id": "Kolom tabel bertambah mulai dari bagian awal tiap orang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.selesai",
+   "halaman": "langkah",
+   "id": "Selesai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.bagian_keluarga",
+   "halaman": "langkah",
+   "id": "Keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.bagian_hitung",
+   "halaman": "langkah",
+   "id": "Hitungan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_kotor",
+   "halaman": "langkah",
+   "id": "Harta kotor",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_tajhiz",
+   "halaman": "langkah",
+   "id": "Biaya jenazah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_hutang",
+   "halaman": "langkah",
+   "id": "Hutang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_wasiat",
+   "halaman": "langkah",
+   "id": "Wasiat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.harta_bersih",
+   "halaman": "langkah",
+   "id": "Harta yang dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.kotak_potong",
+   "halaman": "langkah",
+   "id": "Tiap kotak = {potong} potong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.kotak_luar",
+   "halaman": "langkah",
+   "id": "{jumlah} kotak di luar bingkai semula ('aul)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.kotak_hilang",
+   "halaman": "langkah",
+   "id": "{jumlah} kotak kosong dibuang (radd)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.isi_kotak",
+   "halaman": "langkah",
+   "id": "{nama}: {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
