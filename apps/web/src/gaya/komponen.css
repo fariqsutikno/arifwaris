@@ -1704,3 +1704,21 @@ table.faraidh.ringkas{min-width:0}
 /* Saat merekam: kursor disembunyikan supaya tidak masuk rekaman */
 .langkah-demi-langkah.merekam,.langkah-demi-langkah.merekam *{cursor:none!important}
 .baris-lainnya small{margin-inline-start:auto;color:var(--ink-muted);font-size:12.5px}
+
+/* Pohon di kartu Hasil (acuan mockup-hasil-per-kasus): kartu kecil rata, penerima hijau muda seragam, terhalang putus-putus abu.
+   Warna per orang hanya di avatar/kotak tabel, bukan di latar node. */
+.wadah-pohon{--hijau-terima:#e4f6ea;--garis-terima:#5fb883;max-height:none;background:var(--surface-raised);border:1px solid var(--divider)}
+.wadah-pohon .pohon{--lebar-node:150px;--jarak-node:18px;gap:44px;padding:22px 16px 26px}
+.wadah-pohon .node-orang{padding:8px 10px;border-width:1.5px;border-radius:12px;box-shadow:none;transition:none;color:var(--ink)}
+.wadah-pohon .node-orang:hover,.wadah-pohon .node-orang.terkait{transform:none;box-shadow:none;border-color:var(--ink)}
+.wadah-pohon .node-orang b{font:700 14px/1.25 var(--font-sans)}
+.wadah-pohon .node-orang .peran-node{font:500 12px/1.2 var(--font-sans);text-transform:none;letter-spacing:0;opacity:1;color:var(--ink-muted)}
+.wadah-pohon .node-orang[class*="g-"]{background:var(--hijau-terima);border-color:var(--garis-terima)}
+.wadah-pohon .node-orang .frac{font:700 14px var(--font-display)}
+.wadah-pohon .node-orang .angka{font:500 12.5px var(--font-sans);color:var(--ink-muted)}
+.wadah-pohon .node-orang.putus,.wadah-pohon .node-orang.terhalang{background:var(--surface-sunken);border:1.5px dashed var(--ink-muted);color:var(--ink-muted)}
+.wadah-pohon .node-orang.terhalang b{text-decoration:none;color:var(--ink)}
+.wadah-pohon .node-orang.terhalang .peran-node{background:none;color:var(--ink-muted);padding:0}
+.wadah-pohon .node-orang.almarhum,.wadah-pohon .node-orang.meninggal{color:var(--on-meninggal,#fff)}
+.wadah-pohon .node-orang.almarhum b,.wadah-pohon .node-orang.meninggal b,.wadah-pohon .node-orang.almarhum .peran-node,.wadah-pohon .node-orang.meninggal .peran-node{color:inherit}
+.wadah-pohon .node-orang.almarhum{background:var(--ink)}
