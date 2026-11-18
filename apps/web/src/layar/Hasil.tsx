@@ -160,7 +160,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
   const [sembunyiManual, setSembunyiManual] = useState(false);
   // Susunan cepat belum punya harta: rupiah tersembunyi sampai "Ubah harta" diisi, jadi tidak tampil "Rp 0".
-  const sembunyiNominal = sembunyiManual || kasus.tirkah.kotor <= 0n;
+  const hartaKosong = kasus.tirkah.kotor <= 0n;
+  const sembunyiNominal = sembunyiManual || hartaKosong;
   const setSembunyiNominal = setSembunyiManual;
   const [namaTerbuka, setNamaTerbuka] = useState(false);
   const [waktuHitung] = useState(() => Date.now());
@@ -299,12 +300,11 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
           : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
-            sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
+            sembunyiNominal={sembunyiNominal} saatSembunyi={hartaKosong && bolehUbah ? () => setUbahHartaTerbuka(true) : () => setSembunyiNominal(!sembunyiNominal)} hartaKosong={hartaKosong && bolehUbah}
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
-            idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
-            saatUbahHarta={bolehUbah && !adaPotonganHarta && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
+            idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih}
             pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
             kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
               : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
@@ -319,7 +319,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             <UbinJenisMasalah ringkasan={ringkasan} daftarMayit={daftarMayit} />
             {!menunggu && !gharqaDitahan && <UbinDitahan ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} />}
             <UbinTentang waktuHitung={waktuHitung} namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
-              saatUbahHarta={bolehUbah && adaPotonganHarta && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
+              saatUbahHarta={bolehUbah && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
               saatUbahMadzhab={bolehUbah && !adalahBelajar ? () => setMadzhabTerbuka(true) : undefined}
               saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
               saatUbahPembulatan={bolehUbah && tampilPembulatan ? satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) }) : undefined} />

@@ -49,8 +49,8 @@ describe('layar hasil', () => {
     expect(screen.queryByRole('region', { name: /^Tidak mendapat bagian/ })).toBeNull();
     expect(screen.queryByRole('region', { name: 'Harta yang dibagi' })).toBeNull();
     expect(screen.queryByText('Segera hadir')).toBeNull();
-    // Harta tetap bisa diubah dari kartu Pembagian.
-    fireEvent.click(within(pembagian()).getByRole('button', { name: 'Ubah harta' }));
+    // Harta tetap bisa diubah dari pensil di "Tentang kasus ini".
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah harta' }));
     expect(screen.getByRole('dialog', { name: 'Ubah harta peninggalan' })).toBeTruthy();
   });
 
@@ -168,7 +168,6 @@ describe('layar hasil', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Layar penuh' })); // pohon hanya bisa diketuk per orang di layar penuh; hero hanya pratinjau
     fireEvent.click(within(screen.getByRole('dialog', { name: 'Pohon keluarga' })).getByRole('button', { name: /^Ibu/ }));
     const dialog = screen.getAllByRole('dialog').find(isi => !isi.classList.contains('pohon-penuh'))!; // modal orang, bukan layar penuh
-    fireEvent.click(within(dialog).getByRole('button', { name: /Kapan dapat berapa/ }));
     const baris = within(dialog).getByText('Ada anak/cucu, atau ada dua saudara atau lebih.').closest('tr')!;
     expect(baris.textContent).toMatch(/kasus ini/);
   });
@@ -208,7 +207,7 @@ describe('layar hasil', () => {
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
     expect(dialog.querySelector('.kepala-modal.menerima')?.textContent).toMatch(/Menerima bagian/);
-    expect(within(dialog).getByRole('button', { name: /Dalilnya/ }).textContent).toMatch(/\d+ dalil/);
+    expect(within(dialog).getByRole('heading', { name: 'Kapan dapat berapa?' })).toBeTruthy(); // alur bernomor, tanpa lipatan
   });
 
   it('Tentang kasus ini merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {
@@ -252,7 +251,7 @@ describe('layar hasil', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(within(pembagian()).getByRole('button', { name: /^Anak laki-laki/ }));
     const dialog = screen.getByRole('dialog');
-    const kenapa = dialog.querySelector('.kenapa-utama')!;
+    const kenapa = dialog.querySelector('.syarat-modal')!;
     expect(kenapa.textContent).toMatch(/sisa/);
     expect(kenapa.textContent).not.toMatch(/Istri mendapat/);
     expect(within(dialog).getByText('Ahli waris lain yang terdampak')).toBeTruthy();
@@ -289,7 +288,7 @@ describe('layar hasil', () => {
 
   it('pintasan "Ubah ahli waris" membuka langkah ahli waris', () => {
     render(<Uji awal={prototipe()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Ubah ahli waris' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah Ahli waris' }));
     expect(aksiTerakhir).toEqual({ jenis: 'KE_LANGKAH', langkah: 3 });
   });
 

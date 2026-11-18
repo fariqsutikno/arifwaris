@@ -1,6 +1,6 @@
 // Daftar "Siapa menerima berapa" (acuan-hasil-final.html): kelompok Penerima dan Tidak mendapat bagian, baris tanpa alasan
 // (alasan ada di modal orang), sakelar Fardh/Saham untuk bentuk pecahan, lalu penjumlahan sampai harta yang dibagi.
-// Ikon pensil (ubah ahli waris) dan mata (sembunyikan nominal) tetap. Baris penjumlahan menyaring daftar; satuan pembulatan
+// Aksi ubah ada di "Tentang kasus ini"; di sini hanya mata (sembunyikan nominal) tetap. Baris penjumlahan menyaring daftar; satuan pembulatan
 // diubah lewat pil di baris sisa pembulatan (dialog), hanya muncul bila ada angka tidak bulat.
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
@@ -32,6 +32,7 @@ interface Props {
   saatUbahPengaturan: (pengaturan: PengaturanTampil) => void;
   sembunyiNominal: boolean;
   saatSembunyi: () => void;
+  hartaKosong?: boolean;
   sedangMenebak: boolean;
   adalahBelajar: boolean;
   saatTampilkanJawaban: () => void;
@@ -45,9 +46,7 @@ interface Props {
   saatPilihOrang: (id: string) => void;
   /** Orang yang bagiannya berbeda dari Syafi'i menurut madzhab terpilih. */
   idBerbeda?: ReadonlySet<string>;
-  saatUbahAhliWaris?: (() => void) | undefined;
   /** Diisi hanya bila tidak ada potongan harta (selain itu harta diubah dari Tentang kasus ini). */
-  saatUbahHarta?: (() => void) | undefined;
   /** Kotak di atas daftar (munasakhat: "Yang dibagi sekarang"). */
   pembuka?: ReactNode;
   /** Kelompok sesudah Penerima (munasakhat: meninggal sebelum dibagi; taqdir: ditahan). */
@@ -62,6 +61,8 @@ const peranDari = (orang: Pick<Penerima, 'nama' | 'kunci'>) => {
 
 export function KartuPembagian(props: Props) {
   const { ringkasan, pengaturan, sembunyiNominal, sedangMenebak } = props;
+  // Harta belum diisi: nominal memang tersembunyi dan mata tak ada yang disembunyikan; ketuk = isi harta.
+  const labelMata = props.hartaKosong ? t('hitung.ubah_harta') : sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal');
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
   const totalDiterima = ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, 0n);
   const totalSisaKeluar = ringkasan.daftarSisaKeluar.reduce((jumlah, sisa) => jumlah + sisa.nominal, 0n);
@@ -82,7 +83,6 @@ export function KartuPembagian(props: Props) {
           {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. */}
           <p className="sub-kartu">
             {sedangMenebak ? t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) }) : t('hasil.ketuk_nama_penjelasan')}
-            {props.saatUbahHarta && <> <button type="button" className="tautan-aksi tautan-sebaris" onClick={props.saatUbahHarta}>{t('hitung.ubah_harta')}</button></>}
           </p>
         </div>
         <div className="alat-pembagian">
@@ -92,14 +92,9 @@ export function KartuPembagian(props: Props) {
               <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sama'} onClick={() => props.saatUbahPengaturan({ bentuk: 'sama' })}>{t('hasil.saham')}</button>
             </div>
           )}
-          {props.saatUbahAhliWaris && (
-            <button type="button" className="tautan-aksi" onClick={props.saatUbahAhliWaris}>
-              <Ikon nama="pensil" ukuran={16} />{t('hitung.ubah_ahli_waris')}
-            </button>
-          )}
           {!sedangMenebak && (
             <button type="button" className="tombol-ikon" aria-pressed={sembunyiNominal} onClick={props.saatSembunyi}
-              aria-label={sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')} title={sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal')}>
+              aria-label={labelMata} title={labelMata}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
                 <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" /><circle cx="12" cy="12" r="3" />
                 {sembunyiNominal && <path d="M4 4l16 16" />}
