@@ -205,7 +205,10 @@ describe('layar hasil', () => {
   it('klik baris di tabel faraidh juga membuka penjelasan orang itu', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(within(screen.getByRole('table')).getByText('Ibu').closest('tr')!);
-    expect(within(screen.getByRole('dialog')).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
+    const dialog = screen.getByRole('dialog');
+    expect(within(dialog).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
+    expect(dialog.querySelector('.kepala-modal.menerima')?.textContent).toMatch(/Menerima bagian/);
+    expect(within(dialog).getByRole('button', { name: /Dalilnya/ }).textContent).toMatch(/\d+ dalil/);
   });
 
   it('Tentang kasus ini merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {

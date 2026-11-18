@@ -24017,6 +24017,27 @@
    "id": "Dari penyebut {daftar},",
    "ar": "من المخارج {daftar}،",
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jumlah_orang",
+   "halaman": "hitung",
+   "id": "{n} orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jumlah_keadaan",
+   "halaman": "hitung",
+   "id": "{n} keadaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jumlah_dalil",
+   "halaman": "hitung",
+   "id": "{n} dalil",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -1,7 +1,7 @@
-// Modal penjelasan satu orang (dari klik pohon, daftar, bar, atau tabel): bagiannya di kasus ini, lalu
-// "Kenapa segitu?" (baris explain yang subjeknya orang ini), "Cara menghitungnya", dan "Ahli waris lain yang terdampak"
-// (baris tentang orang lain yang menyebut dia sebagai penyebab). "Kapan dapat berapa?" dan dalil sebagai lipatan sekunder.
-// Ubah jumlah jenis orang ini lewat tombol Ubah (modal kecil − n +).
+// Penjelasan satu orang (dari klik pohon, daftar, bar, atau tabel; modal di laptop, laci bawah di HP). Kepala berwarna
+// menurut status (menerima / tidak mendapat); bagian terbuka: bagiannya, "Kenapa segitu?" (baris explain yang subjeknya
+// orang ini), "Cara menghitungnya". Terlipat dengan jumlahnya: ahli waris lain yang terdampak (baris tentang orang lain
+// yang menyebut dia sebagai penyebab), "Kapan dapat berapa?", dalil. Ubah jumlah lewat tautan di kaki (modal kecil − n +).
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
@@ -12,6 +12,7 @@ import { ahwalUntuk } from '../konten/sumber';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
+import { Ikon } from '../ui/Ikon';
 import { angka, bahasaArab, t } from '../terjemah';
 import type { Kelompok } from '../checklist';
 
@@ -53,16 +54,23 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
     ...(dapat?.kodeAlasan ? { kodeAlasan: dapat.kodeAlasan } : {}),
   };
 
+  const adalahPewaris = id === graf.idPewaris;
+  const statusKepala = sedangMenebak || adalahPewaris || !kelompok ? 'netral' : halang ? 'tidak' : 'menerima';
+  const labelStatus = adalahPewaris ? t('hitung.almarhum') : sedangMenebak || !kelompok ? peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat') : halang ? t('hitung.tidak_mendapat_bagian') : t('hitung.menerima_bagian');
+  const peran = adalahPewaris ? undefined : kelompok ? TEKS_KELOMPOK()[kelompok] : undefined;
+  const orangTerdampak = [...new Set(orangDisebut(barisTerdampak))].filter(lain => lain !== id);
+
   return (
     <div className="modal-latar" onClick={event => { if (event.target === event.currentTarget) saatTutup(); }}>
       <div className="modal-orang" role="dialog" aria-modal="true" aria-labelledby="judul-modal" ref={wadah}
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
-        <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
+        <header className={`kepala-modal ${statusKepala}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? t('hitung.almarhum') : halang && !sedangMenebak ? t('hitung.terhalang_mahjub') : kelompok ? TEKS_KELOMPOK()[kelompok] : peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat')}</p>
+            <p className="peran-modal">{labelStatus}</p>
             <h2 id="judul-modal">{nama}</h2>
+            {peran && <p className="sub-modal">{peran}</p>}
           </div>
-          <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}>✕</button>
+          <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}><Ikon nama="salah" ukuran={18} /></button>
         </header>
         <div className="isi-modal">
           {sedangMenebak && <p className="caption-isian">{t('hitung.mode_belajar_bagian_orang_ini_masih')}</p>}
@@ -96,13 +104,12 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
             </div>
           )}
           {!sedangMenebak && barisTerdampak.length > 0 && (
-            <div>
-              <h3>{t('hitung.ahli_waris_lain_yang_terdampak')}</h3>
+            <Lipatan judul={t('hitung.ahli_waris_lain_yang_terdampak')} catatan={t('hitung.jumlah_orang', { n: orangTerdampak.length })}>
               <ul>{barisTerdampak.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}</ul>
-            </div>
+            </Lipatan>
           )}
           {ahwal && (
-            <Lipatan judul={t('hitung.kapan_dapat_berapa')} catatan={t('hitung.semua_kemungkinan_bagian_nama', { nama: nama.toLowerCase() })}>
+            <Lipatan judul={t('hitung.kapan_dapat_berapa')} catatan={t('hitung.jumlah_keadaan', { n: ahwal.length })}>
               <table>
                 <tbody>
                   {ahwal.map(baris => {
@@ -120,7 +127,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
             </Lipatan>
           )}
           {refs.length > 0 && !sedangMenebak && (
-            <Lipatan judul={t('umum.dalilnya')}><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
+            <Lipatan judul={t('umum.dalilnya')} catatan={t('hitung.jumlah_dalil', { n: refs.length })}><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
           )}
         </div>
         <footer className="kaki-modal">
