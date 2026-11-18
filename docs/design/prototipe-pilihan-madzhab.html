@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prototipe pilihan madzhab</title>
+<link rel="stylesheet" href="fonts/fonts.css">
+<style>
+:root{
+  --surface:#eef3e8;--ink:#14181a;--ink-muted:#525c57;--primary:#0e0f10;--on-primary:#fff;--primary-soft:#dce8d8;
+  --outline:#c9d4c6;--divider:#dfe6dc;--aksen:#f2682a;--aksen-soft:#fde6d8;--halaman:#b9d4c0;
+  --kartu:rgba(255,255,255,.72);--kartu-tepi:rgba(255,255,255,.95);--hero:#0f3b36;
+  --font-display:"Parkinsans",system-ui,sans-serif;--font-sans:"Host Grotesk",system-ui,sans-serif;
+  --r-md:16px;--r-lg:24px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--halaman);color:var(--ink);font:16px/1.5 var(--font-sans)}
+.pilih-alt{position:sticky;top:0;z-index:5;background:var(--ink);color:#fff;padding:10px 16px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:14px}
+.pilih-alt button{background:none;border:0;color:#cfd8d2;font:inherit;cursor:pointer;padding:4px 0;border-bottom:2px solid transparent}
+.pilih-alt button[aria-pressed=true]{color:#fff;border-color:var(--aksen)}
+.catatan{max-width:760px;margin:16px auto 0;padding:0 16px;font-size:14px;color:var(--ink-muted)}
+.bingkai{max-width:760px;margin:12px auto 40px;background:var(--surface);border-radius:28px;padding:16px;box-shadow:0 8px 24px rgba(20,40,30,.12)}
+.hero{background:var(--hero);color:#eaf2ee;border-radius:var(--r-lg);padding:20px 22px}
+.hero .lok{margin:0;font-size:14px;color:#a9c4bb;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.hero h1{font:600 26px/1.2 var(--font-display);margin:6px 0 4px}
+.hero a,.hero button.tautan{color:#fff}
+.tautan{background:none;border:0;padding:0;font:inherit;color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.panel{background:var(--kartu);border:1px solid var(--kartu-tepi);border-radius:var(--r-md);padding:16px 18px;margin-top:12px}
+.panel h2{font:600 17px var(--font-display);margin:0 0 8px}
+.baris{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 0;border-top:1px solid var(--divider)}
+.baris:first-of-type{border-top:0}
+.nama{font-weight:600}
+.bagian{text-align:right;font-variant-numeric:tabular-nums}
+.bagian small,.sub{color:var(--ink-muted);font-size:13px}
+.beda{display:inline-flex;align-items:center;gap:4px;font-size:12px;background:var(--aksen-soft);color:#8a3510;border-radius:999px;padding:1px 8px;margin-left:6px;font-weight:500}
+details{grid-column:1/-1;font-size:14px;color:var(--ink-muted)}
+details summary{cursor:pointer;color:var(--ink);list-style:none;display:inline-flex;gap:4px;align-items:center}
+details summary::before{content:"";width:0;height:0;border:5px solid transparent;border-left-color:currentColor;transition:transform .15s}
+details[open] summary::before{transform:rotate(90deg) translateX(2px)}
+.sumber{font-size:13px;color:var(--ink-muted);display:flex;gap:6px;align-items:flex-start;margin:10px 2px 0}
+.sumber svg{flex:none;margin-top:2px}
+.ikon{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* dialog */
+dialog{border:0;border-radius:var(--r-lg);padding:20px;max-width:420px;width:calc(100% - 32px);background:var(--surface);color:var(--ink)}
+dialog::backdrop{background:rgba(10,20,15,.45)}
+dialog h2{font:600 20px var(--font-display);margin:0 0 4px}
+.opsi{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;border:1px solid var(--outline);margin-top:8px;cursor:pointer;background:#fff}
+.opsi:has(input:checked){border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.opsi input{margin-top:4px;accent-color:var(--primary)}
+.opsi b{display:block}
+.aksi{display:flex;gap:12px;justify-content:flex-end;align-items:center;margin-top:16px}
+.pill{background:var(--primary);color:var(--on-primary);border:0;border-radius:999px;padding:10px 20px;font:600 15px var(--font-sans);cursor:pointer}
+/* B: segmen */
+.segmen{display:flex;gap:4px;background:rgba(255,255,255,.08);border-radius:999px;padding:4px;margin-top:12px;flex-wrap:wrap}
+.segmen button{flex:1;min-width:72px;background:none;border:0;color:#cfe0d9;font:500 14px var(--font-sans);padding:8px 10px;border-radius:999px;cursor:pointer}
+.segmen button[aria-pressed=true]{background:#fff;color:var(--ink)}
+/* C: tabel banding */
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 6px;text-align:right;border-top:1px solid var(--divider)}
+th:first-child,td:first-child{text-align:left}
+thead th{border-top:0;color:var(--ink-muted);font-weight:500;font-size:13px}
+td.sama{color:var(--ink-muted)}
+td.lain{font-weight:600}
+th.aktif,td.aktif{background:var(--primary-soft)}
+.gulir{overflow-x:auto}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:no-preference){.panel{animation:muncul .25s ease}}
+@keyframes muncul{from{opacity:0;transform:translateY(4px)}}
+</style>
+</head>
+<body>
+<nav class="pilih-alt" aria-label="Alternatif">
+  <strong>Pilihan madzhab:</strong>
+  <button data-alt="a" aria-pressed="true">A · Tautan + dialog</button>
+  <button data-alt="b" aria-pressed="false">B · Segmen di hero</button>
+  <button data-alt="c" aria-pressed="false">C · Banding di bawah hasil</button>
+</nav>
+<p class="catatan" id="catatan"></p>
+
+<main class="bingkai">
+  <section class="hero">
+    <p class="lok"><span id="lokMadzhab">Menurut madzhab Syafi'i</span>
+      <span data-hanya="a">· <button class="tautan" id="bukaDialog">ganti madzhab</button></span></p>
+    <h1>Harta Rp90.000.000 dibagi ke 5 orang</h1>
+    <p class="sub" style="color:#a9c4bb;margin:0">Suami, ibu, 2 saudara seibu, 1 saudara laki-laki kandung</p>
+    <div class="segmen" data-hanya="b" role="group" aria-label="Madzhab">
+      <button data-m="syafii" aria-pressed="true">Syafi'i</button>
+      <button data-m="hanbali" aria-pressed="false">Hanbali</button>
+      <button data-m="hanafi" aria-pressed="false">Hanafi</button>
+      <button data-m="maliki" aria-pressed="false">Maliki</button>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Siapa dapat berapa</h2>
+    <div id="daftar"></div>
+    <p class="sumber" id="sumber" hidden>
+      <svg class="ikon" viewBox="0 0 24 24"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>
+      <span id="sumberTeks"></span></p>
+  </section>
+
+  <section class="panel" data-hanya="c">
+    <h2>Kata madzhab lain</h2>
+    <p class="sub" style="margin:0 0 8px">Hanya orang yang bagiannya berbeda antar madzhab.</p>
+    <div class="gulir"><table id="banding"></table></div>
+    <p class="sumber"><svg class="ikon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Hanbali, Hanafi, Maliki menurut nukilan Lahim dan Ithraa (sumber sekunder).</p>
+  </section>
+</main>
+
+<dialog id="dialog">
+  <h2>Hitung menurut madzhab</h2>
+  <p class="sub" style="margin:0">Hasil berubah hanya pada titik yang diperselisihkan.</p>
+  <form method="dialog" id="formMadzhab">
+    <label class="opsi"><input type="radio" name="m" value="syafii" checked><span><b>Syafi'i</b><span class="sub">Bawaan. Dicocokkan ke Raudhatu ath-Thalibin.</span></span></label>
+    <label class="opsi"><input type="radio" name="m" value="hanbali"><span><b>Hanbali</b><span class="sub">Menurut nukilan Lahim dan Ithraa.</span></span></label>
+    <label class="opsi"><input type="radio" name="m" value="hanafi"><span><b>Hanafi</b><span class="sub">Menurut nukilan Lahim dan Ithraa.</span></span></label>
+    <label class="opsi"><input type="radio" name="m" value="maliki"><span><b>Maliki</b><span class="sub">Menurut nukilan Lahim dan Ithraa.</span></span></label>
+    <div class="aksi"><button class="tautan" value="batal">Batal</button><button class="pill" value="ok">Pakai</button></div>
+  </form>
+</dialog>
+
+<script>
+// Contoh musyarrakah (KB 18, titik musyarrakah): Syafi'i & Maliki menggabungkan saudara kandung dengan saudara seibu; Hanbali & Hanafi tidak.
+const NAMA = {syafii:"Syafi'i",hanbali:'Hanbali',hanafi:'Hanafi',maliki:'Maliki'};
+const TASYRIK = {syafii:true,hanbali:false,hanafi:false,maliki:true};
+const rp = n => 'Rp' + n.toLocaleString('id-ID');
+function bagian(m){
+  const t = TASYRIK[m];
+  return [
+    {nama:'Suami',pecahan:'1/2',uang:45e6,alasan:'Tidak ada anak.'},
+    {nama:'Ibu',pecahan:'1/6',uang:15e6,alasan:'Ada beberapa saudara.'},
+    {nama:'Saudara seibu (Ani)',pecahan:t?'1/9':'1/6',uang:t?10e6:15e6,khilaf:true},
+    {nama:'Saudara seibu (Budi)',pecahan:t?'1/9':'1/6',uang:t?10e6:15e6,khilaf:true},
+    {nama:'Saudara kandung (Cahya)',pecahan:t?'1/9':'—',uang:t?10e6:0,khilaf:true},
+  ];
+}
+const KENAPA = {
+  true:'Sisa harta habis untuk bagian tetap. Saudara kandung juga anak dari ibu yang sama, jadi ia digabung dengan saudara seibu dan berbagi sepertiga sama rata.',
+  false:'Sisa harta habis untuk bagian tetap. Saudara kandung adalah penerima sisa, dan sisanya tidak ada, jadi ia tidak mendapat bagian. Ia tidak digabung dengan saudara seibu.'
+};
+let alt='a', madzhab='syafii';
+const CATATAN = {
+  a:'A — Madzhab tidak terlihat sebagai pilihan sampai pengguna mengeklik "ganti madzhab". Paling tenang; Syafi\'i tetap jelas sebagai bawaan.',
+  b:'B — Empat madzhab selalu terlihat di hero; satu klik untuk berganti. Paling cepat untuk membandingkan, tapi menonjolkan khilaf di semua kasus, termasuk yang hasilnya sama.',
+  c:'C — Hasil utama tetap Syafi\'i; tabel di bawah hanya muncul bila ada orang yang bagiannya berbeda. Mengeklik judul kolom menjadikan madzhab itu hasil utama.'
+};
+function render(){
+  document.querySelectorAll('[data-hanya]').forEach(el=>el.hidden = el.dataset.hanya!==alt);
+  document.querySelectorAll('.pilih-alt button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.alt===alt));
+  document.querySelectorAll('.segmen button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===madzhab));
+  document.getElementById('catatan').textContent = CATATAN[alt];
+  document.getElementById('lokMadzhab').textContent = 'Menurut madzhab ' + NAMA[madzhab];
+  const bukanSyf = madzhab!=='syafii';
+  const daftar = bagian(madzhab), syf = bagian('syafii');
+  document.getElementById('daftar').innerHTML = daftar.map((o,i)=>{
+    const beda = bukanSyf && o.uang!==syf[i].uang;
+    return `<div class="baris"><span class="nama">${o.nama}${beda?'<span class="beda">berbeda dari Syafi\'i</span>':''}</span>
+      <span class="bagian">${o.uang?rp(o.uang):'Tidak mendapat'}<br><small>${o.pecahan}</small></span>
+      ${o.khilaf && (alt!=='c'||true) ? `<details><summary>${beda?'Kenapa berbeda?':'Kenapa?'}</summary><p>${KENAPA[TASYRIK[madzhab]]}${beda?` Menurut Syafi'i: ${syf[i].uang?rp(syf[i].uang):'tidak mendapat'}.`:''}</p></details>`:''}
+    </div>`;}).join('');
+  const sumber = document.getElementById('sumber');
+  sumber.hidden = !bukanSyf || alt==='c';
+  document.getElementById('sumberTeks').textContent = `Madzhab ${NAMA[madzhab]} di sini mengikuti nukilan Lahim dan Ithraa (sumber sekunder, belum dicocokkan ke kitab induk madzhab itu).`;
+  const kol = Object.keys(NAMA);
+  const beda = bagian('syafii').map((o,i)=>({o,i})).filter(({i})=>new Set(kol.map(m=>bagian(m)[i].uang)).size>1);
+  document.getElementById('banding').innerHTML =
+    `<thead><tr><th>Orang</th>${kol.map(m=>`<th class="${m===madzhab?'aktif':''}"><button class="tautan" data-pakai="${m}">${NAMA[m]}</button></th>`).join('')}</tr></thead>
+     <tbody>${beda.map(({o,i})=>`<tr><td>${o.nama}</td>${kol.map(m=>{const u=bagian(m)[i].uang;return `<td class="${m===madzhab?'aktif ':''}${u===o.uang?'sama':'lain'}">${u?rp(u):'—'}</td>`}).join('')}</tr>`).join('')}</tbody>`;
+}
+document.querySelector('.pilih-alt').onclick = e=>{ if(e.target.dataset.alt){alt=e.target.dataset.alt;madzhab='syafii';render();} };
+document.querySelector('.segmen').onclick = e=>{ if(e.target.dataset.m){madzhab=e.target.dataset.m;render();} };
+document.getElementById('banding').onclick = e=>{ if(e.target.dataset.pakai){madzhab=e.target.dataset.pakai;render();} };
+const dlg = document.getElementById('dialog');
+document.getElementById('bukaDialog').onclick = ()=>{ dlg.querySelector(`input[value=${madzhab}]`).checked=true; dlg.showModal(); };
+dlg.addEventListener('close',()=>{ if(dlg.returnValue==='ok'){ madzhab = new FormData(document.getElementById('formMadzhab')).get('m'); render(); } });
+render();
+</script>
+</body>
+</html>

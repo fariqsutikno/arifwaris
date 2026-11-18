@@ -43,9 +43,9 @@ describe('pohon samping langkah Keluarga (spec kanvas 5.11, 8)', () => {
       );
     }
     render(<Papan />);
-    expect(document.querySelector('.grup h2')!.textContent).toBe('Orang tua Almarhum');   // bagian pertama yang belum lengkap
+    expect(document.querySelector('.grup h2')!.textContent).toBe('Orang tua almarhum');   // bagian pertama yang belum lengkap
     fireEvent.click(screen.getByRole('button', { name: 'ketuk' }));
-    expect(document.querySelector('.grup h2')!.textContent).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(document.querySelector('.grup h2')!.textContent).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
     const baris = document.getElementById(`baris-${rina}`)!;
     expect(baris.className).toContain('sorot-baris');
     expect(document.activeElement).toBe(baris);
@@ -60,14 +60,27 @@ describe('pohon samping langkah Keluarga (spec kanvas 5.11, 8)', () => {
     expect(container.querySelector('[data-orang="PEWARIS"]')!.className).toContain('simpul-pemilik');
   });
 
-  it('penghubung dan pewaris bukan tombol (tidak ada tombol nonaktif, tidak ada "Ke baris Almarhum")', () => {
+  it('penghubung dan pewaris bukan tombol (tidak ada tombol nonaktif, tidak ada "Ke baris almarhum")', () => {
     const dasar = kasusBaru('L');
     const kasus = { ...dasar, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'PAMAN_KANDUNG') };
     const { container } = render(<PanggungPohon kasus={kasus} saatPilihOrang={() => undefined} />);
     expect(container.querySelector('.node-orang.penghubung')).toBeTruthy();
     expect(container.querySelector('.node-orang.penghubung')!.tagName).toBe('DIV');
     expect(screen.getAllByRole('button').filter(tombol => (tombol as HTMLButtonElement).disabled)).toEqual([]);
-    expect(screen.queryByRole('button', { name: /Ke baris Almarhum/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /Ke baris almarhum/ })).toBeNull();
     expect(container.querySelector('[data-orang="PEWARIS"]')!.tagName).toBe('DIV');
+  });
+});
+
+describe('penanda meninggal dan sebutan simpul penghubung (C5-2, C5-3)', () => {
+  it('penghubung memakai sebutan hubungan dan keterangan "meninggal lebih dulu", bukan pucat atau "Belum bernama"', () => {
+    const dasar = kasusBaru('L');
+    const kasus = { ...dasar, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'PAMAN_KANDUNG') };
+    const { container } = render(<PanggungPohon kasus={kasus} saatPilihOrang={() => undefined} />);
+    const simpul = container.querySelector('.node-orang.penghubung')!;
+    expect(simpul.className).toContain('meninggal');
+    expect(simpul.textContent).toContain('Kakek dari ayah');
+    expect(simpul.textContent).toContain('meninggal sebelum almarhum');
+    expect(simpul.textContent).not.toMatch(/Belum bernama|sudah wafat/);
   });
 });

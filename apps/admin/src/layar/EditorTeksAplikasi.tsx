@@ -44,6 +44,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { buatPencocok, rapikan, type PencocokTeks, type SumberTeks } from '../editor/teksLayar';
 import { usePortal } from '../repo';
 import { pesanGalat } from '../pesanGalat';
+import { contohSisipan, namaSisipan, sisipanBerubah, sisipanDari } from '../editor/penjelasanHasil';
 
 const tanpaAksi = () => {};
 const CSS_KOTAK = `.kotak-sunting{position:absolute;padding:0;border:0;border-radius:3px;background:none;cursor:pointer;
@@ -184,7 +185,7 @@ export function EditorTeksAplikasi() {
   );
 }
 
-function LayarBisaDisunting({ pencocok, aktif, sorot, saatKotak, saatPilih, children }: {
+export function LayarBisaDisunting({ pencocok, aktif, sorot, saatKotak, saatPilih, children }: {
   pencocok: PencocokTeks; aktif: boolean; sorot: string | null; saatKotak: (kunci: string[]) => void;
   saatPilih: (sumber: SumberTeks[], simpul: Text) => void; children: ReactNode;
 }) {
@@ -298,6 +299,12 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
   }
 
   async function simpan() {
+    const { hilang, baru } = sisipanBerubah(keadaan.id, teksId);
+    if (hilang.length || baru.length) {
+      setGalat([hilang.length ? `Bagian yang diisi otomatis hilang: ${hilang.join(', ')}. Tambahkan lagi lewat "Sisipkan".` : '',
+        baru.length ? `Ada bagian isian yang tidak dikenal aplikasi: ${baru.join(', ')}. Hapus kurung kurawalnya.` : ''].filter(Boolean).join(' '));
+      return;
+    }
     setSibuk(true);
     setGalat(null);
     try {
@@ -375,8 +382,19 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
             <span className="text-xs text-muted-foreground">Pratinjau: </span><PratinjauTeks teks={teksId} />
           </div>
         ) : null}
-        {/\{\w+\}/.test(keadaan.id) ? (
-          <p className="text-xs text-muted-foreground">Bagian bertanda kurung kurawal, mis. {'{jumlah}'}, diisi otomatis oleh aplikasi. Biarkan apa adanya.</p>
+        {sisipanDari(keadaan.id).length ? (
+          <div className="grid gap-1 text-xs text-muted-foreground">
+            <p>Bagian berlabel diisi otomatis oleh aplikasi. Biarkan ada di kalimat.</p>
+            {terkunci ? null : (
+              <p className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                Sisipkan:
+                {sisipanDari(keadaan.id).map(kunci => (
+                  <button key={kunci} type="button" className="text-primary underline underline-offset-2"
+                    onClick={() => setTeksId(teks => `${teks}${teks && !/\s$/.test(teks) ? ' ' : ''}{${kunci}}`)}>{namaSisipan(kunci)}</button>
+                ))}
+              </p>
+            )}
+          </div>
         ) : null}
         <Label className="grid gap-1.5">
           Bahasa Arab (opsional)
@@ -400,14 +418,17 @@ export function DialogSunting({ pilihan, data, bacaSaja, layarSekarang, saatTutu
 function teksLokasi(sumber: SumberTeks, layarSekarang: string | undefined): string {
   const lokasi = new Set(lokasiTeks[sumber.kunci] ?? []);
   if (layarSekarang) lokasi.add(layarSekarang);
-  return lokasi.size ? [...lokasi].join(' · ') : `belum diketahui (kelompok ${namaKelompok(sumber)})`;
+  if (lokasi.size) return [...lokasi].join(' · ');
+  return sumber.kunci.startsWith('narasi.') ? 'Penjelasan hasil' : `belum diketahui (kelompok ${namaKelompok(sumber)})`;
 }
 
-/** Teks apa adanya, bagian {sisipan} ditandai sebagai isian otomatis. */
+/** Kalimat dengan nilai contoh (mis. "Ahmad", "1/6"); sisipan tanpa contoh tampil sebagai namanya, rujukan sebagai "rujukan". */
 function PratinjauTeks({ teks }: { teks: string }) {
-  return <>{teks.split(/(\{\w+\})/).map((bagian, i) => (/^\{\w+\}$/.test(bagian)
-    ? <span key={i} className="rounded bg-primary/15 px-1 text-xs" title="Diisi otomatis oleh aplikasi">{bagian.slice(1, -1)}</span>
-    : <span key={i}>{bagian}</span>))}</>;
+  return <>{teks.split(/(\{\w+\})/).map((bagian, i) => {
+    if (!/^\{\w+\}$/.test(bagian)) return <span key={i}>{bagian}</span>;
+    const kunci = bagian.slice(1, -1);
+    return <span key={i} className="rounded bg-primary/15 px-1 text-xs" title="Diisi otomatis oleh aplikasi">{contohSisipan(kunci) ?? namaSisipan(kunci)}</span>;
+  })}</>;
 }
 
 /** Nilai terbaru satu teks di database (draf/ajuan bila ada, selain itu yang terbit), jatuh ke nilai layar; `revisi` =
@@ -428,7 +449,7 @@ function keadaanSumber(sumber: SumberTeks, data: { entri: RingkasanEntri[]; diks
 
 /** Snapshot layar web: yang terbit, ditimpa teks yang sedang disunting (draf/ajuan terakhir) supaya hasil suntingan
  * langsung terlihat di semua tempat. Revisi dikembalikan tidak ditimpakan (belum layak tampil). */
-function timpaBelumTerbit(asal: Snapshot, data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }): Snapshot {
+export function timpaBelumTerbit(asal: Snapshot, data: { entri: RingkasanEntri[]; diksi: RingkasanKunciDiksi[] }): Snapshot {
   const tampil = (status: string) => status === 'draf' || status === 'diajukan' || status === 'disetujui';
   const teks = new Map(data.entri.filter(e => e.revisiTerakhir && tampil(e.revisiTerakhir.status))
     .map(e => [e.slug, e.revisiTerakhir!.isi as IsiTeksEdukasi]));
@@ -447,7 +468,7 @@ function timpaBelumTerbit(asal: Snapshot, data: { entri: RingkasanEntri[]; diksi
   };
 }
 
-function sumberDariSnapshot(): SumberTeks[] {
+export function sumberDariSnapshot(): SumberTeks[] {
   const snapshot = snapshotTerpasang();
   const teks = snapshot.konten.filter(baris => baris.jenis === 'teks_edukasi').map((baris): SumberTeks => {
     const isi = baris.isi as IsiTeksEdukasi;
@@ -458,7 +479,7 @@ function sumberDariSnapshot(): SumberTeks[] {
 }
 
 /** Layar web yang gagal dirender (mis. butuh data yang tidak ada di portal) tidak menjatuhkan seluruh editor. */
-class PenjagaGalat extends Component<{ children: ReactNode }, { galat: string | null }> {
+export class PenjagaGalat extends Component<{ children: ReactNode }, { galat: string | null }> {
   override state = { galat: null as string | null };
   static getDerivedStateFromError(e: unknown) { return { galat: e instanceof Error ? e.message : String(e) }; }
   override render() {

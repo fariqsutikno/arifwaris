@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { kasusBaru, rapikanKeadaan, type Kasus, type Kelompok } from '../kasus';
 import { KanvasKeluarga } from '../layar/keluarga/KanvasKeluarga';
-import { denganBagianTetapTerisi, keluargaBudi, keluargaKarto } from './fixtures/kanvas';
+import { denganBagianTetapTerisi, keluargaBudi, keluargaKarto, tambah } from './fixtures/kanvas';
 
 let terakhir: Kasus;
 function Uji({ awal }: { awal: Kasus }) {
@@ -34,21 +34,28 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     expect(screen.getByRole('group', { name: 'Suami' })).toBeTruthy();
   });
 
-  it('anak: penghitung Laki-laki dan Perempuan; PertanyaanHamil muncul', () => {
+  it('anak: penghitung Laki-laki dan Perempuan; tanpa calon ibu janin tidak ada pertanyaan hamil', () => {
     render(<Uji awal={dijawab(kasusBaru('L'), { PEWARIS: ['pasangan'] })} />);
-    expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(judulAktif()).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
     radio('Ya');
     expect(screen.getByText('Laki-laki')).toBeTruthy();
     expect(screen.getByText('Perempuan')).toBeTruthy();
     klik('Tambah Anak laki-laki');
     expect(screen.getByRole('group', { name: 'Anak laki-laki 1' })).toBeTruthy();
     expect(document.querySelector('[aria-labelledby]')).toBeTruthy();
-    expect(screen.getByText(/hamil|kandungan/i)).toBeTruthy();
+    expect(screen.queryByText(/hamil|kandungan/i)).toBeNull();
+  });
+
+  it('anak: istri sudah punya kartu sendiri, jadi pertanyaan hamil umum tidak muncul di bagian anak (C4-3)', () => {
+    const { kasus } = tambah(kasusBaru('L'), 'PEWARIS', 'ISTRI');
+    render(<Uji awal={dijawab(kasus, { PEWARIS: ['pasangan'] })} />);
+    radio('Ya');
+    expect(screen.queryByText(/hamil/i)).toBeNull();
   });
 
   it('orang tua: baris tetap Ayah dan Ibu tanpa Ya/Tidak; bagian dijawab setelah keduanya punya keadaan', () => {
     render(<Uji awal={dijawab(kasusBaru('L'), { PEWARIS: ['pasangan', 'anak'] })} />);
-    expect(judulAktif()).toBe('Orang tua Almarhum');
+    expect(judulAktif()).toBe('Orang tua almarhum');
     expect(screen.queryByRole('radio', { name: 'Tidak' })).toBeNull();
     expect(screen.getByRole('group', { name: 'Ayah' })).toBeTruthy();
     expect(screen.getByRole('group', { name: 'Ibu' })).toBeTruthy();
@@ -78,20 +85,20 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
   const keAnakPewarisKarto = () => {
     const { kasus, ...isi } = keluargaKarto();
     render(<Uji awal={dijawab(kasus, { PEWARIS: ['pasangan', 'anak'] })} />);
-    klik('Ubah Anak Almarhum');
+    klik('Ubah Anak almarhum');
     return isi;
   };
 
   it('saudara tidak dirender bila ada anak laki-laki; Details "Kenapa kakak atau adik … tidak ditanyakan?" ada', () => {
     keAnakPewarisKarto();
-    expect(judulAktif()).toBe('Almarhum punya anak? Hitung juga yang sudah wafat.');
+    expect(judulAktif()).toBe('Almarhum punya anak, termasuk yang sudah meninggal?');
     expect(document.querySelector('.langkah-bagian')!.textContent).not.toContain('Kakak atau adik');
-    expect(screen.getByText('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).toBeTruthy();
+    expect(screen.getByText('Kenapa kakak atau adik almarhum tidak ditanyakan?')).toBeTruthy();
   });
 
   it('Tetap isi kerabat lain menambahkan bagian saudara', () => {
     keAnakPewarisKarto();
-    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
+    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
     expect(document.querySelector('.langkah-bagian')!.textContent).toContain('Kakak atau adik');
   });
 
@@ -100,7 +107,7 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
     const judul = 'Kenapa anak-anak Slamet tidak ditanyakan?';
     fireEvent.click(within(detailsDengan(judul)).getByRole('button', { name: 'Tetap isi kerabat lain' }));
     expect(slamet).toBeTruthy();
-    expect(document.querySelector('.langkah-bagian')!.textContent).toContain('Anak Slamet');
+    expect(document.querySelector('.langkah-bagian')!.textContent).toContain('Anak dari Slamet');
   });
 
   it('anak bersama: Ya semuanya mencatat dijawab; Tidak semua menampilkan centang anak', () => {
@@ -118,10 +125,10 @@ describe('isi bagian keluarga (spec kanvas 5.2)', () => {
 
   it('Tambah dengan nama hubungan membuka DialogTambahHubungan dan menambah orang bukan ahli waris tanpa mengubah bagian yang sudah lengkap', () => {
     keAnakPewarisKarto();
-    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
+    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tetap isi kerabat lain' }));
     const lengkapSebelum = () => [...document.querySelectorAll('.langkah-bagian li.selesai')].map(li => li.textContent);
     const sebelum = lengkapSebelum();
-    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik Almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tambah dengan nama hubungan' }));
+    fireEvent.click(within(detailsDengan('Kenapa kakak atau adik almarhum tidak ditanyakan?')).getByRole('button', { name: 'Tambah dengan nama hubungan' }));
     fireEvent.click(screen.getByRole('button', { name: 'Mertua' }));
     const dialog = screen.getByRole('alertdialog');
     fireEvent.change(within(dialog).getByRole('textbox'), { target: { value: 'Pak Haji' } });

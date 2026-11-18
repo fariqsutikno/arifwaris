@@ -39,7 +39,7 @@ const status = () => document.querySelector('.bar-bawah [role=status]')!.textCon
 describe('Wizard memakai kanvas untuk kasus nyata (spec kanvas 5, K1)', () => {
   it('nyata di langkah 3 merender kanvas (kartu Pasangan), bukan daftar jumlah', () => {
     render(<Papan kasus={denganHarta(kasusBaru('L'))} />);
-    expect(screen.getByRole('heading', { level: 2, name: 'Waktu Almarhum wafat, apakah beliau punya istri?' })).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 2, name: 'Waktu almarhum meninggal, apakah beliau punya istri?' })).toBeTruthy();
     expect(screen.queryByText(t('hitung.keluarga_inti'))).toBeNull();
     expect(status()).toMatch(/^Keluarga: \d+ bagian lagi\.$/);
   });
@@ -53,9 +53,9 @@ describe('Wizard memakai kanvas untuk kasus nyata (spec kanvas 5, K1)', () => {
   it('Lanjut saat ada bagian kurang: tidak pindah, status menyebut sisa bagian, baris yang kurang ditandai dan difokuskan', () => {
     const pasangan = daftarBagian(kasusBaru('L'))[0]!;
     render(<Papan kasus={denganHarta(tambahBaris(kasusBaru('L'), pasangan, 'ISTRI'))} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Ke Periksa ›' }));
+    fireEvent.click(screen.getByRole('button', { name: /Lanjut: Periksa/ }));
     expect(status()).toMatch(/^Masih \d+ bagian, lanjutkan dari Istri\.$/);
-    expect(document.querySelector('.grup h2')!.textContent).toBe('Waktu Almarhum wafat, apakah beliau punya istri?');
+    expect(document.querySelector('.grup h2')!.textContent).toBe('Waktu almarhum meninggal, apakah beliau punya istri?');
     const baris = document.querySelector('[data-baris-orang]') as HTMLElement;
     expect(baris.getAttribute('aria-invalid')).toBe('true');
     expect(document.activeElement).toBe(baris);

@@ -9,13 +9,22 @@ import { DialogKonfirmasi } from '../../ui/Dialog';
 import { IsianUang } from './IsianUang';
 import { t } from '../../terjemah';
 
-interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void }
+interface Props { kasus: Kasus; ubah: (fungsiUbah: (kasus: Kasus) => Kasus) => void; tandaiKurang?: boolean }
 
 const labelTambahCepat = (nilai: bigint) => t('hitung.jumlah_jt', { jumlah: nilai / 1_000_000n });
 
-export function LangkahHarta({ kasus, ubah }: Props) {
+export function LangkahHarta({ kasus, ubah, tandaiKurang = false }: Props) {
   const [cara, setCara] = useState<'total' | 'rinci'>(kasus.rincianHarta ? 'rinci' : 'total');
   const [tanyaKosongkan, setTanyaKosongkan] = useState(false);
+  const [ketukan, setKetukan] = useState<{ kali: number; tambahan: bigint; total: bigint }>();
+  const galatTotal = tandaiKurang && kasus.tirkah.kotor <= 0n ? t('hitung.harta_wajib_isi') : undefined;
+  // Ketikan atau kosongkan membuat baris "sekarang ..." basi, jadi dibuang.
+  const ketikTotal = (kotor: bigint) => { setKetukan(undefined); aturTotal(kotor); };
+  const tambahCepat = (nilai: bigint) => {
+    const total = kasus.tirkah.kotor + nilai;
+    setKetukan(sebelumnya => ({ kali: (sebelumnya?.kali ?? 0) + 1, tambahan: nilai, total }));
+    aturTotal(total);
+  };
   const aturTotal = (kotor: bigint) => ubah(k => {
     const { rincianHarta: _rincian, ...tanpaRincian } = k;
     return { ...tanpaRincian, tirkah: { ...k.tirkah, kotor } };
@@ -40,19 +49,21 @@ export function LangkahHarta({ kasus, ubah }: Props) {
 
         {cara === 'total' ? (
           <div className="tumpuk-rapat">
-            <IsianUang id="harta-total" label={t('hitung.total_harta_peninggalan')} besar nilai={kasus.tirkah.kotor} saatUbah={aturTotal}
-              info={TEKS_HARTA.presisi} />
+            <IsianUang id="harta-total" label={t('hitung.total_harta_peninggalan')} besar nilai={kasus.tirkah.kotor} saatUbah={ketikTotal}
+              info={TEKS_HARTA.presisi} galat={galatTotal} ketukan={ketukan && { kali: ketukan.kali, label: labelTambahCepat(ketukan.tambahan) }} />
             <div className="tambah-cepat" aria-label={t('hitung.tambah_cepat')}>
               <span className="caption-isian">{t('hitung.tambah_cepat')}</span>
               {TEKS_HARTA.tambahCepat.map(nilai => (
-                <button key={String(nilai)} type="button" className="chip-kecil" onClick={() => aturTotal(kasus.tirkah.kotor + nilai)}>
+                <button key={String(nilai)} type="button" className="chip-kecil" onClick={() => tambahCepat(nilai)}>
                   {labelTambahCepat(nilai)}
                 </button>
               ))}
               {kasus.tirkah.kotor > 0n && <button type="button" className="chip-kecil hapus" onClick={() => setTanyaKosongkan(true)}>{t('hitung.kosongkan')}</button>}
+              {ketukan && <p className="caption-isian baris-ketukan" role="status" aria-live="polite">
+                {t('hitung.tambah_cepat_info', { tambahan: t('hitung.tambahan_jt', { jumlah: ketukan.tambahan / 1_000_000n }), total: formatRupiah(ketukan.total) })}</p>}
               {tanyaKosongkan && (
                 <DialogKonfirmasi judul={t('hitung.kosongkan_total_harta')} labelLanjut={t('hitung.kosongkan')} saatBatal={() => setTanyaKosongkan(false)}
-                  saatLanjut={() => { setTanyaKosongkan(false); aturTotal(0n); }}>
+                  saatLanjut={() => { setTanyaKosongkan(false); ketikTotal(0n); }}>
                   <p>{t('hitung.total_jumlah_akan_dihapus_dan_perlu', { jumlah: formatRupiah(kasus.tirkah.kotor) })}</p>
                 </DialogKonfirmasi>
               )}
@@ -60,8 +71,8 @@ export function LangkahHarta({ kasus, ubah }: Props) {
           </div>
         ) : (
           <div className="rincian-harta">
-            {KATEGORI_HARTA.map(kategori => (
-              <IsianUang key={kategori} id={`harta-${kategori}`} label={KATEGORI_HARTA_TEKS[kategori].label}
+            {KATEGORI_HARTA.map((kategori, indeks) => (
+              <IsianUang key={kategori} galat={indeks === 0 ? galatTotal : undefined} id={`harta-${kategori}`} label={KATEGORI_HARTA_TEKS[kategori].label}
                 nilai={kasus.rincianHarta?.[kategori] ?? 0n} saatUbah={jumlah => aturRincian(kategori, jumlah)}
                 info={KATEGORI_HARTA_TEKS[kategori].contoh} />
             ))}

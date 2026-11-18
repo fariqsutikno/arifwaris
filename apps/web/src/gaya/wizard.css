@@ -80,6 +80,9 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 /* pertanyaan pendamping di dalam langkah (kewajiban, kondisi khusus): setingkat judul bagian, bukan label kecil */
 .lembar-wizard h2.judul-bagian-kecil{margin:10px 0 0;color:var(--ink);font:600 20px/1.25 var(--font-display);letter-spacing:-.01em;text-transform:none}
 
+/* pertanyaan pendamping bergaya sama dengan pertanyaan lain di langkah (17px semibold) */
+.pertanyaan-bagian{margin:10px 0 0;color:var(--ink);font:600 17px/1.35 var(--font-sans);letter-spacing:0;text-transform:none}
+
 /* pita bagian di kartu Pembagian: seluruh harta sesuai skala, menunjuk ruas menyorot orangnya */
 .pita-hasil{display:flex;gap:3px;height:16px;margin:4px 0 14px}
 .pita-hasil .ruas{display:block;min-width:6px;height:100%;border-radius:var(--radius-pill);cursor:pointer;transform-origin:left;animation:isi-bar .9s .1s cubic-bezier(.3,.8,.2,1) both;transition:opacity .2s,transform .2s}
@@ -140,8 +143,7 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .tautan-teks{min-height:44px;padding:0 2px;border:0;background:none;color:var(--on-fill);font:600 14px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;text-align:start}
 .pilihan-dialog{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .label-pilihan{flex-basis:100%;font:700 13px var(--font-sans)}
-.pilih-dialog{min-height:40px;padding:0 14px;border:var(--border-w) solid var(--outline);border-radius:999px;background:var(--surface-raised);color:var(--on-fill);font:600 14px var(--font-sans);cursor:pointer}
-.pilih-dialog.terpilih{background:var(--on-fill);color:var(--surface-raised)}
+.pilih-dialog.terpilih{background:var(--on-fill);color:var(--surface-raised);font-weight:600}
 .tautan-hubungan{margin-top:10px}
 .tautan-hubungan .tautan-teks{color:#fff}
 .daftar-hubungan{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 12px}
@@ -156,3 +158,18 @@ body.layar-hasil .halaman-hasil>.kaki-hasil{padding:14px var(--sisi) 0}
 .panggung-pohon .pratinjau-isi .pohon-baris{row-gap:14px}
 .panggung-pohon .pratinjau-isi .node-orang{gap:2px 6px;padding:7px 8px}
 .panggung-pohon .pratinjau-isi .node-orang b{font-size:13px}
+
+/* Pertanyaan di langkah Almarhum: satu ukuran untuk semua (nama, tahun, sudah dibagi), karena tidak ada yang lebih mendesak. */
+.isian-nama-almarhum>span,.isian-nama-almarhum~.isian-tahun>span,.lembar-wizard #pintu-tanya{font:600 17px/1.35 var(--font-sans);letter-spacing:0;text-transform:none;color:var(--ink);margin:0}
+.lembar-wizard #pintu-tanya{margin-top:8px}
+
+/* Pertanyaan pintu: ubin Logivo (sudut besar, bayangan lembut), terpilih = bergaris ink. */
+.daftar-pintu{display:grid;gap:12px}
+.pilihan-pintu{display:flex;align-items:center;gap:14px;padding:16px 18px;border:var(--border-w) solid transparent;border-radius:var(--radius-sm);background:var(--surface-raised);box-shadow:var(--shadow-pop-sm);color:var(--ink);font:600 17px/1.3 var(--font-sans);text-align:start;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}
+.pilihan-pintu:hover{transform:translateY(-2px);box-shadow:var(--shadow-pop)}
+.pilihan-pintu i{flex:none;width:22px;height:22px;border:2px solid var(--ink-muted);border-radius:50%;transition:border-color .15s,background .15s}
+.pilihan-pintu[aria-checked=true]{border-color:var(--ink)}
+.pilihan-pintu[aria-checked=true] i{border-color:var(--ink);background:radial-gradient(var(--ink) 45%,transparent 50%)}
+.pilihan-pintu .teks-pintu{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pilihan-pintu small{color:var(--ink-muted);font:500 13px/1.4 var(--font-sans)}
+.pilihan-pintu:focus-visible{outline:3px solid var(--focus);outline-offset:2px}

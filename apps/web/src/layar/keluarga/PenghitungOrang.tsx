@@ -7,8 +7,8 @@ import type { KunciAhliWaris } from '@waris/engine';
 import { daftarInduk, INDUK_BARU_WAFAT, jenisDari } from '../../checklist';
 import type { Kasus } from '../../kasus';
 import { LABEL_SEHARI, sebutAlmarhum } from '../../konten/ahliWaris';
-import { kurangiBarisKosong, orangDenganKunci, tambahBaris } from '../../isianBagian';
-import type { Bagian } from '../../kelompok';
+import { kurangiBarisKosong, tambahBaris } from '../../isianBagian';
+import { orangDiBaris, type Bagian } from '../../kelompok';
 import { t } from '../../terjemah';
 import { PilihInduk } from './PilihInduk';
 
@@ -21,7 +21,7 @@ export function PenghitungOrang({ kasus, bagian, kunci, label, ubah }: Props) {
   // Label tampil boleh berupa pertanyaan (Berapa istri?); tombolnya tetap menyebut perannya.
   const peran = sebutAlmarhum(LABEL_SEHARI[kunci] ?? jenis?.label ?? kunci, kasus.graf.orang[bagian.milik]?.jenisKelamin ?? 'L');
   const nama = label ?? peran;
-  const jumlah = orangDenganKunci(kasus, bagian.milik, kunci).length;
+  const jumlah = orangDiBaris(kasus, bagian, kunci).length;
   const calonInduk = jenis?.kunciInduk ? daftarInduk(kasus.graf, bagian.milik, jenis.kunciInduk) : [];
   const indukTerpilih = idIndukPilihan === INDUK_BARU_WAFAT || (idIndukPilihan && calonInduk.includes(idIndukPilihan))
     ? idIndukPilihan : calonInduk[0] ?? INDUK_BARU_WAFAT;

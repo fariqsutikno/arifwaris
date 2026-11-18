@@ -5,7 +5,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
-import { hitungIsian } from '../checklist';
+import { hitungIsian, peranDariMayit } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
 import { barisBerlaku } from '../konten/ahwal';
 import { ahwalUntuk } from '../konten/sumber';
@@ -59,7 +59,7 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
         onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
         <header className={`kepala-modal ${!halang && kelompok ? `g-${kelompok}` : 'netral'}`}>
           <div>
-            <p className="peran-modal">{id === graf.idPewaris ? t('hitung.almarhum') : halang && !sedangMenebak ? t('hitung.terhalang_mahjub') : kelompok ? TEKS_KELOMPOK()[kelompok] : t('hitung.kerabat')}</p>
+            <p className="peran-modal">{id === graf.idPewaris ? t('hitung.almarhum') : halang && !sedangMenebak ? t('hitung.terhalang_mahjub') : kelompok ? TEKS_KELOMPOK()[kelompok] : peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat')}</p>
             <h2 id="judul-modal">{nama}</h2>
           </div>
           <button type="button" className="tombol-ikon" data-tutup aria-label={t('umum.tutup')} onClick={saatTutup}>✕</button>

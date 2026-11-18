@@ -14,7 +14,7 @@ export function NamaKasus({ kasus, ubah }: Props) {
   });
   return (
     <label className="isian isian-kecil nama-kasus">
-      <span className="judul-bagian-kecil">{t('hitung.nama_kasus_tanya')}</span>
+      <span className="judul-bagian-kecil">{t('hitung.nama_kasus_tanya')} <span className="opsional">{t('hitung.boleh_dikosongkan')}</span></span>
       <span className="caption-isian">{t('hitung.nama_kasus_ket')}</span>
       <input value={kasus.nama ?? ''} maxLength={BATAS_JUDUL} autoComplete="off" onChange={event => simpanNama(event.target.value)}
         placeholder={t('hitung.nama_kasus_contoh')} />

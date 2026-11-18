@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pratinjau tabel faraidh</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- Pratinjau tiga arah tabel (A, B, C) untuk dipilih pemilik. Data: kasus Biasa, tahap Tashih sedang aktif. Angka dari engine. -->
+<style>
+:root{--ink:#14181a;--muted:#5a645f;--line:#e3e9e0;--orange:#f2682a;--hijau:#1f6f5c;--font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:#e6efe3;color:var(--ink);font:400 15px/1.5 var(--font);padding:20px 16px 40px}
+h1{font-size:20px;margin:0 0 4px}h2{font-size:17px;margin:0}p{margin:0}
+.atas{max-width:1320px;margin:0 auto 16px}.atas p{color:#2c4136;font-size:14px}
+.deret{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.opsi{background:#fff;border-radius:22px;box-shadow:var(--sh);padding:16px;min-width:0}
+.opsi > header{display:flex;gap:10px;align-items:baseline;margin-bottom:4px}
+.opsi > header b{width:28px;height:28px;border-radius:50%;background:#0e0f10;color:#fff;display:grid;place-items:center;font-size:14px;flex:none}
+.opsi > p{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.wadah{overflow-x:auto}
+.inisial{width:28px;height:28px;border-radius:50%;display:inline-grid;place-items:center;font:700 12px var(--font);color:#14181a;flex:none}
+.nama{display:flex;gap:8px;align-items:center;white-space:nowrap}
+.nama small{display:block;color:var(--muted);font-size:11.5px;line-height:1.1}
+
+/* A: tabel kitab dirapikan */
+table.a{border-collapse:separate;border-spacing:0;width:100%;font-variant-numeric:tabular-nums}
+.a th{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;padding:6px 10px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+.a th big{display:block;font-size:20px;color:var(--ink);letter-spacing:0;text-transform:none;line-height:1.1}
+.a th.kini{color:var(--orange);box-shadow:inset 0 -3px 0 var(--orange)}.a th.kini big{color:var(--orange)}
+.a td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--line);font-size:16px;font-weight:600;white-space:nowrap}
+.a td:first-child,.a th:first-child{text-align:start}
+.a td.lama{color:#8c9690;font-weight:500}
+.a td.kini{background:#fff4ec;color:var(--ink)}
+.a td.rp{text-align:right;font-size:14.5px}
+.a td.gabung{position:relative;color:#8c9690;font-weight:500}
+.a td.gabung::before{content:"";position:absolute;left:6px;top:10px;bottom:10px;width:6px;border:2px solid #cfd8cc;border-right:0;border-radius:4px 0 0 4px}
+.a td.gabung small{display:block;font-size:11px;font-weight:500}
+.a tr.halang td{color:#a7b0ab;font-weight:400}
+.a tr.halang .nm{text-decoration:line-through;text-decoration-color:#c3cbc6}
+.a tfoot td{border-bottom:0;font-size:14px;color:var(--muted)}
+
+/* B: batang proporsi */
+.batang{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.batang i{display:block;height:8px;border-radius:4px;min-width:3px}
+.batang .rel{width:70px;background:#eef2ec;border-radius:4px;overflow:hidden;flex:none}
+
+/* C: kartu per orang */
+.kartu-orang{display:flex;flex-direction:column;gap:10px}
+.ko{border:1px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.ko.halang{opacity:.55}
+.ko .atas-ko{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ko .rp{font-weight:700;font-variant-numeric:tabular-nums}
+.ko .jejak{display:flex;gap:6px;flex-wrap:wrap;font-size:12.5px;font-variant-numeric:tabular-nums}
+.ko .jejak span{background:#f1f5ed;border-radius:999px;padding:2px 9px;color:var(--muted)}
+.ko .jejak span.kini{background:#fff1e7;color:var(--orange);font-weight:600}
+.ko .jejak span b{color:var(--ink)}
+.balik{font:600 13.5px var(--font);background:none;border:0;text-decoration:underline;text-underline-offset:3px;padding:0;cursor:pointer;margin-top:4px}
+.untung{margin-top:14px;font-size:13px;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px}
+.untung b{color:var(--ink)}
+@media (max-width:1000px){.deret{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="atas">
+  <h1>Pratinjau tabel faraidh</h1>
+  <p>Kasus Biasa, tahap Tashih sedang aktif. Warna tiap orang sama dengan kotak harta. Pilih satu, atau gabungan.</p>
+</div>
+<div class="deret">
+  <section class="opsi"><header><b>A</b><h2>Tabel kitab dirapikan</h2></header><p>Bentuk tetap seperti kitab; angka besar, kolom aktif menonjol, kolom lama meredup.</p><div class="wadah" id="opsiA"></div>
+    <p class="untung"><b>Kuat:</b> mudah dicocokkan dengan ustadz. <b>Lemah:</b> proporsi bagian tidak langsung terlihat.</p></section>
+  <section class="opsi"><header><b>B</b><h2>A + batang proporsi</h2></header><p>Sama dengan A, ditambah batang kecil berwarna di kolom aktif: sekilas terlihat siapa dapat paling banyak.</p><div class="wadah" id="opsiB"></div>
+    <p class="untung"><b>Kuat:</b> tersambung dengan kotak harta. <b>Lemah:</b> sedikit lebih lebar di HP.</p></section>
+  <section class="opsi"><header><b>C</b><h2>Kartu per orang</h2></header><p>Tiap orang satu kartu berisi jejak angkanya per tahap. Tautan untuk membalik ke tabel kitab.</p><div id="opsiC"></div>
+    <p class="untung"><b>Kuat:</b> paling ramah HP. <b>Lemah:</b> sulit membandingkan satu kolom antar orang.</p></section>
+</div>
+<script>
+const rupiah = n => 'Rp ' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const bagi = (s, d) => 300000000n * BigInt(s) / BigInt(d);
+// Ringkas untuk pratinjau sempit; di aplikasi rupiah penuh.
+const rpRingkas = n => `Rp ${(Number(n / 100000n) / 10).toLocaleString('id-ID')} jt`;
+const ORANG = [
+  { id: 'Aminah', peran: 'istri', warna: '#f6a77f', fardh: '1/8', asal: 3, tashih: 9 },
+  { id: 'Fatimah', peran: 'ibu', warna: '#f2c46d', fardh: '1/6', asal: 4, tashih: 12 },
+  { id: 'Budi', peran: 'anak', warna: '#3f9478', fardh: 'sisa', asal: 17, tashih: 34, gabung: 2 },
+  { id: 'Siti', peran: 'anak', warna: '#a9dcc6', fardh: null, asal: null, tashih: 17 },
+  { id: 'Hasan', peran: 'kakak', warna: '#d9dfd6', halang: 'terhalang oleh Budi' },
+];
+const TASHIH = 72, MAKS = Math.max(...ORANG.map(o => o.tashih ?? 0));
+const nama = o => `<span class="nama"><span class="inisial" style="background:${o.warna}">${o.id[0]}</span><span><span class="nm">${o.id}</span><small>${o.halang ?? o.peran}</small></span></span>`;
+const batang = o => o.tashih ? `<span class="batang">${o.tashih}<span class="rel"><i style="width:${o.tashih / MAKS * 100}%;background:${o.warna}"></i></span></span>` : '–';
+
+function tabel(denganBatang) {
+  const kepala = `<tr><th>Ahli waris</th><th>Fardh</th><th>Asal<big>24</big></th><th class="kini">Tashih<big>72</big></th><th>Rupiah</th></tr>`;
+  const baris = ORANG.map(o => {
+    const sel = [];
+    if (o.halang) sel.push(`<td>–</td><td>–</td><td>–</td><td class="rp">–</td>`);
+    else {
+      if (o.gabung) sel.push(`<td class="gabung" rowspan="2">${o.fardh}<small>bersama</small></td><td class="gabung" rowspan="2">${o.asal}<small>bersama</small></td>`);
+      else if (o.fardh) sel.push(`<td class="lama">${o.fardh}</td><td class="lama">${o.asal}</td>`);
+      sel.push(`<td class="kini">${denganBatang ? batang(o) : o.tashih}</td><td class="rp lama">${rpRingkas(bagi(o.tashih, TASHIH))}</td>`);
+    }
+    return `<tr class="${o.halang ? 'halang' : ''}"><td>${nama(o)}</td>${sel.join('')}</tr>`;
+  }).join('');
+  return `<table class="a"><thead>${kepala}</thead><tbody>${baris}</tbody><tfoot><tr><td>Jumlah</td><td></td><td>24</td><td>72</td><td class="rp">${rpRingkas(ORANG.reduce((a, o) => a + (o.tashih ? bagi(o.tashih, TASHIH) : 0n), 0n))}</td></tr></tfoot></table>`;
+}
+
+function kartu() {
+  return `<div class="kartu-orang">${ORANG.map(o => `<div class="ko ${o.halang ? 'halang' : ''}"><div class="atas-ko">${nama(o)}<span class="rp">${o.tashih ? rupiah(bagi(o.tashih, TASHIH)) : '–'}</span></div>
+    ${o.halang ? '' : `<div class="jejak"><span>Fardh <b>${o.fardh ?? 'sisa'}</b></span><span>Asal <b>${o.asal ?? '17 bersama Budi'}</b></span><span class="kini">Tashih <b>${o.tashih}</b> dari 72</span></div>
+    <span class="batang" style="justify-content:flex-start"><span class="rel" style="width:100%"><i style="width:${o.tashih / TASHIH * 100}%;background:${o.warna}"></i></span></span>`}</div>`).join('')}</div>
+    <button class="balik">Lihat sebagai tabel kitab</button>`;
+}
+
+document.getElementById('opsiA').innerHTML = tabel(false);
+document.getElementById('opsiB').innerHTML = tabel(true);
+document.getElementById('opsiC').innerHTML = kartu();
+</script>
+</body>
+</html>
