@@ -24822,6 +24822,27 @@
    "id": "harta = {jumlah} kotak",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_label",
+   "halaman": "hitung",
+   "id": "Kolom",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_hitungan",
+   "halaman": "hitung",
+   "id": "Hitungan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_petunjuk",
+   "halaman": "hitung",
+   "id": "Ketuk kepala kolom untuk melihat hitungannya.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
