@@ -158,7 +158,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | 'pindah' | null>(null);
   const [konfirmasiBelajar, setKonfirmasiBelajar] = useState(false);
   const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
-  const [sembunyiNominal, setSembunyiNominal] = useState(false);
+  const [sembunyiManual, setSembunyiManual] = useState(false);
+  // Susunan cepat belum punya harta: rupiah tersembunyi sampai "Ubah harta" diisi, jadi tidak tampil "Rp 0".
+  const sembunyiNominal = sembunyiManual || kasus.tirkah.kotor <= 0n;
+  const setSembunyiNominal = setSembunyiManual;
   const [namaTerbuka, setNamaTerbuka] = useState(false);
   const [pengaturan, setPengaturan] = useState<PengaturanTampil>({ bentuk: 'sederhana' });
   // HP: pohon dan tabel tidak muat berdampingan, jadi tampil satu per satu lewat sakelar (CSS menyembunyikan sakelar di laptop).

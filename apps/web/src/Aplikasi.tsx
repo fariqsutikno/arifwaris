@@ -171,7 +171,12 @@ export function Aplikasi() {
     if (entri) bukaRiwayat(entri);
     else bukaDiHitung(kasusLama, { jenis: 'sendiri' });
   };
-  const mulaiDari = (kasusBaru: Kasus) => bukaDiHitung(kasusBaru, { jenis: 'sendiri' });
+  // Susunan cepat hanya mengisi ahli waris: langsung ke Hasil (saham); harta diisi lewat "Ubah harta" di sana.
+  const mulaiDari = (kasusBaru: Kasus) => {
+    kirim({ jenis: 'MUAT', kasus: kasusBaru });
+    setSumberSesi({ jenis: 'sendiri' });
+    window.location.hash = TAUTAN_KALKULATOR;
+  };
   // Menu Hitung selalu membuka awal Hitung (skenario baru / lanjut / impor); kasus yang ada tetap dimuat.
   const keAwalHitung = () => kirim({ jenis: 'KE_LAYAR', layar: 'awal' });
   const kerjakanSoal = (soal: SoalHitung) => {
