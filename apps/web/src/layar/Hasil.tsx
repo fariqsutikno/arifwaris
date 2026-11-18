@@ -208,6 +208,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
   const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
+    try { return susunSemuaLinimasa(); } catch { return { linimasa: null, babakLinimasa: null }; } // gagal menyusun = pakai daftar lama, layar Hasil tetap hidup
+    function susunSemuaLinimasa(): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } {
     if (sedangMenebak || adaDzawilArham) return { linimasa: null, babakLinimasa: null };
     if (hasilBiasa) return { linimasa: susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: [{ hasil: hasilBiasa, ringkasan }] };
     if (hasilMunasakhat) {
@@ -217,13 +219,15 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       };
     }
     // Taqdir/menunggu dan gharqa tidak punya tabel pipeline: tanpa babak.
-    if ((tampil.jenis === 'taqdir' || tampil.jenis === 'menunggu') && tampil.hasil.status === 'OK') {
+    // 'menunggu' belum membagi apa pun (layar Hasil menyatakan itu), jadi tidak diceritakan sebagai "dibagi sekarang".
+    if (tampil.jenis === 'taqdir' && tampil.hasil.status === 'OK') {
       return { linimasa: susunLinimasaTaqdir(tampil.hasil, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: [] };
     }
     if (tampil.jenis === 'gharqa' && (tampil.hasil.status === 'OK' || tampil.hasil.status === 'MAUQUF') && kasus.gharqa) {
       return { linimasa: susunLinimasaGharqa(tampil.hasil, kasus.graf, kasus.gharqa.keadaan, { kamus: kamusNarasi }), babakLinimasa: [] };
     }
     return { linimasa: null, babakLinimasa: null };
+    }
   }, [tampil, hasilBiasa, hasilMunasakhat, kasus.gharqa, sedangMenebak, adaDzawilArham, kasus.graf, ringkasan]);
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 

@@ -1767,4 +1767,4 @@ table.faraidh.ringkas{min-width:0}
 .dunia b{display:block;margin-bottom:6px}
 .batang-dunia{display:flex;gap:1px;height:14px;border-radius:4px;overflow:hidden;background:var(--surface)}
 .batang-dunia i{display:block}
-.batang-dunia i.ditahan,.kt .ditahan,.kt.ditahan{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 5px,transparent 5px 10px)}
+.batang-dunia i.ditahan,.kt .ditahan,.kt.ditahan,.ket-kotak i.ditahan{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 5px,transparent 5px 10px)}

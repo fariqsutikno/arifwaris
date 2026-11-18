@@ -5,7 +5,7 @@ import type { IdOrang } from '@waris/engine';
 import type { BarisHarta, Visual } from '@waris/explain';
 import { formatRupiah } from '../format';
 import type { RingkasanHasil } from './ringkasan';
-import { warnaOrang } from './warnaOrang';
+import { warnaPeraga } from './warnaOrang';
 import { angka, t } from '../terjemah';
 
 /** Riset 29e: kotak dibelah dengan garis hanya sampai sebanyak ini; lebih dari itu cukup label "tiap kotak = n potong". */
@@ -44,15 +44,15 @@ export function KotakHarta({ visual, ringkasan, sebutan }: { visual: VisualKotak
       <div className="grid-kotak" style={{ gridTemplateColumns: `repeat(${Math.min(jumlah, 12)}, minmax(0, 1fr))` }}>
         {kotak.map((isi, urut) => (
           <div key={urut} className={['kt', bergaris && 'potong', urut >= jumlah - luar && luar > 0 && 'luar', isi[0] === 'ditahan' && 'ditahan'].filter(Boolean).join(' ')}
-            style={bergaris ? undefined : { background: warnaOrang(ringkasan, isi[0] ?? '') }}>
-            {bergaris && isi.map((id, bagian) => <span key={bagian} style={{ background: warnaOrang(ringkasan, id) }} />)}
+            style={bergaris ? undefined : { background: warnaPeraga(ringkasan, isi[0] ?? '', nama(isi[0] ?? '')) }}>
+            {bergaris && isi.map((id, bagian) => <span key={bagian} className={id === 'ditahan' ? 'ditahan' : undefined} style={{ background: warnaPeraga(ringkasan, id, nama(id)) }} />)}
           </div>
         ))}
       </div>
       <p className="ket-kotak">
         {visual.isi.map(isi => (
           <span key={isi.kelompok} data-orang={isi.anggota.join(' ')}>
-            <i style={{ background: warnaOrang(ringkasan, isi.anggota[0]!) }} />
+            <i className={isi.anggota[0] === 'ditahan' ? 'ditahan' : undefined} style={{ background: warnaPeraga(ringkasan, isi.anggota[0]!, nama(isi.anggota[0]!)) }} />
             {t('langkah.isi_kotak', { nama: isi.anggota.map(nama).join(' + '), jumlah: angka(String(isi.jumlah)) })}
           </span>
         ))}

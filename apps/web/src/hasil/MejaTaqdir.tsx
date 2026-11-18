@@ -3,7 +3,7 @@
 
 import type { Visual } from '@waris/explain';
 import type { RingkasanHasil } from './ringkasan';
-import { warnaOrang } from './warnaOrang';
+import { warnaPeraga } from './warnaOrang';
 import { angka, t } from '../terjemah';
 
 type VisualMeja = Extract<Visual, { jenis: 'meja' }>;
@@ -20,7 +20,7 @@ export function MejaTaqdir({ visual, ringkasan, sebutan }: { visual: VisualMeja;
             {dunia.isi.map(isi => (
               <i key={isi.kelompok} data-orang={isi.anggota.join(' ')} title={nama(isi.anggota[0]!)}
                 className={isi.kelompok === 'ditahan' ? 'ditahan' : undefined}
-                style={{ flex: Number(isi.jumlah) / jamiah, background: warnaOrang(ringkasan, isi.anggota[0]!) }} />
+                style={{ flex: Number(isi.jumlah) / jamiah, background: warnaPeraga(ringkasan, isi.anggota[0]!, nama(isi.anggota[0]!)) }} />
             ))}
           </div>
         </div>

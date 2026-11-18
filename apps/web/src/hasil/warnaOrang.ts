@@ -23,3 +23,9 @@ export function warnaOrang(ringkasan: RingkasanHasil, id: IdOrang): string {
 /** Di luar layar hasil (belum ada ringkasan): warna tetap per nama, FNV-1a supaya nama mirip tetap berbeda. */
 const acak = (teks: string) => [...teks].reduce((nilai, huruf) => Math.imul(nilai ^ huruf.codePointAt(0)!, 16777619) >>> 0, 2166136261);
 export const warnaDariNama = (nama: string): string => PALET_ORANG[(acak(nama.trim()) >>> 13) % PALET_ORANG.length]!;
+
+/** Peraga langkah menampilkan juga orang yang bukan penerima (janin, hilang, mitra kelas D): warna dari nama, kecuali bagian ditahan (netral). */
+export function warnaPeraga(ringkasan: RingkasanHasil, id: IdOrang, nama: string): string {
+  const warna = warnaOrang(ringkasan, id);
+  return warna === WARNA_NETRAL && id !== 'ditahan' && !id.startsWith('sisaKeluar:') ? warnaDariNama(nama) : warna;
+}
