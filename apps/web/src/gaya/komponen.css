@@ -1453,7 +1453,7 @@ body.layar-hasil{background:var(--halaman)}
 .baris-info small{grid-column:2;font-size:12.5px;line-height:1.45;color:var(--ink-muted)}
 .kepala-ubin{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
 .isi-pohon-tabel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:12px}
-.panel-pohon,.panel-tabel-hasil{min-width:0}
+.panel-pohon-hasil,.panel-tabel-hasil{min-width:0}
 .alat-pohon{display:flex;align-items:center;gap:8px;margin-bottom:8px}
 .alat-pohon .alat-bulat{background:var(--surface-sunken);color:var(--ink)}
 .wadah-pohon{overflow:auto;max-height:520px;border-radius:16px;background:var(--surface-sunken)}
@@ -1477,7 +1477,7 @@ body.layar-hasil{background:var(--halaman)}
   .tata-hasil>*{grid-column:1/-1!important}
   .isi-pohon-tabel{grid-template-columns:1fr}
   .sakelar-hp{display:inline-flex}
-  .ubin-pohon-tabel[data-tampil=pohon] .panel-tabel-hasil,.ubin-pohon-tabel[data-tampil=tabel] .panel-pohon{display:none}
+  .ubin-pohon-tabel[data-tampil=pohon] .panel-tabel-hasil,.ubin-pohon-tabel[data-tampil=tabel] .panel-pohon-hasil{display:none}
 }
 @media (max-width:480px){
   .uh b{font-size:18px}.uh.kamu b{font-size:26px}

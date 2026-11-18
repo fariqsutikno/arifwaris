@@ -240,7 +240,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             </div>
           </div>
           <div className="isi-pohon-tabel">
-            <div className="panel-pohon" aria-label={t('hitung.pohon_keluarga')}>
+            <div className="panel-pohon-hasil" aria-label={t('hitung.pohon_keluarga')}>
               <div className="alat-pohon">
                 <button type="button" className="alat-bulat" aria-label={t('hitung.perbesar')} onClick={() => setLayarPenuh({ zoom: 1.5 })}><Ikon nama="zoomMasuk" /></button>
                 <button type="button" className="alat-bulat" aria-label={t('hitung.layar_penuh')} onClick={() => setLayarPenuh({ zoom: 1 })}><Ikon nama="perbesar" /></button>
