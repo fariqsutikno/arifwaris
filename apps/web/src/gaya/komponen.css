@@ -1385,6 +1385,105 @@ body.layar-hasil{background:var(--halaman)}
   .pohon-penuh-atas{padding:10px 12px}
 }
 
+/* ─── Hasil v6 (acuan docs/design/acuan-hasil-final.html, riset-ux-hasil bagian 27) ─────────────────────
+   Hero: status + judul + kalimat + fakta + aksi | ubin Bagianmu/Harta/Penerima. Bento 12 kolom:
+   daftar (7) + Jenis masalah/Tentang (5) → pohon & tabel (12) → Bagikan · Langkah selanjutnya · Pelajari (4+4+4). */
+.hero-hasil{display:block}
+.bilah-hero{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,.85)}
+.bilah-hero .lok-hero{margin:0}
+.status-hero{display:inline-flex;gap:6px;align-items:center;padding:4px 10px;border-radius:var(--radius-pill);background:rgba(255,255,255,.14);font-size:13px}
+.status-hero i{width:8px;height:8px;border-radius:50%;background:#7fe0b0}
+.isi-hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:22px;align-items:end;margin-top:16px}
+.hero-hasil .judul-soal{display:flex;flex-direction:column;align-items:flex-start;gap:0}
+.hero-hasil .judul-soal h1{margin:0;color:#fff;font:500 clamp(28px,3.4vw,36px)/1.1 var(--font-display);letter-spacing:-.02em;max-width:22ch;text-wrap:balance}
+.hero-hasil .kalimat-hero{margin:10px 0 0;font-size:15.5px;color:rgba(255,255,255,.93)}
+.fakta-hero{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.fakta-hero span{padding:4px 10px;border-radius:var(--radius-pill);background:rgba(255,255,255,.12);font-size:13px}
+.hero-hasil .aksi-hero{margin-top:16px}
+.hero-hasil .aksi-hero .pil-hero{background:#fff;color:#14181a}
+.hero-hasil .tautan-hero{display:inline-flex;align-items:center;gap:6px}
+.hero-hasil .tab-kecil{margin-top:14px}
+.ubin-hero{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.uh{min-width:0;padding:13px 15px;border-radius:22px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;text-align:start;font:inherit}
+.uh .lbl{display:block;font-size:12.5px;color:rgba(255,255,255,.82)}
+.uh b{display:block;margin-top:3px;font:600 21px/1.15 var(--font-display);font-variant-numeric:tabular-nums}
+.uh small{display:block;margin-top:3px;font-size:12.5px;color:rgba(255,255,255,.8)}
+.uh.kamu{grid-column:1/-1;background:rgba(255,255,255,.95);border-color:#fff;color:var(--ink);cursor:pointer}
+.uh.kamu .lbl,.uh.kamu small{color:var(--ink-muted)}
+.uh.kamu b{font-size:32px}
+.uh.kamu:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+
+.tata-hasil{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;align-items:start}
+.tata-hasil>*{min-width:0}
+.bento-s7{grid-column:span 7}.bento-s5{grid-column:span 5;display:grid;gap:12px}.bento-s12{grid-column:span 12}.bento-s4{grid-column:span 4;display:grid}
+.mode-belajar .tata-hasil .bento-s7{grid-column:span 12}
+.ubin{min-width:0;padding:18px;border-radius:24px;background:var(--kartu);border:1px solid var(--kartu-tepi);box-shadow:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+.ubin h2{margin:0;font:700 19px/1.2 var(--font-display);letter-spacing:-.01em}
+.ubin.mint{background:var(--mint,#dcefe2);border-color:transparent}
+.ubin.oranye{background:#fde6d8;border-color:transparent}
+.ubin.gelap{background:#0e0f10;border-color:#0e0f10;color:#fff}
+.ubin.gelap .sub-kartu{color:rgba(255,255,255,.72)}
+.mode-belajar .ubin.kartu-utama{border:1px dashed var(--aksen)}
+.ubin .tombol-ikon{border:0;border-radius:50%;background:var(--surface-sunken);box-shadow:none}
+.ubin .tombol-ikon[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
+.alat-pembagian{display:flex;align-items:center;gap:8px}
+.segmen{display:inline-flex;padding:3px;border-radius:var(--radius-pill);background:var(--surface-sunken)}
+.segmen button{min-height:36px;padding:0 14px;border:0;border-radius:var(--radius-pill);background:none;color:var(--ink);font:600 13.5px var(--font-sans);cursor:pointer}
+.segmen button[aria-checked=true]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.segmen button:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+.judul-kelompok{display:flex;justify-content:space-between;margin:14px 0 0;padding-bottom:4px;border-bottom:1px solid var(--divider);font:600 12.5px var(--font-sans);color:var(--ink-muted)}
+.baris-bagian .avatar-orang{border-radius:14px}
+.baris-bagian.redup .nama-bagian,.baris-bagian.redup .angka{color:var(--ink-muted)}
+.baris-bagian.redup .avatar-orang{background:#dfe3dd!important;color:#3f4944}
+.jumlah-bagian{text-align:end}
+.jumlah-bagian .angka{font:600 17px/1.2 var(--font-sans)}
+.jumlah-bagian small{display:block;margin-top:2px;font-size:12.5px;color:var(--ink-muted);white-space:normal}
+.penjumlahan{margin:12px 0 0;padding:12px 14px;border-radius:16px;background:rgba(20,24,26,.035);font-variant-numeric:tabular-nums}
+.penjumlahan div{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-size:14px}
+.penjumlahan dt{color:var(--ink-muted)}
+.penjumlahan dd{margin:0}
+.penjumlahan .hasil-jumlah{margin-top:6px;padding-top:8px;border-top:1.5px solid var(--ink);font-weight:600}
+.penjumlahan .hasil-jumlah dt{color:var(--ink)}
+.ubin .kartu-bulat{margin-top:12px}
+.kepala-info{margin:14px 0 4px;font:600 12px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
+.daftar-info{display:grid;gap:9px;margin-top:6px}
+.baris-info{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:0 14px;font-size:14px}
+.baris-info .lbl{grid-row:span 2;color:var(--ink-muted)}
+.baris-info b{font-weight:500}
+.baris-info small{grid-column:2;font-size:12.5px;line-height:1.45;color:var(--ink-muted)}
+.kepala-ubin{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
+.isi-pohon-tabel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;margin-top:12px}
+.panel-pohon,.panel-tabel-hasil{min-width:0}
+.alat-pohon{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.alat-pohon .alat-bulat{background:var(--surface-sunken);color:var(--ink)}
+.wadah-pohon{overflow:auto;max-height:520px;border-radius:16px;background:var(--surface-sunken)}
+.judul-panel{margin:0 0 8px;font:600 15px var(--font-sans)}
+.panel-tabel-hasil .wadah-tabel{overflow-x:auto}
+.sakelar-hp{display:none}
+.urutan-selanjutnya{margin:10px 0 0;padding-inline-start:20px;display:grid;gap:8px;font-size:14px}
+.urutan-selanjutnya span{display:block;font-size:13px;color:var(--ink-muted)}
+.daftar-aksi-ubin{display:grid;gap:4px;margin-top:10px}
+.daftar-aksi-ubin button,.ubin-pelajari .kepala-lipat{display:flex;align-items:center;gap:12px;width:100%;padding:10px 6px;border:0;border-radius:14px;background:none;color:inherit;font:inherit;text-align:start;cursor:pointer}
+.daftar-aksi-ubin button:hover,.ubin-pelajari .kepala-lipat:hover{background:rgba(127,127,127,.12)}
+.daftar-aksi-ubin button:focus-visible,.ubin-pelajari .kepala-lipat:focus-visible{outline:3px solid var(--focus)}
+.daftar-aksi-ubin b,.judul-pintu b{display:block;font-weight:600;font-size:14.5px;text-decoration:underline;text-underline-offset:3px;text-decoration-color:rgba(127,127,127,.6)}
+.daftar-aksi-ubin small,.judul-pintu small{display:block;font-size:12.5px;opacity:.75}
+.ikon-bulat{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.7);color:#14181a}
+.ubin-pelajari .urut-langkah{margin-top:10px}
+.ubin-pelajari .judul-pintu{flex:1}
+.ubin-pelajari .isi-kartu-sisi{margin-top:8px;padding:14px;border-radius:16px;background:var(--surface);color:var(--ink)}
+@media (max-width:980px){
+  .isi-hero{grid-template-columns:1fr;align-items:start}
+  .tata-hasil>*{grid-column:1/-1!important}
+  .isi-pohon-tabel{grid-template-columns:1fr}
+  .sakelar-hp{display:inline-flex}
+  .ubin-pohon-tabel[data-tampil=pohon] .panel-tabel-hasil,.ubin-pohon-tabel[data-tampil=tabel] .panel-pohon{display:none}
+}
+@media (max-width:480px){
+  .uh b{font-size:18px}.uh.kamu b{font-size:26px}
+  .ubin{padding:16px}
+}
+
 /* Dialog bagikan kasus: langkah bernomor. Skala tunggal: judul langkah 16/700, bantu 14, isi kolom 15, catatan 13. Kolom 48, tombol dalam kolom 40. */
 .form-bagikan{max-width:580px;gap:20px;padding:24px}
 .kepala-bagikan{display:grid;grid-template-columns:auto 1fr auto;gap:14px;align-items:start}

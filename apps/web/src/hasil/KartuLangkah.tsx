@@ -165,9 +165,11 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
   );
 
   return (
-    <section className="kartu-sisi urut-langkah" data-tur="langkah">
+    <div className="urut-langkah" data-tur="langkah">
+      {/* Pintu di panel "Pelajari cara menghitungnya"; untuk sementara membuka langkah lama di tempat (rencana-integrasi-langkah-demi-langkah). */}
       <button type="button" className="kepala-lipat" aria-expanded={terbuka} onClick={() => setTerbuka(!terbuka)}>
-        <h2>{adalahBelajar ? t('hitung.pembahasan_langkah_demi_langkah') : t('hitung.pelajari_langkah_perhitungan')}</h2>
+        <span className="ikon-bulat"><Ikon nama="daftar" /></span>
+        <span className="judul-pintu"><b>{adalahBelajar ? t('hitung.pembahasan_langkah_demi_langkah') : t('hasil.langkah_demi_langkah')}</b><small>{t('hasil.langkah_demi_langkah_sub')}</small></span>
         {terkunci && <span className="lencana-kunci"><Ikon nama="kunci" ukuran={14} /> {t('umum.terkunci')}</span>}
         <span className="panah-lipat" aria-hidden="true" />
       </button>
@@ -199,7 +201,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
             baris={ketukan === null ? null : babIni.bab.daftarBaris[ketukan] ?? null} semuaBaris={babIni.bab.daftarBaris} peraga={peraga} />}
           laci={laciTerbuka ? <>{jalurLangkah}{langkahIni(ketukan, baris => { setPoin(baris); setSelesai(false); putarLagi(); })}</> : null} />
       )}
-    </section>
+    </div>
   );
 }
 

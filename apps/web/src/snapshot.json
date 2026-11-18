@@ -23009,6 +23009,384 @@
    "id": "Batal",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.status_pasti",
+   "halaman": "hasil",
+   "id": "Pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pembagian_harta_nama",
+   "halaman": "hasil",
+   "id": "Pembagian harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.dibagi_ke_jumlah_orang",
+   "halaman": "hasil",
+   "id": "Dibagi ke {jumlah} orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.jumlah_mayit",
+   "halaman": "hasil",
+   "id": "{jumlah} mayit",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.tanpa_potongan_harta",
+   "halaman": "hasil",
+   "id": "Tanpa potongan harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ada_potongan_harta",
+   "halaman": "hasil",
+   "id": "Harta dipotong dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagianmu_sebagai",
+   "halaman": "hasil",
+   "id": "Bagianmu, sebagai {peran}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.harta_dibagi",
+   "halaman": "hasil",
+   "id": "Harta dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sudah_bersih",
+   "halaman": "hasil",
+   "id": "sudah bersih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.penerima",
+   "halaman": "hasil",
+   "id": "Penerima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.jumlah_orang",
+   "halaman": "hasil",
+   "id": "{jumlah} orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.jumlah_tidak_mendapat",
+   "halaman": "hasil",
+   "id": "{jumlah} tidak mendapat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.siapa_menerima_berapa",
+   "halaman": "hasil",
+   "id": "Siapa menerima berapa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ketuk_nama_penjelasan",
+   "halaman": "hasil",
+   "id": "Ketuk nama untuk penjelasan lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.fardh",
+   "halaman": "hasil",
+   "id": "Fardh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.saham",
+   "halaman": "hasil",
+   "id": "Saham",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.diterima_jumlah_penerima",
+   "halaman": "hasil",
+   "id": "Diterima {jumlah} penerima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.tidak_mendapat_jumlah",
+   "halaman": "hasil",
+   "id": "Tidak mendapat bagian ({jumlah})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_pembulatan",
+   "halaman": "hasil",
+   "id": "Sisa pembulatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.jenis_masalah",
+   "halaman": "hasil",
+   "id": "Jenis masalah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.biasa",
+   "halaman": "hasil",
+   "id": "Biasa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.kondisi",
+   "halaman": "hasil",
+   "id": "Kondisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.mayit",
+   "halaman": "hasil",
+   "id": "Mayit",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.yang_dibagi",
+   "halaman": "hasil",
+   "id": "Yang dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.kasus",
+   "halaman": "hasil",
+   "id": "Kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hitungan",
+   "halaman": "hasil",
+   "id": "Hitungan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.madzhab",
+   "halaman": "hasil",
+   "id": "Madzhab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.syafii",
+   "halaman": "hasil",
+   "id": "Syafi'i",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.syafii_ket",
+   "halaman": "hasil",
+   "id": "Bawaan; terverifikasi ke kitab Raudhah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.rincian_harta",
+   "halaman": "hasil",
+   "id": "Kotor {kotor} − jenazah {jenazah} − hutang {hutang} − wasiat {wasiat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkas_ahli_waris",
+   "halaman": "hasil",
+   "id": "{penerima} penerima · {tidak} tidak mendapat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pembulatan",
+   "halaman": "hasil",
+   "id": "Pembulatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ke_satuan",
+   "halaman": "hasil",
+   "id": "Ke {satuan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.dibulatkan_ke_bawah",
+   "halaman": "hasil",
+   "id": "Dibulatkan ke bawah tiap orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.aul_radd",
+   "halaman": "hasil",
+   "id": "'Aul / radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.tidak_ada",
+   "halaman": "hasil",
+   "id": "Tidak ada",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pohon_dan_tabel",
+   "halaman": "hasil",
+   "id": "Pohon keluarga dan tabel faraidh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pohon_dan_tabel_sub",
+   "halaman": "hasil",
+   "id": "Ketuk orang untuk penjelasan lengkap; arahkan untuk menyorotnya di pohon dan tabel.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pohon",
+   "halaman": "hasil",
+   "id": "Pohon",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.tabel",
+   "halaman": "hasil",
+   "id": "Tabel",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_dan_simpan",
+   "halaman": "hasil",
+   "id": "Bagikan dan simpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan_file_kasus",
+   "halaman": "hasil",
+   "id": "Simpan file kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan_file_ket",
+   "halaman": "hasil",
+   "id": "Bisa dibuka lagi di aplikasi ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan_riwayat_ket",
+   "halaman": "hasil",
+   "id": "Lanjutkan nanti dari beranda",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_tautan",
+   "halaman": "hasil",
+   "id": "Bagikan tautan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_tautan_ket",
+   "halaman": "hasil",
+   "id": "Keluarga membuka hasil yang sama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.langkah_selanjutnya",
+   "halaman": "hasil",
+   "id": "Langkah selanjutnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pelajari_cara_menghitungnya",
+   "halaman": "hasil",
+   "id": "Pelajari cara menghitungnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pelajari_sub",
+   "halaman": "hasil",
+   "id": "Untuk dicocokkan dengan ustadz, atau belajar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.langkah_demi_langkah",
+   "halaman": "hasil",
+   "id": "Langkah demi langkah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.langkah_demi_langkah_sub",
+   "halaman": "hasil",
+   "id": "Dari 1 sampai selesai · teks atau sinema bersuara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.coba_tebak_dulu",
+   "halaman": "hasil",
+   "id": "Coba tebak dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.mode_belajar",
+   "halaman": "hasil",
+   "id": "Mode Belajar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagianmu",
+   "halaman": "hasil",
+   "id": "Bagianmu",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
