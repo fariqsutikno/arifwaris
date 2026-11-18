@@ -1412,3 +1412,11 @@ Bar bawah sekarang memuat tiga baris: garis kemajuan, lima tombol (tahap sebelum
 - **A. Satu aksi utama + menu "Lainnya".** Bawah hanya: garis kemajuan tipis (bisa diketuk per tahap), tautan "Kembali" di kiri, tombol "Lanjut" di kanan; di sinema ditambah satu tombol putar/jeda bulat. Sisanya (kecepatan, suara, rekam video, pohon, tabel, tampilkan semua, lompat ke tahap) masuk menu "Lainnya" (ikon titik tiga di kepala). "Langkah x dari y" cukup di kepala. 3·3·3 **(rekomendasi)**
 - **B. A + kontrol sinema menghilang sendiri.** Di sinema, bar bawah memudar setelah 3 detik tanpa sentuhan dan muncul lagi saat panggung disentuh; garis kemajuan tipis tetap. Teks tidak menghilang (orang sedang membaca dan mengetik). 3·3·2 **(rekomendasi, dipasang bersama A)**
 - C. Ketuk sisi panggung (kanan maju, kiri mundur) tanpa tombol sama sekali. 2·2·3: cepat untuk yang sudah tahu, tapi tidak terlihat bagi pengguna baru dan bentrok dengan ketuk istilah.
+
+### 30d. Keputusan pemilik (2026-11-18): B
+
+Dilihat dari pratinjau-kontrol-bawah.html. Diterapkan di mockup-langkah-demi-langkah.html:
+- Bawah: garis kemajuan (ruas per tahap, bisa diketuk), tautan "Kembali", tombol "Lanjut"; di sinema ditambah tombol putar/jeda.
+- Kepala: "Tahap x dari y · Langkah a dari b", pilihan Teks | Sinema, tombol titik tiga "Lainnya", tutup.
+- Lembar "Lainnya": lompat ke tahap, tampilkan semua langkah (teks), kecepatan, suara, pohon, tabel (sinema), rekam video.
+- Sinema: bar bawah memudar setelah 3 detik diam; gerak mouse atau ketuk memunculkannya lagi (ketukan yang memunculkan tidak ikut memajukan langkah). Teks tidak memudar.

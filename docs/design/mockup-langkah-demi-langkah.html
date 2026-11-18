@@ -148,19 +148,27 @@ td.tertutup span{visibility:hidden}
 .ruas i{flex:1;height:4px;border-radius:2px;background:#d4ddd1}
 .sinema .ruas i{background:#2b3c37}
 .ruas i.lewat{background:var(--orange)}.ruas i.kini{background:#ffb08a}
-.kontrol{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:4px}
-.kontrol button{width:44px;height:44px;border-radius:50%;border:0;background:#e3e9e0;display:grid;place-items:center;cursor:pointer}
-.sinema .kontrol button{background:var(--gelap2)}
+.kontrol{display:flex;align-items:center;gap:10px;margin-top:4px}
+.kontrol .sela{flex:1}
+.kontrol button{border:0;cursor:pointer;display:grid;place-items:center}
 .kontrol button:disabled{opacity:.3;cursor:default}
-.kontrol button.utama{width:auto;padding:0 20px;border-radius:999px;background:#0e0f10;color:#fff;font:600 14px var(--font);display:inline-flex;gap:6px;align-items:center}
-.sinema .kontrol button.utama{background:#fff;color:#0e0f10}
-.kontrol button.putar{width:50px;height:50px;background:var(--orange);color:#fff}
-.posisi{font-size:13px;color:var(--muted);text-align:center;margin-top:4px}
-.sinema .posisi{color:#9fb3aa}
-.menu{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:8px}
-.menu button{background:none;border:0;font:500 13.5px var(--font);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;color:var(--muted)}
-.sinema .menu button{color:#b9c9c1}
-.menu .rekam{color:var(--orange)!important}
+.kontrol .kembali{background:none;padding:0;font:600 14px var(--font);text-decoration:underline;text-underline-offset:3px}
+.kontrol .utama{height:44px;padding:0 22px;border-radius:999px;background:#0e0f10;color:#fff;font:600 14px var(--font);display:inline-flex;gap:6px;align-items:center}
+.sinema .kontrol .utama{background:#fff;color:#0e0f10}
+.kontrol .putar{width:48px;height:48px;border-radius:50%;background:var(--orange);color:#fff}
+.bawah{transition:opacity .4s,transform .4s}
+/* B: di sinema, kontrol memudar setelah diam; ketuk/gerak memunculkannya lagi */
+.fokus.sinema.diam .bawah{opacity:0;transform:translateY(14px);pointer-events:none}
+.lainnya{position:absolute;left:0;right:0;bottom:0;z-index:30;background:#fff;color:var(--ink);border-radius:22px 22px 0 0;box-shadow:0 -12px 40px rgba(0,0,0,.25);padding:14px 18px 20px;display:none;max-height:80%;overflow:auto}
+.lainnya.buka{display:block}
+.lainnya .atas{display:flex;justify-content:space-between;margin-bottom:8px}
+.lainnya .sub{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.lainnya .tahapan{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 10px}
+.lainnya .tahapan button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 11px;font:500 13px var(--font);cursor:pointer}
+.lainnya .tahapan button[aria-current=true]{background:#0e0f10;color:#fff;border-color:#0e0f10}
+.lainnya .baris{display:flex;width:100%;align-items:center;gap:10px;background:none;border:0;border-top:1px solid #eef2ec;padding:12px 2px;font:500 14.5px var(--font);text-align:start;cursor:pointer}
+.lainnya .baris small{margin-left:auto;color:var(--muted);font-size:12.5px}
+.fokus:not(.sinema) .lainnya .sinema-saja{display:none}
 .fokus:not(.sinema) .sinema-saja,.sinema .teks-saja{display:none!important}
 
 /* saat merekam: hanya bingkai video yang ditangkap; kursor disembunyikan */
@@ -184,9 +192,7 @@ td.tertutup span{visibility:hidden}
   .panggung{padding:18px 14px;gap:16px;min-height:300px}
   .papan{font-size:19px}.takarir{font-size:14.5px}
   .bawah{padding:6px 12px 10px}
-  .kontrol{gap:6px}.kontrol button{width:40px;height:40px}.kontrol button.utama{padding:0 14px}
   .kt{border-radius:5px}.grid{gap:3px}
-  .menu{gap:12px}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -208,6 +214,7 @@ td.tertutup span{visibility:hidden}
   <header class="kepala">
     <div class="judul"><p class="tahap" id="tahapKe"></p><h1 id="tahapJudul"></h1></div>
     <div class="pilih" role="group" aria-label="Tampilan"><button id="pTeks" aria-pressed="true">Teks</button><button id="pSinema" aria-pressed="false">Sinema</button></div>
+    <button class="tutup" id="bukaLainnya" aria-label="Lainnya" aria-haspopup="dialog"><svg class="ik" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/></svg></button>
     <button class="tutup" id="tutupFokus" aria-label="Tutup"><svg class="ik" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </header>
   <div class="badan" id="badan">
@@ -228,19 +235,20 @@ td.tertutup span{visibility:hidden}
   <div class="bawah">
     <div class="kemajuan" id="kemajuan"></div>
     <div class="kontrol">
-      <button id="tahapMundur" aria-label="Tahap sebelumnya" title="Tahap sebelumnya"><svg class="ik" viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6z"/></svg></button>
-      <button id="mundur" aria-label="Langkah sebelumnya" title="Langkah sebelumnya"><svg class="ik" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+      <button id="mundur" class="kembali">Kembali</button><span class="sela"></span>
       <button id="putar" class="putar sinema-saja" aria-label="Putar otomatis"></button>
-      <button id="maju" class="utama">Langkah berikutnya <svg class="ik" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
-      <button id="tahapMaju" aria-label="Tahap berikutnya" title="Tahap berikutnya"><svg class="ik" viewBox="0 0 24 24"><path d="M18 5v14M6 6l8 6-8 6z"/></svg></button>
+      <button id="maju" class="utama">Lanjut <svg class="ik" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
     </div>
-    <p class="posisi" id="posisi"></p>
-    <nav class="menu">
-      <button id="mSemua" class="teks-saja">Tampilkan semua langkah</button>
-      <button id="mPohon" class="sinema-saja">Pohon</button><button id="mTabel" class="sinema-saja">Tabel</button>
-      <button id="mKecepatan" class="sinema-saja">Kecepatan 1×</button><button id="mSuara" class="sinema-saja" aria-pressed="true">Suara: nyala</button>
-      <button id="mRekam" class="rekam">Rekam video</button>
-    </nav>
+  </div>
+  <div class="lainnya" id="lainnya" role="dialog" aria-label="Lainnya">
+    <div class="atas"><b>Lainnya</b><button class="tautan" id="tutupLainnya">Tutup</button></div>
+    <p class="sub">Lompat ke tahap</p><div class="tahapan" id="tahapan"></div>
+    <button class="baris teks-saja" id="mSemua">Tampilkan semua langkah</button>
+    <button class="baris sinema-saja" id="mKecepatan">Kecepatan 1×</button>
+    <button class="baris sinema-saja" id="mSuara" aria-pressed="true">Suara: nyala</button>
+    <button class="baris sinema-saja" id="mPohon">Pohon keluarga</button>
+    <button class="baris sinema-saja" id="mTabel">Tabel faraidh</button>
+    <button class="baris" id="mRekam">Rekam video<small>hanya panggung, berhenti sendiri</small></button>
   </div>
 </div>
 
@@ -527,14 +535,15 @@ function tampilkan(i) {
   const k = kasus(), { t, l } = urutan[i], th = k.tahap[t];
   $('fokus').classList.toggle('sinema', tampilan === 'sinema');
   $('pTeks').setAttribute('aria-pressed', tampilan === 'teks'); $('pSinema').setAttribute('aria-pressed', tampilan === 'sinema');
-  $('tahapKe').textContent = semua && tampilan === 'teks' ? 'Semua tahap' : `Tahap ${t + 1} dari ${k.tahap.length}`;
+  $('tahapKe').textContent = semua && tampilan === 'teks' ? 'Semua tahap' : `Tahap ${t + 1} dari ${k.tahap.length} · Langkah ${l + 1} dari ${th.langkah.length}`;
   $('tahapJudul').textContent = semua && tampilan === 'teks' ? 'Langkah perhitungan lengkap' : th.judul;
-  $('posisi').textContent = semua && tampilan === 'teks' ? '' : `Langkah ${l + 1} dari ${th.langkah.length}`;
+  $('tahapan').innerHTML = k.tahap.map((th2, t2) => `<button data-tahap="${t2}" aria-current="${t2 === t}">${t2 + 1}. ${th2.judul}</button>`).join('');
   $('kemajuan').innerHTML = k.tahap.map((th2, t2) => `<button class="ruas" style="--n:${th2.langkah.length}" data-tahap="${t2}" aria-label="Tahap ${t2 + 1}: ${th2.judul}">${th2.langkah.map((_, l2) => {
     const j = indeksDi(t2, l2); return `<i class="${j < i ? 'lewat' : j === i ? 'kini' : ''}"></i>`; }).join('')}</button>`).join('');
   const kunciNav = semua && tampilan === 'teks';
-  $('mundur').disabled = kunciNav || i === 0; $('tahapMundur').disabled = kunciNav || t === 0;
-  $('maju').disabled = kunciNav || i === urutan.length - 1; $('tahapMaju').disabled = kunciNav || t === k.tahap.length - 1;
+  $('mundur').disabled = kunciNav || i === 0;
+  $('maju').disabled = kunciNav || i === urutan.length - 1;
+  bangunkan();
   $('mSemua').textContent = semua ? 'Kembali ke langkah demi langkah' : 'Tampilkan semua langkah';
   if (tampilan === 'teks') gambarTeks(i); else { gambarSinema(i); bacakan(langkahDi(i).n); }
 }
@@ -595,13 +604,16 @@ function pindah(i) { if (perekam || i < 0 || i >= urutan.length) return; berhent
 
 $('tab').innerHTML = Object.entries(KASUS).map(([c, k]) => `<button data-kasus="${c}" aria-selected="${c === kunci}">${k.tab}</button>`).join('');
 document.addEventListener('click', e => {
+  const tidur = $('fokus').classList.contains('diam');
+  if ($('fokus').classList.contains('buka')) bangunkan();
   const t = e.target.closest('button');
+  if (!t && tidur) return;
   if (!t?.classList.contains('istilah')) $('pop').classList.remove('buka');
   if (!t) { if (tampilan === 'sinema' && e.target.closest('#panggung')) pindah(posisi + 1); return; }
   if (t.classList.contains('istilah')) { const [n, arti] = ISTILAH[t.dataset.istilah], r = t.getBoundingClientRect(), pop = $('pop'); pop.innerHTML = `<b>${n}</b>${arti}`; pop.classList.add('buka'); pop.style.left = `${Math.max(8, Math.min(innerWidth - 290, r.left))}px`; pop.style.top = `${r.bottom + 6}px`; return; }
   const th = urutan[posisi]?.t;
   if (t.dataset.kasus) return gantiKasus(t.dataset.kasus);
-  if (t.dataset.tahap) { if (semua) return; return pindah(indeksDi(+t.dataset.tahap, 0)); }
+  if (t.dataset.tahap) { $('lainnya').classList.remove('buka'); if (semua) { semua = false; } return pindah(indeksDi(+t.dataset.tahap, 0)); }
   switch (t.id) {
     case 'bukaFokus': $('fokus').classList.add('buka'); return tampilkan(posisi);
     case 'tutupFokus': berhenti(); if (perekam) perekam.stop(); return $('fokus').classList.remove('buka');
@@ -609,16 +621,16 @@ document.addEventListener('click', e => {
     case 'pSinema': return gantiTampilan('sinema');
     case 'maju': return pindah(posisi + 1);
     case 'mundur': return pindah(posisi - 1);
-    case 'tahapMaju': return pindah(indeksDi(th + 1, 0));
-    case 'tahapMundur': return pindah(indeksDi(th - 1, 0));
+    case 'bukaLainnya': return $('lainnya').classList.add('buka');
+    case 'tutupLainnya': return $('lainnya').classList.remove('buka');
     case 'putar': return otomatis ? berhenti() : mulai(posisi === urutan.length - 1 ? 0 : posisi);
-    case 'mSemua': semua = !semua; return tampilkan(posisi);
-    case 'mPohon': return bukaLapisan('Pohon keluarga', gambarPohon(kasus().pohon, sorotPohon(posisi)));
-    case 'mTabel': return bukaLapisan('Tabel faraidh sejauh ini', `<div class="wadah-tabel">${gambarTabel(posisi)}</div>`);
+    case 'mSemua': $('lainnya').classList.remove('buka'); semua = !semua; return tampilkan(posisi);
+    case 'mPohon': $('lainnya').classList.remove('buka'); return bukaLapisan('Pohon keluarga', gambarPohon(kasus().pohon, sorotPohon(posisi)));
+    case 'mTabel': $('lainnya').classList.remove('buka'); return bukaLapisan('Tabel faraidh sejauh ini', `<div class="wadah-tabel">${gambarTabel(posisi)}</div>`);
     case 'tutupLapisan': return $('lapisan').classList.remove('buka');
     case 'mKecepatan': kecepatan = KECEPATAN[(KECEPATAN.indexOf(kecepatan) + 1) % KECEPATAN.length]; t.textContent = `Kecepatan ${kecepatan}×`; return;
     case 'mSuara': suaraNyala = !suaraNyala; if (!suaraNyala) speechSynthesis.cancel(); t.textContent = `Suara: ${suaraNyala ? 'nyala' : 'mati'}`; t.setAttribute('aria-pressed', suaraNyala); return;
-    case 'mRekam': if (perekam) { berhenti(); return perekam.stop(); } return rekam();
+    case 'mRekam': $('lainnya').classList.remove('buka'); if (perekam) { berhenti(); return perekam.stop(); } return rekam();
   }
 });
 document.addEventListener('keydown', e => {
@@ -627,6 +639,14 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') pindah(posisi - 1);
   if (e.key === 'Escape') { $('lapisan').classList.remove('buka'); $('pop').classList.remove('buka'); }
 });
+// B: kontrol sinema memudar setelah diam; tidak berlaku di teks (orang sedang membaca) dan saat lembar Lainnya terbuka.
+const DIAM_MS = 3000;
+let jadwalDiam;
+function bangunkan() {
+  $('fokus').classList.remove('diam'); clearTimeout(jadwalDiam);
+  if (tampilan === 'sinema') jadwalDiam = setTimeout(() => { if (!$('lainnya').classList.contains('buka')) $('fokus').classList.add('diam'); }, DIAM_MS);
+}
+document.addEventListener('pointermove', () => { if ($('fokus').classList.contains('buka') && tampilan === 'sinema') bangunkan(); });
 urutan = susunUrutan(); aturPutar();
 </script>
 </body>
