@@ -10,7 +10,8 @@ import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut
 import { buatKonteks, type HasilOk, type Konteks } from './context.js';
 import type { BarisPenjelasan, Kamus } from './segments.js';
 
-export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir';
+export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir'
+  | 'belumPasti' | 'kemungkinan' | 'pemberian' | 'wafatBersamaan';
 export type BagianLangkah = 'keluarga' | 'hitung';
 export type KolomLinimasa = 'bagian' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'nominal';
 /** `kolom:idOrang`, sel tabel yang terisi pada langkah itu. */
@@ -23,6 +24,8 @@ export interface IsiKotak { kelompok: string; anggota: IdOrang[]; jumlah: bigint
 export type Visual =
   | { jenis: 'harta'; baris: BarisHarta[] }
   | { jenis: 'pohon'; sorot: Record<IdOrang, PeranPohon> }
+  /** Meja taqdir: tiap dunia (jika terbukti X) = satu batang saham pada jami'ah yang sama; `sorot` = indeks dunia yang sedang dibahas. */
+  | { jenis: 'meja'; jamiah: bigint; dunia: Array<{ masalah: bigint; isi: IsiKotak[] }>; sorot?: number }
   /** Kotak wakil: `jumlah` kotak, tiap kotak dibelah `potong`; `isi` dalam satuan potongan (Σ isi = jumlah × potong). */
   | {
     jenis: 'kotak'; jumlah: bigint; potong: bigint; isi: IsiKotak[];

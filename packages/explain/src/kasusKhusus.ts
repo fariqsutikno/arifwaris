@@ -11,8 +11,8 @@ import { labelPeran, urutanKe } from './people.js';
 import { buatBaris, gabungDan, kalimat, susun, tekankan, teksKamus, type BarisPenjelasan, type Kamus, type Penyusun, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
-type TaqdirOk = Extract<HasilTaqdir, { status: 'OK' }>;
-type GharqaSelesai = Extract<HasilGharqa, { status: 'OK' | 'MAUQUF' }>;
+export type TaqdirOk = Extract<HasilTaqdir, { status: 'OK' }>;
+export type GharqaSelesai = Extract<HasilGharqa, { status: 'OK' | 'MAUQUF' }>;
 type Sebut = (id: IdOrang) => Potongan;
 type DaftarStatus = Array<{ mayit: IdOrang; statusOrang: Record<IdOrang, StatusOrang> }>;
 
@@ -233,3 +233,14 @@ function sebutPenerima(penyusun: Penyusun, id: string, sebut: Sebut): Potongan[]
 }
 
 const teksSebut = (potongan: Potongan): string => potongan.teks;
+
+// ─── Sebutan untuk linimasa ───────────────────────────────────────────────────
+
+export const sebutTaqdir = (graf: GrafKeluarga, hasil: TaqdirOk, penyusun: Penyusun): Sebut =>
+  buatSebut(graf, hasil.daftarDunia.flatMap(dunia => dunia.daftarStatus), penyusun, id => sebutanSumber(hasil.daftarDunia, graf, id, penyusun));
+
+export function sebutGharqa(graf: GrafKeluarga, hasil: GharqaSelesai, penyusun: Penyusun): Sebut {
+  const semuaHarta = hasil.status === 'OK' ? hasil.harta : hasil.skenario.flatMap(skenario => skenario.harta);
+  const semuaDunia = semuaHarta.flatMap(harta => harta.daftarDunia ?? []);
+  return buatSebut(graf, semuaHarta.flatMap(harta => harta.daftarStatus), penyusun, id => sebutanSumber(semuaDunia, graf, id, penyusun));
+}
