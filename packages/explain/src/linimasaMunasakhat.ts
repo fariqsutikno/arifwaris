@@ -26,7 +26,12 @@ export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKelu
     };
     const konteks = buatKonteks(langkah.hasil, grafMayit, { kamus: opsi.kamus, bahasa: 'id' });
     const awalan = sebut(langkah.mayit).teks;
-    tahap.push(...tahapBiasa(konteks, urutan).map(satu => ({ ...satu, judul: `${awalan}: ${satu.judul}` })));
+    // Hanya mayit pertama yang membawa harta; mayit berikutnya membagi saham, jadi kolom rupiahnya (Rp 0) tidak ditampilkan.
+    const tanpaNominal = (kode: string) => urutan > 0 && kode.startsWith('nominal:');
+    tahap.push(...tahapBiasa(konteks, urutan).map(satu => ({
+      ...satu, judul: `${awalan}: ${satu.judul}`,
+      langkah: satu.langkah.map(isi => (isi.sel ? { ...isi, sel: isi.sel.filter(kode => !tanpaNominal(kode)) } : isi)),
+    })));
     const gabungan = daftarGabungan.find(langkahIni => langkahIni.mayit === langkah.mayit);
     if (gabungan) tahap.push(tahapPenyambung(penggabungan(gabungan, sebut, penyusun), gabungan));
   }
@@ -35,7 +40,7 @@ export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKelu
   const idDalamRantai = new Set<string>([...Object.keys(hasil.saham), ...daftarGabungan.flatMap(satu => Object.keys(satu.rincian)), ...hasil.daftarLangkah.map(satu => satu.mayit)]);
   const nama = Object.fromEntries([...idDalamRantai].map(id => [id, id.startsWith(AWALAN_SISA)
     ? sebutPenerima(penyusun, id, sebut).map(potongan => potongan.teks).join('') : sebut(id).teks]));
-  return { tahap, tabel: hasil.daftarLangkah.map(langkah => kolomTabel(langkah.hasil)), nama };
+  return { tahap, tabel: hasil.daftarLangkah.map((langkah, urutan) => kolomTabel(langkah.hasil).filter(kolom => urutan === 0 || kolom.kolom !== 'nominal')), nama };
 }
 
 // ─── Tahap ────────────────────────────────────────────────────────────────────
@@ -57,11 +62,9 @@ function tahapPenyambung(bab: Bab, gabungan: LangkahGabungan): Tahap {
 
 function tahapAkhir(bagian: BagianMunasakhat, hasil: HasilMunasakhatOk): Tahap {
   const tahap = tahapDariBab('hasilAkhir', bagian);
-  const isi: IsiKotak[] = [
-    ...Object.entries(hasil.saham).filter(([, saham]) => saham > 0n).map(([id, saham]) => ({ kelompok: id, anggota: [id], jumlah: saham })),
-    ...hasil.sisaKeluar.map(sisa => ({ kelompok: `${AWALAN_SISA}${sisa.mayit}`, anggota: [`${AWALAN_SISA}${sisa.mayit}`], jumlah: sisa.saham })),
-  ];
-  return { ...tahap, langkah: [{ ...tahap.langkah[0]!, visual: kotakJamiah(hasil.jamiah, isi) }, ...tahap.langkah.slice(1)] };
+  // Ikhtishar = saham yang sudah disederhanakan (sama dengan narasi "diringkas"); baris sisa memakai kunci `sisaKeluar:<mayit>`.
+  const isi: IsiKotak[] = Object.entries(hasil.ikhtishar.saham).filter(([, saham]) => saham > 0n).map(([id, saham]) => ({ kelompok: id, anggota: [id], jumlah: saham }));
+  return { ...tahap, langkah: [{ ...tahap.langkah[0]!, visual: kotakJamiah(hasil.ikhtishar.jamiah, isi) }, ...tahap.langkah.slice(1)] };
 }
 
 function kotakJamiah(jamiah: bigint, isi: IsiKotak[]): Visual {

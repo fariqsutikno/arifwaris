@@ -50,14 +50,14 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
     <div className="teks-isi" ref={wadah}>
       <div className="teks-kiri">
         <section className="panel-langkah"><h2>{t('langkah.pohon_keluarga')}</h2><div className="isi-pohon">{pohon}</div></section>
-        <section className="panel-langkah"><h2>{t('langkah.tabel_faraidh')}</h2>
+        {(semua || linimasa.tahap[urutan[indeks]!.tahap]!.babak !== undefined) && <section className="panel-langkah"><h2>{t('langkah.tabel_faraidh')}</h2>
           {babakTampil.map((nomor, urut) => (
             <div className="wadah-tabel" key={nomor}>
               <TabelLangkah kolom={linimasa.tabel[nomor]!} hasil={babak[nomor]!.hasil} ringkasan={babak[nomor]!.ringkasan} sembunyiNominal={sembunyiNominal}
                 terbuka={selPerBabak[urut]!.terbuka} kini={kiniDiTabel ? selPerBabak[urut]!.kini : new Set()} />
             </div>
           ))}
-        </section>
+        </section>}
       </div>
       <section className="panel-langkah" aria-live="polite">
         {tahapTampil.map(nomorTahap => {
@@ -72,7 +72,7 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
               {semua && <p className="ke-tahap">{t('langkah.tahap_dari', { nomor: angka(String(nomorTahap + 1)), total: angka(String(linimasa.tahap.length)) })}</p>}
               {semua && <h3>{tahap.judul}</h3>}
               {harta && <HartaTabel baris={harta.baris} sembunyiNominal={sembunyiNominal} />}
-              {kotak && <KotakHarta visual={kotak} ringkasan={tahap.babak === undefined ? ringkasanAkhir : babak[tahap.babak]!.ringkasan} sebutan={linimasa.nama} />}
+              {kotak && <KotakHarta visual={kotak} ringkasan={tahap.babak === undefined ? ringkasanAkhir : babak[tahap.babak]!.ringkasan} sebutan={tahap.babak === undefined ? linimasa.nama : undefined} />}
               {kelompokkan(tahap.langkah.map((langkah, nomor) => ({ langkah, nomor })).filter(({ nomor }) => nomor <= sampaiLangkah))
                 .map(kelompok => (
                   <div key={kelompok.isi[0]!.nomor} className={`bagian-langkah bagian-${kelompok.bagian}`}>

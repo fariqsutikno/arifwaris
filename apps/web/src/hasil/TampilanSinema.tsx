@@ -54,7 +54,7 @@ export function TampilanSinema({ linimasa, urutan, indeks, babak, ringkasanAkhir
       <main className="panggung" ref={panggung}>
         <div className="visual-sinema" key={`${posisi.tahap}`}>
           {harta && <HartaTabel baris={harta.baris} sembunyiNominal={sembunyiNominal} />}
-          {kotak && <div className={adaTabel ? 'kotak-mini' : undefined}><KotakHarta visual={kotak} ringkasan={ringkasanTahap} sebutan={linimasa.nama} /></div>}
+          {kotak && <div className={adaTabel ? 'kotak-mini' : undefined}><KotakHarta visual={kotak} ringkasan={ringkasanTahap} sebutan={tahap.babak === undefined ? linimasa.nama : undefined} /></div>}
           {pohonAktif && <div className="pohon-sinema">{pohon}</div>}
           {adaTabel && (
             <div className="wadah-tabel">

@@ -28,7 +28,7 @@ describe('susunLinimasaMunasakhat', () => {
       for (const satu of kotak) expect(satu.isi.reduce((total, isi) => total + isi.jumlah, 0n)).toBe(satu.jumlah * satu.potong);
       const akhir = linimasa.tahap.at(-1)!.langkah[0]!.visual;
       expect(akhir).toMatchObject({ jenis: 'kotak' });
-      if (akhir?.jenis === 'kotak') expect(akhir.jumlah * akhir.potong).toBe(hasil.jamiah);
+      if (akhir?.jenis === 'kotak') expect(akhir.jumlah * akhir.potong).toBe(hasil.ikhtishar.jamiah);
       // Setiap id di kotak punya sebutan.
       for (const satu of kotak) for (const isi of satu.isi) expect(linimasa.nama![isi.anggota[0]!], isi.anggota[0]).toBeTruthy();
     });
