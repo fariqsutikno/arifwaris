@@ -24843,6 +24843,27 @@
    "id": "Ketuk kepala kolom untuk melihat hitungannya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.persamaan_fardh",
+   "halaman": "narasi",
+   "id": "{ashl} ÷ {d} = {kotak} kotak untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.persamaan_fardh_kali",
+   "halaman": "narasi",
+   "id": "{ashl} ÷ {d} × {n} = {kotak} kotak untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.cerita.penyebut.persamaan_sisa",
+   "halaman": "narasi",
+   "id": "{ashl} − {terpakai} = {kotak} kotak untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
