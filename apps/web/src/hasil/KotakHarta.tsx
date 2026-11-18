@@ -30,8 +30,9 @@ export function HartaTabel({ baris, sembunyiNominal }: { baris: BarisHarta[]; se
 
 type VisualKotak = Extract<Visual, { jenis: 'kotak' }>;
 
-export function KotakHarta({ visual, ringkasan }: { visual: VisualKotak; ringkasan: RingkasanHasil }) {
-  const nama = (id: IdOrang) => ringkasan.penerima.find(orang => orang.id === id)?.nama ?? id;
+/** `sebutan`: nama lintas mayit dari linimasa (munasakhat); menimpa nama dari ringkasan. */
+export function KotakHarta({ visual, ringkasan, sebutan }: { visual: VisualKotak; ringkasan: RingkasanHasil; sebutan?: Record<string, string> | undefined }) {
+  const nama = (id: IdOrang) => sebutan?.[id] ?? ringkasan.penerima.find(orang => orang.id === id)?.nama ?? id;
   const jumlah = Number(visual.jumlah), potong = Number(visual.potong);
   const pemilik: IdOrang[] = visual.isi.flatMap(isi => Array.from({ length: Number(isi.jumlah) }, () => isi.anggota[0]!));
   const kotak = Array.from({ length: jumlah }, (_, urut) => pemilik.slice(urut * potong, (urut + 1) * potong));

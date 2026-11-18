@@ -48,4 +48,21 @@ describe('hasil munasakhat', () => {
     expect(screen.getByRole('heading', { name: 'Tabel munasakhat' })).toBeTruthy();
     expect(screen.getAllByText(/Jami'ah akhir/).length).toBeGreaterThan(0);
   });
+
+  it('langkah demi langkah: tahap per mayit, menyambung bagian, hasil akhir sampai Selesai', () => {
+    render(<Hasil kasus={kasusBerlapis()} idSesi="uji-munasakhat-ldl" tujuan="hitung" kirim={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    const judul = () => mode().querySelector('h1')!.textContent ?? '';
+    const lihat = new Set<string>();
+    for (let klik = 0; klik < 200 && !within(mode()).queryByRole('button', { name: 'Selesai' }); klik++) {
+      lihat.add(judul());
+      fireEvent.click(within(mode()).getByRole('button', { name: /Lanjut/ }));
+    }
+    expect([...lihat].some(teks => /^Budi/.test(teks))).toBe(true);
+    expect([...lihat].some(teks => /sambung|gabung/i.test(teks))).toBe(true);
+    expect(judul()).toMatch(/Hasil akhir|akhir/i);
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Selesai' }));
+    expect(screen.queryByRole('dialog', { name: 'Langkah demi langkah' })).toBeNull();
+  });
 });

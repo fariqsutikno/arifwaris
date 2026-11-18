@@ -14,6 +14,7 @@ import { Ikon } from '../ui/Ikon';
 import { TombolIkon } from '../ui/Tooltip';
 import { FokusLangkah, PanelHitung } from './FokusLangkah';
 import { LangkahDemiLangkah } from './LangkahDemiLangkah';
+import type { PeragaBabak } from './urutanLinimasa';
 import { kolomTerbukaSampai, sorotKetukan, type DataPeran } from './ketukan';
 import { durasiPutaran, peragaKetukan, tundaSelDari } from './peraga';
 import type { RingkasanHasil } from './ringkasan';
@@ -32,6 +33,8 @@ interface Props {
   kanvas: { pohon: ReactNode; tabel: ReactNode };
   /** Ada (kasus biasa, bukan Belajar terkunci) = pintu membuka mode Langkah demi langkah, bukan daftar lama di tempat. */
   linimasa: Linimasa | null;
+  /** Hasil dan ringkasan per babak tabel (satu per mayit); ada bersama `linimasa`. */
+  babak: PeragaBabak[] | null;
 }
 
 
@@ -45,10 +48,10 @@ const tandaiTepi = (wadah: HTMLElement) => {
 export const labelSubLangkah = (nomorBab: number, ketukan: number | null, jumlahBaris: number) =>
   `Langkah ${nomorBab + 1}${ketukan !== null && jumlahBaris > 1 ? String.fromCharCode(97 + ketukan) : ''}`;
 
-export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiNominal, terkunci, adalahBelajar, kanvas, linimasa }: Props) {
+export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiNominal, terkunci, adalahBelajar, kanvas, linimasa, babak }: Props) {
   const [terbuka, setTerbuka] = useState(false);
   const [modeBaru, setModeBaru] = useState(false);
-  const pakaiModeBaru = !!linimasa && !!hasil && !terkunci;
+  const pakaiModeBaru = !!linimasa && !!babak && !terkunci;
   const [mode, setMode] = useState<'satu' | 'semua'>('satu');
   const [indeks, setIndeks] = useState(0);
   const [dibaca, setDibaca] = useState<Set<number>>(new Set([0]));
@@ -178,7 +181,7 @@ export function KartuLangkah({ daftarBab, dataPeran, hasil, ringkasan, sembunyiN
         {terkunci && <span className="lencana-kunci"><Ikon nama="kunci" ukuran={14} /> {t('umum.terkunci')}</span>}
         <span className="panah-lipat" aria-hidden="true" />
       </button>
-      {modeBaru && linimasa && hasil && <LangkahDemiLangkah linimasa={linimasa} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} pohon={kanvas.pohon} saatTutup={() => setModeBaru(false)} />}
+      {modeBaru && linimasa && babak && <LangkahDemiLangkah linimasa={linimasa} babak={babak} ringkasanAkhir={ringkasan} sembunyiNominal={sembunyiNominal} pohon={kanvas.pohon} saatTutup={() => setModeBaru(false)} />}
       {terbuka && (terkunci ? (
         <div className="isi-kartu-sisi">
           <div className="langkah-terkunci">

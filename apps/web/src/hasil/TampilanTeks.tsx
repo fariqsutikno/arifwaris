@@ -6,11 +6,10 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import type { BagianLangkah, Langkah, Linimasa } from '@waris/explain';
 import { Baris, Dalil } from '../layar/Penjelasan';
 import { useGerakDikurangi } from '../tampilan';
-import type { HasilOk } from '../jalankan';
 import { HartaTabel, KotakHarta } from './KotakHarta';
 import { TabelLangkah } from './TabelLangkah';
 import { terbangkanAngka } from './terbangAngka';
-import { selSampai, visualTerakhir, type Posisi } from './urutanLinimasa';
+import { babakDi, selSampai, visualTerakhir, type PeragaBabak, type Posisi } from './urutanLinimasa';
 import type { RingkasanHasil } from './ringkasan';
 import { angka, t } from '../terjemah';
 import type { ReactNode } from 'react';
@@ -20,17 +19,19 @@ interface Props {
   urutan: Posisi[];
   indeks: number;
   semua: boolean;
-  hasil: HasilOk;
-  ringkasan: RingkasanHasil;
+  babak: PeragaBabak[];
+  /** Untuk tahap tanpa tabel (munasakhat: penyambungan, hasil akhir): nama dan warna penerima akhir. */
+  ringkasanAkhir: RingkasanHasil;
   sembunyiNominal: boolean;
   pohon: ReactNode;
 }
 
-export function TampilanTeks({ linimasa, urutan, indeks, semua, hasil, ringkasan, sembunyiNominal, pohon }: Props) {
+export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasanAkhir, sembunyiNominal, pohon }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
   const gerakKurang = useGerakDikurangi();
   const akhir = semua ? urutan.length - 1 : indeks;
-  const { terbuka, kini } = useMemo(() => selSampai(linimasa, urutan, akhir), [linimasa, urutan, akhir]);
+  const babakTampil = semua ? babak.map((_, nomor) => nomor) : [babakDi(linimasa, urutan, akhir)];
+  const selPerBabak = useMemo(() => babakTampil.map(nomor => selSampai(linimasa, urutan, akhir, nomor)), [linimasa, urutan, akhir, semua, babak.length]); // eslint-disable-line react-hooks/exhaustive-deps
   const kiniDiTabel = !semua;
 
   useLayoutEffect(() => {
@@ -50,9 +51,12 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, hasil, ringkasan
       <div className="teks-kiri">
         <section className="panel-langkah"><h2>{t('langkah.pohon_keluarga')}</h2><div className="isi-pohon">{pohon}</div></section>
         <section className="panel-langkah"><h2>{t('langkah.tabel_faraidh')}</h2>
-          <div className="wadah-tabel">
-            <TabelLangkah kolom={linimasa.tabel} hasil={hasil} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terbuka={terbuka} kini={kiniDiTabel ? kini : new Set()} />
-          </div>
+          {babakTampil.map((nomor, urut) => (
+            <div className="wadah-tabel" key={nomor}>
+              <TabelLangkah kolom={linimasa.tabel[nomor]!} hasil={babak[nomor]!.hasil} ringkasan={babak[nomor]!.ringkasan} sembunyiNominal={sembunyiNominal}
+                terbuka={selPerBabak[urut]!.terbuka} kini={kiniDiTabel ? selPerBabak[urut]!.kini : new Set()} />
+            </div>
+          ))}
         </section>
       </div>
       <section className="panel-langkah" aria-live="polite">
@@ -68,7 +72,7 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, hasil, ringkasan
               {semua && <p className="ke-tahap">{t('langkah.tahap_dari', { nomor: angka(String(nomorTahap + 1)), total: angka(String(linimasa.tahap.length)) })}</p>}
               {semua && <h3>{tahap.judul}</h3>}
               {harta && <HartaTabel baris={harta.baris} sembunyiNominal={sembunyiNominal} />}
-              {kotak && <KotakHarta visual={kotak} ringkasan={ringkasan} />}
+              {kotak && <KotakHarta visual={kotak} ringkasan={tahap.babak === undefined ? ringkasanAkhir : babak[tahap.babak]!.ringkasan} sebutan={linimasa.nama} />}
               {kelompokkan(tahap.langkah.map((langkah, nomor) => ({ langkah, nomor })).filter(({ nomor }) => nomor <= sampaiLangkah))
                 .map(kelompok => (
                   <div key={kelompok.isi[0]!.nomor} className={`bagian-langkah bagian-${kelompok.bagian}`}>
