@@ -24717,6 +24717,69 @@
    "id": "{nama}: {jumlah}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.sinema",
+   "halaman": "langkah",
+   "id": "Sinema",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.putar_otomatis",
+   "halaman": "langkah",
+   "id": "Putar otomatis",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.jeda_otomatis",
+   "halaman": "langkah",
+   "id": "Jeda",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.kecepatan",
+   "halaman": "langkah",
+   "id": "Kecepatan {kali}×",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.suara_nyala",
+   "halaman": "langkah",
+   "id": "Suara: nyala",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.suara_mati",
+   "halaman": "langkah",
+   "id": "Suara: mati",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.suara_tak_ada",
+   "halaman": "langkah",
+   "id": "Perangkat ini tidak punya suara bahasa Indonesia, jadi sinema berjalan dengan teks saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.lihat_pohon",
+   "halaman": "langkah",
+   "id": "Lihat pohon keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.lihat_tabel",
+   "halaman": "langkah",
+   "id": "Lihat tabel faraidh",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
