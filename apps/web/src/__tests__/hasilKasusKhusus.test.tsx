@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
@@ -68,5 +68,25 @@ describe('hasil kasus khusus (kerangka Hasil v6)', () => {
     render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={() => {}} />);
     expect(screen.getByText(/Terlalu banyak yang belum pasti/)).toBeTruthy();
     expect(screen.getAllByRole('button', { name: /Pastikan/ }).length).toBeGreaterThan(0);
+  });
+
+  const jalankanLangkah = (kasus: Kasus, idSesi: string) => {
+    render(<Hasil kasus={kasus} idSesi={idSesi} tujuan="hitung" kirim={() => {}} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    for (let klik = 0; klik < 200 && !within(mode()).queryByRole('button', { name: 'Selesai' }); klik++) fireEvent.click(within(mode()).getByRole('button', { name: /Lanjut/ }));
+    return mode();
+  };
+  it('langkah demi langkah: taqdir (hilang) punya meja kemungkinan dan kotak dengan bagian ditahan', () => {
+    const mode = jalankanLangkah(dengan((k, anak) => terapkanKeadaan(k, anak, { jenis: 'hilang' })), 's-ldl-taqdir');
+    expect(mode.querySelector('table')).toBeNull();
+    expect(mode.querySelector('.kt.ditahan, .kt .ditahan')).toBeTruthy();
+    fireEvent.click(within(mode).getByRole('button', { name: 'Selesai' }));
+    expect(screen.queryByRole('dialog', { name: 'Langkah demi langkah' })).toBeNull();
+  });
+  it('langkah demi langkah: gharqa serentak berjalan sampai Selesai', () => {
+    const mode = jalankanLangkah(bersamaan('serentak'), 's-ldl-gharqa');
+    expect(mode.querySelector('.kotak-harta')).toBeTruthy();
+    fireEvent.click(within(mode).getByRole('button', { name: 'Selesai' }));
   });
 });

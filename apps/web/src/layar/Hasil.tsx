@@ -34,7 +34,7 @@ import { DialogTambahAnak } from './DialogTambahAnak';
 import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
 import { adaTidakPas, adalahDzawilArham, pecahanTeks, persenTeks, ringkas, ringkasBiasa, type RingkasanHasil } from '../hasil/ringkasan';
 import { jenisDari } from '../checklist';
-import { susunLinimasa, susunLinimasaMunasakhat, type Linimasa } from '@waris/explain';
+import { susunLinimasa, susunLinimasaGharqa, susunLinimasaMunasakhat, susunLinimasaTaqdir, type Linimasa } from '@waris/explain';
 import type { PeragaBabak } from '../hasil/urutanLinimasa';
 import { kamusNarasi } from '../konten/kamusNarasi';
 import { unduhKasus } from '../berkas';
@@ -216,8 +216,15 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         babakLinimasa: hasilMunasakhat.daftarLangkah.map(langkah => ({ hasil: langkah.hasil, ringkasan: ringkasBiasa({ ...kasus.graf, idPewaris: langkah.mayit }, langkah.hasil) })),
       };
     }
+    // Taqdir/menunggu dan gharqa tidak punya tabel pipeline: tanpa babak.
+    if ((tampil.jenis === 'taqdir' || tampil.jenis === 'menunggu') && tampil.hasil.status === 'OK') {
+      return { linimasa: susunLinimasaTaqdir(tampil.hasil, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: [] };
+    }
+    if (tampil.jenis === 'gharqa' && (tampil.hasil.status === 'OK' || tampil.hasil.status === 'MAUQUF') && kasus.gharqa) {
+      return { linimasa: susunLinimasaGharqa(tampil.hasil, kasus.graf, kasus.gharqa.keadaan, { kamus: kamusNarasi }), babakLinimasa: [] };
+    }
     return { linimasa: null, babakLinimasa: null };
-  }, [hasilBiasa, hasilMunasakhat, sedangMenebak, adaDzawilArham, kasus.graf, ringkasan]);
+  }, [tampil, hasilBiasa, hasilMunasakhat, kasus.gharqa, sedangMenebak, adaDzawilArham, kasus.graf, ringkasan]);
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 
   const kamu = kasus.saya ? ringkasan.penerima.find(orang => orang.id === kasus.saya) : undefined;

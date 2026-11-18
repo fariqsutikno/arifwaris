@@ -24780,6 +24780,20 @@
    "id": "Lihat tabel faraidh",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.dunia_ke",
+   "halaman": "langkah",
+   "id": "Kemungkinan {nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.taqdir.visual.ditahan",
+   "halaman": "narasi",
+   "id": "Bagian yang ditahan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
