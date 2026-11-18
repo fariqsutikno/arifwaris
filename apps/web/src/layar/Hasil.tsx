@@ -13,7 +13,8 @@ import { keJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
 import { useBahasa, type Tujuan } from '../preferensi';
-import { HasilKasusKhusus } from '../hasil/HasilKasusKhusus';
+import { PesanKasusKhusus } from '../hasil/HasilKasusKhusus';
+import { KelompokDitahan, TabelKemungkinan, TabelPerHarta, TabelSkenarioGharqa, UbinDitahan, UbinKemungkinanUrutan, UbinMenunggu } from '../hasil/Ditahan';
 import { DaftarAksi, UbinBagikan, UbinJenisMasalah, UbinSelanjutnya, UbinTentang, type AksiUbin } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
@@ -22,6 +23,8 @@ import { ModalOrang } from '../hasil/ModalOrang';
 import { ModalEkspor } from '../hasil/ModalEkspor';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
+import { KelompokMeninggal, KotakYangDibagi, TabelMunasakhatKitab, UbinUrutanPembagian } from '../hasil/Munasakhat';
+import { rantaiMunasakhat } from '../hasil/munasakhat';
 import { Pohon } from '../hasil/Pohon';
 import { tahunWafat as tahunWafatKasus } from '../penandaMeninggal';
 import { bisaTambahAnak } from '../kelompok';
@@ -29,7 +32,7 @@ import { tambahAnakBernama } from '../isianBagian';
 import { namaSingkat } from '../keadaanOrang';
 import { DialogTambahAnak } from './DialogTambahAnak';
 import { PohonLayarPenuh } from '../hasil/PohonLayarPenuh';
-import { adaTidakPas, pecahanTeks, persenTeks, ringkas } from '../hasil/ringkasan';
+import { adaTidakPas, pecahanTeks, persenTeks, ringkas, type RingkasanHasil } from '../hasil/ringkasan';
 import { jenisDari } from '../checklist';
 import { unduhKasus } from '../berkas';
 import { PenyediaSorot } from '../hasil/sorot';
@@ -96,10 +99,11 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       </main>
     );
   }
-  if (tampil.jenis === 'taqdir' || tampil.jenis === 'gharqa' || tampil.jenis === 'menunggu') {
-    return <HasilKasusKhusus kasus={kasus} tampil={tampil} kirim={kirim} idSesi={idSesi} />;
+  if ((tampil.jenis === 'taqdir' || tampil.jenis === 'gharqa' || tampil.jenis === 'menunggu')
+    && (tampil.hasil.status === 'PERLU_INPUT' || tampil.hasil.status === 'TIDAK_DIDUKUNG' || tampil.hasil.status === 'MAUQUF_SEMUA')) {
+    return <PesanKasusKhusus kasus={kasus} hasil={tampil.hasil} kirim={kirim} />;
   }
-  if (tampil.hasil.status !== 'OK') {
+  if ((tampil.jenis === 'biasa' || tampil.jenis === 'munasakhat') && tampil.hasil.status !== 'OK') {
     const hasil = tampil.hasil;
     return (
       <main className="halaman tumpuk">
@@ -126,7 +130,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const bahasa = useBahasa();
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa), [kasus, tampil, bahasa]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
-  const adalahBelajar = tujuan === 'belajar';
+  // Taqdir, menunggu kelahiran, dan gharqa belum punya mode Belajar (tebakan): selalu tampil sebagai hasil hitung.
+  const khusus = ringkasan.jenis === 'taqdir' || ringkasan.jenis === 'menunggu' || ringkasan.jenis === 'gharqa';
+  const adalahBelajar = tujuan === 'belajar' && !khusus;
+  const menunggu = ringkasan.jenis === 'menunggu';
+  const gharqaDitahan = !!ringkasan.gharqa?.skenario;
+  // Menunggu kelahiran: kasus langsung disimpan supaya bisa dibuka lagi setelah bayi lahir.
+  useEffect(() => { if (menunggu) simpanKasus(idSesi, kasus); }, [menunggu, idSesi, kasus]);
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
@@ -181,13 +191,23 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           onClick={() => setAnakDitambahDi(id)}><Ikon nama="tambah" /></button>
       )} />
   );
-  const tabel = <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
+  const umumKhusus = { graf: kasus.graf, ringkasan, sembunyiNominal, saatPilih: setOrangDipilih };
+  const rantai = useMemo(() => (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK'
+    ? { hasil: tampil.hasil, langkah: rantaiMunasakhat(tampil.hasil, ringkasan.tirkah.bersih, kasus.satuanPembulatan) } : null), [tampil, ringkasan, kasus.satuanPembulatan]);
+  const umumRantai = rantai && { graf: kasus.graf, ringkasan, rantai: rantai.langkah, sembunyiNominal, saatPilih: setOrangDipilih };
+  const tabel = umumRantai && !sedangMenebak ? <TabelMunasakhatKitab {...umumRantai} nominal={rantai!.hasil.nominal} />
+    : ringkasan.taqdir ? <TabelKemungkinan {...umumKhusus} />
+    : gharqaDitahan ? <TabelSkenarioGharqa {...umumKhusus} />
+    : ringkasan.gharqa ? <TabelPerHarta {...umumKhusus} daftarHarta={ringkasan.gharqa.harta} />
+    : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   const kanvasFokus = { pohon, tabel };
   const dataPeran = useMemo(() => dataPeranDari(kasus.graf, ringkasan, hasilBiasa?.tabel ?? null, kasus.urutanWafat, hasilBiasa?.jejak), [kasus, ringkasan, hasilBiasa]);
 
   const kamu = kasus.saya ? ringkasan.penerima.find(orang => orang.id === kasus.saya) : undefined;
   const peranKamu = kamu?.kunci && jenisDari(kamu.kunci)?.label.toLowerCase();
-  const daftarMayit = [namaPewaris || t('hitung.almarhum'), ...kasus.urutanWafat.map(id => kasus.graf.orang[id]?.nama?.trim() || id)];
+  const namaMayit = (id: IdOrang) => namaSingkat(kasus, id);
+  const daftarMayit = ringkasan.gharqa ? ringkasan.gharqa.anggota.map(namaMayit) : [namaPewaris || t('hitung.almarhum'), ...kasus.urutanWafat.map(namaMayit)];
+  const hero = teksHero(ringkasan, daftarMayit, namaPewaris);
   const aksiBagikan: AksiUbin[] = [
     ...(sudahTersimpan(idSesi, kasus) ? [] : [{ ikon: 'riwayat' as const, judul: t('hitung.simpan_lanjut_nanti'), keterangan: t('hasil.simpan_riwayat_ket'), saatPilih: () => setNamaTerbuka(true) }]),
     { ikon: 'unduh', judul: t('hasil.simpan_file_kasus'), keterangan: t('hasil.simpan_file_ket'), saatPilih: () => unduhKasus(kasus) },
@@ -199,16 +219,16 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       <header className="hero-hasil">
         <div className="bilah-hero">
           <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab', { nama: namaMadzhab(madzhab) })}</p>
-          {!adalahBelajar && <span className="status-hero"><i />{t('hasil.status_pasti')}</span>}
+          {!adalahBelajar && <span className={hero.ditahan ? 'status-hero tahan' : 'status-hero'}><i />{hero.status}</span>}
         </div>
         <div className="isi-hero">
           <div className="judul-soal">
             {adalahBelajar
               ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
-              : <h1>{namaPewaris ? t('hasil.pembagian_harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya')}</h1>}
+              : <h1>{hero.judul}</h1>}
             <p className="kalimat-hero">{adalahBelajar
               ? (sedangMenebak ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan') : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya'))
-              : t('hasil.dibagi_ke_jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) })}</p>
+              : hero.kalimat}</p>
             {!sedangMenebak && <div className="fakta-hero">
               <span>{t('hasil.jumlah_mayit', { jumlah: angka(String(daftarMayit.length)) })}</span>
               <span>{adaPotonganHarta ? t('hasil.ada_potongan_harta') : t('hasil.tanpa_potongan_harta')}</span>
@@ -218,23 +238,23 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}><Ikon nama="pensil" ukuran={18} /> {t('hitung.ubah_data_2')}</button>}
               {bolehUbah && !adalahBelajar && <button type="button" className="tautan-hero" onClick={() => setMadzhabTerbuka(true)}>{t('hitung.ganti_madzhab')}</button>}
             </div>
-            {!hanyaBaca && <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
+            {!hanyaBaca && !khusus && <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
               <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
               <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('umum.belajar')}</button>
             </div>}
           </div>
           {!sedangMenebak && (
             <div className="ubin-hero">
-              {kamu && (
+              {kamu && !menunggu && (
                 <button type="button" className="uh kamu" onClick={() => setOrangDipilih(kamu.id)}>
                   <span className="lbl">{peranKamu ? t('hasil.bagianmu_sebagai', { peran: peranKamu }) : t('hasil.bagianmu')}</span>
                   <b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(kamu.nominal)}</b>
-                  <small>{pecahanTeks(kamu.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(kamu.saham, ringkasan.penyebut)}</small>
+                  <small>{kamu.rincian ?? <>{pecahanTeks(kamu.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(kamu.saham, ringkasan.penyebut)}</>}</small>
                 </button>
               )}
-              <div className="uh"><span className="lbl">{t('hasil.harta_dibagi')}</span><b>{sembunyiNominal ? t('hitung.rp') : formatRupiahRingkas(ringkasan.tirkah.bersih)}</b><small>{t('hasil.sudah_bersih')}</small></div>
-              <div className="uh"><span className="lbl">{t('hasil.penerima')}</span><b>{t('hasil.jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) })}</b>
-                {ringkasan.terhalang.length > 0 && <small>{t('hasil.jumlah_tidak_mendapat', { jumlah: angka(String(ringkasan.terhalang.length)) })}</small>}</div>
+              {ubinHero(ringkasan, sembunyiNominal).map(ubin => (
+                <div key={ubin.label} className={ubin.tahan ? 'uh tahan' : 'uh'}><span className="lbl">{ubin.label}</span><b>{ubin.nilai}</b>{ubin.kecil && <small>{ubin.kecil}</small>}</div>
+              ))}
             </div>
           )}
         </div>
@@ -244,13 +264,19 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
         <div className="bento-s7">
-          <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
+          {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
+            saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
+          : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
+          : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)}
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih} saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
-            saatUbahHarta={bolehUbah && !adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
+            saatUbahHarta={bolehUbah && !adaPotonganHarta && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
+            pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
+            kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
+              : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
           {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab(madzhab) })}</p>}
           {adalahBelajar && !sedangMenebak && (
             <BandingMadzhab kasus={kasus} aktif={madzhab} sembunyiNominal={sembunyiNominal}
@@ -260,10 +286,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         {!sedangMenebak && (
           <div className="bento-s5">
             <UbinJenisMasalah ringkasan={ringkasan} daftarMayit={daftarMayit} />
+            {!menunggu && !gharqaDitahan && <UbinDitahan ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} />}
             <UbinTentang namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
-              saatUbahHarta={bolehUbah && adaPotonganHarta ? () => setUbahHartaTerbuka(true) : undefined} />
+              saatUbahHarta={bolehUbah && adaPotonganHarta && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined} />
           </div>
         )}
+        {umumRantai && !sedangMenebak && <UbinUrutanPembagian {...umumRantai} />}
         <section className="ubin-h bento-s12 ubin-pohon-tabel" data-tur="pohon" aria-labelledby="judul-pohon-tabel" data-tampil={panelHp}>
           <div className="kepala-ubin">
             <div>
@@ -286,7 +314,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               <Legenda />
             </div>
             <div className="panel-tabel-hasil">
-              <h3 id="judul-tabel-faraidh" className="judul-panel">{t('hitung.tabel_faraidh')}</h3>
+              <h3 id="judul-tabel-faraidh" className="judul-panel">{umumRantai ? t('hasil.munasakhat.tabel_munasakhat') : ringkasan.taqdir ? t('hasil.ditahan.tabel_kemungkinan') : ringkasan.gharqa ? t('hasil.gharqa.tabel_per_harta') : t('hitung.tabel_faraidh')}</h3>
               <div className="wadah-tabel">{tabel}</div>
             </div>
           </div>
@@ -378,6 +406,43 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       )}
     </main>
   );
+}
+
+/** Status, judul, dan kalimat hero menurut jenis kasus (acuan-hasil-final.html: Pasti / Sebagian ditahan / Ditunda / Ditahan). */
+function teksHero(ringkasan: RingkasanHasil, daftarMayit: string[], namaPewaris: string): { status: string; ditahan: boolean; judul: string; kalimat: string } {
+  const nama = namaPewaris || t('hitung.almarhum');
+  if (ringkasan.jenis === 'menunggu') return { status: t('hasil.ditahan.status_ditunda'), ditahan: true, judul: t('hasil.ditahan.judul_menunggu'), kalimat: t('hasil.titipan.menunggu_isi') };
+  if (ringkasan.gharqa?.skenario) return { status: t('hasil.ditahan.ditahan'), ditahan: true, judul: t('hasil.gharqa.judul_ditahan'), kalimat: t('hasil.titipan.gharqa_ditahan') };
+  if (ringkasan.gharqa) return { status: t('hasil.status_pasti'), ditahan: false, judul: t('hasil.pembagian_harta_nama', { nama: daftarMayit.join(t('umum.dan')) }), kalimat: t('hasil.titipan.gharqa_pembuka') };
+  if (ringkasan.ditahan && ringkasan.ditahan.nominal > 0n) return { status: t('hasil.ditahan.status_sebagian'), ditahan: true, judul: t('hasil.ditahan.judul_sebagian', { nama }), kalimat: t('hasil.ditahan.kalimat_sebagian') };
+  return {
+    status: t('hasil.status_pasti'), ditahan: false,
+    judul: namaPewaris ? t('hasil.pembagian_harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya'),
+    kalimat: t('hasil.dibagi_ke_jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) }),
+  };
+}
+
+/** Dua ubin kecil di hero (selain "Bagianmu"), menurut jenis kasus. */
+function ubinHero(ringkasan: RingkasanHasil, sembunyi: boolean): Array<{ label: string; nilai: string; kecil?: string; tahan?: boolean }> {
+  const uang = (nilai: bigint) => (sembunyi ? t('hitung.rp') : formatRupiahRingkas(nilai));
+  const daftarNama = (daftar: Array<{ nama: string }>) => daftar.map(orang => orang.nama).join(', ');
+  const ditahan = ringkasan.ditahan;
+  if (ringkasan.jenis === 'menunggu') {
+    return [{ label: t('hasil.ditahan.harta'), nilai: uang(ringkasan.tirkah.bersih), kecil: t('hasil.ditahan.belum_dibagi_kecil') },
+      { label: t('hasil.ditahan.sudah_pasti'), nilai: t('hasil.jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) }), kecil: daftarNama(ringkasan.penerima) }];
+  }
+  if (ringkasan.gharqa?.skenario) {
+    return [{ label: t('hasil.ditahan.ditahan'), nilai: uang(ringkasan.tirkah.bersih), kecil: t('hasil.gharqa.sampai_ingat'), tahan: true },
+      { label: t('hasil.gharqa.kemungkinan'), nilai: t('hasil.gharqa.jumlah_urutan', { jumlah: angka(String(ringkasan.gharqa.skenario.length)) }), kecil: t('hasil.gharqa.bahan_musyawarah') }];
+  }
+  if (ringkasan.gharqa) return ringkasan.gharqa.harta.map(harta => ({ label: t('hasil.titipan.harta_nama', { nama: harta.nama }), nilai: uang(harta.bersih) }));
+  if (ditahan && ditahan.nominal > 0n) {
+    return [{ label: t('hasil.ditahan.dibagi_sekarang'), nilai: uang(ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, 0n)), kecil: daftarNama(ringkasan.penerima) },
+      { label: t('hasil.ditahan.ditahan'), nilai: uang(ditahan.nominal), kecil: t('hasil.ditahan.untuk_nama', { nama: daftarNama(ditahan.orang) }), tahan: true }];
+  }
+  return [{ label: t('hasil.harta_dibagi'), nilai: uang(ringkasan.tirkah.bersih), kecil: t('hasil.sudah_bersih') },
+    { label: t('hasil.penerima'), nilai: t('hasil.jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) }),
+      ...(ringkasan.terhalang.length > 0 ? { kecil: t('hasil.jumlah_tidak_mendapat', { jumlah: angka(String(ringkasan.terhalang.length)) }) } : {}) }];
 }
 
 /** Tiga keadaan kotak di pohon kaca: wafat (garis putus), menerima (hijau), tidak menerima (redup). */

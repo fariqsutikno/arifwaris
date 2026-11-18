@@ -26,7 +26,7 @@ export function daftarBabDari(kasus: Kasus, tampil: HasilTampil, bahasa: Bahasa 
     return jelaskanMunasakhat(tampil.hasil, kasus.graf, { kamus: kamusNarasi }).daftarBagian
       .flatMap(bagian => bagian.daftarBab.map(bab => ({ judulBagian: bagian.judul, bab })));
   }
-  if (tampil.jenis === 'taqdir' && tampil.hasil.status === 'OK') {
+  if ((tampil.jenis === 'taqdir' || tampil.jenis === 'menunggu') && tampil.hasil.status === 'OK') {
     return jelaskanTaqdir(tampil.hasil, kasus.graf, { kamus: kamusNarasi }).daftarBagian
       .flatMap(bagian => bagian.daftarBab.map(bab => ({ judulBagian: bagian.judul, bab })));
   }

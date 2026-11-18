@@ -1515,6 +1515,50 @@ body.layar-hasil{background:var(--halaman)}
 .ubin-pelajari .urut-langkah{margin-top:10px}
 .ubin-pelajari .judul-pintu{flex:1}
 .ubin-pelajari .isi-kartu-sisi{margin-top:8px;padding:14px;border-radius:16px;background:var(--surface);color:var(--ink)}
+/* Ditahan (taqdir, menunggu lahir, gharqa keadaan 3): kuning = uang yang belum boleh dipakai. */
+.status-hero.tahan i{background:#f2c94c}
+.uh.tahan{background:rgba(242,201,76,.18);border-color:rgba(242,201,76,.55)}
+.ubin-h.ubin-ditahan{background:#fff7e0;border-color:#f0dca0}
+.ubin-ditahan h2 small{font:500 13px var(--font-sans);color:#6b4f00}
+.ubin-ditahan .sub-kartu{color:#6b4f00}
+.baris-ditahan{margin:8px 0 0;padding:0;list-style:none}
+.baris-ditahan li{display:grid;gap:2px;padding:9px 0;border-top:1px solid rgba(107,79,0,.15);font-size:14px}
+.baris-ditahan li:first-child{border-top:0}
+.baris-ditahan span{font-size:13px;color:#6b4f00}
+.kelompok-ditahan .avatar-orang{outline:1.5px dashed #d9b44a;outline-offset:1px}
+.catatan-menunggu{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--surface-sunken);font-size:14px}
+.catatan-menunggu p{margin:4px 0 6px}
+.tumpuk-tabel{display:grid;gap:12px}
+table.faraidh.ringkas{min-width:0}
+.judul-skenario{margin:0 0 6px;font:600 14px var(--font-sans)}
+.faraidh .baris-ditahan-tabel td{background:#fff7e0;color:#6b4f00;font-weight:600}
+/* Munasakhat: kotak yang dibagi, urutan pembagian, tabel ala kitab. */
+.kotak-dibagi{margin:12px 0 0;padding:10px 14px;border-radius:14px;background:var(--surface-sunken);font-size:14px}
+.ubin-urutan .rute-munasakhat{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px}
+.rute-langkah{display:inline-flex;align-items:center;gap:6px}
+.rute-munasakhat button:not(.tautan-aksi){min-height:36px;padding:0 12px;border:1px solid var(--kartu-tepi);border-radius:var(--radius-pill);background:var(--surface);color:var(--ink);font:600 13px var(--font-sans);cursor:pointer}
+.rute-munasakhat button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--surface-raised)}
+.rute-munasakhat button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.rute-munasakhat .ke{color:var(--ink-muted)}
+.blok-langkah{margin-top:14px;padding-inline-start:14px;border-inline-start:3px solid var(--aksen)}
+.blok-langkah h3{margin:0;font:600 16px var(--font-sans)}
+.masuk-langkah{margin:4px 0 8px;font-size:14px;color:var(--ink-muted)}
+.masuk-langkah b{color:var(--ink)}
+.tabel-langkah{width:100%;border-collapse:collapse;font-size:14px}
+.tabel-langkah th{padding:6px 8px;text-align:start;font:600 12.5px var(--font-sans);color:var(--ink-muted);border-bottom:1px solid var(--divider)}
+.tabel-langkah td{padding:8px;border-bottom:1px solid var(--divider);vertical-align:top}
+.tabel-langkah td small{display:block;font-size:12.5px;color:var(--ink-muted)}
+.tabel-langkah .uang{text-align:end;white-space:nowrap;font-variant-numeric:tabular-nums}
+.tabel-langkah tbody tr{cursor:pointer}
+.tabel-langkah tbody tr:hover{background:rgba(127,127,127,.08)}
+.tabel-langkah tbody tr:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.tabel-langkah .terus,.tabel-langkah .selesai{display:block;margin-top:2px;white-space:normal}
+.tabel-langkah .terus{color:var(--ink-muted);font-size:13px}
+.tabel-langkah .selesai{color:var(--primary);font-weight:600;font-size:13px}
+.faraidh .pengali{display:block;font-weight:600;opacity:.8}
+.faraidh th .ket{display:block;margin-top:2px;font:500 11.5px var(--font-sans);opacity:.8}
+.faraidh .jami{background:rgba(127,127,127,.12)}
+.faraidh thead th.jami{background:#2b3134}
 @media (max-width:980px){
   .isi-hero{grid-template-columns:1fr;align-items:start}
   .tata-hasil>*{grid-column:1/-1!important}

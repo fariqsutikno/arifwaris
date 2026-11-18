@@ -7,7 +7,8 @@ import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { LANGKAH_SELANJUTNYA } from '../konten/ahwal';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import { Istilah } from '../ui/Tooltip';
-import type { RingkasanHasil, TentangKasus } from './ringkasan';
+import type { KeadaanGharqa } from '@waris/engine';
+import type { JenisBelumPasti, RingkasanHasil, TentangKasus } from './ringkasan';
 import { angka, panah, t } from '../terjemah';
 
 // Bagian tertentu = fardh (1/2, 1/4, 1/8, 2/3, 1/3, 1/6): besarnya sudah ditentukan nash.
@@ -35,12 +36,53 @@ export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: Ringka
     <section className="ubin-h" aria-labelledby="judul-jenis-masalah">
       <h2 id="judul-jenis-masalah">{t('hasil.jenis_masalah')}</h2>
       <div className="daftar-info">
-        <BarisInfo label={t('hitung.jenis_kasus')} nilai={ringkasan.jenis === 'munasakhat' ? <Istilah id="munasakhat">{t('hitung.munasakhat')}</Istilah> : t('hasil.biasa')} />
-        {jenis && <BarisInfo label={t('hasil.kondisi')} nilai={<Istilah id={jenis.istilah}>{jenis.nama}</Istilah>} keterangan={jenis.arti} />}
-        <BarisInfo label={t('hasil.mayit')} nilai={daftarMayit.map((nama, urutan) => angka(`${urutan + 1}: ${nama}`)).join(' · ')} />
-        <BarisInfo label={t('hasil.yang_dibagi')} nilai={t('hitung.harta_nama', { nama: daftarMayit[0] ?? '' })} />
+        {ringkasan.taqdir ? <BarisBelumPasti ringkasan={ringkasan} />
+          : ringkasan.gharqa ? <BarisGharqa ringkasan={ringkasan} daftarMayit={daftarMayit} />
+          : <>
+            <BarisInfo label={t('hitung.jenis_kasus')} nilai={ringkasan.jenis === 'munasakhat' ? <Istilah id="munasakhat">{t('hitung.munasakhat')}</Istilah> : t('hasil.biasa')} />
+            {jenis && <BarisInfo label={t('hasil.kondisi')} nilai={<Istilah id={jenis.istilah}>{jenis.nama}</Istilah>} keterangan={jenis.arti} />}
+            <BarisInfo label={t('hasil.mayit')} nilai={daftarMayit.map((nama, urutan) => angka(`${urutan + 1}: ${nama}`)).join(' · ')} />
+            <BarisInfo label={t('hasil.yang_dibagi')} nilai={t('hitung.harta_nama', { nama: daftarMayit[0] ?? '' })} />
+          </>}
       </div>
     </section>
+  );
+}
+
+const JENIS_BELUM_PASTI: Record<JenisBelumPasti, string> = { haml: 'haml', mafqud: 'mafqud', khuntsa: 'khuntsa' };
+
+/** Taqdir / menunggu (13a–c): sumber yang belum pasti, jumlah kemungkinan, dan cara pemberiannya. */
+function BarisBelumPasti({ ringkasan }: { ringkasan: RingkasanHasil }) {
+  const { sumber, daftarDunia } = ringkasan.taqdir!;
+  const jenisAda = [...new Set(sumber.map(s => s.jenis))];
+  const menunggu = ringkasan.jenis === 'menunggu';
+  return (
+    <>
+      <BarisInfo label={t('hitung.jenis_kasus')} nilai={jenisAda.map((jenis, indeks) => <span key={jenis}>{indeks > 0 && ' · '}<Istilah id={JENIS_BELUM_PASTI[jenis]}>{JENIS_BELUM_PASTI[jenis]}</Istilah></span>)} />
+      <BarisInfo label={t('hasil.kondisi')} nilai={menunggu ? t('hasil.ditahan.kondisi_menunggu') : t('hasil.ditahan.jumlah_kemungkinan', { jumlah: angka(String(daftarDunia.length)) })} />
+      <BarisInfo label={t('hasil.ditahan.yang_belum_pasti')} nilai={sumber.map(s => s.nama).join(' · ')} />
+      <BarisInfo label={t('hasil.yang_dibagi')} nilai={menunggu ? t('hasil.ditahan.belum_dibagi')
+        : <><Istilah id="aqall">{t('hasil.ditahan.bagian_terkecil')}</Istilah>{t('hasil.ditahan.sisanya')}<Istilah id="mauquf">{t('hasil.ditahan.ditahan_kecil')}</Istilah></>} />
+    </>
+  );
+}
+
+const KONDISI_GHARQA: Record<KeadaanGharqa, () => string> = {
+  serentak: () => t('hasil.gharqa.keadaan_serentak'),
+  terlupakan: () => t('hasil.gharqa.keadaan_terlupakan'),
+  berurutanTakDiketahui: () => t('hasil.gharqa.keadaan_berurutan'),
+  tidakDiketahui: () => t('hasil.gharqa.keadaan_tidak_diketahui'),
+};
+
+function BarisGharqa({ ringkasan, daftarMayit }: { ringkasan: RingkasanHasil; daftarMayit: string[] }) {
+  const { keadaan } = ringkasan.gharqa!;
+  return (
+    <>
+      <BarisInfo label={t('hitung.jenis_kasus')} nilai={<><Istilah id="gharqa">gharqa</Istilah> {t('hasil.gharqa.meninggal_bersamaan')}</>} />
+      <BarisInfo label={t('hasil.kondisi')} nilai={KONDISI_GHARQA[keadaan]()} />
+      <BarisInfo label={t('hasil.mayit')} nilai={daftarMayit.join(' · ')} />
+      <BarisInfo label={t('hasil.yang_dibagi')} nilai={keadaan === 'terlupakan' ? t('hasil.gharqa.ditahan_dulu') : t('hasil.gharqa.harta_terpisah', { jumlah: angka(String(daftarMayit.length)) })} />
+    </>
   );
 }
 
@@ -63,13 +105,29 @@ export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyi
         <BarisInfo label={t('hasil.pembulatan')} nilai={t('hasil.ke_satuan', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuanPembulatan)?.judul ?? formatRupiah(satuanPembulatan) })}
           keterangan={t('hasil.dibulatkan_ke_bawah')} />
       </div>
-      <h3 className="kepala-info">{t('hasil.hitungan')}</h3>
-      <div className="daftar-info"><BarisHitungan tentang={tentang} /></div>
+      {Object.keys(tentang).length > 0 && <>
+        <h3 className="kepala-info">{t('hasil.hitungan')}</h3>
+        <div className="daftar-info"><BarisHitungan tentang={tentang} /></div>
+      </>}
     </section>
   );
 }
 
 function BarisHitungan({ tentang }: { tentang: TentangKasus }) {
+  if (tentang.kemungkinan) {
+    const { jumlah, jamiah, diberikan, mauquf } = tentang.kemungkinan;
+    return (
+      <>
+        <BarisInfo label={t('hasil.ditahan.masalah_tiap_kemungkinan')} nilai={t('hasil.ditahan.jumlah_kemungkinan', { jumlah: angka(String(jumlah)) })} />
+        <BarisInfo label={<Istilah id="jamiah">{t('hitung.jami_ah')}</Istilah>} nilai={angka(String(jamiah))} keterangan={t('hasil.ditahan.jamiah_ket')} />
+        <BarisInfo label={t('hasil.ditahan.diberi_sekarang')} nilai={angka(String(diberikan))} keterangan={t('hasil.ditahan.dari_jamiah', { jamiah: angka(String(jamiah)) })} />
+        <BarisInfo label={t('hasil.ditahan.ditahan')} nilai={angka(String(mauquf))} keterangan={t('hasil.ditahan.dari_jamiah', { jamiah: angka(String(jamiah)) })} />
+      </>
+    );
+  }
+  if (tentang.perHarta) {
+    return <>{tentang.perHarta.map(harta => <BarisInfo key={harta.nama} label={t('hasil.munasakhat.masalah_nama', { nama: harta.nama })} nilai={angka(String(harta.jamiah))} />)}</>;
+  }
   return (
     <>
       {tentang.ashl && (
