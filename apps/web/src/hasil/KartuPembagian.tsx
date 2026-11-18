@@ -43,7 +43,7 @@ interface Props {
 /** Peran di bawah nama ("Istri"), kecuali namanya memang sudah peran itu. */
 const peranDari = (orang: { nama: string; kunci: Penerima['kunci'] }) => {
   const label = orang.kunci && jenisDari(orang.kunci)?.label;
-  return label && label !== orang.nama ? label : undefined;
+  return label && !orang.nama.startsWith(label) ? label : undefined;
 };
 
 export function KartuPembagian(props: Props) {
