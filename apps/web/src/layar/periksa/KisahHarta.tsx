@@ -39,7 +39,7 @@ export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting, pe
       <h2 id="judul-kisah" className="judul-bagian-kecil">{t('hitung.periksa.kisah_judul', { nama: pemilik })}</h2>
       <div className="linimasa">
         {kematianSebelum(kasus).map(id => (
-          <div key={id} className="jeda sebelum">{t('hitung.periksa.sebelum_pemilik', { tahun: tahunWafat(id)?.tahun ?? '?', nama: nama(id), pemilik })}</div>
+          <div key={id} className="jeda sebelum"><div><small>{labelSebelum(tahunWafat(id), pemilik)}</small>{t('hitung.periksa.sebelum_pemilik', { nama: nama(id) })}</div></div>
         ))}
         {babak.map((satu, indeks) => (
           <div key={satu.idMayit} className="langkah-kisah">
@@ -47,14 +47,15 @@ export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting, pe
             <BabakKisah kasus={kasus} babak={satu} ubah={ubah} kirim={kirim} terbuka={disunting === satu.idMayit}
               saatBuka={() => sunting(satu.idMayit)} saatTutup={() => sunting(null)} />
             {satu.peristiwaSesudah.map((peristiwa, urutan) => (
-              <div key={urutan} className="peristiwa"><Ikon nama="tambah" ukuran={15} />{kalimatPeristiwa(kasus, peristiwa, satu.idMayit)}</div>
+              <div key={urutan} className="peristiwa"><Ikon nama="tambah" ukuran={15} />
+                <div><small>{t('hitung.periksa.label_sesudah', { nama: nama(satu.idMayit) })}</small>{kalimatPeristiwa(kasus, peristiwa)}</div></div>
             ))}
           </div>
         ))}
         <Jeda kata={t('hitung.periksa.sampai_hari_ini')} harta={harta} />
         <article className="babak kini" aria-label={t('hitung.periksa.hari_ini')}>
-          <div className="kepala"><div>
-            <div className="tahun-besar">{t('hitung.periksa.hari_ini')}</div>
+          <div className="babak-kepala"><div>
+            <div className="penanda-kini">{t('hitung.periksa.hari_ini')}</div>
             <div className="judul-babak">{t('hitung.periksa.yang_masih_hidup')}</div>
           </div></div>
           <p>{t('hitung.periksa.hari_ini_isi', { daftar: hidup, pemilik })}</p>
@@ -68,6 +69,9 @@ export function KisahHarta({ kasus, ubah, kirim, babakDisunting, saatSunting, pe
     </section>
   );
 }
+
+const labelSebelum = (tahun: TanggalKira | undefined, pemilik: string) =>
+  tahun ? t('hitung.periksa.sebelum_label_tahun', { tahun: tahun.tahun, pemilik }) : t('hitung.periksa.sebelum_label', { pemilik });
 
 const kataJeda = (tahun: number | null) => tahun === null ? t('hitung.periksa.jeda_tanpa_tahun') : t('hitung.periksa.jeda_tahun', { n: tahun });
 
@@ -86,10 +90,10 @@ function kalimatCatatan(kasus: Kasus, jenis: string, orang: IdOrang[]): string {
   }
 }
 
-function kalimatPeristiwa(kasus: Kasus, peristiwa: Peristiwa, idAlmarhum: IdOrang): string {
-  const [nama, almarhum] = [namaSingkat(kasus, peristiwa.idOrang), namaSingkat(kasus, idAlmarhum)];
-  if (peristiwa.jenis === 'lahir') return t('hitung.periksa.peristiwa_baris_lahir', { nama, almarhum });
+function kalimatPeristiwa(kasus: Kasus, peristiwa: Peristiwa): string {
+  const nama = namaSingkat(kasus, peristiwa.idOrang);
+  if (peristiwa.jenis === 'lahir') return t('hitung.periksa.peristiwa_baris_lahir', { nama });
   const pasangan = namaSingkat(kasus, peristiwa.idPasangan);
-  return peristiwa.jenis === 'nikah' ? t('hitung.periksa.peristiwa_baris_nikah', { nama, pasangan, almarhum })
-    : t('hitung.periksa.peristiwa_baris_cerai', { nama, pasangan, almarhum });
+  return peristiwa.jenis === 'nikah' ? t('hitung.periksa.peristiwa_baris_nikah', { nama, pasangan })
+    : t('hitung.periksa.peristiwa_baris_cerai', { nama, pasangan });
 }

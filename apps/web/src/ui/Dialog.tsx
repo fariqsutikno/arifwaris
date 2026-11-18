@@ -18,9 +18,11 @@ interface Props {
   kataKunci?: string;
   /** Tombol lanjut nonaktif selama isian belum lengkap. */
   lanjutNonaktif?: boolean;
+  /** Aksi merusak (hapus): tombol lanjut merah di kanan, Batal berupa tautan di kiri. */
+  bahaya?: boolean;
 }
 
-export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan, kataKunci, lanjutNonaktif }: Props) {
+export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'Batal', saatLanjut, saatBatal, tahan, kataKunci, lanjutNonaktif, bahaya }: Props) {
   const id = useId();
   const [ketikan, setKetikan] = useState('');
   const cocok = !kataKunci || ketikan.trim() === kataKunci;
@@ -38,10 +40,12 @@ export function DialogKonfirmasi({ judul, children, labelLanjut, labelBatal = 'B
             <input value={ketikan} onChange={event => setKetikan(event.target.value)} autoComplete="off" spellCheck={false} />
           </label>
         )}
-        <div className="aksi-konfirmasi">
-          <Tombol data-batal onClick={saatBatal}>{labelBatal}</Tombol>
+        <div className={bahaya ? 'aksi-konfirmasi bahaya' : 'aksi-konfirmasi'}>
+          {bahaya
+            ? <button type="button" className="tautan-batal" data-batal onClick={saatBatal}>{labelBatal}</button>
+            : <Tombol data-batal onClick={saatBatal}>{labelBatal}</Tombol>}
           {tahan ? <TombolTahan label={labelLanjut} saatSelesai={saatLanjut} />
-            : <Tombol varian="secondary" disabled={!cocok || lanjutNonaktif} onClick={saatLanjut}>{labelLanjut}</Tombol>}
+            : <Tombol varian={bahaya ? 'danger' : 'secondary'} disabled={!cocok || lanjutNonaktif} onClick={saatLanjut}>{labelLanjut}</Tombol>}
         </div>
       </div>
     </div>

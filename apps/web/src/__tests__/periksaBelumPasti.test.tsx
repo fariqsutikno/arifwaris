@@ -26,7 +26,7 @@ describe('BelumPasti di Periksa', () => {
 
   it('keadaan belum tahu: tiga pilihan; "Masih hidup" menyimpan dan hal itu hilang dari daftar', () => {
     render(<Papan awal={kasusIbuBelumTahu().kasus} />);
-    expect(screen.getAllByRole('radio').map(r => r.textContent)).toEqual(['Masih hidup', 'Wafat sebelum Almarhum', 'Wafat sesudah Almarhum']);
+    expect(screen.getAllByRole('radio').map(r => r.textContent)).toEqual(['Masih hidup', 'Meninggal sebelum almarhum', 'Meninggal sesudah almarhum']);
     fireEvent.click(screen.getByRole('radio', { name: 'Masih hidup' }));
     expect(screen.getByTestId('sisa').textContent).toBe('0');
     expect(screen.getByText('Tersimpan: Siti. Kisah ikut berubah.')).toBeTruthy();
@@ -55,7 +55,7 @@ describe('BelumPasti di Periksa', () => {
     render(<Papan awal={kasusIbuBelumTahu().kasus} />);
     fireEvent.click(screen.getByRole('button', { name: 'Salin pertanyaan untuk keluarga' }));
     await waitFor(() => expect(screen.getByText(/Pertanyaan disalin/)).toBeTruthy());
-    expect(writeText.mock.calls[0]![0]).toContain('1. Waktu Almarhum wafat, apakah Siti masih hidup?');
+    expect(writeText.mock.calls[0]![0]).toContain('1. Waktu almarhum meninggal, apakah Siti masih hidup?');
     expect(document.querySelector('.wa')!.textContent).toBe(writeText.mock.calls[0]![0]);
   });
 

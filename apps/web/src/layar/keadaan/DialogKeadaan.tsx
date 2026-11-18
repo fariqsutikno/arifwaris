@@ -109,10 +109,10 @@ export function DialogKeadaan({ kasus, idOrang, saatSelesai, saatBatal, mulaiDi 
   const kembali = () => { const lalu = riwayat.at(-1); if (!lalu) return saatBatal(); setRiwayat(riwayat.slice(0, -1)); setLayar(lalu); setPilihan(null); };
 
   const opsi = (daftar: Array<[string, string, string?]>) => (
-    <div className="pilihan-dialog" role="radiogroup" aria-labelledby={`${id}-tanya`}>
+    <div className="daftar-pintu" role="radiogroup" aria-labelledby={`${id}-tanya`}>
       {daftar.map(([nilai, label, keterangan]) => (
-        <button key={nilai} type="button" role="radio" aria-checked={pilihan === nilai} className="opsi-dialog" onClick={() => setPilihan(nilai)}>
-          <span>{label}</span>{keterangan && <small>{keterangan}</small>}
+        <button key={nilai} type="button" role="radio" aria-checked={pilihan === nilai} className="pilihan-pintu" onClick={() => setPilihan(nilai)}>
+          <i aria-hidden="true" /><span className="teks-pintu"><span>{label}</span>{keterangan && <small>{keterangan}</small>}</span>
         </button>
       ))}
     </div>

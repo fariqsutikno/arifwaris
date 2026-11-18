@@ -6,12 +6,11 @@
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import type { Kasus, TanggalKira } from './kasus';
 import { alasanTidakDidukung, daftarAlmarhum, KHUNTSA_MUNGKIN, keadaanOrang, namaSingkat, terapkanKeadaan, type JawabanKeadaan } from './keadaanOrang';
+import { anggotaBagian, daftarBagian, kunciBagian, orangDiBaris, type Bagian, type JenisBagian } from './kelompok';
 import { aturTahunWafat, waktuRelatif } from './silsilah';
 import { t } from './terjemah';
 
 export type PilihanKeadaan = 'hidup' | 'wafat' | 'belumTahu' | 'hilang' | 'bercerai' | 'khuntsa';
-/** `lainnya` = ditaruh di bawah satu pilihan "Lainnya"; bila pilihan khusus orang itu hanya satu, ia tampil langsung (`utama`). */
-export interface OpsiKeadaan { nilai: PilihanKeadaan; kelompok: 'utama' | 'lainnya' }
 export type Lanjutan = 'wafat' | 'putusan' | 'iddah' | 'baligh';
 export type JawabanLanjutan =
   | { jenis: 'wafat'; tahun?: TanggalKira | null; waktu?: 'sebelum' | 'sesudah' }
@@ -20,18 +19,30 @@ export type JawabanLanjutan =
   | { jenis: 'baligh'; sudah: boolean };
 
 const PILIHAN_UMUM: PilihanKeadaan[] = ['hidup', 'wafat', 'belumTahu'];
-const KUNCI_LELUHUR: KunciAhliWaris[] = ['AYAH', 'IBU', 'KAKEK', 'NENEK_DARI_AYAH', 'NENEK_DARI_IBU'];
-const KUNCI_PASANGAN: KunciAhliWaris[] = ['SUAMI', 'ISTRI'];
 
-export function pilihanKeadaan(kunci: KunciAhliWaris): OpsiKeadaan[] {
-  const khusus: PilihanKeadaan[] = KUNCI_LELUHUR.includes(kunci) ? ['hilang']
-    : KUNCI_PASANGAN.includes(kunci) ? ['hilang', 'bercerai']
-    : ['hilang', ...(KHUNTSA_MUNGKIN.includes(kunci) ? ['khuntsa' as const] : [])];
-  const kelompokKhusus = khusus.length === 1 ? 'utama' : 'lainnya';
-  return [
-    ...PILIHAN_UMUM.map((nilai): OpsiKeadaan => ({ nilai, kelompok: 'utama' })),
-    ...khusus.map((nilai): OpsiKeadaan => ({ nilai, kelompok: kelompokKhusus })),
-  ];
+/** Hilang tanpa kabar dan cerai tidak jadi pil di kartu orang; keduanya dijawab di pertanyaan lanjutan akhir langkah (calonHilang, calonCerai). */
+export const pilihanKeadaan = (kunci: KunciAhliWaris): PilihanKeadaan[] =>
+  KHUNTSA_MUNGKIN.includes(kunci) ? [...PILIHAN_UMUM, 'khuntsa'] : PILIHAN_UMUM;
+
+/** `kunci`, `nomor` (urutan dalam perannya), dan `jenis` supaya daftar memakai sebutan yang sama dengan kartu orangnya. */
+export interface CalonLanjutan { id: IdOrang; milik: IdOrang; kunci: KunciAhliWaris; nomor: number; jenis: JenisBagian }
+const KEADAAN_BISA_HILANG: Array<PilihanKeadaan | null> = [null, 'hidup', 'belumTahu', 'hilang'];
+const KEADAAN_BISA_CERAI: Array<PilihanKeadaan | null> = [null, 'hidup', 'belumTahu', 'bercerai'];
+
+/** Orang di kartu mana pun (satu kali, tanpa janin) yang keadaannya masih boleh diganti menjadi hilang tanpa kabar. */
+export const calonHilang = (kasus: Kasus): CalonLanjutan[] => calonDi(kasus, () => true, KEADAAN_BISA_HILANG);
+/** Pasangan almarhum yang keadaannya masih boleh diganti menjadi sudah dicerai. */
+export const calonCerai = (kasus: Kasus): CalonLanjutan[] => calonDi(kasus, bagian => bagian.jenis === 'pasangan', KEADAAN_BISA_CERAI);
+
+function calonDi(kasus: Kasus, bagianDipakai: (bagian: Bagian) => boolean, keadaanBoleh: Array<PilihanKeadaan | null>): CalonLanjutan[] {
+  const dilihat = new Set<IdOrang>();
+  // Dari anggotaBagian, bukan dari baris kartu: pasangan yang talaknya sudah bain bukan lagi ahli waris sehingga lepas dari baris, tapi tetap harus ada di daftar.
+  return daftarBagian(kasus).filter(bagian => bagian.jenis !== 'anakBersama' && bagianDipakai(bagian)).flatMap(bagian => {
+    const anggota = anggotaBagian(kasus, bagian);
+    const kunciDari = (id: IdOrang) => kunciBagian(kasus, bagian).find(kunci => orangDiBaris(kasus, bagian, kunci).includes(id)) ?? kunciBagian(kasus, bagian)[0]!;
+    return anggota.filter(id => !dilihat.has(id) && dilihat.add(id) && keadaanOrang(kasus, id) !== 'dalamKandungan' && keadaanBoleh.includes(keadaanTerpilih(kasus, id)))
+      .map(id => ({ id, milik: bagian.milik, jenis: bagian.jenis, kunci: kunciDari(id), nomor: anggota.filter(lain => kunciDari(lain) === kunciDari(id)).indexOf(id) + 1 }));
+  });
 }
 
 /** null = belum dipilih. Keadaan sementara (menunggu lanjutan) sudah terbaca dari graf. */
@@ -103,6 +114,15 @@ export function alasanBarisKurang(kasus: Kasus, id: IdOrang, milik: IdOrang): st
   if (terpilih === null) return t('hitung.kanvas.baris_pilih_keadaan');
   if (terpilih === 'wafat') return t('hitung.kanvas.baris_isi_waktu', { rel: namaSingkat(kasus, milik) });
   return t('hitung.kanvas.baris_jawab_lanjutan');
+}
+
+/** Pesan spesifik untuk baris yang belum rampung: apa tepatnya yang belum dijawab (dipakai di kaki kartu). */
+export function pesanBarisKurang(kasus: Kasus, id: IdOrang, milik: IdOrang): string {
+  const nama = namaSingkat(kasus, id);
+  const terpilih = keadaanTerpilih(kasus, id);
+  if (terpilih === null) return t('hitung.kanvas.kurang_keadaan', { nama });
+  if (terpilih === 'wafat') return t('hitung.kanvas.kurang_waktu', { nama, rel: namaSingkat(kasus, milik) });
+  return t('hitung.kanvas.kurang_lanjutan', { nama });
 }
 
 /** Tahun menyatakan "sesudah" tetapi engine belum mendukung kombinasinya (keadaan tetap "sebelum"); null bila tidak ada masalah. */

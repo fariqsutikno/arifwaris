@@ -73,7 +73,7 @@ function kasusAViaKanvas(): Kasus {
       case 'halLain': kasus = jawabHalLain(kasus, bagian.milik, false); break;
       case 'anakBersama': kasus = jawabAnakBersama(kasus, bagian, true); break;
       case 'kamu': kasus = jawabKamu(kasus, null); break;
-      case 'pasangan': case 'anak': case 'saudara': case 'jauh':
+      case 'pasangan': case 'anak': case 'saudara': case 'jauh': case 'saudaraKakek':
         if (milik === 'Budi' && bagian.jenis === 'pasangan') kasus = tambahOrang(kasus, bagian, 'ISTRI', 'Dewi');
         else if (milik === 'Budi' && bagian.jenis === 'anak') {
           kasus = tambahOrang(tambahOrang(kasus, bagian, 'ANAK_LK', 'Andi'), bagian, 'ANAK_PR', 'Sari');
@@ -129,7 +129,7 @@ describe('aksesibilitas kanvas (spec kanvas 11.8)', () => {
     expect(screen.getByRole('radiogroup', { name: t('hitung.kanvas.pintu_judul') })).toBeTruthy();
     unmount();
     render(<Papan awal={kasusBaru('L')} />);
-    expect(screen.getByRole('radiogroup', { name: 'Waktu Almarhum wafat, apakah beliau punya istri?' })).toBeTruthy();
+    expect(screen.getByRole('radiogroup', { name: 'Waktu almarhum meninggal, apakah beliau punya istri?' })).toBeTruthy();
     fireEvent.click(screen.getByRole('radio', { name: 'Ya' }));
     fireEvent.click(screen.getByRole('button', { name: 'Tambah Istri' }));
     expect(screen.getByRole('radiogroup', { name: 'Keadaannya sekarang?' })).toBeTruthy();

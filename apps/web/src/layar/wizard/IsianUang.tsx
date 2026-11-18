@@ -19,9 +19,13 @@ interface Props {
   /** Penjelasan panjang di balik ikon ⓘ di samping label. */
   info?: ReactNode;
   besar?: boolean;
+  /** Pesan galat: isian dibingkai merah dan ditandai aria-invalid (dipakai Lanjut yang tertahan). */
+  galat?: string | undefined;
+  /** Ketukan tambah cepat: kotak berkedip dan label melayang; `kali` bertambah tiap ketukan supaya animasi mengulang. */
+  ketukan?: { kali: number; label: string } | undefined;
 }
 
-export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar }: Props) {
+export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar, galat, ketukan }: Props) {
   const isian = useRef<HTMLInputElement>(null);
   const digitSebelumKursor = useRef<number | null>(null);
 
@@ -35,10 +39,11 @@ export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar 
   return (
     <div className={besar ? 'isian-uang besar' : 'isian-uang'}>
       <div className="label-isian"><label htmlFor={id}>{label}</label>{info && <InfoTip label={t('hitung.tentang_label', { label })}>{info}</InfoTip>}</div>
-      <div className="kotak-uang">
+      <div className={['kotak-uang', galat && 'galat', ketukan && `kedip-${ketukan.kali % 2}`].filter(Boolean).join(' ')}>
         <span className="prefix-uang" aria-hidden="true">{t('hitung.rp_3')}</span>
         <input id={id} ref={isian} inputMode="numeric" autoComplete="off" placeholder="0" value={teksRibuan(nilai)}
-          {...(keterangan ? { 'aria-describedby': `${id}-ket` } : {})}
+          {...(galat ? { 'aria-invalid': true } : {})}
+          {...(galat || keterangan ? { 'aria-describedby': [galat && `${id}-galat`, keterangan && `${id}-ket`].filter(Boolean).join(' ') } : {})}
           onChange={event => {
             const { selectionStart } = event.target;
             const value = angkaLatin(event.target.value);
@@ -47,6 +52,8 @@ export function IsianUang({ id, label, nilai, saatUbah, keterangan, info, besar 
             saatUbah(digit ? BigInt(digit) : 0n);
           }} />
       </div>
+      {ketukan && <span key={ketukan.kali} className="label-melayang" aria-hidden="true">{ketukan.label}</span>}
+      {galat && <p className="pesan-galat" id={`${id}-galat`}>{galat}</p>}
       {keterangan && <p className="caption-isian" id={`${id}-ket`}>{keterangan}</p>}
     </div>
   );

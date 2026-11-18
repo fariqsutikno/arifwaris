@@ -7,9 +7,9 @@ import type { TanggalKira } from '../../kasus';
 
 const PANJANG_TAHUN = 4;
 
-interface Props { label: string; petunjuk?: string; contoh?: string; nilai: TanggalKira | undefined; saatUbah: (tanggal: TanggalKira | undefined) => void }
+interface Props { label: string; petunjuk?: string; contoh?: string; fokus?: boolean; nilai: TanggalKira | undefined; saatUbah: (tanggal: TanggalKira | undefined) => void }
 
-export function IsianTahun({ label, petunjuk, contoh, nilai, saatUbah }: Props) {
+export function IsianTahun({ label, petunjuk, contoh, fokus, nilai, saatUbah }: Props) {
   const [teks, setTeks] = useState(nilai ? String(nilai.tahun) : '');
   const ubahTeks = (mentah: string) => {
     const angka = mentah.replace(/\D/g, '').slice(0, PANJANG_TAHUN);
@@ -19,7 +19,7 @@ export function IsianTahun({ label, petunjuk, contoh, nilai, saatUbah }: Props) 
   return (
     <label className="isian isian-tahun">
       <span>{label}{petunjuk && <> <span className="opsional">{petunjuk}</span></>}</span>
-      <input inputMode="numeric" autoComplete="off" value={teks} {...(contoh ? { placeholder: contoh } : {})} onChange={event => ubahTeks(event.target.value)} />
+      <input autoFocus={fokus} inputMode="numeric" autoComplete="off" value={teks} {...(contoh ? { placeholder: contoh } : {})} onChange={event => ubahTeks(event.target.value)} />
     </label>
   );
 }

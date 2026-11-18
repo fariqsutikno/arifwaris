@@ -113,6 +113,18 @@ export function Aplikasi() {
     const tautan = tautanKasus(idSesi, { layar, langkah: keadaan.langkah, ada: !!kasus });
     if (window.location.hash !== tautan) history.replaceState(null, '', tautan);
   }, [diKalkulator, idSesi, layar, keadaan.langkah, !!kasus]);
+  // Tautan/hash ke kasus lain di tab yang sama: URL jadi sumber, sama seperti muat ulang.
+  const idKasusDiUrl = rute.halaman === 'kalkulator' ? rute.kasus?.id : undefined;
+  useEffect(() => {
+    if (!idKasusDiUrl || idKasusDiUrl === idSesi) return;
+    const dariUrl = pulihDariUrl(window.location.hash, bacaTujuan());
+    if (!dariUrl) return;
+    if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
+    setSoalAktif(null);
+    setIdSesi(dariUrl.id);
+    setSumberSesi(dariUrl.sumber);
+    kirimAsli({ jenis: 'PULIHKAN', keadaan: dariUrl.keadaan });
+  }, [idKasusDiUrl]);
   const daftarTur = diKalkulator ? TUR[layar] ?? [] : [];
   // Keluar dari Hitung saat ada kasus di wizard/hasil: tanya dulu, dan beri tahu di mana kasusnya bisa dilanjutkan.
   const belumSelesai = !!kasus && layar !== 'awal' && layar !== 'hasil' && !kasusLengkap(kasus);

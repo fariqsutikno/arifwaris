@@ -31,7 +31,7 @@ describe('BagianUrutan (spec kanvas 5.6)', () => {
   it('pertanyaan berpasangan menyebut A dan B; Sebelum menyelesaikan dan bagian lengkap', () => {
     const { kasus } = kartoBertahun();
     render(<Uji awal={kasus} bagian={ambil(kasus, 'urutan')} Isi={BagianUrutan} />);
-    expect(screen.getByText('Mbah Sumi wafat sebelum atau sesudah Budi?')).toBeTruthy();
+    expect(screen.getByText('Mbah Sumi meninggal sebelum atau sesudah Budi?')).toBeTruthy();
     expect(bagianLengkap(kasus, ambil(kasus, 'urutan'))).toBe(false);
     radio('Sebelum Budi');
     expect(bagianLengkap(terakhir, ambil(terakhir, 'urutan'))).toBe(true);
@@ -76,10 +76,10 @@ describe('BagianKamu (spec kanvas 5.8)', () => {
     const pilihanKamu = () => within(container.querySelector<HTMLElement>('.pilihan-urutan')!);
     expect(pilihanKamu().queryAllByRole('radio', { checked: true })).toHaveLength(0);
     expect(bagianLengkap(kasus, kamu)).toBe(false);
-    radio('Saya Rina');
+    radio('Saya anak perempuan almarhum (Rina)');
     expect(terakhir.saya).toBe(rina);
     expect(within(document.getElementById(`baris-${rina}`)!).getByText('kamu')).toBeTruthy();
-    radio('Bukan, saya mengisi untuk orang lain');
+    radio('Saya bukan ahli waris, hanya membantu mengisi');
     expect(terakhir.saya).toBeNull();
     expect(bagianLengkap(terakhir, kamu)).toBe(true);
   });

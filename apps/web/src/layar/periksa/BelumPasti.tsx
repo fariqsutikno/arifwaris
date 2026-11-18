@@ -8,7 +8,7 @@ import { jawabUrutanTertunda } from '../../antreanUrutan';
 import { daftarBelumPasti, type HalBelumPastiTampil } from '../../belumPasti';
 import type { Kasus } from '../../kasus';
 import { jawabLanjutan, pilihKeadaan } from '../../keadaanBaris';
-import { namaSingkat } from '../../keadaanOrang';
+import { namaJelas } from '../../keadaanOrang';
 import { t } from '../../terjemah';
 import { Ikon } from '../../ui/Ikon';
 
@@ -19,7 +19,7 @@ export function BelumPasti({ kasus, ubah, saatLihatDiKeluarga }: Props) {
   const [tersimpan, setTersimpan] = useState('');
   const [statusSalin, setStatusSalin] = useState<'tersalin' | 'gagal' | null>(null);
   if (daftar.length === 0 && !tersimpan) return null;
-  const nama = (id: IdOrang) => namaSingkat(kasus, id);
+  const nama = (id: IdOrang) => namaJelas(kasus, id);
   const simpan = (untuk: IdOrang, f: (k: Kasus) => Kasus) => { ubah(f); setTersimpan(t('hitung.periksa.tersimpan', { nama: nama(untuk) })); };
   const pertanyaan = (hal: HalBelumPastiTampil) => hal.jenis === 'keadaan'
     ? t('hitung.periksa.tanya_keadaan', { almarhum: nama(hal.milik), nama: nama(hal.orang) })

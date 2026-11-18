@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { GrafKeluarga } from '@waris/engine';
-import { daftarInduk, hapusAhliWaris, hitungIsian, kurangiAhliWaris, tambahAhliWaris } from '../checklist';
+import { daftarInduk, hapusAhliWaris, hitungIsian, kurangiAhliWaris, labelOrangChecklist, pastikanOrangTua, tambahAhliWaris } from '../checklist';
 
 const grafAwal = (jenisKelamin: 'L' | 'P'): GrafKeluarga => ({
   idPewaris: 'PEWARIS',
@@ -107,5 +107,15 @@ describe('hapus orang tertentu', () => {
     const [pertama, kedua] = hitungIsian(graf, 'PEWARIS').ANAK_LK!;
     graf = hapusAhliWaris(graf, pertama!);
     expect(hitungIsian(graf, 'PEWARIS').ANAK_LK).toEqual([kedua]);
+  });
+});
+
+describe('labelOrangChecklist: leluhur tanpa kunci peran disebut menurut hubungannya', () => {
+  it('kakek dari ibu dan ayah dari kakek, bukan "Kerabat"', () => {
+    const ibu = pastikanOrangTua(grafAwal('L'), 'PEWARIS', 'P');
+    const kakek = pastikanOrangTua(ibu.graf, ibu.idOrang, 'L');
+    expect(labelOrangChecklist(kakek.graf, 'PEWARIS', kakek.idOrang)).toBe('Kakek dari ibu (sudah wafat)');
+    const buyut = pastikanOrangTua(kakek.graf, kakek.idOrang, 'L');
+    expect(labelOrangChecklist(buyut.graf, 'PEWARIS', buyut.idOrang)).toBe('Ayah dari kakek dari ibu (sudah wafat)');
   });
 });

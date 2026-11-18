@@ -28,7 +28,8 @@ export type Aksi =
   | { jenis: 'KE_LANGKAH'; langkah: number; fokus?: IdOrang; fokusBagian?: string; dariPeriksa?: boolean }
   | { jenis: 'UBAH_KASUS'; ubah: (kasus: Kasus) => Kasus }
   | { jenis: 'KE_LAYAR'; layar: Layar }
-  | { jenis: 'ULANGI' };
+  | { jenis: 'ULANGI' }
+  | { jenis: 'PULIHKAN'; keadaan: KeadaanAplikasi };
 
 export const keadaanAwal = (kasusTersimpan: Kasus | null, tujuan: Tujuan | null): KeadaanAplikasi =>
   ({ layar: 'awal', langkah: 1, kasus: kasusTersimpan, tujuan, jenisKasus: kasusTersimpan?.jenisKasus ?? null });
@@ -36,6 +37,7 @@ export const keadaanAwal = (kasusTersimpan: Kasus | null, tujuan: Tujuan | null)
 export function pengurangKeadaan(keadaan: KeadaanAplikasi, aksi: Aksi): KeadaanAplikasi {
   switch (aksi.jenis) {
     case 'PILIH_TUJUAN': return { ...keadaan, tujuan: aksi.tujuan };
+    case 'PULIHKAN': return aksi.keadaan;
     case 'MULAI': return { ...keadaan, layar: 'pintu', langkah: 1, kasus: null, jenisKasus: null };
     case 'PILIH_JENIS_KASUS': return { ...keadaan, layar: 'wizard', langkah: 1, jenisKasus: aksi.jenisKasus };
     case 'PILIH_PEWARIS': return { ...keadaan, kasus: pilihPewaris(keadaan.kasus, aksi.jenisKelamin, keadaan.jenisKasus) };

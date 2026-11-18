@@ -50,7 +50,7 @@ export function UbinDitahan({ ringkasan, sembunyiNominal }: Pick<Umum, 'ringkasa
   const ditahan = ringkasan.ditahan;
   if (!ditahan || ditahan.nominal === 0n) return null;
   return (
-    <section className="ubin ubin-ditahan" aria-labelledby="judul-uang-ditahan">
+    <section className="ubin-h ubin-ditahan" aria-labelledby="judul-uang-ditahan">
       <h2 id="judul-uang-ditahan">{t('hasil.ditahan.uang_ditahan')} <small><Istilah id="mauquf">{t('hasil.titipan.istilah')}</Istilah></small></h2>
       <p className="sub-kartu">{uangAtau(ditahan.nominal, sembunyiNominal)} · {t('hasil.ditahan.jangan_dipakai')}</p>
       <ul className="baris-ditahan">
@@ -65,7 +65,7 @@ export function UbinMenunggu({ ringkasan, saatPilih, saatBagiSekarang }: Pick<Um
   const daftarDunia = ringkasan.taqdir?.daftarDunia ?? [];
   const tetap = (id: IdOrang) => daftarDunia.every(dunia => dunia.saham[id] === ringkasan.taqdir?.diberikan[id]);
   return (
-    <section className="ubin kartu-utama" aria-labelledby="judul-menunggu">
+    <section className="ubin-h kartu-utama" aria-labelledby="judul-menunggu">
       <h2 id="judul-menunggu">{t('hasil.ditahan.yang_sudah_pasti')}</h2>
       <p className="sub-kartu">{t('hasil.ditahan.menunggu_sub')}</p>
       {ringkasan.penerima.length > 0 && (
@@ -192,7 +192,7 @@ export function UbinKemungkinanUrutan({ graf, ringkasan, sembunyiNominal, saatPi
   const namaMayit = (id: IdOrang) => skenario.flatMap(sk => sk.harta).find(h => h.mayit === id)?.nama ?? namaOrang(graf, ringkasan.statusOrang, id);
   const total = (harta: HartaRingkas[], id: IdOrang) => harta.reduce((jumlah, h) => jumlah + (h.nominal[id] ?? 0n), 0n);
   return (
-    <section className="ubin kartu-utama" aria-labelledby="judul-kemungkinan-urutan">
+    <section className="ubin-h kartu-utama" aria-labelledby="judul-kemungkinan-urutan">
       <h2 id="judul-kemungkinan-urutan">{t('hasil.gharqa.kemungkinan_urutan', { jumlah: angka(String(skenario.length)) })}</h2>
       <p className="sub-kartu">{t('hasil.gharqa.kemungkinan_urutan_sub')}</p>
       <div className="wadah-tabel">

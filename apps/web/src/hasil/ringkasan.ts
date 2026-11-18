@@ -72,6 +72,10 @@ export interface RingkasanHasil {
   gharqa?: { keadaan: KeadaanGharqa; anggota: IdOrang[]; harta: HartaRingkas[]; skenario?: Array<{ urutan: IdOrang[]; harta: HartaRingkas[] }> };
 }
 
+/** Hanya hasil biasa/munasakhat yang OK punya satu tabel bagian; taqdir, gharqa, menunggu, galat tidak. */
+export const bisaDiringkas = (tampil: HasilTampil): boolean =>
+  (tampil.jenis === 'biasa' || tampil.jenis === 'munasakhat') && tampil.hasil.status === 'OK';
+
 export function ringkas(kasus: Kasus, tampil: HasilTampil): RingkasanHasil {
   if (tampil.jenis === 'biasa' && tampil.hasil.status === 'OK') return ringkasBiasa(kasus.graf, tampil.hasil);
   if (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK') return ringkasMunasakhat(kasus.graf, tampil.hasil);
@@ -202,7 +206,8 @@ function ringkasTaqdir(kasus: Kasus, hasil: TaqdirOk, jenis: 'taqdir' | 'menungg
     .map(([id, saham]): Penerima => ({ ...orang(id), saham, nominal: hasil.nominal[id] ?? 0n, keterangan: '', ashabah: false })));
   const ditahan = orangDitahan(graf, hasil.daftarDunia, hasil.diberikan, hasil.jejak).map(({ id, sebab }) => ({ ...orang(id), sebab }));
   const tidakMenerima = new Set([...penerima, ...ditahan].map(o => o.id));
-  const diberikanTotal = Object.values(hasil.diberikan).reduce((jumlah, saham) => jumlah + saham, 0n);
+  if (!hasil.daftarDunia.length) throw new Error('invarian taqdir: tanpa kemungkinan');
+  const diberikanTotal = penerima.map(o => o.saham).reduce((jumlah, saham) => jumlah + saham, 0n);
   return {
     jenis, penerima, penyebut: hasil.jamiah,
     // Terhalang hanya bila terhalang di semua kemungkinan.
@@ -230,7 +235,8 @@ function orangDitahan(graf: GrafKeluarga, daftarDunia: DuniaTaqdir[], diberikan:
   const alasan = new Map(jejak.flatMap(langkah => (langkah.jenis === 'TAQDIR_PEMBERIAN' ? [[langkah.idOrang, langkah.alasan] as const] : [])));
   const sumber = Object.keys(daftarDunia[0]?.taqdir ?? {});
   const punyaBagian = [...new Set(daftarDunia.flatMap(dunia => Object.keys(dunia.saham).filter(id => dunia.saham[id]! > 0n)))];
-  return [...new Set([...sumber, ...punyaBagian])].filter(id => orangNyata(graf, id) && !((diberikan[id] ?? 0n) > 0n)).map(id => ({
+  // Sumber ketidakpastian selalu disebut (mis. khuntsa/mafqud yang sudah diberi aqall tetap menunggu sisanya).
+  return [...new Set([...sumber, ...punyaBagian.filter(id => !((diberikan[id] ?? 0n) > 0n))])].filter(id => orangNyata(graf, id)).map(id => ({
     id,
     sebab: graf.orang[id]?.statusHidup === 'dalamKandungan' ? 'bayi' : graf.orang[id]?.statusHidup === 'mafqud' ? 'kabar'
       // [R13-15] [SYF] mitra ashabah haml tidak diberi apa pun (13a.4).
@@ -286,7 +292,7 @@ function ringkasGharqa(kasus: Kasus, hasil: GharqaSelesai): RingkasanHasil {
   const nominalMauquf = harta.reduce((jumlah, h) => jumlah + h.nominalMauquf, 0n);
   const dibagi = penerima.reduce((jumlah, o) => jumlah + o.nominal, 0n);
   const daftarDunia = hasil.harta.flatMap(h => h.daftarDunia ?? []);
-  const diberikan = Object.fromEntries(penerima.map(o => [o.id, o.saham]));
+  const diberikan = Object.fromEntries(penerima.map(o => [o.id, harta.reduce((jumlah, h) => jumlah + (h.saham[o.id] ?? 0n), 0n)]));
   const jejakSemua = hasil.harta.flatMap(h => h.jejak);
   return {
     ...dasar, penerima, penyebut: tirkah.bersih > 0n ? tirkah.bersih : 1n,
@@ -307,6 +313,7 @@ export const tirkahGharqa = (kasus: Kasus, mayit: IdOrang): InputTirkah =>
 
 function jumlahTirkah(daftar: LangkahTirkah[]): LangkahTirkah {
   const [pertama, ...lain] = daftar;
+  if (!pertama) throw new Error('invarian gharqa: tanpa anggota');
   const BIDANG = ['kotor', 'tajhiz', 'hutang', 'wasiatDiminta', 'wasiatBatas', 'wasiatDipakai', 'wasiatButuhIjazah', 'bersih'] as const;
   return lain.reduce((jumlah, satu) => ({ ...jumlah, ...Object.fromEntries(BIDANG.map(bidang => [bidang, jumlah[bidang] + satu[bidang]])) }), pertama!);
 }

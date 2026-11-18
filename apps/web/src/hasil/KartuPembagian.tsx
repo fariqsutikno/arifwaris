@@ -36,6 +36,8 @@ interface Props {
   satuanPembulatan: bigint;
   saatUbahPembulatan: (satuan: bigint) => void;
   saatPilihOrang: (id: string) => void;
+  /** Orang yang bagiannya berbeda dari Syafi'i menurut madzhab terpilih. */
+  idBerbeda?: ReadonlySet<string>;
   saatUbahAhliWaris?: (() => void) | undefined;
   /** Diisi hanya bila tidak ada potongan harta (selain itu harta diubah dari Tentang kasus ini). */
   saatUbahHarta?: (() => void) | undefined;
@@ -58,7 +60,7 @@ export function KartuPembagian(props: Props) {
   const totalSisaKeluar = ringkasan.daftarSisaKeluar.reduce((jumlah, sisa) => jumlah + sisa.nominal, 0n);
 
   return (
-    <section className="ubin kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
+    <section className="ubin-h kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <div className="judul-kartu">
           <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hitung.pembagian')}</h2>
@@ -101,7 +103,7 @@ export function KartuPembagian(props: Props) {
           <JudulKelompok judul={t('hasil.penerima')} jumlah={ringkasan.penerima.length} />
           <ul className="daftar-bagian">
             {ringkasan.penerima.map(orang => (
-              <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} saatPilih={props.saatPilihOrang}
+              <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} berbeda={!!props.idBerbeda?.has(orang.id)} saatPilih={props.saatPilihOrang}
                 uang={uang(orang.nominal)} pecahan={orang.rincian ?? <>{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(orang.saham, ringkasan.penyebut)}</>} />
             ))}
             {ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan).map(sisa => (
@@ -144,8 +146,8 @@ export function JudulKelompok({ id, judul, jumlah }: { id?: string; judul: strin
   return <h3 className="judul-kelompok" id={id}><span>{judul}</span><span>{t('hasil.jumlah_orang', { jumlah: angka(String(jumlah)) })}</span></h3>;
 }
 
-export function BarisOrang({ orang, warna, redup = false, saatPilih, uang, pecahan }: {
-  orang: Pick<Penerima | Terhalang, 'id' | 'nama' | 'kunci'>; warna?: string; redup?: boolean; saatPilih: (id: string) => void; uang: string; pecahan: ReactNode;
+export function BarisOrang({ orang, warna, redup = false, berbeda = false, saatPilih, uang, pecahan }: {
+  orang: Pick<Penerima | Terhalang, 'id' | 'nama' | 'kunci'>; warna?: string; redup?: boolean; /** Bagiannya berbeda dari Syafi'i menurut madzhab terpilih. */ berbeda?: boolean; saatPilih: (id: string) => void; uang: string; pecahan: ReactNode;
 }) {
   const atribut = useAtributOrang();
   const { className, ...pemicu } = atribut(orang.id);
@@ -154,7 +156,7 @@ export function BarisOrang({ orang, warna, redup = false, saatPilih, uang, pecah
     <li>
       <button type="button" {...pemicu} className={['baris-bagian', redup && 'redup', className].filter(Boolean).join(' ')} onClick={() => saatPilih(orang.id)}>
         <AvatarOrang nama={orang.nama} warna={warna} ukuran={40} />
-        <span className="nama-bagian">{orang.nama}{peran && <small>{peran}</small>}</span>
+        <span className="nama-bagian">{orang.nama}{peran && <small>{peran}</small>}{berbeda && <small className="label-beda-madzhab">{t('hitung.berbeda_dari_syafii')}</small>}</span>
         <span className="jumlah-bagian"><span className="angka">{uang}</span><small>{pecahan}</small></span>
       </button>
     </li>

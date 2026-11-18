@@ -136,3 +136,19 @@ it('ringkasan kasus tanpa kotak centang (tidak terlihat seperti yang bisa dicent
   expect(ringkasan.querySelector('.tanda-ringkas')).toBeNull();
   expect(ringkasan.textContent).not.toMatch(/✓/);
 });
+
+it('navigasi hash ke URL kasus lain di tab yang sama memulihkan kasus itu', async () => {
+  const { catatRiwayat } = await import('../riwayat');
+  const { ubahOrang } = await import('../checklist');
+  const bernama = (nama: string) => { const k = { ...denganIstri(), tirkah: { ...denganIstri().tirkah, kotor: 24_000_000n } }; return { ...k, graf: ubahOrang(k.graf, 'PEWARIS', { nama }) }; };
+  catatRiwayat('satu', bernama('Ahmad Satu'), Date.now(), { jenis: 'sendiri' });
+  catatRiwayat('dua', bernama('Zaid Dua'), Date.now(), { jenis: 'sendiri' });
+  window.location.hash = '#/hitung/satu';
+  render(<Aplikasi />);
+  expect(document.body.textContent).toMatch(/Ahmad Satu/);
+  const { act } = await import('@testing-library/react');
+  act(() => { window.location.hash = '#/hitung/dua'; window.dispatchEvent(new HashChangeEvent('hashchange')); });
+  expect(document.body.textContent).toMatch(/Zaid Dua/);
+  expect(document.body.textContent).not.toMatch(/Ahmad Satu/);
+  expect(window.location.hash).toBe('#/hitung/dua');
+});

@@ -60,7 +60,7 @@ export function UbinUrutanPembagian({ graf, ringkasan, rantai, sembunyiNominal, 
   );
   const indeksTampil = ruteTerbuka ? rantai.map((_, indeks) => indeks) : [0, 1, rantai.length - 1];
   return (
-    <section className="ubin bento-s12 ubin-urutan" aria-labelledby="judul-urutan">
+    <section className="ubin-h bento-s12 ubin-urutan" aria-labelledby="judul-urutan">
       <h2 id="judul-urutan">{t('hasil.munasakhat.urutan_pembagian')}</h2>
       <p className="sub-kartu">{t('hasil.munasakhat.urutan_sub')}</p>
       <div className="rute-munasakhat">

@@ -2,7 +2,9 @@
 // orang lain". Tanpa jawaban bawaan; keduanya jawaban sah, jadi bagian boleh dilewati. Menyimpan `saya` lewat jawabKamu.
 
 import { useId } from 'react';
+import type { IdOrang } from '@waris/engine';
 import type { Kasus } from '../../kasus';
+import { peranDariMayit } from '../../checklist';
 import { calonKamu, jawabKamu } from '../../isianBagian';
 import { namaSingkat } from '../../keadaanOrang';
 import type { Bagian } from '../../kelompok';
@@ -13,7 +15,7 @@ interface Props { kasus: Kasus; bagian: Bagian; ubah: (f: (k: Kasus) => Kasus) =
 export function BagianKamu({ kasus, ubah }: Props) {
   const idLabel = useId();
   const pilihan: Array<[string | null, string]> = [
-    ...calonKamu(kasus).map((id): [string, string] => [id, t('hitung.kanvas.kamu_saya', { nama: namaSingkat(kasus, id) })]),
+    ...calonKamu(kasus).map((id): [string, string] => [id, labelSaya(kasus, id)]),
     [null, t('hitung.kanvas.kamu_orang_lain')],
   ];
   return (
@@ -24,4 +26,15 @@ export function BagianKamu({ kasus, ubah }: Props) {
       ))}
     </div>
   );
+}
+
+/** "Saya istri almarhum"; nama atau nomor disebut hanya bila menambah kejelasan ("Saya anak almarhum (Anak laki-laki 1)"). */
+function labelSaya(kasus: Kasus, id: IdOrang): string {
+  const nama = namaSingkat(kasus, id);
+  const peran = peranDariMayit(kasus.graf, kasus.graf.idPewaris, id);
+  if (!peran) return t('hitung.kanvas.ringkas_kamu', { nama });
+  const almarhum = namaSingkat(kasus, kasus.graf.idPewaris);
+  return nama.toLowerCase() === peran.toLowerCase()
+    ? t('hitung.kanvas.kamu_saya', { peran: peran.toLowerCase(), almarhum })
+    : t('hitung.kanvas.kamu_saya_nama', { peran: peran.toLowerCase(), almarhum, nama });
 }

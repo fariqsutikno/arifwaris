@@ -6,9 +6,9 @@ import { useId, useState } from 'react';
 import type { IdOrang, KunciAhliWaris } from '@waris/engine';
 import type { Kasus } from '../../kasus';
 import { daftarAnakPewaris, isiBarisTetap, jawabAnakBersama, kunciBagian, orangDenganKunci, slotTetap, tandaiAnakBersama } from '../../isianBagian';
-import { pilihanKeadaan, type PilihanKeadaan } from '../../keadaanBaris';
+import { pilihanKeadaan } from '../../keadaanBaris';
 import { namaSingkat } from '../../keadaanOrang';
-import { anggotaBagian, bagianDijawab, KUNCI_PER_KELOMPOK, type Bagian } from '../../kelompok';
+import { anggotaBagian, bagianDijawab, daftarBagian, KUNCI_PER_KELOMPOK, orangDiBaris, type Bagian } from '../../kelompok';
 import { t } from '../../terjemah';
 import { PertanyaanHamil } from '../keadaan/PertanyaanHamil';
 import { BagianHalLain } from './BagianHalLain';
@@ -22,14 +22,21 @@ interface Props {
   tandaiKurang: boolean; disorot: IdOrang | null; ya?: boolean;
 }
 
+/** Dilihat dari kakek, saudara laki-lakinya adalah paman pewaris [R03-2]; baris ini memakai sebutan paman, bukan saudara. */
+export const SEBUTAN_SAUDARA_KAKEK: Partial<Record<KunciAhliWaris, () => string>> = {
+  SAUDARA_KANDUNG: () => t('hitung.kanvas.baris_paman_kandung_ayah'),
+  SAUDARA_SEBAPAK: () => t('hitung.kanvas.baris_paman_sebapak_ayah'),
+};
+
 export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya = true }: Props) {
-  const barisDi = (kunci: KunciAhliWaris) => orangDenganKunci(kasus, bagian.milik, kunci).map(id => (
-    <BarisOrang key={id} kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot} />
+  const barisDi = (kunci: KunciAhliWaris, sebutan?: string) => orangDiBaris(kasus, bagian, kunci).map(id => (
+    <BarisOrang key={id} kasus={kasus} id={id} kunci={kunci} milik={bagian.milik} ubah={ubah} tandaiKurang={tandaiKurang} disorot={id === disorot}
+      {...(sebutan ? { sebutan } : {})} />
   ));
-  const kelompokPeran = (kunci: KunciAhliWaris, label?: string) => (
+  const kelompokPeran = (kunci: KunciAhliWaris, label?: string, sebutan?: string) => (
     <div className="kelompok-peran" key={kunci}>
       <PenghitungOrang kasus={kasus} bagian={bagian} kunci={kunci} ubah={ubah} {...(label ? { label } : {})} />
-      {barisDi(kunci)}
+      {barisDi(kunci, sebutan)}
     </div>
   );
   const bingung = (daftar: KunciAhliWaris[]) => <BingungMemilih daftarKunci={daftar.filter(kunci => orangDenganKunci(kasus, bagian.milik, kunci).length > 0)} />;
@@ -47,7 +54,7 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
         <>
           {kelompokPeran('ANAK_LK', t('hitung.laki_laki'))}
           {kelompokPeran('ANAK_PR', t('hitung.perempuan'))}
-          <PertanyaanHamil kasus={kasus} idMayit={bagian.milik} ubah={ubah} />
+          <PertanyaanHamil kasus={kasus} idMayit={bagian.milik} ubah={ubah} kecuali={orangBerkartu(kasus, bagian.milik)} />
           {bingung(['ANAK_LK', 'ANAK_PR'])}
         </>
       );
@@ -57,6 +64,10 @@ export function BagianKeluarga({ kasus, bagian, ubah, tandaiKurang, disorot, ya 
     case 'saudara': case 'jauh': {
       const daftar = KUNCI_PER_KELOMPOK[bagian.jenis] ?? [];
       return !ya ? null : <>{daftar.map(kunci => kelompokPeran(kunci))}{bingung(daftar)}</>;
+    }
+    case 'saudaraKakek': {
+      const daftar = KUNCI_PER_KELOMPOK.saudaraKakek ?? [];
+      return !ya ? null : <>{daftar.map(kunci => { const sebutan = SEBUTAN_SAUDARA_KAKEK[kunci]?.(); return kelompokPeran(kunci, sebutan, sebutan); })}{bingung(daftar)}</>;
     }
     case 'anakBersama': return <AnakBersama kasus={kasus} bagian={bagian} ubah={ubah} />;
     case 'halLain': return <BagianHalLain kasus={kasus} bagian={bagian} ubah={ubah} />;
@@ -78,9 +89,9 @@ function BarisTetap({ kasus, bagian, kunci, ubah, tandaiKurang, disorot }: Omit<
         <span className="peran">{peran}</span>
         <span className="keadaan-label" id={idLabel}>{t('hitung.kanvas.keadaan_tanya')}</span>
         <div className="seg" role="radiogroup" aria-labelledby={idLabel}>
-          {pilihanKeadaan(kunci).map(({ nilai }) => (
+          {pilihanKeadaan(kunci).map(nilai => (
             <button key={nilai} type="button" role="radio" aria-checked={false}
-              onClick={() => ubah(k => isiBarisTetap(k, bagian, kunci, nilai as PilihanKeadaan))}>{LABEL_KEADAAN[nilai]()}</button>
+              onClick={() => ubah(k => isiBarisTetap(k, bagian, kunci, nilai))}>{LABEL_KEADAAN[nilai]()}</button>
           ))}
         </div>
         {tandaiKurang && <span className="salah">{t('hitung.kanvas.baris_pilih_keadaan')}</span>}
@@ -114,3 +125,7 @@ function AnakBersama({ kasus, bagian, ubah }: { kasus: Kasus; bagian: Bagian; ub
     </>
   );
 }
+
+/** Perempuan yang kartunya tampil di bagian mana pun milik `milik`: hamilnya ditanya di kartu itu, bukan di pertanyaan umum bagian anak. */
+const orangBerkartu = (kasus: Kasus, milik: IdOrang): IdOrang[] =>
+  daftarBagian(kasus).filter(bagian => bagian.milik === milik).flatMap(bagian => anggotaBagian(kasus, bagian));
