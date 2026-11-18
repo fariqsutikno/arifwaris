@@ -133,7 +133,7 @@ function BarisHitungan({ tentang }: { tentang: TentangKasus }) {
       {tentang.ashl && (
         <BarisInfo label={<Istilah id="ashlul-masalah">{t('hitung.asal_masalah')}</Istilah>} nilai={angka(String(tentang.ashl.nilai))}
           keterangan={tentang.ashl.penyebut.length > 1
-            ? <>{t('hitung.dari_penyebut_daftar_yang', { daftar: angka(tentang.ashl.penyebut.map(String).join(t('umum.dan'))) })} <Nisbah hubungan={tentang.ashl.hubungan ?? ''} /></>
+            ? <>{t('hitung.dari_penyebut_daftar', { daftar: angka(tentang.ashl.penyebut.map(String).join(t('umum.dan'))) })} <Nisbah hubungan={tentang.ashl.hubungan ?? ''} /></>
             : t('hitung.penyebut_bagian_yang_ada')} />
       )}
       {tentang.tashih && (

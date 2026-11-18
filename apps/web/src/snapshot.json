@@ -23984,6 +23984,62 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "hasil.disaring",
+   "halaman": "hasil",
+   "id": "Disaring:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ubah_pembulatan",
+   "halaman": "hasil",
+   "id": "Ubah pembulatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pembulatan_judul",
+   "halaman": "hasil",
+   "id": "Bagian tiap orang dibulatkan ke…",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.pembulatan_sub",
+   "halaman": "hasil",
+   "id": "Dibulatkan ke bawah; sisanya tidak dibagi diam-diam.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dari_penyebut_daftar",
+   "halaman": "hitung",
+   "id": "Dari penyebut {daftar},",
+   "ar": "من المخارج {daftar}،",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jumlah_orang",
+   "halaman": "hitung",
+   "id": "{n} orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jumlah_keadaan",
+   "halaman": "hitung",
+   "id": "{n} keadaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jumlah_dalil",
+   "halaman": "hitung",
+   "id": "{n} dalil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
    "kunci": "hasil.munasakhat.yang_dibagi_sekarang",
    "halaman": "hasil",
    "id": "Yang dibagi sekarang:",
