@@ -4,6 +4,8 @@ Acuan desain: `docs/design/mockup-langkah-demi-langkah.html` (disetujui pemilik 
 Tujuan: mengganti modal "Pelajari langkah perhitungan" (`KartuLangkah` + `FokusLangkah`) dengan mode fokus dua tampilan dari satu sumber data.
 Engine dan aturan fikih **tidak** berubah.
 
+**Prasyarat:** layar Hasil diintegrasikan lebih dulu sesuai `acuan-hasil-final.html` (riset bagian 27). Pintu masuk (panel "Pelajari cara menghitungnya"), peta warna orang, gaya tabel, dan istilah berasal dari layar itu; langkah demi langkah dibangun di atasnya.
+
 ## 1. Prinsip
 
 1. **Tidak ada angka atau narasi yang ditulis tangan per kasus.** Mockup menulis data per kasus; aplikasi menurunkannya dari `HasilOk` (tabel + `jejak`) dan graf. Semua kalimat lewat templat diksi `narasi.*` (kamus diberikan lewat argumen), kalimat baru ditambah dengan `pnpm diksi:tambah`.
