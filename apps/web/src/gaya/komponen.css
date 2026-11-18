@@ -1816,3 +1816,19 @@ table.faraidh{font-size:15.5px}
 .alat-pohon{flex-wrap:wrap}
 .alat-pohon .alat-bulat{width:36px;height:36px}
 .tombol-aliran{flex:none;white-space:nowrap}
+
+/* Huruf layar Hasil lebih besar (semua px di berkas ini, jadi tak ada tuas global): naik 1–1,5px per tingkat, tata letak tetap. */
+.halaman-hasil small,.halaman-hasil .angka{font-size:14px}
+.halaman-hasil .sub-kartu,.halaman-hasil .legenda,.halaman-hasil .lbl{font-size:15px}
+.halaman-hasil .kepala-info{font-size:13.5px}
+.halaman-hasil .baris-info b,.halaman-hasil .kotak-kolom,.halaman-hasil .atur-kolom>summary,.halaman-hasil .atur-kolom label{font-size:16px}
+.halaman-hasil .kotak-kolom p,.halaman-hasil .kotak-kolom b{font-size:inherit}
+.halaman-hasil .faraidh{font-size:16px}
+.halaman-hasil .faraidh th,.halaman-hasil .faraidh td{padding:10px 8px}
+.halaman-hasil .faraidh thead th{font-size:15px}
+.halaman-hasil .faraidh td.uang{font-size:17px}
+.halaman-hasil .wadah-pohon .node-orang b{font-size:16px}
+.halaman-hasil .wadah-pohon .node-orang .frac{font-size:15px}
+.halaman-hasil .wadah-pohon .node-orang .angka,.halaman-hasil .wadah-pohon .node-orang .peran-node{font-size:13.5px}
+.halaman-hasil .judul-panel{font-size:17px}
+.halaman-hasil .tombol-aliran,.halaman-hasil .tautan-hero,.halaman-hasil .pil-hero{font-size:15px}
