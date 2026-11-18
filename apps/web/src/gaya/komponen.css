@@ -1732,3 +1732,10 @@ table.faraidh.ringkas{min-width:0}
 .kotak-harta .ket-kotak i{width:14px;height:14px}
 .kotak-harta .ket-kotak span{color:var(--ink)}
 .kotak-mini .kotak-harta{padding-top:24px}
+
+/* Daftar penerima (acuan mockup): baris berpanah, aksi ubah berupa tautan teks, sub-baris lebih terbaca */
+button.baris-bagian{grid-template-columns:auto minmax(0,1fr) auto auto}
+button.baris-bagian>svg{color:var(--ink-muted)}
+.baris-bagian{font-size:15px}
+.baris-bagian small{font-size:13px}
+.alat-pembagian{align-items:center;gap:12px}

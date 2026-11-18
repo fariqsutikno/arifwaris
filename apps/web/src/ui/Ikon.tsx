@@ -41,6 +41,7 @@ const JALUR = {
   info: <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></>,
   mata: <><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z" /><circle cx="12" cy="12" r="3" /></>,
   bawah: <path d="M6 9l6 6 6-6" />,
+  kanan: <path d="M9 6l6 6-6 6" />,
   lainnya: <><circle cx="5" cy="12" r="1.3" /><circle cx="12" cy="12" r="1.3" /><circle cx="19" cy="12" r="1.3" /></>,
   jam: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
 } as const;
