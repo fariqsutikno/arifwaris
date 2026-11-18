@@ -6,4 +6,5 @@ export { ID_ISTILAH, type IdIstilah } from './terms.js';
 export { jelaskanMunasakhat, type PenjelasanMunasakhat, type BagianMunasakhat } from './munasakhat.js';
 export { labelArab, angkaArab } from './arab.js';
 export { jelaskanTaqdir, jelaskanGharqa, type PenjelasanKasusKhusus } from './kasusKhusus.js';
+export { susunLinimasaMunasakhat } from './linimasaMunasakhat.js';
 export { susunLinimasa, kotakWakil, BATAS_KOTAK, type Linimasa, type Tahap, type Langkah, type Visual, type IdTahap, type BagianLangkah, type KolomLinimasa, type KolomTabel, type KodeSel, type PeranPohon, type BarisHarta, type IsiKotak } from './linimasa.js';

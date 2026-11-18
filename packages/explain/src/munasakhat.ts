@@ -13,13 +13,14 @@ import {
 } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
-type HasilOk = Extract<HasilMunasakhat, { status: 'OK' }>;
-type LangkahGabungan = Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>;
+export type HasilMunasakhatOk = Extract<HasilMunasakhat, { status: 'OK' }>;
+type HasilOk = HasilMunasakhatOk;
+export type LangkahGabungan = Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>;
 
 export interface BagianMunasakhat { judul: string; daftarBab: BabPenjelasan[] }
 export interface PenjelasanMunasakhat { daftarBagian: BagianMunasakhat[] }
 
-const AWALAN_SISA = 'sisaKeluar:';
+export const AWALAN_SISA = 'sisaKeluar:';
 
 export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { gaya?: 'cerita' | 'ringkas' | undefined; kamus: Kamus }): PenjelasanMunasakhat {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
@@ -50,7 +51,7 @@ export function jelaskanMunasakhat(hasil: HasilOk, graf: GrafKeluarga, opsi: { g
  * Tanpa nama, peran disebut terhadap mayit pertama yang ia warisi: "istri", "anak laki-laki dari istri".
  * Sebutan yang sama untuk dua orang diberi urutan ("anak perempuan pertama").
  */
-function buatSebut(hasil: HasilOk, graf: GrafKeluarga, penyusun: Penyusun): (id: IdOrang) => Potongan {
+export function buatSebut(hasil: HasilOk, graf: GrafKeluarga, penyusun: Penyusun): (id: IdOrang) => Potongan {
   const idPewaris = hasil.daftarLangkah[0]!.mayit;
   const ahliWarisDari = (id: IdOrang) => {
     for (const langkah of hasil.daftarLangkah) {
@@ -84,7 +85,7 @@ function buatSebut(hasil: HasilOk, graf: GrafKeluarga, penyusun: Penyusun): (id:
 }
 
 /** Penerima di jami'ah: orang, atau baris sisa harta seorang mayit (kunci `sisaKeluar:<mayit>`, IdSisaKeluar engine). */
-function sebutPenerima(penyusun: Penyusun, id: string, sebut: (id: IdOrang) => Potongan): Potongan[] {
+export function sebutPenerima(penyusun: Penyusun, id: string, sebut: (id: IdOrang) => Potongan): Potongan[] {
   return id.startsWith(AWALAN_SISA) ? munasakhat(penyusun, 'sisa_harta', { mayit: sebut(id.slice(AWALAN_SISA.length)) }) : [sebut(id)];
 }
 
@@ -94,7 +95,7 @@ const judulMunasakhat = (penyusun: Penyusun, kunci: string): string => teksKamus
 
 // ─── Bagian ───────────────────────────────────────────────────────────────────
 
-function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BagianMunasakhat {
+export function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BagianMunasakhat {
   const [pertama, ...berikutnya] = [hasil.daftarLangkah[0]!.mayit, ...urutanWafatSebenarnya(hasil)];
   const pewaris = sebut(pertama!);
   const daftarBaris: BarisPenjelasan[] = [
@@ -115,7 +116,7 @@ function urutanWafatSebenarnya(hasil: HasilOk): IdOrang[] {
   return hasil.jejak.flatMap(langkahIni => (langkahIni.jenis === 'MUNASAKHAT' || langkahIni.jenis === 'MUNASAKHAT_DILEWATI' ? [langkahIni.mayit] : []));
 }
 
-function penggabungan(langkahIni: LangkahGabungan, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BabPenjelasan {
+export function penggabungan(langkahIni: LangkahGabungan, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BabPenjelasan {
   const siapa = sebut(langkahIni.mayit);
   const sebelum = langkahIni.jamiah / langkahIni.wafqMasalah;
   const daftarBaris: BarisPenjelasan[] = [
@@ -149,7 +150,7 @@ function teksHubungan(penyusun: Penyusun, langkahIni: LangkahGabungan, siapa: Po
   }
 }
 
-function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BagianMunasakhat {
+export function hasilAkhir(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, penyusun: Penyusun): BagianMunasakhat {
   const { ikhtishar, nominal, pembulatan } = hasil;
   const tampilkanNominal = hasil.jejak.some(langkahIni => langkahIni.jenis === 'TIRKAH' && langkahIni.kotor > 0n);
   const daftarBaris: BarisPenjelasan[] = [];
