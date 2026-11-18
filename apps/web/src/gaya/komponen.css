@@ -395,6 +395,11 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .modal-orang{width:100%;box-sizing:border-box;max-width:540px;max-height:calc(100dvh - 32px);display:flex;flex-direction:column;background:var(--surface-raised);border:var(--border-w) solid var(--outline);border-radius:20px;box-shadow:var(--shadow-pop);overflow:hidden}
 .kepala-modal{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 16px;border-bottom:var(--border-w) solid var(--outline);color:var(--on-fill)}
 .kepala-modal.netral{background:var(--surface-sunken);color:var(--ink)}
+/* Status tegas dari sekali lihat (acuan-hasil-final): hijau tua menerima, abu tua tidak mendapat; huruf putih ≥ 4,5:1. */
+.kepala-modal.menerima{background:#1f5c3a;color:#fff}
+.kepala-modal.tidak{background:#4b554f;color:#fff}
+.kepala-modal.menerima .tombol-ikon,.kepala-modal.tidak .tombol-ikon{color:#fff;background:rgba(255,255,255,.18);border-color:transparent}
+.sub-modal{margin:2px 0 0;font-size:14px;opacity:.85}
 .kepala-modal>div{flex:1}
 .kepala-modal h2{margin:4px 0 0;font:700 24px/1.15 var(--font-display)}
 .peran-modal{margin:0;font:800 11px/1.2 var(--font-sans);letter-spacing:.06em;text-transform:uppercase;opacity:.8}
