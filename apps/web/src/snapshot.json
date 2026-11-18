@@ -23506,6 +23506,398 @@
    "id": "lama × {kali}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.ditahan",
+   "halaman": "hasil",
+   "id": "Ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.ditahan_kecil",
+   "halaman": "hasil",
+   "id": "ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.berbagi_dengan_bayi",
+   "halaman": "hasil",
+   "id": "belum menerima: berbagi sisa harta dengan bayi yang jumlahnya belum diketahui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.menunggu_urutan",
+   "halaman": "hasil",
+   "id": "menunggu urutan wafat diingat atau kesepakatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dibuka_bayi",
+   "halaman": "hasil",
+   "id": "Dibuka setelah bayi lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dibuka_kabar",
+   "halaman": "hasil",
+   "id": "Dibuka setelah ada kabar atau kepastian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dibuka_bersama_bayi",
+   "halaman": "hasil",
+   "id": "Dipastikan setelah bayi lahir; menurut madzhab Syafi'i jumlah bayi tidak dibatasi, jadi bagiannya belum diberi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dibuka_kepastian",
+   "halaman": "hasil",
+   "id": "Dipastikan setelah keadaannya jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dibuka_urutan",
+   "halaman": "hasil",
+   "id": "Ditahan sampai urutannya diingat atau para ahli waris berdamai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.uang_ditahan",
+   "halaman": "hasil",
+   "id": "Uang ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.jangan_dipakai",
+   "halaman": "hasil",
+   "id": "simpan terpisah, jangan dipakai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.yang_sudah_pasti",
+   "halaman": "hasil",
+   "id": "Yang sudah pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.menunggu_sub",
+   "halaman": "hasil",
+   "id": "Harta belum dibagi. Angka ini bagian paling sedikit, apa pun keadaan bayinya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.sudah_pasti",
+   "halaman": "hasil",
+   "id": "Sudah pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.paling_sedikit",
+   "halaman": "hasil",
+   "id": "paling sedikit",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.menunggu_bayi_lahir",
+   "halaman": "hasil",
+   "id": "Menunggu bayi lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.perlu_dibagi_sekarang",
+   "halaman": "hasil",
+   "id": "Perlu dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.perlu_dibagi_sekarang_isi",
+   "halaman": "hasil",
+   "id": "Bisa, bila ada kebutuhan mendesak. Akibatnya sebagian harta ditahan sampai bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.bagi_sekarang",
+   "halaman": "hasil",
+   "id": "Bagi sekarang, sebagian ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.diberi_sekarang",
+   "halaman": "hasil",
+   "id": "Diberi sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.kondisi_menunggu",
+   "halaman": "hasil",
+   "id": "Menunggu lahir (lebih utama)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.jumlah_kemungkinan",
+   "halaman": "hasil",
+   "id": "{jumlah} kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.yang_belum_pasti",
+   "halaman": "hasil",
+   "id": "Yang belum pasti",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.belum_dibagi",
+   "halaman": "hasil",
+   "id": "Belum dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.belum_dibagi_kecil",
+   "halaman": "hasil",
+   "id": "belum dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.bagian_terkecil",
+   "halaman": "hasil",
+   "id": "Bagian terkecil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.sisanya",
+   "halaman": "hasil",
+   "id": "; sisanya ",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.masalah_tiap_kemungkinan",
+   "halaman": "hasil",
+   "id": "Mas'alah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.jamiah_ket",
+   "halaman": "hasil",
+   "id": "Semua kemungkinan disamakan dalam satu angka pembagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dari_jamiah",
+   "halaman": "hasil",
+   "id": "dari {jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.tabel_kemungkinan",
+   "halaman": "hasil",
+   "id": "Tabel kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.status_ditunda",
+   "halaman": "hasil",
+   "id": "Ditunda",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.status_sebagian",
+   "halaman": "hasil",
+   "id": "Sebagian ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.judul_menunggu",
+   "halaman": "hasil",
+   "id": "Pembagian menunggu bayi lahir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.judul_sebagian",
+   "halaman": "hasil",
+   "id": "Sebagian harta {nama} ditahan dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.kalimat_sebagian",
+   "halaman": "hasil",
+   "id": "Yang sudah pasti dibagi sekarang; sisanya ditahan sampai keadaannya jelas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.harta",
+   "halaman": "hasil",
+   "id": "Harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.dibagi_sekarang",
+   "halaman": "hasil",
+   "id": "Dibagi sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ditahan.untuk_nama",
+   "halaman": "hasil",
+   "id": "untuk {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.pecahan_dari_harta",
+   "halaman": "hasil",
+   "id": "{pecahan} dari harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.rupiah_dari",
+   "halaman": "hasil",
+   "id": "{uang} dari {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.kemungkinan_urutan",
+   "halaman": "hasil",
+   "id": "{jumlah} kemungkinan urutan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.kemungkinan_urutan_sub",
+   "halaman": "hasil",
+   "id": "Semua harta ditahan. Angka ini bahan musyawarah, belum dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.keadaan_serentak",
+   "halaman": "hasil",
+   "id": "Keadaan 1: serentak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.keadaan_terlupakan",
+   "halaman": "hasil",
+   "id": "Keadaan 3: urutannya terlupakan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.keadaan_berurutan",
+   "halaman": "hasil",
+   "id": "Keadaan 4: berurutan, tidak diketahui siapa dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.keadaan_tidak_diketahui",
+   "halaman": "hasil",
+   "id": "Keadaan 5: tidak diketahui sama sekali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.meninggal_bersamaan",
+   "halaman": "hasil",
+   "id": "(meninggal bersamaan)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.ditahan_dulu",
+   "halaman": "hasil",
+   "id": "Ditahan dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.harta_terpisah",
+   "halaman": "hasil",
+   "id": "{jumlah} harta, terpisah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.tabel_per_harta",
+   "halaman": "hasil",
+   "id": "Tabel per harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.judul_ditahan",
+   "halaman": "hasil",
+   "id": "Semua harta ditahan dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.sampai_ingat",
+   "halaman": "hasil",
+   "id": "sampai ingat atau berdamai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.kemungkinan",
+   "halaman": "hasil",
+   "id": "Kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.jumlah_urutan",
+   "halaman": "hasil",
+   "id": "{jumlah} urutan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.gharqa.bahan_musyawarah",
+   "halaman": "hasil",
+   "id": "bahan musyawarah",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

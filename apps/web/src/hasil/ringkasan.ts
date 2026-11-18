@@ -1,12 +1,13 @@
 // Ringkasan layar hasil: HasilTampil (OK) → data siap tampil untuk sidebar, pohon, tabel, dan modal.
 // Semua angka diambil dari engine (tabel, statusOrang, jejak); di sini hanya dipilih, diberi nama, dan diformat.
 
-import type { GrafKeluarga, IdOrang, KunciAhliWaris, LangkahJejak, StatusOrang } from '@waris/engine';
+import { hitungTirkah, type DuniaTaqdir, type GrafKeluarga, type HartaGharqa, type HasilGharqa, type HasilTaqdir, type IdOrang, type InputTirkah, type KeadaanGharqa, type KunciAhliWaris, type LangkahJejak, type StatusOrang } from '@waris/engine';
 import { fpb } from '@waris/math';
 import { jenisDari, type Kelompok } from '../checklist';
-import { namaOrang, penyebutAkhir } from '../format';
+import { formatRupiahRingkas, namaOrang, penyebutAkhir } from '../format';
 import { jalankan, type HasilMunasakhatOk, type HasilOk, type HasilTampil } from '../jalankan';
 import type { Kasus } from '../kasus';
+import { namaSingkat } from '../keadaanOrang';
 import { angka, bahasaArab, t } from '../terjemah';
 
 type LangkahTirkah = Extract<LangkahJejak, { jenis: 'TIRKAH' }>;
@@ -26,7 +27,17 @@ export interface Penerima {
   ashabah: boolean;
   /** Kode alasan fardh dari jejak engine (ADA_FARU_WARITS, UMARIYYATAIN, ...), untuk mencocokkan ahwal. */
   kodeAlasan?: string;
+  /** Gharqa: rincian per harta, menggantikan pecahan di daftar ("Rp 37,5 jt dari Ahmad + Rp 8,3 jt dari Budi"). */
+  rincian?: string;
 }
+
+/** Kenapa bagian seseorang ditahan (13.0b): menunggu kelahiran, kabar, kepastian, atau ingatan urutan wafat (gharqa keadaan 3). */
+export type SebabDitahan = 'bayi' | 'kabar' | 'bersamaBayi' | 'kepastian' | 'urutan';
+export interface OrangDitahan { id: IdOrang; nama: string; kunci: KunciAhliWaris | undefined; kelompok: Kelompok; sebab: SebabDitahan }
+export type JenisBelumPasti = 'haml' | 'mafqud' | 'khuntsa';
+
+/** Satu harta anggota gharqa, dibagi sendiri (13d). */
+export interface HartaRingkas { mayit: IdOrang; nama: string; bersih: bigint; jamiah: bigint; saham: Record<string, bigint>; nominal: Record<string, bigint>; nominalMauquf: bigint }
 
 export interface Terhalang { id: IdOrang; nama: string; kunci: KunciAhliWaris | undefined; kelompok: Kelompok; alasan: string }
 
@@ -36,10 +47,14 @@ export interface TentangKasus {
   aul?: { dari: bigint; menjadi: bigint };
   tashih?: { dari: bigint; jadi: bigint; hubungan?: Nisbah };
   jamiah?: bigint;
+  /** Taqdir: jami'ah semua kemungkinan, yang diberikan sekarang, dan yang ditahan (saham). */
+  kemungkinan?: { jumlah: number; jamiah: bigint; diberikan: bigint; mauquf: bigint };
+  /** Gharqa: mas'alah (jami'ah) tiap harta. */
+  perHarta?: Array<{ nama: string; jamiah: bigint }>;
 }
 
 export interface RingkasanHasil {
-  jenis: 'biasa' | 'munasakhat';
+  jenis: 'biasa' | 'munasakhat' | 'taqdir' | 'menunggu' | 'gharqa';
   penerima: Penerima[];
   terhalang: Terhalang[];
   /** Tashih (kasus biasa) atau jami'ah (munasakhat): jumlah semua saham. */
@@ -47,14 +62,21 @@ export interface RingkasanHasil {
   tirkah: LangkahTirkah;
   sisaPembulatan: bigint;
   /** Hanya pasangan yang mewarisi: sisa harta keluar dari ahli waris (engine `sisaKeluar`). Munasakhat: satu per mayit. */
+  /** `ditahan`: bagian mauquf (13.0b); tidak jadi baris di daftar (orangnya ada di kelompok Ditahan), hanya di penjumlahan. */
   daftarSisaKeluar: Array<{ id: string; saham: bigint; nominal: bigint; judul: string; keterangan: string; ditahan?: true }>;
   tentang: TentangKasus;
   statusOrang: Record<IdOrang, StatusOrang>;
+  /** Taqdir/gharqa: harta (rupiah) yang ditahan dan siapa yang menunggu. */
+  ditahan?: { nominal: bigint; orang: OrangDitahan[] };
+  taqdir?: { daftarDunia: DuniaTaqdir[]; diberikan: Record<IdOrang, bigint>; mauquf: bigint; sumber: Array<{ id: IdOrang; nama: string; jenis: JenisBelumPasti }> };
+  gharqa?: { keadaan: KeadaanGharqa; anggota: IdOrang[]; harta: HartaRingkas[]; skenario?: Array<{ urutan: IdOrang[]; harta: HartaRingkas[] }> };
 }
 
 export function ringkas(kasus: Kasus, tampil: HasilTampil): RingkasanHasil {
   if (tampil.jenis === 'biasa' && tampil.hasil.status === 'OK') return ringkasBiasa(kasus.graf, tampil.hasil);
   if (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK') return ringkasMunasakhat(kasus.graf, tampil.hasil);
+  if ((tampil.jenis === 'taqdir' || tampil.jenis === 'menunggu') && tampil.hasil.status === 'OK') return ringkasTaqdir(kasus, tampil.hasil, tampil.jenis);
+  if (tampil.jenis === 'gharqa' && (tampil.hasil.status === 'OK' || tampil.hasil.status === 'MAUQUF')) return ringkasGharqa(kasus, tampil.hasil);
   throw new Error('ringkas hanya untuk hasil OK');
 }
 
@@ -141,12 +163,7 @@ function asalInduk(graf: GrafKeluarga, statusOrang: Record<IdOrang, StatusOrang>
 
 function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): RingkasanHasil {
   // Tiap orang dinamai dari mayit tempat ia pertama kali menjadi ahli waris (bukan "kerabat" mayit lain).
-  const statusOrang: Record<IdOrang, StatusOrang> = {};
-  for (const { hasil: hasilMayit } of hasil.daftarLangkah) {
-    for (const [id, status] of Object.entries(hasilMayit.statusOrang)) {
-      if (!statusOrang[id] || (statusOrang[id]!.jenis !== 'ahliWaris' && status.jenis === 'ahliWaris')) statusOrang[id] = status;
-    }
-  }
+  const statusOrang = gabungStatus(hasil.daftarLangkah.map(langkah => langkah.hasil.statusOrang));
   const penerima = menurutKelompok(Object.entries(hasil.saham).filter(([, saham]) => saham > 0n).map(([id, saham]): Penerima => {
     const kunci = kunciDari(statusOrang[id]);
     return {
@@ -170,7 +187,143 @@ function ringkasMunasakhat(graf: GrafKeluarga, hasil: HasilMunasakhatOk): Ringka
   };
 }
 
+// ─── Taqdir dan menunggu kelahiran (13a–c) ────────────────────────────────────
+
+type TaqdirOk = Extract<HasilTaqdir, { status: 'OK' }>;
+
+// [R13-4] yang tetap di semua kemungkinan diberi sekarang (aqall); sisanya mauquf. Menunggu [R13-17]: angka sama, belum dibagi.
+function ringkasTaqdir(kasus: Kasus, hasil: TaqdirOk, jenis: 'taqdir' | 'menunggu'): RingkasanHasil {
+  const { graf } = kasus;
+  const statusOrang = gabungStatus(hasil.daftarDunia.map(dunia => dunia.statusOrang));
+  const orang = (id: IdOrang) => { const kunci = kunciDari(statusOrang[id]); return { id, nama: namaOrang(graf, statusOrang, id), kunci, kelompok: kelompokDari(kunci) }; };
+  const penerima = menurutKelompok(Object.entries(hasil.diberikan).filter(([id, saham]) => saham > 0n && orangNyata(graf, id))
+    .map(([id, saham]): Penerima => ({ ...orang(id), saham, nominal: hasil.nominal[id] ?? 0n, keterangan: '', ashabah: false })));
+  const ditahan = orangDitahan(graf, hasil.daftarDunia, hasil.diberikan, hasil.jejak).map(({ id, sebab }) => ({ ...orang(id), sebab }));
+  const tidakMenerima = new Set([...penerima, ...ditahan].map(o => o.id));
+  const diberikanTotal = Object.values(hasil.diberikan).reduce((jumlah, saham) => jumlah + saham, 0n);
+  return {
+    jenis, penerima, penyebut: hasil.jamiah,
+    // Terhalang hanya bila terhalang di semua kemungkinan.
+    terhalang: menurutKelompok(daftarTerhalang(graf, hasil.daftarDunia[0]!.statusOrang).filter(o => !tidakMenerima.has(o.id)
+      && hasil.daftarDunia.every(dunia => ['mahjub', 'mamnu'].includes(dunia.statusOrang[o.id]?.jenis ?? '')))),
+    tirkah: langkahTirkah(hasil.jejak),
+    sisaPembulatan: hasil.pembulatan.sisaPembulatan,
+    daftarSisaKeluar: hasil.mauquf > 0n ? [{ id: 'mauquf', saham: hasil.mauquf, nominal: hasil.nominalMauquf, judul: t('hasil.ditahan.ditahan'), keterangan: '', ditahan: true }] : [],
+    tentang: { kemungkinan: { jumlah: hasil.daftarDunia.length, jamiah: hasil.jamiah, diberikan: diberikanTotal, mauquf: hasil.mauquf } },
+    statusOrang,
+    ditahan: { nominal: hasil.nominalMauquf, orang: ditahan },
+    taqdir: {
+      daftarDunia: hasil.daftarDunia, diberikan: hasil.diberikan, mauquf: hasil.mauquf,
+      sumber: Object.keys(hasil.daftarDunia[0]!.taqdir).filter(id => orangNyata(graf, id)).map(id => ({ id, nama: namaOrang(graf, statusOrang, id), jenis: jenisBelumPasti(graf, id) })),
+    },
+  };
+}
+
+const jenisBelumPasti = (graf: GrafKeluarga, id: IdOrang): JenisBelumPasti =>
+  (graf.orang[id]?.statusHidup === 'dalamKandungan' ? 'haml' : graf.orang[id]?.statusHidup === 'mafqud' ? 'mafqud' : 'khuntsa');
+
+/** Yang belum menerima apa pun padahal punya bagian di salah satu kemungkinan, ditambah sumber ketidakpastian itu sendiri. */
+function orangDitahan(graf: GrafKeluarga, daftarDunia: DuniaTaqdir[], diberikan: Record<IdOrang, bigint>, jejak: LangkahJejak[]): Array<{ id: IdOrang; sebab: SebabDitahan }> {
+  const alasan = new Map(jejak.flatMap(langkah => (langkah.jenis === 'TAQDIR_PEMBERIAN' ? [[langkah.idOrang, langkah.alasan] as const] : [])));
+  const sumber = Object.keys(daftarDunia[0]?.taqdir ?? {});
+  const punyaBagian = [...new Set(daftarDunia.flatMap(dunia => Object.keys(dunia.saham).filter(id => dunia.saham[id]! > 0n)))];
+  return [...new Set([...sumber, ...punyaBagian])].filter(id => orangNyata(graf, id) && !((diberikan[id] ?? 0n) > 0n)).map(id => ({
+    id,
+    sebab: graf.orang[id]?.statusHidup === 'dalamKandungan' ? 'bayi' : graf.orang[id]?.statusHidup === 'mafqud' ? 'kabar'
+      // [R13-15] [SYF] mitra ashabah haml tidak diberi apa pun (13a.4).
+      : alasan.get(id) === 'kelasD' ? 'bersamaBayi' : 'kepastian',
+  }));
+}
+
+// ─── Gharqa (13d) ─────────────────────────────────────────────────────────────
+
+type GharqaSelesai = Extract<HasilGharqa, { status: 'OK' | 'MAUQUF' }>;
+
+// [R13-10] tidak saling mewarisi: tiap harta dibagi sendiri; daftar memakai total per orang dengan rincian per harta.
+// Keadaan 3 [SYF]: semua harta ditahan, tiap urutan yang mungkin hanya bahan musyawarah.
+function ringkasGharqa(kasus: Kasus, hasil: GharqaSelesai): RingkasanHasil {
+  const { graf } = kasus;
+  const semuaHarta = hasil.status === 'OK' ? hasil.harta : hasil.skenario.flatMap(skenario => skenario.harta);
+  const statusOrang = gabungStatus(semuaHarta.flatMap(harta => harta.daftarStatus.map(mas => mas.statusOrang)));
+  const orang = (id: IdOrang) => { const kunci = kunciDari(statusOrang[id]); return { id, nama: namaOrang(graf, statusOrang, id), kunci, kelompok: kelompokDari(kunci) }; };
+  const namaMayit = (id: IdOrang) => namaSingkat(kasus, id);
+  const tirkahMayit = (id: IdOrang) => hitungTirkah(tirkahGharqa(kasus, id)).jejak;
+  const susun = (harta: HartaGharqa): HartaRingkas => ({
+    mayit: harta.mayit, nama: namaMayit(harta.mayit), bersih: tirkahMayit(harta.mayit).bersih, jamiah: harta.jamiah,
+    saham: harta.saham, nominal: harta.nominal, nominalMauquf: harta.nominalMauquf,
+  });
+  const anggota = kasus.gharqa?.anggota ?? [];
+  const tirkah = jumlahTirkah(anggota.map(tirkahMayit));
+  const dasar = {
+    jenis: 'gharqa' as const, statusOrang, tirkah, daftarSisaKeluar: [] as RingkasanHasil['daftarSisaKeluar'], tentang: {} as TentangKasus,
+  };
+  if (hasil.status === 'MAUQUF') {
+    const skenario = hasil.skenario.map(({ urutan, harta }) => ({ urutan, harta: harta.map(susun) }));
+    const ids = [...new Set(skenario.flatMap(sk => sk.harta.flatMap(h => Object.keys(h.nominal).filter(id => orangNyata(graf, id) && h.nominal[id]! > 0n))))];
+    return {
+      ...dasar, penerima: [], terhalang: [], penyebut: 1n, sisaPembulatan: 0n,
+      ditahan: { nominal: tirkah.bersih, orang: menurutKelompok(ids.map(id => ({ ...orang(id), sebab: 'urutan' as const }))) },
+      gharqa: { keadaan: kasus.gharqa!.keadaan, anggota, harta: [], skenario },
+    };
+  }
+  const harta = hasil.harta.map(susun);
+  const uang = (nilai: bigint) => formatRupiahRingkas(nilai);
+  const penerima = menurutKelompok([...new Set(harta.flatMap(h => Object.keys(h.nominal)))].filter(id => orangNyata(graf, id)).flatMap((id): Penerima[] => {
+    const dari = harta.filter(h => (h.saham[id] ?? 0n) > 0n);
+    const nominal = dari.reduce((jumlah, h) => jumlah + (h.nominal[id] ?? 0n), 0n);
+    if (!dari.length) return [];
+    const [satu] = dari;
+    return [{
+      ...orang(id), saham: nominal, nominal, keterangan: '', ashabah: false,
+      rincian: dari.length === 1 ? t('hasil.gharqa.pecahan_dari_harta', { pecahan: pecahanTeks(satu!.saham[id]!, satu!.jamiah, 'sederhana'), nama: satu!.nama })
+        : dari.map(h => t('hasil.gharqa.rupiah_dari', { uang: uang(h.nominal[id] ?? 0n), nama: h.nama })).join(' + '),
+    }];
+  }));
+  const terima = new Set(penerima.map(o => o.id));
+  const nominalMauquf = harta.reduce((jumlah, h) => jumlah + h.nominalMauquf, 0n);
+  const dibagi = penerima.reduce((jumlah, o) => jumlah + o.nominal, 0n);
+  const daftarDunia = hasil.harta.flatMap(h => h.daftarDunia ?? []);
+  const diberikan = Object.fromEntries(penerima.map(o => [o.id, o.saham]));
+  const jejakSemua = hasil.harta.flatMap(h => h.jejak);
+  return {
+    ...dasar, penerima, penyebut: tirkah.bersih > 0n ? tirkah.bersih : 1n,
+    terhalang: menurutKelompok(harta.flatMap(h => daftarTerhalang(graf, statusOrangHarta(hasil.harta, h.mayit)))
+      .filter((o, indeks, semua) => !terima.has(o.id) && semua.findIndex(lain => lain.id === o.id) === indeks)),
+    sisaPembulatan: tirkah.bersih - dibagi - nominalMauquf,
+    daftarSisaKeluar: nominalMauquf > 0n ? [{ id: 'mauquf', saham: nominalMauquf, nominal: nominalMauquf, judul: t('hasil.ditahan.ditahan'), keterangan: '', ditahan: true }] : [],
+    tentang: { perHarta: harta.map(h => ({ nama: h.nama, jamiah: h.jamiah })) },
+    ...(nominalMauquf > 0n ? { ditahan: { nominal: nominalMauquf, orang: orangDitahan(graf, daftarDunia, diberikan, jejakSemua).filter(o => !terima.has(o.id)).map(({ id, sebab }) => ({ ...orang(id), sebab })) } } : {}),
+    gharqa: { keadaan: kasus.gharqa!.keadaan, anggota, harta },
+  };
+}
+
+const TANPA_TIRKAH: InputTirkah = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
+/** Tirkah tiap anggota gharqa: pewaris dari isian utama, anggota lain dari isian gharqa (tanpa isian = 0, sama dengan jalankan). */
+export const tirkahGharqa = (kasus: Kasus, mayit: IdOrang): InputTirkah =>
+  (mayit === kasus.graf.idPewaris ? kasus.tirkah : kasus.gharqa?.tirkah[mayit] ?? TANPA_TIRKAH);
+
+function jumlahTirkah(daftar: LangkahTirkah[]): LangkahTirkah {
+  const [pertama, ...lain] = daftar;
+  const BIDANG = ['kotor', 'tajhiz', 'hutang', 'wasiatDiminta', 'wasiatBatas', 'wasiatDipakai', 'wasiatButuhIjazah', 'bersih'] as const;
+  return lain.reduce((jumlah, satu) => ({ ...jumlah, ...Object.fromEntries(BIDANG.map(bidang => [bidang, jumlah[bidang] + satu[bidang]])) }), pertama!);
+}
+
+const statusOrangHarta = (daftarHarta: HartaGharqa[], mayit: IdOrang) => daftarHarta.find(h => h.mayit === mayit)?.daftarStatus[0]?.statusOrang ?? {};
+
 // ─── Bantuan ──────────────────────────────────────────────────────────────────
+
+/** Status gabungan beberapa mas'alah: yang pernah jadi ahli waris memakai status ahli warisnya. */
+function gabungStatus(daftar: Array<Record<IdOrang, StatusOrang>>): Record<IdOrang, StatusOrang> {
+  const statusOrang: Record<IdOrang, StatusOrang> = {};
+  for (const satu of daftar) {
+    for (const [id, status] of Object.entries(satu)) {
+      if (!statusOrang[id] || (statusOrang[id]!.jenis !== 'ahliWaris' && status.jenis === 'ahliWaris')) statusOrang[id] = status;
+    }
+  }
+  return statusOrang;
+}
+
+const orangNyata = (graf: GrafKeluarga, id: IdOrang): boolean => !!graf.orang[id] && !graf.orang[id]!.penghubung;
 
 function tentangKasus(jejak: LangkahJejak[]): TentangKasus {
   const tentang: TentangKasus = {};

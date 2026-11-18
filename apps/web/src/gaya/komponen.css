@@ -1472,6 +1472,22 @@ body.layar-hasil{background:var(--halaman)}
 .ubin-pelajari .urut-langkah{margin-top:10px}
 .ubin-pelajari .judul-pintu{flex:1}
 .ubin-pelajari .isi-kartu-sisi{margin-top:8px;padding:14px;border-radius:16px;background:var(--surface);color:var(--ink)}
+/* Ditahan (taqdir, menunggu lahir, gharqa keadaan 3): kuning = uang yang belum boleh dipakai. */
+.status-hero.tahan i{background:#f2c94c}
+.uh.tahan{background:rgba(242,201,76,.18);border-color:rgba(242,201,76,.55)}
+.ubin.ubin-ditahan{background:#fff7e0;border-color:#f0dca0}
+.ubin-ditahan h2 small{font:500 13px var(--font-sans);color:#6b4f00}
+.ubin-ditahan .sub-kartu{color:#6b4f00}
+.baris-ditahan{margin:8px 0 0;padding:0;list-style:none}
+.baris-ditahan li{display:grid;gap:2px;padding:9px 0;border-top:1px solid rgba(107,79,0,.15);font-size:14px}
+.baris-ditahan li:first-child{border-top:0}
+.baris-ditahan span{font-size:13px;color:#6b4f00}
+.kelompok-ditahan .avatar-orang{outline:1.5px dashed #d9b44a;outline-offset:1px}
+.catatan-menunggu{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--surface-sunken);font-size:14px}
+.catatan-menunggu p{margin:4px 0 6px}
+.tumpuk-tabel{display:grid;gap:12px}
+.judul-skenario{margin:0 0 6px;font:600 14px var(--font-sans)}
+.faraidh .baris-ditahan-tabel td{background:#fff7e0;color:#6b4f00;font-weight:600}
 /* Munasakhat: kotak yang dibagi, urutan pembagian, tabel ala kitab. */
 .kotak-dibagi{margin:12px 0 0;padding:10px 14px;border-radius:14px;background:var(--surface-sunken);font-size:14px}
 .ubin-urutan .rute-munasakhat{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:12px}

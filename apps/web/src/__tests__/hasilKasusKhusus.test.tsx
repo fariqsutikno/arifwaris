@@ -12,30 +12,49 @@ function dengan(ubah: (k: Kasus, anak: string) => Kasus): Kasus {
   return ubah(kasus, Object.values(kasus.graf.orang).find(o => o.idAyah === 'PEWARIS')!.id);
 }
 
-describe('hasil kasus khusus', () => {
-  it('taqdir (hilang): pembagian sekarang + disimpan dulu + bagaimana kalau', () => {
+const janin = (k: Kasus): Kasus => ({ ...k, graf: { ...k.graf, orang: { ...k.graf.orang,
+  J: { id: 'J', jenisKelamin: 'L', idAyah: 'PEWARIS', idIbu: Object.values(k.graf.orang).find(o => o.jenisKelamin === 'P')!.id, statusHidup: 'dalamKandungan', agama: 'islam' } } } });
+const bersamaan = (keadaan: 'serentak' | 'terlupakan') => dengan((k, anak) => terapkanKeadaan(k, anak, { jenis: 'bersamaan', keadaan, tirkah: { kotor: 300_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
+
+describe('hasil kasus khusus (kerangka Hasil v6)', () => {
+  it('taqdir (hilang): status sebagian ditahan, ubin uang ditahan, kelompok ditahan, tabel kemungkinan', () => {
     const kasus = dengan((k, anak) => terapkanKeadaan(k, anak, { jenis: 'hilang' }));
     render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={() => {}} />);
-    expect(screen.getByText(/Disimpan dulu/)).toBeTruthy();
+    expect(screen.getAllByText('Sebagian ditahan').length).toBeGreaterThan(0);
+    expect(screen.getByRole('region', { name: /Uang ditahan/ })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /^Ditahan/ })).toBeTruthy();
     expect(screen.getByText(/menunggu kabar/)).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: /Bagaimana kalau/ }));
+    expect(screen.getByRole('heading', { name: 'Tabel kemungkinan' })).toBeTruthy();
     expect(screen.getAllByText(/masih hidup|sudah wafat/).length).toBeGreaterThan(0);
   });
-  it('gharqa: dua kartu harta dan kalimat tidak saling mewarisi', () => {
-    const kasus = dengan((k, anak) => terapkanKeadaan(k, anak, { jenis: 'bersamaan', keadaan: 'serentak', tirkah: { kotor: 300_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } }));
+  it('haml [SYF]: anak lk yang berbagi ashabah dengan janin belum menerima apa pun (KB 13a.4)', () => {
+    const kasus = dengan(k => janin(k));
     render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={() => {}} />);
-    expect(screen.getByText(/tidak saling mewarisi/)).toBeTruthy();
-    expect(screen.getAllByRole('heading', { name: /^Harta / }).length).toBe(2);
+    expect(screen.getAllByText(/berbagi sisa harta dengan bayi/).length).toBeGreaterThan(0);
+    expect(screen.getByText(/menunggu bayi lahir/)).toBeTruthy();
   });
-  it('menunggu: kartu + tautan hitung sekarang mengubah pilihanJanin', () => {
+  it('gharqa serentak: tidak saling mewarisi, total dengan rincian per harta, tabel per harta', () => {
+    render(<Hasil kasus={bersamaan('serentak')} idSesi="s" tujuan="hitung" kirim={() => {}} />);
+    expect(screen.getByText(/tidak saling mewarisi/)).toBeTruthy();
+    expect(screen.getByRole('heading', { name: 'Tabel per harta' })).toBeTruthy();
+    expect(screen.getAllByRole('columnheader', { name: /^Harta / }).length).toBe(2);
+    expect(screen.getAllByText(/ dari /).length).toBeGreaterThan(0);
+  });
+  it('gharqa terlupakan [SYF]: semua ditahan, dua kemungkinan urutan', () => {
+    render(<Hasil kasus={bersamaan('terlupakan')} idSesi="s" tujuan="hitung" kirim={() => {}} />);
+    expect(screen.getByRole('heading', { name: 'Semua harta ditahan dulu' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /2 kemungkinan urutan/ })).toBeTruthy();
+    expect(screen.getAllByText(/wafat lebih dulu/).length).toBeGreaterThan(1);
+  });
+  it('menunggu: ditunda, kelompok menunggu bayi lahir, tautan bagi sekarang mengubah pilihanJanin', () => {
     const kirim = vi.fn();
-    const kasus = dengan(k => ({ ...k, pilihanJanin: 'tunggu', graf: { ...k.graf, orang: { ...k.graf.orang,
-      J: { id: 'J', jenisKelamin: 'L', idAyah: 'PEWARIS', statusHidup: 'dalamKandungan', agama: 'islam' } } } }));
+    const kasus = dengan(k => ({ ...janin(k), pilihanJanin: 'tunggu' }));
     expect(jalankan(kasus).jenis).toBe('menunggu');
     render(<Hasil kasus={kasus} idSesi="s" tujuan="hitung" kirim={kirim} />);
-    fireEvent.click(screen.getByRole('button', { name: /Hitung sekarang saja/ }));
-    const aksi = kirim.mock.calls[0]![0];
-    expect(aksi.jenis).toBe('UBAH_KASUS');
+    expect(screen.getByRole('heading', { name: 'Pembagian menunggu bayi lahir' })).toBeTruthy();
+    expect(screen.getByRole('heading', { name: /^Menunggu bayi lahir/ })).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /Bagi sekarang, sebagian ditahan/ }));
+    const aksi = kirim.mock.calls.find(([a]) => a.jenis === 'UBAH_KASUS')![0];
     expect(aksi.ubah(kasus).pilihanJanin).toBe('hitungSekarang');
   });
   it('PERLU_INPUT batas kemungkinan: daftar orang, bukan pesan teknis', () => {

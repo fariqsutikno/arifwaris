@@ -17,7 +17,8 @@ export type HasilTampil =
   | { jenis: 'munasakhat'; hasil: HasilMunasakhat }
   | { jenis: 'taqdir'; hasil: HasilTaqdir }
   | { jenis: 'gharqa'; hasil: HasilGharqa }
-  | { jenis: 'menunggu' }
+  /** Menunggu kelahiran [R13-17]: tidak dibagi; taqdir tetap dihitung untuk menunjukkan yang sudah pasti. */
+  | { jenis: 'menunggu'; hasil: HasilTaqdir }
   | { jenis: 'galat'; pesan: string };
 
 export function keInputEngine(kasus: Kasus): InputEngine {
@@ -47,8 +48,8 @@ export function jalankan(kasus: Kasus): HasilTampil {
     }
     if (adaBelumPasti(kasus)) {
       // [R13-17] menunggu kelahiran lebih utama; pengguna yang memilih.
-      if (kasus.pilihanJanin === 'tunggu' && adaJanin(kasus)) return { jenis: 'menunggu' };
-      return { jenis: 'taqdir', hasil: hitungTaqdir(dasar, lanjutan) };
+      const hasil = hitungTaqdir(dasar, lanjutan);
+      return kasus.pilihanJanin === 'tunggu' && adaJanin(kasus) ? { jenis: 'menunggu', hasil } : { jenis: 'taqdir', hasil };
     }
     if (kasus.urutanWafat.length > 0) return { jenis: 'munasakhat', hasil: hitungMunasakhat({ dasar, ...lanjutan }) };
     return { jenis: 'biasa', hasil: hitungDzawilArham(dasar) };
