@@ -24843,6 +24843,20 @@
    "id": "Ketuk kepala kolom untuk melihat hitungannya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ubah_baris",
+   "halaman": "hasil",
+   "id": "Ubah {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.dihitung",
+   "halaman": "hasil",
+   "id": "Dihitung",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

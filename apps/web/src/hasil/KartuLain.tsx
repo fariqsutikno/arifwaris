@@ -1,15 +1,16 @@
 // Ubin pendamping daftar di layar Hasil (acuan-hasil-final.html): Jenis masalah, Tentang kasus ini (KASUS + HITUNGAN),
 // Bagikan dan simpan, Langkah selanjutnya. Semua angka dari ringkasan (engine); ubin tanpa isi tidak dirender pemanggil.
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { formatRupiah } from '../format';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { LANGKAH_SELANJUTNYA } from '../konten/ahwal';
 import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import { Istilah } from '../ui/Tooltip';
+import { ModalPembulatan } from './KartuPembagian';
 import type { KeadaanGharqa } from '@waris/engine';
 import type { JenisBelumPasti, RingkasanHasil, TentangKasus } from './ringkasan';
-import { angka, panah, t } from '../terjemah';
+import { angka, bahasaArab, panah, t } from '../terjemah';
 
 // Bagian tertentu = fardh (1/2, 1/4, 1/8, 2/3, 1/3, 1/6): besarnya sudah ditentukan nash.
 const JENIS_KASUS: Record<NonNullable<TentangKasus['kelas']>, { nama: string; istilah: string; arti: string }> = {
@@ -26,8 +27,13 @@ const Nisbah = ({ hubungan }: { hubungan: string }) =>
   hubungan === 'habis' ? <>{ARTI_NISBAH.habis}</> : <>{ARTI_NISBAH[hubungan] ?? hubungan} (<Istilah id={hubungan}>{hubungan}</Istilah>)</>;
 
 /** Baris info: label abu · nilai tebal · keterangan kecil. */
-function BarisInfo({ label, nilai, keterangan }: { label: ReactNode; nilai: ReactNode; keterangan?: ReactNode }) {
-  return <div className="baris-info"><span className="lbl">{label}</span><b>{nilai}</b>{keterangan && <small>{keterangan}</small>}</div>;
+/** `ubah`: ikon pensil di ujung baris (mockup Hasil); tanpa teks supaya baris tetap tenang, nama aksinya jadi label aksesibilitas. */
+function BarisInfo({ label, nilai, keterangan, ubah }: { label: ReactNode; nilai: ReactNode; keterangan?: ReactNode; ubah?: { nama: string; saat: () => void } | undefined }) {
+  return (
+    <div className="baris-info"><span className="lbl">{label}</span><b>{nilai}</b>{keterangan && <small>{keterangan}</small>}
+      {ubah && <button type="button" className="pensil-baris" aria-label={ubah.nama} onClick={ubah.saat}><Ikon nama="pensil" ukuran={18} /></button>}
+    </div>
+  );
 }
 
 export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: RingkasanHasil; daftarMayit: string[] }) {
@@ -86,9 +92,12 @@ function BarisGharqa({ ringkasan, daftarMayit }: { ringkasan: RingkasanHasil; da
   );
 }
 
-export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta }: {
+export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta, saatUbahMadzhab, saatUbahAhliWaris, saatUbahPembulatan, waktuHitung }: {
   /** Selain Syafi'i (bawaan, terverifikasi); sumbernya sekunder. */ namaMadzhab?: string | undefined; ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
+  saatUbahMadzhab?: (() => void) | undefined; saatUbahAhliWaris?: (() => void) | undefined; saatUbahPembulatan?: ((satuan: bigint) => void) | undefined;
+  /** Waktu (ms) hasil dihitung; diberikan pemanggil supaya tes tidak bergantung jam. */ waktuHitung: number;
 }) {
+  const [bukaBulat, setBukaBulat] = useState(false);
   const { tirkah, tentang } = ringkasan;
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
   return (
@@ -96,15 +105,18 @@ export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyi
       <h2 id="judul-tentang">{t('hitung.tentang_kasus_ini')}</h2>
       <h3 className="kepala-info">{t('hasil.kasus')}</h3>
       <div className="daftar-info">
-        <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')} />
-        <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)}
+        <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')}
+          ubah={saatUbahMadzhab && { nama: t('hasil.ubah_baris', { nama: t('hasil.madzhab') }), saat: saatUbahMadzhab }} />
+        <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)} ubah={saatUbahHarta && { nama: t('hitung.ubah_harta'), saat: saatUbahHarta }}
           keterangan={<>{t('hasil.rincian_harta', { kotor: uang(tirkah.kotor), jenazah: uang(tirkah.tajhiz), hutang: uang(tirkah.hutang), wasiat: uang(tirkah.wasiatDipakai) })}
-            {tirkah.wasiatButuhIjazah > 0n && <> · {t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</>}
-            {saatUbahHarta && <> · <button type="button" className="tautan-aksi tautan-sebaris" onClick={saatUbahHarta}>{t('hitung.ubah_harta')}</button></>}</>} />
-        <BarisInfo label={t('hitung.ahli_waris')} nilai={t('hasil.ringkas_ahli_waris', { penerima: angka(String(ringkasan.penerima.length)), tidak: angka(String(ringkasan.terhalang.length)) })} />
+            {tirkah.wasiatButuhIjazah > 0n && <> · {t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</>}</>} />
+        <BarisInfo label={t('hitung.ahli_waris')} nilai={t('hasil.ringkas_ahli_waris', { penerima: angka(String(ringkasan.penerima.length)), tidak: angka(String(ringkasan.terhalang.length)) })}
+          ubah={saatUbahAhliWaris && { nama: t('hasil.ubah_baris', { nama: t('hitung.ahli_waris') }), saat: saatUbahAhliWaris }} />
         <BarisInfo label={t('hasil.pembulatan')} nilai={t('hasil.ke_satuan', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuanPembulatan)?.judul ?? formatRupiah(satuanPembulatan) })}
-          keterangan={t('hasil.dibulatkan_ke_bawah')} />
+          keterangan={t('hasil.dibulatkan_ke_bawah')} ubah={saatUbahPembulatan && { nama: t('hasil.ubah_baris', { nama: t('hasil.pembulatan') }), saat: () => setBukaBulat(true) }} />
+        <BarisInfo label={t('hasil.dihitung')} nilai={new Date(waktuHitung).toLocaleDateString(bahasaArab() ? 'ar-u-nu-arab' : 'id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} />
       </div>
+      {bukaBulat && saatUbahPembulatan && <ModalPembulatan satuan={satuanPembulatan} saatPilih={satuan => { saatUbahPembulatan(satuan); setBukaBulat(false); }} saatTutup={() => setBukaBulat(false)} />}
       {Object.keys(tentang).length > 0 && <>
         <h3 className="kepala-info">{t('hasil.hitungan')}</h3>
         <div className="daftar-info"><BarisHitungan tentang={tentang} /></div>
