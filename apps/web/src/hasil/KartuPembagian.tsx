@@ -5,6 +5,7 @@
 // Di mode Belajar sebelum jawaban dibuka, seluruh isinya diganti isian tebakan (KartuTebak).
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AvatarOrang } from './AvatarOrang';
 import { warnaOrang } from './warnaOrang';
 import { jenisDari } from '../checklist';
@@ -198,7 +199,8 @@ function ModalPembulatan({ satuan, saatPilih, saatTutup }: { satuan: bigint; saa
     if (document.activeElement === ujung) { event.preventDefault(); (event.shiftKey ? tombol[tombol.length - 1] : tombol[0])?.focus(); }
   };
   return (
-    <div className="modal-latar" onClick={event => { if (event.target === event.currentTarget) saatTutup(); }}>
+    // Portal ke body: position:fixed terkurung bila ada induk ber-transform/filter di dalam ubin.
+    createPortal(<div className="modal-latar" onClick={event => { if (event.target === event.currentTarget) saatTutup(); }}>
       <div ref={kotak} className="modal-orang modal-kecil" role="dialog" aria-modal="true" aria-label={t('hasil.pembulatan_judul')} onKeyDown={jagaFokus}>
         <header className="kepala-modal netral"><div><h2>{t('hasil.pembulatan_judul')}</h2><p className="sub-kartu">{t('hasil.pembulatan_sub')}</p></div></header>
         <div className="isi-modal">
@@ -212,6 +214,6 @@ function ModalPembulatan({ satuan, saatPilih, saatTutup }: { satuan: bigint; saa
         </div>
         <footer className="kaki-modal"><span className="pengisi" /><button type="button" className="tautan-aksi" onClick={saatTutup}>{t('umum.tutup')}</button></footer>
       </div>
-    </div>
+    </div>, document.body)
   );
 }
