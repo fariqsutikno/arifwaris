@@ -24864,6 +24864,90 @@
    "id": "{ashl} − {terpakai} = {kotak} kotak untuk {siapa}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_dasar",
+   "halaman": "hitung",
+   "id": "Dasar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kolom_di_kasus",
+   "halaman": "hitung",
+   "id": "Di kasus ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dasar_bagian",
+   "halaman": "hitung",
+   "id": "Tiap ahli waris mendapat bagian tertentu (fardh) menurut Al-Qur'an, atau sisa harta (ashabah) bila tidak ada bagian tertentu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dasar_ashl",
+   "halaman": "hitung",
+   "id": "Asal masalah adalah bilangan bulat terkecil yang bisa dibagi oleh semua penyebut bagian, supaya tiap bagian keluar tanpa pecahan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dasar_aul",
+   "halaman": "hitung",
+   "id": "Bila jumlah bagian melebihi harta, penyebut dinaikkan menjadi jumlah saham itu, sehingga kekurangannya ditanggung semua pemilik bagian sebanding bagiannya ('aul).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dasar_radd",
+   "halaman": "hitung",
+   "id": "Bila ada sisa dan tidak ada ashabah, sisa dikembalikan kepada pemilik bagian tertentu sebanding bagiannya. Suami atau istri tidak menerima radd.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.dasar_tashih",
+   "halaman": "hitung",
+   "id": "Bila bagian satu kelompok tidak habis dibagi jumlah kepalanya, semua bagian dikalikan pengali terkecil supaya tiap orang mendapat bilangan bulat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_ashl",
+   "halaman": "hitung",
+   "id": "Penyebut bagian: {penyebut}. Asal masalah: {ashl}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_aul",
+   "halaman": "hitung",
+   "id": "Jumlah saham {jumlah} lebih besar dari asal masalah {ashl}, jadi penyebut menjadi {jumlah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_radd",
+   "halaman": "hitung",
+   "id": "Ada sisa dan tidak ada ashabah, jadi sisa dikembalikan dan penyebut menjadi {jumlah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_tashih",
+   "halaman": "hitung",
+   "id": "Bagian kelompok tidak habis dibagi jumlah kepalanya, jadi semua bagian dikali {pengali}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_terhalang",
+   "halaman": "hitung",
+   "id": "{jumlah} orang terhalang, jadi tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
