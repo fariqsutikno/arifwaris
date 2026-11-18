@@ -1416,10 +1416,10 @@ body.layar-hasil{background:var(--halaman)}
 .disaring .tautan-aksi{color:#fff;min-height:0;text-decoration-color:#fff}
 .pilihan-bulat.tegak{grid-template-columns:1fr}
 .kepala-info{margin:14px 0 4px;font:600 12px var(--font-sans);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-muted)}
-.daftar-info{display:grid;gap:9px;margin-top:6px}
-.baris-info{display:grid;grid-template-columns:minmax(90px,auto) 1fr;gap:0 14px;font-size:14px}
+.daftar-info{display:grid;gap:6px;margin-top:6px}
+.baris-info{display:grid;grid-template-columns:minmax(110px,140px) 1fr;gap:1px 12px;padding:9px 12px;border-radius:12px;background:rgba(20,24,26,.035);font-size:14px}
 .baris-info .lbl{grid-row:span 2;color:var(--ink-muted)}
-.baris-info b{font-weight:500}
+.baris-info b{font-weight:500;font-size:14.5px}
 .baris-info small{grid-column:2;font-size:12.5px;line-height:1.45;color:var(--ink-muted)}
 .kepala-ubin{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
 .isi-pohon-tabel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:14px;margin-top:12px}
