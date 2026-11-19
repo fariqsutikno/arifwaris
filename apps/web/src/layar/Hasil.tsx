@@ -371,8 +371,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             </div>
           </div>
         </section>
-        {!sedangMenebak && <div className="bento-s4"><UbinSelanjutnya /></div>}
-        <section className="ubin-h gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
+        {!sedangMenebak && <div className="bento-s6"><UbinSelanjutnya /></div>}
+        <section className="ubin-h gelap bento-s6 ubin-pelajari" aria-labelledby="judul-pelajari">
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
           <p className="sub-kartu">{t('hasil.pelajari_sub')}</p>
           <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} pohon={pohon} linimasa={linimasa} babak={babakLinimasa} />

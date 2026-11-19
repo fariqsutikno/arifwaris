@@ -1376,7 +1376,8 @@ body.layar-hasil{background:var(--halaman)}
 
 .tata-hasil{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;align-items:start}
 .tata-hasil>*{min-width:0}
-.bento-s7{grid-column:span 7}.bento-s5{grid-column:span 5;display:grid;gap:12px}.bento-s12{grid-column:span 12}.bento-s4{grid-column:span 4;display:grid;align-self:stretch;align-content:start}
+.bento-s7{grid-column:span 7}.bento-s5{grid-column:span 5;display:grid;gap:12px}.bento-s12{grid-column:span 12}.bento-s4,.bento-s6{display:grid;align-self:stretch;align-content:start}
+.bento-s4{grid-column:span 4}.bento-s6{grid-column:span 6}
 .mode-belajar .tata-hasil .bento-s7{grid-column:span 12}
 .ubin-h{min-width:0;padding:18px;border-radius:24px;background:var(--kartu);border:1px solid var(--kartu-tepi);box-shadow:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
 .ubin-h h2{margin:0;font:700 19px/1.2 var(--font-display);letter-spacing:-.01em}
@@ -1442,7 +1443,7 @@ body.layar-hasil{background:var(--halaman)}
 .urutan-selanjutnya{margin:10px 0 0;padding-inline-start:20px;display:grid;gap:8px;font-size:14px}
 .urutan-selanjutnya span{display:block;font-size:13px;color:var(--ink-muted)}
 .daftar-aksi-ubin{display:grid;gap:8px;margin-top:10px}
-.bento-s4>.ubin-h{height:100%}
+.bento-s4>.ubin-h,.bento-s6>.ubin-h{height:100%}
 .daftar-aksi-ubin button,.ubin-pelajari .kepala-lipat{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border:0;border-radius:16px;background:rgba(255,255,255,.7);color:inherit;font:inherit;text-align:start;cursor:pointer}
 .daftar-aksi-ubin button:hover,.ubin-pelajari .kepala-lipat:hover{background:rgba(255,255,255,.95)}
 .ubin-h.gelap .daftar-aksi-ubin button,.ubin-pelajari .kepala-lipat{background:rgba(255,255,255,.08)}
@@ -1941,3 +1942,4 @@ table.faraidh{font-size:15.5px}
 .toast .tautan{color:#fff}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 .lembar-bagikan .ikon-bulat{background:var(--mint,#dcefe2)}
+.lembar-bagikan .daftar-aksi-ubin b{text-decoration:none}
