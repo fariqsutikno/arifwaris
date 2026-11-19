@@ -3,6 +3,7 @@ import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
 import { BAB16_FIXTURES, case01, case12, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { jelaskanOrang } from '../orang.js';
+import { KASUS_KAKEK } from './kasusKakek.js';
 import { keTeksBiasa, type Potongan } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
 
@@ -50,6 +51,19 @@ describe('jelaskanOrang', () => {
     const istri = penjelasanKelompok(caseNominal, 'ISTRI')!;
     expect(istri.hitungan.at(-1)!.label).toBe('Rupiah');
     expect(teks(istri.hitungan.at(-1)!.isi)).toContain('3/24 × Rp80.000.000 =');
+  });
+
+  it('kasus kakek dan semua-ashabah: setiap orang yang diterangkan punya pertanyaan dan keluarga', () => {
+    for (const kasus of KASUS_KAKEK) {
+      const hasil = hitung(kasus.input);
+      if (hasil.status !== 'OK') throw new Error(kasus.id);
+      for (const id of Object.keys(hasil.statusOrang)) {
+        const penjelasan = jelaskanOrang(hasil, kasus.input.graf, id, { kamus: kamusSnapshot });
+        if (!penjelasan) continue;
+        expect(penjelasan.pertanyaan.length, `${kasus.id} ${id}`).toBeGreaterThan(0);
+        expect(penjelasan.keluarga.length, `${kasus.id} ${id}`).toBeGreaterThan(0);
+      }
+    }
   });
 
   it('semua kasus bab 16: tidak pernah melempar; bila ada hasil, pertanyaan dan keluarga terisi', () => {

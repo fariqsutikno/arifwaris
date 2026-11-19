@@ -52,3 +52,16 @@ export const KASUS_KAKEK: Array<{ id: string; menguji: string; input: InputEngin
   { id: 'KK-2', menguji: 'sisa sedikit', input: input(grafSisaSedikit) },
   { id: 'KK-3', menguji: "mu'addah", input: input(grafMuaddah) },
 ];
+
+/** Hanya anak laki-laki (2) dan anak perempuan (1): semua ahli waris ashabah, harta dibagi per jatah [R09-2]. */
+export const grafSemuaAshabah: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    D: p('D', 'L', wafat),
+    AL1: p('AL1', 'L', { idAyah: 'D' }),
+    AL2: p('AL2', 'L', { idAyah: 'D' }),
+    AP1: p('AP1', 'P', { idAyah: 'D' }),
+  },
+  pernikahan: [],
+};
+KASUS_KAKEK.push({ id: 'KK-4', menguji: 'semua ashabah', input: input(grafSemuaAshabah) });

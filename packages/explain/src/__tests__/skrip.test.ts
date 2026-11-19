@@ -177,6 +177,18 @@ describe('skrip belajar kasus biasa', () => {
     expect(muaddah).toContain('Saudara laki-laki kandung mengambil sisa harta, sedangkan saudara laki-laki sebapak tidak mendapat bagian');
   });
 
+  it('semua ahli waris ashabah (KK-4): harta dipotong menurut jatah, tanpa pecahan untuk disamakan', () => {
+    const kasus = KASUS_KAKEK.find(satu => satu.id === 'KK-4')!;
+    const hasil = hitung(kasus.input);
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    const ashl = susunLinimasa(hasil, kasus.input.graf, { kamus: kamusSnapshot }).tahap.find(tahap => tahap.id === 'ashl')!.langkah;
+    expect(jenisDari(ashl)).toEqual(['logika', 'hitung', 'hitung']);
+    const teks = ashl.map(teksNarasi).join(' ');
+    expect(teks).toContain('laki-laki 2 jatah, perempuan 1 jatah');
+    expect(teks).toContain('Totalnya 5 jatah');
+    expect(teks).toContain('Angka 5 ini disebut asal masalah');
+  });
+
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {
     const hasil = langkahDari(caseNominal, 'hasil');
     expect(hasil.some(satu => teksNarasi(satu).includes('potong: Rp'))).toBe(true);

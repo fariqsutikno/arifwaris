@@ -325,8 +325,9 @@ function jembatanBagian(konteks: Konteks, adaAshabah: boolean): BarisPenjelasan 
 
 export function babPenyebutSkrip(konteks: Konteks): HasilSkrip {
   const { baris, totalKolom } = konteks.hasil.tabel;
-  if (baris.every(barisTabel => barisTabel.fardh === undefined) || persamaanKotakAshl(konteks).length === 0) return LAMA;
   const ashl = totalKolom.ashl!;
+  if (baris.every(barisTabel => barisTabel.fardh === undefined)) return babPenyebutSemuaAshabah(konteks, ashl);
+  if (persamaanKotakAshl(konteks).length === 0) return LAMA;
   const perbandingan = konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(satu => satu.tujuan === 'ashl');
   const daftarBaris = [perbandingan.length === 0
     ? langkah(konteks, 'logika', 'ashl.potong_sama', { ashl }, { ashl })
@@ -338,6 +339,20 @@ export function babPenyebutSkrip(konteks: Konteks): HasilSkrip {
   });
   // Baris "8 ÷ 8 = 1 kotak untuk istri" per kelompok disisipkan `linimasa.ts` di sini, sebelum kalimat penutup.
   daftarBaris.push(langkah(konteks, 'hitung', 'ashl.jadi', { ashl }, { ashl, ashlul_masalah: istilahUmum(konteks, 'ashlul-masalah') }, ['R09-1']));
+  return { judul: judulSkrip(konteks, 'ashl.judul'), daftarBaris, kolom: 'ashl' };
+}
+
+/** Semua ahli waris ashabah [R09-2]: tidak ada pecahan; harta langsung dibagi per jatah (ru'us) dan totalnya jadi asal masalah. */
+function babPenyebutSemuaAshabah(konteks: Konteks, ashl: bigint): Bab {
+  const { baris, totalKolom } = konteks.hasil.tabel;
+  const daftarBaris = [langkah(konteks, 'logika', 'ashl.semua_ashabah', { ashabah: istilahUmum(konteks, 'ashabah') }, {}, ['R09-2'])];
+  // Tanpa tashih/'aul/radd, saham tiap orang = jatahnya; selain itu rinciannya tidak lagi jatah murni.
+  if (totalKolom.tashih === undefined && totalKolom.aul === undefined && totalKolom.radd === undefined) {
+    const rincian = gabungDan(konteks.penyusun, baris.flatMap(barisTabel => Object.entries(barisTabel.perOrang)).map(([id, orang]) =>
+      susun(konteks.penyusun, kunciKamus('ashl.jatah_orang'), { siapa: konteks.sebutan.sebut([id]), jatah: orang.saham })));
+    daftarBaris.push(langkah(konteks, 'hitung', 'ashl.jatah_total', { rincian, ashl }, { rincian, ashl }, ['R09-2']));
+  }
+  daftarBaris.push(langkah(konteks, 'hitung', 'ashl.jadi', { ashl }, { ashl, ashlul_masalah: istilahUmum(konteks, 'ashlul-masalah') }, ['R09-2']));
   return { judul: judulSkrip(konteks, 'ashl.judul'), daftarBaris, kolom: 'ashl' };
 }
 

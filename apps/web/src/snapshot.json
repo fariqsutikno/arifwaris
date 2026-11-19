@@ -27335,6 +27335,41 @@
    "id": "Bagian sebapak → saudara kandung",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.semua_ashabah.narasi",
+   "halaman": "narasi",
+   "id": "Bayangkan harta sebagai satu kotak utuh. Semua ahli waris di sini mengambil sisa ({ashabah}), jadi tidak ada pecahan yang perlu disamakan. Harta langsung dipotong menurut jatah: laki-laki 2 jatah, perempuan 1 jatah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.semua_ashabah.papan",
+   "halaman": "narasi",
+   "id": "Semua mengambil sisa: bagi per jatah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jatah_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {jatah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jatah_total.narasi",
+   "halaman": "narasi",
+   "id": "Jatahnya: {rincian}. Totalnya {ashl} jatah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jatah_total.papan",
+   "halaman": "narasi",
+   "id": "{rincian} = {ashl}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
