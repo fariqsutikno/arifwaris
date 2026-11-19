@@ -1765,7 +1765,7 @@ button.baris-bagian>svg{color:var(--ink-muted)}
 .isi-modal .titik-modal h4{margin:4px 0 10px;font:700 17px/1.3 var(--font-display);color:var(--ink)}
 .syarat-modal{list-style:none;padding:0!important;display:grid;gap:8px}
 .syarat-modal li{display:flex;gap:10px;align-items:flex-start;background:var(--surface-sunken);border-radius:12px;padding:10px 12px;font-size:15.5px;line-height:1.6}
-.syarat-modal .cek{flex:none;width:22px;height:22px;margin-top:2px;border-radius:50%;background:#1f5c3a;position:relative}
+.syarat-modal .cek{display:block;box-sizing:border-box;padding:0;cursor:default;flex:none;width:22px;height:22px;margin-top:2px;border-radius:50%;background:#1f5c3a;position:relative}
 .syarat-modal .cek::after{content:"";position:absolute;left:7px;top:4px;width:5px;height:10px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg)}
 .tabel-ahwal{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
 .tabel-ahwal th,.tabel-ahwal td{padding:9px 8px;border-bottom:1px solid var(--divider);vertical-align:top;text-align:start;line-height:1.5}
@@ -1832,3 +1832,37 @@ table.faraidh{font-size:15.5px}
 .halaman-hasil .wadah-pohon .node-orang .angka,.halaman-hasil .wadah-pohon .node-orang .peran-node{font-size:13.5px}
 .halaman-hasil .judul-panel{font-size:17px}
 .halaman-hasil .tombol-aliran,.halaman-hasil .tautan-hero,.halaman-hasil .pil-hero{font-size:15px}
+
+/* Modal orang format mockup: judul pertanyaan, teks alur, baris hitungan label + nilai. */
+.isi-modal h3.pertanyaan-modal{margin:0;font:700 20px/1.3 var(--font-display);letter-spacing:0;text-transform:none;color:var(--ink)}
+.isi-modal .teks-alur{margin:0 0 8px;font-size:16px;line-height:1.6}
+.langkah-hitung p.baris-hitung,.langkah-hitung p:has(.label-hitung){display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between}
+.label-hitung{font-weight:700;color:var(--ink-muted);font-size:14px}
+
+/* Drawer Teks: gaya blok per jenis langkah (acuan mockup-langkah-demi-langkah .bag). */
+.bagian-tanya,.bagian-peta{border-inline-start:0;padding-inline-start:0;font-size:17px;color:var(--ink)}
+.bagian-dasar{border-color:#8fb3a3}
+.bagian-keluarga,.bagian-tanpa-jenis-keluarga{border-color:var(--aksen)}
+.bagian-logika{border:1px solid #ddd5f2;background:#f3f0fb;border-radius:14px;padding:10px 12px}
+.bagian-logika .label-bagian{color:#5b4a8a}
+.bagian-jembatan{border-inline-start:0;padding:6px 10px;border-radius:10px;background:#e3f3ea;color:#1f5c3a;font-weight:500}
+.bagian-langkah .rumus{display:inline-block;margin-top:2px;background:#f1f5ed;border-radius:8px;padding:2px 8px;font-weight:600;font-variant-numeric:tabular-nums}
+.bagian-hitung .rumus{background:none;padding:0}
+.bagian-langkah li{font-size:16px;line-height:1.55}
+.label-bagian{font-size:13px}
+
+/* Kepala drawer: Lainnya berlabel teks, Tutup tombol ikon tegas (kontras ≥ 4,5:1 di terang dan gelap). */
+.tombol-lainnya{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:0;background:none;color:inherit;font:600 14.5px var(--font-sans);cursor:pointer;border-radius:12px}
+.tombol-lainnya:hover{background:var(--surface-sunken)}
+.tutup-ldl{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--surface-raised);cursor:pointer}
+.tutup-ldl:focus-visible,.tombol-lainnya:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sinema .tutup-ldl{background:#fff;color:#0e0f10}
+.sinema .tombol-lainnya:hover{background:#1c2b27}
+@media (max-width:480px){.tombol-lainnya span{display:none}.tombol-lainnya{width:44px;justify-content:center;padding:0}}
+
+/* Layar Hasil: ukuran isi ≥ 16px, keterangan ≥ 13px; aksi ubah berupa tautan teks, bukan ikon pensil. */
+.baris-info{font-size:15px}
+.baris-info b{font-size:16px}
+.baris-info small{font-size:13.5px}
+.baris-info .tautan-baris{grid-column:2;justify-self:start;margin-top:4px;padding:0;border:0;background:none;color:var(--ink);font:600 14.5px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:32px}
+.halaman-hasil .judul-kelompok span,.halaman-hasil .orang-sel small{font-size:13.5px}

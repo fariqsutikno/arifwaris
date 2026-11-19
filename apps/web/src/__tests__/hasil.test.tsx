@@ -207,7 +207,7 @@ describe('layar hasil', () => {
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
     expect(dialog.querySelector('.kepala-modal.menerima')?.textContent).toMatch(/Menerima bagian/);
-    expect(within(dialog).getByRole('heading', { name: 'Kapan dapat berapa?' })).toBeTruthy(); // alur bernomor, tanpa lipatan
+    expect(within(dialog).getByRole('heading', { name: 'Dasar · berlaku untuk semua kasus' })).toBeTruthy(); // alur bernomor: Dasar → Di keluarga ini → Hitungan
   });
 
   it('Tentang kasus ini merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {
@@ -255,7 +255,7 @@ describe('layar hasil', () => {
     expect(kenapa.textContent).toMatch(/sisa/);
     expect(kenapa.textContent).not.toMatch(/Istri mendapat/);
     expect(within(dialog).getByText('Ahli waris lain yang terdampak')).toBeTruthy();
-    expect(within(dialog).getByText('Cara menghitungnya')).toBeTruthy();
+    expect(within(dialog).getByRole('heading', { name: 'Hitungan' })).toBeTruthy();
   });
 
   it('hanya istri: hasil tetap tampil, sisa ke dzawil arham / baitul mal', () => {
@@ -284,6 +284,26 @@ describe('layar hasil', () => {
     const tampil = jalankan(kasus);
     if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error('harus OK');
     expect([...dataPeranDari(kasus.graf, ringkasan, tampil.hasil.tabel, []).pembagian.values()]).toEqual(['dzawilArham', 'dzawilArham']);
+  });
+
+  it('dzawil arham: langkah demi langkah memakai linimasa tanpa tabel (semua tahap tampil, tidak error)', () => {
+    const orang = (id: string, jenisKelamin: 'L' | 'P', lain: object = {}) => ({ id, jenisKelamin, statusHidup: 'hidup' as const, agama: 'islam' as const, ...lain });
+    const wafat = { statusHidup: 'wafat' as const, penghubung: true };
+    const kasus: Kasus = { ...kasusBaru('L'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, graf: {
+      idPewaris: 'D', pernikahan: [], orang: {
+        D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+        F1: orang('F1', 'L', { ...wafat, idAyah: 'PGF', idIbu: 'PGM' }), M1: orang('M1', 'P', { ...wafat, idAyah: 'MGF', idIbu: 'MGM' }),
+        PGF: orang('PGF', 'L', wafat), PGM: orang('PGM', 'P', wafat), MGF: orang('MGF', 'L', wafat), MGM: orang('MGM', 'P', wafat),
+        KL1: orang('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }), AM1: orang('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),
+      } } };
+    render(<Uji awal={kasus} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Lainnya' }));
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Tampilkan semua langkah' }));
+    expect(within(mode()).getByText('Semua tahap')).toBeTruthy();
+    expect(mode().querySelector('.kartu-tahap')).toBeTruthy();
+    expect(mode().querySelector('table')).toBeNull();
   });
 
   it('Atur kolom menyembunyikan kolom tabel; kepala kolom yang disembunyikan tak lagi bisa dipilih', () => {

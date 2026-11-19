@@ -27461,6 +27461,34 @@
    "id": "Kenapa kerabat jauh ini mendapat bagian?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_dasar",
+   "halaman": "langkah",
+   "id": "Dasar · berlaku untuk semua kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_keluarga",
+   "halaman": "langkah",
+   "id": "Di keluarga ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_logika",
+   "halaman": "langkah",
+   "id": "Logikanya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_ringkas",
+   "halaman": "langkah",
+   "id": "Ringkasan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

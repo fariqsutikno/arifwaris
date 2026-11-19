@@ -3,7 +3,7 @@
 // mengisi sel tabel, angkanya terbang dari keterangan kotak (atau rumus) ke sel itu.
 
 import { useLayoutEffect, useMemo, useRef } from 'react';
-import type { BagianLangkah, Langkah, Linimasa } from '@waris/explain';
+import { keTeksBiasa, type JenisLangkah, type Langkah, type Linimasa } from '@waris/explain';
 import { Baris, Dalil } from '../layar/Penjelasan';
 import { useGerakDikurangi } from '../tampilan';
 import { HartaTabel, KotakHarta } from './KotakHarta';
@@ -78,11 +78,14 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
               {kotak && <KotakHarta visual={kotak} ringkasan={tahap.babak === undefined ? ringkasanAkhir : babak[tahap.babak]!.ringkasan} sebutan={tahap.babak === undefined ? linimasa.nama : undefined} />}
               {kelompokkan(tahap.langkah.map((langkah, nomor) => ({ langkah, nomor })).filter(({ nomor }) => nomor <= sampaiLangkah))
                 .map(kelompok => (
-                  <div key={kelompok.isi[0]!.nomor} className={`bagian-langkah bagian-${kelompok.bagian}`}>
-                    <p className="label-bagian">{JUDUL_BAGIAN[kelompok.bagian]()}</p>
+                  <div key={kelompok.isi[0]!.nomor} className={`bagian-langkah bagian-${kelompok.gaya}`}>
+                    {JUDUL_BAGIAN[kelompok.gaya]?.() && <p className="label-bagian">{JUDUL_BAGIAN[kelompok.gaya]!()}</p>}
                     <ul>
                       {kelompok.isi.map(({ langkah, nomor }) => (
-                        <li key={nomor} className={!semua && nomorTahap === urutan[indeks]!.tahap && nomor === sampaiLangkah ? 'kini' : undefined}><Baris baris={langkah.narasi} /></li>
+                        <li key={nomor} className={!semua && nomorTahap === urutan[indeks]!.tahap && nomor === sampaiLangkah ? 'kini' : undefined}>
+                          <Baris baris={langkah.narasi} />
+                          {adaRumus(langkah) && <><br /><span className="rumus"><Baris baris={langkah.papan} /></span></>}
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -98,17 +101,28 @@ export function TampilanTeks({ linimasa, urutan, indeks, semua, babak, ringkasan
   );
 }
 
-const JUDUL_BAGIAN: Record<BagianLangkah, () => string> = { keluarga: () => t('langkah.bagian_keluarga'), hitung: () => t('langkah.bagian_hitung') };
+/** Gaya blok per jenis langkah (mockup-langkah-demi-langkah BAGIAN). Tanpa label: pertanyaan, peta, jembatan. Tanpa `jenis` → mengikuti `bagian`. */
+type Gaya = JenisLangkah | 'tanpa-jenis-keluarga' | 'tanpa-jenis-hitung';
+const JUDUL_BAGIAN: Partial<Record<Gaya, () => string>> = {
+  dasar: () => t('langkah.label_dasar'), keluarga: () => t('langkah.label_keluarga'), logika: () => t('langkah.label_logika'),
+  hitung: () => t('langkah.bagian_hitung'), ringkas: () => t('langkah.label_ringkas'),
+  'tanpa-jenis-keluarga': () => t('langkah.bagian_keluarga'), 'tanpa-jenis-hitung': () => t('langkah.bagian_hitung'),
+};
+const gayaDari = (langkah: Langkah): Gaya => langkah.jenis ?? (langkah.bagian === 'keluarga' ? 'tanpa-jenis-keluarga' : 'tanpa-jenis-hitung');
+const JENIS_TANPA_RUMUS: Gaya[] = ['tanya', 'peta', 'jembatan', 'dasar'];
+/** Papan tampil sebagai rumus ringkas di bawah kalimat, kecuali jenis polos atau bila isinya sama. */
+const adaRumus = (langkah: Langkah) => !JENIS_TANPA_RUMUS.includes(gayaDari(langkah)) && keTeksBiasa(langkah.papan) !== keTeksBiasa(langkah.narasi);
 
-interface Kelompok { bagian: BagianLangkah; isi: Array<{ langkah: Langkah; nomor: number }> }
+interface Kelompok { gaya: Gaya; isi: Array<{ langkah: Langkah; nomor: number }> }
 
-/** Langkah berurutan dengan bagian sama jadi satu blok berlabel. */
+/** Langkah berurutan dengan gaya sama jadi satu blok berlabel. */
 function kelompokkan(isi: Kelompok['isi']): Kelompok[] {
   const hasil: Kelompok[] = [];
   for (const butir of isi) {
+    const gaya = gayaDari(butir.langkah);
     const terakhir = hasil.at(-1);
-    if (terakhir?.bagian === butir.langkah.bagian) terakhir.isi.push(butir);
-    else hasil.push({ bagian: butir.langkah.bagian, isi: [butir] });
+    if (terakhir?.gaya === gaya) terakhir.isi.push(butir);
+    else hasil.push({ gaya, isi: [butir] });
   }
   return hasil;
 }
