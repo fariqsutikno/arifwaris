@@ -5,10 +5,11 @@
 
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { persamaanKotakAshl } from './cerita.js';
-import { buatKonteks, type HasilOk, type Konteks } from './context.js';
+import { buatKonteks, type HasilOk, type Konteks, type Langkah } from './context.js';
+import { adaDzawilArham, buatSebutArham } from './dzawilArham.js';
 import { rupiah } from './format.js';
 import { barisAshabah, barisFardh, bagianDipetakan } from './skrip.js';
-import { barisSkrip, susun, teksKamus, type BarisPenjelasan, type Kamus, type Potongan } from './segments.js';
+import { barisSkrip, susun, teksKamus, type BarisPenjelasan, type Kamus, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 export interface BarisHitungan { label: string; isi: Potongan[] }
@@ -23,11 +24,37 @@ export interface PenjelasanOrang {
 const kunci = (nama: string) => `narasi.langkah.orang.${nama}`;
 
 export function jelaskanOrang(hasil: HasilOk, graf: GrafKeluarga, idOrang: IdOrang, opsi: { kamus: Kamus }): PenjelasanOrang | undefined {
-  const konteks = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa: 'id' });
+  const dasar = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa: 'id' });
+  // Dzawil arham: orang disebut menurut posisi tanzilnya, bukan "kerabat" (sama dengan linimasanya).
+  const konteks = adaDzawilArham(hasil) ? { ...dasar, sebutan: { ...dasar.sebutan, sebut: buatSebutArham(dasar, graf, ids => dasar.sebutan.sebut(ids)) } } : dasar;
   if (!bagianDipetakan(konteks)) return undefined;
+  const tanzil = konteks.daftarLangkah('DZAWIL_ARHAM_TANZIL').find(satu => satu.idOrang === idOrang);
+  if (tanzil) return orangDzawilArham(konteks, idOrang, tanzil);
   const barisTabel = hasil.tabel.baris.find(baris => baris.anggota.includes(idOrang));
   if (barisTabel) return orangMenerima(konteks, idOrang, barisTabel.kelompok);
   return orangTerhalang(konteks, idOrang);
+}
+
+/** Kerabat jauh: dasar (siapa dan tanzil), perantaranya, ke mana bagian perantara diteruskan, lalu angka akhirnya. */
+function orangDzawilArham(konteks: Konteks, idOrang: IdOrang, tanzil: Langkah<'DZAWIL_ARHAM_TANZIL'>): PenjelasanOrang | undefined {
+  const { penyusun } = konteks;
+  const kelompok = konteks.hasil.tabel.baris.find(baris => baris.anggota.includes(idOrang))?.kelompok;
+  if (!kelompok) return undefined;
+  const sebut = (ids: IdOrang[]) => konteks.sebutan.sebut(ids);
+  const [masalah] = konteks.daftarLangkah('DZAWIL_ARHAM_MASALAH_PERANTARA');
+  const langkahDari = (nama: string, sisipan: Record<string, Sisipan>, refs: string[], subjek?: IdOrang[]) =>
+    barisSkrip(penyusun, 'keluarga', `dzawil_arham.${nama}`, sisipan, sisipan, refs, subjek);
+  const keluarga = [langkahDari('tanzil_orang', { siapa: sebut([idOrang]), perantara: sebut([tanzil.perantara]), langkah: tanzil.langkah }, tanzil.refs, [idOrang])];
+  for (const turun of konteks.daftarLangkah('DZAWIL_ARHAM_TURUN').filter(satu => idOrang in satu.saham)) {
+    keluarga.push(langkahDari(turun.rasio === 'samaRata' ? 'turun_sama_rata' : 'turun_orang',
+      { perantara: sebut([turun.perantara]), saham: masalah?.saham[turun.perantara] ?? 0n, masalah: masalah?.masalah ?? 0n, penerima: sebut(Object.keys(turun.saham)) }, turun.refs, [idOrang]));
+  }
+  return {
+    pertanyaan: susun(penyusun, kunci('pertanyaan.dzawil_arham')),
+    dasar: [barisSkrip(penyusun, 'dasar', 'dzawil_arham.dasar_siapa', {}, {}, ['R14-4']), barisSkrip(penyusun, 'dasar', 'dzawil_arham.dasar_tanzil', {}, {}, ['R14-6', 'R14-7'])],
+    keluarga,
+    hitungan: hitunganOrang(konteks, idOrang, kelompok),
+  };
 }
 
 function orangMenerima(konteks: Konteks, idOrang: IdOrang, kelompok: string): PenjelasanOrang | undefined {
@@ -78,9 +105,10 @@ function hitunganOrang(konteks: Konteks, idOrang: IdOrang, kelompok: string): Ba
   const orang = barisTabel.perOrang[idOrang]!;
   const label = (nama: string) => teksKamus(penyusun, kunci(`label.${nama}`));
   const daftar: BarisHitungan[] = [];
-  const persamaan = persamaanKotakAshl(konteks).find(satu => satu.kelompok === kelompok);
+  // Dzawil arham tidak punya kolom asal masalah (pembaginya dari tanzil).
+  const persamaan = tabel.totalKolom.ashl === undefined ? undefined : persamaanKotakAshl(konteks).find(satu => satu.kelompok === kelompok);
   if (persamaan?.baris.papan) daftar.push({ label: label('asal'), isi: persamaan.baris.papan });
-  const ashl = tabel.totalKolom.ashl!;
+  const ashl = tabel.totalKolom.ashl ?? 0n;
   if (tabel.totalKolom.aul !== undefined) {
     daftar.push({ label: label('aul'), isi: susun(penyusun, kunci('aul'), { kotak: barisTabel.sel['ashl']!, ashl, aul: tabel.totalKolom.aul }) });
   }

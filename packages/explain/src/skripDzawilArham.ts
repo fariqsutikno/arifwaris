@@ -15,6 +15,9 @@ const langkah = (konteks: Konteks, jenis: JenisLangkah, nama: string, narasi: Si
   barisSkrip(konteks.penyusun, jenis, `dzawil_arham.${nama}`, narasi, papan, refs);
 const dariKalimat = (jenis: JenisLangkah, daftarPotongan: Potongan[], refs: string[] = [], subjek?: IdOrang[]): BarisPenjelasan =>
   ({ ...buatBaris(daftarPotongan, refs, subjek), jenis, papan: daftarPotongan });
+/** Narasi dan papan memakai sisipan yang sama; `subjek` mengisi sel tabel orang itu. */
+const langkahDari = (konteks: Konteks, jenis: JenisLangkah, nama: string, sisipan: Sisipanku, refs: string[], subjek: IdOrang[]): BarisPenjelasan =>
+  barisSkrip(konteks.penyusun, jenis, `dzawil_arham.${nama}`, sisipan, sisipan, refs, subjek);
 const lama = (konteks: Konteks, kunci: string, sisipan: Sisipanku = {}): Potongan[] => susun(konteks.penyusun, `narasi.dzawil_arham.${kunci}`, sisipan);
 
 export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
@@ -29,7 +32,11 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
     const baris = ceritaSisaKeluar(konteks, sisaKeluar, pasangan);
     daftarBaris.push({ ...baris, jenis: 'keluarga', papan: baris.daftarPotongan });
   }
-  daftarBaris.push(langkah(konteks, 'dasar', 'dasar', {}, {}, ['R14-5', 'R14-6']));
+  daftarBaris.push(
+    langkah(konteks, 'dasar', 'dasar', {}, {}, ['R14-5']),
+    langkah(konteks, 'dasar', 'dasar_siapa', {}, {}, ['R14-4']),
+    langkah(konteks, 'dasar', 'dasar_tanzil', {}, {}, ['R14-6', 'R14-7']),
+  );
   for (const khilaf of konteks.daftarLangkah('KHILAF_MADZHAB')) {
     daftarBaris.push(dariKalimat('keluarga', lama(konteks, `khilaf_${khilaf.kode.toLowerCase().replace('-', '_')}`, { madzhab: teksKamus(penyusun, `narasi.umum.madzhab.${khilaf.ruleset}`) }), khilaf.refs, khilaf.idOrang));
   }
@@ -40,7 +47,8 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
     }), mani.refs, [mani.idOrang]));
   }
   for (const tanzil of konteks.daftarLangkah('DZAWIL_ARHAM_TANZIL')) {
-    daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'tanzil', { siapa: sebut([tanzil.idOrang]), perantara: sebut([tanzil.perantara]), langkah: tanzil.langkah }), tanzil.refs, [tanzil.idOrang]));
+    const sisipan = { siapa: sebut([tanzil.idOrang]), perantara: sebut([tanzil.perantara]), langkah: tanzil.langkah };
+    daftarBaris.push(langkahDari(konteks, 'keluarga', 'tanzil_orang', sisipan, tanzil.refs, [tanzil.idOrang]));
   }
   for (const terhijab of konteks.daftarLangkah('DZAWIL_ARHAM_TERHIJAB_JIHAH')) {
     daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'terhijab_jihah', { siapa: sebut([terhijab.idOrang]), oleh: sebut(terhijab.oleh) }), terhijab.refs, [terhijab.idOrang]));
@@ -50,7 +58,8 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
   if (masalah) {
     daftarBaris.push(langkah(konteks, 'jembatan', 'jembatan_masalah', {}, {}));
     const butir = Object.entries(masalah.saham).map(([id, saham]) => lama(konteks, 'masalah_butir', { perantara: sebut([id]), saham }));
-    daftarBaris.push(dariKalimat('hitung', lama(konteks, 'masalah', { rincian: gabungDan(penyusun, butir), masalah: masalah.masalah }), masalah.refs));
+    const rincian = gabungDan(penyusun, butir);
+    daftarBaris.push(langkah(konteks, 'hitung', 'masalah_baru', { rincian, masalah: masalah.masalah }, { rincian, masalah: masalah.masalah }, masalah.refs));
     if (masalah.aul !== undefined) daftarBaris.push(dariKalimat('hitung', lama(konteks, 'aul', { ashl: masalah.ashl, aul: masalah.aul }), ['R14-13']));
     for (const id of masalah.mahjub) daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'perantara_terhijab', { perantara: sebut([id]) }), ['R14-10']));
   }
@@ -59,7 +68,8 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
   if (daftarTurun.length) daftarBaris.push(langkah(konteks, 'jembatan', 'jembatan_turun', {}, {}));
   for (const turun of daftarTurun) {
     const penerima = Object.keys(turun.saham);
-    daftarBaris.push(dariKalimat('hitung', lama(konteks, turun.rasio === 'samaRata' ? 'turun_sama_rata' : 'turun', { perantara: sebut([turun.perantara]), penerima: sebut(penerima) }), turun.refs, penerima));
+    const sisipan = { perantara: sebut([turun.perantara]), saham: masalah?.saham[turun.perantara] ?? 0n, masalah: masalah?.masalah ?? 0n, penerima: sebut(penerima) };
+    daftarBaris.push(langkahDari(konteks, 'hitung', turun.rasio === 'samaRata' ? 'turun_sama_rata' : 'turun_orang', sisipan, turun.refs, penerima));
   }
   for (const duaJalur of konteks.daftarLangkah('DZAWIL_ARHAM_DUA_JALUR')) {
     daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'dua_jalur', { siapa: sebut([duaJalur.idOrang]), perantara: sebut(duaJalur.perantara) }), duaJalur.refs, [duaJalur.idOrang]));

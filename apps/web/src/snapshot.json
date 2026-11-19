@@ -27199,7 +27199,7 @@
   {
    "kunci": "narasi.langkah.dzawil_arham.dasar.narasi",
    "halaman": "narasi",
-   "id": "Bila tidak ada ahli waris utama yang menerima sisa dan baitul mal dianggap tidak tegak, harta diwarisi dzawil arham, yaitu kerabat jauh. Caranya tanzil: tiap kerabat didudukkan pada posisi ahli waris yang menjadi perantaranya.",
+   "id": "Bila tidak ada ahli waris utama yang menerima sisa dan baitul mal dianggap tidak tegak, harta diwarisi dzawil arham.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27368,6 +27368,97 @@
    "kunci": "narasi.langkah.ashl.jatah_total.papan",
    "halaman": "narasi",
    "id": "{rincian} = {ashl}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_siapa.narasi",
+   "halaman": "narasi",
+   "id": "Dzawil arham adalah kerabat yang bukan penerima bagian pasti dan bukan penerima sisa, misalnya bibi dari ibu atau anak dari anak perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_siapa.papan",
+   "halaman": "narasi",
+   "id": "Dzawil arham = kerabat tanpa bagian pasti dan bukan penerima sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.narasi",
+   "halaman": "narasi",
+   "id": "Caranya disebut tanzil: tiap kerabat ditempatkan pada posisi ahli waris yang menjadi jalur nasabnya, misalnya bibi dari ibu sebagai ibu dan bibi dari ayah sebagai ayah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.papan",
+   "halaman": "narasi",
+   "id": "Tanzil: tempatkan pada posisi perantara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanzil_orang.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} ditempatkan sebagai {perantara}, naik {langkah} tingkat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanzil_orang.papan",
+   "halaman": "narasi",
+   "id": "{siapa} → {perantara} ({langkah} tingkat)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.masalah_baru.narasi",
+   "halaman": "narasi",
+   "id": "Para perantara dihitung seperti ahli waris biasa: {rincian}. Jumlahnya {masalah} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.masalah_baru.papan",
+   "halaman": "narasi",
+   "id": "{rincian} = {masalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_orang.narasi",
+   "halaman": "narasi",
+   "id": "Bagian {perantara}, {saham} dari {masalah}, diteruskan kepada {penerima}, seolah-olah {perantara} wafat meninggalkan {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_orang.papan",
+   "halaman": "narasi",
+   "id": "{perantara} {saham}/{masalah} → {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_sama_rata.narasi",
+   "halaman": "narasi",
+   "id": "Bagian {perantara}, {saham} dari {masalah}, dibagi sama rata di antara {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_sama_rata.papan",
+   "halaman": "narasi",
+   "id": "{perantara} {saham}/{masalah} → {penerima}, sama rata",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.dzawil_arham",
+   "halaman": "narasi",
+   "id": "Kenapa kerabat jauh ini mendapat bagian?",
    "ar": null,
    "versiTerbit": 873
   }

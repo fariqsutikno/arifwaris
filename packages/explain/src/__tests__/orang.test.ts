@@ -1,7 +1,8 @@
 // Penjelasan per orang (modal): Dasar → Di keluarga ini → Hitungan, dari jejak dan tabel engine.
-import { hitung } from '@waris/engine';
+import { hitung, hitungDzawilArham } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
 import { BAB16_FIXTURES, case01, case12, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { DZAWIL_ARHAM_FIXTURES } from '../../../engine/src/__tests__/fixtures/dzawilArham.js';
 import { jelaskanOrang } from '../orang.js';
 import { KASUS_KAKEK } from './kasusKakek.js';
 import { keTeksBiasa, type Potongan } from '../segments.js';
@@ -64,6 +65,24 @@ describe('jelaskanOrang', () => {
         expect(penjelasan.keluarga.length, `${kasus.id} ${id}`).toBeGreaterThan(0);
       }
     }
+  });
+
+  it('dzawil arham: kerabat jauh punya dasar tanzil, posisinya, ke mana bagian perantara diteruskan, dan bagian akhir', () => {
+    let jumlah = 0;
+    for (const fixture of DZAWIL_ARHAM_FIXTURES) {
+      const hasil = hitungDzawilArham(fixture.input);
+      if (hasil.status !== 'OK') continue;
+      for (const tanzil of hasil.jejak.filter(satu => satu.jenis === 'DZAWIL_ARHAM_TANZIL')) {
+        const penjelasan = jelaskanOrang(hasil, fixture.input.graf, tanzil.idOrang, { kamus: kamusSnapshot });
+        if (!penjelasan) continue;
+        jumlah++;
+        expect(teks(penjelasan.pertanyaan), fixture.id).toBe('Kenapa kerabat jauh ini mendapat bagian?');
+        expect(penjelasan.dasar.map(keTeksBiasa).join(' '), fixture.id).toContain('tanzil');
+        expect(penjelasan.keluarga.map(keTeksBiasa).join(' '), fixture.id).toContain('ditempatkan sebagai');
+        expect(penjelasan.hitungan.at(-1)!.label, fixture.id).toBeTruthy();
+      }
+    }
+    expect(jumlah).toBeGreaterThan(5);
   });
 
   it('semua kasus bab 16: tidak pernah melempar; bila ada hasil, pertanyaan dan keluarga terisi', () => {
