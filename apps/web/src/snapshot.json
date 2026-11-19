@@ -26012,6 +26012,111 @@
    "id": "Tapi {sisa} kotak tidak habis dibagi {ashl_radd} bagian, dan keduanya tidak punya faktor bersama ({tabayun}). Jadi semua kotak dipotong {ashl_radd}: harta menjadi {hasil} potong.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.nuqshan",
+   "halaman": "narasi",
+   "id": "Kenapa {pecahan}, bukan {dari}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.fardh",
+   "halaman": "narasi",
+   "id": "Kenapa {pecahan}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.ashabah",
+   "halaman": "narasi",
+   "id": "Kenapa mendapat sisa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.terhalang",
+   "halaman": "narasi",
+   "id": "Kenapa tidak mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.asal",
+   "halaman": "narasi",
+   "id": "Memotong harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.aul",
+   "halaman": "narasi",
+   "id": "'Aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.radd",
+   "halaman": "narasi",
+   "id": "Radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.tashih",
+   "halaman": "narasi",
+   "id": "Tashih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.bagian",
+   "halaman": "narasi",
+   "id": "Bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.rupiah",
+   "halaman": "narasi",
+   "id": "Rupiah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.aul",
+   "halaman": "narasi",
+   "id": "{kotak} dari {ashl} menjadi {kotak} dari {aul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.radd",
+   "halaman": "narasi",
+   "id": "{kotak} dari {ashl} menjadi {saham} dari {radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.tashih",
+   "halaman": "narasi",
+   "id": "{dasar} × {pengali} = {total}; bagian orang ini {saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.bagian",
+   "halaman": "narasi",
+   "id": "{saham} dari {penyebut} potong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.rupiah",
+   "halaman": "narasi",
+   "id": "{saham}/{penyebut} × {bersih} = {nominal}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

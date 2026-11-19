@@ -89,10 +89,10 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
 const ALASAN_FARDH_DIPETAKAN = new Set(['ADA_FARU_WARITS', 'TANPA_FARU_WARITS', 'KALALAH', 'TANPA_MUASHSHIB']);
 const PERAN_PASANGAN = new Set(['SUAMI', 'ISTRI']);
 
-export function babBagianSkrip(konteks: Konteks): HasilSkrip {
+/** Semua langkah fardh/ashabah kasus ini sudah punya templat skrip (kasus khusus, kakek, ma'a al-ghair belum). */
+export function bagianDipetakan(konteks: Konteks): boolean {
   const kelompokFardh = new Set(konteks.daftarLangkah('FARDH').map(satu => satu.kelompok));
-  const adaAshabah = konteks.hasil.jejak.some(satu => satu.jenis === 'ASHABAH' && !kelompokFardh.has(satu.kelompok));
-  const dipetakan = konteks.hasil.jejak.every(satu => {
+  return konteks.hasil.jejak.every(satu => {
     if (satu.jenis === 'FARDH') return ALASAN_FARDH_DIPETAKAN.has(satu.alasan.kode);
     if (satu.jenis === 'KASUS_KHUSUS') return false;
     if (satu.jenis !== 'ASHABAH' || kelompokFardh.has(satu.kelompok)) return true;
@@ -100,7 +100,12 @@ export function babBagianSkrip(konteks: Konteks): HasilSkrip {
     const kunciPeran = konteks.sebutan.peranDari(konteks.anggotaDari(satu.kelompok)[0]!)?.kunci ?? '';
     return satu.jenisAshabah === 'bilGhair' || !PERAN_BERPENDAHULU.has(kunciPeran);
   });
-  if (!dipetakan) return LAMA;
+}
+
+export function babBagianSkrip(konteks: Konteks): HasilSkrip {
+  const kelompokFardh = new Set(konteks.daftarLangkah('FARDH').map(satu => satu.kelompok));
+  const adaAshabah = konteks.hasil.jejak.some(satu => satu.jenis === 'ASHABAH' && !kelompokFardh.has(satu.kelompok));
+  if (!bagianDipetakan(konteks)) return LAMA;
 
   const daftarBaris: BarisPenjelasan[] = [];
   const pewaris = konteks.sebutan.pewaris();
@@ -113,7 +118,7 @@ export function babBagianSkrip(konteks: Konteks): HasilSkrip {
   return { judul: judulSkrip(konteks, 'bagian.judul'), daftarBaris, kolom: 'bagian' };
 }
 
-function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Potongan): BarisPenjelasan[] {
+export function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Potongan): BarisPenjelasan[] {
   const anggota = konteks.anggotaDari(satu.kelompok);
   const subjek = sebutKelompok(konteks, satu.kelompok);
   const pecahan = satu.fardh;
@@ -144,7 +149,7 @@ function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Potongan)
   }
 }
 
-function barisAshabah(konteks: Konteks, satu: Langkah<'ASHABAH'>): BarisPenjelasan {
+export function barisAshabah(konteks: Konteks, satu: Langkah<'ASHABAH'>): BarisPenjelasan {
   const subjek = sebutKelompok(konteks, satu.kelompok);
   const anggota = konteks.anggotaDari(satu.kelompok);
   const ashabah = istilahUmum(konteks, 'ashabah');
