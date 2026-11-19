@@ -155,9 +155,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
   // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
   // lewat dialog dengan tombol tekan-tahan.
-  const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | 'pindah' | null>(null);
-  const [konfirmasiBelajar, setKonfirmasiBelajar] = useState(false);
-  const pilihHitungKasus = () => (sedangMenebak ? setKonfirmasiBuka('pindah') : kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' }));
+  const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | null>(null);
   const [sembunyiManual, setSembunyiManual] = useState(false);
   // Susunan cepat belum punya harta: rupiah tersembunyi sampai "Ubah harta" diisi, jadi tidak tampil "Rp 0".
   const hartaKosong = kasus.tirkah.kotor <= 0n;
@@ -261,15 +259,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             <p className="kalimat-hero">{adalahBelajar
               ? (sedangMenebak ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan') : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya'))
               : hero.kalimat}</p>
-            {!sedangMenebak && <div className="fakta-hero">
+            {!sedangMenebak && daftarMayit.length > 1 && <div className="fakta-hero">
               <span>{t('hasil.jumlah_mayit', { jumlah: angka(String(daftarMayit.length)) })}</span>
-            </div>}
-            <div className="aksi-hero">
-              {!sedangMenebak && <button type="button" className="pil-hero" onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>}
-            </div>
-            {!hanyaBaca && !khusus && <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
-              <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
-              <button type="button" aria-pressed={adalahBelajar} onClick={() => (adalahBelajar ? undefined : setKonfirmasiBelajar(true))}>{t('umum.belajar')}</button>
             </div>}
           </div>
           {!sedangMenebak && (
@@ -282,7 +273,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
                 </button>
               )}
               {ubinHero(ringkasan, sembunyiNominal).map(ubin => (
-                <div key={ubin.label} className={ubin.tahan ? 'uh tahan' : 'uh'}><span className="lbl">{ubin.label}</span><b>{ubin.nilai}</b>{ubin.kecil && <small>{ubin.kecil}</small>}</div>
+                <div key={ubin.label} className={ubin.tahan ? 'uh tahan' : ubin.lebar ? 'uh lebar' : 'uh'}><span className="lbl">{ubin.label}</span><b>{ubin.nilai}</b>{ubin.kecil && <small>{ubin.kecil}</small>}</div>
               ))}
             </div>
           )}
@@ -349,9 +340,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
           <p className="sub-kartu">{t('hasil.pelajari_sub')}</p>
           <KartuLangkah daftarBab={daftarBab} dataPeran={dataPeran} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} terkunci={sedangMenebak} adalahBelajar={adalahBelajar} pohon={pohon} linimasa={linimasa} babak={babakLinimasa} />
-          {!adalahBelajar && !hanyaBaca && <DaftarAksi daftar={[
-            { ikon: 'kuis', judul: t('hasil.coba_tebak_dulu'), keterangan: t('hasil.mode_belajar'), saatPilih: () => setKonfirmasiBelajar(true) },
-            ...(bolehUbah ? [{ ikon: 'rujukan' as const, judul: t('hasil.bandingkan_madzhab'), keterangan: t('hasil.bandingkan_madzhab_ket'), saatPilih: () => setMadzhabTerbuka(true) }] : []),
+          {!adalahBelajar && bolehUbah && <DaftarAksi daftar={[
+            { ikon: 'rujukan', judul: t('hasil.bandingkan_madzhab'), keterangan: t('hasil.bandingkan_madzhab_ket'), saatPilih: () => setMadzhabTerbuka(true) },
           ]} />}
         </section>
       </div>
@@ -379,29 +369,16 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       )}
       {konfirmasiBuka && (
         <DialogKonfirmasi tahan
-          judul={konfirmasiBuka === 'lihat' ? t('hitung.yakin_mau_lihat_jawaban') : t('hitung.pindah_ke_hitung_kasus')}
-          labelBatal={konfirmasiBuka === 'lihat' ? t('hitung.coba_dulu') : t('hitung.tetap_belajar')}
-          labelLanjut={konfirmasiBuka === 'lihat' ? t('hitung.tahan_untuk_buka') : t('hitung.tahan_untuk_pindah')}
+          judul={t('hitung.yakin_mau_lihat_jawaban')}
+          labelBatal={t('hitung.coba_dulu')} labelLanjut={t('hitung.tahan_untuk_buka')}
           saatBatal={() => setKonfirmasiBuka(null)}
-          saatLanjut={() => {
-            const jenis = konfirmasiBuka;
-            setKonfirmasiBuka(null);
-            if (jenis === 'lihat') bukaJawaban();
-            else kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
-          }}>
+          saatLanjut={() => { setKonfirmasiBuka(null); bukaJawaban(); }}>
           <ul className="poin-konfirmasi">
             <li>{t('hitung.semua_jawaban_langsung_kebuka_kamu_nggak')}</li>
             {!sudahMencoba && <li>{t('hitung.kamu_belum_nyoba_jawab_sama_sekali')}</li>}
             {/* Hanya soal latihan yang tercatat; XP-nya hanya dari tebakan benar (spec tahap 5). */}
-            {konfirmasiBuka === 'lihat' && saatDikerjakan && <li>{t('hitung.soal_yang_jawabannya_dibuka_tidak_memberi_xp')}</li>}
+            {saatDikerjakan && <li>{t('hitung.soal_yang_jawabannya_dibuka_tidak_memberi_xp')}</li>}
           </ul>
-        </DialogKonfirmasi>
-      )}
-      {konfirmasiBelajar && (
-        <DialogKonfirmasi judul={t('hitung.pindah_ke_mode_belajar')} labelBatal={t('umum.tetap_di_sini')} labelLanjut={t('umum.pindah')}
-          saatBatal={() => setKonfirmasiBelajar(false)}
-          saatLanjut={() => { setKonfirmasiBelajar(false); kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' }); }}>
-          <p>{t('hitung.jawaban_akan_disembunyikan_dan_kamu_diminta')}</p>
         </DialogKonfirmasi>
       )}
       {layarPenuh && (
@@ -447,7 +424,7 @@ function teksHero(ringkasan: RingkasanHasil, daftarMayit: string[], namaPewaris:
 }
 
 /** Dua ubin kecil di hero (selain "Bagianmu"), menurut jenis kasus. */
-function ubinHero(ringkasan: RingkasanHasil, sembunyi: boolean): Array<{ label: string; nilai: string; kecil?: string; tahan?: boolean }> {
+function ubinHero(ringkasan: RingkasanHasil, sembunyi: boolean): Array<{ label: string; nilai: string; kecil?: string; tahan?: boolean; lebar?: boolean }> {
   const uang = (nilai: bigint) => (sembunyi ? t('hitung.rp') : formatRupiahRingkas(nilai));
   const daftarNama = (daftar: Array<{ nama: string }>) => daftar.map(orang => orang.nama).join(', ');
   const ditahan = ringkasan.ditahan;
@@ -464,9 +441,7 @@ function ubinHero(ringkasan: RingkasanHasil, sembunyi: boolean): Array<{ label: 
     return [{ label: t('hasil.ditahan.dibagi_sekarang'), nilai: uang(ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, 0n)), kecil: daftarNama(ringkasan.penerima) },
       { label: t('hasil.ditahan.ditahan'), nilai: uang(ditahan.nominal), kecil: t('hasil.ditahan.untuk_nama', { nama: daftarNama(ditahan.orang) }), tahan: true }];
   }
-  return [{ label: t('hasil.harta_dibagi'), nilai: uang(ringkasan.tirkah.bersih), kecil: t('hasil.sudah_bersih') },
-    { label: t('hasil.penerima'), nilai: t('hasil.jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) }),
-      ...(ringkasan.terhalang.length > 0 ? { kecil: t('hasil.jumlah_tidak_mendapat', { jumlah: angka(String(ringkasan.terhalang.length)) }) } : {}) }];
+  return [{ label: t('hasil.harta_dibagi'), nilai: uang(ringkasan.tirkah.bersih), kecil: t('hasil.sudah_bersih'), lebar: true }];
 }
 
 /** Tiga keadaan kotak di pohon kaca: wafat (garis putus), menerima (hijau), tidak menerima (redup). */

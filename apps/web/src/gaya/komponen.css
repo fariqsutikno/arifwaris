@@ -1222,9 +1222,6 @@ body.layar-hasil{background:var(--halaman)}
 .statistik-hero div{display:flex;flex-direction:column-reverse}
 .statistik-hero dd{margin:0;font:600 24px/1.1 var(--font-display);font-variant-numeric:tabular-nums;white-space:nowrap}
 .statistik-hero dt{font-size:12.5px;color:rgba(255,255,255,.85)}
-.hero-hasil .tab-kecil{padding:3px;border:0;border-radius:var(--radius-pill);background:rgba(255,255,255,.14)}
-.hero-hasil .tab-kecil button{min-height:40px;border-radius:var(--radius-pill);background:transparent;color:#fff;font-weight:600}
-.hero-hasil .tab-kecil button[aria-pressed=true]{background:rgba(255,255,255,.92);color:#14181a}
 .hero-pohon{position:relative;min-width:0;padding:14px 14px 12px;border-radius:22px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.28);backdrop-filter:blur(8px)}
 .hero-alat{position:absolute;top:10px;inset-inline-end:10px;z-index:3;display:flex;gap:6px}
 .alat-bulat{width:40px;height:40px;flex:none;border-radius:50%;border:0;background:rgba(255,255,255,.2);color:#fff;display:grid;place-items:center;cursor:pointer}
@@ -1359,16 +1356,14 @@ body.layar-hasil{background:var(--halaman)}
 .hero-hasil .kalimat-hero{margin:10px 0 0;font-size:15.5px;color:rgba(255,255,255,.93)}
 .fakta-hero{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 .fakta-hero span{padding:4px 10px;border-radius:var(--radius-pill);background:rgba(255,255,255,.12);font-size:13px}
-.hero-hasil .aksi-hero{margin-top:16px}
-.hero-hasil .aksi-hero .pil-hero{background:#fff;color:#14181a}
 .hero-hasil .tautan-hero{display:inline-flex;align-items:center;gap:6px}
-.hero-hasil .tab-kecil{margin-top:14px}
 .ubin-hero{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .uh{min-width:0;padding:13px 15px;border-radius:22px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;text-align:start;font:inherit}
 .uh .lbl{display:block;font-size:12.5px;color:rgba(255,255,255,.82)}
 .uh b{display:block;margin-top:3px;font:600 21px/1.15 var(--font-display);font-variant-numeric:tabular-nums}
 .uh small{display:block;margin-top:3px;font-size:12.5px;color:rgba(255,255,255,.8)}
-.uh.kamu{grid-column:1/-1;background:rgba(255,255,255,.95);border-color:#fff;color:var(--ink);cursor:pointer}
+.uh.lebar,.uh.kamu{grid-column:1/-1}
+.uh.kamu{background:rgba(255,255,255,.95);border-color:#fff;color:var(--ink);cursor:pointer}
 .uh.kamu .lbl,.uh.kamu small{color:var(--ink-muted)}
 .uh.kamu b{font-size:32px}
 .uh.kamu:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
