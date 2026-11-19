@@ -1915,3 +1915,9 @@ table.faraidh{font-size:15.5px}
 .halaman-hasil .faraidh .orang-sel small{font-size:var(--t-kecil)}
 .halaman-hasil .wadah-pohon .avatar-orang{font-size:var(--t-kecil)!important}
 .halaman-hasil .baris-bagian .avatar-orang{font-size:var(--t-isi)!important}
+/* Penanda aktif/filter: lembut (latar sage + garis aksen), bukan blok hitam yang meneriakkan diri. */
+.halaman-hasil .disaring{background:var(--primary-soft);color:var(--ink);border-inline-start:4px solid var(--ink)}
+.halaman-hasil .disaring .tautan-aksi{color:var(--ink);text-decoration-color:var(--ink)}
+.halaman-hasil .penjumlahan>div.aktif{background:var(--primary-soft);color:var(--ink);box-shadow:inset 4px 0 0 var(--ink)}
+.halaman-hasil .penjumlahan>div.aktif dt,.halaman-hasil .penjumlahan>div.aktif .saring{color:var(--ink)}
+.halaman-hasil .penjumlahan .saring:focus-visible::after{outline:3px solid var(--focus);outline-offset:-1px}

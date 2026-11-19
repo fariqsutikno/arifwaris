@@ -144,7 +144,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
-  const adaPotonganHarta = ringkasan.tirkah.kotor !== ringkasan.tirkah.bersih;
   const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
 
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
@@ -264,11 +263,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               : hero.kalimat}</p>
             {!sedangMenebak && <div className="fakta-hero">
               <span>{t('hasil.jumlah_mayit', { jumlah: angka(String(daftarMayit.length)) })}</span>
-              <span>{adaPotonganHarta ? t('hasil.ada_potongan_harta') : t('hasil.tanpa_potongan_harta')}</span>
             </div>}
             <div className="aksi-hero">
               {!sedangMenebak && <button type="button" className="pil-hero" onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>}
-              {bolehUbah && !adalahBelajar && <button type="button" className="chip-madzhab" aria-label={t('hitung.ganti_madzhab')} onClick={() => setMadzhabTerbuka(true)}>{namaMadzhab(madzhab)}<Ikon nama="pensil" ukuran={16} /></button>}
             </div>
             {!hanyaBaca && !khusus && <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
               <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
@@ -299,7 +296,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
-          : <KartuPembagian saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined} ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
+          : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={hartaKosong && bolehUbah ? () => setUbahHartaTerbuka(true) : () => setSembunyiNominal(!sembunyiNominal)} hartaKosong={hartaKosong && bolehUbah}
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
@@ -320,6 +317,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             {!menunggu && !gharqaDitahan && <UbinDitahan ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} />}
             <UbinTentang waktuHitung={waktuHitung} namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
               saatUbahHarta={bolehUbah && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
+              saatUbahMadzhab={bolehUbah && !adalahBelajar ? () => setMadzhabTerbuka(true) : undefined}
+              saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
               saatUbahPembulatan={bolehUbah && tampilPembulatan ? satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) }) : undefined} />
           </div>
         )}

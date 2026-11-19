@@ -33,8 +33,6 @@ interface Props {
   sembunyiNominal: boolean;
   saatSembunyi: () => void;
   hartaKosong?: boolean;
-  /** Pensil di judul daftar penerima: kembali ke langkah ahli waris. */
-  saatUbahAhliWaris?: (() => void) | undefined;
   sedangMenebak: boolean;
   adalahBelajar: boolean;
   saatTampilkanJawaban: () => void;
@@ -118,7 +116,7 @@ export function KartuPembagian(props: Props) {
           {saring && (
             <p className="disaring">{t('hasil.disaring')} <b>{saring.label}</b> · <button type="button" className="tautan-aksi tautan-sebaris" onClick={() => setSaring(null)}>{t('hitung.tampilkan_semua')}</button></p>
           )}
-          {adaDaftarPenerima && <JudulKelompok aksi={props.saatUbahAhliWaris && <button type="button" className="pensil-baris" aria-label={t('hasil.ubah_baris', { nama: t('hitung.ahli_waris') })} onClick={props.saatUbahAhliWaris}><Ikon nama="pensil" ukuran={18} /></button>} judul={t('hasil.penerima')} jumlah={tampilPenerima ? ringkasan.penerima.length : ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan && tampil(sisa.id)).length} />}
+          {adaDaftarPenerima && <JudulKelompok judul={t('hasil.penerima')} jumlah={tampilPenerima ? ringkasan.penerima.length : ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan && tampil(sisa.id)).length} />}
           <ul className="daftar-bagian">
             {tampilPenerima && ringkasan.penerima.map(orang => (
               <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} berbeda={!!props.idBerbeda?.has(orang.id)} saatPilih={props.saatPilihOrang}
