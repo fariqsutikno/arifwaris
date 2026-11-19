@@ -27181,6 +27181,69 @@
    "id": "{rincian}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Tidak ada ahli waris utama yang menerima sisa harta ini. Apakah hartanya tidak diwariskan kepada siapa pun?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanya.papan",
+   "halaman": "narasi",
+   "id": "Siapa yang menerima sisa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila tidak ada ahli waris utama yang menerima sisa dan baitul mal dianggap tidak tegak, harta diwarisi dzawil arham, yaitu kerabat jauh. Caranya tanzil: tiap kerabat didudukkan pada posisi ahli waris yang menjadi perantaranya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar.papan",
+   "halaman": "narasi",
+   "id": "Kerabat jauh mewarisi lewat tanzil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_masalah.narasi",
+   "halaman": "narasi",
+   "id": "Sekarang harta kita bagi di antara para perantara, seolah-olah merekalah ahli warisnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_masalah.papan",
+   "halaman": "narasi",
+   "id": "Bagi di antara perantara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_turun.narasi",
+   "halaman": "narasi",
+   "id": "Bagian tiap perantara lalu diturunkan kepada kerabat yang bernasab melalui dia.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_turun.papan",
+   "halaman": "narasi",
+   "id": "Perantara → kerabat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.judul",
+   "halaman": "narasi",
+   "id": "Harta untuk kerabat jauh",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

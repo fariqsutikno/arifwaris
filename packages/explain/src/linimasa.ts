@@ -8,11 +8,13 @@
 import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import { babAhliWaris, babBagian, babHarta, babHasil, babPembulatan, babPenyebut, babPenyesuaian, persamaanKotakAshl, type Bab } from './cerita.js';
 import { buatKonteks, type HasilOk, type Konteks } from './context.js';
+import { adaDzawilArham } from './dzawilArham.js';
+import { susunLinimasaDzawilArham } from './linimasaDzawilArham.js';
 import { LAMA, babAhliWarisSkrip, babBagianSkrip, babHartaSkrip, babHasilSkrip, babPembulatanSkrip, babPenyebutSkrip, babPenyesuaianSkrip, langkahPeta, type HasilSkrip } from './skrip.js';
 import type { BarisPenjelasan, JenisLangkah, Kamus } from './segments.js';
 
 export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir'
-  | 'belumPasti' | 'kemungkinan' | 'pemberian' | 'wafatBersamaan';
+  | 'belumPasti' | 'kemungkinan' | 'pemberian' | 'wafatBersamaan' | 'dzawilArham';
 export type BagianLangkah = 'keluarga' | 'hitung';
 export type KolomLinimasa = 'bagian' | 'ashl' | 'aul' | 'radd' | 'tashih' | 'nominal';
 /** `kolom:idOrang`, sel tabel yang terisi pada langkah itu. */
@@ -48,6 +50,8 @@ export interface Linimasa { tahap: Tahap[]; tabel: KolomTabel[][]; nama?: Record
 export const BATAS_KOTAK = 24n;
 
 export function susunLinimasa(hasil: HasilOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): Linimasa {
+  // Dzawil arham: pembagi dari tanzil, bukan pipeline fardh/ashl; linimasanya sendiri (tanpa tabel bertahap).
+  if (adaDzawilArham(hasil)) return susunLinimasaDzawilArham(hasil, graf, opsi);
   const konteks = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa: 'id' });
   const tahap = tahapBiasa(konteks, 0);
   const [pertama] = tahap;
