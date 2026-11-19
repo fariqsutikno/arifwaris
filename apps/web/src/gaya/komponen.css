@@ -1832,3 +1832,9 @@ table.faraidh{font-size:15.5px}
 .halaman-hasil .wadah-pohon .node-orang .angka,.halaman-hasil .wadah-pohon .node-orang .peran-node{font-size:13.5px}
 .halaman-hasil .judul-panel{font-size:17px}
 .halaman-hasil .tombol-aliran,.halaman-hasil .tautan-hero,.halaman-hasil .pil-hero{font-size:15px}
+
+/* Modal orang format mockup: judul pertanyaan, teks alur, baris hitungan label + nilai. */
+.isi-modal h3.pertanyaan-modal{margin:0;font:700 20px/1.3 var(--font-display);letter-spacing:0;text-transform:none;color:var(--ink)}
+.isi-modal .teks-alur{margin:0 0 8px;font-size:16px;line-height:1.6}
+.langkah-hitung p.baris-hitung,.langkah-hitung p:has(.label-hitung){display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between}
+.label-hitung{font-weight:700;color:var(--ink-muted);font-size:14px}
