@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Opsi isian jawaban</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- Acuan: docs/design/riset-ux-isian-jawaban-latihan-2026-11-19.md. Satu soal contoh (kasus 16.1): istri 1/8, anak lk + anak pr ashabah bil ghair;
+     asal masalah 8, tashih 24; saham 3, 14, 7. Semua opsi dinilai dengan kunci yang sama. -->
+<style>
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:#fff;--orange:#f2682a;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#dfe6dc;--hijau:#1f6f5c;--merah:#fdecea;--merah-ink:#7a2a17;
+--font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:18px 16px 90px}
+h1,h2,h3,p{margin:0}
+button,input,select{font-family:inherit}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
+.tautan{background:none;border:0;padding:0;font:600 14px var(--font);color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;min-height:32px}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.atas{max-width:1120px;margin:0 auto 12px}
+.atas p{font-size:13px;color:#2c4136;margin:0 4px 8px}
+nav.tab{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+nav.tab button{flex:none;border:0;background:rgba(255,255,255,.5);color:var(--ink);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer}
+nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
+.frame{max-width:1120px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18)}
+.hero{color:#fff;padding:16px 24px 22px;background:radial-gradient(520px 300px at 82% 60%,rgba(255,150,40,.3),transparent 70%),radial-gradient(420px 260px at 6% 0%,rgba(60,210,170,.28),transparent 70%),linear-gradient(135deg,#0a2326 0%,#0f3a38 55%,#0b2a2b 100%)}
+.bilah{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,.85)}
+.hero h1{font-size:28px;line-height:1.15;font-weight:500;letter-spacing:-.02em;margin-top:14px}
+.kalimat{font-size:15px;margin-top:6px;color:rgba(255,255,255,.93)}
+.tata{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;padding:20px 24px 28px}
+.t{background:var(--card);border-radius:24px;padding:18px 20px;box-shadow:var(--sh);min-width:0}
+.s7{grid-column:span 7}.s5{grid-column:span 5}.s12{grid-column:span 12}
+.t h2{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.t h3{font-size:15.5px;font-weight:600}
+.sub{font-size:14px;color:var(--muted);margin-top:2px}
+.baris{display:flex;align-items:center;gap:12px;padding:11px 0;border-top:1px solid var(--line);flex-wrap:wrap}
+.av{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:600;flex:none}
+.nm{flex:1;font-weight:500;min-width:110px}
+.btn{border:0;background:var(--black);color:#fff;font:600 14px var(--font);border-radius:999px;padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.aksi{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip-s{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:500 13.5px var(--font);cursor:pointer;min-height:36px;color:var(--ink)}
+.chip-s[aria-pressed=true]{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.angka{font:600 16px var(--font);border:1.5px solid var(--line);border-radius:10px;padding:7px 6px;text-align:center;font-variant-numeric:tabular-nums;width:64px}
+.pecahan{display:inline-flex;flex-direction:column;align-items:center;gap:3px}
+.pecahan i{display:block;width:60px;height:2px;background:var(--ink);border-radius:2px}
+.pecahan .angka{width:56px;padding:4px 6px}
+.tdk{font-size:13px;color:var(--muted);display:inline-flex;gap:5px;align-items:center}
+.keliru{background:var(--merah);border-radius:12px;padding-left:6px;padding-right:6px}
+.umpan{margin-top:12px;border-radius:14px;padding:11px 14px;font-size:14px}
+.umpan.benar{background:var(--mint);color:#174d3c}.umpan.salah{background:var(--merah);color:var(--merah-ink)}.umpan.kurang{background:var(--kuning);color:var(--kuning-ink)}.umpan.sebagian{background:#e8eefc;color:#1f3a7a}
+ol.langkah{margin:12px 0 0;padding-left:20px}ol.langkah>li{margin-top:14px}ol.langkah>li::marker{font-weight:700}
+.barisAngka{display:flex;gap:12px;align-items:center;margin-top:8px;font-size:14px;flex-wrap:wrap}
+/* B: tabel kitab */
+.wadahTabel{overflow-x:auto;margin-top:12px}
+table.kitab{border-collapse:collapse;min-width:520px;width:100%;font-size:14px}
+.kitab th,.kitab td{border:1.5px solid var(--line);padding:8px;text-align:center;vertical-align:middle}
+.kitab th{background:#f3f6f1;font-weight:600}
+.kitab td:first-child{text-align:left;font-weight:500}
+.kitab select{font:500 14px var(--font);border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff}
+.kitab .angka{width:58px}
+/* D: keypad */
+.slot{min-width:92px;min-height:44px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font:600 17px var(--font);cursor:pointer;padding:4px 10px;color:var(--ink)}
+.slot[aria-pressed=true]{border-color:var(--hijau);box-shadow:0 0 0 3px rgba(31,111,92,.18)}
+.slot .kos{color:var(--muted);font-weight:500}
+.keypad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px;max-width:360px}
+.keypad button{min-height:48px;border:0;border-radius:12px;background:#eef2ec;font:600 18px var(--font);cursor:pointer;color:var(--ink)}
+.keypad button.lebar{grid-column:span 2;font-size:14px}
+/* E: teks bebas */
+.teks{font:500 16px var(--font);border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;width:130px}
+.gema{font-size:13px;width:100%;padding-left:46px}.gema.ok{color:var(--hijau)}.gema.tanya{color:var(--kuning-ink)}.gema.no{color:var(--merah-ink)}
+/* perbandingan */
+table.banding{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+.banding th,.banding td{border-bottom:1px solid var(--line);padding:9px 8px;text-align:left;vertical-align:top}
+.banding th{font-weight:600;background:#f3f6f1}
+.banding td.n{text-align:center;font-weight:600}
+.ya{color:var(--hijau)}.tidak{color:#b3402a}.agak{color:var(--kuning-ink)}
+.pilih label{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:14.5px;cursor:pointer}
+.pilih textarea{width:100%;min-height:70px;margin-top:8px;border:1.5px solid var(--line);border-radius:12px;padding:8px;font:inherit}
+.label-opsi{display:inline-block;background:var(--black);color:#fff;border-radius:8px;font-size:12.5px;font-weight:600;padding:1px 8px;margin-right:6px}
+ul.plus{margin:8px 0 0;padding-left:18px;font-size:14px}ul.plus li{margin-top:3px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(140%);background:var(--black);color:#fff;border-radius:14px;padding:12px 16px;font-size:14px;transition:transform .2s;z-index:30;max-width:calc(100% - 32px)}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.khusus{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.medan{margin-top:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:14px}
+.medan>span:first-child{min-width:150px;font-weight:500}
+.medan.keliru{padding:6px}
+.tetap{background:#f3f6f1;border-radius:10px;padding:6px 10px;font-weight:600;font-variant-numeric:tabular-nums}
+.tiga{display:inline-flex;background:#eef2ec;border-radius:999px;padding:3px}
+.tiga button{border:0;background:none;font:500 13px var(--font);padding:7px 10px;border-radius:999px;cursor:pointer;color:var(--ink);min-height:34px}
+.tiga button[aria-pressed=true]{background:#fff;box-shadow:var(--sh)}
+.rujukan{font-size:12.5px;color:var(--muted);margin-top:6px}
+.layak td.n{white-space:nowrap}
+@media(max-width:760px){
+  .khusus{grid-template-columns:1fr}
+  body{padding:12px 8px 90px}
+  .hero{padding:14px 16px 18px}.hero h1{font-size:23px}
+  .tata{grid-template-columns:1fr;padding:16px}
+  .s7,.s5,.s12{grid-column:auto}
+  .gema{padding-left:0}
+}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="atas">
+  <p>Enam cara mengisi jawaban soal latihan, untuk soal yang sama. Coba isi, tekan Periksa, lalu pilih di tab "Bandingkan dan pilih". Ini contoh, tidak ada yang disimpan.</p>
+  <nav class="tab" role="tablist" id="tab"></nav>
+</div>
+<div class="frame">
+  <header class="hero">
+    <div class="bilah"><span>Latihan</span><span>Soal 3 dari 10 · Bab ashabah</span></div>
+    <h1>Tentukan bagian tiap ahli waris</h1>
+    <p class="kalimat">Almarhum meninggalkan istri, satu anak laki-laki, dan satu anak perempuan.</p>
+  </header>
+  <div id="layar"></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+const ik = d => `<svg class="ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const IK_MATA = '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>';
+
+// Satu sumber kunci untuk semua opsi.
+const ORANG = [['Istri', '#c4643c'], ['Anak laki-laki', '#8a1f9e'], ['Anak perempuan', '#2f7d32']];
+const KUNCI = { status: [['1/8'], ['Ashabah'], ['Ashabah']], ashl: 8, sahamAwal: { istri: 1, ashabah: 7 }, ashlAkhir: 24, saham: [3, 14, 7] };
+const STATUS = ['1/2', '1/4', '1/8', '2/3', '1/3', '1/6', 'Ashabah', 'Terhalang'];
+const senilaiKunci = (i, n, d) => d > 0 && n * KUNCI.ashlAkhir === KUNCI.saham[i] * d;
+const samaHimpunan = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+const av = i => `<span class="av" style="background:${ORANG[i][1]}">${ORANG[i][0][0]}</span>`;
+
+// Nilai isian disimpan per kunci supaya tidak hilang saat layar digambar ulang.
+const nilai = {}, pilihanStatus = {}, umpan = {}, salah = {};
+const v = k => nilai[k] ?? '';
+const simpanIsian = () => document.querySelectorAll('[data-k]').forEach(e => nilai[e.dataset.k] = e.type === 'checkbox' ? e.checked : e.value);
+const kotak = (k, label, kelas = 'angka') => `<input class="${kelas}" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-k="${k}" value="${v(k)}" aria-label="${label}">`;
+const umpanHtml = id => umpan[id] ? `<div class="umpan ${umpan[id][0]}" role="status">${umpan[id][1]}</div>` : '';
+const tandai = (id, i) => (salah[id] ?? []).includes(i) ? ' keliru' : '';
+const aksiHtml = id => `<div class="aksi"><button class="btn" data-periksa="${id}">Periksa jawaban</button><button class="tautan" data-toast="Dialog tahan: Yakin mau lihat jawaban? Soal ini tidak memberi XP">${ik(IK_MATA)}Lihat jawaban</button></div>${umpanHtml(id)}`;
+function chipStatus(id, i) {
+  const pilih = pilihanStatus[id + i] ?? [];
+  return `<span class="chips">${STATUS.map(s => `<button class="chip-s" aria-pressed="${pilih.includes(s)}" data-status="${id}|${i}|${s}">${s}</button>`).join('')}</span>`;
+}
+function ubahStatus(id, i, s) {
+  const pilih = pilihanStatus[id + i] ?? [];
+  // Terhalang berdiri sendiri; fardh saling menggantikan; Ashabah boleh bersama satu fardh.
+  pilihanStatus[id + i] = s === 'Terhalang' ? (pilih.includes(s) ? [] : [s])
+    : s === 'Ashabah' ? (pilih.includes(s) ? pilih.filter(x => x !== s) : [...pilih.filter(x => x !== 'Terhalang'), s])
+    : (pilih.includes(s) ? pilih.filter(x => x !== s) : [...pilih.filter(x => x === 'Ashabah'), s]);
+}
+// Penilaian langkah 1–3 dipakai bersama oleh opsi A dan B.
+function nilaiLangkah(id, statusDari, ashl, ashlAkhir, saham, sahamAwal) {
+  salah[id] = [];
+  const status = [0, 1, 2].map(statusDari);
+  if (status.some(s => !s.length)) return ['kurang', 'Status tiap ahli waris belum lengkap.'];
+  const salahStatus = [0, 1, 2].filter(i => !samaHimpunan(status[i], KUNCI.status[i]));
+  if (salahStatus.length) { salah[id] = salahStatus; return ['salah', `Status belum tepat untuk ${salahStatus.map(i => ORANG[i][0]).join(', ')}. Bagian lain belum diperiksa.`]; }
+  if (!ashl) return ['kurang', 'Status benar. Asal masalah belum diisi.'];
+  if (+ashl !== KUNCI.ashl) return ['salah', 'Status benar. Asal masalah belum tepat: penyebut bersama terkecil dari bagian tetap.'];
+  if (sahamAwal && (+sahamAwal.istri !== KUNCI.sahamAwal.istri || +sahamAwal.ashabah !== KUNCI.sahamAwal.ashabah)) return ['salah', 'Asal masalah benar. Saham awal belum tepat: istri dapat berapa dari 8, dan sisanya berapa?'];
+  if (!ashlAkhir || saham.some(s => !s)) return ['kurang', 'Asal masalah benar. Asal masalah akhir dan saham belum lengkap.'];
+  const A = +ashlAkhir, sebanding = saham.every((s, i) => senilaiKunci(i, +s, A));
+  if (sebanding && A === KUNCI.ashlAkhir) return ['benar', 'Benar semua. Asal masalah 8, lalu jadi 24 supaya saham tiap anak bulat.'];
+  if (sebanding) return ['sebagian', `Perbandingannya benar, tapi asal masalah ${A} belum yang terkecil.`];
+  salah[id] = [0, 1, 2].filter(i => !senilaiKunci(i, +saham[i], A));
+  return ['salah', 'Asal masalah benar. Saham akhir belum tepat. Petunjuk: sisa 7 dibagi anak laki-laki dan perempuan dua banding satu. Apakah 7 habis dibagi 3?'];
+}
+
+const OPSI = {
+  A: {
+    judul: 'A. Langkah bertahap',
+    ringkas: 'Tiga langkah berurutan: status → asal masalah → asal masalah akhir dan saham.',
+    html: () => `<h2>Jawabanmu</h2><ol class="langkah">
+      <li><h3>Status tiap ahli waris</h3><p class="sub">Pilih bagian tetap, Ashabah (ambil sisa), atau Terhalang.</p>
+        ${ORANG.map((_, i) => `<div class="baris${tandai('A', i)}">${av(i)}<span class="nm">${ORANG[i][0]}</span>${chipStatus('A', i)}</div>`).join('')}</li>
+      <li><h3>Asal masalah</h3><div class="barisAngka">${kotak('A-ashl', 'Asal masalah')}</div></li>
+      <li><h3>Asal masalah akhir dan saham</h3><p class="sub">Bila tidak ada perubahan, tulis angka yang sama.</p>
+        <div class="barisAngka"><span>Asal masalah akhir</span>${kotak('A-akhir', 'Asal masalah akhir')}</div>
+        ${ORANG.map((_, i) => `<div class="baris">${av(i)}<span class="nm">${ORANG[i][0]}</span>${kotak('A-s' + i, 'Saham ' + ORANG[i][0])}</div>`).join('')}</li></ol>${aksiHtml('A')}`,
+    periksa: () => nilaiLangkah('A', i => pilihanStatus['A' + i] ?? [], v('A-ashl'), v('A-akhir'), [0, 1, 2].map(i => v('A-s' + i))),
+    plus: ['Mengajarkan urutan hitung', 'Umpan balik menunjuk langkah yang salah', 'Bisa di iPhone (tanpa garis miring)'],
+    minus: ['Paling panjang di HP', 'Daftar bagian tetap terlihat (mengenali, bukan mengingat)']
+  },
+  B: {
+    judul: 'B. Tabel seperti di kitab',
+    ringkas: 'Satu tabel: kolom bagian, asal masalah, dan asal masalah akhir, persis bentuk tabel di kelas.',
+    html: () => `<h2>Jawabanmu</h2><p class="sub">Isi tabel seperti di buku. Kepala kolom diisi asal masalah.</p>
+      <div class="wadahTabel"><table class="kitab"><thead><tr><th>Ahli waris</th><th>Bagian</th><th>Asal masalah<br>${kotak('B-ashl', 'Asal masalah')}</th><th>Asal masalah akhir<br>${kotak('B-akhir', 'Asal masalah akhir')}</th></tr></thead>
+      <tbody>${ORANG.map((_, i) => `<tr class="${tandai('B', i).trim()}"><td>${ORANG[i][0]}</td>
+        <td><select data-k="B-st${i}" aria-label="Bagian ${ORANG[i][0]}"><option value="">Pilih…</option>${['1/2', '1/4', '1/8', '2/3', '1/3', '1/6', 'Ashabah', '1/6 + Ashabah', 'Terhalang'].map(s => `<option ${v('B-st' + i) === s ? 'selected' : ''}>${s}</option>`).join('')}</select></td>
+        ${i === 0 ? `<td>${kotak('B-aw-istri', 'Saham awal istri')}</td>` : i === 1 ? `<td rowspan="2">${kotak('B-aw-ashabah', 'Saham awal ashabah bersama')}<br><span class="sub" style="font-size:12px">bersama</span></td>` : ''}
+        <td>${kotak('B-s' + i, 'Saham akhir ' + ORANG[i][0])}</td></tr>`).join('')}</tbody></table></div>${aksiHtml('B')}`,
+    periksa: () => nilaiLangkah('B', i => { const s = v('B-st' + i); return s === '1/6 + Ashabah' ? ['1/6', 'Ashabah'] : s ? [s] : []; }, v('B-ashl'), v('B-akhir'), [0, 1, 2].map(i => v('B-s' + i)), { istri: v('B-aw-istri'), ashabah: v('B-aw-ashabah') }),
+    plus: ['Sama dengan yang dipakai di kelas dan ujian', 'Semua terlihat dalam satu layar (laptop)', 'Pilihan bagian memakai daftar bawaan HP'],
+    minus: ['Di HP tabel harus digeser ke samping', 'Sel "bersama" untuk ashabah sudah memberi petunjuk', 'Tabel menakutkan bagi pemula (asumsi)']
+  },
+  C: {
+    judul: 'C. Pecahan bertumpuk',
+    ringkas: 'Hanya jawaban akhir. Pembilang di atas garis, penyebut di bawah, plus centang "Tidak dapat".',
+    html: () => `<h2>Jawabanmu</h2><p class="sub">Bagian dari seluruh harta. Pecahan senilai diterima: 3/24 sama dengan 1/8.</p>
+      ${ORANG.map((_, i) => `<div class="baris${tandai('C', i)}">${av(i)}<span class="nm">${ORANG[i][0]}</span>
+        ${v('C-tdk' + i) ? '<span class="sub">0</span>' : `<span class="pecahan">${kotak('C-n' + i, 'Pembilang ' + ORANG[i][0])}<i></i>${kotak('C-d' + i, 'Penyebut ' + ORANG[i][0])}</span>`}
+        <label class="tdk"><input type="checkbox" data-k="C-tdk${i}" data-gambar ${v('C-tdk' + i) ? 'checked' : ''}> Tidak dapat</label></div>`).join('')}${aksiHtml('C')}`,
+    periksa: () => {
+      const baca = i => v('C-tdk' + i) ? [0, 1] : [+v('C-n' + i), +v('C-d' + i)];
+      if ([0, 1, 2].some(i => !v('C-tdk' + i) && (!v('C-n' + i) || !+v('C-d' + i)))) { salah.C = []; return ['kurang', 'Masih ada kotak kosong. Yang tidak mendapat bagian: centang "Tidak dapat".']; }
+      salah.C = [0, 1, 2].filter(i => !senilaiKunci(i, ...baca(i)));
+      return salah.C.length ? ['salah', `${3 - salah.C.length} dari 3 benar.`] : ['benar', 'Benar semua.'];
+    },
+    plus: ['Paling cepat', 'Bisa di iPhone', 'Bentuk pecahan sama seperti ditulis di kertas'],
+    minus: ['Tidak tahu salahnya di langkah mana', 'Tidak melatih ashl dan tashih']
+  },
+  D: {
+    judul: 'D. Papan angka sendiri',
+    ringkas: 'Ketuk kotak orangnya, lalu ketik dengan papan angka di layar yang punya tombol garis miring.',
+    html: () => `<h2>Jawabanmu</h2><p class="sub">Ketuk kotak, lalu ketik dengan papan di bawah. Bagian dari seluruh harta.</p>
+      ${ORANG.map((_, i) => `<div class="baris${tandai('D', i)}">${av(i)}<span class="nm">${ORANG[i][0]}</span><button class="slot" aria-pressed="${papan.aktif === i}" data-slot="${i}" aria-label="Jawaban ${ORANG[i][0]}">${papan.isi[i] || '<span class="kos">ketuk</span>'}</button></div>`).join('')}
+      <div class="keypad" role="group" aria-label="Papan angka">${['7', '8', '9', '⌫', '4', '5', '6', '/', '1', '2', '3', '0'].map(k => `<button data-kunci="${k}" aria-label="${k === '⌫' ? 'Hapus' : k}">${k}</button>`).join('')}<button class="lebar" data-kunci="tdk">Tidak dapat (0)</button><button class="lebar" data-kunci="lanjut">Orang berikutnya</button></div>${aksiHtml('D')}`,
+    periksa: () => {
+      if (papan.isi.some(x => !x)) { salah.D = []; return ['kurang', 'Masih ada yang kosong.']; }
+      salah.D = [0, 1, 2].filter(i => { const [n, d = '1'] = papan.isi[i].split('/'); return !senilaiKunci(i, +n, +d); });
+      return salah.D.length ? ['salah', `${3 - salah.D.length} dari 3 benar.`] : ['benar', 'Benar semua.'];
+    },
+    plus: ['Garis miring selalu ada, di HP apa pun', 'Hanya bentuk yang sah yang bisa diketik', 'Terasa seperti kalkulator'],
+    minus: ['Keyboard HP tidak dipakai (asing bagi sebagian orang)', 'Hanya jawaban akhir', 'Perlu dibuat dan dirawat sendiri']
+  },
+  E: {
+    judul: 'E. Ketik bebas, dibaca',
+    ringkas: 'Kotak teks biasa. Apa pun yang diketik dibaca dan langsung ditampilkan: "Terbaca: 1/8".',
+    html: () => `<h2>Jawabanmu</h2><p class="sub">Ketik sesukamu: 1/8, 1:8, ⅛, 0,125, 12,5%, atau "terhalang".</p>
+      ${ORANG.map((_, i) => `<div class="baris${tandai('E', i)}">${av(i)}<span class="nm">${ORANG[i][0]}</span><input class="teks" data-k="E-${i}" data-gema="${i}" value="${v('E-' + i)}" autocomplete="off" aria-label="Jawaban ${ORANG[i][0]}" aria-describedby="gema${i}"><span class="gema" id="gema${i}">${gemaHtml(v('E-' + i))}</span></div>`).join('')}${aksiHtml('E')}`,
+    periksa: () => {
+      const baca = [0, 1, 2].map(i => bacaBebas(v('E-' + i)));
+      if (baca.some(b => !b || b.status)) { salah.E = [0, 1, 2].filter(i => !baca[i] || baca[i].status); return ['kurang', 'Ada isian yang belum terbaca sebagai besar bagian. Lihat keterangan di bawah kotaknya.']; }
+      salah.E = [0, 1, 2].filter(i => !senilaiKunci(i, baca[i].n, baca[i].d));
+      return salah.E.length ? ['salah', `${3 - salah.E.length} dari 3 benar.`] : ['benar', 'Benar semua.'];
+    },
+    plus: ['Paling luwes, tidak perlu belajar cara mengisi', 'Langsung terlihat apa yang dibaca aplikasi'],
+    minus: ['Di iPhone tetap harus pindah ke keyboard tanda baca', 'Daftar ejaan tidak pernah lengkap', '"Sisa" bisa berarti ashabah atau radd']
+  },
+  F: {
+    judul: 'F. Pilihan ganda',
+    ringkas: 'Tiap orang memilih satu dari empat pecahan. Untuk tingkat dasar.',
+    html: () => `<h2>Jawabanmu</h2><p class="sub">Pilih bagian akhir tiap orang dari seluruh harta.</p>
+      ${ORANG.map((_, i) => `<div class="baris${tandai('F', i)}">${av(i)}<span class="nm">${ORANG[i][0]}</span><span class="chips">${PILIHAN_F[i].map(p => `<button class="chip-s" aria-pressed="${nilai['F-' + i] === p}" data-pilihf="${i}|${p}">${p}</button>`).join('')}</span></div>`).join('')}${aksiHtml('F')}`,
+    periksa: () => {
+      if ([0, 1, 2].some(i => !nilai['F-' + i])) { salah.F = []; return ['kurang', 'Masih ada yang belum dipilih.']; }
+      salah.F = [0, 1, 2].filter(i => { const p = nilai['F-' + i]; const [n, d = '1'] = p === '0' ? ['0'] : p.split('/'); return !senilaiKunci(i, +n, +d); });
+      return salah.F.length ? ['salah', `${3 - salah.F.length} dari 3 benar.`] : ['benar', 'Benar semua.'];
+    },
+    plus: ['Paling ramah pemula dan HP', 'Tanpa mengetik sama sekali'],
+    minus: ['Bisa ditebak tanpa paham', 'Pengecoh harus disusun per soal (kerja konten)', 'Hanya jawaban akhir']
+  }
+};
+const PILIHAN_F = [['1/4', '1/8', '1/6', '0'], ['1/2', '7/12', '2/3', '7/24'], ['1/3', '7/24', '1/4', '0']];
+
+// Opsi D: papan angka sendiri.
+const papan = { aktif: 0, isi: ['', '', ''] };
+function tekanKunci(k) {
+  const i = papan.aktif, s = papan.isi[i];
+  if (k === '⌫') papan.isi[i] = s.slice(0, -1);
+  else if (k === 'tdk') papan.isi[i] = '0';
+  else if (k === 'lanjut') papan.aktif = (i + 1) % 3;
+  else if (k === '/') { if (s && !s.includes('/')) papan.isi[i] = s + '/'; }
+  else if (s.length < 7) papan.isi[i] = s === '0' ? k : s + k;
+}
+
+// Opsi E: pembaca toleran. Status (ashabah) dikenali tapi tidak diterima sebagai besar bagian.
+const PECAHAN_UNICODE = { '½': '1/2', '⅓': '1/3', '⅔': '2/3', '¼': '1/4', '¾': '3/4', '⅙': '1/6', '⅛': '1/8', '⅕': '1/5' };
+const KATA_ASHABAH = /^(ashabah|ashobah|asobah|asabah|'ashabah|‘ashabah|ashaba|ta'?shib|sisa|عصبة|العصبة|تعصيب)$/;
+const KATA_TERHALANG = /^(terhalang|mahjub|mahjoob|hajb|hirman|tidak dapat|tdk dapat|-|محجوب)$/;
+function bacaBebas(teks) {
+  let s = teks.trim().toLowerCase().replace(/[٠-٩۰-۹]/g, c => String(c.charCodeAt(0) % 16));
+  if (!s) return null;
+  s = s.replace(/[½⅓⅔¼¾⅙⅛⅕]/g, c => PECAHAN_UNICODE[c]).replace(/[⁄∕:÷]/g, '/').replace(/\s+/g, ' ');
+  if (KATA_ASHABAH.test(s)) return { status: 'Ashabah' };
+  if (KATA_TERHALANG.test(s)) return { n: 0, d: 1 };
+  let m = /^(\d+) ?\/ ?(\d+)$/.exec(s);
+  if (m && +m[2] > 0) return { n: +m[1], d: +m[2] };
+  m = /^(\d+)(?:[.,](\d+))?( ?%)?$/.exec(s);
+  if (m) { const desimal = m[2] ?? '', d = 10 ** desimal.length * (m[3] ? 100 : 1); return { n: +(m[1] + desimal), d }; }
+  return null;
+}
+function gemaHtml(teks) {
+  if (!teks.trim()) return '';
+  const b = bacaBebas(teks);
+  if (!b) return '<span class="no">Belum terbaca. Contoh: 1/8</span>';
+  if (b.status) return '<span class="tanya">Ashabah itu statusnya. Berapa bagian akhirnya? Contoh: 7/12</span>';
+  return `<span class="ok">Terbaca: ${b.n === 0 ? '0 (tidak dapat)' : `${b.n}/${b.d}`}</span>`;
+}
+
+// Perbandingan dan pilihan pemilik.
+const KRITERIA = ['Bisa di iPhone tanpa ganti keyboard', 'Tidak ambigu', 'Mengajarkan langkah', 'Cepat diisi', 'Tidak membocorkan jawaban', 'Usaha bikin'];
+const NILAI = {
+  A: ['ya', 'ya', 'ya', 'tidak', 'agak', 'sedang'],
+  B: ['ya', 'ya', 'ya', 'agak', 'agak', 'sedang'],
+  C: ['ya', 'ya', 'tidak', 'ya', 'ya', 'kecil'],
+  D: ['ya', 'ya', 'tidak', 'agak', 'ya', 'sedang'],
+  E: ['tidak', 'agak', 'tidak', 'ya', 'ya', 'sedang'],
+  F: ['ya', 'ya', 'tidak', 'ya', 'tidak', 'besar (konten)']
+};
+const TANDA = { ya: '<span class="ya">✓</span>', tidak: '<span class="tidak">✗</span>', agak: '<span class="agak">sebagian</span>' };
+const PADUAN = [
+  ['A+C', 'Langkah bertahap sebagai bawaan, pecahan bertumpuk untuk jawab cepat (rekomendasi riset)'],
+  ['B+C', 'Tabel kitab sebagai bawaan, pecahan bertumpuk untuk jawab cepat'],
+  ['A/B per perangkat', 'Langkah bertahap di HP, tabel kitab di laptop'],
+  ['F→A→C per tingkat', 'Dasar: pilihan ganda; menengah: langkah; sulit: jawaban akhir'],
+];
+function bandingHtml() {
+  return `<div class="tata">
+    <section class="t s12"><h2>Bandingkan</h2><p class="sub">Penilaian awal tim, belum diuji ke pengguna.</p>
+      <div class="wadahTabel"><table class="banding"><thead><tr><th>Opsi</th>${KRITERIA.map(k => `<th>${k}</th>`).join('')}</tr></thead>
+      <tbody>${Object.entries(OPSI).map(([id, o]) => `<tr><td><b>${o.judul}</b><br><span class="sub" style="font-size:13px">${o.ringkas}</span></td>${NILAI[id].map(x => `<td class="n">${TANDA[x] ?? x}</td>`).join('')}</tr>`).join('')}</tbody></table></div></section>
+    <section class="t s12 layak"><h2>Kelayakan per jenis soal</h2><p class="sub">Coba langsung di tab "Kasus khusus".</p>
+      <div class="wadahTabel"><table class="banding"><thead><tr><th>Jenis soal</th>${Object.values(OPSI).map(o => `<th>${o.judul.split('.')[0]}</th>`).join('')}<th>Catatan</th></tr></thead>
+      <tbody>${KELAYAKAN.map(([j, ...r]) => `<tr><td><b>${j}</b></td>${r.slice(0, 6).map(x => `<td class="n">${TANDA[x]}</td>`).join('')}<td>${r[6]}</td></tr>`).join('')}</tbody></table></div>
+      <ul class="plus"><li>Semua opsi butuh tiga keadaan per orang: <b>Dapat</b>, <b>Ditahan dulu</b>, <b>Tidak dapat</b>, ditambah baris "Ditahan (mauquf)" untuk haml, mafqud, dan khuntsa.</li>
+      <li>E paling rapuh di kasus khusus: kata "ditahan", "mauquf", "sisa" makin menambah tafsir ganda.</li>
+      <li>Sekarang aplikasi belum membuka mode tebak untuk taqdir, menunggu kelahiran, dan gharqa (<code>Hasil.tsx</code>); bentuk di atas yang membuatnya mungkin.</li></ul></section>
+    <section class="t s7 pilih"><h2>Pilihanmu</h2><p class="sub">Boleh satu opsi, atau paduan. Opsi bisa digabung karena "Langkah" dan "Jawaban akhir" bisa dipindah kapan saja.</p>
+      ${PADUAN.map(([id, ket], i) => `<label><input type="radio" name="pilihan" value="${id}" ${i === 0 ? '' : ''}><span><b>${id}</b>. ${ket}</span></label>`).join('')}
+      ${Object.entries(OPSI).map(([id, o]) => `<label><input type="radio" name="pilihan" value="${id}"><span><b>${o.judul}</b> saja</span></label>`).join('')}
+      <textarea id="catatanPilihan" placeholder="Alasan atau yang mau diubah…"></textarea>
+      <div class="aksi"><button class="btn" id="salinPilihan">Salin pilihan</button></div></section>
+    <section class="t s5"><h2>Yang sama di semua opsi</h2><ul class="plus">
+      <li>Penilaian dari engine, layar tidak menghitung sendiri.</li><li>Pecahan senilai diterima di jawaban akhir.</li>
+      <li>Asal masalah harus yang terkecil; kelipatannya dinilai "perbandingan benar".</li><li>"Lihat jawaban" satu-satunya jalan keluar.</li>
+      <li>Soal bab 07–08 butuh pilihan tambahan ("1/3 sisa", "Muqasamah") di opsi A dan B.</li></ul></section></div>`;
+}
+
+// Kasus khusus. Angka dari contoh KB (bukan dihitung di sini): 12.6 contoh 2, 14.6, 13a.7 H1 baris [SYF], 13b.6 F1, 13d.2.
+const KELAS_TAQDIR = ['Tetap penuh', 'Diberi yang terkecil', '0 dulu: gugur di sebagian kemungkinan', '0 dulu: berbagi sisa dengan janin'];
+const KHUSUS = {
+  munasakhat: {
+    judul: 'Munasakhat', rujukan: 'KB 12.6 contoh 2',
+    soal: 'Lanjutan soal tadi: sebelum harta dibagi, anak perempuan wafat. Ia meninggalkan ibunya (istri tadi) dan saudara laki-lakinya (anak laki-laki tadi).',
+    langkah: [
+      { judul: 'Babak 1: Almarhum', isi: [{ tetap: 'Asal masalah akhir', teks: '24' }, { tetap: 'Istri · anak lk · anak pr', teks: '3 · 14 · 7' }], ket: 'Sudah dikerjakan di soal sebelumnya, ditampilkan terkunci.' },
+      { judul: 'Babak 2: Anak perempuan', isi: [{ id: 'm-st-ibu', label: 'Status ibu', chips: STATUS, kunci: '1/3' }, { id: 'm-st-sdr', label: 'Status saudara lk', chips: STATUS, kunci: 'Ashabah' }, { id: 'm-ashl2', label: 'Asal masalah', kunci: 3 }] },
+      { judul: 'Gabungan (jami\'ah)', isi: [{ tetap: 'Saham anak pr di babak 1', teks: '7' }, { id: 'm-jamiah', label: 'Jami\'ah', kunci: 72 }, { id: 'm-istri', label: 'Saham akhir istri', kunci: 16 }, { id: 'm-anaklk', label: 'Saham akhir anak lk', kunci: 56 }] }
+    ],
+    akhir: { ket: 'Bagian dari harta almarhum pertama. Yang mewarisi dari dua mayit dijumlah.', baris: [['Istri (juga ibu anak pr)', [16, 72]], ['Anak laki-laki (juga saudaranya)', [56, 72]]] },
+    batas: 'Soal latihan dibatasi sampai 3 mayit; angka jami\'ah bisa besar tapi tetap bilangan bulat di kotak angka.'
+  },
+  dzawil: {
+    judul: 'Dzawil arham', rujukan: 'KB 14.5–14.6 (tanzil, [SYF])',
+    soal: 'Almarhum tidak meninggalkan ahli waris bagian tetap maupun ashabah. Yang ada hanya bibi dari pihak ibu (khalah) dan bibi dari pihak ayah (\'ammah).',
+    langkah: [
+      { judul: 'Didudukkan sebagai siapa?', isi: [{ id: 'd-khalah', label: 'Khalah', chips: ['Ibu', 'Ayah', 'Saudari', 'Nenek'], kunci: 'Ibu' }, { id: 'd-ammah', label: '\'Ammah', chips: ['Ibu', 'Ayah', 'Saudari', 'Nenek'], kunci: 'Ayah' }] },
+      { judul: 'Bagi antar perantara', isi: [{ id: 'd-st-ibu', label: 'Status ibu', chips: STATUS, kunci: '1/3' }, { id: 'd-st-ayah', label: 'Status ayah', chips: STATUS, kunci: 'Ashabah' }, { id: 'd-ashl', label: 'Asal masalah', kunci: 3 }] },
+      { judul: 'Bagian tiap kerabat', isi: [{ id: 'd-khalah-s', label: 'Saham khalah', kunci: 1 }, { id: 'd-ammah-s', label: 'Saham \'ammah', kunci: 2 }] }
+    ],
+    akhir: { ket: 'Bagian dari seluruh harta.', baris: [['Khalah', [1, 3]], ['\'Ammah', [2, 3]]] },
+    batas: 'Langkahnya berbeda dari soal biasa (tanzil), jadi daftar langkah diambil dari jenis soal. Madzhab Hanafi memakai metode qarabah (14.11): langkahnya lain lagi.'
+  },
+  haml: {
+    judul: 'Haml (janin)', rujukan: 'KB 13a.4–13a.7 H1, baris [SYF]',
+    soal: 'Almarhum meninggalkan ibu yang sedang hamil dari ayah almarhum, dan saudara laki-laki kandung. Madzhab Syafi\'i.',
+    langkah: [
+      { judul: 'Kelompok tiap ahli waris', isi: [{ id: 'h-ibu', label: 'Ibu', chips: KELAS_TAQDIR, kunci: 'Diberi yang terkecil' }, { id: 'h-sdr', label: 'Saudara lk kandung', chips: KELAS_TAQDIR, kunci: '0 dulu: berbagi sisa dengan janin' }], ket: 'Menguji paham konsepnya, tanpa menulis enam tabel kemungkinan di HP.' },
+      { judul: 'Bagian sekarang', isi: [{ tetap: 'Jami\'ah', teks: '72' }, { id: 'h-ibu-s', label: 'Saham ibu sekarang', kunci: 12 }, { id: 'h-sdr-s', label: 'Saham saudara sekarang', kunci: 0 }, { id: 'h-tahan', label: 'Ditahan', kunci: 60 }] }
+    ],
+    akhir: { ket: 'Yang diterima sekarang, dari seluruh harta.', baris: [['Ibu', [12, 72]], ['Saudara laki-laki kandung', 'tahan']], tahan: [60, 72] },
+    batas: 'Tingkat sulit boleh meminta tabel enam kemungkinan (opsi B, laptop). "Ditahan dulu" berbeda dari "Tidak dapat".'
+  },
+  mafqud: {
+    judul: 'Mafqud (hilang)', rujukan: 'KB 13b.6 F1',
+    soal: 'Almarhum meninggalkan ibu, saudara laki-laki sebapak, dan seorang saudara laki-laki sebapak lain yang hilang tanpa kabar.',
+    langkah: [
+      { judul: 'Kelompok tiap ahli waris', isi: [{ id: 'f-ibu', label: 'Ibu', chips: KELAS_TAQDIR.slice(0, 3), kunci: 'Diberi yang terkecil' }, { id: 'f-sdr', label: 'Saudara yang hadir', chips: KELAS_TAQDIR.slice(0, 3), kunci: 'Diberi yang terkecil' }] },
+      { judul: 'Bagian sekarang', isi: [{ id: 'f-jamiah', label: 'Jami\'ah dua kemungkinan', kunci: 12 }, { id: 'f-ibu-s', label: 'Saham ibu', kunci: 2 }, { id: 'f-sdr-s', label: 'Saham saudara hadir', kunci: 5 }, { id: 'f-tahan', label: 'Ditahan', kunci: 5 }] }
+    ],
+    akhir: { ket: 'Yang diterima sekarang, dari seluruh harta.', baris: [['Ibu', [2, 12]], ['Saudara yang hadir', [5, 12]], ['Saudara yang hilang', 'tahan']], tahan: [5, 12] },
+    batas: 'Satu orang hilang = 2 kemungkinan, dua orang = 4. Soal latihan dibatasi satu orang hilang. Khuntsa memakai pola yang sama (kemungkinan laki-laki/perempuan, 13c.3).'
+  },
+  gharqa: {
+    judul: 'Gharqa (wafat bersamaan)', rujukan: 'KB 13d.2, [SYF]',
+    soal: 'Suami dan istri wafat dalam satu kecelakaan. Tidak diketahui sama sekali siapa yang lebih dulu. Masing-masing punya ahli waris lain.',
+    langkah: [
+      { judul: 'Apakah mereka saling mewarisi?', isi: [{ id: 'g-saling', label: 'Keputusan', chips: ['Yang terakhir mewarisi', 'Tidak saling mewarisi', 'Ditahan sampai jelas'], kunci: 'Tidak saling mewarisi' }], ket: '"Ditahan sampai jelas" khusus bila urutannya pernah diketahui lalu terlupakan (keadaan 3).' },
+      { judul: 'Lalu', isi: [{ tetap: 'Harta suami dan harta istri', teks: 'dijawab terpisah, masing-masing seperti soal biasa' }] }
+    ],
+    akhir: null,
+    batas: 'Jawaban akhir dipecah per harta (dua daftar). Bila jawabannya "Ditahan", tidak ada angka yang diminta.'
+  }
+};
+const KELAYAKAN = [
+  ['Biasa, \'aul, radd, tashih', 'ya', 'ya', 'ya', 'ya', 'agak', 'ya', 'Langkah 3 selalu meminta asal masalah akhir'],
+  ['Munasakhat', 'ya', 'ya', 'ya', 'ya', 'agak', 'agak', 'A/B: babak per mayit + jami\'ah. Dibatasi 3 mayit'],
+  ['Dzawil arham', 'ya', 'agak', 'ya', 'ya', 'agak', 'agak', 'A: langkah tanzil, bukan langkah biasa'],
+  ['Haml, mafqud, khuntsa', 'ya', 'agak', 'ya', 'ya', 'tidak', 'agak', 'Butuh keadaan "Ditahan dulu" + baris ditahan. B hanya laptop (tabel per kemungkinan)'],
+  ['Gharqa', 'ya', 'ya', 'ya', 'ya', 'agak', 'agak', 'Langkah keputusan dulu, lalu per harta'],
+  ['Laqith, PERLU_INPUT, blocked', 'tidak', 'tidak', 'tidak', 'tidak', 'tidak', 'tidak', 'Tidak masuk bank soal (R13-14 belum terverifikasi)']
+];
+let jenisKhusus = 'munasakhat';
+const pilihKhusus = {}, keadaanKhusus = {}, umpanKhusus = {};
+function medanHtml(m, salahId) {
+  if (m.tetap) return `<div class="medan"><span>${m.tetap}</span><span class="tetap">${m.teks}</span></div>`;
+  const kelas = salahId.includes(m.id) ? ' keliru' : '';
+  if (m.chips) return `<div class="medan${kelas}"><span>${m.label}</span><span class="chips">${m.chips.map(c => `<button class="chip-s" aria-pressed="${pilihKhusus[m.id] === c}" data-khusus-chip="${m.id}|${c}">${c}</button>`).join('')}</span></div>`;
+  return `<div class="medan${kelas}"><span>${m.label}</span>${kotak(m.id, m.label)}</div>`;
+}
+function khususHtml() {
+  const j = KHUSUS[jenisKhusus], uL = umpanKhusus[jenisKhusus + 'L'], uA = umpanKhusus[jenisKhusus + 'A'];
+  const salahL = uL?.[2] ?? [], salahA = uA?.[2] ?? [];
+  const barisAkhir = j.akhir ? j.akhir.baris.map(([nama], i) => {
+    const k = `${jenisKhusus}-a${i}`, st = keadaanKhusus[k] ?? 'dapat';
+    return `<div class="baris${salahA.includes(i) ? ' keliru' : ''}"><span class="nm">${nama}</span>
+      ${st === 'dapat' ? `<span class="pecahan">${kotak(k + 'n', 'Pembilang ' + nama)}<i></i>${kotak(k + 'd', 'Penyebut ' + nama)}</span>` : `<span class="sub">${st === 'tahan' ? 'ditahan dulu' : '0'}</span>`}
+      <span class="tiga" role="group" aria-label="Keadaan ${nama}">${[['dapat', 'Dapat'], ['tahan', 'Ditahan dulu'], ['tidak', 'Tidak dapat']].map(([v, l]) => `<button aria-pressed="${st === v}" data-keadaan="${k}|${v}">${l}</button>`).join('')}</span></div>`;
+  }).join('') + (j.akhir.tahan ? `<div class="baris${salahA.includes('tahan') ? ' keliru' : ''}"><span class="nm">Ditahan (mauquf)</span><span class="pecahan">${kotak(jenisKhusus + '-tn', 'Pembilang ditahan')}<i></i>${kotak(jenisKhusus + '-td', 'Penyebut ditahan')}</span></div>` : '') : '';
+  return `<div class="tata">
+    <section class="t s12"><h2>Kasus khusus</h2><p class="sub">Bagaimana opsi A (langkah) dan C (jawaban akhir) menampung jenis soal lain. Opsi B, D, E, F: lihat tabel kelayakan di tab "Bandingkan dan pilih".</p>
+      <div class="chips" style="margin-top:12px">${Object.entries(KHUSUS).map(([id, k]) => `<button class="chip-s" aria-pressed="${id === jenisKhusus}" data-jenis="${id}">${k.judul}</button>`).join('')}</div>
+      <p style="margin-top:12px;font-size:15px"><b>Soal:</b> ${j.soal}</p><p class="rujukan">Angka kunci: ${j.rujukan}</p></section>
+    <div class="s12 khusus">
+      <section class="t"><h2>A. Langkah</h2><ol class="langkah">${j.langkah.map(l => `<li><h3>${l.judul}</h3>${l.ket ? `<p class="sub">${l.ket}</p>` : ''}${l.isi.map(m => medanHtml(m, salahL)).join('')}</li>`).join('')}</ol>
+        <div class="aksi"><button class="btn" data-periksa-khusus="L">Periksa</button></div>${uL ? `<div class="umpan ${uL[0]}" role="status">${uL[1]}</div>` : ''}</section>
+      <section class="t"><h2>C. Jawaban akhir</h2>${j.akhir ? `<p class="sub">${j.akhir.ket}</p>${barisAkhir}<div class="aksi"><button class="btn" data-periksa-khusus="A">Periksa</button></div>${uA ? `<div class="umpan ${uA[0]}" role="status">${uA[1]}</div>` : ''}` : `<p class="sub" style="margin-top:8px">Tidak ada satu daftar angka: tiap harta dijawab terpisah sesudah keputusan di langkah 1.</p>`}
+        <p class="rujukan" style="margin-top:14px"><b>Batas:</b> ${j.batas}</p></section></div></div>`;
+}
+function periksaKhusus(bagian) {
+  const j = KHUSUS[jenisKhusus];
+  if (bagian === 'L') {
+    const medan = j.langkah.flatMap(l => l.isi).filter(m => m.id);
+    const ambil = m => m.chips ? pilihKhusus[m.id] : v(m.id);
+    if (medan.some(m => ambil(m) === undefined || ambil(m) === '')) return ['kurang', 'Masih ada yang belum diisi.', []];
+    const salahId = medan.filter(m => m.chips ? ambil(m) !== m.kunci : +ambil(m) !== m.kunci).map(m => m.id);
+    if (!salahId.length) return ['benar', 'Benar semua.', []];
+    const langkahPertama = j.langkah.findIndex(l => l.isi.some(m => salahId.includes(m.id))) + 1;
+    return ['salah', `Mulai salah di langkah ${langkahPertama}.`, salahId];
+  }
+  const salahBaris = [];
+  for (const [i, [, kunci]] of j.akhir.baris.entries()) {
+    const k = `${jenisKhusus}-a${i}`, st = keadaanKhusus[k] ?? 'dapat';
+    if (kunci === 'tahan' ? st !== 'tahan' : st !== 'dapat' || +v(k + 'n') * kunci[1] !== kunci[0] * +v(k + 'd') || !+v(k + 'd')) salahBaris.push(i);
+  }
+  if (j.akhir.tahan) { const [n, d] = j.akhir.tahan; if (!+v(jenisKhusus + '-td') || +v(jenisKhusus + '-tn') * d !== n * +v(jenisKhusus + '-td')) salahBaris.push('tahan'); }
+  return salahBaris.length ? ['salah', 'Ada yang belum tepat. "Ditahan dulu" berbeda dari "Tidak dapat".', salahBaris] : ['benar', 'Benar semua.', []];
+}
+
+let aktif = 'A';
+const layar = document.getElementById('layar'), tab = document.getElementById('tab');
+function gambar() {
+  tab.innerHTML = [...Object.entries(OPSI).map(([id, o]) => [id, o.judul]), ['khusus', 'Kasus khusus'], ['banding', 'Bandingkan dan pilih']].map(([id, j]) => `<button role="tab" aria-selected="${id === aktif}" data-tab="${id}">${j}</button>`).join('');
+  if (aktif === 'banding') { layar.innerHTML = bandingHtml(); return; }
+  if (aktif === 'khusus') { layar.innerHTML = khususHtml(); return; }
+  const o = OPSI[aktif];
+  layar.innerHTML = `<div class="tata"><section class="t s7">${o.html()}</section>
+    <section class="t s5"><h2>${o.judul}</h2><p class="sub" style="margin-top:6px">${o.ringkas}</p>
+      <h3 style="margin-top:14px">Kelebihan</h3><ul class="plus">${o.plus.map(x => `<li>${x}</li>`).join('')}</ul>
+      <h3 style="margin-top:12px">Kekurangan</h3><ul class="plus">${o.minus.map(x => `<li>${x}</li>`).join('')}</ul></section></div>`;
+}
+let waktuToast;
+function toast(teks) { const t = document.getElementById('toast'); t.textContent = 'Mockup: ' + teks; t.classList.add('on'); clearTimeout(waktuToast); waktuToast = setTimeout(() => t.classList.remove('on'), 3500); }
+document.addEventListener('click', e => {
+  const el = e.target.closest('button'); if (!el) return;
+  simpanIsian();
+  if (el.dataset.tab) aktif = el.dataset.tab;
+  else if (el.dataset.status) { const [id, i, s] = el.dataset.status.split('|'); ubahStatus(id, i, s); umpan[id] = null; }
+  else if (el.dataset.periksa) umpan[el.dataset.periksa] = OPSI[el.dataset.periksa].periksa();
+  else if (el.dataset.jenis) jenisKhusus = el.dataset.jenis;
+  else if (el.dataset.khususChip) { const [id, c] = el.dataset.khususChip.split('|'); pilihKhusus[id] = c; umpanKhusus[jenisKhusus + 'L'] = null; }
+  else if (el.dataset.keadaan) { const [k, st] = el.dataset.keadaan.split('|'); keadaanKhusus[k] = st; umpanKhusus[jenisKhusus + 'A'] = null; }
+  else if (el.dataset.periksaKhusus) umpanKhusus[jenisKhusus + el.dataset.periksaKhusus] = periksaKhusus(el.dataset.periksaKhusus);
+  else if (el.dataset.slot) papan.aktif = +el.dataset.slot;
+  else if (el.dataset.kunci) { tekanKunci(el.dataset.kunci); umpan.D = null; }
+  else if (el.dataset.pilihf) { const [i, p] = el.dataset.pilihf.split('|'); nilai['F-' + i] = p; umpan.F = null; }
+  else if (el.id === 'salinPilihan') {
+    const teks = `Pilihan isian jawaban: ${document.querySelector('input[name=pilihan]:checked')?.value ?? '-'}\nCatatan: ${document.getElementById('catatanPilihan').value}`;
+    navigator.clipboard?.writeText(teks).catch(() => {}); toast('Pilihan disalin, tempel di chat'); return;
+  }
+  else if (el.dataset.toast) { toast(el.dataset.toast); return; }
+  else return;
+  gambar();
+});
+document.addEventListener('input', e => { if (e.target.dataset.gema) document.getElementById('gema' + e.target.dataset.gema).innerHTML = gemaHtml(e.target.value); });
+document.addEventListener('change', e => { if (e.target.dataset.gambar !== undefined) { simpanIsian(); umpan.C = null; gambar(); } });
+gambar();
+</script>
+</body>
+</html>

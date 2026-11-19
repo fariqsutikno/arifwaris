@@ -117,3 +117,26 @@ ada. Ia hanya memindahkan masalah dari "ditolak" ke "salah dibaca".
 - `tebak.ts`: penilaian per langkah (status dari `ringkasan`/jejak hajb, ashl & tashih dari tabel engine), dan
   "perbandingan benar, ashl bukan yang terkecil".
 - Uji: `tebak.test.ts`, termasuk kelipatan ashl, 'aul, tashih, dan terhalang.
+
+## 9. Opsi untuk dipilih pemilik dan kelayakan per jenis soal (2026-11-19)
+
+Mockup: [mockup-opsi-isian-jawaban.html](mockup-opsi-isian-jawaban.html). Enam opsi untuk soal yang sama, masing-masing bisa diisi dan
+dinilai: **A** langkah bertahap, **B** tabel seperti di kitab, **C** pecahan bertumpuk, **D** papan angka sendiri, **E** ketik bebas
+dengan pembaca toleran dan gema "Terbaca: …", **F** pilihan ganda. Tab "Kasus khusus" menunjukkan A dan C pada munasakhat, dzawil
+arham, haml, mafqud, dan gharqa, dengan angka kunci dari contoh KB (12.6 contoh 2, 14.6, 13a.7 H1 baris [SYF], 13b.6 F1, 13d.2).
+
+| Jenis soal | A | B | C | D | E | F | Yang dibutuhkan |
+|---|---|---|---|---|---|---|---|
+| Biasa, 'aul, radd, tashih | ✓ | ✓ | ✓ | ✓ | sebagian | ✓ | langkah 3 selalu "asal masalah akhir" |
+| Munasakhat (12) | ✓ | ✓ | ✓ | ✓ | sebagian | sebagian | babak per mayit + jami'ah; jawaban akhir = bagian dari harta mayit pertama (12.5); latihan ≤ 3 mayit |
+| Dzawil arham (14) | ✓ | sebagian | ✓ | ✓ | sebagian | sebagian | langkah tanzil (didudukkan sebagai → bagi antar perantara → bagi ke kerabat); [HNF] qarabah langkahnya lain |
+| Haml, mafqud, khuntsa (13a–c) | ✓ | sebagian (laptop) | ✓ | ✓ | ✗ | sebagian | tiga keadaan per orang (Dapat / **Ditahan dulu** / Tidak dapat) + baris "Ditahan (mauquf)"; langkah menguji **kelompok** tiap orang (R13-4: tetap, terkecil, 0 karena gugur di sebagian, 0 karena berbagi sisa dengan janin [SYF]) alih-alih enam tabel kemungkinan; latihan ≤ 1 orang hilang/khuntsa |
+| Gharqa (13d) | ✓ | ✓ | ✓ | ✓ | sebagian | sebagian | langkah keputusan (saling mewarisi / tidak / ditahan, [SYF]) lalu tiap harta dijawab terpisah |
+| Laqith, `PERLU_INPUT`, blocked | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | tidak masuk bank soal (R13-14 belum terverifikasi) |
+
+Temuan tambahan:
+- **"Ditahan dulu" ≠ "Tidak dapat"** wajib ada di opsi mana pun. Tanpa itu, soal haml/mafqud/khuntsa tidak bisa dijawab benar.
+- Daftar langkah diambil dari **jenis soal** (biasa, munasakhat, tanzil, taqdir, gharqa), bukan satu daftar tetap.
+- Kode sekarang menutup mode tebak untuk taqdir, menunggu kelahiran, dan gharqa (`Hasil.tsx`, `khusus`). Bentuk isian ini yang
+  membuat jenis soal tersebut bisa dilatih.
+- E paling rapuh di kasus khusus: kata "ditahan", "mauquf", dan "sisa" menambah tafsir ganda.
