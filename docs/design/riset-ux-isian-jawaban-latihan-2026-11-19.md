@@ -191,14 +191,15 @@ Mockup acuan: [mockup-tabel-faraidh-final.html](mockup-tabel-faraidh-final.html)
 | Semua asal masalah diketik | tidak ada pilihan usul; kepala kolom = kotak bilangan bulat |
 | Isian menolak selain angka secara utuh | `/`, `,`, `½` → isi kembali ke angka terakhir + keterangan; angka Arab diubah ke Latin |
 | Saham tidak perlu disederhanakan | saham terhadap asal masalah kolomnya; asal masalah boleh kelipatan bila semua saham sebanding → "Benar semua. Bentuk terkecil: …" |
-| Satu jawaban sudah terisi | satu sel di **kolom pilihan** per soal ("sudah terisi"), sebagai contoh bentuk jawaban |
-| Sel ashabah bersama tidak terlihat dari awal | sel saham **bergabung hanya setelah pelajar sendiri memilih Ashabah** untuk lebih dari satu orang berurutan; pilihan lain → sel tetap terpisah |
-| Catatan hanya bila berguna | kotak "Cara mengisi" per soal: cara mengisi tiap kolom, tanpa petunjuk jawaban |
+| Satu jawaban sudah terisi, **acak** | satu sel per soal dipilih acak dari kolom pilihan, saham, atau asal masalah; tidak pernah satu kolom penuh, bukan baris pengali, bukan sel 0, bukan sel ashabah bersama. Sel terisi di kolom angka menetapkan skala kolom itu (asal masalahnya harus persis) |
+| Sel ashabah bersama tidak terlihat dari awal | sel saham **langsung bergabung saat pelajar memilih Ashabah** untuk lebih dari satu orang berurutan (tanpa menunggu Periksa), dengan sorotan singkat; pilihan lain → sel tetap terpisah |
+| Catatan hanya bila berguna, dengan penekanan | kotak "Cara mengisi" per soal: kalimat pendek, kata kunci ditebalkan, tanpa petunjuk jawaban |
+| Pengali di atas | baris Pengali di kepala tabel, tepat di bawah asal masalah tiap kolom (seperti juz'us sahm di kitab); baris Ditahan tetap di bawah |
+| Tanpa "Angka kunci" di layar | rujukan KB hanya di komentar sumber |
 | Aksi: Periksa, Kosongkan, Lihat jawaban | Periksa = tombol; Kosongkan dan Lihat jawaban = tautan. Lihat jawaban butuh konfirmasi (di aplikasi: dialog tahan yang sudah ada), lalu kunci ditampilkan dan isian yang berbeda dicoret |
 
-Kenapa jawaban terisi ditaruh di kolom pilihan, bukan di kolom angka: satu saham yang terisi di kolom akhir langsung membuka skala
-tashih (istri 3 ⇒ asal masalah akhir 24), padahal tashih adalah yang diuji. Keseragaman skala tidak dibutuhkan untuk menilai karena
-kelipatan yang sebanding diterima; "Lihat jawaban" selalu menampilkan bentuk terkecil.
+Catatan: bila sel terisi jatuh di kolom asal masalah akhir (mis. istri 3), skala tashih ikut terbuka. Pemilik memilih acak; risiko
+ini diterima. Diuji 125 kali dengan 38 posisi sel terisi berbeda: semua kunci tetap dinilai benar.
 
 Baris **Pengali** (munasakhat, mafqud) dinilai terakhir dan dihitung dari asal masalah yang diisi pelajar, sehingga kelipatan tetap
 konsisten. Haml tabel enam kemungkinan (tingkat sulit, laptop) tidak dimasukkan ke mockup final; bentuknya ada di

@@ -42,6 +42,11 @@ table.kitab{border-collapse:collapse;width:100%;font-size:14px;font-variant-nume
 .kitab td.nama,.kitab th.nama{text-align:left;font-weight:500;min-width:128px;position:sticky;left:0;background:#fff;z-index:1}
 .kitab th.nama{background:#f3f6f1}
 .kitab tr.tambahan td{background:#fafbf8;color:var(--muted)}
+.kitab tr.pengali td,.kitab tr.pengali th{background:#f3f6f1;font-size:13px}
+.kitab tr.pengali th.nama{font-style:italic;font-weight:500;color:var(--muted)}
+.kitab td.baruGabung{animation:gabung 1.2s ease-out}
+@keyframes gabung{from{background:var(--mint)}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){.kitab td.baruGabung{animation:none}}
 .kitab tr.tambahan td.nama{background:#fafbf8;font-style:italic}
 .kitab .terisi{font-weight:600;color:var(--ink);background:#f1f4ef;border-radius:8px;padding:5px 9px;display:inline-block}
 .kitab .terisi small{display:block;font-size:10.5px;font-weight:500;color:var(--muted)}
@@ -102,11 +107,11 @@ const SOAL = {
       { id: 'akhir', judul: 'Asal masalah akhir', jenis: 'bulat', header: '24' }
     ],
     baris: [
-      { nama: 'Istri', kunci: { bagian: '1/8', awal: '1', akhir: '3' }, terisi: ['bagian'] },
+      { nama: 'Istri', kunci: { bagian: '1/8', awal: '1', akhir: '3' } },
       { nama: 'Anak laki-laki', kunci: { bagian: 'Ashabah', awal: '7', akhir: '14' } },
       { nama: 'Anak perempuan', kunci: { bagian: 'Ashabah', awal: '7', akhir: '7' } }
     ],
-    cara: ['Bagian tiap orang dipilih dari daftar.', 'Saham diisi sebagai bilangan bulat terhadap asal masalah di kepala kolomnya.', 'Bila beberapa orang sama-sama Ashabah, sel saham mereka di kolom Asal masalah bergabung jadi satu: isi sisa untuk mereka bersama.', 'Bila tidak ada tashih, Asal masalah akhir diisi sama dengan Asal masalah.']
+    cara: ['<b>Bagian</b> dipilih dari daftar.', 'Saham = <b>bilangan bulat</b> terhadap asal masalah di kepala kolom.', 'Dua orang atau lebih <b>Ashabah</b>? Sel saham mereka <b>bergabung otomatis</b>: isi sisanya sekali.', 'Tanpa tashih: asal masalah akhir <b>sama</b> dengan asal masalah.']
   },
   munasakhat: {
     tab: 'Munasakhat', bab: 'Bab munasakhat', soal: 'Lanjutan soal biasa: sebelum harta dibagi, anak perempuan wafat. Ia meninggalkan ibunya (istri tadi) dan saudara laki-lakinya (anak laki-laki tadi).', rujukan: 'KB 12.6 contoh 2',
@@ -118,13 +123,13 @@ const SOAL = {
     ],
     baris: [
       { nama: 'Istri / ibu', kunci: { m1: '3', b2: '1/3', m2: '1', jamiah: '16' } },
-      { nama: 'Anak lk / saudara', kunci: { m1: '14', b2: 'Ashabah', m2: '2', jamiah: '56' }, terisi: ['b2'] },
+      { nama: 'Anak lk / saudara', kunci: { m1: '14', b2: 'Ashabah', m2: '2', jamiah: '56' } },
       { nama: 'Anak pr (wafat)', kunci: { m1: '7' } },
       { nama: 'Pengali', pengali: true, kunci: { m1: '3', m2: '7' } }
     ],
     // Pengali mas'alah 1 = jami'ah ÷ 24; pengali mas'alah 2 = (saham anak pr 7 × pengali 1) ÷ mas'alah 2.
     pengaliHarusnya: (kol, h) => kol === 'm1' ? h.jamiah / 24 : 7 * (h.jamiah / 24) / h.m2,
-    cara: ['Mas\'alah 1 sudah dikerjakan di soal sebelumnya.', 'Di Mas\'alah 2 yang dibagi adalah harta anak perempuan: isi bagian ahli warisnya dan sahamnya.', 'Baris Pengali: angka pengali tiap mas\'alah agar keduanya bisa dijumlah di Jami\'ah.', 'Jami\'ah tiap orang = jumlah sahamnya dari dua mas\'alah setelah dikali pengali.']
+    cara: ['Mas\'alah 1 <b>sudah dikerjakan</b> di soal sebelumnya.', 'Mas\'alah 2 membagi <b>harta anak perempuan</b>.', '<b>Pengali</b> (di bawah asal masalah): agar dua mas\'alah bisa dijumlah.', 'Jami\'ah = saham × pengali, <b>dijumlah</b> dari dua mas\'alah.']
   },
   dzawil: {
     tab: 'Dzawil arham', bab: 'Bab dzawil arham', soal: 'Tidak ada ahli waris bagian tetap maupun ashabah. Yang ada: anak pr saudara lk kandung, anak pr saudara lk seibu, dan anak pr saudara lk sebapak.', rujukan: 'KB 14.5–14.6 baris 1 (tanzil, [SYF])',
@@ -134,11 +139,11 @@ const SOAL = {
       { id: 'ashl', judul: 'Asal masalah', jenis: 'bulat', header: '6' }
     ],
     baris: [
-      { nama: 'Anak pr sdr lk kandung', kunci: { duduk: 'Saudara kandung', bagian: 'Ashabah', ashl: '5' }, terisi: ['duduk'] },
+      { nama: 'Anak pr sdr lk kandung', kunci: { duduk: 'Saudara kandung', bagian: 'Ashabah', ashl: '5' } },
       { nama: 'Anak pr sdr lk seibu', kunci: { duduk: 'Saudara seibu', bagian: '1/6', ashl: '1' } },
       { nama: 'Anak pr sdr lk sebapak', kunci: { duduk: 'Saudara sebapak', bagian: 'Terhalang', ashl: '0' } }
     ],
-    cara: ['Didudukkan sebagai: ahli waris pertama yang dijumpai bila naik dari kerabat itu.', 'Bagian perantara: bagian orang yang didudukkan itu, seolah dia ahli warisnya.', 'Pilih Terhalang: sahamnya otomatis 0.']
+    cara: ['<b>Didudukkan sebagai</b>: ahli waris pertama yang dijumpai saat naik dari kerabat itu.', '<b>Bagian perantara</b>: bagian orang yang didudukkan itu.', 'Pilih <b>Terhalang</b>: saham otomatis 0.']
   },
   mafqud: {
     tab: 'Mafqud', bab: 'Bab mafqud', soal: 'Almarhum meninggalkan ibu, saudara lk sebapak, dan saudara lk sebapak lain yang hilang tanpa kabar.', rujukan: 'KB 13b.6 F1',
@@ -150,14 +155,14 @@ const SOAL = {
       { id: 'kini', judul: 'Diberikan sekarang', jenis: 'bulat', header: '12', labelHeader: 'Jami\'ah' }
     ],
     baris: [
-      { nama: 'Ibu', kunci: { bh: '1/6', hidup: '2', bm: '1/3', mati: '1', kini: '2' }, terisi: ['bh'] },
+      { nama: 'Ibu', kunci: { bh: '1/6', hidup: '2', bm: '1/3', mati: '1', kini: '2' } },
       { nama: 'Saudara hadir', kunci: { bh: 'Ashabah', hidup: '5', bm: 'Ashabah', mati: '2', kini: '5' } },
       { nama: 'Saudara hilang', kunci: { bh: 'Ashabah', hidup: '5' } },
       { nama: 'Pengali', pengali: true, kunci: { hidup: '1', mati: '4' } },
       { nama: 'Ditahan', tambahan: true, kunci: { kini: '5' } }
     ],
     pengaliHarusnya: (kol, h) => h.kini / h[kol],
-    cara: ['Dua kemungkinan: ia masih hidup, atau sudah wafat. Isi tabel untuk masing-masing.', 'Saudara yang hilang tidak ikut di kemungkinan "ia wafat" (sel "–").', 'Diberikan sekarang: yang terkecil dari dua kemungkinan, setelah dikali pengali.', 'Baris Ditahan: sisa yang belum dibagi sampai kabarnya jelas.']
+    cara: ['Isi <b>dua kemungkinan</b>: ia hidup, ia wafat.', 'Sel <b>"–"</b> memang tidak diisi.', '<b>Diberikan sekarang</b> = yang terkecil dari dua kemungkinan, setelah dikali pengali.', '<b>Ditahan</b> = sisa sampai kabarnya jelas.']
   },
   haml: {
     tab: 'Haml', bab: 'Bab haml · madzhab Syafi\'i', soal: 'Almarhum meninggalkan ibu yang sedang hamil dari ayah almarhum, dan saudara laki-laki kandung.', rujukan: 'KB 13a.4, 13a.7 H1 baris [SYF]',
@@ -170,27 +175,45 @@ const SOAL = {
       { nama: 'Saudara lk kandung', kunci: { kel: '0 dulu: berbagi sisa dengan janin', kini: '0' } },
       { nama: 'Ditahan', tambahan: true, kunci: { kini: '60' } }
     ],
-    cara: ['Kelompok: bagaimana bagian orang ini berubah tergantung jumlah dan jenis kelamin janin.', '"0 dulu" berbeda dari Terhalang: bagiannya bisa datang setelah bayi lahir. Isi 0 di kolom angka.', 'Baris Ditahan: bagian yang disimpan sampai bayi lahir.']
+    cara: ['<b>Kelompok</b>: bagaimana bagiannya berubah menurut janin.', '<b>"0 dulu"</b> bukan Terhalang: bagiannya bisa datang setelah bayi lahir. Isi <b>0</b>.', '<b>Ditahan</b> = disimpan sampai bayi lahir.']
   },
   gharqa: { tab: 'Gharqa', bab: 'Bab gharqa', soal: 'Suami dan istri wafat dalam satu kecelakaan. Tidak diketahui sama sekali siapa yang lebih dulu. Masing-masing punya ahli waris lain.', rujukan: 'KB 13d.2, [SYF]' }
 };
 
 let aktif = 'biasa', gharqaPilih = '';
+// Satu sel "sudah terisi" per soal, dipilih acak: bisa di kolom pilihan, saham, atau asal masalah, tidak pernah satu kolom penuh.
+// Sel yang jawabannya membuka hal yang diuji tidak dipakai: baris pengali, sel 0/terhalang, sel ashabah bersama.
+const jangkar = {};
+function pilihJangkar(soalId) {
+  const s = SOAL[soalId], calon = [];
+  s.kolom.forEach(kol => {
+    if (kol.terkunci) return;
+    if (kol.header) calon.push([kol.id, 'h']);
+    s.baris.forEach((b, i) => {
+      const kunci = b.kunci[kol.id];
+      if (b.pengali || kunci === undefined || kunci === '0') return;
+      if (kol.gabungAshabah && ADALAH_ASHABAH(s.baris[i].kunci[kol.gabungAshabah])) return;
+      calon.push([kol.id, i]);
+    });
+  });
+  jangkar[soalId] = calon[Math.floor(Math.random() * calon.length)];
+}
+const adalahJangkar = (soalId, kolId, i) => jangkar[soalId]?.[0] === kolId && jangkar[soalId]?.[1] === i;
 const nilai = {}, umpan = {}, salah = {}, terbuka = {}, yakinBuka = {};
 const k = (soal, kol, i) => `${soal}|${kol}|${i}`;
 const v = key => nilai[key] ?? '';
 const kolomBagianDari = (s, kol) => s.kolom.slice(0, s.kolom.indexOf(kol)).filter(c => c.jenis === 'pilih').pop();
-const terhalang = (soalId, kol, i) => { const bk = kolomBagianDari(SOAL[soalId], kol); return bk && v(k(soalId, bk.id, i)) === 'Terhalang'; };
+const terhalang = (soalId, kol, i) => { const bk = kolomBagianDari(SOAL[soalId], kol); return bk && nilaiPilih(soalId, bk.id, i) === 'Terhalang'; };
 // Baris yang dipilih Ashabah (oleh pelajar) di kolom acuan; dipakai untuk menggabungkan sel.
 const barisAshabah = (soalId, kol) => kol.gabungAshabah ? SOAL[soalId].baris.map((b, i) => i).filter(i => ADALAH_ASHABAH(nilaiPilih(soalId, kol.gabungAshabah, i))) : [];
-const nilaiPilih = (soalId, kolId, i) => SOAL[soalId].baris[i].terisi?.includes(kolId) ? SOAL[soalId].baris[i].kunci[kolId] : v(k(soalId, kolId, i));
+const nilaiPilih = (soalId, kolId, i) => adalahJangkar(soalId, kolId, i) ? SOAL[soalId].baris[i].kunci[kolId] : v(k(soalId, kolId, i));
 const kotakBulat = (key, label) => `<input class="bulat" data-k="${key}" data-bulat inputmode="numeric" pattern="[0-9]*" autocomplete="off" value="${v(key)}" aria-label="${label}">`;
 
 function selHtml(soalId, kol, i) {
   const s = SOAL[soalId], b = s.baris[i], kunci = b.kunci[kol.id], key = k(soalId, kol.id, i);
   const tampilKunci = isian => `<span class="kunci">${isian && isian !== kunci ? `<s>${isian}</s>` : ''}${kunci}</span>`;
   if (kunci === undefined && !(kol.gabungAshabah && s.baris.some(x => x.kunci[kol.id] !== undefined))) return '–';
-  if (b.terisi?.includes(kol.id)) return `<span class="terisi">${kunci}<small>sudah terisi</small></span>`;
+  if (adalahJangkar(soalId, kol.id, i)) return `<span class="terisi">${kunci}<small>sudah terisi</small></span>`;
   if (kol.terkunci && !b.pengali) return `<span class="terisi">${kunci}</span>`;
   if (kol.jenis === 'bulat' && terhalang(soalId, kol, i)) return '<span class="nol">0</span>';
   if (terbuka[soalId]) return tampilKunci(v(key));
@@ -200,15 +223,19 @@ function selHtml(soalId, kol, i) {
 function kepalaHtml(soalId, kol) {
   if (!kol.header) return '';
   if (kol.terkunci) return `<span class="terisi">${kol.header}</span>`;
+  if (adalahJangkar(soalId, kol.id, 'h')) return `<span class="terisi">${kol.header}<small>sudah terisi</small></span>`;
   const key = k(soalId, kol.id, 'h');
   if (terbuka[soalId]) return `<span class="kunci">${v(key) && v(key) !== kol.header ? `<s>${v(key)}</s>` : ''}${kol.header}</span>`;
   return kotakBulat(key, `${kol.labelHeader ?? 'Asal masalah'} ${kol.judul}`);
 }
+// Sorotan sekali saat sel ashabah baru bergabung.
+let gabungLama = new Set(), gabungKini = new Set();
 function tabelHtml(soalId) {
   const s = SOAL[soalId], sal = salah[soalId] ?? [];
   const lewat = new Set();
-  return `<div class="wadahTabel"><table class="kitab"><thead><tr><th class="nama">Ahli waris</th>${s.kolom.map(kol => `<th class="${sal.includes(k(soalId, kol.id, 'h')) ? 'keliru' : ''}" scope="col"><span class="judulKol">${kol.judul}</span>${kepalaHtml(soalId, kol)}</th>`).join('')}</tr></thead>
-    <tbody>${s.baris.map((b, i) => `<tr class="${b.tambahan || b.pengali ? 'tambahan' : ''}"><td class="nama">${b.nama}</td>${s.kolom.map(kol => {
+  return `<div class="wadahTabel"><table class="kitab"><thead><tr><th class="nama">Ahli waris</th>${s.kolom.map(kol => `<th class="${sal.includes(k(soalId, kol.id, 'h')) ? 'keliru' : ''}" scope="col"><span class="judulKol">${kol.judul}</span>${kepalaHtml(soalId, kol)}</th>`).join('')}</tr>
+    ${s.baris.map((b, i) => b.pengali ? `<tr class="pengali"><th class="nama" scope="row">${b.nama}</th>${s.kolom.map(kol => `<td class="${sal.includes(k(soalId, kol.id, i)) ? 'keliru' : ''}">${selHtml(soalId, kol, i)}</td>`).join('')}</tr>` : '').join('')}</thead>
+    <tbody>${s.baris.map((b, i) => b.pengali ? '' : `<tr class="${b.tambahan ? 'tambahan' : ''}"><td class="nama">${b.nama}</td>${s.kolom.map(kol => {
       if (lewat.has(kol.id + i)) return '';
       // Sel bergabung hanya setelah pelajar sendiri memilih Ashabah untuk lebih dari satu orang yang berurutan.
       const grup = barisAshabah(soalId, kol);
@@ -216,7 +243,10 @@ function tabelHtml(soalId) {
       if (grup.length > 1 && grup[0] === i) { while (grup.includes(i + rentang)) { lewat.add(kol.id + (i + rentang)); rentang++; } }
       const keliru = sal.includes(k(soalId, kol.id, i)) ? 'keliru' : '';
       const isi = rentang > 1 ? gabunganHtml(soalId, kol, i) : selHtml(soalId, kol, i);
-      return `<td class="${keliru}" ${rentang > 1 ? `rowspan="${rentang}"` : ''}>${isi}</td>`;
+      const kunciGabung = `${soalId}|${kol.id}|${i}|${rentang}`;
+      const baru = rentang > 1 && !gabungLama.has(kunciGabung);
+      if (rentang > 1) gabungKini.add(kunciGabung);
+      return `<td class="${[keliru, baru ? 'baruGabung' : ''].join(' ').trim()}" ${rentang > 1 ? `rowspan="${rentang}"` : ''}>${isi}</td>`;
     }).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 function gabunganHtml(soalId, kol, i) {
@@ -230,25 +260,27 @@ function gabunganHtml(soalId, kol, i) {
 function periksa(soalId) {
   const s = SOAL[soalId];
   salah[soalId] = [];
-  const headerPelajar = Object.fromEntries(s.kolom.filter(c => c.header).map(c => [c.id, +(c.terkunci ? c.header : v(k(soalId, c.id, 'h')))]));
+  const headerPelajar = Object.fromEntries(s.kolom.filter(c => c.header).map(c => [c.id, +(c.terkunci || adalahJangkar(soalId, c.id, 'h') ? c.header : v(k(soalId, c.id, 'h')))]));
   let bukanTerkecil = [];
   for (const kol of s.kolom.filter(c => !c.terkunci)) {
     const sel = [];
     s.baris.forEach((b, i) => {
-      if (b.pengali || b.kunci[kol.id] === undefined || b.terisi?.includes(kol.id) || kol.terkunci) return;
+      if (b.pengali || b.kunci[kol.id] === undefined || kol.terkunci) return;
       const grup = barisAshabah(soalId, kol);
       if (grup.length > 1 && grup.includes(i) && grup[0] !== i) return;
-      sel.push([i, b.kunci[kol.id], kol.jenis === 'bulat' && terhalang(soalId, kol, i) ? '0' : v(k(soalId, kol.id, i))]);
+      sel.push([i, b.kunci[kol.id], adalahJangkar(soalId, kol.id, i) ? b.kunci[kol.id] : kol.jenis === 'bulat' && terhalang(soalId, kol, i) ? '0' : v(k(soalId, kol.id, i))]);
     });
     const kosong = sel.filter(([, , isi]) => isi === '').map(([i]) => k(soalId, kol.id, i));
-    if (kol.header && !kol.terkunci && v(k(soalId, kol.id, 'h')) === '') kosong.push(k(soalId, kol.id, 'h'));
+    if (kol.header && !kol.terkunci && !adalahJangkar(soalId, kol.id, 'h') && v(k(soalId, kol.id, 'h')) === '') kosong.push(k(soalId, kol.id, 'h'));
     if (kosong.length) { salah[soalId] = kosong; return ['kurang', `Kolom "${kol.judul}" belum lengkap.`]; }
     let keliru;
     if (kol.jenis === 'pilih') keliru = sel.filter(([, kunci, isi]) => isi !== kunci).map(([i]) => k(soalId, kol.id, i));
     else {
       const H = +kol.header, h = headerPelajar[kol.id];
       keliru = sel.filter(([, kunci, isi]) => +isi * H !== +kunci * h).map(([i]) => k(soalId, kol.id, i));
-      if (!kol.terkunci && h % H !== 0) keliru.push(k(soalId, kol.id, 'h'));
+      // Sel terisi di kolom ini menetapkan skala: asal masalahnya harus persis.
+      const adaJangkarSaham = jangkar[soalId]?.[0] === kol.id && jangkar[soalId]?.[1] !== 'h';
+      if (!kol.terkunci && (h % H !== 0 || (adaJangkarSaham && h !== H))) keliru.push(k(soalId, kol.id, 'h'));
       if (!keliru.length && h !== H && !kol.terkunci) bukanTerkecil.push(`${kol.judul} ${h} (terkecilnya ${H})`);
     }
     if (keliru.length) { salah[soalId] = keliru; return ['salah', `Mulai salah di kolom "${kol.judul}". Kolom sesudahnya belum diperiksa.`]; }
@@ -269,18 +301,16 @@ function layarSoal(id) {
       ${tabelHtml(id)}
       <p class="petunjukBulat" id="petunjukBulat" role="status">Kotak ini hanya menerima bilangan bulat. Pecahan dipilih di kolom Bagian.</p>
       <div class="aksi">${terbuka[id] ? '' : `<button class="btn" data-periksa="${id}">Periksa</button>`}<button class="tautan" data-kosongkan="${id}">Kosongkan</button>${tombolBuka}</div>
-      ${umpan[id] ? `<div class="umpan ${umpan[id][0]}" role="status">${umpan[id][1]}</div>` : ''}
-      <p class="sub" style="font-size:12.5px;margin-top:10px">Angka kunci: ${s.rujukan}</p></section>
-    <section class="t s4 cara"><h2>Cara mengisi</h2><ol>${s.cara.map(c => `<li>${c}</li>`).join('')}<li>Kotak angka hanya menerima bilangan bulat; asal masalah boleh tidak yang terkecil asal sahamnya sebanding.</li></ol></section></div>`;
+      ${umpan[id] ? `<div class="umpan ${umpan[id][0]}" role="status">${umpan[id][1]}</div>` : ''}</section>
+    <section class="t s4 cara"><h2>Cara mengisi</h2><ol>${s.cara.map(c => `<li>${c}</li>`).join('')}<li>Asal masalah <b>boleh bukan yang terkecil</b>, asal sahamnya sebanding.</li><li>Sel <b>"sudah terisi"</b> adalah contoh bentuk jawaban.</li></ol></section></div>`;
 }
 function layarGharqa() {
   const benar = gharqaPilih === 'Tidak saling mewarisi';
   return `<div class="tata"><section class="t s8"><h2>Langkah pertama</h2><p class="sub">Apakah suami dan istri saling mewarisi?</p>
     <div class="chips">${['Yang terakhir mewarisi', 'Tidak saling mewarisi', 'Ditahan sampai jelas'].map(p => `<button class="chip-s" aria-pressed="${gharqaPilih === p}" data-gharqa="${p}">${p}</button>`).join('')}</div>
     ${gharqaPilih ? `<div class="umpan ${benar ? 'benar' : 'salah'}" role="status">${benar ? 'Benar. Sekarang isi dua tabel biasa: harta suami tanpa istri, dan harta istri tanpa suami.' : 'Belum tepat. Perhatikan: urutan wafatnya diketahui, terlupakan, atau tidak diketahui sama sekali?'}</div>` : ''}
-    <div class="aksi"><button class="tautan" data-kosongkan="gharqa">Kosongkan</button><button class="tautan bahaya" data-gharqa="Tidak saling mewarisi">Lihat jawaban</button></div>
-    <p class="sub" style="font-size:12.5px;margin-top:10px">Angka kunci: ${SOAL.gharqa.rujukan}</p></section>
-    <section class="t s4 cara"><h2>Cara mengisi</h2><ol><li>Putuskan dulu apakah mereka saling mewarisi.</li><li>Bila tidak, tiap harta diisi di tabel biasa tersendiri. Bila ditahan, tidak ada angka yang diisi.</li></ol></section></div>`;
+    <div class="aksi"><button class="tautan" data-kosongkan="gharqa">Kosongkan</button><button class="tautan bahaya" data-gharqa="Tidak saling mewarisi">Lihat jawaban</button></div></section>
+    <section class="t s4 cara"><h2>Cara mengisi</h2><ol><li>Putuskan dulu: <b>saling mewarisi atau tidak</b>.</li><li>Tidak saling mewarisi: tiap harta di <b>tabel biasa sendiri</b>. Ditahan: <b>tanpa angka</b>.</li></ol></section></div>`;
 }
 const ik = d => `<svg class="ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 
@@ -291,7 +321,10 @@ function gambar() {
   document.getElementById('bab').textContent = s.bab;
   document.getElementById('judul').textContent = aktif === 'gharqa' ? 'Putuskan dulu, lalu isi tabel tiap harta' : 'Isi tabel pembagiannya';
   document.getElementById('soal').textContent = s.soal;
+  gabungKini = new Set();
+  if (aktif !== 'gharqa' && !jangkar[aktif]) pilihJangkar(aktif);
   layar.innerHTML = aktif === 'gharqa' ? layarGharqa() : layarSoal(aktif);
+  gabungLama = gabungKini;
 }
 const simpan = () => document.querySelectorAll('[data-k]').forEach(e => nilai[e.dataset.k] = e.value);
 document.addEventListener('click', e => {
