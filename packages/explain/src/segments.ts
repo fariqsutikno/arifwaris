@@ -28,6 +28,15 @@ export type JenisLangkah = 'peta' | 'tanya' | 'dasar' | 'keluarga' | 'logika' | 
 
 export const tekankan = (baris: BarisPenjelasan, penekanan: NonNullable<BarisPenjelasan['penekanan']>): BarisPenjelasan => ({ ...baris, penekanan });
 
+/** Huruf awal kalimat papan: papan dari kalimat bebas (bukan templat `.papan`) belum dikapitalkan seperti narasinya. */
+export const kapitalAwal = (daftarPotongan: Potongan[]): Potongan[] => {
+  const [awal, ...sisa] = daftarPotongan;
+  return awal ? [{ ...awal, teks: awal.teks.charAt(0).toUpperCase() + awal.teks.slice(1) }, ...sisa] : daftarPotongan;
+};
+
+/** Papan = teks ringkas skrip; baris cerita (tanpa papan) tampil sama di narasi dan papan. */
+export const papanDari = (baris: BarisPenjelasan): BarisPenjelasan => (baris.papan ? { daftarPotongan: kapitalAwal(baris.papan), refs: baris.refs } : baris);
+
 export const keTeksBiasa = (baris: BarisPenjelasan): string => baris.daftarPotongan.map(potonganIni => potonganIni.teks).join('');
 
 export type Sisipan = string | number | bigint | Pecahan | Potongan | Potongan[];
@@ -116,7 +125,5 @@ export function barisSkrip(
 ): BarisPenjelasan {
   const [kunciNarasi, kunciPapan] = typeof kunci === 'string' ? [`${kunci}.narasi`, `${kunci}.papan`] : kunci;
   const baris = buatBaris(susun(penyusun, `narasi.langkah.${kunciNarasi}`, sisipanNarasi), refs, subjek);
-  const papan = susun(penyusun, `narasi.langkah.${kunciPapan}`, sisipanPapan);
-  const [awal, ...sisa] = papan;
-  return { ...baris, jenis, papan: awal ? [{ ...awal, teks: awal.teks.charAt(0).toUpperCase() + awal.teks.slice(1) }, ...sisa] : papan };
+  return { ...baris, jenis, papan: kapitalAwal(susun(penyusun, `narasi.langkah.${kunciPapan}`, sisipanPapan)) };
 }

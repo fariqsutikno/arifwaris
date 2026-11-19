@@ -27024,7 +27024,7 @@
   {
    "kunci": "narasi.langkah.taqdir.kemungkinan.banyak.narasi",
    "halaman": "narasi",
-   "id": "Ada {jumlah} kemungkinan, jadi ada {jumlah} masalah yang dihitung sendiri-sendiri, lalu semuanya disamakan dalam satu {jamiah}.",
+   "id": "Ada {jumlah} kemungkinan, jadi ada {jumlah} masalah yang dihitung sendiri-sendiri. Semuanya lalu disamakan memakai satu angka pembagi bersama, yang disebut {jamiah}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27388,14 +27388,14 @@
   {
    "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.narasi",
    "halaman": "narasi",
-   "id": "Caranya disebut tanzil: tiap kerabat ditempatkan pada posisi ahli waris yang menjadi jalur nasabnya, misalnya bibi dari ibu sebagai ibu dan bibi dari ayah sebagai ayah.",
+   "id": "Caranya disebut tanzil: tiap kerabat ditempatkan pada posisi perantaranya, yaitu ahli waris yang menghubungkan kerabat itu dengan almarhum. Misalnya bibi dari ibu dianggap ibu, dan bibi dari ayah dianggap ayah.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.papan",
    "halaman": "narasi",
-   "id": "Tanzil: tempatkan pada posisi perantara",
+   "id": "Tanzil: tempatkan pada posisi perantara (penghubung ke almarhum)",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27459,6 +27459,48 @@
    "kunci": "narasi.langkah.orang.pertanyaan.dzawil_arham",
    "halaman": "narasi",
    "id": "Kenapa kerabat jauh ini mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.dunia.masalah.narasi",
+   "halaman": "narasi",
+   "id": "Asal masalah untuk kemungkinan ini {masalah}. Supaya sama dengan angka pembagi bersama {jamiah}, tiap potong dikali {nilai} ({juz_sahm}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.dunia.masalah.papan",
+   "halaman": "narasi",
+   "id": "Asal masalah {masalah} × {nilai} = {jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.tanya_khuntsa.narasi",
+   "halaman": "narasi",
+   "id": "Ada ahli waris yang jenis kelaminnya belum jelas, yaitu {siapa}. Bisakah harta dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.tanya_khuntsa.papan",
+   "halaman": "narasi",
+   "id": "Jenis kelamin belum jelas. Bisa dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.tharif.narasi",
+   "halaman": "narasi",
+   "id": "Bagian {siapa} ({saham} potong) diteruskan kepada ahli warisnya yang masih hidup. Mereka punya asal masalah {masalah}, jadi angka pembagi bersama (jami'ah) menjadi {jamiah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.tharif.papan",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} potong → asal masalah {masalah} → jami'ah {jamiah}",
    "ar": null,
    "versiTerbit": 873
   }

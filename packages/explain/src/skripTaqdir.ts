@@ -28,7 +28,9 @@ const langkahLama = (penyusun: Penyusun, jenis: JenisLangkah, nama: string, sisi
 export function babBelumPastiSkrip(hasil: TaqdirOk, graf: GrafKeluarga, sebut: Sebut, penyusun: Penyusun): Bab {
   const sumber = daftarSumber(graf);
   const siapa = gabungDan(penyusun, sumber.map(id => [sebut(id)]));
-  const daftarBaris = [langkah(penyusun, 'tanya', 'belum.tanya', { siapa }, {}, ['R13-16'], sumber)];
+  // Khuntsa dijelaskan dengan bahasa awam di pertanyaan pembuka, sebelum istilahnya muncul di sebutan.
+  const semuaKhuntsa = sumber.every(id => graf.orang[id]!.khuntsa);
+  const daftarBaris = [langkah(penyusun, 'tanya', semuaKhuntsa ? 'belum.tanya_khuntsa' : 'belum.tanya', { siapa }, {}, ['R13-16'], sumber)];
   if (hasil.daftarDunia.length > 1) {
     daftarBaris.push(langkah(penyusun, 'dasar', 'belum.dasar', { mauquf: istilahNarasi(penyusun, 'mauquf') }, {}, refsPemberian(hasil)));
   }
@@ -59,9 +61,9 @@ export function babKemungkinanSkrip(hasil: TaqdirOk, graf: GrafKeluarga, sebut: 
     const juzSahm = hasil.jamiah / satuDunia.masalah;
     return [
       langkah(penyusun, 'keluarga', 'dunia.jika', { nomor: indeks + 1, kemungkinan: teksTaqdir(penyusun, graf, satuDunia.taqdir, sebut) }, { nomor: indeks + 1 }, [], Object.keys(satuDunia.taqdir)),
-      langkahLama(penyusun, 'hitung', 'dunia.masalah', {
+      langkah(penyusun, 'hitung', 'dunia.masalah', {
         masalah: satuDunia.masalah, jamiah: hasil.jamiah, juz_sahm: istilahNarasi(penyusun, 'juz-as-sahm'), nilai: juzSahm,
-      }, langkahDunia[indeks]?.refs ?? []),
+      }, { masalah: satuDunia.masalah, jamiah: hasil.jamiah, nilai: juzSahm }, langkahDunia[indeks]?.refs ?? []),
       ...Object.entries(satuDunia.saham).map(([id, saham]) => {
         const kalimatOrang = kalimat`${sebutPenerima(penyusun, id, sebut)}: ${saham}/${hasil.jamiah}.`;
         return { ...buatBaris(kalimatOrang, [], [id]), jenis: 'hitung' as const, papan: kalimatOrang };

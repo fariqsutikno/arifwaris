@@ -11,7 +11,7 @@ import { babBelumPastiSkrip, babKemungkinanSkrip, babPemberianSkrip } from './sk
 import { kotakWakil, type IsiKotak, type Langkah, type Linimasa, type Tahap, type Visual } from './linimasa.js';
 import { sebutPenerima } from './munasakhat.js';
 import type { Kamus, Penyusun } from './segments.js';
-import { teksKamus } from './segments.js';
+import { papanDari, teksKamus } from './segments.js';
 
 /** Kunci baris "bagian yang ditahan" di kotak jami'ah (bukan orang; sebutannya dari diksi). */
 export const KUNCI_DITAHAN = 'ditahan';
@@ -58,7 +58,7 @@ export function susunLinimasaGharqa(hasil: GharqaSelesai, graf: GrafKeluarga, ke
 // ─── Tahap ────────────────────────────────────────────────────────────────────
 
 const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({
-  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: baris.papan ? { daftarPotongan: baris.papan, refs: baris.refs } : baris, refs: baris.refs,
+  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
 });
 
 function tahapDariBab(id: Tahap['id'], judul: string, bab: Bab): Tahap {

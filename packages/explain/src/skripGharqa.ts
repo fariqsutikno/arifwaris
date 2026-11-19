@@ -44,7 +44,8 @@ export function babHartaGharqaSkrip(harta: HartaGharqa, sebut: Sebut, penyusun: 
   const daftarBaris: BarisPenjelasan[] = [langkah(penyusun, 'tanya', 'harta.tanya', { mayit }, { mayit })];
   for (const satu of harta.jejak) {
     if (satu.jenis !== 'MUNASAKHAT' || !satu.refs.includes('R13-19')) continue;
-    daftarBaris.push(dariKalimat('logika', susun(penyusun, 'narasi.gharqa.tharif', { siapa: sebut(satu.mayit), saham: satu.saham, masalah: satu.masalah, jamiah: satu.jamiah }), satu.refs, [satu.mayit]));
+    const sisipan = { siapa: sebut(satu.mayit), saham: satu.saham, masalah: satu.masalah, jamiah: satu.jamiah };
+    daftarBaris.push(langkah(penyusun, 'logika', 'harta.tharif', sisipan, sisipan, satu.refs, [satu.mayit]));
   }
   const teksNominal = (uang: bigint | undefined): string => (uang ? ` = ${rupiah(uang)}` : '');
   if (harta.daftarDunia) {

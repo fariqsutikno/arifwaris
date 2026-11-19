@@ -11,7 +11,7 @@ import { buatKonteks, type HasilOk, type Konteks } from './context.js';
 import { adaDzawilArham } from './dzawilArham.js';
 import { susunLinimasaDzawilArham } from './linimasaDzawilArham.js';
 import { LAMA, babAhliWarisSkrip, babBagianSkrip, babHartaSkrip, babHasilSkrip, babPembulatanSkrip, babPenyebutSkrip, babPenyesuaianSkrip, langkahPeta, type HasilSkrip } from './skrip.js';
-import type { BarisPenjelasan, JenisLangkah, Kamus } from './segments.js';
+import { papanDari, type BarisPenjelasan, type JenisLangkah, type Kamus } from './segments.js';
 
 export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir'
   | 'belumPasti' | 'kemungkinan' | 'pemberian' | 'wafatBersamaan' | 'dzawilArham';
@@ -64,8 +64,6 @@ export function susunLinimasa(hasil: HasilOk, graf: GrafKeluarga, opsi: { kamus:
   return { tahap, tabel: [kolomTabel(hasil)] };
 }
 
-/** Papan = teks ringkas skrip; baris cerita (tanpa papan) tampil sama di narasi dan papan. */
-const papanDari = (baris: BarisPenjelasan): BarisPenjelasan => (baris.papan ? { daftarPotongan: baris.papan, refs: baris.refs } : baris);
 const pilihBab = (skrip: HasilSkrip, lama: () => Bab | undefined): Bab | undefined => (skrip === LAMA ? lama() : skrip);
 
 /** Tahap pembagian satu mayit (satu pipeline); `babak` = indeks tabelnya. Munasakhat memanggilnya per mayit. */
