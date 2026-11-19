@@ -213,6 +213,19 @@ export interface Pertanyaan {
   alasan: string;
 }
 
+/** [R14-5] Keluaran tanzil: kursi yang diduduki tiap kerabat dan tabel para perantara (bagian + saham). */
+export interface TanzilArham {
+  /** Satu entri per jalur; satu orang lewat dua jalur → dua entri [R14-11]. `lolos` = jalurnya dipakai (tidak kalah cepat/jihah). */
+  didudukkan: Array<{ idOrang: IdOrang; perantara: IdOrang; sebagai: KunciAhliWaris; lolos: boolean }>;
+  /** Mas'alah para perantara; `masalah` = Σ saham (sudah 'aul/radd bila ada). Perantara terhalang: `saham` 0. */
+  tabelPerantara: {
+    ashl: bigint;
+    aul?: bigint;
+    masalah: bigint;
+    baris: Array<{ perantara: IdOrang; sebagai: KunciAhliWaris; fardh?: Pecahan; ashabah?: boolean; saham: bigint; terhalang: boolean }>;
+  };
+}
+
 export type HasilEngine =
   | { status: 'PERLU_INPUT'; pertanyaan: Pertanyaan[] }
   | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[]; kode?: 'FASE_DZAWIL_ARHAM' | 'PERLU_TAQDIR' }
@@ -223,6 +236,8 @@ export type HasilEngine =
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       /** Hanya pasangan yang mewarisi: sisa tidak dibagi ke ahli waris, tapi ke dzawil arham / baitul mal. */
       sisaKeluar?: { tujuan: TujuanSisa; saham: bigint; nominal: Uang };
+      /** Hanya hasil dzawil arham (tanzil). */
+      tanzil?: TanzilArham;
       ruleset: Ruleset;
       konfigurasi: KonfigurasiMadzhab;
       versiKb: string };

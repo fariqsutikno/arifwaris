@@ -17,7 +17,7 @@ import { RADD_TERCAKUP_TANZIL, bagiAntarPerantara, hitungPosisi, penerimaSatuKel
 import { cariRuteTanzil, saringJihah, type RuteTanzil } from './stages/tanzil.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import type {
-  HasilEngine, IdOrang, InputEngine, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Pertanyaan, Ruleset, StatusOrang, TabelMasalah,
+  HasilEngine, IdOrang, InputEngine, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Pertanyaan, Ruleset, StatusOrang, TabelMasalah, TanzilArham,
 } from './types.js';
 import type { Uang } from '@waris/math';
 
@@ -28,6 +28,7 @@ interface HasilArham {
   saham: Saham;
   masalah: bigint;
   statusArham: Record<IdOrang, StatusOrang>;
+  tanzil: TanzilArham;
   jejak: LangkahJejak[];
 }
 
@@ -113,6 +114,10 @@ function bagiDzawilArham(input: InputEngine): HasilArham | BukanOk {
 
   return {
     saham, masalah,
+    tanzil: {
+      didudukkan: semuaRute.map(rute => ({ idOrang: rute.idOrang, perantara: rute.perantara, sebagai: rute.kunciPerantara, lolos: lolos.includes(rute) })),
+      tabelPerantara: perantara.tabel,
+    },
     statusArham: statusDzawilArham(daftarPeran, saring.statusMani, semuaRute, lolos, saham, perantara.mahjub, mahjubTurun),
     jejak: [...saring.jejak, ...jejakTanzil, perantara.jejak, ...jejakTurun, ...jejakDuaJalur(lolos)],
   };
@@ -236,7 +241,7 @@ function tanpaPasangan(input: InputEngine, arham: HasilArham): HasilOk {
   const statusOrang = { ...terapkanMawani(input.graf, daftarPeran, input.ruleset).statusOrang, ...arham.statusArham };
   const nominal = bagikanNominal(arham.saham, arham.masalah, tirkah.bersih, input.pembulatan.satuan);
   return {
-    status: 'OK', statusOrang,
+    status: 'OK', statusOrang, tanzil: arham.tanzil,
     tabel: susunTabel(arham.saham, arham.masalah, nominal.nominal, statusOrang, []),
     jejak: [tirkah.jejak, ...arham.jejak, ...nominal.jejak],
     pembulatan: { satuan: input.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan },
@@ -256,7 +261,7 @@ function gabungDenganPasangan(input: InputEngine, pasangan: HasilOk, arham: Hasi
   const statusOrang = { ...pasangan.statusOrang, ...arham.statusArham };
   const barisPasangan = pasangan.tabel.baris.filter(baris => Object.values(baris.perOrang).some(sel => sel.saham > 0n));
   return {
-    status: 'OK', statusOrang,
+    status: 'OK', statusOrang, tanzil: arham.tanzil,
     tabel: susunTabel(gabung.saham, gabung.jamiah, nominal.nominal, statusOrang, barisPasangan),
     jejak: [
       ...pasangan.jejak.filter(langkah => langkah.jenis !== 'DISTRIBUSI'),

@@ -3,6 +3,7 @@ import { hitungDzawilArham } from '../dzawilArham.js';
 import { hitung } from '../pipeline.js';
 import type { HasilEngine, Ruleset } from '../types.js';
 import { case24 } from './fixtures/bab16.js';
+import { grafDA02 } from './fixtures/dzawilArham.js';
 import {
   DZAWIL_ARHAM_FIXTURES, KASUS_DZAWIL_ARHAM_MADZHAB, dengan, grafDA14, grafDA17, grafDA19, grafDA20, type FixtureDzawilArham,
 } from './fixtures/dzawilArham.js';
@@ -129,4 +130,30 @@ describe('Dzawil arham — invarian di semua fixture OK', () => {
       }
     });
   }
+});
+
+describe('[R14-5] tanzil: kursi tiap kerabat dan tabel perantara (kunci tabel latihan B7)', () => {
+  test('14.6 baris 1: didudukkan sebagai saudara kandung, seibu, sebapak; asal masalah 6: 5, 1, 0 (terhalang)', () => {
+    const hasil = hitungDzawilArham(dengan(grafDA02));
+    if (hasil.status !== 'OK') throw new Error(hasil.status);
+    const { didudukkan, tabelPerantara } = hasil.tanzil!;
+    expect(didudukkan.map(({ idOrang, perantara, sebagai }) => [idOrang, perantara, sebagai])).toEqual(expect.arrayContaining([
+      ['A1', 'SK', 'SAUDARA_KANDUNG'], ['A2', 'SI', 'SAUDARA_SEIBU'], ['A3', 'SB', 'SAUDARA_SEBAPAK'],
+    ]));
+    expect(tabelPerantara.ashl).toBe(6n);
+    expect(tabelPerantara.masalah).toBe(6n);
+    expect((tabelPerantara.baris.map(baris => [baris.sebagai, baris.ashabah ? 'Ashabah' : baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : '', baris.saham, baris.terhalang]))).toEqual(expect.arrayContaining([
+      ['SAUDARA_KANDUNG', 'Ashabah', 5n, false], ['SAUDARA_SEBAPAK', '', 0n, true], ['SAUDARA_SEIBU', '1/6', 1n, false],
+    ]));
+    expect(tabelPerantara.baris).toHaveLength(3);
+  });
+
+  test("Σ saham perantara = mas'alah perantara untuk semua fixture OK", () => {
+    for (const fixture of DZAWIL_ARHAM_FIXTURES) {
+      const hasil = hitungDzawilArham(fixture.input);
+      if (hasil.status !== 'OK') continue;
+      const { tabelPerantara } = hasil.tanzil!;
+      expect(tabelPerantara.baris.reduce((jumlah, baris) => jumlah + baris.saham, 0n), fixture.id).toBe(tabelPerantara.masalah);
+    }
+  });
 });
