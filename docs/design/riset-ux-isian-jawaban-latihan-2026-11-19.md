@@ -140,3 +140,43 @@ Temuan tambahan:
 - Kode sekarang menutup mode tebak untuk taqdir, menunggu kelahiran, dan gharqa (`Hasil.tsx`, `khusus`). Bentuk isian ini yang
   membuat jenis soal tersebut bisa dilatih.
 - E paling rapuh di kasus khusus: kata "ditahan", "mauquf", dan "sisa" menambah tafsir ganda.
+
+## 10. Pilihan pemilik: B (tabel kitab) dengan urutan dari A (2026-11-19)
+
+Pemilik condong ke **B**: penggunanya sudah pernah belajar faraidh di kelas, jadi tabel lebih terasa "faraidh" daripada langkah
+A yang panjang. Kekuatan A (mengajarkan urutan) dibawa masuk ke tabel. Mockup:
+[mockup-tabel-faraidh-isian.html](mockup-tabel-faraidh-isian.html).
+
+**Urutan di dalam tabel.** Kolom kiri ke kanan = urutan hitung. Mode **"Kolom demi kolom"** (bawaan) membuka kolom berikutnya setelah
+kolom sebelumnya benar, dan umpan baliknya menyebut kolomnya. Mode **"Semua terbuka"** untuk yang ingin langsung mengisi; penilaian
+berhenti di kolom pertama yang salah.
+
+**Aturan supaya isian seragam** (jawaban atas "asal masalah dll jangan diisi pecahan"):
+1. Tiap sel punya satu jenis isian. Bagian/Kelompok/Didudukkan sebagai = **daftar pilihan tertutup**. Saham, asal masalah,
+   jami'ah, pengali = **kotak bilangan bulat**. Pecahan tidak pernah diketik.
+2. Kotak bilangan bulat **menolak utuh** ketikan selain angka (`/`, `,`, `½`): isinya kembali ke angka terakhir, dan muncul
+   keterangan "Kotak angka hanya menerima bilangan bulat. Pecahan dipilih di kolom Bagian." Isian tidak diam-diam berubah
+   (`1/8` tidak menjadi `18`). Angka Arab diubah ke Latin. Papan angka HP cukup.
+3. **Asal masalah awal dipilih dari tujuh usul** (2, 3, 4, 6, 8, 12, 24; R09-1). Bisa diganti ke "ketik" untuk menguji hafalan.
+   Asal masalah akhir, mas'alah tiap kemungkinan, dan jami'ah diketik sebagai bilangan bulat.
+4. **Saham selalu terhadap asal masalah di kepala kolomnya**, bukan pecahan dari harta. Pertanyaan "disederhanakan atau tidak"
+   hilang.
+5. **Terhalang mengisi 0 sendiri** di sel angka barisnya. "0 dulu" (haml/mafqud) adalah pilihan kelompok tersendiri.
+6. Kelipatan asal masalah akhir dengan perbandingan benar → "perbandingan benar, belum yang terkecil".
+7. Ashabah bersama diisi di **satu sel gabungan** sebelum tashih, seperti di kitab.
+
+**Kasus khusus dalam bentuk tabel** (semua diuji kolom demi kolom dengan kunci KB):
+
+| Jenis | Kolom | Catatan |
+|---|---|---|
+| Biasa (16.1) | Bagian → Asal masalah [usul] → Asal masalah akhir | sel ashabah bersama |
+| Munasakhat (12.6 contoh 2) | Mas'alah 1 (terkunci, dari soal sebelumnya) → Bagian anak pr → Mas'alah 2 → Jami'ah, baris Pengali | pengali diisi pada langkah jami'ah; ≤ 3 mayit |
+| Dzawil arham (14.6 baris 1) | Didudukkan sebagai → Bagian perantara → Asal masalah | Terhalang → 0 otomatis; [HNF] qarabah butuh kolom lain |
+| Mafqud (13b.6 F1) | Bagian·hidup → Ia hidup → Bagian·wafat → Ia wafat → Diberikan sekarang, baris Pengali dan Ditahan | dua kemungkinan muat di HP; khuntsa sama ("ia laki-laki / perempuan") |
+| Haml ringkas (13a.7 H1 [SYF]) | Kelompok → Diberikan sekarang, baris Ditahan | untuk HP |
+| Haml lengkap (13a.7 H1) | enam kolom kemungkinan (mas'alah di kepala, baris Pengali) → Diberikan sekarang | tingkat sulit, laptop |
+| Gharqa (13d.2 [SYF]) | satu keputusan, lalu satu atau dua tabel biasa | "Ditahan" → tanpa angka |
+
+Kolom Bagian per kemungkinan pada mafqud (ibu 1/6 bila mafqud hidup, 1/3 bila wafat) diturunkan dari bab 04 dan cocok dengan
+hasil F1 (ibu 2, saudara hadir 5, ditahan 5 dari 12). Saat diterapkan ke kode, kunci tiap sel diambil dari tabel engine, bukan
+diketik di konten soal.
