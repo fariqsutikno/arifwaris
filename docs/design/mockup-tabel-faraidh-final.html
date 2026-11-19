@@ -190,13 +190,13 @@ const SOAL = {
 };
 
 let aktif = 'biasa', gharqaPilih = '';
-// Satu sel terisi per soal, dipilih acak di kolom pilihan atau saham; tidak pernah di kepala kolom (asal masalah).
+// Satu sel terisi per soal, dipilih acak di kolom saham (bukan kolom bagian); tidak pernah di kepala kolom (asal masalah).
 // Sel yang jawabannya membuka hal yang diuji tidak dipakai: baris pengali, sel 0/terhalang, sel ashabah bersama.
 const jangkar = {};
 function pilihJangkar(soalId) {
   const s = SOAL[soalId], calon = [];
   s.kolom.forEach(kol => {
-    if (kol.terkunci) return;
+    if (kol.terkunci || kol.jenis !== 'bulat') return;
     s.baris.forEach((b, i) => {
       const kunci = b.kunci[kol.id];
       if (b.pengali || kunci === undefined || kunci === '0') return;
