@@ -286,6 +286,26 @@ describe('layar hasil', () => {
     expect([...dataPeranDari(kasus.graf, ringkasan, tampil.hasil.tabel, []).pembagian.values()]).toEqual(['dzawilArham', 'dzawilArham']);
   });
 
+  it('dzawil arham: langkah demi langkah memakai linimasa tanpa tabel (semua tahap tampil, tidak error)', () => {
+    const orang = (id: string, jenisKelamin: 'L' | 'P', lain: object = {}) => ({ id, jenisKelamin, statusHidup: 'hidup' as const, agama: 'islam' as const, ...lain });
+    const wafat = { statusHidup: 'wafat' as const, penghubung: true };
+    const kasus: Kasus = { ...kasusBaru('L'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, graf: {
+      idPewaris: 'D', pernikahan: [], orang: {
+        D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+        F1: orang('F1', 'L', { ...wafat, idAyah: 'PGF', idIbu: 'PGM' }), M1: orang('M1', 'P', { ...wafat, idAyah: 'MGF', idIbu: 'MGM' }),
+        PGF: orang('PGF', 'L', wafat), PGM: orang('PGM', 'P', wafat), MGF: orang('MGF', 'L', wafat), MGM: orang('MGM', 'P', wafat),
+        KL1: orang('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }), AM1: orang('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),
+      } } };
+    render(<Uji awal={kasus} />);
+    fireEvent.click(screen.getByRole('button', { name: /Dari 1 sampai selesai/ }));
+    const mode = () => screen.getByRole('dialog', { name: 'Langkah demi langkah' });
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Lainnya' }));
+    fireEvent.click(within(mode()).getByRole('button', { name: 'Tampilkan semua langkah' }));
+    expect(within(mode()).getByText('Semua tahap')).toBeTruthy();
+    expect(mode().querySelector('.kartu-tahap')).toBeTruthy();
+    expect(mode().querySelector('table')).toBeNull();
+  });
+
   it('Atur kolom menyembunyikan kolom tabel; kepala kolom yang disembunyikan tak lagi bisa dipilih', () => {
     render(<Uji awal={prototipe()} />);
     const tabel = screen.getByRole('table');
