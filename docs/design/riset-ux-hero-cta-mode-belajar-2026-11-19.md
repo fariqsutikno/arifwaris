@@ -126,16 +126,11 @@ Diminta pemilik: bukan melengkapi, tetapi memeriksa apakah bagian 1–8 benar. S
 (`Hasil.tsx`, `ModalEkspor.tsx`, `ui/Bagikan.tsx`, `Aplikasi.tsx`), ke keputusan lama (`riset-ux-hasil-2026-11-17.md`), dan ke
 sumber luar. Status: **Benar**, **Keliru**, **Lemah** (benar tapi buktinya kurang), **Terlewat**.
 
-### 9a. Kritik terbesar: masalahnya dibingkai salah
+### 9a. Kerangka: revamp, bukan menjaga keputusan lama
 
-**Keliru.** Dokumen ini memperlakukan aksi hero sebagai pertanyaan baru dan menawarkan empat pilihan (C1–C4). Padahal pemilik
-**sudah memutuskan** pada 2026-11-17 (riset-ux-hasil bagian 11 butir 1 dan bagian 17): aksi hero = **"Kirim ringkasan"** (teks
-singkat untuk WA), PDF lengkap untuk rapat/ustadz, dan simpan, tautan, serta file kasus di ubin Bagikan. Acuan beku
-`acuan-hasil-final.html` memuat pil "Kirim ringkasan" di hero. Kode lalu menyimpang menjadi "Ekspor" yang hanya berisi JSON.
-
-Jadi temuan intinya bukan "Ekspor kurang penting", tetapi **implementasi menyimpang dari desain yang sudah disetujui**. Dokumen ini
-tidak menyebut keputusan 11-17 sama sekali dan membuka ulang perdebatan (C1 "hapus aksi dari hero" bertentangan langsung dengan
-keputusan itu) tanpa bukti baru. Ini melanggar prinsip kerja: jangan membuka ulang keputusan pemilik tanpa alasan baru.
+Pemilik menegaskan ini **revamp**: keputusan sebelumnya (termasuk "Kirim ringkasan di hero", 2026-11-17) bukan patokan, hanya
+satu kandidat yang dinilai sejajar dengan kandidat lain. Kekurangan dokumen bagian 1–8 di sisi ini: ia tidak membandingkan
+kandidatnya dengan desain 11-17 maupun konvensi aplikasi lain, jadi pilihannya tidak teruji. Bagian 10 menilai ulang dari nol.
 
 ### 9b. Klaim per temuan
 
@@ -157,7 +152,8 @@ keputusan itu) tanpa bukti baru. Ini melanggar prinsip kerja: jangan membuka ula
 ### 9c. JTBD dan HMW
 
 - **H-e2 keliru.** "Kasus sudah otomatis ke riwayat; tidak perlu tombol" tidak sesuai kode: penyimpanan otomatis hanya untuk
-  kasus menunggu kelahiran. Kasus biasa butuh "Simpan, lanjut nanti" di ubin Bagikan (`aksiBagikan`).
+  kasus menunggu kelahiran. Kasus biasa butuh "Simpan, lanjut nanti" di ubin Bagikan (`aksiBagikan`). Pemilik: ini **harus
+  diperbaiki** dalam revamp (bagian 10c).
 - **Terlewat: nominal disembunyikan.** Tangkapan layar pemilik menampilkan `Rp ••••••`. Kirim ringkasan dalam keadaan itu harus
   diputuskan: ikut tersembunyi (hanya pecahan) atau bertanya dulu. Dokumen tidak membahasnya.
 - **Terlewat: pengajar.** `riset-narasi-pengajar-2026-11-19.md` (hari yang sama) punya pengguna ustadz/pengajar. Pemilik kini
@@ -180,25 +176,113 @@ keputusan itu) tanpa bukti baru. Ini melanggar prinsip kerja: jangan membuka ula
   terpisah. Tidak ditemukan pola "sakelar sembunyikan jawaban" di halaman hasil ([dukungan Photomath](https://support.google.com/photomath/answer/14335006?hl=en)).
   Bukti ini lemah (kebanyakan halaman perbandingan), cukup sebagai pembanding, bukan dasar.
 
-### 9e. Kesimpulan yang dikoreksi
+### 9e. Kesimpulan
 
-**Aksi hero.** Pekerjaan H-e dan keputusan 11-17 tetap berlaku: **Kirim ringkasan** (teks WA) adalah aksi utama. Yang ditinjau
-hanya **letaknya**, dengan alasan baru (*reading gravity*, E2):
-- Laptop: pil "Kirim ringkasan" **di akhir kartu "Siapa dapat berapa"**, tepat di bawah baris "Harta yang dibagi", tempat
-  pembacaan selesai. Hero = jawaban saja, tanpa tombol. Ini juga menyelesaikan E3 (hero tidak lagi memuat pil).
-- HP: pil yang sama di akhir daftar. Tidak perlu bar bawah.
-- "Ekspor" dihapus. JSON tetap di ubin Bagikan sebagai "Simpan file kasus" (sudah ada). PDF baru muncul di ubin Bagikan
-  setelah dibuat; sebelum itu tidak dirender (bukan "Segera hadir").
-- Nominal tersembunyi → ringkasan berisi pecahan saja, dengan satu baris "nominal disembunyikan".
-
-**Sakelar.** Hapus dari hero di **semua** keadaan:
-- Kasus sendiri: tidak ada mode tebak (keputusan pemilik). "Coba tebak dulu" di ubin Pelajari juga dihapus. Ubin Pelajari
-  berisi "Langkah demi langkah" dan "Bandingkan madzhab".
-- Soal latihan: mode tebak menjadi keadaan bawaan soal, bukan pilihan. Jalan keluar tunggal = "Lihat jawaban" yang sudah ada
-  (dialog tahan + XP gugur tetap). Sesudah jawaban terbuka, aksi utama = "Soal berikutnya" di akhir pembahasan.
-- Kata "Belajar" hanya untuk menu materi. Tidak perlu nama pintu baru (pertanyaan 4 bagian 6 gugur) karena pintunya tidak ada lagi.
+Diganti oleh bagian 10.
 
 ### 9f. Masih asumsi
 - Belum ada data klik. Keputusan letak berdasar pedoman umum, bukan pengamatan pengguna aplikasi ini.
 - Isi teks ringkasan (urutan baris, kalimat penutup, panjang untuk munasakhat ±52 baris) belum dirancang; bagian 15 riset 11-17
   sudah mencatat risikonya.
+
+## 10. Revamp: penilaian netral dari nol (2026-11-19)
+
+Cara menilai: tiap kandidat diukur dengan kriteria yang sama, bukti dari dua arah ditulis, dan yang tidak pasti ditandai.
+Tidak ada data pengguna aplikasi ini, jadi semua pilihan di bawah adalah **hipotesis yang perlu diuji** (bagian 10e).
+
+### 10a. Apa yang dilakukan orang sesudah hasil keluar?
+
+| Pekerjaan sesudah hasil | Keluarga (bagi harta) | Ustadz/pengajar | Pelajar |
+|---|---|---|---|
+| Membaca bagian + alasan | utama | utama | utama |
+| Memperbaiki isian yang salah | sering (asumsi) | kadang | kadang |
+| Mengirim ke keluarga (teks/tautan/gambar) | sering (asumsi) | jarang | jarang |
+| Dokumen formal (PDF/cetak) | kadang | sering | jarang |
+| Menyimpan untuk dibuka lagi | sering | sering | jarang |
+| Menebak dulu / berlatih | tidak | untuk murid | utama, tetapi lewat soal latihan |
+
+Temuan: **tidak ada satu aksi yang dominan untuk semua kelompok.** Mengirim paling mungkin untuk keluarga, tetapi itu asumsi.
+Konsekuensinya, memilih satu pil besar di hero berarti bertaruh pada satu kelompok.
+
+### 10b. Aksi di hero: kandidat dinilai sejajar
+
+Kriteria: **K1** cocok dengan banyak kelompok, **K2** sesuai konvensi yang sudah dikenal, **K3** tidak menyela pembacaan
+jawaban, **K4** satu pintu untuk satu jenis pekerjaan, **K5** jalan sekarang (bukan janji).
+
+| Kandidat | K1 | K2 | K3 | K4 | K5 | Catatan |
+|---|---|---|---|---|---|---|
+| A. Pil "Ekspor" (sekarang) | ✗ | ✗ "ekspor" kata sistem | ✗ pil paling terang | ✗ ada juga di layar penuh pohon | ✗ hanya JSON | |
+| B. Pil "Kirim ringkasan" di hero (desain 11-17) | sebagian, hanya keluarga | ✓ | ✗ | ✓ | perlu dibuat (kecil) | bertaruh pada satu kelompok |
+| C. Hero tanpa aksi, semua di ubin Bagikan bawah | ✓ | sebagian | ✓ | ✓ | ✓ | aksi berbagi bisa tidak ditemukan; ubin Bagikan ada di bawah pohon/tabel, jauh di HP |
+| D. **Satu tautan "Bagikan" di bilah atas hero** (sejajar status), membuka lembar berisi semua jalan keluar: teks WA, tautan, file kasus, PDF setelah jadi | ✓ | ✓ tombol Bagikan kanan atas pada Google Docs, Figma, Notion | ✓ kecil, tidak terisi | ✓ menggantikan Ekspor, ubin Bagikan, dan ekspor pohon | ✓ teks + tautan + file | |
+| E. Pil di akhir daftar "Siapa dapat berapa" | sebagian | sebagian | ✓ (*reading gravity*) | ✓ | perlu dibuat | |
+
+Bukti dua arah:
+- **Untuk letak atas (D):** pada alat berbasis dokumen, "Bagikan" di kanan atas sudah jadi konvensi. Mengikuti konvensi
+  menurunkan beban belajar (Hukum Jakob). Halaman Hasil lebih mirip dokumen kerja daripada halaman pemasaran.
+- **Untuk letak bawah (E):** *reading gravity*: orang mencari aksi setelah isi habis dibaca
+  ([UX Movement](https://uxmovement.com/mobile/optimal-placement-for-mobile-call-to-action-buttons/)). Pedoman ini lahir dari
+  halaman linear (landing page, formulir), sehingga kurang pas untuk alat.
+- **Melawan B:** satu aksi utama per halaman ([Red Hat](https://ux.redhat.com/elements/call-to-action/guidelines)), dan di
+  10a tidak ada aksi yang jelas paling utama untuk semua kelompok.
+
+**Pilihan: D.** D unggul di kelima kriteria, dan E di dua. Risiko D: tautan kecil kurang terlihat bagi keluarga yang memang
+datang untuk mengirim. Cara mengujinya ada di bagian 10e. Bila terbukti tidak ditemukan, naikkan "Kirim ke WhatsApp" sebagai
+baris pertama di lembar, bukan sebagai pil di hero.
+
+Ikut dibereskan di hero:
+- Chip "1 mayit" dihapus, karena tidak menjawab pekerjaan apa pun. Jumlah mayit hanya muncul bila lebih dari satu (munasakhat/gharqa).
+- Ubin "Penerima 3 orang" mengulang kalimat "Dibagi ke 3 orang" tepat di sebelahnya. Salah satunya cukup.
+
+### 10c. Menyimpan: otomatis atau ditanya saat keluar?
+
+| Kandidat | Kelebihan | Kekurangan |
+|---|---|---|
+| S1. Tombol "Simpan, lanjut nanti" (sekarang) | pengguna memegang kendali | lupa menekan → isian hilang. Sumber H-e2 |
+| S2. Ditanya saat keluar, gaya MS Word ("Simpan kasus ini?" Simpan / Jangan / Batal) | tidak ada yang hilang diam-diam; riwayat hanya berisi yang dipilih | menyela tiap kali keluar; di web, tombol back dan tutup tab tidak bisa dicegat dengan rapi (`beforeunload` hanya memunculkan dialog bawaan peramban tanpa pilihan Simpan) |
+| S3. **Simpan otomatis + status terlihat** ("Tersimpan di riwayat · 17.26") + hapus/urungkan | tidak ada yang hilang, tanpa dialog; pola bawaan Google Docs dan aplikasi macOS | riwayat penuh kasus coba-coba; di perangkat bersama, kasus keluarga tersimpan tanpa disadari |
+| S4. Otomatis sebagai **draf** (nama otomatis), lalu saat keluar dari draf tanpa nama muncul satu baris non-blok "Simpan dengan nama?" | gabungan S2 dan S3 | dua model dalam satu layar membingungkan; pedoman menyarankan tidak mencampur |
+
+Bukti: simpan otomatis adalah bawaan modern, tetapi statusnya harus terlihat supaya pengguna percaya
+([saasui](https://www.saasui.design/blog/saas-autosave-save-states-ux-patterns)). Jangan mencampur model simpan otomatis
+dan simpan manual di satu layar ([Shriki](https://medium.com/@adamshriki/the-different-types-of-saving-options-and-how-to-choose-the-right-one-22732d424714)).
+Pengguna Windows lebih terbiasa dengan dialog simpan ([Uxcel](https://app.uxcel.com/lessons/saving-changes-390/when-to-autosave-4321)).
+Semuanya sumber praktisi, bukan penelitian.
+
+**Pilihan: S3**, dengan dua penyeimbang untuk kekurangannya:
+1. Nama otomatis dari isi kasus ("Almarhum · istri, 2 anak"), dan bisa diubah di bilah hero (pensil di nama kasus).
+2. Lembar Bagikan memuat "Jangan simpan kasus ini" (hapus dari riwayat, dengan Urungkan) untuk perangkat bersama dan coba-coba.
+
+S2 tidak dipilih karena di web tidak bisa dibuat dengan pilihan Simpan saat tab ditutup, dan selalu menyela. Bila pemilik tetap
+ingin gaya Word, versi yang bisa jalan adalah: dialog hanya muncul saat tombol kembali **di dalam aplikasi** ditekan, bukan saat
+tab ditutup.
+
+### 10d. Mode Belajar (tebak)
+
+| Kandidat | Penilaian |
+|---|---|
+| T1. Sakelar di hero (sekarang) | gagal B1–B3: kata ganda, satu arah, separuh segmen tidak berarti |
+| T2. Pintu "Tebak dulu" di ubin Pelajari, untuk semua kasus | lebih tenang dari T1, tetapi tetap menawarkan kuis atas harta keluarga sendiri |
+| T3. **Tebak hanya di soal latihan** (jawaban pemilik di sesi ini) | satu tempat, satu makna. Soal latihan sudah dibuka dengan `tujuan: 'belajar'` dan sudah punya jalan keluar "Lihat jawaban" |
+| T4. "Jadikan soal" dari kasus sendiri (untuk pengajar) | kebutuhan pengajar nyata (riset-narasi-pengajar), tetapi tanpa bukti permintaan; ditunda |
+
+**Pilihan: T3.**
+- Di kasus sendiri: sakelar dan "Coba tebak dulu" dihapus. Ubin Pelajari berisi "Langkah demi langkah" dan "Bandingkan madzhab".
+- Di soal latihan: menebak jadi keadaan awal soal. Hero menyebut "Soal latihan", tanpa sakelar. Jalan keluarnya hanya "Lihat
+  jawaban" (dialog tahan + XP gugur tetap). Sesudah jawaban terbuka, aksi lanjut = "Soal berikutnya".
+- "Belajar" hanya untuk menu materi.
+
+### 10e. Cara menguji (5 orang cukup untuk menemukan masalah besar)
+1. "Kirim hasil ini ke grup keluarga." Diukur: menemukan tautan Bagikan tanpa bantuan, berapa detik.
+2. "Tutup aplikasi, buka lagi besok, lanjutkan kasus tadi." Diukur: yakin kasusnya tersimpan? Melihat status "Tersimpan"?
+3. "Kamu memakai HP kakakmu dan tidak ingin kasus ini tersimpan." Diukur: menemukan "Jangan simpan kasus ini".
+4. Pelajar: "Kerjakan soal ini, lalu menyerah." Diukur: menemukan "Lihat jawaban" dan paham XP gugur.
+
+### 10f. Daftar perubahan kode (sesudah mockup disetujui)
+- `Hasil.tsx`: hapus pil Ekspor, sakelar, chip "1 mayit"; tambah tautan Bagikan + status simpan di bilah hero; simpan otomatis
+  untuk semua jenis kasus (sekarang hanya `menunggu`).
+- `ModalEkspor.tsx` → lembar Bagikan (teks WA, tautan, file kasus, jangan simpan), memakai `ui/Bagikan.tsx`. PDF dirender
+  hanya setelah ada.
+- `KartuLain.tsx`: ubin Bagikan dihapus (pindah ke lembar); "Coba tebak dulu" dihapus dari ubin Pelajari.
+- `PohonLayarPenuh`: ekspor → membuka lembar yang sama.
+- Uji: `hasil.test.tsx` (sakelar hilang, simpan otomatis, lembar Bagikan).
