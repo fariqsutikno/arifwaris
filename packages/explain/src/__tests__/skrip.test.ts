@@ -1,7 +1,7 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
 import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case05, case03, case09, case10, case12, case13, case14, case23, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case05, case03, case08, case09, case10, case12, case13, case14, case23, caseNeg1, caseNeg2, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
 import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
@@ -100,6 +100,30 @@ describe('skrip belajar kasus biasa', () => {
     expect(teks).toContain('(muqasamah) = 3/16');
     expect(teks).toContain('Yang terbesar sepertiga sisa, yaitu 1/4');
     expect(teks).toContain('karena tidak ada anak laki-laki');
+  });
+
+  it("C16-08 (takmilah dan ma'a al-ghair): dasar pelengkap 2/3 dan saudari mengambil sisa", () => {
+    const bagian = langkahDari(case08, 'bagian');
+    const teks = bagian.map(teksNarasi).join(' ');
+    expect(teks).toContain('sebagai pelengkap, supaya bagian mereka genap 2/3');
+    expect(teks).toContain('mengambil sisa harta setelah bagian pasti dibagikan');
+    expect(bagian.every(satu => satu.jenis)).toBe(true);
+  });
+
+  it('C16-23: nenek tanpa ibu punya dasar 1/6 dan alasan "tidak ada ibu"', () => {
+    const teks = langkahDari(case23, 'bagian').map(teksNarasi).join(' ');
+    expect(teks).toContain('Nenek mendapat 1/6 bila tidak ada ibu');
+    expect(teks).toContain('tidak ada ibu, jadi');
+  });
+
+  it('mani\': pembunuh dan beda agama dijelaskan, lalu tinggal yang mewarisi', () => {
+    for (const fixture of [caseNeg1, caseNeg2]) {
+      const ahliWaris = langkahDari(fixture, 'ahliWaris');
+      const teks = ahliWaris.map(teksNarasi).join(' ');
+      expect(teks, fixture.id).toMatch(/membunuh|berbeda agama dengan/);
+      expect(teks, fixture.id).toContain('jadi tidak mendapat warisan');
+      expect(ahliWaris.every(satu => satu.jenis), fixture.id).toBe(true);
+    }
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {

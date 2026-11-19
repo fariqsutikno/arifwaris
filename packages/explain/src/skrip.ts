@@ -76,9 +76,9 @@ export function babHartaSkrip(konteks: Konteks): HasilSkrip {
 // ─── Siapa yang mewarisi ──────────────────────────────────────────────────────
 
 export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
-  if (konteks.daftarLangkah('MANI').length || konteks.daftarLangkah('KHILAF_MADZHAB').length) return LAMA;
+  if (konteks.daftarLangkah('KHILAF_MADZHAB').length) return LAMA;
   const { statusOrang } = konteks.hasil;
-  const idKerabat = Object.keys(statusOrang).filter(id => statusOrang[id]!.jenis === 'ahliWaris' || statusOrang[id]!.jenis === 'mahjub');
+  const idKerabat = Object.keys(statusOrang).filter(id => ['ahliWaris', 'mahjub', 'mamnu'].includes(statusOrang[id]!.jenis));
   const idAhliWaris = idKerabat.filter(id => statusOrang[id]!.jenis === 'ahliWaris');
   if (idKerabat.length === 0 || idAhliWaris.length === 0) return LAMA;
 
@@ -87,6 +87,16 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
   const kerabat = sebutSemua(konteks, idKerabat);
   const daftarBaris = [langkah(konteks, 'tanya', `ahli_waris.tanya.${bentuk}`, { pewaris, kerabat }, bentuk === 'jamak' ? { jumlah: idKerabat.length } : {})];
 
+  const daftarMani = konteks.daftarLangkah('MANI');
+  if (daftarMani.length) {
+    daftarBaris.push(langkah(konteks, 'dasar', 'ahli_waris.dasar_mani', { mani: istilahUmum(konteks, 'mani') }, {}, daftarMani[0]!.refs));
+    for (const satu of daftarMani) {
+      const siapa = konteks.sebutan.sebut([satu.idOrang]);
+      const kunciMani = satu.mani === 'qatl' ? 'ahli_waris.mani.qatl.narasi' : 'ahli_waris.mani.beda_agama.narasi';
+      daftarBaris.push(langkah(konteks, 'keluarga', [kunciMani, 'ahli_waris.mani.papan'], { siapa, pewaris }, { siapa }, satu.refs, [satu.idOrang]));
+    }
+  }
+
   const kelompokHajb = new Map<string, { mahjub: IdOrang[]; hajib: IdOrang[]; refs: string[] }>();
   for (const hajb of konteks.daftarLangkah('HAJB_HIRMAN')) {
     const kunci = `${konteks.sebutan.peranDari(hajb.mahjub)?.kunci}|${hajb.hajib.join(',')}`;
@@ -94,13 +104,13 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
     entri.mahjub.push(hajb.mahjub);
     kelompokHajb.set(kunci, entri);
   }
-  if (kelompokHajb.size === 0) {
+  if (kelompokHajb.size === 0 && daftarMani.length === 0) {
     daftarBaris.push(langkah(konteks, 'keluarga', [`ahli_waris.tidak_terhalang.${bentuk}.narasi`, 'ahli_waris.tidak_terhalang.papan'], {}, {}));
     return { judul: judulSkrip(konteks, 'ahli_waris.judul'), daftarBaris, kolom: 'ahliWaris' };
   }
 
   const [pertama] = [...kelompokHajb.values()];
-  daftarBaris.push(langkah(konteks, 'dasar', 'ahli_waris.dasar_hajb', { hajb_hirman: istilahUmum(konteks, 'hajb-hirman') }, {}, pertama!.refs));
+  if (pertama) daftarBaris.push(langkah(konteks, 'dasar', 'ahli_waris.dasar_hajb', { hajb_hirman: istilahUmum(konteks, 'hajb-hirman') }, {}, pertama.refs));
   for (const { mahjub, hajib, refs } of kelompokHajb.values()) {
     const sebutMahjub = sebutSemua(konteks, mahjub);
     const sebutHajib = sebutSemua(konteks, hajib);
@@ -114,7 +124,7 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
 // ─── Bagian awal ──────────────────────────────────────────────────────────────
 
 const ALASAN_FARDH_DIPETAKAN = new Set(['ADA_FARU_WARITS', 'TANPA_FARU_WARITS', 'KALALAH', 'TANPA_MUASHSHIB', 'UMARIYYATAIN', 'MUSYARRAKAH',
-  'JAM_IKHWAH', 'TANPA_FARU_WARITS_DAN_IKHWAH', 'ADA_FARU_MUDZAKKAR', 'ADA_FARU_MUANNATS', 'AKDARIYYAH', 'JADD_WAL_IKHWAH']);
+  'JAM_IKHWAH', 'TANPA_FARU_WARITS_DAN_IKHWAH', 'ADA_FARU_MUDZAKKAR', 'ADA_FARU_MUANNATS', 'AKDARIYYAH', 'JADD_WAL_IKHWAH', 'TAKMILAH', 'NENEK_TANPA_IBU']);
 /** Kasus khusus yang dasarnya dibawa langkah fardh-nya sendiri (lihat `barisFardh`). */
 const KASUS_KHUSUS_DIPETAKAN = new Set(['umariyyatain', 'musyarrakah', 'akdariyyah']);
 const PERAN_PASANGAN = new Set(['SUAMI', 'ISTRI']);
@@ -126,7 +136,7 @@ export function bagianDipetakan(konteks: Konteks): boolean {
     if (satu.jenis === 'FARDH') return ALASAN_FARDH_DIPETAKAN.has(satu.alasan.kode);
     if (satu.jenis === 'KASUS_KHUSUS') return KASUS_KHUSUS_DIPETAKAN.has(satu.nama);
     if (satu.jenis !== 'ASHABAH' || kelompokFardh.has(satu.kelompok)) return true;
-    return !satu.pilihanJadd && satu.jenisAshabah !== 'maalGhair';
+    return !satu.pilihanJadd;
   });
 }
 
@@ -213,6 +223,13 @@ export function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Po
       const saudari = sebutSemua(konteks, anggota.filter(id => !adalahKakek(id)));
       return [baris('bagian.akdariyyah.saudari', { saudari }, { saudari }), baris('bagian.akdariyyah.bagi_ulang', {}, {})];
     }
+    case 'TAKMILAH':
+      return [
+        baris('bagian.takmilah.dasar', { takmilah_tsulutsain: istilahUmum(konteks, 'takmilah-tsulutsain') }, {}, 'dasar'),
+        baris('bagian.takmilah', { bersama: sebutSemua(konteks, alasan.bersama), subjek, mendapat }, { subjek, pecahan }),
+      ];
+    case 'NENEK_TANPA_IBU':
+      return [baris('bagian.nenek.dasar', {}, {}, 'dasar'), baris(['bagian.nenek.narasi', 'bagian.fardh.papan'], { subjek, mendapat }, papanBiasa)];
     case 'UMARIYYATAIN': {
       const pasangan = sebutKelompok(konteks, konteks.anggotaDari('SUAMI').length > 0 ? 'SUAMI' : 'ISTRI');
       return [
@@ -236,6 +253,12 @@ export function barisAshabah(konteks: Konteks, satu: Langkah<'ASHABAH'>): BarisP
   const ashabah = istilahUmum(konteks, 'ashabah');
   if (satu.jenisAshabah === 'bilGhair') {
     return [langkah(konteks, 'keluarga', 'bagian.ashabah_bil_ghair', { subjek, ashabah }, { subjek, bil_ghair: istilahUmum(konteks, 'bil-ghair') }, satu.refs, anggota)];
+  }
+  if (satu.jenisAshabah === 'maalGhair') {
+    return [
+      langkah(konteks, 'dasar', 'bagian.maal_ghair.dasar', { maal_ghair: istilahUmum(konteks, 'maal-ghair') }, {}, satu.refs),
+      langkah(konteks, 'keluarga', 'bagian.maal_ghair', { subjek }, { subjek }, satu.refs, anggota),
+    ];
   }
   const baris = [langkah(konteks, 'keluarga', 'bagian.ashabah_bin_nafsi', { subjek, ashabah }, { subjek }, satu.refs, anggota)];
   const kunciPeran = konteks.sebutan.peranDari(anggota[0]!)?.kunci ?? '';

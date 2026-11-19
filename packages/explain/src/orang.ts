@@ -24,7 +24,7 @@ const kunci = (nama: string) => `narasi.langkah.orang.${nama}`;
 
 export function jelaskanOrang(hasil: HasilOk, graf: GrafKeluarga, idOrang: IdOrang, opsi: { kamus: Kamus }): PenjelasanOrang | undefined {
   const konteks = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa: 'id' });
-  if (konteks.daftarLangkah('MANI').length || konteks.daftarLangkah('KHILAF_MADZHAB').length || !bagianDipetakan(konteks)) return undefined;
+  if (konteks.daftarLangkah('KHILAF_MADZHAB').length || !bagianDipetakan(konteks)) return undefined;
   const barisTabel = hasil.tabel.baris.find(baris => baris.anggota.includes(idOrang));
   if (barisTabel) return orangMenerima(konteks, idOrang, barisTabel.kelompok);
   return orangTerhalang(konteks, idOrang);

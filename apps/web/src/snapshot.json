@@ -26502,6 +26502,118 @@
    "id": "Kenapa bagiannya begini?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila seorang perempuan sudah mendapat 1/2, perempuan sederajat di bawahnya diberi 1/6 sebagai pelengkap, supaya bagian keduanya genap 2/3. Ini disebut {takmilah_tsulutsain}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.dasar.papan",
+   "halaman": "narasi",
+   "id": "1/2 + 1/6 = 2/3",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.narasi",
+   "halaman": "narasi",
+   "id": "Bersama {bersama}, {subjek} {mendapat} sebagai pelengkap, supaya bagian mereka genap 2/3.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan} · pelengkap 2/3",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Saudari kandung atau sebapak yang bersama anak atau cucu perempuan, tanpa anak laki-laki, mengambil sisa harta. Ini disebut {maal_ghair}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.dasar.papan",
+   "halaman": "narasi",
+   "id": "Saudari + anak perempuan: saudari mengambil sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini ada anak atau cucu perempuan, jadi {subjek} mengambil sisa harta setelah bagian pasti dibagikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.nenek.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Nenek mendapat 1/6 bila tidak ada ibu. Bila ada beberapa nenek, mereka berbagi 1/6 itu sama rata.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.nenek.dasar.papan",
+   "halaman": "narasi",
+   "id": "Nenek: 1/6 bila tidak ada ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.nenek.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini tidak ada ibu, jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.dasar_mani.narasi",
+   "halaman": "narasi",
+   "id": "Ada dua hal yang membuat kerabat tidak mewarisi, yaitu membunuh pewaris dan berbeda agama. Ini disebut {mani}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.dasar_mani.papan",
+   "halaman": "narasi",
+   "id": "Pembunuh dan beda agama tidak mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.mani.qatl.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} membunuh {pewaris}, jadi tidak mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.mani.beda_agama.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} berbeda agama dengan {pewaris}, jadi tidak mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.mani.papan",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mewarisi",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
