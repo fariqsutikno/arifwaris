@@ -19,6 +19,8 @@ import { DaftarAksi, UbinJenisMasalah, UbinSelanjutnya, UbinTentang } from '../h
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
+import { TabelLatihan } from '../hasil/TabelLatihan';
+import { susunTabelSoal } from '../hasil/tabelLatihan';
 import { ModalOrang } from '../hasil/ModalOrang';
 import { LembarBagikan } from '../hasil/LembarBagikan';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
@@ -218,6 +220,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   // Dzawil arham: linimasanya tanpa tabel bertahap (tabel: []), jadi tanpa babak seperti taqdir dan gharqa.
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
+  // Soal latihan biasa memakai tabel faraidh isian (spec B); jenis lain masih isian pecahan lama sampai tabelnya dibangun.
+  const tabelSoal = useMemo(() => {
+    if (!adalahBelajar || !hasilBiasa || adaDzawilArham) return null;
+    const susunan = susunTabelSoal(hasilBiasa, kasus.graf);
+    return 'status' in susunan ? null : susunan;
+  }, [adalahBelajar, hasilBiasa, adaDzawilArham, kasus.graf]);
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
   const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
     try { return susunSemuaLinimasa(); } catch { return { linimasa: null, babakLinimasa: null }; } // gagal menyusun = pakai daftar lama, layar Hasil tetap hidup
@@ -320,7 +328,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
-        <div className="bento-s7">
+        {tabelSoal && <TabelLatihan tabel={tabelSoal} terbuka={jawabanTerbuka} saatLihatJawaban={() => setKonfirmasiBuka('lihat')} saatBenar={jawabBenar} saatMencoba={() => setSudahMencoba(true)} />}
+        {!(tabelSoal && sedangMenebak) && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
@@ -338,7 +347,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             <BandingMadzhab kasus={kasus} aktif={madzhab} sembunyiNominal={sembunyiNominal}
               saatPilih={ruleset => kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) })} />
           )}
-        </div>
+        </div>}
         {!sedangMenebak && (
           <div className="bento-s5">
             <UbinJenisMasalah ringkasan={ringkasan} daftarMayit={daftarMayit} />

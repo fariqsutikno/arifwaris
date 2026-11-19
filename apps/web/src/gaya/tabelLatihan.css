@@ -1,0 +1,36 @@
+/* Tabel faraidh isian soal latihan (acuan: docs/design/mockup-tabel-faraidh-final.html). Warna memakai token terdekat. */
+.tata-tabel-latihan{grid-column:span 12;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;align-items:start}
+.tabel-latihan{grid-column:span 8}
+.cara-mengisi{grid-column:span 4}
+.cara-mengisi ol{margin:8px 0 0;padding-inline-start:20px;font-size:14px}
+.cara-mengisi li{margin-top:7px}
+.wadah-tabel-latihan{overflow-x:auto;margin-top:14px;-webkit-overflow-scrolling:touch}
+.tabel-kitab{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+.tabel-kitab th,.tabel-kitab td{border:1.5px solid var(--outline);padding:7px 8px;text-align:center;vertical-align:middle;min-width:76px}
+.tabel-kitab thead th{background:var(--surface);font-weight:600;font-size:13px}
+.tabel-kitab .judul-kolom{display:block;color:var(--ink-muted);font-weight:500;font-size:12px;margin-bottom:4px}
+.tabel-kitab th.nama{text-align:start;font-weight:500;font-size:14px;min-width:128px;position:sticky;inset-inline-start:0;background:#fff;z-index:1}
+.tabel-kitab thead th.nama{background:var(--surface)}
+.tabel-kitab .terisi{font-weight:600;color:var(--ink);background:var(--surface);border-radius:8px;padding:5px 9px;display:inline-block}
+.tabel-kitab .keliru{background:var(--danger-soft)!important}
+.tabel-kitab .bersama{display:block;font-size:11.5px;color:var(--ink-muted);margin-top:3px}
+.tabel-kitab .kunci{font-weight:700;color:var(--sorot-fardh)}
+.tabel-kitab .kunci s{color:var(--ink-muted);font-weight:500;margin-inline-end:6px}
+.tabel-kitab .nol{font-weight:600;color:var(--ink-muted)}
+.tabel-kitab select{font:600 14px var(--font-sans);border:1.5px solid var(--outline);border-radius:9px;padding:5px 4px;background:#fff;color:var(--ink);max-width:160px}
+.kotak-bulat{font:600 15px var(--font-sans);border:1.5px solid var(--outline);border-radius:9px;padding:5px 4px;text-align:center;width:60px;font-variant-numeric:tabular-nums;background:#fff;color:var(--ink)}
+.tabel-kitab select:disabled,.kotak-bulat:disabled{opacity:1;background:var(--surface)}
+.tabel-kitab td.baru-gabung{animation:gabung-sel 1.2s ease-out}
+@keyframes gabung-sel{from{background:var(--mint,#dcefe2)}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){.tabel-kitab td.baru-gabung{animation:none}}
+.aksi-tabel{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.petunjuk-bulat{margin:10px 0 0;font-size:13px;color:var(--ink);background:var(--sun);border-radius:10px;padding:6px 10px}
+.umpan-tabel{margin-top:12px;border-radius:14px;padding:11px 14px;font-size:14px;color:var(--ink)}
+.umpan-tabel.benar{background:var(--mint,#dcefe2)}
+.umpan-tabel.salah{background:var(--danger-soft)}
+.umpan-tabel.kurang{background:var(--sun)}
+.umpan-tabel.buka{background:var(--surface-sunken)}
+@media (max-width:760px){
+  .tabel-latihan,.cara-mengisi{grid-column:span 12}
+  .tabel-kitab th.nama{min-width:104px}
+}

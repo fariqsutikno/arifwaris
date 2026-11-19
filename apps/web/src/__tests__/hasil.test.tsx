@@ -108,7 +108,7 @@ describe('layar hasil', () => {
   it('mode belajar menyembunyikan semua jawaban sampai diminta', () => {
     render(<Uji awal={prototipe()} tujuan="belajar" />);
     expect(screen.queryByText('Rp 16.666.666')).toBeNull();
-    expect(screen.queryByText('1/6')).toBeNull();
+    expect(screen.queryAllByText('1/6', { selector: 'td, .nama-bagian, .jumlah-bagian *' })).toHaveLength(0);
     expect(screen.queryByText(/Terhalang oleh/)).toBeNull();
     // Tabel tetap tampil tapi angkanya "?", dan langkah perhitungan terkunci sampai jawaban dibuka.
     expect(screen.getAllByLabelText('disembunyikan').length).toBeGreaterThan(0);
@@ -120,19 +120,24 @@ describe('layar hasil', () => {
     expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);
   });
 
-  it('mode belajar: tebakan salah ditolak; benar membuka jawaban dan dihitung dikerjakan', () => {
+  it('mode belajar: tabel salah ditolak; benar membuka jawaban dan dihitung dikerjakan', () => {
+    vi.spyOn(Math, 'random').mockReturnValue(0); // jangkar = sel "Asal masalah" Istri
     const dikerjakan: boolean[] = [];
     render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
-    const isi = (nama: RegExp, nilai: string) => fireEvent.change(within(pembagian()).getByRole('textbox', { name: nama }), { target: { value: nilai } });
-    isi(/Istri/, '1/4'); isi(/Anak laki-laki/, '7/12'); isi(/Anak perempuan/, '7/24');
-    fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
-    expect(screen.getByRole('alert').textContent).toMatch(/belum tepat.*2 dari 3 orang sudah benar.*Perbaiki: Istri/);
+    const pilih = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `Bagian ${nama}` }), { target: { value: nilai } });
+    const ketik = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('textbox', { name: nama }), { target: { value: nilai } });
+    pilih('Istri', '1/4'); pilih('Anak laki-laki', 'Ashabah'); pilih('Anak perempuan', 'Ashabah');
+    ketik('Asal masalah', '8'); ketik('Asal masalah bersama', '7'); ketik('Asal masalah akhir', '24');
+    ketik('Asal masalah akhir Istri', '3'); ketik('Asal masalah akhir Anak laki-laki', '14'); ketik('Asal masalah akhir Anak perempuan', '7');
+    fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
+    expect(screen.getByText(/Mulai salah di kolom "Bagian"/)).toBeTruthy();
     expect(dikerjakan).toEqual([]);
-    isi(/Istri/, '3/24');
-    fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
+    pilih('Istri', '1/8');
+    fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
     expect(dikerjakan).toEqual([true]);
-    expect(screen.queryByRole('button', { name: 'Jawab' })).toBeNull();
-    expect(within(pembagian()).getByRole('status').textContent).toMatch(/Benar semua/);
+    expect(screen.queryByRole('button', { name: 'Periksa' })).toBeNull();
+    expect(screen.getByText('Benar semua.')).toBeTruthy();
+    vi.restoreAllMocks();
   });
 
   it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung tapi tidak benar', () => {
@@ -143,8 +148,8 @@ describe('layar hasil', () => {
     expect(dikerjakan).toEqual([]);
     unmount();
     render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
-    for (const kotak of within(pembagian()).getAllByRole('textbox')) fireEvent.change(kotak, { target: { value: '0' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
+    for (const pilihan of screen.getAllByRole('combobox')) fireEvent.change(pilihan, { target: { value: 'Terhalang' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
     expect(screen.getByRole('alertdialog').textContent).not.toMatch(/belum nyoba/);
     expect(screen.getByRole('alertdialog').textContent).toMatch(/tidak memberi XP/);
