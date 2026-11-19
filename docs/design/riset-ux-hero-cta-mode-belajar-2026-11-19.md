@@ -4,6 +4,9 @@ Lanjutan [riset-ux-hasil-2026-11-17.md](riset-ux-hasil-2026-11-17.md) (temuan A1
 [riset-ux-hasil-keterbacaan-2026-11-19.md](riset-ux-hasil-keterbacaan-2026-11-19.md). Dokumen ini **audit + JTBD + HMW +
 ide**. Belum ada mockup dan belum ada kode diubah; menunggu pemilik memilih (bagian 6).
 
+> **Diaudit ulang hari yang sama (bagian 9).** Beberapa klaim di bagian 2–6 keliru atau tidak sesuai kode, dan rekomendasinya
+> diganti. Baca bagian 9 dulu; bagian 1–8 dibiarkan sebagai jejak.
+
 Dasar bukti: kode `layar/Hasil.tsx` (hero baris 250–290, dialog baris 380–405), `hasil/ModalEkspor.tsx`, `layar/AwalHitung.tsx`,
 tangkapan layar laptop dari pemilik. **Tidak ada data pengguna nyata**; yang bertanda "asumsi" belum diuji.
 
@@ -116,3 +119,86 @@ B4 bisa menyusul kalau latihan tebak berkembang.
 ## 8. Langkah sesudah dipilih
 Ubah `docs/design/mockup-hasil-per-kasus.html` (acuan Hasil, lihat memori acuan-hasil-final) → acc pemilik → baru kode
 `Hasil.tsx`, `ModalEkspor.tsx`, `KartuLain.tsx`, dan uji `hasil.test.tsx`.
+
+## 9. Audit ulang atas dokumen ini (2026-11-19, sore)
+
+Diminta pemilik: bukan melengkapi, tetapi memeriksa apakah bagian 1–8 benar. Setiap klaim dicocokkan ulang ke kode
+(`Hasil.tsx`, `ModalEkspor.tsx`, `ui/Bagikan.tsx`, `Aplikasi.tsx`), ke keputusan lama (`riset-ux-hasil-2026-11-17.md`), dan ke
+sumber luar. Status: **Benar**, **Keliru**, **Lemah** (benar tapi buktinya kurang), **Terlewat**.
+
+### 9a. Kritik terbesar: masalahnya dibingkai salah
+
+**Keliru.** Dokumen ini memperlakukan aksi hero sebagai pertanyaan baru dan menawarkan empat pilihan (C1–C4). Padahal pemilik
+**sudah memutuskan** pada 2026-11-17 (riset-ux-hasil bagian 11 butir 1 dan bagian 17): aksi hero = **"Kirim ringkasan"** (teks
+singkat untuk WA), PDF lengkap untuk rapat/ustadz, dan simpan, tautan, serta file kasus di ubin Bagikan. Acuan beku
+`acuan-hasil-final.html` memuat pil "Kirim ringkasan" di hero. Kode lalu menyimpang menjadi "Ekspor" yang hanya berisi JSON.
+
+Jadi temuan intinya bukan "Ekspor kurang penting", tetapi **implementasi menyimpang dari desain yang sudah disetujui**. Dokumen ini
+tidak menyebut keputusan 11-17 sama sekali dan membuka ulang perdebatan (C1 "hapus aksi dari hero" bertentangan langsung dengan
+keputusan itu) tanpa bukti baru. Ini melanggar prinsip kerja: jangan membuka ulang keputusan pemilik tanpa alasan baru.
+
+### 9b. Klaim per temuan
+
+| Kode | Status | Koreksi |
+|---|---|---|
+| E1 jalan buntu | **Benar** | `DAFTAR_FORMAT`: PNG/PDF tanpa `unduh`, tombolnya `disabled` |
+| E2 urutan terbalik | **Lemah → kini ada bukti** | "Detik pertama pengguna membaca…" tanpa data. Bukti luar yang lebih kuat: *reading gravity*, yaitu aksi utama diletakkan di tempat pemindaian berakhir; orang mencari aksi **setelah** isi habis dibaca ([UX Movement](https://uxmovement.com/mobile/optimal-placement-for-mobile-call-to-action-buttons/)). Ini justru alasan baru yang sah untuk meninjau **letak** (bukan isi) keputusan 11-17, dan dokumen ini tidak memakainya |
+| E3 bentrok aturan tombol | **Benar, tetapi tidak konsisten** | Kalau pil di hero melanggar aturan, pil "Kirim ringkasan" di rekomendasi C2 juga melanggar. Dokumen mengkritik bentuk Ekspor lalu merekomendasikan bentuk yang sama |
+| E4 banyak pintu | **Sebagian keliru** | Dokumen menyebut keputusan "satu aksi satu tempat" seolah dilanggar kode. Faktanya pintu Ekspor ada **dua**: hero dan `PohonLayarPenuh saatEkspor`. Ubin Bagikan berisi aksi lain (simpan untuk nanti, file kasus, tautan), bukan duplikat Ekspor |
+| E5 "kata sistem" | **Bukti keliru** | Rujukannya "KB kosakata pengguna", padahal tabel kosakata ada di `riset-ux-wizard-kritik-2026-11-16.md`, bukan di KB (KB hanya berisi fikih). Isi temuannya tetap masuk akal |
+| E6 hero memanjang di HP | Benar | |
+| B1 satu kata dua makna | **Benar, buktinya lebih kuat** | Kunci terjemahan sama persis: `t('umum.belajar')` dipakai di menu atas (`Kepala.tsx`) dan di sakelar |
+| B2 sakelar = pintu satu arah | **Benar** | Masuk: dialog biasa (`konfirmasiBelajar`). Keluar: dialog tahan (`konfirmasiBuka 'pindah'`). Sakelar seharusnya langsung berlaku dan bisa dibalik; kalau butuh konfirmasi, itu bukan sakelar ([ringkasan pedoman toggle NN/g](https://www.nngroup.com/articles/toggle-switch-guidelines/)) |
+| B3 segmen "Hitung kasus" kosong | Benar | |
+| B4 dua penonton | **Lemah + ada yang terlewat** | Yang terlewat: di **soal latihan** (`kerjakanSoal` memasang `tujuan: 'belajar'`), segmen "Hitung kasus" berfungsi sebagai jalan keluar "lihat jawaban". Jalan itu **sudah ada** lewat `saatTampilkanJawaban` → dialog "Yakin mau lihat jawaban?". Jadi di latihan, sakelar adalah pintu keluar ganda dengan dua judul dialog berbeda. Menghapusnya tidak menghilangkan jalan keluar |
+| B5 empat pintu | **Dilebih-lebihkan** | Di Hasil hanya ada **dua** pintu ke mode tebak untuk kasus sendiri: sakelar dan "Coba tebak dulu" (`DaftarAksi`), keduanya membuka dialog yang sama. Kartu Latihan di Beranda/Lab membuka soal, bukan mode tebak atas kasus sendiri |
+| B7 hilang diam-diam | Benar, kurang lengkap | Sakelar juga hilang saat `hanyaBaca` (tautan dibagikan) |
+
+### 9c. JTBD dan HMW
+
+- **H-e2 keliru.** "Kasus sudah otomatis ke riwayat; tidak perlu tombol" tidak sesuai kode: penyimpanan otomatis hanya untuk
+  kasus menunggu kelahiran. Kasus biasa butuh "Simpan, lanjut nanti" di ubin Bagikan (`aksiBagikan`).
+- **Terlewat: nominal disembunyikan.** Tangkapan layar pemilik menampilkan `Rp ••••••`. Kirim ringkasan dalam keadaan itu harus
+  diputuskan: ikut tersembunyi (hanya pecahan) atau bertanya dulu. Dokumen tidak membahasnya.
+- **Terlewat: pengajar.** `riset-narasi-pengajar-2026-11-19.md` (hari yang sama) punya pengguna ustadz/pengajar. Pemilik kini
+  memutuskan **tebakan hanya untuk soal latihan**, jadi kebutuhan pengajar dilayani lewat "Langkah demi langkah", bukan mode tebak.
+- **HMW-1 menggiring.** "…hanya menawarkan satu langkah berikutnya…" sudah memuat jawabannya. Seharusnya: "Bagaimana hasil
+  sampai ke grup keluarga dalam bentuk yang langsung terbaca, tepat saat pengguna selesai membaca?"
+- **Skor Paham·Dampak·Usaha tanpa alasan.** C1 dan C4 sama-sama 3·2·3 tanpa penjelasan. Usaha C2 dinilai 2, padahal
+  `ui/Bagikan.tsx` sudah menangani Web Share API dan clipboard. Yang perlu dibuat hanya penyusun teks ringkasan dari data
+  `ringkasan` (yang sudah ada). Usaha C2 seharusnya 3, sehingga "C1 sementara" tidak perlu.
+- **Rekomendasi C2 bertentangan dengan E2 milik dokumen sendiri.** E2 berkata aksi di atas datang sebelum jawaban terbaca, lalu
+  C2 tetap menaruh pil di hero.
+
+### 9d. Riset luar (singkat, sumber sekunder)
+
+- Satu aksi utama per halaman, sisanya turun hierarki ([Red Hat Design System](https://ux.redhat.com/elements/call-to-action/guidelines)).
+- Aksi utama diletakkan di akhir jalur pemindaian, bukan di atas ([UX Movement](https://uxmovement.com/mobile/optimal-placement-for-mobile-call-to-action-buttons/)).
+- Toggle = langsung berlaku dan bisa dibalik; yang butuh konfirmasi atau beberapa langkah bukan toggle (pedoman sekunder yang
+  merujuk NN/g; teks asli NN/g tidak terbaca saat riset).
+- Aplikasi hitung belajar (Photomath, Symbolab) memakai pengungkapan bertahap (jawaban → langkah) dan menaruh latihan di area
+  terpisah. Tidak ditemukan pola "sakelar sembunyikan jawaban" di halaman hasil ([dukungan Photomath](https://support.google.com/photomath/answer/14335006?hl=en)).
+  Bukti ini lemah (kebanyakan halaman perbandingan), cukup sebagai pembanding, bukan dasar.
+
+### 9e. Kesimpulan yang dikoreksi
+
+**Aksi hero.** Pekerjaan H-e dan keputusan 11-17 tetap berlaku: **Kirim ringkasan** (teks WA) adalah aksi utama. Yang ditinjau
+hanya **letaknya**, dengan alasan baru (*reading gravity*, E2):
+- Laptop: pil "Kirim ringkasan" **di akhir kartu "Siapa dapat berapa"**, tepat di bawah baris "Harta yang dibagi", tempat
+  pembacaan selesai. Hero = jawaban saja, tanpa tombol. Ini juga menyelesaikan E3 (hero tidak lagi memuat pil).
+- HP: pil yang sama di akhir daftar. Tidak perlu bar bawah.
+- "Ekspor" dihapus. JSON tetap di ubin Bagikan sebagai "Simpan file kasus" (sudah ada). PDF baru muncul di ubin Bagikan
+  setelah dibuat; sebelum itu tidak dirender (bukan "Segera hadir").
+- Nominal tersembunyi → ringkasan berisi pecahan saja, dengan satu baris "nominal disembunyikan".
+
+**Sakelar.** Hapus dari hero di **semua** keadaan:
+- Kasus sendiri: tidak ada mode tebak (keputusan pemilik). "Coba tebak dulu" di ubin Pelajari juga dihapus. Ubin Pelajari
+  berisi "Langkah demi langkah" dan "Bandingkan madzhab".
+- Soal latihan: mode tebak menjadi keadaan bawaan soal, bukan pilihan. Jalan keluar tunggal = "Lihat jawaban" yang sudah ada
+  (dialog tahan + XP gugur tetap). Sesudah jawaban terbuka, aksi utama = "Soal berikutnya" di akhir pembahasan.
+- Kata "Belajar" hanya untuk menu materi. Tidak perlu nama pintu baru (pertanyaan 4 bagian 6 gugur) karena pintunya tidak ada lagi.
+
+### 9f. Masih asumsi
+- Belum ada data klik. Keputusan letak berdasar pedoman umum, bukan pengamatan pengguna aplikasi ini.
+- Isi teks ringkasan (urutan baris, kalimat penutup, panjang untuk munasakhat ±52 baris) belum dirancang; bagian 15 riset 11-17
+  sudah mencatat risikonya.
