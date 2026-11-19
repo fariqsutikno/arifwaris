@@ -25498,7 +25498,7 @@
   {
    "kunci": "narasi.langkah.tashih.potong.narasi",
    "halaman": "narasi",
-   "id": "Jalan keluarnya: setiap kotak dipotong {pengali}. Semua kotak, supaya semua potongan sama besar. Sekarang ada {dasar} × {pengali} = {hasil} potong.",
+   "id": "Jalan keluarnya: setiap kotak dipotong {pengali}. Semua kotak ikut dipotong, bukan hanya kotak yang tidak habis dibagi. Kalau hanya satu kotak dipotong, ukuran potongnya tidak sama dengan kotak lain. Sekarang ada {dasar} × {pengali} = {hasil} potong.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -25526,7 +25526,7 @@
   {
    "kunci": "narasi.langkah.tashih.nilai_tetap.narasi",
    "halaman": "narasi",
-   "id": "Lihat {siapa}. Kotaknya tetap {kotak}, hanya potongnya jadi {potong}. Jadi {pecahan} sama nilainya dengan {potong}/{hasil}.",
+   "id": "{siapa}: kotaknya tetap {kotak}, hanya potongnya jadi {potong}. Jadi {pecahan} sama nilainya dengan {potong}/{hasil}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27718,6 +27718,62 @@
    "kunci": "narasi.langkah.radd.isi_nilai",
    "halaman": "narasi",
    "id": "{kotak} dari {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tanya.jatah.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} kotak bersama, laki-laki dua kali perempuan. Bisakah {saham} dibagi seperti itu tanpa pecahan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tanya.jatah.papan",
+   "halaman": "narasi",
+   "id": "{saham} kotak untuk {ruus} jatah. Habis dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tanya.orang.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} kotak bersama, dibagi sama rata untuk {ruus} orang. Bisakah {saham} dibagi {ruus} tanpa pecahan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tanya.orang.papan",
+   "halaman": "narasi",
+   "id": "{saham} kotak untuk {ruus} orang. Habis dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tanya.banyak.narasi",
+   "halaman": "narasi",
+   "id": "Ada {jumlah} kelompok yang bagiannya harus dibagi ke anggotanya: {siapa}. Bisakah tiap bagian dibagi tanpa pecahan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tanya.banyak.papan",
+   "halaman": "narasi",
+   "id": "Tiap bagian habis dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.tanya_satu.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} kotak untuk {ruus} {satuan}. Bisakah dibagi rata tanpa pecahan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.tanya_satu.papan",
+   "halaman": "narasi",
+   "id": "{saham} kotak untuk {ruus} {satuan}: habis dibagi?",
    "ar": null,
    "versiTerbit": 873
   }

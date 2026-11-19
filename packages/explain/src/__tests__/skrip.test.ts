@@ -25,7 +25,7 @@ describe('skrip belajar kasus biasa', () => {
     expect(jenisDari(langkahDari(case01, 'bagian'))).toEqual(['dasar', 'dasar', 'keluarga', 'keluarga', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'ashl'))).toEqual(['logika', 'hitung', 'hitung', 'hitung']);
     expect(jenisDari(langkahDari(case01, 'penyesuaian'))).toEqual(['tanya', 'hitung']);
-    expect(jenisDari(langkahDari(case01, 'tashih'))).toEqual(['keluarga', 'keluarga', 'logika', 'logika', 'logika', 'hitung', 'hitung', 'jembatan']);
+    expect(jenisDari(langkahDari(case01, 'tashih'))).toEqual(['tanya', 'keluarga', 'keluarga', 'logika', 'logika', 'logika', 'hitung', 'hitung', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'hasil'))).toEqual(['hitung', 'hitung', 'hitung', 'ringkas']);
   });
 
@@ -35,6 +35,18 @@ describe('skrip belajar kasus biasa', () => {
     expect(hitungan('tashih')).toContainEqual(['Tashih', '8 × 3 = 24']);
     expect(hitungan('tashih')).toContainEqual(['Cek', '3 + 14 + 7 = 24']);
     expect(hitungan('ahliWaris')).toEqual([['Mewarisi', 'istri, anak laki-laki, dan anak perempuan']]);
+  });
+
+  it('C16-01: tashih bertanya dengan angka kasus, dan alasan semua kotak dipotong disebut', () => {
+    const [tanya] = langkahDari(case01, 'tashih');
+    expect(teksNarasi(tanya!)).toBe('Anak laki-laki dan anak perempuan mendapat 7 kotak bersama, laki-laki dua kali perempuan. Bisakah 7 dibagi seperti itu tanpa pecahan?');
+    expect(langkahDari(case01, 'tashih').map(teksNarasi).join(' ')).toContain('Semua kotak ikut dipotong, bukan hanya kotak yang tidak habis dibagi');
+  });
+
+  it('C16-12: nilai tetap ditunjukkan untuk setiap kelompok yang kotaknya ikut dipotong', () => {
+    const baris = langkahDari(case12, 'tashih').filter(satu => teksNarasi(satu).includes('kotaknya tetap'));
+    expect(baris.length).toBe(2);
+    expect(baris.every(satu => satu.hitungan !== undefined)).toBe(true);
   });
 
   it('C16-01: angka tashih sama dengan tabel (21 potong, 14 dan 7, jumlah 24)', () => {

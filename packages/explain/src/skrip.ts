@@ -555,12 +555,32 @@ export function babPembulatanSkrip(konteks: Konteks): HasilSkrip {
 }
 
 type Inkisar = Langkah<'PERBANDINGAN_NISAB'>;
+interface KelompokInkisar { satu: Inkisar; anggota: IdOrang[]; siapa: Potongan[]; satuan: string }
+
+/** Pertanyaan pembuka tashih dengan angka kasus: bisakah saham kelompok dibagi ke anggotanya tanpa pecahan? */
+function barisTanyaTashih(konteks: Konteks, kelompok: KelompokInkisar[]): BarisPenjelasan {
+  const [pertama] = kelompok;
+  if (kelompok.length > 1 || !pertama) {
+    // Dipisah titik koma: nama kelompok sendiri sudah memakai "dan", sehingga "a dan b dan c" membingungkan.
+    const daftar = kelompok.flatMap((satu, urutan) => [...(urutan ? [teks('; ')] : []), ...satu.siapa]);
+    return langkah(konteks, 'tanya', 'tashih.tanya.banyak', { jumlah: kelompok.length, siapa: daftar }, {});
+  }
+  const { a: saham, b: ruus } = pertama.satu;
+  const adaJatah = ruus > BigInt(pertama.anggota.length);
+  return adaJatah
+    ? langkah(konteks, 'tanya', 'tashih.tanya.jatah', { siapa: pertama.siapa, saham }, { saham, ruus })
+    : langkah(konteks, 'tanya', 'tashih.tanya.orang', { siapa: pertama.siapa, saham, ruus }, { saham, ruus });
+}
 
 const satuanPembagi = (konteks: Konteks, ruus: bigint, jumlahAnggota: number): string =>
   teksKamus(konteks.penyusun, kunciKamus(ruus > BigInt(jumlahAnggota) ? 'tashih.satuan.jatah' : 'tashih.satuan.orang'));
 
 function barisBagiRata(konteks: Konteks, inkisar: Inkisar[]): BarisPenjelasan[] {
-  const daftarBaris = [langkah(konteks, 'tanya', 'tashih.rata.tanya', {}, {})];
+  const [tunggal] = inkisar;
+  const sisipanTanya = (satu: Inkisar) => ({ saham: satu.a, ruus: satu.b, satuan: satuanPembagi(konteks, satu.b, konteks.anggotaDari(satu.kelompok!).length) });
+  const daftarBaris = [inkisar.length === 1 && tunggal
+    ? langkah(konteks, 'tanya', 'tashih.rata.tanya_satu', { siapa: sebutKelompok(konteks, tunggal.kelompok!), ...sisipanTanya(tunggal) }, sisipanTanya(tunggal))
+    : langkah(konteks, 'tanya', 'tashih.rata.tanya', {}, {})];
   for (const satu of inkisar) {
     const { a: saham, b: ruus } = satu;
     const satuan = satuanPembagi(konteks, ruus, konteks.anggotaDari(satu.kelompok!).length);
@@ -577,11 +597,11 @@ function barisTashih(konteks: Konteks, daftarInkisar: Inkisar[], tashih: Langkah
   const { penyusun } = konteks;
   const pengali = tashih.juzSahm;
   const banyak = daftarInkisar.length > 1;
-  const kelompok = daftarInkisar.map(satu => {
+  const kelompok: KelompokInkisar[] = daftarInkisar.map(satu => {
     const anggota = konteks.anggotaDari(satu.kelompok!);
     return { satu, anggota, siapa: sebutKelompok(konteks, satu.kelompok!), satuan: satuanPembagi(konteks, satu.b, anggota.length) };
   });
-  const daftarBaris: BarisPenjelasan[] = [];
+  const daftarBaris: BarisPenjelasan[] = [barisTanyaTashih(konteks, kelompok)];
   for (const { satu, anggota, siapa, satuan } of kelompok) {
     const { a: saham, b: ruus } = satu;
     if (ruus > BigInt(anggota.length)) daftarBaris.push(langkah(konteks, 'keluarga', 'tashih.jatah', { siapa, ruus }, { ruus, ruus_istilah: istilahUmum(konteks, 'ruus') }, ['R10-2']));
@@ -615,16 +635,18 @@ function barisTashih(konteks: Konteks, daftarInkisar: Inkisar[], tashih: Langkah
       banyak ? { siapa, ...sisipan } : sisipan, { saham: satu.a, pengali, potong_kelompok: potongKelompok, ruus: satu.b, per: potongKelompok / satu.b }, tashih.refs),
     siapa, `${satu.a} × ${pengali} = ${potongKelompok}, ${potongKelompok} ÷ ${satu.b} = ${potongKelompok / satu.b}`));
   }
+  // Semua kotak ikut dipotong, jadi tiap kelompok lain juga ditunjukkan: kotaknya tetap, potongnya bertambah, nilainya sama.
   const kelompokInkisar = new Set(daftarInkisar.map(satu => satu.kelompok));
-  const contoh = konteks.hasil.tabel.baris.find(barisTabel => !kelompokInkisar.has(barisTabel.kelompok) && barisTabel.fardh && !barisTabel.ashabah);
-  if (contoh) {
-    // Setelah 'aul/radd satuan kotak mengikuti penyebut barunya, jadi pecahan dihitung dari kotak ÷ penyebut itu.
-    const { totalKolom } = konteks.hasil.tabel;
-    const kolomDasar = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : 'ashl';
-    const kotak = contoh.sel[kolomDasar]!;
-    const pecahan = kolomDasar === 'ashl' ? contoh.fardh! : `${kotak}/${tashih.dasar}`;
-    const sisipan = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak, potong: kotak * pengali, pecahan, hasil: tashih.hasil };
-    daftarBaris.push(langkah(konteks, 'logika', 'tashih.nilai_tetap', sisipan, sisipan, tashih.refs));
+  const { totalKolom } = konteks.hasil.tabel;
+  // Setelah 'aul/radd satuan kotak mengikuti penyebut barunya, jadi pecahan dihitung dari kotak ÷ penyebut itu.
+  const kolomDasar = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : 'ashl';
+  for (const barisTabel of konteks.hasil.tabel.baris.filter(barisIni => !kelompokInkisar.has(barisIni.kelompok) && barisIni.fardh && !barisIni.ashabah)) {
+    const kotak = barisTabel.sel[kolomDasar]!;
+    const pecahan = kolomDasar === 'ashl' ? barisTabel.fardh! : `${kotak}/${tashih.dasar}`;
+    const siapa = sebutKelompok(konteks, barisTabel.kelompok);
+    const sisipan = { siapa, kotak, potong: kotak * pengali, pecahan, hasil: tashih.hasil };
+    daftarBaris.push(denganHitungan(langkah(konteks, 'logika', 'tashih.nilai_tetap', sisipan, sisipan, tashih.refs, barisTabel.anggota),
+      siapa, `${kotak} × ${pengali} = ${kotak * pengali}`));
   }
   for (const { satu, anggota, siapa, satuan } of kelompok) {
     const barisKelompok = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok === satu.kelompok)!;
