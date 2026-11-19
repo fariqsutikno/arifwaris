@@ -58,7 +58,7 @@ export function susunLinimasaGharqa(hasil: GharqaSelesai, graf: GrafKeluarga, ke
 // ─── Tahap ────────────────────────────────────────────────────────────────────
 
 const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({
-  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
+  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), ...(baris.hitungan ? { hitungan: baris.hitungan } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
 });
 
 function tahapDariBab(id: Tahap['id'], judul: string, bab: Bab): Tahap {

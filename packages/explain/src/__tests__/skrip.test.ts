@@ -38,13 +38,13 @@ describe('skrip belajar kasus biasa', () => {
 
   it("C16-05 ('aul): jembatan penyebut beda, lalu tahap 'aul: pertanyaan, alasan bersama, potong ulang, contoh", () => {
     expect(teksNarasi(langkahDari(case05, 'bagian').at(-1)!)).toContain('belum bisa dijumlahkan');
-    expect(jenisDari(langkahDari(case05, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'logika', 'logika', 'logika', 'hitung']);
+    expect(jenisDari(langkahDari(case05, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'logika', 'logika', 'logika', 'hitung', 'hitung', 'hitung']);
     expect(langkahDari(case05, 'penyesuaian').map(teksNarasi).join(' ')).toContain('7 kotak');
     expect(jenisDari(langkahDari(case05, 'tashih'))).toEqual(['tanya', 'hitung', 'hitung', 'jembatan']);
   });
 
   it('C16-09 (radd tanpa pasangan): sisa ditanyakan, dasar radd, lalu dipotong ulang', () => {
-    expect(jenisDari(langkahDari(case09, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'logika', 'hitung']);
+    expect(jenisDari(langkahDari(case09, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'logika', 'hitung', 'hitung', 'hitung']);
     expect(teksNarasi(langkahDari(case09, 'penyesuaian').at(-1)!)).toContain('dari 4 kotak');
   });
 
@@ -57,7 +57,7 @@ describe('skrip belajar kasus biasa', () => {
 
   it('harta dengan potongan: tanya, dasar, pengurangan berurutan, hasil bersih', () => {
     const harta = langkahDari(caseNominal, 'harta');
-    expect(jenisDari(harta)).toEqual(['peta', 'tanya', 'dasar', 'hitung', 'hitung', 'keluarga', 'hitung', 'keluarga']);
+    expect(jenisDari(harta)).toEqual(['peta', 'tanya', 'dasar', 'hitung', 'hitung', 'keluarga', 'hitung', 'hitung', 'jembatan']);
     const teks = harta.map(teksNarasi).join(' ');
     expect(teks).toContain('Harta Rp150.000.000 dikurangi biaya jenazah Rp5.000.000, tersisa Rp145.000.000');
     expect(teks).toContain('melebihi batas 1/3');

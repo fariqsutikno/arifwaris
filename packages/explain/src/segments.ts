@@ -21,7 +21,17 @@ export type Potongan =
  * `penekanan`: `subjudul` = kalimat pembuka kelompok baris sesudahnya; `perhatian` = hal yang perlu disikapi pembaca
  * (mis. selisih pembulatan), supaya UI bisa memisahkannya dari uraian biasa.
  */
-export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian'; jenis?: JenisLangkah; papan?: Potongan[] }
+export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian'; jenis?: JenisLangkah; papan?: Potongan[]; hitungan?: Hitungan }
+
+/** Baris hitungan berlabel di layar ("Aminah" | "24 × 1/8 = 24 ÷ 8 = 3"); `papan` tetap cadangan untuk tampilan tanpa label. */
+export interface Hitungan { label: Potongan[]; isi: Potongan[] }
+
+const keDaftarPotongan = (isi: string | Potongan | Potongan[]): Potongan[] =>
+  (typeof isi === 'string' ? [{ jenis: 'teks', teks: isi }] : Array.isArray(isi) ? isi : [isi]);
+
+/** Pasang label+isi hitungan pada sebuah baris; label diksi/sebutan orang, isi = angka dan operator. */
+export const denganHitungan = (baris: BarisPenjelasan, label: string | Potongan | Potongan[], isi: string | Potongan | Potongan[]): BarisPenjelasan =>
+  ({ ...baris, hitungan: { label: kapitalAwal(keDaftarPotongan(label)), isi: keDaftarPotongan(isi) } });
 
 /** Peran sebuah kalimat dalam skrip belajar (docs/design/riset-narasi-pengajar-2026-11-19.md bagian 5). */
 export type JenisLangkah = 'peta' | 'tanya' | 'dasar' | 'keluarga' | 'logika' | 'hitung' | 'jembatan' | 'ringkas';

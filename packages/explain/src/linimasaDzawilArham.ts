@@ -26,5 +26,5 @@ export function susunLinimasaDzawilArham(hasil: HasilOk, graf: GrafKeluarga, ops
 }
 
 const langkahDariBaris = (baris: BarisPenjelasan): Langkah => ({
-  bagian: baris.subjek?.length ? 'keluarga' : 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
+  bagian: baris.subjek?.length ? 'keluarga' : 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), ...(baris.hitungan ? { hitungan: baris.hitungan } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
 });

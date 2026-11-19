@@ -11,7 +11,7 @@ import { buatKonteks, type HasilOk, type Konteks } from './context.js';
 import { adaDzawilArham } from './dzawilArham.js';
 import { susunLinimasaDzawilArham } from './linimasaDzawilArham.js';
 import { LAMA, babAhliWarisSkrip, babBagianSkrip, babHartaSkrip, babHasilSkrip, babPembulatanSkrip, babPenyebutSkrip, babPenyesuaianSkrip, langkahPeta, type HasilSkrip } from './skrip.js';
-import { papanDari, type BarisPenjelasan, type JenisLangkah, type Kamus } from './segments.js';
+import { papanDari, type BarisPenjelasan, type Hitungan, type JenisLangkah, type Kamus } from './segments.js';
 
 export type IdTahap = 'harta' | 'ahliWaris' | 'bagian' | 'ashl' | 'penyesuaian' | 'tashih' | 'hasil' | 'berantai' | 'menyambung' | 'hasilAkhir'
   | 'belumPasti' | 'kemungkinan' | 'pemberian' | 'wafatBersamaan' | 'dzawilArham';
@@ -39,7 +39,8 @@ export type Visual =
 /** `sel`: sel tabel yang terisi pada langkah ini (tabel dibangun bertahap, terpisah dari visual tengah). */
 type VisualKotak = Extract<Visual, { jenis: 'kotak' }>;
 
-export interface Langkah { bagian: BagianLangkah; jenis?: JenisLangkah; narasi: BarisPenjelasan; papan: BarisPenjelasan; visual?: Visual; sel?: KodeSel[]; refs: string[] }
+/** `hitungan`: baris hitung berlabel (label + isi) untuk tampilan fokus; `papan` tetap cadangan. */
+export interface Langkah { bagian: BagianLangkah; jenis?: JenisLangkah; hitungan?: Hitungan; narasi: BarisPenjelasan; papan: BarisPenjelasan; visual?: Visual; sel?: KodeSel[]; refs: string[] }
 /** `babak`: indeks tabel (satu mayit = satu babak) yang dibangun tahap ini; kosong = tahap tanpa tabel (pembukaan, penyambungan, hasil akhir). */
 export interface Tahap { id: IdTahap; judul: string; langkah: Langkah[]; babak?: number }
 export interface KolomTabel { kolom: KolomLinimasa; total?: bigint }
@@ -96,7 +97,7 @@ function susunTahap(konteks: Konteks, id: IdTahap, bab: Bab): Tahap {
   const langkah: Langkah[] = bab.daftarBaris.map(baris => {
     const subjek = baris.subjek?.filter(idOrang => adaDiTabel(konteks.hasil, idOrang)) ?? [];
     const sel = kolom && subjek.length ? subjek.map(idOrang => kodeSel(kolom, idOrang)) : undefined;
-    return { bagian: subjek.length ? 'keluarga' : 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs, ...(sel ? { sel } : {}) };
+    return { bagian: subjek.length ? 'keluarga' : 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), ...(baris.hitungan ? { hitungan: baris.hitungan } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs, ...(sel ? { sel } : {}) };
   });
   const visualTahap = visualAwal(konteks, id);
   const persamaan = id === 'ashl' && visualTahap?.jenis === 'kotak' ? persamaanKotakAshl(konteks) : [];
@@ -106,7 +107,7 @@ function susunTahap(konteks: Konteks, id: IdTahap, bab: Bab): Tahap {
     const bertahap = persamaan.map(satu => {
       isi = [...isi, { kelompok: satu.kelompok, anggota: satu.anggota, jumlah: satu.jumlah }];
       const sel = kolom ? satu.anggota.map(idOrang => kodeSel(kolom, idOrang)) : undefined;
-      return { bagian: 'keluarga' as const, ...(satu.baris.jenis ? { jenis: satu.baris.jenis } : {}), narasi: satu.baris, papan: papanDari(satu.baris), refs: satu.baris.refs, visual: { ...visualTahap, isi }, ...(sel ? { sel } : {}) };
+      return { bagian: 'keluarga' as const, ...(satu.baris.jenis ? { jenis: satu.baris.jenis } : {}), ...(satu.baris.hitungan ? { hitungan: satu.baris.hitungan } : {}), narasi: satu.baris, papan: papanDari(satu.baris), refs: satu.baris.refs, visual: { ...visualTahap, isi }, ...(sel ? { sel } : {}) };
     });
     langkah.splice(Math.max(langkah.length - 1, 0), 0, ...bertahap);
     langkah[0] = { ...langkah[0]!, visual: { ...visualTahap, isi: [] } };

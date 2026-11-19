@@ -25022,14 +25022,14 @@
   {
    "kunci": "narasi.langkah.harta.tanpa_potongan.narasi",
    "halaman": "narasi",
-   "id": "{pewaris} meninggalkan {kotor}. Tidak ada biaya jenazah, hutang, atau wasiat, jadi seluruhnya dibagi.",
+   "id": "{pewaris} meninggalkan {kotor}.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "narasi.langkah.harta.tanpa_potongan.papan",
    "halaman": "narasi",
-   "id": "Yang dibagi: {kotor}",
+   "id": "Harta: {kotor}",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27536,6 +27536,188 @@
    "kunci": "narasi.langkah.dzawil_arham.jalur.umumah",
    "halaman": "narasi",
    "id": "lewat ibu {pewaris}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.harta",
+   "halaman": "narasi",
+   "id": "Harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.dikurangi",
+   "halaman": "narasi",
+   "id": "Dikurangi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.harta_dibagi",
+   "halaman": "narasi",
+   "id": "Harta dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.mewarisi",
+   "halaman": "narasi",
+   "id": "Mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.terhalang",
+   "halaman": "narasi",
+   "id": "Terhalang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.asal_masalah",
+   "halaman": "narasi",
+   "id": "Asal masalah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.jumlah",
+   "halaman": "narasi",
+   "id": "Jumlah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.selisih_pembulatan",
+   "halaman": "narasi",
+   "id": "Selisih pembulatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.satu_potong",
+   "halaman": "narasi",
+   "id": "Satu potong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.tashih",
+   "halaman": "narasi",
+   "id": "Tashih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.cek",
+   "halaman": "narasi",
+   "id": "Cek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.asal_naik",
+   "halaman": "narasi",
+   "id": "Asal naik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.label.asal_baru",
+   "halaman": "narasi",
+   "id": "Asal baru",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tidak_ada_potongan.narasi",
+   "halaman": "narasi",
+   "id": "Tidak ada biaya jenazah, hutang, atau wasiat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tidak_ada_potongan.papan",
+   "halaman": "narasi",
+   "id": "Tidak ada biaya jenazah, hutang, atau wasiat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanpa_potongan_dikurangi.narasi",
+   "halaman": "narasi",
+   "id": "Yang dikurangi: biaya jenazah, hutang, dan wasiat, semuanya nol.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanpa_potongan_dikurangi.papan",
+   "halaman": "narasi",
+   "id": "Dikurangi: nol",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanpa_potongan_dibagi.narasi",
+   "halaman": "narasi",
+   "id": "Jadi seluruh {kotor} dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanpa_potongan_dibagi.papan",
+   "halaman": "narasi",
+   "id": "Yang dibagi: {kotor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.jembatan.narasi",
+   "halaman": "narasi",
+   "id": "Hartanya sudah jelas. Sekarang: siapa saja yang berhak?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.jembatan.papan",
+   "halaman": "narasi",
+   "id": "Siapa saja yang berhak?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.hitung_terhalang.narasi",
+   "halaman": "narasi",
+   "id": "Yang terhalang: {mahjub}, oleh {hajib}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.hitung_terhalang.papan",
+   "halaman": "narasi",
+   "id": "Terhalang: {mahjub}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.isi_terhalang",
+   "halaman": "narasi",
+   "id": "{mahjub}, oleh {hajib}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.isi_nilai",
+   "halaman": "narasi",
+   "id": "{kotak} dari {jumlah} (tadinya {kotak} dari {ashl})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.isi_nilai",
+   "halaman": "narasi",
+   "id": "{kotak} dari {jumlah}",
    "ar": null,
    "versiTerbit": 873
   }
