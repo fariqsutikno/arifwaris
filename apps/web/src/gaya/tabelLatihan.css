@@ -26,9 +26,7 @@
 @keyframes gabung-sel{from{background:var(--mint,#dcefe2)}to{background:transparent}}
 @media (prefers-reduced-motion:reduce){.tabel-kitab td.baru-gabung{animation:none}}
 .aksi-tabel{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:16px}
-.aksi-tabel .tautan-aksi{font-size:14px;gap:6px;min-height:36px;text-underline-offset:3px}
 .aksi-tabel .tautan-bahaya{color:var(--danger)}
-.aksi-tabel .aw-btn-primary{height:44px;min-height:44px;padding:11px 20px;border:0;border-radius:var(--radius-pill);font-size:14px;font-weight:600}
 .petunjuk-bulat{margin:10px 0 0;font-size:13px;line-height:1.5;background:#fff7e0;color:#6b4f00;border-radius:10px;padding:6px 10px}
 .umpan-tabel{margin-top:12px;border-radius:14px;padding:11px 14px;font-size:14px;line-height:1.5;color:var(--ink)}
 .umpan-tabel.benar{background:var(--mint,#dcefe2);color:#0b6b3a}
