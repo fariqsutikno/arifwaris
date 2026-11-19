@@ -151,7 +151,7 @@ export const TAQDIR_FIXTURES: TaqdirFixture[] = [
   { id: 'H1-HNB', menguji: 'haml 6 taqdir, mitra ashabah diberi aqall', input: dengan(grafH1, 'hanbali'),
     expected: { jamiah: 72n, diberikan: { I: 12n, S: 20n }, mauquf: 40n } },
   { id: 'H1-SYF', menguji: '[R13-15] mitra ashabah haml diberi 0 (kelas D)', input: dengan(grafH1),
-    expected: { jamiah: 72n, diberikan: { I: 12n }, mauquf: 60n } },
+    expected: { jamiah: 18n, diberikan: { I: 3n }, mauquf: 15n } },   // [R13-20] = 12 dan 60 dari 72 (13a.7)
   { id: 'H2', menguji: "haml, 'aul terbesar pada taqdir 2 pr", input: dengan(grafH2),
     expected: { jamiah: 90n, diberikan: { H: 27n, I: 9n, U1: 9n, U2: 9n }, mauquf: 36n } },
   { id: 'H2-HNB', menguji: 'haml ber-fardh saja: [HNB] = [SYF]', input: dengan(grafH2, 'hanbali'),

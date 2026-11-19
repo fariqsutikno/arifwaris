@@ -299,12 +299,17 @@ export type HasilMunasakhat =
 export type NilaiTaqdir = 'mati' | 'hidup' | 'lk' | 'pr' | 'duaLk' | 'duaPr' | 'lkPr';
 
 /** Satu dunia luar (sumber yang diberi aqall); sumber setengah/terburuk sudah dilebur di dalamnya. */
+/** Kelompok ashabah yang sahamnya ditulis bersama, tanpa angka per kepala (jumlah janin tak diketahui) [R13-20]. */
+export interface KelompokBersama { anggota: IdOrang[]; saham: bigint }
+
 export interface DuniaTaqdir {
   taqdir: Record<IdOrang, NilaiTaqdir>;
   /** Mas'alah dunia ini sebelum disamakan ke jami'ah. */
   masalah: bigint;
   /** Saham tiap penerima pada jami'ah (tabel "jika terbukti X"); baris sisa memakai `IdSisaKeluar`. */
   saham: Record<string, bigint>;
+  /** [SYF] kelompok yang sahamnya bersama; anggotanya tidak ada di `saham`. Σ saham + Σ kelompok = jami'ah. */
+  kelompok: KelompokBersama[];
   /** Status tiap orang di dunia ini (mayit pertama), untuk sebutan peran di penjelasan. */
   statusOrang: Record<IdOrang, StatusOrang>;
   /** Status tiap mas'alah di dunia ini (mayit pertama, lalu mayit munasakhat/tharif berikutnya). */

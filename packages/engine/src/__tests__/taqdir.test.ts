@@ -25,7 +25,7 @@ describe('Taqdir bab 13 — haml, mafqud, khuntsa (kitab Lahim)', () => {
       expect(hasil.mauquf).toBe(fixture.expected.mauquf);
       expect(jumlah(hasil.diberikan) + hasil.mauquf, "Σ diberikan + mauquf = jami'ah").toBe(hasil.jamiah);
       for (const dunia of hasil.daftarDunia) {
-        expect(jumlah(dunia.saham), "Σ saham dunia = jami'ah").toBe(hasil.jamiah);
+        expect(jumlah(dunia.saham) + dunia.kelompok.reduce((a, b) => a + b.saham, 0n), "Σ saham dunia = jami'ah").toBe(hasil.jamiah);
       }
     });
   }
@@ -51,6 +51,27 @@ describe('Taqdir — perilaku lain', () => {
   test('haml di taqdir 2 lk: saham kedua janin digabung ke node haml', () => {
     const duaLk = ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' }).daftarDunia.find(dunia => dunia.taqdir.J === 'duaLk')!;
     expect(duaLk.saham).toEqual({ I: 12n, S: 20n, J: 40n });
+  });
+
+  test("[R13-20] H1 [SYF]: taqdir laki-laki dan perempuan berbilang berhenti di asal masalah, saham kelompok bersama (3 · 6 · 18 · 6, jami'ah 18)", () => {
+    const hasil = ok(input(GRAF.grafH1));
+    expect(hasil.daftarDunia.map(dunia => dunia.masalah)).toEqual([3n, 6n, 18n, 6n]);
+    const [mati, lk, pr, duaPr] = hasil.daftarDunia;
+    expect(mati!.saham).toEqual({ I: 6n, S: 12n });
+    for (const dunia of [lk!, duaPr!]) {
+      expect(dunia.saham).toEqual({ I: 3n });
+      expect(dunia.kelompok).toEqual([{ anggota: ['S', 'J'], saham: 15n }]);
+    }
+    expect(pr!.saham).toEqual({ I: 3n, S: 10n, J: 5n });   // 1 pr: kepala diketahui, tetap per orang
+    expect(pr!.kelompok).toEqual([]);
+    expect(hasil.jamiah).toBe(18n);
+    expect(hasil.diberikan.I).toBe(3n);
+    expect(hasil.mauquf).toBe(15n);
+  });
+
+  test('[HNB] tidak memakai kelompok bersama: 2 lk dan 2 pr tetap per kepala', () => {
+    const hasil = ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' });
+    expect(hasil.daftarDunia.every(dunia => dunia.kelompok.length === 0)).toBe(true);
   });
 
   test('nominal: diberikan + mauquf + selisih pembulatan = harta bersih', () => {

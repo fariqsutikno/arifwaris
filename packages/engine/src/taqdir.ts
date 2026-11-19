@@ -14,7 +14,7 @@ import { turunkanPeran } from './stages/derivasi.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import { ATURAN } from './rulesets/madzhab.js';
 import type {
-  DuniaTaqdir, GrafKeluarga, HasilEngine, HasilTaqdir, IdOrang, InputEngine, InputMunasakhat, LangkahJejak, NilaiTaqdir, Orang, Pertanyaan, Ruleset,
+  DuniaTaqdir, GrafKeluarga, KelompokBersama, HasilEngine, HasilTaqdir, IdOrang, InputEngine, InputMunasakhat, LangkahJejak, NilaiTaqdir, Orang, Pertanyaan, Ruleset,
 } from './types.js';
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
@@ -24,7 +24,7 @@ type Pemberian = 'aqall' | 'setengah' | 'terburuk';
 
 interface Sumber { id: IdOrang; jenis: 'haml' | 'mafqud' | 'khuntsa'; taqdir: NilaiTaqdir[]; pemberian: Pemberian }
 type DaftarStatus = DuniaTaqdir['daftarStatus'];
-interface HasilDunia { saham: Saham; masalah: bigint; statusOrang: HasilOk['statusOrang']; daftarStatus: DaftarStatus; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
+interface HasilDunia { saham: Saham; kelompok: KelompokBersama[]; masalah: bigint; statusOrang: HasilOk['statusOrang']; daftarStatus: DaftarStatus; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
 type HasilMayit = { mayit: IdOrang; hasil: HasilOk };
 
 export interface OpsiTaqdir {
@@ -89,7 +89,8 @@ export function hitungTaqdir(input: InputEngine, opsi: OpsiTaqdir = {}): HasilTa
   const daftarDunia: DuniaTaqdir[] = mentah.map(dunia => {
     const juzSahm = jamiah / dunia.masalah;
     jejak.push({ tahap: 'taqdir', refs: ['R13-16'], jenis: 'TAQDIR_DUNIA', taqdir: dunia.taqdir, masalah: dunia.masalah, juzSahm, jamiah });
-    return { taqdir: dunia.taqdir, masalah: dunia.masalah, statusOrang: dunia.statusOrang, daftarStatus: dunia.daftarStatus, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])) };
+    return { taqdir: dunia.taqdir, masalah: dunia.masalah, statusOrang: dunia.statusOrang, daftarStatus: dunia.daftarStatus, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])),
+      kelompok: dunia.kelompok.map(kelompokIni => ({ ...kelompokIni, saham: kelompokIni.saham * juzSahm })) };
   });
 
   const ditahan = new Set(sumber.filter(sumberIni => sumberIni.jenis !== 'khuntsa').map(sumberIni => sumberIni.id));
@@ -217,7 +218,7 @@ function leburDalam(input: InputEngine, opsi: OpsiTaqdir, taqdirLuar: Taqdir, da
   }
   jejak.push({ tahap: 'taqdir', refs: ['K13c-1'], jenis: 'TAQDIR_LEBUR', aturan: 'setengah', sumber: idDalam });
   return {
-    saham, masalah: jamiahDalam * BigInt(daftarHasil.length), statusOrang: daftarHasil[0]!.statusOrang, daftarStatus: daftarHasil[0]!.daftarStatus,
+    saham, kelompok: [], masalah: jamiahDalam * BigInt(daftarHasil.length), statusOrang: daftarHasil[0]!.statusOrang, daftarStatus: daftarHasil[0]!.daftarStatus,
     mitraAshabahHaml: new Set(daftarHasil.flatMap(dunia => [...dunia.mitraAshabahHaml])),
     mitraFardhHaml: new Set(daftarHasil.flatMap(dunia => [...dunia.mitraFardhHaml])),
   };
@@ -232,6 +233,7 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
 
   let daftarHasil: HasilMayit[];
   let saham: Saham;
+  let kelompok: KelompokBersama[] = [];
   if (opsi.hitungDuniaPasti) {
     const hasil = opsi.hitungDuniaPasti(inputDunia);
     if ('status' in hasil) return hasil;
@@ -245,26 +247,30 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
     const hasil = hitungDzawilArham(inputDunia);
     if (hasil.status !== 'OK') return hasil;
     daftarHasil = [{ mayit: graf.idPewaris, hasil }];
-    saham = tanpaTashihJanin(gabungKembar(sahamDari(graf.idPewaris, hasil)), hasil, haml);
+    ({ saham, kelompok } = tanpaTashihJanin(gabungKembar(sahamDari(graf.idPewaris, hasil)), hasil, haml, hamlBersama(input, taqdir)));
   }
   return {
-    saham: gabungKembar(saham), masalah: totalSaham(saham), statusOrang: daftarHasil[0]!.hasil.statusOrang,
+    saham: gabungKembar(saham), kelompok, masalah: totalSaham(saham) + kelompok.reduce((jumlah, kelompokIni) => jumlah + kelompokIni.saham, 0n), statusOrang: daftarHasil[0]!.hasil.statusOrang,
     daftarStatus: daftarHasil.map(({ mayit, hasil }) => ({ mayit, statusOrang: hasil.statusOrang })),
     ...mitraHaml(daftarHasil.map(({ hasil }) => hasil), haml),
   };
 }
 
 /**
- * [KH] Kelompok yang anggotanya janin saja tidak perlu di-tashih: bagiannya ditahan utuh (13a.7 H3, Lahim hlm. 149).
- * Juz' as-sahm dihitung ulang tanpa kelompok itu; pecahan tiap orang tidak berubah, hanya angka mas'alah.
+ * [KH] Kelompok yang tidak ditashih per kepala: (a) anggotanya janin saja, bagiannya ditahan utuh (13a.7 H3, Lahim hlm. 149);
+ * (b) [SYF] kelompok ashabah yang memuat janin berkelamin/berjumlah tak tentu (`bersama`), saham kelompok ditulis bersama
+ * [R13-20] (13a.5 catatan koreksi). Juz' as-sahm dihitung ulang tanpa kelompok itu; pecahan tiap orang tidak berubah, hanya
+ * angka mas'alah. Kelompok (b) keluar sebagai `kelompok` karena angka per kepalanya memang tidak ada.
  */
-function tanpaTashihJanin(saham: Saham, hasil: HasilOk, haml: Set<IdOrang>): Saham {
+function tanpaTashihJanin(saham: Saham, hasil: HasilOk, haml: Set<IdOrang>, bersama: Set<IdOrang>): { saham: Saham; kelompok: KelompokBersama[] } {
   const { totalKolom, baris } = hasil.tabel;
   const kolomDasar = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : 'ashl';
-  if (haml.size === 0 || totalKolom.tashih === undefined || totalSaham(saham) !== totalKolom.tashih) return saham;
+  if (haml.size === 0 || totalKolom.tashih === undefined || totalSaham(saham) !== totalKolom.tashih) return { saham, kelompok: [] };
+  const kelompokBersama = baris.filter(barisIni => barisIni.ashabah && barisIni.anggota.some(id => bersama.has(id)));
+  const tanpaTashih = new Set([...kelompokBersama, ...baris.filter(barisIni => barisIni.anggota.every(id => haml.has(id)))]);
   let juzTanpaJanin = 1n;
   for (const barisIni of baris) {
-    if (barisIni.anggota.every(id => haml.has(id))) continue;
+    if (tanpaTashih.has(barisIni)) continue;
     const bobot = Object.values(barisIni.perOrang).map(selOrang => selOrang.saham);
     const faktor = bobot.reduce((a, b) => fpb(a, b), 0n);
     if (faktor === 0n) continue;
@@ -272,8 +278,22 @@ function tanpaTashihJanin(saham: Saham, hasil: HasilOk, haml: Set<IdOrang>): Sah
     juzTanpaJanin = kpk(juzTanpaJanin, ruus / fpb(barisIni.sel[kolomDasar]!, ruus));
   }
   const pembagi = totalKolom.tashih / totalKolom[kolomDasar]! / juzTanpaJanin;
-  if (Object.values(saham).some(nilai => nilai % pembagi !== 0n)) throw new Error('invariant taqdir: saham tidak habis dibagi saat melepas tashih janin');
-  return Object.fromEntries(Object.entries(saham).map(([id, nilai]) => [id, nilai / pembagi]));
+  const idBersama = new Set(kelompokBersama.flatMap(barisIni => barisIni.anggota));
+  const kelompok = kelompokBersama.map(barisIni => {
+    const jumlahKelompok = Object.values(barisIni.perOrang).reduce((jumlah, selOrang) => jumlah + selOrang.saham, 0n);
+    if (jumlahKelompok % pembagi !== 0n) throw new Error('invariant taqdir: saham kelompok bersama tidak habis dibagi saat melepas tashih');
+    return { anggota: [...new Set(barisIni.anggota.map(idAsalKembar))], saham: jumlahKelompok / pembagi };
+  });
+  const sisaPerOrang = Object.entries(saham).filter(([id]) => !idBersama.has(id) && !idBersama.has(id + AKHIRAN_KEMBAR));
+  if (sisaPerOrang.some(([, nilai]) => nilai % pembagi !== 0n)) throw new Error('invariant taqdir: saham tidak habis dibagi saat melepas tashih janin');
+  return { saham: Object.fromEntries(sisaPerOrang.map(([id, nilai]) => [id, nilai / pembagi])), kelompok };
+}
+
+/** [R13-20] [SYF] janin yang taqdirnya "laki-laki" atau "perempuan berbilang": jumlah kepalanya tak diketahui. */
+function hamlBersama(input: InputEngine, taqdir: Taqdir): Set<IdOrang> {
+  if (input.ruleset !== 'syafii') return new Set();
+  return new Set(Object.entries(taqdir).filter(([id, nilai]) => input.graf.orang[id]!.statusHidup === 'dalamKandungan' && (nilai === 'lk' || nilai === 'duaPr'))
+    .flatMap(([id]) => [id, id + AKHIRAN_KEMBAR]));
 }
 
 /** Node belum pasti diganti status pastinya; janin kembar = node klon `id~2` dengan orang tua yang sama. */
@@ -294,10 +314,12 @@ function grafPasti(graf: GrafKeluarga, taqdir: Taqdir): GrafKeluarga {
   return { ...graf, orang };
 }
 
+const idAsalKembar = (id: IdOrang): IdOrang => id.endsWith(AKHIRAN_KEMBAR) ? id.slice(0, -AKHIRAN_KEMBAR.length) : id;
+
 function gabungKembar(saham: Saham): Saham {
   const hasil: Saham = {};
   for (const [id, nilai] of Object.entries(saham)) {
-    const idAsal = id.endsWith(AKHIRAN_KEMBAR) ? id.slice(0, -AKHIRAN_KEMBAR.length) : id;
+    const idAsal = idAsalKembar(id);
     hasil[idAsal] = (hasil[idAsal] ?? 0n) + nilai;
   }
   return hasil;
@@ -318,7 +340,7 @@ function mitraHaml(daftarHasil: HasilOk[], haml: Set<IdOrang>): Pick<HasilDunia,
 
 /** [R13-4] tiap orang diberi yang terkecil di semua dunia; haml/mafqud ditahan; kelas D [R13-15] → 0. */
 function beriAqall(daftarDunia: DuniaTaqdir[], ditahan: Set<IdOrang>, kelasD: Set<IdOrang>, refs: string[], jejak: LangkahJejak[]): Record<IdOrang, bigint> {
-  const semuaPenerima = [...new Set(daftarDunia.flatMap(dunia => Object.keys(dunia.saham)))];
+  const semuaPenerima = [...new Set(daftarDunia.flatMap(dunia => [...Object.keys(dunia.saham), ...dunia.kelompok.flatMap(kelompok => kelompok.anggota)]))];
   const diberikan: Record<IdOrang, bigint> = {};
   for (const id of semuaPenerima) {
     const alasan = ditahan.has(id) ? 'ditahan' : kelasD.has(id) ? 'kelasD' : 'aqall';
@@ -332,7 +354,10 @@ function beriAqall(daftarDunia: DuniaTaqdir[], ditahan: Set<IdOrang>, kelasD: Se
 function periksaInvarianTaqdir(diberikan: Record<IdOrang, bigint>, mauquf: bigint, daftarDunia: DuniaTaqdir[]): void {
   if (mauquf < 0n) throw new Error(`invariant taqdir: mauquf ${mauquf} < 0`);
   for (const dunia of daftarDunia) {
+    // [R13-20] anggota kelompok bersama tidak punya angka sendiri di dunia ini; mereka kelas D / ditahan, jadi 0.
+    const bersama = new Set(dunia.kelompok.flatMap(kelompok => kelompok.anggota));
     for (const [id, nilai] of Object.entries(diberikan)) {
+      if (bersama.has(id) && nilai !== 0n) throw new Error(`invariant taqdir: ${id} di kelompok bersama diberi ${nilai}`);
       if (nilai > (dunia.saham[id] ?? 0n)) throw new Error(`invariant taqdir: ${id} diberi ${nilai} > haknya di satu taqdir`);
     }
   }
