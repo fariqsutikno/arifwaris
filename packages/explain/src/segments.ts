@@ -106,6 +106,9 @@ function pilihTeks({ kamus, bahasa }: Penyusun, kunci: string): string {
   return (bahasa === 'ar' ? butir.ar : undefined) ?? butir.id;
 }
 
+/** Label baris hitungan ("Harta", "Jumlah"): kata dari diksi `narasi.langkah.label.*`. */
+export const labelHitung = (penyusun: Penyusun, nama: string): string => teksKamus(penyusun, `narasi.langkah.label.${nama}`);
+
 /** Baris kalimat: potongan yang membuka kalimat (awal baris atau setelah ". ") diberi huruf kapital. */
 export function buatBaris(daftarPotongan: Potongan[], refs: string[] = [], subjek?: IdOrang[]): BarisPenjelasan {
   const kapitalAwal = (potonganIni: Potongan): Potongan => ({ ...potonganIni, teks: potonganIni.teks.charAt(0).toUpperCase() + potonganIni.teks.slice(1) });

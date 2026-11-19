@@ -7,7 +7,7 @@ import type { Bab } from './cerita.js';
 import { rupiah } from './format.js';
 import { barisPemberian, namaMadzhab, teksSebut, type GharqaSelesai } from './kasusKhusus.js';
 import { sebutPenerima } from './munasakhat.js';
-import { barisSkrip, buatBaris, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Penyusun, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Penyusun, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 const BATAS_PENERIMA_RINGKASAN = 4;
@@ -53,7 +53,8 @@ export function babHartaGharqaSkrip(harta: HartaGharqa, sebut: Sebut, penyusun: 
       .map(baris => ({ ...baris, jenis: 'hitung' as const, papan: baris.daftarPotongan })));
   } else {
     for (const [id, saham] of Object.entries(harta.saham)) {
-      daftarBaris.push(dariKalimat('hitung', kalimat`${sebutPenerima(penyusun, id, sebut)}: ${saham}/${harta.jamiah}${teksNominal(harta.nominal[id])}.`, [], [id]));
+      const siapaIni = sebutPenerima(penyusun, id, sebut);
+      daftarBaris.push(denganHitungan(dariKalimat('hitung', kalimat`${siapaIni}: ${saham}/${harta.jamiah}${teksNominal(harta.nominal[id])}.`, [], [id]), siapaIni, `${saham}/${harta.jamiah}${teksNominal(harta.nominal[id])}`));
     }
   }
   if (harta.mauqufSemua) {

@@ -29,6 +29,14 @@ describe('skrip belajar kasus biasa', () => {
     expect(jenisDari(langkahDari(case01, 'hasil'))).toEqual(['hitung', 'hitung', 'hitung', 'ringkas']);
   });
 
+  it('C16-01: baris hitung berlabel: asal masalah, jumlah, tashih, cek', () => {
+    const hitungan = (idTahap: string) => langkahDari(case01, idTahap).flatMap(satu => (satu.hitungan ? [[satu.hitungan.label, satu.hitungan.isi].map(daftar => daftar.map(potongan => potongan.teks).join(''))] : []));
+    expect(hitungan('ashl')).toEqual([['Istri', '8 × 1/8 = 8 ÷ 8 = 1'], ['Anak laki-laki dan anak perempuan', '8 − 1 = 7'], ['Asal masalah', '8']]);
+    expect(hitungan('tashih')).toContainEqual(['Tashih', '8 × 3 = 24']);
+    expect(hitungan('tashih')).toContainEqual(['Cek', '3 + 14 + 7 = 24']);
+    expect(hitungan('ahliWaris')).toEqual([['Mewarisi', 'istri, anak laki-laki, dan anak perempuan']]);
+  });
+
   it('C16-01: angka tashih sama dengan tabel (21 potong, 14 dan 7, jumlah 24)', () => {
     const teks = langkahDari(case01, 'tashih').map(teksNarasi).join(' ');
     expect(teks).toContain('8 × 3 = 24 potong');

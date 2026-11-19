@@ -6,7 +6,7 @@ import type { IdOrang } from '@waris/engine';
 import type { SebutArab } from './arab.js';
 import { ceritaSisaKeluar, type Bab } from './cerita.js';
 import type { Konteks, Langkah } from './context.js';
-import { barisSkrip, buatBaris, gabungDan, susun, teksKamus, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, labelHitung, susun, teksKamus, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 type Sisipanku = Record<string, Sisipan>;
@@ -65,7 +65,8 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
     daftarBaris.push(langkah(konteks, 'jembatan', 'jembatan_masalah', {}, {}));
     const butir = Object.entries(masalah.saham).map(([id, saham]) => lama(konteks, 'masalah_butir', { perantara: sebut([id]), saham }));
     const rincian = gabungDan(penyusun, butir);
-    daftarBaris.push(langkah(konteks, 'hitung', 'masalah_baru', { rincian, masalah: masalah.masalah }, { rincian, masalah: masalah.masalah }, masalah.refs));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'masalah_baru', { rincian, masalah: masalah.masalah }, { rincian, masalah: masalah.masalah }, masalah.refs),
+      labelHitung(penyusun, 'asal_masalah'), String(masalah.masalah)));
     if (masalah.aul !== undefined) daftarBaris.push(dariKalimat('hitung', lama(konteks, 'aul', { ashl: masalah.ashl, aul: masalah.aul }), ['R14-13']));
     for (const id of masalah.mahjub) daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'perantara_terhijab', { perantara: sebut([id]) }), ['R14-10']));
   }

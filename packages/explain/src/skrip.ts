@@ -8,7 +8,7 @@ import type { AlasanFardh, IdOrang } from '@waris/engine';
 import { PERAN_BERPENDAHULU, ceritaArba, opsiKakek, persamaanKotakAshl, teksTujuanSisa, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah, tulisPecahan } from './format.js';
-import { barisSkrip, buatBaris, denganHitungan, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, kalimat, labelHitung as labelHitungDiksi, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
 import { istilah, istilahNarasi, type IdIstilah } from './terms.js';
 
 /** Kasus tahap ini belum dipetakan ke skrip; pakai bab cerita. */
@@ -26,8 +26,7 @@ const istilahKasus = (konteks: Konteks, id: 'umariyyatain' | 'musyarrakah' | 'ak
 const teks = (isi: string): Potongan => ({ jenis: 'teks', teks: isi });
 const gabungPlus = (angka: Array<string | bigint>): Potongan[] => [teks(angka.join(' + '))];
 
-/** Label baris hitungan ("Harta", "Jumlah"): kata dari diksi `narasi.langkah.label.*`. */
-const labelHitung = (konteks: Konteks, nama: string): string => teksKamus(konteks.penyusun, kunciKamus(`label.${nama}`));
+const labelHitung = (konteks: Konteks, nama: string): string => labelHitungDiksi(konteks.penyusun, nama);
 
 function langkah(
   konteks: Konteks, jenis: JenisLangkah, kunci: string | [string, string], narasi: Sisipanku, papan: Sisipanku, refs: string[] = [], subjek?: IdOrang[],
