@@ -302,10 +302,30 @@ export type NilaiTaqdir = 'mati' | 'hidup' | 'lk' | 'pr' | 'duaLk' | 'duaPr' | '
 /** Kelompok ashabah yang sahamnya ditulis bersama, tanpa angka per kepala (jumlah janin tak diketahui) [R13-20]. */
 export interface KelompokBersama { anggota: IdOrang[]; saham: bigint }
 
+/** Satu baris tabel dunia pada skala mas'alah dunia itu (sebelum dikali `pengali`); janin kembar sudah digabung ke satu id. */
+export interface BarisDunia {
+  anggota: IdOrang[];
+  fardh?: Pecahan;
+  ashabah?: boolean;
+  /** Saham seluruh baris. */
+  saham: bigint;
+  /** Saham per orang; kosong bila `bersama`. */
+  perOrang: Record<IdOrang, bigint>;
+  /** [R13-20] [SYF] saham kelompok ditulis bersama, tanpa angka per kepala. */
+  bersama?: true;
+}
+
 export interface DuniaTaqdir {
   taqdir: Record<IdOrang, NilaiTaqdir>;
   /** Mas'alah dunia ini sebelum disamakan ke jami'ah. */
   masalah: bigint;
+  /** Juz' as-sahm: jami'ah ÷ `masalah`. Saham di `saham`/`kelompok` = saham di `bagian` × pengali. */
+  pengali: bigint;
+  /**
+   * Tabel mas'alah dunia ini (bagian + saham sebelum pengali) untuk satu mayit tanpa peleburan.
+   * Tidak ada untuk dunia munasakhat/tharif atau yang dilebur setengah-setengah [K13c-1].
+   */
+  bagian?: BarisDunia[];
   /** Saham tiap penerima pada jami'ah (tabel "jika terbukti X"); baris sisa memakai `IdSisaKeluar`. */
   saham: Record<string, bigint>;
   /** [SYF] kelompok yang sahamnya bersama; anggotanya tidak ada di `saham`. Σ saham + Σ kelompok = jami'ah. */

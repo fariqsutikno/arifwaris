@@ -14,7 +14,7 @@ import { turunkanPeran } from './stages/derivasi.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import { ATURAN } from './rulesets/madzhab.js';
 import type {
-  DuniaTaqdir, GrafKeluarga, KelompokBersama, HasilEngine, HasilTaqdir, IdOrang, InputEngine, InputMunasakhat, LangkahJejak, NilaiTaqdir, Orang, Pertanyaan, Ruleset,
+  BarisDunia, DuniaTaqdir, GrafKeluarga, KelompokBersama, HasilEngine, HasilTaqdir, IdOrang, InputEngine, InputMunasakhat, LangkahJejak, NilaiTaqdir, Orang, Pertanyaan, Ruleset,
 } from './types.js';
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
@@ -24,7 +24,7 @@ type Pemberian = 'aqall' | 'setengah' | 'terburuk';
 
 interface Sumber { id: IdOrang; jenis: 'haml' | 'mafqud' | 'khuntsa'; taqdir: NilaiTaqdir[]; pemberian: Pemberian }
 type DaftarStatus = DuniaTaqdir['daftarStatus'];
-interface HasilDunia { saham: Saham; kelompok: KelompokBersama[]; masalah: bigint; statusOrang: HasilOk['statusOrang']; daftarStatus: DaftarStatus; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
+interface HasilDunia { saham: Saham; kelompok: KelompokBersama[]; bagian?: BarisDunia[]; masalah: bigint; statusOrang: HasilOk['statusOrang']; daftarStatus: DaftarStatus; mitraAshabahHaml: Set<IdOrang>; mitraFardhHaml: Set<IdOrang> }
 type HasilMayit = { mayit: IdOrang; hasil: HasilOk };
 
 export interface OpsiTaqdir {
@@ -89,7 +89,7 @@ export function hitungTaqdir(input: InputEngine, opsi: OpsiTaqdir = {}): HasilTa
   const daftarDunia: DuniaTaqdir[] = mentah.map(dunia => {
     const juzSahm = jamiah / dunia.masalah;
     jejak.push({ tahap: 'taqdir', refs: ['R13-16'], jenis: 'TAQDIR_DUNIA', taqdir: dunia.taqdir, masalah: dunia.masalah, juzSahm, jamiah });
-    return { taqdir: dunia.taqdir, masalah: dunia.masalah, statusOrang: dunia.statusOrang, daftarStatus: dunia.daftarStatus, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])),
+    return { taqdir: dunia.taqdir, masalah: dunia.masalah, pengali: juzSahm, ...(dunia.bagian ? { bagian: dunia.bagian } : {}), statusOrang: dunia.statusOrang, daftarStatus: dunia.daftarStatus, saham: Object.fromEntries(Object.entries(dunia.saham).map(([id, nilai]) => [id, nilai * juzSahm])),
       kelompok: dunia.kelompok.map(kelompokIni => ({ ...kelompokIni, saham: kelompokIni.saham * juzSahm })) };
   });
 
@@ -234,6 +234,7 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
   let daftarHasil: HasilMayit[];
   let saham: Saham;
   let kelompok: KelompokBersama[] = [];
+  let bagian: BarisDunia[] | undefined;
   if (opsi.hitungDuniaPasti) {
     const hasil = opsi.hitungDuniaPasti(inputDunia);
     if ('status' in hasil) return hasil;
@@ -248,9 +249,10 @@ function hitungDunia(input: InputEngine, opsi: OpsiTaqdir, taqdir: Taqdir): Hasi
     if (hasil.status !== 'OK') return hasil;
     daftarHasil = [{ mayit: graf.idPewaris, hasil }];
     ({ saham, kelompok } = tanpaTashihJanin(gabungKembar(sahamDari(graf.idPewaris, hasil)), hasil, haml, hamlBersama(input, taqdir)));
+    bagian = susunBagian(hasil, gabungKembar(saham), kelompok);
   }
   return {
-    saham: gabungKembar(saham), kelompok, masalah: totalSaham(saham) + kelompok.reduce((jumlah, kelompokIni) => jumlah + kelompokIni.saham, 0n), statusOrang: daftarHasil[0]!.hasil.statusOrang,
+    saham: gabungKembar(saham), kelompok, ...(bagian ? { bagian } : {}), masalah: totalSaham(saham) + kelompok.reduce((jumlah, kelompokIni) => jumlah + kelompokIni.saham, 0n), statusOrang: daftarHasil[0]!.hasil.statusOrang,
     daftarStatus: daftarHasil.map(({ mayit, hasil }) => ({ mayit, statusOrang: hasil.statusOrang })),
     ...mitraHaml(daftarHasil.map(({ hasil }) => hasil), haml),
   };
@@ -287,6 +289,18 @@ function tanpaTashihJanin(saham: Saham, hasil: HasilOk, haml: Set<IdOrang>, bers
   const sisaPerOrang = Object.entries(saham).filter(([id]) => !idBersama.has(id) && !idBersama.has(id + AKHIRAN_KEMBAR));
   if (sisaPerOrang.some(([, nilai]) => nilai % pembagi !== 0n)) throw new Error('invariant taqdir: saham tidak habis dibagi saat melepas tashih janin');
   return { saham: Object.fromEntries(sisaPerOrang.map(([id, nilai]) => [id, nilai / pembagi])), kelompok };
+}
+
+/** [R13-4] Tabel dunia: fardh/ashabah dari tabel pipeline, saham sesudah janin dilepas dari tashih (kelompok bersama → satu angka). */
+function susunBagian(hasil: HasilOk, saham: Saham, kelompok: KelompokBersama[]): BarisDunia[] {
+  return hasil.tabel.baris.map(barisIni => {
+    const anggota = [...new Set(barisIni.anggota.map(idAsalKembar))];
+    const bersama = kelompok.find(kelompokIni => anggota.length === kelompokIni.anggota.length && anggota.every(id => kelompokIni.anggota.includes(id)));
+    const dasar = { anggota, ...(barisIni.fardh ? { fardh: barisIni.fardh } : {}), ...(barisIni.ashabah ? { ashabah: barisIni.ashabah } : {}) };
+    if (bersama) return { ...dasar, saham: bersama.saham, perOrang: {}, bersama: true as const };
+    const perOrang = Object.fromEntries(anggota.map(id => [id, saham[id] ?? 0n]));
+    return { ...dasar, saham: Object.values(perOrang).reduce((a, b) => a + b, 0n), perOrang };
+  });
 }
 
 /** [R13-20] [SYF] janin yang taqdirnya "laki-laki" atau "perempuan berbilang": jumlah kepalanya tak diketahui. */
