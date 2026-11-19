@@ -231,3 +231,10 @@ Sumber: al-Ahdal, *I'anah ath-Thalib fi Bidayah 'Ilm al-Fara'idh* (Syafi'i), hlm
 - **Temuan yang perlu keputusan:** kitab ini memakai **empat** taqdir untuk Syafi'i (wafat, laki-laki, satu perempuan,
   perempuan berbilang), dengan alasan «لا ضبط لعدد الحمل». KB 13a.5 menulis enam taqdir. Belum diubah: KB adalah satu-satunya
   sumber fikih, jadi perubahan menunggu keputusan pemilik (dan diverifikasi ke Raudhah bila perlu).
+- **Cek Raudhah (RDH 6/39 · shamela:499/2328):** Raudhah **tidak menyebut daftar taqdir** (empat atau enam). Yang ada kaidahnya:
+  pemilik fardh diberi fardh dalam 'aul terbesar «لاحتمال أن الحمل بنتان»; yang bagiannya tidak muqaddar (seperti anak) bergantung
+  pada batas jumlah janin, dan yang ashah «لا ضبط له», sehingga «لو خلف ابنا وزوجة حاملا فلها الثمن ولا يدفع إلى الابن شيء».
+  Pendapat kedua (batas 4 janin, Ibnu Kajj dan al-Ghazali) bukan yang ashah. Kesimpulan: kaidah Raudhah hanya membedakan janin
+  wafat, laki-laki (berapa pun), satu perempuan, dan perempuan berbilang, sejalan dengan empat taqdir al-Ahdal. Enam taqdir
+  (dengan "2 lk", "lk + pr") memuat anggapan jumlah tepat dua, yaitu model [HNB] di KB 13a.4. Usul revisi KB 13a.5 menunggu
+  keputusan pemilik.
