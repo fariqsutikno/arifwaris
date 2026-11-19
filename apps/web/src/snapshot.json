@@ -26978,6 +26978,132 @@
    "id": "{rincian}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Keadaan {siapa} belum pasti. Bisakah harta dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.tanya.papan",
+   "halaman": "narasi",
+   "id": "Ada yang belum pasti. Bisa dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Harta tetap bisa dibagi sekarang. Tiap orang diberi bagian terkecilnya di antara semua kemungkinan, dan sisanya ditahan ({mauquf}) sampai keadaannya jelas atau para ahli waris berdamai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.dasar.papan",
+   "halaman": "narasi",
+   "id": "Dibagi sekarang, sisanya ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Tiap keadaan yang mungkin dihitung sebagai satu masalah tersendiri, seolah-olah sudah pasti. Ini disebut taqdir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.dasar.papan",
+   "halaman": "narasi",
+   "id": "Hitung tiap kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.banyak.narasi",
+   "halaman": "narasi",
+   "id": "Ada {jumlah} kemungkinan, jadi ada {jumlah} masalah yang dihitung sendiri-sendiri, lalu semuanya disamakan dalam satu {jamiah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.banyak.papan",
+   "halaman": "narasi",
+   "id": "{jumlah} kemungkinan → 1 jami'ah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.jembatan.narasi",
+   "halaman": "narasi",
+   "id": "Kita hitung kemungkinan itu satu per satu, mulai dari yang pertama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.jembatan.papan",
+   "halaman": "narasi",
+   "id": "Satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.dunia.jika.narasi",
+   "halaman": "narasi",
+   "id": "Kemungkinan {nomor}: jika {kemungkinan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.dunia.jika.papan",
+   "halaman": "narasi",
+   "id": "Kemungkinan {nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Setelah semua kemungkinan dihitung, berapa yang diberikan sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.tanya.papan",
+   "halaman": "narasi",
+   "id": "Berapa diberikan sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Jadi sekarang dibagikan {diberikan}/{jamiah}, dan {ditahan}/{jamiah} ditahan sampai keadaannya jelas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas.papan",
+   "halaman": "narasi",
+   "id": "Dibagikan {diberikan}/{jamiah} · ditahan {ditahan}/{jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas_semua.narasi",
+   "halaman": "narasi",
+   "id": "Jadi seluruh harta dibagikan sekarang, tanpa bagian yang ditahan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas_semua.papan",
+   "halaman": "narasi",
+   "id": "Semua dibagikan",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -19,7 +19,7 @@ type DaftarStatus = Array<{ mayit: IdOrang; statusOrang: Record<IdOrang, StatusO
 export interface PenjelasanKasusKhusus { daftarBagian: BagianMunasakhat[] }
 
 const AWALAN_SISA = 'sisaKeluar:';
-const JENIS_SUMBER = { dalamKandungan: 'haml', mafqud: 'mafqud' } as const;
+export const JENIS_SUMBER = { dalamKandungan: 'haml', mafqud: 'mafqud' } as const;
 
 const taqdir = (penyusun: Penyusun, kunci: string, sisipan: Record<string, Sisipan> = {}): Potongan[] => susun(penyusun, `narasi.taqdir.${kunci}`, sisipan);
 const gharqa = (penyusun: Penyusun, kunci: string, sisipan: Record<string, Sisipan> = {}): Potongan[] => susun(penyusun, `narasi.gharqa.${kunci}`, sisipan);
@@ -37,7 +37,7 @@ export function jelaskanTaqdir(hasil: TaqdirOk, graf: GrafKeluarga, opsi: { kamu
 }
 
 /** Semua sumber dilebur (setengah/terburuk) → satu dunia tanpa taqdir luar: tidak ada tabel kemungkinan. */
-const adaKemungkinanLuar = (hasil: TaqdirOk): boolean => hasil.daftarDunia.some(dunia => Object.keys(dunia.taqdir).length > 0);
+export const adaKemungkinanLuar = (hasil: TaqdirOk): boolean => hasil.daftarDunia.some(dunia => Object.keys(dunia.taqdir).length > 0);
 
 function pembukaanTaqdir(hasil: TaqdirOk, graf: GrafKeluarga, sebut: Sebut, penyusun: Penyusun): BagianMunasakhat {
   const sumber = daftarSumber(graf);
@@ -90,10 +90,10 @@ function pembagianSekarang(hasil: TaqdirOk, sebut: Sebut, penyusun: Penyusun): B
   return { judul: teksKamus(penyusun, 'narasi.taqdir.judul.dibagi_sekarang'), daftarBab: [{ judul: teksKamus(penyusun, 'narasi.taqdir.judul.bagian_sekarang'), daftarBaris }] };
 }
 
-interface DataPemberian { jejak: TaqdirOk['jejak']; jamiah: bigint; nominal: Record<IdOrang, bigint>; adaKemungkinanLuar: boolean; teksNominal: (uang: bigint | undefined) => string }
+export interface DataPemberian { jejak: TaqdirOk['jejak']; jamiah: bigint; nominal: Record<IdOrang, bigint>; adaKemungkinanLuar: boolean; teksNominal: (uang: bigint | undefined) => string }
 
 /** Satu baris per penerima: aqall, ditahan, kelas D, atau gugur — dari jejak TAQDIR_PEMBERIAN (juga dipakai harta gharqa). */
-function barisPemberian(data: DataPemberian, sebut: Sebut, penyusun: Penyusun): BarisPenjelasan[] {
+export function barisPemberian(data: DataPemberian, sebut: Sebut, penyusun: Penyusun): BarisPenjelasan[] {
   return data.jejak.flatMap(langkah => {
     if (langkah.jenis !== 'TAQDIR_PEMBERIAN') return [];
     const siapa = sebutPenerima(penyusun, langkah.idOrang, sebut);
@@ -105,14 +105,14 @@ function barisPemberian(data: DataPemberian, sebut: Sebut, penyusun: Penyusun): 
 }
 
 /** "janin lahir dua laki-laki dan orang hilang masih hidup" untuk satu kombinasi taqdir. */
-function teksTaqdir(penyusun: Penyusun, graf: GrafKeluarga, taqdirIni: Record<IdOrang, NilaiTaqdir>, sebut: Sebut): Potongan[] {
+export function teksTaqdir(penyusun: Penyusun, graf: GrafKeluarga, taqdirIni: Record<IdOrang, NilaiTaqdir>, sebut: Sebut): Potongan[] {
   return gabungDan(penyusun, Object.entries(taqdirIni).map(([id, nilai]) => {
     const jenis = graf.orang[id]!.khuntsa ? 'khuntsa' : JENIS_SUMBER[graf.orang[id]!.statusHidup as keyof typeof JENIS_SUMBER];
     return taqdir(penyusun, `nilai.${jenis}.${nilai.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`)}`, { siapa: sebut(id) });
   }));
 }
 
-function daftarSumber(graf: GrafKeluarga): IdOrang[] {
+export function daftarSumber(graf: GrafKeluarga): IdOrang[] {
   return Object.values(graf.orang).filter(orangIni => orangIni.khuntsa || orangIni.statusHidup === 'dalamKandungan' || orangIni.statusHidup === 'mafqud').map(orangIni => orangIni.id);
 }
 
@@ -139,11 +139,11 @@ const PADANAN_KELAMIN = {
   SAUDARI_SEBAPAK: 'SAUDARA_SEBAPAK', SAUDARA_SEIBU: 'SAUDARI_SEIBU', SAUDARI_SEIBU: 'SAUDARA_SEIBU',
 } as const;
 
-function refsPemberian(hasil: TaqdirOk): string[] {
+export function refsPemberian(hasil: TaqdirOk): string[] {
   return hasil.jejak.flatMap(langkah => (langkah.jenis === 'MAUQUF' ? langkah.refs : []));
 }
 
-const namaMadzhab = (penyusun: Penyusun, ruleset: Ruleset): string => teksKamus(penyusun, `narasi.taqdir.madzhab.${ruleset}`);
+export const namaMadzhab = (penyusun: Penyusun, ruleset: Ruleset): string => teksKamus(penyusun, `narasi.taqdir.madzhab.${ruleset}`);
 
 // ─── Gharqa ───────────────────────────────────────────────────────────────────
 
