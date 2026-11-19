@@ -266,7 +266,7 @@ function barisPilihanKakek(konteks: Konteks, alasan: Extract<AlasanFardh, { kode
 }
 
 /** Mu'addah [R08-4]: saudara kandung menghitungkan saudara sebapak terhadap kakek, lalu bagian sebapak kembali ke kandung. */
-function barisMuaddah(konteks: Konteks, refs: string[]): BarisPenjelasan[] {
+export function barisMuaddah(konteks: Konteks, refs: string[]): BarisPenjelasan[] {
   return [
     langkah(konteks, 'dasar', 'bagian.muaddah.dasar', { muaddah: istilahKasus(konteks, 'muaddah') }, {}, refs),
     langkah(konteks, 'logika', 'bagian.muaddah.logika', {}, {}, refs),

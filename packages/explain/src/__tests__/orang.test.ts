@@ -75,6 +75,12 @@ describe('jelaskanOrang', () => {
       for (const tanzil of hasil.jejak.filter(satu => satu.jenis === 'DZAWIL_ARHAM_TANZIL')) {
         const penjelasan = jelaskanOrang(hasil, fixture.input.graf, tanzil.idOrang, { kamus: kamusSnapshot });
         if (!penjelasan) continue;
+        // Kerabat jauh yang terhalang tidak punya hitungan; pertanyaannya "kenapa tidak".
+        if (penjelasan.hitungan.length === 0) {
+          expect(teks(penjelasan.pertanyaan), fixture.id).toBe('Kenapa tidak mendapat bagian?');
+          expect(penjelasan.keluarga.map(keTeksBiasa).join(' '), fixture.id).toContain('terhalang');
+          continue;
+        }
         jumlah++;
         expect(teks(penjelasan.pertanyaan), fixture.id).toBe('Kenapa kerabat jauh ini mendapat bagian?');
         expect(penjelasan.dasar.map(keTeksBiasa).join(' '), fixture.id).toContain('tanzil');

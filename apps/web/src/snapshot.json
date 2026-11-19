@@ -26996,7 +26996,7 @@
   {
    "kunci": "narasi.langkah.taqdir.belum.dasar.narasi",
    "halaman": "narasi",
-   "id": "Harta tetap bisa dibagi sekarang. Tiap orang diberi bagian terkecilnya di antara semua kemungkinan, dan sisanya ditahan ({mauquf}) sampai keadaannya jelas atau para ahli waris berdamai.",
+   "id": "Harta tetap bisa dibagi sekarang. Tiap orang diberi bagian terkecilnya di antara semua kemungkinan, karena itulah yang pasti ia terima apa pun yang terjadi. Sisanya ditahan ({mauquf}) sampai keadaannya jelas atau para ahli waris berdamai.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27388,7 +27388,7 @@
   {
    "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.narasi",
    "halaman": "narasi",
-   "id": "Caranya disebut tanzil: tiap kerabat ditempatkan pada posisi perantaranya, yaitu ahli waris yang menghubungkan kerabat itu dengan almarhum. Misalnya bibi dari ibu dianggap ibu, dan bibi dari ayah dianggap ayah.",
+   "id": "Caranya disebut tanzil: tiap kerabat dinaikkan satu derajat demi satu sampai bertemu ahli waris. Ahli waris itu menjadi perantaranya, jadi kerabat ditempatkan di posisinya. Misalnya bibi dari ibu dianggap ibu.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27402,7 +27402,7 @@
   {
    "kunci": "narasi.langkah.dzawil_arham.tanzil_orang.narasi",
    "halaman": "narasi",
-   "id": "{siapa} ditempatkan sebagai {perantara}, naik {langkah} tingkat.",
+   "id": "{siapa} tersambung {jalur}, jadi ditempatkan sebagai {perantara} (naik {langkah} tingkat).",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27515,6 +27515,27 @@
    "kunci": "narasi.langkah.ahli_waris.jembatan.papan",
    "halaman": "narasi",
    "id": "Siapa sudah jelas. Berapa bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jalur.bunuwwah",
+   "halaman": "narasi",
+   "id": "lewat anak {pewaris}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jalur.ubuwwah",
+   "halaman": "narasi",
+   "id": "lewat ayah {pewaris}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jalur.umumah",
+   "halaman": "narasi",
+   "id": "lewat ibu {pewaris}",
    "ar": null,
    "versiTerbit": 873
   }
