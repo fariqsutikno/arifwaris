@@ -1,7 +1,7 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
 import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case05, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case05, case09, case10, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
 import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
@@ -33,11 +33,23 @@ describe('skrip belajar kasus biasa', () => {
     expect(teks).toContain('Jumlahnya 24');
   });
 
-  it("C16-05 ('aul): tahap bagian ditutup jembatan penyebut beda; tahap 'aul dan tashih masih bab cerita", () => {
-    const bagian = langkahDari(case05, 'bagian');
-    expect(teksNarasi(bagian.at(-1)!)).toContain('belum bisa dijumlahkan');
-    expect(jenisDari(langkahDari(case05, 'penyesuaian'))).toEqual([undefined]);
-    expect(jenisDari(langkahDari(case05, 'tashih'))).toEqual([undefined, undefined]);
+  it("C16-05 ('aul): jembatan penyebut beda, lalu tahap 'aul: pertanyaan, alasan bersama, potong ulang, contoh", () => {
+    expect(teksNarasi(langkahDari(case05, 'bagian').at(-1)!)).toContain('belum bisa dijumlahkan');
+    expect(jenisDari(langkahDari(case05, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'logika', 'logika', 'logika', 'hitung']);
+    expect(langkahDari(case05, 'penyesuaian').map(teksNarasi).join(' ')).toContain('7 kotak');
+    expect(jenisDari(langkahDari(case05, 'tashih'))).toEqual(['tanya', 'hitung', 'hitung', 'jembatan']);
+  });
+
+  it('C16-09 (radd tanpa pasangan): sisa ditanyakan, dasar radd, lalu dipotong ulang', () => {
+    expect(jenisDari(langkahDari(case09, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'logika', 'hitung']);
+    expect(teksNarasi(langkahDari(case09, 'penyesuaian').at(-1)!)).toContain('dari 4 kotak');
+  });
+
+  it('C16-10 (radd dengan pasangan): pasangan dikunci, sisa dibagi, hasil 16 potong', () => {
+    const teks = langkahDari(case10, 'penyesuaian').map(teksNarasi).join(' ');
+    expect(teks).toContain('tidak ikut radd');
+    expect(teks).toContain('harta menjadi 16 potong');
+    expect(teks).toContain('dari 16 kotak');
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {

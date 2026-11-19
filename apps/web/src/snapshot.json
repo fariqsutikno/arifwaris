@@ -25732,6 +25732,286 @@
    "id": "{rincian}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.judul",
+   "halaman": "narasi",
+   "id": "Bagiannya melebihi harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.lebih.narasi",
+   "halaman": "narasi",
+   "id": "Jumlah semua kotak: {rincian}{jumlah}, lebih besar dari {ashl}. Ada {kelebihan} kotak yang tidak muat di dalam harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.lebih.papan",
+   "halaman": "narasi",
+   "id": "{rincian}{jumlah} > {ashl} · {kelebihan} kotak tidak muat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Lalu siapa yang bagiannya dikurangi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.tanya.papan",
+   "halaman": "narasi",
+   "id": "Siapa yang dikurangi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.bersama.narasi",
+   "halaman": "narasi",
+   "id": "Semua orang di sini punya bagian pasti dari Al-Qur'an, jadi tidak ada yang didahulukan. Kekurangannya ditanggung bersama, sebanding dengan bagian masing-masing.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.bersama.papan",
+   "halaman": "narasi",
+   "id": "Semua bagian pasti dikurangi sebanding",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.potong_ulang.narasi",
+   "halaman": "narasi",
+   "id": "Jalan keluarnya: harta yang sama dipotong ulang menjadi {jumlah}. Kotaknya lebih kecil, tapi semua bagian muat. Ini disebut {aul}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.potong_ulang.papan",
+   "halaman": "narasi",
+   "id": "Harta yang sama, dipotong {jumlah} · {aul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.contoh.narasi",
+   "halaman": "narasi",
+   "id": "Lihat {siapa}: tetap {kotak} kotak, tetapi sekarang {kotak} dari {jumlah}, bukan {kotak} dari {ashl}. Bagiannya mengecil sedikit, sama seperti semua orang lainnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.contoh.papan",
+   "halaman": "narasi",
+   "id": "{siapa}: {kotak}/{ashl} → {kotak}/{jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.rincian_kelompok",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.hasil.narasi",
+   "halaman": "narasi",
+   "id": "Jadi harta dibagi {jumlah} kotak: {rincian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.hasil.papan",
+   "halaman": "narasi",
+   "id": "Penyebut baru = {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.judul",
+   "halaman": "narasi",
+   "id": "Sisa harta, ke mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.kurang.narasi",
+   "halaman": "narasi",
+   "id": "Jumlah semua kotak: {rincian}{jumlah}, padahal ada {ashl}. Masih sisa {sisa} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.kurang.papan",
+   "halaman": "narasi",
+   "id": "{rincian}{jumlah} < {ashl} · sisa {sisa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak itu untuk siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanya.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak: ke mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila tidak ada ashabah yang berhak atas sisa, sisanya dikembalikan kepada ahli waris sesuai besar bagian mereka. Ini disebut {radd}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.dasar.papan",
+   "halaman": "narasi",
+   "id": "Sisa dikembalikan sesuai bagian · {radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanpa_ashabah.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini tidak ada yang mengambil sisa sebagai ashabah, jadi {sisa} kotak itu dikembalikan kepada {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanpa_ashabah.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak → {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.perbandingan.narasi",
+   "halaman": "narasi",
+   "id": "Karena tidak ada suami atau istri, cukup bagi menurut perbandingan bagian mereka: {rincian}. Jumlahnya {ashl_radd}, jadi harta dipotong ulang menjadi {ashl_radd} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.perbandingan.papan",
+   "halaman": "narasi",
+   "id": "Perbandingan {perbandingan} · harta dipotong {ashl_radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.rincian_penerima",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.rincian_pasangan",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} (tetap {fardh})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.hasil.narasi",
+   "halaman": "narasi",
+   "id": "Jadi {rincian} dari {ashl_radd} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.hasil.papan",
+   "halaman": "narasi",
+   "id": "Penyebut baru = {ashl_radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_tidak_ikut.narasi",
+   "halaman": "narasi",
+   "id": "{pasangan} tidak ikut radd, karena suami atau istri tidak menerima radd. Bagiannya tetap {fardh} dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_tidak_ikut.papan",
+   "halaman": "narasi",
+   "id": "{pasangan}: tetap {fardh}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_dulu.narasi",
+   "halaman": "narasi",
+   "id": "Kita hitung ulang untuk sisanya: harta dipotong {ashl}. {pasangan} mendapat {saham} kotak, sisanya {sisa} kotak untuk {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_dulu.papan",
+   "halaman": "narasi",
+   "id": "{ashl} − {saham} = {sisa} kotak untuk {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.jamak.narasi",
+   "halaman": "narasi",
+   "id": "{penerima} berbagi {sisa} kotak itu dengan perbandingan {perbandingan}, totalnya {ashl_radd}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.jamak.papan",
+   "halaman": "narasi",
+   "id": "Perbandingan {perbandingan} · total {ashl_radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.mufrad.narasi",
+   "halaman": "narasi",
+   "id": "{penerima} mendapat seluruh {sisa} kotak itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.mufrad.papan",
+   "halaman": "narasi",
+   "id": "Seluruh sisa untuk {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.nisab.habis.narasi",
+   "halaman": "narasi",
+   "id": "{sisa} kotak bisa dibagi rata menjadi {ashl_radd} bagian, jadi harta tetap {hasil} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.nisab.tawafuq.narasi",
+   "halaman": "narasi",
+   "id": "Tapi {sisa} kotak tidak habis dibagi {ashl_radd} bagian, walau keduanya sama-sama bisa dibagi {fpb} ({tawafuq}). Jadi semua kotak dipotong {pengali}: harta menjadi {hasil} potong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.nisab.tabayun.narasi",
+   "halaman": "narasi",
+   "id": "Tapi {sisa} kotak tidak habis dibagi {ashl_radd} bagian, dan keduanya tidak punya faktor bersama ({tabayun}). Jadi semua kotak dipotong {ashl_radd}: harta menjadi {hasil} potong.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

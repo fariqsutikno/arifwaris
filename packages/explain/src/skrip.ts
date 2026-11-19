@@ -183,18 +183,103 @@ export function babPenyebutSkrip(konteks: Konteks): HasilSkrip {
   return { judul: judulSkrip(konteks, 'ashl.judul'), daftarBaris, kolom: 'ashl' };
 }
 
-// ─── Memeriksa jumlah bagian ('adilah) ────────────────────────────────────────
+// ─── Memeriksa jumlah bagian: 'adilah, 'aul, radd ─────────────────────────────
 
 export function babPenyesuaianSkrip(konteks: Konteks): HasilSkrip {
   const [kelas] = konteks.daftarLangkah('KELAS_MASALAH');
-  if (!kelas || kelas.kelas !== 'adilah' || konteks.daftarLangkah('SISA_KELUAR').length) return LAMA;
+  if (!kelas || konteks.daftarLangkah('SISA_KELUAR').length) return LAMA;
   const { baris } = konteks.hasil.tabel;
   const rincian = baris.length > 1 ? `${baris.map(barisTabel => barisTabel.sel['ashl']).join(' + ')} = ` : '';
-  const daftarBaris = [
-    langkah(konteks, 'tanya', 'cek.tanya', {}, { ashl: kelas.ashl }),
-    langkah(konteks, 'hitung', 'cek.pas', { rincian, jumlah: kelas.jumlahSaham }, { rincian, jumlah: kelas.jumlahSaham, adilah: istilahUmum(konteks, 'adilah') }, kelas.refs),
+  const tanya = langkah(konteks, 'tanya', 'cek.tanya', {}, { ashl: kelas.ashl });
+  switch (kelas.kelas) {
+    case 'adilah':
+      return { judul: judulSkrip(konteks, 'cek.judul'), kolom: 'penyesuaian', daftarBaris: [tanya,
+        langkah(konteks, 'hitung', 'cek.pas', { rincian, jumlah: kelas.jumlahSaham }, { rincian, jumlah: kelas.jumlahSaham, adilah: istilahUmum(konteks, 'adilah') }, kelas.refs)] };
+    case 'ailah':
+      return { judul: judulSkrip(konteks, 'aul.judul'), kolom: 'penyesuaian', daftarBaris: [tanya, ...barisAul(konteks, kelas, rincian)] };
+    case 'raddA': case 'raddB':
+      return barisRadd(konteks, kelas, rincian, tanya);
+  }
+}
+
+function barisAul(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: string): BarisPenjelasan[] {
+  const { ashl, jumlahSaham: jumlah } = kelas;
+  const refs = konteks.daftarLangkah('AUL')[0]?.refs ?? kelas.refs;
+  const contoh = konteks.hasil.tabel.baris[0]!;
+  const sisipanContoh = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak: contoh.sel['ashl']!, ashl, jumlah };
+  const rincianKelompok = gabungDan(konteks.penyusun, konteks.hasil.tabel.baris.map(barisTabel =>
+    susun(konteks.penyusun, kunciKamus('aul.rincian_kelompok'), { siapa: sebutKelompok(konteks, barisTabel.kelompok), saham: barisTabel.sel['ashl']! })));
+  return [
+    langkah(konteks, 'hitung', 'aul.lebih', { rincian, jumlah, ashl, kelebihan: jumlah - ashl }, { rincian, jumlah, ashl, kelebihan: jumlah - ashl }, kelas.refs),
+    langkah(konteks, 'tanya', 'aul.tanya', {}, {}),
+    langkah(konteks, 'logika', 'aul.bersama', {}, {}, refs),
+    langkah(konteks, 'logika', 'aul.potong_ulang', { jumlah, aul: istilahUmum(konteks, 'aul') }, { jumlah, aul: istilahUmum(konteks, 'aul') }, refs),
+    langkah(konteks, 'logika', 'aul.contoh', sisipanContoh, { siapa: sisipanContoh.siapa, kotak: sisipanContoh.kotak, ashl, jumlah }, refs),
+    langkah(konteks, 'hitung', 'aul.hasil', { jumlah, rincian: rincianKelompok }, { jumlah }, refs),
   ];
-  return { judul: judulSkrip(konteks, 'cek.judul'), daftarBaris, kolom: 'penyesuaian' };
+}
+
+function barisRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: string, tanya: BarisPenjelasan): HasilSkrip {
+  const [radd] = konteks.daftarLangkah('RADD');
+  if (!radd) return LAMA;
+  const { ashl, jumlahSaham: jumlah } = kelas;
+  const sisa = ashl - jumlah;
+  const kelompokPenerima = Object.keys(radd.raddiyyah.saham);
+  const penerima = sebutSemua(konteks, kelompokPenerima.flatMap(kelompok => konteks.anggotaDari(kelompok)));
+  const perbandingan = Object.values(radd.raddiyyah.saham).join(' : ');
+  const ashlRadd = radd.raddiyyah.ashl;
+  const radd_ = istilahUmum(konteks, 'radd');
+  const { baris } = konteks.hasil.tabel;
+  const daftarBaris = [
+    tanya,
+    langkah(konteks, 'hitung', 'radd.kurang', { rincian, jumlah, ashl, sisa }, { rincian, jumlah, ashl, sisa }, kelas.refs),
+    langkah(konteks, 'tanya', 'radd.tanya', { sisa }, { sisa }),
+    langkah(konteks, 'dasar', 'radd.dasar', { radd: radd_ }, { radd: radd_ }, radd.refs),
+    langkah(konteks, 'keluarga', 'radd.tanpa_ashabah', { sisa, penerima }, { sisa, penerima }, radd.refs),
+  ];
+  const rincianRadd = (hitungSaham: (kelompok: string) => bigint) => gabungDan(konteks.penyusun, kelompokPenerima.map(kelompok =>
+    susun(konteks.penyusun, kunciKamus('radd.rincian_penerima'), { siapa: sebutKelompok(konteks, kelompok), saham: hitungSaham(kelompok) })));
+  const { zawjiyyah } = radd;
+  if (!zawjiyyah) {
+    const rincianBagian = rincianRadd(kelompok => radd.raddiyyah.saham[kelompok]!);
+    daftarBaris.push(
+      langkah(konteks, 'logika', 'radd.perbandingan', { rincian: rincianBagian, ashl_radd: ashlRadd }, { perbandingan, ashl_radd: ashlRadd }, radd.refs),
+      langkah(konteks, 'hitung', 'radd.hasil', { rincian: rincianBagian, ashl_radd: ashlRadd }, { ashl_radd: ashlRadd }, radd.refs),
+    );
+    return { judul: judulSkrip(konteks, 'radd.judul'), kolom: 'penyesuaian', daftarBaris };
+  }
+
+  const barisPasangan = baris.find(barisTabel => barisTabel.kelompok === zawjiyyah.kelompok)!;
+  const pasangan = sebutKelompok(konteks, zawjiyyah.kelompok);
+  const fardhPasangan = barisPasangan.fardh!;
+  daftarBaris.push(
+    langkah(konteks, 'keluarga', 'radd.pasangan_tidak_ikut', { pasangan, fardh: fardhPasangan }, { pasangan, fardh: fardhPasangan }, radd.refs, barisPasangan.anggota),
+    langkah(konteks, 'hitung', 'radd.pasangan_dulu', { ashl: zawjiyyah.ashl, pasangan, saham: zawjiyyah.sahamPasangan, sisa: zawjiyyah.sisa, penerima },
+      { ashl: zawjiyyah.ashl, saham: zawjiyyah.sahamPasangan, sisa: zawjiyyah.sisa, penerima }, radd.refs),
+    kelompokPenerima.length > 1
+      ? langkah(konteks, 'hitung', 'radd.sisa_bagi.jamak', { penerima, sisa: zawjiyyah.sisa, perbandingan, ashl_radd: ashlRadd }, { perbandingan, ashl_radd: ashlRadd }, radd.refs)
+      : langkah(konteks, 'hitung', 'radd.sisa_bagi.mufrad', { penerima, sisa: zawjiyyah.sisa }, { penerima }, radd.refs),
+  );
+  const [bandingkan] = konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(satu => satu.tujuan === 'raddVsSisa');
+  if (bandingkan && kelompokPenerima.length > 1) daftarBaris.push(barisNisabRadd(konteks, bandingkan));
+  const totalRadd = konteks.hasil.tabel.totalKolom.radd!;
+  const rincianAkhir = gabungDan(konteks.penyusun, baris.map(barisTabel => barisTabel.kelompok === zawjiyyah.kelompok
+    ? susun(konteks.penyusun, kunciKamus('radd.rincian_pasangan'), { siapa: sebutKelompok(konteks, barisTabel.kelompok), saham: barisTabel.sel['radd']!, fardh: fardhPasangan })
+    : susun(konteks.penyusun, kunciKamus('radd.rincian_penerima'), { siapa: sebutKelompok(konteks, barisTabel.kelompok), saham: barisTabel.sel['radd']! })));
+  daftarBaris.push(langkah(konteks, 'hitung', 'radd.hasil', { rincian: rincianAkhir, ashl_radd: totalRadd }, { ashl_radd: totalRadd }, radd.refs));
+  return { judul: judulSkrip(konteks, 'radd.judul'), kolom: 'penyesuaian', daftarBaris };
+}
+
+/** Sisa pasangan vs penyebut radd [R09-9]: habis, tawafuq, atau tabayun. */
+function barisNisabRadd(konteks: Konteks, satu: Langkah<'PERBANDINGAN_NISAB'>): BarisPenjelasan {
+  const { a: sisa, b: ashlRadd, fpb, hasil } = satu;
+  const kunci = (jenis: string) => `narasi.langkah.radd.nisab.${jenis}.narasi`;
+  const kalimatNisab = satu.hubungan === 'habis'
+    ? susun(konteks.penyusun, kunci('habis'), { sisa, ashl_radd: ashlRadd, hasil })
+    : satu.hubungan === 'tawafuq'
+      ? susun(konteks.penyusun, kunci('tawafuq'), { sisa, ashl_radd: ashlRadd, fpb, tawafuq: istilahUmum(konteks, 'tawafuq'), pengali: ashlRadd / fpb, hasil })
+      : susun(konteks.penyusun, kunci('tabayun'), { sisa, ashl_radd: ashlRadd, tabayun: istilahUmum(konteks, 'tabayun'), hasil });
+  return { ...buatBaris(kalimatNisab, satu.refs), jenis: 'logika', papan: kalimatNisab };
 }
 
 // ─── Supaya bagian jadi bulat (tashih) ────────────────────────────────────────
@@ -202,7 +287,6 @@ export function babPenyesuaianSkrip(konteks: Konteks): HasilSkrip {
 export function babPembulatanSkrip(konteks: Konteks): HasilSkrip {
   const inkisar = konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(satu => satu.tujuan === 'inkisar');
   if (inkisar.length === 0) return undefined;
-  if (konteks.daftarLangkah('KELAS_MASALAH')[0]?.kelas !== 'adilah') return LAMA;
   const [tashih] = konteks.daftarLangkah('TASHIH');
   const penutup = langkah(konteks, 'jembatan', `tashih.jembatan.${konteks.tampilkanNominal ? 'rupiah' : 'ringkas'}`, {}, {});
   const judul = judulSkrip(konteks, 'tashih.judul');
@@ -252,8 +336,12 @@ function barisTashih(konteks: Konteks, satu: Inkisar, tashih: Langkah<'TASHIH'>)
   );
   const contoh = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok !== satu.kelompok && barisTabel.fardh && !barisTabel.ashabah);
   if (contoh) {
-    const kotak = contoh.sel['ashl']!;
-    const sisipan = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak, potong: kotak * pengali, pecahan: contoh.fardh!, hasil: tashih.hasil };
+    // Setelah 'aul/radd satuan kotak mengikuti penyebut barunya, jadi pecahan dihitung dari kotak ÷ penyebut itu.
+    const { totalKolom } = konteks.hasil.tabel;
+    const kolomDasar = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : 'ashl';
+    const kotak = contoh.sel[kolomDasar]!;
+    const pecahan = kolomDasar === 'ashl' ? contoh.fardh! : `${kotak}/${tashih.dasar}`;
+    const sisipan = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak, potong: kotak * pengali, pecahan, hasil: tashih.hasil };
     daftarBaris.push(langkah(konteks, 'logika', 'tashih.nilai_tetap', sisipan, sisipan, tashih.refs));
   }
   const barisKelompok = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok === satu.kelompok)!;
