@@ -8,6 +8,7 @@ import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
 import { semuaTersimpan } from '../tersimpan';
+import { tandaiDibagikan } from '../bagikanLokal';
 import { jalankan } from '../jalankan';
 import { dataPeranDari } from '../hasil/ketukan';
 import { ringkas } from '../hasil/ringkasan';
@@ -467,5 +468,13 @@ describe('layar hasil', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Urungkan' }));
     expect(semuaTersimpan()).toHaveLength(1);
     expect(screen.getByText(/^Tersimpan di riwayat/)).toBeTruthy();
+  });
+
+  it('kasus yang sedang dibagikan lewat tautan tidak menawarkan Jangan simpan', () => {
+    localStorage.clear();
+    tandaiDibagikan('sesi-dibagikan', true);
+    render(<Uji awal={prototipe()} idSesi="sesi-dibagikan" />);
+    fireEvent.click(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' }));
+    expect(screen.queryByRole('button', { name: 'Jangan simpan kasus ini' })).toBeNull();
   });
 });

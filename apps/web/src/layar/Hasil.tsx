@@ -435,7 +435,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         <LembarBagikan teks={teksRingkasan} saatTutup={() => setLembarTerbuka(false)}
           saatKirim={() => void kirimTeks()} saatSalin={() => void salinTeks()} saatUnduh={() => unduhKasus(kasus)}
           tautan={bagikan && bolehUbah ? { judul: sudahDibagikan(idSesi) ? t('bagikan.kelola') : t('hasil.bagikan_tautan'), saatPilih: () => { setLembarTerbuka(false); setBagikanTerbuka(true); } } : undefined}
-          saatJanganSimpan={!hanyaBaca && !tanpaSimpan && !janganSimpan ? janganSimpanKasus : undefined} />
+          // Kasus yang tautannya masih hidup tidak boleh "dihapus" diam-diam: hentikan pembagian dulu lewat Bagikan tautan.
+          saatJanganSimpan={!hanyaBaca && !tanpaSimpan && !janganSimpan && !sudahDibagikan(idSesi) ? janganSimpanKasus : undefined} />
       )}
       <Toast isi={toast} saatHilang={() => setToast(null)} />
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
