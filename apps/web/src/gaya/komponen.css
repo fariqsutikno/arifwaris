@@ -1860,31 +1860,7 @@ table.faraidh{font-size:15.5px}
 .sinema .tombol-lainnya:hover{background:#1c2b27}
 @media (max-width:480px){.tombol-lainnya span{display:none}.tombol-lainnya{width:44px;justify-content:center;padding:0}}
 
-/* Layar Hasil: ukuran isi ≥ 16px, keterangan ≥ 13px; aksi ubah berupa tautan teks, bukan ikon pensil. */
-.baris-info{font-size:15px}
-.baris-info b{font-size:16px}
-.baris-info small{font-size:13.5px}
-.baris-info .tautan-baris{grid-column:2;justify-self:start;margin-top:4px;padding:0;border:0;background:none;color:var(--ink);font:600 14.5px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:32px}
-.halaman-hasil .judul-kelompok span,.halaman-hasil .orang-sel small{font-size:13.5px}
 
-/* Keterbacaan Hasil (riset-ux-hasil-keterbacaan-2026-11-19): jawaban (nama, pecahan, rupiah) paling besar; tabel jadi bukti pendukung. */
-.halaman-hasil{--ukuran-isi:17px;--ukuran-nama:18px;--ukuran-rupiah:20px;--ukuran-label:15px}
-.halaman-hasil .baris-bagian{font-size:var(--ukuran-isi)}
-.halaman-hasil .nama-bagian{font-size:var(--ukuran-nama);font-weight:600}
-.halaman-hasil .nama-bagian small{font-size:var(--ukuran-label);font-weight:400}
-.halaman-hasil .jumlah-bagian .angka{font:700 var(--ukuran-rupiah)/1.2 var(--font-sans)}
-.halaman-hasil .jumlah-bagian small{font-size:var(--ukuran-isi);color:var(--ink)}
-.halaman-hasil .judul-kelompok,.halaman-hasil .judul-kelompok span{font-size:var(--ukuran-label)}
-.halaman-hasil .penjumlahan div{font-size:var(--ukuran-isi)}
-.halaman-hasil .baris-info{font-size:var(--ukuran-label)}
-.halaman-hasil .baris-info b{font-size:var(--ukuran-isi)}
-.halaman-hasil .baris-info .lbl{font-size:var(--ukuran-label)}
-.halaman-hasil .fakta-hero span,.halaman-hasil .status-hero{font-size:var(--ukuran-label)}
-/* Tabel: angka 16px/500 abu tua; hanya baris Jumlah yang tebal. */
-.halaman-hasil .faraidh td,.halaman-hasil .faraidh td.angka,.halaman-hasil .faraidh td.uang{font:500 16px/1.3 var(--font-sans);color:var(--ink-muted-tua,#3f4944);font-variant-numeric:tabular-nums}
-.halaman-hasil .faraidh td.kiri{color:var(--ink);font-weight:600}
-.halaman-hasil .faraidh thead th small{font:600 16px/1.2 var(--font-sans)}
-.halaman-hasil .faraidh tfoot td{font-weight:700;color:var(--ink)}
 
 /* Tombol ubah = ikon pensil polos (tanpa bingkai), area ketuk 40px; chip madzhab di hero. */
 .halaman-hasil .pensil-baris{display:inline-grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink-muted);cursor:pointer}
@@ -1896,3 +1872,46 @@ table.faraidh{font-size:15.5px}
 .judul-kelompok .pensil-baris{width:40px;height:40px;margin:-10px -8px -10px 0}
 .chip-madzhab{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px 0 16px;border:1.5px solid rgba(255,255,255,.6);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font:600 15px var(--font-sans);cursor:pointer}
 .chip-madzhab:hover{background:rgba(255,255,255,.22)}
+
+/* ═══ SKALA TEKS LAYAR HASIL (satu-satunya sumber ukuran; semua blok Hasil memilih salah satu peran) ═══
+   kecil 14 · label 16 · isi 18 · nilai 20 · judul 24 (22 di HP). Bobot: isi 400, nama/tombol 600, nilai/judul 700.
+   Hierarki: judul > nilai > isi > label > kecil. Tabel dan pohon = bukti pendukung, jadi di tingkat label (16). */
+.halaman-hasil{--t-kecil:14px;--t-label:16px;--t-isi:18px;--t-nilai:20px;--t-judul:24px}
+@media (max-width:560px){.halaman-hasil{--t-judul:22px}}
+/* judul kartu */
+.halaman-hasil .ubin-h h2,.halaman-hasil .kartu-utama h2,.halaman-hasil h2.judul-kartu,.halaman-hasil .judul-kartu h2{font:700 var(--t-judul)/1.2 var(--font-display)}
+/* isi */
+.halaman-hasil .kalimat-hero,.halaman-hasil .baris-info b,.halaman-hasil .penjumlahan div,.halaman-hasil .penjumlahan dt,.halaman-hasil .penjumlahan dd,
+.halaman-hasil .kotak-kolom,.halaman-hasil .daftar-info b,.halaman-hasil .langkah-selanjutnya li,.halaman-hasil .baris-bagian{font-size:var(--t-isi)}
+.halaman-hasil .nama-bagian{font:600 var(--t-isi)/1.25 var(--font-sans)}
+.halaman-hasil .jumlah-bagian .angka{font:700 var(--t-nilai)/1.2 var(--font-sans)}
+.halaman-hasil .jumlah-bagian small{font:500 var(--t-isi)/1.2 var(--font-sans);color:var(--ink)}
+.halaman-hasil .penjumlahan .hasil-jumlah{font-size:var(--t-nilai);font-weight:700}
+.halaman-hasil .uh b{font-size:var(--t-nilai)}
+/* label dan keterangan */
+.halaman-hasil small,.halaman-hasil .lbl,.halaman-hasil .sub-kartu,.halaman-hasil .legenda,.halaman-hasil .judul-kelompok,.halaman-hasil .judul-kelompok span,
+.halaman-hasil .fakta-hero span,.halaman-hasil .status-hero,.halaman-hasil .lok-hero,.halaman-hasil .catatan-madzhab,.halaman-hasil .baris-info .lbl,
+.halaman-hasil .nama-bagian small,.halaman-hasil .ubin-h p,.halaman-hasil .daftar-info small{font-size:var(--t-label);font-weight:400;line-height:1.45}
+.halaman-hasil .kepala-info{font:700 var(--t-label)/1.3 var(--font-sans);letter-spacing:.06em}
+/* tombol, chip, tautan */
+.halaman-hasil .pil-hero,.halaman-hasil .chip-madzhab,.halaman-hasil .tombol-aliran,.halaman-hasil .tautan-aksi,.halaman-hasil .tautan-hero,
+.halaman-hasil .segmen button,.halaman-hasil .tab-kecil button,.halaman-hasil summary,.halaman-hasil .pil-bulat,.halaman-hasil .atur-kolom label{font-size:var(--t-label);font-weight:600}
+/* tabel faraidh (bukti): semua sel 16, nama baris 600, hanya Jumlah tebal */
+.halaman-hasil .faraidh,.halaman-hasil .faraidh td,.halaman-hasil .faraidh th,.halaman-hasil .faraidh td.angka,.halaman-hasil .faraidh td.uang,.halaman-hasil .faraidh thead th,
+.halaman-hasil .faraidh .bagian-sel,.halaman-hasil .faraidh .kolom-ketuk,.halaman-hasil .faraidh thead th small{font-size:var(--t-label);font-weight:500}
+.halaman-hasil .faraidh td.kiri,.halaman-hasil .faraidh thead th{font-weight:600}
+.halaman-hasil .faraidh .orang-sel small{font-size:var(--t-kecil);font-weight:400}
+/* pohon */
+.halaman-hasil .wadah-pohon .node-orang b,.halaman-hasil .wadah-pohon .node-orang .frac{font-size:var(--t-label);font-weight:700}
+.halaman-hasil .wadah-pohon .node-orang .angka,.halaman-hasil .wadah-pohon .node-orang .peran-node,.halaman-hasil .avatar-orang{font-size:var(--t-kecil)}
+.halaman-hasil .judul-panel{font:700 var(--t-isi)/1.3 var(--font-sans)}
+.halaman-hasil .faraidh tfoot td{font-weight:700;color:var(--ink)}
+/* blok bawah: judul aksi = isi 18/600, keterangannya = label 16; kaki halaman = label */
+.halaman-hasil .daftar-aksi-ubin button>span>b,.halaman-hasil .urutan-selanjutnya li>b,.halaman-hasil .judul-pintu b,.halaman-hasil .ubin-pelajari .kepala-lipat b{font:600 var(--t-isi)/1.3 var(--font-sans)}
+.halaman-hasil .daftar-aksi-ubin button>span>span,.halaman-hasil .urutan-selanjutnya li>span,.halaman-hasil .ubin-pelajari .kepala-lipat span{font-size:var(--t-label);font-weight:400}
+.halaman-hasil .urutan-selanjutnya li{font-size:var(--t-label)}
+.halaman-hasil .kaki-hasil p,.halaman-hasil .kaki-hasil a,.halaman-hasil .kaki-hasil button{font-size:var(--t-label)}
+.halaman-hasil .baris-bagian .avatar-orang{font-size:var(--t-isi)}
+.halaman-hasil .faraidh .orang-sel small{font-size:var(--t-kecil)}
+.halaman-hasil .wadah-pohon .avatar-orang{font-size:var(--t-kecil)!important}
+.halaman-hasil .baris-bagian .avatar-orang{font-size:var(--t-isi)!important}
