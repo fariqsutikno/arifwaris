@@ -165,30 +165,38 @@ const SOAL = {
     cara: ['Isi <b>dua kemungkinan</b>: ia hidup, ia wafat.', 'Sel <b>"–"</b> memang tidak diisi.', '<b>Diberikan sekarang</b> = yang terkecil dari dua kemungkinan, setelah dikali pengali.', '<b>Ditahan</b> = sisa sampai kabarnya jelas.']
   },
   haml: {
+    // [SYF] (13a.4): jumlah janin tidak dibatasi, jadi yang berbagi sisa dengan janin belum bisa dihitung → 0 sekarang.
+    // Dua kemungkinan cukup untuk soal ini karena bagian ibu sama di semua kemungkinan janin lahir hidup (H1: 12 dari 72);
+    // soal yang bagian tetapnya berbeda antar kemungkinan (mis. 'aul pada 2 pr, H2) butuh kolom per kemungkinan.
     tab: 'Haml', bab: 'Bab haml · madzhab Syafi\'i', soal: 'Almarhum meninggalkan ibu yang sedang hamil dari ayah almarhum, dan saudara laki-laki kandung.', rujukan: 'KB 13a.4, 13a.7 H1 baris [SYF]',
     kolom: [
-      { id: 'kel', judul: 'Kelompok', jenis: 'pilih', pilihan: KELOMPOK },
-      { id: 'kini', judul: 'Diberikan sekarang', jenis: 'bulat', header: '72', labelHeader: 'Jami\'ah' }
+      { id: 'bw', judul: 'Bagian · janin wafat', jenis: 'pilih', pilihan: BAGIAN },
+      { id: 'wafat', judul: 'Janin wafat', jenis: 'bulat', header: '3' },
+      { id: 'bl', judul: 'Bagian · janin lahir hidup', jenis: 'pilih', pilihan: BAGIAN },
+      { id: 'lahir', judul: 'Janin lahir hidup', jenis: 'bulat', header: '6', gabungAshabah: 'bl' },
+      { id: 'kini', judul: 'Diberikan sekarang', jenis: 'bulat', header: '6', labelHeader: 'Jami\'ah' }
     ],
     baris: [
-      { nama: 'Ibu', kunci: { kel: 'Terkecil', kini: '12' } },
-      { nama: 'Saudara lk kandung', kunci: { kel: '0 dulu: berbagi sisa dengan janin', kini: '0' } },
-      { nama: 'Ditahan', tambahan: true, kunci: { kini: '60' } }
+      { nama: 'Ibu', kunci: { bw: '1/3', wafat: '1', bl: '1/6', lahir: '1', kini: '1' } },
+      { nama: 'Saudara lk kandung', kunci: { bw: 'Ashabah', wafat: '2', bl: 'Ashabah', lahir: '5', kini: '0' } },
+      { nama: 'Janin', kunci: { bl: 'Ashabah', lahir: '5' } },
+      { nama: 'Pengali', pengali: true, kunci: { wafat: '2', lahir: '1' } },
+      { nama: 'Ditahan', tambahan: true, kunci: { kini: '5' } }
     ],
-    cara: ['<b>Kelompok</b>: bagaimana bagiannya berubah menurut janin.', '<b>"0 dulu"</b> bukan Terhalang: bagiannya bisa datang setelah bayi lahir. Isi <b>0</b>.', '<b>Ditahan</b> = disimpan sampai bayi lahir.']
+    pengaliHarusnya: (kol, h) => h.kini / h[kol],
+    cara: ['Isi <b>dua kemungkinan</b>: janin wafat, janin lahir hidup.', 'Janin lahir hidup: <b>jumlahnya belum diketahui</b>, bisa satu, dua, atau lebih.', '<b>Diberikan sekarang</b> = yang <b>pasti</b> didapat di kedua kemungkinan, setelah dikali pengali. Yang belum pasti diisi <b>0</b>.', '<b>Ditahan</b> = sisa sampai bayi lahir.']
   },
   gharqa: { tab: 'Gharqa', bab: 'Bab gharqa', soal: 'Suami dan istri wafat dalam satu kecelakaan. Tidak diketahui sama sekali siapa yang lebih dulu. Masing-masing punya ahli waris lain.', rujukan: 'KB 13d.2, [SYF]' }
 };
 
 let aktif = 'biasa', gharqaPilih = '';
-// Satu sel "sudah terisi" per soal, dipilih acak: bisa di kolom pilihan, saham, atau asal masalah, tidak pernah satu kolom penuh.
+// Satu sel terisi per soal, dipilih acak di kolom pilihan atau saham; tidak pernah di kepala kolom (asal masalah).
 // Sel yang jawabannya membuka hal yang diuji tidak dipakai: baris pengali, sel 0/terhalang, sel ashabah bersama.
 const jangkar = {};
 function pilihJangkar(soalId) {
   const s = SOAL[soalId], calon = [];
   s.kolom.forEach(kol => {
     if (kol.terkunci) return;
-    if (kol.header) calon.push([kol.id, 'h']);
     s.baris.forEach((b, i) => {
       const kunci = b.kunci[kol.id];
       if (b.pengali || kunci === undefined || kunci === '0') return;
@@ -213,7 +221,7 @@ function selHtml(soalId, kol, i) {
   const s = SOAL[soalId], b = s.baris[i], kunci = b.kunci[kol.id], key = k(soalId, kol.id, i);
   const tampilKunci = isian => `<span class="kunci">${isian && isian !== kunci ? `<s>${isian}</s>` : ''}${kunci}</span>`;
   if (kunci === undefined && !(kol.gabungAshabah && s.baris.some(x => x.kunci[kol.id] !== undefined))) return '–';
-  if (adalahJangkar(soalId, kol.id, i)) return `<span class="terisi">${kunci}<small>sudah terisi</small></span>`;
+  if (adalahJangkar(soalId, kol.id, i)) return `<span class="terisi" title="Sudah terisi">${kunci}</span>`;
   if (kol.terkunci && !b.pengali) return `<span class="terisi">${kunci}</span>`;
   if (kol.jenis === 'bulat' && terhalang(soalId, kol, i)) return '<span class="nol">0</span>';
   if (terbuka[soalId]) return tampilKunci(v(key));
@@ -223,7 +231,6 @@ function selHtml(soalId, kol, i) {
 function kepalaHtml(soalId, kol) {
   if (!kol.header) return '';
   if (kol.terkunci) return `<span class="terisi">${kol.header}</span>`;
-  if (adalahJangkar(soalId, kol.id, 'h')) return `<span class="terisi">${kol.header}<small>sudah terisi</small></span>`;
   const key = k(soalId, kol.id, 'h');
   if (terbuka[soalId]) return `<span class="kunci">${v(key) && v(key) !== kol.header ? `<s>${v(key)}</s>` : ''}${kol.header}</span>`;
   return kotakBulat(key, `${kol.labelHeader ?? 'Asal masalah'} ${kol.judul}`);
@@ -302,7 +309,7 @@ function layarSoal(id) {
       <p class="petunjukBulat" id="petunjukBulat" role="status">Kotak ini hanya menerima bilangan bulat. Pecahan dipilih di kolom Bagian.</p>
       <div class="aksi">${terbuka[id] ? '' : `<button class="btn" data-periksa="${id}">Periksa</button>`}<button class="tautan" data-kosongkan="${id}">Kosongkan</button>${tombolBuka}</div>
       ${umpan[id] ? `<div class="umpan ${umpan[id][0]}" role="status">${umpan[id][1]}</div>` : ''}</section>
-    <section class="t s4 cara"><h2>Cara mengisi</h2><ol>${s.cara.map(c => `<li>${c}</li>`).join('')}<li>Asal masalah <b>boleh bukan yang terkecil</b>, asal sahamnya sebanding.</li><li>Sel <b>"sudah terisi"</b> adalah contoh bentuk jawaban.</li></ol></section></div>`;
+    <section class="t s4 cara"><h2>Cara mengisi</h2><ol>${s.cara.map(c => `<li>${c}</li>`).join('')}<li>Asal masalah <b>boleh bukan yang terkecil</b>, asal sahamnya sebanding.</li></ol></section></div>`;
 }
 function layarGharqa() {
   const benar = gharqaPilih === 'Tidak saling mewarisi';

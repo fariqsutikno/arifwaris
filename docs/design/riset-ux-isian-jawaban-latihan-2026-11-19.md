@@ -191,7 +191,7 @@ Mockup acuan: [mockup-tabel-faraidh-final.html](mockup-tabel-faraidh-final.html)
 | Semua asal masalah diketik | tidak ada pilihan usul; kepala kolom = kotak bilangan bulat |
 | Isian menolak selain angka secara utuh | `/`, `,`, `½` → isi kembali ke angka terakhir + keterangan; angka Arab diubah ke Latin |
 | Saham tidak perlu disederhanakan | saham terhadap asal masalah kolomnya; asal masalah boleh kelipatan bila semua saham sebanding → "Benar semua. Bentuk terkecil: …" |
-| Satu jawaban sudah terisi, **acak** | satu sel per soal dipilih acak dari kolom pilihan, saham, atau asal masalah; tidak pernah satu kolom penuh, bukan baris pengali, bukan sel 0, bukan sel ashabah bersama. Sel terisi di kolom angka menetapkan skala kolom itu (asal masalahnya harus persis) |
+| Satu jawaban sudah terisi, **acak** | satu sel per soal dipilih acak dari kolom pilihan atau saham, **tidak pernah di kepala kolom (asal masalah)**, tanpa label "sudah terisi" (cukup tidak bisa diisi); tidak pernah satu kolom penuh, bukan baris pengali, bukan sel 0, bukan sel ashabah bersama. Sel terisi di kolom angka menetapkan skala kolom itu (asal masalahnya harus persis) |
 | Sel ashabah bersama tidak terlihat dari awal | sel saham **langsung bergabung saat pelajar memilih Ashabah** untuk lebih dari satu orang berurutan (tanpa menunggu Periksa), dengan sorotan singkat; pilihan lain → sel tetap terpisah |
 | Catatan hanya bila berguna, dengan penekanan | kotak "Cara mengisi" per soal: kalimat pendek, kata kunci ditebalkan, tanpa petunjuk jawaban |
 | Pengali di atas | baris Pengali di kepala tabel, tepat di bawah asal masalah tiap kolom (seperti juz'us sahm di kitab); baris Ditahan tetap di bawah |
@@ -204,3 +204,14 @@ ini diterima. Diuji 125 kali dengan 38 posisi sel terisi berbeda: semua kunci te
 Baris **Pengali** (munasakhat, mafqud) dinilai terakhir dan dihitung dari asal masalah yang diisi pelajar, sehingga kelipatan tetap
 konsisten. Haml tabel enam kemungkinan (tingkat sulit, laptop) tidak dimasukkan ke mockup final; bentuknya ada di
 `mockup-tabel-faraidh-isian.html` bila nanti dibutuhkan.
+
+### Haml dirombak (2026-11-19)
+Kolom "Kelompok" (R13-4: tetap / terkecil / 0 dulu) membingungkan pemilik: istilahnya abstrak dan tidak terlihat seperti tabel kitab.
+Diganti pola yang sama dengan mafqud, **dua kemungkinan**: *janin wafat* (ashl 3: ibu 1/3 → 1, saudara ashabah → 2) dan *janin lahir
+hidup* (ashl 6: ibu 1/6 → 1, saudara + janin ashabah → **5 bersama**, sel bergabung otomatis). Karena jumlah janin tidak dibatasi
+([SYF], 13a.4), bagian saudara dari "5 bersama" tidak pasti, jadi **diberikan sekarang** 0; ibu diberi yang terkecil (1 dari 6);
+**ditahan** 5. Jami'ah 6 setara hasil KB H1 (12, 0, 60 dari 72).
+
+Batas: dua kolom cukup hanya bila bagian tetap sama di semua kemungkinan janin lahir hidup (benar untuk H1). Soal yang bagian
+tetapnya berubah antar kemungkinan (mis. 'aul pada taqdir 2 pr, H2) butuh kolom per kemungkinan; bank soal haml memilih kasus
+dua kolom untuk HP, dan kasus lain untuk tingkat sulit di laptop.
