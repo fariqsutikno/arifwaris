@@ -28,7 +28,7 @@ describe('jelaskanOrang', () => {
     expect(istri.keluarga.map(keTeksBiasa).join(' ')).toContain('istri mendapat 1/8, bukan 1/4');
     expect(istri.hitungan.map(baris => `${baris.label}: ${teks(baris.isi)}`)).toEqual([
       'Memotong harta: 8 ÷ 8 = 1 kotak untuk istri',
-      'Tashih: 1 × 3 = 3; bagian orang ini 3',
+      'Potong lagi (tashih): 1 kotak × 3 = 3 potong; bagian orang ini 3 potong',
       'Bagian: 3 dari 24 potong',
     ]);
   });

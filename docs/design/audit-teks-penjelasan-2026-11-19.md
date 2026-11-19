@@ -116,3 +116,25 @@ Usul perubahan glosarium (belum dilakukan; butuh rujukan): tambahkan baris "Mudl
 - Tidak ada layar browser dilihat; semua dari keluaran kode.
 - Kalimat fikih tidak dibandingkan ulang dengan KB baris per baris (di luar cakupan audit teks); yang ditandai hanya "kenapa" hilang.
 - Modal munasakhat/taqdir/gharqa tidak ada (fungsi hanya untuk kasus biasa dan dzawil arham).
+
+## 7. Status perbaikan (fase 3, 2026-11-19)
+
+Dump di berkas terpisah menggambarkan keadaan **sebelum** perbaikan; temuan di atas tetap sebagai catatan asal.
+
+| Temuan | Status |
+|---|---|
+| T1 papan huruf kecil/salinan | selesai: kapital otomatis (`papanDari`), papan ringkas untuk "asal masalah × pengali = jami'ah" dan tharif |
+| T3 sebutan kerabat dzawil arham | sebagian: tiap langkah tanzil kini menyebut jalur dari jihah KB 14.7 ("tersambung lewat ibu almarhum"). Peran asli (anak laki-laki dari anak perempuan, dst.) belum: perlu penelusur hubungan dari graf (tugas terpisah) |
+| T7 modal hitungan | selesai: "Potong lagi (tashih): 1 kotak × 3 = 3 potong"; 'aul menyebut kotak tetap, bingkai berubah |
+| T8/T9 jembatan, dasar fardh | sebagian: jembatan ahliWaris→bagian dan dasar fardh di semua tahap bagian; tahap ashl dan penyesuaian tidak diberi jembatan karena tahap berikutnya sudah dibuka pertanyaan |
+| T10 tanya penyesuaian | selesai |
+| T11 modal jatuh ke UI lama | selesai kecuali 1 orang: mani', kerabat jauh terhalang, mu'addah (7 → 1; sisanya DA-02 kerabat ketiga yang terhalang lewat perantara lain, dicek ulang di dump baru) |
+| S1 istilah dini | selesai: khuntsa, perantara, jami'ah, mas'alah→asal masalah, saham→potong (taqdir/gharqa). Tersisa: "ahli waris utama", "nasab", hajb nuqshan, tashih di papan |
+| S2 "kenapa" | sebagian: aqall ("karena itulah yang pasti diterima", KB 13.0 butir 3) dan "naik" tanzil (KB 14: dinaikkan sampai bertemu ahli waris). Radd pasangan: KB 9.4 hanya menulis "suami/istri tidak menerima radd" tanpa alasan, jadi tidak ditulis; kakek memilih bagian terbaik: alasan belum ditemukan di KB, tidak ditulis |
+| S3 angka tak diturunkan | selesai: jami'ah = KPK semua asal masalah (KB 13a), daftar asal masalah disebut; dzawil arham "Harta dibagi N potong, sesuai bagian tiap perantara menurut aturan ahli waris biasa" |
+| S4 kata ambigu | sebagian: bingkai (harta) → kotak (satuan) → potong (setelah tashih); "sisa 1" → "1 kotak tidak terbagi"; jatah dijelaskan (laki-laki 2, perempuan 1). Belum: "bagian" ganda |
+| S5 "ayahnya ibu" | selesai (kakek dari pihak ibu) |
+| S7 "Yang terbesar" | selesai |
+| T4 narasi panjang | sebagian: dasar 'Umariyyatain dipendekkan; dasar lain tetap karena riset menetapkan dasar boleh 2–3 kalimat |
+| T15 pengulangan dasar tiap mayit, S6 "dan … dan", S8 khuntsa panjang, S9 "Kitab menghitungnya", T5 tanya dengan 9 nama, T13 sebutan mayit kedua | belum |
+| Mudla bihi | blocked (bagian 4) |

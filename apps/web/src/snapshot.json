@@ -25421,7 +25421,7 @@
   {
    "kunci": "narasi.langkah.cek.tanya.narasi",
    "halaman": "narasi",
-   "id": "Sebelum lanjut, cek dulu: apakah jumlah kotak pas dengan hartanya? Kalau lebih, harta tidak cukup. Kalau kurang, ada sisa.",
+   "id": "Sebelum lanjut, cek dulu: apakah jumlah kotak pas dengan hartanya?",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26065,7 +26065,7 @@
   {
    "kunci": "narasi.langkah.orang.label.tashih",
    "halaman": "narasi",
-   "id": "Tashih",
+   "id": "Potong lagi (tashih)",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26086,7 +26086,7 @@
   {
    "kunci": "narasi.langkah.orang.aul",
    "halaman": "narasi",
-   "id": "{kotak} dari {ashl} menjadi {kotak} dari {aul}",
+   "id": "{kotak} dari {ashl} menjadi {kotak} dari {aul}: kotaknya tetap {kotak}, tapi bingkai kini diisi {aul} kotak",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26100,7 +26100,7 @@
   {
    "kunci": "narasi.langkah.orang.tashih",
    "halaman": "narasi",
-   "id": "{dasar} × {pengali} = {total}; bagian orang ini {saham}",
+   "id": "{dasar} kotak × {pengali} = {total} potong; bagian orang ini {saham} potong",
    "ar": null,
    "versiTerbit": 873
   },
