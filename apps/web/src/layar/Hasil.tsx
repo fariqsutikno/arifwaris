@@ -209,14 +209,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     : gharqaDitahan ? <TabelSkenarioGharqa {...umumKhusus} />
     : ringkasan.gharqa ? <TabelPerHarta {...umumKhusus} daftarHarta={ringkasan.gharqa.harta} />
     : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
-  // Dzawil arham belum punya linimasa (rencana 5.8): tetap memakai bab penjelasan lama.
+  // Dzawil arham: linimasanya tanpa tabel bertahap (tabel: []), jadi tanpa babak seperti taqdir dan gharqa.
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
   const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
     try { return susunSemuaLinimasa(); } catch { return { linimasa: null, babakLinimasa: null }; } // gagal menyusun = pakai daftar lama, layar Hasil tetap hidup
     function susunSemuaLinimasa(): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } {
-    if (sedangMenebak || adaDzawilArham) return { linimasa: null, babakLinimasa: null };
-    if (hasilBiasa) return { linimasa: susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: [{ hasil: hasilBiasa, ringkasan }] };
+    if (sedangMenebak) return { linimasa: null, babakLinimasa: null };
+    if (hasilBiasa) return { linimasa: susunLinimasa(hasilBiasa, kasus.graf, { kamus: kamusNarasi }), babakLinimasa: adaDzawilArham ? [] : [{ hasil: hasilBiasa, ringkasan }] };
     if (hasilMunasakhat) {
       return {
         linimasa: susunLinimasaMunasakhat(hasilMunasakhat, kasus.graf, { kamus: kamusNarasi }),
@@ -321,7 +321,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             {!menunggu && !gharqaDitahan && <UbinDitahan ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} />}
             <UbinTentang waktuHitung={waktuHitung} namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
               saatUbahHarta={bolehUbah && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
-              saatUbahMadzhab={bolehUbah && !adalahBelajar ? () => setMadzhabTerbuka(true) : undefined}
               saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
               saatUbahPembulatan={bolehUbah && tampilPembulatan ? satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) }) : undefined} />
           </div>

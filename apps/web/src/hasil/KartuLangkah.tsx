@@ -1,5 +1,5 @@
-// Pintu "Langkah demi langkah" di panel "Pelajari cara menghitungnya". Kasus yang punya linimasa (biasa, munasakhat, taqdir, gharqa)
-// membuka mode Langkah demi langkah (LangkahDemiLangkah). Kasus tanpa linimasa (dzawil arham, taqdir yang menunggu kelahiran)
+// Pintu "Langkah demi langkah" di panel "Pelajari cara menghitungnya". Kasus yang punya linimasa (biasa, munasakhat, taqdir, gharqa, dzawil arham)
+// membuka mode Langkah demi langkah (LangkahDemiLangkah). Kasus tanpa linimasa (taqdir yang menunggu kelahiran)
 // memakai daftar bab dari packages/explain di tempat: satu per satu atau semua sekaligus, kanvas menyorot seluruh bab.
 // Di mode Belajar, isinya terkunci sampai jawaban terbuka.
 

@@ -1859,3 +1859,10 @@ table.faraidh{font-size:15.5px}
 .sinema .tutup-ldl{background:#fff;color:#0e0f10}
 .sinema .tombol-lainnya:hover{background:#1c2b27}
 @media (max-width:480px){.tombol-lainnya span{display:none}.tombol-lainnya{width:44px;justify-content:center;padding:0}}
+
+/* Layar Hasil: ukuran isi ≥ 16px, keterangan ≥ 13px; aksi ubah berupa tautan teks, bukan ikon pensil. */
+.baris-info{font-size:15px}
+.baris-info b{font-size:16px}
+.baris-info small{font-size:13.5px}
+.baris-info .tautan-baris{grid-column:2;justify-self:start;margin-top:4px;padding:0;border:0;background:none;color:var(--ink);font:600 14.5px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:32px}
+.halaman-hasil .judul-kelompok span,.halaman-hasil .orang-sel small{font-size:13.5px}

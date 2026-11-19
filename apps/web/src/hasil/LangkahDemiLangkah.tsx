@@ -150,7 +150,7 @@ export function LangkahDemiLangkah({ linimasa, babak, ringkasanAkhir, sembunyiNo
           <button type="button" aria-pressed={!sinema} onClick={() => pilihTampilan('teks')}>{t('langkah.teks')}</button>
           <button type="button" aria-pressed={sinema} onClick={() => pilihTampilan('sinema')}>{t('langkah.sinema')}</button>
         </div>
-        <button type="button" className="tombol-lainnya" onClick={() => setLainnyaTerbuka(true)} aria-haspopup="dialog"><Ikon nama="lainnya" /><span>{t('langkah.lainnya')}</span></button>
+        <button type="button" className="tombol-lainnya" aria-label={t('langkah.lainnya')} onClick={() => setLainnyaTerbuka(true)} aria-haspopup="dialog"><Ikon nama="lainnya" /><span>{t('langkah.lainnya')}</span></button>
         <button type="button" className="tutup-ldl" data-tutup onClick={saatTutup} aria-label={t('umum.tutup')}><Ikon nama="salah" ukuran={22} /></button>
       </header>
       <div className="badan-ldl">
