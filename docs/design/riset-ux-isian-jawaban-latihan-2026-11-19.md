@@ -215,3 +215,8 @@ hidup* (ashl 6: ibu 1/6 → 1, saudara + janin ashabah → **5 bersama**, sel be
 Batas: dua kolom cukup hanya bila bagian tetap sama di semua kemungkinan janin lahir hidup (benar untuk H1). Soal yang bagian
 tetapnya berubah antar kemungkinan (mis. 'aul pada taqdir 2 pr, H2) butuh kolom per kemungkinan; bank soal haml memilih kasus
 dua kolom untuk HP, dan kasus lain untuk tingkat sulit di laptop.
+
+**Diganti lagi (2026-11-19): enam kemungkinan.** Pemilik memilih tabel enam kolom (wafat, 1 lk, 2 lk, 1 pr, 2 pr, lk + pr; 13a.5)
+supaya melatih cara hitung di kelas. Saham per kemungkinan = angka KB H1 ÷ juz'us sahm (dicek: saham × pengali = angka KB). Dua
+kolom bagian (janin wafat / lahir hidup) cukup karena bagian sama di kelima kemungkinan lahir hidup. Diberikan sekarang [SYF]: ibu
+12, saudara 0, ditahan 60 dari 72. Di HP tabel digeser ke samping.
