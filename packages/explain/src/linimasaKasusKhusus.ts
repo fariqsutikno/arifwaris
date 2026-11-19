@@ -5,7 +5,8 @@
 
 import type { GrafKeluarga, HartaGharqa, KeadaanGharqa } from '@waris/engine';
 import type { Bab } from './cerita.js';
-import { jelaskanGharqa, sebutGharqa, sebutTaqdir, type GharqaSelesai, type TaqdirOk } from './kasusKhusus.js';
+import { sebutGharqa, sebutTaqdir, teksSebut, type GharqaSelesai, type TaqdirOk } from './kasusKhusus.js';
+import { babHartaGharqaSkrip, babPembukaanGharqaSkrip } from './skripGharqa.js';
 import { babBelumPastiSkrip, babKemungkinanSkrip, babPemberianSkrip } from './skripTaqdir.js';
 import { kotakWakil, type IsiKotak, type Langkah, type Linimasa, type Tahap, type Visual } from './linimasa.js';
 import { sebutPenerima } from './munasakhat.js';
@@ -37,20 +38,21 @@ export function susunLinimasaTaqdir(hasil: TaqdirOk, graf: GrafKeluarga, opsi: {
 
 export function susunLinimasaGharqa(hasil: GharqaSelesai, graf: GrafKeluarga, keadaan: KeadaanGharqa, opsi: { kamus: Kamus }): Linimasa {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
-  const [pembukaan, ...bagian] = jelaskanGharqa(hasil, graf, keadaan, opsi).daftarBagian;
-  const daftarHarta = hasil.status === 'OK' ? [hasil.harta] : hasil.skenario.map(skenario => skenario.harta);
-  const tahap: Tahap[] = [tahapDariBab('wafatBersamaan', pembukaan!.judul, pembukaan!.daftarBab[0]!)];
-  // OK: satu bagian berisi bab per harta. MAUQUF: satu bagian per skenario urutan, tiap bab satu harta.
-  const daftarBab = hasil.status === 'OK' ? bagian[0]!.daftarBab.map(bab => [bab]) : bagian.map(satu => satu.daftarBab);
-  for (const [urutBagian, babBagian] of daftarBab.entries()) {
-    for (const [urut, bab] of babBagian.entries()) {
-      const harta = daftarHarta[hasil.status === 'OK' ? 0 : urutBagian]![hasil.status === 'OK' ? urutBagian : urut]!;
-      const judul = hasil.status === 'OK' ? bab.judul : `${bagian[urutBagian]!.judul}: ${bab.judul}`;
-      tahap.push(tahapHarta(judul, bab, harta));
+  const sebut = sebutGharqa(graf, hasil, penyusun);
+  const pembukaan = babPembukaanGharqaSkrip(hasil, keadaan, sebut, penyusun);
+  const tahap: Tahap[] = [tahapDariBab('wafatBersamaan', pembukaan.judul, pembukaan)];
+  // OK: satu daftar harta. MAUQUF: satu daftar harta per skenario urutan, judul tahap diawali urutannya.
+  const daftarSkenario = hasil.status === 'OK'
+    ? [{ judul: undefined, harta: hasil.harta }]
+    : hasil.skenario.map(skenario => ({ judul: teksKamus(penyusun, 'narasi.gharqa.judul.skenario', { urutan: skenario.urutan.map(id => teksSebut(sebut(id))).join(' → ') }), harta: skenario.harta }));
+  for (const { judul: judulSkenario, harta: daftarHarta } of daftarSkenario) {
+    for (const harta of daftarHarta) {
+      const bab = babHartaGharqaSkrip(harta, sebut, penyusun);
+      tahap.push(tahapHarta(judulSkenario ? `${judulSkenario}: ${bab.judul}` : bab.judul, bab, harta));
     }
   }
-  const semuaId = daftarHarta.flat(2).flatMap(harta => [...Object.keys(harta.saham), harta.mayit]);
-  return { tahap, tabel: [], nama: nama(penyusun, sebutGharqa(graf, hasil, penyusun), semuaId) };
+  const semuaId = daftarSkenario.flatMap(skenario => skenario.harta).flatMap(harta => [...Object.keys(harta.saham), harta.mayit]);
+  return { tahap, tabel: [], nama: nama(penyusun, sebut, semuaId) };
 }
 
 // ─── Tahap ────────────────────────────────────────────────────────────────────

@@ -77,6 +77,8 @@ describe('susunLinimasaGharqa', () => {
       expect(linimasa.tahap[0]!.id).toBe('wafatBersamaan');
       expect(linimasa.tahap.slice(1).every(tahap => tahap.id === 'harta')).toBe(true);
       expect(linimasa.tahap.length).toBeGreaterThan(1);
+      expect(linimasa.tahap[0]!.langkah.map(langkah => langkah.jenis)).toEqual(['tanya', 'keluarga', 'logika', 'jembatan']);
+      for (const tahap of linimasa.tahap.slice(1)) expect(tahap.langkah[0]!.jenis).toBe('tanya');
       periksaKotak(linimasa);
     });
   }

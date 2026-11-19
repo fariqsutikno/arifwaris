@@ -232,7 +232,7 @@ function sebutPenerima(penyusun: Penyusun, id: string, sebut: Sebut): Potongan[]
   return id.startsWith(AWALAN_SISA) ? susun(penyusun, 'narasi.munasakhat.sisa_harta', { mayit: sebut(id.slice(AWALAN_SISA.length)) }) : [sebut(id)];
 }
 
-const teksSebut = (potongan: Potongan): string => potongan.teks;
+export const teksSebut = (potongan: Potongan): string => potongan.teks;
 
 // ─── Sebutan untuk linimasa ───────────────────────────────────────────────────
 

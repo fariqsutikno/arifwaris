@@ -27104,6 +27104,83 @@
    "id": "Semua dibagikan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.tanya.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} wafat dalam satu peristiwa. Apakah mereka saling mewarisi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.tanya.papan",
+   "halaman": "narasi",
+   "id": "Saling mewarisi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan.narasi",
+   "halaman": "narasi",
+   "id": "Kita bagi harta tiap orang itu satu per satu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan.papan",
+   "halaman": "narasi",
+   "id": "Satu harta, satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan_skenario.narasi",
+   "halaman": "narasi",
+   "id": "Kita lihat tiap urutan yang mungkin satu per satu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan_skenario.papan",
+   "halaman": "narasi",
+   "id": "Tiap urutan, satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Harta {mayit} dibagi kepada siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.tanya.papan",
+   "halaman": "narasi",
+   "id": "Harta {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.ringkas_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}/{jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Jadi harta {mayit} dibagi: {rincian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.ringkas.papan",
+   "halaman": "narasi",
+   "id": "{rincian}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
