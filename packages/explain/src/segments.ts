@@ -21,7 +21,10 @@ export type Potongan =
  * `penekanan`: `subjudul` = kalimat pembuka kelompok baris sesudahnya; `perhatian` = hal yang perlu disikapi pembaca
  * (mis. selisih pembulatan), supaya UI bisa memisahkannya dari uraian biasa.
  */
-export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian' }
+export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian'; jenis?: JenisLangkah; papan?: Potongan[] }
+
+/** Peran sebuah kalimat dalam skrip belajar (docs/design/riset-narasi-pengajar-2026-11-19.md bagian 5). */
+export type JenisLangkah = 'peta' | 'tanya' | 'dasar' | 'keluarga' | 'logika' | 'hitung' | 'jembatan' | 'ringkas';
 
 export const tekankan = (baris: BarisPenjelasan, penekanan: NonNullable<BarisPenjelasan['penekanan']>): BarisPenjelasan => ({ ...baris, penekanan });
 
@@ -104,4 +107,16 @@ export function gabungDan(penyusun: Penyusun, daftar: Potongan[][]): Potongan[] 
     const pemisah = i === daftar.length - 1 ? penghubungAkhir : ', ';
     return [{ jenis: 'teks' as const, teks: pemisah }, ...unsur];
   });
+}
+
+/** Satu langkah skrip: templat `narasi.langkah.<kunci>.narasi` (dibacakan) dan `.papan` (ringkas di layar); sisipan dua teks itu boleh berbeda. Dua kunci terpisah bila papan dipakai bersama beberapa narasi. */
+export function barisSkrip(
+  penyusun: Penyusun, jenis: JenisLangkah, kunci: string | [narasi: string, papan: string], sisipanNarasi: Record<string, Sisipan>, sisipanPapan: Record<string, Sisipan>,
+  refs: string[] = [], subjek?: IdOrang[],
+): BarisPenjelasan {
+  const [kunciNarasi, kunciPapan] = typeof kunci === 'string' ? [`${kunci}.narasi`, `${kunci}.papan`] : kunci;
+  const baris = buatBaris(susun(penyusun, `narasi.langkah.${kunciNarasi}`, sisipanNarasi), refs, subjek);
+  const papan = susun(penyusun, `narasi.langkah.${kunciPapan}`, sisipanPapan);
+  const [awal, ...sisa] = papan;
+  return { ...baris, jenis, papan: awal ? [{ ...awal, teks: awal.teks.charAt(0).toUpperCase() + awal.teks.slice(1) }, ...sisa] : papan };
 }
