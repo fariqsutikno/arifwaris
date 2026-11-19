@@ -4,7 +4,7 @@
 // Tahap yang kasusnya belum dipetakan mengembalikan LAMA, lalu linimasa memakai bab cerita seperti sebelumnya.
 // Tidak ada aturan fikih baru: tiap kalimat memakai angka dan sebab dari jejak, dan rujukan [Rxx-y] dari jejak itu.
 
-import type { IdOrang } from '@waris/engine';
+import type { AlasanFardh, IdOrang } from '@waris/engine';
 import { PERAN_BERPENDAHULU, ceritaArba, opsiKakek, persamaanKotakAshl, teksTujuanSisa, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah, tulisPecahan } from './format.js';
@@ -21,7 +21,7 @@ const kunciKamus = (kunci: string) => `narasi.langkah.${kunci}`;
 const judulSkrip = (konteks: Konteks, kunci: string): string => teksKamus(konteks.penyusun, kunciKamus(kunci));
 const istilahUmum = (konteks: Konteks, id: IdIstilah): Potongan => istilahNarasi(konteks.penyusun, id);
 /** Nama kasus khusus berlabel kitab (al-'Umariyyatain), bukan label istilah umum. */
-const istilahKasus = (konteks: Konteks, id: 'umariyyatain' | 'musyarrakah' | 'akdariyyah'): Potongan =>
+const istilahKasus = (konteks: Konteks, id: 'umariyyatain' | 'musyarrakah' | 'akdariyyah' | 'muaddah'): Potongan =>
   istilah(id, teksKamus(konteks.penyusun, `narasi.cerita.bagian.istilah_${id}`));
 const teks = (isi: string): Potongan => ({ jenis: 'teks', teks: isi });
 const gabungPlus = (angka: Array<string | bigint>): Potongan[] => [teks(angka.join(' + '))];
@@ -132,9 +132,9 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
 // ─── Bagian awal ──────────────────────────────────────────────────────────────
 
 const ALASAN_FARDH_DIPETAKAN = new Set(['ADA_FARU_WARITS', 'TANPA_FARU_WARITS', 'KALALAH', 'TANPA_MUASHSHIB', 'UMARIYYATAIN', 'MUSYARRAKAH',
-  'JAM_IKHWAH', 'TANPA_FARU_WARITS_DAN_IKHWAH', 'ADA_FARU_MUDZAKKAR', 'ADA_FARU_MUANNATS', 'AKDARIYYAH', 'JADD_WAL_IKHWAH', 'TAKMILAH', 'NENEK_TANPA_IBU']);
+  'JAM_IKHWAH', 'TANPA_FARU_WARITS_DAN_IKHWAH', 'ADA_FARU_MUDZAKKAR', 'ADA_FARU_MUANNATS', 'AKDARIYYAH', 'JADD_WAL_IKHWAH', 'JADD_SISA_SEDIKIT', 'TAKMILAH', 'NENEK_TANPA_IBU']);
 /** Kasus khusus yang dasarnya dibawa langkah fardh-nya sendiri (lihat `barisFardh`). */
-const KASUS_KHUSUS_DIPETAKAN = new Set(['umariyyatain', 'musyarrakah', 'akdariyyah']);
+const KASUS_KHUSUS_DIPETAKAN = new Set(['umariyyatain', 'musyarrakah', 'akdariyyah', 'muaddah']);
 const PERAN_PASANGAN = new Set(['SUAMI', 'ISTRI']);
 
 /** Semua langkah fardh/ashabah kasus ini sudah punya templat skrip (kasus khusus, kakek, ma'a al-ghair belum). */
@@ -144,7 +144,7 @@ export function bagianDipetakan(konteks: Konteks): boolean {
     if (satu.jenis === 'FARDH') return ALASAN_FARDH_DIPETAKAN.has(satu.alasan.kode);
     if (satu.jenis === 'KASUS_KHUSUS') return KASUS_KHUSUS_DIPETAKAN.has(satu.nama);
     if (satu.jenis !== 'ASHABAH' || kelompokFardh.has(satu.kelompok)) return true;
-    return !satu.pilihanJadd;
+    return true;
   });
 }
 
@@ -158,6 +158,7 @@ export function babBagianSkrip(konteks: Konteks): HasilSkrip {
   if (adaAshabah && kelompokFardh.size > 0) daftarBaris.push(langkah(konteks, 'dasar', 'bagian.dasar_fardh', {}, {}));
   for (const satu of konteks.hasil.jejak) {
     if (satu.jenis === 'FARDH') daftarBaris.push(...barisFardh(konteks, satu, pewaris));
+    else if (satu.jenis === 'KASUS_KHUSUS' && satu.nama === 'muaddah') daftarBaris.push(...barisMuaddah(konteks, satu.refs));
     else if (satu.jenis === 'ASHABAH' && !kelompokFardh.has(satu.kelompok)) daftarBaris.push(...barisAshabah(konteks, satu));
   }
   daftarBaris.push(jembatanBagian(konteks, adaAshabah));
@@ -209,16 +210,13 @@ export function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Po
       return [baris(['bagian.faru_mudzakkar.narasi', 'bagian.fardh.papan'], { pewaris, oleh: sebutSemua(konteks, alasan.oleh), subjek, pecahan }, papanBiasa)];
     case 'ADA_FARU_MUANNATS':
       return [baris('bagian.faru_muannats', { pewaris, oleh: sebutSemua(konteks, alasan.oleh), subjek, pecahan, ashabah: istilahUmum(konteks, 'ashabah') }, papanBiasa)];
-    case 'JADD_WAL_IKHWAH': {
-      const terpilih = alasan.opsi.find(opsi => opsi.nama === alasan.terpilih)!;
-      const opsi = gabungAtau(konteks, alasan.opsi.map(satuOpsi => kalimat`${opsiKakek(konteks, satuOpsi.nama)} = ${satuOpsi.nilai}`));
-      const sebutTerpilih = opsiKakek(konteks, alasan.terpilih);
+    case 'JADD_WAL_IKHWAH':
+      return barisPilihanKakek(konteks, alasan, subjek, anggota, satu.refs);
+    case 'JADD_SISA_SEDIKIT':
       return [
-        baris('bagian.kakek.dasar', {}, {}, 'dasar'),
-        baris('bagian.kakek.pilihan', { kakek: subjek, opsi }, { opsi }, 'hitung'),
-        langkah(konteks, 'keluarga', 'bagian.kakek.terpilih', { terpilih: sebutTerpilih, nilai: terpilih.nilai, kakek: subjek }, { nilai: terpilih.nilai }, satu.refs, anggota),
+        baris('bagian.sisa_sedikit.dasar', {}, {}, 'dasar'),
+        baris(['bagian.sisa_sedikit.narasi', 'bagian.fardh.papan'], { sisa: alasan.sisa, subjek, pecahan }, papanBiasa),
       ];
-    }
     case 'AKDARIYYAH': {
       const adalahKakek = (id: IdOrang) => konteks.sebutan.peranDari(id)?.kunci === 'KAKEK';
       if (alasan.porsi === 'jadd') {
@@ -250,15 +248,47 @@ export function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Po
         baris('bagian.musyarrakah.dasar', { musyarrakah: istilahKasus(konteks, 'musyarrakah') }, {}, 'dasar'),
         baris('bagian.musyarrakah.bagian', { subjek, pecahan }, { subjek, pecahan }),
       ];
-    default:
-      throw new Error(`alasan fardh ${alasan.kode} belum dipetakan ke skrip`);
   }
 }
 
+/** Kakek bersama saudara: dasar "pilihan terbaik", pilihan dengan nilainya, yang terbesar (dan arti muqasamah bila itu yang terpilih). */
+function barisPilihanKakek(konteks: Konteks, alasan: Extract<AlasanFardh, { kode: 'JADD_WAL_IKHWAH' }>, kakek: Potongan[], anggotaKakek: IdOrang[], refs: string[]): BarisPenjelasan[] {
+  const terpilih = alasan.opsi.find(opsi => opsi.nama === alasan.terpilih)!;
+  const opsi = gabungAtau(konteks, alasan.opsi.map(satuOpsi => kalimat`${opsiKakek(konteks, satuOpsi.nama)} = ${satuOpsi.nilai}`));
+  return [
+    langkah(konteks, 'dasar', 'bagian.kakek.dasar', {}, {}, refs),
+    langkah(konteks, 'hitung', 'bagian.kakek.pilihan', { kakek, opsi }, { opsi }, refs),
+    langkah(konteks, 'keluarga', 'bagian.kakek.terpilih', { terpilih: opsiKakek(konteks, alasan.terpilih), nilai: terpilih.nilai, kakek }, { nilai: terpilih.nilai }, refs, anggotaKakek),
+    ...(alasan.terpilih === 'muqasamah' ? [langkah(konteks, 'logika', 'bagian.kakek.muqasamah', {}, {}, refs)] : []),
+  ];
+}
+
+/** Mu'addah [R08-4]: saudara kandung menghitungkan saudara sebapak terhadap kakek, lalu bagian sebapak kembali ke kandung. */
+function barisMuaddah(konteks: Konteks, refs: string[]): BarisPenjelasan[] {
+  return [
+    langkah(konteks, 'dasar', 'bagian.muaddah.dasar', { muaddah: istilahKasus(konteks, 'muaddah') }, {}, refs),
+    langkah(konteks, 'logika', 'bagian.muaddah.logika', {}, {}, refs),
+  ];
+}
+
 export function barisAshabah(konteks: Konteks, satu: Langkah<'ASHABAH'>): BarisPenjelasan[] {
-  const subjek = sebutKelompok(konteks, satu.kelompok);
   const anggota = konteks.anggotaDari(satu.kelompok);
   const ashabah = istilahUmum(konteks, 'ashabah');
+  const adalahKakek = (id: IdOrang) => konteks.sebutan.peranDari(id)?.kunci === 'KAKEK';
+  const kakek = anggota.filter(adalahKakek);
+  const pilihan = satu.pilihanJadd && kakek.length ? barisPilihanKakek(konteks, satu.pilihanJadd, sebutSemua(konteks, kakek), kakek, satu.refs) : [];
+  const perOrang = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok === satu.kelompok)?.perOrang ?? {};
+  const dapat = anggota.filter(id => (perOrang[id]?.saham ?? 0n) > 0n);
+  const tidak = anggota.filter(id => !dapat.includes(id));
+  // Sisa sudah habis (mis. kakek 1/6 mengambil sisa terakhir): kalimat "mengambil sisa" tidak boleh dipakai.
+  if (dapat.length === 0) return [...pilihan, langkah(konteks, 'keluarga', 'bagian.ashabah_habis', { subjek: sebutKelompok(konteks, satu.kelompok) }, { subjek: sebutKelompok(konteks, satu.kelompok) }, satu.refs, anggota)];
+  if (tidak.length > 0 && !pilihan.length) {
+    // Mu'addah: saudara sebapak dihitung tetapi bagiannya kembali ke saudara kandung.
+    const sebutDapat = sebutSemua(konteks, dapat);
+    const sebutTidak = sebutSemua(konteks, tidak);
+    return [langkah(konteks, 'keluarga', 'bagian.ashabah_sebagian', { dapat: sebutDapat, tidak: sebutTidak }, { dapat: sebutDapat, tidak: sebutTidak }, satu.refs, anggota)];
+  }
+  const subjek = sebutKelompok(konteks, satu.kelompok);
   if (satu.jenisAshabah === 'bilGhair') {
     return [langkah(konteks, 'keluarga', 'bagian.ashabah_bil_ghair', { subjek, ashabah }, { subjek, bil_ghair: istilahUmum(konteks, 'bil-ghair') }, satu.refs, anggota)];
   }
@@ -268,7 +298,7 @@ export function barisAshabah(konteks: Konteks, satu: Langkah<'ASHABAH'>): BarisP
       langkah(konteks, 'keluarga', 'bagian.maal_ghair', { subjek }, { subjek }, satu.refs, anggota),
     ];
   }
-  const baris = [langkah(konteks, 'keluarga', 'bagian.ashabah_bin_nafsi', { subjek, ashabah }, { subjek }, satu.refs, anggota)];
+  const baris = [...pilihan, langkah(konteks, 'keluarga', 'bagian.ashabah_bin_nafsi', { subjek, ashabah }, { subjek }, satu.refs, anggota)];
   const kunciPeran = konteks.sebutan.peranDari(anggota[0]!)?.kunci ?? '';
   if (PERAN_BERPENDAHULU.has(kunciPeran)) {
     // [R05-1] [R05-2] [R05-3]: sisa untuk kerabat laki-laki terdekat; yang disebut di sini justru yang TIDAK ada.
@@ -288,7 +318,7 @@ function jembatanBagian(konteks: Konteks, adaAshabah: boolean): BarisPenjelasan 
     const pecahan = gabungDan(konteks.penyusun, berpecahan.map(barisTabel => [teks(tulisPecahan(barisTabel.fardh!))]));
     return langkah(konteks, 'jembatan', 'bagian.jembatan.beda_penyebut', { pecahan }, { jumlahan: gabungPlus(berpecahan.map(barisTabel => tulisPecahan(barisTabel.fardh!))) });
   }
-  return langkah(konteks, 'jembatan', adaAshabah ? 'bagian.jembatan.ada_sisa' : 'bagian.jembatan.umum', {}, {});
+  return langkah(konteks, 'jembatan', adaAshabah && berpecahan.length > 0 ? 'bagian.jembatan.ada_sisa' : 'bagian.jembatan.umum', {}, {});
 }
 
 // ─── Memotong harta (asal masalah) ────────────────────────────────────────────

@@ -1,6 +1,7 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
 import { hitung, type Ruleset } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
+import { KASUS_KAKEK } from './kasusKakek.js';
 import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
 import { BAB16_FIXTURES, input as inputBab16, p as orangBab16, case01, case05, case03, case08, case09, case10, case12, case13, case14, case23, caseNeg1, caseNeg2, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
@@ -153,6 +154,27 @@ describe('skrip belajar kasus biasa', () => {
     expect(jenisDari(penyesuaian)).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'hitung']);
     expect(penyesuaian.map(teksNarasi).join(' ')).toContain('suami atau istri tidak menerima radd');
     expect(linimasa.tahap.find(tahap => tahap.id === 'hasil')!.langkah.map(teksNarasi).join(' ')).toContain('Sisa: 1 bagian (1/2)');
+  });
+
+  it("tiga jalur kakek: muqasamah dengan arti, sisa sedikit (saudara tidak mendapat), mu'addah (sebapak dikembalikan)", () => {
+    const teksKasus = (id: string) => {
+      const kasus = KASUS_KAKEK.find(satu => satu.id === id)!;
+      const hasil = hitung(kasus.input);
+      if (hasil.status !== 'OK') throw new Error(hasil.status);
+      const bagian = susunLinimasa(hasil, kasus.input.graf, { kamus: kamusSnapshot }).tahap.find(tahap => tahap.id === 'bagian')!.langkah;
+      expect(bagian.every(satu => satu.jenis), id).toBe(true);
+      return bagian.map(teksNarasi).join(' ');
+    };
+    const muqasamah = teksKasus('KK-1');
+    expect(muqasamah).toContain('Muqasamah artinya kakek dihitung seperti satu saudara laki-laki');
+    expect(muqasamah).toContain('(muqasamah) = 1/2');
+    const sisaSedikit = teksKasus('KK-2');
+    expect(sisaSedikit).toContain('sisa harta tinggal 1/6');
+    expect(sisaSedikit).toContain('Sisa harta sudah habis, jadi saudara laki-laki kandung tidak mendapat bagian');
+    expect(sisaSedikit).not.toContain('mengambil seluruh sisa');
+    const muaddah = teksKasus('KK-3');
+    expect(muaddah).toContain("Ini disebut al-Mu'addah");
+    expect(muaddah).toContain('Saudara laki-laki kandung mengambil sisa harta, sedangkan saudara laki-laki sebapak tidak mendapat bagian');
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {

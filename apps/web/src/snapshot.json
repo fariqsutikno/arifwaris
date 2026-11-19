@@ -27244,6 +27244,97 @@
    "id": "Harta untuk kerabat jauh",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.muqasamah.narasi",
+   "halaman": "narasi",
+   "id": "Muqasamah artinya kakek dihitung seperti satu saudara laki-laki: sisa dibagi antara kakek dan saudara, laki-laki dua kali perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.muqasamah.papan",
+   "halaman": "narasi",
+   "id": "Kakek = 1 saudara laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.sisa_sedikit.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila setelah bagian pasti sisa harta tinggal 1/6 atau kurang, kakek mendapat 1/6 dan saudara tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.sisa_sedikit.dasar.papan",
+   "halaman": "narasi",
+   "id": "Sisa ≤ 1/6: kakek 1/6, saudara gugur",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.sisa_sedikit.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini sisa harta tinggal {sisa}, jadi {subjek} mendapat {pecahan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_habis.narasi",
+   "halaman": "narasi",
+   "id": "Sisa harta sudah habis, jadi {subjek} tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_habis.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: tidak mendapat bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_sebagian.narasi",
+   "halaman": "narasi",
+   "id": "{dapat} mengambil sisa harta, sedangkan {tidak} tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_sebagian.papan",
+   "halaman": "narasi",
+   "id": "{dapat}: sisa · {tidak}: 0",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: kakek bersama saudara kandung dan saudara sebapak. Saudara kandung menghitungkan saudara sebapak terhadap kakek, supaya bagian kakek lebih kecil. Ini disebut {muaddah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.dasar.papan",
+   "halaman": "narasi",
+   "id": "Saudara sebapak ikut dihitung terhadap kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.logika.narasi",
+   "halaman": "narasi",
+   "id": "Setelah bagian kakek ditetapkan, saudara sebapak tidak mendapat apa-apa. Bagiannya dikembalikan kepada saudara kandung.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.logika.papan",
+   "halaman": "narasi",
+   "id": "Bagian sebapak → saudara kandung",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
