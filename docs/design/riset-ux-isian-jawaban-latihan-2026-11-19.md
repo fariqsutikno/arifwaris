@@ -220,3 +220,5 @@ dua kolom untuk HP, dan kasus lain untuk tingkat sulit di laptop.
 supaya melatih cara hitung di kelas. Saham per kemungkinan = angka KB H1 ÷ juz'us sahm (dicek: saham × pengali = angka KB). Dua
 kolom bagian (janin wafat / lahir hidup) cukup karena bagian sama di kelima kemungkinan lahir hidup. Diberikan sekarang [SYF]: ibu
 12, saudara 0, ditahan 60 dari 72. Di HP tabel digeser ke samping.
+Revisi: **tiap kemungkinan punya kolom bagian sendiri** (bagian → saham, enam pasang + Diberikan sekarang = 13 kolom), seperti di
+kitab; menggantikan dua kolom bagian bersama.
