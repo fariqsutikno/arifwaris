@@ -35,7 +35,7 @@ describe('linimasa dzawil arham', () => {
     const tahap = linimasaDari('DA-01').tahap.find(satu => satu.id === 'dzawilArham')!;
     const teks = tahap.langkah.map(langkah => keTeksBiasa(langkah.narasi)).join(' ');
     expect(teks).toContain('ditempatkan sebagai ibu, naik 1 tingkat');
-    expect(teks).toContain('Para perantara dihitung seperti ahli waris biasa: ibu 1 dan ayah 2. Jumlahnya 3 bagian');
+    expect(teks).toContain('Harta dibagi 3 potong, sesuai bagian tiap perantara menurut aturan ahli waris biasa: ibu 1 dan ayah 2');
     expect(teks).toContain('Bagian ayah, 2 dari 3, diteruskan kepada kerabat kedua');
     expect(teks).toContain('kerabat yang bukan penerima bagian pasti');
     expect(tahap.langkah.map(langkah => langkah.jenis)).toContain('jembatan');

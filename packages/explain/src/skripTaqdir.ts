@@ -54,7 +54,10 @@ export function babKemungkinanSkrip(hasil: TaqdirOk, graf: GrafKeluarga, sebut: 
   const jumlah = hasil.daftarDunia.length;
   const pengantar = [
     langkah(penyusun, 'dasar', 'kemungkinan.dasar', {}, {}, ['R13-16']),
-    langkah(penyusun, 'logika', 'kemungkinan.banyak', { jumlah, jamiah: istilahNarasi(penyusun, 'jamiah') }, { jumlah }),
+    langkah(penyusun, 'logika', 'kemungkinan.banyak', {
+      jumlah, daftar: gabungDan(penyusun, [...new Set(hasil.daftarDunia.map(satuDunia => satuDunia.masalah))].map(masalah => [{ jenis: 'teks' as const, teks: String(masalah) }])),
+      angka: hasil.jamiah, jamiah: istilahNarasi(penyusun, 'jamiah'),
+    }, { jumlah }),
     langkah(penyusun, 'jembatan', 'kemungkinan.jembatan', {}, {}),
   ];
   const dunia = hasil.daftarDunia.map((satuDunia, indeks) => {

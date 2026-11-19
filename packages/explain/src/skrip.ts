@@ -85,6 +85,7 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
   const bentuk = idKerabat.length > 1 ? 'jamak' : 'mufrad';
   const kerabat = sebutSemua(konteks, idKerabat);
   const daftarBaris = [langkah(konteks, 'tanya', `ahli_waris.tanya.${bentuk}`, { pewaris, kerabat }, bentuk === 'jamak' ? { jumlah: idKerabat.length } : {})];
+  const jembatan = langkah(konteks, 'jembatan', 'ahli_waris.jembatan', {}, {});
 
   const daftarMani = konteks.daftarLangkah('MANI');
   if (daftarMani.length) {
@@ -105,7 +106,7 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
   }
   const daftarKhilaf = konteks.daftarLangkah('KHILAF_MADZHAB');
   if (kelompokHajb.size === 0 && daftarMani.length === 0 && daftarKhilaf.length === 0) {
-    daftarBaris.push(langkah(konteks, 'keluarga', [`ahli_waris.tidak_terhalang.${bentuk}.narasi`, 'ahli_waris.tidak_terhalang.papan'], {}, {}));
+    daftarBaris.push(langkah(konteks, 'keluarga', [`ahli_waris.tidak_terhalang.${bentuk}.narasi`, 'ahli_waris.tidak_terhalang.papan'], {}, {}), jembatan);
     return { judul: judulSkrip(konteks, 'ahli_waris.judul'), daftarBaris, kolom: 'ahliWaris' };
   }
 
@@ -125,7 +126,7 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
     daftarBaris.push({ ...buatBaris(kalimatKhilaf, khilaf.refs, khilaf.idOrang), jenis: 'keluarga', papan: kalimatKhilaf });
   }
   const daftar = sebutSemua(konteks, idAhliWaris);
-  daftarBaris.push(langkah(konteks, 'hitung', 'ahli_waris.tinggal', { jumlah: idAhliWaris.length, daftar }, { daftar }));
+  daftarBaris.push(langkah(konteks, 'hitung', 'ahli_waris.tinggal', { jumlah: idAhliWaris.length, daftar }, { daftar }), jembatan);
   return { judul: judulSkrip(konteks, 'ahli_waris.judul'), daftarBaris, kolom: 'ahliWaris' };
 }
 
@@ -155,7 +156,8 @@ export function babBagianSkrip(konteks: Konteks): HasilSkrip {
 
   const daftarBaris: BarisPenjelasan[] = [];
   const pewaris = konteks.sebutan.pewaris();
-  if (adaAshabah && kelompokFardh.size > 0) daftarBaris.push(langkah(konteks, 'dasar', 'bagian.dasar_fardh', {}, {}));
+  // Arti fardh diperkenalkan sekali di awal tahap, juga bila tidak ada ashabah ("bagian pasti" tidak boleh muncul tanpa arti).
+  if (kelompokFardh.size > 0) daftarBaris.push(langkah(konteks, 'dasar', 'bagian.dasar_fardh', {}, {}));
   for (const satu of konteks.hasil.jejak) {
     if (satu.jenis === 'FARDH') daftarBaris.push(...barisFardh(konteks, satu, pewaris));
     else if (satu.jenis === 'KASUS_KHUSUS' && satu.nama === 'muaddah') daftarBaris.push(...barisMuaddah(konteks, satu.refs));

@@ -21,7 +21,7 @@ const teksNarasi = (satu: Langkah) => keTeksBiasa(satu.narasi);
 
 describe('skrip belajar kasus biasa', () => {
   it('C16-01: tiap tahap berpola pertanyaan, dasar, keluarga, logika, hitungan, jembatan', () => {
-    expect(jenisDari(langkahDari(case01, 'ahliWaris'))).toEqual(['peta', 'tanya', 'keluarga']);
+    expect(jenisDari(langkahDari(case01, 'ahliWaris'))).toEqual(['peta', 'tanya', 'keluarga', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'bagian'))).toEqual(['dasar', 'dasar', 'keluarga', 'keluarga', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'ashl'))).toEqual(['logika', 'hitung', 'hitung', 'hitung']);
     expect(jenisDari(langkahDari(case01, 'penyesuaian'))).toEqual(['tanya', 'hitung']);
@@ -100,7 +100,7 @@ describe('skrip belajar kasus biasa', () => {
     const teks = langkahDari(case14, 'bagian').map(teksNarasi).join(' ');
     expect(teks).toContain('paling menguntungkannya');
     expect(teks).toContain('(muqasamah) = 3/16');
-    expect(teks).toContain('Yang terbesar sepertiga sisa, yaitu 1/4');
+    expect(teks).toContain('Pilihan terbesarnya sepertiga sisa, yaitu 1/4');
     expect(teks).toContain('karena tidak ada anak laki-laki');
   });
 
@@ -184,7 +184,7 @@ describe('skrip belajar kasus biasa', () => {
     const ashl = susunLinimasa(hasil, kasus.input.graf, { kamus: kamusSnapshot }).tahap.find(tahap => tahap.id === 'ashl')!.langkah;
     expect(jenisDari(ashl)).toEqual(['logika', 'hitung', 'hitung']);
     const teks = ashl.map(teksNarasi).join(' ');
-    expect(teks).toContain('laki-laki 2 jatah, perempuan 1 jatah');
+    expect(teks).toContain('laki-laki 2, perempuan 1');
     expect(teks).toContain('Totalnya 5 jatah');
     expect(teks).toContain('Angka 5 ini disebut asal masalah');
   });

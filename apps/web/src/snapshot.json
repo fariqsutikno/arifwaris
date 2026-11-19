@@ -25330,7 +25330,7 @@
   {
    "kunci": "narasi.langkah.ashl.potong_sama.narasi",
    "halaman": "narasi",
-   "id": "Bayangkan harta sebagai satu kotak utuh. Penyebut bagian tadi {ashl}, jadi kotak itu dipotong menjadi {ashl} bagian sama besar.",
+   "id": "Bayangkan harta sebagai satu bingkai. Penyebut bagian tadi {ashl}, jadi bingkai itu diisi {ashl} kotak sama besar.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -25344,7 +25344,7 @@
   {
    "kunci": "narasi.langkah.ashl.potong_beda.narasi",
    "halaman": "narasi",
-   "id": "Bayangkan harta sebagai satu kotak utuh. Penyebut bagian tadi berbeda-beda, jadi kita cari satu angka yang cocok untuk semuanya.",
+   "id": "Bayangkan harta sebagai satu bingkai. Penyebut bagian tadi berbeda-beda, jadi kita cari satu jumlah kotak yang cocok untuk semuanya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -25470,7 +25470,7 @@
   {
    "kunci": "narasi.langkah.tashih.jatah.narasi",
    "halaman": "narasi",
-   "id": "{siapa} dibagi menurut jatah: laki-laki 2 jatah, perempuan 1 jatah. Totalnya {ruus} jatah.",
+   "id": "{siapa} dibagi menurut jatah: laki-laki dihitung 2 jatah, perempuan 1 jatah. Totalnya {ruus} jatah.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -25484,7 +25484,7 @@
   {
    "kunci": "narasi.langkah.tashih.tidak_habis.narasi",
    "halaman": "narasi",
-   "id": "{saham} kotak dibagi {ruus} {satuan}: {hasil_bagi}, sisa {sisa}. Tidak habis, padahal tiap orang harus dapat potongan utuh.",
+   "id": "{saham} kotak dibagi {ruus} {satuan}: hasilnya {hasil_bagi}, dan {sisa} kotak tidak terbagi. Padahal tiap orang harus dapat potongan utuh.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26240,7 +26240,7 @@
   {
    "kunci": "narasi.langkah.tashih.tidak_habis_kelompok.narasi",
    "halaman": "narasi",
-   "id": "{siapa}: {saham} kotak dibagi {ruus} {satuan}, hasilnya {hasil_bagi}, sisa {sisa}. Tidak habis, padahal tiap orang harus dapat potongan utuh.",
+   "id": "{siapa}: {saham} kotak dibagi {ruus} {satuan}, hasilnya {hasil_bagi}, dan {sisa} kotak tidak terbagi. Padahal tiap orang harus dapat potongan utuh.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26254,7 +26254,7 @@
   {
    "kunci": "narasi.langkah.bagian.umariyyatain.dasar.narasi",
    "halaman": "narasi",
-   "id": "Ada satu kasus khusus: bila yang ditinggalkan hanya suami atau istri, ayah, dan ibu, ibu tidak mendapat 1/3 dari seluruh harta, melainkan 1/3 dari sisa setelah bagian pasangan. Ini disebut {umariyyatain}.",
+   "id": "Ada kasus khusus: bila hanya ada suami atau istri, ayah, dan ibu, ibu mendapat 1/3 dari sisa setelah bagian pasangan, bukan 1/3 dari seluruh harta. Ini disebut {umariyyatain}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26429,7 +26429,7 @@
   {
    "kunci": "narasi.langkah.bagian.kakek.terpilih.narasi",
    "halaman": "narasi",
-   "id": "Yang terbesar {terpilih}, yaitu {nilai}. Jadi {kakek} mendapat {nilai} dari seluruh harta.",
+   "id": "Pilihan terbesarnya {terpilih}, yaitu {nilai}. Jadi {kakek} mendapat {nilai} dari seluruh harta.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -26632,14 +26632,14 @@
   {
    "kunci": "narasi.langkah.radd.sisa_tujuan.dzawil_arham.narasi",
    "halaman": "narasi",
-   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham, yaitu kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan.",
+   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham, yaitu kerabat yang bukan ahli waris utama, misalnya kakek dari pihak ibu atau anak dari anak perempuan.",
    "ar": null,
    "versiTerbit": 873
   },
   {
    "kunci": "narasi.langkah.radd.sisa_tujuan.baitul_mal.narasi",
    "halaman": "narasi",
-   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham bila ada (misalnya ayahnya ibu atau anak dari anak perempuan). Bila tidak ada, diserahkan ke baitul mal (kas umum umat Islam).",
+   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham bila ada (misalnya kakek dari pihak ibu atau anak dari anak perempuan). Bila tidak ada, diserahkan ke baitul mal (kas umum umat Islam).",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27024,7 +27024,7 @@
   {
    "kunci": "narasi.langkah.taqdir.kemungkinan.banyak.narasi",
    "halaman": "narasi",
-   "id": "Ada {jumlah} kemungkinan, jadi ada {jumlah} masalah yang dihitung sendiri-sendiri. Semuanya lalu disamakan memakai satu angka pembagi bersama, yang disebut {jamiah}.",
+   "id": "Ada {jumlah} kemungkinan, jadi ada {jumlah} masalah yang dihitung sendiri-sendiri, dengan asal masalah {daftar}. Semuanya disamakan memakai kelipatan persekutuan terkecilnya, {angka}, yang disebut {jamiah}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27339,7 +27339,7 @@
   {
    "kunci": "narasi.langkah.ashl.semua_ashabah.narasi",
    "halaman": "narasi",
-   "id": "Bayangkan harta sebagai satu kotak utuh. Semua ahli waris di sini mengambil sisa ({ashabah}), jadi tidak ada pecahan yang perlu disamakan. Harta langsung dipotong menurut jatah: laki-laki 2 jatah, perempuan 1 jatah.",
+   "id": "Bayangkan harta sebagai satu bingkai. Semua ahli waris di sini mengambil sisa ({ashabah}), jadi tidak perlu menyamakan pecahan. Bingkai langsung diisi menurut jatah: laki-laki 2, perempuan 1.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27416,7 +27416,7 @@
   {
    "kunci": "narasi.langkah.dzawil_arham.masalah_baru.narasi",
    "halaman": "narasi",
-   "id": "Para perantara dihitung seperti ahli waris biasa: {rincian}. Jumlahnya {masalah} bagian.",
+   "id": "Harta dibagi {masalah} potong, sesuai bagian tiap perantara menurut aturan ahli waris biasa: {rincian}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27501,6 +27501,20 @@
    "kunci": "narasi.langkah.gharqa.harta.tharif.papan",
    "halaman": "narasi",
    "id": "{siapa} {saham} potong → asal masalah {masalah} → jami'ah {jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.jembatan.narasi",
+   "halaman": "narasi",
+   "id": "Sekarang sudah jelas siapa yang mewarisi. Berikutnya: berapa bagian masing-masing?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.jembatan.papan",
+   "halaman": "narasi",
+   "id": "Siapa sudah jelas. Berapa bagian?",
    "ar": null,
    "versiTerbit": 873
   }
