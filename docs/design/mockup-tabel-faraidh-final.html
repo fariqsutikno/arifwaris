@@ -165,22 +165,37 @@ const SOAL = {
     cara: ['Isi <b>dua kemungkinan</b>: ia hidup, ia wafat.', 'Sel <b>"–"</b> memang tidak diisi.', '<b>Diberikan sekarang</b> = yang terkecil dari dua kemungkinan, setelah dikali pengali.', '<b>Ditahan</b> = sisa sampai kabarnya jelas.']
   },
   haml: {
-    // [SYF] (13a.4–13a.5): enam kemungkinan; yang berbagi sisa dengan janin diberi 0, ibu diberi yang terkecil.
-    // Saham per kemungkinan = angka KB H1 ÷ juz'us sahm (13a.7).
-    tab: 'Haml', bab: 'Bab haml · madzhab Syafi\'i', soal: 'Almarhum meninggalkan ibu yang sedang hamil dari ayah almarhum, dan saudara laki-laki kandung.', rujukan: 'KB 13a.4–13a.7 H1 baris [SYF]',
-    // Tiap kemungkinan: kolom bagian lalu kolom saham, seperti di kitab.
-    kolom: [['t0', 'Janin wafat', '3'], ['t1', '1 lk', '12'], ['t2', '2 lk', '18'], ['t3', '1 pr', '18'], ['t4', '2 pr', '24'], ['t5', 'lk + pr', '6']]
+    // [SYF] empat taqdir (KB 13a.5, R13-20): mati, laki-laki (berapa pun), satu pr, pr berbilang. Mitra ashabah haml
+    // ditulis bersama janin pada taqdir laki-laki dan pr berbilang (jumlah kepala tak diketahui) → 0 sekarang.
+    tab: 'Haml · Syafi\'i', bab: 'Bab haml · madzhab Syafi\'i', soal: 'Almarhum meninggalkan ibu yang sedang hamil dari ayah almarhum, dan saudara laki-laki kandung.', rujukan: 'KB 13a.5, 13a.7 H1 tabel empat taqdir',
+    kolom: [['t0', 'Janin wafat', '3', false], ['t1', 'Laki-laki', '6', true], ['t2', '1 perempuan', '18', false], ['t3', 'Perempuan berbilang', '6', true]]
+      .flatMap(([id, judul, header, gabung]) => [{ id: 'b' + id, judul: 'Bagian · ' + judul.toLowerCase(), jenis: 'pilih', pilihan: BAGIAN }, { id, judul, jenis: 'bulat', header, ...(gabung ? { gabungAshabah: 'b' + id } : {}) }])
+      .concat([{ id: 'kini', judul: 'Jami\'ah · diberikan sekarang', jenis: 'bulat', header: '18', labelHeader: 'Jami\'ah' }]),
+    baris: [
+      { nama: 'Ibu', kunci: { bt0: '1/3', t0: '1', bt1: '1/6', t1: '1', bt2: '1/6', t2: '3', bt3: '1/6', t3: '1', kini: '3' } },
+      { nama: 'Saudara lk kandung', kunci: { bt0: 'Ashabah', t0: '2', bt1: 'Ashabah', t1: '5', bt2: 'Ashabah', t2: '10', bt3: 'Ashabah', t3: '5', kini: '0' } },
+      { nama: 'Janin', kunci: { bt1: 'Ashabah', t1: '5', bt2: 'Ashabah', t2: '5', bt3: 'Ashabah', t3: '5' } },
+      { nama: 'Pengali', pengali: true, kunci: { t0: '6', t1: '3', t2: '1', t3: '3' } },
+      { nama: 'Ditahan (mauquf)', tambahan: true, kunci: { kini: '15' } }
+    ],
+    pengaliHarusnya: (kol, h) => h.kini / h[kol],
+    cara: ['Syafi\'i: <b>empat kemungkinan</b>, karena jumlah janin <b>tidak dibatasi</b>.', '"Laki-laki" dan "perempuan berbilang" = <b>berapa pun jumlahnya</b>: sisa yang dibagi bersama janin diisi <b>sekali</b> (sel bergabung otomatis).', '<b>Jami\'ah</b> = yang <b>pasti</b> didapat di semua kemungkinan, setelah dikali pengali. Yang belum pasti diisi <b>0</b>.', '<b>Mauquf</b> = sisa sampai bayi lahir.']
+  },
+  hamlHanbali: {
+    // [HNB] enam taqdir (KB 13a.5): batas dua janin; mitra ashabah haml tetap diberi yang terkecil. Angka: KB 13a.7 H1 ÷ juz'us sahm.
+    tab: 'Haml · Hanbali', bab: 'Bab haml · madzhab Hanbali', soal: 'Almarhum meninggalkan ibu yang sedang hamil dari ayah almarhum, dan saudara laki-laki kandung.', rujukan: 'KB 13a.5, 13a.7 H1 [HNB]',
+    kolom: [['t0', 'Janin wafat', '3'], ['t1', '1 lk', '12'], ['t2', '1 pr', '18'], ['t3', '2 lk', '18'], ['t4', '2 pr', '24'], ['t5', 'lk + pr', '6']]
       .flatMap(([id, judul, header]) => [{ id: 'b' + id, judul: 'Bagian · ' + judul.toLowerCase(), jenis: 'pilih', pilihan: BAGIAN }, { id, judul, jenis: 'bulat', header }])
       .concat([{ id: 'kini', judul: 'Jami\'ah · diberikan sekarang', jenis: 'bulat', header: '72', labelHeader: 'Jami\'ah' }]),
     baris: [
       { nama: 'Ibu', kunci: { bt0: '1/3', t0: '1', bt1: '1/6', t1: '2', bt2: '1/6', t2: '3', bt3: '1/6', t3: '3', bt4: '1/6', t4: '4', bt5: '1/6', t5: '1', kini: '12' } },
-      { nama: 'Saudara lk kandung', kunci: { bt0: 'Ashabah', t0: '2', bt1: 'Ashabah', t1: '5', bt2: 'Ashabah', t2: '5', bt3: 'Ashabah', t3: '10', bt4: 'Ashabah', t4: '10', bt5: 'Ashabah', t5: '2', kini: '0' } },
-      { nama: 'Janin', kunci: { bt1: 'Ashabah', t1: '5', bt2: 'Ashabah', t2: '10', bt3: 'Ashabah', t3: '5', bt4: 'Ashabah', t4: '10', bt5: 'Ashabah', t5: '3' } },
+      { nama: 'Saudara lk kandung', kunci: { bt0: 'Ashabah', t0: '2', bt1: 'Ashabah', t1: '5', bt2: 'Ashabah', t2: '10', bt3: 'Ashabah', t3: '5', bt4: 'Ashabah', t4: '10', bt5: 'Ashabah', t5: '2', kini: '20' } },
+      { nama: 'Janin', kunci: { bt1: 'Ashabah', t1: '5', bt2: 'Ashabah', t2: '5', bt3: 'Ashabah', t3: '10', bt4: 'Ashabah', t4: '10', bt5: 'Ashabah', t5: '3' } },
       { nama: 'Pengali', pengali: true, kunci: { t0: '24', t1: '6', t2: '4', t3: '4', t4: '3', t5: '12' } },
-      { nama: 'Ditahan (mauquf)', tambahan: true, kunci: { kini: '60' } }
+      { nama: 'Ditahan (mauquf)', tambahan: true, kunci: { kini: '40' } }
     ],
     pengaliHarusnya: (kol, h) => h.kini / h[kol],
-    cara: ['Tiap <b>kemungkinan janin</b> punya kolom bagian dan saham sendiri: wafat, 1 lk, 2 lk, 1 pr, 2 pr, lk + pr.', 'Isi saham <b>sesuai kemungkinan itu</b>; janin diperlakukan seperti ahli waris biasa.', '<b>Pengali</b>: agar semua kemungkinan bisa dibandingkan di jami\'ah.', '<b>Diberikan sekarang</b> = yang <b>pasti</b> didapat di semua kemungkinan (setelah dikali pengali). Bagian yang tergantung jumlah janin diisi <b>0</b>.', '<b>Ditahan</b> = sisa sampai bayi lahir.']
+    cara: ['Hanbali: <b>enam kemungkinan</b>, janin dianggap <b>paling banyak dua</b>.', 'Isi bagian dan saham <b>tiap kemungkinan</b>; janin seperti ahli waris biasa.', '<b>Jami\'ah</b> = yang <b>terkecil</b> di semua kemungkinan, setelah dikali pengali.', '<b>Mauquf</b> = sisa sampai bayi lahir.']
   },
   gharqa: { tab: 'Gharqa', bab: 'Bab gharqa', soal: 'Suami dan istri wafat dalam satu kecelakaan. Tidak diketahui sama sekali siapa yang lebih dulu. Masing-masing punya ahli waris lain.', rujukan: 'KB 13d.2, [SYF]' }
 };

@@ -238,3 +238,9 @@ Sumber: al-Ahdal, *I'anah ath-Thalib fi Bidayah 'Ilm al-Fara'idh* (Syafi'i), hlm
   wafat, laki-laki (berapa pun), satu perempuan, dan perempuan berbilang, sejalan dengan empat taqdir al-Ahdal. Enam taqdir
   (dengan "2 lk", "lk + pr") memuat anggapan jumlah tepat dua, yaitu model [HNB] di KB 13a.4. Usul revisi KB 13a.5 menunggu
   keputusan pemilik.
+- **Keputusan pemilik: jumlah kolom haml mengikuti madzhab soal.** KB 13a.5 direvisi (R13-20): [HNB] enam taqdir, [SYF] empat
+  taqdir. Mockup: tab "Haml · Syafi'i" (4 kemungkinan, sel bersama pada laki-laki dan perempuan berbilang, jami'ah 18: ibu 3,
+  saudara 0, mauquf 15) dan "Haml · Hanbali" (6 kemungkinan, urutan seperti tabel kelas: wafat, 1 lk, 1 pr, 2 lk, 2 pr, lk + pr;
+  jami'ah 72: ibu 12, saudara 20, mauquf 40).
+- **Belum selaras:** engine `packages/engine/src/taqdir.ts` masih memakai enam taqdir untuk `syafii`. Hasil "diberikan sekarang"
+  sama, tetapi tabel dan jejak engine perlu diubah ke empat taqdir saat fitur ini diterapkan.
