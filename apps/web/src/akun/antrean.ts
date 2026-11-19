@@ -26,7 +26,7 @@ let jumlahAntre = 0;
 export const versiAntrean = (): number => jumlahAntre;
 
 export const akunLokal = (): string | null => bacaMentah(KUNCI_AKUN);
-export const aturAkunLokal = (userId: string | null): void => (userId ? simpanMentah(KUNCI_AKUN, userId) : hapusMentah(KUNCI_AKUN));
+export const aturAkunLokal = (userId: string | null): void => { if (userId) simpanMentah(KUNCI_AKUN, userId); else hapusMentah(KUNCI_AKUN); };
 /** Dipasang sinkron.ts: dipanggil tiap ada entri baru supaya langsung dicoba kirim. */
 export const aturPengirim = (kirim: (() => void) | null): void => { pengirim = kirim; };
 
@@ -99,4 +99,4 @@ function kunciEntri(entri: EntriAntrean): string {
   }
 }
 
-const tulis = (daftar: EntriAntrean[]): void => simpanMentah(KUNCI_ANTREAN, JSON.stringify(daftar));
+const tulis = (daftar: EntriAntrean[]): void => { simpanMentah(KUNCI_ANTREAN, JSON.stringify(daftar)); };

@@ -27531,6 +27531,195 @@
    "id": "Perempuan berbilang",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.menurut_madzhab_dibagi",
+   "halaman": "hasil",
+   "id": "Menurut madzhab {nama}, dibagi ke {jumlah} orang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ubah_nama_kasus",
+   "halaman": "hasil",
+   "id": "Ubah nama kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tersimpan",
+   "halaman": "hasil",
+   "id": "Tersimpan di riwayat · {jam}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tidak_disimpan",
+   "halaman": "hasil",
+   "id": "Tidak disimpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.dihapus",
+   "halaman": "hasil",
+   "id": "Kasus dihapus dari riwayat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.urungkan",
+   "halaman": "hasil",
+   "id": "Urungkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.judul",
+   "halaman": "hasil",
+   "id": "Bagikan hasil ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.pratinjau",
+   "halaman": "hasil",
+   "id": "Pratinjau pesan untuk grup keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.kirim",
+   "halaman": "hasil",
+   "id": "Kirim ke WhatsApp atau aplikasi lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.kirim_ket",
+   "halaman": "hasil",
+   "id": "Teks di atas, siap ditempel",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.salin",
+   "halaman": "hasil",
+   "id": "Salin teks",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.salin_ket",
+   "halaman": "hasil",
+   "id": "Untuk ditempel di mana saja",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.tautan_ket",
+   "halaman": "hasil",
+   "id": "Keluarga membuka hasil yang sama, lengkap dengan alasannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.unduh",
+   "halaman": "hasil",
+   "id": "Unduh file kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.unduh_ket",
+   "halaman": "hasil",
+   "id": "Untuk dibuka lagi di aplikasi ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.jangan_simpan",
+   "halaman": "hasil",
+   "id": "Jangan simpan kasus ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.jangan_simpan_ket",
+   "halaman": "hasil",
+   "id": "Untuk HP pinjaman atau sekadar coba-coba. Kasus dihapus dari riwayat; bisa diurungkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.teks_disalin",
+   "halaman": "hasil",
+   "id": "Teks disalin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.judul",
+   "halaman": "hasil",
+   "id": "Pembagian waris {nama} (madzhab {madzhab})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.harta",
+   "halaman": "hasil",
+   "id": "Harta yang dibagi: {rupiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.harta_tersembunyi",
+   "halaman": "hasil",
+   "id": "Nominal disembunyikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.baris",
+   "halaman": "hasil",
+   "id": "• {nama}: {bagian} = {rupiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.baris_tanpa_nominal",
+   "halaman": "hasil",
+   "id": "• {nama}: {bagian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.ditahan",
+   "halaman": "hasil",
+   "id": "Ditahan: {rupiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.penutup",
+   "halaman": "hasil",
+   "id": "Alasan tiap bagian: buka tautan hasil. Mohon dicek ulang ke ustadz.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.gagal_salin",
+   "halaman": "hasil",
+   "id": "Gagal menyalin teks. Salin dari kotak pratinjau.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sudah_bersih_utang_wasiat",
+   "halaman": "hasil",
+   "id": "sudah bersih dari utang dan wasiat",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

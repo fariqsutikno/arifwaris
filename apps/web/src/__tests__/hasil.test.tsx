@@ -22,11 +22,13 @@ const prototipe = () => buat(['ISTRI', 'IBU', 'AYAH', 'ANAK_LK', 'ANAK_PR', 'SAU
 const c1601 = () => buat(['ISTRI', 'ANAK_LK', 'ANAK_PR'], { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n });
 
 let aksiTerakhir: Aksi | null = null;
-function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: { awal: Kasus; idSesi?: string; tujuan?: Tujuan; saatDikerjakan?: (benar: boolean) => void }) {
+function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan, tanpaSimpan }: { awal: Kasus; idSesi?: string; tujuan?: Tujuan; saatDikerjakan?: (benar: boolean) => void; tanpaSimpan?: boolean }) {
   const [kasus, setKasus] = useState(awal);
+  const [janganSimpan, setJanganSimpan] = useState(false);
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
-  return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
+  return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={setJanganSimpan} />;
 }
+const kotorTersimpan = () => (semuaTersimpan()[0]!.kasus as { tirkah: { kotor: string } }).tirkah.kotor;
 const pembagian = () => screen.getByRole('region', { name: /^(Siapa dapat berapa\?|Jawabanmu|Kunci jawaban)$/ });
 /** Buka jawaban lewat dialog tekan-tahan. */
 const bukaLewatDialog = (namaTombolTahan: RegExp) => {
@@ -57,10 +59,10 @@ describe('layar hasil', () => {
   it('urutan bento mengikuti acuan: pembagian, jenis masalah, tentang, pohon & tabel, bagikan, selanjutnya, pelajari; aksi sekunder berupa tautan (tanpa bar menempel)', () => {
     render(<Uji awal={prototipe()} />);
     const judul = [...document.querySelectorAll('.tata-hasil h2')].map(isi => isi.textContent);
-    expect(judul).toEqual(['Siapa dapat berapa?', 'Kasus ini termasuk apa?', 'Apa yang dipakai di hitungan ini?', 'Bagaimana keluarga ini dibagi?', 'Bagikan dan simpan', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
+    expect(judul).toEqual(['Siapa dapat berapa?', 'Kasus ini termasuk apa?', 'Apa yang dipakai di hitungan ini?', 'Bagaimana keluarga ini dibagi?', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
     expect(document.querySelector('.bar-bawah')).toBeNull();
     expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Reset skenario' })).toBeTruthy();
-    expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // ubin hero diringkas; angka utuh di daftar
+    expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100.000.000')).toBeTruthy();   // ubin Harta dibagi lebar penuh: nominal utuh
   });
 
   it('pembulatan: kartu muncul bila tidak pas, pilihan Rp 1.000 menghitung ulang lewat engine', () => {
@@ -132,21 +134,6 @@ describe('layar hasil', () => {
     expect(within(pembagian()).getByRole('status').textContent).toMatch(/Benar semua/);
   });
 
-  it('mode belajar: pindah ke Hitung kasus saat jawaban tertutup harus menahan tombol; dilepas cepat = batal', () => {
-    render(<Uji awal={c1601()} tujuan="belajar" />);
-    fireEvent.click(screen.getByRole('button', { name: 'Hitung kasus' }));
-    vi.useFakeTimers();
-    const tombol = within(screen.getByRole('alertdialog')).getByRole('button', { name: /Tahan untuk pindah/ });
-    fireEvent.pointerDown(tombol);
-    act(() => { vi.advanceTimersByTime(400); });
-    fireEvent.pointerUp(tombol);
-    act(() => { vi.advanceTimersByTime(2000); });
-    vi.useRealTimers();
-    expect(screen.getByRole('alertdialog')).toBeTruthy();
-    bukaLewatDialog(/Tahan untuk pindah/);
-    expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'hitung' });
-  });
-
   it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung tapi tidak benar', () => {
     const dikerjakan: boolean[] = [];
     const { unmount } = render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
@@ -177,7 +164,7 @@ describe('layar hasil', () => {
     const { unmount } = render(<Uji awal={prototipe()} />);
     const hero = document.querySelector('.hero-hasil')!;
     expect(hero.textContent).toMatch(/Harta dibagi/);
-    expect(hero.textContent).toMatch(/Penerima/);
+    expect(hero.textContent).not.toMatch(/Penerima/);
     expect(document.body.classList.contains('layar-hasil')).toBe(true);
     unmount();
     expect(document.body.classList.contains('layar-hasil')).toBe(false);
@@ -385,15 +372,14 @@ describe('layar hasil', () => {
     localStorage.clear();
   });
 
-  it('hitung kasus: pindah ke Belajar selalu dikonfirmasi; batal tidak mengirim aksi', () => {
+  it('hero kasus sendiri: tanpa tombol, sakelar, chip "1 mayit", ubin Penerima, maupun jalan ke mode tebak', () => {
     render(<Uji awal={c1601()} />);
-    aksiTerakhir = null;
-    fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
-    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Tetap di sini' }));
-    expect(aksiTerakhir).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Belajar' }));
-    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Pindah' }));
-    expect(aksiTerakhir).toEqual({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
+    const hero = document.querySelector('.hero-hasil')!;
+    expect([...hero.querySelectorAll('button')].map(tombol => tombol.textContent?.trim()).filter(Boolean)).toEqual(['Periksa', 'Bagikan']);
+    expect(hero.querySelector('.tab-kecil, .pil-hero, .fakta-hero')).toBeNull();
+    expect(hero.textContent).toMatch(/Menurut madzhab Syafi'i, dibagi ke 3 orang\./);
+    expect(screen.queryByRole('button', { name: /Coba tebak dulu/ })).toBeNull();
+    expect(screen.getByRole('button', { name: /Bandingkan madzhab/ })).toBeTruthy();
   });
 
   it('kasus yang tidak didukung tampil sebagai pesan', () => {
@@ -401,16 +387,85 @@ describe('layar hasil', () => {
     expect(screen.getByRole('alert').textContent).toMatch(/belum bisa dihitung/);
   });
 
-  it('Simpan, lanjut nanti menyimpan kasus lalu hilang dari Bagikan dan simpan', () => {
+  it('simpan otomatis: kasus baru langsung masuk Tersimpan dan bilah menampilkan jamnya; tanpa tombol Simpan', () => {
     localStorage.clear();
     render(<Uji awal={prototipe()} idSesi="sesi-simpan" />);
-    fireEvent.click(screen.getByRole('button', { name: /Simpan, lanjut nanti/ }));
-    expect(semuaTersimpan()).toHaveLength(0);
-    const dialog = screen.getByRole('dialog');
-    fireEvent.change(within(dialog).getByLabelText('Nama kasus'), { target: { value: 'Keluarga X' } });
-    fireEvent.click(within(dialog).getByRole('button', { name: 'Simpan' }));
     expect(semuaTersimpan()).toHaveLength(1);
-    expect(semuaTersimpan()[0]!.judul).toBe('Keluarga X');
+    expect(semuaTersimpan()[0]!.id).toBe('sesi-simpan');
+    expect(screen.getByText(/^Tersimpan di riwayat · \d{2}\.\d{2}$/)).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Simpan, lanjut nanti/ })).toBeNull();
+  });
+
+  it('simpan otomatis ulang saat kasus berubah (ditunda), dan nama otomatis ikut kasus', () => {
+    localStorage.clear();
+    vi.useFakeTimers();
+    render(<Uji awal={prototipe()} idSesi="sesi-ubah" />);
+    const judulAwal = semuaTersimpan()[0]!.judul;
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah harta' }));
+    fireEvent.change(screen.getByLabelText('Harta peninggalan'), { target: { value: '210000000' } });
+    fireEvent.click(within(screen.getByRole('dialog', { name: 'Ubah harta peninggalan' })).getByRole('button', { name: 'Simpan' }));
+    expect(kotorTersimpan()).toBe('110000000');
+    act(() => { vi.advanceTimersByTime(900); });
+    vi.useRealTimers();
+    expect(semuaTersimpan()).toHaveLength(1);
+    expect(kotorTersimpan()).toBe('210000000');
+    expect(semuaTersimpan()[0]!.judul).toBe(judulAwal);
+  });
+
+  it('soal latihan dan tautan penerima tidak disimpan otomatis', () => {
+    localStorage.clear();
+    render(<Uji awal={prototipe()} idSesi="sesi-latihan" tujuan="belajar" tanpaSimpan />);
+    expect(semuaTersimpan()).toHaveLength(0);
+    render(<Hasil kasus={prototipe()} idSesi="sesi-baca" tujuan="hitung" kirim={() => {}} hanyaBaca />);
+    expect(semuaTersimpan()).toHaveLength(0);
+  });
+
+  it('lembar Bagikan: pratinjau teks, empat aksi (tanpa tautan bila belum masuk), tanpa PDF/PNG; Esc menutup dan fokus kembali', () => {
+    localStorage.clear();
+    render(<Uji awal={c1601()} />);
+    const tautan = within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' });
+    tautan.focus();
+    fireEvent.click(tautan);
+    const lembar = screen.getByRole('dialog', { name: 'Bagikan hasil ini' });
+    expect(within(lembar).getByText(/Pembagian waris .*\(madzhab Syafi'i\)/)).toBeTruthy();
+    expect(within(lembar).getAllByRole('button').map(tombol => tombol.querySelector('b')?.textContent ?? tombol.textContent))
+      .toEqual(['Tutup', 'Kirim ke WhatsApp atau aplikasi lain', 'Salin teks', 'Unduh file kasus', 'Jangan simpan kasus ini']);
+    expect(lembar.textContent).not.toMatch(/PDF|PNG|Segera hadir/);
+    expect(document.activeElement?.textContent).toBe('Tutup');
+    fireEvent.keyDown(lembar, { key: 'Escape' });
+    expect(screen.queryByRole('dialog', { name: 'Bagikan hasil ini' })).toBeNull();
+    expect(document.activeElement).toBe(tautan);
+  });
+
+  it('lembar Bagikan: Salin teks menyalin ringkasan dan menampilkan toast; teks mengikuti nominal tersembunyi', async () => {
+    const tulis = vi.fn(() => Promise.resolve());
+    Object.defineProperty(navigator, 'clipboard', { value: { writeText: tulis }, configurable: true });
+    render(<Uji awal={c1601()} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Sembunyikan nominal' }));
+    fireEvent.click(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' }));
+    await act(async () => { fireEvent.click(screen.getByRole('button', { name: /Salin teks/ })); });
+    expect(tulis).toHaveBeenCalledOnce();
+    const teks = (tulis.mock.calls[0] as unknown as [string])[0];
+    expect(teks).toMatch(/Nominal disembunyikan/);
+    expect(teks).not.toMatch(/Rp/);
+    expect(screen.getByText('Teks disalin')).toBeTruthy();
+  });
+
+  it('Jangan simpan: kasus hilang dari Tersimpan, status "Tidak disimpan"; perubahan sesudahnya tidak menyimpan; Urungkan mengembalikan', () => {
+    localStorage.clear();
+    render(<Uji awal={prototipe()} idSesi="sesi-jangan" />);
+    expect(semuaTersimpan()).toHaveLength(1);
+    fireEvent.click(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Jangan simpan kasus ini' }));
+    expect(semuaTersimpan()).toHaveLength(0);
+    expect(screen.getByText('Tidak disimpan')).toBeTruthy();
+    expect(screen.getByText('Kasus dihapus dari riwayat')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Ubah harta' }));
+    fireEvent.change(screen.getByLabelText('Harta peninggalan'), { target: { value: '210000000' } });
+    fireEvent.click(within(screen.getByRole('dialog', { name: 'Ubah harta peninggalan' })).getByRole('button', { name: 'Simpan' }));
+    expect(semuaTersimpan()).toHaveLength(0);
+    fireEvent.click(screen.getByRole('button', { name: 'Urungkan' }));
+    expect(semuaTersimpan()).toHaveLength(1);
+    expect(screen.getByText(/^Tersimpan di riwayat/)).toBeTruthy();
   });
 });

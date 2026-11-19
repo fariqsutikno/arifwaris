@@ -10,17 +10,17 @@ import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
-import type { Aksi } from '../keadaan';
+import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
 import { jalankan, type HasilOk } from '../jalankan';
 import { useBahasa, type Tujuan } from '../preferensi';
 import { PesanKasusKhusus } from '../hasil/HasilKasusKhusus';
 import { KelompokDitahan, TabelKemungkinan, TabelPerHarta, TabelSkenarioGharqa, UbinDitahan, UbinKemungkinanUrutan, UbinMenunggu } from '../hasil/Ditahan';
-import { DaftarAksi, UbinBagikan, UbinJenisMasalah, UbinSelanjutnya, UbinTentang, type AksiUbin } from '../hasil/KartuLain';
+import { DaftarAksi, UbinJenisMasalah, UbinSelanjutnya, UbinTentang } from '../hasil/KartuLain';
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { ModalOrang } from '../hasil/ModalOrang';
-import { ModalEkspor } from '../hasil/ModalEkspor';
+import { LembarBagikan } from '../hasil/LembarBagikan';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
 import { ModalUbahJumlah } from '../hasil/ModalUbahJumlah';
 import { KelompokMeninggal, KotakYangDibagi, TabelMunasakhatKitab, UbinUrutanPembagian } from '../hasil/Munasakhat';
@@ -41,7 +41,10 @@ import { unduhKasus } from '../berkas';
 import { PenyediaSorot } from '../hasil/sorot';
 import { PanelPohon } from '../hasil/PanelPohon';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
-import { simpanKasus, sudahTersimpan } from '../tersimpan';
+import { bacaJudulTersimpan, hapusTersimpan, ubahJudul } from '../tersimpan';
+import { susunTeksRingkasan } from '../hasil/ringkasanTeks';
+import { useSimpanOtomatis } from '../hasil/useSimpanOtomatis';
+import { Toast, type IsiToast } from '../ui/Toast';
 import { DialogNama } from './lab/DialogNama';
 import { DialogBagikan } from './DialogBagikan';
 import { BandingMadzhab } from './BandingMadzhab';
@@ -70,8 +73,13 @@ interface Props {
   terkunci?: boolean | undefined;
   /** Tampilan penerima tautan: tanpa ubah data, reset, bagikan, dan pindah tujuan. */
   hanyaBaca?: boolean | undefined;
-  /** Ada = tautan Bagikan tampil di hero (hanya untuk pengguna yang sudah masuk). */
+  /** Ada = "Bagikan tautan" tampil di lembar Bagikan (hanya untuk pengguna yang sudah masuk). */
   bagikan?: RepositoriBagikan | undefined;
+  /** Soal latihan tidak disimpan otomatis (spec A4). */
+  tanpaSimpan?: boolean | undefined;
+  /** Sesi ini ditandai "Jangan simpan kasus ini": state sesi (bukan disimpan), dipegang pemanggil supaya bertahan antar-layar. */
+  janganSimpan?: boolean | undefined;
+  saatJanganSimpan?: ((nilai: boolean) => void) | undefined;
 }
 
 /** Syafi'i = bawaan, jadi disimpan sebagai tanpa field `madzhab`. */
@@ -83,7 +91,7 @@ const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -124,10 +132,11 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan} /></PenyediaSorot>;
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
+    tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={saatJanganSimpan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -139,8 +148,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const adalahBelajar = tujuan === 'belajar' && !khusus;
   const menunggu = ringkasan.jenis === 'menunggu';
   const gharqaDitahan = !!ringkasan.gharqa?.skenario;
-  // Menunggu kelahiran: kasus langsung disimpan supaya bisa dibuka lagi setelah bayi lahir.
-  useEffect(() => { if (menunggu) simpanKasus(idSesi, kasus); }, [menunggu, idSesi, kasus]);
+  // Setiap kasus yang sampai di sini tersimpan otomatis (termasuk menunggu kelahiran), kecuali soal latihan, tautan penerima, dan "Jangan simpan".
+  const statusSimpan = useSimpanOtomatis(idSesi, kasus, !hanyaBaca && !tanpaSimpan && !janganSimpan);
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
@@ -170,8 +179,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const [orangDipilih, setOrangDipilih] = useState<IdOrang | null>(null);
   const [kunciDiubah, setKunciDiubah] = useState<KunciAhliWaris | null>(null);
   const [ubahHartaTerbuka, setUbahHartaTerbuka] = useState(false);
-  const [eksporTerbuka, setEksporTerbuka] = useState(false);
+  const [lembarTerbuka, setLembarTerbuka] = useState(false);
   const [bagikanTerbuka, setBagikanTerbuka] = useState(false);
+  const [toast, setToast] = useState<IsiToast | null>(null);
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
   const [madzhabTerbuka, setMadzhabTerbuka] = useState(false);
   const madzhab = kasus.madzhab ?? 'syafii';
@@ -237,22 +247,49 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   const peranKamu = kamu?.kunci && jenisDari(kamu.kunci)?.label.toLowerCase();
   const namaMayit = (id: IdOrang) => namaSingkat(kasus, id);
   const daftarMayit = ringkasan.gharqa ? ringkasan.gharqa.anggota.map(namaMayit) : [namaPewaris || t('hitung.almarhum'), ...kasus.urutanWafat.map(namaMayit)];
-  const hero = teksHero(ringkasan, daftarMayit, namaPewaris);
-  const aksiBagikan: AksiUbin[] = [
-    ...(sudahTersimpan(idSesi, kasus) ? [] : [{ ikon: 'riwayat' as const, judul: t('hitung.simpan_lanjut_nanti'), keterangan: t('hasil.simpan_riwayat_ket'), saatPilih: () => setNamaTerbuka(true) }]),
-    { ikon: 'unduh', judul: t('hasil.simpan_file_kasus'), keterangan: t('hasil.simpan_file_ket'), saatPilih: () => unduhKasus(kasus) },
-    ...(bagikan && bolehUbah ? [{ ikon: 'bagikan' as const, judul: sudahDibagikan(idSesi) ? t('bagikan.kelola') : t('hasil.bagikan_tautan'), keterangan: t('hasil.bagikan_tautan_ket'), saatPilih: () => setBagikanTerbuka(true) }] : []),
-  ];
+  const hero = teksHero(ringkasan, daftarMayit, namaPewaris, madzhab);
+  const teksRingkasan = susunTeksRingkasan(ringkasan, kasus, { sembunyiNominal, bentuk: pengaturan.bentuk });
+  const salinTeks = async () => {
+    try { await navigator.clipboard.writeText(teksRingkasan); setToast({ teks: t('hasil.bagikan_lembar.teks_disalin') }); }
+    catch { setToast({ teks: t('hasil.bagikan_lembar.gagal_salin') }); }
+  };
+  const kirimTeks = async () => {
+    // Dibatalkan pengguna = bukan galat; tanpa menu bagikan perangkat, teks disalin (pola ui/Bagikan.tsx).
+    if (navigator.share) await navigator.share({ text: teksRingkasan }).catch(() => {});
+    else await salinTeks();
+  };
+  const janganSimpanKasus = () => {
+    hapusTersimpan(idSesi);
+    saatJanganSimpan?.(true);
+    setLembarTerbuka(false);
+    setToast({ teks: t('hasil.simpan.dihapus'), aksi: { label: t('hasil.simpan.urungkan'), saat: () => { saatJanganSimpan?.(false); setToast(null); } } });
+  };
+  const namaKasus = bacaJudulTersimpan(idSesi) ?? kasus.nama ?? ringkasKasus(kasus).judul;
+  const jamSimpan = statusSimpan.jenis === 'tersimpan'
+    ? angka(statusSimpan.pada.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })) : null;
 
   return (
     <main className={adalahBelajar ? 'halaman-hasil mode-belajar' : 'halaman-hasil'}>
       <header className="hero-hasil">
         <div className="bilah-hero">
-          <p className="lok-hero">{adalahBelajar ? (sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')) : t('hitung.menurut_madzhab', { nama: namaMadzhab(madzhab) })}</p>
-          {!adalahBelajar && <span className={hero.ditahan ? 'status-hero tahan' : 'status-hero'}><i />{hero.status}</span>}
+          {adalahBelajar
+            ? <p className="lok-hero">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</p>
+            : bolehUbah ? <button type="button" className="tautan-hero" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH })}><Ikon nama="kembali" ukuran={18} />{t('hitung.langkah_periksa')}</button> : <span />}
+          {!adalahBelajar && (
+            <div className="kanan-bilah">
+              {!hanyaBaca && <span className="status-simpan" role="status">{jamSimpan ? <><Ikon nama="benar" ukuran={14} />{t('hasil.simpan.tersimpan', { jam: jamSimpan })}</> : t('hasil.simpan.tidak_disimpan')}</span>}
+              <span className={hero.ditahan ? 'status-hero tahan' : 'status-hero'}><i />{hero.status}</span>
+              {!hanyaBaca && <button type="button" className="tautan-hero" onClick={() => setLembarTerbuka(true)}><Ikon nama="bagikan" ukuran={18} />{t('umum.bagikan')}</button>}
+            </div>
+          )}
         </div>
         <div className="isi-hero">
           <div className="judul-soal">
+            {!adalahBelajar && (
+              <div className="nama-kasus"><span>{namaKasus}</span>
+                {statusSimpan.jenis === 'tersimpan' && <button type="button" className="pensil-nama" aria-label={t('hasil.ubah_nama_kasus')} onClick={() => setNamaTerbuka(true)}><Ikon nama="pensil" ukuran={16} /></button>}
+              </div>
+            )}
             {adalahBelajar
               ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
               : <h1>{hero.judul}</h1>}
@@ -334,7 +371,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             </div>
           </div>
         </section>
-        {!sedangMenebak && <div className="bento-s4"><UbinBagikan daftar={aksiBagikan} /></div>}
         {!sedangMenebak && <div className="bento-s4"><UbinSelanjutnya /></div>}
         <section className="ubin-h gelap bento-s4 ubin-pelajari" aria-labelledby="judul-pelajari">
           <h2 id="judul-pelajari">{t('hasil.pelajari_cara_menghitungnya')}</h2>
@@ -383,7 +419,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       )}
       {layarPenuh && (
         <PohonLayarPenuh pohon={pohonLayarPenuh} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}
-          saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setEksporTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
+          saatSembunyi={() => setSembunyiNominal(!sembunyiNominal)} saatEkspor={() => setLembarTerbuka(true)} saatTutup={() => setLayarPenuh(null)} />
       )}
       {anakDitambahDi && (
         <DialogTambahAnak namaOrangTua={namaSingkat(kasus, anakDitambahDi)} saatBatal={() => setAnakDitambahDi(null)}
@@ -392,10 +428,16 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             setAnakDitambahDi(null);
           }} />
       )}
-      {namaTerbuka && <DialogNama judulAwal={kasus.nama ?? ringkasKasus(kasus).judul} saatBatal={() => setNamaTerbuka(false)}
-        saatSimpan={nama => { simpanKasus(idSesi, kasus, nama); setNamaTerbuka(false); segarkan(); }} />}
+      {namaTerbuka && <DialogNama judulAwal={namaKasus} saatBatal={() => setNamaTerbuka(false)}
+        saatSimpan={nama => { ubahJudul(idSesi, nama); setNamaTerbuka(false); segarkan(); }} />}
       {bagikanTerbuka && bagikan && <DialogBagikan idRiwayat={idSesi} kasus={kasus} repo={bagikan} saatTutup={() => setBagikanTerbuka(false)} />}
-      {eksporTerbuka && <ModalEkspor kasus={kasus} saatTutup={() => setEksporTerbuka(false)} />}
+      {lembarTerbuka && (
+        <LembarBagikan teks={teksRingkasan} saatTutup={() => setLembarTerbuka(false)}
+          saatKirim={() => void kirimTeks()} saatSalin={() => void salinTeks()} saatUnduh={() => unduhKasus(kasus)}
+          tautan={bagikan && bolehUbah ? { judul: sudahDibagikan(idSesi) ? t('bagikan.kelola') : t('hasil.bagikan_tautan'), saatPilih: () => { setLembarTerbuka(false); setBagikanTerbuka(true); } } : undefined}
+          saatJanganSimpan={!hanyaBaca && !tanpaSimpan && !janganSimpan ? janganSimpanKasus : undefined} />
+      )}
+      <Toast isi={toast} saatHilang={() => setToast(null)} />
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}
       {ubahHartaTerbuka && (
         <ModalUbahHarta kasus={kasus} saatTutup={() => setUbahHartaTerbuka(false)}
@@ -410,7 +452,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
 }
 
 /** Status, judul, dan kalimat hero menurut jenis kasus (acuan-hasil-final.html: Pasti / Sebagian ditahan / Ditunda / Ditahan). */
-function teksHero(ringkasan: RingkasanHasil, daftarMayit: string[], namaPewaris: string): { status: string; ditahan: boolean; judul: string; kalimat: string } {
+function teksHero(ringkasan: RingkasanHasil, daftarMayit: string[], namaPewaris: string, madzhab: Ruleset): { status: string; ditahan: boolean; judul: string; kalimat: string } {
   const nama = namaPewaris || t('hitung.almarhum');
   if (ringkasan.jenis === 'menunggu') return { status: t('hasil.ditahan.status_ditunda'), ditahan: true, judul: t('hasil.ditahan.judul_menunggu'), kalimat: t('hasil.titipan.menunggu_isi') };
   if (ringkasan.gharqa?.skenario) return { status: t('hasil.ditahan.ditahan'), ditahan: true, judul: t('hasil.gharqa.judul_ditahan'), kalimat: t('hasil.titipan.gharqa_ditahan') };
@@ -419,7 +461,7 @@ function teksHero(ringkasan: RingkasanHasil, daftarMayit: string[], namaPewaris:
   return {
     status: t('hasil.status_pasti'), ditahan: false,
     judul: namaPewaris ? t('hasil.pembagian_harta_nama', { nama: namaPewaris }) : t('hitung.nah_ini_pembagiannya'),
-    kalimat: t('hasil.dibagi_ke_jumlah_orang', { jumlah: angka(String(ringkasan.penerima.length)) }),
+    kalimat: t('hasil.menurut_madzhab_dibagi', { nama: namaMadzhab(madzhab), jumlah: angka(String(ringkasan.penerima.length)) }),
   };
 }
 
@@ -441,7 +483,8 @@ function ubinHero(ringkasan: RingkasanHasil, sembunyi: boolean): Array<{ label: 
     return [{ label: t('hasil.ditahan.dibagi_sekarang'), nilai: uang(ringkasan.penerima.reduce((jumlah, orang) => jumlah + orang.nominal, 0n)), kecil: daftarNama(ringkasan.penerima) },
       { label: t('hasil.ditahan.ditahan'), nilai: uang(ditahan.nominal), kecil: t('hasil.ditahan.untuk_nama', { nama: daftarNama(ditahan.orang) }), tahan: true }];
   }
-  return [{ label: t('hasil.harta_dibagi'), nilai: uang(ringkasan.tirkah.bersih), kecil: t('hasil.sudah_bersih'), lebar: true }];
+  // Ubin lebar penuh: nominal utuh seperti mockup (bukan ringkas).
+  return [{ label: t('hasil.harta_dibagi'), nilai: sembunyi ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih), kecil: t('hasil.sudah_bersih_utang_wasiat'), lebar: true }];
 }
 
 /** Tiga keadaan kotak di pohon kaca: wafat (garis putus), menerima (hijau), tidak menerima (redup). */

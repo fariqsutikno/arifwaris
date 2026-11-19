@@ -56,6 +56,8 @@ export function Aplikasi() {
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
+  // "Jangan simpan kasus ini": sesi yang ditandai tidak disimpan otomatis; hanya state sesi, hilang saat dimuat ulang.
+  const [sesiJanganSimpan, setSesiJanganSimpan] = useState<ReadonlySet<string>>(new Set());
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
@@ -211,7 +213,9 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
-        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={sesi ? repoAkun?.bagikan : undefined} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
+        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={sesi ? repoAkun?.bagikan : undefined} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim}
+            tanpaSimpan={sumberSesi.jenis === 'latihan'} janganSimpan={sesiJanganSimpan.has(idSesi)}
+            saatJanganSimpan={nilai => setSesiJanganSimpan(lama => { const baru = new Set(lama); if (nilai) baru.add(idSesi); else baru.delete(idSesi); return baru; })} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />

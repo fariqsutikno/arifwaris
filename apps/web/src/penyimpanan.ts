@@ -14,13 +14,16 @@ export function bacaMentah(kunci: string): string | null {
   }
 }
 
-export function simpanMentah(kunci: string, nilai: string): void {
+/** true bila nilai benar-benar masuk localStorage (bukan hanya cadangan memori). */
+export function simpanMentah(kunci: string, nilai: string): boolean {
   try {
     localStorage.setItem(kunci, nilai);
     cadangan.delete(kunci);
+    return true;
   } catch {
     // Mode privat / penyimpanan penuh: cukup di memori.
     cadangan.set(kunci, nilai);
+    return false;
   }
 }
 

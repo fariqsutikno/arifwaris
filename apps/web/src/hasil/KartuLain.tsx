@@ -1,5 +1,5 @@
 // Ubin pendamping daftar di layar Hasil (acuan-hasil-final.html): Jenis masalah, Tentang kasus ini (KASUS + HITUNGAN),
-// Bagikan dan simpan, Langkah selanjutnya. Semua angka dari ringkasan (engine); ubin tanpa isi tidak dirender pemanggil.
+// Langkah selanjutnya. Semua angka dari ringkasan (engine); ubin tanpa isi tidak dirender pemanggil.
 
 import { useState, type ReactNode } from 'react';
 import { formatRupiah } from '../format';
@@ -173,15 +173,6 @@ export function DaftarAksi({ daftar }: { daftar: AksiUbin[] }) {
         </button>
       ))}
     </div>
-  );
-}
-
-export function UbinBagikan({ daftar }: { daftar: AksiUbin[] }) {
-  return (
-    <section className="ubin-h oranye" aria-labelledby="judul-bagikan" data-tur="selanjutnya">
-      <h2 id="judul-bagikan">{t('hasil.bagikan_dan_simpan')}</h2>
-      <DaftarAksi daftar={daftar} />
-    </section>
   );
 }
 
