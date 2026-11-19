@@ -37,7 +37,7 @@ function orangMenerima(konteks: Konteks, idOrang: IdOrang, kelompok: string): Pe
   const ashabah = konteks.daftarLangkah('ASHABAH').find(satu => satu.kelompok === kelompok);
   const baris = fardh
     ? barisFardh(konteks, fardh, pewaris)
-    : ashabah ? [{ ...barisAshabah(konteks, ashabah) }, barisSkrip(penyusun, 'dasar', 'bagian.dasar_fardh', {}, {})] : undefined;
+    : ashabah ? [...barisAshabah(konteks, ashabah), barisSkrip(penyusun, 'dasar', 'bagian.dasar_fardh', {}, {})] : undefined;
   if (!baris) return undefined;
   const nuqshan = fardh && konteks.daftarLangkah('HAJB_NUQSHAN').find(satu => konteks.anggotaDari(kelompok).includes(satu.terdampak));
   const pertanyaan = fardh

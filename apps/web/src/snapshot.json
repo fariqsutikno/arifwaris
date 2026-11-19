@@ -26250,6 +26250,153 @@
    "id": "{siapa}: {saham} kotak menjadi {potong_kelompok} potong, dan {potong_kelompok} habis dibagi {ruus}.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: bila yang ditinggalkan hanya suami atau istri, ayah, dan ibu, ibu tidak mendapat 1/3 dari seluruh harta, melainkan 1/3 dari sisa setelah bagian pasangan. Ini disebut {umariyyatain}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.dasar.papan",
+   "halaman": "narasi",
+   "id": "Pasangan + ayah + ibu: ibu 1/3 dari sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.ibu.narasi",
+   "halaman": "narasi",
+   "id": "Setelah {pasangan} mengambil {fardh_pasangan}, {subjek} mendapat 1/3 dari sisa itu, yaitu {pecahan} dari seluruh harta. Dengan begitu bagian ayah tidak lebih kecil dari bagian ibu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.ibu.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: 1/3 dari sisa = {pecahan} dari seluruh harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.paling_dekat.narasi",
+   "halaman": "narasi",
+   "id": "Sisa harta diberikan kepada kerabat laki-laki yang paling dekat. {siapa} mengambilnya karena tidak ada {lebih_dekat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.paling_dekat.papan",
+   "halaman": "narasi",
+   "id": "Tidak ada {lebih_dekat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: suami, ibu, dua saudara seibu atau lebih, dan saudara laki-laki kandung. Bagian pasti sudah menghabiskan harta, tapi saudara kandung digabung dengan saudara seibu karena sama-sama anak ibu. Ini disebut {musyarrakah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.dasar.papan",
+   "halaman": "narasi",
+   "id": "Saudara kandung digabung dengan saudara seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.bagian.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} berbagi {pecahan} sama rata per orang, tanpa membedakan laki-laki dan perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.bagian.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan}, rata per orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {dari}, tapi turun menjadi {pecahan} bila {pewaris} punya dua saudara atau lebih, termasuk saudara yang terhalang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.dasar.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {dari} → {pecahan} bila ada 2 saudara atau lebih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} punya dua saudara atau lebih: {oleh}. Jadi {subjek} {mendapat}, bukan {dari}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {dari} → {pecahan} · {jam_min_al_ikhwah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah_tanpa_dari.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} punya dua saudara atau lebih: {oleh}. Jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah_terhalang.narasi",
+   "halaman": "narasi",
+   "id": "Saudara yang terhalang tetap dihitung, walaupun tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah_terhalang.papan",
+   "halaman": "narasi",
+   "id": "Yang terhalang tetap dihitung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.tanpa_faru_ikhwah.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} tidak punya anak atau cucu yang ikut mewarisi, dan tidak punya dua saudara atau lebih, jadi {subjek} mendapat {pecahan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.faru_mudzakkar.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan keturunan laki-laki ({oleh}), jadi {subjek} mendapat {pecahan} saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.faru_muannats.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} hanya meninggalkan keturunan perempuan ({oleh}), jadi {subjek} mendapat {pecahan}, ditambah sisa harta nanti sebagai {ashabah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.faru_muannats.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan} + sisa",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

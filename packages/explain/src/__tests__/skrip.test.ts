@@ -1,7 +1,7 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
 import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case05, case09, case10, case23, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case05, case03, case09, case10, case13, case23, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
 import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
@@ -66,6 +66,22 @@ describe('skrip belajar kasus biasa', () => {
     const teks = langkahDari(case23, 'tashih').map(teksNarasi).join(' ');
     expect(teks).toContain('pengali bersama');
     expect(teks).toContain('habis dibagi');
+  });
+
+  it("C16-03 ('Umariyyatain): dasar kasus khusus, 1/3 sisa, dan ayah mengambil sisa karena TIDAK ada yang lebih dekat", () => {
+    const bagian = langkahDari(case03, 'bagian');
+    const teks = bagian.map(teksNarasi).join(' ');
+    expect(teks).toContain("Ini disebut al-'Umariyyatain");
+    expect(teks).toContain('Setelah istri mengambil 1/4, ibu mendapat 1/3 dari sisa itu, yaitu 1/4 dari seluruh harta');
+    expect(teks).toContain('karena tidak ada anak laki-laki atau cucu laki-laki dari anak laki-laki');
+    expect(bagian.every(satu => satu.jenis)).toBe(true);
+  });
+
+  it('C16-13 (musyarrakah): ibu turun karena dua saudara, lalu dasar musyarrakah dan bagian rata', () => {
+    const teks = langkahDari(case13, 'bagian').map(teksNarasi).join(' ');
+    expect(teks).toContain('punya dua saudara atau lebih');
+    expect(teks).toContain('Ini disebut al-Musyarrakah');
+    expect(teks).toContain('sama rata per orang');
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {
