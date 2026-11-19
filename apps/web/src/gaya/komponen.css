@@ -1838,3 +1838,24 @@ table.faraidh{font-size:15.5px}
 .isi-modal .teks-alur{margin:0 0 8px;font-size:16px;line-height:1.6}
 .langkah-hitung p.baris-hitung,.langkah-hitung p:has(.label-hitung){display:flex;flex-wrap:wrap;gap:4px 12px;justify-content:space-between}
 .label-hitung{font-weight:700;color:var(--ink-muted);font-size:14px}
+
+/* Drawer Teks: gaya blok per jenis langkah (acuan mockup-langkah-demi-langkah .bag). */
+.bagian-tanya,.bagian-peta{border-inline-start:0;padding-inline-start:0;font-size:17px;color:var(--ink)}
+.bagian-dasar{border-color:#8fb3a3}
+.bagian-keluarga,.bagian-tanpa-jenis-keluarga{border-color:var(--aksen)}
+.bagian-logika{border:1px solid #ddd5f2;background:#f3f0fb;border-radius:14px;padding:10px 12px}
+.bagian-logika .label-bagian{color:#5b4a8a}
+.bagian-jembatan{border-inline-start:0;padding:6px 10px;border-radius:10px;background:#e3f3ea;color:#1f5c3a;font-weight:500}
+.bagian-langkah .rumus{display:inline-block;margin-top:2px;background:#f1f5ed;border-radius:8px;padding:2px 8px;font-weight:600;font-variant-numeric:tabular-nums}
+.bagian-hitung .rumus{background:none;padding:0}
+.bagian-langkah li{font-size:16px;line-height:1.55}
+.label-bagian{font-size:13px}
+
+/* Kepala drawer: Lainnya berlabel teks, Tutup tombol ikon tegas (kontras ≥ 4,5:1 di terang dan gelap). */
+.tombol-lainnya{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 12px;border:0;background:none;color:inherit;font:600 14.5px var(--font-sans);cursor:pointer;border-radius:12px}
+.tombol-lainnya:hover{background:var(--surface-sunken)}
+.tutup-ldl{flex:none;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;border:0;background:var(--ink);color:var(--surface-raised);cursor:pointer}
+.tutup-ldl:focus-visible,.tombol-lainnya:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sinema .tutup-ldl{background:#fff;color:#0e0f10}
+.sinema .tombol-lainnya:hover{background:#1c2b27}
+@media (max-width:480px){.tombol-lainnya span{display:none}.tombol-lainnya{width:44px;justify-content:center;padding:0}}
