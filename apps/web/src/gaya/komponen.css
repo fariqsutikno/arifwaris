@@ -1874,10 +1874,10 @@ table.faraidh{font-size:15.5px}
 .chip-madzhab:hover{background:rgba(255,255,255,.22)}
 
 /* ═══ SKALA TEKS LAYAR HASIL (satu-satunya sumber ukuran; semua blok Hasil memilih salah satu peran) ═══
-   kecil 14 · label 16 · isi 18 · nilai 20 · judul 24 (22 di HP). Bobot: isi 400, nama/tombol 600, nilai/judul 700.
+   kecil 13 · label 15 · isi 16 · nilai 18 · judul 22 (20 di HP). Bobot: isi 400, nama/tombol 600, nilai/judul 700.
    Hierarki: judul > nilai > isi > label > kecil. Tabel dan pohon = bukti pendukung, jadi di tingkat label (16). */
-.halaman-hasil{--t-kecil:14px;--t-label:16px;--t-isi:18px;--t-nilai:20px;--t-judul:24px}
-@media (max-width:560px){.halaman-hasil{--t-judul:22px}}
+.halaman-hasil{--t-kecil:13px;--t-label:15px;--t-isi:16px;--t-nilai:18px;--t-judul:22px}
+@media (max-width:560px){.halaman-hasil{--t-judul:20px}}
 /* judul kartu */
 .halaman-hasil .ubin-h h2,.halaman-hasil .kartu-utama h2,.halaman-hasil h2.judul-kartu,.halaman-hasil .judul-kartu h2{font:700 var(--t-judul)/1.2 var(--font-display)}
 /* isi */
