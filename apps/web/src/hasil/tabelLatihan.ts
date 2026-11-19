@@ -4,6 +4,7 @@
 //   Keluar: TabelSoal, penilaian kolom-demi-kolom (B6), dan pemilihan satu sel jangkar (B5). Fungsi murni, bigint.
 
 import type { GrafKeluarga, HasilEngine, HasilTaqdir, IdOrang, TabelMasalah } from '@waris/engine';
+import { namaOrang } from '../format';
 import { angkaLatin } from '../terjemah';
 
 /** Daftar tertutup kolom Bagian (B2). */
@@ -51,7 +52,7 @@ type SusunanTabel = TabelSoal | { status: 'TIDAK_DIDUKUNG' };
 export function susunTabelSoal(hasil: HasilEngine | HasilTaqdir, graf: GrafKeluarga): SusunanTabel {
   if (hasil.status !== 'OK' || !('tabel' in hasil) || hasil.sisaKeluar) return { status: 'TIDAK_DIDUKUNG' };
   const { tabel } = hasil;
-  const namaDari = (id: IdOrang) => graf.orang[id]?.nama ?? id;
+  const namaDari = (id: IdOrang) => namaOrang(graf, hasil.statusOrang, id);
   // [R09-1] kolom akhir = kolom terakhir yang ada: tashih, lalu 'aul/radd, lalu ashl.
   const kolomAkhir = (['tashih', 'radd', 'aul', 'ashl'] as const).find(kolom => tabel.totalKolom[kolom] !== undefined)!;
 

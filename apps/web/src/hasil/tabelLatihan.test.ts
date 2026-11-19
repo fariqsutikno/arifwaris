@@ -8,8 +8,8 @@ const masukan = (graf: GrafKeluarga): InputEngine => ({ graf, tirkah: { kotor: 0
 
 // Bab 16.1: istri 1/8, anak lk + anak pr ashabah bil ghair; tashih 8 → 24.
 const graf161: GrafKeluarga = { idPewaris: 'D', pernikahan: [{ idSuami: 'D', idIstri: 'W1', status: 'utuh' }], orang: {
-  D: orang('D', 'L', { statusHidup: 'wafat' }), W1: orang('W1', 'P', { nama: 'Istri' }),
-  S1: orang('S1', 'L', { idAyah: 'D', idIbu: 'W1', nama: 'Anak lk' }), D1: orang('D1', 'P', { idAyah: 'D', idIbu: 'W1', nama: 'Anak pr' }) } };
+  D: orang('D', 'L', { statusHidup: 'wafat' }), W1: orang('W1', 'P'),
+  S1: orang('S1', 'L', { idAyah: 'D', idIbu: 'W1' }), D1: orang('D1', 'P', { idAyah: 'D', idIbu: 'W1' }) } };
 // Ayah, ibu, saudara kandung: saudara terhalang oleh ayah.
 const grafTerhalang: GrafKeluarga = { idPewaris: 'D', pernikahan: [], orang: {
   D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }), A: orang('A', 'L'), I: orang('I', 'P'),
@@ -29,8 +29,8 @@ describe('susunTabelSoal — soal biasa dari keluaran engine', () => {
     expect(tabel161.kolom.map(kolom => [kolom.id, kolom.kepala])).toEqual([['bagian', undefined], ['ashl', 8n], ['akhir', 24n]]);
     expect(tabel161.baris.map(baris => [baris.nama, baris.kunci])).toEqual([
       ['Istri', { bagian: '1/8', ashl: '1', akhir: '3' }],
-      ['Anak lk', { bagian: 'Ashabah', ashl: '7', akhir: '14' }],
-      ['Anak pr', { bagian: 'Ashabah', ashl: '7', akhir: '7' }],
+      ['Anak laki-laki', { bagian: 'Ashabah', ashl: '7', akhir: '14' }],
+      ['Anak perempuan', { bagian: 'Ashabah', ashl: '7', akhir: '7' }],
     ]);
   });
 
