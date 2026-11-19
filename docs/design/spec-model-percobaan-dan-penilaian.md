@@ -1,0 +1,507 @@
+# Spec: model percobaan, penilaian, XP, dan nyawa (soal tabel latihan, siap kelas)
+
+Status: **usulan, menunggu pemilik** (2026-11-20). Keputusan pemilik yang sudah ada: tidak ada pengurangan XP per percobaan;
+XP berbeda menurut jenis soal. Ide nyawa dinilai di bagian 4.
+Berlaku untuk tabel faraidh soal latihan (spec `spec-hasil-revamp-dan-tabel-latihan.md` bagian B). Kuis konsep (pilihan
+ganda, `layar/belajar/KuisKonsep.tsx`) disebut hanya bila terdampak.
+Audit pendamping: `audit-arsitektur-kesiapan-kelas.md` (kode temuan `T…` dirujuk di sini).
+
+Cara membaca: tiap butir **Keputusan** punya alasan singkat. Yang ditandai **USULAN** adalah angka/nilai awal yang boleh
+diganti pemilik tanpa mengubah desain. Pertanyaan untuk pemilik bernomor di bagian 8.
+
+Bagian ini tidak menyentuh fikih. Kunci jawaban tetap dari engine (spec B1); dokumen ini hanya mengatur **bagaimana
+percobaan dicatat, dinilai, dan dihargai**.
+
+---
+
+## 0. Ringkasan keputusan
+
+| # | Keputusan | Alasan singkat |
+|---|---|---|
+| K1 | Dua mode: **Latihan** dan **Ujian** (bukan "Kuis", bukan "Belajar") | Kosakata "Mode latihan / Mode ujian" sudah dipakai Kuis konsep (`latihan.mode_latihan`, `latihan.mode_ujian`); satu kata per konsep. "Belajar" bentrok dengan menu Belajar; "Kuis" bentrok dengan Kuis konsep dan `log_kegiatan.jenis = 'kuis'` |
+| K2 | Satu komponen tabel, satu fungsi penilaian per kolom; mode = **kebijakan** yang dioper | Satu sumber aturan penilaian; Ujian dan Latihan hanya berbeda cara menampilkan dan kapan berhenti |
+| K3 | Tiap Periksa/Kirim/Lihat jawaban = satu **kejadian percobaan append-only** | Nilai, XP, rekor, nyawa, dan nilai kelas bisa dihitung ulang kapan saja; kebijakan bisa berubah tanpa migrasi data |
+| K4 | Nilai/XP/rekor = **fungsi murni** atas (kejadian, kebijakan, metadata soal) | Sama dengan engine: deterministik, teruji, bisa dijalankan di klien dan server |
+| K5 | XP penuh hanya pada **benar pertama tanpa Lihat jawaban**; tanpa potongan per salah; ulang = 0 XP tapi tetap aktivitas | Keputusan pemilik + anti-farming |
+| K6 | Lihat jawaban membakar XP soal itu **selamanya** (bukan hanya sesi itu) | Menutup celah sekarang: buka jawaban → ulang soal → benar → dapat XP (T3) |
+| K7 | Bobot XP di **metadata soal** (`bobotXp`), dibaca dari revisi yang dikerjakan | Pemilik: bukan di kode; revisi beku → XP lama tidak berubah saat bobot disunting |
+| K8 | **Nyawa: jangan dibangun sekarang.** Versi minimal = saran belajar tanpa kunci. Bila tetap diinginkan: hanya di Ujian mandiri beruntun, dihitung server | Lihat bagian 4 |
+| K9 | XP (gamifikasi mandiri) dan **nilai kelas** dipisah total | Nilai kelas bisa diambil terbaik/terakhir dan dinilai server; XP tidak boleh dipengaruhi pengajar, dan nilai tidak boleh dipengaruhi XP |
+| K10 | Penugasan kelas **dinilai di server** (edge function menjalankan engine + penilaian yang sama) | Klien tidak dipercaya untuk nilai; engine murni sehingga bisa dijalankan ulang |
+| K11 | Komponen tabel mengeluarkan **hasil terstruktur** (mode, isian, hasil per kolom, jangkar, lihatJawaban), bukan `saatBenar()` | Prasyarat semua di atas; perubahan kecil, dikerjakan **sekarang** sebelum jenis soal lain |
+
+---
+
+## 1. Dua mode: Latihan dan Ujian
+
+### 1.1 Perilaku
+
+| | **Latihan** (bawaan) | **Ujian** |
+|---|---|---|
+| Aksi utama | Tombol **Periksa** (seperti spec B6) | Tombol **Kirim** |
+| Berapa kali | Berulang, sampai benar atau jawaban dibuka | **Sekali**. Sesudah Kirim tabel terkunci |
+| Cara menilai | Kolom kiri→kanan, **berhenti di kolom pertama** yang belum lengkap/salah (B6 1–6) | **Semua kolom dinilai sekaligus**; kolom kosong = salah (tidak ada umpan "belum lengkap" yang menghentikan) |
+| Umpan | Kuning/merah/hijau seperti B6 | Sesudah Kirim: tiap sel benar/salah ditandai sekaligus, ringkasan `{benar} dari {total} kolom benar` (kalimat baru, lewat diksi), lalu kunci tampil seperti sesudah Lihat jawaban |
+| Kirim saat ada sel kosong | – | Dialog tahan: "Masih ada kotak kosong. Tetap kirim?" (pola dialog tahan yang sudah ada) |
+| Lihat jawaban | Tautan merah, dialog tahan, XP hilang (B6) | **Tidak ada sebelum Kirim**. Sesudah Kirim kunci tampil otomatis |
+| Kosongkan | Ada | Ada sebelum Kirim |
+| Tersimpan | Tiap Periksa yang lolos "belum lengkap" dan tiap Lihat jawaban | Satu kejadian saat Kirim, benar maupun salah |
+| XP | Bagian 3 | Bagian 3 (hanya bila semua kolom benar) |
+
+**Keputusan:** Latihan = bawaan untuk soal mandiri. Ujian dipakai (a) bila pelajar memilihnya untuk paket soal, dan
+(b) bila penugasan kelas mewajibkannya. *Alasan:* Latihan adalah tempat belajar dari salah (koreksi bertahap); Ujian
+adalah tempat mengukur.
+
+**Keputusan:** Ujian menilai **per kolom** (bukan per sel) untuk skor. *Alasan:* kolom berkepala dinilai sebanding
+(kepala salah membuat seluruh kolom tidak bermakna); skor per sel akan menghukum dua kali satu kesalahan kepala. Hasil per
+sel tetap disimpan untuk penanda di layar dan untuk pengajar.
+
+**Keputusan:** pengali (baris Pengali) dihitung sebagai satu "kolom" tambahan di skor Ujian, dinilai dari kepala isian
+pelajar seperti B6 langkah 6. Kolom terkunci tidak dihitung.
+
+### 1.2 Satu komponen, satu penilaian
+
+Sekarang `nilaiTabel` (`apps/web/src/hasil/tabelLatihan.ts:94`) sudah berhenti di kolom pertama yang bermasalah; itu
+kebijakan Latihan yang tertanam di fungsi penilaian. Diubah menjadi dua lapis:
+
+```ts
+// murni, tanpa kebijakan: nilai SEMUA kolom
+function nilaiSemuaKolom(tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilKolom[]
+// HasilKolom = { idKolom; status: 'benar' | 'salah' | 'belumLengkap'; kepalaSalah; idBarisSalah; idBarisKosong; bentuk? }
+
+// kebijakan Latihan (perilaku B6 sekarang): ambil yang pertama tidak benar
+const putusanLatihan = (kolom: HasilKolom[]): HasilNilai => …
+// kebijakan Ujian: belumLengkap dianggap salah, semua ditandai
+const putusanUjian = (kolom: HasilKolom[]): { benar: number; total: number; kolom: HasilKolom[] } => …
+```
+
+`nilaiTabel` yang ada tetap ada sebagai `putusanLatihan(nilaiSemuaKolom(...))`, jadi uji B10 tidak berubah.
+
+### 1.3 Dampak ke kode yang ada
+
+- `hasil/TabelLatihan.tsx`: prop baru `mode: 'latihan' | 'ujian'`; tombol Periksa ↔ Kirim; Lihat jawaban disembunyikan
+  di Ujian sebelum Kirim; status `terkunci` sesudah Kirim. Tidak ada kartu/tombol baru selain yang tercantum di 1.1;
+  **tampilan Ujian perlu mockup** sebelum dibangun (aturan spec B bagian 0 butir 4), lihat pertanyaan P2.
+- `hasil/KartuTebak.tsx` dan `hasil/tebak.ts`: tidak diberi mode. Keduanya dihapus sesuai spec B langkah 6; selama masih
+  hidup, adaptor kecil mengubah `saatBenar/saatMencoba` lama menjadi kejadian (bagian 6.3) supaya data tetap seragam.
+- `layar/Hasil.tsx` (`jawabanTerbuka`, `sudahMencoba`, `bukaJawaban`, `jawabBenar`, baris 160–166): logika "XP hanya bila
+  belum dibuka" pindah ke fungsi XP (bagian 3). Hasil hanya meneruskan kejadian.
+- **Hero B8**: bilah kanan `Soal {i} dari {n} · {bab}` tetap; di Ujian ditambah kata `Ujian` di depannya (mis.
+  `Ujian · Soal 2 dari 5 · Bab 9`). Untuk penugasan: tautan kiri `Latihan` diganti nama penugasan dan kembali ke
+  daftar penugasan; bila ada tenggat, bilah memuat `Tenggat {tanggal jam}`. "Soal berikutnya" muncul sesudah Kirim (Ujian)
+  sama seperti sesudah "Benar semua." (Latihan). Teks baru lewat `pnpm diksi:tambah`.
+
+---
+
+## 2. Model data: kejadian percobaan append-only
+
+### 2.1 Bentuk kejadian
+
+```ts
+interface KejadianPercobaan {
+  id: string;                       // uuid buatan klien → kirim ulang tidak dobel (pola log_kegiatan)
+  idSesiSoal: string;               // satu "membuka soal" = satu sesi; Periksa berulang berbagi id ini
+  soalSlug: string;
+  revisiSoal: string;               // revisi.id konten yang dikerjakan (isi soal + bobotXp beku)
+  jenisSoal: JenisSoal;             // 'biasa' | 'munasakhat' | 'dzawilArham' | 'mafqud' | 'khuntsa' | 'haml' | 'gharqa'
+  mode: 'latihan' | 'ujian';
+  konteks: { jenis: 'mandiri' } | { jenis: 'penugasan'; idPenugasan: string };
+  aksi: 'periksa' | 'kirim' | 'lihatJawaban';
+  isian: IsianTabel | null;          // null untuk lihatJawaban tanpa isian
+  jangkar: Jangkar | null;
+  hasilKolom: HasilKolom[] | null;   // putusan klien; server menghitung ulang untuk penugasan
+  benarSemua: boolean;
+  dimulaiPada: string;              // jam perangkat, hanya informasi (lama mengerjakan); tidak dipercaya
+  diterimaPada?: string;            // diisi server (default now()), satu-satunya waktu yang dipercaya
+  versi: { engine: string; ruleset: Ruleset; madzhab: string; kunci: string };
+}
+```
+
+- `versi.kunci` = hash (SHA-256, heksadesimal, 16 karakter cukup) dari `TabelSoal` kanonik (kolom, kunci, kelompok)
+  yang dipakai saat menilai. *Alasan:* bila engine berubah (mis. E2 mengubah kunci haml [SYF]), kita tahu percobaan mana
+  yang dinilai dengan kunci lama, dan bisa menilai ulang atau membiarkannya.
+- `versi.engine` = versi paket engine saat build (bukan `VERSI_KB = '1.0.0-dev'` yang tetap, `apps/web/src/jalankan.ts:11`,
+  temuan T9).
+- Isian disimpan apa adanya (teks per sel), bukan hanya benar/salah: *alasan*, penilaian ulang dan analisis kesalahan
+  umum untuk pengajar butuh isian.
+- Ukuran: tabel haml [HNB] ±13 kolom × ±6 baris teks pendek → di bawah 2 KB per kejadian. Batas server
+  `pg_column_size(isian) < 16000` (pola `kasus_dibagikan`).
+
+### 2.2 Turunan sebagai fungsi murni
+
+Satu modul murni (lihat 6.2 untuk letaknya) berisi:
+
+```ts
+xpSoal(kejadian: KejadianPercobaan[], bobot: (revisi: string) => number): number          // bagian 3
+statusSoal(kejadian): 'belum' | 'dicoba' | 'benar' | 'dibuka'                             // daftar soal, centang
+rekorUjian(kejadian): { terbaik: Skor; jumlahKirim: number } | null                       // rekor per soal/paket
+nilaiPenugasan(kejadian, kebijakan: KebijakanPenugasan): NilaiPenugasan                   // bagian 5
+nyawa(kejadian, sekarangServer: string, aturan: AturanNyawa): KeadaanNyawa                 // bagian 4, bila dibangun
+```
+
+Server punya padanan SQL untuk XP (sudah ada pola `peristiwa_xp`); bila logika XP makin rumit, server memanggil modul
+TS yang sama lewat edge function alih-alih menyalin aturan ke SQL (satu sumber aturan). Untuk sekarang aturan XP cukup
+sederhana untuk ditulis di SQL **dan** TS dengan uji fixture yang sama di kedua sisi (pgTAP + vitest membaca satu berkas
+JSON kasus uji).
+
+### 2.3 Perbandingan dengan yang ada
+
+| Yang ada | Masalah untuk model ini | Nasib |
+|---|---|---|
+| `progres_latihan` (`supabase/migrations/20260926000003_pengguna.sql:21-31`): satu baris per (user, jenis, soal), `benar` = **percobaan terakhir**, `jawaban_terakhir`, `jumlah_coba` | Keadaan, bukan riwayat. Benar lalu salah → `benar=false` (`apps/web/src/progres.ts:48-58`); tidak ada lihatJawaban, mode, jangkar, versi | **Tetap** sebagai cache tampilan (centang di daftar soal), diturunkan dari kejadian. Semantik `benar` diubah ke "pernah benar" (lihat 2.4) |
+| `log_kegiatan` (`20260927000003_akun.sql:24-39`): append-only, waktu server, `jenis/slug/benar` | Sudah append-only dan dipakai XP/streak. Tidak punya isian/mode/konteks/versi/lihatJawaban; `benar` dari klien | **Dipertahankan** untuk pelajaran dan kuis konsep, dan tetap menjadi sumber hari aktif. Percobaan tabel menulis ke tabel baru dan **satu** baris `log_kegiatan` per sesi soal tetap dikirim (untuk streak) sampai fungsi XP/streak membaca tabel baru |
+| `skorKuis.ts` (murni) | Sudah pola yang benar (fungsi murni atas skor). Hanya kuis konsep | Tetap; `predikatDari` dipakai juga untuk skor Ujian tabel (satu tangga predikat) |
+| Rekor paket lokal (`progres.ts:62-79`, `arif-waris:rekor-paket`) | Hanya di perangkat; hilang saat ganti perangkat | Untuk tabel: rekor diturunkan dari kejadian (ikut sinkron). Kuis konsep tidak diubah di spec ini |
+| Antrean akun (`apps/web/src/akun/antrean.ts`): satu entri per kunci, yang baru **menimpa** | Kejadian tidak boleh saling menimpa | Entri baru `{ tabel: 'percobaan', baris }` berkunci `percobaan:${id}` (sama seperti `kegiatan`), jadi tidak pernah ditimpa |
+| `gabung.ts`: progres latihan "terbaru menang", `jumlahCoba` = maksimum dua sisi | Jumlah percobaan dua perangkat hilang (maks, bukan jumlah) | Kejadian digabung dengan **gabungan himpunan berdasarkan id**; tidak ada konflik |
+
+### 2.4 Skema server baru
+
+```sql
+create table percobaan_soal (
+  id uuid primary key,
+  user_id uuid not null default auth.uid() references auth.users on delete cascade,
+  id_sesi_soal uuid not null,
+  soal_slug text not null,
+  revisi_soal uuid not null references revisi,
+  jenis_soal text not null check (jenis_soal in ('biasa','munasakhat','dzawil_arham','mafqud','khuntsa','haml','gharqa')),
+  mode text not null check (mode in ('latihan','ujian')),
+  id_penugasan uuid references penugasan on delete set null,   -- null = mandiri; tabel penugasan menyusul (bagian 5)
+  aksi text not null check (aksi in ('periksa','kirim','lihat_jawaban')),
+  isian jsonb check (pg_column_size(isian) < 16000),
+  jangkar jsonb,
+  hasil_kolom_klien jsonb,
+  benar_semua_klien boolean not null,
+  hasil_kolom_server jsonb,          -- diisi edge function; wajib untuk penugasan
+  benar_semua_server boolean,
+  dimulai_pada_klien timestamptz,
+  diterima_pada timestamptz not null default now(),
+  versi jsonb not null
+);
+create index on percobaan_soal (user_id, soal_slug, diterima_pada);
+-- RLS: insert & select baris sendiri; tidak ada update/delete untuk authenticated (append-only).
+-- Kolom *_server dan diterima_pada tidak di-grant ke authenticated (pola log_kegiatan baris 38-39).
+```
+
+Kolom `id_penugasan` baru ditambahkan bersama tabel `penugasan` (fase kelas); di fase sekarang tabel dibuat tanpanya.
+
+### 2.5 Migrasi dari data yang ada
+
+1. **Tidak ada konversi paksa.** Data lama tidak punya isian/mode/versi; memalsukannya lebih berbahaya daripada
+   membiarkannya. `log_kegiatan` lama tetap menjadi sumber XP untuk kejadian sebelum tanggal peralihan.
+2. Fungsi XP baru = `XP dari log_kegiatan (sebelum peralihan, aturan lama)` ∪ `XP dari percobaan_soal (aturan baru)`,
+   dengan aturan "satu kali per soal" diterapkan **lintas keduanya** (soal yang sudah memberi XP di log lama tidak memberi
+   lagi). Uji pgTAP memastikan total XP pengguna lama tidak berubah pada hari peralihan.
+3. `progres_latihan.benar` diubah semantiknya menjadi "pernah benar tanpa dibuka" dan diisi ulang dari `log_kegiatan`
+   (`bool_or(benar)` per soal) sekali. Klien: `catatLatihan` tidak lagi menimpa `benar` true dengan false.
+4. Lokal: kunci baru `arif-waris:percobaan` (larik kejadian, dibatasi 500 terakhir per perangkat; server memegang
+   semuanya). Tidak ada migrasi lokal; `arif-waris:progres-latihan` tetap dibaca untuk centang lama.
+5. Peralihan berlaku per build; kejadian dari build lama (tanpa tabel baru) tetap mengalir lewat `log_kegiatan`.
+
+---
+
+## 3. XP
+
+### 3.1 Aturan (keputusan)
+
+Untuk satu pengguna dan satu soal (`soal_slug`, lintas revisi):
+
+1. Urutkan kejadian menurut `diterima_pada` (server). Kejadian luring yang terkirim belakangan memakai waktu terima;
+   urutan di dalam satu antrean terjaga karena antrean dikirim berurutan (`antrean.ts:59-81`).
+2. Bila ada kejadian `lihat_jawaban` **sebelum** kejadian benar pertama → **0 XP selamanya** untuk soal itu; status
+   `dibuka`. *Alasan:* menutup celah buka→ulang→benar (T3). "Selamanya" juga mencakup revisi soal berikutnya: revisi
+   biasanya perbaikan teks, bukan soal baru; soal yang benar-benar baru diberi slug baru.
+3. Bila tidak: kejadian benar pertama (`periksa` dengan `benarSemua` di Latihan, atau `kirim` dengan `benarSemua` di
+   Ujian) memberi **XP penuh = `bobotXp` revisi yang dikerjakan saat itu**. Jumlah Periksa salah sebelumnya **tidak
+   mengurangi** (keputusan pemilik).
+4. Kejadian sesudahnya (ulang soal yang sudah benar, Ujian ulang) = **0 XP**, tetapi tetap **aktivitas** untuk hari aktif
+   dan streak. *Alasan:* mengulang itu baik untuk belajar; hanya tidak boleh menjadi ladang XP.
+5. Ujian dengan sebagian kolom benar = 0 XP mandiri (skor tetap tercatat untuk rekor). *Alasan:* XP = "pertama benar";
+   XP parsial akan membuat Ujian lebih menguntungkan daripada Latihan, padahal Latihan tidak punya batas coba.
+6. **Penugasan kelas tidak memberi XP berbeda dari mandiri**: percobaan penugasan dihitung ke XP dengan aturan yang sama
+   (dinilai server), tidak dobel. *Alasan:* kelas memakai nilai, bukan XP (K9); pelajar tidak perlu memilih antara
+   mengerjakan tugas atau mengejar XP.
+7. Hari aktif: satu kejadian apa pun (termasuk salah dan lihat jawaban) membuat hari aktif, seperti sekarang
+   (`hari_aktif`, `20260927000006_peringkat.sql`).
+
+### 3.2 Bobot per jenis soal (USULAN angka awal)
+
+Bobot disimpan di isi revisi soal: field baru `bobotXp: number` (bulat, 1–200) di skema `soal_hitung`
+(`packages/content/src/skema.ts:103-105`). Form portal mengisi otomatis dari tabel usulan di bawah menurut jenis dan
+tingkat, dan penulis boleh mengubahnya (portal menampilkan "Poin XP", bukan nama field, sesuai memori "admin tanpa kode
+teknis"). Fungsi SQL `xp_konten` dipakai hanya sebagai cadangan untuk revisi lama tanpa `bobotXp`.
+
+Dasar usulan: **sebanding dengan jumlah kolom yang dinilai** (kerja nyata pelajar), dengan soal biasa tetap seperti
+sekarang supaya XP pengguna lama tidak bergeser.
+
+| Jenis | Kolom dinilai (kira-kira) | **USULAN bobotXp** |
+|---|---|---|
+| Biasa | 3 | dasar **10**, menengah **20**, sulit **30** (tetap seperti sekarang) |
+| Dzawil arham (tanzil) | 3 + pilihan perantara | **30** |
+| Gharqa | keputusan + 0–2 tabel biasa | **30** |
+| Munasakhat | 2 mayit ±5 + pengali; 3 mayit ±7 + pengali | **40** (2 mayit), **60** (3 mayit) |
+| Mafqud | 5 + pengali + mauquf | **50** |
+| Khuntsa | 5 + pengali + mauquf | **50** |
+| Haml [SYF] | 9 + pengali + mauquf | **70** |
+| Haml [HNB] | 13 + pengali + mauquf | **90** |
+
+Risiko yang diterima: satu soal haml bernilai setara 7–9 soal biasa dasar di papan peringkat. Itu sebanding dengan
+kerjanya, dan jumlah soal haml sedikit. Kuis konsep tidak diubah (5/10/15).
+
+**Keputusan:** XP dibaca dari `revisi_soal` yang tersimpan di kejadian, bukan dari revisi terbit saat dihitung.
+*Alasan:* aturan lama "tingkat dibaca saat dihitung, XP lama ikut berubah" (spec streak) membuat papan peringkat bergeser
+diam-diam saat penulis menyunting; kejadian sudah membawa revisinya, jadi gratis dibekukan.
+
+---
+
+## 4. Sistem nyawa (ide pemilik): penilaian dan rekomendasi
+
+Ide: 5 nyawa; salah mengurangi nyawa; habis → pelajar diarahkan belajar lagi (materi/latihan) dan menunggu 1 jam.
+
+### 4.1 Kapan masuk akal
+
+- **Ujian mandiri beruntun** (paket "Tantangan" beberapa soal, satu Kirim per soal): nyawa memberi taruhan dan
+  ritme, seperti mode tantangan di aplikasi belajar bahasa. Satu Kirim salah = satu nyawa, jelas dan adil.
+- Sebagai **rem untuk menebak acak**: di Ujian, menebak berulang tidak mungkin (sekali kirim), jadi nyawa di sini hanya
+  membatasi jumlah soal salah per jam, bukan menebak.
+
+### 4.2 Kapan merusak
+
+- **Latihan**: alurnya dirancang untuk Periksa berulang dengan koreksi bertahap (B6). Bila tiap Periksa salah memakan
+  nyawa, pelajar takut menekan Periksa dan memilih Lihat jawaban; itu kebalikan tujuan. Soal haml [HNB] ±13 kolom:
+  5 nyawa bisa habis di **satu soal** padahal pelajar sedang maju kolom demi kolom.
+- **Penugasan kelas bernilai**: pengunci 1 jam bisa membuat pelajar melewatkan tenggat karena sistem, bukan karena
+  kemampuannya. Pengajar sudah punya alat sendiri (batas percobaan per penugasan, bagian 5). Dua mekanisme pembatas yang
+  bertumpuk membingungkan.
+- **Pelajar pemula**: kegagalan beruntun di awal + dikunci = alasan berhenti memakai aplikasi. Kalimat "belajar lagi
+  sendiri" terdengar menghukum.
+- **Streak**: bila dikunci saat streak terancam di malam hari, pelajar merasa dihukum dua kali. Maka belajar materi selama
+  terkunci **harus** tetap menghitung hari aktif (sudah begitu: pelajaran selesai = kegiatan).
+
+### 4.3 Syarat teknis bila dibangun
+
+- **Waktu tunggu dihitung server** dari `diterima_pada` kejadian, bukan jam perangkat (jam perangkat bisa dimajukan).
+  Klien hanya menampilkan sisa waktu yang dikirim server.
+- **Nyawa bukan penghitung yang disimpan**, tetapi fungsi `nyawa(kejadian, sekarangServer, aturan)`: jumlah Kirim salah
+  di jendela sejak pemulihan terakhir. Tidak ada keadaan yang bisa diubah klien.
+- **Anti-curang**: selama penilaian dilakukan klien, pelajar bisa tidak mengirim kejadian salah (mode pesawat, hapus
+  penyimpanan, keluar akun). Nyawa yang jujur karena itu **butuh penilaian di server** dan **wajib daring**: Kirim di mode
+  Tantangan = panggilan server yang menilai dan langsung mencatat. Artinya nyawa bergantung pada infrastruktur kelas
+  (bagian 5.4), jadi tidak bisa dibangun lebih dulu dengan jujur.
+- **Luring**: mode Tantangan tidak tersedia luring (tautannya tampil dengan keterangan "butuh internet"). Latihan dan
+  Ujian biasa tetap jalan luring tanpa nyawa.
+- **Tanpa akun**: tidak ada nyawa (tidak ada server yang bisa dipercaya).
+- **Hubungan dengan XP**: nyawa tidak memengaruhi XP; XP tetap aturan bagian 3. Kehabisan nyawa tidak menghapus XP atau
+  streak.
+
+### 4.4 Rekomendasi
+
+**Jangan bangun nyawa di fase ini.** Bangun **versi minimal tanpa kunci** yang memberi manfaat pedagogisnya tanpa
+risikonya:
+
+- **Saran belajar**: di Latihan, sesudah **3 Periksa salah berturut-turut di kolom yang sama**, di bawah umpan merah
+  muncul tautan teks `Pelajari dulu: {judul materi}` ke materi bab soal itu. Tanpa penghitung nyawa, tanpa kunci, tanpa
+  menunggu. Diturunkan murni dari kejadian sesi ini (tidak butuh server). Satu kalimat baru lewat diksi; butuh
+  persetujuan mockup.
+
+Bila sesudah itu pemilik tetap ingin nyawa: hanya untuk **mode Tantangan** (Ujian mandiri beruntun, daring, berakun),
+dibangun **sesudah** penilaian server (fase K3 di bagian 7), dengan aturan di 4.3. Tidak pernah di Latihan dan tidak
+pernah di penugasan kelas.
+
+---
+
+## 5. Kelas dan penugasan
+
+### 5.1 Bentuk data
+
+```sql
+create table kelas (
+  id uuid primary key default gen_random_uuid(),
+  nama text not null check (char_length(btrim(nama)) between 1 and 80),
+  kode_gabung text not null unique check (kode_gabung ~ '^[A-Z0-9]{6}$'),   -- dibagikan pengajar
+  dibuat_oleh uuid not null default auth.uid() references auth.users,
+  diarsipkan boolean not null default false,
+  dibuat_pada timestamptz not null default now()
+);
+create table anggota_kelas (
+  kelas_id uuid references kelas on delete cascade,
+  user_id uuid references auth.users on delete cascade,
+  peran text not null check (peran in ('pengajar','pelajar')),
+  bergabung_pada timestamptz not null default now(),
+  primary key (kelas_id, user_id)
+);
+create table penugasan (
+  id uuid primary key default gen_random_uuid(),
+  kelas_id uuid not null references kelas on delete cascade,
+  judul text not null,
+  soal jsonb not null,           -- [{ slug, revisi }] revisi dikunci saat penugasan diterbitkan
+  kebijakan jsonb not null,      -- KebijakanPenugasan
+  diterbitkan_pada timestamptz,  -- null = draf, tidak terlihat pelajar
+  dibuat_oleh uuid not null default auth.uid() references auth.users
+);
+```
+
+```ts
+interface KebijakanPenugasan {
+  mode: 'latihan' | 'ujian';                // wajib; pelajar tidak bisa mengganti
+  batasPercobaan: number | null;            // jumlah Kirim (Ujian) atau sesi soal (Latihan); null = bebas
+  mulai: string | null; tenggat: string | null;   // waktu server
+  terlambat: 'tolak' | 'terima_ditandai';
+  bobot: Record<string, number>;            // slug → bobot nilai dalam penugasan (bawaan rata)
+  ambilNilai: 'pertama' | 'terbaik' | 'terakhir';
+  bolehLihatJawaban: boolean;               // Latihan saja; Lihat jawaban → nilai soal itu 0
+  tampilkanKunciSesudah: 'kirim' | 'tenggat' | 'pengajar';
+}
+```
+
+- **Revisi soal dikunci saat diterbitkan.** *Alasan:* bila penulis menyunting soal di tengah penugasan, nilai pelajar
+  pertama dan terakhir harus dihitung dari soal yang sama. Kunci = `susunTabelSoal(engine(revisi.kasus))` di versi engine
+  saat dinilai; `versi.kunci` di kejadian menandai bila engine berubah di tengah jalan (pengajar diberi tahu, tidak
+  dinilai ulang otomatis; P7).
+- Nilai penugasan = `nilaiPenugasan(kejadian, kebijakan)` murni: per soal, skor kolom benar/total dari kejadian yang
+  dipilih (`pertama/terbaik/terakhir`) memakai **hasil_kolom_server**, dikali bobot, dijumlah. Latihan dinilai 1 bila
+  akhirnya benar tanpa dibuka, 0 bila dibuka atau tidak selesai. (USULAN: Latihan dalam penugasan tanpa skor parsial,
+  karena Latihan tidak menilai semua kolom.)
+- **Peran pengajar per kelas, bukan peran global.** Enum `peran` yang ada (`admin, penulis, reviewer`,
+  `20260926000001_konten.sql:7`) milik portal konten; mencampur pengajar ke sana memberi pengajar akses portal lewat
+  `peran_saya()`. *Keputusan:* `anggota_kelas.peran`, terpisah dari `peran_pengguna`.
+
+### 5.2 Siapa melihat apa
+
+| Data | Pelajar | Pengajar kelas itu | Pelajar lain | Admin portal |
+|---|---|---|---|---|
+| Kejadian mandiri (`id_penugasan` null) | milik sendiri | **tidak** | tidak | tidak (kecuali lewat service role untuk pemeliharaan) |
+| Kejadian penugasan | milik sendiri | semua di penugasan kelasnya | tidak | tidak |
+| Nilai penugasan | milik sendiri | semua anggota | tidak | tidak |
+| XP, streak, peringkat | milik sendiri; papan publik sesuai profil | **tidak ada tampilan khusus** (sama seperti publik) | papan publik | sama |
+| Kasus tersimpan, riwayat | milik sendiri | tidak | tidak | tidak |
+| Daftar anggota | nama tampilan sesama anggota (P5) | nama + email anggota | – | – |
+
+*Alasan:* pengajar hanya perlu data yang ia minta (penugasan). Latihan mandiri pelajar adalah ruang aman untuk salah;
+bila pengajar bisa melihatnya, pelajar berhenti berlatih bebas.
+
+RLS mengikuti pola `peran_saya()`: fungsi `security definer` `peran_di_kelas(kelas_id)` mengembalikan peran pemanggil,
+dipakai kebijakan `percobaan_soal` (`select` bila `user_id = auth.uid()` atau
+`id_penugasan` milik kelas tempat pemanggil pengajar). Fungsi ini **wajib** diuji pgTAP untuk: pelajar A tidak bisa
+membaca pelajar B; pengajar kelas X tidak bisa membaca kelas Y; pengajar tidak bisa membaca kejadian mandiri.
+
+### 5.3 Pemisahan XP dan nilai kelas
+
+- XP: aturan bagian 3, dihitung dari semua kejadian (mandiri + penugasan), satu kali per soal.
+- Nilai kelas: aturan penugasan, hanya kejadian ber-`id_penugasan`, hanya hasil server.
+- Keduanya tidak pernah saling membaca. Pengajar tidak bisa memberi/mencabut XP; XP tidak masuk nilai.
+
+### 5.4 Penilaian di server
+
+- Edge function `nilai-percobaan`: menerima `{ idPercobaan, idPenugasan, soalSlug, isian, idSesiSoal }`. Ia:
+  1. memeriksa keanggotaan, jendela waktu (`mulai`/`tenggat` terhadap `now()` server) dan `batasPercobaan`;
+  2. memuat revisi soal yang dikunci di penugasan;
+  3. menjalankan engine → `susunTabelSoal` → `nilaiSemuaKolom` dengan **jangkar yang tersimpan di server**;
+  4. menulis baris `percobaan_soal` lengkap dengan `hasil_kolom_server` (klien tidak menulis langsung untuk penugasan).
+- **Jangkar penugasan dipilih server** saat pelajar membuka soal (`mulai_sesi_soal(id_penugasan, slug)` → `{ idSesiSoal,
+  jangkar }`), disimpan di tabel kecil `sesi_soal`. *Alasan:* jangkar memengaruhi penilaian (B5: jangkar menetapkan skala
+  kolom); bila klien memilih, klien bisa memilih jangkar yang memudahkan. Acak server memakai `gen_random_uuid()` sebagai
+  benih; benih disimpan sehingga `pilihJangkar(tabel, acakDariBenih(benih))` bisa diulang.
+- Mandiri tetap dinilai di klien (luring jalan). Kejadian mandiri juga menyimpan isian + jangkar + versi, jadi bisa dinilai
+  ulang server nanti (P6).
+- Engine bisa berjalan di edge function karena murni, tanpa I/O/`Date`/`Math.random` (CLAUDE.md prinsip 1). **Tetapi**
+  dua hal yang dibutuhkan server sekarang ada di `apps/web` dan menyentuh I/O: pemilihan orkestrator (`jalankan.ts`) dan
+  `susunTabelSoal` yang mengimpor `format.ts`/`terjemah.ts` (diksi + preferensi `localStorage`). Lihat 6.2 dan audit T1.
+
+### 5.5 Privasi, akun, luring
+
+- Kelas wajib akun (Google, seperti sekarang). Tanpa akun tidak ada kelas.
+- Pengajar melihat email anggota hanya di kelasnya (butuh untuk mencocokkan siswa); pelajar sesama anggota hanya nama
+  tampilan. Email tidak masuk ke tabel kelas; dibaca lewat fungsi `security definer` yang memeriksa peran pengajar (pola
+  `daftar_peran`).
+- Keluar kelas: keanggotaan dihapus; kejadian penugasan tetap ada untuk nilai pengajar (P5). Hapus akun: kaskade
+  `on delete cascade` menghapus semuanya, seperti tabel lain.
+- Data pelajar di bawah umur mungkin ikut (madrasah/pesantren). USULAN: minimalkan data (nama tampilan + email Google),
+  tanpa nomor induk/kelas sekolah; kebijakan privasi diperbarui sebelum kelas dibuka (P8).
+- **Luring untuk penugasan**: membuka dan mengisi boleh luring (isian disimpan lokal per sesi), **Kirim** butuh daring.
+  Bila Kirim dilakukan luring: isian masuk antrean dengan status "menunggu dinilai"; server menilai saat terkirim dan
+  memakai **waktu terima server** untuk tenggat. *Alasan:* jam perangkat tidak bisa dipercaya untuk tenggat; pelajar
+  diberi tahu di layar bahwa kiriman belum sampai (`Belum terkirim, akan dikirim saat tersambung`).
+
+---
+
+## 6. Kontrak komponen UI dan perubahan yang dikerjakan **sekarang**
+
+### 6.1 Kontrak keluaran komponen tabel
+
+```ts
+interface PercobaanTabel {
+  mode: 'latihan' | 'ujian';
+  aksi: 'periksa' | 'kirim' | 'lihatJawaban';
+  isian: IsianTabel;
+  jangkar: Jangkar | null;
+  hasilKolom: HasilKolom[];       // hasil SEMUA kolom (nilaiSemuaKolom), apa pun modenya
+  benarSemua: boolean;
+}
+// Props TabelLatihan:
+//   mode, jangkar (diberikan dari luar), saatPercobaan(p: PercobaanTabel) => void, terbuka, terkunci
+```
+
+- **Jangkar diberikan dari luar** (prop), tidak lagi dibuat di komponen (`useState(() => pilihJangkar(tabel,
+  Math.random))`, `TabelLatihan.tsx:39`). *Alasan:* untuk penugasan jangkar datang dari server; untuk mandiri pemanggil
+  (Hasil) memilihnya sekali per sesi soal dan mencatatnya.
+- `saatPercobaan` menggantikan `saatMencoba` + `saatBenar`. Hasil (layar) yang memutuskan XP, confetti, dan pencatatan,
+  memakai fungsi murni bagian 2.2.
+- Lihat jawaban: dialog tahan tetap milik Hasil; sesudah dikonfirmasi Hasil memanggil `saatPercobaan` dengan
+  `aksi: 'lihatJawaban'` dan isian saat itu.
+
+### 6.2 Perubahan kecil sekarang (sebelum jenis soal lain dibangun)
+
+| # | Perubahan | Kenapa sekarang |
+|---|---|---|
+| S1 | `nilaiTabel` → `nilaiSemuaKolom` + `putusanLatihan` (1.2); `nilaiTabel` tetap sebagai pembungkus | Tiap jenis soal baru menambah kolom; lebih murah memisah sebelum ada 7 jenis |
+| S2 | `susunTabelSoal`/`nilaiSemuaKolom` tidak mengimpor `format.ts`/`terjemah.ts`: nama orang dan `angkaLatin` dioper dari luar (`namaDari: (id) => string`), atau nama diisi oleh komponen | Membuat modul penilaian murni dan bisa dipindah ke paket bersama untuk server (audit T1). `angkaLatin` cukup disalin ke modul (fungsi kecil murni) atau dipindah ke `@waris/math`/paket bersama |
+| S3 | Jangkar jadi prop; `TabelLatihan` mengeluarkan `PercobaanTabel` lewat `saatPercobaan` (6.1) | Jenis soal lain akan meniru kontrak ini; mengubah 1 komponen sekarang lebih murah daripada 7 nanti |
+| S4 | Hasil menyimpan kejadian lokal (`arif-waris:percobaan`) dengan `revisiSoal`, `jenisSoal`, `versi`; antrean entri `percobaan` (berkunci id) | Data yang terkumpul mulai sekarang sudah bisa dinilai ulang; tidak perlu migrasi nanti |
+| S5 | `catatLatihan` tidak menimpa `benar: true` dengan `false`; Lihat jawaban dicatat walau belum pernah mencoba | Memperbaiki T3/T4 di sisi klien sekarang; status daftar soal benar |
+| S6 | `versi.engine` dari versi paket saat build (bukan `VERSI_KB` tetap) | Tanpa ini, versi di kejadian tidak bermakna (T9) |
+
+Tabel `percobaan_soal` dan perubahan fungsi XP SQL boleh menyusul (S4 sudah menyimpan lokal dan mengantre; entri antrean
+menunggu sampai repositori punya `simpanPercobaan`). Bila menunggu terlalu lama, batasi antrean `percobaan` agar tidak
+membengkak di localStorage (500 entri terakhir).
+
+### 6.3 Adaptor untuk `KartuTebak` lama
+
+Selama `KartuTebak` masih dipakai soal yang belum pindah ke tabel, `saatMencoba/saatBenar/saatLihatJawaban`-nya
+dibungkus Hasil menjadi kejadian dengan `isian: null`, `hasilKolom: null`, `mode: 'latihan'`. Tidak ada perubahan di
+komponen lama.
+
+---
+
+## 7. Urutan pengerjaan
+
+| Fase | Isi | Prasyarat |
+|---|---|---|
+| **P0 (sekarang)** | S1–S6; mode Latihan saja; XP masih lewat `log_kegiatan` seperti sekarang ditambah perbaikan klien S5 | – |
+| **P1** | Tabel `percobaan_soal` + RLS + pgTAP; repositori `simpanPercobaan`/`bacaPercobaan`; `gabung` kejadian per id; fungsi XP SQL membaca `percobaan_soal` (aturan bagian 3, bobot dari revisi); `bobotXp` di skema + form portal | P0; perbaiki T2 (log_kegiatan bisa dipalsukan) sekaligus |
+| **P2** | Mode Ujian (mockup dulu, P2 pertanyaan), rekor Ujian dari kejadian; saran belajar (4.4) | P0 |
+| **P3 (fondasi kelas)** | Paket bersama penilaian (engine dispatcher + tabel latihan) yang bisa diimpor web dan edge function; edge function `nilai-percobaan`; `sesi_soal` (jangkar server) | P1, audit T1 |
+| **P4 (kelas)** | `kelas`, `anggota_kelas`, `penugasan`, RLS + pgTAP lintas peran; layar pengajar (buat kelas, terbitkan penugasan, lihat nilai); layar pelajar (gabung kode, daftar penugasan) | P3 |
+| **P5 (opsional)** | Nyawa untuk mode Tantangan, bila pemilik tetap menginginkan sesudah melihat saran belajar | P3 |
+
+---
+
+## 8. Pertanyaan terbuka untuk pemilik
+
+1. **Nama mode**: setuju "Latihan" dan "Ujian" (sama dengan Kuis konsep), bukan "Kuis"?
+2. **Mockup Ujian**: boleh dibuat mockup tab "Ujian" di `mockup-tabel-faraidh-final.html` (tombol Kirim, dialog kotak
+   kosong, tampilan sesudah kirim dengan skor kolom) sebelum dibangun?
+3. **Bobot XP**: setuju angka USULAN di 3.2 (biasa tetap 10/20/30; haml [SYF] 70, [HNB] 90, dst.)?
+4. **Nyawa**: setuju ditunda dan diganti saran belajar tanpa kunci (4.4)? Bila tidak, setuju dibatasi ke mode Tantangan
+   daring saja?
+5. **Kelas**: siapa boleh membuat kelas: siapa pun yang login, atau hanya akun yang diberi izin admin? Dan apakah
+   pelajar sesama kelas boleh melihat nama satu sama lain?
+6. **Latihan mandiri dinilai server juga** (supaya XP tidak bisa dipalsukan, T2), atau cukup penugasan saja? Yang
+   pertama membuat XP jujur tetapi mewajibkan daring untuk mendapat XP.
+7. **Engine berubah di tengah penugasan** (kunci berbeda): nilai dibiarkan dengan kunci lama dan pengajar diberi tahu
+   (usulan), atau dinilai ulang otomatis?
+8. **Pengguna di bawah umur**: apakah kelas akan dipakai madrasah/pesantren dengan murid di bawah 17 tahun? Bila ya,
+   perlu persetujuan wali dan pembaruan kebijakan privasi sebelum P4.
+9. **Latihan di penugasan**: nilai 1/0 (benar tanpa dibuka) cukup, atau perlu skor parsial (yang menuntut menilai semua
+   kolom juga di Latihan)?
+10. **Ujian parsial**: tetap 0 XP bila tidak semua kolom benar (usulan), atau XP sebanding jumlah kolom benar?
