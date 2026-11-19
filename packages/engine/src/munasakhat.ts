@@ -29,6 +29,7 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
   const daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }> = [];
   const jejak: LangkahJejak[] = [];
   const tujuanSisa: Record<IdSisaKeluar, TujuanSisa> = {};
+  const daftarGabungan: Array<Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>> = [];
   let saham: Saham = {};
   let jamiah = 0n;
 
@@ -54,6 +55,7 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
       saham = gabungan.saham;
       jamiah = gabungan.jejak.jamiah;
       jejak.push(gabungan.jejak);
+      daftarGabungan.push(gabungan.jejak);
     }
     periksaInvarian(saham, jamiah, 'munasakhat');
   }
@@ -64,7 +66,7 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
   const hanyaAhliWaris = <T>(peta: Record<string, T>) => Object.fromEntries(Object.entries(peta).filter(([id]) => !adalahSisa(id)));
 
   return {
-    status: 'OK', daftarLangkah, jamiah, saham: hanyaAhliWaris(saham),
+    status: 'OK', daftarLangkah: beriPengali(daftarLangkah, daftarGabungan), jamiah, saham: hanyaAhliWaris(saham),
     sisaKeluar: Object.keys(saham).filter(adalahSisa).map(id => ({
       mayit: id.slice(AWALAN_SISA.length), tujuan: tujuanSisa[id]!, saham: saham[id]!, nominal: nominal.nominal[id]!,
     })),
@@ -74,6 +76,18 @@ export function hitungMunasakhat(input: InputMunasakhat): HasilMunasakhat {
     pembulatan: { satuan: input.dasar.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan },
     jejak: [...jejak, tirkah.jejak, ...nominal.jejak],
   };
+}
+
+/**
+ * [R12-2] Pengali tiap mas'alah, dihitung mundur dari penggabungan terakhir: pengali penggabungan berikutnya
+ * (wafq mas'alah mayit berikutnya) mengalikan semua yang sudah ada; wafq saham mengalikan mas'alah mayit yang digabung.
+ */
+function beriPengali(daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>, daftarGabungan: Array<Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>>) {
+  return daftarLangkah.map((langkah, urutanKe) => {
+    const pengaliAwal = urutanKe === 0 ? 1n : daftarGabungan[urutanKe - 1]!.wafqSaham;
+    const pengali = daftarGabungan.slice(urutanKe).reduce((hasil, gabungan) => hasil * gabungan.wafqMasalah, pengaliAwal);
+    return { ...langkah, masalah: total(sahamDari(langkah.mayit, langkah.hasil)), pengali };
+  });
 }
 
 /**

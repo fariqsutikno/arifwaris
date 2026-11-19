@@ -279,8 +279,13 @@ export type IdSisaKeluar = `sisaKeluar:${IdOrang}`;
 export type HasilMunasakhat =
   | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit: IdOrang })
   | { status: 'OK';
-      /** Hasil pipeline tiap mayit, urut wafat. */
-      daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>;
+      /**
+       * Hasil pipeline tiap mayit, urut wafat (`hasil.tabel` = bagian + saham per mas'alah).
+       * `masalah` = Σ saham mas'alah itu; `pengali` = angka pengali mas'alah itu ke jami'ah [R12-2]:
+       * mas'alah pertama × wafq mas'alah tiap penggabungan sesudahnya; mas'alah ke-k × wafq saham penggabungannya
+       * × wafq mas'alah penggabungan sesudahnya. Σ (saham × pengali) per penerima = saham akhirnya di `jamiah`.
+       */
+      daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk; masalah: bigint; pengali: bigint }>;
       /** Bab 12.2: label untuk telusur-balik & penjelasan; tidak menentukan jalur hitung [R12-3]. */
       keadaan: 1 | 2 | 3;
       jamiah: bigint;
