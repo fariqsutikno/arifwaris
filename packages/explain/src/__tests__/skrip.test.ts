@@ -1,7 +1,8 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
-import { hitung } from '@waris/engine';
+import { hitung, type Ruleset } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case05, case03, case08, case09, case10, case12, case13, case14, case23, caseNeg1, caseNeg2, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { KASUS_MADZHAB } from '../../../engine/src/__tests__/fixtures/madzhab.js';
+import { BAB16_FIXTURES, input as inputBab16, p as orangBab16, case01, case05, case03, case08, case09, case10, case12, case13, case14, case23, caseNeg1, caseNeg2, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
 import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
@@ -124,6 +125,34 @@ describe('skrip belajar kasus biasa', () => {
       expect(teks, fixture.id).toContain('jadi tidak mendapat warisan');
       expect(ahliWaris.every(satu => satu.jenis), fixture.id).toBe(true);
     }
+  });
+
+  it('khilaf madzhab: kalimat "Menurut madzhab …" masuk tahap siapa mewarisi, semua kasus overlay tidak melempar', () => {
+    let jumlahKhilaf = 0;
+    for (const kasus of KASUS_MADZHAB) {
+      for (const ruleset of Object.keys(kasus.harapan) as Ruleset[]) {
+        const masukan = { ...inputBab16(kasus.graf), ruleset };
+        const hasil = hitung(masukan);
+        if (hasil.status !== 'OK') continue;
+        const linimasa = susunLinimasa(hasil, masukan.graf, { kamus: kamusSnapshot });
+        if (!hasil.jejak.some(satu => satu.jenis === 'KHILAF_MADZHAB')) continue;
+        jumlahKhilaf++;
+        const teks = linimasa.tahap.find(tahap => tahap.id === 'ahliWaris')!.langkah.map(teksNarasi).join(' ');
+        expect(teks, `${kasus.id} ${ruleset}`).toContain('Menurut madzhab');
+      }
+    }
+    expect(jumlahKhilaf).toBeGreaterThan(0);
+  });
+
+  it('hanya suami yang mewarisi: sisa keluar dijelaskan, bukan di-radd', () => {
+    const graf = { idPewaris: 'D', orang: { D: orangBab16('D', 'P', { statusHidup: 'wafat' }), H1: orangBab16('H1', 'L') }, pernikahan: [{ idSuami: 'H1', idIstri: 'D', status: 'utuh' as const }] };
+    const hasil = hitung(inputBab16(graf));
+    if (hasil.status !== 'OK') throw new Error('kasus tidak OK');
+    const linimasa = susunLinimasa(hasil, graf, { kamus: kamusSnapshot });
+    const penyesuaian = linimasa.tahap.find(tahap => tahap.id === 'penyesuaian')!.langkah;
+    expect(jenisDari(penyesuaian)).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'hitung']);
+    expect(penyesuaian.map(teksNarasi).join(' ')).toContain('suami atau istri tidak menerima radd');
+    expect(linimasa.tahap.find(tahap => tahap.id === 'hasil')!.langkah.map(teksNarasi).join(' ')).toContain('Sisa: 1 bagian (1/2)');
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {

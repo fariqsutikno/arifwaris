@@ -5,7 +5,7 @@
 // Tidak ada aturan fikih baru: tiap kalimat memakai angka dan sebab dari jejak, dan rujukan [Rxx-y] dari jejak itu.
 
 import type { IdOrang } from '@waris/engine';
-import { PERAN_BERPENDAHULU, ceritaArba, opsiKakek, persamaanKotakAshl, type Bab } from './cerita.js';
+import { PERAN_BERPENDAHULU, ceritaArba, opsiKakek, persamaanKotakAshl, teksTujuanSisa, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah, tulisPecahan } from './format.js';
 import { barisSkrip, buatBaris, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
@@ -76,7 +76,6 @@ export function babHartaSkrip(konteks: Konteks): HasilSkrip {
 // ─── Siapa yang mewarisi ──────────────────────────────────────────────────────
 
 export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
-  if (konteks.daftarLangkah('KHILAF_MADZHAB').length) return LAMA;
   const { statusOrang } = konteks.hasil;
   const idKerabat = Object.keys(statusOrang).filter(id => ['ahliWaris', 'mahjub', 'mamnu'].includes(statusOrang[id]!.jenis));
   const idAhliWaris = idKerabat.filter(id => statusOrang[id]!.jenis === 'ahliWaris');
@@ -104,7 +103,8 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
     entri.mahjub.push(hajb.mahjub);
     kelompokHajb.set(kunci, entri);
   }
-  if (kelompokHajb.size === 0 && daftarMani.length === 0) {
+  const daftarKhilaf = konteks.daftarLangkah('KHILAF_MADZHAB');
+  if (kelompokHajb.size === 0 && daftarMani.length === 0 && daftarKhilaf.length === 0) {
     daftarBaris.push(langkah(konteks, 'keluarga', [`ahli_waris.tidak_terhalang.${bentuk}.narasi`, 'ahli_waris.tidak_terhalang.papan'], {}, {}));
     return { judul: judulSkrip(konteks, 'ahli_waris.judul'), daftarBaris, kolom: 'ahliWaris' };
   }
@@ -115,6 +115,14 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
     const sebutMahjub = sebutSemua(konteks, mahjub);
     const sebutHajib = sebutSemua(konteks, hajib);
     daftarBaris.push(langkah(konteks, 'keluarga', 'ahli_waris.terhalang', { mahjub: sebutMahjub, hajib: sebutHajib }, { hajib: sebutHajib, mahjub: sebutMahjub }, refs, mahjub));
+  }
+  for (const khilaf of daftarKhilaf) {
+    const sisipan = {
+      madzhab: teksKamus(konteks.penyusun, `narasi.umum.madzhab.${khilaf.ruleset}`),
+      isi: teksKamus(konteks.penyusun, `narasi.cerita.ahli_waris.isi_khilaf.${khilaf.kode.toLowerCase().replace('-', '_')}`),
+    };
+    const kalimatKhilaf = susun(konteks.penyusun, 'narasi.cerita.ahli_waris.khilaf', sisipan);
+    daftarBaris.push({ ...buatBaris(kalimatKhilaf, khilaf.refs, khilaf.idOrang), jenis: 'keluarga', papan: kalimatKhilaf });
   }
   const daftar = sebutSemua(konteks, idAhliWaris);
   daftarBaris.push(langkah(konteks, 'hitung', 'ahli_waris.tinggal', { jumlah: idAhliWaris.length, daftar }, { daftar }));
@@ -306,8 +314,10 @@ export function babPenyebutSkrip(konteks: Konteks): HasilSkrip {
 // ─── Memeriksa jumlah bagian: 'adilah, 'aul, radd ─────────────────────────────
 
 export function babPenyesuaianSkrip(konteks: Konteks): HasilSkrip {
+  const [sisaKeluar] = konteks.daftarLangkah('SISA_KELUAR');
+  if (sisaKeluar) return barisSisaKeluar(konteks, sisaKeluar);
   const [kelas] = konteks.daftarLangkah('KELAS_MASALAH');
-  if (!kelas || konteks.daftarLangkah('SISA_KELUAR').length) return LAMA;
+  if (!kelas) return LAMA;
   const { baris } = konteks.hasil.tabel;
   const rincian = baris.length > 1 ? `${baris.map(barisTabel => barisTabel.sel['ashl']).join(' + ')} = ` : '';
   const tanya = langkah(konteks, 'tanya', 'cek.tanya', {}, { ashl: kelas.ashl });
@@ -320,6 +330,32 @@ export function babPenyesuaianSkrip(konteks: Konteks): HasilSkrip {
     case 'raddA': case 'raddB':
       return barisRadd(konteks, kelas, rincian, tanya);
   }
+}
+
+/** Hanya pasangan yang mewarisi [R09-9] (atau kebijakan baitul mal [R09-8]): sisa keluar dari ahli waris, tidak di-radd. */
+function barisSisaKeluar(konteks: Konteks, sisaKeluar: Langkah<'SISA_KELUAR'>): HasilSkrip {
+  const { baris } = konteks.hasil.tabel;
+  const { ashl, saham: sisa } = sisaKeluar;
+  const jumlah = ashl - sisa;
+  const rincian = baris.length > 1 ? `${baris.map(barisTabel => barisTabel.sel['ashl']).join(' + ')} = ` : '';
+  const pasangan = sebutSemua(konteks, baris.flatMap(barisTabel => barisTabel.anggota));
+  const radd_ = istilahUmum(konteks, 'radd');
+  const refs = sisaKeluar.refs;
+  const daftarBaris = [
+    langkah(konteks, 'tanya', 'cek.tanya', {}, { ashl }),
+    langkah(konteks, 'hitung', 'radd.kurang', { rincian, jumlah, ashl, sisa }, { rincian, jumlah, ashl, sisa }, refs),
+    langkah(konteks, 'tanya', 'radd.tanya', { sisa }, { sisa }),
+  ];
+  if (sisaKeluar.tujuan === 'baitulMalTeratur') {
+    daftarBaris.push(langkah(konteks, 'keluarga', 'radd.baitul_mal_teratur', { sisa }, { sisa }, refs));
+  } else {
+    daftarBaris.push(
+      langkah(konteks, 'dasar', 'radd.dasar', { radd: radd_ }, { radd: radd_ }, refs),
+      langkah(konteks, 'keluarga', 'radd.pasangan_saja', { pasangan, sisa }, { pasangan }, refs),
+      langkah(konteks, 'hitung', [`radd.sisa_tujuan.${sisaKeluar.tujuan === 'dzawilArham' ? 'dzawil_arham' : 'baitul_mal'}.narasi`, 'radd.sisa_tujuan.papan'], { sisa }, { sisa }, refs),
+    );
+  }
+  return { judul: judulSkrip(konteks, 'radd.judul'), kolom: 'penyesuaian', daftarBaris };
 }
 
 function barisAul(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: string): BarisPenjelasan[] {
@@ -504,8 +540,7 @@ function barisTashih(konteks: Konteks, daftarInkisar: Inkisar[], tashih: Langkah
 // ─── Hasil akhir dan ringkasan ────────────────────────────────────────────────
 
 export function babHasilSkrip(konteks: Konteks): HasilSkrip {
-  if (konteks.hasil.sisaKeluar) return LAMA;
-  const { tabel, pembulatan } = konteks.hasil;
+  const { tabel, pembulatan, sisaKeluar } = konteks.hasil;
   const penyebut = konteks.penyebutAkhir;
   const [tirkah] = konteks.daftarLangkah('TIRKAH');
   const daftarBaris: BarisPenjelasan[] = [];
@@ -530,6 +565,13 @@ export function babHasilSkrip(konteks: Konteks): HasilSkrip {
         daftarBaris.push(langkah(konteks, 'hitung', 'hasil.orang_saham', sisipan, sisipan, ['R11-1'], [id]));
       }
     }
+  }
+  if (sisaKeluar) {
+    const nominalBila = konteks.tampilkanNominal ? kalimat` = ${rupiah(sisaKeluar.nominal)}` : [];
+    const kalimatSisa = susun(konteks.penyusun, 'narasi.cerita.hasil.sisa', {
+      saham: sisaKeluar.saham, penyebut, nominal: nominalBila, tujuan: teksTujuanSisa(konteks.penyusun, sisaKeluar.tujuan),
+    });
+    daftarBaris.push(tekankan({ ...buatBaris(kalimatSisa, konteks.daftarLangkah('SISA_KELUAR')[0]?.refs ?? []), jenis: 'hitung', papan: kalimatSisa }, 'perhatian'));
   }
   if (konteks.tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     const perSatuan = pembulatan.satuan > 1n;

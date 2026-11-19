@@ -26614,6 +26614,55 @@
    "id": "{siapa} tidak mewarisi",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_saja.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini hanya {pasangan} yang mewarisi, dan suami atau istri tidak menerima radd. Jadi {sisa} kotak itu tidak dikembalikan kepada mereka.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_saja.papan",
+   "halaman": "narasi",
+   "id": "Hanya {pasangan}: tidak ada radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_tujuan.dzawil_arham.narasi",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham, yaitu kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_tujuan.baitul_mal.narasi",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham bila ada (misalnya ayahnya ibu atau anak dari anak perempuan). Bila tidak ada, diserahkan ke baitul mal (kas umum umat Islam).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_tujuan.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak: di luar ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.baitul_mal_teratur.narasi",
+   "halaman": "narasi",
+   "id": "Dalam kebijakan ini baitul mal dianggap teratur, jadi sisa {sisa} kotak tidak dikembalikan kepada ahli waris, tetapi diserahkan ke baitul mal (kas umum umat Islam).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.baitul_mal_teratur.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak → baitul mal",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
