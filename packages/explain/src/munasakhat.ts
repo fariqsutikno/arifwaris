@@ -112,7 +112,7 @@ export function pembukaan(hasil: HasilOk, sebut: (id: IdOrang) => Potongan, peny
 }
 
 /** Urutan wafat setelah mayit pertama, termasuk yang diabaikan karena tidak mendapat bagian. */
-function urutanWafatSebenarnya(hasil: HasilOk): IdOrang[] {
+export function urutanWafatSebenarnya(hasil: HasilOk): IdOrang[] {
   return hasil.jejak.flatMap(langkahIni => (langkahIni.jenis === 'MUNASAKHAT' || langkahIni.jenis === 'MUNASAKHAT_DILEWATI' ? [langkahIni.mayit] : []));
 }
 

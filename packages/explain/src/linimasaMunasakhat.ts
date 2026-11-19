@@ -7,16 +7,15 @@ import type { GrafKeluarga, IdOrang } from '@waris/engine';
 import type { Bab } from './cerita.js';
 import { buatKonteks } from './context.js';
 import { kolomTabel, kotakWakil, tahapBiasa, type IsiKotak, type Langkah, type Linimasa, type Tahap, type Visual } from './linimasa.js';
-import {
-  AWALAN_SISA, buatSebut, hasilAkhir, penggabungan, pembukaan, sebutPenerima, type BagianMunasakhat, type HasilMunasakhatOk, type LangkahGabungan,
-} from './munasakhat.js';
+import { AWALAN_SISA, buatSebut, sebutPenerima, type HasilMunasakhatOk, type LangkahGabungan } from './munasakhat.js';
+import { babAkhirSkrip, babPembukaanSkrip, babSambungSkrip } from './skripMunasakhat.js';
 import type { Kamus, Penyusun } from './segments.js';
 
 export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): Linimasa {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
   const sebut = buatSebut(hasil, graf, penyusun);
   const daftarGabungan = hasil.jejak.filter((langkah): langkah is LangkahGabungan => langkah.jenis === 'MUNASAKHAT');
-  const tahap: Tahap[] = [tahapDariBab('berantai', pembukaan(hasil, sebut, penyusun))];
+  const tahap: Tahap[] = [tahapDariBab('berantai', babPembukaanSkrip(hasil, sebut, penyusun))];
 
   for (const [urutan, langkah] of hasil.daftarLangkah.entries()) {
     // Mayit berikutnya disebut dengan perannya ("anak perempuan"), bukan "almarhumah" (sama dengan jelaskanMunasakhat).
@@ -33,9 +32,9 @@ export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKelu
       langkah: satu.langkah.map(isi => (isi.sel ? { ...isi, sel: isi.sel.filter(kode => !tanpaNominal(kode)) } : isi)),
     })));
     const gabungan = daftarGabungan.find(langkahIni => langkahIni.mayit === langkah.mayit);
-    if (gabungan) tahap.push(tahapPenyambung(penggabungan(gabungan, sebut, penyusun), gabungan));
+    if (gabungan) tahap.push(tahapPenyambung(babSambungSkrip(gabungan, sebut, penyusun, hasil.daftarLangkah[urutan + 1]?.mayit), gabungan));
   }
-  tahap.push(tahapAkhir(hasilAkhir(hasil, sebut, penyusun), hasil));
+  tahap.push(tahapAkhir(babAkhirSkrip(hasil, sebut, penyusun), hasil));
 
   const idDalamRantai = new Set<string>([...Object.keys(hasil.saham), ...daftarGabungan.flatMap(satu => Object.keys(satu.rincian)), ...hasil.daftarLangkah.map(satu => satu.mayit)]);
   const nama = Object.fromEntries([...idDalamRantai].map(id => [id, id.startsWith(AWALAN_SISA)
@@ -45,11 +44,12 @@ export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKelu
 
 // ─── Tahap ────────────────────────────────────────────────────────────────────
 
-const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({ bagian: 'hitung', narasi: baris, papan: baris, refs: baris.refs });
+const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({
+  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: baris.papan ? { daftarPotongan: baris.papan, refs: baris.refs } : baris, refs: baris.refs,
+});
 
-function tahapDariBab(id: Tahap['id'], bagian: BagianMunasakhat): Tahap {
-  const bab = bagian.daftarBab[0]!;
-  return { id, judul: bagian.judul, langkah: bab.daftarBaris.map(langkahDariBaris) };
+function tahapDariBab(id: Tahap['id'], bab: Bab): Tahap {
+  return { id, judul: bab.judul, langkah: bab.daftarBaris.map(langkahDariBaris) };
 }
 
 /** "Menyambung bagian": kotak jami'ah baru berisi `sesudah` tiap orang (jami'ah sebelumnya × wafq mas'alah + saham mayit × wafq saham). */
@@ -60,8 +60,8 @@ function tahapPenyambung(bab: Bab, gabungan: LangkahGabungan): Tahap {
   return { id: 'menyambung', judul: bab.judul, langkah };
 }
 
-function tahapAkhir(bagian: BagianMunasakhat, hasil: HasilMunasakhatOk): Tahap {
-  const tahap = tahapDariBab('hasilAkhir', bagian);
+function tahapAkhir(bab: Bab, hasil: HasilMunasakhatOk): Tahap {
+  const tahap = tahapDariBab('hasilAkhir', bab);
   // Ikhtishar = saham yang sudah disederhanakan (sama dengan narasi "diringkas"); baris sisa memakai kunci `sisaKeluar:<mayit>`.
   const isi: IsiKotak[] = Object.entries(hasil.ikhtishar.saham).filter(([, saham]) => saham > 0n).map(([id, saham]) => ({ kelompok: id, anggota: [id], jumlah: saham }));
   return { ...tahap, langkah: [{ ...tahap.langkah[0]!, visual: kotakJamiah(hasil.ikhtishar.jamiah, isi) }, ...tahap.langkah.slice(1)] };
