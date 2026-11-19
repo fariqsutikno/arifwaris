@@ -91,6 +91,9 @@ td.tutup span{visibility:hidden}
 .kemajuan{display:flex;gap:6px;margin:14px 20px 0}
 .ruas{flex:var(--n);display:flex;gap:2px;cursor:pointer;background:none;border:0;padding:6px 0}
 .ruas i{flex:1;height:4px;border-radius:2px;background:#2b3c37}
+.ruas{flex-wrap:wrap;gap:2px}.ruas small{flex-basis:100%;margin-top:3px;font:500 11px var(--font);color:#8aa39a;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.ruas.kini small{color:#fff}
+.tebak{margin:8px 20px 0;text-align:center;font-size:13.5px;color:#cfdcd5;display:none}.tebak.jalan{display:block}.tebak .jalur{height:4px;border-radius:2px;background:#2b3c37;max-width:320px;margin:6px auto 0;overflow:hidden}.tebak .jalur i{display:block;height:100%;width:0;background:var(--orange);animation:jalurTebak var(--durasi) linear forwards}
+@keyframes jalurTebak{to{width:100%}}
 .ruas i.lewat{background:var(--orange)}
 .ruas i.kini{background:#ffd3bd}
 .kontrol{display:flex;justify-content:center;align-items:center;gap:10px;margin:8px 20px 0}
@@ -144,6 +147,7 @@ td.tutup span{visibility:hidden}
     <p class="papan" id="papan"></p>
   </main>
   <p class="takarir" id="takarir"></p>
+  <div class="tebak" id="tebak">Coba tebak dulu, jawabannya sebentar lagi<div class="jalur"><i></i></div></div>
   <div class="kemajuan" id="kemajuan"></div>
   <div class="kontrol">
     <button id="tahapMundur" aria-label="Tahap sebelumnya" title="Tahap sebelumnya"><svg class="ik" viewBox="0 0 24 24"><path d="M6 5v14M18 6l-8 6 8 6z"/></svg></button>
@@ -154,7 +158,7 @@ td.tutup span{visibility:hidden}
   </div>
   <nav class="menu">
     <button id="mPohon">Pohon</button><button id="mTabel">Tabel</button>
-    <button id="mKecepatan">Kecepatan 1×</button><button id="mSuara" aria-pressed="true">Suara: nyala</button>
+    <button id="mKecepatan">Kecepatan 1×</button><button id="mSuara" aria-pressed="true">Suara: nyala</button><button id="mTebak" aria-pressed="true">Jeda tebak: nyala</button>
     <button id="mRekam" class="rekam">Rekam video</button><button id="mPenuh">Layar penuh</button><button>Keluar</button>
   </nav>
 </div>
@@ -310,6 +314,8 @@ const KASUS = {
 };
 
 // ═══ Status ═══
+const TEBAK_JEDA_MS = 2500; // langkah yang dibuka dengan pertanyaan memberi waktu menebak sebelum dibacakan
+let jedaTebak = true;
 let kunci = 'biasa', urutan = [], posisi = 0, otomatis = false, jadwal = null, suaraNyala = true, kecepatan = 1, perekam = null;
 const kasus = () => KASUS[kunci];
 // Urutan datar: [{ t: indeks tahap, l: indeks langkah }] supaya maju/mundur satu langkah sederhana.
@@ -381,9 +387,16 @@ function tampilkan(i) {
   $('takarir').textContent = a.n;
   $('kemajuan').innerHTML = k.tahap.map((th2, t2) => `<button class="ruas" style="--n:${th2.langkah.length}" data-tahap="${t2}" aria-label="Tahap ${t2 + 1}: ${th2.judul}">${th2.langkah.map((_, l2) => {
     const j = urutan.findIndex(u => u.t === t2 && u.l === l2); return `<i class="${j < i ? 'lewat' : j === i ? 'kini' : ''}"></i>`; }).join('')}</button>`).join('');
+  document.querySelectorAll('#kemajuan .ruas').forEach((r, t2) => { r.insertAdjacentHTML('beforeend', `<small>${k.tahap[t2].judul}</small>`); });
   $('mundur').disabled = i === 0; $('tahapMundur').disabled = t === 0;
   $('maju').disabled = i === urutan.length - 1; $('tahapMaju').disabled = t === k.tahap.length - 1;
-  bacakan(a.n);
+  const tb = $('tebak'); tb.classList.remove('jalan');
+  const tanya = jedaTebak && otomatis && /^[^.]*\?/.test(a.n);
+  if (tanya) {
+    $('takarir').textContent = a.n.match(/^[^.?]*\?/)[0];
+    tb.style.setProperty('--durasi', TEBAK_JEDA_MS / kecepatan + 'ms'); void tb.offsetWidth; tb.classList.add('jalan');
+    jadwal = setTimeout(() => { tb.classList.remove('jalan'); $('takarir').textContent = a.n; bacakan(a.n); }, TEBAK_JEDA_MS / kecepatan);
+  } else bacakan(a.n);
 }
 
 function bacakan(teks) {
@@ -448,6 +461,7 @@ document.addEventListener('click', e => {
     case 'mPohon': return bukaLapisan('Pohon keluarga', gambarPohon(kasus().pohon, {}));
     case 'mTabel': return bukaLapisan('Tabel faraidh sejauh ini', gambarTabel(kasus(), posisi, []));
     case 'tutupLapisan': return $('lapisan').classList.remove('buka');
+    case 'mTebak': jedaTebak = !jedaTebak; t.setAttribute('aria-pressed', jedaTebak); t.textContent = `Jeda tebak: ${jedaTebak ? 'nyala' : 'mati'}`; return;
     case 'mKecepatan': kecepatan = KECEPATAN[(KECEPATAN.indexOf(kecepatan) + 1) % KECEPATAN.length]; t.textContent = `Kecepatan ${kecepatan}×`; return;
     case 'mSuara': suaraNyala = !suaraNyala; if (!suaraNyala) speechSynthesis.cancel(); t.textContent = `Suara: ${suaraNyala ? 'nyala' : 'mati'}`; t.setAttribute('aria-pressed', suaraNyala); return;
     case 'mRekam': return perekam ? berhenti() : rekam();
