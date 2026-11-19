@@ -40,10 +40,34 @@ export function langkahPeta(konteks: Konteks): BarisPenjelasan {
 export function babHartaSkrip(konteks: Konteks): HasilSkrip {
   const [tirkah] = konteks.daftarLangkah('TIRKAH');
   if (!tirkah || tirkah.kotor === 0n) return undefined;
-  if (tirkah.tajhiz > 0n || tirkah.hutang > 0n || tirkah.wasiatDiminta > 0n) return LAMA;
-  const kotor = rupiah(tirkah.kotor);
-  const baris = langkah(konteks, 'keluarga', 'harta.tanpa_potongan', { pewaris: konteks.sebutan.pewaris(), kotor }, { kotor }, ['R11-1']);
-  return { judul: judulSkrip(konteks, 'harta.judul'), daftarBaris: [baris], kolom: 'nominal' };
+  const pewaris = konteks.sebutan.pewaris();
+  const judul = judulSkrip(konteks, 'harta.judul');
+  if (tirkah.tajhiz === 0n && tirkah.hutang === 0n && tirkah.wasiatDiminta === 0n) {
+    const kotor = rupiah(tirkah.kotor);
+    return { judul, kolom: 'nominal', daftarBaris: [langkah(konteks, 'keluarga', 'harta.tanpa_potongan', { pewaris, kotor }, { kotor }, ['R11-1'])] };
+  }
+  const daftarBaris = [
+    langkah(konteks, 'tanya', 'harta.tanya', { pewaris }, {}),
+    langkah(konteks, 'dasar', 'harta.dasar', { tirkah: istilahUmum(konteks, 'tirkah') }, {}, ['R01-4']),
+  ];
+  let sisa = tirkah.kotor;
+  const kurangi = (apa: 'tajhiz' | 'hutang' | 'wasiat', nilai: bigint, refs: string[]) => {
+    const sisipan = { sebelum: rupiah(sisa), nilai: rupiah(nilai), sisa: rupiah(sisa - nilai) };
+    const namaApa = teksKamus(konteks.penyusun, kunciKamus(`harta.apa.${apa}`));
+    daftarBaris.push(langkah(konteks, 'hitung', 'harta.kurangi', { ...sisipan, apa: namaApa }, sisipan, refs));
+    sisa -= nilai;
+  };
+  if (tirkah.tajhiz > 0n) kurangi('tajhiz', tirkah.tajhiz, tirkah.refs);
+  if (tirkah.hutang > 0n) kurangi('hutang', tirkah.hutang, tirkah.refs);
+  if (sisa === 0n && tirkah.hutang > 0n) daftarBaris.push(langkah(konteks, 'keluarga', 'harta.hutang_habis', {}, {}, tirkah.refs));
+  if (tirkah.wasiatButuhIjazah > 0n) {
+    const sisipan = { diminta: rupiah(tirkah.wasiatDiminta), batas: rupiah(tirkah.wasiatBatas), dipakai: rupiah(tirkah.wasiatDipakai) };
+    daftarBaris.push(tekankan(langkah(konteks, 'keluarga', 'harta.wasiat_melebihi', { pewaris, ...sisipan, kelebihan: rupiah(tirkah.wasiatButuhIjazah) }, sisipan, ['R01-4']), 'perhatian'));
+  }
+  if (tirkah.wasiatDipakai > 0n) kurangi('wasiat', tirkah.wasiatDipakai, ['R01-4']);
+  const bersih = rupiah(tirkah.bersih);
+  daftarBaris.push(langkah(konteks, 'keluarga', 'harta.jadi', { bersih }, { bersih }, ['R11-1']));
+  return { judul, daftarBaris, kolom: 'nominal' };
 }
 
 // ─── Siapa yang mewarisi ──────────────────────────────────────────────────────
@@ -299,9 +323,7 @@ export function babPembulatanSkrip(konteks: Konteks): HasilSkrip {
     if (inkisar.some(satu => satu.hubungan !== 'habis')) return LAMA;
     return { judul, kolom: 'tashih', daftarBaris: [...barisBagiRata(konteks, inkisar), penutup] };
   }
-  const [satu] = inkisar;
-  if (inkisar.length !== 1 || satu!.hubungan === 'habis' || konteks.daftarLangkah('PERBANDINGAN_NISAB').some(lain => lain.tujuan === 'juzSahm')) return LAMA;
-  return { judul, kolom: 'tashih', daftarBaris: [...barisTashih(konteks, satu!, tashih), penutup] };
+  return { judul, kolom: 'tashih', daftarBaris: [...barisTashih(konteks, inkisar, tashih), penutup] };
 }
 
 type Inkisar = Langkah<'PERBANDINGAN_NISAB'>;
@@ -321,25 +343,50 @@ function barisBagiRata(konteks: Konteks, inkisar: Inkisar[]): BarisPenjelasan[] 
   return daftarBaris;
 }
 
-function barisTashih(konteks: Konteks, satu: Inkisar, tashih: Langkah<'TASHIH'>): BarisPenjelasan[] {
-  const { a: saham, b: ruus } = satu;
-  const anggota = konteks.anggotaDari(satu.kelompok!);
-  const kelompok = sebutKelompok(konteks, satu.kelompok!);
-  const satuan = satuanPembagi(konteks, ruus, anggota.length);
+/** Satu atau beberapa kelompok yang bagiannya tidak habis dibagi anggotanya: cek tiap kelompok, cari pengali, potong ulang, bagi. */
+function barisTashih(konteks: Konteks, daftarInkisar: Inkisar[], tashih: Langkah<'TASHIH'>): BarisPenjelasan[] {
+  const { penyusun } = konteks;
   const pengali = tashih.juzSahm;
-  const potongKelompok = saham * pengali;
-  const perSatuan = potongKelompok / ruus;
+  const banyak = daftarInkisar.length > 1;
+  const kelompok = daftarInkisar.map(satu => {
+    const anggota = konteks.anggotaDari(satu.kelompok!);
+    return { satu, anggota, siapa: sebutKelompok(konteks, satu.kelompok!), satuan: satuanPembagi(konteks, satu.b, anggota.length) };
+  });
   const daftarBaris: BarisPenjelasan[] = [];
-  if (ruus > BigInt(anggota.length)) daftarBaris.push(langkah(konteks, 'keluarga', 'tashih.jatah', { siapa: kelompok, ruus }, { ruus, ruus_istilah: istilahUmum(konteks, 'ruus') }, ['R10-2']));
-  daftarBaris.push(
-    langkah(konteks, 'keluarga', 'tashih.tidak_habis', { saham, ruus, satuan, hasil_bagi: saham / ruus, sisa: saham % ruus },
-      { saham, ruus, hasil_bagi: saham / ruus, sisa: saham % ruus, hubungan: istilahUmum(konteks, satu.hubungan === 'tawafuq' ? 'tawafuq' : 'tabayun') }, satu.refs),
-    langkah(konteks, 'logika', 'tashih.potong', { pengali, dasar: tashih.dasar, hasil: tashih.hasil },
-      { pengali, dasar: tashih.dasar, hasil: tashih.hasil, tashih: istilahUmum(konteks, 'tashih') }, tashih.refs),
-    langkah(konteks, 'logika', 'tashih.habis_dibagi', { saham, potong_kelompok: potongKelompok, ruus },
-      { saham, pengali, potong_kelompok: potongKelompok, ruus, per: perSatuan }, tashih.refs),
-  );
-  const contoh = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok !== satu.kelompok && barisTabel.fardh && !barisTabel.ashabah);
+  for (const { satu, anggota, siapa, satuan } of kelompok) {
+    const { a: saham, b: ruus } = satu;
+    if (ruus > BigInt(anggota.length)) daftarBaris.push(langkah(konteks, 'keluarga', 'tashih.jatah', { siapa, ruus }, { ruus, ruus_istilah: istilahUmum(konteks, 'ruus') }, ['R10-2']));
+    if (satu.hubungan === 'habis') {
+      daftarBaris.push(langkah(konteks, 'hitung', 'tashih.rata.pas', { siapa, saham, ruus, satuan }, { saham, ruus, hasil_bagi: saham / ruus }, satu.refs));
+      continue;
+    }
+    const sisipan = { saham, ruus, satuan, hasil_bagi: saham / ruus, sisa: saham % ruus };
+    const papan = { saham, ruus, hasil_bagi: saham / ruus, sisa: saham % ruus, hubungan: istilahUmum(konteks, satu.hubungan === 'tawafuq' ? 'tawafuq' : 'tabayun') };
+    daftarBaris.push(banyak
+      ? langkah(konteks, 'keluarga', ['tashih.tidak_habis_kelompok.narasi', 'tashih.tidak_habis.papan'], { siapa, ...sisipan }, papan, satu.refs)
+      : langkah(konteks, 'keluarga', 'tashih.tidak_habis', sisipan, papan, satu.refs));
+  }
+
+  const simpanan = daftarInkisar.filter(satu => satu.hubungan !== 'habis');
+  if (simpanan.length > 1) {
+    const angka = gabungDan(penyusun, simpanan.map(satu => [teks(String(satu.hasil))]));
+    daftarBaris.push(langkah(konteks, 'logika', 'tashih.pengali_bersama', { angka }, { angka }, ['R10-3']));
+    for (const gabung of konteks.daftarLangkah('PERBANDINGAN_NISAB').filter(satu => satu.tujuan === 'juzSahm')) {
+      const awalan = susun(penyusun, 'narasi.cerita.tashih.awalan_juz_sahm', { a: gabung.a, b: gabung.b });
+      const kalimatNisab = ceritaArba(konteks, gabung, awalan);
+      daftarBaris.push({ ...buatBaris(kalimatNisab, gabung.refs), jenis: 'logika', papan: kalimatNisab });
+    }
+  }
+  daftarBaris.push(langkah(konteks, 'logika', 'tashih.potong', { pengali, dasar: tashih.dasar, hasil: tashih.hasil },
+    { pengali, dasar: tashih.dasar, hasil: tashih.hasil, tashih: istilahUmum(konteks, 'tashih') }, tashih.refs));
+  for (const { satu, siapa } of kelompok) {
+    const potongKelompok = satu.a * pengali;
+    const sisipan = { saham: satu.a, potong_kelompok: potongKelompok, ruus: satu.b };
+    daftarBaris.push(langkah(konteks, 'logika', banyak ? ['tashih.habis_dibagi_kelompok.narasi', 'tashih.habis_dibagi.papan'] : 'tashih.habis_dibagi',
+      banyak ? { siapa, ...sisipan } : sisipan, { saham: satu.a, pengali, potong_kelompok: potongKelompok, ruus: satu.b, per: potongKelompok / satu.b }, tashih.refs));
+  }
+  const kelompokInkisar = new Set(daftarInkisar.map(satu => satu.kelompok));
+  const contoh = konteks.hasil.tabel.baris.find(barisTabel => !kelompokInkisar.has(barisTabel.kelompok) && barisTabel.fardh && !barisTabel.ashabah);
   if (contoh) {
     // Setelah 'aul/radd satuan kotak mengikuti penyebut barunya, jadi pecahan dihitung dari kotak ÷ penyebut itu.
     const { totalKolom } = konteks.hasil.tabel;
@@ -349,16 +396,17 @@ function barisTashih(konteks: Konteks, satu: Inkisar, tashih: Langkah<'TASHIH'>)
     const sisipan = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak, potong: kotak * pengali, pecahan, hasil: tashih.hasil };
     daftarBaris.push(langkah(konteks, 'logika', 'tashih.nilai_tetap', sisipan, sisipan, tashih.refs));
   }
-  const barisKelompok = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok === satu.kelompok)!;
-  const rincian = gabungDan(konteks.penyusun, anggota.map(id =>
-    susun(konteks.penyusun, kunciKamus('tashih.rincian_orang'), { siapa: konteks.sebutan.sebut([id]), saham: barisKelompok.perOrang[id]!.saham })));
+  for (const { satu, anggota, siapa, satuan } of kelompok) {
+    const barisKelompok = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok === satu.kelompok)!;
+    const total = satu.a * pengali;
+    const rincian = gabungDan(penyusun, anggota.map(id =>
+      susun(penyusun, kunciKamus('tashih.rincian_orang'), { siapa: konteks.sebutan.sebut([id]), saham: barisKelompok.perOrang[id]!.saham })));
+    daftarBaris.push(langkah(konteks, 'hitung', 'tashih.dibagi', { kelompok: siapa, saham: satu.a, pengali, total, ruus: satu.b, satuan, per: total / satu.b, rincian },
+      { total, ruus: satu.b, per: total / satu.b, satuan }, tashih.refs));
+  }
   const bagianAkhir = konteks.hasil.tabel.baris.flatMap(barisTabel => Object.values(barisTabel.perOrang).map(orang => orang.saham)).filter(angka => angka > 0n);
-  daftarBaris.push(
-    langkah(konteks, 'hitung', 'tashih.dibagi', { kelompok, saham, pengali, total: potongKelompok, ruus, satuan, per: perSatuan, rincian },
-      { total: potongKelompok, ruus, per: perSatuan, satuan }, tashih.refs),
-    langkah(konteks, 'hitung', 'tashih.cek', { daftar: gabungDan(konteks.penyusun, bagianAkhir.map(angka => [teks(String(angka))])), hasil: tashih.hasil },
-      { jumlahan: gabungPlus(bagianAkhir), hasil: tashih.hasil }, tashih.refs),
-  );
+  daftarBaris.push(langkah(konteks, 'hitung', 'tashih.cek', { daftar: gabungDan(penyusun, bagianAkhir.map(angka => [teks(String(angka))])), hasil: tashih.hasil },
+    { jumlahan: gabungPlus(bagianAkhir), hasil: tashih.hasil }, tashih.refs));
   return daftarBaris;
 }
 

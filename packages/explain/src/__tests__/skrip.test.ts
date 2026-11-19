@@ -1,12 +1,13 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
 import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case05, case09, case10, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case05, case09, case10, case23, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
 import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
 
-const BATAS_KATA_NARASI = 45;
+// Templat sendiri ≤ ±30 kata; sisanya ruang untuk sebutan peran bertingkat yang panjang ("anak laki-laki dari cucu laki-laki dari anak laki-laki").
+const BATAS_KATA_NARASI = 55;
 
 function langkahDari(fixture: typeof case01, idTahap: string): Langkah[] {
   const hasil = hitung(fixture.input);
@@ -50,6 +51,21 @@ describe('skrip belajar kasus biasa', () => {
     expect(teks).toContain('tidak ikut radd');
     expect(teks).toContain('harta menjadi 16 potong');
     expect(teks).toContain('dari 16 kotak');
+  });
+
+  it('harta dengan potongan: tanya, dasar, pengurangan berurutan, hasil bersih', () => {
+    const harta = langkahDari(caseNominal, 'harta');
+    expect(jenisDari(harta)).toEqual(['peta', 'tanya', 'dasar', 'hitung', 'hitung', 'keluarga', 'hitung', 'keluarga']);
+    const teks = harta.map(teksNarasi).join(' ');
+    expect(teks).toContain('Harta Rp150.000.000 dikurangi biaya jenazah Rp5.000.000, tersisa Rp145.000.000');
+    expect(teks).toContain('melebihi batas 1/3');
+    expect(teks).toContain('Jadi yang dibagi kepada ahli waris: Rp80.000.000');
+  });
+
+  it('C16-23 (tashih dua kelompok): pengali bersama dicari, tiap kelompok dibagi', () => {
+    const teks = langkahDari(case23, 'tashih').map(teksNarasi).join(' ');
+    expect(teks).toContain('pengali bersama');
+    expect(teks).toContain('habis dibagi');
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {

@@ -26117,6 +26117,139 @@
    "id": "{saham}/{penyebut} × {bersih} = {nominal}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Sebelum membahas bagian tiap orang, kita pastikan dulu: berapa harta {pewaris} yang benar-benar dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanya.papan",
+   "halaman": "narasi",
+   "id": "Berapa harta yang dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Harta peninggalan ({tirkah}) dikurangi dulu untuk biaya pengurusan jenazah, lalu hutang, lalu wasiat yang paling banyak 1/3.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.dasar.papan",
+   "halaman": "narasi",
+   "id": "Jenazah → hutang → wasiat (maks. 1/3)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.apa.tajhiz",
+   "halaman": "narasi",
+   "id": "biaya jenazah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.apa.hutang",
+   "halaman": "narasi",
+   "id": "hutang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.apa.wasiat",
+   "halaman": "narasi",
+   "id": "wasiat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.kurangi.narasi",
+   "halaman": "narasi",
+   "id": "Harta {sebelum} dikurangi {apa} {nilai}, tersisa {sisa}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.kurangi.papan",
+   "halaman": "narasi",
+   "id": "{sebelum} − {nilai} = {sisa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.hutang_habis.narasi",
+   "halaman": "narasi",
+   "id": "Hutang menghabiskan seluruh harta, jadi tidak ada yang dibagi sebagai warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.hutang_habis.papan",
+   "halaman": "narasi",
+   "id": "Tidak ada yang dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.wasiat_melebihi.narasi",
+   "halaman": "narasi",
+   "id": "Wasiat {pewaris} sebesar {diminta} melebihi batas 1/3 ({batas}), jadi yang dijalankan hanya {dipakai}. Kelebihan {kelebihan} baru boleh dijalankan jika semua ahli waris setuju (ijazah).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.wasiat_melebihi.papan",
+   "halaman": "narasi",
+   "id": "Wasiat {diminta} → {dipakai} (batas {batas})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.jadi.narasi",
+   "halaman": "narasi",
+   "id": "Jadi yang dibagi kepada ahli waris: {bersih}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.jadi.papan",
+   "halaman": "narasi",
+   "id": "Yang dibagi: {bersih}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.pengali_bersama.narasi",
+   "halaman": "narasi",
+   "id": "Angka yang harus disimpan tiap kelompok: {angka}. Supaya cocok untuk semuanya, kita cari satu pengali bersama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.pengali_bersama.papan",
+   "halaman": "narasi",
+   "id": "Pengali bersama untuk {angka}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tidak_habis_kelompok.narasi",
+   "halaman": "narasi",
+   "id": "{siapa}: {saham} kotak dibagi {ruus} {satuan}, hasilnya {hasil_bagi}, sisa {sisa}. Tidak habis, padahal tiap orang harus dapat potongan utuh.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.habis_dibagi_kelompok.narasi",
+   "halaman": "narasi",
+   "id": "{siapa}: {saham} kotak menjadi {potong_kelompok} potong, dan {potong_kelompok} habis dibagi {ruus}.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
