@@ -85,7 +85,7 @@ describe('Gharqa × taqdir (13.0b)', () => {
       if (tunggal.status !== 'OK') throw new Error(tunggal.status);
       expect(harta.saham).toEqual(tunggal.diberikan);
       expect(harta.mauquf).toBe(tunggal.mauquf);
-      expect(harta.daftarDunia).toHaveLength(6);
+      expect(harta.daftarDunia).toHaveLength(4); // [R13-20] [SYF] empat taqdir haml
       periksaHarta(harta);
     }
     expect(hasil.harta[1]!.mauquf > 0n).toBe(true);

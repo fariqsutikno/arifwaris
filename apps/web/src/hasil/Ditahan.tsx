@@ -91,14 +91,15 @@ export function UbinMenunggu({ ringkasan, saatPilih, saatBagiSekarang }: Pick<Um
   );
 }
 
-function teksTaqdir(nilai: NilaiTaqdir, khuntsa: boolean): string {
+// tanpaBatas: haml [SYF] (jumlah janin tak dibatasi, R13-20): 'lk' = laki-laki berapa pun, 'duaPr' = perempuan berbilang.
+function teksTaqdir(nilai: NilaiTaqdir, khuntsa: boolean, tanpaBatas: boolean): string {
   switch (nilai) {
     case 'mati': return t('hasil.titipan.taqdir_mati');
     case 'hidup': return t('hasil.titipan.taqdir_hidup');
-    case 'lk': return khuntsa ? t('hasil.titipan.taqdir_khuntsa_lk') : t('hasil.titipan.taqdir_lk');
+    case 'lk': return khuntsa ? t('hasil.titipan.taqdir_khuntsa_lk') : tanpaBatas ? t('hasil.titipan.taqdir_lk_berapa_pun') : t('hasil.titipan.taqdir_lk');
     case 'pr': return khuntsa ? t('hasil.titipan.taqdir_khuntsa_pr') : t('hasil.titipan.taqdir_pr');
     case 'duaLk': return t('hasil.titipan.taqdir_dua_lk');
-    case 'duaPr': return t('hasil.titipan.taqdir_dua_pr');
+    case 'duaPr': return tanpaBatas ? t('hasil.titipan.taqdir_pr_berbilang') : t('hasil.titipan.taqdir_dua_pr');
     case 'lkPr': return t('hasil.titipan.taqdir_lk_pr');
   }
 }
@@ -110,6 +111,8 @@ export function TabelKemungkinan({ graf, ringkasan, sembunyiNominal, saatPilih }
   if (!taqdir) return null;
   const jamiah = ringkasan.penyebut;
   const daftarId = [...ringkasan.penerima.map(o => o.id), ...(ringkasan.ditahan?.orang ?? []).map(o => o.id)];
+  // Model [SYF] terlihat dari datanya: ada taqdir perempuan berbilang tetapi tidak ada "2 laki-laki".
+  const tanpaBatas = (id: string) => { const nilaiAda = new Set(taqdir.daftarDunia.map(dunia => dunia.taqdir[id])); return nilaiAda.has('duaPr') && !nilaiAda.has('duaLk'); };
   return (
     <table className="faraidh tabel-kemungkinan">
       <thead>
@@ -117,7 +120,7 @@ export function TabelKemungkinan({ graf, ringkasan, sembunyiNominal, saatPilih }
           <th rowSpan={2} className="kiri">{t('hitung.ahli_waris')}</th>
           {taqdir.daftarDunia.map((dunia, indeks) => (
             <th key={indeks}>{Object.entries(dunia.taqdir).map(([id, nilai]) => (
-              <span key={id} className="ket">{graf.orang[id]?.nama?.trim() || namaOrang(graf, ringkasan.statusOrang, id)}: {teksTaqdir(nilai, !!graf.orang[id]?.khuntsa)}</span>
+              <span key={id} className="ket">{graf.orang[id]?.nama?.trim() || namaOrang(graf, ringkasan.statusOrang, id)}: {teksTaqdir(nilai, !!graf.orang[id]?.khuntsa, tanpaBatas(id))}</span>
             ))}<span className="pengali">× {angka(String(jamiah / dunia.masalah))}</span></th>
           ))}
           <th className="jami">{t('hasil.ditahan.diberi_sekarang')}</th>

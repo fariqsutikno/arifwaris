@@ -27517,6 +27517,20 @@
    "id": "Bagaimana keluarga ini dibagi?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_lk_berapa_pun",
+   "halaman": "hasil",
+   "id": "Laki-laki (berapa pun)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_pr_berbilang",
+   "halaman": "hasil",
+   "id": "Perempuan berbilang",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

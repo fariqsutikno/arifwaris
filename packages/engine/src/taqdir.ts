@@ -42,10 +42,13 @@ export const BATAS_DUNIA = 256;
 const AKHIRAN_KEMBAR = '~2';
 const KUNCI_MAUQUF = 'mauquf:';
 
-// [R13-3] enam taqdir operasional; [SYF] jumlah janin tak dibatasi ditangani kelas D [R13-15].
+// [R13-3] [HNB] enam taqdir operasional (batas dua janin).
 const ENAM_TAQDIR_HAML: NilaiTaqdir[] = ['mati', 'lk', 'pr', 'duaLk', 'duaPr', 'lkPr'];
+// [R13-20] [SYF] empat taqdir: jumlah janin tak dibatasi, jadi 'lk' mewakili laki-laki berapa pun dan 'duaPr' mewakili
+// perempuan berbilang (bagian pemilik fardh sama berapa pun jumlahnya); mitra ashabah haml tetap 0 lewat kelas D [R13-15].
+const EMPAT_TAQDIR_HAML_SYAFII: NilaiTaqdir[] = ['mati', 'lk', 'pr', 'duaPr'];
 const TAQDIR_HAML: Record<Ruleset, NilaiTaqdir[] | undefined> = {
-  syafii: ENAM_TAQDIR_HAML,
+  syafii: EMPAT_TAQDIR_HAML_SYAFII,
   hanbali: ENAM_TAQDIR_HAML,        // [K13a-3] dua lk atau dua pr
   hanafi: ['mati', 'lk', 'pr'],     // [K13a-3] fatwa: bagian satu anak
   maliki: undefined,                // [K13a-2] tidak dibagi sampai lahir

@@ -42,13 +42,14 @@ describe('Taqdir — perilaku lain', () => {
     expect(hitungTaqdir({ ...input(GRAF.grafH1), ruleset: 'maliki' }).status).toBe('MAUQUF_SEMUA');
   });
 
-  test('tabel "jika terbukti": H1 [SYF] punya 6 dunia, F1 punya 2', () => {
-    expect(ok(input(GRAF.grafH1)).daftarDunia).toHaveLength(6);
+  test('tabel "jika terbukti": H1 [SYF] punya 4 dunia [R13-20], [HNB] 6, F1 punya 2', () => {
+    expect(ok(input(GRAF.grafH1)).daftarDunia.map(dunia => dunia.taqdir.J)).toEqual(['mati', 'lk', 'pr', 'duaPr']);
+    expect(ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' }).daftarDunia).toHaveLength(6);
     expect(ok(input(GRAF.grafF1)).daftarDunia.map(dunia => dunia.taqdir)).toEqual([{ Q: 'hidup' }, { Q: 'mati' }]);
   });
 
   test('haml di taqdir 2 lk: saham kedua janin digabung ke node haml', () => {
-    const duaLk = ok(input(GRAF.grafH1)).daftarDunia.find(dunia => dunia.taqdir.J === 'duaLk')!;
+    const duaLk = ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' }).daftarDunia.find(dunia => dunia.taqdir.J === 'duaLk')!;
     expect(duaLk.saham).toEqual({ I: 12n, S: 20n, J: 40n });
   });
 
