@@ -1,7 +1,7 @@
 // Skrip belajar kasus biasa: pola tanya → dasar → keluarga → logika → hitung → jembatan, kalimat pendek, angka sama dengan tabel engine.
 import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, case05, case03, case09, case10, case13, case23, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case05, case03, case09, case10, case12, case13, case14, case23, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { susunLinimasa, type Langkah } from '../linimasa.js';
 import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
@@ -82,6 +82,24 @@ describe('skrip belajar kasus biasa', () => {
     expect(teks).toContain('punya dua saudara atau lebih');
     expect(teks).toContain('Ini disebut al-Musyarrakah');
     expect(teks).toContain('sama rata per orang');
+  });
+
+  it('C16-12 (akdariyyah): dasar kasus khusus, kakek 1/6, saudari 1/2, gabungan dibagi 2 : 1', () => {
+    const bagian = langkahDari(case12, 'bagian');
+    const teks = bagian.map(teksNarasi).join(' ');
+    expect(teks).toContain("Ini disebut al-Akdariyyah");
+    expect(teks).toContain('Kakek diberi 1/6.');
+    expect(teks).toContain('1/6 + 1/2 = 2/3');
+    expect(teks).toContain('dua kali bagian saudari');
+    expect(bagian.every(satu => satu.jenis)).toBe(true);
+  });
+
+  it('C16-14 (kakek bersama saudara): dasar pilihan terbaik, pilihan dengan nilainya, yang terbesar dipilih', () => {
+    const teks = langkahDari(case14, 'bagian').map(teksNarasi).join(' ');
+    expect(teks).toContain('paling menguntungkannya');
+    expect(teks).toContain('(muqasamah) = 3/16');
+    expect(teks).toContain('Yang terbesar sepertiga sisa, yaitu 1/4');
+    expect(teks).toContain('karena tidak ada anak laki-laki');
   });
 
   it('kasus bernominal: ada langkah rupiah per orang dan pembukanya menyebut rupiah', () => {

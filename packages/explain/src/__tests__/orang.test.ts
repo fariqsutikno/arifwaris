@@ -1,7 +1,7 @@
 // Penjelasan per orang (modal): Dasar → Di keluarga ini → Hitungan, dari jejak dan tabel engine.
 import { hitung } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
-import { BAB16_FIXTURES, case01, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
+import { BAB16_FIXTURES, case01, case12, caseNominal } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { jelaskanOrang } from '../orang.js';
 import { keTeksBiasa, type Potongan } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
@@ -35,6 +35,15 @@ describe('jelaskanOrang', () => {
     const anak = penjelasanKelompok(case01, 'ANAK_LK')!;
     expect(teks(anak.pertanyaan)).toBe('Kenapa mendapat sisa?');
     expect(anak.hitungan.map(baris => teks(baris.isi)).at(-1)).toBe('14 dari 24 potong');
+  });
+
+  it('C16-12 akdariyyah: kakek dan saudari mendapat langkah masing-masing, pertanyaan umum', () => {
+    const kakek = penjelasanKelompok(case12, 'KAKEK')!;
+    const saudari = penjelasanKelompok(case12, 'SAUDARI_KANDUNG')!;
+    expect(teks(kakek.pertanyaan)).toBe('Kenapa bagiannya begini?');
+    expect(kakek.keluarga.map(keTeksBiasa).join(' ')).toContain('diberi 1/6');
+    expect(saudari.keluarga.map(keTeksBiasa).join(' ')).toContain('diberi 1/2');
+    expect(kakek.dasar.map(keTeksBiasa).join(' ')).toContain("al-Akdariyyah");
   });
 
   it('kasus bernominal: baris rupiah di ujung hitungan', () => {

@@ -26397,6 +26397,111 @@
    "id": "{subjek}: {pecahan} + sisa",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila kakek bersama saudara, kakek mengambil bagian yang paling menguntungkannya dari beberapa pilihan. Sisanya, bila ada, untuk saudara.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.dasar.papan",
+   "halaman": "narasi",
+   "id": "Kakek mengambil pilihan terbaik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.pilihan.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini pilihan {kakek} adalah: {opsi}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.pilihan.papan",
+   "halaman": "narasi",
+   "id": "Pilihan: {opsi}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.terpilih.narasi",
+   "halaman": "narasi",
+   "id": "Yang terbesar {terpilih}, yaitu {nilai}. Jadi {kakek} mendapat {nilai} dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.terpilih.papan",
+   "halaman": "narasi",
+   "id": "Kakek: {nilai}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: suami, ibu, kakek, dan satu saudari kandung atau sebapak. Biasanya saudari tidak diberi bagian pasti bersama kakek, tapi di sini ia diberi, lalu bagiannya digabung dengan bagian kakek dan dibagi ulang. Ini disebut {akdariyyah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.dasar.papan",
+   "halaman": "narasi",
+   "id": "Bagian kakek dan saudari digabung, lalu dibagi ulang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.kakek.narasi",
+   "halaman": "narasi",
+   "id": "{kakek} diberi {pecahan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.kakek.papan",
+   "halaman": "narasi",
+   "id": "{kakek}: {pecahan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.saudari.narasi",
+   "halaman": "narasi",
+   "id": "{saudari} diberi 1/2. Bagian kakek dan saudari lalu digabung: 1/6 + 1/2 = 2/3.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.saudari.papan",
+   "halaman": "narasi",
+   "id": "{saudari} 1/2 · digabung 1/6 + 1/2 = 2/3",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.bagi_ulang.narasi",
+   "halaman": "narasi",
+   "id": "Gabungan itu dibagi ulang: kakek mendapat dua kali bagian saudari.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.bagi_ulang.papan",
+   "halaman": "narasi",
+   "id": "Kakek : saudari = 2 : 1",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.khusus",
+   "halaman": "narasi",
+   "id": "Kenapa bagiannya begini?",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

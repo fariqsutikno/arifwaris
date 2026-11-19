@@ -5,10 +5,10 @@
 // Tidak ada aturan fikih baru: tiap kalimat memakai angka dan sebab dari jejak, dan rujukan [Rxx-y] dari jejak itu.
 
 import type { IdOrang } from '@waris/engine';
-import { PERAN_BERPENDAHULU, ceritaArba, persamaanKotakAshl, type Bab } from './cerita.js';
+import { PERAN_BERPENDAHULU, ceritaArba, opsiKakek, persamaanKotakAshl, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah, tulisPecahan } from './format.js';
-import { barisSkrip, buatBaris, gabungDan, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
 import { istilah, istilahNarasi, type IdIstilah } from './terms.js';
 
 /** Kasus tahap ini belum dipetakan ke skrip; pakai bab cerita. */
@@ -21,7 +21,7 @@ const kunciKamus = (kunci: string) => `narasi.langkah.${kunci}`;
 const judulSkrip = (konteks: Konteks, kunci: string): string => teksKamus(konteks.penyusun, kunciKamus(kunci));
 const istilahUmum = (konteks: Konteks, id: IdIstilah): Potongan => istilahNarasi(konteks.penyusun, id);
 /** Nama kasus khusus berlabel kitab (al-'Umariyyatain), bukan label istilah umum. */
-const istilahKasus = (konteks: Konteks, id: 'umariyyatain' | 'musyarrakah'): Potongan =>
+const istilahKasus = (konteks: Konteks, id: 'umariyyatain' | 'musyarrakah' | 'akdariyyah'): Potongan =>
   istilah(id, teksKamus(konteks.penyusun, `narasi.cerita.bagian.istilah_${id}`));
 const teks = (isi: string): Potongan => ({ jenis: 'teks', teks: isi });
 const gabungPlus = (angka: Array<string | bigint>): Potongan[] => [teks(angka.join(' + '))];
@@ -114,9 +114,9 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
 // ─── Bagian awal ──────────────────────────────────────────────────────────────
 
 const ALASAN_FARDH_DIPETAKAN = new Set(['ADA_FARU_WARITS', 'TANPA_FARU_WARITS', 'KALALAH', 'TANPA_MUASHSHIB', 'UMARIYYATAIN', 'MUSYARRAKAH',
-  'JAM_IKHWAH', 'TANPA_FARU_WARITS_DAN_IKHWAH', 'ADA_FARU_MUDZAKKAR', 'ADA_FARU_MUANNATS']);
+  'JAM_IKHWAH', 'TANPA_FARU_WARITS_DAN_IKHWAH', 'ADA_FARU_MUDZAKKAR', 'ADA_FARU_MUANNATS', 'AKDARIYYAH', 'JADD_WAL_IKHWAH']);
 /** Kasus khusus yang dasarnya dibawa langkah fardh-nya sendiri (lihat `barisFardh`). */
-const KASUS_KHUSUS_DIPETAKAN = new Set(['umariyyatain', 'musyarrakah']);
+const KASUS_KHUSUS_DIPETAKAN = new Set(['umariyyatain', 'musyarrakah', 'akdariyyah']);
 const PERAN_PASANGAN = new Set(['SUAMI', 'ISTRI']);
 
 /** Semua langkah fardh/ashabah kasus ini sudah punya templat skrip (kasus khusus, kakek, ma'a al-ghair belum). */
@@ -191,6 +191,28 @@ export function barisFardh(konteks: Konteks, satu: Langkah<'FARDH'>, pewaris: Po
       return [baris(['bagian.faru_mudzakkar.narasi', 'bagian.fardh.papan'], { pewaris, oleh: sebutSemua(konteks, alasan.oleh), subjek, pecahan }, papanBiasa)];
     case 'ADA_FARU_MUANNATS':
       return [baris('bagian.faru_muannats', { pewaris, oleh: sebutSemua(konteks, alasan.oleh), subjek, pecahan, ashabah: istilahUmum(konteks, 'ashabah') }, papanBiasa)];
+    case 'JADD_WAL_IKHWAH': {
+      const terpilih = alasan.opsi.find(opsi => opsi.nama === alasan.terpilih)!;
+      const opsi = gabungAtau(konteks, alasan.opsi.map(satuOpsi => kalimat`${opsiKakek(konteks, satuOpsi.nama)} = ${satuOpsi.nilai}`));
+      const sebutTerpilih = opsiKakek(konteks, alasan.terpilih);
+      return [
+        baris('bagian.kakek.dasar', {}, {}, 'dasar'),
+        baris('bagian.kakek.pilihan', { kakek: subjek, opsi }, { opsi }, 'hitung'),
+        langkah(konteks, 'keluarga', 'bagian.kakek.terpilih', { terpilih: sebutTerpilih, nilai: terpilih.nilai, kakek: subjek }, { nilai: terpilih.nilai }, satu.refs, anggota),
+      ];
+    }
+    case 'AKDARIYYAH': {
+      const adalahKakek = (id: IdOrang) => konteks.sebutan.peranDari(id)?.kunci === 'KAKEK';
+      if (alasan.porsi === 'jadd') {
+        const kakek = sebutSemua(konteks, anggota.filter(adalahKakek));
+        return [
+          baris('bagian.akdariyyah.dasar', { akdariyyah: istilahKasus(konteks, 'akdariyyah') }, {}, 'dasar'),
+          baris('bagian.akdariyyah.kakek', { kakek, pecahan }, { kakek, pecahan }),
+        ];
+      }
+      const saudari = sebutSemua(konteks, anggota.filter(id => !adalahKakek(id)));
+      return [baris('bagian.akdariyyah.saudari', { saudari }, { saudari }), baris('bagian.akdariyyah.bagi_ulang', {}, {})];
+    }
     case 'UMARIYYATAIN': {
       const pasangan = sebutKelompok(konteks, konteks.anggotaDari('SUAMI').length > 0 ? 'SUAMI' : 'ISTRI');
       return [
@@ -224,6 +246,9 @@ export function barisAshabah(konteks: Konteks, satu: Langkah<'ASHABAH'>): BarisP
   }
   return baris;
 }
+
+const gabungAtau = (konteks: Konteks, daftar: Potongan[][]): Potongan[] => daftar.flatMap((unsur, urutan) =>
+  urutan === 0 ? unsur : [teks(urutan === daftar.length - 1 ? teksKamus(konteks.penyusun, 'narasi.umum.penghubung.atau') : ', '), ...unsur]);
 
 function jembatanBagian(konteks: Konteks, adaAshabah: boolean): BarisPenjelasan {
   const berpecahan = konteks.hasil.tabel.baris.filter(barisTabel => barisTabel.fardh);

@@ -109,7 +109,7 @@ export const pembukaanMadzhab = (penyusun: Penyusun, ruleset: Ruleset): BarisPen
 
 const KUNCI_OPSI_KAKEK: Record<PilihanJadd, string> = { muqasamah: 'muqasamah', tsuluts: 'tsuluts', tsulutsBaqi: 'tsuluts_baqi', sudus: 'sudus' };
 
-const opsiKakek = (konteks: Konteks, pilihan: PilihanJadd): Potongan[] =>
+export const opsiKakek = (konteks: Konteks, pilihan: PilihanJadd): Potongan[] =>
   cerita(konteks, `bagian.opsi_kakek.${KUNCI_OPSI_KAKEK[pilihan]}`, pilihan === 'muqasamah' ? { muqasamah: istilahUmum(konteks, 'muqasamah') } : {});
 
 export function babBagian(konteks: Konteks): Bab {

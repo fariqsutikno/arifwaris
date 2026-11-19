@@ -33,14 +33,19 @@ export function jelaskanOrang(hasil: HasilOk, graf: GrafKeluarga, idOrang: IdOra
 function orangMenerima(konteks: Konteks, idOrang: IdOrang, kelompok: string): PenjelasanOrang | undefined {
   const { penyusun } = konteks;
   const pewaris = konteks.sebutan.pewaris();
-  const fardh = konteks.daftarLangkah('FARDH').find(satu => satu.kelompok === kelompok);
+  // Akdariyyah: satu kelompok punya dua langkah fardh (kakek, saudari); pilih menurut peran orang ini.
+  const kandidat = konteks.daftarLangkah('FARDH').filter(satu => satu.kelompok === kelompok);
+  const adalahKakek = konteks.sebutan.peranDari(idOrang)?.kunci === 'KAKEK';
+  const fardh = kandidat.length > 1 ? kandidat.find(satu => satu.alasan.kode === 'AKDARIYYAH' && (satu.alasan.porsi === 'jadd') === adalahKakek) : kandidat[0];
   const ashabah = konteks.daftarLangkah('ASHABAH').find(satu => satu.kelompok === kelompok);
   const baris = fardh
     ? barisFardh(konteks, fardh, pewaris)
     : ashabah ? [...barisAshabah(konteks, ashabah), barisSkrip(penyusun, 'dasar', 'bagian.dasar_fardh', {}, {})] : undefined;
   if (!baris) return undefined;
   const nuqshan = fardh && konteks.daftarLangkah('HAJB_NUQSHAN').find(satu => konteks.anggotaDari(kelompok).includes(satu.terdampak));
-  const pertanyaan = fardh
+  const pertanyaan = fardh?.alasan.kode === 'AKDARIYYAH'
+    ? susun(penyusun, kunci('pertanyaan.khusus'))
+    : fardh
     ? susun(penyusun, kunci(nuqshan ? 'pertanyaan.nuqshan' : 'pertanyaan.fardh'), nuqshan ? { pecahan: fardh.fardh, dari: nuqshan.dari } : { pecahan: fardh.fardh })
     : susun(penyusun, kunci('pertanyaan.ashabah'));
   return {
