@@ -180,3 +180,26 @@ berhenti di kolom pertama yang salah.
 Kolom Bagian per kemungkinan pada mafqud (ibu 1/6 bila mafqud hidup, 1/3 bila wafat) diturunkan dari bab 04 dan cocok dengan
 hasil F1 (ibu 2, saudara hadir 5, ditahan 5 dari 12). Saat diterapkan ke kode, kunci tiap sel diambil dari tabel engine, bukan
 diketik di konten soal.
+
+## 11. Keputusan final (2026-11-19)
+
+Mockup acuan: [mockup-tabel-faraidh-final.html](mockup-tabel-faraidh-final.html). Menggantikan pengaturan di bagian 10.
+
+| Keputusan pemilik | Bentuk di mockup |
+|---|---|
+| Tanpa "kolom demi kolom", hanya semua terbuka | penilaian semua kolom sekaligus, berhenti di kolom pertama yang salah dan menyebut kolomnya |
+| Semua asal masalah diketik | tidak ada pilihan usul; kepala kolom = kotak bilangan bulat |
+| Isian menolak selain angka secara utuh | `/`, `,`, `½` → isi kembali ke angka terakhir + keterangan; angka Arab diubah ke Latin |
+| Saham tidak perlu disederhanakan | saham terhadap asal masalah kolomnya; asal masalah boleh kelipatan bila semua saham sebanding → "Benar semua. Bentuk terkecil: …" |
+| Satu jawaban sudah terisi | satu sel di **kolom pilihan** per soal ("sudah terisi"), sebagai contoh bentuk jawaban |
+| Sel ashabah bersama tidak terlihat dari awal | sel saham **bergabung hanya setelah pelajar sendiri memilih Ashabah** untuk lebih dari satu orang berurutan; pilihan lain → sel tetap terpisah |
+| Catatan hanya bila berguna | kotak "Cara mengisi" per soal: cara mengisi tiap kolom, tanpa petunjuk jawaban |
+| Aksi: Periksa, Kosongkan, Lihat jawaban | Periksa = tombol; Kosongkan dan Lihat jawaban = tautan. Lihat jawaban butuh konfirmasi (di aplikasi: dialog tahan yang sudah ada), lalu kunci ditampilkan dan isian yang berbeda dicoret |
+
+Kenapa jawaban terisi ditaruh di kolom pilihan, bukan di kolom angka: satu saham yang terisi di kolom akhir langsung membuka skala
+tashih (istri 3 ⇒ asal masalah akhir 24), padahal tashih adalah yang diuji. Keseragaman skala tidak dibutuhkan untuk menilai karena
+kelipatan yang sebanding diterima; "Lihat jawaban" selalu menampilkan bentuk terkecil.
+
+Baris **Pengali** (munasakhat, mafqud) dinilai terakhir dan dihitung dari asal masalah yang diisi pelajar, sehingga kelipatan tetap
+konsisten. Haml tabel enam kemungkinan (tingkat sulit, laptop) tidak dimasukkan ke mockup final; bentuknya ada di
+`mockup-tabel-faraidh-isian.html` bila nanti dibutuhkan.
