@@ -207,7 +207,7 @@ describe('layar hasil', () => {
     const dialog = screen.getByRole('dialog');
     expect(within(dialog).getByRole('heading', { name: 'Ibu' })).toBeTruthy();
     expect(dialog.querySelector('.kepala-modal.menerima')?.textContent).toMatch(/Menerima bagian/);
-    expect(within(dialog).getByRole('heading', { name: 'Kapan dapat berapa?' })).toBeTruthy(); // alur bernomor, tanpa lipatan
+    expect(within(dialog).getByRole('heading', { name: 'Dasar · berlaku untuk semua kasus' })).toBeTruthy(); // alur bernomor: Dasar → Di keluarga ini → Hitungan
   });
 
   it('Tentang kasus ini merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {
@@ -255,7 +255,7 @@ describe('layar hasil', () => {
     expect(kenapa.textContent).toMatch(/sisa/);
     expect(kenapa.textContent).not.toMatch(/Istri mendapat/);
     expect(within(dialog).getByText('Ahli waris lain yang terdampak')).toBeTruthy();
-    expect(within(dialog).getByText('Cara menghitungnya')).toBeTruthy();
+    expect(within(dialog).getByRole('heading', { name: 'Hitungan' })).toBeTruthy();
   });
 
   it('hanya istri: hasil tetap tampil, sisa ke dzawil arham / baitul mal', () => {
