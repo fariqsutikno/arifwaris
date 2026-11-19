@@ -31,7 +31,7 @@ const Nisbah = ({ hubungan }: { hubungan: string }) =>
 function BarisInfo({ label, nilai, keterangan, ubah }: { label: ReactNode; nilai: ReactNode; keterangan?: ReactNode; ubah?: { nama: string; saat: () => void } | undefined }) {
   return (
     <div className="baris-info"><span className="lbl">{label}</span><b>{nilai}</b>{keterangan && <small>{keterangan}</small>}
-      {ubah && <button type="button" className="tautan-baris" onClick={ubah.saat}>{ubah.nama}</button>}
+      {ubah && <button type="button" className="pensil-baris" aria-label={ubah.nama} onClick={ubah.saat}><Ikon nama="pensil" ukuran={18} /></button>}
     </div>
   );
 }
@@ -40,7 +40,7 @@ export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: Ringka
   const jenis = ringkasan.tentang.kelas ? JENIS_KASUS[ringkasan.tentang.kelas] : undefined;
   return (
     <section className="ubin-h" aria-labelledby="judul-jenis-masalah">
-      <h2 id="judul-jenis-masalah">{t('hasil.jenis_masalah')}</h2>
+      <h2 id="judul-jenis-masalah">{t('hasil.judul_kasus_apa')}</h2>
       <div className="daftar-info">
         {ringkasan.taqdir ? <BarisBelumPasti ringkasan={ringkasan} />
           : ringkasan.gharqa ? <BarisGharqa ringkasan={ringkasan} daftarMayit={daftarMayit} />
@@ -92,9 +92,9 @@ function BarisGharqa({ ringkasan, daftarMayit }: { ringkasan: RingkasanHasil; da
   );
 }
 
-export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta, saatUbahAhliWaris, saatUbahPembulatan, waktuHitung }: {
+export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta, saatUbahPembulatan, waktuHitung }: {
   /** Selain Syafi'i (bawaan, terverifikasi); sumbernya sekunder. */ namaMadzhab?: string | undefined; ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
-  saatUbahAhliWaris?: (() => void) | undefined; saatUbahPembulatan?: ((satuan: bigint) => void) | undefined;
+  saatUbahPembulatan?: ((satuan: bigint) => void) | undefined;
   /** Waktu (ms) hasil dihitung; diberikan pemanggil supaya tes tidak bergantung jam. */ waktuHitung: number;
 }) {
   const [bukaBulat, setBukaBulat] = useState(false);
@@ -102,15 +102,14 @@ export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyi
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
   return (
     <section className="ubin-h" aria-labelledby="judul-tentang">
-      <h2 id="judul-tentang">{t('hitung.tentang_kasus_ini')}</h2>
+      <h2 id="judul-tentang">{t('hasil.judul_yang_dipakai')}</h2>
       <h3 className="kepala-info">{t('hasil.kasus')}</h3>
       <div className="daftar-info">
         <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')} />
         <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)} ubah={saatUbahHarta && { nama: t('hitung.ubah_harta'), saat: saatUbahHarta }}
           keterangan={<>{t('hasil.rincian_harta', { kotor: uang(tirkah.kotor), jenazah: uang(tirkah.tajhiz), hutang: uang(tirkah.hutang), wasiat: uang(tirkah.wasiatDipakai) })}
             {tirkah.wasiatButuhIjazah > 0n && <> · {t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</>}</>} />
-        <BarisInfo label={t('hitung.ahli_waris')} nilai={t('hasil.ringkas_ahli_waris', { penerima: angka(String(ringkasan.penerima.length)), tidak: angka(String(ringkasan.terhalang.length)) })}
-          ubah={saatUbahAhliWaris && { nama: t('hasil.ubah_baris', { nama: t('hitung.ahli_waris') }), saat: saatUbahAhliWaris }} />
+        <BarisInfo label={t('hitung.ahli_waris')} nilai={t('hasil.ringkas_ahli_waris', { penerima: angka(String(ringkasan.penerima.length)), tidak: angka(String(ringkasan.terhalang.length)) })} />
         <BarisInfo label={t('hasil.pembulatan')} nilai={t('hasil.ke_satuan', { satuan: PILIHAN_PEMBULATAN.find(pilihan => pilihan.satuan === satuanPembulatan)?.judul ?? formatRupiah(satuanPembulatan) })}
           keterangan={t('hasil.dibulatkan_ke_bawah')} ubah={saatUbahPembulatan && { nama: t('hasil.ubah_baris', { nama: t('hasil.pembulatan') }), saat: () => setBukaBulat(true) }} />
         <BarisInfo label={t('hasil.dihitung')} nilai={new Date(waktuHitung).toLocaleDateString(bahasaArab() ? 'ar-u-nu-arab' : 'id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} />

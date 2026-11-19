@@ -27,7 +27,7 @@ function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan }: {
   const kirim = (aksi: Aksi) => { aksiTerakhir = aksi; if (aksi.jenis === 'UBAH_KASUS') setKasus(aksi.ubah); };
   return <Hasil kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} />;
 }
-const pembagian = () => screen.getByRole('region', { name: /^(Siapa menerima berapa|Jawabanmu|Kunci jawaban)$/ });
+const pembagian = () => screen.getByRole('region', { name: /^(Siapa dapat berapa\?|Jawabanmu|Kunci jawaban)$/ });
 /** Buka jawaban lewat dialog tekan-tahan. */
 const bukaLewatDialog = (namaTombolTahan: RegExp) => {
   vi.useFakeTimers();
@@ -49,7 +49,7 @@ describe('layar hasil', () => {
     expect(screen.queryByRole('region', { name: /^Tidak mendapat bagian/ })).toBeNull();
     expect(screen.queryByRole('region', { name: 'Harta yang dibagi' })).toBeNull();
     expect(screen.queryByText('Segera hadir')).toBeNull();
-    // Harta tetap bisa diubah dari pensil di "Tentang kasus ini".
+    // Harta tetap bisa diubah dari pensil di "Apa yang dipakai di hitungan ini?".
     fireEvent.click(screen.getByRole('button', { name: 'Ubah harta' }));
     expect(screen.getByRole('dialog', { name: 'Ubah harta peninggalan' })).toBeTruthy();
   });
@@ -57,7 +57,7 @@ describe('layar hasil', () => {
   it('urutan bento mengikuti acuan: pembagian, jenis masalah, tentang, pohon & tabel, bagikan, selanjutnya, pelajari; aksi sekunder berupa tautan (tanpa bar menempel)', () => {
     render(<Uji awal={prototipe()} />);
     const judul = [...document.querySelectorAll('.tata-hasil h2')].map(isi => isi.textContent);
-    expect(judul).toEqual(['Siapa menerima berapa', 'Jenis masalah', 'Tentang kasus ini', 'Pohon keluarga dan tabel faraidh', 'Bagikan dan simpan', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
+    expect(judul).toEqual(['Siapa dapat berapa?', 'Kasus ini termasuk apa?', 'Apa yang dipakai di hitungan ini?', 'Bagaimana keluarga ini dibagi?', 'Bagikan dan simpan', 'Langkah selanjutnya', 'Pelajari cara menghitungnya']);
     expect(document.querySelector('.bar-bawah')).toBeNull();
     expect(within(document.querySelector('.kaki-hasil')!).getByRole('button', { name: 'Reset skenario' })).toBeTruthy();
     expect(within(document.querySelector('.hero-hasil')!).getByText('Rp 100 jt')).toBeTruthy();   // ubin hero diringkas; angka utuh di daftar
@@ -91,14 +91,15 @@ describe('layar hasil', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Sembunyikan nominal' }));
     expect(within(pembagian()).queryByText('Rp 16.666.666')).toBeNull();
-    expect(within(pembagian()).getAllByText(/^1\/6 ·/).length).toBeGreaterThan(0);
+    expect(within(pembagian()).getAllByText(/^1\/6$/).length).toBeGreaterThan(0);
+    expect(within(pembagian()).queryByText(/%/)).toBeNull(); // persen tidak lagi di baris
   });
 
   it('bentuk pecahan bisa diganti ke penyebut sama', () => {
     render(<Uji awal={prototipe()} />);
     fireEvent.click(screen.getByRole('radio', { name: 'Saham' }));
-    expect(within(pembagian()).getAllByText(/^12\/72 ·/).length).toBeGreaterThanOrEqual(2);
-    expect(within(pembagian()).queryAllByText(/^1\/6 ·/)).toHaveLength(0);
+    expect(within(pembagian()).getAllByText(/^12\/72$/).length).toBeGreaterThanOrEqual(2);
+    expect(within(pembagian()).queryAllByText(/^1\/6$/)).toHaveLength(0);
   });
 
   it('mode belajar menyembunyikan semua jawaban sampai diminta', () => {
@@ -210,9 +211,9 @@ describe('layar hasil', () => {
     expect(within(dialog).getByRole('heading', { name: 'Dasar · berlaku untuk semua kasus' })).toBeTruthy(); // alur bernomor: Dasar → Di keluarga ini → Hitungan
   });
 
-  it('Tentang kasus ini merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {
+  it('Apa yang dipakai di hitungan ini? merinci harta kotor dikurangi potongan sampai harta yang dibagi', () => {
     render(<Uji awal={prototipe()} />);
-    const tentang = screen.getByRole('region', { name: 'Tentang kasus ini' });
+    const tentang = screen.getByRole('region', { name: 'Apa yang dipakai di hitungan ini?' });
     expect(tentang.textContent).toMatch(/Kotor Rp 110\.000\.000 − jenazah Rp 2\.000\.000 − hutang Rp 3\.000\.000/);
     expect(within(tentang).getAllByText('Rp 100.000.000').length).toBeGreaterThan(0);
   });

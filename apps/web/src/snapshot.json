@@ -27489,6 +27489,34 @@
    "id": "Ringkasan",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_siapa_dapat_berapa",
+   "halaman": "hasil",
+   "id": "Siapa dapat berapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_kasus_apa",
+   "halaman": "hasil",
+   "id": "Kasus ini termasuk apa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_yang_dipakai",
+   "halaman": "hasil",
+   "id": "Apa yang dipakai di hitungan ini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_bagaimana_dibagi",
+   "halaman": "hasil",
+   "id": "Bagaimana keluarga ini dibagi?",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -268,8 +268,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             </div>}
             <div className="aksi-hero">
               {!sedangMenebak && <button type="button" className="pil-hero" onClick={() => setEksporTerbuka(true)}><Ikon nama="unduh" /> {t('hitung.ekspor')}</button>}
-              {bolehUbah && <button type="button" className="tautan-hero" onClick={ubahData}><Ikon nama="pensil" ukuran={18} /> {t('hitung.ubah_data_2')}</button>}
-              {bolehUbah && !adalahBelajar && <button type="button" className="tautan-hero" onClick={() => setMadzhabTerbuka(true)}>{t('hitung.ganti_madzhab')}</button>}
+              {bolehUbah && !adalahBelajar && <button type="button" className="chip-madzhab" aria-label={t('hitung.ganti_madzhab')} onClick={() => setMadzhabTerbuka(true)}>{namaMadzhab(madzhab)}<Ikon nama="pensil" ukuran={16} /></button>}
             </div>
             {!hanyaBaca && !khusus && <div className="tab-kecil" role="group" aria-label={t('umum.tujuan')}>
               <button type="button" aria-pressed={!adalahBelajar} onClick={pilihHitungKasus}>{t('hitung.hitung_kasus')}</button>
@@ -300,7 +299,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
-          : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
+          : <KartuPembagian saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined} ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={hartaKosong && bolehUbah ? () => setUbahHartaTerbuka(true) : () => setSembunyiNominal(!sembunyiNominal)} hartaKosong={hartaKosong && bolehUbah}
             sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
@@ -321,7 +320,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
             {!menunggu && !gharqaDitahan && <UbinDitahan ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} />}
             <UbinTentang waktuHitung={waktuHitung} namaMadzhab={madzhab === 'syafii' ? undefined : namaMadzhab(madzhab)} ringkasan={ringkasan} satuanPembulatan={kasus.satuanPembulatan} sembunyiNominal={sembunyiNominal}
               saatUbahHarta={bolehUbah && !ringkasan.gharqa ? () => setUbahHartaTerbuka(true) : undefined}
-              saatUbahAhliWaris={bolehUbah ? () => kirim({ jenis: 'KE_LANGKAH', langkah: 3 }) : undefined}
               saatUbahPembulatan={bolehUbah && tampilPembulatan ? satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) }) : undefined} />
           </div>
         )}
@@ -329,7 +327,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
         <section className="ubin-h bento-s12 ubin-pohon-tabel" data-tur="pohon" aria-labelledby="judul-pohon-tabel" data-tampil={panelHp}>
           <div className="kepala-ubin">
             <div>
-              <h2 id="judul-pohon-tabel">{t('hasil.pohon_dan_tabel')}</h2>
+              <h2 id="judul-pohon-tabel">{t('hasil.judul_bagaimana_dibagi')}</h2>
               <p className="sub-kartu">{t('hasil.pohon_dan_tabel_sub')}</p>
             </div>
             <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>

@@ -1866,3 +1866,33 @@ table.faraidh{font-size:15.5px}
 .baris-info small{font-size:13.5px}
 .baris-info .tautan-baris{grid-column:2;justify-self:start;margin-top:4px;padding:0;border:0;background:none;color:var(--ink);font:600 14.5px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:32px}
 .halaman-hasil .judul-kelompok span,.halaman-hasil .orang-sel small{font-size:13.5px}
+
+/* Keterbacaan Hasil (riset-ux-hasil-keterbacaan-2026-11-19): jawaban (nama, pecahan, rupiah) paling besar; tabel jadi bukti pendukung. */
+.halaman-hasil{--ukuran-isi:17px;--ukuran-nama:18px;--ukuran-rupiah:20px;--ukuran-label:15px}
+.halaman-hasil .baris-bagian{font-size:var(--ukuran-isi)}
+.halaman-hasil .nama-bagian{font-size:var(--ukuran-nama);font-weight:600}
+.halaman-hasil .nama-bagian small{font-size:var(--ukuran-label);font-weight:400}
+.halaman-hasil .jumlah-bagian .angka{font:700 var(--ukuran-rupiah)/1.2 var(--font-sans)}
+.halaman-hasil .jumlah-bagian small{font-size:var(--ukuran-isi);color:var(--ink)}
+.halaman-hasil .judul-kelompok,.halaman-hasil .judul-kelompok span{font-size:var(--ukuran-label)}
+.halaman-hasil .penjumlahan div{font-size:var(--ukuran-isi)}
+.halaman-hasil .baris-info{font-size:var(--ukuran-label)}
+.halaman-hasil .baris-info b{font-size:var(--ukuran-isi)}
+.halaman-hasil .baris-info .lbl{font-size:var(--ukuran-label)}
+.halaman-hasil .fakta-hero span,.halaman-hasil .status-hero{font-size:var(--ukuran-label)}
+/* Tabel: angka 16px/500 abu tua; hanya baris Jumlah yang tebal. */
+.halaman-hasil .faraidh td,.halaman-hasil .faraidh td.angka,.halaman-hasil .faraidh td.uang{font:500 16px/1.3 var(--font-sans);color:var(--ink-muted-tua,#3f4944);font-variant-numeric:tabular-nums}
+.halaman-hasil .faraidh td.kiri{color:var(--ink);font-weight:600}
+.halaman-hasil .faraidh thead th small{font:600 16px/1.2 var(--font-sans)}
+.halaman-hasil .faraidh tfoot td{font-weight:700;color:var(--ink)}
+
+/* Tombol ubah = ikon pensil polos (tanpa bingkai), area ketuk 40px; chip madzhab di hero. */
+.halaman-hasil .pensil-baris{display:inline-grid;place-items:center;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:none;color:var(--ink-muted);cursor:pointer}
+.halaman-hasil .pensil-baris:hover{background:rgba(20,24,26,.07);color:var(--ink)}
+.halaman-hasil .pensil-baris:focus-visible,.chip-madzhab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.baris-info .pensil-baris{position:absolute;top:2px;right:4px}
+.baris-info:has(.pensil-baris){padding-right:48px}
+.judul-kelompok>span:last-child{display:inline-flex;align-items:center;gap:6px}
+.judul-kelompok .pensil-baris{width:40px;height:40px;margin:-10px -8px -10px 0}
+.chip-madzhab{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px 0 16px;border:1.5px solid rgba(255,255,255,.6);border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font:600 15px var(--font-sans);cursor:pointer}
+.chip-madzhab:hover{background:rgba(255,255,255,.22)}

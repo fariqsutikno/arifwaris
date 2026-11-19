@@ -33,6 +33,8 @@ interface Props {
   sembunyiNominal: boolean;
   saatSembunyi: () => void;
   hartaKosong?: boolean;
+  /** Pensil di judul daftar penerima: kembali ke langkah ahli waris. */
+  saatUbahAhliWaris?: (() => void) | undefined;
   sedangMenebak: boolean;
   adalahBelajar: boolean;
   saatTampilkanJawaban: () => void;
@@ -79,7 +81,7 @@ export function KartuPembagian(props: Props) {
     <section className="ubin-h kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <div className="judul-kartu">
-          <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hasil.siapa_menerima_berapa')}</h2>
+          <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hasil.judul_siapa_dapat_berapa')}</h2>
           {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. */}
           <p className="sub-kartu">
             {sedangMenebak ? t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) }) : t('hasil.ketuk_nama_penjelasan')}
@@ -116,11 +118,11 @@ export function KartuPembagian(props: Props) {
           {saring && (
             <p className="disaring">{t('hasil.disaring')} <b>{saring.label}</b> · <button type="button" className="tautan-aksi tautan-sebaris" onClick={() => setSaring(null)}>{t('hitung.tampilkan_semua')}</button></p>
           )}
-          {adaDaftarPenerima && <JudulKelompok judul={t('hasil.penerima')} jumlah={tampilPenerima ? ringkasan.penerima.length : ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan && tampil(sisa.id)).length} />}
+          {adaDaftarPenerima && <JudulKelompok aksi={props.saatUbahAhliWaris && <button type="button" className="pensil-baris" aria-label={t('hasil.ubah_baris', { nama: t('hitung.ahli_waris') })} onClick={props.saatUbahAhliWaris}><Ikon nama="pensil" ukuran={18} /></button>} judul={t('hasil.penerima')} jumlah={tampilPenerima ? ringkasan.penerima.length : ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan && tampil(sisa.id)).length} />}
           <ul className="daftar-bagian">
             {tampilPenerima && ringkasan.penerima.map(orang => (
               <BarisOrang key={orang.id} orang={orang} warna={warnaOrang(ringkasan, orang.id)} berbeda={!!props.idBerbeda?.has(orang.id)} saatPilih={props.saatPilihOrang}
-                uang={uang(orang.nominal)} pecahan={orang.rincian ?? <>{pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(orang.saham, ringkasan.penyebut)}</>} />
+                uang={uang(orang.nominal)} pecahan={orang.rincian ?? pecahanTeks(orang.saham, ringkasan.penyebut, pengaturan.bentuk)} />
             ))}
             {ringkasan.daftarSisaKeluar.filter(sisa => !sisa.ditahan && tampil(sisa.id)).map(sisa => (
               <li key={sisa.id}>
@@ -128,7 +130,7 @@ export function KartuPembagian(props: Props) {
                   <span className="titik putus" aria-hidden="true" />
                   <span className="nama-bagian">{sisa.judul}<small>{sisa.keterangan}</small></span>
                   <span className="jumlah-bagian"><span className="angka">{uang(sisa.nominal)}</span>
-                    <small>{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)} · {persenTeks(sisa.saham, ringkasan.penyebut)}</small></span>
+                    <small>{pecahanTeks(sisa.saham, ringkasan.penyebut, pengaturan.bentuk)}</small></span>
                 </div>
               </li>
             ))}
@@ -165,8 +167,8 @@ export function KartuPembagian(props: Props) {
   );
 }
 
-export function JudulKelompok({ id, judul, jumlah }: { id?: string; judul: string; jumlah: number }) {
-  return <h3 className="judul-kelompok" id={id}><span>{judul}</span><span>{t('hasil.jumlah_orang', { jumlah: angka(String(jumlah)) })}</span></h3>;
+export function JudulKelompok({ id, judul, jumlah, aksi }: { id?: string; judul: string; jumlah: number; aksi?: ReactNode }) {
+  return <h3 className="judul-kelompok" id={id}><span>{judul}</span><span>{t('hasil.jumlah_orang', { jumlah: angka(String(jumlah)) })}{aksi}</span></h3>;
 }
 
 export function BarisOrang({ orang, warna, redup = false, berbeda = false, saatPilih, uang, pecahan }: {
