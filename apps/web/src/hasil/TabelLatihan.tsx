@@ -191,8 +191,8 @@ export function TabelLatihan({ tabel, saatMencoba, saatBenar, saatLihatJawaban, 
       <section className="ubin-h cara-mengisi" aria-labelledby="judul-cara-mengisi">
         <h2 id="judul-cara-mengisi">{t('hitung.tabel.cara_mengisi')}</h2>
         <ol>
-          {['biasa_1', 'biasa_2', 'biasa_3', 'biasa_4', 'umum_boleh_bukan_terkecil'].map(butir => (
-            <li key={butir}><Tebal teks={t(`hitung.tabel.cara.${butir}`)} /></li>
+          {[t('hitung.tabel.cara.biasa_1'), t('hitung.tabel.cara.biasa_2'), t('hitung.tabel.cara.biasa_3'), t('hitung.tabel.cara.biasa_4'), t('hitung.tabel.cara.umum_boleh_bukan_terkecil')].map(teks => (
+            <li key={teks}><Tebal teks={teks} /></li>
           ))}
         </ol>
       </section>
