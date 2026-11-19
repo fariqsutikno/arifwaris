@@ -27727,6 +27727,118 @@
    "id": "Kasus ini sedang dibagikan lewat tautan. Hentikan pembagiannya dulu lewat Kelola tautan bila ingin menghapusnya dari riwayat.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul",
+   "halaman": "hitung",
+   "id": "Tabelmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara_mengisi",
+   "halaman": "hitung",
+   "id": "Cara mengisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.asal_masalah_akhir",
+   "halaman": "hitung",
+   "id": "Asal masalah akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.bersama",
+   "halaman": "hitung",
+   "id": "bersama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.hanya_bilangan_bulat",
+   "halaman": "hitung",
+   "id": "Kotak ini hanya menerima bilangan bulat. Pecahan dipilih di kolom Bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kolom_belum_lengkap",
+   "halaman": "hitung",
+   "id": "Kolom \"{judul}\" belum lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.mulai_salah",
+   "halaman": "hitung",
+   "id": "Mulai salah di kolom \"{judul}\". Kolom sesudahnya belum diperiksa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.benar_semua",
+   "halaman": "hitung",
+   "id": "Benar semua.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.benar_semua_terkecil",
+   "halaman": "hitung",
+   "id": "Benar semua. Bentuk terkecil: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.butir_terkecil",
+   "halaman": "hitung",
+   "id": "{judul} {diisi} (terkecilnya {terkecil})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.jawaban_dibuka",
+   "halaman": "hitung",
+   "id": "Jawaban dibuka. Isianmu yang berbeda dicoret. Soal ini tidak memberi XP.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_1",
+   "halaman": "hitung",
+   "id": "**Bagian** dipilih dari daftar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_2",
+   "halaman": "hitung",
+   "id": "Saham = **bilangan bulat** terhadap asal masalah di kepala kolom.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_3",
+   "halaman": "hitung",
+   "id": "Dua orang atau lebih **Ashabah**? Sel saham mereka **bergabung otomatis**: isi sisanya sekali.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_4",
+   "halaman": "hitung",
+   "id": "Tanpa tashih: asal masalah akhir **sama** dengan asal masalah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.umum_boleh_bukan_terkecil",
+   "halaman": "hitung",
+   "id": "Asal masalah **boleh bukan yang terkecil**, asal sahamnya sebanding.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
