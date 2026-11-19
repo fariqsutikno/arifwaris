@@ -366,18 +366,18 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
               <h2 id="judul-pohon-tabel">{t('hasil.judul_bagaimana_dibagi')}</h2>
               <p className="sub-kartu">{t('hasil.pohon_dan_tabel_sub')}</p>
             </div>
-            <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>
+            {!(tabelSoal && sedangMenebak) && <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>
               <button type="button" role="radio" aria-checked={panelHp === 'pohon'} onClick={() => setPanelHp('pohon')}>{t('hasil.pohon')}</button>
               <button type="button" role="radio" aria-checked={panelHp === 'tabel'} onClick={() => setPanelHp('tabel')}>{t('hasil.tabel')}</button>
-            </div>
+            </div>}
           </div>
           <div className="isi-pohon-tabel">
             <PanelPohon pohon={buatPohon(true)} legenda={<Legenda />} saatLayarPenuh={() => setLayarPenuh({ zoom: 1 })}
               saatPutar={bolehAliran ? () => setPutaranAliran(putaranAliran + 1) : undefined} />
-            <div className="panel-tabel-hasil">
+            {!(tabelSoal && sedangMenebak) && <div className="panel-tabel-hasil">
               <h3 id="judul-tabel-faraidh" className="judul-panel">{umumRantai ? t('hasil.munasakhat.tabel_munasakhat') : ringkasan.taqdir ? t('hasil.ditahan.tabel_kemungkinan') : ringkasan.gharqa ? t('hasil.gharqa.tabel_per_harta') : t('hitung.tabel_faraidh')}</h3>
               <div className="wadah-tabel">{tabel}</div>
-            </div>
+            </div>}
           </div>
         </section>
         {!sedangMenebak && <div className="bento-s6"><UbinSelanjutnya /></div>}
