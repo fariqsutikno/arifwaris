@@ -110,8 +110,8 @@ describe('layar hasil', () => {
     expect(screen.queryByText('Rp 16.666.666')).toBeNull();
     expect(screen.queryAllByText('1/6', { selector: 'td, .nama-bagian, .jumlah-bagian *' })).toHaveLength(0);
     expect(screen.queryByText(/Terhalang oleh/)).toBeNull();
-    // Tabel tetap tampil tapi angkanya "?", dan langkah perhitungan terkunci sampai jawaban dibuka.
-    expect(screen.getAllByLabelText('disembunyikan').length).toBeGreaterThan(0);
+    // Soal bertabel: panel tabel faraidh berangka ? tidak ada; langkah perhitungan terkunci sampai jawaban dibuka.
+    expect(screen.queryAllByLabelText('disembunyikan')).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: /Pembahasan langkah demi langkah/ }));
     expect(screen.getByText('Jawab soalnya dulu')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
