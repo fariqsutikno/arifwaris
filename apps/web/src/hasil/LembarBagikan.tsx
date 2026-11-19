@@ -12,13 +12,15 @@ interface Props {
   tautan?: { judul: string; saatPilih: () => void } | undefined;
   /** Tanpa ini bagian "Jangan simpan kasus ini" tidak tampil (sudah tidak disimpan, atau memang tidak disimpan). */
   saatJanganSimpan?: (() => void) | undefined;
+  /** Kasus masih dibagikan lewat tautan: "Jangan simpan" diganti penjelasan kenapa belum bisa. */
+  sedangDibagikan?: boolean | undefined;
   saatKirim: () => void;
   saatSalin: () => void;
   saatUnduh: () => void;
   saatTutup: () => void;
 }
 
-export function LembarBagikan({ teks, tautan, saatJanganSimpan, saatKirim, saatSalin, saatUnduh, saatTutup }: Props) {
+export function LembarBagikan({ teks, tautan, saatJanganSimpan, sedangDibagikan, saatKirim, saatSalin, saatUnduh, saatTutup }: Props) {
   const id = useId();
   const tombolTutup = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -49,6 +51,7 @@ export function LembarBagikan({ teks, tautan, saatJanganSimpan, saatKirim, saatS
             </button>
           ))}
         </div>
+        {sedangDibagikan && <><hr /><p className="sub-lembar">{t('hasil.bagikan_lembar.sedang_dibagikan')}</p></>}
         {saatJanganSimpan && <>
           <hr />
           <button type="button" className="tautan tautan-bahaya" onClick={saatJanganSimpan}>{t('hasil.bagikan_lembar.jangan_simpan')}</button>

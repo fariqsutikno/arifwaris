@@ -27720,6 +27720,13 @@
    "id": "sudah bersih dari utang dan wasiat",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.sedang_dibagikan",
+   "halaman": "hasil",
+   "id": "Kasus ini sedang dibagikan lewat tautan. Hentikan pembagiannya dulu lewat Kelola tautan bila ingin menghapusnya dari riwayat.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -476,5 +476,6 @@ describe('layar hasil', () => {
     render(<Uji awal={prototipe()} idSesi="sesi-dibagikan" />);
     fireEvent.click(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' }));
     expect(screen.queryByRole('button', { name: 'Jangan simpan kasus ini' })).toBeNull();
+    expect(screen.getByText(/sedang dibagikan lewat tautan/)).toBeTruthy();
   });
 });
