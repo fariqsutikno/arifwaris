@@ -222,3 +222,12 @@ kolom bagian (janin wafat / lahir hidup) cukup karena bagian sama di kelima kemu
 12, saudara 0, ditahan 60 dari 72. Di HP tabel digeser ke samping.
 Revisi: **tiap kemungkinan punya kolom bagian sendiri** (bagian → saham, enam pasang + Diberikan sekarang = 13 kolom), seperti di
 kitab; menggantikan dua kolom bagian bersama.
+
+### Cek tata letak tabel haml di kitab (Shamela, 2026-11-19)
+Sumber: al-Ahdal, *I'anah ath-Thalib fi Bidayah 'Ilm al-Fara'idh* (Syafi'i), hlm. 183–186 · shamela:96958/171–174.
+- **Kolom akhir = "عمود الجامعة".** Bagian terkecil tiap orang «يرقم مقابل اسمه من عمود الجامعة», sisanya «موقوف». Posisi kolom
+  terakhir di mockup sesuai; judulnya diganti "Jami'ah · diberikan sekarang", baris "Ditahan (mauquf)".
+- **Pengali (juz'us sahm) ditulis di atas tiap mas'alah**: «فرقمناه فوق مسألته». Sesuai baris pengali di kepala tabel.
+- **Temuan yang perlu keputusan:** kitab ini memakai **empat** taqdir untuk Syafi'i (wafat, laki-laki, satu perempuan,
+  perempuan berbilang), dengan alasan «لا ضبط لعدد الحمل». KB 13a.5 menulis enam taqdir. Belum diubah: KB adalah satu-satunya
+  sumber fikih, jadi perubahan menunggu keputusan pemilik (dan diverifikasi ke Raudhah bila perlu).
