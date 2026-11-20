@@ -825,7 +825,8 @@ komponen lama.
 | **P7 (R8)** | Alat ukur keberhasilan: dasbor internal ukuran belajar (4A.7) + ukuran bisnis | P1 (data sejak awal) |
 | **P8 (R9)** | Ticketing dan dukungan dalam aplikasi, basis pengetahuan, halaman status | P6 |
 
-Roadmap lengkap dan alasannya: riset kelas bagian 8.
+Roadmap lengkap dan alasannya: riset kelas bagian 8. Urutan kerja, letak kode, langkah, dan uji per fase:
+`rencana-implementasi-penilaian-kelas/00-induk.md` (gelombang G0–G8, termasuk posisi terhadap jenis soal latihan dan AMIN).
 
 ---
 
