@@ -28,12 +28,13 @@ export interface KejadianPercobaan {
   revisiSoal: string;
   jenisSoal: JenisSoal;
   mode: ModeSoal;
-  konteks: { jenis: 'mandiri' } | { jenis: 'penugasan'; idPenugasan: string };
+  konteks: { jenis: 'mandiri' } | { jenis: 'tugas'; idTugas: string };
   /** `buka` = soal dibuka (waktu pengerjaan); tanpa isian dan hasil. */
   aksi: 'buka' | PercobaanTabel['aksi'];
   /** null untuk buka, lihatJawaban tanpa isian, dan soal kartu lama (belum bertabel). */
   isian: IsianTabel | null;
   jangkar: Jangkar | null;
+  /** hasilKolom dan benarSemua hanya untuk tampilan lokal, tidak pernah dianggap kebenaran: server menilai ulang semua kejadian (spec 2.6). */
   hasilKolom: HasilKolom[] | null;
   benarSemua: boolean;
   /** Jam perangkat, hanya informasi (lama mengerjakan); tidak dipercaya. */
