@@ -115,14 +115,19 @@ describe('Hasil mencatat kejadian percobaan soal latihan', () => {
 
 describe('kartu tebak lama', () => {
   it('soal yang belum bertabel: satu kejadian tanpa isian per percobaan', async () => {
-    const awal = kasusBaru('L');
-    let graf = ['ISTRI', 'ANAK_LK', 'ANAK_PR'].reduce((g, kunci) => tambahAhliWaris(g, 'PEWARIS', kunci as 'ISTRI'), awal.graf);
-    const idBudi = hitungIsian(graf, 'PEWARIS').ANAK_LK![0]!;
-    graf = tambahAhliWaris(tambahAhliWaris(graf, idBudi, 'ISTRI'), idBudi, 'ANAK_PR');
-    const munasakhat: Kasus = { ...awal, graf, urutanWafat: [idBudi], tirkah: { kotor: 300_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
+    // Dzawil arham (14): belum punya tabel latihan; munasakhat sudah (G2).
+    const orang = (id: string, jenisKelamin: 'L' | 'P', lain: object = {}) => ({ id, jenisKelamin, statusHidup: 'hidup' as const, agama: 'islam' as const, ...lain });
+    const wafat = { statusHidup: 'wafat' as const, penghubung: true };
+    const munasakhat: Kasus = { ...kasusBaru('L'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, graf: {
+      idPewaris: 'D', pernikahan: [], orang: {
+        D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }),
+        F1: orang('F1', 'L', { ...wafat, idAyah: 'PGF', idIbu: 'PGM' }), M1: orang('M1', 'P', { ...wafat, idAyah: 'MGF', idIbu: 'MGM' }),
+        PGF: orang('PGF', 'L', wafat), PGM: orang('PGM', 'P', wafat), MGF: orang('MGF', 'L', wafat), MGM: orang('MGM', 'P', wafat),
+        KL1: orang('KL1', 'P', { idAyah: 'MGF', idIbu: 'MGM' }), AM1: orang('AM1', 'P', { idAyah: 'PGF', idIbu: 'PGM' }),
+      } } };
     render(<Uji awal={munasakhat} />);
     await waitFor(() => expect(bacaPercobaan().map(k => k.aksi)).toEqual(['buka']));
-    expect(bacaPercobaan()[0]).toMatchObject({ jenisSoal: 'munasakhat' });
+    expect(bacaPercobaan()[0]).toMatchObject({ jenisSoal: 'dzawilArham' });
     for (const kotak of document.querySelectorAll('.isian-tebak input')) fireEvent.change(kotak, { target: { value: '1/2' } });
     fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
     await waitFor(() => expect(bacaPercobaan().map(k => k.aksi)).toEqual(['buka', 'periksa']));

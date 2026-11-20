@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { hitung, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
+import { hitung, hitungMunasakhat, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
 import { TabelLatihan } from './TabelLatihan';
 import { pilihJangkar, susunTabelSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 import { namaOrang } from '../format';
@@ -175,5 +175,43 @@ describe('TabelLatihan — soal biasa', () => {
     pilih('Kakak/adik laki-laki kandung', 'Terhalang');
     expect(within(baris()).getAllByText('0')).toHaveLength(2);
     expect(within(baris()).queryAllByRole('textbox')).toHaveLength(0);
+  });
+});
+
+// KB 12.6 contoh 2: anak pr (B) wafat sebelum harta dibagi; mas'alah 1 = 24 (terkunci), mas'alah 2 = 3; pengali 3 dan 7; jami'ah 72.
+describe('TabelLatihan — munasakhat', () => {
+  const graf: GrafKeluarga = { idPewaris: 'D', pernikahan: [{ idSuami: 'D', idIstri: 'W', status: 'utuh' }], orang: {
+    D: orang('D', 'L', { statusHidup: 'wafat' }), W: orang('W', 'P'),
+    S: orang('S', 'L', { idAyah: 'D', idIbu: 'W' }), B: orang('B', 'P', { idAyah: 'D', idIbu: 'W' }) } };
+  const hasil = hitungMunasakhat({ urutanWafat: ['B'], dasar: { graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n },
+    pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' } });
+  const susunan = susunTabelSoal(hasil, id => id);
+  if ('status' in susunan) throw new Error(susunan.status);
+  const tampilkanMunasakhat = () => render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+  const isi = (pengaliKedua: string) => {
+    fireEvent.change(screen.getByRole('combobox', { name: 'Bagian · B W' }), { target: { value: '1/3' } });
+    fireEvent.change(screen.getByRole('combobox', { name: 'Bagian · B S' }), { target: { value: 'Ashabah' } });
+    ketik("Mas'alah 2 (B)", '3'); ketik("Mas'alah 2 (B) W", '1'); ketik("Mas'alah 2 (B) S", '2');
+    ketik("Jami'ah", '72'); ketik("Jami'ah W", '16'); ketik("Jami'ah S", '56');
+    ketik("Pengali Mas'alah 1 (D)", '3'); ketik("Pengali Mas'alah 2 (B)", pengaliKedua);
+  };
+
+  it('Mas\'alah 1 terkunci terisi; baris Pengali ada di kepala tabel; kotak pengali tidak ada untuk Jami\'ah', () => {
+    tampilkanMunasakhat();
+    expect(screen.getByText('24')).toBeTruthy();
+    expect(screen.getByRole('rowheader', { name: 'Pengali' })).toBeTruthy();
+    expect(screen.queryByRole('textbox', { name: "Pengali Jami'ah" })).toBeNull();
+  });
+
+  it('isi benar (pengali 3 dan 7) → Benar semua', () => {
+    tampilkanMunasakhat();
+    isi('7'); periksa();
+    expect(screen.getByText('Benar semua.')).toBeTruthy();
+  });
+
+  it('pengali salah → umpan khusus baris Pengali, bukan nama kolom', () => {
+    tampilkanMunasakhat();
+    isi('6'); periksa();
+    expect(screen.getByText('Baris Pengali belum tepat.')).toBeTruthy();
   });
 });

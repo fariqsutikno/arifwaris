@@ -27839,6 +27839,69 @@
    "id": "Asal masalah **boleh bukan yang terkecil**, asal sahamnya sebanding.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul_masalah",
+   "halaman": "hitung",
+   "id": "Mas'alah {nomor} ({nama})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul_bagian_mayit",
+   "halaman": "hitung",
+   "id": "Bagian · {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.pengali",
+   "halaman": "hitung",
+   "id": "Pengali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.pengali_belum_lengkap",
+   "halaman": "hitung",
+   "id": "Baris Pengali belum lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.pengali_belum_tepat",
+   "halaman": "hitung",
+   "id": "Baris Pengali belum tepat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_1",
+   "halaman": "hitung",
+   "id": "Mas'alah 1 **sudah dikerjakan** di soal sebelumnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_2",
+   "halaman": "hitung",
+   "id": "Mas'alah sesudahnya membagi **harta orang yang wafat**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_3",
+   "halaman": "hitung",
+   "id": "**Pengali** (di bawah asal masalah): agar semua mas'alah bisa dijumlah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_4",
+   "halaman": "hitung",
+   "id": "Jami'ah = saham × pengali, **dijumlah** dari semua mas'alah.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -224,12 +224,15 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
     : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   // Dzawil arham: linimasanya tanpa tabel bertahap (tabel: []), jadi tanpa babak seperti taqdir dan gharqa.
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
-  // Soal latihan biasa memakai tabel faraidh isian (spec B); jenis lain masih isian pecahan lama sampai tabelnya dibangun.
+  // Soal latihan biasa dan munasakhat memakai tabel faraidh isian (spec B); jenis lain masih isian pecahan lama sampai tabelnya dibangun.
+  const namaTabel = (id: string) => namaOrang(kasus.graf, ringkasan.statusOrang, id);
   const tabelSoal = useMemo(() => {
-    if (!adalahBelajar || !hasilBiasa || adaDzawilArham) return null;
-    const susunan = hasilBiasa.status === 'OK' ? susunTabelSoal(hasilBiasa, id => namaOrang(kasus.graf, hasilBiasa.statusOrang, id)) : { status: 'TIDAK_DIDUKUNG' as const };
+    if (!adalahBelajar || adaDzawilArham) return null;
+    const sumber = hasilBiasa ?? (tampil.jenis === 'munasakhat' ? tampil.hasil : null);
+    if (!sumber || sumber.status !== 'OK') return null;
+    const susunan = susunTabelSoal(sumber, id => namaOrang(kasus.graf, ringkasan.statusOrang, id));
     return 'status' in susunan ? null : susunan;
-  }, [adalahBelajar, hasilBiasa, adaDzawilArham, kasus.graf]);
+  }, [adalahBelajar, hasilBiasa, tampil, adaDzawilArham, kasus.graf, ringkasan.statusOrang]);
   // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
   const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
@@ -375,7 +378,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
-        {tabelSoal && <TabelLatihan tabel={tabelSoal} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {!(tabelSoal && sedangMenebak) && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
