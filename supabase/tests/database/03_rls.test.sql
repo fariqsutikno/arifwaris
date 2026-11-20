@@ -41,9 +41,8 @@ select throws_ok($$update entri_konten set revisi_terbit_id = '20000000-0000-000
 
 -- reviewer tidak bisa update revisi langsung
 set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000b","role":"authenticated"}';
-update revisi set status = 'disetujui' where id = '20000000-0000-0000-0000-000000000002';
-select is((select status from revisi where id = '20000000-0000-0000-0000-000000000002'), 'draf'::status_revisi,
-          'reviewer juga harus lewat fungsi transisi');
+select throws_ok($$update revisi set status = 'disetujui' where id = '20000000-0000-0000-0000-000000000002'$$, '42501', null,
+                 'reviewer juga harus lewat fungsi transisi');
 
 -- pengguna biasa
 set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-00000000000d","role":"authenticated"}';
