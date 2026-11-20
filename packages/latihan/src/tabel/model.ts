@@ -59,6 +59,6 @@ export interface HasilKolom {
   status: 'benar' | 'salah' | 'belumLengkap';
   /** Sel bersama sekali (baris pertama kelompok); sel kepala terakhir. */
   sel: HasilSel[];
-  /** Hanya bila kolom benar dengan kepala kelipatan kunci. */
-  bentuk?: { diisi: bigint; terkecil: bigint };
+  /** Hanya bila kolom benar dengan kepala kelipatan kunci. Teks digit (bukan bigint) supaya kejadian aman di-JSON-kan. */
+  bentuk?: { diisi: string; terkecil: string };
 }

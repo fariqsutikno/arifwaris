@@ -12,3 +12,6 @@ export function kasusDariSoal(contoh: ContohKasus): Kasus {
   const graf = contoh.ahliWaris.reduce((grafIni, kunci) => tambahAhliWaris(grafIni, dasar.graf.idPewaris, kunci as KunciAhliWaris), dasar.graf);
   return { ...dasar, graf, tirkah: { ...dasar.tirkah, kotor: contoh.harta } };
 }
+
+/** Soal kurasi = slug ('H-01'); soal pola `${slugPola}@${versi}#${benih}` menyusul di langkah 6. */
+export type IdSoal = string;

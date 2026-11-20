@@ -10,4 +10,5 @@ export * from './angka.js';
 export * from './tabel/model.js';
 export * from './tabel/susun.js';
 export * from './tabel/jangkar.js';
+export * from './tabel/kanonik.js';
 export * from './tabel/nilai.js';

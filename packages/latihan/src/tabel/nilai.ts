@@ -29,7 +29,7 @@ export function putusanLatihan(kolom: HasilKolom[]): HasilNilai {
     if (hasil.status === 'salah') {
       return { jenis: 'salah', idKolom, idJudul, kepalaSalah: !!kepala && !kepala.benar, idBarisSalah: barisBermasalah(sel => !sel.benar) };
     }
-    if (hasil.bentuk) bentukTerkecil.push({ idKolom, idJudul, ...hasil.bentuk });
+    if (hasil.bentuk) bentukTerkecil.push({ idKolom, idJudul, diisi: BigInt(hasil.bentuk.diisi), terkecil: BigInt(hasil.bentuk.terkecil) });
   }
   return { jenis: 'benar', bentukTerkecil };
 }
@@ -64,7 +64,7 @@ function nilaiKolom(tabel: TabelSoal, kolom: KolomSoal, isian: IsianTabel, jangk
   });
   sel.push({ idBaris: 'kepala', ...bentukSel(kepalaBenar, kepala === undefined) });
   const status = statusDari(sel);
-  const bentuk = status === 'benar' && kepala !== terkecil ? { bentuk: { diisi: kepala!, terkecil } } : {};
+  const bentuk = status === 'benar' && kepala !== terkecil ? { bentuk: { diisi: String(kepala), terkecil: String(terkecil) } } : {};
   return { idKolom, idJudul, status, sel, ...bentuk };
 }
 

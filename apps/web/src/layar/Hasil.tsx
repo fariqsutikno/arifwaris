@@ -5,13 +5,15 @@
 // Kaki bingkai: catatan + tautan Ubah data · Reset skenario. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
-import { useEffect, useMemo, useReducer, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
-import { jalankan, pilihJangkar, susunTabelSoal, type HasilOk, type PercobaanTabel } from '@waris/latihan';
+import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
+import { catatPercobaan, ringkasKunciTabel } from '../percobaan';
+import { VERSI_ENGINE } from '../versi';
 import { useBahasa, type Tujuan } from '../preferensi';
 import { PesanKasusKhusus } from '../hasil/HasilKasusKhusus';
 import { KelompokDitahan, TabelKemungkinan, TabelPerHarta, TabelSkenarioGharqa, UbinDitahan, UbinKemungkinanUrutan, UbinMenunggu } from '../hasil/Ditahan';
@@ -70,6 +72,8 @@ interface Props {
    * dibuka setelah pernah mencoba menjawab (`benar` = false, tanpa XP, spec tahap 5). Membuka tanpa mencoba tidak dihitung.
    */
   saatDikerjakan?: ((benar: boolean) => void) | undefined;
+  /** Soal latihan yang dikerjakan (bukan kasus sendiri): tiap aksi pelajar dicatat sebagai kejadian percobaan. */
+  soal?: { id: IdSoal; revisiId: string } | undefined;
   /** Kasus dari latihan/materi di mode belajar: data kasus tidak bisa diubah atau di-reset supaya fokus. */
   terkunci?: boolean | undefined;
   /** Tampilan penerima tautan: tanpa ubah data, reset, bagikan, dan pindah tujuan. */
@@ -92,7 +96,7 @@ const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -133,11 +137,11 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} soal={soal} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
     tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={saatJanganSimpan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -160,7 +164,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
   const [sudahMencoba, setSudahMencoba] = useState(false);
-  const bukaJawaban = () => { setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
+  // Lihat jawaban selalu tercatat (T4), walau belum pernah mencoba; XP/penanda dikerjakan tetap hanya bila sudah mencoba.
+  const bukaJawaban = () => { catatLihatJawaban(); setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
   const [tebakanBenar, setTebakanBenar] = useState(false);
   const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
   // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
@@ -227,7 +232,47 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   }, [adalahBelajar, hasilBiasa, adaDzawilArham, kasus.graf]);
   // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
   const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
-  const saatPercobaanTabel = (percobaan: PercobaanTabel) => { setSudahMencoba(true); if (percobaan.benarSemua) jawabBenar(); };
+  // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
+  const [idSesiSoal] = useState(() => crypto.randomUUID());
+  const kunciTabel = useRef('');
+  const sudahDibuka = useRef(false);
+  const isianTerakhir = useRef<IsianTabel | null>(null);
+  const catat = (aksi: KejadianPercobaan['aksi'], bagian: Partial<Pick<KejadianPercobaan, 'isian' | 'jangkar' | 'hasilKolom' | 'benarSemua'>> = {}) => {
+    if (!soal) return;
+    catatPercobaan({
+      id: crypto.randomUUID(), idSesiSoal, soalId: soal.id, revisiSoal: soal.revisiId, jenisSoal: jenisSoalDari(kasus, tampil),
+      mode: 'latihan', konteks: { jenis: 'mandiri' }, aksi, isian: null, jangkar: null, hasilKolom: null, benarSemua: false,
+      dimulaiPada: new Date(waktuHitung).toISOString(),
+      // 'bawaan' = KONFIGURASI_BAWAAN, satu-satunya konfigurasi khilaf internal yang dipakai jalankan().
+      versi: { engine: VERSI_ENGINE, ruleset: kasus.madzhab ?? 'syafii', madzhab: 'bawaan', kunci: kunciTabel.current },
+      ...bagian,
+    });
+  };
+  const catatLihatJawaban = () => {
+    const isian = isianTerakhir.current;
+    catat('lihatJawaban', { isian, jangkar: jangkarSoal, hasilKolom: isian && tabelSoal ? nilaiSemuaKolom(tabelSoal, isian, jangkarSoal) : null });
+  };
+  // 'buka' dicatat sekali, sesudah hash kunci tabel siap supaya versi.kunci terisi.
+  useEffect(() => {
+    if (!soal || !adalahBelajar || sudahDibuka.current) return;
+    let batal = false;
+    const buka = (kunci: string) => { if (batal || sudahDibuka.current) return; kunciTabel.current = kunci; sudahDibuka.current = true; catat('buka'); };
+    if (tabelSoal) void ringkasKunciTabel(tabelSoal).then(buka); else buka('');
+    return () => { batal = true; };
+  }, [soal?.id, adalahBelajar, tabelSoal]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Kartu tebak lama (soal yang belum bertabel): saatMencoba lalu, bila tepat, saatBenar dalam satu tick → satu kejadian tanpa isian (spec 6.3).
+  const kartuLamaBenar = useRef(false);
+  const saatMencobaKartuLama = () => {
+    setSudahMencoba(true);
+    queueMicrotask(() => { catat('periksa', { benarSemua: kartuLamaBenar.current }); kartuLamaBenar.current = false; });
+  };
+  const saatBenarKartuLama = () => { kartuLamaBenar.current = true; jawabBenar(); };
+  const saatPercobaanTabel = (percobaan: PercobaanTabel) => {
+    isianTerakhir.current = percobaan.isian;
+    setSudahMencoba(true);
+    catat(percobaan.aksi, { isian: percobaan.isian, jangkar: percobaan.jangkar, hasilKolom: percobaan.hasilKolom, benarSemua: percobaan.benarSemua });
+    if (percobaan.benarSemua) jawabBenar();
+  };
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
   const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
     try { return susunSemuaLinimasa(); } catch { return { linimasa: null, babakLinimasa: null }; } // gagal menyusun = pakai daftar lama, layar Hasil tetap hidup
@@ -330,14 +375,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
-        {tabelSoal && <TabelLatihan tabel={tabelSoal} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={() => setKonfirmasiBuka('lihat')} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan tabel={tabelSoal} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {!(tabelSoal && sedangMenebak) && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
           : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={hartaKosong && bolehUbah ? () => setUbahHartaTerbuka(true) : () => setSembunyiNominal(!sembunyiNominal)} hartaKosong={hartaKosong && bolehUbah}
-            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={jawabBenar} tebakanBenar={tebakanBenar} saatMencobaMenjawab={() => setSudahMencoba(true)}
+            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={saatBenarKartuLama} tebakanBenar={tebakanBenar} saatMencobaMenjawab={saatMencobaKartuLama}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih}

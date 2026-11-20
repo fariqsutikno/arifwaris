@@ -3,6 +3,7 @@
 // membengkak saat luring. Kegiatan (log_kegiatan) berkunci id-nya sendiri, jadi tidak pernah saling menimpa.
 // Menerima entri dari progres/tersimpan/preferensi; menyerahkannya ke RepositoriPengguna lewat kirimAntrean.
 
+import type { KejadianPercobaan } from '@waris/latihan';
 import type { Kegiatan, Preferensi, ProgresBelajar, ProgresLatihan, RepositoriPengguna, RiwayatTersimpan } from '@waris/data';
 import { bacaMentah, hapusMentah, simpanMentah } from '../penyimpanan';
 
@@ -13,9 +14,13 @@ export type EntriAntrean =
   | { tabel: 'latihan'; baris: ProgresLatihan }
   | { tabel: 'hapus_latihan' }
   | { tabel: 'preferensi'; baris: Preferensi }
-  | { tabel: 'kegiatan'; baris: Kegiatan };
+  | { tabel: 'kegiatan'; baris: Kegiatan }
+  /** Kejadian percobaan: berkunci id-nya sendiri; menunggu di antrean sampai tabel server ada (kirimAntrean melewatinya). */
+  | { tabel: 'percobaan'; baris: KejadianPercobaan };
 
 const KUNCI_ANTREAN = 'arif-waris:antrean';
+/** Kejadian percobaan yang menunggu terlalu lama dibuang yang tertua, supaya localStorage tidak penuh (spec 6.2). */
+const BATAS_ANTREAN_PERCOBAAN = 500;
 /** Dipancarkan di window setelah ≥1 kegiatan sampai server: XP & streak bisa dimuat ulang (StreakKepala). */
 export const PERISTIWA_KEGIATAN_TERKIRIM = 'arif-waris:kegiatan-terkirim';
 const KUNCI_AKUN = 'arif-waris:akun';
@@ -35,7 +40,7 @@ export function antre(entri: EntriAntrean): void {
   jumlahAntre++;
   const kunci = kunciEntri(entri);
   // Hapus & simpan tersimpan berbagi kunci: yang terakhir yang berlaku.
-  tulis([...bacaAntrean().filter(lama => kunciEntri(lama) !== kunci), entri]);
+  tulis(batasiPercobaan([...bacaAntrean().filter(lama => kunciEntri(lama) !== kunci), entri]));
   pengirim?.();
 }
 
@@ -48,7 +53,7 @@ export function bacaAntrean(): EntriAntrean[] {
   }
 }
 
-const TABEL_BERBARIS = ['tersimpan', 'belajar', 'latihan', 'preferensi', 'kegiatan'];
+const TABEL_BERBARIS = ['tersimpan', 'belajar', 'latihan', 'preferensi', 'kegiatan', 'percobaan'];
 // Isi localStorage bisa rusak/versi lama; entri cacat dibuang supaya kunciEntri tidak melempar dari antre().
 const entriUtuh = (entri: any): entri is EntriAntrean =>
   entri?.tabel === 'hapus_tersimpan' ? typeof entri.id === 'string'
@@ -60,6 +65,7 @@ export async function kirimAntrean(pengguna: RepositoriPengguna): Promise<number
   let adaKegiatanTerkirim = false;
   const kabari = () => { if (adaKegiatanTerkirim) window.dispatchEvent(new Event(PERISTIWA_KEGIATAN_TERKIRIM)); };
   for (const entri of bacaAntrean()) {
+    if (entri.tabel === 'percobaan') continue; // belum ada tabel server (G3): tetap di antrean
     try {
       await kirimSatu(pengguna, entri);
     } catch (galat) {
@@ -84,6 +90,7 @@ function kirimSatu(pengguna: RepositoriPengguna, entri: EntriAntrean): Promise<v
     case 'hapus_latihan': return pengguna.hapusSemuaProgresLatihan();
     case 'preferensi': return pengguna.simpanPreferensi(entri.baris);
     case 'kegiatan': return pengguna.catatKegiatan(entri.baris);
+    case 'percobaan': return Promise.resolve(); // tidak sampai sini: kirimAntrean melewatinya
   }
 }
 
@@ -96,7 +103,14 @@ function kunciEntri(entri: EntriAntrean): string {
     case 'hapus_latihan': return 'hapus_latihan';
     case 'preferensi': return 'preferensi';
     case 'kegiatan': return `kegiatan:${entri.baris.id}`;
+    case 'percobaan': return `percobaan:${entri.baris.id}`;
   }
+}
+
+/** Menyisakan 500 entri percobaan terakhir; entri lain tidak tersentuh. */
+function batasiPercobaan(daftar: EntriAntrean[]): EntriAntrean[] {
+  let lebih = daftar.filter(entri => entri.tabel === 'percobaan').length - BATAS_ANTREAN_PERCOBAAN;
+  return lebih <= 0 ? daftar : daftar.filter(entri => entri.tabel !== 'percobaan' || lebih-- <= 0);
 }
 
 const tulis = (daftar: EntriAntrean[]): void => { simpanMentah(KUNCI_ANTREAN, JSON.stringify(daftar)); };

@@ -2,10 +2,12 @@
 // "Penggabungan"). Fungsi murni: menerima dua sisi, mengembalikan hasil untuk ditulis ke lokal dan daftar baris yang
 // harus dikirim karena berbeda dari server.
 
+import { gabungKejadian, type KejadianPercobaan } from '@waris/latihan';
 import type { Preferensi, ProgresBelajar, ProgresLatihan, RiwayatTersimpan } from '@waris/data';
 import type { EntriAntrean } from './antrean';
 
-export interface DataPengguna { tersimpan: RiwayatTersimpan[]; belajar: ProgresBelajar[]; latihan: ProgresLatihan[]; preferensi: Preferensi | null }
+/** `percobaan` diisi hanya bila kedua sisi punya sumbernya; selama belum ada tabel server (G3) pemanggil membiarkannya kosong. */
+export interface DataPengguna { tersimpan: RiwayatTersimpan[]; belajar: ProgresBelajar[]; latihan: ProgresLatihan[]; preferensi: Preferensi | null; percobaan?: KejadianPercobaan[] }
 
 export function gabung(lokal: DataPengguna, server: DataPengguna): { hasil: DataPengguna; kirim: EntriAntrean[] } {
   const tersimpan = gabungPerKunci(lokal.tersimpan, server.tersimpan, baris => baris.id,
@@ -17,6 +19,10 @@ export function gabung(lokal: DataPengguna, server: DataPengguna): { hasil: Data
   const preferensi = !lokal.preferensi || !server.preferensi ? lokal.preferensi ?? server.preferensi
     : lokal.preferensi.diubahPada > server.preferensi.diubahPada ? lokal.preferensi : server.preferensi;
 
+  // Kejadian: gabungan himpunan per id (bukan "terbaru menang"); yang belum ada di server dikirim.
+  const percobaan = lokal.percobaan || server.percobaan ? gabungKejadian(lokal.percobaan ?? [], server.percobaan ?? []) : undefined;
+  const idDiServer = new Set((server.percobaan ?? []).map(kejadian => kejadian.id));
+
   const bedaDariServer = <T>(daftar: T[], dariServer: T[]) => {
     const ada = new Set(dariServer.map(baris => JSON.stringify(baris)));
     return daftar.filter(baris => !ada.has(JSON.stringify(baris)));
@@ -25,9 +31,10 @@ export function gabung(lokal: DataPengguna, server: DataPengguna): { hasil: Data
     ...bedaDariServer(tersimpan, server.tersimpan).map(baris => ({ tabel: 'tersimpan' as const, baris })),
     ...bedaDariServer(belajar, server.belajar).map(baris => ({ tabel: 'belajar' as const, baris })),
     ...bedaDariServer(latihan, server.latihan).map(baris => ({ tabel: 'latihan' as const, baris })),
+    ...(percobaan ?? []).filter(kejadian => !idDiServer.has(kejadian.id)).map(baris => ({ tabel: 'percobaan' as const, baris })),
     ...(preferensi && JSON.stringify(preferensi) !== JSON.stringify(server.preferensi) ? [{ tabel: 'preferensi' as const, baris: preferensi }] : []),
   ];
-  return { hasil: { tersimpan, belajar, latihan, preferensi }, kirim };
+  return { hasil: { tersimpan, belajar, latihan, preferensi, ...(percobaan ? { percobaan } : {}) }, kirim };
 }
 
 const terbaru = (a: string, b: string) => (a >= b ? a : b);
