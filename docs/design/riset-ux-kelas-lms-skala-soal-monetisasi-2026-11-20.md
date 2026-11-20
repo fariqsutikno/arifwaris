@@ -290,7 +290,7 @@ kedua bentuk (spec 2.1 `soalId`, bukan `soalSlug`). Generator sendiri dibangun "
 | Paket | Untuk | Isi | Harga USULAN |
 |---|---|---|---|
 | **Gratis selamanya** | semua orang | Kalkulator lengkap, materi, latihan mandiri dengan pola soal (kuota wajar per hari, mis. 20 soal pola + semua soal kurasi), XP/streak | Rp0 |
-| **Pengajar Gratis** | pengajar perorangan | 1 kelas aktif per periode, ≤ 40 pelajar, tugas dari soal kurasi + pola (soal sama untuk semua), rekap nilai dasar | Rp0 |
+| **Pengajar Gratis** | pengajar perorangan | 1 kelas aktif per periode, ≤ 20 pelajar (keputusan pemilik, D2), tugas dari soal kurasi + pola (soal sama untuk semua), rekap nilai dasar | Rp0 |
 | **Pengajar Pro** | pengajar perorangan | kelas tak terbatas, variasi soal per pelajar, ringkasan per kolom, sesi langsung, ekspor nilai, salin ke periode baru | ±Rp150.000 per pengajar per semester |
 | **Lembaga** | prodi/fakultas/pesantren | semua fitur Pro untuk semua pengajar lembaga, admin lembaga, invoice, DPA, dukungan prioritas, (nanti) periode terpusat | ±Rp15.000–25.000 per pelajar aktif per semester, minimum tertentu |
 | (Opsional nanti) **Pelajar Plus** | pelajar mandiri berat | kuota soal pola tanpa batas, mode Tantangan (bila dibangun), riwayat lengkap | kecil, bulanan |
@@ -411,3 +411,160 @@ Wawancara (30 menit, 5–8 pengajar dari kampus dan pesantren, 2 kaprodi):
 - Kahoot: [EDU feature matrix](https://kahoot.com/feature-matrix-highered-edu/), [Campus](https://kahoot.com/upgrade/premiumplus-campus/)
 - LMS: [Vendr: Canvas](https://www.vendr.com/marketplace/canvas), [Capterra: LMS pricing models](https://www.capterra.com/resources/lms-pricing-models-guide/)
 - Ruangguru: [program sekolah](https://www.ruangguru.com/program/deep-learning), [harga paket 2025/2026](https://ruangguru.com/blog/perpanjang-paket-ruangbelajar)
+
+---
+
+## 12. Keputusan pemilik (2026-11-20, malam)
+
+| # | Keputusan | Dampak |
+|---|---|---|
+| D1 | Setuju usulan O1–O7 (bagian 10), kecuali yang diubah di bawah | spec bagian 5 berlaku |
+| D2 | **Pengajar Gratis maksimal 20 pelajar** (bukan 40) | tabel 6c |
+| D3 | Sasaran utama **B2B** (pengajar Pro dan lembaga); publik tetap gratis | bagian 6 |
+| D4 | **Skor parsial** untuk Latihan dalam tugas **dan** Ujian, berdasarkan kolom, baris, dan tahapan | bagian 13d; spec 5.1 |
+| D5 | **Nama tingkat "Dicoba / Paham / Kuasai" tidak disetujui** | opsi di bagian 13e |
+| D6 | **Batas waktu Ujian opsional**: diatur pengajar di tugas; di latihan mandiri pelajar boleh memasang sendiri untuk berpacu dengan waktu | spec 1.1, 5.1 |
+| D7 | **Rekor dan lencana** dipertimbangkan; bisa diperlihatkan ke dosen, selain milik pribadi | bagian 13b |
+| D8 | Variasi soal per pelajar diatur pengajar per tugas (sudah KL4) | – |
+| D9 | **Akses mode pengajar lewat pengajuan dan verifikasi** (mis. surat keterangan dosen), bukan otomatis | bagian 13c |
+| D10 | **Pengajar diberi data dan statistik** untuk memilih perlakuan (treatment) yang tepat: tingkat tiap pelajar, lalu **rekomendasi perlakuan** di tampilan pengajar (roadmap akhir) | bagian 13a; roadmap R8 |
+
+Jawaban untuk pertanyaan D3: **ya, B2B.** Alasannya (bagian 6b): pasar konsumen faraidh kecil dan musiman, sedangkan
+nilai yang dibayar (soal setara tanpa batas, nilai per langkah, data untuk mengajar) dirasakan pengajar dan lembaga.
+Fitur publik yang gratis tetap penting sebagai pintu masuk: pengajar mengenal aplikasi dari kalkulator dan materinya,
+pelajar sudah terbiasa sebelum kelas memakainya.
+
+---
+
+## 13. Tambahan riset
+
+### 13a. Data dan statistik untuk pengajar (D10)
+
+[Fakta-sumber] Tinjauan sistematis dasbor untuk pengajar menemukan sebagian besar dasbor hanya **meningkatkan
+kesadaran** dan **jarang memberi wawasan yang bisa ditindaklanjuti**; pengajar kesulitan menafsirkan data yang tidak
+dibingkai sebagai tindakan dan meminta dasbor yang menyarankan apa yang sebaiknya dilakukan; bukti dampak ke praktik
+mengajar masih terbatas (Kaliisa, Jivet & Prinsloo 2023,
+[ETHE](https://link.springer.com/10.1186/s41239-023-00394-6); studi CADA,
+[PMC8982662](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8982662/)).
+
+Artinya untuk kita [Dugaan]: dasbor angka saja tidak cukup; setiap tampilan data pengajar harus menjawab "lalu
+saya harus apa?". Itu sejalan dengan D10.
+
+| Lapis | Isi | Kapan |
+|---|---|---|
+| **Data per tugas** | status kiriman, ringkasan per kolom/tahapan, isian tiap pelajar (KL6) | R4 |
+| **Tingkat tiap pelajar** | matriks pelajar × topik (tingkat kemahiran, nama di 13e), dihitung dari kejadian tugas; ringkasan per pelajar "Mahir 6 · Bisa 3 · Mulai 2 dari 11 topik yang sudah ditugaskan" (bukan satu angka tunggal yang menyesatkan); tren per pekan | R6 |
+| **Kelompok kesalahan** | pelajar dikelompokkan menurut pola kesalahan yang sama (mis. "salah di Asal masalah akhir pada soal 'aul": 9 orang) | R6 |
+| **Rekomendasi perlakuan** | per kelompok: materi yang sesuai bab/topik, tugas susulan dari pola yang sama, soal untuk sesi langsung berikutnya; pengajar memilih dan menerapkan dengan satu langkah ("Beri tugas susulan ke 9 pelajar ini") | R8 |
+
+Aturan:
+- Rekomendasi **berbasis aturan yang terbaca** dulu (kolom salah → topik → materi/pola), bukan model kotak hitam;
+  setiap saran menampilkan alasannya ("karena 9 dari 25 salah di kolom …").
+- **Pengajar yang memutuskan**; sistem tidak menerapkan perlakuan otomatis atau mengubah nilai (UU PDP Pasal 10, audit P9).
+- Sumber data bawaan **hanya tugas kelas itu**. Kemajuan mandiri pelajar ikut dihitung **hanya bila pelajar
+  mengizinkan per kelas** ("Bagikan kemajuan latihan mandiriku ke pengajar kelas ini"), bisa ditarik kapan saja, dan
+  persetujuannya tercatat (audit 9c butir 2). Alasan: latihan mandiri adalah ruang aman untuk salah (riset 1 bagian 9).
+- Tidak ada label bernada vonis ("lemah", "malas"); kategori menggambarkan langkah, bukan orang.
+
+### 13b. Rekor dan lencana (D7)
+
+[Fakta-sumber] Meta-analisis khusus lencana digital (Law dkk. 2024) menemukan pengaruh signifikan pada **capaian
+belajar**, tetapi pengaruh pada **motivasi tidak meyakinkan**; efek lebih kuat di pendidikan tinggi dan untuk durasi
+1–9 pekan ([Educational Technology & Society, DOAJ](https://www.doaj.org/article/098444d5c28243b0a504d88eceecd739)).
+Tinjauan 23 studi: hasil beragam, sebagian tanpa manfaat atau negatif (Roy & Clark 2019, dikutip di sumber yang sama);
+kerangka desain lencana: [PMC6658268](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6658268/).
+
+| Ide | Paham | Dampak | Risiko |
+|---|---|---|---|
+| 13b-1. Lencana jumlah (100 soal, 30 hari streak) | ✓ | rendah | farming, mengukur aktivitas bukan paham (riset 1 HMW-3) |
+| **13b-2. Lencana bukti**: diberikan saat syarat pemahaman terpenuhi, mis. tingkat tertinggi di semua topik satu bab ("Tuntas bab 'Aul"), atau benar tanpa dibuka di semua jenis soal khusus | ✓ | sedang–tinggi | rendah |
+| **13b-3. Rekor**: nilai Ujian terbaik per bab/paket, waktu terbaik untuk Ujian berwaktu yang dipilih sendiri | ✓ | sedang | rendah bila pribadi |
+| 13b-4. Lencana dan rekor tampil otomatis ke pengajar | ✓ | sedang | tekanan sosial, privasi |
+
+**[Rekomendasi] 13b-2 + 13b-3.** Halaman pribadi **Pencapaian** (lencana bukti + rekor). Lencana **kebiasaan** (streak)
+tetap pribadi dan tidak pernah tampil ke pengajar. Lencana bukti dan rekor **boleh diperlihatkan ke pengajar kelas
+tertentu bila pelajar memilih** (persetujuan per kelas, sama dengan 13a). Lencana tidak memberi XP tambahan
+(menghindari hadiah bertumpuk, riset 1 E6) dan tidak masuk nilai kelas (K9).
+
+### 13c. Akses mode pengajar lewat verifikasi (D9)
+
+Tujuan verifikasi [Dugaan, perlu dikonfirmasi pemilik]: (1) mencegah "kelas palsu" yang mengumpulkan data pelajar
+(termasuk di bawah umur; UU PDP Pasal 25), (2) menjaga draf tugas dan statistik pelajar hanya untuk pengajar sungguhan,
+(3) menjaga kualitas pemakai fitur berbayar. Catatan jujur: aturan penilaian dan kunci jawaban **tidak bisa
+dirahasiakan sepenuhnya**, karena aplikasi ini juga kalkulator (audit 8c butir 12); yang dilindungi verifikasi adalah
+data pelajar, draf tugas, dan statistik kelas.
+
+| Ide | Paham | Dampak | Usaha | Risiko |
+|---|---|---|---|---|
+| 13c-1. Chat dulu ke admin (manual sepenuhnya) | ✓ | sedang | nol | tidak terskala; tidak tercatat |
+| **13c-2. Formulir "Ajukan akses pengajar"**: nama, lembaga, jabatan/mata kuliah, tautan profil resmi (mis. PDDikti/SINTA/situs lembaga) dan **unggah surat keterangan atau kartu dosen**; ditinjau admin di portal; status Menunggu/Disetujui/Ditolak dengan alasan | ✓ | tinggi | sedang | dokumen = data pribadi (UU PDP) |
+| **13c-3. Jalur cepat domain lembaga**: email Google berdomain lembaga mitra (mis. Google Workspace kampus) diverifikasi lebih cepat, tetap disetujui admin | ✓ | tinggi | kecil | domain mahasiswa dan dosen sering sama → tetap butuh persetujuan |
+| 13c-4. Admin lembaga menyetujui pengajarnya sendiri | ✓ | tinggi | sedang | baru ada di paket Lembaga (R7) |
+
+**[Rekomendasi] 13c-2 + 13c-3 sekarang (saat kelas dibangun), 13c-4 saat paket Lembaga.** Asisten tidak perlu
+verifikasi: diundang pengajar per kelas dengan hak terbatas (spec 5.2).
+
+Perlindungan dokumen verifikasi: disimpan di penyimpanan privat (hanya admin peninjau), tujuan tunggal (verifikasi),
+dihapus **30 hari** sesudah keputusan (USULAN), persetujuan pemrosesan diminta di formulir (UU PDP Pasal 20–22), dan
+yang disimpan sesudahnya hanya status + siapa menyetujui + kapan.
+
+Hak "boleh membuat kelas" adalah **status akun** (disetujui sebagai pengajar), terpisah dari peran per kelas
+(`anggota_kelas.peran`) dan dari peran portal konten (`peran_pengguna`); jangan memakai enum `peran` (audit T5).
+
+### 13d. Skor parsial: kolom, baris, tahapan (D4)
+
+[Fakta-sumber] Penilaian bertahap dengan **error carried forward** (kesalahan awal tidak dihukum lagi di langkah
+berikutnya yang benar menurut nilai yang salah itu) lazim di ujian matematika/sains dan didukung alat e-asesmen
+([Wikipedia: ECF](https://en.wikipedia.org/wiki/Error_Carried_Forward),
+[Numbas: adaptive marking](https://numbas.org.uk/?p=864),
+[Inspera: ECF](https://support.inspera.com/hc/en-us/articles/20617570619805)).
+
+Model [Rekomendasi]:
+- **Sel** = satu orang (baris) di satu kolom, ditambah **kepala kolom** (asal masalah/jami'ah) sebagai satu sel. Sel
+  bersama dinilai sekali (B4). Sel jangkar dan sel terkunci tidak dinilai.
+- **Skor kolom** = sel benar / sel dinilai di kolom itu (memakai aturan sebanding B6 butir 4).
+- **Tahapan** = kelompok kolom menurut langkah pipeline (bab 00.2), mis. soal biasa: (1) **Bagian** (hajb dan furudh),
+  (2) **Asal masalah** (ashl dan saham awal), (3) **Asal masalah akhir** ('aul/radd/tashih). Munasakhat menambah pengali
+  dan jami'ah; taqdir menambah kolom per kemungkinan, pengali, jami'ah, mauquf. Pemetaan kolom → tahapan ditulis di
+  `susunTabelSoal` (satu sumber), bukan di layar.
+- **Skor butir** = Σ bobot tahapan × rata-rata skor kolom di tahapan itu. Bobot bawaan rata per tahapan; **pengajar boleh
+  mengubah bobot tahapan per tugas** (mis. menekankan tashih).
+- **Latihan dalam tugas**: skor diambil dari keadaan isian saat Periksa (semua kolom dinilai di belakang layar, walau
+  layar Latihan tetap berhenti di kolom pertama yang salah), sesuai `ambilNilai` (pertama/terbaik/terakhir). Lihat
+  jawaban → butir 0 kecuali pengajar mengizinkan.
+- **Ujian**: skor dari satu Kirim, semua kolom.
+- **Error carried forward** (opsi tugas, menyusul): kolom sesudahnya dinilai terhadap isian pelajar sendiri sejauh yang
+  bisa dihitung dengan kaidah hisab murni [KH] (mis. asal masalah dari pecahan yang dipilih pelajar, saham = bagian ×
+  asal masalah) di `packages/math`, **tanpa** keputusan fikih baru. Bawaan: mati (dinilai terhadap kunci).
+- Pelajar melihat rincian skornya per tahapan sesudah nilai dirilis ("Bagian 4/4 · Asal masalah 3/4 · Asal masalah akhir
+  1/4").
+
+### 13e. Nama tingkat kemahiran (D5): opsi
+
+Syarat dari UX: dipahami pemula tanpa penjelasan, tidak bernada vonis (dibaca pengajar juga, 13a), tidak bentrok dengan
+"Tingkat" soal (dasar/menengah/sulit) dan "Peringkat".
+
+| Opsi | Contoh | Kelebihan | Kekurangan |
+|---|---|---|---|
+| T1 | **Mulai · Bisa · Mahir** | pendek, jelas, positif | "Bisa" agak umum |
+| T2 | **Mubtadi' · Mutawassith · Muntahi** | khas tradisi pesantren, cocok dengan dunia kitab | tidak semua pemula paham; perlu masuk glosarium dulu (bab 15) |
+| T3 | Ikon **bintang 0–3** per topik + teks kecil "2 dari 3" | universal, ringkas di matriks pengajar | kurang bermakna tanpa teks; terasa seperti game |
+| T4 | **Perlu latihan · Cukup · Kuat** | langsung menunjuk tindakan untuk pengajar | "Perlu latihan" terasa menilai bagi pelajar |
+| T5 | Tanpa nama: **bilah bukti** "2 dari 3 bukti" | jujur dan terukur | lebih abstrak |
+
+[Rekomendasi] **T1** untuk pelajar dan pengajar (satu istilah di dua sisi), dengan ikon tiga titik terisi sebagai
+penanda visual di matriks pengajar. Syarat tiap tingkat tetap seperti spec 4A.3 (tingkat dua = benar tanpa dibuka;
+tingkat tiga = bukti kedua di Ujian atau soal lain bertopik sama ≥ 1 hari kemudian). **Butuh pilihan pemilik.**
+
+### 13f. Batas waktu (D6)
+
+- Tugas: `batasWaktuMenit` opsional per tugas; dihitung **server** sejak `sesi_soal` dibuat; lewat batas → kiriman
+  ditolak atau ditandai terlambat sesuai kebijakan. Aturan tampil sebelum mulai (M3).
+- Mandiri: di mode Ujian pelajar boleh menyalakan **Pakai waktu** dan memilih durasi; hitung mundur hanya tampil bila
+  dinyalakan (menjawab kekhawatiran riset 1 A8 bahwa hitung mundur yang dipaksakan menekan). Waktu terbaik masuk rekor
+  pribadi (13b). XP tidak berubah karena waktu.
+
+### 13g. Pengajar Gratis 20 pelajar (D2)
+
+Tabel 6c diperbarui: **Pengajar Gratis = 1 kelas aktif per periode, maksimal 20 pelajar.** Cukup untuk mencoba dengan
+satu kelompok kecil; kelas perkuliahan penuh (30–60) mendorong ke Pro atau Lembaga.
