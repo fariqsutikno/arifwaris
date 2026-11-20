@@ -653,3 +653,82 @@ Satu aturan untuk semua jenis soal, supaya mudah dijelaskan ke pengajar:
 Indonesia di kode menurut CLAUDE.md; label layar dari diksi). Tidak bentrok dengan "Tingkat" soal (dasar/menengah/sulit),
 tetapi keduanya bisa tampil berdampingan; di layar, label kemahiran selalu didahului kata yang jelas (mis. "Kemahiranmu:
 Intermediate") supaya tidak tertukar.
+
+---
+
+## 15. Keputusan pemilik lanjutan: level ala placement test, tes awal/akhir, rekor, pantauan periode (2026-11-20)
+
+| # | Keputusan |
+|---|---|
+| D17 | Selain kemahiran per topik (Beginner · Intermediate · Advanced), ada **level keseluruhan ala placement test bahasa Inggris** (A1, A2, B1, … ) dengan **kriteria dan indikator** yang jelas |
+| D18 | Ada **tes awal (pre-test) dan tes akhir (post-test)** |
+| D19 | Rekor "benar berturut-turut" harus besar (mis. **20**), bukan 3, karena ini rekor |
+| D20 | Dosen bisa memantau **siapa yang sering mengerjakan latihan di luar tugas**, selama dikerjakan **dalam periode kelas**; **rekor dan lencana yang tampil di kelas harus dicapai dalam periode itu** |
+| D21 | Ambang lencana kecepatan harus **benar-benar ekstrem** |
+
+### 15a. Level A1–C2 dengan kriteria dan indikator (D17)
+
+Acuan bentuk: kerangka CEFR memakai enam level A1–C2 dengan deskriptor "dapat melakukan …". Kita meniru **bentuknya**
+(enam level kumulatif + indikator yang bisa diamati), **bukan isinya**. Urutan level mengikuti struktur bab KB; urutan
+ini adalah **keputusan pedagogis yang wajib divalidasi tim keilmuan** (bukan aturan fikih, tetapi tetap tidak dikarang
+sendiri).
+
+| Level | Kriteria (dapat …) | Cakupan bab KB (USULAN, validasi tim keilmuan) |
+|---|---|---|
+| **A1** | mengenali ahli waris dan bagian pasti (furudh) pada kasus sederhana tanpa hajb rumit | 03, 04 |
+| **A2** | menentukan ashabah dan hajb dengan benar | 05, 06 |
+| **B1** | menghitung asal masalah, 'aul, dan radd; menangani masalah khusus furudh | 07, 09 |
+| **B2** | melakukan tashih; menyelesaikan jadd wal ikhwah | 08, 10 |
+| **C1** | menyelesaikan munasakhat dan dzawil arham | 12, 14 |
+| **C2** | menyelesaikan kasus khusus (haml, mafqud, khuntsa, gharqa) | 13a–13d |
+
+**Indikator** (fungsi murni atas kejadian yang dinilai server, USULAN):
+- Pelajar berada di level L bila **semua topik level ≤ L** minimal **Intermediate** dan **≥ 70% topik level L**
+  **Advanced** (kemahiran per topik, spec 4A.3).
+- Turun level hanya bila kemahiran topik turun (salah di Ujian sesudah Advanced), tidak karena tidak aktif.
+- Setiap level menampilkan indikatornya ke pelajar dan pengajar ("B1: 5 dari 7 topik Advanced; perlu 'aul dan radd").
+
+Hubungan dua skala: **kemahiran** per topik (Beginner/Intermediate/Advanced) adalah bahan; **level** A1–C2 adalah
+ringkasan keseluruhan pelajar. Pengajar melihat keduanya (spec 5.4c).
+
+**Placement test** (mandiri, opsional): 10–15 soal Ujian, mulai di B1, naik bila benar penuh dan turun bila tidak
+(tangga sederhana), hasil = level awal. Soal dari pola (benih acak), buta sebelum dibuka (14a).
+
+### 15b. Tes awal dan tes akhir (D18)
+
+- Pengajar membuat **Tes awal** di awal periode dan **Tes akhir** di akhir periode dari **cetak biru yang sama** (daftar
+  pola + jumlah soal per pola), dengan **benih berbeda**, sehingga soalnya setara tapi tidak sama (pola soal, bagian 5).
+- Mode Ujian, satu kali, skor parsial (13d), batas waktu opsional.
+- Laporan per pelajar dan per kelas: skor awal, skor akhir, level awal dan akhir, dan **gain ternormalisasi**
+  `g = (akhir − awal) / (100 − awal)` (ukuran yang lazim dipakai untuk membandingkan peningkatan pre/post; Hake 1998).
+  Per kolom/tahapan juga, supaya pengajar tahu langkah mana yang paling meningkat.
+- Tes awal/akhir **tidak memberi XP dan tidak masuk lencana** (supaya diukur apa adanya); nilai masuk kelas hanya bila
+  pengajar menghendaki.
+- Data ini juga menjadi bahan **alat ukur keberhasilan** (R8): peningkatan nyata per kelas dan per lembaga.
+
+### 15c. Rekor dan lencana (D19, D21)
+
+- **Rekor beruntun**: lencana di **20**, **50**, dan **100** Ujian berturut-turut benar penuh tanpa dibuka (salah satu
+  memutus rangkaian). Hanya dari percobaan yang dinilai server.
+- **Kecepatan ekstrem**:
+  - Ambang sementara sebelum ada data (USULAN): soal biasa **dasar ≤ 30 detik, menengah ≤ 45 detik, sulit ≤ 60 detik**,
+    diukur server sejak soal dibuka sampai Kirim, benar penuh, mode Ujian. Perkiraan dasar: soal dasar 4 ahli waris ≈ 4
+    pilihan + ±10 angka; orang yang langsung tahu jawabannya butuh ±25 detik hanya untuk mengisi, jadi 30 detik adalah
+    batas yang hanya dicapai yang benar-benar menguasai.
+  - Sesudah peluncuran: ambang = **persentil 1** waktu benar penuh per tingkat/jenis soal, dihitung ulang tiap periode,
+    tidak pernah di bawah **batas masuk akal** (waktu fisik minimum mengisi semua kotak). Waktu di bawah batas masuk akal
+    **tidak otomatis mendapat lencana**, tetapi ditandai untuk ditinjau (indikasi otomatisasi).
+  - Kasus khusus (munasakhat, taqdir, dst.) memakai ambang dari data saja.
+
+### 15d. Pantauan pengajar dalam periode (D20)
+
+Keputusan ini **menggantikan** aturan 13a bahwa kemajuan mandiri hanya terlihat dengan izin pelajar, untuk data
+berikut:
+- Per pelajar, **dalam rentang periode kelas** (`periode_mulai`–`periode_selesai`, waktu server): jumlah soal latihan
+  di luar tugas, hari aktif, perubahan level/kemahiran, lencana dan rekor yang **dicapai dalam periode itu**.
+- **Tidak** termasuk isian dan kesalahan rinci latihan mandiri (minimisasi data, UU PDP Pasal 16 ayat (2)); itu tetap
+  hanya dengan izin pelajar.
+- Halaman Pencapaian pribadi tetap menampilkan semua waktu; tampilan kelas hanya periode itu.
+- Diberitahukan jelas saat bergabung: "Pengajar kelas ini dapat melihat aktivitas latihanmu selama periode kelas
+  (jumlah soal, hari aktif, level, lencana, dan rekor)"; persetujuan tercatat (Pasal 21–22). Bila pelajar ikut dua
+  kelas di periode yang sama, kedua pengajar melihat data yang sama untuk periode masing-masing.

@@ -427,6 +427,20 @@ USULAN ambang tinjau ulang: penyelesaian jujur turun > 5 poin atau tanda menebak
 Fungsi ukuran ditulis sebagai fungsi murni di modul yang sama dengan XP (2.2) dan dijalankan di server (SQL view atau
 edge function terjadwal); hanya agregat yang ditampilkan ke pemilik, tidak per pengguna.
 
+### 4A.10 Level A1–C2, tes awal/akhir, rekor beruntun (D17–D21; riset kelas 15)
+
+- **Level keseluruhan A1–C2** ala placement test: enam level kumulatif dengan kriteria "dapat …" dan cakupan bab KB
+  (03–04 → 13a–13d, **urutan wajib divalidasi tim keilmuan**). Indikator: level L tercapai bila semua topik level ≤ L
+  minimal Intermediate dan ≥ 70% topik level L Advanced (USULAN). Fungsi murni `levelPelajar(kejadian, petaTopikLevel)`;
+  peta topik → level adalah **data konten**, bukan kode.
+- **Placement test** mandiri opsional: 10–15 soal Ujian dari pola, mulai B1, naik/turun bertingkat.
+- **Tes awal/akhir** di kelas: cetak biru sama, benih berbeda, Ujian sekali, skor parsial; laporan skor, level, dan gain
+  ternormalisasi `(akhir − awal) / (100 − awal)` per pelajar, kelas, dan tahapan; tanpa XP dan lencana.
+- **Rekor beruntun**: lencana 20 / 50 / 100 Ujian berturut benar penuh tanpa dibuka.
+- **Kecepatan ekstrem**: ambang sementara dasar ≤ 30 detik, menengah ≤ 45, sulit ≤ 60 (USULAN); sesudah ada data =
+  persentil 1 per tingkat/jenis, dihitung ulang tiap periode, dengan batas masuk akal (di bawahnya ditinjau, tidak
+  otomatis diberi).
+
 ### 4A.9 Soal buta sebelum dibuka (D16; riset kelas 14a)
 
 Sebelum soal dibuka, **daftar soal, pratinjau Soal acak, daftar tugas, dan notifikasi** hanya menampilkan kode/nomor,
@@ -663,6 +677,11 @@ Aturan: berbasis aturan yang terbaca, pengajar yang memutuskan (UU PDP Pasal 10)
 itu, kemajuan mandiri ikut **hanya dengan izin pelajar per kelas**, tanpa label bernada vonis. Pengecualian: **lencana dan
 rekor selalu terlihat pengajar** (D14), diberitahukan saat gabung.
 
+**Pantauan dalam periode** (D20, menggantikan aturan izin di atas untuk data ini): pengajar melihat, per pelajar dan hanya
+dalam rentang periode kelas, jumlah soal latihan di luar tugas, hari aktif, perubahan level/kemahiran, serta lencana dan
+rekor **yang dicapai dalam periode itu**. Isian dan kesalahan rinci latihan mandiri tetap hanya dengan izin pelajar.
+Diberitahukan saat gabung dan persetujuan tercatat.
+
 **Nilai tambahan**: pengajar boleh memberi nilai tambahan per pelajar dengan alasan (mis. atas lencana), append-only,
 kolom terpisah di rekap/ekspor:
 
@@ -812,5 +831,7 @@ Status 2026-11-20 malam: pertanyaan 16–21 disetujui sesuai usulan (riset kelas
 23. ~~Bobot tahapan~~ → **diputuskan**: sesuai effort, 40 · 30 · 30 (D13).
 24. ~~Lencana ke pengajar~~ → **diputuskan**: selalu terlihat (D14).
 13. (lanjutan) ~~Nama tingkat~~ → **diputuskan**: Beginner · Intermediate · Advanced (D11).
-25. **Ambang lencana kecepatan**: dasar 1 menit, menengah 2, sulit 3 (usulan); kasus khusus ditetapkan dari data waktu nyata?
+25. **Ambang kecepatan ekstrem**: dasar ≤ 30 detik, menengah ≤ 45, sulit ≤ 60 sebelum ada data, lalu persentil 1 (D21)?
+27. **Peta level A1–C2 ke bab KB** (riset kelas 15a): perlu divalidasi tim keilmuan; siapa yang meninjau?
+28. **Indikator level**: semua topik ≤ L minimal Intermediate dan ≥ 70% topik level L Advanced, cocok?
 26. **Daftar soal buta**: boleh tampilan daftar diubah menjadi kode/bab/tingkat/jenis saja sebelum soal selesai (perlu mockup)?
