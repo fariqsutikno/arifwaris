@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process';
 // Versi engine bermakna (S6): commit terakhir yang mengubah engine atau math. Versi paket 0.0.1 tidak pernah naik.
 function versiEngine(): string {
   try {
-    return execSync('git log -1 --format=%h -- packages/engine packages/math', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || 'tak-diketahui';
+    return execSync('git log -1 --format=%h -- :/packages/engine :/packages/math', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() || 'tak-diketahui';
   } catch {
     return 'tak-diketahui';
   }
