@@ -568,3 +568,88 @@ tingkat tiga = bukti kedua di Ujian atau soal lain bertopik sama ≥ 1 hari kemu
 
 Tabel 6c diperbarui: **Pengajar Gratis = 1 kelas aktif per periode, maksimal 20 pelajar.** Cukup untuk mencoba dengan
 satu kelompok kecil; kelas perkuliahan penuh (30–60) mendorong ke Pro atau Lembaga.
+
+---
+
+## 14. Keputusan pemilik lanjutan dan desain turunannya (2026-11-20, malam)
+
+| # | Keputusan |
+|---|---|
+| D11 | Nama tiga tingkat kemahiran: **Beginner · Intermediate · Advanced** (pengecualian kosakata yang disengaja pemilik; tetap lewat diksi supaya bisa diterjemahkan) |
+| D12 | Retensi dokumen verifikasi pengajar **30 hari** sesudah keputusan |
+| D13 | Bobot tahapan bawaan **diatur sesuai effort** (13d), pengajar tetap boleh mengubah per tugas |
+| D14 | **Lencana dan rekor selalu terlihat oleh pengajar** kelas yang diikuti, sebagai prestasi yang bisa dipertimbangkan dosen untuk nilai tambahan |
+| D15 | Lencana berupa **penyelesaian dan kecepatan**, mis. "menyelesaikan semua soal bab 'aul", "mengerjakan soal faraidh dalam 1 menit"; bukan sekadar "tuntas bab" |
+| D16 | **Isi soal tidak boleh bocor sebelum soal dibuka** (siapa saja ahli warisnya), supaya tidak bisa dikerjakan dulu di kalkulator |
+
+### 14a. Audit: isi soal bocor sebelum dibuka (D16)
+
+| Kode | Tingkat | Temuan | Bukti |
+|---|---|---|---|
+| L8 | **Tinggi** | **Judul soal = daftar ahli waris** ("Istri, ayah, ibu, anak laki-laki", "Suami, ibu, saudari kandung, saudari sebapak"). Judul tampil di daftar soal dan di pratinjau Soal acak, dan bisa dicari. Pelajar bisa menghitung di kalkulator sebelum membuka soal; lencana kecepatan dan tugas berwaktu jadi tidak bermakna | [Fakta-kode] `apps/web/src/snapshot.json` (`soal_hitung.isi.judul`); `layar/belajar/DaftarSoalHitung.tsx:115` (`<b>{soal.judul}</b>`), `:39` (pencarian judul); `layar/belajar/SoalAcak.tsx:59` |
+| L9 | Sedang | Topik sudah benar disembunyikan sampai soal selesai; pola yang sama perlu diterapkan ke judul | [Fakta-kode] `DaftarSoalHitung.tsx:118` (`selesai && soal.topik`) |
+
+[Rekomendasi] **Aturan "buta sebelum dibuka"**:
+- Sebelum soal dibuka, daftar soal, pratinjau acak, daftar tugas, dan notifikasi hanya menampilkan **identitas netral**:
+  nomor/kode soal, bab, tingkat, jenis soal (biasa/munasakhat/…), dan status. **Tidak** menampilkan ahli waris, jumlah
+  orang, harta, atau topik.
+- Judul berisi ahli waris tampil **sesudah soal selesai atau dibuka jawabannya** (seperti topik sekarang). Pencarian
+  sebelum selesai hanya pada bab/tingkat/jenis/kode.
+- Waktu pengerjaan diukur **server** sejak soal dibuka (`sesi_soal` dibuat saat halaman soal dibuka, bukan saat Kirim).
+  Karena ahli waris baru terlihat sesudah dibuka, menghitung di kalkulator ikut memakan waktu yang diukur.
+- Untuk soal pola, judul dibangkitkan dari benih dan juga tunduk aturan ini.
+- Pengajar tetap melihat isi lengkap saat menyusun tugas.
+
+Batas jujur: sesudah dibuka, pelajar tetap bisa memindahkan kasus ke kalkulator di tab lain (audit 8c butir 12). Aturan
+ini tidak mencegahnya, tetapi waktu yang terukur ikut termakan, jadi lencana kecepatan tetap bermakna.
+
+### 14b. Lencana penyelesaian dan kecepatan (D14, D15)
+
+Desain ini menggantikan rekomendasi 13b sejauh berbeda.
+
+| Jenis | Contoh | Syarat (USULAN) | Catatan anti-curang |
+|---|---|---|---|
+| **Penyelesaian bab** | "Menyelesaikan semua soal bab 'Aul" | setiap soal kurasi bab itu **benar tanpa dibuka**; untuk bab yang memakai pola: setiap pola bab itu punya ≥ 1 soal benar tanpa dibuka | dihitung dari percobaan yang **dinilai server**; soal yang dibuka jawabannya tidak dihitung |
+| **Kecepatan** | "Soal dasar dalam 1 menit" | benar penuh tanpa dibuka, **waktu server** dari soal dibuka sampai Kirim ≤ ambang per tingkat/jenis: dasar 1 menit, menengah 2 menit, sulit 3 menit; kasus khusus per jenis (ditetapkan dari data waktu nyata sesudah peluncuran) | hanya dalam mode **Ujian** (sekali kirim, tanpa umpan bertahap) dan **daring** (waktu server); berlaku "buta sebelum dibuka" (14a) |
+| **Ketepatan** | "10 soal Ujian berturut-turut benar penuh" | dari Kirim Ujian berurutan | dinilai server |
+| Rekor | nilai Ujian terbaik per bab, waktu tercepat per tingkat | dari percobaan dinilai server | – |
+| Kebiasaan | streak | tetap pribadi | tidak tampil ke pengajar |
+
+Penilaian kritis atas D15 [Dugaan]: lencana volume dan kecepatan berisiko mendorong farming dan menebak cepat (riset 1
+HMW-3, E4). Risiko itu dikendalikan dengan tiga syarat di atas: **tanpa dibuka**, **Ujian** (tidak bisa
+menebak-periksa-ulang), dan **dinilai server**. Lencana tidak memberi XP tambahan.
+
+**Terlihat pengajar (D14)**: halaman pelajar di kelas menampilkan lencana dan rekornya. Karena ini mencakup prestasi dari
+latihan mandiri, saat bergabung ke kelas pelajar diberi tahu dengan jelas: "Pengajar kelas ini dapat melihat lencana dan
+rekormu" (UU PDP Pasal 21; persetujuan tercatat saat gabung, Pasal 22). Kemajuan mandiri lain (isian, kesalahan,
+tingkat per topik dari latihan mandiri) **tetap** hanya terlihat dengan izin pelajar (13a).
+
+**Nilai tambahan dari dosen**: pengajar boleh memberi nilai tambahan per pelajar di kelas dengan alasan (mis. "lencana
+Tuntas 'Aul"), dicatat append-only seperti koreksi nilai dan ikut di rekap/ekspor sebagai kolom terpisah.
+
+Syarat teknis: lencana yang tampil ke pengajar hanya dari percobaan **yang dinilai ulang server**. Model kejadian
+(spec 2) memungkinkan ini tanpa mengubah alur luring: setiap kejadian mandiri yang tersinkron membawa isian, jangkar,
+dan versi, sehingga server bisa menilainya ulang saat diterima. Lencana kecepatan butuh waktu mulai dari server, jadi
+hanya bisa didapat saat daring.
+
+### 14c. Bobot tahapan sesuai effort (D13)
+
+Satu aturan untuk semua jenis soal, supaya mudah dijelaskan ke pengajar:
+
+| Tahapan | Isi | Bobot bawaan | Alasan effort |
+|---|---|---|---|
+| **Keputusan fikih** | kolom Bagian / Didudukkan sebagai / Bagian per kemungkinan / keputusan gharqa | **40%** | inti mata kuliah: hajb, furudh, ashabah, ta'shib; satu keputusan per ahli waris, kesalahan konsep paling sering di sini |
+| **Hisab dasar** | asal masalah dan saham awal (per mas'alah atau per kemungkinan) | **30%** | prosedur hisab [KH] per kolom |
+| **Penyatuan** | asal masalah akhir ('aul/radd/tashih), pengali, jami'ah, mauquf | **30%** | langkah paling panjang dan rawan salah hitung, tetapi turunan dari dua tahapan sebelumnya |
+
+- Di dalam satu tahapan, bobot dibagi rata antarkolom yang dinilai.
+- Tahapan yang tidak ada pada suatu jenis soal → bobotnya dibagi proporsional ke tahapan lain (mis. dzawil arham tanpa
+  penyatuan → 57% / 43%).
+- Pengajar boleh mengubah per tugas; bawaan ditampilkan sebagai "40 · 30 · 30".
+
+### 14d. Nama tingkat (D11)
+
+`Beginner · Intermediate · Advanced` dipakai untuk pelajar dan pengajar. Di kode: `tingkatKemahiran: 1 | 2 | 3` (nama
+Indonesia di kode menurut CLAUDE.md; label layar dari diksi). Tidak bentrok dengan "Tingkat" soal (dasar/menengah/sulit),
+tetapi keduanya bisa tampil berdampingan; di layar, label kemahiran selalu didahului kata yang jelas (mis. "Kemahiranmu:
+Intermediate") supaya tidak tertukar.
