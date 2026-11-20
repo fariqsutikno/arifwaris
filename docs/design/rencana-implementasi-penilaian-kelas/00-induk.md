@@ -278,12 +278,14 @@ Pekerjaan sebuah gelombang tidak dimulai sebelum gerbangnya terjawab. Nomor meru
 | G3 | audit 10.9: papan peringkat opt-in | ya, boleh lebih awal dari G3 |
 | G3 | Siapa pengendali data dan kontaknya di kebijakan privasi? | pemilik isi |
 | G3 | audit 10.10: proyek `ap-south-1` = produksi? pindah region sebelum kelas? | pemilik jawab; pindah sebelum G7 bila ya |
-| G3 | spec 8.26: daftar soal buta perlu mockup | ya |
+| G3 | spec 8.1, 8.3, 8.26: nama mode, bobot XP, daftar soal buta | **diputuskan 2026-11-20**: Latihan/Ujian; bobot usulan 3.2; soal buta kode/bab/tingkat/jenis, mockup dulu |
 | G3 | spec 8.6: latihan mandiri dinilai server? | **diputuskan 2026-11-20: ya**, semua kejadian dinilai server (spec 2.6, `04`) |
-| G4 | spec 8.30: siapa menulis pengecoh soal penalaran dan daftar kesalahan umum? | pemilik tunjuk |
-| G6 | spec 8.2: mockup Ujian; 8.25 ambang kecepatan; 8.27 peninjau peta level; 8.28 indikator 70%; 8.29 ambang profil | sesuai usulan spec, dikalibrasi data |
+| G4 | spec 8.30: siapa menulis pengecoh soal penalaran dan daftar kesalahan umum? | **masih menunggu** pemilik menunjuk |
+| G6 | spec 8.2, 8.11, 8.12, 8.14, 8.25, 8.27–8.29 | **diputuskan 2026-11-20**: mockup Ujian dulu; tandai kolom benar tanpa potong XP; soal serupa + materi sesudah dibuka; soal hari ini tanpa bonus; 30/45/60 detik lalu kalibrasi; peta level ditinjau tim keilmuan; ambang usulan sebagai titik awal |
 | G7 | Pilot kelas sebelum AMIN demi kalender semester? | pemilik putuskan (bagian 5.2) |
-| G7 | spec 8.7 engine berubah di tengah tugas; 8.8 dan audit 9c.9 usia pelajar; audit 10.8 kalkulator saat tugas | kunci lama + pemberitahuan; ≥ 18 tahun di fase pertama; *open book* |
+| G7 | spec 8.5, 8.7, 8.8 | **diputuskan 2026-11-20**: pembuat kelas = akun berizin admin selama pilot, nama sesama pelajar tidak tampil bawaan; kunci lama + pemberitahuan pengajar; fase pertama ≥ 18 tahun |
+| G7 | audit 10.8 kalkulator saat tugas | *open book* (usulan) |
+| – | spec 8.4 nyawa | **diputuskan 2026-11-20**: ditunda; bila dibangun hanya mode Tantangan daring |
 | G8 | harga dan paket (riset pasar: paket prodi Rp2,5–3 juta per semester, dugaan) | uji ke dosen dan kaprodi dulu |
 
 ---

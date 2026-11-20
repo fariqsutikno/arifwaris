@@ -872,31 +872,31 @@ Roadmap lengkap dan alasannya: riset kelas bagian 8. Urutan kerja, letak kode, l
 
 ## 8. Pertanyaan terbuka untuk pemilik
 
-1. **Nama mode**: setuju "Latihan" dan "Ujian" (sama dengan Kuis konsep), bukan "Kuis"?
-2. **Mockup Ujian**: boleh dibuat mockup tab "Ujian" di `mockup-tabel-faraidh-final.html` (tombol Kirim, dialog kotak
+1. ~~Nama mode~~ → **diputuskan 2026-11-20: "Latihan" dan "Ujian".** Teks lama:: setuju "Latihan" dan "Ujian" (sama dengan Kuis konsep), bukan "Kuis"?
+2. ~~Mockup Ujian~~ → **diputuskan 2026-11-20: mockup tab Ujian dibuat dulu sebelum dibangun.** Teks lama:: boleh dibuat mockup tab "Ujian" di `mockup-tabel-faraidh-final.html` (tombol Kirim, dialog kotak
    kosong, tampilan sesudah kirim dengan skor kolom) sebelum dibangun?
-3. **Bobot XP**: setuju angka USULAN di 3.2 (biasa tetap 10/20/30; haml [SYF] 70, [HNB] 90, dst.)?
-4. **Nyawa**: setuju ditunda dan diganti saran belajar tanpa kunci (4.4)? Bila tidak, setuju dibatasi ke mode Tantangan
+3. ~~Bobot XP~~ → **diputuskan 2026-11-20: bobot XP sesuai usulan 3.2; tetap bisa diubah per soal lewat `bobotXp`.** Teks lama:: setuju angka USULAN di 3.2 (biasa tetap 10/20/30; haml [SYF] 70, [HNB] 90, dst.)?
+4. ~~Nyawa~~ → **diputuskan 2026-11-20: nyawa ditunda; bila kelak dibangun, hanya di mode Tantangan daring.** Teks lama:: setuju ditunda dan diganti saran belajar tanpa kunci (4.4)? Bila tidak, setuju dibatasi ke mode Tantangan
    daring saja?
-5. **Kelas**: siapa boleh membuat kelas: siapa pun yang login, atau hanya akun yang diberi izin admin? Dan apakah
+5. ~~Kelas~~ → **diputuskan 2026-11-20: selama pilot, pembuat kelas = akun yang diberi izin admin (verifikasi pengajar 5.4b); nama sesama pelajar tidak tampil secara bawaan.** Teks lama:: siapa boleh membuat kelas: siapa pun yang login, atau hanya akun yang diberi izin admin? Dan apakah
    pelajar sesama kelas boleh melihat nama satu sama lain?
 6. ~~Latihan mandiri dinilai server~~ → **diputuskan 2026-11-20**: ya, semua kejadian dinilai server, tidak ada kebenaran
    dari klien (2.6). Teks lama: Latihan mandiri dinilai server juga (supaya XP tidak bisa dipalsukan, T2), atau cukup penugasan saja? Yang
    pertama membuat XP jujur tetapi mewajibkan daring untuk mendapat XP.
-7. **Engine berubah di tengah penugasan** (kunci berbeda): nilai dibiarkan dengan kunci lama dan pengajar diberi tahu
+7. ~~Engine berubah di tengah penugasan~~ → **diputuskan 2026-11-20: kunci lama dipakai + pengajar diberi tahu; tidak dinilai ulang otomatis.** Teks lama: (kunci berbeda): nilai dibiarkan dengan kunci lama dan pengajar diberi tahu
    (usulan), atau dinilai ulang otomatis?
-8. **Pengguna di bawah umur**: apakah kelas akan dipakai madrasah/pesantren dengan murid di bawah 17 tahun? Bila ya,
+8. ~~Pengguna di bawah umur~~ → **diputuskan 2026-11-20: fase pertama hanya pelajar berusia ≥ 18 tahun; madrasah/pesantren menunggu persetujuan wali + kebijakan privasi.** Teks lama:: apakah kelas akan dipakai madrasah/pesantren dengan murid di bawah 17 tahun? Bila ya,
    perlu persetujuan wali dan pembaruan kebijakan privasi sebelum P4.
 9. ~~Latihan di penugasan~~ → **diputuskan**: skor parsial per sel/kolom/tahapan (D4).
 10. ~~Ujian parsial~~ → **diputuskan**: Ujian memberi XP parsial dengan batas `bobotXp` (3.1 butir 5) dan nilai parsial.
 
 Pilihan keterlibatan (riset bagian 10; mockup menyusul di sesi lain sesudah dipilih):
 
-11. **Umpan "hampir"** (O1): tandai kolom yang sudah benar saat Latihan salah (usulan), atau biarkan seperti B6?
-12. **Sesudah jawaban dibuka** (O2): tautan soal serupa + materi (usulan), atau materi saja?
+11. ~~Umpan "hampir"~~ → **diputuskan 2026-11-20: tandai kolom yang sudah benar saat Latihan salah, tanpa pengurangan XP.** Teks lama: (O1): tandai kolom yang sudah benar saat Latihan salah (usulan), atau biarkan seperti B6?
+12. ~~Sesudah jawaban dibuka~~ → **diputuskan 2026-11-20: tautan soal serupa + materi.** Teks lama: (O2): tautan soal serupa + materi (usulan), atau materi saja?
 13. **Nama tiga tingkat kemahiran**: "Paham/Kuasai" ditolak (D5). Pilih dari riset kelas 13e: T1 Mulai · Bisa · Mahir
     (usulan), T2 Mubtadi' · Mutawassith · Muntahi, T3 bintang 0–3, T4 Perlu latihan · Cukup · Kuat, T5 bilah bukti.
-14. **Tantangan harian** (O4): soal hari ini tanpa bonus XP (usulan), atau dengan bonus kecil (mis. 5 XP)?
+14. ~~Tantangan harian~~ → **diputuskan 2026-11-20: soal hari ini tanpa bonus XP.** Teks lama: (O4): soal hari ini tanpa bonus XP (usulan), atau dengan bonus kecil (mis. 5 XP)?
 15. ~~Batas waktu~~ → **diputuskan**: opsional per tugas oleh pengajar; di mandiri pelajar boleh memasang sendiri (D6).
 
 Kelas, skala soal, dan monetisasi (riset kelas bagian 10):
@@ -916,9 +916,9 @@ Status 2026-11-20 malam: pertanyaan 16–21 disetujui sesuai usulan (riset kelas
 23. ~~Bobot tahapan~~ → **diputuskan**: sesuai effort, 40 · 30 · 30 (D13).
 24. ~~Lencana ke pengajar~~ → **diputuskan**: selalu terlihat (D14).
 13. (lanjutan) ~~Nama tingkat~~ → **diputuskan**: Beginner · Intermediate · Advanced (D11).
-25. **Ambang kecepatan ekstrem**: dasar ≤ 30 detik, menengah ≤ 45, sulit ≤ 60 sebelum ada data, lalu persentil 1 (D21)?
-27. **Peta level A1–C2 ke bab KB** (riset kelas 15a): perlu divalidasi tim keilmuan; siapa yang meninjau?
-28. **Indikator level**: semua topik ≤ L minimal Intermediate dan ≥ 70% topik level L Advanced, cocok?
-26. **Daftar soal buta**: boleh tampilan daftar diubah menjadi kode/bab/tingkat/jenis saja sebelum soal selesai (perlu mockup)?
-29. **Profil 5 dimensi** (4A.11): ambang bukti (12 sel/3 soal; 70%/90%) cukup sebagai titik awal sebelum kalibrasi?
-30. **Soal penalaran**: siapa di tim keilmuan yang menulis alasan pengecoh dan daftar kesalahan umum per bab?
+25. ~~Ambang kecepatan ekstrem~~ → **diputuskan 2026-11-20: 30 / 45 / 60 detik sebagai awal, lalu dikalibrasi dengan data.** Teks lama:: dasar ≤ 30 detik, menengah ≤ 45, sulit ≤ 60 sebelum ada data, lalu persentil 1 (D21)?
+27. ~~Peta level A1–C2 ke bab KB~~ → **diputuskan 2026-11-20: peninjau peta level = tim keilmuan.** Teks lama: (riset kelas 15a): perlu divalidasi tim keilmuan; siapa yang meninjau?
+28. ~~Indikator level~~ → **diputuskan 2026-11-20: angka usulan dipakai sebagai titik awal.** Teks lama:: semua topik ≤ L minimal Intermediate dan ≥ 70% topik level L Advanced, cocok?
+26. ~~Daftar soal buta~~ → **diputuskan 2026-11-20: daftar soal sebelum dikerjakan hanya kode/bab/tingkat/jenis; mockup dulu.** Teks lama:: boleh tampilan daftar diubah menjadi kode/bab/tingkat/jenis saja sebelum soal selesai (perlu mockup)?
+29. ~~Profil 5 dimensi~~ → **diputuskan 2026-11-20: angka usulan dipakai sebagai titik awal.** Teks lama: (4A.11): ambang bukti (12 sel/3 soal; 70%/90%) cukup sebagai titik awal sebelum kalibrasi?
+30. **Soal penalaran** (masih menunggu pemilik menunjuk penulis, 2026-11-20): siapa di tim keilmuan yang menulis alasan pengecoh dan daftar kesalahan umum per bab?
