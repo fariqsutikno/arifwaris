@@ -1,0 +1,84 @@
+# Roadmap: urutan kerja dan posisi kita (2026-11-20)
+
+Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
+`rencana-implementasi-penilaian-kelas/00-induk.md` dan dokumen anaknya (01–07).
+
+## Arti kode
+
+| Kode | Artinya | Sumber |
+|---|---|---|
+| **A** | Revamp layar Hasil (hero, Bagikan, simpan otomatis, Pelajari) | `spec-hasil-revamp-dan-tabel-latihan.md` bagian A |
+| **E1–E5** | Prasyarat engine untuk tabel latihan | spec tabel, bagian 4 |
+| **B1–B10** | Tabel faraidh di Latihan (komponen, jenis soal, hero, verifikasi) | spec tabel |
+| **G0–G8** | Gelombang kerja penilaian → kelas → SaaS | `00-induk.md` |
+| **P0–P8** | Fase di spec model penilaian (isi fitur) | `spec-model-percobaan-dan-penilaian.md` |
+| **K, T, PDP** | Temuan keamanan, arsitektur, UU PDP | `audit-arsitektur-kesiapan-kelas.md` |
+
+## Posisi hari ini
+
+| Selesai | Status |
+|---|---|
+| A (Hasil revamp) | selesai, di `main` |
+| E1–E5 (engine) | selesai, di `main` |
+| B1–B6, B9 (tabel soal biasa) + tinjauan visual | selesai, di `main` |
+| G0 keamanan produksi | digabung ke `main` (`24c27e4`); satu langkah dasbor menunggu pemilik, lihat bawah |
+| G1 fondasi penilaian | selesai, **PR #42 terbuka, belum digabung** |
+
+## Alur ke depan
+
+```
+SEKARANG
+  ├─ [kamu] gabung PR #42 (G1) setelah ditinjau
+  ├─ [kamu] jawab 15 pertanyaan terbuka spec (bagian 8) ── gerbang G2–G3
+  └─ [kamu] langkah dasbor G0 yang tersisa (mis. matikan login Email, K1)
+
+G2  jenis soal latihan (B7, B8)         14–23 hari + tim keilmuan
+    munasakhat → dzawil arham → mafqud → khuntsa* → haml [SYF] → haml [HNB] → gharqa
+    lalu hero latihan (B8), hapus KartuTebak (B-akhir), verifikasi skala penuh (B10)
+    *butuh tab Khuntsa di mockup dulu
+
+G3  data server + PDP dasar + soal buta  13–20 hari
+    percobaan_soal + catat-percobaan + XP dari server; papan peringkat opt-in;
+    kebijakan privasi + persetujuan; hapus/unduh akun; soal buta
+
+   ── sejajar sepanjang jalan (berkas beda): mode fokus, verifikasi madzhab,
+      harta sebagian, KHI ──
+
+G4  lengkapi materi & latihan soal       kode 6–9 hari + konten tim keilmuan
+    skema soal penalaran → soal bangkitan + katalog → soal kurasi
+
+G5  AMIN                                 syarat: kebijakan privasi sebut penyedia LLM,
+                                         persetujuan terpisah, retensi log
+G6  Ujian + keterlibatan                 12–18 hari, boleh sejajar G5
+    Ujian → kolom benar → soal serupa → kemahiran → soal hari ini → level → profil
+
+G7  kelas                                18–30 hari; syarat: DPIA, keputusan usia & region
+    mode tugas → kelas inti → tugas otomatis → sesi langsung
+G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
+    lembaga & monetisasi → alat ukur → ticketing → mode cerita AI
+```
+
+## Yang menunggu keputusanmu
+
+1. **15 pertanyaan terbuka** di spec bagian 8 (nama mode, bobot XP, nyawa vs Tantangan, pembuat kelas, usia murid,
+   skor parsial, dst.). Tanpa ini G3 dan G6 tidak bisa mulai.
+2. **Tab Khuntsa di mockup** sebelum jenis soal khuntsa.
+3. **Kontak pengendali data + isi kebijakan privasi** (G3), dan apakah proyek `ap-south-1` = produksi (pindah region sebelum G7).
+4. **Pilot kelas sebelum AMIN?** Demi kalender semester; biayanya AMIN mundur ±5–7 minggu.
+5. **Siapa menulis pengecoh soal penalaran** (G4).
+6. **Harga paket** (G8), setelah wawancara dosen/kaprodi.
+
+## Hal kecil yang masih menggantung
+
+- Label item "Ekspor" di menu Bagikan layar penuh pohon.
+- Cabang `rencana/munasakhat-arham-gharqa` belum digabung; tabel munasakhat dibuat untuk munasakhat biasa dulu.
+- Indeks graphify diperbarui setelah `main` stabil dan di-push.
+- Dua riset (pasar, UX kelas) sudah ada; angka pasar masih asumsi.
+
+## Aturan urutan (ringkas)
+
+1. Yang kerusakannya naik tiap hari (keamanan, PDP, kualitas data) → paling dulu.
+2. Kontrak komponen dan modul penilaian → sebelum jenis soal berikutnya.
+3. Format yang akan diisi banyak konten (format kasus soal, `IdSoal`, `bobotXp`) → final sebelum konten massal.
+4. Fitur yang mengirim data ke pihak ketiga (AMIN) → setelah kebijakan privasi + persetujuan.
+5. Kelas dan SaaS → setelah AMIN, kecuali pilot semester.
