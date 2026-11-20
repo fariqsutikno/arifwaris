@@ -6,6 +6,7 @@
 
 import { barisDinilai, bacaBulat, isiSel } from './isian.js';
 import { terapkanEcf } from './ecf.js';
+import { pengaliHarusnya } from './pengali.js';
 import type { HasilKolom, HasilNilai, HasilSel, IsianTabel, Jangkar, KolomSoal, TabelSoal } from './model.js';
 
 export const nilaiTabel = (tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilNilai =>
@@ -13,7 +14,9 @@ export const nilaiTabel = (tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar
 
 export function nilaiSemuaKolom(tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilKolom[] {
   const kolom = tabel.kolom.filter(kolom => !kolom.terkunci).map(kolom => nilaiKolom(tabel, kolom, isian, jangkar));
-  return terapkanEcf(tabel, isian, jangkar, kolom);
+  const hasil = terapkanEcf(tabel, isian, jangkar, kolom);
+  // B6 langkah 6: baris Pengali diperiksa paling akhir.
+  return tabel.pengali ? [...hasil, nilaiPengali(tabel, isian)] : hasil;
 }
 
 /** B6 butir 1–5 dan 7: kolom pertama yang tidak benar menentukan putusan. */
@@ -66,6 +69,17 @@ function nilaiKolom(tabel: TabelSoal, kolom: KolomSoal, isian: IsianTabel, jangk
   const status = statusDari(sel);
   const bentuk = status === 'benar' && kepala !== terkecil ? { bentuk: { diisi: String(kepala), terkecil: String(terkecil) } } : {};
   return { idKolom, idJudul, status, sel, ...bentuk };
+}
+
+function nilaiPengali(tabel: TabelSoal, isian: IsianTabel): HasilKolom {
+  const kepala = Object.fromEntries(tabel.kolom.filter(kolom => kolom.jenis === 'bulat')
+    .map(kolom => [kolom.id, kolom.terkunci ? kolom.kepala : bacaBulat(isian.kepala[kolom.id])]));
+  const sel = Object.keys(tabel.pengali!.kunci).map((idKolom): HasilSel => {
+    const diisi = bacaBulat(isian.pengali?.[idKolom]);
+    const benar = diisi !== undefined && diisi === pengaliHarusnya(tabel, idKolom, kepala);
+    return { idBaris: idKolom, benar, benarEcf: benar, kosong: diisi === undefined };
+  });
+  return { idKolom: 'pengali', idJudul: 'pengali', status: statusDari(sel), sel };
 }
 
 const statusDari = (sel: HasilSel[]): HasilKolom['status'] =>

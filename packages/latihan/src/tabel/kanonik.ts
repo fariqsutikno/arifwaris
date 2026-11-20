@@ -6,8 +6,9 @@ import type { TabelSoal } from './model.js';
 
 export function tabelKanonik(tabel: TabelSoal): string {
   return JSON.stringify({
-    kolom: tabel.kolom.map(kolom => [kolom.id, kolom.idJudul, kolom.jenis, kolom.pilihan ?? null, kolom.kepala?.toString() ?? null, !!kolom.terkunci, kolom.gabungDari ?? null]),
+    kolom: tabel.kolom.map(kolom => [kolom.id, kolom.idJudul, kolom.jenis, kolom.pilihan ?? null, kolom.kepala?.toString() ?? null, !!kolom.terkunci, kolom.gabungDari ?? null, ...(kolom.mayit ? [kolom.mayit] : [])]),
     baris: tabel.baris.map(baris => [baris.id, urut(baris.kunci), urut(baris.kelompok)]),
+    ...(tabel.pengali ? { pengali: [tabel.pengali.kolomJamiah, ...Object.entries(tabel.pengali.kunci).map(([id, nilai]) => [id, nilai.toString()])] } : {}),
   });
 }
 

@@ -22,6 +22,8 @@ export interface KolomSoal {
   terkunci?: boolean;
   /** Kolom pilihan acuan untuk menggabungkan sel kelompok (B4). */
   gabungDari?: string;
+  /** Munasakhat: mayit yang hartanya dibagi di kolom ini; web memakainya untuk judul "Bagian · {mayit}". */
+  mayit?: IdOrang;
 }
 
 export interface BarisSoal {
@@ -33,10 +35,13 @@ export interface BarisSoal {
   kelompok: Record<string, string>;
 }
 
-export interface TabelSoal { kolom: KolomSoal[]; baris: BarisSoal[] }
+/** Baris Pengali munasakhat (B3): kunci pengali tiap kolom mas'alah; kolom jami'ah dipakai menurunkan nilai yang harus diisi [R12-2]. */
+export interface PengaliSoal { kunci: Record<string, bigint>; kolomJamiah: string }
+
+export interface TabelSoal { kolom: KolomSoal[]; baris: BarisSoal[]; pengali?: PengaliSoal }
 export type SusunanTabel = TabelSoal | { status: 'TIDAK_DIDUKUNG' };
 
-export interface IsianTabel { kepala: Record<string, string>; sel: Record<IdOrang, Record<string, string>> }
+export interface IsianTabel { kepala: Record<string, string>; sel: Record<IdOrang, Record<string, string>>; /** id kolom mas'alah → isian pengali. */ pengali?: Record<string, string> }
 export interface Jangkar { idBaris: IdOrang; idKolom: string }
 
 export type HasilNilai =
@@ -46,7 +51,7 @@ export type HasilNilai =
 
 /** Hasil satu sel. `benarEcf`: benar bila dinilai terhadap isian pelajar sendiri di kolom sebelumnya [KH]; selalu ≥ `benar`. */
 export interface HasilSel {
-  /** Id baris, atau 'kepala' untuk kotak asal masalah/jami'ah di kepala kolom. */
+  /** Id baris, 'kepala' untuk kotak asal masalah/jami'ah di kepala kolom; pada kolom 'pengali' berisi id kolom mas'alahnya. */
   idBaris: IdOrang | 'kepala';
   benar: boolean;
   benarEcf: boolean;

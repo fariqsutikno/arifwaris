@@ -10,7 +10,7 @@ const PENYATUAN: { tahapan: Tahapan; dimensi: Dimensi } = { tahapan: 'penyatuan'
 
 const Q_MATRIKS: Record<string, { tahapan: Tahapan; dimensi: Dimensi }> = {
   bagian: KEPUTUSAN, didudukkanSebagai: KEPUTUSAN, bagianKemungkinan: KEPUTUSAN, keputusanGharqa: KEPUTUSAN,
-  asalMasalah: HISAB, bagianPerantara: HISAB, asalMasalahAkhir: HISAB,
+  asalMasalah: HISAB, masalahPertama: HISAB, bagianPerantara: HISAB, asalMasalahAkhir: HISAB,
   sahamKemungkinan: PENYATUAN, masalahLanjutan: PENYATUAN, pengali: PENYATUAN, jamiah: PENYATUAN, mauquf: PENYATUAN,
 };
 

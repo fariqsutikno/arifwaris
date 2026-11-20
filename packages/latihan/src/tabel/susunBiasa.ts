@@ -34,7 +34,7 @@ export function susunTabelBiasa(hasil: HasilEngine | HasilTaqdir, namaDari: (id:
   };
 }
 
-function labelBagian(kelompok: TabelMasalah['baris'][number]): string {
+export function labelBagian(kelompok: TabelMasalah['baris'][number]): string {
   const fardh = kelompok.fardh ? `${kelompok.fardh.n}/${kelompok.fardh.d}` : undefined;
   if (fardh && kelompok.ashabah) return `${fardh} + Ashabah`;
   return fardh ?? 'Ashabah';
