@@ -555,6 +555,10 @@ berarti hal yang sama.
 
 ### 5.2 Siapa melihat apa
 
+**Asisten** melihat yang dilihat pengajar kelas itu (nilai, isian, ringkasan, nomor induk) dan boleh mengoreksi nilai,
+tetapi tidak menghapus kelas, tidak mengubah kebijakan tugas yang sudah terbit, dan tidak mengelola anggota.
+Pelajar melihat nilai dan pembahasan **miliknya** sesuai `rilisNilai`/`rilisPembahasan`.
+
 | Data | Pelajar | Pengajar kelas itu | Pelajar lain | Admin portal |
 |---|---|---|---|---|
 | Kejadian mandiri (`id_penugasan` null) | milik sendiri | **tidak** | tidak | tidak (kecuali lewat service role untuk pemeliharaan) |
