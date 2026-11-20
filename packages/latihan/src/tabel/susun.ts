@@ -1,15 +1,17 @@
 // Pintu susun tabel soal: memilih fungsi susun menurut jenis hasil engine.
-// Biasa, munasakhat biasa, dzawil arham tanzil; jenis lain (taqdir, gharqa) → TIDAK_DIDUKUNG sampai G2 menambahkannya (spec tabel B7).
+// Biasa, munasakhat biasa, dzawil arham tanzil, mafqud; jenis lain (haml, khuntsa, gharqa) → TIDAK_DIDUKUNG sampai G2 menambahkannya (spec tabel B7).
 
 import type { HasilEngine, HasilMunasakhat, HasilTaqdir, IdOrang } from '@waris/engine';
 import type { SusunanTabel } from './model.js';
 import { susunTabelBiasa } from './susunBiasa.js';
 import { susunTabelDzawilArham } from './susunDzawilArham.js';
+import { susunTabelMafqud } from './susunMafqud.js';
 import { susunTabelMunasakhat } from './susunMunasakhat.js';
 
 /** `namaDari`: web mengoper nama berlabel; server cukup `id => id` karena nama tidak dinilai. */
 export const susunTabelSoal = (hasil: HasilEngine | HasilTaqdir | HasilMunasakhat, namaDari: (id: IdOrang) => string): SusunanTabel =>
   'daftarLangkah' in hasil ? susunTabelMunasakhat(hasil, namaDari)
+    : 'daftarDunia' in hasil ? susunTabelMafqud(hasil, namaDari)
     : adalahDzawilArham(hasil) ? susunTabelDzawilArham(hasil, namaDari)
     : susunTabelBiasa(hasil, namaDari);
 

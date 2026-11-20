@@ -7,6 +7,8 @@ import type { Dimensi, Tahapan } from './qMatriks.js';
 /** Daftar tertutup kolom Bagian (B2). */
 export const PILIHAN_BAGIAN = ['1/2', '1/4', '1/8', '2/3', '1/3', '1/6', 'Ashabah', '1/6 + Ashabah', 'Terhalang'] as const;
 export const BAGIAN_TERHALANG = 'Terhalang';
+/** Id baris Ditahan (mauquf) taqdir; bukan id orang. Sel-nya tidak pernah jadi jangkar (jawabannya yang ditanyakan). */
+export const ID_BARIS_MAUQUF = 'mauquf';
 
 export interface KolomSoal {
   id: string;
@@ -24,6 +26,8 @@ export interface KolomSoal {
   gabungDari?: string;
   /** Munasakhat: mayit yang hartanya dibagi di kolom ini; web memakainya untuk judul "Bagian · {mayit}". */
   mayit?: IdOrang;
+  /** Taqdir: kemungkinan yang dibahas kolom ini ('hidup', 'mati', ...); web memakainya untuk judul "Bagian · {kemungkinan}". */
+  kemungkinan?: string;
 }
 
 export interface BarisSoal {
