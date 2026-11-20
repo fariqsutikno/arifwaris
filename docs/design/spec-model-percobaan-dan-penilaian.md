@@ -34,7 +34,7 @@ percobaan dicatat, dinilai, dan dihargai**.
 | K10 | Penugasan kelas **dinilai di server** (edge function menjalankan engine + penilaian yang sama) | Klien tidak dipercaya untuk nilai; engine murni sehingga bisa dijalankan ulang (audit T1, T2, T14) |
 | K11 | Komponen tabel mengeluarkan **hasil terstruktur** (mode, isian, hasil per kolom, jangkar, lihatJawaban), bukan `saatBenar()` | Prasyarat semua di atas; perubahan kecil, dikerjakan **sekarang** sebelum jenis soal lain |
 | K12 | Umpan Latihan menandai **kolom yang sudah benar** sebelum kolom yang salah | Rasa "hampir" yang jujur dan menunjuk langkah *(riset 2 A3; 6 HMW-1 ide 1b)* |
-| K13 | **Kemahiran per topik** (`Dicoba` → `Paham` → `Kuasai`) menggantikan ide level/rank | Hadiah mengikuti bukti paham yang diulang, tidak bisa dicapai dengan menebak *(riset 6 HMW-3 ide 3c; 5b P7; 5a E2, E4)* |
+| K13 | **Kemahiran per topik** (tiga tingkat; **nama belum diputuskan**, usulan Mulai · Bisa · Mahir, riset kelas 13e) menggantikan ide level/rank | Hadiah mengikuti bukti paham yang diulang, tidak bisa dicapai dengan menebak *(riset 6 HMW-3 ide 3c; 5b P7; 5a E2, E4)* |
 | K14 | **Soal hari ini** dipilih untuk pengulangan berjarak; streak dipertahankan apa adanya; tanpa bonus XP | Alasan kembali yang juga memperkuat ingatan *(riset 6 HMW-4 ide 4b; 5a E2; 5b P3, P4)* |
 | K15 | Kesulitan bertahap = **saran** mengikuti kemahiran, bukan kunci | Pemula diarahkan, yang mahir tidak dihalangi *(riset 6 HMW-5 ide 5b)* |
 | K17 | Kelas = **LMS per periode** (kode/tautan, banyak kelas, mengulang = kelas baru, tugas dari semua soal, nilai terlihat pelajar); soal skala besar lewat **pola soal deterministik** `pola@versi#benih` | riset kelas; bagian 5.0 |
@@ -52,7 +52,7 @@ percobaan dicatat, dinilai, dan dihargai**.
 | Berapa kali | Berulang, sampai benar atau jawaban dibuka | **Sekali**. Sesudah Kirim tabel terkunci |
 | Cara menilai | Kolom kiri→kanan, **berhenti di kolom pertama** yang belum lengkap/salah (B6 1–6) | **Semua kolom dinilai sekaligus**; kolom kosong = salah (tidak ada umpan "belum lengkap" yang menghentikan) |
 | Umpan | Kuning/merah/hijau seperti B6 | Sesudah Kirim: tiap sel benar/salah ditandai sekaligus, ringkasan `{benar} dari {total} kolom benar` (kalimat baru, lewat diksi), lalu kunci tampil seperti sesudah Lihat jawaban |
-| Batas waktu | Tidak ada | Tidak ada untuk mandiri; tugas memakai tenggat, bukan hitung mundur *(riset 2 A8, 10 O8)* |
+| Batas waktu | Tidak ada | **Opsional**: diatur pengajar per tugas (`batasWaktuMenit`, dihitung server); di mandiri pelajar boleh menyalakan **Pakai waktu** sendiri. Hitung mundur hanya tampil bila dipakai *(keputusan pemilik D6; riset kelas 13f)* |
 | Kirim saat ada sel kosong | – | Dialog tahan: "Masih ada kotak kosong. Tetap kirim?" (pola dialog tahan yang sudah ada) |
 | Lihat jawaban | Tautan merah, dialog tahan, XP hilang (B6) | **Tidak ada sebelum Kirim**. Sesudah Kirim kunci tampil otomatis |
 | Kosongkan | Ada | Ada sebelum Kirim |
@@ -229,8 +229,12 @@ Untuk satu pengguna dan satu soal (`soal_id`, lintas revisi; soal pola dengan be
    mengurangi** (keputusan pemilik).
 4. Kejadian sesudahnya (ulang soal yang sudah benar, Ujian ulang) = **0 XP**, tetapi tetap **aktivitas** untuk hari aktif
    dan streak. *Alasan:* mengulang itu baik untuk belajar; hanya tidak boleh menjadi ladang XP.
-5. Ujian dengan sebagian kolom benar = 0 XP mandiri (skor tetap tercatat untuk rekor). *Alasan:* XP = "pertama benar";
-   XP parsial akan membuat Ujian lebih menguntungkan daripada Latihan, padahal Latihan tidak punya batas coba.
+5. **Ujian memberi XP parsial** (keputusan pemilik D4): Kirim Ujian **pertama** untuk soal itu memberi
+   `bobotXp × skor butir` (skor per sel/kolom/tahapan, 5.1 "Skor parsial"). Sesudahnya, benar penuh tanpa dibuka (Latihan
+   atau Ujian) **menambah sisanya** sampai `bobotXp`; total XP per soal tidak pernah melebihi `bobotXp`. Ujian ulang
+   tidak menaikkan XP parsial. Lihat jawaban sesudah Kirim pertama membakar sisa XP. Latihan mandiri tetap hanya memberi
+   XP pada benar penuh. *Alasan:* menghargai kemajuan langkah di Ujian (tanpa umpan bertahap) tanpa membuka farming:
+   Latihan punya umpan per Periksa sehingga skor parsialnya bisa dinaikkan dengan menebak, Ujian tidak.
 6. **Penugasan kelas tidak memberi XP berbeda dari mandiri**: percobaan penugasan dihitung ke XP dengan aturan yang sama
    (dinilai server), tidak dobel. *Alasan:* kelas memakai nilai, bukan XP (K9); pelajar tidak perlu memilih antara
    mengerjakan tugas atau mengejar XP.
@@ -350,6 +354,7 @@ terpisah.
 | XP | Bagian 3 (benar pertama tanpa dibuka; bobot per jenis; tanpa potongan) | sudah di P0/P1 | K5, K7 |
 | Streak | **Tetap apa adanya** (hari aktif dari kegiatan apa pun, notifikasi netral sekali sehari, bisa dimatikan). Tanpa freeze dulu | tidak ada perubahan | riset 2 A9; 5b P3/P4; HMW-4 4e |
 | Level/rank | **Ditolak**; diganti **kemahiran per topik** | 4A.3 | K13; riset HMW-3 3c/3d |
+| Rekor dan lencana | **Lencana bukti** (mis. tuntas satu bab di tingkat tertinggi) + **rekor** (nilai/waktu Ujian terbaik) di halaman pribadi **Pencapaian**; boleh diperlihatkan ke pengajar kelas tertentu bila pelajar memilih; lencana kebiasaan (streak) tetap pribadi; tanpa XP tambahan, tidak masuk nilai | sesudah kemahiran (P2b) | keputusan pemilik D7; riset kelas 13b |
 | Tantangan harian | **Soal hari ini** (pengulangan berjarak), tanpa bonus XP, tanpa papan harian | 4A.4 | K14; riset HMW-4 4b |
 | Kesulitan bertahap | **Saran** tingkat/jenis berikutnya mengikuti kemahiran; tanpa kunci | 4A.5 | K15; riset HMW-5 5b |
 | Nyawa | Ditunda; saran belajar (4.4); Tantangan daring nanti | 4.4 | K8; riset HMW-6 |
@@ -367,7 +372,7 @@ terpisah.
 ### 4A.3 Kemahiran per topik
 
 ```ts
-type Kemahiran = 'belum' | 'dicoba' | 'paham' | 'kuasai';
+type Kemahiran = 'belum' | 'dicoba' | 'paham' | 'kuasai';   // nama kode; label layar belum diputuskan (riset kelas 13e)
 function kemahiranTopik(kejadian: KejadianPercobaan[], topikDari: (slug: string) => string, topik: string): Kemahiran
 ```
 
@@ -380,7 +385,7 @@ function kemahiranTopik(kejadian: KejadianPercobaan[], topikDari: (slug: string)
 
 Alasan: bukti kedua yang berjarak *(riset 5a E2)* membedakan paham dari tebakan beruntung *(riset 5a E4)*, meniru pola
 kemahiran Khan Academy *(riset 5b P7)*. Turun status ditampilkan netral (tanpa animasi kehilangan, *riset 7*).
-Tampilan (di daftar soal per bab dan ringkasan Belajar) **butuh mockup**; kata `Paham` / `Kuasai` diuji ke pengguna dulu
+Tampilan (di daftar soal per bab dan ringkasan Belajar) **butuh mockup**; label tiga tingkat dipilih pemilik dari opsi riset kelas 13e (usulan T1 Mulai · Bisa · Mahir) lalu diuji ke pengguna
 *(riset 11)*.
 
 ### 4A.4 Soal hari ini
@@ -519,6 +524,9 @@ type ButirTugas =
 interface KebijakanTugas {
   mode: 'latihan' | 'ujian';                // wajib; pelajar tidak bisa mengganti
   batasPercobaan: number | null;            // jumlah Kirim (Ujian) atau sesi soal (Latihan); null = bebas
+  batasWaktuMenit: number | null;           // opsional; dihitung server sejak sesi_soal dibuat (D6)
+  bobotTahapan: Record<string, number> | null;   // null = rata per tahapan (riset kelas 13d)
+  nilaiTurunan: boolean;                    // error carried forward [KH]; bawaan false, menyusul
   mulai: string | null; tenggat: string | null;   // waktu server
   terlambat: 'tolak' | 'terima_ditandai';
   bobot: number[];                          // per butir (bawaan rata)
@@ -539,10 +547,15 @@ berarti hal yang sama.
   pertama dan terakhir harus dihitung dari soal yang sama. Kunci = `susunTabelSoal(engine(revisi.kasus))` di versi engine
   saat dinilai; `versi.kunci` di kejadian menandai bila engine berubah di tengah jalan (pengajar diberi tahu, tidak
   dinilai ulang otomatis; P7).
-- Nilai penugasan = `nilaiPenugasan(kejadian, kebijakan)` murni: per soal, skor kolom benar/total dari kejadian yang
-  dipilih (`pertama/terbaik/terakhir`) memakai **hasil_kolom_server**, dikali bobot, dijumlah. Latihan dinilai 1 bila
-  akhirnya benar tanpa dibuka, 0 bila dibuka atau tidak selesai. (USULAN: Latihan dalam penugasan tanpa skor parsial,
-  karena Latihan tidak menilai semua kolom.)
+- **Skor parsial** (keputusan pemilik D4; riset kelas 13d): sel = satu baris di satu kolom, ditambah kepala kolom;
+  skor kolom = sel benar / sel dinilai (aturan sebanding B6); kolom dikelompokkan ke **tahapan** pipeline (soal biasa:
+  Bagian → Asal masalah → Asal masalah akhir; jenis lain menambah pengali, jami'ah, kemungkinan, mauquf); skor butir =
+  Σ bobot tahapan × rata-rata skor kolom tahapan itu. Pemetaan kolom → tahapan ditulis di `susunTabelSoal` (satu sumber).
+  Berlaku untuk **Latihan dalam tugas** (semua kolom dinilai di belakang layar setiap Periksa, layar tetap berhenti di
+  kolom pertama yang salah) dan **Ujian**.
+- Nilai tugas = `nilaiTugas(kejadian, kebijakan)` murni: per butir, skor parsial dari kejadian yang dipilih
+  (`pertama/terbaik/terakhir`) memakai **hasil_kolom_server**, dikali bobot butir, dijumlah. Lihat jawaban → butir 0
+  kecuali `bolehLihatJawaban`. Pelajar melihat rincian per tahapan sesudah nilai dirilis.
 - **Variasi per pelajar**: benih soal pola diturunkan server dari (tugas, pelajar, butir) dan disimpan di `sesi_soal`.
   Varian pola bisa berbeda tingkat kesulitan (riset kelas 5a); statistik per pola dari kejadian menandai pola yang
   variannya terlalu beragam supaya tim keilmuan meninjaunya.
@@ -598,6 +611,44 @@ membaca pelajar B; pengajar kelas X tidak bisa membaca kelas Y; pengajar tidak b
 - Engine bisa berjalan di edge function karena murni, tanpa I/O/`Date`/`Math.random` (CLAUDE.md prinsip 1). **Tetapi**
   dua hal yang dibutuhkan server sekarang ada di `apps/web` dan menyentuh I/O: pemilihan orkestrator (`jalankan.ts`) dan
   `susunTabelSoal` yang mengimpor `format.ts`/`terjemah.ts` (diksi + preferensi `localStorage`). Lihat 6.2 dan audit T1.
+
+### 5.4b Akses mode pengajar (keputusan pemilik D9; riset kelas 13c)
+
+- Membuat kelas butuh status akun **pengajar terverifikasi**. Pengajuan lewat formulir "Ajukan akses pengajar" (nama,
+  lembaga, jabatan/mata kuliah, tautan profil resmi, unggah surat keterangan atau kartu dosen); jalur cepat bila email
+  Google berdomain lembaga mitra; **admin portal meninjau** (Menunggu/Disetujui/Ditolak + alasan). Paket Lembaga (P6):
+  admin lembaga menyetujui pengajarnya sendiri.
+- Asisten tidak perlu verifikasi; diundang pengajar per kelas.
+- Dokumen di penyimpanan privat (hanya peninjau), dihapus 30 hari sesudah keputusan (USULAN); yang tersisa hanya status,
+  peninjau, dan waktu. Persetujuan pemrosesan diminta di formulir (audit 9c).
+- Status pengajar terpisah dari `anggota_kelas.peran` dan dari `peran_pengguna` portal (audit T5).
+
+```sql
+create table pengajuan_pengajar (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null default auth.uid() references auth.users on delete cascade,
+  lembaga text not null, jabatan text not null, tautan_profil text,
+  berkas_path text,              -- objek di bucket privat; dihapus 30 hari sesudah diputuskan
+  status text not null default 'menunggu' check (status in ('menunggu', 'disetujui', 'ditolak')),
+  alasan text, ditinjau_oleh uuid references auth.users, ditinjau_pada timestamptz,
+  dibuat_pada timestamptz not null default now()
+);
+-- Pengajar boleh membuat kelas bila ada baris 'disetujui' miliknya (fungsi boleh_membuat_kelas()).
+```
+
+### 5.4c Data untuk memilih perlakuan (keputusan pemilik D10; riset kelas 13a)
+
+Konsep inti: pengajar **diberi data dan statistik yang bisa ditindaklanjuti** untuk memilih perlakuan yang tepat.
+
+| Lapis | Isi | Fase |
+|---|---|---|
+| Data per tugas | status kiriman, skor per tahapan/kolom, isian tiap pelajar | P4 |
+| Tingkat tiap pelajar | matriks pelajar × topik (kemahiran, 4A.3) dari kejadian tugas; ringkasan per pelajar "{n} topik tingkat 3 · {m} tingkat 2 · {k} tingkat 1 dari {t} topik yang ditugaskan"; tren per pekan | P4c |
+| Kelompok kesalahan | pelajar dikelompokkan menurut kolom/topik yang sama-sama salah | P4c |
+| Rekomendasi perlakuan | per kelompok: materi, tugas susulan dari pola sama, soal untuk sesi langsung; diterapkan pengajar dengan satu langkah; tiap saran menampilkan alasannya | P7 (roadmap akhir) |
+
+Aturan: berbasis aturan yang terbaca, pengajar yang memutuskan (UU PDP Pasal 10), sumber data bawaan hanya tugas kelas
+itu, kemajuan mandiri ikut **hanya dengan izin pelajar per kelas**, tanpa label bernada vonis.
 
 ### 5.5 Privasi, akun, luring
 
@@ -706,19 +757,17 @@ Roadmap lengkap dan alasannya: riset kelas bagian 8.
    (usulan), atau dinilai ulang otomatis?
 8. **Pengguna di bawah umur**: apakah kelas akan dipakai madrasah/pesantren dengan murid di bawah 17 tahun? Bila ya,
    perlu persetujuan wali dan pembaruan kebijakan privasi sebelum P4.
-9. **Latihan di penugasan**: nilai 1/0 (benar tanpa dibuka) cukup, atau perlu skor parsial (yang menuntut menilai semua
-   kolom juga di Latihan)?
-10. **Ujian parsial**: tetap 0 XP bila tidak semua kolom benar (usulan), atau XP sebanding jumlah kolom benar?
+9. ~~Latihan di penugasan~~ → **diputuskan**: skor parsial per sel/kolom/tahapan (D4).
+10. ~~Ujian parsial~~ → **diputuskan**: Ujian memberi XP parsial dengan batas `bobotXp` (3.1 butir 5) dan nilai parsial.
 
 Pilihan keterlibatan (riset bagian 10; mockup menyusul di sesi lain sesudah dipilih):
 
 11. **Umpan "hampir"** (O1): tandai kolom yang sudah benar saat Latihan salah (usulan), atau biarkan seperti B6?
 12. **Sesudah jawaban dibuka** (O2): tautan soal serupa + materi (usulan), atau materi saja?
-13. **Level/rank** (O3): ganti dengan kemahiran per topik `Dicoba / Paham / Kuasai` (usulan), atau tanpa level sama sekali?
-    Setuju kata "Paham" dan "Kuasai"?
+13. **Nama tiga tingkat kemahiran**: "Paham/Kuasai" ditolak (D5). Pilih dari riset kelas 13e: T1 Mulai · Bisa · Mahir
+    (usulan), T2 Mubtadi' · Mutawassith · Muntahi, T3 bintang 0–3, T4 Perlu latihan · Cukup · Kuat, T5 bilah bukti.
 14. **Tantangan harian** (O4): soal hari ini tanpa bonus XP (usulan), atau dengan bonus kecil (mis. 5 XP)?
-15. **Batas waktu di Ujian tabel** (O8): tanpa batas waktu untuk mandiri (usulan), atau batas waktu opsional yang dipilih
-    pelajar seperti mode ujian Kuis konsep?
+15. ~~Batas waktu~~ → **diputuskan**: opsional per tugas oleh pengajar; di mandiri pelajar boleh memasang sendiri (D6).
 
 Kelas, skala soal, dan monetisasi (riset kelas bagian 10):
 
@@ -729,3 +778,10 @@ Kelas, skala soal, dan monetisasi (riset kelas bagian 10):
 20. **Monetisasi** (O6): publik dan pengajar dasar gratis; Pengajar Pro per semester; Lembaga per pelajar aktif per
     semester; tanpa iklan? Angka harga diuji dulu ke pengajar dan kaprodi.
 21. **Nama peran** (O7): Pengajar / Asisten / Pelajar untuk semua jenjang?
+
+Status 2026-11-20 malam: pertanyaan 16–21 disetujui sesuai usulan (riset kelas D1), dengan Pengajar Gratis maksimal
+20 pelajar (D2).
+
+22. **Retensi dokumen verifikasi pengajar**: 30 hari sesudah keputusan cukup?
+23. **Bobot tahapan bawaan**: rata per tahapan (usulan), atau ditetapkan per jenis soal oleh tim keilmuan?
+24. **Lencana yang diperlihatkan ke pengajar**: hanya bila pelajar memilih per kelas (usulan), atau selalu?
