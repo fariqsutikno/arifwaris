@@ -5,7 +5,7 @@
 import type { IdOrang } from '@waris/engine';
 import type { KodeSel, KolomLinimasa, KolomTabel } from '@waris/explain';
 import { formatRupiah } from '../format';
-import type { HasilOk } from '../jalankan';
+import type { HasilOk } from '@waris/latihan';
 import { adalahDzawilArham, urutkanBaris, type RingkasanHasil } from './ringkasan';
 import { warnaOrang } from './warnaOrang';
 import { angka, t } from '../terjemah';

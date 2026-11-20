@@ -59,6 +59,9 @@ importers:
       '@waris/data':
         specifier: workspace:*
         version: link:../../packages/data
+      '@waris/latihan':
+        specifier: workspace:*
+        version: link:../../packages/latihan
       '@waris/web':
         specifier: workspace:*
         version: link:../web
@@ -138,6 +141,9 @@ importers:
       '@waris/explain':
         specifier: workspace:*
         version: link:../../packages/explain
+      '@waris/latihan':
+        specifier: workspace:*
+        version: link:../../packages/latihan
       '@waris/math':
         specifier: workspace:*
         version: link:../../packages/math
@@ -230,6 +236,28 @@ importers:
       '@waris/content':
         specifier: workspace:*
         version: link:../content
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.0.0
+        version: 2.1.9(@types/node@26.6.3)(jsdom@25.0.1)(lightningcss@1.32.0)
+
+  packages/latihan:
+    dependencies:
+      '@waris/engine':
+        specifier: workspace:*
+        version: link:../engine
+      '@waris/math':
+        specifier: workspace:*
+        version: link:../math
+    devDependencies:
+      '@waris/content':
+        specifier: workspace:*
+        version: link:../content
+      fast-check:
+        specifier: ^3.22.0
+        version: 3.23.2
       typescript:
         specifier: ^5.5.0
         version: 5.9.3

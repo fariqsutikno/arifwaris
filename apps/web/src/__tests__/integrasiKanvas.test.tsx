@@ -8,7 +8,7 @@ import type { IdOrang } from '@waris/engine';
 import { ubahNama } from '../checklist';
 import { jawabHalLain } from '../halLain';
 import { isiBarisTetap, jawabAdaTidak, jawabAnakBersama, jawabKamu, slotTetap, tambahBaris } from '../isianBagian';
-import { jalankan, keInputEngine } from '../jalankan';
+import { jalankan, keInputEngine } from '@waris/latihan';
 import { dariJson, kasusBaru, keJson, rapikanKeadaan, type Kasus } from '../kasus';
 import { jawabLanjutan, pilihKeadaan, type PilihanKeadaan } from '../keadaanBaris';
 import { bagianLengkap, daftarBagian, type Bagian } from '../kelompok';

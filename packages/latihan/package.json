@@ -1,0 +1,22 @@
+{
+  "name": "@waris/latihan",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@waris/engine": "workspace:*",
+    "@waris/math": "workspace:*"
+  },
+  "devDependencies": {
+    "@waris/content": "workspace:*",
+    "fast-check": "^3.22.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

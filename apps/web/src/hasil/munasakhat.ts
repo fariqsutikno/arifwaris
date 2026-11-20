@@ -4,7 +4,7 @@
 
 import type { IdOrang, LangkahJejak } from '@waris/engine';
 import { penyebutAkhir } from '../format';
-import type { HasilMunasakhatOk } from '../jalankan';
+import type { HasilMunasakhatOk } from '@waris/latihan';
 
 export type JejakGabung = Extract<LangkahJejak, { jenis: 'MUNASAKHAT' }>;
 

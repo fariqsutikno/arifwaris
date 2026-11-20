@@ -2,7 +2,7 @@
 // supaya pindah tampilan tidak menggeser posisi.
 
 import type { KodeSel, Linimasa, Visual } from '@waris/explain';
-import type { HasilOk } from '../jalankan';
+import type { HasilOk } from '@waris/latihan';
 import type { RingkasanHasil } from './ringkasan';
 
 /** Data satu babak tabel: hasil engine satu mayit dan ringkasannya (kasus biasa satu babak, munasakhat satu per mayit). */

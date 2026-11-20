@@ -1,7 +1,7 @@
 import kartoTaqdir from './fixtures/kartoTaqdir.json?raw';
 import { render } from '@testing-library/react';
 import { expect, it } from 'vitest';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { dariJson } from '../kasus';
 import { HeroLab } from '../layar/lab/HeroLab';
 import { ringkasKasus } from '../riwayat';

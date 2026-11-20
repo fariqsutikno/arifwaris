@@ -2,7 +2,7 @@
 // berlaku dan kalimat statusnya, menurut urutan prioritas: Keluarga belum lengkap, urutan tertunda atau orang belum tahu (dipastikan dulu), kemungkinan, siap.
 
 import type { IdOrang } from '@waris/engine';
-import { orangBelumPasti } from './jalankan';
+import { orangBelumPasti } from '@waris/latihan';
 import { bisaDihitungDenganKemungkinan, daftarBelumPasti, type HalBelumPastiTampil } from './belumPasti';
 import type { Kasus } from './kasus';
 import { namaSingkat } from './keadaanOrang';

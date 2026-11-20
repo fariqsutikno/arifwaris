@@ -3,18 +3,9 @@
 // per kunci dari hasil engine [SYF]: dipakai tes materi dan portal admin (kunci jawaban soal hitung dihitung otomatis) supaya jalurnya satu.
 
 import type { ContohKasus } from '@waris/content';
-import type { KunciAhliWaris } from '@waris/engine';
 import { ringkas } from '../../hasil/ringkasan';
-import { jalankan } from '../../jalankan';
-import { DAFTAR_JENIS, tambahAhliWaris } from '../../checklist';
-import { kasusBaru, type Kasus } from '../../kasus';
-
-export function kasusDariContoh(contoh: ContohKasus): Kasus {
-  const dasar = kasusBaru(contoh.pewaris, 'latihan');
-  // Kunci yang bukan ahli waris di checklist membuat tambahAhliWaris melempar galat; test materi menangkapnya.
-  const graf = contoh.ahliWaris.reduce((grafIni, kunci) => tambahAhliWaris(grafIni, dasar.graf.idPewaris, kunci as KunciAhliWaris), dasar.graf);
-  return { ...dasar, graf, tirkah: { ...dasar.tirkah, kotor: contoh.harta } };
-}
+import { jalankan, kasusDariSoal, type Kasus } from '@waris/latihan';
+import { DAFTAR_JENIS } from '../../checklist';
 
 export type HasilHarapan = { ok: true; harapan: ContohKasus['harapan'] } | { ok: false; galat: string };
 
@@ -23,7 +14,7 @@ export function hitungHarapan(contoh: ContohKasus): HasilHarapan {
   if (contoh.ahliWaris.length === 0) return { ok: false, galat: 'Pilih minimal satu ahli waris.' };
   let kasus: Kasus;
   try {
-    kasus = kasusDariContoh(contoh);
+    kasus = kasusDariSoal(contoh);
   } catch (e) {
     return { ok: false, galat: `Kalkulator tidak bisa menyusun kasus ini: ${e instanceof Error ? e.message : String(e)}` };
   }

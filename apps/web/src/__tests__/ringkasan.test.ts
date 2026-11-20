@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { adaTidakPas, pecahanTeks, persenTeks, ringkas } from '../hasil/ringkasan';
 
 const buat = (kunci: KunciAhliWaris[], tirkah: Kasus['tirkah']): Kasus => {

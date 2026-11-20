@@ -6,9 +6,11 @@ import {
   hitungDzawilArham, hitungGharqa, hitungMunasakhat, hitungTaqdir, KONFIGURASI_BAWAAN,
   type HasilEngine, type HasilGharqa, type HasilMunasakhat, type HasilTaqdir, type InputEngine,
 } from '@waris/engine';
-import type { Kasus } from './kasus';
+import type { JenisSoal } from './kejadian.js';
+import type { Kasus } from './kasus.js';
 
-const VERSI_KB = '1.0.0-dev';
+/** Dipakai bila pemanggil tidak tahu versi enginenya (uji, skrip); kejadian percobaan selalu membawa versi yang sebenarnya. */
+export const VERSI_ENGINE_TIDAK_DIKETAHUI = 'tak-diketahui';
 
 export type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 export type HasilMunasakhatOk = Extract<HasilMunasakhat, { status: 'OK' }>;
@@ -21,14 +23,15 @@ export type HasilTampil =
   | { jenis: 'menunggu'; hasil: HasilTaqdir }
   | { jenis: 'galat'; pesan: string };
 
-export function keInputEngine(kasus: Kasus): InputEngine {
+/** `versiEngine`: hash commit terakhir yang mengubah packages/engine atau packages/math, disuntik saat build (S6). */
+export function keInputEngine(kasus: Kasus, versiEngine: string = VERSI_ENGINE_TIDAK_DIKETAHUI): InputEngine {
   return {
     graf: kasus.graf,
     tirkah: kasus.tirkah,
     pembulatan: { satuan: kasus.satuanPembulatan },
     konfigurasi: KONFIGURASI_BAWAAN,
     ruleset: kasus.madzhab ?? 'syafii',
-    versiKb: VERSI_KB,
+    versiKb: versiEngine,
   };
 }
 
@@ -38,9 +41,9 @@ export const orangBelumPasti = (kasus: Kasus) =>
 export const adaBelumPasti = (kasus: Kasus): boolean => orangBelumPasti(kasus).length > 0;
 const adaJanin = (kasus: Kasus): boolean => Object.values(kasus.graf.orang).some(o => o.statusHidup === 'dalamKandungan');
 
-export function jalankan(kasus: Kasus): HasilTampil {
+export function jalankan(kasus: Kasus, versiEngine: string = VERSI_ENGINE_TIDAK_DIKETAHUI): HasilTampil {
   try {
-    const dasar = keInputEngine(kasus);
+    const dasar = keInputEngine(kasus, versiEngine);
     const lanjutan = { urutanWafat: kasus.urutanWafat, ...(kasus.dikandungSetelahWafat ? { dikandungSetelahWafat: kasus.dikandungSetelahWafat } : {}) };
     if (kasus.gharqa) {
       const { anggota, keadaan, tirkah } = kasus.gharqa;
@@ -57,3 +60,21 @@ export function jalankan(kasus: Kasus): HasilTampil {
     return { jenis: 'galat', pesan: galat instanceof Error ? galat.message : String(galat) };
   }
 }
+
+/** Jenis soal untuk kejadian percobaan (spec 2.1), dari hasil yang ditampilkan. */
+export function jenisSoalDari(kasus: Kasus, tampil: HasilTampil): JenisSoal {
+  switch (tampil.jenis) {
+    case 'gharqa': return 'gharqa';
+    case 'munasakhat': return 'munasakhat';
+    case 'taqdir': case 'menunggu': return jenisTaqdirDari(kasus);
+    default: {
+      const adaDzawilArham = tampil.jenis === 'biasa' && tampil.hasil.status === 'OK'
+        && Object.values(tampil.hasil.statusOrang).some(status => status.jenis === 'ahliWaris' && status.peran.kunci === 'DZAWIL_ARHAM');
+      return adaDzawilArham ? 'dzawilArham' : 'biasa';
+    }
+  }
+}
+
+/** Taqdir berarti ada yang belum pasti; janin lebih dulu, lalu khuntsa, selebihnya mafqud. */
+const jenisTaqdirDari = (kasus: Kasus): JenisSoal =>
+  adaJanin(kasus) ? 'haml' : Object.values(kasus.graf.orang).some(orang => !!orang.khuntsa) ? 'khuntsa' : 'mafqud';

@@ -9,7 +9,7 @@ import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
 import { semuaTersimpan } from '../tersimpan';
 import { tandaiDibagikan } from '../bagikanLokal';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { dataPeranDari } from '../hasil/ketukan';
 import { ringkas } from '../hasil/ringkasan';
 

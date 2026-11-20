@@ -19,12 +19,12 @@ import { Belajar } from '@waris/web/belajar/Belajar';
 import { Rujukan } from '@waris/web/rujukan/Rujukan';
 import { Glosarium } from '@waris/web/belajar/Glosarium';
 import { Hasil } from '@waris/web/layar/Hasil';
-import { kasusDariContoh } from '@waris/web/contoh';
 import { Maximize2, Minimize2, Monitor, Smartphone, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { BingkaiWeb } from './BingkaiWeb';
+import { kasusDariSoal } from '@waris/latihan';
 
 const LEBAR_HP = 375;
 
@@ -138,7 +138,7 @@ function LayarUntukJenis<J extends JenisKonten>({ jenis, slug, isi }: { jenis: J
 function PratinjauSoalHitung({ soal }: { soal: SoalHitung }) {
   let kasus;
   try {
-    kasus = kasusDariContoh(soal.kasus);
+    kasus = kasusDariSoal(soal.kasus);
   } catch (e) {
     return <p role="alert" className="keterangan">Kasus belum bisa dihitung: {e instanceof Error ? e.message : String(e)}</p>;
   }

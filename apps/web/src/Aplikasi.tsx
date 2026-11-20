@@ -29,7 +29,7 @@ import { TanyaJawab } from './layar/belajar/TanyaJawab';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
-import { kasusDariContoh } from './layar/belajar/contoh';
+import { revisiIdSoalHitung } from './konten/sumber';
 import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
@@ -42,6 +42,7 @@ import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
 import { usePenjaga } from './ui/Penjaga';
 import { PembaruanKonten } from './ui/PembaruanKonten';
+import { kasusDariSoal } from '@waris/latihan';
 
 const JEDA_PERBARUI_BAGIKAN_MS = 1500;
 
@@ -183,7 +184,7 @@ export function Aplikasi() {
   const keAwalHitung = () => kirim({ jenis: 'KE_LAYAR', layar: 'awal' });
   const kerjakanSoal = (soal: SoalHitung) => {
     kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
-    bukaDiHitung(kasusDariContoh(soal.kasus), { jenis: 'latihan', kode: soal.kode });
+    bukaDiHitung(kasusDariSoal(soal.kasus), { jenis: 'latihan', kode: soal.kode });
     setSoalAktif(soal);
   };
   // Otomatis sekali di kunjungan pertama tiap layar yang punya tur.
@@ -216,7 +217,8 @@ export function Aplikasi() {
         : <Hasil kasus={kasus} idSesi={idSesi} bagikan={sesi ? repoAkun?.bagikan : undefined} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim}
             tanpaSimpan={sumberSesi.jenis === 'latihan'} janganSimpan={sesiJanganSimpan.has(idSesi)}
             saatJanganSimpan={nilai => setSesiJanganSimpan(lama => { const baru = new Set(lama); if (nilai) baru.add(idSesi); else baru.delete(idSesi); return baru; })} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
-            saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
+            saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
+            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined} />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>

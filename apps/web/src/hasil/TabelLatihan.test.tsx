@@ -1,13 +1,15 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hitung, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
 import { TabelLatihan } from './TabelLatihan';
-import { susunTabelSoal, type TabelSoal } from './tabelLatihan';
+import { pilihJangkar, susunTabelSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
+import { namaOrang } from '../format';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
 const tabelDari = (graf: GrafKeluarga): TabelSoal => {
   const masukan: InputEngine = { graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' };
-  const tabel = susunTabelSoal(hitung(masukan), graf);
+  const hasil = hitung(masukan);
+  const tabel = hasil.status === 'OK' ? susunTabelSoal(hasil, id => namaOrang(graf, hasil.statusOrang, id)) : { status: 'TIDAK_DIDUKUNG' as const };
   if ('status' in tabel) throw new Error(tabel.status);
   return tabel;
 };
@@ -19,15 +21,16 @@ const tabelTerhalang = tabelDari({ idPewaris: 'D', pernikahan: [], orang: {
   D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }), A: orang('A', 'L'), I: orang('I', 'P'),
   K: orang('K', 'L', { idAyah: 'A', idIbu: 'I' }) } });
 
-const saatMencoba = vi.fn(), saatBenar = vi.fn(), saatLihatJawaban = vi.fn();
+const saatPercobaan = vi.fn(), saatLihatJawaban = vi.fn();
+const percobaanKe = (n: number) => saatPercobaan.mock.calls[n]![0] as PercobaanTabel;
+// Acak = 0 → jangkar = sel "Asal masalah" Istri (calon pertama): terisi 1.
 const tampilkan = (tabel = tabel161, terbuka = false) =>
-  render(<TabelLatihan tabel={tabel} terbuka={terbuka} saatMencoba={saatMencoba} saatBenar={saatBenar} saatLihatJawaban={saatLihatJawaban} />);
+  render(<TabelLatihan tabel={tabel} mode="latihan" jangkar={pilihJangkar(tabel, () => 0)} terbuka={terbuka} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
 const pilih = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `Bagian ${nama}` }), { target: { value: nilai } });
 const ketik = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('textbox', { name: nama }), { target: { value: nilai } });
 const kotak = (nama: string) => screen.getByRole('textbox', { name: nama }) as HTMLInputElement;
 const periksa = () => fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
 
-// Math.random = 0 → jangkar = sel "Asal masalah" Istri (calon pertama): terisi 1.
 function isiBenar() {
   pilih('Istri', '1/8'); pilih('Anak laki-laki', 'Ashabah'); pilih('Anak perempuan', 'Ashabah');
   ketik('Asal masalah', '8'); ketik('Asal masalah bersama', '7');
@@ -35,8 +38,7 @@ function isiBenar() {
   ketik('Asal masalah akhir Istri', '3'); ketik('Asal masalah akhir Anak laki-laki', '14'); ketik('Asal masalah akhir Anak perempuan', '7');
 }
 
-beforeEach(() => { vi.spyOn(Math, 'random').mockReturnValue(0); });
-afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); });
+afterEach(() => { vi.clearAllMocks(); });
 
 describe('TabelLatihan — soal biasa', () => {
   it('isi → Periksa → Benar semua; XP dan percobaan dilaporkan; isian terkunci', () => {
@@ -44,8 +46,9 @@ describe('TabelLatihan — soal biasa', () => {
     isiBenar();
     periksa();
     expect(screen.getByText('Benar semua.')).toBeTruthy();
-    expect(saatMencoba).toHaveBeenCalledTimes(1);
-    expect(saatBenar).toHaveBeenCalledTimes(1);
+    expect(saatPercobaan).toHaveBeenCalledTimes(1);
+    expect(percobaanKe(0)).toMatchObject({ mode: 'latihan', aksi: 'periksa', benarSemua: true, jangkar: { idBaris: 'W1', idKolom: 'ashl' } });
+    expect(percobaanKe(0).hasilKolom.every(kolom => kolom.status === 'benar')).toBe(true);
     expect(screen.queryByRole('button', { name: 'Periksa' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Lihat jawaban' })).toBeNull();
   });
@@ -58,7 +61,7 @@ describe('TabelLatihan — soal biasa', () => {
     ketik('Asal masalah akhir Istri', '6'); ketik('Asal masalah akhir Anak laki-laki', '28'); ketik('Asal masalah akhir Anak perempuan', '14');
     periksa();
     expect(screen.getByText('Benar semua. Bentuk terkecil: Asal masalah akhir 48 (terkecilnya 24).')).toBeTruthy();
-    expect(saatBenar).toHaveBeenCalled();
+    expect(percobaanKe(0).benarSemua).toBe(true);
   });
 
   it('salah berhenti di kolom pertama yang salah; sel keliru ditandai; XP tidak diberikan', () => {
@@ -68,15 +71,16 @@ describe('TabelLatihan — soal biasa', () => {
     periksa();
     expect(screen.getByText('Mulai salah di kolom "Bagian". Kolom sesudahnya belum diperiksa.')).toBeTruthy();
     expect(screen.getByRole('combobox', { name: 'Bagian Istri' }).closest('td')!.classList.contains('keliru')).toBe(true);
-    expect(saatMencoba).toHaveBeenCalledTimes(1);
-    expect(saatBenar).not.toHaveBeenCalled();
+    expect(saatPercobaan).toHaveBeenCalledTimes(1);
+    expect(percobaanKe(0).benarSemua).toBe(false);
+    expect(percobaanKe(0).hasilKolom.map(kolom => kolom.status)).toEqual(['salah', 'benar', 'benar']); // semua kolom dinilai, bukan berhenti
   });
 
   it('kolom belum lengkap: umpan kuning dan bukan percobaan', () => {
     tampilkan();
     periksa();
     expect(screen.getByText('Kolom "Bagian" belum lengkap.')).toBeTruthy();
-    expect(saatMencoba).not.toHaveBeenCalled();
+    expect(saatPercobaan).not.toHaveBeenCalled();
   });
 
   it('Kosongkan setelah salah mengosongkan kotak dan menghapus umpan', () => {
@@ -97,18 +101,40 @@ describe('TabelLatihan — soal biasa', () => {
     expect(saatLihatJawaban).toHaveBeenCalledTimes(1);
   });
 
+  it('Lihat jawaban mengirim isian terakhir ke kartu induk', () => {
+    tampilkan();
+    pilih('Istri', '1/8');
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
+    expect(saatLihatJawaban.mock.calls[0]![0]).toMatchObject({ sel: { W1: { bagian: '1/8' } } });
+  });
+
+  it('jangkar dari prop tidak berubah saat Kosongkan: percobaan sesudahnya membawa jangkar yang sama', () => {
+    tampilkan();
+    isiBenar();
+    pilih('Istri', '1/4');
+    periksa();
+    fireEvent.click(screen.getByRole('button', { name: 'Kosongkan' }));
+    pilih('Istri', '1/4');
+    ketik('Asal masalah', '8'); ketik('Asal masalah akhir', '24');
+    pilih('Anak laki-laki', 'Ashabah'); pilih('Anak perempuan', 'Ashabah'); ketik('Asal masalah bersama', '7');
+    ketik('Asal masalah akhir Istri', '3'); ketik('Asal masalah akhir Anak laki-laki', '14'); ketik('Asal masalah akhir Anak perempuan', '7');
+    periksa();
+    expect(saatPercobaan).toHaveBeenCalledTimes(2);
+    expect(percobaanKe(1).jangkar).toEqual(percobaanKe(0).jangkar);
+  });
+
   it('jawaban terbuka: kunci tampil, isian berbeda dicoret, Periksa hilang, umpan abu', () => {
     const { rerender } = tampilkan();
     pilih('Istri', '1/4');
     ketik('Asal masalah', '8');
-    rerender(<TabelLatihan tabel={tabel161} terbuka saatMencoba={saatMencoba} saatBenar={saatBenar} saatLihatJawaban={saatLihatJawaban} />);
+    rerender(<TabelLatihan tabel={tabel161} mode="latihan" jangkar={pilihJangkar(tabel161, () => 0)} terbuka saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
     expect(screen.getByText('Jawaban dibuka. Isianmu yang berbeda dicoret. Soal ini tidak memberi XP.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Periksa' })).toBeNull();
     const barisIstri = screen.getByText('Istri', { selector: 'th' }).closest('tr')!;
     expect(within(barisIstri).getByText('1/4').tagName).toBe('S');
     expect(barisIstri.textContent).toContain('1/8');
     expect(screen.getByText('24')).toBeTruthy();
-    expect(saatBenar).not.toHaveBeenCalled();
+    expect(saatPercobaan).not.toHaveBeenCalled();
   });
 
   it('kotak angka menolak / , ½ 1/8 dengan keterangan; ٢٤ menjadi 24', () => {

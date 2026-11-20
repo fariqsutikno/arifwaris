@@ -5,7 +5,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
-import type { HasilOk } from '../jalankan';
+import type { HasilOk } from '@waris/latihan';
 import { jelaskanOrang, type PenjelasanOrang } from '@waris/explain';
 import { kamusNarasi } from '../konten/kamusNarasi';
 import { hitungIsian, peranDariMayit } from '../checklist';

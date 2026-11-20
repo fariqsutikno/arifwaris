@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { kasusBaru } from '../kasus';
 import { tambahAhliWaris } from '../checklist';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { ringkas } from '../hasil/ringkasan';
 import { WARNA_NETRAL, warnaOrang } from '../hasil/warnaOrang';
 

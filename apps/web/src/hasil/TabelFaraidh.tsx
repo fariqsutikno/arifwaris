@@ -9,7 +9,7 @@ import { useState } from 'react';
 import type { IdOrang, TabelMasalah } from '@waris/engine';
 import type { KolomBab } from '@waris/explain';
 import { formatRupiah } from '../format';
-import type { HasilOk } from '../jalankan';
+import type { HasilOk } from '@waris/latihan';
 import { adalahDzawilArham, teksKelompok, urutkanBaris, type RingkasanHasil } from './ringkasan';
 import type { Kelompok } from '../checklist';
 import { AngkaMasuk } from '../ui/AngkaMasuk';

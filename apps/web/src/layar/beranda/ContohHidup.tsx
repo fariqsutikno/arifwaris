@@ -8,9 +8,8 @@ import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import { PenyediaSorot } from '../../hasil/sorot';
 import { persenTeks, ringkas } from '../../hasil/ringkasan';
 import { formatRupiahRingkas } from '../../format';
-import { jalankan } from '../../jalankan';
+import { jalankan, kasusDariSoal } from '@waris/latihan';
 import type { Kasus } from '../../kasus';
-import { kasusDariContoh } from '../belajar/contoh';
 import { Ikon } from '../../ui/Ikon';
 import { angka, panah, t } from '../../terjemah';
 
@@ -30,7 +29,7 @@ export function ContohHidup({ saatCoba }: { saatCoba: (kasus: Kasus) => void }) 
   const [terpilih, setTerpilih] = useState(0);
   const keadaan = KEADAAN[terpilih]!;
   const { kasus, ringkasan } = useMemo(() => {
-    const kasusIni = kasusDariContoh({ pewaris: keadaan.pewaris, ahliWaris: [...keadaan.ahliWaris], harta: HARTA_CONTOH, harapan: { saham: {}, ashlAkhir: 0n } });
+    const kasusIni = kasusDariSoal({ pewaris: keadaan.pewaris, ahliWaris: [...keadaan.ahliWaris], harta: HARTA_CONTOH, harapan: { saham: {}, ashlAkhir: 0n } });
     return { kasus: kasusIni, ringkasan: ringkas(kasusIni, jalankan(kasusIni)) };
   }, [keadaan]);
 

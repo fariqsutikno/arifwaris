@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { hitungMunasakhat } from '@waris/engine';
 import { hitungIsian, kurangiAhliWaris, tambahAhliWaris } from '../checklist';
-import { keInputEngine } from '../jalankan';
+import { keInputEngine } from '@waris/latihan';
 import { kasusBaru, rapikanKeadaan, type Kasus } from '../kasus';
 import { namaSingkat } from '../keadaanOrang';
 import { geserUrutan, labelMayit, labelOrangDiKartu, mayitLatihan, nomorKembar, mayitTanpaAhliWaris, orangDiKartu, tandaiWafatSebelumDibagi } from '../latihan';

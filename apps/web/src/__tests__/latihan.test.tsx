@@ -3,15 +3,15 @@ import { describe, expect, it, vi } from 'vitest';
 import { type SoalHitung } from '@waris/content';
 import { daftarSoalHitung, daftarSoalKuis } from '../konten/sumber';
 import { ringkas } from '../hasil/ringkasan';
-import { jalankan } from '../jalankan';
-import { kasusDariContoh } from '../layar/belajar/contoh';
+import { jalankan, kasusDariSoal, susunTabelSoal } from '@waris/latihan';
+import { revisiIdSoalHitung } from '../konten/sumber';
 import { Latihan } from '../layar/belajar/Latihan';
 import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
 import { bacaSkorPaket, catatLatihan } from '../progres';
 
 describe('kunci soal hitung = hasil engine', () => {
   it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
-    const kasus = kasusDariContoh(soal.kasus);
+    const kasus = kasusDariSoal(soal.kasus);
     const tampil = jalankan(kasus);
     if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(JSON.stringify(tampil));
     const { penerima, penyebut } = ringkas(kasus, tampil);
@@ -19,6 +19,16 @@ describe('kunci soal hitung = hasil engine', () => {
     for (const orang of penerima) if (orang.saham > 0n) sahamPerKunci[orang.kunci!] = (sahamPerKunci[orang.kunci!] ?? 0n) + orang.saham;
     expect(sahamPerKunci).toEqual(soal.kasus.harapan.saham);
     expect(penyebut).toBe(soal.kasus.harapan.ashlAkhir);
+  });
+});
+
+describe('setiap soal hitung terbit bisa dikerjakan sebagai tabel', () => {
+  it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s: terbaca, engine OK, tabel didukung, revisi diketahui', (kode, soal) => {
+    const tampil = jalankan(kasusDariSoal(soal.kasus));
+    if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(`${kode}: engine tidak OK (${JSON.stringify(tampil).slice(0, 200)})`);
+    const susunan = susunTabelSoal(tampil.hasil, id => id);
+    if ('status' in susunan) throw new Error(`${kode}: tabel soal belum didukung (${susunan.status})`);
+    expect(revisiIdSoalHitung(kode), `${kode}: revisiId hilang dari snapshot`).toBeTruthy();
   });
 });
 
