@@ -3,7 +3,7 @@ import { kasusBaru, type Kasus, type Kelompok } from '../kasus';
 import { anggotaBagian, awalCabang, bagianDariOrang, bagianDilewati, bagianLengkap, daftarBagian } from '../kelompok';
 import { isiBarisTetap, tambahBaris } from '../isianBagian';
 import { statusKeluarga } from '../statusKeluarga';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { posisiPerluDitanya } from '../ujiHipotetis';
 import { keluargaBudi, keluargaKarto, tambah } from './fixtures/kanvas';
 

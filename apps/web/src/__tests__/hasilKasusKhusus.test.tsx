@@ -2,7 +2,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { terapkanKeadaan } from '../keadaanOrang';
 import { Hasil } from '../layar/Hasil';
 

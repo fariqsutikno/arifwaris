@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { terapkanKeadaan } from '../keadaanOrang';
 
 function dasar() {

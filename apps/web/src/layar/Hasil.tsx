@@ -11,7 +11,7 @@ import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
-import { jalankan, type HasilOk } from '../jalankan';
+import { jalankan, susunTabelSoal, type HasilOk } from '@waris/latihan';
 import { useBahasa, type Tujuan } from '../preferensi';
 import { PesanKasusKhusus } from '../hasil/HasilKasusKhusus';
 import { KelompokDitahan, TabelKemungkinan, TabelPerHarta, TabelSkenarioGharqa, UbinDitahan, UbinKemungkinanUrutan, UbinMenunggu } from '../hasil/Ditahan';
@@ -20,7 +20,6 @@ import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { TabelLatihan } from '../hasil/TabelLatihan';
-import { susunTabelSoal } from '../hasil/tabelLatihan';
 import { ModalOrang } from '../hasil/ModalOrang';
 import { LembarBagikan } from '../hasil/LembarBagikan';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
@@ -53,7 +52,7 @@ import { BandingMadzhab } from './BandingMadzhab';
 import { DialogMadzhab, namaMadzhab } from './DialogMadzhab';
 import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
-import { formatRupiah, formatRupiahRingkas } from '../format';
+import { formatRupiah, formatRupiahRingkas, namaOrang } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { Ikon } from '../ui/Ikon';
@@ -223,7 +222,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
   // Soal latihan biasa memakai tabel faraidh isian (spec B); jenis lain masih isian pecahan lama sampai tabelnya dibangun.
   const tabelSoal = useMemo(() => {
     if (!adalahBelajar || !hasilBiasa || adaDzawilArham) return null;
-    const susunan = susunTabelSoal(hasilBiasa, kasus.graf);
+    const susunan = hasilBiasa.status === 'OK' ? susunTabelSoal(hasilBiasa, id => namaOrang(kasus.graf, hasilBiasa.statusOrang, id)) : { status: 'TIDAK_DIDUKUNG' as const };
     return 'status' in susunan ? null : susunan;
   }, [adalahBelajar, hasilBiasa, adaDzawilArham, kasus.graf]);
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;

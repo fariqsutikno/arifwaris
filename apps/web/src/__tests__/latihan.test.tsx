@@ -3,15 +3,14 @@ import { describe, expect, it, vi } from 'vitest';
 import { type SoalHitung } from '@waris/content';
 import { daftarSoalHitung, daftarSoalKuis } from '../konten/sumber';
 import { ringkas } from '../hasil/ringkasan';
-import { jalankan } from '../jalankan';
-import { kasusDariContoh } from '../layar/belajar/contoh';
+import { jalankan, kasusDariSoal } from '@waris/latihan';
 import { Latihan } from '../layar/belajar/Latihan';
 import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
 import { bacaSkorPaket, catatLatihan } from '../progres';
 
 describe('kunci soal hitung = hasil engine', () => {
   it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s', (_kode, soal) => {
-    const kasus = kasusDariContoh(soal.kasus);
+    const kasus = kasusDariSoal(soal.kasus);
     const tampil = jalankan(kasus);
     if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(JSON.stringify(tampil));
     const { penerima, penyebut } = ringkas(kasus, tampil);

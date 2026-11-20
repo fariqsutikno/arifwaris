@@ -2,10 +2,11 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { type ContohKasus } from '@waris/content';
 import { daftarPelajaran } from '../konten/sumber';
-import { hitungHarapan, kasusDariContoh } from '../layar/belajar/contoh';
+import { hitungHarapan } from '../layar/belajar/contoh';
 import { Belajar } from '../layar/belajar/Belajar';
 import { Materi } from '../layar/belajar/Materi';
 import { bacaPelajaranSelesai } from '../progres';
+import { kasusDariSoal } from '@waris/latihan';
 
 const semuaContoh = daftarPelajaran().flatMap(pelajaran => pelajaran.blok.flatMap((blok, urutan) =>
   blok.jenis === 'kasus' ? [[`${pelajaran.slug} #${urutan}`, blok.kasus] as [string, ContohKasus]] : []));
@@ -61,7 +62,7 @@ describe('halaman belajar', () => {
   it('coba di kalkulator saat ada kasus lain: tanya dulu', () => {
     const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
     const dicoba: unknown[] = [];
-    render(<Materi slug={pelajaran.slug} kasusSekarang={kasusDariContoh(semuaContoh[0]![1])} saatCoba={kasus => dicoba.push(kasus)} />);
+    render(<Materi slug={pelajaran.slug} kasusSekarang={kasusDariSoal(semuaContoh[0]![1])} saatCoba={kasus => dicoba.push(kasus)} />);
     fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);
     expect(dicoba).toHaveLength(0);
     expect(screen.getByRole('alertdialog').textContent).toMatch(/tersimpan di Riwayat hitung/);

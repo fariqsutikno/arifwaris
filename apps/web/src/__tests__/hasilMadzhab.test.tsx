@@ -8,8 +8,8 @@ import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
 
 const tidakDidukung = vi.hoisted(() => ({ aktif: false }));
-vi.mock('../jalankan', async importAsli => {
-  const asli = await importAsli<typeof import('../jalankan')>();
+vi.mock('@waris/latihan', async importAsli => {
+  const asli = await importAsli<typeof import('@waris/latihan')>();
   return { ...asli, jalankan: (kasus: Kasus) => (tidakDidukung.aktif
     ? { jenis: 'biasa', hasil: { status: 'TIDAK_DIDUKUNG', alasan: 'Alasan uji' } }
     : asli.jalankan(kasus)) };

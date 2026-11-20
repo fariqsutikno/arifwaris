@@ -7,7 +7,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { Confetti } from '../ui/Confetti';
 import { Ikon } from '../ui/Ikon';
 import { angka, angkaLatin, t } from '../terjemah';
-import { nilaiTabel, PILIHAN_BAGIAN, pilihJangkar, type BarisSoal, type HasilNilai, type IsianTabel, type KolomSoal, type TabelSoal } from './tabelLatihan';
+import { nilaiTabel, PILIHAN_BAGIAN, pilihJangkar, type BarisSoal, type HasilNilai, type IsianTabel, type KolomSoal, type TabelSoal } from '@waris/latihan';
 
 interface Props {
   tabel: TabelSoal;
@@ -22,8 +22,9 @@ const BATAS_DIGIT = /^\d{0,6}$/;
 const BAGIAN_TERHALANG = 'Terhalang';
 const adalahAshabah = (bagian: string | undefined) => bagian === 'Ashabah' || bagian === '1/6 + Ashabah';
 
-const judulKolomDari = (kolom: KolomSoal): string =>
-  ({ bagian: t('hitung.bagian'), ashl: t('hitung.asal_masalah'), akhir: t('hitung.tabel.asal_masalah_akhir') } as Record<string, string>)[kolom.id] ?? kolom.judul;
+const judulKolomDari = (kolom: KolomSoal): string => ({
+  bagian: () => t('hitung.bagian'), asalMasalah: () => t('hitung.asal_masalah'), asalMasalahAkhir: () => t('hitung.tabel.asal_masalah_akhir'),
+} as Record<string, () => string>)[kolom.idJudul]?.() ?? kolom.idJudul;
 
 function labelPilihan(bagian: string): string {
   if (bagian === 'Ashabah') return t('hitung.ashabah');

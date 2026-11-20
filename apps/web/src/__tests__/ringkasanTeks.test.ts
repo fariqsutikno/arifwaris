@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { kasusBaru, type Kasus } from '../kasus';
 import { terapkanKeadaan } from '../keadaanOrang';
 import { ringkas } from '../hasil/ringkasan';

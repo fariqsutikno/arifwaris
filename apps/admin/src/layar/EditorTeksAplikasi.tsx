@@ -31,7 +31,6 @@ import { Rujukan } from '@waris/web/rujukan/Rujukan';
 import { Peringkat } from '@waris/web/layar/Peringkat';
 import { TUR } from '@waris/web/tur';
 import lokasiTeks from 'virtual:lokasi-teks';
-import { kasusDariContoh } from '@waris/web/contoh';
 import { Search } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -45,12 +44,13 @@ import { buatPencocok, rapikan, type PencocokTeks, type SumberTeks } from '../ed
 import { usePortal } from '../repo';
 import { pesanGalat } from '../pesanGalat';
 import { contohSisipan, namaSisipan, sisipanBerubah, sisipanDari } from '../editor/penjelasanHasil';
+import { kasusDariSoal } from '@waris/latihan';
 
 const tanpaAksi = () => {};
 const CSS_KOTAK = `.kotak-sunting{position:absolute;padding:0;border:0;border-radius:3px;background:none;cursor:pointer;
 outline:1px dashed color-mix(in srgb,var(--pink) 70%,transparent)}
 .kotak-sunting:hover,.kotak-sunting:focus-visible,.kotak-sunting.disorot{background:color-mix(in srgb,var(--pink) 18%,transparent);outline-width:2px}`;
-const KASUS_CONTOH = kasusDariContoh({ pewaris: 'L', ahliWaris: ['ISTRI', 'IBU', 'ANAK_LK', 'ANAK_PR'], harta: 120_000_000n, harapan: { saham: {}, ashlAkhir: 0n } });
+const KASUS_CONTOH = kasusDariSoal({ pewaris: 'L', ahliWaris: ['ISTRI', 'IBU', 'ANAK_LK', 'ANAK_PR'], harta: 120_000_000n, harapan: { saham: {}, ashlAkhir: 0n } });
 const SLUG_MATERI_CONTOH = snapshotTerpasang().konten.find(baris => baris.jenis === 'materi')?.slug ?? '';
 
 // Nama kelompok teks untuk manusia (awalan kunci teks edukasi / halaman diksi).

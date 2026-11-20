@@ -5,7 +5,7 @@
 import { useMemo } from 'react';
 import type { Ruleset } from '@waris/engine';
 import { formatRupiah } from '../format';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import type { Kasus } from '../kasus';
 import { ringkas } from '../hasil/ringkasan';
 import { t } from '../terjemah';

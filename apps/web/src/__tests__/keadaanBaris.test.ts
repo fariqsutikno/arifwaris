@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { kasusBaru, type Kasus } from '../kasus';
 import { terapkanKeadaan } from '../keadaanOrang';
 import { alasanBarisKurang, alasanWafatSesudahDitolak, jawabLanjutan, calonCerai, calonHilang, keadaanTerpilih, lanjutanDiperlukan, pilihKeadaan, pilihanKeadaan } from '../keadaanBaris';

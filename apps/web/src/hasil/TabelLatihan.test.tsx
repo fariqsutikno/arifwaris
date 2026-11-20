@@ -2,12 +2,14 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { hitung, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
 import { TabelLatihan } from './TabelLatihan';
-import { susunTabelSoal, type TabelSoal } from './tabelLatihan';
+import { susunTabelSoal, type TabelSoal } from '@waris/latihan';
+import { namaOrang } from '../format';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
 const tabelDari = (graf: GrafKeluarga): TabelSoal => {
   const masukan: InputEngine = { graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' };
-  const tabel = susunTabelSoal(hitung(masukan), graf);
+  const hasil = hitung(masukan);
+  const tabel = hasil.status === 'OK' ? susunTabelSoal(hasil, id => namaOrang(graf, hasil.statusOrang, id)) : { status: 'TIDAK_DIDUKUNG' as const };
   if ('status' in tabel) throw new Error(tabel.status);
   return tabel;
 };

@@ -6,7 +6,7 @@ import {
   hitungDzawilArham, hitungGharqa, hitungMunasakhat, hitungTaqdir, KONFIGURASI_BAWAAN,
   type HasilEngine, type HasilGharqa, type HasilMunasakhat, type HasilTaqdir, type InputEngine,
 } from '@waris/engine';
-import type { Kasus } from './kasus';
+import type { Kasus } from './kasus.js';
 
 const VERSI_KB = '1.0.0-dev';
 

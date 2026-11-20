@@ -5,7 +5,7 @@ import { hitungTirkah, type DuniaTaqdir, type GrafKeluarga, type HartaGharqa, ty
 import { fpb } from '@waris/math';
 import { jenisDari, type Kelompok } from '../checklist';
 import { formatRupiahRingkas, namaOrang, penyebutAkhir } from '../format';
-import { jalankan, type HasilMunasakhatOk, type HasilOk, type HasilTampil } from '../jalankan';
+import { jalankan, type HasilMunasakhatOk, type HasilOk, type HasilTampil } from '@waris/latihan';
 import type { Kasus } from '../kasus';
 import { namaSingkat } from '../keadaanOrang';
 import { angka, bahasaArab, t } from '../terjemah';

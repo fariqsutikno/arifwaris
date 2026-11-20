@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { hitung, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
-import { nilaiTabel, pilihJangkar, susunTabelSoal, type IsianTabel, type TabelSoal } from './tabelLatihan';
+import { nilaiTabel, pilihJangkar, susunTabelSoal, type IsianTabel, type TabelSoal } from '../index.js';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
 const masukan = (graf: GrafKeluarga): InputEngine => ({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n },
@@ -16,7 +16,7 @@ const grafTerhalang: GrafKeluarga = { idPewaris: 'D', pernikahan: [], orang: {
   K: orang('K', 'L', { idAyah: 'A', idIbu: 'I' }) } };
 
 function tabelDari(graf: GrafKeluarga): TabelSoal {
-  const tabel = susunTabelSoal(hitung(masukan(graf)), graf);
+  const tabel = susunTabelSoal(hitung(masukan(graf)), id => id);
   if ('status' in tabel) throw new Error(tabel.status);
   return tabel;
 }
@@ -27,10 +27,10 @@ const isianBenar = (): IsianTabel => ({ kepala: { ashl: '8', akhir: '24' }, sel:
 describe('susunTabelSoal — soal biasa dari keluaran engine', () => {
   test('16.1: bagian, asal masalah 8, asal masalah akhir 24', () => {
     expect(tabel161.kolom.map(kolom => [kolom.id, kolom.kepala])).toEqual([['bagian', undefined], ['ashl', 8n], ['akhir', 24n]]);
-    expect(tabel161.baris.map(baris => [baris.nama, baris.kunci])).toEqual([
-      ['Istri', { bagian: '1/8', ashl: '1', akhir: '3' }],
-      ['Anak laki-laki', { bagian: 'Ashabah', ashl: '7', akhir: '14' }],
-      ['Anak perempuan', { bagian: 'Ashabah', ashl: '7', akhir: '7' }],
+    expect(tabel161.baris.map(baris => [baris.id, baris.kunci])).toEqual([
+      ['W1', { bagian: '1/8', ashl: '1', akhir: '3' }],
+      ['S1', { bagian: 'Ashabah', ashl: '7', akhir: '14' }],
+      ['D1', { bagian: 'Ashabah', ashl: '7', akhir: '7' }],
     ]);
   });
 
@@ -47,7 +47,7 @@ describe('susunTabelSoal — soal biasa dari keluaran engine', () => {
   });
 
   test('jenis lain (taqdir, hasil tak OK) → TIDAK_DIDUKUNG', () => {
-    expect(susunTabelSoal({ status: 'PERLU_INPUT', pertanyaan: [] }, graf161)).toEqual({ status: 'TIDAK_DIDUKUNG' });
+    expect(susunTabelSoal({ status: 'PERLU_INPUT', pertanyaan: [] }, id => id)).toEqual({ status: 'TIDAK_DIDUKUNG' });
   });
 });
 
@@ -81,7 +81,7 @@ describe('nilaiTabel — aturan B6', () => {
     isian.sel.W1!.ashl = '2';
     isian.sel.S1!.ashl = '14';
     const hasil = nilaiTabel(tabel161, isian, null);
-    expect(hasil).toEqual({ jenis: 'benar', bentukTerkecil: [{ idKolom: 'ashl', judul: 'Asal masalah', diisi: 16n, terkecil: 8n }] });
+    expect(hasil).toEqual({ jenis: 'benar', bentukTerkecil: [{ idKolom: 'ashl', idJudul: 'asalMasalah', diisi: 16n, terkecil: 8n }] });
   });
 
   test('kepala bukan kelipatan kunci → kepala salah', () => {
