@@ -530,6 +530,11 @@ membaca pelajar B; pengajar kelas X tidak bisa membaca kelas Y; pengajar tidak b
 ### 5.5 Privasi, akun, luring
 
 - Kelas wajib akun (Google, seperti sekarang). Tanpa akun tidak ada kelas.
+- **Syarat keamanan dan UU PDP yang mengikat bagian ini** ada di audit bagian 8c (anti-IDOR, nilai append-only dengan
+  `koreksi_nilai`, batas percobaan tahan balapan, idempoten, waktu dan jangkar dari server, batas laju, kode gabung) dan
+  9c (persetujuan terekam, data anak, retensi, hapus akun/unduh data, DPIA). Keduanya kriteria terima P3–P4.
+- Penugasan diperlakukan *open book*: aplikasi ini juga kalkulator, jadi kunci selalu bisa diturunkan di perangkat
+  (audit 8c butir 12). Layar pembuatan tugas memberi tahu pengajar.
 - Pengajar melihat email anggota hanya di kelasnya (butuh untuk mencocokkan siswa); pelajar sesama anggota hanya nama
   tampilan. Email tidak masuk ke tabel kelas; dibaca lewat fungsi `security definer` yang memeriksa peran pengajar (pola
   `daftar_peran`).
