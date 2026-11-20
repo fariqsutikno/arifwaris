@@ -224,15 +224,15 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
     : <TabelFaraidh hasil={hasilBiasa} ringkasan={ringkasan} sembunyiNominal={sembunyiNominal} sedangMenebak={sedangMenebak} saatPilih={setOrangDipilih} />;
   // Dzawil arham: linimasanya tanpa tabel bertahap (tabel: []), jadi tanpa babak seperti taqdir dan gharqa.
   const adaDzawilArham = Object.values(ringkasan.statusOrang).some(adalahDzawilArham);
-  // Soal latihan biasa dan munasakhat memakai tabel faraidh isian (spec B); jenis lain masih isian pecahan lama sampai tabelnya dibangun.
+  // Soal latihan biasa, munasakhat, dan dzawil arham tanzil memakai tabel faraidh isian (spec B); jenis lain masih isian pecahan lama sampai tabelnya dibangun.
   const namaTabel = (id: string) => namaOrang(kasus.graf, ringkasan.statusOrang, id);
   const tabelSoal = useMemo(() => {
-    if (!adalahBelajar || adaDzawilArham) return null;
+    if (!adalahBelajar) return null;
     const sumber = hasilBiasa ?? (tampil.jenis === 'munasakhat' ? tampil.hasil : null);
     if (!sumber || sumber.status !== 'OK') return null;
     const susunan = susunTabelSoal(sumber, id => namaOrang(kasus.graf, ringkasan.statusOrang, id));
     return 'status' in susunan ? null : susunan;
-  }, [adalahBelajar, hasilBiasa, tampil, adaDzawilArham, kasus.graf, ringkasan.statusOrang]);
+  }, [adalahBelajar, hasilBiasa, tampil, kasus.graf, ringkasan.statusOrang]);
   // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
   const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.

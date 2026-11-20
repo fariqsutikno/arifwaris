@@ -8,6 +8,8 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { Confetti } from '../ui/Confetti';
 import { Ikon } from '../ui/Ikon';
 import { angka, angkaLatin, t } from '../terjemah';
+import { jenisDari } from '../checklist';
+import { LABEL_SEHARI } from '../konten/ahliWaris';
 import { nilaiSemuaKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 
 interface Props {
@@ -39,6 +41,7 @@ const judulKolomDari = (kolom: KolomSoal, namaDari: (id: string) => string): str
     asalMasalah: () => t('hitung.asal_masalah'), asalMasalahAkhir: () => t('hitung.tabel.asal_masalah_akhir'),
     masalahPertama: () => t('hitung.tabel.judul_masalah', { nomor, nama }), masalahLanjutan: () => t('hitung.tabel.judul_masalah', { nomor, nama }),
     jamiah: () => t('hitung.jami_ah'),
+    didudukkanSebagai: () => t('hitung.tabel.didudukkan_sebagai'), bagianPerantara: () => t('hitung.tabel.bagian_perantara'),
   } as Record<string, () => string>)[kolom.idJudul]?.() ?? kolom.idJudul;
 };
 
@@ -47,6 +50,10 @@ function labelPilihan(bagian: string): string {
   if (bagian === BAGIAN_TERHALANG) return t('hitung.terhalang');
   return bagian.split(' + ').map(potong => (potong === 'Ashabah' ? t('hitung.ashabah') : angka(potong))).join(' + ');
 }
+
+/** Kursi dzawil arham (kunci ahli waris dari engine) → nama sehari-hari. */
+const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
+const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
 export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
@@ -135,12 +142,12 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     if (kolom.jenis === 'bulat' && !modeKunci && memilihTerhalang(baris, kolom)) return <span className="nol">{angka('0')}</span>;
     const diisi = isian.sel[baris.id]?.[kolom.id];
     const bersama = gabung && <span className="bersama">{t('hitung.tabel.bersama')}</span>;
-    if (modeKunci) return <>{kunciDicoret(diisi, kunci, kolom.jenis === 'pilih' ? labelPilihan : angka)}{bersama}</>;
+    if (modeKunci) return <>{kunciDicoret(diisi, kunci, kolom.jenis === 'pilih' ? nilai => labelUntuk(kolom, nilai) : angka)}{bersama}</>;
     if (kolom.jenis === 'pilih') {
       return (
         <select aria-label={label} disabled={terkunciIsian} value={diisi ?? ''} onChange={event => isiPilihan(baris.id, kolom.id, event.target.value)}>
           <option value="">–</option>
-          {(kolom.pilihan ?? PILIHAN_BAGIAN).map(pilihan => <option key={pilihan} value={pilihan}>{labelPilihan(pilihan)}</option>)}
+          {(kolom.pilihan ?? PILIHAN_BAGIAN).map(pilihan => <option key={pilihan} value={pilihan}>{labelUntuk(kolom, pilihan)}</option>)}
         </select>
       );
     }
@@ -226,6 +233,8 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
         <ol>
           {[...(tabel.pengali
             ? [t('hitung.tabel.cara.munasakhat_1'), t('hitung.tabel.cara.munasakhat_2'), t('hitung.tabel.cara.munasakhat_3'), t('hitung.tabel.cara.munasakhat_4')]
+            : tabel.kolom[0]?.idJudul === 'didudukkanSebagai'
+            ? [t('hitung.tabel.cara.dzawil_arham_1'), t('hitung.tabel.cara.dzawil_arham_2'), t('hitung.tabel.cara.dzawil_arham_3')]
             : [t('hitung.tabel.cara.biasa_1'), t('hitung.tabel.cara.biasa_2'), t('hitung.tabel.cara.biasa_3'), t('hitung.tabel.cara.biasa_4')]),
             t('hitung.tabel.cara.umum_boleh_bukan_terkecil')].map(teks => (
             <li key={teks}><Tebal teks={teks} /></li>

@@ -27902,6 +27902,41 @@
    "id": "Jami'ah = saham × pengali, **dijumlah** dari semua mas'alah.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.didudukkan_sebagai",
+   "halaman": "hitung",
+   "id": "Didudukkan sebagai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.bagian_perantara",
+   "halaman": "hitung",
+   "id": "Bagian perantara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.dzawil_arham_1",
+   "halaman": "hitung",
+   "id": "**Didudukkan sebagai**: ahli waris pertama yang dijumpai saat naik dari kerabat itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.dzawil_arham_2",
+   "halaman": "hitung",
+   "id": "**Bagian perantara**: bagian orang yang didudukkan itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.dzawil_arham_3",
+   "halaman": "hitung",
+   "id": "Pilih **Terhalang**: saham otomatis 0.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

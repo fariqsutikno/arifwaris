@@ -3,7 +3,8 @@
 //   Putus : kunci semuanya dari engine; hasil yang bersisa-keluar (sisaKeluar) belum punya tabel.
 //   Keluar: TabelSoal. Fungsi murni.
 
-import type { HasilEngine, HasilTaqdir, IdOrang, TabelMasalah } from '@waris/engine';
+import type { HasilEngine, HasilTaqdir, IdOrang } from '@waris/engine';
+import type { Pecahan } from '@waris/math';
 import { qDari } from './qMatriks.js';
 import { BAGIAN_TERHALANG, PILIHAN_BAGIAN, type BarisSoal, type SusunanTabel } from './model.js';
 
@@ -34,7 +35,7 @@ export function susunTabelBiasa(hasil: HasilEngine | HasilTaqdir, namaDari: (id:
   };
 }
 
-export function labelBagian(kelompok: TabelMasalah['baris'][number]): string {
+export function labelBagian(kelompok: { fardh?: Pecahan; ashabah?: boolean }): string {
   const fardh = kelompok.fardh ? `${kelompok.fardh.n}/${kelompok.fardh.d}` : undefined;
   if (fardh && kelompok.ashabah) return `${fardh} + Ashabah`;
   return fardh ?? 'Ashabah';

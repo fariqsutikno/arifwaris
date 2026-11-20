@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { hitung, hitungMunasakhat, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
+import { hitung, hitungDzawilArham, hitungMunasakhat, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
 import { TabelLatihan } from './TabelLatihan';
 import { pilihJangkar, susunTabelSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 import { namaOrang } from '../format';
@@ -213,5 +213,31 @@ describe('TabelLatihan — munasakhat', () => {
     tampilkanMunasakhat();
     isi('6'); periksa();
     expect(screen.getByText('Baris Pengali belum tepat.')).toBeTruthy();
+  });
+});
+
+// KB 14.6 baris 1: anak pr saudara lk kandung / seibu / sebapak.
+describe('TabelLatihan — dzawil arham (tanzil)', () => {
+  const penghubung = { statusHidup: 'wafat' as const, penghubung: true };
+  const graf: GrafKeluarga = { idPewaris: 'D', pernikahan: [], orang: {
+    D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'F1', idIbu: 'M1' }), F1: orang('F1', 'L', penghubung), M1: orang('M1', 'P', penghubung),
+    FX: orang('FX', 'L', penghubung), MX: orang('MX', 'P', penghubung),
+    SK: orang('SK', 'L', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }), SI: orang('SI', 'L', { ...penghubung, idAyah: 'FX', idIbu: 'M1' }),
+    SB: orang('SB', 'L', { ...penghubung, idAyah: 'F1', idIbu: 'MX' }),
+    A1: orang('A1', 'P', { idAyah: 'SK' }), A2: orang('A2', 'P', { idAyah: 'SI' }), A3: orang('A3', 'P', { idAyah: 'SB' }) } };
+  const hasil = hitungDzawilArham({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' });
+  const susunan = susunTabelSoal(hasil, id => id);
+  if ('status' in susunan) throw new Error(susunan.status);
+  const pilihKe = (nama: string, kolom: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `${kolom} ${nama}` }), { target: { value: nilai } });
+
+  it('pilihan Didudukkan sebagai berasal dari soal; isi benar → Benar semua (sebapak Terhalang: saham otomatis 0)', () => {
+    render(<TabelLatihan tabel={susunan} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    const kotakKursi = screen.getByRole('combobox', { name: 'Didudukkan sebagai A1' });
+    expect(within(kotakKursi).getAllByRole('option').map(opsi => (opsi as HTMLOptionElement).value).sort()).toEqual(['', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARA_SEIBU']);
+    pilihKe('A1', 'Didudukkan sebagai', 'SAUDARA_KANDUNG'); pilihKe('A2', 'Didudukkan sebagai', 'SAUDARA_SEIBU'); pilihKe('A3', 'Didudukkan sebagai', 'SAUDARA_SEBAPAK');
+    pilihKe('A1', 'Bagian perantara', 'Ashabah'); pilihKe('A2', 'Bagian perantara', '1/6'); pilihKe('A3', 'Bagian perantara', 'Terhalang');
+    ketik('Asal masalah', '6'); ketik('Asal masalah A1', '5'); ketik('Asal masalah A2', '1');
+    periksa();
+    expect(screen.getByText('Benar semua.')).toBeTruthy();
   });
 });
