@@ -37,6 +37,7 @@ percobaan dicatat, dinilai, dan dihargai**.
 | K13 | **Kemahiran per topik** (`Dicoba` → `Paham` → `Kuasai`) menggantikan ide level/rank | Hadiah mengikuti bukti paham yang diulang, tidak bisa dicapai dengan menebak *(riset 6 HMW-3 ide 3c; 5b P7; 5a E2, E4)* |
 | K14 | **Soal hari ini** dipilih untuk pengulangan berjarak; streak dipertahankan apa adanya; tanpa bonus XP | Alasan kembali yang juga memperkuat ingatan *(riset 6 HMW-4 ide 4b; 5a E2; 5b P3, P4)* |
 | K15 | Kesulitan bertahap = **saran** mengikuti kemahiran, bukan kunci | Pemula diarahkan, yang mahir tidak dihalangi *(riset 6 HMW-5 ide 5b)* |
+| K17 | Kelas = **LMS per periode** (kode/tautan, banyak kelas, mengulang = kelas baru, tugas dari semua soal, nilai terlihat pelajar); soal skala besar lewat **pola soal deterministik** `pola@versi#benih` | riset kelas; bagian 5.0 |
 | K16 | Daftar **pola gelap terlarang** dan **ukuran keberhasilan** menjadi kriteria terima setiap mekanik | *(riset 7, riset 8)* |
 
 ---
@@ -111,8 +112,8 @@ const putusanUjian = (kolom: HasilKolom[]): { benar: number; total: number; kolo
 interface KejadianPercobaan {
   id: string;                       // uuid buatan klien → kirim ulang tidak dobel (pola log_kegiatan)
   idSesiSoal: string;               // satu "membuka soal" = satu sesi; Periksa berulang berbagi id ini
-  soalSlug: string;
-  revisiSoal: string;               // revisi.id konten yang dikerjakan (isi soal + bobotXp beku)
+  soalId: IdSoal;                   // soal kurasi (slug) atau soal pola `${slugPola}@${versi}#${benih}` (riset kelas 5b)
+  revisiSoal: string;               // revisi.id konten yang dikerjakan: revisi soal kurasi atau revisi pola (isi + bobotXp beku)
   jenisSoal: JenisSoal;             // 'biasa' | 'munasakhat' | 'dzawilArham' | 'mafqud' | 'khuntsa' | 'haml' | 'gharqa'
   mode: 'latihan' | 'ujian';
   konteks: { jenis: 'mandiri' } | { jenis: 'penugasan'; idPenugasan: string };
@@ -172,7 +173,7 @@ create table percobaan_soal (
   id uuid primary key,
   user_id uuid not null default auth.uid() references auth.users on delete cascade,
   id_sesi_soal uuid not null,
-  soal_slug text not null,
+  soal_id text not null check (char_length(soal_id) <= 200),   -- IdSoal
   revisi_soal uuid not null references revisi,
   jenis_soal text not null check (jenis_soal in ('biasa','munasakhat','dzawil_arham','mafqud','khuntsa','haml','gharqa')),
   mode text not null check (mode in ('latihan','ujian')),
@@ -188,7 +189,7 @@ create table percobaan_soal (
   diterima_pada timestamptz not null default now(),
   versi jsonb not null
 );
-create index on percobaan_soal (user_id, soal_slug, diterima_pada);
+create index on percobaan_soal (user_id, soal_id, diterima_pada);
 -- RLS: insert & select baris sendiri; tidak ada update/delete untuk authenticated (append-only).
 -- Kolom *_server dan diterima_pada tidak di-grant ke authenticated (pola log_kegiatan baris 38-39).
 ```
@@ -216,7 +217,7 @@ Kolom `id_penugasan` baru ditambahkan bersama tabel `penugasan` (fase kelas); di
 
 Dasar: hadiah mengikuti usaha jujur, bukan menyalin atau menebak *(riset 6 HMW-3 ide 3b; 5a E4, E6; 2 A1, A5)*.
 
-Untuk satu pengguna dan satu soal (`soal_slug`, lintas revisi):
+Untuk satu pengguna dan satu soal (`soal_id`, lintas revisi; soal pola dengan benih berbeda = soal berbeda):
 
 1. Urutkan kejadian menurut `diterima_pada` (server). Kejadian luring yang terkirim belakangan memakai waktu terima;
    urutan di dalam satu antrean terjaga karena antrean dikirim berurutan (`antrean.ts:59-81`).
@@ -431,49 +432,110 @@ memperbarui XP dan kemahiran pribadi (satu kali per soal) tanpa ditampilkan di l
 
 ## 5. Kelas dan penugasan
 
+Kelas berfungsi sebagai **LMS** untuk perkuliahan (arahan pemilik 2026-11-20). Dasar desain:
+`riset-ux-kelas-lms-skala-soal-monetisasi-2026-11-20.md` (selanjutnya "riset kelas").
+
+### 5.0 Keputusan
+
+| # | Keputusan | Rujukan |
+|---|---|---|
+| KL1 | Gabung lewat **kode kelas** (7 karakter huruf+angka tanpa karakter mirip) dan **tautan undangan**; bisa direset dan dimatikan; opsional persetujuan pengajar. Undangan email menyusul (R7) | riset kelas HMW-1 |
+| KL2 | **Kelas melekat pada satu periode** (label bebas + tanggal mulai/selesai). Lewat tanggal selesai → Arsip (bisa dibuka, tidak bisa diberi tugas baru). Pelajar boleh di banyak kelas; mengulang = kelas periode baru; tidak boleh dua kali di kelas yang sama | riset kelas HMW-2 |
+| KL3 | Tugas boleh memakai **semua soal**: soal kurasi, **pola soal** (generator, R5), dan soal buatan pengajar dari kalkulator (hanya untuk kelasnya) | riset kelas HMW-3, 5 |
+| KL4 | **Soal sama untuk semua** atau **berbeda per pelajar** (benih per pelajar), dipilih pengajar per tugas | riset kelas G3, 5b |
+| KL5 | Pelajar melihat **Tugas lintas kelas** terurut tenggat, **nilai**, dan **pembahasan** sesuai waktu rilis yang dipilih pengajar | riset kelas M2, M4, HMW-6 |
+| KL6 | Pengajar melihat **ringkasan per kolom** per tugas dan isian tiap pelajar; koreksi nilai beralasan | riset kelas HMW-4; audit 8c butir 5 |
+| KL7 | **Sesi langsung** di ruang kelas: layar pengajar agregat tanpa nama, tanpa peringkat kecepatan (R6) | riset kelas HMW-5 |
+| KL8 | Peran kelas: **pengajar**, **asisten**, **pelajar** (per kelas, terpisah dari peran portal) | riset kelas 1b; audit T5 |
+| KL9 | **Lembaga** sebagai pemilik opsional kelas, disiapkan di skema sejak awal (kolom boleh kosong); paket dan hak akses lewat satu fungsi (R7) | riset kelas 6d |
+| KL10 | Login hanya Google | keputusan pemilik |
+
 ### 5.1 Bentuk data
 
 ```sql
 create table kelas (
   id uuid primary key default gen_random_uuid(),
-  nama text not null check (char_length(btrim(nama)) between 1 and 80),
-  kode_gabung text not null unique check (kode_gabung ~ '^[A-Z0-9]{6}$'),   -- dibagikan pengajar
+  lembaga_id uuid references lembaga,                      -- boleh kosong; tabel lembaga menyusul (R7)
+  nama text not null check (char_length(btrim(nama)) between 1 and 80),   -- mis. "Fiqh Mawaris A"
+  periode_label text not null check (char_length(btrim(periode_label)) between 1 and 40),  -- mis. "Ganjil 2026/2027"
+  periode_mulai date not null,
+  periode_selesai date not null check (periode_selesai >= periode_mulai),
+  kode_gabung text unique check (kode_gabung ~ '^[A-HJ-NP-Z2-9]{7}$'),   -- null = gabung dimatikan
+  perlu_persetujuan boolean not null default false,
   dibuat_oleh uuid not null default auth.uid() references auth.users,
-  diarsipkan boolean not null default false,
   dibuat_pada timestamptz not null default now()
 );
+-- Arsip = turunan (current_date > periode_selesai), bukan kolom yang bisa lupa diperbarui.
+
 create table anggota_kelas (
   kelas_id uuid references kelas on delete cascade,
   user_id uuid references auth.users on delete cascade,
-  peran text not null check (peran in ('pengajar','pelajar')),
+  peran text not null check (peran in ('pengajar', 'asisten', 'pelajar')),
+  status text not null check (status in ('menunggu', 'aktif', 'keluar')),
+  nomor_induk text check (char_length(nomor_induk) <= 30),   -- NIM/NIS opsional, hanya terlihat pengajar/asisten kelas itu
   bergabung_pada timestamptz not null default now(),
   primary key (kelas_id, user_id)
 );
-create table penugasan (
+
+create table tugas (
   id uuid primary key default gen_random_uuid(),
   kelas_id uuid not null references kelas on delete cascade,
   judul text not null,
-  soal jsonb not null,           -- [{ slug, revisi }] revisi dikunci saat penugasan diterbitkan
-  kebijakan jsonb not null,      -- KebijakanPenugasan
+  butir jsonb not null,          -- ButirTugas[]; revisi dikunci saat diterbitkan
+  kebijakan jsonb not null,      -- KebijakanTugas
   diterbitkan_pada timestamptz,  -- null = draf, tidak terlihat pelajar
   dibuat_oleh uuid not null default auth.uid() references auth.users
+);
+
+create table sesi_soal (         -- satu pelajar membuka satu butir tugas; benih dan jangkar dari server
+  id uuid primary key default gen_random_uuid(),
+  tugas_id uuid not null references tugas on delete cascade,
+  user_id uuid not null references auth.users on delete cascade,
+  indeks_butir int not null,
+  soal_id text not null,         -- IdSoal yang benar-benar diberikan (benih per pelajar bila variasi)
+  revisi_soal uuid not null,
+  jangkar jsonb,
+  benih_jangkar uuid not null,
+  dibuat_pada timestamptz not null default now(),
+  unique (tugas_id, user_id, indeks_butir)
+);
+
+create table koreksi_nilai (     -- append-only; nilai efektif = koreksi terakhir atau hasil server
+  id uuid primary key default gen_random_uuid(),
+  percobaan_id uuid not null references percobaan_soal,
+  nilai_baru numeric not null check (nilai_baru between 0 and 1),
+  alasan text not null check (char_length(btrim(alasan)) between 3 and 500),
+  oleh uuid not null default auth.uid() references auth.users,
+  pada timestamptz not null default now()
 );
 ```
 
 ```ts
-interface KebijakanPenugasan {
+type ButirTugas =
+  | { jenis: 'kurasi'; slug: string; revisi: string }
+  | { jenis: 'pola'; slugPola: string; versi: number; benih: 'sama' | 'perPelajar'; benihSama?: string }
+  | { jenis: 'buatan'; idSoalBuatan: string };   // dari kalkulator pengajar, hanya untuk kelasnya
+
+interface KebijakanTugas {
   mode: 'latihan' | 'ujian';                // wajib; pelajar tidak bisa mengganti
   batasPercobaan: number | null;            // jumlah Kirim (Ujian) atau sesi soal (Latihan); null = bebas
   mulai: string | null; tenggat: string | null;   // waktu server
   terlambat: 'tolak' | 'terima_ditandai';
-  bobot: Record<string, number>;            // slug → bobot nilai dalam penugasan (bawaan rata)
+  bobot: number[];                          // per butir (bawaan rata)
   ambilNilai: 'pertama' | 'terbaik' | 'terakhir';
-  bolehLihatJawaban: boolean;               // Latihan saja; Lihat jawaban → nilai soal itu 0
-  tampilkanKunciSesudah: 'kirim' | 'tenggat' | 'pengajar';
+  bolehLihatJawaban: boolean;               // Latihan saja; Lihat jawaban → nilai butir itu 0
+  rilisNilai: 'segera' | 'sesudahTenggat' | 'manual';
+  rilisPembahasan: 'segera' | 'sesudahTenggat' | 'manual';
 }
+
+type StatusTugasPelajar = 'belum' | 'sedang' | 'dikirim' | 'terlambat' | 'dinilai' | 'tertutup';
+// statusTugas(kejadian, sesi, kebijakan, sekarangServer) — fungsi murni (riset kelas 7)
 ```
 
-- **Revisi soal dikunci saat diterbitkan.** *Alasan:* bila penulis menyunting soal di tengah penugasan, nilai pelajar
+Istilah: kode dan UI memakai **tugas** (kosakata pengguna, riset kelas 1b); kata "penugasan" di bagian lain dokumen ini
+berarti hal yang sama.
+
+- **Revisi soal/pola dikunci saat diterbitkan.** *Alasan:* bila penulis menyunting soal di tengah penugasan, nilai pelajar
   pertama dan terakhir harus dihitung dari soal yang sama. Kunci = `susunTabelSoal(engine(revisi.kasus))` di versi engine
   saat dinilai; `versi.kunci` di kejadian menandai bila engine berubah di tengah jalan (pengajar diberi tahu, tidak
   dinilai ulang otomatis; P7).
@@ -481,6 +543,12 @@ interface KebijakanPenugasan {
   dipilih (`pertama/terbaik/terakhir`) memakai **hasil_kolom_server**, dikali bobot, dijumlah. Latihan dinilai 1 bila
   akhirnya benar tanpa dibuka, 0 bila dibuka atau tidak selesai. (USULAN: Latihan dalam penugasan tanpa skor parsial,
   karena Latihan tidak menilai semua kolom.)
+- **Variasi per pelajar**: benih soal pola diturunkan server dari (tugas, pelajar, butir) dan disimpan di `sesi_soal`.
+  Varian pola bisa berbeda tingkat kesulitan (riset kelas 5a); statistik per pola dari kejadian menandai pola yang
+  variannya terlalu beragam supaya tim keilmuan meninjaunya.
+- **Salin ke periode baru**: menyalin tugas sebagai draf ke kelas baru; butir pola memakai benih baru.
+- **Ekspor rekap**: CSV/XLSX per kelas (nama tampilan, nomor induk bila diisi, nilai per tugas, nilai akhir), hanya
+  pengajar/asisten.
 - **Peran pengajar per kelas, bukan peran global.** Enum `peran` yang ada (`admin, penulis, reviewer`,
   `20260926000001_konten.sql:7`) milik portal konten; mencampur pengajar ke sana memberi pengajar akses portal lewat
   `peran_saya()`. *Keputusan:* `anggota_kelas.peran`, terpisah dari `peran_pengguna`.
@@ -512,7 +580,7 @@ membaca pelajar B; pengajar kelas X tidak bisa membaca kelas Y; pengajar tidak b
 
 ### 5.4 Penilaian di server
 
-- Edge function `nilai-percobaan`: menerima `{ idPercobaan, idPenugasan, soalSlug, isian, idSesiSoal }`. Ia:
+- Edge function `nilai-percobaan`: menerima `{ idPercobaan, idPenugasan, soalId, isian, idSesiSoal }`. Ia:
   1. memeriksa keanggotaan, jendela waktu (`mulai`/`tenggat` terhadap `now()` server) dan `batasPercobaan`;
   2. memuat revisi soal yang dikunci di penugasan;
   3. menjalankan engine → `susunTabelSoal` → `nilaiSemuaKolom` dengan **jangkar yang tersimpan di server**;
@@ -581,7 +649,7 @@ interface PercobaanTabel {
 | S1 | `nilaiTabel` → `nilaiSemuaKolom` + `putusanLatihan` (1.2); `nilaiTabel` tetap sebagai pembungkus | Tiap jenis soal baru menambah kolom; lebih murah memisah sebelum ada 7 jenis |
 | S2 | `susunTabelSoal`/`nilaiSemuaKolom` tidak mengimpor `format.ts`/`terjemah.ts`: nama orang dan `angkaLatin` dioper dari luar (`namaDari: (id) => string`), atau nama diisi oleh komponen | Membuat modul penilaian murni dan bisa dipindah ke paket bersama untuk server (audit T1). `angkaLatin` cukup disalin ke modul (fungsi kecil murni) atau dipindah ke `@waris/math`/paket bersama |
 | S3 | Jangkar jadi prop; `TabelLatihan` mengeluarkan `PercobaanTabel` lewat `saatPercobaan` (6.1) | Jenis soal lain akan meniru kontrak ini; mengubah 1 komponen sekarang lebih murah daripada 7 nanti |
-| S4 | Hasil menyimpan kejadian lokal (`arif-waris:percobaan`) dengan `revisiSoal`, `jenisSoal`, `versi`; antrean entri `percobaan` (berkunci id) | Data yang terkumpul mulai sekarang sudah bisa dinilai ulang; tidak perlu migrasi nanti |
+| S4 | Hasil menyimpan kejadian lokal (`arif-waris:percobaan`) dengan `soalId` (format `IdSoal`, siap untuk soal pola), `revisiSoal`, `jenisSoal`, `versi`; antrean entri `percobaan` (berkunci id) | Data yang terkumpul mulai sekarang sudah bisa dinilai ulang; tidak perlu migrasi nanti |
 | S5 | `catatLatihan` tidak menimpa `benar: true` dengan `false`; Lihat jawaban dicatat walau belum pernah mencoba | Memperbaiki T3/T4 di sisi klien sekarang; status daftar soal benar |
 | S6 | `versi.engine` dari versi paket saat build (bukan `VERSI_KB` tetap) | Tanpa ini, versi di kejadian tidak bermakna (T9) |
 
@@ -606,8 +674,15 @@ komponen lama.
 | **P2** | Mode Ujian (mockup dulu), rekor Ujian dari kejadian; umpan kolom benar (K12); saran belajar + soal serupa (4.4, 4A.2) | P0; hitung soal per topik |
 | **P2b (keterlibatan)** | Kemahiran per topik (4A.3), soal hari ini (4A.4), saran kesulitan (4A.5); fungsi ukuran keberhasilan (4A.7) | P1 (kejadian di server), mockup disetujui |
 | **P3 (fondasi kelas)** | Paket bersama penilaian (engine dispatcher + tabel latihan) yang bisa diimpor web dan edge function; edge function `nilai-percobaan`; `sesi_soal` (jangkar server) | P1, audit T1 |
-| **P4 (kelas)** | `kelas`, `anggota_kelas`, `penugasan`, RLS + pgTAP lintas peran; layar pengajar (buat kelas, terbitkan penugasan, lihat nilai); layar pelajar (gabung kode, daftar penugasan) | P3 |
+| **P4 (kelas inti, R4)** | `kelas` (periode), `anggota_kelas`, `tugas`, `sesi_soal`, `koreksi_nilai`, `peran_di_kelas()`, RLS + pgTAP lintas peran (audit 8c); pengajar: buat kelas, kode/tautan, tugas dari soal kurasi, pantau, ringkasan per kolom, koreksi, rilis, ekspor; pelajar: gabung, Tugas lintas kelas, kerjakan, nilai, arsip | P3, audit R0 (K1, UU PDP dasar) |
+| **P4b (pola soal, R5)** | Pola soal + `bangkitkanSoal`/`verifikasiSoal` di paket bersama; katalog pola; variasi per pelajar; tinjauan pola di portal | P3; tim keilmuan menulis pola |
+| **P4c (R6)** | Sesi langsung (Realtime), asisten, salin ke periode baru | P4 |
 | **P5 (opsional)** | Nyawa untuk mode Tantangan, bila pemilik tetap menginginkan sesudah melihat saran belajar | P3 |
+| **P6 (R7)** | Lembaga, admin lembaga, paket dan `hakFitur()`, pembayaran lewat gerbang (halaman bayar penyedia), invoice, DPA, undangan email | P4; keputusan model monetisasi |
+| **P7 (R8)** | Alat ukur keberhasilan: dasbor internal ukuran belajar (4A.7) + ukuran bisnis | P1 (data sejak awal) |
+| **P8 (R9)** | Ticketing dan dukungan dalam aplikasi, basis pengetahuan, halaman status | P6 |
+
+Roadmap lengkap dan alasannya: riset kelas bagian 8.
 
 ---
 
@@ -640,3 +715,13 @@ Pilihan keterlibatan (riset bagian 10; mockup menyusul di sesi lain sesudah dipi
 14. **Tantangan harian** (O4): soal hari ini tanpa bonus XP (usulan), atau dengan bonus kecil (mis. 5 XP)?
 15. **Batas waktu di Ujian tabel** (O8): tanpa batas waktu untuk mandiri (usulan), atau batas waktu opsional yang dipilih
     pelajar seperti mode ujian Kuis konsep?
+
+Kelas, skala soal, dan monetisasi (riset kelas bagian 10):
+
+16. **Cara gabung** (O1): kode + tautan sekarang, undangan email nanti?
+17. **Periode** (O2): kelas melekat pada satu periode dengan arsip otomatis?
+18. **Variasi soal per pelajar** (O4): pilihan pengajar per tugas?
+19. **Sesi langsung** (O5): tanpa peringkat kecepatan, agregat tanpa nama di proyektor?
+20. **Monetisasi** (O6): publik dan pengajar dasar gratis; Pengajar Pro per semester; Lembaga per pelajar aktif per
+    semester; tanpa iklan? Angka harga diuji dulu ke pengajar dan kaprodi.
+21. **Nama peran** (O7): Pengajar / Asisten / Pelajar untuk semua jenjang?
