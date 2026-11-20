@@ -112,7 +112,7 @@ dibangun benar tanpa ini; **Sebelum** = sebaiknya sebelum kelas; **Boleh tunggu*
 - Untuk kelas: tidak langsung blocker bila nilai kelas dinilai server (spec K10), tetapi pola yang sama (klien
   melaporkan benar) **tidak boleh** dipakai untuk penugasan.
 - Perbaikan bertahap: (1) murah: batasi laju (mis. trigger menolak > N log per menit per pengguna) dan cocokkan dengan
-  `progres_latihan`; ini hanya menyulitkan. (2) benar: XP soal tabel dihitung dari `percobaan_soal.hasil_kolom_server`
+  `progres_latihan`; ini hanya menyulitkan. (2) benar: XP soal tabel dihitung dari `percobaan_soal.hasil_kolom` (selalu hitungan server)
   (spec P1/P3, pertanyaan spec 6). Kuis konsep pilihan ganda bisa dinilai di SQL (`indeksBenar` ada di revisi) bila
   klien mengirim `jawaban` alih-alih `benar`.
 
@@ -296,7 +296,7 @@ Diperbarui sesudah bagian 7–9: keamanan dan UU PDP didahulukan.
 | 3 | S4 + S6: kejadian lokal dengan `revisiId`, jenis soal, versi engine | T7, T9, T10 | sekarang |
 | 4 | `percobaan_soal` + RLS + pgTAP; XP baru (bobot dari revisi, lihat jawaban membakar XP); `bobotXp` di skema | T2 sebagian, T3, T12 | spec P1 |
 | 5 | Spike edge function menjalankan engine (bab 16 satu kasus) | T14 | sebelum kelas |
-| 6 | Paket bersama penilaian + dispatcher; edge function `nilai-percobaan`; `sesi_soal` (jangkar server) | T1(b), T2 penuh | spec P3, **blocker kelas** |
+| 6 | Paket bersama penilaian + dispatcher; edge function `catat-percobaan` (spec 2.6; dimajukan ke spec P1, keputusan pemilik 2026-11-20); `sesi_soal` (jangkar server) | T1(b), T2 penuh | spec P1 + P3, **blocker kelas** |
 | 7 | `kelas`, `anggota_kelas`, `penugasan`, `peran_di_kelas()` + pgTAP lintas peran | T5, T15 | spec P4 |
 | 8 | Penanganan entri antrean racun | T10 | sebelum kelas |
 | boleh tunggu | T6 catatan, T11, T13, T16 | | |

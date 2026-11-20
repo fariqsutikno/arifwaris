@@ -2,7 +2,7 @@
 
 Induk: `00-induk.md` bagian 4 G7. Perilaku dan skema: spec 5.0–5.5 (tabel `kelas`, `anggota_kelas`, `tugas`, `sesi_soal`,
 `koreksi_nilai`, `nilai_tambahan`, `pengajuan_pengajar`, `ButirTugas`, `KebijakanTugas`). Keamanan: audit 8c butir 1–12.
-Alur pengguna: riset kelas bagian 7. Perkiraan: 25–40 orang-hari.
+Alur pengguna: riset kelas bagian 7. Perkiraan: 22–36 orang-hari.
 
 ## 0. Syarat masuk G7
 
@@ -15,24 +15,15 @@ Alur pengguna: riset kelas bagian 7. Perkiraan: 25–40 orang-hari.
 
 ---
 
-## 1. Fase P3: penilaian server tanpa kelas (4–6 hari)
+## 1. Fase P3: mode tugas di penilaian server (2–3 hari)
 
-Dibangun dan diuji **sebelum** tabel kelas, supaya risiko teknis terbesar selesai lebih dulu.
-
-1. **Bundel**: skrip `pnpm bundel:edge` (cara dari hasil spike) membuat satu berkas ESM `@waris/latihan` + engine untuk edge
-   function, dengan `__VERSI_ENGINE__` disuntik (`02` langkah 5.2). Bundel dibuat saat deploy, tidak di-commit.
-2. **Edge function `nilai-percobaan`** (pola `ai-bantu/index.ts`: klien anon + Authorization untuk membaca dengan RLS,
-   service role hanya untuk menulis hasil yang sudah diverifikasi; audit 8c butir 4):
-   - Masukan: `{ id, idSesiSoal, soalId, revisiSoal, aksi, isian, mode, konteks }`. **Tanpa `user_id`** (8c butir 1).
-   - Memuat revisi soal dari basis data (bukan dari klien), `muatSoal` → `jalankan` → `susunTabelSoal` →
-     `nilaiSemuaKolom` dengan jangkar dari benih server (mandiri: benih dikirim klien dan dicatat, karena latihan mandiri
-     memang tidak berisiko; tugas: dari `sesi_soal`, bagian 2).
-   - Menyisipkan baris `percobaan_soal` lengkap dengan `hasil_kolom_server`, `benar_semua_server`; idempoten per `id`
-     (8c butir 7).
-3. **Mandiri saat daring** memakai fungsi ini (bukan sisip langsung); saat luring tetap sisip langsung lewat antrean tanpa
-   kolom server. Fungsi XP memakai kolom server bila ada (`04` bagian 4).
-4. Uji: `deno test` untuk fungsi (tanpa JWT ditolak; id sama dua kali → hasil sama, satu baris; hasil untuk fixture B7 sama
-   dengan vitest); uji beban kecil (100 permintaan berurutan) untuk melihat waktu respons.
+Edge function `catat-percobaan`, bundelnya, dan validasi ketat spec 2.6 sudah ada sejak G3 (`04` bagian 2) untuk latihan
+mandiri. Di sini fungsi itu hanya diberi **mode tugas**:
+- Masukan menambah `idTugas`; `sesi_soal` (bagian 2.1) wajib ada untuk pengguna itu. Revisi soal, benih soal pola, dan
+  jangkar diambil dari `sesi_soal`/`tugas`; nilai kiriman klien untuk hal-hal itu diabaikan.
+- Pemeriksaan tambahan: anggota aktif kelas, jendela waktu `mulai`/`tenggat` terhadap `now()` server, batas percobaan
+  tahan balapan (audit 8c butir 3, 6, 8, 9).
+- Uji `deno test`: kasus di bagian 2.5.
 
 ## 2. Fase P4: kelas inti (12–18 hari)
 
@@ -50,13 +41,14 @@ Dibangun dan diuji **sebelum** tabel kelas, supaya risiko teknis terbesar selesa
    tugas_id uuid references tugas on delete set null` (spec 2.4 menyebutnya `id_penugasan`; pakai `tugas_id` supaya sama
    dengan `sesi_soal.tugas_id`, dan perbarui spec). RPC `terbitkan_tugas(id)` mengunci revisi tiap butir.
    RPC `mulai_sesi_soal(tugas_id, indeks_butir)`: cek anggota aktif + jendela waktu server; buat atau kembalikan
-   `sesi_soal` (unik per tugas, pelajar, butir); benih jangkar `gen_random_uuid()`; soal pola: benih turunan (tugas,
-   pelajar, butir) bila `perPelajar`.
+   `sesi_soal` (unik per tugas, pelajar, butir); benih jangkar `gen_random_uuid()`; soal pola: benih acak server
+   (`gen_random_uuid()`) per pelajar bila `perPelajar`, atau satu benih acak per butir bila `sama`; tidak diturunkan dari
+   id yang bisa ditebak (bagian 3.2).
 4. RLS `percobaan_soal` diperluas: pengajar/asisten membaca baris dengan `tugas_id` milik kelasnya; tidak pernah baris
    mandiri (spec 5.2). Pelajar **tidak** bisa menyisipkan baris ber-`tugas_id` (hanya edge function, 8c butir 3).
 
 ### 2.2 Edge function
-- `nilai-percobaan` mode tugas: cek keanggotaan, jendela waktu (`now()` server, 8c butir 8), batas percobaan tahan balapan
+- `catat-percobaan` mode tugas: cek keanggotaan, jendela waktu (`now()` server, 8c butir 8), batas percobaan tahan balapan
   (`select … for update` pada `sesi_soal` atau `unique (sesi, nomor_percobaan)`, 8c butir 6), jangkar dan revisi dari
   `sesi_soal`/`tugas` (8c butir 9), batas laju (8c butir 10).
 - `rekap-kelas`: `nilaiTugas(kejadian, kebijakan)` dan `statusTugas(...)` dari `@waris/latihan` (satu sumber aturan, tidak
@@ -85,34 +77,55 @@ kelas salah"), `nilaiEfektif(hasilServer, koreksi[])`. Uji tabel kasus untuk tia
 | `31_kelas_tulis.test.sql` | pelajar tidak bisa menyisipkan `percobaan_soal` ber-`tugas_id`, `koreksi_nilai`, `nilai_tambahan`, `sesi_soal`; tidak ada `update`/`delete` pada nilai |
 | `32_gabung.test.sql` | batas laju gabung; kode yang dimatikan menolak; kelas penuh (paket Gratis 20) menolak dengan alasan |
 | `33_pengajar.test.sql` | tanpa pengajuan disetujui tidak bisa membuat kelas; berkas verifikasi tidak terbaca pengguna lain |
-| `nilai-percobaan` (`deno test`) | batas percobaan tidak terlampaui oleh dua Kirim bersamaan; tenggat dari jam server; jangkar dari server dipakai walau klien mengirim jangkar lain |
+| `catat-percobaan` (`deno test`) | batas percobaan tidak terlampaui oleh dua Kirim bersamaan; tenggat dari jam server; jangkar dari server dipakai walau klien mengirim jangkar lain |
 
 ### 2.6 Retensi dan hapus
 - Hapus akun = kaskade semua baris pelajar, termasuk di kelas (spec 5.5). Pengajar diberi tahu di ekspor bahwa rekap yang
   sudah diunduh adalah tanggung jawab lembaganya.
 - Data kelas dihapus 1 tahun sesudah `periode_selesai` (USULAN, `01` bagian 2.5); pengajar diingatkan mengekspor.
 
-## 3. Fase P4b: pola soal (6–10 hari + pola dari tim keilmuan)
+## 3. Fase P4b: pola soal / generator jutaan soal (7–11 hari + pola dari tim keilmuan)
 
-Model: riset kelas 5b. Langkah:
-1. Jenis konten `pola_soal` (skema zod; ditinjau seperti revisi lain): slug, versi, bab, topik, tingkat, `bobotXp`, slot
-   ahli waris dengan rentang jumlah, syarat atas keluaran engine (mis. "harus 'aul"), rentang harta, templat teks, `refs`.
-2. `acakDariBenih(benih)` di `@waris/latihan`: PRNG deterministik kecil (mis. mulberry32 dari 32 bit pertama benih), tanpa
-   `Math.random`.
-3. `bangkitkanSoal(pola, benih) → Kasus | GAGAL` dan `verifikasiSoal(pola, kasus)`: engine `OK`, `susunTabelSoal` didukung,
-   batas B7, syarat pola. Benih yang gagal dilewati secara deterministik (benih berikutnya), dengan batas percobaan.
+Model: riset kelas 5b. "Jutaan soal" = pola × benih, dibangkitkan saat dibutuhkan; yang disimpan hanya pola (puluhan
+sampai ratusan) dan kejadian yang menyebut `IdSoal`.
+
+### 3.1 Membangun
+1. Jenis konten `pola_soal` (skema zod; masuk `JENIS_FIKIH`, jadi wajib ditinjau seperti revisi lain): slug, versi, bab,
+   topik, tingkat, `bobotXp`, slot ahli waris dengan rentang jumlah, syarat atas keluaran engine (mis. "harus 'aul"),
+   rentang harta, templat teks, `refs`.
+2. `acakDariBenih(benih)` di `@waris/latihan`: PRNG deterministik kecil (mis. mulberry32), tanpa `Math.random`.
+3. `bangkitkanSoal(pola, benih) → Kasus | GAGAL` dan `verifikasiSoal(pola, kasus)`: engine `OK`, `susunTabelSoal`
+   didukung, batas B7, syarat pola. Benih yang gagal dilewati secara deterministik (benih berikutnya), paling banyak 50 kali.
 4. `muatSoal` cabang `pola` aktif (`02` bagian 6.3). `IdSoal` pola = `${slug}@${versi}#${benih}`.
 5. Katalog pola untuk pengajar dan pelajar (saring bab/topik/jenis/tingkat); pratinjau beberapa benih contoh.
 6. Portal: tinjau pola dengan pratinjau 10 benih dan persentase benih yang lolos verifikasi; pola < 80% lolos ditolak
-   (USULAN).
-7. XP soal pola hanya dari penilaian server (`04` bagian 4). Statistik per pola dari kejadian menandai pola yang variannya
-   terlalu beragam (riset kelas 5a).
-8. Uji: `bangkitkanSoal` sama persis di vitest dan `deno test` untuk 1.000 benih; property test: semua soal hasil pola yang
-   lolos verifikasi punya kunci tabel.
+   (USULAN). Statistik per pola dari kejadian menandai pola yang variannya terlalu beragam (riset kelas 5a).
+
+### 3.2 Pengamanan generator (keputusan pemilik 2026-11-20: tidak menerima kebenaran dari klien)
+
+| Celah | Pengaman |
+|---|---|
+| Pelajar memilih benih yang mudah, atau mencoba banyak benih sampai dapat soal yang sudah ia kenal | **Benih hanya diterbitkan server**: mandiri lewat `ambil_soal_pola(slug_pola)` (benih dari `gen_random_uuid()`, sekaligus mencatat kejadian `buka`); tugas lewat `sesi_soal`. `catat-percobaan` menolak kejadian soal pola yang benihnya tidak pernah diterbitkan untuk pengguna itu (spec 2.6 butir 7) |
+| Menyalin `IdSoal` milik teman untuk mendapat XP | sama: benih terikat ke pengguna penerimanya |
+| Ladang XP karena soal tak terbatas | satu kali per soal + batas XP pola harian (USULAN 300 XP/hari, `04` bagian 5.3) + batas laju `ambil_soal_pola` (USULAN 60/jam) |
+| Klien mengirim soal hasil bangkitan sendiri (susunan karangan) | server tidak pernah menerima soal dari klien; soal dibangkitkan ulang di server dari (pola terbit, versi, benih) lalu diverifikasi |
+| Pola mengubah perilaku diam-diam | versi pola beku sesudah terbit; perubahan = versi baru; kejadian lama tetap merujuk versinya |
+| Pola menghasilkan kasus fikih yang blocked atau di luar KB | pola hanya menyusun input; engine mengembalikan `TIDAK_DIDUKUNG`/`PERLU_INPUT` dan benih itu dilewati; pola wajib `refs` dan ditinjau tim keilmuan |
+| Pola dengan rentang besar membuat hitungan berat (penolakan layanan) | skema membatasi jumlah slot dan jumlah orang per slot; engine sudah punya batas keras jumlah "dunia" taqdir; paling banyak 50 benih dicoba per permintaan; batas waktu fungsi |
+| Klien dan server menghasilkan soal berbeda | uji `bangkitkanSoal` sama persis di vitest dan `deno test` untuk 1.000 benih; versi engine dicatat di tiap kejadian |
+| PRNG bisa ditebak | tidak masalah: keacakan datang dari benih yang dipilih server; PRNG hanya mengembangkan benih itu secara deterministik |
+
+Batas yang jujur: kode generator ikut terbundel di aplikasi, jadi siapa pun bisa membangkitkan soal pola di perangkatnya
+dan menghitung kuncinya. Itu tidak memberi XP atau nilai, karena keduanya hanya dari benih terbitan server yang dinilai
+server.
+
+### 3.3 Uji
+Selain uji di 3.2: property test bahwa semua soal hasil pola yang lolos verifikasi punya kunci tabel; pgTAP bahwa
+`ambil_soal_pola` tidak bisa dipanggil `anon` dan mencatat `buka`; `deno test` bahwa benih asing ditolak.
 
 ## 4. Fase P4c: sesi langsung dan data pengajar lanjutan (5–8 hari)
 - Sesi langsung: Supabase Realtime (broadcast) untuk soal yang sedang dibahas; layar proyektor menampilkan **agregat tanpa
-  nama** per kolom, tanpa peringkat kecepatan (KL7). Kiriman tetap lewat `nilai-percobaan`.
+  nama** per kolom, tanpa peringkat kecepatan (KL7). Kiriman tetap lewat `catat-percobaan`.
 - Asisten pengajar (diundang per kelas, hak spec 5.2); salin tugas ke periode baru (pola dengan benih baru).
 - Data perlakuan lapis 2–3 (spec 5.4c): matriks pelajar × topik dan profil 5 dimensi dalam rentang periode, kelompok
   kesalahan; dihitung di edge function memakai `kemahiranTopik` dan `profilKecakapan` yang sama dengan tampilan pribadi

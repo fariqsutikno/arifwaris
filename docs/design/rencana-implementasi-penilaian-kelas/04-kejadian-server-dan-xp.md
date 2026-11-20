@@ -1,92 +1,134 @@
-# 04. Kejadian di server dan XP baru (G3, fase P1)
+# 04. Kejadian di server, penilaian server, dan XP baru (G3, fase P1)
 
-Induk: `00-induk.md` bagian 4 G3. Perilaku: spec 2.3–2.5 (skema, migrasi data), 3.1–3.2 (aturan XP, bobot). Audit T2, T3, T10, T12.
-Prasyarat: G1 (kejadian lokal mengantre), G2 (semua jenis soal menghasilkan kejadian seragam).
-Perkiraan: 4–6 orang-hari.
+Induk: `00-induk.md` bagian 4 G3. Perilaku: spec 2.3–2.6 (skema, migrasi data, **validasi dan anti-manipulasi**), 3.1–3.2
+(aturan XP, bobot). Audit T2, T3, T10, T12, 8c.
+Prasyarat: G1 (paket `@waris/latihan`, spike edge function lulus, kejadian lokal mengantre), G2 (semua jenis soal
+menghasilkan kejadian seragam).
+Perkiraan: 8–12 orang-hari (naik dari 4–6 karena penilaian server dimajukan dari G7, keputusan pemilik 2026-11-20).
+
+**Keputusan pemilik 2026-11-20:** tidak ada kebenaran yang diterima dari sisi klien. Klien hanya mengirim isian dan klik
+pelajar; benar/salah, XP, waktu, urutan, dan versi selalu dihitung server (spec 2.6).
 
 **Selesai bila:**
-- [ ] Kejadian dari antrean terkirim ke `percobaan_soal`, append-only, tidak dobel saat dikirim ulang.
-- [ ] XP dan hari aktif dihitung dari `log_kegiatan` (sebelum peralihan) ∪ `percobaan_soal` (sesudahnya) dengan aturan
-      spec 3.1; total XP setiap pengguna lama **tidak berubah** pada hari peralihan (uji pgTAP).
+- [ ] Satu-satunya jalan menulis `percobaan_soal` adalah edge function `catat-percobaan`; `authenticated` dan `anon` tidak
+      punya `insert`/`update`/`delete` (uji pgTAP).
+- [ ] `catat-percobaan` menolak setiap kiriman yang melanggar spec 2.6 butir 1–7 (uji `deno test` per butir, bagian 2.3).
+- [ ] Kuis konsep dan pelajaran juga lewat fungsi server; `log_kegiatan` tidak bisa lagi ditulis langsung oleh klien.
+- [ ] XP dan hari aktif dihitung **hanya** dari baris tulisan server dengan aturan spec 3.1; total XP setiap pengguna lama
+      **tidak berubah** pada hari peralihan (uji pgTAP).
 - [ ] Lihat jawaban sebelum benar pertama membakar XP soal itu; ulang soal = 0 XP tapi tetap hari aktif.
 - [ ] `bobotXp` ada di skema soal, terisi otomatis di portal ("Poin XP"), dan XP dibaca dari revisi yang dikerjakan.
-- [ ] XP palsu terbatas: paling banyak Σ `bobotXp` semua soal kurasi, satu kali per soal (bagian 4).
 
 ---
 
 ## 1. Migrasi `…_percobaan_soal.sql`
 
-- Tabel persis spec 2.4, **tanpa** kolom `id_penugasan` (ditambah di `06` bersama tabel tugas), dan dengan aksi tambahan
-  `'buka'` di `check` kolom `aksi` (`05` bagian 2: waktu pengerjaan yang dipercaya untuk lencana kecepatan dan kelancaran).
-- RLS: `insert` dan `select` baris sendiri (`user_id = auth.uid()`); tidak ada `update`/`delete` untuk `authenticated`.
-  Kolom `hasil_kolom_server`, `benar_semua_server`, `diterima_pada` tidak di-grant untuk ditulis (pola
-  `20260927000003_akun.sql:38-39`).
-- `revisi_soal references revisi` (soal kurasi). Kejadian dari kartu lama tanpa revisi tidak dikirim ke tabel ini; tetap
-  lewat `log_kegiatan`.
-- **Batas laju** (audit 8c butir 10): trigger `before insert` menolak bila pengguna sudah menyisipkan > 60 baris dalam
-  60 detik terakhir (USULAN). Galat batas laju membuat entri tetap di antrean dan dicoba lagi nanti.
+- Tabel persis spec 2.4: kolom `aksi` memuat `'buka'`; kolom hasil bernama `hasil_kolom` dan `benar_semua` (tidak ada
+  kolom "versi klien" dari hasil); **tanpa** kolom `tugas_id` (ditambah di `06` bersama tabel `tugas`).
+- Hak akses: `revoke all on percobaan_soal from anon, authenticated; grant select on percobaan_soal to authenticated;`
+  RLS `select` hanya `user_id = auth.uid()`. Tidak ada kebijakan `insert`. Penulis = service role di edge function.
+- Indeks unik parsial `(id_sesi_soal) where aksi = 'kirim' and mode = 'ujian'` (satu Kirim per sesi Ujian) dan
+  `(id_sesi_soal) where aksi = 'buka'` (satu buka per sesi).
+- `revisi_soal references revisi`. Kejadian kartu lama tanpa revisi tidak masuk tabel ini (kartu lama dihapus di G2).
 - Indeks `(user_id, soal_id, diterima_pada)` sesuai spec.
-- Uji pgTAP `20_percobaan_soal.test.sql`: tidak bisa membaca/menulis milik orang lain; tidak bisa `update`/`delete`;
-  tidak bisa menulis kolom server; id sama dua kali → baris kedua diabaikan (klien memakai `ignoreDuplicates`); batas laju.
+- Uji pgTAP `20_percobaan_soal.test.sql`: `authenticated` tidak bisa sisip/ubah/hapus, termasuk barisnya sendiri; tidak
+  bisa membaca milik orang lain; `anon` tidak bisa apa pun; indeks unik menolak Kirim Ujian kedua.
 
-## 2. Repositori dan antrean
+## 2. Edge function `catat-percobaan` (satu-satunya pintu tulis)
 
-- `RepositoriPengguna.simpanPercobaan(kejadian: KejadianPercobaan[])` (sisip berkelompok, `ignoreDuplicates`) dan
-  `bacaPercobaan(sejak?: string)` di `packages/data/src/antarmuka.ts`; implementasi Supabase dan memori.
-- Pemetaan kejadian ↔ baris di `packages/data/src/supabase/peta.ts` (nama kolom snake_case, `aksi: 'lihatJawaban'` ↔
-  `'lihat_jawaban'`, `jenisSoal: 'dzawilArham'` ↔ `'dzawil_arham'`). Pemetaan ini satu-satunya tempat terjemahan nama.
-- Antrean: pengirim berhenti melewati entri `percobaan` (`02` langkah 5.3) dan mengirimnya berurutan.
-- **Entri racun** (audit T10): entri yang ditolak server karena bentuknya (bukan karena jaringan/batas laju) dipindah ke
-  `arif-waris:antrean-gagal` (maks 50) supaya tidak menyumbat antrean selamanya; ditampilkan sebagai jumlah di Profil.
-- Login: `gabung.ts` menarik `bacaPercobaan()` dan menggabung per id dengan lokal (gabungan himpunan).
+### 2.1 Letak dan bundel
+`supabase/functions/catat-percobaan/`, memakai bundel `@waris/latihan` + engine dari cara yang terbukti di spike G1
+(`hasil-spike-edge.md`), dengan `__VERSI_ENGINE__` disuntik saat bundel. Pola akses mengikuti `ai-bantu/index.ts`: klien
+anon + header Authorization untuk memverifikasi pengguna dan membaca dengan RLS, service role hanya untuk menulis baris
+yang sudah lolos validasi.
 
-## 3. Fungsi XP dan hari aktif
+### 2.2 Urutan pemeriksaan (spec 2.6; berhenti di pemeriksaan pertama yang gagal)
+1. **Identitas**: `auth.getUser(jwt)`; tanpa sesi sah → 401. Badan tidak punya `user_id`; bila ada → 400.
+2. **Batas laju**: per pengguna, USULAN 30 kejadian/menit dan 2.000/hari (tabel kecil `batas_laju` atau hitung dari
+   `percobaan_soal` 60 detik terakhir). Lewat batas → 429; klien membiarkan entri di antrean.
+3. **Bentuk**: skema ketat (zod atau validasi tulisan tangan setara) dengan `strict()`: ukuran badan ≤ 32 KB; `id`,
+   `idSesiSoal`, `revisiSoal` UUID; `soalId` sesuai pola kurasi atau pola soal; `aksi` ∈ {buka, periksa, kirim,
+   lihatJawaban}; `mode` ∈ {latihan, ujian}; kunci tak dikenal → 400. Tidak ada koreksi diam-diam (memotong, mengubah).
+4. **Soal**: revisi dimuat dari basis data; harus revisi soal yang disebut `soalId` dan pernah terbit (bukan draf, bukan
+   milik soal lain). Soal pola: benih harus pernah diterbitkan untuk pengguna ini (`06` bagian 3); pola dibangkitkan ulang
+   dan diverifikasi di server.
+5. **Isian terhadap tabel**: server menyusun tabel sendiri (`muatSoal` → `jalankan` → `susunTabelSoal`), lalu:
+   hanya id kolom dan id baris yang ada; sel `pilih` hanya dari daftar pilihannya; sel `bulat` hanya `^\d{0,6}$` sesudah
+   `angkaLatin`; sel terkunci, sel tanpa kunci, dan sel jangkar tidak boleh diisi; jangkar ∈ calon `pilihJangkar`.
+   `isian` wajib untuk periksa/kirim, wajib kosong untuk buka.
+6. **Urutan**: Kirim Ujian kedua dalam sesi yang sama → 409; `periksa` dalam sesi Ujian → 400; kejadian sesudah Kirim
+   Ujian dalam sesi yang sama selain `lihatJawaban` → 409.
+7. **Idempoten**: `id` sudah ada dengan isi sama → kembalikan hasil lama (200); isi berbeda → 409.
+8. **Nilai dan tulis**: `nilaiSemuaKolom` di server; tulis `hasil_kolom`, `benar_semua`, `versi` (engine dari bundel,
+   `kunci` = hash `tabelKanonik`), `diterima_pada = now()`. Balasan: hasil per kolom/sel (tanpa kunci jawaban kecuali aksi
+   `lihatJawaban` atau sesudah Kirim Ujian, sama dengan yang memang tampil di layar).
 
-### 3.1 Satu sumber aturan, dua bahasa
-Aturan spec 3.1 ditulis dua kali: `xpSoal()` TS di `@waris/latihan` (dipakai klien untuk tampilan langsung) dan SQL di
-server (sumber kebenaran papan dan streak). Supaya tidak menyimpang:
-- Berkas kasus uji tunggal `packages/latihan/src/__tests__/xp-kasus.json` (urutan kejadian → XP yang diharapkan), mencakup
-  tiap butir spec 3.1 (benar pertama, lihat jawaban sebelum/sesudah benar, ulang, Ujian parsial lalu Latihan benar, Ujian
-  ulang, revisi berbeda).
-- vitest membacanya langsung. Skrip `scripts/xp-kasus-ke-sql.ts` (jalankan dengan `vite-node`, pola `pnpm db:refs`)
-  menulis `supabase/tests/database/21_xp_kasus.test.sql` dari JSON yang sama; uji CI gagal bila berkas SQL tidak sama
-  dengan hasil skrip.
+### 2.3 Uji (`deno test` di folder fungsi + satu uji integrasi dengan `supabase functions serve`)
+Satu kasus uji per butir 2.2 (termasuk: `user_id` disisipkan di badan; revisi draf; revisi soal lain; kolom/baris karangan;
+nilai pilih di luar daftar; `1/8` di sel bulat; isian di sel jangkar; jangkar bukan calon; Kirim Ujian dua kali, juga
+bersamaan; id sama isi beda; badan 33 KB; soal pola dengan benih yang tidak diterbitkan). Hasil server untuk fixture B7
+sama persis dengan vitest.
 
-### 3.2 SQL
-- Fungsi `xp_percobaan(p_user uuid)` (`security definer` hanya bila perlu, `set search_path`, tidak diekspos ke `anon`)
-  menerapkan spec 3.1 per `soal_id`, membaca `bobotXp` dari `revisi.isi ->> 'bobotXp'` milik `revisi_soal` kejadian
-  benar pertama; cadangan `xp_konten` untuk revisi lama tanpa `bobotXp`.
-- Peralihan: soal yang sudah memberi XP lewat `log_kegiatan` tidak memberi lagi lewat `percobaan_soal` (spec 2.5 butir 2).
-  Gabungkan di fungsi XP yang dipakai papan (`peristiwa_xp`, `20260927000006_peringkat.sql`).
-- `hari_aktif`: tambahkan `percobaan_soal.diterima_pada` ke sumber hari aktif. Sesudah itu klien **berhenti** mengirim
-  baris `log_kegiatan` untuk soal tabel (kuis konsep dan pelajaran tetap).
-- `progres_latihan.benar` diisi ulang sekali sebagai "pernah benar" (`bool_or(benar)` dari `log_kegiatan` per soal),
-  spec 2.5 butir 3.
-- Biaya (audit T12): hitung per pengguna saat diminta, papan hanya untuk peserta opt-in (`01` 2.1). Bila lambat di data
-  nyata, baru tambah tabel ringkasan yang diperbarui trigger.
+## 3. Kuis konsep dan pelajaran lewat server
+
+Supaya `log_kegiatan` tidak lagi menjadi celah (audit T2):
+- Fungsi yang sama menerima `{ jenis: 'kuis', id, slug, revisi, indeksPilihan }`: server membaca `indeksBenar` dari revisi
+  soal kuis dan menulis `log_kegiatan` dengan `benar` hitungan server.
+- `{ jenis: 'pelajaran', id, slug }`: slug harus pelajaran terbit; XP pelajaran tetap sekali per slug (aturan yang ada).
+- Migrasi: `revoke insert on log_kegiatan from authenticated` (sekarang `grant insert (id, jenis, slug, benar)`,
+  `20260927000003_akun.sql:38-39`). Dipasang bersamaan dengan rilis klien baru; entri antrean dari klien lama yang ditolak
+  masuk `arif-waris:antrean-gagal` (bagian 4).
+
+## 4. Klien: repositori dan antrean
+
+- `RepositoriPengguna.kirimPercobaan(kejadian)` memanggil `catat-percobaan` (bukan sisip tabel) dan mengembalikan hasil
+  server; `bacaPercobaan(sejak?)` membaca tabel (RLS). Pemetaan nama kolom di `packages/data/src/supabase/peta.ts`.
+- Antrean mengirim entri `percobaan` berurutan. Hasil server **menggantikan** hasil lokal untuk status soal, centang, XP,
+  dan kemahiran; bila berbeda dari hasil lokal, layar mengikuti server.
+- Klien tetap menilai sendiri hanya untuk umpan langsung (dan saat luring). Status lokal yang belum dinilai server
+  ditandai "belum tersinkron" dan tidak menambah XP di layar.
+- **Entri racun** (audit T10): ditolak karena bentuk (400/409) → pindah ke `arif-waris:antrean-gagal` (maks 50), terlihat
+  jumlahnya di Profil. 401/429/jaringan → tetap di antrean.
+- Login: `gabung.ts` menarik `bacaPercobaan()` dan menggabung per id (gabungan himpunan).
+
+## 5. Fungsi XP dan hari aktif
+
+### 5.1 Satu sumber aturan, dua bahasa
+`xpSoal()` TS di `@waris/latihan` (tampilan) dan SQL di server (papan, streak, kebenaran). Supaya tidak menyimpang:
+berkas kasus uji tunggal `packages/latihan/src/__tests__/xp-kasus.json`, dibaca vitest langsung dan diubah menjadi
+`supabase/tests/database/21_xp_kasus.test.sql` oleh `scripts/xp-kasus-ke-sql.ts` (`vite-node`, pola `pnpm db:refs`);
+CI gagal bila berkas SQL berbeda dari hasil skrip. Kasus: benar pertama, lihat jawaban sebelum/sesudah benar, ulang,
+Ujian parsial lalu Latihan benar, Ujian ulang, revisi berbeda, soal pola.
+
+### 5.2 SQL
+- `xp_percobaan(p_user uuid)` (`set search_path`, tidak diekspos ke `anon`) menerapkan spec 3.1 per `soal_id` atas baris
+  `percobaan_soal` (semuanya tulisan server), bobot dari `revisi.isi ->> 'bobotXp'` milik `revisi_soal`; cadangan
+  `xp_konten` untuk revisi lama.
+- Peralihan: soal yang sudah memberi XP lewat `log_kegiatan` lama tidak memberi lagi (spec 2.5 butir 2). Gabungkan di
+  `peristiwa_xp` (`20260927000006_peringkat.sql`).
+- `hari_aktif`: tambahkan `percobaan_soal.diterima_pada`. Klien berhenti mengirim `log_kegiatan` untuk soal tabel.
+- `progres_latihan.benar` diisi ulang sekali sebagai "pernah benar" (spec 2.5 butir 3).
+- Biaya (audit T12): hitung per pengguna saat diminta; papan hanya peserta opt-in (`01` 2.1).
   `-- ponytail: XP dihitung ulang per permintaan; tabel ringkasan bila papan > ±1 detik`.
 
-## 4. Kenapa latihan mandiri tidak dinilai server dulu (gerbang G3, spec 8.6)
+### 5.3 Batas XP soal pola
+Soal pola tidak terbatas, jadi selain satu kali per soal: XP dari soal pola dibatasi per hari (USULAN 300 XP/hari) dan
+hanya untuk benih yang diterbitkan server ke pengguna itu (`06` bagian 3). Menyalin benih orang lain tidak memberi XP.
 
-Kejadian mandiri tetap ditulis klien, jadi `benar_semua_klien` masih bisa dipalsukan. Yang berubah: XP hanya bisa diklaim
-**sekali per soal** dengan bobot dari revisinya, dan dibatasi laju. Dengan soal kurasi yang jumlahnya terbatas, XP palsu
-paling banyak Σ `bobotXp` semua soal; tidak lagi tak terbatas seperti `log_kegiatan` sekarang (T2).
-
-Dua titik yang mengubah keputusan ini:
-1. Saat fase P3 ada (`06` bagian 1), fungsi XP memakai `benar_semua_server` bila terisi. Mengaktifkan penilaian server untuk
-   mandiri cukup dengan memanggil edge function yang sama dari klien saat daring.
-2. **Soal pola** (fase P4b) membuat jumlah soal tak terbatas. Sejak saat itu XP dari soal pola **hanya** dihitung dari
-   `benar_semua_server`; tanpa itu, XP palsu kembali tak terbatas.
-
-## 5. `bobotXp` di konten dan portal
+## 6. `bobotXp` di konten dan portal
 
 - Skema zod `soal_hitung` (`packages/content/src/skema.ts`, ±baris 103): `bobotXp: z.number().int().min(1).max(200).optional()`.
-- Tabel bobot usulan spec 3.2 menjadi satu konstanta `BOBOT_XP_USULAN` di `@waris/latihan` (jenis + tingkat/jumlah mayit →
-  angka). Portal memakainya untuk mengisi field **Poin XP** secara otomatis setelah berkas kasus diunggah dan jenisnya
-  diketahui dari engine; penulis boleh mengubah. Tidak ada nama field teknis di layar.
-- Revisi lama tanpa `bobotXp` memakai `xp_konten` (sama dengan sekarang), jadi XP soal biasa tidak bergeser.
+- Tabel bobot usulan spec 3.2 = konstanta `BOBOT_XP_USULAN` di `@waris/latihan`. Portal mengisi **Poin XP** otomatis setelah
+  berkas kasus diunggah dan jenisnya diketahui dari engine; penulis boleh mengubah (tetap dibatasi 1–200 di skema dan di
+  server). Tidak ada nama field teknis di layar.
 
-## 6. Jangan
+## 7. Batas yang jujur
+Server menjamin *apa yang dihitung*. Server tidak bisa menjamin pelajar tidak menghitung kunci di kalkulator, atau tidak
+membuka jawaban di perangkat lalu membuang kejadian `lihatJawaban` dari antrean (engine berjalan di perangkat). Ini batas
+yang sama dengan audit 8c butir 12 dan alasan tugas diperlakukan *open book*.
+
+## 8. Jangan
+- Membuka `insert` ke `percobaan_soal` atau `log_kegiatan` untuk klien, "sementara" sekalipun.
+- Menyimpan atau memakai hasil benar/salah kiriman klien.
 - Mengonversi `log_kegiatan` lama menjadi kejadian palsu (spec 2.5 butir 1).
-- Membaca bobot dari revisi terbit saat menghitung (XP lama bergeser diam-diam); selalu dari revisi di kejadian.
-- Memberi XP dari soal pola tanpa penilaian server.
+- Membaca bobot dari revisi terbit saat menghitung; selalu dari revisi di kejadian.

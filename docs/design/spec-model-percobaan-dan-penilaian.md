@@ -116,12 +116,12 @@ interface KejadianPercobaan {
   revisiSoal: string;               // revisi.id konten yang dikerjakan: revisi soal kurasi atau revisi pola (isi + bobotXp beku)
   jenisSoal: JenisSoal;             // 'biasa' | 'munasakhat' | 'dzawilArham' | 'mafqud' | 'khuntsa' | 'haml' | 'gharqa'
   mode: 'latihan' | 'ujian';
-  konteks: { jenis: 'mandiri' } | { jenis: 'penugasan'; idPenugasan: string };
-  aksi: 'periksa' | 'kirim' | 'lihatJawaban';
-  isian: IsianTabel | null;          // null untuk lihatJawaban tanpa isian
+  konteks: { jenis: 'mandiri' } | { jenis: 'tugas'; idTugas: string };
+  aksi: 'buka' | 'periksa' | 'kirim' | 'lihatJawaban';   // 'buka' = soal dibuka; waktu server untuk kecepatan (4A.10)
+  isian: IsianTabel | null;          // null untuk buka dan lihatJawaban tanpa isian
   jangkar: Jangkar | null;
-  hasilKolom: HasilKolom[] | null;   // putusan klien; server menghitung ulang untuk penugasan
-  benarSemua: boolean;
+  hasilKolom: HasilKolom[] | null;   // putusan klien, HANYA untuk tampilan langsung; tidak pernah dikirim sebagai kebenaran
+  benarSemua: boolean;               // idem; server menghitung sendiri (2.6)
   dimulaiPada: string;              // jam perangkat, hanya informasi (lama mengerjakan); tidak dipercaya
   diterimaPada?: string;            // diisi server (default now()), satu-satunya waktu yang dipercaya
   versi: { engine: string; ruleset: Ruleset; madzhab: string; kunci: string };
@@ -177,24 +177,54 @@ create table percobaan_soal (
   revisi_soal uuid not null references revisi,
   jenis_soal text not null check (jenis_soal in ('biasa','munasakhat','dzawil_arham','mafqud','khuntsa','haml','gharqa')),
   mode text not null check (mode in ('latihan','ujian')),
-  id_penugasan uuid references penugasan on delete set null,   -- null = mandiri; tabel penugasan menyusul (bagian 5)
-  aksi text not null check (aksi in ('periksa','kirim','lihat_jawaban')),
+  tugas_id uuid references tugas on delete set null,   -- null = mandiri; kolom ditambah bersama tabel tugas (bagian 5)
+  aksi text not null check (aksi in ('buka','periksa','kirim','lihat_jawaban')),
   isian jsonb check (pg_column_size(isian) < 16000),
   jangkar jsonb,
-  hasil_kolom_klien jsonb,
-  benar_semua_klien boolean not null,
-  hasil_kolom_server jsonb,          -- diisi edge function; wajib untuk penugasan
-  benar_semua_server boolean,
-  dimulai_pada_klien timestamptz,
+  hasil_kolom jsonb,                 -- dihitung edge function dari isian; null untuk buka/lihat_jawaban
+  benar_semua boolean,               -- dihitung edge function; tidak pernah dari klien
+  dimulai_pada_klien timestamptz,    -- informasi saja, tidak dipakai untuk aturan apa pun
   diterima_pada timestamptz not null default now(),
   versi jsonb not null
 );
 create index on percobaan_soal (user_id, soal_id, diterima_pada);
--- RLS: insert & select baris sendiri; tidak ada update/delete untuk authenticated (append-only).
--- Kolom *_server dan diterima_pada tidak di-grant ke authenticated (pola log_kegiatan baris 38-39).
+-- RLS: select baris sendiri. TIDAK ADA insert/update/delete untuk authenticated maupun anon:
+-- satu-satunya penulis adalah edge function `catat-percobaan` (service role) sesudah validasi 2.6.
 ```
 
-Kolom `id_penugasan` baru ditambahkan bersama tabel `penugasan` (fase kelas); di fase sekarang tabel dibuat tanpanya.
+Kolom `tugas_id` baru ditambahkan bersama tabel `tugas` (fase kelas); di fase sekarang tabel dibuat tanpanya.
+(Nama lama di versi spec ini: `id_penugasan`; diganti supaya sama dengan `sesi_soal.tugas_id`.)
+
+### 2.6 Validasi dan anti-manipulasi (keputusan pemilik 2026-11-20: tidak menerima kebenaran dari sisi klien)
+
+Prinsip: **klien hanya mengirim apa yang diketik dan diklik pelajar.** Benar/salah, skor, XP, waktu, urutan, benih soal
+pola, dan versi engine selalu ditentukan server. Hasil di layar klien hanya umpan langsung (supaya luring tetap jalan) dan
+diganti hasil server begitu terkirim.
+
+Edge function `catat-percobaan` (satu-satunya pintu tulis untuk kejadian soal tabel, mandiri maupun tugas):
+1. **Identitas**: JWT diverifikasi (`auth.getUser`); badan permintaan **tidak** punya `user_id`.
+2. **Bentuk** (ditolak utuh bila ada yang tidak cocok, galat 400, tidak ada perbaikan diam-diam):
+   ukuran badan ≤ 32 KB; `id`, `idSesiSoal`, `revisiSoal` UUID; `soalId` cocok pola kurasi `^[A-Za-z0-9-]{1,40}$` atau
+   pola `^[a-z0-9-]{1,60}@\d{1,4}#\d{1,10}$`; `aksi`, `mode` dari daftar tertutup; kunci tak dikenal ditolak.
+3. **Isi terhadap soal**: server memuat revisi dari basis data (harus revisi soal itu yang pernah terbit, bukan draf),
+   menyusun tabel sendiri, lalu memeriksa isian: hanya id kolom dan id baris yang ada di tabel; sel `pilih` hanya nilai
+   dari daftar pilihannya; sel `bulat` hanya `^\d{0,6}$` sesudah angka Arab diubah ke Latin; sel terkunci, sel `–`, dan
+   sel jangkar tidak boleh diisi. Jangkar harus salah satu calon `pilihJangkar` (tugas: jangkar dari `sesi_soal`, kiriman
+   klien diabaikan).
+4. **Urutan dan batas**: Ujian = satu `kirim` per `idSesiSoal` (indeks unik parsial); `buka` dicatat sekali per sesi;
+   batas laju per pengguna per menit dan per hari; tugas: jendela waktu dan batas percobaan dari server (5.4).
+5. **Idempoten**: `id` yang sama dengan isi sama → hasil yang sudah ada; `id` sama dengan isi berbeda → 409.
+6. **Hasil**: `nilaiSemuaKolom` dijalankan server; `versi.engine` dan `versi.kunci` diisi server; `diterima_pada = now()`.
+7. **Soal pola**: kejadian untuk soal pola hanya diterima bila benihnya **diterbitkan server untuk pengguna itu** (bagian
+   5.4 "pola"); soal dibangkitkan ulang dan diverifikasi di server dari (pola terbit, benih), tidak pernah dari kiriman klien.
+
+Sumber XP, streak, papan, kemahiran, dan nilai **hanya** baris yang ditulis fungsi ini (dan, untuk kuis konsep dan
+pelajaran, fungsi tulis server yang setara; `log_kegiatan` tidak lagi bisa ditulis langsung klien).
+
+**Batas yang jujur** (audit 8c butir 12): engine juga berjalan di perangkat, jadi pelajar selalu bisa menghitung kunci
+sendiri, atau membuka jawaban lalu tidak mengirim kejadian `lihat_jawaban` (misalnya luring lalu menghapus antrean).
+Server bisa menjamin *apa yang dihitung* (benar/salah, waktu, batas, satu kali per soal) tetapi tidak bisa menjamin
+*pelajar tidak mencontek*. Karena itu tugas tetap *open book*, dan lencana kecepatan memakai waktu server sejak `buka`.
 
 ### 2.5 Migrasi dari data yang ada
 
@@ -623,9 +653,10 @@ berarti hal yang sama.
   Berlaku untuk **Latihan dalam tugas** (semua kolom dinilai di belakang layar setiap Periksa, layar tetap berhenti di
   kolom pertama yang salah) dan **Ujian**.
 - Nilai tugas = `nilaiTugas(kejadian, kebijakan)` murni: per butir, skor parsial dari kejadian yang dipilih
-  (`pertama/terbaik/terakhir`) memakai **hasil_kolom_server**, dikali bobot butir, dijumlah. Lihat jawaban → butir 0
+  (`pertama/terbaik/terakhir`) memakai **hasil_kolom** (selalu hitungan server, 2.6), dikali bobot butir, dijumlah. Lihat jawaban → butir 0
   kecuali `bolehLihatJawaban`. Pelajar melihat rincian per tahapan sesudah nilai dirilis.
-- **Variasi per pelajar**: benih soal pola diturunkan server dari (tugas, pelajar, butir) dan disimpan di `sesi_soal`.
+- **Variasi per pelajar**: benih soal pola dipilih acak oleh server (`gen_random_uuid()`) per (tugas, pelajar, butir) dan
+  disimpan di `sesi_soal`; tidak diturunkan dari id yang bisa ditebak (2.6 butir 7).
   Varian pola bisa berbeda tingkat kesulitan (riset kelas 5a); statistik per pola dari kejadian menandai pola yang
   variannya terlalu beragam supaya tim keilmuan meninjaunya.
 - **Salin ke periode baru**: menyalin tugas sebagai draf ke kelas baru; butir pola memakai benih baru.
@@ -643,7 +674,7 @@ Pelajar melihat nilai dan pembahasan **miliknya** sesuai `rilisNilai`/`rilisPemb
 
 | Data | Pelajar | Pengajar kelas itu | Pelajar lain | Admin portal |
 |---|---|---|---|---|
-| Kejadian mandiri (`id_penugasan` null) | milik sendiri | **tidak** | tidak | tidak (kecuali lewat service role untuk pemeliharaan) |
+| Kejadian mandiri (`tugas_id` null) | milik sendiri | **tidak** | tidak | tidak (kecuali lewat service role untuk pemeliharaan) |
 | Kejadian penugasan | milik sendiri | semua di penugasan kelasnya | tidak | tidak |
 | Nilai penugasan | milik sendiri | semua anggota | tidak | tidak |
 | XP, streak, peringkat | milik sendiri; papan publik sesuai profil | **tidak ada tampilan khusus** (sama seperti publik) | papan publik | sama |
@@ -655,28 +686,31 @@ bila pengajar bisa melihatnya, pelajar berhenti berlatih bebas.
 
 RLS mengikuti pola `peran_saya()`: fungsi `security definer` `peran_di_kelas(kelas_id)` mengembalikan peran pemanggil,
 dipakai kebijakan `percobaan_soal` (`select` bila `user_id = auth.uid()` atau
-`id_penugasan` milik kelas tempat pemanggil pengajar). Fungsi ini **wajib** diuji pgTAP untuk: pelajar A tidak bisa
+`tugas_id` milik kelas tempat pemanggil pengajar). Fungsi ini **wajib** diuji pgTAP untuk: pelajar A tidak bisa
 membaca pelajar B; pengajar kelas X tidak bisa membaca kelas Y; pengajar tidak bisa membaca kejadian mandiri.
 
 ### 5.3 Pemisahan XP dan nilai kelas
 
 - XP: aturan bagian 3, dihitung dari semua kejadian (mandiri + penugasan), satu kali per soal.
-- Nilai kelas: aturan penugasan, hanya kejadian ber-`id_penugasan`, hanya hasil server.
+- Nilai kelas: aturan penugasan, hanya kejadian ber-`tugas_id`, hanya hasil server.
 - Keduanya tidak pernah saling membaca. Pengajar tidak bisa memberi/mencabut XP; XP tidak masuk nilai.
 
 ### 5.4 Penilaian di server
 
-- Edge function `nilai-percobaan`: menerima `{ idPercobaan, idPenugasan, soalId, isian, idSesiSoal }`. Ia:
+- Edge function `catat-percobaan` (2.6) untuk kejadian tugas: menerima `{ id, idTugas, idSesiSoal, soalId, aksi, isian }`. Ia:
   1. memeriksa keanggotaan, jendela waktu (`mulai`/`tenggat` terhadap `now()` server) dan `batasPercobaan`;
   2. memuat revisi soal yang dikunci di penugasan;
   3. menjalankan engine → `susunTabelSoal` → `nilaiSemuaKolom` dengan **jangkar yang tersimpan di server**;
-  4. menulis baris `percobaan_soal` lengkap dengan `hasil_kolom_server` (klien tidak menulis langsung untuk penugasan).
-- **Jangkar penugasan dipilih server** saat pelajar membuka soal (`mulai_sesi_soal(id_penugasan, slug)` → `{ idSesiSoal,
+  4. menulis baris `percobaan_soal` lengkap dengan `hasil_kolom` (klien tidak pernah menulis langsung, 2.6).
+- **Jangkar penugasan dipilih server** saat pelajar membuka soal (`mulai_sesi_soal(tugas_id, indeks_butir)` → `{ idSesiSoal,
   jangkar }`), disimpan di tabel kecil `sesi_soal`. *Alasan:* jangkar memengaruhi penilaian (B5: jangkar menetapkan skala
   kolom); bila klien memilih, klien bisa memilih jangkar yang memudahkan. Acak server memakai `gen_random_uuid()` sebagai
   benih; benih disimpan sehingga `pilihJangkar(tabel, acakDariBenih(benih))` bisa diulang.
-- Mandiri tetap dinilai di klien (luring jalan). Kejadian mandiri juga menyimpan isian + jangkar + versi, jadi bisa dinilai
-  ulang server nanti (P6).
+- **Mandiri juga dinilai server** (2.6): klien menilai untuk umpan langsung dan luring, lalu mengirim isian; server menilai
+  ulang saat terkirim dan hasil server yang berlaku (centang, XP, kemahiran).
+- **Pola**: benih soal pola selalu dipilih server (`gen_random_uuid()`), baik mandiri (`ambil_soal_pola(slug_pola)` →
+  `{ idSesiSoal, soalId }`, sekaligus mencatat `buka`) maupun tugas (`sesi_soal`). Benih tidak diturunkan dari id yang
+  bisa ditebak.
 - Engine bisa berjalan di edge function karena murni, tanpa I/O/`Date`/`Math.random` (CLAUDE.md prinsip 1). **Tetapi**
   dua hal yang dibutuhkan server sekarang ada di `apps/web` dan menyentuh I/O: pemilihan orkestrator (`jalankan.ts`) dan
   `susunTabelSoal` yang mengimpor `format.ts`/`terjemah.ts` (diksi + preferensi `localStorage`). Lihat 6.2 dan audit T1.
@@ -813,10 +847,10 @@ komponen lama.
 | Fase | Isi | Prasyarat |
 |---|---|---|
 | **P0 (sekarang)** | S1–S6; soal buta sebelum dibuka (4A.9, sesudah mockup); mode Latihan saja; XP masih lewat `log_kegiatan` seperti sekarang ditambah perbaikan klien S5 | – |
-| **P1** | Tabel `percobaan_soal` + RLS + pgTAP; repositori `simpanPercobaan`/`bacaPercobaan`; `gabung` kejadian per id; fungsi XP SQL membaca `percobaan_soal` (aturan bagian 3, bobot dari revisi); `bobotXp` di skema + form portal | P0; perbaiki T2 (log_kegiatan bisa dipalsukan) sekaligus |
+| **P1** | Tabel `percobaan_soal` + RLS + pgTAP; **edge function `catat-percobaan` (2.6) sebagai satu-satunya penulis**, juga untuk kuis konsep dan pelajaran (tutup tulis langsung `log_kegiatan`); repositori `simpanPercobaan`/`bacaPercobaan`; `gabung` kejadian per id; fungsi XP SQL membaca `percobaan_soal` (aturan bagian 3, bobot dari revisi); `bobotXp` di skema + form portal | P0; perbaiki T2 (log_kegiatan bisa dipalsukan) sekaligus |
 | **P2** | Mode Ujian (mockup dulu), rekor Ujian dari kejadian; umpan kolom benar (K12); saran belajar + soal serupa (4.4, 4A.2) | P0; hitung soal per topik |
 | **P2b (keterlibatan)** | Kemahiran per topik (4A.3), soal hari ini (4A.4), saran kesulitan (4A.5); fungsi ukuran keberhasilan (4A.7) | P1 (kejadian di server), mockup disetujui |
-| **P3 (fondasi kelas)** | Paket bersama penilaian (engine dispatcher + tabel latihan) yang bisa diimpor web dan edge function; edge function `nilai-percobaan`; `sesi_soal` (jangkar server) | P1, audit T1 |
+| **P3 (fondasi kelas)** | `sesi_soal` (jangkar dan benih server), mode tugas di `catat-percobaan` (paket bersama dan fungsinya sudah ada sejak G1/P1) | P1, audit T1 |
 | **P4 (kelas inti, R4)** | `kelas` (periode), `anggota_kelas`, `tugas`, `sesi_soal`, `koreksi_nilai`, `peran_di_kelas()`, RLS + pgTAP lintas peran (audit 8c); pengajar: buat kelas, kode/tautan, tugas dari soal kurasi, pantau, ringkasan per kolom, koreksi, rilis, ekspor; pelajar: gabung, Tugas lintas kelas, kerjakan, nilai, arsip | P3, audit R0 (K1, UU PDP dasar) |
 | **P4b (pola soal, R5)** | Pola soal + `bangkitkanSoal`/`verifikasiSoal` di paket bersama; katalog pola; variasi per pelajar; tinjauan pola di portal | P3; tim keilmuan menulis pola |
 | **P4c (R6)** | Sesi langsung (Realtime), asisten, salin ke periode baru | P4 |
@@ -840,7 +874,8 @@ Roadmap lengkap dan alasannya: riset kelas bagian 8. Urutan kerja, letak kode, l
    daring saja?
 5. **Kelas**: siapa boleh membuat kelas: siapa pun yang login, atau hanya akun yang diberi izin admin? Dan apakah
    pelajar sesama kelas boleh melihat nama satu sama lain?
-6. **Latihan mandiri dinilai server juga** (supaya XP tidak bisa dipalsukan, T2), atau cukup penugasan saja? Yang
+6. ~~Latihan mandiri dinilai server~~ → **diputuskan 2026-11-20**: ya, semua kejadian dinilai server, tidak ada kebenaran
+   dari klien (2.6). Teks lama: Latihan mandiri dinilai server juga (supaya XP tidak bisa dipalsukan, T2), atau cukup penugasan saja? Yang
    pertama membuat XP jujur tetapi mewajibkan daring untuk mendapat XP.
 7. **Engine berubah di tengah penugasan** (kunci berbeda): nilai dibiarkan dengan kunci lama dan pengajar diberi tahu
    (usulan), atau dinilai ulang otomatis?

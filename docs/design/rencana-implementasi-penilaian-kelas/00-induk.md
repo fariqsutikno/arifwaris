@@ -80,14 +80,14 @@ lengkapi materi dan latihan soal → **AMIN** → sistem kelas → mode cerita A
 | Data percobaan | spec K3, S4–S6; audit T3, T4, T7, T9 | kejadian lokal dengan `IdSoal`, revisi, versi; `benar` tidak mundur | 02 | G1 |
 | Format soal | riset kelas 5b; temuan bagian 1 | format kasus soal untuk semua jenis + `IdSoal` + `muatSoal` | 02 | G1 |
 | Jenis soal | spec tabel B7, B8 | 6 jenis soal + gharqa, hero latihan, hapus `KartuTebak` | 03 | G2 |
-| XP jujur | spec K5–K7, bagian 3; audit T2, T12 | `percobaan_soal`, XP dari kejadian, `bobotXp` di revisi soal | 04 | G3 |
+| XP jujur, tanpa kebenaran dari klien | spec K5–K7, 2.6, bagian 3; audit T2, T12; keputusan pemilik 2026-11-20 | `percobaan_soal` hanya ditulis server, edge function `catat-percobaan` menilai semua kejadian (mandiri juga), kuis dan pelajaran lewat server, XP dari baris server, `bobotXp` di revisi soal | 04 | G3 |
 | Soal buta | D16; spec 4A.9 | daftar soal tanpa bocoran susunan keluarga | 05 | G3 |
 | Mode Ujian | spec K1, 1.1; D6 | tombol Kirim, skor parsial, waktu opsional | 05 | G6 |
 | Keterlibatan | spec K12–K15, 4A; D11, D14–D22 | kolom benar, soal serupa, kemahiran B/I/A, soal hari ini, level A1–C2, tes awal/akhir, profil 5 dimensi, rekor 20/50/100, lencana penyelesaian dan kecepatan | 05 | G6 |
 | Soal penalaran | D22; riset kelas 16d | 3 jenis soal tertutup (pilih alasan, temukan kesalahan, transfer) | 05 | skema di G4, isi di G4–G6 |
-| Penilaian server | spec K10, fase P3; audit T14 | edge function `nilai-percobaan`, `sesi_soal` | 06 | spike di G1, bangun di G7 |
+| Penilaian server | spec K10, 2.6, fase P1 + P3; audit T14 | `catat-percobaan` untuk mandiri (G3); mode tugas + `sesi_soal` (G7) | 04, 06 | spike di G1, mandiri di G3, tugas di G7 |
 | Kelas LMS | spec K17, bagian 5; D1–D10, D12–D13, D20 | kelas per periode, kode/tautan, tugas, skor parsial 40/30/30, nilai, koreksi, rilis, ekspor, arsip, verifikasi pengajar, pantauan periode | 06 | G7 |
-| Pola soal (jutaan soal) | riset kelas 5b; spec P4b | `bangkitkanSoal`/`verifikasiSoal`, katalog pola, variasi per pelajar | 06 | format di G1, bangun di G7 |
+| Pola soal (jutaan soal) | riset kelas 5b; spec P4b, 2.6 butir 7 | `bangkitkanSoal`/`verifikasiSoal`, benih hanya dari server, katalog pola, variasi per pelajar, batas XP harian | 06 | format di G1, bangun di G7 |
 | Sesi langsung | spec P4c | Realtime, agregat tanpa nama | 06 | G7 |
 | Monetisasi | D2, D3; riset kelas 6c–6d | lembaga, `hakFitur`, paket, pembayaran, invoice | 07 | G8 |
 | Alat ukur | spec 4A.7; R8 | dasbor internal belajar + bisnis | 07 | G8 |
@@ -153,8 +153,11 @@ Urutan: munasakhat → dzawil arham → mafqud → khuntsa → haml [SYF] → ha
 `KartuTebak`. Tiap jenis: soal ditulis dan ditinjau (minimal 2 per jenis, supaya "soal serupa" punya isi), fungsi susun
 tabel dengan uji kunci dari spec tabel B7, tampilan dibandingkan berdampingan dengan tab mockup. Rincian: `03`.
 
-### G3. Data server, UU PDP dasar, soal buta (**sesudah** jenis soal selesai, sebelum konten massal; 9–14 hari)
-- Fase P1: tabel `percobaan_soal`, XP dari kejadian dengan `bobotXp` dari revisi soal, tutup T2 (`04`).
+### G3. Data server, UU PDP dasar, soal buta (**sesudah** jenis soal selesai, sebelum konten massal; 13–20 hari)
+- Fase P1: tabel `percobaan_soal` yang **hanya ditulis server**; edge function `catat-percobaan` menilai setiap kejadian
+  (mandiri juga) dengan validasi ketat spec 2.6; kuis dan pelajaran lewat server; XP dari baris server dengan `bobotXp`
+  dari revisi soal; T2 tertutup penuh (`04`). Penilaian server mandiri dimajukan dari G7 atas keputusan pemilik
+  2026-11-20 (tidak menerima kebenaran dari klien).
 - UU PDP dasar: papan peringkat opt-in, kebijakan privasi + persetujuan terekam, hapus dan unduh akun (`01` bagian 2).
 - Soal buta sebelum dibuka (`05` bagian 1). Tidak bergantung G1/G2; spec memasukkannya ke fase P0, jadi boleh dikerjakan
   kapan saja begitu mockup-nya disetujui. G3 adalah batas paling lambat.
@@ -191,8 +194,8 @@ level A1–C2, tes awal/akhir, profil 5 dimensi. Semuanya fungsi murni atas keja
 karena kemahiran dan profil tidak bermakna dengan 23 soal. Berkasnya (latihan, belajar, profil) berbeda dari AMIN
 (chatbot), jadi bisa dikerjakan bersamaan.
 
-### G7. Kelas (sesudah AMIN; 25–40 hari)
-Penilaian server dan `sesi_soal` (fase P3) → kelas inti (fase P4) → pola soal (fase P4b) → sesi langsung (fase P4c).
+### G7. Kelas (sesudah AMIN; 22–36 hari)
+Mode tugas di `catat-percobaan` dan `sesi_soal` (fase P3; fungsi dan bundelnya sudah ada sejak G3) → kelas inti (fase P4) → pola soal (fase P4b) → sesi langsung (fase P4c).
 Syarat masuk: G3 selesai, DPIA, keputusan usia pelajar, keputusan region (pindah region **sebelum** data kelas masuk lebih
 murah). Rincian: `06`.
 
@@ -213,7 +216,7 @@ Rincian: `07`.
 | `@waris/latihan` + S1–S3 | ✔ | | tiap jenis soal meniru kontrak ini |
 | S4–S6 kejadian lokal | ✔ | | data yang terkumpul sejak hari ini bisa dinilai ulang |
 | Format kasus soal + `IdSoal` | ✔ | | jenis soal lain tidak bisa ditulis tanpanya |
-| Fase P1 (`percobaan_soal`, XP baru, `bobotXp`) | | ✔ | migrasi XP sekali untuk semua jenis |
+| Fase P1 (`percobaan_soal`, penilaian server, XP baru, `bobotXp`) | | ✔ | migrasi XP sekali untuk semua jenis; sebelum itu kejadian aman di antrean lokal |
 | UU PDP dasar | | ✔ (papan opt-in boleh lebih awal) | butuh keputusan dan teks pemilik |
 | Soal buta | boleh, bila mockup sudah disetujui | ✔ paling lambat | tidak bergantung jenis soal; hanya butuh mockup |
 | Mode Ujian, keterlibatan | | ✔ (sesudah G4) | butuh semua jenis soal + konten cukup |
@@ -244,14 +247,14 @@ didahulukan sebelum AMIN. Biayanya: AMIN mundur ±5–7 minggu. Ini keputusan pe
 | G0 | keamanan produksi | 1–2 | izin pemilik untuk dasbor dan produksi |
 | G1 | fondasi penilaian | 6–9 | – |
 | G2 | 7 jenis soal + B8 | 14–23 | tim keilmuan menulis dan meninjau soal; mockup khuntsa |
-| G3 | P1, PDP dasar, soal buta | 9–14 | teks kebijakan privasi, kontak pengendali, mockup soal buta |
+| G3 | P1 (dengan penilaian server), PDP dasar, soal buta | 13–20 | teks kebijakan privasi, kontak pengendali, mockup soal buta |
 | G4 | konten | – | tim keilmuan |
 | G5 | AMIN | di luar rencana ini | – |
 | G6 | Ujian + keterlibatan | 12–18 | mockup, validasi peta level oleh tim keilmuan |
-| G7 | kelas | 25–40 | dosen pilot, DPIA, keputusan usia dan region |
+| G7 | kelas | 22–36 | dosen pilot, DPIA, keputusan usia dan region |
 | G8 | SaaS | 20–30 | gerbang pembayaran, keputusan harga |
 
-G0–G3 ≈ 30–48 orang-hari sebelum konten massal. Sebagai pembanding, audit bagian 7 memperkirakan golongan A + B ±1,5–2
+G0–G3 ≈ 34–54 orang-hari sebelum konten massal. Sebagai pembanding, audit bagian 7 memperkirakan golongan A + B ±1,5–2
 minggu; selisihnya adalah format kasus soal dan tujuh jenis soal yang memang sudah ada di rencana pemilik.
 
 ---
@@ -271,7 +274,7 @@ Pekerjaan sebuah gelombang tidak dimulai sebelum gerbangnya terjawab. Nomor meru
 | G3 | Siapa pengendali data dan kontaknya di kebijakan privasi? | pemilik isi |
 | G3 | audit 10.10: proyek `ap-south-1` = produksi? pindah region sebelum kelas? | pemilik jawab; pindah sebelum G7 bila ya |
 | G3 | spec 8.26: daftar soal buta perlu mockup | ya |
-| G3 | spec 8.6: latihan mandiri dinilai server? | tidak; XP dihitung server dari kejadian, tapi kejadian mandiri tetap ditulis klien dengan batas laju (`04` bagian 4) |
+| G3 | spec 8.6: latihan mandiri dinilai server? | **diputuskan 2026-11-20: ya**, semua kejadian dinilai server (spec 2.6, `04`) |
 | G4 | spec 8.30: siapa menulis pengecoh soal penalaran dan daftar kesalahan umum? | pemilik tunjuk |
 | G6 | spec 8.2: mockup Ujian; 8.25 ambang kecepatan; 8.27 peninjau peta level; 8.28 indikator 70%; 8.29 ambang profil | sesuai usulan spec, dikalibrasi data |
 | G7 | Pilot kelas sebelum AMIN demi kalender semester? | pemilik putuskan (bagian 5.2) |
@@ -289,4 +292,31 @@ Pekerjaan sebuah gelombang tidak dimulai sebelum gerbangnya terjawab. Nomor meru
 | Format berkas kasus berubah versi | soal lama tidak terbaca | format berkas sudah berversi (`kasus.ts:181`, versi 1–4); pembaca tetap menerima versi lama, uji untuk tiap versi |
 | `rencana/munasakhat-arham-gharqa` digabung di tengah G2 | susun tabel munasakhat harus menangani kombinasi baru | susun tabel mengembalikan `TIDAK_DIDUKUNG` untuk munasakhat yang memuat dzawil arham atau gharqa sampai dirancang |
 | Data lokal membengkak sebelum fase P1 | localStorage penuh | batas 500 kejadian terakhir di antrean (spec 6.2) |
+| Klien versi lama masih menulis `log_kegiatan` langsung saat hak tulisnya dicabut | XP dari klien lama hilang | cabut hak tulis bersamaan rilis klien baru; entri yang ditolak masuk antrean gagal, tidak macet (`04` bagian 3–4) |
 | Pengerjaan sejajar dengan sesi lain di berkas yang sama (`Hasil.tsx`) | konflik | G1 langkah 3 dan G2 menyentuh `Hasil.tsx`; jangan sejajarkan dengan integrasi mode fokus kecuali dalam worktree terpisah dan digabung berurutan |
+
+---
+
+## 9. Keamanan dan anti-manipulasi: di mana diatur
+
+Ringkasan untuk menjawab "apa saja yang sudah diamankan". Rinciannya di dokumen yang disebut.
+
+| Ancaman | Pengaman | Di mana | Gelombang |
+|---|---|---|---|
+| Mendaftar dengan email orang lain, membaca kasus berbagi-email, mengambil alih akun | matikan login Email; fungsi berbagi hanya percaya provider Google | `01` 1.1 | G0 |
+| Fungsi portal dipanggil tanpa login; `search_path`; penulis memalsukan pembuat draf | cabut `anon`, `set search_path`, hak `update` per kolom | `01` 1.3 | G0 |
+| Migrasi produksi berbeda dari repo | migrasi penyelaras + cek sebelum push | `01` 1.2 | G0 |
+| Klien mengaku benar, memalsukan XP/papan | klien tidak bisa menulis tabel kejadian atau `log_kegiatan`; server menilai semua | spec 2.6; `04` 1–3 | G3 |
+| Isian karangan (kolom/baris palsu, pecahan di kotak bulat, mengisi sel jangkar, jangkar pilihan sendiri) | validasi isian terhadap tabel susunan server | `04` 2.2 butir 5 | G3 |
+| Kiriman ulang, Kirim Ujian dua kali, balapan | idempoten per id; indeks unik; transaksi | `04` 1, 2.2 | G3, G7 |
+| Banjir permintaan | batas laju per menit dan per hari | `04` 2.2 butir 2; `06` 2.1 | G3, G7 |
+| Jam perangkat dimajukan/dimundurkan | semua waktu dari `now()` server; lencana kecepatan dari `buka` server | spec 2.6; `05` 2 | G3, G6 |
+| Memilih benih soal pola yang mudah, menyalin benih orang lain, XP tak terbatas dari pola | benih hanya diterbitkan server per pengguna; soal dibangkitkan ulang dan diverifikasi server; batas XP pola harian | `06` 3; `04` 5.3 | G7 |
+| Pelajar membaca nilai/isian pelajar lain; pengajar membaca kelas lain atau latihan mandiri | RLS + `peran_di_kelas()`; tanpa parameter `user_id` | `06` 2.1, 2.5 | G7 |
+| Pengajar mengubah nilai diam-diam | nilai append-only, koreksi beralasan | spec 5.1; `06` 2 | G7 |
+| Pelanggaran UU PDP | opt-in papan, kebijakan privasi, persetujuan terekam, hapus/unduh akun, retensi, runbook, DPIA | `01` 2 | G3, G7 |
+
+**Yang tidak bisa dijamin teknologi:** engine berjalan di perangkat, jadi pelajar selalu bisa menghitung kunci sendiri
+atau membuka jawaban tanpa mengirim kejadiannya. Server menjamin *apa yang dihitung*, bukan *bahwa pelajar tidak
+mencontek* (spec 2.6, audit 8c butir 12). Karena itu tugas diperlakukan *open book*.
+
