@@ -441,6 +441,49 @@ edge function terjadwal); hanya agregat yang ditampilkan ke pemilik, tidak per p
   persentil 1 per tingkat/jenis, dihitung ulang tiap periode, dengan batas masuk akal (di bawahnya ditinjau, tidak
   otomatis diberi).
 
+### 4A.11 Profil kecakapan 5 dimensi (D22; riset kelas 16)
+
+Level A1–C2 = ringkasan cakupan bab; **profil kecakapan** = kekuatan per jenis kemampuan. Keduanya tampil bersama
+("Level B1 · Hisab Intermediate").
+
+**Data (bagian dari model kejadian, bukan tabel terpisah)**
+
+```ts
+type Dimensi = 'kaidah' | 'hisab' | 'prosedur' | 'kelancaran' | 'penalaran';
+
+// Di KolomSoal (susunTabelSoal), satu sumber: kolom → tahapan → dimensi (Q-matrix)
+interface KolomSoal { /* … */ tahapan: 'keputusanFikih' | 'hisabDasar' | 'penyatuan'; dimensi: Dimensi }
+
+// Di HasilKolom (nilaiSemuaKolom), per sel:
+interface HasilSel { idBaris: IdOrang | 'kepala'; benar: boolean; benarEcf: boolean }  // benarEcf: dinilai terhadap isian pelajar sendiri [KH]
+
+function profilKecakapan(kejadian: KejadianPercobaan[], aturan: AturanProfil, rentang: { mulai: string; selesai: string })
+  : Record<Dimensi, { status: 'belumCukupBukti' | 1 | 2 | 3; jumlahSel: number; jumlahSoal: number; lemahDi?: string }>
+```
+
+- Pemetaan kolom → dimensi: Bagian/Didudukkan sebagai/Bagian per kemungkinan → `kaidah`; Asal masalah, Asal masalah
+  akhir → `hisab`; pengali, jami'ah, mauquf, kolom per kemungkinan → `prosedur`. `kelancaran` dari waktu server;
+  `penalaran` dari jenis soal penalaran.
+- Bukti `hisab` dan `prosedur` memakai `benarEcf` (selalu), supaya salah kaidah tidak menurunkan hisab. Nilai tugas tetap
+  memakai `benar` kecuali `nilaiTurunan` dinyalakan.
+- Aturan bukti → status (USULAN, riset kelas 16c): belum cukup bukti < 12 sel / < 3 soal; Intermediate ≥ 70% dengan ≥ 1
+  soal menengah; Advanced ≥ 90% dengan ≥ 2 soal sulit/khusus dan ≥ 1 bukti Ujian; dari 30 sel terakhir per dimensi.
+  Ambang disimpan sebagai `AturanProfil` (satu tempat), dikalibrasi sesudah peluncuran.
+- Rentang: pribadi = semua waktu; tampilan kelas = periode kelas (D20).
+- Profil **tidak pernah otomatis menjadi nilai**; selalu tampil bersama jumlah buktinya.
+
+**Jenis soal penalaran** (P4c/P7, butuh konten tim keilmuan): `pilihAlasan` (alasan benar dari `LangkahJejak` + `refs`,
+pengecoh ditulis per pola), `temukanKesalahan` (satu sel diubah dari kunci engine menurut daftar kesalahan umum yang
+divalidasi, umpan koreksi sesudahnya), `transfer` (pola yang susunannya belum pernah dikerjakan pelajar). Semua tertutup
+dan dinilai otomatis; penalaran terbuka hanya lewat rubrik manual dosen.
+
+**Tampilan** (mockup menyusul; gambaran teks di riset kelas 16e): pelajar melihat level + lima baris dimensi + saran;
+pengajar melihat kartu per mahasiswa dan matriks kelas (mahasiswa × dimensi) dengan ringkasan kelompok yang bisa diberi
+tugas susulan.
+
+**Fase**: `dimensi` + `tahapan` di `KolomSoal` dan `HasilSel` dengan `benarEcf` ikut **S1 (sekarang)** karena murah dan
+mencegah migrasi; `profilKecakapan` untuk empat dimensi di P2b (pribadi) dan P4c (pengajar); penalaran sesudah konten ada.
+
 ### 4A.9 Soal buta sebelum dibuka (D16; riset kelas 14a)
 
 Sebelum soal dibuka, **daftar soal, pratinjau Soal acak, daftar tugas, dan notifikasi** hanya menampilkan kode/nomor,
@@ -746,7 +789,7 @@ interface PercobaanTabel {
 
 | # | Perubahan | Kenapa sekarang |
 |---|---|---|
-| S1 | `nilaiTabel` → `nilaiSemuaKolom` + `putusanLatihan` (1.2); `nilaiTabel` tetap sebagai pembungkus | Tiap jenis soal baru menambah kolom; lebih murah memisah sebelum ada 7 jenis |
+| S1 | `nilaiTabel` → `nilaiSemuaKolom` (hasil **per sel**, dengan `benarEcf`) + `putusanLatihan` (1.2); `nilaiTabel` tetap sebagai pembungkus; `KolomSoal` mendapat `tahapan` dan `dimensi` (4A.11) | Tiap jenis soal baru menambah kolom; lebih murah memisah sebelum ada 7 jenis |
 | S2 | `susunTabelSoal`/`nilaiSemuaKolom` tidak mengimpor `format.ts`/`terjemah.ts`: nama orang dan `angkaLatin` dioper dari luar (`namaDari: (id) => string`), atau nama diisi oleh komponen | Membuat modul penilaian murni dan bisa dipindah ke paket bersama untuk server (audit T1). `angkaLatin` cukup disalin ke modul (fungsi kecil murni) atau dipindah ke `@waris/math`/paket bersama |
 | S3 | Jangkar jadi prop; `TabelLatihan` mengeluarkan `PercobaanTabel` lewat `saatPercobaan` (6.1) | Jenis soal lain akan meniru kontrak ini; mengubah 1 komponen sekarang lebih murah daripada 7 nanti |
 | S4 | Hasil menyimpan kejadian lokal (`arif-waris:percobaan`) dengan `soalId` (format `IdSoal`, siap untuk soal pola), `revisiSoal`, `jenisSoal`, `versi`; antrean entri `percobaan` (berkunci id) | Data yang terkumpul mulai sekarang sudah bisa dinilai ulang; tidak perlu migrasi nanti |
@@ -835,3 +878,5 @@ Status 2026-11-20 malam: pertanyaan 16–21 disetujui sesuai usulan (riset kelas
 27. **Peta level A1–C2 ke bab KB** (riset kelas 15a): perlu divalidasi tim keilmuan; siapa yang meninjau?
 28. **Indikator level**: semua topik ≤ L minimal Intermediate dan ≥ 70% topik level L Advanced, cocok?
 26. **Daftar soal buta**: boleh tampilan daftar diubah menjadi kode/bab/tingkat/jenis saja sebelum soal selesai (perlu mockup)?
+29. **Profil 5 dimensi** (4A.11): ambang bukti (12 sel/3 soal; 70%/90%) cukup sebagai titik awal sebelum kalibrasi?
+30. **Soal penalaran**: siapa di tim keilmuan yang menulis alasan pengecoh dan daftar kesalahan umum per bab?
