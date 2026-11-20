@@ -732,3 +732,117 @@ berikut:
 - Diberitahukan jelas saat bergabung: "Pengajar kelas ini dapat melihat aktivitas latihanmu selama periode kelas
   (jumlah soal, hari aktif, level, lencana, dan rekor)"; persetujuan tercatat (Pasal 21–22). Bila pelajar ikut dua
   kelas di periode yang sama, kedua pengajar melihat data yang sama untuk periode masing-masing.
+
+---
+
+## 16. Profil kecakapan 5 dimensi (keputusan pemilik D22, 2026-11-20)
+
+D22: level keseluruhan A1–C2 tetap sebagai ringkasan; di bawahnya **profil 5 dimensi** (masing-masing Beginner ·
+Intermediate · Advanced); dosen melihatnya per mahasiswa dan per kelas untuk memilih perlakuan. Empat dimensi dari data
+tabel; penalaran menyusul lewat soal tertutup.
+
+### 16a. Bukti luar
+
+- [Fakta-sumber] **Asesmen diagnostik kognitif** memetakan tiap butir soal ke keterampilan yang dibutuhkannya lewat
+  **Q-matrix** (kisi 0/1 butir × keterampilan), lalu melaporkan status penguasaan per keterampilan, bukan satu skor
+  tunggal; tujuannya membantu pengajar mengubah pengajaran
+  ([Ravand & Robitzsch, PARE](https://openpublishing.library.umass.edu/pare/article/1498/galley/1449/view),
+  [PMC5965638](https://pmc.ncbi.nlm.nih.gov/articles/PMC5965638)). Q-matrix yang dipasang belakangan pada tes yang tidak
+  dirancang untuknya kehilangan ketelitian ([Univ. Luxembourg](https://orbilu.uni.lu/bitstream/10993/68008/1/Optimizing_Large-Scale_Mathematical_Assessments_Le.pdf)).
+- [Fakta-sumber] **Subskor pendek tidak andal**: satu studi menemukan subskala di bawah 10 butir hampir tidak pernah
+  menambah informasi di atas skor total, dan butuh sekitar 20 butir yang cukup berbeda satu sama lain; subtes rata-rata
+  19 butir pernah tercatat berkeandalan hanya 0,38 (metode Haberman; [PMC5339241](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5339241/),
+  [koreksi PMC5985774](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5985774/)).
+- [Fakta-sumber] Soal **"temukan kesalahan"** (erroneous examples) menjanjikan tetapi buktinya kecil dan campuran;
+  manfaatnya tampak bergantung pada umpan koreksi dan bantuan
+  ([Tsovaltzi dkk., EC-TEL 2009](https://www-live.dfki.de/fileadmin/user_upload/import/4653_Tsovaltzietal-ErroneousExamples-ECTEL-2009.pdf),
+  [Melis & Kriesell, AIED 2009](https://dfki.de/fileadmin/user_upload/import/4361_MelisKriesell-AIED-2009.pdf),
+  [CMU AdaptErrEx](https://www.cs.cmu.edu/~bmclaren/projects/AdaptErrEx/abstract.html)).
+
+Artinya untuk kita [Dugaan]:
+1. Tabel faraidh **sudah dirancang per langkah**, jadi Q-matrix-nya hampir gratis: setiap **kolom** sudah memiliki
+   langkah yang jelas. Ini keuntungan besar dibanding tes pilihan ganda biasa.
+2. Karena subskor pendek tidak andal, profil **tidak boleh** dibangun dari satu placement test saja. Ia harus
+   **mengumpulkan bukti dari semua latihan, tugas, dan tes** dan menampilkan "belum cukup bukti" bila sel bukti sedikit.
+3. Soal "temukan kesalahan" dipakai dengan umpan koreksi (tunjukkan langkah yang benar sesudahnya).
+
+### 16b. Lima dimensi dan sumber buktinya (Q-matrix kita)
+
+| Dimensi | Arti untuk pelajar | Bukti (sel yang dinilai) | Catatan |
+|---|---|---|---|
+| **Kaidah** | tahu siapa mewarisi, siapa terhalang, berapa bagiannya | kolom **Bagian** / Didudukkan sebagai / Bagian per kemungkinan; keputusan gharqa | tahap keputusan fikih |
+| **Hisab** | menghitung asal masalah dan saham, 'aul, radd, tashih dengan benar | kepala dan sel **Asal masalah**, **Asal masalah akhir** | dinilai **dengan error carried forward** terhadap Bagian pilihan pelajar sendiri, supaya salah kaidah tidak ikut menurunkan hisab |
+| **Prosedur** | menyusun langkah bertingkat: munasakhat, taqdir | **pengali**, **jami'ah**, **mauquf**, kolom per kemungkinan | hanya muncul di soal khusus; pelajar yang belum pernah mendapat soal khusus = "belum ada bukti" |
+| **Kelancaran** | benar dengan cepat dan stabil | waktu server benar penuh dibanding sebaran waktu soal setingkat | tidak dihitung dari soal yang salah atau dibuka |
+| **Penalaran** | tahu *mengapa*, dan bisa menerapkan ke kasus baru | soal **pilih alasan**, **temukan kesalahan**, **transfer** (16d) | butuh jenis soal baru |
+
+Kunci desain: **ECF untuk profil dipakai selalu**, walau nilai tugas memakai kunci biasa (ECF hanya opsi nilai). Tanpa
+ECF, satu salah Bagian merembet ke semua kolom hisab dan profil akan bilang "hisab lemah" padahal yang lemah kaidahnya.
+ECF hanya memakai kaidah hisab [KH] (`packages/math`), tanpa keputusan fikih.
+
+### 16c. Dari bukti ke Beginner/Intermediate/Advanced (USULAN, dikalibrasi dengan data)
+
+Per pelajar per dimensi, dari **bukti terbaru** (mis. 30 sel terakhir per dimensi, dalam rentang waktu yang dipilih):
+
+| Status | Syarat |
+|---|---|
+| Belum cukup bukti | < 12 sel dari < 3 soal berbeda |
+| Beginner | selain di bawah |
+| Intermediate | ≥ 70% sel benar, termasuk ≥ 1 soal tingkat menengah |
+| Advanced | ≥ 90% sel benar, termasuk ≥ 2 soal tingkat sulit atau khusus, dan ≥ 1 bukti dari Ujian |
+
+Kelancaran memakai median waktu benar penuh: Intermediate bila ≤ median soal setingkat, Advanced bila ≤ persentil 20.
+Penalaran memakai proporsi benar di soal penalaran dengan batas bukti yang sama.
+
+Profil selalu ditampilkan bersama **jumlah buktinya** ("berdasarkan 34 sel dari 9 soal") dan **tidak pernah otomatis
+menjadi nilai** (UU PDP Pasal 10; audit P9).
+
+### 16d. Tiga jenis soal penalaran (tertutup, dinilai otomatis)
+
+| Jenis | Bentuk | Kunci | Konten |
+|---|---|---|---|
+| **Pilih alasan** | sesudah mengisi satu sel Bagian (atau sesudah soal), muncul "Mengapa ibu mendapat 1/6?" dengan 3–4 alasan | dari keluaran engine (`LangkahJejak` + `refs`) dan teks alasan dari KB | alasan pengecoh ditulis tim keilmuan per pola; tanpa AI bebas |
+| **Temukan kesalahan** | tabel terisi lengkap dengan **satu** sel salah; pelajar menunjuk sel itu, lalu memilih perbaikannya | sel salah dibuat dengan mengubah satu langkah dari kunci engine (mis. lupa 'aul, salah hajb) | jenis kesalahan diambil dari daftar kesalahan umum yang divalidasi tim keilmuan; sesudah dijawab tampil langkah yang benar (umpan koreksi, 16a) |
+| **Transfer** | soal pola yang susunan keluarganya **belum pernah** dikerjakan pelajar, di topik yang sudah Intermediate | kunci engine | otomatis dari pola + riwayat kejadian |
+
+### 16e. Gambaran tampilan (teks; mockup menyusul)
+
+Pelajar, halaman Kemajuan:
+
+```
+Level B1                              berdasarkan 9 soal · 2 pekan terakhir
+Kaidah       ●●●  Advanced
+Hisab        ●●○  Intermediate        sering salah: tashih
+Prosedur     ○○○  Belum cukup bukti   coba soal munasakhat
+Kelancaran   ●●○  Intermediate
+Penalaran    ●○○  Beginner            4 dari 9 alasan tepat
+Saran: latihan tashih (3 soal)  ·  Pelajari: bab Tashih
+```
+
+Pengajar, satu mahasiswa: kartu yang sama + tren per pekan + daftar soal sumber bukti (bisa dibuka isiannya bila soal
+tugas).
+
+Pengajar, satu kelas (matriks mahasiswa × dimensi):
+
+```
+                Kaidah  Hisab  Prosedur  Lancar  Nalar    Level
+Ahmad             ●●●    ●○○     ○○○      ●●○     ●○○      B1
+Fatimah           ●●●    ●●●     ●●○      ●●●     ●●○      B2
+Rizki             ●○○    ●●○     –        ●○○     ○○○      A2
+...
+Ringkasan kelas:  Hisab Beginner 9 orang · Penalaran Beginner 14 orang
+→ Saran (roadmap): beri 3 soal tashih ke 9 orang ini · sesi langsung: "temukan kesalahan" bab 'aul
+```
+
+Kelompok "Hisab Beginner 9 orang" bisa diklik untuk memberi tugas susulan hanya ke mereka (rekomendasi perlakuan, R8).
+
+### 16f. Batas yang diakui
+
+- Profil adalah **perkiraan** yang menajam seiring bukti; placement test hanya memberi perkiraan awal (paling banyak
+  25–30 soal campuran, dan dimensi dengan bukti kurang tetap "belum cukup bukti").
+- Ambang 16c harus dikalibrasi dengan data nyata sesudah peluncuran dan divalidasi tim keilmuan sebelum dipakai untuk
+  keputusan dosen yang penting.
+- Penalaran terbuka (penjelasan dengan kata-kata) tidak dinilai otomatis; bila dosen ingin, lewat tugas dengan rubrik
+  manual.
+- Dimensi bisa saling berkorelasi tinggi pada pemula (semua rendah); laporan tidak boleh dibaca sebagai lima hal yang
+  sepenuhnya terpisah.
