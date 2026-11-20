@@ -28,7 +28,7 @@ describe('susunTabelMafqud — KB 13b.6 F1', () => {
     expect(tabel.kolom.map(kolom => [kolom.id, kolom.idJudul, kolom.kepala, kolom.kemungkinan])).toEqual([
       ['b1', 'bagianKemungkinan', undefined, 'hidup'], ['m1', 'sahamKemungkinan', 12n, 'hidup'],
       ['b2', 'bagianKemungkinan', undefined, 'mati'], ['m2', 'sahamKemungkinan', 3n, 'mati'],
-      ['jamiah', 'jamiah', 12n, undefined]]);
+      ['jamiah', 'jamiahSekarang', 12n, undefined]]);
     expect(tabel.pengali!.kunci).toEqual({ m1: 1n, m2: 4n });
   });
 

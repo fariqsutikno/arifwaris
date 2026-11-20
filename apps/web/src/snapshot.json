@@ -27937,6 +27937,69 @@
    "id": "Pilih **Terhalang**: saham otomatis 0.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul_bagian_kemungkinan",
+   "halaman": "hitung",
+   "id": "Bagian · {kemungkinan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.hidup",
+   "halaman": "hitung",
+   "id": "ia hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.mati",
+   "halaman": "hitung",
+   "id": "ia wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.jamiah_diberikan",
+   "halaman": "hitung",
+   "id": "Jami'ah · diberikan sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.ditahan",
+   "halaman": "hitung",
+   "id": "Ditahan (mauquf)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_1",
+   "halaman": "hitung",
+   "id": "Isi **dua kemungkinan**: ia hidup, ia wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_2",
+   "halaman": "hitung",
+   "id": "Sel **\"–\"** memang tidak diisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_3",
+   "halaman": "hitung",
+   "id": "**Diberikan sekarang** = yang terkecil dari dua kemungkinan, setelah dikali pengali.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_4",
+   "halaman": "hitung",
+   "id": "**Ditahan** = sisa sampai kabarnya jelas.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

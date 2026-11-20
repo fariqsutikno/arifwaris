@@ -1,6 +1,6 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { hitung, hitungDzawilArham, hitungMunasakhat, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
+import { hitung, hitungDzawilArham, hitungMunasakhat, hitungTaqdir, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
 import { TabelLatihan } from './TabelLatihan';
 import { pilihJangkar, susunTabelSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 import { namaOrang } from '../format';
@@ -237,6 +237,38 @@ describe('TabelLatihan — dzawil arham (tanzil)', () => {
     pilihKe('A1', 'Didudukkan sebagai', 'SAUDARA_KANDUNG'); pilihKe('A2', 'Didudukkan sebagai', 'SAUDARA_SEIBU'); pilihKe('A3', 'Didudukkan sebagai', 'SAUDARA_SEBAPAK');
     pilihKe('A1', 'Bagian perantara', 'Ashabah'); pilihKe('A2', 'Bagian perantara', '1/6'); pilihKe('A3', 'Bagian perantara', 'Terhalang');
     ketik('Asal masalah', '6'); ketik('Asal masalah A1', '5'); ketik('Asal masalah A2', '1');
+    periksa();
+    expect(screen.getByText('Benar semua.')).toBeTruthy();
+  });
+});
+
+// KB 13b.6 F1: ibu, saudara kandung, saudara kandung lain yang hilang (mafqud).
+describe('TabelLatihan — mafqud', () => {
+  const graf: GrafKeluarga = { idPewaris: 'D', pernikahan: [], orang: {
+    D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }), A: orang('A', 'L', { statusHidup: 'wafat' }), I: orang('I', 'P'), W: orang('W', 'P', { statusHidup: 'wafat' }),
+    S: orang('S', 'L', { idAyah: 'A', idIbu: 'W' }), Q: orang('Q', 'L', { idAyah: 'A', idIbu: 'W', statusHidup: 'mafqud' }) } };
+  const hasil = hitungTaqdir({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' });
+  const susunan = susunTabelSoal(hasil, id => id);
+  if ('status' in susunan) throw new Error(susunan.status);
+  const tampilkanMafqud = () => render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+
+  it('judul kolom mengikuti mockup; baris Ditahan (mauquf) dan Pengali ada', () => {
+    tampilkanMafqud();
+    for (const judul of ['Bagian · ia hidup', 'Ia hidup', 'Bagian · ia wafat', 'Ia wafat', "Jami'ah · diberikan sekarang"]) expect(screen.getByText(judul)).toBeTruthy();
+    expect(screen.getByRole('rowheader', { name: 'Ditahan (mauquf)' })).toBeTruthy();
+    expect(screen.getByRole('rowheader', { name: 'Pengali' })).toBeTruthy();
+  });
+
+  it('isi benar → Benar semua', () => {
+    tampilkanMafqud();
+    const pilihBagian = (judul: string, nama: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `${judul} ${nama}` }), { target: { value: nilai } });
+    pilihBagian('Bagian · ia hidup', 'I', '1/6'); pilihBagian('Bagian · ia hidup', 'S', 'Ashabah'); pilihBagian('Bagian · ia hidup', 'Q', 'Ashabah');
+    pilihBagian('Bagian · ia wafat', 'I', '1/3'); pilihBagian('Bagian · ia wafat', 'S', 'Ashabah');
+    ketik('Ia hidup', '12'); ketik('Ia hidup I', '2'); ketik('Ia hidup S', '5'); ketik('Ia hidup Q', '5');
+    ketik('Ia wafat', '3'); ketik('Ia wafat I', '1'); ketik('Ia wafat S', '2');
+    ketik("Jami'ah · diberikan sekarang", '12'); ketik("Jami'ah · diberikan sekarang I", '2'); ketik("Jami'ah · diberikan sekarang S", '5');
+    ketik("Jami'ah · diberikan sekarang Ditahan (mauquf)", '5');
+    ketik('Pengali Ia hidup', '1'); ketik('Pengali Ia wafat', '4');
     periksa();
     expect(screen.getByText('Benar semua.')).toBeTruthy();
   });

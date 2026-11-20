@@ -14,6 +14,7 @@
 .tabel-kitab tbody th.nama{font-size:14px}
 .tabel-kitab .terisi{font-weight:600;color:var(--ink);background:var(--surface);border-radius:8px;padding:5px 9px;display:inline-block}
 .tabel-kitab .baris-pengali td,.tabel-kitab .baris-pengali th.nama{background:var(--surface);font-weight:500;font-size:13px}
+.tabel-kitab .baris-ditahan th.nama,.tabel-kitab .baris-ditahan td{background:var(--surface);font-style:italic}
 .tabel-kitab .keliru{background:var(--danger-soft)!important}
 .tabel-kitab .bersama{display:block;font-size:11.5px;color:var(--ink-muted);margin-top:3px}
 .tabel-kitab .kunci{font-weight:700;color:var(--sorot-fardh)}

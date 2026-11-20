@@ -10,7 +10,7 @@ import { Ikon } from '../ui/Ikon';
 import { angka, angkaLatin, t } from '../terjemah';
 import { jenisDari } from '../checklist';
 import { LABEL_SEHARI } from '../konten/ahliWaris';
-import { nilaiSemuaKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
+import { ID_BARIS_MAUQUF, nilaiSemuaKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 
 interface Props {
   tabel: TabelSoal;
@@ -32,6 +32,9 @@ const BATAS_DIGIT = /^\d{0,6}$/;
 const BAGIAN_TERHALANG = 'Terhalang';
 const adalahAshabah = (bagian: string | undefined) => bagian === 'Ashabah' || bagian === '1/6 + Ashabah';
 
+const hurufAwalBesar = (teks: string) => teks.charAt(0).toUpperCase() + teks.slice(1);
+const namaKemungkinan = (kemungkinan: string | undefined): string => (kemungkinan === 'hidup' ? t('hitung.tabel.kemungkinan.hidup') : kemungkinan === 'mati' ? t('hitung.tabel.kemungkinan.mati') : kemungkinan ?? '');
+
 // Munasakhat: kolom mas'alah dinomori dari id ('m2' → 2); nama mayit dari pemanggil (`namaDari`).
 const judulKolomDari = (kolom: KolomSoal, namaDari: (id: string) => string): string => {
   const nama = kolom.mayit ? namaDari(kolom.mayit) : '';
@@ -41,6 +44,8 @@ const judulKolomDari = (kolom: KolomSoal, namaDari: (id: string) => string): str
     asalMasalah: () => t('hitung.asal_masalah'), asalMasalahAkhir: () => t('hitung.tabel.asal_masalah_akhir'),
     masalahPertama: () => t('hitung.tabel.judul_masalah', { nomor, nama }), masalahLanjutan: () => t('hitung.tabel.judul_masalah', { nomor, nama }),
     jamiah: () => t('hitung.jami_ah'),
+    bagianKemungkinan: () => t('hitung.tabel.judul_bagian_kemungkinan', { kemungkinan: namaKemungkinan(kolom.kemungkinan) }),
+    sahamKemungkinan: () => hurufAwalBesar(namaKemungkinan(kolom.kemungkinan)), jamiahSekarang: () => t('hitung.tabel.jamiah_diberikan'),
     didudukkanSebagai: () => t('hitung.tabel.didudukkan_sebagai'), bagianPerantara: () => t('hitung.tabel.bagian_perantara'),
   } as Record<string, () => string>)[kolom.idJudul]?.() ?? kolom.idJudul;
 };
@@ -86,13 +91,17 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     if (BATAS_DIGIT.test(latin)) simpan(latin); else setTolakBulat(true);
   };
 
-  const kunciSel = (baris: BarisSoal, kolom: KolomSoal): string | undefined =>
-    baris.kunci[kolom.id] ?? (baris.kunci.bagian === BAGIAN_TERHALANG && kolom.jenis === 'bulat' ? '0' : undefined);
+  const namaBaris = (baris: BarisSoal) => (baris.id === ID_BARIS_MAUQUF ? t('hitung.tabel.ditahan') : baris.nama);
+  const acuanPilihan = (kolom: KolomSoal) => tabel.kolom.slice(0, tabel.kolom.indexOf(kolom)).filter(lain => lain.jenis === 'pilih').pop();
+  const kunciSel = (baris: BarisSoal, kolom: KolomSoal): string | undefined => {
+    const acuan = kolom.jenis === 'bulat' ? acuanPilihan(kolom) : undefined;
+    return baris.kunci[kolom.id] ?? (acuan && baris.kunci[acuan.id] === BAGIAN_TERHALANG ? '0' : undefined);
+  };
   const bagianDipilih = (baris: BarisSoal, idKolom: string) => (modeKunci ? baris.kunci[idKolom] : isian.sel[baris.id]?.[idKolom]);
   const memilihTerhalang = (baris: BarisSoal, kolom: KolomSoal) => {
     // Jami'ah menjumlah semua mas'alah: Terhalang di satu mas'alah tidak menolkannya.
     if (kolom.id === tabel.pengali?.kolomJamiah) return false;
-    const acuan = tabel.kolom.slice(0, tabel.kolom.indexOf(kolom)).filter(lain => lain.jenis === 'pilih').pop();
+    const acuan = acuanPilihan(kolom);
     return !!acuan && bagianDipilih(baris, acuan.id) === BAGIAN_TERHALANG;
   };
 
@@ -135,7 +144,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
 
   function isiSel(baris: BarisSoal, kolom: KolomSoal, gabung: boolean) {
     const kunci = kunciSel(baris, kolom);
-    const label = `${judul(kolom)} ${baris.nama}`;
+    const label = `${judul(kolom)} ${namaBaris(baris)}`;
     if (kunci === undefined) return '–';
     if (jangkar?.idBaris === baris.id && jangkar.idKolom === kolom.id) return <span className="terisi">{angka(kunci)}</span>;
     if (kolom.terkunci) return <span className="terisi">{angka(kunci)}</span>;
@@ -209,8 +218,8 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
             </thead>
             <tbody>
               {tabel.baris.map((baris, indeks) => (
-                <tr key={baris.id}>
-                  <th className="nama" scope="row">{baris.nama}</th>
+                <tr key={baris.id} className={baris.id === ID_BARIS_MAUQUF ? 'baris-ditahan' : undefined}>
+                  <th className="nama" scope="row">{namaBaris(baris)}</th>
                   {tabel.kolom.map(kolom => <Fragment key={kolom.id}>{sel(kolom, indeks, rentangPerKolom.get(kolom.id)!, terlewatPerKolom.get(kolom.id)!)}</Fragment>)}
                 </tr>
               ))}
@@ -231,7 +240,9 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
       <section className="ubin-h cara-mengisi" aria-labelledby="judul-cara-mengisi">
         <h2 id="judul-cara-mengisi">{t('hitung.tabel.cara_mengisi')}</h2>
         <ol>
-          {[...(tabel.pengali
+          {[...(tabel.kolom[0]?.idJudul === 'bagianKemungkinan'
+            ? [t('hitung.tabel.cara.mafqud_1'), t('hitung.tabel.cara.mafqud_2'), t('hitung.tabel.cara.mafqud_3'), t('hitung.tabel.cara.mafqud_4')]
+            : tabel.pengali
             ? [t('hitung.tabel.cara.munasakhat_1'), t('hitung.tabel.cara.munasakhat_2'), t('hitung.tabel.cara.munasakhat_3'), t('hitung.tabel.cara.munasakhat_4')]
             : tabel.kolom[0]?.idJudul === 'didudukkanSebagai'
             ? [t('hitung.tabel.cara.dzawil_arham_1'), t('hitung.tabel.cara.dzawil_arham_2'), t('hitung.tabel.cara.dzawil_arham_3')]

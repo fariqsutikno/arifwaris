@@ -148,8 +148,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
   const bahasa = useBahasa();
   const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa), [kasus, tampil, bahasa]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
-  // Taqdir, menunggu kelahiran, dan gharqa belum punya mode Belajar (tebakan): selalu tampil sebagai hasil hitung.
-  const khusus = ringkasan.jenis === 'taqdir' || ringkasan.jenis === 'menunggu' || ringkasan.jenis === 'gharqa';
+  // Mafqud punya tabel faraidh isian; haml, khuntsa, menunggu kelahiran, dan gharqa belum punya mode Belajar: selalu tampil sebagai hasil hitung.
+  const taqdirBertabel = useMemo(() => tampil.jenis === 'taqdir' && !('status' in susunTabelSoal(tampil.hasil, id => id)), [tampil]);
+  const khusus = (ringkasan.jenis === 'taqdir' && !taqdirBertabel) || ringkasan.jenis === 'menunggu' || ringkasan.jenis === 'gharqa';
   const adalahBelajar = tujuan === 'belajar' && !khusus;
   const menunggu = ringkasan.jenis === 'menunggu';
   const gharqaDitahan = !!ringkasan.gharqa?.skenario;
@@ -228,7 +229,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
   const namaTabel = (id: string) => namaOrang(kasus.graf, ringkasan.statusOrang, id);
   const tabelSoal = useMemo(() => {
     if (!adalahBelajar) return null;
-    const sumber = hasilBiasa ?? (tampil.jenis === 'munasakhat' ? tampil.hasil : null);
+    const sumber = hasilBiasa ?? (tampil.jenis === 'munasakhat' || tampil.jenis === 'taqdir' ? tampil.hasil : null);
     if (!sumber || sumber.status !== 'OK') return null;
     const susunan = susunTabelSoal(sumber, id => namaOrang(kasus.graf, ringkasan.statusOrang, id));
     return 'status' in susunan ? null : susunan;

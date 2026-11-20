@@ -50,7 +50,7 @@ export function susunTabelMafqud(hasil: HasilTaqdir, namaDari: (id: IdOrang) => 
     }
   });
 
-  kolom.push({ id: ID_JAMIAH, idJudul: 'jamiah', ...qDari('jamiah'), jenis: 'bulat', kepala: hasil.jamiah });
+  kolom.push({ id: ID_JAMIAH, idJudul: 'jamiahSekarang', ...qDari('jamiah'), jenis: 'bulat', kepala: hasil.jamiah });
   for (const [id, sel] of baris) if (id !== idMafqud) sel.kunci[ID_JAMIAH] = String(hasil.diberikan[id] ?? 0n);
   // [R13-18] bagian mafqud ditahan sampai statusnya jelas.
   baris.set(ID_BARIS_MAUQUF, { id: ID_BARIS_MAUQUF, nama: ID_BARIS_MAUQUF, kunci: { [ID_JAMIAH]: String(hasil.mauquf) }, kelompok: {} });
