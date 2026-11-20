@@ -1,7 +1,11 @@
-# Spec: model percobaan, penilaian, XP, dan nyawa (soal tabel latihan, siap kelas)
+# Spec: model percobaan, penilaian, XP, nyawa, dan keterlibatan (soal tabel latihan, siap kelas)
 
 Status: **usulan, menunggu pemilik** (2026-11-20). Keputusan pemilik yang sudah ada: tidak ada pengurangan XP per percobaan;
-XP berbeda menurut jenis soal. Ide nyawa dinilai di bagian 4.
+XP berbeda menurut jenis soal; pembelajaran harus terasa seperti game yang menantang tanpa mendorong menebak atau
+farming. Ide nyawa dinilai di bagian 4, desain keterlibatan di bagian 4A.
+
+**Dasar:** `riset-ux-model-percobaan-dan-keterlibatan-2026-11-20.md` (selanjutnya "riset"). Tiap keputusan merujuk bagian
+riset, mis. *(riset 6, HMW-3)*. Bila spec dan riset berbeda, riset menang sampai spec diperbarui.
 Berlaku untuk tabel faraidh soal latihan (spec `spec-hasil-revamp-dan-tabel-latihan.md` bagian B). Kuis konsep (pilihan
 ganda, `layar/belajar/KuisKonsep.tsx`) disebut hanya bila terdampak.
 Audit pendamping: `audit-arsitektur-kesiapan-kelas.md` (kode temuan `T…` dirujuk di sini).
@@ -18,17 +22,22 @@ percobaan dicatat, dinilai, dan dihargai**.
 
 | # | Keputusan | Alasan singkat |
 |---|---|---|
-| K1 | Dua mode: **Latihan** dan **Ujian** (bukan "Kuis", bukan "Belajar") | Kosakata "Mode latihan / Mode ujian" sudah dipakai Kuis konsep (`latihan.mode_latihan`, `latihan.mode_ujian`); satu kata per konsep. "Belajar" bentrok dengan menu Belajar; "Kuis" bentrok dengan Kuis konsep dan `log_kegiatan.jenis = 'kuis'` |
+| K1 | Dua mode: **Latihan** dan **Ujian** (bukan "Kuis", bukan "Belajar") | Kosakata pengguna *(riset 1b)*: "Mode latihan / Mode ujian" sudah dipakai Kuis konsep; "Belajar" = menu; "Kuis" = Kuis konsep dan `log_kegiatan.jenis = 'kuis'` |
 | K2 | Satu komponen tabel, satu fungsi penilaian per kolom; mode = **kebijakan** yang dioper | Satu sumber aturan penilaian; Ujian dan Latihan hanya berbeda cara menampilkan dan kapan berhenti |
-| K3 | Tiap Periksa/Kirim/Lihat jawaban = satu **kejadian percobaan append-only** | Nilai, XP, rekor, nyawa, dan nilai kelas bisa dihitung ulang kapan saja; kebijakan bisa berubah tanpa migrasi data |
-| K4 | Nilai/XP/rekor = **fungsi murni** atas (kejadian, kebijakan, metadata soal) | Sama dengan engine: deterministik, teruji, bisa dijalankan di klien dan server |
-| K5 | XP penuh hanya pada **benar pertama tanpa Lihat jawaban**; tanpa potongan per salah; ulang = 0 XP tapi tetap aktivitas | Keputusan pemilik + anti-farming |
-| K6 | Lihat jawaban membakar XP soal itu **selamanya** (bukan hanya sesi itu) | Menutup celah sekarang: buka jawaban → ulang soal → benar → dapat XP (T3) |
-| K7 | Bobot XP di **metadata soal** (`bobotXp`), dibaca dari revisi yang dikerjakan | Pemilik: bukan di kode; revisi beku → XP lama tidak berubah saat bobot disunting |
-| K8 | **Nyawa: jangan dibangun sekarang.** Versi minimal = saran belajar tanpa kunci. Bila tetap diinginkan: hanya di Ujian mandiri beruntun, dihitung server | Lihat bagian 4 |
-| K9 | XP (gamifikasi mandiri) dan **nilai kelas** dipisah total | Nilai kelas bisa diambil terbaik/terakhir dan dinilai server; XP tidak boleh dipengaruhi pengajar, dan nilai tidak boleh dipengaruhi XP |
-| K10 | Penugasan kelas **dinilai di server** (edge function menjalankan engine + penilaian yang sama) | Klien tidak dipercaya untuk nilai; engine murni sehingga bisa dijalankan ulang |
+| K3 | Tiap Periksa/Kirim/Lihat jawaban = satu **kejadian percobaan append-only** | Nilai, XP, rekor, kemahiran, nilai kelas, dan semua ukuran keberhasilan *(riset 8)* bisa dihitung ulang dari data yang sama; kebijakan bisa berubah tanpa migrasi |
+| K4 | Nilai/XP/rekor/kemahiran = **fungsi murni** atas (kejadian, kebijakan, metadata soal) | Sama dengan engine: deterministik, teruji, bisa dijalankan di klien dan server |
+| K5 | XP penuh hanya pada **benar pertama tanpa Lihat jawaban**; tanpa potongan per salah; ulang = 0 XP tapi tetap aktivitas | Keputusan pemilik + anti-farming *(riset 6, HMW-3 ide 3b; 5a E4, E6)* |
+| K6 | Lihat jawaban membakar XP soal itu **selamanya**; pemulihan lewat **soal serupa** bertopik sama | Menutup celah buka→ulang→benar *(riset 2 A1)* tanpa membuat pelajar "gagal lalu ditinggal" *(riset 6, HMW-2)* |
+| K7 | Bobot XP di **metadata soal** (`bobotXp`), dibaca dari revisi yang dikerjakan | Pemilik: bukan di kode; XP sebanding kerja *(riset 2 A4)*; revisi beku → XP lama tidak bergeser |
+| K8 | **Nyawa: jangan dibangun sekarang.** Versi minimal = saran belajar tanpa kunci. Bila tetap diinginkan: hanya di mode Tantangan (Ujian mandiri beruntun), daring, dinilai server | Nyawa per kesalahan merusak Latihan dan mendorong buka-jawaban-sebelum-mencoba *(riset 5c butir 1; 5b P1; 6 HMW-6)* |
+| K9 | XP (gamifikasi mandiri) dan **nilai kelas** dipisah total; layar tugas tanpa mekanik game | *(riset 6 HMW-7, riset 9)* |
+| K10 | Penugasan kelas **dinilai di server** (edge function menjalankan engine + penilaian yang sama) | Klien tidak dipercaya untuk nilai; engine murni sehingga bisa dijalankan ulang (audit T1, T2, T14) |
 | K11 | Komponen tabel mengeluarkan **hasil terstruktur** (mode, isian, hasil per kolom, jangkar, lihatJawaban), bukan `saatBenar()` | Prasyarat semua di atas; perubahan kecil, dikerjakan **sekarang** sebelum jenis soal lain |
+| K12 | Umpan Latihan menandai **kolom yang sudah benar** sebelum kolom yang salah | Rasa "hampir" yang jujur dan menunjuk langkah *(riset 2 A3; 6 HMW-1 ide 1b)* |
+| K13 | **Kemahiran per topik** (`Dicoba` → `Paham` → `Kuasai`) menggantikan ide level/rank | Hadiah mengikuti bukti paham yang diulang, tidak bisa dicapai dengan menebak *(riset 6 HMW-3 ide 3c; 5b P7; 5a E2, E4)* |
+| K14 | **Soal hari ini** dipilih untuk pengulangan berjarak; streak dipertahankan apa adanya; tanpa bonus XP | Alasan kembali yang juga memperkuat ingatan *(riset 6 HMW-4 ide 4b; 5a E2; 5b P3, P4)* |
+| K15 | Kesulitan bertahap = **saran** mengikuti kemahiran, bukan kunci | Pemula diarahkan, yang mahir tidak dihalangi *(riset 6 HMW-5 ide 5b)* |
+| K16 | Daftar **pola gelap terlarang** dan **ukuran keberhasilan** menjadi kriteria terima setiap mekanik | *(riset 7, riset 8)* |
 
 ---
 
@@ -42,6 +51,7 @@ percobaan dicatat, dinilai, dan dihargai**.
 | Berapa kali | Berulang, sampai benar atau jawaban dibuka | **Sekali**. Sesudah Kirim tabel terkunci |
 | Cara menilai | Kolom kiri→kanan, **berhenti di kolom pertama** yang belum lengkap/salah (B6 1–6) | **Semua kolom dinilai sekaligus**; kolom kosong = salah (tidak ada umpan "belum lengkap" yang menghentikan) |
 | Umpan | Kuning/merah/hijau seperti B6 | Sesudah Kirim: tiap sel benar/salah ditandai sekaligus, ringkasan `{benar} dari {total} kolom benar` (kalimat baru, lewat diksi), lalu kunci tampil seperti sesudah Lihat jawaban |
+| Batas waktu | Tidak ada | Tidak ada untuk mandiri; tugas memakai tenggat, bukan hitung mundur *(riset 2 A8, 10 O8)* |
 | Kirim saat ada sel kosong | – | Dialog tahan: "Masih ada kotak kosong. Tetap kirim?" (pola dialog tahan yang sudah ada) |
 | Lihat jawaban | Tautan merah, dialog tahan, XP hilang (B6) | **Tidak ada sebelum Kirim**. Sesudah Kirim kunci tampil otomatis |
 | Kosongkan | Ada | Ada sebelum Kirim |
@@ -204,6 +214,8 @@ Kolom `id_penugasan` baru ditambahkan bersama tabel `penugasan` (fase kelas); di
 
 ### 3.1 Aturan (keputusan)
 
+Dasar: hadiah mengikuti usaha jujur, bukan menyalin atau menebak *(riset 6 HMW-3 ide 3b; 5a E4, E6; 2 A1, A5)*.
+
 Untuk satu pengguna dan satu soal (`soal_slug`, lintas revisi):
 
 1. Urutkan kejadian menurut `diterima_pada` (server). Kejadian luring yang terkirim belakangan memakai waktu terima;
@@ -297,16 +309,123 @@ Ide: 5 nyawa; salah mengurangi nyawa; habis → pelajar diarahkan belajar lagi (
 ### 4.4 Rekomendasi
 
 **Jangan bangun nyawa di fase ini.** Bangun **versi minimal tanpa kunci** yang memberi manfaat pedagogisnya tanpa
-risikonya:
+risikonya *(riset 6 HMW-6 ide 6c)*:
 
 - **Saran belajar**: di Latihan, sesudah **3 Periksa salah berturut-turut di kolom yang sama**, di bawah umpan merah
-  muncul tautan teks `Pelajari dulu: {judul materi}` ke materi bab soal itu. Tanpa penghitung nyawa, tanpa kunci, tanpa
-  menunggu. Diturunkan murni dari kejadian sesi ini (tidak butuh server). Satu kalimat baru lewat diksi; butuh
-  persetujuan mockup.
+  muncul dua tautan teks: `Pelajari dulu: {judul materi}` (materi bab soal itu) dan `Coba soal serupa` (bila ada soal lain
+  bertopik sama, 4A.2). Tanpa penghitung nyawa, tanpa kunci, tanpa menunggu. Diturunkan murni dari kejadian sesi ini
+  (tidak butuh server). Kalimat baru lewat diksi; butuh persetujuan mockup.
+
+Alasan dari riset: pembuat pola nyawa paling dikenal meninggalkan nyawa per kesalahan karena menghambat pelajar baru
+*(riset 5b P1)*; meminta bantuan sebelum mencoba dan menebak cepat adalah perilaku yang paling merugikan belajar
+*(riset 5a E4)*, dan nyawa di Latihan mendorong keduanya *(riset 5c butir 1)*. Ditolak: nyawa di Latihan (6a), Periksa
+dinonaktifkan sementara (6d, bertentangan dengan keputusan "tombol tak nonaktif"), nyawa yang dipulihkan dengan membaca
+materi (6e).
 
 Bila sesudah itu pemilik tetap ingin nyawa: hanya untuk **mode Tantangan** (Ujian mandiri beruntun, daring, berakun),
-dibangun **sesudah** penilaian server (fase K3 di bagian 7), dengan aturan di 4.3. Tidak pernah di Latihan dan tidak
-pernah di penugasan kelas.
+dibangun **sesudah** penilaian server (fase P3 di bagian 7), dengan aturan di 4.3. Tidak pernah di Latihan dan tidak
+pernah di penugasan kelas. Jeda harus terasa adil *(riset 6 HMW-6)*: sisa waktu tampil sebagai jam selesai
+(`Bisa lagi pukul {jam}`), bukan hitung mundur; Latihan, materi, dan Kuis konsep tetap terbuka dan tetap menghitung
+streak; tanpa pembelian/iklan pemulihan; tanpa notifikasi "nyawamu sudah penuh".
+
+---
+
+## 4A. Desain keterlibatan (engagement)
+
+Arahan pemilik: belajar harus terasa seperti game yang menantang dan membuat ingin kembali. Batasan dari riset: "game"
+berarti **ritme, tantangan, dan umpan instan**, bukan dekorasi game (memori 2026-10-01, *riset 0*); dan setiap mekanik
+harus mendorong pemahaman fikih yang benar, bukan menebak atau farming *(riset 5c, prinsip turunan riset 6)*.
+
+Semua mekanik di bawah adalah **fungsi murni atas kejadian percobaan** (bagian 2); tidak ada keadaan game yang disimpan
+terpisah.
+
+### 4A.1 Peta mekanik
+
+| Mekanik | Keputusan | Versi minimal (dibangun dulu) | Rujukan |
+|---|---|---|---|
+| Umpan instan | Pertahankan Periksa (B6); tambah tanda **kolom yang sudah benar** | Centang di kepala kolom benar + `Kolom 1–2 benar. Mulai salah di kolom "{judul}".` | K12; riset HMW-1 1b |
+| Rasa "hampir" | Dari umpan kolom benar, bukan persen | sama dengan baris di atas | riset HMW-1 (1c ditolak: persen menyesatkan) |
+| Pemulihan sesudah gagal | **Soal serupa** bertopik sama sesudah Lihat jawaban atau 3 salah di kolom sama; soal serupa tetap memberi XP | Tautan `Coba soal serupa` + `Pelajari dulu: {materi}` | K6; riset HMW-2 2b+2d |
+| XP | Bagian 3 (benar pertama tanpa dibuka; bobot per jenis; tanpa potongan) | sudah di P0/P1 | K5, K7 |
+| Streak | **Tetap apa adanya** (hari aktif dari kegiatan apa pun, notifikasi netral sekali sehari, bisa dimatikan). Tanpa freeze dulu | tidak ada perubahan | riset 2 A9; 5b P3/P4; HMW-4 4e |
+| Level/rank | **Ditolak**; diganti **kemahiran per topik** | 4A.3 | K13; riset HMW-3 3c/3d |
+| Tantangan harian | **Soal hari ini** (pengulangan berjarak), tanpa bonus XP, tanpa papan harian | 4A.4 | K14; riset HMW-4 4b |
+| Kesulitan bertahap | **Saran** tingkat/jenis berikutnya mengikuti kemahiran; tanpa kunci | 4A.5 | K15; riset HMW-5 5b |
+| Nyawa | Ditunda; saran belajar (4.4); Tantangan daring nanti | 4.4 | K8; riset HMW-6 |
+| Jeda tunggu | Hanya bila nyawa Tantangan dibangun; jam selesai, server, tanpa jual pemulihan | – | 4.4; riset HMW-6 |
+| Peringkat | Tetap seperti sekarang (publik, opt-out). Tanpa liga, tanpa peringkat kelas | tidak ada perubahan | riset 5b P5; HMW-7 7c |
+
+### 4A.2 Soal serupa
+
+- Soal serupa = soal latihan terbit lain dengan `topik` sama (`packages/content/src/soal.ts:14`), tingkat sama atau satu
+  di bawah, yang belum `benar` dan belum `dibuka` oleh pelajar. Dipilih dengan `acak` tersuntik (pola `pilihAcak`).
+- Tidak ada soal serupa → tautan tidak dirender (memori "UI hanya yang relevan").
+- **Prasyarat konten**: hitung jumlah soal per topik dari konten terbit sebelum membangun; topik dengan satu soal butuh
+  soal tambahan dari tim keilmuan (bukan dikarang di kode).
+
+### 4A.3 Kemahiran per topik
+
+```ts
+type Kemahiran = 'belum' | 'dicoba' | 'paham' | 'kuasai';
+function kemahiranTopik(kejadian: KejadianPercobaan[], topikDari: (slug: string) => string, topik: string): Kemahiran
+```
+
+| Status | Syarat (USULAN) |
+|---|---|
+| `dicoba` | ada kejadian apa pun di soal bertopik itu |
+| `paham` | satu soal bertopik itu benar tanpa dibuka (Latihan atau Ujian) |
+| `kuasai` | sesudah `paham`: benar di **Ujian** soal bertopik itu, **atau** benar tanpa dibuka di **soal lain** bertopik sama yang dikerjakan **≥ 1 hari** (waktu terima server) sesudah `paham` |
+| turun ke `paham` | salah di Ujian soal bertopik itu sesudah `kuasai` |
+
+Alasan: bukti kedua yang berjarak *(riset 5a E2)* membedakan paham dari tebakan beruntung *(riset 5a E4)*, meniru pola
+kemahiran Khan Academy *(riset 5b P7)*. Turun status ditampilkan netral (tanpa animasi kehilangan, *riset 7*).
+Tampilan (di daftar soal per bab dan ringkasan Belajar) **butuh mockup**; kata `Paham` / `Kuasai` diuji ke pengguna dulu
+*(riset 11)*.
+
+### 4A.4 Soal hari ini
+
+`soalHariIni(kejadian, bankSoal, hariIniServer)` memilih satu soal, urutan prioritas:
+1. topik yang soalnya **dibuka atau salah ≥ 1 hari** lalu dan belum dipulihkan;
+2. topik `paham` yang belum `kuasai` dan sudah ≥ 1 hari sejak `paham`;
+3. soal baru berikutnya menurut urutan bab (saran yang sudah ada di `DaftarSoalHitung`).
+
+Satu soal per hari (tetap sama sepanjang hari itu), tampil di Beranda sebagai satu tautan. Mengerjakannya = aktivitas
+(streak). XP mengikuti bagian 3 (soal ulang = 0 XP). Tanpa akun: dihitung dari kejadian lokal dan jam perangkat (tidak ada
+hadiah yang bisa dicurangi, jadi jam perangkat cukup). Butuh mockup Beranda.
+
+### 4A.5 Saran kesulitan
+
+Saran "berikutnya" di daftar soal: tingkat berikutnya (dasar → menengah → sulit) disarankan sesudah **2 topik `paham`**
+di tingkat itu dalam bab yang sama; jenis kasus khusus (munasakhat, taqdir, dzawil arham, gharqa) disarankan sesudah topik
+soal biasa di bab prasyaratnya `paham`. Pemetaan prasyarat bab = data konten (bukan kode), diisi tim keilmuan. Semua soal
+tetap bisa dibuka (tanpa kunci).
+
+### 4A.6 Pola gelap terlarang (kriteria terima setiap mekanik)
+
+Diambil dari *riset 7*. Setiap PR yang menambah mekanik keterlibatan wajib lolos daftar ini:
+- tidak ada kalimat/ilustrasi rasa bersalah, maskot sedih, atau "streak-mu akan hilang" berulang; notifikasi ≤ 1 per hari;
+- XP tidak pernah berkurang; materi dan Latihan tidak pernah terkunci;
+- tidak ada peringkat di kelas, tidak ada daftar "belum mengerjakan" yang terlihat sesama pelajar;
+- keluar sesi satu ketukan (dialog tahan hanya bila ada isian yang akan hilang);
+- tidak ada pembelian/iklan untuk nyawa, streak, atau XP; tidak ada hadiah acak;
+- tidak ada liga dengan degradasi.
+
+### 4A.7 Ukuran keberhasilan
+
+Dari *riset 8*, semua dihitung dari kejadian (tanpa pelacak pihak ketiga), per pekan, sebelum/sesudah fitur:
+retensi D1/D7/D30; penyelesaian jujur (benar tanpa dibuka per sesi soal); rasio lihat-sebelum-mencoba; tanda menebak
+(Periksa < 5 detik sesudah Periksa salah dengan ≤ 1 sel berubah); kesalahan berulang per jenis kolom pada soal ke-n
+bertopik sama; pemulihan (soal serupa benar sesudah jawaban dibuka); transfer `paham` → benar di Ujian; sinyal bahaya
+(berhenti ≤ 2 hari sesudah sesi dengan ≥ 5 salah).
+USULAN ambang tinjau ulang: penyelesaian jujur turun > 5 poin atau tanda menebak naik > 5 poin sesudah mekanik dipasang.
+Fungsi ukuran ditulis sebagai fungsi murni di modul yang sama dengan XP (2.2) dan dijalankan di server (SQL view atau
+edge function terjadwal); hanya agregat yang ditampilkan ke pemilik, tidak per pengguna.
+
+### 4A.8 Kelas tetap netral
+
+Mekanik di 4A hanya di jalur mandiri *(riset 9, HMW-7 7a)*. Layar tugas tidak menampilkan XP, streak, kemahiran, soal
+hari ini, saran, atau peringkat; yang tampil hanya aturan tugas (mode, batas percobaan, tenggat). Percobaan tugas tetap
+memperbarui XP dan kemahiran pribadi (satu kali per soal) tanpa ditampilkan di layar tugas.
 
 ---
 
@@ -479,7 +598,8 @@ komponen lama.
 |---|---|---|
 | **P0 (sekarang)** | S1–S6; mode Latihan saja; XP masih lewat `log_kegiatan` seperti sekarang ditambah perbaikan klien S5 | – |
 | **P1** | Tabel `percobaan_soal` + RLS + pgTAP; repositori `simpanPercobaan`/`bacaPercobaan`; `gabung` kejadian per id; fungsi XP SQL membaca `percobaan_soal` (aturan bagian 3, bobot dari revisi); `bobotXp` di skema + form portal | P0; perbaiki T2 (log_kegiatan bisa dipalsukan) sekaligus |
-| **P2** | Mode Ujian (mockup dulu, P2 pertanyaan), rekor Ujian dari kejadian; saran belajar (4.4) | P0 |
+| **P2** | Mode Ujian (mockup dulu), rekor Ujian dari kejadian; umpan kolom benar (K12); saran belajar + soal serupa (4.4, 4A.2) | P0; hitung soal per topik |
+| **P2b (keterlibatan)** | Kemahiran per topik (4A.3), soal hari ini (4A.4), saran kesulitan (4A.5); fungsi ukuran keberhasilan (4A.7) | P1 (kejadian di server), mockup disetujui |
 | **P3 (fondasi kelas)** | Paket bersama penilaian (engine dispatcher + tabel latihan) yang bisa diimpor web dan edge function; edge function `nilai-percobaan`; `sesi_soal` (jangkar server) | P1, audit T1 |
 | **P4 (kelas)** | `kelas`, `anggota_kelas`, `penugasan`, RLS + pgTAP lintas peran; layar pengajar (buat kelas, terbitkan penugasan, lihat nilai); layar pelajar (gabung kode, daftar penugasan) | P3 |
 | **P5 (opsional)** | Nyawa untuk mode Tantangan, bila pemilik tetap menginginkan sesudah melihat saran belajar | P3 |
@@ -505,3 +625,13 @@ komponen lama.
 9. **Latihan di penugasan**: nilai 1/0 (benar tanpa dibuka) cukup, atau perlu skor parsial (yang menuntut menilai semua
    kolom juga di Latihan)?
 10. **Ujian parsial**: tetap 0 XP bila tidak semua kolom benar (usulan), atau XP sebanding jumlah kolom benar?
+
+Pilihan keterlibatan (riset bagian 10; mockup menyusul di sesi lain sesudah dipilih):
+
+11. **Umpan "hampir"** (O1): tandai kolom yang sudah benar saat Latihan salah (usulan), atau biarkan seperti B6?
+12. **Sesudah jawaban dibuka** (O2): tautan soal serupa + materi (usulan), atau materi saja?
+13. **Level/rank** (O3): ganti dengan kemahiran per topik `Dicoba / Paham / Kuasai` (usulan), atau tanpa level sama sekali?
+    Setuju kata "Paham" dan "Kuasai"?
+14. **Tantangan harian** (O4): soal hari ini tanpa bonus XP (usulan), atau dengan bonus kecil (mis. 5 XP)?
+15. **Batas waktu di Ujian tabel** (O8): tanpa batas waktu untuk mandiri (usulan), atau batas waktu opsional yang dipilih
+    pelajar seperti mode ujian Kuis konsep?
