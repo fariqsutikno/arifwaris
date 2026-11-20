@@ -6,7 +6,7 @@
 <title>Tabel faraidh final</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
 <!-- Mockup final isian soal latihan. Acuan: docs/design/riset-ux-isian-jawaban-latihan-2026-11-19.md bagian 11.
-     Angka kunci dari KB: 16.1, 12.6 contoh 2 (munasakhat), 14.6 baris 1 (dzawil arham), 13b.6 F1 (mafqud), 13a.7 H1 baris [SYF] (haml), 13d.2 (gharqa).
+     Angka kunci dari KB: 16.1, 12.6 contoh 2 (munasakhat), 14.6 baris 1 (dzawil arham), 13b.6 F1 (mafqud), 13c.4 X1 (khuntsa), 13a.7 H1 baris [SYF] (haml), 13d.2 (gharqa).
      Kolom bagian per kemungkinan pada mafqud diturunkan dari bab 04 dan cocok dengan hasil F1. -->
 <style>
 :root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:#fff;--orange:#f2682a;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#d5ddd2;--hijau:#1f6f5c;--merah:#fdecea;--merah-ink:#7a2a17;
@@ -163,6 +163,27 @@ const SOAL = {
     ],
     pengaliHarusnya: (kol, h) => h.kini / h[kol],
     cara: ['Isi <b>dua kemungkinan</b>: ia hidup, ia wafat.', 'Sel <b>"–"</b> memang tidak diisi.', '<b>Diberikan sekarang</b> = yang terkecil dari dua kemungkinan, setelah dikali pengali.', '<b>Ditahan</b> = sisa sampai kabarnya jelas.']
+  },
+  khuntsa: {
+    // [SYF] dan [HNB] jelas: dua taqdir, ia laki-laki dan ia perempuan; tiap orang diberi yang terkecil, sisanya ditahan (KB 13c.4 X1).
+    tab: 'Khuntsa', bab: 'Bab khuntsa', soal: 'Almarhum meninggalkan ayah, dua anak perempuan, dan cucu khuntsa dari anak laki-laki yang sudah wafat.', rujukan: 'KB 13c.4 X1',
+    kolom: [
+      { id: 'bl', judul: 'Bagian · ia laki-laki', jenis: 'pilih', pilihan: BAGIAN },
+      { id: 'lk', judul: 'Ia laki-laki', jenis: 'bulat', header: '6' },
+      { id: 'bp', judul: 'Bagian · ia perempuan', jenis: 'pilih', pilihan: BAGIAN },
+      { id: 'pr', judul: 'Ia perempuan', jenis: 'bulat', header: '6' },
+      { id: 'kini', judul: 'Jami\'ah · diberikan sekarang', jenis: 'bulat', header: '6', labelHeader: 'Jami\'ah' }
+    ],
+    baris: [
+      { nama: 'Ayah', kunci: { bl: '1/6', lk: '1', bp: '1/6 + Ashabah', pr: '2', kini: '1' } },
+      { nama: 'Anak pr 1', kunci: { bl: '2/3', lk: '2', bp: '2/3', pr: '2', kini: '2' } },
+      { nama: 'Anak pr 2', kunci: { bl: '2/3', lk: '2', bp: '2/3', pr: '2', kini: '2' } },
+      { nama: 'Cucu khuntsa', kunci: { bl: 'Ashabah', lk: '1', bp: 'Terhalang', pr: '0', kini: '0' } },
+      { nama: 'Pengali', pengali: true, kunci: { lk: '1', pr: '1' } },
+      { nama: 'Ditahan (mauquf)', tambahan: true, kunci: { kini: '1' } }
+    ],
+    pengaliHarusnya: (kol, h) => h.kini / h[kol],
+    cara: ['Isi <b>dua kemungkinan</b>: ia laki-laki, ia perempuan.', 'Pilih <b>Terhalang</b>: saham otomatis 0.', '<b>Diberikan sekarang</b> = yang terkecil dari dua kemungkinan, setelah dikali pengali.', '<b>Ditahan</b> = sisa sampai statusnya jelas.']
   },
   haml: {
     // [SYF] empat taqdir (KB 13a.5, R13-20): mati, laki-laki (berapa pun), satu pr, pr berbilang. Mitra ashabah haml
