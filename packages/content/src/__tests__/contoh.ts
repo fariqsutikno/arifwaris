@@ -1,6 +1,6 @@
 // Contoh isi konten kecil untuk tes paket ini. Data nyata ada di database; cakupannya diuji di apps/web
 // (__tests__/snapshot.test.ts). Blok & potongan di sini mencakup semua jenis, supaya bolak-balik tulisBlok/skema teruji.
-import { DAFTAR_AYAT, type Blok, type EntriFaq, type KasusTanyaJawab, type Modul, type Pelajaran, type SoalHitung, type SoalKuis, type Syahid } from '../index.js';
+import { DAFTAR_AYAT, type Blok, type ContohKasus, type EntriFaq, type KasusTanyaJawab, type Modul, type Pelajaran, type SoalHitung, type SoalKuis, type Syahid } from '../index.js';
 
 export const CONTOH_BLOK: Blok[] = [
   { jenis: 'judul', tingkat: 2, isi: [{ jenis: 'teks', teks: 'Bagian ' }, { jenis: 'tebal', teks: 'suami' }] },
@@ -26,7 +26,7 @@ export const CONTOH_SOAL_KUIS: SoalKuis = {
   kode: 'K-01', bab: 4, pertanyaan: [{ jenis: 'teks', teks: 'Bagian suami?' }],
   pilihan: [[{ jenis: 'teks', teks: '1/2' }], [{ jenis: 'teks', teks: '1/4' }]], indeksBenar: 0, pembahasan: [{ jenis: 'rujukan', kode: 'R04-2' }],
 };
-export const CONTOH_SOAL_HITUNG: SoalHitung = {
+export const CONTOH_SOAL_HITUNG: SoalHitung & { kasus: ContohKasus } = {
   kode: 'H-01', bab: 4, tingkat: 'dasar', judul: 'Istri, ayah, ibu, anak laki-laki', topik: 't', sumber: 'KB 16 #20',
   kasus: { pewaris: 'L', ahliWaris: ['ISTRI', 'AYAH', 'IBU', 'ANAK_LK'], harta: 120_000_000n,
     harapan: { saham: { ISTRI: 3n, AYAH: 4n, IBU: 4n, ANAK_LK: 13n }, ashlAkhir: 24n } },

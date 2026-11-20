@@ -4,12 +4,21 @@ import type { ContohKasus, Potongan } from './materi.js';
 
 export type Tingkat = 'dasar' | 'menengah' | 'sulit';
 
+/** Isi berkas "Simpan ke berkas" kalkulator (versi ≥ 4): graf, urutan wafat, gharqa, status hidup, khuntsa, madzhab.
+ *  Isinya divalidasi `bacaBerkasKasus` (@waris/latihan) di uji konten dan portal; di sini hanya bentuk luarnya. */
+export type BerkasKasus = Record<string, unknown>;
+
+/** Kasus sebuah soal hitung. Tanpa penanda `bentuk` = bentuk lama (pewaris + kunci ahli waris + harta), jadi soal lama
+ *  tetap terbaca tanpa migrasi; jenis soal lain (munasakhat, mafqud, khuntsa, haml, gharqa, ...) memakai berkas. */
+export type KasusSoal = ContohKasus | { bentuk: 'berkas'; berkas: BerkasKasus };
+export const adalahKasusLama = (kasus: KasusSoal): kasus is ContohKasus => !('bentuk' in kasus);
+
 export interface SoalHitung {
   kode: string;
   bab: number;
   tingkat: Tingkat;
   judul: string;
-  kasus: ContohKasus;
+  kasus: KasusSoal;
   /** Konsep yang diuji; baru ditampilkan setelah soal dikerjakan. */
   topik: string;
   sumber: string;

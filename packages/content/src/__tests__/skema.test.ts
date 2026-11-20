@@ -66,3 +66,10 @@ test('soal_kuis: pengecoh lama digabung ke pembahasan; alasanPilihan harus lengk
 test('jenis tak dikenal (mis. dari DB yang lebih baru dari kode) ditolak, bukan melempar', () => {
   expect(bacaIsi('jenis_baru' as JenisKonten, {})).toEqual({ ok: false, galat: 'jenis konten tidak dikenal: jenis_baru' });
 });
+
+test('soal hitung menerima bentuk lama tanpa penanda dan bentuk berkas; berkas tanpa versi ditolak', () => {
+  const dasar = keJson('soal_hitung', CONTOH_SOAL_HITUNG) as object;
+  expect(bacaIsi('soal_hitung', dasar).ok).toBe(true);
+  expect(bacaIsi('soal_hitung', { ...dasar, kasus: { bentuk: 'berkas', berkas: { versi: 4 } } }).ok).toBe(true);
+  expect(bacaIsi('soal_hitung', { ...dasar, kasus: { bentuk: 'berkas', berkas: {} } }).ok).toBe(false);
+});

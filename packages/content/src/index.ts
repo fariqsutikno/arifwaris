@@ -7,7 +7,7 @@ export {
   bacaBlok, bacaPotongan, semuaPotongan, bacaDaftarAhliWaris, bacaHarapan,
   type Pelajaran, type Modul, type VersiArab, type Blok, type Potongan, type ContohKasus,
 } from './materi.js';
-export type { SoalHitung, SoalKuis, Tingkat } from './soal.js';
+export { adalahKasusLama, type SoalHitung, type SoalKuis, type Tingkat, type KasusSoal, type BerkasKasus } from './soal.js';
 export type { EntriFaq } from './faq.js';
 export { JENIS_TANYA_JAWAB, type KasusTanyaJawab, type JenisTanyaJawab } from './tanyaJawab.js';
 export type { Syahid, SumberKitab } from './pustaka.js';

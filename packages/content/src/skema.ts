@@ -6,7 +6,7 @@ import { z } from 'zod';
 import type { EntriFaq } from './faq.js';
 import type { Blok, ContohKasus, Modul, Pelajaran, Potongan, VersiArab } from './materi.js';
 import type { SumberKitab, Syahid } from './pustaka.js';
-import type { SoalHitung, SoalKuis } from './soal.js';
+import type { KasusSoal, SoalHitung, SoalKuis } from './soal.js';
 import type { KasusTanyaJawab } from './tanyaJawab.js';
 
 export const JENIS_KONTEN = [
@@ -69,6 +69,12 @@ const contohKasus = z.object({
   harapan: z.object({ saham: z.record(bigintTeks), ashlAkhir: bigintTeks }),
 }) as unknown as z.ZodType<ContohKasus>;
 
+const kasusBerkas = z.object({
+  bentuk: z.literal('berkas'),
+  berkas: z.record(z.unknown()).refine(berkas => typeof berkas.versi === 'number', { message: 'berkas kasus harus punya versi' }),
+});
+const kasusSoal = z.union([contohKasus, kasusBerkas]) as unknown as z.ZodType<KasusSoal>;
+
 const blok: z.ZodType<Blok> = z.discriminatedUnion('jenis', [
   z.object({ jenis: z.literal('judul'), tingkat: z.union([z.literal(2), z.literal(3)]), isi: z.array(potongan) }),
   z.object({ jenis: z.literal('paragraf'), isi: z.array(potongan) }),
@@ -101,7 +107,7 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
       { message: 'penjelasan per pilihan harus ada untuk semua pilihan', path: ['alasanPilihan'] })
     .transform(({ pengecoh, ...soal }) => (pengecoh?.length ? { ...soal, pembahasan: [...soal.pembahasan, { jenis: 'teks' as const, teks: ' ' }, ...pengecoh] } : soal)),
   soal_hitung: z.object({
-    kode: z.string(), bab: z.number().int(), tingkat, judul: z.string(), kasus: contohKasus, topik: z.string(), sumber: z.string(),
+    kode: z.string(), bab: z.number().int(), tingkat, judul: z.string(), kasus: kasusSoal, topik: z.string(), sumber: z.string(),
   }),
   tanya_jawab: z.object({
     slug: z.string(), judul: z.string(), jenis: z.enum(['Saran ustadz', 'Fatwa']), ringkasan: z.string(),
