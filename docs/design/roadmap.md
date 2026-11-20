@@ -29,7 +29,7 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 ```
 SEKARANG
   ├─ [kamu] gabung PR #42 (G1) setelah ditinjau
-  ├─ [kamu] jawab 15 pertanyaan terbuka spec (bagian 8) ── gerbang G2–G3
+  ├─ [kamu] jawab pertanyaan spec yang tersisa (bagian 8) ── gerbang G2–G3
   └─ [kamu] langkah dasbor G0 yang tersisa (mis. matikan login Email, K1)
 
 G2  jenis soal latihan (B7, B8)         14–23 hari + tim keilmuan
@@ -60,8 +60,8 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 
 ## Yang menunggu keputusanmu
 
-1. **15 pertanyaan terbuka** di spec bagian 8 (nama mode, bobot XP, nyawa vs Tantangan, pembuat kelas, usia murid,
-   skor parsial, dst.). Tanpa ini G3 dan G6 tidak bisa mulai.
+1. **Pertanyaan spec bagian 8 yang belum dijawab**: 1, 2, 3, 4, 5, 7, 8, 11, 12, 14, 25–30. Sisanya sudah diputuskan
+   (6, 9, 10, 13, 15–24). Yang menahan G3: 1, 3, 26; yang menahan G6: 2, 11, 12, 14, 25, 27–29; yang menahan G7: 5, 7, 8.
 2. **Tab Khuntsa di mockup** sebelum jenis soal khuntsa.
 3. **Kontak pengendali data + isi kebijakan privasi** (G3), dan apakah proyek `ap-south-1` = produksi (pindah region sebelum G7).
 4. **Pilot kelas sebelum AMIN?** Demi kalender semester; biayanya AMIN mundur ±5–7 minggu.
