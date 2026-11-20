@@ -215,8 +215,9 @@ Edge function `catat-percobaan` (satu-satunya pintu tulis untuk kejadian soal ta
    batas laju per pengguna per menit dan per hari; tugas: jendela waktu dan batas percobaan dari server (5.4).
 5. **Idempoten**: `id` yang sama dengan isi sama → hasil yang sudah ada; `id` sama dengan isi berbeda → 409.
 6. **Hasil**: `nilaiSemuaKolom` dijalankan server; `versi.engine` dan `versi.kunci` diisi server; `diterima_pada = now()`.
-7. **Soal pola**: kejadian untuk soal pola hanya diterima bila benihnya **diterbitkan server untuk pengguna itu** (bagian
-   5.4 "pola"); soal dibangkitkan ulang dan diverifikasi di server dari (pola terbit, benih), tidak pernah dari kiriman klien.
+7. **Soal bangkitan** (soal dari pola, keputusan pemilik 2026-11-20: dibangkitkan dulu dengan engine, disimpan, dan
+   terbuka untuk semua di Latihan): kejadian hanya diterima bila `soalId` ada di katalog `soal_bangkitan` dan berstatus
+   terbit; isi soal dibangkitkan ulang di server dari (pola terbit, versi, benih), tidak pernah dari kiriman klien.
 
 Sumber XP, streak, papan, kemahiran, dan nilai **hanya** baris yang ditulis fungsi ini (dan, untuk kuis konsep dan
 pelajaran, fungsi tulis server yang setara; `log_kegiatan` tidak lagi bisa ditulis langsung klien).
@@ -615,7 +616,9 @@ create table koreksi_nilai (     -- append-only; nilai efektif = koreksi terakhi
 ```ts
 type ButirTugas =
   | { jenis: 'kurasi'; slug: string; revisi: string }
-  | { jenis: 'pola'; slugPola: string; versi: number; benih: 'sama' | 'perPelajar'; benihSama?: string }
+  | { jenis: 'bangkitan'; soalId: IdSoal }                       // satu soal tertentu dari katalog soal bangkitan
+  | { jenis: 'otomatis'; saring: { bab?: number[]; topik?: string[]; jenisSoal?: JenisSoal[]; tingkat?: Tingkat[] };
+      sebaran: 'sama' | 'perPelajar' }                           // "buatkan pakai engine": server memilih dari katalog
   | { jenis: 'buatan'; idSoalBuatan: string };   // dari kalkulator pengajar, hanya untuk kelasnya
 
 interface KebijakanTugas {
@@ -655,8 +658,11 @@ berarti hal yang sama.
 - Nilai tugas = `nilaiTugas(kejadian, kebijakan)` murni: per butir, skor parsial dari kejadian yang dipilih
   (`pertama/terbaik/terakhir`) memakai **hasil_kolom** (selalu hitungan server, 2.6), dikali bobot butir, dijumlah. Lihat jawaban → butir 0
   kecuali `bolehLihatJawaban`. Pelajar melihat rincian per tahapan sesudah nilai dirilis.
-- **Variasi per pelajar**: benih soal pola dipilih acak oleh server (`gen_random_uuid()`) per (tugas, pelajar, butir) dan
-  disimpan di `sesi_soal`; tidak diturunkan dari id yang bisa ditebak (2.6 butir 7).
+- **Tugas otomatis** ("buatkan pakai engine", keputusan pemilik 2026-11-20): pengajar tidak memilih soal satu per satu;
+  ia mengisi saringan (bab, topik, jenis, tingkat) dan jumlah butir. Server memilih soal dari katalog `soal_bangkitan`
+  secara acak (`gen_random_uuid()`), sama untuk semua atau berbeda per pelajar, menyimpannya di `sesi_soal`, dan
+  menghindari soal yang sudah pernah dikerjakan pelajar itu bila katalog cukup. Pengajar bisa melihat pratinjau dan
+  mengganti butir sebelum terbit.
   Varian pola bisa berbeda tingkat kesulitan (riset kelas 5a); statistik per pola dari kejadian menandai pola yang
   variannya terlalu beragam supaya tim keilmuan meninjaunya.
 - **Salin ke periode baru**: menyalin tugas sebagai draf ke kelas baru; butir pola memakai benih baru.
@@ -708,9 +714,9 @@ membaca pelajar B; pengajar kelas X tidak bisa membaca kelas Y; pengajar tidak b
   benih; benih disimpan sehingga `pilihJangkar(tabel, acakDariBenih(benih))` bisa diulang.
 - **Mandiri juga dinilai server** (2.6): klien menilai untuk umpan langsung dan luring, lalu mengirim isian; server menilai
   ulang saat terkirim dan hasil server yang berlaku (centang, XP, kemahiran).
-- **Pola**: benih soal pola selalu dipilih server (`gen_random_uuid()`), baik mandiri (`ambil_soal_pola(slug_pola)` →
-  `{ idSesiSoal, soalId }`, sekaligus mencatat `buka`) maupun tugas (`sesi_soal`). Benih tidak diturunkan dari id yang
-  bisa ditebak.
+- **Soal bangkitan** tersimpan sebagai katalog terbuka (2.6 butir 7); semua orang bisa membukanya di Latihan. Tujuannya
+  pembiasaan lewat banyak latihan (*drill*), bukan merahasiakan soal; karena itu tidak ada benih rahasia. Integritas
+  tetap dari penilaian server dan XP sekali per soal.
 - Engine bisa berjalan di edge function karena murni, tanpa I/O/`Date`/`Math.random` (CLAUDE.md prinsip 1). **Tetapi**
   dua hal yang dibutuhkan server sekarang ada di `apps/web` dan menyentuh I/O: pemilihan orkestrator (`jalankan.ts`) dan
   `susunTabelSoal` yang mengimpor `format.ts`/`terjemah.ts` (diksi + preferensi `localStorage`). Lihat 6.2 dan audit T1.

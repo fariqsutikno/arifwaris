@@ -1,4 +1,4 @@
-# 06. Kelas: penilaian server, kelas inti, pola soal, sesi langsung (G7)
+# 06. Kelas dan soal bangkitan: mode tugas, kelas inti, generator jutaan soal, tugas otomatis, sesi langsung (G4, G7)
 
 Induk: `00-induk.md` bagian 4 G7. Perilaku dan skema: spec 5.0–5.5 (tabel `kelas`, `anggota_kelas`, `tugas`, `sesi_soal`,
 `koreksi_nilai`, `nilai_tambahan`, `pengajuan_pengajar`, `ButirTugas`, `KebijakanTugas`). Keamanan: audit 8c butir 1–12.
@@ -84,44 +84,80 @@ kelas salah"), `nilaiEfektif(hasilServer, koreksi[])`. Uji tabel kasus untuk tia
   sudah diunduh adalah tanggung jawab lembaganya.
 - Data kelas dihapus 1 tahun sesudah `periode_selesai` (USULAN, `01` bagian 2.5); pengajar diingatkan mengekspor.
 
-## 3. Fase P4b: pola soal / generator jutaan soal (7–11 hari + pola dari tim keilmuan)
+## 3. Soal bangkitan (generator jutaan soal) dan tugas otomatis
 
-Model: riset kelas 5b. "Jutaan soal" = pola × benih, dibangkitkan saat dibutuhkan; yang disimpan hanya pola (puluhan
-sampai ratusan) dan kejadian yang menyebut `IdSoal`.
+**Keputusan pemilik 2026-11-20:** soal dibangkitkan dulu dengan engine, disimpan, dan **terbuka untuk semua orang** di
+Latihan, sehingga terlihat banyak sekali soal. Tujuannya pembiasaan lewat banyak latihan (*drill*); tidak ada yang bisa
+menghafal atau menyalin sejuta soal. Pengajar bisa memilih **"buatkan pakai engine"** alih-alih memilih soal satu per satu.
 
-### 3.1 Membangun
-1. Jenis konten `pola_soal` (skema zod; masuk `JENIS_FIKIH`, jadi wajib ditinjau seperti revisi lain): slug, versi, bab,
-   topik, tingkat, `bobotXp`, slot ahli waris dengan rentang jumlah, syarat atas keluaran engine (mis. "harus 'aul"),
-   rentang harta, templat teks, `refs`.
-2. `acakDariBenih(benih)` di `@waris/latihan`: PRNG deterministik kecil (mis. mulberry32), tanpa `Math.random`.
-3. `bangkitkanSoal(pola, benih) → Kasus | GAGAL` dan `verifikasiSoal(pola, kasus)`: engine `OK`, `susunTabelSoal`
-   didukung, batas B7, syarat pola. Benih yang gagal dilewati secara deterministik (benih berikutnya), paling banyak 50 kali.
-4. `muatSoal` cabang `pola` aktif (`02` bagian 6.3). `IdSoal` pola = `${slug}@${versi}#${benih}`.
-5. Katalog pola untuk pengajar dan pelajar (saring bab/topik/jenis/tingkat); pratinjau beberapa benih contoh.
-6. Portal: tinjau pola dengan pratinjau 10 benih dan persentase benih yang lolos verifikasi; pola < 80% lolos ditolak
-   (USULAN). Statistik per pola dari kejadian menandai pola yang variannya terlalu beragam (riset kelas 5a).
+Waktu: bagian 3.1–3.4 dikerjakan di **G4** (bagian dari "lengkapi materi dan latihan soal", sesudah G3, sebelum AMIN).
+Bagian 3.5 (tugas otomatis) di G7 bersama kelas inti.
 
-### 3.2 Pengamanan generator (keputusan pemilik 2026-11-20: tidak menerima kebenaran dari klien)
+### 3.1 Pola (konten, ditinjau)
+Jenis konten `pola_soal` (skema zod; masuk `JENIS_FIKIH`, wajib ditinjau): slug, versi, bab, topik, tingkat, `bobotXp`,
+slot ahli waris dengan rentang jumlah, syarat atas keluaran engine (mis. "harus 'aul"), rentang harta, templat teks,
+`refs`. Versi beku sesudah terbit. Skema membatasi jumlah slot dan jumlah orang per slot.
+
+### 3.2 Membangkitkan (skrip, dijalankan pengembang)
+1. `acakDariBenih`, `bangkitkanSoal(pola, benih)`, `verifikasiSoal(pola, kasus)` di `@waris/latihan` (murni, deterministik).
+   Verifikasi: engine `OK`, `susunTabelSoal` didukung, batas B7, syarat pola. Kasus `PERLU_INPUT`, `TIDAK_DIDUKUNG`,
+   titik blocked, atau di luar KB dibuang.
+2. Skrip `scripts/bangkitkan-soal.ts <slug-pola> --jumlah N`: menjalankan benih 0, 1, 2, … sampai N soal lolos, membuang
+   duplikat (susunan ahli waris + harta sama dianggap soal yang sama), lalu menulis baris katalog. Dijalankan lokal, hasil
+   diunggah dengan migrasi data/`copy` ke tabel katalog (tidak lewat klien).
+3. Laporan per pola: jumlah lolos, persentase gagal per alasan, sebaran jenis/tingkat. Pola dengan < 80% benih lolos
+   ditinjau ulang (USULAN).
+
+### 3.3 Katalog `soal_bangkitan`
+```sql
+create table soal_bangkitan (
+  soal_id text primary key,            -- `${slugPola}@${versi}#${benih}`
+  revisi_pola uuid not null references revisi,
+  bab int not null, topik text not null, jenis_soal text not null, tingkat text not null,
+  bobot_xp int not null check (bobot_xp between 1 and 200),
+  nomor bigint generated always as identity,   -- nomor tampil "Soal 1.204.311"
+  terbit boolean not null default true
+);
+-- select untuk anon dan authenticated (soal terbuka); tidak ada tulis untuk klien.
+create index on soal_bangkitan (bab, jenis_soal, tingkat, nomor);
+```
+- Isi kasus **tidak disimpan**: selalu dibangkitkan ulang persis sama dari benih (klien untuk tampil, server untuk
+  menilai). Perkiraan ±100 byte per baris dengan indeks → ±100 MB per sejuta soal: muat di Supabase Pro (8 GB), **tidak**
+  di paket gratis (500 MB). Gerbang G4: pemilik memutuskan paket Supabase sebelum pembangkitan massal.
+- Menarik soal = `terbit = false` (bukan hapus), supaya kejadian lama tetap merujuk soal yang ada.
+
+### 3.4 Tampil di Latihan
+- Daftar bernomor, dimuat per halaman dari server, dengan saringan bab/jenis/tingkat dan jumlah total ("1.204.311 soal").
+  Aturan soal buta berlaku (`05` bagian 1): sebelum dikerjakan hanya nomor, bab, tingkat, jenis.
+- Tombol/tautan "Soal acak" memilih dari saringan yang aktif. Soal serupa = soal lain dari pola yang sama (`05` bagian 4).
+- Soal kurasi tetap dibundel dan bisa luring; soal bangkitan butuh daring kecuali yang sudah pernah dibuka (kasusnya
+  dibangkitkan lokal dari benih, jadi cukup menyimpan `soal_id`).
+- Ditandai "dibangkitkan otomatis, diperiksa engine"; tim keilmuan meninjau **pola** dan **sampel acak** 20 soal per pola
+  sebelum pola terbit, bukan tiap soal.
+
+### 3.5 Tugas otomatis "buatkan pakai engine" (G7)
+- Butir tugas `{ jenis: 'otomatis', saring, sebaran }` (spec 5.1): pengajar mengisi bab/topik/jenis/tingkat dan jumlah
+  butir; pratinjau beberapa contoh; boleh mengganti butir sebelum terbit.
+- Saat pelajar membuka butir, `mulai_sesi_soal` memilih soal acak server (`gen_random_uuid()`) dari katalog yang cocok,
+  sama untuk semua atau berbeda per pelajar, sebisa mungkin yang belum pernah dikerjakan pelajar itu, lalu menyimpannya di
+  `sesi_soal`. Soal itu juga ada di katalog publik; konsisten dengan tugas *open book*.
+
+### 3.6 Pengamanan
 
 | Celah | Pengaman |
 |---|---|
-| Pelajar memilih benih yang mudah, atau mencoba banyak benih sampai dapat soal yang sudah ia kenal | **Benih hanya diterbitkan server**: mandiri lewat `ambil_soal_pola(slug_pola)` (benih dari `gen_random_uuid()`, sekaligus mencatat kejadian `buka`); tugas lewat `sesi_soal`. `catat-percobaan` menolak kejadian soal pola yang benihnya tidak pernah diterbitkan untuk pengguna itu (spec 2.6 butir 7) |
-| Menyalin `IdSoal` milik teman untuk mendapat XP | sama: benih terikat ke pengguna penerimanya |
-| Ladang XP karena soal tak terbatas | satu kali per soal + batas XP pola harian (USULAN 300 XP/hari, `04` bagian 5.3) + batas laju `ambil_soal_pola` (USULAN 60/jam) |
-| Klien mengirim soal hasil bangkitan sendiri (susunan karangan) | server tidak pernah menerima soal dari klien; soal dibangkitkan ulang di server dari (pola terbit, versi, benih) lalu diverifikasi |
-| Pola mengubah perilaku diam-diam | versi pola beku sesudah terbit; perubahan = versi baru; kejadian lama tetap merujuk versinya |
-| Pola menghasilkan kasus fikih yang blocked atau di luar KB | pola hanya menyusun input; engine mengembalikan `TIDAK_DIDUKUNG`/`PERLU_INPUT` dan benih itu dilewati; pola wajib `refs` dan ditinjau tim keilmuan |
-| Pola dengan rentang besar membuat hitungan berat (penolakan layanan) | skema membatasi jumlah slot dan jumlah orang per slot; engine sudah punya batas keras jumlah "dunia" taqdir; paling banyak 50 benih dicoba per permintaan; batas waktu fungsi |
-| Klien dan server menghasilkan soal berbeda | uji `bangkitkanSoal` sama persis di vitest dan `deno test` untuk 1.000 benih; versi engine dicatat di tiap kejadian |
-| PRNG bisa ditebak | tidak masalah: keacakan datang dari benih yang dipilih server; PRNG hanya mengembangkan benih itu secara deterministik |
+| Klien mengirim soal karangan atau mengaku benar | server hanya menerima `soalId` yang ada di katalog dan terbit; soal dibangkitkan ulang dan dinilai di server (spec 2.6 butir 7) |
+| Pelajar memilih soal untuk tugas | soal tugas dipilih server dan dikunci di `sesi_soal` |
+| Katalog diubah dari luar | tidak ada hak tulis klien; pembangkitan hanya lewat skrip pengembang + migrasi |
+| Pola menghasilkan kasus di luar KB/blocked | engine menolak, soal tidak masuk katalog; pola wajib `refs` dan ditinjau |
+| Pola dengan rentang besar membuat hitungan berat | batas skema + batas "dunia" taqdir engine; pembangkitan di skrip, bukan saat permintaan |
+| Klien dan server membangkitkan soal berbeda | uji 1.000 benih sama persis di vitest dan `deno test`; versi engine di tiap kejadian; pola beku per versi |
+| Ladang XP | satu kali per soal + penilaian server + batas laju. Tidak ada batas XP harian (pemilik: tujuan *drill*, menyalin sejuta soal tidak sanggup). Bila ukuran "tanda menebak" (`07` bagian 2) menunjukkan penyalahgunaan di papan, batas harian bisa dinyalakan sebagai satu konstanta |
 
-Batas yang jujur: kode generator ikut terbundel di aplikasi, jadi siapa pun bisa membangkitkan soal pola di perangkatnya
-dan menghitung kuncinya. Itu tidak memberi XP atau nilai, karena keduanya hanya dari benih terbitan server yang dinilai
-server.
-
-### 3.3 Uji
-Selain uji di 3.2: property test bahwa semua soal hasil pola yang lolos verifikasi punya kunci tabel; pgTAP bahwa
-`ambil_soal_pola` tidak bisa dipanggil `anon` dan mencatat `buka`; `deno test` bahwa benih asing ditolak.
+### 3.7 Uji
+Property test: setiap soal di katalog lolos `verifikasiSoal`; `bangkitkanSoal` sama di vitest dan `deno test`; pgTAP:
+klien tidak bisa menulis `soal_bangkitan`, `anon` bisa membaca hanya yang terbit; `deno test`: `soalId` di luar katalog
+ditolak.
 
 ## 4. Fase P4c: sesi langsung dan data pengajar lanjutan (5–8 hari)
 - Sesi langsung: Supabase Realtime (broadcast) untuk soal yang sedang dibahas; layar proyektor menampilkan **agregat tanpa

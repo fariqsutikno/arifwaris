@@ -31,7 +31,7 @@ Dokumen ini menjawab tiga hal:
 | `03-jenis-soal-latihan.md` | Munasakhat, dzawil arham, mafqud, khuntsa, haml [SYF]/[HNB], gharqa; hero B8; hapus `KartuTebak` | G2 |
 | `04-kejadian-server-dan-xp.md` | Tabel `percobaan_soal`, XP baru, `bobotXp`, perbaikan T2 | G3 |
 | `05-ujian-dan-keterlibatan.md` | Soal buta, mode Ujian, kemahiran, level A1–C2, profil 5 dimensi, rekor dan lencana, soal hari ini | G3, G6 |
-| `06-kelas.md` | Penilaian server, `sesi_soal`, kelas inti, verifikasi pengajar, pola soal, sesi langsung | G7 |
+| `06-kelas.md` | Mode tugas, `sesi_soal`, kelas inti, verifikasi pengajar, soal bangkitan dan tugas otomatis, sesi langsung | G4 (soal bangkitan), G7 |
 | `07-saas-lanjutan.md` | Lembaga dan monetisasi, alat ukur keberhasilan, rekomendasi perlakuan, ticketing | G8 |
 
 ---
@@ -87,7 +87,7 @@ lengkapi materi dan latihan soal → **AMIN** → sistem kelas → mode cerita A
 | Soal penalaran | D22; riset kelas 16d | 3 jenis soal tertutup (pilih alasan, temukan kesalahan, transfer) | 05 | skema di G4, isi di G4–G6 |
 | Penilaian server | spec K10, 2.6, fase P1 + P3; audit T14 | `catat-percobaan` untuk mandiri (G3); mode tugas + `sesi_soal` (G7) | 04, 06 | spike di G1, mandiri di G3, tugas di G7 |
 | Kelas LMS | spec K17, bagian 5; D1–D10, D12–D13, D20 | kelas per periode, kode/tautan, tugas, skor parsial 40/30/30, nilai, koreksi, rilis, ekspor, arsip, verifikasi pengajar, pantauan periode | 06 | G7 |
-| Pola soal (jutaan soal) | riset kelas 5b; spec P4b, 2.6 butir 7 | `bangkitkanSoal`/`verifikasiSoal`, benih hanya dari server, katalog pola, variasi per pelajar, batas XP harian | 06 | format di G1, bangun di G7 |
+| Soal bangkitan (jutaan soal) | riset kelas 5b; spec 2.6 butir 7, 5.1; keputusan pemilik 2026-11-20 | pola ditinjau → skrip membangkitkan dengan engine → katalog `soal_bangkitan` terbuka di Latihan; tugas otomatis "buatkan pakai engine" | 06 bagian 3 | format di G1, katalog di G4, tugas otomatis di G7 |
 | Sesi langsung | spec P4c | Realtime, agregat tanpa nama | 06 | G7 |
 | Monetisasi | D2, D3; riset kelas 6c–6d | lembaga, `hakFitur`, paket, pembayaran, invoice | 07 | G8 |
 | Alat ukur | spec 4A.7; R8 | dasbor internal belajar + bisnis | 07 | G8 |
@@ -128,7 +128,7 @@ G1 fondasi penilaian ─┐
                                                           ▼
                                      G5 AMIN (urutan pemilik)  ║  G6 Ujian + keterlibatan (boleh sejajar)
                                                           ▼
-                                     G7 kelas (penilaian server → kelas inti → pola soal → sesi langsung)
+                                     G7 kelas (mode tugas → kelas inti → tugas otomatis → sesi langsung)
                                                           ▼
                                      G8 SaaS (lembaga & monetisasi → alat ukur → ticketing) → mode cerita AI
 ```
@@ -174,9 +174,13 @@ G3 tidak menyentuh berkas Hasil/engine yang sedang dipakai alur "Hasil + mode fo
 jadi bisa berjalan bersamaan dengan langkah-langkah itu.
 
 ### G4. Lengkapi materi dan latihan soal (urutan pemilik, sebelum AMIN)
-Konten ditulis memakai format G1 dan metadata G3. Skema **soal penalaran** (3 jenis, `05` bagian 6) dipasang di awal G4
-supaya penulis bisa mulai; komponen tampilannya boleh menyusul di G6. Target minimal per bab dan per jenis: `05`
-bagian 6.4. Tidak diperkirakan dalam orang-hari karena bergantung tim keilmuan.
+Konten ditulis memakai format G1 dan metadata G3. Isinya:
+1. Skema **soal penalaran** (3 jenis, `05` bagian 6) di awal G4 supaya penulis bisa mulai; tampilannya boleh di G6.
+2. **Soal bangkitan** (`06` bagian 3.1–3.4): pola ditulis dan ditinjau tim keilmuan, skrip membangkitkan soal dengan engine,
+   katalog `soal_bangkitan` terbuka di Latihan. Dikerjakan sesudah G3 karena penilaian server harus sudah jalan sebelum
+   soal sebanyak itu dibuka. Gerbang: paket Supabase (katalog sejuta soal ±100 MB, tidak muat paket gratis).
+3. Soal kurasi tambahan sesuai target `05` bagian 6.4.
+Orang-hari untuk kode soal bangkitan: 6–9 (generator, skrip, katalog, daftar di Latihan); konten bergantung tim keilmuan.
 
 ### G5. AMIN (urutan pemilik)
 Rencana ini tidak merancang AMIN. Yang harus sudah ada dari rencana ini sebelum AMIN dimulai:
@@ -194,8 +198,8 @@ level A1–C2, tes awal/akhir, profil 5 dimensi. Semuanya fungsi murni atas keja
 karena kemahiran dan profil tidak bermakna dengan 23 soal. Berkasnya (latihan, belajar, profil) berbeda dari AMIN
 (chatbot), jadi bisa dikerjakan bersamaan.
 
-### G7. Kelas (sesudah AMIN; 22–36 hari)
-Mode tugas di `catat-percobaan` dan `sesi_soal` (fase P3; fungsi dan bundelnya sudah ada sejak G3) → kelas inti (fase P4) → pola soal (fase P4b) → sesi langsung (fase P4c).
+### G7. Kelas (sesudah AMIN; 18–30 hari)
+Mode tugas di `catat-percobaan` dan `sesi_soal` (fase P3; fungsi dan bundelnya sudah ada sejak G3) → kelas inti (fase P4) → tugas otomatis dari katalog soal bangkitan → sesi langsung (fase P4c).
 Syarat masuk: G3 selesai, DPIA, keputusan usia pelajar, keputusan region (pindah region **sebelum** data kelas masuk lebih
 murah). Rincian: `06`.
 
@@ -220,7 +224,8 @@ Rincian: `07`.
 | UU PDP dasar | | ✔ (papan opt-in boleh lebih awal) | butuh keputusan dan teks pemilik |
 | Soal buta | boleh, bila mockup sudah disetujui | ✔ paling lambat | tidak bergantung jenis soal; hanya butuh mockup |
 | Mode Ujian, keterlibatan | | ✔ (sesudah G4) | butuh semua jenis soal + konten cukup |
-| Kelas, pola soal, SaaS | | ✔ (sesudah AMIN) | golongan C |
+| Soal bangkitan | | ✔ (G4, sesudah G3) | penilaian server harus jalan sebelum soal sebanyak itu dibuka |
+| Kelas, tugas otomatis, SaaS | | ✔ (sesudah AMIN) | golongan C |
 
 ### 5.2 Apakah menunggu AMIN?
 
@@ -235,7 +240,7 @@ spike edge function, format soal untuk materi yang dibaca AMIN lewat RAG).
 
 **Satu pengecualian yang patut ditimbang:** kalender akademik. Kelas baru berguna bila siap **sebelum semester dimulai**
 (umumnya Februari–Maret dan Agustus–September [Dugaan, kalender tiap kampus berbeda]). Bila ada dosen yang bersedia menjadi
-pilot di semester tertentu, kelas inti versi pilot (fase P3 + P4 tanpa pola soal, sesi langsung, dan lembaga) bisa
+pilot di semester tertentu, kelas inti versi pilot (fase P3 + P4 tanpa sesi langsung dan lembaga) bisa
 didahulukan sebelum AMIN. Biayanya: AMIN mundur ±5–7 minggu. Ini keputusan pemilik (gerbang G7 di bagian 7).
 
 ---
@@ -248,10 +253,10 @@ didahulukan sebelum AMIN. Biayanya: AMIN mundur ±5–7 minggu. Ini keputusan pe
 | G1 | fondasi penilaian | 6–9 | – |
 | G2 | 7 jenis soal + B8 | 14–23 | tim keilmuan menulis dan meninjau soal; mockup khuntsa |
 | G3 | P1 (dengan penilaian server), PDP dasar, soal buta | 13–20 | teks kebijakan privasi, kontak pengendali, mockup soal buta |
-| G4 | konten | – | tim keilmuan |
+| G4 | soal bangkitan (kode) + konten | 6–9 untuk kode | tim keilmuan; paket Supabase |
 | G5 | AMIN | di luar rencana ini | – |
 | G6 | Ujian + keterlibatan | 12–18 | mockup, validasi peta level oleh tim keilmuan |
-| G7 | kelas | 22–36 | dosen pilot, DPIA, keputusan usia dan region |
+| G7 | kelas | 18–30 | dosen pilot, DPIA, keputusan usia dan region |
 | G8 | SaaS | 20–30 | gerbang pembayaran, keputusan harga |
 
 G0–G3 ≈ 34–54 orang-hari sebelum konten massal. Sebagai pembanding, audit bagian 7 memperkirakan golongan A + B ±1,5–2
@@ -311,7 +316,7 @@ Ringkasan untuk menjawab "apa saja yang sudah diamankan". Rinciannya di dokumen 
 | Kiriman ulang, Kirim Ujian dua kali, balapan | idempoten per id; indeks unik; transaksi | `04` 1, 2.2 | G3, G7 |
 | Banjir permintaan | batas laju per menit dan per hari | `04` 2.2 butir 2; `06` 2.1 | G3, G7 |
 | Jam perangkat dimajukan/dimundurkan | semua waktu dari `now()` server; lencana kecepatan dari `buka` server | spec 2.6; `05` 2 | G3, G6 |
-| Memilih benih soal pola yang mudah, menyalin benih orang lain, XP tak terbatas dari pola | benih hanya diterbitkan server per pengguna; soal dibangkitkan ulang dan diverifikasi server; batas XP pola harian | `06` 3; `04` 5.3 | G7 |
+| Soal karangan klien, katalog diubah dari luar, pelajar memilih soal tugas | server hanya menerima `soalId` dari katalog terbit dan membangkitkannya ulang; katalog tanpa hak tulis klien; soal tugas dipilih server | `06` 3.6; `04` 2.2 | G4, G7 |
 | Pelajar membaca nilai/isian pelajar lain; pengajar membaca kelas lain atau latihan mandiri | RLS + `peran_di_kelas()`; tanpa parameter `user_id` | `06` 2.1, 2.5 | G7 |
 | Pengajar mengubah nilai diam-diam | nilai append-only, koreksi beralasan | spec 5.1; `06` 2 | G7 |
 | Pelanggaran UU PDP | opt-in papan, kebijakan privasi, persetujuan terekam, hapus/unduh akun, retensi, runbook, DPIA | `01` 2 | G3, G7 |

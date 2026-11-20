@@ -240,7 +240,7 @@ function tulisIdSoal(...): IdSoal
 function muatSoal(id: IdSoal, cari: { soal: (slug: string) => { kasus: KasusSoal; revisiId: string } | undefined })
   : { ok: true; kasus: Kasus; revisiId: string } | { ok: false; alasan: 'TIDAK_ADA' | 'TIDAK_DIDUKUNG' }
 ```
-Cabang `pola` mengembalikan `TIDAK_DIDUKUNG` sampai fase P4b (`06` bagian 5). Pencarian soal disuntikkan (`cari`), jadi
+Cabang `pola` mengembalikan `TIDAK_DIDUKUNG` sampai katalog soal bangkitan dibangun di G4 (`06` bagian 3). Pencarian soal disuntikkan (`cari`), jadi
 web memakai snapshot/konten dan server memakai basis data.
 
 ### 6.4 Uji konten

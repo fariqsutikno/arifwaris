@@ -60,7 +60,7 @@ dihitung untuk kecepatan (tetap dihitung untuk lainnya).
   Datanya sudah ada di `HasilKolom[]`; hanya tampilan (mockup).
 - **Saran belajar** (spec 4.4, pengganti nyawa): sesudah 3 Periksa salah di kolom yang sama dalam satu sesi soal, muncul
   tautan materi bab terkait + soal serupa. Tanpa kunci, tanpa penalti. Fungsi `saranBelajar(kejadianSesi)`.
-- **Soal serupa** (4A.2): soal lain dengan `topik` sama (sebelum pola soal); pola sama benih lain (sesudah fase P4b).
+- **Soal serupa** (4A.2): soal lain dengan `topik` sama (sebelum pola soal); soal lain dari pola yang sama (sesudah katalog soal bangkitan ada di G4).
   Pilihan soal serupa di satu fungsi `soalSerupa(idSoal, katalog)`.
 
 ## 5. Kemahiran, rekor, lencana, level, profil, soal hari ini (fase P2b; 7–10 hari)
@@ -111,7 +111,7 @@ sel yang bisa diketuk.
 
 ### 6.3 Transfer
 `pilihSoalTransfer(kejadian, katalog)`: soal dengan susunan ahli waris yang belum pernah dikerjakan pelajar. Bermakna
-setelah pola soal ada (fase P4b); sebelum itu dari soal kurasi.
+setelah katalog soal bangkitan ada (G4); sebelum itu dari soal kurasi.
 
 ### 6.4 Target konten minimal G4 (USULAN, supaya bukti kemahiran dan profil cukup)
 - Per bab 4–10: ≥ 3 soal dasar, ≥ 3 menengah, ≥ 2 sulit; ≥ 2 soal per `topik`.

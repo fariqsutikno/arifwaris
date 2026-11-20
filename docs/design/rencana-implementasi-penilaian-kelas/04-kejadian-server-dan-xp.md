@@ -50,8 +50,8 @@ yang sudah lolos validasi.
    `idSesiSoal`, `revisiSoal` UUID; `soalId` sesuai pola kurasi atau pola soal; `aksi` ∈ {buka, periksa, kirim,
    lihatJawaban}; `mode` ∈ {latihan, ujian}; kunci tak dikenal → 400. Tidak ada koreksi diam-diam (memotong, mengubah).
 4. **Soal**: revisi dimuat dari basis data; harus revisi soal yang disebut `soalId` dan pernah terbit (bukan draf, bukan
-   milik soal lain). Soal pola: benih harus pernah diterbitkan untuk pengguna ini (`06` bagian 3); pola dibangkitkan ulang
-   dan diverifikasi di server.
+   milik soal lain). Soal bangkitan: `soalId` harus ada di katalog `soal_bangkitan` dan terbit (`06` bagian 3); soal dibangkitkan
+   ulang dan diverifikasi di server.
 5. **Isian terhadap tabel**: server menyusun tabel sendiri (`muatSoal` → `jalankan` → `susunTabelSoal`), lalu:
    hanya id kolom dan id baris yang ada; sel `pilih` hanya dari daftar pilihannya; sel `bulat` hanya `^\d{0,6}$` sesudah
    `angkaLatin`; sel terkunci, sel tanpa kunci, dan sel jangkar tidak boleh diisi; jangkar ∈ calon `pilihJangkar`.
@@ -66,7 +66,7 @@ yang sudah lolos validasi.
 ### 2.3 Uji (`deno test` di folder fungsi + satu uji integrasi dengan `supabase functions serve`)
 Satu kasus uji per butir 2.2 (termasuk: `user_id` disisipkan di badan; revisi draf; revisi soal lain; kolom/baris karangan;
 nilai pilih di luar daftar; `1/8` di sel bulat; isian di sel jangkar; jangkar bukan calon; Kirim Ujian dua kali, juga
-bersamaan; id sama isi beda; badan 33 KB; soal pola dengan benih yang tidak diterbitkan). Hasil server untuk fixture B7
+bersamaan; id sama isi beda; badan 33 KB; `soalId` bangkitan di luar katalog). Hasil server untuk fixture B7
 sama persis dengan vitest.
 
 ## 3. Kuis konsep dan pelajaran lewat server
@@ -98,7 +98,7 @@ Supaya `log_kegiatan` tidak lagi menjadi celah (audit T2):
 berkas kasus uji tunggal `packages/latihan/src/__tests__/xp-kasus.json`, dibaca vitest langsung dan diubah menjadi
 `supabase/tests/database/21_xp_kasus.test.sql` oleh `scripts/xp-kasus-ke-sql.ts` (`vite-node`, pola `pnpm db:refs`);
 CI gagal bila berkas SQL berbeda dari hasil skrip. Kasus: benar pertama, lihat jawaban sebelum/sesudah benar, ulang,
-Ujian parsial lalu Latihan benar, Ujian ulang, revisi berbeda, soal pola.
+Ujian parsial lalu Latihan benar, Ujian ulang, revisi berbeda, soal bangkitan.
 
 ### 5.2 SQL
 - `xp_percobaan(p_user uuid)` (`set search_path`, tidak diekspos ke `anon`) menerapkan spec 3.1 per `soal_id` atas baris
@@ -111,9 +111,10 @@ Ujian parsial lalu Latihan benar, Ujian ulang, revisi berbeda, soal pola.
 - Biaya (audit T12): hitung per pengguna saat diminta; papan hanya peserta opt-in (`01` 2.1).
   `-- ponytail: XP dihitung ulang per permintaan; tabel ringkasan bila papan > ±1 detik`.
 
-### 5.3 Batas XP soal pola
-Soal pola tidak terbatas, jadi selain satu kali per soal: XP dari soal pola dibatasi per hari (USULAN 300 XP/hari) dan
-hanya untuk benih yang diterbitkan server ke pengguna itu (`06` bagian 3). Menyalin benih orang lain tidak memberi XP.
+### 5.3 XP soal bangkitan
+Sama dengan soal kurasi: sekali per soal, dinilai server, bobot dari `soal_bangkitan.bobot_xp` (salinan `bobotXp` revisi
+pola). Tidak ada batas XP harian (keputusan pemilik 2026-11-20: tujuannya *drill*). Batas harian tersedia sebagai satu
+konstanta bila papan menunjukkan penyalahgunaan (`06` bagian 3.6).
 
 ## 6. `bobotXp` di konten dan portal
 
