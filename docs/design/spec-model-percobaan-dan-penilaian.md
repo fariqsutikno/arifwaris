@@ -34,7 +34,7 @@ percobaan dicatat, dinilai, dan dihargai**.
 | K10 | Penugasan kelas **dinilai di server** (edge function menjalankan engine + penilaian yang sama) | Klien tidak dipercaya untuk nilai; engine murni sehingga bisa dijalankan ulang (audit T1, T2, T14) |
 | K11 | Komponen tabel mengeluarkan **hasil terstruktur** (mode, isian, hasil per kolom, jangkar, lihatJawaban), bukan `saatBenar()` | Prasyarat semua di atas; perubahan kecil, dikerjakan **sekarang** sebelum jenis soal lain |
 | K12 | Umpan Latihan menandai **kolom yang sudah benar** sebelum kolom yang salah | Rasa "hampir" yang jujur dan menunjuk langkah *(riset 2 A3; 6 HMW-1 ide 1b)* |
-| K13 | **Kemahiran per topik** (tiga tingkat; **nama belum diputuskan**, usulan Mulai · Bisa · Mahir, riset kelas 13e) menggantikan ide level/rank | Hadiah mengikuti bukti paham yang diulang, tidak bisa dicapai dengan menebak *(riset 6 HMW-3 ide 3c; 5b P7; 5a E2, E4)* |
+| K13 | **Kemahiran per topik** (tiga tingkat **Beginner · Intermediate · Advanced**, keputusan pemilik D11) menggantikan ide level/rank | Hadiah mengikuti bukti paham yang diulang, tidak bisa dicapai dengan menebak *(riset 6 HMW-3 ide 3c; 5b P7; 5a E2, E4)* |
 | K14 | **Soal hari ini** dipilih untuk pengulangan berjarak; streak dipertahankan apa adanya; tanpa bonus XP | Alasan kembali yang juga memperkuat ingatan *(riset 6 HMW-4 ide 4b; 5a E2; 5b P3, P4)* |
 | K15 | Kesulitan bertahap = **saran** mengikuti kemahiran, bukan kunci | Pemula diarahkan, yang mahir tidak dihalangi *(riset 6 HMW-5 ide 5b)* |
 | K17 | Kelas = **LMS per periode** (kode/tautan, banyak kelas, mengulang = kelas baru, tugas dari semua soal, nilai terlihat pelajar); soal skala besar lewat **pola soal deterministik** `pola@versi#benih` | riset kelas; bagian 5.0 |
@@ -354,7 +354,7 @@ terpisah.
 | XP | Bagian 3 (benar pertama tanpa dibuka; bobot per jenis; tanpa potongan) | sudah di P0/P1 | K5, K7 |
 | Streak | **Tetap apa adanya** (hari aktif dari kegiatan apa pun, notifikasi netral sekali sehari, bisa dimatikan). Tanpa freeze dulu | tidak ada perubahan | riset 2 A9; 5b P3/P4; HMW-4 4e |
 | Level/rank | **Ditolak**; diganti **kemahiran per topik** | 4A.3 | K13; riset HMW-3 3c/3d |
-| Rekor dan lencana | **Lencana bukti** (mis. tuntas satu bab di tingkat tertinggi) + **rekor** (nilai/waktu Ujian terbaik) di halaman pribadi **Pencapaian**; boleh diperlihatkan ke pengajar kelas tertentu bila pelajar memilih; lencana kebiasaan (streak) tetap pribadi; tanpa XP tambahan, tidak masuk nilai | sesudah kemahiran (P2b) | keputusan pemilik D7; riset kelas 13b |
+| Rekor dan lencana | Lencana **penyelesaian** (semua soal satu bab benar tanpa dibuka), **kecepatan** (benar penuh di Ujian dalam ambang waktu server per tingkat: dasar 1 menit, menengah 2, sulit 3, USULAN), **ketepatan** (Ujian beruntun benar); **rekor** nilai/waktu terbaik. Halaman pribadi **Pencapaian**; **selalu terlihat pengajar** kelas yang diikuti (pelajar diberi tahu saat gabung); streak tetap pribadi; tanpa XP tambahan; hanya dari percobaan yang dinilai server | P2b (pribadi), P4 (terlihat pengajar) | keputusan pemilik D7, D14, D15; riset kelas 14b |
 | Tantangan harian | **Soal hari ini** (pengulangan berjarak), tanpa bonus XP, tanpa papan harian | 4A.4 | K14; riset HMW-4 4b |
 | Kesulitan bertahap | **Saran** tingkat/jenis berikutnya mengikuti kemahiran; tanpa kunci | 4A.5 | K15; riset HMW-5 5b |
 | Nyawa | Ditunda; saran belajar (4.4); Tantangan daring nanti | 4.4 | K8; riset HMW-6 |
@@ -372,7 +372,7 @@ terpisah.
 ### 4A.3 Kemahiran per topik
 
 ```ts
-type Kemahiran = 'belum' | 'dicoba' | 'paham' | 'kuasai';   // nama kode; label layar belum diputuskan (riset kelas 13e)
+type Kemahiran = 'belum' | 'dicoba' | 'paham' | 'kuasai';   // nama kode; label layar: belum / Beginner / Intermediate / Advanced (D11, lewat diksi)
 function kemahiranTopik(kejadian: KejadianPercobaan[], topikDari: (slug: string) => string, topik: string): Kemahiran
 ```
 
@@ -385,7 +385,7 @@ function kemahiranTopik(kejadian: KejadianPercobaan[], topikDari: (slug: string)
 
 Alasan: bukti kedua yang berjarak *(riset 5a E2)* membedakan paham dari tebakan beruntung *(riset 5a E4)*, meniru pola
 kemahiran Khan Academy *(riset 5b P7)*. Turun status ditampilkan netral (tanpa animasi kehilangan, *riset 7*).
-Tampilan (di daftar soal per bab dan ringkasan Belajar) **butuh mockup**; label tiga tingkat dipilih pemilik dari opsi riset kelas 13e (usulan T1 Mulai · Bisa · Mahir) lalu diuji ke pengguna
+Tampilan (di daftar soal per bab dan ringkasan Belajar) **butuh mockup**; label **Beginner · Intermediate · Advanced** (D11; `dicoba` = Beginner, `paham` = Intermediate, `kuasai` = Advanced), selalu didahului "Kemahiran" supaya tidak tertukar dengan tingkat soal (riset kelas 14d)
 *(riset 11)*.
 
 ### 4A.4 Soal hari ini
@@ -426,6 +426,16 @@ bertopik sama; pemulihan (soal serupa benar sesudah jawaban dibuka); transfer `p
 USULAN ambang tinjau ulang: penyelesaian jujur turun > 5 poin atau tanda menebak naik > 5 poin sesudah mekanik dipasang.
 Fungsi ukuran ditulis sebagai fungsi murni di modul yang sama dengan XP (2.2) dan dijalankan di server (SQL view atau
 edge function terjadwal); hanya agregat yang ditampilkan ke pemilik, tidak per pengguna.
+
+### 4A.9 Soal buta sebelum dibuka (D16; riset kelas 14a)
+
+Sebelum soal dibuka, **daftar soal, pratinjau Soal acak, daftar tugas, dan notifikasi** hanya menampilkan kode/nomor,
+bab, tingkat, jenis soal, dan status; **tidak** menampilkan ahli waris, jumlah orang, harta, atau topik. Judul berisi ahli
+waris tampil sesudah soal selesai atau jawabannya dibuka (pola yang sama dengan topik, `DaftarSoalHitung.tsx:118`).
+Pencarian sebelum selesai hanya pada bab/tingkat/jenis/kode. Waktu pengerjaan diukur server sejak soal dibuka
+(`sesi_soal`). Perubahan ini menyentuh `layar/belajar/DaftarSoalHitung.tsx:39,115` dan `SoalAcak.tsx:59`; masuk P0
+karena murah dan menentukan makna lencana kecepatan serta tugas berwaktu. Butuh persetujuan tampilan (mockup) sebelum
+dikerjakan.
 
 ### 4A.8 Kelas tetap netral
 
@@ -551,6 +561,8 @@ berarti hal yang sama.
   skor kolom = sel benar / sel dinilai (aturan sebanding B6); kolom dikelompokkan ke **tahapan** pipeline (soal biasa:
   Bagian → Asal masalah → Asal masalah akhir; jenis lain menambah pengali, jami'ah, kemungkinan, mauquf); skor butir =
   Σ bobot tahapan × rata-rata skor kolom tahapan itu. Pemetaan kolom → tahapan ditulis di `susunTabelSoal` (satu sumber).
+  **Bobot bawaan sesuai effort** (D13, riset kelas 14c): **keputusan fikih 40 · hisab dasar 30 · penyatuan 30**; rata
+  antarkolom di dalam tahapan; tahapan yang tidak ada dibagi proporsional; pengajar boleh mengubah per tugas.
   Berlaku untuk **Latihan dalam tugas** (semua kolom dinilai di belakang layar setiap Periksa, layar tetap berhenti di
   kolom pertama yang salah) dan **Ujian**.
 - Nilai tugas = `nilaiTugas(kejadian, kebijakan)` murni: per butir, skor parsial dari kejadian yang dipilih
@@ -648,7 +660,21 @@ Konsep inti: pengajar **diberi data dan statistik yang bisa ditindaklanjuti** un
 | Rekomendasi perlakuan | per kelompok: materi, tugas susulan dari pola sama, soal untuk sesi langsung; diterapkan pengajar dengan satu langkah; tiap saran menampilkan alasannya | P7 (roadmap akhir) |
 
 Aturan: berbasis aturan yang terbaca, pengajar yang memutuskan (UU PDP Pasal 10), sumber data bawaan hanya tugas kelas
-itu, kemajuan mandiri ikut **hanya dengan izin pelajar per kelas**, tanpa label bernada vonis.
+itu, kemajuan mandiri ikut **hanya dengan izin pelajar per kelas**, tanpa label bernada vonis. Pengecualian: **lencana dan
+rekor selalu terlihat pengajar** (D14), diberitahukan saat gabung.
+
+**Nilai tambahan**: pengajar boleh memberi nilai tambahan per pelajar dengan alasan (mis. atas lencana), append-only,
+kolom terpisah di rekap/ekspor:
+
+```sql
+create table nilai_tambahan (
+  id uuid primary key default gen_random_uuid(),
+  kelas_id uuid not null references kelas on delete cascade,
+  user_id uuid not null references auth.users on delete cascade,
+  nilai numeric not null, alasan text not null check (char_length(btrim(alasan)) between 3 and 500),
+  oleh uuid not null default auth.uid() references auth.users, pada timestamptz not null default now()
+);
+```
 
 ### 5.5 Privasi, akun, luring
 
@@ -724,7 +750,7 @@ komponen lama.
 
 | Fase | Isi | Prasyarat |
 |---|---|---|
-| **P0 (sekarang)** | S1–S6; mode Latihan saja; XP masih lewat `log_kegiatan` seperti sekarang ditambah perbaikan klien S5 | – |
+| **P0 (sekarang)** | S1–S6; soal buta sebelum dibuka (4A.9, sesudah mockup); mode Latihan saja; XP masih lewat `log_kegiatan` seperti sekarang ditambah perbaikan klien S5 | – |
 | **P1** | Tabel `percobaan_soal` + RLS + pgTAP; repositori `simpanPercobaan`/`bacaPercobaan`; `gabung` kejadian per id; fungsi XP SQL membaca `percobaan_soal` (aturan bagian 3, bobot dari revisi); `bobotXp` di skema + form portal | P0; perbaiki T2 (log_kegiatan bisa dipalsukan) sekaligus |
 | **P2** | Mode Ujian (mockup dulu), rekor Ujian dari kejadian; umpan kolom benar (K12); saran belajar + soal serupa (4.4, 4A.2) | P0; hitung soal per topik |
 | **P2b (keterlibatan)** | Kemahiran per topik (4A.3), soal hari ini (4A.4), saran kesulitan (4A.5); fungsi ukuran keberhasilan (4A.7) | P1 (kejadian di server), mockup disetujui |
@@ -782,6 +808,9 @@ Kelas, skala soal, dan monetisasi (riset kelas bagian 10):
 Status 2026-11-20 malam: pertanyaan 16–21 disetujui sesuai usulan (riset kelas D1), dengan Pengajar Gratis maksimal
 20 pelajar (D2).
 
-22. **Retensi dokumen verifikasi pengajar**: 30 hari sesudah keputusan cukup?
-23. **Bobot tahapan bawaan**: rata per tahapan (usulan), atau ditetapkan per jenis soal oleh tim keilmuan?
-24. **Lencana yang diperlihatkan ke pengajar**: hanya bila pelajar memilih per kelas (usulan), atau selalu?
+22. ~~Retensi dokumen verifikasi~~ → **diputuskan**: 30 hari (D12).
+23. ~~Bobot tahapan~~ → **diputuskan**: sesuai effort, 40 · 30 · 30 (D13).
+24. ~~Lencana ke pengajar~~ → **diputuskan**: selalu terlihat (D14).
+13. (lanjutan) ~~Nama tingkat~~ → **diputuskan**: Beginner · Intermediate · Advanced (D11).
+25. **Ambang lencana kecepatan**: dasar 1 menit, menengah 2, sulit 3 (usulan); kasus khusus ditetapkan dari data waktu nyata?
+26. **Daftar soal buta**: boleh tampilan daftar diubah menjadi kode/bab/tingkat/jenis saja sebelum soal selesai (perlu mockup)?
