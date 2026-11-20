@@ -1,57 +1,72 @@
-// Penilaian tabel latihan (spec B6): kolom kiri→kanan, berhenti di kolom pertama yang belum lengkap atau salah.
-//   Masuk : TabelSoal + isian pelajar + jangkar.  Keluar: HasilNilai.  Murni, bigint, tanpa bahasa.
+// Penilaian tabel latihan, dua lapis (spec 1.2):
+//   nilaiSemuaKolom : murni, menilai SEMUA kolom per sel (benar + benarEcf), tanpa kebijakan berhenti.
+//   putusanLatihan  : kebijakan B6 — berhenti di kolom pertama yang belum lengkap/salah (HasilNilai).
+//   putusanUjian    : kebijakan Ujian — belumLengkap dihitung salah, semua kolom ditandai.
+// Murni, bigint, tanpa bahasa.
 
-import { angkaLatin } from '../angka.js';
-import type { BarisSoal, HasilNilai, IsianTabel, Jangkar, KolomSoal, TabelSoal } from './model.js';
+import { barisDinilai, bacaBulat, isiSel } from './isian.js';
+import { terapkanEcf } from './ecf.js';
+import type { HasilKolom, HasilNilai, HasilSel, IsianTabel, Jangkar, KolomSoal, TabelSoal } from './model.js';
 
-/** B6 langkah 1–5 dan 7: periksa kolom kiri→kanan, berhenti di kolom pertama yang belum lengkap atau salah. */
-export function nilaiTabel(tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilNilai {
+export const nilaiTabel = (tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilNilai =>
+  putusanLatihan(nilaiSemuaKolom(tabel, isian, jangkar));
+
+export function nilaiSemuaKolom(tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilKolom[] {
+  const kolom = tabel.kolom.filter(kolom => !kolom.terkunci).map(kolom => nilaiKolom(tabel, kolom, isian, jangkar));
+  return terapkanEcf(tabel, isian, jangkar, kolom);
+}
+
+/** B6 butir 1–5 dan 7: kolom pertama yang tidak benar menentukan putusan. */
+export function putusanLatihan(kolom: HasilKolom[]): HasilNilai {
   const bentukTerkecil: Extract<HasilNilai, { jenis: 'benar' }>['bentukTerkecil'] = [];
-  for (const kolom of tabel.kolom.filter(kolom => !kolom.terkunci)) {
-    const hasil = nilaiKolom(tabel, kolom, isian, jangkar);
-    if (hasil.jenis !== 'benar') return hasil;
-    if (hasil.bentuk) bentukTerkecil.push(hasil.bentuk);
+  for (const hasil of kolom) {
+    const { idKolom, idJudul } = hasil;
+    const barisBermasalah = (saring: (sel: HasilSel) => boolean) => hasil.sel.filter(sel => sel.idBaris !== 'kepala' && saring(sel)).map(sel => sel.idBaris);
+    const kepala = hasil.sel.find(sel => sel.idBaris === 'kepala');
+    if (hasil.status === 'belumLengkap') {
+      return { jenis: 'belumLengkap', idKolom, idJudul, kepalaKosong: !!kepala?.kosong, idBarisKosong: barisBermasalah(sel => sel.kosong) };
+    }
+    if (hasil.status === 'salah') {
+      return { jenis: 'salah', idKolom, idJudul, kepalaSalah: !!kepala && !kepala.benar, idBarisSalah: barisBermasalah(sel => !sel.benar) };
+    }
+    if (hasil.bentuk) bentukTerkecil.push({ idKolom, idJudul, ...hasil.bentuk });
   }
   return { jenis: 'benar', bentukTerkecil };
 }
 
-type HasilKolom = Exclude<HasilNilai, { jenis: 'benar' }> | { jenis: 'benar'; bentuk?: Extract<HasilNilai, { jenis: 'benar' }>['bentukTerkecil'][number] };
+export function putusanUjian(kolom: HasilKolom[]): { benar: number; total: number; kolom: HasilKolom[] } {
+  return { benar: kolom.filter(hasil => hasil.status === 'benar').length, total: kolom.length, kolom };
+}
 
 function nilaiKolom(tabel: TabelSoal, kolom: KolomSoal, isian: IsianTabel, jangkar: Jangkar | null): HasilKolom {
   const { id: idKolom, idJudul } = kolom;
-  const adaJangkar = jangkar?.idKolom === idKolom;
-  const diisi = (baris: BarisSoal) => (adaJangkar && jangkar.idBaris === baris.id ? baris.kunci[idKolom] : bersihkan(isian.sel[baris.id]?.[idKolom]));
-  // Sel bersama dinilai sekali, di baris pertama kelompoknya [B4].
-  const dinilai = tabel.baris.filter((baris, indeks) => baris.kunci[idKolom] !== undefined
-    && (baris.kelompok[idKolom] === undefined || tabel.baris.findIndex(lain => lain.kelompok[idKolom] === baris.kelompok[idKolom]) === indeks));
-
-  const kepalaIsi = kolom.kepala === undefined ? undefined : bacaBulat(isian.kepala[idKolom]);
-  const idBarisKosong = dinilai.filter(baris => !diisi(baris)).map(baris => baris.id);
-  if (idBarisKosong.length > 0 || (kolom.kepala !== undefined && kepalaIsi === undefined)) {
-    return { jenis: 'belumLengkap', idKolom, idJudul, kepalaKosong: kolom.kepala !== undefined && kepalaIsi === undefined, idBarisKosong };
-  }
+  const dinilai = barisDinilai(tabel, kolom);
+  const bentukSel = (benar: boolean, kosong: boolean) => ({ benar, benarEcf: benar, kosong });
 
   if (kolom.jenis === 'pilih') {
-    const idBarisSalah = dinilai.filter(baris => diisi(baris) !== baris.kunci[idKolom]).map(baris => baris.id);
-    return idBarisSalah.length > 0 ? { jenis: 'salah', idKolom, idJudul, kepalaSalah: false, idBarisSalah } : { jenis: 'benar' };
+    const sel = dinilai.map((baris): HasilSel => {
+      const diisi = isiSel(baris, kolom, isian, jangkar);
+      return { idBaris: baris.id, ...bentukSel(diisi === baris.kunci[idKolom], diisi === undefined) };
+    });
+    return { idKolom, idJudul, status: statusDari(sel), sel };
   }
 
   // Kolom bulat berkepala: sebanding diterima, isi × kunci kepala = kunci sel × isian kepala (B6 butir 4).
   const terkecil = kolom.kepala!;
-  const kepala = kepalaIsi!;
-  const kepalaSalah = kepala === 0n || kepala % terkecil !== 0n || (adaJangkar && kepala !== terkecil);
-  const idBarisSalah = dinilai.filter(baris => {
-    const nilai = bacaBulat(diisi(baris));
-    return nilai === undefined || nilai * terkecil !== BigInt(baris.kunci[idKolom]!) * kepala;
-  }).map(baris => baris.id);
-  if (kepalaSalah || idBarisSalah.length > 0) return { jenis: 'salah', idKolom, idJudul, kepalaSalah, idBarisSalah };
-  return { jenis: 'benar', ...(kepala !== terkecil ? { bentuk: { idKolom, idJudul, diisi: kepala, terkecil } } : {}) };
+  const kepala = bacaBulat(isian.kepala[idKolom]);
+  const adaJangkar = jangkar?.idKolom === idKolom;
+  const kepalaBenar = kepala !== undefined && kepala !== 0n && kepala % terkecil === 0n && !(adaJangkar && kepala !== terkecil);
+  const sel = dinilai.map((baris): HasilSel => {
+    const diisi = isiSel(baris, kolom, isian, jangkar);
+    const nilai = bacaBulat(diisi);
+    const benar = kepala !== undefined && nilai !== undefined && nilai * terkecil === BigInt(baris.kunci[idKolom]!) * kepala;
+    return { idBaris: baris.id, ...bentukSel(benar, diisi === undefined) };
+  });
+  sel.push({ idBaris: 'kepala', ...bentukSel(kepalaBenar, kepala === undefined) });
+  const status = statusDari(sel);
+  const bentuk = status === 'benar' && kepala !== terkecil ? { bentuk: { diisi: kepala!, terkecil } } : {};
+  return { idKolom, idJudul, status, sel, ...bentuk };
 }
 
-const bersihkan = (teks: string | undefined): string | undefined => (teks?.trim() ? teks.trim() : undefined);
-
-/** Hanya bilangan bulat tak negatif (B2); selain itu dianggap kosong. */
-function bacaBulat(teks: string | undefined): bigint | undefined {
-  const bersih = angkaLatin(teks ?? '').trim();
-  return /^\d{1,6}$/.test(bersih) ? BigInt(bersih) : undefined;
-}
+const statusDari = (sel: HasilSel[]): HasilKolom['status'] =>
+  sel.some(hasil => hasil.kosong) ? 'belumLengkap' : sel.every(hasil => hasil.benar) ? 'benar' : 'salah';

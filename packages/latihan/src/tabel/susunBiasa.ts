@@ -4,6 +4,7 @@
 //   Keluar: TabelSoal. Fungsi murni.
 
 import type { HasilEngine, HasilTaqdir, IdOrang, TabelMasalah } from '@waris/engine';
+import { qDari } from './qMatriks.js';
 import { BAGIAN_TERHALANG, PILIHAN_BAGIAN, type BarisSoal, type SusunanTabel } from './model.js';
 
 const ID_BAGIAN = 'bagian';
@@ -25,9 +26,9 @@ export function susunTabelBiasa(hasil: HasilEngine | HasilTaqdir, namaDari: (id:
 
   return {
     kolom: [
-      { id: ID_BAGIAN, idJudul: 'bagian', jenis: 'pilih', pilihan: PILIHAN_BAGIAN },
-      { id: ID_ASHL, idJudul: 'asalMasalah', jenis: 'bulat', kepala: tabel.totalKolom.ashl!, gabungDari: ID_BAGIAN },
-      { id: ID_AKHIR, idJudul: 'asalMasalahAkhir', jenis: 'bulat', kepala: tabel.totalKolom[kolomAkhir]! },
+      { id: ID_BAGIAN, idJudul: 'bagian', ...qDari('bagian'), jenis: 'pilih', pilihan: PILIHAN_BAGIAN },
+      { id: ID_ASHL, idJudul: 'asalMasalah', ...qDari('asalMasalah'), jenis: 'bulat', kepala: tabel.totalKolom.ashl!, gabungDari: ID_BAGIAN },
+      { id: ID_AKHIR, idJudul: 'asalMasalahAkhir', ...qDari('asalMasalahAkhir'), jenis: 'bulat', kepala: tabel.totalKolom[kolomAkhir]! },
     ],
     baris,
   };
