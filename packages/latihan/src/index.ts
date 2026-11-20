@@ -5,6 +5,7 @@ export * from './kasus.js';
 export * from './grafAhliWaris.js';
 export * from './jalankan.js';
 export * from './soal.js';
+export * from './kejadian.js';
 export * from './angka.js';
 export * from './tabel/model.js';
 export * from './tabel/susun.js';

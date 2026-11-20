@@ -1,21 +1,27 @@
 // Tabel faraidh isian soal latihan (spec B2–B6, B9; acuan: mockup-tabel-faraidh-final.html, tab "Soal biasa").
-//   Menerima: TabelSoal (kunci dari engine, hasil/tabelLatihan.ts) + tiga aksi ke kartu induk (XP, percobaan, buka jawaban).
-//   Memutuskan: tampilan sel (pilih/angka/terisi/0/–), sel bersama saat pelajar memilih, penilaian lewat nilaiTabel.
-//   Menyerahkan: saatMencoba / saatBenar ke Hasil (XP dan penanda dikerjakan); jawaban dibuka lewat dialog tahan milik Hasil.
+//   Menerima: TabelSoal (kunci dari engine, @waris/latihan), mode, jangkar dari luar, dan aksi ke kartu induk.
+//   Memutuskan: tampilan sel (pilih/angka/terisi/0/–), sel bersama saat pelajar memilih, penilaian lewat nilaiSemuaKolom.
+//   Menyerahkan: PercobaanTabel ke Hasil tiap Periksa yang lolos "belum lengkap" (XP, confetti, pencatatan diputuskan Hasil);
+//   jawaban dibuka lewat dialog tahan milik Hasil, yang menerima isian terakhir.
 
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Confetti } from '../ui/Confetti';
 import { Ikon } from '../ui/Ikon';
 import { angka, angkaLatin, t } from '../terjemah';
-import { nilaiTabel, PILIHAN_BAGIAN, pilihJangkar, type BarisSoal, type HasilNilai, type IsianTabel, type KolomSoal, type TabelSoal } from '@waris/latihan';
+import { nilaiSemuaKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 
 interface Props {
   tabel: TabelSoal;
-  saatMencoba: () => void;
-  saatBenar: () => void;
-  saatLihatJawaban: () => void;
+  mode: ModeSoal;
+  /** Dipilih pemanggil sekali per sesi soal (di server: dari sesi); komponen tidak mengacak sendiri (B5). */
+  jangkar: Jangkar | null;
+  saatPercobaan: (percobaan: PercobaanTabel) => void;
+  /** Mengirim isian terakhir supaya pemanggil bisa mencatat Lihat jawaban sesudah dialog tahan dikonfirmasi. */
+  saatLihatJawaban: (isian: IsianTabel) => void;
   /** Jawaban sudah dibuka (dialog tahan di Hasil), atau soal sudah dijawab benar. */
   terbuka: boolean;
+  /** Isian dikunci dari luar (Ujian sesudah Kirim, tugas kelas yang ditutup). */
+  terkunci?: boolean;
 }
 
 const BATAS_DIGIT = /^\d{0,6}$/;
@@ -32,25 +38,23 @@ function labelPilihan(bagian: string): string {
   return bagian.split(' + ').map(potong => (potong === 'Ashabah' ? t('hitung.ashabah') : angka(potong))).join(' + ');
 }
 
-export function TabelLatihan({ tabel, saatMencoba, saatBenar, saatLihatJawaban, terbuka }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false }: Props) {
   const [isian, setIsian] = useState<IsianTabel>({ kepala: {}, sel: {} });
   const [hasil, setHasil] = useState<HasilNilai | null>(null);
   const [tolakBulat, setTolakBulat] = useState(false);
-  // Jangkar tetap sampai soal ditutup; Kosongkan tidak mengacak ulang (B5).
-  const [jangkar] = useState(() => pilihJangkar(tabel, Math.random));
   const sudahBergabung = useRef(new Set<string>());
 
   const selesai = hasil?.jenis === 'benar';
   const modeKunci = terbuka && !selesai;
-  const terkunciIsian = selesai || modeKunci;
+  const terkunciIsian = selesai || modeKunci || terkunci;
 
   const periksa = () => {
-    const nilai = nilaiTabel(tabel, isian, jangkar);
+    const hasilKolom = nilaiSemuaKolom(tabel, isian, jangkar);
+    const nilai = putusanLatihan(hasilKolom);
     setHasil(nilai);
     setTolakBulat(false);
     if (nilai.jenis === 'belumLengkap') return;
-    saatMencoba();
-    if (nilai.jenis === 'benar') saatBenar();
+    saatPercobaan({ mode, aksi: 'periksa', isian, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
   };
   const kosongkan = () => { setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false); };
 
@@ -183,7 +187,7 @@ export function TabelLatihan({ tabel, saatMencoba, saatBenar, saatLihatJawaban, 
           <div className="aksi-tabel">
             <button type="button" className="aw-btn aw-btn-primary" onClick={periksa}>{t('hitung.langkah_periksa')}</button>
             <button type="button" className="tautan-aksi" onClick={kosongkan}>{t('hitung.kosongkan')}</button>
-            <button type="button" className="tautan-aksi tautan-bahaya" onClick={saatLihatJawaban}><Ikon nama="mata" ukuran={18} />{t('hitung.lihat_jawaban')}</button>
+            <button type="button" className="tautan-aksi tautan-bahaya" onClick={() => saatLihatJawaban(isian)}><Ikon nama="mata" ukuran={18} />{t('hitung.lihat_jawaban')}</button>
           </div>
         )}
         {umpan && <div className={`umpan-tabel ${umpan.gaya}`} role="status">{umpan.teks}</div>}

@@ -11,7 +11,7 @@ import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
-import { jalankan, susunTabelSoal, type HasilOk } from '@waris/latihan';
+import { jalankan, pilihJangkar, susunTabelSoal, type HasilOk, type PercobaanTabel } from '@waris/latihan';
 import { useBahasa, type Tujuan } from '../preferensi';
 import { PesanKasusKhusus } from '../hasil/HasilKasusKhusus';
 import { KelompokDitahan, TabelKemungkinan, TabelPerHarta, TabelSkenarioGharqa, UbinDitahan, UbinKemungkinanUrutan, UbinMenunggu } from '../hasil/Ditahan';
@@ -225,6 +225,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
     const susunan = hasilBiasa.status === 'OK' ? susunTabelSoal(hasilBiasa, id => namaOrang(kasus.graf, hasilBiasa.statusOrang, id)) : { status: 'TIDAK_DIDUKUNG' as const };
     return 'status' in susunan ? null : susunan;
   }, [adalahBelajar, hasilBiasa, adaDzawilArham, kasus.graf]);
+  // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
+  const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
+  const saatPercobaanTabel = (percobaan: PercobaanTabel) => { setSudahMencoba(true); if (percobaan.benarSemua) jawabBenar(); };
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
   const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
     try { return susunSemuaLinimasa(); } catch { return { linimasa: null, babakLinimasa: null }; } // gagal menyusun = pakai daftar lama, layar Hasil tetap hidup
@@ -327,7 +330,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, terkunci, 
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
-        {tabelSoal && <TabelLatihan tabel={tabelSoal} terbuka={jawabanTerbuka} saatLihatJawaban={() => setKonfirmasiBuka('lihat')} saatBenar={jawabBenar} saatMencoba={() => setSudahMencoba(true)} />}
+        {tabelSoal && <TabelLatihan tabel={tabelSoal} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={() => setKonfirmasiBuka('lihat')} saatPercobaan={saatPercobaanTabel} />}
         {!(tabelSoal && sedangMenebak) && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
