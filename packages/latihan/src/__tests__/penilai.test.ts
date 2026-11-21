@@ -73,3 +73,20 @@ describe('nilaiKiriman: isian terhadap tabel (spec 2.6 butir 5)', () => {
     expect(kode(hasil as never)).toBe('SOAL_TIDAK_DIDUKUNG');
   });
 });
+
+import { bacaKirimanKegiatan, nilaiKuis } from '../index.js';
+describe('kuis dan pelajaran lewat server', () => {
+  test('soal tabel (tanpa kunci jenis) bukan kiriman kegiatan', () => expect(bacaKirimanKegiatan(dasar, 10)).toBeNull());
+  test('kuis sah; benar dihitung server, bukan dibaca dari kiriman', () => {
+    const baca = bacaKirimanKegiatan({ jenis: 'kuis', id: UUID(1), slug: 'K-01', indeksPilihan: 2 }, 10);
+    expect(baca && baca.ok).toBe(true);
+    expect(bacaKirimanKegiatan({ jenis: 'kuis', id: UUID(1), slug: 'K-01', indeksPilihan: 2, benar: true }, 10)).toMatchObject({ ok: false, kode: 'KUNCI_TIDAK_DIKENAL' });
+    expect(nilaiKuis({ pilihan: [1, 2, 3], indeksBenar: 2 }, 2)).toBe(true);
+    expect(nilaiKuis({ pilihan: [1, 2, 3], indeksBenar: 2 }, 0)).toBe(false);
+    expect(nilaiKuis({ pilihan: [1, 2, 3], indeksBenar: 2 }, 7)).toBeNull();
+  });
+  test('pelajaran sah; indeks pilihan karangan ditolak', () => {
+    expect(bacaKirimanKegiatan({ jenis: 'pelajaran', id: UUID(1), slug: 'ashabah-1' }, 10)).toMatchObject({ ok: true });
+    expect(bacaKirimanKegiatan({ jenis: 'kuis', id: UUID(1), slug: 'K-01', indeksPilihan: -1 }, 10)).toMatchObject({ ok: false, kode: 'PILIHAN_TIDAK_SAH' });
+  });
+});

@@ -11,12 +11,15 @@
     "db:reset": "supabase db reset",
     "db:tes": "supabase test db",
     "db:refs": "vite-node scripts/daftar-refs.ts",
+    "db:xp-kasus": "vite-node scripts/xp-kasus-ke-sql.ts",
+    "fungsi:bundel": "vite-node scripts/bundel-fungsi.ts",
     "konten:ekspor": "pnpm --filter @waris/skrip ekspor",
     "konten:pulihkan": "pnpm --filter @waris/skrip pulihkan",
     "diksi:tambah": "pnpm --filter @waris/skrip diksi:tambah"
   },
   "devDependencies": {
     "@waris/content": "workspace:*",
+    "esbuild": "0.21.5",
     "supabase": "^2.117.0",
     "typescript": "^5.5.0",
     "vite-node": "^2.1.9"

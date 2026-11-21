@@ -4,6 +4,7 @@
 // Tidak ada koreksi diam-diam: kiriman yang melanggar ditolak utuh dengan kode galat.
 
 import type { KasusSoal } from '@waris/content';
+import type { Ruleset } from '@waris/engine';
 import { angkaLatin } from './angka.js';
 import { jalankan, jenisSoalDari } from './jalankan.js';
 import { kasusDariSoal } from './soal.js';
@@ -79,6 +80,7 @@ function bacaJangkar(mentah: unknown): HasilCatat<{ nilai: Jangkar | null }> {
 export interface SoalDimuat { kasus: KasusSoal; revisiId: string }
 export interface Penilaian {
   jenisSoal: JenisSoal;
+  ruleset: Ruleset;
   tabel: TabelSoal;
   /** null untuk buka dan lihatJawaban tanpa isian. */
   hasilKolom: HasilKolom[] | null;
@@ -96,12 +98,12 @@ export function nilaiKiriman(kiriman: Kiriman, soal: SoalDimuat, versiEngine: st
   if ('status' in susunan) return tolak('SOAL_TIDAK_DIDUKUNG');
   const jenisSoal = jenisSoalDari(kasus, tampil);
   if (kiriman.aksi === 'buka' || (kiriman.aksi === 'lihatJawaban' && kiriman.isian === null))
-    return { ok: true, penilaian: { jenisSoal, tabel: susunan, hasilKolom: null, benarSemua: false } };
+    return { ok: true, penilaian: { jenisSoal, ruleset: kasus.madzhab ?? 'syafii', tabel: susunan, hasilKolom: null, benarSemua: false } };
   const isian = kiriman.isian!;
   const galat = periksaIsian(susunan, isian, kiriman.jangkar);
   if (galat) return tolak(galat);
   const hasilKolom = nilaiSemuaKolom(susunan, isian, kiriman.jangkar);
-  return { ok: true, penilaian: { jenisSoal, tabel: susunan, hasilKolom, benarSemua: hasilKolom.every(kolom => kolom.status === 'benar') } };
+  return { ok: true, penilaian: { jenisSoal, ruleset: kasus.madzhab ?? 'syafii', tabel: susunan, hasilKolom, benarSemua: hasilKolom.every(kolom => kolom.status === 'benar') } };
 }
 
 /** Kode galat pertama yang ditemukan, atau null bila isian sah. */
@@ -131,3 +133,27 @@ function periksaIsian(tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | nu
   }
   return null;
 }
+
+// ── Kuis konsep dan pelajaran lewat fungsi yang sama (spec 2.6 akhir; audit T2): benar/salah kuis dihitung server. ──
+const KUNCI_KEGIATAN = { kuis: ['jenis', 'id', 'slug', 'indeksPilihan'], pelajaran: ['jenis', 'id', 'slug'] } as const;
+const POLA_SLUG = /^[A-Za-z0-9-]{1,60}$/;
+export type KirimanKegiatan = { jenis: 'kuis'; id: string; slug: string; indeksPilihan: number } | { jenis: 'pelajaran'; id: string; slug: string };
+
+/** Mengenali kiriman kuis/pelajaran (`jenis` ada); kiriman soal tabel tidak punya kunci `jenis` → null. */
+export function bacaKirimanKegiatan(mentah: unknown, ukuranBadan: number): HasilCatat<{ kegiatan: KirimanKegiatan }> | null {
+  if (!adalahObjek(mentah) || !('jenis' in mentah)) return null;
+  if (ukuranBadan > UKURAN_BADAN_MAKS_BAYT) return tolak('BADAN_TERLALU_BESAR');
+  const jenis = mentah.jenis;
+  if (jenis !== 'kuis' && jenis !== 'pelajaran') return tolak('JENIS_TIDAK_SAH');
+  if (Object.keys(mentah).some(kunci => !(KUNCI_KEGIATAN[jenis] as readonly string[]).includes(kunci))) return tolak('KUNCI_TIDAK_DIKENAL');
+  if (!adalahTeks(mentah.id, POLA_UUID)) return tolak('ID_TIDAK_SAH');
+  if (!adalahTeks(mentah.slug, POLA_SLUG)) return tolak('SLUG_TIDAK_SAH');
+  if (jenis === 'pelajaran') return { ok: true, kegiatan: { jenis, id: mentah.id, slug: mentah.slug } };
+  const indeks = mentah.indeksPilihan;
+  if (typeof indeks !== 'number' || !Number.isInteger(indeks) || indeks < 0 || indeks > 9) return tolak('PILIHAN_TIDAK_SAH');
+  return { ok: true, kegiatan: { jenis, id: mentah.id, slug: mentah.slug, indeksPilihan: indeks } };
+}
+
+/** Null bila indeks di luar daftar pilihan (kiriman karangan, ditolak). */
+export const nilaiKuis = (kuis: { pilihan: readonly unknown[]; indeksBenar: number }, indeksPilihan: number): boolean | null =>
+  indeksPilihan < kuis.pilihan.length ? indeksPilihan === kuis.indeksBenar : null;
