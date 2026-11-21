@@ -35,7 +35,6 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 ```
 SEKARANG
   ├─ [kamu] gabung PR #42 (G1) setelah ditinjau
-  ├─ [kamu] tunjuk penulis pengecoh soal penalaran (spec 8.30) ── gerbang G4
   └─ [kamu] langkah dasbor G0 yang tersisa (mis. matikan login Email, K1)
 
 G2  jenis soal latihan (B7, B8)         KODE SELESAI (PR #43)
@@ -48,7 +47,7 @@ G3  data server + PDP dasar + soal buta  13–20 hari
     kebijakan privasi + persetujuan; hapus/unduh akun; soal buta
 
    ── sejajar sepanjang jalan (berkas beda), urutan sesuai keputusan 2026-11-18, semua sebelum AMIN (G5) ──
-      7  verifikasi madzhab   sisa 4 butir Terbuka + 4 sel (s) + 1 sel "?"; cabut label "sekunder" bila cocok
+      7  verifikasi madzhab   SEDANG JALAN; spec + aturan delegasi agen: `spec-jalur-7-verifikasi-madzhab.md` (10 butir)
       7b harta sebagian       riset dan verifikasi bab 11 dulu → KB → engine → UI isian
       8  KHI                  `docs/kb-khi/`, ruleset terpisah
       posisi G4 terhadap 7b dan KHI belum ditegaskan (G4 sudah setelah 7 menurut sisipan 2026-11-19)
@@ -69,12 +68,12 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 
 ## Yang menunggu keputusanmu
 
-1. **Pertanyaan spec bagian 8**: semua sudah diputuskan 2026-11-20 sesuai rekomendasi, kecuali **30** (siapa penulis
-   pengecoh soal penalaran dan daftar kesalahan umum), yang menahan G4.
+1. ~~Pertanyaan spec bagian 8~~ semua diputuskan; **30** diputuskan 2026-11-22: Claude (opus) menulis draf pengecoh dan
+   daftar kesalahan umum, tim keilmuan meninjau sebelum terbit. Gerbang G4 terbuka.
 2. ~~Tab Khuntsa di mockup~~ selesai 2026-11-21 (KB 13c.4 X1); jenis soal khuntsa sudah ada.
 3. **Kontak pengendali data + isi kebijakan privasi** (G3), dan apakah proyek `ap-south-1` = produksi (pindah region sebelum G7).
 4. **Pilot kelas sebelum AMIN?** Demi kalender semester; biayanya AMIN mundur ±5–7 minggu.
-5. **Siapa menulis pengecoh soal penalaran** (G4).
+5. ~~Siapa menulis pengecoh soal penalaran~~ (G4): Claude, lihat butir 1.
 6. **Harga paket** (G8), setelah wawancara dosen/kaprodi.
 
 ## Langkah deploy G3 (hanya pemilik; tidak otomatis)
