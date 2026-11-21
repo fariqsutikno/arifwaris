@@ -13,7 +13,8 @@ import { keJson, keJsonDibagikan, muatLokal, simpanLokal, type Kasus } from './k
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from './keadaan';
 import { TUR } from './konten/tur';
 import { bacaTujuan, catatAktivitas, simpanTujuan, sudahLihatTur, bacaBahasa, type Tujuan } from './preferensi';
-import { catatLatihan } from './progres';
+import { bacaProgresLatihan, catatLatihan } from './progres';
+import { judulSoalTampil } from './layar/belajar/judulSoal';
 import { t } from './terjemah';
 import { Tur } from './tur/Tur';
 import { AwalHitung } from './layar/AwalHitung';
@@ -269,11 +270,11 @@ function urutanLatihanDari(soal: SoalHitung, kerjakan: (soal: SoalHitung) => voi
   const urutan = urutanSoalHitung(daftarSoalHitung());
   const indeks = urutan.findIndex(isi => isi.kode === soal.kode);
   const berikutnya = urutan[indeks + 1];
-  return { nomor: indeks + 1, jumlah: urutan.length, bab: judulTopik(soal.bab), judul: soal.judul, saatBerikutnya: berikutnya ? () => kerjakan(berikutnya) : undefined };
+  return { nomor: indeks + 1, jumlah: urutan.length, bab: judulTopik(soal.bab), judul: judulSoalTampil(soal, !!bacaProgresLatihan('hitung')[soal.kode]), saatBerikutnya: berikutnya ? () => kerjakan(berikutnya) : undefined };
 }
 
 /** `benar` = tebakan tepat sebelum jawaban dibuka; hanya itu yang memberi XP soal hitung (spec tahap 5). */
 function tandaiSoalDikerjakan(soal: SoalHitung, benar: boolean): void {
   catatLatihan('hitung', soal.kode, benar, null);
-  catatAktivitas({ jenis: 'soal', kode: soal.kode, judul: soal.judul, waktu: Date.now() });
+  catatAktivitas({ jenis: 'soal', kode: soal.kode, judul: judulSoalTampil(soal, true), waktu: Date.now() });
 }

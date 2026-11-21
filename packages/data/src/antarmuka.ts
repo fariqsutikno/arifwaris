@@ -123,7 +123,7 @@ export interface Kegiatan {
 /** Yang dikirim klien ke `catat-percobaan` (spec 2.6): hanya isian dan klik pelajar; benar, XP, waktu, versi milik server. */
 export interface KirimanPercobaan {
   id: string; idSesiSoal: string; soalId: string; revisiSoal: string; mode: 'latihan' | 'ujian';
-  aksi: 'buka' | 'periksa' | 'kirim' | 'lihatJawaban'; isian: unknown; jangkar: unknown; dimulaiPada: string;
+  aksi: 'buka' | 'periksa' | 'kirim' | 'lihatJawaban'; isian: unknown; jangkar: unknown; /** Soal gharqa saja (menggantikan isian/jangkar). */ gharqa?: unknown; dimulaiPada: string;
 }
 export interface HasilPercobaanServer { duplikat: boolean; diterimaPada: string; hasilKolom: unknown; benarSemua: boolean | null }
 /** `status` 0 = jaringan/fungsi tak terjangkau; 400/409 = kiriman ditolak (tidak akan pernah lolos); 401/429/5xx = coba lagi nanti. */
