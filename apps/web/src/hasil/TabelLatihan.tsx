@@ -37,7 +37,10 @@ const namaKemungkinan = (kemungkinan: string | undefined): string => (
   kemungkinan === 'hidup' ? t('hitung.tabel.kemungkinan.hidup') : kemungkinan === 'mati' ? t('hitung.tabel.kemungkinan.mati')
   : kemungkinan === 'lk' ? t('hitung.tabel.kemungkinan.lk') : kemungkinan === 'pr' ? t('hitung.tabel.kemungkinan.pr')
   : kemungkinan === 'haml.mati' ? t('hitung.tabel.kemungkinan.haml_mati') : kemungkinan === 'haml.lk' ? t('hitung.tabel.kemungkinan.haml_lk')
-  : kemungkinan === 'haml.pr' ? t('hitung.tabel.kemungkinan.haml_pr') : kemungkinan === 'haml.duaPr' ? t('hitung.tabel.kemungkinan.haml_dua_pr') : kemungkinan ?? '');
+  : kemungkinan === 'haml.pr' ? t('hitung.tabel.kemungkinan.haml_pr') : kemungkinan === 'haml.duaPr' ? t('hitung.tabel.kemungkinan.haml_dua_pr')
+  : kemungkinan === 'hamlHnb.mati' ? t('hitung.tabel.kemungkinan.haml_hnb_mati') : kemungkinan === 'hamlHnb.lk' ? t('hitung.tabel.kemungkinan.haml_hnb_lk')
+  : kemungkinan === 'hamlHnb.pr' ? t('hitung.tabel.kemungkinan.haml_hnb_pr') : kemungkinan === 'hamlHnb.duaLk' ? t('hitung.tabel.kemungkinan.haml_hnb_dua_lk')
+  : kemungkinan === 'hamlHnb.duaPr' ? t('hitung.tabel.kemungkinan.haml_hnb_dua_pr') : kemungkinan === 'hamlHnb.lkPr' ? t('hitung.tabel.kemungkinan.haml_hnb_lk_pr') : kemungkinan ?? '');
 
 // Munasakhat: kolom mas'alah dinomori dari id ('m2' → 2); nama mayit dari pemanggil (`namaDari`).
 const judulKolomDari = (kolom: KolomSoal, namaDari: (id: string) => string): string => {
@@ -244,7 +247,9 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
       <section className="ubin-h cara-mengisi" aria-labelledby="judul-cara-mengisi">
         <h2 id="judul-cara-mengisi">{t('hitung.tabel.cara_mengisi')}</h2>
         <ol>
-          {[...(tabel.kolom[0]?.kemungkinan?.startsWith('haml.')
+          {[...(tabel.kolom[0]?.kemungkinan?.startsWith('hamlHnb.')
+            ? [t('hitung.tabel.cara.haml_hnb_1'), t('hitung.tabel.cara.haml_hnb_2'), t('hitung.tabel.cara.haml_hnb_3'), t('hitung.tabel.cara.haml_hnb_4')]
+            : tabel.kolom[0]?.kemungkinan?.startsWith('haml.')
             ? [t('hitung.tabel.cara.haml_1'), t('hitung.tabel.cara.haml_2'), t('hitung.tabel.cara.haml_3'), t('hitung.tabel.cara.haml_4')]
             : tabel.kolom[0]?.idJudul === 'bagianKemungkinan'
             ? [tabel.kolom[0]!.kemungkinan === 'lk' ? t('hitung.tabel.cara.khuntsa_1') : t('hitung.tabel.cara.mafqud_1'), t('hitung.tabel.cara.mafqud_2'), t('hitung.tabel.cara.mafqud_3'), t('hitung.tabel.cara.mafqud_4')]

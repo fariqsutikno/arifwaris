@@ -28077,6 +28077,76 @@
    "id": "**Mauquf** = sisa sampai bayi lahir.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_mati",
+   "halaman": "hitung",
+   "id": "janin wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_lk",
+   "halaman": "hitung",
+   "id": "1 lk",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_pr",
+   "halaman": "hitung",
+   "id": "1 pr",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_dua_lk",
+   "halaman": "hitung",
+   "id": "2 lk",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_dua_pr",
+   "halaman": "hitung",
+   "id": "2 pr",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_lk_pr",
+   "halaman": "hitung",
+   "id": "lk + pr",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_1",
+   "halaman": "hitung",
+   "id": "Hanbali: **enam kemungkinan**, janin dianggap **paling banyak dua**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_2",
+   "halaman": "hitung",
+   "id": "Isi bagian dan saham **tiap kemungkinan**; janin seperti ahli waris biasa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_3",
+   "halaman": "hitung",
+   "id": "**Jami'ah** = yang **terkecil** di semua kemungkinan, setelah dikali pengali.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_4",
+   "halaman": "hitung",
+   "id": "**Mauquf** = sisa sampai bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

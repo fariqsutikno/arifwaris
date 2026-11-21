@@ -297,9 +297,18 @@ describe('TabelLatihan — haml [SYF]', () => {
     D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }), A: orang('A', 'L', { statusHidup: 'wafat' }), I: orang('I', 'P'),
     S: orang('S', 'L', { idAyah: 'A', idIbu: 'I' }), J: orang('J', 'L', { idAyah: 'A', idIbu: 'I', statusHidup: 'dalamKandungan' }) },
     pernikahan: [{ idSuami: 'A', idIstri: 'I', status: 'utuh' }] };
-  const hasil = hitungTaqdir({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' });
-  const susunan = susunTabelSoal(hasil, id => id);
-  if ('status' in susunan) throw new Error(susunan.status);
+  const susunDari = (ruleset: 'syafii' | 'hanbali') => {
+    const susunan = susunTabelSoal(hitungTaqdir({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset, versiKb: 'uji' }), id => id);
+    if ('status' in susunan) throw new Error(susunan.status);
+    return susunan;
+  };
+  const susunan = susunDari('syafii');
+
+  it('haml [HNB]: enam judul kemungkinan dan cara mengisi Hanbali', () => {
+    render(<TabelLatihan tabel={susunDari('hanbali')} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    for (const judul of ['Bagian · janin wafat', '1 lk', '1 pr', '2 lk', '2 pr', 'Lk + pr']) expect(screen.getByText(judul)).toBeTruthy();
+    expect(screen.getByText('enam kemungkinan', { exact: false })).toBeTruthy();
+  });
 
   it('judul empat kemungkinan mengikuti mockup; cara mengisi haml', () => {
     render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
