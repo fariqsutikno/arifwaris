@@ -47,7 +47,8 @@ G3  data server + PDP dasar + soal buta  13–20 hari
     kebijakan privasi + persetujuan; hapus/unduh akun; soal buta
 
    ── sejajar sepanjang jalan (berkas beda), urutan sesuai keputusan 2026-11-18, semua sebelum AMIN (G5) ──
-      7  verifikasi madzhab   SEDANG JALAN, digabung dengan verifikasi konten (tahap 6):
+      7  verifikasi madzhab   A1–A8 + B0–B5 SELESAI 2026-11-22 (A9–A10 menunggu pemilik; laporan konten di
+                              `docs/laporan-verifikasi-konten.md` menunggu persetujuan sebelum disunting di portal):
                               `spec-verifikasi-madzhab-dan-konten.md` (A: 10 butir madzhab, B: 6 butir konten, aturan delegasi agen)
       7b harta sebagian       riset dan verifikasi bab 11 dulu → KB → engine → UI isian
       8  KHI                  `docs/kb-khi/`, ruleset terpisah
