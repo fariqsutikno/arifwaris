@@ -26,6 +26,9 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | Hasil + mode fokus (Langkah demi langkah, Teks \| Sinema) | selesai, di `main` (PR #35); kode fokus lama sudah dibuang |
 | G2 jenis soal latihan | **kode selesai**, PR #43 (memuat commit G1); sisa: perbandingan layar dengan mockup dan soal terbit tim keilmuan |
 | G3 data server + PDP + soal buta | **berjalan** di sesi sendiri, tiga PR berurutan (server+XP / PDP / soal buta) |
+| Jalur 7: verifikasi madzhab [HNB]/[HNF]/[MLK] | **sebagian besar jalan**: matriks KB 18 punya 106 baris, hanya 4 baris masih bertanda (s) (K01-2, K02-4, K13a-4, R01-1) dan 1 sel "?" (K04-3); 4 butir masih Terbuka di `docs/rencana-verifikasi.md` (R13-14 laqith, K05-2 [MLK], K13-1 [HNF], dzawil arham dua jalur [HNF]) |
+| Jalur 7b: harta sudah dibagi sebagian | **belum mulai**: KB bab 11 baru memuat qismah dan takharuj (R11-2 shulh); belum ada bagian KB, kode engine, maupun UI. Hanya ada bayangan `mockup-sudah-dibagi.html`. Langkah pertama: riset dan verifikasi rujukan ke bab 11 |
+| Jalur 8: KHI | **belum mulai**: `docs/kb-khi/` belum ada; baru ada aturan pemisahan (ruleset sendiri, ditandai "hukum positif, bukan fikih") |
 
 ## Alur ke depan
 
@@ -44,7 +47,11 @@ G3  data server + PDP dasar + soal buta  13–20 hari
     percobaan_soal + catat-percobaan + XP dari server; papan peringkat opt-in;
     kebijakan privasi + persetujuan; hapus/unduh akun; soal buta
 
-   ── sejajar sepanjang jalan (berkas beda): verifikasi madzhab, harta sebagian, KHI ──
+   ── sejajar sepanjang jalan (berkas beda), urutan sesuai keputusan 2026-11-18, semua sebelum AMIN (G5) ──
+      7  verifikasi madzhab   sisa 4 butir Terbuka + 4 sel (s) + 1 sel "?"; cabut label "sekunder" bila cocok
+      7b harta sebagian       riset dan verifikasi bab 11 dulu → KB → engine → UI isian
+      8  KHI                  `docs/kb-khi/`, ruleset terpisah
+      posisi G4 terhadap 7b dan KHI belum ditegaskan (G4 sudah setelah 7 menurut sisipan 2026-11-19)
 
 G4  lengkapi materi & latihan soal       kode 6–9 hari + konten tim keilmuan
     skema soal penalaran → soal bangkitan + katalog → soal kurasi
