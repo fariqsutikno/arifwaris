@@ -1,5 +1,5 @@
 // Spec tahap 5 "Web" + keputusan 2026-09-28: streak di header (teks), papan terbaca tanpa login, ikut papan otomatis
-// (opt-out lewat profil), aksi sekunder berupa teks.
+// (opt-in sejak G3 lewat persetujuan terekam), aksi sekunder berupa teks.
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { expect, test } from 'vitest';
 import { buatMemori, buatMemoriPengguna, type BarisPeringkat, type NilaiPeringkat } from '@waris/data';
@@ -76,22 +76,23 @@ test('papan gagal dimuat: pesan, bukan daftar kosong', async () => {
   expect(await screen.findByRole('alert')).toBeTruthy();
 });
 
-test('profil belum diatur: ikut papan secara bawaan, nama depan Google; menyembunyikan diri tersimpan', async () => {
+test('profil belum diatur: tidak ikut papan secara bawaan, nama depan Google; memilih ikut tersimpan dan terekam', async () => {
   const repo = siapkan(SESI);
   render(<Peringkat sesi={SESI} repo={repo} />);
   fireEvent.click(await screen.findByRole('button', { name: /ubah profil/i }));
   const nama = await screen.findByLabelText(/nama tampilan/i) as HTMLInputElement;
   expect(nama.value).toBe('Umar');
   const ikut = screen.getByLabelText(/tampilkan namaku/i) as HTMLInputElement;
-  expect(ikut.checked).toBe(true);
+  expect(ikut.checked).toBe(false);
   fireEvent.change(nama, { target: { value: '  ' } });
   expect((screen.getByRole('button', { name: /simpan/i }) as HTMLButtonElement).disabled).toBe(true);
   fireEvent.change(nama, { target: { value: 'Abu Hafsh' } });
   fireEvent.click(ikut);
   fireEvent.click(screen.getByRole('button', { name: /simpan/i }));
   await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
-  expect(await repo.pengguna.bacaProfil()).toMatchObject({ namaTampilan: 'Abu Hafsh', ikutPapanPeringkat: false });
-  expect(screen.getByText(/sedang disembunyikan/i)).toBeTruthy();
+  expect(await repo.pengguna.bacaProfil()).toMatchObject({ namaTampilan: 'Abu Hafsh', ikutPapanPeringkat: true });
+  expect(await repo.pengguna.bacaPersetujuan()).toMatchObject([{ jenis: 'papan_peringkat', setuju: true }]);
+  expect(screen.queryByText(/sedang disembunyikan/i)).toBeNull();
 });
 
 test('tanpa nama Google: nama bawaan "Pengguna", bukan awalan email', async () => {
