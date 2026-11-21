@@ -3,7 +3,7 @@ import { hitungMunasakhat } from '../munasakhat.js';
 import type { GrafKeluarga, InputMunasakhat, HasilMunasakhat } from '../types.js';
 import { idSisaKeluar, sahamDari } from '../gabung.js';
 import { input, p } from './fixtures/bab16.js';
-import { M2, MUNASAKHAT_FIXTURES, SISA_KELUAR_MAYIT_KEDUA } from './fixtures/munasakhat.js';
+import { M2, M10, M11, M12, MUNASAKHAT_FIXTURES, SISA_KELUAR_MAYIT_KEDUA } from './fixtures/munasakhat.js';
 
 type Ok = Extract<HasilMunasakhat, { status: 'OK' }>;
 
@@ -127,5 +127,30 @@ describe('Munasakhat — pernikahan dalam rantai', () => {
     const hasil = ok({ dasar: input(graf), urutanWafat: ['W'] });
     // A: istri 1/8, anak 7/8. W: suami B 1/4 (ada anak), anak S sisa 3/4 → B = 1/32, S = 31/32.
     expect(sebagaiPecahan(hasil.saham, hasil.jamiah)).toEqual({ B: '1/32', S: '31/32' });
+  });
+});
+
+// [R12-5] tiap mayit melewati fase dzawil arham (bab 14), bukan hanya mayit pertama.
+describe('Munasakhat — dzawil arham di mayit mana pun', () => {
+  test('M10: mayit kedua hanya meninggalkan dzawil arham', () => {
+    const hasil = ok(M10);
+    expect(sebagaiPecahan(hasil.saham, hasil.jamiah)).toEqual({ W: '1/4', BU: '3/4' });
+    expect(hasil.sisaKeluar).toEqual([]);
+    expect(hasil.keadaan).toBe(1);
+  });
+  test('M11: mayit kedua meninggalkan istri + dzawil arham, sisa tidak keluar', () => {
+    const hasil = ok(M11);
+    expect(sebagaiPecahan(hasil.saham, hasil.jamiah)).toEqual({ W: '1/4', WA: '3/16', BU: '9/16' });
+    expect(hasil.sisaKeluar).toEqual([]);
+    expect(hasil.keadaan).toBe(3);
+  });
+  test('M12: penerima dzawil arham di mayit pertama wafat sebelum pembagian', () => {
+    const hasil = ok(M12);
+    expect(sebagaiPecahan(hasil.saham, hasil.jamiah)).toEqual({ W: '1/4', HB: '3/16', AB: '9/16' });
+    expect(hasil.keadaan).toBe(3);
+  });
+  test('kebijakan sisa baitul mal: sisa tetap keluar, tidak ke dzawil arham', () => {
+    const hasil = ok({ ...M11, dasar: { ...M11.dasar, konfigurasi: { ...M11.dasar.konfigurasi, kebijakanSisa: 'baitulMal' } } });
+    expect(hasil.sisaKeluar.map(sisa => sisa.tujuan)).toEqual(['baitulMalTeratur']);
   });
 });
