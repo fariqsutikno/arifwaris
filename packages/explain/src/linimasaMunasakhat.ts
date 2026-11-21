@@ -9,7 +9,7 @@ import { buatKonteks } from './context.js';
 import { kolomTabel, kotakWakil, tahapBiasa, type IsiKotak, type Langkah, type Linimasa, type Tahap, type Visual } from './linimasa.js';
 import { AWALAN_SISA, buatSebut, sebutPenerima, type HasilMunasakhatOk, type LangkahGabungan } from './munasakhat.js';
 import { babAkhirSkrip, babPembukaanSkrip, babSambungSkrip } from './skripMunasakhat.js';
-import type { Kamus, Penyusun } from './segments.js';
+import { papanDari, type Kamus, type Penyusun } from './segments.js';
 
 export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): Linimasa {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
@@ -45,7 +45,7 @@ export function susunLinimasaMunasakhat(hasil: HasilMunasakhatOk, graf: GrafKelu
 // ─── Tahap ────────────────────────────────────────────────────────────────────
 
 const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({
-  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: baris.papan ? { daftarPotongan: baris.papan, refs: baris.refs } : baris, refs: baris.refs,
+  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), ...(baris.hitungan ? { hitungan: baris.hitungan } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
 });
 
 function tahapDariBab(id: Tahap['id'], bab: Bab): Tahap {

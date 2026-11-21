@@ -26,6 +26,8 @@ interface Props {
   terkunci?: boolean;
   /** Nama mayit untuk judul kolom munasakhat; tanpa ini id dipakai apa adanya. */
   namaDari?: (id: string) => string;
+  /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
+  tanpaCara?: boolean;
 }
 
 const BATAS_DIGIT = /^\d{0,6}$/;
@@ -67,7 +69,7 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
   const [isian, setIsian] = useState<IsianTabel>({ kepala: {}, sel: {} });
   const [hasil, setHasil] = useState<HasilNilai | null>(null);
@@ -244,7 +246,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
         {umpan && <div className={`umpan-tabel ${umpan.gaya}`} role="status">{umpan.teks}</div>}
         {selesai && <Confetti />}
       </section>
-      <section className="ubin-h cara-mengisi" aria-labelledby="judul-cara-mengisi">
+      {!tanpaCara && <section className="ubin-h cara-mengisi" aria-labelledby="judul-cara-mengisi">
         <h2 id="judul-cara-mengisi">{t('hitung.tabel.cara_mengisi')}</h2>
         <ol>
           {[...(tabel.kolom[0]?.kemungkinan?.startsWith('hamlHnb.')
@@ -262,7 +264,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
             <li key={teks}><Tebal teks={teks} /></li>
           ))}
         </ol>
-      </section>
+      </section>}
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { rupiah } from './format.js';
 import {
   AWALAN_SISA, sebutPenerima, urutanWafatSebenarnya, type HasilMunasakhatOk, type LangkahGabungan,
 } from './munasakhat.js';
-import { barisSkrip, buatBaris, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Penyusun, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, kalimat, labelHitung, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Penyusun, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 type Sebut = (id: IdOrang) => Potongan;
@@ -60,14 +60,15 @@ export function babSambungSkrip(gabungan: LangkahGabungan, sebut: Sebut, penyusu
   const daftarBaris = [
     langkah(penyusun, 'tanya', 'sambung.tanya', { siapa, saham, sebelum, masalah }, { saham, sebelum, masalah }, refs),
     ...barisHubungan(penyusun, gabungan, siapa, refs),
-    langkah(penyusun, 'hitung', 'sambung.jamiah', { jamiah: istilahNarasi(penyusun, 'jamiah'), nilai: jamiah }, { nilai: jamiah }, refs),
+    denganHitungan(langkah(penyusun, 'hitung', 'sambung.jamiah', { jamiah: istilahNarasi(penyusun, 'jamiah'), nilai: jamiah }, { nilai: jamiah }, refs), istilahNarasi(penyusun, 'jamiah'), String(jamiah)),
     ...Object.entries(gabungan.rincian).map(([id, rincian]) => {
       const bagian = [
         ...(rincian.sebelum > 0n ? [`${rincian.sebelum} × ${wafqMasalah}`] : []),
         ...(rincian.dariMayit > 0n ? [`${rincian.dariMayit} × ${wafqSaham}`] : []),
       ];
-      const kalimatOrang = kalimat`${sebutPenerima(penyusun, id, sebut)}: ${bagian.join(' + ')} = ${rincian.sesudah}.`;
-      return { ...buatBaris(kalimatOrang), jenis: 'hitung' as const, papan: kalimatOrang };
+      const siapaIni = sebutPenerima(penyusun, id, sebut);
+      const kalimatOrang = kalimat`${siapaIni}: ${bagian.join(' + ')} = ${rincian.sesudah}.`;
+      return denganHitungan({ ...buatBaris(kalimatOrang), jenis: 'hitung' as const, papan: kalimatOrang }, siapaIni, `${bagian.join(' + ')} = ${rincian.sesudah}`);
     }),
     berikut
       ? langkah(penyusun, 'jembatan', 'sambung.jembatan_berikut', { berikut: sebut(berikut) }, { berikut: sebut(berikut) })
@@ -117,7 +118,7 @@ export function babAkhirSkrip(hasil: HasilMunasakhatOk, sebut: Sebut, penyusun: 
   const teksNominal = (uang: bigint): string => (tampilkanNominal ? ` = ${rupiah(uang)}` : '');
   for (const [id, saham] of Object.entries(hasil.saham)) {
     const kalimatOrang = kalimat`${sebut(id)}: ${saham}/${hasil.jamiah}${teksRingkas(id)}${teksNominal(nominal[id]!)}.`;
-    daftarBaris.push({ ...buatBaris(kalimatOrang, ['R11-1']), jenis: 'hitung', papan: kalimatOrang });
+    daftarBaris.push(denganHitungan({ ...buatBaris(kalimatOrang, ['R11-1']), jenis: 'hitung', papan: kalimatOrang }, sebut(id), `${saham}/${hasil.jamiah}${teksNominal(nominal[id]!)}`));
   }
   for (const sisa of hasil.sisaKeluar) {
     const id = `${AWALAN_SISA}${sisa.mayit}`;
@@ -127,7 +128,7 @@ export function babAkhirSkrip(hasil: HasilMunasakhatOk, sebut: Sebut, penyusun: 
   }
   if (tampilkanNominal && pembulatan.sisaPembulatan > 0n) {
     const kalimatSelisih = susun(penyusun, 'narasi.umum.selisih_pembulatan', { selisih: rupiah(pembulatan.sisaPembulatan), satuan: rupiah(pembulatan.satuan) });
-    daftarBaris.push({ ...buatBaris(kalimatSelisih), jenis: 'hitung', papan: kalimatSelisih });
+    daftarBaris.push(denganHitungan({ ...buatBaris(kalimatSelisih), jenis: 'hitung', papan: kalimatSelisih }, labelHitung(penyusun, 'selisih_pembulatan'), rupiah(pembulatan.sisaPembulatan)));
   }
   const rincian = gabungDan(penyusun, Object.entries(diringkas ? ikhtishar.saham : hasil.saham).filter(([, saham]) => saham > 0n)
     .map(([id, saham]) => susun(penyusun, 'narasi.langkah.munasakhat.akhir.ringkas_orang', { siapa: sebut(id), saham, jamiah: ikhtishar.jamiah })));

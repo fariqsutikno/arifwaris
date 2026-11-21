@@ -49,6 +49,16 @@ Format: **Ahli waris → Ashl/Tashih → Bagian (saham)**. Default = jumhur kecu
 | M7 | Mayit 1: zawj, ukht syaqiqah, umm ab, ukht li-ab → ukht li-ab wafat, ahli warisnya: zawj (suaminya) + syaqiqah + umm ab | 6 → 7 | Zawj 3; syaqiqah 3; umm ab 1 | Keadaan 1 fardh saja, 'aul melebihi bagian mayit 2 (2 vs 1), ikhtishar tetap sah. Jalur jami'ah: mas'alah 1 dengan ukht li-ab = 6 → 8 (3, 3, 1, 1); mas'alah 2 = 6 → 7 (3, 3, 1); saham 1 vs 7 tabayun → 56: zawj 24, syaqiqah 24, umm ab 8 → ikhtishar as-siham ÷8 = 3, 3, 1 |
 | M8 | Mayit 1: zawjah, 2 bint (bukan dari zawjah), 'amm (asal 24: 3, 8, 8, 5). Keempatnya wafat: bint 1 → umm, zawj, ibn; bint 2 → umm, ibn; 'amm → zawjah, ibn; zawjah → umm, ab | 24 → 576 | Umm zawjah 24; ab zawjah 48; umm bint 1 32; zawj bint 1 48; ibn bint 1 112; umm bint 2 32; ibn bint 2 160; zawjah 'amm 15; ibn 'amm 105 | Keadaan 2 (jami'ah bersama): wafq mas'alah 3 (12, tawafuq), 3 (6, tawafuq), 8 (tabayun), 1 (tamatsul) → 24; jami'ah 24 × 24; pengali 16, 32, 15, 24 |
 | M9 | Mayit 1: zawjah, bint (dari zawjah), 'amm (asal 8: 1, 4, 3) → bint wafat (umm, 'amm) → zawjah wafat (zawj = 'amm, ibn darinya) → 'amm wafat (zawjah baru, ibn dari zawjah pertama) | 8 → 24 → 96 → 768 | Zawjah ('amm) 75; ibn 693 | Keadaan 3, 4 mayit berantai, semua tabayun. Tabel kitab mencetak ibn "٦١٣=٥٢٥+١٦٨"; 525 + 168 = 693 dan 75 + 693 = 768, jadi dipakai 693 (salah cetak, dikonfirmasi pengguna 2026-09-29) |
+| M10 | D (lk): istri W + saudara lk kandung AK → AK wafat, hanya meninggalkan bintu ukht BU | 4 (rasio) | W 1/4; BU 3/4; keadaan 1 | Dzawil arham di mayit kedua [R12-5] |
+| M11 | M10, AK beristri WA | 16 | W 4; WA 3; BU 9; keadaan 3 | Varian M10 dengan istri pada mayit kedua [R12-5] |
+| M12 | D (lk): istri W + bintu ukht BU (dzawil arham) → BU wafat (suami HB, anak lk AB) | 16 | W 4; HB 3; AB 9; keadaan 3 | Dzawil arham di mayit kedua [R12-5] |
+| MG1 | A: anak lk B, C → B dan C wafat bersamaan ([SYF] serentak). B: istri WB, anak lk SB. C: istri WC, anak pr DC | 16 | WB 1; SB 10; WC 1; DC 4 | Gharqa serentak di tengah rantai [R12-6] |
+| MG2 | MG1, [SYF] terlupakan | MAUQUF | skenario [B,C] = MG1; skenario [C,B]: 128 → WC 8; DC 32; WB 11; SB 77 | Kelompok terlupakan [SYF]: hasil ditahan dan dihitung per skenario urutan |
+| MG3 | MG1, [HNB] tidak diketahui (tilad–tharif di tengah rantai) | 128 | WB 11; SB 77; WC 8; DC 32 | Tilad–tharif [HNB] di tengah rantai [R13-19] |
+| MG4 | MG1 lalu DC wafat (ahli waris: ibu WC, ibnu 'amm SB) | 48 | WB 3; SB 38; WC 7 | Gharqa lanjut: korban gharqa wafat berikutnya [R12-6] |
+| MG5 | Gharqa B, C ([SYF] serentak), lalu DC wafat sesudahnya | harta B 8; harta C 24 | B: WB 1, SB 7. C: WC 7, SB 17 | Gharqa dua korban lalu korban lain wafat sesudahnya [R12-6] |
+| MG6 | MG1 dengan urutan rantai biasa ['C','B'] (pembanding: bukan gharqa) | 128 | sama dengan skenario [C,B] MG2 | Pembanding MG1: urutan rantai biasa, bukan gharqa [R12-6] |
+| MG7 | Negatif: kelompok 1 orang → PERLU_INPUT; kelompok terlupakan 5 orang → PERLU_INPUT; gharqa + taqdir + wafatSesudahnya → TIDAK_DIDUKUNG | — | — | Uji negatif: input kelompok tidak valid dan kombinasi tak didukung |
 
 > M3–M9 ditranskripsi dari tabel Lahim. Tiap angka diverifikasi ulang: saham akhir = saham mas'alah sebelumnya × pengalinya + saham mas'alah mayit berikutnya × pengalinya, dan jumlahnya sama dengan jami'ah di kitab.
 

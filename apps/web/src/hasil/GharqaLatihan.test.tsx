@@ -42,6 +42,12 @@ describe('GharqaLatihan', () => {
     expect(saatPercobaan).not.toHaveBeenCalled();
   });
 
+  it('dua tabel harta: kotak Cara mengisi tabel hanya satu (ditambah satu milik langkah keputusan)', () => {
+    tampilkan(soalDari('tidakDiketahui'));
+    fireEvent.click(screen.getByRole('button', { name: 'Tidak saling mewarisi' }));
+    expect(screen.getAllByRole('heading', { name: 'Cara mengisi' })).toHaveLength(2);
+  });
+
   it('terlupakan [SYF]: Ditahan sampai jelas benar → satu percobaan benarSemua true, tanpa tabel', () => {
     tampilkan(soalDari('terlupakan'));
     fireEvent.click(screen.getByRole('button', { name: 'Ditahan sampai jelas' }));

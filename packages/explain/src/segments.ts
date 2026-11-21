@@ -21,12 +21,31 @@ export type Potongan =
  * `penekanan`: `subjudul` = kalimat pembuka kelompok baris sesudahnya; `perhatian` = hal yang perlu disikapi pembaca
  * (mis. selisih pembulatan), supaya UI bisa memisahkannya dari uraian biasa.
  */
-export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian'; jenis?: JenisLangkah; papan?: Potongan[] }
+export interface BarisPenjelasan { daftarPotongan: Potongan[]; refs: string[]; subjek?: IdOrang[]; penekanan?: 'subjudul' | 'perhatian'; jenis?: JenisLangkah; papan?: Potongan[]; hitungan?: Hitungan }
+
+/** Baris hitungan berlabel di layar ("Aminah" | "24 × 1/8 = 24 ÷ 8 = 3"); `papan` tetap cadangan untuk tampilan tanpa label. */
+export interface Hitungan { label: Potongan[]; isi: Potongan[] }
+
+const keDaftarPotongan = (isi: string | Potongan | Potongan[]): Potongan[] =>
+  (typeof isi === 'string' ? [{ jenis: 'teks', teks: isi }] : Array.isArray(isi) ? isi : [isi]);
+
+/** Pasang label+isi hitungan pada sebuah baris; label diksi/sebutan orang, isi = angka dan operator. */
+export const denganHitungan = (baris: BarisPenjelasan, label: string | Potongan | Potongan[], isi: string | Potongan | Potongan[]): BarisPenjelasan =>
+  ({ ...baris, hitungan: { label: kapitalAwal(keDaftarPotongan(label)), isi: keDaftarPotongan(isi) } });
 
 /** Peran sebuah kalimat dalam skrip belajar (docs/design/riset-narasi-pengajar-2026-11-19.md bagian 5). */
 export type JenisLangkah = 'peta' | 'tanya' | 'dasar' | 'keluarga' | 'logika' | 'hitung' | 'jembatan' | 'ringkas';
 
 export const tekankan = (baris: BarisPenjelasan, penekanan: NonNullable<BarisPenjelasan['penekanan']>): BarisPenjelasan => ({ ...baris, penekanan });
+
+/** Huruf awal kalimat papan: papan dari kalimat bebas (bukan templat `.papan`) belum dikapitalkan seperti narasinya. */
+export const kapitalAwal = (daftarPotongan: Potongan[]): Potongan[] => {
+  const [awal, ...sisa] = daftarPotongan;
+  return awal ? [{ ...awal, teks: awal.teks.charAt(0).toUpperCase() + awal.teks.slice(1) }, ...sisa] : daftarPotongan;
+};
+
+/** Papan = teks ringkas skrip; baris cerita (tanpa papan) tampil sama di narasi dan papan. */
+export const papanDari = (baris: BarisPenjelasan): BarisPenjelasan => (baris.papan ? { daftarPotongan: kapitalAwal(baris.papan), refs: baris.refs } : baris);
 
 export const keTeksBiasa = (baris: BarisPenjelasan): string => baris.daftarPotongan.map(potonganIni => potonganIni.teks).join('');
 
@@ -87,6 +106,9 @@ function pilihTeks({ kamus, bahasa }: Penyusun, kunci: string): string {
   return (bahasa === 'ar' ? butir.ar : undefined) ?? butir.id;
 }
 
+/** Label baris hitungan ("Harta", "Jumlah"): kata dari diksi `narasi.langkah.label.*`. */
+export const labelHitung = (penyusun: Penyusun, nama: string): string => teksKamus(penyusun, `narasi.langkah.label.${nama}`);
+
 /** Baris kalimat: potongan yang membuka kalimat (awal baris atau setelah ". ") diberi huruf kapital. */
 export function buatBaris(daftarPotongan: Potongan[], refs: string[] = [], subjek?: IdOrang[]): BarisPenjelasan {
   const kapitalAwal = (potonganIni: Potongan): Potongan => ({ ...potonganIni, teks: potonganIni.teks.charAt(0).toUpperCase() + potonganIni.teks.slice(1) });
@@ -116,7 +138,5 @@ export function barisSkrip(
 ): BarisPenjelasan {
   const [kunciNarasi, kunciPapan] = typeof kunci === 'string' ? [`${kunci}.narasi`, `${kunci}.papan`] : kunci;
   const baris = buatBaris(susun(penyusun, `narasi.langkah.${kunciNarasi}`, sisipanNarasi), refs, subjek);
-  const papan = susun(penyusun, `narasi.langkah.${kunciPapan}`, sisipanPapan);
-  const [awal, ...sisa] = papan;
-  return { ...baris, jenis, papan: awal ? [{ ...awal, teks: awal.teks.charAt(0).toUpperCase() + awal.teks.slice(1) }, ...sisa] : papan };
+  return { ...baris, jenis, papan: kapitalAwal(susun(penyusun, `narasi.langkah.${kunciPapan}`, sisipanPapan)) };
 }

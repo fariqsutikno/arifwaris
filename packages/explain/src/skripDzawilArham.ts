@@ -5,8 +5,8 @@
 import type { IdOrang } from '@waris/engine';
 import type { SebutArab } from './arab.js';
 import { ceritaSisaKeluar, type Bab } from './cerita.js';
-import type { Konteks } from './context.js';
-import { barisSkrip, buatBaris, gabungDan, susun, teksKamus, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
+import type { Konteks, Langkah } from './context.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, labelHitung, susun, teksKamus, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 type Sisipanku = Record<string, Sisipan>;
@@ -19,6 +19,13 @@ const dariKalimat = (jenis: JenisLangkah, daftarPotongan: Potongan[], refs: stri
 const langkahDari = (konteks: Konteks, jenis: JenisLangkah, nama: string, sisipan: Sisipanku, refs: string[], subjek: IdOrang[]): BarisPenjelasan =>
   barisSkrip(konteks.penyusun, jenis, `dzawil_arham.${nama}`, sisipan, sisipan, refs, subjek);
 const lama = (konteks: Konteks, kunci: string, sisipan: Sisipanku = {}): Potongan[] => susun(konteks.penyusun, `narasi.dzawil_arham.${kunci}`, sisipan);
+
+/** "Kerabat pertama tersambung lewat ibu almarhum, jadi ditempatkan sebagai …": jalurnya dari jihah tanzil [R14-10]. */
+export function barisTanzilOrang(konteks: Konteks, tanzil: Langkah<'DZAWIL_ARHAM_TANZIL'>, sebut: SebutArab): BarisPenjelasan {
+  const jalur = teksKamus(konteks.penyusun, `narasi.langkah.dzawil_arham.jalur.${tanzil.jihah}`, { pewaris: konteks.sebutan.pewaris().teks });
+  const sisipan = { siapa: sebut([tanzil.idOrang]), perantara: sebut([tanzil.perantara]), langkah: tanzil.langkah };
+  return barisSkrip(konteks.penyusun, 'keluarga', 'dzawil_arham.tanzil_orang', { ...sisipan, jalur }, sisipan, tanzil.refs, [tanzil.idOrang]);
+}
 
 export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
   const { penyusun } = konteks;
@@ -47,8 +54,7 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
     }), mani.refs, [mani.idOrang]));
   }
   for (const tanzil of konteks.daftarLangkah('DZAWIL_ARHAM_TANZIL')) {
-    const sisipan = { siapa: sebut([tanzil.idOrang]), perantara: sebut([tanzil.perantara]), langkah: tanzil.langkah };
-    daftarBaris.push(langkahDari(konteks, 'keluarga', 'tanzil_orang', sisipan, tanzil.refs, [tanzil.idOrang]));
+    daftarBaris.push(barisTanzilOrang(konteks, tanzil, sebut));
   }
   for (const terhijab of konteks.daftarLangkah('DZAWIL_ARHAM_TERHIJAB_JIHAH')) {
     daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'terhijab_jihah', { siapa: sebut([terhijab.idOrang]), oleh: sebut(terhijab.oleh) }), terhijab.refs, [terhijab.idOrang]));
@@ -59,7 +65,8 @@ export function babDzawilArhamSkrip(konteks: Konteks, sebut: SebutArab): Bab {
     daftarBaris.push(langkah(konteks, 'jembatan', 'jembatan_masalah', {}, {}));
     const butir = Object.entries(masalah.saham).map(([id, saham]) => lama(konteks, 'masalah_butir', { perantara: sebut([id]), saham }));
     const rincian = gabungDan(penyusun, butir);
-    daftarBaris.push(langkah(konteks, 'hitung', 'masalah_baru', { rincian, masalah: masalah.masalah }, { rincian, masalah: masalah.masalah }, masalah.refs));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'masalah_baru', { rincian, masalah: masalah.masalah }, { rincian, masalah: masalah.masalah }, masalah.refs),
+      labelHitung(penyusun, 'asal_masalah'), String(masalah.masalah)));
     if (masalah.aul !== undefined) daftarBaris.push(dariKalimat('hitung', lama(konteks, 'aul', { ashl: masalah.ashl, aul: masalah.aul }), ['R14-13']));
     for (const id of masalah.mahjub) daftarBaris.push(dariKalimat('keluarga', lama(konteks, 'perantara_terhijab', { perantara: sebut([id]) }), ['R14-10']));
   }
