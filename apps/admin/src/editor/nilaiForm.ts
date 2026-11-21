@@ -156,6 +156,7 @@ function tulisBidang(hasil: Objek, bidang: Bidang, nilai: NilaiBidang | undefine
     case 'centang': return pasang(hasil, bidang.jalur, nilai === true);
     case 'angka': {
       const teks = String(nilai ?? '').trim();
+      if (bidang.opsional && teks === '') return hapus(hasil, bidang.jalur);
       if (!/^-?\d+$/.test(teks)) throw new Error('harus bilangan bulat');
       return pasang(hasil, bidang.jalur, Number(teks));
     }
