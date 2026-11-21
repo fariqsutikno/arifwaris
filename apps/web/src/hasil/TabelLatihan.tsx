@@ -281,4 +281,4 @@ function hasilUmpan(hasil: HasilNilai | null, tabel: TabelSoal, namaDari: (id: s
 }
 
 /** Kata kunci tebal ditandai **…** di teks diksi. */
-const Tebal = ({ teks }: { teks: string }) => <>{teks.split('**').map((potong, indeks) => (indeks % 2 ? <b key={indeks}>{potong}</b> : potong))}</>;
+export const Tebal = ({ teks }: { teks: string }) => <>{teks.split('**').map((potong, indeks) => (indeks % 2 ? <b key={indeks}>{potong}</b> : potong))}</>;

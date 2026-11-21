@@ -11,7 +11,7 @@ import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
-import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
+import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
 import { catatPercobaan, ringkasKunciTabel } from '../percobaan';
 import { VERSI_ENGINE } from '../versi';
 import { useBahasa, type Tujuan } from '../preferensi';
@@ -22,6 +22,7 @@ import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
 import { TabelLatihan } from '../hasil/TabelLatihan';
+import { GharqaLatihan } from '../hasil/GharqaLatihan';
 import { ModalOrang } from '../hasil/ModalOrang';
 import { LembarBagikan } from '../hasil/LembarBagikan';
 import { ModalUbahHarta } from '../hasil/ModalUbahHarta';
@@ -150,7 +151,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
   // Mafqud punya tabel faraidh isian; haml, khuntsa, menunggu kelahiran, dan gharqa belum punya mode Belajar: selalu tampil sebagai hasil hitung.
   const taqdirBertabel = useMemo(() => tampil.jenis === 'taqdir' && !('status' in susunTabelSoal(tampil.hasil, id => id)), [tampil]);
-  const khusus = (ringkasan.jenis === 'taqdir' && !taqdirBertabel) || ringkasan.jenis === 'menunggu' || ringkasan.jenis === 'gharqa';
+  const gharqaBertabel = useMemo(() => tampil.jenis === 'gharqa' && !('status' in susunSoalGharqa(tampil.hasil, id => id)), [tampil]);
+  const khusus = (ringkasan.jenis === 'taqdir' && !taqdirBertabel) || ringkasan.jenis === 'menunggu' || (ringkasan.jenis === 'gharqa' && !gharqaBertabel);
   const adalahBelajar = tujuan === 'belajar' && !khusus;
   const menunggu = ringkasan.jenis === 'menunggu';
   const gharqaDitahan = !!ringkasan.gharqa?.skenario;
@@ -234,6 +236,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
     const susunan = susunTabelSoal(sumber, id => namaOrang(kasus.graf, ringkasan.statusOrang, id));
     return 'status' in susunan ? null : susunan;
   }, [adalahBelajar, hasilBiasa, tampil, kasus.graf, ringkasan.statusOrang]);
+  const soalGharqa = useMemo(() => {
+    if (!adalahBelajar || tampil.jenis !== 'gharqa') return null;
+    const susunan = susunSoalGharqa(tampil.hasil, namaTabel);
+    return 'status' in susunan ? null : susunan;
+  }, [adalahBelajar, tampil, kasus.graf, ringkasan.statusOrang]); // eslint-disable-line react-hooks/exhaustive-deps
+  const adaTabelSoal = !!tabelSoal || !!soalGharqa;
+  const jangkarGharqa = useMemo(() => soalGharqa?.harta.map(harta => pilihJangkar(harta.tabel, Math.random)) ?? [], [soalGharqa]);
   // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
   const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
@@ -261,7 +270,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
     if (!soal || !adalahBelajar || sudahDibuka.current) return;
     let batal = false;
     const buka = (kunci: string) => { if (batal || sudahDibuka.current) return; kunciTabel.current = kunci; sudahDibuka.current = true; catat('buka'); };
-    if (tabelSoal) void ringkasKunciTabel(tabelSoal).then(buka); else buka('');
+    if (tabelSoal) void ringkasKunciTabel(tabelSoal).then(buka);
+    else if (soalGharqa) void Promise.all(soalGharqa.harta.map(harta => ringkasKunciTabel(harta.tabel))).then(daftar => buka([soalGharqa.keputusan, ...daftar].join('|')));
+    else buka('');
     return () => { batal = true; };
   }, [soal?.id, adalahBelajar, tabelSoal]); // eslint-disable-line react-hooks/exhaustive-deps
   // Kartu tebak lama (soal yang belum bertabel): saatMencoba lalu, bila tepat, saatBenar dalam satu tick → satu kejadian tanpa isian (spec 6.3).
@@ -350,7 +361,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
               </div>
             )}
             {adalahBelajar
-              ? <h1>{sedangMenebak ? t('hitung.tentukan_bagian_tiap_ahli_waris') : t('hitung.pembahasan_soal')}</h1>
+              ? <h1>{sedangMenebak ? (soalGharqa ? t('hitung.gharqa.judul_soal') : t('hitung.tentukan_bagian_tiap_ahli_waris')) : t('hitung.pembahasan_soal')}</h1>
               : <h1>{hero.judul}</h1>}
             <p className="kalimat-hero">{adalahBelajar
               ? (sedangMenebak ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan') : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya'))
@@ -379,8 +390,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
+        {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
+          saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {tabelSoal && <TabelLatihan tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
-        {!(tabelSoal && sedangMenebak) && <div className="bento-s7">
+        {!(adaTabelSoal && sedangMenebak) && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
@@ -417,7 +430,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
               <h2 id="judul-pohon-tabel">{t('hasil.judul_bagaimana_dibagi')}</h2>
               <p className="sub-kartu">{t('hasil.pohon_dan_tabel_sub')}</p>
             </div>
-            {!(tabelSoal && sedangMenebak) && <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>
+            {!(adaTabelSoal && sedangMenebak) && <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>
               <button type="button" role="radio" aria-checked={panelHp === 'pohon'} onClick={() => setPanelHp('pohon')}>{t('hasil.pohon')}</button>
               <button type="button" role="radio" aria-checked={panelHp === 'tabel'} onClick={() => setPanelHp('tabel')}>{t('hasil.tabel')}</button>
             </div>}
@@ -425,7 +438,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
           <div className="isi-pohon-tabel">
             <PanelPohon pohon={buatPohon(true)} legenda={<Legenda />} saatLayarPenuh={() => setLayarPenuh({ zoom: 1 })}
               saatPutar={bolehAliran ? () => setPutaranAliran(putaranAliran + 1) : undefined} />
-            {!(tabelSoal && sedangMenebak) && <div className="panel-tabel-hasil">
+            {!(adaTabelSoal && sedangMenebak) && <div className="panel-tabel-hasil">
               <h3 id="judul-tabel-faraidh" className="judul-panel">{umumRantai ? t('hasil.munasakhat.tabel_munasakhat') : ringkasan.taqdir ? t('hasil.ditahan.tabel_kemungkinan') : ringkasan.gharqa ? t('hasil.gharqa.tabel_per_harta') : t('hitung.tabel_faraidh')}</h3>
               <div className="wadah-tabel">{tabel}</div>
             </div>}

@@ -28147,6 +28147,90 @@
    "id": "**Mauquf** = sisa sampai bayi lahir.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.langkah_pertama",
+   "halaman": "hitung",
+   "id": "Langkah pertama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.pertanyaan",
+   "halaman": "hitung",
+   "id": "Apakah mereka saling mewarisi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.yang_terakhir_mewarisi",
+   "halaman": "hitung",
+   "id": "Yang terakhir mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.tidak_saling_mewarisi",
+   "halaman": "hitung",
+   "id": "Tidak saling mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.ditahan_sampai_jelas",
+   "halaman": "hitung",
+   "id": "Ditahan sampai jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.umpan_benar_tabel",
+   "halaman": "hitung",
+   "id": "Benar. Sekarang isi satu tabel biasa untuk harta tiap orang, tanpa yang wafat bersamanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.umpan_benar_ditahan",
+   "halaman": "hitung",
+   "id": "Benar. Harta ditahan sampai jelas, jadi tidak ada angka yang diisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.umpan_salah",
+   "halaman": "hitung",
+   "id": "Belum tepat. Perhatikan: urutan wafatnya diketahui, terlupakan, atau tidak diketahui sama sekali?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.cara_1",
+   "halaman": "hitung",
+   "id": "Putuskan dulu: **saling mewarisi atau tidak**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.cara_2",
+   "halaman": "hitung",
+   "id": "Tidak saling mewarisi: tiap harta di **tabel biasa sendiri**. Ditahan: **tanpa angka**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.harta_nama",
+   "halaman": "hitung",
+   "id": "Harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.judul_soal",
+   "halaman": "hitung",
+   "id": "Putuskan dulu, lalu isi tabel tiap harta",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
