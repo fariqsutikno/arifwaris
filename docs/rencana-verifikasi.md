@@ -43,7 +43,7 @@ Semua ⚑ dari commit Prompt 1–6 dan `docs/audit-verifikasi.md`, per 2026-09-2
 |---|---|---|---|---|---|
 | 1 | R13-14 laqith: «merdeka», «penemu tidak mewarisi» | `11c87b0` | Raudhah 5/435 dan 5/437 hanya menutup harta ke baitul mal, hukum Islam, istilhaq. **2026-11-22**: merdeka (al-Umm 6/265, Raudhah 9/210), penemu tidak mewarisi (Mukhtashar al-Muzani 8/237, Nihayat al-Mathlab 8/546) | Selesai | 17.4 |
 | 2 | K05-2 [MLK] furudh dalam wala' | audit ⚑2 | 'Iqd 3/1197 hanya memuat urutan wala', tidak menafikan fardh; sel diubah menjadi «belum terverifikasi». **2026-11-22**: Mudawwanah 2/588 (jawaban Malik) dan 'Iqd 3/1197 «فلا شئ للأب» menafikan fardh ayah | Selesai | 18.2, 17.5 butir 12 |
-| 3 | K13-1 [HNF] harta murtaddah | `03d13b7` | Mabsuth 10/101–107 memuat pembedaan kasb Islam/riddah; klaim harta murtaddah untuk ahli waris muslim belum diperiksa | **Terbuka** | 18.2 (sel) |
+| 3 | K13-1 [HNF] harta murtaddah | `03d13b7` | Mabsuth 10/101–107 memuat pembedaan kasb Islam/riddah; klaim harta murtaddah untuk ahli waris muslim belum diperiksa | Ditutup (pemilik 2026-11-22): di luar lingkup platform, tidak dicari | 18.2 (sel) |
 | 4 | Satu dzawil arham dua jalur [HNF] | tahap 7 | Belum ada nash. **2026-11-22**: ada (Mabsuth 30/15, al-Ikhtiyar 5/108, Tabyin 6/243): tiap jalur dihitung pada ushul menurut Muhammad | Selesai | 18.2 K14-2, bab 14, 17.5 butir 13 |
 | 5 | K13-2 [HNF], K09-1 dan K14-1 [MLK] | `03d13b7`, `5ca162f`, audit ⚑1 | Isi sel diubah mengikuti kitab (kerabat ibu saja; baitul mal bersyarat imam adil) | Selesai (dikonfirmasi pengguna) | 17.5 butir 8 |
 | 6 | K13b-1 [HNB] dan [MLK] masa tunggu mafqud | `ac970f9`, `5ca162f`, audit ⚑1 | Dua riwayat untuk yang selamat; [MLK] 70/80/90 th | Selesai (dikonfirmasi) | 17.5 butir 8 |
@@ -53,3 +53,4 @@ Semua ⚑ dari commit Prompt 1–6 dan `docs/audit-verifikasi.md`, per 2026-09-2
 | 10 | Ijazah wasiat di konten «sah setelah wafat» | audit (informasi) | Pernyataan baru di konten; cocok dengan R01-7 dan K01-1 | Selesai (dicatat) | 17.5 butir 9 |
 | 11 | K04-3 [HNF]/[MLK] nenek dua qarabah | spec verifikasi A1–A2 | [HNF] primer di 6 kitab: Abu Yusuf per badan difatwakan, Muhammad per jihat = opsi; khilaf hanya saat berkumpul dengan nenek lain. [MLK] tidak ada nash Maliki | Selesai [HNF] (dikonfirmasi pengguna 2026-11-22); [MLK] tetap ? | 18.2, bab 04 KHILAF, 17.5 butir 11 |
 | 12 | K13a-4 [MLK], K01-2 [HNB]/[HNF], R01-1 [HNB] | spec verifikasi A6–A8 | Sel (s)/? naik ke primer; [HNF] K01-2 «rahn tidak dibahas» ternyata dibahas (= [SYF]) | Selesai | 18.2, 17.5 butir 15 |
+| 13 | K02-4 [MLK] ikhtilaf ad-dar (s) | spec verifikasi A9 | Di luar lingkup platform (kafir harbi/dzimmi) | Ditutup (pemilik 2026-11-22), sel tetap (s) | 18.2 |

@@ -64,7 +64,7 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 ## 18.3 Yang Belum Ada (per 2026-09-29, setelah pencarian Shamela)
 | Titik | Madzhab | Dampak ke engine |
 |---|---|---|
-| Harta murtaddah untuk ahli waris muslim (K13-1) | [HNF] | tidak ada — kasus murtad bukan lingkup platform; klaim belum dicek ke Mabsuth |
+| Harta murtaddah untuk ahli waris muslim (K13-1) | [HNF] | tidak ada — kasus murtad bukan lingkup platform; klaim belum dicek ke Mabsuth; ditutup tanpa dicari (keputusan pemilik 2026-11-22) |
 | Posisi baitul mal dalam urutan [HNF] | [HNF] | tidak ada — engine tidak mengirim harta ke baitul mal selama ada dzawil arham |
 | Nash eksplisit "tidak ada khilaf" untuk munasakhat/'aul/tashih | semua | tidak ada — dianggap [KH] sama: bab munasakhat/tashih ada di keempat madzhab dengan cara hitung sama ('Iqd al-Jawahir, al-Wasith, al-Hawi, al-Hidayah Abu al-Khaththab), dan 'aul disepakati kecuali Ibnu 'Abbas |
 | Contoh kitab gabungan haml + khuntsa + mafqud | semua | 13.0b tetap aturan susunan kita; tidak ditemukan di 8.598 kitab Shamela lokal |
