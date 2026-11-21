@@ -6,7 +6,7 @@
 
 import { putar } from '../../suara';
 import { useEffect, useRef, useState } from 'react';
-import { JUDUL_BAB, type SoalKuis } from '@waris/content';
+import { JUDUL_BAB, type SoalHitung, type SoalKuis } from '@waris/content';
 import { daftarSoalKuis } from '../../konten/sumber';
 import { bacaPilihan, catatAktivitas, simpanPilihan } from '../../preferensi';
 import { bacaRekorPaket, catatLatihan, simpanSkorPaket } from '../../progres';
@@ -24,6 +24,9 @@ export function perBab<T extends { bab: number }>(daftar: T[]): Array<[number, T
   return [...new Set(daftar.map(soal => soal.bab))].sort((a, b) => a - b)
     .map(bab => [bab, daftar.filter(soal => soal.bab === bab)]);
 }
+
+/** Satu sumber urutan soal hitung: dipakai daftar Latihan dan "Soal berikutnya" di hero soal. */
+export const urutanSoalHitung = (daftar: SoalHitung[]): SoalHitung[] => perBab(daftar).flatMap(([, isi]) => isi);
 
 export const JUMLAH_SOAL_ACAK = 10;
 export const PAKET_ACAK = 'acak';

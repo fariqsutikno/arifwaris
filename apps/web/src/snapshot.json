@@ -28231,6 +28231,20 @@
    "id": "Putuskan dulu, lalu isi tabel tiap harta",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.isi_tabel_pembagiannya",
+   "halaman": "hitung",
+   "id": "Isi tabel pembagiannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kembali_ke_daftar_soal",
+   "halaman": "hitung",
+   "id": "Kembali ke daftar soal",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

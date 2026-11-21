@@ -66,10 +66,10 @@ const c1601 = (): Kasus => {
   const dasar = kasusBaru('L');
   return { ...dasar, tirkah: { kotor: 24_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, graf: ['ISTRI', 'ANAK_LK', 'ANAK_PR'].reduce((graf, kunci) => tambahAhliWaris(graf, 'PEWARIS', kunci as 'ISTRI'), dasar.graf) };
 };
-function Uji({ awal, saatDikerjakan }: { awal: Kasus; saatDikerjakan?: (benar: boolean) => void }) {
+function Uji({ awal, saatDikerjakan, urutanLatihan }: { awal: Kasus; saatDikerjakan?: (benar: boolean) => void; urutanLatihan?: React.ComponentProps<typeof Hasil>['urutanLatihan'] }) {
   const [kasus] = useState(awal);
   return <Hasil kasus={kasus} idSesi="s" tujuan="belajar" kirim={(_: Aksi) => {}} saatDikerjakan={saatDikerjakan} tanpaSimpan terkunci
-    soal={{ id: 'H-99', revisiId: 'rev-1' }} />;
+    soal={{ id: 'H-99', revisiId: 'rev-1' }} urutanLatihan={urutanLatihan} />;
 }
 const bukaLewatDialog = () => {
   vi.useFakeTimers();
@@ -110,6 +110,31 @@ describe('Hasil mencatat kejadian percobaan soal latihan', () => {
     expect(dikerjakan).toEqual([]);
     expect(bacaPercobaan().map(k => k.aksi)).toEqual(['buka', 'lihatJawaban']);
     expect(bacaPercobaan()[1]!.hasilKolom).not.toBeNull();
+  });
+});
+
+describe('hero soal latihan (B8)', () => {
+  const hero = { nomor: 2, jumlah: 5, bab: 'Aul dan radd', judul: 'Istri dan dua anak' };
+
+  it('bilah Latihan + posisi soal; h1 Isi tabel; tombol Soal berikutnya hanya sesudah jawaban dibuka', () => {
+    const berikutnya = vi.fn();
+    render(<Uji awal={c1601()} urutanLatihan={{ ...hero, saatBerikutnya: berikutnya }} />);
+    expect(screen.getByRole('link', { name: 'Latihan' }).getAttribute('href')).toBe('#/latihan');
+    expect(screen.getByText('Soal 2 dari 5 · Aul dan radd')).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Isi tabel pembagiannya');
+    expect(screen.queryByRole('button', { name: /Soal berikutnya/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
+    bukaLewatDialog();
+    fireEvent.click(screen.getByRole('button', { name: /Soal berikutnya/ }));
+    expect(berikutnya).toHaveBeenCalledTimes(1);
+  });
+
+  it('soal terakhir: tombol utama kembali ke daftar soal', () => {
+    render(<Uji awal={c1601()} urutanLatihan={{ ...hero, nomor: 5 }} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
+    bukaLewatDialog();
+    expect(screen.queryByRole('button', { name: /Soal berikutnya/ })).toBeNull();
+    expect(screen.getByRole('link', { name: 'Kembali ke daftar soal' }).getAttribute('href')).toBe('#/latihan');
   });
 });
 

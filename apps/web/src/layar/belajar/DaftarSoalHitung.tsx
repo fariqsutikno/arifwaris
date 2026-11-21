@@ -11,7 +11,7 @@ import { bacaProgresLatihan } from '../../progres';
 import { Ikon } from '../../ui/Ikon';
 import { angka, t } from '../../terjemah';
 import { TEKS_TINGKAT } from '../AwalHitung';
-import { judulTopik, perBab } from './KuisKonsep';
+import { judulTopik, perBab, urutanSoalHitung } from './KuisKonsep';
 import { TombolBukaKasus } from './TombolBukaKasus';
 
 const BATAS_AWAL = 8;
@@ -21,7 +21,7 @@ const TINGKAT: Tingkat[] = ['dasar', 'menengah', 'sulit'];
 interface Props { kasusSekarang: Kasus | null; saatKerjakan: (soal: SoalHitung) => void }
 
 export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
-  const semua = daftarSoalHitung();
+  const semua = urutanSoalHitung(daftarSoalHitung());
   const catatan = bacaProgresLatihan('hitung');
   const berikutnya = semua.find(soal => !catatan[soal.kode]);
   const [kueri, setKueri] = useState('');

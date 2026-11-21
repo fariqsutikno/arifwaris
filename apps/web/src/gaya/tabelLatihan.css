@@ -39,3 +39,4 @@
   .tabel-latihan,.cara-mengisi{grid-column:span 12}
   .tabel-kitab th.nama{min-width:104px}
 }
+.aksi-soal-berikutnya{grid-column:span 12;display:flex;justify-content:flex-end}

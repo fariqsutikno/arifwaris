@@ -58,6 +58,7 @@ import { ringkasKasus } from '../riwayat';
 import { formatRupiah, formatRupiahRingkas, namaOrang } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
+import { tautanLatihan } from '../rute';
 import { Ikon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { daftarBabDari } from './Penjelasan';
@@ -81,6 +82,8 @@ interface Props {
   hanyaBaca?: boolean | undefined;
   /** Ada = "Bagikan tautan" tampil di lembar Bagikan (hanya untuk pengguna yang sudah masuk). */
   bagikan?: RepositoriBagikan | undefined;
+  /** Posisi soal di daftar Latihan untuk hero soal (B8); `saatBerikutnya` kosong = soal terakhir. */
+  urutanLatihan?: { nomor: number; jumlah: number; bab: string; judul: string; saatBerikutnya?: (() => void) | undefined } | undefined;
   /** Soal latihan tidak disimpan otomatis (spec A4). */
   tanpaSimpan?: boolean | undefined;
   /** Sesi ini ditandai "Jangan simpan kasus ini": state sesi (bukan disimpan), dipegang pemanggil supaya bertahan antar-layar. */
@@ -97,7 +100,7 @@ const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -138,11 +141,11 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
       </main>
     );
   }
-  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} soal={soal} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
+  return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} soal={soal} urutanLatihan={urutanLatihan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
     tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={saatJanganSimpan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -342,9 +345,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
     <main className={adalahBelajar ? 'halaman-hasil mode-belajar' : 'halaman-hasil'}>
       <header className="hero-hasil">
         <div className="bilah-hero">
-          {adalahBelajar
+          {adalahBelajar && urutanLatihan && adaTabelSoal
+            ? <a className="tautan-hero" href={tautanLatihan('hitung')}><Ikon nama="kembali" ukuran={18} />{t('umum.latihan')}</a>
+            : adalahBelajar
             ? <p className="lok-hero">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</p>
             : bolehUbah ? <button type="button" className="tautan-hero" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH })}><Ikon nama="kembali" ukuran={18} />{t('hitung.langkah_periksa')}</button> : <span />}
+          {adalahBelajar && urutanLatihan && adaTabelSoal && (
+            <span className="lok-hero">{t('umum.soal_nomor_dari_total', { nomor: angka(String(urutanLatihan.nomor)), total: angka(String(urutanLatihan.jumlah)) })} · {urutanLatihan.bab}{madzhab !== 'syafii' && ` · ${namaMadzhab(madzhab)}`}</span>
+          )}
           {!adalahBelajar && (
             <div className="kanan-bilah">
               {!hanyaBaca && <span className="status-simpan" role="status">{jamSimpan ? <><Ikon nama="benar" ukuran={14} />{t('hasil.simpan.tersimpan', { jam: jamSimpan })}</> : t('hasil.simpan.tidak_disimpan')}</span>}
@@ -361,10 +369,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
               </div>
             )}
             {adalahBelajar
-              ? <h1>{sedangMenebak ? (soalGharqa ? t('hitung.gharqa.judul_soal') : t('hitung.tentukan_bagian_tiap_ahli_waris')) : t('hitung.pembahasan_soal')}</h1>
+              ? <h1>{sedangMenebak ? (soalGharqa ? t('hitung.gharqa.judul_soal') : tabelSoal ? t('hitung.isi_tabel_pembagiannya') : t('hitung.tentukan_bagian_tiap_ahli_waris')) : t('hitung.pembahasan_soal')}</h1>
               : <h1>{hero.judul}</h1>}
             <p className="kalimat-hero">{adalahBelajar
-              ? (sedangMenebak ? t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan') : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya'))
+              ? (sedangMenebak ? (urutanLatihan && adaTabelSoal ? urutanLatihan.judul : t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')) : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya'))
               : hero.kalimat}</p>
             {!sedangMenebak && daftarMayit.length > 1 && <div className="fakta-hero">
               <span>{t('hasil.jumlah_mayit', { jumlah: angka(String(daftarMayit.length)) })}</span>
@@ -393,6 +401,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, terk
         {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
           saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {tabelSoal && <TabelLatihan tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
+          <div className="aksi-soal-berikutnya">
+            {urutanLatihan.saatBerikutnya
+              ? <button type="button" className="aw-btn aw-btn-primary" onClick={urutanLatihan.saatBerikutnya}>{t('latihan.soal_berikutnya')}<Ikon nama="kanan" ukuran={18} /></button>
+              : <a className="aw-btn aw-btn-primary" href={tautanLatihan('hitung')}>{t('hitung.kembali_ke_daftar_soal')}</a>}
+          </div>
+        )}
         {!(adaTabelSoal && sedangMenebak) && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />

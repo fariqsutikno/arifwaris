@@ -29,7 +29,8 @@ import { TanyaJawab } from './layar/belajar/TanyaJawab';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
-import { revisiIdSoalHitung } from './konten/sumber';
+import { daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
+import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
 import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
@@ -218,7 +219,8 @@ export function Aplikasi() {
             tanpaSimpan={sumberSesi.jenis === 'latihan'} janganSimpan={sesiJanganSimpan.has(idSesi)}
             saatJanganSimpan={nilai => setSesiJanganSimpan(lama => { const baru = new Set(lama); if (nilai) baru.add(idSesi); else baru.delete(idSesi); return baru; })} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
-            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined} />}
+            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined}
+            urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined} />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
@@ -247,6 +249,14 @@ const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLoka
 
 /** Id sesi riwayat; cukup unik di satu perangkat. */
 const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+
+/** Posisi soal di urutan daftar Latihan (satu sumber: urutanSoalHitung) dan aksi ke soal sesudahnya. */
+function urutanLatihanDari(soal: SoalHitung, kerjakan: (soal: SoalHitung) => void) {
+  const urutan = urutanSoalHitung(daftarSoalHitung());
+  const indeks = urutan.findIndex(isi => isi.kode === soal.kode);
+  const berikutnya = urutan[indeks + 1];
+  return { nomor: indeks + 1, jumlah: urutan.length, bab: judulTopik(soal.bab), judul: soal.judul, saatBerikutnya: berikutnya ? () => kerjakan(berikutnya) : undefined };
+}
 
 /** `benar` = tebakan tepat sebelum jawaban dibuka; hanya itu yang memberi XP soal hitung (spec tahap 5). */
 function tandaiSoalDikerjakan(soal: SoalHitung, benar: boolean): void {
