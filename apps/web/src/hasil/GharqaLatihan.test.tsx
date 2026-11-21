@@ -55,3 +55,11 @@ describe('GharqaLatihan', () => {
     expect(screen.queryByText('Harta ZAID')).toBeNull();
   });
 });
+
+describe('GharqaLatihan: kiriman ke server', () => {
+  it('keputusan salah dikirim sebagai gharqa tanpa harta', () => {
+    tampilkan(soalDari('tidakDiketahui'));
+    fireEvent.click(screen.getByRole('button', { name: 'Yang terakhir mewarisi' }));
+    expect((saatPercobaan.mock.calls[0]![0] as PercobaanTabel).gharqa).toEqual({ keputusan: 'terakhirMewarisi', harta: [] });
+  });
+});

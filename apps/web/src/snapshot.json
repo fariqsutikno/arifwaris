@@ -28387,6 +28387,20 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "latihan.soal_kode",
+   "halaman": "latihan",
+   "id": "Soal {kode}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.cari_kode_bab_tingkat",
+   "halaman": "latihan",
+   "id": "Cari kode, bab, atau tingkat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
    "kunci": "narasi.langkah.taqdir.dunia.masalah.narasi",
    "halaman": "narasi",
    "id": "Asal masalah untuk kemungkinan ini {masalah}. Supaya sama dengan angka pembagi bersama {jamiah}, tiap potong dikali {nilai} ({juz_sahm}).",

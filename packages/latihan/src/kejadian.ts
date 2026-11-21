@@ -5,15 +5,24 @@
 import type { Ruleset } from '@waris/engine';
 import type { IdSoal } from './soal.js';
 import type { HasilKolom, IsianTabel, Jangkar } from './tabel/model.js';
+import type { KeputusanGharqa } from './tabel/susunGharqa.js';
 
 export type ModeSoal = 'latihan' | 'ujian';
 export type JenisSoal = 'biasa' | 'munasakhat' | 'dzawilArham' | 'mafqud' | 'khuntsa' | 'haml' | 'gharqa';
+
+/** Soal gharqa: keputusan pelajar + isian tiap tabel harta yang sudah dikerjakan (server menilai semuanya sekaligus). */
+export interface IsianGharqa {
+  keputusan: KeputusanGharqa;
+  harta: Array<{ mayit: string; isian: IsianTabel; jangkar: Jangkar | null }>;
+}
 
 export interface PercobaanTabel {
   mode: ModeSoal;
   aksi: 'periksa' | 'kirim' | 'lihatJawaban';
   isian: IsianTabel;
   jangkar: Jangkar | null;
+  /** Hanya soal gharqa; isian/jangkar di atas diabaikan pencatat. */
+  gharqa?: IsianGharqa;
   hasilKolom: HasilKolom[];
   benarSemua: boolean;
 }
@@ -34,6 +43,8 @@ export interface KejadianPercobaan {
   /** null untuk buka, lihatJawaban tanpa isian, dan soal kartu lama (belum bertabel). */
   isian: IsianTabel | null;
   jangkar: Jangkar | null;
+  /** Soal gharqa saja: menggantikan isian/jangkar (keduanya null). Di server disimpan di kolom `isian`. */
+  gharqa?: IsianGharqa | null;
   /** hasilKolom dan benarSemua hanya untuk tampilan lokal, tidak pernah dianggap kebenaran: server menilai ulang semua kejadian (spec 2.6). */
   hasilKolom: HasilKolom[] | null;
   benarSemua: boolean;

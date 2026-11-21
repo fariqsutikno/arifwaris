@@ -43,8 +43,9 @@ describe('daftar soal hitung', () => {
     tampilkan('hitung');
     const kepalaBab = screen.getAllByRole('button', { expanded: true }).filter(tombol => tombol.className === 'kepala-bab');
     expect(kepalaBab).toHaveLength(1);
-    fireEvent.change(screen.getByRole('searchbox'), { target: { value: kedua.judul } });
-    expect(screen.getByText(kedua.judul)).toBeTruthy();
+    fireEvent.change(screen.getByRole('searchbox'), { target: { value: kedua.kode } });
+    // Soal buta: yang belum dikerjakan dicari dan ditampilkan lewat kodenya, bukan judulnya.
+    expect(screen.getByText(`Soal ${kedua.kode}`)).toBeTruthy();
     expect(screen.getAllByRole('button', { expanded: true }).filter(tombol => tombol.className === 'kepala-bab')).toHaveLength(1);
     fireEvent.change(screen.getByRole('searchbox'), { target: { value: 'tidak-ada-soal-begini-xyz' } });
     expect(screen.getByText('Tidak ada soal yang cocok.')).toBeTruthy();

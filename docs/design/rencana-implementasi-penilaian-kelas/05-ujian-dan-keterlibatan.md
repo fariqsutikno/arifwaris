@@ -15,6 +15,8 @@ dokumen ini (daftar di bagian 8); pemilik memilih; baru dibangun. Soal buta puny
 
 ## 1. Soal buta sebelum dibuka (spec 4A.9, D16; kapan saja sesudah mockup disetujui, paling lambat G3; 2–3 hari)
 
+**Status (G3, PR 3):** selesai tanpa mockup baru: `judulSoalTampil` (`layar/belajar/judulSoal.ts`) dipakai daftar soal, Soal acak, pintasan Lab, hero soal, dan aktivitas terakhir; pencarian sebelum selesai hanya kode/bab/tingkat. **Belum:** pencarian/penyaringan menurut *jenis soal* (jenis baru diketahui setelah engine menghitung, belum ada di konten) dan fungsi `statusSoal` bersama (status tetap dari `bacaProgresLatihan`).
+
 Spec memasukkannya ke fase P0 karena murah; tidak bergantung G1/G2, jadi boleh lebih awal bila mockup sudah ada.
 - Mockup daftar soal: kode/nomor, bab, tingkat, jenis soal, status; tanpa ahli waris, jumlah orang, harta, atau topik.
 - Ubah `layar/belajar/DaftarSoalHitung.tsx` (judul berisi ahli waris di ±baris 39 dan 115) dan `SoalAcak.tsx` (±baris 59).

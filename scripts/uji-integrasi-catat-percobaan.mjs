@@ -38,6 +38,19 @@ assert.equal(salah.benarSemua, false);
 await cek('kuis tak terbit', panggil({ jenis: 'kuis', id: uuid(), slug: 'tidak-ada', indeksPilihan: 0 }), 400, 'KONTEN_TIDAK_TERBIT');
 const klien = await rest('/rest/v1/percobaan_soal', { method: 'POST', headers: H(env.ANON_KEY, { Authorization: `Bearer ${jwt}` }), body: JSON.stringify({ id: uuid(), user_id: user.id }) });
 assert.equal(klien.status, 403, 'klien tidak bisa menulis langsung');
+// ── Gharqa: keputusan + tabel per harta dinilai server dari satu kiriman (berkas dibuat scripts/berkas-gharqa-uji.ts). ──
+const { berkas, jawabanBenar } = JSON.parse(execSync('pnpm exec vite-node scripts/berkas-gharqa-uji.ts', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] }));
+const entriG = (await (await rest('/rest/v1/entri_konten', { method: 'POST', headers: H(env.SERVICE_ROLE_KEY, { Prefer: 'return=representation' }), body: JSON.stringify({ jenis: 'soal_hitung', slug: `G-99-${Date.now()}` }) })).json())[0];
+const revisiG = (await (await rest('/rest/v1/revisi', { method: 'POST', headers: H(env.SERVICE_ROLE_KEY, { Prefer: 'return=representation' }), body: JSON.stringify({ entri_id: entriG.id, isi: { ...isi, kode: 'G-99', kasus: { bentuk: 'berkas', berkas } }, refs: ['R13-10'], status: 'disetujui', dibuat_oleh: user.id }) })).json())[0];
+const dasarG = { idSesiSoal: uuid(), soalId: 'G-99', revisiSoal: revisiG.id, mode: 'latihan', dimulaiPada: new Date().toISOString() };
+const periksaG = gharqa => panggil({ ...dasarG, id: uuid(), aksi: 'periksa', gharqa });
+await cek('gharqa buka', panggil({ ...dasarG, id: uuid(), aksi: 'buka' }), 200);
+assert.equal((await cek('gharqa keputusan salah', periksaG({ keputusan: 'terakhirMewarisi', harta: [] }), 200)).benarSemua, false);
+assert.equal((await cek('gharqa baru satu harta', periksaG({ ...jawabanBenar, harta: jawabanBenar.harta.slice(0, 1) }), 200)).benarSemua, false);
+assert.equal((await cek('gharqa semua benar', periksaG(jawabanBenar), 200)).benarSemua, true);
+await cek('gharqa mayit karangan', periksaG({ ...jawabanBenar, harta: [{ ...jawabanBenar.harta[0], mayit: 'HANTU' }] }), 400, 'HARTA_TIDAK_ADA');
+await cek('gharqa dengan isian tunggal', panggil({ ...dasarG, id: uuid(), aksi: 'periksa', isian: { kepala: {}, sel: {} }, jangkar: null }), 400, 'GHARQA_ISIAN_TIDAK_SESUAI');
+await cek('gharqa pada soal biasa', panggil({ ...dasar, id: uuid(), aksi: 'periksa', gharqa: jawabanBenar }), 400, 'GHARQA_BUKAN_SOAL_INI');
 console.log('semua lulus');
 
 // ── hapus-akun (UU PDP): pengguna biasa terhapus beserta datanya; akun penulis ditahan jejak editorial (409). ──

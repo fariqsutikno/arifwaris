@@ -20,6 +20,7 @@ import { DaftarKasus } from './lab/DaftarKasus';
 import { HeroLab } from './lab/HeroLab';
 import { MulaiCepat } from './lab/MulaiCepat';
 import { panah, t } from '../terjemah';
+import { judulSoalTampil } from './belajar/judulSoal';
 
 export const TEKS_TINGKAT = (): Record<Tingkat, string> => ({ dasar: t('hitung.dasar'), menengah: t('hitung.menengah'), sulit: t('hitung.sulit') });
 
@@ -98,7 +99,7 @@ function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => vo
             <button type="button" className="ubin ubin-lab ubin-lab-soal" style={{ '--i': urutan } as CSSProperties} onClick={() => saatKerjakan(soal)}>
               <span className="panah-bulat" aria-hidden="true">{panah()}</span>
               <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
-              <b className="judul-ubin">{soal.judul}</b>
+              <b className="judul-ubin">{judulSoalTampil(soal, !!catatan[soal.kode])}</b>
               <span className="keterangan">{t('hitung.kerjakan')}</span>
             </button>
           </li>
