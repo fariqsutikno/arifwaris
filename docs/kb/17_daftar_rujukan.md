@@ -72,7 +72,8 @@ Selain tabel: K05-2 [MLK] terverifikasi 2026-11-22 (Mudawwanah 2/588, 17.5 butir
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| — | Kosong per 2026-11-22 (R13-14 ditutup, 17.5 butir 14) | — |
+
+Per 2026-11-22 tabel ini kosong; R13-14 ditutup (17.5 butir 14).
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:
