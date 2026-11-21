@@ -7,6 +7,9 @@ insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000d1', 'a@tes.local'),
   ('00000000-0000-0000-0000-0000000000d2', 'b@tes.local');
 
+-- Sejak G3 log_kegiatan hanya ditulis server (edge function catat-percobaan, service role); baris uji disisipkan pemilik tabel.
+insert into log_kegiatan (id, user_id, jenis, slug, benar) values ('30000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-0000000000d1', 'kuis', 'K-01', true);
+
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-0000000000d1", "role": "authenticated"}';
 
@@ -24,11 +27,10 @@ insert into riwayat_hitung (id, kasus, judul, disimpan_pada) values ('k1', '{}',
   on conflict (user_id, id) do update set judul = excluded.judul, disimpan_pada = excluded.disimpan_pada;
 select is((select judul from riwayat_hitung), 'baru', 'riwayat_hitung memakai disimpan_pada');
 
-select lives_ok($$insert into log_kegiatan (id, jenis, slug, benar) values ('30000000-0000-0000-0000-000000000001', 'kuis', 'K-01', true)$$,
-  'pemilik bisa menambah log');
+select throws_ok($$insert into log_kegiatan (id, jenis, slug, benar) values ('30000000-0000-0000-0000-000000000002', 'kuis', 'K-03', true)$$,
+  '42501', null, 'klien tidak bisa menambah log (hanya server)');
 select ok((select terjadi_pada from log_kegiatan) <= now(), 'terjadi_pada diisi server');
-select throws_ok($$insert into log_kegiatan (jenis, slug, terjadi_pada) values ('kuis', 'K-02', '2020-01-01')$$,
-  '42501', null, 'terjadi_pada tidak bisa diisi klien');
+select is((select count(*) from log_kegiatan), 1::bigint, 'pemilik membaca lognya sendiri');
 update log_kegiatan set slug = 'ubah';
 delete from log_kegiatan;
 select is((select slug from log_kegiatan), 'K-01', 'log tidak bisa diubah atau dihapus');

@@ -55,7 +55,10 @@ export function catatLatihan(jenis: JenisLatihan, soalSlug: string, benar: boole
   };
   simpanMentah(KUNCI_LATIHAN, JSON.stringify({ ...semua, [kunciLatihan(jenis, soalSlug)]: baris }));
   antre({ tabel: 'latihan', baris });
-  antre({ tabel: 'kegiatan', baris: { id: crypto.randomUUID(), jenis: jenis === 'hitung' ? 'soal' : 'kuis', slug: soalSlug, benar } });
+  // Soal hitung: XP datang dari percobaan_soal (dinilai server), bukan dari sini. Kuis: server menilai dari pilihan.
+  if (jenis === 'kuis' && typeof jawaban === 'number') {
+    antre({ tabel: 'kegiatan', baris: { id: crypto.randomUUID(), jenis: 'kuis', slug: soalSlug, benar, indeksPilihan: jawaban } });
+  }
 }
 
 export const bacaSkorPaket = (): Record<string, string> => bacaObjek<string>(KUNCI_SKOR_PAKET);

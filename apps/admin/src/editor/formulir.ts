@@ -183,6 +183,8 @@ export const FORM_KONTEN: Record<JenisKonten, Bagian[]> = {
       { jalur: 'tingkat', label: 'Tingkat', jenis: 'pilihan', opsi: ['dasar', 'menengah', 'sulit'], samping: true },
       { jalur: 'sumber', label: 'Sumber', jenis: 'teks', samping: true, contoh: 'Kasus uji no. 5',
         bantuan: 'Asal kasus: nomor kasus uji tim keilmuan, atau nama kitab dan halamannya.' },
+      { jalur: 'bobotXp', label: 'Poin XP', jenis: 'angka', opsional: true, samping: true,
+        bantuan: 'Poin yang didapat pelajar sekali per soal (1–200). Kosong = ikut tingkat: dasar 10, menengah 20, sulit 30. Soal yang lebih panjang (munasakhat, mafqud, haml) sebaiknya diisi lebih besar.' },
       { jalur: 'kode', label: 'Kode soal', jenis: 'teks', samping: true, identitas: { awalan: 'H-' }, bantuan: BANTUAN_KODE_SOAL },
     ] },
   ],

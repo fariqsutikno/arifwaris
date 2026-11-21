@@ -110,3 +110,14 @@ test('semua templat terbaca sebagai Markdown yang sah untuk bidangnya', () => {
     }
   }
 });
+
+describe('Poin XP soal hitung (bobotXp)', () => {
+  const form = () => keNilaiForm('soal_hitung', SOAL_HITUNG_UJI);
+  test('kosong = tidak disimpan; terisi = bilangan bulat 1–200', () => {
+    const kosong = dariNilaiForm('soal_hitung', 'x', { ...form(), nilai: { ...form().nilai, bobotXp: '' } });
+    expect(kosong.ok && 'bobotXp' in (kosong.isi as object)).toBe(false);
+    const isi = dariNilaiForm('soal_hitung', 'x', { ...form(), nilai: { ...form().nilai, bobotXp: '60' } });
+    expect(isi.ok && (isi.isi as { bobotXp?: number }).bobotXp).toBe(60);
+    expect(dariNilaiForm('soal_hitung', 'x', { ...form(), nilai: { ...form().nilai, bobotXp: '500' } }).ok).toBe(false);
+  });
+});

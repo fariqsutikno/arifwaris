@@ -13,3 +13,5 @@ export * from './tabel/jangkar.js';
 export * from './tabel/kanonik.js';
 export * from './tabel/nilai.js';
 export * from './tabel/susunGharqa.js';
+export * from './penilai.js';
+export * from './xp.js';
