@@ -49,10 +49,7 @@ test('kunci snapshot yang tidak dipakai kode dilaporkan', () => {
   if (tidakDipakai.length) console.warn(`diksi tidak dipakai kode (${tidakDipakai.length}):`, tidakDipakai);
 });
 
-it('isian dengan angka Arab dibaca sama dengan angka Latin', async () => {
+it('isian uang dengan angka Arab dibaca sama dengan angka Latin', async () => {
   const { bacaInputUang } = await import('../format');
-  const { bacaPecahan } = await import('../hasil/tebak');
   expect(bacaInputUang('١٢٠٬٠٠٠')).toBe(120000n);
-  expect(bacaPecahan('١/٨')).toEqual({ n: 1n, d: 8n });
-  expect(bacaPecahan('۳/۲۴')).toEqual({ n: 3n, d: 24n });
 });

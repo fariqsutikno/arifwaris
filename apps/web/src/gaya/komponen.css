@@ -315,8 +315,6 @@ table.faraidh{width:100%;min-width:0;border-collapse:separate;border-spacing:0;b
 .alat-pembagian{display:flex;gap:6px}
 .tombol-ikon{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);cursor:pointer;box-shadow:var(--shadow-pop-sm)}
 .tombol-ikon[aria-pressed=true],.tombol-ikon[aria-expanded=true]{background:var(--ink);color:var(--surface-raised)}
-.tebak{display:flex;flex-direction:column;gap:10px;align-items:flex-start;padding:14px;border-radius:14px;background:var(--pink);color:var(--on-fill);border:var(--border-w) solid var(--outline);font-size:14px}
-.tebak p{margin:0}
 .panel-atur{display:grid;gap:14px;padding:14px;border:var(--border-w) solid var(--outline);border-radius:14px;background:var(--surface-sunken);margin-bottom:14px}
 .panel-atur h3{margin:0 0 8px;font:800 11px/1.3 var(--font-sans);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-muted)}
 .cek{display:flex;gap:10px;align-items:flex-start;padding:6px 0;cursor:pointer;font-size:13.5px;line-height:1.35}
@@ -582,12 +580,6 @@ summary.kepala-bulat::-webkit-details-marker{display:none}
 .tautan-tombol{margin-top:6px;padding:0;border:0;background:none;color:var(--primary);font:700 14px var(--font-sans);text-decoration:underline;cursor:pointer}
 .entri-faq{max-width:760px;scroll-margin-top:80px}
 .isi-lipat-faq{padding:0 16px 14px;font-size:15px}
-.tebak code{font:700 13px var(--font-sans);background:rgba(255,255,255,.6);padding:1px 5px;border-radius:6px}
-.isian-tebak{display:grid;gap:6px}
-.baris-tebak{display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700}
-.baris-tebak input{width:84px;height:36px;padding:0 10px;border-radius:var(--radius-sm);border:var(--border-w) solid var(--outline);background:var(--surface-raised);color:var(--ink);font:700 15px var(--font-display);text-align:center}
-.baris-tebak input:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
-.baris-tebak.keliru input{border-color:var(--danger);box-shadow:0 0 0 2px var(--danger)}
 .riwayat-beranda{margin-top:24px}
 
 /* Materi ala e-learning */
@@ -666,21 +658,12 @@ a.isi-soal:hover b{text-decoration:underline}
 .isian-kata-kunci{font-weight:600;font-size:14px}
 @media (max-width:560px){.status-simpan{display:none}}
 
-/* Mode belajar: tebakan */
-.tebak{display:flex;flex-direction:column;gap:14px;align-items:stretch;padding:16px;border-radius:var(--radius-md);background:var(--surface-sunken);color:var(--ink);border:var(--border-w) solid var(--outline);font-size:14px}
-.petunjuk-tebak h3{margin:0 0 4px;font:700 17px/1.3 var(--font-display)}
-.petunjuk-tebak p{margin:0;line-height:1.55}
-.contoh-tebak{margin-top:6px!important;color:var(--ink-muted)}
-.tebak code{font:700 13px var(--font-sans);background:var(--surface-raised);border:1.5px solid var(--divider);padding:0 6px;border-radius:6px;color:var(--ink)}
-.isian-tebak{padding:12px;border-radius:var(--radius-sm);background:var(--surface-raised);border:1.5px solid var(--divider)}
 .hasil-tebak{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-radius:var(--radius-sm);border:var(--border-w) solid var(--outline)}
 .hasil-tebak b{display:flex;align-items:center;gap:6px;font:700 16px/1.3 var(--font-display)}
 .hasil-tebak p{margin:0;line-height:1.5}
 .hasil-tebak.salah{background:var(--pink);color:var(--on-fill)}
 .hasil-tebak.kurang{background:var(--sun);color:var(--on-fill)}
 .hasil-tebak.benar{background:var(--lime);color:var(--on-fill);box-shadow:var(--shadow-pop-sm);margin-bottom:12px}
-.aksi-tebak{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.aksi-tebak .aw-btn{justify-content:center}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
 .confetti span{position:absolute;top:-16px;width:10px;height:14px;border:1.5px solid #111322;border-radius:2px;animation:jatuh 1.5s cubic-bezier(.25,.6,.45,1) forwards}
 @keyframes jatuh{to{transform:translate(var(--geser),105vh) rotate(var(--putar));opacity:.9}}

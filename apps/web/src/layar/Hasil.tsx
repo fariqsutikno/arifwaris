@@ -156,7 +156,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const taqdirBertabel = useMemo(() => tampil.jenis === 'taqdir' && !('status' in susunTabelSoal(tampil.hasil, id => id)), [tampil]);
   const gharqaBertabel = useMemo(() => tampil.jenis === 'gharqa' && !('status' in susunSoalGharqa(tampil.hasil, id => id)), [tampil]);
   const khusus = (ringkasan.jenis === 'taqdir' && !taqdirBertabel) || ringkasan.jenis === 'menunggu' || (ringkasan.jenis === 'gharqa' && !gharqaBertabel);
-  const adalahBelajar = tujuan === 'belajar' && !khusus;
+  // Mode belajar hanya untuk soal yang bisa jadi tabel isian; yang belum bisa (mis. [HNB] tilad–tharif) tampil sebagai hasil hitung, bukan layar macet.
+  const biasaBertabel = useMemo(() => (tampil.jenis === 'biasa' || tampil.jenis === 'munasakhat') && tampil.hasil.status === 'OK' && !('status' in susunTabelSoal(tampil.hasil, id => id)), [tampil]);
+  const bertabel = tampil.jenis === 'taqdir' ? taqdirBertabel : tampil.jenis === 'gharqa' ? gharqaBertabel : biasaBertabel;
+  const adalahBelajar = tujuan === 'belajar' && !khusus && bertabel;
   const menunggu = ringkasan.jenis === 'menunggu';
   const gharqaDitahan = !!ringkasan.gharqa?.skenario;
   // Setiap kasus yang sampai di sini tersimpan otomatis (termasuk menunggu kelahiran), kecuali soal latihan, tautan penerima, dan "Jangan simpan".
@@ -278,13 +281,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     else buka('');
     return () => { batal = true; };
   }, [soal?.id, adalahBelajar, tabelSoal]); // eslint-disable-line react-hooks/exhaustive-deps
-  // Kartu tebak lama (soal yang belum bertabel): saatMencoba lalu, bila tepat, saatBenar dalam satu tick → satu kejadian tanpa isian (spec 6.3).
-  const kartuLamaBenar = useRef(false);
-  const saatMencobaKartuLama = () => {
-    setSudahMencoba(true);
-    queueMicrotask(() => { catat('periksa', { benarSemua: kartuLamaBenar.current }); kartuLamaBenar.current = false; });
-  };
-  const saatBenarKartuLama = () => { kartuLamaBenar.current = true; jawabBenar(); };
   const saatPercobaanTabel = (percobaan: PercobaanTabel) => {
     isianTerakhir.current = percobaan.isian;
     setSudahMencoba(true);
@@ -408,13 +404,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
               : <a className="aw-btn aw-btn-primary" href={tautanLatihan('hitung')}>{t('hitung.kembali_ke_daftar_soal')}</a>}
           </div>
         )}
-        {!(adaTabelSoal && sedangMenebak) && <div className="bento-s7">
+        {!sedangMenebak && <div className="bento-s7">
           {menunggu ? <UbinMenunggu ringkasan={ringkasan} saatPilih={setOrangDipilih}
             saatBagiSekarang={bolehUbah ? () => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, pilihanJanin: 'hitungSekarang' }) }) : undefined} />
           : gharqaDitahan ? <UbinKemungkinanUrutan {...umumKhusus} />
           : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={hartaKosong && bolehUbah ? () => setUbahHartaTerbuka(true) : () => setSembunyiNominal(!sembunyiNominal)} hartaKosong={hartaKosong && bolehUbah}
-            sedangMenebak={sedangMenebak} saatTampilkanJawaban={() => setKonfirmasiBuka('lihat')} saatTebakanBenar={saatBenarKartuLama} tebakanBenar={tebakanBenar} saatMencobaMenjawab={saatMencobaKartuLama}
+            tebakanBenar={tebakanBenar}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih}
@@ -445,7 +441,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
               <h2 id="judul-pohon-tabel">{t('hasil.judul_bagaimana_dibagi')}</h2>
               <p className="sub-kartu">{t('hasil.pohon_dan_tabel_sub')}</p>
             </div>
-            {!(adaTabelSoal && sedangMenebak) && <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>
+            {!sedangMenebak && <div className="segmen sakelar-hp" role="radiogroup" aria-label={t('hasil.pohon_dan_tabel')}>
               <button type="button" role="radio" aria-checked={panelHp === 'pohon'} onClick={() => setPanelHp('pohon')}>{t('hasil.pohon')}</button>
               <button type="button" role="radio" aria-checked={panelHp === 'tabel'} onClick={() => setPanelHp('tabel')}>{t('hasil.tabel')}</button>
             </div>}
@@ -453,7 +449,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
           <div className="isi-pohon-tabel">
             <PanelPohon pohon={buatPohon(true)} legenda={<Legenda />} saatLayarPenuh={() => setLayarPenuh({ zoom: 1 })}
               saatPutar={bolehAliran ? () => setPutaranAliran(putaranAliran + 1) : undefined} />
-            {!(adaTabelSoal && sedangMenebak) && <div className="panel-tabel-hasil">
+            {!sedangMenebak && <div className="panel-tabel-hasil">
               <h3 id="judul-tabel-faraidh" className="judul-panel">{umumRantai ? t('hasil.munasakhat.tabel_munasakhat') : ringkasan.taqdir ? t('hasil.ditahan.tabel_kemungkinan') : ringkasan.gharqa ? t('hasil.gharqa.tabel_per_harta') : t('hitung.tabel_faraidh')}</h3>
               <div className="wadah-tabel">{tabel}</div>
             </div>}

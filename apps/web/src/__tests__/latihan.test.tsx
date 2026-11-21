@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { type SoalHitung } from '@waris/content';
 import { daftarSoalHitung, daftarSoalKuis } from '../konten/sumber';
 import { ringkas } from '../hasil/ringkasan';
-import { jalankan, kasusDariSoal, susunTabelSoal } from '@waris/latihan';
+import { jalankan, kasusDariSoal, susunSoalGharqa, susunTabelSoal } from '@waris/latihan';
 import { revisiIdSoalHitung } from '../konten/sumber';
 import { Latihan } from '../layar/belajar/Latihan';
 import { PAKET_ACAK, durasiUjian, judulTopik, soalPaket } from '../layar/belajar/KuisKonsep';
@@ -25,9 +25,11 @@ describe('kunci soal hitung = hasil engine', () => {
 describe('setiap soal hitung terbit bisa dikerjakan sebagai tabel', () => {
   it.each(daftarSoalHitung().map(soal => [soal.kode, soal] as const))('%s: terbaca, engine OK, tabel didukung, revisi diketahui', (kode, soal) => {
     const tampil = jalankan(kasusDariSoal(soal.kasus));
-    if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') throw new Error(`${kode}: engine tidak OK (${JSON.stringify(tampil).slice(0, 200)})`);
-    const susunan = susunTabelSoal(tampil.hasil, id => id);
-    if ('status' in susunan) throw new Error(`${kode}: tabel soal belum didukung (${susunan.status})`);
+    // Semua jenis harus tampil sebagai tabel: tanpa itu soal macet di mode belajar (kartu tebak lama sudah dihapus).
+    const susunan = tampil.jenis === 'gharqa' ? susunSoalGharqa(tampil.hasil, id => id)
+      : tampil.jenis === 'biasa' || tampil.jenis === 'munasakhat' || tampil.jenis === 'taqdir' ? susunTabelSoal(tampil.hasil as never, id => id)
+      : { status: 'TIDAK_DIDUKUNG' as const };
+    if ('status' in susunan) throw new Error(`${kode}: tabel soal belum didukung (jenis ${tampil.jenis}, ${susunan.status})`);
     expect(revisiIdSoalHitung(kode), `${kode}: revisiId hilang dari snapshot`).toBeTruthy();
   });
 });

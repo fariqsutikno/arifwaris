@@ -137,25 +137,3 @@ describe('hero soal latihan (B8)', () => {
     expect(screen.getByRole('link', { name: 'Kembali ke daftar soal' }).getAttribute('href')).toBe('#/latihan');
   });
 });
-
-describe('kartu tebak lama', () => {
-  it('soal yang belum bertabel: satu kejadian tanpa isian per percobaan', async () => {
-    // KB 14.6 #3: kerabat yang kalah jihah belum punya tabel latihan (tanzil biasa dan munasakhat sudah).
-    const orang = (id: string, jenisKelamin: 'L' | 'P', lain: object = {}) => ({ id, jenisKelamin, statusHidup: 'hidup' as const, agama: 'islam' as const, ...lain });
-    const wafat = { statusHidup: 'wafat' as const, penghubung: true };
-    const munasakhat: Kasus = { ...kasusBaru('L'), tirkah: { kotor: 90_000_000n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, graf: {
-      idPewaris: 'D', pernikahan: [], orang: {
-        D: orang('D', 'L', { statusHidup: 'wafat' }),
-        AP: orang('AP', 'P', { ...wafat, idAyah: 'D' }), APP: orang('APP', 'P', { ...wafat, idIbu: 'AP' }), X1: orang('X1', 'P', { idIbu: 'APP' }),
-        S: orang('S', 'L', { ...wafat, idAyah: 'D' }), SS: orang('SS', 'L', { ...wafat, idAyah: 'S' }), SSD: orang('SSD', 'P', { ...wafat, idAyah: 'SS' }),
-        X2: orang('X2', 'P', { idIbu: 'SSD' }),
-      } } };
-    render(<Uji awal={munasakhat} />);
-    await waitFor(() => expect(bacaPercobaan().map(k => k.aksi)).toEqual(['buka']));
-    expect(bacaPercobaan()[0]).toMatchObject({ jenisSoal: 'dzawilArham' });
-    for (const kotak of document.querySelectorAll('.isian-tebak input')) fireEvent.change(kotak, { target: { value: '1/2' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Jawab' }));
-    await waitFor(() => expect(bacaPercobaan().map(k => k.aksi)).toEqual(['buka', 'periksa']));
-    expect(bacaPercobaan()[1]).toMatchObject({ isian: null, hasilKolom: null, benarSemua: false });
-  });
-});

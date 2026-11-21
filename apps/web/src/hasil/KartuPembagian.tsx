@@ -15,7 +15,7 @@ import { PILIHAN_PEMBULATAN } from '../konten/harta';
 import type { BentukPecahan, Penerima, RingkasanHasil, Terhalang } from './ringkasan';
 import { pecahanTeks, persenTeks } from './ringkasan';
 import { Confetti } from '../ui/Confetti';
-import { KartuTebak, UmpanBalikBenar } from './KartuTebak';
+import { UmpanBalikBenar } from './UmpanBalikBenar';
 import { useAtributOrang } from './sorot';
 import { Ikon } from '../ui/Ikon';
 import { angka, t } from '../terjemah';
@@ -33,12 +33,8 @@ interface Props {
   sembunyiNominal: boolean;
   saatSembunyi: () => void;
   hartaKosong?: boolean;
-  sedangMenebak: boolean;
   adalahBelajar: boolean;
-  saatTampilkanJawaban: () => void;
-  saatTebakanBenar: () => void;
-  saatMencobaMenjawab: () => void;
-  /** Tebakan baru saja dijawab benar semua: tampilkan umpan balik + confetti di atas pembagian. */
+  /** Soal baru saja dijawab benar semua: tampilkan umpan balik + confetti di atas pembagian. */
   tebakanBenar: boolean;
   tampilPembulatan: boolean;
   satuanPembulatan: bigint;
@@ -60,7 +56,7 @@ const peranDari = (orang: Pick<Penerima, 'nama' | 'kunci'>) => {
 };
 
 export function KartuPembagian(props: Props) {
-  const { ringkasan, pengaturan, sembunyiNominal, sedangMenebak } = props;
+  const { ringkasan, pengaturan, sembunyiNominal } = props;
   // Harta belum diisi: nominal memang tersembunyi dan mata tak ada yang disembunyikan; ketuk = isi harta.
   const labelMata = props.hartaKosong ? t('hitung.ubah_harta') : sembunyiNominal ? t('hitung.tampilkan_nominal') : t('hitung.sembunyikan_nominal');
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
@@ -79,20 +75,17 @@ export function KartuPembagian(props: Props) {
     <section className="ubin-h kartu-utama" aria-labelledby="judul-pembagian" data-tur="pembagian">
       <header className="kepala-pembagian">
         <div className="judul-kartu">
-          <h2 id="judul-pembagian">{props.adalahBelajar ? (sedangMenebak ? t('hitung.jawabanmu') : t('hitung.kunci_jawaban')) : t('hasil.judul_siapa_dapat_berapa')}</h2>
-          {/* Harta adalah bagian dari soal, jadi tetap tampil saat menebak. */}
-          <p className="sub-kartu">
-            {sedangMenebak ? t('hitung.dibagi_dari_harta', { harta: uang(ringkasan.tirkah.bersih) }) : t('hasil.ketuk_nama_penjelasan')}
-          </p>
+          <h2 id="judul-pembagian">{props.adalahBelajar ? t('hitung.kunci_jawaban') : t('hasil.judul_siapa_dapat_berapa')}</h2>
+          <p className="sub-kartu">{t('hasil.ketuk_nama_penjelasan')}</p>
         </div>
         <div className="alat-pembagian">
-          {!sedangMenebak && (
+          {(
             <div className="segmen" role="radiogroup" aria-label={t('hitung.bentuk_pecahan')}>
               <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sederhana'} onClick={() => props.saatUbahPengaturan({ bentuk: 'sederhana' })}>{t('hasil.fardh')}</button>
               <button type="button" role="radio" aria-checked={pengaturan.bentuk === 'sama'} onClick={() => props.saatUbahPengaturan({ bentuk: 'sama' })}>{t('hasil.saham')}</button>
             </div>
           )}
-          {!sedangMenebak && (
+          {(
             <button type="button" className="tombol-ikon" aria-pressed={props.hartaKosong ? undefined : sembunyiNominal} onClick={props.saatSembunyi}
               aria-label={labelMata} title={labelMata}>
               {/* Harta belum diisi: tombol ini membuka isian harta, jadi ikonnya pensil, bukan mata tercoret. */}
@@ -107,9 +100,7 @@ export function KartuPembagian(props: Props) {
         </div>
       </header>
 
-      {sedangMenebak ? (
-        <KartuTebak ringkasan={ringkasan} saatBenar={props.saatTebakanBenar} saatMencoba={props.saatMencobaMenjawab} saatLihatJawaban={props.saatTampilkanJawaban} />
-      ) : (
+      {(
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
           {props.pembuka}
