@@ -10,14 +10,21 @@ Perkiraan: 8–12 orang-hari (naik dari 4–6 karena penilaian server dimajukan 
 pelajar; benar/salah, XP, waktu, urutan, dan versi selalu dihitung server (spec 2.6).
 
 **Selesai bila:**
-- [ ] Satu-satunya jalan menulis `percobaan_soal` adalah edge function `catat-percobaan`; `authenticated` dan `anon` tidak
-      punya `insert`/`update`/`delete` (uji pgTAP).
-- [ ] `catat-percobaan` menolak setiap kiriman yang melanggar spec 2.6 butir 1–7 (uji `deno test` per butir, bagian 2.3).
-- [ ] Kuis konsep dan pelajaran juga lewat fungsi server; `log_kegiatan` tidak bisa lagi ditulis langsung oleh klien.
-- [ ] XP dan hari aktif dihitung **hanya** dari baris tulisan server dengan aturan spec 3.1; total XP setiap pengguna lama
-      **tidak berubah** pada hari peralihan (uji pgTAP).
-- [ ] Lihat jawaban sebelum benar pertama membakar XP soal itu; ulang soal = 0 XP tapi tetap hari aktif.
-- [ ] `bobotXp` ada di skema soal, terisi otomatis di portal ("Poin XP"), dan XP dibaca dari revisi yang dikerjakan.
+- [x] Satu-satunya jalan menulis `percobaan_soal` adalah edge function `catat-percobaan`; `authenticated` dan `anon` tidak
+      punya `insert`/`update`/`delete` (pgTAP `20`).
+- [x] `catat-percobaan` menolak setiap kiriman yang melanggar spec 2.6 (uji vitest `penilai.test.ts` per butir: logika
+      murni di `packages/latihan/src/penilai.ts`; aturan urutan/idempoten/laju di SQL `catat_percobaan`, pgTAP `21`;
+      uji integrasi runtime edge asli `scripts/uji-integrasi-catat-percobaan.mjs`). `deno` tidak terpasang di mesin
+      pengembang, jadi tidak ada `deno test`.
+- [x] Kuis konsep dan pelajaran juga lewat fungsi server; `log_kegiatan` tidak bisa lagi ditulis langsung oleh klien (pgTAP `04`, `23`).
+- [x] XP dan hari aktif dihitung dari baris tulisan server dengan aturan spec 3.1 (`xp_soal_baru`); total XP pengguna lama
+      **tidak berubah** pada hari peralihan (pgTAP `23`).
+- [x] Lihat jawaban sebelum benar pertama membakar XP soal itu; ulang soal = 0 XP tapi tetap hari aktif (pgTAP `22`, dari `xp-kasus.json` yang sama dengan vitest).
+- [~] `bobotXp` ada di skema soal, diisi di portal sebagai "Poin XP" (kosong = ikut tingkat), dan XP dibaca dari revisi
+      yang dikerjakan. **Belum**: pengisian otomatis dari jenis soal (tabel 3.2) di portal.
+- [ ] **Soal gharqa belum dinilai server** (kejadiannya memuat keputusan + beberapa tabel; kontrak kiriman perlu
+      diperluas). Sampai itu selesai server menolak kiriman gharqa (`SOAL_TIDAK_DIDUKUNG`) dan soal gharqa tidak memberi XP.
+- Soal bangkitan (`soal_bangkitan`) belum ada; kiriman `soalId` pola ditolak (`SOAL_BANGKITAN_BELUM_ADA`) sampai G4.
 
 ---
 
