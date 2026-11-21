@@ -64,7 +64,7 @@ describe('susunTabelMunasakhat — KB 12.6 contoh 2', () => {
 
   test('kolom terkunci tidak dinilai dan tidak pernah jadi jangkar', () => {
     expect(nilaiSemuaKolom(tabel, isianKunci(), null).some(kolom => kolom.idKolom === 'm1')).toBe(false);
-    fc.assert(fc.property(fc.double({ min: 0, max: 1, noDefaultInfinity: true }), acak => {
+    fc.assert(fc.property(fc.double({ min: 0, max: 1, noDefaultInfinity: true, noNaN: true }), acak => {
       const jangkar = pilihJangkar(tabel, () => acak)!;
       const kolom = tabel.kolom.find(lain => lain.id === jangkar.idKolom)!;
       return kolom.jenis === 'bulat' && !kolom.terkunci && tabel.baris.find(baris => baris.id === jangkar.idBaris)!.kunci[kolom.id] !== '0';

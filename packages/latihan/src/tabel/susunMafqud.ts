@@ -10,18 +10,18 @@ import { BAGIAN_TERHALANG, ID_BARIS_MAUQUF, PILIHAN_BAGIAN, type BarisSoal, type
 import { labelBagian } from './susunBiasa.js';
 
 const ID_JAMIAH = 'jamiah';
-const PASANGAN_KEMUNGKINAN = [['hidup', 'mati'], ['lk', 'pr']];
+// Mafqud, khuntsa, lalu haml [SYF] (empat taqdir, KB 13a.5 [R13-20]); haml [HNB] enam taqdir belum didukung.
+const KEMUNGKINAN_TIAP_JENIS = [['hidup', 'mati'], ['lk', 'pr'], ['mati', 'lk', 'pr', 'duaPr']];
+const JENIS_HAML = 2;
 
 export function susunTabelMafqud(hasil: HasilTaqdir, namaDari: (id: IdOrang) => string): SusunanTabel {
   if (hasil.status !== 'OK') return { status: 'TIDAK_DIDUKUNG' };
   const { daftarDunia } = hasil;
   const sumber = Object.keys(daftarDunia[0]?.taqdir ?? {});
-  const nilaiPertama = daftarDunia[0]?.taqdir[sumber[0]!];
-  const pasangan = PASANGAN_KEMUNGKINAN.find(nilai => nilaiPertama && nilai.includes(nilaiPertama));
-  const adalahSatuSumber = sumber.length === 1 && pasangan
-    && daftarDunia.every(dunia => dunia.bagian && dunia.kelompok.length === 0 && pasangan.includes(dunia.taqdir[sumber[0]!]!));
-  if (!adalahSatuSumber) return { status: 'TIDAK_DIDUKUNG' };
-  const idMafqud = sumber[0]!; // juga khuntsa: bagiannya ditahan sama [R13-18]
+  const jenis = KEMUNGKINAN_TIAP_JENIS.findIndex(nilai => daftarDunia.every(dunia => dunia.bagian && nilai.includes(dunia.taqdir[sumber[0]!]!)));
+  const adalahHaml = jenis === JENIS_HAML;
+  if (sumber.length !== 1 || jenis < 0 || (adalahHaml && hasil.ruleset !== 'syafii')) return { status: 'TIDAK_DIDUKUNG' };
+  const idMafqud = sumber[0]!; // juga khuntsa dan haml: bagiannya ditahan sama [R13-18]
 
   const baris = new Map<IdOrang, BarisSoal>();
   const barisDari = (id: IdOrang): BarisSoal => {
@@ -34,18 +34,21 @@ export function susunTabelMafqud(hasil: HasilTaqdir, namaDari: (id: IdOrang) => 
   daftarDunia.forEach((dunia, indeks) => {
     const idBagian = `b${indeks + 1}`;
     const idMasalah = `m${indeks + 1}`;
-    const kemungkinan = dunia.taqdir[idMafqud]!;
+    const kemungkinan = adalahHaml ? `haml.${dunia.taqdir[idMafqud]}` : dunia.taqdir[idMafqud]!;
+    const adaKelompokBersama = dunia.bagian!.some(kelompok => kelompok.bersama);
     kolom.push({ id: idBagian, idJudul: 'bagianKemungkinan', ...qDari('bagianKemungkinan'), jenis: 'pilih', pilihan: PILIHAN_BAGIAN, kemungkinan });
-    kolom.push({ id: idMasalah, idJudul: 'sahamKemungkinan', ...qDari('sahamKemungkinan'), jenis: 'bulat', kepala: dunia.masalah, kemungkinan });
+    kolom.push({ id: idMasalah, idJudul: 'sahamKemungkinan', ...qDari('sahamKemungkinan'), jenis: 'bulat', kepala: dunia.masalah, kemungkinan, ...(adaKelompokBersama ? { gabungDari: idBagian } : {}) });
     kunciPengali[idMasalah] = dunia.pengali;
 
-    for (const kelompok of dunia.bagian!) {
+    dunia.bagian!.forEach((kelompok, urutan) => {
       for (const id of kelompok.anggota) {
         const sel = barisDari(id);
         sel.kunci[idBagian] = labelBagian(kelompok);
-        sel.kunci[idMasalah] = String(kelompok.perOrang[id]!);
+        // [R13-20] [SYF] sahamnya satu angka untuk seluruh kelompok: sel bersama.
+        sel.kunci[idMasalah] = String(kelompok.bersama ? kelompok.saham : kelompok.perOrang[id]!);
+        if (kelompok.bersama) sel.kelompok[idMasalah] = `${idMasalah}-${urutan}`;
       }
-    }
+    });
     // Terhalang di dunia ini: punya baris (karena berbagian di dunia lain) tapi tanpa angka.
     for (const [id, status] of Object.entries(dunia.statusOrang)) {
       if (status.jenis === 'mahjub' || status.jenis === 'mamnu') barisDari(id).kunci[idBagian] = BAGIAN_TERHALANG;
