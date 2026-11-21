@@ -39,3 +39,23 @@ await cek('kuis tak terbit', panggil({ jenis: 'kuis', id: uuid(), slug: 'tidak-a
 const klien = await rest('/rest/v1/percobaan_soal', { method: 'POST', headers: H(env.ANON_KEY, { Authorization: `Bearer ${jwt}` }), body: JSON.stringify({ id: uuid(), user_id: user.id }) });
 assert.equal(klien.status, 403, 'klien tidak bisa menulis langsung');
 console.log('semua lulus');
+
+// ── hapus-akun (UU PDP): pengguna biasa terhapus beserta datanya; akun penulis ditahan jejak editorial (409). ──
+const buatPengguna = async () => {
+  const surel = `hapus${Date.now()}${Math.random().toString(36).slice(2, 6)}@tes.local`;
+  const dibuat = await (await rest('/auth/v1/admin/users', { method: 'POST', headers: H(env.SERVICE_ROLE_KEY), body: JSON.stringify({ email: surel, password: 'Uji-12345!', email_confirm: true }) })).json();
+  const token = (await (await rest('/auth/v1/token?grant_type=password', { method: 'POST', headers: H(env.ANON_KEY), body: JSON.stringify({ email: surel, password: 'Uji-12345!' }) })).json()).access_token;
+  return { id: dibuat.id, token };
+};
+const hapus = async token => { const x = await fetch(`${env.API_URL}/functions/v1/hapus-akun`, { method: 'POST', headers: H(env.ANON_KEY, { Authorization: `Bearer ${token}` }) }); return [x.status, await x.json().catch(() => null)]; };
+const biasa = await buatPengguna();
+await rest('/rest/v1/rpc/atur_persetujuan', { method: 'POST', headers: H(env.ANON_KEY, { Authorization: `Bearer ${biasa.token}` }), body: JSON.stringify({ p_jenis: 'kebijakan_privasi', p_setuju: true, p_versi: 1 }) });
+await cek('hapus akun tanpa sesi', hapus(env.ANON_KEY), 401);
+await cek('hapus akun biasa', hapus(biasa.token), 200);
+const sisa = await (await rest(`/rest/v1/persetujuan?user_id=eq.${biasa.id}&select=id`, { headers: H(env.SERVICE_ROLE_KEY) })).json();
+assert.equal(sisa.length, 0, 'data pengguna ikut terhapus (cascade)');
+const penulis = await buatPengguna();
+await rest('/rest/v1/entri_konten', { method: 'POST', headers: H(env.SERVICE_ROLE_KEY, { Prefer: 'return=representation' }), body: JSON.stringify({ jenis: 'faq', slug: `hapus-${Date.now()}` }) })
+  .then(r => r.json()).then(([e]) => rest('/rest/v1/revisi', { method: 'POST', headers: H(env.SERVICE_ROLE_KEY), body: JSON.stringify({ entri_id: e.id, isi: {}, refs: ['R01-1'], dibuat_oleh: penulis.id }) }));
+await cek('hapus akun penulis ditahan', hapus(penulis.token), 409, 'AKUN_PENULIS');
+console.log('hapus-akun lulus');
