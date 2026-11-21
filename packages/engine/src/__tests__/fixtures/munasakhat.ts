@@ -250,3 +250,39 @@ export const SISA_KELUAR_MAYIT_KEDUA: InputMunasakhat = munasakhat({
   },
   pernikahan: [{ idSuami: 'H', idIstri: 'D', status: 'utuh' }, { idSuami: 'H', idIstri: 'W2', status: 'utuh' }],
 }, ['H']);
+
+// M10–M12 [R12-5]: mayit yang hanya meninggalkan dzawil arham / penerima dzawil arham yang wafat sebelum pembagian.
+// BU = putri U (saudari kandung D) dari Y: bintul ukht, dzawil arham D; W satu-satunya dzawil furudh.
+const grafM10 = (): GrafKeluarga['orang'] => ({
+  D: p('D', 'L', { statusHidup: 'wafat', idAyah: 'F', idIbu: 'M' }),
+  W: p('W', 'P'),
+  F: placeholder('F', 'L'),
+  M: placeholder('M', 'P'),
+  AK: p('AK', 'L', { idAyah: 'F', idIbu: 'M' }),
+  U: p('U', 'P', { statusHidup: 'wafat', idAyah: 'F', idIbu: 'M' }),
+  Y: placeholder('Y', 'L'),
+  BU: p('BU', 'P', { idAyah: 'Y', idIbu: 'U' }),
+});
+
+export const M10: InputMunasakhat = munasakhat({
+  idPewaris: 'D',
+  orang: grafM10(),
+  pernikahan: [{ idSuami: 'D', idIstri: 'W', status: 'utuh' }],
+}, ['AK']);
+
+export const M11: InputMunasakhat = munasakhat({
+  idPewaris: 'D',
+  orang: { ...grafM10(), WA: p('WA', 'P') },
+  pernikahan: [{ idSuami: 'D', idIstri: 'W', status: 'utuh' }, { idSuami: 'AK', idIstri: 'WA', status: 'utuh' }],
+}, ['AK']);
+
+const { AK: _tanpaAK, ...grafTanpaAK } = grafM10();
+export const M12: InputMunasakhat = munasakhat({
+  idPewaris: 'D',
+  orang: {
+    ...grafTanpaAK,
+    HB: p('HB', 'L'),
+    AB: p('AB', 'L', { idAyah: 'HB', idIbu: 'BU' }),
+  },
+  pernikahan: [{ idSuami: 'D', idIstri: 'W', status: 'utuh' }, { idSuami: 'HB', idIstri: 'BU', status: 'utuh' }],
+}, ['BU']);

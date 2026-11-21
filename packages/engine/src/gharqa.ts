@@ -6,32 +6,25 @@
 // 13.0b: bila ahli waris memuat haml/mafqud/khuntsa, tiap harta dihitung lewat hitungTaqdir (aqall + mauquf).
 // Keadaan 2 (yang terakhir diketahui pasti) bukan urusan file ini: itu munasakhat biasa (bab 12).
 
-import { gabungkan, periksaInvarian, sahamDari, totalSaham, type Saham } from './gabung.js';
+import { sahamDari, totalSaham, type Saham } from './gabung.js';
 import { hitungDzawilArham } from './dzawilArham.js';
 import { hitungMunasakhat } from './munasakhat.js';
 import { hitungTaqdir, type HitungDuniaPasti } from './taqdir.js';
 import { bagikanNominal } from './stages/pembagian.js';
 import { hitungTirkah } from './stages/tirkah.js';
-import type { GrafKeluarga, HartaGharqa, HasilEngine, HasilGharqa, IdOrang, InputEngine, InputGharqa, InputTirkah, LangkahJejak } from './types.js';
+import { MAKS_SKENARIO_URUTAN, TANPA_TIRKAH, grafSebagaiPewaris, jumlahUrutan, metodeGharqa, permutasi, tiladSatuMayit, type Gagal } from './langkahGharqa.js';
+import type { HartaGharqa, HasilGharqa, IdOrang, InputEngine, InputGharqa, InputTirkah, LangkahJejak } from './types.js';
 
-type Gagal = Extract<HasilGharqa, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }>;
-type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
-
-// Urutan wafat anggota = n!; lebih dari ini → PERLU_INPUT (batas kombinatorik, CLAUDE.md).
-const MAKS_ANGGOTA_SKENARIO = 4;
-const TANPA_TIRKAH: InputTirkah = { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n };
 
 export function hitungGharqa(input: InputGharqa): HasilGharqa {
   const tidakSah = periksaAnggota(input);
   if (tidakSah) return tidakSah;
   const { ruleset } = input.dasar;
 
-  if (input.keadaan === 'serentak') return terpisah(input, 'R13-10');
-  // [K13d-1] [HNB] masyhur: saling mewarisi dari tilad.
-  if (ruleset === 'hanbali') return tilad(input);
-  // [R13-10] [SYF] keadaan 3: ditahan sampai ingat atau ishtilah.
-  if (ruleset === 'syafii' && input.keadaan === 'terlupakan') return skenarioUrutan(input);
-  return terpisah(input, ruleset === 'syafii' ? 'R13-10' : 'K13d-1');
+  const metode = metodeGharqa(ruleset, input.keadaan);
+  if (metode.metode === 'tilad') return tilad(input);
+  if (metode.metode === 'skenario') return skenarioUrutan(input);
+  return terpisah(input, metode.rujukan);
 }
 
 function periksaAnggota(input: InputGharqa): Gagal | undefined {
@@ -96,39 +89,13 @@ function tilad(input: InputGharqa): HasilGharqa {
   return { status: 'OK', metode: 'tilad', harta };
 }
 
-/** Mas'alah tilad satu mayit (rekan dihidupkan) lalu tharif tiap rekan yang mendapat bagian, digabung seperti munasakhat. */
-function tiladSatuMayit(inputMayit: InputEngine, mayit: IdOrang, rekan: IdOrang[]):
-  { saham: Saham; jejak: LangkahJejak[]; daftarHasil: HasilOk[]; urutanTharif: IdOrang[] } | Gagal {
-  const hasilTilad = hitungDzawilArham({ ...inputMayit, graf: hidupkan(inputMayit.graf, rekan) });
-  if (hasilTilad.status !== 'OK') return { ...hasilTilad, mayit };
-
-  let saham = sahamDari(mayit, hasilTilad);
-  let jamiah = totalSaham(saham);
-  const jejak: LangkahJejak[] = [...hasilTilad.jejak];
-  const daftarHasil: HasilOk[] = [hasilTilad];
-  const urutanTharif = rekan.filter(id => saham[id]);
-  for (const idRekan of urutanTharif) {
-    const hasilTharif = hitungDzawilArham({ ...inputMayit, graf: grafSebagaiPewaris(inputMayit.graf, idRekan), tirkah: TANPA_TIRKAH });
-    if (hasilTharif.status !== 'OK') return { ...hasilTharif, mayit: idRekan };
-    const sahamTharif = sahamDari(idRekan, hasilTharif);
-    daftarHasil.push(hasilTharif);
-    const gabungan = gabungkan(saham, jamiah, idRekan, sahamTharif, totalSaham(sahamTharif));
-    jejak.push({ tahap: 'munasakhat', refs: ['R13-19'], jenis: 'MUNASAKHAT', mayit: idRekan, saham: gabungan.sahamMayit, masalah: gabungan.masalah,
-      hubungan: gabungan.hubungan, fpb: gabungan.fpb, wafqMasalah: gabungan.wafqMasalah, wafqSaham: gabungan.wafqSaham, jamiah: gabungan.jamiah, rincian: gabungan.rincian });
-    saham = gabungan.saham;
-    jamiah = gabungan.jamiah;
-    periksaInvarian(saham, jamiah, 'gharqa tilad');
-  }
-  return { saham, jejak, daftarHasil, urutanTharif };
-}
-
 // ─── [SYF] keadaan 3: skenario urutan ─────────────────────────────────────────
 
 /** Tiap urutan yang mungkin: harta anggota ke-i dibagi dengan munasakhat, anggota sesudahnya mewarisi lalu wafat. */
 function skenarioUrutan(input: InputGharqa): HasilGharqa {
-  if (input.anggota.length > MAKS_ANGGOTA_SKENARIO) {
+  if (jumlahUrutan(input.anggota.length) > MAKS_SKENARIO_URUTAN) {
     return { status: 'PERLU_INPUT', pertanyaan: input.anggota.map(id => ({ idOrang: id, isian: 'statusHidup' as const,
-      alasan: `Lebih dari ${MAKS_ANGGOTA_SKENARIO} anggota dengan urutan terlupakan; pastikan sebagian urutan dulu.` })) };
+      alasan: `Lebih dari ${MAKS_SKENARIO_URUTAN} kemungkinan urutan wafat dengan urutan terlupakan; pastikan sebagian urutan dulu.` })) };
   }
   const skenario: Array<{ urutan: IdOrang[]; harta: HartaGharqa[] }> = [];
   for (const urutan of permutasi(input.anggota)) {
@@ -183,15 +150,3 @@ const inputSebagaiPewaris = (input: InputGharqa, mayit: IdOrang): InputEngine =>
   ({ ...input.dasar, graf: grafSebagaiPewaris(input.dasar.graf, mayit), tirkah: tirkahDari(input, mayit) });
 
 const tirkahDari = (input: InputGharqa, mayit: IdOrang): InputTirkah => input.tirkah?.[mayit] ?? TANPA_TIRKAH;
-const grafSebagaiPewaris = (graf: GrafKeluarga, idPewaris: IdOrang): GrafKeluarga => ({ ...graf, idPewaris });
-
-function hidupkan(graf: GrafKeluarga, daftarId: IdOrang[]): GrafKeluarga {
-  const orang = { ...graf.orang };
-  for (const id of daftarId) orang[id] = { ...orang[id]!, statusHidup: 'hidup' };
-  return { ...graf, orang };
-}
-
-function permutasi(daftar: IdOrang[]): IdOrang[][] {
-  if (daftar.length <= 1) return [daftar];
-  return daftar.flatMap((id, indeks) => permutasi([...daftar.slice(0, indeks), ...daftar.slice(indeks + 1)]).map(sisa => [id, ...sisa]));
-}

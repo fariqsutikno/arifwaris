@@ -141,6 +141,9 @@ Mayit 1: istri, anak lk, anak pr → ashl 8 → tashih 24: istri 3, anak lk 14, 
 - Field `keadaan` (1 / 2 / 3) disimpan untuk telusur-balik ke KB dan penjelasan ke pengguna, tapi tidak menentukan jalur kode. Ditentukan atas seluruh rantai: **1** bila hasil akhir sama dengan membagi harta mayit pertama langsung kepada yang masih hidup (seperti M3 yang beberapa kematiannya beruntun); **2** bila ada >1 mayit kedua dan ahli waris masing-masing tidak mewarisi dari mayit pertama maupun mayit lain; selain itu **3**.
 - Ahli waris yang wafat sebelum mayit pertama bukan ahli waris sama sekali (bukan munasakhat).
 - Jika urutan wafat tidak diketahui → bab 13 (gharqa).
+- Satu langkah rantai boleh berupa kelompok gharqa; hukum antar anggota mengikuti 13d (R13-10/K13d-1/R13-19) [R12-5][R12-6].
+- Mas'alah tiap mayit dihitung termasuk fase dzawil arham (bab 14).
+- [SYF] kelompok "terlupakan" di dalam rantai → seluruh hasil ditahan dengan skenario tiap urutan, total ≤ 24.
 
 ---
 
@@ -153,3 +156,5 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R12-2 | Kaidah 3 keadaan, 3 jenis ikhtishar, teknik jami'ah | KH + Lahim | Lahim hal. 72 (kaidah pembeda), hal. 91 Amr 1–3 (ikhtishar), RDH Bab 9 | Lahim: kaidah pembeda pakai istilah *baqiyyah* vs *ba'dh*. Tabel jami'ah: 3 cabang (inqisam/tawafuq/tabayun), tidak ada tadakhul. |
 | R12-3 | Jalur hitung dasar = Keadaan 3; Keadaan 1 & 2 ikhtishar opsional | Lahim | Lahim Amr Keempat "Shifatul 'Amal al-'Ammah" | «طريقة العمل العامة لجميع الحالات هي طريقة العمل في الحالة الثالثة... وإلا فلو قسمت المسألة في الحالتين بطريقة الحالة الثالثة، ثم اختصر بعد العمل لكانت النتيجة واحدة» |
 | R12-4 | Contoh 12.6 | KH + Lahim | Contoh terverifikasi dari Lahim | Contoh 1: tamatsul (inqisam). Contoh 2: tabayun. |
+| R12-5 | Munasakhat = mayit wafat lalu ahli warisnya atau sebagian wafat sebelum dibagi; tidak disyaratkan wafat satu per satu | LHM | Lahim · shamela:31238/132 (hlm. 139) | «أن يموت شخص فلا تقسم تركته حتى يموت ورثته أو بعضهم». Sekunder. |
+| R12-6 | Bila korban gharqa tidak saling mewarisi, harta tiap korban untuk ahli warisnya yang hidup saat ia wafat, tanpa rekan musibah; mas'alah gharqa tanpa saling mewarisi dikerjakan seperti mas'alah lain; dengan saling mewarisi ([HNB]) tharif digabung "seperti munasakhat" | LHM + pembanding | Lahim · shamela:31238/157 (hlm. 164); Ibnu 'Utsaimin, *Tashil al-Fara'idh* · shamela:11095/128 (hlm. 133) — pembanding, Hanbali | Lahim: «يكون ميراث كل واحد منهم لورثته الأحياء حين الحكم بموته دون الذين ماتوا معه». Pembanding Tashil: «عمل مسائل الغرقى إذا لم يحكم بالتوارث بينهم لا يختلف عن عمل مسائل غيرها». Sekunder. |
