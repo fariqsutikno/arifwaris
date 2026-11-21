@@ -67,7 +67,7 @@ Penomoran mengikuti edisi standar yang lazim dipakai (Shahih al-Bukhari dan Shah
 | «وأفرضهم زيد بن ثابت» | At-Tirmidzi 3790; Ibnu Majah 154 · hadits:tirmidhi:3790 hadits:ibnmajah:154 | Hasan gharib (at-Tirmidzi); shahih (Darussalam, sunnah.com) |
 
 ## 17.4 Titik yang Masih Ditandai `[perlu verifikasi lanjut]`
-Selain tabel: K05-2 [MLK] (furudh dalam wala') belum terverifikasi; 'Iqd 3/1197 hanya memuat urutan wala'. Engine mode [MLK] = `TIDAK_DIDUKUNG` untuk titik ini. Sisa lain (K13-1 [HNF] harta murtaddah, satu orang dua jalur [HNF]) tercatat di bab 18 dan `docs/rencana-verifikasi.md`.
+Selain tabel: K05-2 [MLK] terverifikasi 2026-11-22 (Mudawwanah 2/588, 17.5 butir 12). Sisa lain (K13-1 [HNF] harta murtaddah) tercatat di bab 18 dan `docs/rencana-verifikasi.md`.
 
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
@@ -87,3 +87,5 @@ Dicatat agar jejak audit transparan:
 9. **Ijazah wasiat (konten, Prompt 6)**: menurut [SYF] (Bahr al-Madzhab, R01-7) persetujuan baru sah setelah wafat; mekanismenya tetap tidak dihitung engine.
 10. **Tutup ⚑ (2026-09-29)**: R01-7, R02-11, R11-3 keluar dari 17.4 (terverifikasi, Prompt 1–4); K05-2 [MLK] dinyatakan belum terverifikasi (bukan «tidak ada fardh»); rujukan Takmilah di K13a-3 [HNF] dihapus. Daftar lengkap: `docs/rencana-verifikasi.md`, «Keputusan tertunda».
 11. **K04-3 dipertajam (dikonfirmasi pengguna 2026-11-22)**: khilaf nenek dua qarabah dibatasi pada kasus berkumpul dengan nenek lain; sendirian = 1/6 di semua madzhab (R04-8). [HNF] berubah dari «seperti [HNB]» (nukilan Mughni) menjadi per badan menurut Abu Yusuf yang difatwakan (Kanz, Tabyin, al-'Alamkiriyyah, Ibnu 'Abidin), dengan opsi per jihat (Muhammad). [MLK] tetap «?». Laporan: `docs/rencana-verifikasi.md` butir 11.
+12. **K05-2 [MLK] terverifikasi (2026-11-22)**: tidak ada fardh dalam wala'; ayah mu'tiq tidak mendapat apa pun bersama anak lk mu'tiq (Mudawwanah 2/588, jawaban Malik; 'Iqd 3/1197 ternyata menyatakannya eksplisit: «فلا شئ للأب»). Sama dengan [HNF]. Engine tidak terdampak: 'ashabah mu'tiq belum dimodelkan (hanya `MUTIQ`/`MUTIQAH`).
+13. **Dzawil arham dua jalur [HNF] (2026-11-22)**: «belum ada nash» dicabut; menurut Muhammad (yang ditarjih) satu orang dua jalur mewarisi dengan tiap jalur, dihitung pada ushul (Mabsuth 30/15, al-Ikhtiyar 5/108, Tabyin 6/243). Sejalan dengan K14-3 yang sudah memakai qaul Muhammad; bukan perubahan hukum.

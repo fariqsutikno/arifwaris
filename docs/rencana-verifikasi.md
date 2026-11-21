@@ -42,9 +42,9 @@ Semua ⚑ dari commit Prompt 1–6 dan `docs/audit-verifikasi.md`, per 2026-09-2
 | # | Titik | Asal | Temuan | Status | Tercatat di |
 |---|---|---|---|---|---|
 | 1 | R13-14 laqith: «merdeka», «penemu tidak mewarisi» | `11c87b0` | Raudhah 5/435 dan 5/437 hanya menutup harta ke baitul mal, hukum Islam, istilhaq; dua butir ini belum eksplisit | **Terbuka** | 17.4 |
-| 2 | K05-2 [MLK] furudh dalam wala' | audit ⚑2 | 'Iqd 3/1197 hanya memuat urutan wala', tidak menafikan fardh; sel diubah menjadi «belum terverifikasi», engine mode [MLK] = `TIDAK_DIDUKUNG` | **Terbuka** | 17.4 (catatan), 18.2 |
+| 2 | K05-2 [MLK] furudh dalam wala' | audit ⚑2 | 'Iqd 3/1197 hanya memuat urutan wala', tidak menafikan fardh; sel diubah menjadi «belum terverifikasi». **2026-11-22**: Mudawwanah 2/588 (jawaban Malik) dan 'Iqd 3/1197 «فلا شئ للأب» menafikan fardh ayah | Selesai | 18.2, 17.5 butir 12 |
 | 3 | K13-1 [HNF] harta murtaddah | `03d13b7` | Mabsuth 10/101–107 memuat pembedaan kasb Islam/riddah; klaim harta murtaddah untuk ahli waris muslim belum diperiksa | **Terbuka** | 18.2 (sel) |
-| 4 | Satu dzawil arham dua jalur [HNF] | tahap 7 | Belum ada nash | **Terbuka** | 18.3 |
+| 4 | Satu dzawil arham dua jalur [HNF] | tahap 7 | Belum ada nash. **2026-11-22**: ada (Mabsuth 30/15, al-Ikhtiyar 5/108, Tabyin 6/243): tiap jalur dihitung pada ushul menurut Muhammad | Selesai | 18.2 K14-2, bab 14, 17.5 butir 13 |
 | 5 | K13-2 [HNF], K09-1 dan K14-1 [MLK] | `03d13b7`, `5ca162f`, audit ⚑1 | Isi sel diubah mengikuti kitab (kerabat ibu saja; baitul mal bersyarat imam adil) | Selesai (dikonfirmasi pengguna) | 17.5 butir 8 |
 | 6 | K13b-1 [HNB] dan [MLK] masa tunggu mafqud | `ac970f9`, `5ca162f`, audit ⚑1 | Dua riwayat untuk yang selamat; [MLK] 70/80/90 th | Selesai (dikonfirmasi) | 17.5 butir 8 |
 | 7 | K14-3 [HNB] khal 2/3, khalah 1/3 | `ac970f9`, `5ca162f`, audit ⚑1 | Pengecualian sesuai Mughni 6/324 | Selesai (dikonfirmasi) | 17.5 butir 8 |

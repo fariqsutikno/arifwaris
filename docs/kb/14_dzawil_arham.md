@@ -130,7 +130,7 @@ Sumber: *al-Mabsuth* as-Sarakhsi 30/6–7 (primer Hanafi). Mengganti ringkasan 4
 - Sifat ushul berbeda di suatu tingkat → bagi dulu di **tingkat pertama yang berbeda** (lk 2:1), kumpulkan bagian kelompok lk dan kelompok pr, turunkan ke keturunannya, ulangi sampai ke badan.
 - Kerabat pihak ayah bersama kerabat pihak ibu dalam satu shinf → **2/3 pihak ayah, 1/3 pihak ibu** (dasar: ijma' sahabat 'ammah 2/3, khalah 1/3).
 
-**Belum ada nash**: satu orang lewat dua jalur → mode [HNF] = `TIDAK_DIDUKUNG` untuk kasus itu.
+**Satu orang lewat dua jalur** (diteliti 2026-11-22): mewarisi dengan tiap jalur, dihitung pada ushul (Muhammad): «فَلَا شَكَّ عَلَى قَوْلِ مُحَمَّدٍ أَنَّهَا تَرِثُهُ بِالْقَرَابَتَيْنِ جَمِيعًا» (Mabsuth 30/15 · shamela:5423/5983); «وَمَنْ لَهُ قَرَابَةٌ مِنْ جِهَتَيْنِ مِنْ ذَوِي الْأَرْحَامِ فَلَهُ سَهْمَانِ ... عِنْدَ مُحَمَّدٍ اعْتِبَارًا بِالْأُصُولِ» (al-Ikhtiyar 5/108 · shamela:1066/810); tarjih «وَقَوْلُ مُحَمَّدٍ أَصَحُّ فِي ذَوِي الْأَرْحَامِ جَمِيعًا» (Tabyin 6/243 · shamela:23023/1831). Abu Yusuf: dua penukilan (Irak: satu jalur; Ma wara' an-Nahr: dua jalur pada furu', «وَهَذَا هُوَ الصَّحِيحُ»). Contoh hitung eksplisit hanya di shinf pertama. Contoh (Mabsuth 30/15): yang dua jalur bersama yang satu jalur → Muhammad 3/4 dan 1/4, karena qismah di ushul menghitung tiap jalurnya. Engine: metode qarabah [HNF] seluruhnya belum diimplementasikan (`TIDAK_DIDUKUNG`, K14-2).
 
 Contoh (Mabsuth): anak pr dari anak pr anak lk vs anak pr dari anak pr anak pr → derajat sama, yang pertama anak ashabul furudh → **semua untuknya**. Anak pr dari anak pr dari anak pr vs anak pr dari anak pr dari anak lk dari anak lk → yang pertama lebih dekat satu derajat → **semua untuknya**.
 
