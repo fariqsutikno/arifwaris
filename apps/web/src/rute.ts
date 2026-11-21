@@ -16,6 +16,7 @@ export type Rute =
   | { halaman: 'tanya-jawab'; slug?: string }
   | { halaman: 'riwayat' }
   | { halaman: 'peringkat' }
+  | { halaman: 'privasi' }
   | { halaman: 'dibagikan'; slug: string }
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
@@ -40,7 +41,7 @@ export function bacaRute(hash: string): Rute {
     return parameter === 'kuis' ? (paket ? { halaman, tab: 'kuis', paket } : { halaman, tab: 'kuis' }) : { halaman, tab: 'hitung' };
   }
   if (halaman === 'k' && parameter) return { halaman: 'dibagikan', slug: parameter };
-  if (halaman === 'riwayat' || halaman === 'peringkat') return { halaman };
+  if (halaman === 'riwayat' || halaman === 'peringkat' || halaman === 'privasi') return { halaman };
   if (halaman === 'faq') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'tanya-jawab') return parameter ? { halaman, slug: parameter } : { halaman };
   if (halaman === 'glosarium') return parameter ? { halaman, id: parameter } : { halaman };
@@ -62,6 +63,7 @@ export const tautanBagikan = (slug: string) => `#/k/${encodeURIComponent(slug)}`
 export const alamatBagikan = (slug: string) => `${window.location.origin}${window.location.pathname}${tautanBagikan(slug)}`;
 export const tautanRiwayat = () => '#/riwayat';
 export const tautanPeringkat = () => '#/peringkat';
+export const tautanPrivasi = () => '#/privasi';
 export const tautanFaq = (id?: string) => `#/faq${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanTanyaJawab = (slug?: string) => `#/tanya-jawab${slug ? `/${encodeURIComponent(slug)}` : ''}`;
 export const tautanGlosarium = (id?: string) => `#/glosarium${id ? `/${encodeURIComponent(id)}` : ''}`;

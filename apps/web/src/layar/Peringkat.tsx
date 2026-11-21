@@ -1,10 +1,11 @@
-// Papan peringkat (spec tahap 5 "Web"): tab Mingguan / Sepanjang waktu. Semua orang bisa melihat; semua yang login dan
-// ber-XP tampil kecuali yang menyembunyikan diri (opt-out, keputusan 2026-09-28). Belum login → ajakan masuk (teks);
+// Papan peringkat (spec tahap 5 "Web"): tab Mingguan / Sepanjang waktu. Semua orang bisa melihat; hanya yang login, ber-XP,
+// dan memilih ikut tampil (opt-in, UU PDP; pilihan terekam lewat persetujuan). Belum login → ajakan masuk (teks);
 // login → tautan ubah profil. Baris sendiri disorot dan tetap tampil meski di luar batas.
 
 import { useEffect, useState } from 'react';
 import type { BarisPeringkat, PeriodePeringkat, Profil, Sesi } from '@waris/data';
 import { ModalProfil } from '../akun/ModalProfil';
+import { VERSI_KEBIJAKAN_PRIVASI } from '../akun/persetujuan';
 import type { RepoAkun } from '../akun/sinkron';
 import { t } from '../terjemah';
 import { IkonApi, tanpaEmojiApi } from '../ui/Ikon';
@@ -32,6 +33,14 @@ export function Peringkat({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun | 
     if (sesi && repo) repo.pengguna.bacaProfil().then(setProfil).catch(() => setProfil(null));
   }, [repo, sesi?.userId]);
 
+  const aturIkut = async (ikut: boolean) => {
+    if (!repo) return;
+    try {
+      await repo.pengguna.aturPersetujuan('papan_peringkat', ikut, VERSI_KEBIJAKAN_PRIVASI);
+      setProfil(await repo.pengguna.bacaProfil());
+      setVersi(versi + 1);
+    } catch { /* tombol tetap; coba lagi */ }
+  };
   const tersimpan = (baru: Profil) => { setProfil(baru); setModalTerbuka(false); setVersi(versi + 1); };
 
   return (
@@ -52,7 +61,10 @@ export function Peringkat({ sesi, repo }: { sesi: Sesi | null; repo: RepoAkun | 
             </p>
           ) : (
             <p className="keterangan">
-              {profil && !profil.ikutPapanPeringkat && <>{t('akun.namamu_disembunyikan_dari_papan')} </>}
+              {!profil?.ikutPapanPeringkat && <>{t('akun.namamu_disembunyikan_dari_papan')} </>}
+              <button type="button" className="tautan-teks" onClick={() => void aturIkut(!profil?.ikutPapanPeringkat)}>
+                {profil?.ikutPapanPeringkat ? t('akun.sembunyikan_namaku_dari_papan') : t('akun.tampilkan_namaku_di_papan')}
+              </button>{' '}
               <button type="button" className="tautan-teks" onClick={() => setModalTerbuka(true)}>{t('akun.ubah_profil')}</button>
             </p>
           )}

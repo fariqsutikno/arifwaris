@@ -3,7 +3,7 @@
 // sama dengan primary key tabel di supabase/migrations/20260926000003_pengguna.sql.
 // Streak/XP/papan dihitung SQL (diuji pgTAP 06_peringkat); di memori hanya nilai yang diset tes lewat aturPeringkat.
 import type {
-  BacaBagikan, BarisPeringkat, KabarPush, Kegiatan, KirimanPercobaan, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
+  BacaBagikan, BarisPeringkat, KabarPush, Kegiatan, KirimanPercobaan, PersetujuanSaya, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
   RepositoriBagikan, RepositoriPengguna, RepositoriPeringkat, RingkasanPeringkat, RiwayatTersimpan,
 } from '../antarmuka.js';
 import { GALAT_TAUTAN_DIPAKAI } from '../antarmuka.js';
@@ -22,6 +22,7 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
   const latihan = new Map<string, ProgresLatihan>();
   const preferensi = new Map<string, Preferensi>();
   const kegiatan = new Map<string, Kegiatan>();
+  const persetujuan = new Map<string, PersetujuanSaya>();
   const percobaan = new Map<string, KirimanPercobaan & { diterimaPada: string }>();
   const profil = new Map<string, Profil>();
   const langgananPush = new Map<string, LanggananPush>();
@@ -61,6 +62,24 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
       return milikSaya(percobaan).map(baris => ({ id: baris.id, idSesiSoal: baris.idSesiSoal, soalId: baris.soalId, revisiSoal: baris.revisiSoal,
         jenisSoal: 'biasa', mode: baris.mode, aksi: baris.aksi, isian: baris.isian, jangkar: baris.jangkar, hasilKolom: null, benarSemua: null,
         dimulaiPadaKlien: baris.dimulaiPada, diterimaPada: baris.diterimaPada, versi: {} }));
+    },
+    async aturPersetujuan(jenis, setuju, versi) {
+      persetujuan.set(kunci(jenis), { jenis, setuju, versi });
+      if (jenis === 'papan_peringkat') {
+        const lama = profil.get(kunci());
+        if (lama || setuju) profil.set(kunci(), { namaTampilan: 'Pengguna', tampilkanAvatar: false, zonaWaktu: 'Asia/Jakarta', ...lama, ikutPapanPeringkat: setuju });
+      }
+    },
+    async bacaPersetujuan() { return milikSaya(persetujuan); },
+    async unduhDataSaya() {
+      return { riwayat_hitung: milikSaya(riwayat), progres_belajar: milikSaya(belajar), progres_latihan: milikSaya(latihan), log_kegiatan: milikSaya(kegiatan),
+        percobaan_soal: milikSaya(percobaan), persetujuan: milikSaya(persetujuan) };
+    },
+    async hapusAkun() {
+      for (const peta of [riwayat, belajar, latihan, preferensi, kegiatan, percobaan, persetujuan, profil, langgananPush] as Array<Map<string, unknown>>) {
+        const awalan = pemilik() + '\u0000';
+        for (const kunciBaris of [...peta.keys()]) if (kunciBaris.startsWith(awalan)) peta.delete(kunciBaris);
+      }
     },
     async bacaProfil() { return profil.get(kunci()) ?? null; },
     async simpanProfil(baris) { profil.set(kunci(), { ...baris, namaTampilan: baris.namaTampilan.trim() }); },

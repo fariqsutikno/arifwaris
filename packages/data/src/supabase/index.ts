@@ -5,7 +5,7 @@
 // galat ramah, dan saringValid saat baca.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
-import { BATAS_AJUAN_SAYA, GALAT_TAUTAN_DIPAKAI, GalatPercobaan } from '../antarmuka.js';
+import { BATAS_AJUAN_SAYA, GALAT_TAUTAN_DIPAKAI, GalatPercobaan, type PersetujuanSaya } from '../antarmuka.js';
 import type {
   HasilAi, HasilPercobaanServer, RepositoriAi,
   BacaBagikan, BarisPeringkat, PeranPengguna, RepositoriBagikan, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
@@ -207,6 +207,15 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     },
     // ponytail: satu halaman (1000 baris bawaan PostgREST); tambah paging bila seorang pelajar melewatinya.
     async bacaPercobaan() { return (await hasil(klien.from('percobaan_soal').select('*').order('diterima_pada')) as any[]).map(keBarisPercobaan); },
+    async aturPersetujuan(jenis, setuju, versi) { await hasil(klien.rpc('atur_persetujuan', { p_jenis: jenis, p_setuju: setuju, p_versi: versi })); },
+    async bacaPersetujuan() { return await hasil(klien.rpc('persetujuan_saya')) as PersetujuanSaya[]; },
+    async unduhDataSaya() { return await hasil(klien.rpc('unduh_data_saya')); },
+    async hapusAkun() {
+      const { error } = await klien.functions.invoke('hapus-akun');
+      if (!error) return;
+      const badan = await (error as { context?: Response }).context?.json?.().catch(() => null) as { galat?: string } | null | undefined;
+      throw new Error(badan?.galat ?? 'GAGAL_MENGHAPUS');
+    },
     async bacaProfil() {
       const baris = await hasil(klien.from('profil').select('*').eq('user_id', await userId()).maybeSingle()) as any;
       return baris && {

@@ -138,6 +138,12 @@ export interface BarisPercobaanServer {
   isian: unknown; jangkar: unknown; hasilKolom: unknown; benarSemua: boolean | null; dimulaiPadaKlien: string | null; diterimaPada: string; versi: unknown;
 }
 
+/** Persetujuan terekam (UU PDP): append-only di server; keadaan efektif = pilihan terakhir per jenis. */
+export type JenisPersetujuan = 'kebijakan_privasi' | 'papan_peringkat' | 'push' | 'ai_konteks' | 'usia_18' | 'kelas_berbagi_nilai';
+export interface PersetujuanSaya { jenis: JenisPersetujuan; versi: number; setuju: boolean }
+/** Kode galat dari hapus-akun: akun penulis/pemeriksa konten tidak bisa dihapus sendiri (jejak editorial). */
+export const GALAT_AKUN_PENULIS = 'AKUN_PENULIS';
+
 /** Profil untuk papan peringkat (spec tahap 5). Tanpa baris = tidak ikut papan, zona Asia/Jakarta. */
 export interface Profil {
   namaTampilan: string; ikutPapanPeringkat: boolean; tampilkanAvatar: boolean; zonaWaktu: string;
@@ -174,6 +180,13 @@ export interface RepositoriPengguna {
   /** Melempar GalatPercobaan. Idempoten per id. */
   kirimPercobaan(kiriman: KirimanPercobaan): Promise<HasilPercobaanServer>;
   bacaPercobaan(): Promise<BarisPercobaanServer[]>;
+  /** `versi` = versi kebijakan yang dibaca saat memilih. Menarik persetujuan (setuju = false) langsung berlaku di server. */
+  aturPersetujuan(jenis: JenisPersetujuan, setuju: boolean, versi: number): Promise<void>;
+  bacaPersetujuan(): Promise<PersetujuanSaya[]>;
+  /** Salinan semua data milik pengguna (JSON siap simpan ke berkas). */
+  unduhDataSaya(): Promise<unknown>;
+  /** Menghapus akun beserta semua datanya di server. Melempar Error(GALAT_AKUN_PENULIS) untuk akun penulis. */
+  hapusAkun(): Promise<void>;
   bacaProfil(): Promise<Profil | null>;
   /** Langsung ke server, tidak lewat antrean: profil hanya dipakai di halaman yang butuh jaringan. */
   simpanProfil(profil: Profil): Promise<void>;
