@@ -269,6 +269,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   };
   const catatLihatJawaban = () => {
     const isian = isianTerakhir.current;
+    // Gharqa: lihat jawaban tanpa isian; server tidak menilai apa pun, hanya membakar XP.
+    if (soalGharqa) return catat('lihatJawaban');
     catat('lihatJawaban', { isian, jangkar: jangkarSoal, hasilKolom: isian && tabelSoal ? nilaiSemuaKolom(tabelSoal, isian, jangkarSoal) : null });
   };
   // 'buka' dicatat sekali, sesudah hash kunci tabel siap supaya versi.kunci terisi.
@@ -284,7 +286,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const saatPercobaanTabel = (percobaan: PercobaanTabel) => {
     isianTerakhir.current = percobaan.isian;
     setSudahMencoba(true);
-    catat(percobaan.aksi, { isian: percobaan.isian, jangkar: percobaan.jangkar, hasilKolom: percobaan.hasilKolom, benarSemua: percobaan.benarSemua });
+    catat(percobaan.aksi, { ...(percobaan.gharqa ? { gharqa: percobaan.gharqa } : { isian: percobaan.isian, jangkar: percobaan.jangkar }), hasilKolom: percobaan.hasilKolom, benarSemua: percobaan.benarSemua });
     if (percobaan.benarSemua) jawabBenar();
   };
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;

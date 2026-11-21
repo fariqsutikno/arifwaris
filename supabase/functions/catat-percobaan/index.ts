@@ -22,6 +22,12 @@ async function ringkasKunci(tabel: unknown): Promise<string> {
   return [...new Uint8Array(hash)].map(bita => bita.toString(16).padStart(2, '0')).join('').slice(0, PANJANG_KUNCI_TABEL);
 }
 
+// Soal biasa: hash satu tabel. Gharqa: keputusan benar + hash tiap tabel harta, dipisah '|' (sama dengan yang disusun klien).
+async function kunciVersi(penilaian: { keputusanSoal: string | null; daftarTabel: unknown[] }): Promise<string> {
+  const hash = await Promise.all(penilaian.daftarTabel.map(ringkasKunci));
+  return [...(penilaian.keputusanSoal ? [penilaian.keputusanSoal] : []), ...hash].join('|');
+}
+
 Deno.serve(async req => {
   if (req.method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
   if (req.method !== 'POST') return galat(405, 'METODE_TIDAK_DIIZINKAN');
@@ -59,10 +65,10 @@ Deno.serve(async req => {
   const { data, error } = await servis.rpc('catat_percobaan', {
     p_user: user.id, p_id: kiriman.id, p_id_sesi_soal: kiriman.idSesiSoal, p_soal_id: kiriman.soalId, p_revisi_soal: kiriman.revisiSoal,
     p_jenis_soal: penilaian.jenisSoal.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`), p_mode: kiriman.mode,
-    p_aksi: kiriman.aksi.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`), p_isian: kiriman.isian, p_jangkar: kiriman.jangkar,
+    p_aksi: kiriman.aksi.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`), p_isian: kiriman.isian ?? kiriman.gharqa, p_jangkar: kiriman.jangkar,
     p_hasil_kolom: penilaian.hasilKolom, p_benar_semua: penilaian.hasilKolom ? penilaian.benarSemua : null,
     p_dimulai_pada: kiriman.dimulaiPada,
-    p_versi: { engine: VERSI_ENGINE, ruleset: penilaian.ruleset, madzhab: 'bawaan', kunci: await ringkasKunci(penilaian.tabel) },
+    p_versi: { engine: VERSI_ENGINE, ruleset: penilaian.ruleset, madzhab: 'bawaan', kunci: await kunciVersi(penilaian) },
   });
   if (error) {
     // PT400/PT409/PT429 dari catat_percobaan: pesan = kode galat, status = tiga angka terakhir SQLSTATE.

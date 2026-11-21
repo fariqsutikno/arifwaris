@@ -6,7 +6,7 @@
 import { useRef, useState } from 'react';
 import { Ikon } from '../ui/Ikon';
 import { t } from '../terjemah';
-import type { IsianTabel, Jangkar, KeputusanGharqa, PercobaanTabel, SoalGharqa } from '@waris/latihan';
+import type { IsianGharqa, IsianTabel, Jangkar, KeputusanGharqa, PercobaanTabel, SoalGharqa } from '@waris/latihan';
 import { TabelLatihan, Tebal } from './TabelLatihan';
 
 const PILIHAN_KEPUTUSAN: KeputusanGharqa[] = ['terakhirMewarisi', 'tidakSalingMewarisi', 'ditahan'];
@@ -31,6 +31,9 @@ const labelKeputusan = (keputusan: KeputusanGharqa) => ({
 export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan, saatLihatJawaban }: Props) {
   const [dipilih, setDipilih] = useState<KeputusanGharqa | null>(null);
   const hartaBenar = useRef(new Map<string, boolean>());
+  // Isian terakhir tiap harta: server menilai keputusan dan semua tabel dari satu kiriman.
+  const isianHarta = useRef(new Map<string, IsianGharqa['harta'][number]>());
+  const kirimanGharqa = (pilihan: KeputusanGharqa): IsianGharqa => ({ keputusan: pilihan, harta: [...isianHarta.current.values()] });
   const keputusan = terbuka ? soal.keputusan : dipilih;
   const keputusanBenar = keputusan === soal.keputusan;
 
@@ -38,13 +41,14 @@ export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan,
     setDipilih(pilihan);
     // Keputusan yang meneruskan ke tabel baru dilaporkan setelah tabel selesai; selebihnya (salah, atau ditahan) selesai di sini.
     if (pilihan !== soal.keputusan || soal.harta.length === 0) {
-      saatPercobaan({ mode: 'latihan', aksi: 'periksa', isian: KOSONG, jangkar: null, hasilKolom: [], benarSemua: pilihan === soal.keputusan });
+      saatPercobaan({ mode: 'latihan', aksi: 'periksa', isian: KOSONG, jangkar: null, gharqa: { keputusan: pilihan, harta: [] }, hasilKolom: [], benarSemua: pilihan === soal.keputusan });
     }
   };
-  const kosongkan = () => { setDipilih(null); hartaBenar.current.clear(); };
+  const kosongkan = () => { setDipilih(null); hartaBenar.current.clear(); isianHarta.current.clear(); };
   const saatPercobaanHarta = (mayit: string) => (percobaan: PercobaanTabel) => {
     hartaBenar.current.set(mayit, percobaan.benarSemua);
-    saatPercobaan({ ...percobaan, benarSemua: soal.harta.every(harta => hartaBenar.current.get(harta.mayit)) });
+    isianHarta.current.set(mayit, { mayit, isian: percobaan.isian, jangkar: percobaan.jangkar });
+    saatPercobaan({ ...percobaan, gharqa: kirimanGharqa(soal.keputusan), benarSemua: soal.harta.every(harta => hartaBenar.current.get(harta.mayit)) });
   };
 
   const umpan = !keputusan || terbuka ? null
