@@ -22,9 +22,9 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | E1–E5 (engine) | selesai, di `main` |
 | B1–B6, B9 (tabel soal biasa) + tinjauan visual | selesai, di `main` |
 | G0 keamanan produksi | digabung ke `main` (`24c27e4`); satu langkah dasbor menunggu pemilik, lihat bawah |
-| G1 fondasi penilaian | selesai, **PR #42 terbuka, belum digabung** |
+| G1 fondasi penilaian | selesai, di `main` (PR #42, lewat #43) |
 | Hasil + mode fokus (Langkah demi langkah, Teks \| Sinema) | selesai, di `main` (PR #35); kode fokus lama sudah dibuang |
-| G2 jenis soal latihan | **kode selesai**, PR #43 (memuat commit G1); sisa: perbandingan layar dengan mockup dan soal terbit tim keilmuan |
+| G2 jenis soal latihan | **kode selesai**, di `main` (PR #43); sisa: perbandingan layar dengan mockup dan soal terbit tim keilmuan |
 | G3 data server + PDP + soal buta | **berjalan** di sesi sendiri, tiga PR berurutan (server+XP / PDP / soal buta) |
 | Jalur 7: verifikasi madzhab [HNB]/[HNF]/[MLK] | **sebagian besar jalan**: matriks KB 18 punya 106 baris, hanya 4 baris masih bertanda (s) (K01-2, K02-4, K13a-4, R01-1) dan 1 sel "?" (K04-3); 4 butir masih Terbuka di `docs/rencana-verifikasi.md` (R13-14 laqith, K05-2 [MLK], K13-1 [HNF], dzawil arham dua jalur [HNF]) |
 | Jalur 7b: harta sudah dibagi sebagian | **belum mulai**: KB bab 11 baru memuat qismah dan takharuj (R11-2 shulh); belum ada bagian KB, kode engine, maupun UI. Hanya ada bayangan `mockup-sudah-dibagi.html`. Langkah pertama: riset dan verifikasi rujukan ke bab 11 |
@@ -69,7 +69,6 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 
 ## Yang menunggu keputusanmu
 
-0. **Gabung PR #42 dan #43** (#43 memuat commit #42: gabungkan #42 dulu atau tutup salah satunya).
 1. **Pertanyaan spec bagian 8**: semua sudah diputuskan 2026-11-20 sesuai rekomendasi, kecuali **30** (siapa penulis
    pengecoh soal penalaran dan daftar kesalahan umum), yang menahan G4.
 2. ~~Tab Khuntsa di mockup~~ selesai 2026-11-21 (KB 13c.4 X1); jenis soal khuntsa sudah ada.
@@ -81,7 +80,7 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 ## Hal kecil yang masih menggantung
 
 - Label item "Ekspor" di menu Bagikan layar penuh pohon.
-- Cabang `rencana/munasakhat-arham-gharqa` belum digabung; tabel munasakhat dibuat untuk munasakhat biasa dulu.
+- Cabang `rencana/munasakhat-arham-gharqa` sudah digabung (PR #46, 2026-11-21); tabel latihan munasakhat tetap hanya untuk munasakhat biasa (kelompok gharqa/dzawil arham di rantai → TIDAK_DIDUKUNG, perlu desain + mockup).
 - Indeks graphify diperbarui setelah `main` stabil dan di-push.
 - Dua riset (pasar, UX kelas) sudah ada; angka pasar masih asumsi.
 
