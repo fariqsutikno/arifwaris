@@ -12,6 +12,7 @@ import { Ikon } from '../../ui/Ikon';
 import { angka, t } from '../../terjemah';
 import { TEKS_TINGKAT } from '../AwalHitung';
 import { judulTopik, perBab, urutanSoalHitung } from './KuisKonsep';
+import { judulSoalTampil } from './judulSoal';
 import { TombolBukaKasus } from './TombolBukaKasus';
 
 const BATAS_AWAL = 8;
@@ -36,7 +37,9 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
     if (tingkat && soal.tingkat !== tingkat) return false;
     if (sembunyikanSelesai && selesai) return false;
     const kata = kueri.trim().toLowerCase();
-    return !kata || soal.judul.toLowerCase().includes(kata) || (selesai && soal.topik.toLowerCase().includes(kata));
+    // Soal buta: sebelum selesai hanya kode, bab, dan tingkat yang bisa dicari; judul dan topik membuka susunan keluarga.
+    return !kata || soal.kode.toLowerCase().includes(kata) || judulTopik(soal.bab).toLowerCase().includes(kata) || TEKS_TINGKAT()[soal.tingkat].toLowerCase().includes(kata)
+      || (selesai && (soal.judul.toLowerCase().includes(kata) || soal.topik.toLowerCase().includes(kata)));
   };
   const babTampil = perBab(semua).map(([bab, daftar]) => ({ bab, daftar, cocok: daftar.filter(cocok) })).filter(isi => !menyaring || isi.cocok.length > 0);
   const jumlahCocok = babTampil.reduce((jumlah, isi) => jumlah + isi.cocok.length, 0);
@@ -47,8 +50,8 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
     <>
       <div className="alat-soal">
         <label className="kolom-cari">
-          <span className="sembunyi-visual">{t('latihan.cari_judul_soal')}</span>
-          <input type="search" value={kueri} placeholder={t('latihan.cari_judul_soal')} onChange={kejadian => setKueri(kejadian.target.value)} />
+          <span className="sembunyi-visual">{t('latihan.cari_kode_bab_tingkat')}</span>
+          <input type="search" value={kueri} placeholder={t('latihan.cari_kode_bab_tingkat')} onChange={kejadian => setKueri(kejadian.target.value)} />
         </label>
         <div className="pilih-tingkat" role="group" aria-label={t('latihan.tingkat')}>
           <button type="button" aria-pressed={tingkat === null} onClick={() => setTingkat(null)}>{t('latihan.semua')}</button>
@@ -112,7 +115,7 @@ function BarisSoal({ soal, selesai, disarankan, kasusSekarang, saatKerjakan }: B
         {selesai && <Ikon nama="benar" ukuran={16} />}
       </span>
       <div className="isi-soal">
-        <b>{soal.judul}</b>
+        <b>{judulSoalTampil(soal, selesai)}</b>
         <span className="keterangan">
           <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
           {selesai && <> · {soal.topik}</>}

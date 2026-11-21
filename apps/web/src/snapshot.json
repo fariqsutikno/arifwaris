@@ -28462,6 +28462,20 @@
    "id": "[DIISI PEMILIK]",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.soal_kode",
+   "halaman": "latihan",
+   "id": "Soal {kode}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.cari_kode_bab_tingkat",
+   "halaman": "latihan",
+   "id": "Cari kode, bab, atau tingkat",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

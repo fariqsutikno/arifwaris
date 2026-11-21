@@ -13,6 +13,7 @@ import { angka, t } from '../../terjemah';
 import { TEKS_TINGKAT } from '../AwalHitung';
 import { DropdownCentang } from './DropdownCentang';
 import { judulTopik, perBab } from './KuisKonsep';
+import { judulSoalTampil } from './judulSoal';
 import { kandidatAcak, pilihAcak, type SaringanAcak } from './soalAcak';
 import { TombolBukaKasus } from './TombolBukaKasus';
 
@@ -56,7 +57,7 @@ export function SoalAcak({ kasusSekarang, saatKerjakan }: Props) {
       {terpilih ? (
         <div className="pratinjau-acak" aria-live="polite">
           <div>
-            <b>{terpilih.judul}</b>
+            <b>{judulSoalTampil(terpilih, !!selesai[terpilih.kode])}</b>
             <span className="keterangan"><span className={`tingkat tingkat-${terpilih.tingkat}`}>{TEKS_TINGKAT()[terpilih.tingkat]}</span> · {judulTopik(terpilih.bab)}</span>
           </div>
           <div className="aksi-acak">
