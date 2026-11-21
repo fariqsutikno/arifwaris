@@ -59,7 +59,7 @@ function terpisah(input: InputGharqa, rujukan: string): HasilGharqa {
     }
     const hasil = hitungDzawilArham(inputMayit);
     if (hasil.status !== 'OK') return { ...hasil, mayit };
-    harta.push(susunHarta(input, mayit, sahamDari(mayit, hasil), [...istibham, ...hasil.jejak], [{ mayit, statusOrang: hasil.statusOrang }]));
+    harta.push({ ...susunHarta(input, mayit, sahamDari(mayit, hasil), [...istibham, ...hasil.jejak], [{ mayit, statusOrang: hasil.statusOrang }]), hasilBiasa: hasil });
   }
   return { status: 'OK', metode: 'terpisah', harta };
 }

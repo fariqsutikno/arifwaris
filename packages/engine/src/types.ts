@@ -399,6 +399,8 @@ export interface HartaGharqa {
   nominalMauquf: Uang;
   /** Tabel "jika terbukti X" bila harta ini memuat taqdir. */
   daftarDunia?: DuniaTaqdir[];
+  /** Hasil mas'alah biasa harta ini (tabel faraidhnya) bila tidak saling mewarisi dan tanpa taqdir [R13-10]; sumber tabel soal latihan. */
+  hasilBiasa?: Extract<HasilEngine, { status: 'OK' }>;
   /** [K13a-2] [MLK]: harta ini tidak dibagi sampai janin lahir; saham kosong, seluruh harta bersih ditahan. */
   mauqufSemua?: { alasan: string; refs: string[]; ruleset: Ruleset };
 }
