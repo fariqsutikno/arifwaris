@@ -1,11 +1,15 @@
-// Profil untuk papan peringkat (spec tahap 5 "Web"): nama tampilan, ikut papan (opt-out, keputusan 2026-09-28), avatar,
+// Profil untuk papan peringkat (spec tahap 5 "Web"): nama tampilan, ikut papan (opt-in, UU PDP), avatar, unduh data dan hapus akun,
 // zona waktu batas hari. Dibaca & disimpan langsung ke server (tidak lewat antrean). Belum pernah diatur → nama depan
-// dari Google, ikut papan, zona waktu perangkat bila termasuk pilihan, selain itu WIB.
+// dari Google, tidak ikut papan, zona waktu perangkat bila termasuk pilihan, selain itu WIB.
 
 import { useEffect, useState } from 'react';
-import type { Profil, Sesi } from '@waris/data';
+import { GALAT_AKUN_PENULIS, type Profil, type Sesi } from '@waris/data';
 import { pushDidukung } from '../notifikasi/perangkat';
+import { tautanPrivasi } from '../rute';
 import { t } from '../terjemah';
+import { DialogKonfirmasi } from '../ui/Dialog';
+import { VERSI_KEBIJAKAN_PRIVASI } from './persetujuan';
+import { keluarDanBersihkan } from './sinkron';
 import type { RepoAkun } from './sinkron';
 
 const PANJANG_NAMA_MAKS = 40;
@@ -22,9 +26,12 @@ export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
   const [profil, setProfil] = useState<Profil | null>(null);
   const [galat, setGalat] = useState<'muat' | 'simpan' | null>(null);
   const [sedangSimpan, setSedangSimpan] = useState(false);
+  const [ikutAwal, setIkutAwal] = useState(false);
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState(false);
+  const [galatAkun, setGalatAkun] = useState<'unduh' | 'hapus' | 'penulis' | null>(null);
   useEffect(() => {
     repo.pengguna.bacaProfil()
-      .then(tersimpan => setProfil(tersimpan ?? profilBawaan(sesi)))
+      .then(tersimpan => { setProfil(tersimpan ?? profilBawaan(sesi)); setIkutAwal(tersimpan?.ikutPapanPeringkat ?? false); })
       .catch(() => setGalat('muat'));
   }, []);
 
@@ -33,11 +40,34 @@ export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
     if (!profil || !nama) return;
     setSedangSimpan(true);
     try {
+      // Pilihan ikut papan dicatat sebagai persetujuan (terekam, bisa ditarik); profil menyusul agar nama dan avatar tersimpan.
+      if (profil.ikutPapanPeringkat !== ikutAwal) await repo.pengguna.aturPersetujuan('papan_peringkat', profil.ikutPapanPeringkat, VERSI_KEBIJAKAN_PRIVASI);
       await repo.pengguna.simpanProfil({ ...profil, namaTampilan: nama });
       saatTersimpan({ ...profil, namaTampilan: nama });
     } catch {
       setGalat('simpan');
       setSedangSimpan(false);
+    }
+  };
+  const unduhData = async () => {
+    setGalatAkun(null);
+    try {
+      const data = await repo.pengguna.unduhDataSaya();
+      const tautan = document.createElement('a');
+      tautan.href = URL.createObjectURL(new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }));
+      tautan.download = 'data-arif-waris.json';
+      tautan.click();
+      URL.revokeObjectURL(tautan.href);
+    } catch { setGalatAkun('unduh'); }
+  };
+  const hapusAkun = async () => {
+    setKonfirmasiHapus(false);
+    try {
+      await repo.pengguna.hapusAkun();
+      await keluarDanBersihkan(repo);
+      window.location.reload();
+    } catch (galatHapus) {
+      setGalatAkun(galatHapus instanceof Error && galatHapus.message === GALAT_AKUN_PENULIS ? 'penulis' : 'hapus');
     }
   };
   const ubah = (sebagian: Partial<Profil>) => setProfil(lama => lama && { ...lama, ...sebagian });
@@ -82,6 +112,14 @@ export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
                 <small className="caption-isian">{t('akun.hari_berganti_pukul_00_00_di_zona_ini')}</small>
               </label>
               {galat === 'simpan' && <p role="alert" className="peringatan-isian">{t('akun.profil_gagal_disimpan')}</p>}
+              <p className="keterangan">
+                <button type="button" className="tautan-teks" onClick={() => void unduhData()}>{t('akun.unduh_dataku')}</button>{' '}
+                <a className="tautan-teks" href={tautanPrivasi()} target="_blank" rel="noreferrer">{t('akun.kebijakan_privasi')}</a>{' '}
+                <button type="button" className="tautan-teks tautan-bahaya" onClick={() => setKonfirmasiHapus(true)}>{t('akun.hapus_akun')}</button>
+              </p>
+              {galatAkun === 'unduh' && <p role="alert" className="peringatan-isian">{t('akun.unduh_data_gagal')}</p>}
+              {galatAkun === 'hapus' && <p role="alert" className="peringatan-isian">{t('akun.hapus_akun_gagal')}</p>}
+              {galatAkun === 'penulis' && <p role="alert" className="peringatan-isian">{t('akun.hapus_akun_penulis')}</p>}
             </>
           )}
         </div>
@@ -92,6 +130,12 @@ export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
             onClick={() => void simpan()}>{t('umum.simpan')}</button>
         </footer>
       </div>
+      {konfirmasiHapus && (
+        <DialogKonfirmasi judul={t('akun.hapus_akun')} labelLanjut={t('akun.hapus_akun')} bahaya kataKunci={t('akun.hapus_akun_ketik')}
+          saatBatal={() => setKonfirmasiHapus(false)} saatLanjut={() => void hapusAkun()}>
+          <p>{t('akun.hapus_akun_isi')}</p>
+        </DialogKonfirmasi>
+      )}
     </div>
   );
 }
@@ -101,7 +145,7 @@ function profilBawaan(sesi: Sesi): Profil {
   const namaDepan = (sesi.nama ?? '').trim().split(/\s+/)[0] || t('akun.pengguna');
   const zonaPerangkat = Intl.DateTimeFormat().resolvedOptions().timeZone;
   return {
-    namaTampilan: namaDepan.slice(0, PANJANG_NAMA_MAKS), ikutPapanPeringkat: true, tampilkanAvatar: false,
+    namaTampilan: namaDepan.slice(0, PANJANG_NAMA_MAKS), ikutPapanPeringkat: false, tampilkanAvatar: false,
     zonaWaktu: ZONA_INDONESIA.includes(zonaPerangkat) ? zonaPerangkat : 'Asia/Jakarta',
   };
 }

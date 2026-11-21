@@ -160,9 +160,9 @@ pihak yang mengumpulkan persetujuan wali.
 ## 3. Kriteria selesai
 
 - [ ] G0: bagian 1 terpenuhi, diverifikasi di produksi dengan alat hanya-baca.
-- [ ] Papan peringkat: pengguna baru tidak tampil; nama baru tampil setelah memilih ikut.
-- [ ] Kebijakan privasi memuat semua butir Pasal 21 ayat (1) dan daftar prosesor termasuk penyedia LLM.
-- [ ] Persetujuan append-only; menarik persetujuan langsung berlaku (papan, push, `ai_konteks`).
-- [ ] Unduh data berisi semua tabel data pengguna; hapus akun menghapus semua baris (uji pgTAP per tabel).
+- [x] Papan peringkat: pengguna baru tidak tampil; nama baru tampil setelah memilih ikut (G3, pgTAP 07 dan 24).
+- [~] Kebijakan privasi: halaman `#/privasi` memuat semua butir; **teks masih draf**, bagian bertanda [DIISI PEMILIK] (kontak pengendali, retensi, lokasi/dasar transfer, daftar prosesor termasuk penyedia LLM) menunggu pemilik. Versi = `VERSI_KEBIJAKAN_PRIVASI` di kode, bukan versiTerbit konten.
+- [x] Persetujuan append-only; menarik persetujuan langsung berlaku (papan, push; `ai_konteks` dibaca AMIN lewat `persetujuan_saya()` nanti). pgTAP 24.
+- [x] Unduh data (`unduh_data_saya`) dan hapus akun (`hapus-akun`); uji pgTAP 24 menjaga semua FK ke `auth.users` cascade, kecuali jejak editorial (akun penulis ditahan, 409 `AKUN_PENULIS`). Uji integrasi: `scripts/uji-integrasi-catat-percobaan.mjs`.
 - [ ] Jadwal retensi terpasang; retensi log AMIN ditetapkan sebelum AMIN dimulai.
 - [ ] Runbook insiden ada; DPIA dan keputusan usia ada sebelum G7.

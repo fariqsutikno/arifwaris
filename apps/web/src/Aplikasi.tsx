@@ -4,7 +4,7 @@ import { useEffect, useReducer, useState } from 'react';
 import type { SoalHitung } from '@waris/content';
 import type { Sesi } from '@waris/data';
 import { muatRepoAkun, type RepoAkun } from './akun/klien';
-import { mulaiSinkron } from './akun/sinkron';
+import { keluarDanBersihkan, mulaiSinkron } from './akun/sinkron';
 import { StreakKepala } from './akun/StreakKepala';
 import { TombolAkun } from './akun/TombolAkun';
 import { LonceNotifikasi } from './notifikasi/LonceNotifikasi';
@@ -35,6 +35,9 @@ import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
 import { Peringkat } from './layar/Peringkat';
+import { Privasi } from './layar/Privasi';
+import { DialogPersetujuan } from './akun/DialogPersetujuan';
+import { perluSetujuKebijakan } from './akun/persetujuan';
 import { KasusDibagikan } from './layar/KasusDibagikan';
 import { sudahDibagikan } from './bagikanLokal';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
@@ -64,6 +67,7 @@ export function Aplikasi() {
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
   const [akunSiap, setAkunSiap] = useState(false);
+  const [perluSetuju, setPerluSetuju] = useState(false);
   // ponytail: layar yang menyimpan data di useState awal (mis. DaftarRiwayat) baru segar setelah pindah halaman.
   const [, segarkanData] = useReducer((n: number) => n + 1, 0);
   useEffect(() => {
@@ -75,6 +79,11 @@ export function Aplikasi() {
       if (location.search.includes('code=')) history.replaceState(null, '', location.pathname + location.hash);
     });
   }, []);
+  // Persetujuan kebijakan privasi: ditanyakan sekali per versi; galat baca tidak memblokir pemakaian.
+  useEffect(() => {
+    if (!sesi || !repoAkun) return;
+    repoAkun.pengguna.bacaPersetujuan().then(daftar => setPerluSetuju(perluSetujuKebijakan(daftar))).catch(() => undefined);
+  }, [sesi?.userId, repoAkun]);
   const kirim = (aksi: Aksi) => {
     if (aksi.jenis === 'ULANGI') simpanLokal(null);
     if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') {
@@ -196,15 +205,20 @@ export function Aplikasi() {
     <>
       <Kepala halaman={rute.halaman}
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
+      {perluSetuju && repoAkun && rute.halaman !== 'privasi' && (
+        <DialogPersetujuan repo={repoAkun} saatSetuju={() => setPerluSetuju(false)}
+          saatKeluar={() => void keluarDanBersihkan(repoAkun).finally(() => window.location.reload())} />
+      )}
       <PembaruanKonten />
       <SumberNotifikasi sesi={sesi} repo={repoAkun} />
-      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan', 'dibagikan'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
+      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan', 'dibagikan', 'privasi'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} sesi={sesi}
           saatMasuk={masukGoogle} />
         : rute.halaman === 'belajar' ? <Belajar />
         : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
         : rute.halaman === 'peringkat' ? <Peringkat sesi={sesi} repo={repoAkun} />
+        : rute.halaman === 'privasi' ? <Privasi />
         : rute.halaman === 'dibagikan' ? <KasusDibagikan slug={rute.slug} repo={repoAkun} menunggu={!akunSiap} saatMasuk={masukGoogle} saatSalin={mulaiDari} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
