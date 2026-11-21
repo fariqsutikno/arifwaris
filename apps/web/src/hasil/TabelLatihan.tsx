@@ -33,7 +33,9 @@ const BAGIAN_TERHALANG = 'Terhalang';
 const adalahAshabah = (bagian: string | undefined) => bagian === 'Ashabah' || bagian === '1/6 + Ashabah';
 
 const hurufAwalBesar = (teks: string) => teks.charAt(0).toUpperCase() + teks.slice(1);
-const namaKemungkinan = (kemungkinan: string | undefined): string => (kemungkinan === 'hidup' ? t('hitung.tabel.kemungkinan.hidup') : kemungkinan === 'mati' ? t('hitung.tabel.kemungkinan.mati') : kemungkinan ?? '');
+const namaKemungkinan = (kemungkinan: string | undefined): string => (
+  kemungkinan === 'hidup' ? t('hitung.tabel.kemungkinan.hidup') : kemungkinan === 'mati' ? t('hitung.tabel.kemungkinan.mati')
+  : kemungkinan === 'lk' ? t('hitung.tabel.kemungkinan.lk') : kemungkinan === 'pr' ? t('hitung.tabel.kemungkinan.pr') : kemungkinan ?? '');
 
 // Munasakhat: kolom mas'alah dinomori dari id ('m2' → 2); nama mayit dari pemanggil (`namaDari`).
 const judulKolomDari = (kolom: KolomSoal, namaDari: (id: string) => string): string => {
@@ -241,7 +243,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
         <h2 id="judul-cara-mengisi">{t('hitung.tabel.cara_mengisi')}</h2>
         <ol>
           {[...(tabel.kolom[0]?.idJudul === 'bagianKemungkinan'
-            ? [t('hitung.tabel.cara.mafqud_1'), t('hitung.tabel.cara.mafqud_2'), t('hitung.tabel.cara.mafqud_3'), t('hitung.tabel.cara.mafqud_4')]
+            ? [tabel.kolom[0]!.kemungkinan === 'lk' ? t('hitung.tabel.cara.khuntsa_1') : t('hitung.tabel.cara.mafqud_1'), t('hitung.tabel.cara.mafqud_2'), t('hitung.tabel.cara.mafqud_3'), t('hitung.tabel.cara.mafqud_4')]
             : tabel.pengali
             ? [t('hitung.tabel.cara.munasakhat_1'), t('hitung.tabel.cara.munasakhat_2'), t('hitung.tabel.cara.munasakhat_3'), t('hitung.tabel.cara.munasakhat_4')]
             : tabel.kolom[0]?.idJudul === 'didudukkanSebagai'

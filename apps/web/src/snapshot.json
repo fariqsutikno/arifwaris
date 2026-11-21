@@ -28000,6 +28000,27 @@
    "id": "**Ditahan** = sisa sampai kabarnya jelas.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.lk",
+   "halaman": "hitung",
+   "id": "ia laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.pr",
+   "halaman": "hitung",
+   "id": "ia perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.khuntsa_1",
+   "halaman": "hitung",
+   "id": "Isi **dua kemungkinan**: ia laki-laki, ia perempuan.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

@@ -273,3 +273,20 @@ describe('TabelLatihan — mafqud', () => {
     expect(screen.getByText('Benar semua.')).toBeTruthy();
   });
 });
+
+describe('TabelLatihan — khuntsa', () => {
+  // KB 13c.4 X1: ayah A, dua anak pr B1 B2, cucu khuntsa K dari anak lk S yang wafat.
+  const graf: GrafKeluarga = { idPewaris: 'D', pernikahan: [], orang: {
+    D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A' }), A: orang('A', 'L'),
+    B1: orang('B1', 'P', { idAyah: 'D' }), B2: orang('B2', 'P', { idAyah: 'D' }),
+    S: orang('S', 'L', { statusHidup: 'wafat', idAyah: 'D' }), K: orang('K', 'L', { idAyah: 'S', khuntsa: 'diharapkanJelas' }) } };
+  const hasil = hitungTaqdir({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' });
+  const susunan = susunTabelSoal(hasil, id => id);
+  if ('status' in susunan) throw new Error(susunan.status);
+
+  it('judul kolom ia laki-laki / ia perempuan dan cara mengisi khusus khuntsa', () => {
+    render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    for (const judul of ['Bagian · ia laki-laki', 'Ia laki-laki', 'Bagian · ia perempuan', 'Ia perempuan']) expect(screen.getByText(judul)).toBeTruthy();
+    expect(screen.getByText('ia laki-laki, ia perempuan.', { exact: false })).toBeTruthy();
+  });
+});
