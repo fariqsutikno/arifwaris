@@ -102,9 +102,9 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   if (duaJihah.length > 0) {
     return { status: 'TIDAK_DIDUKUNG', alasan: `Ahli waris dengan dua jihah (pasangan sekaligus kerabat): ${duaJihah.join(', ')}.`, refs: [] };
   }
-  // [K04-3] [HNB]/[HNF] nenek dua qarabah mewarisi dengan tiap qarabah; [MLK] baru nukilan sekunder. Belum dimodelkan.
-  if (input.ruleset !== 'syafii' && nenekDuaQarabah.length > 0) {
-    return { status: 'TIDAK_DIDUKUNG', alasan: `Nenek dengan dua qarabah (${nenekDuaQarabah.join(', ')}) belum didukung untuk madzhab ini.`, refs: ['K04-3'] };
+  // [K04-3] [MLK] tak ada nash Maliki → ditolak; [SYF]/[HNB]/[HNF] dimodelkan di bagianNenek (bobot di PeranAhliWaris.bobotNenek).
+  if (aturan.nenekDuaQarabah === 'tidakDidukung' && nenekDuaQarabah.length > 0) {
+    return { status: 'TIDAK_DIDUKUNG', alasan: `Nenek dengan dua qarabah (${nenekDuaQarabah.join(', ')}) belum didukung untuk madzhab ini (tidak ada nash).`, refs: ['K04-3'] };
   }
 
   // 1b. Mawani': keluarkan pembunuh, beda agama, dst.

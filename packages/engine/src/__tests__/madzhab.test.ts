@@ -1,10 +1,10 @@
 import { describe, expect, test } from 'vitest';
 import { hitung } from '../pipeline.js';
 import { hitungMunasakhat } from '../munasakhat.js';
-import type { InputEngine } from '../types.js';
+import { KONFIGURASI_BAWAAN, type InputEngine } from '../types.js';
 import { BAB16_FIXTURES, input, p } from './fixtures/bab16.js';
 import { M2 } from './fixtures/munasakhat.js';
-import { KASUS_MADZHAB } from './fixtures/madzhab.js';
+import { KASUS_MADZHAB, grafK04_3Berkumpul } from './fixtures/madzhab.js';
 import { periksaInvarian } from './invarian.property.test.js';
 
 const denganRuleset = (dasar: InputEngine, ruleset: InputEngine['ruleset']): InputEngine => ({ ...dasar, ruleset });
@@ -71,6 +71,16 @@ describe('Overlay madzhab — kasus bab 18.2', () => {
       });
     }
   }
+});
+
+describe('K04-3 nenek dua qarabah berkumpul — opsi Muhammad [HNF]', () => {
+  test('hanafi dengan nenekDuaQarabahHanafi "muhammad" = per jihat, sama dengan hanbali', () => {
+    const konfigurasi = { ...KONFIGURASI_BAWAAN, nenekDuaQarabahHanafi: 'muhammad' as const };
+    const hasil = hitung({ ...input(grafK04_3Berkumpul, konfigurasi), ruleset: 'hanafi' });
+    if (hasil.status !== 'OK') throw new Error(JSON.stringify(hasil));
+    periksaInvarian(grafK04_3Berkumpul, hasil);
+    expect(sahamAkhir(hasil)).toEqual({ saham: { G: 2n, H: 1n, AL: 15n }, penyebut: 18n });
+  });
 });
 
 describe('Jejak KHILAF_MADZHAB', () => {

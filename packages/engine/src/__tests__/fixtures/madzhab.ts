@@ -77,7 +77,8 @@ const grafK03_1b: GrafKeluarga = {
 };
 
 // ─── K04-3: satu nenek lewat ayah sekaligus lewat ibu (ayah & ibu pewaris sama-sama anak G) + anak lk ───
-// [SYF]: satu bagian [R04-8] → G 1, anak lk 5 (ashl 6). Madzhab lain: belum dimodelkan → TIDAK_DIDUKUNG.
+// [K04-3] M1: G sendirian (tanpa nenek lain) → bagian nenek biasa 1/6 di semua ruleset [R04-8]
+// → G 1, anak lk 5 (ashl 6). [MLK] tetap TIDAK_DIDUKUNG (tidak ada nash Maliki).
 const grafK04_3: GrafKeluarga = {
   idPewaris: 'PW',
   orang: {
@@ -92,7 +93,7 @@ const grafK04_3: GrafKeluarga = {
 
 // ─── K04-3 pihak yang sama: G nenek dari dua jalur, keduanya lewat ayah (B & C sepupu, ibu mereka kakak-adik) ───
 // Jalur PW→A→B→E→G (L L P, 2 lk) dan PW→A→C→F→G (L P P, 1 lk); keduanya shahihah.
-// [SYF]: satu bagian. [HNB] (batas 2 lk): dua jalur sah → dua qarabah → TIDAK_DIDUKUNG. [HNF] sama.
+// [K04-3] M1 (G sendirian): [SYF]/[HNB]/[HNF] → G 1, anak lk 5. [HNB] (batas 2 lk): dua jalur sah → dua qarabah, tetap 1/6.
 // [MLK] (batas 1 lk): jalur pertama lewat batas, tinggal satu qarabah → G 1, anak lk 5.
 const grafK04_3SatuPihak: GrafKeluarga = {
   idPewaris: 'PW',
@@ -128,6 +129,26 @@ const grafNenekJalurKedua: GrafKeluarga = {
   pernikahan: [],
 };
 
+// ─── K04-3 M2: G dua qarabah (ibu dari ibu ayah & ibu dari ibu ibu) berkumpul dengan H (ibu dari ibu ayah dari ayah) + anak lk ───
+// Jalur G: PW→A→C→G dan PW→I→D→G (tingkat 3); H: PW→A→B→H (tingkat 3, 2 lk di jalur: batas [HNB] 2 terpenuhi).
+// 1/6 dibagi antar nenek: [SYF]/[HNF] bawaan (Abu Yusuf) rata per badan → G 1, H 1 (ashl 6 → tashih 12, anak lk 10).
+// [HNB]/[HNF] opsi Muhammad: per jihat → G 2, H 1 (ashl 6 → tashih 18, anak lk 15). [MLK]: TIDAK_DIDUKUNG.
+export const grafK04_3Berkumpul: GrafKeluarga = {
+  idPewaris: 'PW',
+  orang: {
+    PW: p('PW', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+    A: p('A', 'L', { ...penghubung, idAyah: 'B', idIbu: 'C' }),
+    I: p('I', 'P', { ...penghubung, idIbu: 'D' }),
+    B: p('B', 'L', { ...penghubung, idIbu: 'H' }),
+    C: p('C', 'P', { ...penghubung, idIbu: 'G' }),
+    D: p('D', 'P', { ...penghubung, idIbu: 'G' }),
+    G: p('G', 'P'),
+    H: p('H', 'P'),
+    AL: p('AL', 'L', { idAyah: 'PW' }),
+  },
+  pernikahan: [],
+};
+
 const sendiri ={ saham: { AL: 1n }, penyebut: 1n };
 
 export const KASUS_NENEK: KasusMadzhab[] = [
@@ -144,11 +165,14 @@ export const KASUS_NENEK: KasusMadzhab[] = [
     syafii: { saham: { UKB: 1n, AL: 5n }, penyebut: 6n }, hanafi: { saham: { UKB: 1n, AL: 5n }, penyebut: 6n },
     hanbali: sendiri, maliki: sendiri } },
   { id: 'MZ5', kode: 'K04-3', menguji: 'nenek dua qarabah', graf: grafK04_3, harapan: {
-    syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
-    hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG', maliki: 'TIDAK_DIDUKUNG' } },
+    syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, hanbali: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
+    hanafi: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, maliki: 'TIDAK_DIDUKUNG' } },
   { id: 'MZ6', kode: 'K04-3', menguji: 'nenek dua qarabah, pihak yang sama', graf: grafK04_3SatuPihak, harapan: {
     syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, maliki: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
-    hanbali: 'TIDAK_DIDUKUNG', hanafi: 'TIDAK_DIDUKUNG' } },
+    hanbali: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, hanafi: { saham: { G: 1n, AL: 5n }, penyebut: 6n } } },
+  { id: 'MZ5b', kode: 'K04-3', menguji: 'nenek dua qarabah berkumpul dengan nenek lain (M2)', graf: grafK04_3Berkumpul, harapan: {
+    syafii: { saham: { G: 1n, H: 1n, AL: 10n }, penyebut: 12n }, hanafi: { saham: { G: 1n, H: 1n, AL: 10n }, penyebut: 12n },
+    hanbali: { saham: { G: 2n, H: 1n, AL: 15n }, penyebut: 18n }, maliki: 'TIDAK_DIDUKUNG' } },
   { id: 'MZ7', kode: 'R03-5', menguji: 'jalur terpendek fasidah, jalur lain shahihah', graf: grafNenekJalurKedua, harapan: {
     syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
     // [HNB]: R14-4 (penanda dzawil arham pada jalur fasidah) kini berlaku (KB 18.4), R03-5 juga; hasil sama dengan [SYF].

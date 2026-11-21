@@ -64,6 +64,8 @@ export interface PeranAhliWaris {
   lintasan: IdOrang[];
   /** Rujukan keputusan peran bila berasal dari titik khilaf (mis. 'K03-1'), dipakai mawani untuk status dzawil arham. */
   rujukan?: string;
+  /** [K04-3] hanya nenek dua qarabah: bobot saat 1/6 dibagi antar nenek = jumlah qarabah sahnya (per jihat) atau 1 (per badan). */
+  bobotNenek?: bigint;
 }
 
 export type StatusOrang =
@@ -79,11 +81,13 @@ export type Ruleset = 'syafii' | 'hanbali' | 'hanafi' | 'maliki';
 export interface KonfigurasiMadzhab {
   kebijakanSisa: 'radd' | 'baitulMal';          // default 'radd'   [R09-8] [R14-5]
   talakBainSaatMaradh: 'qaulJadid' | 'qaulQadim'; // default 'qaulJadid' [R02-3]
+  nenekDuaQarabahHanafi?: 'abuYusuf' | 'muhammad'; // default 'abuYusuf' [K04-3]; hanya bermakna di ruleset hanafi; kosong = bawaan (data lama)
 }
 
 export const KONFIGURASI_BAWAAN: KonfigurasiMadzhab = {
   kebijakanSisa: 'radd',
   talakBainSaatMaradh: 'qaulJadid',
+  nenekDuaQarabahHanafi: 'abuYusuf', // default 'abuYusuf' [K04-3]
 };
 
 // ─── Output tabel ─────────────────────────────────────────────────────────────
