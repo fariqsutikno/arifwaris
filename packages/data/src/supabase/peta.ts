@@ -3,7 +3,7 @@
 import type { JenisKonten } from '@waris/content';
 import type { BarisTerbitMentah } from '../saring.js';
 import type {
-  DiksiTerbit, JejakEntri, ProgresBelajar, ProgresLatihan, RingkasanEntri, RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, RiwayatTersimpan,
+  BarisPercobaanServer, DiksiTerbit, JejakEntri, ProgresBelajar, ProgresLatihan, RingkasanEntri, RingkasanKunciDiksi, RingkasanRevisi, RingkasanRevisiDiksi, RiwayatTersimpan,
 } from '../antarmuka.js';
 
 type Baris = Record<string, any>;
@@ -62,4 +62,10 @@ export const keRiwayat = (baris: Baris): RiwayatTersimpan => ({ id: baris.id, ka
 export const keProgresBelajar = (baris: Baris): ProgresBelajar => ({ pelajaranSlug: baris.pelajaran_slug, selesai: baris.selesai, diubahPada: baris.diubah_pada });
 export const keProgresLatihan = (baris: Baris): ProgresLatihan => ({
   soalSlug: baris.soal_slug, jenis: baris.jenis, jawabanTerakhir: baris.jawaban_terakhir, benar: baris.benar, jumlahCoba: baris.jumlah_coba, diubahPada: baris.diubah_pada,
+});
+
+export const keBarisPercobaan = (baris: Baris): BarisPercobaanServer => ({
+  id: baris.id, idSesiSoal: baris.id_sesi_soal, soalId: baris.soal_id, revisiSoal: baris.revisi_soal, jenisSoal: baris.jenis_soal, mode: baris.mode,
+  aksi: baris.aksi, isian: baris.isian, jangkar: baris.jangkar, hasilKolom: baris.hasil_kolom, benarSemua: baris.benar_semua,
+  dimulaiPadaKlien: baris.dimulai_pada_klien, diterimaPada: baris.diterima_pada, versi: baris.versi,
 });
