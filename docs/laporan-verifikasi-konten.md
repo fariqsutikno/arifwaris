@@ -59,3 +59,32 @@ faq 40 klaim (36 cocok), ahwal 18 (17), modul 10 (10), cheatsheet 0 (judul saja,
 | faq:60 | ⚠ | Isi memakai [R13-3], [R13-15], [R13-6] tetapi baris «Rujukan» hanya R13-1 | lengkapi daftar Rujukan |
 | faq:70, 82 | ⚠ | «Madzhab apa yang dipakai?» dan «Kasus apa yang belum bisa dihitung?» adalah status produk; kemungkinan basi (multi-madzhab, haml/mafqud/khuntsa/gharqa sudah jalan) | pemilik mencocokkan dengan status aplikasi sekarang |
 | ahwal:175 (ANAK_LK) | ⚠ | «tidak pernah terhalang» terlalu luas: R06-2 hanya hajb hirman; mawani' (pembunuhan, beda agama) tetap berlaku | «tidak pernah terhalang oleh ahli waris lain (hajb hirman) [R06-2]» |
+
+## Teks basi: pengganti siap tempel di portal (2026-11-22)
+
+Status aplikasi dicek dari kode (bukan dari KB): empat madzhab bisa dipilih (`DialogMadzhab.tsx:9`); dzawil arham [SYF]
+dihitung dengan tanzil (`latihan/jalankan.ts:58`, `TabelFaraidh.tsx:174`); haml, mafqud, khuntsa lewat taqdir; gharqa dan
+munasakhat punya jalur hasil sendiri. Batas yang masih ditolak engine diambil dari alasan `TIDAK_DIDUKUNG` yang ada.
+
+**faq · «Madzhab apa yang dipakai?»** (ganti seluruhnya)
+> Bawaannya madzhab Syafi'i. Kamu bisa beralih ke Hanbali, Hanafi, atau Maliki lewat tautan «ganti madzhab» di layar hasil.
+> Yang berubah hanya titik-titik yang memang diperselisihkan (dicatat di matriks khilaf), dan tiap titik menyebut sumbernya:
+> kitab madzhab itu sendiri, atau nukilan Lahim dan Ithraa bila belum ditemukan di kitab madzhabnya. Kalau sebuah kasus
+> menyentuh titik yang belum dikaji untuk madzhab pilihanmu, kalkulator memberi tahu dan tidak menebak. Kompilasi Hukum Islam
+> (hukum positif) belum dipakai.
+
+**faq · «Kasus apa yang belum bisa dihitung?»** (ganti seluruhnya)
+> Kebanyakan kasus sudah bisa dihitung, termasuk anak dalam kandungan, orang hilang, khuntsa, korban yang wafat bersamaan,
+> kematian berlapis (munasakhat), dan dzawil arham. Untuk anak dalam kandungan, orang hilang, dan khuntsa, kalkulator
+> menghitung semua kemungkinan lalu menahan bagian yang belum pasti. Yang masih ditolak antara lain: kerabat yang punya dua
+> hubungan sekaligus (misalnya suami yang juga sepupu), kakek bersama saudari yang menjadi ashabah karena anak perempuan,
+> beberapa cara pembagian dzawil arham di luar madzhab Syafi'i, dan janin yang berbagi bagian pasti dengan ahli waris
+> sekelompok. Kalau kasusmu termasuk di sini, kalkulator memberi tahu alasannya.
+
+**teks_edukasi · `ahli_waris.mereka_baru_mewarisi_kalau_tidak_ada`** (ganti)
+> Mereka baru mewarisi kalau tidak ada ashabah dan tidak ada ahli waris berbagian pasti selain suami/istri. Aplikasi
+> menghitung bagian mereka dengan metode tanzil (madzhab Syafi'i) [R14-6].
+
+**Di luar portal (kode UI, bukan konten):** `apps/web/src/layar/DialogMadzhab.tsx` baris 2 dan 29 menandai tiga madzhab
+non-Syafi'i sebagai «nukilan Lahim». Per 2026-11-22 sebagian besar sel bab 18 sudah primer, jadi label itu tidak lagi akurat.
+Usulan: «sumber disebut per titik» atau hapus label. Perlu keputusan pemilik karena menyentuh UI.
