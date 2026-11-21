@@ -25,7 +25,7 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | G1 fondasi penilaian | selesai, di `main` (PR #42, lewat #43) |
 | Hasil + mode fokus (Langkah demi langkah, Teks \| Sinema) | selesai, di `main` (PR #35); kode fokus lama sudah dibuang |
 | G2 jenis soal latihan | **kode selesai**, di `main` (PR #43); sisa: perbandingan layar dengan mockup dan soal terbit tim keilmuan |
-| G3 data server + PDP + soal buta | **berjalan** di sesi sendiri, tiga PR berurutan (server+XP / PDP / soal buta) |
+| G3 data server + PDP + soal buta | **kode selesai, di `main`** (PR #45, #49, #50); belum di-deploy ke produksi, lihat "Langkah deploy G3" |
 | Jalur 7: verifikasi madzhab [HNB]/[HNF]/[MLK] | **sebagian besar jalan**: matriks KB 18 punya 106 baris, hanya 4 baris masih bertanda (s) (K01-2, K02-4, K13a-4, R01-1) dan 1 sel "?" (K04-3); 4 butir masih Terbuka di `docs/rencana-verifikasi.md` (R13-14 laqith, K05-2 [MLK], K13-1 [HNF], dzawil arham dua jalur [HNF]) |
 | Jalur 7b: harta sudah dibagi sebagian | **belum mulai**: KB bab 11 baru memuat qismah dan takharuj (R11-2 shulh); belum ada bagian KB, kode engine, maupun UI. Hanya ada bayangan `mockup-sudah-dibagi.html`. Langkah pertama: riset dan verifikasi rujukan ke bab 11 |
 | Jalur 8: KHI | **belum mulai**: `docs/kb-khi/` belum ada; baru ada aturan pemisahan (ruleset sendiri, ditandai "hukum positif, bukan fikih") |
@@ -76,6 +76,13 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 4. **Pilot kelas sebelum AMIN?** Demi kalender semester; biayanya AMIN mundur ±5–7 minggu.
 5. **Siapa menulis pengecoh soal penalaran** (G4).
 6. **Harga paket** (G8), setelah wawancara dosen/kaprodi.
+
+## Langkah deploy G3 (hanya pemilik; tidak otomatis)
+1. Ambil cadangan produksi (migrasi `20261120000004` menghapus 129 entri `rujukan`; migrasi PDP mengosongkan pilihan peringkat semua pengguna).
+2. `supabase db push` untuk migrasi `20261120000004` sampai `20261121000004`.
+3. `pnpm fungsi:bundel`, lalu deploy edge function `catat-percobaan` dan `hapus-akun`. Sebelum itu klien hanya mengantre percobaan (XP belum muncul).
+4. Isi lima tempat `[DIISI PEMILIK]` di teks kebijakan privasi (kontak pengendali data dan sebagainya).
+Belum ada di G3: Poin XP otomatis dari jenis soal, soal bangkitan (G4), hapus akun untuk akun penulis, penyaringan soal buta menurut jenis.
 
 ## Hal kecil yang masih menggantung
 
