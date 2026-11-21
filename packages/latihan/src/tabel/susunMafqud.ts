@@ -10,17 +10,18 @@ import { BAGIAN_TERHALANG, ID_BARIS_MAUQUF, PILIHAN_BAGIAN, type BarisSoal, type
 import { labelBagian } from './susunBiasa.js';
 
 const ID_JAMIAH = 'jamiah';
-// Mafqud, khuntsa, lalu haml [SYF] (empat taqdir, KB 13a.5 [R13-20]); haml [HNB] enam taqdir belum didukung.
-const KEMUNGKINAN_TIAP_JENIS = [['hidup', 'mati'], ['lk', 'pr'], ['mati', 'lk', 'pr', 'duaPr']];
-const JENIS_HAML = 2;
+// Mafqud, khuntsa, haml [SYF] (empat taqdir [R13-20]) dan haml [HNB] (enam taqdir, KB 13a.5).
+const KEMUNGKINAN_TIAP_JENIS = [['hidup', 'mati'], ['lk', 'pr'], ['mati', 'lk', 'pr', 'duaPr'], ['mati', 'lk', 'pr', 'duaLk', 'duaPr', 'lkPr']];
+const JENIS_HAML = { syafii: 2, hanbali: 3 } as const;
 
 export function susunTabelMafqud(hasil: HasilTaqdir, namaDari: (id: IdOrang) => string): SusunanTabel {
   if (hasil.status !== 'OK') return { status: 'TIDAK_DIDUKUNG' };
   const { daftarDunia } = hasil;
   const sumber = Object.keys(daftarDunia[0]?.taqdir ?? {});
   const jenis = KEMUNGKINAN_TIAP_JENIS.findIndex(nilai => daftarDunia.every(dunia => dunia.bagian && nilai.includes(dunia.taqdir[sumber[0]!]!)));
-  const adalahHaml = jenis === JENIS_HAML;
-  if (sumber.length !== 1 || jenis < 0 || (adalahHaml && hasil.ruleset !== 'syafii')) return { status: 'TIDAK_DIDUKUNG' };
+  const adalahHaml = jenis >= JENIS_HAML.syafii;
+  if (sumber.length !== 1 || jenis < 0 || (adalahHaml && jenis !== JENIS_HAML[hasil.ruleset as keyof typeof JENIS_HAML])) return { status: 'TIDAK_DIDUKUNG' };
+  const awalanHaml = hasil.ruleset === 'hanbali' ? 'hamlHnb.' : 'haml.';
   const idMafqud = sumber[0]!; // juga khuntsa dan haml: bagiannya ditahan sama [R13-18]
 
   const baris = new Map<IdOrang, BarisSoal>();
@@ -34,7 +35,7 @@ export function susunTabelMafqud(hasil: HasilTaqdir, namaDari: (id: IdOrang) => 
   daftarDunia.forEach((dunia, indeks) => {
     const idBagian = `b${indeks + 1}`;
     const idMasalah = `m${indeks + 1}`;
-    const kemungkinan = adalahHaml ? `haml.${dunia.taqdir[idMafqud]}` : dunia.taqdir[idMafqud]!;
+    const kemungkinan = adalahHaml ? `${awalanHaml}${dunia.taqdir[idMafqud]}` : dunia.taqdir[idMafqud]!;
     const adaKelompokBersama = dunia.bagian!.some(kelompok => kelompok.bersama);
     kolom.push({ id: idBagian, idJudul: 'bagianKemungkinan', ...qDari('bagianKemungkinan'), jenis: 'pilih', pilihan: PILIHAN_BAGIAN, kemungkinan });
     kolom.push({ id: idMasalah, idJudul: 'sahamKemungkinan', ...qDari('sahamKemungkinan'), jenis: 'bulat', kepala: dunia.masalah, kemungkinan, ...(adaKelompokBersama ? { gabungDari: idBagian } : {}) });

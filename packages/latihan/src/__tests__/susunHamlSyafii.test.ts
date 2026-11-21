@@ -41,7 +41,7 @@ describe('susunTabelHamlSyafii — KB 13a.7 H1 [SYF]', () => {
     expect(nilaiSemuaKolom(tabel, isianKunci(), null).every(kolom => kolom.status === 'benar')).toBe(true);
   });
 
-  test('haml [HNB] belum didukung', () => {
-    expect(susunTabelSoal(hitung('hanbali'), id => id)).toEqual({ status: 'TIDAK_DIDUKUNG' });
+  test('haml [HNB] memakai jalur sendiri (lihat susunHamlHanbali.test.ts)', () => {
+    expect(susunTabelSoal(hitung('hanbali'), id => id)).not.toEqual({ status: 'TIDAK_DIDUKUNG' });
   });
 });
