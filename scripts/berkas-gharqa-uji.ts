@@ -1,7 +1,7 @@
 // Dipakai uji-integrasi-catat-percobaan.mjs: mencetak JSON { berkas, jawabanBenar } untuk soal gharqa KB 13d.2
 // (Zaid dan 'Amr wafat bersamaan, tidak diketahui urutannya). jawabanBenar disusun dari tabel yang dibuat penilai,
 // jadi skrip integrasi tidak menyalin kunci jawaban. Jalankan: `pnpm exec vite-node scripts/berkas-gharqa-uji.ts`.
-import type { GrafKeluarga, Orang } from '@waris/engine';
+import type { GrafKeluarga, Orang } from '../packages/engine/src/index.js';
 import { kasusBaru, keJson, nilaiKiriman, type IsianGharqa, type Kiriman } from '../packages/latihan/src/index.js';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
