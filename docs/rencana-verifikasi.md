@@ -51,3 +51,4 @@ Semua ⚑ dari commit Prompt 1–6 dan `docs/audit-verifikasi.md`, per 2026-09-2
 | 8 | Bab 14.3 atribusi «غلط الشيخ أبو حامد» | `5396163`, `5ca162f`, audit ⚑1 | Dikembalikan ke Ibnu Suraqah | Selesai (dikonfirmasi) | 17.5 butir 8 |
 | 9 | K13a-3 [HNF] rujukan Takmilah | audit ⚑3 | Tidak ketemu di Shamela; rujukan dihapus, hukum tetap didukung Mabsuth 30/52 | Selesai | audit-verifikasi.md |
 | 10 | Ijazah wasiat di konten «sah setelah wafat» | audit (informasi) | Pernyataan baru di konten; cocok dengan R01-7 dan K01-1 | Selesai (dicatat) | 17.5 butir 9 |
+| 11 | K04-3 [HNF]/[MLK] nenek dua qarabah | spec verifikasi A1–A2 | [HNF] primer di 6 kitab: Abu Yusuf per badan difatwakan, Muhammad per jihat = opsi; khilaf hanya saat berkumpul dengan nenek lain. [MLK] tidak ada nash Maliki | Selesai [HNF] (dikonfirmasi pengguna 2026-11-22); [MLK] tetap ? | 18.2, bab 04 KHILAF, 17.5 butir 11 |
