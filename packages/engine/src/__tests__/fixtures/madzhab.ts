@@ -78,7 +78,7 @@ const grafK03_1b: GrafKeluarga = {
 
 // ─── K04-3: satu nenek lewat ayah sekaligus lewat ibu (ayah & ibu pewaris sama-sama anak G) + anak lk ───
 // [K04-3] M1: G sendirian (tanpa nenek lain) → bagian nenek biasa 1/6 di semua ruleset [R04-8]
-// → G 1, anak lk 5 (ashl 6). [MLK] tetap TIDAK_DIDUKUNG (tidak ada nash Maliki).
+// → G 1, anak lk 5 (ashl 6) di semua ruleset, [MLK] juga (penolakan [MLK] hanya untuk M2: lihat MZ5b).
 const grafK04_3: GrafKeluarga = {
   idPewaris: 'PW',
   orang: {
@@ -166,7 +166,7 @@ export const KASUS_NENEK: KasusMadzhab[] = [
     hanbali: sendiri, maliki: sendiri } },
   { id: 'MZ5', kode: 'K04-3', menguji: 'nenek dua qarabah', graf: grafK04_3, harapan: {
     syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, hanbali: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
-    hanafi: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, maliki: 'TIDAK_DIDUKUNG' } },
+    hanafi: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, maliki: { saham: { G: 1n, AL: 5n }, penyebut: 6n } } },
   { id: 'MZ6', kode: 'K04-3', menguji: 'nenek dua qarabah, pihak yang sama', graf: grafK04_3SatuPihak, harapan: {
     syafii: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, maliki: { saham: { G: 1n, AL: 5n }, penyebut: 6n },
     hanbali: { saham: { G: 1n, AL: 5n }, penyebut: 6n }, hanafi: { saham: { G: 1n, AL: 5n }, penyebut: 6n } } },

@@ -59,6 +59,27 @@ function cariNenekDuaQarabah(graf: GrafKeluarga, daftarPeran: Record<IdOrang, Pe
     .map(peran => peran.idOrang);
 }
 
+/**
+ * [K04-3] Alasan penolakan bila bobot per jihat tak bisa ditentukan dari KB; undefined = bisa dihitung.
+ * Hanya berlaku per jihat (per badan tak butuh bobot). KB tidak membahas: (a) qarabah beda tingkat,
+ * (b) jalur lewat leluhur laki-laki yang masih hidup (ayah menghijab nenek jalurnya, K04-2).
+ */
+export function qarabahTakTerukur(graf: GrafKeluarga, idNenekDuaQarabah: IdOrang[], aturan: AturanMadzhab, konfigurasi: KonfigurasiMadzhab): string | undefined {
+  if (!nenekPerJihat(aturan, konfigurasi)) return undefined;
+  for (const idNenek of idNenekDuaQarabah) {
+    const jalurSah = semuaJalurLeluhur(graf, graf.idPewaris, idNenek).filter(lintasan => !cekJalurNenek(graf, lintasan, aturan).gugur);
+    if (new Set(jalurSah.map(lintasan => lintasan.length)).size > 1) {
+      return `Nenek ${idNenek} punya qarabah beda tingkat; pembagian per jihat belum dibahas KB.`;
+    }
+    const adaLeluhurLakiHidup = jalurSah.some(lintasan => lintasan.slice(1, -1)
+      .some(id => jenisKelaminDari(graf, id) === 'L' && graf.orang[id]!.statusHidup === 'hidup'));
+    if (adaLeluhurLakiHidup) {
+      return `Nenek ${idNenek} punya qarabah lewat leluhur laki-laki yang masih hidup; pembagian per jihat belum dibahas KB.`;
+    }
+  }
+  return undefined;
+}
+
 const jumlahQarabah = (graf: GrafKeluarga, idNenek: IdOrang, aturan: AturanMadzhab): number =>
   semuaJalurLeluhur(graf, graf.idPewaris, idNenek).filter(lintasan => !cekJalurNenek(graf, lintasan, aturan).gugur).length;
 

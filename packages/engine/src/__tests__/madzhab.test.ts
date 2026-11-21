@@ -83,6 +83,39 @@ describe('K04-3 nenek dua qarabah berkumpul — opsi Muhammad [HNF]', () => {
   });
 });
 
+describe('K04-3 per jihat: qarabah yang tak terukur → TIDAK_DIDUKUNG', () => {
+  const grafAyahHidup = {
+    ...grafK04_3Berkumpul,
+    orang: { ...grafK04_3Berkumpul.orang, A: p('A', 'L', { idAyah: 'B', idIbu: 'C' }) },
+  };
+  const muhammad = { ...KONFIGURASI_BAWAAN, nenekDuaQarabahHanafi: 'muhammad' as const };
+
+  test('hanafi+muhammad: jalur lewat ayah yang hidup → TIDAK_DIDUKUNG K04-3', () => {
+    expect(hitung({ ...input(grafAyahHidup, muhammad), ruleset: 'hanafi' })).toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['K04-3'] });
+  });
+
+  test('syafii pada graf yang sama tetap berjalan (per badan tak terpengaruh)', () => {
+    expect(hitung({ ...input(grafAyahHidup), ruleset: 'syafii' }).status).not.toBe('TIDAK_DIDUKUNG');
+  });
+
+  test('hanbali: jalur beda tingkat (ibu tingkat 2, ayah tingkat 3) → TIDAK_DIDUKUNG K04-3', () => {
+    const graf = {
+      idPewaris: 'PW',
+      orang: {
+        PW: p('PW', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }),
+        A: p('A', 'L', { statusHidup: 'wafat', penghubung: true, idIbu: 'C' }),
+        C: p('C', 'P', { statusHidup: 'wafat', penghubung: true, idIbu: 'G' }),
+        I: p('I', 'P', { statusHidup: 'wafat', penghubung: true, idIbu: 'G' }),
+        G: p('G', 'P'),
+        AL: p('AL', 'L', { idAyah: 'PW' }),
+      },
+      pernikahan: [],
+    };
+    expect(hitung({ ...input(graf), ruleset: 'hanbali' })).toMatchObject({ status: 'TIDAK_DIDUKUNG', refs: ['K04-3'] });
+    expect(hitung({ ...input(graf), ruleset: 'syafii' }).status).toBe('OK');
+  });
+});
+
 describe('Jejak KHILAF_MADZHAB', () => {
   const khilaf = (id: string, ruleset: InputEngine['ruleset']) => {
     const hasil = hitung(denganRuleset(input(KASUS_MADZHAB.find(kasus => kasus.id === id)!.graf), ruleset));

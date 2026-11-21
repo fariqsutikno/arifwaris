@@ -7,7 +7,7 @@ import { periksaKeberlakuan, periksaKonfigurasi } from './rulesets/gerbang.js';
 import { ATURAN } from './rulesets/madzhab.js';
 import { hitungAshl } from './stages/ashl.js';
 import { tetapkanBagian } from './stages/bagian.js';
-import { turunkanPeran } from './stages/derivasi.js';
+import { qarabahTakTerukur, turunkanPeran } from './stages/derivasi.js';
 import { terapkanHajb } from './stages/hajb.js';
 import { klasifikasikanMasalah } from './stages/klasifikasi.js';
 import { maniDari, terapkanMawani } from './stages/mawani.js';
@@ -102,10 +102,16 @@ export function jalankanTahapAhliWaris(input: InputEngine): HasilTahapAhliWaris 
   if (duaJihah.length > 0) {
     return { status: 'TIDAK_DIDUKUNG', alasan: `Ahli waris dengan dua jihah (pasangan sekaligus kerabat): ${duaJihah.join(', ')}.`, refs: [] };
   }
-  // [K04-3] [MLK] tak ada nash Maliki → ditolak; [SYF]/[HNB]/[HNF] dimodelkan di bagianNenek (bobot di PeranAhliWaris.bobotNenek).
-  if (aturan.nenekDuaQarabah === 'tidakDidukung' && nenekDuaQarabah.length > 0) {
-    return { status: 'TIDAK_DIDUKUNG', alasan: `Nenek dengan dua qarabah (${nenekDuaQarabah.join(', ')}) belum didukung untuk madzhab ini (tidak ada nash).`, refs: ['K04-3'] };
+  // [K04-3] M1 (sendirian) = nenek biasa 1/6 di semua madzhab [R04-8]. [MLK] M2 (berkumpul dengan nenek lain): tak ada nash → ditolak.
+  // ponytail: dicek sebelum hajb; nenek lain yang nanti terhijab tetap membuat kasus ditolak (arah aman). Pindah ke setelah hajb bila perlu presisi.
+  const adaNenekLain = Object.values(daftarPeran)
+    .some(peran => (peran.kunci === 'NENEK_DARI_AYAH' || peran.kunci === 'NENEK_DARI_IBU') && !nenekDuaQarabah.includes(peran.idOrang));
+  if (aturan.nenekDuaQarabah === 'tidakDidukung' && nenekDuaQarabah.length > 0 && adaNenekLain) {
+    return { status: 'TIDAK_DIDUKUNG', alasan: `Nenek dengan dua qarabah (${nenekDuaQarabah.join(', ')}) yang berkumpul dengan nenek lain belum didukung untuk madzhab ini (tidak ada nash).`, refs: ['K04-3'] };
   }
+  // [K04-3] per jihat hanya untuk qarabah yang bisa diukur menurut KB.
+  const takTerukur = qarabahTakTerukur(graf, nenekDuaQarabah, aturan, konfigurasi);
+  if (takTerukur) return { status: 'TIDAK_DIDUKUNG', alasan: takTerukur, refs: ['K04-3'] };
 
   // 1b. Mawani': keluarkan pembunuh, beda agama, dst.
   const mawani = terapkanMawani(graf, daftarPeran, input.ruleset);
