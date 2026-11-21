@@ -1,4 +1,4 @@
-# Roadmap: urutan kerja dan posisi kita (2026-11-20)
+# Roadmap: urutan kerja dan posisi kita (2026-11-21)
 
 Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 `rencana-implementasi-penilaian-kelas/00-induk.md` dan dokumen anaknya (01–07).
@@ -23,6 +23,9 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | B1–B6, B9 (tabel soal biasa) + tinjauan visual | selesai, di `main` |
 | G0 keamanan produksi | digabung ke `main` (`24c27e4`); satu langkah dasbor menunggu pemilik, lihat bawah |
 | G1 fondasi penilaian | selesai, **PR #42 terbuka, belum digabung** |
+| Hasil + mode fokus (Langkah demi langkah, Teks \| Sinema) | selesai, di `main` (PR #35); kode fokus lama sudah dibuang |
+| G2 jenis soal latihan | **kode selesai**, PR #43 (memuat commit G1); sisa: perbandingan layar dengan mockup dan soal terbit tim keilmuan |
+| G3 data server + PDP + soal buta | **berjalan** di sesi sendiri, tiga PR berurutan (server+XP / PDP / soal buta) |
 
 ## Alur ke depan
 
@@ -32,17 +35,16 @@ SEKARANG
   ├─ [kamu] tunjuk penulis pengecoh soal penalaran (spec 8.30) ── gerbang G4
   └─ [kamu] langkah dasbor G0 yang tersisa (mis. matikan login Email, K1)
 
-G2  jenis soal latihan (B7, B8)         14–23 hari + tim keilmuan
-    munasakhat → dzawil arham → mafqud → khuntsa* → haml [SYF] → haml [HNB] → gharqa
-    lalu hero latihan (B8), hapus KartuTebak (B-akhir), verifikasi skala penuh (B10)
-    *butuh tab Khuntsa di mockup dulu
+G2  jenis soal latihan (B7, B8)         KODE SELESAI (PR #43)
+    munasakhat, dzawil arham, mafqud, khuntsa, haml [SYF], haml [HNB], gharqa [SYF]; hero B8; KartuTebak dihapus; B10 otomatis lulus
+    sisa: bandingkan layar dengan mockup (laptop + 375 px) begitu soal terbit; rapikan "Cara mengisi" ganda di gharqa;
+          buang kunci diksi kartu tebak; [HNB] tilad–tharif belum punya tabel (perlu desain + mockup)
 
 G3  data server + PDP dasar + soal buta  13–20 hari
     percobaan_soal + catat-percobaan + XP dari server; papan peringkat opt-in;
     kebijakan privasi + persetujuan; hapus/unduh akun; soal buta
 
-   ── sejajar sepanjang jalan (berkas beda): mode fokus, verifikasi madzhab,
-      harta sebagian, KHI ──
+   ── sejajar sepanjang jalan (berkas beda): verifikasi madzhab, harta sebagian, KHI ──
 
 G4  lengkapi materi & latihan soal       kode 6–9 hari + konten tim keilmuan
     skema soal penalaran → soal bangkitan + katalog → soal kurasi
@@ -60,9 +62,10 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 
 ## Yang menunggu keputusanmu
 
+0. **Gabung PR #42 dan #43** (#43 memuat commit #42: gabungkan #42 dulu atau tutup salah satunya).
 1. **Pertanyaan spec bagian 8**: semua sudah diputuskan 2026-11-20 sesuai rekomendasi, kecuali **30** (siapa penulis
    pengecoh soal penalaran dan daftar kesalahan umum), yang menahan G4.
-2. **Tab Khuntsa di mockup** sebelum jenis soal khuntsa.
+2. ~~Tab Khuntsa di mockup~~ selesai 2026-11-21 (KB 13c.4 X1); jenis soal khuntsa sudah ada.
 3. **Kontak pengendali data + isi kebijakan privasi** (G3), dan apakah proyek `ap-south-1` = produksi (pindah region sebelum G7).
 4. **Pilot kelas sebelum AMIN?** Demi kalender semester; biayanya AMIN mundur ±5–7 minggu.
 5. **Siapa menulis pengecoh soal penalaran** (G4).
