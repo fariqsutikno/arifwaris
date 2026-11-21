@@ -29,14 +29,14 @@ export interface Kiriman {
   mode: ModeSoal; aksi: AksiKiriman; isian: IsianTabel | null; jangkar: Jangkar | null; dimulaiPada: string | null;
 }
 export type GalatKiriman = { status: 400 | 409; kode: string };
-export type Hasil<T> = ({ ok: true } & T) | ({ ok: false } & GalatKiriman);
+export type HasilCatat<T> = ({ ok: true } & T) | ({ ok: false } & GalatKiriman);
 const tolak = (kode: string): { ok: false } & GalatKiriman => ({ ok: false, status: 400, kode });
 
 const adalahObjek = (nilai: unknown): nilai is Record<string, unknown> => typeof nilai === 'object' && nilai !== null && !Array.isArray(nilai);
 const adalahTeks = (nilai: unknown, pola: RegExp): nilai is string => typeof nilai === 'string' && pola.test(nilai);
 
 /** Bentuk saja (spec 2.6 butir 2); isi isian diperiksa terhadap tabel di `nilaiKiriman`. */
-export function bacaKiriman(mentah: unknown, ukuranBadan: number): Hasil<{ kiriman: Kiriman }> {
+export function bacaKiriman(mentah: unknown, ukuranBadan: number): HasilCatat<{ kiriman: Kiriman }> {
   if (ukuranBadan > UKURAN_BADAN_MAKS_BAYT) return tolak('BADAN_TERLALU_BESAR');
   if (!adalahObjek(mentah)) return tolak('BENTUK_TIDAK_SAH');
   if ('user_id' in mentah || 'userId' in mentah) return tolak('USER_ID_DILARANG');
@@ -58,7 +58,7 @@ export function bacaKiriman(mentah: unknown, ukuranBadan: number): Hasil<{ kirim
     isian: isianSah.nilai, jangkar: jangkarSah.nilai, dimulaiPada: (dimulaiPada as string | null | undefined) ?? null } };
 }
 
-function bacaIsian(mentah: unknown): Hasil<{ nilai: IsianTabel | null }> {
+function bacaIsian(mentah: unknown): HasilCatat<{ nilai: IsianTabel | null }> {
   if (mentah === undefined || mentah === null) return { ok: true, nilai: null };
   if (!adalahObjek(mentah) || Object.keys(mentah).some(kunci => !['kepala', 'sel', 'pengali'].includes(kunci))) return tolak('ISIAN_TIDAK_SAH');
   const { kepala, sel, pengali } = mentah;
@@ -69,7 +69,7 @@ function bacaIsian(mentah: unknown): Hasil<{ nilai: IsianTabel | null }> {
   return { ok: true, nilai: { kepala, sel: sel as Record<string, Record<string, string>>, ...(pengali ? { pengali } : {}) } };
 }
 
-function bacaJangkar(mentah: unknown): Hasil<{ nilai: Jangkar | null }> {
+function bacaJangkar(mentah: unknown): HasilCatat<{ nilai: Jangkar | null }> {
   if (mentah === undefined || mentah === null) return { ok: true, nilai: null };
   if (!adalahObjek(mentah) || typeof mentah.idBaris !== 'string' || typeof mentah.idKolom !== 'string'
     || Object.keys(mentah).length !== 2) return tolak('JANGKAR_TIDAK_SAH');
@@ -86,12 +86,13 @@ export interface Penilaian {
 }
 
 /** Spec 2.6 butir 3 dan 5: tabel disusun server, isian diperiksa terhadapnya, lalu dinilai. */
-export function nilaiKiriman(kiriman: Kiriman, soal: SoalDimuat, versiEngine: string): Hasil<{ penilaian: Penilaian }> {
+export function nilaiKiriman(kiriman: Kiriman, soal: SoalDimuat, versiEngine: string): HasilCatat<{ penilaian: Penilaian }> {
   let kasus;
   try { kasus = kasusDariSoal(soal.kasus); } catch { return tolak('SOAL_TIDAK_DIDUKUNG'); }
   const tampil = jalankan(kasus, versiEngine);
-  const susunan = tampil.jenis === 'galat' ? { status: 'TIDAK_DIDUKUNG' as const }
-    : tampil.jenis === 'menunggu' ? { status: 'TIDAK_DIDUKUNG' as const } : susunTabelSoal(tampil.hasil, id => kasus.graf.orang[id]?.nama ?? id);
+  // Gharqa membawa keputusan + beberapa tabel; kontrak kiriman untuk itu menyusul (belum ada jalur server).
+  if (tampil.jenis === 'galat' || tampil.jenis === 'menunggu' || tampil.jenis === 'gharqa') return tolak('SOAL_TIDAK_DIDUKUNG');
+  const susunan = susunTabelSoal(tampil.hasil, id => kasus.graf.orang[id]?.nama ?? id);
   if ('status' in susunan) return tolak('SOAL_TIDAK_DIDUKUNG');
   const jenisSoal = jenisSoalDari(kasus, tampil);
   if (kiriman.aksi === 'buka' || (kiriman.aksi === 'lihatJawaban' && kiriman.isian === null))
