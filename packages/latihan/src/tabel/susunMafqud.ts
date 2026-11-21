@@ -1,7 +1,7 @@
-// Tabel soal mafqud (spec B7): per kemungkinan (hidup / wafat) sepasang kolom Bagian · Mas'alah, baris Pengali,
+// Tabel soal mafqud dan khuntsa (spec B7; keduanya satu sumber dengan dua kemungkinan: hidup/wafat atau laki-laki/perempuan): per kemungkinan (hidup / wafat) sepasang kolom Bagian · Mas'alah, baris Pengali,
 // kolom Jami'ah (diberikan sekarang) dan baris Ditahan (mauquf).
 //   Masuk : HasilTaqdir OK dari engine (daftarDunia: bagian, mas'alah, pengali per dunia; diberikan; mauquf).
-//   Putus : semua kunci dari engine. Hanya mafqud satu orang (dua dunia hidup/mati); haml dan khuntsa menyusul sendiri-sendiri.
+//   Putus : semua kunci dari engine. Hanya satu sumber dengan dua kemungkinan; haml dan kelompok bersama menyusul sendiri-sendiri.
 //   Keluar: TabelSoal dengan `pengali`. Mafqud tidak punya sel Jami'ah: bagiannya ada di baris Ditahan [R13-18].
 
 import type { HasilTaqdir, IdOrang } from '@waris/engine';
@@ -10,16 +10,18 @@ import { BAGIAN_TERHALANG, ID_BARIS_MAUQUF, PILIHAN_BAGIAN, type BarisSoal, type
 import { labelBagian } from './susunBiasa.js';
 
 const ID_JAMIAH = 'jamiah';
-const KEMUNGKINAN_MAFQUD = ['hidup', 'mati'];
+const PASANGAN_KEMUNGKINAN = [['hidup', 'mati'], ['lk', 'pr']];
 
 export function susunTabelMafqud(hasil: HasilTaqdir, namaDari: (id: IdOrang) => string): SusunanTabel {
   if (hasil.status !== 'OK') return { status: 'TIDAK_DIDUKUNG' };
   const { daftarDunia } = hasil;
   const sumber = Object.keys(daftarDunia[0]?.taqdir ?? {});
-  const adalahMafqud = sumber.length === 1
-    && daftarDunia.every(dunia => dunia.bagian && dunia.kelompok.length === 0 && KEMUNGKINAN_MAFQUD.includes(dunia.taqdir[sumber[0]!]!));
-  if (!adalahMafqud) return { status: 'TIDAK_DIDUKUNG' };
-  const idMafqud = sumber[0]!;
+  const nilaiPertama = daftarDunia[0]?.taqdir[sumber[0]!];
+  const pasangan = PASANGAN_KEMUNGKINAN.find(nilai => nilaiPertama && nilai.includes(nilaiPertama));
+  const adalahSatuSumber = sumber.length === 1 && pasangan
+    && daftarDunia.every(dunia => dunia.bagian && dunia.kelompok.length === 0 && pasangan.includes(dunia.taqdir[sumber[0]!]!));
+  if (!adalahSatuSumber) return { status: 'TIDAK_DIDUKUNG' };
+  const idMafqud = sumber[0]!; // juga khuntsa: bagiannya ditahan sama [R13-18]
 
   const baris = new Map<IdOrang, BarisSoal>();
   const barisDari = (id: IdOrang): BarisSoal => {
