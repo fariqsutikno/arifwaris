@@ -46,3 +46,16 @@ Pemetaan oleh agen sonnet; golongan dan usulan teks oleh penyunting (opus).
 ## B4 · soal_kuis.md
 
 11 soal: kunci, pengecoh, penjelasan, dan kode semuanya ✔ (dua soal hitung, K-06 dan K-07, dihitung ulang dan cocok).
+
+## B5 · faq, ahwal, modul, cheatsheet
+
+faq 40 klaim (36 cocok), ahwal 18 (17), modul 10 (10), cheatsheet 0 (judul saja, deskripsi kosong). Tidak ada ⚑.
+
+| Berkas:baris | Gol. | Temuan | Usulan teks / tindakan |
+|---|---|---|---|
+| faq:17 | ⚠ | Talak raj'i dalam iddah tetap mewarisi, dirujuk [R02-1] (R02-1 = empat sebab waris); isi cocok dengan KB 2.3, tetapi KB tak punya kode khusus raj'i | ganti [R02-1] → [R02-12] bila tim keilmuan setuju (akad nikah sah) atau hapus kodenya; kandidat kode baru di KB |
+| faq:42 | ✔ | Terjemah QS 4:11 dan 4:176 identik kata per kata dengan Kemenag RI (MCP Quran, edisi id-id) | opsional: beri label «terjemah Kemenag RI» juga pada kutipan 4:176 |
+| faq:56 | ⚠ | Isi memakai [R14-5] tetapi baris «Rujukan» hanya R03-7 (R03-7 bukan definisi dzawil arham) | Rujukan: R14-4, R14-5 |
+| faq:60 | ⚠ | Isi memakai [R13-3], [R13-15], [R13-6] tetapi baris «Rujukan» hanya R13-1 | lengkapi daftar Rujukan |
+| faq:70, 82 | ⚠ | «Madzhab apa yang dipakai?» dan «Kasus apa yang belum bisa dihitung?» adalah status produk; kemungkinan basi (multi-madzhab, haml/mafqud/khuntsa/gharqa sudah jalan) | pemilik mencocokkan dengan status aplikasi sekarang |
+| ahwal:175 (ANAK_LK) | ⚠ | «tidak pernah terhalang» terlalu luas: R06-2 hanya hajb hirman; mawani' (pembunuhan, beda agama) tetap berlaku | «tidak pernah terhalang oleh ahli waris lain (hajb hirman) [R06-2]» |

@@ -72,7 +72,7 @@ Selain tabel: K05-2 [MLK] terverifikasi 2026-11-22 (Mudawwanah 2/588, 17.5 butir
 Titik-titik ini **tidak** mengubah hasil hitungan pada kasus umum, tetapi dasarnya belum dicek ke teks asli:
 | Kode | Topik | Yang dibutuhkan |
 |---|---|---|
-| R13-14 | Hukum laqith, sisa dua butir: «merdeka», «penemu tidak mewarisi» (harta ke baitul mal, hukum Islam, istilhaq sudah terverifikasi di Raudhah 5/435, 5/437) | Raudhah, Kitab al-Laqith |
+| — | Kosong per 2026-11-22 (R13-14 ditutup, 17.5 butir 14) | — |
 
 ## 17.5 Koreksi yang Terjadi Setelah Verifikasi ke Raudhah
 Dicatat agar jejak audit transparan:
@@ -89,3 +89,4 @@ Dicatat agar jejak audit transparan:
 11. **K04-3 dipertajam (dikonfirmasi pengguna 2026-11-22)**: khilaf nenek dua qarabah dibatasi pada kasus berkumpul dengan nenek lain; sendirian = 1/6 di semua madzhab (R04-8). [HNF] berubah dari «seperti [HNB]» (nukilan Mughni) menjadi per badan menurut Abu Yusuf yang difatwakan (Kanz, Tabyin, al-'Alamkiriyyah, Ibnu 'Abidin), dengan opsi per jihat (Muhammad). [MLK] tetap «?». Laporan: `docs/rencana-verifikasi.md` butir 11.
 12. **K05-2 [MLK] terverifikasi (2026-11-22)**: tidak ada fardh dalam wala'; ayah mu'tiq tidak mendapat apa pun bersama anak lk mu'tiq (Mudawwanah 2/588, jawaban Malik; 'Iqd 3/1197 ternyata menyatakannya eksplisit: «فلا شئ للأب»). Sama dengan [HNF]. Engine tidak terdampak: 'ashabah mu'tiq belum dimodelkan (hanya `MUTIQ`/`MUTIQAH`).
 13. **Dzawil arham dua jalur [HNF] (2026-11-22)**: «belum ada nash» dicabut; menurut Muhammad (yang ditarjih) satu orang dua jalur mewarisi dengan tiap jalur, dihitung pada ushul (Mabsuth 30/15, al-Ikhtiyar 5/108, Tabyin 6/243). Sejalan dengan K14-3 yang sudah memakai qaul Muhammad; bukan perubahan hukum.
+14. **R13-14 laqith (2026-11-22)**: dua butir sisa terverifikasi ke teks primer Syafi'iyyah: «merdeka» (al-Umm 6/265, Raudhah 9/210, Tuhfah 6/356 «ijma'») dan «penemu tidak mewarisi / tidak ada wala'» (Mukhtashar al-Muzani 8/237, Nihayat al-Mathlab 8/546, al-Hawi 18/83). Keluar dari 17.4; titik blocked di CLAUDE.md dicabut.
