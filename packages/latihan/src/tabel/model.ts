@@ -1,0 +1,73 @@
+// Tipe tabel faraidh soal latihan (spec tabel B1): kolom, baris, isian pelajar, jangkar, hasil penilaian.
+// Murni dan tanpa bahasa: judul kolom berupa id (`idJudul`), kalimatnya milik web (diksi). Pecahan = teks, angka = bigint.
+
+import type { IdOrang } from '@waris/engine';
+import type { Dimensi, Tahapan } from './qMatriks.js';
+
+/** Daftar tertutup kolom Bagian (B2). */
+export const PILIHAN_BAGIAN = ['1/2', '1/4', '1/8', '2/3', '1/3', '1/6', 'Ashabah', '1/6 + Ashabah', 'Terhalang'] as const;
+export const BAGIAN_TERHALANG = 'Terhalang';
+/** Id baris Ditahan (mauquf) taqdir; bukan id orang. Sel-nya tidak pernah jadi jangkar (jawabannya yang ditanyakan). */
+export const ID_BARIS_MAUQUF = 'mauquf';
+
+export interface KolomSoal {
+  id: string;
+  /** Id judul kolom ('bagian', 'asalMasalah', 'asalMasalahAkhir', ...); web menerjemahkannya lewat diksi. */
+  idJudul: string;
+  /** Dari Q-matriks (qDari): tahapan hitung dan dimensi kecakapan yang dibuktikan kolom ini. */
+  tahapan: Tahapan;
+  dimensi: Dimensi;
+  jenis: 'pilih' | 'bulat';
+  pilihan?: readonly string[];
+  /** Kunci asal masalah/jami'ah; pelajar mengisi kepala kolom, sebanding diterima. */
+  kepala?: bigint;
+  terkunci?: boolean;
+  /** Kolom pilihan acuan untuk menggabungkan sel kelompok (B4). */
+  gabungDari?: string;
+  /** Munasakhat: mayit yang hartanya dibagi di kolom ini; web memakainya untuk judul "Bagian · {mayit}". */
+  mayit?: IdOrang;
+  /** Taqdir: kemungkinan yang dibahas kolom ini ('hidup', 'mati', ...); web memakainya untuk judul "Bagian · {kemungkinan}". */
+  kemungkinan?: string;
+}
+
+export interface BarisSoal {
+  id: IdOrang;
+  nama: string;
+  /** id kolom → jawaban ('1/8', 'Ashabah', '24'); tidak ada = sel "–" atau diturunkan dari pilihan (Terhalang → 0). */
+  kunci: Record<string, string>;
+  /** id kolom → id kelompok engine, hanya untuk sel bersama (anggota > 1). */
+  kelompok: Record<string, string>;
+}
+
+/** Baris Pengali munasakhat (B3): kunci pengali tiap kolom mas'alah; kolom jami'ah dipakai menurunkan nilai yang harus diisi [R12-2]. */
+export interface PengaliSoal { kunci: Record<string, bigint>; kolomJamiah: string }
+
+export interface TabelSoal { kolom: KolomSoal[]; baris: BarisSoal[]; pengali?: PengaliSoal }
+export type SusunanTabel = TabelSoal | { status: 'TIDAK_DIDUKUNG' };
+
+export interface IsianTabel { kepala: Record<string, string>; sel: Record<IdOrang, Record<string, string>>; /** id kolom mas'alah → isian pengali. */ pengali?: Record<string, string> }
+export interface Jangkar { idBaris: IdOrang; idKolom: string }
+
+export type HasilNilai =
+  | { jenis: 'belumLengkap'; idKolom: string; idJudul: string; kepalaKosong: boolean; idBarisKosong: IdOrang[] }
+  | { jenis: 'salah'; idKolom: string; idJudul: string; kepalaSalah: boolean; idBarisSalah: IdOrang[] }
+  | { jenis: 'benar'; bentukTerkecil: Array<{ idKolom: string; idJudul: string; diisi: bigint; terkecil: bigint }> };
+
+/** Hasil satu sel. `benarEcf`: benar bila dinilai terhadap isian pelajar sendiri di kolom sebelumnya [KH]; selalu ≥ `benar`. */
+export interface HasilSel {
+  /** Id baris, 'kepala' untuk kotak asal masalah/jami'ah di kepala kolom; pada kolom 'pengali' berisi id kolom mas'alahnya. */
+  idBaris: IdOrang | 'kepala';
+  benar: boolean;
+  benarEcf: boolean;
+  kosong: boolean;
+}
+
+export interface HasilKolom {
+  idKolom: string;
+  idJudul: string;
+  status: 'benar' | 'salah' | 'belumLengkap';
+  /** Sel bersama sekali (baris pertama kelompok); sel kepala terakhir. */
+  sel: HasilSel[];
+  /** Hanya bila kolom benar dengan kepala kelipatan kunci. Teks digit (bukan bigint) supaya kejadian aman di-JSON-kan. */
+  bentuk?: { diisi: string; terkecil: string };
+}

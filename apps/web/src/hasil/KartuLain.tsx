@@ -1,5 +1,5 @@
 // Ubin pendamping daftar di layar Hasil (acuan-hasil-final.html): Jenis masalah, Tentang kasus ini (KASUS + HITUNGAN),
-// Bagikan dan simpan, Langkah selanjutnya. Semua angka dari ringkasan (engine); ubin tanpa isi tidak dirender pemanggil.
+// Langkah selanjutnya. Semua angka dari ringkasan (engine); ubin tanpa isi tidak dirender pemanggil.
 
 import { useState, type ReactNode } from 'react';
 import { formatRupiah } from '../format';
@@ -40,7 +40,7 @@ export function UbinJenisMasalah({ ringkasan, daftarMayit }: { ringkasan: Ringka
   const jenis = ringkasan.tentang.kelas ? JENIS_KASUS[ringkasan.tentang.kelas] : undefined;
   return (
     <section className="ubin-h" aria-labelledby="judul-jenis-masalah">
-      <h2 id="judul-jenis-masalah">{t('hasil.jenis_masalah')}</h2>
+      <h2 id="judul-jenis-masalah">{t('hasil.judul_kasus_apa')}</h2>
       <div className="daftar-info">
         {ringkasan.taqdir ? <BarisBelumPasti ringkasan={ringkasan} />
           : ringkasan.gharqa ? <BarisGharqa ringkasan={ringkasan} daftarMayit={daftarMayit} />
@@ -93,8 +93,8 @@ function BarisGharqa({ ringkasan, daftarMayit }: { ringkasan: RingkasanHasil; da
 }
 
 export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyiNominal, saatUbahHarta, saatUbahMadzhab, saatUbahAhliWaris, saatUbahPembulatan, waktuHitung }: {
-  /** Selain Syafi'i (bawaan, terverifikasi); sumbernya sekunder. */ namaMadzhab?: string | undefined; ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined;
-  saatUbahMadzhab?: (() => void) | undefined; saatUbahAhliWaris?: (() => void) | undefined; saatUbahPembulatan?: ((satuan: bigint) => void) | undefined;
+  /** Selain Syafi'i (bawaan, terverifikasi); sumbernya sekunder. */ namaMadzhab?: string | undefined; ringkasan: RingkasanHasil; satuanPembulatan: bigint; sembunyiNominal: boolean; saatUbahHarta?: (() => void) | undefined; saatUbahMadzhab?: (() => void) | undefined; saatUbahAhliWaris?: (() => void) | undefined;
+  saatUbahPembulatan?: ((satuan: bigint) => void) | undefined;
   /** Waktu (ms) hasil dihitung; diberikan pemanggil supaya tes tidak bergantung jam. */ waktuHitung: number;
 }) {
   const [bukaBulat, setBukaBulat] = useState(false);
@@ -102,11 +102,11 @@ export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyi
   const uang = (nilai: bigint) => (sembunyiNominal ? t('hitung.rp') : formatRupiah(nilai));
   return (
     <section className="ubin-h" aria-labelledby="judul-tentang">
-      <h2 id="judul-tentang">{t('hitung.tentang_kasus_ini')}</h2>
+      <h2 id="judul-tentang">{t('hasil.judul_yang_dipakai')}</h2>
       <h3 className="kepala-info">{t('hasil.kasus')}</h3>
       <div className="daftar-info">
         <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')}
-          ubah={saatUbahMadzhab && { nama: t('hasil.ubah_baris', { nama: t('hasil.madzhab') }), saat: saatUbahMadzhab }} />
+          ubah={saatUbahMadzhab && { nama: t('hitung.ganti_madzhab'), saat: saatUbahMadzhab }} />
         <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)} ubah={saatUbahHarta && { nama: t('hitung.ubah_harta'), saat: saatUbahHarta }}
           keterangan={<>{t('hasil.rincian_harta', { kotor: uang(tirkah.kotor), jenazah: uang(tirkah.tajhiz), hutang: uang(tirkah.hutang), wasiat: uang(tirkah.wasiatDipakai) })}
             {tirkah.wasiatButuhIjazah > 0n && <> · {t('hitung.wasiat_dipangkas_ke_batas_1_3', { lebih: uang(tirkah.wasiatButuhIjazah) })}</>}</>} />
@@ -173,15 +173,6 @@ export function DaftarAksi({ daftar }: { daftar: AksiUbin[] }) {
         </button>
       ))}
     </div>
-  );
-}
-
-export function UbinBagikan({ daftar }: { daftar: AksiUbin[] }) {
-  return (
-    <section className="ubin-h oranye" aria-labelledby="judul-bagikan" data-tur="selanjutnya">
-      <h2 id="judul-bagikan">{t('hasil.bagikan_dan_simpan')}</h2>
-      <DaftarAksi daftar={daftar} />
-    </section>
   );
 }
 

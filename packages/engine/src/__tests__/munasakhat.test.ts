@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { hitungMunasakhat } from '../munasakhat.js';
 import type { GrafKeluarga, InputMunasakhat, HasilMunasakhat } from '../types.js';
+import { idSisaKeluar, sahamDari } from '../gabung.js';
 import { input, p } from './fixtures/bab16.js';
 import { M2, MUNASAKHAT_FIXTURES, SISA_KELUAR_MAYIT_KEDUA } from './fixtures/munasakhat.js';
 
@@ -41,8 +42,26 @@ describe('Munasakhat bab 12 — kasus uji M1–M9 (bab 16)', () => {
         expect(hubunganHubungan).toEqual(expected.hubunganHubungan);
       }
       expect(hasil.daftarLangkah.map(s => s.mayit)).toEqual([fixture.input.dasar.graf.idPewaris, ...fixture.input.urutanWafat]);
+
+      // [R12-2] tabel per mas'alah: Σ saham × pengali per penerima (selain mayit) = saham akhir di jami'ah
+      const mayit = new Set(hasil.daftarLangkah.map(langkah => langkah.mayit));
+      const akhir: Record<string, bigint> = {};
+      for (const langkah of hasil.daftarLangkah) {
+        for (const [id, nilai] of Object.entries(sahamDari(langkah.mayit, langkah.hasil))) if (!mayit.has(id)) akhir[id] = (akhir[id] ?? 0n) + nilai * langkah.pengali;
+      }
+      const sisa = Object.fromEntries(hasil.sisaKeluar.map(sisaIni => [idSisaKeluar(sisaIni.mayit), sisaIni.saham]));
+      expect(akhir, 'Σ saham × pengali').toEqual({ ...hasil.saham, ...sisa });
     });
   }
+
+  test("12.6 contoh 2 (M2): mas'alah 1 = 24, mas'alah 2 = 3 (ibu 1/3, saudara ashabah); pengali 3 dan 7; jami'ah 72 (16, 56)", () => {
+    const hasil = ok(MUNASAKHAT_FIXTURES.find(fixture => fixture.id === 'M2')!.input);
+    const [pertama, kedua] = hasil.daftarLangkah;
+    expect([pertama!.masalah, kedua!.masalah, pertama!.pengali, kedua!.pengali]).toEqual([24n, 3n, 3n, 7n]);
+    expect(kedua!.hasil.tabel.baris.map(baris => [baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : 'ashabah', ...Object.values(baris.perOrang).map(sel => sel.saham)])).toEqual([['1/3', 1n], ['ashabah', 2n]]);
+    expect(hasil.jamiah).toBe(72n);
+    expect(Object.values(hasil.saham).sort()).toEqual([16n, 56n]);
+  });
 });
 
 describe('Munasakhat — penolakan dan pertanyaan', () => {

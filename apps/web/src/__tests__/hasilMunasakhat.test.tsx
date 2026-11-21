@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { hitungIsian, tambahAhliWaris } from '../checklist';
-import { jalankan, type HasilMunasakhatOk } from '../jalankan';
+import { jalankan, type HasilMunasakhatOk } from '@waris/latihan';
 import { kasusBaru, type Kasus } from '../kasus';
 import { Hasil } from '../layar/Hasil';
 import { rantaiMunasakhat } from '../hasil/munasakhat';

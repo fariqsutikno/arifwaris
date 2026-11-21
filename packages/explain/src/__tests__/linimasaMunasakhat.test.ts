@@ -3,6 +3,7 @@ import { hitungMunasakhat, type InputMunasakhat } from '@waris/engine';
 import { describe, expect, it } from 'vitest';
 import { M2, M7, M8, M9, SISA_KELUAR_MAYIT_KEDUA } from '../../../engine/src/__tests__/fixtures/munasakhat.js';
 import { susunLinimasaMunasakhat } from '../linimasaMunasakhat.js';
+import { keTeksBiasa } from '../segments.js';
 import { kamusSnapshot } from './kamus.js';
 
 function linimasaDari(input: InputMunasakhat) {
@@ -10,6 +11,22 @@ function linimasaDari(input: InputMunasakhat) {
   if (hasil.status !== 'OK') throw new Error(hasil.status);
   return { hasil, linimasa: susunLinimasaMunasakhat(hasil, input.dasar.graf, { kamus: kamusSnapshot }) };
 }
+
+describe('skrip munasakhat', () => {
+  it('M2: pembukaan bertanya, ada dasar munasakhat, sambungan menyebut pembagi baru, hasil akhir ditutup ringkasan', () => {
+    const { linimasa } = linimasaDari(M2.input);
+    const jenis = (id: string) => linimasa.tahap.find(tahap => tahap.id === id)!.langkah.map(langkah => langkah.jenis);
+    const teks = (id: string) => linimasa.tahap.find(tahap => tahap.id === id)!.langkah.map(langkah => keTeksBiasa(langkah.narasi)).join(' ');
+    expect(jenis('berantai')).toEqual(['tanya', 'dasar', 'logika', 'keluarga', 'jembatan']);
+    expect(teks('berantai')).toContain('Ini disebut munasakhat');
+    expect(jenis('menyambung')[0]).toBe('tanya');
+    expect(jenis('menyambung').at(-1)).toBe('jembatan');
+    expect(teks('menyambung')).toContain('menjadi 72');
+    expect(jenis('hasilAkhir')[0]).toBe('tanya');
+    expect(jenis('hasilAkhir').at(-1)).toBe('ringkas');
+    expect(teks('hasilAkhir')).toContain('istri 2/9 dan anak laki-laki 7/9');
+  });
+});
 
 describe('susunLinimasaMunasakhat', () => {
   for (const [nama, input] of [['M2', M2.input], ['M7', M7.input], ['M8', M8.input], ['M9', M9.input], ['sisa keluar mayit kedua', SISA_KELUAR_MAYIT_KEDUA]] as const) {

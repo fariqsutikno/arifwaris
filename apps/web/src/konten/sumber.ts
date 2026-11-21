@@ -36,6 +36,9 @@ export const daftarSyahid = () => daftarKonten('syahid');
 export const sumberKitab = () => daftarKonten('kitab');
 export const daftarCheatsheet = () => daftarKonten('cheatsheet');
 export const cariPelajaran = (slug: string): Pelajaran | undefined => daftarPelajaran().find(p => p.slug === slug);
+/** Revisi konten yang dikerjakan (T7): kejadian percobaan menyebutnya supaya penilaian ulang tahu versi soalnya. */
+export const revisiIdSoalHitung = (kode: string): string | undefined =>
+  perJenis.get('soal_hitung')?.find(baris => (baris.isi as SoalHitung).kode === kode)?.revisiId;
 export const cariSoalHitung = (kode: string): SoalHitung | undefined => daftarSoalHitung().find(s => s.kode === kode);
 export const glosarium = (): EntriGlosarium[] => glosariumTergabung;
 export const cariIstilah = (id: string): EntriGlosarium | undefined => istilahMenurutSinonim.get(id);

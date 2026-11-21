@@ -9830,13 +9830,6 @@
    "versiTerbit": 370
   },
   {
-   "kunci": "hitung.benar_dari_total_orang_sudah_benar",
-   "halaman": "hitung",
-   "id": "{benar} dari {total} orang sudah benar. Perbaiki: {nama}.",
-   "ar": "{benar} من {total} صحيحة. صحح: {nama}.",
-   "versiTerbit": 371
-  },
-  {
    "kunci": "hitung.benar_semua",
    "halaman": "hitung",
    "id": "Benar semua!",
@@ -10355,13 +10348,6 @@
    "versiTerbit": 440
   },
   {
-   "kunci": "hitung.isi_dulu_nama",
-   "halaman": "hitung",
-   "id": "Isi dulu: {nama}.",
-   "ar": "أدخل أولا: {nama}.",
-   "versiTerbit": 441
-  },
-  {
    "kunci": "hitung.isi_total_harta_peninggalan_dulu_harus",
    "halaman": "hitung",
    "id": "Isi total harta peninggalan dulu, harus lebih dari Rp 0.",
@@ -10416,13 +10402,6 @@
    "id": "Jawabanmu",
    "ar": "إجابتك",
    "versiTerbit": 449
-  },
-  {
-   "kunci": "hitung.jawabanmu_belum_tepat",
-   "halaman": "hitung",
-   "id": "Jawabanmu belum tepat",
-   "ar": "إجابتك غير صحيحة",
-   "versiTerbit": 450
   },
   {
    "kunci": "hitung.jeda",
@@ -10864,13 +10843,6 @@
    "id": "Mas'alah gabungan untuk semua mayit",
    "ar": "المسألة الجامعة لجميع الأموات",
    "versiTerbit": 512
-  },
-  {
-   "kunci": "hitung.masih_ada_yang_kosong",
-   "halaman": "hitung",
-   "id": "Masih ada yang kosong",
-   "ar": "بقيت خانات فارغة",
-   "versiTerbit": 513
   },
   {
    "kunci": "hitung.matikan_animasi",
@@ -11496,13 +11468,6 @@
    "versiTerbit": 598
   },
   {
-   "kunci": "hitung.seluruh_harta_yang_dibagi",
-   "halaman": "hitung",
-   "id": "seluruh harta yang dibagi",
-   "ar": "كل ما يقسم",
-   "versiTerbit": 599
-  },
-  {
    "kunci": "hitung.sembunyikan_nominal",
    "halaman": "hitung",
    "id": "Sembunyikan nominal",
@@ -11557,13 +11522,6 @@
    "id": "Sepupu lk (dari paman sebapak)",
    "ar": "ابن العم لأب",
    "versiTerbit": 607
-  },
-  {
-   "kunci": "hitung.sesudah_aul_atau_radd_bila_ada",
-   "halaman": "hitung",
-   "id": ", sesudah 'aul atau radd bila ada. Bukan bagian fardh awalnya.",
-   "ar": "، بعد العول أو الرد إن وجد، لا الفرض الأصلي.",
-   "versiTerbit": 608
   },
   {
    "kunci": "hitung.setelah_dibulatkan_ke_bawah_tersisa",
@@ -11790,13 +11748,6 @@
    "versiTerbit": 638
   },
   {
-   "kunci": "hitung.tebak_pembagian_akhirnya",
-   "halaman": "hitung",
-   "id": "Tebak pembagian akhirnya",
-   "ar": "خمن القسمة النهائية",
-   "versiTerbit": 639
-  },
-  {
    "kunci": "hitung.teks",
    "halaman": "hitung",
    "id": ", ",
@@ -11963,13 +11914,6 @@
    "id": "Total langsung",
    "ar": "المجموع مباشرة",
    "versiTerbit": 665
-  },
-  {
-   "kunci": "hitung.tulis_bagian_akhir_tiap_orang_dari",
-   "halaman": "hitung",
-   "id": "Tulis bagian akhir tiap orang dari",
-   "ar": "اكتب النصيب النهائي لكل واحد من",
-   "versiTerbit": 666
   },
   {
    "kunci": "hitung.turunkan_label",
@@ -12145,13 +12089,6 @@
    "id": "yang besar habis dibagi yang kecil",
    "ar": "الأكبر يقبل القسمة على الأصغر",
    "versiTerbit": 690
-  },
-  {
-   "kunci": "hitung.yang_tidak_mendapat_bagian_isi",
-   "halaman": "hitung",
-   "id": ". Yang tidak mendapat bagian, isi",
-   "ar": ". ومن لا نصيب له فاكتب",
-   "versiTerbit": 691
   },
   {
    "kunci": "latihan.belum",
@@ -13048,13 +12985,6 @@
    "id": "Hapus semua",
    "ar": "حذف الكل",
    "versiTerbit": 815
-  },
-  {
-   "kunci": "umum.jawab",
-   "halaman": "umum",
-   "id": "Jawab",
-   "ar": "أجب",
-   "versiTerbit": 816
   },
   {
    "kunci": "umum.jumlah",
@@ -18485,13 +18415,6 @@
    "kunci": "hitung.urutan_yang_biasa_dilakukan",
    "halaman": "hitung",
    "id": "Urutan yang biasa dilakukan keluarga",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.dibagi_dari_harta",
-   "halaman": "hitung",
-   "id": "Dibagi dari harta {harta}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -24960,6 +24883,3289 @@
    "kunci": "hasil.dihitung",
    "halaman": "hasil",
    "id": "Dihitung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.atur_kolom",
+   "halaman": "hasil",
+   "id": "Atur kolom",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.kolom_tampil",
+   "halaman": "hasil",
+   "id": "{tampil} dari {total} jenis tampil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.putar_aliran",
+   "halaman": "hasil",
+   "id": "Putar aliran",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.peta.tiga.narasi",
+   "halaman": "narasi",
+   "id": "Kita akan menjawab tiga hal: siapa yang mendapat bagian, berapa bagiannya, dan berapa rupiahnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.peta.tiga.papan",
+   "halaman": "narasi",
+   "id": "Siapa · berapa bagian · berapa rupiah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.peta.dua.narasi",
+   "halaman": "narasi",
+   "id": "Kita akan menjawab dua hal: siapa yang mendapat bagian, dan berapa bagiannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.peta.dua.papan",
+   "halaman": "narasi",
+   "id": "Siapa · berapa bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.judul",
+   "halaman": "narasi",
+   "id": "Harta yang dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanpa_potongan.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan {kotor}. Tidak ada biaya jenazah, hutang, atau wasiat, jadi seluruhnya dibagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanpa_potongan.papan",
+   "halaman": "narasi",
+   "id": "Yang dibagi: {kotor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.judul",
+   "halaman": "narasi",
+   "id": "Siapa yang mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tanya.jamak.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan {kerabat}. Apakah semuanya mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tanya.jamak.papan",
+   "halaman": "narasi",
+   "id": "{jumlah} kerabat. Semuanya mendapat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tanya.mufrad.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan {kerabat}. Apakah ia mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tanya.mufrad.papan",
+   "halaman": "narasi",
+   "id": "1 kerabat. Mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.dasar_hajb.narasi",
+   "halaman": "narasi",
+   "id": "Kerabat tertentu bisa menghalangi kerabat lain, sehingga yang terhalang tidak mendapat bagian. Ini disebut {hajb_hirman}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.dasar_hajb.papan",
+   "halaman": "narasi",
+   "id": "Ada kerabat yang menghalangi kerabat lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tidak_terhalang.jamak.narasi",
+   "halaman": "narasi",
+   "id": "Tidak ada yang terhalang. Semuanya mewarisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tidak_terhalang.mufrad.narasi",
+   "halaman": "narasi",
+   "id": "Tidak ada yang menghalanginya. Ia mewarisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tidak_terhalang.papan",
+   "halaman": "narasi",
+   "id": "Tidak ada yang terhalang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.terhalang.narasi",
+   "halaman": "narasi",
+   "id": "{mahjub} terhalang oleh {hajib}, jadi tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.terhalang.papan",
+   "halaman": "narasi",
+   "id": "{hajib} menghalangi {mahjub}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tinggal.narasi",
+   "halaman": "narasi",
+   "id": "Tinggal {jumlah} orang yang mewarisi: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.tinggal.papan",
+   "halaman": "narasi",
+   "id": "Mewarisi: {daftar}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.judul",
+   "halaman": "narasi",
+   "id": "Bagian awal tiap orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.dasar_fardh.narasi",
+   "halaman": "narasi",
+   "id": "Sebagian ahli waris punya bagian pasti dari Al-Qur'an, namanya fardh. Sisanya diambil ahli waris lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.dasar_fardh.papan",
+   "halaman": "narasi",
+   "id": "Bagian pasti (fardh) dan sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.mendapat.mufrad",
+   "halaman": "narasi",
+   "id": "mendapat {pecahan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.mendapat.jamak",
+   "halaman": "narasi",
+   "id": "berbagi {pecahan} sama rata",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.dasar_faru.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {dari} bila {pewaris} tidak punya anak atau cucu yang ikut mewarisi, dan {pecahan} bila punya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.dasar_faru.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {dari} tanpa anak, {pecahan} dengan anak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ada_faru.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan {oleh}, jadi {subjek} {mendapat}, bukan {dari}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ada_faru.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {dari} → {pecahan} · {hajb_nuqshan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ada_faru_tanpa_dari.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan {oleh}, jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.fardh.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.tanpa_faru.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} tidak punya anak atau cucu yang ikut mewarisi, jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kalalah.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} tidak meninggalkan anak, cucu, ayah, maupun kakek, jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kalalah.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan} · {kalalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.tanpa_muashshib.mufrad.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} sendirian dan tidak ada laki-laki sederajat yang membuatnya ikut mengambil sisa, jadi {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.tanpa_muashshib.jamak.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} lebih dari satu dan tidak ada laki-laki sederajat yang membuat mereka ikut mengambil sisa, jadi {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.tanpa_muashshib.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan} · {muashshib}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_bil_ghair.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} tidak punya bagian pasti. Mereka mengambil sisa bersama-sama, dan yang mengambil sisa disebut {ashabah}. Laki-laki mendapat dua kali bagian perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_bil_ghair.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: sisa, 2 : 1 · {bil_ghair}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_bin_nafsi.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} mengambil seluruh sisa harta setelah bagian pasti dibagikan. Yang mengambil sisa disebut {ashabah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_bin_nafsi.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jembatan.beda_penyebut.narasi",
+   "halaman": "narasi",
+   "id": "{pecahan} belum bisa dijumlahkan, karena potongannya tidak sama besar. Itu tugas tahap berikutnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jembatan.beda_penyebut.papan",
+   "halaman": "narasi",
+   "id": "{jumlahan} = ?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jembatan.ada_sisa.narasi",
+   "halaman": "narasi",
+   "id": "Bagian pasti sudah ketemu, tapi \"sisa\" belum berupa angka. Supaya bisa dihitung, harta dipotong dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jembatan.ada_sisa.papan",
+   "halaman": "narasi",
+   "id": "Bagian pasti + sisa = ?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jembatan.umum.narasi",
+   "halaman": "narasi",
+   "id": "Bagian-bagian ini sekarang kita ubah menjadi potongan harta, supaya mudah dihitung.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jembatan.umum.papan",
+   "halaman": "narasi",
+   "id": "Pecahan → potongan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.judul",
+   "halaman": "narasi",
+   "id": "Memotong harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.potong_sama.narasi",
+   "halaman": "narasi",
+   "id": "Bayangkan harta sebagai satu kotak utuh. Penyebut bagian tadi {ashl}, jadi kotak itu dipotong menjadi {ashl} bagian sama besar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.potong_sama.papan",
+   "halaman": "narasi",
+   "id": "Harta = {ashl} kotak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.potong_beda.narasi",
+   "halaman": "narasi",
+   "id": "Bayangkan harta sebagai satu kotak utuh. Penyebut bagian tadi berbeda-beda, jadi kita cari satu angka yang cocok untuk semuanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.potong_beda.papan",
+   "halaman": "narasi",
+   "id": "Cari satu angka untuk semua penyebut",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.fardh.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} {pecahan}: {ashl} dibagi {d}, {kotak} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.fardh.papan",
+   "halaman": "narasi",
+   "id": "{ashl} ÷ {d} = {kotak} kotak untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.fardh_kali.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} {pecahan}: {ashl} dibagi {d}, lalu dikali {n}, {kotak} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.fardh_kali.papan",
+   "halaman": "narasi",
+   "id": "{ashl} ÷ {d} × {n} = {kotak} kotak untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.sisa.narasi",
+   "halaman": "narasi",
+   "id": "Sisanya {ashl} dikurangi {terpakai}, yaitu {kotak} kotak, untuk {siapa}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.sisa.papan",
+   "halaman": "narasi",
+   "id": "{ashl} − {terpakai} = {kotak} kotak untuk {siapa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jadi.narasi",
+   "halaman": "narasi",
+   "id": "Jadi harta dipotong menjadi {ashl}. Angka {ashl} ini disebut asal masalah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jadi.papan",
+   "halaman": "narasi",
+   "id": "Asal masalah = {ashl} · {ashlul_masalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.cek.judul",
+   "halaman": "narasi",
+   "id": "Memeriksa jumlah bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.cek.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Sebelum lanjut, cek dulu: apakah jumlah kotak pas dengan hartanya? Kalau lebih, harta tidak cukup. Kalau kurang, ada sisa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.cek.tanya.papan",
+   "halaman": "narasi",
+   "id": "Jumlah kotak pas {ashl}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.cek.pas.narasi",
+   "halaman": "narasi",
+   "id": "Jumlah semua kotak: {rincian}{jumlah}, sama dengan jumlah potongan harta. Pas, tidak perlu penyesuaian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.cek.pas.papan",
+   "halaman": "narasi",
+   "id": "{rincian}{jumlah} · pas · {adilah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.judul",
+   "halaman": "narasi",
+   "id": "Supaya bagian jadi bulat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.satuan.jatah",
+   "halaman": "narasi",
+   "id": "jatah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.satuan.orang",
+   "halaman": "narasi",
+   "id": "orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.jatah.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} dibagi menurut jatah: laki-laki 2 jatah, perempuan 1 jatah. Totalnya {ruus} jatah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.jatah.papan",
+   "halaman": "narasi",
+   "id": "{ruus} jatah · laki-laki 2, perempuan 1 · {ruus_istilah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tidak_habis.narasi",
+   "halaman": "narasi",
+   "id": "{saham} kotak dibagi {ruus} {satuan}: {hasil_bagi}, sisa {sisa}. Tidak habis, padahal tiap orang harus dapat potongan utuh.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tidak_habis.papan",
+   "halaman": "narasi",
+   "id": "{saham} ÷ {ruus} = {hasil_bagi}, sisa {sisa} · {hubungan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.potong.narasi",
+   "halaman": "narasi",
+   "id": "Jalan keluarnya: setiap kotak dipotong {pengali}. Semua kotak, supaya semua potongan sama besar. Sekarang ada {dasar} × {pengali} = {hasil} potong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.potong.papan",
+   "halaman": "narasi",
+   "id": "Tiap kotak dipotong {pengali} · {dasar} × {pengali} = {hasil} potong · {tashih}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.habis_dibagi.narasi",
+   "halaman": "narasi",
+   "id": "{saham} kotak menjadi {potong_kelompok} potong, dan {potong_kelompok} habis dibagi {ruus}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.habis_dibagi.papan",
+   "halaman": "narasi",
+   "id": "{saham} × {pengali} = {potong_kelompok} · {potong_kelompok} ÷ {ruus} = {per}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.nilai_tetap.narasi",
+   "halaman": "narasi",
+   "id": "Lihat {siapa}. Kotaknya tetap {kotak}, hanya potongnya jadi {potong}. Jadi {pecahan} sama nilainya dengan {potong}/{hasil}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.nilai_tetap.papan",
+   "halaman": "narasi",
+   "id": "{siapa}: {kotak} kotak = {potong} potong · {pecahan} = {potong}/{hasil}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rincian_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} potong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.dibagi.narasi",
+   "halaman": "narasi",
+   "id": "{kelompok} sekarang punya {saham} × {pengali} = {total} potong. Dibagi {ruus} {satuan}, {per} per {satuan}. Jadi {rincian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.dibagi.papan",
+   "halaman": "narasi",
+   "id": "{total} ÷ {ruus} = {per} per {satuan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.cek.narasi",
+   "halaman": "narasi",
+   "id": "Semua bagian sekarang bulat: {daftar}. Jumlahnya {hasil}, pas dengan potongan harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.cek.papan",
+   "halaman": "narasi",
+   "id": "{jumlahan} = {hasil}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Apakah bagian tiap kelompok bisa dibagi rata ke anggotanya, tanpa pecahan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.tanya.papan",
+   "halaman": "narasi",
+   "id": "Dibagi rata tanpa pecahan?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.pas.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} kotak untuk {ruus} {satuan}: pas dibagi rata.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.pas.papan",
+   "halaman": "narasi",
+   "id": "{saham} ÷ {ruus} = {hasil_bagi}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.semua.narasi",
+   "halaman": "narasi",
+   "id": "Semua kelompok bisa dibagi rata, jadi tidak perlu dipotong lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.rata.semua.papan",
+   "halaman": "narasi",
+   "id": "Tidak perlu pembulatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.jembatan.rupiah.narasi",
+   "halaman": "narasi",
+   "id": "Semua bagian sudah bulat. Terakhir: berapa rupiahnya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.jembatan.rupiah.papan",
+   "halaman": "narasi",
+   "id": "Berapa rupiah?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.jembatan.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Semua bagian sudah bulat. Tinggal ringkasannya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.jembatan.ringkas.papan",
+   "halaman": "narasi",
+   "id": "Ringkasan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.judul_rupiah",
+   "halaman": "narasi",
+   "id": "Bagian dalam rupiah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.judul_saham",
+   "halaman": "narasi",
+   "id": "Hasil akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.satu_potong.narasi",
+   "halaman": "narasi",
+   "id": "Harta {bersih} dipotong {penyebut}. Satu potong bernilai {nilai}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.satu_potong.papan",
+   "halaman": "narasi",
+   "id": "1 potong = {bersih} ÷ {penyebut} = {nilai}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.orang_rupiah.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} potong: {nominal}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.orang_rupiah.papan",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}/{penyebut} = {nominal}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.orang_saham.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} dari {penyebut} potong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.orang_saham.papan",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}/{penyebut}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.cek_pas.narasi",
+   "halaman": "narasi",
+   "id": "Jumlahnya pas {bersih}, tanpa selisih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.cek_pas.papan",
+   "halaman": "narasi",
+   "id": "Jumlah = {bersih}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.ringkas_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}/{penyebut}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Jadi {rincian}, dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.hasil.ringkas.papan",
+   "halaman": "narasi",
+   "id": "{rincian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.judul",
+   "halaman": "narasi",
+   "id": "Bagiannya melebihi harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.lebih.narasi",
+   "halaman": "narasi",
+   "id": "Jumlah semua kotak: {rincian}{jumlah}, lebih besar dari {ashl}. Ada {kelebihan} kotak yang tidak muat di dalam harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.lebih.papan",
+   "halaman": "narasi",
+   "id": "{rincian}{jumlah} > {ashl} · {kelebihan} kotak tidak muat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Lalu siapa yang bagiannya dikurangi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.tanya.papan",
+   "halaman": "narasi",
+   "id": "Siapa yang dikurangi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.bersama.narasi",
+   "halaman": "narasi",
+   "id": "Semua orang di sini punya bagian pasti dari Al-Qur'an, jadi tidak ada yang didahulukan. Kekurangannya ditanggung bersama, sebanding dengan bagian masing-masing.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.bersama.papan",
+   "halaman": "narasi",
+   "id": "Semua bagian pasti dikurangi sebanding",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.potong_ulang.narasi",
+   "halaman": "narasi",
+   "id": "Jalan keluarnya: harta yang sama dipotong ulang menjadi {jumlah}. Kotaknya lebih kecil, tapi semua bagian muat. Ini disebut {aul}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.potong_ulang.papan",
+   "halaman": "narasi",
+   "id": "Harta yang sama, dipotong {jumlah} · {aul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.contoh.narasi",
+   "halaman": "narasi",
+   "id": "Lihat {siapa}: tetap {kotak} kotak, tetapi sekarang {kotak} dari {jumlah}, bukan {kotak} dari {ashl}. Bagiannya mengecil sedikit, sama seperti semua orang lainnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.contoh.papan",
+   "halaman": "narasi",
+   "id": "{siapa}: {kotak}/{ashl} → {kotak}/{jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.rincian_kelompok",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.hasil.narasi",
+   "halaman": "narasi",
+   "id": "Jadi harta dibagi {jumlah} kotak: {rincian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.aul.hasil.papan",
+   "halaman": "narasi",
+   "id": "Penyebut baru = {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.judul",
+   "halaman": "narasi",
+   "id": "Sisa harta, ke mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.kurang.narasi",
+   "halaman": "narasi",
+   "id": "Jumlah semua kotak: {rincian}{jumlah}, padahal ada {ashl}. Masih sisa {sisa} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.kurang.papan",
+   "halaman": "narasi",
+   "id": "{rincian}{jumlah} < {ashl} · sisa {sisa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak itu untuk siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanya.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak: ke mana?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila tidak ada ashabah yang berhak atas sisa, sisanya dikembalikan kepada ahli waris sesuai besar bagian mereka. Ini disebut {radd}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.dasar.papan",
+   "halaman": "narasi",
+   "id": "Sisa dikembalikan sesuai bagian · {radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanpa_ashabah.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini tidak ada yang mengambil sisa sebagai ashabah, jadi {sisa} kotak itu dikembalikan kepada {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.tanpa_ashabah.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak → {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.perbandingan.narasi",
+   "halaman": "narasi",
+   "id": "Karena tidak ada suami atau istri, cukup bagi menurut perbandingan bagian mereka: {rincian}. Jumlahnya {ashl_radd}, jadi harta dipotong ulang menjadi {ashl_radd} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.perbandingan.papan",
+   "halaman": "narasi",
+   "id": "Perbandingan {perbandingan} · harta dipotong {ashl_radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.rincian_penerima",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.rincian_pasangan",
+   "halaman": "narasi",
+   "id": "{siapa} {saham} (tetap {fardh})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.hasil.narasi",
+   "halaman": "narasi",
+   "id": "Jadi {rincian} dari {ashl_radd} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.hasil.papan",
+   "halaman": "narasi",
+   "id": "Penyebut baru = {ashl_radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_tidak_ikut.narasi",
+   "halaman": "narasi",
+   "id": "{pasangan} tidak ikut radd, karena suami atau istri tidak menerima radd. Bagiannya tetap {fardh} dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_tidak_ikut.papan",
+   "halaman": "narasi",
+   "id": "{pasangan}: tetap {fardh}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_dulu.narasi",
+   "halaman": "narasi",
+   "id": "Kita hitung ulang untuk sisanya: harta dipotong {ashl}. {pasangan} mendapat {saham} kotak, sisanya {sisa} kotak untuk {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_dulu.papan",
+   "halaman": "narasi",
+   "id": "{ashl} − {saham} = {sisa} kotak untuk {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.jamak.narasi",
+   "halaman": "narasi",
+   "id": "{penerima} berbagi {sisa} kotak itu dengan perbandingan {perbandingan}, totalnya {ashl_radd}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.jamak.papan",
+   "halaman": "narasi",
+   "id": "Perbandingan {perbandingan} · total {ashl_radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.mufrad.narasi",
+   "halaman": "narasi",
+   "id": "{penerima} mendapat seluruh {sisa} kotak itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_bagi.mufrad.papan",
+   "halaman": "narasi",
+   "id": "Seluruh sisa untuk {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.nisab.habis.narasi",
+   "halaman": "narasi",
+   "id": "{sisa} kotak bisa dibagi rata menjadi {ashl_radd} bagian, jadi harta tetap {hasil} kotak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.nisab.tawafuq.narasi",
+   "halaman": "narasi",
+   "id": "Tapi {sisa} kotak tidak habis dibagi {ashl_radd} bagian, walau keduanya sama-sama bisa dibagi {fpb} ({tawafuq}). Jadi semua kotak dipotong {pengali}: harta menjadi {hasil} potong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.nisab.tabayun.narasi",
+   "halaman": "narasi",
+   "id": "Tapi {sisa} kotak tidak habis dibagi {ashl_radd} bagian, dan keduanya tidak punya faktor bersama ({tabayun}). Jadi semua kotak dipotong {ashl_radd}: harta menjadi {hasil} potong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.nuqshan",
+   "halaman": "narasi",
+   "id": "Kenapa {pecahan}, bukan {dari}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.fardh",
+   "halaman": "narasi",
+   "id": "Kenapa {pecahan}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.ashabah",
+   "halaman": "narasi",
+   "id": "Kenapa mendapat sisa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.terhalang",
+   "halaman": "narasi",
+   "id": "Kenapa tidak mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.asal",
+   "halaman": "narasi",
+   "id": "Memotong harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.aul",
+   "halaman": "narasi",
+   "id": "'Aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.radd",
+   "halaman": "narasi",
+   "id": "Radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.tashih",
+   "halaman": "narasi",
+   "id": "Tashih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.bagian",
+   "halaman": "narasi",
+   "id": "Bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.label.rupiah",
+   "halaman": "narasi",
+   "id": "Rupiah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.aul",
+   "halaman": "narasi",
+   "id": "{kotak} dari {ashl} menjadi {kotak} dari {aul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.radd",
+   "halaman": "narasi",
+   "id": "{kotak} dari {ashl} menjadi {saham} dari {radd}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.tashih",
+   "halaman": "narasi",
+   "id": "{dasar} × {pengali} = {total}; bagian orang ini {saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.bagian",
+   "halaman": "narasi",
+   "id": "{saham} dari {penyebut} potong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.rupiah",
+   "halaman": "narasi",
+   "id": "{saham}/{penyebut} × {bersih} = {nominal}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Sebelum membahas bagian tiap orang, kita pastikan dulu: berapa harta {pewaris} yang benar-benar dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.tanya.papan",
+   "halaman": "narasi",
+   "id": "Berapa harta yang dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Harta peninggalan ({tirkah}) dikurangi dulu untuk biaya pengurusan jenazah, lalu hutang, lalu wasiat yang paling banyak 1/3.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.dasar.papan",
+   "halaman": "narasi",
+   "id": "Jenazah → hutang → wasiat (maks. 1/3)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.apa.tajhiz",
+   "halaman": "narasi",
+   "id": "biaya jenazah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.apa.hutang",
+   "halaman": "narasi",
+   "id": "hutang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.apa.wasiat",
+   "halaman": "narasi",
+   "id": "wasiat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.kurangi.narasi",
+   "halaman": "narasi",
+   "id": "Harta {sebelum} dikurangi {apa} {nilai}, tersisa {sisa}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.kurangi.papan",
+   "halaman": "narasi",
+   "id": "{sebelum} − {nilai} = {sisa}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.hutang_habis.narasi",
+   "halaman": "narasi",
+   "id": "Hutang menghabiskan seluruh harta, jadi tidak ada yang dibagi sebagai warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.hutang_habis.papan",
+   "halaman": "narasi",
+   "id": "Tidak ada yang dibagi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.wasiat_melebihi.narasi",
+   "halaman": "narasi",
+   "id": "Wasiat {pewaris} sebesar {diminta} melebihi batas 1/3 ({batas}), jadi yang dijalankan hanya {dipakai}. Kelebihan {kelebihan} baru boleh dijalankan jika semua ahli waris setuju (ijazah).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.wasiat_melebihi.papan",
+   "halaman": "narasi",
+   "id": "Wasiat {diminta} → {dipakai} (batas {batas})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.jadi.narasi",
+   "halaman": "narasi",
+   "id": "Jadi yang dibagi kepada ahli waris: {bersih}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.harta.jadi.papan",
+   "halaman": "narasi",
+   "id": "Yang dibagi: {bersih}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.pengali_bersama.narasi",
+   "halaman": "narasi",
+   "id": "Angka yang harus disimpan tiap kelompok: {angka}. Supaya cocok untuk semuanya, kita cari satu pengali bersama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.pengali_bersama.papan",
+   "halaman": "narasi",
+   "id": "Pengali bersama untuk {angka}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.tidak_habis_kelompok.narasi",
+   "halaman": "narasi",
+   "id": "{siapa}: {saham} kotak dibagi {ruus} {satuan}, hasilnya {hasil_bagi}, sisa {sisa}. Tidak habis, padahal tiap orang harus dapat potongan utuh.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.tashih.habis_dibagi_kelompok.narasi",
+   "halaman": "narasi",
+   "id": "{siapa}: {saham} kotak menjadi {potong_kelompok} potong, dan {potong_kelompok} habis dibagi {ruus}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: bila yang ditinggalkan hanya suami atau istri, ayah, dan ibu, ibu tidak mendapat 1/3 dari seluruh harta, melainkan 1/3 dari sisa setelah bagian pasangan. Ini disebut {umariyyatain}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.dasar.papan",
+   "halaman": "narasi",
+   "id": "Pasangan + ayah + ibu: ibu 1/3 dari sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.ibu.narasi",
+   "halaman": "narasi",
+   "id": "Setelah {pasangan} mengambil {fardh_pasangan}, {subjek} mendapat 1/3 dari sisa itu, yaitu {pecahan} dari seluruh harta. Dengan begitu bagian ayah tidak lebih kecil dari bagian ibu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.umariyyatain.ibu.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: 1/3 dari sisa = {pecahan} dari seluruh harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.paling_dekat.narasi",
+   "halaman": "narasi",
+   "id": "Sisa harta diberikan kepada kerabat laki-laki yang paling dekat. {siapa} mengambilnya karena tidak ada {lebih_dekat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.paling_dekat.papan",
+   "halaman": "narasi",
+   "id": "Tidak ada {lebih_dekat}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: suami, ibu, dua saudara seibu atau lebih, dan saudara laki-laki kandung. Bagian pasti sudah menghabiskan harta, tapi saudara kandung digabung dengan saudara seibu karena sama-sama anak ibu. Ini disebut {musyarrakah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.dasar.papan",
+   "halaman": "narasi",
+   "id": "Saudara kandung digabung dengan saudara seibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.bagian.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} berbagi {pecahan} sama rata per orang, tanpa membedakan laki-laki dan perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.musyarrakah.bagian.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan}, rata per orang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "{subjek} mendapat {dari}, tapi turun menjadi {pecahan} bila {pewaris} punya dua saudara atau lebih, termasuk saudara yang terhalang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.dasar.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {dari} → {pecahan} bila ada 2 saudara atau lebih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} punya dua saudara atau lebih: {oleh}. Jadi {subjek} {mendapat}, bukan {dari}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {dari} → {pecahan} · {jam_min_al_ikhwah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah_tanpa_dari.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} punya dua saudara atau lebih: {oleh}. Jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah_terhalang.narasi",
+   "halaman": "narasi",
+   "id": "Saudara yang terhalang tetap dihitung, walaupun tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.jam_ikhwah_terhalang.papan",
+   "halaman": "narasi",
+   "id": "Yang terhalang tetap dihitung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.tanpa_faru_ikhwah.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} tidak punya anak atau cucu yang ikut mewarisi, dan tidak punya dua saudara atau lebih, jadi {subjek} mendapat {pecahan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.faru_mudzakkar.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} meninggalkan keturunan laki-laki ({oleh}), jadi {subjek} mendapat {pecahan} saja.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.faru_muannats.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} hanya meninggalkan keturunan perempuan ({oleh}), jadi {subjek} mendapat {pecahan}, ditambah sisa harta nanti sebagai {ashabah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.faru_muannats.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan} + sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila kakek bersama saudara, kakek mengambil bagian yang paling menguntungkannya dari beberapa pilihan. Sisanya, bila ada, untuk saudara.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.dasar.papan",
+   "halaman": "narasi",
+   "id": "Kakek mengambil pilihan terbaik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.pilihan.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini pilihan {kakek} adalah: {opsi}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.pilihan.papan",
+   "halaman": "narasi",
+   "id": "Pilihan: {opsi}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.terpilih.narasi",
+   "halaman": "narasi",
+   "id": "Yang terbesar {terpilih}, yaitu {nilai}. Jadi {kakek} mendapat {nilai} dari seluruh harta.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.terpilih.papan",
+   "halaman": "narasi",
+   "id": "Kakek: {nilai}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: suami, ibu, kakek, dan satu saudari kandung atau sebapak. Biasanya saudari tidak diberi bagian pasti bersama kakek, tapi di sini ia diberi, lalu bagiannya digabung dengan bagian kakek dan dibagi ulang. Ini disebut {akdariyyah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.dasar.papan",
+   "halaman": "narasi",
+   "id": "Bagian kakek dan saudari digabung, lalu dibagi ulang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.kakek.narasi",
+   "halaman": "narasi",
+   "id": "{kakek} diberi {pecahan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.kakek.papan",
+   "halaman": "narasi",
+   "id": "{kakek}: {pecahan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.saudari.narasi",
+   "halaman": "narasi",
+   "id": "{saudari} diberi 1/2. Bagian kakek dan saudari lalu digabung: 1/6 + 1/2 = 2/3.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.saudari.papan",
+   "halaman": "narasi",
+   "id": "{saudari} 1/2 · digabung 1/6 + 1/2 = 2/3",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.bagi_ulang.narasi",
+   "halaman": "narasi",
+   "id": "Gabungan itu dibagi ulang: kakek mendapat dua kali bagian saudari.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.akdariyyah.bagi_ulang.papan",
+   "halaman": "narasi",
+   "id": "Kakek : saudari = 2 : 1",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.khusus",
+   "halaman": "narasi",
+   "id": "Kenapa bagiannya begini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila seorang perempuan sudah mendapat 1/2, perempuan sederajat di bawahnya diberi 1/6 sebagai pelengkap, supaya bagian keduanya genap 2/3. Ini disebut {takmilah_tsulutsain}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.dasar.papan",
+   "halaman": "narasi",
+   "id": "1/2 + 1/6 = 2/3",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.narasi",
+   "halaman": "narasi",
+   "id": "Bersama {bersama}, {subjek} {mendapat} sebagai pelengkap, supaya bagian mereka genap 2/3.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.takmilah.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: {pecahan} · pelengkap 2/3",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Saudari kandung atau sebapak yang bersama anak atau cucu perempuan, tanpa anak laki-laki, mengambil sisa harta. Ini disebut {maal_ghair}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.dasar.papan",
+   "halaman": "narasi",
+   "id": "Saudari + anak perempuan: saudari mengambil sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini ada anak atau cucu perempuan, jadi {subjek} mengambil sisa harta setelah bagian pasti dibagikan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.maal_ghair.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.nenek.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Nenek mendapat 1/6 bila tidak ada ibu. Bila ada beberapa nenek, mereka berbagi 1/6 itu sama rata.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.nenek.dasar.papan",
+   "halaman": "narasi",
+   "id": "Nenek: 1/6 bila tidak ada ibu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.nenek.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini tidak ada ibu, jadi {subjek} {mendapat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.dasar_mani.narasi",
+   "halaman": "narasi",
+   "id": "Ada dua hal yang membuat kerabat tidak mewarisi, yaitu membunuh pewaris dan berbeda agama. Ini disebut {mani}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.dasar_mani.papan",
+   "halaman": "narasi",
+   "id": "Pembunuh dan beda agama tidak mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.mani.qatl.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} membunuh {pewaris}, jadi tidak mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.mani.beda_agama.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} berbeda agama dengan {pewaris}, jadi tidak mendapat warisan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ahli_waris.mani.papan",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_saja.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini hanya {pasangan} yang mewarisi, dan suami atau istri tidak menerima radd. Jadi {sisa} kotak itu tidak dikembalikan kepada mereka.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.pasangan_saja.papan",
+   "halaman": "narasi",
+   "id": "Hanya {pasangan}: tidak ada radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_tujuan.dzawil_arham.narasi",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham, yaitu kerabat yang bukan ahli waris utama, misalnya ayahnya ibu atau anak dari anak perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_tujuan.baitul_mal.narasi",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak itu diberikan kepada kerabat dzawil arham bila ada (misalnya ayahnya ibu atau anak dari anak perempuan). Bila tidak ada, diserahkan ke baitul mal (kas umum umat Islam).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.sisa_tujuan.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak: di luar ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.baitul_mal_teratur.narasi",
+   "halaman": "narasi",
+   "id": "Dalam kebijakan ini baitul mal dianggap teratur, jadi sisa {sisa} kotak tidak dikembalikan kepada ahli waris, tetapi diserahkan ke baitul mal (kas umum umat Islam).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.radd.baitul_mal_teratur.papan",
+   "halaman": "narasi",
+   "id": "Sisa {sisa} kotak → baitul mal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.tanya.narasi",
+   "halaman": "narasi",
+   "id": "{pewaris} wafat. Sebelum hartanya dibagi, {berikutnya} ikut wafat. Ke mana bagian yang sudah dimiliki orang yang wafat itu?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.tanya.papan",
+   "halaman": "narasi",
+   "id": "{urutan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ahli waris yang masih hidup saat pewaris wafat sudah memiliki bagiannya, walau belum diterima. Bila ia wafat sebelum harta dibagi, bagiannya menjadi hartanya sendiri dan dibagi lagi kepada ahli warisnya. Ini disebut {munasakhat}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.dasar.papan",
+   "halaman": "narasi",
+   "id": "Bagian yang belum diterima tetap milik ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.batas.narasi",
+   "halaman": "narasi",
+   "id": "Yang diteruskan hanya bagian dari harta {pewaris} yang sampai kepada orang yang wafat itu. Hutang, wasiat, dan harta lain miliknya diselesaikan oleh ahli warisnya sendiri.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.batas.papan",
+   "halaman": "narasi",
+   "id": "Hanya bagian dari harta {pewaris} yang diteruskan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan1.narasi",
+   "halaman": "narasi",
+   "id": "Yang wafat belakangan hanya meninggalkan ahli waris yang sama dengan sisa ahli waris {pewaris}, dan bagian mereka tidak berubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan1.papan",
+   "halaman": "narasi",
+   "id": "Ahli waris dan bagiannya tidak berubah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan1_lanjut.narasi",
+   "halaman": "narasi",
+   "id": "Jadi hasil akhirnya sama dengan membagi harta {pewaris} langsung kepada yang masih hidup. Langkah bertahap di bawah tetap ditampilkan sebagai bukti.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan1_lanjut.papan",
+   "halaman": "narasi",
+   "id": "Hasil sama dengan dibagi langsung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan2.narasi",
+   "halaman": "narasi",
+   "id": "Ahli waris tiap orang yang wafat belakangan tidak ikut mewarisi dari {pewaris} maupun dari yang lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan2.papan",
+   "halaman": "narasi",
+   "id": "Ahli warisnya saling terpisah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan2_lanjut.narasi",
+   "halaman": "narasi",
+   "id": "Kitab menghitungnya dengan satu angka pembagi gabungan sekaligus. Langkah bertahap di bawah memberi hasil yang sama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan2_lanjut.papan",
+   "halaman": "narasi",
+   "id": "Satu angka pembagi gabungan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan3.narasi",
+   "halaman": "narasi",
+   "id": "Ahli waris tiap orang yang wafat berbeda, jadi bagian mereka diteruskan satu per satu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.keadaan3.papan",
+   "halaman": "narasi",
+   "id": "Diteruskan satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.dilewati.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} tidak mendapat bagian dari harta {pewaris}, jadi tidak ada yang diteruskan kepada ahli warisnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.dilewati.papan",
+   "halaman": "narasi",
+   "id": "{siapa}: tidak mendapat bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.mulai.narasi",
+   "halaman": "narasi",
+   "id": "Kita mulai dari yang wafat pertama, {pewaris}, seperti kasus biasa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.pembukaan.mulai.papan",
+   "halaman": "narasi",
+   "id": "Mulai dari {pewaris}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tanya.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} mendapat {saham} dari {sebelum} bagian, tapi pembagian ahli warisnya memakai {masalah} bagian. Bagaimana menyambungkannya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tanya.papan",
+   "halaman": "narasi",
+   "id": "{saham} dari {sebelum} · dibagi {masalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tamatsul.narasi",
+   "halaman": "narasi",
+   "id": "{saham} sama dengan {masalah} ({tamatsul}), jadi angka pembagi tidak perlu diperbesar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tamatsul.papan",
+   "halaman": "narasi",
+   "id": "{saham} = {masalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.habis.narasi",
+   "halaman": "narasi",
+   "id": "{saham} habis dibagi {masalah}, jadi angka pembagi tidak perlu diperbesar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.habis.papan",
+   "halaman": "narasi",
+   "id": "{saham} ÷ {masalah} habis",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tawafuq.narasi",
+   "halaman": "narasi",
+   "id": "{saham} dan {masalah} sama-sama habis dibagi {fpb} ({tawafuq}), jadi disederhanakan: {saham} : {masalah} = {wafq_saham} : {wafq_masalah} ({wafq}).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tawafuq.papan",
+   "halaman": "narasi",
+   "id": "{saham} : {masalah} = {wafq_saham} : {wafq_masalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tabayun.narasi",
+   "halaman": "narasi",
+   "id": "{saham} dan {masalah} tidak bisa sama-sama dibagi kecuali oleh 1 ({tabayun}), jadi tidak bisa disederhanakan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.tabayun.papan",
+   "halaman": "narasi",
+   "id": "{saham} : {masalah} tetap",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.kali.narasi",
+   "halaman": "narasi",
+   "id": "Angka pembagi sebelumnya dikali {wafq_masalah}, dan bagian ahli waris {siapa} dikali {wafq_saham}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.kali.papan",
+   "halaman": "narasi",
+   "id": "Pembagi × {wafq_masalah} · {siapa} × {wafq_saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.kali_saham.narasi",
+   "halaman": "narasi",
+   "id": "Bagian ahli waris {siapa} dikali {wafq_saham}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.kali_saham.papan",
+   "halaman": "narasi",
+   "id": "{siapa} × {wafq_saham}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.jamiah.narasi",
+   "halaman": "narasi",
+   "id": "Dengan begitu angka pembagi gabungan ({jamiah}) menjadi {nilai}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.jamiah.papan",
+   "halaman": "narasi",
+   "id": "Jami'ah = {nilai}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.jembatan_berikut.narasi",
+   "halaman": "narasi",
+   "id": "Berikutnya {berikut} juga wafat, jadi bagiannya kita bagi lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.jembatan_berikut.papan",
+   "halaman": "narasi",
+   "id": "Berikutnya: {berikut}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.jembatan_akhir.narasi",
+   "halaman": "narasi",
+   "id": "Semua kematian sudah dibagi. Tinggal hasil akhirnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.sambung.jembatan_akhir.papan",
+   "halaman": "narasi",
+   "id": "Hasil akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.akhir.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Setelah semua kematian dibagi, berapa bagian akhir tiap orang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.akhir.tanya.papan",
+   "halaman": "narasi",
+   "id": "Bagian akhir tiap orang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.akhir.ringkas_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}/{jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.akhir.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Jadi {rincian}, dari harta {pewaris}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.munasakhat.akhir.ringkas.papan",
+   "halaman": "narasi",
+   "id": "{rincian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Keadaan {siapa} belum pasti. Bisakah harta dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.tanya.papan",
+   "halaman": "narasi",
+   "id": "Ada yang belum pasti. Bisa dibagi sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Harta tetap bisa dibagi sekarang. Tiap orang diberi bagian terkecilnya di antara semua kemungkinan, dan sisanya ditahan ({mauquf}) sampai keadaannya jelas atau para ahli waris berdamai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.belum.dasar.papan",
+   "halaman": "narasi",
+   "id": "Dibagi sekarang, sisanya ditahan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Tiap keadaan yang mungkin dihitung sebagai satu masalah tersendiri, seolah-olah sudah pasti. Ini disebut taqdir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.dasar.papan",
+   "halaman": "narasi",
+   "id": "Hitung tiap kemungkinan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.banyak.narasi",
+   "halaman": "narasi",
+   "id": "Ada {jumlah} kemungkinan, jadi ada {jumlah} masalah yang dihitung sendiri-sendiri, lalu semuanya disamakan dalam satu {jamiah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.banyak.papan",
+   "halaman": "narasi",
+   "id": "{jumlah} kemungkinan → 1 jami'ah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.jembatan.narasi",
+   "halaman": "narasi",
+   "id": "Kita hitung kemungkinan itu satu per satu, mulai dari yang pertama.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.kemungkinan.jembatan.papan",
+   "halaman": "narasi",
+   "id": "Satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.dunia.jika.narasi",
+   "halaman": "narasi",
+   "id": "Kemungkinan {nomor}: jika {kemungkinan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.dunia.jika.papan",
+   "halaman": "narasi",
+   "id": "Kemungkinan {nomor}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Setelah semua kemungkinan dihitung, berapa yang diberikan sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.tanya.papan",
+   "halaman": "narasi",
+   "id": "Berapa diberikan sekarang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Jadi sekarang dibagikan {diberikan}/{jamiah}, dan {ditahan}/{jamiah} ditahan sampai keadaannya jelas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas.papan",
+   "halaman": "narasi",
+   "id": "Dibagikan {diberikan}/{jamiah} · ditahan {ditahan}/{jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas_semua.narasi",
+   "halaman": "narasi",
+   "id": "Jadi seluruh harta dibagikan sekarang, tanpa bagian yang ditahan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.taqdir.pemberian.ringkas_semua.papan",
+   "halaman": "narasi",
+   "id": "Semua dibagikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.tanya.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} wafat dalam satu peristiwa. Apakah mereka saling mewarisi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.tanya.papan",
+   "halaman": "narasi",
+   "id": "Saling mewarisi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan.narasi",
+   "halaman": "narasi",
+   "id": "Kita bagi harta tiap orang itu satu per satu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan.papan",
+   "halaman": "narasi",
+   "id": "Satu harta, satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan_skenario.narasi",
+   "halaman": "narasi",
+   "id": "Kita lihat tiap urutan yang mungkin satu per satu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.pembukaan.jembatan_skenario.papan",
+   "halaman": "narasi",
+   "id": "Tiap urutan, satu per satu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Harta {mayit} dibagi kepada siapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.tanya.papan",
+   "halaman": "narasi",
+   "id": "Harta {mayit}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.ringkas_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {saham}/{jamiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.ringkas.narasi",
+   "halaman": "narasi",
+   "id": "Jadi harta {mayit} dibagi: {rincian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.gharqa.harta.ringkas.papan",
+   "halaman": "narasi",
+   "id": "{rincian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanya.narasi",
+   "halaman": "narasi",
+   "id": "Tidak ada ahli waris utama yang menerima sisa harta ini. Apakah hartanya tidak diwariskan kepada siapa pun?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanya.papan",
+   "halaman": "narasi",
+   "id": "Siapa yang menerima sisa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila tidak ada ahli waris utama yang menerima sisa dan baitul mal dianggap tidak tegak, harta diwarisi dzawil arham.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar.papan",
+   "halaman": "narasi",
+   "id": "Kerabat jauh mewarisi lewat tanzil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_masalah.narasi",
+   "halaman": "narasi",
+   "id": "Sekarang harta kita bagi di antara para perantara, seolah-olah merekalah ahli warisnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_masalah.papan",
+   "halaman": "narasi",
+   "id": "Bagi di antara perantara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_turun.narasi",
+   "halaman": "narasi",
+   "id": "Bagian tiap perantara lalu diturunkan kepada kerabat yang bernasab melalui dia.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.jembatan_turun.papan",
+   "halaman": "narasi",
+   "id": "Perantara → kerabat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.judul",
+   "halaman": "narasi",
+   "id": "Harta untuk kerabat jauh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.muqasamah.narasi",
+   "halaman": "narasi",
+   "id": "Muqasamah artinya kakek dihitung seperti satu saudara laki-laki: sisa dibagi antara kakek dan saudara, laki-laki dua kali perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.kakek.muqasamah.papan",
+   "halaman": "narasi",
+   "id": "Kakek = 1 saudara laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.sisa_sedikit.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Bila setelah bagian pasti sisa harta tinggal 1/6 atau kurang, kakek mendapat 1/6 dan saudara tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.sisa_sedikit.dasar.papan",
+   "halaman": "narasi",
+   "id": "Sisa ≤ 1/6: kakek 1/6, saudara gugur",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.sisa_sedikit.narasi",
+   "halaman": "narasi",
+   "id": "Di keluarga ini sisa harta tinggal {sisa}, jadi {subjek} mendapat {pecahan}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_habis.narasi",
+   "halaman": "narasi",
+   "id": "Sisa harta sudah habis, jadi {subjek} tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_habis.papan",
+   "halaman": "narasi",
+   "id": "{subjek}: tidak mendapat bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_sebagian.narasi",
+   "halaman": "narasi",
+   "id": "{dapat} mengambil sisa harta, sedangkan {tidak} tidak mendapat bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.ashabah_sebagian.papan",
+   "halaman": "narasi",
+   "id": "{dapat}: sisa · {tidak}: 0",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.dasar.narasi",
+   "halaman": "narasi",
+   "id": "Ada satu kasus khusus: kakek bersama saudara kandung dan saudara sebapak. Saudara kandung menghitungkan saudara sebapak terhadap kakek, supaya bagian kakek lebih kecil. Ini disebut {muaddah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.dasar.papan",
+   "halaman": "narasi",
+   "id": "Saudara sebapak ikut dihitung terhadap kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.logika.narasi",
+   "halaman": "narasi",
+   "id": "Setelah bagian kakek ditetapkan, saudara sebapak tidak mendapat apa-apa. Bagiannya dikembalikan kepada saudara kandung.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.bagian.muaddah.logika.papan",
+   "halaman": "narasi",
+   "id": "Bagian sebapak → saudara kandung",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.semua_ashabah.narasi",
+   "halaman": "narasi",
+   "id": "Bayangkan harta sebagai satu kotak utuh. Semua ahli waris di sini mengambil sisa ({ashabah}), jadi tidak ada pecahan yang perlu disamakan. Harta langsung dipotong menurut jatah: laki-laki 2 jatah, perempuan 1 jatah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.semua_ashabah.papan",
+   "halaman": "narasi",
+   "id": "Semua mengambil sisa: bagi per jatah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jatah_orang",
+   "halaman": "narasi",
+   "id": "{siapa} {jatah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jatah_total.narasi",
+   "halaman": "narasi",
+   "id": "Jatahnya: {rincian}. Totalnya {ashl} jatah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.ashl.jatah_total.papan",
+   "halaman": "narasi",
+   "id": "{rincian} = {ashl}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_siapa.narasi",
+   "halaman": "narasi",
+   "id": "Dzawil arham adalah kerabat yang bukan penerima bagian pasti dan bukan penerima sisa, misalnya bibi dari ibu atau anak dari anak perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_siapa.papan",
+   "halaman": "narasi",
+   "id": "Dzawil arham = kerabat tanpa bagian pasti dan bukan penerima sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.narasi",
+   "halaman": "narasi",
+   "id": "Caranya disebut tanzil: tiap kerabat ditempatkan pada posisi ahli waris yang menjadi jalur nasabnya, misalnya bibi dari ibu sebagai ibu dan bibi dari ayah sebagai ayah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.dasar_tanzil.papan",
+   "halaman": "narasi",
+   "id": "Tanzil: tempatkan pada posisi perantara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanzil_orang.narasi",
+   "halaman": "narasi",
+   "id": "{siapa} ditempatkan sebagai {perantara}, naik {langkah} tingkat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.tanzil_orang.papan",
+   "halaman": "narasi",
+   "id": "{siapa} → {perantara} ({langkah} tingkat)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.masalah_baru.narasi",
+   "halaman": "narasi",
+   "id": "Para perantara dihitung seperti ahli waris biasa: {rincian}. Jumlahnya {masalah} bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.masalah_baru.papan",
+   "halaman": "narasi",
+   "id": "{rincian} = {masalah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_orang.narasi",
+   "halaman": "narasi",
+   "id": "Bagian {perantara}, {saham} dari {masalah}, diteruskan kepada {penerima}, seolah-olah {perantara} wafat meninggalkan {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_orang.papan",
+   "halaman": "narasi",
+   "id": "{perantara} {saham}/{masalah} → {penerima}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_sama_rata.narasi",
+   "halaman": "narasi",
+   "id": "Bagian {perantara}, {saham} dari {masalah}, dibagi sama rata di antara {penerima}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.dzawil_arham.turun_sama_rata.papan",
+   "halaman": "narasi",
+   "id": "{perantara} {saham}/{masalah} → {penerima}, sama rata",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.langkah.orang.pertanyaan.dzawil_arham",
+   "halaman": "narasi",
+   "id": "Kenapa kerabat jauh ini mendapat bagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_dasar",
+   "halaman": "langkah",
+   "id": "Dasar · berlaku untuk semua kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_keluarga",
+   "halaman": "langkah",
+   "id": "Di keluarga ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_logika",
+   "halaman": "langkah",
+   "id": "Logikanya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "langkah.label_ringkas",
+   "halaman": "langkah",
+   "id": "Ringkasan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_siapa_dapat_berapa",
+   "halaman": "hasil",
+   "id": "Siapa dapat berapa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_kasus_apa",
+   "halaman": "hasil",
+   "id": "Kasus ini termasuk apa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_yang_dipakai",
+   "halaman": "hasil",
+   "id": "Apa yang dipakai di hitungan ini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.judul_bagaimana_dibagi",
+   "halaman": "hasil",
+   "id": "Bagaimana keluarga ini dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_lk_berapa_pun",
+   "halaman": "hasil",
+   "id": "Laki-laki (berapa pun)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.titipan.taqdir_pr_berbilang",
+   "halaman": "hasil",
+   "id": "Perempuan berbilang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.menurut_madzhab_dibagi",
+   "halaman": "hasil",
+   "id": "Menurut madzhab {nama}, dibagi ke {jumlah} orang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ubah_nama_kasus",
+   "halaman": "hasil",
+   "id": "Ubah nama kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tersimpan",
+   "halaman": "hasil",
+   "id": "Tersimpan di riwayat · {jam}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tidak_disimpan",
+   "halaman": "hasil",
+   "id": "Tidak disimpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.dihapus",
+   "halaman": "hasil",
+   "id": "Kasus dihapus dari riwayat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.urungkan",
+   "halaman": "hasil",
+   "id": "Urungkan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.judul",
+   "halaman": "hasil",
+   "id": "Bagikan hasil ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.pratinjau",
+   "halaman": "hasil",
+   "id": "Pratinjau pesan untuk grup keluarga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.kirim",
+   "halaman": "hasil",
+   "id": "Kirim ke WhatsApp atau aplikasi lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.kirim_ket",
+   "halaman": "hasil",
+   "id": "Teks di atas, siap ditempel",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.salin",
+   "halaman": "hasil",
+   "id": "Salin teks",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.salin_ket",
+   "halaman": "hasil",
+   "id": "Untuk ditempel di mana saja",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.tautan_ket",
+   "halaman": "hasil",
+   "id": "Keluarga membuka hasil yang sama, lengkap dengan alasannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.unduh",
+   "halaman": "hasil",
+   "id": "Unduh file kasus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.unduh_ket",
+   "halaman": "hasil",
+   "id": "Untuk dibuka lagi di aplikasi ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.jangan_simpan",
+   "halaman": "hasil",
+   "id": "Jangan simpan kasus ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.jangan_simpan_ket",
+   "halaman": "hasil",
+   "id": "Untuk HP pinjaman atau sekadar coba-coba. Kasus dihapus dari riwayat; bisa diurungkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.teks_disalin",
+   "halaman": "hasil",
+   "id": "Teks disalin",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.judul",
+   "halaman": "hasil",
+   "id": "Pembagian waris {nama} (madzhab {madzhab})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.harta",
+   "halaman": "hasil",
+   "id": "Harta yang dibagi: {rupiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.harta_tersembunyi",
+   "halaman": "hasil",
+   "id": "Nominal disembunyikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.baris",
+   "halaman": "hasil",
+   "id": "• {nama}: {bagian} = {rupiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.baris_tanpa_nominal",
+   "halaman": "hasil",
+   "id": "• {nama}: {bagian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.ditahan",
+   "halaman": "hasil",
+   "id": "Ditahan: {rupiah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.ringkasan_teks.penutup",
+   "halaman": "hasil",
+   "id": "Alasan tiap bagian: buka tautan hasil. Mohon dicek ulang ke ustadz.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.gagal_salin",
+   "halaman": "hasil",
+   "id": "Gagal menyalin teks. Salin dari kotak pratinjau.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sudah_bersih_utang_wasiat",
+   "halaman": "hasil",
+   "id": "sudah bersih dari utang dan wasiat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.sedang_dibagikan",
+   "halaman": "hasil",
+   "id": "Kasus ini sedang dibagikan lewat tautan. Hentikan pembagiannya dulu lewat Kelola tautan bila ingin menghapusnya dari riwayat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul",
+   "halaman": "hitung",
+   "id": "Tabelmu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara_mengisi",
+   "halaman": "hitung",
+   "id": "Cara mengisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.asal_masalah_akhir",
+   "halaman": "hitung",
+   "id": "Asal masalah akhir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.bersama",
+   "halaman": "hitung",
+   "id": "bersama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.hanya_bilangan_bulat",
+   "halaman": "hitung",
+   "id": "Kotak ini hanya menerima bilangan bulat. Pecahan dipilih di kolom Bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kolom_belum_lengkap",
+   "halaman": "hitung",
+   "id": "Kolom \"{judul}\" belum lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.mulai_salah",
+   "halaman": "hitung",
+   "id": "Mulai salah di kolom \"{judul}\". Kolom sesudahnya belum diperiksa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.benar_semua",
+   "halaman": "hitung",
+   "id": "Benar semua.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.benar_semua_terkecil",
+   "halaman": "hitung",
+   "id": "Benar semua. Bentuk terkecil: {daftar}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.butir_terkecil",
+   "halaman": "hitung",
+   "id": "{judul} {diisi} (terkecilnya {terkecil})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.jawaban_dibuka",
+   "halaman": "hitung",
+   "id": "Jawaban dibuka. Isianmu yang berbeda dicoret. Soal ini tidak memberi XP.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_1",
+   "halaman": "hitung",
+   "id": "**Bagian** dipilih dari daftar.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_2",
+   "halaman": "hitung",
+   "id": "Saham = **bilangan bulat** terhadap asal masalah di kepala kolom.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_3",
+   "halaman": "hitung",
+   "id": "Dua orang atau lebih **Ashabah**? Sel saham mereka **bergabung otomatis**: isi sisanya sekali.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.biasa_4",
+   "halaman": "hitung",
+   "id": "Tanpa tashih: asal masalah akhir **sama** dengan asal masalah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.umum_boleh_bukan_terkecil",
+   "halaman": "hitung",
+   "id": "Asal masalah **boleh bukan yang terkecil**, asal sahamnya sebanding.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul_masalah",
+   "halaman": "hitung",
+   "id": "Mas'alah {nomor} ({nama})",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul_bagian_mayit",
+   "halaman": "hitung",
+   "id": "Bagian · {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.pengali",
+   "halaman": "hitung",
+   "id": "Pengali",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.pengali_belum_lengkap",
+   "halaman": "hitung",
+   "id": "Baris Pengali belum lengkap.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.pengali_belum_tepat",
+   "halaman": "hitung",
+   "id": "Baris Pengali belum tepat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_1",
+   "halaman": "hitung",
+   "id": "Mas'alah 1 **sudah dikerjakan** di soal sebelumnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_2",
+   "halaman": "hitung",
+   "id": "Mas'alah sesudahnya membagi **harta orang yang wafat**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_3",
+   "halaman": "hitung",
+   "id": "**Pengali** (di bawah asal masalah): agar semua mas'alah bisa dijumlah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.munasakhat_4",
+   "halaman": "hitung",
+   "id": "Jami'ah = saham × pengali, **dijumlah** dari semua mas'alah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.didudukkan_sebagai",
+   "halaman": "hitung",
+   "id": "Didudukkan sebagai",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.bagian_perantara",
+   "halaman": "hitung",
+   "id": "Bagian perantara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.dzawil_arham_1",
+   "halaman": "hitung",
+   "id": "**Didudukkan sebagai**: ahli waris pertama yang dijumpai saat naik dari kerabat itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.dzawil_arham_2",
+   "halaman": "hitung",
+   "id": "**Bagian perantara**: bagian orang yang didudukkan itu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.dzawil_arham_3",
+   "halaman": "hitung",
+   "id": "Pilih **Terhalang**: saham otomatis 0.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.judul_bagian_kemungkinan",
+   "halaman": "hitung",
+   "id": "Bagian · {kemungkinan}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.hidup",
+   "halaman": "hitung",
+   "id": "ia hidup",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.mati",
+   "halaman": "hitung",
+   "id": "ia wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.jamiah_diberikan",
+   "halaman": "hitung",
+   "id": "Jami'ah · diberikan sekarang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.ditahan",
+   "halaman": "hitung",
+   "id": "Ditahan (mauquf)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_1",
+   "halaman": "hitung",
+   "id": "Isi **dua kemungkinan**: ia hidup, ia wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_2",
+   "halaman": "hitung",
+   "id": "Sel **\"–\"** memang tidak diisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_3",
+   "halaman": "hitung",
+   "id": "**Diberikan sekarang** = yang terkecil dari dua kemungkinan, setelah dikali pengali.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.mafqud_4",
+   "halaman": "hitung",
+   "id": "**Ditahan** = sisa sampai kabarnya jelas.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.lk",
+   "halaman": "hitung",
+   "id": "ia laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.pr",
+   "halaman": "hitung",
+   "id": "ia perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.khuntsa_1",
+   "halaman": "hitung",
+   "id": "Isi **dua kemungkinan**: ia laki-laki, ia perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_mati",
+   "halaman": "hitung",
+   "id": "janin wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_lk",
+   "halaman": "hitung",
+   "id": "laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_pr",
+   "halaman": "hitung",
+   "id": "1 perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_dua_pr",
+   "halaman": "hitung",
+   "id": "perempuan berbilang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_1",
+   "halaman": "hitung",
+   "id": "Syafi'i: **empat kemungkinan**, karena jumlah janin **tidak dibatasi**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_2",
+   "halaman": "hitung",
+   "id": "\"Laki-laki\" dan \"perempuan berbilang\" = **berapa pun jumlahnya**: sisa yang dibagi bersama janin diisi **sekali** (sel bergabung otomatis).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_3",
+   "halaman": "hitung",
+   "id": "**Jami'ah** = yang **pasti** didapat di semua kemungkinan, setelah dikali pengali. Yang belum pasti diisi **0**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_4",
+   "halaman": "hitung",
+   "id": "**Mauquf** = sisa sampai bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_mati",
+   "halaman": "hitung",
+   "id": "janin wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_lk",
+   "halaman": "hitung",
+   "id": "1 lk",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_pr",
+   "halaman": "hitung",
+   "id": "1 pr",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_dua_lk",
+   "halaman": "hitung",
+   "id": "2 lk",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_dua_pr",
+   "halaman": "hitung",
+   "id": "2 pr",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_hnb_lk_pr",
+   "halaman": "hitung",
+   "id": "lk + pr",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_1",
+   "halaman": "hitung",
+   "id": "Hanbali: **enam kemungkinan**, janin dianggap **paling banyak dua**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_2",
+   "halaman": "hitung",
+   "id": "Isi bagian dan saham **tiap kemungkinan**; janin seperti ahli waris biasa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_3",
+   "halaman": "hitung",
+   "id": "**Jami'ah** = yang **terkecil** di semua kemungkinan, setelah dikali pengali.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_hnb_4",
+   "halaman": "hitung",
+   "id": "**Mauquf** = sisa sampai bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.langkah_pertama",
+   "halaman": "hitung",
+   "id": "Langkah pertama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.pertanyaan",
+   "halaman": "hitung",
+   "id": "Apakah mereka saling mewarisi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.yang_terakhir_mewarisi",
+   "halaman": "hitung",
+   "id": "Yang terakhir mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.tidak_saling_mewarisi",
+   "halaman": "hitung",
+   "id": "Tidak saling mewarisi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.ditahan_sampai_jelas",
+   "halaman": "hitung",
+   "id": "Ditahan sampai jelas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.umpan_benar_tabel",
+   "halaman": "hitung",
+   "id": "Benar. Sekarang isi satu tabel biasa untuk harta tiap orang, tanpa yang wafat bersamanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.umpan_benar_ditahan",
+   "halaman": "hitung",
+   "id": "Benar. Harta ditahan sampai jelas, jadi tidak ada angka yang diisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.umpan_salah",
+   "halaman": "hitung",
+   "id": "Belum tepat. Perhatikan: urutan wafatnya diketahui, terlupakan, atau tidak diketahui sama sekali?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.cara_1",
+   "halaman": "hitung",
+   "id": "Putuskan dulu: **saling mewarisi atau tidak**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.cara_2",
+   "halaman": "hitung",
+   "id": "Tidak saling mewarisi: tiap harta di **tabel biasa sendiri**. Ditahan: **tanpa angka**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.harta_nama",
+   "halaman": "hitung",
+   "id": "Harta {nama}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.gharqa.judul_soal",
+   "halaman": "hitung",
+   "id": "Putuskan dulu, lalu isi tabel tiap harta",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.isi_tabel_pembagiannya",
+   "halaman": "hitung",
+   "id": "Isi tabel pembagiannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kembali_ke_daftar_soal",
+   "halaman": "hitung",
+   "id": "Kembali ke daftar soal",
    "ar": null,
    "versiTerbit": 873
   }

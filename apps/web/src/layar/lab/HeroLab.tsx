@@ -8,7 +8,7 @@ import { Pohon } from '../../hasil/Pohon';
 import { PratinjauPohon } from '../../hasil/PratinjauPohon';
 import { PenyediaSorot } from '../../hasil/sorot';
 import { bisaDiringkas, ringkas } from '../../hasil/ringkasan';
-import { jalankan } from '../../jalankan';
+import { jalankan } from '@waris/latihan';
 import type { Kasus } from '../../kasus';
 import { ringkasKasus } from '../../riwayat';
 import { PohonSusunan } from './PohonSusunan';

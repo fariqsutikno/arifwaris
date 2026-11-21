@@ -7,7 +7,7 @@ import type { AlasanFardh, PilihanJadd, IdOrang, KodeKhilafOverlay, Ruleset, Tuj
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
 import {
-  gabungDan, buatBaris, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type Penyusun, type Potongan, type Sisipan,
+  barisSkrip, gabungDan, buatBaris, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type Penyusun, type Potongan, type Sisipan,
 } from './segments.js';
 import { istilah, istilahNarasi, type IdIstilah } from './terms.js';
 
@@ -109,7 +109,7 @@ export const pembukaanMadzhab = (penyusun: Penyusun, ruleset: Ruleset): BarisPen
 
 const KUNCI_OPSI_KAKEK: Record<PilihanJadd, string> = { muqasamah: 'muqasamah', tsuluts: 'tsuluts', tsulutsBaqi: 'tsuluts_baqi', sudus: 'sudus' };
 
-const opsiKakek = (konteks: Konteks, pilihan: PilihanJadd): Potongan[] =>
+export const opsiKakek = (konteks: Konteks, pilihan: PilihanJadd): Potongan[] =>
   cerita(konteks, `bagian.opsi_kakek.${KUNCI_OPSI_KAKEK[pilihan]}`, pilihan === 'muqasamah' ? { muqasamah: istilahUmum(konteks, 'muqasamah') } : {});
 
 export function babBagian(konteks: Konteks): Bab {
@@ -226,7 +226,7 @@ function ceritaKasusKhusus(konteks: Konteks, nama: Langkah<'KASUS_KHUSUS'>['nama
 // [R05-2] urutan ashabah bi nafsihi [SYF]: bunuwwah → ubuwwah → juduwwah & ukhuwwah (sejajar) → bani al-ikhwah
 // (gugur oleh kakek) → 'umumah & anaknya; [R05-3] dalam satu jihah yang kandung didahulukan dari yang sebapak.
 // Diksi `bagian.lebih_dekat_dari.<peran>` berisi siapa saja yang, bila ada, lebih berhak atas sisa daripada peran ini.
-const PERAN_BERPENDAHULU = new Set([
+export const PERAN_BERPENDAHULU = new Set([
   'CUCU_LK', 'AYAH', 'KAKEK', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', 'KEPONAKAN_KANDUNG', 'KEPONAKAN_SEBAPAK',
   'PAMAN_KANDUNG', 'PAMAN_SEBAPAK', 'SEPUPU_KANDUNG', 'SEPUPU_SEBAPAK',
 ]);
@@ -327,14 +327,20 @@ export function persamaanKotakAshl(konteks: Konteks): PersamaanKotak[] {
     const { n, d } = barisTabel.fardh!;
     const jumlah = n * ashl / d;
     terpakai += jumlah;
-    const kunci = n === 1n ? 'penyebut.persamaan_fardh' : 'penyebut.persamaan_fardh_kali';
-    langkah.push({ baris: buatBaris(cerita(konteks, kunci, { ashl, d, ...(n === 1n ? {} : { n }), kotak: jumlah, siapa: sebutKelompok(konteks, barisTabel.kelompok) }), [], barisTabel.anggota),
-      anggota: barisTabel.anggota, kelompok: barisTabel.kelompok, jumlah });
+    const siapa = sebutKelompok(konteks, barisTabel.kelompok);
+    const sebagianKali = n === 1n ? {} : { n };
+    langkah.push({
+      baris: barisSkrip(konteks.penyusun, 'hitung', n === 1n ? 'ashl.fardh' : 'ashl.fardh_kali',
+        { siapa, pecahan: barisTabel.fardh!, ashl, d, ...sebagianKali, kotak: jumlah }, { ashl, d, ...sebagianKali, kotak: jumlah, siapa }, [], barisTabel.anggota),
+      anggota: barisTabel.anggota, kelompok: barisTabel.kelompok, jumlah,
+    });
   }
   const [penerimaSisa] = barisAshabah;
   if (penerimaSisa && ashl > terpakai) {
     const sisa = ashl - terpakai;
-    langkah.push({ baris: buatBaris(cerita(konteks, 'penyebut.persamaan_sisa', { ashl, terpakai, kotak: sisa, siapa: sebutKelompok(konteks, penerimaSisa.kelompok) }), [], penerimaSisa.anggota),
+    const siapa = sebutKelompok(konteks, penerimaSisa.kelompok);
+    const sisipan = { ashl, terpakai, kotak: sisa, siapa };
+    langkah.push({ baris: barisSkrip(konteks.penyusun, 'hitung', 'ashl.sisa', sisipan, sisipan, [], penerimaSisa.anggota),
       anggota: penerimaSisa.anggota, kelompok: penerimaSisa.kelompok, jumlah: sisa });
   }
   return langkah;

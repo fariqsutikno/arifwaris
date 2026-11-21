@@ -19,14 +19,25 @@ export function bacaTersimpan(): Array<{ id: string; judul: string; disimpanPada
   }).sort((a, b) => b.disimpanPada.localeCompare(a.disimpanPada));
 }
 
-/** Simpan kasus. Nama buatan pengguna dipertahankan saat disimpan ulang (mis. simpan otomatis kasus khusus). */
-export function simpanKasus(id: string, kasus: Kasus, judul?: string): void {
+/**
+ * Simpan kasus; false bila penyimpanan perangkat menolak. Nama buatan pengguna dipertahankan saat disimpan ulang;
+ * nama otomatis (ringkasan ahli waris) ikut diperbarui bila kasusnya berubah.
+ */
+export function simpanKasus(id: string, kasus: Kasus, judul?: string): boolean {
   const lama = semuaTersimpan().find(baris => baris.id === id);
-  tulis({
+  return tulis({
     id, kasus: JSON.parse(keJson(kasus)), disimpanPada: waktuMaju(lama?.disimpanPada),
-    judul: bersihkanJudul(judul ?? lama?.judul ?? kasus.nama ?? '', kasus),
+    judul: bersihkanJudul(judul ?? (lama && !judulOtomatis(lama) ? lama.judul : undefined) ?? kasus.nama ?? '', kasus),
   });
 }
+
+function judulOtomatis(baris: RiwayatTersimpan): boolean {
+  const kasus = dariJson(JSON.stringify(baris.kasus));
+  return kasus.berhasil && baris.judul === ringkasKasus(kasus.kasus).judul;
+}
+
+export const bacaJudulTersimpan = (id: string): string | undefined => semuaTersimpan().find(baris => baris.id === id)?.judul;
+export const bacaWaktuSimpan = (id: string): string | undefined => semuaTersimpan().find(baris => baris.id === id)?.disimpanPada;
 
 export function ubahJudul(id: string, judul: string): void {
   const lama = semuaTersimpan().find(baris => baris.id === id);
@@ -35,9 +46,10 @@ export function ubahJudul(id: string, judul: string): void {
   tulis({ ...lama, judul: bersihkanJudul(judul, kasus.berhasil ? kasus.kasus : undefined, lama.judul), disimpanPada: waktuMaju(lama.disimpanPada) });
 }
 
-function tulis(baris: RiwayatTersimpan): void {
-  gantiSemuaTersimpan([baris, ...semuaTersimpan().filter(lain => lain.id !== baris.id)]);
+function tulis(baris: RiwayatTersimpan): boolean {
+  const tersimpanDiPerangkat = gantiSemuaTersimpan([baris, ...semuaTersimpan().filter(lain => lain.id !== baris.id)]);
   antre({ tabel: 'tersimpan', baris });
+  return tersimpanDiPerangkat;
 }
 
 /** Nama kosong → ringkasan otomatis; panjang dibatasi. */
@@ -69,4 +81,4 @@ export function semuaTersimpan(): RiwayatTersimpan[] {
   }
 }
 
-export const gantiSemuaTersimpan = (daftar: RiwayatTersimpan[]): void => simpanMentah(KUNCI_TERSIMPAN, JSON.stringify(daftar));
+export const gantiSemuaTersimpan = (daftar: RiwayatTersimpan[]): boolean => simpanMentah(KUNCI_TERSIMPAN, JSON.stringify(daftar));

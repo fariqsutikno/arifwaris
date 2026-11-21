@@ -45,12 +45,14 @@ Anak manusia yang masih dalam kandungan ketika muwarrits wafat, yang mewarisi at
 >
 > **Catatan koreksi**: versi KB sebelumnya menyebut 6 taqdir sebagai posisi [SYF]. Itu model [HNB]. Untuk ahli waris ber-fardh hasilnya sama (menambah janin di atas 2 pr tidak mengubah fardh siapa pun), tetapi untuk mitra ashabah haml [SYF] memberi 0.
 
-## 13a.5 Taqdir Haml
-Enam taqdir: **mati, 1 lk, 1 pr, 2 lk, 2 pr, 1 lk + 1 pr**. Lebih dari 2 = nadir [R13-3]. Taqdir yang mustahil untuk kasus konkret dilewati.
+## 13a.5 Taqdir Haml — revisi 2026-11-19 [R13-3] [R13-20]
+Jumlah taqdir mengikuti madzhab, karena bergantung pada batas jumlah janin (13a.4). Taqdir yang mustahil untuk kasus konkret dilewati.
 
-- [HNB]: keenamnya → aqall per ahli waris, termasuk mitra ashabah haml.
-- [SYF]: keenamnya dipakai **hanya untuk ahli waris ber-fardh dan ahli waris yang tidak berbagi ashabah dengan haml**; mitra ashabah haml diberi 0 apa pun taqdirnya.
+- **[HNB]: enam taqdir** — **mati, 1 lk, 1 pr, 2 lk, 2 pr, 1 lk + 1 pr** (batas 2 janin; lebih dari 2 = nadir) → aqall per ahli waris, termasuk mitra ashabah haml. (sekunder: Lahim hlm. 144–146.)
+- **[SYF]: empat taqdir** — **mati, laki-laki (berapa pun), satu perempuan, perempuan berbilang**. Jumlah janin tidak dibatasi, jadi "2 lk" dan "1 lk + 1 pr" tidak dibedakan dari "laki-laki": bagian pemilik fardh sama, dan bagian mitra ashabah haml tidak bisa dihitung. Pemilik fardh diberi fardh dalam 'aul terbesar (taqdir perempuan berbilang); mitra ashabah haml diberi 0. (primer: RDH 6/39 menetapkan kaidahnya tanpa menyebut daftar taqdir; daftar empat taqdir: al-Ahdal, *I'anah ath-Thalib* hlm. 183.)
 - [HNF]: taqdir mati, 1 lk, 1 pr (fatwa: yang ditahan = bagian 1 anak lk).
+
+> **Catatan koreksi 2026-11-19**: versi sebelumnya menulis [SYF] memakai keenam taqdir untuk pemilik fardh. Hasil untuk pemilik fardh tidak berubah (taqdir "2 pr" sudah mewakili perempuan berbilang), tetapi tabel [SYF] kini empat kolom. Pada taqdir laki-laki dan perempuan berbilang, saham mitra ashabah haml ditulis **bersama** janin (tidak dibagi per kepala), karena jumlah kepalanya tidak diketahui.
 
 ### Tiga Kelas Ahli Waris [R13-4]
 - **A — tidak berubah** di semua taqdir → bagian penuh sekarang.
@@ -80,6 +82,7 @@ Enam taqdir: **mati, 1 lk, 1 pr, 2 lk, 2 pr, 1 lk + 1 pr**. Lebih dari 2 = nadir
 
 - **[HNB]**: ibu 12, saudara lk 20, **mauquf 40**.
 - **[SYF]**: ibu 12 (kelas B), saudara lk **0** (kelas D: berbagi ashabah dengan haml), **mauquf 60**.
+- **[SYF] tabel empat taqdir** (turunan 13a.5): mati 3 (ibu 1, saudara 2) · laki-laki 6 (ibu 1, saudara + haml **5 bersama**) · 1 pr 18 (ibu 3, saudara 10, haml 5) · pr berbilang 6 (ibu 1, saudara + haml **5 bersama**). Jami'ah 18, juz'us sahm 6 / 3 / 1 / 3. Ibu 3, saudara 0, **mauquf 15** (= 12, 0, 60 dari 72).
 
 **H2** — Suami, ibu, 2 saudara seibu, haml istri ayah (Lahim hlm. 148). Jami'ah 90. Paling merugikan = taqdir 2 pr (mas'alah 10, 'aul). [HNB] dan [SYF] sama (semua ber-fardh): suami 27, ibu 9, tiap saudara seibu 9, **mauquf 36**.
 
@@ -99,6 +102,7 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R13-5 | Batas kehamilan [SYF] = 4 tahun | ITH + RDH | Ithraa, Mirats al-Haml slide 9; Raudhah 8/377 (Kitab al-'Iddah): «أكثر مدة الحمل أربع سنين» · shamela:499/3487 | «أربع سنوات، وهو المشهور عند المالكية، ومذهب الشافعية والحنابلة» |
 | R13-15 | [SYF]: mitra ashabah haml tidak diberi apa pun | LHM + ITH | Lahim hlm. 145; Ithraa, Muqarrar al-Fara'idh, Mirats al-Haml slide 12 | Ithraa: «يوقف الأحظ للحمل من نصيب ذكرين أو أنثيين، مع إيقاف نصيب مشاركه، وهو قول الشافعية». Diterima sebagai dasar tanpa menunggu nash Raudhah (keputusan pengguna 2026-09-29). |
 | R13-16 | Tata kerja taqdir → jami'ah → aqall | KH | Lahim hlm. 146 | Lima langkah «صفة العمل في مسائل الحمل». |
+| R13-20 | [SYF]: empat taqdir haml | RDH + sekunder | RDH 6/39 · shamela:499/2328; al-Ahdal, I'anah ath-Thalib fi Bidayah 'Ilm al-Fara'idh hlm. 183–186 · shamela:96958/171 shamela:96958/172 shamela:96958/173 shamela:96958/174 | RDH (kaidah): «لاحتمال أن الحمل بنتان ... الأصح أو الصحيح: أنه لا ضبط له ... ولو خلف ابنا وزوجة حاملا، فلها الثمن، ولا يدفع إلى الابن شيء». Al-Ahdal: «إلا أن التقادير هنا أربعة: ... بتقدير موته ... بتقدير ذكورته ... بتقدير كونه أنثى واحدة ... بتقدير كونه أنثى متعددة». |
 | R13-17 | Pembagian sebelum lahir boleh; [MLK] menunggu | LHM + ITH | Lahim hlm. 143–144; Ithraa slide 11 | «وهذا مذهب الحنابلة والحنفية والراجح عند الشافعية» |
 
 

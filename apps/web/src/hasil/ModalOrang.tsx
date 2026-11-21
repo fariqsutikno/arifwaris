@@ -1,30 +1,30 @@
 // Penjelasan satu orang (dari klik pohon, daftar, bar, atau tabel; modal di laptop, laci bawah di HP). Kepala berwarna
 // menurut status (menerima / tidak mendapat); bagian terbuka: bagiannya, "Kenapa segitu?" (baris explain yang subjeknya
-// orang ini), "Cara menghitungnya". Terlipat dengan jumlahnya: ahli waris lain yang terdampak (baris tentang orang lain
-// yang menyebut dia sebagai penyebab), "Kapan dapat berapa?", dalil. Ubah jumlah lewat tautan di kaki (modal kecil − n +).
+// orang ini), "Cara menghitungnya". Ketiganya alur bernomor (acuan mockup-hasil-per-kasus): dasar (dalil + kapan dapat berapa) →
+// keadaan di keluarga ini → hitungan. Terlipat dengan jumlahnya: ahli waris lain yang terdampak. Ubah jumlah lewat tautan di kaki (modal kecil − n +).
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
+import type { HasilOk } from '@waris/latihan';
+import { jelaskanOrang, type PenjelasanOrang } from '@waris/explain';
+import { kamusNarasi } from '../konten/kamusNarasi';
 import { hitungIsian, peranDariMayit } from '../checklist';
 import { formatRupiah, namaOrang } from '../format';
 import { barisBerlaku } from '../konten/ahwal';
 import { ahwalUntuk } from '../konten/sumber';
 import { Baris, Dalil, orangDisebut, type BabBerjudul } from '../layar/Penjelasan';
 import type { BentukPecahan, RingkasanHasil } from './ringkasan';
-import { pecahanTeks, persenTeks } from './ringkasan';
+import { pecahanTeks, persenTeks, teksKelompok } from './ringkasan';
 import { Ikon } from '../ui/Ikon';
 import { angka, bahasaArab, t } from '../terjemah';
-import type { Kelompok } from '../checklist';
-
-const TEKS_KELOMPOK = (): Record<Kelompok, string> => ({
-  pasangan: t('hitung.pasangan'), keturunan: t('hitung.keturunan'), leluhur: t('hitung.leluhur'), saudara: t('hitung.saudara'),
-});
 
 interface Props {
   id: IdOrang;
   graf: GrafKeluarga;
   ringkasan: RingkasanHasil;
   daftarBab: BabBerjudul[];
+  /** Hasil engine kasus biasa; kosong (munasakhat dst.) = penjelasan lama dari daftar bab. */
+  hasil: HasilOk | null;
   bentuk: BentukPecahan;
   sedangMenebak: boolean;
   sembunyiNominal: boolean;
@@ -32,9 +32,20 @@ interface Props {
   saatUbah?: ((kunci: KunciAhliWaris) => void) | undefined;
 }
 
-export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatUbah }: Props) {
+export function ModalOrang({ id, graf, ringkasan, daftarBab, hasil, bentuk, sedangMenebak, sembunyiNominal, saatTutup, saatUbah }: Props) {
   const wadah = useRef<HTMLDivElement>(null);
   useEffect(() => { wadah.current?.querySelector<HTMLButtonElement>('[data-tutup]')?.focus(); }, []);
+  // Esc menutup dari mana pun fokus berada (bukan hanya di dalam modal).
+  useEffect(() => {
+    const tekan = (event: KeyboardEvent) => { if (event.key === 'Escape') saatTutup(); };
+    document.addEventListener('keydown', tekan);
+    return () => document.removeEventListener('keydown', tekan);
+  }, [saatTutup]);
+  // Gagal menyusun penjelasan baru = jatuh ke penjelasan lama; modal tetap terbuka.
+  const penjelasan = useMemo(() => {
+    if (!hasil) return undefined;
+    try { return jelaskanOrang(hasil, graf, id, { kamus: kamusNarasi }); } catch { return undefined; }
+  }, [hasil, graf, id]);
 
   const dapat = ringkasan.penerima.find(orang => orang.id === id);
   const halang = ringkasan.terhalang.find(orang => orang.id === id);
@@ -57,13 +68,12 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
   const adalahPewaris = id === graf.idPewaris;
   const statusKepala = sedangMenebak || adalahPewaris || !kelompok ? 'netral' : halang ? 'tidak' : 'menerima';
   const labelStatus = adalahPewaris ? t('hitung.almarhum') : sedangMenebak || !kelompok ? peranDariMayit(graf, graf.idPewaris, id) ?? t('hitung.kerabat') : halang ? t('hitung.tidak_mendapat_bagian') : t('hitung.menerima_bagian');
-  const peran = adalahPewaris ? undefined : kelompok ? TEKS_KELOMPOK()[kelompok] : undefined;
+  const peran = adalahPewaris ? undefined : kelompok ? teksKelompok(kelompok) : undefined;
   const orangTerdampak = [...new Set(orangDisebut(barisTerdampak))].filter(lain => lain !== id);
 
   return (
     <div className="modal-latar" onClick={event => { if (event.target === event.currentTarget) saatTutup(); }}>
-      <div className="modal-orang" role="dialog" aria-modal="true" aria-labelledby="judul-modal" ref={wadah}
-        onKeyDown={event => { if (event.key === 'Escape') saatTutup(); }}>
+      <div className="modal-orang" role="dialog" aria-modal="true" aria-labelledby="judul-modal" ref={wadah}>
         <header className={`kepala-modal ${statusKepala}`}>
           <div>
             <p className="peran-modal">{labelStatus}</p>
@@ -84,50 +94,81 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
               </div>
             </div>
           )}
-          {!sedangMenebak && (barisKenapa.length > 0 || halang) && (
-            <div className="kenapa-utama">
-              <h3>{halang ? t('hitung.kenapa_tidak_dapat') : t('hitung.kenapa_segitu')}</h3>
-              <ul>
-                {barisKenapa.length === 0 && halang && <li>{halang.alasan}</li>}
-                {barisKenapa.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}
-              </ul>
-            </div>
-          )}
-          {dapat && !sedangMenebak && (
-            <div>
-              <h3>{t('hitung.cara_menghitungnya')}</h3>
-              <p className="cara-hitung">
-                {t('hitung.harta_dibagi_menjadi_penyebut_bagian_yang', { penyebut: ringkasan.penyebut, nama, saham: dapat.saham })}<br />
-                {angka(String(dapat.saham))}/{angka(String(ringkasan.penyebut))} × {sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</b>
-                {ringkasan.sisaPembulatan > 0n && <small> ({t('hitung.dibulatkan_ke_bawah')})</small>}
-              </p>
-            </div>
+          {!sedangMenebak && (
+            <>
+              {penjelasan && <h3 className="pertanyaan-modal"><Baris baris={{ daftarPotongan: penjelasan.pertanyaan, refs: [] }} /></h3>}
+              <ol className="alur-modal">
+                {(ahwal || penjelasan) && (
+                  <Titik jenis="dasar" judul={penjelasan ? t('langkah.label_dasar') : t('hitung.kapan_dapat_berapa')}>
+                    {refs.length > 0 && <div className="isi-kenapa"><Dalil daftarKode={refs} /></div>}
+                    {penjelasan?.dasar.map((baris, indeks) => <p key={indeks} className="teks-alur"><Baris baris={baris} /></p>)}
+                    {ahwal && (
+                      <table className="tabel-ahwal">
+                        <tbody>
+                          {ahwal.map(baris => {
+                            const berlaku = barisBerlaku(baris, dataCocok);
+                            return (
+                              <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
+                                <th>{bahasaArab() && baris.ar ? baris.ar.bagian : baris.bagian}</th>
+                                <td>{bahasaArab() && baris.ar ? baris.ar.syarat : baris.syarat}{berlaku && <span className="stiker-kecil">{t('hitung.kasus_ini')}</span>}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    )}
+                    {ahwal && <p className="caption-isian">{t('umum.draf_menunggu_pengecekan_tim_keilmuan')}</p>}
+                  </Titik>
+                )}
+                {penjelasan ? (
+                  <>
+                    {penjelasan.keluarga.length > 0 && (
+                      <Titik jenis="kasus" judul={t('langkah.label_keluarga')}>
+                        <ul className="syarat-modal">
+                          {penjelasan.keluarga.map((baris, indeks) => <li key={indeks}><span className="cek" aria-hidden="true" /><span><Baris baris={baris} /></span></li>)}
+                        </ul>
+                      </Titik>
+                    )}
+                    {hitunganTampil(penjelasan.hitungan, sembunyiNominal).length > 0 && (
+                      <Titik jenis="kasus" judul={t('langkah.bagian_hitung')}>
+                        <div className="langkah-hitung">
+                          {hitunganTampil(penjelasan.hitungan, sembunyiNominal).map(baris => (
+                            <p key={baris.label}><span className="label-hitung">{baris.label}</span><span><Baris baris={{ daftarPotongan: baris.isi, refs: [] }} /></span></p>
+                          ))}
+                        </div>
+                      </Titik>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {(barisKenapa.length > 0 || halang) && (
+                      <Titik jenis="kasus" judul={halang ? t('hitung.kenapa_tidak_dapat') : t('hitung.kenapa_segitu')}>
+                        <ul className="syarat-modal">
+                          {barisKenapa.length === 0 && halang && <li><span className="cek" aria-hidden="true" /><span>{halang.alasan}</span></li>}
+                          {barisKenapa.map((baris, indeks) => <li key={indeks}><span className="cek" aria-hidden="true" /><span><Baris baris={baris} /></span></li>)}
+                        </ul>
+                      </Titik>
+                    )}
+                    {dapat && (
+                      <Titik jenis="kasus" judul={t('hitung.cara_menghitungnya')}>
+                        <div className="langkah-hitung">
+                          <p>{t('hitung.harta_dibagi_menjadi_penyebut_bagian_yang', { penyebut: ringkasan.penyebut, nama, saham: dapat.saham })}</p>
+                          <p>
+                            {angka(String(dapat.saham))}/{angka(String(ringkasan.penyebut))} × {sembunyiNominal ? t('hitung.rp') : formatRupiah(ringkasan.tirkah.bersih)} = <b>{sembunyiNominal ? t('hitung.rp') : formatRupiah(dapat.nominal)}</b>
+                            {ringkasan.sisaPembulatan > 0n && <small> ({t('hitung.dibulatkan_ke_bawah')})</small>}
+                          </p>
+                        </div>
+                      </Titik>
+                    )}
+                  </>
+                )}
+              </ol>
+            </>
           )}
           {!sedangMenebak && barisTerdampak.length > 0 && (
             <Lipatan judul={t('hitung.ahli_waris_lain_yang_terdampak')} catatan={t('hitung.jumlah_orang', { n: orangTerdampak.length })}>
               <ul>{barisTerdampak.map((baris, indeks) => <li key={indeks}><Baris baris={baris} /></li>)}</ul>
             </Lipatan>
-          )}
-          {ahwal && (
-            <Lipatan judul={t('hitung.kapan_dapat_berapa')} catatan={t('hitung.jumlah_keadaan', { n: ahwal.length })}>
-              <table>
-                <tbody>
-                  {ahwal.map(baris => {
-                    const berlaku = !sedangMenebak && barisBerlaku(baris, dataCocok);
-                    return (
-                      <tr key={baris.bagian} className={berlaku ? 'kini' : undefined}>
-                        <th>{bahasaArab() && baris.ar ? baris.ar.bagian : baris.bagian}</th>
-                        <td>{bahasaArab() && baris.ar ? baris.ar.syarat : baris.syarat}{berlaku && <span className="stiker-kecil">{t('hitung.kasus_ini')}</span>}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-              <p className="caption-isian">{t('umum.draf_menunggu_pengecekan_tim_keilmuan')}</p>
-            </Lipatan>
-          )}
-          {refs.length > 0 && !sedangMenebak && (
-            <Lipatan judul={t('umum.dalilnya')} catatan={t('hitung.jumlah_dalil', { n: refs.length })}><div className="isi-kenapa"><Dalil daftarKode={refs} /></div></Lipatan>
           )}
         </div>
         <footer className="kaki-modal">
@@ -138,6 +179,16 @@ export function ModalOrang({ id, graf, ringkasan, daftarBab, bentuk, sedangMeneb
       </div>
     </div>
   );
+}
+
+const LABEL_RUPIAH = kamusNarasi('narasi.langkah.orang.label.rupiah')?.id;
+/** Baris "Rupiah" memuat nominal; ikut tersembunyi bersama kotak harta lain. */
+const hitunganTampil = (daftar: PenjelasanOrang['hitungan'], sembunyiNominal: boolean) =>
+  sembunyiNominal ? daftar.filter(baris => baris.label !== LABEL_RUPIAH) : daftar;
+
+/** Satu titik di alur penjelasan: nomor bulat (hijau = dasar umum, oranye = keadaan kasus ini) disambung garis ke titik berikutnya. */
+function Titik({ jenis, judul, children }: { jenis: 'dasar' | 'kasus'; judul: string; children: ReactNode }) {
+  return <li className={`titik-modal ${jenis}`}><h4>{judul}</h4>{children}</li>;
 }
 
 /** Lipatan sekunder (lebih kecil dan netral dari "Kenapa segitu?"), dengan ikon +/−. */

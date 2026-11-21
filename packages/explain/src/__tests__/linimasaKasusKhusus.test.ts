@@ -19,6 +19,27 @@ function periksaKotak(linimasa: Linimasa) {
   }
 }
 
+describe('skrip taqdir', () => {
+  it('tiap fixture: pembuka bertanya, kemungkinan dibuka dasar + banyaknya + jembatan, pemberian ditutup ringkasan', () => {
+    let adaKemungkinan = 0;
+    for (const fixture of TAQDIR_FIXTURES) {
+      const hasil = hitungTaqdir({ ...fixture.input, tirkah: HARTA });
+      if (hasil.status !== 'OK') continue;
+      const linimasa = susunLinimasaTaqdir(hasil, fixture.input.graf, { kamus: kamusSnapshot });
+      const jenis = (id: string) => linimasa.tahap.find(tahap => tahap.id === id)?.langkah.map(langkah => langkah.jenis);
+      expect(jenis('belumPasti')![0], fixture.id).toBe('tanya');
+      expect(jenis('pemberian')![0], fixture.id).toBe('tanya');
+      expect(jenis('pemberian')!.at(-1), fixture.id).toBe('ringkas');
+      const kemungkinan = jenis('kemungkinan');
+      if (kemungkinan) {
+        adaKemungkinan++;
+        expect(kemungkinan.slice(0, 3), fixture.id).toEqual(['dasar', 'logika', 'jembatan']);
+      }
+    }
+    expect(adaKemungkinan).toBeGreaterThan(0);
+  });
+});
+
 describe('susunLinimasaTaqdir', () => {
   for (const fixture of TAQDIR_FIXTURES) {
     it(`${fixture.id}: pembukaan, meja semua dunia (bila ada kemungkinan luar), pemberian sekarang`, () => {
@@ -56,6 +77,8 @@ describe('susunLinimasaGharqa', () => {
       expect(linimasa.tahap[0]!.id).toBe('wafatBersamaan');
       expect(linimasa.tahap.slice(1).every(tahap => tahap.id === 'harta')).toBe(true);
       expect(linimasa.tahap.length).toBeGreaterThan(1);
+      expect(linimasa.tahap[0]!.langkah.map(langkah => langkah.jenis)).toEqual(['tanya', 'keluarga', 'logika', 'jembatan']);
+      for (const tahap of linimasa.tahap.slice(1)) expect(tahap.langkah[0]!.jenis).toBe('tanya');
       periksaKotak(linimasa);
     });
   }

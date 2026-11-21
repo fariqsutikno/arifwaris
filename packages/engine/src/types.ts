@@ -213,6 +213,19 @@ export interface Pertanyaan {
   alasan: string;
 }
 
+/** [R14-5] Keluaran tanzil: kursi yang diduduki tiap kerabat dan tabel para perantara (bagian + saham). */
+export interface TanzilArham {
+  /** Satu entri per jalur; satu orang lewat dua jalur → dua entri [R14-11]. `lolos` = jalurnya dipakai (tidak kalah cepat/jihah). */
+  didudukkan: Array<{ idOrang: IdOrang; perantara: IdOrang; sebagai: KunciAhliWaris; lolos: boolean }>;
+  /** Mas'alah para perantara; `masalah` = Σ saham (sudah 'aul/radd bila ada). Perantara terhalang: `saham` 0. */
+  tabelPerantara: {
+    ashl: bigint;
+    aul?: bigint;
+    masalah: bigint;
+    baris: Array<{ perantara: IdOrang; sebagai: KunciAhliWaris; fardh?: Pecahan; ashabah?: boolean; saham: bigint; terhalang: boolean }>;
+  };
+}
+
 export type HasilEngine =
   | { status: 'PERLU_INPUT'; pertanyaan: Pertanyaan[] }
   | { status: 'TIDAK_DIDUKUNG'; alasan: string; refs: string[]; kode?: 'FASE_DZAWIL_ARHAM' | 'PERLU_TAQDIR' }
@@ -223,6 +236,8 @@ export type HasilEngine =
       pembulatan: { satuan: bigint; sisaPembulatan: Uang };
       /** Hanya pasangan yang mewarisi: sisa tidak dibagi ke ahli waris, tapi ke dzawil arham / baitul mal. */
       sisaKeluar?: { tujuan: TujuanSisa; saham: bigint; nominal: Uang };
+      /** Hanya hasil dzawil arham (tanzil). */
+      tanzil?: TanzilArham;
       ruleset: Ruleset;
       konfigurasi: KonfigurasiMadzhab;
       versiKb: string };
@@ -279,8 +294,13 @@ export type IdSisaKeluar = `sisaKeluar:${IdOrang}`;
 export type HasilMunasakhat =
   | (Extract<HasilEngine, { status: 'PERLU_INPUT' | 'TIDAK_DIDUKUNG' }> & { mayit: IdOrang })
   | { status: 'OK';
-      /** Hasil pipeline tiap mayit, urut wafat. */
-      daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk }>;
+      /**
+       * Hasil pipeline tiap mayit, urut wafat (`hasil.tabel` = bagian + saham per mas'alah).
+       * `masalah` = Σ saham mas'alah itu; `pengali` = angka pengali mas'alah itu ke jami'ah [R12-2]:
+       * mas'alah pertama × wafq mas'alah tiap penggabungan sesudahnya; mas'alah ke-k × wafq saham penggabungannya
+       * × wafq mas'alah penggabungan sesudahnya. Σ (saham × pengali) per penerima = saham akhirnya di `jamiah`.
+       */
+      daftarLangkah: Array<{ mayit: IdOrang; hasil: HasilOk; masalah: bigint; pengali: bigint }>;
       /** Bab 12.2: label untuk telusur-balik & penjelasan; tidak menentukan jalur hitung [R12-3]. */
       keadaan: 1 | 2 | 3;
       jamiah: bigint;
@@ -299,12 +319,37 @@ export type HasilMunasakhat =
 export type NilaiTaqdir = 'mati' | 'hidup' | 'lk' | 'pr' | 'duaLk' | 'duaPr' | 'lkPr';
 
 /** Satu dunia luar (sumber yang diberi aqall); sumber setengah/terburuk sudah dilebur di dalamnya. */
+/** Kelompok ashabah yang sahamnya ditulis bersama, tanpa angka per kepala (jumlah janin tak diketahui) [R13-20]. */
+export interface KelompokBersama { anggota: IdOrang[]; saham: bigint }
+
+/** Satu baris tabel dunia pada skala mas'alah dunia itu (sebelum dikali `pengali`); janin kembar sudah digabung ke satu id. */
+export interface BarisDunia {
+  anggota: IdOrang[];
+  fardh?: Pecahan;
+  ashabah?: boolean;
+  /** Saham seluruh baris. */
+  saham: bigint;
+  /** Saham per orang; kosong bila `bersama`. */
+  perOrang: Record<IdOrang, bigint>;
+  /** [R13-20] [SYF] saham kelompok ditulis bersama, tanpa angka per kepala. */
+  bersama?: true;
+}
+
 export interface DuniaTaqdir {
   taqdir: Record<IdOrang, NilaiTaqdir>;
   /** Mas'alah dunia ini sebelum disamakan ke jami'ah. */
   masalah: bigint;
+  /** Juz' as-sahm: jami'ah ÷ `masalah`. Saham di `saham`/`kelompok` = saham di `bagian` × pengali. */
+  pengali: bigint;
+  /**
+   * Tabel mas'alah dunia ini (bagian + saham sebelum pengali) untuk satu mayit tanpa peleburan.
+   * Tidak ada untuk dunia munasakhat/tharif atau yang dilebur setengah-setengah [K13c-1].
+   */
+  bagian?: BarisDunia[];
   /** Saham tiap penerima pada jami'ah (tabel "jika terbukti X"); baris sisa memakai `IdSisaKeluar`. */
   saham: Record<string, bigint>;
+  /** [SYF] kelompok yang sahamnya bersama; anggotanya tidak ada di `saham`. Σ saham + Σ kelompok = jami'ah. */
+  kelompok: KelompokBersama[];
   /** Status tiap orang di dunia ini (mayit pertama), untuk sebutan peran di penjelasan. */
   statusOrang: Record<IdOrang, StatusOrang>;
   /** Status tiap mas'alah di dunia ini (mayit pertama, lalu mayit munasakhat/tharif berikutnya). */
@@ -354,6 +399,8 @@ export interface HartaGharqa {
   nominalMauquf: Uang;
   /** Tabel "jika terbukti X" bila harta ini memuat taqdir. */
   daftarDunia?: DuniaTaqdir[];
+  /** Hasil mas'alah biasa harta ini (tabel faraidhnya) bila tidak saling mewarisi dan tanpa taqdir [R13-10]; sumber tabel soal latihan. */
+  hasilBiasa?: Extract<HasilEngine, { status: 'OK' }>;
   /** [K13a-2] [MLK]: harta ini tidak dibagi sampai janin lahir; saham kosong, seluruh harta bersih ditahan. */
   mauqufSemua?: { alasan: string; refs: string[]; ruleset: Ruleset };
 }

@@ -6,7 +6,6 @@ import { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import type { RingkasanEntri, RingkasanKunciDiksi } from '@waris/data';
 import { pasangSnapshot, snapshotTerpasang } from '@waris/web/sumber';
 import { Hasil } from '@waris/web/layar/Hasil';
-import { kasusDariContoh } from '@waris/web/contoh';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -19,11 +18,12 @@ import { buatPencocok, type SumberTeks } from '../editor/teksLayar';
 import { usePortal } from '../repo';
 import { pesanGalat } from '../pesanGalat';
 import { DialogSunting, LayarBisaDisunting, PenjagaGalat, sumberDariSnapshot, timpaBelumTerbit } from './EditorTeksAplikasi';
+import { kasusDariSoal } from '@waris/latihan';
 
 const NAMA_LAYAR = 'Penjelasan hasil';
 const HARTA_CONTOH = 120_000_000n;
 const HARAPAN_KOSONG = { saham: {}, ashlAkhir: 0n }; // harapan tidak dipakai di sini
-const buatKasus = (pewaris: 'L' | 'P', ahliWaris: string[]) => kasusDariContoh({ pewaris, ahliWaris, harta: HARTA_CONTOH, harapan: HARAPAN_KOSONG });
+const buatKasus = (pewaris: 'L' | 'P', ahliWaris: string[]) => kasusDariSoal({ pewaris, ahliWaris, harta: HARTA_CONTOH, harapan: HARAPAN_KOSONG });
 const KASUS_CONTOH = [
   { id: 'anak', label: 'Istri, ibu, anak laki-laki dan perempuan', kasus: buatKasus('L', ['ISTRI', 'IBU', 'ANAK_LK', 'ANAK_PR']) },
   { id: 'aul', label: 'Suami, ibu, dan saudari kandung (bagian melebihi harta)', kasus: buatKasus('P', ['SUAMI', 'IBU', 'SAUDARI_KANDUNG']) },

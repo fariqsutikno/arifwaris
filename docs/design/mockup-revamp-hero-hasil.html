@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Revamp hero Hasil</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- Acuan: docs/design/riset-ux-hero-cta-mode-belajar-2026-11-19.md bagian 10. Contoh: istri 1/8, anak laki-laki 7/12, anak perempuan 7/24 dari Rp 240.000.000. -->
+<style>
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:#fff;--orange:#f2682a;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#dfe6dc;--hijau:#1f6f5c;
+--font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:18px 16px 90px}
+h1,h2,h3,p{margin:0}
+button{font-family:inherit}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
+.tautan{background:none;border:0;padding:0;font:600 14px var(--font);color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;min-height:32px}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.atas{max-width:1120px;margin:0 auto 12px}
+.atas p{font-size:13px;color:#2c4136;margin:0 4px 8px}
+nav.tab{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding:2px}
+nav.tab button{flex:none;border:0;background:rgba(255,255,255,.5);color:var(--ink);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer}
+nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
+.frame{max-width:1120px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18)}
+.tugas{display:none;background:var(--kuning);color:#4a3a00;padding:10px 20px;font-size:13.5px}.tugas.aktif{display:block}
+
+.hero{color:#fff;padding:16px 24px 24px;background:radial-gradient(520px 300px at 82% 60%,rgba(255,150,40,.3),transparent 70%),radial-gradient(420px 260px at 6% 0%,rgba(60,210,170,.28),transparent 70%),linear-gradient(135deg,#0a2326 0%,#0f3a38 55%,#0b2a2b 100%)}
+.bilah{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,.85)}
+.bilah .kanan{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.bilah .tautan{color:#fff}
+.status{display:inline-flex;gap:6px;align-items:center;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;font-size:13px}
+.status i{width:8px;height:8px;border-radius:50%;background:#7fe0b0}
+.simpan{font-size:13px;color:rgba(255,255,255,.78);display:inline-flex;gap:5px;align-items:center}
+.isi{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;align-items:end;margin-top:18px}
+.namaKasus{display:flex;gap:6px;align-items:center;font-size:14px;color:rgba(255,255,255,.85)}
+.namaKasus button{background:rgba(255,255,255,.14);border:0;color:#fff;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;cursor:pointer}
+.hero h1{font-size:32px;line-height:1.1;font-weight:500;letter-spacing:-.02em;margin-top:8px}
+.kalimat{font-size:15.5px;margin-top:8px;color:rgba(255,255,255,.93)}
+.chip{display:inline-block;margin-top:12px;background:rgba(255,255,255,.14);border-radius:999px;padding:4px 10px;font-size:13px}
+.pil{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;font:600 14px var(--font);background:#fff;color:var(--ink);border:0;cursor:pointer;margin-top:14px}
+.sakelar{display:inline-flex;background:rgba(255,255,255,.14);border-radius:999px;padding:4px;margin-top:12px}
+.sakelar button{border:0;background:none;color:#fff;font:500 14px var(--font);padding:8px 14px;border-radius:999px;cursor:pointer}
+.sakelar button[aria-pressed=true]{background:#fff;color:var(--ink)}
+.ubin{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.uh{border-radius:20px;padding:13px 15px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22)}
+.uh .lbl{font-size:12.5px;color:rgba(255,255,255,.82)}
+.uh b{display:block;font-size:21px;font-weight:600;margin-top:3px;font-variant-numeric:tabular-nums}
+.uh small{display:block;font-size:12.5px;color:rgba(255,255,255,.8)}
+.uh.lebar{grid-column:1/-1}
+
+.tata{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px;padding:20px 24px 28px}
+.t{background:var(--card);border-radius:24px;padding:18px 20px;box-shadow:var(--sh);min-width:0}
+.s7{grid-column:span 7}.s5{grid-column:span 5}.s12{grid-column:span 12}
+.t h2{font-size:20px;font-weight:700;letter-spacing:-.01em}
+.sub{font-size:14px;color:var(--muted);margin-top:2px}
+.baris{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.av{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:600;flex:none}
+.baris .nm{flex:1;font-weight:500}
+.baris .nil{text-align:right;font-variant-numeric:tabular-nums}
+.baris .nil b{display:block;font-weight:600}.baris .nil small{color:var(--muted)}
+.total{display:flex;justify-content:space-between;background:#f3f6f1;border-radius:14px;padding:12px 14px;margin-top:8px;font-weight:600}
+.aksiDaftar{display:grid;gap:4px;margin-top:10px}
+.aksiDaftar button{display:flex;gap:12px;align-items:center;text-align:left;border:0;background:none;padding:10px 6px;border-radius:12px;cursor:pointer;font:inherit;color:inherit}
+.aksiDaftar button:hover{background:rgba(0,0,0,.04)}
+.aksiDaftar b{display:block;font-weight:600;font-size:14.5px}.aksiDaftar small{color:var(--muted);font-size:13px}
+.ikBulat{width:38px;height:38px;border-radius:50%;background:var(--mint);display:grid;place-items:center;flex:none}
+.coret{position:relative}
+.coret::after{content:"";position:absolute;inset:0;border:2px dashed #d64545;border-radius:14px;pointer-events:none}
+.label-coret{display:inline-block;background:#d64545;color:#fff;font-size:11.5px;font-weight:600;border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.tebakIsian{display:flex;gap:8px;align-items:center}
+.tebakIsian input{width:72px;font:500 15px var(--font);border:1.5px solid var(--line);border-radius:10px;padding:6px 8px;text-align:center}
+.benar{color:var(--hijau);font-weight:600;font-size:13px}.salah{color:#b3402a;font-weight:600;font-size:13px}
+.btn{border:0;background:var(--black);color:#fff;font:600 14px var(--font);border-radius:999px;padding:11px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:44px}
+
+.segmen{display:inline-flex;background:#eef2ec;border-radius:999px;padding:4px}
+.segmen button{border:0;background:none;font:500 13.5px var(--font);padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--ink);min-height:36px}
+.segmen button[aria-pressed=true]{background:#fff;box-shadow:var(--sh)}
+.langkahIsi{margin:12px 0 0;padding-left:20px}
+.langkahIsi>li{margin-top:14px}.langkahIsi>li::marker{font-weight:700}
+.langkahIsi h3{font-size:15.5px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;width:100%;padding-left:48px}
+.chip-s{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:6px 11px;font:500 13.5px var(--font);cursor:pointer;min-height:36px;color:var(--ink)}
+.chip-s[aria-pressed=true]{background:var(--hijau);border-color:var(--hijau);color:#fff}
+.angka{font:600 16px var(--font);border:1.5px solid var(--line);border-radius:10px;padding:7px 6px;text-align:center;font-variant-numeric:tabular-nums}
+.barisAngka{display:flex;gap:12px;align-items:center;margin-top:8px;font-size:14px}
+.pecahan{display:inline-flex;flex-direction:column;align-items:center;gap:3px}
+.pecahan i{display:block;width:60px;height:2px;background:var(--ink);border-radius:2px}
+.pecahan .angka{padding:4px 6px}
+.tdk{font-size:13px;color:var(--muted);display:inline-flex;gap:5px;align-items:center;min-width:96px}
+.baris.keliru{background:#fdecea;border-radius:12px;padding-left:6px;padding-right:6px}
+.umpan{margin-top:12px;border-radius:14px;padding:11px 14px;font-size:14px}
+.umpan.benar{background:var(--mint);color:#174d3c}.umpan.salah{background:#fdecea;color:#7a2a17}.umpan.kurang{background:var(--kuning);color:var(--kuning-ink)}.umpan.sebagian{background:#e8eefc;color:#1f3a7a}
+@media(max-width:760px){.chips{padding-left:0}}
+.lapis{position:fixed;inset:0;background:rgba(10,20,15,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.lapis.on{display:flex}
+.lembar{background:#fff;width:min(520px,100%);border-radius:24px 24px 0 0;padding:20px 20px 24px;max-height:90vh;overflow:auto}
+@media(min-width:760px){.lapis{align-items:center}.lembar{border-radius:24px}}
+.lembar h2{font-size:20px}
+.pratinjau{background:#e7f6e9;border-radius:14px;padding:12px 14px;font-size:13.5px;white-space:pre-line;margin:12px 0 4px;font-family:var(--font)}
+.lembar hr{border:0;border-top:1px solid var(--line);margin:10px 0}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(140%);background:var(--black);color:#fff;border-radius:14px;padding:12px 16px;font-size:14px;display:flex;gap:14px;align-items:center;transition:transform .2s;z-index:30;max-width:calc(100% - 32px)}
+.toast.on{transform:translateX(-50%) translateY(0)}.toast .tautan{color:#fff}
+.catatanRiset{font-size:13px;color:var(--muted);margin-top:8px}
+.cara h3{font-size:16px;margin:4px 0}
+.cara ol{margin:6px 0 0;padding-left:20px;font-size:14px}
+.cara .cek{font-size:13.5px;color:var(--hijau);margin-top:6px}
+.cara textarea{width:100%;min-height:60px;margin-top:8px;border:1.5px solid var(--line);border-radius:12px;padding:8px;font:inherit}
+.pilihanCocok{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:14px}
+@media(max-width:760px){
+  body{padding:12px 8px 90px}
+  .isi{grid-template-columns:1fr}
+  .hero{padding:14px 16px 20px}.hero h1{font-size:26px}
+  .tata{grid-template-columns:1fr;padding:16px}
+  .s7,.s5,.s12{grid-column:auto}
+}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="atas">
+  <p>Mockup revamp: hero layar Hasil, simpan otomatis, dan soal latihan. Ini contoh, tidak ada yang disimpan. Garis merah putus-putus = yang dihapus.</p>
+  <nav class="tab" role="tablist" id="tab"></nav>
+</div>
+<div class="frame">
+  <div class="tugas" id="tugas"></div>
+  <div id="layar"></div>
+</div>
+
+<div class="lapis" id="lapis" role="dialog" aria-modal="true" aria-labelledby="judulLembar">
+  <div class="lembar">
+    <div style="display:flex;justify-content:space-between;align-items:center"><h2 id="judulLembar">Bagikan hasil ini</h2><button class="tautan" id="tutupLembar">Tutup</button></div>
+    <p class="sub">Pratinjau pesan untuk grup keluarga</p>
+    <div class="pratinjau" id="pratinjau"></div>
+    <div class="aksiDaftar">
+      <button data-toast="Membuka menu bagikan HP (WhatsApp, Telegram, dll.). Di laptop: teks disalin"><span class="ikBulat" data-ik="kirim"></span><span><b>Kirim ke WhatsApp atau aplikasi lain</b><small>Teks di atas, siap ditempel</small></span></button>
+      <button data-toast="Teks disalin"><span class="ikBulat" data-ik="salin"></span><span><b>Salin teks</b><small>Untuk ditempel di mana saja</small></span></button>
+      <button data-toast="Tautan dibuat (perlu masuk akun)"><span class="ikBulat" data-ik="tautan"></span><span><b>Bagikan tautan</b><small>Keluarga membuka hasil yang sama, lengkap dengan alasannya</small></span></button>
+      <button data-toast="File kasus diunduh. Bisa dibuka lagi lewat Buka file"><span class="ikBulat" data-ik="unduh"></span><span><b>Unduh file kasus</b><small>Untuk dibuka lagi di aplikasi ini</small></span></button>
+    </div>
+    <hr>
+    <button class="tautan" id="janganSimpan" style="color:#9a3a22">Jangan simpan kasus ini</button>
+    <p class="catatanRiset">Untuk HP pinjaman atau sekadar coba-coba. Kasus dihapus dari riwayat; bisa diurungkan.</p>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"><span id="toastTeks"></span><button class="tautan" id="urung">Urungkan</button></div>
+
+<script>
+const IK = {
+  kembali:'<path d="M15 18l-6-6 6-6"/>', bagikan:'<path d="M12 3v12M7 8l5-5 5 5M5 14v5h14v-5"/>', ubah:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  cek:'<path d="M5 12l5 5 9-10"/>', kirim:'<path d="M4 12l16-8-6 16-3-6z"/>', salin:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+  tautan:'<path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/>', unduh:'<path d="M12 4v11M7 10l5 5 5-5M5 20h14"/>',
+  langkah:'<path d="M5 6h14M5 12h14M5 18h9"/>', banding:'<path d="M7 4v16M17 4v16M3 8h8M13 16h8"/>', lanjut:'<path d="M9 6l6 6-6 6"/>', mata:'<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'
+};
+const ik = n => `<svg class="ik" viewBox="0 0 24 24" aria-hidden="true">${IK[n]}</svg>`;
+
+// Satu sumber data contoh; rupiah diturunkan dari pecahan × harta.
+const HARTA = 240000000, PENYEBUT = 24;
+const PENERIMA = [['Istri', 3, '1/8', '#c4643c'], ['Anak laki-laki', 14, '7/12', '#8a1f9e'], ['Anak perempuan', 7, '7/24', '#2f7d32']];
+const rp = n => 'Rp ' + n.toLocaleString('id-ID');
+const nominal = s => HARTA * s / PENYEBUT;
+const ringkasanTeks = () => `Pembagian waris Almarhum (madzhab Syafi'i)\nHarta yang dibagi: ${rp(HARTA)}\n\n${PENERIMA.map(([n, s, p]) => `• ${n}: ${p} = ${rp(nominal(s))}`).join('\n')}\n\nAlasan tiap bagian: buka tautan hasil. Mohon dicek ulang ke ustadz.`;
+
+const daftarPenerima = () => PENERIMA.map(([n, s, p, w]) => `<div class="baris"><span class="av" style="background:${w}">${n[0]}</span><span class="nm">${n}</span><span class="nil"><b>${rp(nominal(s))}</b><small>${p}</small></span>${ik('lanjut')}</div>`).join('');
+const kartuDaftar = () => `<section class="t s7"><h2>Siapa dapat berapa?</h2><p class="sub">Ketuk nama untuk penjelasan lengkap.</p><div style="margin-top:10px">${daftarPenerima()}</div>
+  <div class="total"><span>Harta yang dibagi</span><span>${rp(HARTA)}</span></div></section>`;
+
+let disimpan = true;
+
+// Isian soal latihan. Kunci contoh (dari engine, kasus 16.1): istri fardh 1/8; anak lk + anak pr ashabah bil ghair;
+// asal masalah 8, tashih jadi 24; saham 3, 14, 7.
+const STATUS = ['1/2', '1/4', '1/8', '2/3', '1/3', '1/6', 'Ashabah', 'Terhalang'];
+const KUNCI = { status: [['1/8'], ['Ashabah'], ['Ashabah']], ashl: 8, ashlAkhir: 24, saham: [3, 14, 7] };
+const isian = { mode: 'langkah', status: [[], [], []], ashl: '', ashlAkhir: '', saham: ['', '', ''], akhir: [['', ''], ['', ''], ['', '']], tidakDapat: [false, false, false], umpan: null, salahBaris: [] };
+const sama = (a, b) => a.length === b.length && a.every(x => b.includes(x));
+const kotakAngka = (id, nilai, label, lebar = 64) => `<input class="angka" inputmode="numeric" pattern="[0-9]*" autocomplete="off" data-isi="${id}" value="${nilai}" aria-label="${label}" style="width:${lebar}px">`;
+function isianLangkah() {
+  const tandai = (i, langkah) => isian.langkahSalah === langkah && isian.salahBaris.includes(i) ? ' keliru' : '';
+  return `<ol class="langkahIsi">
+    <li><h3>Status tiap ahli waris</h3><p class="sub">Pilih bagian tetapnya, Ashabah (ambil sisa), atau Terhalang. Ayah bisa punya 1/6 sekaligus Ashabah.</p>
+      ${PENERIMA.map(([n, , , w], i) => `<div class="baris${tandai(i, 1)}" style="flex-wrap:wrap"><span class="av" style="background:${w}">${n[0]}</span><span class="nm">${n}</span>
+        <span class="chips">${STATUS.map(s => `<button class="chip-s" aria-pressed="${isian.status[i].includes(s)}" data-status="${i}|${s}">${s}</button>`).join('')}</span></div>`).join('')}</li>
+    <li><h3>Asal masalah</h3><p class="sub">Penyebut bersama terkecil dari bagian tetap.</p><div class="barisAngka">${kotakAngka('ashl', isian.ashl, 'Asal masalah')}</div></li>
+    <li><h3>Asal masalah akhir dan saham</h3><p class="sub">Sesudah semua penyesuaian. Bila tidak ada perubahan, tulis angka yang sama.</p>
+      <div class="barisAngka"><span>Asal masalah akhir</span>${kotakAngka('ashlAkhir', isian.ashlAkhir, 'Asal masalah akhir')}</div>
+      ${PENERIMA.map(([n, , , w], i) => `<div class="baris${tandai(i, 3)}"><span class="av" style="background:${w}">${n[0]}</span><span class="nm">${n}</span>${kotakAngka('saham' + i, isian.saham[i], 'Saham ' + n)}<span class="sub" style="min-width:58px">dari ${isian.ashlAkhir || '…'}</span></div>`).join('')}</li></ol>`;
+}
+function isianAkhir() {
+  return `<p class="sub">Bagian dari seluruh harta. Pecahan senilai diterima: 3/24 sama dengan 1/8.</p><div style="margin-top:6px">
+    ${PENERIMA.map(([n, , , w], i) => `<div class="baris${isian.salahBaris.includes(i) ? ' keliru' : ''}"><span class="av" style="background:${w}">${n[0]}</span><span class="nm">${n}</span>
+      ${isian.tidakDapat[i] ? '<span class="sub">0</span>' : `<span class="pecahan">${kotakAngka(`akhir${i}n`, isian.akhir[i][0], 'Pembilang ' + n, 56)}<i></i>${kotakAngka(`akhir${i}d`, isian.akhir[i][1], 'Penyebut ' + n, 56)}</span>`}
+      <label class="tdk"><input type="checkbox" data-tdk="${i}" ${isian.tidakDapat[i] ? 'checked' : ''}> Tidak dapat</label></div>`).join('')}</div>`;
+}
+function bacaKotak() {
+  document.querySelectorAll('[data-isi]').forEach(k => {
+    const id = k.dataset.isi, v = k.value.replace(/\D/g, '');
+    if (id === 'ashl' || id === 'ashlAkhir') isian[id] = v;
+    else if (id.startsWith('saham')) isian.saham[+id.slice(5)] = v;
+    else { const m = /akhir(\d)([nd])/.exec(id); isian.akhir[+m[1]][m[2] === 'n' ? 0 : 1] = v; }
+  });
+}
+function periksa() {
+  bacaKotak(); isian.salahBaris = [];
+  if (isian.mode === 'langkah') {
+    const salahStatus = isian.status.map((s, i) => sama(s, KUNCI.status[i]) ? -1 : i).filter(i => i >= 0);
+    if (isian.status.some(s => !s.length)) return isian.umpan = ['kurang', 'Langkah 1: masih ada yang belum dipilih statusnya.'];
+    if (salahStatus.length) { isian.salahBaris = salahStatus; isian.langkahSalah = 1; return isian.umpan = ['salah', `Langkah 1 belum tepat untuk ${salahStatus.map(i => PENERIMA[i][0]).join(', ')}. Langkah berikutnya belum diperiksa.`]; }
+    if (!isian.ashl) return isian.umpan = ['kurang', 'Langkah 1 benar. Langkah 2: asal masalah belum diisi.'];
+    if (+isian.ashl !== KUNCI.ashl) return isian.umpan = ['salah', 'Langkah 1 benar. Langkah 2 belum tepat: asal masalah adalah penyebut bersama terkecil dari bagian tetap yang ada.'];
+    if (!isian.ashlAkhir || isian.saham.some(s => !s)) return isian.umpan = ['kurang', 'Langkah 1 dan 2 benar. Langkah 3 belum lengkap.'];
+    const A = +isian.ashlAkhir, sebanding = isian.saham.every((s, i) => +s * KUNCI.ashlAkhir === KUNCI.saham[i] * A);
+    if (sebanding && A === KUNCI.ashlAkhir) return isian.umpan = ['benar', 'Benar semua. Asal masalah 8, lalu jadi 24 supaya saham tiap anak bulat.'];
+    if (sebanding) return isian.umpan = ['sebagian', `Perbandingannya benar, tapi asal masalah ${A} belum yang terkecil. Coba bagi semuanya dengan bilangan yang sama.`];
+    isian.langkahSalah = 3;
+    isian.salahBaris = isian.saham.map((s, i) => +s * KUNCI.ashlAkhir === KUNCI.saham[i] * A ? -1 : i).filter(i => i >= 0);
+    return isian.umpan = ['salah', 'Langkah 1 dan 2 benar. Langkah 3 belum tepat. Petunjuk: sisa 7 dibagi anak laki-laki dan perempuan dua banding satu. Apakah 7 habis dibagi 3?'];
+  }
+  const kosong = isian.akhir.some((p, i) => !isian.tidakDapat[i] && (!p[0] || !+p[1]));
+  if (kosong) return isian.umpan = ['kurang', 'Masih ada kotak yang kosong. Kalau ada yang tidak mendapat bagian, centang "Tidak dapat".'];
+  isian.salahBaris = PENERIMA.map((_, i) => { const [n, d] = isian.tidakDapat[i] ? [0, 1] : isian.akhir[i].map(Number); return n * KUNCI.ashlAkhir === KUNCI.saham[i] * d ? -1 : i; }).filter(i => i >= 0);
+  isian.umpan = isian.salahBaris.length ? ['salah', `${PENERIMA.length - isian.salahBaris.length} dari ${PENERIMA.length} benar. Coba cara "Langkah demi langkah" untuk tahu salahnya di mana.`] : ['benar', 'Benar semua.'];
+}
+const LAYAR = {
+  sekarang: {
+    tab: 'Sekarang',
+    html: () => `<header class="hero">
+      <div class="bilah"><span>Menurut madzhab Syafi'i</span><span class="status"><i></i>Pasti</span></div>
+      <div class="isi"><div>
+        <h1>Nah, ini pembagiannya</h1><p class="kalimat">Dibagi ke 3 orang</p>
+        <span class="chip coret" style="padding:4px 10px">1 mayit</span><br>
+        <span class="coret" style="display:inline-block"><button class="pil" data-toast="Ekspor: hanya JSON yang jalan; PNG dan PDF segera hadir">${ik('unduh')}Ekspor</button></span><br>
+        <span class="coret" style="display:inline-block"><div class="sakelar"><button aria-pressed="true">Hitung kasus</button><button data-toast="Dialog: Pindah ke mode Belajar? Kembali butuh tahan-untuk-pindah">Belajar</button></div></span>
+      </div><div class="ubin"><div class="uh"><span class="lbl">Harta dibagi</span><b>${rp(HARTA)}</b><small>sudah bersih</small></div><div class="uh coret"><span class="lbl">Penerima</span><b>3 orang</b></div></div></div>
+    </header>
+    <div class="tata">${kartuDaftar()}
+      <section class="t s5"><h2>Yang dihapus dan kenapa</h2>
+        <div class="aksiDaftar" style="gap:8px">
+          <div><b>Ekspor</b> <span class="label-coret">hapus</span><p class="sub">Kata sistem, hanya JSON yang jalan, pintunya dua (hero dan layar penuh pohon). Diganti satu tautan Bagikan.</p></div>
+          <div><b>Hitung kasus / Belajar</b> <span class="label-coret">hapus</span><p class="sub">"Belajar" juga nama menu materi. Masuk pakai dialog, keluar pakai tahan-untuk-pindah. Menebak pindah ke soal latihan.</p></div>
+          <div><b>1 mayit</b> <span class="label-coret">hapus</span><p class="sub">Tidak menjawab apa pun; hanya ditampilkan bila lebih dari satu.</p></div>
+          <div><b>Penerima 3 orang</b> <span class="label-coret">hapus</span><p class="sub">Mengulang "Dibagi ke 3 orang".</p></div>
+          <div><b>Simpan, lanjut nanti</b> <span class="label-coret">hapus</span><p class="sub">Lupa ditekan = isian hilang. Diganti simpan otomatis.</p></div>
+        </div></section></div>`
+  },
+  kasus: {
+    tab: 'Usulan: kasus sendiri',
+    html: () => `<header class="hero">
+      <div class="bilah"><button class="tautan" data-toast="Kembali ke Periksa">${ik('kembali')}Periksa</button>
+        <span class="kanan"><span class="simpan" id="statusSimpan">${disimpan ? `${ik('cek')}Tersimpan di riwayat · 17.26` : 'Tidak disimpan'}</span><span class="status"><i></i>Pasti</span><button class="tautan" id="bukaBagikan">${ik('bagikan')}Bagikan</button></span></div>
+      <div class="isi"><div>
+        <div class="namaKasus"><span>Almarhum · istri, 2 anak</span><button aria-label="Ubah nama kasus" data-toast="Nama kasus bisa diubah; nama awal dibuat otomatis">${ik('ubah')}</button></div>
+        <h1>Nah, ini pembagiannya</h1><p class="kalimat">Menurut madzhab Syafi'i, dibagi ke 3 orang.</p>
+      </div><div class="ubin"><div class="uh lebar"><span class="lbl">Harta dibagi</span><b>${rp(HARTA)}</b><small>sudah bersih dari utang dan wasiat</small></div></div></div>
+    </header>
+    <div class="tata">${kartuDaftar()}
+      <section class="t s5"><h2>Pelajari cara menghitungnya</h2><p class="sub">Untuk dicocokkan dengan ustadz, atau belajar</p>
+        <div class="aksiDaftar">
+          <button data-toast="Langkah 1 sampai selesai, layar penuh"><span class="ikBulat">${ik('langkah')}</span><span><b>Langkah demi langkah</b><small>Dari 1 sampai selesai</small></span></button>
+          <button data-toast="Membandingkan hasil empat madzhab"><span class="ikBulat">${ik('banding')}</span><span><b>Bandingkan madzhab</b><small>Syafi'i, Hanbali, Hanafi, Maliki</small></span></button>
+        </div>
+        <p class="catatanRiset">"Coba tebak dulu" tidak ada lagi di sini: menebak hanya di soal latihan.</p></section></div>`
+  },
+  tebak: {
+    tab: 'Usulan: soal latihan',
+    html: () => `<header class="hero">
+      <div class="bilah"><button class="tautan" data-toast="Kembali ke daftar latihan">${ik('kembali')}Latihan</button><span>Soal 3 dari 10 · Bab ashabah</span></div>
+      <div class="isi"><div>
+        <h1>Tentukan bagian tiap ahli waris</h1><p class="kalimat">Almarhum meninggalkan istri, satu anak laki-laki, dan satu anak perempuan.</p>
+      </div><div></div></div>
+    </header>
+    <div class="tata">
+      <section class="t s7"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap"><h2>Jawabanmu</h2>
+        <div class="segmen" role="group" aria-label="Cara menjawab">${[['langkah', 'Langkah demi langkah'], ['akhir', 'Jawaban akhir']].map(([v, l]) => `<button aria-pressed="${isian.mode === v}" data-mode="${v}">${l}</button>`).join('')}</div></div>
+        ${isian.mode === 'langkah' ? isianLangkah() : isianAkhir()}
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:16px"><button class="btn" id="periksa">Periksa jawaban</button><button class="tautan" data-pindah="bahas" data-toast="Dialog tahan: Yakin mau lihat jawaban? Soal ini tidak memberi XP">${ik('mata')}Lihat jawaban</button></div>
+        ${isian.umpan ? `<div class="umpan ${isian.umpan[0]}" role="status">${isian.umpan[1]}</div>` : ''}
+        <p class="catatanRiset">Tidak ada kotak teks bebas: status dipilih, angka diisi di kotak angka. Pindah cara menjawab tidak menghapus isian dan tidak membuka jawaban.</p></section>
+      <section class="t s5"><h2>Petunjuk</h2><p class="sub" style="margin-top:6px">Mulai dari yang punya bagian tetap. Siapa yang mengambil sisa?</p>
+        <p class="catatanRiset" style="margin-top:12px">Coba juga: isi asal masalah akhir 48 dengan saham 6, 28, 14. Perbandingannya benar, tapi asal masalahnya belum yang terkecil.</p></section></div>`
+  },
+  bahas: {
+    tab: 'Usulan: pembahasan',
+    html: () => `<header class="hero">
+      <div class="bilah"><button class="tautan" data-toast="Kembali ke daftar latihan">${ik('kembali')}Latihan</button><span>Soal 3 dari 10 · Bab ashabah</span></div>
+      <div class="isi"><div>
+        <h1>Pembahasan soal</h1><p class="kalimat">Jawabanmu 1 dari 3 benar. Cocokkan, lalu pelajari cara menghitungnya.</p>
+      </div><div></div></div>
+    </header>
+    <div class="tata">
+      <section class="t s7"><h2>Jawaban</h2><div style="margin-top:10px">${PENERIMA.map(([n, , p, w], i) => `<div class="baris"><span class="av" style="background:${w}">${n[0]}</span><span class="nm">${n}</span><span class="nil"><b>${p}</b><small class="${i ? 'salah' : 'benar'}">${i ? 'Jawabanmu kosong' : 'Jawabanmu benar'}</small></span></div>`).join('')}</div>
+        <div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px"><button class="btn" data-toast="Membuka soal 4">Soal berikutnya${ik('lanjut')}</button><button class="tautan" data-toast="Langkah demi langkah">Lihat cara menghitung</button></div>
+        <p class="catatanRiset">Aksi utama ada di akhir pembahasan, tempat orang selesai membaca.</p></section></div>`
+  },
+  cara: { tab: 'Cara mencoba', html: () => caraHtml() }
+};
+
+const TUGAS = [
+  ['kasus', 'Kirim hasil ini ke grup keluarga', ['Lihat layar hasil.', 'Cari cara mengirim ke grup WhatsApp keluarga.', 'Baca pratinjau pesannya.'], 'Kamu menemukan "Bagikan" tanpa bertanya? Pesannya cukup jelas untuk keluarga?'],
+  ['kasus', 'Lanjutkan besok', ['Bayangkan aplikasi ditutup.', 'Lihat bagian atas layar.', 'Apakah kamu yakin kasus ini masih ada besok?'], 'Kamu melihat tulisan "Tersimpan di riwayat"? Kamu percaya?'],
+  ['kasus', 'HP pinjaman', ['Kamu memakai HP kakak.', 'Kamu tidak ingin kasus ini tersimpan.', 'Cari caranya.'], 'Kamu menemukan "Jangan simpan kasus ini"?'],
+  ['tebak', 'Kerjakan soal, lalu menyerah', ['Isi satu jawaban.', 'Kamu bingung, ingin melihat jawabannya.', 'Cari caranya.'], 'Kamu menemukan "Lihat jawaban"? Paham bahwa soal ini jadi tidak memberi XP?'],
+  ['tebak', 'Kerjakan soal di HP-mu', ['Pilih status tiap orang.', 'Isi asal masalah, asal masalah akhir, dan saham.', 'Tekan Periksa jawaban.'], 'Semua bisa diisi tanpa bertanya? Tahu di mana menulis "ashabah"? Umpan baliknya menunjuk langkah yang salah?'],
+  ['tebak', 'Jawab cepat', ['Pindah ke "Jawaban akhir".', 'Isi pecahan tiap orang.', 'Pindah lagi ke langkah: isianmu masih ada?'], 'Kotak pecahan bertumpuk mudah diisi? Isian tidak hilang saat pindah?']
+];
+const ASUMSI = ['Pelajar lebih terbantu oleh langkah seperti tabel di kitab daripada satu jawaban akhir', 'Memilih status (1/8, Ashabah, Terhalang) lebih jelas daripada mengetik sendiri','Keluarga lebih sering mengirim teks ke grup daripada mengunduh file', 'Simpan otomatis lebih disukai daripada ditanya saat keluar', 'Menebak cukup ada di soal latihan, tidak perlu untuk kasus sendiri'];
+function caraHtml() {
+  return `<div class="tata cara">
+    <section class="t s12"><h2>Ini contoh</h2><p style="margin-top:6px;font-size:14px">Tidak ada yang disimpan. Tombol hanya menampilkan pesan. Contoh keluarga: almarhum meninggalkan istri, satu anak laki-laki, dan satu anak perempuan.</p></section>
+    ${TUGAS.map(([l, j, langkah, cek], i) => `<section class="t s7" style="grid-column:span 6"><h3>Tugas ${i + 1}: ${j}</h3><ol>${langkah.map(x => `<li>${x}</li>`).join('')}</ol><p class="cek">Yang dicek: ${cek}</p><p><button class="tautan" data-mulai="${i}">Mulai tugas ini</button></p><textarea data-catatan="Tugas ${i + 1}" placeholder="Catatanmu…"></textarea></section>`).join('')}
+    <section class="t s12"><h2>Apakah dugaan kami benar?</h2>${ASUMSI.map((a, i) => `<div style="margin-top:10px"><b style="font-weight:500">${a}</b><div class="pilihanCocok">${['Sesuai', 'Tidak sesuai', 'Tidak yakin'].map(o => `<label><input type="radio" name="a${i}" value="${o}"> ${o}</label>`).join('')}</div></div>`).join('')}</section>
+    <section class="t s12"><h2>Kirim catatan</h2><p style="font-size:14px;margin:6px 0 10px">Salin semua catatanmu lalu tempel di chat ke tim.</p><button class="btn" id="salinCatatan">Salin catatan</button></section></div>`;
+}
+
+let aktif = 'kasus', tugasAktif = null;
+const tab = document.getElementById('tab'), layar = document.getElementById('layar');
+function tampil() {
+  tab.innerHTML = Object.entries(LAYAR).map(([id, l]) => `<button role="tab" aria-selected="${id === aktif}" data-tab="${id}">${l.tab}</button>`).join('');
+  layar.innerHTML = LAYAR[aktif].html();
+  const t = document.getElementById('tugas');
+  t.classList.toggle('aktif', tugasAktif !== null && TUGAS[tugasAktif][0] === aktif);
+  if (tugasAktif !== null) t.textContent = `Tugas ${tugasAktif + 1}: ${TUGAS[tugasAktif][1]}. ${TUGAS[tugasAktif][3]}`;
+  document.querySelectorAll('[data-ik]').forEach(e => e.innerHTML = ik(e.dataset.ik));
+}
+let urungkan = null, waktuToast;
+function toast(teks, saatUrung) {
+  document.getElementById('toastTeks').textContent = 'Mockup: ' + teks;
+  urungkan = saatUrung ?? null;
+  document.getElementById('toast').classList.add('on');
+  clearTimeout(waktuToast); waktuToast = setTimeout(() => document.getElementById('toast').classList.remove('on'), 4000);
+}
+const lapis = document.getElementById('lapis');
+document.addEventListener('click', e => {
+  const el = e.target.closest('button'); if (!el) return;
+  if (el.dataset.tab) { aktif = el.dataset.tab; tampil(); return; }
+  if (el.dataset.mode) { bacaKotak(); isian.mode = el.dataset.mode; isian.umpan = null; isian.salahBaris = []; tampil(); return; }
+  if (el.dataset.status) {
+    bacaKotak(); const [i, s] = el.dataset.status.split('|'), pilih = isian.status[+i];
+    // Terhalang berdiri sendiri; fardh lain saling menggantikan; Ashabah boleh bersama satu fardh.
+    if (s === 'Terhalang') isian.status[+i] = pilih.includes(s) ? [] : [s];
+    else if (s === 'Ashabah') isian.status[+i] = pilih.includes(s) ? pilih.filter(x => x !== s) : [...pilih.filter(x => x !== 'Terhalang'), s];
+    else isian.status[+i] = pilih.includes(s) ? pilih.filter(x => x !== s) : [...pilih.filter(x => x === 'Ashabah'), s];
+    isian.umpan = null; tampil(); return;
+  }
+  if (el.id === 'periksa') { periksa(); tampil(); return; }
+  if (el.id === 'bukaBagikan') { document.getElementById('pratinjau').textContent = ringkasanTeks(); lapis.classList.add('on'); document.getElementById('tutupLembar').focus(); return; }
+  if (el.id === 'tutupLembar') { lapis.classList.remove('on'); return; }
+  if (el.id === 'janganSimpan') { disimpan = false; lapis.classList.remove('on'); tampil(); toast('Kasus dihapus dari riwayat', () => { disimpan = true; tampil(); }); return; }
+  if (el.id === 'urung') { urungkan?.(); document.getElementById('toast').classList.remove('on'); return; }
+  if (el.dataset.mulai) { tugasAktif = +el.dataset.mulai; aktif = TUGAS[tugasAktif][0]; tampil(); window.scrollTo(0, 0); return; }
+  if (el.id === 'salinCatatan') { const teks = [...document.querySelectorAll('[data-catatan]')].map(x => `${x.dataset.catatan}: ${x.value}`).join('\n') + '\n' + ASUMSI.map((a, i) => `${a}: ${document.querySelector(`input[name=a${i}]:checked`)?.value ?? '-'}`).join('\n'); navigator.clipboard?.writeText(teks).catch(() => {}); toast('Catatan disalin'); return; }
+  if (el.dataset.toast) { toast(el.dataset.toast, () => {}); if (el.dataset.pindah) { aktif = el.dataset.pindah; tampil(); } }
+});
+document.addEventListener('change', e => { if (e.target.dataset.tdk) { bacaKotak(); isian.tidakDapat[+e.target.dataset.tdk] = e.target.checked; isian.umpan = null; tampil(); } });
+lapis.addEventListener('click', e => { if (e.target === lapis) lapis.classList.remove('on'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') lapis.classList.remove('on'); });
+tampil();
+</script>
+</body>
+</html>

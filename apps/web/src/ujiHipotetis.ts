@@ -4,7 +4,7 @@
 
 import { hitungDzawilArham, hitungMunasakhat, type HasilEngine, type IdOrang, type KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from './checklist';
-import { adaBelumPasti, keInputEngine } from './jalankan';
+import { adaBelumPasti, keInputEngine } from '@waris/latihan';
 import type { Kasus } from './kasus';
 
 type HasilMunasakhatOk = Extract<ReturnType<typeof hitungMunasakhat>, { status: 'OK' }>;

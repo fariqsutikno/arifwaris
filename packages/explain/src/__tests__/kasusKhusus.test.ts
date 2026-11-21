@@ -27,16 +27,16 @@ const teksBagian = (penjelasan: PenjelasanKasusKhusus, indeks: number) =>
   penjelasan.daftarBagian[indeks]!.daftarBab.flatMap(bab => bab.daftarBaris.map(keTeksBiasa));
 
 describe('Penjelasan taqdir', () => {
-  test('H1 [SYF]: 6 kemungkinan, mitra ashabah haml kelas D, mauquf beserta rupiah', () => {
+  test('H1 [SYF]: 4 kemungkinan, mitra ashabah haml kelas D, mauquf beserta rupiah', () => {
     const penjelasan = taqdir('H1-SYF');
     expect(judul(penjelasan)).toEqual(['Ahli waris yang belum pasti', 'Semua kemungkinan', 'Yang dibagi sekarang']);
-    expect(penjelasan.daftarBagian[1]!.daftarBab).toHaveLength(6);
+    expect(penjelasan.daftarBagian[1]!.daftarBab).toHaveLength(4);
     expect(teksBagian(penjelasan, 1)[0]).toBe('Jika janin yang dikandung ibu lahir tidak hidup:');
     expect(teksBagian(penjelasan, 2)).toEqual([
-      'Ibu menerima bagian terkecilnya: 12/72 = Rp1.200.000.',
+      'Ibu menerima bagian terkecilnya: 3/18 = Rp1.200.000.',
       'Saudara laki-laki kandung belum menerima apa pun: ia berbagi ashabah dengan janin yang jumlahnya tidak dibatasi, jadi bagiannya belum dapat dipastikan.',
       'Bagian janin yang dikandung ibu ditahan seluruhnya.',
-      'Ditahan (mauquf): 60/72 = Rp6.000.000.',
+      'Ditahan (mauquf): 15/18 = Rp6.000.000.',
     ]);
   });
 
@@ -87,7 +87,7 @@ describe('Penjelasan gharqa × taqdir (13.0b)', () => {
   test('[SYF] harta yang memuat haml menyebut bagian yang ditahan', () => {
     const teks = teksBagian(jelaskan('syafii'), 1);
     expect(teks).toContain('Bagian janin yang dikandung istri dari almarhum ditahan seluruhnya.');
-    expect(teks).toContain('Ditahan (mauquf): 1260/1440 = Rp6.300.000.');
+    expect(teks).toContain('Ditahan (mauquf): 63/72 = Rp6.300.000.');
     expect(teks.some(baris => baris.includes('Kerabat'))).toBe(false);
   });
 

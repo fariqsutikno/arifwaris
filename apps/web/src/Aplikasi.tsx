@@ -29,7 +29,8 @@ import { TanyaJawab } from './layar/belajar/TanyaJawab';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
-import { kasusDariContoh } from './layar/belajar/contoh';
+import { daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
+import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
 import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { HalamanRiwayat } from './layar/Riwayat';
@@ -42,6 +43,7 @@ import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
 import { usePenjaga } from './ui/Penjaga';
 import { PembaruanKonten } from './ui/PembaruanKonten';
+import { kasusDariSoal } from '@waris/latihan';
 
 const JEDA_PERBARUI_BAGIKAN_MS = 1500;
 
@@ -56,6 +58,8 @@ export function Aplikasi() {
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
+  // "Jangan simpan kasus ini": sesi yang ditandai tidak disimpan otomatis; hanya state sesi, hilang saat dimuat ulang.
+  const [sesiJanganSimpan, setSesiJanganSimpan] = useState<ReadonlySet<string>>(new Set());
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
@@ -181,7 +185,7 @@ export function Aplikasi() {
   const keAwalHitung = () => kirim({ jenis: 'KE_LAYAR', layar: 'awal' });
   const kerjakanSoal = (soal: SoalHitung) => {
     kirim({ jenis: 'PILIH_TUJUAN', tujuan: 'belajar' });
-    bukaDiHitung(kasusDariContoh(soal.kasus), { jenis: 'latihan', kode: soal.kode });
+    bukaDiHitung(kasusDariSoal(soal.kasus), { jenis: 'latihan', kode: soal.kode });
     setSoalAktif(soal);
   };
   // Otomatis sekali di kunjungan pertama tiap layar yang punya tur.
@@ -211,8 +215,12 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
-        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={sesi ? repoAkun?.bagikan : undefined} tujuan={keadaan.tujuan} kirim={kirim} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
-            saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}  />}
+        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={sesi ? repoAkun?.bagikan : undefined} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim}
+            tanpaSimpan={sumberSesi.jenis === 'latihan'} janganSimpan={sesiJanganSimpan.has(idSesi)}
+            saatJanganSimpan={nilai => setSesiJanganSimpan(lama => { const baru = new Set(lama); if (nilai) baru.add(idSesi); else baru.delete(idSesi); return baru; })} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
+            saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
+            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined}
+            urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined} />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
@@ -241,6 +249,14 @@ const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLoka
 
 /** Id sesi riwayat; cukup unik di satu perangkat. */
 const buatIdSesi = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
+
+/** Posisi soal di urutan daftar Latihan (satu sumber: urutanSoalHitung) dan aksi ke soal sesudahnya. */
+function urutanLatihanDari(soal: SoalHitung, kerjakan: (soal: SoalHitung) => void) {
+  const urutan = urutanSoalHitung(daftarSoalHitung());
+  const indeks = urutan.findIndex(isi => isi.kode === soal.kode);
+  const berikutnya = urutan[indeks + 1];
+  return { nomor: indeks + 1, jumlah: urutan.length, bab: judulTopik(soal.bab), judul: soal.judul, saatBerikutnya: berikutnya ? () => kerjakan(berikutnya) : undefined };
+}
 
 /** `benar` = tebakan tepat sebelum jawaban dibuka; hanya itu yang memberi XP soal hitung (spec tahap 5). */
 function tandaiSoalDikerjakan(soal: SoalHitung, benar: boolean): void {

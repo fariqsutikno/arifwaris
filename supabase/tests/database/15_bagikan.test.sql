@@ -25,7 +25,7 @@ select is(baca_kasus_dibagikan('kasus-pribadi') ->> 'status', 'ok', 'pemilik mem
 select is(tautan_bagikan_tersedia('kasus-umum', 'r1'), true, 'slug milik kasus sendiri tidak dianggap bentrok');
 select is(tautan_bagikan_tersedia('kasus-umum', 'lain'), false, 'slug milik kasus lain tidak tersedia');
 
-set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-0000000000e2", "role": "authenticated", "email": "teman@tes.local"}';
+set local request.jwt.claims = '{"sub": "00000000-0000-0000-0000-0000000000e2", "role": "authenticated", "email": "teman@tes.local", "app_metadata": {"provider": "google"}}';
 select is(baca_kasus_dibagikan('kasus-teman') ->> 'status', 'ok', 'email terdaftar boleh (tanpa beda huruf besar)');
 select is(baca_kasus_dibagikan('kasus-pribadi') ->> 'status', 'tidak_ada', 'kasus privat orang lain dilaporkan tidak ada');
 select is((select count(*) from kasus_dibagikan), 0::bigint, 'baris orang lain tidak terbaca langsung');

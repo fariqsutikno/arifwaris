@@ -1,7 +1,7 @@
 // apps/web/src/__tests__/snapshot.test.ts
 // Snapshot bawaan = sumber konten saat offline; pengganti tes data di packages/content (yang berkasnya dihapus).
 import { expect, test } from 'vitest';
-import { periksaKonsistensi } from '@waris/content';
+import { periksaKonsistensi, type ContohKasus } from '@waris/content';
 import { saringValid, type Snapshot } from '@waris/data/snapshot';
 import bawaan from '../snapshot.json';
 import { cariIstilah, cariPelajaran, daftarKonten, daftarPelajaran, glosarium, pasangSnapshot, snapshotTerpasang } from '../konten/sumber';
@@ -20,7 +20,7 @@ test('getter terurut dan bigint terbaca', () => {
   expect(pelajaran.length).toBeGreaterThan(0);
   expect(pelajaran.map(p => p.modul * 100 + p.urutan)).toEqual([...pelajaran].map(p => p.modul * 100 + p.urutan).sort((a, b) => a - b));
   expect(cariPelajaran(pelajaran[0]!.slug)).toBe(pelajaran[0]);
-  expect(typeof daftarKonten('soal_hitung')[0]!.kasus.harta).toBe('bigint');
+  expect(typeof (daftarKonten('soal_hitung')[0]!.kasus as ContohKasus).harta).toBe('bigint');
 });
 
 test('glosarium KB mendapat Arab dari glosarium_ar', () => {

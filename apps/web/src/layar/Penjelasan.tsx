@@ -6,7 +6,7 @@ import { Fragment } from 'react';
 import type { IdOrang } from '@waris/engine';
 import { dalilUntuk } from '@waris/content';
 import { jelaskan, jelaskanGharqa, jelaskanMunasakhat, jelaskanTaqdir, type BabPenjelasan, type BarisPenjelasan } from '@waris/explain';
-import type { HasilTampil } from '../jalankan';
+import type { HasilTampil } from '@waris/latihan';
 import type { Kasus } from '../kasus';
 import { tautanRujukan } from '../rute';
 import { Istilah } from '../ui/Tooltip';

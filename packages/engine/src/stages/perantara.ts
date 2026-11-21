@@ -5,7 +5,7 @@
 
 import { hitungDenganTercakup } from '../pipeline.js';
 import { sahamDari, totalSaham, type Saham } from '../gabung.js';
-import type { GrafKeluarga, HasilEngine, IdOrang, InputEngine, LangkahJejak, Ruleset, TabelMasalah } from '../types.js';
+import type { GrafKeluarga, HasilEngine, IdOrang, InputEngine, LangkahJejak, Ruleset, TabelMasalah, TanzilArham } from '../types.js';
 import type { RuteTanzil } from './tanzil.js';
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
@@ -24,6 +24,7 @@ export interface MasalahPerantara {
   masalah: bigint;
   /** Perantara yang terhijab → penghijabnya. */
   mahjub: Record<IdOrang, IdOrang[]>;
+  tabel: TanzilArham['tabelPerantara'];
   jejak: LangkahJejak;
 }
 
@@ -40,8 +41,17 @@ export function bagiAntarPerantara(input: InputEngine, lolos: RuteTanzil[]): Mas
     return status?.jenis === 'mahjub' ? [[id, status.oleh]] : [];
   }));
   const { ashl, aul } = hasil.tabel.totalKolom;
+  const tabel = {
+    ashl: ashl!, ...(aul !== undefined ? { aul } : {}), masalah,
+    baris: daftarPerantara.map(perantara => {
+      const barisIni = hasil.tabel.baris.find(baris => baris.anggota.includes(perantara));
+      return { perantara, sebagai: lolos.find(rute => rute.perantara === perantara)!.kunciPerantara,
+        ...(barisIni?.fardh ? { fardh: barisIni.fardh } : {}), ...(barisIni?.ashabah ? { ashabah: barisIni.ashabah } : {}),
+        saham: saham[perantara] ?? 0n, terhalang: !saham[perantara] };
+    }),
+  };
   return {
-    saham, masalah, mahjub,
+    saham, masalah, mahjub, tabel,
     jejak: { tahap: 'dzawilArham', refs: ['R14-9', 'R14-13'], jenis: 'DZAWIL_ARHAM_MASALAH_PERANTARA',
       ashl: ashl!, ...(aul !== undefined ? { aul } : {}), saham, masalah, mahjub: Object.keys(mahjub) },
   };

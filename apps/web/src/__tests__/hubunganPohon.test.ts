@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { GrafKeluarga, IdOrang, KunciAhliWaris } from '@waris/engine';
 import { hitungIsian, tambahAhliWaris } from '../checklist';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { kasusBaru } from '../kasus';
 import { HUBUNGAN, selesaikanJalur, type KunciHubungan } from '../hubunganPohon';
 import { pasanganAktif, tambahDariOrang } from '../kerabatPohon';

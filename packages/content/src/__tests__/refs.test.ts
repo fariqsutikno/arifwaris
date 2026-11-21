@@ -40,7 +40,7 @@ describe('rujukan KB (bab 01–14, 16)', () => {
   test('kode unik dan lengkap', () => {
     const daftarKode = RUJUKAN.map(r => r.kode);
     expect(new Set(daftarKode).size).toBe(daftarKode.length);
-    expect(daftarKode.length).toBe(140);
+    expect(daftarKode.length).toBe(141);
   });
 
   test('status dan jenis', () => {

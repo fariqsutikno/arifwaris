@@ -8,8 +8,8 @@ import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
 
 const tidakDidukung = vi.hoisted(() => ({ aktif: false }));
-vi.mock('../jalankan', async importAsli => {
-  const asli = await importAsli<typeof import('../jalankan')>();
+vi.mock('@waris/latihan', async importAsli => {
+  const asli = await importAsli<typeof import('@waris/latihan')>();
   return { ...asli, jalankan: (kasus: Kasus) => (tidakDidukung.aktif
     ? { jenis: 'biasa', hasil: { status: 'TIDAK_DIDUKUNG', alasan: 'Alasan uji' } }
     : asli.jalankan(kasus)) };
@@ -33,7 +33,7 @@ describe('pilihan madzhab di hasil', () => {
   it('bawaan Syafi\'i: tanpa catatan sumber dan tanpa label beda', () => {
     tidakDidukung.aktif = false;
     render(<Uji awal={musyarrakah()} />);
-    expect(screen.getByText("Menurut madzhab Syafi'i")).toBeTruthy();
+    expect(screen.getByText(/^Menurut madzhab Syafi'i, dibagi ke \d+ orang\.$/)).toBeTruthy();
     expect(screen.queryByText(/nukilan Lahim dan Ithraa \(sumber/)).toBeNull();
     expect(screen.queryByText("berbeda dari Syafi'i")).toBeNull();
   });
@@ -47,7 +47,7 @@ describe('pilihan madzhab di hasil', () => {
     fireEvent.click(within(dialog).getByRole('radio', { name: /Hanbali/ }));
     fireEvent.click(within(dialog).getByRole('button', { name: 'Pakai' }));
     expect(screen.queryByRole('dialog', { name: 'Pilih madzhab' })).toBeNull();
-    expect(screen.getByText('Menurut madzhab Hanbali')).toBeTruthy();
+    expect(screen.getByText(/^Menurut madzhab Hanbali, dibagi ke \d+ orang\.$/)).toBeTruthy();
     expect(screen.getAllByText(/Madzhab Hanbali di sini mengikuti nukilan Lahim dan Ithraa/).length).toBeGreaterThan(0);
     expect(screen.getAllByText("berbeda dari Syafi'i").length).toBeGreaterThan(0);
 
@@ -55,7 +55,7 @@ describe('pilihan madzhab di hasil', () => {
     const lagi = screen.getByRole('dialog', { name: 'Pilih madzhab' });
     fireEvent.click(within(lagi).getByRole('radio', { name: /Syafi'i/ }));
     fireEvent.click(within(lagi).getByRole('button', { name: 'Pakai' }));
-    expect(screen.getByText("Menurut madzhab Syafi'i")).toBeTruthy();
+    expect(screen.getByText(/^Menurut madzhab Syafi'i, dibagi ke \d+ orang\.$/)).toBeTruthy();
     expect(screen.queryByText("berbeda dari Syafi'i")).toBeNull();
   });
 
@@ -66,7 +66,7 @@ describe('pilihan madzhab di hasil', () => {
     const dialog = screen.getByRole('dialog', { name: 'Pilih madzhab' });
     fireEvent.click(within(dialog).getByRole('radio', { name: /Maliki/ }));
     fireEvent.click(within(dialog).getByRole('button', { name: 'Batal' }));
-    expect(screen.getByText("Menurut madzhab Syafi'i")).toBeTruthy();
+    expect(screen.getByText(/^Menurut madzhab Syafi'i, dibagi ke \d+ orang\.$/)).toBeTruthy();
   });
 
   it('mode Belajar tidak punya tautan ganti madzhab', () => {

@@ -4,7 +4,7 @@ import { case01 } from '../../../../packages/engine/src/__tests__/fixtures/bab16
 import { M1 } from '../../../../packages/engine/src/__tests__/fixtures/munasakhat';
 import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
-import { jalankan } from '../jalankan';
+import { jalankan } from '@waris/latihan';
 import { tambahJanin, terapkanKeadaan } from '../keadaanOrang';
 
 type Ok = Extract<HasilEngine, { status: 'OK' }>;

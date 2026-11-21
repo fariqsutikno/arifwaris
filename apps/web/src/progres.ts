@@ -49,7 +49,8 @@ export function catatLatihan(jenis: JenisLatihan, soalSlug: string, benar: boole
   const semua = bacaObjek<ProgresLatihan>(KUNCI_LATIHAN);
   const sebelumnya = semua[kunciLatihan(jenis, soalSlug)];
   const baris: ProgresLatihan = {
-    soalSlug, jenis, benar, jawabanTerakhir: jawaban ?? null,
+    // Sekali benar tetap benar (T3): percobaan salah berikutnya hanya menambah jumlahCoba dan mengganti jawaban terakhir.
+    soalSlug, jenis, benar: benar || !!sebelumnya?.benar, jawabanTerakhir: jawaban ?? null,
     jumlahCoba: (sebelumnya?.jumlahCoba ?? 0) + 1, diubahPada: new Date().toISOString(),
   };
   simpanMentah(KUNCI_LATIHAN, JSON.stringify({ ...semua, [kunciLatihan(jenis, soalSlug)]: baris }));

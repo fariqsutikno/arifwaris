@@ -43,6 +43,8 @@ const JALUR = {
   bawah: <path d="M6 9l6 6 6-6" />,
   kanan: <path d="M9 6l6 6-6 6" />,
   lainnya: <><circle cx="5" cy="12" r="1.3" /><circle cx="12" cy="12" r="1.3" /><circle cx="19" cy="12" r="1.3" /></>,
+  kirim: <path d="M4 12l16-8-6 16-3-6z" />,
+  tautan: <path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1" />,
   jam: <><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></>,
 } as const;
 

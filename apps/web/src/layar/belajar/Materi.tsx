@@ -9,12 +9,11 @@ import { type Blok, type ContohKasus, type Pelajaran } from '@waris/content';
 import { cariPelajaran, daftarModul, daftarPelajaran, daftarSoalKuis } from '../../konten/sumber';
 import { TabelFaraidh } from '../../hasil/TabelFaraidh';
 import { ringkas } from '../../hasil/ringkasan';
-import { jalankan, type HasilOk } from '../../jalankan';
+import { jalankan, type HasilOk, kasusDariSoal } from '@waris/latihan';
 import type { Kasus } from '../../kasus';
 import { catatAktivitas } from '../../preferensi';
 import { bacaPelajaranSelesai, tandaiPelajaranSelesai } from '../../progres';
 import { tautanBelajar } from '../../rute';
-import { kasusDariContoh } from './contoh';
 import { KartuSoalKuis } from './KartuSoalKuis';
 import { angka, panah, panahMundur, t } from '../../terjemah';
 import { Sebaris } from './Sebaris';
@@ -185,7 +184,7 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba, idJudul }: { blok: B
 }
 
 function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKasus } & Omit<Props, 'slug'>) {
-  const kasus = useMemo(() => kasusDariContoh(contoh), [contoh]);
+  const kasus = useMemo(() => kasusDariSoal(contoh), [contoh]);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') {
     return <p className="kartu kartu-galat" role="alert">{t('belajar.contoh_ini_tidak_bisa_dihitung_laporkan')}</p>;

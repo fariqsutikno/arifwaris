@@ -1,7 +1,7 @@
 export { jelaskan, type BabPenjelasan, type OpsiPenjelasan, type Penjelasan } from './narasi.js';
 export type { KolomBab } from './cerita.js';
 export { narasiNisab } from './nisab.js';
-export { keTeksBiasa, susun, teksKamus, type Bahasa, type Kamus, type Penyusun, type BarisPenjelasan, type Potongan } from './segments.js';
+export { keTeksBiasa, susun, teksKamus, type Bahasa, type Kamus, type Penyusun, type BarisPenjelasan, type JenisLangkah, type Potongan } from './segments.js';
 export { ID_ISTILAH, type IdIstilah } from './terms.js';
 export { jelaskanMunasakhat, type PenjelasanMunasakhat, type BagianMunasakhat } from './munasakhat.js';
 export { labelArab, angkaArab } from './arab.js';
@@ -9,3 +9,4 @@ export { jelaskanTaqdir, jelaskanGharqa, type PenjelasanKasusKhusus } from './ka
 export { susunLinimasaTaqdir, susunLinimasaGharqa, KUNCI_DITAHAN } from './linimasaKasusKhusus.js';
 export { susunLinimasaMunasakhat } from './linimasaMunasakhat.js';
 export { susunLinimasa, kotakWakil, BATAS_KOTAK, type Linimasa, type Tahap, type Langkah, type Visual, type IdTahap, type BagianLangkah, type KolomLinimasa, type KolomTabel, type KodeSel, type PeranPohon, type BarisHarta, type IsiKotak } from './linimasa.js';
+export { jelaskanOrang, type PenjelasanOrang, type BarisHitungan } from './orang.js';

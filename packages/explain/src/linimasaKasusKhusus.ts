@@ -5,9 +5,10 @@
 
 import type { GrafKeluarga, HartaGharqa, KeadaanGharqa } from '@waris/engine';
 import type { Bab } from './cerita.js';
-import { jelaskanGharqa, jelaskanTaqdir, sebutGharqa, sebutTaqdir, type GharqaSelesai, type TaqdirOk } from './kasusKhusus.js';
+import { sebutGharqa, sebutTaqdir, teksSebut, type GharqaSelesai, type TaqdirOk } from './kasusKhusus.js';
+import { babHartaGharqaSkrip, babPembukaanGharqaSkrip } from './skripGharqa.js';
+import { babBelumPastiSkrip, babKemungkinanSkrip, babPemberianSkrip } from './skripTaqdir.js';
 import { kotakWakil, type IsiKotak, type Langkah, type Linimasa, type Tahap, type Visual } from './linimasa.js';
-import type { BagianMunasakhat } from './munasakhat.js';
 import { sebutPenerima } from './munasakhat.js';
 import type { Kamus, Penyusun } from './segments.js';
 import { teksKamus } from './segments.js';
@@ -17,49 +18,55 @@ export const KUNCI_DITAHAN = 'ditahan';
 
 export function susunLinimasaTaqdir(hasil: TaqdirOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): Linimasa {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
-  const penjelasan = jelaskanTaqdir(hasil, graf, opsi);
-  const [pembukaan, ...sisa] = penjelasan.daftarBagian;
-  const pembagian = sisa.at(-1)!;
-  const kemungkinan = sisa.length > 1 ? sisa[0] : undefined;
+  const sebut = sebutTaqdir(graf, hasil, penyusun);
   const meja = (sorot?: number): Visual => ({
     jenis: 'meja', jamiah: hasil.jamiah, ...(sorot === undefined ? {} : { sorot }),
     dunia: hasil.daftarDunia.map(dunia => ({ masalah: dunia.masalah, isi: isiDariSaham(dunia.saham) })),
   });
-  const tahap: Tahap[] = [tahapDariBab('belumPasti', pembukaan!.judul, pembukaan!.daftarBab[0]!)];
-  if (kemungkinan) tahap.push({ id: 'kemungkinan', judul: kemungkinan.judul, langkah: kemungkinan.daftarBab.flatMap((bab, nomorDunia) =>
-    bab.daftarBaris.map((baris, urut): Langkah => ({ ...langkahDariBaris(baris), ...(urut === 0 ? { visual: meja(nomorDunia) } : {}) }))) });
-  tahap.push(tahapPemberian(pembagian, hasil.jamiah, hasil.diberikan, hasil.mauquf));
-  return { tahap, tabel: [], nama: nama(penyusun, sebutTaqdir(graf, hasil, penyusun), [...Object.keys(hasil.diberikan), ...hasil.daftarDunia.flatMap(dunia => Object.keys(dunia.saham))]) };
+  const belumPasti = babBelumPastiSkrip(hasil, graf, sebut, penyusun);
+  const tahap: Tahap[] = [tahapDariBab('belumPasti', belumPasti.judul, belumPasti)];
+  if (hasil.daftarDunia.some(dunia => Object.keys(dunia.taqdir).length > 0)) {
+    const kemungkinan = babKemungkinanSkrip(hasil, graf, sebut, penyusun);
+    const barisPengantar = kemungkinan.pengantar.map((baris, urut): Langkah => ({ ...langkahDariBaris(baris), ...(urut === 0 ? { visual: meja() } : {}) }));
+    const barisDunia = kemungkinan.dunia.flatMap((daftar, nomorDunia) => daftar.map((baris, urut): Langkah => ({ ...langkahDariBaris(baris), ...(urut === 0 ? { visual: meja(nomorDunia) } : {}) })));
+    tahap.push({ id: 'kemungkinan', judul: kemungkinan.judul, langkah: [...barisPengantar, ...barisDunia] });
+  }
+  const pemberian = babPemberianSkrip(hasil, sebut, penyusun);
+  tahap.push(tahapPemberian(pemberian, hasil.jamiah, hasil.diberikan, hasil.mauquf));
+  return { tahap, tabel: [], nama: nama(penyusun, sebut, [...Object.keys(hasil.diberikan), ...hasil.daftarDunia.flatMap(dunia => Object.keys(dunia.saham))]) };
 }
 
 export function susunLinimasaGharqa(hasil: GharqaSelesai, graf: GrafKeluarga, keadaan: KeadaanGharqa, opsi: { kamus: Kamus }): Linimasa {
   const penyusun: Penyusun = { kamus: opsi.kamus, bahasa: 'id' };
-  const [pembukaan, ...bagian] = jelaskanGharqa(hasil, graf, keadaan, opsi).daftarBagian;
-  const daftarHarta = hasil.status === 'OK' ? [hasil.harta] : hasil.skenario.map(skenario => skenario.harta);
-  const tahap: Tahap[] = [tahapDariBab('wafatBersamaan', pembukaan!.judul, pembukaan!.daftarBab[0]!)];
-  // OK: satu bagian berisi bab per harta. MAUQUF: satu bagian per skenario urutan, tiap bab satu harta.
-  const daftarBab = hasil.status === 'OK' ? bagian[0]!.daftarBab.map(bab => [bab]) : bagian.map(satu => satu.daftarBab);
-  for (const [urutBagian, babBagian] of daftarBab.entries()) {
-    for (const [urut, bab] of babBagian.entries()) {
-      const harta = daftarHarta[hasil.status === 'OK' ? 0 : urutBagian]![hasil.status === 'OK' ? urutBagian : urut]!;
-      const judul = hasil.status === 'OK' ? bab.judul : `${bagian[urutBagian]!.judul}: ${bab.judul}`;
-      tahap.push(tahapHarta(judul, bab, harta));
+  const sebut = sebutGharqa(graf, hasil, penyusun);
+  const pembukaan = babPembukaanGharqaSkrip(hasil, keadaan, sebut, penyusun);
+  const tahap: Tahap[] = [tahapDariBab('wafatBersamaan', pembukaan.judul, pembukaan)];
+  // OK: satu daftar harta. MAUQUF: satu daftar harta per skenario urutan, judul tahap diawali urutannya.
+  const daftarSkenario = hasil.status === 'OK'
+    ? [{ judul: undefined, harta: hasil.harta }]
+    : hasil.skenario.map(skenario => ({ judul: teksKamus(penyusun, 'narasi.gharqa.judul.skenario', { urutan: skenario.urutan.map(id => teksSebut(sebut(id))).join(' → ') }), harta: skenario.harta }));
+  for (const { judul: judulSkenario, harta: daftarHarta } of daftarSkenario) {
+    for (const harta of daftarHarta) {
+      const bab = babHartaGharqaSkrip(harta, sebut, penyusun);
+      tahap.push(tahapHarta(judulSkenario ? `${judulSkenario}: ${bab.judul}` : bab.judul, bab, harta));
     }
   }
-  const semuaId = daftarHarta.flat(2).flatMap(harta => [...Object.keys(harta.saham), harta.mayit]);
-  return { tahap, tabel: [], nama: nama(penyusun, sebutGharqa(graf, hasil, penyusun), semuaId) };
+  const semuaId = daftarSkenario.flatMap(skenario => skenario.harta).flatMap(harta => [...Object.keys(harta.saham), harta.mayit]);
+  return { tahap, tabel: [], nama: nama(penyusun, sebut, semuaId) };
 }
 
 // ─── Tahap ────────────────────────────────────────────────────────────────────
 
-const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({ bagian: 'hitung', narasi: baris, papan: baris, refs: baris.refs });
+const langkahDariBaris = (baris: Bab['daftarBaris'][number]): Langkah => ({
+  bagian: 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: baris.papan ? { daftarPotongan: baris.papan, refs: baris.refs } : baris, refs: baris.refs,
+});
 
 function tahapDariBab(id: Tahap['id'], judul: string, bab: Bab): Tahap {
   return { id, judul, langkah: bab.daftarBaris.map(langkahDariBaris) };
 }
 
-function tahapPemberian(bagian: BagianMunasakhat, jamiah: bigint, diberikan: Record<string, bigint>, ditahan: bigint): Tahap {
-  const tahap = tahapDariBab('pemberian', bagian.judul, bagian.daftarBab[0]!);
+function tahapPemberian(bab: Bab, jamiah: bigint, diberikan: Record<string, bigint>, ditahan: bigint): Tahap {
+  const tahap = tahapDariBab('pemberian', bab.judul, bab);
   return { ...tahap, langkah: [{ ...tahap.langkah[0]!, visual: kotakDitahan(jamiah, diberikan, ditahan) }, ...tahap.langkah.slice(1)] };
 }
 

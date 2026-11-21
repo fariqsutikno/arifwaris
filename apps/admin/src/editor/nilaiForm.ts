@@ -3,7 +3,7 @@
 // angka dari teks, kosong → hapus/null). Isi asal dipakai sebagai dasar supaya field tanpa bidang (mis. urutan materi)
 // tidak hilang. Hasil akhir SELALU lewat bacaIsi (Zod); galat dikembalikan per jalur bidang, tidak dilempar.
 import {
-  bacaBlok, bacaIsi, bacaPotongan, DAFTAR_AYAT, keJson, tulisBlok, tulisPotongan,
+  adalahKasusLama, bacaBlok, bacaIsi, bacaPotongan, DAFTAR_AYAT, keJson, tulisBlok, tulisPotongan,
   type BarisAhwal, type Blok, type ContohKasus, type IsiKonten, type JenisKonten, type Potongan,
 } from '@waris/content';
 import { FORM_KONTEN, ISI_AWAL, type Bidang } from './formulir';
@@ -143,6 +143,7 @@ function nilaiAwal(bidang: Bidang, dasar: Objek): NilaiBidang {
     case 'kasus': {
       const hasil = bacaIsi('soal_hitung', { kode: 'x', bab: 0, tingkat: 'dasar', judul: '', topik: '', sumber: '', kasus: dariDasar });
       if (!hasil.ok) throw new Error(`ISI_AWAL kasus tidak sah: ${hasil.galat}`);
+      if (!adalahKasusLama(hasil.isi.kasus)) throw new Error('ISI_AWAL kasus berbentuk berkas belum bisa disunting di formulir ini');
       return hasil.isi.kasus;
     }
     case 'barisAhwal': return [];

@@ -25,7 +25,7 @@ describe('Taqdir bab 13 — haml, mafqud, khuntsa (kitab Lahim)', () => {
       expect(hasil.mauquf).toBe(fixture.expected.mauquf);
       expect(jumlah(hasil.diberikan) + hasil.mauquf, "Σ diberikan + mauquf = jami'ah").toBe(hasil.jamiah);
       for (const dunia of hasil.daftarDunia) {
-        expect(jumlah(dunia.saham), "Σ saham dunia = jami'ah").toBe(hasil.jamiah);
+        expect(jumlah(dunia.saham) + dunia.kelompok.reduce((a, b) => a + b.saham, 0n), "Σ saham dunia = jami'ah").toBe(hasil.jamiah);
       }
     });
   }
@@ -42,14 +42,74 @@ describe('Taqdir — perilaku lain', () => {
     expect(hitungTaqdir({ ...input(GRAF.grafH1), ruleset: 'maliki' }).status).toBe('MAUQUF_SEMUA');
   });
 
-  test('tabel "jika terbukti": H1 [SYF] punya 6 dunia, F1 punya 2', () => {
-    expect(ok(input(GRAF.grafH1)).daftarDunia).toHaveLength(6);
+  test('tabel "jika terbukti": H1 [SYF] punya 4 dunia [R13-20], [HNB] 6, F1 punya 2', () => {
+    expect(ok(input(GRAF.grafH1)).daftarDunia.map(dunia => dunia.taqdir.J)).toEqual(['mati', 'lk', 'pr', 'duaPr']);
+    expect(ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' }).daftarDunia).toHaveLength(6);
     expect(ok(input(GRAF.grafF1)).daftarDunia.map(dunia => dunia.taqdir)).toEqual([{ Q: 'hidup' }, { Q: 'mati' }]);
   });
 
   test('haml di taqdir 2 lk: saham kedua janin digabung ke node haml', () => {
-    const duaLk = ok(input(GRAF.grafH1)).daftarDunia.find(dunia => dunia.taqdir.J === 'duaLk')!;
+    const duaLk = ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' }).daftarDunia.find(dunia => dunia.taqdir.J === 'duaLk')!;
     expect(duaLk.saham).toEqual({ I: 12n, S: 20n, J: 40n });
+  });
+
+  test("[R13-20] H1 [SYF]: taqdir laki-laki dan perempuan berbilang berhenti di asal masalah, saham kelompok bersama (3 · 6 · 18 · 6, jami'ah 18)", () => {
+    const hasil = ok(input(GRAF.grafH1));
+    expect(hasil.daftarDunia.map(dunia => dunia.masalah)).toEqual([3n, 6n, 18n, 6n]);
+    const [mati, lk, pr, duaPr] = hasil.daftarDunia;
+    expect(mati!.saham).toEqual({ I: 6n, S: 12n });
+    for (const dunia of [lk!, duaPr!]) {
+      expect(dunia.saham).toEqual({ I: 3n });
+      expect(dunia.kelompok).toEqual([{ anggota: ['S', 'J'], saham: 15n }]);
+    }
+    expect(pr!.saham).toEqual({ I: 3n, S: 10n, J: 5n });   // 1 pr: kepala diketahui, tetap per orang
+    expect(pr!.kelompok).toEqual([]);
+    expect(hasil.jamiah).toBe(18n);
+    expect(hasil.diberikan.I).toBe(3n);
+    expect(hasil.mauquf).toBe(15n);
+  });
+
+  describe('[R13-4] tabel per dunia (bagian + saham sebelum pengali), kunci tabel latihan B7', () => {
+    const ringkas = (masukan: InputEngine) => ok(masukan).daftarDunia.map(dunia => ({
+      masalah: dunia.masalah, pengali: dunia.pengali,
+      baris: dunia.bagian!.map(baris => [baris.anggota.join('+'), baris.ashabah ? 'A' : '', baris.fardh ? `${baris.fardh.n}/${baris.fardh.d}` : '', baris.bersama ? 'bersama' : '', baris.saham] as const),
+    }));
+
+    test('mafqud 13b.6 F1: hidup 12 (ibu 1/6 2, saudara + hilang ashabah 10), wafat 3; pengali 1 dan 4', () => {
+      const [hidup, wafat] = ok(input(GRAF.grafF1)).daftarDunia;
+      expect([hidup!.masalah, wafat!.masalah, hidup!.pengali, wafat!.pengali]).toEqual([12n, 3n, 1n, 4n]);
+      expect(hidup!.bagian!.map(baris => baris.perOrang)).toEqual([{ I: 2n }, { S: 5n, Q: 5n }]);
+      expect(wafat!.bagian!.map(baris => baris.perOrang)).toEqual([{ I: 1n }, { S: 2n }]);
+    });
+
+    test('haml [HNB] 13a.7 H1: masalah 3, 12, 18, 18, 24, 6; pengali 24, 6, 4, 4, 3, 12 (jami\'ah 72)', () => {
+      const dunia = ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' }).daftarDunia;
+      expect(dunia.map(d => d.masalah)).toEqual([3n, 12n, 18n, 18n, 24n, 6n]);
+      expect(dunia.map(d => d.pengali)).toEqual([24n, 6n, 4n, 4n, 3n, 12n]);
+      for (const d of dunia) expect(d.bagian!.reduce((jumlah, baris) => jumlah + baris.saham, 0n)).toBe(d.masalah);
+    });
+
+    test('haml [SYF] 13a.7 H1: 3 · 6 · 18 · 6, pengali 6, 3, 1, 3, saham kelompok bersama ditulis satu angka', () => {
+      const dunia = ok(input(GRAF.grafH1)).daftarDunia;
+      expect(dunia.map(d => d.pengali)).toEqual([6n, 3n, 1n, 3n]);
+      expect(ringkas(input(GRAF.grafH1))[1]!.baris).toEqual([['I', '', '1/6', '', 1n], ['S+J', 'A', '', 'bersama', 5n]]);
+      expect(dunia[2]!.bagian![1]!.perOrang).toEqual({ S: 10n, J: 5n });   // 1 pr: kepala diketahui
+      for (const d of dunia) {
+        const kelompok = d.kelompok.reduce((jumlah, k) => jumlah + k.saham, 0n);
+        expect(d.bagian!.reduce((jumlah, baris) => jumlah + baris.saham, 0n) * d.pengali, 'bagian × pengali = jami\'ah').toBe(Object.values(d.saham).reduce((a, b) => a + b, 0n) + kelompok);
+      }
+    });
+
+    test('khuntsa X5: ia laki-laki (ashabah) dan ia perempuan (fardh 1/2) punya tabel sendiri', () => {
+      const [lk, pr] = ringkas(input(GRAF.grafX5));
+      expect(lk!.baris.at(-1)).toEqual(['K', 'A', '', '', 1n]);
+      expect(pr!.baris.at(-1)).toEqual(['K', '', '1/2', '', 3n]);
+    });
+  });
+
+  test('[HNB] tidak memakai kelompok bersama: 2 lk dan 2 pr tetap per kepala', () => {
+    const hasil = ok({ ...input(GRAF.grafH1), ruleset: 'hanbali' });
+    expect(hasil.daftarDunia.every(dunia => dunia.kelompok.length === 0)).toBe(true);
   });
 
   test('nominal: diberikan + mauquf + selisih pembulatan = harta bersih', () => {
