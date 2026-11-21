@@ -9,7 +9,7 @@ import {
   JENIS_SUMBER, adaKemungkinanLuar, barisPemberian, daftarSumber, namaMadzhab, refsPemberian, teksTaqdir, type TaqdirOk,
 } from './kasusKhusus.js';
 import { sebutPenerima } from './munasakhat.js';
-import { barisSkrip, buatBaris, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Penyusun, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, kalimat, labelHitung, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Penyusun, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 type Sebut = (id: IdOrang) => Potongan;
@@ -28,7 +28,9 @@ const langkahLama = (penyusun: Penyusun, jenis: JenisLangkah, nama: string, sisi
 export function babBelumPastiSkrip(hasil: TaqdirOk, graf: GrafKeluarga, sebut: Sebut, penyusun: Penyusun): Bab {
   const sumber = daftarSumber(graf);
   const siapa = gabungDan(penyusun, sumber.map(id => [sebut(id)]));
-  const daftarBaris = [langkah(penyusun, 'tanya', 'belum.tanya', { siapa }, {}, ['R13-16'], sumber)];
+  // Khuntsa dijelaskan dengan bahasa awam di pertanyaan pembuka, sebelum istilahnya muncul di sebutan.
+  const semuaKhuntsa = sumber.every(id => graf.orang[id]!.khuntsa);
+  const daftarBaris = [langkah(penyusun, 'tanya', semuaKhuntsa ? 'belum.tanya_khuntsa' : 'belum.tanya', { siapa }, {}, ['R13-16'], sumber)];
   if (hasil.daftarDunia.length > 1) {
     daftarBaris.push(langkah(penyusun, 'dasar', 'belum.dasar', { mauquf: istilahNarasi(penyusun, 'mauquf') }, {}, refsPemberian(hasil)));
   }
@@ -52,19 +54,23 @@ export function babKemungkinanSkrip(hasil: TaqdirOk, graf: GrafKeluarga, sebut: 
   const jumlah = hasil.daftarDunia.length;
   const pengantar = [
     langkah(penyusun, 'dasar', 'kemungkinan.dasar', {}, {}, ['R13-16']),
-    langkah(penyusun, 'logika', 'kemungkinan.banyak', { jumlah, jamiah: istilahNarasi(penyusun, 'jamiah') }, { jumlah }),
+    langkah(penyusun, 'logika', 'kemungkinan.banyak', {
+      jumlah, daftar: gabungDan(penyusun, [...new Set(hasil.daftarDunia.map(satuDunia => satuDunia.masalah))].map(masalah => [{ jenis: 'teks' as const, teks: String(masalah) }])),
+      angka: hasil.jamiah, jamiah: istilahNarasi(penyusun, 'jamiah'),
+    }, { jumlah }),
     langkah(penyusun, 'jembatan', 'kemungkinan.jembatan', {}, {}),
   ];
   const dunia = hasil.daftarDunia.map((satuDunia, indeks) => {
     const juzSahm = hasil.jamiah / satuDunia.masalah;
     return [
       langkah(penyusun, 'keluarga', 'dunia.jika', { nomor: indeks + 1, kemungkinan: teksTaqdir(penyusun, graf, satuDunia.taqdir, sebut) }, { nomor: indeks + 1 }, [], Object.keys(satuDunia.taqdir)),
-      langkahLama(penyusun, 'hitung', 'dunia.masalah', {
+      langkah(penyusun, 'hitung', 'dunia.masalah', {
         masalah: satuDunia.masalah, jamiah: hasil.jamiah, juz_sahm: istilahNarasi(penyusun, 'juz-as-sahm'), nilai: juzSahm,
-      }, langkahDunia[indeks]?.refs ?? []),
+      }, { masalah: satuDunia.masalah, jamiah: hasil.jamiah, nilai: juzSahm }, langkahDunia[indeks]?.refs ?? []),
       ...Object.entries(satuDunia.saham).map(([id, saham]) => {
-        const kalimatOrang = kalimat`${sebutPenerima(penyusun, id, sebut)}: ${saham}/${hasil.jamiah}.`;
-        return { ...buatBaris(kalimatOrang, [], [id]), jenis: 'hitung' as const, papan: kalimatOrang };
+        const siapaIni = sebutPenerima(penyusun, id, sebut);
+        const kalimatOrang = kalimat`${siapaIni}: ${saham}/${hasil.jamiah}.`;
+        return denganHitungan({ ...buatBaris(kalimatOrang, [], [id]), jenis: 'hitung' as const, papan: kalimatOrang }, siapaIni, `${saham}/${hasil.jamiah}`);
       }),
     ];
   });
@@ -85,7 +91,7 @@ export function babPemberianSkrip(hasil: TaqdirOk, sebut: Sebut, penyusun: Penyu
   }
   if (tampilkanNominal && hasil.pembulatan.sisaPembulatan > 0n) {
     const kalimatSelisih = susun(penyusun, 'narasi.umum.selisih_pembulatan', { selisih: rupiah(hasil.pembulatan.sisaPembulatan), satuan: rupiah(hasil.pembulatan.satuan) });
-    daftarBaris.push({ ...buatBaris(kalimatSelisih), jenis: 'hitung', papan: kalimatSelisih });
+    daftarBaris.push(denganHitungan({ ...buatBaris(kalimatSelisih), jenis: 'hitung', papan: kalimatSelisih }, labelHitung(penyusun, 'selisih_pembulatan'), rupiah(hasil.pembulatan.sisaPembulatan)));
   }
   const sisipan = { diberikan: hasil.jamiah - hasil.mauquf, ditahan: hasil.mauquf, jamiah: hasil.jamiah };
   daftarBaris.push(hasil.mauquf > 0n

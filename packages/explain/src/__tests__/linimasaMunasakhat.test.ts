@@ -50,4 +50,11 @@ describe('susunLinimasaMunasakhat', () => {
       for (const satu of kotak) for (const isi of satu.isi) expect(linimasa.nama![isi.anggota[0]!], isi.anggota[0]).toBeTruthy();
     });
   }
+
+  it('M2: baris hitung per orang membawa hitungan berlabel (label = orang, isi = rumus)', () => {
+    const { linimasa } = linimasaDari(M2.input);
+    const hitungan = linimasa.tahap.flatMap(tahap => tahap.langkah).flatMap(langkah => (langkah.hitungan ? [langkah.hitungan] : []));
+    expect(hitungan.length).toBeGreaterThan(0);
+    expect(hitungan.every(satu => satu.label.length > 0 && satu.isi.length > 0)).toBe(true);
+  });
 });
