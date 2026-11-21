@@ -22,6 +22,8 @@ export interface SoalHitung {
   /** Konsep yang diuji; baru ditampilkan setelah soal dikerjakan. */
   topik: string;
   sumber: string;
+  /** Poin XP yang didapat sekali per soal (1–200); kosong = mengikuti tingkat (10/20/30). Dibaca dari revisi yang dikerjakan. */
+  bobotXp?: number;
 }
 
 export interface SoalKuis {

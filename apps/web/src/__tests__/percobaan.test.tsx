@@ -4,7 +4,8 @@ import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { KejadianPercobaan } from '@waris/latihan';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
-import { antre, aturAkunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
+import { antre, aturAkunLokal, bacaAntrean, bacaAntreanGagal, kirimAntrean } from '../akun/antrean';
+import { GalatPercobaan } from '@waris/data';
 import { gabung } from '../akun/gabung';
 import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
@@ -32,16 +33,37 @@ describe('penyimpanan kejadian lokal', () => {
 });
 
 describe('antrean percobaan', () => {
-  it('berkunci id sendiri (tidak menimpa), dibatasi 500, dan dilewati pengirim sampai tabel server ada', async () => {
+  it('berkunci id sendiri (tidak menimpa) dan dibatasi 500', () => {
     aturAkunLokal('u');
     for (let urut = 0; urut < BATAS_PERCOBAAN_LOKAL + 3; urut++) antre({ tabel: 'percobaan', baris: kejadian(`k${urut}`) });
-    antre({ tabel: 'kegiatan', baris: { id: 'g1', jenis: 'soal', slug: 'H-01', benar: true } });
     const antrean = bacaAntrean();
     expect(antrean.filter(entri => entri.tabel === 'percobaan')).toHaveLength(BATAS_PERCOBAAN_LOKAL);
     expect((antrean.find(entri => entri.tabel === 'percobaan') as { baris: { id: string } }).baris.id).toBe('k3');
+  });
+
+  it('terkirim berurutan ke server tanpa hasil/benar dari klien', async () => {
+    aturAkunLokal('u');
+    antre({ tabel: 'percobaan', baris: kejadian('k1', { benarSemua: true, hasilKolom: [], aksi: 'periksa', isian: { kepala: {}, sel: {} } }) });
     const { pengguna } = buatMemoriPengguna(buatMemori({ sesi: { userId: 'u', email: 'u@tes.local' } }));
-    expect(await kirimAntrean(pengguna)).toBe(BATAS_PERCOBAAN_LOKAL); // kegiatan terkirim, percobaan menunggu
-    expect(bacaAntrean().every(entri => entri.tabel === 'percobaan')).toBe(true);
+    const kirim = vi.spyOn(pengguna, 'kirimPercobaan');
+    expect(await kirimAntrean(pengguna)).toBe(0);
+    expect(Object.keys(kirim.mock.calls[0]![0]).sort()).toEqual(['aksi', 'dimulaiPada', 'id', 'idSesiSoal', 'isian', 'jangkar', 'mode', 'revisiSoal', 'soalId']);
+  });
+
+  it('entri racun (400/409) pindah ke antrean-gagal dan tidak menyumbat; 429/jaringan tetap menunggu', async () => {
+    aturAkunLokal('u');
+    antre({ tabel: 'percobaan', baris: kejadian('racun') });
+    antre({ tabel: 'percobaan', baris: kejadian('sehat') });
+    const { pengguna } = buatMemoriPengguna(buatMemori({ sesi: { userId: 'u', email: 'u@tes.local' } }));
+    const asli = pengguna.kirimPercobaan.bind(pengguna);
+    vi.spyOn(pengguna, 'kirimPercobaan').mockImplementation(async kiriman => { if (kiriman.id === 'racun') throw new GalatPercobaan(409, 'ID_BENTROK'); return asli(kiriman); });
+    expect(await kirimAntrean(pengguna)).toBe(0);
+    expect(bacaAntreanGagal()).toHaveLength(1);
+
+    antre({ tabel: 'percobaan', baris: kejadian('tertahan') });
+    vi.spyOn(pengguna, 'kirimPercobaan').mockRejectedValue(new GalatPercobaan(429, 'LAJU_TERLAMPAUI'));
+    expect(await kirimAntrean(pengguna)).toBe(1);
+    expect(bacaAntreanGagal()).toHaveLength(1);
   });
 });
 

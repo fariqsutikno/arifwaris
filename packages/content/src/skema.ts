@@ -108,6 +108,7 @@ const SKEMA: Record<JenisKonten, z.ZodTypeAny> = {
     .transform(({ pengecoh, ...soal }) => (pengecoh?.length ? { ...soal, pembahasan: [...soal.pembahasan, { jenis: 'teks' as const, teks: ' ' }, ...pengecoh] } : soal)),
   soal_hitung: z.object({
     kode: z.string(), bab: z.number().int(), tingkat, judul: z.string(), kasus: kasusSoal, topik: z.string(), sumber: z.string(),
+    bobotXp: z.number().int().min(1).max(200).optional(),
   }),
   tanya_jawab: z.object({
     slug: z.string(), judul: z.string(), jenis: z.enum(['Saran ustadz', 'Fatwa']), ringkasan: z.string(),

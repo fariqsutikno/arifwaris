@@ -114,7 +114,29 @@ export interface ProgresLatihan {
 }
 export interface Preferensi { isi: Record<string, unknown>; diubahPada: string }
 /** Satu kegiatan belajar selesai (spec akun: dasar streak tahap 5). `id` dibuat klien supaya kirim ulang tidak dobel. */
-export interface Kegiatan { id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null }
+export interface Kegiatan {
+  id: string; jenis: 'pelajaran' | 'soal' | 'kuis'; slug: string; benar: boolean | null;
+  /** Pilihan pelajar pada kuis; server yang menilai benar/salahnya (spec 2.6). Tanpa ini kuis tidak dikirim. */
+  indeksPilihan?: number;
+}
+
+/** Yang dikirim klien ke `catat-percobaan` (spec 2.6): hanya isian dan klik pelajar; benar, XP, waktu, versi milik server. */
+export interface KirimanPercobaan {
+  id: string; idSesiSoal: string; soalId: string; revisiSoal: string; mode: 'latihan' | 'ujian';
+  aksi: 'buka' | 'periksa' | 'kirim' | 'lihatJawaban'; isian: unknown; jangkar: unknown; dimulaiPada: string;
+}
+export interface HasilPercobaanServer { duplikat: boolean; diterimaPada: string; hasilKolom: unknown; benarSemua: boolean | null }
+/** `status` 0 = jaringan/fungsi tak terjangkau; 400/409 = kiriman ditolak (tidak akan pernah lolos); 401/429/5xx = coba lagi nanti. */
+export class GalatPercobaan extends Error {
+  constructor(readonly status: number, readonly kode: string) { super(kode); }
+  /** Kiriman yang bentuk/urutannya salah: dicoba ulang pun tetap ditolak. */
+  get racun(): boolean { return this.status === 400 || this.status === 409; }
+}
+/** Baris percobaan_soal milik pengguna, apa adanya dari server (camelCase). */
+export interface BarisPercobaanServer {
+  id: string; idSesiSoal: string; soalId: string; revisiSoal: string; jenisSoal: string; mode: 'latihan' | 'ujian'; aksi: string;
+  isian: unknown; jangkar: unknown; hasilKolom: unknown; benarSemua: boolean | null; dimulaiPadaKlien: string | null; diterimaPada: string; versi: unknown;
+}
 
 /** Profil untuk papan peringkat (spec tahap 5). Tanpa baris = tidak ikut papan, zona Asia/Jakarta. */
 export interface Profil {
@@ -147,7 +169,11 @@ export interface RepositoriPengguna {
   hapusSemuaProgresLatihan(): Promise<void>;
   bacaPreferensi(): Promise<Preferensi | null>;
   simpanPreferensi(preferensi: Preferensi): Promise<void>;
+  /** Kuis dan pelajaran lewat edge function (log_kegiatan tidak bisa ditulis klien); soal tabel lewat kirimPercobaan. */
   catatKegiatan(kegiatan: Kegiatan): Promise<void>;
+  /** Melempar GalatPercobaan. Idempoten per id. */
+  kirimPercobaan(kiriman: KirimanPercobaan): Promise<HasilPercobaanServer>;
+  bacaPercobaan(): Promise<BarisPercobaanServer[]>;
   bacaProfil(): Promise<Profil | null>;
   /** Langsung ke server, tidak lewat antrean: profil hanya dipakai di halaman yang butuh jaringan. */
   simpanProfil(profil: Profil): Promise<void>;

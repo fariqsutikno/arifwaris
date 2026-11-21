@@ -4,7 +4,8 @@
 // Menerima entri dari progres/tersimpan/preferensi; menyerahkannya ke RepositoriPengguna lewat kirimAntrean.
 
 import type { KejadianPercobaan } from '@waris/latihan';
-import type { Kegiatan, Preferensi, ProgresBelajar, ProgresLatihan, RepositoriPengguna, RiwayatTersimpan } from '@waris/data';
+import { GalatPercobaan, type Kegiatan, type Preferensi, type ProgresBelajar, type ProgresLatihan, type RepositoriPengguna, type RiwayatTersimpan } from '@waris/data';
+import { keKiriman } from './kiriman';
 import { bacaMentah, hapusMentah, simpanMentah } from '../penyimpanan';
 
 export type EntriAntrean =
@@ -15,7 +16,7 @@ export type EntriAntrean =
   | { tabel: 'hapus_latihan' }
   | { tabel: 'preferensi'; baris: Preferensi }
   | { tabel: 'kegiatan'; baris: Kegiatan }
-  /** Kejadian percobaan: berkunci id-nya sendiri; menunggu di antrean sampai tabel server ada (kirimAntrean melewatinya). */
+  /** Kejadian percobaan: berkunci id-nya sendiri; dikirim berurutan ke catat-percobaan, yang menilai ulang semuanya. */
   | { tabel: 'percobaan'; baris: KejadianPercobaan };
 
 const KUNCI_ANTREAN = 'arif-waris:antrean';
@@ -24,6 +25,9 @@ const BATAS_ANTREAN_PERCOBAAN = 500;
 /** Dipancarkan di window setelah ≥1 kegiatan sampai server: XP & streak bisa dimuat ulang (StreakKepala). */
 export const PERISTIWA_KEGIATAN_TERKIRIM = 'arif-waris:kegiatan-terkirim';
 const KUNCI_AKUN = 'arif-waris:akun';
+/** Entri yang ditolak server karena bentuk/urutannya (400/409): disimpan untuk dilihat, tidak diulang (audit T10). */
+const KUNCI_ANTREAN_GAGAL = 'arif-waris:antrean-gagal';
+const BATAS_ANTREAN_GAGAL = 50;
 let pengirim: (() => void) | null = null;
 let jumlahAntre = 0;
 
@@ -65,15 +69,20 @@ export async function kirimAntrean(pengguna: RepositoriPengguna): Promise<number
   let adaKegiatanTerkirim = false;
   const kabari = () => { if (adaKegiatanTerkirim) window.dispatchEvent(new Event(PERISTIWA_KEGIATAN_TERKIRIM)); };
   for (const entri of bacaAntrean()) {
-    if (entri.tabel === 'percobaan') continue; // belum ada tabel server (G3): tetap di antrean
     try {
       await kirimSatu(pengguna, entri);
     } catch (galat) {
+      // Entri racun tidak boleh menyumbat antrean selamanya; 401/429/jaringan tetap di antrean dan dicoba lagi nanti.
+      if (galat instanceof GalatPercobaan && galat.racun) {
+        simpanGagal(entri);
+        tulis(bacaAntrean().filter(sisa => JSON.stringify(sisa) !== JSON.stringify(entri)));
+        continue;
+      }
       console.warn('kirim perubahan akun gagal, dicoba lagi nanti:', galat);
       kabari();
       return bacaAntrean().length;
     }
-    if (entri.tabel === 'kegiatan') adaKegiatanTerkirim = true;
+    if (entri.tabel === 'kegiatan' || entri.tabel === 'percobaan') adaKegiatanTerkirim = true;
     // Entri bisa sudah ditimpa versi baru selama menunggu: hanya buang bila masih sama persis.
     tulis(bacaAntrean().filter(sisa => JSON.stringify(sisa) !== JSON.stringify(entri)));
   }
@@ -90,7 +99,7 @@ function kirimSatu(pengguna: RepositoriPengguna, entri: EntriAntrean): Promise<v
     case 'hapus_latihan': return pengguna.hapusSemuaProgresLatihan();
     case 'preferensi': return pengguna.simpanPreferensi(entri.baris);
     case 'kegiatan': return pengguna.catatKegiatan(entri.baris);
-    case 'percobaan': return Promise.resolve(); // tidak sampai sini: kirimAntrean melewatinya
+    case 'percobaan': return pengguna.kirimPercobaan(keKiriman(entri.baris)).then(() => undefined);
   }
 }
 
@@ -112,5 +121,15 @@ function batasiPercobaan(daftar: EntriAntrean[]): EntriAntrean[] {
   let lebih = daftar.filter(entri => entri.tabel === 'percobaan').length - BATAS_ANTREAN_PERCOBAAN;
   return lebih <= 0 ? daftar : daftar.filter(entri => entri.tabel !== 'percobaan' || lebih-- <= 0);
 }
+
+export function bacaAntreanGagal(): EntriAntrean[] {
+  try {
+    const daftar: unknown = JSON.parse(bacaMentah(KUNCI_ANTREAN_GAGAL) ?? '[]');
+    return Array.isArray(daftar) ? daftar.filter(entriUtuh) : [];
+  } catch {
+    return [];
+  }
+}
+const simpanGagal = (entri: EntriAntrean): void => { simpanMentah(KUNCI_ANTREAN_GAGAL, JSON.stringify([...bacaAntreanGagal(), entri].slice(-BATAS_ANTREAN_GAGAL))); };
 
 const tulis = (daftar: EntriAntrean[]): void => { simpanMentah(KUNCI_ANTREAN, JSON.stringify(daftar)); };

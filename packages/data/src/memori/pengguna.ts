@@ -3,7 +3,7 @@
 // sama dengan primary key tabel di supabase/migrations/20260926000003_pengguna.sql.
 // Streak/XP/papan dihitung SQL (diuji pgTAP 06_peringkat); di memori hanya nilai yang diset tes lewat aturPeringkat.
 import type {
-  BacaBagikan, BarisPeringkat, KabarPush, Kegiatan, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
+  BacaBagikan, BarisPeringkat, KabarPush, Kegiatan, KirimanPercobaan, LanggananPush, PeriodePeringkat, Preferensi, Profil, ProgresBelajar, ProgresLatihan, RepositoriAkun,
   RepositoriBagikan, RepositoriPengguna, RepositoriPeringkat, RingkasanPeringkat, RiwayatTersimpan,
 } from '../antarmuka.js';
 import { GALAT_TAUTAN_DIPAKAI } from '../antarmuka.js';
@@ -22,6 +22,7 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
   const latihan = new Map<string, ProgresLatihan>();
   const preferensi = new Map<string, Preferensi>();
   const kegiatan = new Map<string, Kegiatan>();
+  const percobaan = new Map<string, KirimanPercobaan & { diterimaPada: string }>();
   const profil = new Map<string, Profil>();
   const langgananPush = new Map<string, LanggananPush>();
   const kabarPush = new Map<string, KabarPush[]>();
@@ -50,6 +51,17 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
     async bacaPreferensi() { return preferensi.get(kunci()) ?? null; },
     async simpanPreferensi(baris) { preferensi.set(kunci(), baris); },
     async catatKegiatan(baris) { if (!kegiatan.has(kunci(baris.id))) kegiatan.set(kunci(baris.id), baris); },
+    // Penilai sungguhan hanya di server; memori mencatat apa yang diterima supaya uji antrean/gabung bisa memeriksanya.
+    async kirimPercobaan(kiriman) {
+      const diterimaPada = new Date().toISOString();
+      if (!percobaan.has(kunci(kiriman.id))) percobaan.set(kunci(kiriman.id), { ...kiriman, diterimaPada });
+      return { duplikat: false, diterimaPada, hasilKolom: null, benarSemua: null };
+    },
+    async bacaPercobaan() {
+      return milikSaya(percobaan).map(baris => ({ id: baris.id, idSesiSoal: baris.idSesiSoal, soalId: baris.soalId, revisiSoal: baris.revisiSoal,
+        jenisSoal: 'biasa', mode: baris.mode, aksi: baris.aksi, isian: baris.isian, jangkar: baris.jangkar, hasilKolom: null, benarSemua: null,
+        dimulaiPadaKlien: baris.dimulaiPada, diterimaPada: baris.diterimaPada, versi: {} }));
+    },
     async bacaProfil() { return profil.get(kunci()) ?? null; },
     async simpanProfil(baris) { profil.set(kunci(), { ...baris, namaTampilan: baris.namaTampilan.trim() }); },
     async simpanLangganan(baris) { langgananPush.set(kunci(baris.endpoint), baris); },

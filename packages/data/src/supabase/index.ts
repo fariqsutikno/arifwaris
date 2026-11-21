@@ -5,16 +5,16 @@
 // galat ramah, dan saringValid saat baca.
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { bacaIsi, keJson, type IsiKonten, type JenisKonten, type Peran } from '@waris/content';
-import { BATAS_AJUAN_SAYA, GALAT_TAUTAN_DIPAKAI } from '../antarmuka.js';
+import { BATAS_AJUAN_SAYA, GALAT_TAUTAN_DIPAKAI, GalatPercobaan } from '../antarmuka.js';
 import type {
-  HasilAi, RepositoriAi,
+  HasilAi, HasilPercobaanServer, RepositoriAi,
   BacaBagikan, BarisPeringkat, PeranPengguna, RepositoriBagikan, RepositoriAkun, RepositoriDiksi, RepositoriEditorial, RepositoriKonten, RepositoriPengguna,
   RepositoriPeringkat,
 } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
 import {
   keDiksiTerbit, keJejak, keProgresBelajar, keProgresLatihan, keRevisi, keRevisiDiksi, keRingkasanEntri, keRingkasanKunciDiksi,
-  keRiwayat, keTerbitMentah,
+  keRiwayat, keTerbitMentah, keBarisPercobaan,
 } from './peta.js';
 
 const RELASI_TERBIT = 'revisi_terbit:revisi!entri_konten_revisi_terbit_id_fkey(id, isi, refs, hapus)';
@@ -158,6 +158,17 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
     },
   };
 
+  // Satu pintu tulis untuk percobaan, kuis, dan pelajaran (edge function catat-percobaan); galat HTTP membawa kode di badan.
+  const panggilCatat = async (body: Record<string, unknown>): Promise<{ data: unknown }> => {
+    const { data, error } = await klien.functions.invoke('catat-percobaan', { body });
+    if (error) {
+      const respons = (error as { context?: Response }).context;
+      const badan = await respons?.json?.().catch(() => null) as { galat?: string } | null | undefined;
+      throw new GalatPercobaan(respons?.status ?? 0, badan?.galat ?? 'JARINGAN');
+    }
+    return { data };
+  };
+
   const pengguna: RepositoriPengguna = {
     async bacaRiwayat() { return (await hasil(klien.from('riwayat_hitung').select('*').order('disimpan_pada', { ascending: false })) as any[]).map(keRiwayat); },
     async simpanRiwayat(baris) {
@@ -184,9 +195,18 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       await hasil(klien.from('preferensi').upsert({ user_id: await userId(), isi: baris.isi, diubah_pada: baris.diubahPada }));
     },
     async catatKegiatan(baris) {
-      await hasil(klien.from('log_kegiatan').upsert(
-        { id: baris.id, jenis: baris.jenis, slug: baris.slug, benar: baris.benar }, { onConflict: 'id', ignoreDuplicates: true }));
+      // 'soal' tabel kini lewat kirimPercobaan; entri lama dan kuis tanpa pilihan tidak bisa dinilai server → dibuang.
+      if (baris.jenis === 'soal' || (baris.jenis === 'kuis' && baris.indeksPilihan === undefined)) return;
+      await panggilCatat(baris.jenis === 'kuis'
+        ? { jenis: 'kuis', id: baris.id, slug: baris.slug, indeksPilihan: baris.indeksPilihan }
+        : { jenis: 'pelajaran', id: baris.id, slug: baris.slug });
     },
+    async kirimPercobaan(kiriman) {
+      const { data } = await panggilCatat({ ...kiriman });
+      return data as HasilPercobaanServer;
+    },
+    // ponytail: satu halaman (1000 baris bawaan PostgREST); tambah paging bila seorang pelajar melewatinya.
+    async bacaPercobaan() { return (await hasil(klien.from('percobaan_soal').select('*').order('diterima_pada')) as any[]).map(keBarisPercobaan); },
     async bacaProfil() {
       const baris = await hasil(klien.from('profil').select('*').eq('user_id', await userId()).maybeSingle()) as any;
       return baris && {

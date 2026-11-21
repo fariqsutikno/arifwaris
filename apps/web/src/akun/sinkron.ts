@@ -11,6 +11,8 @@ import { gantiSemuaTersimpan, semuaTersimpan } from '../tersimpan';
 import { hapusSemuaMentah } from '../penyimpanan';
 import { akunLokal, antre, aturAkunLokal, aturPengirim, bacaAntrean, kirimAntrean, versiAntrean } from './antrean';
 import { gabung, type DataPengguna } from './gabung';
+import { dariBarisServer } from './kiriman';
+import { bacaPercobaan } from '../percobaan';
 
 export interface RepoAkun { akun: RepositoriAkun; pengguna: RepositoriPengguna; peringkat: RepositoriPeringkat; bagikan: RepositoriBagikan }
 const AWALAN_DATA = 'arif-waris:';
@@ -74,7 +76,7 @@ function pasangPengirim(pengguna: RepositoriPengguna): void {
   window.addEventListener('online', kirim);
 }
 
-const dataLokal = (): DataPengguna => ({ tersimpan: semuaTersimpan(), ...semuaProgres(), preferensi: kumpulPreferensi() });
+const dataLokal = (): DataPengguna => ({ tersimpan: semuaTersimpan(), ...semuaProgres(), preferensi: kumpulPreferensi(), percobaan: bacaPercobaan() });
 
 function tulisLokal(data: DataPengguna): void {
   gantiSemuaTersimpan(data.tersimpan);
@@ -85,14 +87,15 @@ function tulisLokal(data: DataPengguna): void {
 /** Waktu dari Postgres dinormalkan ke toISOString supaya bisa dibandingkan sebagai teks dengan waktu lokal. */
 async function dataServer(pengguna: RepositoriPengguna): Promise<DataPengguna> {
   const iso = (waktu: string) => new Date(waktu).toISOString();
-  const [tersimpan, belajar, latihan, preferensi] = await Promise.all([
-    pengguna.bacaRiwayat(), pengguna.bacaProgresBelajar(), pengguna.bacaProgresLatihan(), pengguna.bacaPreferensi(),
+  const [tersimpan, belajar, latihan, preferensi, percobaan] = await Promise.all([
+    pengguna.bacaRiwayat(), pengguna.bacaProgresBelajar(), pengguna.bacaProgresLatihan(), pengguna.bacaPreferensi(), pengguna.bacaPercobaan(),
   ]);
   return {
     tersimpan: tersimpan.map(baris => ({ ...baris, disimpanPada: iso(baris.disimpanPada) })),
     belajar: belajar.map(baris => ({ ...baris, diubahPada: iso(baris.diubahPada) })),
     latihan: latihan.map(baris => ({ ...baris, diubahPada: iso(baris.diubahPada) })),
     preferensi: preferensi && { ...preferensi, diubahPada: iso(preferensi.diubahPada) },
+    percobaan: percobaan.map(dariBarisServer),
   };
 }
 
