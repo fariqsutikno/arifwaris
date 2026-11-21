@@ -28021,6 +28021,62 @@
    "id": "Isi **dua kemungkinan**: ia laki-laki, ia perempuan.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_mati",
+   "halaman": "hitung",
+   "id": "janin wafat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_lk",
+   "halaman": "hitung",
+   "id": "laki-laki",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_pr",
+   "halaman": "hitung",
+   "id": "1 perempuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.kemungkinan.haml_dua_pr",
+   "halaman": "hitung",
+   "id": "perempuan berbilang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_1",
+   "halaman": "hitung",
+   "id": "Syafi'i: **empat kemungkinan**, karena jumlah janin **tidak dibatasi**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_2",
+   "halaman": "hitung",
+   "id": "\"Laki-laki\" dan \"perempuan berbilang\" = **berapa pun jumlahnya**: sisa yang dibagi bersama janin diisi **sekali** (sel bergabung otomatis).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_3",
+   "halaman": "hitung",
+   "id": "**Jami'ah** = yang **pasti** didapat di semua kemungkinan, setelah dikali pengali. Yang belum pasti diisi **0**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.tabel.cara.haml_4",
+   "halaman": "hitung",
+   "id": "**Mauquf** = sisa sampai bayi lahir.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

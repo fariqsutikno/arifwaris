@@ -290,3 +290,20 @@ describe('TabelLatihan — khuntsa', () => {
     expect(screen.getByText('ia laki-laki, ia perempuan.', { exact: false })).toBeTruthy();
   });
 });
+
+describe('TabelLatihan — haml [SYF]', () => {
+  // KB 13a.7 H1: ibu hamil dari ayah almarhum, saudara lk kandung S.
+  const graf: GrafKeluarga = { idPewaris: 'D', orang: {
+    D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }), A: orang('A', 'L', { statusHidup: 'wafat' }), I: orang('I', 'P'),
+    S: orang('S', 'L', { idAyah: 'A', idIbu: 'I' }), J: orang('J', 'L', { idAyah: 'A', idIbu: 'I', statusHidup: 'dalamKandungan' }) },
+    pernikahan: [{ idSuami: 'A', idIstri: 'I', status: 'utuh' }] };
+  const hasil = hitungTaqdir({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' });
+  const susunan = susunTabelSoal(hasil, id => id);
+  if ('status' in susunan) throw new Error(susunan.status);
+
+  it('judul empat kemungkinan mengikuti mockup; cara mengisi haml', () => {
+    render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    for (const judul of ['Bagian · janin wafat', 'Janin wafat', 'Laki-laki', '1 perempuan', 'Perempuan berbilang']) expect(screen.getByText(judul)).toBeTruthy();
+    expect(screen.getByText('empat kemungkinan', { exact: false })).toBeTruthy();
+  });
+});
