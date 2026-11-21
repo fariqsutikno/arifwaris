@@ -8,7 +8,7 @@ import type { AlasanFardh, IdOrang } from '@waris/engine';
 import { PERAN_BERPENDAHULU, ceritaArba, opsiKakek, persamaanKotakAshl, teksTujuanSisa, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah, tulisPecahan } from './format.js';
-import { barisSkrip, buatBaris, gabungDan, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
+import { barisSkrip, buatBaris, denganHitungan, gabungDan, kalimat, labelHitung as labelHitungDiksi, susun, teksKamus, tekankan, type BarisPenjelasan, type JenisLangkah, type Potongan, type Sisipan } from './segments.js';
 import { istilah, istilahNarasi, type IdIstilah } from './terms.js';
 
 /** Kasus tahap ini belum dipetakan ke skrip; pakai bab cerita. */
@@ -25,6 +25,8 @@ const istilahKasus = (konteks: Konteks, id: 'umariyyatain' | 'musyarrakah' | 'ak
   istilah(id, teksKamus(konteks.penyusun, `narasi.cerita.bagian.istilah_${id}`));
 const teks = (isi: string): Potongan => ({ jenis: 'teks', teks: isi });
 const gabungPlus = (angka: Array<string | bigint>): Potongan[] => [teks(angka.join(' + '))];
+
+const labelHitung = (konteks: Konteks, nama: string): string => labelHitungDiksi(konteks.penyusun, nama);
 
 function langkah(
   konteks: Konteks, jenis: JenisLangkah, kunci: string | [string, string], narasi: Sisipanku, papan: Sisipanku, refs: string[] = [], subjek?: IdOrang[],
@@ -47,7 +49,17 @@ export function babHartaSkrip(konteks: Konteks): HasilSkrip {
   const judul = judulSkrip(konteks, 'harta.judul');
   if (tirkah.tajhiz === 0n && tirkah.hutang === 0n && tirkah.wasiatDiminta === 0n) {
     const kotor = rupiah(tirkah.kotor);
-    return { judul, kolom: 'nominal', daftarBaris: [langkah(konteks, 'keluarga', 'harta.tanpa_potongan', { pewaris, kotor }, { kotor }, ['R11-1'])] };
+    const nolRupiah = rupiah(0n);
+    const hitungHarta = denganHitungan(langkah(konteks, 'hitung', 'harta.tanpa_potongan', { pewaris, kotor }, { kotor }, ['R11-1']), labelHitung(konteks, 'harta'), kotor);
+    return { judul, kolom: 'nominal', daftarBaris: [
+      langkah(konteks, 'tanya', 'harta.tanya', { pewaris }, {}),
+      langkah(konteks, 'dasar', 'harta.dasar', { tirkah: istilahUmum(konteks, 'tirkah') }, {}, ['R01-4']),
+      langkah(konteks, 'keluarga', 'harta.tidak_ada_potongan', {}, {}, ['R01-4']),
+      hitungHarta,
+      denganHitungan(langkah(konteks, 'hitung', 'harta.tanpa_potongan_dikurangi', {}, {}, ['R01-4']), labelHitung(konteks, 'dikurangi'), `${nolRupiah} + ${nolRupiah} + ${nolRupiah}`),
+      denganHitungan(langkah(konteks, 'hitung', 'harta.tanpa_potongan_dibagi', { kotor }, { kotor }, ['R11-1']), labelHitung(konteks, 'harta_dibagi'), kotor),
+      langkah(konteks, 'jembatan', 'harta.jembatan', {}, {}),
+    ] };
   }
   const daftarBaris = [
     langkah(konteks, 'tanya', 'harta.tanya', { pewaris }, {}),
@@ -57,7 +69,7 @@ export function babHartaSkrip(konteks: Konteks): HasilSkrip {
   const kurangi = (apa: 'tajhiz' | 'hutang' | 'wasiat', nilai: bigint, refs: string[]) => {
     const sisipan = { sebelum: rupiah(sisa), nilai: rupiah(nilai), sisa: rupiah(sisa - nilai) };
     const namaApa = teksKamus(konteks.penyusun, kunciKamus(`harta.apa.${apa}`));
-    daftarBaris.push(langkah(konteks, 'hitung', 'harta.kurangi', { ...sisipan, apa: namaApa }, sisipan, refs));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'harta.kurangi', { ...sisipan, apa: namaApa }, sisipan, refs), namaApa, `${sisipan.sebelum} − ${sisipan.nilai} = ${sisipan.sisa}`));
     sisa -= nilai;
   };
   if (tirkah.tajhiz > 0n) kurangi('tajhiz', tirkah.tajhiz, tirkah.refs);
@@ -69,7 +81,10 @@ export function babHartaSkrip(konteks: Konteks): HasilSkrip {
   }
   if (tirkah.wasiatDipakai > 0n) kurangi('wasiat', tirkah.wasiatDipakai, ['R01-4']);
   const bersih = rupiah(tirkah.bersih);
-  daftarBaris.push(langkah(konteks, 'keluarga', 'harta.jadi', { bersih }, { bersih }, ['R11-1']));
+  daftarBaris.push(
+    denganHitungan(langkah(konteks, 'hitung', 'harta.jadi', { bersih }, { bersih }, ['R11-1']), labelHitung(konteks, 'harta_dibagi'), bersih),
+    langkah(konteks, 'jembatan', 'harta.jembatan', {}, {}),
+  );
   return { judul, daftarBaris, kolom: 'nominal' };
 }
 
@@ -85,6 +100,7 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
   const bentuk = idKerabat.length > 1 ? 'jamak' : 'mufrad';
   const kerabat = sebutSemua(konteks, idKerabat);
   const daftarBaris = [langkah(konteks, 'tanya', `ahli_waris.tanya.${bentuk}`, { pewaris, kerabat }, bentuk === 'jamak' ? { jumlah: idKerabat.length } : {})];
+  const jembatan = langkah(konteks, 'jembatan', 'ahli_waris.jembatan', {}, {});
 
   const daftarMani = konteks.daftarLangkah('MANI');
   if (daftarMani.length) {
@@ -105,7 +121,8 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
   }
   const daftarKhilaf = konteks.daftarLangkah('KHILAF_MADZHAB');
   if (kelompokHajb.size === 0 && daftarMani.length === 0 && daftarKhilaf.length === 0) {
-    daftarBaris.push(langkah(konteks, 'keluarga', [`ahli_waris.tidak_terhalang.${bentuk}.narasi`, 'ahli_waris.tidak_terhalang.papan'], {}, {}));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'keluarga', [`ahli_waris.tidak_terhalang.${bentuk}.narasi`, 'ahli_waris.tidak_terhalang.papan'], {}, {}),
+      labelHitung(konteks, 'mewarisi'), sebutSemua(konteks, idAhliWaris)), jembatan);
     return { judul: judulSkrip(konteks, 'ahli_waris.judul'), daftarBaris, kolom: 'ahliWaris' };
   }
 
@@ -125,7 +142,14 @@ export function babAhliWarisSkrip(konteks: Konteks): HasilSkrip {
     daftarBaris.push({ ...buatBaris(kalimatKhilaf, khilaf.refs, khilaf.idOrang), jenis: 'keluarga', papan: kalimatKhilaf });
   }
   const daftar = sebutSemua(konteks, idAhliWaris);
-  daftarBaris.push(langkah(konteks, 'hitung', 'ahli_waris.tinggal', { jumlah: idAhliWaris.length, daftar }, { daftar }));
+  daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'ahli_waris.tinggal', { jumlah: idAhliWaris.length, daftar }, { daftar }), labelHitung(konteks, 'mewarisi'), daftar));
+  for (const { mahjub, hajib } of kelompokHajb.values()) {
+    const sebutMahjub = sebutSemua(konteks, mahjub);
+    const sebutHajib = sebutSemua(konteks, hajib);
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'ahli_waris.hitung_terhalang', { mahjub: sebutMahjub, hajib: sebutHajib }, { mahjub: sebutMahjub }),
+      labelHitung(konteks, 'terhalang'), susun(konteks.penyusun, kunciKamus('ahli_waris.isi_terhalang'), { mahjub: sebutMahjub, hajib: sebutHajib })));
+  }
+  daftarBaris.push(jembatan);
   return { judul: judulSkrip(konteks, 'ahli_waris.judul'), daftarBaris, kolom: 'ahliWaris' };
 }
 
@@ -155,7 +179,8 @@ export function babBagianSkrip(konteks: Konteks): HasilSkrip {
 
   const daftarBaris: BarisPenjelasan[] = [];
   const pewaris = konteks.sebutan.pewaris();
-  if (adaAshabah && kelompokFardh.size > 0) daftarBaris.push(langkah(konteks, 'dasar', 'bagian.dasar_fardh', {}, {}));
+  // Arti fardh diperkenalkan sekali di awal tahap, juga bila tidak ada ashabah ("bagian pasti" tidak boleh muncul tanpa arti).
+  if (kelompokFardh.size > 0) daftarBaris.push(langkah(konteks, 'dasar', 'bagian.dasar_fardh', {}, {}));
   for (const satu of konteks.hasil.jejak) {
     if (satu.jenis === 'FARDH') daftarBaris.push(...barisFardh(konteks, satu, pewaris));
     else if (satu.jenis === 'KASUS_KHUSUS' && satu.nama === 'muaddah') daftarBaris.push(...barisMuaddah(konteks, satu.refs));
@@ -264,7 +289,7 @@ function barisPilihanKakek(konteks: Konteks, alasan: Extract<AlasanFardh, { kode
 }
 
 /** Mu'addah [R08-4]: saudara kandung menghitungkan saudara sebapak terhadap kakek, lalu bagian sebapak kembali ke kandung. */
-function barisMuaddah(konteks: Konteks, refs: string[]): BarisPenjelasan[] {
+export function barisMuaddah(konteks: Konteks, refs: string[]): BarisPenjelasan[] {
   return [
     langkah(konteks, 'dasar', 'bagian.muaddah.dasar', { muaddah: istilahKasus(konteks, 'muaddah') }, {}, refs),
     langkah(konteks, 'logika', 'bagian.muaddah.logika', {}, {}, refs),
@@ -338,8 +363,17 @@ export function babPenyebutSkrip(konteks: Konteks): HasilSkrip {
     daftarBaris.push({ ...buatBaris(kalimatNisab, satu.refs), jenis: 'logika', papan: kalimatNisab });
   });
   // Baris "8 ÷ 8 = 1 kotak untuk istri" per kelompok disisipkan `linimasa.ts` di sini, sebelum kalimat penutup.
-  daftarBaris.push(langkah(konteks, 'hitung', 'ashl.jadi', { ashl }, { ashl, ashlul_masalah: istilahUmum(konteks, 'ashlul-masalah') }, ['R09-1']));
+  const rumus = perbandingan.length === 1 ? rumusNisab(perbandingan[0]!) : String(ashl);
+  daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'ashl.jadi', { ashl }, { ashl, ashlul_masalah: istilahUmum(konteks, 'ashlul-masalah') }, ['R09-1']), labelHitung(konteks, 'asal_masalah'), rumus));
   return { judul: judulSkrip(konteks, 'ashl.judul'), daftarBaris, kolom: 'ashl' };
+}
+
+/** Rumus asal masalah dari satu perbandingan penyebut [R09-1]: tawafuq a × (b ÷ fpb), tabayun a × b, selain itu hasilnya saja. */
+function rumusNisab(satu: Langkah<'PERBANDINGAN_NISAB'>): string {
+  const { a, b, fpb, hasil } = satu;
+  if (satu.hubungan === 'tawafuq') return `${a} × (${b} ÷ ${fpb}) = ${a} × ${b / fpb} = ${hasil}`;
+  if (satu.hubungan === 'tabayun') return `${a} × ${b} = ${hasil}`;
+  return String(hasil);
 }
 
 /** Semua ahli waris ashabah [R09-2]: tidak ada pecahan; harta langsung dibagi per jatah (ru'us) dan totalnya jadi asal masalah. */
@@ -352,7 +386,7 @@ function babPenyebutSemuaAshabah(konteks: Konteks, ashl: bigint): Bab {
       susun(konteks.penyusun, kunciKamus('ashl.jatah_orang'), { siapa: konteks.sebutan.sebut([id]), jatah: orang.saham })));
     daftarBaris.push(langkah(konteks, 'hitung', 'ashl.jatah_total', { rincian, ashl }, { rincian, ashl }, ['R09-2']));
   }
-  daftarBaris.push(langkah(konteks, 'hitung', 'ashl.jadi', { ashl }, { ashl, ashlul_masalah: istilahUmum(konteks, 'ashlul-masalah') }, ['R09-2']));
+  daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'ashl.jadi', { ashl }, { ashl, ashlul_masalah: istilahUmum(konteks, 'ashlul-masalah') }, ['R09-2']), labelHitung(konteks, 'asal_masalah'), String(ashl)));
   return { judul: judulSkrip(konteks, 'ashl.judul'), daftarBaris, kolom: 'ashl' };
 }
 
@@ -369,7 +403,8 @@ export function babPenyesuaianSkrip(konteks: Konteks): HasilSkrip {
   switch (kelas.kelas) {
     case 'adilah':
       return { judul: judulSkrip(konteks, 'cek.judul'), kolom: 'penyesuaian', daftarBaris: [tanya,
-        langkah(konteks, 'hitung', 'cek.pas', { rincian, jumlah: kelas.jumlahSaham }, { rincian, jumlah: kelas.jumlahSaham, adilah: istilahUmum(konteks, 'adilah') }, kelas.refs)] };
+        denganHitungan(langkah(konteks, 'hitung', 'cek.pas', { rincian, jumlah: kelas.jumlahSaham }, { rincian, jumlah: kelas.jumlahSaham, adilah: istilahUmum(konteks, 'adilah') }, kelas.refs),
+          labelHitung(konteks, 'jumlah'), `${rincian}${kelas.jumlahSaham}`)] };
     case 'ailah':
       return { judul: judulSkrip(konteks, 'aul.judul'), kolom: 'penyesuaian', daftarBaris: [tanya, ...barisAul(konteks, kelas, rincian)] };
     case 'raddA': case 'raddB':
@@ -388,7 +423,7 @@ function barisSisaKeluar(konteks: Konteks, sisaKeluar: Langkah<'SISA_KELUAR'>): 
   const refs = sisaKeluar.refs;
   const daftarBaris = [
     langkah(konteks, 'tanya', 'cek.tanya', {}, { ashl }),
-    langkah(konteks, 'hitung', 'radd.kurang', { rincian, jumlah, ashl, sisa }, { rincian, jumlah, ashl, sisa }, refs),
+    denganHitungan(langkah(konteks, 'hitung', 'radd.kurang', { rincian, jumlah, ashl, sisa }, { rincian, jumlah, ashl, sisa }, refs), labelHitung(konteks, 'jumlah'), `${rincian}${jumlah} < ${ashl}`),
     langkah(konteks, 'tanya', 'radd.tanya', { sisa }, { sisa }),
   ];
   if (sisaKeluar.tujuan === 'baitulMalTeratur') {
@@ -410,14 +445,28 @@ function barisAul(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: st
   const sisipanContoh = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak: contoh.sel['ashl']!, ashl, jumlah };
   const rincianKelompok = gabungDan(konteks.penyusun, konteks.hasil.tabel.baris.map(barisTabel =>
     susun(konteks.penyusun, kunciKamus('aul.rincian_kelompok'), { siapa: sebutKelompok(konteks, barisTabel.kelompok), saham: barisTabel.sel['ashl']! })));
+  const nilaiTiapKelompok = konteks.hasil.tabel.baris.map(barisTabel => {
+    const sisipan = { kotak: barisTabel.sel['ashl']!, jumlah, ashl };
+    return barisNilai(konteks, barisTabel.kelompok, susun(konteks.penyusun, kunciKamus('aul.isi_nilai'), sisipan), refs);
+  });
   return [
-    langkah(konteks, 'hitung', 'aul.lebih', { rincian, jumlah, ashl, kelebihan: jumlah - ashl }, { rincian, jumlah, ashl, kelebihan: jumlah - ashl }, kelas.refs),
+    denganHitungan(langkah(konteks, 'hitung', 'aul.lebih', { rincian, jumlah, ashl, kelebihan: jumlah - ashl }, { rincian, jumlah, ashl, kelebihan: jumlah - ashl }, kelas.refs),
+      labelHitung(konteks, 'jumlah'), `${rincian}${jumlah} > ${ashl}`),
     langkah(konteks, 'tanya', 'aul.tanya', {}, {}),
     langkah(konteks, 'logika', 'aul.bersama', {}, {}, refs),
-    langkah(konteks, 'logika', 'aul.potong_ulang', { jumlah, aul: istilahUmum(konteks, 'aul') }, { jumlah, aul: istilahUmum(konteks, 'aul') }, refs),
+    denganHitungan(langkah(konteks, 'logika', 'aul.potong_ulang', { jumlah, aul: istilahUmum(konteks, 'aul') }, { jumlah, aul: istilahUmum(konteks, 'aul') }, refs),
+      labelHitung(konteks, 'asal_naik'), `${ashl} → ${jumlah}`),
     langkah(konteks, 'logika', 'aul.contoh', sisipanContoh, { siapa: sisipanContoh.siapa, kotak: sisipanContoh.kotak, ashl, jumlah }, refs),
+    ...nilaiTiapKelompok,
     langkah(konteks, 'hitung', 'aul.hasil', { jumlah, rincian: rincianKelompok }, { jumlah }, refs),
   ];
+}
+
+/** Baris hitung "Maryam dan Hafsah: 4 dari 8": nilai satu kelompok pada penyebut baru ('aul/radd), berlabel nama kelompok. */
+function barisNilai(konteks: Konteks, kelompok: string, isi: Potongan[], refs: string[]): BarisPenjelasan {
+  const siapa = sebutKelompok(konteks, kelompok);
+  const kalimatNilai = kalimat`${siapa}: ${isi}.`;
+  return denganHitungan({ ...buatBaris(kalimatNilai, refs, konteks.anggotaDari(kelompok)), jenis: 'hitung', papan: kalimatNilai }, siapa, isi);
 }
 
 function barisRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: string, tanya: BarisPenjelasan): HasilSkrip {
@@ -433,7 +482,7 @@ function barisRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: s
   const { baris } = konteks.hasil.tabel;
   const daftarBaris = [
     tanya,
-    langkah(konteks, 'hitung', 'radd.kurang', { rincian, jumlah, ashl, sisa }, { rincian, jumlah, ashl, sisa }, kelas.refs),
+    denganHitungan(langkah(konteks, 'hitung', 'radd.kurang', { rincian, jumlah, ashl, sisa }, { rincian, jumlah, ashl, sisa }, kelas.refs), labelHitung(konteks, 'jumlah'), `${rincian}${jumlah} < ${ashl}`),
     langkah(konteks, 'tanya', 'radd.tanya', { sisa }, { sisa }),
     langkah(konteks, 'dasar', 'radd.dasar', { radd: radd_ }, { radd: radd_ }, radd.refs),
     langkah(konteks, 'keluarga', 'radd.tanpa_ashabah', { sisa, penerima }, { sisa, penerima }, radd.refs),
@@ -445,7 +494,10 @@ function barisRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: s
     const rincianBagian = rincianRadd(kelompok => radd.raddiyyah.saham[kelompok]!);
     daftarBaris.push(
       langkah(konteks, 'logika', 'radd.perbandingan', { rincian: rincianBagian, ashl_radd: ashlRadd }, { perbandingan, ashl_radd: ashlRadd }, radd.refs),
-      langkah(konteks, 'hitung', 'radd.hasil', { rincian: rincianBagian, ashl_radd: ashlRadd }, { ashl_radd: ashlRadd }, radd.refs),
+      ...kelompokPenerima.map(kelompok => barisNilai(konteks, kelompok,
+        susun(konteks.penyusun, kunciKamus('radd.isi_nilai'), { kotak: radd.raddiyyah.saham[kelompok]!, jumlah: ashlRadd }), radd.refs)),
+      denganHitungan(langkah(konteks, 'hitung', 'radd.hasil', { rincian: rincianBagian, ashl_radd: ashlRadd }, { ashl_radd: ashlRadd }, radd.refs),
+        labelHitung(konteks, 'asal_baru'), `${ashl} → ${ashlRadd}`),
     );
     return { judul: judulSkrip(konteks, 'radd.judul'), kolom: 'penyesuaian', daftarBaris };
   }
@@ -467,7 +519,11 @@ function barisRadd(konteks: Konteks, kelas: Langkah<'KELAS_MASALAH'>, rincian: s
   const rincianAkhir = gabungDan(konteks.penyusun, baris.map(barisTabel => barisTabel.kelompok === zawjiyyah.kelompok
     ? susun(konteks.penyusun, kunciKamus('radd.rincian_pasangan'), { siapa: sebutKelompok(konteks, barisTabel.kelompok), saham: barisTabel.sel['radd']!, fardh: fardhPasangan })
     : susun(konteks.penyusun, kunciKamus('radd.rincian_penerima'), { siapa: sebutKelompok(konteks, barisTabel.kelompok), saham: barisTabel.sel['radd']! })));
-  daftarBaris.push(langkah(konteks, 'hitung', 'radd.hasil', { rincian: rincianAkhir, ashl_radd: totalRadd }, { ashl_radd: totalRadd }, radd.refs));
+  daftarBaris.push(
+    ...baris.map(barisTabel => barisNilai(konteks, barisTabel.kelompok, susun(konteks.penyusun, kunciKamus('radd.isi_nilai'), { kotak: barisTabel.sel['radd']!, jumlah: totalRadd }), radd.refs)),
+    denganHitungan(langkah(konteks, 'hitung', 'radd.hasil', { rincian: rincianAkhir, ashl_radd: totalRadd }, { ashl_radd: totalRadd }, radd.refs),
+      labelHitung(konteks, 'asal_baru'), `${ashl} → ${totalRadd}`),
+  );
   return { judul: judulSkrip(konteks, 'radd.judul'), kolom: 'penyesuaian', daftarBaris };
 }
 
@@ -499,17 +555,38 @@ export function babPembulatanSkrip(konteks: Konteks): HasilSkrip {
 }
 
 type Inkisar = Langkah<'PERBANDINGAN_NISAB'>;
+interface KelompokInkisar { satu: Inkisar; anggota: IdOrang[]; siapa: Potongan[]; satuan: string }
+
+/** Pertanyaan pembuka tashih dengan angka kasus: bisakah saham kelompok dibagi ke anggotanya tanpa pecahan? */
+function barisTanyaTashih(konteks: Konteks, kelompok: KelompokInkisar[]): BarisPenjelasan {
+  const [pertama] = kelompok;
+  if (kelompok.length > 1 || !pertama) {
+    // Dipisah titik koma: nama kelompok sendiri sudah memakai "dan", sehingga "a dan b dan c" membingungkan.
+    const daftar = kelompok.flatMap((satu, urutan) => [...(urutan ? [teks('; ')] : []), ...satu.siapa]);
+    return langkah(konteks, 'tanya', 'tashih.tanya.banyak', { jumlah: kelompok.length, siapa: daftar }, {});
+  }
+  const { a: saham, b: ruus } = pertama.satu;
+  const adaJatah = ruus > BigInt(pertama.anggota.length);
+  return adaJatah
+    ? langkah(konteks, 'tanya', 'tashih.tanya.jatah', { siapa: pertama.siapa, saham }, { saham, ruus })
+    : langkah(konteks, 'tanya', 'tashih.tanya.orang', { siapa: pertama.siapa, saham, ruus }, { saham, ruus });
+}
 
 const satuanPembagi = (konteks: Konteks, ruus: bigint, jumlahAnggota: number): string =>
   teksKamus(konteks.penyusun, kunciKamus(ruus > BigInt(jumlahAnggota) ? 'tashih.satuan.jatah' : 'tashih.satuan.orang'));
 
 function barisBagiRata(konteks: Konteks, inkisar: Inkisar[]): BarisPenjelasan[] {
-  const daftarBaris = [langkah(konteks, 'tanya', 'tashih.rata.tanya', {}, {})];
+  const [tunggal] = inkisar;
+  const sisipanTanya = (satu: Inkisar) => ({ saham: satu.a, ruus: satu.b, satuan: satuanPembagi(konteks, satu.b, konteks.anggotaDari(satu.kelompok!).length) });
+  const daftarBaris = [inkisar.length === 1 && tunggal
+    ? langkah(konteks, 'tanya', 'tashih.rata.tanya_satu', { siapa: sebutKelompok(konteks, tunggal.kelompok!), ...sisipanTanya(tunggal) }, sisipanTanya(tunggal))
+    : langkah(konteks, 'tanya', 'tashih.rata.tanya', {}, {})];
   for (const satu of inkisar) {
     const { a: saham, b: ruus } = satu;
     const satuan = satuanPembagi(konteks, ruus, konteks.anggotaDari(satu.kelompok!).length);
-    daftarBaris.push(langkah(konteks, 'hitung', 'tashih.rata.pas', { siapa: sebutKelompok(konteks, satu.kelompok!), saham, ruus, satuan },
-      { saham, ruus, hasil_bagi: saham / ruus }, satu.refs));
+    const siapa = sebutKelompok(konteks, satu.kelompok!);
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'tashih.rata.pas', { siapa, saham, ruus, satuan }, { saham, ruus, hasil_bagi: saham / ruus }, satu.refs),
+      siapa, `${saham} ÷ ${ruus} = ${saham / ruus}`));
   }
   daftarBaris.push(langkah(konteks, 'hitung', 'tashih.rata.semua', {}, {}, ['R10-2']));
   return daftarBaris;
@@ -520,16 +597,16 @@ function barisTashih(konteks: Konteks, daftarInkisar: Inkisar[], tashih: Langkah
   const { penyusun } = konteks;
   const pengali = tashih.juzSahm;
   const banyak = daftarInkisar.length > 1;
-  const kelompok = daftarInkisar.map(satu => {
+  const kelompok: KelompokInkisar[] = daftarInkisar.map(satu => {
     const anggota = konteks.anggotaDari(satu.kelompok!);
     return { satu, anggota, siapa: sebutKelompok(konteks, satu.kelompok!), satuan: satuanPembagi(konteks, satu.b, anggota.length) };
   });
-  const daftarBaris: BarisPenjelasan[] = [];
+  const daftarBaris: BarisPenjelasan[] = [barisTanyaTashih(konteks, kelompok)];
   for (const { satu, anggota, siapa, satuan } of kelompok) {
     const { a: saham, b: ruus } = satu;
     if (ruus > BigInt(anggota.length)) daftarBaris.push(langkah(konteks, 'keluarga', 'tashih.jatah', { siapa, ruus }, { ruus, ruus_istilah: istilahUmum(konteks, 'ruus') }, ['R10-2']));
     if (satu.hubungan === 'habis') {
-      daftarBaris.push(langkah(konteks, 'hitung', 'tashih.rata.pas', { siapa, saham, ruus, satuan }, { saham, ruus, hasil_bagi: saham / ruus }, satu.refs));
+      daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'tashih.rata.pas', { siapa, saham, ruus, satuan }, { saham, ruus, hasil_bagi: saham / ruus }, satu.refs), siapa, `${saham} ÷ ${ruus} = ${saham / ruus}`));
       continue;
     }
     const sisipan = { saham, ruus, satuan, hasil_bagi: saham / ruus, sisa: saham % ruus };
@@ -549,36 +626,39 @@ function barisTashih(konteks: Konteks, daftarInkisar: Inkisar[], tashih: Langkah
       daftarBaris.push({ ...buatBaris(kalimatNisab, gabung.refs), jenis: 'logika', papan: kalimatNisab });
     }
   }
-  daftarBaris.push(langkah(konteks, 'logika', 'tashih.potong', { pengali, dasar: tashih.dasar, hasil: tashih.hasil },
-    { pengali, dasar: tashih.dasar, hasil: tashih.hasil, tashih: istilahUmum(konteks, 'tashih') }, tashih.refs));
+  daftarBaris.push(denganHitungan(langkah(konteks, 'logika', 'tashih.potong', { pengali, dasar: tashih.dasar, hasil: tashih.hasil },
+    { pengali, dasar: tashih.dasar, hasil: tashih.hasil, tashih: istilahUmum(konteks, 'tashih') }, tashih.refs), labelHitung(konteks, 'tashih'), `${tashih.dasar} × ${pengali} = ${tashih.hasil}`));
   for (const { satu, siapa } of kelompok) {
     const potongKelompok = satu.a * pengali;
     const sisipan = { saham: satu.a, potong_kelompok: potongKelompok, ruus: satu.b };
-    daftarBaris.push(langkah(konteks, 'logika', banyak ? ['tashih.habis_dibagi_kelompok.narasi', 'tashih.habis_dibagi.papan'] : 'tashih.habis_dibagi',
-      banyak ? { siapa, ...sisipan } : sisipan, { saham: satu.a, pengali, potong_kelompok: potongKelompok, ruus: satu.b, per: potongKelompok / satu.b }, tashih.refs));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'logika', banyak ? ['tashih.habis_dibagi_kelompok.narasi', 'tashih.habis_dibagi.papan'] : 'tashih.habis_dibagi',
+      banyak ? { siapa, ...sisipan } : sisipan, { saham: satu.a, pengali, potong_kelompok: potongKelompok, ruus: satu.b, per: potongKelompok / satu.b }, tashih.refs),
+    siapa, `${satu.a} × ${pengali} = ${potongKelompok}, ${potongKelompok} ÷ ${satu.b} = ${potongKelompok / satu.b}`));
   }
+  // Semua kotak ikut dipotong, jadi tiap kelompok lain juga ditunjukkan: kotaknya tetap, potongnya bertambah, nilainya sama.
   const kelompokInkisar = new Set(daftarInkisar.map(satu => satu.kelompok));
-  const contoh = konteks.hasil.tabel.baris.find(barisTabel => !kelompokInkisar.has(barisTabel.kelompok) && barisTabel.fardh && !barisTabel.ashabah);
-  if (contoh) {
-    // Setelah 'aul/radd satuan kotak mengikuti penyebut barunya, jadi pecahan dihitung dari kotak ÷ penyebut itu.
-    const { totalKolom } = konteks.hasil.tabel;
-    const kolomDasar = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : 'ashl';
-    const kotak = contoh.sel[kolomDasar]!;
-    const pecahan = kolomDasar === 'ashl' ? contoh.fardh! : `${kotak}/${tashih.dasar}`;
-    const sisipan = { siapa: sebutKelompok(konteks, contoh.kelompok), kotak, potong: kotak * pengali, pecahan, hasil: tashih.hasil };
-    daftarBaris.push(langkah(konteks, 'logika', 'tashih.nilai_tetap', sisipan, sisipan, tashih.refs));
+  const { totalKolom } = konteks.hasil.tabel;
+  // Setelah 'aul/radd satuan kotak mengikuti penyebut barunya, jadi pecahan dihitung dari kotak ÷ penyebut itu.
+  const kolomDasar = totalKolom.aul !== undefined ? 'aul' : totalKolom.radd !== undefined ? 'radd' : 'ashl';
+  for (const barisTabel of konteks.hasil.tabel.baris.filter(barisIni => !kelompokInkisar.has(barisIni.kelompok) && barisIni.fardh && !barisIni.ashabah)) {
+    const kotak = barisTabel.sel[kolomDasar]!;
+    const pecahan = kolomDasar === 'ashl' ? barisTabel.fardh! : `${kotak}/${tashih.dasar}`;
+    const siapa = sebutKelompok(konteks, barisTabel.kelompok);
+    const sisipan = { siapa, kotak, potong: kotak * pengali, pecahan, hasil: tashih.hasil };
+    daftarBaris.push(denganHitungan(langkah(konteks, 'logika', 'tashih.nilai_tetap', sisipan, sisipan, tashih.refs, barisTabel.anggota),
+      siapa, `${kotak} × ${pengali} = ${kotak * pengali}`));
   }
   for (const { satu, anggota, siapa, satuan } of kelompok) {
     const barisKelompok = konteks.hasil.tabel.baris.find(barisTabel => barisTabel.kelompok === satu.kelompok)!;
     const total = satu.a * pengali;
     const rincian = gabungDan(penyusun, anggota.map(id =>
       susun(penyusun, kunciKamus('tashih.rincian_orang'), { siapa: konteks.sebutan.sebut([id]), saham: barisKelompok.perOrang[id]!.saham })));
-    daftarBaris.push(langkah(konteks, 'hitung', 'tashih.dibagi', { kelompok: siapa, saham: satu.a, pengali, total, ruus: satu.b, satuan, per: total / satu.b, rincian },
-      { total, ruus: satu.b, per: total / satu.b, satuan }, tashih.refs));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'tashih.dibagi', { kelompok: siapa, saham: satu.a, pengali, total, ruus: satu.b, satuan, per: total / satu.b, rincian },
+      { total, ruus: satu.b, per: total / satu.b, satuan }, tashih.refs), siapa, `${total} ÷ ${satu.b} = ${total / satu.b}`));
   }
   const bagianAkhir = konteks.hasil.tabel.baris.flatMap(barisTabel => Object.values(barisTabel.perOrang).map(orang => orang.saham)).filter(angka => angka > 0n);
-  daftarBaris.push(langkah(konteks, 'hitung', 'tashih.cek', { daftar: gabungDan(penyusun, bagianAkhir.map(angka => [teks(String(angka))])), hasil: tashih.hasil },
-    { jumlahan: gabungPlus(bagianAkhir), hasil: tashih.hasil }, tashih.refs));
+  daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'tashih.cek', { daftar: gabungDan(penyusun, bagianAkhir.map(angka => [teks(String(angka))])), hasil: tashih.hasil },
+    { jumlahan: gabungPlus(bagianAkhir), hasil: tashih.hasil }, tashih.refs), labelHitung(konteks, 'cek'), `${bagianAkhir.join(' + ')} = ${tashih.hasil}`));
   return daftarBaris;
 }
 
@@ -592,7 +672,8 @@ export function babHasilSkrip(konteks: Konteks): HasilSkrip {
   const bersih = tirkah ? rupiah(tirkah.bersih) : '';
   if (konteks.tampilkanNominal && tirkah && pembulatan.satuan === 1n && tirkah.bersih % penyebut === 0n) {
     const sisipan = { bersih, penyebut, nilai: rupiah(tirkah.bersih / penyebut) };
-    daftarBaris.push(langkah(konteks, 'hitung', 'hasil.satu_potong', sisipan, sisipan, ['R11-1']));
+    daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'hasil.satu_potong', sisipan, sisipan, ['R11-1']),
+      labelHitung(konteks, 'satu_potong'), `${bersih} ÷ ${penyebut} = ${sisipan.nilai}`));
   }
   const ringkasan: Potongan[][] = [];
   for (const barisTabel of tabel.baris) {
@@ -604,10 +685,11 @@ export function babHasilSkrip(konteks: Konteks): HasilSkrip {
         daftarBaris.push({ ...buatBaris(nol, ['R11-1'], [id]), jenis: 'hitung', papan: nol });
       } else if (konteks.tampilkanNominal) {
         const uang = rupiah(nominal);
-        daftarBaris.push(langkah(konteks, 'hitung', 'hasil.orang_rupiah', { siapa, saham, nominal: uang }, { siapa, saham, penyebut, nominal: uang }, ['R11-1'], [id]));
+        daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'hasil.orang_rupiah', { siapa, saham, nominal: uang }, { siapa, saham, penyebut, nominal: uang }, ['R11-1'], [id]),
+          siapa, `${saham}/${penyebut} × ${bersih} = ${uang}`));
       } else {
         const sisipan = { siapa, saham, penyebut };
-        daftarBaris.push(langkah(konteks, 'hitung', 'hasil.orang_saham', sisipan, sisipan, ['R11-1'], [id]));
+        daftarBaris.push(denganHitungan(langkah(konteks, 'hitung', 'hasil.orang_saham', sisipan, sisipan, ['R11-1'], [id]), siapa, `${saham}/${penyebut}`));
       }
     }
   }
@@ -624,7 +706,7 @@ export function babHasilSkrip(konteks: Konteks): HasilSkrip {
     const selisih = perSatuan
       ? [...susun(konteks.penyusun, 'narasi.cerita.hasil.selisih.per_satuan', sisipan), teks(' '), ...susun(konteks.penyusun, 'narasi.cerita.hasil.saran_transfer')]
       : susun(konteks.penyusun, 'narasi.cerita.hasil.selisih.per_rupiah', { selisih: sisipan.selisih });
-    daftarBaris.push(tekankan({ ...buatBaris(selisih), jenis: 'hitung', papan: selisih }, 'perhatian'));
+    daftarBaris.push(tekankan(denganHitungan({ ...buatBaris(selisih), jenis: 'hitung', papan: selisih }, labelHitung(konteks, 'selisih_pembulatan'), sisipan.selisih), 'perhatian'));
   } else if (konteks.tampilkanNominal && tirkah) {
     daftarBaris.push(langkah(konteks, 'hitung', 'hasil.cek_pas', { bersih }, { bersih }));
   }

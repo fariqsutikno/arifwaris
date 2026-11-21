@@ -77,3 +77,17 @@ describe('susunTabelMunasakhat — di luar jangkauan', () => {
     expect(susunTabelSoal({ status: 'PERLU_INPUT', mayit: 'D' } as never, id => id)).toEqual({ status: 'TIDAK_DIDUKUNG' });
   });
 });
+
+describe('susunTabelMunasakhat — kelompok gharqa di rantai [R12-6]', () => {
+  test('munasakhat yang memuat kelompok gharqa → TIDAK_DIDUKUNG (tabelnya perlu desain sendiri)', () => {
+    const graf: GrafKeluarga = { idPewaris: 'A', pernikahan: [{ idSuami: 'B', idIstri: 'WB', status: 'utuh' }, { idSuami: 'C', idIstri: 'WC', status: 'utuh' }], orang: {
+      A: orang('A', 'L', { statusHidup: 'wafat', idIbu: 'MA' }), MA: orang('MA', 'P', { statusHidup: 'wafat', penghubung: true }),
+      B: orang('B', 'L', { idAyah: 'A', idIbu: 'MA' }), C: orang('C', 'L', { idAyah: 'A', idIbu: 'MA' }),
+      WB: orang('WB', 'P'), SB: orang('SB', 'L', { idAyah: 'B', idIbu: 'WB' }), WC: orang('WC', 'P'), DC: orang('DC', 'P', { idAyah: 'C', idIbu: 'WC' }) } };
+    const dengan = hitungMunasakhat({ urutanWafat: [{ anggota: ['B', 'C'], keadaan: 'serentak' }], dasar: { graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n },
+      pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' } });
+    expect(dengan.status).toBe('OK');
+    expect(susunTabelSoal(dengan, id => id)).toEqual({ status: 'TIDAK_DIDUKUNG' });
+  });
+});
+

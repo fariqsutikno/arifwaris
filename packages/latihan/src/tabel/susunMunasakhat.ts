@@ -1,6 +1,6 @@
 // Tabel soal munasakhat (spec B7): Mas'alah 1 (terkunci) · [Bagian · Mas'alah] tiap mayit berikutnya · Jami'ah, plus baris Pengali.
 //   Masuk : HasilMunasakhat OK dari engine (daftarLangkah: tabel, masalah, pengali per mas'alah; jami'ah; saham akhir).
-//   Putus : semua kunci dari engine. Munasakhat yang memuat sisa keluar (dzawil arham/baitul mal) belum punya tabel (G2 hanya yang biasa).
+//   Putus : semua kunci dari engine. Munasakhat yang memuat sisa keluar, dzawil arham, atau kelompok gharqa belum punya tabel (hanya yang biasa).
 //   Keluar: TabelSoal dengan `pengali`. Satu baris per orang lintas mas'alah; mayit hanya punya sel di mas'alah tempat ia mewarisi.
 
 import type { HasilMunasakhat, IdOrang } from '@waris/engine';
@@ -12,6 +12,10 @@ const ID_JAMIAH = 'jamiah';
 
 export function susunTabelMunasakhat(hasil: HasilMunasakhat, namaDari: (id: IdOrang) => string): SusunanTabel {
   if (hasil.status !== 'OK' || hasil.sisaKeluar.length > 0) return { status: 'TIDAK_DIDUKUNG' };
+  // [R12-5] [R12-6] kelompok gharqa dan dzawil arham di dalam rantai butuh desain dan mockup tabel sendiri.
+  const adaGharqa = hasil.urutanWafat.some(kejadian => typeof kejadian !== 'string');
+  const adaDzawilArham = hasil.daftarLangkah.some(langkah => Object.values(langkah.hasil.statusOrang).some(status => status.jenis === 'ahliWaris' && status.peran.kunci === 'DZAWIL_ARHAM'));
+  if (adaGharqa || adaDzawilArham) return { status: 'TIDAK_DIDUKUNG' };
 
   const baris = new Map<IdOrang, BarisSoal>();
   const barisDari = (id: IdOrang): BarisSoal => {

@@ -7,7 +7,7 @@ import type { AlasanFardh, PilihanJadd, IdOrang, KodeKhilafOverlay, Ruleset, Tuj
 import { sebutKelompok, sebutSemua, type Konteks, type Langkah } from './context.js';
 import { rupiah } from './format.js';
 import {
-  barisSkrip, gabungDan, buatBaris, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type Penyusun, type Potongan, type Sisipan,
+  barisSkrip, denganHitungan, gabungDan, buatBaris, kalimat, susun, teksKamus, tekankan, type BarisPenjelasan, type Penyusun, type Potongan, type Sisipan,
 } from './segments.js';
 import { istilah, istilahNarasi, type IdIstilah } from './terms.js';
 
@@ -323,15 +323,19 @@ export function persamaanKotakAshl(konteks: Konteks): PersamaanKotak[] {
   if (barisAshabah.length > 1 || baris.every(barisTabel => !barisTabel.fardh)) return [];
   const langkah: PersamaanKotak[] = [];
   let terpakai = 0n;
+  const ruas: bigint[] = [];   // jatah tiap kelompok fardh, untuk rumus sisa "24 − 3 − 4 = 17"
   for (const barisTabel of baris.filter(barisIni => barisIni.fardh)) {
     const { n, d } = barisTabel.fardh!;
     const jumlah = n * ashl / d;
     terpakai += jumlah;
+    ruas.push(jumlah);
     const siapa = sebutKelompok(konteks, barisTabel.kelompok);
     const sebagianKali = n === 1n ? {} : { n };
+    // Rumus: 24 × 1/8 = 24 ÷ 8 = 3;  6 × 2/3 = (6 ÷ 3) × 2 = 4
+    const rumus = n === 1n ? `${ashl} × ${n}/${d} = ${ashl} ÷ ${d} = ${jumlah}` : `${ashl} × ${n}/${d} = (${ashl} ÷ ${d}) × ${n} = ${jumlah}`;
     langkah.push({
-      baris: barisSkrip(konteks.penyusun, 'hitung', n === 1n ? 'ashl.fardh' : 'ashl.fardh_kali',
-        { siapa, pecahan: barisTabel.fardh!, ashl, d, ...sebagianKali, kotak: jumlah }, { ashl, d, ...sebagianKali, kotak: jumlah, siapa }, [], barisTabel.anggota),
+      baris: denganHitungan(barisSkrip(konteks.penyusun, 'hitung', n === 1n ? 'ashl.fardh' : 'ashl.fardh_kali',
+        { siapa, pecahan: barisTabel.fardh!, ashl, d, ...sebagianKali, kotak: jumlah }, { ashl, d, ...sebagianKali, kotak: jumlah, siapa }, [], barisTabel.anggota), siapa, rumus),
       anggota: barisTabel.anggota, kelompok: barisTabel.kelompok, jumlah,
     });
   }
@@ -340,7 +344,7 @@ export function persamaanKotakAshl(konteks: Konteks): PersamaanKotak[] {
     const sisa = ashl - terpakai;
     const siapa = sebutKelompok(konteks, penerimaSisa.kelompok);
     const sisipan = { ashl, terpakai, kotak: sisa, siapa };
-    langkah.push({ baris: barisSkrip(konteks.penyusun, 'hitung', 'ashl.sisa', sisipan, sisipan, [], penerimaSisa.anggota),
+    langkah.push({ baris: denganHitungan(barisSkrip(konteks.penyusun, 'hitung', 'ashl.sisa', sisipan, sisipan, [], penerimaSisa.anggota), siapa, `${[ashl, ...ruas].join(' − ')} = ${sisa}`),
       anggota: penerimaSisa.anggota, kelompok: penerimaSisa.kelompok, jumlah: sisa });
   }
   return langkah;
