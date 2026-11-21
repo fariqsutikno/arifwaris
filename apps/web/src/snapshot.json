@@ -9830,13 +9830,6 @@
    "versiTerbit": 370
   },
   {
-   "kunci": "hitung.benar_dari_total_orang_sudah_benar",
-   "halaman": "hitung",
-   "id": "{benar} dari {total} orang sudah benar. Perbaiki: {nama}.",
-   "ar": "{benar} من {total} صحيحة. صحح: {nama}.",
-   "versiTerbit": 371
-  },
-  {
    "kunci": "hitung.benar_semua",
    "halaman": "hitung",
    "id": "Benar semua!",
@@ -10355,13 +10348,6 @@
    "versiTerbit": 440
   },
   {
-   "kunci": "hitung.isi_dulu_nama",
-   "halaman": "hitung",
-   "id": "Isi dulu: {nama}.",
-   "ar": "أدخل أولا: {nama}.",
-   "versiTerbit": 441
-  },
-  {
    "kunci": "hitung.isi_total_harta_peninggalan_dulu_harus",
    "halaman": "hitung",
    "id": "Isi total harta peninggalan dulu, harus lebih dari Rp 0.",
@@ -10416,13 +10402,6 @@
    "id": "Jawabanmu",
    "ar": "إجابتك",
    "versiTerbit": 449
-  },
-  {
-   "kunci": "hitung.jawabanmu_belum_tepat",
-   "halaman": "hitung",
-   "id": "Jawabanmu belum tepat",
-   "ar": "إجابتك غير صحيحة",
-   "versiTerbit": 450
   },
   {
    "kunci": "hitung.jeda",
@@ -10864,13 +10843,6 @@
    "id": "Mas'alah gabungan untuk semua mayit",
    "ar": "المسألة الجامعة لجميع الأموات",
    "versiTerbit": 512
-  },
-  {
-   "kunci": "hitung.masih_ada_yang_kosong",
-   "halaman": "hitung",
-   "id": "Masih ada yang kosong",
-   "ar": "بقيت خانات فارغة",
-   "versiTerbit": 513
   },
   {
    "kunci": "hitung.matikan_animasi",
@@ -11496,13 +11468,6 @@
    "versiTerbit": 598
   },
   {
-   "kunci": "hitung.seluruh_harta_yang_dibagi",
-   "halaman": "hitung",
-   "id": "seluruh harta yang dibagi",
-   "ar": "كل ما يقسم",
-   "versiTerbit": 599
-  },
-  {
    "kunci": "hitung.sembunyikan_nominal",
    "halaman": "hitung",
    "id": "Sembunyikan nominal",
@@ -11557,13 +11522,6 @@
    "id": "Sepupu lk (dari paman sebapak)",
    "ar": "ابن العم لأب",
    "versiTerbit": 607
-  },
-  {
-   "kunci": "hitung.sesudah_aul_atau_radd_bila_ada",
-   "halaman": "hitung",
-   "id": ", sesudah 'aul atau radd bila ada. Bukan bagian fardh awalnya.",
-   "ar": "، بعد العول أو الرد إن وجد، لا الفرض الأصلي.",
-   "versiTerbit": 608
   },
   {
    "kunci": "hitung.setelah_dibulatkan_ke_bawah_tersisa",
@@ -11790,13 +11748,6 @@
    "versiTerbit": 638
   },
   {
-   "kunci": "hitung.tebak_pembagian_akhirnya",
-   "halaman": "hitung",
-   "id": "Tebak pembagian akhirnya",
-   "ar": "خمن القسمة النهائية",
-   "versiTerbit": 639
-  },
-  {
    "kunci": "hitung.teks",
    "halaman": "hitung",
    "id": ", ",
@@ -11963,13 +11914,6 @@
    "id": "Total langsung",
    "ar": "المجموع مباشرة",
    "versiTerbit": 665
-  },
-  {
-   "kunci": "hitung.tulis_bagian_akhir_tiap_orang_dari",
-   "halaman": "hitung",
-   "id": "Tulis bagian akhir tiap orang dari",
-   "ar": "اكتب النصيب النهائي لكل واحد من",
-   "versiTerbit": 666
   },
   {
    "kunci": "hitung.turunkan_label",
@@ -12145,13 +12089,6 @@
    "id": "yang besar habis dibagi yang kecil",
    "ar": "الأكبر يقبل القسمة على الأصغر",
    "versiTerbit": 690
-  },
-  {
-   "kunci": "hitung.yang_tidak_mendapat_bagian_isi",
-   "halaman": "hitung",
-   "id": ". Yang tidak mendapat bagian, isi",
-   "ar": ". ومن لا نصيب له فاكتب",
-   "versiTerbit": 691
   },
   {
    "kunci": "latihan.belum",
@@ -13048,13 +12985,6 @@
    "id": "Hapus semua",
    "ar": "حذف الكل",
    "versiTerbit": 815
-  },
-  {
-   "kunci": "umum.jawab",
-   "halaman": "umum",
-   "id": "Jawab",
-   "ar": "أجب",
-   "versiTerbit": 816
   },
   {
    "kunci": "umum.jumlah",
@@ -18485,13 +18415,6 @@
    "kunci": "hitung.urutan_yang_biasa_dilakukan",
    "halaman": "hitung",
    "id": "Urutan yang biasa dilakukan keluarga",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hitung.dibagi_dari_harta",
-   "halaman": "hitung",
-   "id": "Dibagi dari harta {harta}.",
    "ar": null,
    "versiTerbit": 873
   },

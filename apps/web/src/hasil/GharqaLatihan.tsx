@@ -76,7 +76,7 @@ export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan,
       {keputusanBenar && soal.harta.map((harta, indeks) => (
         <div key={harta.mayit} className="tata-tabel-latihan">
           <h3 className="judul-panel">{t('hitung.gharqa.harta_nama', { nama: namaDari(harta.mayit) })}</h3>
-          <TabelLatihan tabel={harta.tabel} namaDari={namaDari} mode="latihan" jangkar={jangkar[indeks] ?? null} terbuka={terbuka}
+          <TabelLatihan tabel={harta.tabel} namaDari={namaDari} mode="latihan" jangkar={jangkar[indeks] ?? null} terbuka={terbuka} tanpaCara={indeks > 0}
             saatLihatJawaban={saatLihatJawaban} saatPercobaan={saatPercobaanHarta(harta.mayit)} />
         </div>
       ))}
