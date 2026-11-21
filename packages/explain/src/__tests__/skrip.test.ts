@@ -21,12 +21,32 @@ const teksNarasi = (satu: Langkah) => keTeksBiasa(satu.narasi);
 
 describe('skrip belajar kasus biasa', () => {
   it('C16-01: tiap tahap berpola pertanyaan, dasar, keluarga, logika, hitungan, jembatan', () => {
-    expect(jenisDari(langkahDari(case01, 'ahliWaris'))).toEqual(['peta', 'tanya', 'keluarga']);
+    expect(jenisDari(langkahDari(case01, 'ahliWaris'))).toEqual(['peta', 'tanya', 'keluarga', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'bagian'))).toEqual(['dasar', 'dasar', 'keluarga', 'keluarga', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'ashl'))).toEqual(['logika', 'hitung', 'hitung', 'hitung']);
     expect(jenisDari(langkahDari(case01, 'penyesuaian'))).toEqual(['tanya', 'hitung']);
-    expect(jenisDari(langkahDari(case01, 'tashih'))).toEqual(['keluarga', 'keluarga', 'logika', 'logika', 'logika', 'hitung', 'hitung', 'jembatan']);
+    expect(jenisDari(langkahDari(case01, 'tashih'))).toEqual(['tanya', 'keluarga', 'keluarga', 'logika', 'logika', 'logika', 'hitung', 'hitung', 'jembatan']);
     expect(jenisDari(langkahDari(case01, 'hasil'))).toEqual(['hitung', 'hitung', 'hitung', 'ringkas']);
+  });
+
+  it('C16-01: baris hitung berlabel: asal masalah, jumlah, tashih, cek', () => {
+    const hitungan = (idTahap: string) => langkahDari(case01, idTahap).flatMap(satu => (satu.hitungan ? [[satu.hitungan.label, satu.hitungan.isi].map(daftar => daftar.map(potongan => potongan.teks).join(''))] : []));
+    expect(hitungan('ashl')).toEqual([['Istri', '8 × 1/8 = 8 ÷ 8 = 1'], ['Anak laki-laki dan anak perempuan', '8 − 1 = 7'], ['Asal masalah', '8']]);
+    expect(hitungan('tashih')).toContainEqual(['Tashih', '8 × 3 = 24']);
+    expect(hitungan('tashih')).toContainEqual(['Cek', '3 + 14 + 7 = 24']);
+    expect(hitungan('ahliWaris')).toEqual([['Mewarisi', 'istri, anak laki-laki, dan anak perempuan']]);
+  });
+
+  it('C16-01: tashih bertanya dengan angka kasus, dan alasan semua kotak dipotong disebut', () => {
+    const [tanya] = langkahDari(case01, 'tashih');
+    expect(teksNarasi(tanya!)).toBe('Anak laki-laki dan anak perempuan mendapat 7 kotak bersama, laki-laki dua kali perempuan. Bisakah 7 dibagi seperti itu tanpa pecahan?');
+    expect(langkahDari(case01, 'tashih').map(teksNarasi).join(' ')).toContain('Semua kotak ikut dipotong, bukan hanya kotak yang tidak habis dibagi');
+  });
+
+  it('C16-12: nilai tetap ditunjukkan untuk setiap kelompok yang kotaknya ikut dipotong', () => {
+    const baris = langkahDari(case12, 'tashih').filter(satu => teksNarasi(satu).includes('kotaknya tetap'));
+    expect(baris.length).toBe(2);
+    expect(baris.every(satu => satu.hitungan !== undefined)).toBe(true);
   });
 
   it('C16-01: angka tashih sama dengan tabel (21 potong, 14 dan 7, jumlah 24)', () => {
@@ -38,13 +58,13 @@ describe('skrip belajar kasus biasa', () => {
 
   it("C16-05 ('aul): jembatan penyebut beda, lalu tahap 'aul: pertanyaan, alasan bersama, potong ulang, contoh", () => {
     expect(teksNarasi(langkahDari(case05, 'bagian').at(-1)!)).toContain('belum bisa dijumlahkan');
-    expect(jenisDari(langkahDari(case05, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'logika', 'logika', 'logika', 'hitung']);
+    expect(jenisDari(langkahDari(case05, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'logika', 'logika', 'logika', 'hitung', 'hitung', 'hitung']);
     expect(langkahDari(case05, 'penyesuaian').map(teksNarasi).join(' ')).toContain('7 kotak');
     expect(jenisDari(langkahDari(case05, 'tashih'))).toEqual(['tanya', 'hitung', 'hitung', 'jembatan']);
   });
 
   it('C16-09 (radd tanpa pasangan): sisa ditanyakan, dasar radd, lalu dipotong ulang', () => {
-    expect(jenisDari(langkahDari(case09, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'logika', 'hitung']);
+    expect(jenisDari(langkahDari(case09, 'penyesuaian'))).toEqual(['tanya', 'hitung', 'tanya', 'dasar', 'keluarga', 'logika', 'hitung', 'hitung', 'hitung']);
     expect(teksNarasi(langkahDari(case09, 'penyesuaian').at(-1)!)).toContain('dari 4 kotak');
   });
 
@@ -57,7 +77,7 @@ describe('skrip belajar kasus biasa', () => {
 
   it('harta dengan potongan: tanya, dasar, pengurangan berurutan, hasil bersih', () => {
     const harta = langkahDari(caseNominal, 'harta');
-    expect(jenisDari(harta)).toEqual(['peta', 'tanya', 'dasar', 'hitung', 'hitung', 'keluarga', 'hitung', 'keluarga']);
+    expect(jenisDari(harta)).toEqual(['peta', 'tanya', 'dasar', 'hitung', 'hitung', 'keluarga', 'hitung', 'hitung', 'jembatan']);
     const teks = harta.map(teksNarasi).join(' ');
     expect(teks).toContain('Harta Rp150.000.000 dikurangi biaya jenazah Rp5.000.000, tersisa Rp145.000.000');
     expect(teks).toContain('melebihi batas 1/3');
@@ -100,7 +120,7 @@ describe('skrip belajar kasus biasa', () => {
     const teks = langkahDari(case14, 'bagian').map(teksNarasi).join(' ');
     expect(teks).toContain('paling menguntungkannya');
     expect(teks).toContain('(muqasamah) = 3/16');
-    expect(teks).toContain('Yang terbesar sepertiga sisa, yaitu 1/4');
+    expect(teks).toContain('Pilihan terbesarnya sepertiga sisa, yaitu 1/4');
     expect(teks).toContain('karena tidak ada anak laki-laki');
   });
 
@@ -184,7 +204,7 @@ describe('skrip belajar kasus biasa', () => {
     const ashl = susunLinimasa(hasil, kasus.input.graf, { kamus: kamusSnapshot }).tahap.find(tahap => tahap.id === 'ashl')!.langkah;
     expect(jenisDari(ashl)).toEqual(['logika', 'hitung', 'hitung']);
     const teks = ashl.map(teksNarasi).join(' ');
-    expect(teks).toContain('laki-laki 2 jatah, perempuan 1 jatah');
+    expect(teks).toContain('laki-laki 2, perempuan 1');
     expect(teks).toContain('Totalnya 5 jatah');
     expect(teks).toContain('Angka 5 ini disebut asal masalah');
   });

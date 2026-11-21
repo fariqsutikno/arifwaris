@@ -8,8 +8,9 @@ import { persamaanKotakAshl } from './cerita.js';
 import { buatKonteks, type HasilOk, type Konteks, type Langkah } from './context.js';
 import { adaDzawilArham, buatSebutArham } from './dzawilArham.js';
 import { rupiah } from './format.js';
-import { barisAshabah, barisFardh, bagianDipetakan } from './skrip.js';
-import { barisSkrip, susun, teksKamus, type BarisPenjelasan, type Kamus, type Potongan, type Sisipan } from './segments.js';
+import { barisAshabah, barisFardh, barisMuaddah, bagianDipetakan } from './skrip.js';
+import { barisTanzilOrang } from './skripDzawilArham.js';
+import { barisSkrip, buatBaris, susun, teksKamus, type BarisPenjelasan, type Kamus, type Potongan, type Sisipan } from './segments.js';
 import { istilahNarasi } from './terms.js';
 
 export interface BarisHitungan { label: string; isi: Potongan[] }
@@ -39,12 +40,12 @@ export function jelaskanOrang(hasil: HasilOk, graf: GrafKeluarga, idOrang: IdOra
 function orangDzawilArham(konteks: Konteks, idOrang: IdOrang, tanzil: Langkah<'DZAWIL_ARHAM_TANZIL'>): PenjelasanOrang | undefined {
   const { penyusun } = konteks;
   const kelompok = konteks.hasil.tabel.baris.find(baris => baris.anggota.includes(idOrang))?.kelompok;
-  if (!kelompok) return undefined;
   const sebut = (ids: IdOrang[]) => konteks.sebutan.sebut(ids);
   const [masalah] = konteks.daftarLangkah('DZAWIL_ARHAM_MASALAH_PERANTARA');
+  if (!kelompok) return orangDzawilArhamTerhalang(konteks, idOrang, tanzil);
   const langkahDari = (nama: string, sisipan: Record<string, Sisipan>, refs: string[], subjek?: IdOrang[]) =>
     barisSkrip(penyusun, 'keluarga', `dzawil_arham.${nama}`, sisipan, sisipan, refs, subjek);
-  const keluarga = [langkahDari('tanzil_orang', { siapa: sebut([idOrang]), perantara: sebut([tanzil.perantara]), langkah: tanzil.langkah }, tanzil.refs, [idOrang])];
+  const keluarga = [barisTanzilOrang(konteks, tanzil, sebut)];
   for (const turun of konteks.daftarLangkah('DZAWIL_ARHAM_TURUN').filter(satu => idOrang in satu.saham)) {
     keluarga.push(langkahDari(turun.rasio === 'samaRata' ? 'turun_sama_rata' : 'turun_orang',
       { perantara: sebut([turun.perantara]), saham: masalah?.saham[turun.perantara] ?? 0n, masalah: masalah?.masalah ?? 0n, penerima: sebut(Object.keys(turun.saham)) }, turun.refs, [idOrang]));
@@ -57,6 +58,23 @@ function orangDzawilArham(konteks: Konteks, idOrang: IdOrang, tanzil: Langkah<'D
   };
 }
 
+/** Kerabat jauh yang tidak mendapat bagian: kalah cepat dalam satu jihah [R14-7], atau perantaranya sendiri terhalang [R14-10]. */
+function orangDzawilArhamTerhalang(konteks: Konteks, idOrang: IdOrang, tanzil: Langkah<'DZAWIL_ARHAM_TANZIL'>): PenjelasanOrang {
+  const { penyusun } = konteks;
+  const sebut = (ids: IdOrang[]) => konteks.sebutan.sebut(ids);
+  const kalah = konteks.daftarLangkah('DZAWIL_ARHAM_TERHIJAB_JIHAH').find(satu => satu.idOrang === idOrang);
+  const sebab = kalah
+    ? { kalimat: susun(penyusun, 'narasi.dzawil_arham.terhijab_jihah', { siapa: sebut([idOrang]), oleh: sebut(kalah.oleh) }), refs: kalah.refs }
+    : { kalimat: susun(penyusun, 'narasi.dzawil_arham.perantara_terhijab', { perantara: sebut([tanzil.perantara]) }), refs: ['R14-10'] };
+  const baris = { ...buatBaris(sebab.kalimat, sebab.refs, [idOrang]), jenis: 'keluarga' as const, papan: sebab.kalimat };
+  return {
+    pertanyaan: susun(penyusun, kunci('pertanyaan.terhalang')),
+    dasar: [barisSkrip(penyusun, 'dasar', 'dzawil_arham.dasar_tanzil', {}, {}, ['R14-6', 'R14-7'])],
+    keluarga: [barisTanzilOrang(konteks, tanzil, sebut), baris],
+    hitungan: [],
+  };
+}
+
 function orangMenerima(konteks: Konteks, idOrang: IdOrang, kelompok: string): PenjelasanOrang | undefined {
   const { penyusun } = konteks;
   const pewaris = konteks.sebutan.pewaris();
@@ -65,9 +83,12 @@ function orangMenerima(konteks: Konteks, idOrang: IdOrang, kelompok: string): Pe
   const adalahKakek = konteks.sebutan.peranDari(idOrang)?.kunci === 'KAKEK';
   const fardh = kandidat.length > 1 ? kandidat.find(satu => satu.alasan.kode === 'AKDARIYYAH' && (satu.alasan.porsi === 'jadd') === adalahKakek) : kandidat[0];
   const ashabah = konteks.daftarLangkah('ASHABAH').find(satu => satu.kelompok === kelompok);
+  // Mu'addah [R08-4]: saudara sebapak dihitung tapi bagiannya kembali ke saudara kandung; tidak punya langkah fardh/ashabah sendiri.
+  const muaddah = konteks.daftarLangkah('KASUS_KHUSUS').find(satu => satu.nama === 'muaddah');
   const baris = fardh
     ? barisFardh(konteks, fardh, pewaris)
-    : ashabah ? [...barisAshabah(konteks, ashabah), barisSkrip(penyusun, 'dasar', 'bagian.dasar_fardh', {}, {})] : undefined;
+    : ashabah ? [...barisAshabah(konteks, ashabah), barisSkrip(penyusun, 'dasar', 'bagian.dasar_fardh', {}, {})]
+    : muaddah ? barisMuaddah(konteks, muaddah.refs) : undefined;
   if (!baris) return undefined;
   const nuqshan = fardh && konteks.daftarLangkah('HAJB_NUQSHAN').find(satu => konteks.anggotaDari(kelompok).includes(satu.terdampak));
   const pertanyaan = fardh?.alasan.kode === 'AKDARIYYAH'
@@ -78,15 +99,26 @@ function orangMenerima(konteks: Konteks, idOrang: IdOrang, kelompok: string): Pe
   return {
     pertanyaan,
     dasar: baris.filter(satu => satu.jenis === 'dasar'),
-    keluarga: baris.filter(satu => satu.jenis === 'keluarga'),
+    keluarga: baris.filter(satu => satu.jenis === 'keluarga' || (muaddah && !fardh && !ashabah && satu.jenis === 'logika')),
     hitungan: hitunganOrang(konteks, idOrang, kelompok),
   };
 }
 
 function orangTerhalang(konteks: Konteks, idOrang: IdOrang): PenjelasanOrang | undefined {
+  const { penyusun } = konteks;
+  const mani = konteks.daftarLangkah('MANI').find(satu => satu.idOrang === idOrang);
+  if (mani) {
+    // Pembunuh atau beda agama: bukan terhalang kerabat lain, tapi tidak berhak sama sekali (mani').
+    const sisipan = { siapa: konteks.sebutan.sebut([idOrang]), pewaris: konteks.sebutan.pewaris() };
+    return {
+      pertanyaan: susun(penyusun, kunci('pertanyaan.terhalang')),
+      dasar: [barisSkrip(penyusun, 'dasar', 'ahli_waris.dasar_mani', { mani: istilahNarasi(penyusun, 'mani') }, {}, mani.refs)],
+      keluarga: [barisSkrip(penyusun, 'keluarga', [mani.mani === 'qatl' ? 'ahli_waris.mani.qatl.narasi' : 'ahli_waris.mani.beda_agama.narasi', 'ahli_waris.mani.papan'], sisipan, { siapa: sisipan.siapa }, mani.refs, [idOrang])],
+      hitungan: [],
+    };
+  }
   const hajb = konteks.daftarLangkah('HAJB_HIRMAN').find(satu => satu.mahjub === idOrang);
   if (!hajb) return undefined;
-  const { penyusun } = konteks;
   const sebutMahjub = konteks.sebutan.sebut([idOrang]);
   const sebutHajib = konteks.sebutan.sebut(hajb.hajib);
   return {

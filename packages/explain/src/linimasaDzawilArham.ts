@@ -9,7 +9,7 @@ import { buatSebutArham } from './dzawilArham.js';
 import type { IdTahap, Langkah, Linimasa, Tahap } from './linimasa.js';
 import { LAMA, babHartaSkrip, babHasilSkrip, type HasilSkrip } from './skrip.js';
 import { babDzawilArhamSkrip } from './skripDzawilArham.js';
-import type { BarisPenjelasan, Kamus } from './segments.js';
+import { papanDari, type BarisPenjelasan, type Kamus } from './segments.js';
 
 export function susunLinimasaDzawilArham(hasil: HasilOk, graf: GrafKeluarga, opsi: { kamus: Kamus }): Linimasa {
   const dasar = buatKonteks(hasil, graf, { kamus: opsi.kamus, bahasa: 'id' });
@@ -25,7 +25,6 @@ export function susunLinimasaDzawilArham(hasil: HasilOk, graf: GrafKeluarga, ops
   return { tahap, tabel: [] };
 }
 
-const papanDari = (baris: BarisPenjelasan): BarisPenjelasan => (baris.papan ? { daftarPotongan: baris.papan, refs: baris.refs } : baris);
 const langkahDariBaris = (baris: BarisPenjelasan): Langkah => ({
-  bagian: baris.subjek?.length ? 'keluarga' : 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
+  bagian: baris.subjek?.length ? 'keluarga' : 'hitung', ...(baris.jenis ? { jenis: baris.jenis } : {}), ...(baris.hitungan ? { hitungan: baris.hitungan } : {}), narasi: baris, papan: papanDari(baris), refs: baris.refs,
 });
