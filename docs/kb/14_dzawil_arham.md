@@ -33,11 +33,11 @@ Catatan: ummul ab al-jadd (nenek di atas kakek melalui laki-laki) → khilaf; de
 **Bersama pasangan**: pasangan mengambil fardh **penuh** (1/2 atau 1/4, tidak berkurang karena dzawil arham), sisanya untuk dzawil arham.
 
 ## 14.4 Metode Pewarisan [R14-6]
-> **Catatan sumber**: dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Bab ar-Radd wa Dzawil Arham (6/45 · shamela:499/2334): **Syafi'iyyah secara mazhab hanya mengenal satu metode, yaitu Ahl at-Tanzil** (dinukil eksplisit: *"الْأَصَحُّ الْأَقْيَسُ: مَذْهَبُ أَهْلِ التَّنْزِيلِ"* — "yang paling shahih dan paling sesuai qiyas adalah madzhab Ahl at-Tanzil"). **Ahl al-Qarabah bukan pendapat internal Syafi'i**, melainkan murni madzhab Abu Hanifah — disebut di sini hanya sebagai perbandingan lintas madzhab, bukan opsi dalam Syafi'i.
+> **Catatan sumber**: dikonfirmasi dari *Raudhah ath-Thalibin* (Nawawi), Bab ar-Radd wa Dzawil Arham (6/45 · shamela:499/2334): **Syafi'iyyah secara mazhab hanya mengenal satu metode, yaitu Ahl at-Tanzil** (dinukil eksplisit: *"الْأَصَحُّ الْأَقْيَسُ: مَذْهَبُ أَهْلِ التَّنْزِيلِ"* — "yang paling shahih dan paling sesuai qiyas adalah madzhab Ahl at-Tanzil"). Ahl al-Qarabah adalah madzhab Abu Hanifah, tetapi **juga dipegang sebagian ashhab Syafi'i** («مِنْهُمْ مَنْ أَخَذَ بِمَذْهَبِ أَهْلِ الْقَرَابَةِ ... وَبِهِ قَطَعَ الْبَغَوِيُّ وَالْمُتَوَلِّي», Raudhah 6/45; koreksi 2026-11-22). Pendapat itu kalah oleh tarjih an-Nawawi di atas, sehingga bukan opsi [SYF] di engine.
 >
 > **Tiga metode (lintas madzhab)**:
 > 1. **Ahl ar-Rahm**: semua sama rata, dekat maupun jauh. (Ditinggalkan semua madzhab.)
-> 2. **Ahl al-Qarabah** (murni Hanafi): diurutkan berdasarkan kedekatan derajat ke mayit langsung, lalu kekuatan qarabah.
+> 2. **Ahl al-Qarabah** (Hanafi; minoritas ashhab Syafi'i): diurutkan berdasarkan kedekatan derajat ke mayit langsung, lalu kekuatan qarabah.
 > 3. **Ahl at-Tanzil ([SYF] — satu-satunya metode dalam madzhab Syafi'i, juga dipakai masyhur Hanbali dan Ibnu 'Utsaimin)**: setiap dzawil arham **didudukkan pada posisi ahli waris** yang menjadi perantaranya.
 
 Contoh perbedaan (dari Ibnu 'Utsaimin): cicit pr dari anak pr + anak pr saudara lk (bukan seibu):
@@ -86,7 +86,7 @@ Contoh (Lahim hlm. 194): satu orang yang sekaligus anak lk dari **anak lk** saud
 *Koreksi 2026-09-30:* rumusan sebelumnya ("anak lk dari saudari kandung" langsung) mustahil secara nasab karena menuntut dua ibu; orang itu harus lewat dua garis berbeda, ayah dan ibunya.
 
 ## 14.9 Bersama Salah Satu Pasangan [R14-12]
-Pasangan mengambil fardh-nya **penuh dari makhraj-nya sendiri, tanpa hijab dan tanpa 'aul**: suami 1/2, istri 1/4 — tidak turun ke 1/4 atau 1/8 karena ada anak dari anak pr, sebab dzawil arham bukan far'u warits. Sisanya untuk dzawil arham.
+Pasangan mengambil fardh-nya **penuh dari makhraj-nya sendiri, tanpa hijab dan tanpa 'aul**: suami 1/2, istri 1/4 — tidak turun ke 1/4 atau 1/8 karena ada anak dari anak pr, sebab dzawil arham bukan far'u warits; alasan dalam teks primer: «الأرحام لا يعادلونهم، فلا ردّ على الزوجين؛ إذ لا رحم لهما» (Nihayat al-Mathlab 9/252). Sisanya untuk dzawil arham. Khilaf munazzil: «اعتبار الأصل» (Yahya bin Adam) membagi sisa menurut saham perantara bersama pasangan; kalah oleh «اعتبار ما بقي» (Raudhah 6/58 «أصحهما»); hasil keduanya hanya beda bila dzawil arham mewarisi seperti fardh + ta'shib (Nihayat 9/254).
 
 Tata kerja = **munasakhat keadaan 3** (bab 12): *mas'alah zaujiyyah* = mas'alah pertama, *mas'alah dzawil arham* = mas'alah kedua, sisa setelah fardh pasangan = saham "mayit kedua" (Lahim hlm. 208).
 1. Mas'alah zaujiyyah dari makhraj fardh pasangan (tashih bila istri >1).
@@ -150,9 +150,9 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R14-7 | Yang lebih dulu sampai ke ahli waris didahulukan | RDH | Raudhah 6/46 (Bab 8) · shamela:499/2335 | «ويقدمون منهم من سبق إلى الوارث» |
 | R14-8 | 2:1 kecuali anak saudara seibu | RDH | Raudhah 6/49–50 (Bab 8) · shamela:499/2338 shamela:499/2339 | Lihat blok KHILAF 14.5. |
 | R14-9 | Dzawil arham tunggal mengambil semua | RDH | Raudhah 6/46 (Bab 8) · shamela:499/2335 | «والمذهبان متفقان على أن من انفرد من ذوي الأرحام، يحوز جميع المال ذكرا كان أو أنثى» |
-| R14-10 | Tiga jihah tanzil; hajb dalam satu jihah vs lintas jihah | LHM | Lahim hlm. 192–194 | «إذا اتحدت جهتهم حجب القريب من الوارث البعيد منه... إذا اختلفت الجهة أخذوا حكم الوارث الذي يدلون به إرثاً وحجباً» |
-| R14-11 | Satu orang dua jalur | LHM | Lahim hlm. 194–195 | «ألا تحجب إحداهما الأخرى... يرث بهما... أن تحجب إحداهما الأخرى... يرث بالجهة الحاجبة» |
-| R14-12 | Pasangan fardh penuh; tata kerja munasakhat keadaan 3 | LHM | Lahim hlm. 207–208 | «أعطي أحد الزوجين فرضه من مخرجه من غير حجب ولا عول» |
+| R14-10 | Tiga jihah tanzil; hajb dalam satu jihah vs lintas jihah | RDH (sebagian) + LHM ⚑ | Lahim hlm. 192–194 | «إذا اتحدت جهتهم حجب القريب من الوارث البعيد منه... إذا اختلفت الجهة أخذوا حكم الوارث الذي يدلون به إرثاً وحجباً» **Primer sebagian (2026-11-22)**: tanzil + «السبق إلى الوارث» + hajb antar-perantara: «يُنَزَّلُ مَنْزِلَةَ الْوَارِثِ الَّذِي يُدْلِي بِهِ ... وَإِنْ حَجَبَ بَعْضُهُمْ بَعْضًا، جَرَى الْحُكْمُ كَذَلِكَ فِي ذَوِي الْأَرْحَامِ» (Raudhah 6/57 · shamela:499/2346); «وَيُقَدِّمُونَ مِنْهُمْ مَنْ سَبَقَ إِلَى الْوَارِثِ» (6/46 · shamela:499/2335). ⚑ Kerangka **tiga jihah** dan syarat «hajb antar-perantara hanya bila jihah berbeda» tidak ada di Raudhah/Nihayat (hanya Lahim); Raudhah 6/57 memberlakukan hajb antar-perantara tanpa syarat jihah. |
+| R14-11 | Satu orang dua jalur | RDH + LHM | Lahim hlm. 194–195 | «ألا تحجب إحداهما الأخرى... يرث بهما... أن تحجب إحداهما الأخرى... يرث بالجهة الحاجبة» **Primer (2026-11-22)**: «قَدْ يَجْتَمِعُ فِي الشَّخْصِ مِنْ ذَوِي الْأَرْحَامِ قَرَابَتَانِ ... فَإِنْ سَبَقَ بَعْضُ الْوُجُوهِ إِلَى وَارِثٍ، قُدِّمَ بِهِ، وَإِلَّا قَدَّرُوا الْوُجُوهَ أَشْخَاصًا وَرَّثُوا بِهَا» (Raudhah 6/58 · shamela:499/2347; Nihayat al-Mathlab 9/247 · shamela:9851/4774). |
+| R14-12 | Pasangan fardh penuh; tata kerja munasakhat keadaan 3 | RDH + LHM | Lahim hlm. 207–208 | «أعطي أحد الزوجين فرضه من مخرجه من غير حجب ولا عول» **Primer (2026-11-22)**: «لا شك أن ذوي الأرحام لا يحجبون الزوجين، ولا ينقصون نصيبَهما بالعول ... فنخرج نصيب أحد الزوجين نصفاً كاملاً، أو ربعاً كاملاً» (Nihayat al-Mathlab 9/252 · shamela:9851/4779); Raudhah 6/58 (shamela:499/2347) «يُخْرَجُ نَصِيبُهُ، وَيُقَسَّمُ الْبَاقِي ... وَلِلْمُنَزِّلِينَ مَذْهَبَانِ. أَصَحُّهُمَا: كَذَلِكَ» (pendapat kedua «اعتبار الأصل», Yahya bin Adam dan Dirar bin Surad, kalah). Tata kerja munasakhat keadaan 3 tetap Lahim. |
 | R14-13 | 'Aul hanya 6→7 | KH | Lahim hlm. 217 | «نهاية عوله إلى سبعة» |
 | R14-14 | Qarabah [HNF]: 7 shinf, derajat, anak ahli waris | — (Hanafi primer) | al-Mabsuth, as-Sarakhsi, 30/6 · shamela:5423/5974 | «ثم ذوو الأرحام في الحاصل سبعة أصناف ... وفي كل ذلك عند التساوي في الدرجة إذا كان أحدهما ولد صاحب فرض أو ولد عصبة والآخر ليس كذلك فولد صاحب الفرض والعصبة أولى» |
 | R14-15 | Qarabah [HNF]: cara membagi per tingkat ushul (qaul Muhammad) | — (Hanafi primer) | al-Mabsuth 30/6 · shamela:5423/5974 | «وهذا قول محمد، وهو الظاهر من مذهب أبي حنيفة، ثم رجع أبو يوسف ... وهو رواية شاذة» |
