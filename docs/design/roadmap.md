@@ -28,7 +28,7 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | G3 data server + PDP + soal buta | **kode selesai, di `main`** (PR #45, #49, #50); belum di-deploy ke produksi, lihat "Langkah deploy G3" |
 | Jalur 7: verifikasi madzhab [HNB]/[HNF]/[MLK] | **sebagian besar jalan**: matriks KB 18 punya 106 baris, hanya 4 baris masih bertanda (s) (K01-2, K02-4, K13a-4, R01-1) dan 1 sel "?" (K04-3); 4 butir masih Terbuka di `docs/rencana-verifikasi.md` (R13-14 laqith, K05-2 [MLK], K13-1 [HNF], dzawil arham dua jalur [HNF]) |
 | Jalur 7b: harta sudah dibagi sebagian | **belum mulai**: KB bab 11 baru memuat qismah dan takharuj (R11-2 shulh); belum ada bagian KB, kode engine, maupun UI. Hanya ada bayangan `mockup-sudah-dibagi.html`. Langkah pertama: riset dan verifikasi rujukan ke bab 11 |
-| Jalur 8: KHI | **rencana + sumber siap (2026-11-23)**: `docs/superpowers/plans/2026-11-23-khi-jalur-8.md`; teks KHI terverifikasi dan temuan awal di `docs/kb-khi/`. Keputusan: KHI **sebelum G4**, pembanding = madzhab pilihan pengguna, callout "beda dari fikih". Belum ada kode |
+| Jalur 8: KHI | **rencana + sumber siap (2026-11-23)**: `docs/superpowers/plans/2026-11-23-khi-jalur-8.md`; teks KHI terverifikasi dan temuan awal di `docs/kb-khi/`. Keputusan: KHI **sebelum G4**, pembanding = madzhab pilihan pengguna, panel informasi "kalau menurut KHI" (bukan kalkulator). Belum ada kode |
 
 ## Alur ke depan
 

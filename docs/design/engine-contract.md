@@ -189,7 +189,7 @@ interface KonfigurasiMadzhab {              // internal Syafi'iyyah saja; UI: "p
 ```
 
 Khilaf antar-madzhab lain di KB = hardcoded [SYF] + anotasi rujukan.
-Setiap tahap menerima `ruleset` sebagai parameter (colokan untuk KHI).
+Setiap tahap menerima `ruleset` sebagai parameter (KHI tidak memakai colokan ini: hanya panel informasi, 2026-11-23).
 
 ### Mode input daftar cepat ⇄ pohon
 - Daftar = tampilan dari graf, bukan data terpisah.
