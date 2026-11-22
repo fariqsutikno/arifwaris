@@ -64,3 +64,25 @@ Perlu satu edisi KHI lain untuk menjawab; sampai itu jelas, tandai `perlu verifi
 ## 5. Yang dipetakan tapi belum diverifikasi
 
 Pernyataan di artikel hukumonline (tersier), mis. "janda dalam iddah talak raj'i mewarisi", "poligami: 1/2 + 1/3 dari harta bersama" (kutipan Pedoman Pelaksanaan Tugas Buku II, 2013), "wasiat wajibah ≤ 1/3 pada perluasan", bukan teks KHI. Dipakai sebagai petunjuk arah riset, bukan dasar aturan.
+
+## 6. Pembaruan setelah edisi KHI lain, Pedoman Buku II (2010), dan putusan MK 46
+
+**Salah ketik (bagian 4) dijawab.** Tiga edisi KHI sama persis pada Pasal 174(1) ("saudara perempuan dari nenek") dan 209(1) ("harta wasiat anak angkatnya"), jadi itu bunyi resmi, bukan salah cetak lokal; dikutip apa adanya. Tanda `*` Pasal 177 adalah catatan kaki: "Berdasarkan Surat Edaran Mahkamah Agung Nomor 2 Tahun 1994, maksud pasal tersebut ialah: ayah mendapat sepertiga bagian bila pewaris tidak meninggalkan anak, tetapi meninggalkan suami dan ibu, bila ada anak, ayah mendapat seperenam bagian" (KHI Ed Lain, OCR; urutan baris pada OCR terbalik). Salah ketik huruf di PDF pertama (menutu, pembarian, memfitrnah, dst.) tetap kesalahan cetak PDF itu.
+
+**Pedoman Buku II Edisi Revisi 2010 (MA RI, Ditjen Badilag, 2011)** ternyata merumuskan hukum kewarisan yang dipakai hakim PA secara lengkap (hlm. 163–168, kutipan di `markdown-khi/pedoman-buku-ii-kutipan.md`). Ini mengubah beberapa baris tabel bagian 3:
+
+| Baris | Perubahan |
+|---|---|
+| 6 (Pasal 177) | Pedoman: ayah 1/6 bila ada anak/keturunan, **ashabah** bila tidak (Pasal 177 jo SEMA 2/1994). Jadi **sama dengan fikih**, bukan beda. |
+| 9 (181–182) | Pedoman butir 6: yurisprudensi MA menyamakan saudara seibu dengan kandung/seayah, **ashabah bersama, laki-laki 2:1** (tanpa nomor putusan). Tetap **beda** dari [SYF] (K07-1, tasyrik). Pedoman butir 4(a)(6)–(7) juga memperlakukan semua jenis saudara dalam satu rumusan. |
+| 10 (celah) | **Terjawab sebagian**: Pedoman memberi kelompok ashabah (anak, saudara, kakek-nenek, paman-bibi dan keturunannya), prinsip hijab (butir 5), empat derajat kelompok (butir 7), dan urutan hitung (butir 8). KHI "diam" lebih sedikit daripada dugaan; pertanyaan 2 rencana berubah (lihat rencana). |
+| 13 (Pasal 193) | Pedoman 8(h): radd **tidak berlaku untuk janda dan duda** → **sama dengan** default [SYF]. |
+| 14 (Pasal 191, dzawil arham) | Pedoman 2(a): asas bilateral, **"tidak mengenal kerabat dzawil arham"**; kerabat jauh masuk sebagai ahli waris pengganti atau ashabah (kakek-nenek, paman-bibi). **Beda besar** dari bab 14 (tanzil). |
+| 1 (pengganti) | Pedoman memperluas pengganti ke keturunan **saudara** serta paman/bibi dan kakek/nenek (butir 2(a)(2), 4(c)); sedangkan **SEMA 3/2015 (Rakernas 2010)** dan makalah Djafar membatasi sampai cucu, keponakan → wasiat wajibah. **Dua sumber bertentangan**; SEMA lebih baru (2015). Perlu keputusan pemilik. |
+| 2 (wasiat wajibah non-muslim) | Pedoman 2(i): kerabat sedarah non-muslim mendapat wasiat wajibah **maksimal 1/3 dan tidak melebihi bagian ahli waris yang sederajat**. 51 K/Ag/1999 menyamakan dengan bagian anak muslim. Usul default: aturan Pedoman, dengan label "bervariasi menurut putusan hakim". |
+| 3 (harta bersama poligami) | Pedoman hlm. 139–140: Pasal 94 dinilai tidak adil dan "harus dipahami" lain: harta tiap perkawinan menjadi harta bersama dengan **semua istri sebelumnya**; rumus istri pertama ½ + 1/3 + 1/4 + 1/5; harta yang diperuntukkan istri ke-2–4 (rumah, perabot, pakaian) tidak melebihi 1/3. |
+| 16 (hibah) | Pedoman butir 3: hibah dan wasiat kepada ahli waris **diperhitungkan sebagai warisan** (disebut "Pasal 210", kemungkinan 211/195(3)). |
+
+**MK 46/PUU-VIII/2010.** Pasal 43(1) UU Perkawinan dibaca: anak di luar perkawinan punya hubungan perdata dengan ibu dan keluarga ibunya **serta dengan laki-laki yang dapat dibuktikan (IPTEK/alat bukti lain) sebagai ayah biologisnya**. KHI Pasal 186 hanya menyebut ibu dan keluarga ibu. Bahan yang ada tidak menjelaskan akibat MK pada waris Islam di PA; **tidak dihitung** di engine, hanya dicatat di materi/callout sebagai "ada putusan MK; hubungan perdata, belum otomatis waris".
+
+**Di luar cakupan:** artikel IJISK 3(4) 2026 (waris BW non-muslim, putusan PN Medan; verstek/voluntair).
