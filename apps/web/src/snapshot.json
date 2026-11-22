@@ -28375,7 +28375,7 @@
   {
    "kunci": "privasi.kontak_isi",
    "halaman": "privasi",
-   "id": "Pengendali data: ArifWaris Team. Email untuk pertanyaan, permintaan hak, dan pengaduan: cs@arifwaris.com.",
+   "id": "Pengendali data: {pengelola}. Email untuk pertanyaan, permintaan hak, dan pengaduan: {email}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28886,7 +28886,7 @@
   {
    "kunci": "syarat.kontak_isi",
    "halaman": "syarat",
-   "id": "ArifWaris Team, cs@arifwaris.com.",
+   "id": "{pengelola}, {email}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28914,7 +28914,7 @@
   {
    "kunci": "syarat.umum_isi",
    "halaman": "syarat",
-   "id": "Bila satu ketentuan tidak dapat diberlakukan, ketentuan lainnya tetap berlaku sejauh diizinkan hukum. Kami tidak melepaskan hak hanya karena tidak langsung menggunakannya. Syarat ini bersama kebijakan privasi mengatur pemakaian Platform Waris.",
+   "id": "Bila satu ketentuan tidak dapat diberlakukan, ketentuan lainnya tetap berlaku sejauh diizinkan hukum. Kami tidak melepaskan hak hanya karena tidak langsung menggunakannya. Syarat ini bersama kebijakan privasi mengatur pemakaian {platform}.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28942,7 +28942,7 @@
   {
    "kunci": "syarat.tentang_isi",
    "halaman": "syarat",
-   "id": "Platform Waris adalah alat bantu belajar faraidh dan perhitungan awal pembagian waris, dikelola ArifWaris Team (\"kami\"). \"Kamu\" adalah pengguna layanan.\n\nDengan masuk atau memakai layanan, kamu menyatakan sudah membaca dan menyetujui syarat ini dan kebijakan privasi. Bila tidak setuju, jangan masuk atau memakai layanan; kalkulator dan belajar tanpa akun tetap bisa dipakai.",
+   "id": "{platform} adalah alat bantu belajar faraidh dan perhitungan awal pembagian waris, dikelola {pengelola} (\"kami\"). \"Kamu\" adalah pengguna layanan.\n\nDengan masuk atau memakai layanan, kamu menyatakan sudah membaca dan menyetujui syarat ini dan kebijakan privasi. Bila tidak setuju, jangan masuk atau memakai layanan; kalkulator dan belajar tanpa akun tetap bisa dipakai.",
    "ar": null,
    "versiTerbit": 873
   },
