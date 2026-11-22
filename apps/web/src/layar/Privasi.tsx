@@ -1,6 +1,7 @@
 // Kebijakan privasi (UU PDP Pasal 21 ayat 1): data, tujuan, retensi, lokasi, prosesor, hak, kontak.
 // Teks lewat diksi (bagian bertanda [DIISI PEMILIK] menunggu keputusan pemilik); versi = VERSI_KEBIJAKAN_PRIVASI.
 
+import { TANGGAL_BERLAKU_KEBIJAKAN, VERSI_KEBIJAKAN_PRIVASI } from '../akun/persetujuan';
 import { t } from '../terjemah';
 
 
@@ -9,6 +10,7 @@ export function Privasi() {
     <main className="halaman tumpuk">
       <header className="tumpuk-rapat">
         <h1>{t('privasi.judul')}</h1>
+        <p className="catatan-info">{t('privasi.versi', { versi: VERSI_KEBIJAKAN_PRIVASI, tanggal: TANGGAL_BERLAKU_KEBIJAKAN })}</p>
       </header>
       {bagian().map(({ id, judul, isi }) => (
         <section key={id} className="tumpuk-rapat" aria-labelledby={`privasi-${id}`}>

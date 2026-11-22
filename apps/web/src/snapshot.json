@@ -28291,7 +28291,7 @@
   {
    "kunci": "privasi.data_isi",
    "halaman": "privasi",
-   "id": "Bila kamu masuk dengan Google, kami menyimpan:\n\nAkun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk Supabase. Kata sandi Google tidak pernah sampai ke kami.\n\nProfil: nama tampilan, pilihan ikut papan peringkat, pilihan menampilkan foto, dan zona waktu.\n\nBelajar dan latihan: pelajaran yang selesai, jawaban dan hasil latihan, setiap percobaan soal (jawaban yang kamu isi, hasilnya, dan waktu server saat kejadian), serta XP dan streak yang dihitung dari kegiatan itu.\n\nKasus hitungan: kasus yang kamu simpan ke riwayat, dan kasus yang kamu bagikan lewat tautan (isi kasus, tautan, dan daftar email penerima bila aksesnya dibatasi ke email tertentu).\n\nPreferensi dan persetujuan: pengaturan tampilanmu, serta pilihan persetujuanmu beserta versi kebijakan dan waktunya.\n\nNotifikasi: bila kamu menyalakannya, alamat langganan dan kunci enkripsi dari peramban atau perangkatmu.\n\nTanpa masuk, kasus, progres, dan pengaturanmu hanya tersimpan di perangkatmu dan tidak dikirim ke server kami.",
+   "id": "Bila kamu masuk dengan Google, kami menyimpan:\n\nAkun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk Supabase. Kata sandi Google tidak pernah sampai ke kami.\n\nProfil: nama tampilan, pilihan ikut papan peringkat, pilihan menampilkan foto, dan zona waktu.\n\nBelajar dan latihan: pelajaran yang selesai, jawaban dan hasil latihan, setiap percobaan soal (jawaban yang kamu isi, hasilnya, dan waktu server saat kejadian), serta XP dan streak yang dihitung dari kegiatan itu.\n\nKasus hitungan: kasus yang kamu simpan ke riwayat, dan kasus yang kamu bagikan lewat tautan (isi kasus, tautan, dan daftar email penerima bila aksesnya dibatasi ke email tertentu).\n\nPreferensi dan persetujuan: pengaturan tampilanmu, serta pilihan persetujuanmu beserta versi kebijakan dan waktunya.\n\nNotifikasi: bila kamu menyalakannya, alamat langganan dan kunci enkripsi dari peramban atau perangkatmu.\n\nDi perangkatmu: aplikasi menyimpan progres, kasus, pengaturan, dan salinan konten di penyimpanan lokal peramban supaya tetap jalan tanpa sambungan. Data ini tinggal di perangkatmu; menghapus data situs di peramban menghapusnya.\n\nTanpa masuk, kasus, progres, dan pengaturanmu hanya tersimpan di perangkatmu dan tidak dikirim ke server kami.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28361,7 +28361,7 @@
   {
    "kunci": "privasi.hak_isi",
    "halaman": "privasi",
-   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMengajukan keberatan atau pengaduan lewat kontak di bawah; kami menanggapinya secepatnya dan dalam batas waktu yang ditetapkan UU PDP.",
+   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMeminta pemrosesan dibatasi atau dihentikan, dan menyatakan keberatan atas pemrosesan. Kami tidak mengambil keputusan otomatis yang berdampak hukum bagimu; XP dan streak hanya dipakai untuk tampilan belajar dan papan peringkat.\n\nMengajukan pengaduan lewat kontak di bawah, dan menggugat serta menuntut ganti rugi atas pelanggaran pemrosesan datamu sesuai hukum.\n\nKami menanggapi permintaan hakmu dalam batas waktu yang ditetapkan UU PDP.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28718,7 +28718,7 @@
   {
    "kunci": "privasi.keamanan_isi",
    "halaman": "privasi",
-   "id": "Datamu hanya bisa dibaca dan diubah oleh akunmu sendiri; aturan akses basis data membatasinya per pengguna. Percobaan soal hanya ditulis oleh server setelah diperiksa, bukan oleh aplikasi di perangkatmu. Kunci rahasia layanan tidak ada di aplikasi, dan kunci langganan notifikasimu tidak ikut dalam berkas unduhan.\n\nTidak ada sistem yang sepenuhnya aman. Bila terjadi kebocoran data pribadi yang berisiko bagimu, kami akan memberitahumu dan lembaga berwenang sesuai UU PDP.",
+   "id": "Datamu hanya bisa dibaca dan diubah oleh akunmu sendiri; aturan akses basis data membatasinya per pengguna. Percobaan soal hanya ditulis oleh server setelah diperiksa, bukan oleh aplikasi di perangkatmu. Kunci rahasia layanan tidak ada di aplikasi, dan kunci langganan notifikasimu tidak ikut dalam berkas unduhan.\n\nTidak ada sistem yang sepenuhnya aman. Bila terjadi kegagalan pelindungan data pribadi, kami memberi tahu kamu dan lembaga berwenang secara tertulis dalam waktu yang ditetapkan UU PDP (paling lama 3x24 jam sejak kami mengetahuinya), disertai data yang terungkap, waktu dan penyebab kejadian, dan langkah penanganannya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28732,7 +28732,7 @@
   {
    "kunci": "privasi.anak_isi",
    "halaman": "privasi",
-   "id": "Kami tidak memeriksa usia pengguna. Bila kamu belum berusia 18 tahun, mintalah persetujuan orang tua atau wali sebelum masuk dan menyetujui kebijakan ini.\n\nOrang tua atau wali yang mendapati anaknya memakai akun tanpa izin dapat meminta penghapusan akun dan data lewat kontak di bawah.",
+   "id": "Kami tidak memeriksa usia pengguna. Dengan menyetujui kebijakan ini kamu menyatakan sudah berusia 18 tahun atau telah mendapat persetujuan orang tua atau wali untuk memakai layanan dan memproses datamu.\n\nOrang tua atau wali yang mendapati anaknya memakai akun tanpa izin dapat meminta penghapusan akun dan data lewat kontak di bawah.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28830,7 +28830,7 @@
   {
    "kunci": "syarat.beta_isi",
    "halaman": "syarat",
-   "id": "Layanan masih berstatus beta dan gratis sampai waktu yang ditentukan pengelola. Selama beta, fitur dan data dapat berubah, dan kami tidak menjamin layanan selalu tersedia tanpa gangguan, pemeliharaan, atau kesalahan.\n\nKami dapat menambah, mengubah, membatasi, atau menghentikan fitur. Informasi akan disampaikan sebelum skema berubah, termasuk saat fitur berbayar dibuka. Fitur berbayar ditawarkan sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku.",
+   "id": "Layanan masih berstatus beta dan gratis sampai waktu yang ditentukan pengelola. Selama beta, fitur dan data dapat berubah, dan kami tidak menjamin layanan selalu tersedia tanpa gangguan, pemeliharaan, atau kesalahan.\n\nKami dapat menambah, mengubah, membatasi, atau menghentikan fitur. Informasi akan disampaikan sebelum skema berubah, termasuk saat fitur berbayar dibuka. Fitur berbayar ditawarkan sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku.\n\nBila perubahan merugikanmu, kamu bisa berhenti memakai layanan, mengunduh datamu, dan menghapus akun.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28844,7 +28844,7 @@
   {
    "kunci": "syarat.tanggung_jawab_isi",
    "halaman": "syarat",
-   "id": "Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian tidak langsung, kehilangan data akibat gangguan di luar kendali kami, atau keputusan yang diambil berdasarkan hasil hitung. Ini tidak menghilangkan hakmu yang tidak bisa dikesampingkan menurut hukum, termasuk hak pelindungan data pribadi (UU No. 27 Tahun 2022) dan hak konsumen.",
+   "id": "Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian tidak langsung, kehilangan data akibat gangguan di luar kendali wajar kami, atau keputusan yang diambil berdasarkan hasil hitung tanpa pemeriksaan pihak berwenang. Ini tidak menghapus tanggung jawab kami atas kesalahan atau kelalaian berat kami sendiri, dan tidak mengurangi hakmu yang tidak bisa dikesampingkan menurut hukum, termasuk hak pelindungan data pribadi (UU No. 27 Tahun 2022) dan hak konsumen.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28915,6 +28915,48 @@
    "kunci": "syarat.umum_isi",
    "halaman": "syarat",
    "id": "Bila satu ketentuan tidak dapat diberlakukan, ketentuan lainnya tetap berlaku sejauh diizinkan hukum. Kami tidak melepaskan hak hanya karena tidak langsung menggunakannya. Syarat ini bersama kebijakan privasi mengatur pemakaian Platform Waris.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.versi",
+   "halaman": "privasi",
+   "id": "Versi {versi}, berlaku sejak {tanggal}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.versi",
+   "halaman": "syarat",
+   "id": "Versi {versi}, berlaku sejak {tanggal}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.tentang_judul",
+   "halaman": "syarat",
+   "id": "Tentang layanan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.tentang_isi",
+   "halaman": "syarat",
+   "id": "Platform Waris adalah alat bantu belajar faraidh dan perhitungan awal pembagian waris, dikelola ArifWaris Team (\"kami\"). \"Kamu\" adalah pengguna layanan.\n\nDengan masuk atau memakai layanan, kamu menyatakan sudah membaca dan menyetujui syarat ini dan kebijakan privasi. Bila tidak setuju, jangan masuk atau memakai layanan; kalkulator dan belajar tanpa akun tetap bisa dipakai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.penghentian_judul",
+   "halaman": "syarat",
+   "id": "Penghentian layanan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.penghentian_isi",
+   "halaman": "syarat",
+   "id": "Kamu bisa berhenti kapan saja dengan menghapus akun. Kami dapat menghentikan layanan atau sebagian fiturnya; bila itu terjadi, kami memberi pemberitahuan dalam jangka waktu yang wajar dan kesempatan mengunduh datamu sebelum layanan atau akunmu ditutup.\n\nSetelah ditutup, datamu dihapus sesuai kebijakan privasi, kecuali yang wajib kami simpan menurut hukum.",
    "ar": null,
    "versiTerbit": 873
   }
