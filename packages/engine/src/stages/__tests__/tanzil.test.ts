@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { case24, p } from '../../__tests__/fixtures/bab16.js';
-import { dengan, grafDA03, grafDA04, grafDA07, grafDA11 } from '../../__tests__/fixtures/dzawilArham.js';
+import { dengan, grafDA03, grafDA04, grafDA07, grafDA11, grafDA21, grafDA22 } from '../../__tests__/fixtures/dzawilArham.js';
 import { hitung } from '../../pipeline.js';
 import { KONFIGURASI_BAWAAN, type GrafKeluarga } from '../../types.js';
 import { turunkanPeran } from '../derivasi.js';
@@ -66,9 +66,27 @@ describe('saringJihah [R14-10]', () => {
   test('jihah sama: yang lebih dulu sampai menghijab; jejak mencatat penghijabnya', () => {
     const peran = peranDari(grafDA03);
     const rute = [...cariRuteTanzil(grafDA03, peran, 'X1'), ...cariRuteTanzil(grafDA03, peran, 'X2')];
-    const hasil = saringJihah(rute);
+    const hasil = saringJihah(rute, 'jihah');
     expect(hasil.lolos.map(r => r.idOrang)).toEqual(['X2']);
     expect(hasil.jejak).toContainEqual({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH', idOrang: 'X1', perantara: 'AP', oleh: ['X2'] });
+  });
+});
+
+describe('shinf [R14-10]', () => {
+  const shinfDari = (graf: typeof grafDA03, id: string) => cariRuteTanzil(graf, peranDari(graf), id).map(r => r.shinf);
+  test('anak pr dari anak pr: banat; kakek fasid: ajdad; khalah dan anak pr paman: ammatKhalat', () => {
+    expect(shinfDari(grafDA03, 'X1')).toEqual(['banat']);
+    expect(shinfDari(grafDA04, 'MGF')).toEqual(['ajdad']);
+    expect(shinfDari(case24.input.graf, 'KL1')).toEqual(['ammatKhalat']);
+  });
+  test('anak saudara seibu dan anak pr dari anak pr saudara kandung: satu shinf walau jihah beda (Raudhah 6/49)', () => {
+    expect(shinfDari(grafDA21, 'X1')).toEqual(['baniIkhwah']);
+    expect(shinfDari(grafDA21, 'X2')).toEqual(['baniIkhwah']);
+  });
+  test("anak 'ammah dan anak saudari: beda shinf, keduanya lolos saringan (Raudhah 6/57)", () => {
+    const rute = [...cariRuteTanzil(grafDA22, peranDari(grafDA22), 'X1'), ...cariRuteTanzil(grafDA22, peranDari(grafDA22), 'X2')];
+    expect(rute.map(r => r.shinf)).toEqual(['ammatKhalat', 'baniIkhwah']);
+    expect(saringJihah(rute, 'shinf').lolos).toHaveLength(2);
   });
 });
 

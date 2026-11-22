@@ -153,6 +153,8 @@ export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1' 
 
 /** [R14-10] Jihah ahl at-tanzil, ditentukan oleh ahli waris perantara (Lahim hlm. 192–193). */
 export type Jihah = 'bunuwwah' | 'ubuwwah' | 'umumah';
+/** [R14-10] Shinf dzawil arham menurut Raudhah 6/46–55: sabq ("yang lebih dulu sampai ke ahli waris") hanya berlaku dalam satu shinf. */
+export type Shinf = 'banat' | 'baniIkhwah' | 'ajdad' | 'ammatKhalat';
 
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   | { jenis: 'MANI'; idOrang: IdOrang; mani: string }

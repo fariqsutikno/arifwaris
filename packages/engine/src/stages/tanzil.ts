@@ -1,11 +1,12 @@
 // Tahap tanzil (bab 14.5, 14.7) — dzawil arham didudukkan pada posisi ahli waris perantaranya.
 //   Masuk : graf + peran hasil derivasi + id seorang dzawil arham.
 //   Putus : tiap lintasan orang itu ke pewaris dinaikkan derajat demi derajat sampai posisi ahli waris (perantara);
-//           dalam jihah yang sama, yang lebih dulu sampai menghijab yang lain.
+//           dalam satu shinf, yang lebih dulu sampai ke ahli waris menghijab yang lain (apa pun jihahnya) [R14-10].
+//           Antar-shinf tidak ada sabq: semua lolos, hajb antar-perantara diputus di tahap mas'alah perantara.
 //   Keluar: rute yang lolos → mas'alah perantara (stages/perantara.ts).
 
 import type { TidakDidukung } from './model.js';
-import type { GrafKeluarga, IdOrang, Jihah, KunciAhliWaris, LangkahJejak, PeranAhliWaris } from '../types.js';
+import type { GrafKeluarga, IdOrang, Jihah, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Shinf } from '../types.js';
 
 export interface RuteTanzil {
   idOrang: IdOrang;
@@ -13,7 +14,9 @@ export interface RuteTanzil {
   lintasan: IdOrang[];
   perantara: IdOrang;
   kunciPerantara: KunciAhliWaris;
+  /** Dasar sabq [HNB] dan kata kunci narasi jalur; [SYF] membandingkan per shinf [R14-10]. */
   jihah: Jihah;
+  shinf: Shinf;
   /** Banyaknya derajat dari orang ini ke perantara. */
   langkah: number;
 }
@@ -29,7 +32,7 @@ export function cariRuteTanzil(graf: GrafKeluarga, daftarPeran: Record<IdOrang, 
   // [R14-11] KB tidak mengatur kerabat yang sekaligus keturunan saudara leluhur pewaris (leluhur yang juga paman); jangan dibuang diam-diam.
   if (terlewat) return { status: 'TIDAK_DIDUKUNG', alasan: 'kekerabatan ganda lewat leluhur pewaris (pernikahan antarkerabat) belum didukung', refs: ['R14-11'] };
   const daftarRute = semua.flatMap(lintasan => {
-    const rute = naikKePerantara(daftarPeran, idOrang, lintasan);
+    const rute = naikKePerantara(graf, daftarPeran, idOrang, lintasan);
     return rute ? [rute] : [];
   });
   // Tiap lintasan memuat orang tua/anak/saudara pewaris (semuanya ahli waris), jadi mustahil kosong.
@@ -37,14 +40,26 @@ export function cariRuteTanzil(graf: GrafKeluarga, daftarPeran: Record<IdOrang, 
   return daftarRute;
 }
 
-/** [R14-7] [R14-10] Dalam jihah yang sama, rute dengan langkah paling sedikit menghijab yang lain; lintas jihah tidak. */
-export function saringJihah(daftarRute: RuteTanzil[]): { lolos: RuteTanzil[]; tersisih: RuteTanzil[]; jejak: LangkahJejak[] } {
-  const terdekat = new Map<Jihah, number>();
-  for (const rute of daftarRute) terdekat.set(rute.jihah, Math.min(terdekat.get(rute.jihah) ?? Infinity, rute.langkah));
-  const lolos = daftarRute.filter(rute => rute.langkah === terdekat.get(rute.jihah));
-  const tersisih = daftarRute.filter(rute => rute.langkah !== terdekat.get(rute.jihah));
+/** Satuan perbandingan sabq: [SYF] per shinf (Raudhah); [HNB] per jihah (Lahim hlm. 192–194), kerangka tiga jihah. */
+export type DasarSabq = 'shinf' | 'jihah';
+
+export const kelompokSabq = (rute: RuteTanzil, dasar: DasarSabq): string => rute[dasar];
+
+/**
+ * [R14-7] [R14-10] [SYF] Raudhah 6/46, 6/49, 6/51, 6/54: dalam satu shinf, rute dengan langkah paling sedikit
+ * ("man sabaqa ila warits") menghijab yang lain, tanpa melihat jihah perantaranya. Lintas shinf tidak ada sabq.
+ * [HNB] memakai jihah sebagai satuan yang sama (Lahim).
+ */
+export function saringJihah(daftarRute: RuteTanzil[], dasar: DasarSabq): { lolos: RuteTanzil[]; tersisih: RuteTanzil[]; jejak: LangkahJejak[] } {
+  const terdekat = new Map<string, number>();
+  for (const rute of daftarRute) {
+    const kelompok = kelompokSabq(rute, dasar);
+    terdekat.set(kelompok, Math.min(terdekat.get(kelompok) ?? Infinity, rute.langkah));
+  }
+  const lolos = daftarRute.filter(rute => rute.langkah === terdekat.get(kelompokSabq(rute, dasar)));
+  const tersisih = daftarRute.filter(rute => rute.langkah !== terdekat.get(kelompokSabq(rute, dasar)));
   const penghijab = (rute: RuteTanzil) => [...new Set(lolos
-    .filter(pemenang => pemenang.jihah === rute.jihah && pemenang.idOrang !== rute.idOrang).map(pemenang => pemenang.idOrang))];
+    .filter(pemenang => kelompokSabq(pemenang, dasar) === kelompokSabq(rute, dasar) && pemenang.idOrang !== rute.idOrang).map(pemenang => pemenang.idOrang))];
   const jejak: LangkahJejak[] = [
     ...lolos.map((rute): LangkahJejak => ({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TANZIL',
       idOrang: rute.idOrang, perantara: rute.perantara, kunciPerantara: rute.kunciPerantara, jihah: rute.jihah, langkah: rute.langkah })),
@@ -98,14 +113,29 @@ function kumpulkanLintasan(graf: GrafKeluarga, idOrang: IdOrang): { lintasan: Id
 // ─── Bantuan ──────────────────────────────────────────────────────────────────
 
 /** [R14-7] naik satu derajat demi satu derajat sampai bertemu ahli waris. */
-function naikKePerantara(daftarPeran: Record<IdOrang, PeranAhliWaris>, idOrang: IdOrang, lintasan: IdOrang[]): RuteTanzil | undefined {
+function naikKePerantara(graf: GrafKeluarga, daftarPeran: Record<IdOrang, PeranAhliWaris>, idOrang: IdOrang, lintasan: IdOrang[]): RuteTanzil | undefined {
   for (let i = lintasan.length - 2; i >= 1; i--) {
     const kunci = daftarPeran[lintasan[i]!]?.kunci;
     if (kunci === undefined || BUKAN_PERANTARA.has(kunci)) continue;
     const kunciPerantara = kunci as KunciAhliWaris;
-    return { idOrang, lintasan, perantara: lintasan[i]!, kunciPerantara, jihah: jihahDari(kunciPerantara), langkah: lintasan.length - 1 - i };
+    return { idOrang, lintasan, perantara: lintasan[i]!, kunciPerantara, jihah: jihahDari(kunciPerantara), shinf: shinfDari(graf, lintasan), langkah: lintasan.length - 1 - i };
   }
   return undefined;
+}
+
+/**
+ * [R14-10] Shinf menurut Raudhah 6/46–55, dibaca dari bentuk lintasan [pewaris, n1, ...]:
+ * n1 anak pewaris → awlad al-banat; naik murni lewat orang tua → ajdad/jaddat saqithun;
+ * n1 orang tua tapi lintasan melompat ke saudaranya → 'ammat/akhwal/khalat dan keturunannya (termasuk banat al-a'mam);
+ * n1 saudara pewaris → bani al-ikhwah dan awlad al-akhawat (satu shinf walau jihahnya ubuwwah dan umumah).
+ */
+function shinfDari(graf: GrafKeluarga, lintasan: IdOrang[]): Shinf {
+  const orangTuaDari = (id: IdOrang) => [graf.orang[id]?.idAyah, graf.orang[id]?.idIbu];
+  const pewaris = lintasan[0]!;
+  const pertama = lintasan[1]!;
+  if (orangTuaDari(pertama).includes(pewaris)) return 'banat';
+  if (lintasan.every((id, i) => i === 0 || orangTuaDari(lintasan[i - 1]!).includes(id))) return 'ajdad';
+  return orangTuaDari(pewaris).includes(pertama) ? 'ammatKhalat' : 'baniIkhwah';
 }
 
 const jihahDari = (kunci: KunciAhliWaris): Jihah =>

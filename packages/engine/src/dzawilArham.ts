@@ -14,7 +14,7 @@ import { turunkanPeran } from './stages/derivasi.js';
 import { maniDari, terapkanMawani } from './stages/mawani.js';
 import { bagikanNominal } from './stages/pembagian.js';
 import { RADD_TERCAKUP_TANZIL, bagiAntarPerantara, hitungPosisi, penerimaSatuKelompok, samakanPenerima } from './stages/perantara.js';
-import { cariRuteTanzil, saringJihah, type RuteTanzil } from './stages/tanzil.js';
+import { cariRuteTanzil, kelompokSabq, saringJihah, type DasarSabq, type RuteTanzil } from './stages/tanzil.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import type {
   HasilEngine, IdOrang, InputEngine, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Pertanyaan, Ruleset, StatusOrang, TabelMasalah, TanzilArham,
@@ -92,7 +92,9 @@ function bagiDzawilArham(input: InputEngine): HasilArham | BukanOk {
     if ('status' in rute) return rute;
     semuaRute.push(...rute);
   }
-  const { lolos, jejak: jejakTanzil } = saringJihah(semuaRute);
+  // [R14-10] [SYF] sabq per shinf (Raudhah); [HNB] per jihah (Lahim). Ruleset lain tidak sampai ke sini (K14-1/K14-2).
+  const dasarSabq: DasarSabq = input.ruleset === 'hanbali' ? 'jihah' : 'shinf';
+  const { lolos, jejak: jejakTanzil } = saringJihah(semuaRute, dasarSabq);
 
   const perantara = bagiAntarPerantara(input, lolos);
   if ('status' in perantara) return perantara;
@@ -118,7 +120,7 @@ function bagiDzawilArham(input: InputEngine): HasilArham | BukanOk {
       didudukkan: semuaRute.map(rute => ({ idOrang: rute.idOrang, perantara: rute.perantara, sebagai: rute.kunciPerantara, lolos: lolos.includes(rute) })),
       tabelPerantara: perantara.tabel,
     },
-    statusArham: statusDzawilArham(daftarPeran, saring.statusMani, semuaRute, lolos, saham, perantara.mahjub, mahjubTurun),
+    statusArham: statusDzawilArham(daftarPeran, saring.statusMani, semuaRute, lolos, saham, perantara.mahjub, mahjubTurun, dasarSabq),
     jejak: [...saring.jejak, ...jejakTanzil, perantara.jejak, ...jejakTurun, ...jejakDuaJalur(lolos)],
   };
 }
@@ -214,7 +216,7 @@ function jejakDuaJalur(lolos: RuteTanzil[]): LangkahJejak[] {
 function statusDzawilArham(
   daftarPeran: Record<IdOrang, PeranAhliWaris>, statusMani: Record<IdOrang, StatusOrang>,
   semuaRute: RuteTanzil[], lolos: RuteTanzil[], saham: Saham, mahjubPerantara: Record<IdOrang, IdOrang[]>,
-  mahjubTurun: Record<IdOrang, StatusMahjub>,
+  mahjubTurun: Record<IdOrang, StatusMahjub>, dasarSabq: DasarSabq,
 ): Record<IdOrang, StatusOrang> {
   const status: Record<IdOrang, StatusOrang> = { ...statusMani };
   for (const idOrang of new Set(semuaRute.map(rute => rute.idOrang))) {
@@ -223,8 +225,8 @@ function statusDzawilArham(
     const ruteLolos = lolos.filter(rute => rute.idOrang === idOrang);
     const perantaraTerhijab = ruteLolos.flatMap(rute => mahjubPerantara[rute.perantara] ?? []);
     status[idOrang] = ruteLolos.length === 0
-      // [R14-7] kalah cepat dalam jihah yang sama.
-      ? { jenis: 'mahjub', peran, oleh: [...new Set(lolos.filter(rute => semuaRute.some(r => r.idOrang === idOrang && r.jihah === rute.jihah)).map(rute => rute.idOrang))], rujukanAturan: 'R14-7' }
+      // [R14-7] kalah cepat dalam shinf yang sama.
+      ? { jenis: 'mahjub', peran, oleh: [...new Set(lolos.filter(rute => semuaRute.some(r => r.idOrang === idOrang && kelompokSabq(r, dasarSabq) === kelompokSabq(rute, dasarSabq))).map(rute => rute.idOrang))], rujukanAturan: 'R14-7' }
       // [R14-10] perantaranya terhijab.
       : perantaraTerhijab.length > 0 ? { jenis: 'mahjub', peran, oleh: perantaraTerhijab, rujukanAturan: 'R14-10' }
       // Terhijab di dalam cabang perantaranya.

@@ -314,6 +314,38 @@ export const grafDA20: GrafKeluarga = {
   pernikahan: [],
 };
 
+// [R14-10] Raudhah 6/49: satu shinf (bani al-ikhwah), jihah beda → yang lebih dulu sampai ke ahli waris menang.
+// X1 = anak pr saudara seibu (1 langkah ke saudara seibu); X2 = anak pr dari anak pr saudara kandung (2 langkah ke saudara kandung).
+export const grafDA21: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    FX: p('FX', 'L', penghubung),
+    SE: p('SE', 'L', { ...penghubung, idAyah: 'FX', idIbu: 'M1' }),
+    X1: p('X1', 'P', { idAyah: 'SE' }),
+    SK: p('SK', 'L', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }),
+    SKP: p('SKP', 'P', { ...penghubung, idAyah: 'SK' }),
+    X2: p('X2', 'P', { idIbu: 'SKP' }),
+  },
+  pernikahan: [],
+};
+
+// [R14-10] Raudhah 6/57: beda shinf → tanzil lalu hajb antar-perantara tanpa syarat jihah.
+// X1 = anak pr 'ammah kandung (→ ayah); X2 = anak pr saudari kandung (→ saudari, terhijab ayah); keduanya jihah ubuwwah.
+export const grafDA22: GrafKeluarga = {
+  idPewaris: 'D',
+  orang: {
+    ...keluargaInti,
+    F1: p('F1', 'L', { ...penghubung, idAyah: 'PGF', idIbu: 'PGM' }),
+    PGF: p('PGF', 'L', penghubung), PGM: p('PGM', 'P', penghubung),
+    AM: p('AM', 'P', { ...penghubung, idAyah: 'PGF', idIbu: 'PGM' }),
+    X1: p('X1', 'P', { idIbu: 'AM' }),
+    SiK: p('SiK', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }),
+    X2: p('X2', 'P', { idIbu: 'SiK' }),
+  },
+  pernikahan: [],
+};
+
 export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
   { id: 'DA-01', sumber: '16 #24, 14.6', menguji: "khalah (→ ibu) & 'ammah (→ ayah)", input: case24.input,
     harapan: { status: 'OK', saham: { KL1: 1n, AM1: 2n }, penyebut: 3n, jenisJejak: ['DZAWIL_ARHAM_TANZIL', 'DZAWIL_ARHAM_MASALAH_PERANTARA'] } },
@@ -354,6 +386,10 @@ export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
     harapan: { status: 'OK', saham: { SD: 1n }, penyebut: 1n, dikecualikan: ['DS'] } },
   { id: 'DA-20', sumber: '14.8 (R14-11)', menguji: 'dua jalur satu jihah: jalur terjauh gugur, bukan terhijab', input: dengan(grafDA20),
     harapan: { status: 'OK', saham: { Z: 1n }, penyebut: 1n } },
+  { id: 'DA-21', sumber: '14.7 (R14-10), Raudhah 6/49', menguji: 'satu shinf beda jihah: jarak ke ahli waris menentukan', input: dengan(grafDA21),
+    harapan: { status: 'OK', saham: { X1: 1n }, penyebut: 1n, dikecualikan: ['X2'] } },
+  { id: 'DA-22', sumber: '14.7 (R14-10), Raudhah 6/57', menguji: "beda shinf sejihah: ayah menghijab saudari → anak 'ammah mengambil semua", input: dengan(grafDA22),
+    harapan: { status: 'OK', saham: { X1: 1n }, penyebut: 1n, dikecualikan: ['X2'] } },
 ];
 
 /** Kasus yang sama lintas madzhab (K14-1..3). */
@@ -379,6 +415,13 @@ export const KASUS_DZAWIL_ARHAM_MADZHAB: Array<{ id: string; graf: GrafKeluarga;
   } },
   { id: 'K14-3 cabang seibu rekursif', graf: grafDA18, harapan: {
     hanbali: { status: 'OK', saham: { XL: 1n, XP: 1n }, penyebut: 2n, jenisJejak: ['KHILAF_MADZHAB'] },
+  } },
+  // [R14-10] [HNB] Lahim: sabq per jihah. DA-21 beda jihah → tiap perantara mengambil bagiannya; DA-22 sama-sama ubuwwah → anak saudari lebih dulu.
+  { id: 'R14-10 satu shinf beda jihah', graf: grafDA21, harapan: {
+    hanbali: { status: 'OK', saham: { X1: 1n, X2: 5n }, penyebut: 6n },
+  } },
+  { id: 'R14-10 beda shinf sejihah', graf: grafDA22, harapan: {
+    hanbali: { status: 'OK', saham: { X2: 1n }, penyebut: 1n, dikecualikan: ['X1'] },
   } },
   { id: 'K14-1 maliki baitul mal', graf: grafDA11, konfigurasi: BAITUL_MAL, harapan: {
     maliki: { status: 'TIDAK_DIDUKUNG', refs: ['K14-1'] },
