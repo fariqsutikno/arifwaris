@@ -151,7 +151,7 @@ export type AlasanFardh =
 
 export type KodeKhilafOverlay = 'K03-1' | 'K04-1' | 'K04-2' | 'K05-1' | 'K07-1' | 'K14-3';
 
-/** [R14-10] Jihah ahl at-tanzil, ditentukan oleh ahli waris perantara (Lahim hlm. 192–193). */
+/** [K14-4] [HNB] Jihah ahl at-tanzil (Lahim hlm. 192–193; [SYF] tidak memakainya), ditentukan oleh ahli waris perantara. */
 export type Jihah = 'bunuwwah' | 'ubuwwah' | 'umumah';
 
 export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
