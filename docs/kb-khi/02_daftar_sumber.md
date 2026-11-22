@@ -57,7 +57,11 @@ Bentuk: `jilid/halaman cetak · shamela:<book_id>/<page_id>`; dapat dibuka denga
 | F01 | an-Nawawi, *Raudhah ath-Thalibin* | F ([SYF] primer) | 499 | syirkah: 4/275 (p.1669), 4/279 (p.1673), 4/280 (p.1674); hibah: 5/364 (p.2202), 5/375 (p.2213); tabarru' sakit maut: 3/429 (p.1236) |
 | F02 | Ibnu al-Mulaqqin, *'Ujalat al-Muhtaj ila Taujih al-Minhaj* (syarah Minhaj an-Nawawi) | F ([SYF] sekunder-klasik) | 20561 | taswiyah hibah antar anak, sunnah/makruh: 2/987 (p.982), 2/988 (p.983) |
 | F03 | an-Namlah, *Taisir Masa'il al-Fiqh* (syarah ar-Raudh al-Murbi', [HNB]) | F ([HNB] sekunder) | 1319 | taswiyah wajib: 4/18 (p.2063) |
-| F04 | Fadhl Murad, *al-Qawa'id al-Umm li al-Fiqh*, memuat Keputusan 3/1444 H Lajnah al-Ijtihad wa al-Fatwa, Ittihad 'Alami li 'Ulama al-Muslimin (2 Mei 1444 H / 26 Nov 2022), tentang harta campuran suami-istri | FM | 30084 | kadd wa si'ayah, harta istri milik sendiri: hlm. 581–582 (p.569–570) |
+| F04 | Fadhl Murad, *al-Qawa'id al-Umm li al-Fiqh*, memuat Keputusan 3/1444 H Lajnah al-Ijtihad wa al-Fatwa, Ittihad 'Alami li 'Ulama al-Muslimin (2 Mei 1444 H / 26 Nov 2022), tentang harta campuran suami-istri | FM | 30084 | kadd wa si'ayah, harta istri milik sendiri: hlm. 581–583 (p.569–571) |
+| F06 | as-Sarakhsi, *al-Mabsuth* ([HNF] primer) | F | 5423 | syirkah: 11/152 (p.2377); taswiyah hibah: 12/56 (p.2536) |
+| F07 | Ibnu Qudamah, *al-Mughni* ([HNB] primer) | F | 8463 | syirkah abdan jaiz: 5/4 (p.1887); taswiyah hibah: 6/54 (p.2376) |
+| F08 | Ibnu Abdil Barr, *al-Kafi fi Fiqh Ahl al-Madinah* ([MLK]) | F | 7367 | syirkah abdan: 2/784 (p.797) |
+| F09 | al-Qarafi, *adz-Dzakhirah* ([MLK]) | F | 1717 | taswiyah hibah makruh: 6/289 (p.2679) |
 | F05 | Ibnu Hazm, *al-Muhalla* | F (sekunder bagi madzhab lain) | 767 | pendapat Abu Hanifah tentang syirkah abdan: 6/413 (p.2534) |
 
 ## 4. Peta klaim → sumber (untuk `00_temuan_awal.md` bagian 3 dan 6)

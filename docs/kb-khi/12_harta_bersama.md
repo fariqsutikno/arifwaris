@@ -43,7 +43,7 @@ Hukumonline [H10, H06]: harta bersama bubar demi hukum karena kematian; bila ist
 | Aspek | Fikih | KHI + praktik PA | Tingkat |
 |---|---|---|---|
 | Harta suami-istri pasca nikah | [SYF]: tidak ada harta bersama otomatis; **syirkah 'inan** sah (modal bercampur), **syirkah abdan dan wujuh batal** [F01 Raudhah 4/275, 4/279, 4/280]. Keputusan lembaga fatwa modern (IUMS 2022): harta suami-istri terpisah, akad nikah bukan sebab bercampur, pembagian harta campuran menurut kesepakatan atau bukti sumbangan [F04 hlm. 581–582] | harta yang diperoleh selama perkawinan = harta bersama, separuh milik pasangan hidup (KHI-96-1) | **beda** (padanan KB: kosong; riset draf `01_riset_fikih_pembanding.md` A dan D2) |
-| Dasar madzhab lain | belum ada rujukan klasik di tangan (F05 hanya menukil bahwa Abu Hanifah membolehkan abdan) | — | belum tersedia |
+| Dasar madzhab lain | syirkah abdan sah di [HNF] (F06, F07 nukilan), [HNB] (F07 5/4), [MLK] bersyarat (F08 2/784); tetap perlu akad/kesepakatan, tidak otomatis karena nikah (draf `03_draf_kb_harta_pasangan_dan_hibah.md` A.1) | — | draf KB siap, menunggu persetujuan |
 | Pengaruh pada hasil faraidh | tirkah = harta milik pewaris saja; bagian pasangan atas harta campuran dipisah dulu menurut kepemilikan/kesepakatan | tirkah = bagian pewaris dari harta bersama + bawaan (KHI-171-e) | **inti peringatan** |
 | Poligami | tidak ada konsep harta bersama otomatis | KHI-94 terpisah per perkawinan; Pedoman: tumpang tindih untuk istri terdahulu | beda; hanya informasi |
 | Non-muslim (pasangan) | tidak mewarisi (R02-4); bagian dari harta campuran mengikuti kepemilikan/kesepakatan | mendapat bagian harta bersama (PA-Y1) | beda |
