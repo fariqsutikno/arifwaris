@@ -6,7 +6,7 @@ Versi 4, berlaku sejak 22 November 2026
 
 Bila kamu masuk dengan Google, kami menyimpan:
 
-Akun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk Supabase. Kata sandi Google tidak pernah sampai ke kami.
+Akun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk di Supabase. Kata sandi Google tidak pernah sampai ke kami.
 
 Profil: nama tampilan, pilihan ikut papan peringkat, pilihan menampilkan foto, dan zona waktu.
 
@@ -70,11 +70,11 @@ Salinan cadangan: selama masa beta kami tidak menjamin adanya cadangan berkala. 
 
 ## Di mana data disimpan
 
-Data akun dan belajarmu disimpan di basis data Supabase. Servernya berada di luar Indonesia; saat ini di wilayah Mumbai, India. Selama masa beta lokasi atau penyedia server dapat berpindah (misalnya ke server sendiri); bila itu terjadi, kebijakan ini diperbarui dan kamu diminta menyetujuinya lagi.
+Data akun dan belajarmu disimpan di basis data yang dikelola Supabase, berlokasi di Mumbai, India. Lokasi atau penyedia server dapat berpindah selama masa beta; bila itu terjadi, kebijakan ini diperbarui dan kamu diminta menyetujuinya lagi.
 
 Aplikasi web disajikan lewat Vercel, yang dapat mencatat alamat IP dan data teknis permintaan di log operasionalnya.
 
-Karena data dipindahkan ke luar Indonesia, kami memastikan penyedia memakai pengamanan yang setara sebagaimana disyaratkan UU PDP, dan kami tetap bertanggung jawab atas pemrosesannya.
+Bila server berada di luar Indonesia, data kamu berpindah lintas negara. Kami memastikan penyedia memakai pengamanan yang setara sebagaimana disyaratkan UU PDP, dan kami tetap bertanggung jawab atas pemrosesannya.
 
 ## Pihak yang memproses datamu
 

@@ -27,14 +27,14 @@ Kamu setuju tidak:
 Kami dapat menyetel ulang XP atau streak yang diperoleh dengan cara di atas, mengganti nama tampilan yang melanggar, atau menangguhkan akun. Bila akun ditangguhkan, kamu tetap bisa meminta unduhan data dan penghapusan akun lewat kontak.
 
 ## 5. Konten kami dan konten kamu
-- Materi, soal, penjelasan, dan tampilan milik pengelola atau pemberi lisensinya. Kamu boleh memakainya untuk belajar pribadi. Menyalin massal atau menjual ulang memerlukan izin. Seluruh hak cipta dilindungi..
+- Materi, soal, penjelasan, dan tampilan milik pengelola atau pemberi lisensinya. Kamu boleh memakainya untuk belajar pribadi. Menyalin massal atau menjual ulang memerlukan izin. Seluruh hak cipta dilindungi.
 - Kasus yang kamu simpan atau bagikan tetap milikmu. Dengan membagikan lewat tautan, kamu mengizinkan layanan menampilkannya kepada orang yang punya akses sesuai pilihanmu (tautan, atau email tertentu).
 
 ## 6. Papan peringkat, notifikasi, dan fitur opsional
 Ikut papan peringkat dan notifikasi bersifat pilihan dan bisa kamu matikan kapan saja di Profil (lihat Kebijakan Privasi).
 
 ## 7. Ketersediaan dan perubahan layanan
-Layanan diberikan apa adanya. Kami berusaha menjaganya tetap tersedia dan benar, tetapi dapat ada gangguan, pemeliharaan, atau perubahan fitur. Fitur dapat ditambah, diubah, atau dihentikan. Bila ada perubahan besar yang memengaruhi datamu, kami memberi tahu lebih dulu. Layanan masih berstatus beta dan gratis; fitur dan data dapat berubah, dan kami tidak menjamin ketersediaan terus-menerus. Fitur berbayar akan ditawarkan kemudian sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku..
+Layanan diberikan apa adanya. Kami berusaha menjaganya tetap tersedia dan benar, tetapi dapat ada gangguan, pemeliharaan, atau perubahan fitur. Fitur dapat ditambah, diubah, atau dihentikan. Bila ada perubahan besar yang memengaruhi datamu, kami memberi tahu lebih dulu. Layanan masih berstatus beta dan gratis; fitur dan data dapat berubah, dan kami tidak menjamin ketersediaan terus-menerus. Fitur berbayar akan ditawarkan kemudian sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku.
 
 ## 8. Batas tanggung jawab
 Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian tidak langsung, kehilangan data akibat gangguan di luar kendali kami, atau akibat keputusan berdasarkan hasil hitung. Ini tidak menghilangkan hak yang tidak bisa dikesampingkan menurut hukum, termasuk hak pelindungan data pribadi (UU No. 27 Tahun 2022) dan hak konsumen.
@@ -43,10 +43,10 @@ Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian tidak langsun
 Bila syarat berubah bermakna, kamu diminta menyetujui versi baru sebelum melanjutkan (mekanisme versi seperti kebijakan privasi). Menolak berarti berhenti memakai akun; kamu tetap bisa menghapus akun dan datamu.
 
 ## 10. Hukum dan sengketa
-Syarat ini tunduk pada hukum Republik Indonesia. Sengketa diupayakan selesai secara musyawarah lebih dulu. Bila musyawarah gagal, sengketa diselesaikan di pengadilan negeri yang berwenang menurut hukum Indonesia..
+Syarat ini tunduk pada hukum Republik Indonesia. Sengketa diupayakan selesai secara musyawarah lebih dulu. Bila musyawarah gagal, sengketa diselesaikan di pengadilan negeri yang berwenang menurut hukum Indonesia.
 
 ## 11. Kontak
-ArifWaris Team, cs@arifwaris.com (sama dengan kontak di Kebijakan Privasi)..
+ArifWaris Team, cs@arifwaris.com (sama dengan kontak di Kebijakan Privasi).
 
 ## Catatan untuk peninjau
 - Klausul kuota dan Ujian di bagian 4 dicocokkan ke `supabase/migrations/20261121000002_catat_percobaan.sql`; ubah teks bila angka berubah.

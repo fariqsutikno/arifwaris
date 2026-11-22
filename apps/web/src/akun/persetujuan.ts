@@ -17,6 +17,10 @@ export const SISIPAN_KEBIJAKAN = {
   platform: NAMA_APLIKASI,
   pengelola: import.meta.env.VITE_PENGELOLA || 'ArifWaris Team',
   email: import.meta.env.VITE_EMAIL_KONTAK || 'cs@arifwaris.com',
+  // Ganti saat penyedia/lokasi pindah (mis. ke VPS) lalu naikkan VERSI_KEBIJAKAN_PRIVASI.
+  penyedia_data: import.meta.env.VITE_PENYEDIA_DATA || 'Supabase',
+  lokasi_data: import.meta.env.VITE_LOKASI_DATA || 'Mumbai, India',
+  penyedia_web: import.meta.env.VITE_PENYEDIA_WEB || 'Vercel',
   versi: VERSI_KEBIJAKAN_PRIVASI,
   tanggal: TANGGAL_BERLAKU_KEBIJAKAN,
 };
