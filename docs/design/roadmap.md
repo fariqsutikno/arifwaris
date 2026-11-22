@@ -28,7 +28,7 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | G3 data server + PDP + soal buta | **kode selesai, di `main`** (PR #45, #49, #50); belum di-deploy ke produksi, lihat "Langkah deploy G3" |
 | Jalur 7: verifikasi madzhab [HNB]/[HNF]/[MLK] | **sebagian besar jalan**: matriks KB 18 punya 106 baris, hanya 4 baris masih bertanda (s) (K01-2, K02-4, K13a-4, R01-1) dan 1 sel "?" (K04-3); 4 butir masih Terbuka di `docs/rencana-verifikasi.md` (R13-14 laqith, K05-2 [MLK], K13-1 [HNF], dzawil arham dua jalur [HNF]) |
 | Jalur 7b: harta sudah dibagi sebagian | **belum mulai**: KB bab 11 baru memuat qismah dan takharuj (R11-2 shulh); belum ada bagian KB, kode engine, maupun UI. Hanya ada bayangan `mockup-sudah-dibagi.html`. Langkah pertama: riset dan verifikasi rujukan ke bab 11 |
-| Jalur 8: KHI | **belum mulai**: `docs/kb-khi/` belum ada; baru ada aturan pemisahan (ruleset sendiri, ditandai "hukum positif, bukan fikih") |
+| Jalur 8: KHI | **rencana + sumber siap (2026-11-23)**: `docs/superpowers/plans/2026-11-23-khi-jalur-8.md`; teks KHI terverifikasi dan temuan awal di `docs/kb-khi/`. Keputusan: KHI **sebelum G4**, pembanding = madzhab pilihan pengguna, callout "beda dari fikih". Belum ada kode |
 
 ## Alur ke depan
 
@@ -52,7 +52,7 @@ G3  data server + PDP dasar + soal buta  13–20 hari
                               `spec-verifikasi-madzhab-dan-konten.md` (A: 10 butir madzhab, B: 6 butir konten, aturan delegasi agen)
       7b harta sebagian       riset dan verifikasi bab 11 dulu → KB → engine → UI isian
       8  KHI                  `docs/kb-khi/`, ruleset terpisah
-      posisi G4 terhadap 7b dan KHI belum ditegaskan (G4 sudah setelah 7 menurut sisipan 2026-11-19)
+      KHI (8) dikerjakan **sebelum G4** (keputusan 2026-11-23, supaya materi lebih kaya); posisi 7b terhadap G4 belum ditegaskan
 
 G4  lengkapi materi & latihan soal       kode 6–9 hari + konten tim keilmuan
     skema soal penalaran → soal bangkitan + katalog → soal kurasi
