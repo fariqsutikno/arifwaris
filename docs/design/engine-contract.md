@@ -12,7 +12,7 @@ Semua rujukan bab/kode `[Rxx-y]` mengacu ke `docs/kb/`.
 | 1 | Tirkah, mawani', ahli waris, hajb, furudh, ashabah, 'Umariyyatain, Musyarrakah, jadd wal ikhwah, ashl, 'aul/radd, tashih, nominal, takharuj | 01–11 |
 | 2 | Munasakhat; haml, mafqud, khuntsa, gharqa, murtad, li'an/zina, laqith (status `MAUQUF`) | 12, 13 |
 | 3 | Dzawil arham (tanzil) | 14 |
-| 4 | Ruleset KHI (terpisah, ditandai hukum positif) | `docs/kb-khi/` |
+| 4 | Panel informasi KHI (bukan hitungan; ditandai hukum positif) | `docs/kb-khi/` |
 
 Edukasi: (a) pembahasan per kasus dari trace + dalil; (b) modul belajar per bab + glosarium + kuis
 (kunci jawaban dihitung oleh engine).

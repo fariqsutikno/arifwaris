@@ -33,11 +33,13 @@ Djafar [S09 hlm. 15–16, 21]: wasiat wajibah di KHI dipakai untuk anak/orang tu
 
 Jalan keluar fikih yang ada di KB dan dapat dipakai callout: **wasiat sukarela ≤ 1/3** untuk non-ahli waris [R01-4, R01-5]; **perdamaian/tahawub antar ahli waris** [R11-2, R11-3; KHI-183 sejalan]; **hibah semasa sehat yang diserahterimakan** (F01 Raudhah 5/375; hibah sakit-maut dihitung dari sepertiga, F01 3/429). Catatan: klaim "boleh berwasiat kepada non-muslim" **belum boleh dimuat** di callout sampai bab 01 menambahkannya dengan rujukan.
 
-## 11.5 Titik keputusan (belum boleh jadi default)
-- **T-W1. Basis 1/3.** KHI-209-1 ("harta wasiat anak angkatnya") vs KHI-209-2 dan Pedoman ("harta warisan"). Usul: pakai "harta warisan bersih" (tirkah setelah tajhiz dan utang) sampai ada rujukan lain; tandai `perlu verifikasi lanjut`.
-- **T-W2. Wasiat biasa + wajibah.** Apakah total keduanya ≤ 1/3, atau masing-masing? Sumber tidak menentukan. Usul: total ≤ 1/3 dan wajibah hanya bila **tidak ada** wasiat ("yang tidak menerima wasiat", KHI-209).
-- **T-W3. Siapa yang berhak.** Daftar penerima praktik (non-muslim, tiri, keponakan pr, nikah tak tercatat) membutuhkan input status hubungan dan agama → engine mengembalikan `PERLU_INPUT`, tidak menebak.
-- **T-W4. Sifat ex officio.** Wasiat wajibah ditetapkan hakim; mode KHI menampilkan sebagai **perkiraan** ("hakim dapat memberikan"), bukan hak pasti.
+## 11.5 Keputusan penyajian (2026-11-23: KHI hanya informasi, tidak dihitung)
+- **Basis 1/3 (dulu T-W1):** "harta warisan" (KHI-209-2, Pasal 195, PA-PED-165-h); ketidakselarasan "harta wasiat" di KHI-209-1 dicatat sebagai bunyi asli.
+- **Wasiat biasa + wajibah (T-W2):** wajibah hanya bila pewaris tidak berwasiat ("yang tidak menerima wasiat"); total wasiat tidak lewat 1/3 (KHI-195-2, KHI-201).
+- **Siapa yang berhak (T-W3):** tidak ada input atau tebakan; panel hanya menyebut kelompok yang dikenal praktik PA.
+- **Ex officio (T-W4):** ditulis "hakim dapat memberikan"; bukan hak pasti.
+- **Perluasan praktik:** "bervariasi menurut putusan hakim; rumus Pedoman: paling banyak 1/3 dan tidak melebihi bagian ahli waris sederajat; ada putusan yang menyamakan dengan anak muslim (51 K/Ag/1999)".
+- Klaim "boleh berwasiat kepada non-muslim" tidak dimuat sampai bab 01 KB menambahkannya.
 
 ## 11.6 Rancangan callout (data, bukan kalimat)
 `PerbedaanKhi{butir: 'wasiatWajibah', pasal: 209, orang: [penerima], menurutKhi: {≤ 1/3, dasar}, menurutFikih: 0 untuk penerima (non-ahli waris), jalanKeluar: [wasiatSukarela≤1/3, perdamaian, hibahSerahTerima], padananFikih: 'sebagian'}`. Peringatan wajib: "ini ketentuan hukum positif Indonesia; menurut fikih tidak ada wasiat wajibah selain yang diwasiatkan pewaris".

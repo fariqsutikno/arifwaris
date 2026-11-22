@@ -14,7 +14,7 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 - Setiap cabang kode fikih WAJIB diberi anotasi rujukan, contoh: `// [R09-7] radd, bab 9.4`.
 - Aturan yang tidak ada di KB, atau berstatus `[perlu verifikasi lanjut]` (bab 17.4), JANGAN dikarang.
   Kembalikan `TIDAK_DIDUKUNG` / tandai `blocked` dan beri tahu pengguna.
-- KHI = fase 4, ruleset terpisah (`docs/kb-khi/`), selalu ditandai "hukum positif, bukan fikih".
+- KHI = fase 4, **panel informasi pembanding** ("kalau menurut KHI", keputusan pemilik 2026-11-23: bukan kalkulator, tanpa hasil hitung KHI), sumber `docs/kb-khi/`, selalu ditandai "hukum positif, bukan fikih".
   Bukan overlay madzhab; jangan campur ke ruleset fikih.
 
 ## Prinsip engine (tidak boleh dilanggar)
