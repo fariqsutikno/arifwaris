@@ -6,6 +6,8 @@
 > Teks hasil ekstraksi: `markdown-khi/` di folder yang sama; gabungan semuanya: `markdown-khi/kumpulan-sumber-khi.md`. Teks KHI terverifikasi (Pasal 85–97, 170–214): `docs/kb-khi/00_teks_khi_terverifikasi.md`.
 > Tingkat: **P** = teks hukum positif, **PA** = praktik peradilan agama (pedoman/SEMA/yurisprudensi), **S** = sekunder (makalah ilmiah), **T** = tersier (ulasan populer), **F** = fikih klasik, **FM** = fikih modern.
 
+> **Catatan halaman Pedoman (S05) dan makalah Djafar (S09):** nomor halaman diambil dari angka yang tampak pada hasil OCR/teks dan bisa meleset ±1. Penanda utama adalah **butir** (asas a–j, butir 1–10, bagian A–C) dan nomor baris berkas.
+
 ## 1. Hukum positif dan praktik PA
 
 | Kode | Sumber | Tingkat | Berkas | sha256 | Cara melacak |
