@@ -392,6 +392,19 @@ export const grafSabqTuhfah6394: GrafKeluarga = {
   },
 };
 
+// Nihayat al-Mathlab 9/259: bint bint bint + tiga bint ukht mufarriqah → «الْمَالُ بَيْنَ بَنَاتِ الْأُخْوَاتِ عَلَى خَمْسَةٍ؛ فَإِنَّهُنَّ أَسْبَقُ».
+export const grafSabqNihayat9259: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaInti,
+    FX: p('FX', 'L', penghubung), MX: p('MX', 'P', penghubung),
+    AP: p('AP', 'P', { ...penghubung, idAyah: 'D' }), APP: p('APP', 'P', { ...penghubung, idIbu: 'AP' }), X: p('X', 'P', { idIbu: 'APP' }),
+    UK: p('UK', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }), BK: p('BK', 'P', { idIbu: 'UK' }),
+    UB: p('UB', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'MX' }), BB: p('BB', 'P', { idIbu: 'UB' }),
+    UI: p('UI', 'P', { ...penghubung, idAyah: 'FX', idIbu: 'M1' }), BI: p('BI', 'P', { idIbu: 'UI' }),
+  },
+};
+
 export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
   { id: 'DA-01', sumber: '16 #24, 14.6', menguji: "khalah (→ ibu) & 'ammah (→ ayah)", input: case24.input,
     harapan: { status: 'OK', saham: { KL1: 1n, AM1: 2n }, penyebut: 3n, jenisJejak: ['DZAWIL_ARHAM_TANZIL', 'DZAWIL_ARHAM_MASALAH_PERANTARA'] } },
@@ -401,7 +414,7 @@ export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
     harapan: { status: 'OK', saham: { X2: 1n }, penyebut: 1n, dikecualikan: ['X1'], jenisJejak: ['DZAWIL_ARHAM_TERHIJAB_JIHAH'] } },
   { id: 'DA-04', sumber: '14.6 #4', menguji: 'empat perantara berfardh', input: dengan(grafDA04),
     harapan: { status: 'OK', saham: { MGF: 1n, B1: 1n, B2: 3n, B3: 1n }, penyebut: 6n } },
-  { id: 'DA-05', sumber: '14.7 [SYF]', menguji: 'sabq global: X2 (1 langkah) menghijab X1 (2 langkah) walau beda jihah [R14-10]', input: dengan(grafDA05),
+  { id: 'DA-05', sumber: '14.7 [SYF], Nihayat al-Mathlab 9/259', menguji: 'sabq global: X2 (1 langkah) menghijab X1 (2 langkah) walau beda jihah [R14-10]', input: dengan(grafDA05),
     harapan: { status: 'OK', saham: { X2: 1n }, penyebut: 1n, dikecualikan: ['X1'], jenisJejak: ['DZAWIL_ARHAM_TERHIJAB_JIHAH'] } },
   { id: 'DA-21', sumber: '14.7 k1', menguji: 'sabq global: anak pr saudari (1) menghijab anak pr \'ammah (2)', input: dengan(grafSabqK1),
     harapan: { status: 'OK', saham: { SiA: 1n }, penyebut: 1n, dikecualikan: ['AMA'] } },
@@ -415,6 +428,8 @@ export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
     harapan: { status: 'OK', saham: { AM: 1n }, penyebut: 1n, dikecualikan: ['A1'] } },
   { id: 'DA-26', sumber: 'Tuhfah 6/394', menguji: "seri sabq 1:1: ayah menghijab saudara → semua ke 'ammah seibu", input: dengan(grafSabqTuhfah6394),
     harapan: { status: 'OK', saham: { AM: 1n }, penyebut: 1n, dikecualikan: ['A1'] } },
+  { id: 'DA-27', sumber: 'Nihayat al-Mathlab 9/259', menguji: 'anak-anak saudari (1 langkah) menghijab bint bint bint (2 langkah) [R14-10]', input: dengan(grafSabqNihayat9259),
+    harapan: { status: 'OK', saham: { BK: 3n, BB: 1n, BI: 1n }, penyebut: 5n, dikecualikan: ['X'] } },
   { id: 'DA-06', sumber: '14.7', menguji: 'hajb antar-perantara lintas jihah', input: dengan(grafDA06),
     harapan: { status: 'OK', saham: { AM1: 1n, NP: 1n }, penyebut: 2n, dikecualikan: ['NS'] } },
   { id: 'DA-07', sumber: '14.8', menguji: 'satu orang dua jalur [R14-11]', input: dengan(grafDA07),

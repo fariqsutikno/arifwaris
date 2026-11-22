@@ -91003,6 +91003,1160 @@
    }
   ]
  },
+ "dzawilArham:DA-27/cerita": {
+  "daftarBab": [
+   {
+    "judul": "Langkah 1 — Dzawil arham",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Tidak ada ashabul furudh atau ashabah yang menerima sisa, dan baitul mal dianggap tidak tegak, maka harta diwarisi dzawil arham dengan cara tanzil: tiap orang didudukkan pada posisi ahli waris yang menjadi perantaranya."
+       }
+      ],
+      "refs": [
+       "R14-5",
+       "R14-6"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "Kerabat kedua"
+       },
+       {
+        "jenis": "teks",
+        "teks": " didudukkan sebagai "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "saudara perempuan kandung"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (1 derajat)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "Kerabat ketiga"
+       },
+       {
+        "jenis": "teks",
+        "teks": " didudukkan sebagai "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "saudara perempuan sebapak"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (1 derajat)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "Kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": " didudukkan sebagai "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "saudara perempuan seibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (1 derajat)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "X"
+        ],
+        "teks": "Kerabat pertama"
+       },
+       {
+        "jenis": "teks",
+        "teks": " tidak mendapat bagian karena "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK",
+         "BB",
+         "BI"
+        ],
+        "teks": "kerabat kedua, kerabat ketiga, dan kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": " lebih dulu sampai ke ahli waris dari arah yang sama."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "X"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Harta dibagi di antara para perantara seolah mereka ahli warisnya: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "saudara perempuan seibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1, "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "saudara perempuan kandung"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 3, dan "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "saudara perempuan sebapak"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1, dari 5 bagian."
+       }
+      ],
+      "refs": [
+       "R14-9",
+       "R14-13"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "saudara perempuan sebapak"
+       },
+       {
+        "jenis": "teks",
+        "teks": " diberikan kepada "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "kerabat ketiga"
+       },
+       {
+        "jenis": "teks",
+        "teks": " seolah ia wafat meninggalkan mereka."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "saudara perempuan seibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " diberikan kepada "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": " seolah ia wafat meninggalkan mereka."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "saudara perempuan kandung"
+       },
+       {
+        "jenis": "teks",
+        "teks": " diberikan kepada "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "kerabat kedua"
+       },
+       {
+        "jenis": "teks",
+        "teks": " seolah ia wafat meninggalkan mereka."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     }
+    ],
+    "kolom": "bagian"
+   },
+   {
+    "judul": "Langkah 2 — Hasil akhir",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Harta dibagi menjadi 5 bagian:"
+       }
+      ],
+      "refs": [],
+      "penekanan": "subjudul"
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "Kerabat ketiga"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1 bagian (1/5)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "Kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1 bagian (1/5)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "Kerabat kedua"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 3 bagian (3/5)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     }
+    ],
+    "kolom": "nominal"
+   }
+  ]
+ },
+ "dzawilArham:DA-27/ringkas": {
+  "daftarBab": [
+   {
+    "judul": "Langkah 1 — Dzawil arham",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Tidak ada ashabul furudh atau ashabah yang menerima sisa, dan baitul mal dianggap tidak tegak, maka harta diwarisi dzawil arham dengan cara tanzil: tiap orang didudukkan pada posisi ahli waris yang menjadi perantaranya."
+       }
+      ],
+      "refs": [
+       "R14-5",
+       "R14-6"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "Kerabat kedua"
+       },
+       {
+        "jenis": "teks",
+        "teks": " didudukkan sebagai "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "saudara perempuan kandung"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (1 derajat)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "Kerabat ketiga"
+       },
+       {
+        "jenis": "teks",
+        "teks": " didudukkan sebagai "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "saudara perempuan sebapak"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (1 derajat)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "Kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": " didudukkan sebagai "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "saudara perempuan seibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (1 derajat)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "X"
+        ],
+        "teks": "Kerabat pertama"
+       },
+       {
+        "jenis": "teks",
+        "teks": " tidak mendapat bagian karena "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK",
+         "BB",
+         "BI"
+        ],
+        "teks": "kerabat kedua, kerabat ketiga, dan kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": " lebih dulu sampai ke ahli waris dari arah yang sama."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "X"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Harta dibagi di antara para perantara seolah mereka ahli warisnya: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "saudara perempuan seibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1, "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "saudara perempuan kandung"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 3, dan "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "saudara perempuan sebapak"
+       },
+       {
+        "jenis": "teks",
+        "teks": " 1, dari 5 bagian."
+       }
+      ],
+      "refs": [
+       "R14-9",
+       "R14-13"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "saudara perempuan sebapak"
+       },
+       {
+        "jenis": "teks",
+        "teks": " diberikan kepada "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "kerabat ketiga"
+       },
+       {
+        "jenis": "teks",
+        "teks": " seolah ia wafat meninggalkan mereka."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "saudara perempuan seibu"
+       },
+       {
+        "jenis": "teks",
+        "teks": " diberikan kepada "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": " seolah ia wafat meninggalkan mereka."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Bagian "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "saudara perempuan kandung"
+       },
+       {
+        "jenis": "teks",
+        "teks": " diberikan kepada "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "kerabat kedua"
+       },
+       {
+        "jenis": "teks",
+        "teks": " seolah ia wafat meninggalkan mereka."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     }
+    ],
+    "kolom": "bagian"
+   },
+   {
+    "judul": "Langkah 2 — Hasil akhir",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "Harta dibagi menjadi 5 bagian:"
+       }
+      ],
+      "refs": [],
+      "penekanan": "subjudul"
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "Kerabat ketiga"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1 bagian (1/5)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "Kerabat keempat"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 1 bagian (1/5)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "Kerabat kedua"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": 3 bagian (3/5)."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     }
+    ],
+    "kolom": "nominal"
+   }
+  ]
+ },
+ "dzawilArham:DA-27/arab": {
+  "daftarBab": [
+   {
+    "judul": "الخطوة ١ — ذوو الأرحام",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "لم يوجد صاحب فرض يُرَدّ عليه ولا عاصب، وبيت المال غير منتظم، فيرث ذوو الأرحام على مذهب أهل التنزيل: يُنزَّل كلٌّ منهم منزلة من أدلى به."
+       }
+      ],
+      "refs": [
+       "R14-5",
+       "R14-6"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "قريب ٢"
+       },
+       {
+        "jenis": "teks",
+        "teks": " يُنزَّل منزلة "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "الأخت الشقيقة"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (١ درجة)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "قريب ٣"
+       },
+       {
+        "jenis": "teks",
+        "teks": " يُنزَّل منزلة "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "الأخت لأب"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (١ درجة)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "قريب ٤"
+       },
+       {
+        "jenis": "teks",
+        "teks": " يُنزَّل منزلة "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "الأخت لأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": " (١ درجة)."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "X"
+        ],
+        "teks": "قريب ١"
+       },
+       {
+        "jenis": "teks",
+        "teks": " محجوب؛ لأن "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK",
+         "BB",
+         "BI"
+        ],
+        "teks": "قريب ٢ وقريب ٣ وقريب ٤"
+       },
+       {
+        "jenis": "teks",
+        "teks": " أسبق إلى الوارث من جهته."
+       }
+      ],
+      "refs": [
+       "R14-7",
+       "R14-10"
+      ],
+      "subjek": [
+       "X"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "تُقسم التركة بين المُدلى بهم كأنهم الورثة: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "الأخت لأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ١ و"
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "الأخت الشقيقة"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ٣ و"
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "الأخت لأب"
+       },
+       {
+        "jenis": "teks",
+        "teks": " ١، من ٥."
+       }
+      ],
+      "refs": [
+       "R14-9",
+       "R14-13"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "ونصيب "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UB"
+        ],
+        "teks": "الأخت لأب"
+       },
+       {
+        "jenis": "teks",
+        "teks": " لمن أدلى به كأنه مات عنهم: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "قريب ٣"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "ونصيب "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UI"
+        ],
+        "teks": "الأخت لأم"
+       },
+       {
+        "jenis": "teks",
+        "teks": " لمن أدلى به كأنه مات عنهم: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "قريب ٤"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "teks",
+        "teks": "ونصيب "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "UK"
+        ],
+        "teks": "الأخت الشقيقة"
+       },
+       {
+        "jenis": "teks",
+        "teks": " لمن أدلى به كأنه مات عنهم: "
+       },
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "قريب ٢"
+       },
+       {
+        "jenis": "teks",
+        "teks": "."
+       }
+      ],
+      "refs": [
+       "R14-8"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     }
+    ],
+    "kolom": "bagian"
+   },
+   {
+    "judul": "الخطوة ٢ — القسمة",
+    "daftarBaris": [
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BB"
+        ],
+        "teks": "قريب ٣"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": ١ من ٥."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BB"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BI"
+        ],
+        "teks": "قريب ٤"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": ١ من ٥."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BI"
+      ]
+     },
+     {
+      "daftarPotongan": [
+       {
+        "jenis": "orang",
+        "daftarIdOrang": [
+         "BK"
+        ],
+        "teks": "قريب ٢"
+       },
+       {
+        "jenis": "teks",
+        "teks": ": ٣ من ٥."
+       }
+      ],
+      "refs": [
+       "R11-1"
+      ],
+      "subjek": [
+       "BK"
+      ]
+     }
+    ],
+    "kolom": "nominal"
+   }
+  ]
+ },
  "dzawilArham:DA-06/cerita": {
   "daftarBab": [
    {
