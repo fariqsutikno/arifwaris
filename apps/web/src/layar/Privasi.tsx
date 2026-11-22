@@ -14,7 +14,7 @@ export function Privasi() {
       {bagian().map(({ id, judul, isi }) => (
         <section key={id} className="tumpuk-rapat" aria-labelledby={`privasi-${id}`}>
           <h2 id={`privasi-${id}`}>{judul}</h2>
-          <p>{isi}</p>
+          {isi.split('\n\n').map(paragraf => <p key={paragraf}>{paragraf}</p>)}
         </section>
       ))}
     </main>
@@ -29,5 +29,8 @@ const bagian = () => [
   { id: 'lokasi', judul: t('privasi.lokasi_judul'), isi: t('privasi.lokasi_isi') },
   { id: 'prosesor', judul: t('privasi.prosesor_judul'), isi: t('privasi.prosesor_isi') },
   { id: 'hak', judul: t('privasi.hak_judul'), isi: t('privasi.hak_isi') },
+  { id: 'keamanan', judul: t('privasi.keamanan_judul'), isi: t('privasi.keamanan_isi') },
+  { id: 'anak', judul: t('privasi.anak_judul'), isi: t('privasi.anak_isi') },
+  { id: 'perubahan', judul: t('privasi.perubahan_judul'), isi: t('privasi.perubahan_isi') },
   { id: 'kontak', judul: t('privasi.kontak_judul'), isi: t('privasi.kontak_isi') },
 ];

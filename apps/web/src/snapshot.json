@@ -28249,7 +28249,7 @@
   {
    "kunci": "privasi.draf",
    "halaman": "privasi",
-   "id": "Draf: teks ini belum ditinjau dan bagian bertanda [DIISI PEMILIK] belum final.",
+   "id": "Draf: teks ini belum ditinjau pemilik atau penasihat hukum. Bagian bertanda [DIISI PEMILIK] belum final.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28298,7 +28298,7 @@
   {
    "kunci": "privasi.data_isi",
    "halaman": "privasi",
-   "id": "Bila kamu masuk dengan Google: alamat email dan nama dari akun Google, progres belajar dan latihan, riwayat kasus hitungan yang kamu simpan, percobaan dan hasil soal, preferensi tampilan, pilihan persetujuanmu, dan (bila kamu membagikan) kasus yang kamu bagikan lewat tautan. Tanpa masuk, semuanya hanya tersimpan di perangkatmu.",
+   "id": "Bila kamu masuk dengan Google, kami menyimpan:\n\nAkun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk Supabase. Kata sandi Google tidak pernah sampai ke kami.\n\nProfil: nama tampilan, pilihan ikut papan peringkat, pilihan menampilkan foto, dan zona waktu.\n\nBelajar dan latihan: pelajaran yang selesai, jawaban dan hasil latihan, setiap percobaan soal (jawaban yang kamu isi, hasilnya, dan waktu server saat kejadian), serta XP dan streak yang dihitung dari kegiatan itu.\n\nKasus hitungan: kasus yang kamu simpan ke riwayat, dan kasus yang kamu bagikan lewat tautan (isi kasus, tautan, dan daftar email penerima bila aksesnya dibatasi ke email tertentu).\n\nPreferensi dan persetujuan: pengaturan tampilanmu, serta pilihan persetujuanmu beserta versi kebijakan dan waktunya.\n\nNotifikasi: bila kamu menyalakannya, alamat langganan dan kunci enkripsi dari peramban atau perangkatmu.\n\nTanpa masuk, kasus, progres, dan pengaturanmu hanya tersimpan di perangkatmu dan tidak dikirim ke server kami.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28312,7 +28312,7 @@
   {
    "kunci": "privasi.tujuan_isi",
    "halaman": "privasi",
-   "id": "Menyinkronkan belajarmu antar perangkat, menghitung XP dan streak di server, dan, bila kamu memilih, menampilkan namamu di papan peringkat. Dasar pemrosesannya adalah persetujuanmu.",
+   "id": "Kami memakai datamu hanya untuk:\n\nMenjalankan akunmu: masuk, menyimpan progres, dan menyinkronkannya antar perangkat.\n\nMenilai percobaan soal dan menghitung XP serta streak di server, supaya hasilnya adil dan tidak bisa diubah dari sisi pengguna.\n\nMenampilkan nama tampilanmu, XP, dan streak di papan peringkat, hanya bila kamu memilih ikut. Foto profil tampil hanya bila kamu juga memilihnya.\n\nMengirim notifikasi pengingat (streak terancam dan ringkasan peringkat pekanan), hanya bila kamu menyalakannya.\n\nMenampilkan kasus yang kamu bagikan kepada orang yang kamu beri akses.\n\nDasar pemrosesannya adalah persetujuanmu: saat pertama masuk, dan terpisah untuk papan peringkat dan notifikasi. Kamu bisa menariknya kapan saja. Kami tidak menjual datamu dan tidak memakainya untuk iklan.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28326,7 +28326,7 @@
   {
    "kunci": "privasi.retensi_isi",
    "halaman": "privasi",
-   "id": "Data belajarmu disimpan selama akunmu ada dan dihapus saat kamu menghapus akun. Jangka penyimpanan data lain: [DIISI PEMILIK].",
+   "id": "Selama akunmu ada: datamu disimpan sampai kamu menghapus akun. Kami tidak menyetel penghapusan otomatis data lama.\n\nSaat kamu menghapus akun (menu Profil): semua data di atas ikut terhapus dari basis data kami, termasuk catatan persetujuanmu. Pengecualian: akun penulis atau pemeriksa konten tidak bisa dihapus sendiri karena terikat jejak penyuntingan; hubungi kontak di bawah dan pengelola akan membantu.\n\nSaat kamu mematikan notifikasi: langganan perangkatmu langsung dihapus. Saat kamu keluar dari papan peringkat: namamu langsung hilang dari papan.\n\nSalinan cadangan: penyedia basis data menyimpan cadangan berkala, sehingga data yang sudah dihapus hilang dari cadangan menurut siklusnya. [DIISI PEMILIK: lama simpan cadangan Supabase sesuai paket yang dipakai, misalnya 7 hari.]",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28340,7 +28340,7 @@
   {
    "kunci": "privasi.lokasi_isi",
    "halaman": "privasi",
-   "id": "Server data berada di luar Indonesia (penyedia Supabase). Dasar dan lokasi persisnya: [DIISI PEMILIK].",
+   "id": "Data akun dan belajarmu disimpan di basis data Supabase. Servernya berada di luar Indonesia: [DIISI PEMILIK: nama kota/negara region proyek Supabase produksi, isi setelah region produksi diputuskan].\n\nAplikasi web disajikan lewat Vercel, yang dapat mencatat alamat IP dan data teknis permintaan di log operasionalnya.\n\nKarena data dipindahkan ke luar Indonesia, kami memastikan penyedia memakai pengamanan yang setara sebagaimana disyaratkan UU PDP, dan kami tetap bertanggung jawab atas pemrosesannya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28354,7 +28354,7 @@
   {
    "kunci": "privasi.prosesor_isi",
    "halaman": "privasi",
-   "id": "Supabase (penyimpanan data dan akun), Google (masuk dengan Google), dan layanan Web Push peramban bila kamu menyalakan notifikasi. Penyedia layanan AI dipakai di portal penulis; daftar lengkap untuk pelajar: [DIISI PEMILIK].",
+   "id": "Pihak yang memproses datamu atas nama kami:\n\nSupabase: basis data, layanan masuk, dan fungsi server.\n\nVercel: menyajikan aplikasi web.\n\nGoogle: masuk dengan akun Google. Google menerima kejadian bahwa kamu masuk ke aplikasi ini, sesuai kebijakannya sendiri.\n\nLayanan Web Push dari pembuat peramban atau perangkatmu: hanya bila kamu menyalakan notifikasi; isi notifikasi dikirim lewat layanan itu.\n\nLayanan AI (Google Gemini dan SumoPod): hanya dipanggil oleh penulis dan admin konten untuk merapikan atau menyusun naskah materi. Data belajar dan percobaan soalmu tidak dikirim ke layanan AI.\n\nKami tidak membagikan datamu ke pihak lain di luar daftar ini, kecuali bila diwajibkan hukum.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28368,7 +28368,7 @@
   {
    "kunci": "privasi.hak_isi",
    "halaman": "privasi",
-   "id": "Kamu bisa mengunduh salinan datamu, menghapus akunmu, menarik persetujuan (misalnya menyembunyikan namamu dari papan), dan mengajukan keberatan. Unduh dan hapus ada di menu Profil.",
+   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMengajukan keberatan atau pengaduan lewat kontak di bawah.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28382,7 +28382,7 @@
   {
    "kunci": "privasi.kontak_isi",
    "halaman": "privasi",
-   "id": "[DIISI PEMILIK]",
+   "id": "Pengendali data: [DIISI PEMILIK: nama pengelola/lembaga]. Email untuk pertanyaan, permintaan hak, dan pengaduan: [DIISI PEMILIK: alamat email kontak].",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28712,6 +28712,48 @@
    "kunci": "narasi.langkah.tashih.rata.tanya_satu.papan",
    "halaman": "narasi",
    "id": "{saham} kotak untuk {ruus} {satuan}: habis dibagi?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.keamanan_judul",
+   "halaman": "privasi",
+   "id": "Keamanan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.keamanan_isi",
+   "halaman": "privasi",
+   "id": "Datamu hanya bisa dibaca dan diubah oleh akunmu sendiri; aturan akses basis data membatasinya per pengguna. Percobaan soal hanya ditulis oleh server setelah diperiksa, bukan oleh aplikasi di perangkatmu. Kunci rahasia layanan tidak ada di aplikasi, dan kunci langganan notifikasimu tidak ikut dalam berkas unduhan.\n\nTidak ada sistem yang sepenuhnya aman. Bila terjadi kebocoran data pribadi yang berisiko bagimu, kami akan memberitahumu dan lembaga berwenang sesuai UU PDP.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.anak_judul",
+   "halaman": "privasi",
+   "id": "Anak di bawah umur",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.anak_isi",
+   "halaman": "privasi",
+   "id": "Kami tidak memeriksa usia pengguna. Bila kamu belum berusia 18 tahun, mintalah persetujuan orang tua atau wali sebelum masuk dan menyetujui kebijakan ini.\n\nOrang tua atau wali yang mendapati anaknya memakai akun tanpa izin dapat meminta penghapusan akun dan data lewat kontak di bawah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.perubahan_judul",
+   "halaman": "privasi",
+   "id": "Perubahan kebijakan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.perubahan_isi",
+   "halaman": "privasi",
+   "id": "Bila isi kebijakan ini berubah bermakna, versinya dinaikkan dan kamu diminta membacanya dan menyetujuinya lagi sebelum melanjutkan. Kebijakan yang sedang berlaku selalu bisa dibuka lagi dari halaman ini.",
    "ar": null,
    "versiTerbit": 873
   }
