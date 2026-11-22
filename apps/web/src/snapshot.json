@@ -28249,7 +28249,7 @@
   {
    "kunci": "privasi.draf",
    "halaman": "privasi",
-   "id": "Draf: teks ini belum ditinjau pemilik atau penasihat hukum. Bagian bertanda [DIISI PEMILIK] belum final.",
+   "id": "Draf versi beta: teks ini belum ditinjau penasihat hukum dan dapat berubah.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28326,7 +28326,7 @@
   {
    "kunci": "privasi.retensi_isi",
    "halaman": "privasi",
-   "id": "Selama akunmu ada: datamu disimpan sampai kamu menghapus akun. Kami tidak menyetel penghapusan otomatis data lama.\n\nSaat kamu menghapus akun (menu Profil): semua data di atas ikut terhapus dari basis data kami, termasuk catatan persetujuanmu. Pengecualian: akun penulis atau pemeriksa konten tidak bisa dihapus sendiri karena terikat jejak penyuntingan; hubungi kontak di bawah dan pengelola akan membantu.\n\nSaat kamu mematikan notifikasi: langganan perangkatmu langsung dihapus. Saat kamu keluar dari papan peringkat: namamu langsung hilang dari papan.\n\nSalinan cadangan: penyedia basis data menyimpan cadangan berkala, sehingga data yang sudah dihapus hilang dari cadangan menurut siklusnya. [DIISI PEMILIK: lama simpan cadangan Supabase sesuai paket yang dipakai, misalnya 7 hari.]",
+   "id": "Selama akunmu ada: datamu disimpan sampai kamu menghapus akun. Kami tidak menyetel penghapusan otomatis data lama.\n\nSaat kamu menghapus akun (menu Profil): semua data di atas ikut terhapus dari basis data kami, termasuk catatan persetujuanmu. Pengecualian: akun penulis atau pemeriksa konten tidak bisa dihapus sendiri karena terikat jejak penyuntingan; hubungi kontak di bawah dan pengelola akan membantu.\n\nSaat kamu mematikan notifikasi: langganan perangkatmu langsung dihapus. Saat kamu keluar dari papan peringkat: namamu langsung hilang dari papan.\n\nSalinan cadangan: selama masa beta kami tidak menjamin adanya cadangan berkala. Bila cadangan dibuat, data yang sudah kamu hapus tidak akan dipulihkan ke akunmu.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28340,7 +28340,7 @@
   {
    "kunci": "privasi.lokasi_isi",
    "halaman": "privasi",
-   "id": "Data akun dan belajarmu disimpan di basis data Supabase. Servernya berada di luar Indonesia: [DIISI PEMILIK: nama kota/negara region proyek Supabase produksi, isi setelah region produksi diputuskan].\n\nAplikasi web disajikan lewat Vercel, yang dapat mencatat alamat IP dan data teknis permintaan di log operasionalnya.\n\nKarena data dipindahkan ke luar Indonesia, kami memastikan penyedia memakai pengamanan yang setara sebagaimana disyaratkan UU PDP, dan kami tetap bertanggung jawab atas pemrosesannya.",
+   "id": "Data akun dan belajarmu disimpan di basis data Supabase. Servernya berada di luar Indonesia; saat ini di wilayah Mumbai, India. Selama masa beta lokasi atau penyedia server dapat berpindah (misalnya ke server sendiri); bila itu terjadi, kebijakan ini diperbarui dan kamu diminta menyetujuinya lagi.\n\nAplikasi web disajikan lewat Vercel, yang dapat mencatat alamat IP dan data teknis permintaan di log operasionalnya.\n\nKarena data dipindahkan ke luar Indonesia, kami memastikan penyedia memakai pengamanan yang setara sebagaimana disyaratkan UU PDP, dan kami tetap bertanggung jawab atas pemrosesannya.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28368,7 +28368,7 @@
   {
    "kunci": "privasi.hak_isi",
    "halaman": "privasi",
-   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMengajukan keberatan atau pengaduan lewat kontak di bawah.",
+   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMengajukan keberatan atau pengaduan lewat kontak di bawah; kami menanggapinya secepatnya dan dalam batas waktu yang ditetapkan UU PDP.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28382,7 +28382,7 @@
   {
    "kunci": "privasi.kontak_isi",
    "halaman": "privasi",
-   "id": "Pengendali data: [DIISI PEMILIK: nama pengelola/lembaga]. Email untuk pertanyaan, permintaan hak, dan pengaduan: [DIISI PEMILIK: alamat email kontak].",
+   "id": "Pengendali data: ArifWaris Team. Email untuk pertanyaan, permintaan hak, dan pengaduan: cs@arifwaris.com.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28753,7 +28753,7 @@
   {
    "kunci": "privasi.perubahan_isi",
    "halaman": "privasi",
-   "id": "Bila isi kebijakan ini berubah bermakna, versinya dinaikkan dan kamu diminta membacanya dan menyetujuinya lagi sebelum melanjutkan. Kebijakan yang sedang berlaku selalu bisa dibuka lagi dari halaman ini.",
+   "id": "Bila isi kebijakan ini berubah bermakna (termasuk saat penyedia atau lokasi server berpindah), versinya dinaikkan dan kamu diminta membacanya dan menyetujuinya lagi sebelum melanjutkan. Kebijakan yang sedang berlaku selalu bisa dibuka lagi dari halaman ini.",
    "ar": null,
    "versiTerbit": 873
   }
