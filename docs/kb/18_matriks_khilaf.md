@@ -159,7 +159,7 @@ Status: **disetujui pengguna 2026-09-29** (setelah verifikasi kitab; R01-1 dipec
 | R14-7 | ya | tidak | tidak | Lahim hlm. 192–193 (nukilan Hanbali); [HNF] qarabah |
 | R14-8 | tidak | tidak | tidak | K14-3 berbeda |
 | R14-9 | ya | tidak | tidak | Mughni 6/319 tanzil |
-| R14-10 | ya | tidak | tidak | Lahim hlm. 192–194 |
+| R14-10 | ya | tidak | tidak | [SYF] sabq per shinf (Raudhah 6/46–57, primer); [HNB] per jihah (Lahim hlm. 192–194); keputusan 2026-11-23 |
 | R14-11 | ya | tidak | tidak | Lahim hlm. 194–195 |
 | R14-12 | ya | tidak | tidak | Lahim hlm. 207–208 |
 | R14-13 | ya | tidak | tidak | Lahim hlm. 217 |
