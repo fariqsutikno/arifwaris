@@ -28247,13 +28247,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "privasi.draf",
-   "halaman": "privasi",
-   "id": "Draf versi beta: teks ini belum ditinjau penasihat hukum dan dapat berubah.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "privasi.dialog_judul",
    "halaman": "privasi",
    "id": "Kebijakan privasi",
@@ -28263,7 +28256,7 @@
   {
    "kunci": "privasi.dialog_ringkas",
    "halaman": "privasi",
-   "id": "Progres belajar dan percobaan soalmu disimpan di akunmu supaya ikut ke perangkat lain. Namamu tidak tampil di papan peringkat kecuali kamu memilihnya. Kamu bisa mengunduh atau menghapus datamu kapan saja.",
+   "id": "Progres belajar dan percobaan soalmu disimpan di akunmu supaya ikut ke perangkat lain. Namamu tidak tampil di papan peringkat kecuali kamu memilihnya. Kamu bisa mengunduh atau menghapus datamu kapan saja. Dengan setuju, kamu juga menerima syarat layanan.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28754,6 +28747,146 @@
    "kunci": "privasi.perubahan_isi",
    "halaman": "privasi",
    "id": "Bila isi kebijakan ini berubah bermakna (termasuk saat penyedia atau lokasi server berpindah), versinya dinaikkan dan kamu diminta membacanya dan menyetujuinya lagi sebelum melanjutkan. Kebijakan yang sedang berlaku selalu bisa dibuka lagi dari halaman ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.judul",
+   "halaman": "syarat",
+   "id": "Syarat layanan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.baca_lengkap",
+   "halaman": "syarat",
+   "id": "Baca syarat layanan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.hasil_judul",
+   "halaman": "syarat",
+   "id": "Hasil hitung bukan fatwa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.hasil_isi",
+   "halaman": "syarat",
+   "id": "Hasil mengikuti madzhab yang kamu pilih (bawaan: Syafi'i) dan sumber yang ditampilkan di tiap langkah. Itu alat bantu belajar dan perhitungan awal, bukan fatwa, bukan putusan pengadilan, dan bukan nasihat hukum.\n\nUntuk pembagian waris yang sebenarnya, rujuklah ulama atau lembaga fatwa, serta pengadilan agama atau notaris sesuai hukum yang berlaku bagimu. Hukum positif (misalnya KHI) ditandai terpisah dari fikih.\n\nKasus yang aturannya belum didukung atau datanya kurang akan ditandai, bukan ditebak. Hasilnya hanya sebaik data yang kamu isi. Kami tidak bertanggung jawab atas keputusan yang kamu ambil hanya dari hasil aplikasi tanpa memeriksanya ke pihak berwenang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.akun_judul",
+   "halaman": "syarat",
+   "id": "Akun",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.akun_isi",
+   "halaman": "syarat",
+   "id": "Kamu masuk lewat akun Google dan bertanggung jawab atas aktivitas di akunmu serta menjaga akses ke akun Google-mu.\n\nSoal usia, lihat bagian Anak di bawah umur pada kebijakan privasi: di bawah 18 tahun perlu persetujuan orang tua atau wali.\n\nKamu bisa menghapus akun kapan saja di menu Profil. Akun penulis atau pemeriksa konten dihapus lewat pengelola.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.pemakaian_judul",
+   "halaman": "syarat",
+   "id": "Pemakaian yang wajar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.pemakaian_isi",
+   "halaman": "syarat",
+   "id": "Kamu setuju tidak: meretas, menguji kerentanan tanpa izin, atau mengganggu layanan; memakai skrip atau otomasi untuk mengirim percobaan soal, XP, atau streak (server membatasi 30 percobaan per menit dan 2000 per hari per akun, dan Ujian hanya menerima satu Kirim per sesi); memakai akun orang lain atau mengakali papan peringkat; memakai nama tampilan yang menyinggung, mengandung SARA, atau menyamar sebagai orang lain; membagikan lewat tautan kasus yang memuat data pribadi orang lain tanpa hak.\n\nKami dapat menyetel ulang XP atau streak yang diperoleh dengan cara itu, mengganti nama tampilan yang melanggar, atau menangguhkan akun. Pada akun yang ditangguhkan, kamu tetap bisa meminta unduhan data dan penghapusan akun lewat kontak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.konten_judul",
+   "halaman": "syarat",
+   "id": "Konten",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.konten_isi",
+   "halaman": "syarat",
+   "id": "Materi, soal, penjelasan, dan tampilan aplikasi dilindungi hak cipta. Kamu boleh memakainya untuk belajar pribadi; menyalin secara massal atau menjual ulang memerlukan izin tertulis.\n\nKasus yang kamu simpan atau bagikan tetap milikmu. Dengan membagikannya lewat tautan, kamu mengizinkan layanan menampilkannya kepada orang yang punya akses sesuai pilihanmu (tautan, atau email tertentu).",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.beta_judul",
+   "halaman": "syarat",
+   "id": "Masa beta dan layanan berbayar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.beta_isi",
+   "halaman": "syarat",
+   "id": "Layanan masih berstatus beta dan gratis sampai waktu yang ditentukan pengelola. Selama beta, fitur dan data dapat berubah, dan kami tidak menjamin layanan tersedia terus-menerus.\n\nInformasi akan disampaikan sebelum skema berubah. Fitur berbayar akan ditawarkan sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.tanggung_jawab_judul",
+   "halaman": "syarat",
+   "id": "Batas tanggung jawab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.tanggung_jawab_isi",
+   "halaman": "syarat",
+   "id": "Sejauh diizinkan hukum, kami tidak bertanggung jawab atas kerugian tidak langsung, kehilangan data akibat gangguan di luar kendali kami, atau keputusan yang diambil berdasarkan hasil hitung. Ini tidak menghilangkan hakmu yang tidak bisa dikesampingkan menurut hukum, termasuk hak pelindungan data pribadi (UU No. 27 Tahun 2022) dan hak konsumen.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.perubahan_judul",
+   "halaman": "syarat",
+   "id": "Perubahan syarat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.perubahan_isi",
+   "halaman": "syarat",
+   "id": "Bila syarat ini berubah bermakna, kamu diminta menyetujui versi baru sebelum melanjutkan. Menolak berarti berhenti memakai akun; kamu tetap bisa menghapus akun dan datamu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.hukum_judul",
+   "halaman": "syarat",
+   "id": "Hukum dan sengketa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.hukum_isi",
+   "halaman": "syarat",
+   "id": "Syarat ini tunduk pada hukum Republik Indonesia. Sengketa diupayakan selesai secara musyawarah lebih dulu; bila gagal, diselesaikan di pengadilan negeri yang berwenang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.kontak_judul",
+   "halaman": "syarat",
+   "id": "Kontak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.kontak_isi",
+   "halaman": "syarat",
+   "id": "ArifWaris Team, cs@arifwaris.com.",
    "ar": null,
    "versiTerbit": 873
   }

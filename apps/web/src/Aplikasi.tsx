@@ -37,6 +37,7 @@ import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type S
 import { HalamanRiwayat } from './layar/Riwayat';
 import { Peringkat } from './layar/Peringkat';
 import { Privasi } from './layar/Privasi';
+import { Syarat } from './layar/Syarat';
 import { DialogPersetujuan } from './akun/DialogPersetujuan';
 import { perluSetujuKebijakan } from './akun/persetujuan';
 import { KasusDibagikan } from './layar/KasusDibagikan';
@@ -206,13 +207,13 @@ export function Aplikasi() {
     <>
       <Kepala halaman={rute.halaman}
         adaTur={daftarTur.length > 0} saatKeHitung={keAwalHitung} saatTur={() => setTurBerjalan(true)} akun={<><StreakKepala sesi={sesi} repo={repoAkun} /><LonceNotifikasi sesi={sesi} repo={repoAkun} /><TombolAkun sesi={sesi} repo={repoAkun} /></>} />
-      {perluSetuju && repoAkun && rute.halaman !== 'privasi' && (
+      {perluSetuju && repoAkun && rute.halaman !== 'privasi' && rute.halaman !== 'syarat' && (
         <DialogPersetujuan repo={repoAkun} saatSetuju={() => setPerluSetuju(false)}
           saatKeluar={() => void keluarDanBersihkan(repoAkun).finally(() => window.location.reload())} />
       )}
       <PembaruanKonten />
       <SumberNotifikasi sesi={sesi} repo={repoAkun} />
-      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan', 'dibagikan', 'privasi'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
+      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan', 'dibagikan', 'privasi', 'syarat'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={muatLokalAtau(kasus)} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} sesi={sesi}
           saatMasuk={masukGoogle} />
         : rute.halaman === 'belajar' ? <Belajar />
@@ -220,6 +221,7 @@ export function Aplikasi() {
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={kerjakanSoal} />
         : rute.halaman === 'peringkat' ? <Peringkat sesi={sesi} repo={repoAkun} />
         : rute.halaman === 'privasi' ? <Privasi />
+        : rute.halaman === 'syarat' ? <Syarat />
         : rute.halaman === 'dibagikan' ? <KasusDibagikan slug={rute.slug} repo={repoAkun} menunggu={!akunSiap} saatMasuk={masukGoogle} saatSalin={mulaiDari} />
         : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />

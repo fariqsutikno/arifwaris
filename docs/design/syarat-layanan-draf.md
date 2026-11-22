@@ -1,6 +1,6 @@
 # Syarat layanan (konsep, belum final)
 
-Status: konsep untuk ditinjau pemilik dan penasihat hukum. Belum terhubung ke UI. Bila disetujui, pasang sebagai layar `Syarat` dan jenis persetujuan baru (saat ini tabel `persetujuan` hanya mengenal `kebijakan_privasi`, `papan_peringkat`, `push`, `ai_konteks`, `usia_18`, `kelas_berbagi_nilai`; syarat layanan bisa digabung ke dialog kebijakan privasi, atau tambah jenis `syarat_layanan` lewat migrasi). Seluruh isian pemilik sudah terisi (2026-11-22).
+Status: sudah dipasang di aplikasi sebagai layar `#/syarat` (diksi `syarat.*`), ditautkan dari dialog persetujuan (versi kebijakan 3). Teks resmi = diksi; berkas ini hanya catatan. Diperkaya dari referensi pemilik.
 
 ## 1. Tentang layanan
 Platform Waris adalah alat bantu hitung dan belajar faraidh. Menggunakan layanan, termasuk masuk dengan akun Google, berarti kamu menyetujui syarat ini dan Kebijakan Privasi.

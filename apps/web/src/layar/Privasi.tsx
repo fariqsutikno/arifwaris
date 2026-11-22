@@ -9,7 +9,6 @@ export function Privasi() {
     <main className="halaman tumpuk">
       <header className="tumpuk-rapat">
         <h1>{t('privasi.judul')}</h1>
-        <p className="catatan-info">{t('privasi.draf')}</p>
       </header>
       {bagian().map(({ id, judul, isi }) => (
         <section key={id} className="tumpuk-rapat" aria-labelledby={`privasi-${id}`}>
