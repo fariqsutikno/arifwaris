@@ -4,6 +4,7 @@
 //   Putus : ambil alih hanya bila pipeline berhenti di fase dzawil arham, atau hanya pasangan yang mewarisi dan
 //           sisanya untuk dzawil arham. Lalu: saring mawani' → tanzil & jihah → mas'alah perantara → turun ke penerima
 //           (rekursif: perantara sebagai pewaris) → gabung dengan mas'alah zaujiyyah bila ada pasangan.
+//           [HNF] memakai metode qarabah (stages/qarabah.ts) sebagai ganti tanzil → perantara.
 //   Keluar: HasilEngine OK dengan saham per orang asli; jejak DZAWIL_ARHAM_* + refs R14-x.
 
 import { gabungkan, idSisaKeluar, periksaInvarian, sahamDari, totalSaham, type Saham } from './gabung.js';
@@ -14,6 +15,7 @@ import { turunkanPeran } from './stages/derivasi.js';
 import { maniDari, terapkanMawani } from './stages/mawani.js';
 import { bagikanNominal } from './stages/pembagian.js';
 import { RADD_TERCAKUP_TANZIL, bagiAntarPerantara, hitungPosisi, penerimaSatuKelompok, samakanPenerima } from './stages/perantara.js';
+import { TERCAKUP_QARABAH, bagiQarabah } from './stages/qarabah.js';
 import { cariRuteTanzil, saringJihah, type RuteTanzil } from './stages/tanzil.js';
 import { hitungTirkah } from './stages/tirkah.js';
 import type {
@@ -28,7 +30,8 @@ interface HasilArham {
   saham: Saham;
   masalah: bigint;
   statusArham: Record<IdOrang, StatusOrang>;
-  tanzil: TanzilArham;
+  /** Hanya metode tanzil; qarabah tidak punya perantara. */
+  tanzil?: TanzilArham;
   jejak: LangkahJejak[];
 }
 
@@ -44,7 +47,7 @@ export function hitungDzawilArham(input: InputEngine): HasilEngine {
 
 /** `tercakup` diteruskan ke gerbang 18.4: kosong di tingkat teratas, RADD_TERCAKUP_TANZIL pada rekursi turun [R14-9]. */
 function hitungDzawilArhamDenganTercakup(input: InputEngine, tercakup: ReadonlySet<string>): HasilEngine {
-  const hasilPipeline = hitungDenganTercakup(input, tercakup);
+  const hasilPipeline = jalankanPipeline(input, tercakup);
   const denganPasangan = hasilPipeline.status === 'OK' && hasilPipeline.sisaKeluar?.tujuan === 'dzawilArham' ? hasilPipeline : undefined;
   const tanpaAhliWaris = hasilPipeline.status === 'TIDAK_DIDUKUNG' && hasilPipeline.kode === 'FASE_DZAWIL_ARHAM';
   if (!denganPasangan && !tanpaAhliWaris) return hasilPipeline;
@@ -56,7 +59,18 @@ function hitungDzawilArhamDenganTercakup(input: InputEngine, tercakup: ReadonlyS
   if ('status' in arham) return arham;
 
   const hasil = denganPasangan ? gabungDenganPasangan(input, denganPasangan, arham) : tanpaPasangan(input, arham);
-  return periksaKeberlakuan(input.ruleset, hasil, tercakup) ?? hasil;
+  return periksaKeberlakuan(input.ruleset, hasil, input.ruleset === 'hanafi' ? new Set([...tercakup, ...TERCAKUP_QARABAH]) : tercakup) ?? hasil;
+}
+
+/**
+ * [HNF] cabang dzawil arham (qarabah) memakai token yang belum "ya" di 18.4 (TERCAKUP_QARABAH); gerbang dilonggarkan
+ * hanya untuk cabang itu, kasus hanafi lain tetap melewati gerbang ketat.
+ */
+function jalankanPipeline(input: InputEngine, tercakup: ReadonlySet<string>): HasilEngine {
+  if (input.ruleset !== 'hanafi') return hitungDenganTercakup(input, tercakup);
+  const longgar = hitungDenganTercakup(input, new Set([...tercakup, ...TERCAKUP_QARABAH]));
+  const cabangArham = longgar.status === 'OK' ? longgar.sisaKeluar?.tujuan === 'dzawilArham' : longgar.status === 'TIDAK_DIDUKUNG' && longgar.kode === 'FASE_DZAWIL_ARHAM';
+  return cabangArham ? longgar : hitungDenganTercakup(input, tercakup);
 }
 
 // ─── Gerbang madzhab (K14-1, K14-2) ───────────────────────────────────────────
@@ -67,8 +81,8 @@ function gerbangMadzhab(input: InputEngine): BukanOk | undefined {
     return { status: 'TIDAK_DIDUKUNG', alasan: 'Dzawil arham tidak mewarisi selama baitul mal tegak; harta ke baitul mal.',
       refs: [input.ruleset === 'syafii' ? 'R14-5' : 'K14-1'] };
   }
-  // [K14-2] [HNF] metode qarabah belum diimplementasikan; [MLK] metodenya belum ada di matriks.
-  if (input.ruleset === 'hanafi' || input.ruleset === 'maliki') {
+  // [K14-2] [MLK] metodenya belum ada di matriks ([HNF] = qarabah, stages/qarabah.ts).
+  if (input.ruleset === 'maliki') {
     return { status: 'TIDAK_DIDUKUNG', alasan: 'Metode pembagian dzawil arham untuk madzhab ini belum didukung.', refs: ['K14-2'] };
   }
   return undefined;
@@ -84,6 +98,8 @@ function bagiDzawilArham(input: InputEngine): HasilArham | BukanOk {
 
   const saring = saringMawani(input, calon);
   if ('status' in saring) return saring;
+  // [K14-2] [HNF] qarabah menggantikan tanzil.
+  if (input.ruleset === 'hanafi') return bagiQarabahArham(input, daftarPeran, saring);
 
   const semuaRute: RuteTanzil[] = [];
   for (const peran of saring.boleh) {
@@ -121,6 +137,19 @@ function bagiDzawilArham(input: InputEngine): HasilArham | BukanOk {
     statusArham: statusDzawilArham(daftarPeran, saring.statusMani, semuaRute, lolos, saham, perantara.mahjub, mahjubTurun),
     jejak: [...saring.jejak, ...jejakTanzil, perantara.jejak, ...jejakTurun, ...jejakDuaJalur(lolos)],
   };
+}
+
+/** [K14-2] [HNF] qarabah: penerima = ahli waris; yang tersisih = mahjub dengan rujukan R14-14. */
+function bagiQarabahArham(input: InputEngine, daftarPeran: Record<IdOrang, PeranAhliWaris>,
+  saring: { boleh: PeranAhliWaris[]; statusMani: Record<IdOrang, StatusOrang>; jejak: LangkahJejak[] }): HasilArham | BukanOk {
+  const qarabah = bagiQarabah(input.graf, daftarPeran, saring.boleh.map(peran => peran.idOrang));
+  if ('status' in qarabah) return qarabah;
+  const statusArham: Record<IdOrang, StatusOrang> = { ...saring.statusMani };
+  for (const peran of saring.boleh) {
+    const penghalang = qarabah.mahjub[peran.idOrang];
+    statusArham[peran.idOrang] = penghalang ? { jenis: 'mahjub', peran, oleh: penghalang, rujukanAturan: 'R14-14' } : { jenis: 'ahliWaris', peran };
+  }
+  return { saham: qarabah.saham, masalah: qarabah.masalah, statusArham, jejak: [...saring.jejak, ...qarabah.jejak] };
 }
 
 /** Mawani' (bab 02) berlaku bagi dzawil arham sendiri, sebelum tanzil, supaya yang terhalang tidak menempati kursi perantara. */
@@ -241,7 +270,7 @@ function tanpaPasangan(input: InputEngine, arham: HasilArham): HasilOk {
   const statusOrang = { ...terapkanMawani(input.graf, daftarPeran, input.ruleset).statusOrang, ...arham.statusArham };
   const nominal = bagikanNominal(arham.saham, arham.masalah, tirkah.bersih, input.pembulatan.satuan);
   return {
-    status: 'OK', statusOrang, tanzil: arham.tanzil,
+    status: 'OK', statusOrang, ...(arham.tanzil ? { tanzil: arham.tanzil } : {}),
     tabel: susunTabel(arham.saham, arham.masalah, nominal.nominal, statusOrang, []),
     jejak: [tirkah.jejak, ...arham.jejak, ...nominal.jejak],
     pembulatan: { satuan: input.pembulatan.satuan, sisaPembulatan: nominal.sisaPembulatan },
@@ -261,7 +290,7 @@ function gabungDenganPasangan(input: InputEngine, pasangan: HasilOk, arham: Hasi
   const statusOrang = { ...pasangan.statusOrang, ...arham.statusArham };
   const barisPasangan = pasangan.tabel.baris.filter(baris => Object.values(baris.perOrang).some(sel => sel.saham > 0n));
   return {
-    status: 'OK', statusOrang, tanzil: arham.tanzil,
+    status: 'OK', statusOrang, ...(arham.tanzil ? { tanzil: arham.tanzil } : {}),
     tabel: susunTabel(gabung.saham, gabung.jamiah, nominal.nominal, statusOrang, barisPasangan),
     jejak: [
       ...pasangan.jejak.filter(langkah => langkah.jenis !== 'DISTRIBUSI'),

@@ -113,7 +113,7 @@ const jihahDari = (kunci: KunciAhliWaris): Jihah =>
 
 /** Semua lintasan [idAwal, ..., leluhur] lewat idAyah/idIbu, termasuk [idAwal]. */
 // ponytail: eksponensial pada pernikahan antarkerabat berlapis; cukup untuk graf keluarga, memoisasi bila perlu.
-function lintasanKeAtas(graf: GrafKeluarga, idAwal: IdOrang): IdOrang[][] {
+export function lintasanKeAtas(graf: GrafKeluarga, idAwal: IdOrang): IdOrang[][] {
   const hasil: IdOrang[][] = [];
   const telusuri = (lintasan: IdOrang[]) => {
     hasil.push(lintasan);

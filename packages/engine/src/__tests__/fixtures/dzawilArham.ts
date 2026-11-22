@@ -361,7 +361,7 @@ export const KASUS_DZAWIL_ARHAM_MADZHAB: Array<{ id: string; graf: GrafKeluarga;
   harapan: Partial<Record<Ruleset, FixtureDzawilArham['harapan']>> }> = [
   { id: 'K14-3 anak dari anak pr', graf: grafDA11, harapan: {
     hanbali: { status: 'OK', saham: { XL: 1n, XP: 1n }, penyebut: 2n, jenisJejak: ['KHILAF_MADZHAB'] },
-    hanafi: { status: 'TIDAK_DIDUKUNG', refs: ['K14-2'] },
+    // [HNF] qarabah: diuji di qarabah.test.ts (penjelasannya belum ada, jadi tidak ikut kasus emas packages/explain).
     maliki: { status: 'TIDAK_DIDUKUNG', refs: ['K14-2'] },
   } },
   { id: 'K14-3 khal & khalah', graf: grafDA12, harapan: {
