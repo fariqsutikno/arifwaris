@@ -26,6 +26,7 @@ export function Privasi() {
 const bagian = () => [
   { id: 'data', judul: t('privasi.data_judul', SISIPAN_KEBIJAKAN), isi: t('privasi.data_isi', SISIPAN_KEBIJAKAN) },
   { id: 'tujuan', judul: t('privasi.tujuan_judul', SISIPAN_KEBIJAKAN), isi: t('privasi.tujuan_isi', SISIPAN_KEBIJAKAN) },
+  { id: 'pakai', judul: t('privasi.pakai_judul', SISIPAN_KEBIJAKAN), isi: t('privasi.pakai_isi', SISIPAN_KEBIJAKAN) },
   { id: 'retensi', judul: t('privasi.retensi_judul', SISIPAN_KEBIJAKAN), isi: t('privasi.retensi_isi', SISIPAN_KEBIJAKAN) },
   { id: 'lokasi', judul: t('privasi.lokasi_judul', SISIPAN_KEBIJAKAN), isi: t('privasi.lokasi_isi', SISIPAN_KEBIJAKAN) },
   { id: 'prosesor', judul: t('privasi.prosesor_judul', SISIPAN_KEBIJAKAN), isi: t('privasi.prosesor_isi', SISIPAN_KEBIJAKAN) },

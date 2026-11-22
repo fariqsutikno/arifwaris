@@ -27,6 +27,7 @@ const bagian = () => [
   { id: 'akun', judul: t('syarat.akun_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.akun_isi', SISIPAN_KEBIJAKAN) },
   { id: 'pemakaian', judul: t('syarat.pemakaian_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.pemakaian_isi', SISIPAN_KEBIJAKAN) },
   { id: 'konten', judul: t('syarat.konten_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.konten_isi', SISIPAN_KEBIJAKAN) },
+  { id: 'data', judul: t('syarat.data_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.data_isi', SISIPAN_KEBIJAKAN) },
   { id: 'pilihan', judul: t('syarat.pilihan_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.pilihan_isi', SISIPAN_KEBIJAKAN) },
   { id: 'beta', judul: t('syarat.beta_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.beta_isi', SISIPAN_KEBIJAKAN) },
   { id: 'tanggung_jawab', judul: t('syarat.tanggung_jawab_judul', SISIPAN_KEBIJAKAN), isi: t('syarat.tanggung_jawab_isi', SISIPAN_KEBIJAKAN) },

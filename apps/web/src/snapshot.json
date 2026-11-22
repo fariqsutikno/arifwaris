@@ -28959,6 +28959,34 @@
    "id": "Kamu bisa berhenti kapan saja dengan menghapus akun. Kami dapat menghentikan layanan atau sebagian fiturnya; bila itu terjadi, kami memberi pemberitahuan dalam jangka waktu yang wajar dan kesempatan mengunduh datamu sebelum layanan atau akunmu ditutup.\n\nSetelah ditutup, datamu dihapus sesuai kebijakan privasi, kecuali yang wajib kami simpan menurut hukum.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.pakai_judul",
+   "halaman": "privasi",
+   "id": "Bagaimana datamu dipakai dan siapa yang bisa melihatnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "privasi.pakai_isi",
+   "halaman": "privasi",
+   "id": "Per jenis data:\n\nEmail, nama, dan foto akun Google: dipakai untuk masuk dan mengenali akunmu. Hanya kamu dan pengelola (untuk pemeliharaan) yang bisa melihatnya. Nama tampilan dan foto baru terlihat pengguna lain bila kamu ikut papan peringkat.\n\nProgres belajar, percobaan soal, XP, dan streak: dipakai untuk menyimpan kemajuanmu, menilai jawaban, dan menghitung XP. Hanya terlihat olehmu. Bila kamu ikut papan peringkat, pengguna lain melihat nama tampilan, XP, dan streak-mu (bukan jawaban atau riwayatmu).\n\nRiwayat dan kasus tersimpan: hanya terlihat olehmu. Kasus yang kamu bagikan terlihat oleh orang yang kamu beri akses (siapa pun yang punya tautan, atau email tertentu).\n\nLangganan notifikasi: dipakai hanya untuk mengirim pengingat yang kamu nyalakan.\n\nCatatan persetujuan: dipakai sebagai bukti pilihan yang kamu buat.\n\nSiapa yang bisa melihat datamu:\n\nKamu sendiri. Pengguna lain, hanya sebatas yang kamu pilih bagikan. Pengelola, yang memegang akses teknis ke basis data, hanya bila perlu untuk pemeliharaan, keamanan, menanggapi permintaanmu, atau diwajibkan hukum; aplikasi sendiri membatasi akses data per akun. Pihak pemroses yang disebut di bagian berikutnya, sebatas menjalankan layanan. Pihak berwenang, bila diwajibkan hukum.\n\nYang tidak kami lakukan: menjual datamu, memakainya untuk iklan, atau membagikannya ke pihak di luar daftar pemroses.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.data_judul",
+   "halaman": "syarat",
+   "id": "Datamu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.data_isi",
+   "halaman": "syarat",
+   "id": "Pemrosesan datamu diatur kebijakan privasi, yang menjadi bagian dari syarat ini. Datamu tetap milikmu; kami menyimpan dan memprosesnya hanya untuk menjalankan fitur yang kamu pakai.\n\nXP, streak, dan riwayat adalah catatan di akunmu, tidak bisa dipindahkan ke akun lain, dan ikut terhapus bila akun dihapus.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
