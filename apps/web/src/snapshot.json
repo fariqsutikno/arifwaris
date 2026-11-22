@@ -28774,7 +28774,7 @@
   {
    "kunci": "syarat.hasil_isi",
    "halaman": "syarat",
-   "id": "Hasil mengikuti madzhab yang kamu pilih (bawaan: Syafi'i) dan sumber yang ditampilkan di tiap langkah. Itu alat bantu belajar dan perhitungan awal, bukan fatwa, bukan putusan pengadilan, dan bukan nasihat hukum.\n\nUntuk pembagian waris yang sebenarnya, rujuklah ulama atau lembaga fatwa, serta pengadilan agama atau notaris sesuai hukum yang berlaku bagimu. Hukum positif (misalnya KHI) ditandai terpisah dari fikih.\n\nKasus yang aturannya belum didukung atau datanya kurang akan ditandai, bukan ditebak. Hasilnya hanya sebaik data yang kamu isi. Kami tidak bertanggung jawab atas keputusan yang kamu ambil hanya dari hasil aplikasi tanpa memeriksanya ke pihak berwenang.",
+   "id": "Hasil mengikuti madzhab yang kamu pilih (bawaan: Syafi'i) dan sumber yang ditampilkan di tiap langkah. Itu alat bantu belajar dan perhitungan awal, bukan fatwa, bukan putusan pengadilan, dan bukan nasihat hukum.\n\nUntuk pembagian waris yang sebenarnya, periksa fakta, dokumen, utang, wasiat, hibah, dan ahli warismu bersama ulama atau lembaga fatwa, serta pengadilan agama, notaris, atau penasihat hukum yang berwenang. Hukum positif (misalnya KHI) ditandai terpisah dari fikih; menyebut sebuah aturan tidak berarti kami memberi pendapat hukum atas kasusmu.\n\nKasus yang aturannya belum didukung atau datanya kurang akan ditandai, bukan ditebak. Namun sistem tidak selalu bisa mengenali setiap kekurangan atau keadaan khusus, jadi tidak adanya peringatan bukan jaminan bahwa kasusnya lengkap atau hasilnya benar.\n\nKamu bertanggung jawab memeriksa data yang kamu isi dan hasilnya sebelum mengandalkannya. Sejauh diizinkan hukum, kami tidak bertanggung jawab atas keputusan yang kamu ambil hanya dari hasil aplikasi tanpa memeriksanya ke pihak berwenang.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28788,7 +28788,7 @@
   {
    "kunci": "syarat.akun_isi",
    "halaman": "syarat",
-   "id": "Kamu masuk lewat akun Google dan bertanggung jawab atas aktivitas di akunmu serta menjaga akses ke akun Google-mu.\n\nSoal usia, lihat bagian Anak di bawah umur pada kebijakan privasi: di bawah 18 tahun perlu persetujuan orang tua atau wali.\n\nKamu bisa menghapus akun kapan saja di menu Profil. Akun penulis atau pemeriksa konten dihapus lewat pengelola.",
+   "id": "Kamu masuk lewat akun Google. Kamu bertanggung jawab atas aktivitas di akunmu dan menjaga akses ke akun Google-mu. Beri tahu kami lewat kontak bila kamu menduga akunmu disalahgunakan. Jangan memakai identitas orang lain atau menghindari pembatasan akun.\n\nSoal usia, lihat bagian Anak di bawah umur pada kebijakan privasi: di bawah 18 tahun perlu persetujuan orang tua atau wali.\n\nKamu bisa menghapus akun kapan saja di menu Profil. Akun penulis atau pemeriksa konten dihapus lewat pengelola.\n\nKami dapat membatasi sementara atau menangguhkan akses bila perlu untuk melindungi layanan atau pengguna lain, menyelidiki dugaan pelanggaran, atau memenuhi kewajiban hukum. Bila memungkinkan, kami memberi tahu alasannya dan cara mengajukan keberatan. Penangguhan tidak menghapus hakmu untuk meminta unduhan dan penghapusan data.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28802,7 +28802,7 @@
   {
    "kunci": "syarat.pemakaian_isi",
    "halaman": "syarat",
-   "id": "Kamu setuju tidak: meretas, menguji kerentanan tanpa izin, atau mengganggu layanan; memakai skrip atau otomasi untuk mengirim percobaan soal, XP, atau streak (server membatasi 30 percobaan per menit dan 2000 per hari per akun, dan Ujian hanya menerima satu Kirim per sesi); memakai akun orang lain atau mengakali papan peringkat; memakai nama tampilan yang menyinggung, mengandung SARA, atau menyamar sebagai orang lain; membagikan lewat tautan kasus yang memuat data pribadi orang lain tanpa hak.\n\nKami dapat menyetel ulang XP atau streak yang diperoleh dengan cara itu, mengganti nama tampilan yang melanggar, atau menangguhkan akun. Pada akun yang ditangguhkan, kamu tetap bisa meminta unduhan data dan penghapusan akun lewat kontak.",
+   "id": "Kamu setuju tidak: meretas, mengakses tanpa izin, menguji kerentanan tanpa persetujuan tertulis, atau mengganggu layanan; memakai skrip atau otomasi untuk mengirim percobaan soal atau memanipulasi XP dan streak; memakai akun orang lain, membuat akun palsu, atau mengakali papan peringkat; memakai nama tampilan yang menyesatkan, menyamar sebagai orang lain, atau berisi ujaran kebencian dan pelecehan; membagikan lewat tautan kasus yang memuat data pribadi orang lain tanpa hak; atau memakai layanan untuk melanggar hukum.\n\nSaat ini server membatasi 30 percobaan soal per menit dan 2000 per hari per akun, dan Ujian hanya menerima satu Kirim per sesi. Batas ini dapat berubah.\n\nBila ada pelanggaran, kami dapat menyembunyikan konten yang melanggar, menyetel ulang XP atau streak yang diperoleh dengan cara itu, mengganti nama tampilan, membatasi fitur, atau menangguhkan akun, sesuai sifat dan tingkat pelanggaran. Tindakan ini dilakukan pengelola secara manual, bukan otomatis.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28816,7 +28816,7 @@
   {
    "kunci": "syarat.konten_isi",
    "halaman": "syarat",
-   "id": "Materi, soal, penjelasan, dan tampilan aplikasi dilindungi hak cipta. Kamu boleh memakainya untuk belajar pribadi; menyalin secara massal atau menjual ulang memerlukan izin tertulis.\n\nKasus yang kamu simpan atau bagikan tetap milikmu. Dengan membagikannya lewat tautan, kamu mengizinkan layanan menampilkannya kepada orang yang punya akses sesuai pilihanmu (tautan, atau email tertentu).",
+   "id": "Materi, soal, penjelasan, dan tampilan aplikasi dilindungi hak cipta. Kamu boleh memakainya untuk belajar pribadi dan nonkomersial; menyalin secara massal, menerbitkan ulang, atau menjualnya memerlukan izin tertulis.\n\nKasus yang kamu simpan atau bagikan tetap milikmu, dan kamu bertanggung jawab memastikan kamu berhak memasukkan datanya serta tidak melanggar privasi orang lain. Jangan memasukkan data pribadi orang lain yang tidak diperlukan.\n\nDengan menyimpan atau membagikan kasus, kamu memberi kami izin terbatas untuk menyimpan, memproses, dan menampilkannya hanya sejauh perlu untuk menjalankan fitur itu, sesuai pilihan aksesmu dan kebijakan privasi. Orang yang memperoleh tautan dapat melihat isi yang ditampilkan; bila kamu membatasi ke email tertentu, akses mengikuti pilihan itu. Salinan yang sudah dilihat atau disimpan penerima mungkin tidak bisa ditarik kembali.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28830,7 +28830,7 @@
   {
    "kunci": "syarat.beta_isi",
    "halaman": "syarat",
-   "id": "Layanan masih berstatus beta dan gratis sampai waktu yang ditentukan pengelola. Selama beta, fitur dan data dapat berubah, dan kami tidak menjamin layanan tersedia terus-menerus.\n\nInformasi akan disampaikan sebelum skema berubah. Fitur berbayar akan ditawarkan sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku.",
+   "id": "Layanan masih berstatus beta dan gratis sampai waktu yang ditentukan pengelola. Selama beta, fitur dan data dapat berubah, dan kami tidak menjamin layanan selalu tersedia tanpa gangguan, pemeliharaan, atau kesalahan.\n\nKami dapat menambah, mengubah, membatasi, atau menghentikan fitur. Informasi akan disampaikan sebelum skema berubah, termasuk saat fitur berbayar dibuka. Fitur berbayar ditawarkan sesuai ketentuan yang berlaku: harga dan syaratnya diumumkan sebelum berlaku, dan kamu tidak dikenai biaya tanpa persetujuanmu. Pengembalian dana mengikuti ketentuan yang diumumkan saat paket dibuka dan hukum yang berlaku.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28887,6 +28887,34 @@
    "kunci": "syarat.kontak_isi",
    "halaman": "syarat",
    "id": "ArifWaris Team, cs@arifwaris.com.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.pilihan_judul",
+   "halaman": "syarat",
+   "id": "Fitur pilihan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.pilihan_isi",
+   "halaman": "syarat",
+   "id": "Ikut papan peringkat dan menerima notifikasi bersifat pilihan dan bisa kamu nyalakan atau matikan kapan saja di Profil. Penggunaannya tunduk pada kebijakan privasi. Mematikan fitur tidak menghapus data yang sudah diproses; pengelolaan data dijelaskan di kebijakan privasi, dan kamu bisa menghapus akun.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.umum_judul",
+   "halaman": "syarat",
+   "id": "Ketentuan umum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "syarat.umum_isi",
+   "halaman": "syarat",
+   "id": "Bila satu ketentuan tidak dapat diberlakukan, ketentuan lainnya tetap berlaku sejauh diizinkan hukum. Kami tidak melepaskan hak hanya karena tidak langsung menggunakannya. Syarat ini bersama kebijakan privasi mengatur pemakaian Platform Waris.",
    "ar": null,
    "versiTerbit": 873
   }

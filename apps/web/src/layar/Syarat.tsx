@@ -22,9 +22,11 @@ const bagian = () => [
   { id: 'akun', judul: t('syarat.akun_judul'), isi: t('syarat.akun_isi') },
   { id: 'pemakaian', judul: t('syarat.pemakaian_judul'), isi: t('syarat.pemakaian_isi') },
   { id: 'konten', judul: t('syarat.konten_judul'), isi: t('syarat.konten_isi') },
+  { id: 'pilihan', judul: t('syarat.pilihan_judul'), isi: t('syarat.pilihan_isi') },
   { id: 'beta', judul: t('syarat.beta_judul'), isi: t('syarat.beta_isi') },
   { id: 'tanggung_jawab', judul: t('syarat.tanggung_jawab_judul'), isi: t('syarat.tanggung_jawab_isi') },
   { id: 'perubahan', judul: t('syarat.perubahan_judul'), isi: t('syarat.perubahan_isi') },
   { id: 'hukum', judul: t('syarat.hukum_judul'), isi: t('syarat.hukum_isi') },
+  { id: 'umum', judul: t('syarat.umum_judul'), isi: t('syarat.umum_isi') },
   { id: 'kontak', judul: t('syarat.kontak_judul'), isi: t('syarat.kontak_isi') },
 ];
