@@ -60,6 +60,7 @@ Sumber tunggal untuk ruleset overlay. **[SYF]** = default dan dasar; [HNB], [HNF
 | K14-1 | Dzawil arham mewarisi | bila baitul mal tidak tegak | ya (Mughni 6/318–319 · shamela:8463/2641) | ya (Mabsuth 30/2 · shamela:5423/5970) | tidak mewarisi bila imam adil (harta ke baitul mal); bila imam tidak adil «ينبغي أن يورث ذوو الأرحام» ('Iqd 3/1247, nukilan dari ashhab · shamela:14594/1245) | 14 |
 | K14-2 | Metode dzawil arham | tanzil | tanzil (Mughni 6/319 · shamela:8463/2641) | qarabah, 7 shinf (14.11; Mabsuth 30/6 · shamela:5423/5974). Satu orang dua jalur: mewarisi dengan tiap jalur, dihitung pada ushul (Muhammad): «فَلَا شَكَّ عَلَى قَوْلِ مُحَمَّدٍ أَنَّهَا تَرِثُهُ بِالْقَرَابَتَيْنِ جَمِيعًا» (Mabsuth 30/15 · shamela:5423/5983); «وَمَنْ لَهُ قَرَابَةٌ مِنْ جِهَتَيْنِ مِنْ ذَوِي الْأَرْحَامِ فَلَهُ سَهْمَانِ ... عِنْدَ مُحَمَّدٍ اعْتِبَارًا بِالْأُصُولِ» (al-Ikhtiyar 5/108 · shamela:1066/810); tarjih «وَقَوْلُ مُحَمَّدٍ أَصَحُّ فِي ذَوِي الْأَرْحَامِ جَمِيعًا» (Tabyin 6/243 · shamela:23023/1831). Abu Yusuf: dua penukilan (Irak: satu jalur; Ma wara' an-Nahr: dua jalur pada furu', «وَهَذَا هُوَ الصَّحِيحُ»). Contoh hitung eksplisit hanya di shinf pertama | — | 14 |
 | K14-3 | lk vs pr dalam dzawil arham | 2:1 kecuali cabang perantara seibu | sama rata bila ayah dan ibunya sama, kecuali khal (2/3) dan khalah (1/3) (Mughni 6/324 · shamela:8463/2646) | 2:1 dihitung per tingkat ushul (qaul Muhammad, zhahir madzhab) | — | 14 |
+| K14-4 | Cakupan sabq ke ahli waris (tanzil) | global antar semua dzawil arham (Raudhah 6/55 · shamela:499/2344; Tuhfah 6/394 · shamela:9059/2803; Nihayat al-Mathlab 9/231 · shamela:9851/4758) | hanya dalam satu jihah (tiga: bunuwwah, ubuwwah, umumah); lintas jihah ikut perantara (Kasysyaf 10/447 · shamela:622/4859; asy-Syarh al-Kabir 7/124 · shamela:1153/3957; contoh al-Wajiz ad-Dujaili 296 · shamela:147064/285) | — (qarabah) | — | 14 |
 
 ## 18.3 Yang Belum Ada (per 2026-09-29, setelah pencarian Shamela)
 | Titik | Madzhab | Dampak ke engine |
@@ -156,10 +157,10 @@ Status: **disetujui pengguna 2026-09-29** (setelah verifikasi kitab; R01-1 dipec
 | R14-4 | ya | tidak | tidak | Definisi sama (Mughni 6/318); K14-1 hanya soal apakah mewarisi |
 | R14-5 | tidak | tidak | tidak | K14-1 berbeda di ketiga madzhab |
 | R14-6 | tidak | tidak | tidak | Kutipan Raudhah khusus [SYF]; [HNB] tanzil lewat K14-2 |
-| R14-7 | ya | tidak | tidak | Lahim hlm. 192–193 (nukilan Hanbali); [HNF] qarabah |
+| R14-7 | ya | tidak | tidak | Sabq ada di [HNB] tetapi cakupannya beda: K14-4; [HNF] qarabah |
 | R14-8 | tidak | tidak | tidak | K14-3 berbeda |
 | R14-9 | ya | tidak | tidak | Mughni 6/319 tanzil |
-| R14-10 | ya | tidak | tidak | Lahim hlm. 192–194 |
+| R14-10 | tidak | tidak | tidak | K14-4: [SYF] sabq global, [HNB] per jihah |
 | R14-11 | ya | tidak | tidak | Lahim hlm. 194–195 |
 | R14-12 | ya | tidak | tidak | Lahim hlm. 207–208 |
 | R14-13 | ya | tidak | tidak | Lahim hlm. 217 |
