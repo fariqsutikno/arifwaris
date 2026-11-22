@@ -58,7 +58,7 @@ function orangDzawilArham(konteks: Konteks, idOrang: IdOrang, tanzil: Langkah<'D
   };
 }
 
-/** Kerabat jauh yang tidak mendapat bagian: kalah cepat dalam satu jihah [R14-7], atau perantaranya sendiri terhalang [R14-10]. */
+/** Kerabat jauh yang tidak mendapat bagian: kalah cepat sampai ke ahli waris [R14-7] (global [SYF] [R14-10], per jihah [HNB] [K14-4]), atau perantaranya sendiri terhalang [R14-10]. */
 function orangDzawilArhamTerhalang(konteks: Konteks, idOrang: IdOrang, tanzil: Langkah<'DZAWIL_ARHAM_TANZIL'>): PenjelasanOrang {
   const { penyusun } = konteks;
   const sebut = (ids: IdOrang[]) => konteks.sebutan.sebut(ids);
