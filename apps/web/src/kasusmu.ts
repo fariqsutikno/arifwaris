@@ -6,7 +6,6 @@ import type { RepositoriBagikan } from '@waris/data';
 import { antre } from './akun/antrean';
 import { sudahDibagikan, tandaiDibagikan } from './bagikanLokal';
 import type { Kasus } from './kasus';
-import { ambilProgresSoal, hapusProgresSoal, simpanProgresSoal, type ProgresSoalLokal } from './progresSoalLokal';
 import { MASA_SIMPAN, bacaRiwayat, catatRiwayat, hapusRiwayat, ringkasKasus, type EntriRiwayat, type SumberRiwayat } from './riwayat';
 import { bacaTersimpan, hapusTersimpan, simpanKasus } from './tersimpan';
 
@@ -57,11 +56,10 @@ export interface CadanganKasus {
   id: string;
   entriRiwayat: EntriRiwayat | null;
   tersimpan: { kasus: Kasus; judul: string } | null;
-  progresSoal: ProgresSoalLokal | null;
 }
 
 /**
- * Hapus tuntas satu kasus dari perangkat dan akun: riwayat, Tersimpan (+ antrean hapus ke akun), isian soal, dan
+ * Hapus tuntas satu kasus dari perangkat dan akun: riwayat, Tersimpan (+ antrean hapus ke akun), dan
  * tautan bagikan bila ada. Satu pintu supaya kasus tidak "hidup lagi" lewat simpanan yang terlewat.
  * Tautan dihentikan tanpa menunggu jaringan; gagal (offline) tidak membatalkan hapus lokal.
  */
@@ -71,11 +69,9 @@ export function hapusKasus(id: string, bagikan?: Pick<RepositoriBagikan, 'berhen
     id,
     entriRiwayat: bacaRiwayat().find(entri => entri.id === id) ?? null,
     tersimpan: tersimpan ? { kasus: tersimpan.kasus, judul: tersimpan.judul } : null,
-    progresSoal: ambilProgresSoal(id),
   };
   hapusRiwayat(id);
   hapusTersimpan(id);
-  hapusProgresSoal(id);
   // Tanpa akses akun tautan belum bisa dihentikan, jadi penandanya dibiarkan agar tidak terlupa.
   if (bagikan && sudahDibagikan(id)) {
     tandaiDibagikan(id, false);
@@ -85,15 +81,14 @@ export function hapusKasus(id: string, bagikan?: Pick<RepositoriBagikan, 'berhen
   return cadangan;
 }
 
-/** Urungkan hapusKasus: menulis ulang riwayat, Tersimpan (ikut antre ke akun lagi) dan isian soal. */
+/** Urungkan hapusKasus: menulis ulang riwayat dan Tersimpan (ikut antre ke akun lagi). */
 export function pulihkanKasus(cadangan: CadanganKasus): void {
-  const { id, entriRiwayat, tersimpan, progresSoal } = cadangan;
+  const { id, entriRiwayat, tersimpan } = cadangan;
   if (entriRiwayat) catatRiwayat(id, entriRiwayat.kasus, entriRiwayat.waktu, entriRiwayat.sumber);
   if (tersimpan) simpanKasus(id, tersimpan.kasus, tersimpan.judul);
-  if (progresSoal) simpanProgresSoal(id, progresSoal);
 }
 
 export function hapusSemuaSementara(): void {
   const tersimpan = new Set(bacaTersimpan().map(baris => baris.id));
-  bacaRiwayat().filter(entri => !tersimpan.has(entri.id)).forEach(entri => { hapusRiwayat(entri.id); hapusProgresSoal(entri.id); });
+  bacaRiwayat().filter(entri => !tersimpan.has(entri.id)).forEach(entri => hapusRiwayat(entri.id));
 }

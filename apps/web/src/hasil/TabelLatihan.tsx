@@ -9,6 +9,7 @@ import { Confetti } from '../ui/Confetti';
 import { Ikon } from '../ui/Ikon';
 import { angka, angkaLatin, t } from '../terjemah';
 import { jenisDari } from '../checklist';
+import { bacaIsianSoal, hapusIsianSoal, hitungTerisi, simpanIsianSoal } from '../isianSoal';
 import { LABEL_SEHARI } from '../konten/ahliWaris';
 import { ID_BARIS_MAUQUF, nilaiSemuaKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 
@@ -26,10 +27,10 @@ interface Props {
   terkunci?: boolean;
   /** Nama mayit untuk judul kolom munasakhat; tanpa ini id dipakai apa adanya. */
   namaDari?: (id: string) => string;
-  /** Isian saat dipasang (pulih dari simpanan perangkat); setelah itu komponen memegang isiannya sendiri. */
-  isianAwal?: IsianTabel | undefined;
-  /** Dipanggil tiap isian berubah (termasuk Kosongkan) dan sekali saat dipasang, untuk disimpan pemanggil. */
-  saatIsianBerubah?: (isian: IsianTabel) => void;
+  /** Soal latihan: isian tersimpan per kode soal supaya soal yang terputus bisa dilanjutkan (spec siklus kasus dan soal). */
+  kodeSoal?: string | undefined;
+  /** Kosongkan pada isian yang sudah terisi = percobaan baru (jangkar diacak ulang oleh pemanggil). */
+  saatKosongkan?: (() => void) | undefined;
   /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
   tanpaCara?: boolean;
 }
@@ -73,13 +74,19 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, isianAwal, saatIsianBerubah }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, saatKosongkan }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
-  const [isian, setIsian] = useState<IsianTabel>(isianAwal ?? { kepala: {}, sel: {} });
-  useEffect(() => { saatIsianBerubah?.(isian); }, [isian]); // eslint-disable-line react-hooks/exhaustive-deps
+  const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal)?.isian) || { kepala: {}, sel: {} });
+  const isianAwal = useRef(isian);
   const [hasil, setHasil] = useState<HasilNilai | null>(null);
   const [tolakBulat, setTolakBulat] = useState(false);
   const sudahBergabung = useRef(new Set<string>());
+
+  // Setiap perubahan isian disimpan; kosong = hapus. Soal benar / jawaban dibuka dihapus oleh Hasil.
+  useEffect(() => {
+    if (!kodeSoal || isian === isianAwal.current) return;
+    if (hitungTerisi(isian) > 0) simpanIsianSoal(kodeSoal, isian, hitungKotak(tabel, jangkar)); else hapusIsianSoal(kodeSoal);
+  }, [isian]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selesai = hasil?.jenis === 'benar';
   const modeKunci = terbuka && !selesai;
@@ -93,7 +100,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     if (nilai.jenis === 'belumLengkap') return;
     saatPercobaan({ mode, aksi: 'periksa', isian, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
   };
-  const kosongkan = () => { setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false); };
+  const kosongkan = () => { if (hitungTerisi(isian) > 0) saatKosongkan?.(); setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false); };
 
   const isiPilihan = (idBaris: string, idKolom: string, nilai: string) => {
     setIsian(lama => ({ ...lama, sel: { ...lama.sel, [idBaris]: { ...lama.sel[idBaris], [idKolom]: nilai } } }));
@@ -272,6 +279,15 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
       </section>}
     </div>
   );
+}
+
+/** Kotak yang harus diisi pelajar: kepala kolom, baris pengali, dan sel yang bukan petunjuk (jangkar/terkunci). */
+function hitungKotak(tabel: TabelSoal, jangkar: Jangkar | null): number {
+  const kepala = tabel.kolom.filter(kolom => kolom.kepala !== undefined && !kolom.terkunci).length;
+  const pengali = tabel.pengali ? Object.keys(tabel.pengali.kunci).length : 0;
+  const sel = tabel.baris.reduce((jumlah, baris) => jumlah + tabel.kolom.filter(kolom => baris.kunci[kolom.id] !== undefined && !kolom.terkunci
+    && !(jangkar?.idBaris === baris.id && jangkar.idKolom === kolom.id)).length, 0);
+  return kepala + pengali + sel;
 }
 
 function hasilUmpan(hasil: HasilNilai | null, tabel: TabelSoal, namaDari: (id: string) => string): { gaya: string; teks: string } | null {

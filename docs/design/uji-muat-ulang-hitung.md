@@ -1,8 +1,12 @@
 # Muat ulang di Hitung & Latihan: diagnosis dan peta uji
 
+> **Pembaruan 2026-11-23:** peta uji soal latihan (bagian 2, A1-A4, L*) **digantikan model #55**
+> (`spec-siklus-kasus-dan-soal.md`, B6): soal beralamat `#/latihan/soal/<kode>`, dipulihkan dari bank soal + `isianSoal`,
+> bukan dari riwayat. Tes pengganti: `soalAlamat.test.tsx`, `soalPulih.test.tsx`, `isianSoal.test.ts`, `muatUlangInvarian.test.ts`.
+
 Tanggal: 2026-11-23 (revisi 2: model simpan). Status: perbaikan Tugas 1–11 selesai (lihat "Status cakupan" di bawah).
 
-## Cara kerja sekarang
+## Cara kerja sekarang — *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
 
 - URL kasus: `#/hitung/<idSesi>` (hasil), `/langkah/<n>` (wizard), `/cerita` (`rute.ts`).
 - Muat ulang → `pulihDariUrl` (`Aplikasi.tsx`) mencari entri **riwayat** (`localStorage arif-waris:riwayat`) berid itu,
@@ -61,18 +65,18 @@ Lapisan: **U** = unit (vitest, `pulihDariUrl`/reducer/riwayat), **K** = komponen
 | P16 | `#/hitung/<id acak / tebakan / milik orang lain>` | Pesan umum yang sama dengan P8; id dari URL tidak tampil di layar; tidak ada permintaan server berdasarkan id | U + K |
 | P17 | Hash dengan `%` rusak: `#/hitung/%E0`, `#/belajar/%`, `#/rujukan/%ZZ` | Tidak melempar, halaman tidak blank; jatuh ke beranda atau P8 | U + E |
 
-### 2. Soal latihan
+### 2. Soal latihan — *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
 
 | ID | Skenario | Harapan | Lapisan |
 |---|---|---|---|
-| L1 | Buka soal, refresh sebelum mengisi | Hero "Soal n dari N · bab", kode soal, soal berikutnya tetap ada (A1) | U + E |
+| L1 | Buka soal, refresh sebelum mengisi | Hero "Soal n dari N · bab", kode soal, soal berikutnya tetap ada (A1) | U + E ← digantikan model #55 |
 | L2 | Isi sebagian tabel, refresh | Isian kembali (A3) | K + E |
 | L3 | Periksa (salah), refresh | Isian + status "sudah mencoba" kembali; buka jawaban sesudahnya dihitung dikerjakan tanpa XP | K |
 | L4 | Jawab benar, refresh | Pembahasan tetap terbuka; progres & XP tercatat **sekali** (tidak dobel) | K + U |
 | L5 | Buka jawaban tanpa mencoba, refresh | Jawaban tetap terbuka; tidak dihitung dikerjakan | K |
-| L6 | Jangkar | Sama sebelum dan sesudah refresh (A4); beda antar sesi soal boleh | U |
-| L7 | Kejadian percobaan | `idSesiSoal` sama setelah refresh; tidak ada kejadian `buka` ganda | U |
-| L8 | Buka soal yang sama dari daftar dua kali | Sesi baru: isian kosong, jangkar boleh baru | K |
+| L6 | Jangkar | Sama sebelum dan sesudah refresh (A4); beda antar sesi soal boleh | U ← digantikan model #55 |
+| L7 | Kejadian percobaan | `idSesiSoal` sama setelah refresh; tidak ada kejadian `buka` ganda | U ← digantikan model #55 |
+| L8 | Buka soal yang sama dari daftar dua kali | Sesi baru: isian kosong, jangkar boleh baru | K ← digantikan model #55 |
 | L9 | Soal gharqa (`GharqaLatihan`), refresh | Sama dengan L1–L6 | K |
 | L10 | Soal [HNB] yang tak bisa jadi tabel (tampil sebagai hasil hitung), refresh | Tetap tampil hasil, tidak macet | U |
 | L11 | Soal tanpa harta (masuk wizard), refresh | Wizard langkah yang sama | U |
@@ -114,7 +118,7 @@ Lapisan: **U** = unit (vitest, `pulihDariUrl`/reducer/riwayat), **K** = komponen
 | S2 | Urungkan sesudah hapus | Riwayat, Tersimpan, isian kembali; kasus terbuka lagi | U + K |
 | S3 | Hapus kasus yang sedang dibagikan | Dialog menyebut tautan ikut dihentikan; `bagikan.berhenti` dipanggil; Urungkan tidak menghidupkan tautan | U + K |
 | S4 | `bagikan.berhenti` gagal (offline) | Hapus lokal tetap jalan; tidak crash | U |
-| S5 | Entri riwayat kedaluwarsa (> 30 hari) | Isian soalnya ikut terbuang | U |
+| S5 | Entri riwayat kedaluwarsa (> 30 hari) | Isian soalnya ikut terbuang | U ← digantikan model #55 |
 | S6 | Soal latihan: hapus kasus | Kasus + isian hilang; progres & XP latihan tetap | U |
 | S7 | Hapus dari Berkas kasus / Riwayat | Jalur hapus yang sama dengan S1 (termasuk tautan bagikan) | U |
 | S8 | Keluar akun | Isian soal lokal ikut bersih | U |
@@ -143,7 +147,7 @@ Tes ada di `apps/web/src/__tests__/` kecuali disebut lain. Verifikasi browser (p
 | P4, B1 | `pulihUrl.test.ts` (semua `SUSUNAN_CEPAT`) + browser |
 | P8, P16, P17 | `kasusTakDitemukan.test.tsx`, `rute.test.ts` + browser (`#/hitung/<acak>`, `#/hitung/%E0`, `#/belajar/%`) |
 | P13 | browser: Back dari soal memunculkan satu dialog penjaga (bukan dua), Pindah → `#/latihan` |
-| P10, P11 | `progresSoalLokal.test.ts` (penyimpanan diblokir/rusak); entri riwayat rusak sudah dilewati `bacaRiwayat` |
+| P10, P11 | `progresSoalLokal.test.ts` (penyimpanan diblokir/rusak); entri riwayat rusak sudah dilewati `bacaRiwayat` ← digantikan model #55 |
 | L1, L6, L7 | `soalDariSumber.test.ts`, `acakBerbenih.test.ts`, browser (hero, jangkar sama, kejadian `buka` tunggal) |
 | L2–L5, L8 | `soalPulih.test.tsx` + browser (isian kembali, buka jawaban tidak menggandakan `jumlahCoba`) |
 | L9 (gharqa) | kode ikut `isianHarta`; belum ada tes komponen khusus gharqa (hanya tes lama) |
@@ -152,7 +156,7 @@ Tes ada di `apps/web/src/__tests__/` kecuali disebut lain. Verifikasi browser (p
 | H5, H6, H8, H9 | `muatUlangInvarian.test.ts` |
 | X1 | `pulihUrl.test.ts` (dedup dibatasi ke bukan-latihan) |
 | S1–S4, S6, S7 | `kasusmu.test.ts`, `hapusKasusIni.test.tsx`, `hasil.test.tsx` + browser (hapus + Urungkan) |
-| S5 | `progresSoalLokal.test.ts` |
+| S5 | `progresSoalLokal.test.ts` ← digantikan model #55 |
 | S8 | `sinkron-akun.test.ts` (`keluarDanBersihkan` menghapus semua kunci `arif-waris:`) |
 | S9 | `persetujuan.test.tsx` + browser `#/privasi` |
 | S10 | `hasil.test.tsx` (label "Tersimpan di perangkat ini") |

@@ -4,6 +4,11 @@
 
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
+import { bacaSemuaIsianSoal, hitungTerisi } from '../isianSoal';
+import { judulSoalTampil } from './belajar/judulSoal';
+import { judulTopik } from './belajar/KuisKonsep';
+import { soalTerputus } from './belajar/statusSoal';
+import type { SoalHitung } from '@waris/content';
 import type { Kasus } from '../kasus';
 import { bacaAktivitas } from '../preferensi';
 import { bacaPelajaranSelesai, bacaProgresLatihan } from '../progres';
@@ -34,16 +39,20 @@ interface PropsBeranda {
   kasusTerakhir: Kasus | null;
   saatKeHitung: () => void;
   saatCoba: (kasus: Kasus) => void;
+  /** Membuka soal terputus lewat panel "Lanjutkan soal". */
+  saatKerjakanSoal?: ((soal: SoalHitung) => void) | undefined;
   sesi?: Sesi | null;
   /** Ada hanya bila akun tersedia (env Supabase terisi). */
   saatMasuk?: (() => void) | undefined;
 }
 
-export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, sesi = null, saatMasuk }: PropsBeranda) {
+export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, saatKerjakanSoal, sesi = null, saatMasuk }: PropsBeranda) {
   const selesai = bacaPelajaranSelesai();
   const jumlahSelesai = daftarPelajaran().filter(pelajaran => selesai.has(pelajaran.slug)).length;
   const berikutnya = daftarPelajaran().find(pelajaran => !selesai.has(pelajaran.slug));
   const soalSelesai = daftarSoalHitung().filter(soal => bacaProgresLatihan('hitung')[soal.kode]).length;
+  const isianSoal = bacaSemuaIsianSoal();
+  const soalTerputusTerbaru = soalTerputus(daftarSoalHitung(), bacaProgresLatihan('hitung'), isianSoal)[0];
   const kuisTerakhir = bacaAktivitas().find(aktivitas => aktivitas.jenis === 'kuis');
   // Tanpa kasus yang sedang dimuat (misal sesudah reset), tetap tunjukkan entri riwayat terbaru,
   // supaya Beranda tidak bilang "belum ada" sementara Riwayat berisi.
@@ -81,6 +90,15 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, sesi = null, sa
             : <><b className="judul-ubin">{t('beranda.mulai_hitung')}</b><span className="keterangan">{t('beranda.isi_data_almarhum_ahli_waris_dan')}</span></>}
           <span className="aksi-status">{terakhir ? t('beranda.lanjutkan_kasus') : t('beranda.mulai_hitung')} {panah()}</span>
         </a>
+        {soalTerputusTerbaru && saatKerjakanSoal && (
+          <button type="button" className="ubin ubin-latihan ubin-soal-terputus" style={{ '--i': 1 } as CSSProperties} onClick={() => saatKerjakanSoal(soalTerputusTerbaru)}>
+            <span className="panah-bulat" aria-hidden="true">{panah()}</span>
+            <span className="label-langkah">{t('beranda.lanjutkan_soal')}</span>
+            <b className="judul-ubin">{judulSoalTampil(soalTerputusTerbaru, false)} · {judulTopik(soalTerputusTerbaru.bab)}</b>
+            <span className="keterangan">{t('beranda.isian_tersimpan', { terisi: angka(String(hitungTerisi(isianSoal[soalTerputusTerbaru.kode]!.isian))), total: angka(String(isianSoal[soalTerputusTerbaru.kode]!.jumlahKotak)) })}</span>
+            <span className="aksi-status">{t('hitung.lab_lanjutkan')} {panah()}</span>
+          </button>
+        )}
         <a className="ubin ubin-belajar" style={{ '--i': 1 } as CSSProperties} href={tautanBelajar(berikutnya?.slug)}>
           <span className="panah-bulat" aria-hidden="true">{panah()}</span>
           <Cincin selesai={jumlahSelesai} total={totalPelajaran} />

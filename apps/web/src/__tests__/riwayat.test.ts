@@ -25,8 +25,8 @@ it('satu entri per sesi, terbaru di atas; kasus yang sama tidak dobel', () => {
 
 it('sumber tercatat; entri yang tidak dibuka lebih dari 30 hari dibuang', () => {
   catatRiwayat('lama', kasus('ISTRI'), 0, sendiri);
-  catatRiwayat('soal', kasus('ANAK_PR'), MASA_SIMPAN + 1, { jenis: 'latihan', kode: 'H-01' });
-  expect(bacaRiwayat().map(entri => [entri.id, labelSumber(entri.sumber)])).toEqual([['soal', 'Soal latihan H-01']]);
+  catatRiwayat('berkas', kasus('ANAK_PR'), MASA_SIMPAN + 1, { jenis: 'impor' });
+  expect(bacaRiwayat().map(entri => [entri.id, labelSumber(entri.sumber)])).toEqual([['berkas', 'Impor file']]);
 });
 
 it('ringkasan dan waktu relatif', () => {
