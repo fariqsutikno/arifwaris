@@ -28987,6 +28987,41 @@
    "id": "Pemrosesan datamu diatur kebijakan privasi, yang menjadi bagian dari syarat ini. Datamu tetap milikmu; kami menyimpan dan memprosesnya hanya untuk menjalankan fitur yang kamu pakai.\n\nXP, streak, dan riwayat adalah catatan di akunmu, tidak bisa dipindahkan ke akun lain, dan ikut terhapus bila akun dihapus.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "bagikan.tautan_acak_info",
+   "halaman": "bagikan",
+   "id": "Alamat dibuat acak supaya tidak bisa ditebak, jadi tidak bisa diketik sendiri.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tautan_dibagikan",
+   "halaman": "akun",
+   "id": "Tautan yang sedang dibagikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tautan_buka",
+   "halaman": "akun",
+   "id": "Buka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tautan_hentikan",
+   "halaman": "akun",
+   "id": "Hentikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "akun.tautan_gagal_dihentikan",
+   "halaman": "akun",
+   "id": "Tautan gagal dihentikan. Coba lagi.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
