@@ -187,7 +187,7 @@ function layarSoal() {
   const sel = (b, i) => {
     if (dibuka) return `<td><span class="kunci">${i === 0 ? '<s>1/4</s>' : ''}${b.kunci.bagian}</span></td>`;
     const nilai = salah ? isianSalah[i] : '';
-    return `<td class="${salah && i === 0 ? 'keliru' : ''}"><select aria-label="Bagian ${b.nama}"><option value="">Pilih</option>${BAGIAN.map(p => `<option ${p === nilai ? 'selected' : ''}>${p}</option>`).join('')}</select></td>`;
+    return `<td class="${salah ? 'keliru' : ''}"><select aria-label="Bagian ${b.nama}"><option value="">Pilih</option>${BAGIAN.map(p => `<option ${p === nilai ? 'selected' : ''}>${p}</option>`).join('')}</select></td>`;
   };
   const angka = (b, kol) => `<td><input class="bulat" inputmode="numeric" aria-label="${kol} ${b.nama}" value="${salah && kol === 'awal' ? (b.nama === 'Istri' ? '1' : '3') : ''}"></td>`;
   return `<div class="tata">
@@ -195,7 +195,7 @@ function layarSoal() {
       <div class="kepalaT"><h2 id="jt">Tabel faraidh</h2>${teksXp()}</div>
       <p class="sub">Isi dari kiri ke kanan, lalu Periksa.</p>
       <div class="wadahTabel"><table class="kitab">
-        <thead><tr><th class="nama">Ahli waris</th><th><span class="judulKol">Bagian</span></th>
+        <thead><tr><th class="nama">Ahli waris</th><th class="${salah && !dibuka ? 'keliru' : ''}"><span class="judulKol">Bagian</span></th>
           <th><span class="judulKol">Asal masalah</span><input class="bulat" value="${salah ? '4' : ''}" aria-label="Asal masalah"></th>
           <th><span class="judulKol">Asal masalah akhir</span><input class="bulat" aria-label="Asal masalah akhir"></th></tr></thead>
         <tbody>${BARIS.map((b, i) => `<tr><td class="nama">${b.nama}</td>${sel(b, i)}${angka(b, 'awal')}${angka(b, 'akhir')}</tr>`).join('')}</tbody>
@@ -213,7 +213,7 @@ function layarSoal() {
       <ol class="sub" style="padding-left:20px;margin-top:8px">
         <li><b>Bagian</b> dipilih dari daftar.</li>
         <li>Saham = bilangan bulat terhadap asal masalah di kepala kolom.</li>
-        <li>Salah tidak mengurangi XP. Perbaiki saja yang merah.</li>
+        <li>Salah tidak mengurangi XP. Kolom yang merah perlu dicek lagi.</li>
         <li>Salah 2 kali? Petunjuk boleh dibuka. Bonusnya saja yang hilang.</li>
       </ol>
     </aside>
@@ -225,7 +225,7 @@ function umpan() {
   if (aktif === 'dibuka') return `<div class="umpan netral">Jawaban kolom <b>Bagian</b> sudah ditampilkan. Sekarang isi kolom <b>Asal masalah</b>.</div>`;
   const tawar = aktif === 'tawar';
   return `<div class="umpan salah" role="status">
-      ${aktif === 'salah1' ? 'Bagian <b>istri</b> belum tepat. Ganti pilihannya, lalu Periksa lagi.' : 'Bagian <b>istri</b> masih belum tepat.'}
+      ${aktif === 'salah1' ? 'Kolom <b>Bagian</b> belum tepat semua. Cek lagi tiap baris, lalu Periksa.' : 'Kolom <b>Bagian</b> masih ada yang belum tepat.'}
       ${tawar ? `<br><button class="tautan" data-k="p1">${ik('lampu')}Butuh petunjuk?</button>` : ''}
     </div>`;
 }
@@ -235,12 +235,12 @@ function kartuPetunjuk() {
   const kedua = aktif !== 'p1';
   return `<section class="petunjuk" aria-labelledby="jp">
     <h3 id="jp">${ik('lampu', 16)}Petunjuk ${kedua ? '2 dari 2' : '1 dari 2'}</h3>
-    <p class="butir">Bagian istri bisa <b>1/4</b> atau <b>1/8</b>. Yang menentukan: almarhum punya anak (atau cucu dari anak laki-laki) atau tidak.</p>
-    ${kedua ? `<p class="butir">Cek lagi soalnya: almarhum punya anak?</p>` : ''}
+    <p class="butir">Bagian tetap seseorang bisa <b>mengecil</b> karena ahli waris lain ikut hadir. Sudah kamu perhitungkan?</p>
+    ${kedua ? `<p class="butir">Coba lihat lagi bagian <b>istri</b>.</p>` : ''}
     <div class="kakiPetunjuk">
       ${kedua ? `<button class="tautan lanjut bahaya" data-k="dialog">${ik('mata')}Tunjukkan jawabannya</button>`
               : `<button class="tautan lanjut" data-k="p2">Masih bingung? Petunjuk 2</button>`}
-      <a class="tautan materi" href="#">${ik('buku', 16)}Baca materi bagian istri</a>
+      <a class="tautan materi" href="#">${ik('buku', 16)}Baca materi hajb nuqshan</a>
     </div>
   </section>`;
 }

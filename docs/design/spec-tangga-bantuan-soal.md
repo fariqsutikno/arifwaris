@@ -72,7 +72,12 @@ harga di setiap tombol.
 - Kartu kuning "Petunjuk · kolom Bagian" berisi petunjuk 1. Di bawahnya hanya satu aksi berikutnya: "Masih buntu?
   Petunjuk berikutnya", lalu setelah petunjuk 2 "Tunjukkan jawaban kolom Bagian" (merah). Petunjuk yang sudah dibuka
   tetap tampil bertumpuk di kartu yang sama.
-- Umpan salah langsung menunjuk barisnya ("Bagian **istri** belum tepat"), bukan kalimat penghibur.
+- Umpan salah menunjuk **kolom**, tidak menunjuk baris ("Kolom **Bagian** belum tepat semua"); seluruh kolom diberi warna
+  merah. Menunjuk baris membuat kolom dengan dua pilihan (misalnya istri 1/4 atau 1/8) langsung tertebak. (Revisi 3.)
+- Petunjuk menyenggol, tidak menjurus. Petunjuk 1 = konsep umum dari jenis jejak, tanpa nama orang dan tanpa nilai
+  ("Bagian tetap seseorang bisa mengecil karena ahli waris lain ikut hadir"). Petunjuk 2 = menyempit ke siapa yang perlu
+  dicek ("Coba lihat lagi bagian istri"), tetap tanpa nilai. Yang paham akan berkata "oh iya"; yang menebak tetap
+  tidak tahu nilainya. Tautan materi ke bab yang sesuai jejak (di sini hajb nuqshan).
 - "Buka sisanya" dinamai **Buka semua kolom**, hanya muncul setelah ada kolom dibuka (XP sudah hilang).
 - Daftar Latihan memakai gaya baris yang ada sekarang (DaftarSoalHitung). Tambahannya hanya keterangan
   (mandiri / dengan petunjuk / satu kolom dibuka) dan penanda **layak diulang**. Judul tetap buta sampai selesai
@@ -81,15 +86,17 @@ harga di setiap tombol.
 
 ## 6. Isi petunjuk
 Fikih harus bisa ditelusuri ke KB. Tidak ada kalimat yang dikarang per soal.
-- **Konsep (anak tangga 1)**: satu templat per `idJudul` kolom (`asalMasalah`, `bagian`, `didudukkanSebagai`, `pengali`,
-  `jamiah`, …), diksi `hitung.bantuan.konsep.<idJudul>`, dengan tautan ke pelajaran yang membahasnya.
-- **Singgungan (anak tangga 2)**: dari `LangkahJejak` hasil engine, jadi selalu sesuai kasus dan ber-refs:
-  - `didudukkanSebagai`, baris terhalang → `HAJB_HIRMAN.hajib`: "Ingat, di kasus ini ada {hajib}."
-  - `bagian`, fardh berkurang → `HAJB_NUQSHAN.penyebab`: "Perhatikan siapa yang membuat bagian {nama} berkurang."
-  - `asalMasalah` / `asalMasalahAkhir` → `AUL` / `RADD` / `KASUS_KHUSUS`: "Jumlah bagiannya melebihi/kurang dari asal masalah."
-  - `pengali` → `PERBANDINGAN_NISAB` tujuan `inkisar`: "Ada kelompok yang sahamnya tidak terbagi rata."
-  - Kolom tanpa jejak yang cocok: lewati anak tangga 2.
-  Singgungan menyebut **apa yang perlu diperhatikan**, tidak pernah nilai sel.
+(Revisi 3: menyenggol, tidak menjurus.) Keduanya diturunkan dari `LangkahJejak` baris yang salah, jadi sesuai kasus dan ber-refs.
+- **Petunjuk 1 (konsep)**: satu templat per jenis jejak, tanpa nama dan nilai. Diksi `hitung.bantuan.konsep.<jenis>`:
+  - `HAJB_NUQSHAN` → "Bagian tetap seseorang bisa mengecil karena ahli waris lain ikut hadir."
+  - `HAJB_HIRMAN` → "Ada ahli waris yang tidak mendapat apa-apa karena terhalang orang yang lebih dekat."
+  - `AUL` / `RADD` → "Jumlah semua bagian tidak selalu pas dengan asal masalah."
+  - `PERBANDINGAN_NISAB` (inkisar) → "Saham sebuah kelompok tidak selalu bisa dibagi rata ke anggotanya."
+  - `ASHABAH` bil ghair → "Ada ahli waris yang berbagi sisa dengan perbandingan tertentu."
+  - Lain-lain: templat umum per `idJudul` kolom.
+- **Petunjuk 2 (menyempit)**: menyebut **siapa** yang perlu dicek (`terdampak` / `mahjub` / kelompok), tidak pernah nilai:
+  "Coba lihat lagi bagian {nama}." Kalau ada beberapa baris salah, yang disebut hanya satu (baris salah pertama).
+- Tautan materi: bab yang sesuai jenis jejak.
 - **Buka kolom (anak tangga 3)**: kunci kolom itu tampil seperti mode kunci sekarang; isian yang berbeda dicoret.
 
 ## 7. Supaya ingin kembali
