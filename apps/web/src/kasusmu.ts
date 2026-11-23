@@ -3,6 +3,7 @@
 // Pengguna hanya melihat dua status: Tersimpan dan Sementara. Kasus yang sama (id sama) muncul sekali, sebagai tersimpan.
 
 import type { RepositoriBagikan } from '@waris/data';
+import { antre } from './akun/antrean';
 import { sudahDibagikan, tandaiDibagikan } from './bagikanLokal';
 import type { Kasus } from './kasus';
 import { ambilProgresSoal, hapusProgresSoal, simpanProgresSoal, type ProgresSoalLokal } from './progresSoalLokal';
@@ -78,7 +79,8 @@ export function hapusKasus(id: string, bagikan?: Pick<RepositoriBagikan, 'berhen
   // Tanpa akses akun tautan belum bisa dihentikan, jadi penandanya dibiarkan agar tidak terlupa.
   if (bagikan && sudahDibagikan(id)) {
     tandaiDibagikan(id, false);
-    bagikan.berhenti(id).catch(() => undefined);
+    // Luring: perintah berhenti diantre ke akun supaya tautan tidak tertinggal hidup.
+    bagikan.berhenti(id).catch(() => antre({ tabel: 'hentikan_bagikan', idRiwayat: id }));
   }
   return cadangan;
 }

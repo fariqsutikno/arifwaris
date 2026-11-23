@@ -1,5 +1,6 @@
 import { beforeEach, expect, test, vi } from 'vitest';
-import { aturAkunLokal, bacaAntrean } from '../akun/antrean';
+import { antre, aturAkunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
+import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { sudahDibagikan, tandaiDibagikan } from '../bagikanLokal';
 import { bacaKasusKu, hapusKasus, hapusSemuaSementara, pulihkanKasus } from '../kasusmu';
 import { bacaProgresSoal, simpanProgresSoal, type ProgresSoalLokal } from '../progresSoalLokal';
@@ -89,13 +90,24 @@ test('tanpa akses akun, penanda bagikan dibiarkan (tautan belum bisa dihentikan)
   expect(sudahDibagikan('a')).toBe(true);
 });
 
-test('berhenti gagal (offline) tidak membatalkan hapus lokal dan tidak melempar (S4)', async () => {
+test('berhenti gagal (offline): hapus lokal tetap jalan dan perintah berhenti masuk antrean, diputar saat online (S4)', async () => {
   catatRiwayat('a', kasusKe(0), Date.now(), sendiri);
   tandaiDibagikan('a', true);
   const berhenti = vi.fn().mockRejectedValue(new Error('offline'));
   expect(() => hapusKasus('a', { berhenti })).not.toThrow();
-  await Promise.resolve();
+  await new Promise(selesai => setTimeout(selesai, 0));
   expect(bacaRiwayat()).toEqual([]);
+  expect(bacaAntrean()).toContainEqual({ tabel: 'hentikan_bagikan', idRiwayat: 'a' });
+  const { pengguna } = buatMemoriPengguna(buatMemori({ sesi: { userId: 'u', email: 'u@tes.local' } }));
+  const ulang = vi.fn().mockResolvedValue(undefined);
+  expect(await kirimAntrean(pengguna, { berhenti: ulang })).toBe(0);
+  expect(ulang).toHaveBeenCalledWith('a');
+});
+
+test('antrean hentikan_bagikan tetap menunggu bila repositori bagikan belum tersedia', async () => {
+  antre({ tabel: 'hentikan_bagikan', idRiwayat: 'a' });
+  const { pengguna } = buatMemoriPengguna(buatMemori({ sesi: { userId: 'u', email: 'u@tes.local' } }));
+  expect(await kirimAntrean(pengguna)).toBeGreaterThan(0);
 });
 
 test('pulihkanKasus menulis ulang riwayat, tersimpan (ikut antre ke akun) dan progres soal (S2)', () => {

@@ -30,8 +30,8 @@ export async function mulaiSinkron(repo: RepoAkun, saatDataBerubah: () => void):
       aturAkunLokal(sesi.userId);
       kirim.forEach(antre);
     }
-    pasangPengirim(repo.pengguna);
-    if (await kirimAntrean(repo.pengguna) === 0) {
+    pasangPengirim(repo.pengguna, repo.bagikan);
+    if (await kirimAntrean(repo.pengguna, repo.bagikan) === 0) {
       const versiSebelum = versiAntrean();
       const server = await dataServer(repo.pengguna);
       // Perubahan lokal baru bisa masuk antrean selagi dataServer menunggu jaringan, bahkan sudah terkirim dan keluar
@@ -48,7 +48,7 @@ export async function mulaiSinkron(repo: RepoAkun, saatDataBerubah: () => void):
 
 export async function kirimSebelumKeluar(repo: RepoAkun, batasMs = BATAS_KIRIM_KELUAR_MS): Promise<number> {
   const batas = new Promise<number>(selesai => setTimeout(() => selesai(-1), batasMs));
-  const sisa = await Promise.race([kirimAntrean(repo.pengguna), batas]);
+  const sisa = await Promise.race([kirimAntrean(repo.pengguna, repo.bagikan), batas]);
   return sisa === -1 ? Math.max(1, bacaAntrean().length) : sisa;
 }
 
@@ -63,12 +63,12 @@ export async function keluarDanBersihkan(repo: RepoAkun): Promise<void> {
 
 let pendengarOnline: (() => void) | null = null;
 
-function pasangPengirim(pengguna: RepositoriPengguna): void {
+function pasangPengirim(pengguna: RepositoriPengguna, bagikan: RepositoriBagikan): void {
   let sedangKirim = false;
   const kirim = () => {
     if (sedangKirim) return;
     sedangKirim = true;
-    void kirimAntrean(pengguna).finally(() => { sedangKirim = false; });
+    void kirimAntrean(pengguna, bagikan).finally(() => { sedangKirim = false; });
   };
   aturPengirim(kirim);
   if (pendengarOnline) window.removeEventListener('online', pendengarOnline);
