@@ -26,6 +26,10 @@ interface Props {
   terkunci?: boolean;
   /** Nama mayit untuk judul kolom munasakhat; tanpa ini id dipakai apa adanya. */
   namaDari?: (id: string) => string;
+  /** Isian saat dipasang (pulih dari simpanan perangkat); setelah itu komponen memegang isiannya sendiri. */
+  isianAwal?: IsianTabel | undefined;
+  /** Dipanggil tiap isian berubah (termasuk Kosongkan) dan sekali saat dipasang, untuk disimpan pemanggil. */
+  saatIsianBerubah?: (isian: IsianTabel) => void;
   /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
   tanpaCara?: boolean;
 }
@@ -69,9 +73,10 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, isianAwal, saatIsianBerubah }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
-  const [isian, setIsian] = useState<IsianTabel>({ kepala: {}, sel: {} });
+  const [isian, setIsian] = useState<IsianTabel>(isianAwal ?? { kepala: {}, sel: {} });
+  useEffect(() => { saatIsianBerubah?.(isian); }, [isian]); // eslint-disable-line react-hooks/exhaustive-deps
   const [hasil, setHasil] = useState<HasilNilai | null>(null);
   const [tolakBulat, setTolakBulat] = useState(false);
   const sudahBergabung = useRef(new Set<string>());

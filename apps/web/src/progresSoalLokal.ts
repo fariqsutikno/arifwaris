@@ -9,6 +9,8 @@ const KUNCI_PROGRES_SOAL = 'arif-waris:progres-soal';
 export interface ProgresSoalLokal {
   isian: IsianTabel | null;
   pilihanGharqa: KeputusanGharqa | null;
+  /** Gharqa: satu tabel per harta (kunci = id mayit). */
+  isianHarta?: Record<string, IsianTabel>;
   jawabanTerbuka: boolean;
   sudahMencoba: boolean;
   tebakanBenar: boolean;
@@ -69,6 +71,7 @@ function adalahProgres(nilai: unknown): nilai is ProgresSoalLokal {
   const progres = nilai as Record<string, unknown>;
   return (progres.isian === null || (typeof progres.isian === 'object' && progres.isian !== null))
     && (progres.pilihanGharqa === null || typeof progres.pilihanGharqa === 'string')
+    && (progres.isianHarta === undefined || (typeof progres.isianHarta === 'object' && progres.isianHarta !== null))
     && typeof progres.jawabanTerbuka === 'boolean' && typeof progres.sudahMencoba === 'boolean' && typeof progres.tebakanBenar === 'boolean'
     && typeof progres.idSesiSoal === 'string' && typeof progres.revisiSoal === 'string';
 }

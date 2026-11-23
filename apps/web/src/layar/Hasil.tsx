@@ -10,9 +10,10 @@ import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
 import { acakDariBenih } from '../acakBerbenih';
+import { bacaProgresSoal, simpanProgresSoal } from '../progresSoalLokal';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
-import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
+import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KeputusanGharqa, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
 import { catatPercobaan, ringkasKunciTabel } from '../percobaan';
 import { VERSI_ENGINE } from '../versi';
 import { useBahasa, type Tujuan } from '../preferensi';
@@ -170,13 +171,22 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
   const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
 
-  const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
-  useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
+  // Isian dan status soal setengah jadi dipulihkan dari perangkat (muat ulang / buka dari Riwayat). Nilai pulihan hanya
+  // mengisi state: tidak memanggil saatDikerjakan/catatLatihan/catat('buka') lagi, supaya progres tidak dobel (L4, X5).
+  const [pulih] = useState(() => (soal ? bacaProgresSoal(idSesi, soal.revisiId) : null));
+  const [jawabanTerbuka, setJawabanTerbuka] = useState(pulih && adalahBelajar ? pulih.jawabanTerbuka : !adalahBelajar);
+  // Hanya saat adalahBelajar berubah; efek pertama tidak boleh menimpa nilai pulihan.
+  const adalahBelajarLama = useRef(adalahBelajar);
+  useEffect(() => {
+    if (adalahBelajarLama.current === adalahBelajar) return;
+    adalahBelajarLama.current = adalahBelajar;
+    setJawabanTerbuka(!adalahBelajar);
+  }, [adalahBelajar]);
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
-  const [sudahMencoba, setSudahMencoba] = useState(false);
+  const [sudahMencoba, setSudahMencoba] = useState(pulih?.sudahMencoba ?? false);
   // Lihat jawaban selalu tercatat (T4), walau belum pernah mencoba; XP/penanda dikerjakan tetap hanya bila sudah mencoba.
   const bukaJawaban = () => { catatLihatJawaban(); setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
-  const [tebakanBenar, setTebakanBenar] = useState(false);
+  const [tebakanBenar, setTebakanBenar] = useState(pulih?.tebakanBenar ?? false);
   const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
   // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
   // lewat dialog dengan tombol tekan-tahan.
@@ -254,7 +264,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   // sama setelah muat ulang; sesi baru (buka soal dari daftar) = jangkar baru.
   const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, acakDariBenih(idSesi)) : null), [tabelSoal, idSesi]);
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
-  const [idSesiSoal] = useState(() => crypto.randomUUID());
+  const [idSesiSoal] = useState(() => pulih?.idSesiSoal ?? crypto.randomUUID());
+  const [isianSoal, setIsianSoal] = useState<IsianTabel | null>(pulih?.isian ?? null);
+  const [pilihanGharqa, setPilihanGharqa] = useState<KeputusanGharqa | null>(pulih?.pilihanGharqa ?? null);
+  const [isianHartaGharqa, setIsianHartaGharqa] = useState<Record<string, IsianTabel>>(pulih?.isianHarta ?? {});
+  useEffect(() => {
+    if (!soal || !adalahBelajar) return;
+    simpanProgresSoal(idSesi, { isian: isianSoal, pilihanGharqa, isianHarta: isianHartaGharqa, jawabanTerbuka, sudahMencoba, tebakanBenar, idSesiSoal, revisiSoal: soal.revisiId });
+  }, [soal?.id, adalahBelajar, idSesi, isianSoal, pilihanGharqa, isianHartaGharqa, jawabanTerbuka, sudahMencoba, tebakanBenar, idSesiSoal]); // eslint-disable-line react-hooks/exhaustive-deps
   const kunciTabel = useRef('');
   const sudahDibuka = useRef(false);
   const isianTerakhir = useRef<IsianTabel | null>(null);
@@ -279,7 +296,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   useEffect(() => {
     if (!soal || !adalahBelajar || sudahDibuka.current) return;
     let batal = false;
-    const buka = (kunci: string) => { if (batal || sudahDibuka.current) return; kunciTabel.current = kunci; sudahDibuka.current = true; catat('buka'); };
+    const buka = (kunci: string) => { if (batal || sudahDibuka.current) return; kunciTabel.current = kunci; sudahDibuka.current = true; if (!pulih) catat('buka'); };
     if (tabelSoal) void ringkasKunciTabel(tabelSoal).then(buka);
     else if (soalGharqa) void Promise.all(soalGharqa.harta.map(harta => ringkasKunciTabel(harta.tabel))).then(daftar => buka([soalGharqa.keputusan, ...daftar].join('|')));
     else buka('');
@@ -399,8 +416,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
         {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
+          pilihanAwal={pulih?.pilihanGharqa} isianHartaAwal={pulih?.isianHarta}
+          saatBerubah={(pilihan, isianHarta) => { setPilihanGharqa(pilihan); setIsianHartaGharqa(isianHarta); }}
           saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
-        {tabelSoal && <TabelLatihan tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} isianAwal={pulih?.isian ?? undefined} saatIsianBerubah={setIsianSoal} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
           <div className="aksi-soal-berikutnya">
             {urutanLatihan.saatBerikutnya
