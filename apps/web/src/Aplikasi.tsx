@@ -113,7 +113,14 @@ export function Aplikasi() {
     setToast({ teks: t('hasil.hapus_kasus.toast'), aksi: { label: t('hasil.simpan.urungkan'), saat: () => {
       setToast(null);
       pulihkanKasus(cadangan);
-      if (cadangan.entriRiwayat) bukaRiwayat(cadangan.entriRiwayat);
+      const entri = cadangan.entriRiwayat;
+      if (!entri) return;
+      // Hapus hanya dari Hasil, jadi kembali ke Hasil (bukan lewat bukaRiwayat, yang melempar kasus belum lengkap ke wizard).
+      kirimAsli({ jenis: 'MUAT', kasus: entri.kasus });
+      setIdSesi(entri.id);
+      setSumberSesi(entri.sumber);
+      setSoalAktif(soalDariSumber(entri.sumber));
+      catatRiwayat(entri.id, entri.kasus, Date.now(), entri.sumber);
     } } });
   };
 

@@ -2,17 +2,13 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, expect, it } from 'vitest';
 import { Aplikasi } from '../Aplikasi';
-import { tambahAhliWaris } from '../checklist';
-import { kasusBaru } from '../kasus';
+import { kasusDariSusunan, SUSUNAN_CEPAT } from '../lab';
 import { bacaProgresSoal, simpanProgresSoal } from '../progresSoalLokal';
 import { bacaRiwayat, catatRiwayat } from '../riwayat';
 import { semuaTersimpan, simpanKasus } from '../tersimpan';
 
-const kasusLengkap = () => {
-  const dasar = kasusBaru('L', 'latihan');
-  const graf = ['ISTRI', 'ANAK_LK'].reduce((g, k) => tambahAhliWaris(g, 'PEWARIS', k as 'ISTRI'), dasar.graf);
-  return { ...dasar, tirkah: { ...dasar.tirkah, kotor: 24_000_000n }, graf };
-};
+// Susunan cepat: harta 0 dan bagian lain belum ditanya, tapi dibuka langsung di Hasil (kasus tersulit untuk Urungkan).
+const kasusLengkap = () => kasusDariSusunan(SUSUNAN_CEPAT[0]!);
 const bukaLembar = () => fireEvent.click(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' }));
 
 beforeEach(() => {
@@ -49,6 +45,8 @@ it('hapus → konfirmasi → semua simpanan hilang, kembali ke Awal Hitung denga
   expect(semuaTersimpan().map(baris => baris.judul)).toEqual(['Kasus A']);
   expect(bacaProgresSoal('abc', 'r')).not.toBeNull();
   expect(window.location.hash).toBe('#/hitung/abc');
+  // Kembali ke layar yang sama (Hasil), bukan wizard.
+  expect(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' })).toBeTruthy();
 });
 
 it('Batal di dialog tidak menghapus apa pun', () => {
