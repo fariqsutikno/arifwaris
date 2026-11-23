@@ -2,9 +2,12 @@
 // riwayat otomatis (riwayat.ts, perangkat ini, 30 hari) dan kasus tersimpan (tersimpan.ts, bernama, permanen, ikut akun).
 // Pengguna hanya melihat dua status: Tersimpan dan Sementara. Kasus yang sama (id sama) muncul sekali, sebagai tersimpan.
 
+import type { RepositoriBagikan } from '@waris/data';
+import { sudahDibagikan, tandaiDibagikan } from './bagikanLokal';
 import type { Kasus } from './kasus';
-import { MASA_SIMPAN, bacaRiwayat, hapusRiwayat, ringkasKasus, type SumberRiwayat } from './riwayat';
-import { bacaTersimpan, hapusTersimpan } from './tersimpan';
+import { ambilProgresSoal, hapusProgresSoal, simpanProgresSoal, type ProgresSoalLokal } from './progresSoalLokal';
+import { MASA_SIMPAN, bacaRiwayat, catatRiwayat, hapusRiwayat, ringkasKasus, type EntriRiwayat, type SumberRiwayat } from './riwayat';
+import { bacaTersimpan, hapusTersimpan, simpanKasus } from './tersimpan';
 
 const HARI = 24 * 60 * 60 * 1000;
 
@@ -48,13 +51,47 @@ const pakaiRingkasan = (kasus: Kasus) => {
   return { keterangan, lengkap };
 };
 
-/** Hapus dari riwayat dan dari tersimpan sekaligus; kalau tidak, kasus yang dihapus muncul lagi sebagai sementara. */
-export function hapusKasus(id: string): void {
+/** Isi yang tadi dihapus, untuk Urungkan. Tautan bagikan yang sudah dihentikan tidak ikut kembali. */
+export interface CadanganKasus {
+  id: string;
+  entriRiwayat: EntriRiwayat | null;
+  tersimpan: { kasus: Kasus; judul: string } | null;
+  progresSoal: ProgresSoalLokal | null;
+}
+
+/**
+ * Hapus tuntas satu kasus dari perangkat dan akun: riwayat, Tersimpan (+ antrean hapus ke akun), isian soal, dan
+ * tautan bagikan bila ada. Satu pintu supaya kasus tidak "hidup lagi" lewat simpanan yang terlewat.
+ * Tautan dihentikan tanpa menunggu jaringan; gagal (offline) tidak membatalkan hapus lokal.
+ */
+export function hapusKasus(id: string, bagikan?: Pick<RepositoriBagikan, 'berhenti'>): CadanganKasus {
+  const tersimpan = bacaTersimpan().find(baris => baris.id === id);
+  const cadangan: CadanganKasus = {
+    id,
+    entriRiwayat: bacaRiwayat().find(entri => entri.id === id) ?? null,
+    tersimpan: tersimpan ? { kasus: tersimpan.kasus, judul: tersimpan.judul } : null,
+    progresSoal: ambilProgresSoal(id),
+  };
   hapusRiwayat(id);
   hapusTersimpan(id);
+  hapusProgresSoal(id);
+  // Tanpa akses akun tautan belum bisa dihentikan, jadi penandanya dibiarkan agar tidak terlupa.
+  if (bagikan && sudahDibagikan(id)) {
+    tandaiDibagikan(id, false);
+    bagikan.berhenti(id).catch(() => undefined);
+  }
+  return cadangan;
+}
+
+/** Urungkan hapusKasus: menulis ulang riwayat, Tersimpan (ikut antre ke akun lagi) dan isian soal. */
+export function pulihkanKasus(cadangan: CadanganKasus): void {
+  const { id, entriRiwayat, tersimpan, progresSoal } = cadangan;
+  if (entriRiwayat) catatRiwayat(id, entriRiwayat.kasus, entriRiwayat.waktu, entriRiwayat.sumber);
+  if (tersimpan) simpanKasus(id, tersimpan.kasus, tersimpan.judul);
+  if (progresSoal) simpanProgresSoal(id, progresSoal);
 }
 
 export function hapusSemuaSementara(): void {
   const tersimpan = new Set(bacaTersimpan().map(baris => baris.id));
-  bacaRiwayat().filter(entri => !tersimpan.has(entri.id)).forEach(entri => hapusRiwayat(entri.id));
+  bacaRiwayat().filter(entri => !tersimpan.has(entri.id)).forEach(entri => { hapusRiwayat(entri.id); hapusProgresSoal(entri.id); });
 }

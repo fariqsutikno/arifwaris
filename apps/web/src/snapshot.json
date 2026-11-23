@@ -28847,6 +28847,13 @@
    "id": "Ahli waris memberi persetujuan sesudah pewaris wafat, bukan sebelumnya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hapus_kasus_tautan_dihentikan",
+   "halaman": "hitung",
+   "id": "Tautan bagikannya juga dihentikan dan tidak bisa dipulihkan.",
+   "ar": "سيتوقف رابط المشاركة أيضًا ولا يمكن استعادته.",
+   "versiTerbit": 873
   }
  ]
 }

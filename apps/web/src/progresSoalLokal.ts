@@ -21,8 +21,14 @@ export interface ProgresSoalLokal {
 }
 
 export function bacaProgresSoal(idSesi: string, revisiSoal: string): ProgresSoalLokal | null {
+  const progres = ambilProgresSoal(idSesi);
+  return progres?.revisiSoal === revisiSoal ? progres : null;
+}
+
+/** Tanpa pemeriksaan revisi: untuk cadangan sebelum dihapus. */
+export function ambilProgresSoal(idSesi: string): ProgresSoalLokal | null {
   const progres = bacaPeta()[idSesi];
-  return adalahProgres(progres) && progres.revisiSoal === revisiSoal ? progres : null;
+  return adalahProgres(progres) ? progres : null;
 }
 
 export function simpanProgresSoal(idSesi: string, progres: ProgresSoalLokal): void {
