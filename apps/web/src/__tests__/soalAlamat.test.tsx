@@ -73,3 +73,16 @@ test('Kerjakan ulang menaikkan nomor percobaan dan mengosongkan isian', async ()
   expect(kotakPertama().value).toBe('');
   expect(Object.keys(bacaSemuaIsianSoal())).toEqual([soal!.kode]);
 });
+
+test('pindah ke soal lain lewat alamat (tombol mundur/maju): isian soal sebelumnya tidak ikut terbawa', async () => {
+  const [pertama, kedua] = urutan();
+  window.location.hash = `#/latihan/soal/${pertama!.kode}`;
+  render(<Aplikasi />);
+  await waitFor(() => expect(kotakPertama()).not.toBeNull());
+  const kotak = kotakPertama();
+  fireEvent.change(kotak, { target: { value: kotak instanceof HTMLSelectElement ? kotak.options[1]!.value : '1' } });
+  window.location.hash = `#/latihan/soal/${kedua!.kode}`;
+  await waitFor(() => expect(document.querySelector('.lok-hero')?.textContent).toMatch(/Soal 2 dari/));
+  expect(kotakPertama().value).toBe('');
+  expect(bacaSemuaIsianSoal()[kedua!.kode]).toBeUndefined();
+});
