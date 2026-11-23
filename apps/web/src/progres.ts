@@ -5,6 +5,7 @@
 
 import type { ProgresBelajar, ProgresLatihan } from '@waris/data';
 import { antre } from './akun/antrean';
+import { hapusSemuaIsianSoal } from './isianSoal';
 import { hapusMentah, bacaMentah, simpanMentah } from './penyimpanan';
 import { hapusAktivitas } from './preferensi';
 import { skorTerbaik } from './skorKuis';
@@ -81,7 +82,7 @@ export function simpanSkorPaket(paket: string, skor: string): void {
   simpanMentah(KUNCI_SKOR_PAKET, JSON.stringify({ ...bacaSkorPaket(), [paket]: skor }));
 }
 
-/** Reset progres belajar: pelajaran selesai, latihan, skor paket, dan jejak belajar. Riwayat hitung tidak tersentuh.
+/** Reset progres belajar: pelajaran selesai, latihan, skor paket, isian soal yang belum selesai, dan jejak belajar. Riwayat hitung tidak tersentuh.
  * Di akun: pelajaran selesai diantre ulang sebagai `selesai: false`, latihan dihapus semua (antrean berurutan, jadi
  * latihan yang antre sebelum reset ikut terhapus). */
 export function resetProgresBelajar(): void {
@@ -89,6 +90,7 @@ export function resetProgresBelajar(): void {
     .forEach(baris => antre({ tabel: 'belajar', baris: { ...baris, selesai: false, diubahPada: new Date().toISOString() } }));
   if (Object.keys(bacaObjek(KUNCI_LATIHAN)).length) antre({ tabel: 'hapus_latihan' });
   [KUNCI_BELAJAR, KUNCI_LATIHAN, KUNCI_SKOR_PAKET, KUNCI_REKOR_PAKET].forEach(kunci => simpanMentah(kunci, '{}'));
+  hapusSemuaIsianSoal();
   hapusAktivitas();
 }
 

@@ -63,6 +63,7 @@ import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { tautanLatihan } from '../rute';
 import { bacaPercobaanSoal, hapusIsianSoal, naikkanPercobaanSoal } from '../isianSoal';
+import { bacaProgresLatihan } from '../progres';
 import { Ikon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { daftarBabDari } from './Penjelasan';
@@ -264,18 +265,25 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const benihJangkar = useMemo(() => (soal ? `${soal.id}:${bacaPercobaanSoal(soal.id)}` : idSesi), [soal?.id, idSesi, kosongkanKe]); // eslint-disable-line react-hooks/exhaustive-deps
   const jangkarGharqa = useMemo(() => soalGharqa?.harta.map((harta, indeks) => pilihJangkar(harta.tabel, acakDariBenih(`${benihJangkar}:${indeks}`))) ?? [], [soalGharqa, benihJangkar]);
   const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, acakDariBenih(benihJangkar)) : null), [tabelSoal, benihJangkar]);
-  const saatKosongkanTabel = () => { if (soal) { naikkanPercobaanSoal(soal.id); setKosongkanKe(n => n + 1); } };
+  const saatKosongkanTabel = () => {
+    if (!soal) return;
+    naikkanPercobaanSoal(soal.id);
+    setKosongkanKe(n => n + 1);
+    sesiSoal.current = { id: crypto.randomUUID(), mulai: Date.now() };
+    catat('buka');
+  };
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
-  const [idSesiSoal] = useState(() => crypto.randomUUID());
+  // Kosongkan yang memulai percobaan baru = sesi baru (id + waktu mulai), supaya server tidak mencampur dua percobaan.
+  const sesiSoal = useRef({ id: crypto.randomUUID(), mulai: waktuHitung });
   const kunciTabel = useRef('');
   const sudahDibuka = useRef(false);
   const isianTerakhir = useRef<IsianTabel | null>(null);
   const catat = (aksi: KejadianPercobaan['aksi'], bagian: Partial<Pick<KejadianPercobaan, 'isian' | 'jangkar' | 'hasilKolom' | 'benarSemua'>> = {}) => {
     if (!soal) return;
     catatPercobaan({
-      id: crypto.randomUUID(), idSesiSoal, soalId: soal.id, revisiSoal: soal.revisiId, jenisSoal: jenisSoalDari(kasus, tampil),
+      id: crypto.randomUUID(), idSesiSoal: sesiSoal.current.id, soalId: soal.id, revisiSoal: soal.revisiId, jenisSoal: jenisSoalDari(kasus, tampil),
       mode: 'latihan', konteks: { jenis: 'mandiri' }, aksi, isian: null, jangkar: null, hasilKolom: null, benarSemua: false,
-      dimulaiPada: new Date(waktuHitung).toISOString(),
+      dimulaiPada: new Date(sesiSoal.current.mulai).toISOString(),
       // 'bawaan' = KONFIGURASI_BAWAAN, satu-satunya konfigurasi khilaf internal yang dipakai jalankan().
       versi: { engine: VERSI_ENGINE, ruleset: kasus.madzhab ?? 'syafii', madzhab: 'bawaan', kunci: kunciTabel.current },
       ...bagian,
@@ -416,7 +424,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       <div className="tata-hasil">
         {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
           saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
-        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatKosongkan={saatKosongkanTabel} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} revisiSoal={soal?.revisiId} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatKosongkan={saatKosongkanTabel} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
           <div className="aksi-soal-berikutnya">
             {urutanLatihan.saatBerikutnya
@@ -524,8 +532,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
           <ul className="poin-konfirmasi">
             <li>{t('hitung.semua_jawaban_langsung_kebuka_kamu_nggak')}</li>
             {!sudahMencoba && <li>{t('hitung.kamu_belum_nyoba_jawab_sama_sekali')}</li>}
-            {/* Hanya soal latihan yang tercatat; XP-nya hanya dari tebakan benar (spec tahap 5). */}
-            {saatDikerjakan && <li>{t('hitung.soal_yang_jawabannya_dibuka_tidak_memberi_xp')}</li>}
+            {/* Server: lihat jawaban sebelum benar pertama = 0 XP selamanya (xp_soal_baru); yang sudah pernah benar tidak kehilangan apa-apa. */}
+            {saatDikerjakan && !(soal && bacaProgresLatihan('hitung')[soal.id]?.benar) && <li>{t('hitung.xp_soal_hangus_selamanya')}</li>}
           </ul>
         </DialogKonfirmasi>
       )}

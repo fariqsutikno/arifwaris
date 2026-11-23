@@ -13,6 +13,8 @@ export interface IsianSoal {
   jumlahKotak: number;
   /** Nomor percobaan (0 = pertama); benih jangkar acak. Bertahan walau isian dihapus. */
   percobaan?: number;
+  /** revisi.id soal saat isian dibuat; isian dari revisi lain dibuang saat dibaca (baris tabel bisa sudah berbeda). */
+  revisi?: string;
 }
 
 export function bacaSemuaIsianSoal(): Record<string, IsianSoal> {
@@ -24,11 +26,15 @@ export function bacaSemuaIsianSoal(): Record<string, IsianSoal> {
   }
 }
 
-export const bacaIsianSoal = (kode: string): IsianSoal | null => bacaSemuaIsianSoal()[kode] ?? null;
+/** Isian tanpa `revisi` (sebelum kolom ini ada) dianggap cocok dengan revisi mana pun. */
+export function bacaIsianSoal(kode: string, revisi?: string): IsianSoal | null {
+  const simpanan = bacaSemuaIsianSoal()[kode] ?? null;
+  return simpanan && revisi && simpanan.revisi && simpanan.revisi !== revisi ? null : simpanan;
+}
 
-export function simpanIsianSoal(kode: string, isian: IsianTabel, jumlahKotak = 0, sekarang = Date.now()): void {
+export function simpanIsianSoal(kode: string, isian: IsianTabel, jumlahKotak = 0, revisi?: string, sekarang = Date.now()): void {
   const percobaan = bacaPercobaanSoal(kode);
-  tulis(kode, { isian, diubahPada: sekarang, jumlahKotak, ...(percobaan > 0 ? { percobaan } : {}) });
+  tulis(kode, { isian, diubahPada: sekarang, jumlahKotak, ...(percobaan > 0 ? { percobaan } : {}), ...(revisi ? { revisi } : {}) });
 }
 
 export const bacaPercobaanSoal = (kode: string): number => bacaIsianSoal(kode)?.percobaan ?? 0;
@@ -42,6 +48,9 @@ export function hapusIsianSoal(kode: string): void {
 /** Mulai percobaan baru (Kerjakan ulang / Kosongkan): isian kosong, jangkar baru. */
 export const naikkanPercobaanSoal = (kode: string): void =>
   tulis(kode, { isian: { kepala: {}, sel: {} }, diubahPada: 0, jumlahKotak: 0, percobaan: bacaPercobaanSoal(kode) + 1 });
+
+/** Reset progres belajar: draf dan nomor percobaan semua soal ikut kembali ke nol. */
+export function hapusSemuaIsianSoal(): void { simpanMentah(KUNCI_ISIAN_SOAL, '{}'); }
 
 function tulis(kode: string, isi: IsianSoal | null): void {
   const { [kode]: _lama, ...sisa } = bacaSemuaIsianSoal();

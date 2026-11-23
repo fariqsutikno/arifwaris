@@ -29,6 +29,7 @@ interface Props {
   namaDari?: (id: string) => string;
   /** Soal latihan: isian tersimpan per kode soal supaya soal yang terputus bisa dilanjutkan (spec siklus kasus dan soal). */
   kodeSoal?: string | undefined;
+  revisiSoal?: string | undefined;
   /** Kosongkan pada isian yang sudah terisi = percobaan baru (jangkar diacak ulang oleh pemanggil). */
   saatKosongkan?: (() => void) | undefined;
   /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
@@ -74,9 +75,9 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, saatKosongkan }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, revisiSoal, saatKosongkan }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
-  const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal)?.isian) || { kepala: {}, sel: {} });
+  const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal, revisiSoal)?.isian) || { kepala: {}, sel: {} });
   const isianAwal = useRef(isian);
   const [hasil, setHasil] = useState<HasilNilai | null>(null);
   const [tolakBulat, setTolakBulat] = useState(false);
@@ -85,7 +86,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
   // Setiap perubahan isian disimpan; kosong = hapus. Soal benar / jawaban dibuka dihapus oleh Hasil.
   useEffect(() => {
     if (!kodeSoal || isian === isianAwal.current) return;
-    if (hitungTerisi(isian) > 0) simpanIsianSoal(kodeSoal, isian, hitungKotak(tabel, jangkar)); else hapusIsianSoal(kodeSoal);
+    if (hitungTerisi(isian) > 0) simpanIsianSoal(kodeSoal, isian, hitungKotak(tabel, jangkar), revisiSoal); else hapusIsianSoal(kodeSoal);
   }, [isian]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const selesai = hasil?.jenis === 'benar';

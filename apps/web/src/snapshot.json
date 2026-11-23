@@ -29337,6 +29337,13 @@
    "id": "{nama}, {lokasi}",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.xp_soal_hangus_selamanya",
+   "halaman": "hitung",
+   "id": "XP soal ini hangus selamanya, walau nanti kamu kerjakan ulang sampai benar.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

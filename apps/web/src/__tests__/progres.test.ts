@@ -57,3 +57,11 @@ test('rekor paket: nilai terbaik tidak turun, percobaan bertambah, skor lama dih
   resetProgresBelajar();
   expect(bacaRekorPaket()).toEqual({});
 });
+
+test('reset progres belajar ikut mengosongkan isian dan nomor percobaan soal', async () => {
+  const { simpanIsianSoal, naikkanPercobaanSoal, bacaIsianSoal } = await import('../isianSoal');
+  naikkanPercobaanSoal('K-01');
+  simpanIsianSoal('K-01', { kepala: {}, sel: { a: { b: '1' } } }, 1);
+  resetProgresBelajar();
+  expect(bacaIsianSoal('K-01')).toBeNull();
+});

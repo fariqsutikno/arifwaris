@@ -155,7 +155,7 @@ describe('layar hasil', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
     fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
     expect(screen.getByRole('alertdialog').textContent).not.toMatch(/belum nyoba/);
-    expect(screen.getByRole('alertdialog').textContent).toMatch(/tidak memberi XP/);
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/hangus selamanya/);
     bukaLewatDialog(/Tahan untuk buka/);
     expect(dikerjakan).toEqual([false]);
   });
