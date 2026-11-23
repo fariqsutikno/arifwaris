@@ -1,7 +1,7 @@
 # Spec: tangga bantuan soal hitung (2026-11-23)
 
 Menggantikan "Lihat jawaban" (dialog tahan, semua jawaban sekaligus) di soal latihan bertabel. Mode Ujian tidak berubah.
-Status: **konsep disetujui pemilik 2026-11-23**; mockup belum dibuat; kode belum disentuh.
+Status: **konsep disetujui pemilik 2026-11-23**; mockup `mockup-tangga-bantuan.html` revisi 2; kode belum disentuh.
 
 ## 1. Masalah sekarang
 - Lihat jawaban tersedia sejak detik pertama, cukup ditahan, dan membuka semua kolom sekaligus. Pelajar yang buntu di satu
@@ -47,15 +47,37 @@ Mulai  →  isi  →  Periksa ─ benar ─→ selesai (predikat)
 - Kosongkan / Kerjakan ulang = percobaan baru: hitungan usaha dan anak tangga kembali ke nol. XP tetap mengikuti aturan
   server (benar pertama saja).
 
-## 5. XP (server, `xp_soal_baru`)
-Benar pertama memberi `bobot × faktor`, dengan:
-- `faktor = max(40%, 100% − 15% × (Periksa salah + petunjuk diambil))` sebelum benar pertama;
-- buka kolom sebelum benar pertama = 0 XP selamanya (sama seperti lihat jawaban sekarang).
+## 5. XP (server, `xp_soal_baru`) — revisi 2026-11-23
+Dibingkai sebagai **untung**, bukan potongan. Alasan:
+- *Loss aversion* (Kahneman & Tversky): kehilangan terasa sekitar dua kali lebih berat daripada untung yang sama besar.
+  "−3 XP" di setiap tombol terasa seperti hukuman, sedangkan "bonus mandiri" yang tidak didapat terasa seperti peluang.
+- *Help avoidance* (Aleven dkk., kajian *help seeking* di lingkungan belajar interaktif): kalau bantuan mahal, pelajar
+  yang paling butuh justru menghindarinya, lalu menyerah atau menebak. Harga bantuan harus kecil dan sekali saja.
+- Salah adalah bagian dari belajar (*desirable difficulties*, Bjork). Memotong XP per salah membuat orang takut menekan
+  Periksa, padahal Periksa itulah umpan baliknya.
 
-Periksa salah dan petunjuk dihitung di semua sesi sebelum benar pertama; Kosongkan tidak mengembalikannya. Kalau tidak,
-Kosongkan menjadi cara memutihkan potongan.
-Teks di layar: XP soal ini tampil kecil di dekat tombol ("XP soal ini: 85"), dan setiap anak tangga menyebut harganya
-sebelum diambil ("Petunjuk, −15 XP"). Tidak ada potongan yang tersembunyi.
+Aturannya:
+- Benar tanpa membuka kolom = **XP dasar** (60% bobot).
+- **Bonus mandiri** (40% bobot) hanya kalau benar tanpa petunjuk **dan** Periksa salah tidak lebih dari 3 kali. Batas 3
+  menutup celah menebak kolom pilihan satu per satu (biasanya 6–8 pilihan), tanpa menghukum salah biasa.
+- Petunjuk berapa pun hanya melepas bonus (sekali), tidak ada potongan per petunjuk.
+- Buka kolom sebelum benar pertama = 0 XP selamanya.
+- Hitungan dilakukan di semua sesi sebelum benar pertama; Kosongkan tidak memutihkan.
+
+Di layar hanya ada satu penanda di kepala tabel: "12 XP · ☆ +8 mandiri". Saat bonus lepas, chip itu dicoret. Tidak ada
+harga di setiap tombol.
+
+## 5a. Tampilan petunjuk — revisi 2026-11-23
+- Tidak ada daftar tiga anak tangga. Setelah 2 usaha, umpan merah mendapat satu tautan **Lihat petunjuk**.
+- Kartu kuning "Petunjuk · kolom Bagian" berisi petunjuk 1. Di bawahnya hanya satu aksi berikutnya: "Masih buntu?
+  Petunjuk berikutnya", lalu setelah petunjuk 2 "Tunjukkan jawaban kolom Bagian" (merah). Petunjuk yang sudah dibuka
+  tetap tampil bertumpuk di kartu yang sama.
+- Umpan salah langsung menunjuk barisnya ("Bagian **istri** belum tepat"), bukan kalimat penghibur.
+- "Buka sisanya" dinamai **Buka semua kolom**, hanya muncul setelah ada kolom dibuka (XP sudah hilang).
+- Daftar Latihan memakai gaya baris yang ada sekarang (DaftarSoalHitung). Tambahannya hanya keterangan
+  (mandiri / dengan petunjuk / satu kolom dibuka) dan penanda **layak diulang**. Judul tetap buta sampai selesai
+  (`judulSoalTampil`). Predikat berupa kalimat di layar selesai ("Dua dari tiga kolom kamu selesaikan sendiri"),
+  bukan label.
 
 ## 6. Isi petunjuk
 Fikih harus bisa ditelusuri ke KB. Tidak ada kalimat yang dikarang per soal.

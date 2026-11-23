@@ -4,21 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tangga bantuan soal</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
-<!-- Mockup tangga bantuan. Acuan: docs/design/spec-tangga-bantuan-soal.md. Kasus: KB 16.1 (istri, anak lk, anak pr).
-     Kunci: istri 1/8 → 3, anak lk Ashabah → 14, anak pr Ashabah → 7; asal masalah 8, akhir 24.
-     Singgungan "bagian istri berkurang" = HAJB_NUQSHAN (penyebab: anak), bab 04. Teks petunjuk konsep = draf, perlu dicek ke KB/glosarium sebelum masuk diksi. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap">
+<!-- Mockup tangga bantuan, revisi 2 (2026-11-23). Acuan: docs/design/spec-tangga-bantuan-soal.md.
+     Kasus: KB 16.1 (istri, anak lk, anak pr). Kunci: istri 1/8 → 3, anak lk Ashabah → 14, anak pr Ashabah → 7; asal masalah 8, akhir 24.
+     Singgungan "bagian istri berkurang" = HAJB_NUQSHAN (penyebab: anak), bab 04. Teks petunjuk konsep = draf, dicek ke KB/glosarium sebelum masuk diksi.
+     Judul soal buta sampai selesai (judulSoalTampil): hero dan daftar menampilkan "Soal H-03". -->
 <style>
-:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:#fff;--orange:#f2682a;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#d5ddd2;--hijau:#1f6f5c;--merah:#fdecea;--merah-ink:#7a2a17;--biru:#eaf0fb;--biru-ink:#23406e;
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:#fff;--orange:#f2682a;--aksen:#f2682a;--aksen-soft:#fdeee5;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#d5ddd2;--hijau:#1f6f5c;--sorot-fardh:#1f6f5c;--merah:#fdecea;--merah-ink:#7a2a17;--surface:#f3f6f1;
 --font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:18px 16px 90px}
 h1,h2,h3,p{margin:0}
 button,input,select{font-family:inherit}
 .ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
-.tautan{background:none;border:0;padding:0;font:600 14px var(--font);color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:36px;display:inline-flex;gap:6px;align-items:center}
+.tautan{background:none;border:0;padding:0;font:600 14px var(--font);color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:36px;display:inline-flex;gap:6px;align-items:center;text-align:left}
 .tautan.bahaya{color:#9a3a22}
-.tautan .harga{font-weight:500;color:var(--muted);text-decoration:none}
 :focus-visible{outline:3px solid var(--orange);outline-offset:2px}
 .atas{max-width:1120px;margin:0 auto 12px}
 .atas p{font-size:13px;color:#2c4136;margin:0 4px 8px}
@@ -34,11 +34,12 @@ nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
 .t{background:var(--card);border-radius:24px;padding:18px 20px;box-shadow:var(--sh);min-width:0}
 .s8{grid-column:span 8}.s4{grid-column:span 4}.s12{grid-column:span 12}
 .t h2{font-size:20px;font-weight:700;letter-spacing:-.01em}
-.kepalaT{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
-.xp{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;display:inline-flex;gap:6px;align-items:center}
+.kepalaT{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+/* XP: dasar + bonus mandiri (bingkai untung, bukan potongan) */
+.xp{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
 .xp b{color:var(--ink)}
-.xp s{color:var(--muted)}
-.xp.hangus b{color:var(--merah-ink)}
+.bonus{display:inline-flex;gap:4px;align-items:center;border-radius:999px;padding:2px 9px;background:var(--kuning);color:var(--kuning-ink);font-weight:600}
+.bonus.lepas{background:#eef0ec;color:var(--muted);text-decoration:line-through}
 .sub{font-size:14px;color:var(--muted);margin-top:2px}
 .wadahTabel{overflow-x:auto;margin-top:14px}
 table.kitab{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
@@ -46,86 +47,92 @@ table.kitab{border-collapse:collapse;width:100%;font-size:14px;font-variant-nume
 .kitab th{background:#f3f6f1;font-weight:600;font-size:13px}
 .kitab th .judulKol{display:block;color:var(--muted);font-weight:500;font-size:12px;margin-bottom:4px}
 .kitab td.nama,.kitab th.nama{text-align:left;font-weight:500;min-width:128px}
-.kitab th.sorot,.kitab td.sorot{box-shadow:inset 0 0 0 2px var(--orange)}
 .kitab .keliru{background:var(--merah)}
 .kitab .kunci{font-weight:700;color:var(--hijau)}
 .kitab .kunci s{color:var(--merah-ink);font-weight:500;margin-right:6px}
 .kitab select{font:600 14px var(--font);border:1.5px solid var(--line);border-radius:9px;padding:5px 4px;background:#fff;color:var(--ink)}
 .bulat{font:600 15px var(--font);border:1.5px solid var(--line);border-radius:9px;padding:5px 4px;text-align:center;width:60px;background:#fff}
 .btn{border:0;background:var(--black);color:#fff;font:600 14px var(--font);border-radius:999px;padding:11px 20px;cursor:pointer;min-height:44px}
-.btn.lemah{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.lemah{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line);padding:8px 16px;min-height:38px}
 .aksi{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:16px}
 .umpan{margin-top:12px;border-radius:14px;padding:11px 14px;font-size:14px}
-.umpan.benar{background:var(--mint);color:#174d3c}.umpan.salah{background:var(--merah);color:var(--merah-ink)}
-.datang{font-size:13px;color:var(--muted);margin-top:10px;display:flex;gap:8px;align-items:center}
-.titik{display:inline-flex;gap:4px}.titik i{width:8px;height:8px;border-radius:50%;background:var(--line)}.titik i.on{background:var(--hijau)}
-/* Kartu bantuan */
-.bantuan{border-radius:18px;background:var(--biru);color:var(--biru-ink);padding:14px 16px;margin-top:14px;animation:muncul .45s ease-out}
+.umpan.benar{background:var(--mint);color:#174d3c}.umpan.salah{background:var(--merah);color:var(--merah-ink)}.umpan.netral{background:#eef0ec;color:#2c3a33}
+.umpan .tautan{color:inherit;min-height:28px;margin-top:4px}
+/* Petunjuk: satu kartu, isi bertambah ke bawah, satu aksi berikutnya */
+.petunjuk{border-radius:18px;background:#fff8e6;border:1.5px solid #f1dfae;padding:14px 16px;margin-top:12px;animation:muncul .4s ease-out}
 @keyframes muncul{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.bantuan{animation:none}}
-.bantuan h3{font-size:15px;font-weight:700;display:flex;gap:8px;align-items:center}
-.tangga{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
-.tangga li{display:grid;grid-template-columns:26px 1fr;gap:10px;align-items:start}
-.anak{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 12px var(--font);background:#fff;color:var(--biru-ink);box-shadow:inset 0 0 0 1.5px #c3d1ea}
-.anak.diambil{background:var(--biru-ink);color:#fff;box-shadow:none}
-.tangga .isi{font-size:14px;color:var(--ink)}
-.tangga .isi .label{font-weight:600;color:var(--biru-ink);display:block}
-.tangga .isi a{color:var(--biru-ink)}
-.tangga li.terkunci .isi{color:var(--muted)}
-.ajak{font-size:13.5px;color:var(--biru-ink);margin-top:6px}
+@media (prefers-reduced-motion:reduce){.petunjuk{animation:none}}
+.petunjuk h3{font-size:14px;font-weight:700;color:var(--kuning-ink);display:flex;gap:8px;align-items:center}
+.butir{margin-top:8px;font-size:15px;line-height:1.55}
+.butir + .butir{border-top:1.5px dashed #f1dfae;padding-top:8px}
+.butir a{color:var(--kuning-ink);font-weight:600}
+.petunjuk .lanjut{margin-top:6px;color:var(--kuning-ink)}
+.petunjuk .lanjut.bahaya{color:#9a3a22}
 /* Dialog */
 .latarDialog{position:fixed;inset:0;background:rgba(10,20,15,.45);display:grid;place-items:center;padding:16px;z-index:5}
-.dialog{background:#fff;border-radius:24px;max-width:440px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.dialog{background:#fff;border-radius:24px;max-width:420px;width:100%;padding:22px;box-shadow:0 24px 60px rgba(0,0,0,.25)}
 .dialog h2{font-size:20px}
-.dialog ul{margin:10px 0 0;padding-left:20px;font-size:14px;color:var(--muted)}
-.dialog label{display:block;font-size:14px;margin-top:14px;font-weight:600}
+.dialog p{font-size:14.5px;color:var(--muted);margin-top:8px}
+.dialog label{display:block;font-size:14px;margin-top:16px}
 .dialog input{width:100%;margin-top:6px;font:600 16px var(--font);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px}
 .dialog .galat{font-size:13px;color:var(--merah-ink);margin-top:6px}
 .dialog .aksi{justify-content:flex-end}
 /* Selesai */
-.predikat{display:flex;gap:14px;align-items:center;margin-top:4px}
-.predikat .kata{font-size:22px;font-weight:700;letter-spacing:-.01em}
-.ringkas{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14px}
-.ringkas li{display:flex;gap:8px;align-items:center}
-/* Daftar latihan */
-.daftar{list-style:none;margin:12px 0 0;padding:0}
-.daftar li{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 0;border-top:1.5px solid var(--line)}
-.daftar .jd{font-weight:600}.daftar .jd small{display:block;font-weight:400;color:var(--muted);font-size:13px}
-.label-p{font-size:13px;font-weight:600;border-radius:999px;padding:3px 10px}
-.p-mandiri{background:var(--mint);color:#174d3c}.p-dibantu{background:var(--biru);color:var(--biru-ink)}.p-dibuka{background:#eef0f4;color:#2c3445}
+.predikat{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-top:14px}
+.ringkas{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:6px;font-size:14.5px}
+.ringkas li{display:flex;gap:8px;align-items:flex-start}
 .catatan{font-size:13px;color:var(--muted);margin-top:14px;border-top:1.5px dashed var(--line);padding-top:10px}
+/* Daftar Latihan: gaya asli DaftarSoalHitung */
+.daftar-soal{list-style:none;margin:10px 0 0;padding:0}
+.baris-soal{display:flex;align-items:center;gap:14px;padding:12px 10px;border-radius:16px}
+.baris-soal.disarankan{background:var(--aksen-soft)}
+.status-soal{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px dashed #aab8a7;color:#fff}
+.baris-soal.selesai .status-soal{border:0;background:var(--sorot-fardh)}
+.baris-soal.selesai .status-dibantu{background:#6f9a8c}
+.baris-soal.selesai .status-dibuka{border:1.5px solid #c9d4c6;background:#e9ede6;color:#4a5853}
+.baris-soal.disarankan .status-soal{border:2px solid var(--aksen)}
+.isi-soal{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.isi-soal b{font:600 16px/1.4 var(--font)}
+.baris-soal.selesai .isi-soal b{font-weight:500;color:var(--muted)}
+.keterangan{font-size:13.5px;color:var(--muted)}
+.tingkat{font-weight:800}
+.penanda{font-weight:700;color:#a83a08}
+.ulangi{color:var(--kuning-ink);font-weight:600}
+.kepala-bab{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 @media(max-width:760px){
   body{padding:12px 8px 90px}
   .hero{padding:14px 16px 18px}.hero h1{font-size:22px}
   .tata{grid-template-columns:1fr;padding:16px}
   .s8,.s4,.s12{grid-column:auto}
-  .daftar li{grid-template-columns:1fr auto}
-  .daftar li .tautan{grid-column:1/-1;justify-self:start}
+  .baris-soal{display:grid;grid-template-columns:30px minmax(0,1fr);align-items:start;gap:6px 12px;padding:12px 8px}
+  .baris-soal .isi-soal{grid-column:2}
+  .baris-soal .btn{grid-column:2;justify-self:start;margin-top:4px}
 }
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="i-bantu" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6V14"/><path d="M12 17h.01"/></symbol>
   <symbol id="i-lampu" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.4 1 1.1 1 1.8V16h5v-.3c0-.7.4-1.4 1-1.8A6 6 0 0 0 12 3z"/></symbol>
   <symbol id="i-mata" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-cek" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-ulang" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4v5h5"/></symbol>
   <symbol id="i-buku" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/></symbol>
+  <symbol id="i-bintang" viewBox="0 0 24 24"><path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/></symbol>
 </svg>
 <div class="atas">
-  <p>Mockup tangga bantuan soal hitung. Pilih keadaan di bawah, atau klik aksi di dalam layar. Ini contoh, tidak ada yang disimpan.</p>
+  <p>Mockup tangga bantuan (revisi 2). Pilih keadaan, atau klik aksi di dalam layar. Ini contoh, tidak ada yang disimpan.</p>
   <nav class="tab" role="tablist" id="tab"></nav>
 </div>
 <div class="frame">
   <header class="hero"><div class="bilah"><span>Latihan · soal 3 dari 12</span><span>Bab ashabah</span></div>
-    <h1>Istri, anak laki-laki, dan anak perempuan</h1>
+    <h1 id="judulSoal">Soal H-03</h1>
     <p class="kalimat">Almarhum meninggalkan istri, satu anak laki-laki, dan satu anak perempuan. Isi tabelnya.</p></header>
   <div id="layar"></div>
 </div>
 <div id="wadahDialog"></div>
 <script>
-const BOBOT = 20, POTONG = 3, LANTAI = 8; // 15% dari 20 = 3; lantai 40% = 8 (spec bagian 5)
+// XP = dasar + bonus mandiri (spec bagian 5, revisi 2). Bonus lepas kalau memakai petunjuk atau Periksa salah lebih dari 3 kali.
+const XP_DASAR = 12, XP_BONUS = 8;
 const BAGIAN = ['1/2', '1/4', '1/8', '2/3', '1/3', '1/6', 'Ashabah', 'Terhalang'];
 const BARIS = [
   { nama: 'Istri', kunci: { bagian: '1/8', awal: '1', akhir: '3' } },
@@ -135,118 +142,102 @@ const BARIS = [
 const KEADAAN = [
   { id: 'awal', tab: '1 · Awal' },
   { id: 'salah1', tab: '2 · Salah sekali' },
-  { id: 'muncul', tab: '3 · Bantuan datang' },
-  { id: 'konsep', tab: '4 · Petunjuk konsep' },
-  { id: 'singgung', tab: '5 · Singgungan kasus' },
+  { id: 'tawar', tab: '3 · Petunjuk ditawarkan' },
+  { id: 'p1', tab: '4 · Petunjuk 1' },
+  { id: 'p2', tab: '5 · Petunjuk 2' },
   { id: 'dialog', tab: '6 · Ketik "hangus"' },
   { id: 'dibuka', tab: '7 · Kolom dibuka' },
   { id: 'selesai', tab: '8 · Selesai' },
   { id: 'daftar', tab: '9 · Daftar Latihan' },
 ];
-// Isian pelajar per keadaan: istri dijawab 1/4 (salah) sampai kolom Bagian dibuka.
 const isianSalah = { 0: '1/4', 1: 'Ashabah', 2: 'Ashabah' };
 let aktif = 'awal';
-
 const ik = (id, ukuran = 18) => `<svg class="ik" width="${ukuran}" height="${ukuran}"><use href="#i-${id}"/></svg>`;
-const xpDi = { awal: BOBOT, salah1: BOBOT - POTONG, muncul: BOBOT - 2 * POTONG, konsep: BOBOT - 3 * POTONG, singgung: BOBOT - 4 * POTONG, dialog: BOBOT - 4 * POTONG, dibuka: 0, selesai: 0 };
 
 function render() {
   document.getElementById('tab').innerHTML = KEADAAN.map(k => `<button role="tab" aria-selected="${k.id === aktif}" data-k="${k.id}">${k.tab}</button>`).join('');
+  document.getElementById('judulSoal').textContent = aktif === 'selesai' ? 'Istri, anak laki-laki, dan anak perempuan' : 'Soal H-03';
   document.getElementById('layar').innerHTML = aktif === 'daftar' ? layarDaftar() : aktif === 'selesai' ? layarSelesai() : layarSoal();
   document.getElementById('wadahDialog').innerHTML = aktif === 'dialog' ? dialogHangus() : '';
   document.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { aktif = b.dataset.k; render(); });
-  const masuk = document.getElementById('ketik'); if (masuk) masuk.focus();
+  document.getElementById('ketik')?.focus();
 }
 
 function teksXp() {
-  const xp = xpDi[aktif];
-  if (aktif === 'dibuka') return `<span class="xp hangus">XP soal ini: <b>hangus</b></span>`;
-  return `<span class="xp">XP soal ini: ${xp < BOBOT ? `<s>${BOBOT}</s> ` : ''}<b>${xp}</b></span>`;
+  if (aktif === 'dibuka') return `<span class="xp">Kolom dibuka, soal ini tanpa XP</span>`;
+  const lepas = ['p1', 'p2', 'dialog'].includes(aktif);
+  return `<span class="xp"><b>${XP_DASAR} XP</b><span class="bonus ${lepas ? 'lepas' : ''}">${ik('bintang', 14)}+${XP_BONUS} mandiri</span></span>`;
 }
 
 function layarSoal() {
-  const dibuka = aktif === 'dibuka';
-  const sorot = ['muncul', 'konsep', 'singgung', 'dialog'].includes(aktif);
-  const salah = aktif !== 'awal';
+  const dibuka = aktif === 'dibuka', salah = aktif !== 'awal';
   const sel = (b, i) => {
-    if (dibuka) return `<td class="sorot"><span class="kunci">${i === 0 ? '<s>1/4</s>' : ''}${b.kunci.bagian}</span></td>`;
-    const nilai = aktif === 'awal' ? '' : isianSalah[i];
-    return `<td class="${sorot ? 'sorot' : ''} ${salah && i === 0 ? 'keliru' : ''}"><select aria-label="Bagian ${b.nama}"><option value="">Pilih</option>${BAGIAN.map(p => `<option ${p === nilai ? 'selected' : ''}>${p}</option>`).join('')}</select></td>`;
+    if (dibuka) return `<td><span class="kunci">${i === 0 ? '<s>1/4</s>' : ''}${b.kunci.bagian}</span></td>`;
+    const nilai = salah ? isianSalah[i] : '';
+    return `<td class="${salah && i === 0 ? 'keliru' : ''}"><select aria-label="Bagian ${b.nama}"><option value="">Pilih</option>${BAGIAN.map(p => `<option ${p === nilai ? 'selected' : ''}>${p}</option>`).join('')}</select></td>`;
   };
-  const angka = (b, kol) => `<td><input class="bulat" inputmode="numeric" aria-label="${kol} ${b.nama}" value="${aktif === 'awal' ? '' : ({ awal: b.nama === 'Istri' ? '2' : '3', akhir: '' })[kol] ?? ''}"></td>`;
+  const angka = (b, kol) => `<td><input class="bulat" inputmode="numeric" aria-label="${kol} ${b.nama}" value="${salah && kol === 'awal' ? (b.nama === 'Istri' ? '1' : '3') : ''}"></td>`;
   return `<div class="tata">
     <section class="t s8" aria-labelledby="jt">
       <div class="kepalaT"><h2 id="jt">Tabel faraidh</h2>${teksXp()}</div>
       <p class="sub">Isi dari kiri ke kanan, lalu Periksa.</p>
       <div class="wadahTabel"><table class="kitab">
-        <thead><tr><th class="nama">Ahli waris</th><th class="${sorot || dibuka ? 'sorot' : ''}"><span class="judulKol">Bagian</span></th>
-          <th><span class="judulKol">Asal masalah</span><input class="bulat" value="${aktif === 'awal' ? '' : '4'}" aria-label="Asal masalah"></th>
+        <thead><tr><th class="nama">Ahli waris</th><th><span class="judulKol">Bagian</span></th>
+          <th><span class="judulKol">Asal masalah</span><input class="bulat" value="${salah ? '4' : ''}" aria-label="Asal masalah"></th>
           <th><span class="judulKol">Asal masalah akhir</span><input class="bulat" aria-label="Asal masalah akhir"></th></tr></thead>
         <tbody>${BARIS.map((b, i) => `<tr><td class="nama">${b.nama}</td>${sel(b, i)}${angka(b, 'awal')}${angka(b, 'akhir')}</tr>`).join('')}</tbody>
       </table></div>
       ${umpan()}
-      ${kartuBantuan()}
+      ${kartuPetunjuk()}
       <div class="aksi">
-        <button class="btn" data-k="${aktif === 'awal' ? 'salah1' : aktif === 'salah1' ? 'muncul' : aktif === 'dibuka' ? 'selesai' : aktif}">Periksa</button>
+        <button class="btn" data-k="${{ awal: 'salah1', salah1: 'tawar', dibuka: 'selesai' }[aktif] ?? aktif}">Periksa</button>
         <button class="tautan" data-k="awal">Kosongkan</button>
-        ${dibuka ? `<button class="tautan bahaya" data-k="selesai">${ik('mata')}Buka sisanya</button>` : ''}
+        ${dibuka ? `<button class="tautan bahaya" data-k="selesai">${ik('mata')}Buka semua kolom</button>` : ''}
       </div>
-      ${dibuka ? `<p class="catatan">"Buka sisanya" baru muncul setelah XP hangus. Sebelum itu tidak ada jalan membuka semua sekaligus.</p>` : ''}
     </section>
     <aside class="t s4" aria-labelledby="jc">
       <h2 id="jc">Cara mengisi</h2>
       <ol class="sub" style="padding-left:20px;margin-top:8px">
         <li><b>Bagian</b> dipilih dari daftar.</li>
         <li>Saham = bilangan bulat terhadap asal masalah di kepala kolom.</li>
-        <li>Buntu? Setelah dua kali mencoba, bantuan datang per kolom.</li>
+        <li>Salah itu biasa. Kolom yang perlu dicek ditandai merah.</li>
       </ol>
-      <p class="catatan">Harga tiap bantuan selalu disebut sebelum diambil. Periksa yang salah juga memotong ${POTONG} XP, minimal tersisa ${LANTAI}.</p>
+      <p class="catatan">${ik('bintang', 14)} <b>Bonus mandiri</b> didapat kalau benar tanpa petunjuk. Salah beberapa kali tidak apa-apa.</p>
     </aside>
   </div>`;
 }
 
 function umpan() {
   if (aktif === 'awal') return '';
-  if (aktif === 'dibuka') return `<div class="umpan" style="background:#eef0f4;color:#2c3445">Kolom <b>Bagian</b> dibuka. Lanjutkan kolom <b>Asal masalah</b> sendiri.</div>`;
-  const usaha = aktif === 'salah1' ? 1 : 2;
-  return `<div class="umpan salah" role="status">Mulai salah di kolom <b>Bagian</b>.</div>
-    ${usaha < 2 ? `<p class="datang"><span class="titik"><i class="on"></i><i></i></span>Coba sekali lagi. Kalau masih buntu, bantuan datang.</p>` : ''}`;
+  if (aktif === 'dibuka') return `<div class="umpan netral">Kolom <b>Bagian</b> sudah terbuka. Kolom <b>Asal masalah</b> giliranmu.</div>`;
+  const tawar = aktif === 'tawar';
+  return `<div class="umpan salah" role="status">
+      ${aktif === 'salah1' ? 'Bagian <b>istri</b> belum tepat. Kolom lain menunggu kolom ini benar dulu.' : 'Bagian <b>istri</b> masih belum tepat.'}
+      ${tawar ? `<br><button class="tautan" data-k="p1">${ik('lampu')}Lihat petunjuk</button>` : ''}
+    </div>`;
 }
 
-function kartuBantuan() {
-  if (aktif === 'awal' || aktif === 'salah1' || aktif === 'dibuka') return '';
-  const tingkat = { muncul: 0, konsep: 1, singgung: 2, dialog: 2 }[aktif];
-  const isi = [
-    { label: 'Petunjuk konsep', teks: `Bagian istri ditentukan oleh ada atau tidaknya <b>keturunan almarhum</b>. <a href="#">Baca materi Furudh ${ik('buku', 16)}</a>`, ke: 'konsep' },
-    { label: 'Singgungan kasus', teks: 'Perhatikan: di kasus ini ada orang yang membuat <b>bagian istri berkurang</b>.', ke: 'singgung' },
-    { label: 'Buka jawaban kolom Bagian', teks: '', ke: 'dialog' },
-  ];
-  const harga = ['−3 XP', '−3 XP', 'XP soal ini hangus'];
-  return `<section class="bantuan" aria-labelledby="jb">
-    <h3 id="jb">${ik('bantu')}${tingkat === 0 ? 'Butuh bantuan di kolom Bagian?' : 'Bantuan · kolom Bagian'}</h3>
-    ${tingkat === 0 ? `<p class="ajak">Ambil bertahap. Mulai dari petunjuk kecil dulu, sering kali itu sudah cukup.</p>` : ''}
-    <ol class="tangga">${isi.map((anak, i) => {
-      const diambil = i < tingkat, berikut = i === tingkat;
-      return `<li class="${!diambil && !berikut ? 'terkunci' : ''}"><span class="anak ${diambil ? 'diambil' : ''}">${diambil ? ik('cek', 14) : i + 1}</span>
-        <div class="isi">${diambil ? `<span class="label">${anak.label}</span>${anak.teks}`
-          : berikut ? `<button class="tautan ${i === 2 ? 'bahaya' : ''}" data-k="${anak.ke}">${i === 2 ? ik('mata') : ik('lampu')}${anak.label} <span class="harga">· ${harga[i]}</span></button>`
-          : `${anak.label} <span class="harga" style="color:var(--muted)">· terbuka setelah langkah ${i}</span>`}</div></li>`;
-    }).join('')}</ol>
+function kartuPetunjuk() {
+  if (!['p1', 'p2', 'dialog'].includes(aktif)) return '';
+  const kedua = aktif !== 'p1';
+  return `<section class="petunjuk" aria-labelledby="jp">
+    <h3 id="jp">${ik('lampu', 16)}Petunjuk · kolom Bagian</h3>
+    <p class="butir">Bagian istri ada dua kemungkinan. Mana yang berlaku tergantung ada atau tidaknya <b>keturunan almarhum</b>. <a href="#">Ulang materinya ${ik('buku', 15)}</a></p>
+    ${kedua ? `<p class="butir">Lihat lagi daftar ahli waris di soal. Siapa di antara mereka yang <b>keturunan almarhum</b>?</p>` : ''}
+    ${kedua ? `<button class="tautan lanjut bahaya" data-k="dialog">${ik('mata')}Tunjukkan jawaban kolom Bagian</button>`
+            : `<button class="tautan lanjut" data-k="p2">Masih buntu? Petunjuk berikutnya</button>`}
   </section>`;
 }
 
 function dialogHangus() {
   return `<div class="latarDialog"><div class="dialog" role="alertdialog" aria-labelledby="jd" aria-describedby="dd">
-    <h2 id="jd">Buka jawaban kolom Bagian?</h2>
-    <ul id="dd">
-      <li>XP soal ini hangus selamanya, walau nanti kamu kerjakan ulang sampai benar.</li>
-      <li>Hanya kolom Bagian yang dibuka. Kolom lain tetap kamu kerjakan.</li>
-    </ul>
-    <label for="ketik">Ketik <b>hangus</b> untuk membuka</label>
+    <h2 id="jd">Tunjukkan jawaban kolom Bagian?</h2>
+    <p id="dd">Kolom lain tetap kamu kerjakan, tapi soal ini tidak memberi XP lagi, juga kalau nanti diulang.</p>
+    <label for="ketik">Ketik <b>hangus</b> kalau yakin</label>
     <input id="ketik" autocomplete="off" spellcheck="false">
-    <p class="galat" id="galat" hidden>Ketik kata hangus persis seperti itu.</p>
-    <div class="aksi"><button class="tautan" data-k="singgung">Coba lagi dulu</button>
-      <button class="btn" id="bukaKolom">Buka kolom</button></div>
+    <p class="galat" id="galat" hidden>Ketik kata hangus, persis seperti itu.</p>
+    <div class="aksi"><button class="tautan" data-k="p2">Coba lagi dulu</button>
+      <button class="btn" id="bukaKolom">Tunjukkan</button></div>
   </div></div>`;
 }
 document.addEventListener('click', e => {
@@ -258,31 +249,38 @@ document.addEventListener('click', e => {
 function layarSelesai() {
   return `<div class="tata"><section class="t s12" aria-labelledby="js">
     <div class="umpan benar" role="status">Benar semua.</div>
-    <div class="predikat" style="margin-top:16px"><span class="label-p p-dibuka">Dibuka</span><span class="kata">Selesai, dengan satu kolom dibuka</span></div>
+    <p class="predikat" id="js">Dua dari tiga kolom kamu selesaikan sendiri.</p>
     <ul class="ringkas">
-      <li>${ik('cek')}Kolom Asal masalah dan Asal masalah akhir kamu kerjakan sendiri.</li>
-      <li>${ik('lampu')}Kolom Bagian: 2 petunjuk, lalu dibuka.</li>
+      <li>${ik('cek')}Asal masalah dan asal masalah akhir: tanpa bantuan.</li>
       <li>${ik('buku')}Yang perlu diulang: <a href="#">bagian istri saat ada keturunan</a>.</li>
+      <li>${ik('ulang')}Soal ini masuk <b>layak diulang</b>. Coba lagi besok, tanpa petunjuk.</li>
     </ul>
     <div class="aksi"><button class="btn" data-k="daftar">Soal berikutnya</button>
-      <button class="tautan" data-k="awal">${ik('ulang')}Kerjakan ulang sekarang</button></div>
-    <p class="catatan">Contoh predikat lain. Mandiri: "Benar tanpa bantuan. Kolom Bagian kali ini lancar." Dibantu: "Benar dengan 1 petunjuk, XP 14 dari 20."</p>
+      <button class="tautan" data-k="awal">Kerjakan ulang sekarang</button></div>
+    <p class="catatan">Contoh lain. Mandiri: "Benar tanpa petunjuk. +${XP_DASAR} XP, +${XP_BONUS} bonus mandiri." Pakai petunjuk: "Benar. +${XP_DASAR} XP. Besok coba tanpa petunjuk untuk bonusnya."</p>
   </section></div>`;
 }
 
 function layarDaftar() {
   const soal = [
-    { j: 'Suami dan dua anak perempuan', b: 'Bab furudh', p: 'mandiri', kata: 'Mandiri' },
-    { j: 'Ibu, ayah, dan istri', b: 'Bab umariyyatain', p: 'dibantu', kata: 'Dibantu', ulang: true },
-    { j: 'Istri, anak laki-laki, dan anak perempuan', b: 'Bab ashabah', p: 'dibuka', kata: 'Dibuka', ulang: true },
-    { j: 'Suami, ibu, dan dua saudara seibu', b: 'Bab \'aul', p: '', kata: '' },
+    { kode: 'H-01', judul: 'Suami dan dua anak perempuan', tingkat: 'Dasar', status: 'benar', ket: 'Sudah benar · mandiri' },
+    { kode: 'H-02', judul: 'Ibu, ayah, dan istri', tingkat: 'Dasar', status: 'dibantu', ket: 'Benar dengan petunjuk', ulangi: true },
+    { kode: 'H-03', judul: 'Istri, anak laki-laki, dan anak perempuan', tingkat: 'Dasar', status: 'dibuka', ket: 'Satu kolom dibuka', ulangi: true },
+    { kode: 'H-04', tingkat: 'Menengah', status: 'belum', disarankan: true },
+    { kode: 'H-05', tingkat: 'Menengah', status: 'belum' },
   ];
   return `<div class="tata"><section class="t s12" aria-labelledby="jl">
-    <div class="kepalaT"><h2 id="jl">Latihan</h2><button class="tautan">${ik('ulang')}Ulangi yang dibantu (2)</button></div>
-    <ul class="daftar">${soal.map(s => `<li><span class="jd">${s.j}<small>${s.b}${s.ulang ? ' · ulangi nanti' : ''}</small></span>
-      ${s.kata ? `<span class="label-p p-${s.p}">${s.kata}</span>` : '<span></span>'}
-      <button class="btn lemah" data-k="awal">${s.kata ? 'Kerjakan ulang' : 'Kerjakan'}</button></li>`).join('')}</ul>
-    <p class="catatan">Kerjakan ulang yang berhasil tanpa bantuan mengganti predikat jadi Mandiri. XP tetap dari benar pertama (aturan server).</p>
+    <div class="kepala-bab"><h2 id="jl">Bab ashabah</h2><span class="keterangan">3 dari 5 selesai</span></div>
+    <ul class="daftar-soal">${soal.map(s => {
+      const selesai = s.status !== 'belum';
+      return `<li class="baris-soal ${selesai ? 'selesai' : ''} ${s.disarankan ? 'disarankan' : ''}">
+        <span class="status-soal status-${s.status}" role="img" aria-label="${s.ket ?? 'Belum dikerjakan'}">${s.status === 'benar' || s.status === 'dibantu' ? ik('cek', 16) : s.status === 'dibuka' ? ik('mata', 16) : ''}</span>
+        <div class="isi-soal"><b>${selesai ? s.judul : `Soal ${s.kode}`}</b>
+          <span class="keterangan"><span class="tingkat">${s.tingkat}</span>${s.ket ? ` · ${s.ket}` : ''}${s.ulangi ? ` · <span class="ulangi">layak diulang</span>` : ''}${s.disarankan ? ` · <span class="penanda">Soal berikutnya untukmu</span>` : ''}</span></div>
+        <button class="btn ${s.disarankan ? '' : 'lemah'}" data-k="awal">${s.ulangi ? 'Ulangi' : selesai ? 'Pembahasan' : 'Kerjakan'}</button>
+      </li>`;
+    }).join('')}</ul>
+    <p class="catatan">Gaya baris sama dengan daftar Latihan sekarang. Yang baru hanya keterangan (mandiri / dengan petunjuk / kolom dibuka) dan penanda "layak diulang". Judul tetap buta sampai soal selesai.</p>
   </section></div>`;
 }
 render();
