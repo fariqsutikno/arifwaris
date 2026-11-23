@@ -1,6 +1,6 @@
 # Rencana perbaikan tautan bagikan kasus
 
-Sumber: [audit-tautan-bagikan-2026-11-23.md](audit-tautan-bagikan-2026-11-23.md) (T1–T8). Status: **menunggu persetujuan pemilik**.
+Sumber: [audit-tautan-bagikan-2026-11-23.md](audit-tautan-bagikan-2026-11-23.md) (T1–T8). Status: **disetujui 2026-11-23, bentuk slug B (acak murni)**.
 Urutan di bawah = urutan kerja. Langkah 1 adalah inti; langkah lain kecil dan bisa ikut di PR yang sama.
 
 ## Keputusan yang perlu pemilik ambil dulu
@@ -11,27 +11,25 @@ Urutan di bawah = urutan kerja. Langkah 1 adalah inti; langkah lain kecil dan bi
    - B: akses tautan selalu slug acak murni, tanpa nama. Nama bebas hanya untuk akses email/privat.
 2. **Slug email/privat**: tetap boleh nama bebas (disarankan; yang membuka tetap harus lolos cek email/pemilik).
 
-Rencana di bawah memakai **A**.
+**Diputuskan pemilik: B.** Akses tautan = slug acak murni 16 karakter; input nama dinonaktifkan untuk akses tautan.
 
 ## Langkah 1. Slug akses tautan wajib acak dan aman (T1, T2)
 
 **Klien** — `apps/web/src/layar/DialogBagikan.tsx`
 - Ganti `slugAcak` (baris 225, `Math.random`) dengan `crypto.getRandomValues`. Konstanta `PANJANG_SLUG_ACAK = 16` (baris 19)
   dengan alfabet `a-z0-9` (≈ 82 bit). Pakai rejection sampling atau alfabet 32 karakter supaya tidak bias.
-- Saat akses = tautan: input hanya mengubah *awalan nama*; sufiks acak ditampilkan terkunci di sebelahnya
-  (`waris-ayah` + `-k3f9…`). Slug akhir = `awalan ? `${awalan}-${sufiks}` : sufiks`. Sufiks dibuat sekali per kasus dan
-  dipertahankan saat awalan diubah, supaya tautan tidak berganti tanpa sebab.
-- Saat akses berubah dari email/privat ke tautan dan slug lama tidak punya sufiks acak: tambahkan sufiks otomatis, dan
+- Saat akses = tautan: slug acak ditampilkan hanya-baca (tidak bisa diketik). Slug dibuat sekali per kasus dan dipertahankan.
+- Saat akses berubah dari email/privat ke tautan dan slug lama bukan acak 16 karakter: buat slug acak baru, dan
   tunjukkan peringatan "tautan lama (`…`) berhenti bekerja" yang sudah ada (`konf_tautan_diganti`, baris 180).
 - Pola slug yang sah satu sumber: tambahkan `SLUG_BAGIKAN_TAUTAN` di `apps/web/src/rute.ts` di sebelah `SLUG_BAGIKAN` (baris 62):
-  `/^(?:[a-z0-9][a-z0-9-]{0,22}-)?[a-z0-9]{16}$/` (maks 40 karakter, tetap lolos check lama).
+  `/^[a-z0-9]{16}$/` (tetap lolos check lama).
 - Kalimat UI baru (keterangan sufiks, peringatan) lewat kamus terjemah, bukan hardcode.
 
 **Database** — migrasi baru `supabase/migrations/20261123000001_slug_tautan_acak.sql`
 ```sql
 -- T1 (audit 2026-11-23): akses 'tautan' hanya dijaga slug, jadi slug wajib berakhir 16 karakter acak.
 alter table kasus_dibagikan add constraint slug_tautan_acak
-  check (akses <> 'tautan' or slug ~ '^([a-z0-9][a-z0-9-]{0,22}-)?[a-z0-9]{16}$');
+  check (akses <> 'tautan' or slug ~ '^[a-z0-9]{16}$');
 ```
 - Check ini tidak bisa membuktikan sufiks benar-benar acak (klien yang curang bisa mengirim `aaaa…`), tetapi pengguna yang
   curang hanya membahayakan kasusnya sendiri. Tujuannya mencegah slug pendek/tebak-able karena UI lama atau kekeliruan.
@@ -39,8 +37,8 @@ alter table kasus_dibagikan add constraint slug_tautan_acak
   Bila ada baris yang melanggar, ubah dulu aksesnya ke `privat` (pemilik bisa membagikan ulang), jangan dihapus.
 
 **Uji**
-- `supabase/tests/database/15_bagikan.test.sql`: slug `kasus-umum` untuk akses tautan diganti slug bersufiks 16 karakter;
-  tambah `throws_ok` untuk akses tautan dengan slug tanpa sufiks (`23514`), dan `lives_ok` untuk akses email dengan nama bebas.
+- `supabase/tests/database/15_bagikan.test.sql`: slug `kasus-umum` untuk akses tautan diganti slug acak 16 karakter;
+  tambah `throws_ok` untuk akses tautan dengan slug nama bebas (`23514`), dan `lives_ok` untuk akses email dengan nama bebas.
 - Unit test klien kecil untuk pembuat slug: panjang 16, hanya `a-z0-9`, dan slug akhir lolos `SLUG_BAGIKAN_TAUTAN`.
 
 ## Langkah 2. Cabut hak tabel yang tidak dipakai (T7)
@@ -82,7 +80,7 @@ PR #53 (muat ulang) menghentikan tautan saat kasus dihapus. Sisa celahnya: kasus
 
 ## Selesai bila
 
-- [ ] Slug akses tautan baru selalu bersufiks 16 karakter dari `crypto.getRandomValues`; tidak ada lagi `Math.random` di jalur bagikan.
+- [ ] Slug akses tautan baru selalu 16 karakter acak dari `crypto.getRandomValues`; tidak ada lagi `Math.random` di jalur bagikan.
 - [ ] Check `slug_tautan_acak` dan `revoke` aktif di produksi; `pnpm` test DB (pgTAP) hijau.
 - [ ] Pengaturan Auth produksi T6 dicek dan dicatat.
 - [ ] (Opsional, PR terpisah) daftar tautan aktif di halaman akun.
