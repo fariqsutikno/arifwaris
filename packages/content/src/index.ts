@@ -21,3 +21,7 @@ export {
   transisiRevisi, bolehSuntingDraf, bolehPerbaruiAjuan, bolehAbaikanRevisi, caraBuangEntri, bolehPulihkanEntri, periksaRefs,
   type Peran, type StatusRevisi, type AksiEditorial, type CaraBuangEntri, type KeadaanSampah,
 } from './editorial.js';
+export {
+  CATATAN_KHI, ID_CATATAN_KHI, JALAN_KELUAR, cariCatatanKhi, teksTampil,
+  type CatatanKhi, type IdCatatanKhi, type JalanKeluar, type SumberKhi, type ButirPraktikPa, type Madzhab,
+} from './khi/catatanKhi.js';
