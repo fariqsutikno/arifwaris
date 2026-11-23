@@ -1,6 +1,6 @@
 # Muat ulang di Hitung & Latihan: diagnosis dan peta uji
 
-Tanggal: 2026-11-23. Status: diagnosis selesai, perbaikan belum.
+Tanggal: 2026-11-23 (revisi 2: model simpan). Status: diagnosis selesai, perbaikan belum.
 
 ## Cara kerja sekarang
 
@@ -24,15 +24,15 @@ Tanggal: 2026-11-23. Status: diagnosis selesai, perbaikan belum.
 
 Kasus sendiri yang lengkap, dibuka dari Riwayat lalu di-refresh: **pulih benar** (diuji di browser).
 
-## Arah perbaikan (usulan, belum dikerjakan)
+| S0 | "Jangan simpan kasus ini" menjanjikan tidak disimpan, padahal kasus tetap ditulis ke riwayat perangkat 30 hari | tautan hanya memanggil `hapusTersimpan`; efek `catatRiwayat` di `Aplikasi.tsx` tanpa syarat | Baca kode |
+| S0b | Hapus kasus di Berkas/Riwayat tidak menghentikan tautan bagikan | `kasusmu.hapusKasus` hanya riwayat + Tersimpan | Baca kode |
 
-1. A1/A2: di `pulihDariUrl` (dan efek `PULIHKAN`), bila `sumber.jenis === 'latihan'` turunkan `soalAktif` dari
-   `daftarSoalHitung().find(kode)`; satu sumber, tanpa simpanan baru.
-2. B1: syarat "boleh tetap di Hasil" sama dengan syarat `mulaiDari`, bukan `kasusLengkap`. Bisa jadi satu fungsi
-   `bolehDiHasil(kasus)` (ada ahli waris + keluarga lengkap; harta boleh 0) dipakai oleh `pulihDariUrl` dan Hasil.
-3. A4: jangkar dari benih `idSesi` (PRNG kecil, deterministik), bukan `Math.random`, jadi sama setelah refresh.
-4. A3: simpan `{isian, jawabanTerbuka, sudahMencoba, tebakanBenar, idSesiSoal}` per `idSesi` di `sessionStorage`
-   (hilang saat tab ditutup, cukup untuk refresh). Bersihkan saat soal ditandai selesai atau dibuka ulang dari daftar.
+## Arah perbaikan
+
+Rencana lengkap: `docs/design/rencana-perbaikan-muat-ulang.md` (revisi 2). Ringkas: pulihkan `soalAktif` dari
+sumber riwayat; `bolehDiHasil` untuk susunan cepat; jangkar berbenih `idSesi`; isian soal tersimpan otomatis di
+localStorage per sesi (ikut masa riwayat 30 hari); "Jangan simpan" diganti "Hapus kasus ini" yang menghapus
+tuntas; kebijakan privasi v2.
 
 ## Peta uji
 
@@ -85,7 +85,7 @@ Lapisan: **U** = unit (vitest, `pulihDariUrl`/reducer/riwayat), **K** = komponen
 | ID | Skenario | Harapan | Lapisan |
 |---|---|---|---|
 | H1 | Hasil kasus sendiri, refresh | Simpan otomatis tetap menunjuk id yang sama, tanpa entri ganda | U |
-| H2 | "Jangan simpan kasus ini" lalu refresh | Putuskan: tetap tidak disimpan (persist per id) atau kembali tersimpan, lalu uji keputusan itu (sekarang hilang diam-diam) | K |
+| H2 | (diganti S1–S7: "Jangan simpan" dihapus, keputusan pemilik 2026-11-23) | Tautan "Jangan simpan" tidak ada lagi | K |
 | H3 | Ubah harta / ahli waris di Hasil, refresh | Perubahan terakhir ada (riwayat ditulis tiap perubahan) | U |
 | H4 | Wizard belum selesai, refresh | Dialog bawaan `beforeunload` muncul; bila lanjut, langkah pulih | E |
 | H5 | Kasus contoh materi (`sumber materi`, terkunci), refresh | Tetap terkunci | U (ada sebagian) |
@@ -104,17 +104,29 @@ Lapisan: **U** = unit (vitest, `pulihDariUrl`/reducer/riwayat), **K** = komponen
 | X4 | Bahasa diganti (memuat ulang halaman) saat di Hasil/soal | Sama dengan refresh: posisi + isian kembali | E |
 | X5 | Refresh berkali-kali cepat | Tidak menumpuk entri riwayat / kejadian percobaan | U |
 
-### 5. Properti (invarian)
+### 5. Model simpan & hapus
+
+| ID | Skenario | Harapan | Lapisan |
+|---|---|---|---|
+| S1 | "Hapus kasus ini" di Hasil → konfirmasi | Hilang dari riwayat, Tersimpan (lokal + antre akun), isian soal; layar Awal; toast Urungkan | K + U |
+| S2 | Urungkan sesudah hapus | Riwayat, Tersimpan, isian kembali; kasus terbuka lagi | U + K |
+| S3 | Hapus kasus yang sedang dibagikan | Dialog menyebut tautan ikut dihentikan; `bagikan.berhenti` dipanggil; Urungkan tidak menghidupkan tautan | U + K |
+| S4 | `bagikan.berhenti` gagal (offline) | Hapus lokal tetap jalan; tidak crash | U |
+| S5 | Entri riwayat kedaluwarsa (> 30 hari) | Isian soalnya ikut terbuang | U |
+| S6 | Soal latihan: hapus kasus | Kasus + isian hilang; progres & XP latihan tetap | U |
+| S7 | Hapus dari Berkas kasus / Riwayat | Jalur hapus yang sama dengan S1 (termasuk tautan bagikan) | U |
+| S8 | Keluar akun | Isian soal lokal ikut bersih | U |
+| S9 | Kebijakan privasi | Menyebut simpan otomatis di perangkat, retensi 30 hari, hapus kasus; versi 2 memicu persetujuan ulang | K + E |
+| S10 | Tidak masuk akun | Hasil tetap tersimpan otomatis di perangkat; label status jujur ("di perangkat ini") | K |
+| S11 | Tutup tab, buka lagi dari Riwayat (soal latihan) | Isian dan status soal kembali (bukan hanya saat refresh) | E |
+
+### 6. Properti (invarian)
 
 - Untuk setiap `keadaan` yang bisa dicapai lewat reducer dengan kasus `k`:
   `pulihDariUrl(tautanKasus(id, keadaan))` setelah `catatRiwayat(id, k)` menghasilkan `layar` & `langkah` yang sama
   (kecuali `awal`/`pintu`). Ini menangkap B1 dan regresi serupa sekaligus.
 - `bacaRute(tautanKasus(...))` selalu bolak-balik ke posisi yang sama.
 
-## Urutan kerja yang disarankan
+## Urutan kerja
 
-1. Tes U untuk P4, P6, L1, L6, X1 + properti (merah dulu).
-2. Perbaikan 1–3 (kecil, di `pulihDariUrl` + jangkar berbenih).
-3. Tes K untuk L2–L5, lalu perbaikan 4 (sessionStorage per idSesi).
-4. P8 (pesan kasus tidak ditemukan) dan H2 (keputusan pemilik).
-5. Cek E di preview: L1–L4, P13, H4.
+Ikuti tugas 1–11 di `docs/design/rencana-perbaikan-muat-ulang.md`.
