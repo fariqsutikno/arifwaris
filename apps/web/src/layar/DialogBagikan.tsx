@@ -1,12 +1,14 @@
 // Dialog "Bagikan kasus", satu layar, urutan mengikuti cara orang berpikir: (1) siapa yang boleh membuka, (2) daftar email bila
 // perlu, (3) tautannya. Bawaan "Hanya saya" = tidak dibagikan, jadi tautan baru muncul setelah memilih untuk membagikan.
 // Memilih "Hanya saya" lalu menyimpan = menghentikan pembagian. Setiap simpan lewat konfirmasi yang menjelaskan akibatnya.
-// Nama tautan diketik langsung dengan cek "tersedia / sudah dipakai"; menyimpan menyalin tautan otomatis. Klik di luar menutup.
+// Akses email: nama tautan diketik dengan cek "tersedia / sudah dipakai". Akses tautan: slug acak hanya-baca (tidak bisa ditebak).
+// Menyimpan menyalin tautan otomatis. Klik di luar menutup.
 
 import { useEffect, useId, useState } from 'react';
 import type { AksesBagikan, PengaturanBagikan, RepositoriBagikan } from '@waris/data';
 import { keJsonDibagikan, type Kasus } from '../kasus';
-import { SLUG_BAGIKAN, alamatBagikan, tautanBagikan } from '../rute';
+import { SLUG_BAGIKAN, SLUG_BAGIKAN_TAUTAN, alamatBagikan, tautanBagikan } from '../rute';
+import { buatSlugAcak } from '../slugBagikan';
 import { tandaiDibagikan } from '../bagikanLokal';
 import { Ikon, type NamaIkon } from '../ui/Ikon';
 import { Tombol } from '../ui/komponen';
@@ -16,7 +18,6 @@ interface Props { idRiwayat: string; kasus: Kasus; repo: RepositoriBagikan; saat
 type StatusNama = 'sendiri' | 'memeriksa' | 'tersedia' | 'dipakai' | 'tidak_sah' | 'tak_diketahui';
 
 const BATAS_EMAIL = 50;
-const PANJANG_SLUG_ACAK = 8;
 const JEDA_CEK_NAMA_MS = 400;
 
 export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
@@ -24,7 +25,7 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   const [memuat, setMemuat] = useState(true);
   const [tersimpan, setTersimpan] = useState<PengaturanBagikan | null>(null);
   const [akses, setAkses] = useState<AksesBagikan>('privat');
-  const [slug, setSlug] = useState(slugAcak);
+  const [slug, setSlug] = useState(buatSlugAcak);
   const [teksEmail, setTeksEmail] = useState('');
   const [galat, setGalat] = useState('');
   const [sibuk, setSibuk] = useState(false);
@@ -46,7 +47,7 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   // Nama tautan diperiksa saat mengetik (setelah jeda singkat); kegagalan cek tidak menghalangi, server tetap menolak bentrok.
   useEffect(() => {
     if (!membagikan) return;
-    if (!SLUG_BAGIKAN.test(slug)) return setStatusNama('tidak_sah');
+    if (!(akses === 'tautan' ? SLUG_BAGIKAN_TAUTAN : SLUG_BAGIKAN).test(slug)) return setStatusNama('tidak_sah');
     if (tersimpan?.slug === slug) return setStatusNama('sendiri');
     setStatusNama('memeriksa');
     let batal = false;
@@ -55,7 +56,7 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
         .catch(() => { if (!batal) setStatusNama('tak_diketahui'); });
     }, JEDA_CEK_NAMA_MS);
     return () => { batal = true; clearTimeout(tunda); };
-  }, [slug, tersimpan, repo, idRiwayat, membagikan]);
+  }, [slug, tersimpan, repo, idRiwayat, membagikan, akses]);
 
   const email = bacaEmail(teksEmail);
   const emailSalah = email.filter(surel => !SUREL.test(surel));
@@ -94,6 +95,11 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
   };
   // Mengubah apa pun membuat status "baru disimpan/tersalin" tidak berlaku lagi.
   const ubah = (aksi: () => void) => { aksi(); setBaruDisimpan(false); setTersalin(false); setGalat(''); setKonfirmasi(false); };
+  // Slug lama yang bukan acak (nama bebas dari akses email/privat) tidak boleh ikut ke akses tautan: diganti baru.
+  const pilihAksesBaru = (baru: AksesBagikan) => {
+    setAkses(baru);
+    if (baru === 'tautan' && !SLUG_BAGIKAN_TAUTAN.test(slug)) setSlug(buatSlugAcak());
+  };
   const tautanLamaBerubah = dibagikanSekarang && membagikan && slug !== tersimpan.slug;
 
   return (
@@ -114,7 +120,7 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
               <legend><span className="nomor-langkah" aria-hidden="true">1</span><span><b>{t('bagikan.langkah1')}</b><small>{t('bagikan.langkah1_bantu')}</small></span></legend>
               {pilihanAkses().map(pilihan => (
                 <label key={pilihan.nilai} className="opsi-akses" data-pilih={akses === pilihan.nilai}>
-                  <input type="radio" name={`${id}-akses`} checked={akses === pilihan.nilai} onChange={() => ubah(() => setAkses(pilihan.nilai))} />
+                  <input type="radio" name={`${id}-akses`} checked={akses === pilihan.nilai} onChange={() => ubah(() => pilihAksesBaru(pilihan.nilai))} />
                   <span className="ikon-opsi"><Ikon nama={pilihan.ikon} ukuran={20} /></span>
                   <span className="teks-opsi"><b>{pilihan.label}</b><small>{pilihan.bantu}</small></span>
                   <span className="radio-visual" aria-hidden="true" />
@@ -143,13 +149,13 @@ export function DialogBagikan({ idRiwayat, kasus, repo, saatTutup }: Props) {
                 <div className={`kotak-tautan${statusNama === 'dipakai' || statusNama === 'tidak_sah' ? ' salah' : ''}`}>
                   <span className="awalan-tautan" aria-hidden="true">{awalanTautan()}</span>
                   <input aria-label={t('bagikan.tautan')} value={slug} maxLength={40} autoComplete="off" spellCheck={false} aria-describedby={`${id}-status-nama`}
-                    onFocus={event => event.target.select()} onChange={event => ubah(() => setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')))} />
+                    readOnly={akses === 'tautan'} onFocus={event => event.target.select()} onChange={event => ubah(() => setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '')))} />
                   <Tombol type="button" disabled={!siapSalin} onClick={() => void salin(slug)}>
                     <Ikon nama={tersalin ? 'benar' : 'salin'} ukuran={16} /> {tersalin ? t('bagikan.tersalin_pendek') : t('bagikan.salin')}
                   </Tombol>
                 </div>
                 <p id={`${id}-status-nama`} className={`catatan-kolom ${statusNama === 'dipakai' || statusNama === 'tidak_sah' ? 'salah' : statusNama === 'tersedia' ? 'bagus' : ''}`} role="status">
-                  {teksStatusNama(statusNama)}
+                  {akses === 'tautan' && statusNama !== 'memeriksa' ? t('bagikan.tautan_acak_info') : teksStatusNama(statusNama)}
                 </p>
                 <div className="baris-pratinjau">
                   {siapSalin
@@ -221,5 +227,3 @@ const SUREL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 /** Dipisah koma, titik koma, spasi, atau baris baru; huruf kecil dan tanpa duplikat. */
 const bacaEmail = (teks: string): string[] => [...new Set(teks.toLowerCase().split(/[\s,;]+/).filter(Boolean))];
-
-const slugAcak = (): string => Array.from({ length: PANJANG_SLUG_ACAK }, () => Math.floor(Math.random() * 36).toString(36)).join('');

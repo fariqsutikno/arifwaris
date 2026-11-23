@@ -65,6 +65,8 @@ export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung', paket?: string)
   (tab === 'kuis' ? `#/latihan/kuis${paket ? `/${encodeURIComponent(paket)}` : ''}` : '#/latihan');
 /** Kasus yang dibagikan: `#/k/<slug>`; slug = huruf kecil, angka, strip (sama dengan check di tabel kasus_dibagikan). */
 export const SLUG_BAGIKAN = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;
+/** Akses "tautan" hanya dijaga slug, jadi wajib acak 16 karakter (sama dengan check slug_tautan_acak di tabel). */
+export const SLUG_BAGIKAN_TAUTAN = /^[a-z0-9]{16}$/;
 export const tautanBagikan = (slug: string) => `#/k/${encodeURIComponent(slug)}`;
 export const alamatBagikan = (slug: string) => `${window.location.origin}${window.location.pathname}${tautanBagikan(slug)}`;
 export const tautanRiwayat = () => '#/riwayat';

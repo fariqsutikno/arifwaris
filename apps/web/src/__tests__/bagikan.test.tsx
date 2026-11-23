@@ -4,6 +4,7 @@ import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { tambahAhliWaris } from '../checklist';
 import { keJson, kasusBaru } from '../kasus';
 import { sudahDibagikan } from '../bagikanLokal';
+import { SLUG_BAGIKAN_TAUTAN } from '../rute';
 import { DialogBagikan } from '../layar/DialogBagikan';
 import { KasusDibagikan } from '../layar/KasusDibagikan';
 
@@ -37,18 +38,26 @@ test('bawaan Hanya saya: tanpa tautan dan tanpa tombol simpan; memilih membagika
   expect(screen.getByRole('textbox', { name: 'Tautan' })).toBeTruthy();
 });
 
-test('nama tautan bisa diketik; status tersedia/dipakai; membuat tautan lewat konfirmasi lalu menyalin', async () => {
+test('akses email: nama tautan bisa diketik dengan status tersedia/dipakai', async () => {
   const { bagikan } = siapkan();
-  await bagikan.simpan('lain', { slug: 'sama', akses: 'tautan', email: [] }, {});
+  await bagikan.simpan('lain', { slug: 'sama', akses: 'email', email: [] }, {});
   render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
-  await pilihAkses(/Siapa saja/);
+  await pilihAkses(/Email tertentu/);
   const isian = screen.getByRole('textbox', { name: 'Tautan' });
-  expect(screen.getByRole('button', { name: 'Salin' })).toHaveProperty('disabled', true);
   fireEvent.change(isian, { target: { value: 'Sama' } });
   expect(await screen.findByText('Sudah dipakai kasus lain. Coba nama lain.')).toBeTruthy();
-  expect(screen.getByRole('button', { name: 'Selesai' })).toHaveProperty('disabled', true);
   fireEvent.change(isian, { target: { value: 'kasus-pak-budi' } });
   expect(await screen.findByText('Nama tautan ini tersedia.')).toBeTruthy();
+});
+
+test('akses tautan: alamat acak hanya-baca; membuat tautan lewat konfirmasi lalu menyalin', async () => {
+  const { bagikan } = siapkan();
+  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
+  await pilihAkses(/Siapa saja/);
+  const isian = screen.getByRole('textbox', { name: 'Tautan' }) as HTMLInputElement;
+  expect(isian.readOnly).toBe(true);
+  expect(isian.value).toMatch(SLUG_BAGIKAN_TAUTAN);
+  expect(screen.getByRole('button', { name: 'Salin' })).toHaveProperty('disabled', true);
   fireEvent.click(screen.getByRole('button', { name: 'Selesai' }));
   // Belum tersimpan sebelum dikonfirmasi.
   expect(await bagikan.bacaPengaturan('r1')).toBeNull();
@@ -56,10 +65,20 @@ test('nama tautan bisa diketik; status tersedia/dipakai; membuat tautan lewat ko
   fireEvent.click(screen.getByRole('button', { name: 'Ya, simpan' }));
   expect(await screen.findByText(/Tautan aktif/, { selector: 'p.catatan-info.sukses' })).toBeTruthy();
   expect(sudahDibagikan('r1')).toBe(true);
-  expect(await bagikan.bacaPengaturan('r1')).toEqual({ slug: 'kasus-pak-budi', akses: 'tautan', email: [] });
+  expect(await bagikan.bacaPengaturan('r1')).toEqual({ slug: isian.value, akses: 'tautan', email: [] });
   expect(screen.getByRole('button', { name: /Salin|Tersalin/ })).toHaveProperty('disabled', false);
   expect(screen.getByRole('link', { name: /Pratinjau sebagai penerima/ })).toBeTruthy();
   expect(screen.getByText('Hanya lihat')).toBeTruthy();
+});
+
+test('beralih dari email bernama bebas ke tautan: alamat diganti acak dan peringatan tautan lama muncul', async () => {
+  const { bagikan } = siapkan();
+  await bagikan.simpan('r1', { slug: 'kasus-teman', akses: 'email', email: ['a@b.co'] }, {});
+  render(<DialogBagikan idRiwayat="r1" kasus={kasus()} repo={bagikan} saatTutup={() => {}} />);
+  await pilihAkses(/Siapa saja/);
+  expect((screen.getByRole('textbox', { name: 'Tautan' }) as HTMLInputElement).value).toMatch(SLUG_BAGIKAN_TAUTAN);
+  fireEvent.click(screen.getByRole('button', { name: 'Selesai' }));
+  expect(await screen.findByText(/Tautan lama \(kasus-teman\) berhenti berfungsi/)).toBeTruthy();
 });
 
 test('memilih Hanya saya lalu menyimpan menghentikan pembagian (dengan konfirmasi)', async () => {
