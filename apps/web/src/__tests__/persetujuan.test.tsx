@@ -71,3 +71,19 @@ test('profil: unduh data berupa berkas JSON; hapus akun minta mengetik kalimat, 
   fireEvent.click(lanjut);
   expect(await screen.findByText(/akun penulis tidak bisa dihapus sendiri/i)).toBeTruthy();
 });
+
+test('kebijakan v2 (S9): akun yang menyetujui v1 diminta setuju ulang; halaman menyebut simpan otomatis di perangkat, retensi 30 hari, dan Hapus kasus ini', () => {
+  expect(VERSI_KEBIJAKAN_PRIVASI).toBe(2);
+  expect(perluSetujuKebijakan([{ jenis: 'kebijakan_privasi', versi: 1, setuju: true }])).toBe(true);
+  render(<Privasi />);
+  const teks = document.body.textContent ?? '';
+  expect(teks).toMatch(/tersimpan otomatis di perangkat ini/);
+  expect(teks).toMatch(/tidak dikirim ke server kecuali kamu masuk/);
+  expect(teks).toMatch(/tidak dibuka 30 hari/);
+  expect(teks).toMatch(/Hapus kasus ini/);
+});
+
+test('ringkasan dialog persetujuan menyebut kasus ikut tersimpan di akun', () => {
+  render(<DialogPersetujuan repo={repoDari(siapkan())} saatSetuju={() => undefined} saatKeluar={() => undefined} />);
+  expect(document.body.textContent).toMatch(/Kasus hitunganmu ikut tersimpan di akun/);
+});

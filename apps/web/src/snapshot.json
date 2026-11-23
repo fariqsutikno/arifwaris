@@ -28228,7 +28228,7 @@
   {
    "kunci": "privasi.dialog_ringkas",
    "halaman": "privasi",
-   "id": "Progres belajar dan percobaan soalmu disimpan di akunmu supaya ikut ke perangkat lain. Namamu tidak tampil di papan peringkat kecuali kamu memilihnya. Kamu bisa mengunduh atau menghapus datamu kapan saja.",
+   "id": "Progres belajar dan percobaan soalmu disimpan di akunmu supaya ikut ke perangkat lain. Kasus hitunganmu ikut tersimpan di akun. Namamu tidak tampil di papan peringkat kecuali kamu memilihnya. Kamu bisa mengunduh atau menghapus datamu kapan saja.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28263,7 +28263,7 @@
   {
    "kunci": "privasi.data_isi",
    "halaman": "privasi",
-   "id": "Bila kamu masuk dengan Google: alamat email dan nama dari akun Google, progres belajar dan latihan, riwayat kasus hitungan yang kamu simpan, percobaan dan hasil soal, preferensi tampilan, pilihan persetujuanmu, dan (bila kamu membagikan) kasus yang kamu bagikan lewat tautan. Tanpa masuk, semuanya hanya tersimpan di perangkatmu.",
+   "id": "Bila kamu masuk dengan Google: alamat email dan nama dari akun Google, progres belajar dan latihan, kasus hitungan yang tersimpan (otomatis), percobaan dan hasil soal, preferensi tampilan, pilihan persetujuanmu, dan (bila kamu membagikan) kasus yang kamu bagikan lewat tautan. Tanpa masuk pun, kasus yang kamu hitung dan isian soal latihan tersimpan otomatis di perangkat ini (penyimpanan peramban) supaya bisa dilanjutkan setelah halaman dimuat ulang. Data ini tidak dikirim ke server kecuali kamu masuk.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28291,7 +28291,7 @@
   {
    "kunci": "privasi.retensi_isi",
    "halaman": "privasi",
-   "id": "Data belajarmu disimpan selama akunmu ada dan dihapus saat kamu menghapus akun. Jangka penyimpanan data lain: [DIISI PEMILIK].",
+   "id": "Data belajarmu disimpan selama akunmu ada dan dihapus saat kamu menghapus akun. Di perangkat: kasus yang tidak dibuka 30 hari dan isian soalnya dihapus otomatis; kasus yang kamu simpan bertahan sampai kamu menghapusnya. Jangka penyimpanan data lain: [DIISI PEMILIK].",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28333,7 +28333,7 @@
   {
    "kunci": "privasi.hak_isi",
    "halaman": "privasi",
-   "id": "Kamu bisa mengunduh salinan datamu, menghapus akunmu, menarik persetujuan (misalnya menyembunyikan namamu dari papan), dan mengajukan keberatan. Unduh dan hapus ada di menu Profil.",
+   "id": "Kamu bisa mengunduh salinan datamu, menghapus akunmu, menarik persetujuan (misalnya menyembunyikan namamu dari papan), dan mengajukan keberatan. Unduh dan hapus ada di menu Profil. Kamu juga bisa menghapus satu kasus kapan saja lewat \"Hapus kasus ini\" di halaman hasil atau di Riwayat; kasus terhapus dari perangkat dan dari akunmu, dan tautan bagikannya dihentikan.",
    "ar": null,
    "versiTerbit": 873
   },
