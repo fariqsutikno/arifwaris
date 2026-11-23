@@ -10,6 +10,7 @@ import { formatRupiah } from './format';
 import { dariJson, keJson, type Kasus } from './kasus';
 import { LABEL_SEHARI } from './konten/ahliWaris';
 import { perluPeriksaCerita } from './keadaanOrang';
+import { buangProgresSoalSelain } from './progresSoalLokal';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 import { angka, bahasaArab, t } from './terjemah';
 
@@ -42,7 +43,9 @@ export function catatRiwayat(id: string, kasus: Kasus, waktu: number, sumber: Su
   const json = keJson(kasus);
   // Kasus yang persis sama (mis. dibuka lagi dari riwayat lalu tidak diubah) tidak dicatat dua kali.
   const lain = bacaTersimpan().filter(entri => entri.id !== id && entri.kasus !== json && waktu - entri.waktu <= MASA_SIMPAN);
-  simpanTersimpan([{ id, waktu, sumber, kasus: json }, ...lain]);
+  const baru = [{ id, waktu, sumber, kasus: json }, ...lain];
+  simpanTersimpan(baru);
+  buangProgresSoalSelain(new Set(baru.map(entri => entri.id)));
 }
 
 /** Catat kasus sebagai entri baru hanya bila isinya belum ada di riwayat (mis. kasus tersimpan dari versi lama). */
