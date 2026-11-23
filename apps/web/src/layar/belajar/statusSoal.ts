@@ -3,13 +3,13 @@
 
 import type { SoalHitung } from '@waris/content';
 import type { ProgresLatihan } from '@waris/data';
-import { hitungTerisi, type IsianSoal } from '../../isianSoal';
+import { hitungTerisiSoal, type IsianSoal } from '../../isianSoal';
 
 export type StatusSoal = 'belum' | 'terputus' | 'benar' | 'lihatJawaban';
 
 export function statusSoal(progres: ProgresLatihan | undefined, isian: IsianSoal | null | undefined): StatusSoal {
   if (progres) return progres.benar ? 'benar' : 'lihatJawaban';
-  return isian && hitungTerisi(isian.isian) > 0 ? 'terputus' : 'belum';
+  return isian && hitungTerisiSoal(isian) > 0 ? 'terputus' : 'belum';
 }
 
 /** Sama dengan `judulSoalTampil`: benar atau jawabannya dibuka. */
@@ -22,4 +22,4 @@ export const soalTerputus = (daftar: readonly SoalHitung[], progres: Record<stri
 
 /** Porsi kotak terisi, 0-100, untuk cincin status; tanpa jumlah kotak (isian lama) tampil setengah. */
 export const porsiIsian = (isian: IsianSoal): number =>
-  isian.jumlahKotak > 0 ? Math.min(100, Math.round((hitungTerisi(isian.isian) / isian.jumlahKotak) * 100)) : 50;
+  isian.jumlahKotak > 0 ? Math.min(100, Math.round((hitungTerisiSoal(isian) / isian.jumlahKotak) * 100)) : 50;

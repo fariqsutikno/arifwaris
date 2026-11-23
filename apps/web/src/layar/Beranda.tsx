@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, type CSSProperties } from 'react';
 import { daftarFaq, daftarPelajaran, daftarSoalHitung } from '../konten/sumber';
-import { bacaSemuaIsianSoal, hitungTerisi } from '../isianSoal';
+import { bacaSemuaIsianSoal, hitungTerisiSoal } from '../isianSoal';
 import { judulSoalTampil } from './belajar/judulSoal';
 import { judulTopik } from './belajar/KuisKonsep';
 import { soalTerputus } from './belajar/statusSoal';
@@ -95,7 +95,7 @@ export function Beranda({ kasusTerakhir, saatKeHitung, saatCoba, saatKerjakanSoa
             <span className="panah-bulat" aria-hidden="true">{panah()}</span>
             <span className="label-langkah">{t('beranda.lanjutkan_soal')}</span>
             <b className="judul-ubin">{judulSoalTampil(soalTerputusTerbaru, false)} · {judulTopik(soalTerputusTerbaru.bab)}</b>
-            <span className="keterangan">{t('beranda.isian_tersimpan', { terisi: angka(String(hitungTerisi(isianSoal[soalTerputusTerbaru.kode]!.isian))), total: angka(String(isianSoal[soalTerputusTerbaru.kode]!.jumlahKotak)) })}</span>
+            <span className="keterangan">{t('beranda.isian_tersimpan', { terisi: angka(String(hitungTerisiSoal(isianSoal[soalTerputusTerbaru.kode]!))), total: angka(String(isianSoal[soalTerputusTerbaru.kode]!.jumlahKotak)) })}</span>
             <span className="aksi-status">{t('hitung.lab_lanjutkan')} {panah()}</span>
           </button>
         )}

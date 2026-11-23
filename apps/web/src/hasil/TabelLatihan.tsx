@@ -31,6 +31,9 @@ interface Props {
   kodeSoal?: string | undefined;
   /** Kosongkan pada isian yang sudah terisi = percobaan baru (jangkar diacak ulang oleh pemanggil). */
   saatKosongkan?: (() => void) | undefined;
+  /** Pemilik lain yang menyimpan isian (tabel harta pada soal gharqa): isian awal dan kabar tiap perubahan. */
+  isianAwal?: IsianTabel | undefined;
+  saatIsianBerubah?: ((isian: IsianTabel) => void) | undefined;
   /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
   tanpaCara?: boolean;
 }
@@ -74,9 +77,9 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, saatKosongkan }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, saatKosongkan, isianAwal: isianPulih, saatIsianBerubah }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
-  const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal)?.isian) || { kepala: {}, sel: {} });
+  const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal)?.isian) || isianPulih || { kepala: {}, sel: {} });
   const isianAwal = useRef(isian);
   const [hasil, setHasil] = useState<HasilNilai | null>(null);
   const [tolakBulat, setTolakBulat] = useState(false);
@@ -84,7 +87,9 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
 
   // Setiap perubahan isian disimpan; kosong = hapus. Soal benar / jawaban dibuka dihapus oleh Hasil.
   useEffect(() => {
-    if (!kodeSoal || isian === isianAwal.current) return;
+    if (isian === isianAwal.current) return;
+    saatIsianBerubah?.(isian);
+    if (!kodeSoal) return;
     if (hitungTerisi(isian) > 0) simpanIsianSoal(kodeSoal, isian, hitungKotak(tabel, jangkar)); else hapusIsianSoal(kodeSoal);
   }, [isian]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -282,7 +287,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
 }
 
 /** Kotak yang harus diisi pelajar: kepala kolom, baris pengali, dan sel yang bukan petunjuk (jangkar/terkunci). */
-function hitungKotak(tabel: TabelSoal, jangkar: Jangkar | null): number {
+export function hitungKotak(tabel: TabelSoal, jangkar: Jangkar | null): number {
   const kepala = tabel.kolom.filter(kolom => kolom.kepala !== undefined && !kolom.terkunci).length;
   const pengali = tabel.pengali ? Object.keys(tabel.pengali.kunci).length : 0;
   const sel = tabel.baris.reduce((jumlah, baris) => jumlah + tabel.kolom.filter(kolom => baris.kunci[kolom.id] !== undefined && !kolom.terkunci

@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hitungGharqa, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputGharqa, type Orang } from '@waris/engine';
 import { susunSoalGharqa, type PercobaanTabel, type SoalGharqa } from '@waris/latihan';
 import { GharqaLatihan } from './GharqaLatihan';
+import { bacaIsianSoal } from '../isianSoal';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
 const wafat = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}) => orang(id, jenisKelamin, { statusHidup: 'wafat', ...lain });
@@ -22,7 +23,7 @@ const soalDari = (keadaan: InputGharqa['keadaan']): SoalGharqa => {
 };
 
 const saatPercobaan = vi.fn(), saatLihatJawaban = vi.fn();
-const tampilkan = (soal: SoalGharqa, terbuka = false) => render(<GharqaLatihan soal={soal} namaDari={id => id} jangkar={soal.harta.map(() => null)} terbuka={terbuka} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+const tampilkan = (soal: SoalGharqa, terbuka = false, kodeSoal?: string) => render(<GharqaLatihan kodeSoal={kodeSoal} soal={soal} namaDari={id => id} jangkar={soal.harta.map(() => null)} terbuka={terbuka} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
 afterEach(() => { cleanup(); saatPercobaan.mockClear(); });
 
 describe('GharqaLatihan', () => {
@@ -61,5 +62,29 @@ describe('GharqaLatihan: kiriman ke server', () => {
     tampilkan(soalDari('tidakDiketahui'));
     fireEvent.click(screen.getByRole('button', { name: 'Yang terakhir mewarisi' }));
     expect((saatPercobaan.mock.calls[0]![0] as PercobaanTabel).gharqa).toEqual({ keputusan: 'terakhirMewarisi', harta: [] });
+  });
+});
+
+describe('GharqaLatihan: isian pulih saat muat ulang', () => {
+  it('keputusan benar + isian tabel harta tersimpan per kode soal, lalu pulih di render berikutnya', () => {
+    localStorage.clear();
+    const soal = soalDari('tidakDiketahui');
+    tampilkan(soal, false, 'G-01');
+    fireEvent.click(screen.getByRole('button', { name: 'Tidak saling mewarisi' }));
+    const kotak = screen.getAllByRole('textbox')[0] as HTMLInputElement;
+    fireEvent.change(kotak, { target: { value: '12' } });
+    expect(bacaIsianSoal('G-01')?.gharqa?.keputusan).toBe('tidakSalingMewarisi');
+    cleanup();
+    tampilkan(soal, false, 'G-01');
+    expect(screen.getByRole('button', { name: 'Tidak saling mewarisi' }).getAttribute('aria-pressed')).toBe('true');
+    expect((screen.getAllByRole('textbox')[0] as HTMLInputElement).value).toBe('12');
+    expect(saatPercobaan).not.toHaveBeenCalled();
+  });
+
+  it('keputusan salah tidak disimpan', () => {
+    localStorage.clear();
+    tampilkan(soalDari('tidakDiketahui'), false, 'G-01');
+    fireEvent.click(screen.getByRole('button', { name: 'Yang terakhir mewarisi' }));
+    expect(bacaIsianSoal('G-01')).toBeNull();
   });
 });
