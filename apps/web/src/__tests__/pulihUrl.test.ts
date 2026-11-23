@@ -3,6 +3,7 @@ import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { pulihDariUrl } from '../Aplikasi';
 import { kasusBaru } from '../kasus';
 import { tandaiWafatSebelumDibagi } from '../latihan';
+import { kasusDariSusunan, SUSUNAN_CEPAT } from '../lab';
 import { catatRiwayat, hapusRiwayat } from '../riwayat';
 
 const lengkap = () => {
@@ -38,4 +39,38 @@ it('id tak dikenal atau URL biasa tidak memulihkan apa pun', () => {
 it('kasus belum lengkap tidak dibuka di hasil', () => {
   catatRiwayat('x', kasusBaru('P'), 1, { jenis: 'sendiri' });
   expect(pulihDariUrl('#/hitung/x', null)?.keadaan.layar).toBe('wizard');
+});
+
+it('susunan cepat (harta 0) tetap di hasil saat dimuat ulang', () => {
+  const dasar = kasusBaru('L', 'latihan');
+  const cepat = { ...dasar, tirkah: { ...dasar.tirkah, kotor: 0n }, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'ISTRI') };
+  catatRiwayat('cepat', cepat, 1, { jenis: 'sendiri' });
+  expect(pulihDariUrl('#/hitung/cepat', null)?.keadaan.layar).toBe('hasil');
+});
+
+it('kasus nyata yang pintunya belum dijawab dibuka di wizard', () => {
+  const nyata = kasusBaru('L', 'nyata');
+  catatRiwayat('nyata', { ...nyata, graf: tambahAhliWaris(nyata.graf, 'PEWARIS', 'ISTRI') }, 1, { jenis: 'sendiri' });
+  expect(pulihDariUrl('#/hitung/nyata', null)?.keadaan.layar).toBe('wizard');
+});
+
+// Menggantikan X1 dari #53 (dua tab soal yang sama dipulihkan lewat riwayat): soal tidak lagi di riwayat, jadi entri lama
+// bersumber latihan tidak boleh terbuka sebagai kasus lewat URL kasus.
+it('entri lama bersumber latihan tidak dipulihkan sebagai kasus', () => {
+  catatRiwayat('a', lengkap(), 1, { jenis: 'latihan', kode: 'H-01' });
+  expect(pulihDariUrl('#/hitung/a', null)).toBeNull();
+});
+
+it('kasus sendiri yang sama tetap tidak dicatat dua kali', () => {
+  catatRiwayat('a', lengkap(), 1, { jenis: 'sendiri' });
+  catatRiwayat('b', lengkap(), 2, { jenis: 'sendiri' });
+  expect(pulihDariUrl('#/hitung/a', null)).toBeNull();
+  expect(pulihDariUrl('#/hitung/b', null)).not.toBeNull();
+});
+
+it('semua susunan cepat nyata (harta 0, bagian lain belum ditanya) tetap di hasil saat dimuat ulang (B1/P4)', () => {
+  for (const susunan of SUSUNAN_CEPAT) {
+    catatRiwayat(susunan.kunci, kasusDariSusunan(susunan), 1, { jenis: 'sendiri' });
+    expect(pulihDariUrl(`#/hitung/${susunan.kunci}`, null)?.keadaan.layar, susunan.kunci).toBe('hasil');
+  }
 });

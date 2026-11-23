@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup Kalau menurut KHI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<!-- Task 6 jalur 8 KHI. Panel informasi (bukan kalkulator). Kalimat isi = teks catatan KHI dari packages/content (pengganti, hartaBersama);
+     kerangka = diksi narasi.khi.*. Gaya mengikuti mockup-hasil-per-kasus.html (Logivo). Tanpa kode teknis, tanpa tombol berbingkai untuk aksi sekunder. -->
+<style>
+:root{--page:#b9d4c0;--frame:#eef3e8;--ink:#14181a;--muted:#525c57;--card:rgba(255,255,255,.86);--edge:rgba(255,255,255,.95);
+--orange:#f2682a;--orange-soft:#fde6d8;--mint:#dcefe2;--kuning:#fbefc9;--kuning-ink:#6b4f00;--black:#0e0f10;--line:#dfe6dc;--hijau:#1f6f5c;--biru:#e3ecf5;--biru-ink:#1f4468;
+--font:"Onest",system-ui,sans-serif;--sh:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.5 var(--font);padding:18px 12px 70px}
+h1,h2,h3,h4,p,ul{margin:0}ul{padding:0;list-style:none}
+button,input{font-family:inherit}
+.ik{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-4px}
+.tautan{background:none;border:0;padding:0;font:600 14px var(--font);color:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+:focus-visible{outline:3px solid var(--orange);outline-offset:2px}
+.atas{max-width:1100px;margin:0 auto 12px}
+.atas p{font-size:13px;color:#2c4136;margin:0 4px 8px}
+nav.tab{display:flex;gap:6px;flex-wrap:wrap;padding:2px}
+nav.tab button{border:0;background:rgba(255,255,255,.5);color:var(--ink);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer}
+nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
+.catatan{max-width:1100px;margin:0 auto 12px;background:var(--kuning);color:#4a3a00;border-radius:16px;padding:10px 16px;font-size:13.5px}
+.frame{max-width:1100px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18);position:relative;min-height:940px}
+.frame.ponsel{max-width:390px}
+/* hasil (sebagian, hanya konteks) */
+.hero{color:#fff;padding:18px 20px 22px;background:radial-gradient(520px 300px at 82% 60%,rgba(255,150,40,.33),transparent 70%),linear-gradient(135deg,#17372e,#0e2a22)}
+.hero small{color:rgba(255,255,255,.8);font-size:13px}
+.hero h1{font-size:30px;line-height:1.15;font-weight:500;letter-spacing:-.02em;margin-top:6px;max-width:24ch}
+.hero .k{font-size:15px;margin-top:8px;color:rgba(255,255,255,.93);max-width:56ch}
+.bento{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;padding:12px}
+.t{background:var(--card);border:1px solid var(--edge);border-radius:24px;padding:16px 18px;min-width:0;box-shadow:var(--sh)}
+.t h2{font-size:18px;font-weight:700}.t .sub{font-size:13px;color:var(--muted)}
+.s7{grid-column:span 7}.s5{grid-column:span 5}.s12{grid-column:span 12}
+.baris{display:flex;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14.5px}.baris:last-child{border:0}
+.rp{font-weight:600;font-variant-numeric:tabular-nums}
+.lainnya{display:flex;gap:18px;flex-wrap:wrap;align-items:center;padding:4px 20px 18px;font-size:14px}
+.lainnya .tautan{color:var(--hijau)}
+.lainnya .jml{font-weight:500;color:var(--muted);text-decoration:none}
+/* panel */
+.tirai{position:absolute;inset:0;background:rgba(14,15,16,.38);opacity:0;visibility:hidden;transition:.2s;z-index:5}
+.tirai.on{opacity:1;visibility:visible}
+.panel{position:absolute;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--frame);z-index:6;transform:translateX(102%);transition:transform .25s;display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(20,40,30,.2)}
+.panel.on{transform:none}
+.kepalaP{padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+.kepalaP .baris1{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.kepalaP h2{font-size:21px;font-weight:700;letter-spacing:-.01em}
+.tutup{background:none;border:0;cursor:pointer;color:var(--muted);display:inline-flex;gap:4px;align-items:center;font:600 14px var(--font)}
+.penanda{display:inline-flex;gap:6px;align-items:center;background:var(--biru);color:var(--biru-ink);border-radius:999px;padding:3px 11px;font:600 12.5px var(--font);margin-top:8px}
+.pengantar{font-size:14px;color:#2c3530;margin-top:8px}
+.pilihan{display:flex;gap:8px;align-items:center;font-size:13.5px;margin-top:10px;color:#2c3530}
+.pilihan input{width:18px;height:18px;accent-color:var(--hijau)}
+.isiP{overflow:auto;padding:12px 14px 18px;display:grid;gap:10px;align-content:start;flex:1}
+.kartu{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.kartu>button.kepala{all:unset;box-sizing:border-box;display:flex;gap:12px;align-items:flex-start;width:100%;padding:14px 16px;cursor:pointer}
+.kartu>button.kepala:focus-visible{outline:3px solid var(--orange);outline-offset:-3px}
+.kepala .judul{flex:1;min-width:0}
+.kepala b{display:block;font-size:16px;font-weight:600}
+.kepala .pasal{font-size:13px;color:var(--muted)}
+.kepala .cuplik{display:block;font-size:13.5px;color:#2c3530;margin-top:4px}
+.tingkat{display:inline-block;font:600 12px var(--font);border-radius:999px;padding:2px 9px;margin-top:6px}
+.tingkat.beda{background:var(--orange-soft);color:#8a3a10}.tingkat.sama{background:var(--mint);color:#1b5a43}.tingkat.celah{background:var(--kuning);color:var(--kuning-ink)}
+.panahK{color:var(--muted);transition:transform .2s;margin-top:2px}
+.kartu.buka .panahK{transform:rotate(180deg)}
+.badan{display:none;padding:0 16px 14px;border-top:1px dashed var(--line)}
+.kartu.buka .badan{display:block}
+.bag{margin-top:12px}
+.bag h3{font:600 12.5px var(--font);color:var(--muted);text-transform:none;letter-spacing:.01em;margin-bottom:4px}
+.bag li{font-size:14px;padding:3px 0 3px 16px;position:relative}
+.bag li::before{content:"";position:absolute;left:2px;top:.85em;width:6px;height:6px;border-radius:50%;background:#9db3a5}
+.bag.praktik h3{color:#8a3a10}
+.bag.peringatan{border-left:4px solid var(--kuning-ink);padding:2px 0 2px 12px;background:none}
+.bag.peringatan h3{color:var(--kuning-ink)}
+.bag.peringatan li::before{background:var(--kuning-ink)}
+.bag.jalan li::before{background:var(--hijau)}
+.bag.catatan li{color:#4a554f}
+.tautanK{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px;font-size:13.5px;color:var(--hijau)}
+.penutup{font-size:13px;color:var(--muted);padding:2px 6px 0}
+.kosong{padding:26px 20px 30px;text-align:center;color:var(--muted)}
+.kosong .ik{width:30px;height:30px;color:#9db3a5}
+.hidden{display:none!important}
+@media(max-width:760px){.s7,.s5{grid-column:span 12}.hero h1{font-size:25px}}
+.frame.ponsel .s7,.frame.ponsel .s5{grid-column:span 12}.frame.ponsel .hero h1{font-size:25px}
+</style>
+</head>
+<body>
+<div class="atas">
+  <p><b>Task 6 · jalur 8 KHI.</b> Satu layar: Hasil dengan tautan "Kalau menurut KHI" dan panel baca. <i>Kerja yang dicari (JTBD)</i>: saat hasil faraidh sudah keluar dan saya mungkin berurusan ke Pengadilan Agama, saya ingin tahu <b>apa yang akan berbeda dan apa pilihan saya sebagai muslim</b>, tanpa merasa dihakimi atau ditakut-takuti. <i>HMW</i>: bagaimana membuat perbedaan KHI terbaca tenang, singkat, dan bisa ditelusuri sumbernya, tanpa menjadi kalkulator kedua?</p>
+  <nav class="tab" role="tablist" aria-label="Keadaan layar">
+    <button role="tab" aria-selected="true" data-k="hasil">1 · Hasil, tautan muncul</button>
+    <button role="tab" aria-selected="false" data-k="panel">2 · Panel dibuka</button>
+    <button role="tab" aria-selected="false" data-k="kartu">3 · Kartu terbuka</button>
+    <button role="tab" aria-selected="false" data-k="kosong">4 · Kasus tanpa catatan</button>
+    <button role="tab" aria-selected="false" data-k="ponsel">5 · Lebar ponsel</button>
+  </nav>
+</div>
+<div class="catatan" id="catatan"></div>
+
+<div class="frame" id="frame">
+  <header class="hero">
+    <small>Menurut madzhab Syafi'i</small>
+    <h1 id="hHeadline">Istri dan anak laki-laki mendapat bagian; cucu terhalang oleh anaknya</h1>
+    <p class="k">Contoh: suami wafat, meninggalkan istri, satu anak laki-laki, dan seorang cucu dari anak laki-laki yang wafat lebih dulu.</p>
+  </header>
+  <section class="bento">
+    <div class="t s7">
+      <h2>Siapa dapat apa</h2><p class="sub">Menurut fikih, harta milik pewaris</p>
+      <div class="baris"><span>Istri</span><span class="rp">1/8 dari harta</span></div>
+      <div class="baris"><span>Anak laki-laki</span><span class="rp">sisanya</span></div>
+      <div class="baris"><span>Cucu (dari anak laki-laki yang wafat)</span><span class="rp">terhalang</span></div>
+    </div>
+    <div class="t s5"><h2>Dalil</h2><p class="sub">Ayat dan hadits di bawah tiap baris.</p></div>
+  </section>
+  <p class="lainnya" id="lainnya">
+    <button class="tautan" id="bukaKhi"><svg class="ik" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/></svg>Kalau menurut KHI</button>
+    <span class="jml" id="jml">2 catatan</span>
+    <button class="tautan" style="color:var(--muted)"><svg class="ik" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Bagikan hasil</button>
+  </p>
+
+  <div class="tirai" id="tirai"></div>
+  <aside class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="judulP" aria-hidden="true">
+    <div class="kepalaP">
+      <div class="baris1"><h2 id="judulP">Kalau menurut KHI</h2><button class="tutup" id="tutupKhi"><svg class="ik" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>Tutup</button></div>
+      <span class="penanda"><svg class="ik" style="width:16px;height:16px" viewBox="0 0 24 24"><path d="M12 3l9 4v5c0 5-3.5 8-9 9-5.5-1-9-4-9-9V7z"/></svg>Hukum positif, bukan fikih</span>
+      <p class="pengantar">Pengadilan Agama memakai Kompilasi Hukum Islam (KHI). Berikut yang berbeda atau perlu diketahui dibanding hasil fikih madzhab Syafi'i di layar ini.</p>
+      <label class="pilihan"><input type="checkbox" id="praktik" checked>Tampilkan praktik Pengadilan Agama</label>
+    </div>
+    <div class="isiP" id="isiP">
+      <article class="kartu" id="k1">
+        <button class="kepala" aria-expanded="false"><span class="judul"><b>Cucu menggantikan orang tuanya</b><span class="pasal">Pasal 185 KHI</span>
+          <span class="cuplik">Ahli waris yang meninggal lebih dahulu dari pewaris dapat digantikan oleh anaknya.</span><span class="tingkat beda">Berbeda dari fikih</span></span>
+          <svg class="ik panahK" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="badan">
+          <div class="bag"><h3>Bunyi KHI</h3><ul>
+            <li>Ahli waris yang meninggal lebih dahulu dari pewaris dapat digantikan oleh anaknya, kecuali yang terhalang karena putusan hakim.</li>
+            <li>Bagian ahli waris pengganti tidak boleh melebihi bagian ahli waris yang sederajat dengan yang diganti.</li></ul></div>
+          <div class="bag praktik"><h3>Menurut praktik Pengadilan Agama</h3><ul>
+            <li>Menurut rumusan kamar Mahkamah Agung (hasil Rakernas 2010), penggantian hanya sampai derajat cucu; anak perempuan dari saudara kandung diberi wasiat wajibah.</li>
+            <li>Putusan Mahkamah Agung (yurisprudensi 2018) menerima cucu laki-laki dan perempuan, dari anak laki-laki maupun perempuan, sebagai ahli waris pengganti.</li>
+            <li class="cat" style="color:#4a554f">Catatan: Pedoman Buku II (2010) memuat cakupan yang lebih luas (keturunan saudara, kakek-nenek, paman-bibi); tidak dijadikan acuan karena bertentangan dengan rumusan kamar yang lebih baru.</li></ul></div>
+          <div class="bag"><h3>Menurut fikih madzhab Syafi'i</h3><ul>
+            <li>Cucu dari anak laki-laki terhalang oleh anak laki-laki.</li>
+            <li>Cucu dari anak perempuan termasuk dzawil arham; mewarisi bila tidak ada ahli waris lain yang berhak, dengan metode tanzil.</li>
+            <li>Fikih tidak mengenal ahli waris pengganti.</li></ul></div>
+          <div class="bag"><h3>Belum tersedia</h3><ul><li>konsep ahli waris pengganti dalam fikih (tidak ada; yang ada hanya jalan keluar wasiat dan perdamaian)</li></ul></div>
+          <div class="bag jalan"><h3>Jika ingin selaras dengan fikih, yang dapat ditempuh</h3><ul>
+            <li>Pewaris berwasiat secara sukarela, paling banyak sepertiga, untuk yang bukan ahli waris.</li>
+            <li>Para ahli waris berdamai setelah masing-masing mengetahui bagiannya menurut fikih.</li>
+            <li>Pewaris menghibahkan hartanya semasa sehat dan menyerahkannya langsung kepada penerima.</li></ul></div>
+          <div class="bag peringatan"><h3>Perlu diperhatikan</h3><ul><li>Pembagian antara pengganti dan ahli waris lain ditentukan hakim menurut kasus; di sini tidak dihitung.</li></ul></div>
+          <div class="tautanK"><button class="tautan">Lihat bunyi pasal</button><button class="tautan">Lihat dasar fikihnya</button></div>
+        </div>
+      </article>
+      <article class="kartu" id="k2">
+        <button class="kepala" aria-expanded="false"><span class="judul"><b>Harta bersama suami-istri</b><span class="pasal">Pasal 85–97 KHI</span>
+          <span class="cuplik">Bila salah satu pasangan wafat, separuh harta bersama menjadi hak pasangan yang hidup.</span><span class="tingkat beda">Berbeda dari fikih</span></span>
+          <svg class="ik panahK" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+        <div class="badan">
+          <div class="bag peringatan"><h3>Perlu diperhatikan</h3><ul><li>Angka harta yang dimasukkan di kalkulator fikih adalah harta milik pewaris saja; bagian pasangan dipisah lebih dulu menurut kepemilikan atau kesepakatan, bukan otomatis separuh.</li></ul></div>
+          <div class="bag"><h3>Bunyi KHI</h3><ul>
+            <li>Harta yang diperoleh selama perkawinan menjadi harta bersama; harta bawaan serta harta hadiah atau warisan tetap milik masing-masing.</li>
+            <li>Bila salah satu pasangan wafat, separuh harta bersama menjadi hak pasangan yang hidup.</li>
+            <li>Harta waris adalah harta bawaan ditambah bagian pewaris dari harta bersama, setelah dikurangi keperluan selama sakit, biaya jenazah, utang, dan pemberian untuk kerabat.</li></ul></div>
+          <div class="bag praktik"><h3>Menurut praktik Pengadilan Agama</h3><ul>
+            <li>Pasangan non-muslim yang tidak mewarisi tetap mendapat bagian harta bersama menurut putusan Mahkamah Agung.</li>
+            <li class="cat" style="color:#4a554f">Catatan: Pada suami beristri lebih dari satu, Pasal 94 menyebut harta bersama terpisah per perkawinan, tetapi pedoman Mahkamah Agung memahaminya bertumpuk dengan istri-istri terdahulu.</li></ul></div>
+          <div class="bag"><h3>Menurut fikih madzhab Syafi'i</h3><ul>
+            <li>Tidak ada harta bersama otomatis karena pernikahan; harta suami dan istri terpisah.</li>
+            <li>Kerja sama usaha yang sah hanya syirkah 'inan (modal); kerja sama tenaga (abdan) dan atas nama baik (wujuh) batal.</li>
+            <li>Pembagian harta yang bercampur menurut kesepakatan atau bukti sumbangan (keputusan lembaga fatwa modern 2022, bukan nukilan madzhab klasik).</li></ul></div>
+          <div class="bag jalan"><h3>Jika ingin selaras dengan fikih, yang dapat ditempuh</h3><ul>
+            <li>Suami dan istri membuat kesepakatan tertulis semasa hidup tentang harta yang bercampur.</li>
+            <li>Para ahli waris berdamai setelah masing-masing mengetahui bagiannya menurut fikih.</li></ul></div>
+          <div class="tautanK"><button class="tautan">Lihat bunyi pasal</button><button class="tautan">Lihat dasar fikihnya</button></div>
+        </div>
+      </article>
+      <p class="penutup">Ini informasi pembanding, bukan fatwa. Hakim menilai tiap kasus; untuk keputusan nyata, tanyakan kepada ulama atau pengacara.</p>
+    </div>
+  </aside>
+</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const frame=$('#frame'),panel=$('#panel'),tirai=$('#tirai');
+const ket={
+ hasil:'Keadaan 1. Tautan teks "Kalau menurut KHI" muncul di baris bawah hasil (bukan tombol berbingkai), dengan jumlah catatan. Hanya tampil bila ada catatan relevan; untuk kasus tanpa catatan tautan ini hilang (keadaan 4).',
+ panel:'Keadaan 2. Panel baca dari kanan (layar penuh di ponsel). Penanda "Hukum positif, bukan fikih" selalu terlihat; madzhab mengikuti pilihan di layar Hasil; praktik Pengadilan Agama bisa disembunyikan; kartu tertutup menampilkan judul, pasal, tingkat, dan satu kalimat.',
+ kartu:'Keadaan 3. Kartu terbuka: peringatan (kuning) naik ke atas hanya pada catatan yang punya peringatan penting; bagian berurutan bunyi → praktik → fikih → belum tersedia → jalan keluar. Tidak ada angka hasil dan tidak ada kode.',
+ kosong:'Keadaan 4. Kasus tanpa catatan relevan (mis. hanya anak): tidak ada tautan dan tidak ada kartu kosong. Halaman baca KHI umum tetap bisa dibuka dari Belajar.',
+ ponsel:'Keadaan 5. Lebar ponsel: panel menjadi lembar penuh; tombol Tutup tetap di kanan atas.'};
+function atur(k){
+  $$('nav.tab button').forEach(b=>b.setAttribute('aria-selected',b.dataset.k===k));
+  $('#catatan').textContent=ket[k];
+  const kosong=k==='kosong';
+  $('#lainnya').classList.toggle('hidden',false);
+  $('#bukaKhi').classList.toggle('hidden',kosong);$('#jml').classList.toggle('hidden',kosong);
+  $('#hHeadline').textContent=kosong?'Anak laki-laki mendapat seluruh harta':'Istri dan anak laki-laki mendapat bagian; cucu terhalang oleh anaknya';
+  $('.hero .k').textContent=kosong?'Contoh: ayah wafat, meninggalkan satu anak laki-laki saja.':'Contoh: suami wafat, meninggalkan istri, satu anak laki-laki, dan seorang cucu dari anak laki-laki yang wafat lebih dulu.';
+  $$('.s7 .baris').forEach((b,i)=>b.classList.toggle('hidden',kosong&&i>0));
+  $('.s7 .baris').innerHTML=kosong?'<span>Anak laki-laki</span><span class="rp">seluruh harta</span>':'<span>Istri</span><span class="rp">1/8 dari harta</span>';
+  frame.classList.toggle('ponsel',k==='ponsel');
+  const buka=k==='panel'||k==='kartu'||k==='ponsel';
+  panel.classList.toggle('on',buka);tirai.classList.toggle('on',buka);panel.setAttribute('aria-hidden',!buka);
+  $$('.kartu').forEach(c=>{const o=(k==='kartu'&&c.id==='k1')||(k==='ponsel'&&false);c.classList.toggle('buka',o);c.querySelector('.kepala').setAttribute('aria-expanded',o)});
+}
+$$('nav.tab button').forEach(b=>b.onclick=()=>atur(b.dataset.k));
+$('#bukaKhi').onclick=()=>atur('panel');$('#tutupKhi').onclick=()=>atur('hasil');tirai.onclick=()=>atur('hasil');
+document.addEventListener('keydown',e=>{if(e.key==='Escape')atur('hasil')});
+$$('.kartu .kepala').forEach(b=>b.onclick=()=>{const c=b.parentElement,o=!c.classList.contains('buka');c.classList.toggle('buka',o);b.setAttribute('aria-expanded',o)});
+$('#praktik').onchange=e=>$$('.bag.praktik').forEach(x=>x.classList.toggle('hidden',!e.target.checked));
+atur('hasil');
+</script>
+</body>
+</html>

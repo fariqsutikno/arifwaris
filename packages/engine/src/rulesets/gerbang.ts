@@ -19,6 +19,10 @@ export function periksaKonfigurasi(input: InputEngine): TidakDidukung | undefine
   if (input.ruleset !== 'syafii' && input.konfigurasi.talakBainSaatMaradh === 'qaulQadim') {
     return { status: 'TIDAK_DIDUKUNG', alasan: "Pilihan qaul qadim hanya ada dalam madzhab Syafi'i.", refs: ['K02-3'] };
   }
+  // [K04-3] opsi Muhammad adalah khilaf internal Hanafiyyah; [HNB] sudah per jihat, [SYF]/[MLK] tak punya opsi ini.
+  if (input.ruleset !== 'hanafi' && input.konfigurasi.nenekDuaQarabahHanafi === 'muhammad') {
+    return { status: 'TIDAK_DIDUKUNG', alasan: 'Pilihan Muhammad untuk nenek dua qarabah hanya ada dalam madzhab Hanafi.', refs: ['K04-3'] };
+  }
   return undefined;
 }
 

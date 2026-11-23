@@ -17,6 +17,11 @@ export interface AturanMadzhab {
   tasyrik: boolean;
   /** [K05-1] [K08-1] kakek menghijab saudara kandung/sebapak seperti ayah. */
   kakekMenghijabSaudara: boolean;
+  /**
+   * [K04-3] nenek dua qarabah yang berkumpul dengan nenek lain: 'perBadan' rata per orang, 'perJihat' tiap qarabah
+   * dihitung satu bagian, 'ikutKonfigurasi' menurut `nenekDuaQarabahHanafi`, 'tidakDidukung' (tak ada nash).
+   */
+  nenekDuaQarabah: 'perBadan' | 'perJihat' | 'ikutKonfigurasi' | 'tidakDidukung';
   /** [K09-1] kebijakan sisa yang sah untuk madzhab ini. */
   kebijakanSisaSah: ReadonlyArray<KonfigurasiMadzhab['kebijakanSisa']>;
 }
@@ -24,21 +29,21 @@ export interface AturanMadzhab {
 export const ATURAN: Record<Ruleset, AturanMadzhab> = {
   syafii: {
     ruleset: 'syafii', nenekDekatMenghijabMutlak: false, ummulAbTerhijabAyah: true, tasyrik: true,
-    kakekMenghijabSaudara: false, kebijakanSisaSah: ['radd', 'baitulMal'],
+    kakekMenghijabSaudara: false, kebijakanSisaSah: ['radd', 'baitulMal'], nenekDuaQarabah: 'perBadan', // [K04-3] Raudhah 6/10
   },
   // [K03-1] Mughni 6/300–301: tiga nenek (ummul umm, ummul ab, ummul jadd) → paling banyak 2 laki-laki (ayah, kakek).
   hanbali: {
     ruleset: 'hanbali', batasLakiLakiJalurNenek: 2, nenekDekatMenghijabMutlak: true, ummulAbTerhijabAyah: false, tasyrik: false,
-    kakekMenghijabSaudara: false, kebijakanSisaSah: ['radd'],
+    kakekMenghijabSaudara: false, kebijakanSisaSah: ['radd'], nenekDuaQarabah: 'perJihat', // [K04-3] Mughni 6/303
   },
   hanafi: {
     ruleset: 'hanafi', nenekDekatMenghijabMutlak: true, ummulAbTerhijabAyah: true, tasyrik: false,
-    kakekMenghijabSaudara: true, kebijakanSisaSah: ['radd'],
+    kakekMenghijabSaudara: true, kebijakanSisaSah: ['radd'], nenekDuaQarabah: 'ikutKonfigurasi', // [K04-3] Tabyin 6/232, Mi'raj 8/934
   },
   // [K03-1] 'Iqd 3/1239–1240: hanya ummul umm dan ummul ab (ke atas lewat perempuan) → paling banyak 1 laki-laki (ayah).
   maliki: {
     ruleset: 'maliki', batasLakiLakiJalurNenek: 1, nenekDekatMenghijabMutlak: false, ummulAbTerhijabAyah: true, tasyrik: true,
-    kakekMenghijabSaudara: false, kebijakanSisaSah: ['radd', 'baitulMal'],
+    kakekMenghijabSaudara: false, kebijakanSisaSah: ['radd', 'baitulMal'], nenekDuaQarabah: 'tidakDidukung', // [K04-3] tak ada nash Maliki
   },
 };
 

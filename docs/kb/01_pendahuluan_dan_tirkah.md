@@ -56,6 +56,19 @@ Catatan tertib: meski dalam ayat wasiat disebut lebih dulu dari hutang, **hutang
 - **Wasiat kepada ahli waris**: tandai **"tidak sah tanpa ijazah ahli waris lain"** (R01-5); engine menolak dan melaporkan ke pengguna.
 - Jika hutang ≥ tirkah, tidak ada pembagian waris.
 
+## 1.6 Hibah Semasa Hidup dan Menyamakan Antar Anak [R01-10] [R01-11] [K01-3]
+- **Hibah** = tamlik tanpa imbalan semasa hidup; **berlaku (lazim) hanya dengan qabdh** (serah terima); sebelum qabdh belum menjadi milik penerima [R01-10].
+- **Hibah dan seluruh tabarru' orang yang sakit maut** dihitung dari **sepertiga**, seperti wasiat [R01-11].
+- **Wasiat** adalah tabarru' yang digantungkan pada kematian; hibah/hadiah/sedekah adalah tamlik tunai (Raudhah 5/364 · shamela:499/2202).
+
+> **KHILAF K01-3 – Menyamakan hibah antar anak**
+> - **[SYF]**: **sunnah** adil dalam pemberian; melebihkan **makruh** (Ibnu Hibban: haram). Cara adil: samakan laki-laki dan perempuan (ada pendapat: seperti waris). Ayah boleh menarik hibah kepada anaknya ('Ujalat al-Muhtaj 2/987–988 · shamela:20561/982, 20561/983; syarah Minhaj, **sekunder-klasik**, bukan Raudhah).
+> - **[HNF]**: **"sepatutnya" menyamakan**: menurut Muhammad seperti waris (laki-laki 2 : perempuan 1), menurut Abu Yusuf sama rata; kewajiban taswiyah ditempatkan pada **wasiat setelah wafat**, bukan hibah semasa sehat (Mabsuth 12/56 · shamela:5423/2536).
+> - **[HNB]**: **wajib** menyamakan; bila melebihkan, wajib menyamakan dengan menarik kembali atau menambah anak yang kurang; ukuran **sesuai pembagian Kitabullah (2:1)** karena hibah dipandang percepatan atas yang terjadi setelah wafat (Taisir Masa'il al-Fiqh 4/18 · shamela:1319/2063; Mughni 6/54 · shamela:8463/2376).
+> - **[MLK]**: **makruh**, tidak dibatalkan (Ibnu al-Qasim), kecuali jelas untuk lari dari faraidh; menurut Asbagh yang sudah diserahterimakan berlaku; hadits Basyir dipahami tentang pemberian seluruh harta, sebagian boleh (adz-Dzakhirah 6/289 · shamela:1717/2679).
+> Dasar hadits: «اتقوا الله واعدلوا بين أولادكم» (al-Bukhari 2587; Muslim 1623, dinukil 'Ujalat al-Muhtaj catatan kaki 203).
+> Engine tidak memodelkan hibah semasa hidup; bagian ini hanya informasi (catatan KHI Pasal 211).
+
 ---
 
 ## Dasar dan Rujukan Bab Ini
@@ -72,6 +85,8 @@ Kode: **[Q]** Al-Qur'an · **[H]** Hadits · **[A]** Atsar sahabat · **[IJ]** I
 | R01-7 | Ijazah wasiat baru sah setelah wafat | BMZ | Bahr al-Madzhab, ar-Ruyani, Kitab al-Washaya, 8/42 · shamela:16934/3737 | «فأجازها في حياته، لم يلزمه الإجازة وكان مخيرًا بعد الموت بين الإجازة والرد وبه قال أبو حنيفة، وأكثر الفقهاء». Fitur ijazah tetap tidak diimplementasikan. |
 | R01-9 | Auto-cap wasiat ke 1/3 = keputusan scope engine | — | Keputusan desain (bukan klaim fikih independen) | Dalil batas 1/3: R01-4 (hadits Sa'd). Engine ini tidak mengimplementasikan mekanisme ijazah, sehingga setiap wasiat > 1/3 dipangkas otomatis. Hasil ini kebetulan sama dengan hukum asal *pada kondisi tanpa ijazah*, tapi TIDAK mencakup skenario ijazah. R01-7 tetap terbuka untuk fase lanjut. |
 | R01-8 | Mempelajari faraidh fardhu kifayah | H (dha'if) | Ibnu Majah no. 2719, dari Abu Hurairah — sanadnya dha'if · hadits:ibnmajah:2719 | «تعلموا الفرائض وعلموها، فإنها نصف العلم». Status fardhu kifayah adalah ketetapan fuqaha, hadits ini hanya penguat. |
+| R01-10 | Hibah lazim dengan qabdh | RDH | Raudhah 5/375 (Kitab al-Hibah, fashl syarth luzum) · shamela:499/2213 | «وأما شرط لزوم الهبة، فهو القبض، فلا يحصل الملك في الموهوب والهدية إلا بقبضهما، هذا هو المشهور» |
+| R01-11 | Tabarru' orang sakit maut dari sepertiga | RDH | Raudhah 3/429 (Kitab al-Buyu', far' masa'il ad-daur) · shamela:499/1236 | «حكمها حكم هبته وسائر تبرعاته، تعتبر من الثلث» |
 
 
 ## Nukilan Lintas-Madzhab (verifikasi Shamela 2026-09-29)

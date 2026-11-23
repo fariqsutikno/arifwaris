@@ -9,6 +9,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
+import { acakDariBenih } from '../acakBerbenih';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
 import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
@@ -45,7 +46,7 @@ import { unduhKasus } from '../berkas';
 import { PenyediaSorot } from '../hasil/sorot';
 import { PanelPohon } from '../hasil/PanelPohon';
 import { TabelFaraidh } from '../hasil/TabelFaraidh';
-import { bacaJudulTersimpan, hapusTersimpan, ubahJudul } from '../tersimpan';
+import { bacaJudulTersimpan, ubahJudul } from '../tersimpan';
 import { susunTeksRingkasan } from '../hasil/ringkasanTeks';
 import { useSimpanOtomatis } from '../hasil/useSimpanOtomatis';
 import { Toast, type IsiToast } from '../ui/Toast';
@@ -59,7 +60,7 @@ import { formatRupiah, formatRupiahRingkas, namaOrang } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { tautanLatihan } from '../rute';
-import { hapusIsianSoal } from '../isianSoal';
+import { bacaPercobaanSoal, hapusIsianSoal, naikkanPercobaanSoal } from '../isianSoal';
 import { Ikon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { daftarBabDari } from './Penjelasan';
@@ -89,9 +90,8 @@ interface Props {
   salinan?: { saatJadikanKasus: () => void; saatKerjakanUlang?: (() => void) | undefined; soal: boolean } | undefined;
   /** Soal latihan tidak disimpan otomatis (spec A4). */
   tanpaSimpan?: boolean | undefined;
-  /** Sesi ini ditandai "Jangan simpan kasus ini": state sesi (bukan disimpan), dipegang pemanggil supaya bertahan antar-layar. */
-  janganSimpan?: boolean | undefined;
-  saatJanganSimpan?: ((nilai: boolean) => void) | undefined;
+  /** "Hapus kasus ini" sudah dikonfirmasi: pemanggil menghapus tuntas dan menyiapkan Urungkan (layar ini ikut hilang). */
+  saatHapusKasus?: (() => void) | undefined;
 }
 
 /** Syafi'i = bawaan, jadi disimpan sebagai tanpa field `madzhab`. */
@@ -103,7 +103,7 @@ const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan, salinan }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, saatHapusKasus, salinan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -145,10 +145,10 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     );
   }
   return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} soal={soal} urutanLatihan={urutanLatihan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
-    tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={saatJanganSimpan} salinan={salinan} /></PenyediaSorot>;
+    tanpaSimpan={tanpaSimpan} saatHapusKasus={saatHapusKasus} salinan={salinan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan, salinan }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, saatHapusKasus, salinan }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -165,12 +165,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const adalahBelajar = tujuan === 'belajar' && !khusus && bertabel;
   const menunggu = ringkasan.jenis === 'menunggu';
   const gharqaDitahan = !!ringkasan.gharqa?.skenario;
-  // Setiap kasus yang sampai di sini tersimpan otomatis (termasuk menunggu kelahiran), kecuali soal latihan, tautan penerima, dan "Jangan simpan".
-  const statusSimpan = useSimpanOtomatis(idSesi, kasus, !hanyaBaca && !tanpaSimpan && !janganSimpan);
+  // Setiap kasus yang sampai di sini tersimpan otomatis (termasuk menunggu kelahiran), kecuali soal latihan dan tautan penerima.
+  const statusSimpan = useSimpanOtomatis(idSesi, kasus, !hanyaBaca && !tanpaSimpan);
   // Penanda halaman: latar sage, bingkai krem, dan nav menyatu dengan hero (CSS body.layar-hasil).
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
   const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
+  // Mode belajar tidak punya tombol Bagikan (tempat tautan Hapus kasus ini di mode lain), jadi tautannya di kaki halaman.
+  const hapusDiKaki = adalahBelajar && !hanyaBaca && !!saatHapusKasus;
 
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
@@ -201,6 +203,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const [bagikanTerbuka, setBagikanTerbuka] = useState(false);
   const [toast, setToast] = useState<IsiToast | null>(null);
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState(false);
   const [madzhabTerbuka, setMadzhabTerbuka] = useState(false);
   const madzhab = kasus.madzhab ?? 'syafii';
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
@@ -251,9 +254,13 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     return 'status' in susunan ? null : susunan;
   }, [adalahBelajar, tampil, kasus.graf, ringkasan.statusOrang]); // eslint-disable-line react-hooks/exhaustive-deps
   const adaTabelSoal = !!tabelSoal || !!soalGharqa;
-  const jangkarGharqa = useMemo(() => soalGharqa?.harta.map(harta => pilihJangkar(harta.tabel, Math.random)) ?? [], [soalGharqa]);
-  // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
-  const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
+  // Benih jangkar = kode soal + nomor percobaan (isianSoal): sama setelah muat ulang, baru saat Kerjakan ulang / Kosongkan.
+  // `idSesi` ikut sebagai kunci supaya membuka soal lagi (sesi baru) membaca ulang nomornya.
+  const [kosongkanKe, setKosongkanKe] = useState(0);
+  const benihJangkar = useMemo(() => (soal ? `${soal.id}:${bacaPercobaanSoal(soal.id)}` : idSesi), [soal?.id, idSesi, kosongkanKe]); // eslint-disable-line react-hooks/exhaustive-deps
+  const jangkarGharqa = useMemo(() => soalGharqa?.harta.map((harta, indeks) => pilihJangkar(harta.tabel, acakDariBenih(`${benihJangkar}:${indeks}`))) ?? [], [soalGharqa, benihJangkar]);
+  const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, acakDariBenih(benihJangkar)) : null), [tabelSoal, benihJangkar]);
+  const saatKosongkanTabel = () => { if (soal) { naikkanPercobaanSoal(soal.id); setKosongkanKe(n => n + 1); } };
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
   const [idSesiSoal] = useState(() => crypto.randomUUID());
   const kunciTabel = useRef('');
@@ -332,13 +339,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     if (navigator.share) await navigator.share({ text: teksRingkasan }).catch(() => {});
     else await salinTeks();
   };
-  const janganSimpanKasus = () => {
-    hapusTersimpan(idSesi);
-    saatJanganSimpan?.(true);
-    setLembarTerbuka(false);
-    setToast({ teks: t('hasil.simpan.dihapus'), aksi: { label: t('hasil.simpan.urungkan'), saat: () => { saatJanganSimpan?.(false); setToast(null); } } });
-  };
   const namaKasus = bacaJudulTersimpan(idSesi) ?? kasus.nama ?? ringkasKasus(kasus).judul;
+  // Jujur soal tempatnya: masuk akun → ikut akun; tidak → hanya di perangkat. Soal latihan tidak masuk Tersimpan, hanya riwayat perangkat.
+  const labelSimpan = (jam: string | null) => jam ? (bagikan ? t('hasil.simpan.tersimpan_akun', { jam }) : t('hasil.simpan.tersimpan_perangkat', { jam }))
+    : statusSimpan.jenis === 'tidak' ? t('hasil.simpan.di_perangkat') : t('hasil.simpan.tidak_disimpan');
   const jamSimpan = statusSimpan.jenis === 'tersimpan'
     ? angka(statusSimpan.pada.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })) : null;
 
@@ -356,7 +360,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
           )}
           {!adalahBelajar && (
             <div className="kanan-bilah">
-              {!hanyaBaca && <span className="status-simpan" role="status">{jamSimpan ? <><Ikon nama="benar" ukuran={14} />{t('hasil.simpan.tersimpan', { jam: jamSimpan })}</> : t('hasil.simpan.tidak_disimpan')}</span>}
+              {!hanyaBaca && <span className="status-simpan" role="status">{jamSimpan ? <><Ikon nama="benar" ukuran={14} />{labelSimpan(jamSimpan)}</> : labelSimpan(null)}</span>}
               <span className={hero.ditahan ? 'status-hero tahan' : 'status-hero'}><i />{hero.status}</span>
               {!hanyaBaca && <button type="button" className="tautan-hero" onClick={() => setLembarTerbuka(true)}><Ikon nama="bagikan" ukuran={18} />{t('umum.bagikan')}</button>}
             </div>
@@ -408,7 +412,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       <div className="tata-hasil">
         {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
           saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
-        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatKosongkan={saatKosongkanTabel} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
           <div className="aksi-soal-berikutnya">
             {urutanLatihan.saatBerikutnya
@@ -480,10 +484,11 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
 
       <footer className="kaki-hasil">
         <p>{t('hitung.hasil_ini_menurut_madzhab_syafi_i')} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
-        {bolehUbah && (
+        {(bolehUbah || hapusDiKaki) && (
           <div className="aksi-kaki">
-            <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>
-            <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('umum.reset')}{t('hitung.skenario')}</button>
+            {bolehUbah && <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
+            {bolehUbah && <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('umum.reset')}{t('hitung.skenario')}</button>}
+            {hapusDiKaki && <button type="button" className="tautan-aksi tautan-bahaya" onClick={() => setKonfirmasiHapus(true)}>{t('hasil.bagikan_lembar.hapus_kasus')}</button>}
           </div>
         )}
       </footer>
@@ -531,9 +536,14 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
         <LembarBagikan teks={teksRingkasan} saatTutup={() => setLembarTerbuka(false)}
           saatKirim={() => void kirimTeks()} saatSalin={() => void salinTeks()} saatUnduh={() => unduhKasus(kasus)}
           tautan={bagikan && bolehUbah ? { judul: sudahDibagikan(idSesi) ? t('bagikan.kelola') : t('hasil.bagikan_tautan'), saatPilih: () => { setLembarTerbuka(false); setBagikanTerbuka(true); } } : undefined}
-          // Kasus yang tautannya masih hidup tidak boleh "dihapus" diam-diam: hentikan pembagian dulu lewat Kelola tautan.
-          sedangDibagikan={!hanyaBaca && !tanpaSimpan && !janganSimpan && sudahDibagikan(idSesi)}
-          saatJanganSimpan={!hanyaBaca && !tanpaSimpan && !janganSimpan && !sudahDibagikan(idSesi) ? janganSimpanKasus : undefined} />
+          saatHapusKasus={!hanyaBaca && saatHapusKasus ? () => { setLembarTerbuka(false); setKonfirmasiHapus(true); } : undefined} />
+      )}
+      {konfirmasiHapus && (
+        <DialogKonfirmasi judul={t('hitung.hapus_kasus_ini')} labelLanjut={t('umum.hapus')} bahaya saatBatal={() => setKonfirmasiHapus(false)}
+          saatLanjut={() => { setKonfirmasiHapus(false); saatHapusKasus?.(); }}>
+          <p>{tanpaSimpan ? t('hasil.hapus_kasus.isi_latihan') : t('hasil.hapus_kasus.isi')}</p>
+          {bagikan && sudahDibagikan(idSesi) && <p>{t('hitung.hapus_kasus_tautan_dihentikan')}</p>}
+        </DialogKonfirmasi>
       )}
       <Toast isi={toast} saatHilang={() => setToast(null)} />
       {kunciDiubah && <ModalUbahJumlah kunci={kunciDiubah} graf={kasus.graf} ubahGraf={ubahGraf} saatTutup={() => setKunciDiubah(null)} />}

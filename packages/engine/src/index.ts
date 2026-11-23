@@ -12,3 +12,4 @@ export { hitungTirkah } from './stages/tirkah.js';
 export { hitungDzawilArham } from './dzawilArham.js';
 export { hitungTaqdir, BATAS_DUNIA, type OpsiTaqdir } from './taqdir.js';
 export { hitungGharqa } from './gharqa.js';
+export { pilihCatatanKhi, ID_CATATAN_KHI as ID_PEMICU_KHI, type IdCatatanKhi as IdPemicuKhi } from './khi/pilihCatatanKhi.js';

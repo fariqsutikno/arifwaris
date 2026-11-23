@@ -1,4 +1,4 @@
-// Lembar Bagikan di layar Hasil: pratinjau teks ringkasan + empat cara membagikan + "Jangan simpan kasus ini".
+// Lembar Bagikan di layar Hasil: pratinjau teks ringkasan + empat cara membagikan + "Hapus kasus ini".
 // Menerima teks dan aksi dari Hasil (tidak tahu soal engine atau penyimpanan). HP: lembar dari bawah, laptop: dialog tengah.
 // Fokus pindah ke tautan Tutup saat dibuka dan kembali ke pemicu saat ditutup; Esc dan ketuk latar menutup.
 
@@ -10,17 +10,15 @@ interface Props {
   teks: string;
   /** Tanpa ini baris "Bagikan tautan" tidak tampil. */
   tautan?: { judul: string; saatPilih: () => void } | undefined;
-  /** Tanpa ini bagian "Jangan simpan kasus ini" tidak tampil (sudah tidak disimpan, atau memang tidak disimpan). */
-  saatJanganSimpan?: (() => void) | undefined;
-  /** Kasus masih dibagikan lewat tautan: "Jangan simpan" diganti penjelasan kenapa belum bisa. */
-  sedangDibagikan?: boolean | undefined;
+  /** Tanpa ini bagian "Hapus kasus ini" tidak tampil (tampilan penerima tautan). */
+  saatHapusKasus?: (() => void) | undefined;
   saatKirim: () => void;
   saatSalin: () => void;
   saatUnduh: () => void;
   saatTutup: () => void;
 }
 
-export function LembarBagikan({ teks, tautan, saatJanganSimpan, sedangDibagikan, saatKirim, saatSalin, saatUnduh, saatTutup }: Props) {
+export function LembarBagikan({ teks, tautan, saatHapusKasus, saatKirim, saatSalin, saatUnduh, saatTutup }: Props) {
   const id = useId();
   const tombolTutup = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -51,11 +49,10 @@ export function LembarBagikan({ teks, tautan, saatJanganSimpan, sedangDibagikan,
             </button>
           ))}
         </div>
-        {sedangDibagikan && <><hr /><p className="sub-lembar">{t('hasil.bagikan_lembar.sedang_dibagikan')}</p></>}
-        {saatJanganSimpan && <>
+        {saatHapusKasus && <>
           <hr />
-          <button type="button" className="tautan tautan-bahaya" onClick={saatJanganSimpan}>{t('hasil.bagikan_lembar.jangan_simpan')}</button>
-          <p className="sub-lembar">{t('hasil.bagikan_lembar.jangan_simpan_ket')}</p>
+          <button type="button" className="tautan tautan-bahaya" onClick={saatHapusKasus}>{t('hasil.bagikan_lembar.hapus_kasus')}</button>
+          <p className="sub-lembar">{t('hasil.bagikan_lembar.hapus_kasus_ket')}</p>
         </>}
       </div>
     </div>

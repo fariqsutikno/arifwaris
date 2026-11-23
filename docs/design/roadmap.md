@@ -28,14 +28,13 @@ Satu halaman untuk menjawab "lanjut, mana dulu?". Rincian tiap gelombang ada di
 | G3 data server + PDP + soal buta | **kode selesai, di `main`** (PR #45, #49, #50); belum di-deploy ke produksi, lihat "Langkah deploy G3" |
 | Jalur 7: verifikasi madzhab [HNB]/[HNF]/[MLK] | **sebagian besar jalan**: matriks KB 18 punya 106 baris, hanya 4 baris masih bertanda (s) (K01-2, K02-4, K13a-4, R01-1) dan 1 sel "?" (K04-3); 4 butir masih Terbuka di `docs/rencana-verifikasi.md` (R13-14 laqith, K05-2 [MLK], K13-1 [HNF], dzawil arham dua jalur [HNF]) |
 | Jalur 7b: harta sudah dibagi sebagian | **belum mulai**: KB bab 11 baru memuat qismah dan takharuj (R11-2 shulh); belum ada bagian KB, kode engine, maupun UI. Hanya ada bayangan `mockup-sudah-dibagi.html`. Langkah pertama: riset dan verifikasi rujukan ke bab 11 |
-| Jalur 8: KHI | **belum mulai**: `docs/kb-khi/` belum ada; baru ada aturan pemisahan (ruleset sendiri, ditandai "hukum positif, bukan fikih") |
+| Jalur 8: KHI | **rencana + sumber siap (2026-11-23)**: `docs/superpowers/plans/2026-11-23-khi-jalur-8.md`; teks KHI terverifikasi dan temuan awal di `docs/kb-khi/`. Keputusan: KHI **sebelum G4**, pembanding = madzhab pilihan pengguna, panel informasi "kalau menurut KHI" (bukan kalkulator). Belum ada kode |
 
 ## Alur ke depan
 
 ```
 SEKARANG
   ├─ [kamu] gabung PR #42 (G1) setelah ditinjau
-  ├─ [kamu] tunjuk penulis pengecoh soal penalaran (spec 8.30) ── gerbang G4
   └─ [kamu] langkah dasbor G0 yang tersisa (mis. matikan login Email, K1)
 
 G2  jenis soal latihan (B7, B8)         KODE SELESAI (PR #43)
@@ -48,10 +47,12 @@ G3  data server + PDP dasar + soal buta  13–20 hari
     kebijakan privasi + persetujuan; hapus/unduh akun; soal buta
 
    ── sejajar sepanjang jalan (berkas beda), urutan sesuai keputusan 2026-11-18, semua sebelum AMIN (G5) ──
-      7  verifikasi madzhab   sisa 4 butir Terbuka + 4 sel (s) + 1 sel "?"; cabut label "sekunder" bila cocok
+      7  verifikasi madzhab   A1–A8 + B0–B5 SELESAI 2026-11-22 (A9–A10 menunggu pemilik; laporan konten di
+                              `docs/laporan-verifikasi-konten.md` menunggu persetujuan sebelum disunting di portal):
+                              `spec-verifikasi-madzhab-dan-konten.md` (A: 10 butir madzhab, B: 6 butir konten, aturan delegasi agen)
       7b harta sebagian       riset dan verifikasi bab 11 dulu → KB → engine → UI isian
       8  KHI                  `docs/kb-khi/`, ruleset terpisah
-      posisi G4 terhadap 7b dan KHI belum ditegaskan (G4 sudah setelah 7 menurut sisipan 2026-11-19)
+      KHI (8) dikerjakan **sebelum G4** (keputusan 2026-11-23, supaya materi lebih kaya); posisi 7b terhadap G4 belum ditegaskan
 
 G4  lengkapi materi & latihan soal       kode 6–9 hari + konten tim keilmuan
     skema soal penalaran → soal bangkitan + katalog → soal kurasi
@@ -69,12 +70,12 @@ G8  SaaS                                 20–30 hari; uji harga ke dosen dulu
 
 ## Yang menunggu keputusanmu
 
-1. **Pertanyaan spec bagian 8**: semua sudah diputuskan 2026-11-20 sesuai rekomendasi, kecuali **30** (siapa penulis
-   pengecoh soal penalaran dan daftar kesalahan umum), yang menahan G4.
+1. ~~Pertanyaan spec bagian 8~~ semua diputuskan; **30** diputuskan 2026-11-22: Claude (opus) menulis draf pengecoh dan
+   daftar kesalahan umum, tim keilmuan meninjau sebelum terbit. Gerbang G4 terbuka.
 2. ~~Tab Khuntsa di mockup~~ selesai 2026-11-21 (KB 13c.4 X1); jenis soal khuntsa sudah ada.
 3. **Kontak pengendali data + isi kebijakan privasi** (G3), dan apakah proyek `ap-south-1` = produksi (pindah region sebelum G7).
 4. **Pilot kelas sebelum AMIN?** Demi kalender semester; biayanya AMIN mundur ±5–7 minggu.
-5. **Siapa menulis pengecoh soal penalaran** (G4).
+5. ~~Siapa menulis pengecoh soal penalaran~~ (G4): Claude, lihat butir 1.
 6. **Harga paket** (G8), setelah wawancara dosen/kaprodi.
 
 ## Langkah deploy G3 (hanya pemilik; tidak otomatis)

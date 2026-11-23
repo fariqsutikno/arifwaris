@@ -29,6 +29,8 @@ interface Props {
   namaDari?: (id: string) => string;
   /** Soal latihan: isian tersimpan per kode soal supaya soal yang terputus bisa dilanjutkan (spec siklus kasus dan soal). */
   kodeSoal?: string | undefined;
+  /** Kosongkan pada isian yang sudah terisi = percobaan baru (jangkar diacak ulang oleh pemanggil). */
+  saatKosongkan?: (() => void) | undefined;
   /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
   tanpaCara?: boolean;
 }
@@ -72,7 +74,7 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, saatKosongkan }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
   const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal)?.isian) || { kepala: {}, sel: {} });
   const isianAwal = useRef(isian);
@@ -98,7 +100,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     if (nilai.jenis === 'belumLengkap') return;
     saatPercobaan({ mode, aksi: 'periksa', isian, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
   };
-  const kosongkan = () => { setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false); };
+  const kosongkan = () => { if (hitungTerisi(isian) > 0) saatKosongkan?.(); setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false); };
 
   const isiPilihan = (idBaris: string, idKolom: string, nilai: string) => {
     setIsian(lama => ({ ...lama, sel: { ...lama.sel, [idBaris]: { ...lama.sel[idBaris], [idKolom]: nilai } } }));

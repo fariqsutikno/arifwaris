@@ -2,13 +2,14 @@
 // `#/glosarium/ashabah`, `#/rujukan/R09-4`).
 // `#/` (atau hash tak dikenal) = Beranda; `#/hitung` = awal kalkulator. Kasus yang sedang dikerjakan punya id sendiri di URL
 // (`#/hitung/<id>` = hasil, `/langkah/3` = wizard langkah 3, `/cerita`), jadi muat ulang kembali ke halaman itu.
+// Soal hitung: `#/latihan/soal/<kode>` (soal tidak masuk riwayat, jadi tidak punya id kasus).
 // Segmen ekstra pada `/langkah/3/<n>` (URL lama dari alur Babak) diabaikan.
 
 import { useEffect, useState } from 'react';
 
 export type Rute =
   | { halaman: 'beranda' }
-  | { halaman: 'kalkulator'; kasus?: PosisiKasus }
+  | { halaman: 'kalkulator'; kasus?: PosisiKasus; soal?: string }
   | { halaman: 'belajar' }
   | { halaman: 'materi'; slug: string }
   | { halaman: 'latihan'; tab: 'hitung' | 'kuis'; paket?: string }
@@ -25,11 +26,16 @@ export type Rute =
 /** Posisi kasus di Hitung: id entri riwayat + layar (wizard membawa langkah). */
 export interface PosisiKasus { id: string; layar: 'hasil' | 'cerita' | 'wizard'; langkah?: number }
 
+/** Hash bisa diketik/ditempel siapa saja; `%` salah format (mis. `%E0`) jangan melempar, cukup dipakai apa adanya (tak akan cocok dengan apa pun). */
+const dekodeSegmen = (segmen: string): string => {
+  try { return decodeURIComponent(segmen); } catch { return segmen; }
+};
+
 export function bacaRute(hash: string): Rute {
-  const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+  const segmen = hash.replace(/^#\/?/, '').split('/').map(dekodeSegmen);
+  const [halaman, parameter, bagian, langkah] = segmen;
   if (halaman === 'hitung') {
     if (!parameter) return { halaman: 'kalkulator' };
-    const [, , bagian, langkah] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
     if (bagian === 'cerita') return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'cerita' } };
     if (bagian === 'langkah' && Number.isInteger(Number(langkah))) {
       return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'wizard', langkah: Number(langkah) } };
@@ -38,7 +44,9 @@ export function bacaRute(hash: string): Rute {
   }
   if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'latihan') {
-    const paket = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    // Soal hitung punya alamat sendiri; ia dikerjakan di kalkulator, jadi rutenya tetap 'kalkulator'. Kode tak dikenal ditangani Aplikasi.
+    if (parameter === 'soal' && bagian) return { halaman: 'kalkulator', soal: bagian };
+    const paket = bagian;
     return parameter === 'kuis' ? (paket ? { halaman, tab: 'kuis', paket } : { halaman, tab: 'kuis' }) : { halaman, tab: 'hitung' };
   }
   if (halaman === 'k' && parameter) return { halaman: 'dibagikan', slug: parameter };
@@ -49,7 +57,7 @@ export function bacaRute(hash: string): Rute {
   if (halaman === 'rujukan') {
     if (!parameter) return { halaman };
     if (/^R\d{2}-\d+$/.test(parameter)) return { halaman, kode: parameter };
-    const kitab = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    const kitab = bagian;
     return kitab ? { halaman, kategori: parameter, kitab } : { halaman, kategori: parameter };
   }
   return { halaman: 'beranda' };
@@ -62,6 +70,8 @@ export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung', paket?: string)
 export const SLUG_BAGIKAN = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;
 export const tautanBagikan = (slug: string) => `#/k/${encodeURIComponent(slug)}`;
 export const alamatBagikan = (slug: string) => `${window.location.origin}${window.location.pathname}${tautanBagikan(slug)}`;
+/** Soal hitung yang sedang dikerjakan: `#/latihan/soal/<kode>` (muat ulang membuka soal yang sama). */
+export const tautanSoal = (kode: string) => `#/latihan/soal/${encodeURIComponent(kode)}`;
 export const tautanRiwayat = () => '#/riwayat';
 export const tautanPeringkat = () => '#/peringkat';
 export const tautanPrivasi = () => '#/privasi';

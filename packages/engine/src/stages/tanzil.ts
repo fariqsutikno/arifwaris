@@ -1,11 +1,11 @@
 // Tahap tanzil (bab 14.5, 14.7) — dzawil arham didudukkan pada posisi ahli waris perantaranya.
 //   Masuk : graf + peran hasil derivasi + id seorang dzawil arham.
 //   Putus : tiap lintasan orang itu ke pewaris dinaikkan derajat demi derajat sampai posisi ahli waris (perantara);
-//           dalam jihah yang sama, yang lebih dulu sampai menghijab yang lain.
+//           yang lebih dulu sampai menghijab yang lain: global antar semua rute [SYF] [R14-10], per jihah [HNB] [K14-4].
 //   Keluar: rute yang lolos → mas'alah perantara (stages/perantara.ts).
 
 import type { TidakDidukung } from './model.js';
-import type { GrafKeluarga, IdOrang, Jihah, KunciAhliWaris, LangkahJejak, PeranAhliWaris } from '../types.js';
+import type { GrafKeluarga, IdOrang, Jihah, KunciAhliWaris, LangkahJejak, PeranAhliWaris, Ruleset } from '../types.js';
 
 export interface RuteTanzil {
   idOrang: IdOrang;
@@ -20,7 +20,7 @@ export interface RuteTanzil {
 
 // Pasangan dan wala' bukan kekerabatan nasab, jadi tidak pernah menjadi perantara.
 const BUKAN_PERANTARA = new Set<PeranAhliWaris['kunci']>(['DZAWIL_ARHAM', 'BUKAN_AHLI_WARIS', 'SUAMI', 'ISTRI', 'MUTIQ', 'MUTIQAH']);
-// [R14-10] bunuwwah = lewat anak mayit; umumah = lewat ibu (termasuk anak ibu dan ibunya ibu); sisanya ubuwwah.
+// [K14-4] [HNB] jihah (dipakai sabq per jihah): bunuwwah = lewat anak mayit; umumah = lewat ibu (termasuk anak ibu dan ibunya ibu); sisanya ubuwwah.
 const JIHAH_BUNUWWAH = new Set<KunciAhliWaris>(['ANAK_LK', 'ANAK_PR', 'CUCU_LK', 'CUCU_PR']);
 const JIHAH_UMUMAH = new Set<KunciAhliWaris>(['IBU', 'NENEK_DARI_IBU', 'SAUDARA_SEIBU', 'SAUDARI_SEIBU']);
 
@@ -37,21 +37,28 @@ export function cariRuteTanzil(graf: GrafKeluarga, daftarPeran: Record<IdOrang, 
   return daftarRute;
 }
 
-/** [R14-7] [R14-10] Dalam jihah yang sama, rute dengan langkah paling sedikit menghijab yang lain; lintas jihah tidak. */
-export function saringJihah(daftarRute: RuteTanzil[]): { lolos: RuteTanzil[]; tersisih: RuteTanzil[]; jejak: LangkahJejak[] } {
-  const terdekat = new Map<Jihah, number>();
-  for (const rute of daftarRute) terdekat.set(rute.jihah, Math.min(terdekat.get(rute.jihah) ?? Infinity, rute.langkah));
-  const lolos = daftarRute.filter(rute => rute.langkah === terdekat.get(rute.jihah));
-  const tersisih = daftarRute.filter(rute => rute.langkah !== terdekat.get(rute.jihah));
+/**
+ * Sabq ke ahli waris perantara: rute dengan langkah paling sedikit menghijab yang lain.
+ * [SYF] [R14-7] [R14-10] kelompoknya SEMUA rute (global, lintas jihah); [HNB] [K14-4] hanya rute sejihah.
+ * Jejak `DZAWIL_ARHAM_TERHIJAB_JIHAH` dipakai untuk keduanya; `oleh` berisi pemenang di kelompok yang sama.
+ */
+export function saringSabq(daftarRute: RuteTanzil[], ruleset: Ruleset): { lolos: RuteTanzil[]; tersisih: RuteTanzil[]; jejak: LangkahJejak[] } {
+  const kelompokDari = (rute: RuteTanzil): Jihah | 'semua' => (ruleset === 'hanbali' ? rute.jihah : 'semua');
+  const terdekat = new Map<Jihah | 'semua', number>();
+  for (const rute of daftarRute) terdekat.set(kelompokDari(rute), Math.min(terdekat.get(kelompokDari(rute)) ?? Infinity, rute.langkah));
+  const menang = (rute: RuteTanzil) => rute.langkah === terdekat.get(kelompokDari(rute));
+  const lolos = daftarRute.filter(menang);
+  const tersisih = daftarRute.filter(rute => !menang(rute));
   const penghijab = (rute: RuteTanzil) => [...new Set(lolos
-    .filter(pemenang => pemenang.jihah === rute.jihah && pemenang.idOrang !== rute.idOrang).map(pemenang => pemenang.idOrang))];
+    .filter(pemenang => kelompokDari(pemenang) === kelompokDari(rute) && pemenang.idOrang !== rute.idOrang).map(pemenang => pemenang.idOrang))];
+  const refs = ruleset === 'hanbali' ? ['R14-7', 'K14-4'] : ['R14-7', 'R14-10'];
   const jejak: LangkahJejak[] = [
-    ...lolos.map((rute): LangkahJejak => ({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TANZIL',
+    ...lolos.map((rute): LangkahJejak => ({ tahap: 'dzawilArham', refs, jenis: 'DZAWIL_ARHAM_TANZIL',
       idOrang: rute.idOrang, perantara: rute.perantara, kunciPerantara: rute.kunciPerantara, jihah: rute.jihah, langkah: rute.langkah })),
     // [R14-11] jalur yang kalah hanya oleh jalur lain orang itu sendiri bukan terhijab: ia mewarisi dengan jalur terdekat.
     ...tersisih.flatMap((rute): LangkahJejak[] => {
       const oleh = penghijab(rute);
-      return oleh.length === 0 ? [] : [{ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH',
+      return oleh.length === 0 ? [] : [{ tahap: 'dzawilArham', refs, jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH',
         idOrang: rute.idOrang, perantara: rute.perantara, oleh }];
     }),
   ];

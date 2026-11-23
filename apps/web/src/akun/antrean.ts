@@ -4,13 +4,15 @@
 // Menerima entri dari progres/tersimpan/preferensi; menyerahkannya ke RepositoriPengguna lewat kirimAntrean.
 
 import type { KejadianPercobaan } from '@waris/latihan';
-import { GalatPercobaan, type Kegiatan, type Preferensi, type ProgresBelajar, type ProgresLatihan, type RepositoriPengguna, type RiwayatTersimpan } from '@waris/data';
+import { GalatPercobaan, type RepositoriBagikan, type Kegiatan, type Preferensi, type ProgresBelajar, type ProgresLatihan, type RepositoriPengguna, type RiwayatTersimpan } from '@waris/data';
 import { keKiriman } from './kiriman';
 import { bacaMentah, hapusMentah, simpanMentah } from '../penyimpanan';
 
 export type EntriAntrean =
   | { tabel: 'tersimpan'; baris: RiwayatTersimpan }
   | { tabel: 'hapus_tersimpan'; id: string }
+  /** Kasus dihapus saat tautan bagikannya gagal dihentikan (luring): dicoba lagi sampai berhasil. */
+  | { tabel: 'hentikan_bagikan'; idRiwayat: string }
   | { tabel: 'belajar'; baris: ProgresBelajar }
   | { tabel: 'latihan'; baris: ProgresLatihan }
   | { tabel: 'hapus_latihan' }
@@ -61,16 +63,17 @@ const TABEL_BERBARIS = ['tersimpan', 'belajar', 'latihan', 'preferensi', 'kegiat
 // Isi localStorage bisa rusak/versi lama; entri cacat dibuang supaya kunciEntri tidak melempar dari antre().
 const entriUtuh = (entri: any): entri is EntriAntrean =>
   entri?.tabel === 'hapus_tersimpan' ? typeof entri.id === 'string'
+    : entri?.tabel === 'hentikan_bagikan' ? typeof entri.idRiwayat === 'string'
     : entri?.tabel === 'hapus_latihan' ? true
     : TABEL_BERBARIS.includes(entri?.tabel) && typeof entri.baris === 'object' && entri.baris !== null;
 
 /** Kirim berurutan; berhenti di kegagalan pertama supaya urutan terjaga. Mengembalikan jumlah entri yang tersisa. */
-export async function kirimAntrean(pengguna: RepositoriPengguna): Promise<number> {
+export async function kirimAntrean(pengguna: RepositoriPengguna, bagikan?: Pick<RepositoriBagikan, 'berhenti'>): Promise<number> {
   let adaKegiatanTerkirim = false;
   const kabari = () => { if (adaKegiatanTerkirim) window.dispatchEvent(new Event(PERISTIWA_KEGIATAN_TERKIRIM)); };
   for (const entri of bacaAntrean()) {
     try {
-      await kirimSatu(pengguna, entri);
+      await kirimSatu(pengguna, entri, bagikan);
     } catch (galat) {
       // Entri racun tidak boleh menyumbat antrean selamanya; 401/429/jaringan tetap di antrean dan dicoba lagi nanti.
       if (galat instanceof GalatPercobaan && galat.racun) {
@@ -90,8 +93,9 @@ export async function kirimAntrean(pengguna: RepositoriPengguna): Promise<number
   return bacaAntrean().length;
 }
 
-function kirimSatu(pengguna: RepositoriPengguna, entri: EntriAntrean): Promise<void> {
+function kirimSatu(pengguna: RepositoriPengguna, entri: EntriAntrean, bagikan?: Pick<RepositoriBagikan, 'berhenti'>): Promise<void> {
   switch (entri.tabel) {
+    case 'hentikan_bagikan': return bagikan ? bagikan.berhenti(entri.idRiwayat) : Promise.reject(new Error('repositori bagikan belum siap'));
     case 'tersimpan': return pengguna.simpanRiwayat(entri.baris);
     case 'hapus_tersimpan': return pengguna.hapusRiwayat(entri.id);
     case 'belajar': return pengguna.simpanProgresBelajar(entri.baris);
@@ -107,6 +111,7 @@ function kunciEntri(entri: EntriAntrean): string {
   switch (entri.tabel) {
     case 'tersimpan': return `tersimpan:${entri.baris.id}`;
     case 'hapus_tersimpan': return `tersimpan:${entri.id}`;
+    case 'hentikan_bagikan': return `hentikan_bagikan:${entri.idRiwayat}`;
     case 'belajar': return `belajar:${entri.baris.pelajaranSlug}`;
     case 'latihan': return `latihan:${entri.baris.jenis}:${entri.baris.soalSlug}`;
     case 'hapus_latihan': return 'hapus_latihan';
