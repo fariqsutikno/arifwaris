@@ -38,3 +38,12 @@ it('toast beraksi tidak hilang selagi fokus ada di dalamnya', () => {
   fireEvent.blur(screen.getByRole('button', { name: 'Urungkan' }));
   jalan(10100); expect(saatHilang).toHaveBeenCalledTimes(1);
 });
+
+it('render ulang induk dengan saatHilang baru tidak mengulang hitungan mundur', () => {
+  const isi = { teks: 'x', aksi: { label: 'Urungkan', saat: vi.fn() } };
+  const saatHilang = vi.fn();
+  const { rerender } = render(<Toast isi={isi} saatHilang={() => saatHilang()} />);
+  jalan(6000);
+  rerender(<Toast isi={isi} saatHilang={() => saatHilang()} />);
+  jalan(4100); expect(saatHilang).toHaveBeenCalledTimes(1);
+});
