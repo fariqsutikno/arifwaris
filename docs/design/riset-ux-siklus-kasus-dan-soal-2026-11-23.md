@@ -191,3 +191,36 @@ sumber latihan/materi), `rute.ts` (rute soal), progres latihan (+ status Terputu
 ## 9. Langkah sesudah dipilih
 Mockup statis (Beranda dua baris, Lab tanpa soal di Kasusmu, Latihan dengan status + Lanjutkan soal, hasil soal
 "pembahasan" dengan tautan Jadikan kasus sendiri) + panduan uji, lalu spec dan implementasi.
+
+## 10. Revisi mockup (2026-11-23, sore)
+
+Masukan pemilik: mockup pertama tidak mengikuti gaya Logivo, status soal tampil sebagai label kaku, dan judul soal
+membocorkan susunan keluarga.
+
+### 10a. Gaya
+Mockup memakai kerangka yang sudah ada di aplikasi, bukan token lama: hero gelap teal dengan cahaya jingga
+(`beranda.css .hero-beranda`), panel kaca untuk "Lanjutkan" (`belajar.css .panel-lanjut`), latar krem, kartu putih radius
+24px, ubin bergradasi, judul Parkinsans 500 rapat, dan baris soal per bab dengan bar kemajuan (`latihan.css`).
+
+### 10b. Status soal: pola di tempat lain (dari pengamatan umum, belum dicek ulang per aplikasi)
+| Aplikasi | Cara menampilkan |
+|---|---|
+| LeetCode | ikon kecil di depan judul: centang hijau = selesai, lingkaran jingga = pernah dicoba; tidak ada label teks di baris |
+| Duolingo | cincin kemajuan di tiap unit; terisi sebagian = sedang jalan |
+| Khan Academy | kotak kecil berwarna bertingkat (dicoba, kenal, mahir) dengan legenda sekali di atas |
+| Brilliant / Exercism | ikon status + satu baris keterangan; tombol berubah kata (Mulai / Lanjutkan / Tinjau) |
+
+Pola bersama: **satu tanda visual di depan baris + legenda sekali**, keterangan teks hanya untuk keadaan yang perlu
+tindakan, dan **kata tombol mengikuti status**. Label/chip di setiap baris dihindari karena ramai.
+
+Penerapan: cincin 30px yang memperluas `.status-soal-baru` yang sudah ada.
+- Belum dikerjakan: cincin putus-putus (sudah ada di aplikasi).
+- Terputus: cincin jingga terisi sesuai jumlah isian (mis. 1 dari 5), baris disorot `--aksen-soft`, keterangan
+  "Terputus, 1 dari 5 isian", tombol hitam "Lanjutkan".
+- Sudah, benar: lingkaran hijau `--sorot-fardh` dengan centang (sudah ada).
+- Sudah, lihat jawaban: lingkaran abu dengan ikon mata. Netral, bukan merah: tidak menghukum.
+Teks status tetap ada untuk pembaca layar (`aria-label`) dan di keterangan baris untuk yang sudah selesai.
+
+### 10c. Judul soal
+Mengikuti aturan soal buta yang sudah ada (`layar/belajar/judulSoal.ts`): sebelum dikerjakan hanya "Soal K-12" + bab +
+tingkat; judul asli terbuka setelah benar atau jawaban dibuka. Berlaku juga di Beranda dan panel "Lanjutkan soal".

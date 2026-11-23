@@ -6,99 +6,145 @@
 <title>Mockup Kasus dan Soal</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@500;600;700&family=Host+Grotesk:wght@400;500;600;700&display=swap">
 <style>
-/* Token Arif Waris v5 (gaya Logivo, apps/web/src/gaya/token.css). Hanya tema terang (keputusan 2026-10-01).
+/* Gaya Logivo seperti di aplikasi (apps/web/src/gaya: token.css, beranda.css, latihan.css). Hanya tema terang (keputusan 2026-10-01).
    Dasar: riset-ux-siklus-kasus-dan-soal-2026-11-23.md. Prinsip: dua benda dua rumah, tempat menentukan mode. */
 :root{color-scheme:light;--surface:#eef3e8;--raised:#fff;--sunken:#e4ece1;--outline:#c9d4c6;--divider:#dfe6dc;--ink:#14181a;--muted:#525c57;
---primary:#0e0f10;--on-primary:#fff;--soft:#dce8d8;--lime:#d3ebaa;--sun:#fde6d8;--danger:#c53a28;--dsoft:#fbe0da;--aksen:#f2682a;--halaman:#b9d4c0;
---display:"Parkinsans",system-ui,sans-serif;--sans:"Host Grotesk",system-ui,sans-serif;--r-sm:10px;--r-md:16px;--r-lg:24px;--pop:0 8px 24px rgba(20,40,30,.12)}
+--primary:#0e0f10;--on-primary:#fff;--soft:#dce8d8;--lime:#d3ebaa;--sun:#fde6d8;--danger:#c53a28;--dsoft:#fbe0da;--aksen:#f2682a;--aksen-soft:#fde6d8;
+--fardh:#138a4b;--halaman:#b9d4c0;--krem:#f6f2e9;--kartu:rgba(255,255,255,.72);--kartu-tepi:rgba(255,255,255,.95);--focus:#f2682a;
+--display:"Parkinsans",system-ui,sans-serif;--sans:"Host Grotesk",system-ui,sans-serif;--bayang:0 1px 2px rgba(20,40,30,.06),0 6px 18px rgba(20,40,30,.07)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--halaman);color:var(--ink);font:400 15px/1.5 var(--sans)}
-h1,h2,h3{font-family:var(--display);margin:0;line-height:1.25;font-weight:600}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.15;font-weight:500;letter-spacing:-.02em}
 p{margin:0}
-a,.tautan{color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;background:none;border:0;padding:0;font:inherit;font-weight:600;cursor:pointer}
+a,.tautan{color:var(--ink);font:600 14px var(--sans);text-decoration:underline;text-underline-offset:4px;background:none;border:0;padding:0;cursor:pointer;min-height:32px}
 button{font:inherit;cursor:pointer;color:inherit}
 .ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
-:focus-visible{outline:3px solid var(--aksen);outline-offset:2px}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 
-.mock-atas{max-width:1000px;margin:0 auto;padding:16px 16px 0;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.mock-atas{max-width:1080px;margin:0 auto;padding:16px 16px 0;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
 .mock-atas b{font:600 15px var(--display)}
-.mock-atas .tab{display:flex;gap:4px;background:rgba(255,255,255,.6);padding:4px;border-radius:999px}
-.mock-atas .tab button{border:0;background:none;padding:6px 14px;border-radius:999px;font-weight:600}
+.mock-atas .tab{display:flex;gap:2px;background:rgba(255,255,255,.55);padding:3px;border-radius:999px}
+.mock-atas .tab button{border:0;background:none;min-height:36px;padding:0 14px;border-radius:999px;font-weight:600}
 .mock-atas .tab button[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
-.mock-atas .ket{font-size:13px;color:#2c3a33}
+.mock-atas .ket{font-size:13px;color:#24352c}
 
-.app{max-width:1000px;margin:12px auto 40px;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--pop);overflow:hidden}
-.kepala{display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--raised);border-bottom:1px solid var(--outline);flex-wrap:wrap}
-.kepala .merek{font:700 17px var(--display)}
-.kepala nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
-.kepala nav button{border:0;background:none;padding:8px 12px;border-radius:999px;font-weight:600;color:var(--muted);min-height:40px}
-.kepala nav button[aria-current=page]{background:var(--soft);color:var(--ink)}
-.isi{padding:24px 20px 32px;display:flex;flex-direction:column;gap:20px;min-height:520px}
-.kecil{font-size:13px;color:var(--muted)}
-.jalur{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.app{max-width:1080px;margin:12px auto 40px;background:var(--krem);border-radius:28px;box-shadow:0 18px 50px rgba(20,40,30,.18);overflow:hidden}
+.kepala{display:flex;align-items:center;gap:16px;padding:12px 20px;flex-wrap:wrap;color:#fff;background:#0a2326}
+.kepala .merek{font:600 18px var(--display);letter-spacing:-.02em}
+.kepala nav{display:flex;gap:2px;margin-left:auto;flex-wrap:wrap}
+.kepala nav button{border:0;background:none;padding:0 14px;border-radius:999px;font-weight:600;color:rgba(255,255,255,.75);min-height:40px}
+.kepala nav button:hover{color:#fff;background:rgba(255,255,255,.08)}
+.kepala nav button[aria-current=page]{background:rgba(255,255,255,.94);color:#14181a}
+.isi{padding:0 0 32px;display:flex;flex-direction:column;gap:20px;min-height:560px}
+.isi>*:not(.hero-gelap){margin-inline:20px}
+.kecil{font-size:13.5px;color:var(--muted)}
+.jalur{font-size:13.5px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:20px}
 
-.kartu{background:var(--raised);border:1px solid var(--outline);border-radius:var(--r-md);padding:16px}
-.judul-bagian{font-size:18px}
-.lanjut{display:flex;gap:14px;align-items:center;padding:14px 16px;background:var(--raised);border:1px solid var(--outline);border-radius:var(--r-md);text-align:left;width:100%;min-height:64px}
-.lanjut:hover{border-color:var(--ink)}
-.lanjut .ikon-bulat{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
-.lanjut .jenis{font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-.lanjut .nama{font:600 16px var(--display)}
-.lanjut .panah{margin-left:auto}
-.bg-kasus{background:var(--lime)}.bg-soal{background:var(--sun)}
-.dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(max-width:700px){.dua{grid-template-columns:1fr}}
+/* hero gelap seperti Beranda/Hasil */
+.hero-gelap{position:relative;isolation:isolate;overflow:hidden;color:#fff;padding:28px 20px 30px;background:linear-gradient(135deg,#0a2326,#0f3a38 55%,#0b2a2b)}
+.hero-gelap::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(520px circle at 78% 60%,rgba(255,150,40,.42),transparent 70%)}
+.hero-gelap h1{font-size:clamp(30px,4vw,46px);line-height:1.04;letter-spacing:-.03em}
+.hero-gelap .lead{color:rgba(255,255,255,.85);margin-top:8px;max-width:46ch}
+.hero-gelap .kecil{color:rgba(255,255,255,.72)}
+.panel-kaca{display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:22px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);color:#fff;text-align:left;width:100%;min-height:72px;transition:background .2s}
+.panel-kaca:hover{background:rgba(255,255,255,.16)}
+.panel-kaca .jenis{font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.7)}
+.panel-kaca .nama{font:500 18px/1.2 var(--display);letter-spacing:-.01em}
+.panel-kaca .panah-kecil{margin-left:auto}
+.panah-kecil{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.16);flex:none;transition:transform .25s}
+.panel-kaca:hover .panah-kecil{transform:translateX(4px)}
+.lencana-ikon{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;flex:none;color:#14181a}
+.bg-kasus{background:var(--lime)}.bg-soal{background:var(--sun)}.bg-contoh{background:#d9c9f2}
+.dua{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+@media(max-width:720px){.dua{grid-template-columns:1fr}}
 
-.hero{background:var(--primary);color:var(--on-primary);border-radius:var(--r-md);padding:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
-.hero h2{font-size:20px}.hero .kecil{color:#cfd6d2}
-.pil{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:0;font-weight:700}
-.pil.terang{background:var(--raised);color:var(--ink)}
+/* kartu krem-putih */
+.kartu{background:var(--raised);border-radius:24px;padding:20px;box-shadow:var(--bayang)}
+.judul-bagian{font-size:20px}
+.ubin-dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:720px){.ubin-dua{grid-template-columns:1fr}}
+.ubin{border-radius:24px;padding:20px;min-height:150px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b))}
+.ubin.hijau{--a:#d3ebaa;--b:#b7de80}.ubin.jingga{--a:#fde6d8;--b:#f8c7a6}
+.ubin h2{font-size:22px}
+
+.pil{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:0 22px;border-radius:999px;border:0;font-weight:700;text-decoration:none}
+.pil.terang{background:#fff;color:#0e0f10}
 .pil.gelap{background:var(--primary);color:var(--on-primary)}
-.hero .pil{margin-left:auto}
+.aksi{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
 
-.daftar{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.baris{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--raised);border:1px solid var(--outline);border-radius:var(--r-sm);flex-wrap:wrap}
-.baris .teks{flex:1;min-width:180px}
-.baris .teks b{font:600 15px var(--display)}
-.chip{display:inline-flex;align-items:center;gap:5px;font:600 12px var(--sans);padding:3px 10px;border-radius:999px;background:var(--soft);white-space:nowrap}
-.chip.belum{background:var(--sunken);color:var(--muted)}
-.chip.putus{background:var(--sun)}
-.chip.benar{background:var(--lime)}
-.chip.lihat{background:#e6e0f5}
-.tbl-baris{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--ink);background:var(--raised);font-weight:600}
-.tbl-baris.isi-penuh{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+/* daftar kasus */
+.daftar{list-style:none;margin:0;padding:6px;display:flex;flex-direction:column;background:var(--raised);border-radius:24px;box-shadow:var(--bayang)}
+.baris{display:flex;gap:14px;align-items:center;padding:12px 12px;border-radius:16px;flex-wrap:wrap;transition:background .2s}
+.baris:hover{background:var(--surface)}
+.baris .teks{flex:1;min-width:180px;display:flex;flex-direction:column;gap:2px}
+.baris .teks b{font:600 16px/1.4 var(--sans)}
+.ket-simpan{font-size:13px;color:var(--muted)}
+.ket-simpan.tersimpan{color:#16734b;font-weight:600}
 
-.label-mode{display:inline-flex;gap:6px;align-items:center;font:600 13px var(--sans);padding:4px 12px;border-radius:999px}
-.status-simpan{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
-.soal-cerita{font-size:16px}
-.tebak{display:grid;grid-template-columns:1fr 110px;gap:8px 12px;align-items:center;max-width:460px}
+/* status soal: satu cincin 30px, empat keadaan (memperluas .status-soal-baru di latihan.css) */
+.status{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;position:relative}
+.status.belum{border:2px dashed #aab8a7}
+.status.putus{background:conic-gradient(var(--aksen) var(--isi,40%),transparent 0);}
+.status.putus::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--aksen)}
+.status.putus::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--raised);z-index:1}
+.status.benar{background:var(--fardh)}
+.status.lihat{background:#e9ede6;color:#4a5853;border:1.5px solid #c9d4c6}
+.status .ik{width:16px;height:16px;position:relative;z-index:2}
+.bab{margin:0}
+.kepala-bab{display:flex;align-items:center;gap:14px;padding:16px 18px 6px}
+.kepala-bab h2{flex:1;font-size:18px;font-weight:600;letter-spacing:-.01em}
+.bar{width:140px;height:8px;border-radius:99px;background:var(--sunken);overflow:hidden;display:flex}
+.bar span{display:block;height:100%}
+.daftar-soal{list-style:none;margin:0;padding:0 8px 8px;display:flex;flex-direction:column}
+.baris-soal{display:flex;align-items:center;gap:14px;padding:12px 10px;border-radius:16px;transition:background .2s}
+.baris-soal:hover{background:var(--surface)}
+.baris-soal.disarankan{background:var(--aksen-soft)}
+.baris-soal .isi-soal{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.baris-soal .isi-soal b{font:600 16px/1.4 var(--sans)}
+.baris-soal.selesai .isi-soal b{font-weight:500;color:var(--muted)}
+.baris-soal .keterangan{font-size:13.5px;color:var(--muted)}
+.ket-putus{color:#a83a08;font-weight:700}
+.tingkat{font-weight:800}.tingkat-dasar{color:#16734b}.tingkat-menengah{color:#8f5600}
+.tbl-baris{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--outline);background:var(--raised);font-weight:600;white-space:nowrap}
+.tbl-baris:hover{border-color:var(--ink)}
+.tbl-baris.utama{background:var(--primary);color:#fff;border-color:var(--primary)}
+.legenda{display:flex;gap:18px;flex-wrap:wrap;align-items:center;font-size:13.5px;color:var(--muted)}
+.legenda span{display:inline-flex;gap:8px;align-items:center}
+.legenda .status{width:22px;height:22px}.legenda .status .ik{width:12px;height:12px}
+.legenda .status.putus::before{inset:4px}
+
+.label-mode{display:inline-flex;gap:6px;align-items:center;font:600 13px var(--sans);padding:5px 12px;border-radius:999px;color:#14181a}
+.status-simpan{display:inline-flex;gap:6px;align-items:center;font-size:13.5px;color:rgba(255,255,255,.78)}
+.isi>.status-simpan{color:var(--muted)}
+.soal-cerita{font-size:17px;color:rgba(255,255,255,.92);margin-top:10px;max-width:60ch}
+.tebak{display:grid;grid-template-columns:1fr 110px;gap:10px 14px;align-items:center;max-width:480px}
 .tebak label{font-weight:600}
-.tebak input{min-height:44px;border:1px solid var(--outline);border-radius:var(--r-sm);padding:0 12px;font:600 16px var(--sans);width:100%;background:var(--raised)}
+.tebak input{min-height:46px;border:1px solid var(--outline);border-radius:12px;padding:0 12px;font:600 17px var(--sans);width:100%;background:var(--surface);text-align:center}
+.tebak input:focus{background:#fff}
 .tebak input.salah{border-color:var(--danger);background:var(--dsoft)}
-.tebak input.cocok{border-color:#3b8a4f;background:#eaf6e6}
-.aksi{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.tebak input.cocok{border-color:var(--fardh);background:#e6f4ea}
 .tabel{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
-.tabel th,.tabel td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--divider)}
+.tabel th,.tabel td{text-align:left;padding:12px 8px;border-bottom:1px solid var(--divider)}
+.tabel tr:last-child td{border-bottom:0}
 .tabel th{font-size:13px;color:var(--muted);font-weight:600}
 .tabel td.angka,.tabel th.angka{text-align:right}
-.catatan{background:var(--sunken);border-radius:var(--r-sm);padding:12px 14px;font-size:14px}
+.catatan{background:var(--surface);border-radius:16px;padding:12px 16px;font-size:14px}
+.petunjuk{background:#fff4c2;border-radius:16px;padding:12px 16px;font-size:14px;display:flex;gap:10px;align-items:flex-start;margin-top:16px}
+.petunjuk b{font-family:var(--display);font-weight:600}
 
-.petunjuk{background:#fff7d6;border:1px solid #e9cf6a;border-radius:var(--r-sm);padding:10px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
-.petunjuk b{font-family:var(--display)}
-
-#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--primary);color:#fff;padding:12px 18px;border-radius:14px;display:none;gap:16px;align-items:center;max-width:calc(100% - 32px);z-index:9;box-shadow:var(--pop)}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#0e0f10;color:#fff;padding:12px 18px;border-radius:16px;display:none;gap:16px;align-items:center;max-width:calc(100% - 32px);z-index:9;box-shadow:0 12px 30px rgba(0,0,0,.25)}
 #toast .tautan{color:#fff}
 
 /* panduan */
-.panduan{max-width:760px}
-.panduan h2{font-size:20px;margin-top:8px}
+.panduan{max-width:760px;padding-top:20px}
+.panduan h2{font-size:22px;margin-top:8px}
 .panduan ol{padding-left:20px;margin:6px 0}
-.tugas{border:1px solid var(--outline);border-radius:var(--r-md);background:var(--raised);padding:16px;display:flex;flex-direction:column;gap:8px}
-.tugas textarea{width:100%;min-height:64px;border:1px solid var(--outline);border-radius:var(--r-sm);padding:8px;font:inherit}
+.tugas{background:var(--raised);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:var(--bayang)}
+.tugas textarea{width:100%;min-height:64px;border:1px solid var(--outline);border-radius:12px;padding:8px;font:inherit}
 .asumsi{display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--divider)}
-.asumsi .pilih{display:flex;gap:12px;flex-wrap:wrap;font-size:14px}
-.legenda{display:flex;gap:10px;flex-wrap:wrap}
-@media(max-width:560px){.isi{padding:18px 16px 28px}.hero .pil{margin-left:0}.tebak{grid-template-columns:1fr 90px}}
+.asumsi .pilih{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
+@media(max-width:560px){.isi>*:not(.hero-gelap){margin-inline:16px}.hero-gelap{padding:22px 16px 24px}.tebak{grid-template-columns:1fr 90px}.bar{width:90px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
@@ -111,6 +157,7 @@ button{font:inherit;cursor:pointer;color:inherit}
   <symbol id="i-awan" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 2A3 3 0 0 0 7 18z"/></symbol>
   <symbol id="i-buku" viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></symbol>
   <symbol id="i-salin" viewBox="0 0 24 24"><path d="M8 8h11v11H8z"/><path d="M5 16V5h11"/></symbol>
+  <symbol id="i-mata" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
   <symbol id="i-jeda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
 </svg>
 
@@ -150,19 +197,19 @@ const data = {
       bagian: [['Anak perempuan', '1/2', 3, 30000000], ['Ibu', '1/6', 1, 10000000], ['Ayah', '1/6 + ashabah', 2, 20000000]], tashih: 6 },
   ],
   soal: [
-    { kode: 'K-03', judul: 'Istri bersama anak laki-laki dan anak perempuan', tingkat: 'Dasar', status: 'benar',
+    { kode: 'K-03', bab: "Ashabah", judul: 'Istri bersama anak laki-laki dan anak perempuan', tingkat: 'Dasar', status: 'benar',
       cerita: 'Seorang laki-laki wafat meninggalkan istri, satu anak laki-laki, dan satu anak perempuan.',
       kunci: [['Ashlul masalah', 8], ['Tashih', 24], ['Saham istri', 3], ['Saham anak laki-laki', 14], ['Saham anak perempuan', 7]],
       bagian: [['Istri', '1/8', 3], ['Anak laki-laki', 'Ashabah', 14], ['Anak perempuan', 'Ashabah', 7]], tashih: 24 },
-    { kode: 'K-07', judul: 'Ayah dan ibu bersama anak perempuan', tingkat: 'Dasar', status: 'lihat',
+    { kode: 'K-07', bab: "Ashabah", judul: 'Ayah dan ibu bersama anak perempuan', tingkat: 'Dasar', status: 'lihat',
       cerita: 'Seorang perempuan wafat meninggalkan ibu, ayah, dan satu anak perempuan.',
       kunci: [['Ashlul masalah', 6], ['Saham anak perempuan', 3], ['Saham ibu', 1], ['Saham ayah', 2]],
       bagian: [['Anak perempuan', '1/2', 3], ['Ibu', '1/6', 1], ['Ayah', '1/6 + ashabah', 2]], tashih: 6 },
-    { kode: 'K-12', judul: "Suami, ibu, dua saudari sekandung", tingkat: 'Menengah', status: 'putus', isian: { 0: '6', 1: '' },
+    { kode: 'K-12', bab: "'Aul", judul: "Suami, ibu, dua saudari sekandung", tingkat: 'Menengah', status: 'putus', isian: { 0: '6', 1: '' },
       cerita: 'Seorang perempuan wafat meninggalkan suami, ibu, dan dua saudari sekandung.',
       kunci: [['Ashlul masalah', 6], ["Setelah 'aul", 8], ['Saham suami', 3], ['Saham ibu', 1], ['Saham dua saudari (berdua)', 4]],
       bagian: [['Suami', '1/2', 3], ['Ibu', '1/6', 1], ['Saudari sekandung 1', '2/3 berdua', 2], ['Saudari sekandung 2', '2/3 berdua', 2]], tashih: 8, waktu: '2 jam lalu' },
-    { kode: 'K-15', judul: 'Anak perempuan bersama cucu perempuan', tingkat: 'Menengah', status: 'belum',
+    { kode: 'K-15', bab: "Furudh", judul: 'Anak perempuan bersama cucu perempuan', tingkat: 'Menengah', status: 'belum',
       cerita: 'Seorang perempuan wafat meninggalkan suami, satu anak perempuan, satu cucu perempuan dari anak laki-laki, dan paman sekandung.',
       kunci: [['Ashlul masalah', 12], ['Saham suami', 3], ['Saham anak perempuan', 6], ['Saham cucu perempuan', 2], ['Saham paman', 1]],
       bagian: [['Suami', '1/4', 3], ['Anak perempuan', '1/2', 6], ['Cucu perempuan', '1/6', 2], ['Paman sekandung', 'Ashabah', 1]], tashih: 12 },
@@ -173,7 +220,7 @@ const data = {
 };
 
 const TEKS_STATUS = { belum: 'Belum dikerjakan', putus: 'Terputus', benar: 'Sudah, benar', lihat: 'Sudah, lihat jawaban' };
-const AKSI_STATUS = { belum: 'Kerjakan', putus: 'Lanjutkan', benar: 'Lihat pembahasan', lihat: 'Lihat pembahasan' };
+const AKSI_STATUS = { belum: 'Kerjakan', putus: 'Lanjutkan', benar: 'Pembahasan', lihat: 'Pembahasan' };
 const ik = (nama, ukuran = 18) => `<svg class="ik" width="${ukuran}" height="${ukuran}" aria-hidden="true"><use href="#i-${nama}"/></svg>`;
 const layar = document.getElementById('layar');
 let posisi = { halaman: 'beranda' };
@@ -190,36 +237,48 @@ const rumahDari = h => ({ kasus: 'lab', soal: 'latihan', contoh: 'materi' })[h] 
 const soalTerputus = () => data.soal.find(s => s.status === 'putus');
 const cariKasus = id => data.kasus.find(k => k.id === id);
 const cariSoal = kode => data.soal.find(s => s.kode === kode);
+const sudahSelesai = s => s.status === 'benar' || s.status === 'lihat';
+// Soal buta (judulSoal.ts): sebelum selesai hanya kode + bab; judul asli membocorkan susunan keluarga.
+const judulSoal = s => sudahSelesai(s) ? s.judul : `Soal ${s.kode}`;
+const terisi = s => Object.values(s.isian ?? {}).filter(Boolean).length;
+const cincin = s => {
+  const isi = s.status === 'putus' ? `style="--isi:${Math.round(terisi(s) / s.kunci.length * 100)}%"` : '';
+  const ikon = s.status === 'benar' ? ik('cek', 16) : s.status === 'lihat' ? ik('mata', 16) : '';
+  return `<span class="status ${s.status}" ${isi} role="img" aria-label="${TEKS_STATUS[s.status]}">${ikon}</span>`;
+};
+const keteranganStatus = s => ({
+  belum: '', putus: ` · <span class="ket-putus">Terputus, ${terisi(s)} dari ${s.kunci.length} isian</span>`,
+  benar: ' · Sudah, benar', lihat: ' · Sudah, lihat jawaban' })[s.status];
 
 function beranda() {
   const k = cariKasus(data.kasusTerakhir), s = soalTerputus();
-  const baris = [
-    k && `<button class="lanjut" data-buka-kasus="${k.id}"><span class="ikon-bulat bg-kasus">${ik('kasus', 22)}</span>
-      <span><span class="jenis">Lanjutkan kasus</span><br><span class="nama">${k.nama}</span><br><span class="kecil">${k.ringkas}</span></span>${ik('panah')}</button>`,
-    s && `<button class="lanjut" data-buka-soal="${s.kode}"><span class="ikon-bulat bg-soal">${ik('soal', 22)}</span>
-      <span><span class="jenis">Lanjutkan soal</span><br><span class="nama">${s.kode} · ${s.judul}</span><br><span class="kecil">Terputus ${s.waktu} · tebakanmu masih ada</span></span>${ik('panah')}</button>`,
+  const panel = [
+    k && `<button class="panel-kaca" data-buka-kasus="${k.id}"><span class="lencana-ikon bg-kasus">${ik('kasus', 22)}</span>
+      <span><span class="jenis">Lanjutkan kasus</span><br><span class="nama">${k.nama}</span><br><span class="kecil">${k.ringkas}</span></span><span class="panah-kecil">${ik('panah')}</span></button>`,
+    s && `<button class="panel-kaca" data-buka-soal="${s.kode}"><span class="lencana-ikon bg-soal">${cincin(s)}</span>
+      <span><span class="jenis">Lanjutkan soal</span><br><span class="nama">${judulSoal(s)} · ${s.bab}</span><br><span class="kecil">Terputus ${s.waktu} · ${terisi(s)} dari ${s.kunci.length} isian tersimpan</span></span><span class="panah-kecil">${ik('panah')}</span></button>`,
   ].filter(Boolean);
-  return `<div><h1 style="font-size:26px">Assalamu'alaikum</h1><p class="kecil">Lanjutkan yang terakhir kamu buka, atau mulai yang baru.</p></div>
-    ${baris.length ? `<div class="dua">${baris.join('')}</div>` : ''}
-    <div class="dua">
-      <div class="kartu"><h2 class="judul-bagian">Hitung warisan</h2><p class="kecil" style="margin:4px 0 10px">Isi keluarga yang ditinggalkan, lihat bagian tiap orang.</p><button class="tautan" data-ke="lab">Buka Lab Hitung</button></div>
-      <div class="kartu"><h2 class="judul-bagian">Latihan soal</h2><p class="kecil" style="margin:4px 0 10px">Tebak dulu, lalu cocokkan dengan jawabannya.</p><button class="tautan" data-ke="latihan">Buka Latihan</button></div>
+  return `<section class="hero-gelap"><h1>Assalamu'alaikum</h1><p class="lead">Lanjutkan yang terakhir kamu buka, atau mulai yang baru.</p>
+      ${panel.length ? `<div class="dua">${panel.join('')}</div>` : ''}</section>
+    <div class="ubin-dua">
+      <div class="ubin hijau"><h2>Hitung warisan</h2><p class="kecil" style="color:#2b3a30">Isi keluarga yang ditinggalkan, lihat bagian tiap orang.</p><button class="tautan" style="align-self:flex-start" data-ke="lab">Buka Lab Hitung</button></div>
+      <div class="ubin jingga"><h2>Latihan soal</h2><p class="kecil" style="color:#3d2e25">Tebak dulu, lalu cocokkan dengan jawabannya.</p><button class="tautan" style="align-self:flex-start" data-ke="latihan">Buka Latihan</button></div>
     </div>`;
 }
 
 function lab() {
   const k = cariKasus(data.kasusTerakhir);
-  const tersimpan = data.kasus.filter(x => x.tersimpan), sementara = data.kasus.filter(x => !x.tersimpan);
-  const barisKasus = x => `<li class="baris"><span class="ikon-bulat bg-kasus" style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center">${ik('kasus')}</span>
-    <span class="teks"><b>${x.nama}</b><br><span class="kecil">${x.ringkas}${x.asal ? ' · ' + x.asal : ''}</span></span>
-    <span class="chip ${x.tersimpan ? 'benar' : 'belum'}">${x.tersimpan ? 'Tersimpan' : 'Sementara · ' + x.sisaHari + ' hari lagi'}</span>
+  const urut = [...data.kasus.filter(x => x.tersimpan), ...data.kasus.filter(x => !x.tersimpan)];
+  const barisKasus = x => `<li class="baris"><span class="lencana-ikon bg-kasus" style="width:36px;height:36px;border-radius:12px">${ik('kasus')}</span>
+    <span class="teks"><b>${x.nama}</b><span class="kecil">${x.ringkas}${x.asal ? ' · ' + x.asal : ''}</span>
+    <span class="ket-simpan ${x.tersimpan ? 'tersimpan' : ''}">${x.tersimpan ? 'Tersimpan' : 'Sementara, terhapus ' + x.sisaHari + ' hari lagi'}</span></span>
     <button class="tautan" data-buka-kasus="${x.id}">Buka</button></li>`;
-  return `<div class="jalur">Lab Hitung</div>
-    ${k ? `<div class="hero"><div><span class="kecil">Kasus terakhir · ${k.waktu}</span><h2>${k.nama}</h2><span class="kecil">${k.ringkas}</span></div>
-      <button class="pil terang" data-buka-kasus="${k.id}">Lanjutkan ${ik('panah')}</button></div>` : ''}
+  return `<section class="hero-gelap"><span class="kecil">Lab Hitung</span>
+    ${k ? `<div class="aksi" style="margin-top:10px;justify-content:space-between"><div><span class="kecil">Kasus terakhir · ${k.waktu}</span><h1 style="font-size:clamp(26px,3.4vw,38px)">${k.nama}</h1><p class="kecil">${k.ringkas}</p></div>
+      <button class="pil terang" data-buka-kasus="${k.id}">Lanjutkan ${ik('panah')}</button></div>` : '<h1>Mulai hitung</h1>'}</section>
     <div class="aksi"><button class="tautan" data-pesan="Mockup: membuka isian kasus baru dari nol.">Mulai kasus baru</button><button class="tautan" data-pesan="Mockup: memilih file kasus untuk diimpor.">Impor file kasus</button></div>
-    <section><h2 class="judul-bagian">Kasusmu</h2><p class="kecil" style="margin-bottom:10px">Hanya kasus. Soal latihan ada di halaman Latihan.</p>
-      <ul class="daftar">${[...tersimpan, ...sementara].map(barisKasus).join('')}</ul></section>
+    <section style="display:flex;flex-direction:column;gap:10px"><div><h2 class="judul-bagian">Kasusmu</h2><p class="kecil">Hanya kasus. Soal latihan ada di halaman Latihan.</p></div>
+      <ul class="daftar">${urut.map(barisKasus).join('')}</ul></section>
     <p class="kecil">Mau berlatih? <button class="tautan" data-ke="latihan">Buka soal di Latihan</button></p>`;
 }
 
@@ -231,10 +290,10 @@ function hasilTabel(bagian, tashih, harta) {
 function bukaKasus() {
   const k = cariKasus(posisi.id);
   data.kasusTerakhir = k.id;
-  return `<div class="jalur"><button class="tautan" data-ke="lab">${ik('kiri', 16)} Lab Hitung</button> / Kasus</div>
-    <div class="aksi" style="justify-content:space-between"><div><span class="label-mode bg-kasus">${ik('kasus', 16)} Kasus</span>
-      <h1 style="font-size:24px;margin-top:6px">${k.nama}</h1><p class="kecil">${k.ringkas} · Harta ${RP(k.harta)}${k.asal ? ' · ' + k.asal : ''}</p></div>
-      <span class="status-simpan">${ik('awan', 16)} ${k.tersimpan ? 'Tersimpan · ' + k.waktu : 'Tersimpan sementara di riwayat · ' + k.sisaHari + ' hari lagi'}</span></div>
+  return `<section class="hero-gelap"><div class="jalur" style="padding:0 0 12px;color:rgba(255,255,255,.75)"><button class="tautan" style="color:#fff" data-ke="lab">${ik('kiri', 16)} Lab Hitung</button></div>
+      <span class="label-mode bg-kasus">${ik('kasus', 16)} Kasus</span>
+      <h1 style="margin-top:10px">${k.nama}</h1><p class="lead">${k.ringkas} · Harta ${RP(k.harta)}${k.asal ? ' · ' + k.asal : ''}</p>
+      <p class="status-simpan" style="margin-top:10px">${ik('awan', 16)} ${k.tersimpan ? 'Tersimpan · ' + k.waktu : 'Tersimpan sementara di riwayat · terhapus ' + k.sisaHari + ' hari lagi'}</p></section>
     <div class="kartu">${hasilTabel(k.bagian, k.tashih, true)}</div>
     ${k.catatan ? `<p class="catatan">${k.catatan}</p>` : ''}
     <div class="aksi"><button class="tautan" data-pesan="Mockup: kembali ke isian untuk mengubah keluarga atau harta.">Ubah isian</button>
@@ -244,51 +303,58 @@ function bukaKasus() {
 
 function latihan() {
   const s = soalTerputus();
-  return `<div class="jalur">Latihan</div>
-    <div><h1 style="font-size:24px">Soal hitung</h1><p class="kecil">Status tiap soal tersimpan di sini. Soal tidak masuk Kasusmu.</p></div>
-    ${s ? `<button class="lanjut" data-buka-soal="${s.kode}"><span class="ikon-bulat bg-soal">${ik('jeda', 22)}</span>
-      <span><span class="jenis">Lanjutkan soal yang terputus</span><br><span class="nama">${s.kode} · ${s.judul}</span><br><span class="kecil">${Object.values(s.isian).filter(Boolean).length} isian sudah kamu tebak</span></span>${ik('panah')}</button>` : ''}
-    <div class="legenda kecil">${Object.entries(TEKS_STATUS).map(([k, t]) => `<span class="chip ${k}">${t}</span>`).join('')}</div>
-    <ul class="daftar">${data.soal.map(x => `<li class="baris"><span class="teks"><span class="kecil">${x.kode} · ${x.tingkat}</span><br><b>${x.judul}</b></span>
-      <span class="chip ${x.status}">${TEKS_STATUS[x.status]}</span>
-      <button class="tbl-baris ${x.status === 'belum' || x.status === 'putus' ? 'isi-penuh' : ''}" data-buka-soal="${x.kode}">${AKSI_STATUS[x.status]}</button></li>`).join('')}</ul>`;
+  const perBab = [...new Set(data.soal.map(x => x.bab))].map(bab => ({ bab, soal: data.soal.filter(x => x.bab === bab) }));
+  const bar = daftar => {
+    const n = daftar.length, hit = st => daftar.filter(x => x.status === st).length / n * 100;
+    return `<span class="bar" aria-hidden="true"><span style="width:${hit('benar')}%;background:var(--fardh)"></span><span style="width:${hit('lihat')}%;background:#aab8a7"></span><span style="width:${hit('putus')}%;background:var(--aksen)"></span></span>`;
+  };
+  return `<section class="hero-gelap"><span class="kecil">Latihan</span><h1 style="margin-top:6px">Soal hitung</h1>
+      <p class="lead">Judul soal terbuka setelah kamu mengerjakannya, supaya susunan keluarganya tidak bocor.</p>
+      ${s ? `<div class="dua" style="grid-template-columns:1fr"><button class="panel-kaca" data-buka-soal="${s.kode}"><span class="lencana-ikon bg-soal">${cincin(s)}</span>
+        <span><span class="jenis">Lanjutkan yang terputus</span><br><span class="nama">${judulSoal(s)} · ${s.bab}</span><br><span class="kecil">${terisi(s)} dari ${s.kunci.length} isian tersimpan · ${s.waktu}</span></span><span class="panah-kecil">${ik('panah')}</span></button></div>` : ''}</section>
+    <div class="legenda" aria-label="Arti tanda">${['belum', 'putus', 'benar', 'lihat'].map(st => `<span>${cincin({ status: st, kunci: [1, 1], isian: { 0: 1 } })}${TEKS_STATUS[st]}</span>`).join('')}</div>
+    ${perBab.map(g => `<section class="kartu bab" style="padding:0"><div class="kepala-bab"><h2>${g.bab}</h2>
+        <span class="kecil">${g.soal.filter(sudahSelesai).length} dari ${g.soal.length}</span>${bar(g.soal)}</div>
+      <ul class="daftar-soal">${g.soal.map(x => `<li class="baris-soal ${sudahSelesai(x) ? 'selesai' : ''} ${x.status === 'putus' ? 'disarankan' : ''}">${cincin(x)}
+        <span class="isi-soal"><b>${judulSoal(x)}</b><span class="keterangan"><span class="tingkat tingkat-${x.tingkat.toLowerCase()}">${x.tingkat}</span>${keteranganStatus(x)}</span></span>
+        <button class="tbl-baris ${x.status === 'putus' ? 'utama' : ''}" data-buka-soal="${x.kode}">${AKSI_STATUS[x.status]}</button></li>`).join('')}</ul></section>`).join('')}`;
 }
 
 function bukaSoal() {
   const s = cariSoal(posisi.kode);
-  const kembali = `<div class="jalur"><button class="tautan" data-ke="latihan">${ik('kiri', 16)} Latihan</button> / ${s.kode}</div>`;
-  const kepala = `<div><span class="label-mode bg-soal">${ik('soal', 16)} Soal latihan ${s.kode}</span><h1 style="font-size:22px;margin-top:6px">${s.judul}</h1></div>
-    <p class="soal-cerita">${s.cerita}</p>`;
-  if (s.status === 'benar' || s.status === 'lihat') {
-    return `${kembali}${kepala}<div class="aksi"><span class="chip ${s.status}">${ik('cek', 14)} ${TEKS_STATUS[s.status]}</span><span class="kecil">Ini pembahasannya. Jawaban sudah terbuka.</span></div>
+  const kepala = (tambahan = '') => `<section class="hero-gelap"><div class="jalur" style="padding:0 0 12px"><button class="tautan" style="color:#fff" data-ke="latihan">${ik('kiri', 16)} Latihan</button></div>
+    <span class="label-mode bg-soal">${ik('soal', 16)} Soal latihan · ${s.bab} · ${s.tingkat}</span>
+    <h1 style="margin-top:10px">${judulSoal(s)}</h1><p class="soal-cerita">${s.cerita}</p>${tambahan}</section>`;
+  if (sudahSelesai(s)) {
+    return `${kepala(`<p class="status-simpan" style="margin-top:12px">${cincin(s)} ${TEKS_STATUS[s.status]} · ini pembahasannya</p>`)}
       <div class="kartu">${hasilTabel(s.bagian, s.tashih, false)}</div>
       <div class="aksi"><button class="tautan" data-ulang="${s.kode}">Kerjakan ulang</button>
-        <button class="tautan" data-jadikan="${s.kode}">${ik('salin', 16)} Jadikan kasus sendiri</button>
+        <button class="tautan" data-jadikan="${s.kode}">Jadikan kasus sendiri</button>
         <button class="tautan" data-pesan="Mockup: membuka langkah demi langkah.">Langkah demi langkah</button></div>
       <p class="kecil">Kerjakan ulang tidak menambah XP. Jadikan kasus sendiri membuat salinan di Kasusmu; soal ini tidak berubah.</p>`;
   }
   s.isian ??= {};
-  return `${kembali}${kepala}
-    <form class="kartu" id="form-tebak" data-kode="${s.kode}" novalidate><div class="tebak">
+  return `${kepala()}
+    <form class="kartu" id="form-tebak" data-kode="${s.kode}" novalidate><h2 class="judul-bagian" style="margin-bottom:14px">Tebakanmu</h2><div class="tebak">
       ${s.kunci.map((k, i) => `<label for="t${i}">${k[0]}</label><input id="t${i}" inputmode="numeric" data-i="${i}" value="${s.isian[i] ?? ''}" autocomplete="off">`).join('')}
-    </div><div class="aksi" style="margin-top:16px"><button class="pil gelap" type="submit">Periksa</button>
+    </div><div class="aksi" style="margin-top:18px"><button class="pil gelap" type="submit">Periksa</button>
       <button class="tautan" type="button" data-lihat="${s.kode}">Lihat jawaban</button></div></form>
     <p class="status-simpan" id="status-tebak">${ik('awan', 16)} ${s.status === 'putus' ? 'Tebakanmu tersimpan. Lanjutkan kapan saja dari Latihan.' : 'Tebakan tersimpan otomatis begitu kamu mengisi.'}</p>`;
 }
 
 function materi() {
-  return `<div class="jalur">Belajar / Ashabah</div>
-    <div class="kartu"><h1 style="font-size:22px">Ashabah bin nafsi</h1><p style="margin-top:8px">Anak laki-laki mengambil sisa harta setelah ashhabul furudh mendapat bagiannya.</p>
-      <p class="kecil" style="margin-top:12px">Contoh: ${data.contoh.ringkas}.</p><p style="margin-top:8px"><button class="tautan" data-ke="contoh">Coba di kalkulator</button></p></div>`;
+  return `<section class="hero-gelap"><span class="kecil">Belajar · Ashabah</span><h1 style="margin-top:6px">Ashabah bin nafsi</h1>
+      <p class="lead">Anak laki-laki mengambil sisa harta setelah ashhabul furudh mendapat bagiannya.</p></section>
+    <div class="kartu"><p>Contoh: ${data.contoh.ringkas}.</p><p style="margin-top:10px"><button class="tautan" data-ke="contoh">Coba di kalkulator</button></p></div>`;
 }
 
 function bukaContoh() {
   const c = data.contoh;
-  return `<div class="jalur"><button class="tautan" data-ke="materi">${ik('kiri', 16)} Materi Ashabah</button> / Contoh</div>
-    <div><span class="label-mode" style="background:#e6e0f5">${ik('buku', 16)} Contoh dari materi</span><h1 style="font-size:22px;margin-top:6px">${c.ringkas}</h1>
-    <p class="kecil">Hanya dilihat. Tidak masuk Kasusmu.</p></div>
+  return `<section class="hero-gelap"><div class="jalur" style="padding:0 0 12px"><button class="tautan" style="color:#fff" data-ke="materi">${ik('kiri', 16)} Materi Ashabah</button></div>
+      <span class="label-mode bg-contoh">${ik('buku', 16)} Contoh dari materi</span><h1 style="margin-top:10px">${c.ringkas}</h1>
+      <p class="lead">Hanya dilihat. Tidak masuk Kasusmu.</p></section>
     <div class="kartu">${hasilTabel(c.bagian, c.tashih, true)}</div>
-    <div class="aksi"><button class="tautan" data-jadikan-contoh>${ik('salin', 16)} Jadikan kasus sendiri</button><span class="kecil">lalu ubah sesuai keluargamu</span></div>`;
+    <div class="aksi"><button class="tautan" data-jadikan-contoh>Jadikan kasus sendiri</button><span class="kecil">lalu ubah sesuai keluargamu</span></div>`;
 }
 
 // ── aksi ──
@@ -354,12 +420,13 @@ document.addEventListener('submit', e => {
 const TUGAS = [
   { judul: 'Membuka kasus keluarga yang kemarin', halaman: 'beranda', langkah: ['Di Beranda, cari kasus Almarhum Ahmad.', 'Buka kasusnya.'], cek: 'Apakah kamu langsung melihat bagian tiap orang, tanpa disuruh menebak?' },
   { judul: 'Melanjutkan soal yang terputus', halaman: 'beranda', langkah: ['Dari Beranda, lanjutkan soal yang terputus.', 'Lihat apakah tebakanmu sebelumnya masih ada.', 'Isi satu kotak lagi lalu kembali ke Latihan.'], cek: 'Apakah jelas bahwa tebakanmu tidak hilang?' },
-  { judul: 'Mencari soal yang belum dikerjakan', halaman: 'latihan', langkah: ['Buka Latihan.', 'Temukan soal yang belum pernah kamu kerjakan dan kerjakan.', 'Coba Periksa. (Jawaban K-15: 12, 3, 6, 2, 1)'], cek: 'Apakah status soal berubah setelah benar?' },
-  { judul: 'Melihat lagi pembahasan soal lama', halaman: 'latihan', langkah: ['Di Latihan, buka soal K-03 yang sudah benar.', 'Baca pembahasannya.'], cek: 'Apakah kamu tidak dipaksa menebak lagi? Apakah "Kerjakan ulang" mudah ditemukan bila mau?' },
-  { judul: 'Mengubah soal menjadi kasus sendiri', halaman: 'latihan', langkah: ['Buka soal K-07.', 'Pilih "Jadikan kasus sendiri".', 'Kembali ke Lab Hitung dan cari salinannya.'], cek: 'Apakah jelas bahwa soal aslinya tidak berubah?' },
+  { judul: 'Mencari soal yang belum dikerjakan', halaman: 'latihan', langkah: ['Buka Latihan.', 'Temukan soal yang belum pernah kamu kerjakan (Soal K-15) dan kerjakan.', 'Coba Periksa. (Jawaban K-15: 12, 3, 6, 2, 1)'], cek: 'Apakah status soal berubah setelah benar?' },
+  { judul: 'Melihat lagi pembahasan soal lama', halaman: 'latihan', langkah: ['Di Latihan, buka soal yang sudah benar (Istri bersama anak laki-laki dan anak perempuan).', 'Baca pembahasannya.'], cek: 'Apakah kamu tidak dipaksa menebak lagi? Apakah "Kerjakan ulang" mudah ditemukan bila mau?' },
+  { judul: 'Mengubah soal menjadi kasus sendiri', halaman: 'latihan', langkah: ['Buka soal Ayah dan ibu bersama anak perempuan.', 'Pilih "Jadikan kasus sendiri".', 'Kembali ke Lab Hitung dan cari salinannya.'], cek: 'Apakah jelas bahwa soal aslinya tidak berubah?' },
   { judul: 'Memakai contoh materi', halaman: 'materi', langkah: ['Buka Belajar, lalu "Coba di kalkulator".', 'Jadikan contoh itu kasus sendiri.'], cek: 'Apakah contoh tidak memenuhi Kasusmu sampai kamu memintanya?' },
 ];
 const ASUMSI = [
+  'Judul soal sebaiknya tersembunyi sampai saya mengerjakannya.',
   'Saya lebih suka Beranda menampilkan kasus dan soal di dua baris terpisah, bukan satu "terakhir dibuka".',
   'Soal latihan tidak perlu muncul di Kasusmu.',
   'Kalau keluar di tengah soal, saya ingin tebakan saya tetap ada.',
@@ -377,7 +444,7 @@ function panduan() {
     <h2>Arti tanda</h2>
     <div class="legenda"><span class="label-mode bg-kasus">${ik('kasus', 16)} Kasus</span><span class="kecil">masalah waris keluargamu, disimpan di Kasusmu (Lab Hitung)</span></div>
     <div class="legenda"><span class="label-mode bg-soal">${ik('soal', 16)} Soal latihan</span><span class="kecil">ada kunci jawabannya, tinggal di Latihan</span></div>
-    <div class="legenda">${Object.entries(TEKS_STATUS).map(([k, t]) => `<span class="chip ${k}">${t}</span>`).join('')}</div>
+    <div class="legenda">${['belum', 'putus', 'benar', 'lihat'].map(st => `<span>${cincin({ status: st, kunci: [1, 1], isian: { 0: 1 } })}${TEKS_STATUS[st]}</span>`).join('')}</div>
     <p class="kecil"><b>Terputus</b> = soal sudah kamu buka dan isi sebagian, belum diperiksa.</p>
     <h2>Tugas</h2>
     ${TUGAS.map((t, i) => `<div class="tugas"><b style="font-family:var(--display)">${i + 1}. ${t.judul}</b><ol>${t.langkah.map(l => `<li>${l}</li>`).join('')}</ol>
