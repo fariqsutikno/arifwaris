@@ -144,6 +144,36 @@ button{font:inherit;cursor:pointer;color:inherit}
 .asumsi{display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--divider)}
 .asumsi .pilih{display:flex;gap:14px;flex-wrap:wrap;font-size:14px}
 @media(max-width:560px){.isi>*:not(.hero-gelap){margin-inline:16px}.hero-gelap{padding:22px 16px 24px}.tebak{grid-template-columns:1fr 90px}.bar{width:90px}}
+/* Lab Hitung: disalin dari apps/web/src/gaya/lab.css (tampilan yang sudah ada, tidak diubah) */
+.lab-ubin{display:grid;gap:14px;margin:0;padding:0;list-style:none;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.lab-ubin.soal{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:720px){.lab-ubin.soal{grid-template-columns:1fr}}
+.lab-ubin>li{display:flex}
+.ubin-lab{flex:1;min-height:180px;border:0;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:6px;text-align:start;position:relative;
+  background:radial-gradient(240px 180px at 100% 0%,rgba(255,255,255,.6),transparent 70%),linear-gradient(135deg,var(--a),var(--b));transition:transform .25s,box-shadow .25s}
+.ubin-lab:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(20,40,30,.16)}
+li:nth-child(5n+1)>.ubin-lab,.lab-berkas:nth-child(5n+1){--a:#d3ebaa;--b:#b7de80}
+li:nth-child(5n+2)>.ubin-lab,.lab-berkas:nth-child(5n+2){--a:#fde6d8;--b:#f8c7a6}
+li:nth-child(5n+3)>.ubin-lab,.lab-berkas:nth-child(5n+3){--a:#d6e2fb;--b:#b4c8f1}
+li:nth-child(5n+4)>.ubin-lab,.lab-berkas:nth-child(5n+4){--a:#fbdbe4;--b:#f1b4c6}
+li:nth-child(5n+5)>.ubin-lab,.lab-berkas:nth-child(5n+5){--a:#fde7c9;--b:#f6c68a}
+.ubin-lab .judul-ubin{margin-top:auto;font:600 24px/1.1 var(--display);letter-spacing:-.02em}
+.ubin-lab .panah-bulat{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#0e0f10;color:#fff}
+.ubin-nol{color:#fff;background:radial-gradient(320px 220px at 85% 110%,rgba(255,150,40,.45),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)!important}
+.ubin-nol .panah-bulat{background:#fff;color:#0e0f10}.ubin-nol .kecil{color:rgba(255,255,255,.8)}
+.lab-rak{display:flex;margin:0 -20px;padding:30px 30px 44px;overflow-x:auto;list-style:none;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 30px,#000 calc(100% - 30px),transparent 100%)}
+.lab-berkas{flex:0 0 min(270px,80vw);position:relative;display:flex;flex-direction:column;gap:8px;padding:12px 30px 16px 12px;border:1px solid rgba(20,40,30,.08);border-radius:24px;
+  background:linear-gradient(135deg,var(--a),var(--b));box-shadow:0 10px 26px rgba(20,40,30,.14);transform:rotate(var(--miring,0deg)) translateY(var(--turun,0px));transition:transform .35s,box-shadow .35s}
+.lab-berkas+.lab-berkas{margin-inline-start:-26px}
+.lab-berkas:nth-child(4n+1){--miring:-3deg}.lab-berkas:nth-child(4n+2){--miring:2deg;--turun:10px}.lab-berkas:nth-child(4n+3){--miring:-1.5deg;--turun:2px}.lab-berkas:nth-child(4n+4){--miring:3deg;--turun:12px}
+.lab-berkas:hover,.lab-berkas:focus-within{z-index:5;transform:rotate(0) translateY(-14px);box-shadow:0 24px 46px rgba(20,40,30,.24)}
+.lab-berkas .pohon{height:110px;border-radius:16px;background:linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b);display:grid;place-items:center;color:rgba(255,255,255,.6);font-size:12px}
+.lab-berkas h3{margin:6px 4px 0;font:600 18px/1.25 var(--display)}
+.lab-berkas .label{align-self:flex-start;font:600 12px var(--sans);padding:3px 10px;border-radius:999px;background:#14181a;color:#fff}
+.lab-berkas .label.sementara{background:rgba(255,255,255,.8);color:#14181a;border:1px solid rgba(20,40,30,.2)}
+.lab-berkas .aksi{gap:12px;margin:4px 4px 0}
+.lab-berkas .pil{min-height:40px;padding:0 16px;background:#fff;color:#14181a}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -269,17 +299,24 @@ function beranda() {
 function lab() {
   const k = cariKasus(data.kasusTerakhir);
   const urut = [...data.kasus.filter(x => x.tersimpan), ...data.kasus.filter(x => !x.tersimpan)];
-  const barisKasus = x => `<li class="baris"><span class="lencana-ikon bg-kasus" style="width:36px;height:36px;border-radius:12px">${ik('kasus')}</span>
-    <span class="teks"><b>${x.nama}</b><span class="kecil">${x.ringkas}${x.asal ? ' · ' + x.asal : ''}</span>
-    <span class="ket-simpan ${x.tersimpan ? 'tersimpan' : ''}">${x.tersimpan ? 'Tersimpan' : 'Sementara, terhapus ' + x.sisaHari + ' hari lagi'}</span></span>
-    <button class="tautan" data-buka-kasus="${x.id}">Buka</button></li>`;
+  const belum = data.soal.filter(x => !sudahSelesai(x)).slice(0, 3);
   return `<section class="hero-gelap"><span class="kecil">Lab Hitung</span>
     ${k ? `<div class="aksi" style="margin-top:10px;justify-content:space-between"><div><span class="kecil">Kasus terakhir · ${k.waktu}</span><h1 style="font-size:clamp(26px,3.4vw,38px)">${k.nama}</h1><p class="kecil">${k.ringkas}</p></div>
-      <button class="pil terang" data-buka-kasus="${k.id}">Lanjutkan ${ik('panah')}</button></div>` : '<h1>Mulai hitung</h1>'}</section>
-    <div class="aksi"><button class="tautan" data-pesan="Mockup: membuka isian kasus baru dari nol.">Mulai kasus baru</button><button class="tautan" data-pesan="Mockup: memilih file kasus untuk diimpor.">Impor file kasus</button></div>
-    <section style="display:flex;flex-direction:column;gap:10px"><div><h2 class="judul-bagian">Kasusmu</h2><p class="kecil">Hanya kasus. Soal latihan ada di halaman Latihan.</p></div>
-      <ul class="daftar">${urut.map(barisKasus).join('')}</ul></section>
-    <p class="kecil">Mau berlatih? <button class="tautan" data-ke="latihan">Buka soal di Latihan</button></p>`;
+      <button class="pil terang" data-buka-kasus="${k.id}">Lanjutkan ${ik('panah')}</button></div>` : '<h1>Mulai hitung</h1>'}
+      <p class="kecil" style="margin-top:12px">Hanya kasus. Soal latihan yang terputus dilanjutkan dari Latihan.</p></section>
+    <section style="display:flex;flex-direction:column;gap:12px"><div><h2 class="judul-bagian" style="font-size:26px">Mulai kasus baru</h2><p class="kecil">Mulai dari nol, atau pilih susunan keluarga yang mirip.</p></div>
+      <ul class="lab-ubin">${[['Mulai dari nol', 'Kasus yang sedang berjalan tetap ada di Kasusmu.'], ['Istri dan anak', '3 ahli waris'], ['Suami dan anak', '3 ahli waris'], ['Ayah, ibu, dan anak', '3 ahli waris']].map((u, i) =>
+        `<li><button class="ubin-lab ${i === 0 ? 'ubin-nol' : ''}" data-pesan="Mockup: membuka isian kasus baru (tampilan sama seperti sekarang)."><span class="panah-bulat">${ik('panah')}</span><span class="judul-ubin">${u[0]}</span><span class="kecil">${u[1]}</span></button></li>`).join('')}</ul>
+      <button class="tautan" style="align-self:flex-start" data-pesan="Mockup: memilih file kasus untuk diimpor.">Punya berkas kasus? Impor file</button></section>
+    <section><h2 class="judul-bagian" style="font-size:26px">Kasusmu</h2><p class="kecil">Kasus yang kamu buka tersimpan otomatis selama 30 hari (Sementara). Soal latihan tidak lagi muncul di sini.</p>
+      <ul class="lab-rak">${urut.map(x => `<li class="lab-berkas"><span class="label ${x.tersimpan ? '' : 'sementara'}">${x.tersimpan ? 'Tersimpan' : 'Sementara · ' + x.sisaHari + ' hari lagi'}</span>
+        <span class="pohon">pratinjau pohon (seperti sekarang)</span><h3>${x.nama}</h3><span class="kecil" style="margin:0 4px">${x.ringkas}${x.asal ? ' · ' + x.asal : ''}</span>
+        <span class="aksi"><button class="pil" data-buka-kasus="${x.id}">Lanjut</button><button class="tautan" data-pesan="Mockup: ganti nama.">Ganti nama</button></span></li>`).join('')}</ul></section>
+    <section style="display:flex;flex-direction:column;gap:12px"><div><h2 class="judul-bagian" style="font-size:26px">Berlatih dengan soal</h2><p class="kecil">Membuka soal di Latihan. Statusnya tersimpan di sana, bukan di Kasusmu.</p></div>
+      <ul class="lab-ubin soal">${belum.map(x => `<li><button class="ubin-lab" data-buka-soal="${x.kode}"><span class="panah-bulat">${ik('panah')}</span>
+        <span style="display:flex;gap:8px;align-items:center">${cincin(x)}<span class="tingkat tingkat-${x.tingkat.toLowerCase()}">${x.tingkat}</span></span>
+        <span class="judul-ubin" style="font-size:22px">${judulSoal(x)}</span><span class="kecil">${x.bab}${keteranganStatus(x)}</span></button></li>`).join('')}</ul>
+      <button class="tautan" style="align-self:flex-start" data-ke="latihan">Lihat semua soal di Latihan</button></section>`;
 }
 
 function hasilTabel(bagian, tashih, harta) {
