@@ -28714,6 +28714,139 @@
    "id": "{saham} kotak untuk {ruus} {satuan}: habis dibagi?",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.hukum_positif",
+   "halaman": "narasi",
+   "id": "Hukum positif, bukan fikih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.pasal",
+   "halaman": "narasi",
+   "id": "Pasal {nomor} KHI",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.bunyi",
+   "halaman": "narasi",
+   "id": "Bunyi KHI",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.praktik",
+   "halaman": "narasi",
+   "id": "Menurut praktik Pengadilan Agama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.catatan_awalan",
+   "halaman": "narasi",
+   "id": "Catatan: {isi}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.fikih",
+   "halaman": "narasi",
+   "id": "Menurut fikih madzhab {madzhab}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.fikih_cadangan",
+   "halaman": "narasi",
+   "id": "Madzhab {madzhab} belum dibahas pada butir ini; berikut menurut madzhab {pembanding}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.belum",
+   "halaman": "narasi",
+   "id": "Belum tersedia",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.jalan",
+   "halaman": "narasi",
+   "id": "Jika ingin selaras dengan fikih, yang dapat ditempuh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.label.peringatan",
+   "halaman": "narasi",
+   "id": "Perlu diperhatikan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.tingkat.beda",
+   "halaman": "narasi",
+   "id": "Berbeda dari fikih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.tingkat.sama",
+   "halaman": "narasi",
+   "id": "Selaras dengan fikih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.tingkat.celah",
+   "halaman": "narasi",
+   "id": "KHI tidak mengatur sampai rincian; hakim merujuk fikih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.penutup",
+   "halaman": "narasi",
+   "id": "Ini informasi pembanding, bukan fatwa. Hakim menilai tiap kasus; untuk keputusan nyata, tanyakan kepada ulama atau pengacara.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.jalan.wasiat_sukarela",
+   "halaman": "narasi",
+   "id": "Pewaris berwasiat secara sukarela, paling banyak sepertiga, untuk yang bukan ahli waris.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.jalan.perdamaian",
+   "halaman": "narasi",
+   "id": "Para ahli waris berdamai setelah masing-masing mengetahui bagiannya menurut fikih.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.jalan.hibah_serah_terima",
+   "halaman": "narasi",
+   "id": "Pewaris menghibahkan hartanya semasa sehat dan menyerahkannya langsung kepada penerima.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.jalan.kesepakatan_tertulis",
+   "halaman": "narasi",
+   "id": "Suami dan istri membuat kesepakatan tertulis semasa hidup tentang harta yang bercampur.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.khi.jalan.persetujuan_setelah_wafat",
+   "halaman": "narasi",
+   "id": "Ahli waris memberi persetujuan sesudah pewaris wafat, bukan sebelumnya.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

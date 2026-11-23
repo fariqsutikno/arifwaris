@@ -10,3 +10,4 @@ export { susunLinimasaTaqdir, susunLinimasaGharqa, KUNCI_DITAHAN } from './linim
 export { susunLinimasaMunasakhat } from './linimasaMunasakhat.js';
 export { susunLinimasa, kotakWakil, BATAS_KOTAK, type Linimasa, type Tahap, type Langkah, type Visual, type IdTahap, type BagianLangkah, type KolomLinimasa, type KolomTabel, type KodeSel, type PeranPohon, type BarisHarta, type IsiKotak } from './linimasa.js';
 export { jelaskanOrang, type PenjelasanOrang, type BarisHitungan } from './orang.js';
+export { jelaskanCatatanKhi, type BahanCatatanKhi, type BagianCatatanKhi, type PenjelasanCatatanKhi, type OpsiCatatanKhi, type MadzhabKhi } from './catatanKhi.js';

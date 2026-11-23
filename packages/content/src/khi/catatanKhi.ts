@@ -13,13 +13,13 @@ export type IdCatatanKhi = (typeof ID_CATATAN_KHI)[number];
 
 export type JalanKeluar = 'wasiatSukarela' | 'perdamaian' | 'hibahSerahTerima' | 'kesepakatanTertulis' | 'persetujuanSetelahWafat';
 
-/** Jalan keluar fikih yang sudah terverifikasi di KB; tidak boleh ditambah dari pengetahuan umum. */
-export const JALAN_KELUAR: Record<JalanKeluar, { ringkas: string; rujukanKb: readonly string[]; terverifikasi: true }> = {
-  wasiatSukarela: { ringkas: 'Pewaris berwasiat secara sukarela, paling banyak sepertiga, untuk yang bukan ahli waris.', rujukanKb: ['R01-4', 'R01-5'], terverifikasi: true },
-  perdamaian: { ringkas: 'Para ahli waris berdamai setelah masing-masing mengetahui bagiannya menurut fikih.', rujukanKb: ['R11-2', 'R11-3'], terverifikasi: true },
-  hibahSerahTerima: { ringkas: 'Pewaris menghibahkan hartanya semasa sehat dan menyerahkannya langsung kepada penerima.', rujukanKb: ['R01-10', 'R01-11'], terverifikasi: true },
-  kesepakatanTertulis: { ringkas: 'Suami dan istri membuat kesepakatan tertulis semasa hidup tentang harta yang bercampur.', rujukanKb: ['R19-5'], terverifikasi: true },
-  persetujuanSetelahWafat: { ringkas: 'Ahli waris memberi persetujuan sesudah pewaris wafat, bukan sebelumnya.', rujukanKb: ['R01-7', 'K01-1'], terverifikasi: true },
+/** Jalan keluar fikih yang sudah terverifikasi di KB; tidak boleh ditambah dari pengetahuan umum. Kalimatnya ada di diksi narasi.khi.jalan.* (explain). */
+export const JALAN_KELUAR: Record<JalanKeluar, { rujukanKb: readonly string[]; terverifikasi: true }> = {
+  wasiatSukarela: { rujukanKb: ['R01-4', 'R01-5'], terverifikasi: true },
+  perdamaian: { rujukanKb: ['R11-2', 'R11-3'], terverifikasi: true },
+  hibahSerahTerima: { rujukanKb: ['R01-10', 'R01-11'], terverifikasi: true },
+  kesepakatanTertulis: { rujukanKb: ['R19-5'], terverifikasi: true },
+  persetujuanSetelahWafat: { rujukanKb: ['R01-7', 'K01-1'], terverifikasi: true },
 };
 
 export interface SumberKhi {
@@ -292,5 +292,4 @@ export const teksTampil = (catatan: CatatanKhi): string[] => [
   ...Object.values(catatan.fikih).flat(),
   ...catatan.belumTersedia,
   ...(catatan.peringatan ? [catatan.peringatan] : []),
-  ...catatan.jalanKeluar.map(jalan => JALAN_KELUAR[jalan].ringkas),
 ];
