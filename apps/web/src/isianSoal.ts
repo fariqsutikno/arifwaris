@@ -1,7 +1,7 @@
 // Tebakan soal hitung yang belum selesai, per kode soal, di perangkat ini (tidak disinkron ke akun).
 // Soal tinggal di Latihan: isian disimpan di sini, bukan di riwayat kasus (spec siklus kasus dan soal, P3).
 
-import type { IsianTabel } from '@waris/latihan';
+import type { IsianTabel, KeputusanGharqa } from '@waris/latihan';
 import { bacaMentah, simpanMentah } from './penyimpanan';
 
 const KUNCI_ISIAN_SOAL = 'arif-waris:isian-soal';
@@ -13,6 +13,8 @@ export interface IsianSoal {
   jumlahKotak: number;
   /** Nomor percobaan (0 = pertama); benih jangkar acak. Bertahan walau isian dihapus. */
   percobaan?: number;
+  /** Soal gharqa: keputusan yang sudah benar + isian tabel tiap harta (kunci = id mayit). Data lama tidak punya field ini. */
+  gharqa?: { keputusan?: KeputusanGharqa; harta: Record<string, IsianTabel> };
 }
 
 export function bacaSemuaIsianSoal(): Record<string, IsianSoal> {
@@ -29,6 +31,11 @@ export const bacaIsianSoal = (kode: string): IsianSoal | null => bacaSemuaIsianS
 export function simpanIsianSoal(kode: string, isian: IsianTabel, jumlahKotak = 0, sekarang = Date.now()): void {
   const percobaan = bacaPercobaanSoal(kode);
   tulis(kode, { isian, diubahPada: sekarang, jumlahKotak, ...(percobaan > 0 ? { percobaan } : {}) });
+}
+
+export function simpanIsianGharqa(kode: string, gharqa: NonNullable<IsianSoal['gharqa']>, jumlahKotak: number, sekarang = Date.now()): void {
+  const percobaan = bacaPercobaanSoal(kode);
+  tulis(kode, { isian: { kepala: {}, sel: {} }, gharqa, diubahPada: sekarang, jumlahKotak, ...(percobaan > 0 ? { percobaan } : {}) });
 }
 
 export const bacaPercobaanSoal = (kode: string): number => bacaIsianSoal(kode)?.percobaan ?? 0;
@@ -52,3 +59,7 @@ function tulis(kode: string, isi: IsianSoal | null): void {
 export const hitungTerisi = (isian: IsianTabel): number =>
   [isian.kepala, isian.pengali ?? {}, ...Object.values(isian.sel).map(baris => baris ?? {})]
     .flatMap(kotak => Object.values(kotak)).filter(nilai => typeof nilai === 'string' && nilai !== '').length;
+
+/** Terisi satu soal: isian tabel biasa, ditambah keputusan dan tabel harta pada soal gharqa. */
+export const hitungTerisiSoal = (soal: IsianSoal): number =>
+  hitungTerisi(soal.isian) + (soal.gharqa?.keputusan ? 1 : 0) + Object.values(soal.gharqa?.harta ?? {}).reduce((jumlah, isian) => jumlah + hitungTerisi(isian), 0);

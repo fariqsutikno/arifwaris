@@ -7,13 +7,16 @@ import { useRef, useState } from 'react';
 import { Ikon } from '../ui/Ikon';
 import { t } from '../terjemah';
 import type { IsianGharqa, IsianTabel, Jangkar, KeputusanGharqa, PercobaanTabel, SoalGharqa } from '@waris/latihan';
-import { TabelLatihan, Tebal } from './TabelLatihan';
+import { hitungKotak, TabelLatihan, Tebal } from './TabelLatihan';
+import { bacaIsianSoal, hapusIsianSoal, simpanIsianGharqa } from '../isianSoal';
 
 const PILIHAN_KEPUTUSAN: KeputusanGharqa[] = ['terakhirMewarisi', 'tidakSalingMewarisi', 'ditahan'];
 const KOSONG: IsianTabel = { kepala: {}, sel: {} };
 
 interface Props {
   soal: SoalGharqa;
+  /** Isian (keputusan benar + tabel tiap harta) tersimpan per kode soal supaya soal terputus bisa dilanjutkan. */
+  kodeSoal?: string | undefined;
   namaDari: (id: string) => string;
   jangkar: Array<Jangkar | null>;
   /** Jawaban sudah dibuka (dialog tahan di Hasil) atau soal sudah benar seluruhnya. */
@@ -28,8 +31,10 @@ const labelKeputusan = (keputusan: KeputusanGharqa) => ({
   ditahan: t('hitung.gharqa.ditahan_sampai_jelas'),
 })[keputusan];
 
-export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan, saatLihatJawaban }: Props) {
-  const [dipilih, setDipilih] = useState<KeputusanGharqa | null>(null);
+export function GharqaLatihan({ soal, kodeSoal, namaDari, jangkar, terbuka, saatPercobaan, saatLihatJawaban }: Props) {
+  const tersimpan = useRef(kodeSoal ? bacaIsianSoal(kodeSoal)?.gharqa : undefined);
+  const [dipilih, setDipilih] = useState<KeputusanGharqa | null>(tersimpan.current?.keputusan ?? null);
+  const isianTersimpan = useRef<Record<string, IsianTabel>>({ ...tersimpan.current?.harta });
   const hartaBenar = useRef(new Map<string, boolean>());
   // Isian terakhir tiap harta: server menilai keputusan dan semua tabel dari satu kiriman.
   const isianHarta = useRef(new Map<string, IsianGharqa['harta'][number]>());
@@ -37,14 +42,23 @@ export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan,
   const keputusan = terbuka ? soal.keputusan : dipilih;
   const keputusanBenar = keputusan === soal.keputusan;
 
+  // Hanya keputusan benar yang meneruskan ke tabel yang disimpan; yang salah/ditahan sudah selesai sebagai percobaan.
+  const simpan = (pilihan: KeputusanGharqa | null) => {
+    if (!kodeSoal) return;
+    if (pilihan !== soal.keputusan || soal.harta.length === 0) return hapusIsianSoal(kodeSoal);
+    const jumlahKotak = 1 + soal.harta.reduce((jumlah, harta, indeks) => jumlah + hitungKotak(harta.tabel, jangkar[indeks] ?? null), 0);
+    simpanIsianGharqa(kodeSoal, { keputusan: pilihan, harta: isianTersimpan.current }, jumlahKotak);
+  };
   const pilih = (pilihan: KeputusanGharqa) => {
     setDipilih(pilihan);
+    simpan(pilihan);
     // Keputusan yang meneruskan ke tabel baru dilaporkan setelah tabel selesai; selebihnya (salah, atau ditahan) selesai di sini.
     if (pilihan !== soal.keputusan || soal.harta.length === 0) {
       saatPercobaan({ mode: 'latihan', aksi: 'periksa', isian: KOSONG, jangkar: null, gharqa: { keputusan: pilihan, harta: [] }, hasilKolom: [], benarSemua: pilihan === soal.keputusan });
     }
   };
-  const kosongkan = () => { setDipilih(null); hartaBenar.current.clear(); isianHarta.current.clear(); };
+  const kosongkan = () => { setDipilih(null); isianTersimpan.current = {}; simpan(null); hartaBenar.current.clear(); isianHarta.current.clear(); };
+  const saatIsianHartaBerubah = (mayit: string) => (isian: IsianTabel) => { isianTersimpan.current = { ...isianTersimpan.current, [mayit]: isian }; simpan(soal.keputusan); };
   const saatPercobaanHarta = (mayit: string) => (percobaan: PercobaanTabel) => {
     hartaBenar.current.set(mayit, percobaan.benarSemua);
     isianHarta.current.set(mayit, { mayit, isian: percobaan.isian, jangkar: percobaan.jangkar });
@@ -81,6 +95,7 @@ export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan,
         <div key={harta.mayit} className="tata-tabel-latihan">
           <h3 className="judul-panel">{t('hitung.gharqa.harta_nama', { nama: namaDari(harta.mayit) })}</h3>
           <TabelLatihan tabel={harta.tabel} namaDari={namaDari} mode="latihan" jangkar={jangkar[indeks] ?? null} terbuka={terbuka} tanpaCara={indeks > 0}
+            isianAwal={tersimpan.current?.harta[harta.mayit]} saatIsianBerubah={saatIsianHartaBerubah(harta.mayit)}
             saatLihatJawaban={saatLihatJawaban} saatPercobaan={saatPercobaanHarta(harta.mayit)} />
         </div>
       ))}

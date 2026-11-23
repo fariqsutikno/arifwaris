@@ -7,7 +7,7 @@ import { useState, type CSSProperties } from 'react';
 import type { SoalHitung, Tingkat } from '@waris/content';
 import { daftarSoalHitung } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
-import { bacaSemuaIsianSoal, hitungTerisi, type IsianSoal } from '../../isianSoal';
+import { bacaSemuaIsianSoal, hitungTerisiSoal, type IsianSoal } from '../../isianSoal';
 import { bacaProgresLatihan } from '../../progres';
 import { Ikon } from '../../ui/Ikon';
 import { angka, t } from '../../terjemah';
@@ -146,7 +146,7 @@ function BarisSoal({ soal, status, isian, disarankan, kasusSekarang, saatKerjaka
 }
 
 function keteranganStatus(status: StatusSoal, isian: IsianSoal | undefined): string | null {
-  if (status === 'terputus' && isian) return t('latihan.terputus_isian', { terisi: angka(String(hitungTerisi(isian.isian))), total: angka(String(isian.jumlahKotak)) });
+  if (status === 'terputus' && isian) return t('latihan.terputus_isian', { terisi: angka(String(hitungTerisiSoal(isian))), total: angka(String(isian.jumlahKotak)) });
   if (status === 'benar') return t('latihan.sudah_benar');
   if (status === 'lihatJawaban') return t('latihan.sudah_lihat_jawaban');
   return null;

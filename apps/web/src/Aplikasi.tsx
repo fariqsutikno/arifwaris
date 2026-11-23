@@ -286,7 +286,7 @@ export function Aplikasi() {
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={kasusTerakhir} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={soal => kerjakanSoal(soal)} saatMulaiDari={mulaiDari} bagikan={bagikanAkun} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
-        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={bagikanAkun} tujuan={soalAktif ? keadaan.tujuan : 'hitung'} kirim={kirim}
+        : <Hasil key={idSesi} kasus={kasus} idSesi={idSesi} bagikan={bagikanAkun} tujuan={soalAktif ? keadaan.tujuan : 'hitung'} kirim={kirim}
             tanpaSimpan={sumberSesi.jenis === 'latihan'} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatHapusKasus={adalahKasusPengguna(sumberSesi) ? hapusKasusIni : undefined}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}

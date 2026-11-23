@@ -410,7 +410,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
-        {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
+        {soalGharqa && <GharqaLatihan kodeSoal={soal?.id} soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
           saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {tabelSoal && <TabelLatihan kodeSoal={soal?.id} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatKosongkan={saatKosongkanTabel} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
