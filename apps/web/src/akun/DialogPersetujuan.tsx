@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import type { RepoAkun } from './sinkron';
 import { VERSI_KEBIJAKAN_PRIVASI } from './persetujuan';
-import { tautanPrivasi } from '../rute';
+import { tautanPrivasi, tautanSyarat } from '../rute';
 import { t } from '../terjemah';
 import { Tombol } from '../ui/komponen';
 
@@ -29,7 +29,8 @@ export function DialogPersetujuan({ repo, saatSetuju, saatKeluar }: Props) {
         <header className="kepala-modal netral"><div><h2>{t('privasi.dialog_judul')}</h2></div></header>
         <div className="isi-modal tumpuk-rapat">
           <p>{t('privasi.dialog_ringkas')}</p>
-          <p><a className="tautan-teks" href={tautanPrivasi()} target="_blank" rel="noreferrer">{t('privasi.baca_lengkap')}</a></p>
+          <p><a className="tautan-teks" href={tautanPrivasi()} target="_blank" rel="noreferrer">{t('privasi.baca_lengkap')}</a>{' '}
+            <a className="tautan-teks" href={tautanSyarat()} target="_blank" rel="noreferrer">{t('syarat.baca_lengkap')}</a></p>
           {galat && <p role="alert" className="peringatan-isian">{t('akun.profil_gagal_disimpan')}</p>}
         </div>
         <footer className="kaki-modal">
