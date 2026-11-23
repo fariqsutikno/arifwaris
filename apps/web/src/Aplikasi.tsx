@@ -30,7 +30,7 @@ import { TanyaJawab } from './layar/belajar/TanyaJawab';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
-import { daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
+import { cariSoalHitung, daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
 import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
 import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
@@ -59,7 +59,7 @@ export function Aplikasi() {
   // Kasus tersimpan hanya dihapus lewat ULANGI, dan langsung (sebelum render berikutnya) supaya beranda
   // tidak menawarkan kasus yang baru saja dihapus. MULAI (kasus null sementara) tidak menimpa simpanan lama.
   // Soal latihan yang sedang dikerjakan di kalkulator; ditandai selesai saat jawabannya dibuka.
-  const [soalAktif, setSoalAktif] = useState<SoalHitung | null>(null);
+  const [soalAktif, setSoalAktif] = useState<SoalHitung | null>(() => soalDariSumber(pulih?.sumber));
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
@@ -135,7 +135,7 @@ export function Aplikasi() {
     const dariUrl = pulihDariUrl(window.location.hash, bacaTujuan());
     if (!dariUrl) return;
     if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
-    setSoalAktif(null);
+    setSoalAktif(soalDariSumber(dariUrl.sumber));
     setIdSesi(dariUrl.id);
     setSumberSesi(dariUrl.sumber);
     kirimAsli({ jenis: 'PULIHKAN', keadaan: dariUrl.keadaan });
@@ -173,6 +173,7 @@ export function Aplikasi() {
   const bukaRiwayat = (entri: EntriRiwayat) => {
     bukaDiHitung(entri.kasus, entri.sumber);
     setIdSesi(entri.id);
+    setSoalAktif(soalDariSumber(entri.sumber));
     catatRiwayat(entri.id, entri.kasus, Date.now(), entri.sumber);
   };
   // Lanjut kasus terakhir. Kasus yang masih dimuat cukup ditampilkan lagi (sesi & mode belajar tetap);
@@ -259,6 +260,10 @@ export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string;
   if (keadaan.layar !== 'wizard' && !bolehDiHasil(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
   return { id, sumber: entri.sumber, keadaan };
 }
+
+/** Soal latihan di balik sumber riwayat; kode yang sudah tidak ada di bank soal → null (kasus tetap terbuka tanpa hero soal). */
+export const soalDariSumber = (sumber: SumberRiwayat | undefined): SoalHitung | null =>
+  sumber?.jenis === 'latihan' ? cariSoalHitung(sumber.kode) ?? null : null;
 
 /** Di beranda, tawarkan kasus yang sedang dikerjakan; bila belum ada, yang tersimpan di perangkat. */
 const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLokal();
