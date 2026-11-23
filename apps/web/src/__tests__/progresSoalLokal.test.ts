@@ -32,12 +32,14 @@ it('JSON rusak atau bentuk lama → null', () => {
   expect(bacaProgresSoal('a', 'rev-1')).toBeNull();
 });
 
-it('localStorage melempar → tidak melempar (P10)', () => {
+it('localStorage melempar → tidak melempar, progres bertahan di memori selama sesi (P10)', () => {
   vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('diblokir'); });
   vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => { throw new Error('penuh'); });
+  vi.spyOn(Storage.prototype, 'removeItem').mockImplementation(() => { throw new Error('diblokir'); });
   expect(() => simpanProgresSoal('a', contoh)).not.toThrow();
-  expect(bacaProgresSoal('a', 'rev-1')).toBeNull();
+  expect(bacaProgresSoal('a', 'rev-1')).toEqual(contoh);
   expect(() => hapusProgresSoal('a')).not.toThrow();
+  expect(bacaProgresSoal('a', 'rev-1')).toBeNull();
   expect(() => hapusSemuaProgresSoal()).not.toThrow();
 });
 

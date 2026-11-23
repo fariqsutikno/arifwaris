@@ -3,6 +3,7 @@
 // kasusnya (30 hari); tidak dikirim ke akun. Satu kunci berisi seluruh peta agar mudah dibersihkan sekaligus.
 
 import type { IsianTabel, KeputusanGharqa } from '@waris/latihan';
+import { bacaMentah, hapusMentah, simpanMentah } from './penyimpanan';
 
 const KUNCI_PROGRES_SOAL = 'arif-waris:progres-soal';
 
@@ -40,13 +41,7 @@ export function hapusProgresSoal(idSesi: string): void {
   tulisPeta(sisa);
 }
 
-export function hapusSemuaProgresSoal(): void {
-  try {
-    localStorage.removeItem(KUNCI_PROGRES_SOAL);
-  } catch {
-    // Penyimpanan diblokir: tidak ada yang bisa dibersihkan.
-  }
-}
+export const hapusSemuaProgresSoal = (): void => hapusMentah(KUNCI_PROGRES_SOAL);
 
 /** Dipakai kedaluwarsa riwayat: progres tidak hidup lebih lama dari kasusnya. */
 export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void {
@@ -57,20 +52,15 @@ export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void {
 
 function bacaPeta(): Record<string, unknown> {
   try {
-    const peta: unknown = JSON.parse(localStorage.getItem(KUNCI_PROGRES_SOAL) ?? '{}');
+    const peta: unknown = JSON.parse(bacaMentah(KUNCI_PROGRES_SOAL) ?? '{}');
     return peta && typeof peta === 'object' && !Array.isArray(peta) ? (peta as Record<string, unknown>) : {};
   } catch {
     return {};
   }
 }
 
-function tulisPeta(peta: Record<string, unknown>): void {
-  try {
-    localStorage.setItem(KUNCI_PROGRES_SOAL, JSON.stringify(peta));
-  } catch {
-    // Mode privat / penyimpanan penuh: isian tidak tersimpan, soal tetap bisa dikerjakan.
-  }
-}
+// Mode privat / penyimpanan penuh: simpanMentah jatuh ke memori, soal tetap bisa dikerjakan selama sesi.
+const tulisPeta = (peta: Record<string, unknown>): void => void simpanMentah(KUNCI_PROGRES_SOAL, JSON.stringify(peta));
 
 function adalahProgres(nilai: unknown): nilai is ProgresSoalLokal {
   if (!nilai || typeof nilai !== 'object') return false;
