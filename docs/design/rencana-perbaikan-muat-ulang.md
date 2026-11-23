@@ -10,7 +10,8 @@ Tanggal: 2026-11-23 (revisi 2: model simpan disederhanakan, keputusan pemilik). 
    privasi lewat **"Hapus kasus ini"** yang benar-benar menghapus. Tidak ada lagi mode "Jangan simpan".
 3. Kebijakan privasi menyebut apa yang tersimpan di perangkat, berapa lama, dan cara menghapusnya.
 
-**Di luar cakupan:** sinkron isian soal setengah jadi ke akun, desain ulang halaman Riwayat, konten KHI.
+**Di luar cakupan:** sinkron isian soal setengah jadi ke akun, desain ulang halaman Riwayat, konten KHI, audit
+aturan akses tautan bagikan `#/k/<slug>` (dijadwalkan sesudah rencana ini selesai, lihat bawah).
 
 ## Model simpan (keputusan pemilik 2026-11-23)
 
@@ -191,7 +192,7 @@ export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void  // iku
 2. Tes unit: sesudah keluar, `bacaProgresSoal` → `null`.
 3. Commit `fix(web): keluar akun ikut membersihkan isian soal di perangkat`.
 
-## Tugas 9: kasus tidak ditemukan + lintas tab (P8, P10, P11, X1, X2)
+## Tugas 9: kasus tidak ditemukan, hash rusak, lintas tab (P8, P10, P11, P16, P17, X1, X2)
 
 1. `Aplikasi` membedakan "URL kasus tapi entri tak ada" (`bacaRute(hash).kasus` ada && `pulih === null`) dari
    "bukan URL kasus". Tampilkan pemberitahuan di Awal Hitung pakai komponen peringatan/toast yang sudah ada:
@@ -202,7 +203,16 @@ export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void  // iku
    sumber bukan `latihan` (soal latihan per sesi memang boleh berganda, tiap sesi = percobaan) DAN pulih tetap
    jatuh ke P8 bila memang hilang. Pertahankan "kasus sendiri yang sama tidak dicatat dua kali". Tulis alasan di
    pesan commit; ragu → tanya pemilik.
-3. Commit `fix(web): beri tahu kasus tak ditemukan; refresh pulih walau soal sama dibuka di tab lain`.
+3. Aturan keamanan pesan (P16): teks pemberitahuan **umum dan sama untuk semua sebab** (dihapus, kedaluwarsa,
+   id acak/tebakan, perangkat lain), dan **tidak menampilkan id atau teks apa pun dari URL**. Id kasus hanya dicari
+   di localStorage perangkat (tidak ada permintaan server berdasarkan id), jadi tidak ada IDOR di jalur ini; jangan
+   menambah fetch server berdasarkan id dari URL.
+4. Hash rusak (P17): `bacaRute` memanggil `decodeURIComponent`, yang melempar `URIError` untuk `%` salah format
+   (mis. `#/hitung/%E0`, `#/belajar/%`). Tes merah dulu: `bacaRute('#/hitung/%E0')` tidak melempar. Perbaikan:
+   satu helper `dekodeSegmen` dengan try/catch di `rute.ts` dipakai di semua pemanggilan (jangan tambal per cabang);
+   segmen gagal decode → rute dianggap tak dikenal (`beranda`), atau untuk `#/hitung/...` → perlakuan P8.
+   Cek juga di preview bahwa halaman tidak blank.
+5. Commit `fix(web): beri tahu kasus tak ditemukan (pesan umum); hash rusak tidak membuat aplikasi macet; refresh pulih walau soal sama dibuka di tab lain`.
 
 ## Tugas 10: kebijakan privasi (S9)
 
@@ -248,3 +258,9 @@ diisi sendiri. Perubahan:
 - Tidak ada "Jangan simpan" tersisa di UI/kode/diksi.
 - Kebijakan privasi v2 tampil dan dialog persetujuan muncul ulang untuk akun yang menyetujui v1.
 - Tidak ada file KHI milik sesi lain yang ikut ter-commit.
+
+## Agenda sesudahnya (bukan bagian rencana ini)
+
+Audit keamanan tautan bagikan `#/k/<slug>`: aturan akses (RLS) tabel `kasus_dibagikan` di Supabase, dan apakah
+hasil `perlu_masuk` / `tidak_boleh` / `tidak_ada` dari `RepositoriBagikan.baca` membocorkan bahwa sebuah slug ada
+(enumerasi slug). Keputusan pemilik 2026-11-23: dikerjakan setelah rencana ini selesai.

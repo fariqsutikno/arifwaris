@@ -58,6 +58,8 @@ Lapisan: **U** = unit (vitest, `pulihDariUrl`/reducer/riwayat), **K** = komponen
 | P13 | Back/forward browser antara `#/latihan` dan `#/hitung/<id>` | Posisi benar, tanpa dialog ganda | E |
 | P14 | Login Google (`?code=`) lalu kembali ke `#/hitung/<id>` | Kasus pulih, `code` dibersihkan dari URL | E |
 | P15 | Sinkron akun selesai setelah render awal | Tidak menimpa kasus yang sedang dibuka | E |
+| P16 | `#/hitung/<id acak / tebakan / milik orang lain>` | Pesan umum yang sama dengan P8; id dari URL tidak tampil di layar; tidak ada permintaan server berdasarkan id | U + K |
+| P17 | Hash dengan `%` rusak: `#/hitung/%E0`, `#/belajar/%`, `#/rujukan/%ZZ` | Tidak melempar, halaman tidak blank; jatuh ke beranda atau P8 | U + E |
 
 ### 2. Soal latihan
 
