@@ -39,3 +39,16 @@ it('kasus belum lengkap tidak dibuka di hasil', () => {
   catatRiwayat('x', kasusBaru('P'), 1, { jenis: 'sendiri' });
   expect(pulihDariUrl('#/hitung/x', null)?.keadaan.layar).toBe('wizard');
 });
+
+it('susunan cepat (harta 0) tetap di hasil saat dimuat ulang', () => {
+  const dasar = kasusBaru('L', 'latihan');
+  const cepat = { ...dasar, tirkah: { ...dasar.tirkah, kotor: 0n }, graf: tambahAhliWaris(dasar.graf, 'PEWARIS', 'ISTRI') };
+  catatRiwayat('cepat', cepat, 1, { jenis: 'sendiri' });
+  expect(pulihDariUrl('#/hitung/cepat', null)?.keadaan.layar).toBe('hasil');
+});
+
+it('kasus nyata yang pintunya belum dijawab dibuka di wizard', () => {
+  const nyata = kasusBaru('L', 'nyata');
+  catatRiwayat('nyata', { ...nyata, graf: tambahAhliWaris(nyata.graf, 'PEWARIS', 'ISTRI') }, 1, { jenis: 'sendiri' });
+  expect(pulihDariUrl('#/hitung/nyata', null)?.keadaan.layar).toBe('wizard');
+});

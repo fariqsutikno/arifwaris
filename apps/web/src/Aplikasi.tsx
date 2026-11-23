@@ -42,6 +42,7 @@ import { perluSetujuKebijakan } from './akun/persetujuan';
 import { KasusDibagikan } from './layar/KasusDibagikan';
 import { sudahDibagikan } from './bagikanLokal';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
+import { bolehDiHasil } from './layar/wizard/validasi';
 import { TAUTAN_KALKULATOR, bacaRute, tautanKasus, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
@@ -254,8 +255,8 @@ export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string;
   if (layar === 'wizard') aksi.push({ jenis: 'KE_LANGKAH', langkah: langkah ?? 1 });
   else if (layar === 'cerita') aksi.push({ jenis: 'KE_LAYAR', layar });
   let keadaan = aksi.reduce(pengurangKeadaan, keadaanAwal(null, tujuan));
-  // Kasus yang belum lengkap tidak punya hasil: jatuh ke langkah wizard pertama yang belum terisi.
-  if (keadaan.layar !== 'wizard' && !kasusLengkap(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
+  // Kasus yang belum boleh ke Hasil (harta 0 dari susunan cepat boleh): jatuh ke langkah wizard pertama yang belum terisi.
+  if (keadaan.layar !== 'wizard' && !bolehDiHasil(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
   return { id, sumber: entri.sumber, keadaan };
 }
 
