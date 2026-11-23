@@ -7,6 +7,7 @@ import { ModalProfil } from '../akun/ModalProfil';
 import { perluSetujuKebijakan, VERSI_KEBIJAKAN_PRIVASI } from '../akun/persetujuan';
 import { Peringkat } from '../layar/Peringkat';
 import { Privasi } from '../layar/Privasi';
+import { Syarat } from '../layar/Syarat';
 
 const SESI = { userId: 'a', email: 'umar@tes.local', nama: 'Umar bin Khattab' };
 const siapkan = () => buatMemoriPengguna(buatMemori({ sesi: SESI }));
@@ -24,6 +25,7 @@ test('dialog persetujuan: Setuju merekam versi kebijakan; tolak = keluar', async
   const saatSetuju = vi.fn(), saatKeluar = vi.fn();
   render(<DialogPersetujuan repo={repoDari(repo)} saatSetuju={saatSetuju} saatKeluar={saatKeluar} />);
   expect(screen.getByRole('link', { name: /baca kebijakan lengkap/i }).getAttribute('href')).toBe('#/privasi');
+  expect(screen.getByRole('link', { name: /baca syarat layanan/i }).getAttribute('href')).toBe('#/syarat');
   fireEvent.click(screen.getByRole('button', { name: /tidak setuju, keluar/i }));
   expect(saatKeluar).toHaveBeenCalled();
   fireEvent.click(screen.getByRole('button', { name: /^setuju$/i }));
@@ -31,12 +33,18 @@ test('dialog persetujuan: Setuju merekam versi kebijakan; tolak = keluar', async
   expect(await repo.pengguna.bacaPersetujuan()).toEqual([{ jenis: 'kebijakan_privasi', versi: VERSI_KEBIJAKAN_PRIVASI, setuju: true }]);
 });
 
-test('halaman kebijakan memuat semua butir dan menandai bagian yang menunggu pemilik', () => {
+test('halaman kebijakan memuat semua butir dan dan kontak', () => {
   render(<Privasi />);
   for (const judul of [/data yang kami simpan/i, /untuk apa/i, /berapa lama/i, /di mana data disimpan/i, /pihak yang memproses/i, /hakmu/i, /kontak pengendali data/i]) {
     expect(screen.getByRole('heading', { name: judul })).toBeTruthy();
   }
-  expect(screen.getByText(/draf/i)).toBeTruthy();
+});
+
+test('halaman syarat layanan memuat semua butir', () => {
+  render(<Syarat />);
+  for (const judul of [/hasil hitung bukan fatwa/i, /pemakaian yang wajar/i, /masa beta/i, /hukum dan sengketa/i]) {
+    expect(screen.getByRole('heading', { name: judul })).toBeTruthy();
+  }
 });
 
 test('papan: tautan teks mengajak ikut, mencatat persetujuan; tautan sembunyikan menariknya', async () => {
@@ -70,4 +78,20 @@ test('profil: unduh data berupa berkas JSON; hapus akun minta mengetik kalimat, 
   hapus.mockRejectedValueOnce(new Error(GALAT_AKUN_PENULIS));
   fireEvent.click(lanjut);
   expect(await screen.findByText(/akun penulis tidak bisa dihapus sendiri/i)).toBeTruthy();
+});
+
+test('kebijakan v2 (S9): akun yang menyetujui v1 diminta setuju ulang; halaman menyebut simpan otomatis di perangkat, retensi 30 hari, dan Hapus kasus ini', () => {
+  expect(VERSI_KEBIJAKAN_PRIVASI).toBe(5);
+  expect(perluSetujuKebijakan([{ jenis: 'kebijakan_privasi', versi: 4, setuju: true }])).toBe(true);
+  render(<Privasi />);
+  const teks = document.body.textContent ?? '';
+  expect(teks).toMatch(/tersimpan otomatis di perangkat ini/);
+  expect(teks).toMatch(/tidak dikirim ke server kecuali kamu masuk/);
+  expect(teks).toMatch(/tidak dibuka 30 hari/);
+  expect(teks).toMatch(/Hapus kasus ini/);
+});
+
+test('ringkasan dialog persetujuan menyebut kasus ikut tersimpan di akun', () => {
+  render(<DialogPersetujuan repo={repoDari(siapkan())} saatSetuju={() => undefined} saatKeluar={() => undefined} />);
+  expect(document.body.textContent).toMatch(/Kasus hitunganmu ikut tersimpan di akun/);
 });

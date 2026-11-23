@@ -17,6 +17,7 @@ export type Rute =
   | { halaman: 'riwayat' }
   | { halaman: 'peringkat' }
   | { halaman: 'privasi' }
+  | { halaman: 'syarat' }
   | { halaman: 'dibagikan'; slug: string }
   | { halaman: 'glosarium'; id?: string }
   | { halaman: 'rujukan'; kode?: string; kategori?: string; kitab?: string };
@@ -24,11 +25,16 @@ export type Rute =
 /** Posisi kasus di Hitung: id entri riwayat + layar (wizard membawa langkah). */
 export interface PosisiKasus { id: string; layar: 'hasil' | 'cerita' | 'wizard'; langkah?: number }
 
+/** Hash bisa diketik/ditempel siapa saja; `%` salah format (mis. `%E0`) jangan melempar, cukup dipakai apa adanya (tak akan cocok dengan apa pun). */
+const dekodeSegmen = (segmen: string): string => {
+  try { return decodeURIComponent(segmen); } catch { return segmen; }
+};
+
 export function bacaRute(hash: string): Rute {
-  const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+  const segmen = hash.replace(/^#\/?/, '').split('/').map(dekodeSegmen);
+  const [halaman, parameter, bagian, langkah] = segmen;
   if (halaman === 'hitung') {
     if (!parameter) return { halaman: 'kalkulator' };
-    const [, , bagian, langkah] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
     if (bagian === 'cerita') return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'cerita' } };
     if (bagian === 'langkah' && Number.isInteger(Number(langkah))) {
       return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'wizard', langkah: Number(langkah) } };
@@ -37,18 +43,18 @@ export function bacaRute(hash: string): Rute {
   }
   if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'latihan') {
-    const paket = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    const paket = bagian;
     return parameter === 'kuis' ? (paket ? { halaman, tab: 'kuis', paket } : { halaman, tab: 'kuis' }) : { halaman, tab: 'hitung' };
   }
   if (halaman === 'k' && parameter) return { halaman: 'dibagikan', slug: parameter };
-  if (halaman === 'riwayat' || halaman === 'peringkat' || halaman === 'privasi') return { halaman };
+  if (halaman === 'riwayat' || halaman === 'peringkat' || halaman === 'privasi' || halaman === 'syarat') return { halaman };
   if (halaman === 'faq') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'tanya-jawab') return parameter ? { halaman, slug: parameter } : { halaman };
   if (halaman === 'glosarium') return parameter ? { halaman, id: parameter } : { halaman };
   if (halaman === 'rujukan') {
     if (!parameter) return { halaman };
     if (/^R\d{2}-\d+$/.test(parameter)) return { halaman, kode: parameter };
-    const kitab = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    const kitab = bagian;
     return kitab ? { halaman, kategori: parameter, kitab } : { halaman, kategori: parameter };
   }
   return { halaman: 'beranda' };
@@ -59,11 +65,14 @@ export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung', paket?: string)
   (tab === 'kuis' ? `#/latihan/kuis${paket ? `/${encodeURIComponent(paket)}` : ''}` : '#/latihan');
 /** Kasus yang dibagikan: `#/k/<slug>`; slug = huruf kecil, angka, strip (sama dengan check di tabel kasus_dibagikan). */
 export const SLUG_BAGIKAN = /^[a-z0-9][a-z0-9-]{1,38}[a-z0-9]$/;
+/** Akses "tautan" hanya dijaga slug, jadi wajib acak 16 karakter (sama dengan check slug_tautan_acak di tabel). */
+export const SLUG_BAGIKAN_TAUTAN = /^[a-z0-9]{16}$/;
 export const tautanBagikan = (slug: string) => `#/k/${encodeURIComponent(slug)}`;
 export const alamatBagikan = (slug: string) => `${window.location.origin}${window.location.pathname}${tautanBagikan(slug)}`;
 export const tautanRiwayat = () => '#/riwayat';
 export const tautanPeringkat = () => '#/peringkat';
 export const tautanPrivasi = () => '#/privasi';
+export const tautanSyarat = () => '#/syarat';
 export const tautanFaq = (id?: string) => `#/faq${id ? `/${encodeURIComponent(id)}` : ''}`;
 export const tautanTanyaJawab = (slug?: string) => `#/tanya-jawab${slug ? `/${encodeURIComponent(slug)}` : ''}`;
 export const tautanGlosarium = (id?: string) => `#/glosarium${id ? `/${encodeURIComponent(id)}` : ''}`;

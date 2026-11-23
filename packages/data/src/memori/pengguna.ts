@@ -102,20 +102,26 @@ export function buatMemoriPengguna(bersama: MemoriBersama): {
   };
 
   // Meniru kasus_dibagikan + baca_kasus_dibagikan (diuji pgTAP 15_bagikan).
-  const dibagikan = new Map<string, { pemilik: string; idRiwayat: string; slug: string; akses: 'privat' | 'tautan' | 'email'; email: string[]; kasus: unknown }>();
+  const dibagikan = new Map<string, { pemilik: string; idRiwayat: string; slug: string; akses: 'privat' | 'tautan' | 'email'; email: string[]; kasus: unknown; diubahPada: string }>();
   const barisSaya = (idRiwayat: string) => dibagikan.get(kunci(idRiwayat));
   const bagikan: RepositoriBagikan = {
     async bacaPengaturan(idRiwayat) {
       const baris = barisSaya(idRiwayat);
       return baris ? { slug: baris.slug, akses: baris.akses, email: baris.email } : null;
     },
+    async daftarMilikSaya() {
+      const awalan = pemilik() + '\u0000';
+      return [...dibagikan.entries()].filter(([kunciBaris, baris]) => kunciBaris.startsWith(awalan) && baris.akses !== 'privat')
+        .map(([, baris]) => ({ slug: baris.slug, akses: baris.akses, idRiwayat: baris.idRiwayat, diubahPada: baris.diubahPada }))
+        .sort((kiri, kanan) => kanan.diubahPada.localeCompare(kiri.diubahPada));
+    },
     async simpan(idRiwayat, pengaturan, kasus) {
       if ([...dibagikan.values()].some(baris => baris.slug === pengaturan.slug && !(baris.pemilik === pemilik() && baris.idRiwayat === idRiwayat))) {
         throw new Error(GALAT_TAUTAN_DIPAKAI);
       }
-      dibagikan.set(kunci(idRiwayat), { pemilik: pemilik(), idRiwayat, ...pengaturan, kasus });
+      dibagikan.set(kunci(idRiwayat), { pemilik: pemilik(), idRiwayat, ...pengaturan, kasus, diubahPada: new Date().toISOString() });
     },
-    async perbaruiKasus(idRiwayat, kasus) { const baris = barisSaya(idRiwayat); if (baris) baris.kasus = kasus; },
+    async perbaruiKasus(idRiwayat, kasus) { const baris = barisSaya(idRiwayat); if (baris) { baris.kasus = kasus; baris.diubahPada = new Date().toISOString(); } },
     async berhenti(idRiwayat) { dibagikan.delete(kunci(idRiwayat)); },
     async tautanTersedia(slug, idRiwayat) {
       return ![...dibagikan.values()].some(baris => baris.slug === slug && !(baris.pemilik === pemilik() && baris.idRiwayat === idRiwayat));

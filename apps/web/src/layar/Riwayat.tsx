@@ -2,6 +2,7 @@
 // (hero gelap, berkas berwarna). Daftarnya komponen yang sama dengan Awal Lab, hanya penuh dan bisa disaring dan dicari.
 
 import { useEffect } from 'react';
+import type { RepositoriBagikan } from '@waris/data';
 import type { Kasus } from '../kasus';
 import type { EntriRiwayat } from '../riwayat';
 import { tautanInduk } from '../rute';
@@ -9,9 +10,9 @@ import { Ikon } from '../ui/Ikon';
 import { DaftarKasus } from './lab/DaftarKasus';
 import { t } from '../terjemah';
 
-interface Props { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void }
+interface Props { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void; bagikan?: Pick<RepositoriBagikan, 'berhenti'> | undefined }
 
-export function HalamanRiwayat({ kasusSekarang, saatBuka }: Props) {
+export function HalamanRiwayat({ kasusSekarang, saatBuka, bagikan }: Props) {
   // Penanda halaman: latar krem dan nav menyatu dengan hero gelap, sama dengan Beranda, Belajar, dan Awal Lab.
   useEffect(() => { document.body.classList.add('layar-beranda'); return () => document.body.classList.remove('layar-beranda'); }, []);
   return (
@@ -24,7 +25,7 @@ export function HalamanRiwayat({ kasusSekarang, saatBuka }: Props) {
         </div>
       </header>
       <div className="tata-beranda">
-        <DaftarKasus kasusSekarang={kasusSekarang} saatBuka={saatBuka} />
+        <DaftarKasus kasusSekarang={kasusSekarang} saatBuka={saatBuka} bagikan={bagikan} />
       </div>
     </main>
   );
