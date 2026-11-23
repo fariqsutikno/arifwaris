@@ -484,6 +484,16 @@ describe('layar hasil', () => {
     expect(screen.getByRole('alertdialog').textContent).toMatch(/Tautan bagikannya juga dihentikan/);
   });
 
+  it('soal latihan (mode belajar, tanpa lembar Bagikan): Hapus kasus ini ada di kaki halaman dan dialognya menyebut progres tidak terhapus', () => {
+    const hapus = vi.fn();
+    render(<Uji awal={c1601()} tujuan="belajar" tanpaSimpan saatHapusKasus={hapus} />);
+    expect(screen.queryByRole('button', { name: 'Bagikan' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Hapus kasus ini' }));
+    expect(screen.getByRole('alertdialog').textContent).toMatch(/Progres dan XP latihan tidak ikut terhapus/);
+    fireEvent.click(within(screen.getByRole('alertdialog')).getByRole('button', { name: 'Hapus' }));
+    expect(hapus).toHaveBeenCalledOnce();
+  });
+
   it('tampilan penerima tautan (hanyaBaca) tidak menawarkan Hapus kasus ini', () => {
     render(<Hasil kasus={prototipe()} idSesi="x" tujuan="hitung" kirim={() => undefined} hanyaBaca saatHapusKasus={() => undefined} />);
     // Penerima tautan tidak punya lembar Bagikan, jadi tidak ada jalan ke Hapus kasus ini.

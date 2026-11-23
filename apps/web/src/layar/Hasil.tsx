@@ -169,6 +169,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   useEffect(() => { document.body.classList.add('layar-hasil'); return () => document.body.classList.remove('layar-hasil'); }, []);
   const bolehUbah = !hanyaBaca && !(terkunci && adalahBelajar);
   const ubahData = () => kirim({ jenis: 'KE_LANGKAH', langkah: 1 });
+  // Mode belajar tidak punya tombol Bagikan (tempat tautan Hapus kasus ini di mode lain), jadi tautannya di kaki halaman.
+  const hapusDiKaki = adalahBelajar && !hanyaBaca && !!saatHapusKasus;
 
   // Isian dan status soal setengah jadi dipulihkan dari perangkat (muat ulang / buka dari Riwayat). Nilai pulihan hanya
   // mengisi state: tidak memanggil saatDikerjakan/catatLatihan/catat('buka') lagi, supaya progres tidak dobel (L4, X5).
@@ -488,10 +490,11 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
 
       <footer className="kaki-hasil">
         <p>{t('hitung.hasil_ini_menurut_madzhab_syafi_i')} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
-        {bolehUbah && (
+        {(bolehUbah || hapusDiKaki) && (
           <div className="aksi-kaki">
-            <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>
-            <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('umum.reset')}{t('hitung.skenario')}</button>
+            {bolehUbah && <button type="button" className="tautan-aksi" onClick={ubahData}>{t('hitung.ubah_data_2')}</button>}
+            {bolehUbah && <button type="button" className="tautan-aksi" onClick={() => setKonfirmasiUlangi(true)}>{t('umum.reset')}{t('hitung.skenario')}</button>}
+            {hapusDiKaki && <button type="button" className="tautan-aksi tautan-bahaya" onClick={() => setKonfirmasiHapus(true)}>{t('hasil.bagikan_lembar.hapus_kasus')}</button>}
           </div>
         )}
       </footer>

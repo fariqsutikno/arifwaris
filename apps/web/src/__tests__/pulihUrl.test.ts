@@ -3,6 +3,7 @@ import { hitungIsian, tambahAhliWaris } from '../checklist';
 import { pulihDariUrl } from '../Aplikasi';
 import { kasusBaru } from '../kasus';
 import { tandaiWafatSebelumDibagi } from '../latihan';
+import { kasusDariSusunan, SUSUNAN_CEPAT } from '../lab';
 import { catatRiwayat, hapusRiwayat } from '../riwayat';
 
 const lengkap = () => {
@@ -66,4 +67,11 @@ it('kasus sendiri yang sama tetap tidak dicatat dua kali', () => {
   catatRiwayat('b', lengkap(), 2, { jenis: 'sendiri' });
   expect(pulihDariUrl('#/hitung/a', null)).toBeNull();
   expect(pulihDariUrl('#/hitung/b', null)).not.toBeNull();
+});
+
+it('semua susunan cepat nyata (harta 0, bagian lain belum ditanya) tetap di hasil saat dimuat ulang (B1/P4)', () => {
+  for (const susunan of SUSUNAN_CEPAT) {
+    catatRiwayat(susunan.kunci, kasusDariSusunan(susunan), 1, { jenis: 'sendiri' });
+    expect(pulihDariUrl(`#/hitung/${susunan.kunci}`, null)?.keadaan.layar, susunan.kunci).toBe('hasil');
+  }
 });
