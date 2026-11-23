@@ -14,9 +14,9 @@ const lengkap = () => {
 beforeEach(() => hapusRiwayat());
 
 it('muat ulang di URL kasus kembali ke kasus dan halaman yang sama', () => {
-  catatRiwayat('abc', lengkap(), 1, { jenis: 'materi' });
+  catatRiwayat('abc', lengkap(), 1, { jenis: 'impor' });
   expect(pulihDariUrl('#/hitung/abc', null)?.keadaan).toMatchObject({ layar: 'hasil' });
-  expect(pulihDariUrl('#/hitung/abc', null)?.sumber).toEqual({ jenis: 'materi' });
+  expect(pulihDariUrl('#/hitung/abc', null)?.sumber).toEqual({ jenis: 'impor' });
   expect(pulihDariUrl('#/hitung/abc/langkah/2', null)?.keadaan).toMatchObject({ layar: 'wizard', langkah: 2 });
   expect(pulihDariUrl('#/hitung/abc/langkah/3/9', null)?.keadaan).toMatchObject({ layar: 'wizard', langkah: 3 });
 });
@@ -27,7 +27,7 @@ it('tautan babak lama (latihan dengan mayit lanjutan) tetap terbuka di langkah 3
   const [anak] = hitungIsian(kasus.graf, 'PEWARIS').ANAK_LK!;
   kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, anak!, 'ANAK_LK') };   // anak punya ahli waris hidup, jadi langkah 3 tidak tertahan
   kasus = tandaiWafatSebelumDibagi(kasus, anak!, true);
-  catatRiwayat('lama', kasus, 1, { jenis: 'materi' });
+  catatRiwayat('lama', kasus, 1, { jenis: 'impor' });
   expect(pulihDariUrl('#/hitung/lama/langkah/3/2', null)?.keadaan).toMatchObject({ layar: 'wizard', langkah: 3 });
 });
 
@@ -54,12 +54,11 @@ it('kasus nyata yang pintunya belum dijawab dibuka di wizard', () => {
   expect(pulihDariUrl('#/hitung/nyata', null)?.keadaan.layar).toBe('wizard');
 });
 
-it('dua sesi soal latihan yang sama (dua tab) tetap bisa dipulihkan masing-masing (X1)', () => {
-  const kasus = lengkap();
-  catatRiwayat('a', kasus, 1, { jenis: 'latihan', kode: 'H-01' });
-  catatRiwayat('b', kasus, 2, { jenis: 'latihan', kode: 'H-01' });
-  expect(pulihDariUrl('#/hitung/a', null)).not.toBeNull();
-  expect(pulihDariUrl('#/hitung/b', null)).not.toBeNull();
+// Menggantikan X1 dari #53 (dua tab soal yang sama dipulihkan lewat riwayat): soal tidak lagi di riwayat, jadi entri lama
+// bersumber latihan tidak boleh terbuka sebagai kasus lewat URL kasus.
+it('entri lama bersumber latihan tidak dipulihkan sebagai kasus', () => {
+  catatRiwayat('a', lengkap(), 1, { jenis: 'latihan', kode: 'H-01' });
+  expect(pulihDariUrl('#/hitung/a', null)).toBeNull();
 });
 
 it('kasus sendiri yang sama tetap tidak dicatat dua kali', () => {

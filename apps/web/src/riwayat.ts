@@ -1,6 +1,6 @@
 // "Terakhir dibuka": kasus yang pernah dibuka di wizard atau layar hasil, terbaru di atas, disimpan di perangkat ini,
 // otomatis tanpa perlu ditekan. Kasus yang belum sampai hasil tetap dicatat (ditandai data belum lengkap) supaya bisa
-// dilanjutkan. Satu entri per sesi (mulai kasus / impor / buka dari riwayat, materi, atau latihan): mengubah kasus
+// dilanjutkan. Satu entri per sesi (mulai kasus / impor / buka dari riwayat): mengubah kasus
 // di layar hasil memperbarui entri sesinya. Tiap entri mencatat sumbernya. Entri yang tidak dibuka lebih dari 30
 // hari dibuang. Beda dengan tersimpan.ts: hanya yang disimpan manual lewat tombol Simpan, tanpa kedaluwarsa.
 
@@ -10,7 +10,6 @@ import { formatRupiah } from './format';
 import { dariJson, keJson, type Kasus } from './kasus';
 import { LABEL_SEHARI } from './konten/ahliWaris';
 import { perluPeriksaCerita } from './keadaanOrang';
-import { buangProgresSoalSelain } from './progresSoalLokal';
 import { LANGKAH_HASIL, langkahTerjauh } from './layar/wizard/validasi';
 import { angka, bahasaArab, t } from './terjemah';
 
@@ -29,8 +28,12 @@ export type SumberRiwayat =
 export interface EntriRiwayat { id: string; waktu: number; sumber: SumberRiwayat; judul: string; keterangan: string; lengkap: boolean; kasus: Kasus }
 interface EntriTersimpan { id: string; waktu: number; sumber?: SumberRiwayat; kasus: string }
 
+/** Hanya kasus (sendiri/impor) yang tinggal di Kasusmu; soal tinggal di Latihan, contoh materi tidak disimpan. */
+export const adalahKasusPengguna = (sumber: SumberRiwayat): boolean => sumber.jenis === 'sendiri' || sumber.jenis === 'impor';
+
+/** Entri lama bersumber latihan/materi disembunyikan di sini, tetapi tidak dihapus dari penyimpanan. */
 export function bacaRiwayat(): EntriRiwayat[] {
-  return bacaTersimpan().flatMap(entri => {
+  return bacaTersimpan().filter(entri => adalahKasusPengguna(entri.sumber ?? { jenis: 'sendiri' })).flatMap(entri => {
     const hasil = dariJson(entri.kasus);
     return hasil.berhasil
       ? [{ id: entri.id, waktu: entri.waktu, sumber: entri.sumber ?? { jenis: 'sendiri' }, ...ringkasKasus(hasil.kasus), kasus: hasil.kasus }]
@@ -41,14 +44,9 @@ export function bacaRiwayat(): EntriRiwayat[] {
 /** Catat atau perbarui entri sesi `id`; `waktu` = terakhir dibuka/diubah. */
 export function catatRiwayat(id: string, kasus: Kasus, waktu: number, sumber: SumberRiwayat): void {
   const json = keJson(kasus);
-  // Kasus yang persis sama (mis. dibuka lagi dari riwayat lalu tidak diubah) tidak dicatat dua kali. Kecuali soal latihan:
-  // tiap sesi soal = satu percobaan, dan dua tab pada soal yang sama tidak boleh saling menghapus (refresh tab pertama tetap pulih).
-  const sumberLatihan = (sumberEntri?: SumberRiwayat) => sumberEntri?.jenis === 'latihan';
-  const dobel = (entri: EntriTersimpan) => entri.kasus === json && !sumberLatihan(sumber) && !sumberLatihan(entri.sumber);
-  const lain = bacaTersimpan().filter(entri => entri.id !== id && !dobel(entri) && waktu - entri.waktu <= MASA_SIMPAN);
-  const baru = [{ id, waktu, sumber, kasus: json }, ...lain];
-  simpanTersimpan(baru);
-  buangProgresSoalSelain(new Set(baru.map(entri => entri.id)));
+  // Kasus yang persis sama (mis. dibuka lagi dari riwayat lalu tidak diubah) tidak dicatat dua kali.
+  const lain = bacaTersimpan().filter(entri => entri.id !== id && entri.kasus !== json && waktu - entri.waktu <= MASA_SIMPAN);
+  simpanTersimpan([{ id, waktu, sumber, kasus: json }, ...lain]);
 }
 
 /** Catat kasus sebagai entri baru hanya bila isinya belum ada di riwayat (mis. kasus tersimpan dari versi lama). */

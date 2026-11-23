@@ -99,6 +99,14 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 .status-soal-baru{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:2px dashed #aab8a7;color:#fff}
 .baris-soal-baru.selesai .status-soal-baru{border:0;background:var(--sorot-fardh)}
 .baris-soal-baru.disarankan .status-soal-baru{border:2px solid var(--aksen)}
+.status-soal-baru{position:relative}
+.baris-soal-baru.selesai .status-lihatJawaban{border:1.5px solid #c9d4c6;background:#e9ede6;color:#4a5853}
+.baris-soal-baru .status-terputus{border:0;background:conic-gradient(var(--aksen) var(--isi,40%),transparent 0)}
+.status-terputus::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--aksen)}
+.status-terputus::before{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--surface-raised);z-index:1}
+.baris-soal-baru.terputus{background:var(--aksen-soft)}
+.ket-terputus{font-weight:700;color:#a83a08}
+.lanjut-terputus{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 4px 12px;padding:12px 16px;border-radius:16px;background:var(--aksen-soft)}
 .baris-soal-baru .isi-soal{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
 .baris-soal-baru .isi-soal b{font:600 16px/1.4 var(--font-sans)}
 .baris-soal-baru.selesai .isi-soal b{font-weight:500;color:var(--ink-muted)}
@@ -328,3 +336,5 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
   .panel-acak,.pratinjau-acak,.panel-dropdown,.progres-bab .bar-progres>span,.bar-nilai>span{animation:none}
   .pemicu-dropdown>svg,.kepala-bab>svg,.jalur-sakelar::after,.aw-btn.tombol-terang{transition:none}
 }
+.aksi-salinan{display:flex;flex-wrap:wrap;gap:4px 20px;margin:6px 0 0}
+.ubin-lab-soal .status-soal-baru{width:26px;height:26px}

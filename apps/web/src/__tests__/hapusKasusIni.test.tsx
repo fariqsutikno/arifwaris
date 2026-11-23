@@ -3,7 +3,6 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { beforeEach, expect, it } from 'vitest';
 import { Aplikasi } from '../Aplikasi';
 import { kasusDariSusunan, SUSUNAN_CEPAT } from '../lab';
-import { bacaProgresSoal, simpanProgresSoal } from '../progresSoalLokal';
 import { bacaRiwayat, catatRiwayat } from '../riwayat';
 import { semuaTersimpan, simpanKasus } from '../tersimpan';
 
@@ -16,7 +15,6 @@ beforeEach(() => {
   localStorage.setItem('arif-waris:tur:hasil', '1');
   catatRiwayat('abc', kasusLengkap(), Date.now(), { jenis: 'sendiri' });
   simpanKasus('abc', kasusLengkap(), 'Kasus A');
-  simpanProgresSoal('abc', { isian: null, pilihanGharqa: null, jawabanTerbuka: false, sudahMencoba: false, tebakanBenar: false, idSesiSoal: 'p', revisiSoal: 'r' });
   window.location.hash = '#/hitung/abc';
 });
 
@@ -36,14 +34,12 @@ it('hapus → konfirmasi → semua simpanan hilang, kembali ke Awal Hitung denga
   fireEvent.click(within(dialog).getByRole('button', { name: 'Hapus' }));
   expect(bacaRiwayat()).toEqual([]);
   expect(semuaTersimpan()).toEqual([]);
-  expect(bacaProgresSoal('abc', 'r')).toBeNull();
   expect(screen.getByRole('button', { name: /Mulai dari nol/ })).toBeTruthy();
   expect(window.location.hash).toBe('#/hitung');
   expect(screen.getByText('Kasus dihapus')).toBeTruthy();
   fireEvent.click(screen.getByRole('button', { name: 'Urungkan' }));
   expect(bacaRiwayat().map(entri => entri.id)).toEqual(['abc']);
   expect(semuaTersimpan().map(baris => baris.judul)).toEqual(['Kasus A']);
-  expect(bacaProgresSoal('abc', 'r')).not.toBeNull();
   expect(window.location.hash).toBe('#/hitung/abc');
   // Kembali ke layar yang sama (Hasil), bukan wizard.
   expect(within(document.querySelector('.bilah-hero')!).getByRole('button', { name: 'Bagikan' })).toBeTruthy();

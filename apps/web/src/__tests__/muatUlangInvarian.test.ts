@@ -1,15 +1,14 @@
 // Invarian muat ulang: tiap posisi yang bisa dicapai lewat reducer, setelah kasusnya tercatat di riwayat,
 // dipulihkan ke layar & langkah yang sama dari URL-nya (menangkap B1 dan regresi serupa). Plus sisa peta uji level U.
 import { beforeEach, expect, it } from 'vitest';
-import { kasusDariSoal } from '@waris/latihan';
-import { pulihDariUrl } from '../Aplikasi';
+import { pulihDariSoal, pulihDariUrl } from '../Aplikasi';
 import { kasusDariSusunan, SUSUNAN_CEPAT } from '../lab';
 import { kasusBaru, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, keadaanAwal, pengurangKeadaan, type Aksi, type KeadaanAplikasi } from '../keadaan';
 import { daftarSoalHitung } from '../konten/sumber';
 import { bolehDiHasil } from '../layar/wizard/validasi';
 import { catatRiwayat, hapusRiwayat, type SumberRiwayat } from '../riwayat';
-import { tautanKasus } from '../rute';
+import { tautanKasus, tautanSoal } from '../rute';
 import { tambahAhliWaris } from '../checklist';
 
 beforeEach(() => { localStorage.clear(); hapusRiwayat(); });
@@ -35,10 +34,9 @@ const kasusContoh = (): Array<[string, Kasus, SumberRiwayat]> => [
   ['lengkap', lengkap(), { jenis: 'sendiri' }],
   ['belum lengkap', kasusBaru('P'), { jenis: 'sendiri' }],
   ...SUSUNAN_CEPAT.map((susunan, indeks): [string, Kasus, SumberRiwayat] => [`susunan cepat ${indeks}`, kasusDariSusunan(susunan), { jenis: 'sendiri' }]),
-  ...daftarSoalHitung().map((soal): [string, Kasus, SumberRiwayat] => [`soal ${soal.kode}`, kasusDariSoal(soal.kasus), { jenis: 'latihan', kode: soal.kode }]),
 ];
 
-it('pulih dari URL memberi layar & langkah yang sama untuk semua posisi tercapai (susunan cepat, semua soal, belum lengkap)', () => {
+it('pulih dari URL memberi layar & langkah yang sama untuk semua posisi tercapai (susunan cepat, belum lengkap)', () => {
   let diperiksa = 0;
   for (const [nama, kasus, sumber] of kasusContoh()) {
     for (const [indeks, keadaan] of posisiTercapai(kasus).entries()) {
@@ -56,6 +54,20 @@ it('pulih dari URL memberi layar & langkah yang sama untuk semua posisi tercapai
   expect(diperiksa).toBeGreaterThan(20);
 });
 
+// Menggantikan "semua soal lewat riwayat" dari #53: soal tidak masuk riwayat (spec siklus kasus dan soal), alamatnya #/latihan/soal/<kode>.
+it('tiap soal bank soal pulih dari alamatnya sebagai soal yang ditebak, tanpa riwayat', () => {
+  expect(daftarSoalHitung().length).toBeGreaterThan(5);
+  for (const soal of daftarSoalHitung()) {
+    const pulih = pulihDariSoal(tautanSoal(soal.kode), 'hitung');
+    expect(pulih?.soal.kode, soal.kode).toBe(soal.kode);
+    expect(pulih!.pembahasan, soal.kode).toBe(false);
+    expect(pulih!.keadaan.layar, soal.kode).toBe('hasil');
+    expect(pulih!.keadaan.tujuan, soal.kode).toBe('belajar');
+  }
+  expect(pulihDariSoal('#/latihan/soal/tidak-ada', null)).toBeNull();
+  expect(pulihDariSoal('#/hitung/x', null)).toBeNull();
+});
+
 it('P3/H8: URL /cerita memulihkan layar cerita; P6: langkah tak sah dibatasi ke langkah sah', () => {
   catatRiwayat('x', lengkap(), 1, { jenis: 'sendiri' });
   expect(pulihDariUrl('#/hitung/x/cerita', null)?.keadaan.layar).toBe('cerita');
@@ -66,10 +78,10 @@ it('P3/H8: URL /cerita memulihkan layar cerita; P6: langkah tak sah dibatasi ke 
   }
 });
 
-it('H5/H6: sumber materi dan impor ikut pulih', () => {
+it('H5/H6 (diubah): sumber impor ikut pulih; contoh materi tidak masuk riwayat sehingga tidak dipulihkan', () => {
   catatRiwayat('m', lengkap(), 1, { jenis: 'materi' });
   catatRiwayat('i', { ...lengkap(), nama: 'Berkas lain' }, 2, { jenis: 'impor' });
-  expect(pulihDariUrl('#/hitung/m', null)?.sumber).toEqual({ jenis: 'materi' });
+  expect(pulihDariUrl('#/hitung/m', null)).toBeNull();
   expect(pulihDariUrl('#/hitung/i', null)?.sumber).toEqual({ jenis: 'impor' });
 });
 
@@ -78,7 +90,7 @@ it('H9: sebelum kasus tercatat (pintu/wizard tanpa pewaris) → tidak ada yang d
 });
 
 it('L16: tujuan dari preferensi tetap dipakai saat pulih', () => {
-  catatRiwayat('x', lengkap(), 1, { jenis: 'latihan', kode: 'H-01' });
+  catatRiwayat('x', lengkap(), 1, { jenis: 'sendiri' });
   expect(pulihDariUrl('#/hitung/x', 'belajar')?.keadaan.tujuan).toBe('belajar');
   expect(pulihDariUrl('#/hitung/x', 'hitung')?.keadaan.tujuan).toBe('hitung');
 });

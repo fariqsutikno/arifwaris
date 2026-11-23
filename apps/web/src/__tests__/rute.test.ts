@@ -1,5 +1,5 @@
 import { expect, it } from 'vitest';
-import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, bacaRute, tautanKasus, tautanPeringkat, tautanInduk, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanLatihan, tautanGlosarium, tautanRujukan } from '../rute';
+import { TAUTAN_BERANDA, TAUTAN_KALKULATOR, bacaRute, tautanKasus, tautanPeringkat, tautanInduk, tautanBelajar, tautanFaq, tautanTanyaJawab, tautanLatihan, tautanGlosarium, tautanRujukan, tautanSoal } from '../rute';
 
 it('hash dibaca jadi rute; yang tak dikenal jatuh ke beranda', () => {
   expect(bacaRute('')).toEqual({ halaman: 'beranda' });
@@ -59,4 +59,17 @@ it('URL langkah yang tak sah (P6) tidak membuat rute macet', () => {
   expect(bacaRute('#/hitung/a/langkah/abc')).toEqual({ halaman: 'kalkulator', kasus: { id: 'a', layar: 'hasil' } });
   expect(bacaRute('#/hitung/a/langkah/99')).toEqual({ halaman: 'kalkulator', kasus: { id: 'a', layar: 'wizard', langkah: 99 } });
   expect(bacaRute('#/hitung/a/langkah/-1')).toEqual({ halaman: 'kalkulator', kasus: { id: 'a', layar: 'wizard', langkah: -1 } });
+});
+
+it('soal hitung punya alamat sendiri: #/latihan/soal/<kode> (rute kalkulator, tanpa id kasus)', () => {
+  expect(bacaRute('#/latihan/soal/H-01')).toEqual({ halaman: 'kalkulator', soal: 'H-01' });
+  expect(bacaRute(tautanSoal('H-01'))).toEqual({ halaman: 'kalkulator', soal: 'H-01' });
+  expect(tautanSoal('a b/c')).toBe('#/latihan/soal/a%20b%2Fc');
+  expect(bacaRute(tautanSoal('a b/c'))).toEqual({ halaman: 'kalkulator', soal: 'a b/c' });
+});
+
+it('alamat soal tanpa kode jatuh ke daftar Latihan; % rusak tidak melempar', () => {
+  expect(bacaRute('#/latihan/soal')).toEqual({ halaman: 'latihan', tab: 'hitung' });
+  expect(bacaRute('#/latihan/soal/')).toEqual({ halaman: 'latihan', tab: 'hitung' });
+  expect(bacaRute('#/latihan/soal/%E0')).toEqual({ halaman: 'kalkulator', soal: '%E0' });
 });

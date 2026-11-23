@@ -1,7 +1,7 @@
 import { beforeEach, expect, test, vi } from 'vitest';
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { akunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean';
-import { bacaProgresSoal, simpanProgresSoal } from '../progresSoalLokal';
+import { bacaIsianSoal, simpanIsianSoal } from '../isianSoal';
 import { keluarDanBersihkan, kirimSebelumKeluar, mulaiSinkron } from '../akun/sinkron';
 import { bacaPelajaranSelesai, bacaProgresLatihan, catatLatihan, resetProgresBelajar, tandaiPelajaranSelesai } from '../progres';
 
@@ -105,9 +105,9 @@ test('keluar menghapus semua kunci arif-waris', async () => {
 test('keluar ikut membersihkan isian soal latihan di perangkat (S8)', async () => {
   const { repo } = siapkan(A);
   await mulaiSinkron(repo, vi.fn());
-  simpanProgresSoal('sesi', { isian: null, pilihanGharqa: null, jawabanTerbuka: false, sudahMencoba: true, tebakanBenar: false, idSesiSoal: 'p', revisiSoal: 'r' });
+  simpanIsianSoal('H-01', { kepala: {}, sel: { a: { b: '1' } } }, 3);
   await keluarDanBersihkan(repo);
-  expect(bacaProgresSoal('sesi', 'r')).toBeNull();
+  expect(bacaIsianSoal('H-01')).toBeNull();
 });
 
 test('reset progres menghapus latihan di akun: tidak muncul lagi setelah sinkron', async () => {

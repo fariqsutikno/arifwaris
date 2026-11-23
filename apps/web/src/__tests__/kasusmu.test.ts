@@ -3,7 +3,6 @@ import { antre, aturAkunLokal, bacaAntrean, kirimAntrean } from '../akun/antrean
 import { buatMemori, buatMemoriPengguna } from '@waris/data';
 import { sudahDibagikan, tandaiDibagikan } from '../bagikanLokal';
 import { bacaKasusKu, hapusKasus, hapusSemuaSementara, pulihkanKasus } from '../kasusmu';
-import { bacaProgresSoal, simpanProgresSoal, type ProgresSoalLokal } from '../progresSoalLokal';
 import { kasusDariSusunan, SUSUNAN_CEPAT } from '../lab';
 import { bacaRiwayat, catatRiwayat, hapusRiwayat } from '../riwayat';
 import { semuaTersimpan, simpanKasus } from '../tersimpan';
@@ -62,15 +61,11 @@ test('hapusSemuaSementara menyisakan yang tersimpan', () => {
   expect(bacaKasusKu().map(kasus => kasus.id)).toEqual(['t']);
 });
 
-const progres: ProgresSoalLokal = { isian: null, pilihanGharqa: null, jawabanTerbuka: false, sudahMencoba: true, tebakanBenar: false, idSesiSoal: 'p', revisiSoal: 'r' };
-
-test('hapusKasus juga menghapus progres soal dan mengantre hapus_tersimpan (S1, S6)', () => {
-  catatRiwayat('a', kasusKe(0), Date.now(), { jenis: 'latihan', kode: 'H-01' });
+test('hapusKasus mengantre hapus_tersimpan (S1, S6)', () => {
+  catatRiwayat('a', kasusKe(0), Date.now(), sendiri);
   simpanKasus('a', kasusKe(0), 'A');
-  simpanProgresSoal('a', progres);
   hapusKasus('a');
   expect(bacaRiwayat()).toEqual([]);
-  expect(bacaProgresSoal('a', 'r')).toBeNull();
   expect(bacaAntrean()).toContainEqual({ tabel: 'hapus_tersimpan', id: 'a' });
 });
 
@@ -110,22 +105,13 @@ test('antrean hentikan_bagikan tetap menunggu bila repositori bagikan belum ters
   expect(await kirimAntrean(pengguna)).toBeGreaterThan(0);
 });
 
-test('pulihkanKasus menulis ulang riwayat, tersimpan (ikut antre ke akun) dan progres soal (S2)', () => {
-  catatRiwayat('a', kasusKe(0), 123, { jenis: 'latihan', kode: 'H-01' });
+test('pulihkanKasus menulis ulang riwayat, tersimpan (ikut antre ke akun) (S2)', () => {
+  catatRiwayat('a', kasusKe(0), 123, { jenis: 'impor' });
   simpanKasus('a', kasusKe(0), 'Nama A');
-  simpanProgresSoal('a', progres);
   const cadangan = hapusKasus('a');
   localStorage.removeItem('arif-waris:antrean');
   pulihkanKasus(cadangan);
-  expect(bacaRiwayat().map(entri => [entri.id, entri.waktu, entri.sumber])).toEqual([['a', 123, { jenis: 'latihan', kode: 'H-01' }]]);
+  expect(bacaRiwayat().map(entri => [entri.id, entri.waktu, entri.sumber])).toEqual([['a', 123, { jenis: 'impor' }]]);
   expect(semuaTersimpan().map(baris => [baris.id, baris.judul])).toEqual([['a', 'Nama A']]);
-  expect(bacaProgresSoal('a', 'r')).toEqual(progres);
   expect(bacaAntrean().some(entri => entri.tabel === 'tersimpan')).toBe(true);
-});
-
-test('hapusSemuaSementara juga membuang progres soalnya', () => {
-  catatRiwayat('s', kasusKe(0), Date.now(), sendiri);
-  simpanProgresSoal('s', progres);
-  hapusSemuaSementara();
-  expect(bacaProgresSoal('s', 'r')).toBeNull();
 });

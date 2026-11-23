@@ -29059,6 +29059,83 @@
    "versiTerbit": 873
   },
   {
+   "kunci": "umum.tebakanmu_tersimpan_lanjutkan_dari_latihan",
+   "halaman": "umum",
+   "id": "Tebakanmu tersimpan. Lanjutkan kapan saja dari Latihan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.soal_latihan_pembahasan",
+   "halaman": "hitung",
+   "id": "Soal latihan · pembahasan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kerjakan_ulang",
+   "halaman": "hitung",
+   "id": "Kerjakan ulang",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.jadikan_kasus_sendiri",
+   "halaman": "hitung",
+   "id": "Jadikan kasus sendiri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.terputus_isian",
+   "halaman": "latihan",
+   "id": "Terputus, {terisi} dari {total} isian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.sudah_benar",
+   "halaman": "latihan",
+   "id": "Sudah, benar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.sudah_lihat_jawaban",
+   "halaman": "latihan",
+   "id": "Sudah, lihat jawaban",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.lanjutkan_yang_terputus",
+   "halaman": "latihan",
+   "id": "Lanjutkan yang terputus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.lanjutkan_soal",
+   "halaman": "beranda",
+   "id": "Lanjutkan soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "beranda.isian_tersimpan",
+   "halaman": "beranda",
+   "id": "{terisi} dari {total} isian tersimpan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.soal_tidak_ditemukan",
+   "halaman": "latihan",
+   "id": "Soal ini tidak ditemukan. Pilih soal dari daftar Latihan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
    "kunci": "narasi.khi.label.hukum_positif",
    "halaman": "narasi",
    "id": "Hukum positif, bukan fikih",
