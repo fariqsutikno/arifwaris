@@ -301,6 +301,11 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       const baris = await hasil(klien.from('kasus_dibagikan').select('slug, akses, email').eq('id_riwayat', idRiwayat).maybeSingle()) as any;
       return baris && { slug: baris.slug, akses: baris.akses, email: baris.email };
     },
+    async daftarMilikSaya() {
+      // RLS membatasi ke baris milik sendiri; 'privat' = tidak dibagikan.
+      const baris = await hasil(klien.from('kasus_dibagikan').select('slug, akses, id_riwayat, diubah_pada').neq('akses', 'privat').order('diubah_pada', { ascending: false })) as any[];
+      return baris.map(isi => ({ slug: isi.slug, akses: isi.akses, idRiwayat: isi.id_riwayat, diubahPada: isi.diubah_pada }));
+    },
     async simpan(idRiwayat, pengaturan, kasus) {
       const { error } = await klien.from('kasus_dibagikan').upsert({
         pemilik: await userId(), id_riwayat: idRiwayat, slug: pengaturan.slug, akses: pengaturan.akses, email: pengaturan.email,

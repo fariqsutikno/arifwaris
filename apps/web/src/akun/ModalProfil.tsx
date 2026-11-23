@@ -10,6 +10,7 @@ import { t } from '../terjemah';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { VERSI_KEBIJAKAN_PRIVASI } from './persetujuan';
 import { keluarDanBersihkan } from './sinkron';
+import { DaftarTautanDibagikan } from './TautanDibagikanSaya';
 import type { RepoAkun } from './sinkron';
 
 const PANJANG_NAMA_MAKS = 40;
@@ -112,6 +113,7 @@ export function ModalProfil({ sesi, repo, saatTutup, saatTersimpan }: Props) {
                 <small className="caption-isian">{t('akun.hari_berganti_pukul_00_00_di_zona_ini')}</small>
               </label>
               {galat === 'simpan' && <p role="alert" className="peringatan-isian">{t('akun.profil_gagal_disimpan')}</p>}
+              <DaftarTautanDibagikan repo={repo.bagikan} />
               <p className="keterangan">
                 <button type="button" className="tautan-teks" onClick={() => void unduhData()}>{t('akun.unduh_dataku')}</button>{' '}
                 <a className="tautan-teks" href={tautanPrivasi()} target="_blank" rel="noreferrer">{t('akun.kebijakan_privasi')}</a>{' '}
