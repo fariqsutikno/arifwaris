@@ -1,5 +1,11 @@
 # Rencana perbaikan: muat ulang, model simpan, dan hapus kasus
 
+> **Pembaruan 2026-11-23 (penggabungan #53 dan #55):** bagian soal latihan dalam rencana ini **digantikan model #55**
+> (`spec-siklus-kasus-dan-soal.md`): soal tidak masuk riwayat, isian disimpan per kode soal (`isianSoal.ts`), soal punya
+> alamat `#/latihan/soal/<kode>`, jangkar berbenih kode soal + nomor percobaan. `progresSoalLokal.ts` dibuang. Bagian
+> yang tetap berlaku: boleh di Hasil, Hapus kasus ini (hapus tuntas), kebijakan privasi, kasus tak ditemukan, hash rusak.
+> Baris/tugas yang berubah diberi tanda "digantikan model #55".
+
 Tanggal: 2026-11-23 (revisi 2: model simpan disederhanakan, keputusan pemilik). Untuk dikerjakan di sesi baru
 (Sonnet). Diagnosis & peta uji: `docs/design/uji-muat-ulang-hitung.md` (ID seperti A1, B1, L4, S3 merujuk ke sana).
 
@@ -18,11 +24,11 @@ aturan akses tautan bagikan `#/k/<slug>` (dijadwalkan sesudah rencana ini selesa
 | Data | Di perangkat (localStorage) | Di akun (bila masuk) | Masa |
 |---|---|---|---|
 | Kasus (sendiri, impor, materi, salinan tautan) | otomatis: riwayat + Tersimpan | Tersimpan tersinkron (sudah berjalan: `simpanKasus` → `antre('tersimpan')`) | riwayat 30 hari tak dibuka; Tersimpan sampai dihapus |
-| Kasus soal latihan | otomatis: riwayat (sumber `latihan`) | tidak (progres & XP yang tersinkron) | 30 hari |
-| Isian soal setengah jadi + status (dibuka/mencoba/benar) | otomatis, per sesi kasus | tidak | ikut entri riwayatnya (30 hari) |
+| Kasus soal latihan | otomatis: riwayat (sumber `latihan`) | tidak (progres & XP yang tersinkron) | 30 hari | ← digantikan model #55 (soal tidak masuk riwayat; isian per kode soal, tanpa kedaluwarsa 30 hari)
+| Isian soal setengah jadi + status (dibuka/mencoba/benar) | otomatis, per sesi kasus | tidak | ikut entri riwayatnya (30 hari) | ← digantikan model #55 (soal tidak masuk riwayat; isian per kode soal, tanpa kedaluwarsa 30 hari)
 | Progres latihan, XP, percobaan | sudah ada | sudah tersinkron | tidak berubah |
 
-- **Mengulang soal:** buka dari daftar Latihan = percobaan baru (sesi baru, tabel kosong, jangkar baru). Buka dari
+- **Mengulang soal:** buka dari daftar Latihan = percobaan baru (sesi baru, tabel kosong, jangkar baru). Buka dari *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
   Riwayat = lanjut isian terakhir. Tombol "Kosongkan" di tabel tetap untuk mengulang di tempat.
 - **"Jangan simpan kasus ini" dihapus.** Alasan: sekarang menyesatkan, karena hanya menghapus dari Tersimpan
   (`hapusTersimpan`), sedangkan efek `catatRiwayat` di `Aplikasi.tsx` tetap menulis kasus ke riwayat perangkat
@@ -52,16 +58,16 @@ aturan akses tautan bagikan `#/k/<slug>` (dijadwalkan sesudah rencana ini selesa
 | File | Peran |
 |---|---|
 | `apps/web/src/Aplikasi.tsx` | `pulihDariUrl`, `soalAktif`, `bukaRiwayat`, efek `PULIHKAN`, props ke `Hasil`; buang `sesiJanganSimpan` |
-| `apps/web/src/progresSoalLokal.ts` (**baru**) | satu-satunya pemilik simpanan isian/status soal per `idSesi` (localStorage) |
+| `apps/web/src/progresSoalLokal.ts` (**baru**) | satu-satunya pemilik simpanan isian/status soal per `idSesi` (localStorage) ← bagian soal digantikan model #55 |
 | `apps/web/src/acakBerbenih.ts` (**baru**) | PRNG kecil deterministik dari string |
-| `apps/web/src/riwayat.ts` | kedaluwarsa riwayat ikut membuang progres soal; dedup lintas tab |
-| `apps/web/src/kasusmu.ts` | `hapusKasus` jadi hapus tuntas (+ progres soal, + tautan bagikan) |
-| `apps/web/src/layar/Hasil.tsx` | jangkar berbenih, pulihkan status soal, "Hapus kasus ini" |
+| `apps/web/src/riwayat.ts` | kedaluwarsa riwayat ikut membuang progres soal; dedup lintas tab ← bagian soal digantikan model #55 |
+| `apps/web/src/kasusmu.ts` | `hapusKasus` jadi hapus tuntas (+ progres soal, + tautan bagikan) ← bagian soal digantikan model #55 |
+| `apps/web/src/layar/Hasil.tsx` | jangkar berbenih, pulihkan status soal, "Hapus kasus ini" ← bagian soal digantikan model #55 |
 | `apps/web/src/hasil/LembarBagikan.tsx` | buang tautan "Jangan simpan" |
 | `apps/web/src/hasil/useSimpanOtomatis.ts` | buang parameter jangan-simpan bila tak terpakai lagi |
 | `apps/web/src/hasil/TabelLatihan.tsx`, `GharqaLatihan.tsx` | isian awal + callback perubahan |
 | `apps/web/src/layar/lab/BerkasKasus.tsx` | pakai hapus tuntas (sekarang tidak menghentikan tautan bagikan) |
-| `apps/web/src/akun/sinkron.ts` | `keluarDanBersihkan` ikut membersihkan progres soal lokal |
+| `apps/web/src/akun/sinkron.ts` | `keluarDanBersihkan` ikut membersihkan progres soal lokal ← bagian soal digantikan model #55 |
 | `apps/web/src/layar/wizard/validasi.ts` | `bolehDiHasil` dekat `langkahTerjauh` |
 | `apps/web/src/layar/Privasi.tsx`, `akun/persetujuan.ts`, `snapshot.json` | teks kebijakan + versi |
 
@@ -80,7 +86,7 @@ aturan akses tautan bagikan `#/k/<slug>` (dijadwalkan sesudah rencana ini selesa
    syarat yang sama. Jangan ubah pemakai `kasusLengkap` lain tanpa alasan.
 3. Commit `fix(web): muat ulang susunan cepat tetap di Hasil (bolehDiHasil)`.
 
-## Tugas 2: pulihkan soal aktif (A1, A2, L1, L12, L17)
+## Tugas 2: pulihkan soal aktif (A1, A2, L1, L12, L17) — *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
 
 1. Tes merah: ekspor `soalDariSumber(sumber)` dari `Aplikasi.tsx`:
    `{latihan, 'H-01'}` → soal H-01 dari `daftarSoalHitung()`; kode tak dikenal → `null`; sumber lain → `null`.
@@ -91,7 +97,7 @@ aturan akses tautan bagikan `#/k/<slug>` (dijadwalkan sesudah rencana ini selesa
 3. Preview: buka soal dari Latihan → refresh → "Soal 1 dari 23 · …" dan "Soal H-01" tetap.
 4. Commit `fix(web): soal latihan dipulihkan dari riwayat saat muat ulang/buka riwayat`.
 
-## Tugas 3: jangkar berbenih (A4, L6)
+## Tugas 3: jangkar berbenih (A4, L6) — *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
 
 1. `acakBerbenih.ts`: `export function acakDariBenih(benih: string): () => number` (hash string → mulberry32,
    ±10 baris). Tes: benih sama → deret sama; beda → beda; nilai dalam [0, 1).
@@ -99,7 +105,7 @@ aturan akses tautan bagikan `#/k/<slug>` (dijadwalkan sesudah rencana ini selesa
    Komentar: berbenih supaya jangkar sama setelah muat ulang; sesi baru = jangkar baru (B5).
 3. Commit `fix(web): jangkar soal latihan berbenih idSesi, stabil saat muat ulang`.
 
-## Tugas 4: modul `progresSoalLokal.ts`
+## Tugas 4: modul `progresSoalLokal.ts` — *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
 
 Fungsi saja, semua akses localStorage dibungkus try/catch (mode privat/kuota → tidak crash, P10):
 
@@ -128,7 +134,7 @@ export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void  // iku
   entri riwayat kedaluwarsa → progresnya ikut hilang.
 - Commit `feat(web): progresSoalLokal, isian soal per sesi di perangkat`.
 
-## Tugas 5: isian & status soal bertahan (A3, L2–L5, L7, L8, L9, X5)
+## Tugas 5: isian & status soal bertahan (A3, L2–L5, L7, L8, L9, X5) — *(digantikan model #55, `spec-siklus-kasus-dan-soal.md`)*
 
 1. `TabelLatihan.tsx`: prop opsional `isianAwal?: IsianTabel`, `saatIsianBerubah?: (isian: IsianTabel) => void`;
    `useState(isianAwal ?? kosong)`; panggil callback tiap isian berubah (termasuk Kosongkan). Hasil periksa
@@ -151,7 +157,7 @@ export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void  // iku
    - `idSesi` beda → kosong (L8).
 5. Commit `fix(web): isian dan status soal latihan tersimpan otomatis di perangkat`.
 
-## Tugas 6: hapus tuntas di satu tempat (S1–S4, S7)
+## Tugas 6: hapus tuntas di satu tempat (S1–S4, S7) — bagian progres soal digantikan model #55
 
 1. Tes merah untuk `hapusKasus(id, bagikan?)` di `kasusmu.ts`:
    - menghapus entri riwayat, Tersimpan (dan antre `hapus_tersimpan`), progres soal `id`.
@@ -184,7 +190,7 @@ export function buangProgresSoalSelain(idSah: ReadonlySet<string>): void  // iku
    Urungkan → kasus kembali; refresh sesudah hapus (`#/hitung/<id>`) → P8.
 7. Commit `feat(web): ganti Jangan simpan dengan Hapus kasus ini (hapus tuntas + urungkan)`.
 
-## Tugas 8: keluar akun membersihkan isian soal (S8)
+## Tugas 8: keluar akun membersihkan isian soal (S8) — bagian progres soal digantikan model #55
 
 1. `akun/sinkron.ts` `keluarDanBersihkan`: tambah `hapusSemuaProgresSoal()` di samping pembersihan yang sudah ada.
    Periksa juga apakah riwayat lokal dibersihkan; samakan dengan teks kebijakan (Tugas 10), jangan mengubah

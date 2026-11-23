@@ -29,7 +29,7 @@ Lanjutan dari PR #55 (tambalan: soal tidak jadi kasus terakhir); spec ini mengga
 | B3 | Kasusmu / Riwayat / Lanjutkan Lab / Beranda | hanya kasus (soal sudah tersaring, P2). Hapus logika `bukaRiwayat` khusus latihan dari PR #55 karena tidak diperlukan lagi |
 | B4 | Materi "Coba di kalkulator" | hasil hanya-baca (seperti sekarang) + tautan "Jadikan kasus sendiri" |
 | B5 | "Jadikan kasus sendiri" | `bukaDiHitung(salinan, { jenis: 'sendiri' })` dengan `idSesi` baru; kasus masuk riwayat seperti kasus biasa. Soal/contoh asli tidak berubah. Hanya tersedia di soal selesai dan contoh materi (bukan soal belum selesai) |
-| B6 | Muat ulang di tengah soal | boleh tetap memakai URL kalkulator yang ada; karena P1 sesi soal tidak masuk riwayat, pemulihan URL untuk soal cukup membuka kembali soalnya bila `pulihDariUrl` sudah mendukung, kalau tidak, kembali ke Latihan. Jangan sampai soal terbuka sebagai kasus. |
+| B6 | Muat ulang di tengah soal | **Alamat soal:** `#/latihan/soal/<kode>` (`rute.ts`: `bacaRute` → `{ halaman: 'kalkulator', soal: kode }`, `tautanSoal(kode)`). Selama soal dikerjakan, URL = alamat itu (`history.replaceState`). Muat ulang membuka soal dari bank soal (`daftarSoalHitung`) + isian dari `isianSoal` (`pulihDariSoal` di `Aplikasi.tsx`); hero "Soal n dari N", kode, dan "soal berikutnya" tetap. Soal selesai → pembahasan (B2). Kode tak dikenal/rusak → pesan umum `latihan.soal_tidak_ditemukan` (tanpa kode dari URL) lalu daftar Latihan. Soal tidak pernah terbuka sebagai kasus. **Jangkar:** benih = kode soal + nomor percobaan (disimpan di `isianSoal`, `percobaan`), naik saat Kerjakan ulang atau Kosongkan pada isian terisi, jadi stabil saat muat ulang. Isian soal gharqa (banyak tabel) belum dipulihkan. |
 
 ## 3. Tampilan yang berubah
 
@@ -54,4 +54,4 @@ Semua kalimat baru lewat kamus terjemah (`t(...)`), mengikuti cara kunci yang ad
 - `pnpm run typecheck` dan `pnpm --filter web test` hijau.
 
 ## 5. Di luar cakupan
-Sinkron isian ke akun; "Jadikan soal" dari kasus (pengajar); rute URL khusus soal; kelas/tugas.
+Sinkron isian ke akun; "Jadikan soal" dari kasus (pengajar); kelas/tugas.
