@@ -46,6 +46,8 @@ import { bolehDiHasil } from './layar/wizard/validasi';
 import { TAUTAN_KALKULATOR, bacaRute, tautanKasus, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
+import { Toast, type IsiToast } from './ui/Toast';
+import { hapusKasus, pulihkanKasus } from './kasusmu';
 import { usePenjaga } from './ui/Penjaga';
 import { PembaruanKonten } from './ui/PembaruanKonten';
 import { kasusDariSoal } from '@waris/latihan';
@@ -63,8 +65,7 @@ export function Aplikasi() {
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
-  // "Jangan simpan kasus ini": sesi yang ditandai tidak disimpan otomatis; hanya state sesi, hilang saat dimuat ulang.
-  const [sesiJanganSimpan, setSesiJanganSimpan] = useState<ReadonlySet<string>>(new Set());
+  const [toast, setToast] = useState<IsiToast | null>(null);
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
@@ -93,11 +94,26 @@ export function Aplikasi() {
     if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') {
       // Kasus tersimpan yang belum pernah masuk riwayat (dari versi lama) dicatat dulu sebelum diganti, supaya tidak hilang.
       if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
-      setSoalAktif(null);
-      setIdSesi(buatIdSesi());
-      setSumberSesi({ jenis: 'sendiri' });
+      mulaiSesiBaru();
     }
     kirimAsli(aksi);
+  };
+  const mulaiSesiBaru = () => {
+    setSoalAktif(null);
+    setIdSesi(buatIdSesi());
+    setSumberSesi({ jenis: 'sendiri' });
+  };
+  // Hapus tuntas lalu kembali ke Awal Hitung. Tidak lewat kirim(ULANGI): itu mencatat kasus yang baru dihapus kembali ke riwayat.
+  const hapusKasusIni = () => {
+    const cadangan = hapusKasus(idSesi, bagikanAkun);
+    simpanLokal(null);
+    mulaiSesiBaru();
+    kirimAsli({ jenis: 'ULANGI' });
+    setToast({ teks: t('hasil.hapus_kasus.toast'), aksi: { label: t('hasil.simpan.urungkan'), saat: () => {
+      setToast(null);
+      pulihkanKasus(cadangan);
+      if (cadangan.entriRiwayat) bukaRiwayat(cadangan.entriRiwayat);
+    } } });
   };
 
   useEffect(() => { if (keadaan.kasus) simpanLokal(keadaan.kasus); }, [keadaan.kasus]);
@@ -235,11 +251,11 @@ export function Aplikasi() {
         : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} bagikan={bagikanAkun} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
         : <Hasil kasus={kasus} idSesi={idSesi} bagikan={bagikanAkun} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim}
-            tanpaSimpan={sumberSesi.jenis === 'latihan'} janganSimpan={sesiJanganSimpan.has(idSesi)}
-            saatJanganSimpan={nilai => setSesiJanganSimpan(lama => { const baru = new Set(lama); if (nilai) baru.add(idSesi); else baru.delete(idSesi); return baru; })} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
+            tanpaSimpan={sumberSesi.jenis === 'latihan'} saatHapusKasus={hapusKasusIni} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
             soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined}
             urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined} />}
+      <Toast isi={toast} saatHilang={() => setToast(null)} />
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>

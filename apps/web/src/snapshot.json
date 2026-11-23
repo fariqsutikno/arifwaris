@@ -27470,23 +27470,9 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hasil.simpan.tersimpan",
-   "halaman": "hasil",
-   "id": "Tersimpan di riwayat · {jam}",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hasil.simpan.tidak_disimpan",
    "halaman": "hasil",
    "id": "Tidak disimpan",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hasil.simpan.dihapus",
-   "halaman": "hasil",
-   "id": "Kasus dihapus dari riwayat",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27561,20 +27547,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hasil.bagikan_lembar.jangan_simpan",
-   "halaman": "hasil",
-   "id": "Jangan simpan kasus ini",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hasil.bagikan_lembar.jangan_simpan_ket",
-   "halaman": "hasil",
-   "id": "Untuk HP pinjaman atau sekadar coba-coba. Kasus dihapus dari riwayat; bisa diurungkan.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hasil.bagikan_lembar.teks_disalin",
    "halaman": "hasil",
    "id": "Teks disalin",
@@ -27641,13 +27613,6 @@
    "kunci": "hasil.sudah_bersih_utang_wasiat",
    "halaman": "hasil",
    "id": "sudah bersih dari utang dan wasiat",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hasil.bagikan_lembar.sedang_dibagikan",
-   "halaman": "hasil",
-   "id": "Kasus ini sedang dibagikan lewat tautan. Hentikan pembagiannya dulu lewat Kelola tautan bila ingin menghapusnya dari riwayat.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28853,6 +28818,62 @@
    "halaman": "hitung",
    "id": "Tautan bagikannya juga dihentikan dan tidak bisa dipulihkan.",
    "ar": "سيتوقف رابط المشاركة أيضًا ولا يمكن استعادته.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.hapus_kasus",
+   "halaman": "hasil",
+   "id": "Hapus kasus ini",
+   "ar": "احذف هذه المسألة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.hapus_kasus_ket",
+   "halaman": "hasil",
+   "id": "Dihapus dari perangkat ini dan dari akunmu. Bisa diurungkan sesaat sesudahnya.",
+   "ar": "تُحذف من هذا الجهاز ومن حسابك. يمكن التراجع بعد الحذف مباشرة.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hapus_kasus.isi",
+   "halaman": "hasil",
+   "id": "Kasus ini dihapus dari perangkat ini dan dari akunmu (bila kamu masuk).",
+   "ar": "تُحذف هذه المسألة من هذا الجهاز ومن حسابك (إن كنت مسجّلًا).",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hapus_kasus.isi_latihan",
+   "halaman": "hasil",
+   "id": "Kasus soal dan isianmu dihapus dari perangkat ini. Progres dan XP latihan tidak ikut terhapus.",
+   "ar": "تُحذف مسألة التمرين وإجاباتك من هذا الجهاز. لا يُحذف تقدمك ونقاطك في التمارين.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hapus_kasus.toast",
+   "halaman": "hasil",
+   "id": "Kasus dihapus",
+   "ar": "حُذفت المسألة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tersimpan_perangkat",
+   "halaman": "hasil",
+   "id": "Tersimpan di perangkat ini · {jam}",
+   "ar": "محفوظة على هذا الجهاز · {jam}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tersimpan_akun",
+   "halaman": "hasil",
+   "id": "Tersimpan · ikut akunmu · {jam}",
+   "ar": "محفوظة · مع حسابك · {jam}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.di_perangkat",
+   "halaman": "hasil",
+   "id": "Tersimpan di perangkat ini",
+   "ar": "محفوظة على هذا الجهاز",
    "versiTerbit": 873
   }
  ]
