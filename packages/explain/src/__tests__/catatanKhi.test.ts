@@ -88,6 +88,17 @@ describe('jelaskanCatatanKhi: praktik PA, yang belum tersedia, jalan keluar', ()
   });
 });
 
+describe('jelaskanCatatanKhi: urutan peringatan', () => {
+  test('hanya harta bersama yang menaruh peringatan di atas bunyi; lainnya di akhir', () => {
+    for (const catatan of CATATAN_KHI) {
+      const jenis = jelaskan(catatan, 'syafii').bagian.map(bagian => bagian.jenis);
+      if (catatan.peringatan === undefined) expect(jenis).not.toContain('peringatan');
+      else if (catatan.id === 'hartaBersama') expect(jenis[0]).toBe('peringatan');
+      else expect(jenis[jenis.length - 1]).toBe('peringatan');
+    }
+  });
+});
+
 describe('jelaskanCatatanKhi: kualitas teks', () => {
   test('tanpa kode teknis, angka persen, atau bahasa perintah/fatwa kepada pengguna', () => {
     for (const catatan of CATATAN_KHI) {

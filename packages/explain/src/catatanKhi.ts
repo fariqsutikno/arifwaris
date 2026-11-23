@@ -17,6 +17,8 @@ export interface BahanCatatanKhi {
   belumTersedia: readonly string[];
   jalanKeluar: readonly string[];
   peringatan?: string;
+  /** Peringatan tampil sebelum bunyi KHI. */
+  peringatanDiAtas?: boolean;
 }
 
 export interface BagianCatatanKhi {
@@ -45,14 +47,15 @@ export function jelaskanCatatanKhi(bahan: BahanCatatanKhi, opsi: OpsiCatatanKhi)
   const teks = (kunci: string, sisipan: Record<string, string> = {}) => teksKamus(penyusun, `narasi.khi.${kunci}`, sisipan);
   const namaMadzhab = (madzhab: MadzhabKhi) => teksKamus(penyusun, `narasi.umum.madzhab.${madzhab}`);
 
-  const bagian: BagianCatatanKhi[] = [{ jenis: 'bunyi', judul: teks('label.bunyi'), butir: [...bahan.bunyiKhi] }];
+  const peringatan: BagianCatatanKhi[] = bahan.peringatan === undefined ? [] : [{ jenis: 'peringatan', judul: teks('label.peringatan'), butir: [bahan.peringatan] }];
+  const bagian: BagianCatatanKhi[] = [...(bahan.peringatanDiAtas ? peringatan : []), { jenis: 'bunyi', judul: teks('label.bunyi'), butir: [...bahan.bunyiKhi] }];
   if (bahan.praktikPa.length > 0) bagian.push({ jenis: 'praktik', judul: teks('label.praktik'), butir: butirPraktik(bahan, teks) });
   bagian.push(bagianFikih(bahan, opsi.madzhab, teks, namaMadzhab));
   if (bahan.belumTersedia.length > 0) bagian.push({ jenis: 'belum', judul: teks('label.belum'), butir: [...bahan.belumTersedia] });
   if (bahan.jalanKeluar.length > 0) {
     bagian.push({ jenis: 'jalan', judul: teks('label.jalan'), butir: bahan.jalanKeluar.map(jalan => teks(`jalan.${keSnake(jalan)}`)) });
   }
-  if (bahan.peringatan !== undefined) bagian.push({ jenis: 'peringatan', judul: teks('label.peringatan'), butir: [bahan.peringatan] });
+  if (!bahan.peringatanDiAtas) bagian.push(...peringatan);
 
   return {
     id: bahan.id, judul: bahan.judul, pasalLabel: teks('label.pasal', { nomor: bahan.pasal }),

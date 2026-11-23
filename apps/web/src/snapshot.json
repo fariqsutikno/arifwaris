@@ -28847,6 +28847,76 @@
    "id": "Ahli waris memberi persetujuan sesudah pewaris wafat, bukan sebelumnya.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.tautan",
+   "halaman": "hasil",
+   "id": "Kalau menurut KHI",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.jumlah",
+   "halaman": "hasil",
+   "id": "{jumlah} catatan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.judul",
+   "halaman": "hasil",
+   "id": "Kalau menurut KHI",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.pengantar",
+   "halaman": "hasil",
+   "id": "Pengadilan Agama memakai Kompilasi Hukum Islam (KHI). Berikut yang berbeda atau perlu diketahui dibanding hasil fikih madzhab {madzhab} di layar ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.tampil_praktik",
+   "halaman": "hasil",
+   "id": "Tampilkan praktik Pengadilan Agama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.lihat_sumber",
+   "halaman": "hasil",
+   "id": "Lihat sumbernya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.sembunyikan_sumber",
+   "halaman": "hasil",
+   "id": "Sembunyikan sumber",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.sumber_hukum",
+   "halaman": "hasil",
+   "id": "Hukum positif dan praktik",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.sumber_fikih",
+   "halaman": "hasil",
+   "id": "Fikih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.khi.sumber_butir",
+   "halaman": "hasil",
+   "id": "{nama}, {lokasi}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

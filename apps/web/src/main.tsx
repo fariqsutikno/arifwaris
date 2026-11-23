@@ -17,6 +17,7 @@ import './gaya/wizard.css';
 import './gaya/keluarga.css';
 import './gaya/periksa.css';
 import './gaya/tabelLatihan.css';
+import './gaya/khi.css';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { pilihAwal, type Snapshot } from '@waris/data/snapshot';

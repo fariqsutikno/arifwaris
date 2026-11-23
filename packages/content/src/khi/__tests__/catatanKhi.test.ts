@@ -5,7 +5,7 @@ import { describe, expect, test } from 'vitest';
 import daftarSumberMd from '../../../../../docs/kb-khi/02_daftar_sumber.md?raw';
 import bab19 from '../../../../../docs/kb/19_harta_pasangan.md?raw';
 import { RUJUKAN, MATRIKS_KHILAF } from '../../refs.js';
-import { CATATAN_KHI, ID_CATATAN_KHI, JALAN_KELUAR, cariCatatanKhi, teksTampil } from '../catatanKhi.js';
+import { CATATAN_KHI, ID_CATATAN_KHI, JALAN_KELUAR, NAMA_SUMBER_KHI, cariCatatanKhi, teksTampil } from '../catatanKhi.js';
 import { ID_CATATAN_KHI as ID_PEMICU_ENGINE } from '../../../../engine/src/khi/pilihCatatanKhi.js';
 
 const kodeKb = new Set([
@@ -38,6 +38,18 @@ describe('catatan KHI', () => {
         expect(sumber.kode, catatan.id).toMatch(/^[SFH]\d{2}$/);
         expect(daftarSumberMd, `${catatan.id}: ${sumber.kode}`).toContain(`| ${sumber.kode} |`);
         expect(sumber.lokasi.length, `${catatan.id}: ${sumber.kode}`).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  test('setiap kode sumber yang dipakai punya nama tampil tanpa kode teknis', () => {
+    for (const catatan of CATATAN_KHI) {
+      for (const sumber of catatan.sumber) {
+        const butir = NAMA_SUMBER_KHI[sumber.kode];
+        expect(butir, `${catatan.id}: ${sumber.kode}`).toBeDefined();
+        expect(butir!.nama, sumber.kode).not.toMatch(POLA_KODE_TEKNIS);
+        expect(sumber.lokasi, `${catatan.id}: ${sumber.kode}`).not.toMatch(POLA_KODE_TEKNIS);
+        expect(butir!.hukumPositif, `${catatan.id}: ${sumber.kode}`).toBe(sumber.kode.startsWith('S'));
       }
     }
   });

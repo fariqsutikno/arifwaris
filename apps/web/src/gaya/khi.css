@@ -1,0 +1,38 @@
+/* Panel "Kalau menurut KHI" di layar Hasil (acuan: docs/design/mockup-kalau-menurut-khi.html). Panel dari kanan; HP = lembar penuh. */
+.tautan-khi{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 10px}
+.tautan-khi .jumlah-khi{color:var(--ink-muted);font:500 14px var(--font-sans)}
+.latar-khi{place-items:stretch end;padding:0}
+.panel-khi{max-width:none;width:min(520px,100%);height:100dvh;max-height:none;border-radius:var(--radius-lg) 0 0 var(--radius-lg);border-right:0;padding:0;background:var(--surface);gap:0}
+.kepala-panel-khi{padding:16px 18px 12px;border-bottom:1px solid var(--divider);display:grid;gap:8px}
+.baris-judul-khi{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.baris-judul-khi h2{margin:0;font:700 21px/1.2 var(--font-display);letter-spacing:-.01em}
+.penanda-khi{display:inline-flex;gap:6px;align-items:center;justify-self:start;background:#e3ecf5;color:#1f4468;border-radius:var(--radius-pill);padding:3px 11px;font:600 12.5px var(--font-sans)}
+.pengantar-khi{margin:0;font-size:14px;color:var(--ink)}
+.pilihan-khi{display:flex;gap:8px;align-items:center;font-size:13.5px;color:var(--ink)}
+.pilihan-khi input{width:18px;height:18px;accent-color:#1f6f5c}
+.isi-panel-khi{overflow:auto;padding:12px 14px 22px;display:grid;gap:10px;align-content:start;flex:1}
+.kartu-khi{background:var(--surface-raised);border:1px solid var(--divider);border-radius:20px;overflow:hidden}
+.kepala-kartu-khi{all:unset;box-sizing:border-box;display:flex;gap:12px;align-items:flex-start;width:100%;padding:14px 16px;cursor:pointer}
+.kepala-kartu-khi:focus-visible{outline:3px solid var(--focus);outline-offset:-3px}
+.judul-kartu-khi{flex:1;min-width:0;display:grid;gap:2px}
+.judul-kartu-khi b{font:600 16px/1.3 var(--font-sans)}
+.pasal-khi{font-size:13px;color:var(--ink-muted)}
+.cuplik-khi{font-size:13.5px;color:var(--ink);margin-top:2px}
+.tingkat-khi{justify-self:start;font:600 12px var(--font-sans);border-radius:var(--radius-pill);padding:2px 9px;margin-top:6px}
+.tingkat-beda{background:#fde6d8;color:#8a3a10}.tingkat-sama{background:#dcefe2;color:#1b5a43}.tingkat-celah{background:#fbefc9;color:#6b4f00}
+.panah-khi{color:var(--ink-muted);transition:transform .2s;margin-top:2px}
+.kartu-khi.buka .panah-khi{transform:rotate(180deg)}
+.badan-kartu-khi{padding:0 16px 14px;border-top:1px dashed var(--divider);display:grid;gap:12px}
+.bagian-khi{margin-top:12px}
+.bagian-khi h3,.sumber-khi h3{margin:0 0 4px;font:600 12.5px var(--font-sans);color:var(--ink-muted)}
+.bagian-khi ul,.sumber-khi ul{list-style:none;margin:0;padding:0}
+.bagian-khi li,.sumber-khi li{font-size:14px;padding:3px 0 3px 16px;position:relative}
+.bagian-khi li::before,.sumber-khi li::before{content:"";position:absolute;left:2px;top:.85em;width:6px;height:6px;border-radius:50%;background:#9db3a5}
+.bagian-praktik h3{color:#8a3a10}
+.bagian-jalan li::before{background:#1f6f5c}
+.bagian-peringatan h3{font-weight:700}
+.bagian-peringatan h3{color:#6b4f00}
+.bagian-peringatan li::before{background:#6b4f00}
+.sumber-khi{display:grid;gap:8px}
+.penutup-khi{margin:0;padding:2px 6px 0;font-size:13px;color:var(--ink-muted)}
+@media(max-width:860px){.latar-khi{place-items:stretch}.panel-khi{width:100%;border-radius:0}}

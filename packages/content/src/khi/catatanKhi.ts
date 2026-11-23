@@ -53,6 +53,8 @@ export interface CatatanKhi {
   belumTersedia: readonly string[];
   jalanKeluar: readonly JalanKeluar[];
   peringatan?: string;
+  /** Peringatan paling berguna dan paling mudah terlewat: ditampilkan sebelum bunyi KHI (hanya harta bersama). */
+  peringatanDiAtas?: boolean;
   sumber: readonly SumberKhi[];
 }
 
@@ -79,8 +81,8 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     jalanKeluar: ['wasiatSukarela', 'perdamaian', 'hibahSerahTerima'],
     peringatan: 'Pembagian antara pengganti dan ahli waris lain ditentukan hakim menurut kasus; di sini tidak dihitung.',
     sumber: [
-      { kode: 'S01', lokasi: 'Pasal 185 dan Pasal 173' }, { kode: 'S06', lokasi: 'Yurisprudensi 2/Yur/Ag/2018' },
-      { kode: 'S07', lokasi: 'Rumusan Kamar SEMA 3/2015 butir 9 (teks tempel)' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 163–168' },
+      { kode: 'S01', lokasi: 'Pasal 185 dan Pasal 173' }, { kode: 'S06', lokasi: '2/Yur/Ag/2018' },
+      { kode: 'S07', lokasi: 'SEMA 3/2015 butir 9' }, { kode: 'S05', lokasi: 'hlm. 163–168' },
     ],
   },
   {
@@ -104,8 +106,8 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     jalanKeluar: ['wasiatSukarela', 'perdamaian', 'hibahSerahTerima'],
     peringatan: 'Ini ketentuan hukum positif Indonesia; menurut fikih tidak ada wasiat wajibah selain yang diwasiatkan pewaris.',
     sumber: [
-      { kode: 'S01', lokasi: 'Pasal 209, 195, 201' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 165' },
-      { kode: 'S06', lokasi: 'Yurisprudensi 1/Yur/Ag/2018' }, { kode: 'S07', lokasi: 'SEMA 7/2012 butir 20, SEMA 3/2023 butir 3, SEMA 3/2015 butir 9' },
+      { kode: 'S01', lokasi: 'Pasal 209, 195, 201' }, { kode: 'S05', lokasi: 'hlm. 165' },
+      { kode: 'S06', lokasi: '1/Yur/Ag/2018' }, { kode: 'S07', lokasi: 'SEMA 7/2012 butir 20, SEMA 3/2023 butir 3, SEMA 3/2015 butir 9' },
     ],
   },
   {
@@ -129,10 +131,11 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     padananFikih: 'ada', belumTersedia: [],
     jalanKeluar: ['kesepakatanTertulis', 'perdamaian', 'hibahSerahTerima'],
     peringatan: 'Angka harta yang dimasukkan di kalkulator fikih adalah harta milik pewaris saja; bagian pasangan dipisah lebih dulu menurut kepemilikan atau kesepakatan, bukan otomatis separuh.',
+    peringatanDiAtas: true,
     sumber: [
-      { kode: 'S01', lokasi: 'Pasal 85–97, 171, 190' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 139–140' },
-      { kode: 'S06', lokasi: 'Yurisprudensi 1/Yur/Ag/2018' }, { kode: 'F01', lokasi: 'Raudhah 4/275, 4/279, 4/280' },
-      { kode: 'F04', lokasi: 'Keputusan lembaga fatwa 3/1444 H, hlm. 581–583' },
+      { kode: 'S01', lokasi: 'Pasal 85–97, 171, 190' }, { kode: 'S05', lokasi: 'hlm. 139–140' },
+      { kode: 'S06', lokasi: '1/Yur/Ag/2018' }, { kode: 'F01', lokasi: 'jilid/halaman 4/275, 4/279, 4/280' },
+      { kode: 'F04', lokasi: 'keputusan 3/1444 H, hlm. 581–583' },
     ],
   },
   {
@@ -172,7 +175,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     rujukanFikih: ['R06-5', 'K07-1', 'R11-2'],
     padananFikih: 'ada', belumTersedia: [], jalanKeluar: ['perdamaian'],
     peringatan: 'Pedoman tidak menyebut nomor putusan yang dirujuknya.',
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 181, 182' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, butir 6 tentang kerabat' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 181, 182' }, { kode: 'S05', lokasi: 'butir 6 tentang kerabat' }],
   },
   {
     id: 'kerabatJauh', judul: 'Kerabat jauh (dzawil arham)', pasal: '174, 191', hukumPositif: true, tingkat: 'beda',
@@ -191,7 +194,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     },
     rujukanFikih: ['K14-1', 'K14-2', 'R01-4', 'R11-2'],
     padananFikih: 'ada', belumTersedia: [], jalanKeluar: ['wasiatSukarela', 'perdamaian'],
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 174, 191' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 163, 166–168' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 174, 191' }, { kode: 'S05', lokasi: 'hlm. 163, 166–168' }],
   },
   {
     id: 'anakLuarKawin', judul: 'Anak di luar perkawinan', pasal: '186', hukumPositif: true, tingkat: 'sama',
@@ -207,7 +210,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     },
     rujukanFikih: ['R13-11', 'K13-2', 'R01-4'],
     padananFikih: 'sebagian', belumTersedia: ['status anak dari pernikahan agama yang tidak dicatat'], jalanKeluar: ['wasiatSukarela'],
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 186 dan Penjelasan' }, { kode: 'S07', lokasi: 'SEMA 3/2023 butir 3' }, { kode: 'S08', lokasi: 'Putusan MK 46/PUU-VIII/2010, amar' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 186 dan Penjelasan' }, { kode: 'S07', lokasi: 'SEMA 3/2023 butir 3' }, { kode: 'S08', lokasi: 'amar putusan' }],
   },
   {
     id: 'wasiatAhliWaris', judul: 'Wasiat lebih dari sepertiga atau kepada ahli waris', pasal: '195, 201, 207', hukumPositif: true, tingkat: 'sama',
@@ -228,7 +231,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     rujukanFikih: ['R01-4', 'R01-5', 'R01-7', 'K01-1', 'R11-2'],
     padananFikih: 'ada', belumTersedia: [], jalanKeluar: ['persetujuanSetelahWafat', 'perdamaian'],
     peringatan: 'KHI tidak menyebut kapan persetujuan ahli waris sah; fikih Syafi\'i mensyaratkannya sesudah pewaris wafat.',
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 195, 201, 207' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 165 dan 171' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 195, 201, 207' }, { kode: 'S05', lokasi: 'hlm. 165 dan 171' }],
   },
   {
     id: 'hibahOrtuAnak', judul: 'Hibah orang tua kepada anak', pasal: '210–213', hukumPositif: true, tingkat: 'beda',
@@ -247,7 +250,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     },
     rujukanFikih: ['K01-3', 'R01-10', 'R01-11'],
     padananFikih: 'sebagian', belumTersedia: ['batas sepertiga untuk hibah semasa sehat'], jalanKeluar: ['hibahSerahTerima'],
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 210–213' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 165 butir 3' }, { kode: 'F01', lokasi: 'Raudhah 5/375, 3/429' }, { kode: 'F02', lokasi: 'Ujalat al-Muhtaj 2/987–988' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 210–213' }, { kode: 'S05', lokasi: 'hlm. 165 butir 3' }, { kode: 'F01', lokasi: 'jilid/halaman 5/375, 3/429' }, { kode: 'F02', lokasi: 'jilid/halaman 2/987–988' }],
   },
   {
     id: 'ayah', judul: 'Bagian ayah', pasal: '177', hukumPositif: true, tingkat: 'sama',
@@ -261,7 +264,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     rujukanFikih: ['R04-5'],
     padananFikih: 'ada', belumTersedia: [], jalanKeluar: [],
     peringatan: 'Bunyi pasal tampak berbeda, tetapi penjelasan resmi Mahkamah Agung menyelaraskannya dengan fikih.',
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 177' }, { kode: 'S03', lokasi: 'catatan kaki Pasal 177' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 165 butir 4' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 177' }, { kode: 'S03', lokasi: 'catatan kaki Pasal 177' }, { kode: 'S05', lokasi: 'hlm. 165 butir 4' }],
   },
   {
     id: 'saudariKandungSeayah', judul: 'Saudari kandung dan seayah', pasal: '182', hukumPositif: true, tingkat: 'celah',
@@ -274,7 +277,7 @@ export const CATATAN_KHI: readonly CatatanKhi[] = [
     },
     rujukanFikih: ['R04-14', 'R04-15'],
     padananFikih: 'ada', belumTersedia: [], jalanKeluar: [],
-    sumber: [{ kode: 'S01', lokasi: 'Pasal 182' }, { kode: 'S05', lokasi: 'Pedoman Buku II 2010, hlm. 166 butir 4a(7)' }],
+    sumber: [{ kode: 'S01', lokasi: 'Pasal 182' }, { kode: 'S05', lokasi: 'hlm. 166 butir 4a(7)' }],
   },
 ];
 
@@ -293,3 +296,16 @@ export const teksTampil = (catatan: CatatanKhi): string[] => [
   ...catatan.belumTersedia,
   ...(catatan.peringatan ? [catatan.peringatan] : []),
 ];
+
+/** Nama sumber yang boleh tampil di layar (kode tidak ditampilkan). `hukumPositif` = teks hukum atau praktik PA; selain itu fikih. */
+export const NAMA_SUMBER_KHI: Record<string, { nama: string; hukumPositif: boolean }> = {
+  S01: { nama: 'Kompilasi Hukum Islam (Inpres 1/1991)', hukumPositif: true },
+  S03: { nama: 'Kompilasi Hukum Islam, edisi lain (dengan catatan kaki Pasal 177)', hukumPositif: true },
+  S05: { nama: 'Pedoman Pelaksanaan Tugas dan Administrasi Peradilan Agama, Buku II (Mahkamah Agung, 2010)', hukumPositif: true },
+  S06: { nama: 'Himpunan Yurisprudensi Mahkamah Agung sampai 2018', hukumPositif: true },
+  S07: { nama: 'Rumusan Kamar Agama Mahkamah Agung (SEMA)', hukumPositif: true },
+  S08: { nama: 'Putusan Mahkamah Konstitusi 46/PUU-VIII/2010', hukumPositif: true },
+  F01: { nama: 'Raudhah ath-Thalibin (an-Nawawi)', hukumPositif: false },
+  F02: { nama: "'Ujalat al-Muhtaj (Ibnu al-Mulaqqin), syarah Minhaj", hukumPositif: false },
+  F04: { nama: "Keputusan lembaga fatwa Ittihad 'Alami li 'Ulama al-Muslimin (2022), dikutip dalam al-Qawa'id al-Umm li al-Fiqh", hukumPositif: false },
+};

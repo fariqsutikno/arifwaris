@@ -52,6 +52,8 @@ import { Toast, type IsiToast } from '../ui/Toast';
 import { DialogNama } from './lab/DialogNama';
 import { DialogBagikan } from './DialogBagikan';
 import { BandingMadzhab } from './BandingMadzhab';
+import { catatanKhiUntuk } from '../hasil/catatanKhi';
+import { PanelKhi } from '../hasil/PanelKhi';
 import { DialogMadzhab, namaMadzhab } from './DialogMadzhab';
 import { sudahDibagikan } from '../bagikanLokal';
 import { ringkasKasus } from '../riwayat';
@@ -200,6 +202,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const [konfirmasiUlangi, setKonfirmasiUlangi] = useState(false);
   const [madzhabTerbuka, setMadzhabTerbuka] = useState(false);
   const madzhab = kasus.madzhab ?? 'syafii';
+  const catatanKhi = useMemo(() => catatanKhiUntuk(kasus, tampil), [kasus, tampil]);
+  const [khiTerbuka, setKhiTerbuka] = useState(false);
   const ubahGraf = (ubah: (graf: Kasus['graf']) => Kasus['graf']) => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, graf: ubah(k.graf) }) });
   const namaPewaris = kasus.graf.orang[kasus.graf.idPewaris]?.nama?.trim() || '';
   const jumlahOrang = Object.values(kasus.graf.orang).filter(orang => !orang.penghubung).length;
@@ -469,6 +473,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       </div>
 
       <footer className="kaki-hasil">
+        {catatanKhi.length > 0 && (
+          <p className="tautan-khi">
+            <button type="button" className="tautan-aksi" onClick={() => setKhiTerbuka(true)}>{t('hasil.khi.tautan')}</button>
+            <span className="jumlah-khi">{t('hasil.khi.jumlah', { jumlah: catatanKhi.length })}</span>
+          </p>
+        )}
         <p>{t('hitung.hasil_ini_menurut_madzhab_syafi_i')} {t('hitung.nemu_yang_janggal')} <a href={TAUTAN_LAPORAN} target="_blank" rel="noopener">{t('umum.laporkan_ke_pengembang')}</a>.</p>
         {bolehUbah && (
           <div className="aksi-kaki">
@@ -482,6 +492,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
           saatLanjut={() => { setKonfirmasiUlangi(false); kirim({ jenis: 'ULANGI' }); }} />
       )}
 
+      {khiTerbuka && <PanelKhi daftar={catatanKhi} madzhab={madzhab} saatTutup={() => setKhiTerbuka(false)} />}
       {madzhabTerbuka && <DialogMadzhab awal={madzhab} saatBatal={() => setMadzhabTerbuka(false)}
         saatPakai={ruleset => { setMadzhabTerbuka(false); kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) }); }} />}
       {orangDipilih && (
