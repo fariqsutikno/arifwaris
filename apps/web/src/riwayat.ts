@@ -41,8 +41,11 @@ export function bacaRiwayat(): EntriRiwayat[] {
 /** Catat atau perbarui entri sesi `id`; `waktu` = terakhir dibuka/diubah. */
 export function catatRiwayat(id: string, kasus: Kasus, waktu: number, sumber: SumberRiwayat): void {
   const json = keJson(kasus);
-  // Kasus yang persis sama (mis. dibuka lagi dari riwayat lalu tidak diubah) tidak dicatat dua kali.
-  const lain = bacaTersimpan().filter(entri => entri.id !== id && entri.kasus !== json && waktu - entri.waktu <= MASA_SIMPAN);
+  // Kasus yang persis sama (mis. dibuka lagi dari riwayat lalu tidak diubah) tidak dicatat dua kali. Kecuali soal latihan:
+  // tiap sesi soal = satu percobaan, dan dua tab pada soal yang sama tidak boleh saling menghapus (refresh tab pertama tetap pulih).
+  const sumberLatihan = (sumberEntri?: SumberRiwayat) => sumberEntri?.jenis === 'latihan';
+  const dobel = (entri: EntriTersimpan) => entri.kasus === json && !sumberLatihan(sumber) && !sumberLatihan(entri.sumber);
+  const lain = bacaTersimpan().filter(entri => entri.id !== id && !dobel(entri) && waktu - entri.waktu <= MASA_SIMPAN);
   const baru = [{ id, waktu, sumber, kasus: json }, ...lain];
   simpanTersimpan(baru);
   buangProgresSoalSelain(new Set(baru.map(entri => entri.id)));

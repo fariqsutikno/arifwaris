@@ -65,7 +65,8 @@ export function Aplikasi() {
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
-  const [toast, setToast] = useState<IsiToast | null>(null);
+  // URL kasus yang entrinya tidak ada: pesan umum, sama untuk semua sebab, tanpa id dari URL (P8, P16).
+  const [toast, setToast] = useState<IsiToast | null>(() => (!pulih && adalahUrlKasus(window.location.hash) ? { teks: t('hitung.kasus_tidak_ditemukan') } : null));
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
@@ -151,7 +152,7 @@ export function Aplikasi() {
   useEffect(() => {
     if (!idKasusDiUrl || idKasusDiUrl === idSesi) return;
     const dariUrl = pulihDariUrl(window.location.hash, bacaTujuan());
-    if (!dariUrl) return;
+    if (!dariUrl) { setToast({ teks: t('hitung.kasus_tidak_ditemukan') }); return; }
     if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
     setSoalAktif(soalDariSumber(dariUrl.sumber));
     setIdSesi(dariUrl.id);
@@ -278,6 +279,11 @@ export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string;
   if (keadaan.layar !== 'wizard' && !bolehDiHasil(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
   return { id, sumber: entri.sumber, keadaan };
 }
+
+const adalahUrlKasus = (hash: string): boolean => {
+  const rute = bacaRute(hash);
+  return rute.halaman === 'kalkulator' && !!rute.kasus;
+};
 
 /** Soal latihan di balik sumber riwayat; kode yang sudah tidak ada di bank soal → null (kasus tetap terbuka tanpa hero soal). */
 export const soalDariSumber = (sumber: SumberRiwayat | undefined): SoalHitung | null =>

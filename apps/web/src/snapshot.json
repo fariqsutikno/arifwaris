@@ -28875,6 +28875,13 @@
    "id": "Tersimpan di perangkat ini",
    "ar": "محفوظة على هذا الجهاز",
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_tidak_ditemukan",
+   "halaman": "hitung",
+   "id": "Kasus ini tidak ada lagi di perangkat ini. Mungkin sudah dihapus atau lewat 30 hari.",
+   "ar": "هذه المسألة لم تعد موجودة على هذا الجهاز. ربما حُذفت أو مرّت ٣٠ يومًا.",
+   "versiTerbit": 873
   }
  ]
 }

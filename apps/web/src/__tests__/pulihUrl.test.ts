@@ -52,3 +52,18 @@ it('kasus nyata yang pintunya belum dijawab dibuka di wizard', () => {
   catatRiwayat('nyata', { ...nyata, graf: tambahAhliWaris(nyata.graf, 'PEWARIS', 'ISTRI') }, 1, { jenis: 'sendiri' });
   expect(pulihDariUrl('#/hitung/nyata', null)?.keadaan.layar).toBe('wizard');
 });
+
+it('dua sesi soal latihan yang sama (dua tab) tetap bisa dipulihkan masing-masing (X1)', () => {
+  const kasus = lengkap();
+  catatRiwayat('a', kasus, 1, { jenis: 'latihan', kode: 'H-01' });
+  catatRiwayat('b', kasus, 2, { jenis: 'latihan', kode: 'H-01' });
+  expect(pulihDariUrl('#/hitung/a', null)).not.toBeNull();
+  expect(pulihDariUrl('#/hitung/b', null)).not.toBeNull();
+});
+
+it('kasus sendiri yang sama tetap tidak dicatat dua kali', () => {
+  catatRiwayat('a', lengkap(), 1, { jenis: 'sendiri' });
+  catatRiwayat('b', lengkap(), 2, { jenis: 'sendiri' });
+  expect(pulihDariUrl('#/hitung/a', null)).toBeNull();
+  expect(pulihDariUrl('#/hitung/b', null)).not.toBeNull();
+});
