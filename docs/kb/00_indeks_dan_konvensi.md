@@ -44,3 +44,4 @@ Knowledge base ilmu faraidh untuk sistem AI platform waris. Disusun dari dua sum
 | 16 | 16_kasus_uji.md | Kasus uji dengan jawaban terverifikasi |
 | 17 | 17_daftar_rujukan.md | Daftar rujukan, takhrij hadits, metodologi, jejak koreksi |
 | 18 | 18_matriks_khilaf.md | Matriks khilaf SYF/HNB/HNF/MLK, kode `Kxx-y` |
+| 19 | 19_harta_pasangan.md | Harta suami-istri dan syirkah (informasi, tidak dipakai engine hitung) |

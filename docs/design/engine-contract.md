@@ -12,7 +12,7 @@ Semua rujukan bab/kode `[Rxx-y]` mengacu ke `docs/kb/`.
 | 1 | Tirkah, mawani', ahli waris, hajb, furudh, ashabah, 'Umariyyatain, Musyarrakah, jadd wal ikhwah, ashl, 'aul/radd, tashih, nominal, takharuj | 01–11 |
 | 2 | Munasakhat; haml, mafqud, khuntsa, gharqa, murtad, li'an/zina, laqith (status `MAUQUF`) | 12, 13 |
 | 3 | Dzawil arham (tanzil) | 14 |
-| 4 | Ruleset KHI (terpisah, ditandai hukum positif) | `docs/kb-khi/` |
+| 4 | Panel informasi KHI (bukan hitungan; ditandai hukum positif) | `docs/kb-khi/` |
 
 Edukasi: (a) pembahasan per kasus dari trace + dalil; (b) modul belajar per bab + glosarium + kuis
 (kunci jawaban dihitung oleh engine).
@@ -189,7 +189,7 @@ interface KonfigurasiMadzhab {              // internal Syafi'iyyah saja; UI: "p
 ```
 
 Khilaf antar-madzhab lain di KB = hardcoded [SYF] + anotasi rujukan.
-Setiap tahap menerima `ruleset` sebagai parameter (colokan untuk KHI).
+Setiap tahap menerima `ruleset` sebagai parameter (KHI tidak memakai colokan ini: hanya panel informasi, 2026-11-23).
 
 ### Mode input daftar cepat ⇄ pohon
 - Daftar = tampilan dari graf, bukan data terpisah.

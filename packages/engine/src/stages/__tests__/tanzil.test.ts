@@ -1,12 +1,12 @@
 import { describe, expect, test } from 'vitest';
 import { case24, p } from '../../__tests__/fixtures/bab16.js';
-import { dengan, grafDA03, grafDA04, grafDA07, grafDA11 } from '../../__tests__/fixtures/dzawilArham.js';
+import { dengan, grafDA03, grafDA04, grafDA05, grafDA07, grafDA11 } from '../../__tests__/fixtures/dzawilArham.js';
 import { hitung } from '../../pipeline.js';
 import { KONFIGURASI_BAWAAN, type GrafKeluarga } from '../../types.js';
 import { turunkanPeran } from '../derivasi.js';
 import { maniDari } from '../mawani.js';
 import { bagiAntarPerantara, grafPosisi, periksaAulDzawilArham, samakanPenerima } from '../perantara.js';
-import { cariRuteTanzil as cariRuteMentah, saringJihah, semuaLintasan } from '../tanzil.js';
+import { cariRuteTanzil as cariRuteMentah, saringSabq, semuaLintasan } from '../tanzil.js';
 
 // Untuk graf normal hasilnya selalu daftar rute; TIDAK_DIDUKUNG diuji terpisah.
 const cariRuteTanzil = (...arg: Parameters<typeof cariRuteMentah>) => {
@@ -62,13 +62,34 @@ describe('cariRuteTanzil: kekerabatan ganda lewat leluhur [R14-11]', () => {
   });
 });
 
-describe('saringJihah [R14-10]', () => {
-  test('jihah sama: yang lebih dulu sampai menghijab; jejak mencatat penghijabnya', () => {
+describe('saringSabq', () => {
+  test('[SYF] jihah sama: yang lebih dulu sampai menghijab; jejak mencatat penghijabnya [R14-10]', () => {
     const peran = peranDari(grafDA03);
     const rute = [...cariRuteTanzil(grafDA03, peran, 'X1'), ...cariRuteTanzil(grafDA03, peran, 'X2')];
-    const hasil = saringJihah(rute);
+    const hasil = saringSabq(rute, 'syafii');
     expect(hasil.lolos.map(r => r.idOrang)).toEqual(['X2']);
     expect(hasil.jejak).toContainEqual({ tahap: 'dzawilArham', refs: ['R14-7', 'R14-10'], jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH', idOrang: 'X1', perantara: 'AP', oleh: ['X2'] });
+  });
+
+  // grafDA05: X1 (anak pr dari anak pr anak pr; bunuwwah, 2 langkah), X2 (anak pr saudara; ubuwwah, 1 langkah).
+  const ruteDA05 = () => {
+    const peran = peranDari(grafDA05);
+    return [...cariRuteTanzil(grafDA05, peran, 'X1'), ...cariRuteTanzil(grafDA05, peran, 'X2')];
+  };
+
+  test('[SYF] global: rute terdekat menghijab semua yang lain walau beda jihah [R14-10]', () => {
+    const hasil = saringSabq(ruteDA05(), 'syafii');
+    expect(hasil.lolos.map(r => r.idOrang)).toEqual(['X2']);
+    expect(hasil.jejak).toContainEqual(expect.objectContaining({ jenis: 'DZAWIL_ARHAM_TERHIJAB_JIHAH', idOrang: 'X1', oleh: ['X2'] }));
+  });
+
+  test('[HNB] per jihah: beda jihah tidak saling menghijab [K14-4]', () => {
+    const hasil = saringSabq(ruteDA05(), 'hanbali');
+    expect(hasil.lolos.map(r => r.idOrang).sort()).toEqual(['X1', 'X2']);
+    expect(hasil.tersisih).toEqual([]);
+    // R14-10 = [SYF] saja (KB 18.4: "tidak" untuk [HNB]); rujukan [HNB] adalah K14-4.
+    expect(hasil.jejak.flatMap(langkah => langkah.refs)).not.toContain('R14-10');
+    expect(hasil.jejak.flatMap(langkah => langkah.refs)).toContain('K14-4');
   });
 });
 

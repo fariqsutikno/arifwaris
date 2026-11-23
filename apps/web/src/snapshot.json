@@ -16881,8 +16881,8 @@
   {
    "kunci": "narasi.dzawil_arham.terhijab_jihah",
    "halaman": "narasi",
-   "id": "{siapa} tidak mendapat bagian karena {oleh} lebih dulu sampai ke ahli waris dari arah yang sama.",
-   "ar": "{siapa} محجوب؛ لأن {oleh} أسبق إلى الوارث من جهته.",
+   "id": "{siapa} tidak mendapat bagian karena {oleh} lebih dulu sampai ke ahli waris.",
+   "ar": "{siapa} محجوب؛ لأن {oleh} أسبق إلى الوارث.",
    "versiTerbit": 873
   },
   {
@@ -27470,23 +27470,9 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hasil.simpan.tersimpan",
-   "halaman": "hasil",
-   "id": "Tersimpan di riwayat · {jam}",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hasil.simpan.tidak_disimpan",
    "halaman": "hasil",
    "id": "Tidak disimpan",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hasil.simpan.dihapus",
-   "halaman": "hasil",
-   "id": "Kasus dihapus dari riwayat",
    "ar": null,
    "versiTerbit": 873
   },
@@ -27561,20 +27547,6 @@
    "versiTerbit": 873
   },
   {
-   "kunci": "hasil.bagikan_lembar.jangan_simpan",
-   "halaman": "hasil",
-   "id": "Jangan simpan kasus ini",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hasil.bagikan_lembar.jangan_simpan_ket",
-   "halaman": "hasil",
-   "id": "Untuk HP pinjaman atau sekadar coba-coba. Kasus dihapus dari riwayat; bisa diurungkan.",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
    "kunci": "hasil.bagikan_lembar.teks_disalin",
    "halaman": "hasil",
    "id": "Teks disalin",
@@ -27641,13 +27613,6 @@
    "kunci": "hasil.sudah_bersih_utang_wasiat",
    "halaman": "hasil",
    "id": "sudah bersih dari utang dan wasiat",
-   "ar": null,
-   "versiTerbit": 873
-  },
-  {
-   "kunci": "hasil.bagikan_lembar.sedang_dibagikan",
-   "halaman": "hasil",
-   "id": "Kasus ini sedang dibagikan lewat tautan. Hentikan pembagiannya dulu lewat Kelola tautan bila ingin menghapusnya dari riwayat.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28256,7 +28221,7 @@
   {
    "kunci": "privasi.dialog_ringkas",
    "halaman": "privasi",
-   "id": "Progres belajar dan percobaan soalmu disimpan di akunmu supaya ikut ke perangkat lain. Namamu tidak tampil di papan peringkat kecuali kamu memilihnya. Kamu bisa mengunduh atau menghapus datamu kapan saja. Dengan setuju, kamu juga menerima syarat layanan.",
+   "id": "Progres belajar dan percobaan soalmu disimpan di akunmu supaya ikut ke perangkat lain. Kasus hitunganmu ikut tersimpan di akun. Namamu tidak tampil di papan peringkat kecuali kamu memilihnya. Kamu bisa mengunduh atau menghapus datamu kapan saja. Dengan setuju, kamu juga menerima syarat layanan.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28291,7 +28256,7 @@
   {
    "kunci": "privasi.data_isi",
    "halaman": "privasi",
-   "id": "Bila kamu masuk dengan Google, kami menyimpan:\n\nAkun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk di {penyedia_data}. Kata sandi Google tidak pernah sampai ke kami.\n\nProfil: nama tampilan, pilihan ikut papan peringkat, pilihan menampilkan foto, dan zona waktu.\n\nBelajar dan latihan: pelajaran yang selesai, jawaban dan hasil latihan, setiap percobaan soal (jawaban yang kamu isi, hasilnya, dan waktu server saat kejadian), serta XP dan streak yang dihitung dari kegiatan itu.\n\nKasus hitungan: kasus yang kamu simpan ke riwayat, dan kasus yang kamu bagikan lewat tautan (isi kasus, tautan, dan daftar email penerima bila aksesnya dibatasi ke email tertentu).\n\nPreferensi dan persetujuan: pengaturan tampilanmu, serta pilihan persetujuanmu beserta versi kebijakan dan waktunya.\n\nNotifikasi: bila kamu menyalakannya, alamat langganan dan kunci enkripsi dari peramban atau perangkatmu.\n\nDi perangkatmu: aplikasi menyimpan progres, kasus, pengaturan, dan salinan konten di penyimpanan lokal peramban supaya tetap jalan tanpa sambungan. Data ini tinggal di perangkatmu; menghapus data situs di peramban menghapusnya.\n\nTanpa masuk, kasus, progres, dan pengaturanmu hanya tersimpan di perangkatmu dan tidak dikirim ke server kami.",
+   "id": "Bila kamu masuk dengan Google, kami menyimpan:\n\nAkun: alamat email, nama, dan foto profil dari akun Google, dikelola layanan masuk di {penyedia_data}. Kata sandi Google tidak pernah sampai ke kami.\n\nProfil: nama tampilan, pilihan ikut papan peringkat, pilihan menampilkan foto, dan zona waktu.\n\nBelajar dan latihan: pelajaran yang selesai, jawaban dan hasil latihan, setiap percobaan soal (jawaban yang kamu isi, hasilnya, dan waktu server saat kejadian), serta XP dan streak yang dihitung dari kegiatan itu.\n\nKasus hitungan: kasus yang kamu simpan ke riwayat, dan kasus yang kamu bagikan lewat tautan (isi kasus, tautan, dan daftar email penerima bila aksesnya dibatasi ke email tertentu).\n\nPreferensi dan persetujuan: pengaturan tampilanmu, serta pilihan persetujuanmu beserta versi kebijakan dan waktunya.\n\nNotifikasi: bila kamu menyalakannya, alamat langganan dan kunci enkripsi dari peramban atau perangkatmu.\n\nDi perangkatmu: aplikasi menyimpan progres, kasus, pengaturan, dan salinan konten di penyimpanan lokal peramban supaya tetap jalan tanpa sambungan. Data ini tinggal di perangkatmu; menghapus data situs di peramban menghapusnya.\n\nTanpa masuk, kasus, progres, dan pengaturanmu hanya tersimpan di perangkatmu dan tidak dikirim ke server kami. Kasus yang kamu hitung dan isian soal latihan tersimpan otomatis di perangkat ini supaya bisa dilanjutkan setelah halaman dimuat ulang; data ini tidak dikirim ke server kecuali kamu masuk.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28319,7 +28284,7 @@
   {
    "kunci": "privasi.retensi_isi",
    "halaman": "privasi",
-   "id": "Selama akunmu ada: datamu disimpan sampai kamu menghapus akun. Kami tidak menyetel penghapusan otomatis data lama.\n\nSaat kamu menghapus akun (menu Profil): semua data di atas ikut terhapus dari basis data kami, termasuk catatan persetujuanmu. Pengecualian: akun penulis atau pemeriksa konten tidak bisa dihapus sendiri karena terikat jejak penyuntingan; hubungi kontak di bawah dan pengelola akan membantu.\n\nSaat kamu mematikan notifikasi: langganan perangkatmu langsung dihapus. Saat kamu keluar dari papan peringkat: namamu langsung hilang dari papan.\n\nSalinan cadangan: selama masa beta kami tidak menjamin adanya cadangan berkala. Bila cadangan dibuat, data yang sudah kamu hapus tidak akan dipulihkan ke akunmu.",
+   "id": "Selama akunmu ada: datamu disimpan sampai kamu menghapus akun. Kami tidak menyetel penghapusan otomatis data lama.\n\nSaat kamu menghapus akun (menu Profil): semua data di atas ikut terhapus dari basis data kami, termasuk catatan persetujuanmu. Pengecualian: akun penulis atau pemeriksa konten tidak bisa dihapus sendiri karena terikat jejak penyuntingan; hubungi kontak di bawah dan pengelola akan membantu.\n\nSaat kamu mematikan notifikasi: langganan perangkatmu langsung dihapus. Saat kamu keluar dari papan peringkat: namamu langsung hilang dari papan.\n\nDi perangkatmu: kasus yang tidak dibuka 30 hari dan isian soalnya dihapus otomatis; kasus yang kamu simpan bertahan sampai kamu menghapusnya.\n\nSalinan cadangan: selama masa beta kami tidak menjamin adanya cadangan berkala. Bila cadangan dibuat, data yang sudah kamu hapus tidak akan dipulihkan ke akunmu.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -28361,7 +28326,7 @@
   {
    "kunci": "privasi.hak_isi",
    "halaman": "privasi",
-   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMeminta pemrosesan dibatasi atau dihentikan, dan menyatakan keberatan atas pemrosesan. Kami tidak mengambil keputusan otomatis yang berdampak hukum bagimu; XP dan streak hanya dipakai untuk tampilan belajar dan papan peringkat.\n\nMengajukan pengaduan lewat kontak di bawah, dan menggugat serta menuntut ganti rugi atas pelanggaran pemrosesan datamu sesuai hukum.\n\nKami menanggapi permintaan hakmu dalam batas waktu yang ditetapkan UU PDP.",
+   "id": "Menurut UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi, kamu berhak:\n\nMengakses dan mengunduh salinan datamu: menu Profil, Unduh dataku.\n\nMemperbaiki data: nama tampilan dan pengaturan bisa kamu ubah sendiri di Profil; untuk data lain hubungi kontak di bawah.\n\nMenghapus akun dan datamu: menu Profil, Hapus akun.\n\nMenghapus satu kasus: kapan saja lewat \"Hapus kasus ini\" di halaman hasil atau di Riwayat; kasus terhapus dari perangkat dan dari akunmu, dan tautan bagikannya dihentikan.\n\nMenarik persetujuan: matikan papan peringkat atau notifikasi di Profil kapan saja. Menarik persetujuan kebijakan privasi berarti berhenti memakai akun; hapus akunmu bila ingin datamu ikut dihapus.\n\nMeminta pemrosesan dibatasi atau dihentikan, dan menyatakan keberatan atas pemrosesan. Kami tidak mengambil keputusan otomatis yang berdampak hukum bagimu; XP dan streak hanya dipakai untuk tampilan belajar dan papan peringkat.\n\nMengajukan pengaduan lewat kontak di bawah, dan menggugat serta menuntut ganti rugi atas pelanggaran pemrosesan datamu sesuai hukum.\n\nKami menanggapi permintaan hakmu dalam batas waktu yang ditetapkan UU PDP.",
    "ar": null,
    "versiTerbit": 873
   },
@@ -29021,6 +28986,76 @@
    "halaman": "akun",
    "id": "Tautan gagal dihentikan. Coba lagi.",
    "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.hapus_kasus",
+   "halaman": "hasil",
+   "id": "Hapus kasus ini",
+   "ar": "احذف هذه المسألة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.bagikan_lembar.hapus_kasus_ket",
+   "halaman": "hasil",
+   "id": "Dihapus dari perangkat ini dan dari akunmu. Bisa diurungkan sesaat sesudahnya.",
+   "ar": "تُحذف من هذا الجهاز ومن حسابك. يمكن التراجع بعد الحذف مباشرة.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hapus_kasus.isi",
+   "halaman": "hasil",
+   "id": "Kasus ini dihapus dari perangkat ini dan dari akunmu (bila kamu masuk).",
+   "ar": "تُحذف هذه المسألة من هذا الجهاز ومن حسابك (إن كنت مسجّلًا).",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hapus_kasus.isi_latihan",
+   "halaman": "hasil",
+   "id": "Kasus soal dan isianmu dihapus dari perangkat ini. Progres dan XP latihan tidak ikut terhapus.",
+   "ar": "تُحذف مسألة التمرين وإجاباتك من هذا الجهاز. لا يُحذف تقدمك ونقاطك في التمارين.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.hapus_kasus.toast",
+   "halaman": "hasil",
+   "id": "Kasus dihapus",
+   "ar": "حُذفت المسألة",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.di_perangkat",
+   "halaman": "hasil",
+   "id": "Tersimpan di perangkat ini",
+   "ar": "محفوظة على هذا الجهاز",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tersimpan_akun",
+   "halaman": "hasil",
+   "id": "Tersimpan · ikut akunmu · {jam}",
+   "ar": "محفوظة · مع حسابك · {jam}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.simpan.tersimpan_perangkat",
+   "halaman": "hasil",
+   "id": "Tersimpan di perangkat ini · {jam}",
+   "ar": "محفوظة على هذا الجهاز · {jam}",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.hapus_kasus_tautan_dihentikan",
+   "halaman": "hitung",
+   "id": "Tautan bagikannya juga dihentikan dan tidak bisa dipulihkan.",
+   "ar": "سيتوقف رابط المشاركة أيضًا ولا يمكن استعادته.",
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.kasus_tidak_ditemukan",
+   "halaman": "hitung",
+   "id": "Kasus ini tidak ada lagi di perangkat ini. Mungkin sudah dihapus atau lewat 30 hari.",
+   "ar": "هذه المسألة لم تعد موجودة على هذا الجهاز. ربما حُذفت أو مرّت ٣٠ يومًا.",
    "versiTerbit": 873
   }
  ]

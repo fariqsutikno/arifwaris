@@ -39,5 +39,13 @@ export function langkahTerjauh(kasus: Kasus | null): number {
   return LANGKAH_HASIL;
 }
 
+/**
+ * Hasil boleh dibuka bila jenis kasus/pintu sudah dijawab dan ada ahli waris. Harta (langkah 2) boleh 0 dan bagian
+ * kanvas yang belum ditanya boleh menunggu: susunan cepat (mulaiDari) sengaja langsung ke Hasil dengan keduanya,
+ * jadi muat ulang di URL Hasil tidak boleh melemparnya ke wizard.
+ */
+export const bolehDiHasil = (kasus: Kasus | null): boolean =>
+  !!kasus && !alasanBelumLengkap(kasus, 1) && adaAhliWaris(kasus);
+
 export const adaAhliWaris = (kasus: Kasus): boolean =>
   Object.values(hitungIsian(kasus.graf, kasus.graf.idPewaris)).some(daftar => (daftar?.length ?? 0) > 0);

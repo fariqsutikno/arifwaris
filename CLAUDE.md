@@ -14,7 +14,7 @@ pakai transliterasi baku sesuai `docs/kb/15_glosarium.md`. Keyword bahasa dan AP
 - Setiap cabang kode fikih WAJIB diberi anotasi rujukan, contoh: `// [R09-7] radd, bab 9.4`.
 - Aturan yang tidak ada di KB, atau berstatus `[perlu verifikasi lanjut]` (bab 17.4), JANGAN dikarang.
   Kembalikan `TIDAK_DIDUKUNG` / tandai `blocked` dan beri tahu pengguna.
-- KHI = fase 4, ruleset terpisah (`docs/kb-khi/`), selalu ditandai "hukum positif, bukan fikih".
+- KHI = fase 4, **panel informasi pembanding** ("kalau menurut KHI", keputusan pemilik 2026-11-23: bukan kalkulator, tanpa hasil hitung KHI), sumber `docs/kb-khi/`, selalu ditandai "hukum positif, bukan fikih".
   Bukan overlay madzhab; jangan campur ke ruleset fikih.
 
 ## Prinsip engine (tidak boleh dilanggar)
@@ -98,7 +98,7 @@ Contoh buruk: `// tambah 1 ke total` di atas `total += 1`.
 > keterbacaan > DRY. Jangan korbankan kejelasan atau ketertelusuran demi kode yang lebih "elegan".
 
 ## Titik blocked (jangan diimplementasikan sebagai default)
-- R13-14 (laqith): perlu verifikasi. (R11-3 takharuj: atsar terverifikasi 2026-09-29, blocked dicabut.)
+- (R13-14 laqith: terverifikasi 2026-11-22, blocked dicabut. R11-3 takharuj: atsar terverifikasi 2026-09-29, blocked dicabut.)
 - Haml [SYF] (bab 13a): jumlah janin tak dibatasi → ashabah yang berbagi dengan haml tidak diberi apa pun;
   model 6 taqdir hanya untuk [HNB]. Batas kehamilan maksimal [SYF] = 4 tahun (R13-5, Ithraa).
 - Kombinatorik taqdir: batas keras jumlah "dunia" (engine-contract); lewat batas → `PERLU_INPUT`, bukan macet.

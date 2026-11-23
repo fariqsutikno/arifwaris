@@ -83,13 +83,13 @@ Dua kalimat Arab memakai «محجوب» apa pun jenis kelamin orangnya, sehingga
 
 | Teks Indonesia saat ini | Teks Arab saat ini |
 |---|---|
-| "{siapa} tidak mendapat bagian karena {oleh} lebih dulu sampai ke ahli waris dari arah yang sama." | «{siapa} محجوب؛ لأن {oleh} أسبق إلى الوارث من جهته.» |
+| "{siapa} tidak mendapat bagian karena {oleh} lebih dulu sampai ke ahli waris." | «{siapa} محجوب؛ لأن {oleh} أسبق إلى الوارث.» |
 | "{perantara} terhalang, sehingga yang bernasab melaluinya tidak mendapat apa-apa." | «{perantara} محجوب، فلا شيء لمن أدلى به.» |
 
 Pilihan:
 
 - **(a) Rumusan netral gender**, bisa langsung disunting di portal (menu Diksi). Contoh usulan untuk kalimat pertama:
-  «لا شيء لـ{siapa}؛ لأن {oleh} أسبق إلى الوارث من جهته.» Kalimat kedua perlu disusun tim.
+  «لا شيء لـ{siapa}؛ لأن {oleh} أسبق إلى الوارث.» Kalimat kedua perlu disusun tim.
 - **(b) Dua versi (laki-laki / perempuan)**: tim menulis keduanya, programmer menambah pemilihnya. Lebih rapi,
   tapi butuh kerja kode.
 

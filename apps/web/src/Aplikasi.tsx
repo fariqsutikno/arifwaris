@@ -30,7 +30,7 @@ import { TanyaJawab } from './layar/belajar/TanyaJawab';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
-import { daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
+import { cariSoalHitung, daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
 import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
 import { Rujukan } from './layar/rujukan/Rujukan';
 import { bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
@@ -43,9 +43,12 @@ import { perluSetujuKebijakan } from './akun/persetujuan';
 import { KasusDibagikan } from './layar/KasusDibagikan';
 import { sudahDibagikan } from './bagikanLokal';
 import { kasusLengkap } from './layar/KonfirmasiKasusBaru';
+import { bolehDiHasil } from './layar/wizard/validasi';
 import { TAUTAN_KALKULATOR, bacaRute, tautanKasus, useRute } from './rute';
 import { KepalaHalaman } from './ui/KepalaHalaman';
 import { Dok } from './ui/Dok';
+import { Toast, type IsiToast } from './ui/Toast';
+import { hapusKasus, pulihkanKasus } from './kasusmu';
 import { usePenjaga } from './ui/Penjaga';
 import { PembaruanKonten } from './ui/PembaruanKonten';
 import { kasusDariSoal } from '@waris/latihan';
@@ -59,12 +62,12 @@ export function Aplikasi() {
   // Kasus tersimpan hanya dihapus lewat ULANGI, dan langsung (sebelum render berikutnya) supaya beranda
   // tidak menawarkan kasus yang baru saja dihapus. MULAI (kasus null sementara) tidak menimpa simpanan lama.
   // Soal latihan yang sedang dikerjakan di kalkulator; ditandai selesai saat jawabannya dibuka.
-  const [soalAktif, setSoalAktif] = useState<SoalHitung | null>(null);
+  const [soalAktif, setSoalAktif] = useState<SoalHitung | null>(() => soalDariSumber(pulih?.sumber));
   // Sesi riwayat: satu entri riwayat per kasus yang dimulai/dibuka; perubahan di layar hasil memperbarui entrinya.
   const [idSesi, setIdSesi] = useState(() => pulih?.id ?? buatIdSesi());
   const [sumberSesi, setSumberSesi] = useState<SumberRiwayat>(pulih?.sumber ?? { jenis: 'sendiri' });
-  // "Jangan simpan kasus ini": sesi yang ditandai tidak disimpan otomatis; hanya state sesi, hilang saat dimuat ulang.
-  const [sesiJanganSimpan, setSesiJanganSimpan] = useState<ReadonlySet<string>>(new Set());
+  // URL kasus yang entrinya tidak ada: pesan umum, sama untuk semua sebab, tanpa id dari URL (P8, P16).
+  const [toast, setToast] = useState<IsiToast | null>(() => (!pulih && adalahUrlKasus(window.location.hash) ? { teks: t('hitung.kasus_tidak_ditemukan') } : null));
   // Akun pengguna (opsional, spec akun pengguna "Login"): tanpa env Supabase, repoAkun tetap null dan tombolnya tidak tampil.
   const [repoAkun, setRepoAkun] = useState<RepoAkun | null>(null);
   const [sesi, setSesi] = useState<Sesi | null>(null);
@@ -86,16 +89,40 @@ export function Aplikasi() {
     if (!sesi || !repoAkun) return;
     repoAkun.pengguna.bacaPersetujuan().then(daftar => setPerluSetuju(perluSetujuKebijakan(daftar))).catch(() => undefined);
   }, [sesi?.userId, repoAkun]);
+  // Hanya tersedia bila masuk akun: tautan bagikan baru bisa dihentikan/diubah lewat sini.
+  const bagikanAkun = sesi ? repoAkun?.bagikan : undefined;
   const kirim = (aksi: Aksi) => {
     if (aksi.jenis === 'ULANGI') simpanLokal(null);
     if (aksi.jenis === 'ULANGI' || aksi.jenis === 'MULAI' || aksi.jenis === 'MUAT') {
       // Kasus tersimpan yang belum pernah masuk riwayat (dari versi lama) dicatat dulu sebelum diganti, supaya tidak hilang.
       if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
-      setSoalAktif(null);
-      setIdSesi(buatIdSesi());
-      setSumberSesi({ jenis: 'sendiri' });
+      mulaiSesiBaru();
     }
     kirimAsli(aksi);
+  };
+  const mulaiSesiBaru = () => {
+    setSoalAktif(null);
+    setIdSesi(buatIdSesi());
+    setSumberSesi({ jenis: 'sendiri' });
+  };
+  // Hapus tuntas lalu kembali ke Awal Hitung. Tidak lewat kirim(ULANGI): itu mencatat kasus yang baru dihapus kembali ke riwayat.
+  const hapusKasusIni = () => {
+    const cadangan = hapusKasus(idSesi, bagikanAkun);
+    simpanLokal(null);
+    mulaiSesiBaru();
+    kirimAsli({ jenis: 'ULANGI' });
+    setToast({ teks: t('hasil.hapus_kasus.toast'), aksi: { label: t('hasil.simpan.urungkan'), saat: () => {
+      setToast(null);
+      pulihkanKasus(cadangan);
+      const entri = cadangan.entriRiwayat;
+      if (!entri) return;
+      // Hapus hanya dari Hasil, jadi kembali ke Hasil (bukan lewat bukaRiwayat, yang melempar kasus belum lengkap ke wizard).
+      kirimAsli({ jenis: 'MUAT', kasus: entri.kasus });
+      setIdSesi(entri.id);
+      setSumberSesi(entri.sumber);
+      setSoalAktif(soalDariSumber(entri.sumber));
+      catatRiwayat(entri.id, entri.kasus, Date.now(), entri.sumber);
+    } } });
   };
 
   useEffect(() => { if (keadaan.kasus) simpanLokal(keadaan.kasus); }, [keadaan.kasus]);
@@ -133,9 +160,9 @@ export function Aplikasi() {
   useEffect(() => {
     if (!idKasusDiUrl || idKasusDiUrl === idSesi) return;
     const dariUrl = pulihDariUrl(window.location.hash, bacaTujuan());
-    if (!dariUrl) return;
+    if (!dariUrl) { setToast({ teks: t('hitung.kasus_tidak_ditemukan') }); return; }
     if (keadaan.kasus) catatBilaBelumAda(idSesi, keadaan.kasus, Date.now());
-    setSoalAktif(null);
+    setSoalAktif(soalDariSumber(dariUrl.sumber));
     setIdSesi(dariUrl.id);
     setSumberSesi(dariUrl.sumber);
     kirimAsli({ jenis: 'PULIHKAN', keadaan: dariUrl.keadaan });
@@ -173,6 +200,7 @@ export function Aplikasi() {
   const bukaRiwayat = (entri: EntriRiwayat) => {
     bukaDiHitung(entri.kasus, entri.sumber);
     setIdSesi(entri.id);
+    setSoalAktif(soalDariSumber(entri.sumber));
     catatRiwayat(entri.id, entri.kasus, Date.now(), entri.sumber);
   };
   // Lanjut kasus terakhir. Kasus yang masih dimuat cukup ditampilkan lagi (sesi & mode belajar tetap);
@@ -223,21 +251,21 @@ export function Aplikasi() {
         : rute.halaman === 'privasi' ? <Privasi />
         : rute.halaman === 'syarat' ? <Syarat />
         : rute.halaman === 'dibagikan' ? <KasusDibagikan slug={rute.slug} repo={repoAkun} menunggu={!akunSiap} saatMasuk={masukGoogle} saatSalin={mulaiDari} />
-        : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} />
+        : rute.halaman === 'riwayat' ? <HalamanRiwayat kasusSekarang={kasus} saatBuka={bukaRiwayat} bagikan={bagikanAkun} />
         : rute.halaman === 'faq' ? <Faq id={rute.id} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'tanya-jawab' ? <TanyaJawab slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
         : rute.halaman === 'glosarium' ? <Glosarium id={rute.id} />
         : rute.halaman === 'rujukan' ? <Rujukan kode={rute.kode} kategori={rute.kategori} kitab={rute.kitab} />
         : layar === 'pintu' ? <PintuLab saatPilih={jenisKasus => kirim({ jenis: 'PILIH_JENIS_KASUS', jenisKasus })} />
         : layar === 'wizard' ? <Wizard keadaan={keadaan} kirim={kirim} />
-        : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} />
+        : layar === 'awal' || !kasus ? <AwalHitung kasusTersimpan={muatLokalAtau(kasus)} kirim={kirim} saatLanjut={lanjutkan} saatBukaRiwayat={bukaRiwayat} saatImpor={kasusImpor => bukaDiHitung(kasusImpor, { jenis: 'impor' })} saatKerjakanSoal={kerjakanSoal} saatMulaiDari={mulaiDari} bagikan={bagikanAkun} />
         : layar === 'cerita' ? <PilihanMenunggu kirim={kirim} />
-        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={sesi ? repoAkun?.bagikan : undefined} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim}
-            tanpaSimpan={sumberSesi.jenis === 'latihan'} janganSimpan={sesiJanganSimpan.has(idSesi)}
-            saatJanganSimpan={nilai => setSesiJanganSimpan(lama => { const baru = new Set(lama); if (nilai) baru.add(idSesi); else baru.delete(idSesi); return baru; })} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
+        : <Hasil kasus={kasus} idSesi={idSesi} bagikan={bagikanAkun} tujuan={sumberSesi.jenis === 'latihan' ? keadaan.tujuan : 'hitung'} kirim={kirim}
+            tanpaSimpan={sumberSesi.jenis === 'latihan'} saatHapusKasus={hapusKasusIni} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
             soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined}
             urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined} />}
+      <Toast isi={toast} saatHilang={() => setToast(null)} />
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
@@ -256,10 +284,19 @@ export function pulihDariUrl(hash: string, tujuan: Tujuan | null): { id: string;
   if (layar === 'wizard') aksi.push({ jenis: 'KE_LANGKAH', langkah: langkah ?? 1 });
   else if (layar === 'cerita') aksi.push({ jenis: 'KE_LAYAR', layar });
   let keadaan = aksi.reduce(pengurangKeadaan, keadaanAwal(null, tujuan));
-  // Kasus yang belum lengkap tidak punya hasil: jatuh ke langkah wizard pertama yang belum terisi.
-  if (keadaan.layar !== 'wizard' && !kasusLengkap(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
+  // Kasus yang belum boleh ke Hasil (harta 0 dari susunan cepat boleh): jatuh ke langkah wizard pertama yang belum terisi.
+  if (keadaan.layar !== 'wizard' && !bolehDiHasil(entri.kasus)) keadaan = pengurangKeadaan(keadaan, { jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH });
   return { id, sumber: entri.sumber, keadaan };
 }
+
+const adalahUrlKasus = (hash: string): boolean => {
+  const rute = bacaRute(hash);
+  return rute.halaman === 'kalkulator' && !!rute.kasus;
+};
+
+/** Soal latihan di balik sumber riwayat; kode yang sudah tidak ada di bank soal → null (kasus tetap terbuka tanpa hero soal). */
+export const soalDariSumber = (sumber: SumberRiwayat | undefined): SoalHitung | null =>
+  sumber?.jenis === 'latihan' ? cariSoalHitung(sumber.kode) ?? null : null;
 
 /** Di beranda, tawarkan kasus yang sedang dikerjakan; bila belum ada, yang tersimpan di perangkat. */
 const muatLokalAtau = (kasus: ReturnType<typeof muatLokal>) => kasus ?? muatLokal();
