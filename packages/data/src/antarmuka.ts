@@ -199,6 +199,8 @@ export interface RepositoriPengguna {
 /** Bagikan kasus lewat tautan pendek (supabase/migrations/20261003000001_bagikan_kasus.sql). Penerima hanya membaca. */
 export type AksesBagikan = 'privat' | 'tautan' | 'email';
 export interface PengaturanBagikan { slug: string; akses: AksesBagikan; email: string[] }
+/** Satu tautan milik pengguna yang sedang aktif dibagikan (akses bukan privat). */
+export interface TautanDibagikanSaya { slug: string; akses: AksesBagikan; idRiwayat: string; diubahPada: string }
 export type BacaBagikan =
   | { status: 'ok'; kasus: unknown; akses: AksesBagikan; milikSendiri: boolean }
   | { status: 'perlu_masuk' | 'tidak_boleh' | 'tidak_ada' };
@@ -206,6 +208,8 @@ export const GALAT_TAUTAN_DIPAKAI = 'Tautan itu sudah dipakai kasus lain.';
 export interface RepositoriBagikan {
   /** Pengaturan kasus milik pengguna dengan id riwayat itu; null = belum pernah dibagikan. */
   bacaPengaturan(idRiwayat: string): Promise<PengaturanBagikan | null>;
+  /** Semua kasus milik pengguna yang sedang dibagikan, terbaru dulu; untuk menghentikan tautan dari perangkat mana pun. */
+  daftarMilikSaya(): Promise<TautanDibagikanSaya[]>;
   /** Buat atau ubah (termasuk ganti slug). Melempar GALAT_TAUTAN_DIPAKAI bila slug dipakai kasus lain. */
   simpan(idRiwayat: string, pengaturan: PengaturanBagikan, kasus: unknown): Promise<void>;
   /** Isi yang dibagikan mengikuti kasus pemilik; tidak berbuat apa-apa bila kasus belum dibagikan. */
