@@ -7,6 +7,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { type SoalHitung, type Tingkat } from '@waris/content';
+import type { RepositoriBagikan } from '@waris/data';
 import { daftarSoalHitung } from '../konten/sumber';
 import { TEKS_HITUNG } from '../konten/umum';
 import { dariJson, type Kasus } from '../kasus';
@@ -33,11 +34,13 @@ interface Props {
   saatKerjakanSoal: (soal: SoalHitung) => void;
   /** Buka wizard dengan kasus yang ahli warisnya sudah terisi (mulai cepat). */
   saatMulaiDari: (kasus: Kasus) => void;
+  /** Hanya ada saat masuk akun: dipakai menghentikan tautan bagikan saat kasus dihapus. */
+  bagikan?: Pick<RepositoriBagikan, 'berhenti'> | undefined;
 }
 
 const JUMLAH_SOAL_PINTASAN = 3;
 
-export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat, saatImpor, saatKerjakanSoal, saatMulaiDari }: Props) {
+export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat, saatImpor, saatKerjakanSoal, saatMulaiDari, bagikan }: Props) {
   const inputFile = useRef<HTMLInputElement>(null);
   const [pesan, setPesan] = useState<string | null>(null);
   const saatPilihFile = async (file: File | undefined) => {
@@ -75,7 +78,7 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
 
       <div className="tata-beranda" onPointerMove={sorotUbin}>
         <MulaiCepat saatPilih={mulaiDariSusunan} saatDariNol={mulaiBaru} adaKasusBerjalan={!!kasusTersimpan} saatImpor={() => inputFile.current?.click()} />
-        <DaftarKasus kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} ringkas />
+        <DaftarKasus kasusSekarang={kasusTersimpan} saatBuka={saatBukaRiwayat} ringkas bagikan={bagikan} />
         <PintasanSoal saatKerjakan={saatKerjakanSoal} />
         <input ref={inputFile} type="file" accept="application/json,.json" hidden onChange={event => void saatPilihFile(event.target.files?.[0])} />
         {pesan && <p className="isian-salah" role="alert">{pesan}</p>}

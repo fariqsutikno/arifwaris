@@ -3,6 +3,7 @@
 // kisi berkas, penyaring Semua/Tersimpan/Sementara (hanya bila dua jenis ada), kolom cari bila banyak, dan hapus semua sementara.
 
 import { useState } from 'react';
+import type { RepositoriBagikan } from '@waris/data';
 import { BATAS_TAMPIL_CARI, cariEntri } from '../../lab';
 import type { Kasus } from '../../kasus';
 import { bacaKasusKu, hapusSemuaSementara } from '../../kasusmu';
@@ -15,9 +16,9 @@ import { angka, t } from '../../terjemah';
 const JUMLAH_RINGKAS = 6;
 type Saring = 'semua' | 'tersimpan' | 'sementara';
 
-interface Props { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void; ringkas?: boolean }
+interface Props { kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void; ringkas?: boolean; bagikan?: Pick<RepositoriBagikan, 'berhenti'> | undefined }
 
-export function DaftarKasus({ kasusSekarang, saatBuka, ringkas = false }: Props) {
+export function DaftarKasus({ kasusSekarang, saatBuka, ringkas = false, bagikan }: Props) {
   const [daftar, setDaftar] = useState(() => bacaKasusKu());
   const [saring, setSaring] = useState<Saring>('semua');
   const [kata, setKata] = useState('');
@@ -31,7 +32,7 @@ export function DaftarKasus({ kasusSekarang, saatBuka, ringkas = false }: Props)
   const tampil = ringkas ? daftar.slice(0, JUMLAH_RINGKAS) : cariEntri(terpilih, kata);
   const berkas = tampil.map((kasus, urutan) => (
     <li key={kasus.id} className={kasus.tersimpan ? 'lab-berkas tersimpan' : 'lab-berkas'} style={{ ['--urut' as string]: urutan }}>
-      <BerkasKasus kasus={kasus} kasusSekarang={kasusSekarang} saatBuka={saatBuka} saatBerubah={segarkan} />
+      <BerkasKasus kasus={kasus} kasusSekarang={kasusSekarang} saatBuka={saatBuka} saatBerubah={segarkan} bagikan={bagikan} />
     </li>
   ));
 

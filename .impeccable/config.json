@@ -15,6 +15,15 @@
         "value": "plus jakarta sans",
         "createdAt": "2026-10-01T00:15:47.643Z",
         "reason": "token Arif Waris v4 dipakai semua mockup repo; bukan pilihan baru"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          "docs/design/mockup-kalau-menurut-khi.html"
+        ],
+        "createdAt": "2026-11-23T00:19:39.372Z",
+        "reason": "false positive: teks putih di hero berlatar gradasi hijau gelap (#17372e, kilau jingga .33); diukur sendiri ~8-12:1; pola sama dengan mockup-hasil-per-kasus.html; bukan keputusan pengguna"
       }
     ]
   }

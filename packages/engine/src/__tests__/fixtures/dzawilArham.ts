@@ -314,6 +314,97 @@ export const grafDA20: GrafKeluarga = {
   pernikahan: [],
 };
 
+// ─── Sabq global [SYF] [R14-10] / per jihah [HNB] [K14-4] ─────────────────────
+// Pewaris D tanpa ahli waris nasab; F1/M1 wafat. Tiap graf: sabq (langkah ke perantara) tiap dzawil arham ada di komentar.
+const PGF = { PGF: p('PGF', 'L', penghubung), PGM: p('PGM', 'P', penghubung) };
+const keluargaIntiBerorangTua = {
+  ...keluargaInti, ...PGF,
+  F1: p('F1', 'L', { ...penghubung, idAyah: 'PGF', idIbu: 'PGM' }),
+  M1: p('M1', 'P', { ...penghubung, idAyah: 'MGF', idIbu: 'MGM' }),
+  MGF: p('MGF', 'L', penghubung), MGM: p('MGM', 'P', penghubung),
+};
+
+// k1: anak pr 'ammah kandung (→ ayah, 2 langkah) + anak pr saudari kandung (→ saudari, 1 langkah).
+export const grafSabqK1: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaIntiBerorangTua,
+    AM: p('AM', 'P', { ...penghubung, idAyah: 'PGF', idIbu: 'PGM' }), AMA: p('AMA', 'P', { idIbu: 'AM' }),
+    SiK: p('SiK', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }), SiA: p('SiA', 'P', { idIbu: 'SiK' }),
+  },
+};
+
+// k5: anak pr saudara seibu (1 langkah, umumah) + anak pr dari anak pr saudara kandung (2 langkah, ubuwwah).
+export const grafSabqK5: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaInti,
+    SI: p('SI', 'L', { ...penghubung, idAyah: 'FX', idIbu: 'M1' }), FX: p('FX', 'L', penghubung),
+    A1: p('A1', 'P', { idAyah: 'SI' }),
+    SK: p('SK', 'L', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }),
+    AP2: p('AP2', 'P', { ...penghubung, idAyah: 'SK' }), X2: p('X2', 'P', { idIbu: 'AP2' }),
+  },
+};
+
+// Raudhah 6/55: anak pr paman kandung (→ paman, 1 langkah) + anak pr khal (→ ibu, 2 langkah).
+export const grafSabqRaudhah655: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaIntiBerorangTua,
+    PK: p('PK', 'L', { ...penghubung, idAyah: 'PGF', idIbu: 'PGM' }), A1: p('A1', 'P', { idAyah: 'PK' }),
+    KH: p('KH', 'L', { ...penghubung, idAyah: 'MGF', idIbu: 'MGM' }), A2: p('A2', 'P', { idAyah: 'KH' }),
+  },
+};
+
+// Nihayat al-Mathlab 9/231: anak pr 'ammah seibu (→ ayah, 2) + anak pr dari anak lk paman sebapak (→ ibnul 'amm, 1)
+// + anak pr khal kandung (→ ibu, 2).
+export const grafSabqNihayat931: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaIntiBerorangTua,
+    PGFX: p('PGFX', 'L', penghubung),
+    AM: p('AM', 'P', { ...penghubung, idAyah: 'PGFX', idIbu: 'PGM' }), A1: p('A1', 'P', { idIbu: 'AM' }),
+    PS: p('PS', 'L', { ...penghubung, idAyah: 'PGF', idIbu: 'PGMX' }), PGMX: p('PGMX', 'P', penghubung),
+    IA: p('IA', 'L', { ...penghubung, idAyah: 'PS' }), A2: p('A2', 'P', { idAyah: 'IA' }),
+    KH: p('KH', 'L', { ...penghubung, idAyah: 'MGF', idIbu: 'MGM' }), A3: p('A3', 'P', { idAyah: 'KH' }),
+  },
+};
+
+// al-Hawi 8/177: 'ammah seibu (→ ayah, 1 langkah) + anak pr khalah kandung (→ ibu, 2 langkah).
+export const grafSabqHawi8177: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaIntiBerorangTua,
+    PGFX: p('PGFX', 'L', penghubung),
+    AM: p('AM', 'P', { idAyah: 'PGFX', idIbu: 'PGM' }),
+    KL: p('KL', 'P', { ...penghubung, idAyah: 'MGF', idIbu: 'MGM' }), A1: p('A1', 'P', { idIbu: 'KL' }),
+  },
+};
+
+// Tuhfah 6/394: 'ammah seibu (→ ayah, 1) + anak pr saudara kandung (→ saudara kandung, 1): seri, ayah menghijab saudara.
+export const grafSabqTuhfah6394: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaIntiBerorangTua,
+    PGFX: p('PGFX', 'L', penghubung),
+    AM: p('AM', 'P', { idAyah: 'PGFX', idIbu: 'PGM' }),
+    SK: p('SK', 'L', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }), A1: p('A1', 'P', { idAyah: 'SK' }),
+  },
+};
+
+// Nihayat al-Mathlab 9/259: bint bint bint + tiga bint ukht mufarriqah → «الْمَالُ بَيْنَ بَنَاتِ الْأُخْوَاتِ عَلَى خَمْسَةٍ؛ فَإِنَّهُنَّ أَسْبَقُ».
+export const grafSabqNihayat9259: GrafKeluarga = {
+  idPewaris: 'D', pernikahan: [],
+  orang: {
+    ...keluargaInti,
+    FX: p('FX', 'L', penghubung), MX: p('MX', 'P', penghubung),
+    AP: p('AP', 'P', { ...penghubung, idAyah: 'D' }), APP: p('APP', 'P', { ...penghubung, idIbu: 'AP' }), X: p('X', 'P', { idIbu: 'APP' }),
+    UK: p('UK', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'M1' }), BK: p('BK', 'P', { idIbu: 'UK' }),
+    UB: p('UB', 'P', { ...penghubung, idAyah: 'F1', idIbu: 'MX' }), BB: p('BB', 'P', { idIbu: 'UB' }),
+    UI: p('UI', 'P', { ...penghubung, idAyah: 'FX', idIbu: 'M1' }), BI: p('BI', 'P', { idIbu: 'UI' }),
+  },
+};
+
 export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
   { id: 'DA-01', sumber: '16 #24, 14.6', menguji: "khalah (→ ibu) & 'ammah (→ ayah)", input: case24.input,
     harapan: { status: 'OK', saham: { KL1: 1n, AM1: 2n }, penyebut: 3n, jenisJejak: ['DZAWIL_ARHAM_TANZIL', 'DZAWIL_ARHAM_MASALAH_PERANTARA'] } },
@@ -323,8 +414,22 @@ export const DZAWIL_ARHAM_FIXTURES: FixtureDzawilArham[] = [
     harapan: { status: 'OK', saham: { X2: 1n }, penyebut: 1n, dikecualikan: ['X1'], jenisJejak: ['DZAWIL_ARHAM_TERHIJAB_JIHAH'] } },
   { id: 'DA-04', sumber: '14.6 #4', menguji: 'empat perantara berfardh', input: dengan(grafDA04),
     harapan: { status: 'OK', saham: { MGF: 1n, B1: 1n, B2: 3n, B3: 1n }, penyebut: 6n } },
-  { id: 'DA-05', sumber: '14.4', menguji: 'lintas jihah: jarak tidak berpengaruh', input: dengan(grafDA05),
-    harapan: { status: 'OK', saham: { X1: 1n, X2: 1n }, penyebut: 2n } },
+  { id: 'DA-05', sumber: '14.7 [SYF], Nihayat al-Mathlab 9/259', menguji: 'sabq global: X2 (1 langkah) menghijab X1 (2 langkah) walau beda jihah [R14-10]', input: dengan(grafDA05),
+    harapan: { status: 'OK', saham: { X2: 1n }, penyebut: 1n, dikecualikan: ['X1'], jenisJejak: ['DZAWIL_ARHAM_TERHIJAB_JIHAH'] } },
+  { id: 'DA-21', sumber: '14.7 k1', menguji: 'sabq global: anak pr saudari (1) menghijab anak pr \'ammah (2)', input: dengan(grafSabqK1),
+    harapan: { status: 'OK', saham: { SiA: 1n }, penyebut: 1n, dikecualikan: ['AMA'] } },
+  { id: 'DA-22', sumber: '14.7 k5', menguji: 'sabq global: anak pr saudara seibu (1) menghijab cucu pr saudara kandung (2)', input: dengan(grafSabqK5),
+    harapan: { status: 'OK', saham: { A1: 1n }, penyebut: 1n, dikecualikan: ['X2'] } },
+  { id: 'DA-23', sumber: 'Raudhah 6/55', menguji: 'anak pr paman (1) menghijab anak pr khal (2)', input: dengan(grafSabqRaudhah655),
+    harapan: { status: 'OK', saham: { A1: 1n }, penyebut: 1n, dikecualikan: ['A2'] } },
+  { id: 'DA-24', sumber: 'Nihayat al-Mathlab 9/231', menguji: 'anak pr anak paman (1) menghijab anak pr \'ammah seibu & anak pr khal (2)', input: dengan(grafSabqNihayat931),
+    harapan: { status: 'OK', saham: { A2: 1n }, penyebut: 1n, dikecualikan: ['A1', 'A3'] } },
+  { id: 'DA-25', sumber: 'al-Hawi 8/177', menguji: '\'ammah seibu (1) menghijab anak pr khalah (2)', input: dengan(grafSabqHawi8177),
+    harapan: { status: 'OK', saham: { AM: 1n }, penyebut: 1n, dikecualikan: ['A1'] } },
+  { id: 'DA-26', sumber: 'Tuhfah 6/394', menguji: "seri sabq 1:1: ayah menghijab saudara → semua ke 'ammah seibu", input: dengan(grafSabqTuhfah6394),
+    harapan: { status: 'OK', saham: { AM: 1n }, penyebut: 1n, dikecualikan: ['A1'] } },
+  { id: 'DA-27', sumber: 'Nihayat al-Mathlab 9/259', menguji: 'anak-anak saudari (1 langkah) menghijab bint bint bint (2 langkah) [R14-10]', input: dengan(grafSabqNihayat9259),
+    harapan: { status: 'OK', saham: { BK: 3n, BB: 1n, BI: 1n }, penyebut: 5n, dikecualikan: ['X'] } },
   { id: 'DA-06', sumber: '14.7', menguji: 'hajb antar-perantara lintas jihah', input: dengan(grafDA06),
     harapan: { status: 'OK', saham: { AM1: 1n, NP: 1n }, penyebut: 2n, dikecualikan: ['NS'] } },
   { id: 'DA-07', sumber: '14.8', menguji: 'satu orang dua jalur [R14-11]', input: dengan(grafDA07),
@@ -379,6 +484,22 @@ export const KASUS_DZAWIL_ARHAM_MADZHAB: Array<{ id: string; graf: GrafKeluarga;
   } },
   { id: 'K14-3 cabang seibu rekursif', graf: grafDA18, harapan: {
     hanbali: { status: 'OK', saham: { XL: 1n, XP: 1n }, penyebut: 2n, jenisJejak: ['KHILAF_MADZHAB'] },
+  } },
+  // [HNB] [K14-4]: sabq hanya dalam satu jihah; lintas jihah tiap orang mengikuti perantaranya.
+  { id: 'K14-4 DA-05 lintas jihah', graf: grafDA05, harapan: {
+    syafii: { status: 'OK', saham: { X2: 1n }, penyebut: 1n },
+    hanbali: { status: 'OK', saham: { X1: 1n, X2: 1n }, penyebut: 2n },
+  } },
+  { id: 'K14-4 k5 seibu vs kandung', graf: grafSabqK5, harapan: {
+    syafii: { status: 'OK', saham: { A1: 1n }, penyebut: 1n },
+    hanbali: { status: 'OK', saham: { A1: 1n, X2: 5n }, penyebut: 6n },
+  } },
+  { id: 'K14-4 Raudhah 6/55', graf: grafSabqRaudhah655, harapan: {
+    hanbali: { status: 'OK', saham: { A1: 2n, A2: 1n }, penyebut: 3n },
+  } },
+  { id: 'K14-4 Lahim 222 sama sabq', graf: grafDA06, harapan: {
+    syafii: { status: 'OK', saham: { AM1: 1n, NP: 1n }, penyebut: 2n, dikecualikan: ['NS'] },
+    hanbali: { status: 'OK', saham: { AM1: 1n, NP: 1n }, penyebut: 2n, dikecualikan: ['NS'] },
   } },
   { id: 'K14-1 maliki baitul mal', graf: grafDA11, konfigurasi: BAITUL_MAL, harapan: {
     maliki: { status: 'TIDAK_DIDUKUNG', refs: ['K14-1'] },

@@ -921,4 +921,4 @@ Status 2026-11-20 malam: pertanyaan 16–21 disetujui sesuai usulan (riset kelas
 28. ~~Indikator level~~ → **diputuskan 2026-11-20: angka usulan dipakai sebagai titik awal.** Teks lama:: semua topik ≤ L minimal Intermediate dan ≥ 70% topik level L Advanced, cocok?
 26. ~~Daftar soal buta~~ → **diputuskan 2026-11-20: daftar soal sebelum dikerjakan hanya kode/bab/tingkat/jenis; mockup dulu.** Teks lama:: boleh tampilan daftar diubah menjadi kode/bab/tingkat/jenis saja sebelum soal selesai (perlu mockup)?
 29. ~~Profil 5 dimensi~~ → **diputuskan 2026-11-20: angka usulan dipakai sebagai titik awal.** Teks lama: (4A.11): ambang bukti (12 sel/3 soal; 70%/90%) cukup sebagai titik awal sebelum kalibrasi?
-30. **Soal penalaran** (masih menunggu pemilik menunjuk penulis, 2026-11-20): siapa di tim keilmuan yang menulis alasan pengecoh dan daftar kesalahan umum per bab?
+30. **Soal penalaran** (diputuskan 2026-11-22: Claude/opus menulis draf, tim keilmuan meninjau sebelum terbit): siapa di tim keilmuan yang menulis alasan pengecoh dan daftar kesalahan umum per bab?

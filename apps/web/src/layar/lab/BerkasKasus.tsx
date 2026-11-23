@@ -3,6 +3,8 @@
 // hidup di sini supaya Awal Lab dan halaman Kasusmu memakai perilaku yang sama.
 
 import { useState } from 'react';
+import type { RepositoriBagikan } from '@waris/data';
+import { sudahDibagikan } from '../../bagikanLokal';
 import { keJson, type Kasus } from '../../kasus';
 import { hapusKasus, type KasusKu } from '../../kasusmu';
 import { waktuRelatif, type EntriRiwayat } from '../../riwayat';
@@ -15,9 +17,9 @@ import { angka, t } from '../../terjemah';
 
 const SKALA_BERKAS = 0.55;
 
-interface Props { kasus: KasusKu; kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void; saatBerubah: () => void }
+interface Props { kasus: KasusKu; kasusSekarang: Kasus | null; saatBuka: (entri: EntriRiwayat) => void; saatBerubah: () => void; bagikan?: Pick<RepositoriBagikan, 'berhenti'> | undefined }
 
-export function BerkasKasus({ kasus, kasusSekarang, saatBuka, saatBerubah }: Props) {
+export function BerkasKasus({ kasus, kasusSekarang, saatBuka, saatBerubah, bagikan }: Props) {
   const [dialog, setDialog] = useState<'nama' | 'hapus' | null>(null);
   const tutup = () => setDialog(null);
   return (
@@ -43,8 +45,9 @@ export function BerkasKasus({ kasus, kasusSekarang, saatBuka, saatBerubah }: Pro
       )}
       {dialog === 'hapus' && (
         <DialogKonfirmasi judul={t('hitung.hapus_kasus_ini')} labelLanjut={t('umum.hapus')} saatBatal={tutup}
-          saatLanjut={() => { hapusKasus(kasus.id); tutup(); saatBerubah(); }}>
+          saatLanjut={() => { hapusKasus(kasus.id, bagikan); tutup(); saatBerubah(); }}>
           <p>{`"${kasus.judul}"`} {kasus.tersimpan ? t('hitung.lab_hapus_tersimpan_isi') : t('hitung.akan_dihapus_dari_perangkat_ini_dan')}</p>
+          {bagikan && sudahDibagikan(kasus.id) && <p>{t('hitung.hapus_kasus_tautan_dihentikan')}</p>}
         </DialogKonfirmasi>
       )}
     </>

@@ -5,7 +5,7 @@ import type { HasilEngine, Ruleset } from '../types.js';
 import { case24 } from './fixtures/bab16.js';
 import { grafDA02 } from './fixtures/dzawilArham.js';
 import {
-  DZAWIL_ARHAM_FIXTURES, KASUS_DZAWIL_ARHAM_MADZHAB, dengan, grafDA14, grafDA17, grafDA19, grafDA20, type FixtureDzawilArham,
+  DZAWIL_ARHAM_FIXTURES, KASUS_DZAWIL_ARHAM_MADZHAB, dengan, grafDA05, grafDA14, grafDA17, grafDA19, grafDA20, type FixtureDzawilArham,
 } from './fixtures/dzawilArham.js';
 
 type Ok = Extract<HasilEngine, { status: 'OK' }>;
@@ -82,6 +82,15 @@ describe('Dzawil arham — temuan review akhir', () => {
     const hasil = hitungDzawilArham(dengan(grafDA19));
     if (hasil.status !== 'OK') throw new Error(`${hasil.status}`);
     expect(hasil.statusOrang.DS).toMatchObject({ jenis: 'mahjub', oleh: ['SD'] });
+  });
+
+  test('[SYF] sabq global: penghijab X1 adalah X2 walau beda jihah; [HNB] keduanya mewarisi', () => {
+    const hasil = hitungDzawilArham(dengan(grafDA05));
+    if (hasil.status !== 'OK') throw new Error(`${hasil.status}`);
+    expect(hasil.statusOrang.X1).toMatchObject({ jenis: 'mahjub', oleh: ['X2'], rujukanAturan: 'R14-7' });
+    const hanbali = hitungDzawilArham(dengan(grafDA05, 'hanbali'));
+    if (hanbali.status !== 'OK') throw new Error(`${hanbali.status}`);
+    expect(hanbali.statusOrang.X1).toMatchObject({ jenis: 'ahliWaris' });
   });
 
   test('dua jalur satu jihah: tidak ada jejak "terhijab oleh dirinya sendiri"', () => {

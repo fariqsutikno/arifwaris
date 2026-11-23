@@ -108,7 +108,11 @@ function bagianIbu(penyusun: Penyusun, fardhPasangan: Pecahan): void {
 function bagianNenek(penyusun: Penyusun): void {
   // Semua nenek yang lolos hajb berbagi 1/6.
   const nenek = penyusun.dari('NENEK_DARI_IBU', 'NENEK_DARI_AYAH');
-  if (nenek.length > 0) penyusun.tambahFardh('JADDAH', nenek, SUDUS, { kode: 'NENEK_TANPA_IBU', banyaknya: nenek.length }, ['R04-7', 'R04-8']);
+  // [K04-3] M2 per jihat: nenek dua qarabah berbobot jumlah qarabahnya (bobotNenek); bobot dinormalisasi buatKelompok,
+  // jadi nenek dua qarabah sendirian (M1) tetap 1/6 utuh.
+  const bobot = Object.fromEntries(nenek.map(n => [n.idOrang, n.bobotNenek ?? 1n]));
+  const refs = nenek.some(n => n.bobotNenek !== undefined) ? ['R04-7', 'R04-8', 'K04-3'] : ['R04-7', 'R04-8'];
+  if (nenek.length > 0) penyusun.tambahFardh('JADDAH', nenek, SUDUS, { kode: 'NENEK_TANPA_IBU', banyaknya: nenek.length }, refs, bobot);
 }
 
 // ─── Keturunan [R04-11] [R04-12] [R04-13] ─────────────────────────────────────

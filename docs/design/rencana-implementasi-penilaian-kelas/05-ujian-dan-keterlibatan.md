@@ -104,8 +104,8 @@ interface KesalahanUmum {            // jenis konten 'kesalahan_umum', katalog p
 // 'temukan kesalahan' = soal hitung + satu KesalahanUmum yang cocok → tabel kunci dengan satu sel diubah;
 // pelajar menunjuk sel yang salah lalu memilih uraian kesalahannya. Tidak perlu jenis soal tersendiri.
 ```
-Skema zod di `packages/content/src/skema.ts`; dimasukkan ke `JENIS_FIKIH` (wajib ditinjau). Penulis pengecoh dan katalog
-kesalahan ditunjuk pemilik (spec 8.30, gerbang G4).
+Skema zod di `packages/content/src/skema.ts`; dimasukkan ke `JENIS_FIKIH` (wajib ditinjau). Pengecoh dan katalog
+kesalahan ditulis Claude (opus), ditinjau tim keilmuan sebelum terbit (spec 8.30, diputuskan 2026-11-22).
 
 ### 6.2 Tampilan (G6, sesudah mockup)
 Komponen pilihan alasan memakai pola `KartuSoalKuis` yang ada; temukan kesalahan memakai `TabelLatihan` mode baca dengan

@@ -25,11 +25,16 @@ export type Rute =
 /** Posisi kasus di Hitung: id entri riwayat + layar (wizard membawa langkah). */
 export interface PosisiKasus { id: string; layar: 'hasil' | 'cerita' | 'wizard'; langkah?: number }
 
+/** Hash bisa diketik/ditempel siapa saja; `%` salah format (mis. `%E0`) jangan melempar, cukup dipakai apa adanya (tak akan cocok dengan apa pun). */
+const dekodeSegmen = (segmen: string): string => {
+  try { return decodeURIComponent(segmen); } catch { return segmen; }
+};
+
 export function bacaRute(hash: string): Rute {
-  const [halaman, parameter] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
+  const segmen = hash.replace(/^#\/?/, '').split('/').map(dekodeSegmen);
+  const [halaman, parameter, bagian, langkah] = segmen;
   if (halaman === 'hitung') {
     if (!parameter) return { halaman: 'kalkulator' };
-    const [, , bagian, langkah] = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent);
     if (bagian === 'cerita') return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'cerita' } };
     if (bagian === 'langkah' && Number.isInteger(Number(langkah))) {
       return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'wizard', langkah: Number(langkah) } };
@@ -38,7 +43,7 @@ export function bacaRute(hash: string): Rute {
   }
   if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'latihan') {
-    const paket = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    const paket = bagian;
     return parameter === 'kuis' ? (paket ? { halaman, tab: 'kuis', paket } : { halaman, tab: 'kuis' }) : { halaman, tab: 'hitung' };
   }
   if (halaman === 'k' && parameter) return { halaman: 'dibagikan', slug: parameter };
@@ -49,7 +54,7 @@ export function bacaRute(hash: string): Rute {
   if (halaman === 'rujukan') {
     if (!parameter) return { halaman };
     if (/^R\d{2}-\d+$/.test(parameter)) return { halaman, kode: parameter };
-    const kitab = hash.replace(/^#\/?/, '').split('/').map(decodeURIComponent)[2];
+    const kitab = bagian;
     return kitab ? { halaman, kategori: parameter, kitab } : { halaman, kategori: parameter };
   }
   return { halaman: 'beranda' };

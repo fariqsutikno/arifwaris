@@ -14,6 +14,9 @@ import { Hasil } from '../layar/Hasil';
 import { BATAS_PERCOBAAN_LOKAL, bacaPercobaan, catatPercobaan } from '../percobaan';
 import { bacaProgresLatihan, catatLatihan } from '../progres';
 
+// Jangkar soal berbenih idSesi; tes ini butuh jangkar = sel "Asal masalah" Istri (nilai acak 0).
+vi.mock('../acakBerbenih', () => ({ acakDariBenih: () => () => 0 }));
+
 const kejadian = (id: string, lain: Partial<KejadianPercobaan> = {}): KejadianPercobaan => ({
   id, idSesiSoal: 's1', soalId: 'H-01', revisiSoal: 'r1', jenisSoal: 'biasa', mode: 'latihan', konteks: { jenis: 'mandiri' }, aksi: 'periksa',
   isian: null, jangkar: null, hasilKolom: null, benarSemua: false, dimulaiPada: '2026-11-20T00:00:00.000Z',
@@ -102,7 +105,6 @@ const bukaLewatDialog = () => {
 
 describe('Hasil mencatat kejadian percobaan soal latihan', () => {
   it('buka sekali; Periksa yang belum lengkap bukan kejadian; Periksa benar membawa isian, jangkar, hasil semua kolom, versi', async () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0);
     render(<Uji awal={c1601()} />);
     await waitFor(() => expect(bacaPercobaan().map(k => k.aksi)).toEqual(['buka']));
     fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
@@ -120,7 +122,6 @@ describe('Hasil mencatat kejadian percobaan soal latihan', () => {
     expect(periksa.hasilKolom!.every(kolom => kolom.status === 'benar')).toBe(true);
     expect(periksa.isian!.kepala).toMatchObject({ ashl: '8', akhir: '24' });
     expect(periksa.versi.engine).toBeTruthy();
-    vi.restoreAllMocks();
   });
 
   it('Lihat jawaban tanpa pernah mencoba tetap tercatat, tanpa menghitung dikerjakan', async () => {
