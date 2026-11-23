@@ -3,16 +3,18 @@
 // sembunyikan yang selesai; saat menyaring, bab yang cocok otomatis terbuka dan yang tidak cocok disembunyikan.
 // Aksi per baris berupa tautan teks; satu-satunya tombol utama dipakai untuk soal berikutnya yang disarankan.
 
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import type { SoalHitung, Tingkat } from '@waris/content';
 import { daftarSoalHitung } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
+import { bacaSemuaIsianSoal, hitungTerisi, type IsianSoal } from '../../isianSoal';
 import { bacaProgresLatihan } from '../../progres';
 import { Ikon } from '../../ui/Ikon';
 import { angka, t } from '../../terjemah';
 import { TEKS_TINGKAT } from '../AwalHitung';
 import { judulTopik, perBab, urutanSoalHitung } from './KuisKonsep';
 import { judulSoalTampil } from './judulSoal';
+import { porsiIsian, soalSelesai, soalTerputus, statusSoal, type StatusSoal } from './statusSoal';
 import { TombolBukaKasus } from './TombolBukaKasus';
 
 const BATAS_AWAL = 8;
@@ -24,6 +26,9 @@ interface Props { kasusSekarang: Kasus | null; saatKerjakan: (soal: SoalHitung) 
 export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
   const semua = urutanSoalHitung(daftarSoalHitung());
   const catatan = bacaProgresLatihan('hitung');
+  const isianTersimpan = bacaSemuaIsianSoal();
+  const statusDari = (soal: SoalHitung) => statusSoal(catatan[soal.kode], isianTersimpan[soal.kode]);
+  const terputus = soalTerputus(semua, catatan, isianTersimpan)[0];
   const berikutnya = semua.find(soal => !catatan[soal.kode]);
   const [kueri, setKueri] = useState('');
   const [tingkat, setTingkat] = useState<Tingkat | null>(null);
@@ -63,6 +68,12 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
           <span>{t('latihan.sembunyikan_yang_selesai')}</span>
         </label>
       </div>
+      {terputus && (
+        <div className="lanjut-terputus">
+          <span><b>{t('latihan.lanjutkan_yang_terputus')}</b> · {judulSoalTampil(terputus, false)} · {judulTopik(terputus.bab)}</span>
+          <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(terputus)} varian="primary" kelas="tombol-baris">{t('hitung.lab_lanjutkan')}</TombolBukaKasus>
+        </div>
+      )}
       {menyaring && <p className="keterangan" aria-live="polite">{t('latihan.jumlah_soal_cocok', { jumlah: angka(String(jumlahCocok)) })}</p>}
 
       {babTampil.map(({ bab, daftar, cocok: terlihat }) => {
@@ -85,7 +96,7 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
               <div id={`bab-soal-${bab}`}>
                 <ul className="daftar-polos daftar-soal-baru">
                   {terlihat.slice(0, batas).map(soal => (
-                    <BarisSoal key={soal.kode} soal={soal} selesai={!!catatan[soal.kode]} disarankan={soal.kode === berikutnya?.kode}
+                    <BarisSoal key={soal.kode} soal={soal} status={statusDari(soal)} isian={isianTersimpan[soal.kode]} disarankan={soal.kode === berikutnya?.kode}
                       kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} />
                   ))}
                 </ul>
@@ -106,25 +117,37 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
   );
 }
 
-interface BarisProps { soal: SoalHitung; selesai: boolean; disarankan: boolean; kasusSekarang: Kasus | null; saatKerjakan: (soal: SoalHitung) => void }
+interface BarisProps { soal: SoalHitung; status: StatusSoal; isian: IsianSoal | undefined; disarankan: boolean; kasusSekarang: Kasus | null; saatKerjakan: (soal: SoalHitung) => void }
 
-function BarisSoal({ soal, selesai, disarankan, kasusSekarang, saatKerjakan }: BarisProps) {
+function BarisSoal({ soal, status, isian, disarankan, kasusSekarang, saatKerjakan }: BarisProps) {
+  const selesai = soalSelesai(status);
+  const keterangan = keteranganStatus(status, isian);
   return (
-    <li className={['baris-soal-baru', selesai && 'selesai', disarankan && 'disarankan'].filter(Boolean).join(' ')}>
-      <span className="status-soal-baru" role="img" aria-label={selesai ? t('latihan.sudah_dikerjakan') : t('latihan.belum_dikerjakan')}>
-        {selesai && <Ikon nama="benar" ukuran={16} />}
+    <li className={['baris-soal-baru', selesai && 'selesai', status === 'terputus' && 'terputus', disarankan && 'disarankan'].filter(Boolean).join(' ')}>
+      <span className={`status-soal-baru status-${status}`} role="img" aria-label={keterangan ?? t('latihan.belum_dikerjakan')}
+        style={status === 'terputus' && isian ? { '--isi': `${porsiIsian(isian)}%` } as CSSProperties : undefined}>
+        {status === 'benar' && <Ikon nama="benar" ukuran={16} />}
+        {status === 'lihatJawaban' && <Ikon nama="mata" ukuran={16} />}
       </span>
       <div className="isi-soal">
         <b>{judulSoalTampil(soal, selesai)}</b>
         <span className="keterangan">
           <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
           {selesai && <> · {soal.topik}</>}
+          {keterangan && <> · <span className={status === 'terputus' ? 'ket-terputus' : undefined}>{keterangan}</span></>}
           {disarankan && <> · <span className="penanda-berikutnya">{t('latihan.soal_berikutnya_untukmu')}</span></>}
         </span>
       </div>
       <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatKerjakan(soal)} varian={disarankan ? 'primary' : 'secondary'} kelas="tombol-baris">
-        {selesai ? t('latihan.ulangi') : t('hitung.kerjakan')}
+        {selesai ? t('hitung.pembahasan') : status === 'terputus' ? t('hitung.lab_lanjutkan') : t('hitung.kerjakan')}
       </TombolBukaKasus>
     </li>
   );
+}
+
+function keteranganStatus(status: StatusSoal, isian: IsianSoal | undefined): string | null {
+  if (status === 'terputus' && isian) return t('latihan.terputus_isian', { terisi: angka(String(hitungTerisi(isian.isian))), total: angka(String(isian.jumlahKotak)) });
+  if (status === 'benar') return t('latihan.sudah_benar');
+  if (status === 'lihatJawaban') return t('latihan.sudah_lihat_jawaban');
+  return null;
 }

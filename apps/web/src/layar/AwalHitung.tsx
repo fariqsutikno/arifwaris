@@ -1,9 +1,9 @@
 // Awal Lab: tempat perjalanan kalkulator dimulai, tiga bagian dengan tujuan berbeda: Mulai kasus baru (dari nol, susunan
 // keluarga, impor), Kasusmu (semua kasus, tersimpan dan sementara), dan Berlatih dengan soal. Hero: Lanjutkan kasus berjalan
 // atau mulai baru.
-// Skenario baru langsung ke wizard dalam mode Hitung kasus;
-// mode Belajar dipilih di layar hasil (toggle Hitung kasus / Belajar), jadi tidak ditanya dua kali.
-// Pintasan belajar: beberapa soal latihan yang belum dikerjakan, langsung dibuka di mode Belajar tanpa menyusun skenario.
+// Skenario baru langsung ke wizard dalam mode Hitung kasus.
+// Pintasan soal: beberapa soal latihan yang belum selesai (yang terputus lebih dulu), dibuka sebagai soal, bukan kasus;
+// soal tinggal di Latihan, kasus di Kasusmu.
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { type SoalHitung, type Tingkat } from '@waris/content';
@@ -11,6 +11,7 @@ import { daftarSoalHitung } from '../konten/sumber';
 import { TEKS_HITUNG } from '../konten/umum';
 import { dariJson, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
+import { bacaSemuaIsianSoal } from '../isianSoal';
 import { bacaProgresLatihan } from '../progres';
 import type { EntriRiwayat } from '../riwayat';
 import { tautanLatihan } from '../rute';
@@ -21,6 +22,7 @@ import { HeroLab } from './lab/HeroLab';
 import { MulaiCepat } from './lab/MulaiCepat';
 import { panah, t } from '../terjemah';
 import { judulSoalTampil } from './belajar/judulSoal';
+import { porsiIsian, soalTerputus, statusSoal } from './belajar/statusSoal';
 
 export const TEKS_TINGKAT = (): Record<Tingkat, string> => ({ dasar: t('hitung.dasar'), menengah: t('hitung.menengah'), sulit: t('hitung.sulit') });
 
@@ -87,7 +89,9 @@ export function AwalHitung({ kasusTersimpan, kirim, saatLanjut, saatBukaRiwayat,
 /** Soal latihan yang belum dikerjakan (urutan daftar latihan, dari yang dasar); kalau semua sudah, ulangi dari awal. */
 function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => void }) {
   const catatan = bacaProgresLatihan('hitung');
-  const belum = daftarSoalHitung().filter(soal => !catatan[soal.kode]);
+  const isian = bacaSemuaIsianSoal();
+  const terputus = soalTerputus(daftarSoalHitung(), catatan, isian);
+  const belum = [...terputus, ...daftarSoalHitung().filter(soal => !catatan[soal.kode] && !terputus.includes(soal))];
   const daftar = (belum.length > 0 ? belum : daftarSoalHitung()).slice(0, JUMLAH_SOAL_PINTASAN);
   return (
     <section className="bagian-lab" aria-labelledby="judul-pintasan-soal">
@@ -100,7 +104,9 @@ function PintasanSoal({ saatKerjakan }: { saatKerjakan: (soal: SoalHitung) => vo
               <span className="panah-bulat" aria-hidden="true">{panah()}</span>
               <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
               <b className="judul-ubin">{judulSoalTampil(soal, !!catatan[soal.kode])}</b>
-              <span className="keterangan">{t('hitung.kerjakan')}</span>
+              {statusSoal(catatan[soal.kode], isian[soal.kode]) === 'terputus'
+                ? <span className="keterangan"><span className="status-soal-baru status-terputus" role="img" aria-label={t('hitung.lab_lanjutkan')} style={{ '--isi': `${porsiIsian(isian[soal.kode]!)}%` } as CSSProperties} /> {t('hitung.lab_lanjutkan')}</span>
+                : <span className="keterangan">{t('hitung.kerjakan')}</span>}
             </button>
           </li>
         ))}

@@ -1,6 +1,6 @@
 // "Terakhir dibuka": kasus yang pernah dibuka di wizard atau layar hasil, terbaru di atas, disimpan di perangkat ini,
 // otomatis tanpa perlu ditekan. Kasus yang belum sampai hasil tetap dicatat (ditandai data belum lengkap) supaya bisa
-// dilanjutkan. Satu entri per sesi (mulai kasus / impor / buka dari riwayat, materi, atau latihan): mengubah kasus
+// dilanjutkan. Satu entri per sesi (mulai kasus / impor / buka dari riwayat): mengubah kasus
 // di layar hasil memperbarui entri sesinya. Tiap entri mencatat sumbernya. Entri yang tidak dibuka lebih dari 30
 // hari dibuang. Beda dengan tersimpan.ts: hanya yang disimpan manual lewat tombol Simpan, tanpa kedaluwarsa.
 
@@ -28,8 +28,12 @@ export type SumberRiwayat =
 export interface EntriRiwayat { id: string; waktu: number; sumber: SumberRiwayat; judul: string; keterangan: string; lengkap: boolean; kasus: Kasus }
 interface EntriTersimpan { id: string; waktu: number; sumber?: SumberRiwayat; kasus: string }
 
+/** Hanya kasus (sendiri/impor) yang tinggal di Kasusmu; soal tinggal di Latihan, contoh materi tidak disimpan. */
+export const adalahKasusPengguna = (sumber: SumberRiwayat): boolean => sumber.jenis === 'sendiri' || sumber.jenis === 'impor';
+
+/** Entri lama bersumber latihan/materi disembunyikan di sini, tetapi tidak dihapus dari penyimpanan. */
 export function bacaRiwayat(): EntriRiwayat[] {
-  return bacaTersimpan().flatMap(entri => {
+  return bacaTersimpan().filter(entri => adalahKasusPengguna(entri.sumber ?? { jenis: 'sendiri' })).flatMap(entri => {
     const hasil = dariJson(entri.kasus);
     return hasil.berhasil
       ? [{ id: entri.id, waktu: entri.waktu, sumber: entri.sumber ?? { jenis: 'sendiri' }, ...ringkasKasus(hasil.kasus), kasus: hasil.kasus }]

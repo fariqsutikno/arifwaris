@@ -59,6 +59,7 @@ import { formatRupiah, formatRupiahRingkas, namaOrang } from '../format';
 import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { tautanLatihan } from '../rute';
+import { hapusIsianSoal } from '../isianSoal';
 import { Ikon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
 import { daftarBabDari } from './Penjelasan';
@@ -84,6 +85,8 @@ interface Props {
   bagikan?: RepositoriBagikan | undefined;
   /** Posisi soal di daftar Latihan untuk hero soal (B8); `saatBerikutnya` kosong = soal terakhir. */
   urutanLatihan?: { nomor: number; jumlah: number; bab: string; judul: string; saatBerikutnya?: (() => void) | undefined } | undefined;
+  /** Hasil soal selesai atau contoh materi: bisa disalin jadi kasus sendiri; soal selesai juga bisa dikerjakan ulang. */
+  salinan?: { saatJadikanKasus: () => void; saatKerjakanUlang?: (() => void) | undefined; soal: boolean } | undefined;
   /** Soal latihan tidak disimpan otomatis (spec A4). */
   tanpaSimpan?: boolean | undefined;
   /** Sesi ini ditandai "Jangan simpan kasus ini": state sesi (bukan disimpan), dipegang pemanggil supaya bertahan antar-layar. */
@@ -100,7 +103,7 @@ const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan, salinan }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -142,10 +145,10 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     );
   }
   return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} soal={soal} urutanLatihan={urutanLatihan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
-    tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={saatJanganSimpan} /></PenyediaSorot>;
+    tanpaSimpan={tanpaSimpan} janganSimpan={janganSimpan} saatJanganSimpan={saatJanganSimpan} salinan={salinan} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, janganSimpan, saatJanganSimpan, salinan }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -174,9 +177,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
   const [sudahMencoba, setSudahMencoba] = useState(false);
   // Lihat jawaban selalu tercatat (T4), walau belum pernah mencoba; XP/penanda dikerjakan tetap hanya bila sudah mencoba.
-  const bukaJawaban = () => { catatLihatJawaban(); setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
+  const bukaJawaban = () => { catatLihatJawaban(); if (soal) hapusIsianSoal(soal.id); setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
   const [tebakanBenar, setTebakanBenar] = useState(false);
-  const jawabBenar = () => { setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
+  const jawabBenar = () => { if (soal) hapusIsianSoal(soal.id); setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
   // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
   // lewat dialog dengan tombol tekan-tahan.
   const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | null>(null);
@@ -361,6 +364,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
         </div>
         <div className="isi-hero">
           <div className="judul-soal">
+            {salinan && <p className="lok-hero">{salinan.soal ? t('hitung.soal_latihan_pembahasan') : t('hitung.contoh_materi')}</p>}
             {!adalahBelajar && (
               <div className="nama-kasus"><span>{namaKasus}</span>
                 {statusSimpan.jenis === 'tersimpan' && <button type="button" className="pensil-nama" aria-label={t('hasil.ubah_nama_kasus')} onClick={() => setNamaTerbuka(true)}><Ikon nama="pensil" ukuran={16} /></button>}
@@ -372,6 +376,12 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             <p className="kalimat-hero">{adalahBelajar
               ? (sedangMenebak ? (urutanLatihan && adaTabelSoal ? urutanLatihan.judul : t('hitung.kerjakan_di_kartu_jawabanmu_langkah_perhitungan')) : t('hitung.cocokkan_jawabanmu_lalu_pelajari_cara_menghitungnya'))
               : hero.kalimat}</p>
+            {salinan && (
+              <p className="aksi-salinan">
+                {salinan.saatKerjakanUlang && <button type="button" className="tautan-hero" onClick={salinan.saatKerjakanUlang}>{t('hitung.kerjakan_ulang')}</button>}
+                <button type="button" className="tautan-hero" onClick={salinan.saatJadikanKasus}>{t('hitung.jadikan_kasus_sendiri')}</button>
+              </p>
+            )}
             {!sedangMenebak && daftarMayit.length > 1 && <div className="fakta-hero">
               <span>{t('hasil.jumlah_mayit', { jumlah: angka(String(daftarMayit.length)) })}</span>
             </div>}
@@ -398,7 +408,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       <div className="tata-hasil">
         {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
           saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
-        {tabelSoal && <TabelLatihan tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
         {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
           <div className="aksi-soal-berikutnya">
             {urutanLatihan.saatBerikutnya
