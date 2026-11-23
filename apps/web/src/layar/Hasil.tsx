@@ -9,6 +9,7 @@ import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
 import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
+import { acakDariBenih } from '../acakBerbenih';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
 import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
@@ -248,9 +249,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     return 'status' in susunan ? null : susunan;
   }, [adalahBelajar, tampil, kasus.graf, ringkasan.statusOrang]); // eslint-disable-line react-hooks/exhaustive-deps
   const adaTabelSoal = !!tabelSoal || !!soalGharqa;
-  const jangkarGharqa = useMemo(() => soalGharqa?.harta.map(harta => pilihJangkar(harta.tabel, Math.random)) ?? [], [soalGharqa]);
-  // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya.
-  const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, Math.random) : null), [tabelSoal]);
+  const jangkarGharqa = useMemo(() => soalGharqa?.harta.map((harta, indeks) => pilihJangkar(harta.tabel, acakDariBenih(`${idSesi}:${indeks}`))) ?? [], [soalGharqa, idSesi]);
+  // Jangkar dipilih sekali per soal yang tampil (B5); komponen hanya menerimanya. Berbenih idSesi supaya
+  // sama setelah muat ulang; sesi baru (buka soal dari daftar) = jangkar baru.
+  const jangkarSoal = useMemo(() => (tabelSoal ? pilihJangkar(tabelSoal, acakDariBenih(idSesi)) : null), [tabelSoal, idSesi]);
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
   const [idSesiSoal] = useState(() => crypto.randomUUID());
   const kunciTabel = useRef('');

@@ -13,6 +13,10 @@ import { jalankan } from '@waris/latihan';
 import { dataPeranDari } from '../hasil/ketukan';
 import { ringkas } from '../hasil/ringkasan';
 
+// Jangkar soal berbenih idSesi; tes yang butuh sel jangkar tertentu menetapkan nilai acaknya di sini.
+const nilaiAcak = vi.hoisted(() => ({ nilai: 0.5 }));
+vi.mock('../acakBerbenih', () => ({ acakDariBenih: () => () => nilaiAcak.nilai }));
+
 const buat = (kunci: KunciAhliWaris[], tirkah: Kasus['tirkah']): Kasus => {
   const kasus = kasusBaru('L');
   return { ...kasus, tirkah, graf: kunci.reduce((graf, k) => tambahAhliWaris(graf, 'PEWARIS', k), kasus.graf) };
@@ -121,7 +125,7 @@ describe('layar hasil', () => {
   });
 
   it('mode belajar: tabel salah ditolak; benar membuka jawaban dan dihitung dikerjakan', () => {
-    vi.spyOn(Math, 'random').mockReturnValue(0); // jangkar = sel "Asal masalah" Istri
+    nilaiAcak.nilai = 0; // jangkar = sel "Asal masalah" Istri
     const dikerjakan: boolean[] = [];
     render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
     const pilih = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `Bagian ${nama}` }), { target: { value: nilai } });
@@ -137,7 +141,7 @@ describe('layar hasil', () => {
     expect(dikerjakan).toEqual([true]);
     expect(screen.queryByRole('button', { name: 'Periksa' })).toBeNull();
     expect(screen.getByText('Benar semua.')).toBeTruthy();
-    vi.restoreAllMocks();
+    nilaiAcak.nilai = 0.5;
   });
 
   it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung tapi tidak benar', () => {
