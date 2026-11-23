@@ -13,9 +13,9 @@ const lengkap = () => {
 beforeEach(() => hapusRiwayat());
 
 it('muat ulang di URL kasus kembali ke kasus dan halaman yang sama', () => {
-  catatRiwayat('abc', lengkap(), 1, { jenis: 'materi' });
+  catatRiwayat('abc', lengkap(), 1, { jenis: 'impor' });
   expect(pulihDariUrl('#/hitung/abc', null)?.keadaan).toMatchObject({ layar: 'hasil' });
-  expect(pulihDariUrl('#/hitung/abc', null)?.sumber).toEqual({ jenis: 'materi' });
+  expect(pulihDariUrl('#/hitung/abc', null)?.sumber).toEqual({ jenis: 'impor' });
   expect(pulihDariUrl('#/hitung/abc/langkah/2', null)?.keadaan).toMatchObject({ layar: 'wizard', langkah: 2 });
   expect(pulihDariUrl('#/hitung/abc/langkah/3/9', null)?.keadaan).toMatchObject({ layar: 'wizard', langkah: 3 });
 });
@@ -26,7 +26,7 @@ it('tautan babak lama (latihan dengan mayit lanjutan) tetap terbuka di langkah 3
   const [anak] = hitungIsian(kasus.graf, 'PEWARIS').ANAK_LK!;
   kasus = { ...kasus, graf: tambahAhliWaris(kasus.graf, anak!, 'ANAK_LK') };   // anak punya ahli waris hidup, jadi langkah 3 tidak tertahan
   kasus = tandaiWafatSebelumDibagi(kasus, anak!, true);
-  catatRiwayat('lama', kasus, 1, { jenis: 'materi' });
+  catatRiwayat('lama', kasus, 1, { jenis: 'impor' });
   expect(pulihDariUrl('#/hitung/lama/langkah/3/2', null)?.keadaan).toMatchObject({ layar: 'wizard', langkah: 3 });
 });
 
