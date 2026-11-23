@@ -24,7 +24,7 @@ nav.tab{display:flex;gap:6px;flex-wrap:wrap;padding:2px}
 nav.tab button{border:0;background:rgba(255,255,255,.5);color:var(--ink);font:500 14px var(--font);padding:9px 14px;border-radius:999px;cursor:pointer}
 nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
 .catatan{max-width:1100px;margin:0 auto 12px;background:var(--kuning);color:#4a3a00;border-radius:16px;padding:10px 16px;font-size:13.5px}
-.frame{max-width:1100px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18);position:relative;min-height:640px;transition:max-width .2s}
+.frame{max-width:1100px;margin:0 auto;background:var(--frame);border-radius:30px;overflow:hidden;box-shadow:0 20px 50px rgba(20,40,30,.18);position:relative;min-height:640px}
 .frame.ponsel{max-width:390px}
 /* hasil (sebagian, hanya konteks) */
 .hero{color:#fff;padding:18px 20px 22px;background:radial-gradient(520px 300px at 82% 60%,rgba(255,150,40,.33),transparent 70%),linear-gradient(135deg,#17372e,#0e2a22)}
@@ -68,12 +68,12 @@ nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
 .badan{display:none;padding:0 16px 14px;border-top:1px dashed var(--line)}
 .kartu.buka .badan{display:block}
 .bag{margin-top:12px}
-.bag h4{font:600 12.5px var(--font);color:var(--muted);text-transform:none;letter-spacing:.01em;margin-bottom:4px}
+.bag h3{font:600 12.5px var(--font);color:var(--muted);text-transform:none;letter-spacing:.01em;margin-bottom:4px}
 .bag li{font-size:14px;padding:3px 0 3px 16px;position:relative}
 .bag li::before{content:"";position:absolute;left:2px;top:.85em;width:6px;height:6px;border-radius:50%;background:#9db3a5}
-.bag.praktik h4{color:#8a3a10}
-.bag.peringatan{background:var(--kuning);border-radius:14px;padding:9px 12px}
-.bag.peringatan h4{color:var(--kuning-ink)}
+.bag.praktik h3{color:#8a3a10}
+.bag.peringatan{border-left:4px solid var(--kuning-ink);padding:2px 0 2px 12px;background:none}
+.bag.peringatan h3{color:var(--kuning-ink)}
 .bag.peringatan li::before{background:var(--kuning-ink)}
 .bag.jalan li::before{background:var(--hijau)}
 .bag.catatan li{color:#4a554f}
@@ -134,23 +134,23 @@ nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
           <span class="cuplik">Ahli waris yang meninggal lebih dahulu dari pewaris dapat digantikan oleh anaknya.</span><span class="tingkat beda">Berbeda dari fikih</span></span>
           <svg class="ik panahK" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="badan">
-          <div class="bag"><h4>Bunyi KHI</h4><ul>
+          <div class="bag"><h3>Bunyi KHI</h3><ul>
             <li>Ahli waris yang meninggal lebih dahulu dari pewaris dapat digantikan oleh anaknya, kecuali yang terhalang karena putusan hakim.</li>
             <li>Bagian ahli waris pengganti tidak boleh melebihi bagian ahli waris yang sederajat dengan yang diganti.</li></ul></div>
-          <div class="bag praktik"><h4>Menurut praktik Pengadilan Agama</h4><ul>
+          <div class="bag praktik"><h3>Menurut praktik Pengadilan Agama</h3><ul>
             <li>Menurut rumusan kamar Mahkamah Agung (hasil Rakernas 2010), penggantian hanya sampai derajat cucu; anak perempuan dari saudara kandung diberi wasiat wajibah.</li>
             <li>Putusan Mahkamah Agung (yurisprudensi 2018) menerima cucu laki-laki dan perempuan, dari anak laki-laki maupun perempuan, sebagai ahli waris pengganti.</li>
             <li class="cat" style="color:#4a554f">Catatan: Pedoman Buku II (2010) memuat cakupan yang lebih luas (keturunan saudara, kakek-nenek, paman-bibi); tidak dijadikan acuan karena bertentangan dengan rumusan kamar yang lebih baru.</li></ul></div>
-          <div class="bag"><h4>Menurut fikih madzhab Syafi'i</h4><ul>
+          <div class="bag"><h3>Menurut fikih madzhab Syafi'i</h3><ul>
             <li>Cucu dari anak laki-laki terhalang oleh anak laki-laki.</li>
             <li>Cucu dari anak perempuan termasuk dzawil arham; mewarisi bila tidak ada ahli waris lain yang berhak, dengan metode tanzil.</li>
             <li>Fikih tidak mengenal ahli waris pengganti.</li></ul></div>
-          <div class="bag"><h4>Belum tersedia</h4><ul><li>konsep ahli waris pengganti dalam fikih (tidak ada; yang ada hanya jalan keluar wasiat dan perdamaian)</li></ul></div>
-          <div class="bag jalan"><h4>Jika ingin selaras dengan fikih, yang dapat ditempuh</h4><ul>
+          <div class="bag"><h3>Belum tersedia</h3><ul><li>konsep ahli waris pengganti dalam fikih (tidak ada; yang ada hanya jalan keluar wasiat dan perdamaian)</li></ul></div>
+          <div class="bag jalan"><h3>Jika ingin selaras dengan fikih, yang dapat ditempuh</h3><ul>
             <li>Pewaris berwasiat secara sukarela, paling banyak sepertiga, untuk yang bukan ahli waris.</li>
             <li>Para ahli waris berdamai setelah masing-masing mengetahui bagiannya menurut fikih.</li>
             <li>Pewaris menghibahkan hartanya semasa sehat dan menyerahkannya langsung kepada penerima.</li></ul></div>
-          <div class="bag peringatan"><h4>Perlu diperhatikan</h4><ul><li>Pembagian antara pengganti dan ahli waris lain ditentukan hakim menurut kasus; di sini tidak dihitung.</li></ul></div>
+          <div class="bag peringatan"><h3>Perlu diperhatikan</h3><ul><li>Pembagian antara pengganti dan ahli waris lain ditentukan hakim menurut kasus; di sini tidak dihitung.</li></ul></div>
           <div class="tautanK"><button class="tautan">Lihat bunyi pasal</button><button class="tautan">Lihat dasar fikihnya</button></div>
         </div>
       </article>
@@ -159,19 +159,19 @@ nav.tab button[aria-selected=true]{background:var(--black);color:#fff}
           <span class="cuplik">Bila salah satu pasangan wafat, separuh harta bersama menjadi hak pasangan yang hidup.</span><span class="tingkat beda">Berbeda dari fikih</span></span>
           <svg class="ik panahK" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
         <div class="badan">
-          <div class="bag peringatan"><h4>Perlu diperhatikan</h4><ul><li>Angka harta yang dimasukkan di kalkulator fikih adalah harta milik pewaris saja; bagian pasangan dipisah lebih dulu menurut kepemilikan atau kesepakatan, bukan otomatis separuh.</li></ul></div>
-          <div class="bag"><h4>Bunyi KHI</h4><ul>
+          <div class="bag peringatan"><h3>Perlu diperhatikan</h3><ul><li>Angka harta yang dimasukkan di kalkulator fikih adalah harta milik pewaris saja; bagian pasangan dipisah lebih dulu menurut kepemilikan atau kesepakatan, bukan otomatis separuh.</li></ul></div>
+          <div class="bag"><h3>Bunyi KHI</h3><ul>
             <li>Harta yang diperoleh selama perkawinan menjadi harta bersama; harta bawaan serta harta hadiah atau warisan tetap milik masing-masing.</li>
             <li>Bila salah satu pasangan wafat, separuh harta bersama menjadi hak pasangan yang hidup.</li>
             <li>Harta waris adalah harta bawaan ditambah bagian pewaris dari harta bersama, setelah dikurangi keperluan selama sakit, biaya jenazah, utang, dan pemberian untuk kerabat.</li></ul></div>
-          <div class="bag praktik"><h4>Menurut praktik Pengadilan Agama</h4><ul>
+          <div class="bag praktik"><h3>Menurut praktik Pengadilan Agama</h3><ul>
             <li>Pasangan non-muslim yang tidak mewarisi tetap mendapat bagian harta bersama menurut putusan Mahkamah Agung.</li>
             <li class="cat" style="color:#4a554f">Catatan: Pada suami beristri lebih dari satu, Pasal 94 menyebut harta bersama terpisah per perkawinan, tetapi pedoman Mahkamah Agung memahaminya bertumpuk dengan istri-istri terdahulu.</li></ul></div>
-          <div class="bag"><h4>Menurut fikih madzhab Syafi'i</h4><ul>
+          <div class="bag"><h3>Menurut fikih madzhab Syafi'i</h3><ul>
             <li>Tidak ada harta bersama otomatis karena pernikahan; harta suami dan istri terpisah.</li>
             <li>Kerja sama usaha yang sah hanya syirkah 'inan (modal); kerja sama tenaga (abdan) dan atas nama baik (wujuh) batal.</li>
             <li>Pembagian harta yang bercampur menurut kesepakatan atau bukti sumbangan (keputusan lembaga fatwa modern 2022, bukan nukilan madzhab klasik).</li></ul></div>
-          <div class="bag jalan"><h4>Jika ingin selaras dengan fikih, yang dapat ditempuh</h4><ul>
+          <div class="bag jalan"><h3>Jika ingin selaras dengan fikih, yang dapat ditempuh</h3><ul>
             <li>Suami dan istri membuat kesepakatan tertulis semasa hidup tentang harta yang bercampur.</li>
             <li>Para ahli waris berdamai setelah masing-masing mengetahui bagiannya menurut fikih.</li></ul></div>
           <div class="tautanK"><button class="tautan">Lihat bunyi pasal</button><button class="tautan">Lihat dasar fikihnya</button></div>
