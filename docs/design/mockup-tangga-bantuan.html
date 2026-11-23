@@ -66,7 +66,19 @@ table.kitab{border-collapse:collapse;width:100%;font-size:14px;font-variant-nume
 .butir{margin-top:8px;font-size:15px;line-height:1.55}
 .butir + .butir{border-top:1.5px dashed #f1dfae;padding-top:8px}
 .butir a{color:var(--kuning-ink);font-weight:600}
-.petunjuk .lanjut{margin-top:6px;color:var(--kuning-ink)}
+.kakiPetunjuk{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;margin-top:10px;padding-top:8px;border-top:1.5px solid #f1dfae}
+.petunjuk .materi{color:var(--muted);font-weight:500}
+.petunjuk .lanjut{color:var(--kuning-ink)}
+/* Layar selesai */
+.hasilAtas{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.hasilAtas h2{font-size:24px}
+.dapatXp{font-size:15px;font-weight:700;background:var(--mint);color:#174d3c;border-radius:999px;padding:4px 12px}
+.blokHasil{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.blok{border-radius:16px;padding:14px 16px;background:var(--surface)}
+.blok h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;gap:6px;align-items:center}
+.blok p{margin-top:6px;font-size:15px}
+.blok.ulang{background:#fff8e6}
+@media(max-width:760px){.blokHasil{grid-template-columns:1fr}}
 .petunjuk .lanjut.bahaya{color:#9a3a22}
 /* Dialog */
 .latarDialog{position:fixed;inset:0;background:rgba(10,20,15,.45);display:grid;place-items:center;padding:16px;z-index:5}
@@ -166,7 +178,8 @@ function render() {
 function teksXp() {
   if (aktif === 'dibuka') return `<span class="xp">Kolom dibuka, soal ini tanpa XP</span>`;
   const lepas = ['p1', 'p2', 'dialog'].includes(aktif);
-  return `<span class="xp"><b>${XP_DASAR} XP</b><span class="bonus ${lepas ? 'lepas' : ''}">${ik('bintang', 14)}+${XP_BONUS} mandiri</span></span>`;
+  return lepas ? `<span class="xp"><b>${XP_DASAR} XP</b> · bonus hilang karena pakai petunjuk</span>`
+    : `<span class="xp"><b>${XP_DASAR} XP</b><span class="bonus">${ik('bintang', 14)}+${XP_BONUS} kalau tanpa petunjuk</span></span>`;
 }
 
 function layarSoal() {
@@ -200,20 +213,20 @@ function layarSoal() {
       <ol class="sub" style="padding-left:20px;margin-top:8px">
         <li><b>Bagian</b> dipilih dari daftar.</li>
         <li>Saham = bilangan bulat terhadap asal masalah di kepala kolom.</li>
-        <li>Salah itu biasa. Kolom yang perlu dicek ditandai merah.</li>
+        <li>Salah tidak mengurangi XP. Perbaiki saja yang merah.</li>
+        <li>Salah 2 kali? Petunjuk boleh dibuka. Bonusnya saja yang hilang.</li>
       </ol>
-      <p class="catatan">${ik('bintang', 14)} <b>Bonus mandiri</b> didapat kalau benar tanpa petunjuk. Salah beberapa kali tidak apa-apa.</p>
     </aside>
   </div>`;
 }
 
 function umpan() {
   if (aktif === 'awal') return '';
-  if (aktif === 'dibuka') return `<div class="umpan netral">Kolom <b>Bagian</b> sudah terbuka. Kolom <b>Asal masalah</b> giliranmu.</div>`;
+  if (aktif === 'dibuka') return `<div class="umpan netral">Jawaban kolom <b>Bagian</b> sudah ditampilkan. Sekarang isi kolom <b>Asal masalah</b>.</div>`;
   const tawar = aktif === 'tawar';
   return `<div class="umpan salah" role="status">
-      ${aktif === 'salah1' ? 'Bagian <b>istri</b> belum tepat. Kolom lain menunggu kolom ini benar dulu.' : 'Bagian <b>istri</b> masih belum tepat.'}
-      ${tawar ? `<br><button class="tautan" data-k="p1">${ik('lampu')}Lihat petunjuk</button>` : ''}
+      ${aktif === 'salah1' ? 'Bagian <b>istri</b> belum tepat. Ganti pilihannya, lalu Periksa lagi.' : 'Bagian <b>istri</b> masih belum tepat.'}
+      ${tawar ? `<br><button class="tautan" data-k="p1">${ik('lampu')}Butuh petunjuk?</button>` : ''}
     </div>`;
 }
 
@@ -221,18 +234,21 @@ function kartuPetunjuk() {
   if (!['p1', 'p2', 'dialog'].includes(aktif)) return '';
   const kedua = aktif !== 'p1';
   return `<section class="petunjuk" aria-labelledby="jp">
-    <h3 id="jp">${ik('lampu', 16)}Petunjuk · kolom Bagian</h3>
-    <p class="butir">Bagian istri ada dua kemungkinan. Mana yang berlaku tergantung ada atau tidaknya <b>keturunan almarhum</b>. <a href="#">Ulang materinya ${ik('buku', 15)}</a></p>
-    ${kedua ? `<p class="butir">Lihat lagi daftar ahli waris di soal. Siapa di antara mereka yang <b>keturunan almarhum</b>?</p>` : ''}
-    ${kedua ? `<button class="tautan lanjut bahaya" data-k="dialog">${ik('mata')}Tunjukkan jawaban kolom Bagian</button>`
-            : `<button class="tautan lanjut" data-k="p2">Masih buntu? Petunjuk berikutnya</button>`}
+    <h3 id="jp">${ik('lampu', 16)}Petunjuk ${kedua ? '2 dari 2' : '1 dari 2'}</h3>
+    <p class="butir">Bagian istri bisa <b>1/4</b> atau <b>1/8</b>. Yang menentukan: almarhum punya anak (atau cucu dari anak laki-laki) atau tidak.</p>
+    ${kedua ? `<p class="butir">Cek lagi soalnya: almarhum punya anak?</p>` : ''}
+    <div class="kakiPetunjuk">
+      ${kedua ? `<button class="tautan lanjut bahaya" data-k="dialog">${ik('mata')}Tunjukkan jawabannya</button>`
+              : `<button class="tautan lanjut" data-k="p2">Masih bingung? Petunjuk 2</button>`}
+      <a class="tautan materi" href="#">${ik('buku', 16)}Baca materi bagian istri</a>
+    </div>
   </section>`;
 }
 
 function dialogHangus() {
   return `<div class="latarDialog"><div class="dialog" role="alertdialog" aria-labelledby="jd" aria-describedby="dd">
-    <h2 id="jd">Tunjukkan jawaban kolom Bagian?</h2>
-    <p id="dd">Kolom lain tetap kamu kerjakan, tapi soal ini tidak memberi XP lagi, juga kalau nanti diulang.</p>
+    <h2 id="jd">Lihat jawaban kolom Bagian?</h2>
+    <p id="dd">Soal ini jadi tidak dapat XP, termasuk kalau nanti diulang. Kolom lain tetap kamu isi sendiri.</p>
     <label for="ketik">Ketik <b>hangus</b> kalau yakin</label>
     <input id="ketik" autocomplete="off" spellcheck="false">
     <p class="galat" id="galat" hidden>Ketik kata hangus, persis seperti itu.</p>
@@ -248,16 +264,18 @@ document.addEventListener('click', e => {
 
 function layarSelesai() {
   return `<div class="tata"><section class="t s12" aria-labelledby="js">
-    <div class="umpan benar" role="status">Benar semua.</div>
-    <p class="predikat" id="js">Dua dari tiga kolom kamu selesaikan sendiri.</p>
-    <ul class="ringkas">
-      <li>${ik('cek')}Asal masalah dan asal masalah akhir: tanpa bantuan.</li>
-      <li>${ik('buku')}Yang perlu diulang: <a href="#">bagian istri saat ada keturunan</a>.</li>
-      <li>${ik('ulang')}Soal ini masuk <b>layak diulang</b>. Coba lagi besok, tanpa petunjuk.</li>
-    </ul>
+    <div class="hasilAtas">
+      <div><h2 id="js">Selesai!</h2><p class="sub">2 dari 3 kolom kamu kerjakan sendiri.</p></div>
+      <span class="dapatXp">Tanpa XP</span>
+    </div>
+    <div class="blokHasil">
+      <div class="blok"><h3>${ik('cek', 16)}Sudah bisa</h3><p>Asal masalah dan asal masalah akhir.</p></div>
+      <div class="blok ulang"><h3>${ik('buku', 16)}Perlu dipelajari lagi</h3><p>Bagian istri. <a href="#">Baca materinya</a></p></div>
+    </div>
+    <p class="sub" style="margin-top:14px">${ik('ulang', 16)} Soal ini kami tandai <b>layak diulang</b>. Coba lagi besok tanpa petunjuk.</p>
     <div class="aksi"><button class="btn" data-k="daftar">Soal berikutnya</button>
       <button class="tautan" data-k="awal">Kerjakan ulang sekarang</button></div>
-    <p class="catatan">Contoh lain. Mandiri: "Benar tanpa petunjuk. +${XP_DASAR} XP, +${XP_BONUS} bonus mandiri." Pakai petunjuk: "Benar. +${XP_DASAR} XP. Besok coba tanpa petunjuk untuk bonusnya."</p>
+    <p class="catatan">Keadaan lain di layar yang sama. Tanpa petunjuk: "Selesai! Semua kolom kamu kerjakan sendiri." dengan pil "+${XP_DASAR + XP_BONUS} XP", tanpa blok "Perlu dipelajari lagi". Pakai petunjuk: pil "+${XP_DASAR} XP" dan blok "Perlu dipelajari lagi" untuk kolom yang dibantu.</p>
   </section></div>`;
 }
 
