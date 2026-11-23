@@ -5,7 +5,7 @@ import type { PersetujuanSaya } from '@waris/data';
 import { NAMA_APLIKASI } from '../terjemah';
 
 // ponytail: konstanta di kode; pindah ke versiTerbit konten `teks_edukasi` bila kebijakan sering direvisi lewat portal.
-export const VERSI_KEBIJAKAN_PRIVASI = 5;
+export const VERSI_KEBIJAKAN_PRIVASI = 6;
 // Berlaku untuk kebijakan privasi dan syarat layanan (satu persetujuan); ganti bersama versi.
 export const TANGGAL_BERLAKU_KEBIJAKAN = '22 November 2026';
 
