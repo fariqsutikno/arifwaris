@@ -44,6 +44,8 @@ test('mengerjakan soal, isi satu kotak, keluar: soal tidak jadi kasus; dibuka la
   fireEvent.click(screen.getAllByRole('button', { name: 'Lanjutkan' })[0]!);
   await waitFor(() => expect(kotakPertama()).not.toBeNull());
   expect(kotakPertama().value).toBe(nilai);
+  // Soal yang masih ditebak bukan pembahasan: tautan salinan hanya untuk soal selesai (spec B5).
+  expect(screen.queryByRole('button', { name: 'Jadikan kasus sendiri' })).toBeNull();
 });
 
 test('soal selesai dibuka sebagai pembahasan; Jadikan kasus sendiri menyalin ke Kasusmu', async () => {

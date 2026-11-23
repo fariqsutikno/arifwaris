@@ -253,7 +253,7 @@ export function Aplikasi() {
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
             soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined}
             urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined}
-            salinan={adalahKasusPengguna(sumberSesi) ? undefined : { saatJadikanKasus: jadikanKasusSendiri, saatKerjakanUlang: sumberSesi.jenis === 'latihan' ? kerjakanUlangSoal : undefined, soal: sumberSesi.jenis === 'latihan' }} />}
+            salinan={adalahKasusPengguna(sumberSesi) || soalAktif ? undefined : { saatJadikanKasus: jadikanKasusSendiri, saatKerjakanUlang: sumberSesi.jenis === 'latihan' ? kerjakanUlangSoal : undefined, soal: sumberSesi.jenis === 'latihan' }} />}
       <Dok />
       <Tur daftar={daftarTur} kunci={layar} sedangBerjalan={turBerjalan} saatSelesai={() => setTurBerjalan(false)} />
     </>
