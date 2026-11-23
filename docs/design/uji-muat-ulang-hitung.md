@@ -1,6 +1,6 @@
 # Muat ulang di Hitung & Latihan: diagnosis dan peta uji
 
-Tanggal: 2026-11-23 (revisi 2: model simpan). Status: diagnosis selesai, perbaikan belum.
+Tanggal: 2026-11-23 (revisi 2: model simpan). Status: perbaikan Tugas 1–11 selesai (lihat "Status cakupan" di bawah).
 
 ## Cara kerja sekarang
 
@@ -132,3 +132,30 @@ Lapisan: **U** = unit (vitest, `pulihDariUrl`/reducer/riwayat), **K** = komponen
 ## Urutan kerja
 
 Ikuti tugas 1–11 di `docs/design/rencana-perbaikan-muat-ulang.md`.
+
+## Status cakupan (2026-11-23, sesudah Tugas 1–11)
+
+Tes ada di `apps/web/src/__tests__/` kecuali disebut lain. Verifikasi browser (preview) dilakukan sekali di akhir.
+
+| ID | Tercakup oleh |
+|---|---|
+| P1–P7, P9* | `pulihUrl.test.ts`, `rute.test.ts`, `muatUlangInvarian.test.ts` (invarian atas susunan cepat, semua soal, belum lengkap) |
+| P4, B1 | `pulihUrl.test.ts` (semua `SUSUNAN_CEPAT`) + browser |
+| P8, P16, P17 | `kasusTakDitemukan.test.tsx`, `rute.test.ts` + browser (`#/hitung/<acak>`, `#/hitung/%E0`, `#/belajar/%`) |
+| P13 | browser: Back dari soal memunculkan satu dialog penjaga (bukan dua), Pindah → `#/latihan` |
+| P10, P11 | `progresSoalLokal.test.ts` (penyimpanan diblokir/rusak); entri riwayat rusak sudah dilewati `bacaRiwayat` |
+| L1, L6, L7 | `soalDariSumber.test.ts`, `acakBerbenih.test.ts`, browser (hero, jangkar sama, kejadian `buka` tunggal) |
+| L2–L5, L8 | `soalPulih.test.tsx` + browser (isian kembali, buka jawaban tidak menggandakan `jumlahCoba`) |
+| L9 (gharqa) | kode ikut `isianHarta`; belum ada tes komponen khusus gharqa (hanya tes lama) |
+| L10, L11, L12, L16 | `muatUlangInvarian.test.ts`, `soalDariSumber.test.ts` |
+| H4 | browser: `beforeunload` dicegah di wizard (kasus belum lengkap) |
+| H5, H6, H8, H9 | `muatUlangInvarian.test.ts` |
+| X1 | `pulihUrl.test.ts` (dedup dibatasi ke bukan-latihan) |
+| S1–S4, S6, S7 | `kasusmu.test.ts`, `hapusKasusIni.test.tsx`, `hasil.test.tsx` + browser (hapus + Urungkan) |
+| S5 | `progresSoalLokal.test.ts` |
+| S8 | `sinkron-akun.test.ts` (`keluarDanBersihkan` menghapus semua kunci `arif-waris:`) |
+| S9 | `persetujuan.test.tsx` + browser `#/privasi` |
+| S10 | `hasil.test.tsx` (label "Tersimpan di perangkat ini") |
+
+Belum tercakup: P9 (pulih dari Tersimpan tanpa riwayat), P12, P14, P15, X2–X5 (selain X1), S11 (tutup tab lalu buka dari Riwayat: logikanya sama dengan muat ulang, tidak diuji terpisah),
+L13 (revisi beda dibuang: diuji di `progresSoalLokal.test.ts`, belum di komponen), L14, L15.
