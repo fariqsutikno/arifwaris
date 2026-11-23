@@ -6,6 +6,7 @@ import daftarSumberMd from '../../../../../docs/kb-khi/02_daftar_sumber.md?raw';
 import bab19 from '../../../../../docs/kb/19_harta_pasangan.md?raw';
 import { RUJUKAN, MATRIKS_KHILAF } from '../../refs.js';
 import { CATATAN_KHI, ID_CATATAN_KHI, JALAN_KELUAR, cariCatatanKhi, teksTampil } from '../catatanKhi.js';
+import { ID_CATATAN_KHI as ID_PEMICU_ENGINE } from '../../../../engine/src/khi/pilihCatatanKhi.js';
 
 const kodeKb = new Set([
   ...RUJUKAN.map(rujukan => rujukan.kode),
@@ -20,6 +21,10 @@ describe('catatan KHI', () => {
     expect(CATATAN_KHI.map(catatan => catatan.id).sort()).toEqual([...ID_CATATAN_KHI].sort());
     expect(new Set(CATATAN_KHI.map(catatan => catatan.id)).size).toBe(CATATAN_KHI.length);
     expect(CATATAN_KHI).toHaveLength(11);
+  });
+
+  test('id catatan sama persis (dan urutannya) dengan id pemicu di engine', () => {
+    expect([...ID_CATATAN_KHI]).toEqual([...ID_PEMICU_ENGINE]);
   });
 
   test('semua catatan ditandai hukum positif', () => {
