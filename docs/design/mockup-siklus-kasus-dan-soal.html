@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup Kasus dan Soal</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@500;600;700&family=Host+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Token Arif Waris v5 (gaya Logivo, apps/web/src/gaya/token.css). Hanya tema terang (keputusan 2026-10-01).
+   Dasar: riset-ux-siklus-kasus-dan-soal-2026-11-23.md. Prinsip: dua benda dua rumah, tempat menentukan mode. */
+:root{color-scheme:light;--surface:#eef3e8;--raised:#fff;--sunken:#e4ece1;--outline:#c9d4c6;--divider:#dfe6dc;--ink:#14181a;--muted:#525c57;
+--primary:#0e0f10;--on-primary:#fff;--soft:#dce8d8;--lime:#d3ebaa;--sun:#fde6d8;--danger:#c53a28;--dsoft:#fbe0da;--aksen:#f2682a;--halaman:#b9d4c0;
+--display:"Parkinsans",system-ui,sans-serif;--sans:"Host Grotesk",system-ui,sans-serif;--r-sm:10px;--r-md:16px;--r-lg:24px;--pop:0 8px 24px rgba(20,40,30,.12)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--halaman);color:var(--ink);font:400 15px/1.5 var(--sans)}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.25;font-weight:600}
+p{margin:0}
+a,.tautan{color:var(--ink);font-weight:600;text-decoration:underline;text-underline-offset:3px;background:none;border:0;padding:0;font:inherit;font-weight:600;cursor:pointer}
+button{font:inherit;cursor:pointer;color:inherit}
+.ik{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;vertical-align:-3px}
+:focus-visible{outline:3px solid var(--aksen);outline-offset:2px}
+
+.mock-atas{max-width:1000px;margin:0 auto;padding:16px 16px 0;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.mock-atas b{font:600 15px var(--display)}
+.mock-atas .tab{display:flex;gap:4px;background:rgba(255,255,255,.6);padding:4px;border-radius:999px}
+.mock-atas .tab button{border:0;background:none;padding:6px 14px;border-radius:999px;font-weight:600}
+.mock-atas .tab button[aria-pressed=true]{background:var(--primary);color:var(--on-primary)}
+.mock-atas .ket{font-size:13px;color:#2c3a33}
+
+.app{max-width:1000px;margin:12px auto 40px;background:var(--surface);border-radius:var(--r-lg);box-shadow:var(--pop);overflow:hidden}
+.kepala{display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--raised);border-bottom:1px solid var(--outline);flex-wrap:wrap}
+.kepala .merek{font:700 17px var(--display)}
+.kepala nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.kepala nav button{border:0;background:none;padding:8px 12px;border-radius:999px;font-weight:600;color:var(--muted);min-height:40px}
+.kepala nav button[aria-current=page]{background:var(--soft);color:var(--ink)}
+.isi{padding:24px 20px 32px;display:flex;flex-direction:column;gap:20px;min-height:520px}
+.kecil{font-size:13px;color:var(--muted)}
+.jalur{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+
+.kartu{background:var(--raised);border:1px solid var(--outline);border-radius:var(--r-md);padding:16px}
+.judul-bagian{font-size:18px}
+.lanjut{display:flex;gap:14px;align-items:center;padding:14px 16px;background:var(--raised);border:1px solid var(--outline);border-radius:var(--r-md);text-align:left;width:100%;min-height:64px}
+.lanjut:hover{border-color:var(--ink)}
+.lanjut .ikon-bulat{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex:none}
+.lanjut .jenis{font:600 12px var(--sans);text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.lanjut .nama{font:600 16px var(--display)}
+.lanjut .panah{margin-left:auto}
+.bg-kasus{background:var(--lime)}.bg-soal{background:var(--sun)}
+.dua{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:700px){.dua{grid-template-columns:1fr}}
+
+.hero{background:var(--primary);color:var(--on-primary);border-radius:var(--r-md);padding:20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.hero h2{font-size:20px}.hero .kecil{color:#cfd6d2}
+.pil{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 20px;border-radius:999px;border:0;font-weight:700}
+.pil.terang{background:var(--raised);color:var(--ink)}
+.pil.gelap{background:var(--primary);color:var(--on-primary)}
+.hero .pil{margin-left:auto}
+
+.daftar{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.baris{display:flex;gap:12px;align-items:center;padding:12px 14px;background:var(--raised);border:1px solid var(--outline);border-radius:var(--r-sm);flex-wrap:wrap}
+.baris .teks{flex:1;min-width:180px}
+.baris .teks b{font:600 15px var(--display)}
+.chip{display:inline-flex;align-items:center;gap:5px;font:600 12px var(--sans);padding:3px 10px;border-radius:999px;background:var(--soft);white-space:nowrap}
+.chip.belum{background:var(--sunken);color:var(--muted)}
+.chip.putus{background:var(--sun)}
+.chip.benar{background:var(--lime)}
+.chip.lihat{background:#e6e0f5}
+.tbl-baris{min-height:40px;padding:0 16px;border-radius:999px;border:1px solid var(--ink);background:var(--raised);font-weight:600}
+.tbl-baris.isi-penuh{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+
+.label-mode{display:inline-flex;gap:6px;align-items:center;font:600 13px var(--sans);padding:4px 12px;border-radius:999px}
+.status-simpan{display:inline-flex;gap:6px;align-items:center;font-size:13px;color:var(--muted)}
+.soal-cerita{font-size:16px}
+.tebak{display:grid;grid-template-columns:1fr 110px;gap:8px 12px;align-items:center;max-width:460px}
+.tebak label{font-weight:600}
+.tebak input{min-height:44px;border:1px solid var(--outline);border-radius:var(--r-sm);padding:0 12px;font:600 16px var(--sans);width:100%;background:var(--raised)}
+.tebak input.salah{border-color:var(--danger);background:var(--dsoft)}
+.tebak input.cocok{border-color:#3b8a4f;background:#eaf6e6}
+.aksi{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.tabel{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tabel th,.tabel td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--divider)}
+.tabel th{font-size:13px;color:var(--muted);font-weight:600}
+.tabel td.angka,.tabel th.angka{text-align:right}
+.catatan{background:var(--sunken);border-radius:var(--r-sm);padding:12px 14px;font-size:14px}
+
+.petunjuk{background:#fff7d6;border:1px solid #e9cf6a;border-radius:var(--r-sm);padding:10px 14px;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.petunjuk b{font-family:var(--display)}
+
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--primary);color:#fff;padding:12px 18px;border-radius:14px;display:none;gap:16px;align-items:center;max-width:calc(100% - 32px);z-index:9;box-shadow:var(--pop)}
+#toast .tautan{color:#fff}
+
+/* panduan */
+.panduan{max-width:760px}
+.panduan h2{font-size:20px;margin-top:8px}
+.panduan ol{padding-left:20px;margin:6px 0}
+.tugas{border:1px solid var(--outline);border-radius:var(--r-md);background:var(--raised);padding:16px;display:flex;flex-direction:column;gap:8px}
+.tugas textarea{width:100%;min-height:64px;border:1px solid var(--outline);border-radius:var(--r-sm);padding:8px;font:inherit}
+.asumsi{display:flex;flex-direction:column;gap:6px;padding:12px 0;border-bottom:1px solid var(--divider)}
+.asumsi .pilih{display:flex;gap:12px;flex-wrap:wrap;font-size:14px}
+.legenda{display:flex;gap:10px;flex-wrap:wrap}
+@media(max-width:560px){.isi{padding:18px 16px 28px}.hero .pil{margin-left:0}.tebak{grid-template-columns:1fr 90px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-kasus" viewBox="0 0 24 24"><path d="M4 7h16v12H4z"/><path d="M9 7V5h6v2"/></symbol>
+  <symbol id="i-soal" viewBox="0 0 24 24"><path d="M5 4h14v16H5z"/><path d="M9 9h6M9 13h6M9 17h3"/></symbol>
+  <symbol id="i-panah" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-kiri" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></symbol>
+  <symbol id="i-cek" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+  <symbol id="i-awan" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 0-8 6 6 0 0 0-11.5 2A3 3 0 0 0 7 18z"/></symbol>
+  <symbol id="i-buku" viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></symbol>
+  <symbol id="i-salin" viewBox="0 0 24 24"><path d="M8 8h11v11H8z"/><path d="M5 16V5h11"/></symbol>
+  <symbol id="i-jeda" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M10 9v6M14 9v6"/></symbol>
+</svg>
+
+<div class="mock-atas">
+  <b>Mockup: kasus dan soal latihan</b>
+  <div class="tab" role="group" aria-label="Bagian mockup">
+    <button id="tab-app" aria-pressed="true">Aplikasi</button>
+    <button id="tab-panduan" aria-pressed="false">Cara mencoba</button>
+  </div>
+  <span class="ket">Contoh saja. Tidak ada yang tersimpan. Muat ulang halaman untuk mulai dari awal.</span>
+</div>
+
+<div class="app">
+  <header class="kepala">
+    <span class="merek">Arif Waris</span>
+    <nav aria-label="Menu utama">
+      <button data-ke="beranda">Beranda</button>
+      <button data-ke="lab">Lab Hitung</button>
+      <button data-ke="latihan">Latihan</button>
+      <button data-ke="materi">Belajar</button>
+    </nav>
+  </header>
+  <main class="isi" id="layar" tabindex="-1"></main>
+</div>
+<div id="toast" role="status"><span id="toast-teks"></span><button class="tautan" id="toast-urung">Urungkan</button></div>
+
+<script>
+// Satu sumber data mockup. Angka bagian dihitung ulang di sini dan sudah dicocokkan manual ke kaidah [SYF].
+const RP = n => 'Rp ' + n.toLocaleString('id-ID');
+const data = {
+  kasus: [
+    { id: 'k1', nama: 'Almarhum Ahmad', ringkas: 'Istri, 2 anak laki-laki, 1 anak perempuan', tersimpan: true, waktu: 'Kemarin, 20.14', harta: 300000000,
+      bagian: [['Istri', '1/8', 5, 37500000], ['Anak laki-laki 1', 'Ashabah', 14, 105000000], ['Anak laki-laki 2', 'Ashabah', 14, 105000000], ['Anak perempuan', 'Ashabah', 7, 52500000]], tashih: 40 },
+    { id: 'k2', nama: 'Ibu Siti', ringkas: 'Suami, ibu, ayah', tersimpan: false, sisaHari: 26, waktu: '4 hari lalu', harta: 120000000,
+      bagian: [['Suami', '1/2', 3, 60000000], ['Ibu', '1/3 sisa', 1, 20000000], ['Ayah', 'Ashabah', 2, 40000000]], tashih: 6, catatan: "Ibu mendapat 1/3 dari sisa setelah bagian suami (masalah 'umariyyah)." },
+    { id: 'k3', nama: 'Salinan soal K-07', ringkas: 'Ibu, ayah, anak perempuan', tersimpan: false, sisaHari: 29, waktu: 'Kemarin', harta: 60000000, asal: 'Disalin dari soal K-07',
+      bagian: [['Anak perempuan', '1/2', 3, 30000000], ['Ibu', '1/6', 1, 10000000], ['Ayah', '1/6 + ashabah', 2, 20000000]], tashih: 6 },
+  ],
+  soal: [
+    { kode: 'K-03', judul: 'Istri bersama anak laki-laki dan anak perempuan', tingkat: 'Dasar', status: 'benar',
+      cerita: 'Seorang laki-laki wafat meninggalkan istri, satu anak laki-laki, dan satu anak perempuan.',
+      kunci: [['Ashlul masalah', 8], ['Tashih', 24], ['Saham istri', 3], ['Saham anak laki-laki', 14], ['Saham anak perempuan', 7]],
+      bagian: [['Istri', '1/8', 3], ['Anak laki-laki', 'Ashabah', 14], ['Anak perempuan', 'Ashabah', 7]], tashih: 24 },
+    { kode: 'K-07', judul: 'Ayah dan ibu bersama anak perempuan', tingkat: 'Dasar', status: 'lihat',
+      cerita: 'Seorang perempuan wafat meninggalkan ibu, ayah, dan satu anak perempuan.',
+      kunci: [['Ashlul masalah', 6], ['Saham anak perempuan', 3], ['Saham ibu', 1], ['Saham ayah', 2]],
+      bagian: [['Anak perempuan', '1/2', 3], ['Ibu', '1/6', 1], ['Ayah', '1/6 + ashabah', 2]], tashih: 6 },
+    { kode: 'K-12', judul: "Suami, ibu, dua saudari sekandung", tingkat: 'Menengah', status: 'putus', isian: { 0: '6', 1: '' },
+      cerita: 'Seorang perempuan wafat meninggalkan suami, ibu, dan dua saudari sekandung.',
+      kunci: [['Ashlul masalah', 6], ["Setelah 'aul", 8], ['Saham suami', 3], ['Saham ibu', 1], ['Saham dua saudari (berdua)', 4]],
+      bagian: [['Suami', '1/2', 3], ['Ibu', '1/6', 1], ['Saudari sekandung 1', '2/3 berdua', 2], ['Saudari sekandung 2', '2/3 berdua', 2]], tashih: 8, waktu: '2 jam lalu' },
+    { kode: 'K-15', judul: 'Anak perempuan bersama cucu perempuan', tingkat: 'Menengah', status: 'belum',
+      cerita: 'Seorang perempuan wafat meninggalkan suami, satu anak perempuan, satu cucu perempuan dari anak laki-laki, dan paman sekandung.',
+      kunci: [['Ashlul masalah', 12], ['Saham suami', 3], ['Saham anak perempuan', 6], ['Saham cucu perempuan', 2], ['Saham paman', 1]],
+      bagian: [['Suami', '1/4', 3], ['Anak perempuan', '1/2', 6], ['Cucu perempuan', '1/6', 2], ['Paman sekandung', 'Ashabah', 1]], tashih: 12 },
+  ],
+  contoh: { judul: 'Contoh dari materi Ashabah', ringkas: 'Istri, ayah, anak laki-laki', harta: 240000000,
+    bagian: [['Istri', '1/8', 3, 30000000], ['Ayah', '1/6', 4, 40000000], ['Anak laki-laki', 'Ashabah', 17, 170000000]], tashih: 24 },
+  kasusTerakhir: 'k1',
+};
+
+const TEKS_STATUS = { belum: 'Belum dikerjakan', putus: 'Terputus', benar: 'Sudah, benar', lihat: 'Sudah, lihat jawaban' };
+const AKSI_STATUS = { belum: 'Kerjakan', putus: 'Lanjutkan', benar: 'Lihat pembahasan', lihat: 'Lihat pembahasan' };
+const ik = (nama, ukuran = 18) => `<svg class="ik" width="${ukuran}" height="${ukuran}" aria-hidden="true"><use href="#i-${nama}"/></svg>`;
+const layar = document.getElementById('layar');
+let posisi = { halaman: 'beranda' };
+let petunjukAktif = null;
+
+function ke(halaman, tambahan = {}) {
+  posisi = { halaman, ...tambahan };
+  document.querySelectorAll('.kepala nav button').forEach(b => b.setAttribute('aria-current', b.dataset.ke === rumahDari(halaman) ? 'page' : 'false'));
+  layar.innerHTML = petunjuk() + ({ beranda, lab, kasus: bukaKasus, latihan, soal: bukaSoal, materi, contoh: bukaContoh })[halaman]();
+  layar.focus({ preventScroll: true });
+  window.scrollTo({ top: 0 });
+}
+const rumahDari = h => ({ kasus: 'lab', soal: 'latihan', contoh: 'materi' })[h] ?? h;
+const soalTerputus = () => data.soal.find(s => s.status === 'putus');
+const cariKasus = id => data.kasus.find(k => k.id === id);
+const cariSoal = kode => data.soal.find(s => s.kode === kode);
+
+function beranda() {
+  const k = cariKasus(data.kasusTerakhir), s = soalTerputus();
+  const baris = [
+    k && `<button class="lanjut" data-buka-kasus="${k.id}"><span class="ikon-bulat bg-kasus">${ik('kasus', 22)}</span>
+      <span><span class="jenis">Lanjutkan kasus</span><br><span class="nama">${k.nama}</span><br><span class="kecil">${k.ringkas}</span></span>${ik('panah')}</button>`,
+    s && `<button class="lanjut" data-buka-soal="${s.kode}"><span class="ikon-bulat bg-soal">${ik('soal', 22)}</span>
+      <span><span class="jenis">Lanjutkan soal</span><br><span class="nama">${s.kode} · ${s.judul}</span><br><span class="kecil">Terputus ${s.waktu} · tebakanmu masih ada</span></span>${ik('panah')}</button>`,
+  ].filter(Boolean);
+  return `<div><h1 style="font-size:26px">Assalamu'alaikum</h1><p class="kecil">Lanjutkan yang terakhir kamu buka, atau mulai yang baru.</p></div>
+    ${baris.length ? `<div class="dua">${baris.join('')}</div>` : ''}
+    <div class="dua">
+      <div class="kartu"><h2 class="judul-bagian">Hitung warisan</h2><p class="kecil" style="margin:4px 0 10px">Isi keluarga yang ditinggalkan, lihat bagian tiap orang.</p><button class="tautan" data-ke="lab">Buka Lab Hitung</button></div>
+      <div class="kartu"><h2 class="judul-bagian">Latihan soal</h2><p class="kecil" style="margin:4px 0 10px">Tebak dulu, lalu cocokkan dengan jawabannya.</p><button class="tautan" data-ke="latihan">Buka Latihan</button></div>
+    </div>`;
+}
+
+function lab() {
+  const k = cariKasus(data.kasusTerakhir);
+  const tersimpan = data.kasus.filter(x => x.tersimpan), sementara = data.kasus.filter(x => !x.tersimpan);
+  const barisKasus = x => `<li class="baris"><span class="ikon-bulat bg-kasus" style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center">${ik('kasus')}</span>
+    <span class="teks"><b>${x.nama}</b><br><span class="kecil">${x.ringkas}${x.asal ? ' · ' + x.asal : ''}</span></span>
+    <span class="chip ${x.tersimpan ? 'benar' : 'belum'}">${x.tersimpan ? 'Tersimpan' : 'Sementara · ' + x.sisaHari + ' hari lagi'}</span>
+    <button class="tautan" data-buka-kasus="${x.id}">Buka</button></li>`;
+  return `<div class="jalur">Lab Hitung</div>
+    ${k ? `<div class="hero"><div><span class="kecil">Kasus terakhir · ${k.waktu}</span><h2>${k.nama}</h2><span class="kecil">${k.ringkas}</span></div>
+      <button class="pil terang" data-buka-kasus="${k.id}">Lanjutkan ${ik('panah')}</button></div>` : ''}
+    <div class="aksi"><button class="tautan" data-pesan="Mockup: membuka isian kasus baru dari nol.">Mulai kasus baru</button><button class="tautan" data-pesan="Mockup: memilih file kasus untuk diimpor.">Impor file kasus</button></div>
+    <section><h2 class="judul-bagian">Kasusmu</h2><p class="kecil" style="margin-bottom:10px">Hanya kasus. Soal latihan ada di halaman Latihan.</p>
+      <ul class="daftar">${[...tersimpan, ...sementara].map(barisKasus).join('')}</ul></section>
+    <p class="kecil">Mau berlatih? <button class="tautan" data-ke="latihan">Buka soal di Latihan</button></p>`;
+}
+
+function hasilTabel(bagian, tashih, harta) {
+  return `<table class="tabel"><thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari ${tashih}</th>${harta ? '<th class="angka">Nominal</th>' : ''}</tr></thead>
+    <tbody>${bagian.map(b => `<tr><td>${b[0]}</td><td>${b[1]}</td><td class="angka">${b[2]}</td>${harta ? `<td class="angka">${RP(b[3])}</td>` : ''}</tr>`).join('')}</tbody></table>`;
+}
+
+function bukaKasus() {
+  const k = cariKasus(posisi.id);
+  data.kasusTerakhir = k.id;
+  return `<div class="jalur"><button class="tautan" data-ke="lab">${ik('kiri', 16)} Lab Hitung</button> / Kasus</div>
+    <div class="aksi" style="justify-content:space-between"><div><span class="label-mode bg-kasus">${ik('kasus', 16)} Kasus</span>
+      <h1 style="font-size:24px;margin-top:6px">${k.nama}</h1><p class="kecil">${k.ringkas} · Harta ${RP(k.harta)}${k.asal ? ' · ' + k.asal : ''}</p></div>
+      <span class="status-simpan">${ik('awan', 16)} ${k.tersimpan ? 'Tersimpan · ' + k.waktu : 'Tersimpan sementara di riwayat · ' + k.sisaHari + ' hari lagi'}</span></div>
+    <div class="kartu">${hasilTabel(k.bagian, k.tashih, true)}</div>
+    ${k.catatan ? `<p class="catatan">${k.catatan}</p>` : ''}
+    <div class="aksi"><button class="tautan" data-pesan="Mockup: kembali ke isian untuk mengubah keluarga atau harta.">Ubah isian</button>
+      ${k.tersimpan ? '' : `<button class="tautan" data-simpan="${k.id}">Simpan dengan nama</button>`}
+      <button class="tautan" data-pesan="Mockup: membuka langkah demi langkah.">Langkah demi langkah</button></div>`;
+}
+
+function latihan() {
+  const s = soalTerputus();
+  return `<div class="jalur">Latihan</div>
+    <div><h1 style="font-size:24px">Soal hitung</h1><p class="kecil">Status tiap soal tersimpan di sini. Soal tidak masuk Kasusmu.</p></div>
+    ${s ? `<button class="lanjut" data-buka-soal="${s.kode}"><span class="ikon-bulat bg-soal">${ik('jeda', 22)}</span>
+      <span><span class="jenis">Lanjutkan soal yang terputus</span><br><span class="nama">${s.kode} · ${s.judul}</span><br><span class="kecil">${Object.values(s.isian).filter(Boolean).length} isian sudah kamu tebak</span></span>${ik('panah')}</button>` : ''}
+    <div class="legenda kecil">${Object.entries(TEKS_STATUS).map(([k, t]) => `<span class="chip ${k}">${t}</span>`).join('')}</div>
+    <ul class="daftar">${data.soal.map(x => `<li class="baris"><span class="teks"><span class="kecil">${x.kode} · ${x.tingkat}</span><br><b>${x.judul}</b></span>
+      <span class="chip ${x.status}">${TEKS_STATUS[x.status]}</span>
+      <button class="tbl-baris ${x.status === 'belum' || x.status === 'putus' ? 'isi-penuh' : ''}" data-buka-soal="${x.kode}">${AKSI_STATUS[x.status]}</button></li>`).join('')}</ul>`;
+}
+
+function bukaSoal() {
+  const s = cariSoal(posisi.kode);
+  const kembali = `<div class="jalur"><button class="tautan" data-ke="latihan">${ik('kiri', 16)} Latihan</button> / ${s.kode}</div>`;
+  const kepala = `<div><span class="label-mode bg-soal">${ik('soal', 16)} Soal latihan ${s.kode}</span><h1 style="font-size:22px;margin-top:6px">${s.judul}</h1></div>
+    <p class="soal-cerita">${s.cerita}</p>`;
+  if (s.status === 'benar' || s.status === 'lihat') {
+    return `${kembali}${kepala}<div class="aksi"><span class="chip ${s.status}">${ik('cek', 14)} ${TEKS_STATUS[s.status]}</span><span class="kecil">Ini pembahasannya. Jawaban sudah terbuka.</span></div>
+      <div class="kartu">${hasilTabel(s.bagian, s.tashih, false)}</div>
+      <div class="aksi"><button class="tautan" data-ulang="${s.kode}">Kerjakan ulang</button>
+        <button class="tautan" data-jadikan="${s.kode}">${ik('salin', 16)} Jadikan kasus sendiri</button>
+        <button class="tautan" data-pesan="Mockup: membuka langkah demi langkah.">Langkah demi langkah</button></div>
+      <p class="kecil">Kerjakan ulang tidak menambah XP. Jadikan kasus sendiri membuat salinan di Kasusmu; soal ini tidak berubah.</p>`;
+  }
+  s.isian ??= {};
+  return `${kembali}${kepala}
+    <form class="kartu" id="form-tebak" data-kode="${s.kode}" novalidate><div class="tebak">
+      ${s.kunci.map((k, i) => `<label for="t${i}">${k[0]}</label><input id="t${i}" inputmode="numeric" data-i="${i}" value="${s.isian[i] ?? ''}" autocomplete="off">`).join('')}
+    </div><div class="aksi" style="margin-top:16px"><button class="pil gelap" type="submit">Periksa</button>
+      <button class="tautan" type="button" data-lihat="${s.kode}">Lihat jawaban</button></div></form>
+    <p class="status-simpan" id="status-tebak">${ik('awan', 16)} ${s.status === 'putus' ? 'Tebakanmu tersimpan. Lanjutkan kapan saja dari Latihan.' : 'Tebakan tersimpan otomatis begitu kamu mengisi.'}</p>`;
+}
+
+function materi() {
+  return `<div class="jalur">Belajar / Ashabah</div>
+    <div class="kartu"><h1 style="font-size:22px">Ashabah bin nafsi</h1><p style="margin-top:8px">Anak laki-laki mengambil sisa harta setelah ashhabul furudh mendapat bagiannya.</p>
+      <p class="kecil" style="margin-top:12px">Contoh: ${data.contoh.ringkas}.</p><p style="margin-top:8px"><button class="tautan" data-ke="contoh">Coba di kalkulator</button></p></div>`;
+}
+
+function bukaContoh() {
+  const c = data.contoh;
+  return `<div class="jalur"><button class="tautan" data-ke="materi">${ik('kiri', 16)} Materi Ashabah</button> / Contoh</div>
+    <div><span class="label-mode" style="background:#e6e0f5">${ik('buku', 16)} Contoh dari materi</span><h1 style="font-size:22px;margin-top:6px">${c.ringkas}</h1>
+    <p class="kecil">Hanya dilihat. Tidak masuk Kasusmu.</p></div>
+    <div class="kartu">${hasilTabel(c.bagian, c.tashih, true)}</div>
+    <div class="aksi"><button class="tautan" data-jadikan-contoh>${ik('salin', 16)} Jadikan kasus sendiri</button><span class="kecil">lalu ubah sesuai keluargamu</span></div>`;
+}
+
+// ── aksi ──
+let urung = null;
+function pesan(teks, aksiUrung) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-teks').textContent = teks;
+  urung = aksiUrung ?? null;
+  document.getElementById('toast-urung').style.display = urung ? '' : 'none';
+  t.style.display = 'flex';
+  clearTimeout(pesan.jeda); pesan.jeda = setTimeout(() => t.style.display = 'none', 5000);
+}
+document.getElementById('toast-urung').onclick = () => { urung?.(); document.getElementById('toast').style.display = 'none'; };
+
+function salinJadiKasus(dari, asal, bagian, tashih, harta) {
+  const id = 'k' + (data.kasus.length + 1) + Date.now() % 1000;
+  data.kasus.push({ id, nama: 'Salinan ' + dari, ringkas: bagian.map(b => b[0]).join(', '), tersimpan: false, sisaHari: 30, waktu: 'Baru saja', harta, asal, bagian, tashih });
+  ke('kasus', { id });
+  pesan('Mockup: salinan dibuat di Kasusmu. Yang asli tidak berubah.', () => { data.kasus = data.kasus.filter(k => k.id !== id); data.kasusTerakhir = 'k1'; ke('lab'); });
+}
+const nominalDari = (bagian, tashih, harta) => bagian.map(b => [b[0], b[1], b[2], harta / tashih * b[2]]);
+
+document.addEventListener('click', e => {
+  const el = e.target.closest('button,[data-ke]');
+  if (!el) return;
+  const d = el.dataset;
+  if (d.ke) ke(d.ke);
+  else if (d.bukaKasus) ke('kasus', { id: d.bukaKasus });
+  else if (d.bukaSoal) ke('soal', { kode: d.bukaSoal });
+  else if (d.pesan) pesan(d.pesan);
+  else if (d.simpan) { const k = cariKasus(d.simpan); k.tersimpan = true; ke('kasus', { id: k.id }); pesan('Mockup: kasus tersimpan dengan nama "' + k.nama + '".', () => { k.tersimpan = false; ke('kasus', { id: k.id }); }); }
+  else if (d.ulang) { const s = cariSoal(d.ulang), lama = s.status; s.status = 'belum'; s.isian = {}; ke('soal', { kode: s.kode }); pesan('Mockup: soal dikosongkan untuk dikerjakan ulang.', () => { s.status = lama; ke('soal', { kode: s.kode }); }); }
+  else if (d.lihat) { const s = cariSoal(d.lihat), lama = s.status; s.status = 'lihat'; ke('soal', { kode: s.kode }); pesan('Mockup: jawaban dibuka. XP soal ini tidak dihitung.', () => { s.status = lama; ke('soal', { kode: s.kode }); }); }
+  else if (d.jadikan) { const s = cariSoal(d.jadikan), harta = 120000000; salinJadiKasus('soal ' + s.kode, 'Disalin dari soal ' + s.kode, nominalDari(s.bagian, s.tashih, harta), s.tashih, harta); }
+  else if ('jadikanContoh' in d) { const c = data.contoh; salinJadiKasus('contoh materi', 'Disalin dari contoh materi Ashabah', c.bagian, c.tashih, c.harta); }
+});
+
+document.addEventListener('input', e => {
+  const form = e.target.closest('#form-tebak'); if (!form) return;
+  const s = cariSoal(form.dataset.kode);
+  s.isian[e.target.dataset.i] = e.target.value;
+  e.target.classList.remove('salah', 'cocok');
+  if (s.status === 'belum') s.status = 'putus';
+  s.waktu = 'baru saja';
+  document.getElementById('status-tebak').innerHTML = ik('awan', 16) + ' Tebakanmu tersimpan. Lanjutkan kapan saja dari Latihan.';
+});
+
+document.addEventListener('submit', e => {
+  e.preventDefault();
+  const form = e.target, s = cariSoal(form.dataset.kode);
+  let semuaBenar = true;
+  s.kunci.forEach((k, i) => {
+    const kotak = form.querySelector(`[data-i="${i}"]`);
+    const cocok = Number(kotak.value) === k[1] && kotak.value !== '';
+    kotak.classList.toggle('cocok', cocok); kotak.classList.toggle('salah', !cocok);
+    semuaBenar &&= cocok;
+  });
+  if (semuaBenar) { s.status = 'benar'; s.isian = {}; ke('soal', { kode: s.kode }); pesan('Mockup: benar semua. Soal pindah ke "Sudah, benar".'); }
+  else pesan('Mockup: kotak merah belum tepat. Tebakanmu tetap tersimpan.');
+});
+
+// ── panduan uji ──
+const TUGAS = [
+  { judul: 'Membuka kasus keluarga yang kemarin', halaman: 'beranda', langkah: ['Di Beranda, cari kasus Almarhum Ahmad.', 'Buka kasusnya.'], cek: 'Apakah kamu langsung melihat bagian tiap orang, tanpa disuruh menebak?' },
+  { judul: 'Melanjutkan soal yang terputus', halaman: 'beranda', langkah: ['Dari Beranda, lanjutkan soal yang terputus.', 'Lihat apakah tebakanmu sebelumnya masih ada.', 'Isi satu kotak lagi lalu kembali ke Latihan.'], cek: 'Apakah jelas bahwa tebakanmu tidak hilang?' },
+  { judul: 'Mencari soal yang belum dikerjakan', halaman: 'latihan', langkah: ['Buka Latihan.', 'Temukan soal yang belum pernah kamu kerjakan dan kerjakan.', 'Coba Periksa. (Jawaban K-15: 12, 3, 6, 2, 1)'], cek: 'Apakah status soal berubah setelah benar?' },
+  { judul: 'Melihat lagi pembahasan soal lama', halaman: 'latihan', langkah: ['Di Latihan, buka soal K-03 yang sudah benar.', 'Baca pembahasannya.'], cek: 'Apakah kamu tidak dipaksa menebak lagi? Apakah "Kerjakan ulang" mudah ditemukan bila mau?' },
+  { judul: 'Mengubah soal menjadi kasus sendiri', halaman: 'latihan', langkah: ['Buka soal K-07.', 'Pilih "Jadikan kasus sendiri".', 'Kembali ke Lab Hitung dan cari salinannya.'], cek: 'Apakah jelas bahwa soal aslinya tidak berubah?' },
+  { judul: 'Memakai contoh materi', halaman: 'materi', langkah: ['Buka Belajar, lalu "Coba di kalkulator".', 'Jadikan contoh itu kasus sendiri.'], cek: 'Apakah contoh tidak memenuhi Kasusmu sampai kamu memintanya?' },
+];
+const ASUMSI = [
+  'Saya lebih suka Beranda menampilkan kasus dan soal di dua baris terpisah, bukan satu "terakhir dibuka".',
+  'Soal latihan tidak perlu muncul di Kasusmu.',
+  'Kalau keluar di tengah soal, saya ingin tebakan saya tetap ada.',
+  'Soal yang sudah dikerjakan sebaiknya langsung menampilkan pembahasan.',
+];
+function petunjuk() {
+  if (petunjukAktif === null) return '';
+  const t = TUGAS[petunjukAktif];
+  return `<div class="petunjuk">${ik('soal')}<span><b>Tugas ${petunjukAktif + 1}: ${t.judul}.</b> ${t.langkah.join(' ')} <button class="tautan" id="tutup-petunjuk">Tutup</button></span></div>`;
+}
+function panduan() {
+  layar.innerHTML = `<div class="panduan" style="display:flex;flex-direction:column;gap:16px">
+    <h1 style="font-size:24px">Cara mencoba mockup ini</h1>
+    <p>Ini contoh tampilan, bukan aplikasi sungguhan. Tidak ada yang tersimpan; muat ulang halaman untuk mengulang. Yang ingin kami ketahui: apakah kamu selalu sampai ke tempat yang kamu maksud, kasus atau soal.</p>
+    <h2>Arti tanda</h2>
+    <div class="legenda"><span class="label-mode bg-kasus">${ik('kasus', 16)} Kasus</span><span class="kecil">masalah waris keluargamu, disimpan di Kasusmu (Lab Hitung)</span></div>
+    <div class="legenda"><span class="label-mode bg-soal">${ik('soal', 16)} Soal latihan</span><span class="kecil">ada kunci jawabannya, tinggal di Latihan</span></div>
+    <div class="legenda">${Object.entries(TEKS_STATUS).map(([k, t]) => `<span class="chip ${k}">${t}</span>`).join('')}</div>
+    <p class="kecil"><b>Terputus</b> = soal sudah kamu buka dan isi sebagian, belum diperiksa.</p>
+    <h2>Tugas</h2>
+    ${TUGAS.map((t, i) => `<div class="tugas"><b style="font-family:var(--display)">${i + 1}. ${t.judul}</b><ol>${t.langkah.map(l => `<li>${l}</li>`).join('')}</ol>
+      <p class="kecil">Yang diperhatikan: ${t.cek}</p><button class="tautan" data-mulai-tugas="${i}" style="align-self:flex-start">Mulai tugas ini</button>
+      <label class="kecil" for="cat${i}">Catatanmu</label><textarea id="cat${i}" data-catatan="${i}"></textarea></div>`).join('')}
+    <h2>Cocok dengan kebiasaanmu?</h2>
+    ${ASUMSI.map((a, i) => `<div class="asumsi"><span>${a}</span><div class="pilih">${['Cocok', 'Tidak cocok', 'Belum yakin'].map(p => `<label><input type="radio" name="as${i}" value="${p}"> ${p}</label>`).join('')}</div></div>`).join('')}
+    <p><button class="pil gelap" id="salin-catatan">Salin catatan</button></p>
+    <p class="kecil">Tempel catatan yang disalin ke chat tim.</p></div>`;
+}
+
+document.getElementById('tab-app').onclick = () => bukaTab('app');
+document.getElementById('tab-panduan').onclick = () => bukaTab('panduan');
+function bukaTab(tab) {
+  document.getElementById('tab-app').setAttribute('aria-pressed', tab === 'app');
+  document.getElementById('tab-panduan').setAttribute('aria-pressed', tab === 'panduan');
+  document.querySelector('.kepala nav').style.visibility = tab === 'app' ? '' : 'hidden';
+  if (tab === 'panduan') panduan(); else ke(posisi.halaman, posisi);
+}
+const catatan = {};
+document.addEventListener('input', e => { if (e.target.dataset.catatan) catatan[e.target.dataset.catatan] = e.target.value; });
+document.addEventListener('click', e => {
+  const mulai = e.target.closest('[data-mulai-tugas]');
+  if (mulai) { petunjukAktif = Number(mulai.dataset.mulaiTugas); posisi = { halaman: TUGAS[petunjukAktif].halaman }; bukaTab('app'); }
+  if (e.target.id === 'tutup-petunjuk') { petunjukAktif = null; ke(posisi.halaman, posisi); }
+  if (e.target.id === 'salin-catatan') {
+    const teks = ['Catatan uji mockup kasus dan soal', ...TUGAS.map((t, i) => `Tugas ${i + 1} (${t.judul}): ${catatan[i] || '-'}`),
+      ...ASUMSI.map((a, i) => `${a} → ${document.querySelector(`input[name=as${i}]:checked`)?.value ?? '-'}`)].join('\n');
+    navigator.clipboard?.writeText(teks).then(() => pesan('Catatan disalin.'), () => pesan('Gagal menyalin; pilih teksnya manual.'));
+  }
+});
+
+ke('beranda');
+</script>
+</body>
+</html>
