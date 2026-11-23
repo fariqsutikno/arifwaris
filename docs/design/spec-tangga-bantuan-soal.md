@@ -87,15 +87,25 @@ harga di setiap tombol.
 ## 6. Isi petunjuk
 Fikih harus bisa ditelusuri ke KB. Tidak ada kalimat yang dikarang per soal.
 (Revisi 3: menyenggol, tidak menjurus.) Keduanya diturunkan dari `LangkahJejak` baris yang salah, jadi sesuai kasus dan ber-refs.
-- **Petunjuk 1 (konsep)**: satu templat per jenis jejak, tanpa nama dan nilai. Diksi `hitung.bantuan.konsep.<jenis>`:
-  - `HAJB_NUQSHAN` → "Bagian tetap seseorang bisa mengecil karena ahli waris lain ikut hadir."
-  - `HAJB_HIRMAN` → "Ada ahli waris yang tidak mendapat apa-apa karena terhalang orang yang lebih dekat."
-  - `AUL` / `RADD` → "Jumlah semua bagian tidak selalu pas dengan asal masalah."
-  - `PERBANDINGAN_NISAB` (inkisar) → "Saham sebuah kelompok tidak selalu bisa dibagi rata ke anggotanya."
-  - `ASHABAH` bil ghair → "Ada ahli waris yang berbagi sisa dengan perbandingan tertentu."
-  - Lain-lain: templat umum per `idJudul` kolom.
-- **Petunjuk 2 (menyempit)**: menyebut **siapa** yang perlu dicek (`terdampak` / `mahjub` / kelompok), tidak pernah nilai:
-  "Coba lihat lagi bagian {nama}." Kalau ada beberapa baris salah, yang disebut hanya satu (baris salah pertama).
+Pola (revisi 4, pilihan pemilik "C + 2"):
+- **Petunjuk 1** = istilah fikih (bertooltip, `ui/Tooltip.tsx`, isi dari glosarium bab 15) + pertanyaan yang mengajak
+  berpikir ("siapa/apa yang berubah…?"). Tidak menyebut nama orang, tidak menyebut nilai.
+- **Petunjuk 2** = ajak melihat lagi **bagian mana** + **apa yang perlu dipertimbangkan**. Boleh menyebut nama/kelompok,
+  tidak pernah nilai. Bila beberapa baris salah, yang disebut hanya baris salah pertama.
+
+| Jejak / kolom | Petunjuk 1 | Petunjuk 2 |
+|---|---|---|
+| `HAJB_NUQSHAN`, penyebab far'u warits (kolom Bagian) | Ingat **far'u warits**. Siapa saja yang bagiannya berubah kalau mereka ada? | Lihat lagi bagian **{nama}**. Apakah sudah mempertimbangkan far'u warits di kasus ini? |
+| `HAJB_NUQSHAN`, penyebab jumlah saudara (kolom Bagian) | Ingat, **jumlah saudara** almarhum juga bisa mengubah bagian. Siapa yang bagiannya berubah kalau saudaranya dua atau lebih? | Lihat lagi bagian **{nama}**. Berapa saudara almarhum di kasus ini? |
+| `HAJB_HIRMAN` (kolom Bagian / Didudukkan sebagai) | Ingat **hajb hirman**. Siapa yang mungkin tertutup sama sekali di kasus ini? | Lihat lagi **{nama}**. Adakah ahli waris lain yang lebih dekat ke almarhum? |
+| Asal masalah (`KELAS_MASALAH` adilah) | Ingat **ashlul mas'alah**. Bagian siapa saja yang ikut menentukannya? | Lihat lagi penyebut di kolom Bagian. Apakah semuanya habis membagi asal masalahmu? |
+| Asal masalah akhir, `AUL` | Ingat **'aul**. Apa yang terjadi pada asal masalah kalau bagian-bagiannya melebihi harta? | Jumlahkan saham semua ahli waris. Lebih besar dari asal masalah, atau tidak? |
+| Asal masalah akhir, `RADD` | Ingat **radd**. Ke mana sisa harta pergi kalau tidak ada ashabah? | Jumlahkan saham, lalu bandingkan dengan asal masalah. Siapa yang tidak ikut menerima sisa? |
+| Pengali / asal masalah akhir, `PERBANDINGAN_NISAB` inkisar | Ingat **inkisar**. Kelompok mana yang sahamnya harus dibagi ke beberapa orang? | Lihat lagi saham **{kelompok}**. Bisakah dibagi rata ke jumlah **ru'us**-nya? |
+| `ASHABAH` bil ghair (kolom saham) | Ingat **ashabah bil ghair**. Bagaimana sisa dibagi kalau laki-laki dan perempuan berbagi? | Lihat lagi saham **{nama}** dan **{nama2}**. Apakah perbandingannya sudah sesuai? |
+| Lainnya | templat umum per `idJudul` kolom | Lihat lagi kolom **{kolom}** baris **{nama}**. |
+
+Semua kalimat = draf; dicocokkan ke KB (bab 4, 5, 9, 10) sebelum masuk diksi.
 - Tautan materi: bab yang sesuai jenis jejak.
 - **Buka kolom (anak tangga 3)**: kunci kolom itu tampil seperti mode kunci sekarang; isian yang berbeda dicoret.
 
