@@ -156,3 +156,34 @@ describe('gharqa: kiriman dan penilaian', () => {
     expect(kode(baca({ ...dasar, aksi: 'buka', gharqa: sah }))).toBe('BUKA_TANPA_ISIAN');
   });
 });
+
+describe('tangga bantuan: aksi petunjuk dan bukaKolom', () => {
+  const idKolom = tabel.kolom[0]!.id;
+  const kirim = (bagian: Record<string, unknown>) => baca({ ...dasar, ...bagian });
+  const nilaiBantuan = (bagian: Record<string, unknown>) => {
+    const bacaan = kirim(bagian);
+    return bacaan.ok ? nilaiKiriman(bacaan.kiriman, soal, 'uji') : bacaan;
+  };
+
+  test('petunjuk wajib tingkat 1|2, bukaKolom tanpa tingkat', () => {
+    expect(kode(kirim({ aksi: 'petunjuk', bantuan: { idKolom, tingkat: 2 } }))).toBe('OK');
+    expect(kode(kirim({ aksi: 'bukaKolom', bantuan: { idKolom } }))).toBe('OK');
+    expect(kode(kirim({ aksi: 'petunjuk', bantuan: { idKolom, tingkat: 3 } }))).toBe('BANTUAN_TIDAK_SAH');
+    expect(kode(kirim({ aksi: 'petunjuk', bantuan: { idKolom } }))).toBe('BANTUAN_TIDAK_SAH');
+    expect(kode(kirim({ aksi: 'bukaKolom', bantuan: { idKolom, tingkat: 1 } }))).toBe('BANTUAN_TIDAK_SAH');
+  });
+  test('bantuan wajib untuk aksi bantuan dan terlarang untuk aksi lain', () => {
+    expect(kode(kirim({ aksi: 'petunjuk' }))).toBe('BANTUAN_WAJIB');
+    expect(kode(kirim({ aksi: 'buka', bantuan: { idKolom } }))).toBe('BANTUAN_TIDAK_SESUAI_AKSI');
+  });
+  test('hanya mode latihan; tanpa isian; kunci lain dalam bantuan ditolak', () => {
+    expect(kode(kirim({ mode: 'ujian', aksi: 'bukaKolom', bantuan: { idKolom } }))).toBe('BANTUAN_HANYA_LATIHAN');
+    expect(kode(kirim({ aksi: 'bukaKolom', bantuan: { idKolom }, isian: { kepala: {}, sel: {} } }))).toBe('BUKA_TANPA_ISIAN');
+    expect(kode(kirim({ aksi: 'bukaKolom', bantuan: { idKolom, jawaban: 'x' } }))).toBe('BANTUAN_TIDAK_SAH');
+  });
+  test('dinilai server: tanpa hasil kolom; kolom karangan ditolak', () => {
+    const hasil = nilaiBantuan({ aksi: 'bukaKolom', bantuan: { idKolom } });
+    expect(hasil.ok && hasil.penilaian.hasilKolom).toBeNull();
+    expect(nilaiBantuan({ aksi: 'petunjuk', bantuan: { idKolom: 'karangan', tingkat: 1 } })).toMatchObject({ ok: false, kode: 'KOLOM_TIDAK_ADA' });
+  });
+});

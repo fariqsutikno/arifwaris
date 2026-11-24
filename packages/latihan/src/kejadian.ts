@@ -38,8 +38,10 @@ export interface KejadianPercobaan {
   jenisSoal: JenisSoal;
   mode: ModeSoal;
   konteks: { jenis: 'mandiri' } | { jenis: 'tugas'; idTugas: string };
-  /** `buka` = soal dibuka (waktu pengerjaan); tanpa isian dan hasil. */
-  aksi: 'buka' | PercobaanTabel['aksi'];
+  /** `buka` = soal dibuka (waktu pengerjaan); tanpa isian dan hasil. `petunjuk` dan `bukaKolom` = tangga bantuan (mode latihan). */
+  aksi: 'buka' | PercobaanTabel['aksi'] | 'petunjuk' | 'bukaKolom';
+  /** Hanya petunjuk (dengan tingkat) dan bukaKolom. */
+  bantuan?: { idKolom: string; tingkat?: 1 | 2 };
   /** null untuk buka, lihatJawaban tanpa isian, dan soal kartu lama (belum bertabel). */
   isian: IsianTabel | null;
   jangkar: Jangkar | null;

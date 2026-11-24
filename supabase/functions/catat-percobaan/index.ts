@@ -67,7 +67,7 @@ Deno.serve(async req => {
     p_jenis_soal: penilaian.jenisSoal.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`), p_mode: kiriman.mode,
     p_aksi: kiriman.aksi.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`), p_isian: kiriman.isian ?? kiriman.gharqa, p_jangkar: kiriman.jangkar,
     p_hasil_kolom: penilaian.hasilKolom, p_benar_semua: penilaian.hasilKolom ? penilaian.benarSemua : null,
-    p_dimulai_pada: kiriman.dimulaiPada,
+    p_dimulai_pada: kiriman.dimulaiPada, p_bantuan: kiriman.bantuan,
     p_versi: { engine: VERSI_ENGINE, ruleset: penilaian.ruleset, madzhab: 'bawaan', kunci: await kunciVersi(penilaian) },
   });
   if (error) {

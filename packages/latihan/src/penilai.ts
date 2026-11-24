@@ -21,9 +21,9 @@ const POLA_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}
 const POLA_SOAL_KURASI = /^[A-Za-z0-9-]{1,40}$/;
 const POLA_SOAL_POLA = /^[a-z0-9-]{1,60}@\d{1,4}#\d{1,10}$/;
 const POLA_BULAT = /^\d{0,6}$/;
-const AKSI_SAH = ['buka', 'periksa', 'kirim', 'lihatJawaban'] as const;
+const AKSI_SAH = ['buka', 'periksa', 'kirim', 'lihatJawaban', 'petunjuk', 'bukaKolom'] as const;
 const MODE_SAH = ['latihan', 'ujian'] as const;
-const KUNCI_SAH = ['id', 'idSesiSoal', 'soalId', 'revisiSoal', 'mode', 'aksi', 'isian', 'jangkar', 'gharqa', 'dimulaiPada'];
+const KUNCI_SAH = ['id', 'idSesiSoal', 'soalId', 'revisiSoal', 'mode', 'aksi', 'isian', 'jangkar', 'gharqa', 'bantuan', 'dimulaiPada'];
 const KEPUTUSAN_SAH: readonly KeputusanGharqa[] = ['terakhirMewarisi', 'tidakSalingMewarisi', 'ditahan'];
 const HARTA_GHARQA_MAKS = 10;
 const PANJANG_ID_ORANG_MAKS = 60;
@@ -31,8 +31,14 @@ const PANJANG_ID_ORANG_MAKS = 60;
 export type AksiKiriman = (typeof AKSI_SAH)[number];
 export interface Kiriman {
   id: string; idSesiSoal: string; soalId: string; revisiSoal: string;
-  mode: ModeSoal; aksi: AksiKiriman; isian: IsianTabel | null; jangkar: Jangkar | null; gharqa: IsianGharqa | null; dimulaiPada: string | null;
+  mode: ModeSoal; aksi: AksiKiriman; isian: IsianTabel | null; jangkar: Jangkar | null; gharqa: IsianGharqa | null;
+  /** Hanya aksi petunjuk dan bukaKolom (tangga bantuan, mode latihan). */
+  bantuan: BantuanKiriman | null; dimulaiPada: string | null;
 }
+/** `tingkat` hanya untuk petunjuk. `idKolom` = id kolom tabel, atau `pengali` untuk baris pengali munasakhat. */
+export interface BantuanKiriman { idKolom: string; tingkat?: 1 | 2 }
+const AKSI_BANTUAN: readonly AksiKiriman[] = ['petunjuk', 'bukaKolom'];
+const PANJANG_ID_KOLOM_MAKS = 60;
 export type GalatKiriman = { status: 400 | 409; kode: string };
 export type HasilCatat<T> = ({ ok: true } & T) | ({ ok: false } & GalatKiriman);
 const tolak = (kode: string): { ok: false } & GalatKiriman => ({ ok: false, status: 400, kode });
@@ -46,7 +52,7 @@ export function bacaKiriman(mentah: unknown, ukuranBadan: number): HasilCatat<{ 
   if (!adalahObjek(mentah)) return tolak('BENTUK_TIDAK_SAH');
   if ('user_id' in mentah || 'userId' in mentah) return tolak('USER_ID_DILARANG');
   if (Object.keys(mentah).some(kunci => !KUNCI_SAH.includes(kunci))) return tolak('KUNCI_TIDAK_DIKENAL');
-  const { id, idSesiSoal, revisiSoal, soalId, mode, aksi, isian, jangkar, gharqa, dimulaiPada } = mentah;
+  const { id, idSesiSoal, revisiSoal, soalId, mode, aksi, isian, jangkar, gharqa, bantuan, dimulaiPada } = mentah;
   if (!adalahTeks(id, POLA_UUID) || !adalahTeks(idSesiSoal, POLA_UUID) || !adalahTeks(revisiSoal, POLA_UUID)) return tolak('ID_TIDAK_SAH');
   if (typeof soalId !== 'string' || !(POLA_SOAL_KURASI.test(soalId) || POLA_SOAL_POLA.test(soalId))) return tolak('SOAL_ID_TIDAK_SAH');
   if (!MODE_SAH.includes(mode as ModeSoal)) return tolak('MODE_TIDAK_SAH');
@@ -58,14 +64,29 @@ export function bacaKiriman(mentah: unknown, ukuranBadan: number): HasilCatat<{ 
   if (!isianSah.ok) return isianSah;
   if (!jangkarSah.ok) return jangkarSah;
   if (!gharqaSah.ok) return gharqaSah;
+  const bantuanSah = bacaBantuan(bantuan, aksi as AksiKiriman, mode as ModeSoal);
+  if (!bantuanSah.ok) return bantuanSah;
   // Gharqa menggantikan isian/jangkar tunggal; keduanya tidak boleh sekaligus.
   if (gharqaSah.nilai && (isianSah.nilai !== null || jangkarSah.nilai !== null)) return tolak('GHARQA_DAN_ISIAN');
   const adaIsian = isianSah.nilai !== null || gharqaSah.nilai !== null;
   // `buka` tidak membawa isian; periksa dan kirim wajib; lihatJawaban boleh tanpa.
-  if (aksi === 'buka' && (adaIsian || jangkarSah.nilai !== null)) return tolak('BUKA_TANPA_ISIAN');
+  if ((aksi === 'buka' || AKSI_BANTUAN.includes(aksi as AksiKiriman)) && (adaIsian || jangkarSah.nilai !== null)) return tolak('BUKA_TANPA_ISIAN');
   if ((aksi === 'periksa' || aksi === 'kirim') && !adaIsian) return tolak('ISIAN_WAJIB');
   return { ok: true, kiriman: { id, idSesiSoal, soalId, revisiSoal, mode: mode as ModeSoal, aksi: aksi as AksiKiriman,
-    isian: isianSah.nilai, jangkar: jangkarSah.nilai, gharqa: gharqaSah.nilai, dimulaiPada: (dimulaiPada as string | null | undefined) ?? null } };
+    isian: isianSah.nilai, jangkar: jangkarSah.nilai, gharqa: gharqaSah.nilai, bantuan: bantuanSah.nilai, dimulaiPada: (dimulaiPada as string | null | undefined) ?? null } };
+}
+
+/** Bantuan wajib untuk petunjuk (dengan tingkat 1|2) dan bukaKolom (tanpa tingkat), terlarang untuk aksi lain; hanya mode latihan. */
+function bacaBantuan(mentah: unknown, aksi: AksiKiriman, mode: ModeSoal): HasilCatat<{ nilai: BantuanKiriman | null }> {
+  const butuh = AKSI_BANTUAN.includes(aksi);
+  if (mentah === undefined || mentah === null) return butuh ? tolak('BANTUAN_WAJIB') : { ok: true, nilai: null };
+  if (!butuh) return tolak('BANTUAN_TIDAK_SESUAI_AKSI');
+  if (mode !== 'latihan') return tolak('BANTUAN_HANYA_LATIHAN');
+  if (!adalahObjek(mentah) || typeof mentah.idKolom !== 'string' || mentah.idKolom === '' || mentah.idKolom.length > PANJANG_ID_KOLOM_MAKS) return tolak('BANTUAN_TIDAK_SAH');
+  const { tingkat, ...lain } = mentah;
+  if (Object.keys(lain).length !== 1) return tolak('BANTUAN_TIDAK_SAH');
+  if (aksi === 'bukaKolom') return tingkat === undefined ? { ok: true, nilai: { idKolom: mentah.idKolom } } : tolak('BANTUAN_TIDAK_SAH');
+  return tingkat === 1 || tingkat === 2 ? { ok: true, nilai: { idKolom: mentah.idKolom, tingkat } } : tolak('BANTUAN_TIDAK_SAH');
 }
 
 function bacaIsian(mentah: unknown): HasilCatat<{ nilai: IsianTabel | null }> {
@@ -112,7 +133,7 @@ export interface Penilaian {
   daftarTabel: TabelSoal[];
   /** Hanya gharqa: keputusan yang benar; ikut membentuk `versi.kunci`. */
   keputusanSoal: KeputusanGharqa | null;
-  /** null untuk buka dan lihatJawaban tanpa isian. */
+  /** null untuk buka, petunjuk, bukaKolom, dan lihatJawaban tanpa isian. */
   hasilKolom: HasilKolom[] | null;
   benarSemua: boolean;
 }
@@ -134,7 +155,8 @@ export function nilaiKiriman(kiriman: Kiriman, soal: SoalDimuat, versiEngine: st
   if ('status' in susunan) return tolak('SOAL_TIDAK_DIDUKUNG');
   const jenisSoal = jenisSoalDari(kasus, tampil);
   const dasar = { jenisSoal, ruleset, daftarTabel: [susunan], keputusanSoal: null };
-  if (kiriman.aksi === 'buka' || (kiriman.aksi === 'lihatJawaban' && kiriman.isian === null))
+  if (kiriman.bantuan && !kolomAda([susunan], kiriman.bantuan.idKolom)) return tolak('KOLOM_TIDAK_ADA');
+  if (kiriman.aksi === 'buka' || kiriman.bantuan || (kiriman.aksi === 'lihatJawaban' && kiriman.isian === null))
     return { ok: true, penilaian: { ...dasar, hasilKolom: null, benarSemua: false } };
   const isian = kiriman.isian!;
   const galat = periksaIsian(susunan, isian, kiriman.jangkar);
@@ -147,6 +169,10 @@ export function nilaiKiriman(kiriman: Kiriman, soal: SoalDimuat, versiEngine: st
 function nilaiGharqa(kiriman: Kiriman, soal: SoalGharqa, ruleset: Ruleset): HasilCatat<{ penilaian: Penilaian }> {
   const dasar = { jenisSoal: 'gharqa' as const, ruleset, daftarTabel: soal.harta.map(harta => harta.tabel), keputusanSoal: soal.keputusan };
   if (kiriman.isian !== null || kiriman.jangkar !== null) return tolak('GHARQA_ISIAN_TIDAK_SESUAI');
+  if (kiriman.bantuan) {
+    // Tangga hanya di tabel harta; langkah keputusan tanpa bantuan.
+    return kolomAda(dasar.daftarTabel, kiriman.bantuan.idKolom) ? { ok: true, penilaian: { ...dasar, hasilKolom: null, benarSemua: false } } : tolak('KOLOM_TIDAK_ADA');
+  }
   const jawaban = kiriman.gharqa;
   if (!jawaban) return { ok: true, penilaian: { ...dasar, hasilKolom: null, benarSemua: false } };
   if (jawaban.keputusan !== soal.keputusan) return { ok: true, penilaian: { ...dasar, hasilKolom: [], benarSemua: false } };
@@ -163,6 +189,9 @@ function nilaiGharqa(kiriman: Kiriman, soal: SoalGharqa, ruleset: Ruleset): Hasi
   }
   return { ok: true, penilaian: { ...dasar, hasilKolom, benarSemua: soal.harta.every(harta => benarPerHarta.get(harta.mayit)) } };
 }
+
+const kolomAda = (daftarTabel: readonly TabelSoal[], idKolom: string): boolean =>
+  daftarTabel.some(tabel => tabel.kolom.some(kolom => kolom.id === idKolom) || (idKolom === 'pengali' && tabel.pengali !== undefined));
 
 /** Kode galat pertama yang ditemukan, atau null bila isian sah. */
 function periksaIsian(tabel: TabelSoal, isian: IsianTabel, jangkar: Jangkar | null): string | null {
