@@ -81,13 +81,14 @@ test('profil: unduh data berupa berkas JSON; hapus akun minta mengetik kalimat, 
 });
 
 test('kebijakan v2 (S9): akun yang menyetujui v1 diminta setuju ulang; halaman menyebut simpan otomatis di perangkat, retensi 30 hari, dan Hapus kasus ini', () => {
-  expect(VERSI_KEBIJAKAN_PRIVASI).toBe(5);
-  expect(perluSetujuKebijakan([{ jenis: 'kebijakan_privasi', versi: 4, setuju: true }])).toBe(true);
+  expect(VERSI_KEBIJAKAN_PRIVASI).toBe(6);
+  expect(perluSetujuKebijakan([{ jenis: 'kebijakan_privasi', versi: 5, setuju: true }])).toBe(true);
   render(<Privasi />);
   const teks = document.body.textContent ?? '';
   expect(teks).toMatch(/tersimpan otomatis di perangkat ini/);
   expect(teks).toMatch(/tidak dikirim ke server kecuali kamu masuk/);
-  expect(teks).toMatch(/tidak dibuka 30 hari/);
+  expect(teks).toMatch(/tidak dibuka 30 hari dihapus otomatis/);
+  expect(teks).toMatch(/Isian soal latihan yang belum selesai tetap tersimpan di perangkat ini/);
   expect(teks).toMatch(/Hapus kasus ini/);
 });
 
