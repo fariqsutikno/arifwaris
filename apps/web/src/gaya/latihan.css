@@ -338,3 +338,4 @@ input:checked+.kotak-centang{background:var(--ink);border-color:var(--ink);color
 }
 .aksi-salinan{display:flex;flex-wrap:wrap;gap:4px 20px;margin:6px 0 0}
 .ubin-lab-soal .status-soal-baru{width:26px;height:26px}
+.penanda-ulang{font-weight:600;color:var(--ink)}

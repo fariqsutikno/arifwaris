@@ -36,6 +36,8 @@ interface Props {
   adalahBelajar: boolean;
   /** Soal baru saja dijawab benar semua: tampilkan umpan balik + confetti di atas pembagian. */
   tebakanBenar: boolean;
+  /** Penutup soal latihan yang selesai (predikat dan nama kasus). */
+  penutup?: ReactNode;
   tampilPembulatan: boolean;
   satuanPembulatan: bigint;
   saatUbahPembulatan: (satuan: bigint) => void;
@@ -103,6 +105,7 @@ export function KartuPembagian(props: Props) {
       {(
         <>
           {props.tebakanBenar && <><UmpanBalikBenar /><Confetti /></>}
+          {props.penutup}
           {props.pembuka}
           {saring && (
             <p className="disaring">{t('hasil.disaring')} <b>{saring.label}</b> · <button type="button" className="tautan-aksi tautan-sebaris" onClick={() => setSaring(null)}>{t('hitung.tampilkan_semua')}</button></p>

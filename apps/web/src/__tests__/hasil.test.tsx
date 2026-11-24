@@ -6,6 +6,7 @@ import { tambahAhliWaris } from '../checklist';
 import { kasusBaru, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
+import { bukaSemuaKolomLewatTangga } from './bukaTangga';
 import { Hasil } from '../layar/Hasil';
 import { semuaTersimpan } from '../tersimpan';
 import { tandaiDibagikan } from '../bagikanLokal';
@@ -34,14 +35,6 @@ function Uji({ awal, idSesi = 'sesi-uji', tujuan = 'hitung', saatDikerjakan, tan
 }
 const kotorTersimpan = () => (semuaTersimpan()[0]!.kasus as { tirkah: { kotor: string } }).tirkah.kotor;
 const pembagian = () => screen.getByRole('region', { name: /^(Siapa dapat berapa\?|Jawabanmu|Kunci jawaban)$/ });
-/** Buka jawaban lewat dialog tekan-tahan. */
-const bukaLewatDialog = (namaTombolTahan: RegExp) => {
-  vi.useFakeTimers();
-  fireEvent.pointerDown(within(screen.getByRole('alertdialog')).getByRole('button', { name: namaTombolTahan }));
-  act(() => { vi.advanceTimersByTime(1300); });
-  vi.useRealTimers();
-};
-
 describe('layar hasil', () => {
   it('pembagian per orang dan yang terhalang beserta alasannya', () => {
     render(<Uji awal={prototipe()} />);
@@ -117,9 +110,9 @@ describe('layar hasil', () => {
     expect(screen.queryAllByLabelText('disembunyikan')).toHaveLength(0);
     fireEvent.click(screen.getByRole('button', { name: /Pembahasan langkah demi langkah/ }));
     expect(screen.getByText('Jawab soalnya dulu')).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
-    expect(screen.getByRole('alertdialog').textContent).toMatch(/belum nyoba/);
-    bukaLewatDialog(/Tahan untuk buka/);
+    expect(screen.queryByRole('button', { name: 'Lihat jawaban' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Butuh petunjuk?' })).toBeNull(); // bantuan datang setelah usaha, bukan sejak awal
+    bukaSemuaKolomLewatTangga();
     expect(within(pembagian()).getAllByText('Rp 16.666.666').length).toBe(2);
   });
 
@@ -133,7 +126,7 @@ describe('layar hasil', () => {
     ketik('Asal masalah', '8'); ketik('Asal masalah bersama', '7'); ketik('Asal masalah akhir', '24');
     ketik('Asal masalah akhir Istri', '3'); ketik('Asal masalah akhir Anak laki-laki', '14'); ketik('Asal masalah akhir Anak perempuan', '7');
     fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
-    expect(screen.getByText(/Mulai salah di kolom "Bagian"/)).toBeTruthy();
+    expect(document.querySelector('.umpan-tabel')!.textContent).toBe('Kolom Bagian belum tepat semua.');
     expect(dikerjakan).toEqual([]);
     pilih('Istri', '1/8');
     fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
@@ -143,21 +136,12 @@ describe('layar hasil', () => {
     nilaiAcak.nilai = 0.5;
   });
 
-  it('mode belajar: lihat jawaban tanpa pernah mencoba tidak dihitung; setelah mencoba dihitung tapi tidak benar', () => {
+  it('mode belajar: kolom dibuka sesudah mencoba dihitung dikerjakan tapi tidak benar (tanpa XP)', () => {
     const dikerjakan: boolean[] = [];
-    const { unmount } = render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
-    bukaLewatDialog(/Tahan untuk buka/);
-    expect(dikerjakan).toEqual([]);
-    unmount();
     render(<Uji awal={c1601()} tujuan="belajar" saatDikerjakan={benar => { dikerjakan.push(benar); }} />);
-    for (const pilihan of screen.getAllByRole('combobox')) fireEvent.change(pilihan, { target: { value: 'Terhalang' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Periksa' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
-    expect(screen.getByRole('alertdialog').textContent).not.toMatch(/belum nyoba/);
-    expect(screen.getByRole('alertdialog').textContent).toMatch(/hangus selamanya/);
-    bukaLewatDialog(/Tahan untuk buka/);
+    bukaSemuaKolomLewatTangga();
     expect(dikerjakan).toEqual([false]);
+    expect(screen.getByText(/dari .* kolom kamu selesaikan sendiri/)).toBeTruthy();
   });
 
   it('klik orang di pohon membuka penjelasan dengan ahwal, baris kasus ini disorot', () => {

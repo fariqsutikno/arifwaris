@@ -1,17 +1,22 @@
 // Tabel faraidh isian soal latihan (spec B2–B6, B9; acuan: mockup-tabel-faraidh-final.html, tab "Soal biasa").
 //   Menerima: TabelSoal (kunci dari engine, @waris/latihan), mode, jangkar dari luar, dan aksi ke kartu induk.
 //   Memutuskan: tampilan sel (pilih/angka/terisi/0/–), sel bersama saat pelajar memilih, penilaian lewat nilaiSemuaKolom.
-//   Menyerahkan: PercobaanTabel ke Hasil tiap Periksa yang lolos "belum lengkap" (XP, confetti, pencatatan diputuskan Hasil);
-//   jawaban dibuka lewat dialog tahan milik Hasil, yang menerima isian terakhir.
+//   Menyerahkan: PercobaanTabel ke Hasil tiap Periksa yang lolos "belum lengkap" (XP, confetti, pencatatan diputuskan Hasil).
+//   Tangga bantuan (spec tangga-bantuan-soal): umpan salah menunjuk kolom; setelah 2 usaha ada petunjuk 1/2 di kolom
+//   pertama yang belum benar, lalu buka jawaban kolom itu saja (XP soal hangus, dikonfirmasi dengan mengetik "hangus").
 
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Confetti } from '../ui/Confetti';
-import { Ikon } from '../ui/Ikon';
+import { DialogKonfirmasi } from '../ui/Dialog';
+import { BantuanKolom } from './BantuanKolom';
+import { kalimatPetunjuk } from './kalimatPetunjuk';
+import { Tebal } from './Tebal';
+import { ID_KOLOM_PENGALI, KATA_HANGUS, isianDenganKolomDibuka, kolomSasaran, penandaXp, semuaKolomTabel, USAHA_SEBELUM_PETUNJUK } from '../tanggaBantuan';
 import { angka, angkaLatin, t } from '../terjemah';
 import { jenisDari } from '../checklist';
 import { bacaIsianSoal, hapusIsianSoal, hitungTerisi, simpanIsianSoal } from '../isianSoal';
 import { LABEL_SEHARI } from '../konten/ahliWaris';
-import { ID_BARIS_MAUQUF, nilaiSemuaKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
+import { ID_BARIS_MAUQUF, INDEKS_KONTRAS, nilaiSemuaKolom, petunjukKolom, PILIHAN_BAGIAN, putusanLatihan, type BarisSoal, type HasilNilai, type IsianTabel, type Jangkar, type KolomSoal, type KonteksPetunjuk, type ModeSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
 
 interface Props {
   tabel: TabelSoal;
@@ -19,10 +24,10 @@ interface Props {
   /** Dipilih pemanggil sekali per sesi soal (di server: dari sesi); komponen tidak mengacak sendiri (B5). */
   jangkar: Jangkar | null;
   saatPercobaan: (percobaan: PercobaanTabel) => void;
-  /** Mengirim isian terakhir supaya pemanggil bisa mencatat Lihat jawaban sesudah dialog tahan dikonfirmasi. */
-  saatLihatJawaban: (isian: IsianTabel) => void;
-  /** Jawaban sudah dibuka (dialog tahan di Hasil), atau soal sudah dijawab benar. */
+  /** Soal sudah selesai (benar atau semua kolom dibuka): semua kolom tampil sebagai kunci, tanpa tangga. */
   terbuka: boolean;
+  /** Tangga bantuan soal latihan; tanpa ini tabel tidak punya bantuan. */
+  bantuan?: BantuanTabel | undefined;
   /** Isian dikunci dari luar (Ujian sesudah Kirim, tugas kelas yang ditutup). */
   terkunci?: boolean;
   /** Nama mayit untuk judul kolom munasakhat; tanpa ini id dipakai apa adanya. */
@@ -34,6 +39,14 @@ interface Props {
   saatKosongkan?: (() => void) | undefined;
   /** Kotak Cara mengisi tidak ditampilkan (tabel kedua dan seterusnya dalam satu soal, mis. gharqa). */
   tanpaCara?: boolean;
+}
+
+/** Hubungan tabel dengan layar induk untuk tangga bantuan; pencatatan, XP, dan penyelesaian soal milik induk. */
+export interface BantuanTabel {
+  konteks: KonteksPetunjuk;
+  xp: { bobot: number; masihAda: boolean; hangus: boolean };
+  saatPetunjuk: (idKolom: string, tingkat: 1 | 2) => void;
+  saatBukaKolom: (idKolom: string) => void;
 }
 
 const BATAS_DIGIT = /^\d{0,6}$/;
@@ -75,7 +88,7 @@ function labelPilihan(bagian: string): string {
 const labelKursi = (kunci: string): string => (LABEL_SEHARI as Record<string, string>)[kunci] ?? jenisDari(kunci as never)?.label ?? kunci;
 const labelUntuk = (kolom: KolomSoal, nilai: string): string => (kolom.idJudul === 'didudukkanSebagai' ? labelKursi(nilai) : labelPilihan(nilai));
 
-export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJawaban, terbuka, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, revisiSoal, saatKosongkan }: Props) {
+export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, terbuka, bantuan, terkunci = false, namaDari = id => id, tanpaCara = false, kodeSoal, revisiSoal, saatKosongkan }: Props) {
   const judul = (kolom: KolomSoal) => judulKolomDari(kolom, namaDari);
   const [isian, setIsian] = useState<IsianTabel>(() => (kodeSoal && bacaIsianSoal(kodeSoal, revisiSoal)?.isian) || { kepala: {}, sel: {} });
   const isianAwal = useRef(isian);
@@ -89,19 +102,61 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     if (hitungTerisi(isian) > 0) simpanIsianSoal(kodeSoal, isian, hitungKotak(tabel, jangkar), revisiSoal); else hapusIsianSoal(kodeSoal);
   }, [isian]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const selesai = hasil?.jenis === 'benar';
-  const modeKunci = terbuka && !selesai;
-  const terkunciIsian = selesai || modeKunci || terkunci;
+  // Tangga bantuan per percobaan: usaha, kolom yang petunjuknya dibuka, kolom yang jawabannya dibuka, dan kolom sasaran tangga.
+  const [dibuka, setDibuka] = useState<ReadonlySet<string>>(new Set());
+  const [usaha, setUsaha] = useState(0);
+  const [salah, setSalah] = useState(0);
+  const [tingkatPetunjuk, setTingkatPetunjuk] = useState<Record<string, 1 | 2>>({});
+  const [sasaran, setSasaran] = useState<string | null>(null);
+  const [dialogBuka, setDialogBuka] = useState<string | 'semua' | null>(null);
 
+  const selesai = hasil?.jenis === 'benar';
+  const semuaKunci = terbuka && !selesai;
+  const kolomTerbuka = (idKolom: string) => semuaKunci || dibuka.has(idKolom);
+  const terkunciIsian = selesai || semuaKunci || terkunci;
+
+  /** Hasil per kolom atas isian pelajar, dengan kolom yang dibuka dianggap benar. */
+  const isianEfektif = () => isianDenganKolomDibuka(tabel, isian, dibuka);
   const periksa = () => {
-    const hasilKolom = nilaiSemuaKolom(tabel, isian, jangkar);
+    const efektif = isianEfektif();
+    const hasilKolom = nilaiSemuaKolom(tabel, efektif, jangkar);
     const nilai = putusanLatihan(hasilKolom);
     setHasil(nilai);
     setTolakBulat(false);
+    setSasaran(nilai.jenis === 'benar' ? null : kolomSasaran(hasilKolom, dibuka));
+    if (nilai.jenis !== 'benar' && hitungTerisi(isian) > 0) setUsaha(jumlah => jumlah + 1);
+    if (nilai.jenis === 'salah') setSalah(jumlah => jumlah + 1);
     if (nilai.jenis === 'belumLengkap') return;
-    saatPercobaan({ mode, aksi: 'periksa', isian, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
+    saatPercobaan({ mode, aksi: 'periksa', isian: efektif, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
   };
-  const kosongkan = () => { if (hitungTerisi(isian) > 0) saatKosongkan?.(); setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false); };
+  const kosongkan = () => {
+    if (hitungTerisi(isian) > 0) saatKosongkan?.();
+    setIsian({ kepala: {}, sel: {} }); setHasil(null); setTolakBulat(false);
+    setDibuka(new Set()); setUsaha(0); setSalah(0); setTingkatPetunjuk({}); setSasaran(null);
+  };
+
+  const bukaKolom = (idKolom: string[]) => {
+    if (!bantuan) return;
+    const baru = new Set([...dibuka, ...idKolom]);
+    idKolom.filter(id => !dibuka.has(id)).forEach(id => bantuan.saatBukaKolom(id));
+    setDibuka(baru);
+    const efektif = isianDenganKolomDibuka(tabel, isian, baru);
+    const hasilKolom = nilaiSemuaKolom(tabel, efektif, jangkar);
+    const berikut = kolomSasaran(hasilKolom, baru);
+    setSasaran(berikut);
+    // Tidak ada lagi kolom yang perlu bantuan: soal selesai, dilaporkan sebagai Periksa atas isian efektif (kolom dibuka = kunci).
+    if (berikut === null) {
+      const nilai = putusanLatihan(hasilKolom);
+      setHasil(nilai);
+      saatPercobaan({ mode, aksi: 'periksa', isian: efektif, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
+    }
+  };
+  // XP yang masih bisa hangus meminta konfirmasi mengetik sekali; sesudahnya (atau bila XP sudah didapat) langsung buka.
+  const mintaBuka = (target: string | 'semua') => {
+    if (bantuan && bantuan.xp.masihAda && !bantuan.xp.hangus && dibuka.size === 0) setDialogBuka(target);
+    else bukaKolom(target === 'semua' ? semuaKolomTabel(tabel) : [target]);
+  };
+  const lanjutBuka = () => { const target = dialogBuka!; setDialogBuka(null); bukaKolom(target === 'semua' ? semuaKolomTabel(tabel) : [target]); };
 
   const isiPilihan = (idBaris: string, idKolom: string, nilai: string) => {
     setIsian(lama => ({ ...lama, sel: { ...lama.sel, [idBaris]: { ...lama.sel[idBaris], [idKolom]: nilai } } }));
@@ -119,7 +174,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     const acuan = kolom.jenis === 'bulat' ? acuanPilihan(kolom) : undefined;
     return baris.kunci[kolom.id] ?? (acuan && baris.kunci[acuan.id] === BAGIAN_TERHALANG ? '0' : undefined);
   };
-  const bagianDipilih = (baris: BarisSoal, idKolom: string) => (modeKunci ? baris.kunci[idKolom] : isian.sel[baris.id]?.[idKolom]);
+  const bagianDipilih = (baris: BarisSoal, idKolom: string) => (kolomTerbuka(idKolom) ? baris.kunci[idKolom] : isian.sel[baris.id]?.[idKolom]);
   const memilihTerhalang = (baris: BarisSoal, kolom: KolomSoal) => {
     // Jami'ah menjumlah semua mas'alah: Terhalang di satu mas'alah tidak menolkannya.
     if (kolom.id === tabel.pengali?.kolomJamiah) return false;
@@ -151,9 +206,11 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     hasil.idBarisKosong.forEach(id => tandai.add(`${hasil.idKolom}|${id}`));
     if (hasil.kepalaKosong) tandai.add(`${hasil.idKolom}|kepala`);
   }
+  // Salah: seluruh kolom merah, tanpa menunjuk baris (kolom dengan dua pilihan jadi langsung tertebak bila baris ditunjuk).
   if (hasil?.jenis === 'salah') {
-    hasil.idBarisSalah.forEach(id => tandai.add(`${hasil.idKolom}|${id}`));
-    if (hasil.kepalaSalah) tandai.add(`${hasil.idKolom}|kepala`);
+    const idBaris = hasil.idKolom === ID_KOLOM_PENGALI ? Object.keys(tabel.pengali?.kunci ?? {}) : tabel.baris.map(baris => baris.id);
+    idBaris.forEach(id => tandai.add(`${hasil.idKolom}|${id}`));
+    tandai.add(`${hasil.idKolom}|kepala`);
   }
 
   const kunciDicoret = (diisi: string | undefined, kunci: string, tampil: (teks: string) => string) => (
@@ -170,10 +227,10 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     if (kunci === undefined) return '–';
     if (jangkar?.idBaris === baris.id && jangkar.idKolom === kolom.id) return <span className="terisi">{angka(kunci)}</span>;
     if (kolom.terkunci) return <span className="terisi">{angka(kunci)}</span>;
-    if (kolom.jenis === 'bulat' && !modeKunci && memilihTerhalang(baris, kolom)) return <span className="nol">{angka('0')}</span>;
+    if (kolom.jenis === 'bulat' && !kolomTerbuka(kolom.id) && memilihTerhalang(baris, kolom)) return <span className="nol">{angka('0')}</span>;
     const diisi = isian.sel[baris.id]?.[kolom.id];
     const bersama = gabung && <span className="bersama">{t('hitung.tabel.bersama')}</span>;
-    if (modeKunci) return <>{kunciDicoret(diisi, kunci, kolom.jenis === 'pilih' ? nilai => labelUntuk(kolom, nilai) : angka)}{bersama}</>;
+    if (kolomTerbuka(kolom.id)) return <>{kunciDicoret(diisi, kunci, kolom.jenis === 'pilih' ? nilai => labelUntuk(kolom, nilai) : angka)}{bersama}</>;
     if (kolom.jenis === 'pilih') {
       return (
         <select aria-label={label} disabled={terkunciIsian} value={diisi ?? ''} onChange={event => isiPilihan(baris.id, kolom.id, event.target.value)}>
@@ -202,12 +259,34 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
     sudahBergabung.current = new Set(tabel.kolom.flatMap(kolom => [...rentangPerKolom.get(kolom.id)!].filter(([, span]) => span > 1).map(([awal, span]) => `${kolom.id}|${awal}|${span}`)));
   });
 
-  const umpan = modeKunci ? { gaya: 'buka', teks: t('hitung.tabel.jawaban_dibuka') } : hasilUmpan(hasil, tabel, namaDari);
+  const adaKolomDibuka = semuaKunci || dibuka.size > 0;
+  const umpan = semuaKunci || (selesai && adaKolomDibuka) ? { gaya: 'buka', teks: t('hitung.tabel.jawaban_dibuka') } : hasilUmpan(hasil, tabel, namaDari);
+  const judulKolomBantuan = (idKolom: string) => (idKolom === ID_KOLOM_PENGALI ? t('hitung.tabel.pengali') : judul(tabel.kolom.find(kolom => kolom.id === idKolom)!));
+  // Tautan muncul di kolom pertama yang belum benar setelah 2 usaha; sesudah ada kolom dibuka, kolom berikutnya langsung dibantu.
+  const tampilBantuan = !!bantuan && !selesai && !semuaKunci && !terkunci && sasaran !== null && (usaha >= USAHA_SEBELUM_PETUNJUK || dibuka.size > 0);
+  const penanda = bantuan && !tanpaCara ? penandaXp(bantuan.xp.bobot, { xpMasihAda: bantuan.xp.masihAda, xpHangus: bantuan.xp.hangus || dibuka.size > 0, petunjuk: Object.keys(tingkatPetunjuk).length > 0, salah }) : null;
+  const isiPetunjuk = (idKolom: string) => {
+    const hasilKolom = nilaiSemuaKolom(tabel, isianEfektif(), jangkar).find(kandidat => kandidat.idKolom === idKolom);
+    const petunjuk = petunjukKolom({ tabel, hasil: hasilKolom ?? { idKolom, idJudul: idKolom, status: 'belumLengkap', sel: [] }, isian, konteks: bantuan!.konteks, indeksKontras: INDEKS_KONTRAS });
+    return (nomor: 1 | 2) => kalimatPetunjuk(nomor, petunjuk, {
+      judulKolom: judulKolomBantuan, namaKemungkinan, namaMayit: namaDari, labelPeran: labelKursi, labelBagian: labelPilihan,
+    });
+  };
+  const bukaPetunjuk = (idKolom: string) => {
+    const baru = ((tingkatPetunjuk[idKolom] ?? 0) + 1) as 1 | 2;
+    setTingkatPetunjuk(lama => ({ ...lama, [idKolom]: baru }));
+    bantuan!.saatPetunjuk(idKolom, baru);
+  };
 
   return (
     <div className="bento-s12 tata-tabel-latihan">
       <section className="ubin-h tabel-latihan" aria-labelledby="judul-tabel-latihan">
-        <h2 id="judul-tabel-latihan">{t('hitung.tabel.judul')}</h2>
+        <h2 id="judul-tabel-latihan">{t('hitung.tabel.judul')}{penanda && (
+          <span className={`penanda-xp ${penanda.jenis === 'bonus' ? '' : penanda.jenis === 'bonusLepas' ? 'lepas' : 'hangus'}`}>
+            {penanda.jenis === 'bonus' ? t('hitung.bantuan.xp', { dasar: penanda.dasar, bonus: penanda.bonus })
+              : penanda.jenis === 'bonusLepas' ? t('hitung.bantuan.xp_bonus_lepas', { dasar: penanda.dasar }) : t('hitung.bantuan.xp_hangus')}
+          </span>
+        )}</h2>
         <div className="wadah-tabel-latihan">
           <table className="tabel-kitab">
             <thead>
@@ -217,7 +296,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
                   <th key={kolom.id} scope="col" className={tandai.has(`${kolom.id}|kepala`) ? 'keliru' : undefined}>
                     <span className="judul-kolom">{judul(kolom)}</span>
                     {kolom.kepala !== undefined && (kolom.terkunci ? <span className="terisi">{angka(String(kolom.kepala))}</span>
-                      : modeKunci ? kunciDicoret(isian.kepala[kolom.id], String(kolom.kepala), angka)
+                      : kolomTerbuka(kolom.id) ? kunciDicoret(isian.kepala[kolom.id], String(kolom.kepala), angka)
                       : kotakAngka(isian.kepala[kolom.id], judul(kolom), nilai => { setIsian(lama => ({ ...lama, kepala: { ...lama.kepala, [kolom.id]: nilai } })); }))}
                   </th>
                 ))}
@@ -230,7 +309,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
                     const diisi = isian.pengali?.[kolom.id];
                     return (
                       <td key={kolom.id} className={tandai.has(`pengali|${kolom.id}`) ? 'keliru' : undefined}>
-                        {kunci === undefined ? null : modeKunci ? kunciDicoret(diisi, String(kunci), angka)
+                        {kunci === undefined ? null : kolomTerbuka(ID_KOLOM_PENGALI) ? kunciDicoret(diisi, String(kunci), angka)
                           : kotakAngka(diisi, `${t('hitung.tabel.pengali')} ${judul(kolom)}`, nilai => { setIsian(lama => ({ ...lama, pengali: { ...lama.pengali, [kolom.id]: nilai } })); setHasil(null); })}
                       </td>
                     );
@@ -249,15 +328,25 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, saatLihatJaw
           </table>
         </div>
         {tolakBulat && <p className="petunjuk-bulat" role="status">{t('hitung.tabel.hanya_bilangan_bulat')}</p>}
-        {!selesai && !modeKunci && (
+        {!selesai && !semuaKunci && (
           <div className="aksi-tabel">
             <button type="button" className="aw-btn aw-btn-primary" onClick={periksa}>{t('hitung.langkah_periksa')}</button>
             <button type="button" className="tautan-aksi" onClick={kosongkan}>{t('hitung.kosongkan')}</button>
-            <button type="button" className="tautan-aksi tautan-bahaya" onClick={() => saatLihatJawaban(isian)}><Ikon nama="mata" ukuran={18} />{t('hitung.lihat_jawaban')}</button>
+            {bantuan && dibuka.size > 0 && <button type="button" className="tautan-aksi tautan-bahaya" onClick={() => mintaBuka('semua')}>{t('hitung.bantuan.buka_semua')}</button>}
           </div>
         )}
-        {umpan && <div className={`umpan-tabel ${umpan.gaya}`} role="status">{umpan.teks}</div>}
-        {selesai && <Confetti />}
+        {umpan && <div className={`umpan-tabel ${umpan.gaya}`} role="status"><Tebal teks={umpan.teks} /></div>}
+        {tampilBantuan && sasaran && (
+          <BantuanKolom judulKolom={judulKolomBantuan(sasaran)} tingkat={tingkatPetunjuk[sasaran] ?? 0} isi={isiPetunjuk(sasaran)}
+            saatPetunjuk={() => bukaPetunjuk(sasaran)} saatTunjukkan={() => mintaBuka(sasaran)} />
+        )}
+        {selesai && !adaKolomDibuka && <Confetti />}
+        {dialogBuka && (
+          <DialogKonfirmasi bahaya kataKunci={KATA_HANGUS} judul={t('hitung.bantuan.hangus_judul', { judul: dialogBuka === 'semua' ? t('hitung.bantuan.buka_semua') : judulKolomBantuan(dialogBuka) })}
+            labelBatal={t('hitung.bantuan.hangus_batal')} labelLanjut={t('hitung.bantuan.hangus_lanjut')} saatBatal={() => setDialogBuka(null)} saatLanjut={lanjutBuka}>
+            <p>{t('hitung.bantuan.hangus_isi')}</p>
+          </DialogKonfirmasi>
+        )}
       </section>
       {!tanpaCara && <section className="ubin-h cara-mengisi" aria-labelledby="judul-cara-mengisi">
         <h2 id="judul-cara-mengisi">{t('hitung.tabel.cara_mengisi')}</h2>
@@ -298,11 +387,10 @@ function hasilUmpan(hasil: HasilNilai | null, tabel: TabelSoal, namaDari: (id: s
   if (hasil.jenis !== 'benar' && hasil.idKolom === 'pengali') return hasil.jenis === 'belumLengkap'
     ? { gaya: 'kurang', teks: t('hitung.tabel.pengali_belum_lengkap') } : { gaya: 'salah', teks: t('hitung.tabel.pengali_belum_tepat') };
   if (hasil.jenis === 'belumLengkap') return { gaya: 'kurang', teks: t('hitung.tabel.kolom_belum_lengkap', { judul: judul(hasil.idKolom) }) };
-  if (hasil.jenis === 'salah') return { gaya: 'salah', teks: t('hitung.tabel.mulai_salah', { judul: judul(hasil.idKolom) }) };
+  if (hasil.jenis === 'salah') return { gaya: 'salah', teks: t('hitung.bantuan.umpan_kolom_salah', { judul: judul(hasil.idKolom) }) };
   if (hasil.bentukTerkecil.length === 0) return { gaya: 'benar', teks: t('hitung.tabel.benar_semua') };
   const daftar = hasil.bentukTerkecil.map(bentuk => t('hitung.tabel.butir_terkecil', { judul: judul(bentuk.idKolom), diisi: angka(String(bentuk.diisi)), terkecil: angka(String(bentuk.terkecil)) })).join(', ');
   return { gaya: 'benar', teks: t('hitung.tabel.benar_semua_terkecil', { daftar }) };
 }
 
-/** Kata kunci tebal ditandai **…** di teks diksi. */
-export const Tebal = ({ teks }: { teks: string }) => <>{teks.split('**').map((potong, indeks) => (indeks % 2 ? <b key={indeks}>{potong}</b> : potong))}</>;
+export { Tebal };

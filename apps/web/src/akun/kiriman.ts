@@ -6,7 +6,7 @@ import type { BarisPercobaanServer, KirimanPercobaan } from '@waris/data';
 
 export const keKiriman = (kejadian: KejadianPercobaan): KirimanPercobaan => ({
   id: kejadian.id, idSesiSoal: kejadian.idSesiSoal, soalId: kejadian.soalId, revisiSoal: kejadian.revisiSoal, mode: kejadian.mode,
-  aksi: kejadian.aksi, isian: kejadian.isian, jangkar: kejadian.jangkar, ...(kejadian.gharqa ? { gharqa: kejadian.gharqa } : {}), dimulaiPada: kejadian.dimulaiPada,
+  aksi: kejadian.aksi, isian: kejadian.isian, jangkar: kejadian.jangkar, ...(kejadian.gharqa ? { gharqa: kejadian.gharqa } : {}), ...(kejadian.bantuan ? { bantuan: kejadian.bantuan } : {}), dimulaiPada: kejadian.dimulaiPada,
 });
 
 const keCamel = (teks: string) => teks.replace(/_([a-z])/g, (_, huruf: string) => huruf.toUpperCase());

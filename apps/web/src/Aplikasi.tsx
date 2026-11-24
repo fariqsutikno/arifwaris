@@ -31,6 +31,7 @@ import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
 import { cariSoalHitung, daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
+import { bobotXpSoal } from './tanggaBantuan';
 import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
 import { Rujukan } from './layar/rujukan/Rujukan';
 import { adalahKasusPengguna, bacaRiwayat, catatBilaBelumAda, catatRiwayat, type EntriRiwayat, type SumberRiwayat } from './riwayat';
@@ -290,7 +291,7 @@ export function Aplikasi() {
             tanpaSimpan={sumberSesi.jenis === 'latihan'} terkunci={sumberSesi.jenis === 'latihan' || sumberSesi.jenis === 'materi'}
             saatHapusKasus={adalahKasusPengguna(sumberSesi) ? hapusKasusIni : undefined}
             saatDikerjakan={soalAktif ? benar => tandaiSoalDikerjakan(soalAktif, benar) : undefined}
-            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '' } : undefined}
+            soal={soalAktif ? { id: soalAktif.kode, revisiId: revisiIdSoalHitung(soalAktif.kode) ?? '', bobotXp: bobotXpSoal(soalAktif) } : undefined}
             urutanLatihan={soalAktif ? urutanLatihanDari(soalAktif, kerjakanSoal) : undefined}
             salinan={adalahKasusPengguna(sumberSesi) || soalAktif ? undefined : { saatJadikanKasus: jadikanKasusSendiri, saatKerjakanUlang: sumberSesi.jenis === 'latihan' ? kerjakanUlangSoal : undefined, soal: sumberSesi.jenis === 'latihan' }} />}
       <Toast isi={toast} saatHilang={() => setToast(null)} />

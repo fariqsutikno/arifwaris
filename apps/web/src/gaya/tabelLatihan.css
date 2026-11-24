@@ -40,3 +40,15 @@
   .tabel-kitab th.nama{min-width:104px}
 }
 .aksi-soal-berikutnya{grid-column:span 12;display:flex;justify-content:flex-end}
+.kartu-petunjuk{margin-top:12px;border-radius:14px;padding:12px 14px;background:#fff7e0;color:#6b4f00;font-size:14px;line-height:1.55;animation:muncul-petunjuk .25s ease-out}
+.kartu-petunjuk h3{margin:0 0 6px;font:700 13px var(--font-sans);letter-spacing:.02em}
+.kartu-petunjuk p{margin:0 0 8px}
+.kartu-petunjuk .tautan-aksi{color:inherit}
+.kartu-petunjuk .tautan-bahaya{color:var(--danger)}
+.tautan-bantuan{margin-top:12px;animation:muncul-petunjuk .25s ease-out}
+.penanda-xp{display:inline-block;margin-inline-start:10px;padding:2px 10px;border-radius:999px;background:var(--surface-sunken);font:600 13px var(--font-sans);vertical-align:middle}
+.penanda-xp.lepas,.penanda-xp.hangus{color:var(--ink-soft,#6b6f68)}
+@keyframes muncul-petunjuk{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.kartu-petunjuk,.tautan-bantuan{animation:none}}
+.penutup-soal{margin:12px 0;padding:12px 14px;border-radius:14px;background:var(--mint,#dcefe2);color:#0b6b3a;font-size:14px;line-height:1.55}
+.penutup-soal p{margin:0 0 4px}

@@ -1,7 +1,8 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hitungGharqa, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputGharqa, type Orang } from '@waris/engine';
-import { susunSoalGharqa, type PercobaanTabel, type SoalGharqa } from '@waris/latihan';
+import { KONTEKS_KOSONG, susunSoalGharqa, type PercobaanTabel, type SoalGharqa } from '@waris/latihan';
+import { bacaIsianSoal } from '../isianSoal';
 import { GharqaLatihan } from './GharqaLatihan';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
@@ -21,8 +22,8 @@ const soalDari = (keadaan: InputGharqa['keadaan']): SoalGharqa => {
   return susunan;
 };
 
-const saatPercobaan = vi.fn(), saatLihatJawaban = vi.fn();
-const tampilkan = (soal: SoalGharqa, terbuka = false) => render(<GharqaLatihan soal={soal} namaDari={id => id} jangkar={soal.harta.map(() => null)} terbuka={terbuka} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+const saatPercobaan = vi.fn();
+const tampilkan = (soal: SoalGharqa, terbuka = false) => render(<GharqaLatihan soal={soal} namaDari={id => id} jangkar={soal.harta.map(() => null)} terbuka={terbuka} saatPercobaan={saatPercobaan} />);
 afterEach(() => { cleanup(); saatPercobaan.mockClear(); });
 
 describe('GharqaLatihan', () => {
@@ -61,5 +62,31 @@ describe('GharqaLatihan: kiriman ke server', () => {
     tampilkan(soalDari('tidakDiketahui'));
     fireEvent.click(screen.getByRole('button', { name: 'Yang terakhir mewarisi' }));
     expect((saatPercobaan.mock.calls[0]![0] as PercobaanTabel).gharqa).toEqual({ keputusan: 'terakhirMewarisi', harta: [] });
+  });
+});
+
+describe('GharqaLatihan: tangga bantuan dan isian tersimpan', () => {
+  const bantuan = { konteks: KONTEKS_KOSONG, xp: { bobot: 30, masihAda: false, hangus: false }, saatPetunjuk: vi.fn(), saatBukaKolom: vi.fn() };
+  const tampilkanDenganBantuan = () => render(<GharqaLatihan soal={soalDari('tidakDiketahui')} namaDari={id => id} jangkar={[null, null]} terbuka={false}
+    saatPercobaan={saatPercobaan} bantuan={bantuan} kodeSoal="H-GH" revisiSoal="rev-1" />);
+
+  it('langkah keputusan tanpa bantuan: tidak ada Lihat jawaban, tautan bantuan hanya di tabel harta', () => {
+    tampilkanDenganBantuan();
+    expect(screen.queryByRole('button', { name: 'Lihat jawaban' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Tidak saling mewarisi' }));
+    expect(screen.queryByRole('button', { name: 'Butuh petunjuk?' })).toBeNull();
+    const harta = screen.getAllByRole('combobox')[0]!;
+    fireEvent.change(harta, { target: { value: 'Terhalang' } });
+    const periksa = screen.getAllByRole('button', { name: 'Periksa' })[0]!;
+    fireEvent.click(periksa); fireEvent.click(periksa);
+    expect(screen.getAllByRole('button', { name: 'Butuh petunjuk?' })).toHaveLength(1);
+  });
+
+  it('isian tiap tabel harta tersimpan per soal dan harta', () => {
+    tampilkanDenganBantuan();
+    fireEvent.click(screen.getByRole('button', { name: 'Tidak saling mewarisi' }));
+    fireEvent.change(screen.getAllByRole('combobox')[0]!, { target: { value: 'Terhalang' } });
+    expect(Object.keys(bacaIsianSoal('H-GH:ZAID')?.isian.sel ?? {})).not.toHaveLength(0);
+    expect(bacaIsianSoal('H-GH:AMR')).toBeNull();
   });
 });

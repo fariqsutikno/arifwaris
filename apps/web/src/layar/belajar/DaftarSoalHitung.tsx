@@ -9,6 +9,8 @@ import { daftarSoalHitung } from '../../konten/sumber';
 import type { Kasus } from '../../kasus';
 import { bacaSemuaIsianSoal, hitungTerisi, type IsianSoal } from '../../isianSoal';
 import { bacaProgresLatihan } from '../../progres';
+import { bacaSemuaBantuanSoal } from '../../bantuanSoal';
+import type { PredikatSoal } from '../../tanggaBantuan';
 import { Ikon } from '../../ui/Ikon';
 import { angka, t } from '../../terjemah';
 import { TEKS_TINGKAT } from '../AwalHitung';
@@ -27,6 +29,7 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
   const semua = urutanSoalHitung(daftarSoalHitung());
   const catatan = bacaProgresLatihan('hitung');
   const isianTersimpan = bacaSemuaIsianSoal();
+  const bantuanTersimpan = bacaSemuaBantuanSoal();
   const statusDari = (soal: SoalHitung) => statusSoal(catatan[soal.kode], isianTersimpan[soal.kode]);
   const terputus = soalTerputus(semua, catatan, isianTersimpan)[0];
   const berikutnya = semua.find(soal => !catatan[soal.kode]);
@@ -96,7 +99,7 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
               <div id={`bab-soal-${bab}`}>
                 <ul className="daftar-polos daftar-soal-baru">
                   {terlihat.slice(0, batas).map(soal => (
-                    <BarisSoal key={soal.kode} soal={soal} status={statusDari(soal)} isian={isianTersimpan[soal.kode]} disarankan={soal.kode === berikutnya?.kode}
+                    <BarisSoal key={soal.kode} soal={soal} status={statusDari(soal)} isian={isianTersimpan[soal.kode]} predikat={bantuanTersimpan[soal.kode]?.predikat} disarankan={soal.kode === berikutnya?.kode}
                       kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} />
                   ))}
                 </ul>
@@ -117,11 +120,13 @@ export function DaftarSoalHitung({ kasusSekarang, saatKerjakan }: Props) {
   );
 }
 
-interface BarisProps { soal: SoalHitung; status: StatusSoal; isian: IsianSoal | undefined; disarankan: boolean; kasusSekarang: Kasus | null; saatKerjakan: (soal: SoalHitung) => void }
+interface BarisProps { soal: SoalHitung; status: StatusSoal; isian: IsianSoal | undefined; predikat: PredikatSoal | undefined; disarankan: boolean; kasusSekarang: Kasus | null; saatKerjakan: (soal: SoalHitung) => void }
 
-function BarisSoal({ soal, status, isian, disarankan, kasusSekarang, saatKerjakan }: BarisProps) {
+function BarisSoal({ soal, status, isian, predikat, disarankan, kasusSekarang, saatKerjakan }: BarisProps) {
   const selesai = soalSelesai(status);
-  const keterangan = keteranganStatus(status, isian);
+  const keterangan = keteranganStatus(status, isian, predikat);
+  // Soal yang selesai dengan bantuan diajak diulang; jawaban yang dibuka lewat "Lihat jawaban" lama (tanpa predikat) juga.
+  const layakDiulang = selesai && (predikat ? predikat !== 'mandiri' : status === 'lihatJawaban');
   return (
     <li className={['baris-soal-baru', selesai && 'selesai', status === 'terputus' && 'terputus', disarankan && 'disarankan'].filter(Boolean).join(' ')}>
       <span className={`status-soal-baru status-${status}`} role="img" aria-label={keterangan ?? t('latihan.belum_dikerjakan')}
@@ -135,6 +140,7 @@ function BarisSoal({ soal, status, isian, disarankan, kasusSekarang, saatKerjaka
           <span className={`tingkat tingkat-${soal.tingkat}`}>{TEKS_TINGKAT()[soal.tingkat]}</span>
           {selesai && <> · {soal.topik}</>}
           {keterangan && <> · <span className={status === 'terputus' ? 'ket-terputus' : undefined}>{keterangan}</span></>}
+          {layakDiulang && <> · <span className="penanda-ulang">{t('latihan.layak_diulang')}</span></>}
           {disarankan && <> · <span className="penanda-berikutnya">{t('latihan.soal_berikutnya_untukmu')}</span></>}
         </span>
       </div>
@@ -145,9 +151,9 @@ function BarisSoal({ soal, status, isian, disarankan, kasusSekarang, saatKerjaka
   );
 }
 
-function keteranganStatus(status: StatusSoal, isian: IsianSoal | undefined): string | null {
+function keteranganStatus(status: StatusSoal, isian: IsianSoal | undefined, predikat: PredikatSoal | undefined): string | null {
   if (status === 'terputus' && isian) return t('latihan.terputus_isian', { terisi: angka(String(hitungTerisi(isian.isian))), total: angka(String(isian.jumlahKotak)) });
-  if (status === 'benar') return t('latihan.sudah_benar');
-  if (status === 'lihatJawaban') return t('latihan.sudah_lihat_jawaban');
-  return null;
+  if (status !== 'benar' && status !== 'lihatJawaban') return null;
+  if (predikat) return t(`latihan.keterangan_${predikat === 'dibuka' ? 'dibuka' : predikat}`);
+  return status === 'benar' ? t('latihan.sudah_benar') : t('latihan.sudah_lihat_jawaban');
 }

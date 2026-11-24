@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { tambahAhliWaris } from '../checklist';
@@ -6,6 +6,7 @@ import { kasusBaru, type Kasus } from '../kasus';
 import type { Aksi } from '../keadaan';
 import type { Tujuan } from '../preferensi';
 import { Hasil } from '../layar/Hasil';
+import { bukaSemuaKolomLewatTangga } from './bukaTangga';
 
 const tidakDidukung = vi.hoisted(() => ({ aktif: false }));
 vi.mock('@waris/latihan', async importAsli => {
@@ -98,11 +99,7 @@ describe('panel Kata madzhab lain (mode Belajar)', () => {
   it('tampil di Belajar setelah jawaban dibuka: baris orang yang berbeda, judul kolom mengganti madzhab aktif', () => {
     tidakDidukung.aktif = false;
     render(<Uji awal={musyarrakah()} tujuan="belajar" />);
-    fireEvent.click(screen.getByRole('button', { name: /lihat jawaban/i }));
-    vi.useFakeTimers();
-    fireEvent.pointerDown(within(screen.getByRole('alertdialog')).getByRole('button', { name: /Tahan untuk buka/ }));
-    act(() => { vi.advanceTimersByTime(1300); });
-    vi.useRealTimers();
+    bukaSemuaKolomLewatTangga();
     const panel = screen.getByRole('region', { name: 'Kata madzhab lain' });
     expect(within(panel).getAllByText(/satu ibu/).length).toBeGreaterThan(0);
     expect(within(panel).getByText(/sumber sekunder/)).toBeTruthy();

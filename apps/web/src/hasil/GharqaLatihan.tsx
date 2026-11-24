@@ -2,12 +2,13 @@
 //   Menerima: SoalGharqa dari @waris/latihan, jangkar tiap tabel (dipilih Hasil), aksi ke kartu induk.
 //   Memutuskan: keputusan dinilai dulu; tabel baru muncul bila keputusan benar dan harta ada (ditahan: tanpa angka).
 //   Menyerahkan: SATU rangkaian percobaan ke Hasil: benarSemua hanya bila keputusan dan semua tabel benar (XP sekali).
+//   Tangga bantuan hanya di tabel harta; langkah keputusan (3 pilihan) tetap tanpa bantuan. Isian tiap tabel harta tersimpan per soal.
 
 import { useRef, useState } from 'react';
-import { Ikon } from '../ui/Ikon';
 import { t } from '../terjemah';
 import type { IsianGharqa, IsianTabel, Jangkar, KeputusanGharqa, PercobaanTabel, SoalGharqa } from '@waris/latihan';
-import { TabelLatihan, Tebal } from './TabelLatihan';
+import { TabelLatihan, type BantuanTabel } from './TabelLatihan';
+import { Tebal } from './Tebal';
 
 const PILIHAN_KEPUTUSAN: KeputusanGharqa[] = ['terakhirMewarisi', 'tidakSalingMewarisi', 'ditahan'];
 const KOSONG: IsianTabel = { kepala: {}, sel: {} };
@@ -16,10 +17,14 @@ interface Props {
   soal: SoalGharqa;
   namaDari: (id: string) => string;
   jangkar: Array<Jangkar | null>;
-  /** Jawaban sudah dibuka (dialog tahan di Hasil) atau soal sudah benar seluruhnya. */
+  /** Soal sudah selesai (benar seluruhnya atau kolom-kolomnya dibuka). */
   terbuka: boolean;
   saatPercobaan: (percobaan: PercobaanTabel) => void;
-  saatLihatJawaban: (isian: IsianTabel) => void;
+  bantuan?: BantuanTabel | undefined;
+  /** Isian tiap tabel harta tersimpan di `${kodeSoal}:${mayit}`; Kosongkan memulai percobaan baru (induk mengacak jangkar). */
+  kodeSoal?: string | undefined;
+  revisiSoal?: string | undefined;
+  saatKosongkan?: (() => void) | undefined;
 }
 
 const labelKeputusan = (keputusan: KeputusanGharqa) => ({
@@ -28,7 +33,7 @@ const labelKeputusan = (keputusan: KeputusanGharqa) => ({
   ditahan: t('hitung.gharqa.ditahan_sampai_jelas'),
 })[keputusan];
 
-export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan, saatLihatJawaban }: Props) {
+export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan, bantuan, kodeSoal, revisiSoal, saatKosongkan }: Props) {
   const [dipilih, setDipilih] = useState<KeputusanGharqa | null>(null);
   const hartaBenar = useRef(new Map<string, boolean>());
   // Isian terakhir tiap harta: server menilai keputusan dan semua tabel dari satu kiriman.
@@ -69,7 +74,6 @@ export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan,
         {!terbuka && !(keputusanBenar && dipilih) && (
           <div className="aksi-tabel">
             <button type="button" className="tautan-aksi" onClick={kosongkan}>{t('hitung.kosongkan')}</button>
-            <button type="button" className="tautan-aksi tautan-bahaya" onClick={() => saatLihatJawaban(KOSONG)}><Ikon nama="mata" ukuran={18} />{t('hitung.lihat_jawaban')}</button>
           </div>
         )}
       </section>
@@ -81,7 +85,8 @@ export function GharqaLatihan({ soal, namaDari, jangkar, terbuka, saatPercobaan,
         <div key={harta.mayit} className="tata-tabel-latihan">
           <h3 className="judul-panel">{t('hitung.gharqa.harta_nama', { nama: namaDari(harta.mayit) })}</h3>
           <TabelLatihan tabel={harta.tabel} namaDari={namaDari} mode="latihan" jangkar={jangkar[indeks] ?? null} terbuka={terbuka} tanpaCara={indeks > 0}
-            saatLihatJawaban={saatLihatJawaban} saatPercobaan={saatPercobaanHarta(harta.mayit)} />
+            bantuan={bantuan} kodeSoal={kodeSoal ? `${kodeSoal}:${harta.mayit}` : undefined} revisiSoal={revisiSoal} saatKosongkan={saatKosongkan}
+            saatPercobaan={saatPercobaanHarta(harta.mayit)} />
         </div>
       ))}
     </div>

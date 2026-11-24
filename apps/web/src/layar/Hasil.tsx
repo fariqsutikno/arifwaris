@@ -12,7 +12,7 @@ import type { RepositoriBagikan } from '@waris/data';
 import { acakDariBenih } from '../acakBerbenih';
 import { keJson, type Kasus } from '../kasus';
 import { TOTAL_LANGKAH, type Aksi } from '../keadaan';
-import { jalankan, jenisSoalDari, nilaiSemuaKolom, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type IsianTabel, type KejadianPercobaan, type PercobaanTabel } from '@waris/latihan';
+import { jalankan, jenisSoalDari, konteksDariTampil, namaKasusDariJejak, pilihJangkar, susunSoalGharqa, susunTabelSoal, type HasilOk, type IdSoal, type KejadianPercobaan, type NamaKasus, type PercobaanTabel } from '@waris/latihan';
 import { catatPercobaan, ringkasKunciTabel } from '../percobaan';
 import { VERSI_ENGINE } from '../versi';
 import { useBahasa, type Tujuan } from '../preferensi';
@@ -63,6 +63,10 @@ import { Tombol } from '../ui/komponen';
 import { DialogKonfirmasi } from '../ui/Dialog';
 import { tautanLatihan } from '../rute';
 import { bacaPercobaanSoal, hapusIsianSoal, naikkanPercobaanSoal } from '../isianSoal';
+import { bacaBantuanSoal, catatPredikatSoal, tandaiXpHangus } from '../bantuanSoal';
+import { predikatDari, semuaKolomTabel, type PredikatSoal } from '../tanggaBantuan';
+import { PenutupSoal } from '../hasil/PenutupSoal';
+import type { BantuanTabel } from '../hasil/TabelLatihan';
 import { bacaProgresLatihan } from '../progres';
 import { Ikon } from '../ui/Ikon';
 import { KonfirmasiKasusBaru } from './KonfirmasiKasusBaru';
@@ -80,7 +84,7 @@ interface Props {
    */
   saatDikerjakan?: ((benar: boolean) => void) | undefined;
   /** Soal latihan yang dikerjakan (bukan kasus sendiri): tiap aksi pelajar dicatat sebagai kejadian percobaan. */
-  soal?: { id: IdSoal; revisiId: string } | undefined;
+  soal?: { id: IdSoal; revisiId: string; /** Bobot XP soal ini, untuk penanda XP di kepala tabel. */ bobotXp: number } | undefined;
   /** Kasus dari latihan/materi di mode belajar: data kasus tidak bisa diubah atau di-reset supaya fokus. */
   terkunci?: boolean | undefined;
   /** Tampilan penerima tautan: tanpa ubah data, reset, bagikan, dan pindah tujuan. */
@@ -180,14 +184,22 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const [jawabanTerbuka, setJawabanTerbuka] = useState(!adalahBelajar);
   useEffect(() => { setJawabanTerbuka(!adalahBelajar); }, [adalahBelajar]);
   const sedangMenebak = adalahBelajar && !jawabanTerbuka;
-  const [sudahMencoba, setSudahMencoba] = useState(false);
-  // Lihat jawaban selalu tercatat (T4), walau belum pernah mencoba; XP/penanda dikerjakan tetap hanya bila sudah mencoba.
-  const bukaJawaban = () => { catatLihatJawaban(); if (soal) hapusIsianSoal(soal.id); setJawabanTerbuka(true); if (sudahMencoba) saatDikerjakan?.(false); };
+  // Bantuan yang dipakai pada percobaan ini; direset saat Kosongkan. XP hangus bertahan lintas percobaan (jejak lokal + server).
+  const bantuanPercobaan = useRef({ petunjuk: false, dibuka: 0 });
+  const [xpHangus, setXpHangus] = useState(() => !!soal && bacaBantuanSoal(soal.id).xpHangus);
+  const [penutup, setPenutup] = useState<{ predikat: PredikatSoal; kolomMandiri: number; kolomTotal: number; namaKasus: NamaKasus[] } | null>(null);
   const [tebakanBenar, setTebakanBenar] = useState(false);
-  const jawabBenar = () => { if (soal) hapusIsianSoal(soal.id); setTebakanBenar(true); setJawabanTerbuka(true); saatDikerjakan?.(true); };
-  // Membuka jawaban saat masih menebak (Lihat jawaban, atau pindah ke Hitung kasus) sengaja dibuat berat:
-  // lewat dialog dengan tombol tekan-tahan.
-  const [konfirmasiBuka, setKonfirmasiBuka] = useState<'lihat' | null>(null);
+  // Soal selesai: benar sendiri, dengan petunjuk, atau dengan kolom dibuka (tanpa XP). Kolom dibuka tidak dihitung "benar" di progres.
+  const selesaiSoal = () => {
+    const { petunjuk, dibuka } = bantuanPercobaan.current;
+    const predikat = predikatDari({ petunjuk, dibuka: dibuka > 0 });
+    const kolomTotal = tabelSoal ? semuaKolomTabel(tabelSoal).length : soalGharqa?.harta.reduce((jumlah, harta) => jumlah + semuaKolomTabel(harta.tabel).length, 0) ?? 0;
+    if (soal) { hapusIsianSoal(soal.id); soalGharqa?.harta.forEach(harta => hapusIsianSoal(`${soal.id}:${harta.mayit}`)); catatPredikatSoal(soal.id, predikat); }
+    setPenutup({ predikat, kolomMandiri: Math.max(kolomTotal - dibuka, 0), kolomTotal, namaKasus: tampil.jenis === 'biasa' && tampil.hasil.status === 'OK' ? namaKasusDariJejak(tampil.hasil.jejak) : [] });
+    setTebakanBenar(dibuka === 0);
+    setJawabanTerbuka(true);
+    saatDikerjakan?.(dibuka === 0);
+  };
   const [sembunyiManual, setSembunyiManual] = useState(false);
   // Susunan cepat belum punya harta: rupiah tersembunyi sampai "Ubah harta" diisi, jadi tidak tampil "Rp 0".
   const hartaKosong = kasus.tirkah.kotor <= 0n;
@@ -270,6 +282,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     naikkanPercobaanSoal(soal.id);
     setKosongkanKe(n => n + 1);
     sesiSoal.current = { id: crypto.randomUUID(), mulai: Date.now() };
+    bantuanPercobaan.current = { petunjuk: false, dibuka: 0 };
     catat('buka');
   };
   // ── Kejadian percobaan (S4): satu sesi per soal yang dibuka; Periksa berulang berbagi id sesi.
@@ -277,8 +290,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const sesiSoal = useRef({ id: crypto.randomUUID(), mulai: waktuHitung });
   const kunciTabel = useRef('');
   const sudahDibuka = useRef(false);
-  const isianTerakhir = useRef<IsianTabel | null>(null);
-  const catat = (aksi: KejadianPercobaan['aksi'], bagian: Partial<Pick<KejadianPercobaan, 'isian' | 'jangkar' | 'hasilKolom' | 'benarSemua'>> = {}) => {
+  const catat = (aksi: KejadianPercobaan['aksi'], bagian: Partial<Pick<KejadianPercobaan, 'isian' | 'jangkar' | 'hasilKolom' | 'benarSemua' | 'bantuan'>> = {}) => {
     if (!soal) return;
     catatPercobaan({
       id: crypto.randomUUID(), idSesiSoal: sesiSoal.current.id, soalId: soal.id, revisiSoal: soal.revisiId, jenisSoal: jenisSoalDari(kasus, tampil),
@@ -289,12 +301,18 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       ...bagian,
     });
   };
-  const catatLihatJawaban = () => {
-    const isian = isianTerakhir.current;
-    // Gharqa: lihat jawaban tanpa isian; server tidak menilai apa pun, hanya membakar XP.
-    if (soalGharqa) return catat('lihatJawaban');
-    catat('lihatJawaban', { isian, jangkar: jangkarSoal, hasilKolom: isian && tabelSoal ? nilaiSemuaKolom(tabelSoal, isian, jangkarSoal) : null });
-  };
+  // Tangga bantuan: server menghitung XP dari kejadian ini (petunjuk melepas bonus, buka kolom menghanguskan XP soal).
+  // Tanpa `soal` (kasus sendiri di mode belajar) tidak ada XP yang dipertaruhkan: tangga tetap ada, tanpa dialog hangus dan penanda XP.
+  const bantuanTabel: BantuanTabel | undefined = adaTabelSoal ? {
+    konteks: konteksDariTampil(tampil),
+    xp: { bobot: soal?.bobotXp ?? 0, masihAda: !!soal && !bacaProgresLatihan('hitung')[soal.id], hangus: xpHangus },
+    saatPetunjuk: (idKolom, tingkat) => { bantuanPercobaan.current.petunjuk = true; catat('petunjuk', { bantuan: { idKolom, tingkat } }); },
+    saatBukaKolom: idKolom => {
+      bantuanPercobaan.current.dibuka += 1;
+      if (soal) { tandaiXpHangus(soal.id); setXpHangus(true); }
+      catat('bukaKolom', { bantuan: { idKolom } });
+    },
+  } : undefined;
   // 'buka' dicatat sekali, sesudah hash kunci tabel siap supaya versi.kunci terisi.
   useEffect(() => {
     if (!soal || !adalahBelajar || sudahDibuka.current) return;
@@ -306,10 +324,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     return () => { batal = true; };
   }, [soal?.id, adalahBelajar, tabelSoal]); // eslint-disable-line react-hooks/exhaustive-deps
   const saatPercobaanTabel = (percobaan: PercobaanTabel) => {
-    isianTerakhir.current = percobaan.isian;
-    setSudahMencoba(true);
     catat(percobaan.aksi, { ...(percobaan.gharqa ? { gharqa: percobaan.gharqa } : { isian: percobaan.isian, jangkar: percobaan.jangkar }), hasilKolom: percobaan.hasilKolom, benarSemua: percobaan.benarSemua });
-    if (percobaan.benarSemua) jawabBenar();
+    if (percobaan.benarSemua) selesaiSoal();
   };
   const hasilMunasakhat = tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK' ? tampil.hasil : null;
   const { linimasa, babakLinimasa } = useMemo((): { linimasa: Linimasa | null; babakLinimasa: PeragaBabak[] | null } => {
@@ -422,9 +438,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
       {/* Bento (acuan-hasil-final.html): daftar + kolom info → pohon & tabel → bagikan · selanjutnya · pelajari.
           Ubin yang tidak ada isinya untuk kasus ini tidak dirender. HP: satu kolom, urutan = urutan DOM. */}
       <div className="tata-hasil">
-        {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka}
-          saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
-        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} revisiSoal={soal?.revisiId} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} saatKosongkan={saatKosongkanTabel} saatLihatJawaban={isian => { isianTerakhir.current = isian; setKonfirmasiBuka('lihat'); }} saatPercobaan={saatPercobaanTabel} />}
+        {soalGharqa && <GharqaLatihan soal={soalGharqa} namaDari={namaTabel} jangkar={jangkarGharqa} terbuka={jawabanTerbuka} bantuan={bantuanTabel}
+          kodeSoal={soal?.id} revisiSoal={soal?.revisiId} saatKosongkan={saatKosongkanTabel} saatPercobaan={saatPercobaanTabel} />}
+        {tabelSoal && <TabelLatihan kodeSoal={soal?.id} revisiSoal={soal?.revisiId} tabel={tabelSoal} namaDari={namaTabel} mode="latihan" jangkar={jangkarSoal} terbuka={jawabanTerbuka} bantuan={bantuanTabel} saatKosongkan={saatKosongkanTabel} saatPercobaan={saatPercobaanTabel} />}
         {adaTabelSoal && urutanLatihan && jawabanTerbuka && (
           <div className="aksi-soal-berikutnya">
             {urutanLatihan.saatBerikutnya
@@ -439,6 +455,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
           : <KartuPembagian ringkasan={ringkasan} pengaturan={pengaturan} saatUbahPengaturan={setPengaturan} adalahBelajar={adalahBelajar}
             sembunyiNominal={sembunyiNominal} saatSembunyi={hartaKosong && bolehUbah ? () => setUbahHartaTerbuka(true) : () => setSembunyiNominal(!sembunyiNominal)} hartaKosong={hartaKosong && bolehUbah}
             tebakanBenar={tebakanBenar}
+            penutup={penutup && <PenutupSoal {...penutup} />}
             tampilPembulatan={tampilPembulatan} satuanPembulatan={kasus.satuanPembulatan}
             saatUbahPembulatan={satuan => kirim({ jenis: 'UBAH_KASUS', ubah: k => ({ ...k, satuanPembulatan: satuan }) })}
             idBerbeda={idBerbeda} saatPilihOrang={setOrangDipilih}
@@ -522,20 +539,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
         <ModalOrang id={orangDipilih} graf={kasus.graf} ringkasan={ringkasan} daftarBab={daftarBab} hasil={hasilBiasa} bentuk={pengaturan.bentuk}
           sedangMenebak={sedangMenebak} sembunyiNominal={sembunyiNominal} saatTutup={() => setOrangDipilih(null)}
           saatUbah={bolehUbah ? kunci => { setOrangDipilih(null); setKunciDiubah(kunci); } : undefined} />
-      )}
-      {konfirmasiBuka && (
-        <DialogKonfirmasi tahan
-          judul={t('hitung.yakin_mau_lihat_jawaban')}
-          labelBatal={t('hitung.coba_dulu')} labelLanjut={t('hitung.tahan_untuk_buka')}
-          saatBatal={() => setKonfirmasiBuka(null)}
-          saatLanjut={() => { setKonfirmasiBuka(null); bukaJawaban(); }}>
-          <ul className="poin-konfirmasi">
-            <li>{t('hitung.semua_jawaban_langsung_kebuka_kamu_nggak')}</li>
-            {!sudahMencoba && <li>{t('hitung.kamu_belum_nyoba_jawab_sama_sekali')}</li>}
-            {/* Server: lihat jawaban sebelum benar pertama = 0 XP selamanya (xp_soal_baru); yang sudah pernah benar tidak kehilangan apa-apa. */}
-            {saatDikerjakan && !(soal && bacaProgresLatihan('hitung')[soal.id]?.benar) && <li>{t('hitung.xp_soal_hangus_selamanya')}</li>}
-          </ul>
-        </DialogKonfirmasi>
       )}
       {layarPenuh && (
         <PohonLayarPenuh pohon={pohonLayarPenuh} zoomAwal={layarPenuh.zoom} legenda={<Legenda />} sembunyiNominal={sembunyiNominal}

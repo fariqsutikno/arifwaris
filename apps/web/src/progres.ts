@@ -5,6 +5,7 @@
 
 import type { ProgresBelajar, ProgresLatihan } from '@waris/data';
 import { antre } from './akun/antrean';
+import { hapusSemuaBantuanSoal } from './bantuanSoal';
 import { hapusSemuaIsianSoal } from './isianSoal';
 import { hapusMentah, bacaMentah, simpanMentah } from './penyimpanan';
 import { hapusAktivitas } from './preferensi';
@@ -91,6 +92,7 @@ export function resetProgresBelajar(): void {
   if (Object.keys(bacaObjek(KUNCI_LATIHAN)).length) antre({ tabel: 'hapus_latihan' });
   [KUNCI_BELAJAR, KUNCI_LATIHAN, KUNCI_SKOR_PAKET, KUNCI_REKOR_PAKET].forEach(kunci => simpanMentah(kunci, '{}'));
   hapusSemuaIsianSoal();
+  hapusSemuaBantuanSoal();
   hapusAktivitas();
 }
 

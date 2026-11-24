@@ -2,7 +2,8 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { hitung, hitungDzawilArham, hitungMunasakhat, hitungTaqdir, KONFIGURASI_BAWAAN, type GrafKeluarga, type InputEngine, type Orang } from '@waris/engine';
 import { TabelLatihan } from './TabelLatihan';
-import { pilihJangkar, susunTabelSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
+import { KONTEKS_KOSONG, pilihJangkar, susunTabelSoal, type PercobaanTabel, type TabelSoal } from '@waris/latihan';
+import { naikiTanggaSampaiBukaKolom } from '../__tests__/bukaTangga';
 import { namaOrang } from '../format';
 
 const orang = (id: string, jenisKelamin: 'L' | 'P', lain: Partial<Orang> = {}): Orang => ({ id, jenisKelamin, statusHidup: 'hidup', agama: 'islam', ...lain });
@@ -21,11 +22,15 @@ const tabelTerhalang = tabelDari({ idPewaris: 'D', pernikahan: [], orang: {
   D: orang('D', 'L', { statusHidup: 'wafat', idAyah: 'A', idIbu: 'I' }), A: orang('A', 'L'), I: orang('I', 'P'),
   K: orang('K', 'L', { idAyah: 'A', idIbu: 'I' }) } });
 
-const saatPercobaan = vi.fn(), saatLihatJawaban = vi.fn();
+const saatPercobaan = vi.fn(), saatPetunjuk = vi.fn(), saatBukaKolom = vi.fn();
 const percobaanKe = (n: number) => saatPercobaan.mock.calls[n]![0] as PercobaanTabel;
 // Acak = 0 → jangkar = sel "Asal masalah" Istri (calon pertama): terisi 1.
 const tampilkan = (tabel = tabel161, terbuka = false) =>
-  render(<TabelLatihan tabel={tabel} mode="latihan" jangkar={pilihJangkar(tabel, () => 0)} terbuka={terbuka} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+  render(<TabelLatihan tabel={tabel} mode="latihan" jangkar={pilihJangkar(tabel, () => 0)} terbuka={terbuka} saatPercobaan={saatPercobaan} />);
+const tampilkanBantuan = (xp = { bobot: 20, masihAda: true, hangus: false }) =>
+  render(<TabelLatihan tabel={tabel161} mode="latihan" jangkar={pilihJangkar(tabel161, () => 0)} terbuka={false} saatPercobaan={saatPercobaan}
+    bantuan={{ konteks: KONTEKS_KOSONG, xp, saatPetunjuk, saatBukaKolom }} />);
+const umpanTeks = () => document.querySelector('.umpan-tabel')!.textContent;
 const pilih = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `Bagian ${nama}` }), { target: { value: nilai } });
 const ketik = (nama: string, nilai: string) => fireEvent.change(screen.getByRole('textbox', { name: nama }), { target: { value: nilai } });
 const kotak = (nama: string) => screen.getByRole('textbox', { name: nama }) as HTMLInputElement;
@@ -69,8 +74,10 @@ describe('TabelLatihan — soal biasa', () => {
     isiBenar();
     pilih('Istri', '1/4');
     periksa();
-    expect(screen.getByText('Mulai salah di kolom "Bagian". Kolom sesudahnya belum diperiksa.')).toBeTruthy();
+    expect(umpanTeks()).toBe('Kolom Bagian belum tepat semua.');
+    // Seluruh kolom merah, bukan hanya baris yang salah: baris yang benar tidak membocorkan di mana kesalahannya.
     expect(screen.getByRole('combobox', { name: 'Bagian Istri' }).closest('td')!.classList.contains('keliru')).toBe(true);
+    expect(screen.getByRole('combobox', { name: 'Bagian Anak laki-laki' }).closest('td')!.classList.contains('keliru')).toBe(true);
     expect(saatPercobaan).toHaveBeenCalledTimes(1);
     expect(percobaanKe(0).benarSemua).toBe(false);
     expect(percobaanKe(0).hasilKolom.map(kolom => kolom.status)).toEqual(['salah', 'benar', 'benar']); // semua kolom dinilai, bukan berhenti
@@ -89,23 +96,66 @@ describe('TabelLatihan — soal biasa', () => {
     pilih('Istri', '1/4');
     periksa();
     fireEvent.click(screen.getByRole('button', { name: 'Kosongkan' }));
-    expect(screen.queryByText(/Mulai salah/)).toBeNull();
+    expect(screen.queryByText(/belum tepat semua/)).toBeNull();
     expect(kotak('Asal masalah').value).toBe('');
     expect((screen.getByRole('combobox', { name: 'Bagian Istri' }) as HTMLSelectElement).value).toBe('');
     expect(screen.getByText('1')).toBeTruthy(); // jangkar tetap terisi
   });
 
-  it('Lihat jawaban memanggil dialog tahan milik kartu induk', () => {
-    tampilkan();
-    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
-    expect(saatLihatJawaban).toHaveBeenCalledTimes(1);
+  it('Lihat jawaban sudah tidak ada: bantuan datang sesudah dua usaha, bukan sejak awal', () => {
+    tampilkanBantuan();
+    expect(screen.queryByRole('button', { name: 'Lihat jawaban' })).toBeNull();
+    pilih('Istri', '1/4');
+    periksa();
+    expect(screen.queryByRole('button', { name: 'Butuh petunjuk?' })).toBeNull();
+    periksa();
+    expect(screen.getByRole('button', { name: 'Butuh petunjuk?' })).toBeTruthy();
   });
 
-  it('Lihat jawaban mengirim isian terakhir ke kartu induk', () => {
-    tampilkan();
-    pilih('Istri', '1/8');
-    fireEvent.click(screen.getByRole('button', { name: 'Lihat jawaban' }));
-    expect(saatLihatJawaban.mock.calls[0]![0]).toMatchObject({ sel: { W1: { bagian: '1/8' } } });
+  it('petunjuk 1 lalu 2 tercatat per kolom; kartu satu aksi berikutnya; jawaban kolom dibuka setelah mengetik hangus', () => {
+    tampilkanBantuan();
+    pilih('Istri', '1/4');
+    periksa(); periksa();
+    fireEvent.click(screen.getByRole('button', { name: 'Butuh petunjuk?' }));
+    expect(screen.getByRole('heading', { name: 'Petunjuk 1 dari 2 · kolom Bagian' })).toBeTruthy();
+    expect(saatPetunjuk).toHaveBeenLastCalledWith('bagian', 1);
+    expect(screen.queryByRole('button', { name: /Tunjukkan jawaban kolom/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Petunjuk berikutnya/ }));
+    expect(saatPetunjuk).toHaveBeenLastCalledWith('bagian', 2);
+    fireEvent.click(screen.getByRole('button', { name: 'Tunjukkan jawaban kolom Bagian' }));
+    const dialog = screen.getByRole('alertdialog');
+    const lanjut = within(dialog).getByRole('button', { name: 'Buka jawaban' }) as HTMLButtonElement;
+    expect(lanjut.disabled).toBe(true);
+    fireEvent.change(within(dialog).getByRole('textbox'), { target: { value: 'hangus' } });
+    fireEvent.click(lanjut);
+    expect(saatBukaKolom).toHaveBeenCalledWith('bagian');
+    expect(screen.queryByRole('combobox', { name: 'Bagian Istri' })).toBeNull(); // kolom dibuka tampil sebagai kunci
+    expect(screen.getByText('1/4').tagName).toBe('S'); // isian yang berbeda dicoret
+    expect(screen.getByText('1/8')).toBeTruthy();
+    expect(screen.getByRole('textbox', { name: 'Asal masalah bersama' })).toBeTruthy(); // kolom lain tetap bisa diisi
+    expect(screen.getByRole('button', { name: 'Butuh petunjuk?' })).toBeTruthy(); // tangga pindah ke kolom berikutnya tanpa syarat usaha
+  });
+
+  it('XP sudah didapat atau sudah hangus: buka kolom tanpa mengetik; Buka semua kolom menyelesaikan soal', () => {
+    tampilkanBantuan({ bobot: 20, masihAda: false, hangus: false });
+    pilih('Istri', '1/4');
+    periksa(); periksa();
+    naikiTanggaSampaiBukaKolom();
+    expect(screen.queryByRole('alertdialog')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Buka semua kolom' }));
+    expect(saatBukaKolom.mock.calls.map(panggilan => panggilan[0])).toEqual(['bagian', 'ashl', 'akhir']);
+    expect(percobaanKe(saatPercobaan.mock.calls.length - 1)).toMatchObject({ aksi: 'periksa', benarSemua: true });
+    expect(document.querySelector('.umpan-tabel.buka')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Periksa' })).toBeNull();
+  });
+
+  it('penanda XP: bonus utuh, lepas setelah petunjuk, hangus setelah kolom dibuka', () => {
+    tampilkanBantuan();
+    expect(screen.getByText('12 XP · +8 kalau tanpa petunjuk')).toBeTruthy();
+    pilih('Istri', '1/4');
+    periksa(); periksa();
+    fireEvent.click(screen.getByRole('button', { name: 'Butuh petunjuk?' }));
+    expect(screen.getByText('12 XP · bonus mandiri lepas')).toBeTruthy();
   });
 
   it('jangkar dari prop tidak berubah saat Kosongkan: percobaan sesudahnya membawa jangkar yang sama', () => {
@@ -127,7 +177,7 @@ describe('TabelLatihan — soal biasa', () => {
     const { rerender } = tampilkan();
     pilih('Istri', '1/4');
     ketik('Asal masalah', '8');
-    rerender(<TabelLatihan tabel={tabel161} mode="latihan" jangkar={pilihJangkar(tabel161, () => 0)} terbuka saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    rerender(<TabelLatihan tabel={tabel161} mode="latihan" jangkar={pilihJangkar(tabel161, () => 0)} terbuka saatPercobaan={saatPercobaan} />);
     expect(screen.getByText('Jawaban dibuka. Isianmu yang berbeda dicoret. Soal ini tidak memberi XP.')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Periksa' })).toBeNull();
     const barisIstri = screen.getByText('Istri', { selector: 'th' }).closest('tr')!;
@@ -187,7 +237,7 @@ describe('TabelLatihan — munasakhat', () => {
     pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' } });
   const susunan = susunTabelSoal(hasil, id => id);
   if ('status' in susunan) throw new Error(susunan.status);
-  const tampilkanMunasakhat = () => render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+  const tampilkanMunasakhat = () => render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} />);
   const isi = (pengaliKedua: string) => {
     fireEvent.change(screen.getByRole('combobox', { name: 'Bagian · B W' }), { target: { value: '1/3' } });
     fireEvent.change(screen.getByRole('combobox', { name: 'Bagian · B S' }), { target: { value: 'Ashabah' } });
@@ -231,7 +281,7 @@ describe('TabelLatihan — dzawil arham (tanzil)', () => {
   const pilihKe = (nama: string, kolom: string, nilai: string) => fireEvent.change(screen.getByRole('combobox', { name: `${kolom} ${nama}` }), { target: { value: nilai } });
 
   it('pilihan Didudukkan sebagai berasal dari soal; isi benar → Benar semua (sebapak Terhalang: saham otomatis 0)', () => {
-    render(<TabelLatihan tabel={susunan} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    render(<TabelLatihan tabel={susunan} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} />);
     const kotakKursi = screen.getByRole('combobox', { name: 'Didudukkan sebagai A1' });
     expect(within(kotakKursi).getAllByRole('option').map(opsi => (opsi as HTMLOptionElement).value).sort()).toEqual(['', 'SAUDARA_KANDUNG', 'SAUDARA_SEBAPAK', 'SAUDARA_SEIBU']);
     pilihKe('A1', 'Didudukkan sebagai', 'SAUDARA_KANDUNG'); pilihKe('A2', 'Didudukkan sebagai', 'SAUDARA_SEIBU'); pilihKe('A3', 'Didudukkan sebagai', 'SAUDARA_SEBAPAK');
@@ -250,7 +300,7 @@ describe('TabelLatihan — mafqud', () => {
   const hasil = hitungTaqdir({ graf, tirkah: { kotor: 0n, tajhiz: 0n, hutang: 0n, wasiat: 0n }, pembulatan: { satuan: 1n }, konfigurasi: KONFIGURASI_BAWAAN, ruleset: 'syafii', versiKb: 'uji' });
   const susunan = susunTabelSoal(hasil, id => id);
   if ('status' in susunan) throw new Error(susunan.status);
-  const tampilkanMafqud = () => render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+  const tampilkanMafqud = () => render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} />);
 
   it('judul kolom mengikuti mockup; baris Ditahan (mauquf) dan Pengali ada', () => {
     tampilkanMafqud();
@@ -285,7 +335,7 @@ describe('TabelLatihan — khuntsa', () => {
   if ('status' in susunan) throw new Error(susunan.status);
 
   it('judul kolom ia laki-laki / ia perempuan dan cara mengisi khusus khuntsa', () => {
-    render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} />);
     for (const judul of ['Bagian · ia laki-laki', 'Ia laki-laki', 'Bagian · ia perempuan', 'Ia perempuan']) expect(screen.getByText(judul)).toBeTruthy();
     expect(screen.getByText('ia laki-laki, ia perempuan.', { exact: false })).toBeTruthy();
   });
@@ -305,13 +355,13 @@ describe('TabelLatihan — haml [SYF]', () => {
   const susunan = susunDari('syafii');
 
   it('haml [HNB]: enam judul kemungkinan dan cara mengisi Hanbali', () => {
-    render(<TabelLatihan tabel={susunDari('hanbali')} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    render(<TabelLatihan tabel={susunDari('hanbali')} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} />);
     for (const judul of ['Bagian · janin wafat', '1 lk', '1 pr', '2 lk', '2 pr', 'Lk + pr']) expect(screen.getByText(judul)).toBeTruthy();
     expect(screen.getByText('enam kemungkinan', { exact: false })).toBeTruthy();
   });
 
   it('judul empat kemungkinan mengikuti mockup; cara mengisi haml', () => {
-    render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} saatLihatJawaban={saatLihatJawaban} />);
+    render(<TabelLatihan tabel={susunan} namaDari={id => id} mode="latihan" jangkar={null} terbuka={false} saatPercobaan={saatPercobaan} />);
     for (const judul of ['Bagian · janin wafat', 'Janin wafat', 'Laki-laki', '1 perempuan', 'Perempuan berbilang']) expect(screen.getByText(judul)).toBeTruthy();
     expect(screen.getByText('empat kemungkinan', { exact: false })).toBeTruthy();
   });

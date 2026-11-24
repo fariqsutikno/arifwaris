@@ -10,7 +10,7 @@ import { bacaPercobaanSoal } from '../isianSoal';
 // Jangkar tetap = sel "Asal masalah" Istri, supaya isian benar bisa diketik.
 vi.mock('../acakBerbenih', () => ({ acakDariBenih: () => () => 0 }));
 
-const SOAL = { id: 'H-01', revisiId: 'rev-1' };
+const SOAL = { id: 'H-01', revisiId: 'rev-1', bobotXp: 20 };
 const kasus = () => {
   const dasar = kasusBaru('L');
   const graf = ['ISTRI', 'ANAK_LK', 'ANAK_PR'].reduce((g, k) => tambahAhliWaris(g, 'PEWARIS', k as 'ISTRI'), dasar.graf);
