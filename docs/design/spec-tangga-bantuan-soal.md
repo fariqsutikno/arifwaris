@@ -3,6 +3,7 @@
 Menggantikan "Lihat jawaban" (dialog tahan, semua jawaban sekaligus) di soal latihan bertabel. Mode Ujian tidak berubah.
 Status: **konsep disetujui pemilik 2026-11-23**; mockup `mockup-tangga-bantuan.html` revisi 4; bagian 6 (peta diksi) revisi 7 menunggu persetujuan.
 Fase 2 (kode) selesai 2026-11-24: pemilih petunjuk di `packages/latihan`, migrasi `20261124000001_tangga_bantuan.sql`, tangga di `TabelLatihan`/`Hasil`/`GharqaLatihan`, 79 kunci diksi.
+Diverifikasi di browser 2026-11-25 (laptop dan 375 px, soal H-01/H-02): umpan per kolom, tautan setelah 2 usaha, petunjuk 1 dan 2, dialog "hangus", kolom dibuka dicoret, penutup soal, predikat "Layak diulang" di daftar. Belum terverifikasi: pemberian XP dasar/bonus di server (perlu login).
 Catatan fase 2: kunci diksi memakai snake_case (skrip diksi menolak huruf besar), `hitung.selesai.nama_kasus.*`; `tanzil.pembagian`/`tanzil.pasangan` (6.8) belum dibuat karena kolom tanzil tidak punya sel yang dipetakan; hitungan Periksa salah di layar hanya sesi ini (server menghitung lintas sesi); predikat daftar Latihan tersimpan di perangkat.
 
 ## 1. Masalah sekarang

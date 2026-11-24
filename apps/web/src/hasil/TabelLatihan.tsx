@@ -149,7 +149,7 @@ export function TabelLatihan({ tabel, mode, jangkar, saatPercobaan, terbuka, ban
       const nilai = putusanLatihan(hasilKolom);
       setHasil(nilai);
       saatPercobaan({ mode, aksi: 'periksa', isian: efektif, jangkar, hasilKolom, benarSemua: nilai.jenis === 'benar' });
-    }
+    } else setHasil(null); // umpan lama menunjuk kolom yang baru dibuka; seperti mengetik, umpan dibersihkan
   };
   // XP yang masih bisa hangus meminta konfirmasi mengetik sekali; sesudahnya (atau bila XP sudah didapat) langsung buka.
   const mintaBuka = (target: string | 'semua') => {
