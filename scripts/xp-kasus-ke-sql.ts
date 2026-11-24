@@ -19,8 +19,9 @@ kasus.forEach((k, i) => {
     const hasil = total === undefined ? 'null'
       : `'${JSON.stringify(Array.from({ length: total }, (_, n) => ({ status: n < (e.kolomBenar ?? 0) ? 'benar' : 'salah' })))}'::jsonb`;
     const benarSemua = total === undefined ? (e.benar === undefined ? 'null' : String(e.benar)) : String(e.kolomBenar === total);
-    baris.push(`insert into percobaan_soal (id, user_id, id_sesi_soal, soal_id, revisi_soal, jenis_soal, mode, aksi, hasil_kolom, benar_semua, diterima_pada, versi)
-  values (${uuid(3, i * 100 + j + 1)}, ${USER}, ${uuid(4, i * 100 + (e.mode === 'ujian' && e.aksi === 'kirim' ? j + 1 : 0) + 1)}, 'X-${i + 1}', ${revisi}, 'biasa', '${e.mode}', '${snake(e.aksi)}', ${hasil}, ${benarSemua}, timestamptz '2026-11-01 10:00+00' + interval '${j + 1} minute', '{}');`);
+    const bantuan = e.aksi === 'petunjuk' ? `'{"idKolom":"bagian","tingkat":1}'::jsonb` : e.aksi === 'bukaKolom' ? `'{"idKolom":"bagian"}'::jsonb` : 'null';
+    baris.push(`insert into percobaan_soal (id, user_id, id_sesi_soal, soal_id, revisi_soal, jenis_soal, mode, aksi, hasil_kolom, benar_semua, diterima_pada, versi, bantuan)
+  values (${uuid(3, i * 100 + j + 1)}, ${USER}, ${uuid(4, i * 100 + (e.mode === 'ujian' && e.aksi === 'kirim' ? j + 1 : 0) + 1)}, 'X-${i + 1}', ${revisi}, 'biasa', '${e.mode}', '${snake(e.aksi)}', ${hasil}, ${benarSemua}, timestamptz '2026-11-01 10:00+00' + interval '${j + 1} minute', '{}', ${bantuan});`);
   });
   baris.push(`select is(coalesce((select sum(xp) from xp_soal_baru(${USER}) where soal_id = 'X-${i + 1}'), 0)::int, ${k.xp}, '${k.nama.replace(/'/g, "''")}');`);
 });

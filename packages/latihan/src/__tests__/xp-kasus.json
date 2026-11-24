@@ -1,21 +1,375 @@
 [
-  { "nama": "benar pertama setelah satu salah", "bobot": 10, "kejadian": [
-    { "aksi": "periksa", "mode": "latihan", "benar": false }, { "aksi": "periksa", "mode": "latihan", "benar": true } ], "xp": 10 },
-  { "nama": "lihat jawaban sebelum benar = 0 selamanya", "bobot": 10, "kejadian": [
-    { "aksi": "periksa", "mode": "latihan", "benar": false }, { "aksi": "lihatJawaban", "mode": "latihan", "benar": false }, { "aksi": "periksa", "mode": "latihan", "benar": true } ], "xp": 0 },
-  { "nama": "lihat jawaban sesudah benar tidak mencabut", "bobot": 10, "kejadian": [
-    { "aksi": "periksa", "mode": "latihan", "benar": true }, { "aksi": "lihatJawaban", "mode": "latihan", "benar": false } ], "xp": 10 },
-  { "nama": "ulang soal yang sudah benar = 0 tambahan", "bobot": 20, "kejadian": [
-    { "aksi": "periksa", "mode": "latihan", "benar": true }, { "aksi": "periksa", "mode": "latihan", "benar": true } ], "xp": 20 },
-  { "nama": "hanya buka = 0", "bobot": 10, "kejadian": [ { "aksi": "buka", "mode": "latihan", "benar": false } ], "xp": 0 },
-  { "nama": "Ujian parsial lalu Latihan benar menambah sisa", "bobot": 40, "kejadian": [
-    { "aksi": "kirim", "mode": "ujian", "kolomBenar": 2, "kolomTotal": 4 }, { "aksi": "periksa", "mode": "latihan", "benar": true } ], "xp": 40 },
-  { "nama": "Ujian parsial lalu lihat jawaban membakar sisa", "bobot": 40, "kejadian": [
-    { "aksi": "kirim", "mode": "ujian", "kolomBenar": 1, "kolomTotal": 4 }, { "aksi": "lihatJawaban", "mode": "ujian", "benar": false }, { "aksi": "periksa", "mode": "latihan", "benar": true } ], "xp": 10 },
-  { "nama": "Ujian ulang parsial tidak menaikkan XP", "bobot": 40, "kejadian": [
-    { "aksi": "kirim", "mode": "ujian", "kolomBenar": 2, "kolomTotal": 4 }, { "aksi": "kirim", "mode": "ujian", "kolomBenar": 3, "kolomTotal": 4 } ], "xp": 20 },
-  { "nama": "lihat jawaban sebelum Kirim Ujian = 0", "bobot": 30, "kejadian": [
-    { "aksi": "lihatJawaban", "mode": "latihan", "benar": false }, { "aksi": "kirim", "mode": "ujian", "kolomBenar": 4, "kolomTotal": 4 } ], "xp": 0 },
-  { "nama": "Ujian benar penuh langsung memberi bobot penuh", "bobot": 30, "kejadian": [
-    { "aksi": "kirim", "mode": "ujian", "kolomBenar": 4, "kolomTotal": 4 } ], "xp": 30 }
+  {
+    "nama": "benar pertama setelah satu salah",
+    "bobot": 10,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 10
+  },
+  {
+    "nama": "lihat jawaban sebelum benar = 0 selamanya",
+    "bobot": 10,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "lihatJawaban",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 0
+  },
+  {
+    "nama": "lihat jawaban sesudah benar tidak mencabut",
+    "bobot": 10,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      },
+      {
+        "aksi": "lihatJawaban",
+        "mode": "latihan",
+        "benar": false
+      }
+    ],
+    "xp": 10
+  },
+  {
+    "nama": "ulang soal yang sudah benar = 0 tambahan",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 20
+  },
+  {
+    "nama": "hanya buka = 0",
+    "bobot": 10,
+    "kejadian": [
+      {
+        "aksi": "buka",
+        "mode": "latihan",
+        "benar": false
+      }
+    ],
+    "xp": 0
+  },
+  {
+    "nama": "Ujian parsial lalu Latihan benar menambah sisa",
+    "bobot": 40,
+    "kejadian": [
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 2,
+        "kolomTotal": 4
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 40
+  },
+  {
+    "nama": "Ujian parsial lalu lihat jawaban membakar sisa",
+    "bobot": 40,
+    "kejadian": [
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 1,
+        "kolomTotal": 4
+      },
+      {
+        "aksi": "lihatJawaban",
+        "mode": "ujian",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 10
+  },
+  {
+    "nama": "Ujian ulang parsial tidak menaikkan XP",
+    "bobot": 40,
+    "kejadian": [
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 2,
+        "kolomTotal": 4
+      },
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 3,
+        "kolomTotal": 4
+      }
+    ],
+    "xp": 20
+  },
+  {
+    "nama": "lihat jawaban sebelum Kirim Ujian = 0",
+    "bobot": 30,
+    "kejadian": [
+      {
+        "aksi": "lihatJawaban",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 4,
+        "kolomTotal": 4
+      }
+    ],
+    "xp": 0
+  },
+  {
+    "nama": "Ujian benar penuh langsung memberi bobot penuh",
+    "bobot": 30,
+    "kejadian": [
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 4,
+        "kolomTotal": 4
+      }
+    ],
+    "xp": 30
+  },
+  {
+    "nama": "benar tanpa bantuan = dasar + bonus mandiri",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 20
+  },
+  {
+    "nama": "tiga Periksa salah masih mandiri",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 20
+  },
+  {
+    "nama": "empat Periksa salah melepas bonus, dasar tetap",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": false
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 12
+  },
+  {
+    "nama": "petunjuk melepas bonus tanpa potongan lain",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 12
+  },
+  {
+    "nama": "petunjuk berapa pun sama dengan satu",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 12
+  },
+  {
+    "nama": "buka kolom sebelum benar = 0 selamanya",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "bukaKolom",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 0
+  },
+  {
+    "nama": "buka kolom sesudah benar tidak mencabut",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      },
+      {
+        "aksi": "bukaKolom",
+        "mode": "latihan"
+      }
+    ],
+    "xp": 20
+  },
+  {
+    "nama": "bobot ganjil: dasar dibulatkan ke bawah, bonus sisanya",
+    "bobot": 15,
+    "kejadian": [
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 9
+  },
+  {
+    "nama": "petunjuk sesudah benar tidak mengubah",
+    "bobot": 20,
+    "kejadian": [
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      },
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      }
+    ],
+    "xp": 20
+  },
+  {
+    "nama": "Ujian parsial lalu Latihan benar dengan petunjuk: total ke dasar",
+    "bobot": 40,
+    "kejadian": [
+      {
+        "aksi": "kirim",
+        "mode": "ujian",
+        "kolomBenar": 1,
+        "kolomTotal": 4
+      },
+      {
+        "aksi": "petunjuk",
+        "mode": "latihan"
+      },
+      {
+        "aksi": "periksa",
+        "mode": "latihan",
+        "benar": true
+      }
+    ],
+    "xp": 24
+  }
 ]
