@@ -29344,6 +29344,559 @@
    "id": "XP soal ini hangus selamanya, walau nanti kamu kerjakan ulang sampai benar.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.pilihan.terhalang_keliru",
+   "halaman": "hitung",
+   "id": "Kamu menandai ada yang tidak mendapat bagian. Siapa yang menurutmu menghalanginya, dan apakah orang itu memang lebih dekat ke almarhum?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.pilihan.mewarisi_keliru",
+   "halaman": "hitung",
+   "id": "Periksa lagi: apakah semua orang yang kamu beri bagian memang berhak mewarisi di keluarga ini?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.pilihan.cara_keliru",
+   "halaman": "hitung",
+   "id": "Ada yang cara mewarisinya belum tepat. Untuk tiap orang, tanyakan: ia mendapat bagian pasti, menerima sisa, atau keduanya, dan apa yang menentukannya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.pilihan.besar_keliru",
+   "halaman": "hitung",
+   "id": "Ada bagian pasti yang besarnya belum sesuai. Siapa saja di keluarga ini yang kehadirannya bisa membesarkan atau mengecilkan bagian orang lain?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.pilihan.kedudukan_keliru",
+   "halaman": "hitung",
+   "id": "Ingat **tanzil**. Ada kerabat yang kedudukannya belum tepat. Telusuri lagi lewat siapa tiap kerabat bersambung ke almarhum.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.ashl",
+   "halaman": "hitung",
+   "id": "Ingat **ashlul mas'alah**: angka terkecil yang bisa dibagi oleh semua penyebut.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.saham",
+   "halaman": "hitung",
+   "id": "Ingat **saham**: bagian dalam bilangan bulat dari asal masalah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.ashl.kemungkinan",
+   "halaman": "hitung",
+   "id": "Ingat **ashlul mas'alah**. Tiap kemungkinan punya masalahnya sendiri.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.jumlah_saham",
+   "halaman": "hitung",
+   "id": "Jumlahkan semua saham di kolom sebelumnya. Apakah pas dengan asal masalahmu, lebih, atau kurang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.jumlah_saham.per_orang",
+   "halaman": "hitung",
+   "id": "Ingat **saham**. Setelah asal masalah berubah, apakah saham tiap orang ikut berubah?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.saudari_kakek.akhir",
+   "halaman": "hitung",
+   "id": "Lihat kembali bagian kakek dan saudari setelah asal masalah berubah. Apakah pembagian keduanya sudah selesai?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.bulat",
+   "halaman": "hitung",
+   "id": "Coba bagi saham tiap kelompok ke jumlah orangnya. Apakah semuanya dapat bilangan bulat?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.bulat.per_orang",
+   "halaman": "hitung",
+   "id": "Ingat **saham**. Bagian kelompok dibagi berapa untuk mendapat bagian satu orang?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.munasakhat.masalah",
+   "halaman": "hitung",
+   "id": "Harta yang dibagi di kolom ini milik siapa, dan siapa ahli warisnya saat itu?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.munasakhat.pengali",
+   "halaman": "hitung",
+   "id": "Ingat **jami'ah**. Supaya dua masalah bisa digabung, keduanya perlu disamakan dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.munasakhat.jamiah",
+   "halaman": "hitung",
+   "id": "Ingat **jami'ah**. Apakah semua saham sekarang dihitung dari angka yang sama?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.kemungkinan.jamiah",
+   "halaman": "hitung",
+   "id": "Ingat **jami'ah**. Masalah dari tiap kemungkinan perlu disamakan dulu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.kemungkinan.pemberian",
+   "halaman": "hitung",
+   "id": "Ingat **mauquf**. Bagian mana yang aman diberikan sekarang, apa pun yang terjadi nanti?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.umum",
+   "halaman": "hitung",
+   "id": "Kolom ini bergantung pada kolom sebelumnya. Apakah kolom itu sudah benar?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p1.kosong",
+   "halaman": "hitung",
+   "id": "Masih ada kotak yang kosong di kolom **{kolom}**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.kontras",
+   "halaman": "hitung",
+   "id": "Bandingkan dua kasus lain. **{kasusA}**: {peran} mendapat {bagianA}. **{kasusB}**: {peran} mendapat {bagianB}. Apa yang berbeda di antara keduanya? Sekarang periksa keluargamu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.materi",
+   "halaman": "hitung",
+   "id": "Baca lagi bab **{bab}** di materi, lalu periksa keluargamu.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.umum",
+   "halaman": "hitung",
+   "id": "Lihat lagi kolom **{kolom}** baris **{nama}**. Dari mana kamu mendapat isiannya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.kosong",
+   "halaman": "hitung",
+   "id": "Lihat lagi kolom **{kolom}**. Isi semua baris dulu, lalu Periksa lagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.ashl",
+   "halaman": "hitung",
+   "id": "Lihat lagi penyebut di kolom Bagian. Sudahkah kamu mencari KPK-nya? Kalau tidak ada bagian pasti, hitung jumlah kepala penerima sisa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.saham",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{nama}**. Ubah bagiannya menjadi saham dari asal masalahmu; untuk penerima sisa, lihat apa yang belum terbagi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.ashl.kemungkinan",
+   "halaman": "hitung",
+   "id": "Lihat lagi kemungkinan **{kemungkinan}**. Hitung seolah-olah itu satu-satunya keadaan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.jumlah_saham",
+   "halaman": "hitung",
+   "id": "Kalau jumlahnya tidak sama dengan asal masalah, harta itu kurang atau bersisa. Siapa yang ikut menanggung kekurangannya, atau siapa yang berhak atas sisanya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.jumlah_saham.per_orang",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{nama}**. Periksa apakah dia memang ikut berbagi perubahan itu, dan dengan perbandingan apa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.saudari_kakek.akhir",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{kakek}** dan **{saudari}**. Bandingkan saham keduanya. Apakah perbandingannya sama dengan saudara laki-laki dan perempuan yang berbagi sisa?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.bulat",
+   "halaman": "hitung",
+   "id": "Lihat lagi saham **{kelompok}** dan jumlah orangnya. Berapa FPB keduanya? Kalau lebih dari satu kelompok, angka-angka itu digabung dengan KPK.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.bulat.per_orang",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{nama}**. Dalam kelompoknya, apakah semua anggota dihitung sama?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.munasakhat.masalah",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{mayit}**. Hitung masalahnya seperti soal biasa, dengan ahli waris yang hidup saat ia wafat.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.munasakhat.pengali",
+   "halaman": "hitung",
+   "id": "Lihat lagi masalah **{mayit}** dan saham yang ia terima dari mayit sebelumnya. Berapa FPB keduanya? Ingat juga penggabungan sesudahnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.munasakhat.jamiah",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{nama}**. Apakah ia menerima dari lebih dari satu mayit? Periksa tiap bagiannya setelah dikalikan pengali masing-masing.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.kemungkinan.jamiah",
+   "halaman": "hitung",
+   "id": "Lihat lagi masalah tiap kemungkinan. Sudahkah kamu mencari KPK-nya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.p2.kemungkinan.pemberian",
+   "halaman": "hitung",
+   "id": "Lihat lagi **{nama}** di semua kemungkinan. Bagian berapa yang pasti ia terima di mana pun?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.keturunan",
+   "halaman": "hitung",
+   "id": "keturunan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.saudara",
+   "halaman": "hitung",
+   "id": "saudara-saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.keturunan_dan_saudara",
+   "halaman": "hitung",
+   "id": "keturunan dan saudara-saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.generasi_atas",
+   "halaman": "hitung",
+   "id": "ayah, ibu, dan kakek",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.sederajat",
+   "halaman": "hitung",
+   "id": "orang yang sederajat dengannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.lebih_dekat",
+   "halaman": "hitung",
+   "id": "siapa yang lebih dekat hubungannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.kakek_saudara",
+   "halaman": "hitung",
+   "id": "kakek dan saudara-saudara",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus.sifat_orang",
+   "halaman": "hitung",
+   "id": "keadaan diri tiap ahli waris (agama, pembunuhan, wafat bersamaan)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.aul",
+   "halaman": "hitung",
+   "id": "'aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.radd",
+   "halaman": "hitung",
+   "id": "radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.inkisar",
+   "halaman": "hitung",
+   "id": "inkisar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.hajb_nuqshan",
+   "halaman": "hitung",
+   "id": "hajb nuqshan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.akdariyyah",
+   "halaman": "hitung",
+   "id": "akdariyyah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.musyarrakah",
+   "halaman": "hitung",
+   "id": "musyarrakah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.nama_kasus.umariyyatain",
+   "halaman": "hitung",
+   "id": "'umariyyatain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.butuh_petunjuk",
+   "halaman": "hitung",
+   "id": "Butuh petunjuk?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.umpan_kolom_salah",
+   "halaman": "hitung",
+   "id": "Kolom **{judul}** belum tepat semua.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.judul_kartu",
+   "halaman": "hitung",
+   "id": "Petunjuk {nomor} dari 2 · kolom {judul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.petunjuk_berikutnya",
+   "halaman": "hitung",
+   "id": "Masih buntu? Petunjuk berikutnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.tunjukkan_kolom",
+   "halaman": "hitung",
+   "id": "Tunjukkan jawaban kolom {judul}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.buka_semua",
+   "halaman": "hitung",
+   "id": "Buka semua kolom",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.hangus_judul",
+   "halaman": "hitung",
+   "id": "Buka jawaban kolom {judul}?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.hangus_isi",
+   "halaman": "hitung",
+   "id": "Setelah jawaban satu kolom dibuka, XP soal ini hangus selamanya. Kolom lain tetap bisa kamu kerjakan sendiri.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.hangus_lanjut",
+   "halaman": "hitung",
+   "id": "Buka jawaban",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.hangus_batal",
+   "halaman": "hitung",
+   "id": "Coba dulu",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.xp",
+   "halaman": "hitung",
+   "id": "{dasar} XP · +{bonus} kalau tanpa petunjuk",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.xp_bonus_lepas",
+   "halaman": "hitung",
+   "id": "{dasar} XP · bonus mandiri lepas",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.xp_hangus",
+   "halaman": "hitung",
+   "id": "XP soal ini hangus",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.pada_kemungkinan",
+   "halaman": "hitung",
+   "id": "Pada kemungkinan **{kemungkinan}**, ",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.perantara",
+   "halaman": "hitung",
+   "id": "Perlakukan tiap perantara seperti ahli waris biasa.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus_kalimat",
+   "halaman": "hitung",
+   "id": "Perhatikan terutama **{kategori}** almarhum.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.fokus_dan",
+   "halaman": "hitung",
+   "id": " dan ",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.nama_ini",
+   "halaman": "hitung",
+   "id": "orang ini",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.bantuan.buka_materi",
+   "halaman": "hitung",
+   "id": "Buka materi",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.kasus_ini_disebut",
+   "halaman": "hitung",
+   "id": "Kasus ini disebut **{nama}**.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.predikat_mandiri",
+   "halaman": "hitung",
+   "id": "Semua kolom kamu selesaikan sendiri.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.predikat_petunjuk",
+   "halaman": "hitung",
+   "id": "Kamu menyelesaikan soal ini dengan bantuan petunjuk.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.selesai.predikat_dibuka",
+   "halaman": "hitung",
+   "id": "{mandiri} dari {total} kolom kamu selesaikan sendiri.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.keterangan_mandiri",
+   "halaman": "latihan",
+   "id": "Mandiri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.keterangan_petunjuk",
+   "halaman": "latihan",
+   "id": "Dengan petunjuk",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.keterangan_dibuka",
+   "halaman": "latihan",
+   "id": "Kolom dibuka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.layak_diulang",
+   "halaman": "latihan",
+   "id": "Layak diulang",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

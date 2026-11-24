@@ -10,7 +10,7 @@ tags: [istilah, glosarium, definisi]
 > **perlu direview** sebelum rilis. Kolom ini hanya memparafrasekan kolom Makna, tidak menambah hukum.
 > Kolom **Contoh** = draf (disusun Claude, 2026-09-25), **perlu direview**. Tiap contoh hanya mengutip kasus uji bab 16
 > yang sudah terverifikasi (nomor kasus disebut); istilah tanpa kasus uji yang pas, atau yang masih blocked (bab 13, takharuj), dikosongkan.
-> Baris Jam' min al-ikhwah, Mu'ashshib, Saham, Ru'us, dan pemecahan empat nisab ditambahkan dari bab yang disebut di kolom Makna; teks Arab-nya juga perlu dicek.
+> Baris KPK dan FPB (2026-11-24, untuk tooltip petunjuk tangga bantuan; padanan Arabnya perlu dicek) serta Jam' min al-ikhwah, Mu'ashshib, Saham, Ru'us, dan pemecahan empat nisab ditambahkan dari bab yang disebut di kolom Makna; teks Arab-nya juga perlu dicek.
 
 | Istilah | Arab | Makna | Arti awam | Contoh |
 |--------|------|------|-----------|--------|
@@ -51,6 +51,8 @@ tags: [istilah, glosarium, definisi]
 | Saham | السهم | Bagian dalam bilangan bulat dari ashlul mas'alah (bab 00, konvensi 3) | Jumlah potongan yang diterima seseorang setelah harta dibagi menjadi beberapa bagian yang sama. | Kasus 16.1: dari 24 bagian, istri 3, anak lk 14, anak pr 7. |
 | Ru'us | الرءوس | Jumlah kepala dalam satu kelompok; laki-laki dihitung 2 pada ashabah bil ghair (bab 9.1, 10.3) | Jumlah orang dalam satu kelompok; bila laki-laki dan perempuan berbagi sisa, laki-laki dihitung dua. | Kasus 16.1: anak lk dan anak pr dihitung 3 kepala, karena anak lk dihitung 2. |
 | Wafq | الوفق | Hasil bagi bilangan dengan FPB | Hasil bagi sebuah bilangan dengan faktor persekutuan terbesarnya (FPB). | |
+| KPK | المضاعف المشترك الأصغر | Kelipatan persekutuan terkecil; dipakai pada tamatsul, tadakhul, tawafuq, dan tabayun (bab 10.2) | Angka terkecil yang bisa dibagi habis oleh semua angka yang sedang dibandingkan, misalnya 12 untuk 4 dan 6. | |
+| FPB | القاسم المشترك الأكبر | Faktor persekutuan terbesar; menentukan tawafuq atau tabayun antar dua angka (bab 10.2) | Angka terbesar yang bisa membagi habis dua angka sekaligus, misalnya 2 untuk 4 dan 6. | |
 | Munasakhat | المناسخات | Ahli waris wafat sebelum tirkah dibagi | Ada ahli waris yang ikut wafat sebelum harta sempat dibagi. | Kasus 16.M1: suami ikut wafat sebelum harta almarhumah sempat dibagi. |
 | Jami'ah | الجامعة | Tashih gabungan dalam munasakhat | Angka pembagi gabungan untuk beberapa kematian berantai. | Kasus 16.M2: pembagi gabungan untuk dua kematian adalah 72. |
 | Takharuj | التخارج | Ahli waris keluar dengan imbalan berdasarkan kesepakatan | Seorang ahli waris sepakat keluar dari pembagian dengan imbalan tertentu. | |
