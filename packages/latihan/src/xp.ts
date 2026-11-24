@@ -14,8 +14,12 @@ export interface KejadianXp {
 const adalahBenarPenuh = (k: KejadianXp): boolean =>
   ((k.aksi === 'periksa' && k.mode === 'latihan') || (k.aksi === 'kirim' && k.mode === 'ujian')) && k.benarSemua === true;
 
-/** Bagian XP dasar; sisanya bonus mandiri (tangga bantuan bagian 5). Pecahan bobot dibulatkan ke bawah supaya jumlah tepat bobot. */
 const PERSEN_XP_DASAR = 60;
+/** XP dasar dan bonus mandiri (tangga bantuan bagian 5). Dasar dibulatkan ke bawah; bonus = sisanya, jadi jumlahnya tepat bobot. */
+export function pecahXp(bobotXp: number): { dasar: number; bonus: number } {
+  const dasar = Math.floor((bobotXp * PERSEN_XP_DASAR) / 100);
+  return { dasar, bonus: bobotXp - dasar };
+}
 /** Periksa salah paling banyak sebanyak ini sebelum benar pertama masih dihitung mandiri. */
 const BATAS_PERIKSA_SALAH_MANDIRI = 3;
 
@@ -34,7 +38,7 @@ export function xpSoal(kejadian: readonly KejadianXp[], bobotXp: number): number
     const sebelum = kejadian.slice(0, indeksBenar);
     const mandiri = !sebelum.some(k => k.aksi === 'petunjuk')
       && sebelum.filter(k => k.aksi === 'periksa' && k.mode === 'latihan' && k.benarSemua !== true).length <= BATAS_PERIKSA_SALAH_MANDIRI;
-    const berhak = mandiri ? bobotXp : Math.floor((bobotXp * PERSEN_XP_DASAR) / 100);
+    const berhak = mandiri ? bobotXp : pecahXp(bobotXp).dasar;
     xp += Math.max(berhak - xp, 0);
   }
   return xp;

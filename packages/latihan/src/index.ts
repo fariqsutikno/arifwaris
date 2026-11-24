@@ -16,3 +16,4 @@ export * from './tabel/susunGharqa.js';
 export * from './penilai.js';
 export * from './xp.js';
 export * from './petunjuk.js';
+export * from './namaKasus.js';
