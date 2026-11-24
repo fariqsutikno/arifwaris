@@ -154,6 +154,6 @@ function BarisSoal({ soal, status, isian, predikat, disarankan, kasusSekarang, s
 function keteranganStatus(status: StatusSoal, isian: IsianSoal | undefined, predikat: PredikatSoal | undefined): string | null {
   if (status === 'terputus' && isian) return t('latihan.terputus_isian', { terisi: angka(String(hitungTerisi(isian.isian))), total: angka(String(isian.jumlahKotak)) });
   if (status !== 'benar' && status !== 'lihatJawaban') return null;
-  if (predikat) return t(`latihan.keterangan_${predikat === 'dibuka' ? 'dibuka' : predikat}`);
+  if (predikat) return predikat === 'mandiri' ? t('latihan.keterangan_mandiri') : predikat === 'petunjuk' ? t('latihan.keterangan_petunjuk') : t('latihan.keterangan_dibuka');
   return status === 'benar' ? t('latihan.sudah_benar') : t('latihan.sudah_lihat_jawaban');
 }

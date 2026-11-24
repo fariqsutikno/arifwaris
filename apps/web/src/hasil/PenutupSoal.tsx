@@ -6,6 +6,7 @@ import { Istilah } from '../ui/Tooltip';
 import { t } from '../terjemah';
 import type { PredikatSoal } from '../tanggaBantuan';
 import { Tebal } from './Tebal';
+import { NAMA_KASUS } from './kamusPetunjuk';
 
 interface Props { predikat: PredikatSoal; kolomMandiri: number; kolomTotal: number; namaKasus: readonly NamaKasus[] }
 
@@ -19,7 +20,7 @@ export function PenutupSoal({ predikat, kolomMandiri, kolomTotal, namaKasus }: P
     <div className="penutup-soal" role="status">
       <p><Tebal teks={kalimat} /></p>
       {namaKasus.map(nama => {
-        const istilah = t(`hitung.selesai.nama_kasus.${nama}`);
+        const istilah = NAMA_KASUS[nama]();
         const [awal = '', akhir = ''] = t('hitung.selesai.kasus_ini_disebut', { nama: PENANDA_NAMA }).replace(/\*\*/g, '').split(PENANDA_NAMA);
         return <p key={nama}>{awal}<b><Istilah id={istilah}>{istilah}</Istilah></b>{akhir}</p>;
       })}

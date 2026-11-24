@@ -3,6 +3,7 @@
 
 import type { PetunjukKolom } from '@waris/latihan';
 import { t } from '../terjemah';
+import { KALIMAT_P1, KALIMAT_P2, NAMA_FOKUS } from './kamusPetunjuk';
 
 /** Nama-nama yang hanya diketahui layar (judul kolom, orang, kemungkinan); diberikan pemanggil supaya file ini tetap murni. */
 export interface BahanKalimat {
@@ -14,8 +15,6 @@ export interface BahanKalimat {
 }
 export interface IsiPetunjuk { teks: string; /** Hanya p2.materi: nomor bab untuk tautan materi. */ bab?: string }
 
-/** Kunci diksi memakai snake_case (skrip tambah-diksi menolak huruf besar). */
-const keSnake = (kunci: string): string => kunci.replace(/[A-Z]/g, huruf => `_${huruf.toLowerCase()}`);
 const awalKecil = (teks: string): string => teks.charAt(0).toLowerCase() + teks.slice(1);
 
 export function kalimatPetunjuk(tingkat: 1 | 2, petunjuk: PetunjukKolom, bahan: BahanKalimat): IsiPetunjuk {
@@ -31,12 +30,13 @@ export function kalimatPetunjuk(tingkat: 1 | 2, petunjuk: PetunjukKolom, bahan: 
     ...(parameter.bab ? { bab: parameter.bab } : {}),
     ...(kunci === 'kontras' ? sisipanKontras(parameter, bahan) : {}),
   };
-  const dasar = t(`hitung.bantuan.p${tingkat}.${keSnake(kunci)}`, sisipan);
+  // Kunci yang tak dikenal jatuh ke templat umum (6.9), bukan karangan.
+  const dasar = ((tingkat === 1 ? KALIMAT_P1 : KALIMAT_P2)[kunci] ?? (tingkat === 1 ? KALIMAT_P1 : KALIMAT_P2).umum!)(sisipan);
   if (tingkat === 2) return { teks: dasar, ...(kunci === 'materi' ? { bab: parameter.bab! } : {}) };
   if (!kunci.startsWith('pilihan.')) return { teks: dasar };
   const awal = parameter.kemungkinan ? t('hitung.bantuan.pada_kemungkinan', { kemungkinan: sisipan.kemungkinan! }) + awalKecil(dasar) : dasar;
   const { fokus } = petunjuk.p1;
-  const arah = fokus.length > 0 ? t('hitung.bantuan.fokus_kalimat', { kategori: fokus.map(kategori => t(`hitung.bantuan.fokus.${keSnake(kategori)}`)).join(t('hitung.bantuan.fokus_dan')) }) : '';
+  const arah = fokus.length > 0 ? t('hitung.bantuan.fokus_kalimat', { kategori: fokus.map(kategori => NAMA_FOKUS[kategori]()).join(t('hitung.bantuan.fokus_dan')) }) : '';
   const perantara = parameter.perantara ? t('hitung.bantuan.perantara') : '';
   return { teks: [awal, arah, perantara].filter(Boolean).join(' ') };
 }
