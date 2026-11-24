@@ -1,0 +1,986 @@
+[
+ {
+  "kasus": "C16-01",
+  "peran": "ISTRI",
+  "bagian": "1/8",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "ANAK_PR",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-01",
+  "peran": "ANAK_LK",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_LK",
+   "ANAK_PR",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-01",
+  "peran": "ANAK_PR",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_LK",
+   "ANAK_PR",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-02",
+  "peran": "AYAH",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "AYAH",
+   "IBU",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-03",
+  "peran": "AYAH",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-04",
+  "peran": "SUAMI",
+  "bagian": "1/2",
+  "fokus": "keturunan",
+  "susunan": [
+   "IBU",
+   "KAKEK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-04",
+  "peran": "IBU",
+  "bagian": "1/3",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "IBU",
+   "KAKEK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-04",
+  "peran": "KAKEK",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "IBU",
+   "KAKEK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-05",
+  "peran": "SUAMI",
+  "bagian": "1/2",
+  "fokus": "keturunan",
+  "susunan": [
+   "SAUDARI_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-05",
+  "peran": "SAUDARI_KANDUNG",
+  "bagian": "2/3",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "SAUDARI_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-06",
+  "peran": "ISTRI",
+  "bagian": "1/8",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-06",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-06",
+  "peran": "ANAK_PR",
+  "bagian": "2/3",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-06",
+  "peran": "AYAH",
+  "bagian": "1/6 + Ashabah",
+  "fokus": "keturunan,lebihDekat",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-07",
+  "peran": "SUAMI",
+  "bagian": "1/2",
+  "fokus": "keturunan",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEIBU",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-07",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEIBU",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-07",
+  "peran": "SAUDARI_SEIBU",
+  "bagian": "1/3",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEIBU",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-07",
+  "peran": "SAUDARI_KANDUNG",
+  "bagian": "2/3",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEIBU",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-08",
+  "peran": "ANAK_PR",
+  "bagian": "1/2",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_PR",
+   "SAUDARI_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-08",
+  "peran": "CUCU_PR",
+  "bagian": "1/6",
+  "fokus": "keturunan,sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_PR",
+   "SAUDARI_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-08",
+  "peran": "SAUDARI_KANDUNG",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_PR",
+   "SAUDARI_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-09",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "ANAK_PR",
+   "IBU"
+  ]
+ },
+ {
+  "kasus": "C16-09",
+  "peran": "ANAK_PR",
+  "bagian": "1/2",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "IBU"
+  ]
+ },
+ {
+  "kasus": "C16-10",
+  "peran": "SUAMI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_PR",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-10",
+  "peran": "ANAK_PR",
+  "bagian": "1/2",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_PR",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-10",
+  "peran": "CUCU_PR",
+  "bagian": "1/6",
+  "fokus": "keturunan,sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_PR",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-11",
+  "peran": "ISTRI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "IBU",
+   "ISTRI",
+   "SAUDARA_SEIBU"
+  ]
+ },
+ {
+  "kasus": "C16-11",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "IBU",
+   "ISTRI",
+   "SAUDARA_SEIBU"
+  ]
+ },
+ {
+  "kasus": "C16-11",
+  "peran": "SAUDARA_SEIBU",
+  "bagian": "1/3",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "IBU",
+   "ISTRI",
+   "SAUDARA_SEIBU"
+  ]
+ },
+ {
+  "kasus": "C16-14",
+  "peran": "ISTRI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "ISTRI",
+   "KAKEK",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-14",
+  "peran": "KAKEK",
+  "bagian": "1/4",
+  "fokus": "kakekSaudara",
+  "susunan": [
+   "ISTRI",
+   "KAKEK",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-14",
+  "peran": "SAUDARA_KANDUNG",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "ISTRI",
+   "KAKEK",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-15",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "AYAH",
+   "IBU",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-15",
+  "peran": "AYAH",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "AYAH",
+   "IBU",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-15",
+  "peran": "SAUDARA_KANDUNG",
+  "bagian": "Terhalang",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "AYAH",
+   "IBU",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "SUAMI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "ANAK_LK",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "AYAH",
+  "bagian": "1/6",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "KAKEK",
+  "bagian": "Terhalang",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "CUCU_LK",
+  "bagian": "Terhalang",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "SAUDARA_KANDUNG",
+  "bagian": "Terhalang",
+  "fokus": "keturunan,generasiAtas",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "KEPONAKAN_KANDUNG",
+  "bagian": "Terhalang",
+  "fokus": "keturunan,generasiAtas",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "PAMAN_KANDUNG",
+  "bagian": "Terhalang",
+  "fokus": "keturunan,generasiAtas",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-16",
+  "peran": "SEPUPU_KANDUNG",
+  "bagian": "Terhalang",
+  "fokus": "keturunan,generasiAtas",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "CUCU_LK",
+   "KAKEK",
+   "KEPONAKAN_KANDUNG",
+   "PAMAN_KANDUNG",
+   "SAUDARA_KANDUNG",
+   "SEPUPU_KANDUNG",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17",
+  "peran": "SUAMI",
+  "bagian": "1/2",
+  "fokus": "keturunan",
+  "susunan": [
+   "IBU",
+   "SAUDARA_SEBAPAK",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "IBU",
+   "SAUDARA_SEBAPAK",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17",
+  "peran": "SAUDARI_KANDUNG",
+  "bagian": "1/2",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "IBU",
+   "SAUDARA_SEBAPAK",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17",
+  "peran": "SAUDARA_SEBAPAK",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "IBU",
+   "SAUDARA_SEBAPAK",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17",
+  "peran": "SAUDARI_SEBAPAK",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "IBU",
+   "SAUDARA_SEBAPAK",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17b",
+  "peran": "SUAMI",
+  "bagian": "1/2",
+  "fokus": "keturunan",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17b",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17b",
+  "peran": "SAUDARI_KANDUNG",
+  "bagian": "1/2",
+  "fokus": "generasiAtas",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-17b",
+  "peran": "SAUDARI_SEBAPAK",
+  "bagian": "1/6",
+  "fokus": "saudara,sederajat",
+  "susunan": [
+   "IBU",
+   "SAUDARI_KANDUNG",
+   "SAUDARI_SEBAPAK",
+   "SUAMI"
+  ]
+ },
+ {
+  "kasus": "C16-18",
+  "peran": "ANAK_PR",
+  "bagian": "2/3",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_LK",
+   "CUCU_PR"
+  ]
+ },
+ {
+  "kasus": "C16-18",
+  "peran": "CUCU_LK",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_LK",
+   "CUCU_PR"
+  ]
+ },
+ {
+  "kasus": "C16-18",
+  "peran": "CUCU_PR",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "CUCU_LK",
+   "CUCU_PR"
+  ]
+ },
+ {
+  "kasus": "C16-19",
+  "peran": "ISTRI",
+  "bagian": "1/8",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_PR",
+   "ISTRI",
+   "PAMAN_KANDUNG",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-19",
+  "peran": "ANAK_PR",
+  "bagian": "1/2",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "ISTRI",
+   "PAMAN_KANDUNG",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-19",
+  "peran": "SAUDARA_SEBAPAK",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "ANAK_PR",
+   "ISTRI",
+   "PAMAN_KANDUNG",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-19",
+  "peran": "PAMAN_KANDUNG",
+  "bagian": "Terhalang",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "ANAK_PR",
+   "ISTRI",
+   "PAMAN_KANDUNG",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-20",
+  "peran": "ISTRI",
+  "bagian": "1/8",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-20",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-20",
+  "peran": "ANAK_LK",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-20",
+  "peran": "AYAH",
+  "bagian": "1/6",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-21",
+  "peran": "ISTRI",
+  "bagian": "1/8",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-21",
+  "peran": "IBU",
+  "bagian": "1/6",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-21",
+  "peran": "ANAK_PR",
+  "bagian": "1/2",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-21",
+  "peran": "AYAH",
+  "bagian": "1/6 + Ashabah",
+  "fokus": "keturunan,lebihDekat",
+  "susunan": [
+   "ANAK_PR",
+   "AYAH",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-22",
+  "peran": "ISTRI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "ISTRI",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-22",
+  "peran": "SAUDARA_KANDUNG",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "ISTRI",
+   "SAUDARA_KANDUNG"
+  ]
+ },
+ {
+  "kasus": "C16-23",
+  "peran": "NENEK_DARI_AYAH",
+  "bagian": "1/6",
+  "fokus": "sederajat",
+  "susunan": [
+   "NENEK_DARI_AYAH",
+   "NENEK_DARI_IBU",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-23",
+  "peran": "NENEK_DARI_IBU",
+  "bagian": "1/6",
+  "fokus": "sederajat",
+  "susunan": [
+   "NENEK_DARI_AYAH",
+   "NENEK_DARI_IBU",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-23",
+  "peran": "SAUDARA_SEBAPAK",
+  "bagian": "Ashabah",
+  "fokus": "lebihDekat",
+  "susunan": [
+   "NENEK_DARI_AYAH",
+   "NENEK_DARI_IBU",
+   "SAUDARA_SEBAPAK"
+  ]
+ },
+ {
+  "kasus": "C16-NOM",
+  "peran": "ISTRI",
+  "bagian": "1/8",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "ANAK_PR",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NOM",
+  "peran": "ANAK_LK",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_LK",
+   "ANAK_PR",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NOM",
+  "peran": "ANAK_PR",
+  "bagian": "Ashabah",
+  "fokus": "sederajat",
+  "susunan": [
+   "ANAK_LK",
+   "ANAK_PR",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NEG1",
+  "peran": "ISTRI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_PR",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NEG1",
+  "peran": "IBU",
+  "bagian": "1/3",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "ANAK_PR",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NEG1",
+  "peran": "ANAK_PR",
+  "bagian": "Terhalang",
+  "fokus": "sifatOrang",
+  "susunan": [
+   "ANAK_PR",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NEG2",
+  "peran": "ISTRI",
+  "bagian": "1/4",
+  "fokus": "keturunan",
+  "susunan": [
+   "ANAK_LK",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NEG2",
+  "peran": "IBU",
+  "bagian": "1/3",
+  "fokus": "keturunanDanSaudara",
+  "susunan": [
+   "ANAK_LK",
+   "IBU",
+   "ISTRI"
+  ]
+ },
+ {
+  "kasus": "C16-NEG2",
+  "peran": "ANAK_LK",
+  "bagian": "Terhalang",
+  "fokus": "sifatOrang",
+  "susunan": [
+   "ANAK_LK",
+   "IBU",
+   "ISTRI"
+  ]
+ }
+]
