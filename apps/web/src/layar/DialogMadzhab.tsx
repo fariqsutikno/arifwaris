@@ -1,5 +1,5 @@
 // Dialog "Pilih madzhab" di layar Hasil: empat pilihan radio; Pakai mengirim pilihan, Batal menutup tanpa mengubah.
-// Syafi'i = bawaan (satu-satunya yang terverifikasi ke teks primer); tiga lainnya bersumber nukilan Lahim dan Ithraa.
+// Syafi'i = bawaan; tiga lainnya mayoritas sudah primer, sisanya nukilan Lahim/Ithraa; tiap titik menyebut sumbernya di hasil.
 
 import { useId, useState } from 'react';
 import type { Ruleset } from '@waris/engine';
@@ -26,7 +26,7 @@ export function DialogMadzhab({ awal, saatPakai, saatBatal }: Props) {
           <label key={ruleset} className="pilihan-madzhab">
             <input type="radio" name={`${id}-madzhab`} checked={pilihan === ruleset} onChange={() => setPilihan(ruleset)} />
             <span><b>{namaMadzhab(ruleset)}</b>
-              <small>{ruleset === 'syafii' ? t('hitung.madzhab_bawaan') : t('hitung.madzhab_nukilan_lahim')}</small></span>
+              <small>{ruleset === 'syafii' ? t('hitung.madzhab_bawaan') : t('hitung.madzhab_sumber_per_titik')}</small></span>
           </label>
         ))}
         <div className="aksi-konfirmasi">
