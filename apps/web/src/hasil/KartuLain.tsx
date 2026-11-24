@@ -105,7 +105,7 @@ export function UbinTentang({ namaMadzhab, ringkasan, satuanPembulatan, sembunyi
       <h2 id="judul-tentang">{t('hasil.judul_yang_dipakai')}</h2>
       <h3 className="kepala-info">{t('hasil.kasus')}</h3>
       <div className="daftar-info">
-        <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab }) : t('hasil.syafii_ket')}
+        <BarisInfo label={t('hasil.madzhab')} nilai={namaMadzhab ?? t('hasil.syafii')} keterangan={namaMadzhab ? t('hitung.madzhab_sumber_kitab', { nama: namaMadzhab }) : t('hasil.syafii_ket')}
           ubah={saatUbahMadzhab && { nama: t('hitung.ganti_madzhab'), saat: saatUbahMadzhab }} />
         <BarisInfo label={t('hitung.harta_yang_dibagi')} nilai={uang(tirkah.bersih)} ubah={saatUbahHarta && { nama: t('hitung.ubah_harta'), saat: saatUbahHarta }}
           keterangan={<>{t('hasil.rincian_harta', { kotor: uang(tirkah.kotor), jenazah: uang(tirkah.tajhiz), hutang: uang(tirkah.hutang), wasiat: uang(tirkah.wasiatDipakai) })}

@@ -63,7 +63,7 @@ export function BandingMadzhab({ kasus, aktif, saatPilih, sembunyiNominal }: Pro
           </tbody>
         </table>
       </div>
-      <p className="catatan-madzhab">{t('hitung.banding_madzhab_sumber')}</p>
+      <p className="catatan-madzhab">{t('hitung.banding_madzhab_sumber_kitab')}</p>
     </section>
   );
 }

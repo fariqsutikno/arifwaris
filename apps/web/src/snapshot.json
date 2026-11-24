@@ -29904,6 +29904,20 @@
    "id": "sumber disebut di tiap titik yang berbeda",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.madzhab_sumber_kitab",
+   "halaman": "hitung",
+   "id": "Madzhab {nama} di sini mengikuti kitab madzhab itu sendiri. Sebagian kecil titik masih bersumber nukilan Lahim dan Ithraa; tiap titik menyebut sumbernya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hitung.banding_madzhab_sumber_kitab",
+   "halaman": "hitung",
+   "id": "Hanbali, Hanafi, Maliki menurut kitab madzhab masing-masing; sumber disebut di tiap titik.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

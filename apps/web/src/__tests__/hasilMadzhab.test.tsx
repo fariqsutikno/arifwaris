@@ -35,7 +35,7 @@ describe('pilihan madzhab di hasil', () => {
     tidakDidukung.aktif = false;
     render(<Uji awal={musyarrakah()} />);
     expect(screen.getByText(/^Menurut madzhab Syafi'i, dibagi ke \d+ orang\.$/)).toBeTruthy();
-    expect(screen.queryByText(/nukilan Lahim dan Ithraa \(sumber/)).toBeNull();
+    expect(screen.queryByText(/mengikuti kitab madzhab itu sendiri/)).toBeNull();
     expect(screen.queryByText("berbeda dari Syafi'i")).toBeNull();
   });
 
@@ -49,7 +49,7 @@ describe('pilihan madzhab di hasil', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Pakai' }));
     expect(screen.queryByRole('dialog', { name: 'Pilih madzhab' })).toBeNull();
     expect(screen.getByText(/^Menurut madzhab Hanbali, dibagi ke \d+ orang\.$/)).toBeTruthy();
-    expect(screen.getAllByText(/Madzhab Hanbali di sini mengikuti nukilan Lahim dan Ithraa/).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/Madzhab Hanbali di sini mengikuti kitab madzhab itu sendiri/).length).toBeGreaterThan(0);
     expect(screen.getAllByText("berbeda dari Syafi'i").length).toBeGreaterThan(0);
 
     fireEvent.click(screen.getByRole('button', { name: 'ganti madzhab' }));
@@ -102,7 +102,7 @@ describe('panel Kata madzhab lain (mode Belajar)', () => {
     bukaSemuaKolomLewatTangga();
     const panel = screen.getByRole('region', { name: 'Kata madzhab lain' });
     expect(within(panel).getAllByText(/satu ibu/).length).toBeGreaterThan(0);
-    expect(within(panel).getByText(/sumber sekunder/)).toBeTruthy();
+    expect(within(panel).getByText(/sumber disebut di tiap titik/)).toBeTruthy();
     fireEvent.click(within(panel).getByRole('button', { name: 'Hanbali' }));
     expect(within(screen.getByRole('region', { name: 'Kata madzhab lain' })).getByRole('columnheader', { name: 'Hanbali' }).className).toContain('aktif');
   });

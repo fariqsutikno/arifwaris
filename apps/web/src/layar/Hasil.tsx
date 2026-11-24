@@ -462,7 +462,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
             kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
               : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
-          {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_sekunder', { nama: namaMadzhab(madzhab) })}</p>}
+          {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_kitab', { nama: namaMadzhab(madzhab) })}</p>}
           {adalahBelajar && !sedangMenebak && (
             <BandingMadzhab kasus={kasus} aktif={madzhab} sembunyiNominal={sembunyiNominal}
               saatPilih={ruleset => kirim({ jenis: 'UBAH_KASUS', ubah: k => aturMadzhab(k, ruleset) })} />
