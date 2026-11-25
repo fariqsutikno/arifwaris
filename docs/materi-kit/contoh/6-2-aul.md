@@ -19,9 +19,15 @@ hasil: penyebut yang sudah disesuaikan, yang siap diperiksa apakah masih memerlu
 
 ## Persoalan pada masa 'Umar
 
-Pada bagian ini kita akan membahas *'aul*, yaitu keadaan ketika jumlah bagian para ahli waris melebihi harta yang tersedia. Untuk memahaminya, kita mulai dari sebuah kasus yang pernah terjadi pada masa sahabat.
+Pada bagian ini, kita akan membahas *'aul*, yaitu keadaan ketika jumlah bagian para ahli waris melebihi harta
+yang tersedia. Untuk melihat persoalannya dengan jelas, perhatikan kasus yang pernah terjadi pada masa sahabat
+berikut.
 
-Seorang perempuan wafat dan meninggalkan suami serta dua saudari kandung, tanpa meninggalkan anak. Karena istrinya tidak mempunyai anak, suami mendapat 1/2, sedangkan dua saudari kandung mendapat 2/3. Jika kedua bagian itu ditulis dengan [[ashlul-masalah|penyebut bersama]] 6, suami mendapat 3 bagian dan dua saudari mendapat 4 bagian. Jumlah keduanya adalah 7, padahal harta hanya terbagi menjadi 6 bagian. Dengan demikian, tidak mungkin semua ahli waris menerima haknya secara penuh, sehingga muncul pertanyaan tentang siapa yang harus dikurangi.
+Seorang perempuan wafat dan meninggalkan suami serta dua saudari kandung, tanpa meninggalkan anak. Karena tidak
+ada anak, suami mendapat 1/2, sedangkan dua saudari kandung mendapat 2/3. Jika kedua bagian tersebut ditulis
+dengan [[ashlul-masalah|penyebut bersama]] 6, suami mendapat 3 bagian dan dua saudari mendapat 4 bagian. Jumlahnya
+menjadi 7, padahal harta hanya terbagi menjadi 6 bagian. Tidak mungkin semua ahli waris menerima haknya secara
+penuh. Persoalannya, bagian siapakah yang harus dikurangi?
 
 ```peraga
 judul: Lihat persoalannya
@@ -32,7 +38,9 @@ ahli waris: SUAMI, 2 SAUDARI_KANDUNG
 penjelasan: Harta terdiri atas 6 kotak, sedangkan hak mereka berjumlah 7 kotak. Setelah 'aul diterapkan, harta dibagi menjadi 7 kotak yang sedikit lebih kecil, dan setiap ahli waris tetap mendapat jumlah kotak sesuai haknya.
 ```
 
-Persoalan ini diajukan kepada 'Umar bin al-Khaththab. Beliau memutuskan bahwa tidak ada ahli waris yang didahulukan atas yang lain. Penyebutnya diperbesar menjadi 7, sehingga semua ahli waris sama-sama berkurang sedikit sesuai dengan besar bagiannya masing-masing.
+Persoalan ini diajukan kepada 'Umar bin al-Khaththab. Beliau memutuskan bahwa tidak ada ahli waris yang perlu
+didahulukan. Penyebutnya diperbesar menjadi 7 sehingga bagian semua ahli waris berkurang secara sebanding dengan
+hak masing-masing.
 
 ```dasar
 Ibnu 'Abbas menyatakan bahwa orang pertama yang menerapkan 'aul adalah 'Umar (diriwayatkan oleh al-Hakim dan al-Baihaqi). Para sahabat menyepakati keputusan tersebut. Ibnu 'Abbas menyelisihinya setelah 'Umar wafat, dan ijma' sesudahnya menetapkan berlakunya 'aul.
@@ -43,18 +51,23 @@ rujukan: R09-6
 
 ### Definisi
 
-Secara istilah, [[aul|'aul]] adalah bertambahnya jumlah saham hingga melebihi penyebut bersama, sehingga bagian setiap ahli waris berkurang secara sebanding. Cara menyelesaikannya adalah menjumlahkan seluruh saham, lalu menjadikan jumlah tersebut sebagai penyebut yang baru. Saham setiap ahli waris tidak berubah; yang berubah hanyalah penyebutnya.
+Secara istilah, [[aul|'aul]] adalah keadaan ketika jumlah saham melebihi penyebut bersama sehingga bagian setiap
+ahli waris berkurang secara sebanding. Cara menyelesaikannya adalah dengan menjumlahkan seluruh saham, lalu
+menjadikan hasilnya sebagai penyebut baru. Saham setiap ahli waris tetap, sedangkan penyebutnya berubah.
 
 ### Mengapa disebut berkurang secara sebanding
 
-Untuk melihat makna "sebanding", kita bandingkan bagian setiap ahli waris sebelum dan sesudah 'aul pada kasus di atas.
+Makna "sebanding" dapat dilihat dengan membandingkan bagian setiap ahli waris sebelum dan sesudah 'aul pada kasus
+di atas.
 
 | Ahli waris | Hak menurut nash | Sesudah 'aul | Perkiraan dari seluruh harta |
 |---|---|---|---|
 | Suami | 1/2 (3 dari 6) | 3/7 | dari 50% menjadi sekitar 43% |
 | Dua saudari kandung | 2/3 (4 dari 6) | 4/7 | dari 67% menjadi sekitar 57% |
 
-Tabel tersebut menunjukkan bahwa perbandingan antara bagian suami dan bagian dua saudari tetap 3 : 4. Yang berubah hanyalah jumlah potongan harta, yaitu 7 potong dan bukan lagi 6 potong. Oleh karena itu, 'aul termasuk salah satu bentuk berkurangnya bagian karena berdesakan, sebagaimana telah dibahas pada [[>5-1-hajb#4d|pemicu keempat hajb nuqshan]].
+Perbandingan bagian suami dan dua saudari tetap 3 : 4. Yang berubah hanyalah jumlah potongan harta, dari 6
+menjadi 7 potong dengan ukuran yang lebih kecil. Karena itu, 'aul termasuk salah satu bentuk berkurangnya bagian
+karena berdesakan, sebagaimana telah dibahas pada [[>5-1-hajb#4d|pemicu keempat hajb nuqshan]].
 
 ```ingat
 - Jumlah saham menjadi penyebut | inilah seluruh cara 'aul
@@ -63,7 +76,8 @@ Tabel tersebut menunjukkan bahwa perbandingan antara bagian suami dan bagian dua
 
 ## Kapan 'aul terjadi
 
-Setelah penyebut bersama ditentukan dan seluruh saham dijumlahkan, terdapat tiga kemungkinan hasil. 'Aul hanyalah salah satu dari ketiga kemungkinan tersebut.
+Setelah menentukan penyebut bersama dan menjumlahkan seluruh saham, ada tiga kemungkinan hasil. 'Aul merupakan
+salah satu dari ketiga kemungkinan tersebut.
 
 | Jumlah saham dibandingkan penyebut | Sebutannya | Langkah yang diambil |
 |---|---|---|
@@ -71,7 +85,9 @@ Setelah penyebut bersama ditentukan dan seluruh saham dijumlahkan, terdapat tiga
 | Lebih besar | 'Ailah | **'Aul**: penyebut dinaikkan menjadi jumlah saham |
 | Lebih kecil, dan tidak ada ashabah | Naqishah | **Radd**: sisa harta dikembalikan ([[>6-3-radd]]) |
 
-Apabila jumlah saham lebih kecil tetapi terdapat ashabah, tidak ada yang perlu disesuaikan, karena ashabah akan mengambil sisa harta tersebut. Dengan demikian, 'aul hanya terjadi ketika bagian-bagian pasti saja sudah melebihi harta. Jika dalam kasus seperti itu terdapat ashabah, ia tidak mendapat apa pun karena tidak ada sisa yang dapat diambil.
+Jika jumlah saham lebih kecil dan terdapat ashabah, penyebut tidak perlu disesuaikan karena ashabah akan
+mengambil sisa harta. Dengan demikian, 'aul hanya terjadi ketika bagian-bagian pasti sudah melebihi harta. Jika
+dalam keadaan tersebut terdapat ashabah, ia tidak mendapat bagian karena tidak ada sisa yang dapat diambil.
 
 ```cara-berpikir
 judul: Pemeriksaan setelah penyebut bersama ditemukan
@@ -84,7 +100,9 @@ Setelah 'aul, apakah angka penyebutnya termasuk yang mungkin terjadi? -> jika ti
 
 ## Ashl yang dapat mengalami 'aul
 
-Dari tujuh ashl yang dikenal, yaitu 2, 3, 4, 6, 8, 12, dan 24, hanya tiga yang dapat mengalami 'aul, dan angka tujuannya pun terbatas. Batasan ini sangat berguna sebagai alat pemeriksaan, karena jika hasil hitunganmu berada di luar tabel-tabel berikut, berarti ada bagian yang keliru.
+Dari tujuh ashl yang dikenal, yaitu 2, 3, 4, 6, 8, 12, dan 24, hanya tiga yang dapat mengalami 'aul. Angka
+tujuannya juga terbatas. Batasan ini dapat digunakan untuk memeriksa hasil perhitungan. Jika hasilnya berada di
+luar tabel berikut, berarti ada bagian yang perlu diperiksa kembali.
 
 ### Ashl 6 dapat naik menjadi 7, 8, 9, atau 10
 
@@ -95,7 +113,8 @@ Dari tujuh ashl yang dikenal, yaitu 2, 3, 4, 6, 8, 12, dan 24, hanya tiga yang d
 | **9** | Suami, ibu, 2 saudara seibu, dan 1 saudari kandung | 3 + 1 + 2 + 3 |
 | **10** | Suami, ibu, 2 saudara seibu, dan 2 saudari kandung | 3 + 1 + 2 + 4 |
 
-Seluruh contoh di atas melibatkan suami yang mendapat 1/2. Ashl 6 muncul karena bagian 1/2 bertemu dengan bagian dari kelompok 2/3, 1/3, dan 1/6.
+Seluruh contoh tersebut melibatkan suami yang mendapat 1/2. Ashl 6 muncul ketika bagian 1/2 bertemu dengan bagian
+dari kelompok 2/3, 1/3, dan 1/6.
 
 ### Ashl 12 dapat naik menjadi 13, 15, atau 17
 
@@ -105,15 +124,20 @@ Seluruh contoh di atas melibatkan suami yang mendapat 1/2. Ashl 6 muncul karena 
 | **15** | Istri, ibu, 1 saudara seibu, dan 2 saudari kandung | 3 + 2 + 2 + 8 |
 | **17** | Istri, ibu, 2 saudara seibu, dan 2 saudari kandung | 3 + 2 + 4 + 8 |
 
-Ashl 12 muncul karena adanya bagian 1/4, yang dalam contoh ini adalah bagian istri ketika almarhum tidak mempunyai anak. Perhatikan bahwa angka 'aul dari ashl 12 selalu ganjil.
+Ashl 12 muncul karena ada bagian 1/4, yang dalam contoh ini merupakan bagian istri ketika almarhum tidak
+mempunyai anak. Perhatikan bahwa angka 'aul dari ashl 12 selalu ganjil.
 
 ### Ashl 24 hanya dapat naik menjadi 27
 
-Ashl 24 muncul karena adanya bagian 1/8, yaitu bagian istri ketika almarhum mempunyai anak. Ashl ini hanya memiliki satu kemungkinan 'aul, dan kasusnya dikenal dengan nama tersendiri ([[#5a]]).
+Ashl 24 muncul karena ada bagian 1/8, yaitu bagian istri ketika almarhum mempunyai anak. Ashl ini hanya memiliki
+satu kemungkinan 'aul. Kasusnya dikenal dengan nama tersendiri ([[#5a]]).
 
 ### Ashl 2, 3, 4, dan 8 tidak pernah mengalami 'aul
 
-Jika hitunganmu menunjukkan 'aul pada salah satu ashl ini, atau 'aul ke angka yang tidak tercantum dalam tabel, misalnya dari 12 menjadi 14, periksalah kembali bagian ibu (1/3 atau 1/6) dan pastikan tidak ada ahli waris yang seharusnya gugur tetapi ikut dihitung.
+Jika perhitungan menunjukkan 'aul pada salah satu ashl tersebut, atau menghasilkan angka yang tidak tercantum
+dalam tabel, periksa kembali bagian setiap ahli waris. Misalnya, ashl 12 tidak mungkin naik menjadi 14. Dalam
+keadaan seperti ini, periksa bagian ibu, apakah 1/3 atau 1/6, dan pastikan tidak ada ahli waris yang seharusnya
+gugur tetapi masih ikut dihitung.
 
 ```ingat
 - 6 menjadi 7, 8, 9, 10 | berurutan, paling tinggi 10
@@ -129,7 +153,8 @@ rujukan: R09-4
 
 ## Dua kasus 'aul yang memiliki nama
 
-Terdapat dua kasus pada batas atas 'aul yang sering disebut dengan namanya dalam kitab-kitab fara'idh. Kasus pertama merupakan satu-satunya 'aul dari ashl 24, sedangkan kasus kedua merupakan 'aul terbesar dari ashl 6.
+Ada dua kasus pada batas atas 'aul yang sering disebut dengan nama khusus dalam kitab-kitab fara'idh. Kasus
+pertama merupakan satu-satunya 'aul dari ashl 24, sedangkan kasus kedua merupakan 'aul terbesar dari ashl 6.
 
 ### Al-Minbariyyah: dari 24 menjadi 27
 
@@ -145,7 +170,9 @@ keterangan: ISTRI mendapat 1/8, tetapi setelah 'aul bagiannya menjadi 3 dari 27
 keterangan: AYAH mendapat 1/6; bersama anak perempuan ia biasanya masih mengambil sisa, tetapi dalam kasus ini tidak ada sisa
 ```
 
-**Asal nama:** kasus ini pernah ditanyakan kepada 'Ali bin Abi Thalib, dan beliau langsung menjawab bahwa bagian seperdelapan milik istri telah menjadi sepersembilan. Sebagian riwayat menyebutkan bahwa beliau ditanya ketika sedang berada di atas mimbar, sehingga kasus ini dinamakan al-Minbariyyah.
+**Asal nama:** kasus ini pernah ditanyakan kepada 'Ali bin Abi Thalib. Beliau langsung menjawab bahwa bagian
+seperdelapan milik istri telah berubah menjadi sepersembilan. Sebagian riwayat menyebutkan bahwa pertanyaan
+tersebut diajukan ketika beliau berada di atas mimbar. Karena itu, kasus ini dikenal sebagai al-Minbariyyah.
 
 ```dasar
 Fatwa 'Ali diriwayatkan oleh al-Baihaqi dan Ibnu Abi Syaibah tanpa menyebut mimbar. Keterangan tentang mimbar terdapat pada sebagian jalur riwayat dan disebutkan dalam Raudhah ath-Thalibin.
@@ -165,11 +192,12 @@ harapan: SUAMI 3, IBU 1, SAUDARA_SEIBU 2, SAUDARI_KANDUNG 4; ashl 10
 keterangan: IBU mendapat 1/6, bukan 1/3, karena almarhumah mempunyai empat saudara ([[>5-1-hajb#4b]])
 ```
 
-**Nama lain:** kasus ini juga disebut asy-Syuraihiyyah. Kasus ini merupakan 'aul terbesar yang mungkin terjadi pada ashl 6.
+**Nama lain:** kasus ini juga disebut asy-Syuraihiyyah. Kasus tersebut merupakan 'aul terbesar yang mungkin
+terjadi pada ashl 6.
 
 ## Kesalahan yang sering terjadi
 
-Beberapa kesalahan berikut sering muncul ketika menyelesaikan kasus 'aul, sehingga perlu diperhatikan.
+Beberapa kesalahan berikut perlu diperhatikan ketika menyelesaikan kasus 'aul.
 
 - **Hanya mengurangi satu ahli waris.** Misalnya, suami tetap diberi 1/2 secara penuh, lalu sisanya diberikan kepada saudari. Cara ini bukan 'aul, karena dalam 'aul semua ahli waris berkurang secara sebanding.
 - **'Aul ke angka yang tidak mungkin.** Ashl 12 tidak pernah menjadi 14 atau 16. Jika hal itu terjadi, periksalah kembali bagian ibu dan pastikan tidak ada ahli waris yang seharusnya gugur tetapi ikut dihitung.
@@ -213,11 +241,14 @@ rujukan: R09-3, R06-7
 
 ## Ringkasnya
 
-'Aul diterapkan ketika jumlah saham melebihi penyebut bersama. Jumlah saham tersebut dijadikan penyebut baru, sehingga semua ahli waris berkurang secara sebanding dan perbandingan bagian di antara mereka tetap sama.
+'Aul diterapkan ketika jumlah saham melebihi penyebut bersama. Jumlah saham tersebut dijadikan penyebut baru.
+Dengan cara ini, bagian semua ahli waris berkurang secara sebanding, sedangkan perbandingan bagian di antara
+mereka tetap sama.
 
 - 'Aul pertama kali diputuskan oleh 'Umar, kemudian menjadi ijma'.
 - Hanya tiga ashl yang dapat mengalami 'aul, yaitu ashl 6 (menjadi 7, 8, 9, atau 10), ashl 12 (menjadi 13, 15, atau 17), dan ashl 24 (menjadi 27). Angka di luar itu menandakan adanya kesalahan.
 - Dua kasus yang memiliki nama adalah al-Minbariyyah (dari 24 menjadi 27) dan Umm al-Furukh (dari 6 menjadi 10).
 - Jika terjadi 'aul, ashabah tidak mendapat bagian apa pun.
 
-Pada pelajaran berikutnya, kita akan membahas keadaan yang berlawanan, yaitu ketika harta bersisa dan tidak ada ashabah yang mengambilnya.
+Pada pelajaran berikutnya, kita akan membahas keadaan yang berlawanan, yaitu ketika harta masih tersisa dan
+tidak ada ashabah yang mengambilnya.
