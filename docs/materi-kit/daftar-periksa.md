@@ -21,9 +21,9 @@
 - [ ] `## Ringkasnya` ditutup satu kalimat yang menyambung ke pelajaran berikutnya.
 
 ## Bahasa
-- [ ] Kalimat lengkap dan baku (EYD V, KBBI, pola SPOK), dengan kata penghubung yang membuat alurnya runtut (`panduan-gaya.md` bagian 1, 3, dan 5).
+- [ ] Kalimat lengkap dan baku (EYD V, KBBI, pola SPOK), dengan kata penghubung yang membuat alurnya runtut (`panduan-gaya.md` bagian 1, 3, dan 4).
 - [ ] Satu istilah untuk satu konsep di seluruh pelajaran.
-- [ ] Tebal hemat; paragraf 3–5 kalimat dengan kalimat utama di awal.
+- [ ] Nada pengajar muda yang tenang dan berwibawa; tidak kaku, tidak santai, tidak patah-patah (`panduan-gaya.md` bagian 2 dan 8).
 
 ## Teknis
 - [ ] `pnpm materi:cek <berkas>` lolos tanpa galat.

@@ -136,7 +136,7 @@ rujukan, tautan) dan `packages/latihan` (engine), supaya portal memakai fungsi y
 | `soal`: kode unik di seluruh konten, tepat satu `*`, 3–4 pilihan, alasan di setiap pilihan, rujukan ada | galat |
 | `[Rxx-y]` sebaris di luar `dasar`; HTML; tautan web; emoji | galat |
 | Blok `alur` tidak ada atau bukan blok pertama; `## Cek pemahaman` dan `## Ringkasnya` tidak ada atau tidak di akhir | galat |
-| Kata tidak baku (daftar kecil: nggak, banget, aja, kayak, karna, praktek), tanda pisah panjang, kalimat > 35 kata, paragraf > 6 kalimat | peringatan |
+| Kata tidak baku (daftar kecil: nggak, banget, aja, kayak, karna, praktek), tanda pisah panjang, kalimat > 35 kata, sapaan atau pengantar dibuat-buat ("Coba bayangkan", "Pernahkah kamu") | peringatan |
 | `durasi` jauh dari perkiraan (jumlah kata / 180) | peringatan |
 
 Keluaran: daftar `berkas:baris: pesan`, kode keluar ≠ 0 bila ada galat. Mode `--json` untuk Codex.

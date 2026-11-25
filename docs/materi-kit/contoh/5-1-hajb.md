@@ -29,7 +29,7 @@ Hajb | terhalang dari seluruh atau sebagian bagian
 
 ## Gambaran masalahnya
 
-Sebelum membahas istilah, kita akan melihat sebuah keluarga terlebih dahulu. Persoalan hajb biasanya muncul dalam keadaan seperti ini: keluarga sudah mengetahui siapa saja kerabat almarhum, tetapi mereka terkejut karena hasil pembagiannya berbeda dari yang mereka bayangkan.
+Sebelum membahas istilah hajb lebih jauh, mari kita mulai dengan memperhatikan kasus berikut.
 
 ```kasus
 cerita: Pak Rahmat wafat. Ia meninggalkan seorang istri, seorang anak laki-laki, ibunya, dan seorang kakak laki-laki kandung.
@@ -39,27 +39,27 @@ harta: 120.000.000
 harapan: ISTRI 3, IBU 4, ANAK_LK 17; ashl 24
 ```
 
-Dari hasil tersebut, keluarga Pak Rahmat biasanya mengajukan dua pertanyaan. Pertama, mengapa kakaknya tidak mendapat apa pun, padahal ia saudara kandung yang hubungannya dekat dengan almarhum? Kedua, mengapa istri hanya mendapat 1/8, padahal yang mereka ketahui bagian istri adalah 1/4?
+Dari hasil tersebut, muncul dua pertanyaan. Mengapa kakak Pak Rahmat tidak mendapat apa pun, padahal ia saudara kandung almarhum? Lalu, mengapa istrinya hanya mendapat 1/8, padahal bagian istri yang mereka ketahui adalah 1/4?
 
-Kedua pertanyaan itu sebenarnya menunjuk pada dua peristiwa yang berbeda. Kakak Pak Rahmat **kehilangan seluruh** bagiannya, sedangkan istrinya tetap mendapat bagian, tetapi bagiannya **berkurang**. Meskipun berbeda, keduanya disebabkan oleh hal yang sama, yaitu adanya anak laki-laki. Peristiwa ketika seorang ahli waris tergeser karena adanya ahli waris lain inilah yang disebut hajb.
+Kedua pertanyaan tersebut menunjukkan dua keadaan yang berbeda. Kakak Pak Rahmat **kehilangan seluruh** bagiannya. Sementara itu, istrinya tetap mendapat warisan, tetapi bagiannya **berkurang**. Meskipun akibatnya berbeda, penyebabnya sama: ada anak laki-laki. Keadaan ketika seorang ahli waris tergeser karena adanya ahli waris lain disebut hajb.
 
 ### Posisi hajb dalam alur pembagian
 
-Dalam alur pembagian warisan, hajb berfungsi sebagai saringan kedua. Setelah kita mengetahui siapa saja kerabat yang memiliki hubungan waris, kita terlebih dahulu mengeluarkan kerabat yang terkena penghalang waris. Setelah itu, barulah kita menyaring mereka dengan kaidah hajb, dan ahli waris yang lolos dari kedua saringan inilah yang kemudian ditentukan bagiannya.
+Dalam alur pembagian warisan, hajb merupakan saringan kedua. Setelah menentukan siapa saja yang memiliki hubungan waris, kita perlu mengeluarkan lebih dahulu mereka yang terkena penghalang waris. Barulah setelah itu kaidah hajb diterapkan. Ahli waris yang lolos dari kedua tahap tersebut kemudian dapat ditentukan bagiannya.
 
-Urutan ini perlu diperhatikan ketika menghitung. Jika hajb diperiksa sebelum penghalang waris, orang yang seharusnya dianggap tidak ada dapat ikut menggugurkan ahli waris lain, sehingga hasil pembagiannya menjadi salah.
+Urutan ini penting ketika melakukan perhitungan. Jika hajb diperiksa sebelum penghalang waris, seseorang yang seharusnya dianggap tidak ada dapat ikut menggugurkan ahli waris lain. Akibatnya, hasil pembagian menjadi keliru.
 
 ## Pengertian hajb dan pembagiannya
 
 ### Pengertian hajb
 
-Secara istilah, [[hajb]] adalah terhalangnya seorang ahli waris dari seluruh atau sebagian bagiannya karena adanya ahli waris lain. Orang yang menghalangi disebut *hajib*, sedangkan orang yang terhalang disebut *mahjub*.
+Secara istilah, [[hajb]] adalah keadaan ketika seorang ahli waris kehilangan seluruh atau sebagian bagiannya karena ada ahli waris lain. Orang yang menghalangi disebut *hajib*, sedangkan orang yang terhalang disebut *mahjub*.
 
-Perhatikan frasa "seluruh atau sebagian" dalam pengertian tersebut. Frasa inilah yang nanti membagi hajb menjadi dua akibat, yaitu kehilangan seluruh bagian atau kehilangan sebagian bagian.
+Perhatikan frasa "seluruh atau sebagian" dalam pengertian tersebut. Frasa ini menunjukkan dua akibat hajb: seorang ahli waris dapat kehilangan seluruh bagiannya atau hanya mengalami pengurangan bagian.
 
 ### Dua sebab: sifat pada dirinya atau keberadaan orang lain
 
-Seseorang dapat tidak memperoleh warisan karena dua sebab yang sangat berbeda. Sebab pertama berasal dari dirinya sendiri, sedangkan sebab kedua berasal dari keberadaan ahli waris lain. Perbedaan keduanya dapat dilihat pada tabel berikut.
+Seseorang dapat tidak memperoleh warisan karena dua sebab yang berbeda. Sebab pertama berasal dari keadaan pada dirinya sendiri, sedangkan sebab kedua berasal dari keberadaan ahli waris lain. Perbedaan keduanya dapat dilihat pada tabel berikut.
 
 | | Karena sifat (*bil awshaf*) | Karena orang lain (*bil asykhash*) |
 |---|---|---|
@@ -67,11 +67,11 @@ Seseorang dapat tidak memperoleh warisan karena dua sebab yang sangat berbeda. S
 | **Siapa yang dapat terkena** | Semua ahli waris, termasuk anak dan orang tua | Bergantung pada kedudukannya ([[#3]] dan [[#5]]) |
 | **Akibatnya** | Dianggap tidak ada, sehingga tidak mendapat bagian dan tidak memengaruhi siapa pun | Bagiannya berkurang atau gugur, dan yang gugur kadang masih memengaruhi ahli waris lain ([[#6]]) |
 
-Hajb karena sifat sebenarnya adalah [[mani|mani']] yang telah kamu pelajari pada [[>2-2-penghalang-waris]]. Oleh karena itu, pelajaran ini akan berfokus pada sebab yang kedua, yaitu tergeser karena keberadaan ahli waris lain.
+Hajb karena sifat sebenarnya adalah [[mani|mani']] yang telah dibahas pada [[>2-2-penghalang-waris]]. Karena itu, pelajaran ini akan berfokus pada sebab yang kedua, yaitu ketika seorang ahli waris tergeser karena keberadaan ahli waris lain.
 
 ### Dua akibat: berkurang atau gugur
 
-Hajb karena orang lain dibagi lagi menjadi dua macam. Yang pertama adalah [[hajb-nuqshan|hajb nuqshan]], yaitu berkurangnya bagian seorang ahli waris menjadi bagian yang lebih kecil, tetapi ia tetap mendapat bagian. Istri Pak Rahmat mengalami hajb jenis ini. Yang kedua adalah [[hajb-hirman|hajb hirman]], yaitu gugurnya seluruh bagian sehingga ahli waris tersebut tidak mendapat apa pun, seperti yang dialami kakak Pak Rahmat.
+Hajb karena adanya ahli waris lain terbagi menjadi dua. Pertama, [[hajb-nuqshan|hajb nuqshan]], yaitu ketika bagian seorang ahli waris berkurang, tetapi ia tetap mendapat warisan. Inilah yang dialami oleh istri Pak Rahmat. Kedua, [[hajb-hirman|hajb hirman]], yaitu ketika seorang ahli waris kehilangan seluruh bagiannya, seperti yang terjadi pada kakak Pak Rahmat.
 
 ```peraga
 judul: Coba bandingkan
@@ -100,9 +100,9 @@ rujukan: R06-1
 
 ## Enam ahli waris yang tidak pernah gugur
 
-Setelah mengenal dua jenis hajb, kita perlu mengetahui siapa saja yang tidak mungkin terkena hajb hirman. Terdapat enam ahli waris yang tidak pernah gugur, siapa pun yang hadir bersama mereka, yaitu **ayah, ibu, anak laki-laki, anak perempuan, suami, dan istri**.
+Setelah memahami dua jenis hajb, kita perlu mengetahui siapa saja yang tidak mungkin terkena hajb hirman. Ada enam ahli waris yang tidak pernah gugur, yaitu **ayah, ibu, anak laki-laki, anak perempuan, suami, dan istri**. Siapa pun yang hadir bersama mereka, keenamnya tetap mendapat bagian.
 
-Para ulama menjelaskan bahwa keenam ahli waris ini tidak pernah gugur karena tidak ada perantara antara mereka dan almarhum. Ayah dan ibu berada tepat di atas almarhum, anak berada tepat di bawahnya, sedangkan suami atau istri terhubung secara langsung melalui pernikahan. Sebaliknya, cucu terhubung kepada almarhum melalui anak, dan saudara terhubung melalui ayah atau ibu. Selama hubungan seseorang melewati perantara, selalu ada kemungkinan bahwa ia didahului oleh orang yang lebih kuat.
+Keenam ahli waris tersebut tidak pernah gugur karena hubungan mereka dengan almarhum tidak melewati perantara. Ayah dan ibu berada tepat di atas almarhum, sedangkan anak berada tepat di bawahnya. Suami atau istri juga terhubung langsung melalui pernikahan. Berbeda dengan cucu yang terhubung melalui anak, atau saudara yang terhubung melalui ayah atau ibu. Selama hubungan seseorang melewati perantara, selalu ada kemungkinan ia didahului oleh ahli waris yang lebih kuat.
 
 ```ingat
 - 3 pasang | orang tua, anak, suami dan istri
@@ -110,7 +110,7 @@ Para ulama menjelaskan bahwa keenam ahli waris ini tidak pernah gugur karena tid
 penutup: Ahli waris selain keenam orang ini **dapat** gugur dalam keadaan tertentu.
 ```
 
-Ada dua hal yang sering tertukar dalam bagian ini. Pertama, tidak pernah gugur tidak berarti bagiannya tidak pernah berkurang, karena bagian ayah, ibu, suami, dan istri tetap dapat berkurang ([[#4]]). Kedua, tidak pernah gugur karena orang lain tidak berarti kebal dari penghalang waris. Seorang anak yang membunuh ayahnya tetap tidak mewarisi, karena hal itu termasuk hajb karena sifat ([[#2b]]).
+Ada dua hal yang perlu dibedakan. Pertama, tidak pernah gugur bukan berarti bagiannya tidak pernah berkurang. Bagian ayah, ibu, suami, dan istri tetap dapat berkurang ([[#4]]). Kedua, tidak pernah gugur karena ahli waris lain bukan berarti kebal dari penghalang waris. Seorang anak yang membunuh ayahnya tetap tidak mewarisi karena keadaan tersebut termasuk hajb karena sifat ([[#2b]]).
 
 ```dasar
 Hal ini disepakati oleh empat madzhab, sebagaimana disebutkan dalam Raudhah ath-Thalibin (Syafi'i), al-Mughni (Hanbali), Tuhfat al-Muluk (Hanafi), dan 'Iqd al-Jawahir (Maliki).
@@ -119,11 +119,11 @@ rujukan: R06-2
 
 ## Hajb nuqshan: kapan bagian berkurang
 
-Kita mulai dari jenis hajb yang lebih ringan, yaitu hajb nuqshan. Pengurangan bagian hanya terjadi dalam tujuh bentuk, dan semuanya sebenarnya sudah kamu temui ketika mempelajari bagian pasti. Pada bagian ini, ketujuh bentuk tersebut dikelompokkan berdasarkan **pemicunya**, karena ketika menghitung, yang perlu kamu periksa adalah pemicunya: apakah almarhum mempunyai anak, berapa jumlah saudaranya, dan seterusnya.
+Kita mulai dari hajb nuqshan, yaitu hajb yang membuat bagian seorang ahli waris berkurang. Ada tujuh bentuk hajb nuqshan, dan semuanya sebenarnya sudah muncul dalam pembahasan bagian pasti. Agar lebih mudah digunakan saat menghitung, ketujuh bentuk tersebut akan kita kelompokkan berdasarkan **pemicunya**: apakah almarhum mempunyai anak, berapa jumlah saudaranya, dan seterusnya.
 
 ### Pemicu pertama: almarhum mempunyai keturunan
 
-Pemicu yang paling sering ditemui adalah [[faru-warits|far'u warits]], yaitu anak atau cucu dari anak laki-laki yang berhak mewarisi. Keberadaan far'u warits menurunkan bagian empat ahli waris sekaligus, sebagaimana terlihat di bawah ini.
+Pemicu yang paling sering ditemui adalah [[faru-warits|far'u warits]], yaitu anak atau cucu dari anak laki-laki yang berhak mewarisi. Keberadaan far'u warits dapat menurunkan bagian empat ahli waris sekaligus, seperti terlihat di bawah ini.
 
 ```bandingan
 judul: Coba ganti keadaannya
@@ -135,26 +135,26 @@ Ayah | sisa | 1/6 + sisa | 1/6
 catatan: Bagian ibu di sini dianggap tanpa adanya dua saudara. Suami dan istri tidak mungkin hadir bersamaan; keduanya ditampilkan hanya sebagai perbandingan.
 ```
 
-Di antara keempat ahli waris tersebut, ayah adalah satu-satunya yang memiliki tiga keadaan. Jika almarhum tidak mempunyai anak, ayah mengambil seluruh sisa harta. Jika almarhum hanya mempunyai anak perempuan, ayah mendapat 1/6 dan masih mengambil sisa. Adapun jika almarhum mempunyai anak laki-laki, ayah hanya mendapat 1/6. Rincian ketiga keadaan ini dapat kamu baca kembali pada [[>3-2-orang-tua-kakek-nenek]].
+Di antara keempat ahli waris tersebut, ayah memiliki tiga keadaan. Jika almarhum tidak mempunyai anak, ayah mengambil seluruh sisa harta. Jika almarhum hanya mempunyai anak perempuan, ayah mendapat 1/6 dan masih mengambil sisa. Namun, jika almarhum mempunyai anak laki-laki, ayah hanya mendapat 1/6. Penjelasan lebih lengkap mengenai ketiga keadaan ini dapat dilihat pada [[>3-2-orang-tua-kakek-nenek]].
 
 ### Pemicu kedua: dua saudara atau lebih
 
-Selain karena far'u warits, bagian ibu juga turun dari 1/3 menjadi 1/6 apabila almarhum mempunyai [[jam-min-al-ikhwah|dua saudara atau lebih]], meskipun almarhum tidak mempunyai anak. Saudara yang dimaksud dapat berupa saudara kandung, sebapak, maupun seibu, baik laki-laki maupun perempuan. Bahkan, saudara yang dirinya sendiri gugur tetap dihitung dalam hal ini, dan alasannya akan dijelaskan pada [[#6]].
+Bagian ibu juga turun dari 1/3 menjadi 1/6 jika almarhum memiliki [[jam-min-al-ikhwah|dua saudara atau lebih]], meskipun tidak memiliki anak. Saudara tersebut dapat berupa saudara kandung, sebapak, atau seibu, baik laki-laki maupun perempuan. Bahkan, saudara yang gugur tetap dihitung dalam keadaan ini. Alasannya akan dibahas pada [[#6]].
 
 ### Pemicu ketiga: ada perempuan yang kedudukannya lebih kuat
 
-Terdapat dua ahli waris perempuan yang bagiannya turun dari 1/2 menjadi 1/6 karena hadirnya satu ahli waris perempuan yang kedudukannya lebih kuat.
+Ada dua ahli waris perempuan yang bagiannya turun dari 1/2 menjadi 1/6 ketika hadir ahli waris perempuan lain yang kedudukannya lebih kuat.
 
 | Ahli waris | Jika sendirian | Jika bersama | Bagiannya menjadi |
 |---|---|---|---|
 | Cucu perempuan | 1/2 | satu anak perempuan | 1/6 |
 | Saudari sebapak | 1/2 | satu saudari kandung | 1/6 |
 
-Kedua keadaan tersebut memiliki pola yang sama. Ahli waris yang lebih kuat mengambil 1/2, sedangkan ahli waris di bawahnya mendapat 1/6. Jika dijumlahkan, keduanya memperoleh 2/3, yaitu sama dengan bagian dua perempuan yang sederajat. Pola ini akan kita temui kembali pada [[>5-2-tabel-hajb]].
+Kedua keadaan tersebut mengikuti pola yang sama. Ahli waris yang lebih kuat mengambil 1/2, sedangkan ahli waris di bawahnya mendapat 1/6. Jika dijumlahkan, keduanya memperoleh 2/3, sama dengan bagian dua perempuan yang sederajat. Pola ini akan kita temui kembali pada [[>5-2-tabel-hajb]].
 
 ### Pemicu keempat: berbagi dengan orang lain atau 'aul
 
-Bentuk pengurangan yang terakhir sering tidak disadari sebagai hajb. Bagian seorang ahli waris dapat berkurang karena ia harus membaginya dengan orang lain yang berhak atas bagian yang sama, misalnya dua orang istri yang berbagi 1/8 atau beberapa nenek yang berbagi 1/6. Selain itu, bagian juga dapat berkurang karena [[aul|'aul]], yaitu ketika jumlah seluruh bagian melebihi harta yang ada ([[>6-2-aul]]).
+Bentuk pengurangan yang terakhir sering tidak disadari sebagai hajb. Bagian seorang ahli waris dapat berkurang karena harus dibagi dengan orang lain yang berhak atas bagian yang sama. Misalnya, dua orang istri berbagi 1/8 atau beberapa nenek berbagi 1/6. Bagian juga dapat berkurang karena [[aul|'aul]], yaitu ketika jumlah seluruh bagian melebihi harta yang tersedia ([[>6-2-aul]]).
 
 ```ingat
 judul: Cara mengingat: empat pemicu nuqshan
@@ -166,7 +166,7 @@ judul: Cara mengingat: empat pemicu nuqshan
 
 ## Hajb hirman: lima kaidah
 
-Setelah membahas pengurangan bagian, kita beralih ke jenis hajb yang lebih berat, yaitu gugurnya seluruh bagian. Daftar lengkap tentang siapa menggugurkan siapa memang cukup panjang, tetapi kamu tidak perlu menghafalnya baris demi baris. Hampir seluruh isi daftar tersebut dapat diturunkan dari lima kaidah berikut.
+Setelah membahas hajb nuqshan, kita beralih ke hajb hirman, yaitu hajb yang menggugurkan seluruh bagian seorang ahli waris. Daftar orang yang dapat menggugurkan dan digugurkan memang cukup panjang. Namun, kita tidak perlu menghafalnya satu per satu karena sebagian besar hubungan tersebut dapat dipahami melalui lima kaidah berikut.
 
 ```video
 menyusul: Video 5 menit tentang lima kaidah hajb hirman dengan bantuan pohon keluarga.
@@ -174,25 +174,25 @@ menyusul: Video 5 menit tentang lima kaidah hajb hirman dengan bantuan pohon kel
 
 ### Kaidah pertama: yang terhubung melalui seseorang gugur oleh orang tersebut
 
-Apabila hubungan seseorang dengan almarhum melewati orang lain, orang tersebut menutup jalannya selama ia masih hidup. Cucu terhubung kepada almarhum melalui anak laki-laki, sehingga cucu gugur oleh anak laki-laki. Demikian pula kakek yang terhubung melalui ayah gugur oleh ayah, dan nenek gugur oleh ibu.
+Jika hubungan seorang ahli waris dengan almarhum melewati orang lain, ia dapat gugur karena orang yang menjadi perantara tersebut. Cucu, misalnya, terhubung dengan almarhum melalui anak laki-laki. Karena itu, cucu gugur jika anak laki-laki masih hidup. Dengan kaidah yang sama, kakek gugur karena ayah, sedangkan nenek gugur karena ibu.
 
-Kaidah ini memiliki satu pengecualian, yaitu saudara seibu. Meskipun saudara seibu terhubung kepada almarhum melalui ibu, mereka tetap mewarisi bersama ibu.
+Kaidah ini memiliki satu pengecualian, yaitu saudara seibu. Meskipun terhubung dengan almarhum melalui ibu, saudara seibu tetap dapat mewarisi bersama ibu.
 
 ### Kaidah kedua: yang lebih dekat menggugurkan yang lebih jauh
 
-Dalam satu jenis kerabat, ahli waris yang lebih dekat kepada almarhum didahulukan. Pada jalur kerabat samping, urutannya dimulai dari saudara, kemudian keponakan, paman, dan sepupu. Kaidah yang sama juga berlaku pada keturunan dan leluhur, sehingga cucu menggugurkan cicit dan kakek yang lebih dekat menggugurkan kakek di atasnya.
+Dalam satu jenis kerabat, ahli waris yang lebih dekat dengan almarhum didahulukan. Pada jalur kerabat samping, urutannya dimulai dari saudara, kemudian keponakan, paman, dan sepupu. Kaidah yang sama berlaku pada keturunan dan leluhur. Karena itu, cucu menggugurkan cicit, sedangkan kakek yang lebih dekat menggugurkan kakek di atasnya.
 
 ### Kaidah ketiga: keturunan laki-laki menutup seluruh kerabat samping
 
-Anak laki-laki, atau cucu laki-laki dari anak laki-laki, menggugurkan seluruh [[hawasyi]], yaitu saudara, keponakan, paman, dan sepupu. Kaidah inilah yang menjelaskan mengapa kakak Pak Rahmat tidak mendapat bagian.
+Anak laki-laki, atau cucu laki-laki dari anak laki-laki, menggugurkan seluruh [[hawasyi]], yaitu saudara, keponakan, paman, dan sepupu. Kaidah ini menjelaskan mengapa kakak Pak Rahmat tidak mendapat bagian.
 
 ### Kaidah keempat: ayah menutup seluruh kerabat samping, sedangkan kakek menutup sebagian
 
-Seperti anak laki-laki, ayah juga menggugurkan seluruh kerabat samping. Adapun kakek memiliki cakupan yang lebih terbatas, yaitu menggugurkan saudara seibu dan kerabat samping yang berada di bawah saudara, seperti keponakan, paman, dan sepupu. Kedudukan kakek ketika bersama saudara kandung atau sebapak dibahas secara khusus pada [[>10-1-kakek-dan-saudara]].
+Seperti anak laki-laki, ayah juga menggugurkan seluruh kerabat samping. Kakek memiliki cakupan yang lebih terbatas. Ia menggugurkan saudara seibu dan kerabat samping yang berada di bawah saudara, seperti keponakan, paman, dan sepupu. Kedudukan kakek ketika bersama saudara kandung atau sebapak dibahas secara khusus pada [[>10-1-kakek-dan-saudara]].
 
 ### Kaidah kelima: saudara seibu paling mudah gugur
 
-Saudara seibu gugur oleh anak atau cucu, **baik laki-laki maupun perempuan**, serta oleh ayah dan kakek. Hal ini berbeda dengan saudara kandung, yang tidak gugur karena adanya anak perempuan.
+Saudara seibu gugur karena adanya anak atau cucu, **baik laki-laki maupun perempuan**, serta karena adanya ayah atau kakek. Hal ini berbeda dengan saudara kandung, yang tidak gugur hanya karena ada anak perempuan.
 
 ```dasar
 Gugurnya saudara kandung karena ayah, anak laki-laki, dan cucu laki-laki merupakan ijma', sebagaimana dinukil oleh Ibnu al-Mundzir dan an-Nawawi. Penghalang saudara seibu juga disepakati oleh empat madzhab.
@@ -209,7 +209,7 @@ penutup: Saudara seibu adalah kerabat samping yang paling mudah gugur, karena **
 
 ### Urutan pemeriksaan saat menghitung
 
-Ketika menghadapi sebuah kasus, kelima kaidah tersebut digunakan dengan urutan sebagai berikut. Urutan ini sama dengan urutan yang ditampilkan Lab pada langkah hajb, sehingga kamu dapat mencocokkannya ketika membuka contoh di Lab.
+Ketika menghadapi sebuah kasus, gunakan kelima kaidah tersebut dengan urutan berikut. Urutan ini sama dengan yang ditampilkan pada langkah hajb di Lab, sehingga hasilnya dapat dicocokkan ketika membuka contoh di sana.
 
 ```cara-berpikir
 judul: Urutan memeriksa siapa yang gugur
@@ -229,7 +229,7 @@ awal: AYAH, SAUDARA_KANDUNG, SAUDARA_SEIBU, PAMAN_KANDUNG
 tampil: status
 ```
 
-Untuk menguji pemahamanmu, perhatikan kasus berikut, yang memakai beberapa kaidah sekaligus.
+Untuk melihat bagaimana beberapa kaidah digunakan sekaligus, perhatikan kasus berikut.
 
 ```kasus
 cerita: Seorang suami wafat dan meninggalkan seorang istri, seorang anak perempuan, seorang saudara laki-laki sebapak, dan seorang paman kandung.
@@ -242,13 +242,13 @@ keterangan: SAUDARA_SEBAPAK tetap mendapat sisa karena anak perempuan tidak meng
 keterangan: PAMAN_KANDUNG gugur karena saudara lebih dekat daripada paman ([[#5b]])
 ```
 
-> **Satu bentuk gugur yang lain** Ahli waris yang hanya mengambil sisa juga gugur apabila bagian-bagian pasti telah menghabiskan seluruh harta. Dalam keadaan ini, ia gugur bukan karena ada orang yang lebih dekat, melainkan karena tidak ada lagi sisa harta yang dapat diambil.
+> **Satu bentuk gugur yang lain** Ahli waris yang hanya mengambil sisa juga dapat gugur apabila bagian-bagian pasti telah menghabiskan seluruh harta. Dalam keadaan ini, ia gugur bukan karena ada ahli waris yang lebih dekat, melainkan karena tidak ada lagi sisa harta yang dapat diambil.
 
-Daftar lengkap tentang siapa menggugurkan siapa, termasuk kasus cucu perempuan dan saudari sebapak yang lebih rumit, akan dibahas pada [[>5-2-tabel-hajb]].
+Daftar lengkap mengenai siapa menggugurkan siapa, termasuk kasus cucu perempuan dan saudari sebapak yang lebih rumit, akan dibahas pada [[>5-2-tabel-hajb]].
 
 ## Gugur, tetapi tetap mengurangi
 
-Bagian ini membahas hal yang paling sering terlewat. Ahli waris yang gugur karena adanya orang lain ternyata masih dapat **mengurangi bagian ahli waris lain**. Sebaliknya, kerabat yang terkena penghalang waris benar-benar dianggap tidak ada, sehingga ia tidak memengaruhi siapa pun.
+Ada satu hal penting yang sering terlewat. Seorang ahli waris yang gugur karena adanya ahli waris lain masih dapat **mengurangi bagian ahli waris lain**. Sebaliknya, kerabat yang terkena penghalang waris dianggap tidak ada sehingga tidak memengaruhi pembagian.
 
 ```peraga
 judul: Studi kasus
@@ -263,7 +263,7 @@ ahli waris: AYAH, IBU, SAUDARA_KANDUNG
 penjelasan: Saudara yang membunuh dianggap tidak ada, sehingga saudara yang dihitung tinggal satu orang. Satu saudara tidak menurunkan bagian ibu, sehingga **bagian ibu kembali menjadi 1/3**.
 ```
 
-Perbedaan hasil tersebut berasal dari perbedaan sebab yang telah kita bahas pada [[#2b]]. Saudara yang gugur karena ayah tetap berstatus sebagai saudara almarhum; ia hanya didahului oleh ahli waris yang lebih kuat. Sementara itu, saudara yang membunuh dianggap tidak ada sejak awal, sehingga ia tidak dihitung sama sekali.
+Perbedaan hasil tersebut berasal dari perbedaan sebab yang telah dibahas pada [[#2b]]. Saudara yang gugur karena ayah tetap berstatus sebagai saudara almarhum. Ia hanya didahului oleh ahli waris yang lebih kuat. Sementara itu, saudara yang membunuh dianggap tidak ada sejak awal sehingga tidak dihitung sama sekali.
 
 | | Gugur karena orang lain (*mahjub*) | Terkena penghalang waris (*mamnu'*) |
 |---|---|---|
@@ -283,7 +283,7 @@ rujukan: R06-6
 
 ## Empat kelompok ahli waris
 
-Seluruh pembahasan di atas dapat diringkas ke dalam empat kelompok. Pengelompokan ini didasarkan pada dua pertanyaan, yaitu apakah seorang ahli waris dapat menggugurkan orang lain, dan apakah ia sendiri dapat digugurkan.
+Seluruh pembahasan tersebut dapat diringkas menjadi empat kelompok. Pengelompokan ini didasarkan pada dua pertanyaan: apakah seorang ahli waris dapat menggugurkan orang lain, dan apakah ia sendiri dapat digugurkan?
 
 ```matriks
 kolom: Dapat menggugurkan | Tidak menggugurkan
@@ -291,7 +291,7 @@ Tidak dapat gugur | **Ayah, ibu, anak laki-laki, anak perempuan** menghalangi, t
 Dapat gugur | **Cucu, kakek, nenek, saudara kandung dan sebapak, dan lainnya** dapat menggugurkan dan dapat gugur | **Saudara seibu** dapat gugur, tetapi tidak menggugurkan siapa pun
 ```
 
-Pengelompokan ini berguna sebagai pemeriksaan cepat terhadap hasil hitunganmu. Jika hitunganmu menunjukkan bahwa istri menggugurkan seseorang, atau bahwa anak perempuan gugur karena orang lain, berarti ada langkah yang keliru.
+Pengelompokan ini dapat digunakan untuk memeriksa hasil perhitungan dengan cepat. Jika hasilnya menunjukkan bahwa istri menggugurkan seseorang, atau bahwa anak perempuan gugur karena ahli waris lain, berarti ada langkah yang perlu diperiksa kembali.
 
 ## Cek pemahaman
 
@@ -330,10 +330,10 @@ rujukan: R06-3, R06-5
 
 ## Ringkasnya
 
-Hajb adalah tergesernya seorang ahli waris karena adanya ahli waris lain. Sebelum memeriksa hajb, kerabat yang terkena penghalang waris harus dikeluarkan terlebih dahulu, karena mereka dianggap tidak ada.
+Hajb adalah keadaan ketika seorang ahli waris tergeser karena adanya ahli waris lain. Sebelum memeriksa hajb, kerabat yang terkena penghalang waris harus dikeluarkan lebih dahulu karena mereka dianggap tidak ada.
 
-- **Hajb nuqshan** adalah berkurangnya bagian. Pemicunya ada empat, yaitu adanya anak, dua saudara atau lebih, perempuan yang kedudukannya lebih kuat, dan berbagi bagian atau 'aul.
-- **Hajb hirman** adalah gugurnya seluruh bagian. Kaidahnya dapat diingat dengan tiga kata: melalui, dekat, dan lurus. Saudara seibu adalah kerabat yang paling mudah gugur.
+- **Hajb nuqshan** adalah berkurangnya bagian seorang ahli waris. Ada empat pemicu: adanya anak, dua saudara atau lebih, perempuan yang kedudukannya lebih kuat, serta berbagi bagian atau 'aul.
+- **Hajb hirman** adalah gugurnya seluruh bagian seorang ahli waris. Kaidahnya dapat diingat melalui tiga kata: melalui, dekat, dan lurus. Saudara seibu adalah kerabat yang paling mudah gugur.
 - Enam ahli waris yang tidak pernah gugur adalah ayah, ibu, anak laki-laki, anak perempuan, suami, dan istri.
 - Ahli waris yang gugur karena orang lain masih dapat mengurangi bagian ibu, sedangkan kerabat yang terkena penghalang waris tidak.
 
