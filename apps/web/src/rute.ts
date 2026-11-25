@@ -3,6 +3,7 @@
 // `#/` (atau hash tak dikenal) = Beranda; `#/hitung` = awal kalkulator. Kasus yang sedang dikerjakan punya id sendiri di URL
 // (`#/hitung/<id>` = hasil, `/langkah/3` = wizard langkah 3, `/cerita`), jadi muat ulang kembali ke halaman itu.
 // Soal hitung: `#/latihan/soal/<kode>` (soal tidak masuk riwayat, jadi tidak punya id kasus).
+// Contoh jadi dari materi: `#/lab/contoh/<slug>/<indeksBlok>`.
 // Segmen ekstra pada `/langkah/3/<n>` (URL lama dari alur Babak) diabaikan.
 
 import { useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ export type Rute =
   | { halaman: 'beranda' }
   | { halaman: 'kalkulator'; kasus?: PosisiKasus; soal?: string }
   | { halaman: 'belajar' }
+  | { halaman: 'contoh'; slug: string; /** -1 = bukan bilangan bulat tak negatif (alamat ketikan). */ indeks: number }
   | { halaman: 'materi'; slug: string }
   | { halaman: 'latihan'; tab: 'hitung' | 'kuis'; paket?: string }
   | { halaman: 'faq'; id?: string }
@@ -42,6 +44,10 @@ export function bacaRute(hash: string): Rute {
     }
     return { halaman: 'kalkulator', kasus: { id: parameter, layar: 'hasil' } };
   }
+  if (halaman === 'lab' && parameter === 'contoh' && bagian) {
+    const indeks = /^\d+$/.test(langkah ?? '') ? Number(langkah) : -1;
+    return { halaman: 'contoh', slug: bagian, indeks };
+  }
   if (halaman === 'belajar') return parameter ? { halaman: 'materi', slug: parameter } : { halaman };
   if (halaman === 'latihan') {
     // Soal hitung punya alamat sendiri; ia dikerjakan di kalkulator, jadi rutenya tetap 'kalkulator'. Kode tak dikenal ditangani Aplikasi.
@@ -64,6 +70,8 @@ export function bacaRute(hash: string): Rute {
 }
 
 export const tautanBelajar = (slug?: string) => `#/belajar${slug ? `/${encodeURIComponent(slug)}` : ''}`;
+/** Contoh jadi dari blok kasus materi: `#/lab/contoh/<slug pelajaran>/<indeks blok>`; kasusnya dibaca dari konten, bukan dari URL. */
+export const tautanContoh = (slug: string, indeksBlok: number) => `#/lab/contoh/${encodeURIComponent(slug)}/${indeksBlok}`;
 export const tautanLatihan = (tab: 'hitung' | 'kuis' = 'hitung', paket?: string) =>
   (tab === 'kuis' ? `#/latihan/kuis${paket ? `/${encodeURIComponent(paket)}` : ''}` : '#/latihan');
 /** Kasus yang dibagikan: `#/k/<slug>`; slug = huruf kecil, angka, strip (sama dengan check di tabel kasus_dibagikan). */
@@ -96,6 +104,7 @@ export function tautanKasus(id: string, keadaan: { layar: string; langkah: numbe
 /** Halaman induk untuk tombol Kembali: selalu naik satu tingkat, bukan ke halaman yang terakhir dibuka. */
 export function tautanInduk(rute: Rute): string {
   switch (rute.halaman) {
+    case 'contoh': return tautanBelajar(rute.slug);
     case 'materi': case 'faq': case 'glosarium': return tautanBelajar();
     case 'tanya-jawab': return rute.slug ? tautanTanyaJawab() : tautanBelajar();
     case 'riwayat': return TAUTAN_KALKULATOR;

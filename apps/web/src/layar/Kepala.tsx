@@ -23,7 +23,7 @@ export function Kepala({ halaman, adaTur, saatKeHitung, saatTur, akun }: Props) 
   const menu: Array<{ label: string; ikon: NamaIkon; tautan: string; aktif: boolean; saatKlik?: () => void }> = [
     { label: t('umum.beranda'), ikon: 'rumah', tautan: TAUTAN_BERANDA, aktif: halaman === 'beranda' },
     { label: t('umum.belajar'), ikon: 'pelajaran', tautan: tautanBelajar(), aktif: ['belajar', 'materi', 'glosarium', 'faq', 'tanya-jawab'].includes(halaman) },
-    { label: NAMA_LAB, ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat', saatKlik: saatKeHitung },
+    { label: NAMA_LAB, ikon: 'hitung', tautan: TAUTAN_KALKULATOR, aktif: halaman === 'kalkulator' || halaman === 'riwayat' || halaman === 'contoh', saatKlik: saatKeHitung },
     { label: t('umum.latihan'), ikon: 'kuis', tautan: tautanLatihan(), aktif: halaman === 'latihan' },
     { label: t('umum.rujukan'), ikon: 'rujukan', tautan: tautanRujukan(), aktif: halaman === 'rujukan' },
   ];

@@ -5,7 +5,7 @@
 // Kaki bingkai: catatan + tautan Ubah data · Reset skenario. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
-import { useEffect, useMemo, useReducer, useRef, useState } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
 import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
 import type { RepositoriBagikan } from '@waris/data';
@@ -96,6 +96,8 @@ interface Props {
   urutanLatihan?: { nomor: number; jumlah: number; bab: string; judul: string; saatBerikutnya?: (() => void) | undefined } | undefined;
   /** Hasil soal selesai atau contoh materi: bisa disalin jadi kasus sendiri; soal selesai juga bisa dikerjakan ulang. */
   salinan?: { saatJadikanKasus: () => void; saatKerjakanUlang?: (() => void) | undefined; soal: boolean } | undefined;
+  /** Pita di hero (contoh jadi dari materi): keterangan asal + tautan kembali. */
+  pita?: ReactNode | undefined;
   /** Soal latihan tidak disimpan otomatis (spec A4). */
   tanpaSimpan?: boolean | undefined;
   /** "Hapus kasus ini" sudah dikonfirmasi: pemanggil menghapus tuntas dan menyiapkan Urungkan (layar ini ikut hilang). */
@@ -111,7 +113,7 @@ const aturMadzhab = (kasus: Kasus, ruleset: Ruleset): Kasus => {
 /** Pohon lebih besar dari ini cukup tampil diam. */
 const BATAS_ALIRAN = 40;
 
-export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, saatHapusKasus, salinan }: Props) {
+export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, saatHapusKasus, salinan, pita }: Props) {
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const tombolUbah = <Tombol varian="secondary" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: 1 })}>{t('hitung.ubah_data')}</Tombol>;
 
@@ -153,10 +155,10 @@ export function Hasil({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
     );
   }
   return <PenyediaSorot><HasilOkLayar kasus={kasus} idSesi={idSesi} tujuan={tujuan} kirim={kirim} saatDikerjakan={saatDikerjakan} soal={soal} urutanLatihan={urutanLatihan} terkunci={terkunci} hanyaBaca={hanyaBaca} bagikan={bagikan}
-    tanpaSimpan={tanpaSimpan} saatHapusKasus={saatHapusKasus} salinan={salinan} /></PenyediaSorot>;
+    tanpaSimpan={tanpaSimpan} saatHapusKasus={saatHapusKasus} salinan={salinan} pita={pita} /></PenyediaSorot>;
 }
 
-function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, saatHapusKasus, salinan }: Props) {
+function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urutanLatihan, terkunci, hanyaBaca, bagikan, tanpaSimpan, saatHapusKasus, salinan, pita }: Props) {
   const [, segarkan] = useReducer((n: number) => n + 1, 0);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
@@ -397,6 +399,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
         </div>
         <div className="isi-hero">
           <div className="judul-soal">
+            {pita && <p className="lok-hero">{pita}</p>}
             {salinan && <p className="lok-hero">{salinan.soal ? t('hitung.soal_latihan_pembahasan') : t('hitung.contoh_materi')}</p>}
             {!adalahBelajar && (
               <div className="nama-kasus"><span>{namaKasus}</span>

@@ -13,7 +13,7 @@ import { jalankan, type HasilOk, kasusDariSoal } from '@waris/latihan';
 import type { Kasus } from '../../kasus';
 import { catatAktivitas } from '../../preferensi';
 import { bacaPelajaranSelesai, tandaiPelajaranSelesai } from '../../progres';
-import { tautanBelajar } from '../../rute';
+import { tautanBelajar, tautanContoh } from '../../rute';
 import { KartuSoalKuis } from './KartuSoalKuis';
 import { angka, panah, panahMundur, t } from '../../terjemah';
 import { Sebaris } from './Sebaris';
@@ -28,14 +28,7 @@ import { Peraga } from './blok/Peraga';
 import { Simulasi } from './blok/Simulasi';
 import { pelajaranPratinjau } from './pratinjauMateri';
 
-interface Props {
-  slug: string;
-  /** Kasus yang sedang ada di kalkulator; bila ada, "Buka di Hitung" minta konfirmasi dulu. */
-  kasusSekarang: Kasus | null;
-  saatCoba: (kasus: Kasus) => void;
-}
-
-export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
+export function Materi({ slug }: { slug: string }) {
   const pelajaran = cariPelajaran(slug) ?? pelajaranPratinjau(slug);
   const ujung = useRef<HTMLElement>(null);
   const banner = useRef<HTMLElement>(null);
@@ -100,7 +93,7 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
           {pelajaran.singgung && pelajaran.singgung.length > 0 && (
             <p className="singgung">{t('belajar.terkait')} <Sebaris isi={pelajaran.singgung.map((slugLain): Potongan => ({ jenis: 'tautanPelajaran', slug: slugLain }))} /></p>
           )}
-          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} nomor={nomorJudul.get(urutan)} soal={nomorSoal.get(urutan)} />)}
+          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} contoh={{ slug, indeks: urutan }} nomor={nomorJudul.get(urutan)} soal={nomorSoal.get(urutan)} />)}
         </article>
         <nav ref={ujung} className="navigasi-materi" aria-label={t('belajar.navigasi_pelajaran')}>
           <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('belajar.sebelumnya')}`} />
@@ -164,14 +157,19 @@ function nomorUrutSoal(daftarBlok: Blok[]): Map<number, { nomor: number; total: 
   return new Map(indeksSoal.map((indeks, urutan) => [indeks, { nomor: urutan + 1, total: indeksSoal.length }]));
 }
 
-interface PropsBlok extends Omit<Props, 'slug'> {
+interface PropsBlok {
   blok: Blok;
+  /** Letak blok di pelajaran; ada = blok kasus menautkan ke contoh jadi di Lab. Blok dalam lipat tidak punya indeks sendiri. */
+  contoh?: { slug: string; indeks: number } | undefined;
+  /** FAQ dan Tanya Jawab (bukan pelajaran) membuka kasusnya langsung di Hitung; bila kasus lain ada, minta konfirmasi dulu. */
+  kasusSekarang?: Kasus | null | undefined;
+  saatCoba?: ((kasus: Kasus) => void) | undefined;
   /** Nomor bagian untuk blok judul (2, 2b). */
   nomor?: string | undefined;
   soal?: { nomor: number; total: number } | undefined;
 }
 
-export function BlokMateri({ blok, kasusSekarang, saatCoba, nomor, soal }: PropsBlok) {
+export function BlokMateri({ blok, contoh, kasusSekarang, saatCoba, nomor, soal }: PropsBlok) {
   switch (blok.jenis) {
     case 'judul':
       if (!nomor) return blok.tingkat === 2 ? <h2><Sebaris isi={blok.isi} /></h2> : <h3><Sebaris isi={blok.isi} /></h3>;
@@ -193,8 +191,8 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba, nomor, soal }: Props
           </table>
         </div>
       );
-    case 'kasus': return <ContohDihitung blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
-    // Kasus berkas (munasakhat dan kasus belum pasti) butuh mode contoh jadi di Lab (F3); sementara tidak dirender.
+    case 'kasus': return <ContohDihitung blok={blok} contoh={contoh} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
+    // Kasus berkas (munasakhat dan kasus belum pasti) belum punya sumber di aplikasi (menyusul); sementara tidak dirender.
     case 'kasusBerkas': case 'videoMenyusul': return null;
     case 'alur': return <Alur blok={blok} />;
     case 'caraBerpikir': return <CaraBerpikir blok={blok} />;
@@ -205,7 +203,7 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba, nomor, soal }: Props
     case 'ingat': return <Ingat blok={blok} />;
     case 'dasar': return <Dasar blok={blok} />;
     case 'tebak': return <Tebak blok={blok} />;
-    case 'lipat': return <Lipat blok={blok}>{blok.blok.map((isi, urutan) => <BlokMateri key={urutan} blok={isi} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}</Lipat>;
+    case 'lipat': return <Lipat blok={blok}>{blok.blok.map((isi, urutan) => <BlokMateri key={urutan} blok={isi} />)}</Lipat>;
     case 'matriks': return <Matriks blok={blok} />;
     case 'soal': return <KartuSoalKuis soal={blok.soal} label={t('umum.soal_nomor_dari_total', { nomor: soal?.nomor ?? 1, total: soal?.total ?? 1 })} />;
     case 'video': return (
@@ -224,9 +222,9 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba, nomor, soal }: Props
   }
 }
 
-function ContohDihitung({ blok, kasusSekarang, saatCoba }: { blok: Extract<Blok, { jenis: 'kasus' }> } & Omit<Props, 'slug'>) {
-  const contoh: ContohKasus = blok.kasus;
-  const kasus = useMemo(() => kasusDariSoal(contoh), [contoh]);
+function ContohDihitung({ blok, contoh, kasusSekarang, saatCoba }: { blok: Extract<Blok, { jenis: 'kasus' }> } & Pick<PropsBlok, 'contoh' | 'kasusSekarang' | 'saatCoba'>) {
+  const isiKasus: ContohKasus = blok.kasus;
+  const kasus = useMemo(() => kasusDariSoal(isiKasus), [isiKasus]);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') {
     return <p className="kartu kartu-galat" role="alert">{t('belajar.contoh_ini_tidak_bisa_dihitung_laporkan')}</p>;
@@ -243,7 +241,9 @@ function ContohDihitung({ blok, kasusSekarang, saatCoba }: { blok: Extract<Blok,
           {Object.entries(blok.keterangan).map(([kunci, isi]) => <li key={kunci}><b>{labelKunci(kunci)}</b> <Sebaris isi={isi} /></li>)}
         </ul>
       )}
-      <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>{t('belajar.buka_di_hitung')}</TombolBukaKasus>
+      {contoh
+        ? <a className="tautan-aksi" href={tautanContoh(contoh.slug, contoh.indeks)}>{t('belajar.lihat_langkah_lengkapnya_di_lab')}</a>
+        : saatCoba && <TombolBukaKasus kasusSekarang={kasusSekarang ?? null} saatBuka={() => saatCoba(kasus)}>{t('belajar.buka_di_hitung')}</TombolBukaKasus>}
     </figure>
   );
 }

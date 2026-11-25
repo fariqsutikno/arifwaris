@@ -4,7 +4,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { Materi } from '../layar/belajar/Materi';
 
-const tampilkan = (slug: string) => render(<Materi slug={`pratinjau-${slug}`} kasusSekarang={null} saatCoba={() => {}} />);
+const tampilkan = (slug: string) => render(<Materi slug={`pratinjau-${slug}`} />);
 
 describe('blok materi baru', () => {
   it.each(['5-1-hajb', '6-2-aul'])('%s: semua blok terhitung, tanpa kartu galat', slug => {

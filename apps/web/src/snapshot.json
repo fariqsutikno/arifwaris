@@ -30261,6 +30261,41 @@
    "id": "Harta yang tersisa tidak cukup untuk semua sisa bagian karena ada kelebihan di atas. Kami tidak membagi ulang diam-diam.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.lihat_langkah_lengkapnya_di_lab",
+   "halaman": "belajar",
+   "id": "Lihat langkah lengkapnya di Lab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.contoh_tidak_ditemukan",
+   "halaman": "belajar",
+   "id": "Contoh ini tidak ditemukan. Mungkin pelajarannya sudah berubah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.contoh_dari_pelajaran_bagian",
+   "halaman": "belajar",
+   "id": "Contoh dari pelajaran {pelajaran}, bagian {bagian}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.contoh_dari_pelajaran",
+   "halaman": "belajar",
+   "id": "Contoh dari pelajaran {pelajaran}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.kembali_ke_pelajaran",
+   "halaman": "belajar",
+   "id": "Kembali ke pelajaran",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

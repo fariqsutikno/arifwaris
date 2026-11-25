@@ -6,7 +6,6 @@ import { hitungHarapan } from '../layar/belajar/contoh';
 import { Belajar } from '../layar/belajar/Belajar';
 import { Materi } from '../layar/belajar/Materi';
 import { bacaPelajaranSelesai } from '../progres';
-import { kasusDariSoal } from '@waris/latihan';
 
 const semuaContoh = daftarPelajaran().flatMap(pelajaran => pelajaran.blok.flatMap((blok, urutan) =>
   blok.jenis === 'kasus' ? [[`${pelajaran.slug} #${urutan}`, blok.kasus] as [string, ContohKasus]] : []));
@@ -32,8 +31,7 @@ describe('halaman belajar', () => {
 
   it('pelajaran dengan contoh: tabel dari engine, tautan dalil, dan selesai tersimpan', () => {
     const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
-    const dicoba: unknown[] = [];
-    render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={kasus => dicoba.push(kasus)} />);
+    render(<Materi slug={pelajaran.slug} />);
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(pelajaran.judul);
     expect(document.querySelector('table.faraidh')).toBeTruthy();
     // Chip dalil membuka lembar di halaman yang sama, bukan pindah ke Rujukan.
@@ -42,8 +40,8 @@ describe('halaman belajar', () => {
     expect(within(lembar).getByRole('link', { name: 'Buka di Rujukan' }).getAttribute('href')).toMatch(/^#\/rujukan\/R/);
     fireEvent.keyDown(lembar, { key: 'Escape' });
     expect(screen.queryByRole('dialog')).toBeNull();
-    fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);
-    expect(dicoba).toHaveLength(1);
+    expect(screen.getAllByRole('link', { name: 'Lihat langkah lengkapnya di Lab' })[0]!.getAttribute('href')).toMatch(/^#\/lab\/contoh\/[^/]+\/\d+$/);
+    expect(screen.queryByRole('button', { name: 'Buka di Hitung' })).toBeNull();
     const navigasi = screen.getByRole('navigation', { name: 'Navigasi pelajaran' });
     expect(within(navigasi).getByRole('link', { name: 'Beranda belajar' }).getAttribute('href')).toBe('#/belajar');
     fireEvent.click(within(navigasi).getByRole('link', { name: 'Berikutnya →' }));
@@ -53,25 +51,14 @@ describe('halaman belajar', () => {
 
   it('cek pemahaman di materi: pilihan berhuruf, pembahasan muncul setelah memilih', () => {
     const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kuis'))!;
-    render(<Materi slug={pelajaran.slug} kasusSekarang={null} saatCoba={() => {}} />);
+    render(<Materi slug={pelajaran.slug} />);
     const kartu = document.querySelector('fieldset.kartu-kuis') as HTMLElement;
     fireEvent.click(within(kartu).getByRole('button', { name: /^A\. / }));
     expect(within(kartu).getByRole('status').textContent).toMatch(/Benar|Belum tepat/);
   });
 
-  it('coba di kalkulator saat ada kasus lain: tanya dulu', () => {
-    const pelajaran = daftarPelajaran().find(isi => isi.blok.some(blok => blok.jenis === 'kasus'))!;
-    const dicoba: unknown[] = [];
-    render(<Materi slug={pelajaran.slug} kasusSekarang={kasusDariSoal(semuaContoh[0]![1])} saatCoba={kasus => dicoba.push(kasus)} />);
-    fireEvent.click(screen.getAllByRole('button', { name: 'Buka di Hitung' })[0]!);
-    expect(dicoba).toHaveLength(0);
-    expect(screen.getByRole('alertdialog').textContent).toMatch(/tersimpan di Riwayat hitung/);
-    fireEvent.click(screen.getByRole('button', { name: 'Buka' }));
-    expect(dicoba).toHaveLength(1);
-  });
-
   it('slug tak dikenal tidak membuat halaman rusak', () => {
-    render(<Materi slug="tidak-ada" kasusSekarang={null} saatCoba={() => {}} />);
+    render(<Materi slug="tidak-ada" />);
     expect(screen.getByRole('alert').textContent).toMatch(/tidak ditemukan/);
   });
 });

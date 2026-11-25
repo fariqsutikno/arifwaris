@@ -30,6 +30,7 @@ import { TanyaJawab } from './layar/belajar/TanyaJawab';
 import { Glosarium } from './layar/belajar/Glosarium';
 import { Latihan } from './layar/belajar/Latihan';
 import { Materi } from './layar/belajar/Materi';
+import { ContohJadi } from './layar/belajar/ContohJadi';
 import { cariSoalHitung, daftarSoalHitung, revisiIdSoalHitung } from './konten/sumber';
 import { bobotXpSoal } from './tanggaBantuan';
 import { judulTopik, urutanSoalHitung } from './layar/belajar/KuisKonsep';
@@ -268,11 +269,12 @@ export function Aplikasi() {
       )}
       <PembaruanKonten />
       <SumberNotifikasi sesi={sesi} repo={repoAkun} />
-      {!['beranda', 'kalkulator', 'belajar', 'materi', 'riwayat', 'latihan', 'rujukan', 'dibagikan', 'privasi', 'syarat'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
+      {!['beranda', 'kalkulator', 'belajar', 'materi', 'contoh', 'riwayat', 'latihan', 'rujukan', 'dibagikan', 'privasi', 'syarat'].includes(rute.halaman) && <KepalaHalaman rute={rute} />}
       {rute.halaman === 'beranda' ? <Beranda kasusTerakhir={kasusTerakhir} saatKeHitung={keAwalHitung} saatCoba={cobaDiKalkulator} saatKerjakanSoal={soal => kerjakanSoal(soal)} sesi={sesi}
           saatMasuk={masukGoogle} />
         : rute.halaman === 'belajar' ? <Belajar />
-        : rute.halaman === 'materi' ? <Materi slug={rute.slug} kasusSekarang={kasus} saatCoba={cobaDiKalkulator} />
+        : rute.halaman === 'materi' ? <Materi slug={rute.slug} />
+        : rute.halaman === 'contoh' ? <ContohJadi slug={rute.slug} indeks={rute.indeks} />
         : rute.halaman === 'latihan' ? <Latihan tab={rute.tab} paket={rute.paket} kasusSekarang={kasus} saatKerjakan={soal => kerjakanSoal(soal)} />
         : rute.halaman === 'peringkat' ? <Peringkat sesi={sesi} repo={repoAkun} />
         : rute.halaman === 'privasi' ? <Privasi />
