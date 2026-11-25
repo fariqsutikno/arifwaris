@@ -7,7 +7,7 @@ Pemicu: pemilik meminta konsep AMIN (*AI Mawaris Interaktif*). Arah dari pemilik
   fitur supaya pengguna memakai aplikasi secara maksimal.
 - Tujuan satu kalimat: **memaksimalkan pengalaman belajar pengguna.**
 
-Status: **tahap 1–3 selesai; keputusan pemilik 2026-11-25 masuk (bagian 8)**. Bagian 6 sudah disesuaikan dengan
+Status: **tahap 1–3 selesai; keputusan pemilik 2026-11-25 masuk (bagian 8); mockup revisi 1 di `mockup-amin.html`**. Bagian 6 sudah disesuaikan dengan
 keputusan itu. Berikutnya: mockup, lalu spec.
 Label: [Fakta-kode] = dibaca dari kode/dokumen hari ini; [Bukti] = riset luar; [Asumsi] = belum diuji ke pengguna.
 
