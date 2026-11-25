@@ -5,7 +5,7 @@
 // Navigasi bawah: Sebelumnya · Beranda belajar · Berikutnya, gayanya setara.
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { type Blok, type ContohKasus, type Pelajaran } from '@waris/content';
+import { nomorBagian, type Blok, type ContohKasus, type Pelajaran, type Potongan } from '@waris/content';
 import { cariPelajaran, daftarModul, daftarPelajaran, daftarSoalKuis } from '../../konten/sumber';
 import { TabelFaraidh } from '../../hasil/TabelFaraidh';
 import { ringkas } from '../../hasil/ringkasan';
@@ -21,7 +21,12 @@ import { TombolBukaKasus } from './TombolBukaKasus';
 import { Bagikan } from '../../ui/Bagikan';
 import { Ikon } from '../../ui/Ikon';
 import { Laci } from '../../ui/Laci';
-import { ambilBagian, BilahBaca, idBagian, RailIsi, useBacaan } from './DaftarIsi';
+import { ambilBagian, BilahBaca, idBagian, nomorTampil, RailIsi, useBacaan } from './DaftarIsi';
+import { Alur, Bandingan, CaraBerpikir, Dasar, Ingat, Lipat, Matriks, Peta, Tebak } from './blok/BlokIsi';
+import { labelKunci } from './blok/hitungContoh';
+import { Peraga } from './blok/Peraga';
+import { Simulasi } from './blok/Simulasi';
+import { pelajaranPratinjau } from './pratinjauMateri';
 
 interface Props {
   slug: string;
@@ -31,7 +36,7 @@ interface Props {
 }
 
 export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
-  const pelajaran = cariPelajaran(slug);
+  const pelajaran = cariPelajaran(slug) ?? pelajaranPratinjau(slug);
   const ujung = useRef<HTMLElement>(null);
   const banner = useRef<HTMLElement>(null);
   const artikel = useRef<HTMLElement>(null);
@@ -70,8 +75,9 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
   const sebelumnya = daftarPelajaran()[indeks - 1];
   const berikutnya = daftarPelajaran()[indeks + 1];
   const modul = daftarModul().find(modulIni => modulIni.nomor === pelajaran.modul);
-  // Judul bagian (h2) diberi id berurutan supaya daftar isi bisa menunjuk dan melacaknya.
-  const idJudul = pelajaran.blok.reduce<(string | undefined)[]>((hasil, blok) => [...hasil, blok.jenis === 'judul' && blok.tingkat === 2 ? idBagian(hasil.filter(Boolean).length) : undefined], []);
+  // Nomor bagian (2, 2b) dari satu fungsi yang sama dengan pemeriksa materi; jadi jangkar dan label judul.
+  const nomorJudul = new Map(nomorBagian(pelajaran.blok).map(bagian => [bagian.indeksBlok, bagian.nomor]));
+  const nomorSoal = nomorUrutSoal(pelajaran.blok);
 
   return (
     <div className="halaman-beranda halaman-materi">
@@ -84,13 +90,17 @@ export function Materi({ slug, kasusSekarang, saatCoba }: Props) {
         <h1>{pelajaran.judul}</h1>
         {pelajaran.perluCek && <p className="lencana-draf">{t('umum.draf_belum_direview_tim_keilmuan')}</p>}
         <p className="lead">{pelajaran.tujuan}</p>
+        {pelajaran.durasi && <p className="meta-materi"><Ikon nama="jam" ukuran={16} />{t('belajar.durasi_menit', { menit: angka(String(pelajaran.durasi)) })}</p>}
       </header>
       <div className="tata-materi">
       <BilahBaca judul={pelajaran.judul} bagian={bagian} posisi={posisi} />
       <SidebarMateri key={pelajaran.slug} aktif={pelajaran} />
       <main className="konten-materi tumpuk">
         <article className="isi-materi" ref={artikel}>
-          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} idJudul={idJudul[urutan]} />)}
+          {pelajaran.singgung && pelajaran.singgung.length > 0 && (
+            <p className="singgung">{t('belajar.terkait')} <Sebaris isi={pelajaran.singgung.map((slugLain): Potongan => ({ jenis: 'tautanPelajaran', slug: slugLain }))} /></p>
+          )}
+          {pelajaran.blok.map((blok, urutan) => <BlokMateri key={urutan} blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} nomor={nomorJudul.get(urutan)} soal={nomorSoal.get(urutan)} />)}
         </article>
         <nav ref={ujung} className="navigasi-materi" aria-label={t('belajar.navigasi_pelajaran')}>
           <TautanNavigasi tujuan={sebelumnya} label={`${panahMundur()} ${t('belajar.sebelumnya')}`} />
@@ -148,9 +158,26 @@ function SidebarMateri({ aktif }: { aktif: Pelajaran }) {
   );
 }
 
-export function BlokMateri({ blok, kasusSekarang, saatCoba, idJudul }: { blok: Blok; idJudul?: string | undefined } & Omit<Props, 'slug'>) {
+/** Soal sebaris diberi nomor "Soal n dari total" di seluruh pelajaran. */
+function nomorUrutSoal(daftarBlok: Blok[]): Map<number, { nomor: number; total: number }> {
+  const indeksSoal = daftarBlok.flatMap((blok, indeks) => (blok.jenis === 'soal' ? [indeks] : []));
+  return new Map(indeksSoal.map((indeks, urutan) => [indeks, { nomor: urutan + 1, total: indeksSoal.length }]));
+}
+
+interface PropsBlok extends Omit<Props, 'slug'> {
+  blok: Blok;
+  /** Nomor bagian untuk blok judul (2, 2b). */
+  nomor?: string | undefined;
+  soal?: { nomor: number; total: number } | undefined;
+}
+
+export function BlokMateri({ blok, kasusSekarang, saatCoba, nomor, soal }: PropsBlok) {
   switch (blok.jenis) {
-    case 'judul': return blok.tingkat === 2 ? <h2 id={idJudul}><Sebaris isi={blok.isi} /></h2> : <h3><Sebaris isi={blok.isi} /></h3>;
+    case 'judul':
+      if (!nomor) return blok.tingkat === 2 ? <h2><Sebaris isi={blok.isi} /></h2> : <h3><Sebaris isi={blok.isi} /></h3>;
+      return blok.tingkat === 2
+        ? <h2 id={idBagian(nomor)} data-nomor={angka(nomorTampil(nomor))}><Sebaris isi={blok.isi} /></h2>
+        : <h3 id={idBagian(nomor)}><span className="sub-nomor">{angka(nomor)}</span><span><Sebaris isi={blok.isi} /></span></h3>;
     case 'paragraf': return <p><Sebaris isi={blok.isi} /></p>;
     case 'catatan': return <aside className="catatan-materi"><Sebaris isi={blok.isi} /></aside>;
     case 'daftar': {
@@ -166,7 +193,21 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba, idJudul }: { blok: B
           </table>
         </div>
       );
-    case 'kasus': return <ContohDihitung contoh={blok.kasus} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
+    case 'kasus': return <ContohDihitung blok={blok} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />;
+    // Kasus berkas (munasakhat dan kasus belum pasti) butuh mode contoh jadi di Lab (F3); sementara tidak dirender.
+    case 'kasusBerkas': case 'videoMenyusul': return null;
+    case 'alur': return <Alur blok={blok} />;
+    case 'caraBerpikir': return <CaraBerpikir blok={blok} />;
+    case 'peraga': return <Peraga blok={blok} />;
+    case 'bandingan': return <Bandingan blok={blok} />;
+    case 'simulasi': return <Simulasi blok={blok} />;
+    case 'peta': return <Peta blok={blok} />;
+    case 'ingat': return <Ingat blok={blok} />;
+    case 'dasar': return <Dasar blok={blok} />;
+    case 'tebak': return <Tebak blok={blok} />;
+    case 'lipat': return <Lipat blok={blok}>{blok.blok.map((isi, urutan) => <BlokMateri key={urutan} blok={isi} kasusSekarang={kasusSekarang} saatCoba={saatCoba} />)}</Lipat>;
+    case 'matriks': return <Matriks blok={blok} />;
+    case 'soal': return <KartuSoalKuis soal={blok.soal} label={t('umum.soal_nomor_dari_total', { nomor: soal?.nomor ?? 1, total: soal?.total ?? 1 })} />;
     case 'video': return (
       <figure className="video-materi">
         <iframe src={`https://www.youtube-nocookie.com/embed/${blok.idYoutube}`} title={blok.judul} loading="lazy"
@@ -183,7 +224,8 @@ export function BlokMateri({ blok, kasusSekarang, saatCoba, idJudul }: { blok: B
   }
 }
 
-function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKasus } & Omit<Props, 'slug'>) {
+function ContohDihitung({ blok, kasusSekarang, saatCoba }: { blok: Extract<Blok, { jenis: 'kasus' }> } & Omit<Props, 'slug'>) {
+  const contoh: ContohKasus = blok.kasus;
   const kasus = useMemo(() => kasusDariSoal(contoh), [contoh]);
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   if (tampil.jenis !== 'biasa' || tampil.hasil.status !== 'OK') {
@@ -191,10 +233,16 @@ function ContohDihitung({ contoh, kasusSekarang, saatCoba }: { contoh: ContohKas
   }
   return (
     <figure className="contoh-kasus">
-      <figcaption className="label-langkah">{t('belajar.dihitung_otomatis')}</figcaption>
+      <figcaption className="label-langkah">{blok.judul ?? t('belajar.dihitung_otomatis')}</figcaption>
+      {blok.cerita && <p className="cerita-kasus"><Sebaris isi={blok.cerita} /></p>}
       <div className="wadah-tabel">
         <TabelFaraidh sedangMenebak={false} hasil={tampil.hasil as HasilOk} ringkasan={ringkas(kasus, tampil)} sembunyiNominal={false} saatPilih={() => {}} />
       </div>
+      {blok.keterangan && (
+        <ul className="keterangan-kasus">
+          {Object.entries(blok.keterangan).map(([kunci, isi]) => <li key={kunci}><b>{labelKunci(kunci)}</b> <Sebaris isi={isi} /></li>)}
+        </ul>
+      )}
       <TombolBukaKasus kasusSekarang={kasusSekarang} saatBuka={() => saatCoba(kasus)}>{t('belajar.buka_di_hitung')}</TombolBukaKasus>
     </figure>
   );

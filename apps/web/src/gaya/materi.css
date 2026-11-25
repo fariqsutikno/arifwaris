@@ -57,10 +57,11 @@ summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline
 /* pelajaran aktif ditandai lembut (hijau muda), supaya hanya banner yang jadi jangkar gelap di halaman */
 .pelajaran-sidebar[aria-current=page]{background:#e9f3d6;color:var(--ink);font-weight:700}
 
-/* nomor bagian di atas tiap judul h2: pembaca tahu sedang di bagian ke berapa */
-.isi-materi{counter-reset:bagian}
-.isi-materi h2{counter-increment:bagian;scroll-margin-top:88px}
-.isi-materi h2::before{content:counter(bagian,decimal-leading-zero);display:block;margin-bottom:4px;font:700 12px/1 var(--font-sans);letter-spacing:.12em;color:var(--aksen)}
+/* nomor bagian dari nomorBagian (sama dengan jangkar [[#2b]]): h2 di atas judul, h3 sebagai lencana di depan */
+.isi-materi h2,.isi-materi h3{scroll-margin-top:88px}
+.isi-materi h2[data-nomor]::before{content:attr(data-nomor);display:block;margin-bottom:4px;font:700 12px/1 var(--font-sans);letter-spacing:.12em;color:var(--aksen)}
+.isi-materi h3{display:flex;gap:10px;align-items:baseline;margin:28px 0 8px;font:600 19px/1.3 var(--font-display)}
+.sub-nomor{flex:none;padding:1px 8px;border-radius:8px;background:var(--aksen-soft);font:700 13px var(--font-sans);color:var(--ink);font-variant-numeric:tabular-nums}
 
 /* bilah baca: menempel di atas setelah banner lewat */
 .bilah-baca{position:fixed;inset-inline:0;top:0;z-index:30;background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid var(--divider);box-shadow:0 6px 24px rgba(20,40,30,.08);transform:translateY(-110%);visibility:hidden;transition:transform .3s cubic-bezier(.2,.7,.2,1),visibility 0s .3s}
@@ -103,3 +104,133 @@ summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline
 /* navigasi bawah: tombol yang tidak ada (pelajaran pertama/terakhir) tidak dirender; Berikutnya selalu di ujung */
 .navigasi-materi{display:flex;flex-wrap:wrap;gap:10px}
 @media (max-width:560px){.navigasi-materi>*{flex:1 1 40%}.navigasi-materi>:nth-child(2):not(:last-child){flex-basis:100%;order:3}}
+
+/* ── blok materi buku ringkas (preview materi v2) ─────────────────────────────────────────── */
+.meta-materi{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:14px;color:rgba(255,255,255,.82)}
+.singgung{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink-muted)}
+.tautan-bab{display:inline-flex;align-items:center;gap:5px;padding:1px 10px;border-radius:var(--radius-pill);background:var(--surface-sunken);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;vertical-align:baseline}
+a.tautan-bab:hover{background:var(--outline)}
+a.tautan-bab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.tautan-bab .nomor-bab{color:var(--ink-muted);font-variant-numeric:tabular-nums}
+.tautan-bab.menyusul{font-weight:500;color:var(--ink-muted)}
+.judul-blok{margin:0 0 8px;font:700 13px var(--font-sans);color:var(--ink-muted)}
+.blok-materi{margin:18px 0 24px;padding:20px;border:1.5px solid var(--divider);border-radius:20px}
+.aksi-teks{padding:0;border:0;background:none;color:var(--ink);font:600 15px var(--font-sans);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.aksi-teks:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.segmen{display:inline-flex;flex-wrap:wrap;gap:4px;margin:0 0 14px;padding:4px;border-radius:var(--radius-pill);background:var(--surface-sunken)}
+.segmen button{min-height:36px;padding:6px 14px;border:0;border-radius:var(--radius-pill);background:none;color:var(--ink);font:600 14px var(--font-sans);cursor:pointer}
+.segmen button[aria-pressed=true]{background:var(--surface-raised);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.segmen button:focus-visible{outline:3px solid var(--focus);outline-offset:1px}
+
+/* alur: posisi pelajaran dalam pipeline pembagian */
+.blok-alur{margin:0 0 24px;padding:18px 20px;border-radius:20px;background:var(--krem)}
+.deret-alur{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none;font-size:13.5px}
+.deret-alur li,.deret-alur span{padding:4px 11px;border-radius:var(--radius-pill);background:var(--surface-raised);color:var(--ink-muted)}
+.deret-alur .kini{background:var(--primary);color:var(--on-primary);font-weight:700}
+.isi-alur{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:15px}
+.isi-alur dt{font-weight:700}
+.isi-alur dd{margin:0}
+@media (max-width:560px){.isi-alur{grid-template-columns:1fr}.isi-alur dd{margin-bottom:6px}}
+
+/* cara berpikir: urutan keputusan, pertanyaan → akibat */
+.cara-berpikir ol{display:grid;gap:8px;margin:0;padding:0;list-style:none;counter-reset:langkah}
+.cara-berpikir li{display:grid;grid-template-columns:28px minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start;padding:10px 12px;border-radius:14px;background:var(--krem);font-size:15px;counter-increment:langkah}
+.cara-berpikir li::before{content:counter(langkah);display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--primary);color:var(--on-primary);font:700 12px var(--font-sans)}
+.tanya-langkah{font-weight:600}
+@media (max-width:640px){.cara-berpikir li{grid-template-columns:28px minmax(0,1fr)}.akibat-langkah{grid-column:2}}
+
+/* peta bab: pohon bercabang di layar lebar, menurun di HP */
+.peta-bab{margin:0 0 28px;padding:20px 16px;border-radius:24px;background:var(--krem);overflow-x:auto}
+.pohon,.pohon ul{margin:0;padding:0;list-style:none}
+.pohon{display:flex;width:max-content;min-width:100%;justify-content:center;margin:0 auto}
+.pohon ul{position:relative;display:flex;justify-content:center;padding-top:22px}
+.pohon li{position:relative;display:flex;flex-direction:column;align-items:center;padding:22px 4px 0;text-align:center}
+.pohon>li{padding-top:0}
+.pohon li::before,.pohon li::after{content:"";position:absolute;top:0;width:50%;height:22px;border-top:2px solid var(--outline)}
+.pohon li::before{right:50%}
+.pohon li::after{left:50%;border-left:2px solid var(--outline)}
+.pohon li:only-child::before,.pohon li:only-child::after,.pohon>li::before,.pohon>li::after{display:none}
+.pohon li:only-child{padding-top:0}
+.pohon li:first-child::before,.pohon li:last-child::after{border:0}
+.pohon li:last-child::before{border-right:2px solid var(--outline);border-radius:0 10px 0 0}
+.pohon li:first-child::after{border-radius:10px 0 0 0}
+.pohon ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--outline)}
+.simpul{display:inline-flex;flex-direction:column;gap:2px;min-width:104px;max-width:150px;padding:7px 10px;border:1.5px solid var(--outline);border-radius:14px;background:var(--surface-raised);color:var(--ink);font-size:14px;line-height:1.3;text-decoration:none}
+.simpul b{font:600 14.5px var(--font-display)}
+.simpul small{font-size:12.5px;color:var(--ink-muted)}
+a.simpul:hover{border-color:var(--ink)}
+a.simpul:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.simpul.akar{border-color:var(--primary);background:var(--primary);color:var(--on-primary)}
+.simpul.akar small{color:rgba(255,255,255,.78)}
+/* menurun: dipasang Peta (BlokIsi.tsx) saat pohon bercabang tidak muat */
+.peta-bab.menurun{overflow:visible}
+.peta-bab.menurun{
+  .pohon{display:block;width:auto;min-width:0}
+  .pohon ul{display:block;margin-left:10px;padding:0 0 0 18px;border-left:2px solid var(--outline)}
+  .pohon ul::before,.pohon li::before,.pohon li::after{display:none}
+  .pohon li{display:block;padding:8px 0 0;text-align:left}
+  .simpul{width:100%;max-width:none}
+}
+
+/* peraga: kotak harta (satu kotak = satu bagian) */
+.kotak-peraga{margin:4px 0 10px}
+.label-kotak{margin:0 0 6px;font-size:14px;color:var(--ink-muted)}
+.grid-peraga{display:grid;gap:5px;padding:8px;border:3px solid var(--ink);border-radius:14px}
+.grid-peraga .kotak{aspect-ratio:1;max-height:56px;border-radius:6px;transition:background .45s ease}
+.grid-peraga .kotak.luar{outline:2px dashed var(--sorot-mahjub);outline-offset:2px;opacity:.55}
+.ket-peraga{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 8px;font-size:14px}
+.ket-peraga i{display:inline-block;width:12px;height:12px;margin-right:6px;border-radius:3px;vertical-align:-1px}
+.gugur-peraga{color:var(--sorot-mahjub);text-decoration:line-through}
+.penjelasan-peraga{margin:8px 0 0}
+.baris-gugur td{color:var(--sorot-mahjub)}
+.tabel-materi .angka{text-align:right;font-variant-numeric:tabular-nums}
+
+/* bandingan: batang pecahan */
+.daftar-batang{display:grid;gap:12px}
+.baris-batang{display:grid;grid-template-columns:110px minmax(0,1fr) 96px;gap:12px;align-items:center;font-size:15px}
+.batang{height:22px;overflow:hidden;border-radius:8px;background:var(--surface-sunken)}
+.isi-batang{display:block;height:100%;border-radius:8px;background:var(--sorot-fardh);transition:width .5s ease}
+.isi-batang.sisa{background:repeating-linear-gradient(45deg,var(--sorot-fardh) 0 6px,var(--sorot-ashabah) 6px 12px)}
+.baris-batang .nilai{font-variant-numeric:tabular-nums}
+.baris-batang .nilai.turun{color:#a8410f}
+@media (max-width:560px){.baris-batang{grid-template-columns:76px minmax(0,1fr) 84px;gap:8px;font-size:14px}}
+
+/* simulasi */
+.pilih-orang{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;padding:0;border:0}
+.pilih-orang legend{margin-bottom:8px;font-size:14px;color:var(--ink-muted)}
+.pilih-orang label{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:6px 12px;border:1.5px solid var(--divider);border-radius:12px;font-size:14.5px;cursor:pointer}
+.pilih-orang input{accent-color:var(--primary)}
+.status-orang{display:grid;gap:6px}
+.status-orang p{margin:0}
+.status-orang div{display:grid;grid-template-columns:160px 1fr;gap:10px;padding:8px 12px;border-radius:12px;background:var(--krem);font-size:14.5px}
+.status-orang div b{font-weight:600}
+.status-orang div.gugur{background:var(--danger-soft)}
+.status-orang div.gugur b{color:var(--sorot-mahjub)}
+@media (max-width:560px){.status-orang div{grid-template-columns:1fr;gap:2px}}
+
+/* ingat, dasar, tebak, lipat, matriks */
+.ingat{margin:18px 0 22px;padding:18px 20px;border-radius:20px;background:#dcefe2}
+.judul-ingat{display:flex;align-items:center;gap:8px;margin:0 0 10px;font:700 13px var(--font-sans);color:var(--ink)}
+.kunci-ingat{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+.kunci-ingat span{display:inline-flex;flex-direction:column;min-width:120px;padding:10px 14px;border-radius:14px;background:var(--surface-raised)}
+.kunci-ingat strong{font:700 19px/1.15 var(--font-display)}
+.kunci-ingat small{margin-top:3px;font-size:13.5px;line-height:1.35;color:var(--ink-muted)}
+.ingat>p:last-child{margin:0}
+.dasar{display:flex;gap:8px;align-items:flex-start;margin:4px 0 18px;font-size:14px;color:var(--ink-muted)}
+.dasar>svg{flex:none;margin-top:3px}
+.dasar .chip-dalil{margin-inline-start:4px}
+.tebak{background:var(--krem);border:0}
+.tanya-tebak{font-weight:600}
+.lipat-materi{margin:14px 0 18px;padding:12px 16px;border:1.5px solid var(--divider);border-radius:16px}
+.lipat-materi summary{font-weight:600;cursor:pointer}
+.matriks{display:grid;gap:8px;margin:12px 0 18px;font-size:14.5px}
+.matriks .sumbu{display:grid;place-items:center;font-size:13px;font-weight:700;text-align:center;color:var(--ink-muted)}
+.matriks .sel{padding:12px 14px;border-radius:14px;background:var(--krem)}
+.matriks .sel b{display:block;font-family:var(--font-display)}
+@media (max-width:560px){.matriks{grid-template-columns:1fr 1fr !important}.matriks .kosong,.matriks .sumbu.kiri{display:none}}
+
+/* studi kasus */
+.cerita-kasus{margin:0 0 10px}
+.keterangan-kasus{margin:10px 0 0;padding-left:20px;font-size:14.5px}
+
+@media (prefers-reduced-motion:reduce){.grid-peraga .kotak,.isi-batang{transition:none}}

@@ -3,21 +3,34 @@
 // kanan (layar lebar), dan menu daftar isi di bilah (layar sempit). Murni penyajian; tidak menyentuh progres belajar.
 
 import { useEffect, useState, type RefObject } from 'react';
-import type { Blok } from '@waris/content';
+import { nomorBagian, type Blok, type Potongan } from '@waris/content';
 import { angka, t } from '../../terjemah';
 import { Ikon } from '../../ui/Ikon';
 
-export interface Bagian { id: string; judul: string }
+export interface Bagian { id: string; nomor: string; judul: string }
 
 /** Garis baca: bagian yang judulnya sudah melewati garis ini (sepertiga atas layar, di bawah bilah baca) dianggap sedang dibaca. */
 const GARIS_MINIMUM = 120;
 const garisBaca = () => Math.max(GARIS_MINIMUM, window.innerHeight * 0.3);
 
-export const idBagian = (urutan: number) => `bagian-${urutan + 1}`;
+/** Jangkar = nomor bagian dari nomorBagian (2, 2b), sama dengan tautan [[#2b]] yang diperiksa materi:cek. */
+export const idBagian = (nomor: string) => `b-${nomor}`;
 
+/** Nomor tampil: bagian utama dua digit (01), sub-bagian apa adanya (2b). */
+export const nomorTampil = (nomor: string) => (/^\d+$/.test(nomor) ? nomor.padStart(2, '0') : nomor);
+
+const teksJudul = (isi: Potongan[]) => isi.map(potongan => ('teks' in potongan ? potongan.teks ?? '' : '')).join('');
+
+/** Hanya bagian utama (##) yang masuk daftar isi, supaya rel tetap ringkas. */
 export function ambilBagian(daftarBlok: Blok[]): Bagian[] {
-  return daftarBlok.flatMap(blok => blok.jenis === 'judul' && blok.tingkat === 2 ? [blok.isi] : [])
-    .map((isi, urutan) => ({ id: idBagian(urutan), judul: isi.map(potongan => ('teks' in potongan ? potongan.teks : '')).join('') }));
+  return nomorBagian(daftarBlok).filter(bagian => bagian.tingkat === 2)
+    .map(bagian => ({ id: idBagian(bagian.nomor), nomor: bagian.nomor, judul: teksJudul(bagian.judul) }));
+}
+
+/** Geser ke bagian tanpa mengubah hash (hash dipakai router). */
+export function keBagian(id: string) {
+  const mengurangiGerak = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+  document.getElementById(id)?.scrollIntoView({ behavior: mengurangiGerak ? 'auto' : 'smooth', block: 'start' });
 }
 
 interface Posisi { aktif: string; persen: number; bilahTampil: boolean }
@@ -46,20 +59,14 @@ export function useBacaan(bagian: Bagian[], artikel: RefObject<HTMLElement>, ban
   return posisi;
 }
 
-/** Geser ke bagian tanpa mengubah hash (hash dipakai router). */
-function keBagian(id: string) {
-  const mengurangiGerak = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-  document.getElementById(id)?.scrollIntoView({ behavior: mengurangiGerak ? 'auto' : 'smooth', block: 'start' });
-}
-
 function DaftarBagian({ bagian, aktif, saatPilih }: { bagian: Bagian[]; aktif: string; saatPilih?: () => void }) {
   return (
     <ol className="daftar-polos daftar-bagian">
-      {bagian.map((isi, urutan) => (
+      {bagian.map(isi => (
         <li key={isi.id}>
           <a className="tautan-bagian" href={`#${isi.id}`} aria-current={isi.id === aktif ? 'location' : undefined}
             onClick={kejadian => { kejadian.preventDefault(); keBagian(isi.id); saatPilih?.(); }}>
-            <span className="nomor-bagian" aria-hidden="true">{angka(String(urutan + 1).padStart(2, '0'))}</span>{isi.judul}
+            <span className="nomor-bagian" aria-hidden="true">{angka(nomorTampil(isi.nomor))}</span>{isi.judul}
           </a>
         </li>
       ))}
@@ -94,7 +101,7 @@ export function BilahBaca({ judul, bagian, posisi }: { judul: string; bagian: Ba
       <div className="isi-bilah-baca">
         <div className="teks-bilah-baca">
           <b>{judul}</b>
-          {urutanAktif >= 0 && <span>{angka(String(urutanAktif + 1).padStart(2, '0'))} · {bagian[urutanAktif]!.judul}</span>}
+          {urutanAktif >= 0 && <span>{angka(nomorTampil(bagian[urutanAktif]!.nomor))} · {bagian[urutanAktif]!.judul}</span>}
         </div>
         {bagian.length > 0 && (
           <button type="button" className="tombol-isi-bilah" aria-expanded={terbuka} onClick={() => setTerbuka(buka => !buka)}>

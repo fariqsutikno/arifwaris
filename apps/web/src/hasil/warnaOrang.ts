@@ -6,7 +6,7 @@ import type { IdOrang } from '@waris/engine';
 import type { RingkasanHasil } from './ringkasan';
 
 /** Cukup gelap untuk huruf putih di avatar (acuan-hasil-final.html). */
-const PALET_ORANG = ['#b5653a', '#7d3c98', '#3f6b2a', '#2b6f8a', '#a0567a', '#c0503a', '#5a6826', '#226a88', '#9c5219', '#3a58b8'] as const;
+export const PALET_ORANG = ['#b5653a', '#7d3c98', '#3f6b2a', '#2b6f8a', '#a0567a', '#c0503a', '#5a6826', '#226a88', '#9c5219', '#3a58b8'] as const;
 export const WARNA_NETRAL = '#9aa59e';
 
 const petaPerRingkasan = new WeakMap<RingkasanHasil, Map<IdOrang, string>>();

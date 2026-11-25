@@ -29918,6 +29918,279 @@
    "id": "Hanbali, Hanafi, Maliki menurut kitab madzhab masing-masing; sumber disebut di tiap titik.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_harta",
+   "halaman": "belajar",
+   "id": "Harta bersih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_ahli_waris",
+   "halaman": "belajar",
+   "id": "Siapa ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_penghalang",
+   "halaman": "belajar",
+   "id": "Penghalang waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_hajb",
+   "halaman": "belajar",
+   "id": "Hajb",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_bagian",
+   "halaman": "belajar",
+   "id": "Bagian pasti dan sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_ashl",
+   "halaman": "belajar",
+   "id": "Penyebut bersama",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_aul_radd",
+   "halaman": "belajar",
+   "id": "'Aul atau radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_tashih",
+   "halaman": "belajar",
+   "id": "Tashih",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_nominal",
+   "halaman": "belajar",
+   "id": "Ke rupiah",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_semua",
+   "halaman": "belajar",
+   "id": "Seluruh alur",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tahap_lanjutan",
+   "halaman": "belajar",
+   "id": "Di atas alur pembagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.alur_judul",
+   "halaman": "belajar",
+   "id": "Posisi dalam alur pembagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.alur_tanya",
+   "halaman": "belajar",
+   "id": "Pertanyaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.alur_bekal",
+   "halaman": "belajar",
+   "id": "Bekal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.alur_hasil",
+   "halaman": "belajar",
+   "id": "Hasilnya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.durasi_menit",
+   "halaman": "belajar",
+   "id": "{menit} menit baca",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.terkait",
+   "halaman": "belajar",
+   "id": "Terkait:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.peta_judul",
+   "halaman": "belajar",
+   "id": "Peta bab",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.ingat_judul",
+   "halaman": "belajar",
+   "id": "Cara mengingat",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.cara_berpikir_judul",
+   "halaman": "belajar",
+   "id": "Urutan berpikir",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.lihat_jawaban",
+   "halaman": "belajar",
+   "id": "Lihat jawabannya",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.sembunyikan_jawaban",
+   "halaman": "belajar",
+   "id": "Sembunyikan jawaban",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.keadaan",
+   "halaman": "belajar",
+   "id": "Keadaan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.kotak_jumlah",
+   "halaman": "belajar",
+   "id": "Harta dibagi menjadi {jumlah} kotak yang sama besar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.aul_meluap",
+   "halaman": "belajar",
+   "id": "Hak mereka {hak} kotak, padahal harta hanya {harta} kotak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.aul_diterapkan",
+   "halaman": "belajar",
+   "id": "Setelah 'aul, harta dibagi menjadi {jumlah} kotak yang lebih kecil",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.terapkan_aul",
+   "halaman": "belajar",
+   "id": "Terapkan 'aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.sebelum_aul",
+   "halaman": "belajar",
+   "id": "Lihat lagi sebelum 'aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.kolom_ahli_waris",
+   "halaman": "belajar",
+   "id": "Ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.kolom_bagian",
+   "halaman": "belajar",
+   "id": "Bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.gugur",
+   "halaman": "belajar",
+   "id": "gugur",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.sisa",
+   "halaman": "belajar",
+   "id": "sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.sepertiga_sisa",
+   "halaman": "belajar",
+   "id": "1/3 sisa",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.simulasi_judul",
+   "halaman": "belajar",
+   "id": "Coba sendiri",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.simulasi_pilih",
+   "halaman": "belajar",
+   "id": "Centang kerabat yang ada:",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.simulasi_kosong",
+   "halaman": "belajar",
+   "id": "Centang minimal satu kerabat untuk melihat hasilnya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.mendapat",
+   "halaman": "belajar",
+   "id": "mendapat bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.mendapat_bagian",
+   "halaman": "belajar",
+   "id": "mendapat {bagian}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "belajar.tidak_ada_sisa",
+   "halaman": "belajar",
+   "id": "tidak mendapat apa pun karena tidak ada sisa",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
