@@ -213,7 +213,7 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
 
 export interface Pertanyaan {
   idOrang?: IdOrang;
-  isian: keyof Orang | 'pernikahan' | 'pembulatan';
+  isian: keyof Orang | 'pernikahan' | 'pembulatan' | 'sudahDiterima';
   alasan: string;
 }
 
