@@ -43,7 +43,7 @@ export type PotonganForm = 'utama' | 'samping' | 'arab';
 export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi, bagian: potongan, identitasTerkunci = false, saatBukaKunci, saatSelesaiIsi }: Props) {
   const ubah = (jalur: string, nilai: NilaiBidang) => saatUbah({ ...form, nilai: { ...form.nilai, [jalur]: nilai } });
   // Slug hanya untuk pesan galat bacaBlok; istilah untuk sisipan di editor blok.
-  const konteks: KonteksEditor = { slug: String(form.nilai.slug || form.nilai.id || form.nilai.kode || jenis), istilah: opsi.istilah ?? [] };
+  const konteks: KonteksEditor = { slug: String(form.nilai.slug || form.nilai.id || form.nilai.kode || jenis), istilah: opsi.istilah ?? [], jenis };
   // Soal kuis dengan penjelasan per pilihan: "Kenapa jawaban ini benar" ditulis di bawah pilihan yang benar (kotak yang
   // sama dengan bidang pembahasan), jadi bidang pembahasan terpisah disembunyikan.
   const pembahasanDiPilihan = jenis === 'soal_kuis' && (form.nilai.pilihan as NilaiPilihanKuis | undefined)?.alasan != null;
@@ -94,7 +94,7 @@ export function FormKonten({ jenis, form, saatUbah, bacaSaja, galatBidang, opsi,
   );
 }
 
-interface KonteksEditor { slug: string; istilah: Opsi[] }
+interface KonteksEditor { slug: string; istilah: Opsi[]; jenis: JenisKonten }
 
 /** Potongan FORM_KONTEN untuk satu tempat di layar; bagian tanpa bidang tersisa dibuang. */
 function pilihBagian(semua: Bagian[], potongan: PotonganForm | undefined): Bagian[] {
@@ -152,7 +152,8 @@ function BidangForm({ bidang, nilai, saatUbah, bacaSaja, galat, opsi, konteks, p
             </span>
             {padananId ? <Padanan teks={padananId} panjang={bidang.jenis === 'markdownBlok'} /> : null}
             <EditorBlok label={bidang.label} nilai={teks} saatUbah={saatUbah} mode={bidang.jenis === 'markdownBlok' ? 'blok' : 'potongan'}
-              slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} arab={bidang.arab} galat={!!galat} />
+              slug={konteks.slug} bacaSaja={bacaSaja} istilah={konteks.istilah} arab={bidang.arab} galat={!!galat}
+              periksa={konteks.jenis === 'materi' && bidang.jalur === 'blok'} />
           </div>,
           { contoh: bidang.contoh },
         )
