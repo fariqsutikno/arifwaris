@@ -30394,6 +30394,34 @@
    "id": "Membayar",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.judul",
+   "halaman": "narasi",
+   "id": "Sisa bagian setelah penerimaan di muka",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.ringkasan",
+   "halaman": "narasi",
+   "id": "Sebagian harta sudah diterima di muka, jadi bagian tiap orang dihitung dari sisanya. Harta yang masih dibagi: {sisa}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.kelebihan",
+   "halaman": "narasi",
+   "id": "{nama} sudah menerima {diterima}, lebih dari bagiannya {bagian}. Kelebihan ini perlu disepakati keluarga atau ditanyakan ke pengadilan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "narasi.sisa_hak.kas_kurang",
+   "halaman": "narasi",
+   "id": "Harta yang tersisa tidak cukup untuk semua sisa bagian karena ada kelebihan di atas. Perlu disepakati keluarga atau ditanyakan ke pengadilan.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
