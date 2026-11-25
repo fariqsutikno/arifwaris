@@ -3,15 +3,14 @@
 // ini alat bantu menghitung sisa, bukan bagian dari hukum. Hanya "bagian warisan di muka" yang dihitung; hibah dan pinjaman tidak
 // didukung (riset-harta-sebagian.md), jadi petunjuknya melarang mengisinya. Kelebihan hanya ditampilkan, tanpa saran pengembalian.
 
-import { hitungSisaHak, type SisaHak } from '@waris/engine';
-import type { HasilOk } from '@waris/latihan';
+import { hitungSisaHak, type SisaHak, type SumberNominal } from '@waris/engine';
 import { useMemo, useState } from 'react';
 import { formatRupiah } from '../format';
 import { Ikon } from '../ui/Ikon';
 import { t } from '../terjemah';
 
 interface Props {
-  hasil: HasilOk;
+  hasil: SumberNominal;
   /** Tirkah bersih AWAL: termasuk yang sudah diserahkan. */
   bersih: bigint;
   penerima: Array<{ id: string; nama: string }>;

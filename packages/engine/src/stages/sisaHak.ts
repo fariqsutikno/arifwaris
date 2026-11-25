@@ -6,7 +6,6 @@
 import type { Uang } from '@waris/math';
 import type { HasilEngine, IdOrang, LangkahJejak, Pertanyaan } from '../types.js';
 
-type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 type PerluInput = Extract<HasilEngine, { status: 'PERLU_INPUT' }>;
 
 export interface SisaHak {
@@ -23,7 +22,10 @@ export interface SisaHak {
   jejak: LangkahJejak[];
 }
 
-export function hitungSisaHak(hasil: HasilOk, tirkahBersih: Uang, sudahDiterima: Record<IdOrang, Uang>): SisaHak | PerluInput {
+/** Cukup tabel nominal akhir: hasil biasa memenuhinya, dan munasakhat menyusunnya dari nominal akhir per ahli waris (bab 12.3). */
+export interface SumberNominal { tabel: { baris: Array<{ perOrang: Record<IdOrang, { nominal: Uang }> }> } }
+
+export function hitungSisaHak(hasil: SumberNominal, tirkahBersih: Uang, sudahDiterima: Record<IdOrang, Uang>): SisaHak | PerluInput {
   const nominal = ambilNominal(hasil);
   const masalahInput = periksaPenerimaan(nominal, tirkahBersih, sudahDiterima);
   if (masalahInput.length > 0) return { status: 'PERLU_INPUT', pertanyaan: masalahInput };
@@ -45,7 +47,7 @@ export function hitungSisaHak(hasil: HasilOk, tirkahBersih: Uang, sudahDiterima:
   return { status: 'OK', perOrang, sisaKas, sisaLainnya, kelebihan, kasKurang, jejak };
 }
 
-function ambilNominal(hasil: HasilOk): Record<IdOrang, Uang> {
+function ambilNominal(hasil: SumberNominal): Record<IdOrang, Uang> {
   const nominal: Record<IdOrang, Uang> = {};
   for (const baris of hasil.tabel.baris) {
     for (const [idOrang, sel] of Object.entries(baris.perOrang)) nominal[idOrang] = sel.nominal;

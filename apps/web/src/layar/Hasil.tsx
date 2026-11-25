@@ -252,6 +252,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const umumKhusus = { graf: kasus.graf, ringkasan, sembunyiNominal, saatPilih: setOrangDipilih };
   const rantai = useMemo(() => (tampil.jenis === 'munasakhat' && tampil.hasil.status === 'OK'
     ? { hasil: tampil.hasil, langkah: rantaiMunasakhat(tampil.hasil, ringkasan.tirkah.bersih, kasus.satuanPembulatan) } : null), [tampil, ringkasan, kasus.satuanPembulatan]);
+  // Munasakhat: penyajian saja (KB 11.3, 12.3); nominal akhir per ahli waris sudah ada di ringkasan, tirkah = harta mayit pertama.
+  const sumberSisaHak = hasilBiasa ?? (rantai ? { tabel: { baris: [{ perOrang: Object.fromEntries(ringkasan.penerima.map(orang => [orang.id, { nominal: orang.nominal }])) }] } } : null);
   const umumRantai = rantai && { graf: kasus.graf, ringkasan, rantai: rantai.langkah, sembunyiNominal, saatPilih: setOrangDipilih };
   const tabel = umumRantai && !sedangMenebak ? <TabelMunasakhatKitab {...umumRantai} nominal={rantai!.hasil.nominal} />
     : ringkasan.taqdir ? <TabelKemungkinan {...umumKhusus} />
@@ -467,11 +469,11 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
             kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
               : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
+          {sumberSisaHak && !hartaKosong && !menunggu && !gharqaDitahan && !adalahBelajar && (
+            <SisaHakKartu hasil={sumberSisaHak} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
+          )}
           {hasilBiasa && !hartaKosong && !menunggu && !gharqaDitahan && !adalahBelajar && (
-            <>
-              <SisaHakKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
-              <PiutangKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
-            </>
+            <PiutangKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
           )}
           {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_kitab', { nama: namaMadzhab(madzhab) })}</p>}
           {adalahBelajar && !sedangMenebak && (
