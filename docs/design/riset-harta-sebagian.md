@@ -75,7 +75,8 @@ Jangan menyamakan dengan L3 "Sudah dibagi → mayit kedua dianggap hidup": itu u
 ## 4. Yang tidak boleh dihitung / catatan input
 
 ### 4.1 TIDAK_DIDUKUNG (kembalikan dengan penjelasan)
-- Memotong piutang pewaris dari bagian si penghutang (S5).
+- ~~Memotong piutang pewaris dari bagian si penghutang (S5)~~: **dikoreksi setelah verifikasi (bagian 5.2)**: ada dasar
+  Raudhah 6/299–301 untuk [SYF]; tetap `TIDAK_DIDUKUNG` untuk madzhab lain dan sampai rumusnya masuk KB.
 - Penyamaan hibah antar anak, termasuk ukuran 2:1 [HNB] (K01-3; bab 01.6 menyatakan engine tidak memodelkan hibah).
 - Hibah di sakit maut kepada ahli waris (R01-11 memuat hibah sakit maut dari sepertiga, tetapi tidak menjawab
   kasus penerimanya ahli waris; R01-5 hanya soal wasiat).
@@ -94,21 +95,55 @@ di atas hasil Tahap 6 madzhab mana pun (nol cabang fikih). Perlu persetujuan pem
 - Rumah yang "sudah ditempati" belum dibagi (acuan K1 di riset berlapis): jangan dianggap sudah diterima.
 - Penyerahan berupa barang butuh nilai rupiah; KB tidak menetapkan nilai saat kapan (bagian 6, butir 3).
 
-## 5. Verifikasi primer yang disarankan (opsional, sebelum membuka S3, S5)
-KB 00 konvensi 2 mewajibkan titik tanpa rujukan tegas ditandai; tiga pertanyaan belum punya nukilan:
-1. Raudhah/Fara'idh: ahli waris yang wafat setelah **sebagian** tirkah dibagi (cari di sekitar 6/64–6/72).
-2. Hutang ahli waris kepada pewaris (muqashshah dengan bagiannya) dan piutang sebagai bagian tirkah.
-3. Penerimaan di muka (ta'jil) dari bagian waris dan nasib kelebihannya.
-Hasil dimasukkan ke bab 11 sebagai baris `R11-x` jenis RDH bila ada; bila nihil, tulis "tidak ditemukan".
-Per memori proyek, verifikasi MCP boleh dikerjakan langsung.
+## 5. Hasil verifikasi primer ke Raudhah (2026-11-25, Shamela buku 499)
+Metode: `shamela_search_pages` dibatasi buku 499, lalu halaman dibaca langsung (`shamela_get_pages_range`/`get_page`).
+Kutipan di bawah dibaca dari halaman itu; **belum** dimasukkan ke KB (KB hanya diubah dengan persetujuan pemilik).
+
+### 5.1 Ahli waris wafat setelah sebagian dibagi: **tidak ditemukan**
+- Raudhah 6/72 · shamela:499/2361 (dan 6/73–74 · shamela:499/2362, 2363) hanya memuat «ثُمَّ مَاتَ أَحَدُهُمْ قَبْلَ قِسْمَةِ التَّرِكَةِ».
+  Tidak ada kasus "sebagian sudah dibagi". Pencarian «قسمة بعض التركة» hanya 3 hasil (nazhar munasakhat itu, bab qismah,
+  dan bagian zakat/nakhl), «اقتسموا بعض التركة» nihil.
+- Kesimpulan: S3 tetap **KEP**. Turunan matematis 3.3 tidak punya nash; dasarnya hanya kaidah jami'ah (R12-2, [KH]).
+
+### 5.2 Hutang ahli waris kepada pewaris: **ADA nash tegas** (mengubah klasifikasi S5)
+Raudhah **6/299–301** (Kitab al-Washaya, *ath-tharaf al-khamis*: «فِي مَسَائِلِ الْعَيْنِ وَالدَّيْنِ») · shamela:499/2588, 2589, 2590.
+Isi yang relevan:
+- Hanya ada piutang pada seorang ahli waris: «بَرِئَ مَنْ عَلَيْهِ مِنْ حِصَّتِهِ، وَلَا تَتَوَقَّفُ بَرَاءَتُهُ عَلَى تَوْفِيرِ حِصَّةِ الْبَاقِينَ؛ لِأَنَّ الْمِلْكَ بِالْإِرْثِ لَا يَتَأَخَّرُ، وَالْإِنْسَانُ لَا يَسْتَحِقُّ عَلَى نَفْسِهِ شَيْئًا».
+- Ada barang ('ain) **dan** piutang pada seorang ahli waris: «نَصِيبُهُ مِنْ جُمْلَةِ التَّرِكَةِ» (piutang dihitung dalam tirkah), lalu tiga keadaan:
+  (1) bagiannya **sama** dengan hutangnya: mas'alah ditashih, bagiannya dibuang, barang dibagi atas saham yang lain, bagian si penghutang jatuh **qishash**;
+  (2) bagiannya **lebih besar**: tirkah dibagi, hutang dikurangkan dari bagiannya, sisanya diberi dari barang;
+  (3) bagiannya **lebih kecil**: bagiannya dibuang dari mas'alah, barang dibagi atas sisanya, sisa hutang ditagih darinya lalu dibagi ke ahli waris lain (rumus lengkap + contoh di 6/300–301).
+- **Syarat**: ar-Rafi'i/Imam al-Haramain menahan kesimpulan itu: «هَذَا مَحْمُولٌ عَلَى مَا إِذَا رَضِيَ الْمَدِينُ بِذَلِكَ، أَوْ كَانَ جَاحِدًا، أَوْ مُعْسِرًا»; bila ia mengakui dan mampu, ahli waris lain **tidak boleh** mengambil sepihak, harus saling rela (6/299).
+- Dampak: potong piutang dari bagian si penghutang **ada dasar [SYF] primer**, bersyarat. Rumusnya bukan sederhana
+  (keadaan 3 memakai mas'alah yang dikurangi). Engine bisa mengimplementasikan setelah rumusnya dimasukkan ke KB.
+  Status madzhab lain: belum dicek (bab 18 → non-[SYF] `TIDAK_DIDUKUNG` sampai ada baris).
+
+### 5.3 Penerimaan di muka (ta'jil) dan nasib kelebihan: **tidak ditemukan**
+- Pencarian «تعجيل الميراث», «تعجيل … التركة الوارث», «أخذ أحد الورثة شيئا من التركة قبل القسمة»: nihil di Raudhah.
+  Satu pencarian («أخذ الوارث … أكثر من نصيبه») terhenti oleh pembatasan laju dan belum diulang.
+- Temuan **terkait, bukan jawaban langsung**, di Kitab al-Qismah:
+  - Raudhah 11/209 · shamela:499/4527: «إِذَا قُسِّمَتِ التَّرِكَةُ بَيْنَ الْوَرَثَةِ، ثُمَّ ظَهَرَ دَيْنٌ، فَإِنْ قُلْنَا: الْقِسْمَةُ إِفْرَازٌ، فَهِيَ صَحِيحَةٌ، ثُمَّ تُبَاعُ الْأَنْصِبَاءُ فِي الدَّيْنِ إِنْ لَمْ يُوَفُّوهُ».
+    Mendukung S7: hutang tetap lebih dahulu walau tirkah sudah dibagi; hitung dari tirkah **awal**. Bila qismah dipandang bay', ada dua wajh (perlu kajian bila mau dimodelkan).
+  - Raudhah 11/210 · shamela:499/4528: bila setelah qismah sebagian yang dibagi ternyata hak pihak lain (istihqaq), qismah batal pada bagian itu; ini analogi untuk S6, **bukan** nash tentang ahli waris baru.
+- Kesimpulan: aturan pengembalian kelebihan/penanggung kekurangan kas (S6) tetap **TD**.
+
+### 5.4 Dampak ke klasifikasi
+| Skenario | Sebelum | Sesudah verifikasi |
+|---|---|---|
+| S3 wafat setelah sebagian | KEP + verifikasi | **KEP**, tidak ada nash (nihil) |
+| S5 piutang pewaris pada ahli waris | KEP / potong = TD | Potong **ada dasar [SYF] primer** (6/299–301), bersyarat kerelaan atau penghutang menolak/pailit; butuh keputusan pemilik + masuk KB |
+| S6 kelebihan/pengembalian | TD | **TD** tetap |
+| S7 hutang setelah sebagian dibagi | HITUNG | **HITUNG**, kini ada dasar primer (11/209) |
 
 ## 6. Pertanyaan keputusan untuk pemilik
 
 1. **Makna "sudah menerima".** Pilihan: (a) hanya "bagian warisan yang diserahkan di muka" (rekomendasi); (b) ditambah hibah
    dari pewaris; (c) ditambah pinjaman. Final vs uang muka: untuk hitungan **sama** (keduanya mengurangi sisa hak), beda
    hanya soal dapat ditarik atau tidak (tidak ada di KB). Apakah dua istilah itu dilebur menjadi satu isian?
-2. **Hibah (S4) dan pinjaman (S5)**: ditolak dengan penjelasan + tautan baca (rekomendasi), atau pinjaman boleh masuk
-   tirkah sebagai piutang tanpa potong otomatis (perlu verifikasi 5.2)?
+2. **Hibah (S4) dan pinjaman (S5)**: hibah ditolak dengan penjelasan + tautan baca. Pinjaman: karena Raudhah 6/299–301
+   mengatur potong piutang dari bagian si penghutang (bersyarat), pilih (a) tunda ke fase berikutnya dengan catatan
+   (rekomendasi: rumusnya tiga keadaan, perlu bab KB baru), atau (b) masukkan ke 7b setelah rumus masuk KB dan
+   ada input "penghutang setuju dipotong?".
 3. **Nilai barang** (rumah, tanah, emas) yang sudah diserahkan: nilai saat diserahkan atau nilai disepakati hari ini?
    Rekomendasi: pengguna mengisi nilai rupiah yang disepakati sekarang; engine tidak menaksir.
 4. **Kelebihan** (diterima > bagian): tampilkan angka dan label netral tanpa saran pengembalian? (rekomendasi: ya,
