@@ -1,0 +1,1048 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Preview materi v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Parkinsans:wght@500;600;700&family=Host+Grotesk:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* Preview isi materi v2 (arah "buku ringkas"). Kerangka halaman meniru halaman materi aplikasi (gaya/materi.css):
+   banner gelap, sidebar modul, lembar baca putih, rel "di halaman ini". Yang baru hanya blok-blok isi:
+   peta bab, kotak harta, cara mengingat, studi kasus bertabel, tautan antarbab, tooltip istilah, catatan dasar.
+   Isi fikih dari docs/kb bab 02, 04, 06, 09, 16; semua angka contoh sudah dicek ke engine. */
+:root{
+  --ink:#14181a;--muted:#414a45;--divider:#dfe6dc;--page:#eef3e8;--surface:#fff;--krem:#f6f2e9;--sunken:#e4ece1;--outline:#c9d3c6;
+  --aksen:#f2682a;--aksen-ink:#a8410f;--aksen-soft:#fde6d8;--mint:#dcefe2;--hijau:#1f6f5c;--th:#e9f3d6;
+  --fardh:#138a4b;--mahjub:#d62f33;--mahjub-soft:#fbe3e1;--ashabah:#8b3dff;
+  --display:"Parkinsans",system-ui,sans-serif;--sans:"Host Grotesk",system-ui,sans-serif;--arab:"Noto Kufi Arabic",serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font:400 16.5px/1.7 var(--sans)}
+a{color:var(--hijau);text-underline-offset:3px}
+button{font:inherit;color:inherit}
+
+/* pilih pelajaran (khusus preview) */
+.pilih-preview{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid var(--divider);font-size:14px}
+.pilih-preview button{border:1px solid var(--divider);background:#fff;border-radius:999px;padding:6px 14px;cursor:pointer}
+.pilih-preview button[aria-selected=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.pilih-preview span{color:var(--muted)}
+
+/* banner */
+.hero-materi{padding:28px 24px 36px;color:#fff;background:radial-gradient(520px 260px at 90% 120%,rgba(255,150,40,.45),transparent 70%),radial-gradient(420px 240px at 0% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)}
+.hero-materi .label{font-size:14px;color:rgba(255,255,255,.78)}
+.hero-materi h1{margin:6px 0 10px;max-width:24ch;font:500 clamp(30px,4vw,48px)/1.08 var(--display);letter-spacing:-.03em}
+.hero-materi p{margin:0;max-width:62ch;font-size:17px;color:rgba(255,255,255,.88)}
+.hero-materi .meta{display:flex;gap:6px 18px;flex-wrap:wrap;margin-top:14px;font-size:14px;color:rgba(255,255,255,.8)}
+
+/* tata letak 3 kolom seperti aplikasi */
+.tata-materi{display:grid;grid-template-columns:270px minmax(0,1fr);gap:28px;padding:28px 24px 72px;max-width:1440px;margin:0 auto}
+.sidebar-materi{align-self:start;position:sticky;top:16px;border:1px solid rgba(20,40,30,.08);border-radius:24px;background:#fff;padding:14px 12px;font-size:14px}
+.sidebar-materi .judul-sb{font-weight:700;padding:6px 8px}
+.sidebar-materi ol{list-style:none;margin:0;padding:0}
+.sidebar-materi li a{display:block;padding:7px 10px;border-radius:12px;color:var(--ink);text-decoration:none}
+.sidebar-materi li a[aria-current=page]{background:var(--th);font-weight:700}
+.sidebar-materi .modul-sb{color:var(--muted);padding:8px 10px 2px;font-weight:600}
+.konten-materi{padding:36px 44px;border:1px solid rgba(20,40,30,.08);border-radius:28px;background:#fff;min-width:0}
+.rail-isi{display:none}
+@media (min-width:1280px){
+  .tata-materi{grid-template-columns:270px minmax(0,1fr) 230px}
+  .rail-isi{display:flex;flex-direction:column;gap:2px;position:sticky;top:16px;align-self:start;max-height:calc(100vh - 32px);overflow-y:auto;font-size:14px}
+}
+.rail-isi .judul-rail{font-weight:700;padding:0 10px 6px}
+.rail-isi a{display:flex;gap:10px;align-items:baseline;padding:6px 10px;border-radius:12px;color:var(--muted);text-decoration:none}
+.rail-isi a:hover{background:var(--sunken);color:var(--ink)}
+.rail-isi a.sub{padding-left:28px;font-size:13.5px}
+.nomor-bagian{flex:none;font:700 11px var(--sans);letter-spacing:.08em;color:var(--aksen);font-variant-numeric:tabular-nums}
+@media (max-width:980px){.tata-materi{grid-template-columns:1fr;padding:16px}.sidebar-materi{display:none}}
+@media (max-width:700px){.konten-materi{padding:24px 18px;border-radius:24px}.hero-materi{padding:22px 16px 28px}}
+
+/* isi */
+.isi{max-width:720px}
+.isi h2{margin:52px 0 12px;font:600 26px/1.25 var(--display);letter-spacing:-.02em;scroll-margin-top:24px}
+.isi h2::before{content:attr(data-nomor);display:block;margin-bottom:4px;font:700 12px/1 var(--sans);letter-spacing:.12em;color:var(--aksen)}
+.isi h3{margin:32px 0 8px;font:600 19px/1.3 var(--display);scroll-margin-top:24px;display:flex;gap:10px;align-items:baseline}
+.isi h3 .sub-nomor{flex:none;font:700 13px var(--sans);color:var(--aksen-ink);background:var(--aksen-soft);border-radius:8px;padding:1px 8px}
+.isi p{margin:0 0 14px}
+.isi ul,.isi ol{margin:0 0 14px;padding-left:22px}
+.isi li{margin:5px 0}
+.isi>:first-child{margin-top:0}
+.sorot-bagian{animation:sorot 1.6s ease-out}
+@keyframes sorot{0%{background:var(--aksen-soft)}100%{background:transparent}}
+
+/* istilah + tooltip */
+.istilah{text-decoration:underline dotted 2px;text-decoration-color:var(--hijau);text-underline-offset:3px;cursor:pointer;background:none;border:0;padding:0;font:inherit;color:inherit}
+.tooltip{position:fixed;z-index:50;max-width:300px;padding:12px 14px;border-radius:14px;background:var(--ink);color:#fff;font-size:14px;line-height:1.5;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.tooltip b{font:600 15px var(--display)}
+.tooltip .arab{font-family:var(--arab);margin-inline-start:8px;opacity:.85}
+.tooltip p{margin:4px 0 0}
+.tooltip a{color:#9fe0c4;font-weight:600}
+
+/* catatan dasar (pengganti kode rujukan) */
+.dasar{display:flex;gap:8px;align-items:flex-start;margin:4px 0 16px;font-size:14px;color:var(--muted)}
+.dasar svg{flex:none;width:16px;height:16px;margin-top:3px;color:var(--hijau)}
+.dasar b{color:var(--ink);font-weight:600}
+
+/* tautan antarbab */
+.tautan-bab{display:inline-flex;align-items:center;gap:5px;padding:1px 10px;border-radius:999px;background:var(--sunken);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap}
+.tautan-bab svg{width:13px;height:13px}
+.tautan-bab:hover{background:var(--outline)}
+.singgung{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 20px;font-size:14px;color:var(--muted)}
+
+/* tabel */
+.wadah-tabel{overflow-x:auto;border:1px solid var(--divider);border-radius:16px;margin:10px 0 18px}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--divider);vertical-align:top}
+th{background:var(--th);font-weight:700}
+tr:last-child td{border-bottom:0}
+td.angka,th.angka{text-align:right;font-variant-numeric:tabular-nums}
+tr.gugur td{color:var(--mahjub)}
+tr.gugur td:first-child{text-decoration:line-through}
+tfoot td{font-weight:700;background:var(--krem)}
+.titik{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:0}
+
+/* catatan & cara mengingat */
+.catatan{padding:14px 18px;border-radius:16px;background:var(--aksen-soft);margin:14px 0 18px}
+.catatan.tenang{background:var(--krem)}
+.catatan>b:first-child{display:block;margin-bottom:2px}
+.ingat{margin:18px 0 22px;padding:18px 20px;border-radius:20px;background:var(--mint)}
+.ingat .judul-ingat{display:flex;align-items:center;gap:8px;font:700 13px var(--sans);color:var(--hijau);margin-bottom:10px}
+.ingat .judul-ingat svg{width:18px;height:18px}
+.ingat .kunci{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+.ingat .kunci span{display:inline-flex;flex-direction:column;padding:10px 14px;border-radius:14px;background:#fff;min-width:120px}
+.ingat .kunci strong{font:700 20px/1.1 var(--display)}
+.ingat .kunci small{font-size:13.5px;color:var(--muted);line-height:1.35;margin-top:3px}
+.ingat p{margin:0}
+
+/* studi kasus */
+.kasus{margin:18px 0 24px;padding:20px;border-radius:20px;background:var(--krem)}
+.kasus .judul-kasus{font:700 13px var(--sans);color:var(--muted);margin-bottom:4px}
+.kasus .wadah-tabel{background:#fff}
+.kasus .bawah-kasus{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14.5px}
+
+/* blok interaktif */
+.blok{margin:18px 0 24px;padding:20px;border:1.5px solid var(--divider);border-radius:20px}
+.blok .judul-blok{display:flex;align-items:center;gap:8px;font:700 13px var(--sans);color:var(--hijau);margin-bottom:8px}
+.blok .judul-blok svg{width:16px;height:16px}
+.segmen{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:999px;background:var(--sunken);margin:0 0 14px}
+.segmen button{border:0;background:none;border-radius:999px;padding:6px 14px;cursor:pointer;font-size:14px;font-weight:600}
+.segmen button[aria-pressed=true]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.aksi-teks{background:none;border:0;padding:0;color:var(--hijau);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.tombol{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:9px 18px;cursor:pointer;font-weight:600}
+
+/* kotak harta (meniru KotakHarta di Lab) */
+.kotak-harta{margin:6px 0 4px}
+.grid-kotak{display:grid;gap:5px;padding:8px;border:3px solid var(--ink);border-radius:14px}
+.kt{aspect-ratio:1;max-height:64px;border-radius:6px;background:#e3e9e0;transition:background .45s ease,opacity .45s ease;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink)}
+.kt.luar{background:repeating-linear-gradient(45deg,var(--mahjub-soft) 0 6px,#fff 6px 12px);outline:2px dashed var(--mahjub);outline-offset:-2px;color:var(--mahjub)}
+.ket-kotak{display:flex;gap:6px 16px;flex-wrap:wrap;margin:10px 0 0;font-size:14px}
+.ket-kotak i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.ket-kotak .gugur{color:var(--mahjub);text-decoration:line-through}
+.skala-kotak{font-size:13.5px;color:var(--muted);margin-top:4px}
+
+/* batang pecahan untuk 4a */
+.daftar-batang{display:grid;gap:12px}
+.baris-batang{display:grid;grid-template-columns:110px minmax(0,1fr) 92px;gap:12px;align-items:center;font-size:15px}
+.baris-batang .batang{height:22px;border-radius:8px;background:var(--sunken);overflow:hidden}
+.baris-batang .isi-batang{height:100%;border-radius:8px;transition:width .5s ease}
+.baris-batang .nilai{font-weight:700;font-variant-numeric:tabular-nums}
+.baris-batang .nilai.turun{color:var(--aksen-ink)}
+@media (max-width:560px){.baris-batang{grid-template-columns:84px minmax(0,1fr) 76px;gap:8px;font-size:14px}}
+
+/* peta bab */
+.peta-bab{margin:4px 0 30px;padding:22px 16px;border-radius:24px;background:var(--krem);overflow-x:auto}
+.peta-bab .judul-peta{font:700 13px var(--sans);color:var(--muted);margin:0 0 14px 4px}
+.pohon,.pohon ul{list-style:none;margin:0;padding:0}
+.pohon{display:flex;justify-content:center;min-width:620px}
+.pohon ul{display:flex;justify-content:center;padding-top:22px;position:relative}
+.pohon li{position:relative;padding:22px 6px 0;text-align:center;display:flex;flex-direction:column;align-items:center}
+.pohon>li{padding-top:0}
+.pohon li::before,.pohon li::after{content:"";position:absolute;top:0;width:50%;height:22px;border-top:2px solid var(--outline)}
+.pohon li::before{right:50%}.pohon li::after{left:50%;border-left:2px solid var(--outline)}
+.pohon li:only-child::before,.pohon li:only-child::after{display:none}
+.pohon li:only-child{padding-top:0}
+.pohon li:first-child::before,.pohon li:last-child::after{border:0}
+.pohon li:last-child::before{border-right:2px solid var(--outline);border-radius:0 10px 0 0}
+.pohon li:first-child::after{border-radius:10px 0 0 0}
+.pohon>li::before,.pohon>li::after{display:none}
+.pohon ul::before{content:"";position:absolute;top:0;left:50%;height:22px;border-left:2px solid var(--outline)}
+.simpul{display:inline-flex;flex-direction:column;gap:2px;padding:8px 12px;border-radius:14px;border:1.5px solid var(--outline);background:#fff;cursor:pointer;text-decoration:none;color:var(--ink);font-size:14px;line-height:1.3;min-width:150px;max-width:210px}
+.simpul b{font:600 14.5px var(--display)}
+.simpul small{color:var(--muted);font-size:12.5px}
+.simpul.akar{background:var(--ink);color:#fff;border-color:var(--ink);cursor:default}
+.simpul.akar small{color:rgba(255,255,255,.75)}
+.simpul.sifat{border-style:dashed}
+.simpul:hover:not(.akar){border-color:var(--ink)}
+.simpul .nomor-bagian{font-size:10.5px}
+@media (max-width:700px){
+  .pohon{display:block;min-width:0}
+  .pohon ul{display:block;padding:0 0 0 18px;margin-left:10px;border-left:2px solid var(--outline)}
+  .pohon ul::before,.pohon li::before,.pohon li::after{display:none}
+  .pohon li{display:block;text-align:left;padding:8px 0 0}
+  .simpul{max-width:none;width:100%}
+  .peta-bab{overflow:visible}
+}
+
+/* alur posisi bab */
+.alur{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0 18px;font-size:14px}
+.alur span{padding:6px 12px;border-radius:999px;background:var(--sunken)}
+.alur span.kini{background:var(--ink);color:#fff;font-weight:700}
+.alur svg{width:14px;height:14px;color:var(--muted)}
+
+/* diagram tiga pasang */
+.tiga-pasang{display:grid;grid-template-columns:1fr auto 1fr;grid-template-rows:auto auto auto;gap:10px 14px;align-items:center;justify-items:center;margin:12px 0 18px;padding:18px;border-radius:20px;background:var(--krem)}
+.tiga-pasang .orang{padding:8px 14px;border-radius:12px;background:#fff;border:1.5px solid var(--fardh);font-weight:600;font-size:14.5px;text-align:center}
+.tiga-pasang .pusat{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tiga-pasang .ket{font-size:13px;color:var(--muted);text-align:center}
+
+/* matriks 2x2 */
+.matriks{display:grid;grid-template-columns:auto 1fr 1fr;gap:8px;margin:12px 0 18px;font-size:14.5px}
+.matriks .sumbu{font-size:13px;font-weight:700;color:var(--muted);display:grid;place-items:center;text-align:center}
+.matriks .sel{padding:12px 14px;border-radius:14px;background:var(--krem)}
+.matriks .sel b{display:block;font-family:var(--display)}
+@media (max-width:560px){.matriks{grid-template-columns:1fr 1fr}.matriks .kosong,.matriks .sumbu.kiri{display:none}}
+
+/* simulator */
+.pilih-orang{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.pilih-orang label{display:inline-flex;gap:6px;align-items:center;padding:6px 12px;border:1.5px solid var(--divider);border-radius:12px;cursor:pointer;font-size:14.5px}
+.pilih-orang input{accent-color:var(--ink)}
+.status-orang{display:grid;gap:6px}
+.status-orang div{display:grid;grid-template-columns:150px 1fr;gap:10px;padding:8px 12px;border-radius:12px;background:var(--krem);font-size:14.5px}
+.status-orang div.gugur{background:var(--mahjub-soft)}
+.status-orang div.gugur b{color:var(--mahjub)}
+.status-orang div.catat b{color:var(--aksen-ink)}
+@media (max-width:560px){.status-orang div{grid-template-columns:1fr}}
+
+/* kuis */
+.opsi{display:grid;gap:8px;margin:6px 0 12px}
+.opsi button{text-align:left;border:1.5px solid var(--divider);background:#fff;border-radius:12px;padding:10px 14px;cursor:pointer}
+.opsi button.benar{border-color:var(--fardh);background:#e8f5ec}
+.opsi button.salah{border-color:var(--mahjub);background:var(--mahjub-soft)}
+.umpan{display:none;padding:12px 14px;border-radius:12px;background:var(--krem);font-size:15px}
+.umpan.tampil{display:block}
+.soal{font-weight:600;margin:0 0 8px}
+
+/* video */
+.video{aspect-ratio:16/9;max-height:300px;width:100%;border-radius:20px;background:#0f3a38;color:#fff;display:grid;place-items:center;text-align:center;margin:8px 0 22px;padding:16px}
+.video svg{width:42px;height:42px}
+.video p{margin:6px 0 0;font-size:14px;opacity:.85}
+
+/* ringkasan teks biasa */
+.ringkasan ul{margin:0 0 12px}
+.navigasi{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:36px;padding-top:18px;border-top:1px solid var(--divider)}
+.navigasi a{padding:9px 16px;border-radius:999px;background:var(--sunken);color:var(--ink);text-decoration:none;font-weight:600;font-size:14.5px}
+.navigasi a.berikutnya{background:var(--ink);color:#fff;margin-left:auto}
+
+[hidden]{display:none !important}
+@media (prefers-reduced-motion:reduce){.kt,.isi-batang{transition:none}.sorot-bagian{animation:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-buku" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5V21h16"/></symbol>
+  <symbol id="i-panah" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-lampu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1V17h6v-.2c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2z"/></symbol>
+  <symbol id="i-sentuh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V5a2 2 0 0 1 4 0v6"/><path d="M13 9a2 2 0 0 1 4 0v3a6 6 0 0 1-6 6h-1a5 5 0 0 1-4.5-2.8L4 12.5a1.8 1.8 0 0 1 3-2l2 2.5"/></symbol>
+  <symbol id="i-tanya" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-main" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-tautan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></symbol>
+</svg>
+
+<nav class="pilih-preview" aria-label="Pilih pelajaran preview">
+  <span>Preview v2:</span>
+  <button aria-selected="true" data-pelajaran="hajb">5.1 Hajb</button>
+  <button aria-selected="false" data-pelajaran="aul">7.2 'Aul</button>
+  <span>Ketuk istilah bergaris titik untuk melihat artinya.</span>
+</nav>
+
+<!-- ===================================================== HAJB ===================================================== -->
+<div data-halaman="hajb">
+<header class="hero-materi">
+  <div class="label">Modul 5 · Hajb · Pelajaran 1 dari 2</div>
+  <h1>Hajb: siapa tetap mendapat, siapa tergeser</h1>
+  <p>Tidak semua kerabat yang hadir ikut mendapat warisan. Bab ini menjelaskan kenapa sebagian bagiannya mengecil, sebagian hilang sama sekali, dan bagaimana menebaknya dengan beberapa kaidah.</p>
+  <div class="meta"><span>Sekitar 20 menit</span><span>7 bagian</span><span>3 contoh bertabel · 3 blok interaktif · 3 soal cek</span></div>
+</header>
+<div class="tata-materi">
+  <aside class="sidebar-materi" aria-label="Daftar materi">
+    <div class="judul-sb">Daftar materi</div>
+    <ol>
+      <li class="modul-sb">Modul 4 · Ashabah</li>
+      <li><a href="#">4.1 Tiga jenis ashabah</a></li>
+      <li><a href="#">4.2 Urutan ashabah</a></li>
+      <li class="modul-sb">Modul 5 · Hajb</li>
+      <li><a href="#" aria-current="page">5.1 Siapa tetap mendapat, siapa tergeser</a></li>
+      <li><a href="#">5.2 Tabel lengkap dan kasus cucu-saudari</a></li>
+      <li class="modul-sb">Modul 6 · Kakek dan saudara</li>
+    </ol>
+  </aside>
+
+  <main class="konten-materi"><div class="isi">
+    <div class="singgung">Bersinggungan dengan:
+      <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>2.2 Penghalang waris</a>
+      <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>3 Bagian pasti</a>
+      <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>6 Kakek dan saudara</a>
+    </div>
+
+    <section class="peta-bab" aria-label="Peta bab">
+      <p class="judul-peta">Peta bab ini · ketuk kotak untuk menuju bagiannya</p>
+      <ul class="pohon">
+        <li><span class="simpul akar"><b>Hajb</b><small>terhalang dari seluruh atau sebagian bagian</small></span>
+          <ul>
+            <li><a class="simpul sifat" href="#h-2b"><span class="nomor-bagian">2B</span><b>Karena sifat</b><small>terkena penghalang waris, dianggap tidak ada</small></a></li>
+            <li><a class="simpul" href="#h-2b"><span class="nomor-bagian">2B</span><b>Karena orang lain</b><small>ada ahli waris yang lebih kuat</small></a>
+              <ul>
+                <li><a class="simpul" href="#h-4"><span class="nomor-bagian">04</span><b>Nuqshan</b><small>bagian mengecil · 4 pemicu</small></a></li>
+                <li><a class="simpul" href="#h-5"><span class="nomor-bagian">05</span><b>Hirman</b><small>gugur total · 5 kaidah</small></a>
+                  <ul>
+                    <li><a class="simpul" href="#h-3"><span class="nomor-bagian">03</span><b>6 yang tidak pernah gugur</b></a></li>
+                    <li><a class="simpul" href="#h-6"><span class="nomor-bagian">06</span><b>Gugur, tapi tetap mengurangi</b></a></li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <!-- 01 -->
+    <h2 id="h-1" data-nomor="01">Gambaran masalahnya</h2>
+    <p>Sebelum masuk ke istilah, kita lihat dulu satu keluarga. Masalah hajb biasanya muncul persis seperti ini: keluarga sudah tahu siapa saja kerabat almarhum, lalu kaget karena hasil pembagiannya tidak seperti yang mereka bayangkan.</p>
+    <div class="kasus">
+      <div class="judul-kasus">Studi kasus</div>
+      <p>Pak Rahmat wafat. Ia meninggalkan <b>istri</b>, <b>satu anak laki-laki</b>, <b>ibu</b>, dan <b>seorang kakak laki-laki kandung</b>. Setelah dihitung, hasilnya begini:</p>
+      <div class="wadah-tabel"><table>
+        <thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari 24</th></tr></thead>
+        <tbody>
+          <tr><td><span class="titik" style="background:#b5653a"></span>Istri</td><td>1/8</td><td class="angka">3</td></tr>
+          <tr><td><span class="titik" style="background:#7d3c98"></span>Ibu</td><td>1/6</td><td class="angka">4</td></tr>
+          <tr><td><span class="titik" style="background:#2b6f8a"></span>Anak laki-laki</td><td>sisa (<button class="istilah" data-istilah="ashabah">ashabah</button>)</td><td class="angka">17</td></tr>
+          <tr class="gugur"><td>Kakak laki-laki kandung</td><td>gugur</td><td class="angka">0</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Jumlah</td><td class="angka">24</td></tr></tfoot>
+      </table></div>
+      <div class="bawah-kasus"><a href="#">Lihat langkah lengkapnya di Lab</a></div>
+    </div>
+    <p>Keluarga Pak Rahmat biasanya bertanya dua hal:</p>
+    <ol>
+      <li><b>Kenapa kakaknya tidak dapat apa-apa?</b> Ia saudara kandung, hubungannya dekat.</li>
+      <li><b>Kenapa istri hanya 1/8?</b> Bukankah istri mendapat 1/4?</li>
+    </ol>
+    <p>Dua pertanyaan ini sebenarnya menunjuk dua kejadian yang <b>berbeda</b>. Kakak <b>kehilangan seluruh</b> bagiannya. Istri <b>tidak kehilangan</b> bagian, tetapi bagiannya <b>mengecil</b>. Penyebab keduanya sama: ada anak laki-laki. Kejadian "tergeser karena ada orang lain" inilah yang disebut hajb.</p>
+    <h3 id="h-1a"><span class="sub-nomor">1a</span>Posisi hajb dalam alur pembagian</h3>
+    <p>Hajb adalah saringan kedua. Setelah kita tahu siapa saja kerabat yang punya hubungan waris, kita keluarkan dulu yang terkena penghalang waris, lalu baru menyaring dengan hajb. Yang lolos dari saringan inilah yang ditentukan bagiannya.</p>
+    <div class="alur" aria-label="Alur pembagian">
+      <span>Daftar kerabat</span><svg aria-hidden="true"><use href="#i-panah"/></svg>
+      <span>Penghalang waris</span><svg aria-hidden="true"><use href="#i-panah"/></svg>
+      <span class="kini">Hajb</span><svg aria-hidden="true"><use href="#i-panah"/></svg>
+      <span>Bagian pasti dan sisa</span><svg aria-hidden="true"><use href="#i-panah"/></svg>
+      <span>Hitung</span>
+    </div>
+    <p>Karena itu, materi ini memakai dua bekal dari bab sebelumnya: daftar ahli waris dan bagian pasti mereka. Kalau ada yang lupa, buka lagi <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>3.1 Enam bagian pasti</a>.</p>
+
+    <!-- 02 -->
+    <h2 id="h-2" data-nomor="02">Arti hajb dan pembagiannya</h2>
+    <h3 id="h-2a"><span class="sub-nomor">2a</span>Arti hajb</h3>
+    <p>Secara istilah, <button class="istilah" data-istilah="hajb">hajb</button> adalah <b>terhalangnya seorang ahli waris dari seluruh atau sebagian bagiannya karena ada ahli waris lain</b>. Orang yang menghalangi disebut <button class="istilah" data-istilah="hajib">hajib</button>, orang yang terhalang disebut <button class="istilah" data-istilah="mahjub">mahjub</button>.</p>
+    <p>Perhatikan kata "seluruh atau sebagian". Dua kata ini yang nanti memecah hajb menjadi dua akibat: hilang semuanya, atau berkurang sebagian.</p>
+
+    <h3 id="h-2b"><span class="sub-nomor">2b</span>Dua sebab: sifat dirinya, atau orang lain</h3>
+    <p>Seseorang bisa tidak mendapat warisan karena dua sebab yang sangat berbeda.</p>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th></th><th>Karena sifat (<i>bil awshaf</i>)</th><th>Karena orang lain (<i>bil asykhash</i>)</th></tr></thead>
+      <tbody>
+        <tr><td><b>Sebabnya</b></td><td>Ada sesuatu pada dirinya: membunuh almarhum, beda agama, atau sebab lain di bab penghalang waris</td><td>Ada ahli waris lain yang lebih kuat atau lebih dekat</td></tr>
+        <tr><td><b>Siapa yang bisa terkena</b></td><td>Semua ahli waris, termasuk anak dan orang tua</td><td>Tergantung kedudukannya (bagian 03 dan 05)</td></tr>
+        <tr><td><b>Akibatnya</b></td><td>Dianggap <b>tidak ada</b>: tidak dapat dan tidak memengaruhi siapa pun</td><td>Bisa <b>berkurang</b> atau <b>gugur</b>, dan yang gugur kadang masih memengaruhi orang lain (bagian 06)</td></tr>
+      </tbody>
+    </table></div>
+    <p>Hajb karena sifat sebenarnya adalah <button class="istilah" data-istilah="mani">mani'</button> yang sudah kamu pelajari di <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>2.2 Penghalang waris</a>. Bab ini fokus pada yang kedua: tergeser karena ada orang lain.</p>
+
+    <h3 id="h-2c"><span class="sub-nomor">2c</span>Dua akibat: berkurang atau hilang</h3>
+    <p>Hajb karena orang lain dibagi lagi menjadi dua:</p>
+    <ul>
+      <li><button class="istilah" data-istilah="nuqshan">Hajb nuqshan</button>: bagiannya <b>berkurang</b> ke bagian yang lebih kecil, tetapi tetap mendapat. Istri Pak Rahmat mengalami ini.</li>
+      <li><button class="istilah" data-istilah="hirman">Hajb hirman</button>: <b>gugur total</b>, tidak mendapat apa pun. Kakak Pak Rahmat mengalami ini.</li>
+    </ul>
+    <div class="blok">
+      <div class="judul-blok"><svg aria-hidden="true"><use href="#i-sentuh"/></svg>Coba bandingkan</div>
+      <p style="margin-bottom:10px">Harta digambarkan sebagai 8 kotak. Lihat apa yang terjadi pada istri dan kakak ketika ada anak laki-laki.</p>
+      <div class="segmen" role="group" aria-label="Keadaan keluarga">
+        <button aria-pressed="true" data-anak="0">Tanpa anak</button>
+        <button aria-pressed="false" data-anak="1">Ada anak laki-laki</button>
+      </div>
+      <div class="kotak-harta" id="kotak-2c"></div>
+      <p class="skala-kotak" id="ket-2c"></p>
+    </div>
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat</div>
+      <div class="kunci">
+        <span><strong>Nuqshan = kurang</strong><small>masih dapat, tapi lebih kecil</small></span>
+        <span><strong>Hirman = hilang</strong><small>tidak dapat sama sekali</small></span>
+        <span><strong>Sifat = tiada</strong><small>dianggap tidak pernah ada</small></span>
+      </div>
+      <p>Pertanyaan pertama setiap kali melihat orang tidak mendapat bagian: <b>apakah karena dirinya, atau karena orang lain?</b></p>
+    </div>
+    <p class="dasar"><svg aria-hidden="true"><use href="#i-buku"/></svg><span>Dasar: pembagian hajb menjadi nuqshan dan hirman disebut an-Nawawi dalam <b>Raudhah ath-Thalibin</b>, kitab fara'idh.</span></p>
+
+    <!-- 03 -->
+    <h2 id="h-3" data-nomor="03">Enam yang tidak pernah gugur</h2>
+    <p>Ada enam ahli waris yang <b>tidak pernah terkena hajb hirman</b>, siapa pun yang hadir bersama mereka:</p>
+    <div class="tiga-pasang" aria-label="Enam ahli waris yang tidak pernah gugur">
+      <span class="orang">Ayah</span><span class="ket">orang tua</span><span class="orang">Ibu</span>
+      <span class="orang">Suami</span><span class="orang pusat">Almarhum</span><span class="orang">Istri</span>
+      <span class="orang">Anak laki-laki</span><span class="ket">anak</span><span class="orang">Anak perempuan</span>
+    </div>
+    <p>Kenapa mereka? Para ulama menjelaskan bahwa antara mereka dan almarhum <b>tidak ada perantara</b>. Ayah dan ibu langsung di atas almarhum, anak langsung di bawahnya, dan pasangan terhubung langsung lewat pernikahan. Bandingkan dengan cucu yang terhubung lewat anak, atau saudara yang terhubung lewat ayah atau ibu. Selama ada perantara, selalu mungkin ada orang yang lebih kuat di depannya.</p>
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat</div>
+      <div class="kunci">
+        <span><strong>3 pasang</strong><small>orang tua · anak · suami-istri</small></span>
+        <span><strong>tanpa perantara</strong><small>langsung terhubung ke almarhum</small></span>
+      </div>
+      <p>Siapa pun di luar enam ini <b>bisa</b> gugur dalam keadaan tertentu.</p>
+    </div>
+    <p>Dua hal yang sering tertukar:</p>
+    <ul>
+      <li><b>Tidak pernah gugur bukan berarti tidak pernah berkurang.</b> Bagian ayah, ibu, suami, dan istri tetap bisa mengecil (bagian 04).</li>
+      <li><b>Tidak pernah gugur karena orang lain bukan berarti kebal dari penghalang waris.</b> Anak yang membunuh ayahnya tetap tidak mewarisi, karena itu hajb karena sifat (2b).</li>
+    </ul>
+    <p class="dasar"><svg aria-hidden="true"><use href="#i-buku"/></svg><span>Dasar: <b>disepakati empat madzhab</b>. Disebut dalam Raudhah ath-Thalibin (Syafi'i), al-Mughni (Hanbali), Tuhfat al-Muluk (Hanafi), dan 'Iqd al-Jawahir (Maliki).</span></p>
+
+    <!-- 04 -->
+    <h2 id="h-4" data-nomor="04">Hajb nuqshan: kapan bagian mengecil</h2>
+    <p>Pengurangan bagian tidak terjadi sembarangan. Seluruhnya hanya ada tujuh bentuk, dan semuanya sudah kamu temui ketika belajar bagian pasti. Di sini kita kelompokkan menurut <b>pemicunya</b>, supaya lebih mudah diingat.</p>
+
+    <h3 id="h-4a"><span class="sub-nomor">4a</span>Pemicu pertama: almarhum punya keturunan</h3>
+    <p>Pemicu paling sering adalah <button class="istilah" data-istilah="faru">far'u warits</button>, yaitu anak atau cucu dari anak laki-laki yang mewarisi. Kehadirannya menurunkan bagian empat ahli waris sekaligus. Coba ganti keadaannya:</p>
+    <div class="blok">
+      <div class="judul-blok"><svg aria-hidden="true"><use href="#i-sentuh"/></svg>Coba ganti keadaannya</div>
+      <div class="segmen" role="group" aria-label="Keturunan almarhum">
+        <button aria-pressed="true" data-turunan="0">Tidak punya anak</button>
+        <button aria-pressed="false" data-turunan="1">Ada anak perempuan saja</button>
+        <button aria-pressed="false" data-turunan="2">Ada anak laki-laki</button>
+      </div>
+      <div class="daftar-batang" id="batang-4a"></div>
+      <p class="skala-kotak" style="margin-top:12px">Batang = seluruh harta. Bagian ibu di sini dianggap tanpa dua saudara. Suami dan istri tidak hadir bersamaan; keduanya ditampilkan untuk perbandingan.</p>
+    </div>
+    <p>Yang paling menarik adalah ayah. Ia satu-satunya yang punya tiga keadaan: tanpa anak ia mengambil sisa, bersama anak perempuan ia mendapat 1/6 lalu masih mengambil sisa, dan bersama anak laki-laki ia tinggal 1/6. Rinciannya ada di <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>3.2 Ayah, ibu, kakek, nenek</a>.</p>
+
+    <h3 id="h-4b"><span class="sub-nomor">4b</span>Pemicu kedua: dua saudara atau lebih</h3>
+    <p>Ibu juga turun dari 1/3 ke 1/6 kalau almarhum punya <button class="istilah" data-istilah="jamikhwah">dua saudara atau lebih</button>, walaupun almarhum tidak punya anak. Saudara di sini boleh jenis apa saja: kandung, sebapak, atau seibu, laki-laki atau perempuan. Bahkan saudara yang sendirinya gugur tetap dihitung. Bagian 06 membahas kenapa.</p>
+
+    <h3 id="h-4c"><span class="sub-nomor">4c</span>Pemicu ketiga: ada perempuan setingkat di atasnya</h3>
+    <p>Dua ahli waris perempuan turun dari 1/2 ke 1/6 karena ada satu perempuan yang kedudukannya lebih kuat:</p>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th>Ahli waris</th><th>Sendirian</th><th>Bersama</th><th>Menjadi</th></tr></thead>
+      <tbody>
+        <tr><td>Cucu perempuan</td><td>1/2</td><td>satu anak perempuan</td><td>1/6</td></tr>
+        <tr><td>Saudari sebapak</td><td>1/2</td><td>satu saudari kandung</td><td>1/6</td></tr>
+      </tbody>
+    </table></div>
+    <p>Polanya sama: yang lebih kuat mengambil 1/2, yang di bawahnya tinggal 1/6. Kalau dijumlah, 1/2 + 1/6 = 2/3, sama dengan bagian dua perempuan yang setingkat. Pola ini akan muncul lagi di <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>5.2 Kasus cucu dan saudari</a>.</p>
+
+    <h3 id="h-4d"><span class="sub-nomor">4d</span>Pemicu keempat: berbagi atau 'aul</h3>
+    <p>Bentuk terakhir sering tidak disadari sebagai hajb. Bagian bisa mengecil karena <b>harus dibagi dengan orang lain</b> yang berhak atas bagian yang sama, misalnya dua istri berbagi 1/8, atau beberapa nenek berbagi 1/6. Bagian juga bisa mengecil karena <button class="istilah" data-istilah="aul">'aul</button>, ketika jumlah bagian melebihi harta. Ulama menyebut pengurangan karena berdesakan ini <button class="istilah" data-istilah="muzahamah">muzahamah</button>.</p>
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat: empat pemicu nuqshan</div>
+      <div class="kunci">
+        <span><strong>1. Anak</strong><small>suami, istri, ibu, ayah turun</small></span>
+        <span><strong>2. Saudara</strong><small>dua atau lebih: ibu turun</small></span>
+        <span><strong>3. Perempuan di atas</strong><small>cucu pr, saudari sebapak turun</small></span>
+        <span><strong>4. Berbagi</strong><small>berdesakan atau 'aul</small></span>
+      </div>
+    </div>
+
+    <!-- 05 -->
+    <h2 id="h-5" data-nomor="05">Hajb hirman: lima kaidah</h2>
+    <p>Daftar lengkap siapa menggugurkan siapa cukup panjang, tapi tidak perlu dihafal baris per baris. Hampir semuanya bisa diturunkan dari lima kaidah berikut. Pahami alasannya, nanti tabelnya terasa wajar.</p>
+    <div class="video"><div><svg aria-hidden="true"><use href="#i-main"/></svg><p>Video 5 menit: lima kaidah hajb hirman dengan pohon keluarga (menyusul dari tim keilmuan)</p></div></div>
+
+    <h3 id="h-5a"><span class="sub-nomor">5a</span>Yang terhubung lewat seseorang, gugur oleh orang itu</h3>
+    <p>Kalau hubunganmu dengan almarhum <b>melewati</b> seseorang, orang itu menutup jalanmu selama ia masih ada. Cucu terhubung lewat anak laki-laki, jadi gugur oleh anak laki-laki. Kakek terhubung lewat ayah, jadi gugur oleh ayah. Nenek gugur oleh ibu.</p>
+    <p><b>Satu pengecualian:</b> saudara seibu terhubung lewat ibu, tetapi tetap mewarisi bersama ibu.</p>
+
+    <h3 id="h-5b"><span class="sub-nomor">5b</span>Yang lebih dekat menggugurkan yang lebih jauh</h3>
+    <p>Dalam satu jenis kerabat, yang lebih dekat didahulukan. Di jalur samping urutannya: saudara, lalu keponakan, lalu paman, lalu sepupu. Cucu yang lebih dekat juga menggugurkan cicit, dan kakek yang lebih dekat menggugurkan kakek di atasnya.</p>
+
+    <h3 id="h-5c"><span class="sub-nomor">5c</span>Keturunan laki-laki menutup seluruh jalur samping</h3>
+    <p>Anak laki-laki atau cucu laki-laki dari anak laki-laki menggugurkan <b>semua</b> <button class="istilah" data-istilah="hawasyi">hawasyi</button>: saudara, keponakan, paman, dan sepupu. Itulah yang terjadi pada kakak Pak Rahmat.</p>
+
+    <h3 id="h-5d"><span class="sub-nomor">5d</span>Ayah menutup seluruh jalur samping, kakek sebagian</h3>
+    <p>Ayah juga menggugurkan semua kerabat samping. Kakek lebih terbatas: ia menggugurkan saudara seibu dan kerabat samping di bawah saudara (keponakan, paman, sepupu). Hubungan kakek dengan saudara kandung atau sebapak punya bab tersendiri di <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>6 Kakek dan saudara</a>.</p>
+
+    <h3 id="h-5e"><span class="sub-nomor">5e</span>Saudara seibu paling mudah gugur</h3>
+    <p>Saudara seibu gugur oleh siapa saja dari garis lurus: anak atau cucu, <b>laki-laki maupun perempuan</b>, ayah, dan kakek. Berbeda dengan saudara kandung yang tidak gugur oleh anak perempuan.</p>
+    <p class="dasar"><svg aria-hidden="true"><use href="#i-buku"/></svg><span>Dasar: saudara kandung gugur oleh ayah, anak laki-laki, dan cucu laki-laki adalah <b>ijma'</b> (dinukil Ibnu al-Mundzir dan an-Nawawi). Penghalang saudara seibu juga disepakati empat madzhab.</span></p>
+
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat: tiga kata</div>
+      <div class="kunci">
+        <span><strong>Lewat</strong><small>5a · perantaramu menutup jalanmu</small></span>
+        <span><strong>Dekat</strong><small>5b · yang lebih dekat didahulukan</small></span>
+        <span><strong>Lurus</strong><small>5c–5e · garis lurus (keturunan, ayah) menutup garis samping</small></span>
+      </div>
+      <p>Saudara seibu adalah garis samping yang paling rapuh: <b>anak perempuan pun cukup</b> untuk menggugurkannya.</p>
+    </div>
+
+    <div class="blok">
+      <div class="judul-blok"><svg aria-hidden="true"><use href="#i-sentuh"/></svg>Coba sendiri: siapa yang gugur?</div>
+      <p style="margin-bottom:10px">Centang kerabat yang hadir. Status tiap orang dan kaidah yang berlaku langsung berubah.</p>
+      <div class="pilih-orang" id="pilih-orang"></div>
+      <div class="status-orang" id="status-orang" role="status"></div>
+    </div>
+
+    <div class="kasus">
+      <div class="judul-kasus">Studi kasus</div>
+      <p>Seorang suami wafat meninggalkan istri, satu anak perempuan, satu saudara laki-laki sebapak, dan seorang paman kandung. Siapa yang gugur?</p>
+      <div class="wadah-tabel"><table>
+        <thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari 8</th><th>Keterangan</th></tr></thead>
+        <tbody>
+          <tr><td>Istri</td><td>1/8</td><td class="angka">1</td><td>Turun dari 1/4 karena ada anak (4a)</td></tr>
+          <tr><td>Anak perempuan</td><td>1/2</td><td class="angka">4</td><td>Sendirian</td></tr>
+          <tr><td>Saudara lk sebapak</td><td>sisa</td><td class="angka">3</td><td>Anak perempuan tidak menggugurkan saudara (5c hanya keturunan laki-laki)</td></tr>
+          <tr class="gugur"><td>Paman kandung</td><td>gugur</td><td class="angka">0</td><td>Saudara lebih dekat daripada paman (5b)</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Jumlah</td><td class="angka">8</td><td></td></tr></tfoot>
+      </table></div>
+      <div class="bawah-kasus"><a href="#">Lihat langkah lengkapnya di Lab</a></div>
+    </div>
+    <div class="catatan tenang"><b>Satu lagi bentuk gugur</b>Ahli waris yang hanya mengambil sisa (ashabah) juga gugur kalau bagian-bagian pasti sudah menghabiskan seluruh harta. Ini bukan karena ada orang yang lebih dekat, tetapi karena tidak ada lagi sisa yang bisa diambil.</div>
+    <p>Daftar lengkap siapa menggugurkan siapa, termasuk kasus cucu perempuan dan saudari sebapak yang lebih rumit, dibahas di <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>5.2 Tabel lengkap</a>.</p>
+
+    <!-- 06 -->
+    <h2 id="h-6" data-nomor="06">Gugur, tapi tetap mengurangi</h2>
+    <p>Ini bagian yang paling sering terlewat, bahkan oleh orang yang sudah lama belajar. Orang yang <b>gugur karena orang lain</b> ternyata masih bisa <b>mengurangi bagian ahli waris lain</b>. Sebaliknya, orang yang terkena penghalang waris benar-benar dianggap tidak ada.</p>
+    <div class="kasus">
+      <div class="judul-kasus">Studi kasus</div>
+      <p>Seorang laki-laki wafat meninggalkan <b>ayah</b>, <b>ibu</b>, dan <b>dua saudara laki-laki kandung</b>. Kedua saudara gugur karena ada ayah (5d). Tapi lihat bagian ibu.</p>
+      <div class="segmen" role="group" aria-label="Keadaan saudara">
+        <button aria-pressed="true" data-pembunuh="0">Keduanya gugur karena ayah</button>
+        <button aria-pressed="false" data-pembunuh="1">Seandainya salah satunya pembunuh</button>
+      </div>
+      <div class="kotak-harta" id="kotak-6"></div>
+      <div class="wadah-tabel" id="tabel-6"></div>
+      <p id="ket-6" style="margin:0"></p>
+      <div class="bawah-kasus" style="margin-top:10px"><a href="#">Lihat langkah lengkapnya di Lab</a></div>
+    </div>
+    <p>Kuncinya ada di perbedaan sebab pada 2b. Saudara yang gugur karena ayah tetap ada sebagai saudara almarhum; ia hanya kalah oleh orang yang lebih kuat. Pembunuh dianggap tidak ada sejak awal, sehingga tidak dihitung sebagai siapa pun.</p>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th></th><th>Gugur karena orang lain (<i>mahjub</i>)</th><th>Terkena penghalang waris (<i>mamnu'</i>)</th></tr></thead>
+      <tbody>
+        <tr><td><b>Mendapat bagian?</b></td><td>Tidak</td><td>Tidak</td></tr>
+        <tr><td><b>Bisa mengurangi orang lain?</b></td><td><b>Bisa</b>, misalnya menurunkan ibu ke 1/6</td><td>Tidak, dianggap tidak ada</td></tr>
+        <tr><td><b>Contoh</b></td><td>Saudara bersama ayah</td><td>Saudara yang membunuh almarhum</td></tr>
+      </tbody>
+    </table></div>
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat</div>
+      <div class="kunci">
+        <span><strong>Gugur karena orang</strong><small>masih dihitung</small></span>
+        <span><strong>Gugur karena sifat</strong><small>tidak dihitung</small></span>
+      </div>
+    </div>
+    <p class="dasar"><svg aria-hidden="true"><use href="#i-buku"/></svg><span>Dasar: contoh ayah, ibu, dan dua saudara ini disebut langsung dalam <b>Raudhah ath-Thalibin</b>. Pendapat bahwa saudara yang gugur tetap menurunkan ibu adalah pendapat <b>jumhur</b>.</span></p>
+
+    <!-- 07 -->
+    <h2 id="h-7" data-nomor="07">Empat kelompok ahli waris</h2>
+    <p>Kalau semua yang tadi digabung, setiap ahli waris bisa ditempatkan di salah satu dari empat kotak berikut, menurut dua pertanyaan: <b>bisakah ia menggugurkan orang lain?</b> dan <b>bisakah ia digugurkan?</b></p>
+    <div class="matriks">
+      <span class="kosong"></span><span class="sumbu">Bisa menggugurkan</span><span class="sumbu">Tidak menggugurkan</span>
+      <span class="sumbu kiri">Tidak bisa gugur</span>
+      <div class="sel"><b>Ayah, ibu, anak lk, anak pr</b>Penghalang yang tidak pernah terhalang</div>
+      <div class="sel"><b>Suami, istri</b>Tidak menggugurkan dan tidak gugur</div>
+      <span class="sumbu kiri">Bisa gugur</span>
+      <div class="sel"><b>Cucu, kakek, nenek, saudara kandung dan sebapak, dan lainnya</b>Bisa keduanya</div>
+      <div class="sel"><b>Saudara seibu</b>Bisa gugur, tetapi tidak menggugurkan siapa pun</div>
+    </div>
+    <p>Kotak ini berguna sebagai pemeriksaan cepat. Kalau hitunganmu membuat istri menggugurkan seseorang, atau membuat anak perempuan gugur karena orang lain, pasti ada yang salah.</p>
+
+    <!-- cek -->
+    <h2 id="h-cek" data-nomor="08">Cek pemahaman</h2>
+    <div class="blok" data-kuis>
+      <p class="soal">1. Ahli waris: ayah, ibu, dan dua saudara kandung. Berapa bagian ibu?</p>
+      <div class="opsi">
+        <button data-umpan="Belum. Saudara memang gugur oleh ayah, tetapi yang gugur karena orang lain tetap dihitung untuk menurunkan ibu (06).">1/3</button>
+        <button data-benar="1" data-umpan="Benar. Dua saudara menurunkan ibu ke 1/6 walaupun mereka sendiri gugur.">1/6</button>
+        <button data-umpan="Belum. Ibu termasuk enam yang tidak pernah gugur (03).">Tidak dapat</button>
+      </div>
+      <div class="umpan" role="status"></div>
+    </div>
+    <div class="blok" data-kuis>
+      <p class="soal">2. Seorang perempuan wafat meninggalkan suami, satu anak perempuan, dan satu saudara laki-laki seibu. Apa yang terjadi pada saudara seibu?</p>
+      <div class="opsi">
+        <button data-umpan="Belum. Untuk saudara seibu, anak perempuan pun sudah cukup untuk menggugurkan (5e).">Mendapat bagian, karena anak perempuan tidak menggugurkan saudara</button>
+        <button data-benar="1" data-umpan="Benar. Anak atau cucu, laki-laki maupun perempuan, menggugurkan saudara seibu.">Gugur karena ada anak perempuan</button>
+        <button data-umpan="Belum. Suami tidak pernah menggugurkan siapa pun (07).">Gugur karena ada suami</button>
+      </div>
+      <div class="umpan" role="status"></div>
+    </div>
+    <div class="blok" data-kuis>
+      <p class="soal">3. Mana yang termasuk hajb nuqshan?</p>
+      <div class="opsi">
+        <button data-umpan="Belum. Cucu tidak mendapat apa pun, itu hirman (5a).">Cucu laki-laki tidak mendapat bagian karena ada anak laki-laki</button>
+        <button data-benar="1" data-umpan="Benar. Suami tetap mendapat, hanya lebih kecil.">Suami mendapat 1/4, bukan 1/2, karena ada anak</button>
+        <button data-umpan="Belum. Itu hajb karena sifat (penghalang waris), bukan karena orang lain.">Anak yang membunuh ayahnya tidak mewarisi</button>
+      </div>
+      <div class="umpan" role="status"></div>
+    </div>
+
+    <h2 id="h-ringkas" data-nomor="09">Ringkasnya</h2>
+    <div class="ringkasan">
+      <p>Hajb adalah tergesernya ahli waris karena ada ahli waris lain. Sebelum menyaring dengan hajb, keluarkan dulu yang terkena penghalang waris, karena mereka dianggap tidak ada.</p>
+      <ul>
+        <li><b>Nuqshan</b>: bagian mengecil. Pemicunya empat: anak, dua saudara, perempuan setingkat di atasnya, dan berbagi atau 'aul.</li>
+        <li><b>Hirman</b>: gugur total. Kaidahnya tiga kata: lewat, dekat, lurus. Saudara seibu paling mudah gugur.</li>
+        <li>Enam yang tidak pernah gugur: ayah, ibu, anak laki-laki, anak perempuan, suami, istri.</li>
+        <li>Yang gugur karena orang lain masih bisa mengurangi bagian ibu; yang terkena penghalang waris tidak.</li>
+      </ul>
+      <p>Pelajaran berikutnya melengkapi tabel siapa menggugurkan siapa, termasuk kasus cucu perempuan dan saudari sebapak.</p>
+    </div>
+    <nav class="navigasi" aria-label="Navigasi pelajaran"><a href="#">Sebelumnya</a><a class="berikutnya" href="#">Berikutnya: 5.2 Tabel lengkap</a></nav>
+  </div></main>
+
+  <nav class="rail-isi" aria-label="Di halaman ini">
+    <div class="judul-rail">Di halaman ini</div>
+    <a href="#h-1"><span class="nomor-bagian">01</span>Gambaran masalahnya</a>
+    <a class="sub" href="#h-1a"><span class="nomor-bagian">1A</span>Posisi hajb</a>
+    <a href="#h-2"><span class="nomor-bagian">02</span>Arti dan pembagian</a>
+    <a class="sub" href="#h-2a"><span class="nomor-bagian">2A</span>Arti hajb</a>
+    <a class="sub" href="#h-2b"><span class="nomor-bagian">2B</span>Dua sebab</a>
+    <a class="sub" href="#h-2c"><span class="nomor-bagian">2C</span>Dua akibat</a>
+    <a href="#h-3"><span class="nomor-bagian">03</span>Enam yang tidak gugur</a>
+    <a href="#h-4"><span class="nomor-bagian">04</span>Hajb nuqshan</a>
+    <a class="sub" href="#h-4a"><span class="nomor-bagian">4A</span>Ada keturunan</a>
+    <a class="sub" href="#h-4b"><span class="nomor-bagian">4B</span>Dua saudara</a>
+    <a class="sub" href="#h-4c"><span class="nomor-bagian">4C</span>Perempuan di atas</a>
+    <a class="sub" href="#h-4d"><span class="nomor-bagian">4D</span>Berbagi atau 'aul</a>
+    <a href="#h-5"><span class="nomor-bagian">05</span>Hajb hirman</a>
+    <a class="sub" href="#h-5a"><span class="nomor-bagian">5A</span>Lewat</a>
+    <a class="sub" href="#h-5b"><span class="nomor-bagian">5B</span>Dekat</a>
+    <a class="sub" href="#h-5c"><span class="nomor-bagian">5C</span>Keturunan laki-laki</a>
+    <a class="sub" href="#h-5d"><span class="nomor-bagian">5D</span>Ayah dan kakek</a>
+    <a class="sub" href="#h-5e"><span class="nomor-bagian">5E</span>Saudara seibu</a>
+    <a href="#h-6"><span class="nomor-bagian">06</span>Gugur tapi mengurangi</a>
+    <a href="#h-7"><span class="nomor-bagian">07</span>Empat kelompok</a>
+    <a href="#h-cek"><span class="nomor-bagian">08</span>Cek pemahaman</a>
+    <a href="#h-ringkas"><span class="nomor-bagian">09</span>Ringkasnya</a>
+  </nav>
+</div>
+</div>
+
+<!-- ===================================================== 'AUL ===================================================== -->
+<div data-halaman="aul" hidden>
+<header class="hero-materi">
+  <div class="label">Modul 7 · Menghitung · Pelajaran 2 dari 3</div>
+  <h1>'Aul: ketika bagian melebihi harta</h1>
+  <p>Kadang bagian-bagian pasti, kalau dijumlahkan, lebih dari satu harta utuh. Bab ini menjelaskan apa yang dilakukan dalam keadaan itu, dari mana asalnya, dan batas-batasnya.</p>
+  <div class="meta"><span>Sekitar 15 menit</span><span>6 bagian</span><span>4 contoh bertabel · 1 visual · 2 soal cek</span></div>
+</header>
+<div class="tata-materi">
+  <aside class="sidebar-materi" aria-label="Daftar materi">
+    <div class="judul-sb">Daftar materi</div>
+    <ol>
+      <li class="modul-sb">Modul 7 · Menghitung</li>
+      <li><a href="#">7.1 Ashlul mas'alah</a></li>
+      <li><a href="#" aria-current="page">7.2 'Aul</a></li>
+      <li><a href="#">7.3 Radd</a></li>
+      <li class="modul-sb">Modul 8 · Tashih</li>
+    </ol>
+  </aside>
+
+  <main class="konten-materi"><div class="isi">
+    <div class="singgung">Bersinggungan dengan:
+      <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>7.1 Ashlul mas'alah</a>
+      <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>7.3 Radd</a>
+      <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>5.1 Hajb nuqshan</a>
+    </div>
+
+    <h2 id="a-1" data-nomor="01">Masalah di masa 'Umar</h2>
+    <p>Seorang perempuan wafat. Ia meninggalkan <b>suami</b> dan <b>dua saudari kandung</b>, tanpa anak. Menurut Al-Qur'an, suami mendapat 1/2 karena istrinya tidak punya anak, dan dua saudari kandung mendapat 2/3.</p>
+    <p>Kalau ditulis dengan penyebut yang sama (<button class="istilah" data-istilah="ashl">ashlul mas'alah</button> 6), suami mendapat 3 bagian dan dua saudari 4 bagian. Jumlahnya <b>7</b>, padahal hartanya hanya <b>6</b> bagian. Tidak mungkin semua orang mendapat haknya secara penuh. Siapa yang harus dikurangi?</p>
+    <div class="blok">
+      <div class="judul-blok"><svg aria-hidden="true"><use href="#i-sentuh"/></svg>Lihat masalahnya</div>
+      <div class="kotak-harta" id="kotak-a1"></div>
+      <p class="skala-kotak" id="ket-a1"></p>
+      <p style="margin:10px 0 0"><button class="aksi-teks" id="tombol-aul">Terapkan 'aul</button></p>
+    </div>
+    <p>Pertanyaan ini sampai kepada 'Umar bin al-Khaththab. Beliau memutuskan: <b>tidak ada yang didahulukan</b>. Semua bagian dihitung dari penyebut yang diperbesar menjadi 7, sehingga semua orang sama-sama berkurang sedikit, sebanding dengan bagiannya.</p>
+    <p class="dasar"><svg aria-hidden="true"><use href="#i-buku"/></svg><span>Dasar: Ibnu 'Abbas berkata bahwa orang pertama yang menerapkan 'aul adalah 'Umar (riwayat al-Hakim dan al-Baihaqi). Para sahabat menyepakatinya. Ibnu 'Abbas menyelisihi setelah 'Umar wafat, dan <b>ijma'</b> sesudahnya menetapkan 'aul.</span></p>
+
+    <h2 id="a-2" data-nomor="02">Apa itu 'aul</h2>
+    <h3 id="a-2a"><span class="sub-nomor">2a</span>Pengertian</h3>
+    <p><button class="istilah" data-istilah="aul">'Aul</button> adalah <b>bertambahnya jumlah saham melebihi ashlul mas'alah, sehingga bagian setiap ahli waris berkurang secara sebanding</b>. Caranya sederhana: jumlahkan semua saham, lalu jadikan jumlah itu penyebut yang baru.</p>
+    <h3 id="a-2b"><span class="sub-nomor">2b</span>Kenapa disebut "sebanding"</h3>
+    <p>Bandingkan bagian masing-masing sebelum dan sesudah 'aul pada kasus 'Umar tadi:</p>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th>Ahli waris</th><th>Hak menurut nash</th><th>Sesudah 'aul</th><th>Kira-kira dari harta</th></tr></thead>
+      <tbody>
+        <tr><td>Suami</td><td>1/2 (3 dari 6)</td><td>3/7</td><td>dari 50% menjadi sekitar 43%</td></tr>
+        <tr><td>Dua saudari kandung</td><td>2/3 (4 dari 6)</td><td>4/7</td><td>dari 67% menjadi sekitar 57%</td></tr>
+      </tbody>
+    </table></div>
+    <p>Perbandingan 3 : 4 antara suami dan dua saudari tidak berubah. Yang berubah hanya ukuran "kue"-nya: dibagi menjadi 7 potong, bukan 6. Itulah sebabnya 'aul juga termasuk bentuk berkurangnya bagian karena berdesakan, seperti di <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>5.1 bagian 4d</a>.</p>
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat</div>
+      <div class="kunci">
+        <span><strong>Jumlah saham → penyebut baru</strong><small>itu seluruh cara 'aul</small></span>
+        <span><strong>Semua turun bersama</strong><small>perbandingan antarorang tetap</small></span>
+      </div>
+    </div>
+
+    <h2 id="a-3" data-nomor="03">Di mana posisi 'aul</h2>
+    <p>Setelah ashlul mas'alah ditentukan dan semua saham dijumlahkan, hanya ada tiga kemungkinan. 'Aul adalah salah satunya.</p>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th>Jumlah saham dibanding ashl</th><th>Namanya</th><th>Yang dilakukan</th></tr></thead>
+      <tbody>
+        <tr><td><b>Sama</b></td><td>'Adilah (pas)</td><td>Langsung dibagi</td></tr>
+        <tr><td><b>Lebih besar</b></td><td>'Ailah (meluap)</td><td><b>'Aul</b>: penyebut dinaikkan ke jumlah saham</td></tr>
+        <tr><td><b>Lebih kecil</b>, dan tidak ada ashabah</td><td>Naqishah (kurang)</td><td><b>Radd</b>: sisa dikembalikan, lihat <a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>7.3 Radd</a></td></tr>
+      </tbody>
+    </table></div>
+    <p>Kalau jumlah saham lebih kecil tetapi ada ashabah, tidak terjadi apa-apa: ashabah mengambil sisanya. Karena itu 'aul hanya mungkin terjadi ketika <b>semua</b> ahli waris yang mendapat bagian adalah pemilik bagian pasti, atau ada ashabah tetapi tidak kebagian.</p>
+
+    <h2 id="a-4" data-nomor="04">Ashl yang bisa 'aul, dan sampai berapa</h2>
+    <p>Dari tujuh ashl yang dikenal (2, 3, 4, 6, 8, 12, 24), hanya tiga yang bisa 'aul. Angka tujuannya pun terbatas. Setiap kemungkinan di bawah ini sudah diberi contoh susunan ahli warisnya.</p>
+
+    <h3 id="a-4a"><span class="sub-nomor">4a</span>Ashl 6: naik ke 7, 8, 9, atau 10</h3>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th>Naik ke</th><th>Contoh ahli waris (almarhumah)</th><th>Saham</th></tr></thead>
+      <tbody>
+        <tr><td><b>7</b></td><td>Suami, 2 saudari kandung</td><td>3 + 4</td></tr>
+        <tr><td><b>8</b></td><td>Suami, ibu, 1 saudari kandung, 1 saudari sebapak</td><td>3 + 1 + 3 + 1</td></tr>
+        <tr><td><b>9</b></td><td>Suami, ibu, 2 saudara seibu, 1 saudari kandung</td><td>3 + 1 + 2 + 3</td></tr>
+        <tr><td><b>10</b></td><td>Suami, ibu, 2 saudara seibu, 2 saudari kandung</td><td>3 + 1 + 2 + 4</td></tr>
+      </tbody>
+    </table></div>
+    <h3 id="a-4b"><span class="sub-nomor">4b</span>Ashl 12: naik ke 13, 15, atau 17</h3>
+    <div class="wadah-tabel"><table>
+      <thead><tr><th>Naik ke</th><th>Contoh ahli waris (almarhum)</th><th>Saham</th></tr></thead>
+      <tbody>
+        <tr><td><b>13</b></td><td>Istri, ibu, 2 saudari kandung</td><td>3 + 2 + 8</td></tr>
+        <tr><td><b>15</b></td><td>Istri, ibu, 1 saudara seibu, 2 saudari kandung</td><td>3 + 2 + 2 + 8</td></tr>
+        <tr><td><b>17</b></td><td>Istri, ibu, 2 saudara seibu, 2 saudari kandung</td><td>3 + 2 + 4 + 8</td></tr>
+      </tbody>
+    </table></div>
+    <h3 id="a-4c"><span class="sub-nomor">4c</span>Ashl 24: hanya naik ke 27</h3>
+    <p>Ashl 24 hanya punya satu kemungkinan 'aul, dan kasusnya terkenal dengan nama sendiri (bagian 05).</p>
+    <h3 id="a-4d"><span class="sub-nomor">4d</span>Ashl 2, 3, 4, 8: tidak pernah 'aul</h3>
+    <p>Empat ashl ini tidak pernah mengalami 'aul. Kalau hitunganmu menghasilkan 'aul dari salah satu angka ini, atau ke angka yang tidak ada di tabel (misalnya 12 ke 14), berarti ada bagian yang keliru.</p>
+    <div class="ingat">
+      <div class="judul-ingat"><svg aria-hidden="true"><use href="#i-lampu"/></svg>Cara mengingat</div>
+      <div class="kunci">
+        <span><strong>6 → 7 · 8 · 9 · 10</strong><small>berurutan, paling banyak 10</small></span>
+        <span><strong>12 → 13 · 15 · 17</strong><small>selalu ganjil</small></span>
+        <span><strong>24 → 27</strong><small>hanya satu</small></span>
+      </div>
+      <p>Selain tiga ashl ini: <b>tidak pernah 'aul</b>.</p>
+    </div>
+    <p class="dasar"><svg aria-hidden="true"><use href="#i-buku"/></svg><span>Dasar: batas-batas 'aul ini disebut an-Nawawi dalam <b>Raudhah ath-Thalibin</b>.</span></p>
+
+    <h2 id="a-5" data-nomor="05">Dua kasus 'aul yang diberi nama</h2>
+    <p>Dua kasus di batas atas 'aul sering disebut dengan namanya di kitab-kitab fara'idh. Keduanya layak dikenal, karena sekaligus menunjukkan 'aul paling besar dari ashl 6 dan satu-satunya 'aul dari ashl 24.</p>
+
+    <h3 id="a-5a"><span class="sub-nomor">5a</span>Al-Minbariyyah: 24 menjadi 27</h3>
+    <p><b>Susunannya:</b> seorang laki-laki wafat meninggalkan istri, ayah, ibu, dan dua anak perempuan.</p>
+    <div class="kasus">
+      <div class="judul-kasus">Tabel al-Minbariyyah</div>
+      <div class="wadah-tabel"><table>
+        <thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari 24</th><th class="angka">Sesudah 'aul (27)</th></tr></thead>
+        <tbody>
+          <tr><td>Istri</td><td>1/8</td><td class="angka">3</td><td class="angka">3</td></tr>
+          <tr><td>Ayah</td><td>1/6</td><td class="angka">4</td><td class="angka">4</td></tr>
+          <tr><td>Ibu</td><td>1/6</td><td class="angka">4</td><td class="angka">4</td></tr>
+          <tr><td>Dua anak perempuan</td><td>2/3</td><td class="angka">16</td><td class="angka">16</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Jumlah</td><td class="angka">27 (lebih dari 24)</td><td class="angka">27</td></tr></tfoot>
+      </table></div>
+      <div class="bawah-kasus"><a href="#">Lihat langkah lengkapnya di Lab</a></div>
+    </div>
+    <p><b>Asal namanya:</b> kasus ini ditanyakan kepada 'Ali bin Abi Thalib, dan beliau langsung menjawab bahwa seperdelapan bagian istri telah menjadi sepersembilan (3 dari 27). Sebagian riwayat menyebut beliau ditanya ketika sedang di atas mimbar, sehingga kasus ini disebut al-Minbariyyah.</p>
+    <p><b>Yang bisa dipelajari:</b> ayah bersama anak perempuan biasanya mendapat 1/6 lalu mengambil sisa, tetapi di sini tidak ada sisa sama sekali. Ashl 24 muncul karena ada 1/8 bersama 1/6 dan 2/3.</p>
+
+    <h3 id="a-5b"><span class="sub-nomor">5b</span>Umm al-Furukh: 6 menjadi 10</h3>
+    <p><b>Susunannya:</b> seorang perempuan wafat meninggalkan suami, ibu, dua saudara seibu, dan dua saudari kandung.</p>
+    <div class="kasus">
+      <div class="judul-kasus">Tabel Umm al-Furukh</div>
+      <div class="wadah-tabel"><table>
+        <thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari 6</th><th class="angka">Sesudah 'aul (10)</th></tr></thead>
+        <tbody>
+          <tr><td>Suami</td><td>1/2</td><td class="angka">3</td><td class="angka">3</td></tr>
+          <tr><td>Ibu</td><td>1/6</td><td class="angka">1</td><td class="angka">1</td></tr>
+          <tr><td>Dua saudara seibu</td><td>1/3</td><td class="angka">2</td><td class="angka">2</td></tr>
+          <tr><td>Dua saudari kandung</td><td>2/3</td><td class="angka">4</td><td class="angka">4</td></tr>
+        </tbody>
+        <tfoot><tr><td colspan="2">Jumlah</td><td class="angka">10 (lebih dari 6)</td><td class="angka">10</td></tr></tfoot>
+      </table></div>
+      <div class="bawah-kasus"><a href="#">Lihat langkah lengkapnya di Lab</a></div>
+    </div>
+    <p><b>Namanya:</b> disebut juga asy-Syuraihiyyah. Inilah 'aul terbesar yang mungkin terjadi dari ashl 6.</p>
+    <p><b>Yang bisa dipelajari:</b> ibu mendapat 1/6, bukan 1/3, karena almarhumah punya empat saudara (<a class="tautan-bab" href="#"><svg aria-hidden="true"><use href="#i-tautan"/></svg>5.1 bagian 4b</a>).</p>
+
+    <h2 id="a-6" data-nomor="06">Kesalahan yang sering terjadi</h2>
+    <ul>
+      <li><b>Hanya mengurangi satu orang.</b> Misalnya suami tetap diberi 1/2 penuh lalu sisanya untuk saudari. Ini bukan 'aul. Dalam 'aul semua berkurang sebanding.</li>
+      <li><b>'Aul ke angka yang mustahil.</b> Ashl 12 tidak pernah menjadi 14 atau 16. Kalau itu terjadi, periksa lagi bagian ibu atau saudara.</li>
+      <li><b>Tertukar dengan radd.</b> 'Aul untuk saham yang <b>melebihi</b> ashl; radd untuk saham yang <b>kurang</b> dan tidak ada ashabah.</li>
+    </ul>
+
+    <h2 id="a-cek" data-nomor="07">Cek pemahaman</h2>
+    <div class="blok" data-kuis>
+      <p class="soal">1. Sebuah hitungan menghasilkan ashl 12 yang naik menjadi 14. Apa kesimpulannya?</p>
+      <div class="opsi">
+        <button data-umpan="Belum. Dari ashl 12, 'aul hanya ke 13, 15, atau 17 (4b).">Wajar, ini 'aul biasa</button>
+        <button data-benar="1" data-umpan="Benar. Ashl 12 hanya bisa 'aul ke bilangan ganjil 13, 15, 17. Angka 14 tanda ada bagian yang keliru.">Ada yang salah, karena 12 tidak pernah 'aul ke 14</button>
+        <button data-umpan="Belum. Radd terjadi saat saham kurang dari ashl, bukan lebih (03).">Ini radd</button>
+      </div>
+      <div class="umpan" role="status"></div>
+    </div>
+    <div class="blok" data-kuis>
+      <p class="soal">2. Pada kasus suami dan dua saudari kandung, bagaimana 'aul membagi harta?</p>
+      <div class="opsi">
+        <button data-umpan="Belum. Kalau suami diberi penuh, yang menanggung kekurangan hanya saudari. Dalam 'aul semua berkurang (2b).">Suami tetap 1/2, saudari mendapat sisanya</button>
+        <button data-benar="1" data-umpan="Benar. Penyebut menjadi 7: suami 3/7, dua saudari 4/7.">Suami 3/7 dan dua saudari 4/7</button>
+        <button data-umpan="Belum. Saudari tetap mendapat bagian pasti; tidak ada yang digugurkan.">Saudari gugur karena harta sudah habis</button>
+      </div>
+      <div class="umpan" role="status"></div>
+    </div>
+
+    <h2 id="a-ringkas" data-nomor="08">Ringkasnya</h2>
+    <div class="ringkasan">
+      <p>'Aul dipakai ketika jumlah saham melebihi ashlul mas'alah. Jumlah saham itu dijadikan penyebut baru, sehingga semua ahli waris berkurang sebanding dan perbandingan antarmereka tetap.</p>
+      <ul>
+        <li>Pertama kali diputuskan 'Umar, lalu menjadi ijma'.</li>
+        <li>Hanya ashl 6 (ke 7, 8, 9, 10), 12 (ke 13, 15, 17), dan 24 (ke 27).</li>
+        <li>Dua kasus bernama: al-Minbariyyah (24 ke 27) dan Umm al-Furukh (6 ke 10).</li>
+        <li>Kebalikannya adalah radd, ketika saham kurang dan tidak ada ashabah.</li>
+      </ul>
+    </div>
+    <nav class="navigasi" aria-label="Navigasi pelajaran"><a href="#">Sebelumnya: 7.1 Ashlul mas'alah</a><a class="berikutnya" href="#">Berikutnya: 7.3 Radd</a></nav>
+  </div></main>
+
+  <nav class="rail-isi" aria-label="Di halaman ini">
+    <div class="judul-rail">Di halaman ini</div>
+    <a href="#a-1"><span class="nomor-bagian">01</span>Masalah di masa 'Umar</a>
+    <a href="#a-2"><span class="nomor-bagian">02</span>Apa itu 'aul</a>
+    <a class="sub" href="#a-2a"><span class="nomor-bagian">2A</span>Pengertian</a>
+    <a class="sub" href="#a-2b"><span class="nomor-bagian">2B</span>Kenapa sebanding</a>
+    <a href="#a-3"><span class="nomor-bagian">03</span>Posisi 'aul</a>
+    <a href="#a-4"><span class="nomor-bagian">04</span>Ashl yang bisa 'aul</a>
+    <a class="sub" href="#a-4a"><span class="nomor-bagian">4A</span>Ashl 6</a>
+    <a class="sub" href="#a-4b"><span class="nomor-bagian">4B</span>Ashl 12</a>
+    <a class="sub" href="#a-4c"><span class="nomor-bagian">4C</span>Ashl 24</a>
+    <a class="sub" href="#a-4d"><span class="nomor-bagian">4D</span>Tidak pernah 'aul</a>
+    <a href="#a-5"><span class="nomor-bagian">05</span>Dua kasus bernama</a>
+    <a class="sub" href="#a-5a"><span class="nomor-bagian">5A</span>Al-Minbariyyah</a>
+    <a class="sub" href="#a-5b"><span class="nomor-bagian">5B</span>Umm al-Furukh</a>
+    <a href="#a-6"><span class="nomor-bagian">06</span>Kesalahan umum</a>
+    <a href="#a-cek"><span class="nomor-bagian">07</span>Cek pemahaman</a>
+    <a href="#a-ringkas"><span class="nomor-bagian">08</span>Ringkasnya</a>
+  </nav>
+</div>
+</div>
+
+<div class="tooltip" id="tooltip" role="tooltip" hidden></div>
+
+<script>
+// ---------- ganti pelajaran ----------
+document.querySelectorAll('[data-pelajaran]').forEach(tombol => tombol.addEventListener('click', () => {
+  document.querySelectorAll('[data-pelajaran]').forEach(lain => lain.setAttribute('aria-selected', String(lain === tombol)));
+  document.querySelectorAll('[data-halaman]').forEach(halaman => { halaman.hidden = halaman.dataset.halaman !== tombol.dataset.pelajaran; });
+  window.scrollTo({ top: 0 });
+}));
+
+// ---------- tooltip istilah (arti dari glosarium KB bab 15) ----------
+const GLOSARIUM = {
+  hajb: ['Hajb', 'الحجب', 'Ahli waris terhalang atau berkurang bagiannya karena ada ahli waris lain.'],
+  hajib: ['Hajib', 'الحاجب', 'Ahli waris yang menghalangi ahli waris lain.'],
+  mahjub: ['Mahjub', 'المحجوب', 'Ahli waris yang terhalang oleh ahli waris lain.'],
+  nuqshan: ['Hajb nuqshan', 'حجب النقصان', 'Bagiannya tetap ada tetapi mengecil karena ada ahli waris lain.'],
+  hirman: ['Hajb hirman', 'حجب الحرمان', 'Terhalang sepenuhnya, tidak mendapat bagian sama sekali karena ada ahli waris yang lebih dekat.'],
+  mani: ["Mani'", 'المانع', 'Sebab yang membuat seseorang tidak berhak mewarisi, misalnya berbeda agama atau membunuh almarhum.'],
+  faru: ["Far'u warits", 'الفرع الوارث', 'Keturunan almarhum yang berhak mewarisi: anak, dan cucu dari anak laki-laki.'],
+  hawasyi: ['Hawasyi', 'الحواشي', 'Kerabat dari samping: saudara, keponakan, paman, dan sepupu.'],
+  ashabah: ['Ashabah', 'العصبة', 'Ahli waris yang mengambil sisa harta setelah bagian-bagian pasti diberikan.'],
+  jamikhwah: ["Jam' min al-ikhwah", 'الجمع من الإخوة', 'Almarhum punya dua saudara atau lebih; ini mengurangi bagian ibu walaupun saudaranya sendiri tidak mendapat bagian.'],
+  aul: ["'Aul", 'العول', 'Jumlah bagian melebihi harta, sehingga penyebut dinaikkan dan semua bagian berkurang secara sebanding.'],
+  muzahamah: ['Muzahamah', 'المزاحمة', 'Berkurangnya bagian karena berdesakan: berbagi satu bagian dengan orang lain, atau karena \'aul.'],
+  ashl: ["Ashlul mas'alah", 'أصل المسألة', 'Bilangan bulat terkecil yang darinya setiap bagian dapat dikeluarkan tanpa pecahan.']
+};
+const tooltip = document.getElementById('tooltip');
+let pemicuAktif = null;
+function tampilkanTooltip(pemicu) {
+  const [nama, arab, arti] = GLOSARIUM[pemicu.dataset.istilah];
+  tooltip.innerHTML = `<b>${nama}</b><span class="arab" lang="ar">${arab}</span><p>${arti}</p><p><a href="#" onclick="return false">Buka di glosarium</a></p>`;
+  tooltip.hidden = false;
+  const kotak = pemicu.getBoundingClientRect(), ukuran = tooltip.getBoundingClientRect();
+  const muatBawah = kotak.bottom + 8 + ukuran.height <= innerHeight - 8;
+  tooltip.style.top = (muatBawah ? kotak.bottom + 8 : Math.max(8, kotak.top - 8 - ukuran.height)) + 'px';
+  tooltip.style.left = Math.min(Math.max(8, kotak.left), innerWidth - ukuran.width - 8) + 'px';
+  pemicuAktif = pemicu;
+}
+function sembunyikanTooltip() { tooltip.hidden = true; pemicuAktif = null; }
+document.querySelectorAll('.istilah').forEach(pemicu => {
+  pemicu.addEventListener('mouseenter', () => tampilkanTooltip(pemicu));
+  pemicu.addEventListener('mouseleave', () => setTimeout(() => { if (!tooltip.matches(':hover')) sembunyikanTooltip(); }, 120));
+  pemicu.addEventListener('focus', () => tampilkanTooltip(pemicu));
+  pemicu.addEventListener('click', event => { event.stopPropagation(); pemicuAktif === pemicu ? sembunyikanTooltip() : tampilkanTooltip(pemicu); });
+});
+tooltip.addEventListener('mouseleave', sembunyikanTooltip);
+document.addEventListener('click', event => { if (!tooltip.contains(event.target)) sembunyikanTooltip(); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape') sembunyikanTooltip(); });
+window.addEventListener('scroll', sembunyikanTooltip, { passive: true });
+
+// ---------- sorot bagian saat diklik dari peta / rel ----------
+document.querySelectorAll('a[href^="#h-"],a[href^="#a-"]').forEach(tautan => tautan.addEventListener('click', () => {
+  const tujuan = document.querySelector(tautan.getAttribute('href'));
+  if (!tujuan) return;
+  tujuan.classList.remove('sorot-bagian'); void tujuan.offsetWidth; tujuan.classList.add('sorot-bagian');
+}));
+
+// ---------- kotak harta (meniru KotakHarta di Lab) ----------
+// isi: [{nama, warna, jumlah, gugur?}]; luar = kotak yang melebihi harta (sebelum 'aul)
+function gambarKotak(wadah, jumlahKotak, isi, luar = 0) {
+  const kotak = [];
+  isi.filter(orang => !orang.gugur).forEach(orang => { for (let urut = 0; urut < orang.jumlah; urut++) kotak.push(orang.warna); });
+  const total = jumlahKotak + luar;
+  let html = `<div class="grid-kotak" style="grid-template-columns:repeat(${Math.min(total, 12)},minmax(0,1fr))">`;
+  for (let urut = 0; urut < total; urut++) {
+    const kelasLuar = urut >= jumlahKotak ? ' luar' : '';
+    html += `<div class="kt${kelasLuar}" style="${kotak[urut] && !kelasLuar ? 'background:' + kotak[urut] : ''}">${kelasLuar ? '+' : ''}</div>`;
+  }
+  html += '</div><p class="ket-kotak">' + isi.map(orang => orang.gugur
+    ? `<span class="gugur">${orang.nama}: gugur</span>`
+    : `<span><i style="background:${orang.warna}"></i>${orang.nama}: ${orang.jumlah} kotak</span>`).join('') + '</p>';
+  wadah.innerHTML = html;
+}
+const WARNA = { istri: '#b5653a', ibu: '#7d3c98', ayah: '#3f6b2a', anak: '#2b6f8a', suami: '#2b6f8a', saudari: '#c0503a', kakak: '#9aa59e' };
+
+// 2c: istri 1/4 -> 1/8, kakak sisa -> gugur (harta 8 kotak)
+function gambar2c(adaAnak) {
+  const isi = adaAnak
+    ? [{ nama: 'Istri', warna: WARNA.istri, jumlah: 1 }, { nama: 'Anak laki-laki', warna: WARNA.anak, jumlah: 7 }, { nama: 'Kakak', gugur: true }]
+    : [{ nama: 'Istri', warna: WARNA.istri, jumlah: 2 }, { nama: 'Kakak', warna: WARNA.kakak, jumlah: 6 }];
+  gambarKotak(document.getElementById('kotak-2c'), 8, isi);
+  document.getElementById('ket-2c').innerHTML = adaAnak
+    ? 'Istri turun dari 2 kotak (1/4) ke 1 kotak (1/8): <b>nuqshan</b>. Kakak kehilangan semuanya: <b>hirman</b>. Contoh sederhana tanpa ibu, supaya kotaknya mudah dihitung.'
+    : 'Tanpa anak: istri mendapat 1/4 (2 dari 8 kotak), kakak mengambil sisanya.';
+}
+document.querySelectorAll('[data-anak]').forEach(tombol => tombol.addEventListener('click', () => {
+  document.querySelectorAll('[data-anak]').forEach(lain => lain.setAttribute('aria-pressed', String(lain === tombol)));
+  gambar2c(tombol.dataset.anak === '1');
+}));
+gambar2c(false);
+
+// 4a: batang pecahan berubah menurut keturunan [bab 04 / KB 6.3]
+const BAGIAN_4A = [
+  { nama: 'Suami', warna: WARNA.suami, nilai: [['1/2', .5], ['1/4', .25], ['1/4', .25]] },
+  { nama: 'Istri', warna: WARNA.istri, nilai: [['1/4', .25], ['1/8', .125], ['1/8', .125]] },
+  { nama: 'Ibu', warna: WARNA.ibu, nilai: [['1/3', 1 / 3], ['1/6', 1 / 6], ['1/6', 1 / 6]] },
+  { nama: 'Ayah', warna: WARNA.ayah, nilai: [['sisa', null], ['1/6 + sisa', 1 / 6], ['1/6', 1 / 6]] }
+];
+function gambar4a(keadaan) {
+  document.getElementById('batang-4a').innerHTML = BAGIAN_4A.map(orang => {
+    const [teks, lebar] = orang.nilai[keadaan];
+    const turun = keadaan > 0 && teks !== orang.nilai[0][0];
+    const gaya = lebar === null ? `width:100%;background:repeating-linear-gradient(90deg,${orang.warna}33 0 8px,transparent 8px 14px)` : `width:${lebar * 100}%;background:${orang.warna}`;
+    return `<div class="baris-batang"><span>${orang.nama}</span><div class="batang"><div class="isi-batang" style="${gaya}"></div></div><span class="nilai${turun ? ' turun' : ''}">${teks}</span></div>`;
+  }).join('');
+}
+document.querySelectorAll('[data-turunan]').forEach(tombol => tombol.addEventListener('click', () => {
+  document.querySelectorAll('[data-turunan]').forEach(lain => lain.setAttribute('aria-pressed', String(lain === tombol)));
+  gambar4a(Number(tombol.dataset.turunan));
+}));
+gambar4a(0);
+
+// 05: simulator hirman, disederhanakan dari KB tabel 6.5 (laki-laki untuk cucu/saudara/paman)
+const KERABAT = [
+  ['ayah', 'Ayah'], ['anaklk', 'Anak laki-laki'], ['anakpr', 'Anak perempuan'], ['cuculk', 'Cucu laki-laki'],
+  ['kakek', 'Kakek'], ['sdrkandung', 'Saudara lk kandung'], ['sdribu', 'Saudara seibu'], ['paman', 'Paman kandung']
+];
+const TIDAK_GUGUR = { ayah: 1, anaklk: 1, anakpr: 1 };
+function statusKerabat(id, hadir) {
+  if (TIDAK_GUGUR[id]) return ['tetap', 'Termasuk enam yang tidak pernah gugur (03)'];
+  const ada = siapa => hadir.has(siapa);
+  if (id === 'cuculk' && ada('anaklk')) return ['gugur', 'Oleh anak laki-laki: terhubung lewat dia (5a, lewat)'];
+  if (id === 'kakek' && ada('ayah')) return ['gugur', 'Oleh ayah: terhubung lewat dia (5a, lewat)'];
+  if (id === 'sdrkandung') {
+    const oleh = ['ayah', 'anaklk', 'cuculk'].filter(ada);
+    if (oleh.length) return ['gugur', `Oleh ${oleh.map(nama).join(', ')} (5c/5d, lurus)`];
+    if (ada('kakek')) return ['catat', 'Bersama kakek: dibahas di modul 6 Kakek dan saudara'];
+  }
+  if (id === 'sdribu') {
+    const oleh = ['ayah', 'kakek', 'anaklk', 'anakpr', 'cuculk'].filter(ada);
+    if (oleh.length) return ['gugur', `Oleh ${oleh.map(nama).join(', ')} (5e, paling mudah gugur)`];
+  }
+  if (id === 'paman') {
+    const lurus = ['ayah', 'kakek', 'anaklk', 'cuculk'].filter(ada);
+    if (lurus.length) return ['gugur', `Oleh ${lurus.map(nama).join(', ')} (5c/5d, lurus)`];
+    if (ada('sdrkandung')) return ['gugur', 'Oleh saudara kandung: lebih dekat (5b, dekat)'];
+  }
+  return ['tetap', 'Tidak ada yang menggugurkan'];
+}
+function nama(id) { return KERABAT.find(([kunci]) => kunci === id)[1].toLowerCase(); }
+const awal = new Set(['ayah', 'sdrkandung', 'sdribu', 'paman']);
+document.getElementById('pilih-orang').innerHTML = KERABAT.map(([id, label]) => `<label><input type="checkbox" value="${id}" ${awal.has(id) ? 'checked' : ''}>${label}</label>`).join('');
+function gambarSimulator() {
+  const hadir = new Set([...document.querySelectorAll('#pilih-orang input:checked')].map(input => input.value));
+  document.getElementById('status-orang').innerHTML = hadir.size === 0 ? '<div><b>Belum ada</b><span>Centang minimal satu kerabat.</span></div>'
+    : KERABAT.filter(([id]) => hadir.has(id)).map(([id, label]) => {
+      const [status, alasan] = statusKerabat(id, hadir);
+      const teks = status === 'gugur' ? 'Gugur' : status === 'catat' ? 'Lihat bab lain' : 'Tetap mewarisi';
+      return `<div class="${status}"><b>${label}: ${teks}</b><span>${alasan}</span></div>`;
+    }).join('');
+}
+document.getElementById('pilih-orang').addEventListener('change', gambarSimulator);
+gambarSimulator();
+
+// 06: mahjub tetap mengurangi vs mamnu' (dicek engine: ibu 1/6 dari 6 vs ibu 1/3 dari 3)
+function gambar6(adaPembunuh) {
+  const isi = adaPembunuh
+    ? [{ nama: 'Ibu', warna: WARNA.ibu, jumlah: 1 }, { nama: 'Ayah', warna: WARNA.ayah, jumlah: 2 }, { nama: 'Saudara yang gugur', gugur: true }]
+    : [{ nama: 'Ibu', warna: WARNA.ibu, jumlah: 1 }, { nama: 'Ayah', warna: WARNA.ayah, jumlah: 5 }, { nama: '2 saudara', gugur: true }];
+  gambarKotak(document.getElementById('kotak-6'), adaPembunuh ? 3 : 6, isi);
+  document.getElementById('tabel-6').innerHTML = adaPembunuh
+    ? '<table><thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari 3</th></tr></thead><tbody><tr><td>Ibu</td><td>1/3</td><td class="angka">1</td></tr><tr><td>Ayah</td><td>sisa</td><td class="angka">2</td></tr><tr class="gugur"><td>Saudara (gugur karena ayah)</td><td>gugur</td><td class="angka">0</td></tr><tr class="gugur"><td>Saudara pembunuh</td><td>tidak mewarisi</td><td class="angka">0</td></tr></tbody></table>'
+    : '<table><thead><tr><th>Ahli waris</th><th>Bagian</th><th class="angka">Saham dari 6</th></tr></thead><tbody><tr><td>Ibu</td><td>1/6</td><td class="angka">1</td></tr><tr><td>Ayah</td><td>sisa</td><td class="angka">5</td></tr><tr class="gugur"><td>2 saudara kandung</td><td>gugur</td><td class="angka">0</td></tr></tbody></table>';
+  document.getElementById('ket-6').innerHTML = adaPembunuh
+    ? 'Pembunuh dianggap tidak ada, jadi saudara yang "dihitung" tinggal satu. Satu saudara tidak menurunkan ibu: <b>ibu kembali 1/3</b>.'
+    : 'Dua saudara gugur, tetapi tetap dihitung: <b>ibu turun ke 1/6</b>.';
+}
+document.querySelectorAll('[data-pembunuh]').forEach(tombol => tombol.addEventListener('click', () => {
+  document.querySelectorAll('[data-pembunuh]').forEach(lain => lain.setAttribute('aria-pressed', String(lain === tombol)));
+  gambar6(tombol.dataset.pembunuh === '1');
+}));
+gambar6(false);
+
+// 'aul 01: 6 kotak + 1 meluap -> 7 kotak
+function gambarA1(sudahAul) {
+  if (sudahAul) {
+    gambarKotak(document.getElementById('kotak-a1'), 7, [{ nama: 'Suami', warna: WARNA.suami, jumlah: 3 }, { nama: 'Dua saudari', warna: WARNA.saudari, jumlah: 4 }]);
+    document.getElementById('ket-a1').innerHTML = 'Harta kini dibagi menjadi <b>7 kotak</b> yang sedikit lebih kecil. Semua mendapat jumlah kotak yang sama seperti haknya, tidak ada yang tersisih.';
+  } else {
+    gambarKotak(document.getElementById('kotak-a1'), 6, [{ nama: 'Suami', warna: WARNA.suami, jumlah: 3 }, { nama: 'Dua saudari', warna: WARNA.saudari, jumlah: 3 }], 1);
+    document.getElementById('ket-a1').innerHTML = 'Harta = 6 kotak. Suami berhak 3, dua saudari berhak 4. Satu kotak saudari <b>tidak muat</b> (bergaris merah).';
+  }
+}
+document.getElementById('tombol-aul').addEventListener('click', event => {
+  const sudah = event.target.dataset.sudah === '1';
+  gambarA1(!sudah);
+  event.target.dataset.sudah = sudah ? '0' : '1';
+  event.target.textContent = sudah ? "Terapkan 'aul" : "Kembalikan ke sebelum 'aul";
+});
+gambarA1(false);
+
+// kuis: umpan balik per pilihan
+document.querySelectorAll('[data-kuis]').forEach(blok => {
+  const umpan = blok.querySelector('.umpan');
+  blok.querySelectorAll('.opsi button').forEach(tombol => tombol.addEventListener('click', () => {
+    blok.querySelectorAll('.opsi button').forEach(lain => lain.classList.remove('benar', 'salah'));
+    tombol.classList.add(tombol.dataset.benar ? 'benar' : 'salah');
+    umpan.textContent = tombol.dataset.umpan;
+    umpan.classList.add('tampil');
+  }));
+});
+</script>
+</body>
+</html>
