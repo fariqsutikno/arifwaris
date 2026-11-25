@@ -22,6 +22,7 @@ import { DaftarAksi, UbinJenisMasalah, UbinSelanjutnya, UbinTentang } from '../h
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
+import { SisaHakKartu } from '../hasil/SisaHakKartu';
 import { TabelLatihan } from '../hasil/TabelLatihan';
 import { GharqaLatihan } from '../hasil/GharqaLatihan';
 import { ModalOrang } from '../hasil/ModalOrang';
@@ -462,6 +463,9 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             pembuka={umumRantai && <KotakYangDibagi graf={kasus.graf} ringkasan={ringkasan} />}
             kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
               : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
+          {hasilBiasa && !hartaKosong && !menunggu && !gharqaDitahan && !adalahBelajar && (
+            <SisaHakKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
+          )}
           {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_kitab', { nama: namaMadzhab(madzhab) })}</p>}
           {adalahBelajar && !sedangMenebak && (
             <BandingMadzhab kasus={kasus} aktif={madzhab} sembunyiNominal={sembunyiNominal}

@@ -30191,6 +30191,76 @@
    "id": "tidak mendapat apa pun karena tidak ada sisa",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.tautan",
+   "halaman": "hasil",
+   "id": "Sudah ada yang menerima sebagian?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.petunjuk",
+   "halaman": "hasil",
+   "id": "Isi hanya yang sudah diserahkan sebagai bagian warisannya. Hibah dari Almarhum atau pinjaman belum dihitung di sini, jangan diisi.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.kolom_orang",
+   "halaman": "hasil",
+   "id": "Ahli waris",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.kolom_bagian",
+   "halaman": "hasil",
+   "id": "Bagian",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.kolom_diterima",
+   "halaman": "hasil",
+   "id": "Sudah diterima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.kolom_sisa",
+   "halaman": "hasil",
+   "id": "Masih diterima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.kelebihan",
+   "halaman": "hasil",
+   "id": "Kelebihan {jumlah}",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.sisa_kas",
+   "halaman": "hasil",
+   "id": "Harta yang masih ada untuk dibagi: {jumlah}.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.catatan_kelebihan",
+   "halaman": "hasil",
+   "id": "{nama} menerima lebih dari bagiannya. Kami hanya menampilkan angkanya; cara menyelesaikan kelebihan perlu disepakati keluarga atau lewat pengadilan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.sisa_hak.kas_kurang",
+   "halaman": "hasil",
+   "id": "Harta yang tersisa tidak cukup untuk semua sisa bagian karena ada kelebihan di atas. Kami tidak membagi ulang diam-diam.",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
