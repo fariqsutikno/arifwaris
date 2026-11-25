@@ -135,7 +135,7 @@ Tambahan per tugas (bagian 12):
 
 ## 11. Keputusan pemilik (2026-11-25: "sesuai rekomendasi")
 
-**Semua butir di bawah DISETUJUI sesuai kolom rekomendasi** (status [TERBUKA]/[USULAN] di bagian lain kini [PEMILIK]). Konsekuensi: T1, T2, T3, T4, T5 (munasakhat, penyajian saja) boleh dikerjakan; T6 (pintu B) tidak; T7/T8 (piutang) ditunda.
+**Semua butir di bawah DISETUJUI sesuai kolom rekomendasi** (status [TERBUKA]/[USULAN] di bagian lain kini [PEMILIK]). Konsekuensi: T1, T2, T3, T4, T5 (munasakhat, penyajian saja) boleh dikerjakan; T6 (pintu B) tidak; T7/T8 (piutang) dikerjakan **setelah T1–T5 selesai** (keputusan pemilik 2026-11-25, menggantikan "tunda").
 
 | # | Pertanyaan | Rekomendasi |
 |---|---|---|
