@@ -7,7 +7,8 @@ Pemicu: pemilik meminta konsep AMIN (*AI Mawaris Interaktif*). Arah dari pemilik
   fitur supaya pengguna memakai aplikasi secara maksimal.
 - Tujuan satu kalimat: **memaksimalkan pengalaman belajar pengguna.**
 
-Status: **tahap 1–3 (pengguna, JTBD, audit, HMW, ide, rekomendasi)**. Mockup dan spec menunggu pilihan pemilik di bagian 8.
+Status: **tahap 1–3 selesai; keputusan pemilik 2026-11-25 masuk (bagian 8)**. Bagian 6 sudah disesuaikan dengan
+keputusan itu. Berikutnya: mockup, lalu spec.
 Label: [Fakta-kode] = dibaca dari kode/dokumen hari ini; [Bukti] = riset luar; [Asumsi] = belum diuji ke pengguna.
 
 ---
@@ -56,8 +57,8 @@ diketahui lewat `refs`**, jadi tidak perlu pencarian. Pencarian hanya dibutuhkan
 |---|---|---|---|---|
 | J1 | (A) membaca Hasil dan ada yang tidak masuk akal | bertanya tentang **baris itu** tanpa mengetik ulang konteksnya | paham kenapa keluarga saya dibagi begitu | sorot atau ketuk "Tanya AMIN" di baris; jawaban menyebut orang di kasusnya |
 | J2 | (A/B) bertemu istilah asing | arti singkat di tempat | tidak meninggalkan halaman | ≤ 1 ketukan; jawaban ≤ 3 kalimat + tautan glosarium |
-| J3 | (B) buntu di soal Latihan | didorong sedikit | tetap merasa mengerjakan sendiri | AMIN bertanya balik; tidak pernah menyebut isi kolom sebelum tangga bantuan membukanya |
-| J4 | (B) sudah benar tapi tidak yakin kenapa | penjelasan langkah yang barusan | paham, bukan hafal | AMIN menjelaskan jejak soal setelah selesai, lalu menawarkan satu pertanyaan cek |
+| J3 | (B) buntu di soal Latihan | didorong sedikit | tetap merasa mengerjakan sendiri | **dilayani tangga bantuan, bukan AMIN** (keputusan pemilik: AMIN nonaktif di layar soal) |
+| J4 | (B) membaca kalimat materi yang tidak dipahami | penjelasan lebih rinci atau contoh | paham, bukan hafal | sorot → Tanya AMIN; "Jelaskan lebih rinci" / "Beri contoh"; contoh berangka dihitung engine |
 | J5 | (C) punya pertanyaan waris umum | jawaban yang bisa dipercaya | tahu harus bagaimana | jawaban menyebut dasarnya (kotak Dalilnya); di luar KB = "belum ada di materi kami" |
 | J6 | (C) ingin angka untuk keluarganya sendiri | dihitungkan | tahu bagian tiap orang | AMIN tidak menghitung sendiri; satu tautan ke Lab Hitung |
 | J7 | (D) tidak tahu fitur ada | ditunjukkan tempatnya | memakai aplikasi lebih maksimal | jawaban berisi tautan ke halaman yang benar; tautan tidak pernah rusak |
@@ -99,19 +100,22 @@ ke konten. Pelajarannya: manfaat datang dari **pengaman + konten sendiri**, buka
 |---|---|---|
 | Hasil, Contoh jadi, Kasus dibagikan | **Penjelas**: menjelaskan jejak engine untuk kasus itu, menyebut orangnya ("Kakak Anda terhalang oleh anak laki-laki") | J1; jawabannya sudah pasti benar karena berasal dari engine |
 | Materi, Glosarium, Rujukan, FAQ | **Penjelas + contoh**: ulang dengan bahasa lain, beri contoh keluarga, tawarkan pertanyaan cek | J2, J4 |
-| Latihan, soal belum selesai | **Tutor sokratik**: bertanya balik, menunjuk konsep, **tidak pernah** menyebut isi kolom. Petunjuk lebih dalam diarahkan ke tangga bantuan yang sudah ada (biaya XP tetap berlaku) | R1; tangga bantuan sudah disetujui, AMIN tidak boleh jadi pintu belakang |
-| Latihan, soal sudah selesai atau kolom sudah dibuka | **Penjelas** untuk soal itu | J4 |
-| Ujian | **Tidak tersedia** (tombol AMIN disembunyikan, alasannya disebut sekali) | integritas nilai |
+| **Semua layar mengerjakan soal**: soal hitung Latihan, Kuis konsep, Ujian, soal di dalam materi | **Nonaktif total** (keputusan pemilik 2026-11-25): ikon tidak dirender, menu sorot tidak memuat "Tanya AMIN", panel yang terbuka ditutup saat masuk layar soal. Server juga menolak permintaan yang kartu konteksnya berasal dari layar soal | R1; bantuan saat buntu = tangga bantuan yang sudah ada |
 | Beranda, Lab awal, Riwayat, dll. | **Pemandu**: fitur, navigasi, saran belajar | J7, J8 |
 
-Ide yang ditolak: satu perilaku untuk semua halaman (melanggar R1); mematikan AMIN di seluruh Latihan (hilang manfaat
-tutor yang justru paling berharga di sana).
+Ide yang ditolak: satu perilaku untuk semua halaman (melanggar R1); tutor sokratik di soal Latihan (usulan awal, ditolak
+pemilik: risiko curang lebih besar dari manfaatnya, dan tangga bantuan sudah mengisi peran itu).
+
+**Celah curang yang tersisa (diterima):** pengguna bisa menyalin teks soal lalu menanyakannya di halaman lain. AMIN tidak
+menambah celah melebihi Lab Hitung (yang memang bisa menghitung kasus apa pun). Untuk mengurangi: bila teks pertanyaan
+cocok dengan soal di bank soal (cek kode/sidik teks di server), AMIN menolak dan menyebut "Ini soal latihan; kerjakan
+di Latihan dulu". Penjagaan Ujian yang sesungguhnya ada di desain Ujian (G6: soal acak per siswa, penilaian di server).
 
 ### HMW-2 Konteks halaman
 - **Tiap layar menyusun "kartu konteks" terstruktur**, bukan AMIN mengikis DOM: `{ halaman, judul, perilaku, isi }`. Isi
   per jenis: Hasil = ahli waris (peran, bukan nama), bagian, `refs` jejak; Materi = slug + judul + bagian yang sedang
-  dibaca; Latihan = kode soal, kolom yang sudah benar, anak tangga bantuan saat ini (tanpa kunci kolom yang belum dibuka).
-  Alasan: kunci jawaban tidak pernah ikut terkirim (R1), dan isi bisa diperiksa di uji.
+  dibaca. Layar soal tidak punya kartu konteks (AMIN nonaktif di sana). Alasan: isi bisa diperiksa di uji, dan tidak ada
+  jalur kunci jawaban ke AI.
 - **Sorot teks** → menu kecil "Tanya AMIN" (selain "Salin"); teks sorotan ikut sebagai fokus pertanyaan.
 - Ketuk ikon AMIN di baris Hasil / kartu langkah = pertanyaan siap pakai ("Kenapa ini?").
 - **Tanpa persetujuan `ai_konteks`**: kartu konteks hanya berisi `halaman` + `judul` (tidak ada data keluarga). Pengguna
@@ -137,8 +141,19 @@ tutor yang justru paling berharga di sana).
 - AMIN dilarang memberi pecahan atau nominal **baru**. Angka yang boleh muncul hanya yang sudah ada di kartu konteks
   (hasil engine). Server memeriksa: pecahan/angka di jawaban yang tidak ada di konteks → jawaban ditolak dan dicoba ulang
   sekali dengan pengingat [Asumsi: pemeriksaan sederhana cukup; perlu diuji].
-- Pertanyaan "kalau anaknya tiga?" → "Coba di Lab Hitung" sebagai tautan. Di Hasil: tautan "Ubah kasus ini" ke wizard.
-  (Menyusun kasus dari cerita = mode cerita AI, fase akhir; tidak di AMIN versi pertama.)
+- **Contoh berangka dan "kalau anaknya tiga?" (keputusan pemilik 2026-11-25: masuk versi pertama).** AI tidak menulis
+  angka; AI hanya menyusun **susunan keluarga** dalam format kasus engine. Alurnya:
+  1. AI mengembalikan `{ jawaban, contohKasus: <susunan ahli waris + madzhab> }`.
+  2. Server membaca `contohKasus` dengan pembaca kasus engine yang sama dengan Lab (`bacaKasus`), lalu menghitungnya
+     dengan engine. Kasus tidak sah, `PERLU_INPUT`, atau `TIDAK_DIDUKUNG` → contoh dibuang, AMIN menjawab tanpa contoh
+     berangka (tidak mengarang).
+  3. Panggilan kedua ke AI membawa hasil engine (bagian, jejak, `refs`) untuk dijelaskan, dengan aturan angka yang sama
+     (hanya angka dari hasil engine).
+  4. Di layar: kartu contoh kecil (siapa saja, bagian masing-masing) + tautan "Buka di Lab" yang membuka kasus itu
+     sebagai kasus baru milik pengguna.
+  Biayanya dua panggilan AI per contoh (lihat koin, bagian 6b). Penghubung ini dipakai ulang oleh mode cerita AI.
+- Contoh tanpa angka ("misalnya ada anak laki-laki, saudara tidak dapat") boleh ditulis AI langsung, tetap dengan rujukan.
+- Di Hasil: tautan "Ubah kasus ini" ke wizard untuk pertanyaan yang mengubah kasus pengguna sendiri.
 
 ### HMW-5 Navigasi yang dijamin ada
 - AI tidak menulis URL. AI memilih **tujuan dari daftar putih** yang dikirim server: `{ id: 'glosarium', param: 'ashabah' }`,
@@ -153,7 +168,9 @@ tutor yang justru paling berharga di sana).
 - Setelah menjelaskan konsep, AMIN boleh menawarkan **satu** dari: pertanyaan cek pendek (self-explanation, pilihan, bukan
   isian bebas untuk awam), tautan pelajaran terkait, atau soal latihan yang memakai konsep itu. Pilihannya dihitung di klien
   dari `progres.ts`/`rekomendasiKuis.ts`, bukan dari AI (J8; konsisten dengan prinsip "personalisasi berdasar penguasaan").
-- Tidak ada XP untuk bertanya ke AMIN, dan tidak ada pengurangan XP (kecuali lewat tangga bantuan yang memang berbiaya).
+- Tidak ada XP untuk bertanya ke AMIN, dan tidak ada pengurangan XP.
+- **Tidak proaktif** (keputusan pemilik): AMIN tidak menyapa, tidak muncul sendiri, tidak memberi notifikasi. Ia hanya
+  menjawab saat dipanggil lewat ikon, sorot teks, atau ikon tanya di baris.
 
 ### HMW-7 Pendek dulu
 - Batas jawaban pertama ±60 kata (diatur di prompt + dipotong di server bila jauh melebihi). Di bawahnya tautan
@@ -161,46 +178,133 @@ tutor yang justru paling berharga di sana).
 - Pertanyaan saran (2–3 chip teks) di awal panel, disusun dari kartu konteks: di Hasil "Kenapa X tidak dapat?", di Materi
   "Contoh lain", di Beranda "Mulai dari mana?".
 
+### 6a. Cakupan dan rujukan ke konsultan (keputusan pemilik 2026-11-25)
+AMIN hanya menjawab tiga hal: **(1) faraidh/waris Islam, (2) isi dan cara memakai aplikasi ini, (3) cara belajar faraidh
+di aplikasi ini.** Selain itu ditolak dengan kalimat tetap + tautan, tanpa memotong koin (bagian 6b).
+
+| Jenis pertanyaan | Tanggapan |
+|---|---|
+| Di luar topik (coding, PR sekolah lain, politik, obrolan bebas, menulis esai) | "Itu di luar cakupan AMIN. AMIN hanya membantu soal waris dan aplikasi ini." |
+| Hukum positif yang serius (gugatan, sengketa di pengadilan, pidana, pertanahan, pajak warisan) | Sebut pasal **hanya bila ada di `docs/kb-khi/`** (label "hukum positif, bukan fikih"), lalu arahkan ke konsultan. Pasal di luar `kb-khi` tidak disebut (tidak dikarang). |
+| Kasus kompleks atau berisiko | Penjelasan umum boleh, lalu kalimat tetap "Untuk kasus seperti ini, sebaiknya konsultasikan ke ahli." |
+| Engine mengembalikan `PERLU_INPUT` / `TIDAK_DIDUKUNG`, atau topik di titik blocked KB | Jujur "belum bisa kami pastikan" + arahkan ke konsultan |
+
+Pemicu "kasus kompleks" (usulan, server menambahkan kalimat konsultan bila AI menandai salah satunya): sengketa atau
+konflik antar ahli waris; harta yang sudah dibagi tidak sesuai faraidh (bab 11/7b); wasiat atau hibah yang dipersoalkan;
+utang pewaris yang melebihi harta atau diperselisihkan; harta di luar negeri atau beda kewarganegaraan; ahli waris beda
+agama yang mempersoalkan bagian.
+
+Siapa "konsultan" ditulis sebagai konten yang bisa diedit (mis. pengadilan agama setempat, notaris, ustadz yang memahami
+faraidh). Direktori konsultan berbayar/mitra = urusan G8, bukan AMIN versi pertama.
+
+### 6b. Koin AMIN (keputusan pemilik 2026-11-25: sistem koin, ke depan bisa top up)
+Pengganti "kuota harian". Prinsip: **koin dipotong sesuai pemakaian nyata**, saldo selalu terlihat, tidak pernah
+dipotong diam-diam.
+
+- **Satuan.** 1 koin = sejumlah token AI tetap (angka ditentukan setelah harga penyedia diketahui). Biaya satu jawaban =
+  (token masuk + token keluar) dibagi satuan itu, dibulatkan ke atas, minimal 1 koin. Jawaban dengan contoh berangka
+  memakan dua panggilan, jadi lebih mahal; biaya tampil kecil di bawah jawaban ("2 koin").
+- **Dipotong hanya bila jawaban sampai ke pengguna.** Gagal teknis, jawaban ditolak pemeriksa server, dan penolakan "di
+  luar cakupan" tidak memotong koin (sama dengan aturan kuota `ai-bantu` sekarang).
+- **Jatah gratis.** Tiap akun dapat koin gratis berkala (usulan: isi ulang harian sampai batas tertentu, mis. cukup untuk
+  ±20 jawaban pendek). Koin gratis dipakai lebih dulu daripada koin beli.
+- **Buku koin (data).** Tabel append-only `mutasi_koin` (user, jumlah +/−, jenis: `jatah | beli | pakai | koreksi`,
+  rujukan ke pemakaian/pembayaran, waktu). Saldo = jumlah mutasi; pemotongan lewat fungsi database dalam satu transaksi
+  supaya saldo tidak bisa minus saat dua pertanyaan dikirim bersamaan. `pemakaian_ai` tetap mencatat token per panggilan.
+- **Top up (G8, bukan versi pertama).** Butuh penyedia pembayaran, harga paket, syarat layanan, dan kebijakan privasi
+  yang menyebut pemrosesan pembayaran. Versi pertama hanya jatah gratis, tapi skema data sudah memakai buku koin supaya
+  top up tinggal menambah jenis `beli`.
+- **"Dijualbelikan" = pengguna membeli dari aplikasi**, bukan diperdagangkan antar pengguna. Koin tidak bisa dipindah ke
+  akun lain, tidak bisa diuangkan, dan berlaku hanya di aplikasi. Alasan: koin yang bisa ditransfer/diuangkan berisiko
+  digolongkan uang elektronik (izin Bank Indonesia) dan membuka penipuan jual-beli akun. Perlu dicek ke konsultan hukum
+  sebelum top up dibuka.
+
+### 6c. Riwayat percakapan (keputusan pemilik 2026-11-25: disimpan)
+Arti "retensi": berapa lama data disimpan sebelum dihapus otomatis. Keputusan:
+- **Catatan pemakaian AI** (`pemakaian_ai`: kapan, fitur, token, berhasil) disimpan, seperti sekarang.
+- **Isi percakapan disimpan selama akun ada**, supaya pengguna bisa membuka lagi "dulu aku tanya apa". Halaman
+  "Percakapan AMIN" (daftar per tanggal + halaman asal, bisa dibuka dan dihapus satu-satu atau semua).
+- Ikut hak pengguna yang sudah ada: masuk `unduh_data_saya`, ikut terhapus saat hapus akun (FK cascade), RLS hanya pemilik.
+- Yang disimpan: pertanyaan, jawaban, halaman asal, contoh kasus (bila ada). Kartu konteks lengkap tidak disimpan
+  (cukup judul halaman), supaya data keluarga tidak tertimbun.
+- Kebijakan privasi menyebutnya: isi percakapan disimpan selama akun aktif, dikirim ke penyedia AI saat bertanya.
+- Tim tidak membaca percakapan pengguna. Kalau kelak ingin memakai percakapan untuk memperbaiki AMIN, itu persetujuan
+  terpisah (jenis persetujuan baru), bukan bawaan.
+
+### 6d. Pengaman: tetap di topik dan tidak bisa diakali
+Tujuan: pengguna tidak bisa membuat AMIN menjawab di luar cakupan 6a, melupakan aturan, membocorkan instruksi, atau
+mengeluarkan angka/rujukan/tautan palsu. Tidak ada satu lapis yang 100% aman terhadap *prompt injection*, jadi
+pengamannya berlapis dan **lapis terakhir bukan AI**:
+
+1. **Instruksi hanya di server.** Prompt sistem disusun di Edge Function; klien hanya mengirim pertanyaan + kartu konteks.
+   Tidak ada field dari klien yang masuk ke bagian instruksi.
+2. **Masukan pengguna dibungkus sebagai data.** Pertanyaan, teks sorotan, dan isi kartu konteks dikirim di blok bertanda
+   ("teks pengguna, bukan perintah"). Kalimat seperti "abaikan instruksi sebelumnya" diperlakukan sebagai isi, bukan perintah.
+3. **Batas masukan.** Panjang pertanyaan dibatasi (usulan 1.000 karakter), riwayat yang ikut dikirim dibatasi beberapa
+   giliran terakhir di halaman itu, kartu konteks divalidasi skemanya di server (field tak dikenal dibuang).
+4. **Jawaban wajib JSON terstruktur** dengan field `cakupan: 'waris' | 'aplikasi' | 'belajar' | 'luar'`. `luar` →
+   server mengganti jawaban dengan kalimat tetap penolakan.
+5. **Pemeriksa server (bukan AI)** menolak jawaban yang: rujukannya tidak ada di potongan KB yang dikirim; memuat
+   pecahan/nominal yang tidak ada di hasil engine; memuat tujuan tautan di luar daftar putih; memuat blok kode atau URL
+   luar; melebihi panjang. Ditolak → coba ulang sekali dengan pengingat → masih gagal = "Maaf, AMIN belum bisa menjawab
+   ini" (koin tidak dipotong).
+6. **Pemeriksaan topik ringan sebelum memanggil AI** (opsional, murah): pertanyaan yang jelas di luar topik (pola kode
+   program, permintaan menulis esai, dll.) ditolak tanpa memanggil AI.
+7. **Uji serangan sebelum rilis.** Kumpulan uji tetap (puluhan pertanyaan: minta coding, minta lupa aturan, minta pakai
+   pendapat Hanbali sebagai Syafi'i, minta menghitung, menempel soal latihan, menyamar sebagai admin) dijalankan ke
+   fungsi `amin` sebelum tiap ganti prompt atau model; semua harus ditolak atau dijawab dalam cakupan.
+
+Akibatnya, kalaupun AI berhasil "diakali", yang lolos paling jauh hanya kalimat bebas yang tetap berada dalam format
+jawaban; angka, rujukan, dan tautan tetap dijaga kode.
+
 ## 7. Bentuk di layar (untuk mockup, belum digambar)
 
 - **Pintu**: ikon AMIN kecil di pojok kanan bawah (di atas bar bawah HP); sorot teks; ikon tanya di baris Hasil.
 - **Panel**: lembar bawah di HP (setengah layar, bisa ditarik penuh), panel samping di laptop. Halaman di belakang tetap
   terlihat supaya pengguna bisa mencocokkan.
 - **Isi jawaban**: teks pendek → kotak Dalilnya (bisa dibuka) → tautan tujuan → satu langkah berikutnya → baris "bukan fatwa".
-- **Status**: sisa kuota tampil hanya saat tinggal sedikit; saat habis, panel menawarkan FAQ, Glosarium, dan Tanya-jawab.
-- **Belum login**: panel menjelaskan kenapa perlu masuk (kuota per akun) dengan tautan masuk; kalkulator tetap jalan tanpa akun.
+- **Koin**: saldo kecil di kepala panel; biaya tiap jawaban di bawahnya. Saat habis, panel menawarkan FAQ, Glosarium,
+  Tanya-jawab, dan menyebut kapan jatah gratis terisi lagi.
+- **Belum login**: panel menjelaskan kenapa perlu masuk (koin per akun) dengan tautan masuk; kalkulator tetap jalan tanpa akun.
+- **Layar soal**: ikon AMIN tidak ada sama sekali (bukan abu-abu).
+- **Riwayat**: tautan "Percakapan sebelumnya" di panel → halaman Percakapan AMIN.
 
-## 8. Keputusan yang menunggu pemilik
+## 8. Keputusan pemilik (2026-11-25)
 
-1. **Perilaku di Latihan** (HMW-1): tutor sokratik yang tidak membuka isi kolom dan mengarah ke tangga bantuan.
-   Setuju? Alternatif: AMIN mati di soal yang belum selesai.
-2. **Login**: wajib login untuk AMIN (rekomendasi, kuota per akun, sama dengan mode cerita), atau tamu diberi 3 pertanyaan
-   per hari per perangkat (lebih mudah dicoba, tapi mudah disalahgunakan)?
-3. **Penyedia AI** untuk data pengguna: kandidat yang tidak melatih dengan data (Groq, Cloudflare Workers AI, SumoPod
-   berbayar). Perlu dipilih sebelum kebijakan privasi diisi.
-4. **Retensi log percakapan**: tidak disimpan sama sekali (rekomendasi untuk versi pertama: hanya catat pemakaian di
-   `pemakaian_ai`, tanpa isi), atau simpan 90 hari untuk memperbaiki jawaban?
-5. **Kuota harian** pengguna biasa (usulan awal: 20 pertanyaan; angka final setelah tahu biaya penyedia).
-6. **Pertanyaan umum di luar halaman** sudah disetujui; apakah ada topik yang dikecualikan sejak awal (mis. sengketa
-   keluarga, hukum pidana/perdata di luar waris), dijawab "di luar cakupan AMIN"?
-7. **Sapaan proaktif**: AMIN hanya muncul saat dipanggil (rekomendasi), atau boleh menyapa sekali di saat tertentu
-   (mis. setelah 2 kali Periksa salah)? Proaktif berisiko tumpang tindih dengan tangga bantuan.
+| # | Pertanyaan | Keputusan |
+|---|---|---|
+| 1 | Perilaku di layar soal | **Nonaktif total** di semua layar mengerjakan soal (Latihan, Kuis, Ujian, soal di materi); tidak boleh jadi alat curang (bagian 6 HMW-1) |
+| 2 | Login | **Wajib login** |
+| 3 | Penyedia AI | Setuju memakai penyedia yang **tidak melatih dengan data** pengguna (kandidat Groq, Cloudflare Workers AI, SumoPod berbayar). Pilihan final diusulkan di spec setelah membandingkan harga dan kualitas bahasa Indonesia; Gemini tier gratis tetap tidak dipakai untuk AMIN |
+| 4 | Penyimpanan | Catatan pemakaian AI disimpan; **isi percakapan disimpan selama akun ada**, bisa dilihat dan dihapus pengguna (6c) |
+| 5 | Kuota | Diganti **koin**: dipotong sesuai pemakaian token, jatah gratis berkala, ke depan top up (6b) |
+| 6 | Di luar cakupan | Selain waris/aplikasi/belajar ditolak; hukum positif serius = sebut pasal yang ada di `kb-khi` + arahkan konsultan; kasus kompleks diarahkan ke konsultan (6a) |
+| 7 | Proaktif | **Tidak proaktif**; hanya saat dipanggil. Tidak ada sama sekali di layar soal |
+| + | Contoh berangka | **AI menyusun susunan keluarga, engine menghitung**, masuk versi pertama (HMW-4) |
+| + | Pengaman | AMIN tidak boleh menjawab di luar konteks (mis. coding) dan tidak boleh bisa diakali melupakan aturan (6d) |
+
+Masih terbuka (diputuskan saat spec, tidak menghalangi mockup):
+- Angka satuan koin dan besar jatah gratis: setelah harga penyedia diketahui.
+- Teks "konsultan" (siapa yang disarankan): konten, ditulis pemilik/tim.
+- Daftar akhir pemicu "kasus kompleks" (6a): usulan ada, perlu ditinjau pemilik.
+- Top up: penyedia pembayaran, harga paket, cek regulasi koin (G8).
 
 ## 9. Ukuran sukses (untuk pilot)
 
-- ≥ 70% jawaban di Hasil dinilai "membantu" (tombol kecil setuju/tidak, tanpa komentar wajib).
+- ≥ 70% jawaban dinilai "membantu" (tombol kecil setuju/tidak, tanpa komentar wajib).
 - 0 angka bagian yang berbeda dari engine; 0 tautan rusak (diuji otomatis atas daftar putih).
-- Di Latihan: proporsi soal yang benar **tanpa** AMIN/tangga bantuan pada percobaan berikutnya tidak turun dibanding
-  sebelum AMIN (penjaga R1).
-- Jawaban "belum ada di materi kami" dicatat jumlahnya per topik (tanpa isi pertanyaan bila log tidak disimpan) sebagai
-  daftar kerja konten.
+- 100% lolos kumpulan uji serangan (6d) sebelum tiap rilis prompt/model.
+- Jumlah jawaban "belum ada di materi kami" per topik dicatat sebagai daftar kerja konten.
+- Koin: tidak ada saldo minus dan tidak ada pemotongan untuk jawaban yang gagal (uji database).
 
 ## 10. Langkah berikutnya
 
-1. Pemilik menjawab bagian 8.
-2. Mockup panel AMIN di tiga halaman (Hasil, Materi, Latihan) + keadaan belum login / belum setuju / kuota habis.
-3. Spec: kontrak kartu konteks per halaman, skema jawaban JSON, daftar putih tujuan, aturan pemeriksaan server, uji.
-4. Syarat G5 dari dokumen PDP (kebijakan privasi + penyedia + retensi) diselesaikan sebelum kode yang mengirim data.
+1. Mockup panel AMIN di Hasil dan Materi (sorot → tanya, jelaskan rinci, contoh berangka) + Beranda (pemandu), keadaan
+   belum login / belum setuju konteks / koin habis / di luar cakupan / arahan ke konsultan, dan halaman Percakapan AMIN.
+2. Spec: kontrak kartu konteks per halaman, skema jawaban JSON, daftar putih tujuan, alur contoh kasus lewat engine,
+   pemeriksa server, buku koin, tabel percakapan, kumpulan uji serangan.
+3. Syarat G5 dari dokumen PDP (kebijakan privasi menyebut penyedia, penyimpanan percakapan, persetujuan `ai_konteks`)
+   diselesaikan sebelum kode yang mengirim data.
 
 ## Sumber
 
