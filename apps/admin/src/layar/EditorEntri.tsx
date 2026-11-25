@@ -39,6 +39,7 @@ import { tulisRute, type Kueri } from '../rute';
 import { PemilihRefs } from './PemilihRujukan';
 import { PanelSaranAi, TautanDrafKuis } from './BantuanAi';
 import { Pratinjau } from './Pratinjau';
+import { galatSimpanMateri } from '../editor/periksaIsiMateri';
 import { AksiReview } from './AksiReview';
 import { Perbandingan } from './Perbandingan';
 import { bidangBanding, daftarPerubahan, type PerubahanBidang } from '../editor/banding';
@@ -188,6 +189,8 @@ export function EditorEntri(props: { entriId: string; saatJenisDiketahui?: (jeni
     if (!muatan || keadaan?.jenis !== 'sunting') return null;
     const hasil = isiSekarang();
     if (!hasil.ok) { setGalat(hasil.galat); setTampilSemuaGalat(true); return null; }
+    const galatPemeriksa = muatan.jenis === 'materi' ? galatSimpanMateri(muatan.slug ?? 'baru', (hasil.isi as IsiKonten['materi']).blok) : null;
+    if (galatPemeriksa) { setGalat(galatPemeriksa); return null; }
     if (keadaan.salinanKerjaId) {
       await (keadaan.ajuan
         ? repo.editorial.perbaruiAjuan(keadaan.salinanKerjaId, muatan.jenis, hasil.isi, refs)

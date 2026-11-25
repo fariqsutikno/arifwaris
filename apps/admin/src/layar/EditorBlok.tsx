@@ -15,11 +15,14 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { dariDokumen, dariPotonganDokumen, keDokumen, kePotonganDokumen } from '../editor/dokumen';
+import { memakaiFormatBaru } from '../editor/periksaIsiMateri';
+import { NAMA_BLOK } from '../editor/pesanMateri';
 import { ekstensiEditor, type BukaDialogBlok, type ModeEditor } from '../editor/ekstensi';
 import { labelKunci } from '../editor/kasus';
 import type { Opsi } from '../editor/formulir';
 import { blokKhususBaru, DialogBlokKhusus, DialogIstilah, type JenisBlokKhusus } from './DialogBlok';
 import { DialogRujukan } from './PemilihRujukan';
+import { PanelPemeriksa } from './PanelPemeriksa';
 
 interface Props {
   label: string;
@@ -31,7 +34,8 @@ interface Props {
   istilah: Opsi[];
   arab?: boolean | undefined;
   galat?: boolean;
-  /** Ringkasan sintaks, tampil di mode Markdown. */
+  /** Isi pelajaran: tampilkan hasil pemeriksa dan panel sintaks blok di bawah penyunting. */
+  periksa?: boolean;
 }
 
 type Dialog = { jenis: 'istilah' } | { jenis: 'rujukan' } | { jenis: 'blok'; blok: Blok; saatSimpan: (blok: Blok) => void };
@@ -42,9 +46,10 @@ const BANTUAN_MARKDOWN: Record<ModeEditor, string> = {
   blok: `${BANTUAN_MARKDOWN_POTONGAN} Blok: ## judul, - daftar, > catatan, tabel, \`\`\`kasus / \`\`\`video / \`\`\`kuis.`,
 };
 
-export function EditorBlok({ label, nilai, saatUbah, mode, slug, bacaSaja, istilah, arab = false, galat = false }: Props) {
+export function EditorBlok({ label, nilai, saatUbah, mode, slug, bacaSaja, istilah, arab = false, galat = false, periksa = false }: Props) {
   const awal = useMemo(() => bacaMarkdown(mode, slug, nilai), []); // eslint-disable-line react-hooks/exhaustive-deps -- hanya nilai awal
-  const [modeMarkdown, setModeMarkdown] = useState(!awal.ok);
+  // Blok format baru hanya tampil sebagai kartu di tampilan teks, jadi pelajaran berformat baru langsung dibuka sebagai Markdown.
+  const [modeMarkdown, setModeMarkdown] = useState(!awal.ok || (periksa && memakaiFormatBaru(nilai)));
   const [galatMarkdown, setGalatMarkdown] = useState(awal.ok ? null : awal.galat);
   const [dialog, setDialog] = useState<Dialog | null>(null);
   const terakhirDipancarkan = useRef(nilai);
@@ -126,6 +131,7 @@ export function EditorBlok({ label, nilai, saatUbah, mode, slug, bacaSaja, istil
           {galatMarkdown ? <p className="px-2 text-sm text-destructive">Markdown belum terbaca: {galatMarkdown}</p> : null}
         </div>
       ) : null}
+      {periksa ? <PanelPemeriksa markdown={nilai} slug={slug} /> : null}
       <DialogIstilah buka={dialog?.jenis === 'istilah'} opsi={istilah} saatTutup={() => setDialog(null)}
         saatPilih={(id, teks) => { setDialog(null); sisip({ type: 'istilah', attrs: { id, teks: teksTerpilih() || teks } }); }} />
       <DialogRujukan buka={dialog?.jenis === 'rujukan'} saatTutup={() => setDialog(null)}
@@ -202,7 +208,9 @@ function KartuBlok({ node, editor, updateAttributes, deleteNode, extension }: Re
         <span className="text-sm">{blok ? ringkasBlok(blok) : 'Blok tidak terbaca'}</span>
         {editor.isEditable && blok ? (
           <span className="ml-auto flex gap-1">
-            <Button type="button" size="sm" variant="ghost" onClick={() => bukaDialog(blok, baru => updateAttributes({ blok: baru }))}><Pencil /> Ubah</Button>
+            {bisaDiubahDialog(blok) ? (
+              <Button type="button" size="sm" variant="ghost" onClick={() => bukaDialog(blok, baru => updateAttributes({ blok: baru }))}><Pencil /> Ubah</Button>
+            ) : <span className="self-center text-xs text-muted-foreground">Ubah lewat tampilan Markdown</span>}
             <Button type="button" size="sm" variant="ghost" onClick={deleteNode}><Trash2 /> Hapus</Button>
           </span>
         ) : null}
@@ -222,8 +230,14 @@ function ringkasBlok(blok: Blok): string {
     }
     case 'video': return `Video: ${blok.judul}`;
     case 'kuis': return `Kuis: ${blok.daftarKode.join(', ')}`;
-    default: return blok.jenis;
+    default: return `Bagian ${NAMA_BLOK[blok.jenis.replace(/[A-Z]/g, huruf => `-${huruf.toLowerCase()}`)] ?? blok.jenis}`;
   }
+}
+
+/** Dialog hanya memahami kasus lama, video, dan kuis; kasus berjudul/bercerita/berketerangan akan kehilangan isinya bila dibuka di sana. */
+function bisaDiubahDialog(blok: Blok): boolean {
+  if (blok.jenis === 'kasus') return !blok.judul && !blok.cerita && !blok.keterangan;
+  return blok.jenis === 'video' || blok.jenis === 'kuis';
 }
 
 // --- helper ---
