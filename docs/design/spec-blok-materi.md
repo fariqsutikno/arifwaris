@@ -114,7 +114,7 @@ Kasus dari materi dibuka di Lab **tanpa isian dan tanpa tebakan**: layar Hasil l
 langkah terbuka, tidak menimpa kasus pengguna (tidak ada dialog "Buka kasus ini?" karena kasus pengguna tidak
 disentuh). Ada pita kecil "Contoh dari pelajaran 5.1, bagian 1" dengan tautan kembali ke jangkar asal.
 
-- Alamat: parameter `contoh=<slug>:<indeksBlok>` (atau berkas untuk `kasusBerkas`); kasus diambil dari konten,
+- Alamat: `#/lab/contoh/<slug>/<indeksBlok>` (F3: `tautanContoh` di `rute.ts`, layar `ContohJadi.tsx`; `kasusBerkas` menyusul); kasus diambil dari konten,
   bukan dari URL, supaya tidak bisa disisipi.
 - Status kasus pengguna di penyimpanan lokal tidak berubah; menutup contoh kembali ke kasus sebelumnya.
 - Tidak tercatat sebagai percobaan soal dan tidak memberi XP.
