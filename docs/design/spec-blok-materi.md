@@ -185,7 +185,7 @@ F1 dikerjakan lebih dulu supaya Codex bisa mulai menulis dengan pemeriksa yang s
   (`packages/latihan/src/periksaAngkaMateri.ts`); CLI `scripts/materi-cek.ts`.
 - Slug yang sah = kolom pertama tabel `kerangka-kurikulum.md` + berkas di `konten/materi/`.
 - Skema zod konten (`skema.ts`) belum mengenal blok baru: materi berblok baru belum bisa disimpan ke database
-  sampai F4. Editor portal membawa blok baru sebagai blok khusus utuh.
+  sampai F4 (sudah selesai, lihat catatan F4a). Editor portal membawa blok baru sebagai blok khusus utuh.
 
 ### Catatan F2 (2026-11-25)
 
@@ -197,7 +197,25 @@ F1 dikerjakan lebih dulu supaya Codex bisa mulai menulis dengan pemeriksa yang s
 - Belum: tautan antarpelajaran belum melompat ke bagian (`#2b`) di pelajaran tujuan; `kasus-berkas` menunggu F3;
   kolom Keterangan studi kasus tampil sebagai daftar di bawah tabel, bukan kolom tabel.
 
+### Catatan F4a (2026-11-25)
+
+- `skema.ts`: semua blok baru, potongan `tautanPelajaran`/`tautanBagian`, dan field `Pelajaran` baru (`durasi`, `tahap`,
+  `prasyarat`, `singgung`, semuanya opsional supaya data lama tetap terbaca). `lipat` memakai `z.lazy`. Pecahan
+  `NilaiBagian` disimpan sebagai string digit seperti bigint lain. Tes bolak-balik `keJson` → `bacaIsi` untuk dua
+  contoh kit ada di `pelajaran.test.ts`.
+- `SoalKuis.sumber?: string` (skema `soal_kuis` ikut): `materi:<slug>` untuk soal yang berasal dari pelajaran.
+- Pemeriksaan dipecah: `scripts/materi-periksa.ts` (diekspor, dipakai `materi:cek` dan `materi:impor`).
+- `pnpm materi:impor <folder|berkas>... [--kering]` (`scripts/materi-impor/`): periksa → berhenti bila ada galat →
+  tulis revisi draf lewat `masukSebagaiImpor` (akun impor, peran admin). Keputusan: (1) `refs` materi = `ambilRefs` atas
+  isi (mencakup blok `dasar`/`soal.rujukan`), refs soal = `soal.rujukan` + `ambilRefs`; (2) isi yang sama dengan revisi
+  terakhir dilewati (perbandingan JSON berkunci terurut, karena jsonb mengacak urutan kunci), jadi impor ulang tidak
+  menumpuk draf; (3) urutan entri materi = `modul*100 + urutan` (sama dengan snapshot), soal = urutan pelajaran*100 + indeks;
+  (4) `--kering` memakai repo memori dan tidak membaca database, jadi tidak tahu mana yang sudah ada: semuanya "akan ditulis";
+  (5) entri `modul` belum dibuat dari kerangka kurikulum (tidak diminta di F4a, entri modul 1-10 sudah ada di snapshot).
+- Belum: lampiran `kasus-berkas` (bundel berkas kasus) belum disimpan oleh impor; pelajaran yang memakainya tetap diimpor
+  tetapi nama berkasnya saja yang tersimpan.
+
 ## 13. Keputusan yang masih terbuka
 
-1. Soal dari materi sekaligus masuk bank `soal_kuis` (usulan) atau hanya hidup di pelajaran?
+1. Soal dari materi sekaligus masuk bank `soal_kuis` (usulan; F4a mengimplementasikan usulan ini) atau hanya hidup di pelajaran?
 2. Mode contoh jadi dibuka di tab yang sama (usulan, dengan tautan kembali) atau lembar di atas pelajaran?

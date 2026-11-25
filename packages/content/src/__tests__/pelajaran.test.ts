@@ -3,7 +3,7 @@
 import { describe, expect, test } from 'vitest';
 import hajb from '../../../../docs/materi-kit/contoh/5-1-hajb.md?raw';
 import aul from '../../../../docs/materi-kit/contoh/6-2-aul.md?raw';
-import { bacaBlok, bacaPelajaran, nomorBagian, periksaMateri, tulisBlok, tulisPelajaran } from '../index.js';
+import { bacaBlok, bacaIsi, bacaPelajaran, keJson, nomorBagian, periksaMateri, tulisBlok, tulisPelajaran } from '../index.js';
 
 const KEPALA = '---\nslug: 9-9-uji\nmodul: 9\nurutan: 9\njudul: Uji\ntujuan: t\ndurasi: 1\ntahap: hajb\nprasyarat:\nsinggung:\n---\n';
 
@@ -62,4 +62,24 @@ test('pemeriksa: alur dan penutup wajib, rujukan sebaris ditolak', () => {
   expect(hasil.temuan.map(temuan => temuan.pesan)).toEqual(expect.arrayContaining([
     'blok alur wajib menjadi blok pertama', expect.stringMatching(/Cek pemahaman/), expect.stringMatching(/\[R06-1\] tidak boleh/),
   ]));
+});
+
+describe('skema zod menerima format baru', () => {
+  test.each([['5-1-hajb', hajb], ['6-2-aul', aul]])('%s: keJson → bacaIsi utuh (bigint kembali)', (slug, teks) => {
+    const pelajaran = bacaPelajaran(teks, slug);
+    const hasil = bacaIsi('materi', JSON.parse(JSON.stringify(keJson('materi', pelajaran))));
+    expect(hasil).toEqual({ ok: true, isi: pelajaran });
+  });
+
+  test('data lama tanpa field baru tetap terbaca', () => {
+    const lama = { slug: 'x', judul: 'x', modul: 1, urutan: 1, tujuan: 't', perluCek: false, blok: [{ jenis: 'paragraf', isi: [{ jenis: 'teks', teks: 'a' }] }] };
+    expect(bacaIsi('materi', lama).ok).toBe(true);
+  });
+
+  test('blok lipat bersarang dan blok tak dikenal ditolak', () => {
+    const dasar = { slug: 'x', judul: 'x', modul: 1, urutan: 1, tujuan: 't', perluCek: false };
+    const lipat = { jenis: 'lipat', judul: 'j', blok: [{ jenis: 'lipat', judul: 'k', blok: [{ jenis: 'tebak', tanya: [], jawab: [] }] }] };
+    expect(bacaIsi('materi', { ...dasar, blok: [lipat] }).ok).toBe(true);
+    expect(bacaIsi('materi', { ...dasar, blok: [{ jenis: 'asing' }] }).ok).toBe(false);
+  });
 });

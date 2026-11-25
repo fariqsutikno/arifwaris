@@ -42,4 +42,6 @@ export interface SoalKuis {
   alasanPilihan?: Potongan[][];
   /** Catatan tambahan setelah pembahasan; opsional. */
   catatan?: Potongan[];
+  /** `materi:<slug>` bila soal ini ditulis di pelajaran (sumber kebenarannya berkas materi, bukan portal). */
+  sumber?: string;
 }

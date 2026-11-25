@@ -16,7 +16,8 @@
     "konten:ekspor": "pnpm --filter @waris/skrip ekspor",
     "konten:pulihkan": "pnpm --filter @waris/skrip pulihkan",
     "diksi:tambah": "pnpm --filter @waris/skrip diksi:tambah",
-    "materi:cek": "vite-node scripts/materi-cek.ts --"
+    "materi:cek": "vite-node scripts/materi-cek.ts --",
+    "materi:impor": "vite-node scripts/materi-impor/main.ts --"
   },
   "devDependencies": {
     "@waris/content": "workspace:*",
