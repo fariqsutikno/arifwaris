@@ -170,5 +170,7 @@ Status: **disetujui pengguna 2026-09-29** (setelah verifikasi kitab; R01-1 dipec
 | R14-11 | ya | tidak | tidak | Lahim hlm. 194–195 |
 | R14-12 | ya | tidak | tidak | Lahim hlm. 207–208 |
 | R14-13 | ya | tidak | tidak | Lahim hlm. 217 |
+| R11-4 | tidak | tidak | tidak | 11.4: hanya [SYF] terverifikasi (Raudhah 6/299–301); madzhab lain belum dikaji |
+| R11-5 | tidak | tidak | tidak | 11.3: hutang setelah qismah; hanya [SYF] (Raudhah 11/209) dicek |
 
 Catatan 18.4: token **R01-10, R01-11, R19-1…R19-5**, serta khilaf **K01-3** dan **K19-1**, **tidak dipakai engine hitung** (hanya informasi untuk catatan KHI); karena itu tidak masuk tabel keberlakuan di atas.
