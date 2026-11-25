@@ -108,7 +108,7 @@ summary.judul-modul-sidebar:focus-visible{outline:3px solid var(--focus);outline
 /* ── blok materi buku ringkas (preview materi v2) ─────────────────────────────────────────── */
 .meta-materi{display:flex;align-items:center;gap:6px;margin:4px 0 0;font-size:14px;color:rgba(255,255,255,.82)}
 .singgung{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:14px;color:var(--ink-muted)}
-.tautan-bab{display:inline-flex;align-items:center;gap:5px;padding:1px 10px;border-radius:var(--radius-pill);background:var(--surface-sunken);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;white-space:nowrap;vertical-align:baseline}
+.tautan-bab{display:inline-flex;align-items:center;gap:5px;padding:1px 10px;border-radius:var(--radius-pill);background:var(--surface-sunken);color:var(--ink);font-size:14px;font-weight:600;text-decoration:none;vertical-align:baseline;max-width:100%}
 a.tautan-bab:hover{background:var(--outline)}
 a.tautan-bab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .tautan-bab .nomor-bab{color:var(--ink-muted);font-variant-numeric:tabular-nums}
@@ -127,10 +127,10 @@ a.tautan-bab:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .deret-alur{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px;padding:0;list-style:none;font-size:13.5px}
 .deret-alur li,.deret-alur span{padding:4px 11px;border-radius:var(--radius-pill);background:var(--surface-raised);color:var(--ink-muted)}
 .deret-alur .kini{background:var(--primary);color:var(--on-primary);font-weight:700}
-.isi-alur{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:15px}
+.isi-alur{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 14px;margin:0;font-size:15px}
 .isi-alur dt{font-weight:700}
 .isi-alur dd{margin:0}
-@media (max-width:560px){.isi-alur{grid-template-columns:1fr}.isi-alur dd{margin-bottom:6px}}
+@media (max-width:560px){.isi-alur{grid-template-columns:minmax(0,1fr)}.isi-alur dd{margin-bottom:6px}}
 
 /* cara berpikir: urutan keputusan, pertanyaan → akibat */
 .cara-berpikir ol{display:grid;gap:8px;margin:0;padding:0;list-style:none;counter-reset:langkah}
@@ -177,7 +177,10 @@ a.simpul:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .label-kotak{margin:0 0 6px;font-size:14px;color:var(--ink-muted)}
 .grid-peraga{display:grid;gap:5px;padding:8px;border:3px solid var(--ink);border-radius:14px}
 .grid-peraga .kotak{aspect-ratio:1;max-height:56px;border-radius:6px;transition:background .45s ease}
-.grid-peraga .kotak.luar{outline:2px dashed var(--sorot-mahjub);outline-offset:2px;opacity:.55}
+.baris-kotak{display:flex;gap:8px;align-items:center}
+.luap-peraga{display:grid;gap:5px;padding:8px;border:2px dashed var(--sorot-mahjub);border-radius:14px}
+.kotak-peraga .kotak{aspect-ratio:1;max-height:56px;border-radius:6px}
+.luap-peraga .kotak.luar{opacity:.7}
 .ket-peraga{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 8px;font-size:14px}
 .ket-peraga i{display:inline-block;width:12px;height:12px;margin-right:6px;border-radius:3px;vertical-align:-1px}
 .gugur-peraga{color:var(--sorot-mahjub);text-decoration:line-through}
@@ -227,7 +230,7 @@ a.simpul:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .matriks .sumbu{display:grid;place-items:center;font-size:13px;font-weight:700;text-align:center;color:var(--ink-muted)}
 .matriks .sel{padding:12px 14px;border-radius:14px;background:var(--krem)}
 .matriks .sel b{display:block;font-family:var(--font-display)}
-@media (max-width:560px){.matriks{grid-template-columns:1fr 1fr !important}.matriks .kosong,.matriks .sumbu.kiri{display:none}}
+@media (max-width:560px){.matriks{grid-template-columns:1fr 1fr !important}.matriks .kosong{display:none}.matriks .sumbu.kiri{grid-column:1/-1;place-items:start;margin-top:6px}}
 
 /* studi kasus */
 .cerita-kasus{margin:0 0 10px}

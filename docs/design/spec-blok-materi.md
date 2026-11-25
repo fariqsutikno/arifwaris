@@ -187,6 +187,16 @@ F1 dikerjakan lebih dulu supaya Codex bisa mulai menulis dengan pemeriksa yang s
 - Skema zod konten (`skema.ts`) belum mengenal blok baru: materi berblok baru belum bisa disimpan ke database
   sampai F4. Editor portal membawa blok baru sebagai blok khusus utuh.
 
+### Catatan F2 (2026-11-25)
+
+- Komponen: `apps/web/src/layar/belajar/blok/` (`BlokIsi.tsx` untuk blok tanpa engine, `Peraga.tsx`, `Simulasi.tsx`,
+  `hitungContoh.ts` sebagai satu jalur engine + `ringkas`). Nomor bagian dari `nomorBagian`, jangkar `#b-2b`.
+- Pratinjau lokal (dev saja): `#/belajar/pratinjau-<slug>` membaca `docs/materi-kit/contoh/` dan `konten/materi/`.
+- Peta bab mengukur dirinya: bila pohon bercabang tidak muat di lembar baca, berganti ke pohon menurun.
+- Peraga 'aul: kotak hak yang melebihi harta digambar di luar bingkai; pecahan sebelum 'aul memakai ashl.
+- Belum: tautan antarpelajaran belum melompat ke bagian (`#2b`) di pelajaran tujuan; `kasus-berkas` menunggu F3;
+  kolom Keterangan studi kasus tampil sebagai daftar di bawah tabel, bukan kolom tabel.
+
 ## 13. Keputusan yang masih terbuka
 
 1. Soal dari materi sekaligus masuk bank `soal_kuis` (usulan) atau hanya hidup di pelajaran?

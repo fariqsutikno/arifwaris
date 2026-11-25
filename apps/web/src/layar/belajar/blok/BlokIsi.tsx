@@ -12,7 +12,13 @@ type BlokDari<J extends Blok['jenis']> = Extract<Blok, { jenis: J }>;
 
 /** Tahap pipeline yang digambar berurutan; 'semua' dan 'lanjutan' bukan tahap tunggal (seluruh deret disorot / tidak ada). */
 const TAHAP_PIPELINE = TAHAP_ALUR.filter(tahap => tahap !== 'semua' && tahap !== 'lanjutan');
-const labelTahap = (tahap: TahapAlur) => t(`belajar.tahap_${tahap.replace('-', '_')}`);
+const LABEL_TAHAP: Record<TahapAlur, () => string> = {
+  harta: () => t('belajar.tahap_harta'), 'ahli-waris': () => t('belajar.tahap_ahli_waris'), penghalang: () => t('belajar.tahap_penghalang'),
+  hajb: () => t('belajar.tahap_hajb'), bagian: () => t('belajar.tahap_bagian'), ashl: () => t('belajar.tahap_ashl'),
+  'aul-radd': () => t('belajar.tahap_aul_radd'), tashih: () => t('belajar.tahap_tashih'), nominal: () => t('belajar.tahap_nominal'),
+  semua: () => t('belajar.tahap_semua'), lanjutan: () => t('belajar.tahap_lanjutan'),
+};
+const labelTahap = (tahap: TahapAlur) => LABEL_TAHAP[tahap]();
 
 export function Alur({ blok }: { blok: BlokDari<'alur'> }) {
   return (

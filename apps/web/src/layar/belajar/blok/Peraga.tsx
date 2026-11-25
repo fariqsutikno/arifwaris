@@ -42,7 +42,7 @@ export function Peraga({ blok }: { blok: BlokPeraga }) {
       {blok.tampil === 'aul'
         ? <KotakAul hasil={hasil} warna={warna} diterapkan={aulDiterapkan} saatUbah={setAulDiterapkan} />
         : <KotakBiasa hasil={hasil} warna={warna} jumlahKotak={jumlahKotak} />}
-      <Keterangan hasil={hasil} warna={warna} />
+      <Keterangan hasil={hasil} warna={warna} penyebut={blok.tampil === 'aul' && !aulDiterapkan ? penyebutAshl(hasil) : hasil.ringkasan.penyebut} />
       {blok.tampil === 'kotak-tabel' && <TabelPeraga hasil={hasil} />}
       <p className="penjelasan-peraga"><Sebaris isi={keadaan.penjelasan} /></p>
     </figure>
@@ -58,8 +58,11 @@ function KotakBiasa({ hasil, warna, jumlahKotak }: { hasil: HasilContoh; warna: 
 }
 
 /** Sebelum 'aul: bingkai = ashl, kotak hak = jumlah saham (meluap). Sesudah: bingkai = angka 'aul, semua kotak masuk. */
+/** Penyebut sebelum 'aul: ashl, supaya pecahan yang tampil (3/6, 4/6) sama dengan hak menurut nash. */
+const penyebutAshl = (hasil: HasilContoh) => hasil.hasil.tabel.totalKolom.ashl ?? hasil.ringkasan.penyebut;
+
 function KotakAul({ hasil, warna, diterapkan, saatUbah }: { hasil: HasilContoh; warna: Warna; diterapkan: boolean; saatUbah: (nilai: boolean) => void }) {
-  const ashl = hasil.hasil.tabel.totalKolom.ashl ?? hasil.ringkasan.penyebut;
+  const ashl = penyebutAshl(hasil);
   const pemilik = hasil.perKunci.flatMap(isi => Array.from({ length: Number(isi.saham) }, () => isi.kunci));
   const bingkai = diterapkan ? pemilik.length : Number(ashl);
   return (
@@ -71,24 +74,32 @@ function KotakAul({ hasil, warna, diterapkan, saatUbah }: { hasil: HasilContoh; 
   );
 }
 
+/** Bingkai tebal = harta. Kotak hak yang melebihi harta ('aul belum diterapkan) digambar di luar bingkai. */
 function GridKotak({ pemilik, warna, bingkai, label }: { pemilik: string[]; warna: Warna; bingkai: number; label: string }) {
+  const kolom = Math.min(bingkai, KOLOM_KOTAK_MAKS);
+  const luap = pemilik.slice(bingkai);
   return (
     <div className="kotak-peraga">
       <p className="label-kotak">{label}</p>
-      <div className="grid-peraga" role="img" aria-label={label} style={{ gridTemplateColumns: `repeat(${Math.min(Math.max(pemilik.length, bingkai), KOLOM_KOTAK_MAKS)}, minmax(0, 1fr))` }}>
-        {pemilik.map((kunci, urutan) => (
-          <span key={urutan} className={urutan >= bingkai ? 'kotak luar' : 'kotak'} style={{ background: warna(kunci) }} />
-        ))}
+      <div className="baris-kotak" role="img" aria-label={label}>
+        <div className="grid-peraga" style={{ gridTemplateColumns: `repeat(${kolom}, minmax(0, 1fr))`, flexGrow: kolom }}>
+          {pemilik.slice(0, bingkai).map((kunci, urutan) => <span key={urutan} className="kotak" style={{ background: warna(kunci) }} />)}
+        </div>
+        {luap.length > 0 && (
+          <div className="luap-peraga" style={{ gridTemplateColumns: `repeat(${luap.length}, minmax(0, 1fr))`, flexGrow: luap.length }}>
+            {luap.map((kunci, urutan) => <span key={urutan} className="kotak luar" style={{ background: warna(kunci) }} />)}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-function Keterangan({ hasil, warna }: { hasil: HasilContoh; warna: Warna }) {
+function Keterangan({ hasil, warna, penyebut }: { hasil: HasilContoh; warna: Warna; penyebut: bigint }) {
   return (
     <p className="ket-peraga">
       {hasil.perKunci.map(isi => (
-        <span key={isi.kunci}><i style={{ background: warna(isi.kunci) }} />{namaKelompok(isi.label, isi.jumlahOrang)} {angka(pecahanTeks(isi.saham, hasil.ringkasan.penyebut, 'sederhana'))}</span>
+        <span key={isi.kunci}><i style={{ background: warna(isi.kunci) }} />{namaKelompok(isi.label, isi.jumlahOrang)} {angka(pecahanTeks(isi.saham, penyebut, 'sederhana'))}</span>
       ))}
       {hasil.tidakMenerima.map(kunci => <span key={kunci} className="gugur-peraga">{labelKunci(kunci)}</span>)}
     </p>
