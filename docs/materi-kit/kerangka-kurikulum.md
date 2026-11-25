@@ -1,10 +1,10 @@
 # Kerangka kurikulum
 
-14 modul, 45 pelajaran. Kolom **Sumber** = bab dan subbab KB yang wajib dibaca sebelum menulis. **Pertanyaan
+15 modul, 54 pelajaran. Kolom **Sumber** = bab dan subbab KB yang wajib dibaca sebelum menulis. **Pertanyaan
 pemandu** = pertanyaan yang harus bisa dijawab pelajar setelah membaca. **Poin wajib** = isi yang tidak boleh
 terlewat. Slug bertanda (ada) sudah terbit di aplikasi: tulis ulang isinya, jangan ganti slug.
 
-Level: A1 = modul 1–3, A2 = modul 4–5, B1 = modul 6–8, B2 = modul 9–10, C1 = modul 11–12, C2 = modul 13–14.
+Level: A1 = modul 1–3, A2 = modul 4–5, B1 = modul 6–8, B2 = modul 9–10, C1 = modul 11–12, C2 = modul 13–15.
 
 ## Bagian I: Dasar
 
@@ -97,35 +97,49 @@ Level: A1 = modul 1–3, A2 = modul 4–5, B1 = modul 6–8, B2 = modul 9–10, 
 
 | Slug | Judul | Tahap | Sumber | Pertanyaan pemandu | Poin wajib |
 |---|---|---|---|---|---|
-| 11-1-munasakhat | Ahli waris wafat sebelum harta dibagi | lanjutan | 12: 12.1, 12.2, 12.5 | Bagaimana alur pembagian diulang bila ada ahli waris yang menyusul wafat? | pengertian; tiga keadaan; batas: hanya harta mayit pertama |
-| 11-2-jamiah | Menggabungkan dua pembagian (jami'ah) | lanjutan | 12: 12.3, 12.6 | Bagaimana dua tabel digabung menjadi satu? | cara berpikir jami'ah; contoh bertabel (`kasus-berkas`) |
-| 11-3-ikhtishar | Meringkas (ikhtishar) | lanjutan | 12: 12.4 | Kapan hasil gabungan boleh diringkas? | syarat dan contoh |
+| 11-1-munasakhat | Ahli waris wafat sebelum harta dibagi | lanjutan | 12: 12.1, 12.2 (tabel kaidah pembeda) | Bagaimana mengenali munasakhat, dan termasuk keadaan yang mana kasus ini? | pengertian; mengapa alur pembagian diulang untuk mayit kedua; tabel kaidah pembeda tiga keadaan dibaca sebagai urutan pertanyaan (`cara-berpikir`) |
+| 11-2-keadaan-pertama | Keadaan pertama: cukup dibagi sekali | lanjutan | 12: 12.2 keadaan 1; 16 kasus M7 | Kapan mayit kedua boleh dianggap tidak ada? | syarat seluruh sisa ahli waris dan nisbah bagian sama; empat sub-bentuk; catatan syarat 'aul yang tidak selalu berlaku (kasus M7) |
+| 11-3-keadaan-kedua | Keadaan kedua: ahli waris tiap mayit terpisah | lanjutan | 12: 12.2 keadaan 2, 12.3 | Bagaimana jika ahli waris mayit-mayit berikutnya sama sekali berbeda? | syarat keadaan 2; penyelesaiannya dengan jami'ah; contoh bertabel (`kasus-berkas`) |
+| 11-4-keadaan-ketiga | Keadaan ketiga dan metode jami'ah | lanjutan | 12: 12.2 keadaan 3, 12.3, 12.6 | Bagaimana dua tabel pembagian digabung menjadi satu? | empat sub-bentuk keadaan 3; membandingkan bagian mayit kedua dengan masalahnya (habis dibagi, tawafuq, tabayun); cara berpikir jami'ah; contoh bertabel |
+| 11-5-ikhtishar-dan-batas | Meringkas hasil dan batas munasakhat | lanjutan | 12: 12.4, 12.5 | Kapan hasil gabungan boleh diringkas, dan harta siapa yang dibagi? | syarat ikhtishar dengan contoh; lebih dari dua mayit; batas cakupan: hanya harta mayit pertama |
 
 ### Modul 12 · Dzawil arham
 
 | Slug | Judul | Tahap | Sumber | Pertanyaan pemandu | Poin wajib |
 |---|---|---|---|---|---|
-| 12-1-dzawil-arham | Siapa dzawil arham, dan kapan mereka mewarisi | lanjutan | 14: 14.1–14.3 | Kalau tidak ada ashabul furudh dan ashabah, siapa yang mewarisi? | daftar; syarat mewarisi; hubungan dengan radd |
-| 12-2-tanzil | Metode tanzil | lanjutan | 14: 14.4–14.7 | Bagaimana dzawil arham ditempatkan pada posisi ahli waris yang menghubungkannya? | langkah tanzil sebagai cara berpikir; sabq dan hajb antar dzawil arham; metode qarabah [HNF] cukup disebut |
-| 12-3-arham-kasus-khusus | Dzawil arham: dua jalur, bersama pasangan, dan 'aul | lanjutan | 14: 14.8–14.10 | Apa yang berubah bila ada pasangan atau satu orang lewat dua jalur? | tiga keadaan dengan contoh |
+| 12-1-dzawil-arham | Siapa dzawil arham, dan kapan mereka mewarisi | lanjutan | 14: 14.1–14.3 | Jika tidak ada ashabul furudh dan ashabah, siapa yang mewarisi? | daftar dzawil arham; syarat mereka mewarisi; hubungannya dengan radd dan baitul mal |
+| 12-2-tanzil | Metode tanzil | lanjutan | 14: 14.4–14.6 | Bagaimana dzawil arham ditempatkan pada posisi ahli waris yang menghubungkannya? | langkah tanzil sebagai urutan keputusan; contoh bertabel; metode qarabah [HNF] cukup disebut |
+| 12-3-arham-sabq-dan-dua-jalur | Siapa didahulukan di antara dzawil arham | lanjutan | 14: 14.7, 14.8 | Bagaimana jika ada beberapa dzawil arham dari jalur berbeda, atau satu orang lewat dua jalur? | cakupan sabq dan hajb antar dzawil arham; satu orang lewat dua jalur |
+| 12-4-arham-pasangan-dan-aul | Dzawil arham bersama pasangan, dan 'aul | lanjutan | 14: 14.9, 14.10 | Apa yang berubah jika ada suami atau istri? | pasangan mengambil bagiannya dulu; 'aul dalam bab dzawil arham |
 
-### Modul 13 · Waris yang belum pasti
-
-| Slug | Judul | Tahap | Sumber | Pertanyaan pemandu | Poin wajib |
-|---|---|---|---|---|---|
-| 13-1-taqdir-dan-mauquf | Prinsip: memperkirakan dan menahan | lanjutan | 13: 13.0, 13.0b | Apa yang dilakukan bila ada ahli waris yang keadaannya belum pasti? | taqdir; mengambil yang paling sedikit; harta yang ditahan; gabungan beberapa ketidakpastian |
-| 13-2-haml | Janin dalam kandungan (haml) | lanjutan | 13a | Bagaimana jika ada ahli waris yang masih dalam kandungan? | dua syarat; kapan dibagi; posisi [SYF]: jumlah janin tak dibatasi; model taqdir [HNB] hanya disebut |
-| 13-3-mafqud | Orang hilang (mafqud) | lanjutan | 13b | Bagaimana jika pewaris atau ahli waris hilang? | hukum asal; mafqud sebagai pewaris dan sebagai ahli waris; nasib bagian yang ditahan |
-| 13-4-khuntsa | Khuntsa | lanjutan | 13c | Bagaimana jika jenis kelamin ahli waris belum jelas? | jihah; empat pola |
-| 13-5-gharqa | Wafat bersamaan (gharqa) | lanjutan | 13d | Bagaimana jika urutan wafat tidak diketahui? | lima keadaan; mode [SYF]; metode tilad–tharif khusus [HNB] cukup disebut |
-
-### Modul 14 · Kasus khusus lain
+### Modul 13 · Prinsip ketidakpastian dan haml
 
 | Slug | Judul | Tahap | Sumber | Pertanyaan pemandu | Poin wajib |
 |---|---|---|---|---|---|
-| 14-1-murtad | Murtad | penghalang | 13: 13.5 | Bagaimana harta orang murtad dan hak warisnya? | sesuai 13.5 |
-| 14-2-lian-dan-zina | Anak li'an dan anak zina | ahli-waris | 13: 13.6 | Dari siapa anak li'an dan anak zina mewarisi? | sesuai 13.6 |
-| 14-3-laqith | Anak temuan (laqith) | ahli-waris | 13: 13.7 | Siapa yang mewarisi anak temuan? | sesuai 13.7 |
+| 13-1-taqdir-dan-mauquf | Memperkirakan dan menahan bagian | lanjutan | 13: 13.0 | Apa yang dilakukan jika ada ahli waris yang keadaannya belum pasti? | pengertian taqdir dan mauquf; setiap ahli waris diberi bagian terkecil yang pasti; sisanya ditahan; kapan bagian yang ditahan dibagikan |
+| 13-2-haml-syarat | Janin dalam kandungan: syarat dan waktu pembagian | lanjutan | 13a: 13a.1–13a.3 | Kapan janin mewarisi, dan kapan harta boleh dibagi? | dua syarat haml mewarisi; batas masa kehamilan [SYF]; pilihan menunggu kelahiran atau membagi lebih dulu |
+| 13-3-haml-bagian-ditahan | Janin dalam kandungan: berapa yang ditahan | lanjutan | 13a: 13a.4, 13a.5 | Berapa bagian yang ditahan untuk janin, dan siapa yang terpengaruh? | posisi [SYF]: jumlah janin tidak dibatasi, sehingga ashabah yang berbagi dengan janin belum diberi; tiga kelas ahli waris; model enam taqdir [HNB] cukup disebut |
+| 13-4-haml-contoh | Janin dalam kandungan: contoh dan setelah lahir | lanjutan | 13a: 13a.7 | Bagaimana pembagian diselesaikan setelah bayi lahir? | contoh bertabel mode [SYF]; perbandingan singkat dengan angka [HNB]; menyelesaikan bagian yang ditahan setelah kelahiran |
+
+### Modul 14 · Mafqud, khuntsa, dan gharqa
+
+| Slug | Judul | Tahap | Sumber | Pertanyaan pemandu | Poin wajib |
+|---|---|---|---|---|---|
+| 14-1-mafqud-pewaris | Orang hilang sebagai pewaris | lanjutan | 13b: 13b.1, 13b.2 | Kapan harta orang yang hilang boleh dibagi? | pengertian dan hukum asal; menunggu putusan hakim; siapa ahli warisnya |
+| 14-2-mafqud-ahli-waris | Orang hilang sebagai ahli waris | lanjutan | 13b: 13b.3, 13b.4, 13b.6 | Bagaimana pembagian jika salah satu ahli waris hilang? | taqdir hidup dan wafat; bagian yang ditahan dan nasibnya; contoh bertabel |
+| 14-3-khuntsa-jihah | Khuntsa: pengertian dan arah warisnya | lanjutan | 13c: 13c.1 | Siapa yang disebut khuntsa, dan dari arah mana ia mewarisi? | pengertian khuntsa musykil; jihah tempat khuntsa bisa muncul |
+| 14-4-khuntsa-pola | Khuntsa: empat pola warisan | lanjutan | 13c: 13c.2, 13c.4 | Bagaimana bagian khuntsa ditentukan? | empat pola; setiap pihak diberi bagian terkecil yang pasti; contoh bertabel |
+| 14-5-gharqa | Wafat bersamaan (gharqa) | lanjutan | 13d: 13d.1, 13d.2 | Bagaimana jika urutan wafat beberapa orang tidak diketahui? | pengertian; lima keadaan; posisi [SYF]: mereka tidak saling mewarisi |
+| 14-6-gharqa-hanbali | Gharqa menurut madzhab Hanbali | lanjutan | 13d: 13d.3, 13d.4 | Bagaimana metode tilad dan tharif bekerja? | metode khusus [HNB] dengan contoh; ditandai jelas sebagai pendapat madzhab Hanbali |
+| 14-7-gabungan-ketidakpastian | Jika ketidakpastian lebih dari satu | lanjutan | 13: 13.0b | Bagaimana jika dalam satu kasus ada janin dan orang hilang sekaligus? | cara menggabungkan beberapa taqdir; batas jumlah kemungkinan |
+
+### Modul 15 · Kasus khusus lain
+
+| Slug | Judul | Tahap | Sumber | Pertanyaan pemandu | Poin wajib |
+|---|---|---|---|---|---|
+| 15-1-murtad | Murtad | penghalang | 13: 13.5 | Bagaimana kedudukan harta dan hak waris orang murtad? | sesuai 13.5 |
+| 15-2-lian-dan-zina | Anak li'an dan anak zina | ahli-waris | 13: 13.6 | Dari siapa anak li'an dan anak zina mewarisi? | sesuai 13.6 |
+| 15-3-laqith | Anak temuan (laqith) | ahli-waris | 13: 13.7 | Siapa yang mewarisi anak temuan? | sesuai 13.7 |
 
 ## Catatan untuk penulis
 
@@ -133,4 +147,4 @@ Level: A1 = modul 1–3, A2 = modul 4–5, B1 = modul 6–8, B2 = modul 9–10, 
   ditemukan di KB".
 - Pelajaran 6-1 boleh memuat pengingat pecahan (KPK sederhana) dalam blok `lipat`, karena kesulitan pecahan adalah
   hambatan utama pelajar.
-- Urutan menulis: modul 1 sampai 14 berurutan, karena tautan antarbab merujuk ke pelajaran sebelumnya.
+- Urutan menulis: modul 1 sampai 15 berurutan, karena tautan antarbab merujuk ke pelajaran sebelumnya.

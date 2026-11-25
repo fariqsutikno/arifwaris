@@ -21,9 +21,9 @@
 - [ ] `## Ringkasnya` ditutup satu kalimat yang menyambung ke pelajaran berikutnya.
 
 ## Bahasa
-- [ ] Lolos `panduan-gaya.md` bagian 4 (tidak ada pola tulisan AI).
+- [ ] Kalimat lengkap dan baku (EYD V, KBBI, pola SPOK), dengan kata penghubung yang membuat alurnya runtut (`panduan-gaya.md` bagian 1, 3, dan 5).
 - [ ] Satu istilah untuk satu konsep di seluruh pelajaran.
-- [ ] Tebal hemat, paragraf 2–4 kalimat.
+- [ ] Tebal hemat; paragraf 3–5 kalimat dengan kalimat utama di awal.
 
 ## Teknis
 - [ ] `pnpm materi:cek <berkas>` lolos tanpa galat.

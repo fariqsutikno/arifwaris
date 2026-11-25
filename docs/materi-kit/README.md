@@ -7,9 +7,9 @@ Paket instruksi untuk model lain (Codex) yang menulis materi pelajaran. Titik ma
 | `SKILL.md` | Instruksi utama dan alur kerja per pelajaran |
 | `konsep-materi.md` | Orientasi (menyiapkan pelajar untuk menghitung), jenis isi, unsur wajib |
 | `alur-belajar.md` | Cara menyusun supaya alurnya mengalir |
-| `panduan-gaya.md` | Bahasa dan pola tulisan AI yang dilarang |
+| `panduan-gaya.md` | Kaidah bahasa (EYD, KBBI, SPOK), nada, dan contoh |
 | `format-materi.md` | Sintaks berkas (satu-satunya sumber; dipakai juga oleh parser aplikasi) |
-| `kerangka-kurikulum.md` | 14 modul, 45 pelajaran: slug, sumber KB, pertanyaan pemandu, poin wajib |
+| `kerangka-kurikulum.md` | 15 modul, 54 pelajaran: slug, sumber KB, pertanyaan pemandu, poin wajib |
 | `daftar-periksa.md` | Periksa sebelum menyerahkan |
 | `contoh/` | Dua pelajaran jadi: 5.1 Hajb dan 6.2 'Aul |
 

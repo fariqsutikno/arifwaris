@@ -136,7 +136,7 @@ rujukan, tautan) dan `packages/latihan` (engine), supaya portal memakai fungsi y
 | `soal`: kode unik di seluruh konten, tepat satu `*`, 3–4 pilihan, alasan di setiap pilihan, rujukan ada | galat |
 | `[Rxx-y]` sebaris di luar `dasar`; HTML; tautan web; emoji | galat |
 | Blok `alur` tidak ada atau bukan blok pertama; `## Cek pemahaman` dan `## Ringkasnya` tidak ada atau tidak di akhir | galat |
-| Frasa terlarang dari `panduan-gaya.md` bagian 4 (daftar dibaca dari berkas itu); paragraf > 5 kalimat; kalimat > 35 kata | peringatan |
+| Kata tidak baku (daftar kecil: nggak, banget, aja, kayak, karna, praktek), tanda pisah panjang, kalimat > 35 kata, paragraf > 6 kalimat | peringatan |
 | `durasi` jauh dari perkiraan (jumlah kata / 180) | peringatan |
 
 Keluaran: daftar `berkas:baris: pesan`, kode keluar ≠ 0 bila ada galat. Mode `--json` untuk Codex.
@@ -160,9 +160,9 @@ Keluaran: daftar `berkas:baris: pesan`, kode keluar ≠ 0 bila ada galat. Mode `
 
 ## 10. Kurikulum dan level
 
-- Modul menjadi 14 sesuai `kerangka-kurikulum.md`. Nomor modul pelajaran lama ikut berubah lewat impor; slug tetap,
+- Modul menjadi 15 sesuai `kerangka-kurikulum.md`. Nomor modul pelajaran lama ikut berubah lewat impor; slug tetap,
   jadi progres pelajar (berbasis slug) tidak hilang.
-- Peta level diganti: A1 = modul 1–3, A2 = 4–5, B1 = 6–8, B2 = 9–10, C1 = 11–12, C2 = 13–14 (keputusan pemilik
+- Peta level diganti: A1 = modul 1–3, A2 = 4–5, B1 = 6–8, B2 = 9–10, C1 = 11–12, C2 = 13–15 (keputusan pemilik
   2026-11-25). Perbarui riset 15a dan pemetaan level di kode bila sudah ada.
 - `perluCek` tidak lagi dipakai untuk materi baru; lencana "draf" di banner hanya untuk revisi yang belum terbit.
 
@@ -174,7 +174,7 @@ Keluaran: daftar `berkas:baris: pesan`, kode keluar ≠ 0 bila ada galat. Mode `
 | F2 | Komponen render semua blok + kepala pelajaran | contoh 5.1 dan 6.2 tampil setara preview v2 di desktop dan 375px; uji render per blok |
 | F3 | Lab mode contoh jadi | tautan dari blok kasus membuka Hasil lengkap tanpa menyentuh kasus pengguna |
 | F4 | Impor + portal (pratinjau, pemeriksa sebaris, soal dari materi) | modul contoh terimpor sebagai draf dan bisa diterbitkan dari portal |
-| F5 | 14 modul dan peta level baru | daftar materi menampilkan 14 modul; progres lama utuh |
+| F5 | 15 modul dan peta level baru | daftar materi menampilkan 15 modul; progres lama utuh |
 
 F1 dikerjakan lebih dulu supaya Codex bisa mulai menulis dengan pemeriksa yang sudah jalan.
 

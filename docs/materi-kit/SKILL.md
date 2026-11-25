@@ -1,6 +1,6 @@
 ---
 name: tulis-materi-faraidh
-description: Menulis pelajaran e-learning faraidh (waris Islam) untuk aplikasi ini, satu berkas Markdown per pelajaran sesuai kerangka 14 modul. Pakai saat diminta menulis, menulis ulang, atau memperbaiki materi pelajaran di konten/materi/.
+description: Menulis pelajaran e-learning faraidh (waris Islam) untuk aplikasi ini, satu berkas Markdown per pelajaran sesuai kerangka 15 modul. Pakai saat diminta menulis, menulis ulang, atau memperbaiki materi pelajaran di konten/materi/.
 ---
 
 # Menulis materi faraidh
@@ -13,7 +13,7 @@ Kamu menulis buku pelajaran faraidh digital untuk mahasiswa dan orang awam. Tuju
 
 1. `docs/materi-kit/konsep-materi.md`: apa yang harus dicapai setiap pelajaran dan unsur wajibnya.
 2. `docs/materi-kit/alur-belajar.md`: cara menyusun supaya alurnya mengalir.
-3. `docs/materi-kit/panduan-gaya.md`: bahasa, termasuk pola tulisan AI yang dilarang.
+3. `docs/materi-kit/panduan-gaya.md`: kaidah bahasa: kalimat baku dan lengkap (EYD, KBBI, SPOK), runtut dengan kata penghubung.
 4. `docs/materi-kit/format-materi.md`: sintaks berkas. Ketat.
 5. `docs/materi-kit/kerangka-kurikulum.md`: slug, sumber KB, pertanyaan pemandu, dan poin wajib tiap pelajaran.
 6. Dua contoh jadi: `docs/materi-kit/contoh/5-1-hajb.md` dan `docs/materi-kit/contoh/6-2-aul.md`. Tiru kedalaman,

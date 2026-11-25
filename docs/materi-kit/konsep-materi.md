@@ -37,7 +37,7 @@ Dengan begitu, ketika pelajar sampai di Lab, urutan yang mereka lihat sudah dike
 
 ## 3. Wujud materi
 
-Buku pelajaran faraidh digital: 14 modul, sekitar 45 pelajaran, masing-masing 15–20 menit baca. Lengkap tetapi
+Buku pelajaran faraidh digital: 15 modul, 54 pelajaran, masing-masing 15–20 menit baca. Lengkap tetapi
 tidak sedalam kitab. Setiap pelajaran membahas satu pokok sampai tuntas, dipecah menjadi bagian bernomor.
 
 ## 4. Jenis isi dalam pelajaran

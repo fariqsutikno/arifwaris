@@ -1,64 +1,90 @@
 # Panduan gaya bahasa
 
-Bayangkan dosen yang sabar menjelaskan ke mahasiswa semester awal dan ke pamannya sendiri sekaligus. Bahasa
-Indonesia baku tapi santai, kalimat pendek, langsung ke pokok.
+Materi ditulis seperti **buku pelajaran berbahasa Indonesia yang baik**: kalimatnya lengkap dan baku, alurnya
+runtut, dan setiap paragraf mudah diikuti oleh mahasiswa maupun orang awam. Yang diutamakan adalah kejelasan dan
+kebakuan, bukan kalimat yang sependek mungkin.
 
-## 1. Sapaan dan nada
+## 1. Kaidah bahasa
 
-- Sapa pembaca dengan **kamu**. Penulis menyebut diri **kita** hanya untuk "kita lihat", "kita kembali ke".
-- Nada tenang dan pasti. Tidak menggurui, tidak bercanda berlebihan, tidak memuji pembaca.
-- Topiknya kematian dan keluarga. Contoh kasus memakai nama biasa (Pak Rahmat, Bu Siti) dan keadaan yang wajar.
-  Jangan dramatis ("tragedi", "pilu"), jangan bercanda tentang kematian atau sengketa.
+- Ikuti **EYD (Ejaan yang Disempurnakan) edisi V** dan ejaan **KBBI**. Contoh: *praktik* (bukan praktek),
+  *karena* (bukan karna), *antarpelajaran* (ditulis serangkai), *di atas* (dipisah), *diatur* (disambung).
+- Setiap kalimat memiliki **struktur yang utuh**: sekurang-kurangnya subjek dan predikat, ditambah objek dan
+  keterangan bila perlu (pola SPOK). Hindari kalimat yang tidak bersubjek atau hanya berupa frasa.
+  - Kurang tepat: "Caranya: jumlahkan semua saham."
+  - Tepat: "Cara menyelesaikannya adalah menjumlahkan semua saham, lalu menjadikan jumlah itu sebagai penyebut baru."
+- Gunakan **kata penghubung** agar hubungan antargagasan terlihat jelas: *karena*, *sehingga*, *oleh karena itu*,
+  *akan tetapi*, *dengan demikian*, *misalnya*, *selain itu*, *adapun*. Kalimat-kalimat pendek yang berderet
+  tanpa penghubung terasa patah-patah dan membingungkan.
+- Pakai tanda baca sesuai fungsinya. Titik dua hanya untuk perincian atau penjelasan setelah kalimat yang
+  lengkap. Tanda pisah panjang (—) tidak dipakai.
+- Hindari kata tidak baku dan percakapan: *nggak*, *banget*, *aja*, *kayak*, *bro*.
 
-## 2. Kalimat
+## 2. Nada dan sapaan
 
-- Rata-rata 12–20 kata. Kalau lewat 30 kata, pecah.
-- Satu paragraf 2–4 kalimat, satu gagasan.
-- Subjek jelas, kata kerja aktif: "Ayah menggugurkan saudara", bukan "Saudara digugurkan oleh adanya ayah".
-- Angka dan pecahan ditulis angka: 1/6, 24, dua saudara (jumlah orang kecil boleh huruf).
+- Sapa pembaca dengan **kamu**. Penulis menyebut diri bersama pembaca dengan **kita** ("Pada bagian ini kita akan
+  melihat ...").
+- Nadanya seperti guru yang sabar: menjelaskan dengan tenang, memberi contoh, dan menunjukkan bagian yang sering
+  keliru. Tidak menggurui dan tidak bercanda.
+- Topiknya berkaitan dengan kematian dan keluarga. Contoh kasus memakai nama biasa (Pak Rahmat, Bu Siti) dan
+  keadaan yang wajar, tanpa kata-kata dramatis.
 
-## 3. Istilah
+## 3. Paragraf
 
-- Istilah fikih memakai transliterasi glosarium KB bab 15: *hajb*, *'aul*, *ashabah*, *far'u warits*.
-- Kemunculan pertama: istilah + penjelasan singkat + tooltip `[[...]]`. Sesudahnya istilah saja.
-- Pakai satu kata untuk satu konsep. Kalau sudah memakai "gugur" untuk hajb hirman, jangan berganti ke
-  "tersingkir", "terhapus", "tereliminasi".
-- Hindari kata Inggris kalau ada padanan biasa (bukan "case", "share", "step").
+- Satu paragraf membahas satu gagasan. Panjangnya 3–5 kalimat.
+- Paragraf dibuka dengan **kalimat utama**, lalu diikuti kalimat penjelas: alasan, contoh, atau akibat.
+- Setiap bagian dibuka dengan satu atau dua kalimat yang menghubungkannya dengan bagian sebelumnya, sehingga
+  pembaca tahu mengapa bagian ini dibahas sekarang.
+- Kalimat boleh panjang selama strukturnya jelas. Kalau sebuah kalimat lebih dari 30 kata atau memuat lebih dari
+  dua anak kalimat, pecah menjadi dua kalimat yang masing-masing lengkap.
 
-## 4. Pola tulisan AI yang dilarang
+## 4. Istilah dan definisi
 
-| Jangan | Ganti dengan |
-|---|---|
-| "Bukan hanya X, melainkan juga Y" / "bukan sekadar X, tetapi Y" | Nyatakan Y langsung. |
-| Rangkaian tiga kata sifat atau tiga frasa sejajar demi irama ("jelas, ringkas, dan mendalam") | Satu kata yang paling tepat. |
-| Pembuka kosong: "Dalam dunia faraidh ...", "Penting untuk dipahami bahwa ...", "Perlu diketahui ..." | Mulai dari isinya. |
-| Penutup kosong: "Dengan memahami hal ini, kamu akan ...", "Semoga bermanfaat" | Hapus, atau ganti dengan kalimat yang menyambung ke pelajaran berikutnya. |
-| Kata penguat: "sangat", "benar-benar", "tentu saja", "pada dasarnya", "secara signifikan" | Hapus. |
-| Kata megah: "krusial", "esensial", "fundamental", "komprehensif", "holistik", "menjadi kunci", "memainkan peran penting" | Kata biasa: penting, dasar, lengkap. Lebih baik: tunjukkan akibatnya. |
-| Tanda pisah panjang (—) untuk menyisipkan | Koma, titik, atau titik dua. |
-| Pertanyaan retoris berderet ("Lalu bagaimana? Siapa yang dikurangi? Apa dasarnya?") | Satu pertanyaan, langsung dijawab. |
-| "Mari kita ..." di setiap bagian | Sesekali saja, atau langsung masuk. |
-| Kalimat yang mengulang judul bagian | Hapus. |
-| Daftar berbutir untuk hal yang lebih enak dibaca sebagai paragraf | Paragraf. Butir hanya untuk hal yang memang sejajar dan bisa dihitung. |
-| Tebal di banyak tempat | Paling banyak satu atau dua per paragraf, hanya untuk kata yang harus diingat. |
-| Kesimpulan di akhir setiap bagian ("Jadi, intinya ...") | Biarkan `## Ringkasnya` yang merangkum. |
+- Istilah fikih memakai transliterasi glosarium KB bab 15 dan dicetak miring bila belum bertooltip: *hajb*,
+  *'aul*, *far'u warits*.
+- Definisi ditulis dengan pola baku: "*Hajb* adalah ...", "Yang dimaksud dengan *far'u warits* ialah ...". Setelah
+  definisi, jelaskan dengan bahasa sehari-hari dan beri contoh.
+- Satu konsep memakai satu istilah sepanjang materi. Jika sudah memakai "gugur" untuk *hajb hirman*, jangan
+  berganti menjadi "tersingkir" atau "terhapus" di bagian lain.
+- Angka dan pecahan ditulis dengan angka (1/6, 24 bagian). Jumlah orang yang kecil boleh ditulis dengan huruf
+  (dua saudara, tiga anak).
 
-## 5. Contoh sebelum dan sesudah
+## 5. Yang perlu dihindari
 
-**Sebelum:** "Hajb merupakan salah satu konsep yang sangat fundamental dalam ilmu faraidh. Memahami hajb bukan
-hanya penting untuk mengetahui siapa yang mendapat warisan, tetapi juga krusial untuk menghitung bagian secara
-tepat dan adil."
+| Hindari | Alasan | Lebih baik |
+|---|---|---|
+| Kalimat terpotong atau tanpa subjek ("Caranya: ...", "Kuncinya di sini.", "Hasilnya? Tujuh.") | Melanggar struktur kalimat dan membingungkan | Tulis kalimat lengkap. |
+| Deretan kalimat sangat pendek tanpa kata penghubung | Terasa patah-patah, hubungan antargagasan hilang | Gabungkan dengan penghubung yang sesuai. |
+| Pertanyaan retoris berderet ("Lalu bagaimana? Siapa yang dikurangi? Apa dasarnya?") | Pembaca harus menebak arah tulisan | Satu pertanyaan, lalu langsung dijawab. |
+| Pujian atau penekanan berlebihan pada topik ("sangat krusial", "luar biasa penting") | Tidak menambah informasi | Jelaskan akibat nyatanya: "Jika urutan ini keliru, hasil pembagian akan salah." |
+| Kata asing yang punya padanan (*step*, *case*, *share*) | Tidak baku | *langkah*, *kasus*, *bagian*. |
+| Tebal di banyak tempat | Penekanan kehilangan makna | Paling banyak satu atau dua per paragraf. |
+| Kesimpulan di akhir setiap bagian | Mengulang | Biarkan bagian "Ringkasnya" yang merangkum. |
 
-**Sesudah:** "Tidak semua kerabat yang hadir ikut mendapat warisan. Sebagian tergeser karena ada orang lain yang
-lebih kuat. Kejadian inilah yang disebut hajb."
+## 6. Contoh
 
-**Sebelum:** "Mari kita bahas lebih lanjut mengenai 'aul. Lalu, apa sebenarnya 'aul itu? Bagaimana cara kerjanya?
-Dan mengapa hal ini penting?"
+**Kurang baik** (berlebihan, berputar-putar):
+"Hajb merupakan salah satu konsep yang sangat fundamental dalam ilmu faraidh. Memahami hajb bukan hanya penting
+untuk mengetahui siapa yang mendapat warisan, tetapi juga krusial untuk menghitung bagian secara tepat dan adil."
 
-**Sesudah:** "'Aul dipakai ketika jumlah bagian lebih besar daripada harta. Caranya: jumlahkan semua saham, lalu
-jadikan jumlah itu penyebut baru."
+**Kurang baik** (patah-patah, tidak lengkap):
+"Tidak semua kerabat dapat warisan. Sebagian tergeser. Itulah hajb."
 
-## 6. Periksa sendiri
+**Baik**:
+"Hajb merupakan salah satu bahasan pokok dalam ilmu faraidh. Dalam sebuah keluarga, tidak semua kerabat yang
+ditinggalkan almarhum otomatis mendapat warisan, karena sebagian dari mereka terhalang oleh kerabat lain yang
+kedudukannya lebih kuat. Dengan memahami hajb, kita dapat menentukan siapa yang tetap mendapat bagian dan siapa
+yang tidak, sehingga pembagian warisan dapat dihitung dengan tepat."
 
-Sebelum menyerahkan, baca ulang dengan pertanyaan: kalau kalimat ini dihapus, apakah pembaca kehilangan sesuatu?
-Kalau tidak, hapus.
+**Kurang baik**:
+"Mari kita bahas lebih lanjut mengenai 'aul. Lalu, apa sebenarnya 'aul itu? Bagaimana cara kerjanya? Dan mengapa
+hal ini penting?"
+
+**Baik**:
+"Pada bagian ini kita akan membahas *'aul*, yaitu keadaan ketika jumlah bagian para ahli waris melebihi harta yang
+tersedia. Kita akan melihat pengertiannya, cara menyelesaikannya, dan mengapa cara tersebut dianggap adil bagi
+semua ahli waris."
+
+## 7. Periksa sendiri
+
+Bacalah setiap paragraf dengan suara pelan. Jika ada kalimat yang membuatmu berhenti untuk menebak maksudnya,
+atau kalimat yang tidak jelas subjeknya, perbaiki kalimat itu.
