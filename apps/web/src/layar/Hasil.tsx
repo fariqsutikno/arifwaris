@@ -22,6 +22,7 @@ import { DaftarAksi, UbinJenisMasalah, UbinSelanjutnya, UbinTentang } from '../h
 import { KartuLangkah } from '../hasil/KartuLangkah';
 import { dataPeranDari } from '../hasil/ketukan';
 import { KartuPembagian, type PengaturanTampil } from '../hasil/KartuPembagian';
+import { PiutangKartu } from '../hasil/PiutangKartu';
 import { SisaHakKartu } from '../hasil/SisaHakKartu';
 import { TabelLatihan } from '../hasil/TabelLatihan';
 import { GharqaLatihan } from '../hasil/GharqaLatihan';
@@ -467,7 +468,10 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             kelompokTambahan={umumRantai ? <KelompokMeninggal {...umumRantai} />
               : ringkasan.ditahan && <KelompokDitahan ringkasan={ringkasan} judul={t('hasil.ditahan.ditahan')} saatPilih={setOrangDipilih} />} />}
           {hasilBiasa && !hartaKosong && !menunggu && !gharqaDitahan && !adalahBelajar && (
-            <SisaHakKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
+            <>
+              <SisaHakKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
+              <PiutangKartu hasil={hasilBiasa} bersih={ringkasan.tirkah.bersih} penerima={ringkasan.penerima.map(({ id, nama }) => ({ id, nama }))} />
+            </>
           )}
           {madzhab !== 'syafii' && <p className="catatan-madzhab">{t('hitung.madzhab_sumber_kitab', { nama: namaMadzhab(madzhab) })}</p>}
           {adalahBelajar && !sedangMenebak && (

@@ -30296,6 +30296,104 @@
    "id": "Kembali ke pelajaran",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.tautan",
+   "halaman": "hasil",
+   "id": "Ada ahli waris yang punya hutang ke almarhum?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.petunjuk",
+   "halaman": "hasil",
+   "id": "Isi hutang tiap ahli waris kepada almarhum. Jumlah harta di atas harus sudah termasuk piutang itu. Pembagian saham tidak berubah; yang dihitung ulang hanya uang yang diterima.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.label_hutang",
+   "halaman": "hasil",
+   "id": "Hutang {nama} ke almarhum",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.tanya_setuju",
+   "halaman": "hasil",
+   "id": "{nama} setuju hutangnya dipotong dari bagiannya?",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.opsi_setuju",
+   "halaman": "hasil",
+   "id": "Setuju dipotong",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.opsi_menolak",
+   "halaman": "hasil",
+   "id": "Menolak mengakui, atau tidak mampu membayar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.opsi_tidak_setuju",
+   "halaman": "hasil",
+   "id": "Mengakui dan mampu membayar, tetapi tidak setuju",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.perlu_setuju",
+   "halaman": "hasil",
+   "id": "{nama}: pilih dulu apakah setuju hutangnya dipotong.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.galat_harta",
+   "halaman": "hasil",
+   "id": "Jumlah hutang melebihi harta yang dibagi. Periksa lagi angkanya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.keadaan_sama",
+   "halaman": "hasil",
+   "id": "Bagian {nama} ({bagian}) sama dengan hutangnya, jadi habis untuk melunasi hutang. {nama} tidak menerima apa pun dan tidak perlu membayar; barang dibagi atas saham yang lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.keadaan_lebih",
+   "halaman": "hasil",
+   "id": "Bagian {nama} ({bagian}) lebih besar dari hutangnya ({hutang}). Hutang dipotong dari bagiannya, sisanya {sisa} diambil dari barang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.keadaan_kurang",
+   "halaman": "hasil",
+   "id": "Bagian {nama} ({bagian}) lebih kecil dari hutangnya ({hutang}). Seluruh bagiannya habis, dan {nama} masih harus membayar {kurang}, dibagikan ke ahli waris lain sesuai saham mereka. Barang dibagi atas saham yang lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.kolom_diterima",
+   "halaman": "hasil",
+   "id": "Uang diterima",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "hasil.piutang.kolom_membayar",
+   "halaman": "hasil",
+   "id": "Membayar",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }
