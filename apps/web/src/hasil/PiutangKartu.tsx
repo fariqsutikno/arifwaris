@@ -17,10 +17,11 @@ interface Props {
   penerima: Array<{ id: string; nama: string }>;
 }
 
-const OPSI: Array<{ nilai: PersetujuanPemotongan; kunci: string }> = [
-  { nilai: 'setuju', kunci: 'hasil.piutang.opsi_setuju' },
-  { nilai: 'menolakAtauPailit', kunci: 'hasil.piutang.opsi_menolak' },
-  { nilai: 'mengakuiMampuTidakSetuju', kunci: 'hasil.piutang.opsi_tidak_setuju' },
+// Kunci diksi ditulis literal (tes diksi melarang t() dinamis).
+const OPSI: Array<{ nilai: PersetujuanPemotongan; teks: () => string }> = [
+  { nilai: 'setuju', teks: () => t('hasil.piutang.opsi_setuju') },
+  { nilai: 'menolakAtauPailit', teks: () => t('hasil.piutang.opsi_menolak') },
+  { nilai: 'mengakuiMampuTidakSetuju', teks: () => t('hasil.piutang.opsi_tidak_setuju') },
 ];
 
 export function PiutangKartu({ hasil, bersih, penerima }: Props) {
@@ -56,9 +57,9 @@ export function PiutangKartu({ hasil, bersih, penerima }: Props) {
                 {penghutang.some(orang => orang.idOrang === id) && (
                   <fieldset className="setuju-piutang">
                     <legend>{t('hasil.piutang.tanya_setuju', { nama })}</legend>
-                    {OPSI.map(({ nilai, kunci }) => (
+                    {OPSI.map(({ nilai, teks }) => (
                       <label key={nilai}><input type="radio" name={`setuju-${id}`} checked={persetujuan[id] === nilai}
-                        onChange={() => setPersetujuan({ ...persetujuan, [id]: nilai })} />{t(kunci)}</label>
+                        onChange={() => setPersetujuan({ ...persetujuan, [id]: nilai })} />{teks()}</label>
                     ))}
                   </fieldset>
                 )}
@@ -89,7 +90,7 @@ function HasilPiutang({ hasil, penerima, namaDari }: { hasil: Extract<ReturnType
           if (langkah.jenis !== 'PIUTANG_AHLI_WARIS') return null;
           const nama = namaDari(langkah.idOrang);
           const sisipan = { nama, bagian: formatRupiah(langkah.bagian), hutang: formatRupiah(langkah.hutang), sisa: formatRupiah(langkah.uangDiterima), kurang: formatRupiah(langkah.membayar) };
-          return <li key={langkah.idOrang} className="catatan-sisa-hak">{t(`hasil.piutang.keadaan_${langkah.keadaan}`, sisipan)}</li>;
+          return <li key={langkah.idOrang} className="catatan-sisa-hak">{catatanKeadaan(langkah.keadaan, sisipan)}</li>;
         })}
       </ul>
       <table className="tabel-sisa-hak">
@@ -114,3 +115,8 @@ function HasilPiutang({ hasil, penerima, namaDari }: { hasil: Extract<ReturnType
 
 /** Digit mentah → tampilan dengan titik ribuan; kosong tetap kosong. */
 const tampilkan = (digit: string | undefined): string => (digit ? BigInt(digit).toLocaleString('id-ID') : '');
+
+const catatanKeadaan = (keadaan: 'sama' | 'lebih' | 'kurang', sisipan: Record<string, string>): string =>
+  keadaan === 'sama' ? t('hasil.piutang.keadaan_sama', sisipan)
+    : keadaan === 'lebih' ? t('hasil.piutang.keadaan_lebih', sisipan)
+      : t('hasil.piutang.keadaan_kurang', sisipan);
