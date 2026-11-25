@@ -206,6 +206,9 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
   // Pemberian sekarang: aqall dari semua dunia; ditahan = haml/mafqud; kelasD = mitra ashabah haml [SYF] [R13-15].
   | { jenis: 'TAQDIR_PEMBERIAN'; idOrang: IdOrang; alasan: 'aqall' | 'ditahan' | 'kelasD'; saham: bigint }
   | { jenis: 'MAUQUF'; saham: bigint; jamiah: bigint }
+  // [R11-4] Tahap 6c: piutang pewaris pada seorang ahli waris. bagian = S, hutang = H.
+  | { jenis: 'PIUTANG_AHLI_WARIS'; idOrang: IdOrang; keadaan: 'sama' | 'lebih' | 'kurang'; bagian: Uang; hutang: Uang;
+      uangDiterima: Uang; membayar: Uang }
   | { jenis: 'DZAWIL_ARHAM_GABUNG_PASANGAN'; saham: bigint; masalah: bigint; hubungan: HubunganInkisar; jamiah: bigint }
 );
 
@@ -213,7 +216,7 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
 
 export interface Pertanyaan {
   idOrang?: IdOrang;
-  isian: keyof Orang | 'pernikahan' | 'pembulatan' | 'sudahDiterima';
+  isian: keyof Orang | 'pernikahan' | 'pembulatan' | 'sudahDiterima' | 'hutangKePewaris' | 'persetujuanPiutang';
   alasan: string;
 }
 
