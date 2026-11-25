@@ -1,8 +1,10 @@
 // Jejak sisa hak (bab 11.3 [KH]): narasi lewat diksi `narasi.sisa_hak.*`, tanpa kode rujukan di teks pengguna.
+import { hitung, hitungSisaHak } from '@waris/engine';
 import { describe, expect, test } from 'vitest';
+import { case01 } from '../../../engine/src/__tests__/fixtures/bab16.js';
 import { babSisaHak, type LangkahSisaHak } from '../sisaHak.js';
 import { kamusSnapshot } from './kamus.js';
-import { keTeksBiasa } from '../index.js';
+import { jelaskan, keTeksBiasa, susunLinimasa } from '../index.js';
 import type { Penyusun } from '../segments.js';
 import type { BabPenjelasan } from '../narasi.js';
 
@@ -52,5 +54,34 @@ describe('babSisaHak — narasi jejak sisa_hak', () => {
   test('tiap baris membawa refs R11-5 dan KH', () => {
     const bab = babSisaHak(langkahBuatan({ kasKurang: true }), sebutTes, penyusun);
     expect(bab.daftarBaris.every(baris => baris.refs.join() === 'R11-5,KH')).toBe(true);
+  });
+});
+
+describe('jelaskan() dan linimasa memuat bab sisa hak hanya bila jejak SISA_HAK ada', () => {
+  const input = { ...case01.input, tirkah: { kotor: 100n * JUTA, tajhiz: 0n, hutang: 0n, wasiat: 0n } };
+  const dasar = hitung(input);
+  if (dasar.status !== 'OK') throw new Error(dasar.status);
+  const [idPenerima] = Object.keys(dasar.tabel.baris[0]!.perOrang);
+  const sisa = hitungSisaHak(dasar, 100n * JUTA, { [idPenerima!]: 1n * JUTA });
+  if (sisa.status !== 'OK') throw new Error(sisa.status);
+  const denganJejak = { ...dasar, jejak: [...dasar.jejak, ...sisa.jejak] };
+  const judul = 'Sisa bagian setelah penerimaan di muka';
+  const judulBab = (hasil: typeof dasar, gaya: 'cerita' | 'ringkas') =>
+    jelaskan(hasil, input.graf, { gaya, kamus: kamusSnapshot }).daftarBab.map(bab => bab.judul);
+
+  test.each(['cerita', 'ringkas'] as const)('gaya %s: bab ada bila ada jejak, tidak ada bila tidak', gaya => {
+    expect(judulBab(denganJejak, gaya).some(teks => teks.endsWith(judul))).toBe(true);
+    expect(judulBab(dasar, gaya).some(teks => teks.endsWith(judul))).toBe(false);
+  });
+
+  test('sisa hak muncul sebelum hasil akhir', () => {
+    const urutan = judulBab(denganJejak, 'cerita');
+    expect(urutan.findIndex(teks => teks.endsWith(judul))).toBe(urutan.length - 2);
+  });
+
+  test('linimasa: tahap sisaHak ada bila ada jejak, tidak ada bila tidak', () => {
+    const idTahap = (hasil: typeof dasar) => susunLinimasa(hasil, input.graf, { kamus: kamusSnapshot }).tahap.map(tahap => tahap.id);
+    expect(idTahap(denganJejak)).toContain('sisaHak');
+    expect(idTahap(dasar)).not.toContain('sisaHak');
   });
 });

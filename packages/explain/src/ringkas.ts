@@ -6,12 +6,13 @@ import type { AlasanFardh, PilihanJadd, IdOrang } from '@waris/engine';
 import { ceritaSisaKeluar, type Bab } from './cerita.js';
 import { sebutKelompok, sebutSemua, type Konteks } from './context.js';
 import { rupiah } from './format.js';
+import { babSisaHakDariKonteks } from './sisaHak.js';
 import { narasiNisab } from './nisab.js';
 import { buatBaris, kalimat, susun, teksKamus, type BarisPenjelasan, type Potongan, type Sisipan } from './segments.js';
 import { istilah, istilahNarasi, type IdIstilah } from './terms.js';
 
 export function babRingkas(konteks: Konteks): Bab[] {
-  return [babHarta, babAhliWaris, babBagian, babAshl, babKlasifikasi, babTashih, babHasil]
+  return [babHarta, babAhliWaris, babBagian, babAshl, babKlasifikasi, babTashih, babSisaHakDariKonteks, babHasil]
     .map(buatBab => buatBab(konteks))
     .filter((bab): bab is Bab => bab !== undefined);
 }

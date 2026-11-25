@@ -164,7 +164,6 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const tampil = useMemo(() => jalankan(kasus), [kasus]);
   const ringkasan = useMemo(() => ringkas(kasus, tampil), [kasus, tampil]);
   const bahasa = useBahasa();
-  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa), [kasus, tampil, bahasa]);
   const tampilPembulatan = useMemo(() => adaTidakPas(kasus), [kasus]);
   // Mafqud punya tabel faraidh isian; haml, khuntsa, menunggu kelahiran, dan gharqa belum punya mode Belajar: selalu tampil sebagai hasil hitung.
   const taqdirBertabel = useMemo(() => tampil.jenis === 'taqdir' && !('status' in susunTabelSoal(tampil.hasil, id => id)), [tampil]);
@@ -257,7 +256,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   const sudahDiterima = useMemo(() => kasus.sudahDiterima ?? {}, [kasus.sudahDiterima]);
   const sisaHak = useMemo(() => (sumberSisaHak ? hitungSisaHak(sumberSisaHak, ringkasan.tirkah.bersih, sudahDiterima) : null), [sumberSisaHak, ringkasan.tirkah.bersih, sudahDiterima]);
   // Jejak sisa hak ikut ke Periksa hanya bila ada yang sudah menerima (tanpa isian = bagian apa adanya, tak ada yang diceritakan).
-  const jejakSisaHak = sisaHak?.status === 'OK' && Object.keys(sudahDiterima).length > 0 ? sisaHak.jejak : [];
+  const jejakSisaHak = useMemo(() => (sisaHak?.status === 'OK' && Object.keys(sudahDiterima).length > 0 ? sisaHak.jejak : []), [sisaHak, sudahDiterima]);
+  const daftarBab = useMemo(() => daftarBabDari(kasus, tampil, bahasa, jejakSisaHak), [kasus, tampil, bahasa, jejakSisaHak]);
   const umumRantai = rantai && { graf: kasus.graf, ringkasan, rantai: rantai.langkah, sembunyiNominal, saatPilih: setOrangDipilih };
   const tabel = umumRantai && !sedangMenebak ? <TabelMunasakhatKitab {...umumRantai} nominal={rantai!.hasil.nominal} />
     : ringkasan.taqdir ? <TabelKemungkinan {...umumKhusus} />

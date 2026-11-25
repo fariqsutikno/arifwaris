@@ -4,6 +4,7 @@
 
 import type { IdOrang, LangkahJejak } from '@waris/engine';
 import { rupiah } from './format.js';
+import type { Konteks } from './context.js';
 import type { BabPenjelasan } from './narasi.js';
 import { buatBaris, susun, teksKamus, type Penyusun, type Potongan } from './segments.js';
 
@@ -24,4 +25,10 @@ export function babSisaHak(langkah: LangkahSisaHak, sebut: (id: IdOrang) => Poto
     ...(langkah.kasKurang ? [buatBaris(susun(penyusun, 'narasi.sisa_hak.kas_kurang'), REFS_SISA_HAK)] : []),
   ];
   return { judul: teksKamus(penyusun, 'narasi.sisa_hak.judul'), daftarBaris };
+}
+
+/** Bab untuk jelaskan()/linimasa: ada hanya bila jejak memuat SISA_HAK (caller menambahkannya hanya bila kasus punya sudahDiterima). */
+export function babSisaHakDariKonteks(konteks: Konteks): BabPenjelasan | undefined {
+  const [langkah] = konteks.daftarLangkah('SISA_HAK');
+  return langkah && babSisaHak(langkah, id => konteks.sebutan.sebut([id]), konteks.penyusun);
 }
