@@ -4,8 +4,10 @@ export {
   type Ayat, type TampilanDalil, type RujukanTerbaca, type EntriRujukan, type JenisDalil, type Kitab, type Hadits, type TitikDikaji, type TautanRujukan, type JenisTautan, type Keberlakuan, type TitikKhilaf,
 } from './refs.js';
 export {
-  bacaBlok, bacaPotongan, semuaPotongan, bacaDaftarAhliWaris, bacaHarapan,
-  type Pelajaran, type Modul, type VersiArab, type Blok, type Potongan, type ContohKasus,
+  bacaBlok, bacaBlokBerbaris, bacaPelajaran, bacaPelajaranBerbaris, bacaPotongan, semuaPotongan, nomorBagian, bacaDaftarAhliWaris, bacaHarapan,
+  TAHAP_ALUR, TAMPIL_PERAGA, POLA_KODE_SOAL_MATERI,
+  type Pelajaran, type Modul, type VersiArab, type Blok, type Potongan, type ContohKasus, type TahapAlur, type TampilPeraga,
+  type NilaiBagian, type SimpulPeta, type KeadaanPeraga, type SoalMateri, type NomorBagian,
 } from './materi.js';
 export { adalahKasusLama, type SoalHitung, type SoalKuis, type Tingkat, type KasusSoal, type BerkasKasus } from './soal.js';
 export type { EntriFaq } from './faq.js';
@@ -15,7 +17,7 @@ export {
   JENIS_KONTEN, JENIS_FIKIH, KELOMPOK_FAQ_NON_FIKIH, wajibRef, keJson, bacaIsi,
   type JenisKonten, type IsiKonten, type IsiAhwal, type BarisAhwal, type CocokAhwal, type IsiTeksEdukasi, type IsiCheatsheet, type IsiGlosariumAr,
 } from './skema.js';
-export { tulisBlok, tulisPotongan } from './tulisBlok.js';
+export { tulisBlok, tulisPelajaran, tulisPotongan } from './tulisBlok.js';
 export { ambilRefs, periksaKonsistensi, type BarisKonten } from './konsistensi.js';
 export {
   transisiRevisi, bolehSuntingDraf, bolehPerbaruiAjuan, bolehAbaikanRevisi, caraBuangEntri, bolehPulihkanEntri, periksaRefs,
@@ -25,3 +27,4 @@ export {
   CATATAN_KHI, ID_CATATAN_KHI, JALAN_KELUAR, NAMA_SUMBER_KHI, cariCatatanKhi, teksTampil,
   type CatatanKhi, type IdCatatanKhi, type JalanKeluar, type SumberKhi, type ButirPraktikPa, type Madzhab,
 } from './khi/catatanKhi.js';
+export { periksaMateri, kodeSoalGanda, type Temuan, type KonteksPeriksa, type HasilPeriksa } from './periksaMateri.js';

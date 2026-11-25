@@ -20,5 +20,5 @@ Codex membaca `docs/materi-kit/SKILL.md` di awal sesi. Contoh perintah:
 
 > Baca docs/materi-kit/SKILL.md lalu tulis modul 1 sesuai kerangka.
 
-Pemeriksa `pnpm materi:cek` dan blok baru di aplikasi dibangun menurut `docs/design/spec-blok-materi.md` (fase F1
-dan F2). Sebelum F1 selesai, Codex tetap bisa menulis; pemeriksaan dijalankan setelah pemeriksa tersedia.
+Pemeriksa sudah jalan: `pnpm materi:cek <berkas|folder>` (tambah `--json` untuk keluaran mesin). Tampilan blok baru
+di aplikasi menyusul (F2 di `docs/design/spec-blok-materi.md`).

@@ -177,7 +177,7 @@ penjelasan: Istri turun ke 1/8 (**nuqshan**). Kakak kehilangan semuanya (**hirma
 ```
 ````
 
-- `keadaan` membuka keadaan baru; `ahli waris` dan `penjelasan` milik keadaan di atasnya. 2–4 keadaan.
+- `keadaan` membuka keadaan baru; `ahli waris` dan `penjelasan` milik keadaan di atasnya. 2–4 keadaan (`tampil: aul` boleh 1).
 - `tampil`: `kotak` (kotak saja), `kotak-tabel` (kotak dan tabel), atau `aul` (kotak sebelum 'aul dengan kotak
   yang meluap, lalu tombol "Terapkan 'aul"; hanya untuk kasus yang memang 'aul).
 - `pewaris` berlaku untuk semua keadaan; boleh ditimpa per keadaan.

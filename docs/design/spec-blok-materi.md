@@ -54,7 +54,7 @@ Blok baru (yang lama tetap: judul, paragraf, daftar, catatan, tabel, kasus, vide
 | `tebak` | `{ tanya: Potongan[]; jawab: Potongan[] }` |
 | `lipat` | `{ judul: string; blok: Blok[] }` (isi tanpa blok berpagar) |
 | `matriks` | `{ kolom: string[]; baris: { label: string; sel: Potongan[][] }[] }` |
-| `video` (diperluas) | tambah bentuk `{ jenis: 'video'; menyusul: string }` |
+| `videoMenyusul` | `{ rencana: string }` (jenis terpisah supaya pemakai `video.idYoutube` tidak berubah) |
 | `soal` | `{ soal: SoalKuis }` (tipe `SoalKuis` yang sudah ada; `alasanPilihan` wajib) |
 
 Kode rujukan `[Rxx-y]` sebaris di paragraf: parser tetap membacanya (data lama), tetapi pemeriksa menolaknya di
@@ -178,7 +178,16 @@ Keluaran: daftar `berkas:baris: pesan`, kode keluar ≠ 0 bila ada galat. Mode `
 
 F1 dikerjakan lebih dulu supaya Codex bisa mulai menulis dengan pemeriksa yang sudah jalan.
 
-## 12. Keputusan yang masih terbuka
+## 12. Catatan implementasi F1 (2026-11-25)
+
+- Parser dan penulis: `packages/content/src/materi.ts`, `tulisBlok.ts` (`bacaPelajaran`, `tulisPelajaran`, `nomorBagian`).
+- Pemeriksa: `periksaMateri` (`packages/content/src/periksaMateri.ts`) dan `periksaAngkaMateri` + `hitungContoh`
+  (`packages/latihan/src/periksaAngkaMateri.ts`); CLI `scripts/materi-cek.ts`.
+- Slug yang sah = kolom pertama tabel `kerangka-kurikulum.md` + berkas di `konten/materi/`.
+- Skema zod konten (`skema.ts`) belum mengenal blok baru: materi berblok baru belum bisa disimpan ke database
+  sampai F4. Editor portal membawa blok baru sebagai blok khusus utuh.
+
+## 13. Keputusan yang masih terbuka
 
 1. Soal dari materi sekaligus masuk bank `soal_kuis` (usulan) atau hanya hidup di pelajaran?
 2. Mode contoh jadi dibuka di tab yang sama (usulan, dengan tautan kembali) atau lembar di atas pelajaran?

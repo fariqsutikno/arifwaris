@@ -4,7 +4,7 @@
 // dipipihkan secara tetap: tebal+miring → tebal, daftar bersarang → butir berikutnya, beberapa paragraf di catatan/sel
 // tabel → disambung spasi, paragraf kosong → dilewati.
 import type { JSONContent } from '@tiptap/core';
-import type { Blok, Potongan } from '@waris/content';
+import { tulisPotongan, type Blok, type Potongan } from '@waris/content';
 
 export function keDokumen(daftarBlok: Blok[]): JSONContent {
   const isi = daftarBlok.map(keNode);
@@ -39,7 +39,8 @@ function keNode(blok: Blok): JSONContent {
       type: 'table',
       content: [barisTabel('tableHeader', blok.kepala), ...blok.baris.map(baris => barisTabel('tableCell', baris))],
     };
-    case 'kasus': case 'video': case 'kuis': return { type: 'blokKhusus', attrs: { blok } };
+    // Blok berpagar (kasus, video, kuis, dan blok materi baru) tidak disunting di Tiptap; dibawa utuh. Penyunting khusus = F4.
+    default: return { type: 'blokKhusus', attrs: { blok } };
   }
 }
 
@@ -58,6 +59,8 @@ function isiSebaris(daftar: Potongan[]): { content?: JSONContent[] } {
       case 'miring': return potongan.teks ? [{ type: 'text', text: potongan.teks, marks: [{ type: 'italic' }] }] : [];
       case 'istilah': return [{ type: 'istilah', attrs: { id: potongan.id, teks: potongan.teks } }];
       case 'rujukan': return [{ type: 'rujukan', attrs: { kode: potongan.kode } }];
+      // Tautan antarbagian tampil sebagai sintaks Markdown-nya; tulisBlok → bacaBlok mengubahnya kembali jadi tautan.
+      case 'tautanPelajaran': case 'tautanBagian': return [{ type: 'text', text: tulisPotongan([potongan]) }];
     }
   });
   return isi.length > 0 ? { content: isi } : {};

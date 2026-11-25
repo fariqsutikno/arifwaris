@@ -11,6 +11,9 @@ importers:
       '@waris/content':
         specifier: workspace:*
         version: link:packages/content
+      '@waris/latihan':
+        specifier: workspace:*
+        version: link:packages/latihan
       esbuild:
         specifier: 0.21.5
         version: 0.21.5

@@ -18,3 +18,4 @@ export * from './xp.js';
 export * from './petunjuk.js';
 export * from './namaKasus.js';
 export * from './indeksKontras.js';
+export * from './periksaAngkaMateri.js';

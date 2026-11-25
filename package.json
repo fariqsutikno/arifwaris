@@ -15,10 +15,12 @@
     "fungsi:bundel": "vite-node scripts/bundel-fungsi.ts",
     "konten:ekspor": "pnpm --filter @waris/skrip ekspor",
     "konten:pulihkan": "pnpm --filter @waris/skrip pulihkan",
-    "diksi:tambah": "pnpm --filter @waris/skrip diksi:tambah"
+    "diksi:tambah": "pnpm --filter @waris/skrip diksi:tambah",
+    "materi:cek": "vite-node scripts/materi-cek.ts --"
   },
   "devDependencies": {
     "@waris/content": "workspace:*",
+    "@waris/latihan": "workspace:*",
     "esbuild": "0.21.5",
     "supabase": "^2.117.0",
     "typescript": "^5.5.0",
