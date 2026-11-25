@@ -57,7 +57,7 @@ G3  data server + PDP dasar + soal buta  13–20 hari
 G4  lengkapi materi & latihan soal       kode 6–9 hari + konten tim keilmuan
     skema soal penalaran → soal bangkitan + katalog → soal kurasi
 
-G5  AMIN                                 syarat: kebijakan privasi sebut penyedia LLM,
+G5  AMIN (spec-amin.md, draf 2026-11-25)  syarat: kebijakan privasi sebut penyedia LLM,
                                          persetujuan terpisah, retensi log
 G6  Ujian + keterlibatan                 12–18 hari, boleh sejajar G5
     Ujian → kolom benar → soal serupa → kemahiran → soal hari ini → level → profil
