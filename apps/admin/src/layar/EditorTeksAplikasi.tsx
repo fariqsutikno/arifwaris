@@ -74,7 +74,7 @@ const BAGIAN: readonly Bagian[] = [
   { id: 'hasil', judul: 'Hasil hitung', layar: () => <Hasil kasus={KASUS_CONTOH} idSesi="sunting-teks" tujuan="hitung" kirim={tanpaAksi} /> },
   { id: 'belajar', judul: 'Belajar', layar: () => <Belajar /> },
   { id: 'latihan', judul: 'Latihan', layar: () => <Latihan tab="hitung" kasusSekarang={null} saatKerjakan={tanpaAksi} /> },
-  { id: 'materi', judul: 'Materi (contoh)', layar: () => <Materi slug={SLUG_MATERI_CONTOH} kasusSekarang={null} saatCoba={tanpaAksi} /> },
+  { id: 'materi', judul: 'Materi (contoh)', layar: () => <Materi slug={SLUG_MATERI_CONTOH} /> },
   { id: 'faq', judul: 'FAQ', layar: () => <Faq kasusSekarang={null} saatCoba={tanpaAksi} /> },
   { id: 'tanya-jawab', judul: 'Tanya jawab', layar: () => <TanyaJawab kasusSekarang={null} saatCoba={tanpaAksi} /> },
   { id: 'glosarium', judul: 'Glosarium', layar: () => <Glosarium /> },

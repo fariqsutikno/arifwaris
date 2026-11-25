@@ -102,7 +102,7 @@ export function Pratinjau<J extends JenisKonten>({ jenis, slug, isi, saatTutup }
 function LayarUntukJenis<J extends JenisKonten>({ jenis, slug, isi }: { jenis: J; slug: string; isi: IsiKonten[J] }) {
   switch (jenis) {
     case 'materi':
-      return <Materi slug={slug} kasusSekarang={null} saatCoba={() => {}} />;
+      return <Materi slug={slug} />;
     case 'soal_kuis':
       return <KartuSoalKuis soal={isi as unknown as SoalKuis} />;
     case 'faq':
