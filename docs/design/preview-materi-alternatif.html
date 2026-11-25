@@ -33,7 +33,7 @@ button{font:inherit;color:inherit}
 /* halaman materi */
 .hero{margin:20px 0 0;border-radius:28px 28px 0 0;padding:28px 32px 34px;color:#fff;
   background:radial-gradient(520px 260px at 90% 120%,rgba(255,150,40,.45),transparent 70%),radial-gradient(420px 240px at 0% 0%,rgba(60,210,170,.3),transparent 70%),linear-gradient(135deg,#0a2326,#0f3a38 60%,#0b2a2b)}
-.hero .label{font-size:13px;letter-spacing:.04em;text-transform:uppercase;opacity:.75}
+.hero .label{font-size:13px;opacity:.75}
 .hero h2{font:500 clamp(28px,4vw,44px)/1.1 var(--display);margin:6px 0 10px;letter-spacing:-.03em;max-width:22ch}
 .hero p{margin:0;max-width:62ch;opacity:.9}
 .meta{display:flex;flex-wrap:wrap;gap:8px 16px;margin-top:14px;font-size:14px;opacity:.85}
@@ -49,7 +49,7 @@ button{font:inherit;color:inherit}
 .istilah{border-bottom:1.5px dotted var(--hijau);cursor:help;position:relative}
 .istilah:hover::after,.istilah:focus::after{content:attr(data-arti);position:absolute;left:0;top:calc(100% + 6px);z-index:5;width:max-content;max-width:260px;
   padding:8px 12px;border-radius:10px;background:var(--ink);color:#fff;font-size:13px;line-height:1.45;font-weight:400}
-.dalil{display:inline-flex;align-items:center;gap:4px;padding:1px 8px;border-radius:999px;background:var(--mint);color:var(--hijau);font-size:12px;font-weight:600;vertical-align:2px;white-space:nowrap}
+.dalil{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:999px;background:var(--mint);color:var(--hijau);font-size:12px;font-weight:600;vertical-align:2px;white-space:nowrap}
 .dalil svg{width:12px;height:12px}
 
 .wadah-tabel{overflow-x:auto;border:1px solid var(--line);border-radius:16px;margin:8px 0 16px}
@@ -67,7 +67,7 @@ tr:last-child td{border-bottom:0}
 .video p{margin:6px 0 0;opacity:.8;font-size:14px}
 
 .contoh{padding:20px;border-radius:20px;background:var(--krem);margin:12px 0 18px}
-.contoh .label{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.contoh .label{font-size:13px;color:var(--muted)}
 .contoh p{margin:6px 0 10px}
 .contoh table{background:#fff;border-radius:12px}
 .contoh .wadah-tabel{margin:8px 0 10px}
@@ -75,7 +75,7 @@ tr:last-child td{border-bottom:0}
 
 /* blok interaktif */
 .blok-latihan{border:1.5px solid var(--line);border-radius:20px;padding:20px;margin:16px 0 20px}
-.blok-latihan .label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--hijau);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.blok-latihan .label{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--hijau);font-weight:700}
 .blok-latihan .label svg{width:16px;height:16px}
 .blok-latihan p.soal{font-weight:600;margin:6px 0 12px}
 .keping{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px}
@@ -92,7 +92,7 @@ tr:last-child td{border-bottom:0}
 .aksi-teks{background:none;border:0;padding:0;color:var(--hijau);font-weight:600;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .tombol{border:0;border-radius:999px;background:var(--ink);color:#fff;padding:9px 18px;cursor:pointer;font-weight:600}
 
-.tanya{border-left:3px solid var(--aksen);padding:4px 0 4px 16px;margin:12px 0 16px}
+.tanya{border-radius:16px;background:var(--aksen-soft);padding:14px 18px;margin:12px 0 16px}
 .tanya p{margin:0 0 6px;font-weight:600}
 .tanya .jawab{display:none;font-weight:400;margin-top:8px}
 .tanya .jawab.tampil{display:block}
@@ -114,13 +114,13 @@ details>div{padding:0 16px 12px}
 /* peta nasab (alternatif C) */
 .peta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0 10px}
 .kolom-peta{display:grid;gap:8px;align-content:start;padding:10px;border-radius:16px;background:var(--krem)}
-.kolom-peta>span{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700}
+.kolom-peta>span{font-size:12px;color:var(--muted);font-weight:700}
 .simpul{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:7px 10px;cursor:pointer;font-size:14px;text-align:left}
 .simpul.pusat{background:var(--ink);color:#fff;border-color:var(--ink);cursor:default}
 .simpul.aktif{border-color:var(--ink);background:var(--sunken)}
 .simpul.penghalang{border-color:var(--aksen);background:var(--aksen-soft)}
-.simpul.kebal{box-shadow:inset 3px 0 0 var(--hijau)}
-.info-peta{padding:12px 14px;border-radius:12px;background:var(--sunken);font-size:15px;min-height:52px}
+.simpul.kebal{background:var(--mint)}
+.info-peta{padding:14px 16px;border-radius:12px;background:var(--sunken);font-size:15px;min-height:52px}
 
 /* batang 'aul */
 .batang-wadah{margin:10px 0 6px}
@@ -446,7 +446,7 @@ details>div{padding:0 16px 12px}
           <button class="simpul" data-id="paman">Paman</button>
         </div>
       </div>
-      <p class="info-peta" id="info-peta" role="status">Ketuk salah satu kerabat. Garis hijau di kiri menandai yang tidak pernah gugur.</p>
+      <p class="info-peta" id="info-peta" role="status">Ketuk salah satu kerabat. Kotak hijau muda menandai yang tidak pernah gugur.</p>
       <p style="font-size:14px;color:var(--muted)">Disederhanakan dari KB tabel 6.5 <span class="dalil">R06-3</span>. Kakek bersama saudara kandung atau sebapak dibahas di modul Kakek dan saudara.</p>
 
       <h3>Kaidah yang terbaca dari peta</h3>
