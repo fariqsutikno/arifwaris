@@ -133,7 +133,9 @@ Tambahan per tugas (bagian 12):
 
 **Selesai** = isian tersimpan bersama kasus; kartu hanya pada kasus yang dicakup; jejak + narasi lewat diksi; semua tes bagian 10 lulus; tidak ada kode teknis di teks pengguna; tidak ada aturan fikih di luar KB.
 
-## 11. Daftar pertanyaan TERBUKA untuk pemilik (dengan rekomendasi)
+## 11. Keputusan pemilik (2026-11-25: "sesuai rekomendasi")
+
+**Semua butir di bawah DISETUJUI sesuai kolom rekomendasi** (status [TERBUKA]/[USULAN] di bagian lain kini [PEMILIK]). Konsekuensi: T1, T2, T3, T4, T5 (munasakhat, penyajian saja) boleh dikerjakan; T6 (pintu B) tidak; T7/T8 (piutang) ditunda.
 
 | # | Pertanyaan | Rekomendasi |
 |---|---|---|
