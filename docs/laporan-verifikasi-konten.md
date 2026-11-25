@@ -7,6 +7,32 @@ ekspor. Semua usulan di bawah menunggu persetujuan pemilik/tim keilmuan sebelum 
 Golongan: ✔ cocok · ⚠ lafaz/kondisi/kode salah, hukum tetap · ⚑ hukum berbeda dari KB · ⓘ catatan, tanpa tindakan.
 Pemetaan oleh agen sonnet; golongan dan usulan teks oleh penyunting (opus).
 
+## Daftar centang persetujuan (2026-11-25)
+
+Centang yang disetujui; tempel di portal admin. Detail teks ada di tabel bagian bawah. `[ ]` = menunggu keputusan.
+
+**Ganti teks (hukum/kondisi terlalu mutlak atau usang)**
+- [ ] materi:370 syarat saudari kandung: tambah «kakek»
+- [ ] materi:57, 78 wasiat ke ahli waris: «kecuali disetujui ahli waris lain» [R01-5]
+- [ ] materi:95 jenis kematian: hakiki, hukmi, taqdiri
+- [ ] teks_edukasi:595 dan ~973 batas 1/3: tambah soal ijazah ahli waris
+- [ ] teks_edukasi:346–351 «belum didukung»: pakai pengganti tanzil di bawah
+- [ ] ahwal:175 ANAK_LK: «tidak pernah terhalang oleh ahli waris lain (hajb hirman) [R06-2]»
+- [ ] faq:70 dan faq:82: pakai dua pengganti di bagian «Teks basi»
+
+**Perbaiki kode rujukan saja**
+- [ ] materi:194 R03-7 → R14-4
+- [ ] materi:319 tambah [R06-3]; materi:403–405 tambah [R06-7]
+- [ ] teks_edukasi:331–343 tambah [R14-4]
+- [ ] faq:56 Rujukan → R14-4, R14-5; faq:60 lengkapi R13-3, R13-15, R13-6
+- [ ] faq:17 R02-1 → R02-12 (atau hapus kode)
+
+**Keputusan tim keilmuan (bukan koreksi)**
+- [ ] teks_edukasi:~991 «nilai barang saat dibagi»: pertahankan sebagai saran praktis, atau masukkan KB dulu
+- [ ] faq:42 label «terjemah Kemenag RI» juga di kutipan 4:176 (opsional)
+
+Sudah dikerjakan di kode: label dialog madzhab (commit `29c5fdb`).
+
 ## B2 · materi.md
 
 96 klaim dicek, 83 cocok. Tidak ada ⚑.
