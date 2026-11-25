@@ -214,10 +214,8 @@ dipotong diam-diam.
 - **Top up (G8, bukan versi pertama).** Butuh penyedia pembayaran, harga paket, syarat layanan, dan kebijakan privasi
   yang menyebut pemrosesan pembayaran. Versi pertama hanya jatah gratis, tapi skema data sudah memakai buku koin supaya
   top up tinggal menambah jenis `beli`.
-- **"Dijualbelikan" = pengguna membeli dari aplikasi**, bukan diperdagangkan antar pengguna. Koin tidak bisa dipindah ke
-  akun lain, tidak bisa diuangkan, dan berlaku hanya di aplikasi. Alasan: koin yang bisa ditransfer/diuangkan berisiko
-  digolongkan uang elektronik (izin Bank Indonesia) dan membuka penipuan jual-beli akun. Perlu dicek ke konsultan hukum
-  sebelum top up dibuka.
+- **Koin = kredit layanan prabayar** (seperti top up kredit di layanan AI): dibeli dari aplikasi, terpakai sesuai
+  token, tidak bisa dipindah ke akun lain atau diuangkan. Klarifikasi pemilik 2026-11-25.
 
 ### 6c. Riwayat percakapan (keputusan pemilik 2026-11-25: disimpan)
 Arti "retensi": berapa lama data disimpan sebelum dihapus otomatis. Keputusan:

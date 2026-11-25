@@ -151,7 +151,7 @@ Satu sumber kebenaran: daftar ini didefinisikan sekali di `packages/content` (di
   `tambahKotakAhli`. Engine + konten dibundel lewat `scripts/bundel-fungsi.ts` seperti `catat-percobaan/masuk.ts`.
 - Penyedia: daftar kandidat berformat OpenAI chat completions dari secret `AMIN_PENYEDIA` (url, kunci, model, dipisah).
   **Gemini tier gratis dilarang** (dicek: url `generativelanguage.googleapis.com` ditolak saat start). Pilihan final
-  ditetapkan di F0 setelah membandingkan harga dan kualitas bahasa Indonesia [Pilihan Claude: uji 30 pertanyaan dari
+  ditetapkan di F6 setelah membandingkan harga dan kualitas bahasa Indonesia [Pilihan Claude: uji 30 pertanyaan dari
   kumpulan uji bagian 11 ke tiap kandidat].
 - `pemakaian_ai.fitur` ditambah nilai `amin` dan `amin_contoh` (migrasi ubah check).
 - Suhu rendah (0,2) [Pilihan Claude]; `response_format: json_object`.
@@ -187,6 +187,14 @@ glosarium, rujukan, Lab, materi, akun, koin AMIN, percakapan AMIN, privasi) dan 
 `cakupan: 'belajar'` tidak meminta AI memilih pelajaran. Klien menambahkan tujuan "berikutnya" dari `progres.ts` /
 `rekomendasiKuis.ts` **hanya bila** jawaban AI tidak membawa tujuan (aturan satu tujuan per jawaban).
 
+### 6.5 RAG dan pelatihan
+- **RAG** (mengambil potongan materi dulu, lalu AI menjawab dari potongan itu) = bagian 6.1–6.3. Dikerjakan di F1
+  (tabel dan pencarian) dan F2 (skrip pengisi `pnpm amin:kb`, perakit sumber di `logika.ts`).
+- **Tidak ada pelatihan (training/fine-tuning) model.** Keputusan lama pemilik (2026-09-29): gratis tanpa training.
+  AMIN memakai model umum dari penyedia; "kepintarannya" tentang waris datang dari KB dan panduan fitur yang dikirim
+  tiap pertanyaan. Memperbaiki AMIN = memperbaiki KB, panduan fitur, instruksi, dan kumpulan uji, bukan melatih model.
+- Data pengguna tidak dipakai melatih apa pun, oleh kita maupun penyedia (syarat pemilihan penyedia).
+
 ## 7. Contoh berangka
 
 1. AI mengisi `contohKasus` (hanya bila diminta lewat `beri_contoh`/`contoh_lain` atau pertanyaan "kalau …?").
@@ -216,7 +224,41 @@ masing-masing lolos dan ditolak.
 
 `perluAhli` ≠ null → server menambah kotak "Sebaiknya konsultasikan ke ahli" (teks dari diksi/konten), bukan AI.
 
+### 8a. Pemicu dan teks arahan ke ahli (draf Claude, ditinjau pemilik)
+AI mengisi `perluAhli` bila pertanyaan menyentuh salah satu pemicu. Selain itu, server sendiri mengisi `lainnya` bila
+engine mengembalikan `PERLU_INPUT`/`TIDAK_DIDUKUNG` untuk contoh, atau topik termasuk titik blocked KB.
+
+| Kode | Pemicu (contoh kalimat pengguna) | Kenapa perlu ahli |
+|---|---|---|
+| `sengketa` | ada ahli waris yang menolak membagi, menguasai harta, mengancam gugat, sudah ke pengadilan | hukum acara, bukti, dan mediasi di luar faraidh |
+| `harta_sudah_dibagi` | harta sudah dibagi tidak sesuai faraidh, ingin dibatalkan atau diminta kembali | butuh kesepakatan ulang (bab 11) atau putusan; tergantung keridhaan dan ada tidaknya ahli waris kecil |
+| `wasiat_hibah` | wasiat lebih dari 1/3, wasiat untuk ahli waris, hibah menjelang wafat yang dipersoalkan | sahnya tergantung persetujuan ahli waris dan bukti |
+| `utang` | utang pewaris melebihi harta, utang diperselisihkan, piutang belum jelas | penetapan utang perlu bukti dan kadang proses hukum |
+| `luar_negeri` | harta atau ahli waris di luar negeri, beda kewarganegaraan | hukum negara lain dan prosedur lintas negara |
+| `beda_agama` | ahli waris beda agama mempersoalkan bagian, wasiat wajibah | menyentuh putusan pengadilan dan KHI, bukan hanya fikih |
+| `lainnya` | harta bersama suami-istri (gono-gini) yang belum dipisah, aset usaha/saham, tanah tanpa sertifikat, ahli waris di bawah umur yang hartanya dikelola, dan hal yang engine belum bisa pastikan | penilaian harta dan perwalian butuh pihak berwenang |
+
+Teks kotak (satu teks umum, kalimat kedua per kode):
+> **Sebaiknya konsultasikan ke ahli**
+> Penjelasan AMIN hanya untuk belajar. *[kalimat per kode]* Kamu bisa membawa hasil hitung dari aplikasi ini sebagai bahan diskusi.
+> Tempat bertanya: Pengadilan Agama di kotamu (ada pos bantuan hukum untuk konsultasi), notaris atau PPAT untuk
+> urusan tanah dan akta, atau ustadz/dosen yang memahami faraidh.
+
+Kalimat per kode:
+- `sengketa`: "Perselisihan antar ahli waris menyangkut bukti dan proses hukum yang tidak bisa dinilai AMIN."
+- `harta_sudah_dibagi`: "Pembagian yang sudah terjadi perlu dibicarakan ulang bersama semua ahli waris, dan kadang perlu penetapan pengadilan."
+- `wasiat_hibah`: "Sah tidaknya wasiat atau hibah ini tergantung persetujuan ahli waris dan buktinya."
+- `utang`: "Utang pewaris harus dipastikan dulu jumlah dan buktinya sebelum harta dibagi."
+- `luar_negeri`: "Harta atau ahli waris di luar negeri bisa terikat hukum negara lain."
+- `beda_agama`: "Kasus beda agama sering diputus pengadilan dengan pertimbangan yang tidak dihitung aplikasi ini."
+- `lainnya`: "Kasus ini punya hal yang belum bisa dipastikan oleh aplikasi."
+
+Teks ini konten (bisa diedit di portal); fakta layanan (pos bantuan hukum di Pengadilan Agama) dicek pemilik sebelum terbit.
+
 ## 9. Koin
+
+Koin = **kredit layanan prabayar**, seperti kredit/token di layanan AI (beli paket, terpakai sesuai pemakaian). Bukan
+mata uang: tidak bisa dipindah ke akun lain, tidak bisa diuangkan, hanya untuk AMIN (dan kelak mode cerita AI).
 
 ```sql
 create table saldo_koin (user_id uuid primary key references auth.users on delete cascade,
@@ -232,7 +274,7 @@ create table mutasi_koin (id bigint generated always as identity primary key,
 - `pakai_koin(user, jumlah, pemakaian_id)`: `update saldo_koin set saldo = saldo - least(jumlah, saldo) …` dalam satu
   pernyataan + mutasi `pakai`; tidak pernah minus; mengembalikan saldo baru.
 - Biaya = `ceil((token_masuk + token_keluar) / TOKEN_PER_KOIN)`, minimal 1, dijumlah untuk semua panggilan satu jawaban.
-  Konstanta bernama di `logika.ts`; **angka ditetapkan F0** (usulan awal `TOKEN_PER_KOIN = 2000`, `JATAH_HARIAN = 20`).
+  Konstanta bernama di `logika.ts`; **angka ditetapkan F6** (usulan awal `TOKEN_PER_KOIN = 2000`, `JATAH_HARIAN = 20`).
 - Syarat sebelum memanggil AI: saldo ≥ 1. Jawaban terakhir boleh menghabiskan sisa (tidak ada utang koin).
 - RLS: pengguna hanya membaca saldo dan mutasinya sendiri; tulis hanya lewat fungsi.
 - Uji pgTAP: dua pemakaian serentak tidak membuat saldo minus; jatah tidak terisi dua kali sehari; gagal = 0 mutasi.
@@ -295,18 +337,20 @@ bukan fatwa, kotak ahli, koin habis, belum masuk, belum izin. Teks "siapa konsul
 
 | Fase | Isi | Selesai bila |
 |---|---|---|
-| F0 | Pilih penyedia (uji 30 pertanyaan), tetapkan angka koin, teks kebijakan privasi bagian AI | pemilik menyetujui penyedia, angka, teks |
 | F1 | Migrasi: `kb_potongan` + `cari_kb`, `saldo_koin`/`mutasi_koin` + fungsi, `percakapan_amin`/`pesan_amin`, `panduan_fitur`, check `pemakaian_ai.fitur`, `mirip_soal` | `pnpm db:reset && pnpm db:tes` lulus dengan uji pgTAP baru (koin serentak, RLS, cascade, unduh data) |
 | F2 | `pnpm amin:kb`; `logika.ts` (permintaan, penyaring, prompt, pemeriksa, biaya) + vitest | uji unit tiap aturan bagian 8 dan 11 lulus |
 | F3 | `index.ts` + bundel engine/konten; contoh berangka | fungsi lokal menjawab kumpulan uji serangan 100% sesuai harapan |
 | F4 | Klien: ketersediaan, kartu konteks, pintu, panel, menu sorot, jawaban, `packages/data` | uji unit `aminTersedia` (semua rute soal = salah) dan kartu (tanpa nama); diverifikasi di browser laptop + 375 px sesuai mockup |
 | F5 | Halaman Percakapan AMIN, jempol, saldo/riwayat koin, isi awal panduan fitur | diverifikasi di browser; panduan ditinjau pemilik |
-| F6 | Pilot terbatas | ukuran sukses riset bagian 9 dipantau 2 minggu |
+| F6 | Hitung-hitungan: pilih penyedia (uji 30 pertanyaan + biaya per jawaban dari `pemakaian_ai`), tetapkan `TOKEN_PER_KOIN` dan `JATAH_HARIAN`, teks kebijakan privasi bagian AI | pemilik menyetujui penyedia, angka, teks |
+| F7 | Pilot terbatas | ukuran sukses riset bagian 9 dipantau 2 minggu |
 
-Deploy produksi (migrasi, secret, fungsi) hanya oleh pemilik, per langkah, seperti G3.
+Selama F1–F5 fungsi dijalankan **lokal** dengan penyedia uji dan data contoh (bukan data pengguna), sehingga pilihan
+penyedia dan angka koin bisa ditunda ke F6. Konstanta koin memakai angka sementara sampai F6.
+Deploy produksi (migrasi, secret, fungsi) hanya oleh pemilik, per langkah, seperti G3, dan baru setelah F6 + syarat bagian 12.
 
 ## 15. Masih terbuka
-1. Penyedia final, `TOKEN_PER_KOIN`, `JATAH_HARIAN` (F0).
-2. Teks konsultan dan daftar akhir pemicu `perluAhli` (pemilik).
+1. Penyedia final, `TOKEN_PER_KOIN`, `JATAH_HARIAN` (F6, setelah hitung-hitungan).
+2. Tinjauan pemilik atas draf pemicu dan teks arahan ke ahli (8a).
 3. Ambang `mirip_soal` (disetel dari kumpulan uji).
-4. Cek regulasi koin sebelum top up dibuka (G8, konsultan hukum).
+4. Top up: penyedia pembayaran dan harga paket (G8).
