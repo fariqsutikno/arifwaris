@@ -1,4 +1,5 @@
 import { beforeEach, expect, test, vi } from 'vitest';
+import { daftarModul, daftarPelajaran } from '../konten/sumber';
 import {
   bacaPelajaranSelesai, bacaProgresBelajar, bacaProgresLatihan, bacaRekorPaket, bacaSkorPaket, catatLatihan, resetProgresBelajar, simpanSkorPaket,
   tandaiPelajaranSelesai,
@@ -11,6 +12,19 @@ test('pelajaran selesai tercatat dengan waktu', () => {
   tandaiPelajaranSelesai('ashabah-1');
   expect(bacaPelajaranSelesai()).toEqual(new Set(['ashabah-1']));
   expect(bacaProgresBelajar()['ashabah-1']).toEqual({ pelajaranSlug: 'ashabah-1', selesai: true, diubahPada: '2026-09-27T10:00:00.000Z' });
+});
+
+// F5: kurikulum jadi 15 modul, tetapi progres berbasis slug; slug pelajaran lama tidak boleh berubah.
+test('progres tersimpan dengan slug lama tetap terbaca dan cocok ke pelajaran di 15 modul', () => {
+  localStorage.setItem('arif-waris:progres-belajar', JSON.stringify({
+    '1-1-apa-itu-faraidh': { pelajaranSlug: '1-1-apa-itu-faraidh', selesai: true, diubahPada: WAKTU_LAMA },
+    '5-1-hajb': { pelajaranSlug: '5-1-hajb', selesai: true, diubahPada: WAKTU_LAMA },
+  }));
+  const selesai = bacaPelajaranSelesai();
+  expect(selesai).toEqual(new Set(['1-1-apa-itu-faraidh', '5-1-hajb']));
+  const slug = new Set(daftarPelajaran().map(pelajaran => pelajaran.slug));
+  for (const lama of selesai) expect(slug.has(lama)).toBe(true);
+  expect(daftarModul().map(modul => modul.nomor)).toEqual(Array.from({ length: 15 }, (_, indeks) => indeks + 1));
 });
 
 test('latihan: jumlah coba bertambah, jawaban & benar terakhir disimpan', () => {

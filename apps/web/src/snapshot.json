@@ -5084,11 +5084,7 @@
    "isi": {
     "nomor": 1,
     "judul": "Pengantar",
-    "ringkas": "Apa itu faraidh dan apa yang dibereskan sebelum harta dibagi",
-    "ar": {
-     "judul": "مقدمة",
-     "ringkas": "ما الفرائض وما الذي يقدم قبل قسمة المال"
-    }
+    "ringkas": "Apa itu faraidh, harta yang dibereskan dulu, dan peta besar alurnya"
    },
    "refs": [],
    "versiTerbit": 41
@@ -5101,12 +5097,8 @@
    "revisiId": "ed5685db-516b-4e0b-afcb-7a9993731fe5",
    "isi": {
     "nomor": 2,
-    "judul": "Siapa ahli waris",
-    "ringkas": "Rukun, syarat, sebab, penghalang, dan daftar ahli waris",
-    "ar": {
-     "judul": "من هم الورثة",
-     "ringkas": "الأركان والشروط والأسباب والموانع وقائمة الورثة"
-    }
+    "judul": "Siapa yang mewarisi",
+    "ringkas": "Rukun, syarat, sebab, penghalang, dan daftar ahli waris"
    },
    "refs": [],
    "versiTerbit": 42
@@ -5119,12 +5111,8 @@
    "revisiId": "12f6d891-7385-4e88-b195-e20e0b2d58eb",
    "isi": {
     "nomor": 3,
-    "judul": "Bagian pasti (furudh)",
-    "ringkas": "Enam bagian dalam Al-Qur'an dan siapa pemiliknya",
-    "ar": {
-     "judul": "الأنصبة المقدرة (الفروض)",
-     "ringkas": "الفروض الستة في القرآن ومن يستحقها"
-    }
+    "judul": "Bagian pasti",
+    "ringkas": "Enam bagian pasti dan siapa pemiliknya"
    },
    "refs": [],
    "versiTerbit": 43
@@ -5137,12 +5125,8 @@
    "revisiId": "f102a102-af31-4d71-a1e6-51664132d5f6",
    "isi": {
     "nomor": 4,
-    "judul": "Sisa (ashabah)",
-    "ringkas": "Yang mengambil sisa, jenis-jenisnya, dan urutannya",
-    "ar": {
-     "judul": "الباقي (العصبة)",
-     "ringkas": "من يأخذ الباقي وأنواعه وترتيبه"
-    }
+    "judul": "Ashabah",
+    "ringkas": "Yang mengambil sisa, jenis-jenisnya, dan urutannya"
    },
    "refs": [],
    "versiTerbit": 44
@@ -5155,12 +5139,8 @@
    "revisiId": "428bd38b-e2e4-4268-945c-5c55b9af63b4",
    "isi": {
     "nomor": 5,
-    "judul": "Penghalang (hajb)",
-    "ringkas": "Ahli waris yang terhalang atau berkurang bagiannya",
-    "ar": {
-     "judul": "الحجب",
-     "ringkas": "الوارث المحجوب أو الذي ينقص نصيبه"
-    }
+    "judul": "Hajb",
+    "ringkas": "Ahli waris yang tergeser atau berkurang bagiannya"
    },
    "refs": [],
    "versiTerbit": 45
@@ -5173,12 +5153,8 @@
    "revisiId": "5af585d1-5ee9-420d-8fe5-cb1bb0349e52",
    "isi": {
     "nomor": 6,
-    "judul": "Kakek & saudara",
-    "ringkas": "Muqasamah dan akdariyyah",
-    "ar": {
-     "judul": "الجد والإخوة",
-     "ringkas": "المقاسمة والأكدرية"
-    }
+    "judul": "Menghitung",
+    "ringkas": "Penyebut bersama, 'aul, dan radd"
    },
    "refs": [],
    "versiTerbit": 46
@@ -5191,12 +5167,8 @@
    "revisiId": "92ee2199-3e12-47d0-ac11-0444a474b773",
    "isi": {
     "nomor": 7,
-    "judul": "Menghitung",
-    "ringkas": "Ashlul mas'alah, 'aul, dan radd",
-    "ar": {
-     "judul": "الحساب",
-     "ringkas": "أصل المسألة والعول والرد"
-    }
+    "judul": "Tashih",
+    "ringkas": "Supaya bagian tiap orang menjadi bilangan bulat"
    },
    "refs": [],
    "versiTerbit": 47
@@ -5209,12 +5181,8 @@
    "revisiId": "22ea7182-4069-4547-8ad6-cd0897dbb2dd",
    "isi": {
     "nomor": 8,
-    "judul": "Tashih",
-    "ringkas": "Supaya bagian tiap orang jadi bilangan bulat",
-    "ar": {
-     "judul": "التصحيح",
-     "ringkas": "ليصير نصيب كل واحد عددا صحيحا"
-    }
+    "judul": "Dari saham ke rupiah",
+    "ringkas": "Pembagian nominal, takharuj, dan satu kasus utuh"
    },
    "refs": [],
    "versiTerbit": 48
@@ -5227,12 +5195,8 @@
    "revisiId": "d2cadddf-c025-4b2f-9f37-8fed0bd6307d",
    "isi": {
     "nomor": 9,
-    "judul": "Pembagian nominal",
-    "ringkas": "Dari saham ke rupiah",
-    "ar": {
-     "judul": "القسمة بالمبالغ",
-     "ringkas": "من السهام إلى الروبية"
-    }
+    "judul": "Kasus-kasus bernama",
+    "ringkas": "Al-'Umariyyatain dan Al-Musyarrakah"
    },
    "refs": [],
    "versiTerbit": 49
@@ -5245,15 +5209,81 @@
    "revisiId": "26baecd5-15b8-4c44-ba58-a4ed5995208a",
    "isi": {
     "nomor": 10,
-    "judul": "Munasakhat",
-    "ringkas": "Ahli waris wafat sebelum harta dibagi",
-    "ar": {
-     "judul": "المناسخات",
-     "ringkas": "موت الوارث قبل قسمة التركة"
-    }
+    "judul": "Kakek dan saudara",
+    "ringkas": "Muqasamah, Al-Mu'addah, dan Al-Akdariyyah"
    },
    "refs": [],
    "versiTerbit": 50
+  },
+  {
+   "entriId": "2787dee9-b61c-4ff5-939a-e210cf7f0917",
+   "jenis": "modul",
+   "slug": "11",
+   "urutan": 11,
+   "revisiId": "79c40462-3921-47ea-ab97-743d9aa7349c",
+   "isi": {
+    "nomor": 11,
+    "judul": "Munasakhat",
+    "ringkas": "Ahli waris wafat sebelum harta dibagi"
+   },
+   "refs": [],
+   "versiTerbit": 215
+  },
+  {
+   "entriId": "53807714-fb70-4bf9-ae23-daa245004396",
+   "jenis": "modul",
+   "slug": "12",
+   "urutan": 12,
+   "revisiId": "d59e0b47-55a9-4436-bb72-4122eb14afac",
+   "isi": {
+    "nomor": 12,
+    "judul": "Dzawil arham",
+    "ringkas": "Kerabat di luar ashabul furudh dan ashabah, dan metode tanzil"
+   },
+   "refs": [],
+   "versiTerbit": 216
+  },
+  {
+   "entriId": "02b4fa8e-2d60-47e5-a078-1ad04e56f3eb",
+   "jenis": "modul",
+   "slug": "13",
+   "urutan": 13,
+   "revisiId": "3b1f56f1-49eb-4236-98d8-95c04a24544c",
+   "isi": {
+    "nomor": 13,
+    "judul": "Prinsip ketidakpastian dan haml",
+    "ringkas": "Memperkirakan dan menahan bagian, janin dalam kandungan"
+   },
+   "refs": [],
+   "versiTerbit": 217
+  },
+  {
+   "entriId": "d80f108a-52b6-4f2a-bad4-cd448214ff2e",
+   "jenis": "modul",
+   "slug": "14",
+   "urutan": 14,
+   "revisiId": "b0fc5c12-2ade-4aca-8a6b-ce4c9583ccf0",
+   "isi": {
+    "nomor": 14,
+    "judul": "Mafqud, khuntsa, dan gharqa",
+    "ringkas": "Orang hilang, khuntsa, dan wafat bersamaan"
+   },
+   "refs": [],
+   "versiTerbit": 218
+  },
+  {
+   "entriId": "d319df0c-5bda-40b1-b705-c12bfe3c1cfa",
+   "jenis": "modul",
+   "slug": "15",
+   "urutan": 15,
+   "revisiId": "e923871d-2e27-4cb6-ac60-082950ca9af9",
+   "isi": {
+    "nomor": 15,
+    "judul": "Kasus khusus lain",
+    "ringkas": "Murtad, anak li'an dan anak zina, anak temuan"
+   },
+   "refs": [],
+   "versiTerbit": 219
   },
   {
    "entriId": "39b498f6-d719-4b78-ab11-8aa63920e92c",

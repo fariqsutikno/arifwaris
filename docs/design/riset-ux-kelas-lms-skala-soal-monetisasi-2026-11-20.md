@@ -673,14 +673,17 @@ Acuan bentuk: kerangka CEFR memakai enam level A1–C2 dengan deskriptor "dapat 
 ini adalah **keputusan pedagogis yang wajib divalidasi tim keilmuan** (bukan aturan fikih, tetapi tetap tidak dikarang
 sendiri).
 
-| Level | Kriteria (dapat …) | Cakupan bab KB (USULAN, validasi tim keilmuan) |
+| Level | Kriteria (dapat …) | Cakupan modul kurikulum (keputusan pemilik 2026-11-25) |
 |---|---|---|
-| **A1** | mengenali ahli waris dan bagian pasti (furudh) pada kasus sederhana tanpa hajb rumit | 03, 04 |
-| **A2** | menentukan ashabah dan hajb dengan benar | 05, 06 |
-| **B1** | menghitung asal masalah, 'aul, dan radd; menangani masalah khusus furudh | 07, 09 |
-| **B2** | melakukan tashih; menyelesaikan jadd wal ikhwah | 08, 10 |
-| **C1** | menyelesaikan munasakhat dan dzawil arham | 12, 14 |
-| **C2** | menyelesaikan kasus khusus (haml, mafqud, khuntsa, gharqa) | 13a–13d |
+| **A1** | memahami alur, mengenali ahli waris, dan bagian pasti (furudh) pada kasus sederhana | modul 1–3 |
+| **A2** | menentukan ashabah dan hajb dengan benar | modul 4–5 |
+| **B1** | menghitung asal masalah, 'aul, radd, tashih, dan mengubah saham ke rupiah | modul 6–8 |
+| **B2** | menyelesaikan kasus bernama dan kakek bersama saudara | modul 9–10 |
+| **C1** | menyelesaikan munasakhat dan dzawil arham | modul 11–12 |
+| **C2** | menyelesaikan kasus ketidakpastian dan kasus khusus (haml, mafqud, khuntsa, gharqa, murtad, li'an, laqith) | modul 13–15 |
+
+Pemetaan lama (usulan berbasis bab KB) diganti peta modul di atas; nomor modul dari `docs/materi-kit/kerangka-kurikulum.md`.
+Belum ada pemetaan level di kode aplikasi (fitur level belum dibangun), jadi tidak ada konstanta yang diganti.
 
 **Indikator** (fungsi murni atas kejadian yang dinilai server, USULAN):
 - Pelajar berada di level L bila **semua topik level ≤ L** minimal **Intermediate** dan **≥ 70% topik level L**
