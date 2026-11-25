@@ -122,7 +122,7 @@ export interface TabelMasalah {
 // ─── Jejak: tiap keputusan sebagai data (dinarasikan di packages/explain) ─────
 
 export type { Nisab };
-export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'munasakhat' | 'dzawilArham' | 'taqdir';
+export type Tahap = 'tirkah' | 'derivasi' | 'mawani' | 'hajb' | 'furudh' | 'ashabah' | 'ashl' | 'klasifikasi' | 'tashih' | 'distribusi' | 'sisaHak' | 'munasakhat' | 'dzawilArham' | 'taqdir';
 /** Saham vs ru'us (inkisar) dan sisa zawjiyyah vs ashl radd hanya memakai FPB: habis / tawafuq / tabayun (bab 9.4, 10.3). */
 export type HubunganInkisar = 'habis' | 'tawafuq' | 'tabayun';
 
@@ -181,6 +181,9 @@ export type LangkahJejak = { tahap: Tahap; refs: string[] } & (
       raddiyyah: { saham: Record<IdKelompok, bigint>; ashl: bigint };
       hasil: bigint }
   | { jenis: 'TASHIH'; dasar: bigint; juzSahm: bigint; hasil: bigint }
+  // Tahap 6b bab 11.3 [KH]: sisa hak setelah sebagian harta diterima di muka; refs R11-5 + KH.
+  | { jenis: 'SISA_HAK'; perOrang: Record<IdOrang, { nominal: Uang; sudahDiterima: Uang; sisaHak: Uang }>;
+      sisaKas: Uang; sisaLainnya: Uang; kelebihan: IdOrang[]; kasKurang: boolean }
   | { jenis: 'DISTRIBUSI'; idOrang: IdOrang; saham: bigint; dariTashih: bigint; besaran: Uang }
   // Bab 12.3: saham mayit berikutnya di jami'ah sejauh ini vs mas'alah-nya (tanpa tadakhul).
   | { jenis: 'MUNASAKHAT'; mayit: IdOrang; saham: bigint; masalah: bigint; hubungan: HubunganInkisar;

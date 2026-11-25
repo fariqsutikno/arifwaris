@@ -4,7 +4,7 @@
 // Saham/ashl/tashih tidak disentuh. Kelebihan dan kas kurang hanya DITAMPILKAN: KB tidak punya aturan pengembalian [R11-1].
 
 import type { Uang } from '@waris/math';
-import type { HasilEngine, IdOrang, Pertanyaan } from '../types.js';
+import type { HasilEngine, IdOrang, LangkahJejak, Pertanyaan } from '../types.js';
 
 type HasilOk = Extract<HasilEngine, { status: 'OK' }>;
 type PerluInput = Extract<HasilEngine, { status: 'PERLU_INPUT' }>;
@@ -20,6 +20,7 @@ export interface SisaHak {
   kelebihan: IdOrang[];
   /** Σ sisa hak positif > sisa kas: akibat kelebihan, tidak dibagi ulang diam-diam. */
   kasKurang: boolean;
+  jejak: LangkahJejak[];
 }
 
 export function hitungSisaHak(hasil: HasilOk, tirkahBersih: Uang, sudahDiterima: Record<IdOrang, Uang>): SisaHak | PerluInput {
@@ -39,7 +40,9 @@ export function hitungSisaHak(hasil: HasilOk, tirkahBersih: Uang, sudahDiterima:
   // Invarian: apa yang masih dibagi + sisa lainnya = harta yang masih ada.
   const jumlahSisaHak = jumlah(Object.values(perOrang).map(orang => orang.sisaHak));
   if (jumlahSisaHak + sisaLainnya !== sisaKas) throw new Error('Invarian sisa hak dilanggar: Σ sisaHak + sisaLainnya ≠ sisaKas');
-  return { status: 'OK', perOrang, sisaKas, sisaLainnya, kelebihan, kasKurang: sisaPositif > sisaKas };
+  const kasKurang = sisaPositif > sisaKas;
+  const jejak: LangkahJejak[] = [{ tahap: 'sisaHak', refs: ['R11-5', 'KH'], jenis: 'SISA_HAK', perOrang, sisaKas, sisaLainnya, kelebihan, kasKurang }];
+  return { status: 'OK', perOrang, sisaKas, sisaLainnya, kelebihan, kasKurang, jejak };
 }
 
 function ambilNominal(hasil: HasilOk): Record<IdOrang, Uang> {
