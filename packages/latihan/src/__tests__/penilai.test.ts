@@ -187,3 +187,24 @@ describe('tangga bantuan: aksi petunjuk dan bukaKolom', () => {
     expect(nilaiBantuan({ aksi: 'petunjuk', bantuan: { idKolom: 'karangan', tingkat: 1 } })).toMatchObject({ ok: false, kode: 'KOLOM_TIDAK_ADA' });
   });
 });
+
+describe('bantuan (tangga bantuan)', () => {
+  const bantuan = (aksi: string, isi: unknown, mode = 'latihan') => baca({ ...dasar, mode, aksi, bantuan: isi });
+  test('petunjuk butuh tingkat 1|2; bukaKolom tanpa tingkat', () => {
+    expect(kode(bantuan('petunjuk', { idKolom: 'bagian', tingkat: 2 }))).toBe('OK');
+    expect(kode(bantuan('petunjuk', { idKolom: 'bagian' }))).toBe('BANTUAN_TIDAK_SAH');
+    expect(kode(bantuan('petunjuk', { idKolom: 'bagian', tingkat: 3 }))).toBe('BANTUAN_TIDAK_SAH');
+    expect(kode(bantuan('bukaKolom', { idKolom: 'bagian' }))).toBe('OK');
+    expect(kode(bantuan('bukaKolom', { idKolom: 'bagian', tingkat: 1 }))).toBe('BANTUAN_TIDAK_SAH');
+  });
+  test('bantuan wajib untuk aksinya, terlarang untuk aksi lain dan untuk Ujian', () => {
+    expect(kode(baca({ ...dasar, aksi: 'petunjuk' }))).toBe('BANTUAN_WAJIB');
+    expect(kode(bantuan('buka', { idKolom: 'bagian' }))).toBe('BANTUAN_TIDAK_SESUAI_AKSI');
+    expect(kode(bantuan('petunjuk', { idKolom: 'bagian', tingkat: 1 }, 'ujian'))).toBe('BANTUAN_HANYA_LATIHAN');
+  });
+  test('kolom karangan ditolak; kolom nyata dinilai tanpa hasil', () => {
+    const nilai = (idKolom: string) => { const b = baca({ ...dasar, aksi: 'bukaKolom', bantuan: { idKolom } }); return b.ok ? nilaiKiriman(b.kiriman, soal, 'uji') : b; };
+    expect(nilai('zzz')).toMatchObject({ ok: false, kode: 'KOLOM_TIDAK_ADA' });
+    expect(nilai('bagian')).toMatchObject({ ok: true, penilaian: { hasilKolom: null, benarSemua: false } });
+  });
+});
