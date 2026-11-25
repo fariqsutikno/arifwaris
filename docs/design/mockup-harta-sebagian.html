@@ -1,0 +1,87 @@
+<!doctype html><html lang="id"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mockup: harta sebagian sudah diserahkan</title>
+<style>
+:root{--ink:#17201c;--mute:#5b655f;--bg:#f6f3e7;--card:#fff;--line:#cfd8cf;--pri:#0d4a3f;--warn:#8a4b00;--warnbg:#fff3e0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif;padding:24px 16px 80px}
+main{max-width:640px;margin:auto}h1{font-size:22px;margin:0 0 4px}.lead{color:var(--mute);margin:0 0 8px;font-size:14px}
+.label{font-size:13px;font-weight:600;color:var(--mute);margin:32px 0 8px}
+.layar{background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:18px}
+h2{margin:0 0 12px;font-size:20px;line-height:1.3;font-weight:600}
+ul.pilih{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.opsi{display:flex;gap:12px;align-items:center;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;cursor:pointer}
+.opsi:has(input:checked){border-color:var(--pri);outline:2px solid var(--pri);outline-offset:1px}
+.opsi input{accent-color:var(--pri);width:20px;height:20px;flex:none}
+.opsi b{font-weight:600;font-size:17px;display:block;line-height:1.3}.opsi small{display:block;color:var(--mute);font-size:14px}
+.orang{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.orang h3{margin:0 0 2px;font-size:17px;font-weight:600}.orang .bagian{color:var(--mute);font-size:14px;margin-bottom:10px}
+.orang label.f{display:block;font-size:13px;font-weight:600;color:var(--mute);margin-bottom:4px}
+.rp{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:10px;padding:8px 12px;background:#fff}
+.rp span{color:var(--mute)}.rp input{border:0;outline:0;font:inherit;width:100%;background:none}
+.rp:focus-within{border-color:var(--pri)}
+.jenis{display:grid;gap:6px;margin-top:10px;font-size:15px}.jenis label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.jenis input{accent-color:var(--pri);margin-top:4px}
+.aksi{display:flex;gap:18px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.utama{background:var(--pri);color:#fff;border:0;border-radius:12px;padding:12px 22px;font:inherit;font-weight:600;cursor:pointer}
+a.tautan{color:var(--pri);font-size:15px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1.5px solid var(--line);border-radius:14px;overflow:hidden;font-size:15px}
+th,td{padding:10px 12px;text-align:right;border-bottom:1px solid var(--line)}th:first-child,td:first-child{text-align:left}
+th{font-size:13px;color:var(--mute);font-weight:600;background:#fbfaf3}tr:last-child td{border-bottom:0}
+td.sisa{font-weight:700;color:var(--pri)}td.lebih{font-weight:700;color:var(--warn)}
+.catatan{display:flex;gap:10px;margin-top:12px;padding:12px 14px;border-radius:12px;background:var(--warnbg);color:var(--warn);font-size:14px}
+.catatan svg{flex:none;margin-top:2px}.info{background:#eaf3ef;color:var(--pri)}
+.kecil{color:var(--mute);font-size:13px;margin-top:10px}
+</style>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 11v5M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+<symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 3 2 20h20L12 3zM12 10v4M12 17h.01" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</defs></svg>
+<main>
+<h1>Mockup 7b: sebagian harta sudah diserahkan</h1>
+<p class="lead">Contoh kasus: Almarhum meninggalkan suami, ibu, dan ayah. Tirkah bersih Rp 120.000.000 (bagian: suami 60 jt, ibu 20 jt, ayah 40 jt). Isian di layar 2 dan 3 bisa diubah dan hasilnya ikut berubah.</p>
+
+<div class="label">Layar 1 · Pintu (pilihan kelima ditambahkan)</div>
+<div class="layar"><h2>Sejak Almarhum wafat, apakah hartanya sudah dibagi?</h2>
+<ul class="pilih">
+<li><label class="opsi"><input type="radio" name="pintu"><div><b>Belum, baru saja wafat</b><small>Beberapa bulan terakhir</small></div></label></li>
+<li><label class="opsi"><input type="radio" name="pintu"><div><b>Belum, sudah bertahun-tahun</b><small>Misalnya rumah masih ditempati</small></div></label></li>
+<li><label class="opsi"><input type="radio" name="pintu"><div><b>Sudah pernah dibagi</b><small>Semua bagian sudah diserahkan</small></div></label></li>
+<li><label class="opsi"><input type="radio" name="pintu" checked><div><b>Sebagian sudah diserahkan</b><small>Ada yang sudah menerima, sisanya belum</small></div></label></li>
+<li><label class="opsi"><input type="radio" name="pintu"><div><b>Tidak tahu</b><small>Kami tanyakan tiap orang</small></div></label></li></ul></div>
+
+<div class="label">Layar 2 · Siapa yang sudah menerima?</div>
+<div class="layar"><h2>Siapa yang sudah menerima sebagian harta, dan berapa?</h2>
+<p class="lead">Kosongkan bagi yang belum menerima. Isi total harta awal di langkah sebelumnya: <b>Rp 120.000.000</b>, termasuk yang sudah diserahkan.</p>
+<div id="orang"></div>
+<div class="aksi"><button class="utama" onclick="location.hash='#hasil'">Hitung sisa</button><a class="tautan" href="#">Kembali</a></div>
+<p class="kecil">Rumah yang hanya ditempati bersama belum dihitung sebagai sudah diterima. Untuk barang, isi nilai rupiah yang disepakati sekarang.</p></div>
+
+<div class="label" id="hasil">Layar 3 · Hasil</div>
+<div class="layar"><h2>Sisa yang masih harus diserahkan</h2>
+<table><thead><tr><th>Ahli waris</th><th>Bagian</th><th>Sudah diterima</th><th>Masih diterima</th></tr></thead><tbody id="tbody"></tbody></table>
+<div id="catatan"></div>
+<div class="aksi"><a class="tautan" href="#">Lihat cara hitungnya</a><a class="tautan" href="#">Ubah isian</a></div></div>
+</main>
+<script>
+const TIRKAH=120e6,P=[{n:'Suami',b:60e6,d:30e6},{n:'Ibu',b:20e6,d:0},{n:'Ayah',b:40e6,d:0}];
+const rp=v=>'Rp '+Math.abs(v).toLocaleString('id-ID');
+const wadah=document.getElementById('orang');
+P.forEach((p,i)=>{wadah.insertAdjacentHTML('beforeend',`<div class="orang"><h3>${p.n}</h3><div class="bagian">Bagian menurut faraidh ${rp(p.b)}</div>
+<label class="f" for="d${i}">Sudah menerima</label><div class="rp"><span>Rp</span><input id="d${i}" inputmode="numeric" value="${p.d?p.d.toLocaleString('id-ID'):''}" placeholder="0"></div>
+<div class="jenis"><label><input type="radio" name="j${i}" value="bagian" checked><span>Ini bagian warisannya yang diserahkan lebih dulu</span></label>
+<label><input type="radio" name="j${i}" value="lain"><span>Bukan, ini hibah dari Almarhum atau pinjaman</span></label></div></div>`)});
+const ikon=(id)=>`<svg width="20" height="20"><use href="#${id}"/></svg>`;
+function hitung(){
+ let tb='',cat='',total=0,lebih=[];
+ P.forEach((p,i)=>{
+  const d=+(document.getElementById('d'+i).value.replace(/\D/g,''))||0,jenis=document.querySelector(`[name=j${i}]:checked`).value;
+  p.dipakai=jenis==='bagian'?d:0;p.lain=jenis==='lain'&&d>0;total+=p.dipakai;
+  const sisa=p.b-p.dipakai,lb=sisa<0;if(lb)lebih.push(p.n);
+  tb+=`<tr><td>${p.n}</td><td>${rp(p.b)}</td><td>${p.dipakai?rp(p.dipakai):'-'}</td><td class="${lb?'lebih':'sisa'}">${lb?'Kelebihan '+rp(sisa):rp(sisa)}</td></tr>`});
+ const kas=TIRKAH-total;
+ if(total>TIRKAH)cat+=`<div class="catatan">${ikon('i-warn')}<div>Jumlah yang sudah diterima melebihi total harta. Periksa lagi isian.</div></div>`;
+ else{cat+=`<div class="catatan info">${ikon('i-info')}<div>Harta yang masih ada untuk dibagi: <b>${rp(kas)}</b>.</div></div>`;
+  if(lebih.length)cat+=`<div class="catatan">${ikon('i-warn')}<div>${lebih.join(', ')} menerima lebih dari bagiannya. Kami hanya menampilkan angkanya; cara menyelesaikan kelebihan perlu disepakati keluarga atau lewat pengadilan.</div></div>`;
+  if(P.some(p=>p.lain))cat+=`<div class="catatan info">${ikon('i-info')}<div>Hibah dan pinjaman punya aturan sendiri yang belum kami dukung, jadi tidak memotong bagian. Bagian faraidh di atas tetap dihitung dari harta awal.</div></div>`}
+ document.getElementById('tbody').innerHTML=tb;document.getElementById('catatan').innerHTML=cat}
+document.addEventListener('input',hitung);hitung();
+</script></html>
