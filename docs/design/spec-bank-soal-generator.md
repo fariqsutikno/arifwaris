@@ -103,7 +103,7 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
 | G2 | Penyapu `biasa` + kuota + `pnpm bank:bangun --kering` (cetak statistik per tingkat/label) | statistik masuk akal; tanpa duplikat |
 | G3 | Keluarga lanjutan: munasakhat 2–4 mayit, gharqa, mafqud, khuntsa, haml, dzawil arham | tiap keluarga punya sampel teruji engine |
 | G4 | Tabel `bank_soal` + migrasi + RLS + `bank:bangun` sungguhan + `cariSoal` | pencarian per label mengembalikan kode acak deterministik |
-| G5 | Layar soal dari kode bank (termasuk soal berkas) + pemakaian di Latihan | soal bank bisa dikerjakan dan dinilai |
+| G5 | Layar soal dari kode bank (termasuk soal berkas) + pemakaian di Latihan | soal bank bisa dikerjakan dan dinilai (selesai 2026-11-27, kecuali XP di server) |
 | G6 | `docs/soal-kit/` untuk Codex: pilihan ganda | (terpisah, setelah G5) |
 
 ### Catatan implementasi G1 (2026-11-26)
@@ -232,6 +232,27 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
   (memori + klien tiruan) dan `bank-supabase.test.ts` (integrasi lokal, dilewati tanpa `SUPABASE_URL`); `scripts/bank-tulis.test.ts` (batch, idempoten, turunan kolom).
 - Belum: tidak ada versi bank (isi lama tidak otomatis dibuang bila sapuan berikutnya berbeda; hapus manual `delete from bank_soal where versi_generator < n` atau kosongkan tabel); `modul` pada `cariSoal` satu angka saja (bukan daftar);
   bank belum dipakai layar (G5).
+
+### Catatan implementasi G5 (2026-11-27): soal bank di layar soal hitung dan Latihan
+
+- `packages/latihan/src/bank/soalBank.ts`: `soalHitungDariKode(kode, judul)` -> `SoalHitung` siap layar (kasus dikemas `bentuk: 'berkas'` untuk semua keluarga, jadi penilai server `nilaiKiriman`/`kasusDariSoal` memakai jalur yang sama dengan soal kurasi), `bisaDinilai(kasus)` (ada tabel isian atau tabel gharqa),
+  `REVISI_SOAL_BANK = 'bank'`. `muatSoal` kode generator sekarang memuat lewat `soalDariKode` tanpa basis data (`TIDAK_ADA` untuk kode rusak, `TIDAK_DIDUKUNG` bila engine menolak).
+- Dua perbaikan akar yang ditemukan lewat sapuan sampel (tiap keluarga, 1 dari 600 baris `.bank/`):
+  1. `packages/engine/src/taqdir.ts`: `hitungDunia` memakai `opsi.urutanWafat` yang kosong (`[]`, selalu dikirim `jalankan`) sebagai munasakhat tanpa mayit, sehingga `bagian` tak pernah disusun dan SEMUA soal mafqud/khuntsa/haml tampil tanpa tabel
+     (juga kasus mafqud/khuntsa/haml buatan pengguna di mode Belajar). Sekarang daftar kosong = jalur pipeline biasa (`urutanWafat?.length`), jalur yang sama dengan uji `susunMafqud`/`susunKhuntsa`/`susunHaml*`.
+  2. `susunTabelSoal` menolak tabel yang kunci kolom pilihannya tak ada di daftar pilihan (mis. bagian `3/8` pada muaddah dengan tashih): pelajar tak bisa memilih kunci itu, jadi soal tak mungkin benar. Dahulu lolos dan tak bisa dinilai.
+- Hasil sapuan sampel (jalur layar: engine OK -> tabel -> kunci engine dinilai benar lewat `nilaiKiriman`): biasa 99,0% bisa dinilai (sisanya `sisaKeluar` pasangan atau bagian di luar daftar pilihan), munasakhat ~80% (sisanya dzawil arham/sisa keluar di rantai),
+  gharqa ~91% (sisanya satu harta tanpa tabel), mafqud/khuntsa/haml 100%, dzawil arham ~6% (kebanyakan `tanpaJalurTunggal`: perantara ganda belum punya desain tabel).
+  Keputusan: soal yang tak bisa dinilai dilewati saat memilih soal (kode diurai di klien, jendela berikutnya dicari, maks 3 putaran x 10 kode); dzawil arham dikecualikan dari Latihan lewat `label.tanpa: ['dzawilArham']` (alasan di atas); kelompok gharqa di tengah rantai munasakhat memang tak dibangun generator (catatan G3), jadi tak ada yang terbuang.
+- Web: `apps/web/src/bank/` (`soalBank.ts` `cariSoal(kode)` = kurasi atau bank, judul = `ringkasKasus(kasus).judul` (susunan keluarga, bukan AI), `revisiIdSoal`; `cariSoalBank.ts` pencarian + penyaringan; `klienBank.ts` klien Supabase baca-saja tanpa sesi, tanpa env = nol
+  (produksi) atau bank memori dari `sampelDev.ts` (hanya saat `import.meta.env.DEV`, tidak ikut bundel; indeks `.bank/` tidak dibundel)). Layar: `layar/belajar/SoalBank.tsx` (panel "Soal acak dari bank": tingkat + modul, satu tombol utama "Mulai soal", pesan bila bank tak terjangkau/tak ada yang cocok; soal kurasi di daftar tetap ada).
+  Benih = `<pengguna atau tamu>:<waktu>` (kelas kelak memakai benih tugas). Alamat `#/latihan/soal/<kode>` terbuka lagi setelah muat ulang tanpa basis data. Hero soal bank tanpa nomor ("Soal dari bank"), judul tetap buta sebelum selesai.
+  Teks lewat `pnpm diksi:tambah` (9 kunci `latihan.bank_*` dan `latihan.soal_dari_bank`, terjemahan Arab belum).
+- Percobaan dan XP: kejadian percobaan soal bank dicatat lokal dengan `soalId` = kode generator dan `revisiSoal` = `bank`; progres latihan (benar/jumlah coba) lewat jalur yang sama dengan soal kurasi; bobot XP mengikuti tingkat soal bank (`bobotXpSoal`: 10/20/30) untuk penanda di kepala tabel.
+  **Belum di server**: edge function `catat-percobaan` dan `percobaan_soal.revisi_soal` (FK ke `revisi`) belum mengenal soal bank, jadi `antre()` tidak mengirim percobaan berkode generator (akan ditolak 400) dan XP soal bank belum masuk peringkat server. Butuh migrasi (revisi null + kolom tingkat/bobot) dan cabang `soalDariKode` di penilai; fase tersendiri.
+- Uji: `packages/latihan` `soalBank.test.ts` (12 sampel nyata: muat, jenis soal, berkas = kasus asli, kunci engine benar dan isian salah salah, 5 kode tanpa tabel ditolak, `muatSoal`); `apps/web` `soalBank.test.tsx` (cariSoal, pulih dari alamat, tabel + percobaan berkode generator,
+  antrean, panel dengan repo memori: benih sama = soal sama, filter, tak terhubung, semua kode tak bisa dinilai).
+- Belum: tombol "Soal berikutnya" untuk soal bank (kembali ke Latihan); pindah langsung dari satu alamat soal ke alamat soal lain tanpa lewat Latihan mempertahankan keadaan layar lama (perilaku yang sudah ada untuk soal kurasi).
 
 ## 9. Keputusan terbuka
 

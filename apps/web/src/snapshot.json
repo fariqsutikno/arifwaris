@@ -30326,6 +30326,69 @@
    "id": "Kembali ke pelajaran",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_judul",
+   "halaman": "latihan",
+   "id": "Soal acak dari bank",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_pengantar",
+   "halaman": "latihan",
+   "id": "Kasus buatan generator, jumlahnya tak terbatas. Pilih tingkat dan modul, lalu mulai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_modul",
+   "halaman": "latihan",
+   "id": "Modul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_semua_modul",
+   "halaman": "latihan",
+   "id": "Semua modul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_mulai",
+   "halaman": "latihan",
+   "id": "Mulai soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_mencari",
+   "halaman": "latihan",
+   "id": "Mencari soal...",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_tidak_terhubung",
+   "halaman": "latihan",
+   "id": "Bank soal belum bisa dijangkau. Periksa koneksimu, atau kerjakan soal dari daftar di bawah.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.bank_tidak_ada_cocok",
+   "halaman": "latihan",
+   "id": "Belum ada soal yang cocok dengan pilihan ini. Coba tingkat atau modul lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.soal_dari_bank",
+   "halaman": "latihan",
+   "id": "Soal dari bank",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

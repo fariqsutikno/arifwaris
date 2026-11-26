@@ -7,6 +7,8 @@ import type { KasusSoal } from '@waris/content';
 import type { KunciAhliWaris } from '@waris/engine';
 import { tambahAhliWaris } from './grafAhliWaris.js';
 import { adalahKodeGenerator } from './bank/kodeSoal.js';
+import { REVISI_SOAL_BANK } from './bank/soalBank.js';
+import { soalDariKode } from './bank/soalDariKode.js';
 import { bacaBerkasKasus, kasusBaru, type Kasus } from './kasus.js';
 
 /** Soal kurasi = slug ('H-01'); soal pola = `${slugPola}@${versi}#${benih}` (fase P4b, belum didukung); soal bank = kode generator 'G1-B-...' (bank/kodeSoal). */
@@ -50,10 +52,11 @@ export type HasilMuatSoal =
   | { ok: true; kasus: Kasus; revisiId: string }
   | { ok: false; alasan: 'TIDAK_ADA' | 'TIDAK_DIDUKUNG' };
 
-/** Soal pola → TIDAK_DIDUKUNG sampai fase P4b; soal bank → TIDAK_DIDUKUNG sampai G5 (layar memuatnya lewat soalDariKode); kasus yang tak terbaca juga TIDAK_DIDUKUNG (bukan melempar). */
+/** Soal pola → TIDAK_DIDUKUNG sampai fase P4b; soal bank diurai dari kodenya (tanpa `cari`); kasus yang tak terbaca juga TIDAK_DIDUKUNG (bukan melempar). */
 export function muatSoal(id: IdSoal, cari: PencarianSoal): HasilMuatSoal {
   const terbaca = bacaIdSoal(id);
   if (!terbaca) return { ok: false, alasan: 'TIDAK_ADA' };
+  if (terbaca.jenis === 'generator') return muatSoalBank(terbaca.kode);
   if (terbaca.jenis !== 'kurasi') return { ok: false, alasan: 'TIDAK_DIDUKUNG' };
   const ditemukan = cari.soal(terbaca.slug);
   if (!ditemukan) return { ok: false, alasan: 'TIDAK_ADA' };
@@ -62,4 +65,13 @@ export function muatSoal(id: IdSoal, cari: PencarianSoal): HasilMuatSoal {
   } catch {
     return { ok: false, alasan: 'TIDAK_DIDUKUNG' };
   }
+}
+
+const GALAT_KODE_TIDAK_ADA: ReadonlySet<string> = new Set(['BUKAN_KODE_GENERATOR', 'VERSI_TIDAK_DIKENAL', 'KELUARGA_TIDAK_DIKENAL', 'MUATAN_RUSAK', 'KASUS_TIDAK_SAH']);
+
+/** Kode yang tak bisa diurai = tak ada; kode sah yang engine-nya menolak = tidak didukung. */
+function muatSoalBank(kode: string): HasilMuatSoal {
+  const soal = soalDariKode(kode);
+  if (soal.ok) return { ok: true, kasus: { ...soal.kasus, jenisKasus: 'latihan' }, revisiId: REVISI_SOAL_BANK };
+  return { ok: false, alasan: GALAT_KODE_TIDAK_ADA.has(soal.galat) ? 'TIDAK_ADA' : 'TIDAK_DIDUKUNG' };
 }

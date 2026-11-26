@@ -12,6 +12,7 @@ import { DaftarSoalHitung } from './DaftarSoalHitung';
 import { SesiKuis } from './KuisKonsep';
 import { PapanKuis, RekomendasiKuis } from './PapanKuis';
 import { SoalAcak } from './SoalAcak';
+import { SoalBank } from './SoalBank';
 
 interface Props {
   tab: 'hitung' | 'kuis';
@@ -43,6 +44,7 @@ function HalamanLatihan({ tab, kasusSekarang, saatKerjakan }: Omit<Props, 'paket
         {tab === 'hitung' ? <SoalAcak kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} /> : <RekomendasiKuis />}
       </header>
       <div className="isi-latihan">
+        {tab === 'hitung' && <SoalBank kasusSekarang={kasusSekarang} saatKerjakan={saatKerjakan} />}
         <nav className="tab-latihan" aria-label={t('latihan.jenis_latihan')}>
           <a className="tab-tautan" href={tautanLatihan('hitung')} aria-current={tab === 'hitung' ? 'page' : undefined}>{t('umum.soal_hitung')}</a>
           <a className="tab-tautan" href={tautanLatihan('kuis')} aria-current={tab === 'kuis' ? 'page' : undefined}>{t('latihan.kuis_konsep')}</a>

@@ -4,6 +4,7 @@ export * from './bangunKasus.js';
 export * from './labelSoal.js';
 export * from './tingkatModul.js';
 export * from './soalDariKode.js';
+export * from './soalBank.js';
 export * from './penyapu.js';
 export * from './penyapuLanjutan.js';
 export * from './bangunBank.js';

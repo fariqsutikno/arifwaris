@@ -3,7 +3,7 @@
 // membengkak saat luring. Kegiatan (log_kegiatan) berkunci id-nya sendiri, jadi tidak pernah saling menimpa.
 // Menerima entri dari progres/tersimpan/preferensi; menyerahkannya ke RepositoriPengguna lewat kirimAntrean.
 
-import type { KejadianPercobaan } from '@waris/latihan';
+import { adalahKodeGenerator, type KejadianPercobaan } from '@waris/latihan';
 import { GalatPercobaan, type RepositoriBagikan, type Kegiatan, type Preferensi, type ProgresBelajar, type ProgresLatihan, type RepositoriPengguna, type RiwayatTersimpan } from '@waris/data';
 import { keKiriman } from './kiriman';
 import { bacaMentah, hapusMentah, simpanMentah } from '../penyimpanan';
@@ -43,6 +43,8 @@ export const aturPengirim = (kirim: (() => void) | null): void => { pengirim = k
 
 export function antre(entri: EntriAntrean): void {
   if (!akunLokal()) return;
+  // Server belum menilai soal bank (tak ada baris revisi); dikirim hanya akan ditolak. Tetap tercatat di perangkat (percobaan.ts).
+  if (entri.tabel === 'percobaan' && adalahKodeGenerator(entri.baris.soalId)) return;
   jumlahAntre++;
   const kunci = kunciEntri(entri);
   // Hapus & simpan tersimpan berbagi kunci: yang terakhir yang berlaku.

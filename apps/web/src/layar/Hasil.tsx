@@ -92,7 +92,7 @@ interface Props {
   hanyaBaca?: boolean | undefined;
   /** Ada = "Bagikan tautan" tampil di lembar Bagikan (hanya untuk pengguna yang sudah masuk). */
   bagikan?: RepositoriBagikan | undefined;
-  /** Posisi soal di daftar Latihan untuk hero soal (B8); `saatBerikutnya` kosong = soal terakhir. */
+  /** Posisi soal di daftar Latihan untuk hero soal (B8); `saatBerikutnya` kosong = soal terakhir; `jumlah` 0 = soal di luar daftar (bank), tanpa nomor. */
   urutanLatihan?: { nomor: number; jumlah: number; bab: string; judul: string; saatBerikutnya?: (() => void) | undefined } | undefined;
   /** Hasil soal selesai atau contoh materi: bisa disalin jadi kasus sendiri; soal selesai juga bisa dikerjakan ulang. */
   salinan?: { saatJadikanKasus: () => void; saatKerjakanUlang?: (() => void) | undefined; soal: boolean } | undefined;
@@ -387,7 +387,7 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
             ? <p className="lok-hero">{sedangMenebak ? t('hitung.soal') : t('hitung.pembahasan')}</p>
             : bolehUbah ? <button type="button" className="tautan-hero" onClick={() => kirim({ jenis: 'KE_LANGKAH', langkah: TOTAL_LANGKAH })}><Ikon nama="kembali" ukuran={18} />{t('hitung.langkah_periksa')}</button> : <span />}
           {adalahBelajar && urutanLatihan && adaTabelSoal && (
-            <span className="lok-hero">{t('umum.soal_nomor_dari_total', { nomor: angka(String(urutanLatihan.nomor)), total: angka(String(urutanLatihan.jumlah)) })} · {urutanLatihan.bab}{madzhab !== 'syafii' && ` · ${namaMadzhab(madzhab)}`}</span>
+            <span className="lok-hero">{urutanLatihan.jumlah > 0 && <>{t('umum.soal_nomor_dari_total', { nomor: angka(String(urutanLatihan.nomor)), total: angka(String(urutanLatihan.jumlah)) })} · </>}{urutanLatihan.bab}{madzhab !== 'syafii' && ` · ${namaMadzhab(madzhab)}`}</span>
           )}
           {!adalahBelajar && (
             <div className="kanan-bilah">
