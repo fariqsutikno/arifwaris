@@ -8,3 +8,4 @@ supabase/.branches/
 .env.*
 !.env.example
 supabase/functions/*/penilai.js
+.bank/
