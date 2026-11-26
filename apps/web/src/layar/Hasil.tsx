@@ -5,6 +5,7 @@
 // Kaki bingkai: catatan + tautan Ubah data · Reset skenario. Semua angka dari engine lewat ringkas().
 // PERLU_INPUT / TIDAK_DIDUKUNG / galat → kartu pesan, tanpa hasil setengah jadi.
 
+import { adalahSoalBank } from '../bank/soalBank';
 import { useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from 'react';
 import type { IdOrang, KunciAhliWaris, Ruleset } from '@waris/engine';
 import { TAUTAN_LAPORAN } from '../konten/umum';
@@ -308,7 +309,8 @@ function HasilOkLayar({ kasus, idSesi, tujuan, kirim, saatDikerjakan, soal, urut
   // Tanpa `soal` (kasus sendiri di mode belajar) tidak ada XP yang dipertaruhkan: tangga tetap ada, tanpa dialog hangus dan penanda XP.
   const bantuanTabel: BantuanTabel | undefined = adaTabelSoal ? {
     konteks: konteksDariTampil(tampil),
-    xp: { bobot: soal?.bobotXp ?? 0, masihAda: !!soal && !bacaProgresLatihan('hitung')[soal.id], hangus: xpHangus },
+    // Soal bank belum mendapat XP server (percobaannya hanya tercatat lokal), jadi tidak menjanjikan XP.
+    xp: soal && adalahSoalBank(soal.id) ? { bobot: 0, masihAda: false, hangus: false } : { bobot: soal?.bobotXp ?? 0, masihAda: !!soal && !bacaProgresLatihan('hitung')[soal.id], hangus: xpHangus },
     saatPetunjuk: (idKolom, tingkat) => { bantuanPercobaan.current.petunjuk = true; catat('petunjuk', { bantuan: { idKolom, tingkat } }); },
     saatBukaKolom: idKolom => {
       bantuanPercobaan.current.dibuka += 1;
