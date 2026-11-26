@@ -1,6 +1,6 @@
 # Spec: bank soal hitung hasil generator (2026-11-25)
 
-Status: draf, menunggu persetujuan pemilik. Melengkapi riset `riset-ux-kelas-lms-skala-soal-monetisasi-2026-11-20.md`
+Status: disetujui pemilik 2026-11-26 (usulan di bagian 9 dipakai sampai diputuskan lain). Melengkapi riset `riset-ux-kelas-lms-skala-soal-monetisasi-2026-11-20.md`
 bagian 5 (pola deterministik), dengan keputusan pemilik 2026-11-25 di bawah.
 
 ## 1. Maksud
