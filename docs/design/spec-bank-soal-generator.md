@@ -201,7 +201,8 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
   (R13-4, R13-15). Tidak satu pun `PERLU_INPUT` atau galat engine pada sapuan akhir (sebelum perbaikan janin sebagai orang tua, haml sempat 2.676 `PERLU_INPUT`: graf salah, bukan batas engine).
   Munasakhat setelah kuota: 2 mayit 32.038, 3 mayit 14.732, 4 mayit 13.230; keadaan 3 = 39.978, keadaan 1 = 10.138, keadaan 2 = 9.884; ikhtishar 7.672; menengah 28.457, sulit 31.543.
   Kuota tingkat sulit (bank penuh): sulit keluarga biasa 195.175 + lanjutan 156.543 = 351.718, jadi kekurangan 4.825 dari G2 terisi; bank penuh = 995.175 + 185.000 = 1.180.175 baris
-  (dasar 400.000, menengah 428.457, sulit 351.718). Sapuan penuh `semua` lihat butir berikut bila sudah dicatat.
+  (dasar 400.000, menengah 428.457, sulit 351.718). Angka ini diukur pada sapuan penuh `pnpm bank:bangun --kering` (semua keluarga, satu proses): kandidat 6.516.316; lolos engine 6.313.447 (biasa 5.681.071, tidak berubah dari G2);
+  dibuang TIDAK_DIDUKUNG 49.292 dan MAYIT_DILEWATI 153.577; setelah kuota 1.180.175 (biasa 995.175 + lanjutan 185.000); waktu 2.833 dtk (47 menit), puncak RSS 856 MB; modul 14 = 80.000, 11 = 60.000, 12 = 30.000, 13 = 15.000.
 - Yang belum atau tidak bisa:
   - Dua orang belum pasti sekaligus (mafqud/khuntsa/haml ganda): tidak dibangun; satu orang saja. Kombinatorik taqdir punya batas keras (`BATAS_DUNIA`) dan hasilnya `PERLU_INPUT`, jadi tidak dipaksakan.
   - Pilihan "tunggu kelahiran" (`pilihanJanin`, hasil `menunggu`) untuk haml tidak dikodekan: satu soal haml = satu hasil taqdir.
