@@ -75,7 +75,7 @@ describe('saring dan kuota', () => {
   test('porsi mendekati target pada stok cukup (water-filling dan bagi rata antar label)', () => {
     const stok = (tingkat: BarisBank['tingkat'], labelUtamaBaris: string, jumlah: number): BarisBank[] =>
       Array.from({ length: jumlah }, (_, urutan) => ({
-        kode: `${tingkat}-${labelUtamaBaris}-${urutan}`, label: [], tingkat, modul: [3], jumlahAhliWaris: 1, labelUtama: labelUtamaBaris,
+        kode: `${tingkat}-${labelUtamaBaris}-${urutan}`, label: [], tingkat, modul: [3], jumlahAhliWaris: 1, labelUtama: labelUtamaBaris, keluarga: 'biasa',
       }));
     const bahan = [
       ...stok('dasar', 'a', 500), ...stok('dasar', 'b', 10), ...stok('menengah', 'c', 900), ...stok('sulit', 'd', 900),

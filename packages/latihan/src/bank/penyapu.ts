@@ -18,14 +18,19 @@ export const BATAS_KUNCI_HADIR = 5;
 /** Kunci yang boleh berbilang dibatasi 0-3 orang; yang punya `maksimal` di checklist (istri 4, lainnya 1) memakai maksimalnya. */
 export const BATAS_JUMLAH_BERBILANG = 3;
 
-/** `batas` memotong aliran (uji cepat); tanpa batas = sapuan penuh. */
-export function* sapuKasusBiasa(batas = Infinity): Generator<KasusBiasa> {
+/** `kecilkanMaksimal`: kunci bermaksimal (istri 4) ikut dibatasi `jumlahBerbilangMaks`; keluarga biasa tidak memakainya. */
+export type RuangSapuan = { kunciHadirMaks: number; jumlahBerbilangMaks: number; kecilkanMaksimal?: true };
+const RUANG_BIASA: RuangSapuan = { kunciHadirMaks: BATAS_KUNCI_HADIR, jumlahBerbilangMaks: BATAS_JUMLAH_BERBILANG };
+
+/** `batas` memotong aliran (uji cepat); tanpa batas = sapuan penuh. `ruang` lebih kecil dipakai keluarga lanjutan sebagai dasar. */
+export function* sapuKasusBiasa(batas = Infinity, ruang: RuangSapuan = RUANG_BIASA): Generator<KasusBiasa> {
   let dihasilkan = 0;
   // Jumlah kunci di loop luar supaya `batas` kecil pun memuat kedua pewaris.
-  for (let kunciHadir = 1; kunciHadir <= BATAS_KUNCI_HADIR; kunciHadir++) {
+  for (let kunciHadir = 1; kunciHadir <= ruang.kunciHadirMaks; kunciHadir++) {
     for (const pewaris of ['L', 'P'] as const) {
       const daftarJenis = DAFTAR_JENIS_CHECKLIST.filter(jenis => !jenis.hanyaUntuk || jenis.hanyaUntuk === pewaris);
-      const jumlahMaks = daftarJenis.map(jenis => jenis.maksimal ?? BATAS_JUMLAH_BERBILANG);
+      const jumlahMaks = daftarJenis.map(jenis => (jenis.maksimal === undefined ? ruang.jumlahBerbilangMaks
+        : ruang.kecilkanMaksimal ? Math.min(jenis.maksimal, ruang.jumlahBerbilangMaks) : jenis.maksimal));
       for (const posisi of kombinasi(daftarJenis.length, kunciHadir)) {
         for (const jumlah of jumlahPerKunci(posisi.map(indeks => jumlahMaks[indeks]!))) {
           if (dihasilkan >= batas) return;
