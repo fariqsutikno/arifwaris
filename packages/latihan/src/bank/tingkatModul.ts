@@ -7,13 +7,31 @@ import type { Tingkat } from '@waris/content';
 const adaToken = (label: string[], token: string) => label.includes(token);
 const adaAwalan = (label: string[], awalan: string) => label.some(token => token.startsWith(awalan));
 
-/** Aturan pertama yang cocok menang, dari yang tersulit; tanpa yang cocok = dasar (hanya hajb, fardh, ashabah). */
+/** Kaidah hisab lanjutan: yang mengubah penyebut atau saham (bukan sekadar membagi sisa). */
+const KAIDAH_HISAB_LANJUTAN = ['aul', 'radd', 'tashih'];
+
+/** Jumlah kelompok inkisar dari token `inkisar:<n>`; 0 bila tidak ada. */
+const jumlahKelompokInkisar = (label: string[]) => Number(label.find(token => token.startsWith('inkisar:'))?.slice('inkisar:'.length) ?? 0);
+
+const BATAS_INKISAR_SULIT = 3;
+const BATAS_INKISAR_MENENGAH = 2;
+
+/**
+ * Aturan pertama yang cocok menang, dari yang tersulit (keputusan pemilik 2026-11-26).
+ * Sulit: dua kaidah hisab lanjutan sekaligus, atau inkisar >= 3 kelompok, atau kasus bernama.
+ * Menengah: satu kaidah ('aul, radd), tashih dengan inkisar >= 2, kakek bersama saudara, ashabah bil/ma'al ghair.
+ * Dasar: selebihnya (fardh, ashabah, hajb; tashih ringan 1 kelompok).
+ */
 const ATURAN_TINGKAT: ReadonlyArray<{ tingkat: Tingkat; kalau: (label: string[]) => boolean }> = [
-  { tingkat: 'sulit', kalau: label => adaToken(label, 'aul') && adaToken(label, 'tashih') },
+  {
+    tingkat: 'sulit',
+    kalau: label => KAIDAH_HISAB_LANJUTAN.filter(token => adaToken(label, token)).length >= 2
+      || jumlahKelompokInkisar(label) >= BATAS_INKISAR_SULIT || adaAwalan(label, 'bernama:'),
+  },
   {
     tingkat: 'menengah',
-    kalau: label => ['aul', 'radd', 'tashih', 'kakekSaudara', 'ashabahBilGhair', 'ashabahMaalGhair'].some(token => adaToken(label, token))
-      || adaAwalan(label, 'bernama:'),
+    kalau: label => ['aul', 'radd', 'kakekSaudara', 'ashabahBilGhair', 'ashabahMaalGhair'].some(token => adaToken(label, token))
+      || jumlahKelompokInkisar(label) >= BATAS_INKISAR_MENENGAH,
   },
 ];
 

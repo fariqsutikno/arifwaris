@@ -151,13 +151,25 @@ describe('label dari jejak engine untuk kasus bab 16', () => {
 });
 
 describe('tingkat dan modul', () => {
-  test('tingkat: dasar, menengah, sulit (aul + tashih)', () => {
+  test('tingkat: tiap cabang aturan (keputusan pemilik 2026-11-26)', () => {
+    // dasar: fardh/ashabah/hajb, boleh tashih ringan (1 kelompok)
     expect(tingkatSoal(['hajb:SAUDARA_KANDUNG', 'jumlahAhliWaris:4'])).toBe('dasar');
     expect(tingkatSoal(['jumlahAhliWaris:2'])).toBe('dasar');
+    expect(tingkatSoal(['tashih', 'inkisar:1'])).toBe('dasar');
+    // menengah: satu kaidah, tashih >= 2 kelompok, kakek-saudara, bil/ma'al ghair
     expect(tingkatSoal(['aul', 'aul:6>7'])).toBe('menengah');
     expect(tingkatSoal(['radd'])).toBe('menengah');
-    expect(tingkatSoal(['bernama:umariyyatain'])).toBe('menengah');
+    expect(tingkatSoal(['tashih', 'inkisar:2'])).toBe('menengah');
+    expect(tingkatSoal(['kakekSaudara'])).toBe('menengah');
+    expect(tingkatSoal(['ashabahBilGhair'])).toBe('menengah');
+    expect(tingkatSoal(['ashabahMaalGhair'])).toBe('menengah');
+    expect(tingkatSoal(['ashabahBilGhair', 'tashih', 'inkisar:1'])).toBe('menengah');
+    // sulit: dua kaidah hisab, inkisar >= 3, atau kasus bernama
     expect(tingkatSoal(['aul', 'aul:6>9', 'tashih', 'inkisar:1'])).toBe('sulit');
+    expect(tingkatSoal(['radd', 'tashih', 'inkisar:1'])).toBe('sulit');
+    expect(tingkatSoal(['tashih', 'inkisar:3'])).toBe('sulit');
+    expect(tingkatSoal(['bernama:umariyyatain'])).toBe('sulit');
+    expect(tingkatSoal(['bernama:muaddah', 'kakekSaudara'])).toBe('sulit');
   });
 
   test('modul: label → modul kurikulum, urut; tanpa kaidah lanjutan → bagian pasti dan ashabah', () => {

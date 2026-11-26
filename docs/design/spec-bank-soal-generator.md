@@ -121,8 +121,7 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
   Sisa pasangan yang keluar ke dzawil arham/baitul mal (`SISA_KELUAR`) juga belum punya token.
 - Turunan jejak: `inkisar:<n>` = jumlah langkah inkisar yang tidak `habis`; `kakekSaudara` dari `FARDH` alasan JADD_*, `ASHABAH.pilihanJadd`,
   atau `KASUS_KHUSUS` muaddah/akdariyyah; `jumlahAhliWaris` = orang bukan `bukanAhliWaris` di `statusOrang` (yang gugur ikut terhitung).
-- Tingkat (`ATURAN_TINGKAT`): sulit = `aul` + `tashih`; menengah = salah satu `aul`/`radd`/`tashih`/`kakekSaudara`/ashabah bil ghair/ma'al ghair/`bernama:*`;
-  selebihnya dasar. Bil ghair/ma'al ghair dimasukkan menengah atas keputusan implementasi (spec hanya menyebut "fardh+ashabah" sebagai dasar). Mudah disetel.
+- Tingkat (`ATURAN_TINGKAT`, diganti 2026-11-26 atas keputusan pemilik; lihat catatan G2 lanjutan): sulit = dua kaidah hisab lanjutan (`aul`/`radd`/`tashih`) sekaligus, atau `inkisar:3`+, atau `bernama:*`; menengah = salah satu `aul`/`radd`/`kakekSaudara`/ashabah bil ghair/ma'al ghair, atau `inkisar:2`+; selebihnya dasar (termasuk tashih 1 kelompok). Mudah disetel.
 - Modul (`ATURAN_MODUL`, 15 modul `docs/materi-kit/kerangka-kurikulum.md`): hajb → 5, ashabah bil/ma'al ghair → 4, aul/radd → 6, tashih → 7,
   umariyyatain/musyarrakah → 9, kakekSaudara/muaddah/akdariyyah → 10; tanpa kaidah lanjutan → [3, 4].
 - Uji: 38 kasus satu mayit (bab 16 + padanan 'aul bab 9 + pembanding) dengan label tulisan tangan; property bolak-balik dan tabrakan.
@@ -143,6 +142,21 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
   Sapuan `--batas 1500000` (kombinasi sampai sekitar 4 kunci, 502 dtk): lolos engine 1.493.268, dibuang 6.732 (semua `TIDAK_DIDUKUNG`); lolos per tingkat dasar 317.797 / menengah 1.133.343 / sulit 42.128;
   setelah kuota (target 1 juta) 759.925 = dasar 317.797 + menengah 400.000 + sulit 42.128. Jadi pada ruang ini porsi 40/40/20 belum tercapai: dasar dan sulit kekurangan stok, menengah (didominasi `inkisar:1/2`) berlebih.
   Mengejar porsi butuh ruang lebih besar (K=5, ikut menyumbang `aul`+`tashih`) atau keluarga G3, atau target/porsi disesuaikan (keputusan pemilik, §9).
+
+### Catatan G2 lanjutan (2026-11-26): aturan tingkat baru, pembangun mengalir, sapuan penuh
+
+- Aturan tingkat (keputusan pemilik): lihat butir Tingkat di atas; token nyata: `tashih`, `aul`, `radd`, `inkisar:<n>` (n = kelompok inkisar yang tidak habis), `bernama:*`.
+  Kasus bernama kini selalu sulit (sebelumnya menengah); tashih 1 kelompok kini dasar.
+- Pembangun mengalir `bangunBank` (`bangunBank.ts`): pass 1 menjalankan engine sekali per kandidat dan hanya mencatat hash kode, nomor profil label, nomor sapuan (12 byte/lolos, larik padat);
+  kuota dari ukuran kelompok (water-filling `bagiJatah`, dipakai bersama `terapkanKuota` versi memori); pass 2 mengulang sapuan tanpa engine untuk mengambil kode terpilih.
+  Hasil sama dengan `saringKandidat` + `terapkanKuota` (diuji pada `--batas` 3000, target 400 dan 100.000), kecuali dua kode berhash sama tepat di batas kuota: yang lebih awal disapu menang.
+  CLI mencetak progres tiap 100 ribu kandidat dan menulis JSONL bertahap.
+- Sapuan penuh nyata (`pnpm bank:bangun --kering`, 1 thread, 38 menit 15 dtk, puncak RSS 850 MB): kandidat 5.718.421; lolos engine 5.681.071; dibuang 37.350 (semua `TIDAK_DIDUKUNG`).
+  Lolos per tingkat: dasar 3.403.659 / menengah 2.082.237 / sulit 195.175. Setelah kuota (target 1 juta): 995.175 = dasar 400.000 + menengah 400.000 + sulit 195.175.
+  Jadi porsi 40/40/20 hampir tercapai; satu-satunya kekurangan: stok sulit 195.175 < 200.000 (selisih 4.825 tidak ditambal dari tingkat lain).
+  Modul setelah kuota: 5 = 937.082, 7 = 354.649, 4 = 328.012, 6 = 135.793, 10 = 108.993, 3 = 5.960, 9 = 2.855.
+  Stok terbesar per label utama: `dasar/inkisar:1` 1.529.864, `menengah/inkisar:2` 883.716, `menengah/inkisar:1` 614.078, `menengah/ashabahBilGhair` 405.950; label sulit kecil
+  (`sulit/inkisar:3` 48.277, `sulit/bernama:muaddah` 48.258, `sulit/aul:12>13` 29.159, `sulit/aul:6>7` 26.188) diambil semua.
 
 ## 9. Keputusan terbuka
 

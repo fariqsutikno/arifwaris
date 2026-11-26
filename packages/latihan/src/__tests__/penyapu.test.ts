@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import {
-  BATAS_KUNCI_HADIR, buatKodeSoal, hashKode, labelUtama, periksaKasusBiasa, PORSI_TINGKAT, sapuKasusBiasa,
+  bangunBank, BATAS_KUNCI_HADIR, buatKodeSoal, hashKode, labelUtama, periksaKasusBiasa, PORSI_TINGKAT, sapuKasusBiasa,
   saringKandidat, soalDariKode, terapkanKuota, type BarisBank,
 } from '../index.js';
 
@@ -98,5 +98,17 @@ describe('saring dan kuota', () => {
   test('hashKode stabil', () => {
     expect(hashKode('G1-B-2000000002000040')).toBe(hashKode('G1-B-2000000002000040'));
     expect(hashKode('a')).not.toBe(hashKode('b'));
+  });
+});
+
+describe('pembangun mengalir', () => {
+  test.each([[400], [100_000]])('hasil sama dengan saringKandidat + terapkanKuota (target %i)', target => {
+    const mengalir = bangunBank(sapuan, target);
+    const { lolos, kandidat, dibuang } = saringKandidat(sapuan());
+    const acuan = terapkanKuota(lolos, target);
+    expect(mengalir.kandidat).toBe(kandidat);
+    expect(mengalir.jumlahLolos).toBe(lolos.length);
+    expect(mengalir.dibuang).toEqual(dibuang);
+    expect(mengalir.terpilih).toEqual(acuan);
   });
 });
