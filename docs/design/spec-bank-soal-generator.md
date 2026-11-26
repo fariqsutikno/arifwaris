@@ -106,6 +106,27 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
 | G5 | Layar soal dari kode bank (termasuk soal berkas) + pemakaian di Latihan | soal bank bisa dikerjakan dan dinilai |
 | G6 | `docs/soal-kit/` untuk Codex: pilihan ganda | (terpisah, setelah G5) |
 
+### Catatan implementasi G1 (2026-11-26)
+
+- Letak: `packages/latihan/src/bank/` (`kodeSoal.ts`, `labelSoal.ts`, `tingkatModul.ts`, `soalDariKode.ts`), diekspor dari `index.ts`; uji `src/__tests__/bank.test.ts`.
+  `soal.ts`: `bacaIdSoal` mengenali bentuk ketiga `{ jenis: 'generator', kode }` (dicek lebih dulu karena kode G lolos pola slug kurasi);
+  `muatSoal` mengembalikan `TIDAK_DIDUKUNG` untuk kode generator sampai G5 (layar memuatnya lewat `soalDariKode`).
+- Muatan `G1-B`: 80 bit = pewaris (1 bit, P=1) + 25 kunci × 3 bit jumlah (0–7) + 4 bit penutup nol, ditulis 16 huruf Crockford.
+  Urutan 25 kunci = konstanta `URUTAN_KUNCI` (hanya boleh ditambah di akhir; kasus 1 bab 16 = `G1-B-2000000002000040` dibekukan di uji).
+  Kode yang bit penutupnya tidak nol ditolak, jadi satu kasus tepat satu kode. Keluarga lain (G3) cukup huruf baru; muatan `B` tidak berubah.
+  Jumlah di atas batas checklist (istri > 4, pasangan/ayah/ibu/kakek/nenek > 1), pasangan salah jenis kelamin, kasus kosong, dan
+  mu'tiq/mu'tiqah (belum bisa dibangun dari checklist) = `KASUS_TIDAK_SAH`. Harta soal bank = `HARTA_SOAL_BANK` (120 juta, satu nilai).
+- Token yang **tidak bisa diturunkan dari jejak**: `bernama:minbariyyah` (jejak hanya menandai umariyyatain, musyarrakah, akdariyyah, muaddah;
+  minbariyyah 24>27 hanya terlihat sebagai `aul:24>27`). Tidak dipancarkan sampai engine menambahkan penandanya.
+  Sisa pasangan yang keluar ke dzawil arham/baitul mal (`SISA_KELUAR`) juga belum punya token.
+- Turunan jejak: `inkisar:<n>` = jumlah langkah inkisar yang tidak `habis`; `kakekSaudara` dari `FARDH` alasan JADD_*, `ASHABAH.pilihanJadd`,
+  atau `KASUS_KHUSUS` muaddah/akdariyyah; `jumlahAhliWaris` = orang bukan `bukanAhliWaris` di `statusOrang` (yang gugur ikut terhitung).
+- Tingkat (`ATURAN_TINGKAT`): sulit = `aul` + `tashih`; menengah = salah satu `aul`/`radd`/`tashih`/`kakekSaudara`/ashabah bil ghair/ma'al ghair/`bernama:*`;
+  selebihnya dasar. Bil ghair/ma'al ghair dimasukkan menengah atas keputusan implementasi (spec hanya menyebut "fardh+ashabah" sebagai dasar). Mudah disetel.
+- Modul (`ATURAN_MODUL`, 15 modul `docs/materi-kit/kerangka-kurikulum.md`): hajb → 5, ashabah bil/ma'al ghair → 4, aul/radd → 6, tashih → 7,
+  umariyyatain/musyarrakah → 9, kakekSaudara/muaddah/akdariyyah → 10; tanpa kaidah lanjutan → [3, 4].
+- Uji: 38 kasus satu mayit (bab 16 + padanan 'aul bab 9 + pembanding) dengan label tulisan tangan; property bolak-balik dan tabrakan.
+
 ## 9. Keputusan terbuka
 
 1. Target jumlah awal (usulan 1 juta) dan kuota per tingkat (usulan dasar 40%, menengah 40%, sulit 20%).
