@@ -44,6 +44,14 @@ export const ARTI_TOKEN_LABEL: ReadonlyArray<{ bentuk: string; arti: string }> =
   { bentuk: 'dzawilArham:samaRata', arti: 'Bagian perantara dibagi sama rata kepada keturunannya' },
 ];
 
+/** Token sah = salah satu bentuk di ARTI_TOKEN_LABEL; bagian `<...>` cocok dengan nilai apa pun (tanpa titik dua atau `>`). */
+export function adalahTokenLabel(token: string): boolean {
+  return ARTI_TOKEN_LABEL.some(({ bentuk }) => {
+    const pola = bentuk.split(/<[^>]+>/).map(bagian => bagian.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[^:>]+');
+    return new RegExp(`^${pola}$`).test(token);
+  });
+}
+
 /** Token keluarga lanjutan (G3); soal tanpa salah satunya = keluarga biasa. */
 export const TOKEN_KELUARGA_LANJUTAN = ['munasakhat', 'gharqa', 'mafqud', 'khuntsa', 'haml', 'dzawilArham'] as const;
 export type KeluargaLanjutan = typeof TOKEN_KELUARGA_LANJUTAN[number];

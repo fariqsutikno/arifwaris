@@ -18,6 +18,7 @@
     "konten:pulihkan": "pnpm --filter @waris/skrip pulihkan",
     "diksi:tambah": "pnpm --filter @waris/skrip diksi:tambah",
     "materi:cek": "vite-node scripts/materi-cek.ts --",
+    "soal:cek": "vite-node scripts/soal-cek.ts --",
     "materi:impor": "vite-node scripts/materi-impor/main.ts --"
   },
   "devDependencies": {

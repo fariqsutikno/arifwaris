@@ -104,7 +104,7 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
 | G3 | Keluarga lanjutan: munasakhat 2–4 mayit, gharqa, mafqud, khuntsa, haml, dzawil arham | tiap keluarga punya sampel teruji engine |
 | G4 | Tabel `bank_soal` + migrasi + RLS + `bank:bangun` sungguhan + `cariSoal` | pencarian per label mengembalikan kode acak deterministik |
 | G5 | Layar soal dari kode bank (termasuk soal berkas) + pemakaian di Latihan | soal bank bisa dikerjakan dan dinilai (selesai 2026-11-27, kecuali XP di server) |
-| G6 | `docs/soal-kit/` untuk Codex: pilihan ganda | (terpisah, setelah G5) |
+| G6 | `docs/soal-kit/` untuk Codex: pilihan ganda | paket instruksi + pemeriksa `pnpm soal:cek` (selesai 2026-11-27; impor ke `soal_kuis` belum) |
 
 ### Catatan implementasi G1 (2026-11-26)
 
@@ -253,6 +253,14 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
 - Uji: `packages/latihan` `soalBank.test.ts` (12 sampel nyata: muat, jenis soal, berkas = kasus asli, kunci engine benar dan isian salah salah, 5 kode tanpa tabel ditolak, `muatSoal`); `apps/web` `soalBank.test.tsx` (cariSoal, pulih dari alamat, tabel + percobaan berkode generator,
   antrean, panel dengan repo memori: benih sama = soal sama, filter, tak terhubung, semua kode tak bisa dinilai).
 - Belum: tombol "Soal berikutnya" untuk soal bank (kembali ke Latihan); pindah langsung dari satu alamat soal ke alamat soal lain tanpa lewat Latihan mempertahankan keadaan layar lama (perilaku yang sudah ada untuk soal kurasi).
+
+### Catatan implementasi G6 (2026-11-27)
+
+- Paket instruksi: `docs/soal-kit/` (SKILL, konsep, pengecoh, format, kerangka 136 soal awal, gaya, daftar periksa, dua contoh jadi: modul 5 hajb dan modul 6 'aul, masing-masing 6 soal, angkanya dicocokkan engine). Kiriman Codex: `konten/soal/modul-NN/<paket>.md`.
+- Format: kepala (`paket`, `modul`, `sumber`) lalu blok `soal` bersintaks sama dengan materi (`bacaSoal` dipakai ulang; ia kini menerima kode `P-NN-NNN` selain `K-...`), ditambah isian pemeriksa yang dilepas `bacaPaketSoal` sebelum `bacaSoal`: `topik` (token label bank soal atau `konsep:<kata>`), `pewaris` + `ahli waris` + `harapan` atau `kode-bank`, dan `tanpa-kasus` (alasan angka bukan saham). Kode soal paket `P-<modul>-<nomor>`, unik se-repo, berbeda dari `K-` (materi) dan `G` (generator).
+- Pemeriksa dipecah mengikuti arah paket: `periksaPaketSoal` (`@waris/content/paketSoal.ts`: sintaks, rujukan KB, istilah, tautan pelajaran, kode, petunjuk jawaban, soal bermuatan angka wajib berkasus; memakai ulang `periksaMateri` untuk rujukan, istilah, dan teks mentah) dan `periksaAngkaPaketSoal` (`@waris/latihan/periksaAngkaSoal.ts`: topik cocok dengan label engine lewat `soalDariKode`, `harapan` sama dengan engine lewat `selisihHarapan` yang kini juga dipakai blok `kasus` materi). CLI `pnpm soal:cek <berkas|folder> [--json]` (`scripts/soal-cek.ts`, `soal-periksa.ts`).
+- Batas yang diketahui: angka kasus lanjutan (munasakhat, gharqa, mafqud, khuntsa, haml, dzawil arham) belum dicek, hanya label (soal lanjutan ditulis tanpa angka pecahan). Kebenaran fikih kalimat soal dan alasan di luar angka tetap tanggung jawab penulis dan peninjau. Pemeriksaan "satu soal satu kemampuan" dan kualitas pengecoh tidak otomatis.
+- Belum dikerjakan: impor ke `soal_kuis` dengan `sumber = 'paket:<nama>'` (meniru `scripts/materi-impor/`; parser sudah menghasilkan `SoalMateri` yang sama bentuknya); perluasan `harapan` ke keluarga lanjutan.
 
 ## 9. Keputusan terbuka
 

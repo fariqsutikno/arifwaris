@@ -5,7 +5,7 @@ export {
 } from './refs.js';
 export {
   bacaBlok, bacaBlokBerbaris, bacaPelajaran, bacaPelajaranBerbaris, bacaPotongan, semuaPotongan, nomorBagian, bacaDaftarAhliWaris, bacaHarapan,
-  TAHAP_ALUR, TAMPIL_PERAGA, POLA_KODE_SOAL_MATERI,
+  TAHAP_ALUR, TAMPIL_PERAGA, POLA_KODE_SOAL_MATERI, POLA_KODE_SOAL_PAKET,
   type Pelajaran, type Modul, type VersiArab, type Blok, type Potongan, type ContohKasus, type TahapAlur, type TampilPeraga,
   type NilaiBagian, type SimpulPeta, type KeadaanPeraga, type SoalMateri, type NomorBagian,
 } from './materi.js';
@@ -28,3 +28,4 @@ export {
   type CatatanKhi, type IdCatatanKhi, type JalanKeluar, type SumberKhi, type ButirPraktikPa, type Madzhab,
 } from './khi/catatanKhi.js';
 export { periksaMateri, kodeSoalGanda, type Temuan, type KonteksPeriksa, type HasilPeriksa } from './periksaMateri.js';
+export { bacaPaketSoal, periksaPaketSoal, kodeSoalPaketGanda, type PaketSoal, type ButirPaket, type KasusPaket, type HasilPeriksaPaket } from './paketSoal.js';

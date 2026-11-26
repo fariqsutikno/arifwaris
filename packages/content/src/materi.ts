@@ -594,11 +594,13 @@ function bacaMatriks(daftar: Baris[], nomor: number, galat: Galat): Blok {
 const TINGKAT_SOAL = ['dasar', 'menengah', 'sulit'] as const;
 const PILIHAN_SOAL = { min: 3, maks: 4 } as const;
 export const POLA_KODE_SOAL_MATERI = /^K-\d+\.\d+-\d+$/;
+/** Kode soal paket kiriman (docs/soal-kit): P-<modul>-<nomor>; bacaSoal menerima keduanya, paket memeriksa bentuk ketatnya. */
+export const POLA_KODE_SOAL_PAKET = /^P-\d{2}-\d{3}$/;
 
 function bacaSoal(daftar: Baris[], nomor: number, galat: Galat): Blok {
   const { isian, lain } = kumpulkanIsian(daftar, ['kode', 'tingkat', 'tanya', 'pembahasan', 'rujukan'], 'soal', galat);
   const kode = wajibIsi(isian, 'kode', 'soal', nomor, galat);
-  if (!POLA_KODE_SOAL_MATERI.test(kode)) throw galat(nomor, `blok soal: kode "${kode}" harus K-<modul>.<urutan>-<nomor>`);
+  if (!POLA_KODE_SOAL_MATERI.test(kode) && !POLA_KODE_SOAL_PAKET.test(kode)) throw galat(nomor, `blok soal: kode "${kode}" harus K-<modul>.<urutan>-<nomor> (materi) atau P-<modul>-<nomor> (paket soal)`);
   const tingkat = wajibIsi(isian, 'tingkat', 'soal', nomor, galat);
   if (!(TINGKAT_SOAL as readonly string[]).includes(tingkat)) throw galat(nomor, 'blok soal: tingkat harus dasar, menengah, atau sulit');
   const pilihan: Potongan[][] = [];
