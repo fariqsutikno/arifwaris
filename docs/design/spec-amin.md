@@ -3,7 +3,7 @@
 Dasar: `riset-ux-amin-2026-11-25.md` (keputusan pemilik bagian 8) dan `mockup-amin.html` revisi 2 (disetujui pemilik
 2026-11-25). Dokumen ini mengatur **perilaku, kontrak data, letak kode, uji, dan urutan kerja**. Bila riset dan spec
 berbeda, spec menang.
-Status: **draf, menunggu persetujuan pemilik**. Kode belum dimulai. Posisi roadmap: G5, setelah G4.
+Status: **disetujui pemilik 2026-11-26**; draf 8a (pemicu ahli) menunggu tinjauan. Kode belum dimulai. Posisi roadmap: G5, setelah G4.
 Tanda [Pilihan Claude] = keputusan teknis yang saya ambil tanpa ditanyakan; boleh dibalik pemilik.
 
 ---
