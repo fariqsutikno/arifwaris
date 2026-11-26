@@ -210,6 +210,29 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
   - Haml hanya sebagai anak atau saudara (kandung/seibu) dari ibu yang hidup; haml dari ibu penghubung (sudah wafat) tidak sah. Label haml hanya 3 kelompok kuota (tanpa mauquf, mauquf, mauquf + kelasD) karena engine tidak memberi peran bagi node janin.
   - Madzhab selain [SYF] dan mu'tiq/mu'tiqah tidak disapu. `bernama:minbariyyah` masih belum bisa diturunkan dari jejak (catatan G1).
 
+### Catatan implementasi G4 (2026-11-27): tabel, pencarian, pengisi
+
+- Migrasi `supabase/migrations/20261127000001_bank_soal.sql`: tabel `bank_soal` (`kode` pk, `versi_generator`, `keluarga`, `tingkat` check dasar|menengah|sulit, `modul smallint[]`, `label text[]`, `jumlah_mayit`,
+  `jumlah_ahli_waris`, `dibuat`, dan `urut bigint` = kolom turunan 64 bit pertama `md5(kode)`). Indeks: GIN `label`, GIN `modul`, btree `(keluarga, tingkat)`, btree `(urut, kode)`.
+  RLS: baca untuk semua (anon dan authenticated); tambah/ubah/hapus hanya `peran_saya() = 'admin'` (peran impor, sama dengan `scripts/pulihkan/masuk.ts`); `revoke` tulis dari anon.
+- Pencarian satu pintu: RPC `cari_soal(p_jumlah, p_benih, p_tingkat, p_modul, p_keluarga, p_label_semua, p_label_salah_satu, p_label_tanpa) returns setof text` (plpgsql, `stable`, `security invoker`, `search_path` tetap).
+  Tanpa `order by random()`: benih -> titik pada lingkaran `urut` (md5 benih), hasil = `p_jumlah` baris cocok pertama mulai titik itu, melingkar ke awal bila habis. Biaya ~ jumlah hasil, bukan jumlah baris bank.
+  Benih sama + isi tabel sama = kode sama; benih lain = jendela lain (soal bertetangga di ruang `urut` ikut terambil; `urut` tak berkorelasi dengan isi soal, jadi beragam). Kosong/null pada filter = tidak disaring.
+  Validasi di DB (`PT400`): `jumlah` 1..200, `benih` 1..200 karakter, tiap daftar label <= 50 token.
+- Pembungkus `packages/data` (`bank.ts` tipe + validasi `periksaCariSoal` + `RepositoriBankSoal`; `memori/bank.ts` `buatMemoriBank`; `supabase/bank.ts` `buatBankSupabase`): `cariSoal({ tingkat?, modul?, keluarga?, label?: { semua?, salahSatu?, tanpa? }, jumlah, benih })`
+  -> `string[]` dan `simpan(baris[])` (upsert per batch 2000, `onConflict: kode`). Validasi dijalankan di klien sebelum RPC (galat Indonesia) dan lagi di DB. Repo memori sama kontrak (filter, batas, deterministik) tetapi urutan acaknya
+  FNV-1a, bukan md5: kode tidak bisa dibandingkan antar implementasi. Belum digabung ke `buatRepositoriSupabase`; layar G5 cukup `buatBankSupabase(klien)`.
+- Pengisi: `pnpm bank:bangun` tanpa `--kering` = sapuan, berkas `.bank/indeks-*.jsonl`, lalu tulis ke tabel lewat peran impor (`scripts/bank-tulis.ts`, baca berkas baris demi baris, memori datar). `--dari-berkas` melewati sapuan dan menulis dari
+  berkas yang ada; karena upsert idempoten, jalan yang terputus diulang saja dengan `--dari-berkas` (batch yang sudah masuk hanya ditimpa). `--ke-lokal` mewajibkan `SUPABASE_URL` localhost/127.0.0.1; tujuan jarak jauh ditolak
+  kecuali `--ya`, dan pengecekan terjadi sebelum akun impor disiapkan. `jumlah_mayit` diturunkan dari label (`munasakhat:<n>`, `mayit:<n>`, selain itu 1), `versi_generator` dari awalan kode.
+- Terukur pada Supabase lokal: 1.180.175 baris (seluruh `.bank/`) masuk dalam 79 dtk lewat `--dari-berkas --ke-lokal`; ukuran tabel + indeks 448 MB (data nyata; 387 MB pada data tiruan sebelumnya). `cari_soal` lewat PostgREST:
+  filter `aul` 43 ms, `sulit` + modul 11 sebesar 11 ms, `radd` tanpa `aul` 7 ms (lima soal, anon); pada 1,18 juta baris tiruan di SQL langsung 2-50 ms termasuk filter yang tak ada hasilnya (48 ms).
+  Setiap kode hasil pencarian bisa diurai `uraiKodeSoal`.
+- Uji: pgTAP `supabase/tests/database/26_bank_soal.test.sql` (18 tes: RLS anon/penulis/admin, upsert, determinisme benih, melingkar, filter semua/salahSatu/tanpa/tingkat/modul/keluarga, batas jumlah); vitest `packages/data` `bank.test.ts`
+  (memori + klien tiruan) dan `bank-supabase.test.ts` (integrasi lokal, dilewati tanpa `SUPABASE_URL`); `scripts/bank-tulis.test.ts` (batch, idempoten, turunan kolom).
+- Belum: tidak ada versi bank (isi lama tidak otomatis dibuang bila sapuan berikutnya berbeda; hapus manual `delete from bank_soal where versi_generator < n` atau kosongkan tabel); `modul` pada `cariSoal` satu angka saja (bukan daftar);
+  bank belum dipakai layar (G5).
+
 ## 9. Keputusan terbuka
 
 1. Target jumlah awal (usulan 1 juta) dan kuota per tingkat (usulan dasar 40%, menengah 40%, sulit 20%).

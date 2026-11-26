@@ -8,9 +8,10 @@ import { buatRepositoriSupabase } from '@waris/data';
 
 const EMAIL_IMPOR = 'impor@arif-waris.local';
 
-export async function masukSebagaiImpor() {
+export async function masukSebagaiImpor(periksaTujuan?: (url: string) => void) {
   const { SUPABASE_URL: url, SUPABASE_ANON_KEY: anon, SUPABASE_SERVICE_ROLE_KEY: servis } = process.env;
   if (!url || !anon || !servis) throw new Error('SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY wajib diisi (di shell, atau salin scripts/.env.example jadi scripts/.env)');
+  periksaTujuan?.(url);
   const sandi = randomUUID();
   const admin = createClient(url, servis, { auth: { persistSession: false } });
   // listUsers berhalaman (bawaan 50): akun impor bisa ada di halaman lain. Galat Auth dilempar dengan pesannya.
@@ -26,5 +27,5 @@ export async function masukSebagaiImpor() {
   const klien = createClient(url, anon, { auth: { persistSession: false } });
   const { error } = await klien.auth.signInWithPassword({ email: EMAIL_IMPOR, password: sandi });
   if (error) throw error;
-  return { url, repo: buatRepositoriSupabase(klien) };
+  return { url, klien, repo: buatRepositoriSupabase(klien) };
 }
