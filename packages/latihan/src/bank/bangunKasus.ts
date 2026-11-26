@@ -57,18 +57,16 @@ function tambahkanAhliWaris(graf: GrafKeluarga, idMayit: IdOrang, tambahan: Ahli
 
 // ─── Mafqud, khuntsa, haml ────────────────────────────────────────────────────
 
-const KELOMPOK_BISA_KHUNTSA = ['keturunan', 'saudara'];
+/** [R13-9] khuntsa dan janin hanya di jihah keturunan/saudara: bukan pasangan dan bukan leluhur (janin tak mungkin ayah mayit). */
+const KELOMPOK_BISA_BELUM_PASTI = ['keturunan', 'saudara'];
 
 function tandaiBelumPasti(graf: GrafKeluarga, sasaran: Rujukan, jenis: 'mafqud' | 'khuntsa' | 'haml'): GrafKeluarga {
   const idOrang = idDari(graf, sasaran);
   const orang = graf.orang[idOrang]!;
   if (jenis === 'mafqud') return ubahOrang(graf, idOrang, { statusHidup: 'mafqud' });
-  if (jenis === 'khuntsa') {
-    // [R13-9] khuntsa hanya di jihah keturunan/saudara (bukan pasangan atau leluhur).
-    const kelompok = jenisChecklistDari(sasaran.kunci)?.kelompok;
-    if (!kelompok || !KELOMPOK_BISA_KHUNTSA.includes(kelompok)) throw new Error('khuntsa hanya di jihah keturunan atau saudara');
-    return ubahOrang(graf, idOrang, { khuntsa: 'diharapkanJelas' });
-  }
+  const kelompok = jenisChecklistDari(sasaran.kunci)?.kelompok;
+  if (!kelompok || !KELOMPOK_BISA_BELUM_PASTI.includes(kelompok)) throw new Error(`${jenis} hanya di jihah keturunan atau saudara`);
+  if (jenis === 'khuntsa') return ubahOrang(graf, idOrang, { khuntsa: 'diharapkanJelas' });
   // [R13-1] janin harus punya ibu yang masih hidup: ibunya yang mengandung.
   const ibu = orang.idIbu ? graf.orang[orang.idIbu] : undefined;
   if (!ibu || ibu.statusHidup !== 'hidup' || ibu.penghubung) throw new Error('janin butuh ibu yang masih hidup');

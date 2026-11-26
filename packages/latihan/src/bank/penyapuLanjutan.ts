@@ -28,7 +28,8 @@ export const SAPUAN_LANJUTAN = {
   munasakhat: [
     { ruang: { kunciHadirMaks: 3, jumlahBerbilangMaks: 2, kecilkanMaksimal: true }, anakTambahanMaks: 2, pembagi: 4 },
     { ruang: { kunciHadirMaks: 2, jumlahBerbilangMaks: 2, kecilkanMaksimal: true }, anakTambahanMaks: 1, pembagi: 4 },
-    { ruang: { kunciHadirMaks: 2, jumlahBerbilangMaks: 1, kecilkanMaksimal: true }, anakTambahanMaks: 1, pembagi: 4 },
+    // Tiga mayit tambahan butuh dasar dengan >= 3 orang: tiga kunci masing-masing satu orang.
+    { ruang: { kunciHadirMaks: 3, jumlahBerbilangMaks: 1, kecilkanMaksimal: true }, anakTambahanMaks: 1, pembagi: 100 },
   ],
   gharqa: [
     { ruang: { kunciHadirMaks: 3, jumlahBerbilangMaks: 2, kecilkanMaksimal: true }, anakTambahanMaks: 2, pembagi: 80 },

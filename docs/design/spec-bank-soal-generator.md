@@ -158,6 +158,57 @@ penyapu (skrip)  →  kandidat kasus  →  engine  →  saring  →  label  → 
   Stok terbesar per label utama: `dasar/inkisar:1` 1.529.864, `menengah/inkisar:2` 883.716, `menengah/inkisar:1` 614.078, `menengah/ashabahBilGhair` 405.950; label sulit kecil
   (`sulit/inkisar:3` 48.277, `sulit/bernama:muaddah` 48.258, `sulit/aul:12>13` 29.159, `sulit/aul:6>7` 26.188) diambil semua.
 
+### Catatan implementasi G3 (2026-11-27): keluarga lanjutan
+
+- Letak (`packages/latihan/src/bank/`): `kodeBiasa.ts` (isi lama `kodeSoal.ts`, tata letak bit `G1-B` tidak berubah), `kodeSoal.ts` (pintu `buatKodeSoal`/`uraiKodeSoal` semua keluarga),
+  `kodeLanjutan.ts` + `bitMuatan.ts` (muatan lanjutan), `bangunKasus.ts` (struktur → `Kasus`), `penyapuLanjutan.ts`, label di `labelSoal.ts`, tingkat/modul di `tingkatModul.ts`, kuota di `bangunBank.ts`
+  (`bangunBankDariKode`, `saringKode`). CLI: `pnpm bank:bangun --kering [--keluarga biasa|munasakhat|gharqa|mafqud|khuntsa|haml|dzawilArham|semua] [--batas n] [--target n]`,
+  indeks per keluarga `.bank/indeks-<keluarga>.jsonl`. Uji: `__tests__/bankLanjutan.test.ts`.
+- Kode: `G1-<huruf>-<muatan>`, huruf `M` munasakhat, `G` gharqa, `Q` mafqud, `K` khuntsa, `H` haml, `D` dzawilArham. Muatan = daftar (nilai, lebar bit) base32 Crockford; bit sisa dan slot tak terpakai wajib nol,
+  jadi satu kasus tepat satu kode (diuji). Urutan `URUTAN_KERABAT_JAUH` (keluarga D) hanya boleh ditambah di akhir, seperti `URUTAN_KUNCI`.
+  - **M/G (berantai)**: kasus biasa mayit pertama (76 bit, sama dengan `B`) + 1-3 mayit tambahan (gharqa 1-2): tiap mayit = salah satu ahli waris mayit pertama (kunci + urutan dalam kunci, orang sekunci diambil berurutan)
+    + ahli waris tambahan sendiri (pasangan 0/1, anak lk 0-3, anak pr 0-3, lewat pembangun checklist yang sama). Munasakhat: mayit tambahan masuk `urutanWafat` (total 2-4 mayit). Gharqa: mayit tambahan berstatus
+    `wafat` dalam `gharqa.anggota` bersama pewaris, harta tiap anggota = `HARTA_SOAL_BANK`, keadaan 2 bit (`serentak`, `terlupakan`, `berurutanTakDiketahui`, `tidakDiketahui`).
+  - **Q/K/H**: kasus biasa + satu ahli waris berstatus `mafqud` / `khuntsa: diharapkanJelas` / `dalamKandungan`. Khuntsa dan janin hanya di kelompok keturunan/saudara (janin tak mungkin ayah mayit; ibunya harus hidup).
+  - **D**: pewaris + pasangan 0/1 + 18 jenis kerabat jauh (cucu/keponakan dari jalur perempuan, anak saudari, bint akh, khal, khalah, 'ammah, paman seibu, jadd rahim, bint 'amm) masing-masing 0-2 orang,
+    dibangun dengan `tambahSaudara`/`pastikanOrangTua`/`tambahOrangBaru` yang ada; tidak ada kunci baru di engine. Hanya yang dinilai engine sebagai dzawil arham (`jenisSoalDari`) yang lolos.
+- Lolos = engine memberi hasil yang memang dituntut keluarganya: munasakhat `OK` tanpa `MUNASAKHAT_DILEWATI` (mayit yang tak dapat bagian dilewati [R12-1], jadi tak sebanyak yang tertulis di kode); gharqa `OK` atau `MAUQUF`
+  (`terlupakan` [SYF] = ditahan, label `ditahan`); mafqud/khuntsa/haml hasil taqdir `OK` dengan jenis cocok; dzawilArham `OK` dengan `tanzil`. Alasan dibuang dipisah: `TIDAK_DIDUKUNG`, `PERLU_INPUT`, `GALAT_ENGINE`,
+  `BUKAN_KELUARGA_INI`, `MAYIT_DILEWATI` (plus `KASUS_TIDAK_SAH` dari kode). Madzhab selalu [SYF] bawaan; haml memakai 4 taqdir [SYF] (diuji: daftar dunia <= 4, mitra ashabah janin = 0 [R13-15], tak ada model 6 taqdir).
+- Label dari jejak/hasil engine: `munasakhat`, `munasakhat:<n>` (= jumlah langkah di `daftarLangkah`), `keadaan:<1|2|3>` dan `ikhtishar` (dari `hasil.keadaan`/`hasil.ikhtishar`), kaidah tiap mas'alah (aul, radd, tashih, hajb:*, bernama:*; hitungan per mas'alah
+  `inkisar:*`/`jumlahAhliWaris:*` tidak digabung); `gharqa`, `gharqa:<keadaan>` (masukan kasus), `mayit:<n>`, `ditahan`; `mafqud|khuntsa|haml`, `dunia:<n>`, `sasaran:<KUNCI>` (peran yang ditetapkan engine; haml tidak punya
+  karena node janin tak punya peran di statusOrang), `mauquf`, `kelasD`; `dzawilArham`, `tanzil:<KUNCI>`, `dzawilArham:pasangan|duaJalur|samaRata`. Keadaan munasakhat 1/2/3 dan ikhtishar dipakai karena engine membedakannya.
+- Tingkat: munasakhat 2 mayit menengah (kecuali dua kaidah hisab = sulit), 3 mayit atau lebih sulit; gharqa, mafqud, khuntsa, haml, dzawilArham selalu sulit. Modul keluarga lanjutan hanya satu (tidak ikut modul kaidah di dalamnya,
+  supaya munasakhat berhajb tidak muncul di modul hajb): munasakhat 11, dzawilArham 12, haml 13, mafqud/khuntsa/gharqa 14.
+- Batas sapuan (`SAPUAN_LANJUTAN`): dasar = sapuan biasa dengan ruang kecil (kunci hadir dan jumlah per kunci, istri ikut dibatasi), lalu pengacak deterministik per nomor kandidat (`pembagi`) sebelum graf dibangun dan engine dijalankan.
+  Munasakhat 2/3/4 mayit: dasar (<=3 kunci, <=2 orang), (<=2 kunci, <=2 orang), (3 kunci masing-masing 1 orang), pembagi 4/4/100, anak tambahan <= 2/1/1; gharqa 2/3 anggota: pembagi 80; mafqud dan khuntsa: dasar <= 4 kunci,
+  pembagi 8; haml: dasar <= 4 kunci, tanpa pembagi (sebagian besar gugur sebelum engine karena ibu janin harus hidup); dzawilArham: <= 4 jenis kerabat, tanpa pembagi.
+- Kuota (`KUOTA_KELUARGA_LANJUTAN`, di luar target 1 juta keluarga biasa): munasakhat 60.000, gharqa 30.000, mafqud 30.000, khuntsa 20.000, haml 15.000, dzawilArham 30.000 (total 185.000). Alasan: tiap keluarga paling banyak 6% dari 1 juta supaya
+  tidak ada yang mendominasi, munasakhat terbesar karena ruangnya paling luas dan punya tiga jumlah mayit; di dalam keluarga jatah dibagi rata ke label utama dengan water-filling yang sama (label utama lanjutan = ciri jejak, mis.
+  `munasakhat:3/keadaan:2/tashih`, `mafqud/sasaran:AYAH/dunia:2/mauquf`). Stok haml (16.032) hanya sedikit di atas kuotanya; stok lain jauh di atas.
+- Angka nyata, tiap keluarga disapu sendiri (`--keluarga <nama>`, 1 thread, mesin dev; waktu = dua pass sapuan + engine):
+
+  | Keluarga | Kandidat | Lolos engine | Dibuang | Setelah kuota | Waktu | Puncak RSS |
+  |---|---|---|---|---|---|---|
+  | munasakhat | 385.776 | 223.501 | TIDAK_DIDUKUNG 8.698; MAYIT_DILEWATI 153.577 | 60.000 | 281,8 dtk | 355 MB |
+  | gharqa | 59.152 | 58.236 | TIDAK_DIDUKUNG 916 | 30.000 | 54,3 dtk | 314 MB |
+  | mafqud | 74.082 | 73.690 | TIDAK_DIDUKUNG 392 | 30.000 | 55,9 dtk | 310 MB |
+  | khuntsa | 60.819 | 60.449 | TIDAK_DIDUKUNG 370 | 20.000 | 52,5 dtk | 297 MB |
+  | haml | 17.598 | 16.032 | TIDAK_DIDUKUNG 1.566 | 15.000 | 157,6 dtk | 310 MB |
+  | dzawilArham | 200.468 | 200.468 | (tidak ada) | 30.000 | 106,8 dtk | 291 MB |
+
+  Alasan TIDAK_DIDUKUNG yang teramati pada sampel: munasakhat "tidak ada ahli waris; harta ke baitul mal" dan "kakek bersama saudari ashabah ma'al ghair belum dirinci KB bab 08"; haml "berbagi fardh sekelompok dengan janin belum diatur KB [SYF]"
+  (R13-4, R13-15). Tidak satu pun `PERLU_INPUT` atau galat engine pada sapuan akhir (sebelum perbaikan janin sebagai orang tua, haml sempat 2.676 `PERLU_INPUT`: graf salah, bukan batas engine).
+  Munasakhat setelah kuota: 2 mayit 32.038, 3 mayit 14.732, 4 mayit 13.230; keadaan 3 = 39.978, keadaan 1 = 10.138, keadaan 2 = 9.884; ikhtishar 7.672; menengah 28.457, sulit 31.543.
+  Kuota tingkat sulit (bank penuh): sulit keluarga biasa 195.175 + lanjutan 156.543 = 351.718, jadi kekurangan 4.825 dari G2 terisi; bank penuh = 995.175 + 185.000 = 1.180.175 baris
+  (dasar 400.000, menengah 428.457, sulit 351.718). Sapuan penuh `semua` lihat butir berikut bila sudah dicatat.
+- Yang belum atau tidak bisa:
+  - Dua orang belum pasti sekaligus (mafqud/khuntsa/haml ganda): tidak dibangun; satu orang saja. Kombinatorik taqdir punya batas keras (`BATAS_DUNIA`) dan hasilnya `PERLU_INPUT`, jadi tidak dipaksakan.
+  - Pilihan "tunggu kelahiran" (`pilihanJanin`, hasil `menunggu`) untuk haml tidak dikodekan: satu soal haml = satu hasil taqdir.
+  - Mayit tambahan selalu ahli waris langsung mayit pertama dan ahli waris tambahannya tidak ikut wafat (munasakhat bertingkat tiga generasi, kelompok gharqa di tengah rantai munasakhat, dan anggota gharqa yang tak sekerabat belum ada).
+  - Haml hanya sebagai anak atau saudara (kandung/seibu) dari ibu yang hidup; haml dari ibu penghubung (sudah wafat) tidak sah. Label haml hanya 3 kelompok kuota (tanpa mauquf, mauquf, mauquf + kelasD) karena engine tidak memberi peran bagi node janin.
+  - Madzhab selain [SYF] dan mu'tiq/mu'tiqah tidak disapu. `bernama:minbariyyah` masih belum bisa diturunkan dari jejak (catatan G1).
+
 ## 9. Keputusan terbuka
 
 1. Target jumlah awal (usulan 1 juta) dan kuota per tingkat (usulan dasar 40%, menengah 40%, sulit 20%).

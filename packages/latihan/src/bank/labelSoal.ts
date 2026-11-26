@@ -34,6 +34,7 @@ export const ARTI_TOKEN_LABEL: ReadonlyArray<{ bentuk: string; arti: string }> =
   { bentuk: 'khuntsa', arti: 'Ada ahli waris berkelamin ganda musykil (khuntsa)' },
   { bentuk: 'haml', arti: 'Ada ahli waris yang masih dalam kandungan (haml)' },
   { bentuk: 'dunia:<n>', arti: 'Banyaknya kemungkinan keadaan yang dihitung pada soal yang belum pasti' },
+  { bentuk: 'sasaran:<KUNCI>', arti: 'Jenis ahli waris yang belum pasti (hilang, khuntsa, atau janin)' },
   { bentuk: 'mauquf', arti: 'Ada bagian yang ditahan menunggu kepastian' },
   { bentuk: 'kelasD', arti: 'Ashabah yang berbagi dengan janin tidak diberi bagian sekarang' },
   { bentuk: 'dzawilArham', arti: 'Harta jatuh ke kerabat dzawil arham' },
@@ -109,8 +110,13 @@ export function labelGharqa(hasil: Extract<HasilGharqa, { status: 'OK' | 'MAUQUF
 
 /** Jumlah dunia, bagian ditahan, dan kelas D (mitra ashabah haml tidak diberi apa pun [R13-15]) dibaca dari hasil taqdir. */
 export function labelTaqdir(hasil: Extract<HasilTaqdir, { status: 'OK' }>, jenis: 'mafqud' | 'khuntsa' | 'haml'): string[] {
+  // Jenis ahli waris yang belum pasti, dari peran yang ditetapkan engine (bukan dari tebakan susunan).
+  const sasaran = Object.keys(hasil.daftarDunia[0]?.taqdir ?? {}).flatMap(id => {
+    const status = hasil.daftarDunia[0]!.statusOrang[id];
+    return status && 'peran' in status ? [`sasaran:${status.peran.kunci}`] : [];
+  });
   return urut([
-    jenis, `dunia:${hasil.daftarDunia.length}`,
+    jenis, `dunia:${hasil.daftarDunia.length}`, ...sasaran,
     ...(hasil.mauquf > 0n ? ['mauquf'] : []),
     ...(hasil.jejak.some(langkah => langkah.jenis === 'TAQDIR_PEMBERIAN' && langkah.alasan === 'kelasD') ? ['kelasD'] : []),
   ]);

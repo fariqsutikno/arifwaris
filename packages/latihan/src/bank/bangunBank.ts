@@ -64,8 +64,8 @@ function labelUtamaLanjutan(keluarga: KeluargaLanjutan, label: string[]): string
   switch (keluarga) {
     case 'munasakhat': return `${ciri('munasakhat:', 'keadaan:')}/${labelUtamaBiasa(label)}`;
     case 'gharqa': return `${ciri('gharqa:', 'mayit:')}/${labelUtamaBiasa(label)}`;
-    case 'dzawilArham': return `${keluarga}/${ciri('dzawilArham:')}/${labelUtamaBiasa(label)}`;
-    default: return `${keluarga}/${ciri('dunia:')}/${label.includes('mauquf') ? 'mauquf' : 'tanpaMauquf'}${label.includes('kelasD') ? '/kelasD' : ''}`;
+    case 'dzawilArham': return `${keluarga}/${ciri('dzawilArham:')}/${label.filter(token => token.startsWith('tanzil:')).map(token => token.slice('tanzil:'.length)).join('+') || '-'}`;
+    default: return `${keluarga}/${ciri('sasaran:', 'dunia:')}/${label.includes('mauquf') ? 'mauquf' : 'tanpaMauquf'}${label.includes('kelasD') ? '/kelasD' : ''}`;
   }
 }
 

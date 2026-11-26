@@ -124,10 +124,11 @@ describe('graf keluarga lanjutan', () => {
     expect(kasus.gharqa!.tirkah[idLain]!.kotor).toBe(kasus.tirkah.kotor);
   });
 
-  test('haml butuh ibu hidup; khuntsa bukan pasangan/leluhur; istri mayit tak dinikahkan lagi', () => {
+  test('haml butuh ibu hidup dan bukan leluhur; khuntsa bukan pasangan/leluhur; istri mayit tak dinikahkan lagi', () => {
     const dasar: KasusBiasa = { pewaris: 'L', ahliWaris: { ISTRI: 1, ANAK_LK: 1, AYAH: 1, SAUDARA_SEBAPAK: 1 } };
     expect(() => bangunKasusLanjutan({ keluarga: 'haml', dasar, sasaran: { kunci: 'ANAK_LK', urutan: 0 } })).not.toThrow();
     expect(() => bangunKasusLanjutan({ keluarga: 'haml', dasar, sasaran: { kunci: 'SAUDARA_SEBAPAK', urutan: 0 } })).toThrow();
+    expect(() => bangunKasusLanjutan({ keluarga: 'haml', dasar, sasaran: { kunci: 'AYAH', urutan: 0 } })).toThrow();
     expect(() => bangunKasusLanjutan({ keluarga: 'khuntsa', dasar, sasaran: { kunci: 'AYAH', urutan: 0 } })).toThrow();
     expect(() => bangunKasusLanjutan({ keluarga: 'khuntsa', dasar, sasaran: { kunci: 'ISTRI', urutan: 0 } })).toThrow();
     expect(() => bangunKasusLanjutan({ keluarga: 'munasakhat', dasar, mayit: [{ kunci: 'ISTRI', urutan: 0, tambahan: { pasangan: 1, anakLk: 0, anakPr: 0 } }] })).toThrow();
@@ -203,6 +204,10 @@ describe('titik blocked haml [SYF]', () => {
       if (!soal.ok) continue;
       const tampil = jalankan(soal.kasus);
       expect(tampil.jenis).toBe('taqdir');
+      // Janin bukan orang tua siapa pun.
+      const janin = Object.values(soal.kasus.graf.orang).filter(orang => orang.statusHidup === 'dalamKandungan');
+      expect(janin).toHaveLength(1);
+      expect(Object.values(soal.kasus.graf.orang).some(orang => orang.idAyah === janin[0]!.id || orang.idIbu === janin[0]!.id)).toBe(false);
       if (tampil.jenis !== 'taqdir' || tampil.hasil.status !== 'OK') throw new Error('harus OK');
       // [R13-20] [SYF] empat taqdir; [R13-15] mitra ashabah janin bernilai 0 di `diberikan`.
       expect(tampil.hasil.daftarDunia.length).toBeLessThanOrEqual(4);
