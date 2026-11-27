@@ -4,8 +4,8 @@
 // yang sama di fungsi transisi + RLS (supabase/migrations). Kalau salah satu diubah, ubah keduanya.
 import { wajibRef, type JenisKonten } from './skema.js';
 
-export type Peran = 'admin' | 'penulis' | 'reviewer';
-export type StatusRevisi = 'draf' | 'diajukan' | 'disetujui' | 'dikembalikan';
+export type Peran = 'admin' | 'penulis' | 'reviewer' | 'keilmuan';
+export type StatusRevisi = 'draf' | 'diajukan' | 'diperiksa' | 'disetujui' | 'dikembalikan';
 /** tarik: pembuat menarik kembali pengajuannya (diajukan → draf). terbitkan: admin menerbitkan draf tanpa antrean.
  * perbarui: pembuat (atau admin) mengganti isi ajuannya yang masih menunggu; tetap diajukan. */
 export type AksiEditorial = 'ajukan' | 'setujui' | 'kembalikan' | 'tarik' | 'terbitkan' | 'perbarui';

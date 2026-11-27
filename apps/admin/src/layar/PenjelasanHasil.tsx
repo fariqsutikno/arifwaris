@@ -29,7 +29,7 @@ const KASUS_CONTOH = [
   { id: 'aul', label: 'Suami, ibu, dan saudari kandung (bagian melebihi harta)', kasus: buatKasus('P', ['SUAMI', 'IBU', 'SAUDARI_KANDUNG']) },
   { id: 'radd', label: 'Ibu dan anak perempuan (ada sisa dikembalikan)', kasus: buatKasus('L', ['IBU', 'ANAK_PR']) },
 ] as const;
-const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', dikembalikan: 'Dikembalikan' };
+const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', diperiksa: 'Menunggu keilmuan', dikembalikan: 'Dikembalikan' };
 
 export function PenjelasanHasil() {
   const { repo, peran } = usePortal();

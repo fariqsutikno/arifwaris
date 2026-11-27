@@ -16,7 +16,7 @@ import { tulisRute } from '../rute';
 import { pesanGalat } from '../pesanGalat';
 
 const JENIS_BUAT_BARU: JenisKonten[] = ['materi', 'soal_kuis', 'soal_hitung', 'tanya_jawab', 'faq'];
-const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' } as const;
+const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer', keilmuan: 'Keilmuan' } as const;
 
 export function Beranda() {
   const { repo, sesi, peran } = usePortal();

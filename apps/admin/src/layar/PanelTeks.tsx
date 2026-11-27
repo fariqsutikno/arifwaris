@@ -17,7 +17,7 @@ import { usePortal } from '../repo';
 import { tulisRute } from '../rute';
 import { RiwayatDiksi } from './RiwayatDiksi';
 
-const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', dikembalikan: 'Dikembalikan' };
+const LABEL_STATUS: Record<StatusTeks, string> = { terbit: 'Terbit', draf: 'Draf', diajukan: 'Menunggu review', diperiksa: 'Menunggu keilmuan', dikembalikan: 'Dikembalikan' };
 const BATAS_HASIL_CARI = 50;
 export const kunciTeks = (sumber: { sumber: string; kunci: string }) => `${sumber.sumber}/${sumber.kunci}`;
 

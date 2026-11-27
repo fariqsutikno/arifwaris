@@ -17,7 +17,7 @@ export interface ButirAjuan {
   tujuan: { entriId: string } | { kunciTeks: string; id: string; ar: string | null };
 }
 
-const TAB_DARI_STATUS = { dikembalikan: 'perbaiki', diajukan: 'menunggu', disetujui: 'disetujui' } as const;
+const TAB_DARI_STATUS = { dikembalikan: 'perbaiki', diajukan: 'menunggu', diperiksa: 'menunggu', disetujui: 'disetujui' } as const;
 
 export function susunAjuan(konten: readonly AjuanKonten[], diksi: readonly RingkasanRevisiDiksi[]): ButirAjuan[] {
   const dariKonten = terbaruPer(konten, r => r.entriId).filter(r => !r.diabaikan).filter(bukanTerbitSendiri).flatMap((r): ButirAjuan[] => (r.status === 'draf' ? [] : [{

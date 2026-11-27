@@ -21,7 +21,7 @@ import { tulisRute, type Rute } from './rute';
 
 type KunciAktif = 'beranda' | 'review' | 'ajuan' | 'peran' | KunciMenu | null;
 const URUTAN_GRUP: GrupMenu[] = ['Belajar', 'Bank soal', 'Tanya jawab', 'Pustaka', 'Aplikasi'];
-const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer' } as const;
+const LABEL_PERAN = { admin: 'Admin', penulis: 'Penulis', reviewer: 'Reviewer', keilmuan: 'Keilmuan' } as const;
 
 export function menuAktif(rute: Rute, jenisEntri: JenisKonten | null): KunciAktif {
   switch (rute.layar) {

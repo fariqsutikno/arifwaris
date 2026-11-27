@@ -11,7 +11,7 @@ import { pesanGalat } from '../pesanGalat';
 import { usePortal } from '../repo';
 import { waktuRelatif } from '../ringkas';
 
-const LABEL_STATUS = { draf: 'Draf', diajukan: 'Menunggu review', disetujui: 'Disetujui', dikembalikan: 'Dikembalikan' } as const;
+const LABEL_STATUS = { draf: 'Draf', diajukan: 'Menunggu review', diperiksa: 'Menunggu keilmuan', disetujui: 'Disetujui', dikembalikan: 'Dikembalikan' } as const;
 
 export function RiwayatDiksi({ kunci, terbit, peran, saatBerubah }: {
   kunci: string; terbit: DiksiTerbit | null; peran: Peran; saatBerubah: () => void;

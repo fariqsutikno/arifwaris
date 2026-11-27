@@ -98,6 +98,7 @@ export function kalimatRevisi(r: RingkasanRevisi, namaDari: NamaDari): string {
   switch (r.status) {
     case 'draf': return `${pembuat} menyimpan draf (belum dikirim)`;
     case 'diajukan': return `${pembuat} mengirim perubahan untuk review`;
+    case 'diperiksa': return `${pemeriksa} memeriksa perubahan dari ${pembuat}; menunggu persetujuan keilmuan`;
     case 'disetujui': return r.diperiksaOleh === r.dibuatOleh ? `${pembuat} menerbitkan perubahan` : `${pemeriksa} menyetujui perubahan dari ${pembuat}`;
     case 'dikembalikan': return `${pemeriksa} mengembalikan perubahan dari ${pembuat}`;
   }
