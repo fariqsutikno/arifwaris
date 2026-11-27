@@ -12,6 +12,7 @@ import type {
   RepositoriPeringkat,
 } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
+import { buatBankSupabase } from './bank.js';
 import {
   keDiksiTerbit, keJejak, keProgresBelajar, keProgresLatihan, keRevisi, keRevisiDiksi, keRingkasanEntri, keRingkasanKunciDiksi,
   keRiwayat, keTerbitMentah, keBarisPercobaan,
@@ -351,5 +352,5 @@ export function buatRepositoriSupabase(klien: SupabaseClient) {
       return data as { hasil: HasilAi; sisaKuota: number };
     },
   };
-  return { konten, editorial, diksi, pengguna, akun, peringkat, bagikan, ai };
+  return { konten, editorial, diksi, pengguna, akun, peringkat, bagikan, ai, bank: buatBankSupabase(klien) };
 }

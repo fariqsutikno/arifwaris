@@ -138,7 +138,7 @@ function KartuReviewKuis({ butir, saatSelesai }: { butir: ButirKuis; saatSelesai
   );
 }
 
-function IsiSoal({ soal, refs }: { soal: SoalKuis; refs: readonly string[] }) {
+export function IsiSoal({ soal, refs }: { soal: SoalKuis; refs: readonly string[] }) {
   const rujukan = rujukanManusia(refs);
   return (
     <div className="space-y-4">

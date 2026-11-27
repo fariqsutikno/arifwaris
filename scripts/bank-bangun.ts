@@ -1,10 +1,12 @@
-// pnpm bank:bangun [--kering | --dari-berkas | --ke-lokal | --ya] [--keluarga <nama|semua>] [--batas <n>] [--target <n>]
+// pnpm bank:bangun [--kering | --dari-berkas | --kuis | --ke-lokal | --ya] [--keluarga <nama|semua>] [--batas <n>] [--target <n>]
 // Sapu keluarga (biasa, munasakhat, gharqa, mafqud, khuntsa, haml, dzawilArham; bawaan semua), saring lewat engine,
 // terapkan kuota, cetak statistik, dan tulis indeks lokal per keluarga ke .bank/indeks-<keluarga>.jsonl (folder di-gitignore).
 //   --kering       berhenti di berkas indeks, tidak menyentuh basis data.
 //   (tanpa --kering) lalu tulis berkas itu ke tabel bank_soal lewat peran impor (upsert per batch, idempoten).
 //   --dari-berkas  lewati sapuan, tulis langsung dari berkas yang sudah ada; cara melanjutkan jalan yang terputus.
 //   --ke-lokal     wajib Supabase lokal (SUPABASE_URL localhost/127.0.0.1); tanpa ini dan tanpa --ya, tujuan jarak jauh ditolak.
+//   --kuis         tanpa sapuan: muat .bank/indeks-kuis.jsonl (keluaran pnpm bank:kuis) sebagai bentuk 'kuis' (K5). Soalnya baru
+//                  tampil ke pelajar setelah tim keilmuan menyetujui aturan pengecohnya.
 // `--batas` memotong sapuan tiap keluarga (uji cepat); `--target` = target total keluarga biasa (lanjutan: KUOTA_KELUARGA_LANJUTAN).
 import { closeSync, mkdirSync, openSync, writeSync } from 'node:fs';
 import {
@@ -26,8 +28,9 @@ const SEMUA_KELUARGA = [KELUARGA_BIASA_NAMA, ...DAFTAR_KELUARGA_LANJUTAN];
 const keluargaOpsi = nilaiTeks('--keluarga') ?? 'semua';
 const kering = argumen.includes('--kering');
 const dariBerkas = argumen.includes('--dari-berkas');
-if ((kering && dariBerkas) || (keluargaOpsi !== 'semua' && !SEMUA_KELUARGA.includes(keluargaOpsi))) {
-  console.error(`Pakai: pnpm bank:bangun [--kering | --dari-berkas] [--ke-lokal | --ya] [--keluarga ${['semua', ...SEMUA_KELUARGA].join('|')}] [--batas n] [--target n]`);
+const kuis = argumen.includes('--kuis');
+if ((kering && dariBerkas) || (kuis && (kering || dariBerkas || argumen.includes('--keluarga'))) || (keluargaOpsi !== 'semua' && !SEMUA_KELUARGA.includes(keluargaOpsi))) {
+  console.error(`Pakai: pnpm bank:bangun [--kering | --dari-berkas | --kuis] [--ke-lokal | --ya] [--keluarga ${['semua', ...SEMUA_KELUARGA].join('|')}] [--batas n] [--target n]`);
   process.exit(1);
 }
 const keluargaDisapu = keluargaOpsi === 'semua' ? SEMUA_KELUARGA : [keluargaOpsi];
@@ -99,10 +102,9 @@ function sapuKeBerkas() {
 const BERKAS_INDEKS = (keluarga: string) => `.bank/indeks-${keluarga}.jsonl`;
 const HOST_LOKAL = ['localhost', '127.0.0.1', '[::1]'];
 
-async function tulisKeBasisData() {
+async function sambungBank() {
   const { masukSebagaiImpor } = await import('./pulihkan/masuk');
   const { buatBankSupabase } = await import('@waris/data');
-  const { tulisBerkasIndeks } = await import('./bank-tulis');
   // Cek tujuan sebelum akun impor disiapkan; env dimuat masuk.ts (shell menang atas scripts/.env).
   const periksaTujuan = (tujuan: string) => {
     const host = new URL(tujuan).hostname;
@@ -111,13 +113,28 @@ async function tulisKeBasisData() {
     if (!lokal && !argumen.includes('--ya')) throw new Error(`tujuan jarak jauh (${host}): ulangi dengan --ya bila memang sengaja`);
   };
   const { url, klien } = await masukSebagaiImpor(periksaTujuan);
-  const repo = buatBankSupabase(klien);
   console.log(`Menulis ke ${url}`);
+  return buatBankSupabase(klien);
+}
+
+async function tulisKeBasisData() {
+  const { tulisBerkasIndeks } = await import('./bank-tulis');
+  const repo = await sambungBank();
   for (const keluarga of keluargaDisapu) {
     const ditulis = await tulisBerkasIndeks(repo, BERKAS_INDEKS(keluarga), sudah => process.stderr.write(`\r  ${keluarga}: ${sudah} baris`));
     console.log(`\n${keluarga}: ${ditulis} baris ditulis`);
   }
 }
 
-if (!dariBerkas) sapuKeBerkas();
-if (!kering) await tulisKeBasisData();
+async function tulisKuisKeBasisData() {
+  const { tulisIndeksKuis, BERKAS_INDEKS_KUIS } = await import('./bank-tulis');
+  const repo = await sambungBank();
+  const ditulis = await tulisIndeksKuis(repo, BERKAS_INDEKS_KUIS, sudah => process.stderr.write(`\r  kuis: ${sudah} baris`));
+  console.log(`\nkuis: ${ditulis} baris ditulis`);
+}
+
+if (kuis) await tulisKuisKeBasisData();
+else {
+  if (!dariBerkas) sapuKeBerkas();
+  if (!kering) await tulisKeBasisData();
+}

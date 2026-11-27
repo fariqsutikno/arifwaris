@@ -12,6 +12,8 @@ import type {
 } from '../antarmuka.js';
 import { BATAS_AJUAN_SAYA } from '../antarmuka.js';
 import { saringValid } from '../saring.js';
+import type { RepositoriAturanPengecoh, RepositoriBankSoal } from '../bank.js';
+import { buatMemoriBank } from './bank.js';
 
 interface EntriMemori {
   id: string; jenis: JenisKonten; slug: string; urutan: number; revisiTerbitId: string | null; versiTerbit: number | null; dibuang: boolean; diarsipkan: boolean;
@@ -25,6 +27,8 @@ export interface MemoriBersama {
   diksi: RepositoriDiksi;
   akun: RepositoriAkun;
   ai: RepositoriAi;
+  /** Bank soal + persetujuan aturan pengecoh; persetujuan menegakkan peran keilmuan/admin seperti RLS. */
+  bank: RepositoriBankSoal & RepositoriAturanPengecoh;
   masukSebagai(sesi: Sesi | null): void;
   aturPeranLangsung(userId: string, peran: Peran | null): void;
   /** Hanya untuk tes: meniru baris jsonb yang disunting manual di DB. */
@@ -433,8 +437,16 @@ export function buatMemori(awal: { refs?: string[]; sesi?: Sesi | null; peran?: 
     },
   };
 
+  const bankDasar = buatMemoriBank();
+  const bank: MemoriBersama['bank'] = {
+    ...bankDasar,
+    async setujui(aturan) { wajibPeran('keilmuan', 'admin'); return bankDasar.setujui(aturan); },
+    async cabut(aturan) { wajibPeran('keilmuan', 'admin'); return bankDasar.cabut(aturan); },
+    async contohSoal(aturan, jumlah, benih) { wajibPeran('keilmuan', 'admin'); return bankDasar.contohSoal(aturan, jumlah, benih); },
+  };
+
   return {
-    konten, editorial, diksi, akun, ai,
+    konten, editorial, diksi, akun, ai, bank,
     masukSebagai(sesiBaru) { sesi = sesiBaru; },
     aturPeranLangsung(userId, peranBaru) { if (peranBaru) peran.set(userId, peranBaru); else peran.delete(userId); },
     isiRevisiMentah(revisiId, isi) { ambil(revisi, revisiId, 'revisi').isi = isi; },

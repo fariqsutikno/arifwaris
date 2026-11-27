@@ -22,10 +22,33 @@ export function keBarisBank(indeks: BarisIndeks): BarisBankSoal {
   };
 }
 
-export async function tulisBerkasIndeks(
-  repo: RepositoriBankSoal, berkas: string, progres: (ditulis: number) => void = () => {},
+export const BERKAS_INDEKS_KUIS = '.bank/indeks-kuis.jsonl';
+/** Soal kuis angka bersumber kasus keluarga biasa (spec soal kuis 3.3). */
+const KELUARGA_KUIS = 'biasa';
+const POLA_VERSI_KUIS = /^K(\d+)-/;
+
+/** Satu baris .bank/indeks-kuis.jsonl, seperti yang ditulis bank-kuis.ts. */
+export type BarisIndeksKuis = { kode: string; jenis: string; tingkat: TingkatBank; modul: number[]; label_utama: string; aturan: string[] };
+
+export function keBarisKuis(indeks: BarisIndeksKuis): BarisBankSoal {
+  const versi = POLA_VERSI_KUIS.exec(indeks.kode)?.[1];
+  if (!versi) throw new Error(`kode kuis tanpa versi: ${indeks.kode}`);
+  return {
+    kode: indeks.kode, versiGenerator: Number(versi), keluarga: KELUARGA_KUIS, tingkat: indeks.tingkat, modul: indeks.modul,
+    label: [indeks.label_utama, `jenis:${indeks.jenis}`], jumlahMayit: 1, jumlahAhliWaris: 0, bentuk: 'kuis', aturan: indeks.aturan,
+  };
+}
+
+export const tulisIndeksKuis = (repo: RepositoriBankSoal, berkas: string, progres?: (ditulis: number) => void) =>
+  tulisBerkas(repo, berkas, baris => keBarisKuis(JSON.parse(baris) as BarisIndeksKuis), progres);
+
+export const tulisBerkasIndeks = (repo: RepositoriBankSoal, berkas: string, progres?: (ditulis: number) => void) =>
+  tulisBerkas(repo, berkas, baris => keBarisBank(JSON.parse(baris) as BarisIndeks), progres);
+
+async function tulisBerkas(
+  repo: RepositoriBankSoal, berkas: string, urai: (baris: string) => BarisBankSoal, progres: (ditulis: number) => void = () => {},
 ): Promise<number> {
-  if (!existsSync(berkas)) throw new Error(`berkas tidak ada: ${berkas} (jalankan pnpm bank:bangun --kering dulu)`);
+  if (!existsSync(berkas)) throw new Error(`berkas tidak ada: ${berkas} (jalankan pnpm bank:bangun --kering atau pnpm bank:kuis dulu)`);
   let batch: BarisBankSoal[] = [];
   let ditulis = 0;
   const kosongkan = async () => {
@@ -36,7 +59,7 @@ export async function tulisBerkasIndeks(
   };
   for await (const baris of createInterface({ input: createReadStream(berkas), crlfDelay: Infinity })) {
     if (!baris) continue;
-    batch.push(keBarisBank(JSON.parse(baris) as BarisIndeks));
+    batch.push(urai(baris));
     if (batch.length >= UKURAN_BATCH_SIMPAN_BANK) await kosongkan();
   }
   if (batch.length) await kosongkan();

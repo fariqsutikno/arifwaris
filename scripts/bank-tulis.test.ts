@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { expect, test } from 'vitest';
 import { buatMemoriBank } from '@waris/data';
-import { keBarisBank, tulisBerkasIndeks, type BarisIndeks } from './bank-tulis';
+import { keBarisBank, keBarisKuis, tulisBerkasIndeks, tulisIndeksKuis, type BarisIndeks } from './bank-tulis';
 
 const indeks = (n: number, label: string[] = ['aul']): BarisIndeks =>
   ({ kode: `G1-B-${n}`, keluarga: 'biasa', label, tingkat: 'dasar', modul: [6], jumlah_ahli_waris: 3 });
@@ -29,4 +29,18 @@ test('berkas ditulis per batch dan jalan ulang idempoten (lanjut setelah terputu
 
 test('berkas tidak ada = galat berpetunjuk', async () => {
   await expect(tulisBerkasIndeks(buatMemoriBank(), '/tidak/ada.jsonl')).rejects.toThrow(/bank:bangun --kering/);
+});
+
+test('indeks kuis dimuat sebagai bentuk kuis dengan aturannya; tampil hanya setelah aturan disetujui', async () => {
+  const berkas = join(mkdtempSync(join(tmpdir(), 'bank-')), 'indeks-kuis.jsonl');
+  const baris = { kode: 'K1-ABC', jenis: 'bagian', tingkat: 'sulit', modul: [6, 7], label_utama: 'aul:12>15', aturan: ['lupaAul', 'pasanganTertukar'] } as const;
+  writeFileSync(berkas, `${JSON.stringify(baris)}\n`);
+  expect(keBarisKuis({ ...baris, modul: [...baris.modul], aturan: [...baris.aturan] })).toMatchObject({ versiGenerator: 1, bentuk: 'kuis', aturan: ['lupaAul', 'pasanganTertukar'] });
+  const repo = buatMemoriBank();
+  expect(await tulisIndeksKuis(repo, berkas)).toBe(1);
+  expect(await repo.cariSoal({ jumlah: 5, benih: 'x' })).toEqual([]);
+  expect(await repo.cariSoal({ jumlah: 5, benih: 'x', bentuk: 'kuis' })).toEqual([]);
+  await repo.setujui('lupaAul');
+  await repo.setujui('pasanganTertukar');
+  expect(await repo.cariSoal({ jumlah: 5, benih: 'x', bentuk: 'kuis' })).toEqual(['K1-ABC']);
 });

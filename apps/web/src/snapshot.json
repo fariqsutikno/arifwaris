@@ -30620,6 +30620,223 @@
    "id": "Jadi bagian akhir {siapa} secara keseluruhan adalah {bagian} dari seluruh harta.",
    "ar": null,
    "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_judul",
+   "halaman": "latihan",
+   "id": "Soal kuis acak",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_pengantar",
+   "halaman": "latihan",
+   "id": "Soal pilihan ganda dari hitungan faraidh, dibuat otomatis. Pilih tingkat dan modul, lalu mulai.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_mulai",
+   "halaman": "latihan",
+   "id": "Mulai soal kuis",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_soal_lain",
+   "halaman": "latihan",
+   "id": "Soal kuis lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "latihan.kuis_bank_tidak_ada_cocok",
+   "halaman": "latihan",
+   "id": "Belum ada soal kuis yang cocok dengan pilihan ini. Coba tingkat atau modul lain.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.halaman_judul",
+   "halaman": "soal_kuis",
+   "id": "Aturan pengecoh",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.halaman_pengantar",
+   "halaman": "soal_kuis",
+   "id": "Tiap pilihan yang salah di soal kuis lahir dari satu kesalahpahaman yang umum. Periksa lima contoh soal untuk tiap aturan. Setelah Anda setujui, semua soal yang memakai aturan itu boleh tampil ke pelajar; soal yang masih memuat aturan yang belum disetujui tidak ditampilkan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.status_disetujui",
+   "halaman": "soal_kuis",
+   "id": "Disetujui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.status_belum",
+   "halaman": "soal_kuis",
+   "id": "Belum disetujui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.setujui",
+   "halaman": "soal_kuis",
+   "id": "Setujui",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.cabut",
+   "halaman": "soal_kuis",
+   "id": "Cabut persetujuan",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_judul",
+   "halaman": "soal_kuis",
+   "id": "Contoh soal",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_kosong",
+   "halaman": "soal_kuis",
+   "id": "Belum ada soal di bank yang memakai aturan ini.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_lain",
+   "halaman": "soal_kuis",
+   "id": "Tampilkan contoh lain",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.hanya_keilmuan",
+   "halaman": "soal_kuis",
+   "id": "Halaman ini untuk tim keilmuan dan admin.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_aul.nama",
+   "halaman": "soal_kuis",
+   "id": "Lupa 'aul",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_aul.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memakai bagian sebelum 'aul. Padahal bila jumlah bagian melebihi asal masalah, penyebut dinaikkan dan semua bagian mengecil.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_radd.nama",
+   "halaman": "soal_kuis",
+   "id": "Lupa radd",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_radd.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memakai bagian sebelum radd. Padahal bila jumlah bagian kurang dari asal masalah dan tidak ada ashabah, sisa harta dikembalikan kepada ahli waris yang berhak.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_hajb.nama",
+   "halaman": "soal_kuis",
+   "id": "Lupa penghalang (hajb)",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.lupa_hajb.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru menganggap ahli waris yang terhalang kerabat lebih dekat tetap menerima bagian.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ibu_tetap_sepertiga.nama",
+   "halaman": "soal_kuis",
+   "id": "Ibu selalu sepertiga",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ibu_tetap_sepertiga.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memberi ibu sepertiga. Padahal bila ada keturunan yang mewarisi atau dua saudara atau lebih, bagian ibu turun menjadi seperenam.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.pasangan_tertukar.nama",
+   "halaman": "soal_kuis",
+   "id": "Bagian suami atau istri tertukar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.pasangan_tertukar.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memakai bagian pasangan untuk keadaan sebaliknya: bagian tanpa keturunan padahal ada keturunan, atau sebaliknya.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_sama_rata.nama",
+   "halaman": "soal_kuis",
+   "id": "Sisa dibagi sama rata",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_sama_rata.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru membagi sisa sama rata antara laki-laki dan perempuan. Padahal laki-laki mendapat dua kali bagian perempuan.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_terbalik.nama",
+   "halaman": "soal_kuis",
+   "id": "Penerima sisa tertukar",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.ashabah_terbalik.penjelasan",
+   "halaman": "soal_kuis",
+   "id": "Pilihan keliru memberi sisa kepada kerabat yang lebih jauh, atau menganggap kerabat yang lebih dekat sebagai yang terhalang.",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.memuat",
+   "halaman": "soal_kuis",
+   "id": "Memuat contoh soal...",
+   "ar": null,
+   "versiTerbit": 873
+  },
+  {
+   "kunci": "soal_kuis.aturan.contoh_nomor",
+   "halaman": "soal_kuis",
+   "id": "Contoh {nomor}",
+   "ar": null,
+   "versiTerbit": 873
   }
  ]
 }

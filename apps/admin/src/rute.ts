@@ -11,7 +11,8 @@ export type Rute =
   | { layar: 'entriBaru'; jenis: JenisKonten; kueri?: Kueri }
   | { layar: 'review' }
   | { layar: 'ajuan' }
-  | { layar: 'peran' };
+  | { layar: 'peran' }
+  | { layar: 'aturan' };
 
 const BERANDA: Rute = { layar: 'beranda' };
 const jenisSah = (teks: string | undefined): teks is JenisKonten => !!teks && (JENIS_KONTEN as readonly string[]).includes(teks);
@@ -35,6 +36,7 @@ export function bacaRute(hash: string): Rute {
     case 'review': return { layar: 'review' };
     case 'ajuan': return { layar: 'ajuan' };
     case 'peran': return { layar: 'peran' };
+    case 'aturan': return { layar: 'aturan' };
     default: return BERANDA;
   }
 }
@@ -48,6 +50,7 @@ export function tulisRute(rute: Rute): string {
     case 'review': return '#/review';
     case 'ajuan': return '#/ajuan';
     case 'peran': return '#/peran';
+    case 'aturan': return '#/aturan';
   }
 }
 
