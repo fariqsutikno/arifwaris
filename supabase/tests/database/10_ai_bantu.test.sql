@@ -7,7 +7,7 @@ insert into auth.users (id, email) values ('00000000-0000-0000-0000-00000000000c
 insert into peran_pengguna values ('00000000-0000-0000-0000-00000000000c', 'admin');
 insert into daftar_refs values ('R04-2', 4) on conflict do nothing;
 insert into entri_konten (id, jenis, slug) values
-  ('10000000-0000-0000-0000-000000000001', 'soal_kuis', 'K-ai'), ('10000000-0000-0000-0000-000000000002', 'soal_kuis', 'K-biasa');
+  ('10000000-0000-0000-0000-000000000001', 'materi', 'K-ai'), ('10000000-0000-0000-0000-000000000002', 'materi', 'K-biasa');
 insert into revisi (id, entri_id, isi, refs, dibuat_oleh) values
   ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '{"dibantuAi": true}', '{R04-2}', '00000000-0000-0000-0000-00000000000c'),
   ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000002', '{}', '{R04-2}', '00000000-0000-0000-0000-00000000000c');

@@ -1,7 +1,7 @@
 -- supabase/tests/database/27_review_dua_tahap.test.sql
 -- K1: soal_kuis lewat dua tahap (diajukan -> diperiksa -> disetujui) dengan checklist 5 butir; materi tetap satu tahap.
 begin;
-select plan(19);
+select plan(20);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-0000000000b1', 'penulis@tes.local'),
@@ -17,11 +17,13 @@ insert into daftar_refs values ('R04-2', 4) on conflict do nothing;
 insert into entri_konten (id, jenis, slug) values
   ('10000000-0000-0000-0000-0000000000b1', 'soal_kuis', 'K-dua'),
   ('10000000-0000-0000-0000-0000000000b2', 'soal_kuis', 'K-kembali'),
-  ('10000000-0000-0000-0000-0000000000b3', 'materi', 'M-satu');
+  ('10000000-0000-0000-0000-0000000000b3', 'materi', 'M-satu'),
+  ('10000000-0000-0000-0000-0000000000b9', 'soal_kuis', 'K-draf');
 insert into revisi (id, entri_id, isi, refs, status, dibuat_oleh) values
   ('20000000-0000-0000-0000-0000000000b1', '10000000-0000-0000-0000-0000000000b1', '{}', '{R04-2}', 'diajukan', '00000000-0000-0000-0000-0000000000b1'),
   ('20000000-0000-0000-0000-0000000000b2', '10000000-0000-0000-0000-0000000000b2', '{}', '{R04-2}', 'diajukan', '00000000-0000-0000-0000-0000000000b1'),
-  ('20000000-0000-0000-0000-0000000000b3', '10000000-0000-0000-0000-0000000000b3', '{}', '{R04-2}', 'diajukan', '00000000-0000-0000-0000-0000000000b1');
+  ('20000000-0000-0000-0000-0000000000b3', '10000000-0000-0000-0000-0000000000b3', '{}', '{R04-2}', 'diajukan', '00000000-0000-0000-0000-0000000000b1'),
+  ('20000000-0000-0000-0000-0000000000b9', '10000000-0000-0000-0000-0000000000b9', '{}', '{R04-2}', 'draf', '00000000-0000-0000-0000-0000000000b1');
 
 set local role authenticated;
 
@@ -67,6 +69,10 @@ insert into revisi (id, entri_id, isi, refs, status, dibuat_oleh) values
 set local role authenticated;
 set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-0000000000b3","role":"authenticated"}';
 select lives_ok($$select kembalikan_revisi('20000000-0000-0000-0000-0000000000b4', 'rujukan tidak cocok')$$, 'keilmuan mengembalikan dari diperiksa');
+
+-- admin tidak bisa menerbitkan langsung draf soal kuis
+set local request.jwt.claims to '{"sub":"00000000-0000-0000-0000-0000000000b4","role":"authenticated"}';
+select throws_ok($$select terbitkan_langsung('20000000-0000-0000-0000-0000000000b9')$$, 'P0001', null, 'terbitkan langsung ditolak untuk soal kuis');
 
 select * from finish();
 rollback;
