@@ -19,6 +19,7 @@
     "diksi:tambah": "pnpm --filter @waris/skrip diksi:tambah",
     "materi:cek": "vite-node scripts/materi-cek.ts --",
     "soal:cek": "vite-node scripts/soal-cek.ts --",
+    "soal:impor": "vite-node scripts/soal-impor/main.ts --",
     "materi:impor": "vite-node scripts/materi-impor/main.ts --"
   },
   "devDependencies": {
