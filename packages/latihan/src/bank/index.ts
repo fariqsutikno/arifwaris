@@ -8,3 +8,4 @@ export * from './soalBank.js';
 export * from './penyapu.js';
 export * from './penyapuLanjutan.js';
 export * from './bangunBank.js';
+export * from './kuis/index.js';

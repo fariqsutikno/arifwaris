@@ -11,6 +11,7 @@
     "db:reset": "supabase db reset",
     "db:tes": "supabase test db",
     "bank:bangun": "vite-node scripts/bank-bangun.ts --",
+    "bank:kuis": "vite-node scripts/bank-kuis.ts --",
     "db:refs": "vite-node scripts/daftar-refs.ts",
     "db:xp-kasus": "vite-node scripts/xp-kasus-ke-sql.ts",
     "fungsi:bundel": "vite-node scripts/bundel-fungsi.ts",

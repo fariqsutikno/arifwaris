@@ -115,7 +115,7 @@ export function hashKode(kode: string): number {
  * Water-filling: jatah tingkat dibagi rata ke kelompok (label utama); jatah yang tidak terpakai kelompok kecil
  * pindah ke kelompok yang lebih besar. Murni atas ukuran kelompok, jadi dipakai versi memori dan versi mengalir.
  */
-function bagiJatah(ukuran: Map<string, number>, jatahTingkat: number): Map<string, number> {
+export function bagiJatah(ukuran: Map<string, number>, jatahTingkat: number): Map<string, number> {
   const urut = [...ukuran.entries()].sort((a, b) => a[1] - b[1] || (a[0] < b[0] ? -1 : 1));
   const ambil = new Map<string, number>();
   let sisaJatah = jatahTingkat;
@@ -173,7 +173,7 @@ export function terapkanKuota(lolos: BarisBank[], targetTotal = TARGET_TOTAL_SOA
 }
 
 /** Larik bilangan bulat tak bertanda yang tumbuh berlipat ganda: 4 byte per entri, bukan objek per kandidat. */
-class DaftarPadat {
+export class DaftarPadat {
   private isi = new Uint32Array(1 << 20);
   panjang = 0;
   tambah(nilai: number) {
