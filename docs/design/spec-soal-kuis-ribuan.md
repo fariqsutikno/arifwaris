@@ -76,7 +76,7 @@ dipakai pembangun.
 
 ## 4. Soal konsep dari Codex
 
-- Target dinaikkan dari 136 ke sekitar 1.000: `kerangka-soal.md` dikali ~7, proporsi dasar/menengah/sulit tetap.
+- Target dinaikkan dari 136 ke sekitar 990 (295/420/275), dengan porsi jenis soal konsep di `kerangka-soal.md` (K6, 2026-11-27).
   Soal konsep tidak mengulang soal angka yang sudah dibuat mesin: kerangka diubah supaya Codex fokus pada
   pengertian, syarat, alasan hukum, khilaf, dan kasus yang tidak bisa dibuat mesin (munasakhat, dzawil arham,
   ketidakpastian).

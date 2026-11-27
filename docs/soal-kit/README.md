@@ -41,9 +41,9 @@ Belum diperiksa mesin (tanggung jawab penulis dan peninjau fikih):
 - angka kasus **lanjutan** (munasakhat, gharqa, mafqud, khuntsa, haml, dzawil arham): pemeriksa baru mencocokkan
   label, belum saham. Soal lanjutan karena itu ditulis tanpa angka pecahan (lihat `format-soal.md` bagian 4).
 
-## Langkah berikutnya (belum dikerjakan)
+## Setelah lolos pemeriksa
 
-Impor ke bank `soal_kuis` dengan `sumber = 'paket:<nama>'` mengikuti `scripts/materi-impor/` (soal materi memakai
-`materi:<slug>`): baca paket yang lolos `soal:cek`, tulis tiap soal sebagai revisi draf lewat akun impor, lewati
-yang isinya sama. Parser sudah mengeluarkan `SoalMateri` yang sama bentuknya dengan soal materi, jadi penulis
-revisinya dapat dipakai ulang. Sampai impor ada, paket soal berhenti di `konten/soal/`.
+`pnpm soal:impor <berkas|folder>... [--kering]` memasukkan paket yang lolos `soal:cek` ke bank `soal_kuis`
+(`sumber = 'paket:<nama>'`) sebagai revisi **diajukan**. Soal lalu melewati review dua tahap di portal: reviewer
+mencentang checklist 5 butir dan menandai *diperiksa*, lalu tim keilmuan menyetujui. Soal baru tampil setelah
+disetujui. Isi yang sama dilewati; soal yang sedang direview tidak ditimpa.
